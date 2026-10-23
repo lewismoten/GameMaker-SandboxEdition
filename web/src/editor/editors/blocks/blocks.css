@@ -123,3 +123,68 @@
     display: flex;
   }
 }
+
+/* the toolbar's mirror choice and the four shift arrows */
+.blk-paint .toolbar .field {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.blk-shift {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.blk-shift button {
+  min-width: 32px;
+}
+
+/* Preview & uses: the block tiled 3 x 3 and its animation */
+.blk-insight summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 24px;
+}
+.blk-insight-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+.blk-insight figure {
+  margin: 0;
+}
+.blk-tile {
+  width: 180px;
+  height: 180px;
+  border: 1px solid var(--border);
+}
+.blk-anim {
+  width: 80px;
+  height: 80px;
+  border: 1px solid var(--border);
+}
+.blk-insight h3 {
+  margin: 10px 0 4px;
+  font-size: 1em;
+}
+.blk-uses {
+  margin: 0;
+  padding-left: 20px;
+}
+.blk-uses li {
+  margin: 2px 0;
+}
+.blk-use-link {
+  min-height: 24px;
+  padding: 2px 6px;
+  text-align: left;
+}
+.recolor-chip {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  flex: none;
+}

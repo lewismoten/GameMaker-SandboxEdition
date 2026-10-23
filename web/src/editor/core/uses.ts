@@ -7,6 +7,12 @@ import { parseMonsters } from '../../formats/monster';
 import { parseCharacter, frameCount } from '../../formats/character';
 import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '../../formats/game';
 import type { Project } from './project';
+import { formatHash } from '../../urlState';
+
+/** Opens another of the project's files in the workspace (as following a link to it would). */
+export function openInEditor(project: Project, file: string): void {
+  location.hash = formatHash(['p', project.id, file]);
+}
 
 export interface Use {
   /** The file it is found in (open it to see). */

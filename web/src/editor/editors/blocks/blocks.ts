@@ -6,7 +6,7 @@ import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { fileField } from '../../widgets/filePicker';
 import { TEXTURES, paintTexture } from '../../tools/textures';
-import { h, clear, numberField, checkField, selectField, debounce } from '../../core/ui';
+import { h, clear, numberField, checkField, selectField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock, lut } from '../../core/draw';
 import type { Project } from '../../core/project';
 import {
@@ -25,6 +25,11 @@ import {
 } from '../../../formats/blocks';
 import { paletteCss, parsePalette, type Palette } from '../../../formats/palette';
 import { LASTMON } from '../../../formats/monster';
+import { flipH, flipV, rotateCW, rotateCCW, shiftWrap, mirrorPoints, type Mirror } from './pixelOps';
+import { shade } from '../palette/ramps';
+import { blockInsight } from './blockInsight';
+import { openInEditor } from '../../core/uses';
+import { applyRecolor, recolorDialog } from './recolorDialog';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -41,7 +46,12 @@ const SIDES: [number, string][] = [
   [SOLLEF, 'Left'],
 ];
 
-type Tool = 'draw' | 'fill' | 'pick' | 'line' | 'rect';
+type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect';
+
+/** The painter's own settings, kept in the companion file (never in the block set). */
+interface PainterExtras {
+  mirror?: Mirror;
+}
 
 export function paletteChooser(project: Project, file: string, onChange: (p: Palette) => void): { el: HTMLElement; palette: Palette } {
   const found = project.paletteFor(file);
@@ -83,6 +93,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const redo: Uint8Array[][] = blocks.map(() => []);
   let clipboard: Block | undefined;
   const save = debounce(() => project.files.set(file, serializeBlocks(blocks)), 250);
+  let mirror: Mirror = project.extras<PainterExtras>(file, 'painter', {}).mirror ?? 'none';
+  /** Pixels already shaded in this stroke (each is lightened or darkened once a drag). */
+  let shaded = new Set<number>();
 
   const chooser = paletteChooser(project, file, () => {
     renderPicker();
@@ -90,6 +103,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     renderBlock();
   });
   const pal = () => chooser.palette;
+  const insight = blockInsight({ project, file, blocks, current: () => current, pal, sprites, open: (f) => openInEditor(project, f) });
 
   // ---- block picker -------------------------------------------------------
   const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks');
@@ -117,6 +131,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     renderBlock();
     renderProps();
     refreshUndo();
+    insight.refresh(true);
   }
 
   // ---- pixel canvas -------------------------------------------------------
@@ -154,6 +169,23 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ctx.stroke();
     }
     if (!preview && pickerCanvases[current]) paintBlock(pickerCanvases[current], blocks[current].pixels, pal(), { transparent: sprites });
+    if (!preview) insight?.refresh();
+  }
+
+  /** Sets a pixel and its mirror images. */
+  function plot(px: Uint8Array, x: number, y: number, v: number): void {
+    for (const [mx, my] of mirrorPoints(x, y, mirror)) px[my * BLEN + mx] = v;
+  }
+
+  /** Lightens (dir 1) or darkens (-1) a pixel and its mirror images one step along their palette ramps, once a stroke. */
+  function shadeAt(x: number, y: number, dir: 1 | -1): void {
+    const px = blocks[current].pixels;
+    for (const [mx, my] of mirrorPoints(x, y, mirror)) {
+      const i = my * BLEN + mx;
+      if (shaded.has(i) || (sprites && px[i] === TRANSPARENT)) continue;
+      shaded.add(i);
+      px[i] = shade(pal(), px[i], dir);
+    }
   }
 
   const cell = (e: PointerEvent) => {
@@ -168,21 +200,24 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     const out = src.slice();
     if (tool === 'rect') {
       for (let x = Math.min(a.x, b.x); x <= Math.max(a.x, b.x); x++) {
-        out[a.y * BLEN + x] = color;
-        out[b.y * BLEN + x] = color;
+        plot(out, x, a.y, color);
+        plot(out, x, b.y, color);
       }
       for (let y = Math.min(a.y, b.y); y <= Math.max(a.y, b.y); y++) {
-        out[y * BLEN + a.x] = color;
-        out[y * BLEN + b.x] = color;
+        plot(out, a.x, y, color);
+        plot(out, b.x, y, color);
       }
       return out;
     }
     const n = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y), 1);
-    for (let i = 0; i <= n; i++) out[Math.round(a.y + ((b.y - a.y) * i) / n) * BLEN + Math.round(a.x + ((b.x - a.x) * i) / n)] = color;
+    for (let i = 0; i <= n; i++) plot(out, Math.round(a.x + ((b.x - a.x) * i) / n), Math.round(a.y + ((b.y - a.y) * i) / n), color);
     return out;
   }
 
   function fill(x: number, y: number): void {
+    for (const [mx, my] of mirrorPoints(x, y, mirror)) fillOne(mx, my);
+  }
+  function fillOne(x: number, y: number): void {
     const px = blocks[current].pixels;
     const target = px[y * BLEN + x];
     if (target === color) return;
@@ -232,6 +267,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       return;
     }
     pushUndo();
+    if (tool === 'shade') {
+      shaded = new Set();
+      shadeAt(p.x, p.y, e.button === 2 ? -1 : 1);
+      renderBlock();
+      return;
+    }
     if (tool === 'fill') {
       fill(p.x, p.y);
       changed();
@@ -242,7 +283,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       before = blocks[current].pixels.slice();
       return;
     }
-    blocks[current].pixels[p.y * BLEN + p.x] = e.button === 2 ? (sprites ? TRANSPARENT : 0) : color;
+    plot(blocks[current].pixels, p.x, p.y, e.button === 2 ? (sprites ? TRANSPARENT : 0) : color);
     renderBlock();
   });
   canvas.addEventListener('pointermove', (e) => {
@@ -253,7 +294,11 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       return;
     }
     if (tool === 'draw' && !e.altKey) {
-      blocks[current].pixels[p.y * BLEN + p.x] = e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color;
+      plot(blocks[current].pixels, p.x, p.y, e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color);
+      renderBlock();
+    }
+    if (tool === 'shade') {
+      shadeAt(p.x, p.y, e.buttons === 2 ? -1 : 1);
       renderBlock();
     }
   });
@@ -264,23 +309,59 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
-  function transform(fn: (x: number, y: number, src: Uint8Array) => number): void {
+  function transform(fn: (src: Uint8Array) => Uint8Array): void {
     pushUndo();
-    const src = blocks[current].pixels.slice();
-    for (let y = 0; y < BLEN; y++) for (let x = 0; x < BLEN; x++) blocks[current].pixels[y * BLEN + x] = fn(x, y, src);
+    blocks[current].pixels.set(fn(blocks[current].pixels));
     changed();
   }
-  const L = BLEN - 1;
+  async function replaceColors(): Promise<void> {
+    const r = await recolorDialog(pal(), color, color);
+    if (!r) return;
+    const which = r.everyBlock ? blocks.map((_, i) => i) : [current];
+    let n = 0;
+    for (const i of which) {
+      const next = applyRecolor(blocks[i].pixels, r);
+      if (next.every((v, k) => v === blocks[i].pixels[k])) continue;
+      undo[i].push(blocks[i].pixels.slice());
+      redo[i].length = 0;
+      blocks[i].pixels.set(next);
+      if (pickerCanvases[i]) paintBlock(pickerCanvases[i], blocks[i].pixels, pal(), { transparent: sprites });
+      n++;
+    }
+    if (n) changed();
+    toast(n ? `Recolored ${n} block${n === 1 ? '' : 's'}.` : 'No block used those colors.');
+  }
+  const mirrorSel = selectField<Mirror>(
+    'Mirror',
+    [
+      ['none', 'Off'],
+      ['h', 'Left ↔ right'],
+      ['v', 'Top ↕ bottom'],
+      ['both', 'All four corners'],
+    ],
+    () => mirror,
+    (v) => {
+      mirror = v;
+      project.setExtras(file, 'painter', v === 'none' ? undefined : { mirror: v });
+    },
+    'Paint the mirror image too, for symmetric blocks (pencil, shade, fill, line and box)',
+  );
   const tools = h(
     'div',
     { class: 'toolbar' },
-    ...(['draw', 'fill', 'pick', 'line', 'rect'] as Tool[]).map((t) =>
+    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect'] as Tool[]).map((t) =>
       h(
         'button',
-        { class: t === tool ? 'active primary' : '', dataset: { tool: t }, onclick: () => setTool(t) },
-        { draw: 'Pencil', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box' }[t],
+        {
+          class: t === tool ? 'active primary' : '',
+          dataset: { tool: t },
+          title: t === 'shade' ? 'Lighten a color one step along its palette ramp; right-drag darkens' : undefined,
+          onclick: () => setTool(t),
+        },
+        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box' }[t],
       ),
     ),
+    mirrorSel,
   );
   function setTool(t: Tool): void {
     tool = t;
@@ -289,11 +370,26 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const actions = h(
     'div',
     { class: 'toolbar' },
-    h('button', { onclick: () => transform((x, y, s) => s[y * BLEN + (L - x)]) }, 'Flip ↔'),
-    h('button', { onclick: () => transform((x, y, s) => s[(L - y) * BLEN + x]) }, 'Flip ↕'),
-    h('button', { onclick: () => transform((x, y, s) => s[(L - x) * BLEN + y]) }, 'Rotate ↻'),
-    h('button', { onclick: () => transform((x, y, s) => s[y * BLEN + ((x + 1) % BLEN)]) }, 'Shift ←'),
-    h('button', { onclick: () => transform((x, y, s) => s[((y + 1) % BLEN) * BLEN + x]) }, 'Shift ↑'),
+    h('button', { title: 'Flip left to right', onclick: () => transform(flipH) }, 'Flip ↔'),
+    h('button', { title: 'Flip top to bottom', onclick: () => transform(flipV) }, 'Flip ↕'),
+    h('button', { title: 'Turn a quarter clockwise', onclick: () => transform(rotateCW) }, 'Rotate ↻'),
+    h('button', { title: 'Turn a quarter counterclockwise', onclick: () => transform(rotateCCW) }, 'Rotate ↺'),
+    h(
+      'span',
+      { class: 'blk-shift', role: 'group', 'aria-label': 'Shift a pixel, wrapping round' },
+      h('span', { class: 'meta', 'aria-hidden': 'true' }, 'Shift'),
+      ...(
+        [
+          ['←', 'left', -1, 0],
+          ['→', 'right', 1, 0],
+          ['↑', 'up', 0, -1],
+          ['↓', 'down', 0, 1],
+        ] as const
+      ).map(([icon, word, dx, dy]) =>
+        h('button', { title: `Shift a pixel ${word}; what leaves one edge comes back on the other`, 'aria-label': `Shift ${word}`, onclick: () => transform((s) => shiftWrap(s, dx, dy)) }, icon),
+      ),
+    ),
+    h('button', { title: 'Replace one color or a whole ramp, here or in every block', onclick: () => void replaceColors() }, 'Replace colors…'),
     h('button', { onclick: () => (clipboard = structuredClone(blocks[current])) }, 'Copy'),
     h(
       'button',
@@ -307,7 +403,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       },
       'Paste picture',
     ),
-    h('button', { onclick: () => transform(() => (sprites ? TRANSPARENT : color)) }, 'Clear'),
+    h('button', { onclick: () => transform((s) => s.fill(sprites ? TRANSPARENT : color)) }, 'Clear'),
     undoBtn,
     redoBtn,
   );
@@ -377,6 +473,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     const edit = (fn: () => void) => {
       fn();
       save();
+      insight.refresh(true);
     };
     const sides = (labelText: string, get: () => number, set: (v: number) => void, title: string) =>
       h(
@@ -524,7 +621,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       'div',
       { class: 'blk' },
       h('div', { class: 'blk-picker' }, picker),
-      h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures),
+      h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, insight.el),
       h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
     ),
   );
@@ -532,6 +629,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   renderSwatches();
   renderBlock();
   renderProps();
+  insight.refresh(true);
 
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
@@ -542,5 +640,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
-  return () => window.removeEventListener('keydown', onKey);
+  return () => {
+    window.removeEventListener('keydown', onKey);
+    insight.dispose();
+  };
 });
