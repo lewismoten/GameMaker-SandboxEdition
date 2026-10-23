@@ -7,6 +7,8 @@ import { auditionSong, buildPreview, type Preview } from '../../../formats/cmfPr
 import { channelSounds, DEFAULT_VELOCITY, extendEnd, startMode, startProgram, usedChannels } from '../../../formats/cmfEdit';
 import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAMES } from '../../../formats/cmfSong';
 import { presetName } from './sbi';
+import { presetPreview } from '../../../audio/oplPresetPreview';
+import type { OplPreset } from '../../../audio/oplPatch';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
 export type Change = 'song' | 'view' | 'track' | 'play';
@@ -282,6 +284,22 @@ export class MusicDoc {
     await audio.playSong(auditionSong(this.song, ch, program, key, ticks, vel));
     clearTimeout(this.auditionTimer);
     this.auditionTimer = setTimeout(() => !this.preview && audio.stopSong(), (ticks / TICK_RATE) * 1000 + 1500);
+  }
+
+  /** Plays a preset's short phrase (stopping the song if it is playing). */
+  async previewPreset(p: OplPreset): Promise<void> {
+    if (this.preview) this.stop();
+    const { bytes, seconds } = presetPreview(p);
+    await audio.resume();
+    await audio.playSong(bytes);
+    clearTimeout(this.auditionTimer);
+    this.auditionTimer = setTimeout(() => !this.preview && audio.stopSong(), seconds * 1000);
+  }
+
+  /** Stops a preset's phrase or a tried note. */
+  stopPreview(): void {
+    clearTimeout(this.auditionTimer);
+    if (!this.preview) audio.stopSong();
   }
 
   dispose(): void {
