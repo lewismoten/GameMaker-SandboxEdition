@@ -107,6 +107,23 @@
   display: none;
 }
 
+/* while a demo plays, Stop and the sound picker wait out of sight until the pointer is over the
+   picture (or a key moves into it), so they don't cover the demo; touch screens keep them */
+@media (hover: hover) {
+  .sc-glass.demo-playing .sc-demo-btn,
+  .sc-glass.demo-playing .demo-sound {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .sc-glass.demo-playing:hover .sc-demo-btn,
+  .sc-glass.demo-playing:hover .demo-sound,
+  .sc-glass.demo-playing:focus-within .sc-demo-btn,
+  .sc-glass.demo-playing:focus-within .demo-sound {
+    opacity: 1;
+  }
+}
+
 .demo-loading .sc-demo-btn {
   animation: demo-wait 0.8s ease-in-out infinite alternate;
 }

@@ -126,6 +126,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   let session: Session | undefined;
   let stopped = false;
   let timer: ReturnType<typeof setInterval> | undefined;
+  let tagShown = false;
 
   const start = () => {
     player?.stop();
@@ -136,13 +137,16 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     let endedAt = 0;
     const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio: sound, speakerOnly: sound.mode !== 'blaster', onSession: (s) => (session = s) });
     player = p;
-    if (kind !== 'recorded' && o.tag !== false) {
+    // the note shows for a few seconds when the demo starts, then fades (not again on each loop)
+    if (kind !== 'recorded' && o.tag !== false && !tagShown) {
+      tagShown = true;
       const tag = document.createElement('div');
       tag.className = 'demo-kind-tag';
       tag.textContent = inGame ? IN_GAME_DEMO_TAG : DEMO_KIND_TAG[kind];
       tag.style.cssText =
         'position:absolute;top:6px;left:50%;transform:translateX(-50%);max-width:calc(100% - 12px);padding:2px 8px;border-radius:999px;background:rgb(0 0 0 / .72);color:#fff;font:600 11px/1.4 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;z-index:2';
       host.append(tag);
+      tag.animate([{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], { duration: 5000, fill: 'forwards' });
     }
     // silent until the visitor uses the page (iOS needs a tap for sound): say so, and a tap here does it
     if (sound.mode !== 'none' && !mayPlaySound()) {
