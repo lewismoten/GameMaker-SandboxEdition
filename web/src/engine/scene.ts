@@ -68,6 +68,8 @@ export interface Session {
   rand?: () => () => number;
   /** Told the scene number each time play() enters a scene (before its picture). */
   onScene?: (scene: number) => void;
+  /** Not PLAYGAME's: a touch in `scene` changed map cell (x, y), shown as block `bnum` (World.onTouched). */
+  onTouched?: (scene: number, x: number, y: number, bnum: number) => void;
   /**
    * The last level played. loadscene loads into globals, so a level that leaves its
    * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
@@ -101,7 +103,7 @@ export interface LoadedScene {
  * 6 character blocks, 7 sound set, 8 song. In the C a slot left blank keeps whatever
  * the previous scene loaded into the globals; `prev` stands in for those globals.
  */
-export function loadScene(s: Pick<Session, 'game' | 'rand'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, scnum: number, prev?: World): LoadedScene | string[] {
+export function loadScene(s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, scnum: number, prev?: World): LoadedScene | string[] {
   const { m, game } = s;
   const file = (slot: number) => sceneFile(game, scnum, slot);
   const missing: string[] = [];
@@ -130,6 +132,8 @@ export function loadScene(s: Pick<Session, 'game' | 'rand'> & { m: { files: { ge
   world.mon = mon ? parseMonsters(mon) : (prev?.mon ?? []);
   // loadscene sets NoMons when either the monster file or the monster blocks are absent.
   world.noMons = !file(3) || !file(4);
+  const told = s.onTouched;
+  if (told) world.onTouched = (x, y, bnum) => told(scnum, x, y, bnum);
   world.chr = chr ? parseCharacter(chr) : prev!.chr;
   if (!world.chr) return [file(5) ?? 'character'];
 
@@ -623,7 +627,7 @@ async function saveGame(s: Session, w: World, where: { prevscene: number; doscen
  * over it (also how project/saveData's tests check a save it made). Undefined when the
  * level's files are missing.
  */
-export function restoreSaved(s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, w: World | undefined, data: Saved): LoadedScene | undefined {
+export function restoreSaved(s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, w: World | undefined, data: Saved): LoadedScene | undefined {
   const loaded = loadScene(s, data.doscene, w);
   if (Array.isArray(loaded)) return undefined;
   const nw = loaded.world;

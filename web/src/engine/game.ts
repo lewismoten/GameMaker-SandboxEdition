@@ -34,6 +34,8 @@ export interface RunOptions {
   onFrame?: Session['onFrame'];
   /** Emulated PC speed (shared object: change ticksPerSecond at any time). */
   speed?: SpeedSetting;
+  /** A touch changed a map cell while the player played (never during a demo's playback). */
+  onTouched?: Session['onTouched'];
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -66,6 +68,8 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},
   };
+  const touched = opts.onTouched;
+  if (touched) s.onTouched = (scene, x, y, bnum) => void (!s.rec.playing && touched(scene, x, y, bnum));
   m.keyboard.attach();
   // Screens that wait for a key keep the demo recorder going, as PLAYGAME's GetKey did.
   m.keyPoll = (polls) => s.rec.advanceWait(polls);

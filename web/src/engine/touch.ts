@@ -146,6 +146,7 @@ export function reallyCheckTouch(w: World, x: number, y: number, bnum: number): 
   if (x === MLEN) return 1;
   const blk = w.bg[bnum] ?? w.bg[BACKBL];
   if (!doBlockTouchChar(w, blk)) return 2;
+  if (bnum !== blk.touchBl || blk.obj) w.onTouched?.(x, y, bnum);
   if (bnum !== blk.touchBl) {
     const tmp = { x: 0, y: 0 };
     // Only blocks on screen are changed (the original redrew them as it went).
