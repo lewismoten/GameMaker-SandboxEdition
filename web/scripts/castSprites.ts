@@ -20,19 +20,24 @@ type BlockSource = { game: string; file: string; pal: string; frames: number[][]
 type Source = ChrSource | BlockSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
-  teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal' },
-  gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal' },
-  leo: { game: 'tickle', chr: 'leo.chr', cbl: 'tickle.cbl', pal: 'lab.pal' },
+  teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal', seq: 5 },
+  gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal', seq: 5 },
+  leo: { game: 'tickle', chr: 'leo.chr', cbl: 'tickle.cbl', pal: 'lab.pal', seq: 5 },
   chez: { chez: true },
+  chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200 },
+  rootbeer: { game: 'teddy', file: 'klub.bbl', pal: 'klub.pal', frames: [[[76, 77], [79, 81]], [[76, 77], [80, 81]]], ms: 160, still: true },
   tinHeart: { tinHeart: true },
   doghouse: { game: 'teddy', file: 'street.bbl', pal: 'street.pal', frames: [[[86, 87], [89, 91], [92, 95]]], still: true },
-  joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal' },
+  joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal', seq: 8 },
+  lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal', seq: 8 },
+  will: { game: 'sweats', chr: 'poet.chr', cbl: 'poet.cbl', pal: 'hive.pal', seq: 5 },
+  watt: { game: 'logic', chr: 'watt.chr', cbl: 'watt.cbl', pal: 'watt.pal', seq: 8 },
   bard: { game: 'goat', file: 'goat.mbl', pal: 'stable.pal', frames: [[[40]], [[41]]], ms: 220 },
-  carl: { game: 'carl', chr: 'carl.chr', cbl: 'carl.cbl', pal: 'couch.pal' },
-  goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal' },
-  seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal' },
-  loaf: { game: 'loaf', chr: 'loaf.chr', cbl: 'loaf.cbl', pal: 'hill.pal' },
-  camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal' },
+  carl: { game: 'carl', chr: 'carl.chr', cbl: 'carl.cbl', pal: 'couch.pal', seq: 5 },
+  goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal', seq: 8 },
+  seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal', seq: 5 },
+  loaf: { game: 'loaf', chr: 'loaf.chr', cbl: 'loaf.cbl', pal: 'hill.pal', seq: 5 },
+  camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal', seq: 5 },
 };
 
 const disk = (game: string, file: string) => readFileSync(join(__dirname, '../../games', game, 'disk', file));

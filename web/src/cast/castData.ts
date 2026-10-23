@@ -63,10 +63,10 @@ const LISTED: CastMember[] = [
   {
     id: 'teddy',
     name: 'Teddy',
-    role: 'Pembroke Welsh Corgi, red-gold, one ear taller',
+    role: 'Pembroke Welsh Corgi, red-gold, knows left from right',
     hi: 'Hi! I know left from right. Snacks go on the left. Or the right. Both. Snacks.',
     art: { game: 'teddy', width: 156, height: 156, alt: 'Teddy the corgi grinning, red-gold with a white blaze, his right ear a little taller than his left' },
-    bio: 'A red-gold corgi with a white blaze, a big grin and one ear that stands a little taller than the other. He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
+    bio: 'A red-gold corgi with a white blaze, a big grin and, in the games, one ear a little taller than the other (in real life they match; the lopsided ear just reads better in twenty pixels). He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
     appears: [
       { game: 'teddy', as: 'the hero, fetching Doc Leo’s costume' },
       { game: 'teddy2', as: 'the hero, on Gwinn’s trail to the fair' },
@@ -89,7 +89,7 @@ const LISTED: CastMember[] = [
     role: 'Teddy’s big sister and sister-in-mischief (two n’s)',
     hi: 'It wasn’t me. (It was me.) Zoomies!',
     art: { game: 'teddy', width: 146, height: 146, alt: 'Gwinn, a chocolate-brown dog with amber eyes, a big grin and a pink collar' },
-    bio: 'Chocolate-brown, amber-eyed, pink collar, adopted, and the reason most of these games have a plot. She scattered the costume, flattened the sandcastles with her zoomies and ate a recipe card. She knows one trick (zoomies) and a SIT she has not quite learned. She is not allowed in the library, and she is in the library.',
+    bio: 'Chocolate-brown, amber-eyed, pink collar, adopted, and usually the one causing the trouble: she is the reason most of these games have a plot. She scattered the costume, flattened the sandcastles with her zoomies and ate a recipe card. She knows one trick (zoomies) and a SIT she has not quite learned. She is not allowed in the library, and she is in the library.',
     appears: [
       { game: 'teddy', as: 'the one who ran off with the suitcase' },
       { game: 'teddy2', as: 'the hero of the MEANWHILE… levels' },
@@ -169,7 +169,7 @@ const LISTED: CastMember[] = [
   {
     id: 'doghouse',
     name: 'The Dog House',
-    role: 'A little free library on a post',
+    role: 'Lewis’s dog-themed little free library (and the Tiny Pockets Library inside)',
     hi: 'Take a book, share a book. Snacks in the drawer. Woof!',
     art: { game: 'teddy', width: 164, height: 182, alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks' },
     bio: 'Lewis’s little free library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, share a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
@@ -178,6 +178,23 @@ const LISTED: CastMember[] = [
       { game: 'teddy2', as: 'in the cast cartoon at dusk' },
       { game: 'brief', as: 'the whole library, behind the red door' },
       { game: 'logic', as: 'a photo on Watt’s board' },
+    ],
+  },
+  {
+    id: 'rootbeer',
+    name: 'Root beer',
+    role: 'The only drink Doc Leo orders',
+    hi: 'Twelve ingredients, and a thirteenth nobody will name. Frosty mug?',
+    art: { game: 'teddy', width: 40, height: 40, alt: 'A red-and-white root beer stand with a frosty mug of root beer on the counter' },
+    bio: 'Doc Leo always orders root beer, and so the games keep pouring it: a stand on the midway, a frosty mug that warms you up after shoveling, crocks in a farmhouse kitchen. The family recipe has twelve ingredients and a thirteenth nobody will name; clues to it are filed, framed, mailed and lost all over the Sandbox games.',
+    appears: [
+      { game: 'teddy', as: 'the midway stand: a mug worth fetching' },
+      { game: 'teddy2', as: 'the stand, the signboard and the crocks' },
+      { game: 'snowbound', as: 'the snack bar’s only drink: +35 warmth' },
+      { game: 'realm', as: 'the inn’s lore: Here Be Root Beer' },
+      { game: 'sleuth', as: 'Case 13, never closed' },
+      { game: 'brief', as: 'a recipe card filed under 641.5' },
+      { game: 'year2000', as: 'a postcard about the thirteenth ingredient' },
     ],
   },
   {
@@ -199,6 +216,18 @@ const LISTED: CastMember[] = [
     appears: [{ game: 'brief', as: 'the hero, restoring thirty-two stories' }],
   },
   {
+    id: 'watt',
+    name: 'Watt',
+    role: 'Pocket-sized repair robot (there’s no place like Ohm)',
+    hi: 'Beep. Has anyone seen my charging socket? It’s in the fuse box. Probably.',
+    art: { game: 'logic', width: 20, height: 16, alt: 'Watt, a little robot with a glass dome head, big eyes and a red antenna light, on treads' },
+    bio: 'A pocket-sized repair robot who lives in the Bitmores’ fuse box. Lightning bounced him into the toaster, so he rolls through every appliance’s circuit board, one block per press, to get back to his charging socket. Live current fizzles him in a blink; R reboots him, no hard feelings.',
+    appears: [
+      { game: 'logic', as: 'the hero, home through twenty-odd boards' },
+      { game: 'blaster', as: 'blinking at you on Memory Lane' },
+    ],
+  },
+  {
     id: 'lewis',
     name: 'Lewis “Lewie” Moten III',
     role: 'The person behind all of them',
@@ -210,6 +239,15 @@ const LISTED: CastMember[] = [
       { game: 'teddy', as: 'a snapshot at the gazebo with Teddy' },
       { game: 'tickle', as: 'named on the certificate' },
     ],
+  },
+  {
+    id: 'lewie',
+    name: 'Teenage Lewie',
+    role: 'Snow shoveler, future game maker, December 1992',
+    hi: 'Each driveway is one pixel of the game I’m going to make. Eighty-nine to go.',
+    art: { game: 'snowbound', width: 20, height: 20, alt: 'Teenage Lewie in a red knit hat and red coat, holding a snow shovel' },
+    bio: 'Lewis at fifteen-ish, in a red knit hat, with a shovel and a coffee can. Game-Maker costs $89 at the mall until January, so it’s a dollar a scoop, a paper route at dawn and a lot of dodging (a dog named Biscuit, Big Pete, the plows). The newspaper calls him “our founder”.',
+    appears: [{ game: 'snowbound', as: 'the hero, shoveling his way to $89' }],
   },
   {
     id: 'bard',
@@ -317,6 +355,15 @@ const LISTED: CastMember[] = [
       { game: 'loaf', as: 'kneeling by the well' },
       { game: 'reckoning', as: 'a photo on the hall wall' },
     ],
+  },
+  {
+    id: 'will',
+    name: 'Shakespeare (Will)',
+    role: 'A starched ruff, grey sweatpants, fuzzy slippers',
+    hi: 'Alas! Forsooth! I have lost a pen, and it was the most tragic night of my life.',
+    art: { game: 'sweats', width: 20, height: 20, alt: 'Shakespeare in a white ruff, a purple velvet doublet, grey sweatpants and pink fuzzy slippers' },
+    bio: 'The open-mic regular at The Hive: bald dome, pointed beard, gold earring, a starched ruff over a velvet doublet, and grey sweatpants. He holds his coffee up like Yorick’s skull and declaims seventeen monologues about the most dramatic things that ever happened to him, like a ficus named Gerald and the self-checkout. No coffee, no stage.',
+    appears: [{ game: 'sweats', as: 'the star of open-mic night' }],
   },
 ];
 
