@@ -14,111 +14,148 @@
   "E": "Hop up and to the right"
  },
  "stickers": [
-  {
-   "text": "SNIFF!",
-   "sub": "TEDDY",
-   "shape": "badge",
-   "color": "#d9381e",
-   "ink": "#ffffff",
-   "hero": {
-    "chr": "teddy.chr",
-    "cbl": "teddy.cbl",
-    "pal": "house.pal"
-   }
-  },
-  {
-   "text": "BOOF!",
-   "sub": "GWINN",
-   "shape": "badge",
-   "color": "#1d5fb8",
-   "ink": "#ffd23f",
-   "hero": {
-    "chr": "gwinn.chr",
-    "cbl": "gwinn.cbl",
-    "pal": "farm.pal"
-   }
-  },
-  {
-   "text": "SHE SAT!",
-   "sub": "BEST BEHAVED",
-   "shape": "star",
-   "color": "#ffd23f",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "show.mbl",
-    "pal": "show.pal",
-    "grid": [
-     [
-      54
-     ]
-    ]
-   }
-  },
-  {
-   "text": "DO NOT BOOF",
-   "sub": "PARK SKUNK",
-   "shape": "rect",
-   "color": "#fff6e0",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "night.mbl",
-    "pal": "night.pal",
-    "grid": [
-     [
-      39
-     ]
-    ]
-   }
-  },
-  {
-   "text": "BAWK!",
-   "sub": "THE RUBBER CHICKEN",
-   "shape": "circle",
-   "color": "#ffd23f",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "river.mbl",
-    "pal": "river.pal",
-    "grid": [
-     [
-      45
-     ]
-    ]
-   }
-  },
-  {
-   "text": "RING FOR SERVICE",
-   "sub": "POWER CO.",
-   "shape": "circle",
-   "color": "#1d5fb8",
-   "ink": "#ffffff",
-   "sprite": {
-    "blocks": "main.mbl",
-    "pal": "main.pal",
-    "grid": [
-     [
-      40
-     ]
-    ]
-   }
-  },
-  {
-   "text": "UNIMPRESSED",
-   "sub": "THE RIVAL POODLE",
-   "shape": "rect",
-   "color": "#fbd3e9",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "show.mbl",
-    "pal": "show.pal",
-    "grid": [
-     [
-      38
-     ]
-    ]
-   }
-  }
- ],
+    {
+      "text": "SNIFF!",
+      "sub": "TEDDY",
+      "shape": "cut",
+      "color": "#d9381e",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "house.pal"
+      }
+    },
+    {
+      "text": "BOOF!",
+      "sub": "GWINN",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffd23f",
+      "hero": {
+        "chr": "gwinn.chr",
+        "cbl": "gwinn.cbl",
+        "pal": "farm.pal"
+      }
+    },
+    {
+      "text": "SHE SAT!",
+      "sub": "BEST BEHAVED",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "show.mbl",
+        "pal": "show.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "BAWK!",
+      "sub": "THE RUBBER CHICKEN",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "river.mbl",
+        "pal": "river.pal",
+        "grid": [[45]]
+      }
+    },
+    {
+      "text": "UNIMPRESSED",
+      "sub": "THE RIVAL POODLE",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "show.mbl",
+        "pal": "show.pal",
+        "grid": [[37]]
+      }
+    },
+    {
+      "text": "DO NOT BOOF",
+      "sub": "PARK SKUNK",
+      "shape": "cut",
+      "color": "#2a2a3a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "night.mbl",
+        "pal": "night.pal",
+        "grid": [[33]]
+      }
+    },
+    {
+      "text": "DING!",
+      "sub": "RING FOR SERVICE",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "main.mbl",
+        "pal": "main.pal",
+        "grid": [[40]]
+      }
+    },
+    {
+      "text": "OINK!",
+      "sub": "FARM FRIEND",
+      "shape": "cut",
+      "color": "#ff8fc8",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "farm.mbl",
+        "pal": "farm.pal",
+        "grid": [[42]]
+      }
+    },
+    {
+      "text": "MAAA!",
+      "sub": "THE GOAT",
+      "shape": "cut",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "farm.mbl",
+        "pal": "farm.pal",
+        "grid": [[44]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "house.bbl",
+        "pal": "house.pal",
+        "grid": [[142]],
+        "under": 35
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "farm.bbl",
+        "pal": "farm.pal",
+        "grid": [[68]],
+        "under": 24
+      }
+    },
+    {
+      "text": "HEAR YE!",
+      "sub": "THE TOWN CRIER",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    }
+  ],
  "news": [
   {
    "head": "Teddy's back, and this time Gwinn's playable",
