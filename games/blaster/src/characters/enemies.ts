@@ -128,3 +128,37 @@ export const HOVER_DROP = (speed = 6): Leg[] => [
   [0, -3, 2],
   [0, 16, speed],
 ];
+
+// ------------------------------------------------------------------ one move per stage
+
+/** The sound card's Note-heads hop along a staff (up, down, up, down), then hop back and fall. */
+export const HOP = (side: 1 | -1, speed = 5): Leg[] => [
+  [side * 2, -2, speed],
+  [side * 2, 2, speed],
+  [side * 2, -2, speed],
+  [side * 2, 2, speed],
+  [-side * 3, -2, speed],
+  [-side * 3, 2, speed],
+  [-side, 14, speed + 1],
+];
+
+/** The hard disk's Skulls spin once round a loop, like the platter under them, then drop. */
+export const SPIN = (speed = 5): Leg[] => {
+  // eight points round a circle 3 blocks across, from its top, clockwise (y runs down)
+  const pts = Array.from({ length: 9 }, (_, k) => [Math.round(3 * Math.sin((k * Math.PI) / 4)), Math.round(3 - 3 * Math.cos((k * Math.PI) / 4))]);
+  const legs: Leg[] = [];
+  for (let k = 1; k < pts.length; k++) legs.push([pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1], speed]);
+  legs.push([0, 14, speed + 1]);
+  return legs;
+};
+
+/** The CPU's Opcodes stall in the pipeline (a slow step down: the warning), then snap sideways. */
+export const STALL = (side: 1 | -1, speed = 9): Leg[] => [
+  [0, 2, 2],
+  [side * 5, 0, speed],
+  [0, 2, 2],
+  [-side * 5, 0, speed],
+  [0, 2, 2],
+  [side * 4, 0, speed],
+  [0, 12, 5],
+];

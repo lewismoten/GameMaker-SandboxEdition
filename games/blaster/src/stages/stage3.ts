@@ -1,6 +1,6 @@
 // Stage 3: THE SOUND CARD. Leg A "The Mixer" brings note-heads in conga lines and wasps;
 // leg B "The Woofer" has the speakers that thump the ship forward. Then the Feedback Howler.
-import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from '../characters/enemies';
+import { HOP, HOVER_DROP, S_CURVE, SWEEP, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { soundArt, soundEgg, soundTiles, soundVirus } from '../blocks/sound3';
@@ -20,8 +20,10 @@ function virus3(b: Parameters<typeof soundVirus>[0], p: Parameters<typeof soundV
   swooper(b, 'noteR', S_CURVE(1, 5), { pic: 'note', score: 150 });
   swooper(b, 'noteSL', SWEEP(-1, 6), { pic: 'noteG', score: 150 });
   swooper(b, 'noteSR', SWEEP(1, 6), { pic: 'noteG', score: 150 });
-  swooper(b, 'noteZ', ZIGZAG(1, 5), { pic: 'note', score: 150 });
   swooper(b, 'noteD', HOVER_DROP(8), { pic: 'noteG', score: 150 });
+  // the sound card's own move: note-heads hopping along a staff
+  swooper(b, 'noteHL', HOP(-1, 5), { pic: 'note', score: 160 });
+  swooper(b, 'noteHR', HOP(1, 5), { pic: 'note', score: 160 });
   heavy(b, 'amp', { hp: 5, score: 500, speed: 1 });
   heavy(b, 'ampL', { hp: 5, score: 500, speed: 1, dx: -6, pic: 'amp' });
   heavy(b, 'ampR', { hp: 5, score: 500, speed: 1, dx: 6, pic: 'amp' });
@@ -61,7 +63,7 @@ function legA(g: Grid): void {
   g.hatch(3, 55).hatch(12, 55);
   g.pickup(8, 58, 'repair');
   vuRow(g, 1, 14, 60);
-  conga(g, 8, 62, 5, 'noteZ');
+  conga(g, 8, 62, 5, 'noteHL');
   g.turret(5, 66, 'flak').turret(10, 66, 'flak');
   g.mon(3, 70, 'wasp').mon(12, 70, 'wasp');
   g.stamp(1, 72, 'knob', 2, 2);
@@ -89,7 +91,7 @@ function legB(g: Grid): void {
   g.pickup(3, 49, 'bit').pickup(12, 49, 'bit').pickup(8, 50, 'bit');
   g.stamp(1, 52, 'spk', 4, 4).stamp(11, 52, 'spk', 4, 4);
   g.turret(7, 54, 'flak').turret(8, 57, 'sweep');
-  conga(g, 8, 59, 5, 'noteZ');
+  conga(g, 8, 59, 5, 'noteHR');
   for (const [c, d] of [
     [2, 64],
     [5, 65],
@@ -171,7 +173,7 @@ export function stage3(): Stage {
         kind: 'scroll',
         grid: a,
         kit: ks,
-        card: ['Note-heads dance in conga', 'lines. Wasps dive fast.', 'Records spin: shoot far!'],
+        card: ['Note-heads dance in conga', 'lines and hop along a staff.', 'Wasps dive fast.', 'Records spin: shoot far!'],
       },
       {
         file: 's3b',
