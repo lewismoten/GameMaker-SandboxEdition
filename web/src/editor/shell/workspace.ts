@@ -8,18 +8,12 @@ import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
-import { createZip } from '../../project/zip';
-import { exportWebApp } from '../../export/exportWebApp';
-import { exportSinglePage } from '../../export/exportSinglePage';
-import { macDownload } from './macDownload';
-import { winDownload } from './winDownload';
-import { linuxDownload } from './linuxDownload';
+import { chooseDownload, downloadButton } from './download';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
 import { SHORT } from '../../edition';
-import { plainError } from '../core/plainError';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -204,24 +198,9 @@ export class Workspace {
           h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
         ),
         h(
-          'details',
-          { class: 'export-menu' },
-          h('summary', null, 'Save & share'),
-          h(
-            'div',
-            { class: 'stack' },
-            h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'),
-            h('button', { onclick: () => void this.exportApp() }, 'Export web app'),
-            h(
-              'button',
-              { onclick: () => void this.exportPage(), title: 'One .html file with the game and player inside: double-click to play, even offline' },
-              'Export as one web page',
-            ),
-            h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'),
-            h('button', { onclick: () => void this.exportForMac(), title: 'A Mac app of the game (.dmg or .zip), built here' }, 'Download for Mac'),
-            h('button', { onclick: () => void this.exportForWindows(), title: 'A Windows program of the game (.exe or .zip), built here' }, 'Download for Windows'),
-            h('button', { onclick: () => void this.exportForLinux(), title: 'The game for Linux (a .tar.gz folder with a small player), built here' }, 'Download for Linux'),
-          ),
+          'div',
+          { class: 'toolbar side-actions' },
+          downloadButton(this.project.name, () => this.chooseDownload()),
         ),
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
@@ -435,17 +414,12 @@ export class Workspace {
       h(
         'button',
         {
-          title: 'Download it, or export it to play on the web or in DOS',
-          onclick: () => {
-            const menu = this.sidebar.querySelector<HTMLDetailsElement>('.export-menu');
-            if (!menu) return;
-            this.sidebar.classList.add('open');
-            menu.open = true;
-            menu.querySelector('button')?.focus();
-          },
+          title: 'Download it to play on Windows, a Mac, Linux, the web or DOS',
+          'aria-haspopup': 'dialog',
+          onclick: () => void this.chooseDownload(),
         },
         h('span', { 'aria-hidden': 'true' }, '💾 '),
-        'Save & share',
+        'Download',
       ),
       h(
         'button',
@@ -610,58 +584,9 @@ export class Workspace {
     this.open(this.project.gam);
   }
 
-  private async downloadZip(): Promise<void> {
-    const zip = await createZip(this.project.files.entries().map(([name, data]) => ({ name: name.toUpperCase(), data })));
-    download(`${this.project.gam.replace(/\.gam$/, '')}.zip`, zip, 'application/zip');
-  }
-
-  private async exportForDos(): Promise<void> {
-    try {
-      const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(this.project.files, { title, gam: this.project.gam });
-      download(name, zip, 'application/zip');
-      toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
-    } catch (e) {
-      toast(plainError(e), 'error');
-    }
-  }
-
-  private exportForMac(): Promise<void> {
+  /** The Download chooser (download.ts) for this game, as it is now. */
+  private chooseDownload(): Promise<void> {
     const title = this.project.game().scenes[0]?.desc || this.project.name;
-    return macDownload(title, async () => ({ title, gam: this.project.gam, files: this.project.files }));
-  }
-
-  private exportForWindows(): Promise<void> {
-    const title = this.project.game().scenes[0]?.desc || this.project.name;
-    return winDownload(title, async () => ({ title, gam: this.project.gam, files: this.project.files }));
-  }
-
-  private exportForLinux(): Promise<void> {
-    const title = this.project.game().scenes[0]?.desc || this.project.name;
-    return linuxDownload(title, async () => ({ title, gam: this.project.gam, files: this.project.files }));
-  }
-
-  private async exportPage(): Promise<void> {
-    try {
-      toast('Building web page…');
-      const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, html } = await exportSinglePage(this.project.files, { title, gam: this.project.gam });
-      download(name, html, 'text/html');
-      toast(`Saved ${name}. Open it in any browser to play — no internet needed.`);
-    } catch (e) {
-      toast(plainError(e), 'error');
-    }
-  }
-
-  private async exportApp(): Promise<void> {
-    try {
-      toast('Building web app…');
-      const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, zip } = await exportWebApp(this.project.files, { title, gam: this.project.gam });
-      download(name, zip, 'application/zip');
-      toast(`Saved ${name}. Unzip it onto any static web host to publish it.`);
-    } catch (e) {
-      toast(plainError(e), 'error');
-    }
+    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true });
   }
 }

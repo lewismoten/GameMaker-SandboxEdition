@@ -165,6 +165,10 @@ a {
 }
 
 .topbar a {
+  display: inline-flex;
+  align-items: center;
+  /* a target at least 24px tall (WCAG 2.5.8) */
+  min-height: 24px;
   color: inherit;
   text-decoration: none;
 }
@@ -301,8 +305,8 @@ main.home {
 }
 
 .sidebar h2.file-kind .add {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border-radius: 50%;
   font:
@@ -362,16 +366,6 @@ main.home {
   color: var(--muted);
   font-size: 12px;
   font-style: italic;
-}
-
-.sidebar .export-menu {
-  margin-top: 8px;
-}
-
-.sidebar .export-menu summary {
-  padding: 4px;
-  color: var(--muted);
-  cursor: pointer;
 }
 
 /* "Add a file": a grid of the kinds of files (editor/shell/workspace.ts) */
