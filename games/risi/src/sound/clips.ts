@@ -21,8 +21,8 @@
 //   piscis     Canit Piscis Aureus        14.99   19.66   8000 Hz   "O piscis aureus"
 //   cantemus   Canit Piscis Aureus       143.32  146.22  11025 Hz   "Cantemus omnes"
 //   nemo       Silentium Ridentium        55.51   58.49  11025 Hz   "...nemo ridet."
-//   quisridet  Silentium Ridentium        75.47   77.68  11025 Hz   "...sed quis ridet?"
-//   ridetisne  Silentium Ridentium       160.18  164.72   8000 Hz   "Ridetisne? Nonne ridetis?"
+//   quis       Silentium Ridentium        75.47   77.68  11025 Hz   "...sed quis ridet?"
+//   ridetis    Silentium Ridentium       160.18  164.72   8000 Hz   "Ridetisne? Nonne ridetis?"
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,8 +44,8 @@ export const CLIPS = {
   piscis: 8000,
   cantemus: 11025,
   nemo: 11025,
-  quisridet: 11025,
-  ridetisne: 8000,
+  quis: 11025,
+  ridetis: 8000,
 } as const;
 export type ClipName = keyof typeof CLIPS;
 

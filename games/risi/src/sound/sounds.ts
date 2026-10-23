@@ -131,7 +131,7 @@ const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
   roofs: { speak: 'ha', wail: 'titus', hurt: 'coo', die: 'dii', gain: 'ter', spend: 'tecta', kill: 'sparkle', step: 'pat', life: 'tantara', help: 'gulp', score: 'chime' },
   kitchen: { speak: 'meow', wail: 'felis', hurt: 'squeak', die: 'yowl', gain: 'cheddar', spend: 'corona', kill: 'squeak', step: 'pat', help: 'gulp', score: 'crack' },
   baths: { speak: 'ha', wail: 'piscis', hurt: 'hiss', die: 'dii', gain: 'splash', spend: 'cantemus', kill: 'pop', step: 'pat', life: 'tantara', help: 'gulp', score: 'boing' },
-  theater: { speak: 'ha', wail: 'nemo', hurt: 'thud', die: 'ridetisne', gain: 'crowd', spend: 'rimshot', kill: 'quisridet', step: 'pat', life: 'tantara', help: 'gulp', score: 'chime' },
+  theater: { speak: 'ha', wail: 'nemo', hurt: 'thud', die: 'ridetis', gain: 'crowd', spend: 'rimshot', kill: 'quis', step: 'pat', life: 'tantara', help: 'gulp', score: 'chime' },
 };
 
 /** A level's .SND: which VOC each effect plays (a PC speaker tune for each, for no Sound Blaster). */

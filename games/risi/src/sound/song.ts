@@ -658,10 +658,13 @@ export function medley(): Uint8Array {
   return a.cmf();
 }
 
+/** A level song's file name (DOS 8.3). */
+export const songFile = (name: SongName): string => (name === 'silentium' ? 'silens' : name);
+
 /** Every song, by file name, for the build and the preview. */
 export function allSongs(): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = { title: titleSong(), story: storySong() };
-  for (const [name, f] of Object.entries(LEVEL_SONGS)) out[name] = f().cmf();
+  for (const [name, f] of Object.entries(LEVEL_SONGS)) out[songFile(name as SongName)] = f().cmf();
   out.won = wonSong();
   out.lost = lostSong();
   out.menu = medley();

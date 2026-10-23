@@ -54,8 +54,8 @@ CUES = {
     },
     'Silentium Ridentium': {
         'nemo': (55.56, 58.44, 0.01, 0.30, False),  # "...nemo ridet."
-        'quisridet': (75.36, 77.56, 0.01, 0.25, False),  # "...sed quis ridet?"
-        'ridetisne': (160.08, 164.64, 0.01, 0.35, True),  # "Ridetisne? Nonne ridetis?"
+        'quis': (75.36, 77.56, 0.01, 0.25, False),  # "...sed quis ridet?"
+        'ridetis': (160.08, 164.64, 0.01, 0.35, True),  # "Ridetisne? Nonne ridetis?"
     },
 }
 
