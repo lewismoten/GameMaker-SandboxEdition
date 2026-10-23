@@ -157,11 +157,32 @@ disk.put('won.cmf', songs.won);
 disk.put('lost.cmf', songs.lost);
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme(PRICE));
+// the voice clips cut from the free-plan Riffusion recordings: personal, non-commercial only (kit/license.ts)
+const RECORDED_VOCS = [
+  'canis',
+  'cantemus',
+  'cheddar',
+  'corona',
+  'currimus',
+  'dii',
+  'felis',
+  'flatus',
+  'nemo',
+  'piscis',
+  'quis',
+  'ridetis',
+  'summa',
+  'tecta',
+  'ter',
+  'titus',
+  'victoria',
+];
 disk.put(
   'license.txt',
   licenseText(
     'Veni, Vidi, Risi!',
     `The 1995 shareware notice of Veni, Vidi, Risi!, its fee and its address are part of the story: there is nothing to pay. The songs are Veni, Vidi, Risi!'s (Lewis Moten's group): ${SONG_CREDIT}; ${ART_CREDIT}.`,
+    RECORDED_VOCS,
   ),
 );
 disk.write();
