@@ -67,7 +67,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Third Goat from the
-  Left": lyrics written by
+  Left": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (one of his "bizarre
   gospels" as The Bard of

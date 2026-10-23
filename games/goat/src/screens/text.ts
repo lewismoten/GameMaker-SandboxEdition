@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * about.json says the same in its blurb).
  */
 export const SONG_CREDIT =
-  "lyrics written by ChatGPT from Lewis Moten's prompt (one of his 'bizarre gospels'); recording and cover art made with Riffusion (now Google Flow Music)";
+  "lyrics shaped by ChatGPT from Lewis Moten's prompt (one of his 'bizarre gospels'); recording and cover art made with Riffusion (now Google Flow Music)";
 
 export const STORY = [
   page([
@@ -231,7 +231,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Third Goat from the
-  Left": lyrics written by
+  Left": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (one of his "bizarre
   gospels" as The Bard of
