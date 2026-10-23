@@ -2,10 +2,14 @@
 // straight), barrel rolls, buzzes, and waits. Moving and swinging things are handled by trying a
 // stretch again from a snapshot after a wait (route.ts, carefully()).
 import { SCAN } from '../src/ids';
+import { CLIPS } from '../src/sound/clips';
 import { ORIGIN } from '../src/levels/maps';
 import type { GameSim } from './sim';
 
 type Result = string | undefined;
+
+/** The clips worth hearing out: the lyrics, and Carl's buzz going by (the effects are short). */
+const LONG = new Set<string>([...CLIPS, 'buzz']);
 type Key = keyof typeof SCAN;
 
 export class Bot {
@@ -34,10 +38,33 @@ export class Bot {
 
   async tick(): Promise<Result> {
     const hp = this.sim.ci.hitpts;
-    const r = (await this.sim.tick()) ?? undefined;
+    const r = (await this.listen()) ?? (await this.sim.tick()) ?? undefined;
     if (process.env.BOT_HURT && this.sim.ci.hitpts < hp) this.say(`  hurt ${hp - this.sim.ci.hitpts}`);
     if (process.env.BOT_TRACE) this.say(`  keys ${Object.entries(SCAN).filter(([, k]) => this.sim.isHeld(k)).map(([n]) => n).join(',')}${r ? ' ' + r : ''}`);
     return r;
+  }
+
+  /**
+   * While a clip plays (a lyric, a buzz), looks one tick ahead: if that tick would start another
+   * .VOC (a pickup, a roll, a buzz) and cut it off, Carl hovers (keys let go) until it has
+   * played out, then takes the same keys up again. Returns what a tick returned if play left the
+   * scene meanwhile.
+   */
+  private async listen(): Promise<'link' | 'dead' | 'end' | undefined> {
+    const playing = this.sim.clip;
+    if (!playing || this.sim.clipTicksLeft <= 0 || !LONG.has(playing.name)) return undefined;
+    const before = this.sim.snapshot();
+    const r = await this.sim.tick();
+    const now = this.sim.clip;
+    const cut = !r && now && (now.name !== playing.name || now.until !== playing.until);
+    this.sim.restore(before);
+    if (!cut) return undefined;
+    if (process.env.BOT_LISTEN) this.say(`  listening: ${playing.name} would be cut by ${now?.name}`);
+    const keys = (Object.keys(SCAN) as Key[]).filter((k) => this.sim.isHeld(SCAN[k]));
+    const out = await this.sim.waitForClip();
+    if (out) return out;
+    for (const k of keys) this.sim.press(SCAN[k]);
+    return undefined;
   }
 
   async wait(k: number): Promise<Result> {
@@ -100,6 +127,11 @@ export class Bot {
 
   /** Taps a key (a barrel roll, a buzz) and waits `after` ticks. */
   async tap(key: Key, after = 8): Promise<Result> {
+    // a roll is a .VOC: let a lyric that is playing finish first
+    if (this.sim.clip && LONG.has(this.sim.clip.name)) {
+      const out = await this.sim.waitForClip();
+      if (out) return out;
+    }
     this.sim.press(SCAN[key]);
     const r = await this.wait(2);
     this.sim.release(SCAN[key]);

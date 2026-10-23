@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "ARIFkgBNBM0CTQTNAhIKkgBNBM0CLgquAE0kzQIuBa4AUAzQAk0IzQJNCM0CTQTNAk0EzQISBZIASATIAhIFkgBIDMgCUAjQAk0EzQJNCM0CLgWuAE0EzQJQBNACLgiuAk0QzQJIGMgCUAzQAk0MzQIuA64AUAzQAi4FrgBQBNACSCDIAkgGyABNAc0AOQK5Bk0PzQIuBa4AUCDQAhIFkgBIHMgCTRDNAlA="
+   "keys": "ARIFkgBNBM0CTQTNAhIKkgBNBM0CLgquAE0kzQIuBa4AUAzQAk0IzQJNCM0CTQTNAk0EzQISBZIASATIAhIFkgBIDMgCUAjQAk0EzQJNCM0CLgWuAE0EzQJQBNACLgiuAk0QzQJIGMgCUAzQAk0IzQxNBM0CLgOuAFAM0AIuBa4AUATQAkggyAJIBsgATQHNADkCuQZND80CLgWuAFAg0AISBZIASBzIAk0QzQJQ"
   },
   {
    "scene": 3,
-   "keys": "AS4FrgBNBM0CEgqSAk0EzQIuBa4AUATQAk0UzQJQBNACEgWSAEgIyAISCpIATQTNAk0EzQJQENACLg2uAFAI0AJQBtAATQHNADkCuQZND80CEgqSAEgEyAISBZIASATIAi4PrgISCpICSAzIAksYywJIBMgCLhSuAE0IzQIuCq4AUAjQAkggyAISBZICSAbIAE0BzQA5ArkGTRPNAi4KrgBQBNACLgWuAFAI0AJNBM0CLAWsAFAE0AJLCMsCTRjNAk0="
+   "keys": "AS4FrgBNBM0CEgqSAk0EzQIuBa4AUATQAk0UzQJQBNACEgWSAEgIyAISCpIATQTNAk0AzQZNBM0CUBDQAi4NrgBQCNACUAbQAE0BzQA5ArkGTQ/NAhIKkgBIBMgCEgWSAEgEyAIuCq4MLgWuAhIKkgJICMgBSATIAksYywJIBMgCLhSuAE0IzQIuCq4AUAjQAkggyAISBZICSAbIAE0BzQA5ArkGTRPNAi4KrgBQBNACLgWuAFAI0AJNAM0HTQTNAiwFrABQBNACSwTLB0sEywJNGM0CTQ=="
   },
   {
    "scene": 4,
-   "keys": "ARIKkgBNDM0CLhSuAlAE0AISEpIATQnNBFAB0AAwArAOUAvQAkgUyAIuBa4ATRzNAhIFkgBNEM0CLgSuAFAB0AISBZIATQjNAk0UzQJQHNACTQTNBEsBywAwArAOSwrLAk0LzUxLAcsAMAKwDksKywJNC80CEgWSAE0IzQISCpIASAjIAk0="
+   "keys": "ARIKkgBNDM0CLhSuAlAE0AISEpIATQnNBFAB0AAwArAcUAvQAkgUyAIuBa4ATRzNAhIFkgBNEM0CLgSuAFAB0AISBZIATQjNAk0UzQJQHNACTQTNBEsBywAwArAcSwrLAk0LzUxLAcsAMAKwHEsKywJNC80CEgWSAE0IzQISCpIASAjIAk0="
   },
   {
    "scene": 5,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 7,
-   "keys": "QxIKkgBNNM0CEgWSAE0YzQJQGNACEgWSAEgUyAJNJM0CUATQAhIKkgJIBsgATQHNADkCuQZND80ETRzNAlA="
+   "keys": "QxIKkgBNNM0CEgWSAE0YzQJQGNACEgWSAEgUyAJNJM0CUATQAhIKkgJIBsgATQHNDzkCuQZND80ETRzNAlA="
   }
  ],
  "chapters": [
@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19235,
+  "frames": 19570,
   "chapters": [
    {
     "title": "Opening",
@@ -75,31 +75,31 @@
    },
    {
     "title": "Level 2: The Walls",
-    "frame": 5107
+    "frame": 5147
    },
    {
     "title": "Level 3: Joins Me in Bed",
-    "frame": 7199
+    "frame": 7348
    },
    {
     "title": "Level 4: The Open Window",
-    "frame": 9334
+    "frame": 9621
    },
    {
     "title": "Level 5: Carl Has Seen Things",
-    "frame": 10623
+    "frame": 10910
    },
    {
     "title": "Level 6: The Aux Cord",
-    "frame": 12749
+    "frame": 13036
    },
    {
     "title": "Ending",
-    "frame": 14404
+    "frame": 14740
    },
    {
     "title": "Credits",
-    "frame": 17147
+    "frame": 17482
    }
   ]
  }

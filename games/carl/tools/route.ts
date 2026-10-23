@@ -207,6 +207,8 @@ async function buzzAt(bot: Bot, at: Pt, dir: 'left' | 'right' | 'up' | 'down'): 
   await go(bot, [at], 'buzzing spot');
   await must(bot, bot.hold(dir, 1), 'face');
   await must(bot, bot.tap('b', 14), 'buzz');
+  // the ear twitches with "I swing and I miss": hear it out before flying in
+  await must(bot, bot.sim.waitForClip(), 'the twitch');
 }
 
 /** 3. In bed: buzz his ear, then Teddy's twice, flying into each as it twitches; the window. */
