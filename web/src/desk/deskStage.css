@@ -296,9 +296,12 @@
     top: 168px;
   }
 
+  /* small, on the wall between the egg frame (on the top shelf's right end) and the monitor,
+     under where a game's own poster hangs; its space by the poster is the black light's */
   .desk-scene .news-clipping {
-    left: 224px;
-    top: 40px;
+    left: 338px;
+    top: 192px;
+    width: 58px;
   }
 
   /* 36" x 48" (380 x 500 with its frame), its sill 36" up at y 410: it stands partly behind

@@ -35,10 +35,10 @@ function raise(el: HTMLElement): void {
 }
 
 /**
- * On the desk: on the monitor's top left corner, in the wall's gap between the newspaper
- * clipping and the picture tube (the room is scaled and scrolled). Not the top right, where
- * the "Too retro?" sticky note would take a stray click off the desk; clicks go through the
- * notes to what is under them (toast.css), so they must not sit over anything that leaves.
+ * On the desk: stuck on the monitor's top left corner, over the plastic and the picture's
+ * edge (the room is scaled and scrolled). Not the top right, where the "Too retro?" sticky
+ * note would take a stray click off the desk, and not on the wall beside it, where the
+ * clipping and the black-light poster hang; clicks go through the notes (toast.css).
  */
 function place(el: HTMLElement): void {
   const desk = isDesk();
@@ -50,9 +50,7 @@ function place(el: HTMLElement): void {
   const r = monitor?.getBoundingClientRect();
   if (!r || !r.width || r.bottom < 0 || r.top > innerHeight) return;
   const width = Math.min(200, innerWidth - 32);
-  const clip = document.querySelector('.news-clipping')?.getBoundingClientRect();
-  const left = clip?.width ? clip.right + 8 : r.left + Math.min(90, r.width * 0.12) - width;
-  el.style.left = `${Math.max(16, Math.min(left, innerWidth - width - 16))}px`;
+  el.style.left = `${Math.max(16, Math.min(r.left + Math.min(24, r.width * 0.04), innerWidth - width - 16))}px`;
   el.style.top = `${Math.max(8, r.top - 18)}px`;
 }
 
