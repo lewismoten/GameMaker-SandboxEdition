@@ -71,7 +71,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Where's the
-  Remote?": lyrics written by
+  Remote?": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (as The Bard of
   Bizarre); music made with
