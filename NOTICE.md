@@ -86,7 +86,8 @@ game folder opens in the browser unchanged.
   My Soul, I Screamed, She Smirked, Shakespeare in Sweatpants, and Veni, Vidi, Risi! by
   Lewis's group of that name): games made from Lewis's songs and monologues, presented as
   1995 shareware from The Sofa BBS; their shareware fee and address are part of the story,
-  and they are free under the MIT License. The songs' lyrics and monologues were shaped with
+  and they are free under the MIT License, except the voice clips cut from their recordings
+  (see "The Bard of Bizarre recordings" below). The songs' lyrics and monologues were shaped with
   ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (one
   service under three names: Riffusion renamed itself Producer.ai, and Google bought it and
   made it Google Flow Music); the games' FM scores are arranged from those recordings, and their
@@ -100,8 +101,18 @@ game folder opens in the browser unchanged.
   spectacles) was made with DeepAI, and the Doc Leo photos are Lewis's own. Claude Opus 5.5
   wrote and built the games themselves (code, levels, art and arrangements), directed by
   Lewis.
-- **The BBS pictures** (`web/public/bbs`): THE CHEZ photos (THECHEZ1-3.GIF on The Sofa) and the
-  Doc Leo photos (LEOCHICK.GIF, NEWNOSE.GIF) are Lewis's own; the Bard logo (BARDLOGO.GIF) was made with DeepAI.
+- **The BBS pictures** (`web/public/bbs`, downloadable from the Sandbox BBS's GIF Gallery and
+  The Sofa's GIF area): the photos are Lewis's own (Teddy, Gwinn, the gazebo, the hobo clown
+  and Doc Leo, colonial dress, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
+  **THECHEZ2.GIF**, one shot of Lewis holding Teddy in front of THE CHEZ, which was taken by
+  **Nicky Foster** at the Front Royal-Warren County Chamber of Commerce, at the Revitalize or
+  Die Civic Pride Workshop that Lewis sponsored. The Bard logo (BARDLOGO.GIF) was made with
+  DeepAI.
+- **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
+  (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
+  Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from
+  two of Lewis's photos of himself, over many rounds of his corrections, with
+  `games/kit/scans/blacklight.py`.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
   Bell and others). Shareware games are shown play-only, with their authors' original
@@ -111,6 +122,49 @@ game folder opens in the browser unchanged.
   documentation (`cd/sharware/tools`, Haruyasu Yoshizaki), and Alchemy Mindworks' Graphic
   Workshop shareware for DOS and Windows (`cd/sharware/tools/GWSDOS.ZIP`, `GWSWIN.ZIP`).
   None of them are on the website.
+
+## The Bard of Bizarre recordings: personal, non-commercial only
+
+The Bard of Bizarre's song and monologue recordings were made with Riffusion (one service,
+later called Producer.ai and now Google Flow Music) during Lewis's **free plan**. Lewis pays
+for the service now, and the animated covers (Mustard Seed Hustle's and Thread the Needle,
+Brother Camel's) were made on the paid plan, but every recording was made on the free plan. The service's terms for free-plan output allow
+"personal, non-commercial uses only". So the recordings, and every voice clip cut from them,
+are **not covered by the MIT License**: don't sell them or use them commercially. The
+recordings themselves aren't in this repository.
+
+These files are cut from those recordings (each game's `tools/cutClips.py` cuts them):
+
+- `games/<id>/src/sound/clips/*.pcm` in goat, mustard, needle, loaf, remote, carl,
+  reckoning, loofah, smirked, sweats and risi: the raw clips.
+- The voice clips on each game's disk (`games/<id>/disk/*.voc`), and so in every download
+  and on The Sofa BBS:
+  - **Third Goat from the Left** (goat): HEY, HOOK, NIGHTLNG, SEESYOU, YAY.
+  - **Mustard Seed Hustle** (mustard): ALIVE, FEET, HALLELU, HUSTLE, KEEPON, MOUNTAIN.
+  - **Thread the Needle, Brother Camel** (needle): DREAM, GOLD, HUMPDOWN, SQUEEZE, THREAD.
+  - **Loaf #13 (Left in the Basket)** (loaf): BREAD, COUNTME, MAMA, STILL, TWELVE, WASTED.
+  - **Where's the Remote?!** (remote): DOGCAT, FRIDGE, HAND, MOM, RACCOON, REMOTE, SNEAKY.
+  - **A Fly Named Carl** (carl): AUX, HOOK, LAMP, MISS, NAMED, SEEN, SMILE, TIME, WINDOW.
+  - **The Great Dairy Reckoning of 3:17 A.M.** (reckoning): ALMOND, BEGONE, BETRAY, BETTER,
+    CANT, COLON, COWARD, DEMON, ENEMY, INTOL, LACTAID, OHNO, SHINS, SUFFER, and FLUSHLAC and
+    SLAMWRTH (a made sound followed by a clip).
+  - **Cleanse Me, O Loofah, But Leave My Soul** (loofah): BRINE, LINE, LUCIFER, MANGO, NEVER,
+    PINK, ROUGH, SCRUBBUS, WORSE, WRONG, and DRAINNEV and TOWEL (a made sound followed by a
+    clip).
+  - **I Screamed, She Smirked** (smirked): AFRAID, ASHAMED, CARDBRD, DONTRUN, EXIT, FOG,
+    GETDOWN, JUICE, MILD, NOTREAL, OKAY, PATS, SNEEZING, SWORD, TARGET, WEREWOLF.
+  - **Shakespeare in Sweatpants** (sweats): the 68 monologue clips, `<line>_L`, `_O`, `_P` and
+    `_W` for each of ANTS, BIRD, BLNKT, CART, CHAIR, FICUS, GOAT, ITCH, KALE, LIKE, LILY, OUT,
+    PEN, PIZZA, PLATE, SOCKS and UMBR.
+  - **Veni, Vidi, Risi!** (risi): CANIS, CANTEMUS, CHEDDAR, CORONA, CURRIMUS, DII, FELIS,
+    FLATUS, NEMO, PISCIS, QUIS, RIDETIS, SUMMA, TECTA, TER, TITUS, VICTORIA.
+
+Each of those games' LICENSE.TXT names its clips under "VOICE CLIPS: NOT MIT", its readme and
+credits say so, and the Windows, Mac, Linux, DOS and web-app downloads' notices repeat it
+(`web/src/export/recordedAudio.ts`). **Everything else in each game is MIT licensed**: the
+code, levels, art, text, the other sound effects (made in code) and the FM (CMF) music
+arranged or composed by Claude. Certified Rat Tickler has no recording, so none of it is
+affected.
 
 ## About this fork
 
@@ -164,6 +218,9 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
   License, so this fork leaves it out. The README says where to get it.
+- **The git history** still holds them: the early commits contain Borland C++ (`tools/BORLANDC`)
+  and the Borland and Creative library files listed below, which later commits removed. Those
+  files in the history are their owners' and aren't covered by the MIT License.
 - **Borland's runtime library** files that Game-Maker's source was built with (`CL.LIB`,
   `EMU.LIB`, `MATHL.LIB`, the startup code `STARTUP.ASM`, `SETARGV.ASM`, `SETENVP.ASM`,
   `FULLPATH.C`, `RULES.ASI`, and the `EGAVGA.BGI` graphics driver) and **Creative's Sound
