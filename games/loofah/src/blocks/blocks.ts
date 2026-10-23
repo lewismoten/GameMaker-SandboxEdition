@@ -650,8 +650,13 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let k = 0; k < 4; k++) p.ring(3 + ((k * 5 + f * 4) % 15), 10 + ((k * 3) % 8), 1.2, c('citrus', 2));
     return p;
   };
-  book.add('drain0', drain(0), { hp: -8, grav: GRAV.down, next: 'drain1', ntime: 4 });
-  book.add('drain1', drain(1), { hp: -8, grav: GRAV.down, next: 'drain0', ntime: 4 });
+  // (it burns once where it touches him, then that patch fizzles out: a hurt holds him still, so
+  // water that always burned would hold him in it)
+  book.add('drain0', drain(0), { hp: -8, grav: GRAV.down, next: 'drain1', ntime: 4, touch: 'drainCalm' });
+  book.add('drain1', drain(1), { hp: -8, grav: GRAV.down, next: 'drain0', ntime: 4, touch: 'drainCalm' });
+  const calm = steamAir(92);
+  for (let y = 12; y < 20; y++) for (let x = 0; x < 20; x++) calm.set(x, y, shadeAt(R('demon'), 0, 1, 0.3, x, y));
+  book.add('drainCalm', calm, { grav: GRAV.down });
   // the shower's tile floor (solid) and the caddy's shelves (ledges)
   const showerTile = (ledge: boolean) => {
     const p = ledge ? steamAir(93) : P();

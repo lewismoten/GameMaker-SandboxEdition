@@ -176,16 +176,26 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.flapper] = mon(anim('flapper0', 'flapper1', 3), { power: 90, thru: 1, newmon: MON.flapperOff }, pace(run, 1, 0));
   set[MON.flapperOff] = mon(anim('flapperOff0', 'flapperOff1', 2), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(3, -5, 4, 0)]);
   set[MON.zzz] = mon(anim('zzz0', 'zzz1', 6), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -2, 1, 0), corner(0, -4, 1, 0)]);
-  // IV. Scrubbus Maximus (both halves, four stages each), smug where it stands
+  // IV. Scrubbus Maximus (both halves, four stages each), up on the tub rim. After each splash but
+  // the last it slides along the rim to a new spot (power 230 while it slides, so brine bounces
+  // off), then sits smug again. Both halves slide the same blocks, so they line up again whichever
+  // half is splashed first.
+  const SLIDE = [0, 2, -2, 2];
   for (const half of ['A', 'B'] as const)
     for (let s = 0; s < 4; s++) {
-      const slot = MON[`sponge${half}${s}` as keyof typeof MON];
-      const next = s < 3 ? MON[`sponge${half}${s + 1}` as keyof typeof MON] : half === 'A' ? MON.pink : 64;
-      set[slot] = mon(anim(`sponge${half}${s}a`, `sponge${half}${s}b`, 9 - s * 2), { power: 200, thru: 1, newmon: next }, still);
+      const key = (k: string) => MON[`sponge${half}${k}` as keyof typeof MON];
+      const next = s < 3 ? key(`${s + 1}m`) : half === 'A' ? MON.pink : 64;
+      set[key(`${s}`)] = mon(anim(`sponge${half}${s}a`, `sponge${half}${s}b`, 9 - s * 2), { power: 200, thru: 1, newmon: next }, still);
+      if (s > 0)
+        set[key(`${s}m`)] = mon(anim(`sponge${half}${s}a`, `sponge${half}${s}b`, 2), { power: 230, thru: 1, end: -1, newmon: key(`${s}`) }, [
+          corner(0, 0, 2),
+          corner(SLIDE[s], 0, 2, SLIDE[s] < 0 ? 4 : 0),
+        ]);
     }
-  // cursed citrus suds: out of the soap dish in an arc to the left, a splat where they land
-  const arc: March[] = [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -3, 3, 4), corner(-7, -2, 3, 4), corner(-9, 1, 3, 4), corner(-11, 4, 3, 4)];
-  set[MON.suds] = mon(anim('suds0', 'suds1', 2), { power: 200, thru: 0, end: -1, newmon: MON.splat }, arc);
+  // cursed citrus suds: out of the soap dish, floating slowly left over the gap (across his perch
+  // at the top of the steam) and down into the water, a splat where they land. Brine pops them.
+  const drift: March[] = [corner(0, 0, 2), corner(-4, -2, 2, 4), corner(-8, -2, 1, 4), corner(-11, 0, 1, 4), corner(-14, 4, 1, 4), corner(-16, 7, 2, 4)];
+  set[MON.suds] = mon(anim('suds0', 'suds1', 3), { power: 200, thru: 0, end: -1, newmon: MON.splat }, drift);
   set[MON.splat] = mon([[n('splat'), 4]], { power: 200, thru: 0, end: 18 });
   set[MON.brine] = mon(anim('brine0', 'brine1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
   set[MON.pink] = mon(anim('pink0', 'pink1', 4), { power: 230, thru: 1 }, still);

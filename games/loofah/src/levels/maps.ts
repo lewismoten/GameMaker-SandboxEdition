@@ -295,9 +295,12 @@ export function home(book: BlockBook): Level {
   return { m, start: at(5, 11), size: [W, H] };
 }
 
-/** 4. Scrubbus Maximus: the demon sponge, its citrus suds, rosemary brine, her silver rack. */
+/** 4. Scrubbus Maximus: the shower at midnight. Rosemary on the caddy's shelves, over the drain,
+ * then up the steam to a perch level with the demon sponge, smug on the tub rim across the gap,
+ * spitting cursed citrus suds that float slowly over the perch. Brine cleanses it, top and
+ * bottom, back into the pink one; along the rim for it, and down to her silver rack. */
 export function shower(book: BlockBook): Level {
-  const W = 34;
+  const W = 36;
   const H = 12;
   const m = new MapBuilder(book, 'outside');
   m.fill(1, 0, W - 2, 10, 'steamAir')
@@ -305,19 +308,23 @@ export function shower(book: BlockBook): Level {
     .row(11, 0, W - 1, 'showerFloor')
     .col(0, 0, 11, 'outside')
     .col(W - 1, 0, 11, 'outside');
-  // the drain, full of cursed water
-  m.row(10, 12, 13, 'drain0');
-  // the caddy's shelves, rosemary on them
+  // the caddy's shelves, rosemary on them (the first sprig sings)
   m.row(7, 4, 6, 'caddy').set(5, 6, 'rosemaryFirst');
   m.row(5, 8, 10, 'caddy').set(9, 4, 'rosemaryS');
-  m.row(7, 15, 17, 'caddy').set(16, 6, 'rosemaryS');
-  m.row(7, 19, 20, 'caddy').set(20, 6, 'rosemaryS');
-  // Scrubbus Maximus, smug where it stands; the soap dish behind it up on its tiles
-  m.mon(MON.spongeA0, 24, 8).mon(MON.spongeB0, 24, 9);
-  m.row(7, 26, 28, 'caddy').set(27, 6, 'soapDishB');
-  m.set(20, 3, 'curl0').set(30, 2, 'curl0').set(3, 2, 'curl0');
-  // her silver rack
-  m.set(30, 9, 'herRack');
-  m.link(30, 9, 'won');
+  // the drain, full of cursed water; a shelf past it
+  m.row(10, 11, 12, 'drain0');
+  m.row(7, 14, 16, 'caddy').set(15, 6, 'rosemaryS');
+  // the steam out of the vent, up to his perch (a sprig on it), level with the sponge
+  m.set(18, 10, 'vent').col(18, 3, 9, 'steam0');
+  m.row(4, 19, 21, 'caddy').set(20, 3, 'rosemaryS');
+  // the gap, cursed water below it; the tub rim, Scrubbus Maximus smug on it, the soap dish at its end
+  m.row(10, 22, 23, 'drain0');
+  m.row(4, 24, 31, 'caddy');
+  m.mon(MON.spongeA0, 26, 2).mon(MON.spongeB0, 26, 3);
+  m.set(31, 3, 'soapDishB');
+  m.set(13, 3, 'curl0').set(27, 7, 'curl0').set(3, 2, 'curl0');
+  // her silver rack, down off the end of the rim
+  m.set(33, 9, 'herRack');
+  m.link(33, 9, 'won');
   return { m, start: at(2, 9), size: [W, H] };
 }

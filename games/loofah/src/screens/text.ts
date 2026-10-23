@@ -100,7 +100,7 @@ export const INSTRUCTIONS = [
     'it cleanses Scrubbus Maximus,',
     'top and bottom, four times',
     'each, into the pink one.',
-    '',
+    'Ride the steam up to it.',
     'Hang the pink one back on',
     'her silver rack.',
     '',
