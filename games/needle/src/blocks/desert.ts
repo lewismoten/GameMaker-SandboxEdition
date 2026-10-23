@@ -3,6 +3,7 @@
 // clock), a slot canyon with eye gates cut in it (one grace each, then on his knees), an oasis
 // with palms and a pool, cactus that pricks, dry brush that sends tumbleweeds, two travelers
 // and some children to give gold to, and at the end of the road the tailor's tent.
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { dither } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
@@ -192,5 +193,14 @@ export function desertBlocks(pal: Pal): Kit {
   book.add('tentDoor', tentWall(true, false), air);
   // the right-hand wall (added last, so the blocks before keep their numbers)
   book.add('tentWallR', tentWall(false, false, 2), air);
+  // a painted Easter egg, up in the shade of the slot canyon's first room (a few points, no sound of its own)
+  for (let f = 0; f < EGG_SHINE_FRAMES; f++)
+    book.add(`egg${f || ''}`, drawEasterEgg(shade.crop(0, 0, 20, 20), { ink: c('ink', 0), shell: [c('blue', 1), c('blue', 2), c('blue', 3)], paint: [c('gold', 2), c('gold', 3)], accent: c('white', 2), white: c('white', 2) }, 'stars', f), {
+      score: 50,
+      touch: 'shade',
+      grav: GRAV.down,
+      next: `egg${(f + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: f ? 3 : 60,
+    });
   return k;
 }

@@ -7,7 +7,6 @@ import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
 import { MON } from '../ids';
-import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 /** Ticks between melons rolling off the cart. */
@@ -249,14 +248,5 @@ export function cityBlocks(pal: Pal): Kit {
   };
   book.add('dune', dune(61, false), air);
   book.add('road', dune(62, true), air);
-  // a painted Easter egg, left in the shadow of the great city gate behind him (a few points, no sound of its own)
-  for (let f = 0; f < EGG_SHINE_FRAMES; f++)
-    book.add(`egg${f || ''}`, drawEasterEgg(gateway.crop(0, 0, 20, 20), { ink: c('ink', 0), shell: [c('blue', 1), c('blue', 2), c('blue', 3)], paint: [c('gold', 2), c('gold', 3)], accent: c('white', 2), white: c('white', 2) }, 'stars', f), {
-      score: 50,
-      touch: 'gateway',
-      grav: GRAV.down,
-      next: `egg${(f + 1) % EGG_SHINE_FRAMES || ''}`,
-      ntime: f ? 3 : 60,
-    });
   return k;
 }

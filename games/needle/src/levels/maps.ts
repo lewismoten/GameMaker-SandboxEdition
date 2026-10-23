@@ -151,10 +151,10 @@ const CITY: Record<string, string> = {
   O: 'lamp',
   '*': 'glint',
   '>': 'road',
-  E: 'egg',
 };
 
 const DESERT: Record<string, string> = {
+  E: 'egg',
   '.': 'bg',
   '^': 'skyHi',
   '-': 'skyMid',
@@ -206,8 +206,6 @@ export function city(book: BlockBook): Level {
   m.set(12, 2, '~').set(36, 3, '~').set(61, 2, '~');
   // the great city gate behind him, where he was mindin' his humps
   m.row(1, 1, 3, 'T').fill(1, 2, 3, 3, 'W').text(1, 5, '(|)').fill(1, 6, 3, 4, 'g');
-  // a painted egg in the gate's shadow, behind where he starts
-  m.set(2, 9, 'E');
   m.col(7, 6, 9, 'P').set(7, 5, 'Y');
   // the city in the morning haze, where the rich man struts with his moneybags
   // the city in the haze behind the market, all along the street
@@ -269,6 +267,8 @@ export function desert(book: BlockBook): Level {
   m.fill(41, 2, 14, 7, 'R').row(2, 41, 54, 'r').row(8, 41, 44, 'M').row(9, 41, 44, 's');
   m.fill(45, 5, 2, 4, 's').set(45, 9, 's').set(46, 9, 'j').row(8, 47, 49, 'M').set(47, 9, 'G').row(9, 48, 49, 's');
   m.fill(50, 5, 2, 4, 's').set(50, 9, 's').set(51, 9, 'e').row(8, 52, 54, 'M').set(52, 9, 'G').row(9, 53, 54, 's');
+  // a painted egg up in the shade of the first room, where he can stand up (a hop to reach it)
+  m.set(46, 6, 'E');
   // the oasis: palms, the pool, the third goat on her ledge, another traveler
   m.col(56, 6, 9, 'P').set(56, 5, 'Y').row(9, 57, 58, 'w').col(61, 6, 9, 'P').set(61, 5, 'Y').set(60, 5, 'D');
   m.row(6, 58, 60, 'l').set(59, 5, '*').set(62, 9, 'n');

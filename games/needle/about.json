@@ -9,5 +9,5 @@
   "exe": "NEEDLE.EXE",
   "sound": "sb",
   "tinHeart": { "map": "tailor.map", "at": [35, 17] },
-  "easterEgg": { "map": "city.map", "at": [4, 11] }
+  "easterEgg": { "map": "desert.map", "at": [48, 8] }
 }
