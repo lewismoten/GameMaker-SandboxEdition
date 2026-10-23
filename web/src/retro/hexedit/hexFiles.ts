@@ -123,7 +123,10 @@ export async function openFile(h: RetroHost, drive: string, parts: string[], nam
         return `Saved. The file as it was is ${bak}${g.source === 'installed' ? ' (Restore in GM puts the game back as installed)' : ''}.`;
       };
     else file.readOnly = ['Access denied', `${path} can't be written to.`];
-  } else if (drive === 'C' && parts[0] === 'DOWNLOAD') file.readOnly = ['Access denied', 'Shareware is played, not changed: its files are read-only.'];
+  } else if (drive === 'C' && parts[0] === 'DOWNLOAD')
+    file.readOnly = (await h.gameIn(drive, parts.slice(0, 2)))?.free
+      ? ['Access denied', 'A free download, kept as it came: change your copy in C:\\GM.']
+      : ['Access denied', 'Shareware is played, not changed: its files are read-only.'];
   else file.readOnly = ['Access denied', `${path} is read-only.`];
   return file;
 }
