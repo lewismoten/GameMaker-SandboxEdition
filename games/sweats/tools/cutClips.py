@@ -137,10 +137,8 @@ CUES = {
 
 
 def main():
-    argv = sys.argv[1:]
-    out = argv[argv.index('--out') + 1] if '--out' in argv else OUT
-    args = [a for a in argv if not a.startswith('--') and a != out]
-    folder = args[0] if args else FOLDER
+    out, folder = cutclips.paths(OUT)
+    folder = folder or FOLDER
     os.makedirs(out, exist_ok=True)
     cutclips.MAX_SECONDS = 7.0
     rates = {}
@@ -156,10 +154,7 @@ def main():
                 y = sg.resample_poly(y, rate, cutclips.RATE)
                 y *= 0.97 / np.abs(y).max()
             data = np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
-            if len(data) + 33 >= 40000:
-                raise SystemExit('%s is %d bytes as a VOC' % (name, len(data) + 33))
-            with open(os.path.join(out, name + '.pcm'), 'wb') as f:
-                f.write(data.tobytes())
+            cutclips.write_pcm(out, name, data)
             rates[name] = rate
             print('%-8s %7.2f - %7.2f s  %.2f s  %5d Hz  VOC %6d bytes  "%s"' % (name, start, end, end - start, rate, len(data) + 33, said))
     with open(os.path.join(out, 'rates.json'), 'w') as f:

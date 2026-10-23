@@ -13,9 +13,6 @@
 import os
 import sys
 
-import numpy as np
-import scipy.signal as sg
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
 sys.dont_write_bytecode = True  # no __pycache__ in games/kit/song
@@ -61,8 +58,7 @@ CUES = {
 
 
 def main():
-    argv = sys.argv[1:]
-    out = argv[argv.index('--out') + 1] if '--out' in argv else OUT
+    out, _ = cutclips.paths(OUT)
     os.makedirs(out, exist_ok=True)
     for title, cues in CUES.items():
         x = cutclips.decode(os.path.join(SONGS_DIR, title + '.mp3'))
@@ -70,18 +66,9 @@ def main():
         for name, (s, e, fi, fo, slow) in cues.items():
             cutclips.MAX_SECONDS = 4.9 if slow else 3.6
             start, end, p = cutclips.cut(x, env, s, e, fi, fo)
-            rate = cutclips.RATE
-            data = p
-            if slow:
-                y = (p.astype(np.float64) - 128) / 127
-                y = sg.resample_poly(y, SLOW_RATE // 25, cutclips.RATE // 25)
-                y *= 0.97 / np.abs(y).max()
-                data = np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
-                rate = SLOW_RATE
-            if len(data) + 33 >= 40000:
-                raise SystemExit('%s is %d bytes as a VOC' % (name, len(data) + 33))
-            with open(os.path.join(out, name + '.pcm'), 'wb') as f:
-                f.write(data.tobytes())
+            rate = SLOW_RATE if slow else cutclips.RATE
+            data = cutclips.slow_down(p, SLOW_RATE) if slow else p
+            cutclips.write_pcm(out, name, data)
             print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples at %5d Hz  VOC %6d bytes' % (name, start, end, end - start, len(data), rate, len(data) + 33))
 
 

@@ -14,9 +14,6 @@
 import os
 import sys
 
-import numpy as np
-import scipy.signal as sg
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
 sys.dont_write_bytecode = True  # no __pycache__ in games/kit/song
@@ -34,35 +31,13 @@ SONG = {
         'wasted': (113.15, 116.60, 0.01, 0.40),  # the bridge: "Nothing's ever wasted."
         'still': (195.85, 199.40, 0.01, 0.50),  # the very end, hushed: "I'm still bread."
     },
-    # spliced: [(start, end, fade in, fade out), ...] joined with SPLICE_GAP seconds of silence
+    # spliced: [(start, end, fade in, fade out), ...] joined with splice_gap seconds of silence, kept at splice_rate
     'splices': {
         'mama': [(135.88, 137.15, 0.01, 0.08), (137.45, 140.40, 0.01, 0.20)],  # "Mama, look what I've got..."
     },
+    'splice_gap': 0.06,
+    'splice_rate': 8000,
 }
-SPLICE_GAP = 0.06
-SPLICE_RATE = 8000
 
 if __name__ == '__main__':
     cutclips.main(SONG)
-    argv = sys.argv[1:]
-    out = argv[argv.index('--out') + 1] if '--out' in argv else SONG['out']
-    args = [a for a in argv if not a.startswith('--') and a != out]
-    x = cutclips.decode(args[0] if args else SONG['mp3'])
-    env = cutclips.voice_envelope(x)
-    for name, parts in SONG['splices'].items():
-        pcm = []
-        for k, (s, e, fi, fo) in enumerate(parts):
-            if k:
-                pcm.append(np.full(int(SPLICE_GAP * cutclips.RATE), 128, dtype=np.uint8))
-            start, end, p = cutclips.cut(x, env, s, e, fi, fo)
-            pcm.append(p)
-            print('%-10s part %d %7.2f - %7.2f s' % (name, k + 1, start, end))
-        y = (np.concatenate(pcm).astype(np.float64) - 128) / 127
-        y = sg.resample_poly(y, SPLICE_RATE // 25, cutclips.RATE // 25)
-        y *= 0.97 / np.abs(y).max()
-        data = np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
-        if len(data) + 33 >= 40000:
-            raise SystemExit('%s is %d bytes as a VOC' % (name, len(data) + 33))
-        with open(os.path.join(out, name + '.pcm'), 'wb') as f:
-            f.write(data.tobytes())
-        print('%-10s %.2f s  %6d samples at %d Hz  VOC %6d bytes' % (name, len(data) / SPLICE_RATE, len(data), SPLICE_RATE, len(data) + 33))
