@@ -23,6 +23,7 @@ export function diskMenu(host: DiskMenuHost): {
   button: HTMLElement;
   refresh(insertId?: string): Promise<void>;
   openGame(id: string): Promise<boolean>;
+  current(): string | undefined;
   forget(): void;
 } {
   let disks: Disk[] = [];
@@ -31,8 +32,10 @@ export function diskMenu(host: DiskMenuHost): {
   const button = h(
     'button',
     { type: 'button', class: 'dos-btn', 'aria-haspopup': 'dialog', title: 'Choose a disk to put in drive A:', onclick: () => void open() },
-    '💾 Disks',
+    h('span', { class: 'dos-ico', 'aria-hidden': 'true' }, '💾'),
+    h('span', { class: 'dos-word' }, 'Disks'),
   );
+  const buttonWord = button.querySelector('.dos-word')!;
   const driveLine = h('p', { class: 'dos-drive' });
   const ejectBtn = h('button', { type: 'button', class: 'dos-btn', onclick: () => eject() }, '⏏ Eject');
   const list = h('div', { class: 'dos-disk-list' });
@@ -54,7 +57,7 @@ export function diskMenu(host: DiskMenuHost): {
   function showDrive(): void {
     driveLine.textContent = inDrive ? `In drive A: ${inDrive.kind === 'blank' ? 'a blank disk' : inDrive.title}` : 'Drive A: is empty.';
     ejectBtn.hidden = !inDrive;
-    button.textContent = inDrive ? `💾 A: ${inDrive.kind === 'blank' ? 'blank disk' : inDrive.title}` : '💾 Disks';
+    buttonWord.textContent = inDrive ? `A: ${inDrive.kind === 'blank' ? 'blank disk' : inDrive.title}` : 'Disks';
   }
 
   function draw(): void {
@@ -149,6 +152,8 @@ export function diskMenu(host: DiskMenuHost): {
     button,
     refresh,
     openGame,
+    /** The disk in drive A: (cd:<id>, project:<id>, blank), for the view switch. */
+    current: () => inDrive?.id,
     /** The PC was switched off: the disk came out with it. */
     forget() {
       inDrive = undefined;

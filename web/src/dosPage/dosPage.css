@@ -300,3 +300,41 @@
   color: #9cc4ff;
   font-family: ui-monospace, monospace;
 }
+
+/* a button's icon and word (dosPage.ts face) */
+.dos-ico + .dos-word {
+  margin-left: 0.35em;
+}
+
+.dos-word-short {
+  display: none;
+}
+
+/* phones: icons alone (the words still name the buttons), so the bar keeps to two short rows */
+@media (max-width: 600px) {
+  .dos-bar {
+    gap: 4px 8px;
+    padding: 4px 8px;
+  }
+  .dos-bar h1 {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .dos-bar .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .dos-bar .dos-word-short {
+    display: inline;
+  }
+  .dos-controls {
+    gap: 4px;
+  }
+  .dos-btn {
+    padding: 2px 6px;
+  }
+}

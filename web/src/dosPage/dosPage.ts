@@ -24,6 +24,7 @@ import { registerServiceWorker } from '../offline';
 import { watchForUpdates } from '../devReload';
 import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
+import { viewSwitch } from '../viewSwitch';
 
 const root = document.querySelector<HTMLElement>('#dos')!;
 const speed: SpeedSetting = { slowPc: undefined };
@@ -42,15 +43,21 @@ crt.addEventListener('click', () => (pc?.powered ? pc.focus() : void powerOn()))
 
 // ---- the case's buttons ----------------------------------------------------------------
 
-const toggle = (label: string, title: string, onclick: () => void) =>
-  h('button', { type: 'button', class: 'dos-btn', 'aria-pressed': 'false', title, onclick }, label);
-const powerBtn = toggle('⏻ Power', 'Switch the PC on or off', () => (pc?.powered ? powerOff() : void powerOn()));
-const resetBtn = h('button', { type: 'button', class: 'dos-btn', title: 'Restart the PC, as the reset button did', onclick: () => void reset() }, '↺ Reset');
-const turboBtn = toggle('Turbo', 'Turbo: 66 MHz, or off for a slow PC (about a 286)', () => setTurbo(speed.slowPc !== undefined));
+/** A button's face: its icon, and its word (only the icon shows on a phone; the word still names it). */
+const face = (icon: string, word: string) => [h('span', { class: 'dos-ico', 'aria-hidden': 'true' }, icon), h('span', { class: 'dos-word' }, word)];
+const toggle = (icon: string, word: string, title: string, onclick: () => void) =>
+  h('button', { type: 'button', class: 'dos-btn', 'aria-pressed': 'false', title, onclick }, ...face(icon, word));
+const powerBtn = toggle('⏻', 'Power', 'Switch the PC on or off', () => (pc?.powered ? powerOff() : void powerOn()));
+const resetBtn = h(
+  'button',
+  { type: 'button', class: 'dos-btn', title: 'Restart the PC, as the reset button did', onclick: () => void reset() },
+  ...face('↺', 'Reset'),
+);
+const turboBtn = toggle('⚡', 'Turbo', 'Turbo: 66 MHz, or off for a slow PC (about a 286)', () => setTurbo(speed.slowPc !== undefined));
 let lastVolume = getVolume() || 1;
-const soundBtn = toggle('🔊 Sound', 'Sound on or off', () => setSound(getVolume() === 0));
+const soundBtn = toggle('🔊', 'Sound', 'Sound on or off', () => setSound(getVolume() === 0));
 const blaster = h('input', { type: 'checkbox', id: 'dos-blaster', checked: soundBlaster(), onchange: () => setSoundBlaster(blaster.checked) });
-const fullBtn = h('button', { type: 'button', class: 'dos-btn', title: 'Fill the screen', onclick: () => void fullScreen() }, '⤢ Full screen');
+const fullBtn = h('button', { type: 'button', class: 'dos-btn', title: 'Fill the screen', onclick: () => void fullScreen() }, ...face('⤢', 'Full screen'));
 
 function setTurbo(on: boolean): void {
   speed.slowPc = on ? undefined : TURBO_OFF;
@@ -61,7 +68,7 @@ function setSound(on: boolean): void {
   if (!on) lastVolume = getVolume() || lastVolume;
   setVolume(on ? lastVolume : 0);
   soundBtn.setAttribute('aria-pressed', String(on));
-  soundBtn.textContent = on ? '🔊 Sound' : '🔇 Sound';
+  soundBtn.querySelector('.dos-ico')!.textContent = on ? '🔊' : '🔇';
 }
 
 async function fullScreen(): Promise<void> {
@@ -146,7 +153,7 @@ const disks = diskMenu({
   say,
 });
 
-const cdBtn = toggle('💿 Game-Maker CD', 'Put the Game-Maker CD in drive D:, or take it out', () => void setCd(!pc?.cdInserted));
+const cdBtn = toggle('💿', 'Game-Maker CD', 'Put the Game-Maker CD in drive D:, or take it out', () => void setCd(!pc?.cdInserted));
 
 async function setCd(on: boolean): Promise<void> {
   await powerOn();
@@ -164,8 +171,12 @@ async function startGameMaker(): Promise<void> {
   await command('GM');
 }
 
-const gmBtn = h('button', { type: 'button', class: 'dos-btn dos-primary', onclick: () => void startGameMaker() }, '▶ Game-Maker');
-const bbsBtn = h('button', { type: 'button', class: 'dos-btn', title: 'Call the BBS with the modem', onclick: () => void command('C:\nTERMINAL') }, '☎ BBS');
+const gmBtn = h('button', { type: 'button', class: 'dos-btn dos-primary', onclick: () => void startGameMaker() }, ...face('▶', 'Game-Maker'));
+const bbsBtn = h(
+  'button',
+  { type: 'button', class: 'dos-btn', title: 'Call the BBS with the modem', onclick: () => void command('C:\nTERMINAL') },
+  ...face('☎', 'BBS'),
+);
 const guideBtn = h(
   'button',
   {
@@ -174,7 +185,7 @@ const guideBtn = h(
     title: 'Read Game-Maker’s Owner’s Guide',
     onclick: () => void import('../manual/dosManual').then((m) => m.openDosManual()),
   },
-  '📖 Owner’s Guide',
+  ...face('📖', 'Owner’s Guide'),
 );
 
 /** The addresses this page answers, for the page's own "Links to this page". */
@@ -201,8 +212,10 @@ clear(
     h(
       'header',
       { class: 'dos-bar' },
-      h('a', { class: 'dos-back', href: './', title: `Back to ${PRODUCT}` }, '← Back to the site'),
+      h('a', { class: 'dos-back', href: './', title: `Back to ${PRODUCT}` }, ...face('←', 'Back to the site')),
       h('h1', null, 'DOS Game-Maker'),
+      // Desk | DOS | Web, with the disk in drive A: coming along
+      viewSwitch('dos', () => disks.current()),
       h(
         'div',
         { class: 'dos-controls', role: 'group', 'aria-label': 'The PC' },
@@ -210,7 +223,13 @@ clear(
         resetBtn,
         turboBtn,
         soundBtn,
-        h('label', { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' }, blaster, 'Sound Blaster'),
+        h(
+          'label',
+          { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' },
+          blaster,
+          h('span', { class: 'dos-word-short', 'aria-hidden': 'true' }, 'SB'),
+          h('span', { class: 'dos-word' }, 'Sound Blaster'),
+        ),
         fullBtn,
       ),
       h('div', { class: 'dos-controls', role: 'group', 'aria-label': 'Disks and programs' }, disks.button, cdBtn, gmBtn, bbsBtn, guideBtn),
