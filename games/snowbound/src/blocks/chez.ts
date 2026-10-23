@@ -17,19 +17,22 @@ export function addChez(k: Ctx, { lot }: ReturnType<typeof addGround>) {
     glass: [c('ice', 1), c('ice', 3)],
     roof: c('ink', 1),
     tire: c('ink', 0),
-    hub: c('snow', 6),
+    hub: c('snow', 3),
+    rim: c('snow', 6),
+    pin: c('snow', 6),
+    stripe: c('ink', 1),
     bumper: c('ink', 1),
     lamp: c('glow', 3),
     tail: c('orange', 2),
     outline: c('ink', 0),
   });
   // snow on the roof and the hood, and drifted up against the wheels
-  blob(p, 11, 3, 8, 1.6, snow, 3, 6);
+  blob(p, 12.5, 1.5, 6, 1.4, snow, 3, 6);
   blob(p, 31, 10, 6, 1.4, snow, 3, 6);
   blob(p, 3, 19, 4, 1.5, snow, 3, 5);
   blob(p, 20, 19, 5, 1.5, snow, 3, 5);
   blob(p, 38, 19, 3, 1.5, snow, 3, 5);
-  for (let x = 0; x < 2; x++) blob(p, 8 + x * 24, 19.5, 2.5, 1, R('ink'), 0, 1);
+  for (let x = 0; x < 2; x++) blob(p, 9 + x * 22, 19.5, 2.5, 1, R('ink'), 0, 1);
   book.add('chezL', p.crop(0, 0, 20, 20), { solid: SOLID });
   book.add('chezR', p.crop(20, 0, 20, 20), { solid: SOLID });
 }
