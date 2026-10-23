@@ -41,7 +41,7 @@ export function addBurrows(): void {
         if (d < 8) p.set(x, y, shade(OCHRE, 3 - d / 3 + (y < 10 ? 1 : 0)));
       }
     p.disc(10, 10, 3.5, 0).set(8, 9, BEETLE[4]).set(12, 11, BEETLE[3]);
-    bg.add('nest', p, { solid: SOLID, effect: CTR.sand, eamt: -1, touch: 'plugged', birthMon: MON.beetleChase, birthTime: 90 });
+    bg.add('nest', p, { solid: SOLID, effect: CTR.sand, eamt: -1, score: 150, touch: 'plugged', birthMon: MON.beetleChase, birthTime: 90 });
   }
   {
     const p = sandTexture(156, 3, SAND, 0.25);

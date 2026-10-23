@@ -130,9 +130,11 @@ The far ladder climbs to the patio.
 
 The patio, at sunset. Gwinn is snoring on the Crown of the Sandbox.
 
-Her paws twitch to guard it. Splash a paw twice and she tucks it in.
+Splash a paw twice and she tucks it in: the left one by her side, then the right one by the crown.
 
-Fill your bucket at her water bowls. Mind the slobbery balls and her flying rope toys!
+Her snores blow down the path. When the dust stirs, wait.
+
+Her bowls never run dry. Mind the slobbery balls and rope toys!
 `),
   bbs: wrap(`
 |CONNECT 2400

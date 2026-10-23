@@ -418,15 +418,20 @@ function roughen(m: LevelMap, seed: number): void {
 }
 
 // ================================================================= 5. Gwinn's patio
+// Three beats to the crown: her left paw guards the narrow path up her west side (splash it
+// twice); her snores blow down that path now and then (walk up between gusts); and her
+// right paw is curled across the crown's nook above her head (splashed once, it starts
+// swiping back and forth; splash it again and she tucks it in).
 export const CAT_AT = { x: 13, y: 3 };
 export function patio(): LevelMap {
   const m = new LevelMap('grass', 6);
   m.ring(0, 6, 32, 16, 'brick');
   m.rect(1, 7, 30, 14, 'patio');
   m.rect(11, 0, 10, 7, 'brick');
-  m.rect(12, 1, 8, 2, 'patio');
-  m.rect(12, 3, 1, 4, 'patio').rect(19, 3, 1, 4, 'patio');
-  m.set(15, 1, 'crown').mark('crown', 15, 1);
+  m.rect(12, 1, 8, 1, 'patio');
+  m.set(12, 2, 'patio');
+  m.rect(12, 3, 1, 4, 'snore');
+  m.set(19, 1, 'crown').mark('crown', 19, 1);
   for (let by = 0; by < 4; by++) for (let bx = 0; bx < 6; bx++) m.set(CAT_AT.x + bx, CAT_AT.y + by, `cat${bx}${by}`);
   m.stamp(
     1,
@@ -449,7 +454,7 @@ export function patio(): LevelMap {
     ],
     L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', '@': { tile: 'patio', mark: 'arrive' } }),
   );
-  m.mon(12, 7, MON.pawL).mon(19, 7, MON.pawR).mon(14, 8, MON.tail);
+  m.mon(12, 7, MON.pawL).mon(16, 1, MON.pawR).mon(14, 8, MON.tail);
   return m;
 }
 

@@ -25,11 +25,10 @@ export function addCastles(): void {
     } else p.disc(10, 10, 2.8, OCHRE[0]).disc(10, 11, 1.5, 0).set(8, 8, OCHRE[6]).set(12, 8, OCHRE[5]);
     return p;
   }
-  // The hill gives birth to an ant every 70 ticks. Walking into it spends a scoop of sand
-  // and swaps in 'plugged', which births nothing (and pays 150 on the next touch).
-  bg.add('anthill', anthill(false), { solid: SOLID, effect: CTR.sand, eamt: -1, touch: 'plugged', birthMon: MON.ant, birthTime: 70 });
-  bg.add('plugged', anthill(true), { solid: SOLID, score: 150, touch: 'plugged2' });
-  bg.add('plugged2', anthill(true), { solid: SOLID });
+  // The hill gives birth to an ant every 70 ticks. Walking into it spends a scoop of sand,
+  // pays 150 and swaps in 'plugged', which births nothing.
+  bg.add('anthill', anthill(false), { solid: SOLID, effect: CTR.sand, eamt: -1, score: 150, touch: 'plugged', birthMon: MON.ant, birthTime: 70 });
+  bg.add('plugged', anthill(true), { solid: SOLID });
 
   // ---------------------------------------------------------------- castles of sand
   function bricks(seed: number, merlon: boolean): Pixels {

@@ -40,7 +40,7 @@
   },
   {
    "scene": 7,
-   "keys": "AVAC0AJIIMgBSwzLAUgEyAEwArAOMAKwVUsEywFICMgBTQTNAUgYyAFN"
+   "keys": "AUggyAFLDMsBSATIATACsA4wArBVSAjINkgUyAFIBMgBTQTNATACsA4wArAdTQ=="
   }
  ],
  "chapters": [
@@ -67,7 +67,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 23904,
+  "frames": 24726,
   "chapters": [
    {
     "title": "Opening",
@@ -99,11 +99,11 @@
    },
    {
     "title": "Ending",
-    "frame": 19832
+    "frame": 20654
    },
    {
     "title": "Credits",
-    "frame": 22352
+    "frame": 23174
    }
   ]
  }

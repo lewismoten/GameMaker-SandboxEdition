@@ -246,24 +246,62 @@ export async function burrows(bot: Bot): Promise<void> {
   if ((await bot.goto(40, 27, 'the ladder up')) !== 'link') throw new Error('No way out');
 }
 
-export async function patio(bot: Bot): Promise<void> {
-  expect(bot, S.patio, "Gwinn's nap");
-  await bot.digFrom(15, 19, 'up', 'a water bowl', (n) => n === 'bowlDry');
-  // the left paw guards the way up the west side: splash it twice and she tucks it in
-  await bot.goto(12, 10, 'below her left paw');
-  await bot.goto(12, 9, 'below her left paw');
-  for (let k = 0; k < 6 && bot.monsters(MON.pawL, MON.pawLAngry).length; k++) {
-    if (bot.sim.meter(SEQ.splash) < 1) throw new Error('Out of water');
+/** Ticks before Gwinn's next snore gust blows down the path beside her (0 while it blows). */
+function calmFor(bot: Bot): number {
+  const w = bot.sim.w;
+  const calm = BG.id('snore');
+  const tell = BG.id('snoreTell');
+  const now = w.blkmap[calm];
+  if (now === calm) return w.nxtchg[calm] - w.clock + w.bg[tell].ntime;
+  if (now === tell) return w.nxtchg[calm] - w.clock;
+  return 0;
+}
+
+/** Splashes the paw ahead (Teddy faces the way he last walked) until it is out of `kinds`. */
+async function splashPaw(bot: Bot, kinds: number[], label: string): Promise<void> {
+  for (let k = 0; k < 8 && bot.monsters(...kinds).length; k++) {
+    if (bot.sim.meter(SEQ.splash) < 1) throw new Error(`${label}: out of water`);
     await bot.key(SCAN.b, 2, 14);
   }
-  if (bot.monsters(MON.pawL, MON.pawLAngry).length) throw new Error('The paw is still there');
-  bot.say('Gwinn tucks in her paw');
+  if (bot.monsters(...kinds).length) throw new Error(`${label}: the paw is still there`);
+  bot.say(label);
+}
+
+export async function patio(bot: Bot): Promise<void> {
+  expect(bot, S.patio, "Gwinn's nap");
+  // fill up at her water bowl (it never runs dry): four splashes for her two paws
+  await bot.goto(15, 18, 'a water bowl');
+  for (let k = 0; k < 4 && bot.sim.meter(SEQ.splash) < 6; k++) await bot.push('up', 2, 2);
+  if (bot.sim.meter(SEQ.splash) < 5) throw new Error(`Only ${bot.sim.meter(SEQ.splash) - 1} splashes`);
+  bot.say('a full bucket');
+  // 1. the left paw guards the path up her west side: splash it twice and she tucks it in
+  await bot.goto(12, 10, 'below her left paw');
+  await bot.goto(12, 9, 'below her left paw');
+  await splashPaw(bot, [MON.pawL, MON.pawLAngry], 'Gwinn tucks in her left paw');
   let waited = 0;
   while (bot.monsters(MON.pawLRetreat).length) {
     await bot.wait(1);
     if (++waited > 300) throw new Error('The paw never went');
   }
-  if ((await bot.goto(15, 1, 'the Crown of the Sandbox')) !== 'end') throw new Error('No crown');
+  // 2. her snores blow down the path: wait at its foot for a gust to pass, then walk up
+  await bot.goto(12, 7, 'the foot of the path');
+  waited = 0;
+  while (calmFor(bot) < 40) {
+    await bot.wait(1);
+    if (++waited > 300) throw new Error('Gwinn never stopped snoring');
+  }
+  if (waited) bot.say(`waited ${waited} ticks for a snore to pass`);
+  await bot.goto(12, 2, 'up the path');
+  // 3. the right paw lies across the crown's nook: splash it (it starts swiping), then again
+  await bot.goto(12, 1, 'the crown nook');
+  await bot.goto(13, 1, 'facing her right paw');
+  await splashPaw(bot, [MON.pawR, MON.pawRAngry], 'Gwinn tucks in her right paw');
+  waited = 0;
+  while (bot.monsters(MON.pawRRetreat).length) {
+    await bot.wait(1);
+    if (++waited > 300) throw new Error('The right paw never went');
+  }
+  if ((await bot.goto(19, 1, 'the Crown of the Sandbox')) !== 'end') throw new Error('No crown');
 }
 
 export async function playAll(bot: Bot): Promise<void> {

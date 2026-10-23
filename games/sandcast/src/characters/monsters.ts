@@ -217,6 +217,9 @@ export function buildMonsters(): Monster[] {
       becomes: side === 'L' ? MON.pawLAngry : MON.pawRAngry,
       score: 500,
     });
+    // Riled, the left paw scrabbles where it is; the right one, curled across the crown's
+    // nook, swipes three blocks toward Teddy and back, slowly enough to see coming (splash it
+    // again before it reaches you, or step back down the path).
     def(side === 'L' ? MON.pawLAngry : MON.pawRAngry, {
       pics: [
         [`paw${side}Angry0`, 3],
@@ -226,14 +229,23 @@ export function buildMonsters(): Monster[] {
       thru: false,
       becomes: side === 'L' ? MON.pawLRetreat : MON.pawRRetreat,
       score: 1000,
+      ...(side === 'R'
+        ? {
+            march: [
+              [-3, 0, 1, 0],
+              [0, 0, 1, 0],
+            ] as [number, number, number, number][],
+          }
+        : {}),
     });
-    def(side === 'L' ? MON.pawLRetreat : MON.pawRRetreat, {
-      pics: [['pawWet', 4]],
-      power: 250,
-      thru: false,
-      end: -1,
-      march: [[0, -4, 1, 0]],
-    });
+    // Tucked in: the left paw draws back up the path beside her; the right one, with
+    // nowhere to go in the nook, stays put, dripping, for a moment, and is gone.
+    def(
+      side === 'L' ? MON.pawLRetreat : MON.pawRRetreat,
+      side === 'L'
+        ? { pics: [['pawWet', 4]], power: 250, thru: false, end: -1, march: [[0, -4, 1, 0]] }
+        : { pics: [['pawWet', 4]], power: 250, thru: false, end: 24 },
+    );
   };
   paw('L');
   paw('R');
