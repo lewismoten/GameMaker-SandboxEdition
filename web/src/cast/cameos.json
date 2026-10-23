@@ -34,7 +34,8 @@
     { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" },
     { "game": "carl", "as": "seeing to the stereo’s left speaker" },
     { "game": "year2000", "as": "tinkering with the Teleport Exchange’s switchboard" },
-    { "game": "brief", "as": "seeing to the inventor’s wiring in the Laboratory" }
+    { "game": "brief", "as": "seeing to the inventor’s wiring in the Laboratory" },
+    { "game": "sandcast", "as": "perched on a sandcastle in the BBS file area" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
