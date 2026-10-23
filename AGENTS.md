@@ -65,7 +65,7 @@ preserve what was there.
 - **Commits:** commit small and often: one game or one feature per commit, with no more
   than about 3 uncommitted files at a time. Use `git commit -- <paths>` so you only commit
   your own files. Never push, and never rewrite history.
-- **Dev server:** the maintainer keeps a dev server open on port 5317. Never restart or stop
+- **Dev server:** the maintainer keeps a dev server open on port 5173. Never restart or stop
   it, and never make that page reload. Verify with your own headless browser (playwright-core,
   channel `chrome`) against it. For production checks, use a scratch build
   (`vite build --outDir <tmp>`) previewed on another port, and stop it afterwards. Edits to
