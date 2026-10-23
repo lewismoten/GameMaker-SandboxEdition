@@ -69,8 +69,26 @@ game folder opens in the browser unchanged.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
   text. Many are drawn from Lewis "Lewie" Moten III: his blog writing, photos he provided,
   and conversations about his interests, experiences and hobbies. Lewis directed each game
-  and played it as it came together, and his feedback shaped every one. Teddy, Gwinn and
-  Doc Leo appear as themselves.
+  and played it as it came together, and his feedback shaped every one. Teddy, Gwinn,
+  Doc Leo and THE CHEZ (Lewis's CitiCar) appear as themselves.
+- **The Bard of Bizarre games** (`games/`: Third Goat from the Left, Mustard Seed Hustle,
+  Thread the Needle, Brother Camel, Loaf #13, Certified Rat Tickler, Where's the Remote?!,
+  A Fly Named Carl, The Great Dairy Reckoning of 3:17 A.M., Cleanse Me, O Loofah, But Leave
+  My Soul, I Screamed, She Smirked, Shakespeare in Sweatpants, and Veni, Vidi, Risi! by
+  Lewis's group of that name): games made from Lewis's songs and monologues, presented as
+  1995 shareware from The Sofa BBS; their shareware fee and address are part of the story,
+  and they are free under the MIT License. The songs' lyrics and monologues were shaped with
+  ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (now
+  Google Flow Music); the games' FM scores are arranged from those recordings, and their
+  voice clips are cut from them. The exceptions: Certified Rat Tickler came with no
+  recording, so its music was composed for the game by Claude Opus 5.5, as was the music
+  under The Great Dairy Reckoning's spoken recording; Mustard Seed
+  Hustle's animated cover was made with Producer.ai; the covers of Third Goat from the Left
+  and Thread the Needle, Brother Camel were made with Riffusion; the other games' title and
+  cover art was drawn for them by Claude Opus 5.5. The Bard's logo (the rooster in
+  spectacles) was made with DeepAI, and the Doc Leo photos are Lewis's own. Claude Opus 5.5
+  wrote and built the games themselves (code, levels, art and arrangements), directed by
+  Lewis.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase and others).
   Shareware games are shown play-only, with their authors' original notices.
@@ -107,6 +125,13 @@ formats from their published descriptions and from Game-Maker's own source.
   `web/src/audio/opl.ts` was written for this project.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
   the IBM PC BIOS font.
+- **Caveat** (the handwriting in the Owner's Guide's registration record,
+  `web/src/manual/regRecord.ts`), a font by Impallari Type under the SIL Open Font License
+  1.1, is loaded from Google Fonts when that page is shown; it isn't included in this
+  repository or in exported games.
+- **ChatGPT**, **Riffusion**, **Google Flow Music**, **Producer.ai** and **DeepAI** are
+  their owners' names for the tools used to make the Bard of Bizarre songs and art (see
+  Credits); none of their code is used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
@@ -131,6 +156,48 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
+
+## The Mac, Windows and Linux players
+
+"Download for Mac", "for Windows" and "for Linux" wrap a game's one web page in a small
+player program written for this project (`mac/`, `win/`, `linux/`; the prebuilt players are
+in `web/public/mac`, `web/public/win` and `web/public/linux`). What they contain or use from
+others:
+
+- **Windows: the WebView2 interface header.** `win/Player/webview2.h` lists the vtable slots
+  and interface IDs the player calls, generated from `WebView2.h` of Microsoft's WebView2 SDK
+  (NuGet `Microsoft.Web.WebView2` 1.0.3485.44), which is under a BSD-style license:
+  "Copyright (C) Microsoft Corporation. All rights reserved." The license's full text is
+  kept at the top of that file. No other SDK file is included, nor Microsoft's
+  `WebView2Loader.dll`.
+- **Windows: finding the WebView2 runtime.** The player loads the runtime's own
+  `EmbeddedBrowserWebView.dll` from the folder Edge's updater records in the registry, the
+  approach of the open source [webview](https://github.com/webview/webview) library (MIT
+  License, Copyright (c) 2017 Serge Zaitsev, Copyright (c) 2022 Steffen André Langnes). The
+  approach is credited in `win/Player/main.c`; the player's code is written in C for this
+  project.
+- **Windows: the Microsoft Edge WebView2 Runtime** is Microsoft's software, part of Windows
+  10 and 11; it is not included. Microsoft Edge and WebView2 are trademarks of Microsoft.
+- **Windows: the C runtime startup code.** The `.exe` players are built by `win/build.sh`
+  with [Zig](https://ziglang.org/) (MIT License), whose MinGW-w64 libraries link a little of
+  the MinGW-w64 runtime's startup code into each program; the program otherwise calls only
+  Windows' own DLLs. In the runtime's words, such a program "was built using MinGW-w64 and
+  statically linked against the MinGW-w64 runtime. Some parts of the runtime are under
+  licenses which require that the copyright and license notices are included when
+  distributing the code in binary form." Those permissive notices (the mingw-w64 project's
+  own, copyright 2009–2013, and its contributors') are listed in
+  [COPYING.MinGW-w64-runtime.txt](https://github.com/mingw-w64/mingw-w64/blob/master/COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt).
+- **Linux: GTK 3 and WebKitGTK** (`libwebkit2gtk-4.1` or `-4.0`, with GLib and GTK; GNU
+  LGPL 2.1 or later) are loaded with `dlopen` when the player starts, from the computer's own
+  packages. None of their code or headers is included: the few functions the player uses are
+  declared by hand in `linux/Player/main.c`. The program is built by `linux/build.sh` with
+  Zig against glibc 2.28, so it carries only glibc's small start files (GNU LGPL 2.1 or
+  later, with the exception that lets them be linked into any program).
+- **Mac: AppKit and WebKit**, Apple's frameworks that are part of macOS. The player
+  (`mac/Player/main.swift`) links only to the system's own libraries.
+- Zig itself is a build tool and none of it is redistributed beyond the runtime pieces
+  above. The `.dmg`, `.tar.gz` and `.zip` containers, the Mac code signature and the Windows
+  resources are written by this project's own code in `web/src/export/`.
 
 ## Third-party code and acknowledgments in the original source
 
@@ -210,6 +277,19 @@ follows APPNOTE's layout. The FLI reader `web/src/formats/fli.ts` follows Andy S
 `web/src/formats/gif.ts` is new, not GIFSAVE. `web/src/formats/voc.ts` reproduces Peter
 Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 
+## Tools used to build and test
+
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/) and [Vitest](https://vitest.dev/) (MIT), used only to build
-and test; none of their code ships in the app except Vite's small module runtime.
+[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT), and
+`@types/node` (MIT), the only packages in `web/package.json`, used only to build and test;
+none of their code ships in the app except Vite's small module runtime and preload helper
+(MIT). The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
+see above for what ends up in them.
+
+The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
+`tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,
+NumPy and SciPy (BSD), and OpenAI's Whisper (MIT) for word timings when it is installed.
+They read recordings that are not in the repository, and nothing of theirs is
+committed except the note data and clips they produce. Browser checks during development
+(Playwright, Apache-2.0, and any accessibility checker run with it) are run from outside the
+repository and are not dependencies of it.
