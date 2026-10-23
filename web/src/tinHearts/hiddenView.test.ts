@@ -9,7 +9,7 @@ import { hiddenView } from '../../../games/kit/hiddenView';
  * Items that still show, being moved. Take a game's entry out once its item is moved; the test
  * fails while an entry here is hidden already, so the list only shrinks.
  */
-const STILL_SHOWN = new Set([
+const STILL_SHOWN = new Set<string>([
 ]);
 
 describe('tin hearts and Easter eggs out of sight', async () => {
