@@ -60,8 +60,12 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 editors (`editor/editors/all.ts`) only when a game is opened, so each interface is its own
 download. `offline.ts` registers the service worker (`siteWorker.ts`), which precaches only
 the app shell and caches games as they are used; a new deploy waits for the visitor to say
-"Reload". Game files go through `fetchGameFile` (`project/files.ts`), which shares each
-request. Lists load `games/catalog.json` (`loadCatalogList`), and a game's notice, manual and
+"Reload". A hosted game comes in one request: its pack (`<id>.<hash>.gmpak`, all its files
+gzipped in play order, `project/gamePack.ts`), read as it arrives so play starts once the
+.gam is in (`loadHostedGame`, `streamHostedGame`). Single files go through `fetchGameFile`
+(`project/files.ts`), which shares each request and reads from a pack already at hand. The
+build also puts in the catalog what pages would otherwise fetch files to work out (the
+quick health check, a box's captions). Lists load `games/catalog.json` (`loadCatalogList`), and a game's notice, manual and
 printables come from `games/details/<id>.json` when it is opened (`withDetails`); pictures of
 listed games are prebuilt in `games/shots/` (`gfx/levelPicture.ts`). `main.ts` starts one or
 the other and switches between them;

@@ -484,9 +484,10 @@ export function cdGames(cdRoot: string): Plugin {
       });
       const secret = get().secret.map(known);
       // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
-      // files shrink 3-20x: each game file but a GIF also gets a gzip copy, <file>.gz, which
-      // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The
-      // files themselves stay too, for exports and links.
+      // files shrink 3-20x: a whole game comes as its pack (below), and each game file but a
+      // GIF also gets a gzip copy, <file>.gz, which the site fetches instead when it needs
+      // one file alone (src/project/files.ts, fetchSiteFile). The files themselves stay too,
+      // for exports and links.
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       for (const e of catalog) {
