@@ -35,6 +35,7 @@ import { wallClock } from "./room/wallClock";
 import { wasteBasket } from "./room/wasteBasket";
 import { roomDoor } from "./room/roomDoor";
 import { captureStub } from "./pc/captureStub";
+import { deskProps } from "./props";
 import { EDITION, FORK_NOTE } from "../edition";
 import { loadCatalog, loadGameList, type CatalogEntry } from "../project/files";
 import { Project } from "../editor/core/project";
@@ -347,6 +348,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   );
   clear(root, desk);
   const unfit = fitStage(desk);
+  // the clock, the waste basket, the door, the window, the curtains... (props/)
+  const unProps = deskProps(desk);
 
   let enlarged = false; // the user pressed the enlarge button
   // The PC's insides (DOS, Game-Maker, the BBS, the VGA): loaded when the PC is first needed
@@ -899,6 +902,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     window.removeEventListener("keydown", onKey);
     reg.dispose();
     unfit();
+    unProps();
     lamp.dispose();
     shelf?.dispose();
     unCatalog();

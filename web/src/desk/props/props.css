@@ -224,9 +224,9 @@
 .room-door .rd-peek {
   position: absolute;
   z-index: 2;
-  left: 6px;
-  bottom: 110px;
-  width: 120px;
+  left: 4px;
+  bottom: 24px;
+  width: 84px;
   opacity: 0;
   transform: translateX(-24px) rotate(-8deg);
   transition:
@@ -308,7 +308,7 @@
 
 .sw-tail {
   position: absolute;
-  bottom: 4px;
+  bottom: 72px;
   left: 50%;
   width: 34px;
   height: 11px;

@@ -83,6 +83,7 @@ const MOON_TRICKS: { extra: SkyExtra; sound: "twinkle" | "buzz"; line: string }[
   { extra: wink, sound: "twinkle", line: "The moon winks at you. It’s seen you up this late before." },
 ];
 
+// drawn about (110, 210), moved right of the middle (the monitor hides the window's left side)
 const DOODLES: [string, string][] = [
   ["a smiley face", '<circle cx="110" cy="200" r="34"/><circle cx="98" cy="190" r="2"/><circle cx="122" cy="190" r="2"/><path d="M92 210 q18 16 36 0"/>'],
   ["a heart", '<path d="M110 236 l-34 -34 a18 18 0 0 1 34 -22 a18 18 0 0 1 34 22 z"/>'],
@@ -94,8 +95,8 @@ const DOODLES: [string, string][] = [
 function fog(doodle: string): string {
   return `<svg viewBox="0 0 ${VIEW.w} ${VIEW.h}" preserveAspectRatio="none" aria-hidden="true">
     <defs>
-      <radialGradient id="sw-fog-g" cx="0.34" cy="0.48" r="0.42"><stop offset="0" stop-color="#eef2f8" stop-opacity="0.6"/><stop offset="0.7" stop-color="#eef2f8" stop-opacity="0.35"/><stop offset="1" stop-color="#eef2f8" stop-opacity="0"/></radialGradient>
-      <mask id="sw-fog-m"><rect width="${VIEW.w}" height="${VIEW.h}" fill="#fff"/><g fill="none" stroke="#000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">${doodle}</g></mask>
+      <radialGradient id="sw-fog-g" cx="0.64" cy="0.56" r="0.36"><stop offset="0" stop-color="#eef2f8" stop-opacity="0.6"/><stop offset="0.7" stop-color="#eef2f8" stop-opacity="0.35"/><stop offset="1" stop-color="#eef2f8" stop-opacity="0"/></radialGradient>
+      <mask id="sw-fog-m"><rect width="${VIEW.w}" height="${VIEW.h}" fill="#fff"/><g transform="translate(95 40)" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">${doodle}</g></mask>
     </defs>
     <rect width="${VIEW.w}" height="${VIEW.h}" fill="url(#sw-fog-g)" mask="url(#sw-fog-m)"/>
   </svg>`;
