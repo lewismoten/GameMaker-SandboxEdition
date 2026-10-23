@@ -107,7 +107,7 @@ Copy it for your friends and upload it to your favorite BBS. If you enjoy it, pl
 
 Sandbox Software
 Dept. CURTAIN
-P.O. Box 1995
+P.O. Box 000
 Pittsburgh, PA 15213
 
 (A made-up address. Please do not mail anything.)`;
@@ -519,7 +519,7 @@ THIS IS SHAREWARE
 
     Sandbox Software
     Dept. CURTAIN
-    P.O. Box 1995
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   (This is a fictional address for this game - there is no real Sandbox Software to mail. Please do not send money anywhere.)
