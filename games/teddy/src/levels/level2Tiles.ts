@@ -9,7 +9,7 @@ import { GRAV, Tiles } from './level';
 import { kid, mailCarrier } from '../sprites/folks';
 import { dogHouseLibrary } from '../sprites/library';
 import { CTR } from '../ids';
-import { sign } from './level1Tiles';
+import { bandOf, sign } from './level1Tiles';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';
 
 export const G = 40;
@@ -83,8 +83,9 @@ export function streetTiles(): Tiles {
     t.air(`doorTop_${col}`, door.crop(0, 0, 20, 20));
     t.air(`doorBot_${col}`, door.crop(0, 20, 20, 20));
   }
+  // the roof row is map row 28 (the eave row 29 below covers its block whole)
   const roofRow = (left: boolean, right: boolean, eave: boolean) => {
-    const p = sky(1);
+    const p = sky(bandOf(28));
     for (let y = 0; y < 20; y++) {
       const inset = eave ? 0 : Math.max(0, 19 - y);
       const x0 = left ? inset : 0;
