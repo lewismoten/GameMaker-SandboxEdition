@@ -11,6 +11,7 @@
 //   - each level's door is a Dutch door: the top half open, the bottom half shut so the rats stay
 //     in. The bottom half only opens for a laughing carpet big enough (counter 20, all game long),
 //     and gives the rats straight back as Doc Leo steps through.
+import { chezSide } from '../../../kit/chez';
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
@@ -452,5 +453,34 @@ export function buildBlocks(pal: Pal): BlockBook {
   // (last, so every other block keeps its number) the desk and bench tops between their ends
   book.add('deskMid', deskTop(false), { solid: LEDGE, grav: GRAV.down });
   book.add('benchMid', benchTop(false), { solid: LEDGE, grav: GRAV.down });
+  // (last too) the classroom's wide window onto the parking lot: THE CHEZ, Doc Leo's red
+  // CitiCar, waits under the lamp on the charger's cord while he takes the course
+  const lotWin = new Pixels(40, 20);
+  lotWin.blit(wall('course'), 0, 0).blit(wall('course'), 20, 0);
+  lotWin.rect(1, 2, 38, 16, c('wood', 1));
+  for (let y = 3; y < 17; y++) for (let x = 2; x < 38; x++) lotWin.set(x, y, y < 13 ? shadeAt(R('blue'), 0, 1, y / 30, x, y) : shadeAt(R('grey'), 0, 1, 0.2 + (y - 13) / 10, x, y));
+  const st = rng(37);
+  for (let i = 0; i < 6; i++) lotWin.set(3 + Math.floor(st() * 34), 4 + Math.floor(st() * 4), c('paper', 2));
+  lotWin.rect(2, 13, 36, 1, c('grey', 2));
+  // the lamp and its pool of light on the asphalt
+  for (let x = 22; x < 38; x++) for (let y = 13; y < 17; y++) if (Math.abs(x - 33) < 6 - (y - 13)) lotWin.set(x, y, shadeAt(R('cheese'), 0, 1, 0.3, x, y));
+  lotWin.rect(34, 5, 1, 9, c('grey', 1)).rect(31, 4, 4, 1, c('grey', 1)).rect(31, 5, 3, 1, c('cheese', 2));
+  // the charger, its green light, and the cord to the car's port
+  lotWin.rect(28, 10, 2, 5, c('grey', 2)).set(28, 11, c('potion', 3));
+  const port = chezSide(lotWin, 6, 6, {
+    body: [c('red', 1), c('red', 2), c('red', 3)],
+    trim: c('red', 0),
+    glass: [c('navy', 0), c('glass', 0)],
+    roof: c('ink', 1),
+    tire: c('ink', 0),
+    hub: c('grey', 3),
+    bumper: c('grey', 0),
+    lamp: c('paper', 2),
+    tail: c('flame', 1),
+  }, 'left', 0.5);
+  lotWin.line(port.portX + 1, port.portY, 27, 11, c('ink', 0));
+  lotWin.rect(1, 17, 38, 1, c('wood', 3));
+  book.add('windowLotL', lotWin.crop(0, 0, 20, 20), air);
+  book.add('windowLotR', lotWin.crop(20, 0, 20, 20), air);
   return book;
 }

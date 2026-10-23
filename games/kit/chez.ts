@@ -61,31 +61,40 @@ function inPoly(poly: Pt[], x: number, y: number): boolean {
   return inside;
 }
 
-/** The car alone on a 40x20 picture (HOLE where there is no car), facing right. */
-function profile(k: ChezInk, port: boolean): Pixels {
-  const p = new Pixels(40, 20, HOLE);
+/** The car alone on a picture (HOLE where there is no car), facing right, `s` pixels per unit
+ * (1: the 40x20 two-block car; smaller for one seen far off, through a window). */
+function profile(k: ChezInk, port: boolean, s: number): Pixels {
+  const W = Math.round(40 * s);
+  const H = Math.round(20 * s);
+  const p = new Pixels(W, H, HOLE);
   const fill = (poly: Pt[], c: (y: number) => number) => {
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 40; x++) if (inPoly(poly, x + 0.5, y + 0.5)) p.set(x, y, c(y));
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (inPoly(poly, (x + 0.5) / s, (y + 0.5) / s)) p.set(x, y, c(y / s));
   };
+  const box = (x: number, y: number, w: number, h: number, c: number) => p.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), c);
+  const wy = 17.2 * s - (s < 1 ? 0.3 : 0);
   fill(BODY, (y) => k.body[y < 8 ? 2 : y < 13 ? 1 : 0]);
-  for (const wx of WHEELS) p.disc(wx, 17.2, 3.1, HOLE);
-  p.rect(4, 3, 15, 1, k.roof);
+  for (const wx of WHEELS) p.disc(wx * s, wy, 3.1 * s, HOLE);
+  box(4, 3, 15, 1, k.roof);
   fill(WINDOW, () => k.glass[0]);
   fill(SCREEN, () => k.glass[1]);
-  p.line(15, 8, 18, 5, k.glass[1]);
-  p.rect(12, 5, 1, 12, k.trim); // the door seam
-  p.rect(14, 10, 2, 1, k.bumper); // the handle
-  p.rect(3, 13, 33, 1, k.trim); // the pinstripe
-  p.rect(36, 14, 3, 3, k.bumper).rect(1, 14, 2, 3, k.bumper);
-  p.rect(3, 11, 1, 2, k.tail);
-  p.disc(35, 10.5, 1.2, k.body[0]).set(35, 10, k.lamp).set(36, 10, k.lamp);
-  if (port) p.rect(4, 8, 2, 2, k.trim).set(4, 8, k.bumper);
-  for (const wx of WHEELS) p.disc(wx, 17.2, 2.6, k.tire).disc(wx, 17.2, 1.1, k.hub);
+  if (s >= 1) {
+    p.line(15, 8, 18, 5, k.glass[1]);
+    p.rect(12, 5, 1, 12, k.trim); // the door seam
+    p.rect(14, 10, 2, 1, k.bumper); // the handle
+  }
+  box(3, 13, 33, 1, k.trim); // the pinstripe
+  box(36, 14, 3, 3, k.bumper);
+  box(1, 14, 2, 3, k.bumper);
+  box(3, 11, 1, 2, k.tail);
+  if (s >= 1) p.disc(35, 10.5, 1.2, k.body[0]).set(35, 10, k.lamp).set(36, 10, k.lamp);
+  else box(35, 10, 1.5, 1.5, k.lamp);
+  if (port) box(4, 8, 2, 2, k.trim);
+  for (const wx of WHEELS) p.disc(wx * s, wy, 2.6 * s, k.tire).disc(wx * s, wy, Math.max(0.5, 1.1 * s), k.hub);
   if (k.outline !== undefined) {
     const o = k.outline;
     const edge: Pt[] = [];
-    for (let y = 0; y < 20; y++)
-      for (let x = 0; x < 40; x++)
+    for (let y = 0; y < H; y++)
+      for (let x = 0; x < W; x++)
         if (p.get(x, y) === HOLE && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const v = p.get(x + dx, y + dy); return v !== HOLE && v !== -1; })) edge.push([x, y]);
     for (const [x, y] of edge) p.set(x, y, o);
   }
@@ -93,12 +102,14 @@ function profile(k: ChezInk, port: boolean): Pixels {
 }
 
 /**
- * Parks THE CHEZ on `p` with its 40x20 box's top left at (ox, oy). Facing 'left' shows the
- * passenger side and its charge port; returns where the port is, for a charger's cord.
+ * Parks THE CHEZ on `p` with its box's top left at (ox, oy): 40x20 at scale 1, 40s x 20s at
+ * scale s. Facing 'left' shows the passenger side and its charge port; returns where the port
+ * is, for a charger's cord.
  */
-export function chezSide(p: Pixels, ox: number, oy: number, k: ChezInk, facing: 'left' | 'right' = 'right'): { portX: number; portY: number } {
+export function chezSide(p: Pixels, ox: number, oy: number, k: ChezInk, facing: 'left' | 'right' = 'right', scale = 1): { portX: number; portY: number } {
   const left = facing === 'left';
-  const car = left ? profile(k, true).flipX() : profile(k, false);
+  const car = left ? profile(k, true, scale).flipX() : profile(k, false, scale);
   p.blit(car, ox, oy, HOLE);
-  return { portX: ox + (left ? 35 : 4), portY: oy + 9 };
+  const px = Math.round(5 * scale);
+  return { portX: ox + (left ? car.w - 1 - px : px), portY: oy + Math.round(9 * scale) };
 }

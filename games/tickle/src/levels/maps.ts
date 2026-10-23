@@ -182,7 +182,9 @@ export function course(book: BlockBook): Level {
   m.fill(1, 8, W - 2, 2, 'w');
   // the lesson: the keys on signs, the chalkboard, the clock and the window
   m.text(3, 4, 'P.K.F');
-  m.patch(13, 2, ['1234', 'tttt']).set(10, 2, 'O').set(25, 3, 'W').set(41, 3, 'W').set(53, 3, 'W');
+  m.patch(13, 2, ['1234', 'tttt']).set(10, 2, 'O').set(25, 3, 'W').set(53, 3, 'W');
+  // the wide window onto the parking lot, THE CHEZ charging under the lamp
+  m.set(40, 3, 'windowLotL').set(41, 3, 'windowLotR');
   // practice rat 1, on the floor
   m.mon(MON.labRat, 9, 9);
   // a desk with practice rat 2 on it, drops at its end
