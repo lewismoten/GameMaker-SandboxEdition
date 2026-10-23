@@ -26,6 +26,7 @@ import { dirname, join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
+import { fictionNote } from '../src/export/fiction';
 import { appName, boxColors, dmgWindow, iconPicture, macAppDmg, macAppFiles, macAppZip, macNotices, NOTICES_FILE, type MacAppOptions } from '../src/export/macApp';
 import { GameFiles } from '../src/project/files';
 import { catalogDownloadable } from '../src/export/downloadable';
@@ -110,6 +111,7 @@ async function main(): Promise<void> {
       player,
       author: e.author ?? e.company,
       year: e.year,
+      fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
       colors: boxColors(e.original?.box),
     });

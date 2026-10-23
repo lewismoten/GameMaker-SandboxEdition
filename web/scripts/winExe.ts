@@ -19,6 +19,7 @@ import { join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
+import { fictionNote } from '../src/export/fiction';
 import { boxColors, iconPicture } from '../src/export/macApp';
 import { exeName, winExe, winExeZip, type WinAppOptions, type WinArch } from '../src/export/winApp';
 import { GameFiles } from '../src/project/files';
@@ -76,6 +77,7 @@ async function main(): Promise<void> {
       html: page,
       author: e.author ?? e.company,
       year: e.year,
+      fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
       colors: boxColors(e.original?.box),
     });
