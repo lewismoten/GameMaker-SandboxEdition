@@ -169,7 +169,8 @@ export const HOME_ROUTES: Record<string, Route> = {
       greeted(bot, MON.leo, 'Doc Leo');
       if (plot(bot) < SOCKS) throw new Error(`only ${plot(bot)} socks`);
       nothingLeft(bot, 62, 12);
-      await leave(bot, bot.walk(58.5, 'the front door'), 'the door');
+      await must(bot, bot.walk(59, 'the front door'), 'the door');
+      await leave(bot, bot.walk(76.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** How the Cat Won the Pizza War: the smoke alarm's beep, up on the table past the napkin, the fork, Aunt Marge's question, over the cat, the cactus on the shelf, the pizza cutter, the spatula, the goat, the box. */

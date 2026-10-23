@@ -208,7 +208,10 @@ export const socks: Monologue = {
     '!': 'spot@wallB',
   },
   build: (m: MapBuilder) => {
-    const W = 62;
+    // the walk-off: OFF blocks more of the house past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 18;
+    const W = 62 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 5; x < W; x += 10) m.set(x, 0, '*');
     m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
@@ -236,7 +239,7 @@ export const socks: Monologue = {
     // Doc Leo: is it fashion? The front door out.
     m.mon(MON.leo, 54, 9);
     m.set(58, 9, 'D');
-    m.link(58, 9, 'next');
+    m.link(58 + OFF, 9, 'next');
     win(59, 3, false);
     return { start: [1, 9], size: [W, 12] };
   },
