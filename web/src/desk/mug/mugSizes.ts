@@ -1,6 +1,6 @@
 // Mug sizes and sublimation paper: the printable wrap of common blank mugs (as sublimation
-// blank makers give them), where the pictures go on a wrap (one on the front, the same on the
-// back), the paper sizes, and how an order of wraps is laid out over as many pages as it needs.
+// blank makers give them), the paper sizes, and where the picture goes on the desk mug's wrap
+// (one on the front, the same on the back). The print page's layout is mugLayout.ts.
 
 export interface MugSize {
   id: string;
@@ -15,11 +15,19 @@ export interface MugSize {
   handle: boolean;
 }
 
+/**
+ * The blanks, checked against the makers' sublimation templates: an 11 oz mug is 3.2 in
+ * across (10.05 in round) and 3.75 to 3.8 in tall, its wrap 8.5 x 3.5 in with the gap under
+ * the handle; a 15 oz is 3.4 in across (10.7 in round) and 4.5 in tall, wrap 8.5 x 4 in; a
+ * 12 oz enamel camp mug 3.5 in across, wrap 8.5 x 3 in; a 20 oz skinny tumbler 2.96 in across
+ * and 8.3 in tall, its wrap a full 9.3 x 8.2 in round that meets itself (no handle, no gap).
+ */
+
 export const MUG_SIZES: MugSize[] = [
   { id: '11oz', name: '11 oz mug', wrapW: 8.5, wrapH: 3.5, diameter: 3.2, height: 3.8, handle: true },
   { id: '15oz', name: '15 oz mug', wrapW: 8.5, wrapH: 4, diameter: 3.4, height: 4.5, handle: true },
   { id: '12oz', name: '12 oz camp mug', wrapW: 8.5, wrapH: 3, diameter: 3.5, height: 3.3, handle: true },
-  { id: '20oz', name: '20 oz skinny tumbler', wrapW: 9.3, wrapH: 8.2, diameter: 2.9, height: 8.3, handle: false },
+  { id: '20oz', name: '20 oz skinny tumbler', wrapW: 9.3, wrapH: 8.2, diameter: 2.96, height: 8.3, handle: false },
 ];
 
 export interface Paper {
@@ -31,13 +39,15 @@ export interface Paper {
 
 export const PAPERS: Paper[] = [
   { id: 'letter', name: 'Letter (8.5 × 11 in)', w: 8.5, h: 11 },
+  { id: 'legal', name: 'Legal (8.5 × 14 in)', w: 8.5, h: 14 },
   { id: 'a4', name: 'A4 (210 × 297 mm)', w: 210 / 25.4, h: 297 / 25.4 },
 ];
 
 /** What a sublimation printer can't print at the paper's edge, inches. */
 export const MARGIN = 0.125;
-/** Room between wraps for cutting and the size label, inches. */
-export const GAP = 0.3;
+
+/** Once round the mug's outside, inches. */
+export const circumference = (size: Pick<MugSize, 'diameter'>): number => Math.PI * size.diameter;
 
 /** Where the picture goes on a wrap, inches: the same picture twice, front and back. */
 export interface Placement {
@@ -70,6 +80,9 @@ export function printPlacement(size: Pick<MugSize, 'wrapW' | 'wrapH' | 'diameter
   const h = w / aspect;
   return { w, h, y: (size.wrapH - h) / 2, centers: [size.wrapW / 2 - d, size.wrapW / 2 + d] };
 }
+
+/** Room between wraps for cutting and the size label, inches. */
+export const GAP = 0.3;
 
 export interface Packed<T> {
   item: T;
