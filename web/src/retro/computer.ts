@@ -260,6 +260,21 @@ export class Computer extends ComputerFolders {
   }
 
   /**
+   * Stops whatever is running, the BBS terminal and the utilities too, back to the DOS prompt
+   * (as if you'd pressed Ctrl+Break till it gave up). Ask about a designer's unsaved work first
+   * (leaveProgram.ts). False if it didn't stop.
+   */
+  async stopAnyProgram(): Promise<boolean> {
+    if (!this.busy) return true;
+    if (await this.stopGame()) return true;
+    this.keys.abort();
+    this.vgaScreen?.abort();
+    this.closeEditor?.();
+    for (let i = 0; this.busy && i < 150; i++) await sleep(20);
+    return !this.busy;
+  }
+
+  /**
    * Stops the game that is playing, as if you'd quit it, and waits for the DOS prompt.
    * False if no game was playing (Game-Maker, the terminal or an editor may be).
    */
@@ -424,7 +439,6 @@ export class Computer extends ComputerFolders {
 
   /** A 256-color graphics mode for a picture (the BBS's GIF viewer, VPIC). */
   pictureMode(width: number, height: number): PictureScreen {
-    this.picture?.destroy();
     this.keys.enabled = false;
     const holder = h('div', { class: 'crt-vga' });
     clear(this.layer, holder);
@@ -436,7 +450,6 @@ export class Computer extends ComputerFolders {
 
   /** Back to text mode from a picture, the text screen as it was left. */
   leavePictureMode(): void {
-    this.picture?.destroy();
     this.picture = undefined;
     clear(this.layer);
     this.keys.enabled = true;

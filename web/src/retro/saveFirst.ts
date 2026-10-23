@@ -1,8 +1,8 @@
-// Asked on the desk when you play a game (or change disks) while a Game-Maker designer has
-// changes that aren't saved: save them first, leave them, or go back to designing.
+// Asked (on the desk or the DOS page) when you play a game or change disks while a Game-Maker
+// designer has changes that aren't saved: save them first, leave them, or go back to designing.
 import './saveFirst.css';
-import { h } from '../../editor/core/ui';
-import type { OpenDesigner } from '../../retro/host';
+import { h } from '../editor/core/ui';
+import type { OpenDesigner } from './host';
 
 const DOS_NAME = /^[a-z0-9_$~!#%&-]{1,8}$/i;
 const noExt = (name: string) => name.replace(/\.[^.]*$/, '');

@@ -41,6 +41,7 @@ import { TURBO_OFF } from '../engine/slowPc';
 import { viewState } from '../urlState';
 import { prefetchWhenIdle } from '../prefetch';
 import { viewSwitch } from '../viewSwitch';
+import { leaveProgram as leaveTheProgram } from '../retro/leaveProgram';
 
 // What is opened, looked into or picked up on the desk loads when it first is (and is fetched
 // ahead once the desk is idle, see the end of renderDesk): the manuals, the catalog, the boxes' insides.
@@ -51,7 +52,6 @@ const lazy = {
   boxViewer: () => import('./boxes/boxViewer'),
   gmBox: () => import('./boxes/gmBox'),
   shelf: () => import('./boxes/shelf'),
-  saveFirst: () => import('./pc/saveFirst'),
 };
 export interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
@@ -554,57 +554,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     await openDiskBox(disks, lastDisk, (d) => void insertFromBox(d));
   }
 
-  /** Putting a disk in drive A: the PC boots if it is off, and the disk's game starts
-   * (typed at the DOS prompt, as you would); a disk without one leaves you at A:. */
   /**
-   * Gets back to the DOS prompt for a disk: a game playing quits, and Game-Maker closes
-   * after asking to save a designer's unsaved changes. False if you'd rather keep going
-   * (or something else, like the BBS terminal, is running).
+   * Gets back to the DOS prompt for a disk (retro/leaveProgram.ts): a game playing quits, and
+   * Game-Maker closes after asking to save a designer's unsaved changes. False if you'd rather
+   * keep going (or something else, like the BBS terminal, is running).
    */
-  async function leaveProgram(): Promise<boolean> {
-    const pc = computer;
-    if (!pc?.busy) return true;
-    if (await pc.stopGame()) return true;
-    if (!pc.inGameMaker) {
-      toast('Quit the program that is running first (Esc usually does it).');
-      return false;
-    }
-    const open = pc.designer;
-    let saveAs = '';
-    if (open && !open.saved && open.contents().length) {
-      // the disk in A: is write-protected, or the work is on the CD
-      const at = open.work.folder.drive;
-      const readOnly = at === 'D' || (at === 'A' && !!inDrive?.writeProtected);
-      const { askSaveFirst } = await lazy.saveFirst();
-      const answer = await askSaveFirst(open, readOnly);
-      if (answer === null) return false;
-      saveAs = answer;
-    }
-    if (!(await pc.stopProgram())) {
-      toast('Game-Maker didn’t close. Quit it with Esc first.', 'error');
-      return false;
-    }
-    if (open && saveAs) {
-      const names = open.contents().map((c) => `${saveAs}.${c.ext}`);
-      // nobody's at Game-Maker now: a read-only game is copied to the hard disk unasked
-      pc.quiet = true;
-      pc.copiedTo = undefined;
-      let ok = true;
-      try {
-        for (const c of open.contents()) ok = (await open.work.write(`${saveAs}.${c.ext}`, c.bytes)) && ok;
-      } finally {
-        pc.quiet = false;
-      }
-      const list = names.map((n) => n.toUpperCase()).join(' and ');
-      // write() sets copiedTo when it copies a read-only game to the hard disk (TypeScript
-      // still thinks it is the undefined set above)
-      const copiedTo = pc.copiedTo as string | undefined;
-      const where = copiedTo ? `${copiedTo}, a copy of the game on the hard disk (the original can’t be changed)` : (await lazy.saveFirst()).folderText(open);
-      if (ok) toast(`Saved ${list} in ${where}.`);
-      else toast(`Couldn’t save ${list}.`, 'error');
-    }
-    return true;
-  }
+  const leaveProgram = () => leaveTheProgram(computer, { readOnlyA: !!inDrive?.writeProtected, say: toast });
 
   async function insertFromBox(d: Disk): Promise<void> {
     if (!(await leaveProgram())) return;

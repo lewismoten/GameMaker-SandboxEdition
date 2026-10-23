@@ -1,4 +1,4 @@
-/* "Save your changes first?" on the desk (desk/pc/saveFirst.ts) */
+/* "Save your changes first?" on the desk and the DOS page (retro/saveFirst.ts) */
 .save-first .sf-box {
   width: min(440px, calc(100vw - 32px));
   padding: 20px 22px;
