@@ -170,6 +170,10 @@ export function stage2(): Stage {
     ],
     14,
   );
+  // a cameo from Ohm Sweet Ohm: Watt the repair robot, on plain floor beside the first data
+  // stream (placed after the sprinkles so they don't move)
+  const [wc, wd] = ([[11, 13], [12, 13], [4, 13], [11, 12]] as [number, number][]).find(([c, d]) => /^floor\d$/.test(a.get(c, d)))!;
+  a.set(wc, wd, 'watt');
   a.cardAt = 44;
   const gap = LENGTH - 1;
   // the way in: the floor cell beside the missing finger (the ship can't fly over the edge)

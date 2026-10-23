@@ -2,7 +2,7 @@
 // data), rows of DRAM chips, gold contact fingers, and the address bus whose data streams
 // shove the ship sideways.
 import { Pixels, rng } from '../../../kit/pixels';
-import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
+import { BlockSet, CLEAR, bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
@@ -98,6 +98,34 @@ export function ramTiles(bs: BlockSet, a: StageArt): void {
   bs.add('comb', comb(a, false));
   bs.add('combEnd', comb(a, true));
   bs.add('combEndR', comb(a, true).flipX());
+  bs.add('watt', watt(a, false), { next: 'wattBlink', ntime: 60 });
+  bs.add('wattBlink', watt(a, true), { next: 'watt', ntime: 3 });
+}
+
+/**
+ * A cameo from Ohm Sweet Ohm: Watt, the pocket-sized repair robot from the Bitmores' fuse box,
+ * rolled down Memory Lane to see what the fuss is about (teal head, big eyes, a bent antenna
+ * with its red bulb, an orange body with a yellow light, black treads). He blinks now and then.
+ * Plain floor underneath: the ship flies straight over him.
+ */
+function watt(a: StageArt, blink: boolean): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  const w = new Pixels(20, 20, CLEAR);
+  w.rect(3, 15, 14, 4, p.c('grey', 1));
+  for (let x = 4; x < 17; x += 2) w.set(x, 16, p.c('steel', 3)).set(x, 18, p.c('steel', 2));
+  bevel(w, 5, 11, 10, 5, p.r('fire'), 3);
+  w.rect(9, 12, 2, 2, p.c('gold', 4));
+  blob(w, 10, 8.2, 5.4, 3.8, p.r('cyan'), 1, 3);
+  w.line(12, 5, 13, 5, p.c('steel', 6));
+  w.rect(14, 4, 2, 2, p.c('red', 3));
+  for (const x of [7.5, 12.5]) {
+    if (blink) w.rect(Math.round(x) - 2, 8, 4, 1, p.c('ink', 0));
+    else w.disc(x, 8, 2.1, p.c('grey', 7)).rect(Math.round(x), 8, 2, 2, p.c('ink', 0));
+  }
+  outline(w, p.c('ink', 0));
+  return t.blit(w, 0, 0, CLEAR);
 }
 
 // ------------------------------------------------------------------ page one: the stack
