@@ -267,8 +267,8 @@ export function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8A
 }
 
 /** Checks a built disk: every map's multi-block objects (names: each map file's block names by
- * number, undefined to skip the map) by the rules, and the art of every pair the maps join. */
-export function auditDisk(disk: string, names: (map: string) => string[] | undefined, rules: PartRule[], opts: { factor?: number; floor?: number } = {}): { maps: [string, string[]][]; seams: Seam[]; broken: Seam[] } {
+ * number, undefined to skip the map) by the rules (or each map's own rules), and the art of every pair the maps join. */
+export function auditDisk(disk: string, names: (map: string) => string[] | undefined, rules: PartRule[] | ((map: string) => PartRule[]), opts: { factor?: number; floor?: number } = {}): { maps: [string, string[]][]; seams: Seam[]; broken: Seam[] } {
   const maps: [string, string[]][] = [];
   const pairs = new Map<string, { sc: DiskScene; ids: Map<string, number> }>();
   const done = new Set<string>();
@@ -277,7 +277,7 @@ export function auditDisk(disk: string, names: (map: string) => string[] | undef
     if (!n || done.has(sc.map.toLowerCase())) continue;
     done.add(sc.map.toLowerCase());
     const joined = new Set<string>();
-    maps.push([sc.map.toLowerCase(), checkParts((x, y) => n[sc.blocks[y * MLEN + x]], rules, MLEN, MWID, joined)]);
+    maps.push([sc.map.toLowerCase(), checkParts((x, y) => n[sc.blocks[y * MLEN + x]], typeof rules === 'function' ? rules(sc.map.toLowerCase()) : rules, MLEN, MWID, joined)]);
     const ids = new Map<string, number>();
     n.forEach((v, i) => v !== undefined && ids.set(v, i));
     for (const j of joined) if (!pairs.has(j)) pairs.set(j, { sc, ids });
@@ -298,7 +298,7 @@ export function auditDisk(disk: string, names: (map: string) => string[] | undef
  * misplaced parts per map, and joined pairs whose art jumps at the shared edge (`seamOk` lists
  * the ones drawn that way on purpose, as "a|b" side by side or "a/b" a over b). Returns how
  * many problems it found. */
-export function alignGame(id: string, names: (map: string) => string[] | undefined, rules: PartRule[], opts: { seamOk?: string[]; factor?: number; floor?: number; draw?: string } = {}): number {
+export function alignGame(id: string, names: (map: string) => string[] | undefined, rules: PartRule[] | ((map: string) => PartRule[]), opts: { seamOk?: string[]; factor?: number; floor?: number; draw?: string } = {}): number {
   const r = auditDisk(new URL(`../${id}/disk`, import.meta.url).pathname, names, rules, opts);
   const okSeams = new Set(opts.seamOk ?? []);
   const broken = r.broken.filter((x) => !okSeams.has(`${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}`));
