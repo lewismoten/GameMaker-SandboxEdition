@@ -32,6 +32,11 @@ export class StageSound {
     return p;
   }
 
+  /** The sound is actually going (wanted, and a gesture has started it). */
+  get playing(): boolean {
+    return this.started;
+  }
+
   /** From a gesture's handler: starts the music when sound is wanted (once). */
   start(): void {
     if (!this.wanted || this.started) return;

@@ -148,13 +148,15 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     type: 'button',
     class: 'cast-stage-sound',
     onclick: () => {
-      sound.set(!sound.wanted);
+      // wanted but not started yet (no gesture until now): this click starts it, not turns it off
+      if (sound.wanted && !sound.playing) sound.start();
+      else sound.set(!sound.wanted);
       showSound();
     },
   });
   const showSound = () => {
-    soundBtn.setAttribute('aria-pressed', String(sound.wanted));
-    soundBtn.textContent = sound.wanted ? '🔊 Sound on' : '🔇 Sound off';
+    soundBtn.setAttribute('aria-pressed', String(sound.playing));
+    soundBtn.textContent = sound.playing ? '🔊 Sound on' : sound.wanted ? `🔈 ${matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click'} for sound` : '🔇 Sound off';
   };
   const playBtn = h('button', { type: 'button', class: 'cast-stage-play', onclick: () => setPlaying(!playing) });
   const prevBtn = h('button', { type: 'button', 'aria-label': 'Previous character', onclick: () => go(at - 1, true) }, '◀');
@@ -590,7 +592,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   );
   // the sound starts with a tap on the stage or its controls (browsers, and iPhones most of all,
   // only let it start from a gesture)
-  root.addEventListener('click', () => sound.start());
+  root.addEventListener('click', () => (sound.start(), showSound()));
   canvas.addEventListener('click', () => setPlaying(!playing));
 
   const seen = new IntersectionObserver(([e]) => {
