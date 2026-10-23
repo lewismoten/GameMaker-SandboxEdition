@@ -183,6 +183,9 @@ export class Computer extends ComputerFolders {
         case "egg":
           await (await import("../eggs/eggExe")).runEggExe(this);
           break;
+        case "achieve":
+          await (await import("../achievements/achieveExe")).runAchieveExe(this);
+          break;
         case "batch":
           for (const l of ref.lines) await this.shell.execute(l);
           break;

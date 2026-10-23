@@ -330,6 +330,7 @@ export class Shell {
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',
+      'ACHIEVE     What you\'ve done so far: your merit badges',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);

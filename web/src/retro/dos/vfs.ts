@@ -28,6 +28,7 @@ export type ProgramRef =
   | { kind: 'savehack' }
   | { kind: 'backup' }
   | { kind: 'hexedit' }
+  | { kind: 'achieve' }
   | { kind: 'batch'; lines: string[] };
 
 export interface Drive {
