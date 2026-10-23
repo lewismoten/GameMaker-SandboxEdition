@@ -120,6 +120,7 @@ const SUMMARY: Record<string, string> = {
   remote: "The remote is gone. Lift the cushions, the dog and the cat, call Mom, fall into the void between the cushions. Check your hand.",
   carl: "You are Carl, the fly in the room. Eat his snacks, buzz his ear, barrel-roll past the dish towel, see things. Take the aux cord.",
   reckoning: '3:17 A.M., lactose intolerant, cheesecake in the fridge. Eat it anyway, outrun the gurgle, splash the Devil.',
+  loofah: "You touched the pink one. Now the towel screams. Light the candles, cleanse the demon sponge with brine.",
 };
 
 const TAGLINES = [
