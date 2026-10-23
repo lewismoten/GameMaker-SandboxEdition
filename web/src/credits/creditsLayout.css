@@ -300,3 +300,18 @@ main.credits-page details.credits-mini summary {
   color: var(--accent);
   cursor: pointer;
 }
+
+/* phones: galleries two to a row; a Bard card lists only what made the game */
+@media (max-width: 600px) {
+  main.credits-page .credits-gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  main.credits-page .bard-table td.no {
+    display: none;
+  }
+
+  main.credits-page .bard-table tr {
+    gap: 0 12px;
+  }
+}

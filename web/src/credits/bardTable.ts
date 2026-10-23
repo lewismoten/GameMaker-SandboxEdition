@@ -30,7 +30,7 @@ export function bardSection(): HTMLElement {
       h(
         'p',
         null,
-        'Each row is a game and each column a tool or source, as the game’s own credits screen and LICENSE.TXT say. Claude Opus 5.5 built every game (code, levels and sprites), directed by Lewis. The headers stay at the top of the window as you scroll the table; on a phone each game is a card.',
+        'Each row is a game and each column a tool or source, as the game’s own credits screen and LICENSE.TXT say. Claude Opus 5.5 built every game (code, levels and sprites), directed by Lewis. The headers stay in view as you scroll the table; on a phone each game is a card listing what made it.',
       ),
     ),
     h(

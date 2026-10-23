@@ -6,7 +6,7 @@ import { h } from '../editor/core/ui';
 import { isSandboxGame, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
 import { isOldSecret } from '../project/secretGames';
-import { section, banner, thumb } from './section';
+import { section, banner, thumb, more } from './section';
 
 type Listed = Pick<CatalogEntry, 'id' | 'title' | 'kind' | 'author' | 'company' | 'year' | 'original' | 'series'>;
 
@@ -19,8 +19,24 @@ async function fetchList(name: string): Promise<Listed[] | undefined> {
 
 const byline = (g: Listed) => [g.author, g.company && g.company !== g.author ? g.company : undefined, g.year].filter(Boolean).join(', ');
 
+/** Who made a group's games, most games first, for its one-line summary. */
+function makers(games: Listed[]): string {
+  const n = new Map<string, number>();
+  for (const g of games) {
+    const who = g.company ?? g.author;
+    if (who) n.set(who, (n.get(who) ?? 0) + 1);
+  }
+  const names = [...n.entries()].sort((a, b) => b[1] - a[1]).map(([who]) => who);
+  const shown = names.length > 4 ? [...names.slice(0, 3), `${names.length - 3} more`] : names;
+  return shown.length > 1 ? `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}` : (shown[0] ?? '');
+}
+
+/** A group's games and their authors, behind a one-line summary of who made them. */
 const list = (games: Listed[]) =>
-  h('ul', { class: 'credits-games' }, ...games.map((g) => h('li', null, h('a', { href: `#/game/cd:${g.id}` }, g.title), byline(g) ? ` — ${byline(g)}` : '')));
+  more(
+    `All ${games.length} games, by ${makers(games)}`,
+    h('ul', { class: 'credits-games' }, ...games.map((g) => h('li', null, h('a', { href: `#/game/cd:${g.id}` }, g.title), byline(g) ? ` — ${byline(g)}` : ''))),
+  );
 
 interface Group {
   id: string;
