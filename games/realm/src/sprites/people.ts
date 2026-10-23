@@ -2,7 +2,8 @@
 // ASCII art, each colored by its own key, and a blink for the second frame of their idle
 // animation. Plus the cameos: Doc Leo the hobo clown (grey felt fedora, navy corduroy, purple
 // shirt, green tie, red sneakers, a rubber chicken on a leash), Teddy the corgi and Gwinn, THE
-// CHEZ's owner, Will the playwright from Shakespeare in Sweatpants, and Lord Deadline himself.
+// CHEZ's owner, Will the playwright from Shakespeare in Sweatpants, Mystery Robot Joe from
+// Keep It Brief!, and Lord Deadline himself.
 import { art, lookKey, baseKey, R, type Key } from '../art/sprite';
 import { C } from '../art/pal';
 import type { Canvas, RGB } from '../art/rgb';
@@ -26,6 +27,9 @@ export const HEADS: Record<string, string[]> = {
   long: ['....................', '.......KKKKKK.......', '.....KKhHHHHHhKK....', '....KhHHjjjjHHHhK...', '....KhHjjHHjjHHhK...', '....KhHHHHHHHHHhK...', '...KhHHHHHHHHHHhhK..', '...KhHsSSSSSSsHhhK..', '...KhHsSeSSeSsHhhK..', '...KhHsSeSSeSsHhhK..', '...KhHKsSddSsKHhK...', '...KhK.KKssKK.KhK...'],
   // Will, the bald bard of Shakespeare in Sweatpants: a shiny dome, a fringe over the ears, a gold earring, a pointed beard
   poet: ['....................', '....................', '........KKKK........', '......KKSwSSKK......', '.....KsSwSSSSsK.....', '....KsSSSSSSSSsK....', '....KhsSSSSSSshK....', '....KHsSSSSSSsHK....', '....KHSeSSSSeSHK....', '....yhSeSSSSeShK....', '.....KsShhhhSsK.....', '......KKshhsKK......'],
+  // Mystery Robot Joe, night librarian of The Dog House: a tin box head, a bulb on his antenna,
+  // reading glasses he does not need, a red bow tie
+  tinbox: ['.........KyK........', '..........K.........', '.....KKKKKKKKKK.....', '.....KMMMMMMMMK.....', '.....KKKKMMKKKK.....', '.....KwewKKwewK.....', '.....KKKKMMKKKK.....', '.....KMMMMMMMMK.....', '.....KMmKKKKmMK.....', '.....KMMMMMMMMK.....', '.....KKKKKKKKKK.....', '.......KooKooK......'],
   helmDark: ['....................', '......KKKKKKKK......', '....KKcCCCCCCcKK....', '...KcCCCCyyCCCCcK...', '...KcCCCyKKyCCCcK...', '...KcCCCKyyKCCCcK...', '...KcCCCyKKyCCCcK...', '...KcKKKKKKKKKKcK...', '...KcKooKKKKooKcK...', '...KcKKKKKKKKKKcK...', '....KcCCCCCCCCcK....', '.....KKcccccccK.....'],
 };
 
@@ -40,6 +44,8 @@ export const BODIES: Record<string, string[]> = {
   clown: ['....KgGpttyPGgK.....', '...KsgGGpTTPGgsK....', '...KsKgGGpTPGgKsK...', '....KKgGGGGGGgKK....', '.....KgGGGGGGgK.....'],
   // his starched white ruff over a velvet doublet with gold buttons
   doublet: ['...KwWwWwWwWwWwWK...', '...KggGGGyyGGGggK...', '...KgKgGGGGGGgKgK...', '...KsKgGGyyGGgKsK...', '....KKgGGGGGGgKK....'],
+  // Joe's tin body with the tally counter in his chest
+  tally: ['....KmMMMMMMMMmK....', '...KmKMMKwwKMMKmK...', '...KmKMMKeeKMMKmK...', '...KMKMMKKKKMMKMK...', '....KKmMMMMMMmKK....'],
   armor: ['...KcCMMMMMMMMCcK...', '..KcCcMMMooMMMcCcK..', '..KcKcMMMooMMMcKcK..', '...KKcCCCCCCCCcKK...', '...KcCCCCCCCCCCcK...'],
 };
 export const LEGS: Record<string, string[]> = {
@@ -50,6 +56,8 @@ export const LEGS: Record<string, string[]> = {
   short: ['......KpPKKPpK......', '......KnNKKNnK......', '.......KK..KK.......'],
   // grey sweatpants and fuzzy pink slippers
   slippers: ['.....KpPPKKPPpK.....', '....KfFFfKKfFFfK....', '....KKKKK..KKKKK....'],
+  // Joe's tin feet
+  robot: ['.....KmmKKKKmmK.....', '....KMMMMK.KMMMMK...', '....KKKKKK.KKKKKK...'],
   greaves: ['.....KmMMKKMMmK.....', '.....KcCCKKCCcK.....', '.....KKKK..KKKK.....'],
 };
 
@@ -116,6 +124,13 @@ export const PEOPLE: Record<string, PersonSpec> = {
     body: 'doublet',
     legs: 'slippers',
     key: lookKey({ hair: R('hairBrown', 0, 1, 1), coat: R('purple', 1, 2, 3), pants: R('steel', 1, 2), trim: R('gold', 1, 2, 3) }, { f: C('pink', 1), F: C('pink', 2) }),
+  },
+  // Mystery Robot Joe (Keep It Brief!), visiting the Royal Library after hours
+  joe: {
+    head: 'tinbox',
+    body: 'tally',
+    legs: 'robot',
+    key: lookKey({ hair: R('steel', 0, 1), coat: R('steel', 1, 2, 3), pants: R('steel', 1, 2), trim: R('gold', 1, 2, 3) }, { d: C('white', 0), e: C('ink') }),
   },
   deadline: { head: 'helmDark', body: 'armor', legs: 'greaves', key: lookKey({ hair: R('ink', 0), coat: R('night', 0, 1), pants: R('night', 0, 1), hat: R('night', 0, 1, 1), trim: R('gold', 1, 2, 3) }, { M: C('steel', 1), m: C('steel', 0), o: C('red', 2), y: C('gold', 2) }) },
 };

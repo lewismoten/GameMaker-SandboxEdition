@@ -113,6 +113,8 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
   p.npc(npc('shopkeep'), [83, 32]);
   p.npc(npc('barkeep'), [62, 48], TALK.barkeep, [62, 49]);
   p.npc(npc('librarian'), [85, 48], TALK.librar, [85, 49]);
+  // Mystery Robot Joe, from Keep It Brief!, by the library door (Ms. Pagely tells you about him)
+  p.npc(npc('joe'), [89, 49]);
   p.npc(npc('docleo'), [77, 41], TALK.leo2, [77, 42]);
   p.npc(npc('guard'), [72, 62], TALK.guard, [72, 61]);
   p.npc(npc('kid'), [70, 41]);

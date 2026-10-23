@@ -134,7 +134,9 @@ The fine is nine thousand gold. I would settle for the book.
 
 It was last borrowed by a miner from Eventually Falls, and it has not been seen since they closed the Putoff Mines. The mines are as dark as a closed book. Take a lamp.
 
-Bring it to the library gate. We are open Monday through Someday.`,
+Bring it to the library gate. We are open Monday through Someday.
+
+The tin gentleman by the door in the bow tie? That is Joe, our night librarian, on loan from a little library down a dog house. He reshelves exactly one hundred books a night. He counts them. Twice.`,
   ),
   librew: t(
     'librew',
