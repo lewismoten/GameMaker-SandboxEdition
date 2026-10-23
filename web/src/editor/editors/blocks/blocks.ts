@@ -30,6 +30,7 @@ import { shade } from '../palette/ramps';
 import { blockInsight } from './blockInsight';
 import { openInEditor } from '../../core/uses';
 import { applyRecolor, recolorDialog } from './recolorDialog';
+import { edgeSetDialog } from './edgeSetDialog';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -331,6 +332,19 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (n) changed();
     toast(n ? `Recolored ${n} block${n === 1 ? '' : 's'}.` : 'No block used those colors.');
   }
+  async function makeEdges(): Promise<void> {
+    const r = await edgeSetDialog(blocks, current, pal());
+    if (!r) return;
+    r.pictures.forEach((px, k) => {
+      const i = r.at + k;
+      undo[i].push(blocks[i].pixels.slice());
+      redo[i].length = 0;
+      blocks[i].pixels.set(px);
+      if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
+    });
+    changed();
+    toast(`Made blocks ${r.at} to ${r.at + r.pictures.length - 1}. Teach them to the map’s terrain brush to paint with them.`);
+  }
   const mirrorSel = selectField<Mirror>(
     'Mirror',
     [
@@ -390,6 +404,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ),
     ),
     h('button', { title: 'Replace one color or a whole ramp, here or in every block', onclick: () => void replaceColors() }, 'Replace colors…'),
+    sprites ? null : h('button', { title: 'Paint the edges and corners round this block (grass meeting dirt…) into 12 blocks, for the map’s terrain brush', onclick: () => void makeEdges() }, 'Make an edge set…'),
     h('button', { onclick: () => (clipboard = structuredClone(blocks[current])) }, 'Copy'),
     h(
       'button',

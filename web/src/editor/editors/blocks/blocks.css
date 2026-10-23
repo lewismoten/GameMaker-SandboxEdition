@@ -195,3 +195,10 @@ dialog.modal label.recolor-check {
   margin-top: 8px;
   min-height: 24px;
 }
+.edge-preview {
+  display: block;
+  width: min(100%, 480px);
+  height: auto;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+}
