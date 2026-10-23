@@ -131,7 +131,8 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(57, 'down, the dollar'), 'dollar');
       await declaim(bot, 'the clown wig');
       if (plot(bot) < PROPS) throw new Error(`only ${plot(bot)} props`);
-      await leave(bot, bot.walk(63, 'Lily, the emergency exit'), 'the exit');
+      await must(bot, bot.walk(64, 'Lily, the emergency exit'), 'the exit');
+      await leave(bot, bot.walk(76.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** Shelter Me Gently, You Wounded Beast: under the storm cloud, the patch on the lamp, the gusts, the store's two aisles (wrench, screwdriver, tape; the price tags, Teddy and Gwinn), the checkout, the goat, the storm again, the wounded beast. */

@@ -305,7 +305,10 @@ export const cardbrd: Monologue = {
     '!': 'spot@hBase',
   },
   build: (m: MapBuilder) => {
-    const W = 66;
+    // the walk-off: OFF blocks more of the haunted house past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 13;
+    const W = 66 + OFF;
     m.row(0, 0, W - 1, '^').fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
     // the way in: the spotlight, the sign, Doc Leo taking tickets, Lily walking ahead
     m.set(2, 9, '!');
@@ -336,7 +339,7 @@ export const cardbrd: Monologue = {
     m.mon(CARD_MON.lily, 61, 9);
     // the emergency exit
     m.set(63, 8, 'E').set(63, 9, 'exit');
-    m.link(63, 9, 'next');
+    m.link(63 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: cardMonsters,
