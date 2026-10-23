@@ -6,7 +6,7 @@
 import { GameSim } from './sim';
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
 import { POWER, SEQ } from '../src/ids';
-import { LOOT_MONS, cellOnScreen, isLootBlock, lootScene, monPos } from './lootwatch';
+import { LOOT_MONS, cellOnScreen, isKeepsake, isLootBlock, lootScene, monPos } from './lootwatch';
 
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';
@@ -353,7 +353,7 @@ export class Bot {
       for (let dx = -1; dx <= 16; dx++) {
         const x = (sim.w.mx + dx + 100) % 100;
         const y = (sim.w.my + dy + 100) % 100;
-        if (!cellOnScreen(sim, x, y) || !isLootBlock(sim, sim.blockAt(x, y))) continue;
+        if (!cellOnScreen(sim, x, y) || !isLootBlock(sim, sim.blockAt(x, y)) || isKeepsake(sim, x, y)) continue;
         const id = `${visit}:b${x},${y}`;
         if (this.tried.has(id)) continue;
         const solid = sim.solidAt(x, y);

@@ -119,6 +119,8 @@ export function portMap(mons: MonBook): { plan: Plan; harbor: TownSpots; falls: 
   p.npc(npc('docleo'), [83, 49], TALK.leo4, [83, 50]);
   p.npc(npc('kid'), [68, 50]);
   p.link([85, 47], 'leorew', [0, 0]);
+  // a painted Easter egg in the grass on the far bank of Eventually Pond, by the hedge (50 points)
+  p.put('easterEgg', 91, 42);
   p.spot.nest = [80, 5];
   const falls = { arrive: [71, 62] as Pt };
   p.links.push(...p.npcs.filter((n) => n.talk).map((n) => ({ from: n.at, to: n.talk!.id, at: [0, 0] as Pt })));

@@ -7,6 +7,7 @@
 import { onscrn } from '../../../web/src/engine/touch';
 import type { GameSim } from '../../kit/gameSim';
 import { BLK, MON } from '../src/ids';
+import about from '../about.json';
 
 /** Monsters Pip collects by walking over them. */
 export const LOOT_MONS: ReadonlySet<number> = new Set([MON.gem, MON.bigGem, MON.heart]);
@@ -23,6 +24,12 @@ export function isLootBlock(sim: GameSim, b: number): boolean {
   // a block that takes something first is a shop or a gate
   if (B.eamt < 0) return false;
   return gives || B.chHitPt > 0 || B.scorePts > 0;
+}
+
+/** Whether map cell (x, y) holds the painted Easter egg (about.json): a find for players, not loot. */
+export function isKeepsake(sim: GameSim, x: number, y: number): boolean {
+  const egg = about.easterEgg;
+  return sim.game.scenes[sim.scene].files[1] === egg.map && x === egg.at[0] && y === egg.at[1];
 }
 
 /** Whether a scene has loot worth looking for (not a conversation's pass-through scene). */
@@ -114,7 +121,7 @@ export class LootWatch {
       for (let y = 0; y < 100; y++)
         for (let x = 0; x < 100; x++) {
           const b = sim.blockAt(x, y);
-          if (isLootBlock(sim, b)) this.cells.set(`${x},${y}`, { b, what: `block ${b} at ${x},${y}`, seen: false, taken: false });
+          if (isLootBlock(sim, b) && !isKeepsake(sim, x, y)) this.cells.set(`${x},${y}`, { b, what: `block ${b} at ${x},${y}`, seen: false, taken: false });
         }
     }
     if (!lootScene(sim) || sim.ended) return;

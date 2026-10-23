@@ -15,6 +15,7 @@ import { gateArt } from './gateArt';
 import { C as color } from '../art/pal';
 import { Pixels } from '../../../kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 
 export function portBook(bridges: [number, number][]): BlockBook {
   const book = new BlockBook('port', { [BLK.egg]: 'egg' });
@@ -139,8 +140,21 @@ export function portBook(bridges: [number, number][]): BlockBook {
   // a tin heart in the grass by the lighthouse: a glint crosses it now and then; 100 points
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, tinHeart(k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'grass', score: 100, dither: 0 });
+  // a painted Easter egg in the grass on the far bank of Eventually Pond: a glint crosses it
+  // now and then; 50 points, no sound (added last, so no block before it moves)
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, easterEgg(k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'grass', score: 50, dither: 0 });
   void plain;
   return book;
+}
+
+/** The painted Easter egg (kit/easterEgg.ts) in the fixed sprite colors, on the grass. */
+function easterEgg(frame: number): Canvas {
+  const cv = plain((x, y) => grass(x, y));
+  const cols: RGB[] = [color('outline'), color('purple', 1), color('purple', 2), color('purple', 3), color('gold', 2), color('gold', 3), color('white', 0), color('white', 1)];
+  const p = drawEasterEgg(new Pixels(20, 20, 255), { ink: 0, shell: [1, 2, 3], paint: [4, 5], accent: 6, white: 7 }, 'stars', frame);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (p.get(x, y) !== 255) cv.blend(x, y, cols[p.get(x, y)]);
+  return cv;
 }
 
 /** The tin heart (kit/tinHeart.ts) in the fixed sprite colors, on the grass. */
