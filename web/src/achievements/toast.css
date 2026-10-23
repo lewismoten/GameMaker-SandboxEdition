@@ -110,6 +110,17 @@
   animation-name: ach-stick;
 }
 
+/* on the desk the note sits over the window and the props: clicks go through it to them,
+   all but its close button and See all link */
+.ach-desk .ach-toast {
+  pointer-events: none;
+}
+
+.ach-desk .ach-toast-close,
+.ach-desk .ach-toast-link {
+  pointer-events: auto;
+}
+
 .ach-desk .ach-toast:nth-child(2) {
   transform: rotate(2deg);
 }
