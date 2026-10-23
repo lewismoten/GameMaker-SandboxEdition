@@ -11,12 +11,12 @@
 // - a game of yours also: its files as they are here (.zip), to keep safe or import again.
 //
 // Everything is built here in the browser when the visitor presses Download. Which games
-// have the button is the caller's choice (catalogDownloadable for the catalog's).
+// have the button is the caller's choice (export/downloadable.ts for the catalog's).
 import './download.css';
 import { download, h, modal, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { icon } from './homeIcons';
-import type { CatalogEntry, GameFiles } from '../../project/files';
+import type { GameFiles } from '../../project/files';
 
 export interface DownloadGame {
   title: string;
@@ -67,15 +67,6 @@ const CHOICES: Choice[] = [
   { kind: 'dos', name: 'DOS', format: '.zip', line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.' },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
 ];
-
-/**
- * The catalog's games that may be downloaded: the gameware and this project's own games
- * (the Sandbox and Bard of Bizarre games), not the other authors' shareware, which may only
- * be played here.
- */
-export function catalogDownloadable(e: Pick<CatalogEntry, 'gam' | 'kind' | 'original'>): boolean {
-  return !!e.gam && (e.kind === 'gameware' || !!e.original);
-}
 
 /** The visitor's own system, to choose first: a phone or tablet gets the web page. */
 export function visitorSystem(nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator): DownloadKind {

@@ -12,7 +12,8 @@ import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
-import { catalogDownloadable, chooseDownload, downloadButton } from './download';
+import { chooseDownload, downloadButton } from './download';
+import { catalogDownloadable } from '../../export/downloadable';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -42,7 +43,7 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
   else addEventListener('load', start, { once: true });
 }
 
-/** "Download" (download.ts): for the catalog's games that may be shared; a game of yours has its own in gameActions. */
+/** "Download" (download.ts): for the catalog's games that may be shared (export/downloadable.ts); a game of yours has its own in gameActions. */
 function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;

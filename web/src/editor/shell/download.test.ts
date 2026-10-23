@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { catalogDownloadable, visitorSystem } from './download';
+import { visitorSystem } from './download';
 
 const nav = (userAgent: string, platform = '', maxTouchPoints = 0) => ({ userAgent, platform, maxTouchPoints });
 
@@ -12,12 +12,5 @@ describe('the Download chooser', () => {
     expect(visitorSystem(nav('Mozilla/5.0 (Linux; Android 14)', 'Linux armv8l'))).toBe('web');
     expect(visitorSystem(nav('Mozilla/5.0 (X11; CrOS x86_64 14541.0.0)', 'Linux x86_64'))).toBe('web');
     expect(visitorSystem(nav('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)', 'iPhone'))).toBe('web');
-  });
-
-  it('offers the gameware and this project’s own games, not the other authors’ shareware', () => {
-    expect(catalogDownloadable({ gam: 'sample.gam', kind: 'gameware' })).toBe(true);
-    expect(catalogDownloadable({ gam: 'teddy.gam', kind: 'shareware', original: {} })).toBe(true);
-    expect(catalogDownloadable({ gam: 'other.gam', kind: 'shareware' })).toBe(false);
-    expect(catalogDownloadable({ gam: null, kind: 'gameware' })).toBe(false);
   });
 });
