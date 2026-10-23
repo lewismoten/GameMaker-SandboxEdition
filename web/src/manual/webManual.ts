@@ -41,7 +41,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <h3>Bizarre</h3>
     <p>Games made from the songs of The Bard of Bizarre. They are listed with the shareware
     until there are four or more, then get a tab of their own. Unlike the shareware they are
-    this project’s own and free to change (MIT): <b>Edit a copy</b> works as it does for the
+    this project’s own and free to change (MIT, except their voice clips, which are for personal, non-commercial use
+    only): <b>Edit a copy</b> works as it does for the
     Sandbox games, and <b>Notice</b> tells the song behind each one.</p>`,
   ],
   [
@@ -246,7 +247,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn
     from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was
     made for the game); its code, pictures and levels were made by <b>Claude Opus 5.5</b>, with
-    Lewis directing and playtesting.</p>
+    Lewis directing and playtesting. The recordings were made on Riffusion’s free plan, whose terms
+    allow only personal, non-commercial uses, so the voice clips cut from them are not MIT licensed
+    and are never sold; the rest of each game is MIT.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
     <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
     and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN,
