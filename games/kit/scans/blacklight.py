@@ -38,13 +38,13 @@ FACE = (344, 404, 182, 214)  # an ellipse: center, radii (the ears and neck join
 BAND = ((176, 172), (512, 184))  # the hat band's bottom edge, a line just above the brim
 # his face, drawn as a cartoon over the photo's shapes, traced on the photo (700-scale): the
 # glasses, the eyes, the painted eyebrows, the round red nose, the red cheeks, the white
-# makeup round the mouth and the smile in it
+# makeup round the mouth and the hobo clown's turned-down mouth in it (sad, never mean)
 FEATURES = dict(
     lensL=(180, 290, 328, 386), lensR=(358, 286, 514, 383),
     eyeL=(228, 316, 296, 346), eyeR=(392, 312, 462, 342),
     browL=[(205, 276), (255, 262), (312, 268)], browR=[(382, 266), (440, 260), (492, 272)],
     nose=(310, 354, 392, 438), cheekL=(180, 380, 290, 470), cheekR=(415, 368, 515, 455),
-    mouth=(262, 452, 420, 528), smile=[(292, 490), (318, 498), (342, 501), (368, 498), (394, 487)],
+    mouth=(262, 452, 420, 528), frown=[(300, 503), (318, 494), (342, 491), (366, 494), (384, 503)],
 )
 
 INK = {
@@ -202,7 +202,7 @@ def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
         d.line([(656, 640), (716, 630)], fill=255, width=12),  # the bridge
         [d.ellipse(sc(F[k]), outline=255, width=10) for k in ('eyeL', 'eyeR', 'nose', 'mouth')],
         [d.line(pts(F[k]), fill=255, width=22, joint='curve') for k in ('browL', 'browR')],
-        d.line(pts(F['smile']), fill=255, width=12, joint='curve'),
+        d.line(pts(F['frown']), fill=255, width=12, joint='curve'),
     ))
     # the pupils, looking at you
     for k in ('eyeL', 'eyeR'):
@@ -213,6 +213,68 @@ def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
     black[:] = np.maximum(black, soft_lines)
 
 
+def bezier(*segments) -> list:
+    """Points along cubic curves (each: start, control, control, end), for a polygon."""
+    out = []
+    for p0, p1, p2, p3 in segments:
+        for i in range(25):
+            t = i / 24
+            u = 1 - t
+            out.append(tuple(u**3 * a + 3 * u * u * t * b + 3 * u * t * t * c + t**3 * d for a, b, c, d in zip(p0, p1, p2, p3)))
+    return out
+
+
+# The fedora, drawn as one (700-scale, sized to his hat on the photo): the crown tapering up
+# to a pinched front with the teardrop crease down the middle of its top, the band round its
+# foot, and the brim dipping at the front and turning up at the sides.
+CROWN = bezier(
+    ((196, 214), (186, 150), (208, 92), (236, 58)),
+    ((236, 58), (262, 26), (310, 20), (340, 40)),
+    ((340, 40), (370, 20), (418, 26), (444, 58)),
+    ((444, 58), (472, 92), (494, 150), (484, 214)),
+)
+CREASE = bezier(((340, 42), (318, 70), (320, 116), (340, 132)), ((340, 132), (360, 116), (362, 70), (340, 42)))
+PINCHES = [bezier(((292, 58), (276, 76), (282, 108), (300, 118)), ((300, 118), (306, 96), (304, 72), (292, 58))),
+           bezier(((388, 58), (404, 76), (398, 108), (380, 118)), ((380, 118), (374, 96), (376, 72), (388, 58)))]
+BAND_SHAPE = bezier(((192, 172), (290, 160), (390, 160), (488, 172)), ((488, 172), (490, 186), (490, 200), (487, 210)),
+                    ((487, 210), (390, 198), (290, 198), (193, 212)), ((193, 212), (190, 200), (190, 186), (192, 172)))
+BRIM = bezier(
+    ((96, 226), (130, 206), (220, 196), (340, 196)),  # its top, the sides turned up
+    ((340, 196), (460, 196), (550, 206), (586, 226)),
+    ((586, 226), (590, 240), (580, 254), (560, 250)),  # the right tip, curled
+    ((560, 250), (500, 234), (420, 240), (340, 262)),  # its underside, dipping at the front
+    ((340, 262), (260, 240), (180, 234), (120, 250)),
+    ((120, 250), (100, 254), (90, 240), (96, 226)),
+)
+
+
+def fedora(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
+    """Paints the fedora over where his hat was (the photo's hat is gone already)."""
+    def shape(points) -> np.ndarray:
+        m = Image.new('L', (1400, 1400), 0)
+        ImageDraw.Draw(m).polygon([(x * 2, y * 2) for x, y in points], fill=255)
+        return np.asarray(m.resize((700, 700), Image.LANCZOS), float) / 255
+
+    def outline(points, width: int) -> np.ndarray:
+        m = Image.new('L', (1400, 1400), 0)
+        ImageDraw.Draw(m).line([(x * 2, y * 2) for x, y in points] + [(points[0][0] * 2, points[0][1] * 2)], fill=255, width=width, joint='curve')
+        return np.asarray(m.resize((700, 700), Image.LANCZOS).filter(ImageFilter.GaussianBlur(1.6)), float) / 255
+
+    def fill(m: np.ndarray, color, lit: float) -> None:
+        ink[:] = ink * (1 - m[..., None]) + np.array(color, float) * m[..., None]
+        level[:] = level * (1 - m) + lit * m
+        black[:] = black * (1 - m)
+
+    fill(shape(CROWN), INK['hat'], 0.55)
+    for pinch in PINCHES:
+        fill(shape(pinch), INK['hat'], 0.32)
+    fill(shape(CREASE), INK['hat'], 0.3)
+    fill(shape(BAND_SHAPE), INK['band'], 0.95)
+    fill(shape(BRIM), INK['hatlit'], 0.6)
+    lines = np.maximum.reduce([outline(CROWN, 14), outline(CREASE, 10), outline(BAND_SHAPE, 10), outline(BRIM, 14)] + [outline(p, 8) for p in PINCHES])
+    black[:] = np.maximum(black, lines)
+
+
 def portrait() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """The inks (0-255), how bright each is, and the black flocking over them (0 to 1)."""
     photo = Image.open(PHOTO).convert('RGB')
@@ -220,6 +282,11 @@ def portrait() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     rgb = soften(np.asarray(photo.resize((side, side), Image.LANCZOS), float))
     inside = silhouette(side)
     lab = rounded(regions(rgb, inside), 10)
+    # his felt hat from the photo goes (the fedora is drawn in its place, fedora())
+    hat = np.isin(lab, [PARTS.index('hat'), PARTS.index('hatlit'), PARTS.index('band')])
+    lab[hat] = 0
+    # (and the bits of jacket color left beside his ears under the old brim)
+    lab[(lab == PARTS.index('jacket')) & (np.mgrid[0:side, 0:side][0] < 330)] = 0
     # the shading inside the skin is flat color, no lines; the skin's two tones and the
     # stubble are one shape for the outlines
     skin = [PARTS.index(p) for p in ('shade', 'face', 'stubble')]
@@ -233,6 +300,7 @@ def portrait() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     line = soft(boundaries(group) & (inside > 0.02), 7, 1.8)
     black = line.copy()
     features(ink, level, black)
+    fedora(ink, level, black)
     # crop to the poster's portrait, the full width of the photo
     hgt = int(side * ART_H / W)
     crop = lambda a: a[:hgt]
