@@ -515,5 +515,9 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('girlA1', girlA(1));
   book.add('girlB0', girlB(0));
   book.add('girlB1', girlB(1));
+  // (last, so every other block keeps its number) the seed hopping off after a hello: the same
+  // pictures, worth nothing, so brushing past him as he goes doesn't score every tick
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
   return book;
 }

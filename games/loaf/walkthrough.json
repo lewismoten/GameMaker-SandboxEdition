@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0LzQBNA80hTQBICsgNzQdNCs0GSArIB00OzQpNBM0iTQBICsgSzQZNCM0iTQBICsgNzQdNCEgKyAXNBkgMyABNBc0DTQPNIk0ASArIA80IEgySAE0PzQNNA80iTQBICsgRzQpNBM0iTQBICsgNzQdNA0gKyAXNBk0DzQ8SBJIATQbNA00TzRdNCc0aTQjNIk0ASArIDc0HTRLNIk0ASArIDc0HTQ/NBkgKyEBNCM0GEgySAE0KzQNN"
+   "keys": "AU0LzQBNA80hTQBICsgNzQdNCs0GSArIB00OzQpNBM0iTQBICsgSzQZNCM0iTQBICsgNzQdNCEgKyAXNBkgMyABNBc0DTQPNIk0ASArIA80IEgySAE0PzQNNA80iTQBICsgRzQNNBM0iTQBICsgNzQdNA0gKyAXNBk0DzQ8SBJIATQbNA00TzRdNCc0aTQjNIk0ASArIDc0HTRLNIk0ASArIDc0HTQ/NBkgKyEZNCM0GEgySAE0KzQNN"
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 20142,
+  "frames": 20139,
   "chapters": [
    {
     "title": "Opening",
@@ -67,15 +67,15 @@
    },
    {
     "title": "Level 4: The Way Home",
-    "frame": 13274
+    "frame": 13271
    },
    {
     "title": "Ending",
-    "frame": 15344
+    "frame": 15341
    },
    {
     "title": "Credits",
-    "frame": 18054
+    "frame": 18051
    }
   ]
  }

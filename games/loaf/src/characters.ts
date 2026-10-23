@@ -216,7 +216,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.weevil] = walker(3, 1, 'weevil', 'weevilStop', 4);
   set[MON.mouse] = walker(o.mouse ?? 4, 2, 'mouse', 'mouseSit', 3);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
+  set[MON.seedOff] = mon(anim('seedOff1', 'seedOff0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
   set[MON.fox] = walker(o.fox ?? 5, 2, 'fox', 'foxSniff', 3);
   set[MON.owl] = mon(anim('owl0', 'owl1', 4), { power: 150, thru: 0 }, [
     corner(0, 0, 2),
