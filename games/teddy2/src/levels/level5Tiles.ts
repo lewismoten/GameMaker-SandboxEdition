@@ -22,7 +22,7 @@ export function farmTiles(): Tiles {
   t.wall('deep', dirt(5, true));
   t.air('tuft', tuft(sky(3), 11));
   t.air('flower', tuft(sky(3), 12, 'yellow'));
-  t.air('hedgeTop', hedge(true, 21));
+  t.air('hedgeTop', hedge(true, 21, sky(bandRow(29))));
   t.wall('hedgeWall', hedge(false, 25));
   t.wall(
     'lane',
@@ -52,8 +52,8 @@ export function farmTiles(): Tiles {
       return p;
     })(),
   );
-  // the coop
-  const coop = canvas(2, 2, (_bx, by) => sky(by + 2));
+  // the coop (the canvases below are drawn over the sky of the map rows they stand on)
+  const coop = canvas(2, 2, (_bx, by) => sky(bandRow(38 + by)));
   for (let y = 0; y < 14; y++) coop.rect(20 - y - 4, 2 + y, y * 2 + 8, 1, c('roof', 1));
   coop.rect(4, 16, 32, 24, c('red', 1)).rect(4, 16, 32, 2, c('paint', 3));
   coop.rect(16, 26, 8, 14, c('ink', 0)).rect(14, 36, 12, 2, c('wood', 3));
@@ -156,7 +156,7 @@ export function farmTiles(): Tiles {
       return p;
     })(),
   );
-  const crow = canvas(1, 2, (_bx, by) => sky(by + 2));
+  const crow = canvas(1, 2, (_bx, by) => sky(bandRow(38 + by)));
   crow.rect(9, 10, 2, 30, c('wood', 1)).rect(1, 18, 18, 2, c('wood', 1));
   crow.rect(4, 18, 12, 12, c('blue', 1)).rect(6, 30, 8, 4, c('blue', 0));
   blob(crow, 10, 12, 4, 4, r('hay'), 2, 3);
@@ -168,7 +168,7 @@ export function farmTiles(): Tiles {
   t.air('scareBot', sc[1][0]);
 
   // The farm stand (corn dogs!), the road, the Fair's ride truck with a Ferris wheel car.
-  const stand = canvas(2, 2, (_bx, by) => sky(by + 2));
+  const stand = canvas(2, 2, (_bx, by) => sky(bandRow(38 + by)));
   stand.rect(0, 6, 40, 4, c('red', 2)).rect(0, 6, 40, 1, c('red', 3));
   for (let x = 0; x < 40; x += 8) stand.rect(x, 6, 4, 4, c('paint', 3));
   stand.rect(2, 10, 2, 30, c('wood', 1)).rect(36, 10, 2, 30, c('wood', 1));
@@ -195,7 +195,7 @@ export function farmTiles(): Tiles {
       return p;
     })(),
   );
-  const cab = canvas(2, 2, (_bx, by) => sky(by + 2));
+  const cab = canvas(2, 2, (_bx, by) => sky(bandRow(38 + by)));
   cab.rect(0, 14, 34, 20, c('blue', 2)).rect(0, 14, 24, 2, c('blue', 3)).rect(2, 17, 18, 9, c('sky', 6));
   cab.rect(34, 26, 4, 6, c('ink', 1));
   cab.disc(16, 34, 6, c('ink', 0)).ring(16, 34, 2, c('metal', 3));
@@ -203,7 +203,7 @@ export function farmTiles(): Tiles {
   const cbc = cut(cab);
   for (let by = 0; by < 2; by++) for (let bx = 0; bx < 2; bx++) t.air(`cab${bx}${by}`, cbc[by][bx]);
   // the Ferris wheel car riding on the flatbed: hop in (the way out)
-  const car = canvas(2, 2, (_bx, by) => sky(by + 2));
+  const car = canvas(2, 2, (_bx, by) => sky(bandRow(37 + by)));
   car.rect(18, 0, 4, 8, c('metal', 2));
   car.rect(4, 8, 32, 4, c('red', 2));
   for (let y = 12; y < 36; y++) car.rect(6 + Math.floor((y - 12) / 6), y, 28 - 2 * Math.floor((y - 12) / 6), 1, y < 22 ? c('sky', 5) : c('yellow', 2));
