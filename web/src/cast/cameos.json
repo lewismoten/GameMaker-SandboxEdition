@@ -28,7 +28,8 @@
   "watt": [
     { "game": "blaster", "as": "blinking on Memory Lane" },
     { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" },
-    { "game": "carl", "as": "seeing to the stereo’s left speaker" }
+    { "game": "carl", "as": "seeing to the stereo’s left speaker" },
+    { "game": "year2000", "as": "tinkering with the Teleport Exchange’s switchboard" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
