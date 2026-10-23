@@ -88,6 +88,8 @@ fails until it is rerun. The other play-testing tools:
 | reckoning | `npx vite-node ../games/reckoning/tools/gendemo.ts`  | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | loofah    | `npx vite-node ../games/loofah/tools/check.ts`       | the bot rides the steam for bath salt, tames wild loofahs in the forest-dark aisle, lights six candles, cleanses Scrubbus Maximus |
 | loofah    | `npx vite-node ../games/loofah/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| sweats    | `npx vite-node ../games/sweats/tools/check.ts`       | the bot plays the open mic: four intermissions and seventeen monologues (`SWEATS_FROM`/`SWEATS_UPTO=<scene>` for one) |
+| sweats    | `npx vite-node ../games/sweats/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -372,3 +374,19 @@ takes it back. The music is a goth rock FM arrangement of the recording (`tools/
 `src/sound/song.ts`: fuzz power chords from feedback and pulse waves, a vibrato-twin choir, a
 cathedral organ swelling by program changes, booming tuned toms, a funeral bell), the sung clips
 are cut from it (`tools/cutClips.py`), and the title art is painted in code (`src/art/cover.ts`).
+
+**Shakespeare in Sweatpants** (`sweats`). The Bard of Bizarre's seventeen spoken monologues about
+overly dramatic boring events, shareware from The Sofa BBS (`"series": "bizarre"`): open-mic night at
+The Hive, a castle-front coffee house in Oakland (inspired by Lewis's memories of the Beehive; drawn
+from memory). Will the poet (a ruff, a velvet doublet, grey sweatpants) performs them in four sets, each
+monologue a side-on scene of its own that plays its boring event as an epic; Space declaims, two word
+balloons flying out along paths to both sides (power 160) to beat what comes at him. Between sets the
+intermissions are scenes on The Hive's one map: five tips buy a coffee at the register (a block that
+takes money and turns into a cup that gives counter 20), and the stage's curtain only lets him through
+with one. Each monologue's scene fills two of PLAYGAME's own sound slots with its recording: the
+spotlight where he starts is the scene's only points-alone block, so stepping into it says the opening
+line (the score sound), and the last gate takes the plot (counter 21) and says the punch line (the spend
+sound); B and Space say two more lines (`tools/cutClips.py`, 68 clips from Whisper's word timings).
+Each set is a group (`src/groups/<id>`) with one block set and one monster block set of its own, its
+ramps after the common ones, so every scene shares POET.CBL. The coffee-house jazz score derives four of
+its songs from the recordings' music beds (`tools/analyze.py`).
