@@ -65,7 +65,10 @@ walkthrough, so the claims stay in proportion to how long each game takes. Play 
 level chapters only (not Opening, Story, Ending or Credits), and
 `hours = max(1, round(play minutes × 25 / 60))`: 25 claimed minutes per minute of the bot's
 perfect run, which puts the median game on 3 hours. A test (`web/src/desk/boxes/playtime.test.ts`)
-fails until it is rerun. The other play-testing tools:
+fails until it is rerun. Games with spoken or sung clips also check them in their walkthrough
+(`npx vite-node ../games/kit/clipCheck.ts <id>` runs that check alone: every level's end and start
+clips play to the end), and most games' `tools/align.ts` lists their
+multi-block objects for `kit/align.ts`, which their checks run. The other play-testing tools:
 
 | game      | command (from `web/`)                                | what it does                                                                    |
 | --------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -92,6 +95,8 @@ fails until it is rerun. The other play-testing tools:
 | risi      | `npx vite-node ../games/risi/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | sweats    | `npx vite-node ../games/sweats/tools/check.ts`       | the bot plays the open mic: four intermissions and seventeen monologues (`SWEATS_FROM`/`SWEATS_UPTO=<scene>` for one) |
 | sweats    | `npx vite-node ../games/sweats/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| smirked   | `npx vite-node ../games/smirked/tools/check.ts`      | the bot plays the haunted house to the exit sign without losing a life (`BOT_LOG=1`) |
+| smirked   | `npx vite-node ../games/smirked/tools/gendemo.ts`    | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -106,7 +111,8 @@ fails until it is rerun. The other play-testing tools:
 | year2000  | `npx vite-node ../games/year2000/tools/verify.ts`    | the bot plays all six levels in a row (`GOD=1` keeps it alive)                  |
 | year2000  | `npx vite-node ../games/year2000/tools/gendemo.ts`   | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 
-Sandcastle Knight and Snowbound have no check of their own: their `tools/walkthrough.ts` is it.
+Sandcastle Knight's and Snowbound's `tools/check.ts` only check their multi-block objects: their
+`tools/walkthrough.ts` is the play-through.
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
 title demos are recorded by the build itself (`src/demo.ts` runs the bot) or are fixed key
@@ -340,8 +346,8 @@ bedroom window, and hourglasses (counter 23, two hours each) break the documenta
 sets (the house, the yard), gusts that blow by next/ntime, and the cover drawn in code (`src/art/cover.ts`);
 the music is a kazoo, an island-strummed ukulele and Carl himself as a buzzing one-channel arpeggio.
 
-**The Great Dairy Reckoning of 3:17 A.M.** (`reckoning`). The Bard of Bizarre's spoken monologue (from
-Lewis's own struggle: lactose intolerant, loves cheesecake), shareware from The Sofa BBS (`"series":
+**The Great Dairy Reckoning of 3:17 A.M.** (`reckoning`). The Bard of Bizarre's spoken monologue,
+shareware from The Sofa BBS (`"series":
 "bizarre"`). A side-on platformer in four acts. Out of bed without waking her: the noisy things on
 the floor (a creaky board, a squeaky toy, the toy blocks) are air that costs dignity once and then goes
 quiet (a hurt holds the man still, so a floor that always hurt would hold him there), the dogs asleep
@@ -376,6 +382,18 @@ takes it back. The music is a goth rock FM arrangement of the recording (`tools/
 `src/sound/song.ts`: fuzz power chords from feedback and pulse waves, a vibrato-twin choir, a
 cathedral organ swelling by program changes, booming tuned toms, a funeral bell), the sung clips
 are cut from it (`tools/cutClips.py`), and the title art is painted in code (`src/art/cover.ts`).
+
+**I Screamed, She Smirked** (`smirked`). The Bard of Bizarre's musical-theater song about a haunted
+house that scares the grown-up and not the eight-year-old, shareware from The Sofa BBS (`"series":
+"bizarre"`). A side-on platformer in four levels (the fog hall, the zombie parade, the fake woods of
+spiderwebs, the last hall up to the emergency exit sign), each with a walk-in hall behind its door so
+the door's sung clip plays out before the scene changes. "GET DOWN!" is a tackle thrown the way you
+last walked, which knocks the animatronic zombies over and flattens the papier-mache witches, who
+then want a sorry (counter 21); dollars buy the $12 foam sword for the last hall, where an
+11-year-old in a cardboard knight costume is dueled for his helmet (counter 22). The FM score is
+arranged from the recording (`tools/analyze.py`, `src/sound/song.ts`: a haunted-house organ, muted
+trumpet patter over stride piano, a Broadway chorus), and eighteen sung clips are cut from it
+(`tools/cutClips.py`).
 
 **Shakespeare in Sweatpants** (`sweats`). The Bard of Bizarre's seventeen spoken monologues about
 overly dramatic boring events, shareware from The Sofa BBS (`"series": "bizarre"`): open-mic night at
