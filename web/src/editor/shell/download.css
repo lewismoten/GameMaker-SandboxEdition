@@ -46,7 +46,7 @@ dialog.modal:has(.download-chooser) {
   accent-color: var(--accent);
 }
 
-.download-chooser label {
+.download-chooser .dl-choice label {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
