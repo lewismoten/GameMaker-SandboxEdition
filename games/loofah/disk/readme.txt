@@ -83,7 +83,7 @@ CREDITS (NOW)
   "Cleanse Me, O Loofah, But
   Leave My Soul", a song by The
   Bard of Bizarre (Lewis Moten):
-  lyrics written by ChatGPT
+  lyrics shaped by ChatGPT
   from Lewis's prompts; music
   made with Riffusion (now
   Google Flow Music). The sung

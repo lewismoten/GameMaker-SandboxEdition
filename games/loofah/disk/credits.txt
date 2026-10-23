@@ -10,7 +10,7 @@ Soul" by The Bard of Bizarre
 clown, Doc Leo): a goth rock
 song about domestic life.
 
-Lyrics: written by ChatGPT
+Lyrics: shaped by ChatGPT
 from Lewis's prompts. Music:
 made with Riffusion (now
 Google Flow Music). This

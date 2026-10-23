@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * Who made the song's words and its recording. Used by LICENSE.TXT (the credits page and the
  * README spell it out to fit their columns; about.json, the guide and the flyer say the same).
  */
-export const SONG_CREDIT = "lyrics written by ChatGPT from Lewis Moten's prompts; music made with Riffusion (now Google Flow Music)";
+export const SONG_CREDIT = "lyrics shaped by ChatGPT from Lewis Moten's prompts; music made with Riffusion (now Google Flow Music)";
 
 /** What was made for the game, as LICENSE.TXT says it. */
 export const ART_CREDIT = 'title and cover art drawn for this game by Claude Opus 5.5';
@@ -132,7 +132,7 @@ const CREDITS_TEXT = page(
     'clown, Doc Leo): a goth rock',
     'song about domestic life.',
     '',
-    'Lyrics: written by ChatGPT',
+    'Lyrics: shaped by ChatGPT',
     "from Lewis's prompts. Music:",
     'made with Riffusion (now',
     "Google Flow Music). This",
@@ -248,7 +248,7 @@ CREDITS (NOW)
   "Cleanse Me, O Loofah, But
   Leave My Soul", a song by The
   Bard of Bizarre (Lewis Moten):
-  lyrics written by ChatGPT
+  lyrics shaped by ChatGPT
   from Lewis's prompts; music
   made with Riffusion (now
   Google Flow Music). The sung
