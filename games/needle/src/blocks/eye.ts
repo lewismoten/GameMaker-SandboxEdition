@@ -63,8 +63,21 @@ export function eyeBlocks(pal: Pal): Kit {
     }
     return p;
   };
-  // a cloud bank (solid all through): the walls of the way out the back of the eye
-  for (const s of [4, 5]) book.add(`bank${s}`, starry(24 + s, s).map((x, y) => shadeAt(R('white'), 0, 2, 0.55 + Math.sin(x / 3 + y / 5 + s) * 0.3 - Math.abs(y - 10) / 40, x, y)), { solid: SOLID });
+  // a cloud bank (solid): the roof, the floor and the far end of the way out the back of the
+  // eye, puffed out on the sky's side and flat along the way
+  const bank = (kind: 'roof' | 'floor' | 'end', shade: number) => {
+    const p = kind === 'floor' ? band(4) : starry(26, shade);
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) {
+        const u = kind === 'roof' ? x : kind === 'floor' ? x + 7 : y;
+        const edge = 4 + Math.round(Math.abs(Math.sin(u / 3.2)) * -3 + 2);
+        // depth into the cloud from its puffy outer edge
+        const d = kind === 'roof' ? y - edge : kind === 'floor' ? 19 - edge - y : x - edge;
+        if (d >= 0) p.set(x, y, shadeAt(R('white'), 0, 2, kind === 'roof' ? 1 - d / 20 : 0.45 + d / 30, x, y));
+      }
+    return p;
+  };
+  for (const kind of ['roof', 'floor', 'end'] as const) book.add(`bank${kind[0].toUpperCase()}${kind.slice(1)}`, bank(kind, 5), { solid: SOLID });
   for (let s = 0; s <= 5; s++) book.add(`cloud${s}`, cloud(20 + s, s), { solid: LEDGE, grav: GRAV.down });
   // the golden thread through the needle, hanging down to the sand: climb it
   const thread = (shade: number) => {

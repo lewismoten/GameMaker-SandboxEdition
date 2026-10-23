@@ -405,7 +405,7 @@ export function eye(book: BlockBook): Level {
   cloud(6, 14, 18);
   // out the back of the eye: on through a cloud bank, a way one block high (so "Hump down" plays
   // out as he crawls on; and walled all round, so the eye is the only way in)
-  m.row(4, 7, 11, 'bank5').row(6, 7, 11, 'bank4').set(7, 5, 'bank5');
+  m.row(4, 7, 11, 'bankRoof').row(6, 7, 11, 'bankFloor').set(7, 5, 'bankEnd');
   // good things
   m.set(9, 29, 'jar2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
   m.mon(MON.star, 7, 25).mon(MON.star, 20, 17).mon(MON.star, 16, 3).mon(MON.dove, 15, 30).mon(MON.dove, 4, 8).mon(MON.star, 9, 38);
