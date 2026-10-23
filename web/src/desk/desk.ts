@@ -40,6 +40,7 @@ import type { SpeedSetting } from '../engine/scene';
 import { TURBO_OFF } from '../engine/slowPc';
 import { viewState } from '../urlState';
 import { prefetchWhenIdle } from '../prefetch';
+import { viewSwitch } from '../viewSwitch';
 
 // What is opened, looked into or picked up on the desk loads when it first is (and is fetched
 // ahead once the desk is idle, see the end of renderDesk): the manuals, the catalog, the boxes' insides.
@@ -55,6 +56,8 @@ const lazy = {
 export interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
   toModern(projectId?: string, file?: string): void;
+  /** Leave for today's web interface at an address (#/game/cd:<id>), from the view switch. */
+  toModernAt?(hash: string): void;
 }
 
 export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
@@ -140,7 +143,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h('span', { title: FORK_NOTE }, `${EDITION} · the 1994 desk`),
       h('span', { class: 'spacer' }),
       matchMedia('(pointer: coarse)').matches ? h('span', { class: 'touch-tip' }, 'No keyboard? The disk box, CD and catalog type for you.') : null,
-      h('button', { onclick: () => nav.toModern() }, 'Switch to today’s web →'),
+      // Desk | DOS | Web, with the disk in drive A: coming along (viewSwitch.ts)
+      viewSwitch('desk', () => deskView.get('disk'), {
+        web: (href) => (nav.toModernAt ? nav.toModernAt(href.slice(href.indexOf('#'))) : nav.toModern()),
+      }),
     ),
     h(
       'main',

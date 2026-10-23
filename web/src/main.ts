@@ -11,6 +11,7 @@ import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
 import { themeButton } from './theme';
+import { viewSwitch } from './viewSwitch';
 import { parseHash } from './urlState';
 
 const modernUi = () => import('./modernUi');
@@ -43,7 +44,16 @@ function rememberUi(next: Ui): void {
 
 // ---- the 90s desk ---------------------------------------------------------------------
 
-async function startDesk(): Promise<void> {
+/** What today's web shows (a catalog game cd:<id>, or your own project:<id>), for the view switch. */
+function webShowing(): string | undefined {
+  const [kind, id] = parseHash(location.hash).path;
+  if (kind === 'game' && id?.startsWith('cd:')) return id;
+  if (kind === 'p' && id) return `project:${id}`;
+  return undefined;
+}
+
+/** The desk; `hash` (#/desk?disk=…) says what to put in its drive. */
+async function startDesk(hash?: string): Promise<void> {
   ui = 'desk';
   rememberUi('desk');
   document.documentElement.dataset.ui = 'desk'; // the page background (index.html)
@@ -52,16 +62,18 @@ async function startDesk(): Promise<void> {
   workspace = undefined;
   document.title = 'Game-Maker 1994';
   // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
-  const deskHash = parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk';
+  const deskHash = hash ?? (parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk');
   history.replaceState(null, '', location.pathname + location.search + deskHash);
   const { renderDesk } = await import('./desk/desk');
   if (ui !== 'desk') return;
+  const toModern = (hash: string) => {
+    disposeDesk?.();
+    disposeDesk = undefined;
+    startModern(hash);
+  };
   disposeDesk = renderDesk(app, {
-    toModern: (projectId, file) => {
-      disposeDesk?.();
-      disposeDesk = undefined;
-      startModern(projectId ? `#/p/${projectId}${file ? `/${encodeURIComponent(file)}` : ''}` : '#/');
-    },
+    toModern: (projectId, file) => toModern(projectId ? `#/p/${projectId}${file ? `/${encodeURIComponent(file)}` : ''}` : '#/'),
+    toModernAt: toModern,
   });
 }
 
@@ -83,14 +95,11 @@ function startModern(hash?: string): void {
       h('span', { class: 'spacer' }),
       h('a', { class: 'hide-narrow', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
       h('a', { class: 'hide-narrow', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' }, 'Achievements'),
+      h('a', { class: 'hide-narrow', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
+      // Desk | DOS | Web: the game in front of you comes along (viewSwitch.ts)
+      viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
       themeButton(),
-      h(
-        'button',
-        { class: 'hide-narrow', onclick: () => void startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
-        h('span', { 'aria-hidden': 'true' }, '💾'),
-        ' 1994 desk',
-      ),
       h(
         'button',
         { class: 'hide-narrow topbar-offline', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
@@ -98,19 +107,18 @@ function startModern(hash?: string): void {
         ' Offline',
       ),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones and tablets: the cast, the desk, offline, the credits and the source in a small menu, so the header stays one tidy row
+      // phones and tablets: the cast, achievements, the credits, offline and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the cast, the 1994 desk, playing offline, the credits and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the cast, achievements, the credits, playing offline and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
           h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
-          h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
-          h('button', { onclick: openOffline }, '⤓ Play offline'),
           h('a', { href: '#/credits' }, '📜 Credits'),
+          h('button', { onclick: openOffline }, '⤓ Play offline'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
       ),
@@ -264,7 +272,9 @@ const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash)
   ? !!startHash
   : ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
-if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
+// #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)
+if (startPath[0] === 'dos') location.replace(`./dos.html${startPath[1] ? `?game=${encodeURIComponent(startPath[1])}` : ''}`);
+else if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
 registerServiceWorker();

@@ -62,6 +62,12 @@
   flex: 1;
 }
 
+/* the Desk | DOS | Web switch (src/viewSwitch.ts) on the desk's wall */
+.desk-bar .view-switch {
+  color: #efe9d6;
+  background: rgba(0, 0, 0, 0.35);
+}
+
 .desk-bar .touch-tip {
   font-size: 12px;
   color: #d8ccb0;
