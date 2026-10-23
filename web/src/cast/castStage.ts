@@ -16,6 +16,7 @@ import { currentRoute, type ViewState } from '../urlState';
 import { spriteCanvases, type CastSprite } from './castSprite';
 import type { CastMember } from './castData';
 import { StageSound, type Effect } from './castSound';
+import { unlockAchievement } from '../achievements';
 
 /** The stage in its own pixels; the canvas is scaled up with smoothing off. */
 const W = 160;
@@ -161,6 +162,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const pick = h('select', { 'aria-label': 'Pick a character', onchange: () => go(lineup.findIndex((m) => m.id === pick.value), true) });
 
   const current = () => lineup[at];
+  let paraded = 0;
   const spriteOf = (m: CastMember | { id: string }) => sprites.get(m.id);
   const centre = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
   const has = (...ids: string[]) => ids.every((id) => sprites.has(id));
@@ -216,6 +218,9 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   /** Someone on stage now: walking on when playing, else standing in the light. */
   function go(i: number, chosen = false): void {
     if (!lineup.length) return;
+    // the whole parade, start to end with no one picked: an achievement
+    paraded = chosen ? 0 : paraded + 1;
+    if (paraded > lineup.length) unlockAchievement('cast-parade');
     at = (i + lineup.length) % lineup.length;
     const m = current();
     pick.value = m.id;

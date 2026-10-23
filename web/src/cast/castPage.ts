@@ -9,6 +9,7 @@ import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
 import { pageToc } from '../pageToc';
 import { heartProgress } from '../tinHearts/progress';
+import { unlockAchievement } from '../achievements';
 
 const FILTERS: [Family | 'all', string][] = [
   ['all', 'Everyone'],
@@ -107,6 +108,7 @@ const families = () =>
 
 /** The cast page into `el`. */
 export function renderCast(el: HTMLElement): void {
+  unlockAchievement('cast-visit');
   const state = viewState(['cast']);
   const want = state.get('family');
   let family: Family | 'all' = FILTERS.some(([f]) => f === want) ? (want as Family) : 'all';
