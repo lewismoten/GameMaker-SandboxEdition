@@ -20,11 +20,14 @@ import { writePng } from './png';
 export type NameAt = (x: number, y: number) => string | undefined;
 /** A wanted part: its name, or a test (a RegExp, or { test, toString } for the report). */
 export type Want = string | { test(got: string): boolean; toString(): string };
-/** A part and the parts that must sit beside it: [dx, dy, wanted name]. `want` may use the
- * match: a function of the part's regex match returning the wanted names. */
+/** Where a part wants its neighbors: [dx, dy, wanted]. */
+export type Need = [number, number, Want][];
+/** A part and the parts that must sit beside it. `need` may be a function of the part's regex
+ * match; with several needs (a part that can stand in more than one place of its object) one
+ * of them must hold. */
 export interface PartRule {
-  part: string | RegExp;
-  need: [number, number, Want][] | ((m: RegExpExecArray) => [number, number, Want][]);
+  part: string | { test(name: string): boolean };
+  need: Need | Need[] | ((m: RegExpExecArray) => Need);
   /** Name for the report (default: the part's name). */
   what?: string;
 }
@@ -32,23 +35,38 @@ export interface PartRule {
 const ok = (want: Want, got: string) => (typeof want === 'string' ? got === want : want.test(got));
 
 /** Every part whose neighbors are wrong: "name at x,y: wanted W at dx,dy, found G". Parts must
- * not run off the map's edge either (playgame's maps wrap, so the other side is wrong too). */
-export function checkParts(at: NameAt, rules: PartRule[], w = MLEN, h = MWID): string[] {
+ * not run off the map's edge either (playgame's maps wrap, so the other side is wrong too).
+ * Right-hand and lower neighbors that are right go into `joined` (JSON [left or upper, right or
+ * lower, 'h' or 'v']), the pairs whose art must join up. */
+export function checkParts(at: NameAt, rules: PartRule[], w = MLEN, h = MWID, joined?: Set<string>): string[] {
   const bad: string[] = [];
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
       const name = at(x, y);
       if (!name) continue;
       for (const r of rules) {
-        const m = typeof r.part === 'string' ? (name === r.part ? /^.*$/.exec(name) : null) : r.part.exec(name);
+        const m = typeof r.part === 'string' ? (name === r.part ? /^.*$/.exec(name) : null) : r.part instanceof RegExp ? r.part.exec(name) : r.part.test(name) ? /^.*$/.exec(name) : null;
         if (!m) continue;
-        const need = typeof r.need === 'function' ? r.need(m) : r.need;
-        for (const [dx, dy, want] of need) {
-          const X = x + dx;
-          const Y = y + dy;
-          const got = X < 0 || Y < 0 || X >= w || Y >= h ? 'off the map' : (at(X, Y) ?? '?');
-          if (!ok(want, got)) bad.push(`${r.what ?? name} at ${x},${y}: wanted ${String(want)} at ${dx},${dy}, found ${got}`);
+        const needs: Need[] = typeof r.need === 'function' ? [r.need(m)] : Array.isArray(r.need[0]?.[0]) ? (r.need as Need[]) : [r.need as Need];
+        let best: string[] | undefined;
+        for (const need of needs) {
+          const fails: string[] = [];
+          const joins: string[] = [];
+          for (const [dx, dy, want] of need) {
+            const X = x + dx;
+            const Y = y + dy;
+            const got = X < 0 || Y < 0 || X >= w || Y >= h ? 'off the map' : (at(X, Y) ?? '?');
+            if (!ok(want, got)) fails.push(`${r.what ?? name} at ${x},${y}: wanted ${String(want)} at ${dx},${dy}, found ${got}`);
+            else if (Math.abs(dx) + Math.abs(dy) === 1) joins.push(JSON.stringify(dx + dy > 0 ? [name, got, dx ? 'h' : 'v'] : [got, name, dx ? 'h' : 'v']));
+          }
+          if (!fails.length) {
+            best = [];
+            for (const j of joins) joined?.add(j);
+            break;
+          }
+          if (!best || fails.length < best.length) best = fails;
         }
+        bad.push(...(best ?? []));
       }
     }
   return bad;
@@ -76,6 +94,33 @@ export function gridParts(re: RegExp, sizes: Map<string, [number, number]>, name
   };
 }
 
+/** Rules for an object drawn as rows of parts (null: any block): each part wants every other
+ * part of the object at its place (a part found at several places: at one of them). */
+export function shape(what: string, rows: (Want | null)[][]): PartRule[] {
+  const cells: [number, number, Want][] = [];
+  rows.forEach((row, r) => row.forEach((p, c) => p !== null && cells.push([c, r, p])));
+  const byPart = new Map<string, [number, number, Want][]>();
+  for (const cell of cells) byPart.set(String(cell[2]), [...(byPart.get(String(cell[2])) ?? []), cell]);
+  return [...byPart.values()].map((at) => {
+    const p = at[0][2];
+    return {
+      what: `${what} (${String(p)})`,
+      part: typeof p === 'string' ? p : { test: (g: string) => p.test(g) },
+      need: at.map(([c, r]) => cells.filter((o) => o[0] !== c || o[1] !== r).map(([c2, r2, q]) => [c2 - c, r2 - r, q] as [number, number, Want])),
+    };
+  });
+}
+
+/** Pairs: every `a` has a `b` at dx, dy and every `b` an `a` the other way. */
+export const pair = (what: string, a: Want, b: Want, dx: number, dy: number): PartRule[] => shape(what, dy === 0 ? (dx === 1 ? [[a, b]] : [[b, a]]) : dy === 1 ? [[a], [b]] : [[b], [a]]);
+
+/** A block book's names by block number. */
+export function namesOf(index: Map<string, number>): string[] {
+  const out: string[] = [];
+  for (const [n, i] of index) out[i] = n;
+  return out;
+}
+
 /** Object sizes (columns, rows) from a block set's part names matched by `re` (object, col, row). */
 export function sizesOf(names: Iterable<string>, re: RegExp): Map<string, [number, number]> {
   const out = new Map<string, [number, number]>();
@@ -96,7 +141,10 @@ export interface Seam {
   dir: 'h' | 'v';
   /** Mean color distance across the shared edge. */
   across: number;
-  /** Mean color distance one pixel in from the edge, on both sides (the art's own texture). */
+  /** Draws the pair joined (scaled up) into a PNG, for a look. */
+  draw?: (file: string, s?: number) => void;
+  /** Mean color distance one pixel in from the edge, on the busier side (the art's own texture,
+   * so a pattern with a line on its edge, like tile grout, is not a break). */
   within: number;
 }
 
@@ -116,13 +164,15 @@ export function seams(pic: (name: string) => Pic, pal: Uint8Array, pairs: [strin
     const A = pic(a);
     const B = pic(b);
     let across = 0;
-    let within = 0;
+    let inA = 0;
+    let inB = 0;
     for (let i = 0; i < 20; i++) {
       const [a1, a0, b0, b1] = dir === 'h' ? [A(18, i), A(19, i), B(0, i), B(1, i)] : [A(i, 18), A(i, 19), B(i, 0), B(i, 1)];
       across += dist(pal, a0, b0);
-      within += (dist(pal, a1, a0) + dist(pal, b0, b1)) / 2;
+      inA += dist(pal, a1, a0);
+      inB += dist(pal, b0, b1);
     }
-    return { a, b, dir, across: across / 20, within: within / 20 };
+    return { a, b, dir, across: across / 20, within: Math.max(inA, inB) / 20 };
   });
 }
 
@@ -183,18 +233,52 @@ export function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8A
   writePng(file, p, pal, s);
 }
 
-/** Prints a game's alignment report; returns how many misplaced parts and broken seams. */
-export function report(game: string, maps: [string, string[]][], broken: Seam[] = []): number {
+/** Checks a built disk: every map's multi-block objects (names: each map file's block names by
+ * number, undefined to skip the map) by the rules, and the art of every pair the maps join. */
+export function auditDisk(disk: string, names: (map: string) => string[] | undefined, rules: PartRule[], opts: { factor?: number; floor?: number } = {}): { maps: [string, string[]][]; seams: Seam[]; broken: Seam[] } {
+  const maps: [string, string[]][] = [];
+  const pairs = new Map<string, { sc: DiskScene; ids: Map<string, number> }>();
+  for (const sc of diskScenes(disk)) {
+    const n = names(sc.map.toLowerCase());
+    if (!n) continue;
+    const joined = new Set<string>();
+    maps.push([sc.map.toLowerCase(), checkParts((x, y) => n[sc.blocks[y * MLEN + x]], rules, MLEN, MWID, joined)]);
+    const ids = new Map(n.map((v, i) => [v, i]));
+    for (const j of joined) if (!pairs.has(j)) pairs.set(j, { sc, ids });
+  }
+  const seamsOut: Seam[] = [];
+  for (const [j, { sc, ids }] of pairs) {
+    const [a, b, dir] = JSON.parse(j) as [string, string, 'h' | 'v'];
+    const pic = (name: string): Pic => {
+      const px = sc.bbl[ids.get(name)!].pixels;
+      return (x, y) => px[y * 20 + x];
+    };
+    for (const x of seams(pic, sc.pal, [[a, b, dir]])) seamsOut.push({ ...x, draw: (file, s = 8) => writeParts(file, pic, sc.pal, dir === 'h' ? [[a, b]] : [[a], [b]], s) });
+  }
+  return { maps, seams: seamsOut, broken: brokenSeams(seamsOut, opts.factor, opts.floor) };
+}
+
+/** Runs a game's alignment check on its built disk (games/<id>/disk) and prints the report:
+ * misplaced parts per map, and joined pairs whose art jumps at the shared edge (`seamOk` lists
+ * the ones drawn that way on purpose, as "a|b" side by side or "a/b" a over b). Returns how
+ * many problems it found. */
+export function alignGame(id: string, names: (map: string) => string[] | undefined, rules: PartRule[], opts: { seamOk?: string[]; factor?: number; floor?: number; draw?: string } = {}): number {
+  const r = auditDisk(new URL(`../${id}/disk`, import.meta.url).pathname, names, rules, opts);
+  const okSeams = new Set(opts.seamOk ?? []);
+  const broken = r.broken.filter((x) => !okSeams.has(`${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}`));
   let n = 0;
-  for (const [map, bad] of maps) {
+  for (const [map, bad] of r.maps) {
     if (!bad.length) continue;
     n += bad.length;
-    console.log(`${game} ${map}: ${bad.length} misplaced part(s)`);
+    console.log(`${id} ${map}: ${bad.length} misplaced part(s)`);
     for (const b of bad.slice(0, 12)) console.log(`  ${b}`);
     if (bad.length > 12) console.log(`  ... and ${bad.length - 12} more`);
   }
-  for (const s of broken) console.log(`${game} seam ${s.a} ${s.dir === 'h' ? '|' : '/'} ${s.b}: ${s.across.toFixed(1)} across vs ${s.within.toFixed(1)} beside`);
+  // ALIGN_DRAW=<folder> draws each flagged join there, for a look
+  const draw = opts.draw ?? process.env.ALIGN_DRAW;
+  if (draw) for (const x of broken) x.draw?.(`${draw}/${id}-${x.a}${x.dir === 'h' ? '-' : '_'}${x.b}.png`);
+  for (const x of broken) console.log(`${id} seam ${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}: colors jump ${x.across.toFixed(1)} across the edge, ${x.within.toFixed(1)} beside it`);
   n += broken.length;
-  if (!n) console.log(`${game}: every multi-block object is whole (${maps.length} maps)`);
+  if (!n) console.log(`${id}: multi-block objects whole on ${r.maps.length} maps (${r.seams.length} joins)`);
   return n;
 }
