@@ -53,10 +53,10 @@ export default tseslint.config(
     },
   },
   {
-    // Pending: files vite.config.ts imports. Editing one restarts the dev server, which
-    // reloads every open page, so their fixes wait (see .prettierignore's Pending block).
-    // Fix them while the dev server is stopped, then delete this block.
-    files: ['src/desk/boxes/boxFacts.ts', 'src/project/health.ts', 'src/project/streamGame.ts'],
+    // Pending: vite.config.ts and files it imports. Editing one restarts the dev server,
+    // which reloads every open page, so their fixes wait (see .prettierignore's Pending
+    // block). Fix them while the dev server is stopped, then delete this block.
+    files: ['vite.config.ts', 'src/desk/boxes/boxFacts.ts', 'src/project/health.ts', 'src/project/streamGame.ts'],
     rules: { '@typescript-eslint/no-unnecessary-type-assertion': 'off', '@typescript-eslint/await-thenable': 'off' },
   },
   {
