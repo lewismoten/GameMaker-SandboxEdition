@@ -82,8 +82,8 @@ export function visitorSystem(nav: Pick<Navigator, 'userAgent' | 'platform' | 'm
   const ua = `${nav.userAgentData?.platform ?? ''} ${nav.platform ?? ''} ${nav.userAgent ?? ''}`;
   if (/android|iphone|ipad|ipod|cros/i.test(ua)) return 'web';
   if (/windows|win32|win64/i.test(ua)) return 'windows';
-  if (/mac/i.test(ua)) return nav.maxTouchPoints > 1 ? 'web' : 'mac'; // an iPad asks for the desktop site as a Mac
   if (/linux|x11/i.test(ua)) return 'linux';
+  if (/mac/i.test(ua)) return nav.maxTouchPoints > 1 ? 'web' : 'mac'; // an iPad asks for the desktop site as a Mac
   return 'web';
 }
 
@@ -115,7 +115,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
     const update = () => {
       go.textContent = `Download ${current.format}`;
       alt.hidden = !current.alt;
-      alt.textContent = current.kind === 'web' ? 'Web app (.zip)' : `Zip (${current.alt})`;
+      alt.textContent = current.kind === 'web' ? 'Web app (.zip)' : current.alt ? `Zip (${current.alt})` : '';
     };
     const rows = choices.map((c) => {
       const id = `dl-${c.kind}`;
