@@ -1,5 +1,6 @@
-// The pictures of each listed game that the home page's tiles, its panel, the play page and the
-// desk's boxes show (src/gfx/levelPicture.ts), drawn at build time: one small PNG each instead
+// The pictures of each listed game that the home page's tiles (its title screen,
+// src/gfx/titlePicture.ts), its panel, the play page and the desk's boxes show
+// (src/gfx/levelPicture.ts), drawn at build time: one small PNG each instead
 // of the half a dozen game files a page would fetch to draw it (src/desk/boxes/boxArt.ts renderShot).
 import { readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
@@ -18,6 +19,7 @@ import {
   type LevelPicture,
 } from '../src/gfx/levelPicture';
 import { TRANSPARENT } from '../src/formats/blocks';
+import { builtTitlePath, titlePixels } from '../src/gfx/titlePicture';
 import { pngChunk } from './ogImage';
 import { cdName } from '../src/project/files';
 
@@ -53,9 +55,9 @@ export function encodeIndexedPng(pic: LevelPicture, transparent?: number): Uint8
 }
 
 /**
- * A game's pictures, by site path: each size in BUILT_SHOTS, an original game's box views
- * (builtMapViews of its box's `shots`) and its hero (heroOf); none when it has no level to
- * show. `disk` maps a game file's name (as listed) to where it is on disk.
+ * A game's pictures, by site path: each size in BUILT_SHOTS, its title screen (titlePixels),
+ * an original game's box views (builtMapViews of its box's `shots`) and its hero (heroOf);
+ * none when it has no level to show. `disk` maps a game file's name (as listed) to where it is on disk.
  */
 export function gameShots(
   id: string,
@@ -81,6 +83,8 @@ export function gameShots(
       const pic = gamePicture(files, game, cols, rows);
       if (pic) out.set(builtShotPath(id, cols, rows), encodeIndexedPng(pic));
     }
+    const title = out.size ? titlePixels(files, game) : undefined;
+    if (title) out.set(builtTitlePath(id), encodeIndexedPng(title));
     if (out.size)
       for (const view of builtMapViews(boxShots)) {
         const pic = mapPixels(files, game, ...view);

@@ -1,10 +1,11 @@
 // "Screenshots" of a game drawn from its real maps (the area where its first level starts):
 // for the desk's boxes and disk labels, the play page's poster, the home page's cards, the
-// cast and the printed manuals.
+// cast and the printed manuals. And a game's title screen, for the home page's tiles.
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../project/files';
 import { parseGame } from '../formats/game';
 import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, mapPixels, type MapView } from './levelPicture';
 import { paintIndexed } from '../editor/core/draw';
+import { builtTitlePath, titlePixels, titleSource } from './titlePicture';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
   // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names); fetched once, shared
@@ -89,4 +90,24 @@ export async function mapShot(entry: CatalogEntry, mapName: string, x: number, y
   const canvas = document.createElement('canvas');
   paintIndexed(canvas, pic.pixels, pic.width, pic.height, pic.palette);
   return canvas;
+}
+
+/**
+ * Draws a game's title screen (320 x 200, titlePicture.ts): the one the build drew for a
+ * listed game, or one drawn now from its title files. False when it has none.
+ */
+export async function renderTitle(entry: CatalogEntry, canvas: HTMLCanvasElement): Promise<boolean> {
+  if (!entry.gam) return false;
+  // a built site drew every listed game's title it could: none there means it has none
+  if (entry.shots) {
+    const built = await loadImage(builtTitlePath(entry.id));
+    return built ? !!onCanvas(built, canvas) : false;
+  }
+  const gam = await fetchFile(entry, entry.gam);
+  if (!gam) return false;
+  const game = parseGame(gam);
+  const pic = titlePixels(await titleSource(game, (n) => fetchFile(entry, n)), game);
+  if (!pic) return false;
+  paintIndexed(canvas, pic.pixels, pic.width, pic.height, pic.palette);
+  return true;
 }
