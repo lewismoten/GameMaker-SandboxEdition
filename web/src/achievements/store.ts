@@ -114,7 +114,9 @@ function commit(before: Set<string>): void {
 
 function announceUnlock(id: string): void {
   devLog('unlocked', id);
-  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent(ACHIEVEMENT_UNLOCKED, { detail: { id } }));
+  if (typeof document === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(ACHIEVEMENT_UNLOCKED, { detail: { id } }));
+  void import('./toast').then((m) => m.showUnlock(id));
 }
 
 /** Applies a change now, or once the record is read. The change says whether it changed anything. */

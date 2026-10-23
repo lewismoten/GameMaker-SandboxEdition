@@ -1,0 +1,152 @@
+/* the "achievement unlocked" note (achievements/toast.ts) */
+.ach-toasts {
+  position: fixed;
+  inset: auto;
+  top: 60px;
+  right: 16px;
+  left: auto;
+  bottom: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(320px, calc(100vw - 32px));
+  z-index: 200;
+  pointer-events: none;
+}
+
+.ach-toasts:empty {
+  display: none;
+}
+
+.ach-toast {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 10px 10px 12px;
+  border: 1px solid var(--border, #b6bdcc);
+  border-left: 4px solid var(--accent, #1f3fbf);
+  border-radius: 10px;
+  background: var(--panel, #e9ecf2);
+  color: var(--text, #1a1d29);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  font: 14px/1.35 system-ui, sans-serif;
+  animation: ach-in 0.25s ease-out;
+}
+
+.ach-toast-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.ach-toast-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ach-toast-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted, #4f566a);
+}
+
+.ach-toast-desc {
+  color: var(--muted, #4f566a);
+}
+
+.ach-toast-link {
+  align-self: flex-start;
+  margin-top: 2px;
+  color: var(--accent, #1f3fbf);
+  font-weight: 600;
+}
+
+.ach-toast-close {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ach-toast-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.ach-toast-close:focus-visible,
+.ach-toast-link:focus-visible {
+  outline: 2px solid var(--accent, #1f3fbf);
+  outline-offset: 2px;
+}
+
+/* the desk: a sticky note on the monitor's corner (placed by toast.ts) */
+.ach-toasts.ach-desk {
+  width: min(220px, calc(100vw - 32px));
+}
+
+.ach-desk .ach-toast {
+  border: 0;
+  border-radius: 0;
+  background: #ffe86b;
+  color: #3a3100;
+  box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.4);
+  transform: rotate(-3deg);
+  font: 700 13px/1.25 'Comic Sans MS', 'Marker Felt', cursive;
+  animation-name: ach-stick;
+}
+
+.ach-desk .ach-toast:nth-child(2) {
+  transform: rotate(2deg);
+}
+
+.ach-desk .ach-toast-kicker,
+.ach-desk .ach-toast-desc {
+  color: #5a4d00;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+}
+
+.ach-desk .ach-toast-icon {
+  font-size: 22px;
+}
+
+.ach-desk .ach-toast-close:focus-visible {
+  outline-color: #3a3100;
+}
+
+@keyframes ach-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes ach-stick {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ach-toast,
+  .ach-desk .ach-toast {
+    animation: none;
+  }
+}
