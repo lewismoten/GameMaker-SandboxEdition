@@ -183,8 +183,8 @@ const DIRECTORY: Record<string, Call> = {
     );
     line.ended("Grandma hung up");
   },
-  // Jenny, the sitter (867-5309, like the song): on the phone, as always
-  "8675309": async (line) => {
+  // Jenny, the sitter (555-0175 on Mom's notes): on the phone, as always
+  "5550175": async (line) => {
     if (Math.random() < 2 / 3) return busy(line);
     await ring(line, 2);
     await line.say(
@@ -193,10 +193,10 @@ const DIRECTORY: Record<string, Call> = {
     );
     line.ended("Jenny hung up (back to her other call)");
   },
-  // time & temperature (POPCORN), the weather line, and the movie line (777-FILM)
-  "7672676": async (line) => timeAndTemperature(line),
-  "9361212": async (line) => weather(line),
-  "7773456": async (line) => movieLine(line),
+  // time & temperature, the weather line and the movie line (made-up 555-01xx numbers)
+  "5550111": async (line) => timeAndTemperature(line),
+  "5550112": async (line) => weather(line),
+  "5550113": async (line) => movieLine(line),
   // THE -= S A N D B O X =- BBS (1-412-555-SAND), The Sofa, and Sandcastle Knight's BBS
   "5557263": modem,
   "5550177": modem,
@@ -310,6 +310,10 @@ function hash(s: string): number {
   return n >>> 0;
 }
 
+// Dialed from memory, the number in the old song about a Jenny still reaches this one (it is
+// never shown anywhere: it's a real number in plenty of area codes)
+DIRECTORY["8675309"] = DIRECTORY["5550175"];
+
 /** Who (or what) answers a number. */
 export function callFor(digits: string): Call {
   const n = localNumber(digits);
@@ -328,8 +332,8 @@ export const SPEED_DIAL: [string, string][] = [
   ["Dad", "5550187"],
   ["Pager", "5550199"],
   ["Grandma", "5550123"],
-  ["Jenny", "8675309"],
-  ["Time", "7672676"],
-  ["Weather", "9361212"],
-  ["Movies", "7773456"],
+  ["Jenny", "5550175"],
+  ["Time", "5550111"],
+  ["Weather", "5550112"],
+  ["Movies", "5550113"],
 ];
