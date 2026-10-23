@@ -12,6 +12,9 @@ import { C, SEQ, BLK } from '../ids';
 import { plain } from './autotiles';
 import { bridgeName } from '../levels/ground';
 import { gateArt } from './gateArt';
+import { C as color } from '../art/pal';
+import { Pixels } from '../../../kit/pixels';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 
 export function portBook(bridges: [number, number][]): BlockBook {
   const book = new BlockBook('port', { [BLK.egg]: 'egg' });
@@ -133,8 +136,20 @@ export function portBook(bridges: [number, number][]): BlockBook {
   // the hermit's stone: it has more to say to anyone carrying the egg
   gate(book, 'eggstone', C.egg, 1, gateArt.stone(false), gateArt.stone(true), true);
   eggBlocks(book, true);
+  // a tin heart in the grass by the lighthouse: a glint crosses it now and then; 100 points
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, tinHeart(k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'grass', score: 100, dither: 0 });
   void plain;
   return book;
+}
+
+/** The tin heart (kit/tinHeart.ts) in the fixed sprite colors, on the grass. */
+function tinHeart(frame: number): Canvas {
+  const cv = plain((x, y) => grass(x, y));
+  const cols: RGB[] = [color('outline'), color('steel', 1), color('steel', 2), color('steel', 3), color('white', 1), color('steel', 0)];
+  const p = drawTinHeart(new Pixels(20, 20, 255), { ink: 0, tin: [1, 2, 3], white: 4, dark: 5 }, frame);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (p.get(x, y) !== 255) cv.blend(x, y, cols[p.get(x, y)]);
+  return cv;
 }
 
 function pier(end: boolean): Canvas {

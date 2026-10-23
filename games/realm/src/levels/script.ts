@@ -262,7 +262,11 @@ When you face him, fight like it's due today.`,
 
 No kazoo yet? Doc Leo teaches the Kazoo of Haste, if you do him a favor. Until then you can hum through the reeds and press K. People will stare.
 
-Tonics from Mother Tansy's cousin at the next stall, fifteen gold.`,
+Tonics from Mother Tansy's cousin at the next stall, fifteen gold.
+
+The bald fellow in the ruff and the sweatpants, down the end of the quay? That's Will, a playwright, visiting. Eleven years on one play. He has the title. ALAS, he says. FORSOOTH.
+
+He swears there's a little tin heart in the grass by the lighthouse, ticking away. "Found it! Ticks like it means it," he keeps saying. He hasn't gone to look.`,
   ),
   // ---------------------------------------------------------------- Eventually Falls
   duff: t(

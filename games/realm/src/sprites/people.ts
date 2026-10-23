@@ -2,7 +2,7 @@
 // ASCII art, each colored by its own key, and a blink for the second frame of their idle
 // animation. Plus the cameos: Doc Leo the hobo clown (grey felt fedora, navy corduroy, purple
 // shirt, green tie, red sneakers, a rubber chicken on a leash), Teddy the corgi and Gwinn, THE
-// CHEZ's owner, and Lord Deadline himself.
+// CHEZ's owner, Will the playwright from Shakespeare in Sweatpants, and Lord Deadline himself.
 import { art, lookKey, baseKey, R, type Key } from '../art/sprite';
 import { C } from '../art/pal';
 import type { Canvas, RGB } from '../art/rgb';
@@ -24,6 +24,8 @@ export const HEADS: Record<string, string[]> = {
   miner: ['.........KyK........', '.......KKyyyKK......', '.....KKyyKKKyyKK....', '....KyyyKwwKyyyyK...', '....KyyyKwwKyyyyK...', '...KKKKKKKKKKKKKKK..', '....KhhHsSSsHhhK....', ...FACE],
   kidcap: ['....................', '....................', '....................', '.......KKKKKK.......', '......KcCCCCrK......', '.....KcCCCCCCCKK....', '.....KccccccccccK...', '.....KhhhhhhhhK.....', '.....KHsSeSeSsK.....', '.....KHsSeSeSsK.....', '......KsSdddsK......', '......KKsSSsKK......'],
   long: ['....................', '.......KKKKKK.......', '.....KKhHHHHHhKK....', '....KhHHjjjjHHHhK...', '....KhHjjHHjjHHhK...', '....KhHHHHHHHHHhK...', '...KhHHHHHHHHHHhhK..', '...KhHsSSSSSSsHhhK..', '...KhHsSeSSeSsHhhK..', '...KhHsSeSSeSsHhhK..', '...KhHKsSddSsKHhK...', '...KhK.KKssKK.KhK...'],
+  // Will, the bald bard of Shakespeare in Sweatpants: a shiny dome, a fringe over the ears, a gold earring, a pointed beard
+  poet: ['....................', '....................', '........KKKK........', '......KKSwSSKK......', '.....KsSwSSSSsK.....', '....KsSSSSSSSSsK....', '....KhsSSSSSSshK....', '....KHsSSSSSSsHK....', '....KHSeSSSSeSHK....', '....yhSeSSSSeShK....', '.....KsShhhhSsK.....', '......KKshhsKK......'],
   helmDark: ['....................', '......KKKKKKKK......', '....KKcCCCCCCcKK....', '...KcCCCCyyCCCCcK...', '...KcCCCyKKyCCCcK...', '...KcCCCKyyKCCCcK...', '...KcCCCyKKyCCCcK...', '...KcKKKKKKKKKKcK...', '...KcKooKKKKooKcK...', '...KcKKKKKKKKKKcK...', '....KcCCCCCCCCcK....', '.....KKcccccccK.....'],
 };
 
@@ -36,6 +38,8 @@ export const BODIES: Record<string, string[]> = {
   tabard: ['....KmGLLLLLLGmK....', '...KsmGGLyyLGGmsK...', '...KsKmGGyyGGmKsK...', '....KKnNNNNNNnKK....', '.....KmGGGGGGmK.....'],
   coat: ['....KgGtLLLLtGgK....', '...KsgGGtLLtGGgsK...', '...KsKgGGtyGGgKsK...', '....KKgGGGGGGgKK....', '.....KgGGGGGGgK.....'],
   clown: ['....KgGpttyPGgK.....', '...KsgGGpTTPGgsK....', '...KsKgGGpTPGgKsK...', '....KKgGGGGGGgKK....', '.....KgGGGGGGgK.....'],
+  // his starched white ruff over a velvet doublet with gold buttons
+  doublet: ['...KwWwWwWwWwWwWK...', '...KggGGGyyGGGggK...', '...KgKgGGGGGGgKgK...', '...KsKgGGyyGGgKsK...', '....KKgGGGGGGgKK....'],
   armor: ['...KcCMMMMMMMMCcK...', '..KcCcMMMooMMMcCcK..', '..KcKcMMMooMMMcKcK..', '...KKcCCCCCCCCcKK...', '...KcCCCCCCCCCCcK...'],
 };
 export const LEGS: Record<string, string[]> = {
@@ -44,6 +48,8 @@ export const LEGS: Record<string, string[]> = {
   sneakers: ['.....KpPPKKPPpK.....', '....KooowKKooowK....', '....KKKKK..KKKKK....'],
   robe: ['...KwgGGGGGGGGgwK...', '...KwwwwwwwwwwwwK...', '....KKKKKKKKKKKK....'],
   short: ['......KpPKKPpK......', '......KnNKKNnK......', '.......KK..KK.......'],
+  // grey sweatpants and fuzzy pink slippers
+  slippers: ['.....KpPPKKPPpK.....', '....KfFFfKKfFFfK....', '....KKKKK..KKKKK....'],
   greaves: ['.....KmMMKKMMmK.....', '.....KcCCKKCCcK.....', '.....KKKK..KKKK.....'],
 };
 
@@ -102,6 +108,14 @@ export const PEOPLE: Record<string, PersonSpec> = {
       { hair: [C('steel', 0), C('steel', 1), C('steel', 1)], coat: R('night', 0, 1, 1), pants: R('night', 0, 1), hat: R('steel', 0, 1, 2), trim: R('green', 1, 2, 3) },
       { w: C('white', 1), o: C('red', 2), p: C('purple', 2), P: C('purple', 1), t: C('green', 2), T: C('green', 3), y: C('gold', 2) },
     ),
+  },
+  // Will the playwright, visiting from Shakespeare in Sweatpants: dressed for the stage from the
+  // waist up and for the couch from the waist down
+  poet: {
+    head: 'poet',
+    body: 'doublet',
+    legs: 'slippers',
+    key: lookKey({ hair: R('hairBrown', 0, 1, 1), coat: R('purple', 1, 2, 3), pants: R('steel', 1, 2), trim: R('gold', 1, 2, 3) }, { f: C('pink', 1), F: C('pink', 2) }),
   },
   deadline: { head: 'helmDark', body: 'armor', legs: 'greaves', key: lookKey({ hair: R('ink', 0), coat: R('night', 0, 1), pants: R('night', 0, 1), hat: R('night', 0, 1, 1), trim: R('gold', 1, 2, 3) }, { M: C('steel', 1), m: C('steel', 0), o: C('red', 2), y: C('gold', 2) }) },
 };
