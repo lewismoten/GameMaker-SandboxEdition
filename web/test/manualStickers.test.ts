@@ -1,50 +1,110 @@
-// Tests: Sticker sheets (manual/printables/stickerArt.ts).
+// Tests: Sticker sheets (manual/printables/stickerArt.ts, stickerGeom.ts).
 import { describe, expect, it } from 'vitest';
-import { CUT_H, CUT_W, GAP, cutSvg, layoutStickers, pngWithDpi, shapePath, sheetBounds, stickerSize } from '../src/manual/printables/stickerArt';
+import { BLEED, CUT_H, CUT_W, GAP, cutSvg, layoutStickers, placedOutline, pngWithDpi, sheetBounds, type Placed } from '../src/manual/printables/stickerArt';
+import { CUT_OFFSET, cutGeom, edgeDistance, inside, outline, type Solid, type StickerGeom, type StickerShape } from '../src/manual/printables/stickerGeom';
+
+/** A little character's silhouette: a head on a body with two legs (a gap between them). */
+function figure(scale = 1): Solid {
+  const rows = ['..XXXX..', '..XXXX..', 'XXXXXXXX', '.XXXXXX.', '.XXXXXX.', '.XX..XX.', '.XX..XX.'];
+  const cols = 8;
+  const bits = new Uint8Array(cols * rows.length);
+  rows.forEach((r, y) => [...r].forEach((c, x) => (bits[y * cols + x] = c === 'X' ? 1 : 0)));
+  return { cols, rows: rows.length, cell: 0.12 * scale, bits };
+}
+
+const SHAPES: [StickerShape, number, number][] = [
+  ['circle', 1.6, 1.6],
+  ['rect', 1.9, 1.3],
+  ['star', 1.5, 1.5],
+  ['badge', 1.9, 1.2],
+  ['heart', 1.4, 1.3],
+  ['burst', 1.6, 1.5],
+  ['bubble', 1.8, 1.2],
+  ['floppy', 1.5, 1.5],
+  ['tv', 1.7, 1.5],
+];
+
+const stickers: StickerGeom[] = [...SHAPES.map(([shape, w, h]) => ({ shape, w, h })), cutGeom(figure()), cutGeom(figure(1.3))];
+const fillers: StickerGeom[] = [cutGeom(figure(0.45)), { shape: 'star', w: 0.6, h: 0.6 }];
+
+function minDistance(a: [number, number][], b: [number, number][]): number {
+  let d = Infinity;
+  for (const [x, y] of a) d = Math.min(d, edgeDistance(b, x, y));
+  for (const [x, y] of b) d = Math.min(d, edgeDistance(a, x, y));
+  return d;
+}
 
 describe('sticker sheets', () => {
-  const sizes = Array.from({ length: 20 }, (_, i) => {
-    const shape = (['circle', 'rect', 'star', 'badge'] as const)[i % 4];
-    const [w, h] = stickerSize(shape);
-    return { w, h, shape };
+  const pages = layoutStickers(stickers, fillers, 30);
+
+  it('packs every sticker on one sheet, then fills the gaps', () => {
+    expect(pages).toHaveLength(1);
+    const ids = pages[0].map((p) => p.index);
+    for (let i = 0; i < stickers.length; i++) expect(ids).toContain(i);
+    expect(ids.filter((i) => i >= stickers.length).length).toBeGreaterThan(4);
   });
 
-  it('packs every sticker inside the Print Then Cut area, without overlapping', () => {
-    const pages = layoutStickers(sizes);
-    expect(pages.flat().map((p) => p.index)).toEqual(sizes.map((_, i) => i));
-    expect(pages.length).toBeGreaterThan(1);
-    for (const page of pages) {
-      for (const p of page) {
-        expect(p.x).toBeGreaterThanOrEqual(0);
-        expect(p.y).toBeGreaterThanOrEqual(0);
-        expect(p.x + p.w).toBeLessThanOrEqual(CUT_W);
-        expect(p.y + p.h).toBeLessThanOrEqual(CUT_H);
+  it('keeps every sticker and its bleed inside the printable area', () => {
+    for (const p of pages.flat())
+      for (const [x, y] of placedOutline(p, BLEED)) {
+        expect(x).toBeGreaterThanOrEqual(0);
+        expect(y).toBeGreaterThanOrEqual(0);
+        expect(x).toBeLessThanOrEqual(CUT_W);
+        expect(y).toBeLessThanOrEqual(CUT_H);
       }
-      for (const a of page)
-        for (const b of page) {
-          if (a === b) continue;
-          const apart = a.x + a.w + GAP - 1e-9 <= b.x || b.x + b.w + GAP - 1e-9 <= a.x || a.y + a.h + GAP - 1e-9 <= b.y || b.y + b.h + GAP - 1e-9 <= a.y;
-          expect(apart).toBe(true);
-        }
+  });
+
+  it('never lets two stickers overlap, and keeps a cutting gap between them', () => {
+    for (const page of pages)
+      page.forEach((a, i) =>
+        page.slice(i + 1).forEach((b) => {
+          const pa = placedOutline(a);
+          const pb = placedOutline(b);
+          expect(inside(pa, pb[0][0], pb[0][1])).toBe(false);
+          expect(inside(pb, pa[0][0], pa[0][1])).toBe(false);
+          expect(minDistance(pa, pb)).toBeGreaterThan(GAP * 0.95);
+        }),
+      );
+  });
+
+  it('keeps each cut line inside its own bleed, a bleed away from its edge', () => {
+    for (const p of pages.flat()) {
+      const bleed = placedOutline(p, BLEED);
+      for (const [x, y] of placedOutline(p)) {
+        expect(inside(bleed, x, y)).toBe(true);
+        expect(edgeDistance(bleed, x, y)).toBeGreaterThan(BLEED * 0.8);
+      }
     }
   });
 
-  it('draws closed outlines, grown by the bleed', () => {
-    const p = { x: 1, y: 1, w: 2, h: 1.5, shape: 'rect' as const };
-    expect(shapePath(p)).toMatch(/^M.*Z$/);
-    expect(shapePath(p, 0.5)).toContain('M1.14 0.5H2.86A0.64 0.64');
-    expect(shapePath({ ...p, shape: 'circle' })).toContain('A1 0.75');
-    expect(shapePath({ ...p, shape: 'star' }).split('L')).toHaveLength(28);
+  it('fits each plain shape in its box and follows a die-cut around its art', () => {
+    for (const [shape, w, h] of SHAPES)
+      for (const [x, y] of outline({ shape, w, h })) {
+        expect(x).toBeGreaterThan(-1e-6);
+        expect(y).toBeGreaterThan(-1e-6);
+        expect(x).toBeLessThan(w + 1e-6);
+        expect(y).toBeLessThan(h + 1e-6);
+      }
+    const g = cutGeom(figure());
+    const cut = outline(g);
+    // the cut runs CUT_OFFSET outside the art, and around the gap between the legs only if it is wide
+    const solid = g.solid!;
+    for (let y = 0; y < solid.rows; y++)
+      for (let x = 0; x < solid.cols; x++)
+        if (solid.bits[y * solid.cols + x]) expect(inside(cut, CUT_OFFSET + (x + 0.5) * solid.cell, CUT_OFFSET + (y + 0.5) * solid.cell)).toBe(true);
+    expect(inside(cut, g.w + 0.05, g.h / 2)).toBe(false);
+    for (const [x, y] of cut) expect(Math.abs(x) + Math.abs(y)).toBeLessThan(g.w + g.h + 0.01);
   });
 
   it('writes cut lines in inches, cropped to the stickers', () => {
-    const page = layoutStickers(sizes.slice(0, 3))[0];
+    const page = pages[0];
     const [, , w, h] = sheetBounds(page);
     const svg = cutSvg(page, ['A & B']);
     expect(svg).toContain(`width="${Math.round(w * 1000) / 1000}in"`);
     expect(svg).toContain(`height="${Math.round(h * 1000) / 1000}in"`);
-    expect(svg.match(/<path /g)).toHaveLength(3);
-    expect(svg).toContain('A &amp; B');
+    expect(svg.match(/<path /g)).toHaveLength(page.length);
+    expect(svg).toMatch(/<path id="sticker-1" d="M[\d.]+ [\d.]+L.*Z"/);
+    if (page.some((p: Placed) => p.index === 0)) expect(svg).toContain('A &amp; B');
   });
 
   it('stamps a PNG with its print resolution', () => {
