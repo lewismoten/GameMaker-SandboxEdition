@@ -1,9 +1,9 @@
 // The mail truck pulling away from the corner, off to the post office: a boxy white truck
 // with a red and blue stripe and plain MAIL lettering on its side. It comes when something
 // asks for it (gm-window-event, kind "mailtruck"): your registration card is on its way.
-import { roomSound } from "../propSound";
+import { ambient, roomSound } from "../propSound";
 import { VIEW } from "../../room/snowWindow";
-import { STREET, type OutsideEvent } from "./outside";
+import { outsidePlaying, STREET, type OutsideEvent } from "./outside";
 
 const PARKED = 160;
 
@@ -13,7 +13,7 @@ export const mailtruck: OutsideEvent = {
   label: "The mail truck pulling away",
   when: "any",
   ms: 8_000,
-  start: () => setTimeout(() => roomSound.rumble(5), 2_000),
+  start: () => setTimeout(() => outsidePlaying() && ambient(() => roomSound.rumble(5)), 2_000),
   draw(c, p, t) {
     // parked for a moment, then off to the left, picking up speed
     const go = Math.max(0, (p - 0.3) / 0.7);

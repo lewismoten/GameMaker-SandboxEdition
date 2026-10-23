@@ -2,7 +2,7 @@
 // on its side; then gets up, shakes it off and wanders on. (The Third Goat from the Left,
 // probably: its scream and faint are that game's own sounds.)
 import { roomSound } from "../propSound";
-import { STREET, type OutsideEvent } from "./outside";
+import { outsidePlaying, STREET, type OutsideEvent } from "./outside";
 import { VIEW } from "../../room/snowWindow";
 
 const STOP = 190; // where it stops, in the part of the view the monitor doesn't hide
@@ -56,9 +56,10 @@ export const goat: OutsideEvent = {
   when: "day",
   ms: 13_000,
   start() {
-    // the scream when it stops and sees you, the faint as it keels over
-    setTimeout(() => roomSound.gameVoc("goat", "scream.voc"), 3_600);
-    setTimeout(() => roomSound.gameVoc("goat", "faint.voc"), 4_400);
+    // the scream when it stops and sees you, the faint as it keels over (if it's still
+    // there to be seen)
+    setTimeout(() => outsidePlaying() && roomSound.gameVoc("goat", "scream.voc"), 3_600);
+    setTimeout(() => outsidePlaying() && roomSound.gameVoc("goat", "faint.voc"), 4_400);
   },
   draw(c, p, t) {
     const g = STREET;
