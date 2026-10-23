@@ -3,7 +3,8 @@ import { MON } from '../../src/ids';
 import { NOTES } from '../../src/groups/work/meeting';
 import { COFFEE_THINGS } from '../../src/groups/work/cgoat';
 import { REPAIRS } from '../../src/groups/work/chair';
-import { carefully, declaim, expect, leave, must, plot, type Route } from '../route';
+import { STAGED } from '../../src/groups/work/ficus';
+import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
 export const WORK_ROUTES: Record<string, Route> = {
   /** A Totally Normal Meeting: under the table for his notes (past the footprints), up on it through the buzzwords, the supply closet's shelves, the whiteboard, the door. */
@@ -140,5 +141,34 @@ export const WORK_ROUTES: Record<string, Route> = {
     await carefully(bot, 'the chair', 0, async () => {
       await leave(bot, bot.walk(60.5, 'the chair'), 'the chair');
     });
+  },
+  /** Gerald the Ficus: past the gnats and the falling leaves, out into the night (Carl), over the runaway cart, Peggy's plants, back in to stage it, the boss home. */
+  ficus: async (bot) => {
+    expect(bot, 'ficus');
+    await carefully(bot, 'into the spotlight, a coffee', 0, async () => {
+      await must(bot, bot.walk(4, 'the mug of coffee'), 'mug');
+      await must(bot, bot.walk(6, 'up to Gerald'), 'Gerald');
+      await declaim(bot, 'the gnats');
+    });
+    await carefully(bot, 'the shelf of the dead', 0, async () => {
+      await must(bot, bot.walk(12, 'the coin past Gerald'), 'coin');
+      await must(bot, bot.walk(18, 'under the falling leaves'), 'leaves');
+    });
+    const before = tips(bot);
+    await carefully(bot, 'out into the night', 0, async () => {
+      await must(bot, bot.walk(24, 'the coin by the sofa'), 'coin');
+      await must(bot, bot.walk(33, 'out the back door, Carl'), 'out');
+      if (tips(bot) < before + 2) throw new Error('missed Carl');
+    });
+    await carefully(bot, 'the runaway cart', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 39), 'over the cart');
+      await must(bot, bot.walk(45, "Peggy's plants, Peggy, Randy"), 'Peggy');
+    });
+    if (plot(bot) < STAGED - 1) throw new Error(`only ${plot(bot)} plants`);
+    await carefully(bot, 'the staging', 0, async () => {
+      await must(bot, bot.walk(60, 'back in: the dollar, the sticky note, the coin'), 'staging');
+    });
+    if (plot(bot) < STAGED) throw new Error(`only ${plot(bot)} of the staging`);
+    await leave(bot, bot.walk(62.5, 'the boss home'), 'the front door');
   },
 };

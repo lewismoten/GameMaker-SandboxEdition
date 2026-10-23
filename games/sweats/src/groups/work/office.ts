@@ -18,6 +18,10 @@ export const WORK_RAMPS: Ramp[] = [
   ['ink2', 2, [10, 10, 40], [50, 50, 90]],
   // the breakroom's mint tiles
   ['mint', 3, [90, 140, 120], [210, 240, 220]],
+  // the boss's house: rose wallpaper, crispy dead leaves, the night outside
+  ['rose', 3, [150, 100, 100], [240, 214, 200]],
+  ['crisp', 3, [90, 56, 20], [214, 170, 90]],
+  ['night', 3, [8, 10, 30], [50, 60, 110]],
 ];
 
 /** The office wall: beige, a faint texture. */

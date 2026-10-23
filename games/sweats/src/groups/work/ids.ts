@@ -40,3 +40,17 @@ export const CHAIR_MON = {
   janitorOff: FIRST_GROUP_MON + 4,
   puff: FIRST_GROUP_MON + 5,
 } as const;
+
+/** Gerald the Ficus is Dead (its own .MON). */
+export const FICUS_MON = {
+  /** A crispy leaf letting go of the shelf of dead plants. */
+  leaf: FIRST_GROUP_MON,
+  /** Fungus gnats over Gerald's soil. */
+  gnat: FIRST_GROUP_MON + 1,
+  /** A runaway shopping cart in the parking lot: hop over it. */
+  cart: FIRST_GROUP_MON + 2,
+  /** Peggy, in the parking lot: cash only, no questions asked. A hello is a tip. */
+  peggy: FIRST_GROUP_MON + 3,
+  peggyOff: FIRST_GROUP_MON + 4,
+  puff: FIRST_GROUP_MON + 5,
+} as const;

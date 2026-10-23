@@ -4,6 +4,7 @@
 import type { Group } from '../types';
 import { cgoat, cgoatBlocks, cgoatSprites } from './cgoat';
 import { chair, chairBlocks, chairSprites } from './chair';
+import { ficus, ficusBlocks, ficusSprites } from './ficus';
 import { meeting, meetingBlocks, meetingSprites } from './meeting';
 import { WORK_RAMPS, buildOffice } from './office';
 
@@ -16,11 +17,13 @@ export const work: Group = {
     meetingBlocks(book, pal);
     cgoatBlocks(book, pal);
     chairBlocks(book, pal);
+    ficusBlocks(book, pal);
   },
   sprites: (book, pal) => {
     meetingSprites(book, pal);
     cgoatSprites(book, pal);
     chairSprites(book, pal);
+    ficusSprites(book, pal);
   },
-  monologues: [meeting, cgoat, chair],
+  monologues: [meeting, cgoat, chair, ficus],
 };
