@@ -20,7 +20,7 @@
   },
   {
    "scene": 4,
-   "keys": "AUgEyAFNBM0BSBDIAU0MzQFNIM0BSATIAU0EzQFQBNABS1DLAVAE0AFLCMsBSATIAU0kzQFIAsgFUALQAkgEyAFIAsgFUALQAkgMyAFLIMsBSALIAk0EzQFIDMgBSBzIAUsEywFIAsgCTQTNAUgIyAFNPM0BUAjQAU0EzQFIAsgCUBzQAUsEywFQDNABTQTNAUgCyAJLBMsBSAjIAUsgywFIAsgFUALQAkgQyAFIBMgBSwzLAUgEyAFNDM0BSA=="
+   "keys": "AUgEyAFNBM0BSBDIAU0MzQFNIM0BSATIAU0EzQFQBNABS1DLAVAE0AFLCMsBSATIAU0kzQFIAsgFUALQAkgEyAFIAsgFUALQAkgMyAFLIMsBSALIAk0EzQFIDMgBSBzIAUsEywFIAsgCTQTNAUgIyAFNPM0BUAjQAU0EzQFIAsgCUBzQAUsEywFQDNABTQTNAUgCyAJLBMsBSAjIAUsgywFIAsgFUALQAkg="
   },
   {
    "scene": 2,
@@ -67,7 +67,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 23999,
+  "frames": 23904,
   "chapters": [
    {
     "title": "Opening",
@@ -87,23 +87,23 @@
    },
    {
     "title": "Level 3: Low Tide Lagoon",
-    "frame": 10476
+    "frame": 10381
    },
    {
     "title": "Level 4: Beetle Burrows",
-    "frame": 15004
+    "frame": 14909
    },
    {
     "title": "Level 5: Gwinn's Nap",
-    "frame": 18583
+    "frame": 18488
    },
    {
     "title": "Ending",
-    "frame": 19927
+    "frame": 19832
    },
    {
     "title": "Credits",
-    "frame": 22447
+    "frame": 22352
    }
   ]
  }

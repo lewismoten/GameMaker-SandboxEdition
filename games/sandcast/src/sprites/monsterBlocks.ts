@@ -146,8 +146,8 @@ function slobberBall(frame: number): Pixels {
   p.set(8, 7, STEEL[7]).set(7, 8, WATER[9]);
   return outline(p, GRASS[0]);
 }
-mb.add('slobber0', slobberBall(0), { hp: -5 });
-mb.add('slobber1', slobberBall(1), { hp: -5 });
+mb.add('slobber0', slobberBall(0), { hp: -6 });
+mb.add('slobber1', slobberBall(1), { hp: -6 });
 function ropeToy(frame: number): Pixels {
   // A knotted tug rope, red and white, tumbling end over end.
   const p = sprite();
@@ -166,8 +166,8 @@ function ropeToy(frame: number): Pixels {
   }
   return outline(p, RED[0]);
 }
-mb.add('rope0', ropeToy(0), { hp: -2 });
-mb.add('rope1', ropeToy(1), { hp: -2 });
+mb.add('rope0', ropeToy(0), { hp: -3 });
+mb.add('rope1', ropeToy(1), { hp: -3 });
 function paw(frame: number, angry: boolean, left: boolean): Pixels {
   const p = sprite();
   // Gwinn's big brown paws. Splashed once, she starts scrabbling in her sleep (muddy, claws out).
@@ -198,14 +198,14 @@ function paw(frame: number, angry: boolean, left: boolean): Pixels {
       p.set(x, y, SAND[7]).set(x + 1, y - 1, SAND[5]);
   return left ? p : p.flipX();
 }
-mb.add('pawL0', paw(0, false, true), { hp: -3, solid: SOLID });
-mb.add('pawL1', paw(1, false, true), { hp: -3, solid: SOLID });
-mb.add('pawLAngry0', paw(0, true, true), { hp: -4, solid: SOLID });
-mb.add('pawLAngry1', paw(1, true, true), { hp: -4, solid: SOLID });
-mb.add('pawR0', paw(0, false, false), { hp: -3, solid: SOLID });
-mb.add('pawR1', paw(1, false, false), { hp: -3, solid: SOLID });
-mb.add('pawRAngry0', paw(0, true, false), { hp: -4, solid: SOLID });
-mb.add('pawRAngry1', paw(1, true, false), { hp: -4, solid: SOLID });
+mb.add('pawL0', paw(0, false, true), { hp: -4, solid: SOLID });
+mb.add('pawL1', paw(1, false, true), { hp: -4, solid: SOLID });
+mb.add('pawLAngry0', paw(0, true, true), { hp: -6, solid: SOLID });
+mb.add('pawLAngry1', paw(1, true, true), { hp: -6, solid: SOLID });
+mb.add('pawR0', paw(0, false, false), { hp: -4, solid: SOLID });
+mb.add('pawR1', paw(1, false, false), { hp: -4, solid: SOLID });
+mb.add('pawRAngry0', paw(0, true, false), { hp: -6, solid: SOLID });
+mb.add('pawRAngry1', paw(1, true, false), { hp: -6, solid: SOLID });
 {
   // A soaked paw, dripping, pulled back.
   const p = paw(0, false, true).map((_x, _y, c) => (c === CLEAR ? c : WOOD.includes(c) ? shade(WOOD, WOOD.indexOf(c) - 1.5) : c));
@@ -236,8 +236,8 @@ function tail(frame: number): Pixels {
   }
   return outline(p, WOOD[0]);
 }
-mb.add('tail0', tail(0), { hp: -2 });
-mb.add('tail1', tail(1), { hp: -2 });
+mb.add('tail0', tail(0), { hp: -4 });
+mb.add('tail1', tail(1), { hp: -4 });
 {
   const p = sprite();
   for (let y = 0; y < 20; y++)
