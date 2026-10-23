@@ -15,7 +15,7 @@ export const EYE_OPEN = 64;
 export const EYE_DROOP = 14;
 export const EYE_SHUT = 24;
 export const EYE_LIFT = 8;
-import { addGate, addGoodThings, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
+import { addGate, addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 export function eyeBlocks(pal: Pal): Kit {
   const k = kit(pal);
@@ -95,7 +95,7 @@ export function eyeBlocks(pal: Pal): Kit {
     }
     return p;
   };
-  for (const sh of [0, 1, 2]) book.add(`thread${sh}`, thread(sh), { grav: GRAV.none });
+  for (const sh of [0, 1, 2, 3, 4]) book.add(`thread${sh}`, thread(sh), { grav: GRAV.none });
   // the Spirit's updraft: air that lifts, in rising streaks of light
   const lift = (shade: number, f: number) => {
     const p = starry(40 + shade, shade);
@@ -253,5 +253,9 @@ export function eyeBlocks(pal: Pal): Kit {
   ])
     blob(olive, x, y, 2, 1.2, R('leaf'), 1, 3);
   book.add('olive', olive, { score: 100, touch: 'sky4', grav: GRAV.down });
+
+  // the town's poor, sleeping out at the needle's foot: a camel who passed some by on the road
+  // and comes short of grace still has gold for them here (no one is stranded below the eye)
+  for (const who of ['beggar', 'widow', 'kids', 'blind'] as const) addSoul(k, who, () => town(3));
   return k;
 }

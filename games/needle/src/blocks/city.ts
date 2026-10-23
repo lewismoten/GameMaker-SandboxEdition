@@ -120,6 +120,12 @@ export function cityBlocks(pal: Pal): Kit {
   micro(sign, 5, 6, 'EYE', c('ink', 0));
   micro(sign, 3, 12, 'GATE', c('ink', 0));
   book.add('gateSign', sign, { solid: SOLID });
+  // under it, how to go through: hump down, then crawl (the keys, as the help page gives them)
+  const how = wall(10, false);
+  how.rect(1, 3, 18, 13, c('wood', 3)).frame(1, 3, 18, 13, c('wood', 1));
+  micro(how, 3, 4, 'DOWN', c('ink', 0));
+  micro(how, 5, 10, 'Z/C', c('ink', 0));
+  book.add('kneelSign', how, { solid: SOLID });
 
   // ---------- the market ----------
   const awning = (stripe: string) => {

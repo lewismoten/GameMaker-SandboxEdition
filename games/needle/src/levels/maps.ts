@@ -126,6 +126,7 @@ const CITY: Record<string, string> = {
   g: 'gateway',
   d: 'doorway',
   S: 'gateSign',
+  K: 'kneelSign',
   R: 'awningR',
   B: 'awningB',
   I: 'post',
@@ -241,7 +242,7 @@ export function city(book: BlockBook): Level {
   // crates stacked by the wall, the golden lamp on top
   m.set(64, 9, 'X').col(65, 8, 9, 'X').col(66, 7, 9, 'X').set(66, 6, 'O').set(67, 9, 'J');
   // the city wall and the little needle gate: one block high (hump down and crawl through)
-  m.col(70, 0, 8, 'W').col(71, 0, 8, 'W').set(70, 6, 'S').row(9, 70, 71, 'd');
+  m.col(70, 0, 8, 'W').col(71, 0, 8, 'W').set(70, 6, 'S').set(70, 7, 'K').row(9, 70, 71, 'd');
   // outside: the road
   m.row(9, 72, 78, 'u').set(76, 9, '>');
   m.richMan(10, 9);
@@ -363,8 +364,9 @@ export function tailor(book: BlockBook): Level {
   m.set(4, 6, 'L').set(20, 12, 'w').set(30, 3, 'L').set(40, 6, 'w').set(44, 11, 'L').set(52, 7, 'w');
   // the seamstress by the door, a spool on the floor; the first thread, frayed halfway up
   m.set(5, 15, 'q').set(7, 15, 's').col(8, 1, 15, '|').set(8, 15, 'f').fill(9, 12, 2, 4, 'r').set(3, 15, 'c');
-  // the first shelf: the widow, a pincushion to hop, a moth, a spool; cloth and scraps under it, and the scissors
-  m.row(8, 9, 21, '-').set(13, 7, 'W').set(16, 7, 'x').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 3, 3, 'b').set(15, 15, 'c');
+  // the first shelf: the widow, a pincushion to hop, a moth, a spool; cloth and scraps under it, and the scissors (the blue bolts
+  // step up from the floor to the shelf, so a camel who drops down there can climb back)
+  m.row(8, 9, 21, '-').set(13, 7, 'W').set(16, 7, 'x').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 2, 3, 'b').col(21, 11, 15, 'b').set(15, 15, 'c');
   // the first great needle: its eye (an eye gate) at the shelf, the shelf on through it
   m.col(22, 1, 5, 'N').set(22, 6, 'A').set(22, 7, 'G').set(22, 8, 'V').col(22, 9, 14, 'N').set(22, 15, 'v').row(8, 23, 25, '-');
   // the sewing machine's table: its needle stabs down (kneel under it); a spool, the beggar
@@ -410,7 +412,7 @@ export const eyeShade = (row: number): number => {
 export function eye(book: BlockBook): Level {
   const W = 26;
   const H = 46;
-  const m = new MapBuilder(book, { '.': 'bg' }, 'edge');
+  const m = new MapBuilder(book, { '.': 'bg', B: 'beggar', v: 'widow', k: 'kids', n: 'blind' }, 'edge');
   for (const [a, b, s] of EYE_SHADES) for (let y = a; y <= b; y++) m.row(y, 1, W - 2, s < 0 ? `band${Math.floor(-s)}` : s === 0 ? 'bg' : `sky${s}`);
   m.fill(0, 44, W, 2, 'dune')
     .col(0, 0, 43, 'edge')
@@ -419,6 +421,8 @@ export function eye(book: BlockBook): Level {
   // the sleeping city far below, the moon
   for (let x = 1; x < W - 1; x++) if (x < 11 || x > 14) m.set(x, 43, x % 2 ? 'town0' : 'town1');
   m.set(20, 34, 'moon');
+  // the town's poor, sleeping out at the needle's foot (grace for a camel who comes short of it)
+  m.text(6, 43, 'BvknB');
   // the great golden needle: its point in the sand, its shaft, its head and its eye
   m.set(12, 43, 'pointL').set(13, 43, 'pointR');
   for (let y = 7; y <= 42; y++) m.set(12, y, `shaftL${Math.min(5, eyeShade(y))}`).set(13, y, `shaftR${Math.min(5, eyeShade(y))}`);
@@ -431,8 +435,10 @@ export function eye(book: BlockBook): Level {
   cloud(31, 2, 10);
   for (let y = 13; y <= 30; y++) m.set(3, y, `lift${Math.max(1, Math.min(4, eyeShade(y)))}a`);
   cloud(14, 4, 11);
-  // the right side: clouds up to the eye
-  cloud(14, 14, 20);
+  // the right side: clouds up to the eye, and a second golden thread down to the sand, so a
+  // camel who falls off them on this side of the needle can climb back
+  for (let y = 12; y <= 43; y++) m.set(21, y, `thread${Math.min(4, eyeShade(y))}`);
+  cloud(14, 14, 21);
   cloud(11, 16, 19);
   cloud(8, 19, 22);
   cloud(6, 14, 18);
