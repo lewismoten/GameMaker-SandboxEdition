@@ -163,7 +163,7 @@ export function introFli(): Uint8Array {
     mainStreet(p, 3);
     const x = -150 + t * 8;
     stand(p, x, 100, 1, "LEO'S");
-    p.rect(x + 70, 140, 14, 2, c('ink', 0));
+    p.rect(x + 70, 146, 14, 2, c('ink', 0));
     chez(p, x + 84, 122, 1.1, t);
     say(p, ['July the Fourth.', "Doc Leo's root beer stand rolls in."]);
     frames.push(p);
@@ -263,7 +263,7 @@ export function paradeScreen(): { px: Pixels; pal: Uint8Array } {
     for (let a = 0; a < 13; a++) p.line(fx, fy, fx + Math.cos(a / 2.07) * 16, fy + Math.sin(a / 2.07) * 16, col);
   }
   stand(p, 20, 96, 1, "LEO'S");
-  p.rect(90, 136, 14, 2, c('ink', 0));
+  p.rect(90, 142, 14, 2, c('ink', 0));
   chez(p, 104, 118, 1.1);
   scaleBlit(p, corgi(0), 180, 150, 2);
   bigLeo(p, 232, 112, 1.1, true);
