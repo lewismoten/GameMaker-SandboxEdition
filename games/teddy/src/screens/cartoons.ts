@@ -139,7 +139,7 @@ export function carFli(): Uint8Array {
     r.frame(
       (p) => {
         scaleBlit(p, car, x, 80, 3);
-        scaleBlit(p, head, x + 34, 100 - (f > 12 ? f % 2 : 0), 2);
+        scaleBlit(p, head, x + 34, 112 - (f > 12 ? f % 2 : 0), 2);
         scaleBlit(p, POSES[f < 12 ? 'front' : f < 20 ? 'frontTilt' : 'frontBark'], 60, 140, 2);
         if (f >= 12) for (let k = 0; k < 3; k++) p.rect(x - 10 - k * 9 - (f % 2) * 3, 150 + k * 6, 7 - k * 2, 1, c('paint', 3));
         if (f < 12) {
@@ -183,7 +183,7 @@ export function paradeFli(): Uint8Array {
       const x0 = -260 + f * 7;
       (['drum', 'banner', 'balloons'] as const).forEach((kind, i) => scaleBlit(p, marcher(kind, (f + i) % 2), x0 + 240 + i * 46, 82 - ((f + i) % 2), 2));
       scaleBlit(p, car, x0 + 90, 72, 3);
-      scaleBlit(p, head, x0 + 124, 92 - (f % 2), 2);
+      scaleBlit(p, head, x0 + 124, 104 - (f % 2), 2);
       scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
       scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
       caption(p, f < 30 ? 'AND AFTER THE BIG SHOW...' : 'THE KLOWN KLUB PARADE!', 8);

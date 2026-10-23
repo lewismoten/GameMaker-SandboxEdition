@@ -10,8 +10,9 @@ const strip = (n: string) => n.replace(/^(treat|bone)~/, '').replace(/_\d+$/, ''
 const GRID = /^(?!cloud)([A-Za-z]+?)(\d)(\d)$/; // (not the clouds: cloud<band><part>)
 
 /** Joins drawn as edges on purpose (looked at): Doc Leo's face on the billboard, one picture cut
- * into blocks. */
-const SEAM_OK = ['bb00|bb10', 'bb10/bb11', 'bb01|bb11', 'bb11|bb21', 'bb11/bb12'];
+ * into blocks; and the CitiCar's hood, where the scenery behind it (a hedge over the path) has
+ * its own edge showing past the slope of the windshield. */
+const SEAM_OK = ['bb00|bb10', 'bb10/bb11', 'bb01|bb11', 'bb11|bb21', 'bb11/bb12', 'carRoofR/carBack'];
 
 export function align(): number {
   const names = new Map<string, string[]>();
