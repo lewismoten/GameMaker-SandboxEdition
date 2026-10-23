@@ -22,6 +22,11 @@ export interface BoxItem {
   screen?(sheets: Sheet[]): HTMLElement;
   /** Shows the red film button. */
   redFilm?: boolean;
+  /**
+   * A booklet of its own (a second manual): shown, turned and printed page by page like the
+   * manual. `render` then gives only its cover, for the box's list of pieces.
+   */
+  pages?(): Promise<BookPage[]>;
 }
 
 type PrintMode = 'item' | 'booklet' | 'all';
@@ -31,6 +36,9 @@ export interface BoxOptions {
   binding?: 'staples' | 'comb';
 }
 
+const COMB_HOW = 'two pages a side: fold the stack, or cut it and bind it';
+const STAPLE_HOW = 'two pages a side: fold the stack, staple the fold';
+
 /** Gap between the pages of a comb-bound spread, as a fraction of a page's width. */
 const COMB_GAP = 0.07;
 
@@ -39,8 +47,24 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
   return new Promise((resolve) => {
     let current = 'manual';
     let at = 0;
-    const total = pages.length;
-    const stapled = centerSpread(total);
+    // the booklet on the stage: the manual, or a booklet in the box (BoxItem.pages)
+    let book = pages;
+    let bookId = 'manual';
+    let bookComb = comb;
+    let total = pages.length;
+    let stapled = centerSpread(total);
+    const marks = new Map<string, number>(); // the page each booklet was left open at
+    const booklets = new Map<string, Promise<BookPage[]>>();
+    const isBook = (id = current) => id === 'manual' || !!items.find((i) => i.id === id)?.pages;
+    const openBook = (id: string, p: BookPage[], bound: boolean) => {
+      marks.set(bookId, at);
+      book = p;
+      bookId = id;
+      bookComb = bound;
+      total = p.length;
+      stapled = centerSpread(total);
+      at = marks.get(id) ?? 0;
+    };
     // the stage scrolls a tall piece: focusable, so the keyboard can scroll it too
     const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown' });
     const tray = h('ul', { class: 'gmb-tray-list' });
@@ -57,7 +81,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const two = () => stage.clientWidth >= 760;
 
     // ---- the manual
-    const spread = h('div', { class: `gmb-spread gmb-pages${comb ? ' comb' : ''}` });
+    const spread = h('div', { class: 'gmb-spread gmb-pages' });
     let turned: 1 | -1 | 0 = 0;
     const nav = h(
       'div',
@@ -72,12 +96,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       at = shown[0];
       const availW = stage.clientWidth - 24;
       const availH = stage.clientHeight - 64;
-      const gap = comb ? COMB_GAP * (isTwo ? 1 : 0.5) : 0;
-      const pw = Math.max(120, Math.min(availW / ((isTwo ? 2 : 1) + gap + (comb ? (isTwo ? 0.06 : 0.12) : 0)), (availH * PAGE_W) / PAGE_H));
+      const gap = bookComb ? COMB_GAP * (isTwo ? 1 : 0.5) : 0;
+      const pw = Math.max(120, Math.min(availW / ((isTwo ? 2 : 1) + gap + (bookComb ? (isTwo ? 0.06 : 0.12) : 0)), (availH * PAGE_W) / PAGE_H));
       spread.style.setProperty('--pw', `${pw}px`);
       spread.replaceChildren(
         ...shown.map((i, k) => {
-          const el = pageElement(pages[i], i);
+          const el = pageElement(book[i], i);
           if (shown.length === 2) el.classList.add(k === 0 ? 'left' : 'right');
           else if (isTwo) el.classList.add(i === 0 ? 'right' : 'left');
           el.addEventListener('click', () => go(shown.length === 2 && k === 0 ? -1 : 1));
@@ -86,7 +110,9 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       );
       spread.classList.toggle('one', shown.length === 1 && isTwo);
       spread.classList.toggle('alone-right', shown.length === 1 && isTwo && shown[0] === 0);
-      if (comb) {
+      spread.classList.toggle('comb', bookComb);
+      delete spread.dataset.comb;
+      if (bookComb) {
         // the comb runs along the bound edge: between the pages, or beside a page shown alone
         const side = shown.length === 2 ? 'mid' : shown[0] % 2 === 0 ? 'start' : 'end'; // even pages are right-hand pages
         spread.dataset.comb = side;
@@ -108,12 +134,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
           ? `Cover · ${total} pages`
           : shown[0] === total - 1
             ? 'Back cover'
-            : `Page ${shown.join('–')} of ${total - 2}${!comb && shown[0] === stapled[0] ? ' · center' : ''}`;
+            : `Page ${shown.join('–')} of ${total - 2}${!bookComb && shown[0] === stapled[0] ? ' · center' : ''}`;
       stage.replaceChildren(spread, nav);
       crispShots(spread);
     };
     const go = (dir: 1 | -1) => {
-      if (current !== 'manual') return;
+      if (!isBook()) return;
       const was = at;
       at = stepSpread(at, total, two(), dir);
       if (at !== was) turned = dir;
@@ -149,12 +175,29 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       const item = items.find((i) => i.id === id);
       filmBtn.hidden = !item?.redFilm;
       if (!item?.redFilm) (film.hide(), lens.hide());
-      if (id === 'manual') showManual();
+      bookletBtn.firstChild!.textContent = item?.pages ? 'This booklet, two pages a side' : 'Manual as a booklet';
+      bookletBtn.lastChild!.textContent = !item?.pages && comb ? COMB_HOW : STAPLE_HOW;
+      if (id === 'manual') {
+        openBook('manual', pages, comb);
+        showManual();
+      } else if (item?.pages) void showBooklet(item);
       else if (item) void showItem(item);
+    };
+    const bookletOf = (item: BoxItem) => {
+      let p = booklets.get(item.id);
+      if (!p) booklets.set(item.id, (p = item.pages!()));
+      return p;
+    };
+    const showBooklet = async (item: BoxItem) => {
+      stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Opening…'));
+      const p = await bookletOf(item);
+      if (current !== item.id) return;
+      openBook(item.id, p, false);
+      showManual();
     };
 
     const entries: { id: string; title: string; note?: string; icon: string; promised?: boolean }[] = [
-      { id: 'manual', title: 'Manual', note: `${total} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
+      { id: 'manual', title: 'Manual', note: `${pages.length} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
       ...items,
     ];
     for (const it of entries)
@@ -182,24 +225,28 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       s.el.style.width = `${s.w * scale}in`;
       return h('div', { class: `pp-print-page ${land ? 'land' : ''}` }, small ? h('div', { class: 'pp-cut' }, s.el) : s.el);
     };
-    const manualSingle = () =>
-      pages.map((p, i) => {
+    const manualSingle = (of = pages) =>
+      of.map((p, i) => {
         const el = pageElement(p, i);
         return h('div', { class: 'pp-print-page' }, el);
       });
-    const manualBooklet = () =>
-      bookletSheets(total).flatMap((s) =>
-        [s.front, s.back].map((pair) => h('div', { class: 'pp-print-page land booklet-side' }, ...pair.map((i) => pageElement(pages[i], i)))),
+    const manualBooklet = (of = pages) =>
+      bookletSheets(of.length).flatMap((s) =>
+        [s.front, s.back].map((pair) => h('div', { class: 'pp-print-page land booklet-side' }, ...pair.map((i) => pageElement(of[i], i)))),
       );
     const print = async (mode: PrintMode) => {
       menu.hidden = true;
       const out: HTMLElement[] = [];
-      if (mode === 'booklet') out.push(...manualBooklet());
-      else if (mode === 'item' && current === 'manual') out.push(...manualSingle());
+      // the booklet on the stage (the manual unless a booklet in the box is open)
+      const shownBook = isBook() ? book : pages;
+      if (mode === 'booklet') out.push(...manualBooklet(shownBook));
+      else if (mode === 'item' && isBook()) out.push(...manualSingle(book));
       else {
         const list = mode === 'all' ? items : items.filter((i) => i.id === current);
         if (mode === 'all') out.push(...manualSingle());
-        for (const it of list) for (const s of await it.render()) out.push(sheetPage(s));
+        for (const it of list)
+          if (it.pages) out.push(...manualSingle(await bookletOf(it)));
+          else for (const s of await it.render()) out.push(sheetPage(s));
       }
       printRoot.replaceChildren(...out);
       document.documentElement.classList.add('gmb-printing');
@@ -214,11 +261,17 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     printRoot.replaceChildren(...manualSingle());
     window.addEventListener('afterprint', afterPrint);
 
+    const bookletBtn = h(
+      'button',
+      { onclick: () => void print('booklet') },
+      'Manual as a booklet',
+      h('small', null, comb ? COMB_HOW : STAPLE_HOW),
+    );
     const menu = h(
       'div',
       { class: 'gmb-print-menu', hidden: true },
       h('button', { onclick: () => void print('item') }, 'This piece'),
-      h('button', { onclick: () => void print('booklet') }, 'Manual as a booklet', h('small', null, comb ? 'two pages a side: fold the stack, or cut it and bind it' : 'two pages a side: fold the stack, staple the fold')),
+      bookletBtn,
       h('button', { onclick: () => void print('all') }, 'Everything in the box'),
     );
 
@@ -242,13 +295,13 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       e.stopImmediatePropagation(); // not for the PC underneath
       if (e.key === 'ArrowRight' || e.key === 'PageDown') go(1);
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(-1);
-      else if (e.key === 'Home') ((at = 0), current === 'manual' && showManual());
+      else if (e.key === 'Home') ((at = 0), isBook() && showManual());
       else if (e.key === 'Escape') menu.hidden ? close() : (menu.hidden = true);
       else if ((e.key === 'Enter' || e.key === ' ') && isShot(e.target)) enlarge(e.target);
       else return;
       e.preventDefault();
     };
-    const onResize = () => (current === 'manual' ? showManual() : fitSheets());
+    const onResize = () => (isBook() ? showManual() : fitSheets());
     window.addEventListener('keydown', onKey, true);
     window.addEventListener('resize', onResize);
 
