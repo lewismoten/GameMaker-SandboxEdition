@@ -11,6 +11,7 @@ import { blockCanvas } from '../editor/core/draw';
 import { chooseBlock } from '../editor/widgets/blockChooser';
 import { setHashParams } from '../urlState';
 import { SAVES_CHANGED } from '../project/storage';
+import { unlockAchievement } from '../achievements';
 import {
   backupNow,
   changeSaveLevel,
@@ -106,6 +107,7 @@ async function confirmDialog(title: string, text: string, ok: string, danger = f
 
 /** Opens the panel for a game; `initial` is an address value (a slot number, 'scores', 'backups'). */
 export async function openSaves(target: SavesTarget, initial?: string): Promise<void> {
+  unlockAchievement('saves-panel');
   let view: View = parseView(initial);
   let saves: GameSaves | undefined;
   let labels: GameLabels | undefined;
