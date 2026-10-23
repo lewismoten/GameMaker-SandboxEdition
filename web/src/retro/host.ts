@@ -35,6 +35,8 @@ export interface FolderGame {
   hd?: HdGame;
   catalogId?: string;
   notice?: string;
+  /** A download that is free to change (The Bard of Bizarre's games): Game-Maker copies it to C:\GM to design it. */
+  free?: boolean;
 }
 
 export interface InsertedDisk {

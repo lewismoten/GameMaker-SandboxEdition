@@ -9,6 +9,7 @@ import { Project } from '../../editor/core/project';
 import { download } from '../../editor/core/ui';
 import { ComputerDrives } from './drives';
 import { dosDir } from '../../project/dosDir';
+import { isBizarreGame } from '../../project/bizarre';
 
 export abstract class ComputerFolders extends ComputerDrives {
   /**
@@ -45,7 +46,9 @@ export abstract class ComputerFolders extends ComputerDrives {
     }
     if (drive === 'C' && top === 'DOWNLOAD') {
       const g = cat.find((c) => dosDir(c) === dir && this.downloads.has(c.id));
-      return g ? { title: g.title, files: new GameFiles(await this.catalogFiles(g)), where: path, kind: 'shareware', notice: g.notice } : undefined;
+      if (!g) return undefined;
+      const free = isBizarreGame(g) || undefined;
+      return { title: g.title, files: new GameFiles(await this.catalogFiles(g)), where: path, kind: 'shareware', notice: g.notice, ...(free ? { free, catalogId: g.id } : {}) };
     }
     if (drive === 'D' && this.cdIn && (top === 'GAMEWARE' || top === 'GM')) {
       const g = cat.find((c) => c.kind === 'gameware' && c.id.toUpperCase() === dir);
@@ -64,6 +67,17 @@ export abstract class ComputerFolders extends ComputerDrives {
       return undefined;
     }
     if (g.kind === 'hd') return hdProject(g.hd!);
+    if (g.kind === 'shareware' && g.free) {
+      // free to change: designed from a copy in C:\GM (the download itself stays as it came)
+      const gam = g.files.mainGame();
+      // a copy made before (here or with Edit a copy on the home page) is opened again
+      const mine = (await this.hdGames()).find((x) => x.source === 'project' && x.title === g.title);
+      if (mine) {
+        this.copiedTo = `C:\\GM\\${mine.dir}`;
+        return hdProject(mine);
+      }
+      return this.copyToHardDisk(g.title, g.files, gam, undefined, `${g.where} is a free download, kept as it came.`);
+    }
     if (g.kind === 'shareware') {
       if (this.quiet) return undefined;
       await errorBox(this, `${g.title} is shareware: it can be played, not changed.`, 'Register it with its author!  (C)ontinue');

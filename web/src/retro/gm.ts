@@ -321,7 +321,7 @@ async function utilities(h: RetroHost): Promise<void> {
         }
       }
     } else if (ch === 3) {
-      if (game.kind === 'shareware') {
+      if (game.kind === 'shareware' && !game.free) {
         await errorBox(h, `${game.title} is shareware: get copies from the BBS`, 'or from its author.  (C)ontinue');
         continue;
       }
