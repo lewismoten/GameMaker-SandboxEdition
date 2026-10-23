@@ -1,12 +1,13 @@
-// The sound sets: a PC speaker sound for every effect, each backed by a Sound Blaster .VOC. The
-// noises are synthesized here: Carl's buzz going by (its pitch drops as he passes, the Doppler
-// way), a little buzz as he takes off, the whoosh of a barrel roll, a smack, a splat, a crunch of
-// a snack, a ding, a creak, a sip; the singing is cut from the song itself (clips.ts): "There's a fly in
-// the room" for an extra life, "I swing and I miss" when a barrel roll makes something miss, "...to
-// flash me a smile" for every smile on the kitchen walls, "On my lamp" as the lamp takes him,
-// "I've named it Carl. I hate Carl." when a life is lost, "I've opened the window" as the window
-// opens, "Carl has broken time" as the clock breaks, "Carl has seen things" for a life in the
-// wild, and "Carl's got the aux cord now" at the very end.
+// The sound sets: a PC speaker sound for every effect, nearly each backed by a Sound Blaster .VOC
+// (flying and the buzz key are the speaker's alone, so they never cut a clip off). The noises are
+// synthesized here: Carl's buzz going by (its pitch drops as he passes, the Doppler way), the
+// whoosh of a barrel roll, a smack, a splat, a crunch of a snack, a ding, a creak, a sip; the
+// singing is cut from the song itself (clips.ts): "There's a fly in the room" for an extra life, "I
+// swing and I miss" when a barrel roll makes something miss, "...to flash me a smile" for every
+// smile on the kitchen walls, "On my lamp" as the lamp takes him, "I've named it Carl. I hate
+// Carl." when a life is lost, "I've opened the window" as the window opens, "Carl has broken time"
+// as the clock breaks, "Carl has seen things" for a life in the wild, and "Carl's got the aux cord
+// now" at the very end.
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { rng } from '../../../kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
@@ -51,8 +52,6 @@ export function buildVocs(): Record<string, Uint8Array> {
   const vocs: Record<string, Uint8Array> = {};
   // Carl's buzz going by, close to your ear: rising as he comes, dropping as he passes (Doppler)
   vocs.buzz = sample(0.9, buzzer((t) => 205 + 55 * Math.tanh((0.45 - t) * 7), 2), { envelope: (u) => Math.exp(-(((u - 0.45) / 0.28) ** 2)), gain: 0.9 });
-  // a little buzz taking off
-  vocs.fly = sample(0.22, buzzer((t) => 230 + t * 120, 3), { envelope: env(0.05, 1.4), gain: 0.5 });
   // the barrel roll: a whoosh up and over
   vocs.roll = sample(0.4, mix([lowNoise(21, (t) => 0.08 + Math.sin(t * Math.PI * 2.5) ** 2 * 0.4), 0.7], [buzzer((t) => 220 + Math.sin(t * Math.PI * 2.5) * 80, 4), 0.25]), { envelope: env(0.15, 1.2) });
   // a smack (the towel, the magazine) and Carl's "ow"
@@ -90,10 +89,14 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.gain, gain, speaker((i) => (i < 8 ? 1175 + i * 120 : 0)));
   const spend = { house: 'lamp', kitchen: 'creak', bed: 'window', yard: 'creak', wild: 'time', aux: 'creak' }[place];
   add(SND.spend, spend, SPEAKER.noise(3, 60, 300));
-  add(SND.fly, 'fly', speaker((i) => (i < 6 ? 220 + (i % 2) * 30 : 0)));
+  // flying is the PC speaker's alone: every move starts it, and a .VOC there would cut off
+  // whatever clip is playing (a lyric, the level's last line) the moment Carl changes course
+  set.freqs[SND.fly] = speaker((i) => (i < 6 ? 220 + (i % 2) * 30 : 0));
   add(SND.roll, 'roll', speaker((i) => (i < 12 ? 300 + Math.sin(i / 2) * 200 : 0)));
   add(SND.hurt, 'smack', SPEAKER.warble(500, 120, 2.4));
   add(SND.splat, 'splat', SPEAKER.fall(700, 120));
-  add(SND.buzz, 'buzz', SPEAKER.warble(220, 40, 3));
+  // Carl's buzz (B) is the PC speaker's alone: the ear it wakes says "I swing and I miss" a
+  // moment later, and a .VOC here would be cut off by it (buzz.voc plays when an ear counts)
+  set.freqs[SND.buzz] = SPEAKER.warble(220, 40, 3);
   return set;
 }
