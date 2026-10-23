@@ -118,37 +118,42 @@ export function onChez(x: number, y: number): boolean {
 }
 
 /** The car alone on a picture (HOLE where there is no car), facing right, `s` pixels per unit
- * (1: the 40x20 two-block car; smaller for one seen far off, bigger for a close-up). */
-function profile(k: ChezInk, port: boolean, s: number): Pixels {
+ * (1: the 40x20 two-block car; smaller for one seen far off, bigger for a close-up), `t` pixels
+ * per unit up and down (t = s but for a game whose grid needs it taller than true). */
+function profile(k: ChezInk, port: boolean, s: number, t = s): Pixels {
   const W = Math.round(40 * s);
-  const H = Math.round(20 * s);
+  const H = Math.round(20 * t);
   const p = new Pixels(W, H, HOLE);
   const stripe = k.stripe ?? k.tire;
   const pin = k.pin ?? k.glass[1];
   const rim = k.rim ?? pin;
-  const box = (x: number, y: number, w: number, h: number, c: number) => p.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), c);
+  const box = (x: number, y: number, w: number, h: number, c: number) => p.rect(Math.round(x * s), Math.round(y * t), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * t)), c);
   const at = (x: number) => Math.round(x * s);
-  // white steel wheels and chrome caps on black tires, tucked up behind the quarters
+  const atY = (y: number) => Math.round(y * t);
+  // white steel wheels and chrome caps on black tires (round however tall the car), on the
+  // ground and tucked up behind the quarters
+  const r = TIRE * (s + t) / 2;
+  const cy = H - r - 0.5;
   for (const wx of CHEZ_WHEELS) {
-    p.disc(wx * s - 0.5, CHEZ_AXLE * s - 0.5, TIRE * s, k.tire);
-    p.disc(wx * s - 0.5, CHEZ_AXLE * s - 0.5, Math.max(0.6, 2.15 * s), rim);
-    if (s >= 0.8) p.disc(wx * s - 0.5, CHEZ_AXLE * s - 0.5, Math.max(0.5, 1.0 * s), k.hub);
+    p.disc(wx * s - 0.5, cy, r, k.tire);
+    p.disc(wx * s - 0.5, cy, Math.max(0.6, (r * 2.15) / TIRE), rim);
+    if (s >= 0.8) p.disc(wx * s - 0.5, cy, Math.max(0.5, r / TIRE), k.hub);
   }
   // plain square black bumpers at both ends (not the later CommutaCar's long thick ones)
   box(35.2, 13.0, 2.0, 1.8, k.bumper);
   box(3.9, 12.8, 2.0, 1.8, k.bumper);
-  const px = 1 / s; // one pixel, in units
+  const px = 1 / t; // one pixel (up and down), in units
   const w = Math.max(STRIPE_W, px) / 2;
   const gap = Math.max(STRIPE_GAP, 2 * px) / 2;
   const fall = 11.9 / 18.1; // the windshield-hood line
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       const X = (x + 0.5) / s;
-      const Y = (y + 0.5) / s;
+      const Y = (y + 0.5) / t;
       if (!onChez(X, Y)) continue;
       // flat red sides, lit along the top of the hood's slope, shadowed under the door
       let c = k.body[Y > 16.9 ? 0 : X > 17.9 && Y - 1.3 - (X - 17.9) * fall < Math.max(0.9, 1.5 * px) ? 2 : 1];
-      if (Y < ROOF_EDGE || (Y < 1.3 + px && X < 17.9 + px)) c = k.roof; // (at least a pixel of it)
+      if (Y < ROOF_EDGE || (Y < 1.3 + px && X < 17.9 + 1 / s)) c = k.roof; // (at least a pixel of it)
       else if (inPoly(CHEZ_WINDOW, X, Y)) c = k.glass[0];
       else if (X >= BAND_END - (s >= 2 ? px : 0)) {
         // the stripes: a dark pair, the red between them, a white pinstripe round the band
@@ -163,19 +168,19 @@ function profile(k: ChezInk, port: boolean, s: number): Pixels {
     }
   if (s >= 1) {
     // the windshield, edge on, down the top of the slope; a glint on the door glass
-    p.line(at(18.3), at(1.7), at(27.2), at(7.5), k.glass[1]);
-    if (s >= 1.5) p.line(at(15.5), at(7.6), at(19), at(3.5), k.glass[1]);
+    p.line(at(18.3), atY(1.7), at(27.2), atY(7.5), k.glass[1]);
+    if (s >= 1.5) p.line(at(15.5), atY(7.6), at(19), atY(3.5), k.glass[1]);
     // the door: its seams and its chrome handle
     const seam = (x0: number, x1: number, y0: number, y1: number) => {
-      for (let y = at(y0); y < at(y1); y++) {
-        const x = at(x0 + ((x1 - x0) * ((y + 0.5) / s - y0)) / (y1 - y0));
+      for (let y = atY(y0); y < atY(y1); y++) {
+        const x = at(x0 + ((x1 - x0) * ((y + 0.5) / t - y0)) / (y1 - y0));
         if (p.get(x, y) !== HOLE && p.get(x, y) !== k.glass[0]) p.set(x, y, k.trim);
       }
     };
     seam(12.1, 13.7, 2.2, 18.1);
     seam(26.1, 26.1, 8.3, 18.1);
     box(14.5, 10.6, 1.5, 0.6, k.chrome ?? k.hub);
-    if (s >= 3) for (let x = 28.4; x < 31.8; x += 0.5) p.set(at(x), at(BAND) - (Math.round(x * 2) % 3 === 0 ? 1 : 0), pin); // "electric"
+    if (s >= 3) for (let x = 28.4; x < 31.8; x += 0.5) p.set(at(x), atY(BAND) - (Math.round(x * 2) % 3 === 0 ? 1 : 0), pin); // "electric"
     if (s >= 2) box(13.7, 18.1, 12.4, 0.5, k.bumper); // the black rocker under the door
   }
   box(32.1, 8.9, 0.5, 1.1, k.lens ?? pin); // the headlight
@@ -194,20 +199,21 @@ function profile(k: ChezInk, port: boolean, s: number): Pixels {
   return p;
 }
 
-/** The car facing `facing` on its own picture, 255 where there is no car. */
-export function chezPicture(k: ChezInk, facing: 'left' | 'right' = 'right', scale = 1): Pixels {
-  return facing === 'left' ? profile(k, true, scale).flipX() : profile(k, false, scale);
+/** The car facing `facing` on its own picture, 255 where there is no car; `tall` stretches it
+ * up and down (1: true to the photos). */
+export function chezPicture(k: ChezInk, facing: 'left' | 'right' = 'right', scale = 1, tall = 1): Pixels {
+  return facing === 'left' ? profile(k, true, scale, scale * tall).flipX() : profile(k, false, scale, scale * tall);
 }
 
 /**
  * Parks THE CHEZ on `p` with its box's top left at (ox, oy): 40x20 at scale 1, 40s x 20s at
- * scale s. Facing 'left' shows the passenger side and its charge port; returns where the port
- * is, for a charger's cord.
+ * scale s (20s x tall high when stretched). Facing 'left' shows the passenger side and its
+ * charge port; returns where the port is, for a charger's cord.
  */
-export function chezSide(p: Pixels, ox: number, oy: number, k: ChezInk, facing: 'left' | 'right' = 'right', scale = 1): { portX: number; portY: number } {
+export function chezSide(p: Pixels, ox: number, oy: number, k: ChezInk, facing: 'left' | 'right' = 'right', scale = 1, tall = 1): { portX: number; portY: number } {
   const left = facing === 'left';
-  const car = chezPicture(k, facing, scale);
+  const car = chezPicture(k, facing, scale, tall);
   p.blit(car, ox, oy, HOLE);
   const px = Math.round(7.2 * scale);
-  return { portX: ox + (left ? car.w - 1 - px : px), portY: oy + Math.round(5.6 * scale) };
+  return { portX: ox + (left ? car.w - 1 - px : px), portY: oy + Math.round(5.6 * scale * tall) };
 }
