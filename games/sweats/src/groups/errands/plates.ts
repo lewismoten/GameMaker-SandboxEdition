@@ -208,7 +208,10 @@ export const plates: Monologue = {
     '4': 'entreePlate',
   },
   build: (m: MapBuilder) => {
-    const W = 58;
+    // the walk-off: OFF blocks more of the restaurant past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 13;
+    const W = 58 + OFF;
     m.row(0, 0, W - 1, '^').fill(0, 1, W, 9, '.').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
     for (const x of [6, 14, 27, 36, 46]) m.set(x, 1, 'pendant');
     const table = (x0: number, x1: number) => {
@@ -243,7 +246,7 @@ export const plates: Monologue = {
     m.mon(PM.busboy, 49, 10);
     m.set(53, 10, '$');
     m.set(56, 10, 'G');
-    m.link(56, 10, 'next');
+    m.link(56 + OFF, 10, 'next');
     return { start: [1, 10], size: [W, 13] };
   },
   monsters: platesMonsters,

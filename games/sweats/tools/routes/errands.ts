@@ -172,7 +172,8 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       floor(bot, 10, 'over the busboy');
       await must(bot, bot.walk(53, 'the coin'), 'coin');
       if (plot(bot) < PLATES) throw new Error(`only ${plot(bot)} plates`);
-      await leave(bot, bot.walk(56.5, 'the bus tub'), 'the gate');
+      await must(bot, bot.walk(57, 'the bus tub'), 'the gate');
+      await leave(bot, bot.walk(69.5, 'the walk-off'), 'the walk-off');
     });
   },
 
