@@ -16,7 +16,7 @@
     "remote": { "map": "den.map", "at": [30, 16] },
     "risi": { "map": "kitchen.map", "at": [25, 11] },
     "sandcast": { "map": "keep.map", "at": [32, 1] },
-    "sleuth": { "map": "act1.map", "at": [11, 56] },
+    "sleuth": { "map": "act2.map", "at": [75, 19] },
     "smirked": { "map": "foyer.map", "at": [30, 16] },
     "snowbound": { "map": "gale.map", "at": [13, 24] },
     "sweats": { "map": "hive.map", "at": [81, 15] },
