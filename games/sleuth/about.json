@@ -8,6 +8,7 @@
   "exe": "FINAL.EXE",
   "sound": "sb",
   "egg": { "counter": 25, "atLeast": 2 },
+  "tinHeart": { "map": "act1.map", "at": [11, 56] },
   "label": {
     "background": "#1a0608",
     "band": "#d4a62a",

@@ -8,6 +8,7 @@
   "exe": "BLASTER.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
+  "tinHeart": { "map": "s2a.map", "at": [16, 70] },
   "label": {
     "background": "#0b1a10",
     "band": "#36e07a",
