@@ -63,12 +63,10 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
       } else {
         for (const [x, y, r] of [[15, 22, 3], [22, 20, 4], [25, 27, 3], [17, 29, 2.5], [21, 25, 2]]) pic.disc(x, y0 + y, r, c('white', 2)).set(x - 1, y0 + y - 1, c('ice', 2));
       }
-      pic.disc(20, y0 + 24, 12, c('grey', 2)).ring(20, y0 + 24, 12, c('grey', 2)).ring(20, y0 + 24, 11, c('white', 2));
+      pic.ring(20, y0 + 24, 12, c('grey', 2)).ring(20, y0 + 24, 11.5, c('grey', 2)).ring(20, y0 + 24, 9.6, c('white', 2));
       pic.rect(3, y0 + 36, 34, 2, c('grey', 1));
     }
-    addPicture(book, 'tower', pic, wall(50), (col, row) => ({
-      solid: SOLID,
-    }));
+    addPicture(book, 'tower', pic, wall(50), () => ({ solid: SOLID }));
   }
   // the laundry basket (solid: the step up), heaped with the socks that didn't make it
   const basket = wall(51);
