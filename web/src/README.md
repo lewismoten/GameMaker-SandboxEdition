@@ -83,14 +83,16 @@ sound.
 the one chosen; edits go through `core/project.ts`, which autosaves to IndexedDB. Files
 are always written in the original binary formats.
 
-**Exports.** `shell/projectExport.ts` calls `export/`: `exportWebApp.ts` (the built
-player listed in `player-files.json`, the game's files, a manifest and a service worker),
-`exportSinglePage.ts` (`standalone.html` with the game embedded, built by
-`../scripts/singlePageBuild.ts`), and `exportDos.ts` (the files plus the CD's
-`XFERPLAY.EXE`, renamed after the game). The Mac, Windows and Linux downloads
-(`editor/shell/macDownload.ts`, `winDownload.ts`, `linuxDownload.ts`) put the single page into
-the players in `../public/mac`, `win` and `linux`; `../scripts/macDmg.ts`, `winExe.ts` and
-`linuxTar.ts` run the same code from the command line.
+**Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`,
+which calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`,
+the game's files, a manifest and a service worker), `exportSinglePage.ts` (`standalone.html`
+with the game embedded, built by `../scripts/singlePageBuild.ts`), `exportDos.ts` (the files
+plus the CD's `XFERPLAY.EXE`, renamed after the game), and the Mac, Windows and Linux
+downloads (`macApp.ts`, `winApp.ts`, `linuxApp.ts`), which put the single page into the
+players in `../public/mac`, `win` and `linux`, with `THIRD-PARTY-NOTICES.txt` (`notices.ts`).
+`export/downloadable.ts` says which catalog games may be downloaded, for the button and for
+`../scripts/macDmg.ts`, `winExe.ts` and `linuxTar.ts`, which run the same code from the
+command line.
 
 **Media.** `media/demo.ts` plays a `.REC` demo in the player; `media/demoPreview.ts` plays one inside a picture on the home page, with the demos' sound choice (`demoAudio.ts`). `walkthrough/` plays a Sandbox game's `walkthrough.json` and renders it to MP4 (`exportVideo.ts`, `mp4av.ts`). `media/video.ts` turns
 canvases into video: frame by frame with WebCodecs and `mp4Mux.ts`, or live with
