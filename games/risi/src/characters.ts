@@ -111,7 +111,7 @@ export interface MonsterOptions {
   /** The Gauls' charge: corners (blocks right, rows down) from where they start, and their speed. */
   charge?: [number, number][];
   chargeSpeed?: number;
-  /** Blocks an arrow falls. */
+  /** Rows below the tower's top an arrow comes down to. */
   fall?: number;
 }
 
@@ -142,7 +142,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   const charge = [corner(0, 0, o.chargeSpeed ?? 3), ...(o.charge ?? [[40, 0]]).map(([cx, cy]) => corner(cx, cy, o.chargeSpeed ?? 3, 0))];
   set[MON.gaul] = mon(anim('gaul0', 'gaul1', 3), { power: 230, thru: 0, end: -1 }, charge);
   set[MON.gaul2] = mon(anim('gaulB0', 'gaulB1', 3), { power: 230, thru: 0, end: -1 }, charge);
-  set[MON.arrow] = mon(anim('arrow0', 'arrow1', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 5), corner(-1, o.fall ?? 8, 5, 4)]);
+  // an arrow loosed from the tower: up and over, down into the field ahead of it
+  set[MON.arrow] = mon(anim('arrow0', 'arrow1', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 4), corner(2, -2, 4, 0), corner(4, -2, 4, 0), corner(6, 0, 4, 0), corner(7, o.fall ?? 2, 4, 0)]);
   set[MON.crow] = mon(anim('crow0', 'crow1', 4), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(6, 1, 2, 0), corner(10, -1, 2, 0), corner(4, 0, 2, 4), corner(0, 0, 2, 4)]);
   // III. the rooftops
   set[MON.spell] = mon(anim('spell0', 'spell1', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-3, -1, 2, 4), corner(-6, 0, 2, 4), corner(-9, -1, 2, 4)]);
@@ -158,7 +159,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.bather] = mon(anim('bather0', 'bather1', 16), { power: 230, thru: 1 }, still);
   // VI. the theater: a joke makes a stone face laugh; the laugher comes down to Marcus
   set[MON.stony] = mon(anim('stony0', 'stony1', 20), { power: 200, thru: 1, newmon: MON.laugher }, still);
-  set[MON.laugher] = mon(anim('laugher0', 'laugher1', 4), { power: 50, thru: 0, towards: 1 });
+  set[MON.laugher] = mon(anim('laugher0', 'laugher1', 4), { power: 50, thru: 0, towards: 2 });
   set[MON.cabbage] = mon(anim('cabbage0', 'cabbage1', 3), { power: 40, thru: 0, end: -1 }, [corner(0, 0, 3), corner(2, 0, 3, 0), corner(4, 2, 3, 0), corner(5, 5, 3, 0), corner(6, 9, 3, 0)]);
   set[MON.jester] = mon(anim('jester0', 'jester1', 7), { power: 50, thru: 0, newmon: MON.jesterOff }, still);
   set[MON.jesterOff] = away('jester1', 'jester0');

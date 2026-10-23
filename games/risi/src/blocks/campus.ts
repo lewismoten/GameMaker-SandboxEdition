@@ -254,6 +254,7 @@ export function buildCampus(pal: Pal): BlockBook {
   const alley = P();
   for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) alley.set(xx, y, shadeAt(R('grape'), 0, 1, 0.4 + y / 50, xx, y));
   book.add('alley', alley, air);
+  book.add('alleyLadder', ladder(alley), { grav: GRAV.none });
   // a chimney (solid), and the clever wise man's, which gives birth to spells
   const chimney = (magic: boolean) => {
     const p = dusk(38, 2, true);
