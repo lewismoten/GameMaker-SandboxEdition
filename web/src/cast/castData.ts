@@ -5,8 +5,10 @@
 //
 // New cameos go in cameos.json: { "<member id>": [{ "game": "<game id>", "as": "what they do" }] }.
 // They are added to that member's "Seen in" after the ones below (a game already listed is
-// kept once). A cameo in a game not in CAST_GAMES fails the test: add the game there first.
+// kept once). The Easter egg's and the tin heart's games come from each game's about.json
+// (hidden.json, scripts/castHidden.ts), so a new game shows up with no edit here. A cameo in a game not in CAST_GAMES fails the test: add the game there first.
 import CAMEOS from './cameos.json';
+import HIDDEN from './hidden.json';
 
 export type Family = 'sandbox' | 'bizarre';
 
@@ -207,6 +209,15 @@ const LISTED: CastMember[] = [
     appears: [],
   },
   {
+    id: 'easterEgg',
+    name: 'The Easter egg',
+    role: 'Hand-painted. Hidden. Not a chicken’s.',
+    hi: 'Zigzags on this side, stars on the other. Don’t tell anyone where I am.',
+    art: { game: 'teddy', width: 20, height: 19, alt: 'A painted Easter egg: a rose shell with blue zigzags, yellow dots and a white glint' },
+    bio: 'Somebody dyed it, painted it by hand (bands, zigzags, dots or stars) and tucked it away: one is hidden in every Sandbox and Bard of Bizarre game. Touch it for a few points and the satisfaction of having looked behind the couch. Nobody knows who keeps hiding them. (Not the Easter Bunny. He has an alibi.)',
+    appears: [],
+  },
+  {
     id: 'joe',
     name: 'Mystery Robot Joe',
     role: 'Night librarian, The Dog House',
@@ -367,9 +378,20 @@ const LISTED: CastMember[] = [
   },
 ];
 
-/** Everyone, with the cameos from cameos.json added to their games. */
+/** A hidden thing's place, from its game's about.json (hidden.json): only the level, never where on it. */
+const hiddenOn = (map: string) => `hidden somewhere on the ${map.replace(/\.map$/i, '').replace(/[_-]+/g, ' ')} map`;
+
+/**
+ * Everyone, with the cameos from cameos.json added to their games, and the hidden things (the
+ * Easter egg, the tin heart) in every game whose about.json places one (hidden.json, made by
+ * scripts/castHidden.ts), in cameos.json's words where it has some.
+ */
 export const CAST: CastMember[] = LISTED.map((m) => {
-  const more = ((CAMEOS as Record<string, Appearance[]>)[m.id] ?? []).filter((a) => !m.appears.some((b) => b.game === a.game));
+  const said = (CAMEOS as Record<string, Appearance[]>)[m.id] ?? [];
+  const placed = ((HIDDEN as unknown as Record<string, [string, string][]>)[m.id] ?? [])
+    .filter(([game]) => game in CAST_GAMES)
+    .map(([game, map]) => said.find((a) => a.game === game) ?? { game: game as CastGame, as: hiddenOn(map) });
+  const more = [...placed, ...said].filter((a, i, all) => !m.appears.some((b) => b.game === a.game) && all.findIndex((b) => b.game === a.game) === i);
   return more.length ? { ...m, appears: [...m.appears, ...more] } : m;
 });
 
