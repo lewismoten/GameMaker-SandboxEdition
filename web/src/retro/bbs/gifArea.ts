@@ -75,7 +75,10 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
 export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void> {
   const real = f.bytes / GIF_CPS;
   if (f.board === 'sofa') t.line(`|15Zmodem|07.  ${f.name}, |14${commas(f.bytes)}|07 bytes: |14${downloadLine(f.bytes, '|07, |14')}|07.`);
-  else t.line(`|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, about |14${Math.max(1, Math.round(real / 60))}|07 minute(s) at 14,400 bps.`);
+  else
+    t.line(
+      `|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, about |14${Math.max(1, Math.round(real / 60))}|07 minute(s) at 14,400 bps.`,
+    );
   let bytes: Uint8Array;
   try {
     bytes = await galleryBytes(f.name);

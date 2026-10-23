@@ -72,7 +72,7 @@ export function encodeKeys(keys: RecordedKey[]): string {
 export function decodeKeys(text: string): RecordedKey[] {
   const bin = atob(text);
   const out: RecordedKey[] = [];
-  for (let i = 0; i < bin.length; ) {
+  for (let i = 0; i < bin.length;) {
     let d = 0;
     let shift = 0;
     for (;;) {
@@ -154,7 +154,7 @@ export function youtubeText(o: YoutubeInfo): YoutubeText {
     '',
     `Play it in your browser: ${o.url}`,
     '',
-    'This video was recorded by the web app itself, frame by frame, at the game\'s 320×200 resolution.',
+    "This video was recorded by the web app itself, frame by frame, at the game's 320×200 resolution.",
   ];
   if (chapters.length >= 3) lines.push('', 'Chapters:', ...chapters.map((c) => `${clock(c.start)} ${c.title}`));
   return { title, description: lines.join('\n') };

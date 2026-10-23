@@ -3,13 +3,12 @@
 // Cluckington III (Doc Leo's rubber chicken) pops out of it and squawks. At 3:17 a.m. the
 // fridge downstairs stirs (The Great Dairy Reckoning of 3:17 A.M.); at midnight the chicken
 // comes out in a party hat for the brand-new day.
-import { h } from "../../editor/core/ui";
-import { flash, pressable, say } from "./propKit";
-import { roomSound } from "./propSound";
-import { deskNow } from "../../retro/dos/deskClock";
+import { h } from '../../editor/core/ui';
+import { flash, pressable, say } from './propKit';
+import { roomSound } from './propSound';
+import { deskNow } from '../../retro/dos/deskClock';
 
-const time = (d: Date) =>
-  d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+const time = (d: Date) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
 const BEEPS = [
   (t: string) => `Beep-beep! It’s ${t}. Right on time, as usual.`,
@@ -20,7 +19,7 @@ const BEEPS = [
 
 /** Sir Reginald Cluckington III: a yellow rubber chicken with a red comb, beak open. */
 function chickenArt(party: boolean): SVGElement {
-  const el = h("span");
+  const el = h('span');
   el.innerHTML = `<svg viewBox="0 0 60 60" width="66" height="66" aria-hidden="true">
     <path d="M14 34 q-8 -4 -6 -14 q6 4 10 6 z" fill="#f2c522" stroke="#8a6a00" stroke-width="1"/>
     <path d="M14 30 q2 -14 18 -14 q12 0 14 10 q2 12 -8 18 q-14 6 -24 -14 z" fill="#ffd93a" stroke="#8a6a00" stroke-width="1.2"/>
@@ -31,7 +30,7 @@ function chickenArt(party: boolean): SVGElement {
     <path d="M49 20 q2 6 -1 7 q-3 -2 -1 -7 z" fill="#e0242c"/>
     <circle cx="47" cy="13" r="1.8" fill="#111"/>
     <path d="M26 46 l-2 10 M34 46 l2 10 M21 56 h6 M33 56 h6" stroke="#f08a1c" stroke-width="2" stroke-linecap="round"/>
-    ${party ? '<path d="M41 7 l5 -7 4 8 z" fill="#3a6ee8" stroke="#fff" stroke-width="0.8"/><circle cx="45.5" cy="0.8" r="1.8" fill="#ffd400"/>' : ""}
+    ${party ? '<path d="M41 7 l5 -7 4 8 z" fill="#3a6ee8" stroke="#fff" stroke-width="0.8"/><circle cx="45.5" cy="0.8" r="1.8" fill="#ffd400"/>' : ''}
   </svg>`;
   return el.firstElementChild as SVGElement;
 }
@@ -39,7 +38,7 @@ function chickenArt(party: boolean): SVGElement {
 export function clockProp(clock: HTMLElement): () => void {
   let presses = 0;
   // the rubber chicken, ready to pop out from behind the watch's face like a cuckoo
-  const bird = h("div", { class: "clock-cuckoo", "aria-hidden": "true" });
+  const bird = h('div', { class: 'clock-cuckoo', 'aria-hidden': 'true' });
   clock.append(bird);
   const use = () => {
     presses++;
@@ -49,14 +48,14 @@ export function clockProp(clock: HTMLElement): () => void {
     const min = now.getMinutes();
     if (hr === 3 && min === 17) {
       roomSound.watch();
-      flash(clock, "clock-fridge", 2400);
+      flash(clock, 'clock-fridge', 2400);
       say(clock, `3:17 a.m. Somewhere downstairs a fridge door creaks open. The dairy is stirring…`);
       return;
     }
     const midnight = hr === 0 && min < 5;
     if (midnight || presses % 3 === 0) {
       bird.replaceChildren(chickenArt(midnight));
-      flash(bird, "out", 1900);
+      flash(bird, 'out', 1900);
       roomSound.squawk(midnight ? 3 : 2);
       say(
         clock,
@@ -68,14 +67,13 @@ export function clockProp(clock: HTMLElement): () => void {
       return;
     }
     roomSound.watch();
-    flash(clock, "clock-tick", 700);
+    flash(clock, 'clock-tick', 700);
     say(clock, BEEPS[presses % BEEPS.length](t));
   };
-  return pressable(clock, "", use, {
-    id: "desk-clock",
-    title: "The wall clock: press it to hear the time",
+  return pressable(clock, '', use, {
+    id: 'desk-clock',
+    title: 'The wall clock: press it to hear the time',
   });
 }
 
-const ordinal = (n: number) =>
-  n % 100 >= 11 && n % 100 <= 13 ? "th" : (["th", "st", "nd", "rd"][n % 10] ?? "th");
+const ordinal = (n: number) => (n % 100 >= 11 && n % 100 <= 13 ? 'th' : (['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'));

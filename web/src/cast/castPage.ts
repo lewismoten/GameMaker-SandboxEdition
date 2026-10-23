@@ -35,7 +35,14 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
     h(
       'div',
       { class: 'cast-pic' },
-      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, loading: 'lazy', decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
+      h('img', {
+        src: `./cast/${m.id}.png`,
+        ...shown(m),
+        alt: m.art.alt,
+        loading: 'lazy',
+        decoding: 'async',
+        class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined,
+      }),
     ),
     h(
       'div',
@@ -57,7 +64,14 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
         h(
           'ul',
           null,
-          m.appears.map((a) => h('li', { class: `fam-${CAST_GAMES[a.game][1]}` }, h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]), h('span', { class: 'cast-as' }, ` — ${a.as}`))),
+          m.appears.map((a) =>
+            h(
+              'li',
+              { class: `fam-${CAST_GAMES[a.game][1]}` },
+              h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]),
+              h('span', { class: 'cast-as' }, ` — ${a.as}`),
+            ),
+          ),
         ),
       ),
   );
@@ -189,6 +203,8 @@ export function renderCast(el: HTMLElement): void {
       apply();
     }
     target.classList.add('cast-picked');
-    requestAnimationFrame(() => target.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+    requestAnimationFrame(() =>
+      target.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }),
+    );
   }
 }

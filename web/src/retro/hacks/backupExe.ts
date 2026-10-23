@@ -11,7 +11,29 @@ import { backupNow, deleteBackup, listBackups, renameBackup, restoreBackup, type
 import { loadSaveData } from '../../project/storage';
 import { BACKUP_HELP, parseBackupArgs } from './backupArgs';
 import { findGame, gamesWithSaves, hackGames, type HackGame } from './saveGames';
-import { BAR, BG, BRIGHT, DIM, GREEN, HEAD, RED, TEXT, YELLOW, cell, confirm, dosStamp, editLine, frame, keyBar, messageBox, num, pickList, put, statusLine, type ListRow } from './dosUi';
+import {
+  BAR,
+  BG,
+  BRIGHT,
+  DIM,
+  GREEN,
+  HEAD,
+  RED,
+  TEXT,
+  YELLOW,
+  cell,
+  confirm,
+  dosStamp,
+  editLine,
+  frame,
+  keyBar,
+  messageBox,
+  num,
+  pickList,
+  put,
+  statusLine,
+  type ListRow,
+} from './dosUi';
 
 const TITLE = 'BACKUP 2.1  Saved-game backup for Game-Maker games';
 const COPYRIGHT = 'Copyright (C) 1995 Sandbox Software.  Freeware.';
@@ -71,7 +93,9 @@ export async function runBackup(h: RetroHost, args: string[]): Promise<void> {
       out(`Backups of ${game.dos} (${game.title})`);
       out();
       out('    #  Date     Time    Files      Bytes  Label');
-      list.forEach((b, i) => out(`  ${String(i + 1).padStart(3)}  ${stamp(b.when)} ${String(b.names.length).padStart(5)}${num(b.bytes).padStart(11)}  ${b.label.slice(0, 32)}`));
+      list.forEach((b, i) =>
+        out(`  ${String(i + 1).padStart(3)}  ${stamp(b.when)} ${String(b.names.length).padStart(5)}${num(b.bytes).padStart(11)}  ${b.label.slice(0, 32)}`),
+      );
       shown++;
       // a long list waits for a key a screen at a time, like DIR /P
       if (shown % 3 === 0) {
@@ -118,7 +142,12 @@ async function uiGames(h: RetroHost): Promise<UiGame[]> {
   const rows = await Promise.all(
     games.map(async (g) => {
       const files = await loadSaveData(g.save);
-      return { ...g, files: Object.keys(files).length, bytes: Object.values(files).reduce((n, b) => n + b.length, 0), backups: backups.filter((b) => b.game === g.save) };
+      return {
+        ...g,
+        files: Object.keys(files).length,
+        bytes: Object.values(files).reduce((n, b) => n + b.length, 0),
+        backups: backups.filter((b) => b.game === g.save),
+      };
     }),
   );
   return rows.filter((g) => g.files || g.backups.length);
@@ -158,7 +187,11 @@ async function backupUi(h: RetroHost): Promise<void> {
       text: `${picked.has(g.save) ? '[\xfb]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 26)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(8)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
       a: g.files ? BRIGHT : DIM,
     }));
-    statusLine(h, note || `${plural(games.length, 'game')}; ${picked.size ? `${picked.size} marked` : 'none marked (B backs up the one chosen)'}.`, note ? GREEN : TEXT);
+    statusLine(
+      h,
+      note || `${plural(games.length, 'game')}; ${picked.size ? `${picked.size} marked` : 'none marked (B backs up the one chosen)'}.`,
+      note ? GREEN : TEXT,
+    );
     note = '';
     const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur, hotkeys: [' ', 'A', 'B', 'F2'] });
     cur = pick.i;
@@ -204,10 +237,17 @@ async function gameBackups(h: RetroHost, g: UiGame): Promise<string> {
     frame(h, 1, TOP, 78, BOTTOM, `Backups of ${g.dos} - ${g.title}`.slice(0, 70));
     put(h, 3, TOP + 1, HEAD, `${'#'.padStart(3)}  ${cell('Date     Time', 16)}${'Files'.padStart(5)}${'Bytes'.padStart(10)}  ${cell('Label', 26)}By`);
     const rows: ListRow[] = list.length
-      ? list.map((b, i) => ({ text: `${String(i + 1).padStart(3)}  ${cell(stamp(b.when), 16)}${String(b.names.length).padStart(5)}${num(b.bytes).padStart(10)}  ${cell(b.label, 26)}${b.by ?? 'web'}`, a: b.auto ? YELLOW : BRIGHT }))
+      ? list.map((b, i) => ({
+          text: `${String(i + 1).padStart(3)}  ${cell(stamp(b.when), 16)}${String(b.names.length).padStart(5)}${num(b.bytes).padStart(10)}  ${cell(b.label, 26)}${b.by ?? 'web'}`,
+          a: b.auto ? YELLOW : BRIGHT,
+        }))
       : [{ text: '(no backups yet: B backs up the saves now)', a: DIM }];
     const b = list[Math.min(cur, list.length - 1)];
-    statusLine(h, note || (b ? `Holds ${b.names.map((n) => n.toUpperCase()).join(' ')}`.slice(0, 78) : ''), note.startsWith('ERROR') ? RED : note ? GREEN : TEXT);
+    statusLine(
+      h,
+      note || (b ? `Holds ${b.names.map((n) => n.toUpperCase()).join(' ')}`.slice(0, 78) : ''),
+      note.startsWith('ERROR') ? RED : note ? GREEN : TEXT,
+    );
     note = '';
     const pick = await pickList(h, rows, {
       x: 2,

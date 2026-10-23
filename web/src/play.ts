@@ -49,7 +49,9 @@ async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
   return (await renderShot(entry, c, 16, 10)) ? c.toDataURL() : undefined;
 }
 
-async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string; poster?: Promise<string | undefined> } | undefined> {
+async function choose(): Promise<
+  { id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string; poster?: Promise<string | undefined> } | undefined
+> {
   const params = new URLSearchParams(location.search);
   const gameId = params.get('game') ?? pageGame;
   const projectId = params.get('project');

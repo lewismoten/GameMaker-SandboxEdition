@@ -33,7 +33,10 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
   const stored = await loadProject(p.id);
   if (!stored) return toast('That game is not in this browser any more.', 'error');
   const id = newId();
-  const name = copyName(p.name, (await listProjects()).map((x) => x.name));
+  const name = copyName(
+    p.name,
+    (await listProjects()).map((x) => x.name),
+  );
   await saveProject(id, name, stored.record.gam, stored.files, stored.record.companion);
   rememberOrigin(id, originId(p.id));
   setImported(id, isImported(p.id));

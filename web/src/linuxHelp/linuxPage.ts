@@ -9,8 +9,7 @@ import { pageToc } from '../pageToc';
 import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
-const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
-  h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
+const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) => h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
 
 const kbd = (text: string) => h('kbd', null, text);
 const cmd = (text: string) => h('pre', { class: 'mac-cmd' }, h('code', null, text));
@@ -37,7 +36,15 @@ export function renderLinuxHelp(el: HTMLElement): void {
         h(
           'ol',
           null,
-          h('li', null, 'Extract the downloaded .tar.gz: double-click it and choose ', kbd('Extract'), ', or right-click it and choose ', kbd('Extract Here'), '. You get a folder named after the game.'),
+          h(
+            'li',
+            null,
+            'Extract the downloaded .tar.gz: double-click it and choose ',
+            kbd('Extract'),
+            ', or right-click it and choose ',
+            kbd('Extract Here'),
+            '. You get a folder named after the game.',
+          ),
           h(
             'li',
             null,
@@ -62,11 +69,7 @@ export function renderLinuxHelp(el: HTMLElement): void {
       section(
         'linux-needs',
         'What it needs',
-        h(
-          'p',
-          null,
-          'The window uses WebKitGTK, the web engine of GNOME’s browser, which most desktops already have. If yours does not, install it:',
-        ),
+        h('p', null, 'The window uses WebKitGTK, the web engine of GNOME’s browser, which most desktops already have. If yours does not, install it:'),
         h(
           'ul',
           null,

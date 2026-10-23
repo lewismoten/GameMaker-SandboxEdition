@@ -30,7 +30,11 @@ export function colorChoice(o: ColorChoiceOptions): ColorChoice {
     if (Number.isFinite(v)) o.set(Math.max(0, Math.min(255, v)));
     refresh();
   });
-  const bigger = h('button', { type: 'button', class: 'color-choice-big', title: 'Choose from bigger swatches', onclick: () => void openBigger() }, 'Bigger colors');
+  const bigger = h(
+    'button',
+    { type: 'button', class: 'color-choice-big', title: 'Choose from bigger swatches', onclick: () => void openBigger() },
+    'Bigger colors',
+  );
   const refresh = () => (num.value = String(o.get()));
 
   const openBigger = () =>

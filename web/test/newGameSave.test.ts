@@ -27,7 +27,7 @@ function disk(id: string) {
 const ids = readdirSync(games).filter((id) => existsSync(join(games, id, 'disk')) && readdirSync(join(games, id, 'disk')).some((n) => /\.gam$/i.test(n)));
 const seeded = () => {
   let x = 1;
-  return () => ((x = (x * 16807) % 2147483647) / 2147483647);
+  return () => (x = (x * 16807) % 2147483647) / 2147483647;
 };
 
 describe('a new saved game', () => {

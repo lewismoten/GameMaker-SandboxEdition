@@ -304,10 +304,12 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
 
 /** The pieces of paper in the box (the disks lie beside the guide already), as the guide's own tray lists them. */
 function insertItems(): Promise<BoxItem[]> {
-  return Promise.all([import('../../manual/printables/gmItems'), import('../../project/files')]).then(async ([{ gmBoxItems }, { loadCatalog, isSandboxGame }]) => {
-    const family = (await loadCatalog().catch(() => [])).filter(isSandboxGame);
-    return gmBoxItems(family).filter((i) => i.id !== 'disks');
-  });
+  return Promise.all([import('../../manual/printables/gmItems'), import('../../project/files')]).then(
+    async ([{ gmBoxItems }, { loadCatalog, isSandboxGame }]) => {
+      const family = (await loadCatalog().catch(() => [])).filter(isSandboxGame);
+      return gmBoxItems(family).filter((i) => i.id !== 'disks');
+    },
+  );
 }
 
 function coverImg(game?: string, title?: string): HTMLImageElement {
@@ -321,7 +323,13 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
   // Click the CD to put it in the drive and start Game-Maker (same as the viewer's button).
   const disc = h(
     'div',
-    { class: 'holo-cd', role: 'button', tabindex: 0, title: 'Put the CD in and start Game-Maker', 'aria-label': 'Game-Maker CD: put it in and start Game-Maker' },
+    {
+      class: 'holo-cd',
+      role: 'button',
+      tabindex: 0,
+      title: 'Put the CD in and start Game-Maker',
+      'aria-label': 'Game-Maker CD: put it in and start Game-Maker',
+    },
     h('div', { class: 'holo-spin' }, h('div', { class: 'holo-label' })),
   );
   disc.addEventListener('click', insertCd);
@@ -343,7 +351,11 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
     disc.style.setProperty('--ly', `${((e.clientY - r.top) / r.height) * 100}%`);
   });
   // the Owner's Guide with its real cover (manual/printables/gmCover.ts): Teddy's game under the peeled corner once it has loaded
-  const guide = h('button', { class: 'guide-book has-cover', onclick: openGuide, title: 'Read the Owner’s Guide', 'aria-label': 'Read the Owner’s Guide' }, coverImg());
+  const guide = h(
+    'button',
+    { class: 'guide-book has-cover', onclick: openGuide, title: 'Read the Owner’s Guide', 'aria-label': 'Read the Owner’s Guide' },
+    coverImg(),
+  );
   void sandboxShots().then((shots) => {
     const g = shots.find((x) => x.id === 'teddy') ?? shots[0];
     if (g) guide.replaceChildren(coverImg(g.canvas.toDataURL(), g.title));
@@ -357,13 +369,7 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
   return h(
     'div',
     { class: 'gm-contents' },
-    h(
-      'div',
-      { class: 'gm-left' },
-      guide,
-      disks,
-      disc,
-    ),
+    h('div', { class: 'gm-left' }, guide, disks, disc),
     boxList({ label: 'What’s in the Game-Maker box', items: insertItems(), open: openGuide }),
   );
 }

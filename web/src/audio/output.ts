@@ -1,6 +1,6 @@
 // One volume for everything the PC plays (the desk speakers' knob): each AudioContext
 // sends its sound through a gain node here instead of straight to its destination.
-const KEY = "gm-volume";
+const KEY = 'gm-volume';
 const outputs = new Map<BaseAudioContext, GainNode>();
 
 function load(): number {
@@ -19,8 +19,7 @@ export const getVolume = (): number => volume;
 /** 0 (silent) to 1 (full). */
 export function setVolume(v: number): void {
   volume = Math.max(0, Math.min(1, v));
-  for (const [ctx, g] of outputs)
-    g.gain.setTargetAtTime(volume, ctx.currentTime, 0.02);
+  for (const [ctx, g] of outputs) g.gain.setTargetAtTime(volume, ctx.currentTime, 0.02);
   try {
     localStorage.setItem(KEY, String(volume));
   } catch {

@@ -114,7 +114,15 @@ export async function pickList(ui: Ui, rows: ListRow[], o: ListOptions): Promise
 }
 
 /** Reads a line in place; `allow` filters the characters. Null for Esc. */
-export async function editLine(ui: Ui, x: number, y: number, w: number, start: string, allow: RegExp = /^[\x20-\x7e]$/, a = attr(15, 0)): Promise<string | null> {
+export async function editLine(
+  ui: Ui,
+  x: number,
+  y: number,
+  w: number,
+  start: string,
+  allow: RegExp = /^[\x20-\x7e]$/,
+  a = attr(15, 0),
+): Promise<string | null> {
   const s = ui.screen;
   let text = start;
   let fresh = true; // typing first replaces what was there, as DOS editors did

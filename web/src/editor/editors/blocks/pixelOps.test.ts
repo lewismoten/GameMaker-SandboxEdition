@@ -53,7 +53,10 @@ describe('pixelOps', () => {
 
   it('mirrors points without repeats', () => {
     expect(mirrorPoints(2, 3, 'none')).toEqual([[2, 3]]);
-    expect(mirrorPoints(2, 3, 'h')).toEqual([[2, 3], [BLEN - 3, 3]]);
+    expect(mirrorPoints(2, 3, 'h')).toEqual([
+      [2, 3],
+      [BLEN - 3, 3],
+    ]);
     expect(mirrorPoints(2, 3, 'both')).toHaveLength(4);
     expect(colorCounts(Uint8Array.from([1, 1, 2])).get(1)).toBe(2);
   });

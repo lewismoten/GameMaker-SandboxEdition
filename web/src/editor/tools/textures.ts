@@ -32,7 +32,7 @@ function noise(seed: number, cell: number): (x: number, y: number) => number {
 
 function rand(seed: number): () => number {
   let a = seed >>> 0 || 1;
-  return () => ((a = (a * 1664525 + 1013904223) >>> 0) / 4294967296);
+  return () => (a = (a * 1664525 + 1013904223) >>> 0) / 4294967296;
 }
 
 /** Shades from dark to light between two RGB colors. */

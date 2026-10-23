@@ -147,7 +147,13 @@ export function keyboard(onClick: () => void): HTMLElement {
     if (g) {
       const label = h(
         'button',
-        { type: 'button', class: `kt-label kt-${name.toLowerCase()}`, title: `${name}: ${g.title}`, 'aria-label': `Press ${name}: ${g.title}`, dataset: { code: k[2] } },
+        {
+          type: 'button',
+          class: `kt-label kt-${name.toLowerCase()}`,
+          title: `${name}: ${g.title}`,
+          'aria-label': `Press ${name}: ${g.title}`,
+          dataset: { code: k[2] },
+        },
         TEMPLATE[name] ?? g.short,
       );
       label.style.left = `${((x + 0.1 + k[1] / 2) / 14.95) * 100}%`;

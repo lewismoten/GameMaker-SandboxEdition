@@ -134,7 +134,7 @@ export class MapTools {
       const changed: number[] = [];
       for (const c of cells) {
         const i = c.y * MLEN + c.x;
-        if (blocks[i] !== this.host.brush()) (blocks[i] = this.host.brush()), changed.push(i);
+        if (blocks[i] !== this.host.brush()) ((blocks[i] = this.host.brush()), changed.push(i));
       }
       this.host.overlay.outline = undefined;
       this.host.changed(changed);
@@ -280,14 +280,26 @@ export class MapTools {
       return clear(
         p,
         head(m === 'paste' ? 'Paste' : 'Selection'),
-        h('p', { class: 'meta' }, m === 'paste' ? 'Click where the copied blocks go (Esc stops).' : has ? `${this.selection!.w}×${this.selection!.h} blocks selected.` : 'Drag over the map to select blocks.'),
+        h(
+          'p',
+          { class: 'meta' },
+          m === 'paste'
+            ? 'Click where the copied blocks go (Esc stops).'
+            : has
+              ? `${this.selection!.w}×${this.selection!.h} blocks selected.`
+              : 'Drag over the map to select blocks.',
+        ),
         h(
           'div',
           { class: 'toolbar mt-brush-actions' },
           h('button', { type: 'button', disabled: !has, onclick: () => this.copy(), title: 'Copy (Ctrl+C)' }, '⧉ Copy'),
           h('button', { type: 'button', disabled: !has, onclick: () => this.copy(true), title: 'Cut (Ctrl+X): leaves the chosen block' }, '✂ Cut'),
           h('button', { type: 'button', disabled: !getClip(), onclick: () => this.paste(), title: 'Paste (Ctrl+V), on this map or another' }, '📋 Paste'),
-          h('button', { type: 'button', disabled: !has, onclick: () => void this.saveStamp(), title: 'Keep these blocks as a stamp to place again' }, '★ Save as stamp'),
+          h(
+            'button',
+            { type: 'button', disabled: !has, onclick: () => void this.saveStamp(), title: 'Keep these blocks as a stamp to place again' },
+            '★ Save as stamp',
+          ),
           h('button', { type: 'button', disabled: !has, onclick: () => this.fillSelection(), title: 'Fill with the chosen block (Delete)' }, '▣ Fill'),
         ),
         m === 'paste' ? this.turnBar() : null,
@@ -309,7 +321,12 @@ export class MapTools {
         onEdit: (t) => void this.editTerrain(t),
         onDelete: (t) => (saveBrush(this.host.project, this.host.bbl(), 'terrains', t, true), this.renderPanel()),
       });
-      return clear(p, head('Terrains'), host, h('label', { class: 'check', title: 'Or right-click' }, box, h('span', null, 'Erase (back to the ground block)')));
+      return clear(
+        p,
+        head('Terrains'),
+        host,
+        h('label', { class: 'check', title: 'Or right-click' }, box, h('span', null, 'Erase (back to the ground block)')),
+      );
     }
     if (m === 'stamp') {
       const list = this.stamps();
@@ -328,7 +345,7 @@ export class MapTools {
         onNew: () => this.host.setMode('select'),
         onEdit: async (s) => {
           const name = await promptText('Rename stamp', 'Name', s.name);
-          if (name) saveBrush(this.host.project, this.host.bbl(), 'stamps', { ...s, name }), this.renderPanel();
+          if (name) (saveBrush(this.host.project, this.host.bbl(), 'stamps', { ...s, name }), this.renderPanel());
         },
         onDelete: (s) => (saveBrush(this.host.project, this.host.bbl(), 'stamps', s, true), this.renderPanel()),
       });
@@ -356,8 +373,23 @@ export class MapTools {
   private turnBar(): HTMLElement {
     const can = (t: Transform) => !!this.held && !!transformStamp(this.held, t, this.mirrors);
     const btn = (t: Transform, label: string, title: string) =>
-      h('button', { type: 'button', disabled: !can(t), title: can(t) ? title : `${title}: these blocks have no mirror images in this set`, onclick: () => (this.turn(t), this.renderPanel()) }, label);
-    return h('div', { class: 'toolbar mt-brush-actions', role: 'group', 'aria-label': 'Flip or turn before placing' }, btn('flipH', '⇋ Flip', 'Flip left to right'), btn('flipV', '⇵ Flip', 'Flip upside down'), btn('rotate', '↻ Turn', 'Turn a quarter clockwise'));
+      h(
+        'button',
+        {
+          type: 'button',
+          disabled: !can(t),
+          title: can(t) ? title : `${title}: these blocks have no mirror images in this set`,
+          onclick: () => (this.turn(t), this.renderPanel()),
+        },
+        label,
+      );
+    return h(
+      'div',
+      { class: 'toolbar mt-brush-actions', role: 'group', 'aria-label': 'Flip or turn before placing' },
+      btn('flipH', '⇋ Flip', 'Flip left to right'),
+      btn('flipV', '⇵ Flip', 'Flip upside down'),
+      btn('rotate', '↻ Turn', 'Turn a quarter clockwise'),
+    );
   }
 
   private thumb(block: number): HTMLCanvasElement {

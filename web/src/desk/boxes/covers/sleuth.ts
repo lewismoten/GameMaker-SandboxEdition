@@ -45,20 +45,26 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.fillRect(0, 0, w, h);
   // the back wall of the set: a painted moonlit window for THE RAVEN'S BRIDE
   poly(c, [250, 250, 350, 250, 350, 370, 250, 370]);
-  fill(c, lin(c, 0, 250, 0, 370, [
-    [0, '#1a2a50'],
-    [1, '#3a4a70'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 250, 0, 370, [
+      [0, '#1a2a50'],
+      [1, '#3a4a70'],
+    ]),
+  );
   ell(c, 322, 280, 16, 16);
   fill(c, '#f0ead0');
   stroke(c, '#1a0a0c', 6, [300, 250, 300, 370]);
   stroke(c, '#1a0a0c', 6, [250, 310, 350, 310]);
   // the stage floor, boards running to the footlights
   poly(c, [60, 400, 540, 400, 640, 540, -40, 540]);
-  fill(c, lin(c, 0, 400, 0, 540, [
-    [0, '#3a2414'],
-    [1, '#7a4a24'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 400, 0, 540, [
+      [0, '#3a2414'],
+      [1, '#7a4a24'],
+    ]),
+  );
   for (let i = -10; i <= 10; i++) stroke(c, 'rgba(0,0,0,0.35)', 1.5, [300 + i * 26, 400, 300 + i * 46, 540]);
   // the spotlight from the fly gallery onto the dagger
   c.save();
@@ -71,20 +77,26 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.fill();
   c.restore();
   ell(c, 310, 470, 100, 26);
-  fill(c, rad(c, 310, 470, 100, [
-    [0, 'rgba(255,240,200,0.75)'],
-    [1, 'rgba(255,240,200,0)'],
-  ]));
+  fill(
+    c,
+    rad(c, 310, 470, 100, [
+      [0, 'rgba(255,240,200,0.75)'],
+      [1, 'rgba(255,240,200,0)'],
+    ]),
+  );
   // the dagger, lying where Victor Crane fell
   c.save();
   c.translate(306, 466);
   c.rotate(-0.25);
   poly(c, [-10, -4, 70, -2, 84, 0, 70, 2, -10, 4]);
-  fill(c, lin(c, 0, -4, 0, 4, [
-    [0, '#ffffff'],
-    [0.5, '#b8c0cc'],
-    [1, '#5a606c'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -4, 0, 4, [
+      [0, '#ffffff'],
+      [0.5, '#b8c0cc'],
+      [1, '#5a606c'],
+    ]),
+  );
   stroke(c, '#c89020', 6, [-10, -14, -10, 14]);
   stroke(c, '#2a1408', 7, [-12, 0, -40, 0]);
   ell(c, -42, 0, 5, 5);
@@ -111,10 +123,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.lineTo(w, 90);
   c.quadraticCurveTo(w / 2, 20, 0, 90);
   c.closePath();
-  fill(c, lin(c, 0, 0, 0, 90, [
-    [0, '#2a0408'],
-    [1, '#6a0a18'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 0, 0, 90, [
+      [0, '#2a0408'],
+      [1, '#6a0a18'],
+    ]),
+  );
   c.beginPath();
   c.moveTo(0, 96);
   c.quadraticCurveTo(w / 2, 26, w, 96);
@@ -136,16 +151,36 @@ const paint = (c: Ctx, w: number, h: number): void => {
       const x = i * 56 + (row % 2) * 28;
       if (Math.abs(x - 170) < 50) continue;
       blob(c, [x, y + 60, x, y + 6, x + 24, y - 4, x + 48, y + 6, x + 48, y + 60]);
-      fill(c, lin(c, 0, y - 4, 0, y + 40, [
-        [0, '#5a0a14'],
-        [1, '#100204'],
-      ]));
+      fill(
+        c,
+        lin(c, 0, y - 4, 0, y + 40, [
+          [0, '#5a0a14'],
+          [1, '#100204'],
+        ]),
+      );
     }
   }
   const ix = 170;
   const iy = 696;
   c.fillStyle = '#050203';
-  blob(c, [ix - 60, iy + 20, ix - 44, iy - 120, ix - 46, iy - 186, ix - 20, iy - 204, ix + 20, iy - 204, ix + 46, iy - 186, ix + 44, iy - 120, ix + 62, iy + 20]);
+  blob(c, [
+    ix - 60,
+    iy + 20,
+    ix - 44,
+    iy - 120,
+    ix - 46,
+    iy - 186,
+    ix - 20,
+    iy - 204,
+    ix + 20,
+    iy - 204,
+    ix + 46,
+    iy - 186,
+    ix + 44,
+    iy - 120,
+    ix + 62,
+    iy + 20,
+  ]);
   c.fill();
   ell(c, ix, iy - 222, 20, 24);
   c.fill();

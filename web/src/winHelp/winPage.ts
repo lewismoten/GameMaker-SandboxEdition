@@ -9,8 +9,7 @@ import { pageToc } from '../pageToc';
 import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
-const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
-  h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
+const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) => h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
 
 const kbd = (text: string) => h('kbd', null, text);
 
@@ -33,7 +32,11 @@ export function renderWinHelp(el: HTMLElement): void {
       section(
         'win-warning',
         'What the warning means',
-        h('p', null, 'When you first run the program, Windows may say: “Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting.”'),
+        h(
+          'p',
+          null,
+          'When you first run the program, Windows may say: “Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting.”',
+        ),
         h(
           'p',
           null,
@@ -85,7 +88,11 @@ export function renderWinHelp(el: HTMLElement): void {
           h('li', null, 'Double-click the program. If Windows says it protected your PC, click ', kbd('More info'), '.'),
           h('li', null, 'Click ', kbd('Run anyway'), '.'),
         ),
-        h('p', null, 'From then on the game opens like any other program. Nothing is installed: keep the file wherever you like, such as your Desktop or Documents folder.'),
+        h(
+          'p',
+          null,
+          'From then on the game opens like any other program. Nothing is installed: keep the file wherever you like, such as your Desktop or Documents folder.',
+        ),
         h(
           'p',
           null,
@@ -126,7 +133,11 @@ export function renderWinHelp(el: HTMLElement): void {
         h(
           'ul',
           null,
-          h('li', null, 'It is a small window that plays the game. Inside is the same player as this website, with the game built in. F11 or Alt+Enter switches to full screen.'),
+          h(
+            'li',
+            null,
+            'It is a small window that plays the game. Inside is the same player as this website, with the game built in. F11 or Alt+Enter switches to full screen.',
+          ),
           h('li', null, 'It installs nothing, changes no Windows settings and never asks for administrator rights.'),
           h('li', null, 'Saved games and high scores stay on your PC. Nothing is uploaded.'),
           h(

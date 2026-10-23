@@ -190,11 +190,18 @@ export class Shell {
     this.out();
     const lines: string[] = [];
     // Folders below the root list the . and .. entries first.
-    if (parts.length) lines.push(...(['.', '..'].map((n) => (wide ? `[${n}]`.padEnd(16) : dirLine({ name: n, dir: true, size: 0, date: new Date(1994, 9, 20, 11, 42) })))));
+    if (parts.length)
+      lines.push(...['.', '..'].map((n) => (wide ? `[${n}]`.padEnd(16) : dirLine({ name: n, dir: true, size: 0, date: new Date(1994, 9, 20, 11, 42) }))));
     // DIR /W: names in five 16-column cells a line.
     if (wide) {
       const cells = [...lines.splice(0), ...items.map(dirWide)];
-      for (let i = 0; i < cells.length; i += 5) lines.push(cells.slice(i, i + 5).join('').trimEnd());
+      for (let i = 0; i < cells.length; i += 5)
+        lines.push(
+          cells
+            .slice(i, i + 5)
+            .join('')
+            .trimEnd(),
+        );
     } else lines.push(...items.map(dirLine));
     let shown = 0;
     for (const l of lines) {
@@ -331,7 +338,9 @@ export class Shell {
       this.out(time ? '  time    hours:minutes[:seconds[.hundredths]][a|p]' : '  date    month-day-year');
       this.out('  /LOCAL  Go back to the real local time');
       this.out();
-      this.out(`Type ${time ? 'TIME' : 'DATE'} with no parameters to display the current ${what} and a prompt for a new one. Press ENTER to keep the same ${what}.`);
+      this.out(
+        `Type ${time ? 'TIME' : 'DATE'} with no parameters to display the current ${what} and a prompt for a new one. Press ENTER to keep the same ${what}.`,
+      );
       return;
     }
     if (/^\/local$/i.test(arg)) {
@@ -377,7 +386,7 @@ export class Shell {
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',
-      'ACHIEVE     What you\'ve done so far: your merit badges',
+      "ACHIEVE     What you've done so far: your merit badges",
       'OFFLINE     Copy the whole site here, to use with no connection',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])

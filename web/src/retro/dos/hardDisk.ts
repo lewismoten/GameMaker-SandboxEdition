@@ -24,7 +24,12 @@ export interface HdGame {
 const installedId = (catalogId: string) => `hd-${catalogId}`;
 
 export function dosDirName(name: string): string {
-  return (name.toUpperCase().replace(/\.[^.]*$/, '').replace(/[^A-Z0-9_]/g, '') || 'GAME').slice(0, 8);
+  return (
+    name
+      .toUpperCase()
+      .replace(/\.[^.]*$/, '')
+      .replace(/[^A-Z0-9_]/g, '') || 'GAME'
+  ).slice(0, 8);
 }
 
 /** The folders in C:\GM, given the installed folder names (from the C:\GM listing). */

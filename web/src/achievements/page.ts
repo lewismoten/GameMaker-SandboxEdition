@@ -16,7 +16,15 @@ function bar(n: number, of: number, label: string): HTMLElement {
   const pct = of ? Math.round((n / of) * 100) : 0;
   return h(
     'div',
-    { class: 'ach-bar', role: 'progressbar', 'aria-label': label, 'aria-valuemin': '0', 'aria-valuemax': String(of), 'aria-valuenow': String(n), 'aria-valuetext': `${n} of ${of}` },
+    {
+      class: 'ach-bar',
+      role: 'progressbar',
+      'aria-label': label,
+      'aria-valuemin': '0',
+      'aria-valuemax': String(of),
+      'aria-valuenow': String(n),
+      'aria-valuetext': `${n} of ${of}`,
+    },
     h('span', { style: `width:${pct}%` }),
   );
 }
@@ -34,11 +42,15 @@ function card(a: Achievement, r: AchievementRecord): HTMLElement {
       { class: 'ach-body' },
       h('h3', null, shown.title),
       h('p', { class: 'ach-desc' }, shown.desc),
-      p ? h('div', { class: 'ach-progress' }, bar(p.n, p.of, `${shown.title}: progress`), h('span', null, `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''}`)) : null,
+      p
+        ? h('div', { class: 'ach-progress' }, bar(p.n, p.of, `${shown.title}: progress`), h('span', null, `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''}`))
+        : null,
       h(
         'p',
         { class: 'ach-when' },
-        when ? h('span', null, 'Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when))) : h('span', null, a.hidden ? 'Hidden' : 'Not yet'),
+        when
+          ? h('span', null, 'Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when)))
+          : h('span', null, a.hidden ? 'Hidden' : 'Not yet'),
       ),
     ),
   );
@@ -72,7 +84,13 @@ export function renderAchievements(el: HTMLElement): void {
         { class: 'lead' },
         'Making games, playing them, watching walkthroughs and poking around the 1994 desk all count. They are kept in this browser, for the web pages and the desk alike. A few are hidden until you find them.',
       ),
-      h('div', { class: 'ach-summary' }, h('strong', null, `${done} of ${total}`), h('span', null, ' unlocked'), bar(done, total, 'All achievements: unlocked')),
+      h(
+        'div',
+        { class: 'ach-summary' },
+        h('strong', null, `${done} of ${total}`),
+        h('span', null, ' unlocked'),
+        bar(done, total, 'All achievements: unlocked'),
+      ),
       ...sections,
       h(
         'section',
@@ -84,7 +102,14 @@ export function renderAchievements(el: HTMLElement): void {
           {
             class: 'danger',
             onclick: async () => {
-              if (!(await confirmDialog('Reset achievements?', 'Every achievement and its date will be forgotten in this browser. This cannot be undone.', 'Reset'))) return;
+              if (
+                !(await confirmDialog(
+                  'Reset achievements?',
+                  'Every achievement and its date will be forgotten in this browser. This cannot be undone.',
+                  'Reset',
+                ))
+              )
+                return;
               await resetAchievements();
               void refreshGoals();
             },

@@ -21,7 +21,13 @@ const aspect = (id: MugDesignId | '') => {
 /** The page's layout for a setup. */
 export function planPage(setup: PageSetup): PageLayout {
   const paper = PAPERS.find((p) => p.id === setup.paper) ?? PAPERS[0];
-  const mugs: StripInput[] = setup.mugs.map((m) => ({ size: sizeOf(m.size), front: aspect(m.front), back: aspect(m.back), lift: m.lift, leftHanded: setup.leftHanded }));
+  const mugs: StripInput[] = setup.mugs.map((m) => ({
+    size: sizeOf(m.size),
+    front: aspect(m.front),
+    back: aspect(m.back),
+    lift: m.lift,
+    leftHanded: setup.leftHanded,
+  }));
   return pageLayout(paper, setup.orientation, mugs, setup.mirrored);
 }
 
@@ -79,9 +85,17 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
         'label',
         null,
         label,
-        h('select', { onchange: (e: Event) => (change((e.target as HTMLSelectElement).value), changed()) }, ...items.map((x) => h('option', { value: x.id, selected: x.id === value }, x.name))),
+        h(
+          'select',
+          { onchange: (e: Event) => (change((e.target as HTMLSelectElement).value), changed()) },
+          ...items.map((x) => h('option', { value: x.id, selected: x.id === value }, x.name)),
+        ),
       );
-    const mirror = h('input', { type: 'checkbox', checked: setup.mirrored, onchange: (e: Event) => ((setup.mirrored = (e.target as HTMLInputElement).checked), changed()) });
+    const mirror = h('input', {
+      type: 'checkbox',
+      checked: setup.mirrored,
+      onchange: (e: Event) => ((setup.mirrored = (e.target as HTMLInputElement).checked), changed()),
+    });
     const settings = h(
       'div',
       { class: 'subl-settings' },
@@ -89,7 +103,15 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
         'div',
         { class: 'subl-row' },
         select('Paper', PAPERS, setup.paper, (v) => (setup.paper = v)),
-        select('Page', [{ id: 'portrait', name: 'Portrait' }, { id: 'landscape', name: 'Landscape' }], setup.orientation, (v) => (setup.orientation = v === 'landscape' ? 'landscape' : 'portrait')),
+        select(
+          'Page',
+          [
+            { id: 'portrait', name: 'Portrait' },
+            { id: 'landscape', name: 'Landscape' },
+          ],
+          setup.orientation,
+          (v) => (setup.orientation = v === 'landscape' ? 'landscape' : 'portrait'),
+        ),
         select(
           'Handle hand',
           [
@@ -152,7 +174,17 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
           { class: 'subl-mug-head' },
           h('b', null, `${i + 1}.`),
           sizePick,
-          h('button', { type: 'button', 'aria-pressed': String(i === shown), dataset: { show: String(i) }, onclick: () => ((shown = i), refresh()), 'aria-label': `Show mug ${i + 1} in 3D` }, '3D'),
+          h(
+            'button',
+            {
+              type: 'button',
+              'aria-pressed': String(i === shown),
+              dataset: { show: String(i) },
+              onclick: () => ((shown = i), refresh()),
+              'aria-label': `Show mug ${i + 1} in 3D`,
+            },
+            '3D',
+          ),
           h(
             'button',
             {
@@ -199,7 +231,15 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
         const bodyH = size.height / size.diameter;
         const radius = Math.min(v.canvas.width * 0.3, (v.canvas.height * 0.8) / (2 * bodyH + 0.4));
         const H = radius * 2 * bodyH;
-        drawMug(g, { texture, size, colors: MUG_COLORS[0].colors, rot: -wrapAngle(size, strip.centers[v.side]), cx: v.canvas.width / 2, top: (v.canvas.height - H) / 2 + radius * 0.1, radius });
+        drawMug(g, {
+          texture,
+          size,
+          colors: MUG_COLORS[0].colors,
+          rot: -wrapAngle(size, strip.centers[v.side]),
+          cx: v.canvas.width / 2,
+          top: (v.canvas.height - H) / 2 + radius * 0.1,
+          radius,
+        });
         const name = MUG_DESIGNS.find((d) => d.id === m[v.side])?.name ?? 'blank';
         v.canvas.setAttribute('aria-label', `Mug ${placed.index + 1}, ${v.side}: ${name}`);
       }
@@ -214,11 +254,16 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       const page = planPage(setup);
       const n = page.strips.length;
       const parts = [`${n} mug${n === 1 ? '' : 's'} on this page, ${inchesLeft(page.left)} of paper left at the bottom.`];
-      if (page.blank.length) parts.push(`Mug ${page.blank.map((i) => i + 1).join(', ')} ${page.blank.length > 1 ? 'are' : 'is'} blank on both sides: nothing to print.`);
+      if (page.blank.length)
+        parts.push(`Mug ${page.blank.map((i) => i + 1).join(', ')} ${page.blank.length > 1 ? 'are' : 'is'} blank on both sides: nothing to print.`);
       if (page.overflow.length)
-        parts.push(`Mug ${page.overflow.map((i) => i + 1).join(', ')} won’t fit: ${setup.paper === 'legal' ? 'remove one' : 'try Legal paper, or remove one'}, or print it on the next page.`);
+        parts.push(
+          `Mug ${page.overflow.map((i) => i + 1).join(', ')} won’t fit: ${setup.paper === 'legal' ? 'remove one' : 'try Legal paper, or remove one'}, or print it on the next page.`,
+        );
       status.textContent = parts.join(' ');
-      handNote.textContent = setup.leftHanded ? 'left hand (the handle on the right as you look at it)' : 'right hand (the handle on the left as you look at it)';
+      handNote.textContent = setup.leftHanded
+        ? 'left hand (the handle on the right as you look at it)'
+        : 'right hand (the handle on the left as you look at it)';
       printBtn.disabled = pngBtn.disabled = !n;
       draw3d(page);
       const t = ++ticket;
@@ -281,7 +326,12 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
         h(
           'div',
           { class: 'subl-side' },
-          h('p', { class: 'subl-actual' }, h('b', null, 'Print at 100% / Actual size'), ', not “Fit to page”. Check the 1 inch ruler under each mug with a real ruler.'),
+          h(
+            'p',
+            { class: 'subl-actual' },
+            h('b', null, 'Print at 100% / Actual size'),
+            ', not “Fit to page”. Check the 1 inch ruler under each mug with a real ruler.',
+          ),
           settings,
           h(
             'p',
@@ -329,7 +379,12 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
         h(
           'div',
           { class: 'subl-preview', tabindex: '0', role: 'region', 'aria-label': 'Previews: the mug and the page' },
-          h('figure', { class: 'subl-views' }, ...views.map((v) => h('div', null, v.canvas, h('span', null, v.side === 'front' ? 'Front' : 'Back'))), h('figcaption', null, viewCaption)),
+          h(
+            'figure',
+            { class: 'subl-views' },
+            ...views.map((v) => h('div', null, v.canvas, h('span', null, v.side === 'front' ? 'Front' : 'Back'))),
+            h('figcaption', null, viewCaption),
+          ),
           h('figure', { class: 'subl-page-fig' }, sheet, h('figcaption', null, 'The page, as it prints. Gray marks are outside the pressed piece.')),
         ),
       ),

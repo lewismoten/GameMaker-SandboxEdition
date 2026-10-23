@@ -90,4 +90,3 @@ export function shadeRamp(pal: Palette, base: RGB, a: number, b: number): void {
     for (let c = 0; c < 3; c++) pal[(lo + i) * 3 + c] = Math.max(0, Math.min(63, Math.round(from[c] + (to[c] - from[c]) * u)));
   }
 }
-

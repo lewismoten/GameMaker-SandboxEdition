@@ -109,10 +109,26 @@ async function storageEstimate(): Promise<{ usage?: number; quota?: number; pers
 async function cachedPaths(): Promise<Set<string>> {
   const cache = await caches.open(CACHE);
   const base = siteBase().href;
-  return new Set((await cache.keys()).map((r) => r.url.split('?')[0]).filter((u) => u.startsWith(base)).map((u) => decodeURIComponent(u.slice(base.length))));
+  return new Set(
+    (await cache.keys())
+      .map((r) => r.url.split('?')[0])
+      .filter((u) => u.startsWith(base))
+      .map((u) => decodeURIComponent(u.slice(base.length))),
+  );
 }
 
-const empty = (reason: string): OfflineStatus => ({ supported: false, reason, files: [], missing: [], wireTotal: 0, wireMissing: 0, storedMissing: 0, ready: false, copy: 'none', shell: [] });
+const empty = (reason: string): OfflineStatus => ({
+  supported: false,
+  reason,
+  files: [],
+  missing: [],
+  wireTotal: 0,
+  wireMissing: 0,
+  storedMissing: 0,
+  ready: false,
+  copy: 'none',
+  shell: [],
+});
 
 /** What a copy would cost, and how much of it is here already. */
 export async function offlineStatus(): Promise<OfflineStatus> {

@@ -29,8 +29,15 @@ export const BONUS_EGGS: readonly BonusEgg[] = [
     id: 'rotten',
     gameTitle: "Baker's Dozen",
     name: 'The Rotten Egg',
-    description: 'A real egg, or it was once: mottled grey-green, crazed with cracks, and giving off a smell you can see. Nobody in the family will say how long it sat in the root beer cellar, or why nobody ever threw it out. Tap it and find out.',
-    credits: ['Aged to perfection by Claude Opus 5.5', 'Cracked by Lewis "Lewie" Moten III, who said "do not shake it" and then shook it', 'Sniffed, and firmly declined, by Teddy', 'Rolled under the stove by Gwinn (two n\'s), twice', 'Doc Leo held his nose and the flashlight'],
+    description:
+      'A real egg, or it was once: mottled grey-green, crazed with cracks, and giving off a smell you can see. Nobody in the family will say how long it sat in the root beer cellar, or why nobody ever threw it out. Tap it and find out.',
+    credits: [
+      'Aged to perfection by Claude Opus 5.5',
+      'Cracked by Lewis "Lewie" Moten III, who said "do not shake it" and then shook it',
+      'Sniffed, and firmly declined, by Teddy',
+      "Rolled under the stove by Gwinn (two n's), twice",
+      'Doc Leo held his nose and the flashlight',
+    ],
     lore: 'Family legend: in 1776 a Redcoat quartermaster hid the regiment\'s root beer recipe inside a hollow egg, reasoning that no patriot would ever steal a rotten one. He was wrong, and he was downwind. The recipe went west in a saddlebag, the Redcoats went home thirsty, and the family kept the egg "for the heart of the matter."',
     detect: { block: 4 },
   },
@@ -39,8 +46,13 @@ export const BONUS_EGGS: readonly BonusEgg[] = [
     id: 'faberge',
     gameTitle: "Baker's Dozen",
     name: 'The True Easter Egg',
-    description: 'A jeweled egg you could eat, if you dared: a pastry shell glazed in rose icing with a mirror sheen, piped with royal-icing swags, pearls and a trellis, flecked with edible gold leaf, resting in a nest of spun sugar. On top a tiny clockwork baker turns and turns while a music box plays "Yankee Doodle".',
-    credits: ['Baked by Lewis "Lewie" Moten III and Claude Opus 5.5 (one kept the oven, one kept count)', 'Clockwork baker modeled on Doc Leo, who insists the hat is regulation', 'Taste-tested by Teddy and Gwinn (two n\'s), against strict orders'],
+    description:
+      'A jeweled egg you could eat, if you dared: a pastry shell glazed in rose icing with a mirror sheen, piped with royal-icing swags, pearls and a trellis, flecked with edible gold leaf, resting in a nest of spun sugar. On top a tiny clockwork baker turns and turns while a music box plays "Yankee Doodle".',
+    credits: [
+      'Baked by Lewis "Lewie" Moten III and Claude Opus 5.5 (one kept the oven, one kept count)',
+      'Clockwork baker modeled on Doc Leo, who insists the hat is regulation',
+      "Taste-tested by Teddy and Gwinn (two n's), against strict orders",
+    ],
     lore: 'The thirteenth egg of a baker\'s dozen, right where the recipe always said it would be. Ingredient 13 was never an ingredient: "Pour one for whoever is still waiting at the table." The Redcoats had the recipe; the patriots had the root beer, and refills. History calls it a revolution. The family calls it a second glass.',
     detect: { block: 5 },
   },

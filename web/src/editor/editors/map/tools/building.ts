@@ -12,7 +12,8 @@
 // wallLeft → wall, window → wall, door → wall); a cell whose part and fallbacks are all
 // empty is left as it was (-1 in the assembled grid).
 
-export type BuildingPart = 'roofTopLeft' | 'roofTop' | 'roofTopRight' | 'roofLeft' | 'roof' | 'roofRight' | 'wallLeft' | 'wall' | 'wallRight' | 'door' | 'window';
+export type BuildingPart =
+  'roofTopLeft' | 'roofTop' | 'roofTopRight' | 'roofLeft' | 'roof' | 'roofRight' | 'wallLeft' | 'wall' | 'wallRight' | 'door' | 'window';
 
 export const BUILDING_PARTS: { part: BuildingPart; label: string }[] = [
   { part: 'roofTopLeft', label: 'Roof corner, left' },
@@ -101,7 +102,8 @@ export function placeGrid(blocks: Uint8Array, grid: number[][], x: number, y: nu
   const changed: number[] = [];
   grid.forEach((row, dy) =>
     row.forEach((v, dx) => {
-      const cx = x + dx, cy = y + dy;
+      const cx = x + dx,
+        cy = y + dy;
       if (v < 0 || cx < 0 || cy < 0 || cx >= mapW || cy >= mapH) return;
       const i = cy * mapW + cx;
       if (blocks[i] !== v) {

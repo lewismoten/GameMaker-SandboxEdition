@@ -101,7 +101,7 @@ function status(): string {
   if (r.kind === 'registered') return `|10REGISTERED |07to |15${r.userName}`;
   if (r.kind === 'check') return '|12UNREGISTERED |07(the manual check at every start)';
   if (r.kind === 'missing') return '|12NO PLAYGAME.REG |07(GM will not start)';
-  return '|12BAD PLAYGAME.REG |07(another copy\'s serial number)';
+  return "|12BAD PLAYGAME.REG |07(another copy's serial number)";
 }
 
 async function menu(h: RetroHost): Promise<string> {
@@ -157,8 +157,8 @@ async function unregister(h: RetroHost): Promise<void> {
   await step(h, TOP + 3, 'Spoiling the registration number');
   pcExtras().setReg(regFile(name, SERIAL, '0'));
   put(h, 4, TOP + 5, '|07Game-Maker is |12UNREGISTERED|07. Next time GM starts it shows the serial');
-  put(h, 4, TOP + 6, '|07number and asks for a word from the |15Owner\'s Guide|07: see |14[7] Answer table|07.');
-  put(h, 4, TOP + 8, '|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won\'t start at all;');
+  put(h, 4, TOP + 6, "|07number and asks for a word from the |15Owner's Guide|07: see |14[7] Answer table|07.");
+  put(h, 4, TOP + 8, "|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won't start at all;");
   put(h, 4, TOP + 9, '|08GM REGISTER (or [1] here) brings it back.');
   await anyKey(h);
 }
@@ -280,7 +280,7 @@ export function answerPages(): string[][] {
 
 async function answerTable(h: RetroHost): Promise<void> {
   const pages = answerPages();
-  for (let p = 0; p < pages.length; ) {
+  for (let p = 0; p < pages.length;) {
     clearArea(h);
     put(h, 4, TOP - 1, `|14DOC CHECK BYPASS LIST |07for the SE Owner's Guide  |08(${p + 1}/${pages.length})`);
     pages[p].forEach((row, i) => put(h, 4, TOP + 1 + i, row));

@@ -1,9 +1,9 @@
 // The bedroom door's brass knob (room/roomDoor.ts), tried: it's locked (making games, do not
 // disturb), or someone knocks, or the door creaks open a crack and Teddy or Gwinn looks in,
 // or Doc Leo honks hello from the hall.
-import { h } from "../../editor/core/ui";
-import { flash, hitArea, pressable, say, stillMotion, turns } from "./propKit";
-import { roomSound } from "./propSound";
+import { h } from '../../editor/core/ui';
+import { flash, hitArea, pressable, say, stillMotion, turns } from './propKit';
+import { roomSound } from './propSound';
 
 // Teddy: red-gold with a white blaze, his right ear (on your left) a little taller
 const TEDDY = `<svg viewBox="0 0 120 120" aria-hidden="true">
@@ -38,30 +38,30 @@ const GWINN = `<svg viewBox="0 0 120 120" aria-hidden="true">
 
 interface Visit {
   text: string;
-  sound: "rattle" | "knock" | "creak" | "honk";
+  sound: 'rattle' | 'knock' | 'creak' | 'honk';
   peek?: string;
 }
 
 const VISITS: Visit[] = [
-  { sound: "rattle", text: "Rattle, rattle. It’s locked from this side: DO NOT DISTURB, MAKING GAMES." },
-  { sound: "creak", peek: TEDDY, text: "Teddy noses the door open, one ear up and one a little shorter. No snacks on the floor. He leaves." },
-  { sound: "knock", text: "Knock knock! “Dinner in ten minutes!” (It’s always ten more minutes.)" },
-  { sound: "creak", peek: GWINN, text: "Gwinn pokes her head in with a sock in her mouth. It wasn’t her. (It was her.)" },
-  { sound: "honk", text: "Honk honk! A bike horn out in the hall: Doc Leo, saying hi on his way past." },
+  { sound: 'rattle', text: 'Rattle, rattle. It’s locked from this side: DO NOT DISTURB, MAKING GAMES.' },
+  { sound: 'creak', peek: TEDDY, text: 'Teddy noses the door open, one ear up and one a little shorter. No snacks on the floor. He leaves.' },
+  { sound: 'knock', text: 'Knock knock! “Dinner in ten minutes!” (It’s always ten more minutes.)' },
+  { sound: 'creak', peek: GWINN, text: 'Gwinn pokes her head in with a sock in her mouth. It wasn’t her. (It was her.)' },
+  { sound: 'honk', text: 'Honk honk! A bike horn out in the hall: Doc Leo, saying hi on his way past.' },
 ];
 
 export function doorProp(door: HTMLElement): () => void {
-  const leaf = door.querySelector<HTMLElement>(".rd-door");
+  const leaf = door.querySelector<HTMLElement>('.rd-door');
   if (!leaf) return () => {};
-  door.removeAttribute("aria-hidden");
+  door.removeAttribute('aria-hidden');
   // the dark hall behind the door, and whoever looks round it
-  const gap = h("div", { class: "rd-gap", "aria-hidden": "true" });
-  const peeker = h("div", { class: "rd-peek", "aria-hidden": "true" });
+  const gap = h('div', { class: 'rd-gap', 'aria-hidden': 'true' });
+  const peeker = h('div', { class: 'rd-peek', 'aria-hidden': 'true' });
   door.prepend(gap);
   door.append(peeker);
   // the KEEP OUT sign is read as text; the door itself is a picture around it
-  leaf.querySelectorAll(".rd-panel").forEach((p) => p.setAttribute("aria-hidden", "true"));
-  const knob = hitArea("rd-knob-hit");
+  leaf.querySelectorAll('.rd-panel').forEach((p) => p.setAttribute('aria-hidden', 'true'));
+  const knob = hitArea('rd-knob-hit');
   leaf.append(knob);
   const next = turns(VISITS);
   const use = () => {
@@ -69,16 +69,16 @@ export function doorProp(door: HTMLElement): () => void {
     roomSound[v.sound]();
     if (v.peek) {
       peeker.innerHTML = v.peek;
-      flash(door, "ajar", stillMotion() ? 3000 : 3200);
-    } else flash(leaf, v.sound === "rattle" ? "rattle" : "knocked", 700);
+      flash(door, 'ajar', stillMotion() ? 3000 : 3200);
+    } else flash(leaf, v.sound === 'rattle' ? 'rattle' : 'knocked', 700);
     say(knob, v.text, v.peek ? peekArt(v.peek) : undefined);
   };
-  return pressable(knob, "Doorknob: try the door", use, { id: "desk-door" });
+  return pressable(knob, 'Doorknob: try the door', use, { id: 'desk-door' });
 }
 
 /** The visitor's face, small, in the bubble too (the door is easy to miss on a big screen). */
 function peekArt(svg: string): Node {
-  const el = h("span");
-  el.innerHTML = svg.replace("<svg ", '<svg width="64" height="64" ');
+  const el = h('span');
+  el.innerHTML = svg.replace('<svg ', '<svg width="64" height="64" ');
   return el.firstElementChild!;
 }

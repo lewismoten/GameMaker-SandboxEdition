@@ -24,24 +24,29 @@ describe('DOS export', () => {
     expect(dosNameProblems(['sample.gam', 'toolongname.map', 'two.dots.pal', 'ok_1.cmf'])).toEqual(['toolongname.map', 'two.dots.pal']);
   });
 
-  it.skipIf(!existsSync(sample) || !existsSync(join(cdgm, 'xferplay.exe')))('names the stand-alone player after the game and keeps its files intact', async () => {
-    stubFetch();
-    const files = new GameFiles(readdirSync(sample).map((n) => [n, new Uint8Array(readFileSync(join(sample, n)))]));
-    files.set('game0.sav', new TextEncoder().encode('{}')); // web-only save, must be left out
-    const { name, zip, exe } = await exportDos(files, { title: 'SAMPLE GAME', gam: 'sample.gam', appBase: 'http://x/' });
-    expect(name).toBe('sample-dos.zip');
-    expect(exe).toBe('SAMPLE.EXE');
-    const entries = new Map((await readZip(zip)).map((e) => [e.name, e.data]));
-    expect(Buffer.compare(entries.get('SAMPLE.EXE')!, readFileSync(join(cdgm, 'xferplay.exe')))).toBe(0);
-    expect(entries.has('SNDBLAST.DRV')).toBe(true);
-    expect(new TextDecoder().decode(entries.get('CONFIG.BAT'))).toContain('SAMPLE config');
-    expect(Buffer.compare(entries.get('SAMPLE.MAP')!, readFileSync(join(sample, 'sample.map')))).toBe(0);
-    expect(entries.has('GAME0.SAV')).toBe(false);
-    expect(dosNameProblems([...entries.keys()])).toEqual([]);
-  });
+  it.skipIf(!existsSync(sample) || !existsSync(join(cdgm, 'xferplay.exe')))(
+    'names the stand-alone player after the game and keeps its files intact',
+    async () => {
+      stubFetch();
+      const files = new GameFiles(readdirSync(sample).map((n) => [n, new Uint8Array(readFileSync(join(sample, n)))]));
+      files.set('game0.sav', new TextEncoder().encode('{}')); // web-only save, must be left out
+      const { name, zip, exe } = await exportDos(files, { title: 'SAMPLE GAME', gam: 'sample.gam', appBase: 'http://x/' });
+      expect(name).toBe('sample-dos.zip');
+      expect(exe).toBe('SAMPLE.EXE');
+      const entries = new Map((await readZip(zip)).map((e) => [e.name, e.data]));
+      expect(Buffer.compare(entries.get('SAMPLE.EXE')!, readFileSync(join(cdgm, 'xferplay.exe')))).toBe(0);
+      expect(entries.has('SNDBLAST.DRV')).toBe(true);
+      expect(new TextDecoder().decode(entries.get('CONFIG.BAT'))).toContain('SAMPLE config');
+      expect(Buffer.compare(entries.get('SAMPLE.MAP')!, readFileSync(join(sample, 'sample.map')))).toBe(0);
+      expect(entries.has('GAME0.SAV')).toBe(false);
+      expect(dosNameProblems([...entries.keys()])).toEqual([]);
+    },
+  );
 
   it('refuses a .gam name that cannot become an .EXE name', async () => {
     stubFetch();
-    await expect(exportDos(new GameFiles([['my game.gam', new Uint8Array(1)]]), { title: 'x', gam: 'my game.gam', appBase: 'http://x/' })).rejects.toThrow(/not a DOS file name/);
+    await expect(exportDos(new GameFiles([['my game.gam', new Uint8Array(1)]]), { title: 'x', gam: 'my game.gam', appBase: 'http://x/' })).rejects.toThrow(
+      /not a DOS file name/,
+    );
   });
 });

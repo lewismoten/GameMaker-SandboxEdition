@@ -32,9 +32,19 @@ describe('stamps', () => {
   it('flips and turns a stamp, swapping its blocks for their mirrors', () => {
     const m = mirrors(set);
     const s = { w: 3, h: 2, cells: [1, 0, -1, 3, 0, 0] };
-    expect(stampRows(transformStamp(s, 'flipH', m)!)).toEqual([[-1, 0, 2], [0, 0, 4]]);
-    expect(stampRows(transformStamp(s, 'flipV', m)!)).toEqual([[1, 0, 0], [3, 0, -1]]);
-    expect(stampRows(transformStamp(s, 'rotate', m)!)).toEqual([[1, 2], [0, 0], [0, -1]]);
+    expect(stampRows(transformStamp(s, 'flipH', m)!)).toEqual([
+      [-1, 0, 2],
+      [0, 0, 4],
+    ]);
+    expect(stampRows(transformStamp(s, 'flipV', m)!)).toEqual([
+      [1, 0, 0],
+      [3, 0, -1],
+    ]);
+    expect(stampRows(transformStamp(s, 'rotate', m)!)).toEqual([
+      [1, 2],
+      [0, 0],
+      [0, -1],
+    ]);
     expect(transformStamp({ w: 1, h: 1, cells: [5] }, 'flipH', m)).toBeUndefined();
   });
 });

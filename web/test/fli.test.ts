@@ -14,17 +14,24 @@ const flis = existsSync(gameware)
   : [];
 
 describe('fli', () => {
-  it.skipIf(!flis.length)('decodes every sample animation to a non-empty picture', () => {
-    for (const f of flis) {
-      const bytes = new Uint8Array(readFileSync(f));
-      if (bytes.length === 16384) continue; // truncated on the CD image
-      const anim = parseFli(bytes);
-      expect(anim.frames.length, f).toBeGreaterThanOrEqual(anim.frameCount);
-      const canvas = newFliCanvas(anim);
-      let paletteSet = false;
-      for (let i = 0; i < anim.frameCount; i++) paletteSet = applyFliFrame(anim, i, canvas) || paletteSet;
-      expect(paletteSet, f).toBe(true);
-      expect(canvas.palette.every((v) => v < 64), f).toBe(true);
-    }
-  }, 60_000);
+  it.skipIf(!flis.length)(
+    'decodes every sample animation to a non-empty picture',
+    () => {
+      for (const f of flis) {
+        const bytes = new Uint8Array(readFileSync(f));
+        if (bytes.length === 16384) continue; // truncated on the CD image
+        const anim = parseFli(bytes);
+        expect(anim.frames.length, f).toBeGreaterThanOrEqual(anim.frameCount);
+        const canvas = newFliCanvas(anim);
+        let paletteSet = false;
+        for (let i = 0; i < anim.frameCount; i++) paletteSet = applyFliFrame(anim, i, canvas) || paletteSet;
+        expect(paletteSet, f).toBe(true);
+        expect(
+          canvas.palette.every((v) => v < 64),
+          f,
+        ).toBe(true);
+      }
+    },
+    60_000,
+  );
 });

@@ -24,7 +24,17 @@ import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castT
  * right); on stage it turns to face you with its idle sequence (0), or `front`, blocks of its
  * .CBL one grid per frame.
  */
-type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][]; frontArt?: Pixels[]; acts?: Record<string, number> };
+type ChrSource = {
+  game: string;
+  chr: string;
+  cbl: string;
+  pal: string;
+  seq?: number;
+  ms?: number;
+  front?: number[][][];
+  frontArt?: Pixels[];
+  acts?: Record<string, number>;
+};
 /** Drawn here in colors of its own (6-bit VGA). */
 type PaintSource = { paint: Pixels[]; front?: Pixels[]; colors: [number, number, number][]; still?: boolean; wobble?: boolean; ms?: number };
 /** Drawn by a game's own drawing code (in its palette `pal`): walking frames, then facing you. */
@@ -33,7 +43,17 @@ type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]
  * Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame; `recolor` swaps
  * colors (hex to hex) where the game's palette draws a regular in colors not their own.
  */
-type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean; mirror?: boolean; height?: number; recolor?: Record<string, string> };
+type BlockSource = {
+  game: string;
+  file: string;
+  pal: string;
+  frames: number[][][];
+  ms?: number;
+  still?: boolean;
+  mirror?: boolean;
+  height?: number;
+  recolor?: Record<string, string>;
+};
 type Source = ChrSource | BlockSource | DrawnSource | PaintSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
@@ -53,7 +73,23 @@ export const CAST_SPRITES: Record<string, Source> = {
   chez: { game: 'realm', chr: 'chez.chr', cbl: 'pip.cbl', pal: 'flats.pal', seq: 8, front: [[[19]], [[20]]] },
   // drawn swimming left round the eddy: turned round to walk on forwards
   chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200, mirror: true },
-  rootbeer: { game: 'teddy', file: 'klub.bbl', pal: 'klub.pal', frames: [[[76, 77], [79, 81]], [[76, 77], [80, 81]]], ms: 160, still: true },
+  rootbeer: {
+    game: 'teddy',
+    file: 'klub.bbl',
+    pal: 'klub.pal',
+    frames: [
+      [
+        [76, 77],
+        [79, 81],
+      ],
+      [
+        [76, 77],
+        [80, 81],
+      ],
+    ],
+    ms: 160,
+    still: true,
+  },
   tinHeart: { tinHeart: true },
   easterEgg: { paint: eggTurning(), front: eggShine(), colors: EGG_PAL, wobble: true, ms: 160 },
   // the costume Gwinn runs off with on stage (Teddy's Little Big Adventure's intro)
@@ -63,10 +99,31 @@ export const CAST_SPRITES: Record<string, Source> = {
   'prop:chicken': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('chicken')], still: true },
   // the child who carries Loaf #13 home (Loaf #13's home level), and the needle Brother Camel
   // tries (the eye level's needle, its eye and a little of its shaft)
-  'prop:girl': { game: 'loaf', file: 'loaf.mbl', pal: 'home.pal', frames: [[[33], [35]], [[34], [36]]], ms: 180 },
+  'prop:girl': {
+    game: 'loaf',
+    file: 'loaf.mbl',
+    pal: 'home.pal',
+    frames: [
+      [[33], [35]],
+      [[34], [36]],
+    ],
+    ms: 180,
+  },
   'prop:needle': { paint: [needlePicture()], colors: NEEDLE_PAL, still: true },
   'prop:nose': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('nose')], still: true },
-  doghouse: { game: 'teddy', file: 'street.bbl', pal: 'street.pal', frames: [[[86, 87], [89, 91], [92, 95]]], still: true },
+  doghouse: {
+    game: 'teddy',
+    file: 'street.bbl',
+    pal: 'street.pal',
+    frames: [
+      [
+        [86, 87],
+        [89, 91],
+        [92, 95],
+      ],
+    ],
+    still: true,
+  },
   joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal', seq: 8 },
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal', seq: 8 },
   will: { game: 'sweats', chr: 'poet.chr', cbl: 'poet.cbl', pal: 'hive.pal', seq: 5 },
@@ -86,7 +143,20 @@ export const CAST_SPRITES: Record<string, Source> = {
   seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal', seq: 5 },
   loaf: { game: 'loaf', chr: 'loaf.chr', cbl: 'loaf.cbl', pal: 'hill.pal', seq: 5 },
   // turning to face you: drawn here, as his game only has him from the side
-  camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal', seq: 5, frontArt: [...Array(9).fill(0).map(() => camelFront()), camelFront(true)], ms: 150 },
+  camel: {
+    game: 'needle',
+    chr: 'loaded.chr',
+    cbl: 'loaded.cbl',
+    pal: 'city.pal',
+    seq: 5,
+    frontArt: [
+      ...Array(9)
+        .fill(0)
+        .map(() => camelFront()),
+      camelFront(true),
+    ],
+    ms: 150,
+  },
 };
 
 const disk = (game: string, file: string) => readFileSync(join(__dirname, '../../games', game, 'disk', file));
@@ -139,9 +209,28 @@ interface Raw {
 
 function raw(s: Source): Raw {
   if ('chez' in s) {
-    const car = chezPicture({ body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 }, 'right', 1);
+    const car = chezPicture(
+      { body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 },
+      'right',
+      1,
+    );
     const palette = new Uint8Array(768);
-    [[0, 0, 0], [42, 8, 4], [58, 16, 9], [63, 32, 22], [34, 4, 3], [8, 12, 20], [40, 48, 56], [4, 4, 6], [6, 6, 7], [50, 52, 56], [12, 12, 14], [63, 44, 0], [52, 4, 4], [61, 61, 60]].forEach((c, i) => palette.set(c, i * 3));
+    [
+      [0, 0, 0],
+      [42, 8, 4],
+      [58, 16, 9],
+      [63, 32, 22],
+      [34, 4, 3],
+      [8, 12, 20],
+      [40, 48, 56],
+      [4, 4, 6],
+      [6, 6, 7],
+      [50, 52, 56],
+      [12, 12, 14],
+      [63, 44, 0],
+      [52, 4, 4],
+      [61, 61, 60],
+    ].forEach((c, i) => palette.set(c, i * 3));
     return { width: car.w, height: car.h, frames: [Uint8Array.from(car.px)], palette, ms: 200, walk: true };
   }
   if ('tinHeart' in s) {
@@ -153,7 +242,16 @@ function raw(s: Source): Raw {
     const palette = new Uint8Array(768);
     s.colors.forEach((c, i) => palette.set(c, i * 3));
     const all = [...s.paint, ...(s.front ?? [])];
-    return { width: all[0].w, height: all[0].h, frames: all.map((p) => Uint8Array.from(p.px)), ...(s.front ? { nWalk: s.paint.length } : {}), palette, ms: s.ms ?? 200, walk: !s.still, wobble: s.wobble };
+    return {
+      width: all[0].w,
+      height: all[0].h,
+      frames: all.map((p) => Uint8Array.from(p.px)),
+      ...(s.front ? { nWalk: s.paint.length } : {}),
+      palette,
+      ms: s.ms ?? 200,
+      walk: !s.still,
+      wobble: s.wobble,
+    };
   }
   const palette = parsePalette(disk(s.game, s.pal));
   if ('chr' in s) {
@@ -170,12 +268,12 @@ function raw(s: Source): Raw {
     const front = s.frontArt
       ? s.frontArt.map((p) => Uint8Array.from(p.px))
       : s.front
-      ? s.front.map((grid) => {
-          const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
-          grid.forEach((row, r) => put(px, BLEN, blocks[row[0]], 0, 0, (2 - grid.length + r) * BLEN));
-          return px;
-        })
-      : played(seqs[0]).map(draw);
+        ? s.front.map((grid) => {
+            const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
+            grid.forEach((row, r) => put(px, BLEN, blocks[row[0]], 0, 0, (2 - grid.length + r) * BLEN));
+            return px;
+          })
+        : played(seqs[0]).map(draw);
     const frames = [...walk, ...front];
     const acts: Record<string, [number, number]> = {};
     for (const [name, seq] of Object.entries(s.acts ?? {})) {
@@ -192,7 +290,16 @@ function raw(s: Source): Raw {
       acts[name] = [all.length, more.length];
       all.push(...more);
     }
-    return { width: all[0].w, height: all[0].h, frames: all.map((p) => Uint8Array.from(p.px)), nWalk: s.walk.length, ...(s.acts ? { acts } : {}), palette, ms: s.ms ?? 200, walk: !s.still };
+    return {
+      width: all[0].w,
+      height: all[0].h,
+      frames: all.map((p) => Uint8Array.from(p.px)),
+      nWalk: s.walk.length,
+      ...(s.acts ? { acts } : {}),
+      palette,
+      ms: s.ms ?? 200,
+      walk: !s.still,
+    };
   }
   const kind = s.file.split('.').pop()!.toLowerCase() as BlockKind;
   const blocks = parseBlocks(disk(s.game, s.file), BLOCK_COUNTS[kind]);
@@ -205,7 +312,15 @@ function raw(s: Source): Raw {
   });
   // cut to `height` rows from the top (a needle shortened to fit the stage)
   const height = Math.min(rows * BLEN, s.height ?? rows * BLEN);
-  return { width: cols * BLEN, height, frames: frames.map((f) => f.slice(0, cols * BLEN * height)), palette, ms: s.ms ?? 200, walk: !s.still, mirror: s.mirror };
+  return {
+    width: cols * BLEN,
+    height,
+    frames: frames.map((f) => f.slice(0, cols * BLEN * height)),
+    palette,
+    ms: s.ms ?? 200,
+    walk: !s.still,
+    mirror: s.mirror,
+  };
 }
 
 /** Trimmed to the rows any frame draws on, recolored to only the colors used (0 is see-through). */
@@ -218,7 +333,10 @@ export function castSprite(s: Source): CastSprite {
   let bottom = r.height;
   while (top < bottom - 1 && !drawn(top)) top++;
   while (bottom > top + 1 && !drawn(bottom - 1)) bottom--;
-  const hex = (c: number) => Math.round((c * 255) / 63).toString(16).padStart(2, '0');
+  const hex = (c: number) =>
+    Math.round((c * 255) / 63)
+      .toString(16)
+      .padStart(2, '0');
   return {
     w: r.width,
     h: bottom - top,

@@ -40,7 +40,15 @@ export function polyPath(pts: Pt[], S: number): Path2D {
 // ------------------------------------------------------------------ words
 
 /** Lines of text at the largest size (px) that fits maxW x maxH, splitting on spaces into up to 3 lines. */
-export function fit(g: CanvasRenderingContext2D, text: string, maxW: number, maxH: number, weight: string, family: string, lh = 1.05): { lines: string[]; size: number } {
+export function fit(
+  g: CanvasRenderingContext2D,
+  text: string,
+  maxW: number,
+  maxH: number,
+  weight: string,
+  family: string,
+  lh = 1.05,
+): { lines: string[]; size: number } {
   const words = text.split(/\s+/).filter(Boolean);
   let best = { lines: [text], size: 1 };
   for (let n = 1; n <= Math.min(3, words.length); n++) {
@@ -63,7 +71,15 @@ export function fit(g: CanvasRenderingContext2D, text: string, maxW: number, max
   return best;
 }
 
-export function drawLines(g: CanvasRenderingContext2D, fitted: { lines: string[]; size: number }, cx: number, cy: number, weight: string, family: string, lh = 1.05): void {
+export function drawLines(
+  g: CanvasRenderingContext2D,
+  fitted: { lines: string[]; size: number },
+  cx: number,
+  cy: number,
+  weight: string,
+  family: string,
+  lh = 1.05,
+): void {
   g.font = `${weight} ${fitted.size}px ${family}`;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
@@ -265,7 +281,7 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
           // round stickers narrow toward the bottom, so their words sit higher and narrower
           const inset = shape === 'heart' ? 0.36 : shape === 'burst' ? 0.4 : shape === 'star' ? 0.46 : round ? 0.6 : 0.84;
           const bandH = (H - bandTop) * (pointy ? 0.62 : round ? 0.72 : 1);
-          wordsIn(g, words, W * (1 - inset) / 2, bandTop + bandH * 0.08, W * inset, bandH * 0.84, words.color);
+          wordsIn(g, words, (W * (1 - inset)) / 2, bandTop + bandH * 0.08, W * inset, bandH * 0.84, words.color);
         }
       } else wordsIn(g, words, bx * W, by * H, bw * W, bh * H, words.ink);
     },
@@ -391,7 +407,11 @@ export function bbsSticker(): Sticker {
       g.font = `700 ${Math.min(W * 0.085, (100 * W * 0.88) / g.measureText('THE -= SANDBOX =- BBS').width)}px ${mono}`;
       g.textBaseline = 'middle';
       g.textAlign = 'left';
-      const parts: [string, string][] = [['THE -= ', '#aaaaaa'], ...[...'SANDBOX'].map((c, i): [string, string] => [c, SANDBOX_RAINBOW[i]]), [' =- BBS', '#aaaaaa']];
+      const parts: [string, string][] = [
+        ['THE -= ', '#aaaaaa'],
+        ...[...'SANDBOX'].map((c, i): [string, string] => [c, SANDBOX_RAINBOW[i]]),
+        [' =- BBS', '#aaaaaa'],
+      ];
       const total = parts.reduce((t, [c]) => t + g.measureText(c).width, 0);
       let tx = (W - total) / 2;
       for (const [c, col] of parts) {
@@ -476,4 +496,3 @@ export function sandboxSticker(size = 1.45): Sticker {
     drawLines(g, soft, m / 2, y + ribbonH * S * 0.76, '900', BLACK_FONT);
   });
 }
-

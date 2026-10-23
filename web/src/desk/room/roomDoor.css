@@ -54,12 +54,7 @@
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    background: radial-gradient(
-      circle at 35% 30%,
-      #fff6c8,
-      #d4a83a 45%,
-      #8a6418 85%
-    );
+    background: radial-gradient(circle at 35% 30%, #fff6c8, #d4a83a 45%, #8a6418 85%);
     box-shadow:
       0 0 0 5px #c79d3c,
       0 0 0 6px rgba(0, 0, 0, 0.25),
@@ -75,16 +70,15 @@
     padding: 12px 10px 10px;
     box-sizing: border-box;
     background:
-      repeating-linear-gradient(transparent 0 15px, #9fc0dc 15px 16px) 0 8px /
-        100% 100% no-repeat,
+      repeating-linear-gradient(transparent 0 15px, #9fc0dc 15px 16px) 0 8px / 100% 100% no-repeat,
       #fbf8ee;
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
     transform: rotate(-4deg);
     text-align: center;
     color: #c0141b;
     font:
-      700 26px/1 "Marker Felt",
-      "Comic Sans MS",
+      700 26px/1 'Marker Felt',
+      'Comic Sans MS',
       cursive;
   }
 
@@ -96,7 +90,7 @@
   }
 
   .room-door .rd-sign::before {
-    content: "";
+    content: '';
     position: absolute;
     left: 50%;
     top: -8px;

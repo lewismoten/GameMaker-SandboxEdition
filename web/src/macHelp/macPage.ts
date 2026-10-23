@@ -8,8 +8,7 @@ import { pageToc } from '../pageToc';
 import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
-const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
-  h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
+const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) => h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
 
 const kbd = (text: string) => h('kbd', null, text);
 

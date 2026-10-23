@@ -2,7 +2,7 @@
 // the modem and the phone line, the BBS's sounds) goes through one gain here on its way to
 // the volume knob (audio/output.ts), so the power switch can cut it all in an instant, the
 // way switching off a real PC does. (A game's own sound engine is stopped with the game.)
-import { output } from "../../audio/output";
+import { output } from '../../audio/output';
 
 let line: { ctx: BaseAudioContext; gain: GainNode } | undefined;
 

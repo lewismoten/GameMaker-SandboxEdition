@@ -38,7 +38,9 @@ export function slotName(project: Project, scene: number, slot: number): string 
 
 /** Every scene slot that names the file, as readable lines. */
 export function sceneUses(project: Project, file: string): Use[] {
-  return project.usesOf(file).map((u) => ({ file: project.gam, text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`, count: 1 }));
+  return project
+    .usesOf(file)
+    .map((u) => ({ file: project.gam, text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`, count: 1 }));
 }
 
 /** Slide shows (.lst) and backdrops (.bkd) that show the file. */
@@ -60,7 +62,8 @@ function partners(project: Project, file: string, slot: number, other: number): 
   const out: { scene: number; file: string }[] = [];
   project.game().scenes.forEach((s, i) => {
     const f = s.files[other] && normalize(s.files[other]);
-    if (s.gametype === ADVTYPE && normalize(s.files[slot] ?? '') === n && f && project.files.has(f) && !out.some((o) => o.file === f)) out.push({ scene: i, file: f });
+    if (s.gametype === ADVTYPE && normalize(s.files[slot] ?? '') === n && f && project.files.has(f) && !out.some((o) => o.file === f))
+      out.push({ scene: i, file: f });
   });
   return out;
 }
@@ -129,7 +132,8 @@ export function blockSetsFor(project: Project, pal: string): string[] {
   const n = normalize(pal);
   const sets = new Set<string>();
   for (const s of project.game().scenes)
-    if (s.gametype === ADVTYPE && normalize(s.files[0] ?? '') === n) for (const slot of [2, 4, 6]) s.files[slot] && project.files.has(normalize(s.files[slot])) && sets.add(normalize(s.files[slot]));
+    if (s.gametype === ADVTYPE && normalize(s.files[0] ?? '') === n)
+      for (const slot of [2, 4, 6]) s.files[slot] && project.files.has(normalize(s.files[slot])) && sets.add(normalize(s.files[slot]));
   if (!sets.size)
     for (const k of ['bbl', 'mbl', 'cbl'] as const) for (const f of project.files.byExtension(k)) if (project.paletteFor(f).source === n) sets.add(f);
   return [...sets];
@@ -151,7 +155,7 @@ export function colorUses(project: Project, pal: string, color: number): Use[] {
 /** 1, 2, 3, 7, 9, 10 → "1–3, 7, 9–10". */
 export function listRuns(ns: number[]): string {
   const parts: string[] = [];
-  for (let i = 0; i < ns.length; ) {
+  for (let i = 0; i < ns.length;) {
     let j = i;
     while (j + 1 < ns.length && ns[j + 1] === ns[j] + 1) j++;
     parts.push(j > i ? `${ns[i]}–${ns[j]}` : String(ns[i]));

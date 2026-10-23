@@ -54,7 +54,13 @@ const SHOTS: Shot[] = [
   { name: 'HOBO3.JPG', photo: 'lewie-at-clown-club-as-hobo.jpg', crop: [0.04, 0, 1, 0.84], jpeg: { quality: 65, gray: true } },
   { name: 'COLONIAL.GIF', photo: 'lewie dressed up for SAR with George Washington.jpg', crop: [0, 0, 0.95, 1], gif: { colors: 128 } },
   // the library's charter number on its sign is blurred
-  { name: 'DOGHOUSE.JPG', photo: 'lewies-little-free-library-with-wall-of-rock.jpg', crop: [0, 0, 1, 1], jpeg: { quality: 70, progressive: true }, blur: [[0.322, 0.138, 0.455, 0.17]] },
+  {
+    name: 'DOGHOUSE.JPG',
+    photo: 'lewies-little-free-library-with-wall-of-rock.jpg',
+    crop: [0, 0, 1, 1],
+    jpeg: { quality: 70, progressive: true },
+    blur: [[0.322, 0.138, 0.455, 0.17]],
+  },
   // just the picture of the library from the app screenshot (not its address); its "1/2" blurred
   { name: 'LIBRARY.GIF', photo: 'lewies-tiny-little-library.jpg', crop: [0.05, 0.29, 0.46, 0.505], gif: { colors: 16 }, blur: [[0.8, 0, 1, 0.1]] },
   // the restaurant sign above is cropped off; the plate is the car's name
@@ -62,7 +68,9 @@ const SHOTS: Shot[] = [
 ];
 
 function photoSize(file: string): [number, number] {
-  const r = spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', file], { encoding: 'utf8' });
+  const r = spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', file], {
+    encoding: 'utf8',
+  });
   const [w, h] = r.stdout.trim().split(',').map(Number);
   return [w, h];
 }
@@ -138,7 +146,7 @@ function medianCut(rgb: Uint8Array, count: number): number[][] {
   }
   return boxes.map((b) => {
     const n = weight(b);
-    return [0, 1, 2].map((ch) => Math.min(63, Math.round((b.reduce((s, e) => s + (e.c[ch] * 8 + 4) * e.n, 0) / n) / 4)));
+    return [0, 1, 2].map((ch) => Math.min(63, Math.round(b.reduce((s, e) => s + (e.c[ch] * 8 + 4) * e.n, 0) / n / 4)));
   });
 }
 
@@ -243,7 +251,18 @@ for (const s of SHOTS) {
   } else out = jpeg(rgb, w, h, s.jpeg!);
   writeFileSync(resolve(OUT, s.name), out);
   const gray = !!(s.gif?.gray || s.jpeg?.gray);
-  list.push({ name: s.name, bytes: out.length, width: w, height: h, format: s.gif ? 'GIF' : 'JPEG', colors: s.gif?.colors ?? (gray ? 256 : 16_777_216), gray, progressive: !!s.jpeg?.progressive });
-  console.log(`${s.name.padEnd(13)} ${w}x${h} ${s.gif ? `GIF ${s.gif.colors}${gray ? ' gray' : ''}` : `JPEG${s.jpeg!.progressive ? ' progressive' : ''}${gray ? ' gray' : ''}`} ${out.length} bytes`);
+  list.push({
+    name: s.name,
+    bytes: out.length,
+    width: w,
+    height: h,
+    format: s.gif ? 'GIF' : 'JPEG',
+    colors: s.gif?.colors ?? (gray ? 256 : 16_777_216),
+    gray,
+    progressive: !!s.jpeg?.progressive,
+  });
+  console.log(
+    `${s.name.padEnd(13)} ${w}x${h} ${s.gif ? `GIF ${s.gif.colors}${gray ? ' gray' : ''}` : `JPEG${s.jpeg!.progressive ? ' progressive' : ''}${gray ? ' gray' : ''}`} ${out.length} bytes`,
+  );
 }
 writeFileSync(LIST, JSON.stringify(list, null, 2) + '\n');

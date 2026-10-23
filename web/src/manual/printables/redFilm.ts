@@ -137,12 +137,19 @@ export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK):
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
   const rnd = seeded(seed);
-  camouflage(c, rnd, w, hh, () => PX * STROKE * (0.8 + rnd() * 0.4), () => {
-    c.font = FONT;
-    c.textBaseline = 'middle';
-    c.fillStyle = ink;
-    c.fillText(word, pad / 3, hh / 2 + PX * 0.04);
-  });
+  camouflage(
+    c,
+    rnd,
+    w,
+    hh,
+    () => PX * STROKE * (0.8 + rnd() * 0.4),
+    () => {
+      c.font = FONT;
+      c.textBaseline = 'middle';
+      c.fillStyle = ink;
+      c.fillText(word, pad / 3, hh / 2 + PX * 0.04);
+    },
+  );
   return canvas;
 }
 
@@ -230,7 +237,11 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
     const r = s * 0.36;
     const tip = [cx + dx * r, cy + dy * r];
     line([[cx - dx * r, cy - dy * r], tip]);
-    line([[tip[0] - dx * r * 0.7 - dy * r * 0.6, tip[1] - dy * r * 0.7 - dx * r * 0.6], tip, [tip[0] - dx * r * 0.7 + dy * r * 0.6, tip[1] - dy * r * 0.7 + dx * r * 0.6]]);
+    line([
+      [tip[0] - dx * r * 0.7 - dy * r * 0.6, tip[1] - dy * r * 0.7 - dx * r * 0.6],
+      tip,
+      [tip[0] - dx * r * 0.7 + dy * r * 0.6, tip[1] - dy * r * 0.7 + dx * r * 0.6],
+    ]);
   };
   switch (ch) {
     case '.':
@@ -251,8 +262,14 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
       break;
     case 'X':
       c.lineWidth = PEN * 1.5;
-      line([[x + s * 0.12, y + s * 0.12], [x + s * 0.88, y + s * 0.88]]);
-      line([[x + s * 0.88, y + s * 0.12], [x + s * 0.12, y + s * 0.88]]);
+      line([
+        [x + s * 0.12, y + s * 0.12],
+        [x + s * 0.88, y + s * 0.88],
+      ]);
+      line([
+        [x + s * 0.88, y + s * 0.12],
+        [x + s * 0.12, y + s * 0.88],
+      ]);
       c.lineWidth = PEN;
       break;
     case '@':
@@ -294,10 +311,16 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
       arrow(0, -1);
       break;
     case '-':
-      line([[x, cy], [x + s, cy]]);
+      line([
+        [x, cy],
+        [x + s, cy],
+      ]);
       break;
     case '|':
-      line([[cx, y], [cx, y + s]]);
+      line([
+        [cx, y],
+        [cx, y + s],
+      ]);
       break;
   }
 }
@@ -318,17 +341,25 @@ export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.joi
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
   const rnd = seeded(seed);
-  camouflage(c, rnd, w, hh, () => PEN * (0.8 + rnd() * 0.5), () => {
-    c.fillStyle = ink;
-    c.strokeStyle = ink;
-    c.lineWidth = PEN;
-    c.lineCap = 'round';
-    c.lineJoin = 'round';
-    sketch.rows.forEach((row, j) => [...row].forEach((ch, i) => glyph(c, ch, pad + i * CELL, pad + j * CELL)));
-    c.font = LABEL_FONT;
-    c.textBaseline = 'middle';
-    for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
-  }, 16);
+  camouflage(
+    c,
+    rnd,
+    w,
+    hh,
+    () => PEN * (0.8 + rnd() * 0.5),
+    () => {
+      c.fillStyle = ink;
+      c.strokeStyle = ink;
+      c.lineWidth = PEN;
+      c.lineCap = 'round';
+      c.lineJoin = 'round';
+      sketch.rows.forEach((row, j) => [...row].forEach((ch, i) => glyph(c, ch, pad + i * CELL, pad + j * CELL)));
+      c.font = LABEL_FONT;
+      c.textBaseline = 'middle';
+      for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
+    },
+    16,
+  );
   return canvas;
 }
 

@@ -11,12 +11,15 @@ function shard(c: Ctx, x: number, y: number, s: number, rot: number, color: stri
   c.translate(x, y);
   c.rotate(rot);
   poly(c, [0, -s * 1.6, s * 0.5, -s * 0.3, s * 0.32, s * 1.2, 0, s * 1.5, -s * 0.36, s * 1.1, -s * 0.5, -s * 0.4]);
-  fill(c, lin(c, -s * 0.5, 0, s * 0.5, 0, [
-    [0, color],
-    [0.45, '#fff'],
-    [0.55, color],
-    [1, 'rgba(0,0,0,0.6)'],
-  ]));
+  fill(
+    c,
+    lin(c, -s * 0.5, 0, s * 0.5, 0, [
+      [0, color],
+      [0.45, '#fff'],
+      [0.55, color],
+      [1, 'rgba(0,0,0,0.6)'],
+    ]),
+  );
   poly(c, [0, -s * 1.6, s * 0.1, s * 1.4, -s * 0.12, s * 1.3]);
   fill(c, 'rgba(255,255,255,0.5)');
   c.restore();
@@ -26,11 +29,14 @@ function shard(c: Ctx, x: number, y: number, s: number, rot: number, color: stri
 function planet(c: Ctx, x: number, y: number, rr: number, colors: [string, string, string], lx: number, ly: number): void {
   const a = Math.atan2(ly - y, lx - x);
   ell(c, x, y, rr, rr);
-  fill(c, rad(c, x + Math.cos(a) * rr * 0.45, y + Math.sin(a) * rr * 0.45, rr * 1.5, [
-    [0, colors[0]],
-    [0.45, colors[1]],
-    [1, colors[2]],
-  ]));
+  fill(
+    c,
+    rad(c, x + Math.cos(a) * rr * 0.45, y + Math.sin(a) * rr * 0.45, rr * 1.5, [
+      [0, colors[0]],
+      [0.45, colors[1]],
+      [1, colors[2]],
+    ]),
+  );
 }
 
 /** The courier pod: a stubby capsule with a bubble window, Max at the controls. */
@@ -41,25 +47,34 @@ function pod(c: Ctx, x: number, y: number, s: number, rot: number): void {
   c.scale(s, s);
   // the engine trail
   poly(c, [-60, -16, -330, -4, -330, 4, -60, 16]);
-  fill(c, lin(c, -60, 0, -330, 0, [
-    [0, 'rgba(120,230,255,0.9)'],
-    [1, 'rgba(60,120,255,0)'],
-  ]));
+  fill(
+    c,
+    lin(c, -60, 0, -330, 0, [
+      [0, 'rgba(120,230,255,0.9)'],
+      [1, 'rgba(60,120,255,0)'],
+    ]),
+  );
   glow(c, -70, 0, 70, '#80e0ff', 0.9);
   // fins
   for (const sy of [-1, 1]) {
     poly(c, [-40, sy * 20, -84, sy * 64, -64, sy * 66, 0, sy * 26]);
-    fill(c, lin(c, 0, 0, 0, sy * 66, [
-      [0, '#f0a020'],
-      [1, '#8a4a00'],
-    ]));
+    fill(
+      c,
+      lin(c, 0, 0, 0, sy * 66, [
+        [0, '#f0a020'],
+        [1, '#8a4a00'],
+      ]),
+    );
   }
   blob(c, [-66, -30, 30, -42, 90, -10, 90, 10, 30, 42, -66, 30, -76, 0]);
-  fill(c, lin(c, 0, -42, 0, 42, [
-    [0, '#ffffff'],
-    [0.35, '#c8d4e8'],
-    [1, '#3a4664'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -42, 0, 42, [
+      [0, '#ffffff'],
+      [0.35, '#c8d4e8'],
+      [1, '#3a4664'],
+    ]),
+  );
   stroke(c, '#f0a020', 8, [-50, 0, 18, 0]);
   // the parcel emblem: couriers deliver
   poly(c, [-40, 6, -14, 6, -14, 26, -40, 26]);
@@ -67,10 +82,13 @@ function pod(c: Ctx, x: number, y: number, s: number, rot: number): void {
   stroke(c, '#6a3a10', 2, [-27, 6, -27, 26]);
   // window, with Max in his courier cap
   ell(c, 42, -6, 26, 22);
-  fill(c, lin(c, 20, -28, 60, 16, [
-    [0, '#aef4ff'],
-    [1, '#0a3050'],
-  ]));
+  fill(
+    c,
+    lin(c, 20, -28, 60, 16, [
+      [0, '#aef4ff'],
+      [1, '#0a3050'],
+    ]),
+  );
   ell(c, 44, -2, 11, 12);
   fill(c, '#e8b48a');
   poly(c, [30, -8, 58, -8, 62, -2, 30, -2]);
@@ -105,10 +123,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   rays(c, cx, cy, 420, 18, '#ffb040', 0.18);
   glow(c, cx, cy, 170, '#ff8a20', 0.8);
   ell(c, cx, cy, 82, 82);
-  fill(c, rad(c, cx - 20, cy - 20, 90, [
-    [0, '#2a1a10'],
-    [1, '#050302'],
-  ]));
+  fill(
+    c,
+    rad(c, cx - 20, cy - 20, 90, [
+      [0, '#2a1a10'],
+      [1, '#050302'],
+    ]),
+  );
   c.save();
   c.globalCompositeOperation = 'lighter';
   c.strokeStyle = '#ffd080';
@@ -160,10 +181,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   pod(c, 300, 520, 1.15, -0.32);
   // an asteroid or two in the foreground
   blob(c, [520, 610, 560, 590, 600, 616, 590, 660, 540, 668]);
-  fill(c, lin(c, 520, 590, 590, 668, [
-    [0, '#8a7a90'],
-    [1, '#1a1420'],
-  ]));
+  fill(
+    c,
+    lin(c, 520, 590, 590, 668, [
+      [0, '#8a7a90'],
+      [1, '#1a1420'],
+    ]),
+  );
   finish(c, w, h, 'maximus');
 };
 export default paint;

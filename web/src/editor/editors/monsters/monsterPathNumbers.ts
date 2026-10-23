@@ -28,11 +28,7 @@ export function renderPathNumbers(numbers: HTMLDetailsElement, p: March[], k: Pa
       ? h(
           'table',
           { class: 'data' },
-          h(
-            'thead',
-            null,
-            h('tr', null, h('th', null, '#'), h('th', null, 'Across'), h('th', null, 'Down'), h('th', null, 'Speed'), h('th', null, 'Picture')),
-          ),
+          h('thead', null, h('tr', null, h('th', null, '#'), h('th', null, 'Across'), h('th', null, 'Down'), h('th', null, 'Speed'), h('th', null, 'Picture'))),
           h(
             'tbody',
             null,

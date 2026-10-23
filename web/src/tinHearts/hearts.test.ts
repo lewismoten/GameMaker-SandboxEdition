@@ -16,7 +16,11 @@ describe('tin hearts', () => {
 
   it('counts every Sandbox and Bard of Bizarre game, and no secret one', () => {
     const counted = [...Object.keys(hearts.hearts), ...hearts.pending].sort();
-    expect(counted).toEqual(Object.keys(abouts).filter((id) => heartsCount(abouts[id])).sort());
+    expect(counted).toEqual(
+      Object.keys(abouts)
+        .filter((id) => heartsCount(abouts[id]))
+        .sort(),
+    );
     for (const id of counted) expect(abouts[id].secret, id).not.toBe(true);
     expect(counted.length).toBeGreaterThanOrEqual(24);
   });

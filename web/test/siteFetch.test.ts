@@ -74,7 +74,11 @@ describe('hosted file fetching', () => {
     const calls: string[] = [];
     vi.stubGlobal('fetch', async (url: string) => {
       calls.push(url);
-      if (url === './t6/catalog.json') return json([{ id: 's', kind: 'shareware', details: true, original: { sound: 'sb' } }, { id: 'g', kind: 'gameware' }]);
+      if (url === './t6/catalog.json')
+        return json([
+          { id: 's', kind: 'shareware', details: true, original: { sound: 'sb' } },
+          { id: 'g', kind: 'gameware' },
+        ]);
       if (url === './t6/details/s.json') return json({ notice: 'Register!', original: { manual: { title: 'M', pages: [] } } });
       return new Response('nf', { status: 404 });
     });
@@ -88,7 +92,9 @@ describe('hosted file fetching', () => {
 
   it('uses the full catalog where there is no short one', async () => {
     vi.stubGlobal('fetch', async (url: string) =>
-      url.endsWith('index.json') ? new Response('[{"id":"x","notice":"N"}]', { headers: { 'content-type': 'application/json' } }) : new Response('<html>', { headers: { 'content-type': 'text/html' } }),
+      url.endsWith('index.json')
+        ? new Response('[{"id":"x","notice":"N"}]', { headers: { 'content-type': 'application/json' } })
+        : new Response('<html>', { headers: { 'content-type': 'text/html' } }),
     );
     expect(await loadCatalogList('./t7/')).toEqual([{ id: 'x', notice: 'N' }]);
   });

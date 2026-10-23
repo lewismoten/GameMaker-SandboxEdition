@@ -57,12 +57,21 @@ const xml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 /** The app's folder name: the title, without the characters a Mac file name cannot have. */
 export function appName(title: string): string {
-  const name = title.replace(/[/:\\\u0000-\u001f]+/g, '-').replace(/^[.\s]+|\s+$/g, '').slice(0, 64).trim() || 'Game';
+  const name =
+    title
+      .replace(/[/:\\\u0000-\u001f]+/g, '-')
+      .replace(/^[.\s]+|\s+$/g, '')
+      .slice(0, 64)
+      .trim() || 'Game';
   return `${name}.app`;
 }
 
 export function bundleId(id: string): string {
-  const clean = id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || 'game';
+  const clean =
+    id
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'game';
   return `com.lewismoten.gamemaker.${clean}`;
 }
 
@@ -154,7 +163,14 @@ export const macNotices = () => new TextEncoder().encode(thirdPartyNotices('mac'
 
 /** The disk image's Finder window: the app, an Applications shortcut to drag it onto, and the notices below. */
 export function dmgWindow(name: string): Uint8Array {
-  return dsStore({ x: 200, y: 140, width: 600, height: 440, iconSize: 128, icons: { [name]: [160, 170], Applications: [440, 170], [NOTICES_FILE]: [300, 330] } });
+  return dsStore({
+    x: 200,
+    y: 140,
+    width: 600,
+    height: 440,
+    iconSize: 128,
+    icons: { [name]: [160, 170], Applications: [440, 170], [NOTICES_FILE]: [300, 330] },
+  });
 }
 
 /** The app in a .zip (Archive Utility makes the app from it, executable), with its notices. */
@@ -193,6 +209,12 @@ export function boxColors(box: { background?: string } | undefined): IconColors 
   const m = box?.background && /^#([0-9a-f]{6})$/i.exec(box.background);
   if (!m) return undefined;
   const n = parseInt(m[1], 16);
-  const dark = [16, 8, 0].map((s) => Math.round(((n >> s) & 255) * 0.45).toString(16).padStart(2, '0')).join('');
+  const dark = [16, 8, 0]
+    .map((s) =>
+      Math.round(((n >> s) & 255) * 0.45)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('');
   return { top: box!.background!, bottom: `#${dark}` };
 }

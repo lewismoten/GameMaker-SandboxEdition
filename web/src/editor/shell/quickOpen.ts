@@ -93,7 +93,11 @@ export function quickOpen(project: Project): Promise<string | undefined> {
             },
             h('span', { class: 'qo-icon', 'aria-hidden': 'true' }, KIND_ICON[kindOf(hit.file)] ?? '📄'),
             h('span', { class: 'qo-name' }, hit.file),
-            h('span', { class: 'qo-note meta' }, hit.note || (kindOf(hit.file) === 'gam' ? 'The game' : uses ? `In ${uses} scene slot${uses === 1 ? '' : 's'}` : KIND_LABELS[kindOf(hit.file)])),
+            h(
+              'span',
+              { class: 'qo-note meta' },
+              hit.note || (kindOf(hit.file) === 'gam' ? 'The game' : uses ? `In ${uses} scene slot${uses === 1 ? '' : 's'}` : KIND_LABELS[kindOf(hit.file)]),
+            ),
           );
         }),
       );

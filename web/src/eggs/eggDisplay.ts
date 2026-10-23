@@ -43,7 +43,9 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     standShown = key;
     stand.hidden = !items.length;
     if (!items.length) return;
-    const names = items.map((i) => (i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'iou' ? 'an IOU note' : 'a pastry egg'));
+    const names = items.map((i) =>
+      i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'iou' ? 'an IOU note' : 'a pastry egg',
+    );
     stand.setAttribute('aria-label', `Cake stand with ${names.join(' and ')}: take a closer look`);
     stand.title = 'A cake stand';
     const W = 56;

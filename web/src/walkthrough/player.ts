@@ -38,7 +38,12 @@ export function loadWalkthrough(entry: CatalogEntry): Promise<Walkthrough | unde
   return p;
 }
 
-const slug = (s: string) => s.replace(/['’]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'game';
+const slug = (s: string) =>
+  s
+    .replace(/['’]/g, '')
+    .replace(/[^\w]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase() || 'game';
 
 /** The address of the game's page in the web app. */
 export const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
@@ -65,7 +70,11 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
     await navigator.clipboard.writeText(text);
     return true;
   } catch {
-    const ta = h('textarea', { readonly: true, 'aria-hidden': 'true', tabindex: '-1', style: 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0' }, text) as HTMLTextAreaElement;
+    const ta = h(
+      'textarea',
+      { readonly: true, 'aria-hidden': 'true', tabindex: '-1', style: 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0' },
+      text,
+    ) as HTMLTextAreaElement;
     inside.append(ta);
     ta.select();
     let ok = false;
@@ -91,7 +100,12 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
   }
 }
 
-async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady: (() => void) | undefined, onLose: (f: () => void) => void): Promise<void> {
+async function watch(
+  entry: CatalogEntry,
+  loadFiles: () => Promise<GameFiles>,
+  onReady: (() => void) | undefined,
+  onLose: (f: () => void) => void,
+): Promise<void> {
   const [walk, files] = await Promise.all([loadWalkthrough(entry), loadFiles()]);
   if (!walk || !entry.gam) {
     toast(`${entry.title} has no walkthrough.`);
@@ -108,8 +122,21 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
   const timeEl = h('span', { class: 'wt-time', 'aria-live': 'off' });
   const bar = h('div', { class: 'wt-bar-fill' });
   const ticks = tl.chapters.slice(1).map((c) => h('span', { class: 'wt-bar-tick', style: `left:${(100 * c.frame) / total}%` }));
-  const progress = h('div', { class: 'wt-bar', role: 'progressbar', 'aria-label': 'Walkthrough position', 'aria-valuemin': '0', 'aria-valuemax': String(Math.round(total / WALKTHROUGH_FPS)) }, bar, ...ticks);
-  const speeds = [1, 2, 4].map((v) => h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`));
+  const progress = h(
+    'div',
+    {
+      class: 'wt-bar',
+      role: 'progressbar',
+      'aria-label': 'Walkthrough position',
+      'aria-valuemin': '0',
+      'aria-valuemax': String(Math.round(total / WALKTHROUGH_FPS)),
+    },
+    bar,
+    ...ticks,
+  );
+  const speeds = [1, 2, 4].map((v) =>
+    h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`),
+  );
   const soundPick = demoAudioPicker({ label: 'Sound', className: 'wt-sound' });
   const chapterList = h('ol', { class: 'wt-chapters' });
   const status = h('p', { class: 'meta wt-status', role: 'status' });
@@ -118,9 +145,15 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
     'select',
     { class: 'wt-export-pick', 'aria-label': 'What to put in the MP4' },
     h('option', { value: 'all' }, `Whole walkthrough (${clock(total / WALKTHROUGH_FPS)})`),
-    ...tl.chapters.map((c, i) => h('option', { value: String(i) }, `Only ${c.title} (${clock(((tl.chapters[i + 1]?.frame ?? total) - c.frame) / WALKTHROUGH_FPS)})`)),
+    ...tl.chapters.map((c, i) =>
+      h('option', { value: String(i) }, `Only ${c.title} (${clock(((tl.chapters[i + 1]?.frame ?? total) - c.frame) / WALKTHROUGH_FPS)})`),
+    ),
   );
-  const exportBtn = h('button', { type: 'button', class: 'wt-export-btn', title: '320×200 at 60 frames a second with the sound picked, made frame by frame (faster than real time)' }, '⬇ Download MP4');
+  const exportBtn = h(
+    'button',
+    { type: 'button', class: 'wt-export-btn', title: '320×200 at 60 frames a second with the sound picked, made frame by frame (faster than real time)' },
+    '⬇ Download MP4',
+  );
   const exportBar = h('progress', { class: 'wt-export-progress', max: 1, value: 0, hidden: true, 'aria-label': 'Making the MP4' });
   const yt = walkthroughText(entry, walk);
   const ytText = youtubeClipboard(yt);
@@ -227,7 +260,10 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
   const setPlaying = (on: boolean) => {
     if (on && run?.done) {
       fresh();
-      void run!.start().then(() => run!.step(true)).then(showTime);
+      void run!
+        .start()
+        .then(() => run!.step(true))
+        .then(showTime);
     }
     playing = on;
     audio.pauseMusic(!on);
@@ -320,7 +356,9 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
           exportBar.value = done / all;
           const secs = (performance.now() - began) / 1000;
           const left = done > 0 ? (secs / done) * (all - done) : 0;
-          status.textContent = done ? `Making the video: ${Math.round((100 * done) / all)}% (${clock(done / WALKTHROUGH_FPS)} of ${clock(all / WALKTHROUGH_FPS)}), about ${clock(left)} to go.` : 'Making the video: getting to the start…';
+          status.textContent = done
+            ? `Making the video: ${Math.round((100 * done) / all)}% (${clock(done / WALKTHROUGH_FPS)} of ${clock(all / WALKTHROUGH_FPS)}), about ${clock(left)} to go.`
+            : 'Making the video: getting to the start…';
         },
       });
       saveBlob(name, res.blob);
@@ -384,12 +422,7 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
         status,
         ytDetails,
       ),
-      h(
-        'aside',
-        { class: 'wt-side', 'aria-label': 'Chapters' },
-        h('h3', null, 'Chapters'),
-        chapterList,
-      ),
+      h('aside', { class: 'wt-side', 'aria-label': 'Chapters' }, h('h3', null, 'Chapters'), chapterList),
     ),
   );
   closed = true;

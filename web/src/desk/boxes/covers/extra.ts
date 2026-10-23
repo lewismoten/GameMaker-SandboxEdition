@@ -28,18 +28,24 @@ function mug(c: Ctx, x: number, y: number, s: number): void {
   c.stroke();
   // glass and root beer
   poly(c, [-60, -160, 60, -160, 54, 0, -54, 0]);
-  fill(c, lin(c, -60, 0, 60, 0, [
-    [0, 'rgba(180,220,255,0.55)'],
-    [0.2, 'rgba(255,255,255,0.75)'],
-    [0.5, 'rgba(180,220,255,0.35)'],
-    [1, 'rgba(120,170,220,0.6)'],
-  ]));
+  fill(
+    c,
+    lin(c, -60, 0, 60, 0, [
+      [0, 'rgba(180,220,255,0.55)'],
+      [0.2, 'rgba(255,255,255,0.75)'],
+      [0.5, 'rgba(180,220,255,0.35)'],
+      [1, 'rgba(120,170,220,0.6)'],
+    ]),
+  );
   poly(c, [-52, -140, 52, -140, 47, -8, -47, -8]);
-  fill(c, lin(c, 0, -140, 0, -8, [
-    [0, '#c87a34'],
-    [0.4, '#7a3410'],
-    [1, '#2a0c04'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -140, 0, -8, [
+      [0, '#c87a34'],
+      [0.4, '#7a3410'],
+      [1, '#2a0c04'],
+    ]),
+  );
   const r = seeded('mug-bubbles');
   for (let i = 0; i < 26; i++) {
     ell(c, -40 + r() * 80, -130 + r() * 115, 1.5 + r() * 2.5, 1.5 + r() * 2.5);
@@ -57,11 +63,14 @@ function mug(c: Ctx, x: number, y: number, s: number): void {
     [0, -150, 26],
   ]) {
     ell(c, fx, fy, fr, fr * 0.8);
-    fill(c, rad(c, fx - fr * 0.3, fy - fr * 0.4, fr * 1.2, [
-      [0, '#fffef6'],
-      [0.6, '#f4e6c8'],
-      [1, '#c8a878'],
-    ]));
+    fill(
+      c,
+      rad(c, fx - fr * 0.3, fy - fr * 0.4, fr * 1.2, [
+        [0, '#fffef6'],
+        [0.6, '#f4e6c8'],
+        [1, '#c8a878'],
+      ]),
+    );
   }
   // a drip
   stroke(c, '#f4e6c8', 8, [56, -150, 58, -110]);
@@ -72,10 +81,13 @@ function mug(c: Ctx, x: number, y: number, s: number): void {
   c.translate(-4, -196);
   c.rotate(-0.12);
   poly(c, [-74, 10, -60, -8, -20, -2, 0, -30, 20, -2, 60, -8, 74, 10, 0, 22]);
-  fill(c, lin(c, 0, -30, 0, 22, [
-    [0, '#2a2a34'],
-    [1, '#08080c'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -30, 0, 22, [
+      [0, '#2a2a34'],
+      [1, '#08080c'],
+    ]),
+  );
   stroke(c, '#d8a030', 4, [-70, 10, 0, 21, 70, 10]);
   ell(c, 40, 2, 9, 9);
   fill(c, '#f8f4ec');
@@ -101,11 +113,14 @@ function clown(c: Ctx, x: number, y: number, s: number): void {
   }
   // corduroy jacket over a purple shirt and a green tie
   poly(c, [-52, -230, 52, -230, 46, -100, -46, -100]);
-  fill(c, lin(c, -52, 0, 52, 0, [
-    [0, '#141c3c'],
-    [0.5, '#2a3870'],
-    [1, '#141c3c'],
-  ]));
+  fill(
+    c,
+    lin(c, -52, 0, 52, 0, [
+      [0, '#141c3c'],
+      [0.5, '#2a3870'],
+      [1, '#141c3c'],
+    ]),
+  );
   c.strokeStyle = 'rgba(255,255,255,0.08)';
   c.lineWidth = 2;
   for (let i = -48; i < 48; i += 6) stroke(c, 'rgba(255,255,255,0.07)', 2, [i, -228, i, -102]);
@@ -127,10 +142,13 @@ function clown(c: Ctx, x: number, y: number, s: number): void {
   c.translate(96, -368);
   c.rotate(-0.4);
   ell(c, 0, 0, 34, 16);
-  fill(c, lin(c, 0, -16, 0, 16, [
-    [0, '#fff27a'],
-    [1, '#e0b820'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -16, 0, 16, [
+      [0, '#fff27a'],
+      [1, '#e0b820'],
+    ]),
+  );
   ell(c, 34, -14, 13, 12);
   fill(c, '#ffe860');
   poly(c, [44, -16, 66, -22, 46, -8]);
@@ -152,10 +170,13 @@ function clown(c: Ctx, x: number, y: number, s: number): void {
   }
   // the head
   ell(c, 0, -262, 36, 40);
-  fill(c, rad(c, -10, -275, 50, [
-    [0, '#ffd9bc'],
-    [1, '#d8987a'],
-  ]));
+  fill(
+    c,
+    rad(c, -10, -275, 50, [
+      [0, '#ffd9bc'],
+      [1, '#d8987a'],
+    ]),
+  );
   // ash beard and the white mouth, turned down
   poly(c, [-32, -258, 32, -258, 26, -230, 0, -222, -26, -230]);
   fill(c, 'rgba(60,64,90,0.85)');
@@ -168,10 +189,13 @@ function clown(c: Ctx, x: number, y: number, s: number): void {
   ell(c, 20, -258, 7, 5);
   fill(c, 'rgba(230,80,80,0.6)');
   ell(c, 0, -258, 9, 9);
-  fill(c, rad(c, -3, -261, 10, [
-    [0, '#ff8a80'],
-    [1, '#c01818'],
-  ]));
+  fill(
+    c,
+    rad(c, -3, -261, 10, [
+      [0, '#ff8a80'],
+      [1, '#c01818'],
+    ]),
+  );
   // white round the eyes, spectacles, thick brows
   for (const ex of [-14, 14]) {
     ell(c, ex, -276, 9, 7);
@@ -188,10 +212,13 @@ function clown(c: Ctx, x: number, y: number, s: number): void {
   poly(c, [-58, -296, 58, -296, 50, -288, -50, -288]);
   fill(c, '#4a4a52');
   poly(c, [-34, -296, -30, -336, 0, -342, 30, -336, 34, -296]);
-  fill(c, lin(c, 0, -342, 0, -296, [
-    [0, '#6a6a74'],
-    [1, '#3a3a42'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -342, 0, -296, [
+      [0, '#6a6a74'],
+      [1, '#3a3a42'],
+    ]),
+  );
   c.fillStyle = '#8a1a1a';
   c.fillRect(-34, -306, 68, 8);
   poly(c, [22, -336, 30, -330, 26, -322]);
@@ -207,17 +234,23 @@ function corgi(c: Ctx, x: number, y: number, s: number): void {
   ell(c, 0, 2, 50, 9);
   fill(c, 'rgba(0,0,0,0.35)');
   ell(c, 0, -34, 34, 36);
-  fill(c, rad(c, -10, -46, 50, [
-    [0, '#ffb060'],
-    [1, '#c0581c'],
-  ]));
+  fill(
+    c,
+    rad(c, -10, -46, 50, [
+      [0, '#ffb060'],
+      [1, '#c0581c'],
+    ]),
+  );
   ell(c, 2, -26, 18, 24);
   fill(c, '#fbf4ea');
   ell(c, 0, -86, 28, 24);
-  fill(c, rad(c, -8, -94, 34, [
-    [0, '#ffb868'],
-    [1, '#c86020'],
-  ]));
+  fill(
+    c,
+    rad(c, -8, -94, 34, [
+      [0, '#ffb868'],
+      [1, '#c86020'],
+    ]),
+  );
   poly(c, [-24, -98, -30, -142, -6, -108]);
   fill(c, '#d06a28');
   poly(c, [10, -108, 30, -150, 26, -98]);
@@ -257,7 +290,9 @@ function card(c: Ctx, x: number, y: number, w: number, rot: number): void {
   c.fillStyle = '#1b2d6b';
   c.font = `italic ${Math.round(h * 0.1)}px Georgia, serif`;
   c.textAlign = 'left';
-  ['1. Sassafras', '2. Wintergreen', '3. Nutmeg (genuine)', '4. Molasses', '13. ..........'].forEach((t, i) => c.fillText(t, -w / 2 + 10, -h / 2 + h * 0.3 + i * h * 0.13));
+  ['1. Sassafras', '2. Wintergreen', '3. Nutmeg (genuine)', '4. Molasses', '13. ..........'].forEach((t, i) =>
+    c.fillText(t, -w / 2 + 10, -h / 2 + h * 0.3 + i * h * 0.13),
+  );
   c.save();
   c.rotate(-0.25);
   c.strokeStyle = 'rgba(200,36,30,0.85)';

@@ -173,7 +173,16 @@ function buildTree(entries: IsoEntry[]): Node {
       const last = i === parts.length - 1;
       let child = at.children.find((c) => c.name === part);
       if (!child) {
-        child = { name: part, isoName: '', dir: !last, mode: last ? (e.mode ?? (e.symlink !== undefined ? 0o755 : 0o644)) : 0o755, children: [], parent: at, lba: 0, size: 0 };
+        child = {
+          name: part,
+          isoName: '',
+          dir: !last,
+          mode: last ? (e.mode ?? (e.symlink !== undefined ? 0o755 : 0o644)) : 0o755,
+          children: [],
+          parent: at,
+          lba: 0,
+          size: 0,
+        };
         at.children.push(child);
       }
       if (last) {
@@ -219,8 +228,13 @@ function systemUse(n: Node): number[] {
 function directoryRecords(d: Node, date: Date, erAt?: number): Uint8Array[] {
   const dirLinks = (n: Node) => 2 + n.children.filter((c) => c.dir).length;
   const parent = d.parent ?? d;
-  const dotSu = d.parent ? [...rr(1), ...px(0o040000 | d.mode, dirLinks(d))] : [...sue('SP', [0xbe, 0xef, 0]), ...rr(1), ...px(0o040000 | d.mode, dirLinks(d)), ...(erAt !== undefined ? ce(erAt, 0, er().length) : [])];
-  const records = [dirRecord(Uint8Array.of(0), d.lba, d.size, 2, date, dotSu), dirRecord(Uint8Array.of(1), parent.lba, parent.size, 2, date, [...rr(1), ...px(0o040000 | parent.mode, dirLinks(parent))])];
+  const dotSu = d.parent
+    ? [...rr(1), ...px(0o040000 | d.mode, dirLinks(d))]
+    : [...sue('SP', [0xbe, 0xef, 0]), ...rr(1), ...px(0o040000 | d.mode, dirLinks(d)), ...(erAt !== undefined ? ce(erAt, 0, er().length) : [])];
+  const records = [
+    dirRecord(Uint8Array.of(0), d.lba, d.size, 2, date, dotSu),
+    dirRecord(Uint8Array.of(1), parent.lba, parent.size, 2, date, [...rr(1), ...px(0o040000 | parent.mode, dirLinks(parent))]),
+  ];
   for (const c of d.children) {
     const size = c.dir ? c.size : (c.data?.length ?? 0);
     records.push(dirRecord(enc.encode(c.isoName), c.dir || c.data?.length ? c.lba : 0, size, c.dir ? 2 : 0, date, systemUse(c)));

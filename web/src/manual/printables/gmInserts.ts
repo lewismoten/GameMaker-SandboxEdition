@@ -26,7 +26,8 @@ export const SUPPORT = {
 /** The list price printed on the box, and what Bits & Bytes Software marked it down to. */
 export const GM_PRICE = { msrp: '$59.95', store: 'Bits & Bytes Software', sale: '$48.00' } as const;
 
-const MADE_UP = 'Every phone, fax and BBS number and every address on this card is make-believe (555 numbers are kept for fiction). Nothing to call: help for this edition is in the Owner’s Guide.';
+const MADE_UP =
+  'Every phone, fax and BBS number and every address on this card is make-believe (555 numbers are kept for fiction). Nothing to call: help for this edition is in the Owner’s Guide.';
 
 /** The two program disks: what each one holds. */
 export const GM_DISKS: { n: number; name: string; holds: string }[] = [
@@ -62,7 +63,11 @@ export async function diskSleeve(): Promise<Sheet[]> {
       8.5,
       5.5,
       'gmd',
-      h('div', { class: 'gmd-disks' }, ...GM_DISKS.map((d) => h('figure', null, gmFloppy(d.n), h('figcaption', null, h('b', null, `Disk ${d.n}`), ` ${d.holds}.`)))),
+      h(
+        'div',
+        { class: 'gmd-disks' },
+        ...GM_DISKS.map((d) => h('figure', null, gmFloppy(d.n), h('figcaption', null, h('b', null, `Disk ${d.n}`), ` ${d.holds}.`))),
+      ),
       h(
         'div',
         { class: 'gmd-sleeve' },
@@ -89,7 +94,8 @@ export async function diskSleeve(): Promise<Sheet[]> {
 /** The product registration card: a form on one side, business reply mail on the other. */
 export async function registrationCard(): Promise<Sheet[]> {
   const line = (label: string, cls = '') => h('div', { class: `grc-line ${cls}` }, h('span', null, label), h('i'));
-  const boxes = (label: string, ...opts: string[]) => h('div', { class: 'grc-row' }, h('span', null, label), ...opts.map((o) => h('span', { class: 'grc-box' }, h('i'), o)));
+  const boxes = (label: string, ...opts: string[]) =>
+    h('div', { class: 'grc-row' }, h('span', null, label), ...opts.map((o) => h('span', { class: 'grc-box' }, h('i'), o)));
   const serial = `GMSE-30-${String(hashString('game-maker-se') % 100000).padStart(5, '0')}`;
   const form = sheet(
     7,
@@ -122,8 +128,19 @@ export async function registrationCard(): Promise<Sheet[]> {
       h('span', null, 'FIRST-CLASS MAIL · PERMIT NO. 5550 · PITTSBURGH, PA'),
       h('small', null, 'POSTAGE WILL BE PAID BY ADDRESSEE'),
     ),
-    h('div', { class: 'grc-to' }, h('b', null, SUPPORT.address[0].toUpperCase()), h('span', null, 'Attn: Game-Maker Registration'), h('span', null, SUPPORT.address[1]), h('span', null, SUPPORT.address[2])),
-    h('p', { class: 'grc-note' }, '(Fictional address and permit. Nothing to post: when Game-Maker asks, fill in the copy of this card beside the monitor and Mail it from there. The reply with your registration number comes right back.)'),
+    h(
+      'div',
+      { class: 'grc-to' },
+      h('b', null, SUPPORT.address[0].toUpperCase()),
+      h('span', null, 'Attn: Game-Maker Registration'),
+      h('span', null, SUPPORT.address[1]),
+      h('span', null, SUPPORT.address[2]),
+    ),
+    h(
+      'p',
+      { class: 'grc-note' },
+      '(Fictional address and permit. Nothing to post: when Game-Maker asks, fill in the copy of this card beside the monitor and Mail it from there. The reply with your registration number comes right back.)',
+    ),
   );
   return [form, reply];
 }
@@ -147,8 +164,18 @@ export async function licenseSheet(): Promise<Sheet[]> {
           'Game-Maker 3.0 ©\u00a01991–1994 Recreational Software Designs. Its author, Andy Stone, released the source code under the MIT License in 2014. ',
           `${PRODUCT} is a modified fork of it, released under the same license.`,
         ),
-        h('li', null, h('b', null, 'What you may do. '), 'Install it on as many computers as you own, make backup copies, change it, and give copies away, as long as this notice goes with them.'),
-        h('li', null, h('b', null, 'Your games are yours. '), 'Games you make with it are yours to share, sell or upload to any BBS. The PLAYGAME player may go along with them.'),
+        h(
+          'li',
+          null,
+          h('b', null, 'What you may do. '),
+          'Install it on as many computers as you own, make backup copies, change it, and give copies away, as long as this notice goes with them.',
+        ),
+        h(
+          'li',
+          null,
+          h('b', null, 'Your games are yours. '),
+          'Games you make with it are yours to share, sell or upload to any BBS. The PLAYGAME player may go along with them.',
+        ),
         h(
           'li',
           null,
@@ -166,7 +193,13 @@ export async function licenseSheet(): Promise<Sheet[]> {
         'div',
         { class: 'gml2-mit' },
         h('b', null, 'The MIT License (MIT)'),
-        h('p', null, 'Copyright (c) 2014 gandrewstone', h('br'), 'Copyright (c) 2026 Lewis Moten (modifications: the web port, the 1994 desk and the Sandbox Software games)'),
+        h(
+          'p',
+          null,
+          'Copyright (c) 2014 gandrewstone',
+          h('br'),
+          'Copyright (c) 2026 Lewis Moten (modifications: the web port, the 1994 desk and the Sandbox Software games)',
+        ),
         h(
           'p',
           null,
@@ -189,7 +222,11 @@ const FKEYS = ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10
 
 /** What each key does while designing and while playing (from the help screens and PLAYGAME). */
 export function templateKeys(): { key: string; design?: string; play?: string }[] {
-  const play = new Map<string, string>([...PLAYGAME_KEYS.map(([k, v]): [string, string] => [k, v.split(':')[0]]), ['F8', 'Joystick on / off'], ['F10', 'About Game-Maker']]);
+  const play = new Map<string, string>([
+    ...PLAYGAME_KEYS.map(([k, v]): [string, string] => [k, v.split(':')[0]]),
+    ['F8', 'Joystick on / off'],
+    ['F10', 'About Game-Maker'],
+  ]);
   const design = new Map([
     ['Esc', 'Back out of a menu'],
     ['F1', 'Help screen'],
@@ -238,8 +275,10 @@ function gridSvg(cols: number, rows: number, cell: number, major: number, labels
   const W = cols * cell;
   const H = rows * cell;
   let lines = '';
-  for (let i = 0; i <= cols; i++) lines += `<line x1="${i * cell}" y1="0" x2="${i * cell}" y2="${H}" class="${i % major ? 'mn' : i % (major * 2) ? 'md' : 'mj'}"/>`;
-  for (let j = 0; j <= rows; j++) lines += `<line x1="0" y1="${j * cell}" x2="${W}" y2="${j * cell}" class="${j % major ? 'mn' : j % (major * 2) ? 'md' : 'mj'}"/>`;
+  for (let i = 0; i <= cols; i++)
+    lines += `<line x1="${i * cell}" y1="0" x2="${i * cell}" y2="${H}" class="${i % major ? 'mn' : i % (major * 2) ? 'md' : 'mj'}"/>`;
+  for (let j = 0; j <= rows; j++)
+    lines += `<line x1="0" y1="${j * cell}" x2="${W}" y2="${j * cell}" class="${j % major ? 'mn' : j % (major * 2) ? 'md' : 'mj'}"/>`;
   let nums = '';
   if (labels)
     for (let i = 0; i < Math.max(cols, rows); i += major) {
@@ -275,7 +314,9 @@ export async function mapGrid(): Promise<Sheet[]> {
       h(
         'div',
         { class: 'gmg-bottom' },
-        ...[1, 2].map((n) => h('figure', null, html('div', 'gmg-block', gridSvg(20, 20, 2, 5, false)), h('figcaption', null, `Block sketch ${n} · 20 × 20 pixels`))),
+        ...[1, 2].map((n) =>
+          h('figure', null, html('div', 'gmg-block', gridSvg(20, 20, 2, 5, false)), h('figcaption', null, `Block sketch ${n} · 20 × 20 pixels`)),
+        ),
         h(
           'ul',
           { class: 'gmg-key' },
@@ -308,7 +349,13 @@ export async function supportCard(): Promise<Sheet[]> {
     num('Fax support', SUPPORT.fax, '24 hours · answered next business day'),
     num('FaxBack documents', SUPPORT.faxback, 'Call from your fax handset · 101 Installing · 102 Memory · 103 Sound Blaster · 104 Mouse · 105 Windows'),
     h('h3', null, 'ONLINE'),
-    h('div', { class: 'gsc-num' }, h('span', null, 'The official BBS ', sandboxBanner()), h('b', null, SUPPORT.bbs), h('small', null, '24 hours · 2400–14,400 baud · 8-N-1 · updates, patches and new games')),
+    h(
+      'div',
+      { class: 'gsc-num' },
+      h('span', null, 'The official BBS ', sandboxBanner()),
+      h('b', null, SUPPORT.bbs),
+      h('small', null, '24 hours · 2400–14,400 baud · 8-N-1 · updates, patches and new games'),
+    ),
     h(
       'dl',
       { class: 'gsc-net' },
@@ -331,10 +378,31 @@ export async function supportCard(): Promise<Sheet[]> {
     h(
       'ul',
       null,
-      h('li', null, h('b', null, 'Out of memory? '), 'Game-Maker needs 512K free. Type ', h('code', null, 'MEM'), '. Take TSRs out of AUTOEXEC.BAT and CONFIG.SYS, or start MS-DOS 6 clean (press F5 at “Starting MS-DOS…”).'),
-      h('li', null, h('b', null, 'Won’t start? '), 'You need MS-DOS 4.1 or later on a 286 or better. Quit Windows and run it from the DOS prompt. Turn off QEMM’s Stealth mode.'),
+      h(
+        'li',
+        null,
+        h('b', null, 'Out of memory? '),
+        'Game-Maker needs 512K free. Type ',
+        h('code', null, 'MEM'),
+        '. Take TSRs out of AUTOEXEC.BAT and CONFIG.SYS, or start MS-DOS 6 clean (press F5 at “Starting MS-DOS…”).',
+      ),
+      h(
+        'li',
+        null,
+        h('b', null, 'Won’t start? '),
+        'You need MS-DOS 4.1 or later on a 286 or better. Quit Windows and run it from the DOS prompt. Turn off QEMM’s Stealth mode.',
+      ),
       h('li', null, h('b', null, 'No pointer? '), 'Load your mouse driver first (', h('code', null, 'MOUSE'), ' or ', h('code', null, 'C:\\DOS\\MOUSE'), ').'),
-      h('li', null, h('b', null, 'Menus freeze? '), 'Some PCs can’t start one program from another: type ', h('code', null, 'GMBAT'), ' instead of ', h('code', null, 'GM'), '.'),
+      h(
+        'li',
+        null,
+        h('b', null, 'Menus freeze? '),
+        'Some PCs can’t start one program from another: type ',
+        h('code', null, 'GMBAT'),
+        ' instead of ',
+        h('code', null, 'GM'),
+        '.',
+      ),
       h('li', null, h('b', null, 'Screen breaks up? '), 'Game-Maker needs standard VGA (256 colors). Choose Auto-Detect VGA on the Configuration screen.'),
     ),
     h('h3', null, 'SOUND BLASTER'),
@@ -349,13 +417,32 @@ export async function supportCard(): Promise<Sheet[]> {
     h(
       'ul',
       null,
-      h('li', null, 'Match the card’s jumpers. Your AUTOEXEC.BAT should say so: ', h('code', null, 'SET BLASTER=A220 I7 D1 T4'), '. Then set the same numbers on Game-Maker’s Configuration screen.'),
-      h('li', null, h('b', null, 'Locks up or no sound? '), 'IRQ 7 is shared with the printer port; a network card often sits at IRQ 5 or port 240h. Pick a free one.'),
+      h(
+        'li',
+        null,
+        'Match the card’s jumpers. Your AUTOEXEC.BAT should say so: ',
+        h('code', null, 'SET BLASTER=A220 I7 D1 T4'),
+        '. Then set the same numbers on Game-Maker’s Configuration screen.',
+      ),
+      h(
+        'li',
+        null,
+        h('b', null, 'Locks up or no sound? '),
+        'IRQ 7 is shared with the printer port; a network card often sits at IRQ 5 or port 240h. Pick a free one.',
+      ),
       h('li', null, h('b', null, 'Sound stops after a blip? '), 'Wrong DMA channel.'),
       h('li', null, h('b', null, 'Pro Audio Spectrum 16? '), 'Load MVSOUND.SYS in CONFIG.SYS and set its Sound Blaster side to IRQ 2, DMA 1.'),
     ),
     h('h3', null, 'WHEN YOU CALL'),
-    h('p', null, 'Be at your computer with the serial number from your registration card, your DOS version (', h('code', null, 'VER'), '), what ', h('code', null, 'MEM'), ' says, and your sound card’s settings.'),
+    h(
+      'p',
+      null,
+      'Be at your computer with the serial number from your registration card, your DOS version (',
+      h('code', null, 'VER'),
+      '), what ',
+      h('code', null, 'MEM'),
+      ' says, and your sound card’s settings.',
+    ),
   );
   return [front, back];
 }

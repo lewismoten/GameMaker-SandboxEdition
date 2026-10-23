@@ -378,6 +378,6 @@ export function createWorld(map: GameMap, sound: SoundHooks, rand = Math.random)
 export const random = (w: World, n: number) => Math.floor(w.rand() * n);
 export const sign = (v: number) => (v > 0 ? 1 : v < 0 ? -1 : 0);
 /** C int (16-bit) wrap. */
-export const i16 = (v: number) => ((v << 16) >> 16);
+export const i16 = (v: number) => (v << 16) >> 16;
 /** C unsigned int (16-bit). */
 export const u16 = (v: number) => v & 0xffff;

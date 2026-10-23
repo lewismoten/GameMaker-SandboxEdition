@@ -53,7 +53,8 @@ export function renderBrushPanel<T extends BrushItem>(host: HTMLElement, o: Brus
               class: 'danger',
               'aria-label': `Delete ${current.name}`,
               onclick: async () => {
-                if (await confirmDialog(`Delete ${noun}`, `Delete the ${noun} “${current.name}”? The map keeps what was painted with it.`, 'Delete')) o.onDelete(current);
+                if (await confirmDialog(`Delete ${noun}`, `Delete the ${noun} “${current.name}”? The map keeps what was painted with it.`, 'Delete'))
+                  o.onDelete(current);
               },
             },
             '🗑 Delete',

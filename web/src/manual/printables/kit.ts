@@ -176,8 +176,8 @@ function cutAway(px: Uint8Array, ground: Int16Array, w: number, h: number): void
     seen[i] = 1;
     if (px[i] === TRANSPARENT || px[i] === ground[i]) stack.push(i);
   };
-  for (let x = 0; x < w; x++) push(x), push((h - 1) * w + x);
-  for (let y = 0; y < h; y++) push(y * w), push(y * w + w - 1);
+  for (let x = 0; x < w; x++) (push(x), push((h - 1) * w + x));
+  for (let y = 0; y < h; y++) (push(y * w), push(y * w + w - 1));
   while (stack.length) {
     const i = stack.pop()!;
     px[i] = TRANSPARENT;

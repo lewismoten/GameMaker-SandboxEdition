@@ -7,61 +7,61 @@
 // off whatever the hour (remembered for the visit; by day it only glows dimly), and the felt
 // eggs on the shelf show patterns only black light brings out (eggGlow.ts). Pressed, the
 // poster's tube flickers (desk-blacklight).
-import { h } from "../../editor/core/ui";
-import { watchDaylight } from "../room/daylight";
-import { flash, pressable, say, stillMotion, turns } from "./propKit";
-import { roomSound } from "./propSound";
-import { eggGlow } from "./eggGlow";
+import { h } from '../../editor/core/ui';
+import { watchDaylight } from '../room/daylight';
+import { flash, pressable, say, stillMotion, turns } from './propKit';
+import { roomSound } from './propSound';
+import { eggGlow } from './eggGlow';
 
-const KEY = "gm-blacklight"; // "on" or "off" when the tube was switched this visit
+const KEY = 'gm-blacklight'; // "on" or "off" when the tube was switched this visit
 const chosen = (): boolean | undefined => {
   try {
     const v = sessionStorage.getItem(KEY);
-    return v === "on" ? true : v === "off" ? false : undefined;
+    return v === 'on' ? true : v === 'off' ? false : undefined;
   } catch {
     return undefined;
   }
 };
 const choose = (on: boolean) => {
   try {
-    sessionStorage.setItem(KEY, on ? "on" : "off");
+    sessionStorage.setItem(KEY, on ? 'on' : 'off');
   } catch {
     /* private mode: for now only */
   }
 };
 
 /** The two prints (games/kit/scans/blacklight.py, from Lewis's own hobo clown photo). */
-const PRINT = (when: "day" | "night") =>
-  h("img", {
+const PRINT = (when: 'day' | 'night') =>
+  h('img', {
     class: `bl-print ${when}`,
     src: `./desk/docleo-blacklight-${when}.webp`,
-    alt: "",
+    alt: '',
     width: 360,
     height: 540,
-    loading: "lazy",
-    decoding: "async",
+    loading: 'lazy',
+    decoding: 'async',
   });
 
 const NIGHT = [
-  "Bzzt… tink… tink. The black light flickers, and Doc Leo glows: a magenta nose, a green grin, an electric-blue fedora.",
-  "Tink-tink-bzzzz. Every white sock in the room glows too. (Yes, even that one.)",
-  "The tube flickers. In 1994 this was the height of interior design.",
+  'Bzzt… tink… tink. The black light flickers, and Doc Leo glows: a magenta nose, a green grin, an electric-blue fedora.',
+  'Tink-tink-bzzzz. Every white sock in the room glows too. (Yes, even that one.)',
+  'The tube flickers. In 1994 this was the height of interior design.',
 ];
 const DAY = [
-  "Click… tink. The black light flickers on for a second. By day it’s just a velvet poster of Doc Leo.",
-  "Tink. Black lights don’t do much in daylight. Come back after dark.",
+  'Click… tink. The black light flickers on for a second. By day it’s just a velvet poster of Doc Leo.',
+  'Tink. Black lights don’t do much in daylight. Come back after dark.',
 ];
 
 export function blackLight(desk: HTMLElement): () => void {
-  const scene = desk.querySelector<HTMLElement>(".desk-scene");
+  const scene = desk.querySelector<HTMLElement>('.desk-scene');
   if (!scene) return () => {};
-  const dim = h("div", { class: "bl-dim", "aria-hidden": "true" });
-  const tube = h("div", { class: "bl-tube" });
+  const dim = h('div', { class: 'bl-dim', 'aria-hidden': 'true' });
+  const tube = h('div', { class: 'bl-tube' });
   // the day print, and the glowing one over it, shown after dark
-  const poster = h("div", { class: "bl-poster" }, PRINT("day"), PRINT("night"));
+  const poster = h('div', { class: 'bl-poster' }, PRINT('day'), PRINT('night'));
   scene.prepend(dim);
   // on the wall beside the big poster, next after it when you Tab along the wall
-  const big = scene.querySelector(".poster");
+  const big = scene.querySelector('.poster');
   if (big) big.after(tube, poster);
   else scene.append(tube, poster);
 
@@ -70,37 +70,37 @@ export function blackLight(desk: HTMLElement): () => void {
   const day1 = turns(DAY);
   const off = pressable(
     poster,
-    "Black-light poster of Doc Leo: flicker the black light",
+    'Black-light poster of Doc Leo: flicker the black light',
     () => {
       roomSound.flicker();
-      flash(desk, stillMotion() ? "bl-blink" : "bl-flicker", 1000);
+      flash(desk, stillMotion() ? 'bl-blink' : 'bl-flicker', 1000);
       say(poster, uv ? night1() : day1());
     },
-    { id: "desk-blacklight", title: "" }, // (a tooltip would sit over the art)
+    { id: 'desk-blacklight', title: '' }, // (a tooltip would sit over the art)
   );
   // the tube: on after dark unless switched this visit
   let uv = false;
   const show = () => {
     uv = chosen() ?? night;
-    desk.classList.toggle("bl-night", night);
-    desk.classList.toggle("bl-uv", uv);
-    tube.setAttribute("aria-checked", String(uv));
+    desk.classList.toggle('bl-night', night);
+    desk.classList.toggle('bl-uv', uv);
+    tube.setAttribute('aria-checked', String(uv));
     glow.update();
   };
   const offTube = pressable(
     tube,
-    "Black light",
+    'Black light',
     () => {
       choose(!uv);
       if (!uv) roomSound.flicker();
       else roomSound.click();
       show();
       // short, to the right of the tube, so it never covers the poster you want to look at
-      say(tube, uv ? (night ? "Bzzzz. Black light on." : "On. By day, only a dim glow.") : "Click. Black light off.", undefined, { beside: true });
+      say(tube, uv ? (night ? 'Bzzzz. Black light on.' : 'On. By day, only a dim glow.') : 'Click. Black light off.', undefined, { beside: true });
     },
-    { id: "desk-uv", title: "" },
+    { id: 'desk-uv', title: '' },
   );
-  tube.setAttribute("role", "switch"); // (pressable makes it a button first)
+  tube.setAttribute('role', 'switch'); // (pressable makes it a button first)
   const glow = eggGlow(desk);
   const stop = watchDaylight((light) => {
     night = light < 0.5;
@@ -111,7 +111,7 @@ export function blackLight(desk: HTMLElement): () => void {
     offTube();
     stop();
     glow.dispose();
-    desk.classList.remove("bl-night", "bl-uv");
+    desk.classList.remove('bl-night', 'bl-uv');
     for (const el of [dim, tube, poster]) el.remove();
   };
 }

@@ -70,7 +70,12 @@ export class Pager {
       now(list.entries).map((e) => e.length),
       room,
     );
-    const brief = list.compact ? paginate(now(list.compact).map(() => 1), room) : full;
+    const brief = list.compact
+      ? paginate(
+          now(list.compact).map(() => 1),
+          room,
+        )
+      : full;
     this.paged = { full, brief };
     this.extended = !list.compact || full.length <= EXTENDED_PAGES;
   }
@@ -115,7 +120,12 @@ export class Pager {
     else if (answer === 'E' && this.list.compact) {
       const first = this.pages[this.page][0] ?? 0;
       this.extended = !this.extended;
-      this.show(Math.max(0, this.pages.findIndex((p) => p.includes(first))));
+      this.show(
+        Math.max(
+          0,
+          this.pages.findIndex((p) => p.includes(first)),
+        ),
+      );
     } else return false;
     return true;
   }

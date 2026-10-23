@@ -42,7 +42,16 @@ export function paintBlock(c: HTMLCanvasElement, pixels: Uint8Array, pal: Palett
 }
 
 /** Draws a block onto a 2D context at (x, y) scaled by s, skipping transparent pixels if asked. */
-export function drawBlockTo(ctx: CanvasRenderingContext2D, pixels: Uint8Array, pal: Palette, x: number, y: number, s: number, transparent = false, orient = 0): void {
+export function drawBlockTo(
+  ctx: CanvasRenderingContext2D,
+  pixels: Uint8Array,
+  pal: Palette,
+  x: number,
+  y: number,
+  s: number,
+  transparent = false,
+  orient = 0,
+): void {
   const l = lut(pal);
   for (let yy = 0; yy < BLEN; yy++)
     for (let xx = 0; xx < BLEN; xx++) {

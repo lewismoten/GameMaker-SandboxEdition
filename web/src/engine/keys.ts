@@ -29,13 +29,7 @@ export function simKeyPress(w: World, key: number): void {
     if (w.keydn[key] === 0) {
       for (let loop = 0; loop < MAXSEQ; loop++) {
         if (chr.sequences[loop].key >> 8 !== key) continue;
-        if (
-          chr.cseq !== DIESEQ &&
-          !chrSeq(w).ground &&
-          ci.meter[loop] > 0 &&
-          ci.seqon[loop] &&
-          w.keystkptr < MAXKEYS
-        ) {
+        if (chr.cseq !== DIESEQ && !chrSeq(w).ground && ci.meter[loop] > 0 && ci.seqon[loop] && w.keystkptr < MAXKEYS) {
           w.keystack[w.keystkptr] = { key: w.curkey, seq: chr.cseq, frame: chr.cframe };
           w.keystkptr++;
           if (w.keystkptr >= MAXKEYS) cleanKeyStack(w);

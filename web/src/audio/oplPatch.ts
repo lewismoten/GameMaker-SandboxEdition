@@ -58,8 +58,7 @@ function op(words: string): Op {
     else if (k === 'w') {
       if (!['0', '1', '2', '3'].includes(v)) throw new Error(`No waveform ${w}`);
       wave = n;
-    }
-    else if (k === 'ksl') {
+    } else if (k === 'ksl') {
       if (!(v in KSLS)) throw new Error(`No key scale ${w}`);
       ksl = KSLS[v];
     } else if (k === 'hold') char |= 0x20;

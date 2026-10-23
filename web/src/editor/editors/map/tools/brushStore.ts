@@ -21,7 +21,8 @@ function cleanTerrain(t: Terrain): Terrain | undefined {
 
 function cleanStamp(s: Stamp): Stamp | undefined {
   if (!s || typeof s !== 'object') return undefined;
-  const w = num(s.w, 0), h = num(s.h, 0);
+  const w = num(s.w, 0),
+    h = num(s.h, 0);
   const cells = asArray<number>(s.cells);
   if (w < 1 || h < 1 || cells.length !== w * h) return undefined;
   return { ...s, id: String(s.id ?? newId()), name: String(s.name ?? 'Stamp'), w, h, cells: cells.map((c) => num(c, -1)) };
@@ -40,7 +41,9 @@ const CLEAN = { terrains: cleanTerrain, stamps: cleanStamp, buildings: cleanBuil
 /** The brushes of one kind for a block set. */
 export function loadBrushes<T extends Item>(project: Project, bbl: string, kind: BrushKind): T[] {
   if (!bbl) return [];
-  return asArray<never>(project.extras(bbl, kind, [])).map((x) => CLEAN[kind](x)).filter((x): x is T => !!x) as T[];
+  return asArray<never>(project.extras(bbl, kind, []))
+    .map((x) => CLEAN[kind](x))
+    .filter((x): x is T => !!x) as T[];
 }
 
 /** Adds or replaces (by id) one brush, or with `remove` deletes it; saved with the project. */

@@ -560,7 +560,8 @@ function pages(shots: GameShot[]): BookletPage[] {
     ),
     {
       cover: true,
-      body: div(`
+      body: div(
+        `
         <div class="cover-banner"><em>It’s as much fun to create computer games as it is to play them.</em></div>
         <div class="cover-title">Notes</div>`,
         regRecord('cover'),

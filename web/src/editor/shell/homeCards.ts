@@ -335,7 +335,14 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
     h(
       'button',
       // out of the Tab order (one stop per tile; the panel at the top has them all for the keyboard)
-      { class: 'shot-icon', type: 'button', tabindex: -1, dataset: { tip }, 'aria-label': `${tip}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
+      {
+        class: 'shot-icon',
+        type: 'button',
+        tabindex: -1,
+        dataset: { tip },
+        'aria-label': `${tip}: ${game.title}`,
+        onclick: (e: Event) => (e.stopPropagation(), onclick()),
+      },
       svgIcon(name),
     );
   tools.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));
@@ -420,7 +427,14 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
   return (
     [
       play(href),
-      playOnly ? notice : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
+      playOnly
+        ? notice
+        : h(
+            'button',
+            { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` },
+            svgIcon('edit'),
+            'Edit a copy',
+          ),
       keys,
       isBizarreGame(e) ? notice : null,
       hasManual(game) ? loadingButton('manual', 'Manual', `Read the ${game.title} manual`, (ready) => openGameManual(e, ready)) : null,

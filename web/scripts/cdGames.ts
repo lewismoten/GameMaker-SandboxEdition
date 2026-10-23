@@ -209,7 +209,9 @@ function packName(id: string, names: string[], disk: ReadonlyMap<string, string>
 
 /** The quick check of a game's files (its .gam and graphic scripts, src/project/health.ts): what the ⚠ note says. */
 function quickHealth(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'sizes' | 'path'>, files: ReadonlyMap<string, string>): Issue[] {
-  const loaded = new Map(e.files.filter((n) => QUICK_CHECK_FILE.test(n) && files.has(`${e.path}${n}`)).map((n) => [n, new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!))]));
+  const loaded = new Map(
+    e.files.filter((n) => QUICK_CHECK_FILE.test(n) && files.has(`${e.path}${n}`)).map((n) => [n, new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!))]),
+  );
   return checkGame({ names: () => [...e.files].sort(), get: (n) => loaded.get(n), byteSize: (n) => e.sizes[e.files.indexOf(n)] }, e.gam ?? undefined);
 }
 
@@ -331,7 +333,8 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const base = join(root, dir);
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
-    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string };
+    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo &
+      OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     const id = dir.toLowerCase();
@@ -447,7 +450,9 @@ export function cdGames(cdRoot: string): Plugin {
         if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json' || url === 'games/extra.json') {
           res.setHeader('Content-Type', 'application/json');
           const { gm, catalog, secret } = get();
-          res.end(JSON.stringify(url.startsWith('gm/') ? gm : url.endsWith('catalog.json') ? slimCatalog(catalog) : url.endsWith('extra.json') ? secret : catalog));
+          res.end(
+            JSON.stringify(url.startsWith('gm/') ? gm : url.endsWith('catalog.json') ? slimCatalog(catalog) : url.endsWith('extra.json') ? secret : catalog),
+          );
           return;
         }
         const details = /^games\/details\/([a-z0-9_-]+)\.json$/.exec(url);

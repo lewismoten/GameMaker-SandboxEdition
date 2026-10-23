@@ -1395,7 +1395,9 @@
 .pp-sheet.pp-rc {
   position: relative;
   padding: 4cqw 5cqw;
-  background: repeating-linear-gradient(transparent 0 4.4cqw, #a9bfd8 4.4cqw 4.55cqw) 0 8cqw / 100% calc(100% - 8cqw) no-repeat, #fbf6e6 !important;
+  background:
+    repeating-linear-gradient(transparent 0 4.4cqw, #a9bfd8 4.4cqw 4.55cqw) 0 8cqw / 100% calc(100% - 8cqw) no-repeat,
+    #fbf6e6 !important;
   font:
     2.3cqw/4.55cqw 'Bradley Hand',
     'Comic Sans MS',

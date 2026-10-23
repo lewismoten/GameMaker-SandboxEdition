@@ -546,8 +546,12 @@ export function drawHeart(g: CanvasRenderingContext2D, cx: number, cy: number, s
     const a = vs[0];
     const b = vs[1];
     const c = vs[2];
-    const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
-    const wx = c[0] - a[0], wy = c[1] - a[1], wz = c[2] - a[2];
+    const ux = b[0] - a[0],
+      uy = b[1] - a[1],
+      uz = b[2] - a[2];
+    const wx = c[0] - a[0],
+      wy = c[1] - a[1],
+      wz = c[2] - a[2];
     let n: V3 = [uy * wz - uz * wy, uz * wx - ux * wz, ux * wy - uy * wx];
     const nl = Math.hypot(...n) || 1;
     n = [n[0] / nl, n[1] / nl, n[2] / nl];
@@ -571,14 +575,18 @@ export function drawHeart(g: CanvasRenderingContext2D, cx: number, cy: number, s
       for (let i = 0; i < vs.length - (closed ? 0 : 1); i++) {
         const a = vs[i];
         const b = vs[(i + 1) % vs.length];
-        if ((a[2] + b[2] >= 0) !== front) {
+        if (a[2] + b[2] >= 0 !== front) {
           run = undefined;
           continue;
         }
         if (!run) runs.push((run = [proj(a)]));
         run.push(proj(b));
       }
-      for (const [col, k] of [['#7a5414', 1], ['#d9a63c', 0.62], ['#fff0b8', 0.22]] as const) {
+      for (const [col, k] of [
+        ['#7a5414', 1],
+        ['#d9a63c', 0.62],
+        ['#fff0b8', 0.22],
+      ] as const) {
         g.strokeStyle = col;
         g.lineWidth = Math.max(0.6, w * k);
         for (const r of runs) {
@@ -590,7 +598,11 @@ export function drawHeart(g: CanvasRenderingContext2D, cx: number, cy: number, s
     };
     g.lineCap = 'round';
     g.lineJoin = 'round';
-    line(mesh.girdle.map(([x, y, z]) => [x * 1.025, y * 1.025, z] as V3), size * 0.04, true);
+    line(
+      mesh.girdle.map(([x, y, z]) => [x * 1.025, y * 1.025, z] as V3),
+      size * 0.04,
+      true,
+    );
     for (const sc of mesh.scrolls) line(sc, size * 0.016);
     line(mesh.bail, size * 0.022, true);
     for (const b of mesh.beads) {
@@ -616,7 +628,7 @@ export function drawHeart(g: CanvasRenderingContext2D, cx: number, cy: number, s
     if (d.n[2] > 0) return;
     const [nx, ny] = d.n;
     const b = Math.pow(0.5 + 0.5 * Math.sin(nx * 9 + ny * 6 + turn * 1.5 + i * 0.7), 3);
-    const [fr, fg, fb] = hsl((((nx + ny) * 0.8 + turn * 0.2 + i * 0.13) % 1 + 1) % 1, 0.85, 0.62);
+    const [fr, fg, fb] = hsl(((((nx + ny) * 0.8 + turn * 0.2 + i * 0.13) % 1) + 1) % 1, 0.85, 0.62);
     const r = Math.round(40 + 215 * b * 0.75 + fr * 0.25 * b);
     const gg = Math.round(50 + 205 * b * 0.75 + fg * 0.25 * b);
     const bb = Math.round(80 + 175 * b * 0.75 + fb * 0.25 * b);
@@ -902,7 +914,10 @@ export function pastryShell(): Shell {
       pts.push([x + Math.cos(a) * r * (0.5 + rand()) * 1.3, y + Math.sin(a) * r * (0.5 + rand())]);
     }
     wrap((dx) => {
-      for (const [g, col] of [[C, rand() < 0.5 ? '#e8bf55' : '#f4d98a'], [M, '#fff']] as const) {
+      for (const [g, col] of [
+        [C, rand() < 0.5 ? '#e8bf55' : '#f4d98a'],
+        [M, '#fff'],
+      ] as const) {
         g.fillStyle = col;
         g.beginPath();
         pts.forEach(([px, py], i) => (i ? g.lineTo(px + dx, py) : g.moveTo(px + dx, py)));
@@ -1156,7 +1171,11 @@ export function drawBaker(g: CanvasRenderingContext2D, x: number, y: number, s: 
       hat.addColorStop(1, '#bdb8ad');
       g.fillStyle = hat;
       g.fillRect(hx - s * 0.09, hy - s * 0.2, s * 0.18, s * 0.11);
-      for (const [dx, dy, r] of [[-0.07, -0.25, 0.07], [0.07, -0.25, 0.07], [0, -0.29, 0.085]] as const) {
+      for (const [dx, dy, r] of [
+        [-0.07, -0.25, 0.07],
+        [0.07, -0.25, 0.07],
+        [0, -0.29, 0.085],
+      ] as const) {
         g.beginPath();
         g.arc(hx + dx * s, hy + dy * s, r * s, 0, Math.PI * 2);
         g.fill();

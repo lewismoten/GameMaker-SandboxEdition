@@ -136,8 +136,7 @@ const RULE = '\n\n' + '-'.repeat(78) + '\n\n';
 
 /** The notices for one platform's download. */
 export function thirdPartyNotices(platform: NoticePlatform): string {
-  const parts =
-    platform === 'windows' ? [PROJECT, WEBVIEW2, WEBVIEW, MINGW, ZIG] : platform === 'linux' ? [PROJECT, ZIG, GLIBC] : [PROJECT, APPLE];
+  const parts = platform === 'windows' ? [PROJECT, WEBVIEW2, WEBVIEW, MINGW, ZIG] : platform === 'linux' ? [PROJECT, ZIG, GLIBC] : [PROJECT, APPLE];
   const text = `THIRD-PARTY NOTICES\n\nThe game's player program and the notices of the code from others it contains.${RULE}${parts.join(RULE)}\n`;
   // Windows: CRLF, and a byte order mark so every Notepad reads it as UTF-8
   return platform === 'windows' ? `\uFEFF${text.replace(/\n/g, '\r\n')}` : text;

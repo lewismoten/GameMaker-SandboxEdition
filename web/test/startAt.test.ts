@@ -10,7 +10,7 @@ describe('play test from a level', () => {
   const level = game.scenes.length - 1;
 
   it('finds the level that plays a map, whatever its case', () => {
-        const map = game.scenes[level].files[1];
+    const map = game.scenes[level].files[1];
     expect(levelForMap(game, map.toLowerCase())).toBe(level);
     expect(levelForMap(game, 'nothere.map')).toBe(-1);
   });

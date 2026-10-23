@@ -15,10 +15,19 @@ export interface EdgeSetChoice {
 
 /** The preview's layout: the 3x3 set with the fill in the middle, and the 4 inner corners beside it. */
 const LAYOUT: [slot: number | 'fill', x: number, y: number][] = [
-  [0, 0, 0], [1, 1, 0], [2, 2, 0],
-  [3, 0, 1], ['fill', 1, 1], [4, 2, 1],
-  [5, 0, 2], [6, 1, 2], [7, 2, 2],
-  [8, 4, 0], [9, 5, 0], [10, 4, 1], [11, 5, 1],
+  [0, 0, 0],
+  [1, 1, 0],
+  [2, 2, 0],
+  [3, 0, 1],
+  ['fill', 1, 1],
+  [4, 2, 1],
+  [5, 0, 2],
+  [6, 1, 2],
+  [7, 2, 2],
+  [8, 4, 0],
+  [9, 5, 0],
+  [10, 4, 1],
+  [11, 5, 1],
 ];
 
 export function edgeSetDialog(blocks: Block[], current: number, pal: Palette): Promise<EdgeSetChoice | undefined> {
@@ -31,7 +40,11 @@ export function edgeSetDialog(blocks: Block[], current: number, pal: Palette): P
     const at = num('First new block', start < 0 ? Math.max(0, blocks.length - EDGE_SLOTS.length) : start, 0, blocks.length - EDGE_SLOTS.length);
     const wavy = h('input', { type: 'checkbox', checked: true }) as HTMLInputElement;
     const outline = h('input', { type: 'checkbox', checked: true }) as HTMLInputElement;
-    const canvas = h('canvas', { class: 'pixel edge-preview', role: 'img', 'aria-label': 'The new edge set around the fill block, and its four inner corners' });
+    const canvas = h('canvas', {
+      class: 'pixel edge-preview',
+      role: 'img',
+      'aria-label': 'The new edge set around the fill block, and its four inner corners',
+    });
     const note = h('p', { class: 'meta', 'aria-live': 'polite' });
     const read = (i: HTMLInputElement, lo: number, hi: number) => Math.max(lo, Math.min(hi, Math.round(Number(i.value) || 0)));
     const options = (): EdgeOptions => ({ depth: read(depth, 1, 9), wavy: wavy.checked, outline: outline.checked ? (c) => shade(pal, c, -1) : undefined });
@@ -67,13 +80,22 @@ export function edgeSetDialog(blocks: Block[], current: number, pal: Palette): P
           close({ at: read(at, 0, blocks.length - EDGE_SLOTS.length), pictures: pictures() });
         },
       },
-      h('p', { class: 'meta' }, `Block ${current} is the fill. The 8 edges and corners and the 4 inner corners are painted from it and the ground round it, in the order the map’s terrain brush expects.`),
+      h(
+        'p',
+        { class: 'meta' },
+        `Block ${current} is the fill. The 8 edges and corners and the 4 inner corners are painted from it and the ground round it, in the order the map’s terrain brush expects.`,
+      ),
       h('div', { class: 'grid-fields' }, field('Ground round it (block)', outside), field('Border depth (pixels)', depth), field('First new block', at)),
       check('Wavy border', wavy),
       check('Darker outline (one step down the fill’s ramp)', outline),
       canvas,
       note,
-      h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), h('button', { type: 'submit', class: 'primary' }, 'Make the blocks')),
+      h(
+        'div',
+        { class: 'buttons' },
+        h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
+        h('button', { type: 'submit', class: 'primary' }, 'Make the blocks'),
+      ),
     );
   });
 }

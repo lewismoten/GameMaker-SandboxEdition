@@ -36,7 +36,9 @@
   background: var(--panel, #e9ecf2);
   color: var(--text, #1a1d29);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  font: 14px/1.35 system-ui, sans-serif;
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
   animation: ach-in 0.25s ease-out;
 }
 
@@ -112,7 +114,10 @@
   color: #3a3100;
   box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.4);
   transform: rotate(-3deg);
-  font: 700 13px/1.25 'Comic Sans MS', 'Marker Felt', cursive;
+  font:
+    700 13px/1.25 'Comic Sans MS',
+    'Marker Felt',
+    cursive;
   animation-name: ach-stick;
   transition: transform 0.2s;
 }

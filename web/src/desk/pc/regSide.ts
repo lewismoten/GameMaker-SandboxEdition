@@ -8,7 +8,19 @@ import './regSide.css';
 import { h, clear } from '../../editor/core/ui';
 import { onRegDesk, type RegAsk, type RegDesk } from '../../retro/gmReg/regDesk';
 import { CARD_NAME_MAX, NUMBER_MAX, SERIAL } from '../../retro/gmReg/registration';
-import { BOUGHT, CD_NUMBER, COMPUTERS, MAIL_DAYS_MS, OWNER_ADDRESS, RSD_ADDRESS, mailCheck, replyTo, savedReply, saveReply, type Reply } from '../../retro/gmReg/mailCard';
+import {
+  BOUGHT,
+  CD_NUMBER,
+  COMPUTERS,
+  MAIL_DAYS_MS,
+  OWNER_ADDRESS,
+  RSD_ADDRESS,
+  mailCheck,
+  replyTo,
+  savedReply,
+  saveReply,
+  type Reply,
+} from '../../retro/gmReg/mailCard';
 import { PRODUCT } from '../../edition';
 import type { BookPage } from '../../manual/printables/manualPages';
 
@@ -57,7 +69,15 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   const nextBtn = h('button', { type: 'button', class: 'rs-btn', ...keepFocus, onclick: () => turn(1) }, 'Next ›');
   const markBtn = h('button', { type: 'button', class: 'rs-btn', 'aria-pressed': 'true', ...keepFocus, onclick: () => toggleMark() }, 'Mark the word');
   // for a phone (no keyboard): the answer typed here goes to GM as if typed on the screen
-  const answerIn = h('input', { id: 'rs-answer', class: 'rs-answer-in', type: 'text', maxLength: 15, autocomplete: 'off', autocapitalize: 'characters', spellcheck: false });
+  const answerIn = h('input', {
+    id: 'rs-answer',
+    class: 'rs-answer-in',
+    type: 'text',
+    maxLength: 15,
+    autocomplete: 'off',
+    autocapitalize: 'characters',
+    spellcheck: false,
+  });
   const answer = h(
     'form',
     {
@@ -181,11 +201,25 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
 
   const printed = (label: string, value: string) => [h('dt', null, label), h('dd', null, value)];
   const pick = (legend: string, name: string, options: readonly string[]) =>
-    h('fieldset', { class: 'rs-pick' }, h('legend', null, legend, ' ', h('small', null, '(optional)')), options.map((o) => h('label', null, h('input', { type: 'radio', name, value: o }), o)));
+    h(
+      'fieldset',
+      { class: 'rs-pick' },
+      h('legend', null, legend, ' ', h('small', null, '(optional)')),
+      options.map((o) => h('label', null, h('input', { type: 'radio', name, value: o }), o)),
+    );
 
   // the front: the owner writes a name and mails it
   // filled in with a stand-in name, ready to mail (or type your own over it)
-  const nameIn = h('input', { id: 'rs-name', class: 'rs-in', type: 'text', maxLength: CARD_NAME_MAX, value: SAMPLE_NAME, autocomplete: 'off', spellcheck: false, 'aria-required': 'true' });
+  const nameIn = h('input', {
+    id: 'rs-name',
+    class: 'rs-in',
+    type: 'text',
+    maxLength: CARD_NAME_MAX,
+    value: SAMPLE_NAME,
+    autocomplete: 'off',
+    spellcheck: false,
+    'aria-required': 'true',
+  });
   // focusing it selects the stand-in, so typing replaces it
   nameIn.addEventListener('focus', () => nameIn.select());
   const postMsg = h('p', { id: 'rs-post-msg', class: 'rs-msg' });
@@ -196,7 +230,13 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     h('dl', { class: 'rs-printed' }, printed('Product', PRODUCT), printed('Version', '3.0'), printed('Serial no.', String(SERIAL)), printed('CD #', CD_NUMBER)),
     h('label', { for: 'rs-name', class: 'rs-name-l' }, 'Your name ', h('small', null, '(please print)')),
     nameIn,
-    h('p', { class: 'rs-filled' }, h('span', null, 'Address '), h('span', { class: 'rs-hand' }, OWNER_ADDRESS.join(', ')), h('small', null, ' (written in for you; make-believe)')),
+    h(
+      'p',
+      { class: 'rs-filled' },
+      h('span', null, 'Address '),
+      h('span', { class: 'rs-hand' }, OWNER_ADDRESS.join(', ')),
+      h('small', null, ' (written in for you; make-believe)'),
+    ),
     pick('Where did you buy it?', 'rs-bought', BOUGHT),
     pick('Your computer', 'rs-pc', COMPUTERS),
     postMsg,
@@ -205,7 +245,15 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
 
   // for a number from an earlier reply: written in by hand, as GM REGISTER asks
   const keyName = h('input', { id: 'rs-key-name', class: 'rs-in', type: 'text', maxLength: CARD_NAME_MAX, autocomplete: 'name', spellcheck: false });
-  const numIn = h('input', { id: 'rs-number', class: 'rs-in rs-num', type: 'text', inputMode: 'numeric', maxLength: NUMBER_MAX, autocomplete: 'off', spellcheck: false });
+  const numIn = h('input', {
+    id: 'rs-number',
+    class: 'rs-in rs-num',
+    type: 'text',
+    inputMode: 'numeric',
+    maxLength: NUMBER_MAX,
+    autocomplete: 'off',
+    spellcheck: false,
+  });
   const keyMsg = h('p', { id: 'rs-key-msg', class: 'rs-msg' });
   const byHand = h(
     'details',
@@ -234,9 +282,23 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
       { class: 'rs-brm' },
       h('p', { class: 'rs-from' }, h('small', null, 'From: '), fromLines),
       h('p', { class: 'rs-nopost' }, 'NO POSTAGE NECESSARY IF MAILED IN THE UNITED STATES'),
-      h('div', { class: 'rs-bars', 'aria-hidden': 'true' }, Array.from({ length: 7 }, () => h('i'))),
-      h('p', { class: 'rs-brm-h' }, h('b', null, 'BUSINESS REPLY MAIL'), h('span', null, 'FIRST-CLASS MAIL · PERMIT NO. 1995 · AMHERST, NH'), h('small', null, 'POSTAGE WILL BE PAID BY ADDRESSEE')),
-      h('p', { class: 'rs-to' }, RSD_ADDRESS.map((l, i) => h('span', null, i ? l : l.toUpperCase()))),
+      h(
+        'div',
+        { class: 'rs-bars', 'aria-hidden': 'true' },
+        Array.from({ length: 7 }, () => h('i')),
+      ),
+      h(
+        'p',
+        { class: 'rs-brm-h' },
+        h('b', null, 'BUSINESS REPLY MAIL'),
+        h('span', null, 'FIRST-CLASS MAIL · PERMIT NO. 1995 · AMHERST, NH'),
+        h('small', null, 'POSTAGE WILL BE PAID BY ADDRESSEE'),
+      ),
+      h(
+        'p',
+        { class: 'rs-to' },
+        RSD_ADDRESS.map((l, i) => h('span', null, i ? l : l.toUpperCase())),
+      ),
       h('span', { class: 'rs-postmark', 'aria-hidden': 'true' }, 'MAILED'),
     ),
     h('p', { class: 'rs-days' }, 'The mail truck has your card. ', h('b', null, 'A few days later…')),
@@ -316,7 +378,10 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     reply = replyTo({ name: nameIn.value, bought: picked('rs-bought'), computer: picked('rs-pc') });
     saveReply(reply);
     drawLetter(reply);
-    clear(fromLines, [reply.name, ...OWNER_ADDRESS].map((l) => h('span', null, l)));
+    clear(
+      fromLines,
+      [reply.name, ...OWNER_ADDRESS].map((l) => h('span', null, l)),
+    );
     stage('mailing');
     skipBtn.focus();
     // the desk's window: the mail truck comes for the card and drives off with it
@@ -481,7 +546,9 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
       cardLead.textContent = 'Mail the card: RSD’s reply brings a registration number, and GM stops asking for words from the guide.';
       if (!same) {
         pageNo = ask.page;
-        say(`Game-Maker asks for a word from the Owner’s Guide: page ${ask.page}, paragraph ${ask.paragraph}, word ${ask.word}. The guide is open at that page beside the monitor, with the registration card.`);
+        say(
+          `Game-Maker asks for a word from the Owner’s Guide: page ${ask.page}, paragraph ${ask.paragraph}, word ${ask.word}. The guide is open at that page beside the monitor, with the registration card.`,
+        );
         void loadGuide().then((g) => {
           guide = g;
           drawPage();
@@ -490,11 +557,13 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
       drawPage();
     } else if (ask.kind === 'unregistered') {
       cardTitle.textContent = 'Register Game-Maker';
-      cardLead.textContent = 'GM is running unregistered, so it asks for a word from the guide every time it starts. Mail the card for a registration number and it won’t.';
+      cardLead.textContent =
+        'GM is running unregistered, so it asks for a word from the guide every time it starts. Mail the card for a registration number and it won’t.';
       if (!same && before?.kind === 'question') say('That’s the word. Game-Maker is running unregistered; the registration card stays beside the monitor.');
     } else {
       cardTitle.textContent = 'GM REGISTER';
-      cardLead.textContent = 'Game-Maker asks for the name and number from RSD’s reply. Mail the card for one, then choose Register now or type them on the screen.';
+      cardLead.textContent =
+        'Game-Maker asks for the name and number from RSD’s reply. Mail the card for one, then choose Register now or type them on the screen.';
       if (!same) say('Game-Maker asks for the name and registration number from RSD’s reply. The registration card is beside the monitor.');
     }
     update();

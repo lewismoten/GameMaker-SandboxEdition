@@ -5,7 +5,20 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { changeSaveLevel, heroSpotProblem, moveSaveHero, newGameSave, pictureBlock, saveLevels, savePicture, saveMap, savedWorld, SaveFormatError, serializeSave, parseSave } from '../src/project/saveData';
+import {
+  changeSaveLevel,
+  heroSpotProblem,
+  moveSaveHero,
+  newGameSave,
+  pictureBlock,
+  saveLevels,
+  savePicture,
+  saveMap,
+  savedWorld,
+  SaveFormatError,
+  serializeSave,
+  parseSave,
+} from '../src/project/saveData';
 import { changeBlocks, restoreSaved, type Saved } from '../src/engine/scene';
 import { moveChars } from '../src/engine/character';
 import { blockBirthMonsters, moveAllMonsters } from '../src/engine/monsters';
@@ -26,7 +39,7 @@ function disk(id: string) {
 
 const seeded = () => {
   let x = 7;
-  return () => ((x = (x * 16807) % 2147483647) / 2147483647);
+  return () => (x = (x * 16807) % 2147483647) / 2147483647;
 };
 
 // a few games (every level of each); all of them take a minute

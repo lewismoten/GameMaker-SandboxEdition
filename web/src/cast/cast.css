@@ -342,7 +342,6 @@ main.cast .lead {
   min-width: 6.5rem;
 }
 
-
 /* ---- seen in ---- */
 
 .cast-seen-box {
@@ -397,7 +396,5 @@ main.cast .lead {
 
 /* Mystery Robot Joe is tin gray: he stands against the reading room's warm wood paneling */
 #cast-joe .cast-pic {
-  background:
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 26px),
-    radial-gradient(circle at 50% 55%, #c98a4b 0%, #7a4a22 80%);
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 26px), radial-gradient(circle at 50% 55%, #c98a4b 0%, #7a4a22 80%);
 }

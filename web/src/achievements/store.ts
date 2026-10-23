@@ -244,4 +244,3 @@ export function forgetForTests(): void {
   held = [];
   writing = Promise.resolve();
 }
-

@@ -25,4 +25,9 @@ const PATTERNS: EggPattern[] = ['zigzag', 'bands', 'dots', 'stars'];
 export const eggTurning = (): Pixels[] => PATTERNS.map((p) => easterEggSprite(COLORS, CLEAR, p, 0));
 
 /** Standing still: the glint sliding down its shell, then a rest. */
-export const eggShine = (): Pixels[] => [...Array.from({ length: EGG_SHINE_FRAMES }, (_, f) => easterEggSprite(COLORS, CLEAR, 'zigzag', f)), ...Array(5).fill(0).map(() => easterEggSprite(COLORS, CLEAR, 'zigzag', 0))];
+export const eggShine = (): Pixels[] => [
+  ...Array.from({ length: EGG_SHINE_FRAMES }, (_, f) => easterEggSprite(COLORS, CLEAR, 'zigzag', f)),
+  ...Array(5)
+    .fill(0)
+    .map(() => easterEggSprite(COLORS, CLEAR, 'zigzag', 0)),
+];

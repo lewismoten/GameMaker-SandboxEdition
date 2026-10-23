@@ -311,8 +311,16 @@ export function closeGaps(game: Game): Map<number, Point> {
   const used = game.scenes.map((s, i) => (s.gametype === NOSCENE ? -1 : i)).filter((i) => i >= 0);
   if (!used.length) return new Map();
   const ps = used.map((i) => game.scenes[i].pos);
-  const xs = closeAxis(ps.map((p) => p.x), CARD_UNITS.w, SNUG_GAP.x);
-  const ys = closeAxis(ps.map((p) => p.y), CARD_UNITS.h, SNUG_GAP.y);
+  const xs = closeAxis(
+    ps.map((p) => p.x),
+    CARD_UNITS.w,
+    SNUG_GAP.x,
+  );
+  const ys = closeAxis(
+    ps.map((p) => p.y),
+    CARD_UNITS.h,
+    SNUG_GAP.y,
+  );
   const dx = Math.round((POS_MIN.x + POS_MAX.x) / 2 - (Math.min(...xs) + Math.max(...xs)) / 2);
   const dy = Math.round((POS_MIN.y + POS_MAX.y) / 2 - (Math.min(...ys) + Math.max(...ys)) / 2);
   return new Map(used.map((s, k) => [s, clampPos({ x: xs[k] + dx, y: ys[k] + dy })]));
@@ -325,7 +333,15 @@ export function gapSavings(game: Game): { x: number; y: number } {
   const after = [...closeGaps(game).values()];
   const less = (a: number[], b: number[], size: number) => Math.max(0, 1 - span(b, size) / span(a, size));
   return {
-    x: less(before.map((p) => p.x), after.map((p) => p.x), CARD_UNITS.w),
-    y: less(before.map((p) => p.y), after.map((p) => p.y), CARD_UNITS.h),
+    x: less(
+      before.map((p) => p.x),
+      after.map((p) => p.x),
+      CARD_UNITS.w,
+    ),
+    y: less(
+      before.map((p) => p.y),
+      after.map((p) => p.y),
+      CARD_UNITS.h,
+    ),
   };
 }

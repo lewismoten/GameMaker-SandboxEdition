@@ -145,11 +145,25 @@ function leafOf(st: Structure, bytes: Uint8Array, fi: number, off: number): Leaf
   const a = f.array;
   if (!a) {
     const value = decode(bytes, f.off, f.type, f.len);
-    return { off: f.off, len: f.len, group: f.name, name: '', type: f.type, key: f.key, value, note: value !== undefined && f.note ? f.note(value) : '', color: fi, sect: sectionAt(st, f.off) };
+    return {
+      off: f.off,
+      len: f.len,
+      group: f.name,
+      name: '',
+      type: f.type,
+      key: f.key,
+      value,
+      note: value !== undefined && f.note ? f.note(value) : '',
+      color: fi,
+      sect: sectionAt(st, f.off),
+    };
   }
   const i = Math.floor((off - f.off) / a.size);
   const b = off - f.off - i * a.size;
-  const pi = Math.max(0, a.parts.findIndex((p) => b >= p.at && b < p.at + p.len));
+  const pi = Math.max(
+    0,
+    a.parts.findIndex((p) => b >= p.at && b < p.at + p.len),
+  );
   const p = a.parts[pi];
   const start = f.off + i * a.size + p.at;
   const value = decode(bytes, start, p.type, p.len);
@@ -205,7 +219,7 @@ export class Builder {
 
   /** A field at the current offset; returns its value. */
   f(name: string, type: FieldType, o: { len?: number; key?: string; note?: (v: number | string) => string } = {}): number {
-    const len = o.len ?? (type === 'vlq' ? readVlq(this.bytes, this.off).len : SIZE[type] ?? 1);
+    const len = o.len ?? (type === 'vlq' ? readVlq(this.bytes, this.off).len : (SIZE[type] ?? 1));
     this.fields.push({ off: this.off, len, name, type, key: o.key, note: o.note });
     const v = decode(this.bytes, this.off, type, len);
     this.off += len;
@@ -263,7 +277,14 @@ export class Builder {
 }
 
 /** Shorthand for an array part. */
-export const part = (at: number, name: string, type: FieldType, key?: (i: number) => string, note?: Part['note'], len = SIZE[type] ?? 1): Part => ({ at, len, name, type, key, note });
+export const part = (at: number, name: string, type: FieldType, key?: (i: number) => string, note?: Part['note'], len = SIZE[type] ?? 1): Part => ({
+  at,
+  len,
+  name,
+  type,
+  key,
+  note,
+});
 
 // ---------------------------------------------------------------- Game-Maker's formats
 
@@ -286,7 +307,8 @@ function gam(b: Builder): void {
   b.f('Links per scene', 'i16', { key: 'linksPerScene' });
   const poolAt = 256 + 6 + n * 283 + 2;
   const poolLen = b.u16(poolAt - 2);
-  const poolName = (v: number | string) => (v === 0 ? '(none)' : typeof v === 'number' && v < poolLen ? `"${cString(bytes.subarray(poolAt + v, poolAt + poolLen))}"` : 'past the pool!');
+  const poolName = (v: number | string) =>
+    v === 0 ? '(none)' : typeof v === 'number' && v < poolLen ? `"${cString(bytes.subarray(poolAt + v, poolAt + poolLen))}"` : 'past the pool!';
   for (let s = 0; s < n; s++) {
     const type = b.u16();
     const desc = cString(bytes.subarray(b.off + 23, b.off + 43));
@@ -307,7 +329,13 @@ function gam(b: Builder): void {
       20,
       10,
       [
-        part(0, 'to scene', 'u16', (i) => `${k}.links.${i}.toScene`, (v) => (v === 0xffff ? 'unused' : '')),
+        part(
+          0,
+          'to scene',
+          'u16',
+          (i) => `${k}.links.${i}.toScene`,
+          (v) => (v === 0xffff ? 'unused' : ''),
+        ),
         part(2, 'from x', 'i16', (i) => `${k}.links.${i}.from.x`),
         part(4, 'from y', 'i16', (i) => `${k}.links.${i}.from.y`),
         part(6, 'to x', 'i16', (i) => `${k}.links.${i}.to.x`),
@@ -365,7 +393,22 @@ function map(b: Builder): void {
     'Map grid',
     10000,
     2,
-    [part(0, 'block', 'u8', (i) => `blocks.${i}`, (v) => `background block ${v}`), part(1, 'monster', 'u8', (i) => `mons.${i}`, (v) => (Number(v) >= 200 ? 'no monster' : `placed monster ${v}`))],
+    [
+      part(
+        0,
+        'block',
+        'u8',
+        (i) => `blocks.${i}`,
+        (v) => `background block ${v}`,
+      ),
+      part(
+        1,
+        'monster',
+        'u8',
+        (i) => `mons.${i}`,
+        (v) => (Number(v) >= 200 ? 'no monster' : `placed monster ${v}`),
+      ),
+    ],
     (i) => `Cell (${i % 100},${Math.floor(i / 100)})`,
   );
   b.sect('Placed monsters');
@@ -398,7 +441,17 @@ const gravity = (v: number | string) => {
 };
 const effectName = (v: number | string) => {
   const n = Number(v);
-  return n === 0 ? 'none' : n === 1 ? 'lives' : n === 3 ? 'money' : n >= 5 && n < 20 ? `sequence ${n} counter` : n >= 20 && n < 30 ? `extra counter ${n - 20}` : '';
+  return n === 0
+    ? 'none'
+    : n === 1
+      ? 'lives'
+      : n === 3
+        ? 'money'
+        : n >= 5 && n < 20
+          ? `sequence ${n} counter`
+          : n >= 20 && n < 30
+            ? `extra counter ${n - 20}`
+            : '';
 };
 
 /** .BBL/.MBL/.CBL: 420-byte blocks (BLOC.H). */
@@ -406,7 +459,22 @@ function blocks(b: Builder, count: number): void {
   for (let i = 0; i < count; i++) {
     const k = (f: string) => ({ key: `${i}.${f}` });
     b.sect(`Block ${i}`);
-    b.arr('Block ' + i + ' pixels', 400, 1, [part(0, '', 'u8', (j) => `${i}.pixels.${j}`, (v) => (v === 255 ? 'transparent (255)' : `color ${v}`))], (j) => `(${j % 20},${Math.floor(j / 20)})`, true);
+    b.arr(
+      'Block ' + i + ' pixels',
+      400,
+      1,
+      [
+        part(
+          0,
+          '',
+          'u8',
+          (j) => `${i}.pixels.${j}`,
+          (v) => (v === 255 ? 'transparent (255)' : `color ${v}`),
+        ),
+      ],
+      (j) => `(${j % 20},${Math.floor(j / 20)})`,
+      true,
+    );
     b.f('Birth monster', 'u8', k('birthMon'));
     b.f('Birth time', 'i16', { ...k('birthTime'), note: (v) => (v === 0 ? 'never' : 'ticks') });
     b.f('Extra', 'raw', { len: 2 });
@@ -463,8 +531,36 @@ function chr(b: Builder): void {
   b.arr('Y', 3, 2, [part(0, '', 'i16', (i) => `y.${i}`)], (i) => `[${i}]`);
   b.f('Current frame', 'i8', { key: 'cframe' });
   b.f('Current sequence', 'i8', { key: 'cseq' });
-  b.arr('Inventory', 10, 1, [part(0, '', 'u8', (i) => `inv.${i}`, (v) => (v === 150 ? 'empty' : `block ${v}`))], (i) => `[${i}]`);
-  b.arr('Counters', 30, 2, [part(0, '', 'i16', (i) => `meter.${i}`, (v) => (v === 32767 ? 'unlimited' : ''))], (i) => `[${i}] ${METER_NAMES(i)}`);
+  b.arr(
+    'Inventory',
+    10,
+    1,
+    [
+      part(
+        0,
+        '',
+        'u8',
+        (i) => `inv.${i}`,
+        (v) => (v === 150 ? 'empty' : `block ${v}`),
+      ),
+    ],
+    (i) => `[${i}]`,
+  );
+  b.arr(
+    'Counters',
+    30,
+    2,
+    [
+      part(
+        0,
+        '',
+        'i16',
+        (i) => `meter.${i}`,
+        (v) => (v === 32767 ? 'unlimited' : ''),
+      ),
+    ],
+    (i) => `[${i}] ${METER_NAMES(i)}`,
+  );
   b.sect('Player 2 (unused)');
   b.f('Player 2 record (PLAYGAME uses only the first)', 'raw', { len: 3784 });
 }
@@ -480,18 +576,47 @@ function mon(b: Builder): void {
     b.f('Stick', 'i16', k('stick'));
     b.f('Power', 'u8', { ...k('power'), note: (v) => (Number(v) >= 100 ? "can't be killed by touch" : '') });
     b.f('Stops at solid blocks', 'i8', k('thru'));
-    b.arr('Animation', 21, 4, [part(0, 'block', 'i16', (i) => `${m}.pic.${i}.0`, (v) => (Number(v) >= 100 ? 'end' : '')), part(2, 'ticks', 'i16', (i) => `${m}.pic.${i}.1`)], (i) => `[${i}]`);
+    b.arr(
+      'Animation',
+      21,
+      4,
+      [
+        part(
+          0,
+          'block',
+          'i16',
+          (i) => `${m}.pic.${i}.0`,
+          (v) => (Number(v) >= 100 ? 'end' : ''),
+        ),
+        part(2, 'ticks', 'i16', (i) => `${m}.pic.${i}.1`),
+      ],
+      (i) => `[${i}]`,
+    );
     b.f('Last time', 'u32', k('lasttime'));
     b.f('Becomes when it dies', 'i8', { ...k('newmon'), note: (v) => (v === 64 ? 'none' : '') });
     b.f('Score bonus', 'i16', k('upscore'));
     b.f('Extra', 'raw', { len: 21 });
     b.f('Attack path', 'i16', { ...k('activate'), note: (v) => ['none', 'absolute', 'relative to the character'][Number(v)] ?? '' });
     b.f('Life', 'i16', { ...k('end'), note: (v) => (v === -2 ? 'never dies' : v === -1 ? 'dies after its path' : v === 0 ? 'dies when killed' : 'ticks') });
-    b.f('Towards', 'i16', { ...k('towards'), note: (v) => (v === 0 ? 'follows its path' : Number(v) >= 64 ? 'random' : Number(v) > 0 ? 'toward the character' : 'away from the character') });
+    b.f('Towards', 'i16', {
+      ...k('towards'),
+      note: (v) => (v === 0 ? 'follows its path' : Number(v) >= 64 ? 'random' : Number(v) > 0 ? 'toward the character' : 'away from the character'),
+    });
     b.arr('Close', 2, 2, [part(0, '', 'i16', (i) => `${m}.close.${i}`)], (i) => `[${i}]`);
     for (const [p, name] of ['Normal path', 'Attack path'].entries()) {
       const mk = (f: string) => (i: number) => `${m}.march.${p}.${i}.${f}`;
-      b.arr(name, 10, 8, [part(0, 'x', 'i16', mk('x')), part(2, 'y', 'i16', mk('y')), part(4, 'speed', 'i16', mk('pic'), (v) => (v === 0 ? 'end of path' : '')), part(6, 'orientation', 'i16', mk('orient'))], (i) => `corner ${i}`);
+      b.arr(
+        name,
+        10,
+        8,
+        [
+          part(0, 'x', 'i16', mk('x')),
+          part(2, 'y', 'i16', mk('y')),
+          part(4, 'speed', 'i16', mk('pic'), (v) => (v === 0 ? 'end of path' : '')),
+          part(6, 'orientation', 'i16', mk('orient')),
+        ],
+        (i) => `corner ${i}`,
+      );
     }
     for (const f of ['x', 'y', 'pic', 'orient']) b.f(`Current ${f === 'pic' ? 'speed' : f}`, 'i16', k(`cur.${f}`));
   }
@@ -501,7 +626,13 @@ function mon(b: Builder): void {
 function pal(b: Builder): void {
   b.sect('Palette');
   const lvl = (v: number | string) => (Number(v) > 63 ? 'over 63!' : `${Math.round((Number(v) * 100) / 63)}%`);
-  b.arr('Palette', 256, 3, [part(0, 'red', 'u8', (i) => `${i * 3}`, lvl), part(1, 'green', 'u8', (i) => `${i * 3 + 1}`, lvl), part(2, 'blue', 'u8', (i) => `${i * 3 + 2}`, lvl)], (i) => `Color ${i}`);
+  b.arr(
+    'Palette',
+    256,
+    3,
+    [part(0, 'red', 'u8', (i) => `${i * 3}`, lvl), part(1, 'green', 'u8', (i) => `${i * 3 + 1}`, lvl), part(2, 'blue', 'u8', (i) => `${i * 3 + 2}`, lvl)],
+    (i) => `Color ${i}`,
+  );
 }
 
 /** .HIS: the top ten (HISCOREL.C). */
@@ -519,16 +650,60 @@ function savnames(b: Builder): void {
 /** .SND: 30 PC speaker effects of 36 frequencies, then 30 .VOC names (SOUND.H). */
 function snd(b: Builder): void {
   for (let e = 0; e < 30; e++) b.sect(`Effect ${e}${SOUND_NAMES[e] ? ` (${SOUND_NAMES[e]})` : ''}`, e * 72);
-  b.arr('PC speaker', 30 * 36, 2, [part(0, 'Hz', 'u16', (i) => `freqs.${Math.floor(i / 36)}.${i % 36}`, (v) => (v === 0 ? 'silence' : ''))], (i) => `effect ${Math.floor(i / 36)} step ${i % 36}`);
+  b.arr(
+    'PC speaker',
+    30 * 36,
+    2,
+    [
+      part(
+        0,
+        'Hz',
+        'u16',
+        (i) => `freqs.${Math.floor(i / 36)}.${i % 36}`,
+        (v) => (v === 0 ? 'silence' : ''),
+      ),
+    ],
+    (i) => `effect ${Math.floor(i / 36)} step ${i % 36}`,
+  );
   b.sect('Sound Blaster .VOC names');
-  b.arr('.VOC names', 30, 9, [part(0, '', 'str', (i) => `digital.${i}`, (v) => (v ? `${v}.VOC` : 'PC speaker'), 9)], (i) => `effect ${i}`);
+  b.arr(
+    '.VOC names',
+    30,
+    9,
+    [
+      part(
+        0,
+        '',
+        'str',
+        (i) => `digital.${i}`,
+        (v) => (v ? `${v}.VOC` : 'PC speaker'),
+        9,
+      ),
+    ],
+    (i) => `effect ${i}`,
+  );
 }
 
 /** .REC: demo key presses (PLAYGAME.C Recording). */
 function rec(b: Builder): void {
   b.sect('Recorded keys');
   const n = Math.min(1000, Math.floor(b.bytes.length / 3));
-  b.arr('Keys', n, 3, [part(0, 'ticks since last', 'u16', (i) => `${i}.delta`), part(2, 'scan code', 'u8', (i) => `${i}.key`, (v) => `${hex(Number(v) & 0x7f)}h ${Number(v) & 0x80 ? 'released' : 'pressed'}`)], (i) => `Key ${i}`);
+  b.arr(
+    'Keys',
+    n,
+    3,
+    [
+      part(0, 'ticks since last', 'u16', (i) => `${i}.delta`),
+      part(
+        2,
+        'scan code',
+        'u8',
+        (i) => `${i}.key`,
+        (v) => `${hex(Number(v) & 0x7f)}h ${Number(v) & 0x80 ? 'released' : 'pressed'}`,
+      ),
+    ],
+    (i) => `Key ${i}`,
+  );
 }
 
 /** Text: one field a line (DOS text ends at Ctrl-Z). */

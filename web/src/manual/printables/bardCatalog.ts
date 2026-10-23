@@ -69,13 +69,13 @@ async function gameBlock(g: CatalogEntry): Promise<HTMLElement> {
       'div',
       null,
       h('h3', null, g.title),
+      h('p', { class: 'bard-meta' }, `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`),
+      // what a caller weighed before tying up the phone line: the ZIP's size and time, and the room it takes
       h(
         'p',
         { class: 'bard-meta' },
-        `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`,
+        [`${zipName(g)} · ${sizeText(zipBytes(g))}:`, ...downloadLine(zipBytes(g), ',\n').split('\n'), `· ${hardDiskLine(g)}`].map(keep).join(' '),
       ),
-      // what a caller weighed before tying up the phone line: the ZIP's size and time, and the room it takes
-      h('p', { class: 'bard-meta' }, [`${zipName(g)} · ${sizeText(zipBytes(g))}:`, ...downloadLine(zipBytes(g), ',\n').split('\n'), `· ${hardDiskLine(g)}`].map(keep).join(' ')),
       h('p', null, pitch(g)),
     ),
   );
@@ -125,14 +125,30 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
     blocks.push(sectionBlock(c, first), ...rest);
   }
   // the honest small print follows the games, on the last page of them if it fits
-  blocks.push(h('p', { class: 'bard-small' }, h('b', null, 'The small print, today: '), BARD_CREDIT, ' This flyer was made for Game-Maker: Sandbox Edition; Doc Leo never mailed one.'));
-  const logo = slide ? h('img', { class: 'bard-logo', src: crop(slide, LOGO), alt: 'The Bard of Bizarre', width: LOGO[2], height: LOGO[3] }) : h('b', { class: 'bard-logo-text' }, 'The Bard of Bizarre');
+  blocks.push(
+    h(
+      'p',
+      { class: 'bard-small' },
+      h('b', null, 'The small print, today: '),
+      BARD_CREDIT,
+      ' This flyer was made for Game-Maker: Sandbox Edition; Doc Leo never mailed one.',
+    ),
+  );
+  const logo = slide
+    ? h('img', { class: 'bard-logo', src: crop(slide, LOGO), alt: 'The Bard of Bizarre', width: LOGO[2], height: LOGO[3] })
+    : h('b', { class: 'bard-logo-text' }, 'The Bard of Bizarre');
 
   const masthead = h(
     'header',
     { class: 'bard-head' },
     logo,
-    h('div', null, h('b', null, 'SONG-GAMES'), h('span', null, 'Bizarre gospels, mundane epics', h('br'), '& a little Latin, made into games'), h('em', null, `${ISSUE} · Pittsburgh, PA`)),
+    h(
+      'div',
+      null,
+      h('b', null, 'SONG-GAMES'),
+      h('span', null, 'Bizarre gospels, mundane epics', h('br'), '& a little Latin, made into games'),
+      h('em', null, `${ISSUE} · Pittsburgh, PA`),
+    ),
   );
   const howdy = h(
     'div',
@@ -169,7 +185,15 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
       h(
         'ol',
         null,
-        h('li', null, 'Fire up TERMINAL and call ', h('b', null, 'THE SOFA BBS'), ' at ', h('b', { class: 'bard-phone' }, SOFA_PHONE), '. Busy? Just call again.'),
+        h(
+          'li',
+          null,
+          'Fire up TERMINAL and call ',
+          h('b', null, 'THE SOFA BBS'),
+          ' at ',
+          h('b', { class: 'bard-phone' }, SOFA_PHONE),
+          '. Busy? Just call again.',
+        ),
         h('li', null, 'Say hi in the teleconference (ignore LUNCHMEAT).'),
         h('li', null, 'Open the ', h('b', null, 'File Library'), ' and type ', h('kbd', null, 'D'), ' and the file’s number. Free for every caller.'),
         h('li', null, 'It unzips into ', h('code', null, 'C:\\DOWNLOAD'), '. Type the game’s name and press Enter.'),
@@ -180,11 +204,7 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
       { class: 'bard-coupon' },
       h('h2', null, '✂ Registration coupon'),
       h('p', null, 'This is shareware: copy it, give it to friends, upload it to your favorite BBS. If it made you smile, register:'),
-      h(
-        'table',
-        null,
-        ...bard.map((g) => h('tr', null, h('td', null, '☐'), h('td', null, g.title), h('td', null, price(g)))),
-      ),
+      h('table', null, ...bard.map((g) => h('tr', null, h('td', null, '☐'), h('td', null, g.title), h('td', null, price(g))))),
       h('p', null, 'Registered players get a tape of the song and a hand-drawn surprise. Send a check (US funds) to:'),
       h('div', { class: 'bard-mail' }, h('address', null, 'The Bard of Bizarre', h('br'), 'c/o The Sofa BBS', h('br'), 'Pittsburgh, PA'), stamp),
       h('p', { class: 'bard-story' }, '(In the story only: there is nothing to pay and nowhere to mail. The games are free.)'),

@@ -76,7 +76,15 @@ export function peLayout(exe: Uint8Array): PeLayout {
   for (let i = 0; i < count; i++) {
     const h = opt + optSize + i * 40;
     const name = String.fromCharCode(...exe.subarray(h, h + 8)).replace(/\0+$/, '');
-    sections.push({ header: h, name, vsize: dv.getUint32(h + 8, true), va: dv.getUint32(h + 12, true), raw: dv.getUint32(h + 16, true), ptr: dv.getUint32(h + 20, true), flags: dv.getUint32(h + 36, true) });
+    sections.push({
+      header: h,
+      name,
+      vsize: dv.getUint32(h + 8, true),
+      va: dv.getUint32(h + 12, true),
+      raw: dv.getUint32(h + 16, true),
+      ptr: dv.getUint32(h + 20, true),
+      flags: dv.getUint32(h + 36, true),
+    });
   }
   return { pe, machine, is64, opt, dirs, dirCount, sectionAlign: dv.getUint32(opt + 32, true), fileAlign: dv.getUint32(opt + 36, true), sections };
 }
@@ -167,7 +175,14 @@ export function buildResourceSection(resources: PeResource[], rva: number): Uint
   const entriesAt = size;
   size += 16 * resources.length;
   const ordered: PeResource[] = [];
-  for (const t of types) for (const n of [...tree.get(t)!.keys()].sort(compareKeys)) ordered.push(...tree.get(t)!.get(n)!.sort((a, b) => a.lang - b.lang));
+  for (const t of types)
+    for (const n of [...tree.get(t)!.keys()].sort(compareKeys))
+      ordered.push(
+        ...tree
+          .get(t)!
+          .get(n)!
+          .sort((a, b) => a.lang - b.lang),
+      );
   const dataAt: number[] = [];
   for (const r of ordered) {
     size = align(size, 8);
@@ -198,7 +213,11 @@ export function buildResourceSection(resources: PeResource[], rva: number): Uint
     typeDirs.push(next);
     next += dirSize(tree.get(t)!.size);
   }
-  writeDir(0, types, typeDirs.map((d) => d | 0x80000000));
+  writeDir(
+    0,
+    types,
+    typeDirs.map((d) => d | 0x80000000),
+  );
   types.forEach((t, ti) => {
     const names = [...tree.get(t)!.keys()].sort(compareKeys);
     const langDirs = names.map((n) => {
@@ -206,7 +225,11 @@ export function buildResourceSection(resources: PeResource[], rva: number): Uint
       next += dirSize(tree.get(t)!.get(n)!.length);
       return at;
     });
-    writeDir(typeDirs[ti], names, langDirs.map((d) => d | 0x80000000));
+    writeDir(
+      typeDirs[ti],
+      names,
+      langDirs.map((d) => d | 0x80000000),
+    );
     names.forEach((n, ni) => {
       const langs = tree.get(t)!.get(n)!;
       writeDir(
@@ -295,7 +318,11 @@ export function writeResources(exe: Uint8Array, resources: PeResource[]): Uint8A
   const last = moved.length ? moved[moved.length - 1] : { va: rsrc.va, vsize: section.length };
   dv.setUint32(l.opt + 56, align(last.va + last.vsize, l.sectionAlign), true); // SizeOfImage
   const sections = [...l.sections.slice(0, index), { ...rsrc, raw }, ...moved];
-  dv.setUint32(l.opt + 8, sections.filter((s) => s.flags & 0x40).reduce((n, s) => n + s.raw, 0), true); // SizeOfInitializedData
+  dv.setUint32(
+    l.opt + 8,
+    sections.filter((s) => s.flags & 0x40).reduce((n, s) => n + s.raw, 0),
+    true,
+  ); // SizeOfInitializedData
   dv.setUint32(l.opt + 64, 0, true);
   dv.setUint32(l.opt + 64, peChecksum(out, l.opt + 64), true);
   return out;

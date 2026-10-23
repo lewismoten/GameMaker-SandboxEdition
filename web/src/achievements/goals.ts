@@ -14,7 +14,14 @@ export const GOAL_SET: Partial<Record<Goal, string>> = { sandbox: 'played', biza
 
 /** The catalog games a goal counts. */
 export function goalTargets(catalog: readonly Listed[], goal: Goal): string[] {
-  const pick = goal === 'sandbox' ? isSandboxGame : goal === 'bizarre' ? isBizarreGame : goal === 'walkthroughs' ? (g: Listed) => !!g.original && !!g.walkthrough : () => false;
+  const pick =
+    goal === 'sandbox'
+      ? isSandboxGame
+      : goal === 'bizarre'
+        ? isBizarreGame
+        : goal === 'walkthroughs'
+          ? (g: Listed) => !!g.original && !!g.walkthrough
+          : () => false;
   return catalog.filter((g) => pick(g as CatalogEntry)).map((g) => g.id);
 }
 

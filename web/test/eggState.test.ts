@@ -27,7 +27,20 @@ describe('finding an egg in a save', () => {
     expect(statusOf(false, undefined)).toEqual({ status: 'none', found: false });
   });
   it('has one egg for each Sandbox game', () => {
-    expect(EGGS.map((e) => e.game)).toEqual(['blaster', 'brief', 'depth', 'logic', 'maximus', 'realm', 'sandcast', 'sleuth', 'snowbound', 'teddy', 'teddy2', 'year2000']);
+    expect(EGGS.map((e) => e.game)).toEqual([
+      'blaster',
+      'brief',
+      'depth',
+      'logic',
+      'maximus',
+      'realm',
+      'sandcast',
+      'sleuth',
+      'snowbound',
+      'teddy',
+      'teddy2',
+      'year2000',
+    ]);
   });
   it('is a dozen, never naming the thirteenth game', () => {
     expect(EGGS).toHaveLength(12);

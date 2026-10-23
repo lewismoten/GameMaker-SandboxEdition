@@ -17,9 +17,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   color: #f4f1e6;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%),
-    repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%), repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
   font:
     14px/1.4 system-ui,
     sans-serif;
@@ -27,7 +25,7 @@
 
 /* the desk top */
 .desk::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   right: 0;
@@ -35,11 +33,7 @@
   height: 38%;
   z-index: 0;
   background:
-    repeating-linear-gradient(
-      176deg,
-      rgba(0, 0, 0, 0.08) 0 3px,
-      transparent 3px 11px
-    ),
+    repeating-linear-gradient(176deg, rgba(0, 0, 0, 0.08) 0 3px, transparent 3px 11px),
     linear-gradient(180deg, #5a3a1f 0, var(--wood-b) 6px, var(--wood-a) 100%);
   box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.45);
 }
@@ -57,7 +51,7 @@
   margin: 0;
   font:
     700 16px/1 ui-monospace,
-    "Courier New",
+    'Courier New',
     monospace;
   letter-spacing: 0.25em;
   color: #ffd400;
@@ -153,12 +147,7 @@
   width: 92%;
   padding: 5.5% 5.5% 9%;
   border-radius: 22px 22px 16px 16px;
-  background: linear-gradient(
-    160deg,
-    var(--plastic-hi),
-    var(--plastic) 40%,
-    var(--plastic-lo)
-  );
+  background: linear-gradient(160deg, var(--plastic-hi), var(--plastic) 40%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
     inset 0 -4px 0 var(--plastic-edge),
@@ -201,7 +190,7 @@
   background: #253;
 }
 
-.desk[data-power="on"] .monitor .monitor-led {
+.desk[data-power='on'] .monitor .monitor-led {
   background: var(--led-green);
   box-shadow: 0 0 8px var(--led-green);
 }
@@ -247,14 +236,14 @@
 /* On the desk the screen is smaller than the 640x400 picture: blend pixels rather than
    dropping rows of them, so text stays readable. A wider black border leaves room for
    the bulge of the glass. */
-.desk[data-zoom="false"] .crt canvas.crt-text {
+.desk[data-zoom='false'] .crt canvas.crt-text {
   inset: 4% 4.5%;
   width: 91%;
   height: 92%;
   image-rendering: auto;
 }
 
-.desk[data-power="off"] .crt canvas.crt-text {
+.desk[data-power='off'] .crt canvas.crt-text {
   opacity: 0;
 }
 
@@ -266,29 +255,16 @@
 
 /* scanlines and glass glare */
 .crt::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
   background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.07) 0 1px,
-      transparent 1px 4px
-    ),
-    radial-gradient(
-      120% 90% at 30% 15%,
-      rgba(255, 255, 255, 0.09),
-      transparent 45%
-    ),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 4px),
+    radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%),
     /* the tube curves away from you: darker toward the corners */
-    radial-gradient(
-        farthest-corner at 50% 50%,
-        transparent 60%,
-        rgba(0, 0, 0, 0.18) 85%,
-        rgba(0, 0, 0, 0.45) 100%
-      );
+    radial-gradient(farthest-corner at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 85%, rgba(0, 0, 0, 0.45) 100%);
   box-shadow:
     inset 0 0 30px 6px rgba(0, 0, 0, 0.55),
     inset 0 0 2px 1px rgba(255, 255, 255, 0.08);
@@ -308,7 +284,7 @@
   z-index: 2;
 }
 
-.desk[data-power="on"] .crt .power-hint {
+.desk[data-power='on'] .crt .power-hint {
   display: none;
 }
 
@@ -323,7 +299,7 @@
   inset: 3.5% 4%;
 }
 
-.desk[data-zoom="false"] .crt .crt-vga {
+.desk[data-zoom='false'] .crt .crt-vga {
   inset: 6% 6.5%;
 }
 
@@ -358,19 +334,8 @@
   border-radius: 6px;
   background:
     /* a seam between the front bezel and the cover */
-    linear-gradient(
-      180deg,
-      transparent 10px,
-      rgba(0, 0, 0, 0.18) 10px 11px,
-      rgba(255, 255, 255, 0.5) 11px 12px,
-      transparent 12px
-    ),
-    linear-gradient(
-      180deg,
-      var(--plastic-hi),
-      var(--plastic) 45%,
-      var(--plastic-lo)
-    );
+    linear-gradient(180deg, transparent 10px, rgba(0, 0, 0, 0.18) 10px 11px, rgba(255, 255, 255, 0.5) 11px 12px, transparent 12px),
+    linear-gradient(180deg, var(--plastic-hi), var(--plastic) 45%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
     inset 0 -5px 0 var(--plastic-edge),
@@ -381,7 +346,7 @@
 
 /* the top of the case, seen from slightly above */
 .case::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 1.5%;
   right: 1.5%;
@@ -393,17 +358,13 @@
 
 /* air vents along the bottom */
 .case::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 22px;
   bottom: 10px;
   width: 38%;
   height: 12px;
-  background: repeating-linear-gradient(
-    90deg,
-    #6f6855 0 3px,
-    transparent 3px 8px
-  );
+  background: repeating-linear-gradient(90deg, #6f6855 0 3px, transparent 3px 8px);
   border-radius: 2px;
   opacity: 0.55;
 }
@@ -447,7 +408,7 @@
 }
 
 .case button.case-btn:active,
-.case button.case-btn[aria-pressed="true"] {
+.case button.case-btn[aria-pressed='true'] {
   transform: translateY(2px);
   box-shadow:
     inset 0 1px 0 #fff,
@@ -527,8 +488,7 @@
 }
 
 .seg-display.lit svg {
-  filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9))
-    drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
+  filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9)) drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
 }
 
 .drives {
@@ -757,7 +717,7 @@
 }
 
 .drive-actions::before {
-  content: "";
+  content: '';
   position: absolute;
   right: 90px;
   bottom: 100%;
@@ -799,11 +759,7 @@
   /* tilting it back doesn't shrink its box: give back the space it no longer covers */
   margin-bottom: -11%;
   border-radius: 6px 6px 10px 10px;
-  background: linear-gradient(
-    var(--plastic-hi),
-    var(--plastic) 60%,
-    var(--plastic-lo)
-  );
+  background: linear-gradient(var(--plastic-hi), var(--plastic) 60%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
     inset 0 -6px 0 var(--plastic-edge),
@@ -968,13 +924,7 @@
   height: 66px;
   clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
   background:
-    linear-gradient(
-      100deg,
-      rgba(255, 255, 255, 0.22),
-      transparent 30%,
-      transparent 75%,
-      rgba(255, 255, 255, 0.1)
-    ),
+    linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 30%, transparent 75%, rgba(255, 255, 255, 0.1)),
     linear-gradient(rgba(120, 124, 134, 0.42), rgba(70, 72, 80, 0.62));
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.35),
@@ -1035,9 +985,7 @@
   top: 106px;
   bottom: 0;
   border-radius: 2px 2px 6px 6px;
-  background:
-    linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 40%),
-    linear-gradient(#e6e0cf, #cfc7b1 55%, #b2aa93);
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 40%), linear-gradient(#e6e0cf, #cfc7b1 55%, #b2aa93);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.7),
     inset 0 -3px 0 rgba(0, 0, 0, 0.2),
@@ -1046,7 +994,7 @@
 
 /* its lock, with the key slot */
 .disk-box .bx-front::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   top: 14px;
@@ -1054,17 +1002,12 @@
   height: 16px;
   margin-left: -8px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 30%,
-    #fff,
-    #c9ccd0 35%,
-    #7c8086 80%
-  );
+  background: radial-gradient(circle at 35% 30%, #fff, #c9ccd0 35%, #7c8086 80%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .disk-box .bx-front::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   top: 18px;
@@ -1080,16 +1023,10 @@
   top: 16px;
   padding: 2px 5px 1px;
   border-radius: 1px;
-  background:
-    linear-gradient(
-      rgba(255, 255, 255, 0.28),
-      transparent 45%,
-      rgba(0, 0, 0, 0.25)
-    ),
-    var(--tape, #17181c);
+  background: linear-gradient(rgba(255, 255, 255, 0.28), transparent 45%, rgba(0, 0, 0, 0.25)), var(--tape, #17181c);
   color: #f4f4f0;
   font:
-    700 8px/1 "Courier New",
+    700 8px/1 'Courier New',
     monospace;
   letter-spacing: 0.08em;
   text-shadow:
@@ -1128,7 +1065,7 @@
     8px 8px 0 #cfc8af,
     0 12px 18px rgba(0, 0, 0, 0.45);
   font:
-    700 13px/1.15 "Courier New",
+    700 13px/1.15 'Courier New',
     ui-monospace,
     monospace;
   text-align: left;
@@ -1138,12 +1075,12 @@
   display: block;
   margin-top: 8px;
   font:
-    400 10px/1.3 "Courier New",
+    400 10px/1.3 'Courier New',
     monospace;
 }
 
 .catalog-prop .paper::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 8px;
   top: 10px;
@@ -1190,7 +1127,7 @@
 /* push-pins */
 .poster::before,
 .poster::after {
-  content: "";
+  content: '';
   position: absolute;
   top: -4px;
   width: 10px;
@@ -1243,7 +1180,7 @@
   background: #0b0b0b;
   color: #f2e600;
   font:
-    italic 900 13px/1 "Arial Black",
+    italic 900 13px/1 'Arial Black',
     Arial,
     sans-serif;
   text-shadow: 1px 1px 0 #1f9a3a;
@@ -1261,7 +1198,7 @@
 .manual-prop .booklet-cover em {
   padding: 0 6px;
   font:
-    10px "Times New Roman",
+    10px 'Times New Roman',
     serif;
 }
 
@@ -1279,8 +1216,8 @@
   box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.35);
   transform: rotate(6deg);
   font:
-    700 13px/1.2 "Comic Sans MS",
-    "Marker Felt",
+    700 13px/1.2 'Comic Sans MS',
+    'Marker Felt',
     cursive;
   text-align: left;
   cursor: pointer;
@@ -1292,11 +1229,11 @@
 
 /* ---- zoomed screen (graphic designers, full screen games) ----------------------------- */
 
-.desk:not([data-zoom="false"]) .desk-scene {
+.desk:not([data-zoom='false']) .desk-scene {
   z-index: 60;
 }
 
-.desk:not([data-zoom="false"]) .crt {
+.desk:not([data-zoom='false']) .crt {
   position: fixed;
   inset: 0;
   z-index: 60;
@@ -1304,12 +1241,12 @@
   border-radius: 0;
 }
 
-.desk:not([data-zoom="false"]) .crt::after {
+.desk:not([data-zoom='false']) .crt::after {
   display: none;
 }
 
 /* full screen is a flat picture */
-.desk:not([data-zoom="false"]) .crt .crt-picture {
+.desk:not([data-zoom='false']) .crt .crt-picture {
   filter: none;
 }
 
@@ -1317,7 +1254,7 @@
   display: none;
 }
 
-.desk[data-zoom="manual"] .zoom-exit {
+.desk[data-zoom='manual'] .zoom-exit {
   position: fixed;
   right: 12px;
   bottom: 12px;
@@ -1343,7 +1280,7 @@
   color: #fff;
   font:
     700 13px/1.4 ui-monospace,
-    "Courier New",
+    'Courier New',
     monospace;
   letter-spacing: 0.06em;
 }
@@ -1383,7 +1320,7 @@
   color: #000;
   font:
     13px/1.35 ui-monospace,
-    "Courier New",
+    'Courier New',
     monospace;
 }
 
@@ -1530,7 +1467,7 @@
   margin-top: 2px;
   color: #f2e600;
   font:
-    italic 900 21px/1 "Arial Black",
+    italic 900 21px/1 'Arial Black',
     Arial,
     sans-serif;
   letter-spacing: -0.03em;
@@ -1616,13 +1553,7 @@
   border-radius: 50%;
   background:
     radial-gradient(circle, #222 0 7%, #c9ced6 7% 16%, transparent 16%),
-    radial-gradient(
-      circle,
-      transparent 0 30%,
-      rgba(255, 255, 255, 0.95) 30% 97%,
-      #aab 97%
-    ),
-    conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
+    radial-gradient(circle, transparent 0 30%, rgba(255, 255, 255, 0.95) 30% 97%, #aab 97%), conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
   box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
 }
 
@@ -1635,7 +1566,7 @@
 .gm-box .cd-disc .cd-title {
   fill: #000080;
   font:
-    900 11px "Arial Black",
+    900 11px 'Arial Black',
     Arial,
     sans-serif;
 }

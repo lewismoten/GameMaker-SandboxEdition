@@ -110,7 +110,12 @@ const LISTED: CastMember[] = [
     name: 'Doc Leo',
     role: 'Hobo clown, PhD in Comedic Science',
     hi: 'Nose on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
-    art: { game: 'teddy', width: 224, height: 147, alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash' },
+    art: {
+      game: 'teddy',
+      width: 224,
+      height: 147,
+      alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash',
+    },
     bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, a red nose, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. Nose on: showtime. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
@@ -133,7 +138,12 @@ const LISTED: CastMember[] = [
     name: 'THE CHEZ',
     role: 'A tomato-red 1976½ CitiCar. Always charging.',
     hi: 'Ah-OOO-gah! Don’t mind me, I’m charging. I am always charging.',
-    art: { game: 'teddy', width: 120, height: 56, alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels' },
+    art: {
+      game: 'teddy',
+      width: 120,
+      height: 56,
+      alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels',
+    },
     bio: 'Lewis’s own electric car: a tomato-red 1976½ CitiCar, about half the length of anything parked next to it, with a black roof and racing stripes (they make the car go faster). It pulls a parade float at its usual few miles an hour, clears the road with an ah-OOO-gah, and turns up at a curb in nearly every Sandbox game. It is charging. It is always charging.',
     appears: [
       { game: 'teddy', as: 'waiting at the end of every level' },
@@ -173,7 +183,12 @@ const LISTED: CastMember[] = [
     name: 'The Dog House',
     role: 'Lewis’s dog-themed little lending library (and the Tiny Pockets Library inside)',
     hi: 'Take a book, leave a book. Snacks in the drawer. Woof!',
-    art: { game: 'teddy', width: 164, height: 182, alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks' },
+    art: {
+      game: 'teddy',
+      width: 164,
+      height: 182,
+      alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks',
+    },
     bio: 'Lewis’s little lending library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, leave a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
     appears: [
       { game: 'teddy', as: 'on Maple Street, with a Teddy-sized room inside' },
@@ -243,7 +258,12 @@ const LISTED: CastMember[] = [
     name: 'Lewis “Lewie” Moten III',
     role: 'The person behind all of them',
     hi: 'Hi, I’m Lewis. The dogs are mine, the car is mine, and the clown… is also me.',
-    art: { game: 'sandcast', width: 180, height: 180, alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo' },
+    art: {
+      game: 'sandcast',
+      width: 180,
+      height: 180,
+      alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo',
+    },
     bio: 'Teddy and Gwinn’s person, THE CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
     appears: [
       { game: 'sandcast', as: 'SysOp of the secret BBS, in a selfie with Teddy' },

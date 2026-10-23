@@ -27,7 +27,11 @@ describe('the cast page', () => {
       // the hidden things are listed from the games' about.json (hidden.json)
       if (!(HIDDEN as readonly string[]).includes(m.id)) expect(m.appears.length, m.id).toBeGreaterThan(0);
       expect(new Set(m.appears.map((a) => a.game)).size, m.id).toBe(m.appears.length);
-      for (const a of m.appears) expect(catalog.some((g) => g.id === a.game), `${m.id} in ${a.game}`).toBe(true);
+      for (const a of m.appears)
+        expect(
+          catalog.some((g) => g.id === a.game),
+          `${m.id} in ${a.game}`,
+        ).toBe(true);
       expect(Object.keys(CAST_GAMES)).toContain(m.art.game as CastGame);
     }
   });
@@ -42,7 +46,10 @@ describe('the cast page', () => {
 
   it('takes cameos only for members and games the page knows', () => {
     for (const [id, list] of Object.entries(CAMEOS as Record<string, { game: string; as: string }[]>)) {
-      expect(CAST.some((m) => m.id === id), id).toBe(true);
+      expect(
+        CAST.some((m) => m.id === id),
+        id,
+      ).toBe(true);
       for (const a of list) {
         expect(Object.keys(CAST_GAMES), `${id} in ${a.game}`).toContain(a.game);
         expect(a.as.length, `${id} in ${a.game}`).toBeGreaterThan(2);
@@ -57,7 +64,11 @@ describe('the cast page', () => {
     for (const id of HIDDEN) {
       const m = CAST.find((c) => c.id === id)!;
       expect(m, id).toBeDefined();
-      for (const [game] of placed[id]) expect(m.appears.map((a) => a.game), `${id} in ${game}`).toContain(game);
+      for (const [game] of placed[id])
+        expect(
+          m.appears.map((a) => a.game),
+          `${id} in ${game}`,
+        ).toContain(game);
       for (const a of m.appears) expect(secret, `${id} in ${a.game}`).not.toContain(a.game);
     }
   });

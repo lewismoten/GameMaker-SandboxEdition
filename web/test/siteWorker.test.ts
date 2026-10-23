@@ -37,7 +37,12 @@ describe('site service worker', () => {
   });
 
   it('writes a worker that parses, with the shell, groups and hashed files in it', () => {
-    const src = siteWorkerSource({ version: 'v1', precache: ['./', 'index.html', 'assets/main-abc.js'], groups: { 'index.html': 'h1' }, assets: ['assets/main-abc.js'] });
+    const src = siteWorkerSource({
+      version: 'v1',
+      precache: ['./', 'index.html', 'assets/main-abc.js'],
+      groups: { 'index.html': 'h1' },
+      assets: ['assets/main-abc.js'],
+    });
     expect(() => new Function(src)).not.toThrow();
     expect(src).toContain('const PRECACHE = ["","index.html","assets/main-abc.js"]');
     expect(src).toContain('"index.html":"h1"');

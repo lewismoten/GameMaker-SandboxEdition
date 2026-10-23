@@ -1,7 +1,7 @@
 // How light it is outside right now, by the room's clock (the visitor's own, unless DOS's TIME
 // set it: retro/dos/deskClock.ts): a winter day like the
 // one in 1992, sunrise about 7:15 and sunset about 4:55, with an hour of dusk either side.
-import { deskNow, onDeskClock } from "../../retro/dos/deskClock";
+import { deskNow, onDeskClock } from '../../retro/dos/deskClock';
 
 const SUNRISE = 7.25;
 const SUNSET = 16.9;

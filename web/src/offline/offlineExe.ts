@@ -41,10 +41,12 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
   };
   const lines = (rows: [string, number?][]) => {
     let y = TOP + 1;
-    for (const [text, a] of rows) for (const l of text ? wrap(text, W - 4) : ['']) if (y < TOP + H - 1) s.write(X + 2, y++, a ?? TEXT, toCp437(l.padEnd(W - 4)));
+    for (const [text, a] of rows)
+      for (const l of text ? wrap(text, W - 4) : ['']) if (y < TOP + H - 1) s.write(X + 2, y++, a ?? TEXT, toCp437(l.padEnd(W - 4)));
   };
   const games = (st: OfflineStatus) => st.files.filter((f) => f.path.endsWith('.gmpak')).length;
-  const space = (st: OfflineStatus) => (st.quota !== undefined && st.usage !== undefined ? `Room for the site here: about ${sizeText(Math.max(0, st.quota - st.usage))} free.` : '');
+  const space = (st: OfflineStatus) =>
+    st.quota !== undefined && st.usage !== undefined ? `Room for the site here: about ${sizeText(Math.max(0, st.quota - st.usage))} free.` : '';
 
   try {
     frame('TAKE IT ALONG', ' Please wait...');
@@ -62,7 +64,9 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
       if (st.ready) {
         frame('READY OFFLINE', ' R Remove offline copies   Esc Quit');
         lines([
-          [`√ Ready offline. All ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes are on this computer (${sizeText(st.wireTotal)}).`],
+          [
+            `√ Ready offline. All ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes are on this computer (${sizeText(st.wireTotal)}).`,
+          ],
           [''],
           ['Everything works with no connection.'],
           [''],

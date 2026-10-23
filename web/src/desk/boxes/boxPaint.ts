@@ -52,7 +52,7 @@ function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: num
     if (i > 0) {
       const full = part[0] === 'F';
       const fill = ctx.fillStyle;
-      at += paintBbsName(ctx, at + fontPx(ctx) * 0.35, y, fontPx(ctx), { full }) ;
+      at += paintBbsName(ctx, at + fontPx(ctx) * 0.35, y, fontPx(ctx), { full });
       ctx.fillStyle = fill;
       rest = part.slice(1);
     }
@@ -214,7 +214,13 @@ export function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: 
   d.push((10 - ((odd * 3 + even) % 10)) % 10);
   const L = ['0001101', '0011001', '0010011', '0111101', '0100011', '0110001', '0101111', '0111011', '0110111', '0001011'];
   const R = L.map((c) => [...c].map((b) => (b === '0' ? '1' : '0')).join(''));
-  const bits = `101${d.slice(0, 6).map((v) => L[v]).join('')}01010${d.slice(6).map((v) => R[v]).join('')}101`;
+  const bits = `101${d
+    .slice(0, 6)
+    .map((v) => L[v])
+    .join('')}01010${d
+    .slice(6)
+    .map((v) => R[v])
+    .join('')}101`;
   // guard bars (and the first and last digit's) run down past the others
   const guard = (i: number) => i < 10 || (i >= 45 && i < 50) || i >= 85;
   const quiet = 9;

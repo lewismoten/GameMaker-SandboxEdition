@@ -4,20 +4,14 @@
 // TIME or DATE set it (retro/dos/deskClock.ts), and then a little red SET shows on the face.
 // It hangs on the wall left of the desk, so it only shows when the window is wide enough to
 // have wall there (stage.ts sets .wide-wall).
-import "./wallClock.css";
-import { h } from "../../editor/core/ui";
-import { deskClockSet, deskNow } from "../../retro/dos/deskClock";
+import './wallClock.css';
+import { h } from '../../editor/core/ui';
+import { deskClockSet, deskNow } from '../../retro/dos/deskClock';
 
 const CX = 90;
 const CY = 262;
 
-const hand = (
-  cls: string,
-  len: number,
-  back: number,
-  width: number,
-  color: string,
-) =>
+const hand = (cls: string, len: number, back: number, width: number, color: string) =>
   `<g class="${cls}"><rect x="${CX - width / 2}" y="${CY - len}" width="${width}" height="${len + back}" rx="${width / 2}" fill="${color}"/></g>`;
 
 export function wallClock(): HTMLElement {
@@ -28,19 +22,15 @@ export function wallClock(): HTMLElement {
     const x = (r: number) => (CX + Math.sin(a) * r).toFixed(1);
     const y = (r: number) => (CY - Math.cos(a) * r).toFixed(1);
     return `<line x1="${x(r1)}" y1="${y(r1)}" x2="${x(66)}" y2="${y(66)}" stroke="#222" stroke-width="${big ? 3 : 1}"/>`;
-  }).join("");
+  }).join('');
   const numbers = [12, 3, 6, 9]
     .map((n) => {
       const a = (n * Math.PI) / 6;
       return `<text x="${CX + Math.sin(a) * 46}" y="${CY - Math.cos(a) * 46 + 7}" text-anchor="middle" font-size="20" font-weight="800" font-family="Arial Black, Arial, sans-serif" fill="#222">${n}</text>`;
     })
-    .join("");
-  const holes = Array.from(
-    { length: 6 },
-    (_, i) =>
-      `<ellipse cx="${CX}" cy="${372 + i * 22}" rx="4" ry="5" fill="#050506"/>`,
-  ).join("");
-  const el = h("div", { class: "wall-clock", role: "img" });
+    .join('');
+  const holes = Array.from({ length: 6 }, (_, i) => `<ellipse cx="${CX}" cy="${372 + i * 22}" rx="4" ry="5" fill="#050506"/>`).join('');
+  const el = h('div', { class: 'wall-clock', role: 'img' });
   el.innerHTML = `<svg viewBox="0 0 180 540" aria-hidden="true">
     <defs>
       <linearGradient id="wc-strap" x1="0" x2="1"><stop offset="0" stop-color="#141517"/><stop offset="0.45" stop-color="#3a3d42"/><stop offset="1" stop-color="#101113"/></linearGradient>
@@ -76,53 +66,44 @@ export function wallClock(): HTMLElement {
     <text class="wc-set" x="${CX}" y="${CY + 44}" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1.5" font-family="Arial, sans-serif" fill="#d3141c" visibility="hidden">SET</text>
     <rect x="${CX + 22}" y="${CY - 7}" width="18" height="14" fill="#fff" stroke="#888" stroke-width="1"/>
     <text class="wc-date" x="${CX + 31}" y="${CY + 4}" text-anchor="middle" font-size="10" font-weight="700" font-family="Arial, sans-serif" fill="#222"></text>
-    ${hand("wc-hour", 36, 8, 7, "#222")}
-    ${hand("wc-min", 56, 10, 4.5, "#222")}
-    ${hand("wc-sec", 62, 16, 1.6, "#d3141c")}
+    ${hand('wc-hour', 36, 8, 7, '#222')}
+    ${hand('wc-min', 56, 10, 4.5, '#222')}
+    ${hand('wc-sec', 62, 16, 1.6, '#d3141c')}
     <circle cx="${CX}" cy="${CY}" r="4.5" fill="#d3141c"/>
     <!-- glare on the crystal -->
     <ellipse cx="${CX - 24}" cy="${CY - 34}" rx="34" ry="16" fill="#fff" opacity="0.25" transform="rotate(-30 ${CX - 24} ${CY - 34})"/>
   </svg>`;
 
-  const turn = (cls: string, deg: number) =>
-    el
-      .querySelector(`.${cls}`)
-      ?.setAttribute("transform", `rotate(${deg} ${CX} ${CY})`);
-  const date = el.querySelector(".wc-date")!;
-  const setMark = el.querySelector(".wc-set")!;
-  let shown = "";
+  const turn = (cls: string, deg: number) => el.querySelector(`.${cls}`)?.setAttribute('transform', `rotate(${deg} ${CX} ${CY})`);
+  const date = el.querySelector('.wc-date')!;
+  const setMark = el.querySelector('.wc-set')!;
+  let shown = '';
   const tick = () => {
     const now = deskNow();
     const set = deskClockSet();
     const s = now.getSeconds();
     const m = now.getMinutes() + s / 60;
-    turn("wc-sec", s * 6);
-    turn("wc-min", m * 6);
-    turn("wc-hour", ((now.getHours() % 12) + m / 60) * 30);
+    turn('wc-sec', s * 6);
+    turn('wc-min', m * 6);
+    turn('wc-hour', ((now.getHours() % 12) + m / 60) * 30);
     date.textContent = String(now.getDate());
-    const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const time = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     if (`${time}${set}` !== shown) {
       shown = `${time}${set}`;
-      setMark.setAttribute("visibility", set ? "visible" : "hidden");
-      el.setAttribute(
-        "aria-label",
-        `A giant wristwatch hung on the wall as a clock: ${time}${set ? " (set at the DOS prompt, not the real time)" : ""}`,
-      );
+      setMark.setAttribute('visibility', set ? 'visible' : 'hidden');
+      el.setAttribute('aria-label', `A giant wristwatch hung on the wall as a clock: ${time}${set ? ' (set at the DOS prompt, not the real time)' : ''}`);
       // and a tooltip on the watch saying how to put it back
-      const svg = el.querySelector("svg")!;
-      svg.querySelector(":scope > title")?.remove();
+      const svg = el.querySelector('svg')!;
+      svg.querySelector(':scope > title')?.remove();
       if (set) {
-        const tip = document.createElementNS("http://www.w3.org/2000/svg", "title");
-        tip.textContent = "Set with TIME at the DOS prompt, not the real time (TIME /LOCAL puts it back)";
+        const tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        tip.textContent = 'Set with TIME at the DOS prompt, not the real time (TIME /LOCAL puts it back)';
         svg.prepend(tip);
       }
     }
   };
   tick();
   // quartz: the second hand jumps once a second
-  const timer = setInterval(
-    () => (el.isConnected ? tick() : clearInterval(timer)),
-    1000,
-  );
+  const timer = setInterval(() => (el.isConnected ? tick() : clearInterval(timer)), 1000);
   return el;
 }

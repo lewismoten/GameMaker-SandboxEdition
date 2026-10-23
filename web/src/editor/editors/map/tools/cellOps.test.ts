@@ -4,7 +4,12 @@ import { findBlock, floodCells, lineCells, rectCells, replaceAll, spanRect } fro
 
 describe('map cell helpers', () => {
   it('draws lines and rectangles', () => {
-    expect(lineCells({ x: 0, y: 0 }, { x: 3, y: 1 })).toEqual([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 3, y: 1 }]);
+    expect(lineCells({ x: 0, y: 0 }, { x: 3, y: 1 })).toEqual([
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 1 },
+      { x: 3, y: 1 },
+    ]);
     expect(spanRect({ x: 3, y: 1 }, { x: 1, y: 2 })).toEqual({ x: 1, y: 1, w: 3, h: 2 });
     expect(rectCells({ x: 0, y: 0, w: 3, h: 3 }, true)).toHaveLength(8);
   });

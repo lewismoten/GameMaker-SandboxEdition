@@ -2,10 +2,10 @@
 // draws itself over the view for a few seconds (room/snowWindow.ts addSkyExtra) while a
 // button rides along with it, so it can be clicked or tabbed to for a word about it (and its
 // achievement the first time). index.ts picks one every few minutes.
-import { addSkyExtra, VIEW } from "../../room/snowWindow";
-import { hitArea, pressable, say, stillMotion } from "../propKit";
-import { ambient, muteAmbient } from "../propSound";
-import { windowVisible } from "./visible";
+import { addSkyExtra, VIEW } from '../../room/snowWindow';
+import { hitArea, pressable, say, stillMotion } from '../propKit';
+import { ambient, muteAmbient } from '../propSound';
+import { windowVisible } from './visible';
 
 let live = false;
 /** Whether something outside is playing and can be seen (for sounds it starts later on). */
@@ -21,7 +21,7 @@ export interface OutsideEvent {
   /** Its button's name while it is there. */
   label: string;
   /** When it can happen by itself (any time when something asks for it: index.ts). */
-  when: "day" | "night" | "any";
+  when: 'day' | 'night' | 'any';
   /** How long it lasts. */
   ms: number;
   /** Its sound as it starts (through the speakers' knob). */
@@ -46,7 +46,7 @@ export function play(win: HTMLElement, layer: HTMLElement, ev: OutsideEvent): Pr
   if (!windowVisible(win)) return Promise.resolve();
   const still = stillMotion();
   const button = hitArea(`sw-out sw-out-${ev.kind}`);
-  const moon = layer.querySelector(".sw-moon");
+  const moon = layer.querySelector('.sw-moon');
   if (moon) moon.before(button);
   else layer.append(button);
   const off = pressable(button, ev.label, () => say(button, ev.press()), { id: ev.id });
@@ -66,7 +66,7 @@ export function play(win: HTMLElement, layer: HTMLElement, ev: OutsideEvent): Pr
       if (t >= ms || !win.isConnected || !seen) {
         if (!seen) muteAmbient(true);
         live = false;
-        if (document.activeElement === button) win.querySelector<HTMLElement>(".sw-glass")?.focus();
+        if (document.activeElement === button) win.querySelector<HTMLElement>('.sw-glass')?.focus();
         off();
         button.remove();
         done();

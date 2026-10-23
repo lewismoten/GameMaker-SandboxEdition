@@ -9,7 +9,9 @@ function flow(label: string, steps: (string | [string, string])[]): HTMLElement 
   return h(
     'div',
     { class: 'ug-flow', role: 'img', 'aria-label': label },
-    ...steps.map((s) => (typeof s === 'string' ? h('span', { class: 'ug-arrow' }, s) : h('span', { class: 'ug-box' }, h('b', null, s[0]), h('small', null, s[1])))),
+    ...steps.map((s) =>
+      typeof s === 'string' ? h('span', { class: 'ug-arrow' }, s) : h('span', { class: 'ug-box' }, h('b', null, s[0]), h('small', null, s[1])),
+    ),
   );
 }
 
@@ -26,7 +28,11 @@ function chain(): HTMLElement {
       '18 ticks →',
       ['Gap', 'stays a gap'],
     ]),
-    h('figcaption', null, 'Figure 2-1. Top: a reward that becomes plain floor. Bottom: a level clock. Thirty seconds into the scene every bridge on the map cracks, and a second later every one is gone.'),
+    h(
+      'figcaption',
+      null,
+      'Figure 2-1. Top: a reward that becomes plain floor. Bottom: a level clock. Thirty seconds into the scene every bridge on the map cracks, and a second later every one is gone.',
+    ),
   );
 }
 
@@ -45,7 +51,13 @@ function walkoff(): HTMLElement {
       },
       ...cells.map((c) => h('span', { class: `ug-cell-${c}` }, c === 'hero' ? '☺' : c === 'gate' ? '▤' : c === 'link' ? '⇨' : '')),
     ),
-    h('div', { class: 'ug-strip-labels', 'aria-hidden': 'true' }, h('span', null, 'gate: the line starts'), h('span', null, 'walk-off: it plays out'), h('span', null, 'link')),
+    h(
+      'div',
+      { class: 'ug-strip-labels', 'aria-hidden': 'true' },
+      h('span', null, 'gate: the line starts'),
+      h('span', null, 'walk-off: it plays out'),
+      h('span', null, 'link'),
+    ),
     h('figcaption', null, 'Figure 5-1. A walk-off. At a walking pace each block buys a fraction of a second; leave enough of them for the longest line.'),
   );
 }

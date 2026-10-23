@@ -65,34 +65,34 @@ function docLeo(c: CanvasRenderingContext2D): void {
   path(c, CHEZ_WINDOW);
   c.clip();
   // the corduroy jacket's shoulder and the green tie
-  c.fillStyle = "#7a5a32";
+  c.fillStyle = '#7a5a32';
   c.fillRect(17, 6.6, 6, 2);
-  c.fillStyle = "#3c9a3c";
+  c.fillStyle = '#3c9a3c';
   c.fillRect(20.2, 6.6, 0.8, 2);
   // the face, looking ahead (toward the nose, x 36)
-  c.fillStyle = "#f2c9a0";
+  c.fillStyle = '#f2c9a0';
   c.beginPath();
   c.ellipse(20.2, 5.2, 1.7, 1.9, 0, 0, Math.PI * 2);
   c.fill();
   // stubble and the grin
-  c.fillStyle = "rgba(60,50,40,0.35)";
+  c.fillStyle = 'rgba(60,50,40,0.35)';
   c.beginPath();
   c.ellipse(20.6, 6.3, 1.3, 0.75, 0, 0, Math.PI);
   c.fill();
-  c.strokeStyle = "#5a1a10";
+  c.strokeStyle = '#5a1a10';
   c.lineWidth = 0.22;
   c.beginPath();
   c.arc(21.1, 5.9, 0.6, 0.2, Math.PI - 0.6);
   c.stroke();
-  c.fillStyle = "#1a1a1a";
+  c.fillStyle = '#1a1a1a';
   c.fillRect(21.0, 4.6, 0.35, 0.35);
   // the red nose
-  c.fillStyle = "#e0242c";
+  c.fillStyle = '#e0242c';
   c.beginPath();
   c.arc(22.0, 5.3, 0.62, 0, Math.PI * 2);
   c.fill();
   // the fedora: brim and a dented crown
-  c.fillStyle = "#5a4632";
+  c.fillStyle = '#5a4632';
   c.fillRect(18.0, 3.4, 4.6, 0.5);
   c.beginPath();
   c.moveTo(18.8, 3.5);
@@ -115,16 +115,16 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
   c.translate(x + 40 * k, ground - 20 * k);
   c.scale(-k, k);
   // a shadow on the snow
-  c.fillStyle = "rgba(40,50,70,0.25)";
+  c.fillStyle = 'rgba(40,50,70,0.25)';
   c.beginPath();
   c.ellipse(20.5, 20, 18, 1.2, 0, 0, Math.PI * 2);
   c.fill();
   // white steel wheels and chrome caps on black tires
   for (const wx of CHEZ_WHEELS) {
     for (const [r, col] of [
-      [TIRE, "#161618"],
-      [2.0, "#f2eee4"],
-      [1.0, "#b8bcc4"],
+      [TIRE, '#161618'],
+      [2.0, '#f2eee4'],
+      [1.0, '#b8bcc4'],
     ] as const) {
       c.fillStyle = col;
       c.beginPath();
@@ -133,14 +133,14 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
     }
   }
   // plain square black bumpers
-  c.fillStyle = "#1a1a1e";
+  c.fillStyle = '#1a1a1e';
   c.fillRect(35.2, 13.0, 2.0, 1.8);
   c.fillRect(3.9, 12.8, 2.0, 1.8);
   // the tomato-red body and its headlight pod
   const red = c.createLinearGradient(0, 1.3, 0, 18.1);
-  red.addColorStop(0, "#ff6a50");
-  red.addColorStop(0.55, "#e8402c");
-  red.addColorStop(1, "#b02018");
+  red.addColorStop(0, '#ff6a50');
+  red.addColorStop(0.55, '#e8402c');
+  red.addColorStop(1, '#b02018');
   c.fillStyle = red;
   path(c, CHEZ_BODY);
   c.fill();
@@ -150,7 +150,7 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
   path(c, CHEZ_BODY);
   c.clip();
   // the black roof
-  c.fillStyle = "#141416";
+  c.fillStyle = '#141416';
   c.fillRect(0, 0, 40, ROOF_EDGE);
   // the racing stripes: a white pinstripe round a dark pair with red between them, stepping up
   const band = (w: number, col: string, d = 0) => {
@@ -164,28 +164,28 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
     }
     c.stroke();
   };
-  c.lineCap = "butt";
-  band(1.9, "#fff4e8");
-  band(1.5, "#e8402c");
-  band(0.5, "#26262a", -0.5);
-  band(0.5, "#26262a", 0.5);
+  c.lineCap = 'butt';
+  band(1.9, '#fff4e8');
+  band(1.5, '#e8402c');
+  band(0.5, '#26262a', -0.5);
+  band(0.5, '#26262a', 0.5);
   c.restore();
   // the door window, with Doc Leo in it, and the windshield's edge
   const glass = c.createLinearGradient(0, 2.8, 0, 8.3);
-  glass.addColorStop(0, "#a8d8f0");
-  glass.addColorStop(1, "#2a4a6a");
+  glass.addColorStop(0, '#a8d8f0');
+  glass.addColorStop(1, '#2a4a6a');
   c.fillStyle = glass;
   path(c, CHEZ_WINDOW);
   c.fill();
   docLeo(c);
-  c.strokeStyle = "#d8eef8";
+  c.strokeStyle = '#d8eef8';
   c.lineWidth = 0.35;
   c.beginPath();
   c.moveTo(18.3, 1.7);
   c.lineTo(27.2, 7.5);
   c.stroke();
   // the door's seams and handle
-  c.strokeStyle = "#7a1006";
+  c.strokeStyle = '#7a1006';
   c.lineWidth = 0.3;
   c.beginPath();
   c.moveTo(12.1, 2.2);
@@ -193,26 +193,26 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
   c.moveTo(26.1, 8.3);
   c.lineTo(26.1, 18.1);
   c.stroke();
-  c.fillStyle = "#d8d8e0";
+  c.fillStyle = '#d8d8e0';
   c.fillRect(14.5, 10.6, 1.5, 0.6);
   // the headlight, the amber marker up front, the red one at the back, the charge port
-  c.fillStyle = "#fff8c0";
+  c.fillStyle = '#fff8c0';
   c.fillRect(32.1, 8.9, 0.5, 1.1);
-  c.fillStyle = "#ffa020";
+  c.fillStyle = '#ffa020';
   c.fillRect(30.4, 10.9, 1.2, 0.8);
-  c.fillStyle = "#e01818";
+  c.fillStyle = '#e01818';
   c.fillRect(7.1, 12.4, 1.2, 0.8);
-  c.fillStyle = "#7a1006";
+  c.fillStyle = '#7a1006';
   c.fillRect(6.6, 5.0, 1.3, 1.3);
   c.restore();
   // the plate on the back (not mirrored, so it reads): THE CHEZ, just past the rear bumper
   const px = x + (40 - 4.6) * k;
   const py = ground - 20 * k + 11.1 * k;
-  c.fillStyle = "#f4f2e8";
+  c.fillStyle = '#f4f2e8';
   c.fillRect(px - 0.2 * k, py, 2.6 * k, 1.5 * k);
-  c.fillStyle = "#1a3a8a";
+  c.fillStyle = '#1a3a8a';
   c.font = `bold ${Math.max(3, 0.9 * k)}px Arial, sans-serif`;
-  c.textAlign = "center";
-  c.textBaseline = "middle";
-  c.fillText("THE CHEZ", px + 1.1 * k, py + 0.78 * k, 2.4 * k);
+  c.textAlign = 'center';
+  c.textBaseline = 'middle';
+  c.fillText('THE CHEZ', px + 1.1 * k, py + 0.78 * k, 2.4 * k);
 }

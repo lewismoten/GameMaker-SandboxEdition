@@ -37,10 +37,16 @@ function dogHouse(c: Ctx, x: number, y: number, s: number): void {
     c.fillRect(x + xx * u, y + yy * u, w * u, h * u);
   };
   // post and the rock cubby
-  R(18, 40, 8, 60, lin(c, x + 18 * u, 0, x + 26 * u, 0, [
-    [0, '#3a2414'],
-    [1, '#1a0e06'],
-  ]));
+  R(
+    18,
+    40,
+    8,
+    60,
+    lin(c, x + 18 * u, 0, x + 26 * u, 0, [
+      [0, '#3a2414'],
+      [1, '#1a0e06'],
+    ]),
+  );
   R(4, 46, 36, 18, '#f2eee4');
   R(4, 46, 36, 2.5, '#c8241e');
   const rocks = ['#e8443a', '#ffd23f', '#3d8fd1', '#4caf50', '#a05cd0', '#f08a2c'];
@@ -54,15 +60,27 @@ function dogHouse(c: Ctx, x: number, y: number, s: number): void {
     c.fill();
   });
   // the box, lit from inside
-  R(0, 6, 44, 34, lin(c, x, 0, x + 44 * u, 0, [
-    [0, '#ffffff'],
-    [1, '#d8d4c8'],
-  ]));
-  R(4, 10, 36, 26, rad(c, x + 22 * u, y + 23 * u, 26 * u, [
-    [0, '#ffe7a0'],
-    [0.6, '#d8902c'],
-    [1, '#6a3a10'],
-  ]));
+  R(
+    0,
+    6,
+    44,
+    34,
+    lin(c, x, 0, x + 44 * u, 0, [
+      [0, '#ffffff'],
+      [1, '#d8d4c8'],
+    ]),
+  );
+  R(
+    4,
+    10,
+    36,
+    26,
+    rad(c, x + 22 * u, y + 23 * u, 26 * u, [
+      [0, '#ffe7a0'],
+      [0.6, '#d8902c'],
+      [1, '#6a3a10'],
+    ]),
+  );
   // books inside, a library bigger than the box: rows receding into the glow
   const books = ['#c8241e', '#1d5fb8', '#ffd23f', '#2e8b57', '#e88a2c', '#7a3fb0', '#1f9a9a'];
   for (let row = 0; row < 3; row++)
@@ -83,10 +101,13 @@ function dogHouse(c: Ctx, x: number, y: number, s: number): void {
   c.fill();
   // the red door, flung open to the left on its strap hinges
   poly(c, [x + 4 * u, y + 10 * u, x - 18 * u, y + 4 * u, x - 18 * u, y + 42 * u, x + 4 * u, y + 36 * u]);
-  fill(c, lin(c, x - 18 * u, 0, x + 4 * u, 0, [
-    [0, '#7a0a06'],
-    [1, '#e0281c'],
-  ]));
+  fill(
+    c,
+    lin(c, x - 18 * u, 0, x + 4 * u, 0, [
+      [0, '#7a0a06'],
+      [1, '#e0281c'],
+    ]),
+  );
   poly(c, [x - 0 * u, y + 13 * u, x - 14 * u, y + 9.5 * u, x - 14 * u, y + 33 * u, x - 0 * u, y + 33 * u]);
   fill(c, 'rgba(160,210,255,0.35)');
   // dog-bone handle
@@ -170,11 +191,14 @@ function joe(c: Ctx, x: number, y: number, s: number): void {
   // antenna and its bulb
   stroke(c, '#9aa6b6', 4, [0, -76, 0, -98]);
   ell(c, 0, -102, 7, 7);
-  fill(c, rad(c, -2, -104, 8, [
-    [0, '#fffbe0'],
-    [0.5, '#ffd23f'],
-    [1, '#a07000'],
-  ]));
+  fill(
+    c,
+    rad(c, -2, -104, 8, [
+      [0, '#fffbe0'],
+      [0.5, '#ffd23f'],
+      [1, '#a07000'],
+    ]),
+  );
   glow(c, 0, -102, 30, '#ffd23f', 0.7);
   c.restore();
 }
@@ -206,10 +230,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.save();
   c.globalCompositeOperation = 'lighter';
   poly(c, [bx + bs * 0.1, by + bs * 0.25, bx + bs * 0.9, by + bs * 0.25, w * 0.98, h, w * 0.02, h]);
-  fill(c, lin(c, 0, by, 0, h, [
-    [0, 'rgba(255,200,90,0.35)'],
-    [1, 'rgba(255,200,90,0.02)'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, by, 0, h, [
+      [0, 'rgba(255,200,90,0.35)'],
+      [1, 'rgba(255,200,90,0.02)'],
+    ]),
+  );
   c.restore();
   glow(c, bx + bs * 0.5, by + bs * 0.5, bs * 0.9, '#ffb040', 0.55);
   dogHouse(c, bx, by, bs);

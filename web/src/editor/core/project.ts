@@ -8,7 +8,8 @@ import { debounce } from './ui';
 import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';
 
-export type FileKind = 'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
+export type FileKind =
+  'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
 
 export const KIND_LABELS: Record<FileKind, string> = {
   gam: 'Game (integrator)',
@@ -65,7 +66,11 @@ export class Project {
   static create(name: string): Project {
     unlockAchievement('make-new');
     const files = new GameFiles();
-    const gam = `${normalize(name).replace(/[^a-z0-9]/g, '').slice(0, 8) || 'game'}.gam`;
+    const gam = `${
+      normalize(name)
+        .replace(/[^a-z0-9]/g, '')
+        .slice(0, 8) || 'game'
+    }.gam`;
     files.set(gam, serializeGame(newGame(name)));
     return new Project(newId(), name, gam, files);
   }
@@ -170,7 +175,11 @@ export class Project {
 
   /** A file name not yet used, e.g. "level2.map". */
   freeName(base: string, ext: string): string {
-    const stem = base.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 8) || 'new';
+    const stem =
+      base
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '')
+        .slice(0, 8) || 'new';
     if (!this.files.has(`${stem}.${ext}`)) return `${stem}.${ext}`;
     for (let i = 1; i < 1000; i++) {
       const s = `${stem.slice(0, 8 - String(i).length)}${i}`;

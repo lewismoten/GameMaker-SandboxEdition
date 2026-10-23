@@ -24,7 +24,11 @@ describe('auto-tiling', () => {
   it('picks edges, outer corners and the fill for a painted rectangle', () => {
     const b = new Uint8Array(W8 * H8).fill(1);
     paintTerrain(b, grass(), rect(2, 2, 4, 4), false, W8, H8);
-    expect(grid(b).slice(2, 5).map((r) => r.slice(2, 5))).toEqual([
+    expect(
+      grid(b)
+        .slice(2, 5)
+        .map((r) => r.slice(2, 5)),
+    ).toEqual([
       [10, 11, 12],
       [13, 14, 15],
       [16, 17, 18],
@@ -36,7 +40,19 @@ describe('auto-tiling', () => {
     const b = new Uint8Array(W8 * H8).fill(1);
     const t = grass();
     paintTerrain(b, t, rect(1, 1, 5, 5), false, W8, H8);
-    paintTerrain(b, t, [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 2 }], true, W8, H8); // erase the top-left 2×2
+    paintTerrain(
+      b,
+      t,
+      [
+        { x: 1, y: 1 },
+        { x: 2, y: 1 },
+        { x: 1, y: 2 },
+        { x: 2, y: 2 },
+      ],
+      true,
+      W8,
+      H8,
+    ); // erase the top-left 2×2
     expect(b[3 * W8 + 3]).toBe(10 + 9); // gap at its top-left
     expect(b[1 * W8 + 3]).toBe(10); // the new top-left corner
     expect(b[1 * W8 + 1]).toBe(1); // erased to the ground
@@ -51,7 +67,20 @@ describe('auto-tiling', () => {
 
   it('lays a path with straights and corners', () => {
     const b = new Uint8Array(W8 * H8).fill(1);
-    paintTerrain(b, road(), [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 3, y: 2 }, { x: 3, y: 3 }], false, W8, H8);
+    paintTerrain(
+      b,
+      road(),
+      [
+        { x: 1, y: 1 },
+        { x: 2, y: 1 },
+        { x: 3, y: 1 },
+        { x: 3, y: 2 },
+        { x: 3, y: 3 },
+      ],
+      false,
+      W8,
+      H8,
+    );
     expect([b[1 * W8 + 1], b[1 * W8 + 2], b[1 * W8 + 3], b[2 * W8 + 3], b[3 * W8 + 3]]).toEqual([30, 30, 34, 31, 31]);
     // erasing the corner turns its neighbors into ends (straights)
     paintTerrain(b, road(), [{ x: 3, y: 1 }], true, W8, H8);

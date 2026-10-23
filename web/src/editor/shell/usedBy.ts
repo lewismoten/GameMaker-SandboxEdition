@@ -10,7 +10,11 @@ export function usedByLine(project: Project, file: string): HTMLElement {
   const scripts = scriptUses(project, file);
   const line = h('p', { class: 'meta used-by' });
   if (!scenes.length && !scripts.length) {
-    line.append('Not used by any scene yet: choose it for a scene in ', h('button', { class: 'used-by-link', onclick: () => openInEditor(project, project.gam) }, project.gam), '.');
+    line.append(
+      'Not used by any scene yet: choose it for a scene in ',
+      h('button', { class: 'used-by-link', onclick: () => openInEditor(project, project.gam) }, project.gam),
+      '.',
+    );
     return line;
   }
   line.append('Used by ');

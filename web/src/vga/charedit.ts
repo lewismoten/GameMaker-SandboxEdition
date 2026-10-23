@@ -26,7 +26,12 @@ import { CharacterInventory } from './charedit/inventory';
 class CharacterMaker extends CharacterInventory {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Character Designer', this.work, () => this.saved, () => [{ ext: 'chr', bytes: serializeCharacter(this.p) }]);
+    return openWork(
+      'Character Designer',
+      this.work,
+      () => this.saved,
+      () => [{ ext: 'chr', bytes: serializeCharacter(this.p) }],
+    );
   }
 
   async main(): Promise<void> {

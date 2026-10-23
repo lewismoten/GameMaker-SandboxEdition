@@ -189,7 +189,15 @@ export const TRANSFORMS: { name: string; title: string; run: (s: Speaker) => Spe
     },
   },
   { name: 'Vibrato', title: 'Wobble the pitch', run: (s) => make((i) => (s[i] ? s[i] * (1 + 0.08 * Math.sin(i * 1.9)) : 0)) },
-  { name: 'Mutate', title: 'Change it a little, at random', run: (s) => make((i) => (s[i] ? s[i] * 2 ** (r(-1.5, 1.5) / 12) : Math.random() < 0.05 ? r(200, 2000) : 0)) },
-  { name: 'Smooth', title: 'Average neighbouring pitches', run: (s) => make((i) => (s[i] ? (s[Math.max(0, i - 1)] || s[i]) / 4 + s[i] / 2 + (s[Math.min(NUMFREQ - 1, i + 1)] || s[i]) / 4 : 0)) },
+  {
+    name: 'Mutate',
+    title: 'Change it a little, at random',
+    run: (s) => make((i) => (s[i] ? s[i] * 2 ** (r(-1.5, 1.5) / 12) : Math.random() < 0.05 ? r(200, 2000) : 0)),
+  },
+  {
+    name: 'Smooth',
+    title: 'Average neighbouring pitches',
+    run: (s) => make((i) => (s[i] ? (s[Math.max(0, i - 1)] || s[i]) / 4 + s[i] / 2 + (s[Math.min(NUMFREQ - 1, i + 1)] || s[i]) / 4 : 0)),
+  },
   { name: 'Choppy', title: 'Silence every other step', run: (s) => make((i) => (i % 2 ? 0 : s[i])) },
 ];

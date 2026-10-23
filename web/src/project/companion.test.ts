@@ -1,12 +1,27 @@
 // The companion file: a round trip, the backup carries it, the DOS export never does.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GameFiles } from './files';
-import { backupEntries, emptyCompanion, getSection, isEmptyCompanion, parseCompanion, renameInCompanion, serializeCompanion, setSection, takeCompanion } from './companion';
+import {
+  backupEntries,
+  emptyCompanion,
+  getSection,
+  isEmptyCompanion,
+  parseCompanion,
+  renameInCompanion,
+  serializeCompanion,
+  setSection,
+  takeCompanion,
+} from './companion';
 import { withCompanion, type ProjectRecord } from './storage';
 import { readZip, createZip } from './zip';
 import { exportDos } from '../export/exportDos';
 
-const game = () => new GameFiles([['quest.gam', new Uint8Array([1, 2, 3])], ['forest.bbl', new Uint8Array([4, 5])], ['level1.map', new Uint8Array([6])]]);
+const game = () =>
+  new GameFiles([
+    ['quest.gam', new Uint8Array([1, 2, 3])],
+    ['forest.bbl', new Uint8Array([4, 5])],
+    ['level1.map', new Uint8Array([6])],
+  ]);
 
 describe('the companion file', () => {
   it('round-trips through JSON and keeps keys it does not know', () => {

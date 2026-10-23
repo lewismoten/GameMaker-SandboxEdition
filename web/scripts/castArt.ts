@@ -36,7 +36,11 @@ const CHEZ_PAL: [number, number, number][] = [
 ];
 
 function chezArt(scale: number): LevelPicture {
-  const car = chezPicture({ body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 }, 'right', scale);
+  const car = chezPicture(
+    { body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 },
+    'right',
+    scale,
+  );
   const palette = new Uint8Array(768);
   CHEZ_PAL.forEach((c, i) => palette.set(c, i * 3));
   return { width: car.w, height: car.h, pixels: Uint8Array.from(car.px), palette };
@@ -68,7 +72,15 @@ export const CAST_ART: Record<string, Source> = {
   lewis: { game: 'sandcast', fli: 'sysop.fli', frame: 182, crop: [6, 16, 180, 180] },
   tinHeart: { game: 'teddy', tinHeart: 1 },
   easterEgg: { game: 'teddy', paint: eggShine()[1], colors: EGG_PAL },
-  rootbeer: { game: 'teddy', blocks: 'klub.bbl', pal: 'klub.pal', grid: [[76, 77], [79, 81]] },
+  rootbeer: {
+    game: 'teddy',
+    blocks: 'klub.bbl',
+    pal: 'klub.pal',
+    grid: [
+      [76, 77],
+      [79, 81],
+    ],
+  },
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal' },
   will: { game: 'sweats', chr: 'poet.chr', cbl: 'poet.cbl', pal: 'hive.pal' },
   watt: { game: 'logic', chr: 'watt.chr', cbl: 'watt.cbl', pal: 'watt.pal' },
@@ -110,7 +122,8 @@ export function castPicture(s: Source): LevelPicture | undefined {
     const k = s.tinHeart;
     const [art] = tinHeartFrames(TRANSPARENT);
     const pixels = new Uint8Array(TIN_HEART_W * k * TIN_HEART_H * k);
-    for (let y = 0; y < TIN_HEART_H * k; y++) for (let x = 0; x < TIN_HEART_W * k; x++) pixels[y * TIN_HEART_W * k + x] = art[Math.floor(y / k) * TIN_HEART_W + Math.floor(x / k)];
+    for (let y = 0; y < TIN_HEART_H * k; y++)
+      for (let x = 0; x < TIN_HEART_W * k; x++) pixels[y * TIN_HEART_W * k + x] = art[Math.floor(y / k) * TIN_HEART_W + Math.floor(x / k)];
     const palette = new Uint8Array(768);
     TIN_HEART_PAL.forEach((c, i) => palette.set(c, i * 3));
     return { width: TIN_HEART_W * k, height: TIN_HEART_H * k, pixels, palette };

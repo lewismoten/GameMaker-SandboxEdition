@@ -6,7 +6,10 @@ const b = (...v: number[]) => new Uint8Array(v);
 
 describe('fileHistory', () => {
   it('undoes and redoes changes to several files', () => {
-    const files = new GameFiles([['a.gif', b(1)], ['s.bbl', b(2)]]);
+    const files = new GameFiles([
+      ['a.gif', b(1)],
+      ['s.bbl', b(2)],
+    ]);
     let restored = 0;
     const steps = fileHistory(files, () => restored++, { merge: -1 });
     steps.before('a.gif', 's.bbl');

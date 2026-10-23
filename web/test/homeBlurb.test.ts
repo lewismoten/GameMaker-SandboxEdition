@@ -13,7 +13,9 @@ describe('readableBlurb', () => {
     expect(readableBlurb('volume', 'CHAPTER I After getting through the daily hell called high school, Marty headed home. He sat…')).toBe(
       'After getting through the daily hell called high school, Marty headed home.',
     );
-    expect(readableBlurb('parsec3d', 'PARSEC MAN 3D Somewhere in the system of XON there is a crystal.')).toBe('Somewhere in the system of XON there is a crystal.');
+    expect(readableBlurb('parsec3d', 'PARSEC MAN 3D Somewhere in the system of XON there is a crystal.')).toBe(
+      'Somewhere in the system of XON there is a crystal.',
+    );
   });
 
   it('leaves ordinary text alone', () => {
@@ -31,8 +33,14 @@ describe('readableBlurb', () => {
 
 describe('readableBlurb length', () => {
   it('keeps the sentences that fit, or the first one', () => {
-    const one = 'A thunderstorm has scrambled the Bitmores’ Smart Home, and Watt, a pocket-sized repair robot, must roll through twenty haywire circuit boards to get home.';
-    expect(readableBlurb('logic', `${one} Flip switches, blow fuses, throw relays and route live current to shut down the force fields, without touching a live wire.`)).toBe(one);
+    const one =
+      'A thunderstorm has scrambled the Bitmores’ Smart Home, and Watt, a pocket-sized repair robot, must roll through twenty haywire circuit boards to get home.';
+    expect(
+      readableBlurb(
+        'logic',
+        `${one} Flip switches, blow fuses, throw relays and route live current to shut down the force fields, without touching a live wire.`,
+      ),
+    ).toBe(one);
     expect(readableBlurb('x', 'Short one. Short two.')).toBe('Short one. Short two.');
   });
 });

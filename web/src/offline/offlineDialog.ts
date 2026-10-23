@@ -32,27 +32,36 @@ export async function openOfflineDialog(): Promise<void> {
       const n = games(s);
       if (s.ready) {
         status.textContent = `✓ Ready offline. All ${n} games, the 1994 desk, the editors, the manuals and the boxes are kept in this browser (${sizeText(s.wireTotal)}), so the whole site works with no connection.`;
-        const remove = h('button', {
-          type: 'button',
-          onclick: async () => {
-            remove.setAttribute('disabled', '');
-            status.textContent = 'Removing the offline copy…';
-            await removeOffline(s).catch(() => undefined);
-            show(await offlineStatus(), 'Removed. Parts you use are kept for offline use again as you use them.');
+        const remove = h(
+          'button',
+          {
+            type: 'button',
+            onclick: async () => {
+              remove.setAttribute('disabled', '');
+              status.textContent = 'Removing the offline copy…';
+              await removeOffline(s).catch(() => undefined);
+              show(await offlineStatus(), 'Removed. Parts you use are kept for offline use again as you use them.');
+            },
           },
-        }, 'Remove offline copies');
+          'Remove offline copies',
+        );
         clear(body, status, note ? h('p', null, note) : null, h('p', { class: 'meta' }, storageLine(s)), buttons(remove, closeButton()));
         return;
       }
       const partial = s.missing.length < s.files.length;
-      const lead = s.copy === 'outdated' && partial
-        ? `Your offline copy needs an update: ${s.missing.length} files have changed or are new since you made it (${sizeText(s.wireMissing)}).`
-        : s.copy === 'unfinished' && partial
-          ? `Your offline copy is not finished: ${s.missing.length} files (${sizeText(s.wireMissing)}) still to come.`
-          : `Download everything once, and the whole site works with no connection: all ${n} games, the 1994 desk, the editors, the manuals and the boxes.`;
+      const lead =
+        s.copy === 'outdated' && partial
+          ? `Your offline copy needs an update: ${s.missing.length} files have changed or are new since you made it (${sizeText(s.wireMissing)}).`
+          : s.copy === 'unfinished' && partial
+            ? `Your offline copy is not finished: ${s.missing.length} files (${sizeText(s.wireMissing)}) still to come.`
+            : `Download everything once, and the whole site works with no connection: all ${n} games, the 1994 desk, the editors, the manuals and the boxes.`;
       status.textContent = lead;
       const room = hasRoom(s, s.storedMissing);
-      const go = h('button', { type: 'button', class: 'primary', onclick: () => void download(s) }, s.copy !== 'none' && partial ? `Download the rest (${sizeText(s.wireMissing)})` : `Download ${sizeText(s.wireMissing)}`);
+      const go = h(
+        'button',
+        { type: 'button', class: 'primary', onclick: () => void download(s) },
+        s.copy !== 'none' && partial ? `Download the rest (${sizeText(s.wireMissing)})` : `Download ${sizeText(s.wireMissing)}`,
+      );
       if (!room) go.setAttribute('disabled', '');
       clear(
         body,

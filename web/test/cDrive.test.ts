@@ -55,7 +55,14 @@ describe('Downloads', () => {
   });
 
   it('remembers DEL and RD across reloads', async () => {
-    const store = memoryStore({ ids: [['TEDDY.GIF', 1], ['blaster', 2]], deleted: [], dirs: [['IMAGES', 1]] });
+    const store = memoryStore({
+      ids: [
+        ['TEDDY.GIF', 1],
+        ['blaster', 2],
+      ],
+      deleted: [],
+      dirs: [['IMAGES', 1]],
+    });
     const a = new Downloads(store);
     await a.ready;
     a.remove('TEDDY.GIF');
@@ -81,7 +88,10 @@ describe('Downloads', () => {
     const a = new Downloads(store, () => 5);
     a.add('GWINN.JPG');
     await a.saved();
-    expect(store.state?.ids).toEqual([['GWINN.JPG', 5], ['TEDDY.GIF', 1]]);
+    expect(store.state?.ids).toEqual([
+      ['GWINN.JPG', 5],
+      ['TEDDY.GIF', 1],
+    ]);
   });
 
   it('works for this visit without storage', async () => {

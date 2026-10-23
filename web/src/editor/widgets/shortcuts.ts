@@ -81,13 +81,7 @@ export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
   snd: [
     {
       title: 'Sound set',
-      rows: [
-        [['P'], 'Play the PC speaker sound'],
-        [['V'], 'Play the .voc'],
-        [['G'], 'Play it as the game would'],
-        [['Esc'], 'Stop'],
-        ...UNDO,
-      ],
+      rows: [[['P'], 'Play the PC speaker sound'], [['V'], 'Play the .voc'], [['G'], 'Play it as the game would'], [['Esc'], 'Stop'], ...UNDO],
     },
   ],
   bkd: [{ title: 'Backdrop', rows: [...UNDO, [['←', '→', '↑', '↓'], 'Move the view on the backdrop (Shift: 20 pixels at a time)']] }],
@@ -213,7 +207,13 @@ export function showShortcuts(kind?: FileKind): Promise<void> {
       'div',
       // it scrolls on small screens, so it takes focus for the arrow keys
       { class: 'keys-list', role: 'region', 'aria-label': 'Shortcuts', tabIndex: 0 },
-      kind && kind !== 'other' ? h('p', { class: 'hint' }, own.length ? `${KIND_LABELS[kind]}, and every editor:` : `${KIND_LABELS[kind]} has no keys of its own; these work everywhere:`) : null,
+      kind && kind !== 'other'
+        ? h(
+            'p',
+            { class: 'hint' },
+            own.length ? `${KIND_LABELS[kind]}, and every editor:` : `${KIND_LABELS[kind]} has no keys of its own; these work everywhere:`,
+          )
+        : null,
       ...own.map(table),
       table(COMMON),
     ),

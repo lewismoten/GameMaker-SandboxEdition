@@ -23,7 +23,17 @@ export type ProgramRef =
   | { kind: 'egg' }
   | { kind: 'terminal' }
   | { kind: 'vpic' }
-  | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string; /** GMCRACK "patched" this .EXE: the group's intro first. */ cracked?: string }
+  | {
+      kind: 'game';
+      title: string;
+      gam: string;
+      files: () => Promise<Map<string, Uint8Array>>;
+      notice?: string;
+      editable?: boolean;
+      diskId?: string;
+      /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string;
+      /** GMCRACK "patched" this .EXE: the group's intro first. */ cracked?: string;
+    }
   | { kind: 'install'; /** GM30\INSTALL.EXE from the BBS's Warez area, not the CD's. */ from?: 'warez' }
   | { kind: 'gmcrack' }
   | { kind: 'savehack' }
@@ -113,7 +123,14 @@ export function dosMatch(pattern: string, name: string): boolean {
     const dot = n.indexOf('.');
     return dot < 0 ? [n, ''] : [n.slice(0, dot), n.slice(dot + 1)];
   };
-  const part = (p: string, n: string) => new RegExp(`^${p.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.?')}$`, 'i').test(n);
+  const part = (p: string, n: string) =>
+    new RegExp(
+      `^${p
+        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*/g, '.*')
+        .replace(/\?/g, '.?')}$`,
+      'i',
+    ).test(n);
   const [pb, pe] = split(pattern);
   const [nb, ne] = split(name);
   return part(pb, nb) && part(pe, ne);

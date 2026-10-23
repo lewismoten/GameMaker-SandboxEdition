@@ -38,7 +38,7 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
       s.fill(0, 0, 79, 24, attr(7, 0), 176);
       s.write(0, 0, TITLEATTR, toCp437(' ACHIEVE.EXE  Merit Badge Log 1.0'.padEnd(57) + 'Sandbox Software 1995 ').slice(0, 80));
       s.window(X, TOP, W, ROWS + 6, MENUATTR, SHADATTR);
-      s.write(X + Math.floor((W - 18) / 2), TOP - 1, attr(15, 1), ' WHAT YOU\'VE DONE ');
+      s.write(X + Math.floor((W - 18) / 2), TOP - 1, attr(15, 1), " WHAT YOU'VE DONE ");
       // the parts, as tabs along the top of the window
       let tx = X + 2;
       CATEGORIES.forEach((c, i) => {
@@ -59,7 +59,12 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
         const t = shownText(a, !!when);
         const p = progressOf(a, r);
         const right = when ? dosDate(when) : p ? `${p.n}/${p.of}` : '';
-        s.write(X + 2, row, i === cur ? at : when ? attr(15, 1) : attr(7, 1), toCp437(`${when ? '√' : '·'} ${fit(t.title, 30)} ${fit(t.desc, 30)} ${right.padStart(8)}`));
+        s.write(
+          X + 2,
+          row,
+          i === cur ? at : when ? attr(15, 1) : attr(7, 1),
+          toCp437(`${when ? '√' : '·'} ${fit(t.title, 30)} ${fit(t.desc, 30)} ${right.padStart(8)}`),
+        );
       }
       // the chosen one in full
       const a = list[cur];
@@ -69,9 +74,20 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
       s.write(X + 2, TOP + ROWS + 2, MENUATTR, 'Ä'.repeat(W - 4));
       s.fill(X + 1, TOP + ROWS + 3, X + W - 2, TOP + ROWS + 4, MENUATTR);
       s.write(X + 2, TOP + ROWS + 3, attr(15, 1), toCp437(fit(t.desc, W - 4)));
-      const state = when ? `Unlocked ${dosDate(when)}` : a.hidden ? 'Hidden. Keep looking.' : p ? `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''} so far` : 'Not yet.';
+      const state = when
+        ? `Unlocked ${dosDate(when)}`
+        : a.hidden
+          ? 'Hidden. Keep looking.'
+          : p
+            ? `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''} so far`
+            : 'Not yet.';
       const inPart = list.filter((x) => r.unlocked[x.id]).length;
-      s.write(X + 2, TOP + ROWS + 4, attr(7, 1), toCp437(fit(`${state}   ${CATEGORIES[cat].title}: ${inPart} of ${list.length}   In all: ${done} of ${ACHIEVEMENTS.length}`, W - 4)));
+      s.write(
+        X + 2,
+        TOP + ROWS + 4,
+        attr(7, 1),
+        toCp437(fit(`${state}   ${CATEGORIES[cat].title}: ${inPart} of ${list.length}   In all: ${done} of ${ACHIEVEMENTS.length}`, W - 4)),
+      );
       s.write(0, 24, BARATTR, toCp437(' ←→ Part  ↑↓ Choose  Esc Quit').padEnd(80).slice(0, 80));
 
       const k = await ui.keys.next();
@@ -80,8 +96,8 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
       else if (key === 'ArrowUp') cur = (cur + list.length - 1) % list.length;
       else if (key === 'Home') cur = 0;
       else if (key === 'End') cur = list.length - 1;
-      else if (key === 'ArrowRight' || key === 'Tab') (cat = (cat + 1) % CATEGORIES.length), (cur = 0);
-      else if (key === 'ArrowLeft') (cat = (cat + CATEGORIES.length - 1) % CATEGORIES.length), (cur = 0);
+      else if (key === 'ArrowRight' || key === 'Tab') ((cat = (cat + 1) % CATEGORIES.length), (cur = 0));
+      else if (key === 'ArrowLeft') ((cat = (cat + CATEGORIES.length - 1) % CATEGORIES.length), (cur = 0));
       else if (key === 'Escape' || key === 'Q') break;
     }
   } finally {

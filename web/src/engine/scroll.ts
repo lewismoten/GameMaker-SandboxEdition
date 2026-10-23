@@ -7,7 +7,23 @@
 // Timing: ChangeScroll runs once per 18.2 Hz game tick and picks a speed; DrawScroll
 // runs on every 145.6 Hz timer interrupt and moves the view a little each time.
 import { inScreenBounds } from './touch';
-import { BLEN, LASTMM, LASTMON, MLEN, MWID, OFFSCRN, SCROLLPERMOVE, SCRSPDX, SCRSPDY, SIZEX, SIZEY, sign, type BresScroll, type Coord, type World } from './world';
+import {
+  BLEN,
+  LASTMM,
+  LASTMON,
+  MLEN,
+  MWID,
+  OFFSCRN,
+  SCROLLPERMOVE,
+  SCRSPDX,
+  SCRSPDY,
+  SIZEX,
+  SIZEY,
+  sign,
+  type BresScroll,
+  type Coord,
+  type World,
+} from './world';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../formats/blocks';
 
 /**

@@ -18,7 +18,24 @@ export function sbi(o: {
   carWave?: number;
   feedback: number;
 }): Uint8Array {
-  return Uint8Array.from([o.modChar, o.carChar, o.modLevel, o.carLevel, o.modAD, o.carAD, o.modSR, o.carSR, o.modWave ?? 0, o.carWave ?? 0, o.feedback, 0, 0, 0, 0, 0]);
+  return Uint8Array.from([
+    o.modChar,
+    o.carChar,
+    o.modLevel,
+    o.carLevel,
+    o.modAD,
+    o.carAD,
+    o.modSR,
+    o.carSR,
+    o.modWave ?? 0,
+    o.carWave ?? 0,
+    o.feedback,
+    0,
+    0,
+    0,
+    0,
+    0,
+  ]);
 }
 
 /** A few classic FM patches. */
@@ -68,7 +85,10 @@ export function song(bpm: number, voices: Voice[]): Uint8Array {
   for (const v of voices) {
     instruments[v.channel] = v.instrument;
     let t = 0;
-    for (const raw of v.notes.split(',').map((s) => s.trim()).filter(Boolean)) {
+    for (const raw of v.notes
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)) {
       const m = /^(.+?)\s+([whqest])(\.?)$/.exec(raw);
       if (!m) throw new Error(`Bad note "${raw}"`);
       const len = LEN[m[2]] * (m[3] ? 1.5 : 1) * ticksPerBeat;

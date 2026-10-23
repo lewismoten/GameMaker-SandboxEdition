@@ -31,10 +31,21 @@ describe('the Linux player', () => {
 describe('tar', () => {
   it('reads back what it writes, modes and long names too', async () => {
     const long = `${'folder/'.repeat(20)}file.txt`;
-    const tar = createTar([{ path: 'a/', mode: 0o755 }, { path: 'a/run', data: enc.encode('#!/bin/sh\n'), mode: 0o755 }, { path: long, data: new Uint8Array(1000) }], new Date(0));
+    const tar = createTar(
+      [
+        { path: 'a/', mode: 0o755 },
+        { path: 'a/run', data: enc.encode('#!/bin/sh\n'), mode: 0o755 },
+        { path: long, data: new Uint8Array(1000) },
+      ],
+      new Date(0),
+    );
     expect(tar.length % 512).toBe(0);
     const entries = await readTar(tar);
-    expect(entries.map((e) => [e.path, e.mode, e.data.length])).toEqual([['a/', 0o755, 0], ['a/run', 0o755, 10], [long, 0o644, 1000]]);
+    expect(entries.map((e) => [e.path, e.mode, e.data.length])).toEqual([
+      ['a/', 0o755, 0],
+      ['a/run', 0o755, 10],
+      [long, 0o644, 1000],
+    ]);
   });
 });
 
@@ -81,7 +92,10 @@ describe('linuxApp', () => {
       mkdirSync(stub);
       writeFileSync(join(stub, 'xdg-open'), '#!/bin/sh\necho "opened $1"\n', { mode: 0o755 });
       writeFileSync(join(stub, 'uname'), '#!/bin/sh\necho riscv64\n', { mode: 0o755 });
-      const out = execFileSync(join(root, 'share/GameMaker/teddy-test/app/play.sh'), { env: { ...env, PATH: `${stub}:/usr/bin:/bin` }, stdio: 'pipe' }).toString();
+      const out = execFileSync(join(root, 'share/GameMaker/teddy-test/app/play.sh'), {
+        env: { ...env, PATH: `${stub}:/usr/bin:/bin` },
+        stdio: 'pipe',
+      }).toString();
       expect(out).toBe(`opened ${join(root, 'share/GameMaker/teddy-test/app/game.html')}\n`);
       execFileSync(join(root, 'share/GameMaker/teddy-test/app/uninstall.sh'), ['--all'], { env });
       expect(existsSync(join(root, 'share/applications/gamemaker-teddy-test.desktop'))).toBe(false);

@@ -5,7 +5,10 @@
 // arrows to Home; letting go of one arrow lets go of Home and presses the arrow still held.
 // Opposite arrows ↑+↓ stand in for pad 5, the keypad's center.
 
-const UP = 72, LEFT = 75, RIGHT = 77, DOWN = 80;
+const UP = 72,
+  LEFT = 75,
+  RIGHT = 77,
+  DOWN = 80;
 
 /** Arrow pairs and the keypad key each pair stands for, in the order they are tried. */
 export const ARROW_CHORDS: readonly { arrows: readonly [number, number]; scan: number }[] = [

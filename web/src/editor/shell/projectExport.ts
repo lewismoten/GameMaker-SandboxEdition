@@ -29,5 +29,9 @@ export function projectDownloadButton(id: string, title: string): HTMLElement {
 
 /** The ⋯ More menu's item. */
 export function projectDownloadItem(id: string): HTMLElement {
-  return h('button', { 'aria-haspopup': 'dialog', onclick: () => void downloadProject(id), title: 'Download it to play on Windows, a Mac, Linux, the web or DOS, or its files' }, 'Download…');
+  return h(
+    'button',
+    { 'aria-haspopup': 'dialog', onclick: () => void downloadProject(id), title: 'Download it to play on Windows, a Mac, Linux, the web or DOS, or its files' },
+    'Download…',
+  );
 }

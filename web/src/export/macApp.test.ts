@@ -127,34 +127,50 @@ describe('macApp', () => {
   });
 
   // On a Mac: codesign accepts the app.
-  it.runIf(process.platform === 'darwin')('makes an app codesign verifies', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'gm-mac-test-'));
-    try {
-      await writeApp(dir);
-      execFileSync('codesign', ['--verify', '--deep', '--strict', join(dir, 'Test Game.app')], { timeout: 20000 });
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
-    }
-  }, 30000);
+  it.runIf(process.platform === 'darwin')(
+    'makes an app codesign verifies',
+    async () => {
+      const dir = mkdtempSync(join(tmpdir(), 'gm-mac-test-'));
+      try {
+        await writeApp(dir);
+        execFileSync('codesign', ['--verify', '--deep', '--strict', join(dir, 'Test Game.app')], { timeout: 20000 });
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    },
+    30000,
+  );
 
   // Mounting the disk image is opt-in (GM_MAC_MOUNT_TEST=1): a mount that macOS's disk
   // service never finishes would hang every test run, and it leaves the image attached.
-  it.runIf(process.platform === 'darwin' && process.env.GM_MAC_MOUNT_TEST === '1')('makes a disk image macOS mounts', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'gm-mac-test-'));
-    try {
-      writeFileSync(join(dir, 'test.dmg'), await macAppDmg(app));
-      const attach = execFileSync('hdiutil', ['attach', '-nobrowse', '-readonly', '-mountrandom', dir, join(dir, 'test.dmg')], { encoding: 'utf8', timeout: 30000 });
-      const [dev, , mount] = attach.trim().split('\n').pop()!.split('\t').map((s) => s.trim());
+  it.runIf(process.platform === 'darwin' && process.env.GM_MAC_MOUNT_TEST === '1')(
+    'makes a disk image macOS mounts',
+    async () => {
+      const dir = mkdtempSync(join(tmpdir(), 'gm-mac-test-'));
       try {
-        execFileSync('test', ['-x', join(mount, 'Test Game.app/Contents/MacOS/GameMakerPlayer')]);
-        execFileSync('codesign', ['--verify', '--deep', '--strict', join(mount, 'Test Game.app')], { timeout: 20000 });
+        writeFileSync(join(dir, 'test.dmg'), await macAppDmg(app));
+        const attach = execFileSync('hdiutil', ['attach', '-nobrowse', '-readonly', '-mountrandom', dir, join(dir, 'test.dmg')], {
+          encoding: 'utf8',
+          timeout: 30000,
+        });
+        const [dev, , mount] = attach
+          .trim()
+          .split('\n')
+          .pop()!
+          .split('\t')
+          .map((s) => s.trim());
+        try {
+          execFileSync('test', ['-x', join(mount, 'Test Game.app/Contents/MacOS/GameMakerPlayer')]);
+          execFileSync('codesign', ['--verify', '--deep', '--strict', join(mount, 'Test Game.app')], { timeout: 20000 });
+        } finally {
+          execFileSync('hdiutil', ['detach', '-force', '-quiet', dev], { timeout: 30000 });
+        }
       } finally {
-        execFileSync('hdiutil', ['detach', '-force', '-quiet', dev], { timeout: 30000 });
+        rmSync(dir, { recursive: true, force: true });
       }
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
-    }
-  }, 90000);
+    },
+    90000,
+  );
 
   const app = { title: 'Test Game', id: 'test', html, player };
   async function writeApp(dir: string): Promise<void> {

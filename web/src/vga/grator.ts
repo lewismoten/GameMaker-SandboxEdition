@@ -50,7 +50,12 @@ import { IntegratorScenes } from './grator/scenes';
 class Integrator extends IntegratorScenes {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Integrator', this.work, () => this.saved, () => [{ ext: 'gam', bytes: this.serialize() }]);
+    return openWork(
+      'Integrator',
+      this.work,
+      () => this.saved,
+      () => [{ ext: 'gam', bytes: this.serialize() }],
+    );
   }
 
   /** main(): the text-mode menu. */

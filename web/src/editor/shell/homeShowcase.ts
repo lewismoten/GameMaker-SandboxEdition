@@ -49,7 +49,16 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;
   return downloadButton(game.title, () =>
-    chooseDownload({ title: e.title, gam: e.gam!, files: () => game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box, fiction: fictionNote(e) }),
+    chooseDownload({
+      title: e.title,
+      gam: e.gam!,
+      files: () => game.files(),
+      id: e.id,
+      author: e.author ?? e.company,
+      year: e.year,
+      box: e.original?.box,
+      fiction: fictionNote(e),
+    }),
   );
 }
 
@@ -111,7 +120,9 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       h('span', { class: `sc-chip kind-${game.kind}` }, game.project && isImported(game.project.id) ? 'Imported' : KIND_LABEL[game.kind]),
       how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
       how.resume ? h('span', { class: 'sc-resume' }, 'Continue where you left off') : null,
-      how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another') : null,
+      how.featured && how.onAnother
+        ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another')
+        : null,
     );
     title.textContent = game.title;
     clear(
@@ -121,7 +132,12 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       game.entry
         ? h(
             'button',
-            { class: 'sc-another sc-link', onclick: () => void copyLink(game), title: 'Copy a link that opens this page on this game', 'aria-label': `Copy a link to ${game.title}` },
+            {
+              class: 'sc-another sc-link',
+              onclick: () => void copyLink(game),
+              title: 'Copy a link that opens this page on this game',
+              'aria-label': `Copy a link to ${game.title}`,
+            },
             icon('link'),
             'Copy link',
           )
@@ -155,7 +171,13 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     // saved games and high scores: a hosted game's are kept as game:<id>, yours as project:<id>
     saves = savesButton(
       game.entry || game.project
-        ? { saveId: game.project ? `project:${game.project.id}` : `game:${game.entry!.id}`, title: game.title, gam: game.gam, files: () => game.files(), key: game.key }
+        ? {
+            saveId: game.project ? `project:${game.project.id}` : `game:${game.entry!.id}`,
+            title: game.title,
+            gam: game.gam,
+            files: () => game.files(),
+            key: game.key,
+          }
         : undefined,
     );
     if (saves) actions.insertBefore(saves.el, actions.querySelector('.card-more'));

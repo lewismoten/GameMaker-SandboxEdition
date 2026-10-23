@@ -48,7 +48,17 @@ describe('smart buildings', () => {
 
   it('places a grid on the map, skipping empty cells and the map edge', () => {
     const map = new Uint8Array(4 * 4);
-    const changed = placeGrid(map, [[1, -1], [2, 3]], 3, 2, 4, 4);
+    const changed = placeGrid(
+      map,
+      [
+        [1, -1],
+        [2, 3],
+      ],
+      3,
+      2,
+      4,
+      4,
+    );
     expect([...map]).toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2]);
     expect(changed).toEqual([11, 15]);
   });

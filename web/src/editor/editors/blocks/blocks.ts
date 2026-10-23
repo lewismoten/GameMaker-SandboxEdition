@@ -400,11 +400,28 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           ['↓', 'down', 0, 1],
         ] as const
       ).map(([icon, word, dx, dy]) =>
-        h('button', { title: `Shift a pixel ${word}; what leaves one edge comes back on the other`, 'aria-label': `Shift ${word}`, onclick: () => transform((s) => shiftWrap(s, dx, dy)) }, icon),
+        h(
+          'button',
+          {
+            title: `Shift a pixel ${word}; what leaves one edge comes back on the other`,
+            'aria-label': `Shift ${word}`,
+            onclick: () => transform((s) => shiftWrap(s, dx, dy)),
+          },
+          icon,
+        ),
       ),
     ),
     h('button', { title: 'Replace one color or a whole ramp, here or in every block', onclick: () => void replaceColors() }, 'Replace colors…'),
-    sprites ? null : h('button', { title: 'Paint the edges and corners round this block (grass meeting dirt…) into 12 blocks, for the map’s terrain brush', onclick: () => void makeEdges() }, 'Make an edge set…'),
+    sprites
+      ? null
+      : h(
+          'button',
+          {
+            title: 'Paint the edges and corners round this block (grass meeting dirt…) into 12 blocks, for the map’s terrain brush',
+            onclick: () => void makeEdges(),
+          },
+          'Make an edge set…',
+        ),
     h('button', { onclick: () => (clipboard = structuredClone(blocks[current])) }, 'Copy'),
     h(
       'button',
@@ -624,12 +641,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     h(
       'div',
       { class: 'blk-head' },
-      h(
-        'p',
-        { class: 'hint' },
-        sprites ? 'Color 255 is transparent. ' : '',
-        'Pick a block, paint it, then set how it behaves.',
-      ),
+      h('p', { class: 'hint' }, sprites ? 'Color 255 is transparent. ' : '', 'Pick a block, paint it, then set how it behaves.'),
       chooser.el,
     ),
     h(

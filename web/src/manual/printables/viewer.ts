@@ -122,7 +122,11 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         const thick = Math.min(18, Math.max(5, pw * 0.035));
         spread.style.setProperty('--lt', `${thick * read}px`);
         spread.style.setProperty('--rt', `${thick * (1 - read)}px`);
-        spread.append(h('i', { class: 'gmb-comb', 'aria-hidden': 'true' }), h('i', { class: 'gmb-edge l', 'aria-hidden': 'true' }), h('i', { class: 'gmb-edge r', 'aria-hidden': 'true' }));
+        spread.append(
+          h('i', { class: 'gmb-comb', 'aria-hidden': 'true' }),
+          h('i', { class: 'gmb-edge l', 'aria-hidden': 'true' }),
+          h('i', { class: 'gmb-edge r', 'aria-hidden': 'true' }),
+        );
         if (turned) {
           const page = spread.querySelectorAll('.mpage')[turned === 1 && shown.length === 2 ? 0 : shown.length - 1] as HTMLElement | undefined;
           page?.classList.add(turned === 1 ? 'turn-in-next' : 'turn-in-prev');
@@ -262,12 +266,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     printRoot.replaceChildren(...manualSingle());
     window.addEventListener('afterprint', afterPrint);
 
-    const bookletBtn = h(
-      'button',
-      { onclick: () => void print('booklet') },
-      'Manual as a booklet',
-      h('small', null, comb ? COMB_HOW : STAPLE_HOW),
-    );
+    const bookletBtn = h('button', { onclick: () => void print('booklet') }, 'Manual as a booklet', h('small', null, comb ? COMB_HOW : STAPLE_HOW));
     const menu = h(
       'div',
       { class: 'gmb-print-menu', hidden: true },

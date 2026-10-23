@@ -128,7 +128,8 @@ registerEditor(['map'], (host, project, file) => {
       tabindex: 0,
       role: 'region',
       'aria-label': 'The map (scroll with the arrow keys)',
-      style: 'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 240px - var(--map-tools-h, 60px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+      style:
+        'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 240px - var(--map-tools-h, 60px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
     },
     h('div', { class: 'mt-stack' }, canvas, over),
   );
@@ -138,8 +139,20 @@ registerEditor(['map'], (host, project, file) => {
     drawOverlay(over, zoom, overlay, bgImgs);
   };
   const status = h('div', { class: 'meta' });
-  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(120px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.55))' }), 'Blocks to paint with');
-  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(100px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.4))' }), 'Monsters to place');
+  const picker = rovingGrid(
+    h('div', {
+      class: 'block-picker',
+      style: 'max-height:max(120px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.55))',
+    }),
+    'Blocks to paint with',
+  );
+  const monPicker = rovingGrid(
+    h('div', {
+      class: 'block-picker',
+      style: 'max-height:max(100px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.4))',
+    }),
+    'Monsters to place',
+  );
   const monCount = h('div', { class: 'meta' });
 
   // Links touching this map: where the character starts (to) and where scenes change (from).
@@ -168,7 +181,12 @@ registerEditor(['map'], (host, project, file) => {
           {
             class: i === brush ? 'selected' : '',
             title: `Block ${i}`,
-            onclick: () => ((brush = i), setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'), rebuildPickers(), redrawOverlay()),
+            onclick: () => (
+              (brush = i),
+              setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'),
+              rebuildPickers(),
+              redrawOverlay()
+            ),
           },
           blockCanvas(b.pixels, chooser.palette),
           h('small', null, i),
@@ -547,9 +565,24 @@ registerEditor(['map'], (host, project, file) => {
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
   const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
-  const gridBtn = h('button', { type: 'button', class: 'mt-tool', 'aria-label': 'Grid', title: 'Show the block grid (G)', onclick: () => toggleGrid() }, '#', h('span', { class: 'mt-label' }, 'Grid'));
-  const findBtn = h('button', { type: 'button', class: 'mt-tool', 'aria-label': 'Find', title: 'Highlight every use of the chosen block', onclick: () => toggleFind() }, '🔍', h('span', { class: 'mt-label' }, 'Find'));
-  const replaceBtn = h('button', { type: 'button', class: 'mt-tool', 'aria-label': 'Replace…', title: 'Replace every use of one block with another', onclick: () => void replaceDialog() }, '⇄', h('span', { class: 'mt-label' }, 'Replace…'));
+  const gridBtn = h(
+    'button',
+    { type: 'button', class: 'mt-tool', 'aria-label': 'Grid', title: 'Show the block grid (G)', onclick: () => toggleGrid() },
+    '#',
+    h('span', { class: 'mt-label' }, 'Grid'),
+  );
+  const findBtn = h(
+    'button',
+    { type: 'button', class: 'mt-tool', 'aria-label': 'Find', title: 'Highlight every use of the chosen block', onclick: () => toggleFind() },
+    '🔍',
+    h('span', { class: 'mt-label' }, 'Find'),
+  );
+  const replaceBtn = h(
+    'button',
+    { type: 'button', class: 'mt-tool', 'aria-label': 'Replace…', title: 'Replace every use of one block with another', onclick: () => void replaceDialog() },
+    '⇄',
+    h('span', { class: 'mt-label' }, 'Replace…'),
+  );
   function syncToggles(): void {
     for (const [b, on] of [
       [gridBtn, overlay.grid],
@@ -576,7 +609,13 @@ registerEditor(['map'], (host, project, file) => {
       const count = h('p', { class: 'meta', 'aria-live': 'polite' });
       const sync = () => (count.textContent = `Block ${from} is used ${findBlock(map.blocks, from).length} times on this map.`);
       const pick = (label: string, get: () => number, set: (v: number) => void) => {
-        const b = blockButton(() => bg, () => chooser.palette, get, (v) => (set(v), sync()), { title: label, transparent: false });
+        const b = blockButton(
+          () => bg,
+          () => chooser.palette,
+          get,
+          (v) => (set(v), sync()),
+          { title: label, transparent: false },
+        );
         b.setAttribute('aria-label', label);
         return h('div', { class: 'field' }, h('span', null, label), b);
       };
@@ -584,9 +623,28 @@ registerEditor(['map'], (host, project, file) => {
       return h(
         'div',
         { class: 'stack' },
-        h('div', { class: 'toolbar' }, pick('Replace block', () => from, (v) => (from = v)), h('span', { 'aria-hidden': 'true' }, '→'), pick('With block', () => to, (v) => (to = v))),
+        h(
+          'div',
+          { class: 'toolbar' },
+          pick(
+            'Replace block',
+            () => from,
+            (v) => (from = v),
+          ),
+          h('span', { 'aria-hidden': 'true' }, '→'),
+          pick(
+            'With block',
+            () => to,
+            (v) => (to = v),
+          ),
+        ),
         count,
-        h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(false) }, 'Cancel'), h('button', { type: 'button', class: 'primary', onclick: () => close(true) }, 'Replace all')),
+        h(
+          'div',
+          { class: 'buttons' },
+          h('button', { type: 'button', onclick: () => close(false) }, 'Cancel'),
+          h('button', { type: 'button', class: 'primary', onclick: () => close(true) }, 'Replace all'),
+        ),
       );
     });
     if (!go || from === to) return;
@@ -731,7 +789,16 @@ registerEditor(['map'], (host, project, file) => {
       'div',
       { class: 'row' },
       h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, scroller, status),
-      h('div', { class: 'stack mt-side-col', style: 'flex:0 1 260px' }, tools.panel, h('strong', null, 'Blocks'), picker, h('strong', null, 'Monsters'), monPicker, monCount),
+      h(
+        'div',
+        { class: 'stack mt-side-col', style: 'flex:0 1 260px' },
+        tools.panel,
+        h('strong', null, 'Blocks'),
+        picker,
+        h('strong', null, 'Monsters'),
+        monPicker,
+        monCount,
+      ),
     ),
   );
   rebuild();
@@ -778,7 +845,8 @@ registerEditor(['map'], (host, project, file) => {
     const urlX = view.num('x');
     const urlY = view.num('y');
     const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
-    const at = urlX !== undefined && urlY !== undefined ? { x: urlX, y: urlY } : start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
+    const at =
+      urlX !== undefined && urlY !== undefined ? { x: urlX, y: urlY } : start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
     if (at) {
       const s = BLEN * zoom;
       scroller.scrollTo({ left: at.x * s - scroller.clientWidth / 2, top: at.y * s - scroller.clientHeight / 2 });

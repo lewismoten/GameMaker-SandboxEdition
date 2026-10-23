@@ -54,7 +54,10 @@ export async function starterProject(title: string, from = 'sample'): Promise<Pr
   const libMap = lib.has(level.files[1]) ? parseMap(lib.get(level.files[1])!) : undefined;
   const monUse = new Map<number, number>();
   for (const m of libMap?.monsters ?? []) if (m.monnum < 64) monUse.set(m.monnum, (monUse.get(m.monnum) ?? 0) + 1);
-  const favorites = [...monUse.entries()].sort((a, b) => b[1] - a[1]).map(([n]) => n).slice(0, 3);
+  const favorites = [...monUse.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([n]) => n)
+    .slice(0, 3);
   const spots = [
     [x0 + 4, y0 + 4],
     [x0 + W - 5, y0 + 5],

@@ -35,7 +35,8 @@ export function drawOverlay(c: HTMLCanvasElement, zoom: number, st: OverlayState
     g.strokeStyle = '#ff2bd6';
     g.fillStyle = 'rgba(255,43,214,0.25)';
     for (const i of st.found) {
-      const x = (i % MLEN) * s, y = Math.floor(i / MLEN) * s;
+      const x = (i % MLEN) * s,
+        y = Math.floor(i / MLEN) * s;
       g.fillRect(x, y, s, s);
       g.strokeRect(x + 1, y + 1, s - 2, s - 2);
     }

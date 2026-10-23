@@ -210,7 +210,11 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
       title: 'Sticker sheet',
       note: 'Heroes from every Sandbox game',
       icon: '⭐',
-      render: () => mixedStickers(gmStickerSpecs(family, (g) => contextFor(g, family)), 'game-maker-se'),
+      render: () =>
+        mixedStickers(
+          gmStickerSpecs(family, (g) => contextFor(g, family)),
+          'game-maker-se',
+        ),
       screen: stickerScreen,
     },
   ];

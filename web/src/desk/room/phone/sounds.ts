@@ -2,9 +2,9 @@
 // the three rising tones before "the number you have reached is not in service", the
 // off-hook howler, answering machine and pager beeps, hold music, a modem screeching on
 // the line, and (out loud, in the room) the phone's bell and a fire engine's siren.
-import { output } from "../../../audio/output";
-import { audioContext, unlock } from "../../../audio/context";
-import { DTMF, Line } from "../../../retro/bbs/modem";
+import { output } from '../../../audio/output';
+import { audioContext, unlock } from '../../../audio/context';
+import { DTMF, Line } from '../../../retro/bbs/modem';
 
 let shared: AudioContext | undefined;
 
@@ -12,7 +12,7 @@ let shared: AudioContext | undefined;
 function audio(): AudioContext | undefined {
   try {
     shared ??= audioContext();
-    if (shared && shared.state !== "running") unlock();
+    if (shared && shared.state !== 'running') unlock();
     return shared;
   } catch {
     return undefined;
@@ -133,8 +133,7 @@ export class PhoneSounds {
   /** The loud off-hook warning, when you leave the phone off the hook too long. */
   howler(): void {
     const [l, t] = this.line();
-    for (let i = 0; i < 300; i++)
-      l.tones([1400, 2060, 2450, 2600], t + i * 0.2, 0.1, 0.06);
+    for (let i = 0; i < 300; i++) l.tones([1400, 2060, 2450, 2600], t + i * 0.2, 0.1, 0.06);
   }
 
   /** An answering machine's beep: returns its length (s). */
@@ -231,11 +230,11 @@ export class PhoneSounds {
     g.gain.linearRampToValueAtTime(0.05, t + dur * 0.8);
     g.gain.linearRampToValueAtTime(0, t + dur);
     const lp = this.ctx.createBiquadFilter();
-    lp.type = "lowpass";
+    lp.type = 'lowpass';
     lp.frequency.value = 2200;
     lp.connect(g);
     const o = this.ctx.createOscillator();
-    o.type = "sawtooth";
+    o.type = 'sawtooth';
     o.frequency.value = 950;
     const sweep = this.ctx.createOscillator();
     sweep.frequency.value = 0.35;

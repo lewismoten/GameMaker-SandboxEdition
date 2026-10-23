@@ -7,26 +7,26 @@
 // Other code can send one now: dispatchEvent(new CustomEvent('gm-window-event', { detail:
 // { kind } })), as the registration card does for the mail truck ("mailtruck", which only
 // comes that way).
-import { daylight } from "../../room/daylight";
-import { stillMotion } from "../propKit";
-import { play, type OutsideEvent } from "./outside";
-import { windowVisible } from "./visible";
-import { plow } from "./plow";
-import { sleds } from "./sleds";
-import { dogs } from "./dogs";
-import { chez } from "./chez";
-import { goat } from "./goat";
-import { chicken } from "./chicken";
-import { star } from "./star";
-import { aurora } from "./aurora";
-import { mailtruck } from "./mailtruck";
+import { daylight } from '../../room/daylight';
+import { stillMotion } from '../propKit';
+import { play, type OutsideEvent } from './outside';
+import { windowVisible } from './visible';
+import { plow } from './plow';
+import { sleds } from './sleds';
+import { dogs } from './dogs';
+import { chez } from './chez';
+import { goat } from './goat';
+import { chicken } from './chicken';
+import { star } from './star';
+import { aurora } from './aurora';
+import { mailtruck } from './mailtruck';
 
 const EVENTS: OutsideEvent[] = [plow, sleds, dogs, chez, goat, chicken, star, aurora];
 const ALL = [...EVENTS, mailtruck];
-export const WINDOW_EVENT = "gm-window-event";
+export const WINDOW_EVENT = 'gm-window-event';
 
 export function outsideWindow(win: HTMLElement, pc: { gamePlaying(): boolean }): () => void {
-  const layer = win.querySelector<HTMLElement>(".sw-hits");
+  const layer = win.querySelector<HTMLElement>('.sw-hits');
   if (!layer) return () => {};
   let busy = false;
   const run = (ev: OutsideEvent) => {
@@ -35,21 +35,24 @@ export function outsideWindow(win: HTMLElement, pc: { gamePlaying(): boolean }):
     void play(win, layer, ev).then(() => (busy = false));
   };
   let timer = 0;
-  let last = "";
+  let last = '';
   const later = () => {
-    timer = window.setTimeout(() => {
-      if (!win.isConnected) return;
-      if (windowVisible(win) && !stillMotion()) {
-        const night = daylight() < 0.5;
-        const now = EVENTS.filter((e) => (e.when === "any" || (e.when === "night") === night) && e.kind !== last);
-        const ev = now[Math.floor(Math.random() * now.length)];
-        if (ev) {
-          last = ev.kind;
-          run(ev);
+    timer = window.setTimeout(
+      () => {
+        if (!win.isConnected) return;
+        if (windowVisible(win) && !stillMotion()) {
+          const night = daylight() < 0.5;
+          const now = EVENTS.filter((e) => (e.when === 'any' || (e.when === 'night') === night) && e.kind !== last);
+          const ev = now[Math.floor(Math.random() * now.length)];
+          if (ev) {
+            last = ev.kind;
+            run(ev);
+          }
         }
-      }
-      later();
-    }, 180_000 + Math.random() * 240_000);
+        later();
+      },
+      180_000 + Math.random() * 240_000,
+    );
   };
   later();
   const asked = (e: Event) => {

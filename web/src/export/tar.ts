@@ -38,7 +38,7 @@ function header(e: TarEntry, mtime: number): Uint8Array {
   field(h, 100, 8, octal(e.mode ?? (dir ? 0o755 : 0o644), 8));
   field(h, 108, 8, octal(0, 8));
   field(h, 116, 8, octal(0, 8));
-  field(h, 124, 12, octal(dir ? 0 : e.data?.length ?? 0, 12));
+  field(h, 124, 12, octal(dir ? 0 : (e.data?.length ?? 0), 12));
   field(h, 136, 12, octal(mtime, 12));
   h.fill(0x20, 148, 156); // the checksum counts its own field as spaces
   h[156] = dir ? 0x35 : 0x30; // '5' folder, '0' file
@@ -88,7 +88,7 @@ export async function readTar(bytes: Uint8Array): Promise<Required<TarEntry>[]> 
   const dec = new TextDecoder();
   const text = (at: number, len: number) => dec.decode(tar.subarray(at, at + len)).replace(/\0.*$/s, '');
   const out: Required<TarEntry>[] = [];
-  for (let at = 0; at + 512 <= tar.length; ) {
+  for (let at = 0; at + 512 <= tar.length;) {
     if (tar.subarray(at, at + 512).every((b) => b === 0)) break;
     const sum = parseInt(text(at + 148, 8).trim(), 8);
     const check = tar.subarray(at, at + 512).reduce((n, b, i) => n + (i >= 148 && i < 156 ? 0x20 : b), 0);

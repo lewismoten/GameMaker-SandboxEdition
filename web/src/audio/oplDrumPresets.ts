@@ -14,10 +14,27 @@ import { patch, preset, type DrumSlot, type OplPreset } from './oplPatch';
 /** What each drum is, for the picker: its MIDI channel, name and what it shares. */
 export const DRUM_SLOTS: Record<DrumSlot, { ch: number; name: string; shares: string }> = {
   bd: { ch: 11, name: 'Bass drum', shares: 'The bass drum has FM channel 6 to itself and uses both operators.' },
-  sd: { ch: 12, name: 'Snare drum', shares: 'The snare and the hi-hat share FM channel 7: the last one played sets the pitch of both. Only the first operator of the patch is used.' },
-  tom: { ch: 13, name: 'Tom-tom', shares: 'The tom-tom and the cymbal share FM channel 8: the tom\'s note also colors the cymbal. Only the first operator is used; the note sets the tom\'s pitch.' },
-  cy: { ch: 14, name: 'Cymbal', shares: 'The cymbal and the tom-tom share FM channel 8: the last one played sets the pitch of both. Only the first operator is used.' },
-  hh: { ch: 15, name: 'Hi-hat', shares: 'The hi-hat and the snare share FM channel 7: the last one played sets the pitch of both. Only the first operator is used.' },
+  sd: {
+    ch: 12,
+    name: 'Snare drum',
+    shares: 'The snare and the hi-hat share FM channel 7: the last one played sets the pitch of both. Only the first operator of the patch is used.',
+  },
+  tom: {
+    ch: 13,
+    name: 'Tom-tom',
+    shares:
+      "The tom-tom and the cymbal share FM channel 8: the tom's note also colors the cymbal. Only the first operator is used; the note sets the tom's pitch.",
+  },
+  cy: {
+    ch: 14,
+    name: 'Cymbal',
+    shares: 'The cymbal and the tom-tom share FM channel 8: the last one played sets the pitch of both. Only the first operator is used.',
+  },
+  hh: {
+    ch: 15,
+    name: 'Hi-hat',
+    shares: 'The hi-hat and the snare share FM channel 7: the last one played sets the pitch of both. Only the first operator is used.',
+  },
 };
 
 /** The drum a rhythm-mode MIDI channel plays. */
@@ -28,14 +45,21 @@ const one = (words: string) => patch(words, 'x0.5 ar0');
 const kit = (drum: DrumSlot, id: string, name: string, key: number, about: string, p: Uint8Array) => preset('kit', id, name, key, 'hits', about, p, drum);
 
 export const DRUM_KIT: OplPreset[] = [
-  kit('bd', 'kick-punchy', 'Kick (punchy)', 36, 'A tight rock kick: a short, hard thump (the games\' kick)', patch('x1 tl14 ar15 dr8 sl7 rr7', 'x1 ar15 dr7 sl5 rr7', 'fb4')),
+  kit(
+    'bd',
+    'kick-punchy',
+    'Kick (punchy)',
+    36,
+    "A tight rock kick: a short, hard thump (the games' kick)",
+    patch('x1 tl14 ar15 dr8 sl7 rr7', 'x1 ar15 dr7 sl5 rr7', 'fb4'),
+  ),
   kit('bd', 'kick-boomy', 'Kick (boomy)', 31, 'A big, low kick that booms and rings', patch('x1 tl24 ar15 dr6 sl15 rr6', 'x1 ar15 dr5 sl3 rr5', 'fb2')),
-  kit('sd', 'snare-tight', 'Snare (tight)', 55, 'A crisp, short snare (the games\' snare)', one('x2 tl2 ar15 dr7 sl0 rr7')),
+  kit('sd', 'snare-tight', 'Snare (tight)', 55, "A crisp, short snare (the games' snare)", one('x2 tl2 ar15 dr7 sl0 rr7')),
   kit('sd', 'snare-fat', 'Snare (fat)', 50, 'A deep, fat snare with a longer rattle', one('x1 ar15 dr6 sl1 rr6')),
   kit('sd', 'clap', 'Clap', 60, 'A hand clap: a bright, dry slap of noise', one('x4 tl2 ar15 dr8 sl0 rr7 w3')),
   kit('sd', 'rimshot', 'Rimshot', 67, 'A rimshot: a hard, very short crack', one('x6 tl4 ar15 dr9 sl15 rr9')),
   kit('tom', 'tom-low', 'Low Tom', 41, 'A floor tom (play low notes, around F2)', one('x2 tl2 ar15 dr6 sl3 rr6')),
-  kit('tom', 'tom-mid', 'Mid Tom', 48, 'A rack tom (play around C3; the games\' tom)', one('x2 tl4 ar15 dr7 sl3 rr7')),
+  kit('tom', 'tom-mid', 'Mid Tom', 48, "A rack tom (play around C3; the games' tom)", one('x2 tl4 ar15 dr7 sl3 rr7')),
   kit('tom', 'tom-high', 'High Tom', 53, 'A small high tom (play around F3)', one('x2 tl5 ar15 dr8 sl3 rr8')),
   kit('tom', 'timpani-tom', 'Timpani (tom-tom)', 43, 'A kettle drum on the tom channel: a long ring (from Veni, Vidi, Risi!)', one('x1 ar15 dr4 sl2 rr6')),
   kit('cy', 'crash', 'Crash Cymbal', 72, 'A crash: a loud splash that rings out', one('x1 tl4 ar15 dr3 sl2 rr3')),

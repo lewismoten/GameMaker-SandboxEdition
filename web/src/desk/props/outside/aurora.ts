@@ -1,23 +1,23 @@
 // The northern lights, rippling green and violet over the hills on a clear winter night:
 // soft curtains of light that sway, brighten and fade.
-import { roomSound } from "../propSound";
-import type { OutsideEvent } from "./outside";
+import { roomSound } from '../propSound';
+import type { OutsideEvent } from './outside';
 
 export const aurora: OutsideEvent = {
-  kind: "aurora",
-  id: "desk-aurora",
-  label: "The northern lights",
-  when: "night",
+  kind: 'aurora',
+  id: 'desk-aurora',
+  label: 'The northern lights',
+  when: 'night',
   ms: 16_000,
   start: () => roomSound.shimmer(6),
   draw(c, p, t) {
     const fade = Math.sin(Math.PI * p);
     c.save();
-    c.globalCompositeOperation = "lighter";
+    c.globalCompositeOperation = 'lighter';
     for (const [color, base, amp, phase] of [
-      ["60,255,140", 160, 26, 0],
-      ["150,90,255", 136, 20, 2],
-      ["80,220,200", 180, 18, 4],
+      ['60,255,140', 160, 26, 0],
+      ['150,90,255', 136, 20, 2],
+      ['80,220,200', 180, 18, 4],
     ] as const) {
       for (let x = 80; x < 320; x += 3) {
         const top = base - 60 + Math.sin(x / 34 + t / 1800 + phase) * amp;
@@ -36,6 +36,6 @@ export const aurora: OutsideEvent = {
   },
   press() {
     roomSound.shimmer(2);
-    return "The northern lights ripple green and violet over the hills. You hardly ever see them. Make it count!";
+    return 'The northern lights ripple green and violet over the hills. You hardly ever see them. Make it count!';
   },
 };

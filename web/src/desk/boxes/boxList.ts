@@ -69,7 +69,11 @@ export function boxList(o: BoxListOptions): HTMLElement {
       first.el.style.width = `${LAYOUT}px`;
       first.el.inert = true; // a picture of the piece: nothing in it to reach
       const tall = (THUMB_W * first.h) / first.w;
-      const shrunk = h('span', { class: 'box-list-shrunk', style: `transform: scale(${THUMB_W / LAYOUT}); top: ${Math.max(0, (THUMB_H - tall) / 2)}px` }, first.el);
+      const shrunk = h(
+        'span',
+        { class: 'box-list-shrunk', style: `transform: scale(${THUMB_W / LAYOUT}); top: ${Math.max(0, (THUMB_H - tall) / 2)}px` },
+        first.el,
+      );
       thumb.replaceChildren(shrunk);
     }
   });

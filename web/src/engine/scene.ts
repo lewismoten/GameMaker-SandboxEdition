@@ -105,7 +105,11 @@ export interface LoadedScene {
  * 6 character blocks, 7 sound set, 8 song. In the C a slot left blank keeps whatever
  * the previous scene loaded into the globals; `prev` stands in for those globals.
  */
-export function loadScene(s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, scnum: number, prev?: World): LoadedScene | string[] {
+export function loadScene(
+  s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } },
+  scnum: number,
+  prev?: World,
+): LoadedScene | string[] {
   const { m, game } = s;
   const file = (slot: number) => sceneFile(game, scnum, slot);
   const missing: string[] = [];
@@ -157,7 +161,11 @@ async function sceneReady(s: Session, scnum: number): Promise<void> {
   const snd = files[7] ? m.files.get(files[7]) : undefined;
   let samples: string[] = [];
   try {
-    samples = snd ? parseSoundSet(snd).digital.filter((d) => d && d[0] !== ' ').map((d) => `${d}.voc`) : [];
+    samples = snd
+      ? parseSoundSet(snd)
+          .digital.filter((d) => d && d[0] !== ' ')
+          .map((d) => `${d}.voc`)
+      : [];
   } catch {
     /* loadScene reports it */
   }
@@ -431,15 +439,17 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     // is a port safety net against looping forever; the C loop has none.
     let guard = 0;
     do {
-      if (await moveChars(w, async () => {
-        const slot = await pickDropSlot(m, w);
-        // DropBloc gave the keyboard back to the BIOS while its screen was up, so keys
-        // pressed there (such as Esc to cancel) never reached the game.
-        m.flushKeys();
-        w.keydn.fill(0);
-        resync();
-        return slot;
-      }))
+      if (
+        await moveChars(w, async () => {
+          const slot = await pickDropSlot(m, w);
+          // DropBloc gave the keyboard back to the BIOS while its screen was up, so keys
+          // pressed there (such as Esc to cancel) never reached the game.
+          m.flushKeys();
+          w.keydn.fill(0);
+          resync();
+          return slot;
+        })
+      )
         done = DEAD;
     } while (w.chr.cframe === -1 && done !== DEAD && guard++ < 50);
     changeBlocks(w);
@@ -636,7 +646,11 @@ async function saveGame(s: Session, w: World, where: { prevscene: number; doscen
  * over it (also how project/saveData's tests check a save it made). Undefined when the
  * level's files are missing.
  */
-export function restoreSaved(s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, w: World | undefined, data: Saved): LoadedScene | undefined {
+export function restoreSaved(
+  s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } },
+  w: World | undefined,
+  data: Saved,
+): LoadedScene | undefined {
   const loaded = loadScene(s, data.doscene, w);
   if (Array.isArray(loaded)) return undefined;
   const nw = loaded.world;

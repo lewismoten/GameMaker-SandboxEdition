@@ -130,7 +130,7 @@ class Operator {
       case 2:
         return Math.abs(s);
       case 3:
-        return (p < 0.25 || (p >= 0.5 && p < 0.75)) ? Math.abs(s) : 0;
+        return p < 0.25 || (p >= 0.5 && p < 0.75) ? Math.abs(s) : 0;
       default:
         return s;
     }
@@ -181,10 +181,11 @@ export class Opl2 {
 
   reset(): void {
     for (let r = 0; r < 256; r++) this.write(r, 0);
-    for (const ch of this.channels) for (const op of ch.ops) {
-      op.stage = Stage.Off;
-      op.envDb = SILENT_DB;
-    }
+    for (const ch of this.channels)
+      for (const op of ch.ops) {
+        op.stage = Stage.Off;
+        op.envDb = SILENT_DB;
+      }
   }
 
   read(reg: number): number {
@@ -209,7 +210,7 @@ export class Opl2 {
     }
     // Operator registers: the top 3 bits pick the parameter, the low 5 bits the slot.
     const group = reg & 0xe0;
-    if (group >= 0x20 && group <= 0x80 || group === 0xe0) {
+    if ((group >= 0x20 && group <= 0x80) || group === 0xe0) {
       const slot = SLOT_OFFSETS.indexOf(reg & 0x1f);
       if (slot < 0) return;
       // Slot index -> channel (three per group of six) and operator (0 modulator, 1 carrier).
@@ -279,7 +280,7 @@ export class Opl2 {
     const [bd, sdhh, tomcy] = [this.channels[6], this.channels[7], this.channels[8]];
     const toggle = (bit: number, ops: Operator[]) => {
       if (!(changed & bit)) return;
-      for (const op of ops) (keys & bit ? op.keyOn() : op.keyOff());
+      for (const op of ops) keys & bit ? op.keyOn() : op.keyOff();
     };
     toggle(0x10, bd.ops); // bass drum
     toggle(0x08, [sdhh.ops[1]]); // snare drum
@@ -296,7 +297,7 @@ export class Opl2 {
       this.time += dt;
       // LFOs: tremolo at 3.7 Hz (1 dB, or 4.8 dB deep) and vibrato at about 6.1 Hz
       // (7 cents, or 14 cents deep), shared by every operator that enables them.
-      const trem = (1 - Math.cos(this.time * 3.7 * 2 * Math.PI)) / 2 * (this.amDepth ? 4.8 : 1);
+      const trem = ((1 - Math.cos(this.time * 3.7 * 2 * Math.PI)) / 2) * (this.amDepth ? 4.8 : 1);
       const vibCents = Math.sin(this.time * 6.1 * 2 * Math.PI) * (this.vibDepth ? 14 : 7);
       const vibFactor = Math.pow(2, vibCents / 1200);
       // 23-bit LFSR noise for the rhythm section
@@ -331,7 +332,7 @@ export class Opl2 {
     this.advance(ch, m, dt, vibFactor);
     this.advance(ch, c, dt, vibFactor);
     // Feedback feeds the average of the modulator's last two outputs back into its own phase.
-    const fb = ch.feedback ? ((m.out + m.prevOut) * Math.pow(2, ch.feedback - 7)) : 0;
+    const fb = ch.feedback ? (m.out + m.prevOut) * Math.pow(2, ch.feedback - 7) : 0;
     const mOut = m.wave01(m.phase + fb) * this.opLevel(ch, m, trem);
     m.prevOut = m.out;
     m.out = mOut;

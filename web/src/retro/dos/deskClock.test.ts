@@ -45,6 +45,7 @@ describe('DATE', () => {
     expect(ymd(parseDosDate('3-4-05', base))).toEqual([2005, 3, 4, 14]);
   });
   it('turns down what DOS calls an invalid date', () => {
-    for (const bad of ['13-01-94', '2-30-94', '2-29-95', '4-31-94', '0-1-94', '1-1-1979', '1-1-2100', 'today', '10-23', '']) expect(parseDosDate(bad, base)).toBeUndefined();
+    for (const bad of ['13-01-94', '2-30-94', '2-29-95', '4-31-94', '0-1-94', '1-1-1979', '1-1-2100', 'today', '10-23', ''])
+      expect(parseDosDate(bad, base)).toBeUndefined();
   });
 });

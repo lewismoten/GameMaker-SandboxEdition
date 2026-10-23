@@ -41,7 +41,13 @@ export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef &
   }
   if (g.gam) {
     const bat = configBat(g.gam);
-    nodes.push(bytesNode('CONFIG.BAT', Uint8Array.from(bat, (c) => c.charCodeAt(0)), { date, run: { kind: 'batch', lines: [bat.trim()] } }));
+    nodes.push(
+      bytesNode(
+        'CONFIG.BAT',
+        Uint8Array.from(bat, (c) => c.charCodeAt(0)),
+        { date, run: { kind: 'batch', lines: [bat.trim()] } },
+      ),
+    );
   }
   // the CD's games kept their CONFIG.HLP (or, like ORB, came without one) with their files
   const has = (n: string) => g.files.some((f) => f.toLowerCase() === n);

@@ -71,11 +71,18 @@ export function makeEdgeSet(fill: Uint8Array, outside: Uint8Array, o: EdgeOption
         const i = y * BLEN + x;
         if (isOutside(k, x, y, o)) out[i] = outside[i];
         else {
-          const edge = o.outline && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => {
-            const nx = x + dx;
-            const ny = y + dy;
-            return nx >= 0 && ny >= 0 && nx < BLEN && ny < BLEN && isOutside(k, nx, ny, o);
-          });
+          const edge =
+            o.outline &&
+            [
+              [1, 0],
+              [-1, 0],
+              [0, 1],
+              [0, -1],
+            ].some(([dx, dy]) => {
+              const nx = x + dx;
+              const ny = y + dy;
+              return nx >= 0 && ny >= 0 && nx < BLEN && ny < BLEN && isOutside(k, nx, ny, o);
+            });
           out[i] = edge ? o.outline!(fill[i]) : fill[i];
         }
       }

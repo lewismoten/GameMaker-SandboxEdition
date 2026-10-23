@@ -145,7 +145,10 @@ export function healthNote(target: HealthTarget): HTMLElement {
     const n = issues.length + notes.length;
     if (!n) return;
     note.textContent = `ⓘ Notes on its files (${n})`;
-    note.setAttribute('aria-label', `${target.title}: notes on its files, ${issues.length ? countLabel(issues) : `${n} note${n === 1 ? '' : 's'}`}. Show them.`);
+    note.setAttribute(
+      'aria-label',
+      `${target.title}: notes on its files, ${issues.length ? countLabel(issues) : `${n} note${n === 1 ? '' : 's'}`}. Show them.`,
+    );
     note.hidden = false;
   });
   return note;
@@ -166,8 +169,13 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
     body,
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
   ]);
-  const failed = (e: Error) => ({ own: [{ severity: 'error', kind: 'unreadable', message: `The check failed: ${e.message}` } as Issue], inherited: [] as Issue[] });
-  const { own: issues, inherited } = await (target.deepSplit ? target.deepSplit() : target.deep().then((own) => ({ own, inherited: [] as Issue[] }))).catch(failed);
+  const failed = (e: Error) => ({
+    own: [{ severity: 'error', kind: 'unreadable', message: `The check failed: ${e.message}` } as Issue],
+    inherited: [] as Issue[],
+  });
+  const { own: issues, inherited } = await (target.deepSplit ? target.deepSplit() : target.deep().then((own) => ({ own, inherited: [] as Issue[] }))).catch(
+    failed,
+  );
   const errors = issues.filter((i) => i.severity === 'error').length;
   const from = target.original?.title ?? 'the original';
   const came = inherited.length
@@ -223,7 +231,14 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
         ]
       : []),
     ...(notes.length
-      ? [h('section', null, h('h4', null, 'About this edition'), h('ul', null, ...notes.map((n) => h('li', { class: 'warning' }, h('span', { class: 'sev', 'aria-label': 'note' }, 'ⓘ'), ' ', n))))]
+      ? [
+          h(
+            'section',
+            null,
+            h('h4', null, 'About this edition'),
+            h('ul', null, ...notes.map((n) => h('li', { class: 'warning' }, h('span', { class: 'sev', 'aria-label': 'note' }, 'ⓘ'), ' ', n))),
+          ),
+        ]
       : []),
   );
   await shown;

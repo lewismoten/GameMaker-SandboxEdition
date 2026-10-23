@@ -212,7 +212,10 @@ dialog.modal:has(.wt-dialog) {
 .wt-youtube input {
   width: 100%;
   box-sizing: border-box;
-  font: 12px/1.4 ui-monospace, Menlo, monospace;
+  font:
+    12px/1.4 ui-monospace,
+    Menlo,
+    monospace;
 }
 
 @media (max-width: 820px) {

@@ -46,7 +46,9 @@ function sourceOf(pc: Computer): Source {
   if (mode === 'game') {
     // The game's own 320x200 canvas: the one that takes the keys, not the smoothly scaled
     // copy (exactScale) laid under it at the monitor's size.
-    const game = [...pc.monitor.querySelectorAll<HTMLCanvasElement>('.crt-game canvas')].find((c) => c.width === VGA_W && c.height === VGA_H && c.tabIndex >= 0);
+    const game = [...pc.monitor.querySelectorAll<HTMLCanvasElement>('.crt-game canvas')].find(
+      (c) => c.width === VGA_W && c.height === VGA_H && c.tabIndex >= 0,
+    );
     if (game)
       return {
         kind: 'vga',
@@ -192,7 +194,15 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
       wait.firstElementChild!.textContent = `${waitForGame ? '☒' : '☐'} Wait for the next game`;
     });
     menu.replaceChildren(
-      h('strong', null, !fmt ? 'Recording isn’t available in this browser' : fmt.ext === 'mp4' ? 'Record with sound · MP4' : 'Record with sound · WebM (this browser can’t make MP4)'),
+      h(
+        'strong',
+        null,
+        !fmt
+          ? 'Recording isn’t available in this browser'
+          : fmt.ext === 'mp4'
+            ? 'Record with sound · MP4'
+            : 'Record with sound · WebM (this browser can’t make MP4)',
+      ),
       wait,
       h('span', { class: 'cap-sep', role: 'presentation' }, 'The PC’s screen'),
       ...(
@@ -202,7 +212,12 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
           ['text', 'Text only, 720×400', 'Pauses while the PC is in graphics mode'],
         ] as [RecordMode, string, string][]
       ).map(([mode, label, note]) =>
-        h('button', { role: 'menuitem', disabled: !fmt, ...keepFocus, onclick: choose(() => (waitForGame ? arm({ kind: 'screen', mode }) : startScreen(mode, false))) }, label, h('small', null, note)),
+        h(
+          'button',
+          { role: 'menuitem', disabled: !fmt, ...keepFocus, onclick: choose(() => (waitForGame ? arm({ kind: 'screen', mode }) : startScreen(mode, false))) },
+          label,
+          h('small', null, note),
+        ),
       ),
       h('span', { class: 'cap-sep', role: 'presentation' }, 'Around it'),
       h(

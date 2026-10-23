@@ -128,7 +128,15 @@ function drawStrip(page: PageLayout, p: PlacedStrip, designs: SideDesigns, ppi: 
   // one inch, to check the printer kept the size
   const rx = room.x + room.w - 0.02;
   const ry = cropBottom + LABEL_BAND - 0.07;
-  g.append(el('path', { class: 'subl-inch', d: `M${r4(rx - 1)} ${r4(ry - 0.06)}V${r4(ry)}H${r4(rx)}V${r4(ry - 0.06)}M${r4(rx - 0.5)} ${r4(ry - 0.035)}V${r4(ry)}`, fill: 'none', stroke: '#555', 'stroke-width': 0.008 }));
+  g.append(
+    el('path', {
+      class: 'subl-inch',
+      d: `M${r4(rx - 1)} ${r4(ry - 0.06)}V${r4(ry)}H${r4(rx)}V${r4(ry - 0.06)}M${r4(rx - 0.5)} ${r4(ry - 0.035)}V${r4(ry)}`,
+      fill: 'none',
+      stroke: '#555',
+      'stroke-width': 0.008,
+    }),
+  );
   g.append(text(rx - 1.04, ry, '1 inch', 'end', 0.06));
   return g;
 }

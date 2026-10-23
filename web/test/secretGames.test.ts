@@ -67,7 +67,9 @@ describe('the build and secret games', () => {
   const cd = resolve(__dirname, '../../cd');
   const games = resolve(__dirname, '../../games');
   const secret = existsSync(games)
-    ? readdirSync(games).filter((d) => existsSync(resolve(games, d, 'about.json')) && JSON.parse(readFileSync(resolve(games, d, 'about.json'), 'utf8')).secret === true)
+    ? readdirSync(games).filter(
+        (d) => existsSync(resolve(games, d, 'about.json')) && JSON.parse(readFileSync(resolve(games, d, 'about.json'), 'utf8')).secret === true,
+      )
     : [];
 
   it.skipIf(!existsSync(cd) || !secret.length)('lists them only in the secret catalog', () => {

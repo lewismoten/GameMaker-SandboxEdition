@@ -40,11 +40,29 @@ let bonus: Bonus | undefined;
 
 async function ledger(): Promise<Row[]> {
   const list = await eggStates();
-  const rows: Row[] = list.map((e) => ({ key: e.egg.game, gameTitle: e.egg.gameTitle, name: e.egg.name, status: e.status, inSave: e.inSave, found: e.found, hidden: !!e.egg.detect }));
+  const rows: Row[] = list.map((e) => ({
+    key: e.egg.game,
+    gameTitle: e.egg.gameTitle,
+    name: e.egg.name,
+    status: e.status,
+    inSave: e.inSave,
+    found: e.found,
+    hidden: !!e.egg.detect,
+  }));
   if (!list.length || !list.every((e) => e.found)) return rows;
   bonus ??= await import('./bonus');
   const { bonusStates, bonusKey, eggTaps } = bonus;
-  for (const e of await bonusStates()) rows.push({ key: bonusKey(e.egg), gameTitle: e.egg.gameTitle, name: e.egg.name, status: e.status, inSave: e.inSave, found: e.found, hidden: !!e.egg.detect, taps: e.egg.id === 'rotten' ? eggTaps() : undefined });
+  for (const e of await bonusStates())
+    rows.push({
+      key: bonusKey(e.egg),
+      gameTitle: e.egg.gameTitle,
+      name: e.egg.name,
+      status: e.status,
+      inSave: e.inSave,
+      found: e.found,
+      hidden: !!e.egg.detect,
+      taps: e.egg.id === 'rotten' ? eggTaps() : undefined,
+    });
   return rows;
 }
 
@@ -91,9 +109,17 @@ export async function runEggExe(ui: Ui): Promise<void> {
     const e = list[cur];
     const cracks = e.taps !== undefined && bonus ? `, ${bonus.tapsText(e.taps)}` : '';
     s.fill(x + 1, y + n + 2, x + w - 2, y + n + 2, MENUATTR);
-    s.write(x + 2, y + n + 2, MENUATTR, toCp437(`${e.name}: ${STATE_TEXT[e.status]}${e.inSave ? '' : e.hidden ? ', not in any save' : ', not hidden in the game yet'}${cracks}`).slice(0, w - 4));
+    s.write(
+      x + 2,
+      y + n + 2,
+      MENUATTR,
+      toCp437(`${e.name}: ${STATE_TEXT[e.status]}${e.inSave ? '' : e.hidden ? ', not in any save' : ', not hidden in the game yet'}${cracks}`).slice(0, w - 4),
+    );
     // the keys, with the cracking ones on the rotten egg's row
-    const bar = e.taps !== undefined ? ' ↑↓ Choose  ←→ Crack  O Open  0 Whole  Enter Add/Break  R Reset  T Hearts  Esc' : ' ↑↓ Choose  Enter Add/Break  A Add  B Break  R Reset  T Tin hearts  Esc Quit';
+    const bar =
+      e.taps !== undefined
+        ? ' ↑↓ Choose  ←→ Crack  O Open  0 Whole  Enter Add/Break  R Reset  T Hearts  Esc'
+        : ' ↑↓ Choose  Enter Add/Break  A Add  B Break  R Reset  T Tin hearts  Esc Quit';
     s.write(0, 24, BARATTR, toCp437(bar).padEnd(80).slice(0, 80));
     const k = await ui.keys.next();
     const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;

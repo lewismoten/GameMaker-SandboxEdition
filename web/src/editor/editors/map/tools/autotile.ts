@@ -120,7 +120,10 @@ const has = (t: Terrain, slot: number) => slot >= 0 && (t.tiles[slot] ?? -1) >= 
 
 /** The slot of an edges terrain for a neighbor mask. */
 function edgesSlot(m: number): number {
-  const n = !!(m & N), e = !!(m & E), s = !!(m & S), w = !!(m & W);
+  const n = !!(m & N),
+    e = !!(m & E),
+    s = !!(m & S),
+    w = !!(m & W);
   if ((!n && !s) || (!e && !w)) return 4; // one block thin: no edge fits, the fill does
   if (!n) return !w ? 0 : !e ? 2 : 1;
   if (!s) return !w ? 6 : !e ? 8 : 7;
@@ -135,7 +138,10 @@ function edgesSlot(m: number): number {
 
 /** The slot of a path for a side mask (bits as sideBits), falling back to what is there. */
 function pathSlot(t: Terrain, bits: number): number {
-  const n = bits & 1, e = bits & 2, s = bits & 4, w = bits & 8;
+  const n = bits & 1,
+    e = bits & 2,
+    s = bits & 4,
+    w = bits & 8;
   const count = (n ? 1 : 0) + (e ? 1 : 0) + (s ? 1 : 0) + (w ? 1 : 0);
   const straight = (vertical: boolean) => (vertical ? 1 : 0);
   if (count === 4) return has(t, 10) ? 10 : has(t, 6) ? 6 : 0;
@@ -188,10 +194,20 @@ export function pickBlock(t: Terrain, mask: number): number {
 /** The 8-bit neighbor mask of a cell: which neighbors are in (off the map counts as in). */
 export function neighborMask(isIn: (x: number, y: number) => boolean, x: number, y: number, w = MLEN, h = MWID): number {
   const at = (dx: number, dy: number) => {
-    const nx = x + dx, ny = y + dy;
+    const nx = x + dx,
+      ny = y + dy;
     return nx < 0 || ny < 0 || nx >= w || ny >= h || isIn(nx, ny);
   };
-  return (at(0, -1) ? N : 0) | (at(1, -1) ? NE : 0) | (at(1, 0) ? E : 0) | (at(1, 1) ? SE : 0) | (at(0, 1) ? S : 0) | (at(-1, 1) ? SW : 0) | (at(-1, 0) ? W : 0) | (at(-1, -1) ? NW : 0);
+  return (
+    (at(0, -1) ? N : 0) |
+    (at(1, -1) ? NE : 0) |
+    (at(1, 0) ? E : 0) |
+    (at(1, 1) ? SE : 0) |
+    (at(0, 1) ? S : 0) |
+    (at(-1, 1) ? SW : 0) |
+    (at(-1, 0) ? W : 0) |
+    (at(-1, -1) ? NW : 0)
+  );
 }
 
 /**
@@ -214,7 +230,8 @@ export function paintTerrain(blocks: Uint8Array, t: Terrain, cells: { x: number;
     touch(y * w + x, erase ? t.outside : marker);
     for (let dy = -1; dy <= 1; dy++)
       for (let dx = -1; dx <= 1; dx++) {
-        const nx = x + dx, ny = y + dy;
+        const nx = x + dx,
+          ny = y + dy;
         if (nx >= 0 && ny >= 0 && nx < w && ny < h) fix.add(ny * w + nx);
       }
   }
@@ -222,7 +239,8 @@ export function paintTerrain(blocks: Uint8Array, t: Terrain, cells: { x: number;
   const edgeIn = t.kind !== 'path';
   for (const i of fix) {
     if (!set.has(blocks[i])) continue;
-    const x = i % w, y = (i / w) | 0;
+    const x = i % w,
+      y = (i / w) | 0;
     const m = neighborMask(isIn, x, y, w, h);
     const v = pickBlock(t, edgeIn ? m : maskInMap(m, x, y, w, h));
     if (blocks[i] !== v) touch(i, v);

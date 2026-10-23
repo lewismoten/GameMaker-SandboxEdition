@@ -25,7 +25,11 @@ export function blockInsight(o: {
   sprites: boolean;
   open: (file: string) => void;
 }): Insight {
-  const tile = h('canvas', { class: `pixel blk-tile${o.sprites ? ' checker' : ''}`, role: 'img', 'aria-label': 'The block repeated 3 by 3, to check that its edges meet' });
+  const tile = h('canvas', {
+    class: `pixel blk-tile${o.sprites ? ' checker' : ''}`,
+    role: 'img',
+    'aria-label': 'The block repeated 3 by 3, to check that its edges meet',
+  });
   const anim = h('canvas', { class: `pixel blk-anim${o.sprites ? ' checker' : ''}`, role: 'img', 'aria-label': 'The block’s animation as the game plays it' });
   const animText = h('p', { class: 'meta blk-anim-text', 'aria-live': 'off' });
   const usesList = h('ul', { class: 'blk-uses' });
@@ -62,8 +66,18 @@ export function blockInsight(o: {
     clear(
       usesList,
       ...(uses.length
-        ? uses.map((u) => h('li', null, u.file === o.file ? u.text : h('button', { class: 'blk-use-link', title: `Open ${u.file}`, onclick: () => o.open(u.file) }, u.text)))
-        : [h('li', { class: 'meta' }, o.project.usesOf(o.file).length ? 'Nothing yet: no map, monster or hero of the scenes that use this set shows it.' : 'No scene uses this block set yet, so nothing shows it.')]),
+        ? uses.map((u) =>
+            h('li', null, u.file === o.file ? u.text : h('button', { class: 'blk-use-link', title: `Open ${u.file}`, onclick: () => o.open(u.file) }, u.text)),
+          )
+        : [
+            h(
+              'li',
+              { class: 'meta' },
+              o.project.usesOf(o.file).length
+                ? 'Nothing yet: no map, monster or hero of the scenes that use this set shows it.'
+                : 'No scene uses this block set yet, so nothing shows it.',
+            ),
+          ]),
     );
   }
 

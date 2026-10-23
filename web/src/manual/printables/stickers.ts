@@ -74,7 +74,11 @@ const dieCutPx = (img: HTMLCanvasElement, words: boolean, shrink: number) =>
 
 /** The little cut-out of a character that fills a gap: no words, about half an inch. */
 function mini(name: string, img: HTMLCanvasElement, color: string): Sticker {
-  return dieCut(`${name} (small)`, img, Math.max(2, Math.min(4, Math.round((0.55 * 150) / Math.max(img.height, img.width * 0.8)))), { text: '', color, ink: color });
+  return dieCut(`${name} (small)`, img, Math.max(2, Math.min(4, Math.round((0.55 * 150) / Math.max(img.height, img.width * 0.8)))), {
+    text: '',
+    color,
+    ink: color,
+  });
 }
 
 /** A spec made ready: its picture loaded, its kind and shape chosen. Also its mini, if it has a character. */
@@ -161,7 +165,13 @@ function gameSpecs(ctx: PrintContext): MixedSticker[] {
 export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
   const box = ctx.entry.original?.box;
   const [main, sub] = splitTitle(ctx.entry.title);
-  const title = floppy(`${ctx.entry.title} disk`, main.toUpperCase(), sub, box?.background ?? '#1d3f7a', box?.accent && box.accent !== box.background ? darkOf(box) : '#111');
+  const title = floppy(
+    `${ctx.entry.title} disk`,
+    main.toUpperCase(),
+    sub,
+    box?.background ?? '#1d3f7a',
+    box?.accent && box.accent !== box.background ? darkOf(box) : '#111',
+  );
   return fitted(
     gameSpecs(ctx).map((spec): MixedSticker => ({ ...spec, from: ctx })),
     ctx.entry.id,
@@ -218,7 +228,11 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
         h('span', null, 'Cut along the dotted lines. Stick on your disk box, your folder, your little brother.'),
         pages.length > 1 ? h('em', null, `Sheet ${i + 1} of ${pages.length}`) : null,
       ),
-      h('img', { class: 'stk-art', src: art.toDataURL(), alt: `Stickers: ${[...new Set(page.map((p) => names[p.index].replace(/ \(small\)$/, '')))].join(', ')}` }),
+      h('img', {
+        class: 'stk-art',
+        src: art.toDataURL(),
+        alt: `Stickers: ${[...new Set(page.map((p) => names[p.index].replace(/ \(small\)$/, '')))].join(', ')}`,
+      }),
       h('p', { class: 'stk-foot' }, 'Plain paper and a glue stick work; label paper is better. Have a cutting machine? Use the Print Then Cut files.'),
     );
     const [, , pw, ph] = sheetBounds(page, BLEED);
@@ -231,10 +245,9 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
       name: `${base}-stickers${pages.length > 1 ? `-${i + 1}` : ''}`,
       svg: () => cutSvg(page, names),
       png: async () =>
-        new Blob(
-          [pngWithDpi(new Uint8Array(await (await toBlob(drawPage(page, all, DPI_PRINT, true))).arrayBuffer()), DPI_PRINT) as Uint8Array<ArrayBuffer>],
-          { type: 'image/png' },
-        ),
+        new Blob([pngWithDpi(new Uint8Array(await (await toBlob(drawPage(page, all, DPI_PRINT, true))).arrayBuffer()), DPI_PRINT) as Uint8Array<ArrayBuffer>], {
+          type: 'image/png',
+        }),
     });
     return s;
   });

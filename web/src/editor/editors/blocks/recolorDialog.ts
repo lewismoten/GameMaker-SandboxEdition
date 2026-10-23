@@ -25,7 +25,15 @@ export function recolorDialog(pal: Palette, from: number, to: number): Promise<R
       const show = () => (chip.style.background = paletteCss(pal, Math.max(0, Math.min(255, Number(input.value) || 0))));
       input.addEventListener('input', show);
       show();
-      return { input, el: h('label', { class: 'field' }, h('span', null, label), h('span', { class: 'row', style: 'gap:6px;align-items:center;flex-wrap:nowrap' }, input, max === 255 ? chip : null)) };
+      return {
+        input,
+        el: h(
+          'label',
+          { class: 'field' },
+          h('span', null, label),
+          h('span', { class: 'row', style: 'gap:6px;align-items:center;flex-wrap:nowrap' }, input, max === 255 ? chip : null),
+        ),
+      };
     };
     const f = num('Color', from);
     const t = num('becomes color', to);
@@ -47,7 +55,12 @@ export function recolorDialog(pal: Palette, from: number, to: number): Promise<R
       h('div', { class: 'grid-fields' }, f.el, t.el, n.el),
       h('label', { class: 'check recolor-check' }, swap, h('span', null, 'Swap: the second colors become the first, too')),
       h('label', { class: 'check recolor-check' }, every, h('span', null, 'In every block of this set (not just this one)')),
-      h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), h('button', { type: 'submit', class: 'primary' }, 'Replace')),
+      h(
+        'div',
+        { class: 'buttons' },
+        h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
+        h('button', { type: 'submit', class: 'primary' }, 'Replace'),
+      ),
     );
   });
 }

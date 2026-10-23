@@ -6,16 +6,22 @@ import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stars,
 /** A Googie tower with a saucer on top. */
 function tower(c: Ctx, x: number, base: number, top: number, s: number, lit: string): void {
   poly(c, [x - 10 * s, base, x - 5 * s, top, x + 5 * s, top, x + 10 * s, base]);
-  fill(c, lin(c, x - 10 * s, 0, x + 10 * s, 0, [
-    [0, '#2a1a5a'],
-    [0.5, '#8a7ad0'],
-    [1, '#1a0a3a'],
-  ]));
+  fill(
+    c,
+    lin(c, x - 10 * s, 0, x + 10 * s, 0, [
+      [0, '#2a1a5a'],
+      [0.5, '#8a7ad0'],
+      [1, '#1a0a3a'],
+    ]),
+  );
   ell(c, x, top, 44 * s, 11 * s);
-  fill(c, lin(c, 0, top - 11 * s, 0, top + 11 * s, [
-    [0, '#e8f4ff'],
-    [1, '#4a5a9a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, top - 11 * s, 0, top + 11 * s, [
+      [0, '#e8f4ff'],
+      [1, '#4a5a9a'],
+    ]),
+  );
   ell(c, x, top - 8 * s, 20 * s, 12 * s);
   fill(c, lit);
   glow(c, x, top, 50 * s, lit, 0.4);
@@ -28,23 +34,32 @@ function car(c: Ctx, x: number, y: number, s: number, body: string, dir: number)
   c.translate(x, y);
   c.scale(s * dir, s);
   poly(c, [-50, -6, -220, 0, -50, 8]);
-  fill(c, lin(c, -50, 0, -220, 0, [
-    [0, 'rgba(120,255,240,0.6)'],
-    [1, 'rgba(120,255,240,0)'],
-  ]));
+  fill(
+    c,
+    lin(c, -50, 0, -220, 0, [
+      [0, 'rgba(120,255,240,0.6)'],
+      [1, 'rgba(120,255,240,0)'],
+    ]),
+  );
   ell(c, 6, -16, 26, 20);
-  fill(c, rad(c, 0, -26, 30, [
-    [0, 'rgba(230,255,255,0.95)'],
-    [1, 'rgba(80,180,220,0.6)'],
-  ]));
+  fill(
+    c,
+    rad(c, 0, -26, 30, [
+      [0, 'rgba(230,255,255,0.95)'],
+      [1, 'rgba(80,180,220,0.6)'],
+    ]),
+  );
   poly(c, [-56, -10, -40, -34, -30, -10]);
   fill(c, body);
   blob(c, [-58, -8, 40, -10, 62, 0, 50, 12, -54, 12]);
-  fill(c, lin(c, 0, -10, 0, 12, [
-    [0, '#ffffff'],
-    [0.3, body],
-    [1, '#1a0a2a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -10, 0, 12, [
+      [0, '#ffffff'],
+      [0.3, body],
+      [1, '#1a0a2a'],
+    ]),
+  );
   glow(c, -40, 14, 30, '#ff60c0', 0.7);
   c.restore();
 }
@@ -107,11 +122,14 @@ function dex(c: Ctx, x: number, y: number, s: number): void {
   fill(c, '#d9381e');
   // jumpsuit body with a lightning-bolt chest badge
   blob(c, [-30, -124, -34, -200, -14, -222, 22, -222, 40, -200, 34, -124]);
-  fill(c, lin(c, -34, 0, 40, 0, [
-    [0, '#7a86a8'],
-    [0.4, '#f4f8ff'],
-    [1, '#6a7698'],
-  ]));
+  fill(
+    c,
+    lin(c, -34, 0, 40, 0, [
+      [0, '#7a86a8'],
+      [0.4, '#f4f8ff'],
+      [1, '#6a7698'],
+    ]),
+  );
   poly(c, [0, -204, 14, -204, 6, -186, 16, -186, -2, -160, 4, -180, -6, -180]);
   fill(c, '#3fe0d0');
   // arms: one reaching for the dog
@@ -121,10 +139,13 @@ function dex(c: Ctx, x: number, y: number, s: number): void {
   stroke(c, '#dce4f4', 16, [-26, -204, -54, -170, -70, -180]);
   // head, with a flat-top and a big open "Hey!"
   ell(c, 6, -250, 30, 32);
-  fill(c, rad(c, 0, -258, 38, [
-    [0, '#ffd8b8'],
-    [1, '#c8865a'],
-  ]));
+  fill(
+    c,
+    rad(c, 0, -258, 38, [
+      [0, '#ffd8b8'],
+      [1, '#c8865a'],
+    ]),
+  );
   blob(c, [-26, -262, -24, -290, 30, -292, 34, -262, 4, -272]);
   fill(c, '#5a2a10');
   ell(c, 20, -250, 4, 5);
@@ -148,11 +169,14 @@ const paint = (c: Ctx, w: number, h: number): void => {
   // the Moon, with the Science Fair dome on its rim
   glow(c, 470, 230, 220, '#b0c8ff', 0.4);
   ell(c, 470, 230, 110, 110);
-  fill(c, rad(c, 430, 190, 150, [
-    [0, '#ffffff'],
-    [0.5, '#c8d0e8'],
-    [1, '#5a6080'],
-  ]));
+  fill(
+    c,
+    rad(c, 430, 190, 150, [
+      [0, '#ffffff'],
+      [0.5, '#c8d0e8'],
+      [1, '#5a6080'],
+    ]),
+  );
   for (const [mx, my, mr] of [
     [430, 200, 18],
     [500, 260, 26],
@@ -172,7 +196,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
     const bh = 60 + r() * 90;
     poly(c, [bx, 470, bx, 470 - bh, bx + 44, 470 - bh, bx + 44, 470]);
     fill(c, '#1a0a3a');
-    for (let k = 0; k < 6; k++) if (r() > 0.4) (c.fillStyle = '#ffd860'), c.fillRect(bx + 6 + (k % 3) * 12, 476 - bh + Math.floor(k / 3) * 14, 6, 6);
+    for (let k = 0; k < 6; k++) if (r() > 0.4) ((c.fillStyle = '#ffd860'), c.fillRect(bx + 6 + (k % 3) * 12, 476 - bh + Math.floor(k / 3) * 14, 6, 6));
   }
   tower(c, 90, 470, 280, 1.2, '#3fe0d0');
   tower(c, 260, 470, 330, 0.9, '#ff60c0');
@@ -192,10 +216,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   car(c, 120, 220, 0.5, '#ffd23c', 1);
   // the moving sidewalk in front
   poly(c, [-20, 470, w + 20, 470, w + 20, h, -20, h]);
-  fill(c, lin(c, 0, 470, 0, h, [
-    [0, '#4a3a8a'],
-    [1, '#1a0a3a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 470, 0, h, [
+      [0, '#4a3a8a'],
+      [1, '#1a0a3a'],
+    ]),
+  );
   for (let i = 0; i < 10; i++) {
     const t = i / 10;
     stroke(c, 'rgba(63,224,208,0.4)', 2, [0, 480 + t * t * 220, w, 480 + t * t * 220]);
@@ -208,7 +235,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.arc(538, 440, 42, Math.PI, 0);
   fill(c, '#d9381e');
   c.fillStyle = '#fff';
-  c.font = "900 13px Arial, sans-serif";
+  c.font = '900 13px Arial, sans-serif';
   c.textAlign = 'center';
   c.fillText('PHONE', 538, 432);
   c.fillText('25¢', 538, 470);

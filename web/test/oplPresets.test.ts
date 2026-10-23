@@ -17,7 +17,7 @@ function render(bytes: Uint8Array, seconds: number): Float32Array {
   const out = new Float32Array(Math.round(seconds * SR));
   const perTick = SR / TICK_RATE;
   let until = 0;
-  for (let i = 0; i < out.length; ) {
+  for (let i = 0; i < out.length;) {
     if (until <= 0) {
       player.tick();
       until += perTick;
@@ -39,7 +39,10 @@ describe('OPL2 instrument presets', () => {
       expect([...p.patch.subarray(11)], p.id).toEqual([0, 0, 0, 0, 0]);
       expect(ids.has(p.id), p.id).toBe(false);
       ids.add(p.id);
-      expect(PRESET_GROUPS.some((g) => g.id === p.group), p.id).toBe(true);
+      expect(
+        PRESET_GROUPS.some((g) => g.id === p.group),
+        p.id,
+      ).toBe(true);
       // findPreset names it by its bytes: no two presets share a patch
       expect(findPreset(p.patch)?.id, p.id).toBe(p.id);
     }
@@ -47,8 +50,12 @@ describe('OPL2 instrument presets', () => {
   });
 
   it('reads the patch words as the chip registers', () => {
-    expect([...patch('x1 tl15 ksl3 ar15 dr1 sl5 rr3', 'x1 ar13 dr2 sl7 rr4', 'fb3').subarray(0, 11)]).toEqual([0x01, 0x01, 0x4f, 0x00, 0xf1, 0xd2, 0x53, 0x74, 0, 0, 0x06]);
-    expect([...patch('x2 tl4 ksl6 hold vib trem ksr w2', 'x0.5 ar0', 'fb7 add').subarray(0, 11)]).toEqual([0xf2, 0x00, 0xc4, 0x00, 0xf0, 0x00, 0x00, 0x00, 2, 0, 0x0f]);
+    expect([...patch('x1 tl15 ksl3 ar15 dr1 sl5 rr3', 'x1 ar13 dr2 sl7 rr4', 'fb3').subarray(0, 11)]).toEqual([
+      0x01, 0x01, 0x4f, 0x00, 0xf1, 0xd2, 0x53, 0x74, 0, 0, 0x06,
+    ]);
+    expect([...patch('x2 tl4 ksl6 hold vib trem ksr w2', 'x0.5 ar0', 'fb7 add').subarray(0, 11)]).toEqual([
+      0xf2, 0x00, 0xc4, 0x00, 0xf0, 0x00, 0x00, 0x00, 2, 0, 0x0f,
+    ]);
     expect(() => patch('x11', '')).toThrow();
     expect(() => patch('ar16', '')).toThrow();
     expect(() => patch('w4', '')).toThrow();

@@ -3,7 +3,15 @@ import { DIZ_LINES, DIZ_WIDTH, ascii, dizBytes, gameDiz, newestPicture, pictureD
 import type { CatalogEntry } from '../src/project/files';
 import { GALLERY } from '../src/retro/bbs/gallery';
 
-const game = (over: Partial<CatalogEntry>): CatalogEntry => ({ id: 'teddy', title: "Teddy's Little Big Adventure", kind: 'shareware', path: '', gam: 'teddy.gam', files: [], ...over });
+const game = (over: Partial<CatalogEntry>): CatalogEntry => ({
+  id: 'teddy',
+  title: "Teddy's Little Big Adventure",
+  kind: 'shareware',
+  path: '',
+  gam: 'teddy.gam',
+  files: [],
+  ...over,
+});
 
 const legal = (lines: string[]) => {
   expect(lines.length).toBeLessThanOrEqual(DIZ_LINES);
@@ -15,7 +23,14 @@ const legal = (lines: string[]) => {
 
 describe('FILE_ID.DIZ', () => {
   it('keeps a game within 10 lines of 45 ASCII columns', () => {
-    const long = game({ title: 'KEEP IT BRIEF! The Tiny Pockets Library and a much longer name', company: 'Sandbox Software', year: 1995, price: '$7–$15', original: {} as CatalogEntry['original'], blurb: '“Hi.” '.repeat(80) });
+    const long = game({
+      title: 'KEEP IT BRIEF! The Tiny Pockets Library and a much longer name',
+      company: 'Sandbox Software',
+      year: 1995,
+      price: '$7–$15',
+      original: {} as CatalogEntry['original'],
+      blurb: '“Hi.” '.repeat(80),
+    });
     const lines = gameDiz(long);
     legal(lines);
     expect(lines[0].endsWith('[1/1]')).toBe(true);

@@ -68,7 +68,10 @@
   border-radius: 10px;
   background: #f4ead2;
   color: #2a2014;
-  font: 600 16px/1.4 Georgia, 'Times New Roman', serif;
+  font:
+    600 16px/1.4 Georgia,
+    'Times New Roman',
+    serif;
   text-align: center;
   white-space: pre-line;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);

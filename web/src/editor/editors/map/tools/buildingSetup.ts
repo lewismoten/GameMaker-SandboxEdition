@@ -6,9 +6,21 @@ import { drawPreview, slotButton, type SetupCtx } from './setupKit';
 
 // the parts laid out the way they sit on a house, with a short caption each
 const LAYOUT: ([BuildingPart, string] | null)[][] = [
-  [['roofTopLeft', 'Corner'], ['roofTop', 'Roof top'], ['roofTopRight', 'Corner']],
-  [['roofLeft', 'Side'], ['roof', 'Roof'], ['roofRight', 'Side']],
-  [['wallLeft', 'Wall left'], ['window', 'Window'], ['wallRight', 'Wall right']],
+  [
+    ['roofTopLeft', 'Corner'],
+    ['roofTop', 'Roof top'],
+    ['roofTopRight', 'Corner'],
+  ],
+  [
+    ['roofLeft', 'Side'],
+    ['roof', 'Roof'],
+    ['roofRight', 'Side'],
+  ],
+  [
+    ['wallLeft', 'Wall left'],
+    ['window', 'Window'],
+    ['wallRight', 'Wall right'],
+  ],
   [null, ['wall', 'Wall'], ['door', 'Door']],
 ];
 
@@ -26,7 +38,9 @@ export function editBuilding(ctx: SetupCtx, start: Building | undefined, ground:
       drawPreview(preview, ctx, assembleBuilding(b, pw, ph), ground);
       const ok = b.parts.wall >= 0 && (b.parts.roofTop >= 0 || b.parts.roof >= 0);
       save.disabled = !ok;
-      note.textContent = ok ? 'Drag out a rectangle on the map to build one this way, any size.' : 'Choose at least the roof edge (or roof fill) and the wall fill.';
+      note.textContent = ok
+        ? 'Drag out a rectangle on the map to build one this way, any size.'
+        : 'Choose at least the roof edge (or roof fill) and the wall fill.';
     };
     const label = (p: BuildingPart) => BUILDING_PARTS.find((x) => x.part === p)!.label;
     const grid = h(
@@ -34,7 +48,18 @@ export function editBuilding(ctx: SetupCtx, start: Building | undefined, ground:
       { class: 'mt-grid', style: '--cols:3;--cell:64px' },
       ...LAYOUT.flat().map((x) =>
         x
-          ? h('div', { class: 'mt-part' }, slotButton(ctx, label(x[0]), undefined, () => b.parts[x[0]], (v) => ((b.parts[x[0]] = v), refresh())), h('small', { 'aria-hidden': 'true' }, x[1]))
+          ? h(
+              'div',
+              { class: 'mt-part' },
+              slotButton(
+                ctx,
+                label(x[0]),
+                undefined,
+                () => b.parts[x[0]],
+                (v) => ((b.parts[x[0]] = v), refresh()),
+              ),
+              h('small', { 'aria-hidden': 'true' }, x[1]),
+            )
           : h('span', { 'aria-hidden': 'true' }),
       ),
     );
@@ -49,7 +74,11 @@ export function editBuilding(ctx: SetupCtx, start: Building | undefined, ground:
           close({ ...b, name: name.value.trim() });
         },
       },
-      h('p', { class: 'hint' }, 'Choose a block for each part, laid out as on a house. Parts left empty borrow a near one: a missing left wall uses the wall fill.'),
+      h(
+        'p',
+        { class: 'hint' },
+        'Choose a block for each part, laid out as on a house. Parts left empty borrow a near one: a missing left wall uses the wall fill.',
+      ),
       h('div', { class: 'toolbar' }, h('label', { class: 'field' }, h('span', null, 'Name'), name)),
       h(
         'div',
@@ -63,10 +92,30 @@ export function editBuilding(ctx: SetupCtx, start: Building | undefined, ground:
           h(
             'div',
             { class: 'toolbar' },
-            numberField('Width', () => pw, (v) => ((pw = v), refresh()), { min: 1, max: 16 }),
-            numberField('Height', () => ph, (v) => ((ph = v), refresh()), { min: 1, max: 12 }),
-            numberField('Roof rows', () => b.roofRows, (v) => ((b.roofRows = v), refresh()), { min: 1, max: 8 }),
-            numberField('Window every', () => b.windowEvery, (v) => ((b.windowEvery = v), refresh()), { min: 1, max: 6, title: 'Columns from one window to the next' }),
+            numberField(
+              'Width',
+              () => pw,
+              (v) => ((pw = v), refresh()),
+              { min: 1, max: 16 },
+            ),
+            numberField(
+              'Height',
+              () => ph,
+              (v) => ((ph = v), refresh()),
+              { min: 1, max: 12 },
+            ),
+            numberField(
+              'Roof rows',
+              () => b.roofRows,
+              (v) => ((b.roofRows = v), refresh()),
+              { min: 1, max: 8 },
+            ),
+            numberField(
+              'Window every',
+              () => b.windowEvery,
+              (v) => ((b.windowEvery = v), refresh()),
+              { min: 1, max: 6, title: 'Columns from one window to the next' },
+            ),
           ),
           note,
         ),

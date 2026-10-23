@@ -3,15 +3,37 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CatalogEntry } from '../src/project/files';
-import { DOS_EXTRA_BYTES, PLAYER_EXE_BYTES, disksLine, downloadLine, gameDisks, installedBytes, minutesText, sizeText, storageLine, transferMinutes, zipBytes, zipName } from '../src/project/diskFacts';
+import {
+  DOS_EXTRA_BYTES,
+  PLAYER_EXE_BYTES,
+  disksLine,
+  downloadLine,
+  gameDisks,
+  installedBytes,
+  minutesText,
+  sizeText,
+  storageLine,
+  transferMinutes,
+  zipBytes,
+  zipName,
+} from '../src/project/diskFacts';
 import { boxDisks } from '../src/desk/boxes/boxFacts';
 import { disksIn } from '../src/desk/disks/diskBox';
 import { FLOPPY_BYTES, type Disk } from '../src/retro/dos/disks';
 import { gameDiz } from '../src/retro/bbs/fileId';
 
 const game = (bytes: number, over: Partial<CatalogEntry> = {}): CatalogEntry => ({
-  id: 'goat', title: 'Goat', kind: 'shareware', path: '', gam: 'goat.gam', exe: 'GOAT.EXE', bytes,
-  files: ['goat.gam', 'title.gif', 'song.cmf'], sizes: [bytes / 2, bytes / 4, bytes / 4], original: {} as CatalogEntry['original'], ...over,
+  id: 'goat',
+  title: 'Goat',
+  kind: 'shareware',
+  path: '',
+  gam: 'goat.gam',
+  exe: 'GOAT.EXE',
+  bytes,
+  files: ['goat.gam', 'title.gif', 'song.cmf'],
+  sizes: [bytes / 2, bytes / 4, bytes / 4],
+  original: {} as CatalogEntry['original'],
+  ...over,
 });
 
 describe('disk facts', () => {
@@ -56,7 +78,15 @@ describe('disk facts', () => {
 
   it('is the only source of disk counts and sizes the paper and the BBS print', () => {
     const src = (p: string) => readFileSync(new URL(`../src/${p}`, import.meta.url), 'utf8');
-    for (const p of ['manual/printables/gen.ts', 'manual/printables/bardCatalog.ts', 'desk/room/catalog.ts', 'desk/boxes/gameBox.ts', 'retro/bbs/bbs.ts', 'retro/bbs/sofaFiles.ts', 'retro/bbs/fileId.ts']) {
+    for (const p of [
+      'manual/printables/gen.ts',
+      'manual/printables/bardCatalog.ts',
+      'desk/room/catalog.ts',
+      'desk/boxes/gameBox.ts',
+      'retro/bbs/bbs.ts',
+      'retro/bbs/sofaFiles.ts',
+      'retro/bbs/fileId.ts',
+    ]) {
       const s = src(p);
       expect(s, p).toContain('project/diskFacts');
       expect(s, p).not.toMatch(/files\.length\} files|\* 0\.58|diskCount\(/);

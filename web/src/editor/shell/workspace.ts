@@ -378,18 +378,34 @@ export class Workspace {
           { class: 'toolbar' },
           h(
             'button',
-            { class: 'keys-btn', title: 'Open a file by name (Ctrl+P)', 'aria-label': 'Open a file by name', 'aria-keyshortcuts': 'Control+P Meta+P', onclick: () => void this.quickOpen() },
+            {
+              class: 'keys-btn',
+              title: 'Open a file by name (Ctrl+P)',
+              'aria-label': 'Open a file by name',
+              'aria-keyshortcuts': 'Control+P Meta+P',
+              onclick: () => void this.quickOpen(),
+            },
             h('span', { 'aria-hidden': 'true' }, '⌕'),
           ),
           h(
             'button',
-            { class: 'keys-btn', title: 'Keyboard shortcuts (?)', 'aria-label': 'Keyboard shortcuts', 'aria-keyshortcuts': 'Shift+?', onclick: () => void showShortcuts(kindOf(file)) },
+            {
+              class: 'keys-btn',
+              title: 'Keyboard shortcuts (?)',
+              'aria-label': 'Keyboard shortcuts',
+              'aria-keyshortcuts': 'Shift+?',
+              onclick: () => void showShortcuts(kindOf(file)),
+            },
             keyboardIcon(),
           ),
           fileActions([
             ...(isGam ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             { label: 'Duplicate', run: () => void this.duplicate(file) },
-            { label: 'Download file', run: () => download(file.toUpperCase(), this.project.files.get(file)!), title: `Save ${file.toUpperCase()} to your computer` },
+            {
+              label: 'Download file',
+              run: () => download(file.toUpperCase(), this.project.files.get(file)!),
+              title: `Save ${file.toUpperCase()} to your computer`,
+            },
             ...(isGam ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
@@ -484,7 +500,11 @@ export class Workspace {
     const level = this.levelHere();
     const name = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
     return level
-      ? h('button', { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` }, '▶ Play this level')
+      ? h(
+          'button',
+          { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` },
+          '▶ Play this level',
+        )
       : h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test');
   }
 
@@ -510,7 +530,11 @@ export class Workspace {
           'div',
           { class: 'toolbar' },
           level && h('button', { onclick: () => this.play(true, back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
-          h('button', { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' }, 'Stop'),
+          h(
+            'button',
+            { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' },
+            'Stop',
+          ),
         ),
       ),
       host,

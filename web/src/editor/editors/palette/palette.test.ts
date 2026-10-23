@@ -60,7 +60,10 @@ describe('ramps', () => {
 describe('variants', () => {
   it('re-lights every color by scale and lift, clamped', () => {
     const p = defaultPalette();
-    const night = relight(p, VARIANTS.find((v) => v.id === 'night')!);
+    const night = relight(
+      p,
+      VARIANTS.find((v) => v.id === 'night')!,
+    );
     expect(night[15 * 3]).toBe(Math.round(63 * 0.48 + 1.5));
     expect(night[15 * 3 + 2]).toBe(Math.min(63, Math.round(63 * 0.8 + 6.5)));
     expect(night.length).toBe(768);
@@ -76,7 +79,10 @@ describe('variants', () => {
 
   it('pulls the brightest colors down underwater', () => {
     const p = new Uint8Array(768).fill(63);
-    const w = relight(p, VARIANTS.find((v) => v.id === 'underwater')!);
+    const w = relight(
+      p,
+      VARIANTS.find((v) => v.id === 'underwater')!,
+    );
     expect(w[0]).toBeLessThan(63);
     expect(w[2]).toBeLessThan(63);
     expect(w[1]).toBeLessThan(63);

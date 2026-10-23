@@ -2,7 +2,17 @@
 // real maps: the area where each game's first level starts.
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
 import { parseGame } from '../../formats/game';
-import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, mapPixels, type MapView } from '../../gfx/levelPicture';
+import {
+  BUILT_SHOTS,
+  builtMapShotPath,
+  builtMapViews,
+  builtShotPath,
+  busiest,
+  firstLevels,
+  levelPixels,
+  mapPixels,
+  type MapView,
+} from '../../gfx/levelPicture';
 import { paintIndexed } from '../../editor/core/draw';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
@@ -69,7 +79,10 @@ export async function renderShot(entry: CatalogEntry, canvas: HTMLCanvasElement,
  */
 export async function mapShot(entry: CatalogEntry, mapName: string, x: number, y: number, w = 16, h = 10): Promise<HTMLCanvasElement | undefined> {
   const view: MapView = [mapName, x, y, w, h];
-  const built = entry.shots && builtMapViews(entry.original?.box?.shots).some((v) => v.join() === view.join()) ? await loadImage(builtMapShotPath(entry.id, view)) : undefined;
+  const built =
+    entry.shots && builtMapViews(entry.original?.box?.shots).some((v) => v.join() === view.join())
+      ? await loadImage(builtMapShotPath(entry.id, view))
+      : undefined;
   if (built) return onCanvas(built);
   const gamName = entry.gam;
   const gam = gamName ? await fetchFile(entry, gamName) : undefined;

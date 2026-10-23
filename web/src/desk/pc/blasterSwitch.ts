@@ -61,7 +61,12 @@ function blasterNote(sw: HTMLElement): { open(text: string, restart?: () => bool
   const text = h('p', { class: 'sb-note-text' });
   const restartBtn = h('button', { type: 'button', class: 'sb-note-restart' }, 'Restart game');
   const closeBtn = h('button', { type: 'button', class: 'sb-note-close', 'aria-label': 'Close', title: 'Close (Esc)' }, '×');
-  const panel = h('div', { class: 'sb-note', role: 'group', 'aria-label': 'Sound Blaster', hidden: true }, text, h('div', { class: 'sb-note-buttons' }, restartBtn, closeBtn));
+  const panel = h(
+    'div',
+    { class: 'sb-note', role: 'group', 'aria-label': 'Sound Blaster', hidden: true },
+    text,
+    h('div', { class: 'sb-note-buttons' }, restartBtn, closeBtn),
+  );
   let timer: number | undefined;
   let held = 0; // pointer over it (1) and/or focus inside it (2)
   let onRestart: (() => boolean) | undefined;

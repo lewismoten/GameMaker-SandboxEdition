@@ -307,14 +307,38 @@ function contour(fd: Field, level: number): Pt[] {
       const bottom = () => edgePt(i, j + 1, true);
       const left = () => edgePt(i, j, false);
       switch (code) {
-        case 1: case 14: link(left(), top()); break;
-        case 2: case 13: link(top(), right()); break;
-        case 3: case 12: link(left(), right()); break;
-        case 4: case 11: link(right(), bottom()); break;
-        case 6: case 9: link(top(), bottom()); break;
-        case 7: case 8: link(left(), bottom()); break;
-        case 5: link(left(), top()); link(right(), bottom()); break;
-        case 10: link(top(), right()); link(left(), bottom()); break;
+        case 1:
+        case 14:
+          link(left(), top());
+          break;
+        case 2:
+        case 13:
+          link(top(), right());
+          break;
+        case 3:
+        case 12:
+          link(left(), right());
+          break;
+        case 4:
+        case 11:
+          link(right(), bottom());
+          break;
+        case 6:
+        case 9:
+          link(top(), bottom());
+          break;
+        case 7:
+        case 8:
+          link(left(), bottom());
+          break;
+        case 5:
+          link(left(), top());
+          link(right(), bottom());
+          break;
+        case 10:
+          link(top(), right());
+          link(left(), bottom());
+          break;
       }
     }
   // walk the rings, keep the biggest
@@ -335,7 +359,7 @@ function contour(fd: Field, level: number): Pt[] {
       cur = nb;
     }
     const a = Math.abs(signedArea(ring));
-    if (a > bestArea) (bestArea = a), (best = ring);
+    if (a > bestArea) ((bestArea = a), (best = ring));
   }
   return best;
 }
@@ -352,7 +376,7 @@ function simplify(pts: Pt[], eps: number): Pt[] {
     const l = Math.hypot(bx - ax, by - ay) || 1e-9;
     for (let i = a + 1; i < b; i++) {
       const dd = Math.abs((bx - ax) * (ay - pts[i][1]) - (ax - pts[i][0]) * (by - ay)) / l;
-      if (dd > fd) (fd = dd), (far = i);
+      if (dd > fd) ((fd = dd), (far = i));
     }
     if (far >= 0) {
       keep[far] = 1;
@@ -378,7 +402,10 @@ function dieCut(solid: Solid, grow: number): Pt[] {
   if (hit) return hit;
   const fd = fieldOf(solid);
   const level = Math.min(CUT_OFFSET + grow, FIELD_PAD - 2 * FIELD_RES);
-  const ring = simplify(contour(fd, Math.max(level, FIELD_RES * 0.6)), 0.0025 / FIELD_RES).map(([i, j]): Pt => [i * fd.res - fd.pad + CUT_OFFSET, j * fd.res - fd.pad + CUT_OFFSET]);
+  const ring = simplify(contour(fd, Math.max(level, FIELD_RES * 0.6)), 0.0025 / FIELD_RES).map(([i, j]): Pt => [
+    i * fd.res - fd.pad + CUT_OFFSET,
+    j * fd.res - fd.pad + CUT_OFFSET,
+  ]);
   m.set(key, ring);
   return ring;
 }

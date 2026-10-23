@@ -50,7 +50,7 @@ function menu(t: Term): void {
   t.line('|13          ─────────────────── |15The Sofa |13─ |15Top Menu |13───────────────────');
   t.line();
   t.line('|14   T |07... |15Teleconference |07(talk with the other callers)');
-  t.line('|14   W |07... |15Who\'s on |07(see every line)');
+  t.line("|14   W |07... |15Who's on |07(see every line)");
   t.line('|14   L |07... |15The lounge |07(news from the SysOps)');
   t.line('|14   F |07... |15File library |07(free downloads from our regulars)');
   t.line('|14   P |07... |15GIF pictures |07(THE CHEZ and the Bard of Bizarre logo)');
@@ -126,7 +126,7 @@ function lounge(t: Term): void {
   t.line('|07I SCREAMED, SHE SMIRKED and SHAKESPEARE IN SWEATPANTS,');
   t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
   t.line("|07And VENI, VIDI, RISI!, six songs in Latin by Lewis's group Veni, Vidi, Risi!");
-  t.line('|07Free! Hit F.  And in GIF pictures (hit P): THE CHEZ, DOC LEO\'s CitiCar.');
+  t.line("|07Free! Hit F.  And in GIF pictures (hit P): THE CHEZ, DOC LEO's CitiCar.");
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
 }

@@ -45,7 +45,13 @@ export function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number
     g.arc(x + r * 0.35, y + r * 0.35, r * 0.55, 0, Math.PI * 2);
     g.fill();
   };
-  for (const [fx, fy] of [[0.07, 0.18], [0.93, 0.18], [0.07, 0.84], [0.93, 0.84]]) rivet(x0 + w * fx, top + hgt * fy);
+  for (const [fx, fy] of [
+    [0.07, 0.18],
+    [0.93, 0.18],
+    [0.07, 0.84],
+    [0.93, 0.84],
+  ])
+    rivet(x0 + w * fx, top + hgt * fy);
   // the brass plate, with its words (legible when the stand is drawn large)
   const pw = w * 0.7;
   const ph = hgt * 0.5;
@@ -155,17 +161,21 @@ export function heartTrophy(place: (el: HTMLElement) => void): () => void {
   };
 }
 
-const WORDS = 'Zero One Two Three Four Five Six Seven Eight Nine Ten Eleven Twelve Thirteen Fourteen Fifteen Sixteen Seventeen Eighteen Nineteen Twenty'.split(' ');
+const WORDS = 'Zero One Two Three Four Five Six Seven Eight Nine Ten Eleven Twelve Thirteen Fourteen Fifteen Sixteen Seventeen Eighteen Nineteen Twenty'.split(
+  ' ',
+);
 const TENS = ['', '', 'Twenty', 'Thirty', 'Forty'];
 /** A count as Joe writes it at the start of a sentence: "Twenty-four". */
-export const countWord = (n: number): string => (n < 21 ? WORDS[n] : n < 50 ? `${TENS[Math.floor(n / 10)]}${n % 10 ? `-${WORDS[n % 10].toLowerCase()}` : ''}` : String(n));
+export const countWord = (n: number): string =>
+  n < 21 ? WORDS[n] : n < 50 ? `${TENS[Math.floor(n / 10)]}${n % 10 ? `-${WORDS[n % 10].toLowerCase()}` : ''}` : String(n);
 
 /** Joe's note, for `n` hearts. */
 export const joeNote = (n: number): string =>
   `${countWord(n)} tin hearts, counted twice on my tally counter, and every one of them ticking. The Tin Man walked all the way to Oz for a heart and found he had been kind the whole way there. You went looking in every corner of every game, which is much the same thing. Here is the one I borrowed. Keep it where it can catch the light.`;
 
 /** What the trophy view says happened, once the scene has played. */
-export const ALL_ALONG = 'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG.';
+export const ALL_ALONG =
+  'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG.';
 
 /**
  * A closer look: the diamond heart on its stand, Mystery Robot Joe beside it, and his note.
@@ -245,7 +255,14 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
       const hand = { x: x + (pose.mirror ? 17 : 10) * px, y: y + 12 * px, s: 7 * px };
       const cup = { x: sx, y: top - size * 0.42, s: size };
       const f = pose.heart;
-      art.drawHeart(g, hand.x + (cup.x - hand.x) * f, hand.y + (cup.y - hand.y) * f - Math.sin(f * Math.PI) * hh * 0.08, hand.s + (cup.s - hand.s) * f, turn, still ? 0.3 : clock);
+      art.drawHeart(
+        g,
+        hand.x + (cup.x - hand.x) * f,
+        hand.y + (cup.y - hand.y) * f - Math.sin(f * Math.PI) * hh * 0.08,
+        hand.s + (cup.s - hand.s) * f,
+        turn,
+        still ? 0.3 : clock,
+      );
     };
 
     const finish = () => {
@@ -336,7 +353,11 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
       { class: 'eggv-card' },
       h('h2', { id: 'trophy-title' }, 'The Diamond Heart'),
       h('p', { class: 'eggv-where' }, `Presented by Mystery Robot Joe, for finding all ${n} tin hearts`),
-      h('p', null, 'A heart cut from one flawless diamond, faceted like an imperial jeweled egg and caged in gold filigree, sitting in a tin cup on a riveted tin box that Joe made himself. The brass plate reads: PRESENTED BY MYSTERY ROBOT JOE.'),
+      h(
+        'p',
+        null,
+        'A heart cut from one flawless diamond, faceted like an imperial jeweled egg and caged in gold filigree, sitting in a tin cup on a riveted tin box that Joe made himself. The brass plate reads: PRESENTED BY MYSTERY ROBOT JOE.',
+      ),
       h('h3', null, 'A note from Joe'),
       h('p', { class: 'eggv-lore' }, `“${joeNote(n)}” — Joe`),
       more,

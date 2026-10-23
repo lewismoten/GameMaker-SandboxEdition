@@ -19,7 +19,6 @@ const TIME_COMPRESSION = 25;
 /** Bytes per second PKUNZIP inflates and writes to the hard disk. */
 const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
 
-
 /** The board's own files: the games in the catalog that were uploaded to The Sofa. */
 export function sofaLibrary(catalog: CatalogEntry[]): CatalogEntry[] {
   return catalog.filter((g) => g.gam && isSofaFile(g));
@@ -27,13 +26,16 @@ export function sofaLibrary(catalog: CatalogEntry[]): CatalogEntry[] {
 
 export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
   const files = sofaLibrary(await h.catalog());
-  const entries = () => files.map((g, i) => {
-    const got = h.downloads.has(g.id) ? '|10*' : ' ';
-    const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
-    return desc.map((l, j) =>
-      j === 0 ? `|14${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipBytes(g)).padStart(9)} |07${l}` : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
-    );
-  });
+  const entries = () =>
+    files.map((g, i) => {
+      const got = h.downloads.has(g.id) ? '|10*' : ' ';
+      const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
+      return desc.map((l, j) =>
+        j === 0
+          ? `|14${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipBytes(g)).padStart(9)} |07${l}`
+          : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
+      );
+    });
   const pager = new Pager(t, {
     header: (p, n) => [
       '|13          ──────────────── |15The Sofa |13─ |15File Library |13────────────────',
@@ -43,7 +45,10 @@ export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
     entries: () => (files.length ? entries() : [['|08  (the library is empty tonight)']]),
     // once the Bard's uploads outrun three pages: one line a file, V# for the whole DIZ
     compact: () =>
-      files.map((g, i) => `|14${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? '|10*' : ' '}|15${zipName(g).padEnd(12)}|14${commas(zipBytes(g)).padStart(9)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g))}`),
+      files.map(
+        (g, i) =>
+          `|14${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? '|10*' : ' '}|15${zipName(g).padEnd(12)}|14${commas(zipBytes(g)).padStart(9)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g))}`,
+      ),
     footer: ['', '|10*|07 = already downloaded to C:\\DOWNLOAD'],
   });
   pager.show();
@@ -121,7 +126,7 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
     const x = s.cursorX;
     const ms = (size / rate) * 1000;
     const start = performance.now();
-    for (let f = 0; f < 1; ) {
+    for (let f = 0; f < 1;) {
       f = ms ? Math.min(1, (performance.now() - start) / ms) : 1;
       s.write(x, s.cursorY, attr(7, 0), `${Math.round(f * 100)}%`.padStart(4));
       if (f < 1) await sleep(Math.min(100, ms / 4));

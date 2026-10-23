@@ -62,7 +62,10 @@ export class AudioRenderer {
         if (!b || !isCmf(b)) return;
         const cmf = parseCmf(b);
         if (cmf.clockTicks !== CMF_GAMEMAKER_CLOCK) return;
-        this.player.load(cmf.music.slice(), cmf.instruments.map((x) => x.slice()));
+        this.player.load(
+          cmf.music.slice(),
+          cmf.instruments.map((x) => x.slice()),
+        );
         this.untilTick = 0;
         return;
       }

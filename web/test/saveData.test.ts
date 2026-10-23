@@ -87,7 +87,12 @@ describe('saved games', () => {
     expect(save.world.ci.meter[3]).toBe(INF_REPEAT - 1);
     setField(save, 'hitpts', 1e9);
     expect(save.world.ci.hitpts).toBe(32767);
-    expect(fieldWarnings(save, saveFields(save).find((f) => f.id === 'hitpts')!).length).toBeGreaterThan(0);
+    expect(
+      fieldWarnings(
+        save,
+        saveFields(save).find((f) => f.id === 'hitpts')!,
+      ).length,
+    ).toBeGreaterThan(0);
     setField(save, 'counter:3', UNLIMITED);
     expect(save.world.ci.meter[22]).toBe(INF_REPEAT);
     expect(getField(save, 'counter:3')).toBe(UNLIMITED);
@@ -182,7 +187,13 @@ describe('high-score files', () => {
 
   it('sorts, names the file and warns', () => {
     expect(highScoreFileName('NEBULA.GAM')).toBe('nebula.his');
-    expect(sortHighScores([{ score: 5, name: 'a' }, { score: 9, name: 'b' }, { score: 5, name: 'c' }]).map((e) => e.name)).toEqual(['b', 'a', 'c']);
+    expect(
+      sortHighScores([
+        { score: 5, name: 'a' },
+        { score: 9, name: 'b' },
+        { score: 5, name: 'c' },
+      ]).map((e) => e.name),
+    ).toEqual(['b', 'a', 'c']);
     expect(highScoreWarnings({ score: 100, name: 'x'.repeat(25) })).toHaveLength(1);
     expect(highScoreWarnings({ score: 100, name: 'Gwinn' })).toEqual([]);
   });
@@ -190,7 +201,13 @@ describe('high-score files', () => {
 
 describe('backups', () => {
   it('summarize lists slots and size', () => {
-    const s = summarize({ id: 'a', game: 'game:x', when: 1, label: 'L', files: { 'game2.sav': new Uint8Array(3), 'savnames.dat': new Uint8Array(210), 'game0.sav': new Uint8Array(1) } });
+    const s = summarize({
+      id: 'a',
+      game: 'game:x',
+      when: 1,
+      label: 'L',
+      files: { 'game2.sav': new Uint8Array(3), 'savnames.dat': new Uint8Array(210), 'game0.sav': new Uint8Array(1) },
+    });
     expect(s.slots).toEqual([0, 2]);
     expect(s.bytes).toBe(214);
     expect('files' in s).toBe(false);

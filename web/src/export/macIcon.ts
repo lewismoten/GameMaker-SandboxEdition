@@ -50,7 +50,10 @@ export function drawIcon(picture: IndexedImage | undefined, colors: IconColors =
   let crop = { x: 0, y: 0, w: 1, h: 1 };
   if (picture) {
     const aspect = picture.width === 320 && picture.height === 200 ? 4 / 3 : picture.width / picture.height;
-    crop = aspect > 4 / 3 ? { x: (picture.width * (1 - (4 / 3) / aspect)) / 2, y: 0, w: (picture.width * (4 / 3)) / aspect, h: picture.height } : { x: 0, y: (picture.height * (1 - aspect / (4 / 3))) / 2, w: picture.width, h: (picture.height * aspect) / (4 / 3) };
+    crop =
+      aspect > 4 / 3
+        ? { x: (picture.width * (1 - 4 / 3 / aspect)) / 2, y: 0, w: (picture.width * (4 / 3)) / aspect, h: picture.height }
+        : { x: 0, y: (picture.height * (1 - aspect / (4 / 3))) / 2, w: picture.width, h: (picture.height * aspect) / (4 / 3) };
   }
   for (let y = 0; y < S; y++) {
     for (let x = 0; x < S; x++) {
@@ -129,7 +132,12 @@ export function halve(rgba: Uint8Array, size: number): Uint8Array {
       let g = 0;
       let b = 0;
       let a = 0;
-      for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
+      for (const [dx, dy] of [
+        [0, 0],
+        [1, 0],
+        [0, 1],
+        [1, 1],
+      ]) {
         const i = ((2 * y + dy) * size + 2 * x + dx) * 4;
         const al = rgba[i + 3];
         r += rgba[i] * al;
@@ -221,7 +229,16 @@ export async function macIcon(picture: IndexedImage | undefined, colors?: IconCo
   ]);
   // ic11/ic12: 16 and 32 pt at 2x; ic07-ic10: 128 to 1024; ic13/ic14: 128 and 256 pt at 2x
   return {
-    icns: icns([['ic11', png32], ['ic12', png64], ['ic07', png128], ['ic13', png256], ['ic08', png256], ['ic14', png512], ['ic09', png512], ['ic10', png1024]]),
+    icns: icns([
+      ['ic11', png32],
+      ['ic12', png64],
+      ['ic07', png128],
+      ['ic13', png256],
+      ['ic08', png256],
+      ['ic14', png512],
+      ['ic09', png512],
+      ['ic10', png1024],
+    ]),
     png512,
   };
 }

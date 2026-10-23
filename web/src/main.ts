@@ -218,14 +218,7 @@ async function route(): Promise<void> {
   }
   document.title = PRODUCT;
   // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
-  clear(
-    titleSlot,
-    h(
-      'span',
-      { class: 'topbar-tagline hide-narrow', title: FORK_NOTE },
-      'Make 1994 DOS games. No programming.',
-    ),
-  );
+  clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
   await renderHome(content, nav);
 }
 
@@ -260,7 +253,9 @@ window.addEventListener('hashchange', () => void route());
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash)
+  ? !!startHash
+  : ['p', 'game', 'help', 'cast', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 

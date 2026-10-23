@@ -30,15 +30,17 @@ export function rectCells(r: CellRect, outline = false): Cell[] {
 export function lineCells(a: Cell, b: Cell): Cell[] {
   const out: Cell[] = [];
   let { x, y } = a;
-  const dx = Math.abs(b.x - x), sx = x < b.x ? 1 : -1;
-  const dy = -Math.abs(b.y - y), sy = y < b.y ? 1 : -1;
+  const dx = Math.abs(b.x - x),
+    sx = x < b.x ? 1 : -1;
+  const dy = -Math.abs(b.y - y),
+    sy = y < b.y ? 1 : -1;
   let err = dx + dy;
   for (;;) {
     out.push({ x, y });
     if (x === b.x && y === b.y) return out;
     const e2 = 2 * err;
-    if (e2 >= dy) (err += dy), (x += sx);
-    if (e2 <= dx) (err += dx), (y += sy);
+    if (e2 >= dy) ((err += dy), (x += sx));
+    if (e2 <= dx) ((err += dx), (y += sy));
   }
 }
 
@@ -52,7 +54,8 @@ export function floodCells(blocks: Uint8Array, at: Cell, w = MLEN, h = MWID): Ce
     const i = stack.pop()!;
     if (seen[i] || blocks[i] !== target) continue;
     seen[i] = 1;
-    const x = i % w, y = (i / w) | 0;
+    const x = i % w,
+      y = (i / w) | 0;
     out.push({ x, y });
     if (x > 0) stack.push(i - 1);
     if (x < w - 1) stack.push(i + 1);

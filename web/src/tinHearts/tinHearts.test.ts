@@ -9,19 +9,38 @@ vi.mock('../project/storage', () => ({
   writeSaveFile: async (id: string, name: string, bytes: Uint8Array) => void ((saves[id] ??= {})[name] = bytes),
 }));
 
-import { countedOf, FOUND_FILE, heartHook, heartStates, MANIFEST, parseFound, pendingOf, readOverrides, setAllOverrides, setOverride, statusOf } from './tinHearts';
+import {
+  countedOf,
+  FOUND_FILE,
+  heartHook,
+  heartStates,
+  MANIFEST,
+  parseFound,
+  pendingOf,
+  readOverrides,
+  setAllOverrides,
+  setOverride,
+  statusOf,
+} from './tinHearts';
 import { countWord, joeNote } from './trophy';
 import type { Session } from '../engine/scene';
 
 const store = new Map<string, string>();
-const games = [{ id: 'realm', title: 'Quest for the Round Tuit' }, { id: 'sleuth', title: 'Final Curtain' }];
+const games = [
+  { id: 'realm', title: 'Quest for the Round Tuit' },
+  { id: 'sleuth', title: 'Final Curtain' },
+];
 const flush = () => new Promise((r) => setTimeout(r, 0));
 
 describe('tin hearts', () => {
   beforeEach(() => {
     store.clear();
     for (const k of Object.keys(saves)) delete saves[k];
-    vi.stubGlobal('localStorage', { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, String(v)), removeItem: (k: string) => void store.delete(k) });
+    vi.stubGlobal('localStorage', {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, String(v)),
+      removeItem: (k: string) => void store.delete(k),
+    });
   });
   afterEach(() => vi.unstubAllGlobals());
 

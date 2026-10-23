@@ -135,7 +135,14 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     const sound = (audio = new PreviewAudio(demoAudio()));
     let played = false;
     let endedAt = 0;
-    const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio: sound, speakerOnly: sound.mode !== 'blaster', onSession: (s) => (session = s) });
+    const p = mountPlayer(host, game, gam, {
+      title: o.title,
+      playback: rec,
+      preview: true,
+      audio: sound,
+      speakerOnly: sound.mode !== 'blaster',
+      onSession: (s) => (session = s),
+    });
     player = p;
     // the note shows for a few seconds when the demo starts, then fades (not again on each loop)
     if (kind !== 'recorded' && o.tag !== false && !tagShown) {
@@ -170,7 +177,8 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       // caught for good: the score table that follows is not worth waiting for)
       const left = playing && session!.rec.halted;
       const over =
-        (playing && session!.rec.tick >= lastTick + 18) || ((left || (played && !playing)) && (endedAt ||= performance.now()) && performance.now() - endedAt > 1500);
+        (playing && session!.rec.tick >= lastTick + 18) ||
+        ((left || (played && !playing)) && (endedAt ||= performance.now()) && performance.now() - endedAt > 1500);
       if (!over) return;
       if (o.loop) start();
       else handle.stop();

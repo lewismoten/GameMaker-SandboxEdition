@@ -16,7 +16,19 @@ vi.mock('../project/storage', () => ({
 }));
 
 import { ACHIEVEMENTS, CATEGORIES, DESK_PROPS, achievementById, shownText } from './catalog';
-import { FILE, SAVE_ID, achievementsWritten, forgetForTests, loadAchievements, mergeRecords, parseRecord, progress, resetAchievements, tally, unlockAchievement } from './store';
+import {
+  FILE,
+  SAVE_ID,
+  achievementsWritten,
+  forgetForTests,
+  loadAchievements,
+  mergeRecords,
+  parseRecord,
+  progress,
+  resetAchievements,
+  tally,
+  unlockAchievement,
+} from './store';
 import { goalProgress, goalTargets } from './goals';
 
 const stored = () => parseRecord(saves[SAVE_ID]?.[FILE]);

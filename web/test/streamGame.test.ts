@@ -22,7 +22,24 @@ function sampleGame(): Uint8Array {
   return serializeGame(g);
 }
 
-const NAMES = ['a.bbl', 'a.map', 'a.pal', 'a.snd', 'b.bbl', 'b.map', 'c.map', 'demo.rec', 'extra.txt', 'g.gam', 'intro.fli', 'm.gif', 'story.txt', 't.cmf', 't.gif', 'won.gif'];
+const NAMES = [
+  'a.bbl',
+  'a.map',
+  'a.pal',
+  'a.snd',
+  'b.bbl',
+  'b.map',
+  'c.map',
+  'demo.rec',
+  'extra.txt',
+  'g.gam',
+  'intro.fli',
+  'm.gif',
+  'story.txt',
+  't.cmf',
+  't.gif',
+  'won.gif',
+];
 
 describe('progressive game loading', () => {
   it('orders files as play first needs them', () => {
@@ -109,7 +126,10 @@ describe('progressive game loading', () => {
   });
 
   it('keeps a file the game wrote before the hosted one arrived', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(new Uint8Array([7]))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(new Uint8Array([7]))),
+    );
     const entry = { id: 'h', title: 'H', kind: 'gameware' as const, path: 'games/h/', gam: null, files: ['h.his'] };
     const g = streamHostedGame(entry);
     const writes: string[] = [];

@@ -102,7 +102,8 @@ export function boardInput(ctx: BoardInput): void {
     'wheel',
     (e) => {
       e.preventDefault();
-      if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX)) ctx.cam.zoomAt(ctx.cam.z * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY);
+      if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX))
+        ctx.cam.zoomAt(ctx.cam.z * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY);
       else ctx.cam.panTo(ctx.cam.x + e.deltaX / ctx.cam.z, ctx.cam.y);
     },
     { passive: false },

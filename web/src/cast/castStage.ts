@@ -156,12 +156,23 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   });
   const showSound = () => {
     soundBtn.setAttribute('aria-pressed', String(sound.playing));
-    soundBtn.textContent = sound.playing ? '🔊 Sound on' : sound.wanted ? `🔈 ${matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click'} for sound` : '🔇 Sound off';
+    soundBtn.textContent = sound.playing
+      ? '🔊 Sound on'
+      : sound.wanted
+        ? `🔈 ${matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click'} for sound`
+        : '🔇 Sound off';
   };
   const playBtn = h('button', { type: 'button', class: 'cast-stage-play', onclick: () => setPlaying(!playing) });
   const prevBtn = h('button', { type: 'button', 'aria-label': 'Previous character', onclick: () => go(at - 1, true) }, '◀');
   const nextBtn = h('button', { type: 'button', 'aria-label': 'Next character', onclick: () => go(at + 1, true) }, '▶');
-  const pick = h('select', { 'aria-label': 'Pick a character', onchange: () => go(lineup.findIndex((m) => m.id === pick.value), true) });
+  const pick = h('select', {
+    'aria-label': 'Pick a character',
+    onchange: () =>
+      go(
+        lineup.findIndex((m) => m.id === pick.value),
+        true,
+      ),
+  });
 
   const current = () => lineup[at];
   let paraded = 0;
@@ -307,7 +318,13 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       out.width = img.width + 2;
       out.height = img.height + 2;
       const c = out.getContext('2d')!;
-      for (const [dx, dy] of [[0, 1], [2, 1], [1, 0], [1, 2]]) c.drawImage(img, dx, dy);
+      for (const [dx, dy] of [
+        [0, 1],
+        [2, 1],
+        [1, 0],
+        [1, 2],
+      ])
+        c.drawImage(img, dx, dy);
       c.globalCompositeOperation = 'source-in';
       c.fillStyle = 'rgba(232,226,255,0.55)';
       c.fillRect(0, 0, out.width, out.height);
@@ -442,7 +459,13 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     if (!gone) {
       ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - fade : fade;
       // a waddle for one who walks on in a single frame, a hop for the tin heart
-      const lift = moving ? (s.sprite.hop ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : s.walk.length === 1 ? Math.floor(now / 160) % 2 : 0) : 0;
+      const lift = moving
+        ? s.sprite.hop
+          ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7)
+          : s.walk.length === 1
+            ? Math.floor(now / 160) % 2
+            : 0
+        : 0;
       const tilt = moving && s.sprite.wobble ? Math.sin(now / 140) * 0.28 : 0;
       const top = put(frame, x, lift + Math.round(up), left, squeeze, tilt);
       ctx.globalAlpha = 1;
@@ -543,8 +566,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
           if (loafGag(m) || m.id === 'goat' || needleGag(m)) {
             into('post', now);
             if (m.id === 'goat') sound.effect('goat/scream');
-          }
-          else {
+          } else {
             into('exit', now);
             say(undefined);
           }

@@ -255,7 +255,14 @@ export function demoButton(title: string, load: () => Promise<GameFiles>, gam: s
             notice: 'Preview — not a recorded demo: the hero walks back and forth with the game’s own keys. Nothing is saved to the game.',
           });
         }
-        await playDemo({ title, files, gam, rec: bytes, heading: `${title}: the demo (added)`, notice: added.inGame ? added.made : `${ADDED_DEMO_NOTICE}. ${added.made}` });
+        await playDemo({
+          title,
+          files,
+          gam,
+          rec: bytes,
+          heading: `${title}: the demo (added)`,
+          notice: added.inGame ? added.made : `${ADDED_DEMO_NOTICE}. ${added.made}`,
+        });
       },
     },
     '▶ Watch demo',

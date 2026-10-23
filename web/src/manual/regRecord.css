@@ -8,7 +8,10 @@
 
 .mpage .rr-head {
   margin-bottom: 0.6cqw;
-  font: 700 2.6cqw/1.2 Helvetica, Arial, sans-serif;
+  font:
+    700 2.6cqw/1.2 Helvetica,
+    Arial,
+    sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -27,7 +30,10 @@
 
 .mpage .rr dt {
   flex: none;
-  font: 2.35cqw/1 'Times New Roman', Times, serif;
+  font:
+    2.35cqw/1 'Times New Roman',
+    Times,
+    serif;
 }
 
 .mpage .rr dd {
@@ -52,7 +58,10 @@
 
 .mpage .rr-printed {
   padding-left: 1cqw;
-  font: 700 2.35cqw/1.2 'Courier New', Courier, monospace;
+  font:
+    700 2.35cqw/1.2 'Courier New',
+    Courier,
+    monospace;
   letter-spacing: 0.08em;
 }
 
@@ -90,7 +99,10 @@
 
 .mpage .rr-small {
   margin-top: 1.2cqw;
-  font: italic 2cqw/1.3 'Times New Roman', Times, serif;
+  font:
+    italic 2cqw/1.3 'Times New Roman',
+    Times,
+    serif;
 }
 
 /* the back cover: no box, the cover's own type */

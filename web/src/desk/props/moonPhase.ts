@@ -1,7 +1,7 @@
 // The real moon tonight, near enough for a window: how far it is through its month (from a
 // known new moon, 6 January 2000 18:14 UTC, at the mean synodic month), how much of it is
 // lit, and the phase's name.
-import { deskNow } from "../../retro/dos/deskClock";
+import { deskNow } from '../../retro/dos/deskClock';
 
 const MONTH = 29.530588853; // days
 const NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
@@ -15,14 +15,14 @@ export interface Moon {
 }
 
 const NAMES = [
-  "a new moon",
-  "a waxing crescent",
-  "the first quarter",
-  "a waxing gibbous moon",
-  "a full moon",
-  "a waning gibbous moon",
-  "the last quarter",
-  "a waning crescent",
+  'a new moon',
+  'a waxing crescent',
+  'the first quarter',
+  'a waxing gibbous moon',
+  'a full moon',
+  'a waning gibbous moon',
+  'the last quarter',
+  'a waning crescent',
 ];
 
 export function moonPhase(when = deskNow()): Moon {
@@ -36,13 +36,7 @@ export function moonPhase(when = deskNow()): Moon {
  * The lit part of a moon of radius r at (cx, cy) as a path, for the northern sky: waxing,
  * the right side is lit; waning, the left. The terminator is half an ellipse.
  */
-export function moonPath(
-  ctx: CanvasRenderingContext2D,
-  cx: number,
-  cy: number,
-  r: number,
-  age: number,
-): void {
+export function moonPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, age: number): void {
   const waxing = age < 0.5;
   const side = waxing ? 1 : -1;
   const k = Math.cos(age * 2 * Math.PI); // 1 new, 0 quarter, -1 full

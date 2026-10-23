@@ -115,7 +115,7 @@ const css = (p: Palette, i: number) => `rgb(${vga8(p[i * 3])},${vga8(p[i * 3 + 1
 /** Entries that differ, as runs: "9–71, 76–79". */
 export function runs(list: number[]): string {
   const out: string[] = [];
-  for (let k = 0; k < list.length; ) {
+  for (let k = 0; k < list.length;) {
     let e = k;
     while (e + 1 < list.length && list[e + 1] === list[e] + 1) e++;
     out.push(e === k ? `${list[k]}` : `${list[k]}–${list[e]}`);
@@ -190,7 +190,13 @@ function windowPixels(map: Uint8Array, bbl: Uint8Array, [x, y, w, hh]: Set['at']
 }
 
 const key = (focus: Range[]) =>
-  h('p', { class: 'ug-palkey' }, 'Red outlines: ', focus.map(([a, b, n]) => `colors ${a}–${b}, ${n}`).join('; '), '. A bar under a color: it differs from the reference. The black rows are unused colors.');
+  h(
+    'p',
+    { class: 'ug-palkey' },
+    'Red outlines: ',
+    focus.map(([a, b, n]) => `colors ${a}–${b}, ${n}`).join('; '),
+    '. A bar under a color: it differs from the reference. The black rows are unused colors.',
+  );
 
 /** The set's palettes loaded, with the window's pixels; undefined when a file is missing. */
 async function load(s: Set) {

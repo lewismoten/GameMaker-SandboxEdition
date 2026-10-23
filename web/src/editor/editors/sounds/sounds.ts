@@ -310,7 +310,8 @@ registerEditor(['snd'], (host, project, file) => {
   render();
   const onKey = (e: KeyboardEvent) => {
     const t = e.target;
-    const typing = t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || (t instanceof HTMLElement && t.isContentEditable);
+    const typing =
+      t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || (t instanceof HTMLElement && t.isContentEditable);
     // P, V and G play the PC speaker sound, the .voc, or the effect as the game would
     if (!e.ctrlKey && !e.metaKey && !e.altKey && !typing && !document.querySelector('dialog[open]') && host.isConnected) {
       const k = e.key.toLowerCase();

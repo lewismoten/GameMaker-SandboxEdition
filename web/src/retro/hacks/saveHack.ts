@@ -56,7 +56,28 @@ import {
 } from '../../project/saveData';
 import type { GameFiles } from '../../project/files';
 import { gameFilesOf, gamesAndSaves, hackGames, type GameWithSaves } from './saveGames';
-import { BG, BRIGHT, DIM, GREEN, HEAD, RED, TEXT, YELLOW, cell, confirm, dosStamp, editLine, frame, keyBar, messageBox, num, pickList, put, statusLine, type ListRow } from './dosUi';
+import {
+  BG,
+  BRIGHT,
+  DIM,
+  GREEN,
+  HEAD,
+  RED,
+  TEXT,
+  YELLOW,
+  cell,
+  confirm,
+  dosStamp,
+  editLine,
+  frame,
+  keyBar,
+  messageBox,
+  num,
+  pickList,
+  put,
+  statusLine,
+  type ListRow,
+} from './dosUi';
 import { deskDate } from '../dos/vfs';
 
 const RULE = '='.repeat(79);
@@ -118,7 +139,12 @@ export async function runSaveHack(h: RetroHost): Promise<void> {
     chrome('~\x18\x19~ Choose  ~Enter~ Select game  ~Esc~ Quit');
     frame(h, 1, TOP, 78, BOTTOM, 'Select a game');
     put(h, 3, TOP + 1, HEAD, cell('Name', 10) + cell('Game', 40) + cell('Saves', 8) + 'Scores');
-    statusLine(h, withData ? `${withData} game${withData === 1 ? '' : 's'} with saved data found. Pick any game to start a new save.` : 'No saved games found! Pick a game to start a new save in it.');
+    statusLine(
+      h,
+      withData
+        ? `${withData} game${withData === 1 ? '' : 's'} with saved data found. Pick any game to start a new save.`
+        : 'No saved games found! Pick a game to start a new save in it.',
+    );
     const rows: ListRow[] = games.map((g) => {
       const saves = Object.keys(g.files).filter((n) => /^game\d\.sav$/i.test(n)).length;
       const his = Object.keys(g.files).some((n) => /\.his$/i.test(n));
@@ -131,7 +157,13 @@ export async function runSaveHack(h: RetroHost): Promise<void> {
     statusLine(h, `Loading ${g.dos}...`);
     const files = await gameFilesOf(g);
     const gam = g.gam && files ? (files.mainGame(g.gam) ?? g.gam) : g.gam;
-    const o: Open = { game: g, gam, disk: files, saves: await loadGameSaves(g.save, { gam, disk: files }), labels: files && gam ? gameLabels(files, gam) : undefined };
+    const o: Open = {
+      game: g,
+      gam,
+      disk: files,
+      saves: await loadGameSaves(g.save, { gam, disk: files }),
+      labels: files && gam ? gameLabels(files, gam) : undefined,
+    };
     await slotMenu(h, o, chrome, original);
     g.files = o.saves.files;
   }
@@ -161,14 +193,32 @@ async function slotMenu(h: RetroHost, o: Open, chrome: Chrome, original: Origina
       if (!sl.save) return { text: file + cell('(empty)', 21) + 'Enter: start a new save here', a: DIM };
       const sv = sl.save;
       const lvl = o.labels?.sceneName(sv.doscene);
-      return { text: file + cell(sl.name || '(no name)', 21) + cell(`${sv.doscene}${lvl ? ` ${lvl}` : ''}`, 21) + cell(num(sv.world.ci.score), 12) + num(sv.world.ci.lives) };
+      return {
+        text:
+          file +
+          cell(sl.name || '(no name)', 21) +
+          cell(`${sv.doscene}${lvl ? ` ${lvl}` : ''}`, 21) +
+          cell(num(sv.world.ci.score), 12) +
+          num(sv.world.ci.lives),
+      };
     });
     const hsName = (o.saves.highScoreFile ?? (o.game.gam ? highScoreFileName(o.game.gam) : 'scores.his')).toUpperCase();
     const orig = (await listBackups(o.game.save)).find((b) => b.by === 'SAVEHACK' && b.label === ORIGINAL);
     rows.push({ text: '', selectable: false });
     rows.push({ text: `High-score table (${hsName})${o.saves.highScoresFromDisk ? ' - as it came on the disk' : ''}`, a: YELLOW });
-    rows.push(orig ? { text: `Restore original saves (backed up ${dosStamp(deskDate(orig.when))})`, a: YELLOW } : { text: 'Restore original saves (nothing changed yet)', a: DIM, selectable: false });
-    statusLine(h, note || (o.saves.slots.some((sl) => sl.save) ? 'Pick a saved game to edit, or an empty slot for a new save.' : 'No saved games yet: pick an empty slot to start one.'), note.startsWith('ERROR') ? RED : note ? GREEN : TEXT);
+    rows.push(
+      orig
+        ? { text: `Restore original saves (backed up ${dosStamp(deskDate(orig.when))})`, a: YELLOW }
+        : { text: 'Restore original saves (nothing changed yet)', a: DIM, selectable: false },
+    );
+    statusLine(
+      h,
+      note ||
+        (o.saves.slots.some((sl) => sl.save)
+          ? 'Pick a saved game to edit, or an empty slot for a new save.'
+          : 'No saved games yet: pick an empty slot to start one.'),
+      note.startsWith('ERROR') ? RED : note ? GREEN : TEXT,
+    );
     note = '';
     const first = rows.findIndex((r) => r.selectable !== false);
     const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: cur || first, hotkeys: ['R', 'N'] });
@@ -192,7 +242,8 @@ async function slotMenu(h: RetroHost, o: Open, chrome: Chrome, original: Origina
         note = 'Nothing to restore: SAVEHACK has not changed this game.';
         continue;
       }
-      if (!(await confirm(h, [`Put back ${o.game.title}'s saves as they were`, `on ${dosStamp(deskDate(orig.when))}? Everything saved since is lost.`]))) continue;
+      if (!(await confirm(h, [`Put back ${o.game.title}'s saves as they were`, `on ${dosStamp(deskDate(orig.when))}? Everything saved since is lost.`])))
+        continue;
       await restoreBackup(orig.id, { by: 'SAVEHACK' });
       await reload(o);
       note = 'Original saves restored.';
@@ -251,8 +302,22 @@ function blockText(b: Block | undefined, n: number, labels: GameLabels | undefin
 
 // the 16 text colors (6-bit), for drawing a block in half-block characters
 const VGA16 = [
-  [0, 0, 0], [0, 0, 42], [0, 42, 0], [0, 42, 42], [42, 0, 0], [42, 0, 42], [42, 21, 0], [42, 42, 42],
-  [21, 21, 21], [21, 21, 63], [21, 63, 21], [21, 63, 63], [63, 21, 21], [63, 21, 63], [63, 63, 21], [63, 63, 63],
+  [0, 0, 0],
+  [0, 0, 42],
+  [0, 42, 0],
+  [0, 42, 42],
+  [42, 0, 0],
+  [42, 0, 42],
+  [42, 21, 0],
+  [42, 42, 42],
+  [21, 21, 21],
+  [21, 21, 63],
+  [21, 63, 21],
+  [21, 63, 63],
+  [63, 21, 21],
+  [63, 21, 63],
+  [63, 63, 21],
+  [63, 63, 63],
 ];
 
 function nearest16(pal: Palette, i: number): number {
@@ -350,7 +415,11 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
     frame(h, 1, TOP, 78, BOTTOM, `${o.game.dos} ${file}${sl.name ? ` "${sl.name}"` : ''}`);
     scr(h).fill(PANE - 2, TOP + 1, PANE - 2, BOTTOM - 1, BG, 179);
     const fields = saveFields(save, labels);
-    const edited = new Set(saveFields(before, labels).filter((f) => getField(before, f.id) !== getField(save, f.id)).map((f) => f.id));
+    const edited = new Set(
+      saveFields(before, labels)
+        .filter((f) => getField(before, f.id) !== getField(save, f.id))
+        .map((f) => f.id),
+    );
     const rows: ListRow[] = [];
     const rowField: (SaveField | undefined)[] = [];
     let group = '';
@@ -364,10 +433,17 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
       const warn = !unused && fieldWarnings(save, f, labels).length ? '!' : ' ';
       const mark = edited.has(f.id) ? '*' : ' ';
       const fixed = !f.editable && f.id !== 'scene';
-      rows.push({ text: cell(f.label, 30) + valueText(f, save).padStart(13) + mark + warn, a: fixed || unused ? DIM : warn === '!' ? RED : edited.has(f.id) ? YELLOW : BRIGHT });
+      rows.push({
+        text: cell(f.label, 30) + valueText(f, save).padStart(13) + mark + warn,
+        a: fixed || unused ? DIM : warn === '!' ? RED : edited.has(f.id) ? YELLOW : BRIGHT,
+      });
       rowField.push(f);
     }
-    statusLine(h, note || (dirty() ? 'Changed (*). F2 saves.' : 'Pick a value and press Enter.'), note.startsWith('WARNING') || note.startsWith('ERROR') ? RED : dirty() ? YELLOW : TEXT);
+    statusLine(
+      h,
+      note || (dirty() ? 'Changed (*). F2 saves.' : 'Pick a value and press Enter.'),
+      note.startsWith('WARNING') || note.startsWith('ERROR') ? RED : dirty() ? YELLOW : TEXT,
+    );
     note = '';
     const pick = await pickList(h, rows, {
       x: 2,
@@ -393,7 +469,9 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
     }
     if (pick.key === 'M') {
       const changed = maxAll(save, labels);
-      note = changed.length ? `Max all: ${changed.length} stat${changed.length === 1 ? '' : 's'} set as high as the game handles well.` : 'Every stat is at its maximum already.';
+      note = changed.length
+        ? `Max all: ${changed.length} stat${changed.length === 1 ? '' : 's'} set as high as the game handles well.`
+        : 'Every stat is at its maximum already.';
       continue;
     }
     if (f?.id === 'scene' && pick.key === 'Enter') {
@@ -465,7 +543,9 @@ async function pickItem(h: RetroHost, o: Open, save: SavedGame, f: SaveField): P
   let all = !blocks || pickUps.length < 2;
   for (;;) {
     const values = [BACKBL, ...(all ? every : pickUps)];
-    const rows: ListRow[] = values.map((n) => (n === BACKBL ? { text: '(empty)' } : { text: blockText(blocks?.[n], n, labels, scene), a: blocks?.[n]?.obj ? BRIGHT : DIM }));
+    const rows: ListRow[] = values.map((n) =>
+      n === BACKBL ? { text: '(empty)' } : { text: blockText(blocks?.[n], n, labels, scene), a: blocks?.[n]?.obj ? BRIGHT : DIM },
+    );
     frame(h, 1, TOP, 78, BOTTOM, `${f.label}: choose an item`);
     scr(h).fill(PANE - 2, TOP + 1, PANE - 2, BOTTOM - 1, BG, 179);
     keyBar(h, `~\x18\x19~ Choose  ~Enter~ Put in the slot  ~Tab~ ${all ? 'Pick-ups only' : 'Every block'}  ~Esc~ Cancel`);
@@ -481,7 +561,9 @@ async function pickItem(h: RetroHost, o: Open, save: SavedGame, f: SaveField): P
         scr(h).fill(PANE, TOP + 1, PANE + PANE_W, BOTTOM - 1, BG);
         if (!i) return put(h, PANE, TOP + 1, DIM, 'An empty slot');
         drawBlock(h, PANE + 2, TOP + 2, blocks?.[values[i]], pal);
-        wrapWords(blockText(blocks?.[values[i]], values[i], labels, scene).replace(/^Block +\d+ +/, ''), PANE_W).forEach((l, k) => put(h, PANE, TOP + 13 + k, TEXT, l));
+        wrapWords(blockText(blocks?.[values[i]], values[i], labels, scene).replace(/^Block +\d+ +/, ''), PANE_W).forEach((l, k) =>
+          put(h, PANE, TOP + 13 + k, TEXT, l),
+        );
       },
     });
     if (pick.key === 'Tab') {
@@ -491,7 +573,13 @@ async function pickItem(h: RetroHost, o: Open, save: SavedGame, f: SaveField): P
     if (pick.key !== 'Enter') return '';
     const n = values[pick.i];
     const b = blocks?.[n];
-    if (n !== BACKBL && b && !b.obj && !(await confirm(h, ['WARNING: this block is not one the hero can pick up.', 'It shows on the F2 screen, and dropping it', 'puts it on the map.']))) return 'Not changed.';
+    if (
+      n !== BACKBL &&
+      b &&
+      !b.obj &&
+      !(await confirm(h, ['WARNING: this block is not one the hero can pick up.', 'It shows on the F2 screen, and dropping it', 'puts it on the map.']))
+    )
+      return 'Not changed.';
     setField(save, f.id, n, labels);
     return n === BACKBL ? `${f.label} emptied.` : `${f.label}: block ${n}.`;
   }
@@ -507,7 +595,16 @@ async function pickLevel(h: RetroHost, o: Open, save: SavedGame): Promise<SavedG
   statusLine(h, 'The hero starts where the game enters the level. Score, lives, items stay.');
   put(h, 3, TOP + 1, HEAD, cell('Level', 50) + 'Starts at');
   const rows: ListRow[] = levels.map((l) => ({ text: cell(levelLabel(l), 50) + `${l.to.x},${l.to.y}`, a: l.scene === save.doscene ? YELLOW : BRIGHT }));
-  const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: Math.max(0, levels.findIndex((l) => l.scene === save.doscene)) });
+  const pick = await pickList(h, rows, {
+    x: 2,
+    y: TOP + 2,
+    w: 75,
+    h: BOTTOM - TOP - 3,
+    cur: Math.max(
+      0,
+      levels.findIndex((l) => l.scene === save.doscene),
+    ),
+  });
   if (pick.key !== 'Enter') return '';
   try {
     return changeSaveLevel(o.disk, o.gam, save, levels[pick.i].scene);
@@ -540,9 +637,16 @@ async function highScores(h: RetroHost, o: Open, chrome: Chrome, original: Origi
     put(h, 4, TOP + 2, HEAD, cell('#', 5) + cell('Name', HIGH_SCORE_NAME_MAX + 4) + 'Score'.padStart(14));
     const rows: ListRow[] = table.entries.map((e, i) => {
       const warn = highScoreWarnings(e);
-      return { text: cell(`${i + 1}.`, 5) + cell(e.name || '(none)', HIGH_SCORE_NAME_MAX + 4) + num(e.score).padStart(14) + (warn.length ? '  !' : ''), a: warn.length ? RED : e.name ? BRIGHT : DIM };
+      return {
+        text: cell(`${i + 1}.`, 5) + cell(e.name || '(none)', HIGH_SCORE_NAME_MAX + 4) + num(e.score).padStart(14) + (warn.length ? '  !' : ''),
+        a: warn.length ? RED : e.name ? BRIGHT : DIM,
+      };
     });
-    statusLine(h, note || (dirty() ? 'Changed. F2 saves.' : 'Pick an entry and press Enter.'), note.startsWith('WARNING') || note.startsWith('ERROR') ? RED : TEXT);
+    statusLine(
+      h,
+      note || (dirty() ? 'Changed. F2 saves.' : 'Pick an entry and press Enter.'),
+      note.startsWith('WARNING') || note.startsWith('ERROR') ? RED : TEXT,
+    );
     note = '';
     const pick = await pickList(h, rows, {
       x: 3,
@@ -553,7 +657,9 @@ async function highScores(h: RetroHost, o: Open, chrome: Chrome, original: Origi
       hotkeys: ['Delete', 'F2', 'S'],
       onMove: (i) => {
         scr(h).fill(58, TOP + 2, 77, BOTTOM - 1, BG);
-        highScoreWarnings(table.entries[i]).flatMap((w) => wrapWords(`! ${w}`, 19)).forEach((l, k) => put(h, 58, TOP + 2 + k, RED, l));
+        highScoreWarnings(table.entries[i])
+          .flatMap((w) => wrapWords(`! ${w}`, 19))
+          .forEach((l, k) => put(h, 58, TOP + 2 + k, RED, l));
       },
     });
     cur = pick.i;
@@ -588,7 +694,8 @@ async function highScores(h: RetroHost, o: Open, chrome: Chrome, original: Origi
       await messageBox(h, ['ERROR: a score must be between', `${num(SCORE_MIN)} and ${num(SCORE_MAX)}.`, '', 'Press any key.']);
       continue;
     }
-    if (n > 999_999_999 && !(await confirm(h, ['WARNING: values above 999,999,999 may overflow', 'the 10 columns the Top Ten screen gives a score.']))) continue;
+    if (n > 999_999_999 && !(await confirm(h, ['WARNING: values above 999,999,999 may overflow', 'the 10 columns the Top Ten screen gives a score.'])))
+      continue;
     e.name = name.slice(0, HIGH_SCORE_NAME_MAX);
     e.score = n;
     const warn = highScoreWarnings(e);

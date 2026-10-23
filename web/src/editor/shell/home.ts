@@ -127,7 +127,13 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const libTitle = h('h2', { id: 'lib-title' });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
-  const leadMore = h('button', { type: 'button', class: 'lib-lead-more', 'aria-expanded': 'false', 'aria-controls': 'lib-lead', onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true') });
+  const leadMore = h('button', {
+    type: 'button',
+    class: 'lib-lead-more',
+    'aria-expanded': 'false',
+    'aria-controls': 'lib-lead',
+    onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true'),
+  });
   const libLead = h('p', { class: 'lead', id: 'lib-lead' }, libLeadText, leadMore);
   const showLead = (all: boolean) => {
     const info = CATEGORIES.find((x) => x.id === current)!;
@@ -163,7 +169,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     h(
       'p',
       { class: 'lib-drop-hint' },
-      h('button', { type: 'button', class: 'lib-drop-folder', 'aria-label': 'Open a game folder to import', onclick: () => void importPicked(nav, { directory: true }) }, 'or open a folder…'),
+      h(
+        'button',
+        { type: 'button', class: 'lib-drop-folder', 'aria-label': 'Open a game folder to import', onclick: () => void importPicked(nav, { directory: true }) },
+        'or open a folder…',
+      ),
     ),
   );
 
@@ -191,13 +201,18 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const games = new Map<string, HomeGame>();
   const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
   let sort = savedSort();
-  const sorted = () => (sort === 'name' ? [...projects].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })) : projects);
+  const sorted = () =>
+    sort === 'name' ? [...projects].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })) : projects;
   const mine = (p: (typeof projects)[number]) => remember(projectGame(p, findOriginal(p, catalog)));
   /** Your games made here (My games) or imported. */
   const own = (c: Category) => (c === 'mine' || c === 'imported' ? projects.filter((p) => isImported(p.id) === (c === 'imported')) : []);
   const isOwn = (c: Category) => c === 'mine' || c === 'imported';
   const gamesOf = (c: Category): HomeGame[] =>
-    isOwn(c) ? sorted().filter((p) => isImported(p.id) === (c === 'imported')).map(mine) : entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind)));
+    isOwn(c)
+      ? sorted()
+          .filter((p) => isImported(p.id) === (c === 'imported'))
+          .map(mine)
+      : entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind)));
   /** The collection a game is listed in. */
   const categoryOf = (g: HomeGame): Category => (g.project && isImported(g.project.id) ? 'imported' : g.kind);
   // My games in the order you like: the one edited last first, or by name
@@ -243,14 +258,16 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     // a collection's heading only while one of its games shows
     for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
       let any = false;
-      for (let e = sub.nextElementSibling as HTMLElement | null; e && !e.classList.contains('lib-sub'); e = e.nextElementSibling as HTMLElement | null) any ||= e.classList.contains('card') && !e.hidden;
+      for (let e = sub.nextElementSibling as HTMLElement | null; e && !e.classList.contains('lib-sub'); e = e.nextElementSibling as HTMLElement | null)
+        any ||= e.classList.contains('card') && !e.hidden;
       sub.hidden = !any;
     }
     tiles.querySelector('.lib-none')?.remove();
     pack();
     if (!q || shown) return;
     // nothing here: point to the collections that have it
-    const elsewhere = shownCats().filter((c) => c.id !== current)
+    const elsewhere = shownCats()
+      .filter((c) => c.id !== current)
       .map((c) => ({ c, n: gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
       .filter((x) => x.n);
     tiles.append(
@@ -259,7 +276,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         { class: 'meta lib-none', role: 'status' },
         `No game in ${CATEGORIES.find((c) => c.id === current)!.name} matches “${search.value.trim()}”.`,
         ...elsewhere.map(({ c, n }) =>
-          h('button', { type: 'button', class: 'lib-elsewhere', onclick: () => void select(c.id, true).then(() => document.getElementById(`lib-tab-${c.id}`)?.focus()) }, `${c.name} has ${n} →`),
+          h(
+            'button',
+            { type: 'button', class: 'lib-elsewhere', onclick: () => void select(c.id, true).then(() => document.getElementById(`lib-tab-${c.id}`)?.focus()) },
+            `${c.name} has ${n} →`,
+          ),
         ),
       ),
     );
@@ -283,7 +304,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     packedCols = cols;
     const groups = heads.map((head) => ({ head, items: [...tiles.querySelectorAll<HTMLElement>(`:scope > .card[data-group="${head.dataset.group}"]`)] }));
     const order: HTMLElement[] = [];
-    for (const p of packCollections(groups.map((g) => g.items.length), cols)) {
+    for (const p of packCollections(
+      groups.map((g) => g.items.length),
+      cols,
+    )) {
       const { head, items } = groups[p.index];
       head.style.gridArea = `${p.head.row} / ${p.head.col} / auto / span ${p.head.span}`;
       items.forEach((el, i) => (el.style.gridArea = `${p.tiles[i].row} / ${p.tiles[i].col}`));
@@ -377,11 +401,15 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       const way = all.map((el) => ({ el, b: box(el) })).filter(({ b }) => (down ? b.top > r.top + 4 : b.top < r.top - 4));
       if (!way.length) return -1;
       const row = down ? Math.min(...way.map(({ b }) => b.top)) : Math.max(...way.map(({ b }) => b.top));
-      const near = way.filter(({ b }) => Math.abs(b.top - row) < 4).sort((a, b) => Math.abs(a.b.left + a.b.width / 2 - x) - Math.abs(b.b.left + b.b.width / 2 - x));
+      const near = way
+        .filter(({ b }) => Math.abs(b.top - row) < 4)
+        .sort((a, b) => Math.abs(a.b.left + a.b.width / 2 - x) - Math.abs(b.b.left + b.b.width / 2 - x));
       return all.indexOf(near[0].el);
     };
     const j =
-      e.key === 'ArrowUp' || e.key === 'ArrowDown' ? vertical(e.key === 'ArrowDown') : { ArrowLeft: i - 1, ArrowRight: i + 1, Home: 0, End: all.length - 1 }[e.key]!;
+      e.key === 'ArrowUp' || e.key === 'ArrowDown'
+        ? vertical(e.key === 'ArrowDown')
+        : { ArrowLeft: i - 1, ArrowRight: i + 1, Home: 0, End: all.length - 1 }[e.key]!;
     if (j < 0 || j >= all.length) return;
     e.preventDefault();
     all[j].focus();
@@ -449,8 +477,16 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
                 'div',
                 { class: 'toolbar' },
                 h('button', { class: 'primary', type: 'button', onclick: () => void newGame(nav) }, '+ Make a new game'),
-                h('button', { type: 'button', onclick: () => void select('gameware', true).then(() => document.getElementById('lib-tab-gameware')?.focus()) }, 'Browse Gameware'),
-                h('button', { type: 'button', onclick: () => void select('sandbox', true).then(() => document.getElementById('lib-tab-sandbox')?.focus()) }, 'Browse Sandbox'),
+                h(
+                  'button',
+                  { type: 'button', onclick: () => void select('gameware', true).then(() => document.getElementById('lib-tab-gameware')?.focus()) },
+                  'Browse Gameware',
+                ),
+                h(
+                  'button',
+                  { type: 'button', onclick: () => void select('sandbox', true).then(() => document.getElementById('lib-tab-sandbox')?.focus()) },
+                  'Browse Sandbox',
+                ),
               ),
             )
           : c === 'imported'
@@ -458,7 +494,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
                 'div',
                 { class: 'lib-empty' },
                 h('p', { class: 'lib-empty-title' }, 'No imported games yet'),
-                h('p', { class: 'meta' }, 'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you drop it on the import tile or open it.'),
+                h(
+                  'p',
+                  { class: 'meta' },
+                  'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you drop it on the import tile or open it.',
+                ),
               )
             : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
       ];
@@ -550,12 +590,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, howBtn),
         tiles,
       ),
-      h(
-        'section',
-        { class: 'home-start', 'aria-labelledby': 'home-start-title' },
-        h('h2', { id: 'home-start-title' }, 'Getting started'),
-        ...startBody(),
-      ),
+      h('section', { class: 'home-start', 'aria-labelledby': 'home-start-title' }, h('h2', { id: 'home-start-title' }, 'Getting started'), ...startBody()),
     ),
   );
 
@@ -605,7 +640,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     if (saves) top.openSaves(saves);
   } else {
     // your own games live in the browser that made them: a link to one opens only there
-    if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: its Download button saves it.');
+    if (hashKey().startsWith('my:'))
+      toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: its Download button saves it.');
     showStart();
   }
   // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too

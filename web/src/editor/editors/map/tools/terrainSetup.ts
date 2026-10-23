@@ -44,7 +44,12 @@ export function editTerrain(ctx: SetupCtx, start?: Terrain, guessOutside = 0): P
     const refresh = () => {
       const scratch = new Uint8Array(PW * PH).fill(t.outside);
       paintTerrain(scratch, t, previewCells(t.kind), false, PW, PH);
-      drawPreview(preview, ctx, Array.from({ length: PH }, (_, y) => [...scratch.slice(y * PW, y * PW + PW)]), t.outside);
+      drawPreview(
+        preview,
+        ctx,
+        Array.from({ length: PH }, (_, y) => [...scratch.slice(y * PW, y * PW + PW)]),
+        t.outside,
+      );
       const missing = requiredSlots(t.kind).filter((i) => t.tiles[i] < 0).length;
       const clash = t.tiles.includes(t.outside);
       note.textContent = clash
@@ -60,15 +65,31 @@ export function editTerrain(ctx: SetupCtx, start?: Terrain, guessOutside = 0): P
       const need = new Set(requiredSlots(t.kind));
       const make = (i: number) => {
         const s = SLOTS[t.kind][i];
-        const b = slotButton(ctx, s.label, s.mask, () => t.tiles[i], (v) => ((t.tiles[i] = v), refresh()));
+        const b = slotButton(
+          ctx,
+          s.label,
+          s.mask,
+          () => t.tiles[i],
+          (v) => ((t.tiles[i] = v), refresh()),
+        );
         if (need.has(i)) b.classList.add('needed');
         slots[i] = b;
         return b;
       };
       if (t.kind === 'edges') {
         template.replaceChildren(
-          h('div', { class: 'mt-group' }, h('span', { class: 'meta' }, 'Fill, edges and outer corners'), h('div', { class: 'mt-grid', style: '--cols:3' }, ...[0, 1, 2, 3, 4, 5, 6, 7, 8].map(make))),
-          h('div', { class: 'mt-group' }, h('span', { class: 'meta' }, 'Inner corners (optional)'), h('div', { class: 'mt-grid', style: '--cols:2' }, ...[9, 10, 11, 12].map(make))),
+          h(
+            'div',
+            { class: 'mt-group' },
+            h('span', { class: 'meta' }, 'Fill, edges and outer corners'),
+            h('div', { class: 'mt-grid', style: '--cols:3' }, ...[0, 1, 2, 3, 4, 5, 6, 7, 8].map(make)),
+          ),
+          h(
+            'div',
+            { class: 'mt-group' },
+            h('span', { class: 'meta' }, 'Inner corners (optional)'),
+            h('div', { class: 'mt-grid', style: '--cols:2' }, ...[9, 10, 11, 12].map(make)),
+          ),
         );
       } else {
         const cols = t.kind === 'bits16' ? 4 : t.kind === 'path' ? 6 : 8;
@@ -98,7 +119,9 @@ export function editTerrain(ctx: SetupCtx, start?: Terrain, guessOutside = 0): P
           });
           slots.forEach(refreshSlot);
           refresh();
-          toast(n ? `Found ${n} block${n === 1 ? '' : 's'} by their edges. Check the preview.` : 'No more blocks matched by their edges; drop them in by hand.');
+          toast(
+            n ? `Found ${n} block${n === 1 ? '' : 's'} by their edges. Check the preview.` : 'No more blocks matched by their edges; drop them in by hand.',
+          );
         },
       },
       '✨ Guess the rest from the art',
@@ -140,8 +163,17 @@ export function editTerrain(ctx: SetupCtx, start?: Terrain, guessOutside = 0): P
           close({ ...t, name: name.value.trim() });
         },
       },
-      h('p', { class: 'hint' }, 'Drop your blocks into the template: click a slot and choose its block. The little drawings show where the terrain (green) meets the ground (brown).'),
-      h('div', { class: 'toolbar' }, h('label', { class: 'field' }, h('span', null, 'Name'), name), h('div', { class: 'field' }, h('span', null, 'Ground'), ground)),
+      h(
+        'p',
+        { class: 'hint' },
+        'Drop your blocks into the template: click a slot and choose its block. The little drawings show where the terrain (green) meets the ground (brown).',
+      ),
+      h(
+        'div',
+        { class: 'toolbar' },
+        h('label', { class: 'field' }, h('span', null, 'Name'), name),
+        h('div', { class: 'field' }, h('span', null, 'Ground'), ground),
+      ),
       kindBar,
       h('div', { class: 'mt-body' }, template, h('div', { class: 'stack mt-side' }, h('strong', null, 'Preview'), preview, note, guess)),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), save),

@@ -11,7 +11,29 @@ import type { RetroHost } from '../host';
 import { attr, COLS, ROWS } from '../text/textScreen';
 import { toCp437 } from '../text/cp437';
 import { resolvePath } from '../dos/vfs';
-import { BAR, BG, BRIGHT, DIM, FRAME, GREEN, HEAD, RED, TEXT, WARN, YELLOW, cell, editLine, frame, keyBar, messageBox, num, pickList, put, statusLine, type ListRow } from '../hacks/dosUi';
+import {
+  BAR,
+  BG,
+  BRIGHT,
+  DIM,
+  FRAME,
+  GREEN,
+  HEAD,
+  RED,
+  TEXT,
+  WARN,
+  YELLOW,
+  cell,
+  editLine,
+  frame,
+  keyBar,
+  messageBox,
+  num,
+  pickList,
+  put,
+  statusLine,
+  type ListRow,
+} from '../hacks/dosUi';
 import { leafAt, sectionAt, type Leaf, type Structure } from './structure';
 import { describe } from './structureMedia';
 import { listFolder, openFile, pathOf, type HexFile } from './hexFiles';
@@ -114,7 +136,9 @@ async function pickFile(h: RetroHost, start: { drive: string; parts: string[] })
     const entries: Entry[] = [
       ...(parts.length ? [{ label: `${cell('..', 13)}  <UP-DIR>`, kind: 'up' as const, name: '..' }] : []),
       ...list.filter((x) => x.dir).map((e) => ({ label: `${cell(e.name, 13)}  <DIR>`, kind: 'dir' as const, name: e.name })),
-      ...list.filter((x) => !x.dir).map((e) => ({ label: `${cell(e.name, 13)}${num(e.size).padStart(10)}${e.save ? '  saved by the game' : ''}`, kind: 'file' as const, name: e.name })),
+      ...list
+        .filter((x) => !x.dir)
+        .map((e) => ({ label: `${cell(e.name, 13)}${num(e.size).padStart(10)}${e.save ? '  saved by the game' : ''}`, kind: 'file' as const, name: e.name })),
       ...['A', 'C', 'D'].map((d) => ({ label: `[-${d}-]`, kind: 'drive' as const, name: d })),
     ];
     const rows: ListRow[] = entries.map((e) => ({ text: e.label, a: e.kind === 'file' ? BRIGHT : YELLOW }));
@@ -490,7 +514,12 @@ function draw(h: RetroHost, t: State): void {
   }
   statusLine(h, t.note || position(t), t.note ? t.noteAttr : TEXT);
   t.noteAttr = TEXT;
-  keyBar(h, t.editing ? '~Esc~ View  ~Tab~ Hex/ASCII  ~0-9 A-F~ Type over  ~Bksp~ Back  ~F9~ Undo  ~F10~ Save' : '~F1~ Help ~F2~ Struct ~F3~ Fields ~G~ Goto ~F~ Find ~Tab~ Pane ~E~ Edit ~F10~ Save ~Esc~ Quit');
+  keyBar(
+    h,
+    t.editing
+      ? '~Esc~ View  ~Tab~ Hex/ASCII  ~0-9 A-F~ Type over  ~Bksp~ Back  ~F9~ Undo  ~F10~ Save'
+      : '~F1~ Help ~F2~ Struct ~F3~ Fields ~G~ Goto ~F~ Find ~Tab~ Pane ~E~ Edit ~F10~ Save ~Esc~ Quit',
+  );
 }
 
 function position(t: State): string {
@@ -531,7 +560,12 @@ function panel(h: RetroHost, t: State, cur: Leaf | undefined): void {
   line(1, 'Field', cur.name ? `${cur.group} ► ${cur.name}` : cur.group, attr(COLORS[cur.color % COLORS.length], 1));
   line(2, 'Offset', `${hex(cur.off, 8)}h (${num(cur.off)})  ${num(cur.len)} byte${cur.len === 1 ? '' : 's'}  ${TYPE_NAMES[cur.type]}`);
   const v = cur.value;
-  const shown = v === undefined ? `${cur.len > 16 ? `${num(cur.len)} raw bytes` : [...b.subarray(cur.off, cur.off + cur.len)].map((x) => hex(x)).join(' ')}` : typeof v === 'string' ? `"${v}"` : `${v}  (${hex(v < 0 ? v + 2 ** (8 * Math.min(cur.len, 4)) : v, cur.len * 2)}h)`;
+  const shown =
+    v === undefined
+      ? `${cur.len > 16 ? `${num(cur.len)} raw bytes` : [...b.subarray(cur.off, cur.off + cur.len)].map((x) => hex(x)).join(' ')}`
+      : typeof v === 'string'
+        ? `"${v}"`
+        : `${v}  (${hex(v < 0 ? v + 2 ** (8 * Math.min(cur.len, 4)) : v, cur.len * 2)}h)`;
   line(3, 'Value', `${shown}${cur.note ? `  - ${cur.note}` : ''}`, YELLOW);
 }
 

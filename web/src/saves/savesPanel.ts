@@ -90,7 +90,8 @@ function parseView(s: string | undefined): View {
   return Number.isInteger(n) && n >= 1 && n <= SAVE_SLOTS ? n - 1 : 0;
 }
 /** "0 to 32,767; the game handles up to 9,999 well." */
-const rangeText = (f: SaveField, lower = false) => `${lower ? 'from' : 'From'} ${fmt(f.min)} to ${fmt(f.max)}${f.safeMax < f.max ? `; the game handles up to ${fmt(f.safeMax)} well` : ''}.`;
+const rangeText = (f: SaveField, lower = false) =>
+  `${lower ? 'from' : 'From'} ${fmt(f.min)} to ${fmt(f.max)}${f.safeMax < f.max ? `; the game handles up to ${fmt(f.safeMax)} well` : ''}.`;
 const kb = (n: number) => `${fmt(Math.max(1, Math.round(n / 1024)))} KB`;
 
 async function confirmDialog(title: string, text: string, ok: string, danger = false): Promise<boolean> {
@@ -174,7 +175,12 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
           'aria-current': on ? 'true' : undefined,
           onclick: () => go(v),
         },
-        h('span', { class: 'sv-nav-title' }, title, extra ? h('span', { class: 'sv-dot', title: 'Unsaved changes', 'aria-label': '(unsaved changes)' }, '●') : null),
+        h(
+          'span',
+          { class: 'sv-nav-title' },
+          title,
+          extra ? h('span', { class: 'sv-dot', title: 'Unsaved changes', 'aria-label': '(unsaved changes)' }, '●') : null,
+        ),
         h('span', { class: 'sv-nav-sub' }, sub),
       );
     };
@@ -225,12 +231,20 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       warn.hidden = !w.length;
     };
     if (f.type === 'info')
-      return h('div', { class: 'sv-field info' }, h('span', { class: 'sv-label' }, f.label), h('span', { class: 'sv-info' }, f.id === 'scene' ? f.note : String(v ?? '—')));
+      return h(
+        'div',
+        { class: 'sv-field info' },
+        h('span', { class: 'sv-label' }, f.label),
+        h('span', { class: 'sv-info' }, f.id === 'scene' ? f.note : String(v ?? '—')),
+      );
     if (f.type === 'item') {
       const blocks = labels?.blocks(save.doscene);
       const pal = labels?.palette(save.doscene);
       const n = typeof v === 'number' ? v : BACKBL;
-      const pic = blocks?.[n] && pal && n !== BACKBL ? blockCanvas(blocks[n].pixels, pal, { className: 'sv-pic' }) : h('span', { class: 'sv-pic empty', 'aria-hidden': 'true' }, '·');
+      const pic =
+        blocks?.[n] && pal && n !== BACKBL
+          ? blockCanvas(blocks[n].pixels, pal, { className: 'sv-pic' })
+          : h('span', { class: 'sv-pic empty', 'aria-hidden': 'true' }, '·');
       const btn = h(
         'button',
         {
@@ -241,10 +255,25 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
           'aria-describedby': [groupTip, `${id}-warn`].filter(Boolean).join(' '),
           onclick: async () => {
             let next: number | undefined;
-            if (blocks && pal) next = await chooseBlock(`${f.label}: what the hero carries`, blocks, pal, n, [{ value: BACKBL, label: 'empty', icon: '·' }], false, (b, i) => !!b.obj || i === n);
+            if (blocks && pal)
+              next = await chooseBlock(
+                `${f.label}: what the hero carries`,
+                blocks,
+                pal,
+                n,
+                [{ value: BACKBL, label: 'empty', icon: '·' }],
+                false,
+                (b, i) => !!b.obj || i === n,
+              );
             else {
               const s = await modal<string>(f.label, (close) => {
-                const input = h('input', { type: 'number', min: 0, max: BACKBL, value: String(n), 'aria-label': 'Block number (150 = empty)' }) as HTMLInputElement;
+                const input = h('input', {
+                  type: 'number',
+                  min: 0,
+                  max: BACKBL,
+                  value: String(n),
+                  'aria-label': 'Block number (150 = empty)',
+                }) as HTMLInputElement;
                 return [input, h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(input.value) }, 'OK'))];
               });
               next = s === undefined ? undefined : Number(s);
@@ -321,11 +350,26 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         h('header', { class: 'sv-head' }, title),
         s.error
           ? h('p', { class: 'sv-empty' }, `${s.error} `, 'You can download it as it is, or delete it.')
-          : h('p', { class: 'sv-empty' }, 'Nothing saved here yet. In the game, press F5 to save into this slot, start a new save here as the game begins, or bring in a .sav file.'),
+          : h(
+              'p',
+              { class: 'sv-empty' },
+              'Nothing saved here yet. In the game, press F5 to save into this slot, start a new save here as the game begins, or bring in a .sav file.',
+            ),
         h(
           'div',
           { class: 'sv-tools' },
-          !s.bytes && disk && target.gam ? h('button', { type: 'button', class: 'primary', onclick: () => void newSave(slot), title: 'A saved game at the very start: the first level, with the hero’s starting hit points, lives and items' }, '＋ New save') : null,
+          !s.bytes && disk && target.gam
+            ? h(
+                'button',
+                {
+                  type: 'button',
+                  class: 'primary',
+                  onclick: () => void newSave(slot),
+                  title: 'A saved game at the very start: the first level, with the hero’s starting hit points, lives and items',
+                },
+                '＋ New save',
+              )
+            : null,
           h('button', { type: 'button', onclick: () => void importSav(slot) }, '⇪ Import .sav…'),
           s.bytes ? h('button', { type: 'button', onclick: () => exportSav(slot, s.bytes!) }, '⇩ Download .sav') : null,
           s.bytes ? h('button', { type: 'button', class: 'danger', onclick: () => void removeSlot(slot) }, 'Delete') : null,
@@ -387,31 +431,41 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       if (first) groupTips.set(g, tip(GROUP_LABELS[g], h('p', null, first.note), g === 'inventory' ? null : h('p', null, `Each ${rangeText(first, true)}`)));
     }
     // where the hero is comes first: the picture shows the save at a glance
-    const sets = [...groups].sort(([a], [b]) => Number(b === 'where') - Number(a === 'where')).map(([g, list]) =>
-      g === 'where' ? whereGroup(slot, w, () => refreshState()) : h(
-        'fieldset',
-        { class: `sv-group sv-g-${g}` },
-        h('legend', null, GROUP_LABELS[g], groupTips.get(g)?.el),
-        (() => {
-          const row = (f: SaveField) => fieldRow(slot, save, f, (rebuild) => refreshState(rebuild), groupTips.get(g)?.id);
-          if (g !== 'uses') return h('div', { class: 'sv-fields' }, list.map(row));
-          // the sequences that never count down are folded away
-          const limited = list.filter((f) => getField(save, f.id) !== UNLIMITED);
-          const free = list.filter((f) => getField(save, f.id) === UNLIMITED);
-          return [
-            limited.length ? h('div', { class: 'sv-fields' }, limited.map(row)) : h('p', { class: 'sv-group-note' }, 'Every sequence of this character is unlimited.'),
-            free.length
-              ? h(
-                  'details',
-                  { class: 'sv-more', open: openUnlimited.has(slot), ontoggle: (e: Event) => ((e.target as HTMLDetailsElement).open ? openUnlimited.add(slot) : openUnlimited.delete(slot)) },
-                  h('summary', null, `${free.length} unlimited sequence${free.length === 1 ? '' : 's'}`),
-                  h('div', { class: 'sv-fields' }, free.map(row)),
-                )
-              : null,
-          ];
-        })(),
-      ),
-    );
+    const sets = [...groups]
+      .sort(([a], [b]) => Number(b === 'where') - Number(a === 'where'))
+      .map(([g, list]) =>
+        g === 'where'
+          ? whereGroup(slot, w, () => refreshState())
+          : h(
+              'fieldset',
+              { class: `sv-group sv-g-${g}` },
+              h('legend', null, GROUP_LABELS[g], groupTips.get(g)?.el),
+              (() => {
+                const row = (f: SaveField) => fieldRow(slot, save, f, (rebuild) => refreshState(rebuild), groupTips.get(g)?.id);
+                if (g !== 'uses') return h('div', { class: 'sv-fields' }, list.map(row));
+                // the sequences that never count down are folded away
+                const limited = list.filter((f) => getField(save, f.id) !== UNLIMITED);
+                const free = list.filter((f) => getField(save, f.id) === UNLIMITED);
+                return [
+                  limited.length
+                    ? h('div', { class: 'sv-fields' }, limited.map(row))
+                    : h('p', { class: 'sv-group-note' }, 'Every sequence of this character is unlimited.'),
+                  free.length
+                    ? h(
+                        'details',
+                        {
+                          class: 'sv-more',
+                          open: openUnlimited.has(slot),
+                          ontoggle: (e: Event) => ((e.target as HTMLDetailsElement).open ? openUnlimited.add(slot) : openUnlimited.delete(slot)),
+                        },
+                        h('summary', null, `${free.length} unlimited sequence${free.length === 1 ? '' : 's'}`),
+                        h('div', { class: 'sv-fields' }, free.map(row)),
+                      )
+                    : null,
+                ];
+              })(),
+            ),
+      );
 
     clear(
       main,
@@ -420,8 +474,18 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         { class: 'sv-head' },
         title,
         h('label', { class: 'sv-name', for: `sv-name-${slot}` }, h('span', null, 'Name'), nameInput),
-        h('p', { class: 'sv-where' }, labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`, ` · ${kb(s.bytes?.length ?? 0)}`),
-        h('button', { type: 'button', class: 'sv-about-btn', onclick: () => void aboutSave(slot, fields), 'aria-haspopup': 'dialog' }, h('span', { class: 'sv-about-i', 'aria-hidden': 'true' }, 'i'), 'About this save'),
+        h(
+          'p',
+          { class: 'sv-where' },
+          labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`,
+          ` · ${kb(s.bytes?.length ?? 0)}`,
+        ),
+        h(
+          'button',
+          { type: 'button', class: 'sv-about-btn', onclick: () => void aboutSave(slot, fields), 'aria-haspopup': 'dialog' },
+          h('span', { class: 'sv-about-i', 'aria-hidden': 'true' }, 'i'),
+          'About this save',
+        ),
       ),
       h(
         'div',
@@ -435,13 +499,21 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
             title: 'Every counting value to the most the game handles well (items stay as they are)',
             onclick: () => {
               const changed = maxAll(save, labels);
-              toast(changed.length ? `Raised ${changed.length} value${changed.length === 1 ? '' : 's'}. Save changes to keep them.` : 'Everything is already at its top.');
+              toast(
+                changed.length
+                  ? `Raised ${changed.length} value${changed.length === 1 ? '' : 's'}. Save changes to keep them.`
+                  : 'Everything is already at its top.',
+              );
               render();
             },
           },
           '★ Max all',
         ),
-        h('button', { type: 'button', onclick: () => exportSav(slot, serializeSave(save)), title: 'Download this save (with any changes) as a .sav file' }, '⇩ Download .sav'),
+        h(
+          'button',
+          { type: 'button', onclick: () => exportSav(slot, serializeSave(save)), title: 'Download this save (with any changes) as a .sav file' },
+          '⇩ Download .sav',
+        ),
         h('button', { type: 'button', onclick: () => void importSav(slot) }, '⇪ Import .sav…'),
         h('button', { type: 'button', class: 'danger', onclick: () => void removeSlot(slot) }, 'Delete save'),
       ),
@@ -455,7 +527,8 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   /** How the map works, for its aria-describedby and the About dialog. */
   const MAP_HELP =
     'Drag the hero to move him: his feet snap to a block, and he fits where that block and the one above it are open (green; red where something solid is in the way). A click on the map puts him there too. Drag anywhere else (or with the middle button, or Shift+drag) to look around the whole level; it wraps around at its edges, as the game’s map does. Pinch or Ctrl+wheel zooms. Keys, with the map focused: the arrow keys move him to the next block he fits in that way, Shift+arrows look around (Ctrl+Shift+arrows by 8 blocks), C centers on him, + and − zoom, 0 shows the screen F6 opens on (the dashed frame).';
-  const LEVEL_HELP = 'A new level starts where the game enters it, with its items and monsters fresh; score, lives, items and counters stay. Level start enters the level again from its start the same way.';
+  const LEVEL_HELP =
+    'A new level starts where the game enters it, with its items and monsters fresh; score, lives, items and counters stay. Level start enters the level again from its start the same way.';
 
   /** The level picker, the whole level around the hero (drag him, or look around), and his block. */
   const whereGroup = (slot: number, w: { save: SavedGame; name: string }, changed: () => void): HTMLElement => {
@@ -506,7 +579,13 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         },
       },
       ...levels.map((l) => h('option', { value: String(l.scene), selected: l.scene === save.doscene }, levelLabel(l))),
-      levels.some((l) => l.scene === save.doscene) ? null : h('option', { value: String(save.doscene), selected: true, disabled: true }, labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`),
+      levels.some((l) => l.scene === save.doscene)
+        ? null
+        : h(
+            'option',
+            { value: String(save.doscene), selected: true, disabled: true },
+            labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`,
+          ),
     ) as HTMLSelectElement;
     const restart = h(
       'button',
@@ -623,7 +702,11 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
           'div',
           { class: 'sv-about', tabindex: 0, role: 'region', 'aria-label': 'About this save' },
           h('h3', null, 'Saving'),
-          h('p', null, 'Changes stay here until Save changes; Undo changes drops them. The first change of a visit backs every save up first (see Backups). In the game, F6 loads the save. Download .sav gives the file with any changes; Import .sav… puts a file in this slot.'),
+          h(
+            'p',
+            null,
+            'Changes stay here until Save changes; Undo changes drops them. The first change of a visit backs every save up first (see Backups). In the game, F6 loads the save. Download .sav gives the file with any changes; Import .sav… puts a file in this slot.',
+          ),
           h('p', null, '★ Max all raises every counting value to the most the game handles well; the items stay as they are.'),
           h('h3', null, GROUP_LABELS.where),
           h('p', null, LEVEL_HELP),
@@ -632,7 +715,11 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
             h('h3', null, GROUP_LABELS[g]),
             shared(g)
               ? h('p', null, list[0].note, g === 'inventory' ? '' : ` Each ${rangeText(list[0], true)}`)
-              : h('dl', null, list.flatMap((f) => [h('dt', null, f.label), h('dd', null, `${f.note} ${rangeText(f)}`)])),
+              : h(
+                  'dl',
+                  null,
+                  list.flatMap((f) => [h('dt', null, f.label), h('dd', null, `${f.note} ${rangeText(f)}`)]),
+                ),
           ]),
         ),
         h('div', { class: 'buttons' }, h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => close(undefined) }, 'Close')),
@@ -655,7 +742,11 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     }
   };
 
-  const fileBase = () => (target.gam ?? target.title).replace(/\.[^.]*$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const fileBase = () =>
+    (target.gam ?? target.title)
+      .replace(/\.[^.]*$/, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-');
   const exportSav = (slot: number, bytes: Uint8Array) => download(`${fileBase()}-game${slot}.sav`, bytes);
 
   const importSav = async (slot: number) => {
@@ -668,7 +759,15 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       toast(`${file.name}: ${(e as Error).message}`, 'error');
       return;
     }
-    if (saves?.slots[slot].bytes && !(await confirmDialog('Replace this save?', `Slot ${slot + 1} already holds a saved game. Replace it with ${file.name}? (A backup is taken first.)`, 'Replace'))) return;
+    if (
+      saves?.slots[slot].bytes &&
+      !(await confirmDialog(
+        'Replace this save?',
+        `Slot ${slot + 1} already holds a saved game. Replace it with ${file.name}? (A backup is taken first.)`,
+        'Replace',
+      ))
+    )
+      return;
     backedUp = false; // a fresh backup for each replace
     await safety();
     await writeSlotBytes(target.saveId, slot, bytes);
@@ -696,7 +795,15 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   };
 
   const removeSlot = async (slot: number) => {
-    if (!(await confirmDialog('Delete this save?', `Slot ${slot + 1} will be empty. A backup is taken first, so it can be restored from Backups.`, 'Delete', true))) return;
+    if (
+      !(await confirmDialog(
+        'Delete this save?',
+        `Slot ${slot + 1} will be empty. A backup is taken first, so it can be restored from Backups.`,
+        'Delete',
+        true,
+      ))
+    )
+      return;
     backedUp = false;
     await safety();
     await deleteSlot(target.saveId, slot);
@@ -716,7 +823,9 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     const refreshState = () => {
       const dirty = dirtyScores();
       saveBtn.disabled = undoBtn.disabled = !dirty;
-      const order = list.some((e, i) => i > 0 && e.score > list[i - 1].score) ? ' ⚠ Not highest first: the game puts a new score above the first lower one it finds, so use Sort by score.' : '';
+      const order = list.some((e, i) => i > 0 && e.score > list[i - 1].score)
+        ? ' ⚠ Not highest first: the game puts a new score above the first lower one it finds, so use Sort by score.'
+        : '';
       status.textContent = (dirty ? 'Not saved yet.' : saves!.highScoresFromDisk ? 'The table this game came with.' : '') + order;
       renderNav();
     };
@@ -778,7 +887,15 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       h(
         'header',
         { class: 'sv-head' },
-        h('div', { class: 'sv-label-row' }, h('h3', { class: 'sv-title', tabindex: -1 }, 'High scores'), tip('the high scores', `The Top Ten screen shows a score in 10 columns and hides a score of 0. Players type up to ${HIGH_SCORE_NAME_MAX} letters; a new score goes in above every lower one, so keep the table highest first.`).el),
+        h(
+          'div',
+          { class: 'sv-label-row' },
+          h('h3', { class: 'sv-title', tabindex: -1 }, 'High scores'),
+          tip(
+            'the high scores',
+            `The Top Ten screen shows a score in 10 columns and hides a score of 0. Players type up to ${HIGH_SCORE_NAME_MAX} letters; a new score goes in above every lower one, so keep the table highest first.`,
+          ).el,
+        ),
         h('p', { class: 'sv-where' }, saves!.highScoreFile ?? highScoreFileName(target.gam ?? 'game')),
       ),
       h(
@@ -797,7 +914,18 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
           'table',
           { class: 'sv-scores' },
           h('caption', { class: 'sv-sr' }, 'Top ten scores'),
-          h('thead', null, h('tr', null, h('th', { scope: 'col' }, '#'), h('th', { scope: 'col' }, 'Score'), h('th', { scope: 'col' }, 'Name'), h('th', { scope: 'col' }, h('span', { class: 'sv-sr' }, 'Warnings')))),
+          h(
+            'thead',
+            null,
+            h(
+              'tr',
+              null,
+              h('th', { scope: 'col' }, '#'),
+              h('th', { scope: 'col' }, 'Score'),
+              h('th', { scope: 'col' }, 'Name'),
+              h('th', { scope: 'col' }, h('span', { class: 'sv-sr' }, 'Warnings')),
+            ),
+          ),
           h('tbody', null, rows),
         ),
       ),
@@ -818,18 +946,36 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   // ------------------------------------------------------------------ backups
   const renderBackups = () => {
     const label = h('input', { type: 'text', id: 'sv-backup-label', placeholder: 'Label (optional)', maxlength: 60 }) as HTMLInputElement;
-    const hasSaves = saves!.slots.some((s) => s.bytes) || !!saves!.highScoreFile && !saves!.highScoresFromDisk;
+    const hasSaves = saves!.slots.some((s) => s.bytes) || (!!saves!.highScoreFile && !saves!.highScoresFromDisk);
     const rows = backups.map((b) => {
       const when = new Date(b.when);
-      const what = [b.slots.length ? `slot${b.slots.length === 1 ? '' : 's'} ${b.slots.map((s) => s + 1).join(', ')}` : null, b.names.some((n) => /\.his$/i.test(n)) ? 'high scores' : null, b.names.includes(FOUND_FILE) ? 'tin heart' : null, kb(b.bytes)].filter(Boolean).join(' · ');
+      const what = [
+        b.slots.length ? `slot${b.slots.length === 1 ? '' : 's'} ${b.slots.map((s) => s + 1).join(', ')}` : null,
+        b.names.some((n) => /\.his$/i.test(n)) ? 'high scores' : null,
+        b.names.includes(FOUND_FILE) ? 'tin heart' : null,
+        kb(b.bytes),
+      ]
+        .filter(Boolean)
+        .join(' · ');
       return h(
         'li',
         { class: 'sv-backup' },
         h(
           'div',
           { class: 'sv-backup-text' },
-          h('span', { class: 'sv-backup-label' }, b.label, b.auto ? h('span', { class: 'sv-badge' }, 'auto') : null, b.by && b.by !== 'web' ? h('span', { class: 'sv-badge' }, b.by) : null),
-          h('span', { class: 'sv-backup-meta' }, h('time', { datetime: when.toISOString() }, when.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })), ` · ${what}`),
+          h(
+            'span',
+            { class: 'sv-backup-label' },
+            b.label,
+            b.auto ? h('span', { class: 'sv-badge' }, 'auto') : null,
+            b.by && b.by !== 'web' ? h('span', { class: 'sv-badge' }, b.by) : null,
+          ),
+          h(
+            'span',
+            { class: 'sv-backup-meta' },
+            h('time', { datetime: when.toISOString() }, when.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })),
+            ` · ${what}`,
+          ),
         ),
         h(
           'div',
@@ -840,7 +986,14 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
               type: 'button',
               'aria-label': `Restore ${b.label}`,
               onclick: async () => {
-                if (!(await confirmDialog('Restore this backup?', `The saves and high scores go back to “${b.label}”. What is there now is backed up first.`, 'Restore'))) return;
+                if (
+                  !(await confirmDialog(
+                    'Restore this backup?',
+                    `The saves and high scores go back to “${b.label}”. What is there now is backed up first.`,
+                    'Restore',
+                  ))
+                )
+                  return;
                 await restoreBackup(b.id, { safety: true, by: 'web' });
                 work.clear();
                 scores = undefined;
@@ -863,7 +1016,12 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
                     'form',
                     { method: 'dialog', onsubmit: (e: Event) => (e.preventDefault(), close(input.value)) },
                     input,
-                    h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), h('button', { class: 'primary' }, 'Rename')),
+                    h(
+                      'div',
+                      { class: 'buttons' },
+                      h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
+                      h('button', { class: 'primary' }, 'Rename'),
+                    ),
                   );
                 });
                 if (name?.trim()) await renameBackup(b.id, name);
@@ -890,7 +1048,12 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     });
     clear(
       main,
-      h('header', { class: 'sv-head' }, h('h3', { class: 'sv-title', tabindex: -1 }, 'Backups'), h('p', { class: 'sv-where' }, 'Kept in this browser, as many as you like.')),
+      h(
+        'header',
+        { class: 'sv-head' },
+        h('h3', { class: 'sv-title', tabindex: -1 }, 'Backups'),
+        h('p', { class: 'sv-where' }, 'Kept in this browser, as many as you like.'),
+      ),
       h(
         'form',
         {
@@ -905,7 +1068,9 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         label,
         h('button', { class: 'primary', disabled: !hasSaves }, 'Back up now'),
       ),
-      rows.length ? h('ul', { class: 'sv-backups', 'aria-label': 'Backups, newest first' }, rows) : h('p', { class: 'sv-empty' }, 'No backups yet. One is taken by itself before your first change here.'),
+      rows.length
+        ? h('ul', { class: 'sv-backups', 'aria-label': 'Backups, newest first' }, rows)
+        : h('p', { class: 'sv-empty' }, 'No backups yet. One is taken by itself before your first change here.'),
     );
   };
 

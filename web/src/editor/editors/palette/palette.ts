@@ -101,7 +101,15 @@ registerEditor(['pal'], (host, project, file) => {
     preview.style.background = paletteCss(pal, selected);
     colorBox.refresh();
     view.set({ color: selected });
-    const hex = '#' + [0, 1, 2].map((c) => Math.round((pal[selected * 3 + c] * 255) / 63).toString(16).padStart(2, '0')).join('');
+    const hex =
+      '#' +
+      [0, 1, 2]
+        .map((c) =>
+          Math.round((pal[selected * 3 + c] * 255) / 63)
+            .toString(16)
+            .padStart(2, '0'),
+        )
+        .join('');
     clear(
       label,
       h('strong', null, `Color ${selected}${rangeEnd !== undefined ? ` to ${rangeEnd}` : ''}`),
@@ -157,7 +165,14 @@ registerEditor(['pal'], (host, project, file) => {
         h('div', { class: 'row', style: 'align-items:center' }, preview, label),
         colorBox.el,
         ...sliders.map((s) => s.row),
-        h('div', { class: 'toolbar' }, h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'), tools.rampBtn, undoBtn, redoBtn),
+        h(
+          'div',
+          { class: 'toolbar' },
+          h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'),
+          tools.rampBtn,
+          undoBtn,
+          redoBtn,
+        ),
         gifs.length
           ? h(
               'div',

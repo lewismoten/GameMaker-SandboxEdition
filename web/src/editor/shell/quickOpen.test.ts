@@ -24,7 +24,11 @@ function project(): Project {
 describe('quick switcher', () => {
   it('ranks names that start with the query first, then words, then scenes', () => {
     const p = project();
-    expect(quickHits(p, 'for').map((x) => x.file).sort()).toEqual(['for.pal', 'forest.bbl']);
+    expect(
+      quickHits(p, 'for')
+        .map((x) => x.file)
+        .sort(),
+    ).toEqual(['for.pal', 'forest.bbl']);
     expect(quickHits(p, 'meadow')).toEqual([{ file: 'one.map', note: 'Used by Meadow' }]);
     expect(quickHits(p, 'palettes').map((x) => x.file)).toEqual(['for.pal']);
   });
@@ -35,7 +39,11 @@ describe('quick switcher', () => {
     noteOpened(p, 'one.map');
     noteOpened(p, 'forest.bbl');
     expect(recentFiles(p)).toEqual(['forest.bbl', 'one.map']);
-    expect(quickHits(p, '').slice(0, 2).map((x) => x.file)).toEqual(['forest.bbl', 'one.map']);
+    expect(
+      quickHits(p, '')
+        .slice(0, 2)
+        .map((x) => x.file),
+    ).toEqual(['forest.bbl', 'one.map']);
     expect(p.files.entries()).toEqual(before);
   });
 

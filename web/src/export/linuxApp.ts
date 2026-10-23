@@ -53,7 +53,13 @@ export function folderName(title: string): string {
 }
 
 export function linuxId(id: string): string {
-  return id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64) || 'game';
+  return (
+    id
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64) || 'game'
+  );
 }
 
 /** A shell word: the text in single quotes. */

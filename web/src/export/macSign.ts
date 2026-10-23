@@ -62,7 +62,13 @@ export function codeDirectories(bin: Uint8Array): { at: number; hash: HashName; 
       if (dv.getUint32(blob) !== CSMAGIC_CODEDIRECTORY) continue;
       const kind = dv.getUint8(blob + 37);
       if (kind !== 1 && kind !== 2) throw new Error(`The Mac player's signature uses an unknown hash (${kind}).`);
-      out.push({ at: blob, hash: kind === 1 ? 'SHA-1' : 'SHA-256', hashOffset: dv.getUint32(blob + 16), hashSize: dv.getUint8(blob + 36), specialSlots: dv.getUint32(blob + 24) });
+      out.push({
+        at: blob,
+        hash: kind === 1 ? 'SHA-1' : 'SHA-256',
+        hashOffset: dv.getUint32(blob + 16),
+        hashSize: dv.getUint8(blob + 36),
+        specialSlots: dv.getUint32(blob + 24),
+      });
     }
   }
   return out;
@@ -187,7 +193,9 @@ export async function codeResources(files: [path: string, data: Uint8Array][]): 
   const sorted = [...files].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
   const hashed = await Promise.all(sorted.map(async ([p, d]) => [p, await hash('SHA-1', d), await hash('SHA-256', d)] as const));
   const files1 = hashed.map(([p, h1]) => `\t\t<key>${xml(p)}</key>\n\t\t<data>\n\t\t${b64(h1)}\n\t\t</data>\n`).join('');
-  const files2 = hashed.map(([p, , h2]) => `\t\t<key>${xml(p)}</key>\n\t\t<dict>\n\t\t\t<key>hash2</key>\n\t\t\t<data>\n\t\t\t${b64(h2)}\n\t\t\t</data>\n\t\t</dict>\n`).join('');
+  const files2 = hashed
+    .map(([p, , h2]) => `\t\t<key>${xml(p)}</key>\n\t\t<dict>\n\t\t\t<key>hash2</key>\n\t\t\t<data>\n\t\t\t${b64(h2)}\n\t\t\t</data>\n\t\t</dict>\n`)
+    .join('');
   const text = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -209,7 +217,11 @@ ${RULES}
  * The player binary re-sealed for an app with this Info.plist and these resources (paths
  * relative to Contents/), and the CodeResources file that goes with it.
  */
-export async function resealPlayer(player: Uint8Array, infoPlist: Uint8Array, resources: [path: string, data: Uint8Array][]): Promise<{ binary: Uint8Array; codeResources: Uint8Array }> {
+export async function resealPlayer(
+  player: Uint8Array,
+  infoPlist: Uint8Array,
+  resources: [path: string, data: Uint8Array][],
+): Promise<{ binary: Uint8Array; codeResources: Uint8Array }> {
   const sealed = await codeResources(resources);
   const binary = player.slice();
   const dirs = codeDirectories(binary);

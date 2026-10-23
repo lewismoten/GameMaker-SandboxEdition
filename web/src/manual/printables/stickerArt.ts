@@ -128,7 +128,7 @@ export function layoutStickers(stickers: StickerGeom[], fillers: StickerGeom[] =
   const prints = fillers.map(footprint);
   let left = maxFill;
   for (const page of pages) {
-    for (let placed = true; placed && left > 0; ) {
+    for (let placed = true; placed && left > 0;) {
       placed = false;
       for (let f = 0; f < fillers.length && left > 0; f++)
         if (put(page, fillers[f], prints[f], stickers.length + f)) {
@@ -178,8 +178,7 @@ export function cutSvg(page: Placed[], names: string[] = []): string {
   const S = 100; // SVG units per inch
   const paths = page.map(
     (p, k) =>
-      `  <path id="sticker-${k + 1}" d="${shapePath(p, 0, S, -bx * S, -by * S)}">` +
-      `<title>${escapeXml(names[p.index] || `Sticker ${k + 1}`)}</title></path>`,
+      `  <path id="sticker-${k + 1}" d="${shapePath(p, 0, S, -bx * S, -by * S)}">` + `<title>${escapeXml(names[p.index] || `Sticker ${k + 1}`)}</title></path>`,
   );
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',

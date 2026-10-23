@@ -303,7 +303,10 @@ registerEditor(['chr'], (host, project, file) => {
         i === 5 ? h('div', { class: 'chr-list-head' }, 'Your moves') : null,
         h(
           'button',
-          { class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`, onclick: () => ((current = i), view.set({ sequence: i }), renderList(), renderDetail()) },
+          {
+            class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`,
+            onclick: () => ((current = i), view.set({ sequence: i }), renderList(), renderDetail()),
+          },
           h('span', { class: 'chr-seq-thumb checker' }, spriteCanvas(s.frames[0] && frameCount(s) ? s.frames[0] : undefined, 1)),
           h('span', { class: 'chr-seq-name' }, h('b', null, `${i}`), ' ', seqName(i)),
           s.key && i < 5 ? h('kbd', null, scanName(s.key >> 8)) : null,
@@ -410,7 +413,15 @@ registerEditor(['chr'], (host, project, file) => {
         title: 'Replace these frames with the chosen sequence’s, facing the other way: moves go left instead of right, blocks mirrored',
         onclick: async () => {
           const src = chr.sequences[Number(sel.value)];
-          if (n && !(await confirmDialog('Mirror a sequence', `Replace this sequence’s ${n} frame${n === 1 ? '' : 's'} with ${seqName(Number(sel.value))}’s, facing the other way?`, 'Replace'))) return;
+          if (
+            n &&
+            !(await confirmDialog(
+              'Mirror a sequence',
+              `Replace this sequence’s ${n} frame${n === 1 ? '' : 's'} with ${seqName(Number(sel.value))}’s, facing the other way?`,
+              'Replace',
+            ))
+          )
+            return;
           edit(() => setFrames(seq, mirroredFrames(src)));
           renderList();
           renderDetail();

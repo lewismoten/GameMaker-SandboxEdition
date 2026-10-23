@@ -58,7 +58,9 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
   const glowList = h('p', { class: 'meta' });
   const showGlows = () => {
     const g = glows();
-    glowList.textContent = g.length ? `Glowing (kept as they are): ${g.map(([a, b]) => (a === b ? a : `${a}–${b}`)).join(', ')}` : 'No glowing colors: every color is re-lit.';
+    glowList.textContent = g.length
+      ? `Glowing (kept as they are): ${g.map(([a, b]) => (a === b ? a : `${a}–${b}`)).join(', ')}`
+      : 'No glowing colors: every color is re-lit.';
   };
   const glowBtns = h(
     'div',
@@ -70,7 +72,11 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
         onclick: () => {
           const [a, b] = span();
           const rest = glows().filter(([x, y]) => y < a || x > b);
-          project.setExtras(file, 'glow', [...rest, [a, b]].sort((p, q) => p[0] - q[0]));
+          project.setExtras(
+            file,
+            'glow',
+            [...rest, [a, b]].sort((p, q) => p[0] - q[0]),
+          );
           showGlows();
           redraw();
         },
@@ -96,7 +102,11 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
   const game = project.game();
   const levels = game.scenes.map((_, i) => i).filter((i) => game.scenes[i].gametype === ADVTYPE && game.scenes[i].files[1]);
   const mine = levels.filter((i) => normalize(game.scenes[i].files[0] ?? '') === file);
-  const sceneSel = h('select', { 'aria-label': 'Level to show' }, ...(mine.length ? mine : levels).map((i) => h('option', { value: String(i) }, sceneName(project, i))));
+  const sceneSel = h(
+    'select',
+    { 'aria-label': 'Level to show' },
+    ...(mine.length ? mine : levels).map((i) => h('option', { value: String(i) }, sceneName(project, i))),
+  );
   const others = project.files.byExtension('pal').filter((f) => f !== file);
   const compareSel = h(
     'select',
@@ -172,12 +182,21 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
       'details',
       { class: 'panel pal-compare', open: true },
       h('summary', null, 'Night, dusk, underwater…'),
-      h('p', { class: 'meta' }, 'The same blocks in a re-lit palette: every color scaled toward the mood, glowing colors kept. Pick a range, then Mark as glowing.'),
+      h(
+        'p',
+        { class: 'meta' },
+        'The same blocks in a re-lit palette: every color scaled toward the mood, glowing colors kept. Pick a range, then Mark as glowing.',
+      ),
       glowList,
       glowBtns,
       levels.length
         ? [
-            h('div', { class: 'row', style: 'gap:8px;align-items:end' }, h('label', { class: 'field' }, h('span', null, 'Level'), sceneSel), h('label', { class: 'field' }, h('span', null, 'Compare with'), compareSel)),
+            h(
+              'div',
+              { class: 'row', style: 'gap:8px;align-items:end' },
+              h('label', { class: 'field' }, h('span', null, 'Level'), sceneSel),
+              h('label', { class: 'field' }, h('span', null, 'Compare with'), compareSel),
+            ),
             h('div', { class: 'pal-shots' }, h('figure', null, left, h('figcaption', { class: 'meta' }, 'This palette')), h('figure', null, right, rightCap)),
           ]
         : h('label', { class: 'field' }, h('span', null, 'Re-light as'), compareSel),

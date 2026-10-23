@@ -15,7 +15,10 @@
 }
 
 .sb-print {
-  font: 800 6.5px/1.05 'Arial Black', Arial, sans-serif;
+  font:
+    800 6.5px/1.05 'Arial Black',
+    Arial,
+    sans-serif;
   letter-spacing: 0.02em;
   text-align: left;
 }
@@ -91,7 +94,9 @@
   border-radius: 8px;
   background: #221d16;
   color: #f3eedf;
-  font: 14px/1.35 system-ui, sans-serif;
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   animation: sb-note-in 0.18s ease-out;
 }

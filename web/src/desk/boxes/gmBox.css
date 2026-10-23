@@ -344,8 +344,7 @@
   height: 26%;
   background:
     linear-gradient(162deg, transparent 0 38%, #e9eff7 38% 52%, #8ea6c6 52% 55%, transparent 55%),
-    linear-gradient(transparent 0 55%, #3d8a2e 55% 70%, #6b4a22 70%),
-    radial-gradient(60% 50% at 70% 62%, #4fa83a 60%, transparent 61%),
+    linear-gradient(transparent 0 55%, #3d8a2e 55% 70%, #6b4a22 70%), radial-gradient(60% 50% at 70% 62%, #4fa83a 60%, transparent 61%),
     linear-gradient(#9cc8f0, #e7d9f2);
   clip-path: polygon(0 62%, 100% 0, 100% 100%, 0 100%);
 }
@@ -399,7 +398,9 @@
   background: radial-gradient(circle at 40% 35%, #ef3b33, #b3121a);
   box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
   color: #fff;
-  font: 800 3.9cqw/1.2 Arial, sans-serif;
+  font:
+    800 3.9cqw/1.2 Arial,
+    sans-serif;
   text-align: center;
   text-shadow: none;
   -webkit-text-stroke: 0;

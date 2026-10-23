@@ -127,7 +127,7 @@ async function accessCheck(t: Term, h: RetroHost): Promise<boolean> {
     return true;
   }
   wrongTries++;
-  t.line('|12Access denied.|08 (SysOp\'s note: lamers skip the bulletins. Elite users read them twice.)');
+  t.line("|12Access denied.|08 (SysOp's note: lamers skip the bulletins. Elite users read them twice.)");
   t.line();
   return false;
 }
@@ -136,12 +136,20 @@ export async function warezArea(t: Term, h: RetroHost): Promise<void> {
   if (!(await accessCheck(t, h))) return;
   const s = h.screen;
   const pager = new Pager(t, {
-    header: (p, n) => [boxTop(`W)arez: 0-Day Elite Releases (shhh)${n > 1 ? ` ${pageLabel(p, n)}` : ''}`), boxRow('|11  #  File name        Size  Description'), boxBottom()],
+    header: (p, n) => [
+      boxTop(`W)arez: 0-Day Elite Releases (shhh)${n > 1 ? ` ${pageLabel(p, n)}` : ''}`),
+      boxRow('|11  #  File name        Size  Description'),
+      boxBottom(),
+    ],
     entries: () =>
       WAREZ.map((u, i) => {
         const got = h.downloads.has(u.id) ? '|10*' : ' ';
         const desc = u.diz.filter((l) => !/^-+$/.test(l)); // as Renegade listed a DIZ, without its rules
-        return desc.map((l, j) => (j === 0 ? `|11${String(i + 1).padStart(2)} ${got}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${l}` : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`));
+        return desc.map((l, j) =>
+          j === 0
+            ? `|11${String(i + 1).padStart(2)} ${got}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${l}`
+            : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
+        );
       }),
     footer: () => [`|10*|07 = already in C:\\DOWNLOAD   |12Not FREE:|07 a file point a ZIP. You have |14${filePoints(account())}|07.`],
   });
@@ -174,7 +182,9 @@ async function transfer(t: Term, h: RetroHost, zip: string, bytes: number, label
     const f = Math.min(1, (performance.now() - start) / total);
     s.cursorY = row;
     s.cursorX = 0;
-    t.print(`|15${zip.padEnd(12)} |10${toCp437('█'.repeat(Math.round(f * 30)).padEnd(30, '░'))} |14${commas(Math.round(bytes * f)).padStart(9)} |07bytes  ${CPS} cps`);
+    t.print(
+      `|15${zip.padEnd(12)} |10${toCp437('█'.repeat(Math.round(f * 30)).padEnd(30, '░'))} |14${commas(Math.round(bytes * f)).padStart(9)} |07bytes  ${CPS} cps`,
+    );
     if (f >= 1) break;
     await sleep(120);
   }
@@ -189,7 +199,7 @@ async function download(t: Term, h: RetroHost, u: WarezRelease): Promise<void> {
   const amnesty = filePoints(account()) < cost;
   if (amnesty) {
     t.line(`|12LEECH ALERT!|07 ${u.zip} costs |14${cost}|07 file point${cost === 1 ? '' : 's'}; you have |14${filePoints(account())}|07.`);
-    t.line('|13<SysOp>|07 Eh, it\'s a slow night. This one\'s on the house. Upload something, ya leech!');
+    t.line("|13<SysOp>|07 Eh, it's a slow night. This one's on the house. Upload something, ya leech!");
   }
   t.line(`|07Protocol: |15Zmodem|07${zips.length > 1 ? `, batch of |14${zips.length}|07 files` : ''}.  (Esc aborts)`);
   for (const [i, zip] of zips.entries()) {
@@ -210,6 +220,8 @@ async function download(t: Term, h: RetroHost, u: WarezRelease): Promise<void> {
   h.downloads.add(u.id);
   updateAccount((a) => zips.reduce((acc) => recordDownload(acc, Math.round(u.bytes / zips.length), amnesty), a));
   const exe = u.files.find((f) => f.run)?.name.replace(/\.EXE$/i, '');
-  t.line(`|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off.${u.files.some((f) => /\.NFO$/i.test(f.name)) ? ' Read the |15.NFO|07 first!' : ''}`);
+  t.line(
+    `|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off.${u.files.some((f) => /\.NFO$/i.test(f.name)) ? ' Read the |15.NFO|07 first!' : ''}`,
+  );
   t.line();
 }

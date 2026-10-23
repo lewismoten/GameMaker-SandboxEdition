@@ -24,38 +24,50 @@ function kid(c: Ctx, x: number, y: number, s: number): void {
   // snow pants and boots
   for (const lx of [-26, 26]) {
     blob(c, [lx - 20, -130, lx + 20, -130, lx + 18, -20, lx - 18, -20]);
-    fill(c, lin(c, lx - 20, 0, lx + 20, 0, [
-      [0, '#1a2a6a'],
-      [0.5, '#3a5ab0'],
-      [1, '#101a4a'],
-    ]));
+    fill(
+      c,
+      lin(c, lx - 20, 0, lx + 20, 0, [
+        [0, '#1a2a6a'],
+        [0.5, '#3a5ab0'],
+        [1, '#101a4a'],
+      ]),
+    );
     blob(c, [lx - 22, -30, lx + 22, -30, lx + 30, 0, lx - 22, 0]);
     fill(c, '#3a2010');
   }
   // the coat
   blob(c, [-66, -110, -70, -230, -40, -266, 40, -266, 70, -230, 66, -110, 0, -98]);
-  fill(c, lin(c, -70, 0, 70, 0, [
-    [0, '#7a0a10'],
-    [0.35, '#f44a3c'],
-    [0.6, '#d8281e'],
-    [1, '#5a0408'],
-  ]));
+  fill(
+    c,
+    lin(c, -70, 0, 70, 0, [
+      [0, '#7a0a10'],
+      [0.35, '#f44a3c'],
+      [0.6, '#d8281e'],
+      [1, '#5a0408'],
+    ]),
+  );
   for (const py of [-140, -180, -220]) stroke(c, 'rgba(90,4,8,0.6)', 3, [-62, py, 0, py + 8, 62, py]);
   stroke(c, '#e8e0d0', 4, [0, -258, 0, -104]);
   // the scarf, its end streaming in the wind
   blob(c, [-44, -276, 44, -276, 44, -254, -44, -252]);
   fill(c, '#ffd23c');
   blob(c, [30, -270, 120, -300, 150, -280, 116, -268, 40, -250]);
-  fill(c, lin(c, 30, 0, 150, 0, [
-    [0, '#ffd23c'],
-    [1, '#2a9a4a'],
-  ]));
+  fill(
+    c,
+    lin(c, 30, 0, 150, 0, [
+      [0, '#ffd23c'],
+      [1, '#2a9a4a'],
+    ]),
+  );
   // the face
   ell(c, 0, -312, 38, 40);
-  fill(c, rad(c, -10, -322, 48, [
-    [0, '#ffe0c4'],
-    [1, '#d89a74'],
-  ]));
+  fill(
+    c,
+    rad(c, -10, -322, 48, [
+      [0, '#ffe0c4'],
+      [1, '#d89a74'],
+    ]),
+  );
   for (const ex of [-14, 14]) {
     ell(c, ex, -314, 4.5, 6);
     fill(c, '#1a0a04');
@@ -71,18 +83,24 @@ function kid(c: Ctx, x: number, y: number, s: number): void {
   c.beginPath();
   c.ellipse(0, -326, 42, 40, 0, Math.PI, 0);
   c.closePath();
-  fill(c, lin(c, -40, 0, 40, 0, [
-    [0, '#0a4a8a'],
-    [0.4, '#3a8ae0'],
-    [1, '#062a5a'],
-  ]));
+  fill(
+    c,
+    lin(c, -40, 0, 40, 0, [
+      [0, '#0a4a8a'],
+      [0.4, '#3a8ae0'],
+      [1, '#062a5a'],
+    ]),
+  );
   blob(c, [-44, -334, 44, -334, 44, -318, -44, -318]);
   fill(c, '#f4f4f4');
   ell(c, 0, -370, 15, 14);
-  fill(c, rad(c, -4, -374, 16, [
-    [0, '#fff'],
-    [1, '#c8d4e8'],
-  ]));
+  fill(
+    c,
+    rad(c, -4, -374, 16, [
+      [0, '#fff'],
+      [1, '#c8d4e8'],
+    ]),
+  );
   // arms up, both mittens on the shovel handle
   stroke(c, '#c81e18', 30, [-54, -230, -84, -190, -60, -150]);
   stroke(c, '#c81e18', 30, [54, -230, 70, -270, 92, -300]);
@@ -93,16 +111,22 @@ function kid(c: Ctx, x: number, y: number, s: number): void {
   c.translate(158, -398);
   c.rotate(0.75);
   poly(c, [-30, 12, 30, 12, 44, -66, -44, -66]);
-  fill(c, lin(c, -44, 0, 44, 0, [
-    [0, '#606878'],
-    [0.45, '#f0f4fa'],
-    [1, '#3a4250'],
-  ]));
+  fill(
+    c,
+    lin(c, -44, 0, 44, 0, [
+      [0, '#606878'],
+      [0.45, '#f0f4fa'],
+      [1, '#3a4250'],
+    ]),
+  );
   blob(c, [-40, -20, -30, -64, 0, -76, 34, -62, 40, -18, 0, -6]);
-  fill(c, rad(c, -8, -54, 50, [
-    [0, '#ffffff'],
-    [1, '#c8d8f4'],
-  ]));
+  fill(
+    c,
+    rad(c, -8, -54, 50, [
+      [0, '#ffffff'],
+      [1, '#c8d8f4'],
+    ]),
+  );
   c.restore();
   for (const [mx, my] of [
     [-62, -150],
@@ -122,11 +146,14 @@ function prize(c: Ctx, x: number, y: number): void {
   c.translate(x, y);
   c.rotate(0.12);
   poly(c, [-44, -58, 44, -58, 44, 58, -44, 58]);
-  fill(c, lin(c, -44, -58, 44, 58, [
-    [0, '#ffd0ec'],
-    [0.5, '#ff7ac0'],
-    [1, '#c03a88'],
-  ]));
+  fill(
+    c,
+    lin(c, -44, -58, 44, 58, [
+      [0, '#ffd0ec'],
+      [0.5, '#ff7ac0'],
+      [1, '#c03a88'],
+    ]),
+  );
   poly(c, [44, -58, 58, -48, 58, 66, 44, 58]);
   fill(c, '#a02a70');
   c.fillStyle = '#2a0a20';
@@ -142,7 +169,7 @@ function prize(c: Ctx, x: number, y: number): void {
   poly(c, [10, 44, 70, 44, 80, 60, 70, 76, 10, 76]);
   fill(c, '#fff8d0');
   c.fillStyle = '#c81e18';
-  c.font = "900 22px Arial, sans-serif";
+  c.font = '900 22px Arial, sans-serif';
   c.fillText('$89', 42, 68);
   c.restore();
 }
@@ -183,11 +210,14 @@ const paint = (c: Ctx, w: number, h: number): void => {
   stroke(c, 'rgba(90,110,170,0.35)', 10, [330, 430, 380, h]);
   // drifts in front, lit pink by the sunrise
   blob(c, [-40, h, -40, 560, 80, 520, 200, 560, 300, 600, 420, 560, 540, 590, 660, 550, 660, h]);
-  fill(c, lin(c, 0, 520, 0, h, [
-    [0, '#ffffff'],
-    [0.4, '#e8eeff'],
-    [1, '#a8b8e8'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 520, 0, h, [
+      [0, '#ffffff'],
+      [0.4, '#e8eeff'],
+      [1, '#a8b8e8'],
+    ]),
+  );
   // dollar bills blowing in the snow
   for (let i = 0; i < 7; i++) {
     const bx = 30 + r() * 540;

@@ -15,7 +15,9 @@
   box-sizing: border-box;
   border-radius: 6px;
   color: var(--rs-ink);
-  font: 14px/1.4 system-ui, sans-serif;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
   animation: rs-in 260ms ease-out;
 }
@@ -118,7 +120,9 @@
 
 .rs-page .rs-mark {
   background: linear-gradient(transparent 8%, rgba(255, 214, 10, 0.42) 8%, rgba(255, 214, 10, 0.42) 92%, transparent 92%);
-  box-shadow: -0.6cqw 0 0 rgba(255, 214, 10, 0.42), 0.6cqw 0 0 rgba(255, 214, 10, 0.42);
+  box-shadow:
+    -0.6cqw 0 0 rgba(255, 214, 10, 0.42),
+    0.6cqw 0 0 rgba(255, 214, 10, 0.42);
 }
 
 .rs-page .rs-word {
@@ -160,7 +164,9 @@
   border-radius: 4px;
   background: #fffdf4;
   color: var(--rs-ink);
-  font: 600 16px 'Courier New', monospace;
+  font:
+    600 16px 'Courier New',
+    monospace;
   text-transform: uppercase;
 }
 
@@ -181,7 +187,9 @@
   border-radius: 4px;
   background: linear-gradient(#f4efe1, #d9d1b8);
   color: var(--rs-ink);
-  font: 600 13px system-ui, sans-serif;
+  font:
+    600 13px system-ui,
+    sans-serif;
   cursor: pointer;
 }
 
@@ -201,7 +209,9 @@
   border-radius: 4px;
   background: transparent;
   color: inherit;
-  font: 22px/1 system-ui, sans-serif;
+  font:
+    22px/1 system-ui,
+    sans-serif;
   cursor: pointer;
 }
 
@@ -240,7 +250,10 @@
 
 .rs-brand b {
   color: var(--rs-red);
-  font: 800 15px Helvetica, Arial, sans-serif;
+  font:
+    800 15px Helvetica,
+    Arial,
+    sans-serif;
   letter-spacing: 0.06em;
 }
 
@@ -254,7 +267,10 @@
 
 .rs-card h2 {
   margin: 0 0 4px;
-  font: 700 17px Helvetica, Arial, sans-serif;
+  font:
+    700 17px Helvetica,
+    Arial,
+    sans-serif;
 }
 
 .rs-lead,
@@ -292,7 +308,11 @@
   border-radius: 0;
   background: rgba(255, 255, 255, 0.55);
   color: #12305e;
-  font: 600 17px 'Comic Sans MS', 'Bradley Hand', 'Segoe Print', cursive;
+  font:
+    600 17px 'Comic Sans MS',
+    'Bradley Hand',
+    'Segoe Print',
+    cursive;
 }
 
 .rs .rs-num {
@@ -359,7 +379,10 @@
   padding: 4px 10px;
   background: var(--rs-red);
   color: #fff;
-  font: 12px Helvetica, Arial, sans-serif;
+  font:
+    12px Helvetica,
+    Arial,
+    sans-serif;
 }
 
 .rs-pc-band b {
@@ -378,7 +401,10 @@
 
 .rs-printed dt,
 .rs-keyed dt {
-  font: 700 11px/1.8 Helvetica, Arial, sans-serif;
+  font:
+    700 11px/1.8 Helvetica,
+    Arial,
+    sans-serif;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -403,7 +429,11 @@
 
 .rs-hand {
   color: #12305e;
-  font: 600 16px 'Comic Sans MS', 'Bradley Hand', 'Segoe Print', cursive;
+  font:
+    600 16px 'Comic Sans MS',
+    'Bradley Hand',
+    'Segoe Print',
+    cursive;
 }
 
 .rs-filled {
@@ -466,7 +496,10 @@
   border: 1px solid var(--rs-line);
   background: #fffbea;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
-  font: 12px Helvetica, Arial, sans-serif;
+  font:
+    12px Helvetica,
+    Arial,
+    sans-serif;
   animation: rs-flip 500ms ease-out;
 }
 
@@ -526,7 +559,10 @@
 }
 
 .rs-brm-h b {
-  font: 900 17px Helvetica, Arial, sans-serif;
+  font:
+    900 17px Helvetica,
+    Arial,
+    sans-serif;
   letter-spacing: 0.02em;
 }
 
@@ -556,7 +592,10 @@
   border: 2px solid rgba(26, 58, 140, 0.75);
   border-radius: 50%;
   color: rgba(26, 58, 140, 0.8);
-  font: 800 11px Helvetica, Arial, sans-serif;
+  font:
+    800 11px Helvetica,
+    Arial,
+    sans-serif;
   letter-spacing: 0.1em;
   rotate: -14deg;
   animation: rs-stamp 300ms 450ms ease-in both;
@@ -575,7 +614,10 @@
 }
 
 .rs-days b {
-  font: italic 700 16px Georgia, 'Times New Roman', serif;
+  font:
+    italic 700 16px Georgia,
+    'Times New Roman',
+    serif;
 }
 
 /* RSD's reply: a dot-matrix letter on tractor-feed paper */
@@ -588,7 +630,10 @@
     repeating-linear-gradient(#fdfcf6 0 18px, #eef3e6 18px 36px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
   color: #2a2a2a;
-  font: 13px/1.45 'Courier New', Courier, monospace;
+  font:
+    13px/1.45 'Courier New',
+    Courier,
+    monospace;
   animation: rs-in 400ms ease-out;
 }
 
@@ -615,7 +660,9 @@
 
 .rs-letter h3 {
   margin: 0 0 4px;
-  font: 700 14px 'Courier New', monospace;
+  font:
+    700 14px 'Courier New',
+    monospace;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -658,7 +705,9 @@
   border-radius: 999px;
   background: var(--rs-paper);
   color: var(--rs-ink);
-  font: 600 14px system-ui, sans-serif;
+  font:
+    600 14px system-ui,
+    sans-serif;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
   cursor: pointer;
 }
