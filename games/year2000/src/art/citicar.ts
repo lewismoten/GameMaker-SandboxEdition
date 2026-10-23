@@ -52,10 +52,10 @@ function wedge(p: Pixels, ox: number, oy: number, s: number, headlights: boolean
   const poly = (pts: [number, number][], c: number) => {
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inPoly(pts, (x + 0.5) / s, (y + 0.5) / s)) p.set(ox + x, oy + y, c);
   };
-  // The dark grey roof panel and the big flat windows: the door's, and a small one behind it.
+  // The dark grey roof panel and the door's big flat window: from the side that is the only
+  // glass (the panel behind the door is solid red, no quarter window).
   box(3.5, 6, 15.5, 2, C('concrete', 0));
   poly([[13.5, 9], [19.4, 9], [25.3, 16.2], [13.5, 16.2]], C('glass', 1));
-  poly([[4.5, 9], [11.5, 9], [11.5, 16.2], [4.5, 16.2]], C('glass', 2));
   poly([[19.3, 7.2], [20.6, 7.2], [26.6, 14.4], [25.9, 15.4]], C('glass', 3)); // the windshield, edge on
   if (s >= 1) {
     p.line(...at(15, 15), ...at(20, 10), C('glass', 3)); // a glint
