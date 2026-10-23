@@ -180,8 +180,18 @@ export function gameDiz(g: CatalogEntry): string[] {
 
 // ---- the GIF Gallery -------------------------------------------------------------------
 
-/** The FILE_ID.DIZ of a picture in the GIF Gallery (the SysOp's own snapshots). */
+/** The FILE_ID.DIZ of a picture in the GIF Gallery (the SysOp's own snapshots), or in The Sofa's GIF area (Doc Leo's). */
 export function pictureDiz(f: GalleryFile): string[] {
+  if (f.board === 'sofa')
+    return fitDiz([
+      headline(f.name),
+      `${f.width}x${f.height}, ${f.colors} colors, interlaced GIF`,
+      RULE,
+      ...clip(ascii(f.desc), 4),
+      center('Interlaced: watch it fill in!'),
+      RULE,
+      `Uploaded by ${SOFA_UPLOADER} to THE SOFA BBS`,
+    ]);
   const kind = f.format === 'GIF' ? `${f.colors} ${f.gray ? 'grays' : 'colors'}, GIF` : `JPEG${f.progressive ? ', progressive' : ''}${f.gray ? ', gray' : ''}`;
   const tag = f.format === 'GIF' ? 'Scanned at the copy shop. VPIC it!' : 'JPEG: worth the wait on a fast 486.';
   return fitDiz([
