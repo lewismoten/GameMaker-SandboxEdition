@@ -184,7 +184,7 @@ them straight from `../cd` and `../games` while developing, and only the product
 | `games/gameware/<id>/` | `cd/gameware/<id>/` (editable samples) |
 | `games/shareware/<id>/` | `cd/sharware/<id>/` (play only; `.exe`/`.bat`/`.com` files left out) |
 | `games/originals/<id>/` | `../games/<id>/disk/` and its `walkthrough.json` |
-| `games/shots/<id>-*.png` | each game's pictures for tiles, boxes and the play page, drawn at build time (`scripts/gameShots.ts`) |
+| `games/shots/<id>-*.png` | each game's pictures for tiles (`<id>-title.png`, its title screen), boxes and the play page, drawn at build time (`scripts/gameShots.ts`) |
 | `gm/index.json`, `gm/<file>` | the installed `C:\GM` folder (`runtime/run/GM`) for the desk's PC |
 | `dos/xferplay.exe`, `dos/sndblast.drv` | `cd/gm/`, for Download → DOS |
 | `mac/`, `win/`, `linux/` | the prebuilt native players, for the Mac, Windows and Linux downloads (in `public/`, built by `../mac`, `../win` and `../linux`) |
