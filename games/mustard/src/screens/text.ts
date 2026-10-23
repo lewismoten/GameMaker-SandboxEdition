@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * README spell it out to fit their columns; about.json says the same in its blurb).
  */
 export const SONG_CREDIT =
-  "lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai";
+  "lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai (formerly Riffusion, now Google Flow Music)";
 
 export const STORY = [
   page([
@@ -127,8 +127,10 @@ const CREDITS_TEXT = page(
     "the Bard's gospel oddities.",
     '',
     "Lyrics: ChatGPT, from Lewis's",
-    'prompt. Music: Riffusion.',
-    'Animated cover: Producer.ai.',
+    'prompt. Music: Riffusion (now',
+    'Google Flow Music). Animated',
+    'cover: the same tool, by then',
+    'called Producer.ai.',
     "This game's FM music, its",
     'sung clips and the title',
     'cartoon are made from them.',
@@ -232,7 +234,8 @@ CREDITS (NOW)
   Bizarre); music made with
   Riffusion (now Google Flow
   Music); animated cover made
-  with Producer.ai.
+  with Producer.ai, Riffusion's
+  later name.
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made

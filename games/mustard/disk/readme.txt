@@ -76,7 +76,8 @@ CREDITS (NOW)
   Bizarre); music made with
   Riffusion (now Google Flow
   Music); animated cover made
-  with Producer.ai.
+  with Producer.ai, Riffusion's
+  later name.
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made

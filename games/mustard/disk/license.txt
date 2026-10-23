@@ -13,7 +13,10 @@ by ChatGPT from Lewis Moten's
 prompt; music made with
 Riffusion (now Google Flow
 Music); animated cover made
-with Producer.ai.
+with Producer.ai (formerly
+Riffusion, now Google Flow
+Music).
+
 Made in 2026 by Lewis Moten,
 with AI help from Claude.
 
@@ -75,5 +78,3 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
-
-
