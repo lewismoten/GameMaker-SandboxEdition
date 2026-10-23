@@ -23,11 +23,16 @@ export function riverTiles(): Tiles {
   t.wall('deep', dirt(5, true));
   t.air('tuft', tuft(sky(3), 11));
   t.air('flower', tuft(sky(3), 12, 'yellow'));
-  t.air('hedgeTop', hedge(true, 21));
+  t.air('hedgeTop', hedge(true, 21, sky(bandRow(29))));
   t.wall('hedgeWall', hedge(false, 25));
+  // trees: leaves and trunk over each sky band (the map picks by row); likewise the
+  // canvases below are drawn over the sky of the rows they stand on
   for (const k of [1, 2]) t.air(`leaf${k}`, leaves(6 + k, sky(k)));
   t.air('trunk', trunk(sky(3)));
   t.air('trunk2', trunk(sky(2)));
+  t.air('leaf0', leaves(6, sky(0)));
+  t.air('trunk0', trunk(sky(0)));
+  t.air('trunk1', trunk(sky(1)));
 
   // Rapids: white water that carries Teddy along (gravity right), and lifts him (up).
   const foam = (base: Pixels, ph: number) => {
@@ -76,7 +81,7 @@ export function riverTiles(): Tiles {
 
   // The waterwheel, turning (2 wide, 3 high, two pictures taking turns).
   for (const ph of [0, 1]) {
-    const w = canvas(2, 3, (_bx, by) => (by < 2 ? sky(by + 2) : water(true, ph, sky(3))));
+    const w = canvas(2, 3, (_bx, by) => (by < 2 ? sky(bandRow(38 + by)) : water(true, ph, sky(3))));
     w.disc(20, 30, 18, c('wood', 1)).disc(20, 30, 14, c('wood', 0));
     for (let k = 0; k < 8; k++) {
       const a = (k / 8) * Math.PI * 2 + ph * (Math.PI / 8);
@@ -125,9 +130,9 @@ export function riverTiles(): Tiles {
     }
     return p;
   };
-  t.air('millRoofL', roof(1, 'L'));
-  t.air('millRoof', roof(1, 'M'));
-  t.air('millRoofR', roof(1, 'R'));
+  t.air('millRoofL', roof(bandRow(30), 'L'));
+  t.air('millRoof', roof(bandRow(30), 'M'));
+  t.air('millRoofR', roof(bandRow(30), 'R'));
   t.ledge(
     'loft',
     (() => {
@@ -175,7 +180,7 @@ export function riverTiles(): Tiles {
     })(),
   );
   t.wall('cliffTop', grassTop(32));
-  const [fTop, fBot] = halves(fisher(), sky(2), sky(2));
+  const [fTop, fBot] = halves(fisher(), sky(bandRow(33)), sky(bandRow(34)));
   t.air('fisherTop', fTop);
   t.air('fisherBot', fBot);
   t.air(
