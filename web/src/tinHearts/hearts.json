@@ -8,6 +8,7 @@
     "mustard": { "map": "mound.map", "at": [3, 11] },
     "needle": { "map": "tailor.map", "at": [35, 17] },
     "realm": { "map": "port.map", "at": [10, 33] },
+    "risi": { "map": "kitchen.map", "at": [25, 11] },
     "sleuth": { "map": "act1.map", "at": [11, 56] },
     "smirked": { "map": "foyer.map", "at": [30, 16] },
     "snowbound": { "map": "gale.map", "at": [13, 24] },
@@ -15,5 +16,5 @@
     "teddy2": { "map": "house.map", "at": [2, 39] },
     "tickle": { "map": "tower.map", "at": [43, 23] }
   },
-  "pending": ["brief", "depth", "loofah", "maximus", "reckoning", "remote", "risi", "sandcast", "sweats", "year2000"]
+  "pending": ["brief", "depth", "loofah", "maximus", "reckoning", "remote", "sandcast", "sweats", "year2000"]
 }
