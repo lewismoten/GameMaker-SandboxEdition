@@ -241,8 +241,9 @@ export function house(): Level {
   for (const [x, y] of treats) m.treat(x, y);
   bs.def('toaster').birthMon = beasts.id('toast');
   bs.def('toaster').birthTime = 70;
-  // a tin heart tucked behind Teddy's bed, just behind where he starts (100 points)
-  m.set(2, 39, addTinHeart(bs, m.get(2, 39)));
+  // a tin heart up in the attic by the boxes, for a dog who bounces up through the hatch
+  // from Doc Leo's bed (100 points)
+  m.set(8, ATTIC - 1, addTinHeart(bs, m.get(8, ATTIC - 1)));
   m.mark('start', 4, 39);
   m.mark('exit', car, 39);
   void art;

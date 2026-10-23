@@ -8,8 +8,8 @@
   "exe": "TEDDY2.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
-  "tinHeart": { "map": "house.map", "at": [2, 39] },
-  "easterEgg": { "map": "farm.map", "at": [2, 39] },
+  "tinHeart": { "map": "house.map", "at": [8, 25] },
+  "easterEgg": { "map": "farm.map", "at": [24, 32] },
   "label": {
     "background": "#fff6e0",
     "band": "#1d5fb8",

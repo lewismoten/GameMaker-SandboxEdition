@@ -127,8 +127,8 @@ export function farm(): Level {
     [72, 37],
   ])
     m.treat(x, y, 'bone');
-  // a painted Easter egg in the lane by the hedge, behind where Gwinn starts (50 points)
-  m.set(2, 39, addEasterEgg(bs, m.get(2, 39), 'dots', 'yellow', 'blue'));
+  // a painted Easter egg in the hayloft's far corner, past the hay (50 points)
+  m.set(b0 + 1, 32, addEasterEgg(bs, m.get(b0 + 1, 32), 'dots', 'yellow', 'blue'));
   m.mark('start', 4, 39);
   m.mark('exit', truck + 2, 38);
   return {
