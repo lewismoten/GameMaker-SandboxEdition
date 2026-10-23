@@ -26,6 +26,7 @@ export const HIVE_RAMPS: Ramp[] = [
   ['screen', 3, [150, 160, 170], [255, 255, 255], undefined, true],
   ['seat', 3, [80, 10, 20], [190, 50, 60]],
   ['glass', 3, [60, 90, 120], [170, 210, 230]],
+  ['daylightHive', 2, [110, 150, 200], [190, 215, 245]],
 ];
 
 export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
@@ -351,6 +352,21 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   };
   book.add('books', shelf(63), AIR);
   book.add('books2', shelf(64), AIR);
+  // a potted fern on the floor, a painting of goats (the third from the left is missing), a playbill for the open mic
+  const plant = wall(67);
+  plant.rect(6, 13, 8, 7, c('red', 1)).rect(5, 12, 10, 2, c('red', 2));
+  for (let k = 0; k < 9; k++) plant.line(10, 13, 10 + Math.cos(-0.3 - k * 0.32) * 9, 13 + Math.sin(-0.3 - k * 0.32) * 10, c('green', 1 + (k % 3)));
+  book.add('fern', plant, AIR);
+  const goats = wall(68, false);
+  goats.rect(1, 4, 18, 12, c('gold', 1)).rect(2, 5, 16, 10, c('green', 1)).rect(2, 5, 16, 5, c('daylightHive', 1));
+  for (const x of [4, 8, 16]) blob(goats, x, 11, 1.6, 1.2, R('white'), 1, 2);
+  book.add('goatArt', goats, AIR);
+  const bill = wall(69, false);
+  bill.rect(3, 1, 14, 18, c('white', 2)).rect(3, 1, 14, 4, c('velvet', 2));
+  micro(bill, 4, 2, 'OPEN', c('gold', 3));
+  micro(bill, 4, 8, 'MIC', c('ink', 0));
+  micro(bill, 4, 13, 'TUES', c('velvet', 1));
+  book.add('playbill', bill, AIR);
   // the stairs: open treads on a stringer (ledges), one up per column
   const stair = wall(65, false);
   stair.rect(0, 0, 20, 4, c('wood', 3)).rect(0, 0, 20, 1, c('wood', 4)).rect(0, 4, 20, 1, c('wood', 0));

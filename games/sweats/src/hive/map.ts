@@ -58,7 +58,7 @@ export function buildHive(m: MapBuilder): void {
   m.link(CURTAIN[0], CURTAIN[1], 'next');
   m.mon(MON.leo, 28, 5);
   // the seating: tables, a couch, the lamps, posters; the third goat at a table with a latte
-  m.set(40, 1, 'pendant').set(48, 1, 'pendant').set(36, 3, 'poster').set(54, 3, 'poster2');
+  m.set(40, 1, 'pendant').set(48, 1, 'pendant').set(36, 3, 'poster').set(54, 3, 'poster2').set(45, 3, 'goatArt').set(50, 3, 'playbill').set(35, 6, 'fern');
   m.set(38, 6, 'table').set(44, 6, 'table').set(52, 6, 'table');
   m.set(40, 6, 'couchArm').row(6, 41, 42, 'couch').set(43, 6, 'couchArm');
   m.set(36, 6, 'coin@wall').set(41, 4, 'coin@wallHi').set(50, 6, 'mug@wall').set(52, 4, 'bill@wallHi').set(56, 6, 'coin@wall');
@@ -70,7 +70,7 @@ export function buildHive(m: MapBuilder): void {
   m.set(22, 13, 'counter');
   placePicture(m, 'espresso0', 23, 13, 2, 1);
   m.set(25, 13, 'counter').set(26, 13, 'pastry').set(27, 13, 'pastry').set(28, 13, 'counter').set(29, 13, 'jar').set(30, 13, 'counter').set(31, 13, 'register').row(13, 32, 33, 'counter');
-  m.set(24, 10, 'menu').set(26, 10, 'menu2').set(29, 8, 'pendant');
+  m.set(24, 10, 'menu').set(26, 10, 'menu2').set(29, 8, 'pendant').set(31, 10, 'playbill').set(21, 13, 'fern');
   // the little movie theater past the counter: the screen, the seats up the rake, the booth
   m.set(34, 13, 'doorway').set(34, 12, 'doorTop');
   for (let x = 35; x <= 50; x++) for (let y = 8; y <= 13; y++) m.set(x, y, 'dark');
@@ -95,7 +95,7 @@ export function buildHive(m: MapBuilder): void {
   m.set(69, 2, 'pendant').set(75, 2, 'pendant');
   m.set(68, 13, 'couchArm').row(13, 69, 70, 'couch').set(71, 13, 'couchArm');
   m.mon(MON.gwinn, 74, 13);
-  m.set(76, 13, 'table');
+  m.set(76, 13, 'table').set(65, 13, 'fern').set(69, 9, 'goatArt').set(75, 9, 'playbill');
   m.col(79, 9, 12, 'books').set(79, 13, 'books2');
   m.set(69, 11, 'coin@wallHi').set(70, 11, 'coin@wallHi').set(78, 13, 'mug@wall').set(73, 10, 'bill@wallHi').set(66, 13, 'coin@wall');
 }
