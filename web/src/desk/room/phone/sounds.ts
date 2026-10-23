@@ -79,7 +79,7 @@ export class PhoneSounds {
   }
 
   private line(): [Line, number] {
-    const l = new Line(this.ctx);
+    const l = new Line(this.ctx, output(this.ctx));
     this.now.push(l);
     return [l, this.ctx.currentTime + 0.03];
   }
@@ -105,7 +105,7 @@ export class PhoneSounds {
   key(k: string): void {
     const pair = DTMF[k];
     if (!pair) return;
-    const l = new Line(this.ctx);
+    const l = new Line(this.ctx, output(this.ctx));
     l.tones(pair, this.ctx.currentTime + 0.01, 0.15, 0.12);
     setTimeout(() => l.out.disconnect(), 400);
   }

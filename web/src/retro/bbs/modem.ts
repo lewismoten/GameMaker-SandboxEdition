@@ -2,7 +2,7 @@
 // tone, touch-tones, the ring, the answering modem's 2100 Hz tone, the V.8 / V.32bis
 // handshake (FSK chirps, the "bing-bong" tones, then the hiss of training), and silence
 // once the speaker turns off at CONNECT. Everything is band-limited like a phone line.
-import { output } from "../../audio/output";
+import { pcOutput } from "../computer/pcAudio";
 
 export const DTMF: Record<string, [number, number]> = {
   "1": [697, 1209],
@@ -31,7 +31,11 @@ export interface CallTimeline {
 /** A phone line: band-limited to 300..3400 Hz, with tones, the answer tone, FSK and hiss. */
 export class Line {
   readonly out: GainNode;
-  constructor(readonly ctx: AudioContext) {
+  /** `to`: where it is heard (the PC's own line by default; the wall phone has its own). */
+  constructor(
+    readonly ctx: AudioContext,
+    to: AudioNode = pcOutput(ctx),
+  ) {
     // The phone line: 300..3400 Hz.
     const hp = ctx.createBiquadFilter();
     hp.type = "highpass";
@@ -41,7 +45,7 @@ export class Line {
     lp.frequency.value = 3400;
     this.out = ctx.createGain();
     this.out.gain.value = 0.5;
-    this.out.connect(hp).connect(lp).connect(output(ctx));
+    this.out.connect(hp).connect(lp).connect(to);
   }
 
   /** A gain stage that fades in at `start` and out at `start + dur` (no clicks). */
