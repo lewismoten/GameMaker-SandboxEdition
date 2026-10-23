@@ -42,12 +42,12 @@ export function showTiles(): Tiles {
       return p;
     })(),
   );
-  // spotlights from the rafters
+  // spotlights from the rafters (shining down in front of the beam)
   for (const side of ['L', 'R'] as const)
     t.air(
       `spot${side}`,
       (() => {
-        const p = new Pixels(20, 20, c('ink', 1));
+        const p = copy(t.pic('rafter'));
         for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((side === 'L' ? x : 19 - x) <= y && (x + y) % 2 === 0) p.set(x, y, c('glow', 2));
         return p;
       })(),
