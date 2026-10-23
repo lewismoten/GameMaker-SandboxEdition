@@ -184,8 +184,8 @@ const DIRECTORY: Record<string, Call> = {
     );
     line.ended("Grandma hung up");
   },
-  // Jenny, the sitter (555-0175 on Mom's notes): on the phone, as always
-  "5550175": async (line) => {
+  // Jenny, the sitter (867-5309, like the song: the number everyone tries): on the phone, as always
+  "8675309": async (line) => {
     if (Math.random() < 2 / 3) return busy(line);
     await ring(line, 2);
     await line.say(
@@ -311,10 +311,6 @@ function hash(s: string): number {
   return n >>> 0;
 }
 
-// Dialed from memory, the number in the old song about a Jenny still reaches this one (it is
-// never shown anywhere: it's a real number in plenty of area codes)
-DIRECTORY["8675309"] = DIRECTORY["5550175"];
-
 /** Who (or what) answers a number. */
 export function callFor(digits: string): Call {
   const n = localNumber(digits);
@@ -333,7 +329,7 @@ export const SPEED_DIAL: [string, string][] = [
   ["Dad", "5550187"],
   ["Pager", "5550199"],
   ["Grandma", "5550123"],
-  ["Jenny", "5550175"],
+  ["Jenny", "8675309"],
   ["Time", "5550111"],
   ["Weather", "5550112"],
   ["Movies", "5550113"],

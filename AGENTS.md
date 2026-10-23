@@ -75,11 +75,11 @@ After changing a game, rebuild it and run its checks. Commit the source and the 
 - **Privacy:**
   - No real addresses or license plates. The car's plate THE CHEZ is fine.
   - Fictional addresses must be obviously fake, e.g. "P.O. Box 000".
-  - Phone numbers are 555-01xx (the existing 1-412-555-SAND stays).
+  - Phone numbers are 555-01xx. Two stay on purpose: 1-412-555-SAND and Jenny's 867-5309, the song's number everyone tries.
   - No membership or lineage organizations.
   - No health, grief or money material. The one exception is the lactose-intolerance game.
-- **Clowns are always friendly.** Never scary, villains or jump scares. The maintainer is a
-  working clown, Doc Leo.
+- **Clowns are always friendly.** Never scary, villains or jump scares. The maintainer, Doc Leo,
+  is in a clown club that entertains children.
 - **Trademarks:** use generic words instead of casual trademarks ("building blocks", not a
   brand). Lyrics quoted word for word and historical tech names (Sound Blaster, MS-DOS,
   VGA…) stay; NOTICE.md lists them.
