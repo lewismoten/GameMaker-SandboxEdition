@@ -2,8 +2,10 @@
 // and each declared heart's block is on its disk at that place and is reported when touched.
 import { describe, expect, it } from 'vitest';
 import { heartProblems, readAbouts, touchHeadless } from '../../../games/kit/tinHeartDisk';
-import { buildManifest, heartsCount, isHeartAt } from './manifest';
-import hearts from './hearts.json';
+import { buildManifest, heartsCount, isHeartAt, type HeartManifest } from './manifest';
+import json from './hearts.json';
+
+const hearts = json as unknown as HeartManifest;
 
 const abouts = readAbouts();
 
@@ -19,7 +21,7 @@ describe('tin hearts', () => {
     expect(counted.length).toBeGreaterThanOrEqual(24);
   });
 
-  for (const [id, place] of Object.entries(hearts.hearts as Record<string, { map: string; at: [number, number] }>))
+  for (const [id, place] of Object.entries(hearts.hearts))
     it(`finds ${id}'s heart on its disk, and the engine reports touching it`, () => {
       expect(heartProblems(id, place)).toEqual([]);
       expect(touchHeadless(id, place)).toBe(true);
