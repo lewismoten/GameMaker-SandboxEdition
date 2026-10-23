@@ -356,5 +356,7 @@ export async function loadFileList(list: Iterable<File>): Promise<GameFiles> {
 
 /** "Eric-Jon Waugh · A-J Games · 1993" */
 export function creditLine(g: Pick<CatalogEntry, 'author' | 'company' | 'year'>): string {
-  return [g.author, g.company, g.year].filter(Boolean).join(' · ');
+  // an author who is also the publisher (The Bard of Bizarre) is named once
+  const company = g.company && g.company.toLowerCase() !== g.author?.toLowerCase() ? g.company : undefined;
+  return [g.author, company, g.year].filter(Boolean).join(' · ');
 }
