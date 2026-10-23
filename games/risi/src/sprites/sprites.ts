@@ -1,5 +1,5 @@
 // MARCUS.CBL, FELIX.CBL and RISI.MBL: Marcus Iocundus the poet (curly dark hair, a white toga
-// with a narrow purple stripe, sandals, a wax tablet of jokes), Felix the cat (grey tabby, a
+// with a narrow purple stripe, sandals, a wax tablet of jokes), Felix, the cat (grey tabby, a
 // white chest, very brave), and everything else that moves: the jokes he tells ("HA!"), Rufus's
 // clouds, Lady Flavia behind her fan, Teddy and Gwinn as good Roman dogs (red collars with a
 // golden bulla; Gwinn's is pink), a slave with figs, mice (one with its cheese), ants, the

@@ -5,7 +5,7 @@
 //      whom the clouds come (sub mensa... in tenebris... sic venit pestilentia): his table gives
 //      birth to them. The shutters are air that a touch throws open (counter 20: the air let in),
 //      and the door out only opens with five. Teddy's CAVE CANEM mosaic is in the floor.
-//   IV. Felis Fortissimus: the kitchen (culina) the same night, as Felix the cat: the table,
+//   IV. Felis Fortissimus: the kitchen (culina) the same night, as Felix, the cat: the table,
 //      the scrolls he climbs (ascendit librum) to the hanging lamp (saltat in lucernam), the
 //      will on the shelf (stat in testamento: oops, nunc fractum est), cupboards a bump opens
 //      (patefaciens armaria: a cheese inside each, counter 21), mouse holes, and on the end of

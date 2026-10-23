@@ -64,7 +64,7 @@ export const INSTRUCTIONS = [
     'Six songs, six places: the',
     'banquet, the battle, the',
     'rooftops, the kitchen (you',
-    'are Felix the cat), the',
+    'are Felix, a cat), the',
     'baths and the theater.',
     '',
     'LEFT/RIGHT or A D walk. UP or',
@@ -194,7 +194,7 @@ lives all six of his songs:
 the banquet, a battle won by
 running away, the rooftops of
 Rome and a tongue twister,
-the kitchen as Felix the
+the kitchen as Felix, the
 bravest cat, the baths where
 a goldfish sings, and at last
 the theater, where nobody

@@ -21,7 +21,7 @@ lives all six of his songs:
 the banquet, a battle won by
 running away, the rooftops of
 Rome and a tongue twister,
-the kitchen as Felix the
+the kitchen as Felix, the
 bravest cat, the baths where
 a goldfish sings, and at last
 the theater, where nobody

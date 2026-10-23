@@ -7,7 +7,7 @@
 //        ditch, to the gate, the first to find it.
 //   III. Titus Torquet Lingua: over the rooftops of Rome at sunset, touching seven tituli (they
 //        twist into tongue twisters), mis-speaking SAXA into SAGA, to Titus's tavern.
-//   IV.  Felis Fortissimus: the kitchen the same night, as Felix the cat. Meow the mice into
+//   IV.  Felis Fortissimus: the kitchen the same night, as Felix, the cat. Meow the mice into
 //        dropping their cheese, climb the scrolls to the lamp, open the cupboards: six cheeses
 //        for the crown of cheese.
 //   V.   Canit Piscis Aureus: the baths, where the golden fish sings. Six golden scales for her

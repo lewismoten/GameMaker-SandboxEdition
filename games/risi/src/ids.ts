@@ -1,5 +1,5 @@
 // The numbers every file of VENI, VIDI, RISI! agrees on: monster slots (the block sets give
-// birth to some), the sequences of both characters (Marcus the poet and Felix the cat), keys and
+// birth to some), the sequences of both characters (Marcus the poet and Felix, the cat), keys and
 // counters, and the sound effects. The six levels come in three pairs, each pair sharing one
 // background set and one monster set (a .BBL holds 150 blocks, a .MBL 100):
 //   villa   (I. the banquet, IV. the kitchen)        VILLA.BBL  VILLA.MBL
