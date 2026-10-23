@@ -1,5 +1,5 @@
-// The Ultimate Owner's Guide: its page sums, its chapters' structure and figures, and (when the
-// original manual's OCR is on this machine) that none of its wording comes from RSD's manual.
+// The Ultimate Owner's Guide: its page sums, its chapters' order, structure and figures, and (when
+// the sources are on this machine) that none of its wording comes from RSD's manual or the reviews.
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS, chapterStarts, planBook } from './plan';
@@ -42,9 +42,15 @@ describe('The Ultimate Owner’s Guide', () => {
     for (const c of CHAPTERS) expect(c.html).not.toMatch(/\blego\b/i);
   });
 
-  const ocr = new URL('../../../../.for-lewis/manual-ocr/manual.txt', import.meta.url);
-  it.skipIf(!existsSync(ocr))('shares no run of six words with the original manual', () => {
-    const theirs = words(readFileSync(ocr, 'utf8'));
+  it('ends with designing with a goal, then the upload checklist on a page of its own, then the numbers', () => {
+    expect(CHAPTERS.slice(-3).map((c) => c.id)).toEqual(['craft', 'upload', 'numbers']);
+    expect(CHAPTERS.filter((c) => c.newPage).map((c) => c.id)).toEqual(['upload']);
+  });
+
+  // the original manual's OCR, and the player reviews the design chapter learned from: no wording of theirs
+  const sources = ['manual-ocr/manual.txt', 'other-games.md'].map((f) => new URL(`../../../../.for-lewis/${f}`, import.meta.url));
+  it.skipIf(!sources.every(existsSync))('shares no run of six words with the original manual or the reviews', () => {
+    const theirs = words(sources.map((f) => readFileSync(f, 'utf8')).join(' '));
     const runs = new Set<string>();
     for (let i = 0; i + 6 <= theirs.length; i++) runs.add(theirs.slice(i, i + 6).join(' '));
     const ours = words(CHAPTERS.map((c) => c.html).join(' '));
