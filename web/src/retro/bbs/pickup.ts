@@ -2,7 +2,7 @@
 // the extension, the line going ragged, then a voice yelling about the noise (spoken by the
 // wall phone's speech voices, desk/room/phone/voice.ts). The modems lose each other and the
 // call drops. Returns what was said, for the screen.
-import { output } from '../../audio/output';
+import { pcOutput } from '../computer/pcAudio';
 import { Line } from './modem';
 
 export interface Overheard {
@@ -28,7 +28,7 @@ function click(ctx: AudioContext): number {
   src.buffer = buf;
   const g = ctx.createGain();
   g.gain.value = 0.6;
-  src.connect(g).connect(output(ctx));
+  src.connect(g).connect(pcOutput(ctx));
   src.start(t);
   // the line: the modem's data hiss broken up, crackling and a hum under it
   const line = new Line(ctx);

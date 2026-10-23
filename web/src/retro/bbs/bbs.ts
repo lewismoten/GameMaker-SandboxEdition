@@ -44,7 +44,7 @@ import { pickUpExtension, type Overheard } from "./pickup";
 import { resolvePath, type DosNode } from "../dos/vfs";
 import { pcExtras } from "../hacks/pcExtras";
 import { unlockAchievement } from "../../achievements";
-import { output } from "../../audio/output";
+import { pcOutput } from "../computer/pcAudio";
 import { dosDir } from "../../project/dosDir";
 import { MODEM_CPS, PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from "../../project/diskFacts";
 import { sizeAbout } from "./sofaFiles";
@@ -407,7 +407,7 @@ async function pageSysop(t: Term, h: RetroHost): Promise<void> {
       g.gain.value = 0.05;
       o.type = "square";
       o.frequency.value = i % 2 ? 1200 : 900;
-      o.connect(g).connect(output(ctx));
+      o.connect(g).connect(pcOutput(ctx));
       o.start();
       o.stop(ctx.currentTime + 0.15);
     }
