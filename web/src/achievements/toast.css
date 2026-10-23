@@ -150,3 +150,10 @@
     animation: none;
   }
 }
+
+/* a phone: two at a time is plenty */
+@media (max-width: 600px) {
+  .ach-toast:nth-last-child(n + 3) {
+    display: none;
+  }
+}

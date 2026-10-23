@@ -45,7 +45,8 @@ function place(el: HTMLElement): void {
   const r = monitor?.getBoundingClientRect();
   if (!r || !r.width || r.bottom < 0 || r.top > innerHeight) return;
   const width = Math.min(220, innerWidth - 32);
-  el.style.left = `${Math.max(16, Math.min(r.right - width * 0.6, innerWidth - width - 16))}px`;
+  // over the plastic at the corner, clear of the picture tube
+  el.style.left = `${Math.max(16, Math.min(r.right - Math.min(90, r.width * 0.12), innerWidth - width - 16))}px`;
   el.style.top = `${Math.max(8, r.top - 18)}px`;
 }
 
