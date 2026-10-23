@@ -10,13 +10,14 @@
 //   app's icon (macIcon.ts);
 // - install.sh / uninstall.sh: copy the game to ~/.local/share/GameMaker/<id>/app and add it
 //   to the applications menu (a .desktop entry), or take it out again;
-// - README.txt: how to play it, and the packages it needs.
+// - README.txt: how to play it, and the packages it needs; THIRD-PARTY-NOTICES.txt (notices.ts).
 //
 // Linux asks nothing about signatures; some file managers need "Allow executing file as
 // program" ticked (or "Run" chosen) for play.sh.
 import { drawIcon, encodeRgbaPng, type IconColors } from './macIcon';
 import { shrink } from './winIcon';
 import { createTarGz, type TarEntry } from './tar';
+import { thirdPartyNotices } from './notices';
 import { SITE_URL } from '../seo/site';
 import type { IndexedImage } from '../formats/gif';
 
@@ -101,7 +102,7 @@ share="\${XDG_DATA_HOME:-$HOME/.local/share}"
 app="$share/GameMaker/$id/app"
 mkdir -p "$app" "$share/applications"
 if [ "$here" != "$app" ]; then
-  cp -f "$here/play.sh" "$here/install.sh" "$here/uninstall.sh" "$here/game.html" "$here/icon.png" "$here/README.txt" "$here"/GameMakerPlayer-* "$app/"
+  cp -f "$here/play.sh" "$here/install.sh" "$here/uninstall.sh" "$here/game.html" "$here/icon.png" "$here/README.txt" "$here/THIRD-PARTY-NOTICES.txt" "$here"/GameMakerPlayer-* "$app/"
 fi
 chmod 755 "$app/play.sh" "$app/install.sh" "$app/uninstall.sh" "$app"/GameMakerPlayer-*
 # Exec: the path in double quotes, with the characters the desktop entry format reserves escaped
@@ -186,6 +187,7 @@ export async function linuxAppFiles(o: LinuxAppOptions): Promise<{ name: string;
       text('install.sh', installScript(o), 0o755),
       text('uninstall.sh', uninstallScript(o), 0o755),
       text('README.txt', readme(o)),
+      text('THIRD-PARTY-NOTICES.txt', thirdPartyNotices('linux')),
       text('game.html', o.html),
       { path: `${name}/icon.png`, data: await linuxIcon(o.picture, o.colors), mode: 0o644 },
       ...LINUX_ARCHES.map((a) => ({ path: `${name}/GameMakerPlayer-${a}`, data: o.players[a], mode: 0o755 })),
