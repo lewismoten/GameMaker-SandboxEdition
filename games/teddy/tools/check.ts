@@ -1,5 +1,6 @@
 // Plays every level headlessly with the bot, one after another the way the game does
-// (Teddy's energy, treats and counters carry over), and reports how it went (after checking
+// (Teddy's energy, treats and counters carry over), and reports how it went; it fails if the
+// bot loses a life or misses an exit (after checking
 // the multi-block objects, tools/align.ts):
 //   cd web && npx vite-node ../games/teddy/tools/check.ts [level file...]
 // TEDDY_WALK=<file> also writes the whole run as a .rec recording (for play-testing the
@@ -28,6 +29,7 @@ let failed = 0;
 for (const make of LEVELS) {
   const l = make();
   if (only.length && !only.includes(l.file)) continue;
+  const livesBefore = ci.lives;
   const r = await playLevel(
     (ci) => {
       const sim = new Sim(
@@ -60,6 +62,7 @@ for (const make of LEVELS) {
     `${l.file}: ${r.ok ? 'REACHED THE EXIT' : 'did not finish: ' + r.log.slice(-1)[0]} in ${sim.ticks} ticks (${(sim.ticks / 18.2).toFixed(0)}s), score ${ci.score}, treats ${ci.meter[CTR.treats] - 1}, energy ${ci.hitpts}, lives ${ci.lives}`,
   );
   if (!r.ok) failed++;
+  if (ci.lives < livesBefore) throw new Error(`teddy: the bot lost a life on ${l.file}`);
 }
 console.log(`${keys.length} key events in all`);
 if (process.env.TEDDY_WALK) writeFileSync(process.env.TEDDY_WALK, serializeRecording(keys));
