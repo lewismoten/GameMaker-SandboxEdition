@@ -164,8 +164,6 @@ export function bathroom(book: BlockBook): Level {
   // the shower stall: glass, the shower head (drips), the steam rising out of the vents up to the silver rack
   m.fill(1, 1, 5, 11, 'g').set(5, 3, 'h').col(1, 4, 11, '~').col(2, 4, 11, '~').set(1, 12, 'v').set(2, 12, 'v');
   m.row(3, 1, 3, 'R').set(3, 2, '1');
-  // an Easter egg in the stall's corner
-  m.set(5, 11, 'easterEgg');
   // the screaming towel on its bar
   m.set(9, 10, 'b').mon(MON.towel, 9, 11);
   // the tub: its rim at either end, the cursed bathwater (the rubber duck, bubbles)
@@ -210,6 +208,8 @@ export function aisle(book: BlockBook): Level {
   // brambles, owls, the second shelving (a wild loofah on it), rosemary
   m.set(18, 11, '%').mon(MON.owl, 19, 3).mon(MON.owl, 27, 2);
   m.row(9, 20, 23, 'E').row(6, 21, 24, 'E').set(22, 8, '$').set(24, 5, '5').mon(MON.feral, 20, 8);
+  // an Easter egg at the far end of the top shelf, away from the rosemary
+  m.set(21, 5, 'easterEgg');
   // the bakery's day-old bin: Loaf #13; a coin on the floor
   m.set(28, 11, 'n').mon(MON.loaf, 28, 10).set(30, 11, '$');
   // the second tree: its vine heavy with gourds, a coin at the top
@@ -237,8 +237,6 @@ export function home(book: BlockBook): Level {
   // the bed: her asleep, his pillow with the washcloth of shame on it; the night stand (a candle)
   m.set(1, 6, 'headboardTop').col(1, 7, 8, 'headboard').set(2, 8, 'wife').row(8, 3, 7, 'bedTop').set(5, 8, 'pillow').row(9, 2, 7, 'bedSide').set(1, 9, 'bedSide');
   m.set(8, 9, 'stand').set(8, 8, 'unlit');
-  // a tin heart on her side of the bed, by her pillow
-  m.set(3, 7, 'tinHeart');
   m.set(10, 4, 'weddingPic').set(10, 9, 'creak');
   m.col(12, 8, 9, 'dresser').col(13, 8, 9, 'dresser').set(13, 7, 'unlit');
   m.set(17, 9, 'doorway').set(17, 8, 'doorwayTop');
@@ -252,6 +250,8 @@ export function home(book: BlockBook): Level {
   m.mon(MON.gwinn, 43, 9).set(47, 9, 'creak');
   // the bookcase (a candle on top), another towel, a spare candle on the floor
   m.row(7, 50, 51, 'wallShelf').row(5, 50, 51, 'wallShelf').set(51, 4, 'unlit').mon(MON.flapper, 54, 9).set(58, 9, 'unlitB');
+  // a little shelf on the wall, a hop back left from the top of the bookcase: a tin heart at its far end
+  m.row(5, 47, 48, 'wallShelf').set(47, 4, 'tinHeart');
   // the bathroom door: six candles burning; through it, the steam of the bathroom, where the
   // walk to the shower gives the funeral bell (the door's 1.6 s toll) time to ring out
   m.set(66, 9, 'bathDoor').set(66, 8, 'bathTop');

@@ -643,14 +643,14 @@ export function buildBlocks(pal: Pal): BlockBook {
 
   // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
   const pic = (name: string) => book.pics.get(name)!.crop(0, 0, 20, 20);
-  // a tin heart on her side of the bed at home, by her pillow: a glint crosses it now and then; 100 points
+  // a tin heart on a little wall shelf at home, a hop back from the top of the bookcase: a glint crosses it now and then; 100 points
   const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, drawTinHeart(pic('paper'), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'paper', score: 100, ...air });
-  // a dyed Easter egg in the corner of the shower stall: 50 points
+  // a dyed Easter egg on the top shelf of the forest-dark aisle's bare shelving: 50 points
   const egg = { ink: c('ink', 0), shell: R('mango'), paint: R('rosemary').slice(1), accent: c('pink', 3), white: c('white', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(pic('stall'), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'stall', score: 50, ...air });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(pic('forest'), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'forest', score: 50, ...air });
   // Mystery Robot Joe (Keep It Brief!), taking stock in the forest-dark aisle at 3 a.m. (scenery)
   const use = ['ink', 'grey', 'metal', 'white', 'gold', 'red', 'skin', 'night', 'steam'].flatMap((n) => R(n));
   book.add('joe', pic('forest').blit(joeCameo(buildPalette('plain').pal, 'side', 0, { use }), 0, 0, CLEAR), air);
