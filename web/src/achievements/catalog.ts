@@ -52,7 +52,7 @@ export const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as con
 /** The help pages for downloaded games. */
 export const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
 /** The desk props another part of the room reports with a gm-achievement event. */
-export const DESK_PROPS = ['desk-clock', 'desk-wastebasket', 'desk-door', 'desk-moon', 'desk-window', 'desk-curtains', 'desk-speaker', 'desk-degauss', 'desk-chez', 'desk-blacklight', 'desk-uv', 'desk-plow', 'desk-sleds', 'desk-dogs', 'desk-goat', 'desk-chicken', 'desk-star', 'desk-aurora', 'desk-mailtruck'] as const;
+export const DESK_PROPS = ['desk-clock', 'desk-wastebasket', 'desk-door', 'desk-moon', 'desk-window', 'desk-curtains', 'desk-speaker', 'desk-degauss', 'desk-chez', 'desk-blacklight', 'desk-uv', 'desk-plow', 'desk-sleds', 'desk-dogs', 'desk-goat', 'desk-chicken', 'desk-star', 'desk-aurora', 'desk-mailtruck', 'desk-zine'] as const;
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
   // making
@@ -125,6 +125,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'desk-star', title: 'Make a wish', desc: 'Caught a shooting star from the window.', icon: '🌠', category: 'found', hidden: true, hint: 'Watch the night sky.' },
   { id: 'desk-aurora', title: 'Northern lights', desc: 'Saw the aurora ripple over the hills.', icon: '🌌', category: 'found', hidden: true, hint: 'Some nights the sky puts on a show.' },
   { id: 'desk-mailtruck', title: 'In the mail', desc: 'Saw the mail truck pull away with your registration card.', icon: '📮', category: 'found', hidden: true, hint: 'Some things go out with the mail.' },
+  { id: 'desk-zine', title: 'Underground press', desc: 'Found the toy whistle and the hacker zine under it.', icon: '📰', category: 'found', hidden: true, hint: 'A cereal-box prize is hiding on the desk.' },
 ];
 
 const BY_ID = new Map(ACHIEVEMENTS.map((a) => [a.id, a]));

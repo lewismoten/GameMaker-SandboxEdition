@@ -13,6 +13,7 @@ import { curtainProps } from "./curtains";
 import { speakerProp } from "./speaker";
 import { degaussProp } from "./degauss";
 import { blackLight } from "./blacklight";
+import { toyWhistle } from "./zine/whistle";
 import { hideBubble } from "./propKit";
 
 export function deskProps(desk: HTMLElement, pc: { gamePlaying(): boolean } = { gamePlaying: () => false }): () => void {
@@ -35,6 +36,7 @@ export function deskProps(desk: HTMLElement, pc: { gamePlaying(): boolean } = { 
   add(speakerProp, ".speaker.left");
   add(degaussProp, ".monitor .brand", ".monitor .screen-bezel");
   offs.push(blackLight(desk));
+  offs.push(toyWhistle(desk));
   return () => {
     offs.forEach((f) => f());
     hideBubble();
