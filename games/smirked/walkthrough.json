@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "smirked",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUgFyAFNFM0BSA/IAU0PzQFQBdABTRTNAUgPyAFNBc0BSArIAUsFywFICsgBUCPQAUsPywFQBdABS0bLAUgKyAFNBc0BSxnLAVAF0AFLCssBUArQAU0FzQFICsgBSwXLAUgZyAFNFM0BSAXIAU0KzQFIBcgBSxnLAUgKyAFQFNABTUbNE0gPyAFNBc0BSAXIAU0UzQFNCs0BUB7QAU0KzQFQD9ABSwXLAUgtyAFND80BTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AVAP0AFNCs0BSAXIAUsFywFIKMgBTQXNAUsFywFQD9ABTQ/NAUgFyAFLCssBTQXNATkCuRlND80FUA/QAU0PzQFNBc0BOQK5GVAF0AFQGdABSwrLAUgeyAFNGc0FSwXLAUgZyAFNBc0BTQrNAU0FzQE5ArkZTQXNAVAK0AFNFM0BUA/QAUsFywFQCtABTRTNAVAK0AFQBdABSw/LAUgFyAFLD8sBSC3IAU0FzQVQI9ABSwXLAVAP0AFLQcsBTQXNATkCuRlND80FTSjNAU0FzQE5ArkZTQ/NBUgFyAFNBc0BSBTIAU0FzQFNBc0BOQK5GU0PzQVQGdABSxnLAVAF0AFLRssBSAXIAUsPywFIBcgBSw/LAUgFyAFNRs0BSAXIAU0tzQFICsgBTQXNAUgeyAFND80BUA/QAU0FzQFQFNABTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0FzQFQBdABTQrNAVAF0AFNFM0BUAXQAU0KzQFID8gBTRPNAU0PzQFQFNABSyjLAVAF0AFLBcsBUAXQAUsPywFQBdABSwXLAVAP0AFND80BTQrNAUsKywFNBc0BUArQAU0tzQFIFMgBSwXLAUgZyAFNBc0BSA/IAVAK0AFNHs0BUArQAU0PzQFQD9ABSwrLAVAU0AFLBcsBUAXQAU0ezQFICsgBTQ/NAUgoyAFLBcsBSAXIAUgFyAFLD8sBSwXLAVAj0AFLD8sBUA/QAU0ozQFQBdABTQXNAU0="
+  },
+  {
+   "scene": 5,
+   "keys": "AUgZyAFQBdABTRTNAUgPyAFNKM0BUBTQAU0KzQFQCtABSwXLAUgoyAFLI8sBTQXNATkCuQ5ND80BUAXQBUgFyAFLX8sBUArQAVAF0AFNCs0BUArQAU0FzQFQBdABSw/LAUgFyAFNCs0BSBnIAU1kzQFQKNABTQ/NAUgoyAFLRssBSA=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Mild Scares for All Ages"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: GET DOWN!"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Strategic Repositioning"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Emergency Exit Sign"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 24428,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1280
+   },
+   {
+    "title": "Level 1: Mild Scares for All Ages",
+    "frame": 2967
+   },
+   {
+    "title": "Level 2: GET DOWN!",
+    "frame": 5940
+   },
+   {
+    "title": "Level 3: Strategic Repositioning",
+    "frame": 11080
+   },
+   {
+    "title": "Level 4: The Emergency Exit Sign",
+    "frame": 14204
+   },
+   {
+    "title": "Ending",
+    "frame": 17190
+   },
+   {
+    "title": "Credits",
+    "frame": 19940
+   }
+  ]
+ }
+}
