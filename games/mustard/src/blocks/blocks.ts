@@ -188,7 +188,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // Rain clouds: they give birth to raindrops.
   const cloud = (part: number, rain: boolean) => {
     const p = sky(55 + part);
-    for (const [x, y, rr] of [[part * -20 + 12, 12, 8], [part * -20 + 22, 9, 9], [part * -20 + 33, 12, 8], [part * -20 + 44, 10, 7]]) blob(p, x, y, rr, rr * 0.75, R(rain ? 'stone' : 'white'), rain ? 2 : 0, rain ? 4 : 2, 1.2);
+    for (const [x, y, rr] of [[part * -20 + 9, 12, 8], [part * -20 + 19, 9, 9], [part * -20 + 29, 12, 8], [part * -20 + 34, 10, 5]]) blob(p, x, y, rr, rr * 0.75, R(rain ? 'stone' : 'white'), rain ? 2 : 0, rain ? 4 : 2, 1.2);
     p.rect(0, 16, 20, 4, c('sky', 3));
     for (let x = 0; x < 20; x++) if (x % 5 === 2) p.set(x, 17, c('water', 3)).set(x, 18, c('water', 2));
     return p;
@@ -426,5 +426,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('pass', pass(), air);
+  // Where a branch crosses the stalk: the stalk carries on behind the branch.
+  book.add('branchStalkL', branch(stalk('L')), { solid: LEDGE, grav: GRAV.down });
+  book.add('branchStalkR', branch(stalk('R')), { solid: LEDGE, grav: GRAV.down });
   return book;
 }

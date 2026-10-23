@@ -273,6 +273,7 @@ export function sky(book: BlockBook): Level {
   m.col(12, 18, 43, '[').col(13, 18, 43, ']');
   // its branches, every three rows (hop up through them)
   m.row(40, 9, 16, '-').row(37, 9, 16, '-').row(34, 9, 22, '-');
+  for (const y of [34, 37, 40]) m.set(12, y, 'branchStalkL').set(13, y, 'branchStalkR');
   m.set(15, 37, 'n').set(10, 39, 'd').text(9, 32, '*').set(16, 36, '*');
   // the evening breeze lifts on the right, to the nest branch
   m.col(22, 20, 33, 'z').row(20, 14, 20, '-').set(16, 20, 'n').set(20, 23, '*');
