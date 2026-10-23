@@ -66,12 +66,16 @@ export function buildWorld(cast: Cast) {
   const solid = (x: number, y: number) => blocks[map.blocks[y * 100 + x]].solid !== 0;
   const slime = book2.n('slime');
   const bat = book2.n('bat');
+  const goblin = book2.n('goblin');
+  // (lighter on the Nowish-Laterburg road, which the quest crosses again and again; goblins
+  // on the road south to the Keep)
   scatter(map, solid, 77, [
-    [slime, 24, 54, 34, 72, 4],
-    [slime, 14, 36, 28, 44, 3],
+    [slime, 24, 54, 34, 72, 3],
+    [slime, 14, 36, 28, 44, 2],
     [bat, 34, 26, 44, 34, 3],
     [slime, 70, 40, 78, 56, 4],
-    [bat, 72, 62, 80, 72, 4],
+    [bat, 72, 62, 80, 72, 2],
+    [goblin, 70, 64, 82, 76, 3],
   ]);
   // the royal hounds and Sir Reginald, each a talk (walk into them) that sends them home
   const world: SceneSpec['links'] = [];

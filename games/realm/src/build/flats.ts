@@ -55,6 +55,24 @@ export function buildFlats(o: { west: { to: string; at: Pt }; east: { to: string
     score: 10,
     hits: 1,
   });
+  // crabs on patrol: they scuttle back and forth across the causeway on a beat you can read
+  // (honk them off the road, or time the gap)
+  mons.add(
+    'patrol',
+    {
+      pics: [
+        [mb.n('crab0'), 4],
+        [mb.n('crab1'), 4],
+      ],
+      power: 90,
+      path: [
+        [0, 4, 1],
+        [0, 0, 1],
+      ],
+      upscore: 20,
+    },
+    MON.gem,
+  );
   const fp = flatsPlan(mons);
   const book = flatsBook(streetBridges(fp.plan.cm, 'road'));
   const area = buildArea({

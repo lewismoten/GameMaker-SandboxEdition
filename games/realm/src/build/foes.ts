@@ -1,5 +1,5 @@
-// The overworld's monsters (WORLD.MON): Procrastislimes and Snooze Bats, and, standing where
-// you find them, the royal hounds and Sir Reginald.
+// The overworld's monsters (WORLD.MON): Procrastislimes, Snooze Bats and (south of Eventually
+// Falls) Gloom Goblins, and, standing where you find them, the royal hounds and Sir Reginald.
 import type { GameMap } from '../../../../web/src/formats/map';
 import { rng } from '../../../kit/pixels';
 import { MonBook } from '../characters/monbook';
@@ -65,6 +65,21 @@ export function worldMons(mb: SpriteSheet): MonBook {
     rush: 2,
     drop: MON.gem,
     score: 15,
+  });
+  addChaser(mons, 'goblin', {
+    pics: [
+      ['goblin0', 6],
+      ['goblin1', 6],
+    ],
+    hurt: [
+      ['goblinHit', 2],
+      ['goblin1', 2],
+    ],
+    power: POWER.foeEasy,
+    wander: 2,
+    rush: 2,
+    drop: MON.bigGem,
+    score: 25,
   });
   mons.npc('teddy');
   mons.npc('gwinn');

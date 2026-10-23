@@ -299,7 +299,7 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
         const h = cellHash(x, y, 9);
         return h < 0.4 ? 'floor1' : 'floor';
       },
-      scenes: [{ id: s.theme, desc: s.desc, owns: () => true, extra, cmf: s.theme === 'keep' ? 'keep.cmf' : 'dungeon.cmf' }],
+      scenes: [{ id: s.theme, desc: s.desc, owns: () => true, extra, cmf: `${s.theme}.cmf` }],
       mbl: `${s.theme}.mbl`,
     });
     files.push(...area.files, { name: `${s.theme}.mbl`, bytes: serializeBlocks(mb.blocks) });

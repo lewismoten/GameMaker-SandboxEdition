@@ -275,9 +275,11 @@ export function minesPlan(mons: MonBook): DungeonPlan {
     [78, 40],
   ]);
   oct(p, 70, 30, 86, 40); // the timber stopes
+  // no way north from the gallery: the old cart track runs on west from the stopes, into the
+  // engine room's side (the Barrows go straight up; the Mines make you go round)
   hall(p, [
-    [50, 52],
-    [50, 44],
+    [70, 35],
+    [62, 35],
   ]);
   oct(p, 38, 26, 62, 44, 3); // Tick-Tock's engine room
   p.cm.region('pool', [
@@ -306,8 +308,17 @@ export function minesPlan(mons: MonBook): DungeonPlan {
   p.put('heartpot', 28, 38);
   p.put('bigchest', 84, 32);
   p.put('heartpot', 72, 38);
-  for (let x = 72; x <= 84; x += 3) p.put('floor2', x, 35);
-  p.row('spikes', 76, 80, 44);
+  for (let x = 63; x <= 84; x += 3) p.put('floor2', x, 35);
+  // fallen timbers and spoil heaps in the gallery: cover from the golems
+  for (const [x, y] of [
+    [40, 55],
+    [60, 56],
+    [45, 64],
+    [55, 63],
+  ] as Pt[])
+    p.put('rubble', x, y);
+  // (spikes by the big chest, not across the way through: the cart track is the only road on)
+  p.row('spikes', 80, 82, 32);
   for (const [x, y] of [
     [40, 29],
     [60, 29],

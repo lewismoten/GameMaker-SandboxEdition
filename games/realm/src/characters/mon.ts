@@ -73,14 +73,13 @@ export function baseMonsters(mb: SpriteSheet): Monster[] {
     towards: 6,
     end: 40,
   });
-  // a tonic: a sparkle fired at Pip's feet that turns, a tick later, into one that can touch him
-  // (stronger than any foe or shot, so one brushing past can't snuff it before Pip drinks)
+  // a tonic: a sparkle fired at Pip's feet that turns, a tick later, into one that can touch him.
+  // It stays on its healing picture: Pip drinks it on the tick after it turns, and a second,
+  // plain frame there would be swallowed without healing. It is stronger than any foe or shot,
+  // so one brushing past can't snuff it before Pip drinks.
   mons[MON.tonicA] = monster({ pics: [[n('sparkle'), 1]], power: POWER.tonic, end: 1, newmon: MON.tonicB });
   mons[MON.tonicB] = monster({
-    pics: [
-      [n('heal'), 2],
-      [n('sparkle'), 2],
-    ],
+    pics: [[n('heal'), 99]],
     power: POWER.tonic,
     end: 30,
   });

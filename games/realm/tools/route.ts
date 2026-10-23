@@ -1,6 +1,7 @@
 // The main quest, as the bot plays it: Nowish, the King's writ, the Snooze Barrows, a steel
-// sword, the Soggy Vaults, THE CHEZ across the Dawdle Flats, a lamp, the Putoff Mines, a
-// night's rest at the Falls and Deadline Keep, where Lord Deadline fights on foot. No side quests beyond what the money needs, no egg.
+// sword, the Soggy Vaults, THE CHEZ across the Dawdle Flats, a lamp, the Putoff Mines and
+// Deadline Keep, where Lord Deadline fights on out of his armor. No side quests beyond what the
+// money needs, no egg.
 import { Bot } from './bot';
 
 type Step = (b: Bot) => Promise<void>;
@@ -169,16 +170,6 @@ export const mines: Step = async (b) => {
   });
 };
 
-export const rest: Step = async (b) => {
-  // a night at the Falls and a tonic for the road: the Keep is no place to arrive tired
-  await b.retry(() => b.enter(80, 61, 'Eventually Falls'));
-  await b.goto(63, 49, 'the bed');
-  await b.push('up', 6);
-  await b.goto(62, 49, 'a tonic');
-  await b.push('up', 6);
-  await b.retry(() => b.enter(71, 64, 'out of Eventually Falls'));
-};
-
 export const keep: Step = async (b) => {
   await b.retry(() => b.enter(76, 76, 'Deadline Keep'));
   await b.retry(async () => {
@@ -198,6 +189,5 @@ export const ROUTE: [string, Step][] = [
   ['The Dawdle Flats', flats],
   ['A lamp', lamp],
   ['The Putoff Mines', mines],
-  ['A night at the Falls', rest],
   ['Deadline Keep', keep],
 ];

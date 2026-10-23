@@ -156,6 +156,13 @@ export function flatsPlan(mons: MonBook): FlatsPlan {
     [30, 40],
   ] as Pt[])
     p.npc(crab, at);
+  // the patrols: each starts just north of the causeway and sweeps four blocks south across it
+  for (const at of [
+    [25, 43],
+    [49, 45],
+    [84, 43],
+  ] as Pt[])
+    p.npc(mons.n('patrol'), at);
   for (const at of [
     [22, 60],
     [40, 60],

@@ -1,6 +1,6 @@
 // The soundtrack: FM songs for the Sound Blaster in the manner of a 1996 RPG — a heraldic
-// fanfare, a lute's village jig, a marching overworld theme, a dungeon's ostinato, Deadline
-// Keep's ticking, a jaunty drive across the Flats, and the Round Tuit made whole.
+// fanfare, a lute's village jig, a marching overworld theme, an ostinato for each dungeon,
+// Deadline Keep's ticking, a jaunty drive across the Flats, and the Round Tuit made whole.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const LUTE = sbi({ modChar: 0x03, carChar: 0x01, modLevel: 0x16, carLevel: 0x00, modAD: 0xf7, carAD: 0xf5, modSR: 0x34, carSR: 0x45, feedback: 0x0a });
@@ -293,46 +293,112 @@ export function castleSong(): Uint8Array {
   );
 }
 
-/** The dungeons: an ostinato in A minor, low strings, a bell now and then. */
-export function dungeonSong(): Uint8Array {
-  const bars = ['Am', 'Am', 'F', 'E', 'Am', 'Dm', 'E', 'E'];
-  const ost =
-    repeat('A2 e, E3 e, C3 e, E3 e, A2 e, E3 e, B2 e, E3 e', 2) +
-    ', ' +
-    repeat('F2 e, C3 e, A2 e, C3 e', 2) +
-    ', ' +
-    repeat('E2 e, B2 e, G#2 e, B2 e', 2) +
-    ', ' +
-    repeat('A2 e, E3 e, C3 e, E3 e', 2) +
-    ', ' +
-    repeat('D2 e, A2 e, F2 e, A2 e', 2) +
-    ', ' +
-    repeat('E2 e, B2 e, G#2 e, B2 e', 4);
-  const bell = ['A5 w', 'r w', 'C6 h, B5 h', 'G#5 w', 'E5 w', 'F5 h, E5 h', 'D5 h, C5 h', 'B4 w'].join(', ');
-  const [a, b] = comp(bars, 'w');
-  return song(
-    100,
-    voices(
-      [INSTRUMENTS.bell, bell, 70],
-      [
-        [INSTRUMENTS.bass, ost, 100],
-        [INSTRUMENTS.strings, a, 55],
-        [INSTRUMENTS.strings, b, 55],
-      ],
-    ),
-  );
+/** One dungeon's song: what changes from dungeon to dungeon. */
+interface Crypt {
+  tempo: number;
+  /** The lead instrument and its line for the A and B sections (8 bars each). */
+  lead: Uint8Array;
+  a: string;
+  b: string;
+  /** Low ostinato and chord pad instruments. */
+  low: Uint8Array;
+  pad: Uint8Array;
+  /** An extra part on top (drips, pick strikes), the same length as both sections. */
+  extra?: [Uint8Array, string, number];
 }
 
-/** Deadline Keep: a clock ticks; C minor, every bar a minute closer. */
+/**
+ * The dungeons share one shape: an A section in A minor over a low ostinato, then a B section
+ * that climbs to D minor and back round to E, so the loop runs about forty seconds before it
+ * repeats. Each dungeon sets its own tempo, lead, colors and one part of its own.
+ */
+function crypt(c: Crypt): Uint8Array {
+  const barsA = ['Am', 'Am', 'F', 'E', 'Am', 'Dm', 'E', 'E'];
+  const barsB = ['Dm', 'Dm', 'Am', 'Am', 'F', 'G', 'E', 'E'];
+  const bars = [...barsA, ...barsB];
+  // the minor third under each chord where the chord is minor; the major third otherwise
+  const low = bars
+    .map((b) => {
+      const minor = b.endsWith('m');
+      return bass([b], `0:e 7:e ${minor ? 3 : 4}:e 7:e 0:e 7:e ${minor ? 3 : 4}:e 7:e`, 2);
+    })
+    .join(', ');
+  const [x, y] = comp(bars, 'w');
+  const parts: [Uint8Array, string, number?][] = [
+    [c.low, low, 100],
+    [c.pad, x, 55],
+    [c.pad, y, 55],
+  ];
+  if (c.extra) parts.push(c.extra);
+  return song(c.tempo, voices([c.lead, `${c.a}, ${c.b}`, 75], parts));
+}
+
+/** The Snooze Barrows: a slow bell over low strings, and a yawning B section. */
+export function barrowsSong(): Uint8Array {
+  return crypt({
+    tempo: 96,
+    lead: INSTRUMENTS.bell,
+    a: ['A5 w', 'r w', 'C6 h, B5 h', 'G#5 w', 'E5 w', 'F5 h, E5 h', 'D5 h, C5 h', 'B4 w'].join(', '),
+    b: ['F5 h, E5 h', 'D5 w', 'E5 h, C5 h', 'A4 w', 'C5 h, D5 h', 'B4 h, G4 h', 'G#4 w', 'r w'].join(', '),
+    low: INSTRUMENTS.bass,
+    pad: INSTRUMENTS.strings,
+  });
+}
+
+/** The Soggy Vaults: a harp, an organ's damp chords and a drip in the dark. */
+export function vaultsSong(): Uint8Array {
+  const drip = repeat('r h, E6 e, r e, r q', 8) + ', ' + repeat('r h, D6 e, r e, A5 q', 8);
+  return crypt({
+    tempo: 88,
+    lead: HARP,
+    a: ['A4 q, C5 q, E5 h', 'D5 q, C5 q, B4 h', 'A4 q, C5 q, F5 h', 'E5 w', 'C5 q, E5 q, A5 h', 'F5 q, E5 q, D5 h', 'B4 q, D5 q, E5 h', 'G#4 w'].join(', '),
+    b: ['D5 q, F5 q, A5 h', 'G5 q, F5 q, E5 h', 'C5 q, E5 q, A5 h', 'G5 q, E5 q, C5 h', 'A4 q, C5 q, F5 h', 'G4 q, B4 q, D5 h', 'E5 h, D5 h', 'B4 w'].join(
+      ', ',
+    ),
+    low: INSTRUMENTS.bass,
+    pad: INSTRUMENTS.organ,
+    extra: [INSTRUMENTS.bell, drip, 45],
+  });
+}
+
+/** The Putoff Mines: a quicker march, brass on top and picks striking on the beat. */
+export function minesSong(): Uint8Array {
+  const picks = repeat('A2 q, r q, A2 q, A2 e, A2 e', 16);
+  return crypt({
+    tempo: 112,
+    lead: INSTRUMENTS.brass,
+    a: ['A4 h, E5 h', 'C5 q, B4 q, A4 h', 'F4 h, C5 h', 'B4 q, G#4 q, E4 h', 'A4 h, E5 h', 'F5 q, E5 q, D5 h', 'E5 q, D5 q, B4 h', 'E4 w'].join(', '),
+    b: ['D5 h, F5 h', 'A5 q, F5 q, D5 h', 'C5 h, E5 h', 'A5 q, E5 q, C5 h', 'F5 h, A5 h', 'G5 q, F5 q, D5 h', 'E5 q, F5 q, E5 q, D5 q', 'B4 h, G#4 h'].join(
+      ', ',
+    ),
+    low: INSTRUMENTS.bass,
+    pad: INSTRUMENTS.strings,
+    extra: [DRUM, picks, 70],
+  });
+}
+
+/** Deadline Keep: a clock ticks; C minor, every bar a minute closer, then a B section that climbs through A-flat and B-flat to the dominant. */
 export function keepSong(): Uint8Array {
-  const bars = ['Cm', 'Cm', 'Ab', 'G', 'Cm', 'Cm', 'Ab', 'G'];
-  const tick = repeat('C6 q, G5 q', 16);
-  const mel = ['C5 h, Eb5 h', 'D5 q, C5 q, B4 h', 'C5 h, Ab4 h', 'G4 w', 'Eb5 h, G5 h', 'F5 q, Eb5 q, D5 h', 'Eb5 q, C5 q, Ab4 h', 'B4 w'].join(', ');
+  const barsA = ['Cm', 'Cm', 'Ab', 'G', 'Cm', 'Cm', 'Ab', 'G'];
+  const barsB = ['Ab', 'Bb', 'Eb', 'Cm', 'Ab', 'Bb', 'G', 'G'];
+  const bars = [...barsA, ...barsB];
+  const tick = repeat('C6 q, G5 q', 32);
+  const melA = ['C5 h, Eb5 h', 'D5 q, C5 q, B4 h', 'C5 h, Ab4 h', 'G4 w', 'Eb5 h, G5 h', 'F5 q, Eb5 q, D5 h', 'Eb5 q, C5 q, Ab4 h', 'B4 w'];
+  const melB = [
+    'C5 q, Eb5 q, Ab5 h',
+    'F5 q, D5 q, Bb4 h',
+    'Eb5 q, G5 q, Bb5 h',
+    'G5 q, Eb5 q, C5 h',
+    'Ab5 h, G5 h',
+    'F5 q, G5 q, Ab5 h',
+    'G5 h, F5 q, D5 q',
+    'B4 h, D5 h',
+  ];
   const [a, b, c] = comp(bars, 'h h');
   return song(
     108,
     voices(
-      [HORN, mel, 100],
+      [HORN, [...melA, ...melB].join(', '), 100],
       [
         [TICK, tick, 70],
         [INSTRUMENTS.organ, a, 55],
