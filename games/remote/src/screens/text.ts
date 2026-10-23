@@ -130,8 +130,9 @@ export const INSTRUCTIONS = [
   page([
     'THE RIDE: the spinning rug',
     'carries you round. Press PLAY',
-    'on the VCR, then sit back',
-    'down on the couch.',
+    'on the VCR, get off at the',
+    'EXIT and sit back down on',
+    'the couch.',
     '',
     'PATIENCE is your health. The',
     "cat swipes; Teddy's kiss, the",

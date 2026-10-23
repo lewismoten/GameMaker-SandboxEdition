@@ -12,7 +12,7 @@
 //   - in the void between the cushions the nothing is solid, a Bermuda swirl stings once, the lost
 //     things are points, the fake remotes say NOPE, and the pay TV takes ten pennies (money);
 //   - on the living room ride the spinning rug carries you round (gravity), the VCR's PLAY
-//     button counts (counter 22) and the couch only lets you sit down with the tape playing.
+//     button counts (counter 22) and the ride only lets you off to the couch with the tape playing.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
@@ -235,8 +235,10 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('cushionUp', lifted(0, 'pennies'), solid);
   book.add('cushionUp2', lifted(1, 'crumbs'), solid);
-  // the seat you sit back down in at the end (the ride): it only takes you with the tape playing
-  book.add('couchSeat', seat(2), { solid: SOLID, effect: PLAY, eamt: -1, score: 1000, touch: 'couchSat' });
+  // the seat you sit back down in at the end (the ride); the way to it is through the ride's exit
+  book.add('couchSeat', seat(2), { solid: SOLID, touch: 'couchSat' });
+  // the ride's other seat cushions: just cushions (nothing to search, and no sound)
+  book.add('seatCushion', seat(0), solid);
   const sat = seat(2);
   blob(sat, 10, 9, 6, 5, R('robe'), 1, 3);
   book.add('couchSat', sat);
@@ -674,6 +676,21 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('bulbs', bulbs(0), { solid: SOLID, next: 'bulbs2', ntime: 6 });
   book.add('bulbs2', bulbs(1), { solid: SOLID, next: 'bulbs', ntime: 6 });
+  // the ride's way off, a velvet rope between two posts: it only lets you off with the tape
+  // playing, and there, beneath the cushion you sit on... the remote ("There you are, you sneaky
+  // guy." plays as you walk to the couch)
+  const exit = (open: boolean) => {
+    const p = carpet(81);
+    p.rect(2, 12, 16, 7, c('white', 2)).rect(2, 18, 16, 1, c('silver', 0));
+    micro(p, 3, 13, 'EXIT', open ? c('led', 0) : c('red', 1));
+    for (const x of [0, 18]) p.rect(x, 3, 2, 15, c('silver', 1)).rect(x, 2, 2, 1, c('silver', 3)).rect(x, 17, 2, 1, c('silver', 0));
+    const sag = (x: number) => Math.round(Math.sin(((x - 2) / 16) * Math.PI) * 4);
+    if (open) p.line(2, 4, 3, 10, c('red', 1)).line(3, 4, 4, 10, c('red', 2));
+    else for (let x = 2; x < 18; x++) p.set(x, 4 + sag(x), c('red', 1)).set(x, 5 + sag(x), c('red', 2));
+    return p;
+  };
+  book.add('rideExit', exit(false), { solid: SOLID, effect: PLAY, eamt: -1, score: 1000, touch: 'rideExitOpen' });
+  book.add('rideExitOpen', exit(true));
   return book;
 }
 

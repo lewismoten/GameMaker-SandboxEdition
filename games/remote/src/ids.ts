@@ -94,8 +94,8 @@ export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, b: 48, c
  * Like money, each starts at 1 and shows one less.
  *   SPOTS: places searched in the living room; the baby gate to the kitchen opens at six
  *   ("nope, not there"). DIGITS: Mom's phone number, seven fridge magnets knocked all over the
- *   kitchen floor; the phone dials them. PLAY: the VCR's PLAY button, pressed; the couch only
- *   lets you sit back down when the tape is playing.
+ *   kitchen floor; the phone dials them. PLAY: the VCR's PLAY button, pressed; the ride's exit
+ *   only lets you off (and back to the couch) when the tape is playing.
  * Pennies are Game-Maker's money (counter 3): the pay TV in the void takes ten.
  */
 export const SPOTS = 20;

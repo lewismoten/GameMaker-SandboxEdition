@@ -2,7 +2,7 @@
 // afghan, Teddy, the cat, the magazines, the laundry) and ask the Voice-O-Matic, through the
 // baby gate; gather Mom's number off the kitchen floor, open the fridge and call her; gather
 // ten pennies in the void and pay the TV; ride the living room ride to the VCR, press PLAY,
-// and sit back down.
+// get off at the EXIT and sit back down.
 import { DIGITS, DIGITS_NEEDED, MONEY, PENNIES_NEEDED, PLAY, SPOTS, SPOTS_NEEDED } from '../src/ids';
 import { Bot } from './bot';
 
@@ -150,7 +150,7 @@ export async function theVoid(bot: Bot): Promise<void> {
   });
 }
 
-/** 4. The living room ride: up through the ride to the VCR, PLAY, and back down to the couch. */
+/** 4. The living room ride: in at the gap, up through the ride to the VCR, PLAY, off at the EXIT and along to the couch. */
 export async function theRide(bot: Bot): Promise<void> {
   expect(bot, 5, 'the ride');
   await carefully(bot, 'up through the ride', 14, async () => {
@@ -160,6 +160,7 @@ export async function theRide(bot: Bot): Promise<void> {
   });
   if (bot.count(PLAY) < 1) throw new Error('PLAY never pressed');
   await carefully(bot, 'back down to the couch', 14, async () => {
-    await through(bot, 13, 12, 'up', 'the couch');
+    await must(bot, bot.take(16, 10, 'up', 'the EXIT'), 'the EXIT');
+    await through(bot, 21, 12, 'up', 'the couch');
   });
 }

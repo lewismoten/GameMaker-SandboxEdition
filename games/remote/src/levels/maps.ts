@@ -281,10 +281,16 @@ const RIDE: Record<string, string> = {
   o: 'bulbs',
   y: 'vcrPlay',
   s: 'couchSeat',
+  c: 'seatCushion',
   Q: 'tapes',
+  '=': 'rideExit',
 };
 
-/** 4. The living room ride: press PLAY on the VCR and sit back down. */
+/**
+ * 4. The living room ride: in at the gap, press PLAY on the VCR, off at the EXIT (the tape must
+ * be playing) and along the front of the couch to sit back down: the walk from the EXIT lets
+ * "There you are, you sneaky guy." play out before the fade.
+ */
 export function theRide(book: BlockBook): Level {
   const map = rows([
     '#PPPPOPPPPPPKPPPPTPPPPPOPPPPP#',
@@ -296,17 +302,17 @@ export function theRide(book: BlockBook): Level {
     '#o^.....,.....H............Vo#',
     '#o^.......................,Vo#',
     '#o^........................Vo#',
-    '#o^<<<<<<<<<<<<<<<<<<<<<<<<<o#',
-    '#ooooooooooo...oooooooooooooo#',
-    '#............................#',
-    '#..p.......gcsch.......,..p..#',
-    '#..........abBde.............#',
+    '#o^<<<<<<<<<<<<<.<<<<<<<<<<<o#',
+    '#ooooooooooo...o=oooooooooooo#',
+    '#..............p......p......#',
+    '#..p............tupgcsch..p..#',
+    '#..................abBde.....#',
     '#............................#',
     '##############################',
   ]);
   const m = new MapBuilder(book, 'wallTop', RIDE);
   m.patch(0, 0, map.lines);
   m.mon(MON.recliner, 4, 5).mon(MON.ottoman, 24, 8).mon(MON.lampshade, 16, 6).mon(MON.popcorn, 20, 2).mon(MON.popcorn, 7, 11).mon(MON.rider, 6, 6);
-  m.link(13, 12, 'won');
+  m.link(21, 12, 'won');
   return { m, start: at(13, 14), size: [map.w, map.h] };
 }
