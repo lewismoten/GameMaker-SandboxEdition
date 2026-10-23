@@ -38,6 +38,8 @@ export interface LinuxAppOptions {
   /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
   fiction?: string;
   picture?: IndexedImage;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts), first in its notices. */
+  audio?: string;
   colors?: IconColors;
 }
 
@@ -197,7 +199,7 @@ export async function linuxAppFiles(o: LinuxAppOptions): Promise<{ name: string;
       text('install.sh', installScript(o), 0o755),
       text('uninstall.sh', uninstallScript(o), 0o755),
       text('README.txt', readme(o)),
-      text('THIRD-PARTY-NOTICES.txt', thirdPartyNotices('linux')),
+      text('THIRD-PARTY-NOTICES.txt', thirdPartyNotices('linux', o.audio)),
       text('game.html', o.html),
       { path: `${name}/icon.png`, data: await linuxIcon(o.picture, o.colors), mode: 0o644 },
       ...LINUX_ARCHES.map((a) => ({ path: `${name}/GameMakerPlayer-${a}`, data: o.players[a], mode: 0o755 })),

@@ -39,6 +39,8 @@ export interface WinAppOptions {
   fiction?: string;
   /** Shown on the icon (macApp.ts's iconPicture). */
   picture?: IndexedImage;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts), first in its notices. */
+  audio?: string;
   colors?: IconColors;
 }
 
@@ -187,7 +189,7 @@ export async function winExe(o: WinAppOptions): Promise<Uint8Array> {
     { type: RT.VERSION, name: 1, lang: 0, data: versionInfo(o) },
     { type: RT.RCDATA, name: 'GAME', lang: 0, data: enc.encode(o.html) },
     { type: RT.RCDATA, name: 'INFO', lang: 0, data: enc.encode(infoText(o)) },
-    { type: RT.RCDATA, name: 'NOTICES', lang: 0, data: enc.encode(thirdPartyNotices('windows')) },
+    { type: RT.RCDATA, name: 'NOTICES', lang: 0, data: enc.encode(thirdPartyNotices('windows', o.audio)) },
   ]);
 }
 
@@ -196,7 +198,7 @@ export async function winExeZip(o: WinAppOptions, date?: Date): Promise<Uint8Arr
   return createZip(
     [
       { name: exeName(o.title), data: await winExe(o) },
-      { name: 'THIRD-PARTY-NOTICES.txt', data: new TextEncoder().encode(thirdPartyNotices('windows')) },
+      { name: 'THIRD-PARTY-NOTICES.txt', data: new TextEncoder().encode(thirdPartyNotices('windows', o.audio)) },
     ],
     date,
   );

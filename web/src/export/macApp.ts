@@ -43,6 +43,8 @@ export interface MacAppOptions {
   fiction?: string;
   /** Shown on the app's icon (iconPicture). */
   picture?: IndexedImage;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts), first in its notices. */
+  audio?: string;
   colors?: IconColors;
 }
 
@@ -159,7 +161,7 @@ export async function macAppFiles(o: MacAppOptions): Promise<{ name: string; fil
 
 /** THIRD-PARTY-NOTICES.txt, beside the app in the .zip and on the .dmg (notices.ts). */
 export const NOTICES_FILE = 'THIRD-PARTY-NOTICES.txt';
-export const macNotices = () => new TextEncoder().encode(thirdPartyNotices('mac'));
+export const macNotices = (audio?: string) => new TextEncoder().encode(thirdPartyNotices('mac', audio));
 
 /** The disk image's Finder window: the app, an Applications shortcut to drag it onto, and the notices below. */
 export function dmgWindow(name: string): Uint8Array {
@@ -177,7 +179,7 @@ export function dmgWindow(name: string): Uint8Array {
 export async function macAppZip(o: MacAppOptions, date?: Date): Promise<Uint8Array> {
   const { files } = await macAppFiles(o);
   return createZip(
-    [...files.map((f) => ({ name: f.path, data: f.data!, mode: 0o100000 | f.mode })), { name: NOTICES_FILE, data: macNotices(), mode: 0o100644 }],
+    [...files.map((f) => ({ name: f.path, data: f.data!, mode: 0o100000 | f.mode })), { name: NOTICES_FILE, data: macNotices(o.audio), mode: 0o100644 }],
     date,
   );
 }
@@ -189,7 +191,7 @@ export async function macAppDmg(o: MacAppOptions, date?: Date): Promise<Uint8Arr
     [
       ...files.map((f) => ({ path: f.path, data: f.data, mode: f.mode })),
       { path: 'Applications', symlink: '/Applications', mode: 0o755 },
-      { path: NOTICES_FILE, data: macNotices(), mode: 0o644 },
+      { path: NOTICES_FILE, data: macNotices(o.audio), mode: 0o644 },
       { path: '.DS_Store', data: dmgWindow(name), mode: 0o644 },
     ],
     { volume: name.replace(/\.app$/, '').slice(0, 32), date, application: 'GAME-MAKER: SANDBOX EDITION' },
