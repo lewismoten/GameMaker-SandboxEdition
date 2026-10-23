@@ -60,7 +60,8 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
       [m('teddy1'), 4],
       [m('teddy0'), 4],
       [m('teddy1'), 4],
-      [m('teddy2'), 10],
+      [m('teddyhi0'), 1],
+      [m('teddy2'), 9],
       [m('teddy3'), 6],
     ],
     { power: 200, thru: 1 },
@@ -70,13 +71,22 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
     [
       [m('gwinn0'), 5],
       [m('gwinn1'), 5],
-      [m('gwinn2'), 12],
+      [m('gwinnhi0'), 1],
+      [m('gwinn2'), 11],
       [m('gwinn3'), 6],
     ],
     { power: 200, thru: 1 },
     square(3, 3, 1),
   );
-  set[MON.leo] = mon(anim('leo', 2, 6), { power: 200, thru: 1 }, patrol(4, 0, 1));
+  set[MON.leo] = mon(
+    [
+      [m('leo0'), 6],
+      [m('leohi0'), 1],
+      [m('leo1'), 5],
+    ],
+    { power: 200, thru: 1 },
+    patrol(4, 0, 1),
+  );
   set[MON.bat] = mon(anim('bat', 2, 2), { power: 85, thru: 0, towards: 2, end: 120, newmon: MON.pop, upscore: 40 });
   // Count Polygon: a ray cracks him (he blinks), another shatters him (he blinks faster), a
   // third takes faces off. He starts in the
@@ -121,9 +131,11 @@ export function monsterTouches(sp: SpriteSet, mbl: Block[]): void {
   each('jaggy', 2, { chHitPt: -20 });
   each('steam', 3, { chHitPt: -15 });
   each('double', 4, { chHitPt: -25 });
-  each('teddy', 4, { chHitPt: 1 });
-  each('gwinn', 4, { chHitPt: 1 });
-  each('leo', 2, { chHitPt: 1 });
+  // friends give light on one tick of their hello, not on every tick you touch them (which
+  // replayed the light chime every tick you stood by them)
+  each('teddyhi', 1, { chHitPt: 6 });
+  each('gwinnhi', 1, { chHitPt: 6 });
+  each('leohi', 1, { chHitPt: 3 });
   each('bat', 2, { chHitPt: -15 });
   for (let s = 0; s < 5; s++) each(`count${s}_`, 2, { chHitPt: -3 });
   for (let s = 0; s < 5; s++) each(`count${s}_hit`, 2, { chHitPt: -3 });

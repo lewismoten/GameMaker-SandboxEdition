@@ -60,6 +60,10 @@ function monsterEntries(): Entry[] {
   add('teddy', 4, (f) => renderSprite(C.teddy(f)));
   add('gwinn', 4, (f) => renderSprite(C.gwinn(f)));
   add('leo', 2, (f) => renderSprite(C.docLeo(f)));
+  // each friend's one-tick hello: the only picture that gives light (see characters/monsters.ts)
+  add('teddyhi', 1, () => renderSprite(C.teddy(2)));
+  add('gwinnhi', 1, () => renderSprite(C.gwinn(2)));
+  add('leohi', 1, () => renderSprite(C.docLeo(1)));
   add('bat', 2, (f) => renderSprite(C.scaled(C.bat(f), 1.3), { noShadow: true, outline: RIM }));
   // the Count a size up from his model, rimmed, so his smaller stages still show on the dark grid
   const big = (s: number, f: number) => C.scaled(C.count(s, f), s < 2 ? 1.1 : 1.3);
