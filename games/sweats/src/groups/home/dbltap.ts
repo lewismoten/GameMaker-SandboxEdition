@@ -262,8 +262,8 @@ export const dbltap: Monologue = {
     m.set(2, 9, '!');
     placePicture(m, 'couch', 4, 8, 2, 2);
     placePicture(m, 'win', 4, 3, 2, 2);
-    m.set(7, 9, 'like1').set(10, 9, '$');
-    m.mon(MON.teddy, 8, 9);
+    m.set(3, 9, '$').set(7, 9, 'like1');
+    m.mon(MON.teddy, 9, 9);
     placePicture(m, 'phone', 11, 8, 2, 2);
     // the feed: the posts up to page six, the hamster flag (trending), the petitions
     m.row(7, 16, 18, 'p').set(17, 6, '%');

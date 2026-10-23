@@ -12,10 +12,7 @@ import { PLOYS } from '../../src/groups/home/pizza';
 import { KIT } from '../../src/groups/home/itch';
 import { CAUSES } from '../../src/groups/home/dbltap';
 import type { Bot } from '../bot';
-import { carefully as carefully0, declaim, expect, leave, must, plot, type Route } from '../route';
-
-// DEBUG
-const carefully: typeof carefully0 = (bot, label, max, f) => (process.env.HOME_RAW ? f() : carefully0(bot, label, max, f));
+import { carefully, declaim, expect, leave, must, plot, type Route } from '../route';
 
 let names: Map<number, string> | undefined;
 /** The home set's block names by number. */
@@ -219,9 +216,8 @@ export const HOME_ROUTES: Record<string, Route> = {
     await carefully(bot, "Janet's table", 0, async () => {
       await must(bot, bot.walk(5, 'the table'), 'table');
       await must(bot, bot.hop('right', 12, 'right', 6.5), 'onto the table');
-      await waitAndDeclaim(bot, [ITCH_MON.ghost, ITCH_MON.tsk], 'the itch, TSK');
-      await must(bot, bot.walk(10, 'on'), 'on');
-      await waitAndDeclaim(bot, [ITCH_MON.ghost, ITCH_MON.tsk], 'the itch, TSK');
+      await waitAndDeclaim(bot, [ITCH_MON.ghost], 'the itch');
+      await waitAndDeclaim(bot, [ITCH_MON.tsk], 'TSK');
       await must(bot, bot.walk(13, 'the napkin'), 'napkin');
       await must(bot, bot.walk(19, 'the mug, out the door'), 'door');
     });
@@ -257,11 +253,11 @@ export const HOME_ROUTES: Record<string, Route> = {
   dbltap: async (bot) => {
     expect(bot, 'dbltap');
     await carefully(bot, 'the couch, the phone', 0, async () => {
-      await must(bot, bot.walk(3, 'the couch'), 'couch');
-      await must(bot, bot.hop('right', 12, 'right', 6.5), 'over the couch');
-      await must(bot, bot.walk(7, 'the bowl of cereal'), 'cereal');
-      await must(bot, bot.hop('right', 12, 'right', 9.5), 'over Teddy');
-      await must(bot, bot.walk(15, 'the coin, in through the phone'), 'phone');
+      await must(bot, bot.walk(3, 'the coin, the couch'), 'couch');
+      await must(bot, bot.hop('right', 12, 'right', 6.2), 'over the couch');
+      await must(bot, bot.walk(7.5, 'the bowl of cereal'), 'cereal');
+      await must(bot, bot.hop('right', 12, 'right', 10.5), 'over Teddy');
+      await must(bot, bot.walk(15, 'in through the phone'), 'phone');
     });
     await carefully(bot, 'up to page six', 0, async () => {
       await must(bot, bot.hop('right', 12, 'right', 16.5), 'onto a post');
