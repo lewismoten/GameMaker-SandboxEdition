@@ -249,7 +249,7 @@ The stories are Lewis Moten's 100 Word Stories, written for Laurence Simon's wee
 THIS IS SHAREWARE
 Copy this disk for a friend, upload it to your favorite BBS, put it on a shareware disk: all of the files, unchanged. Please return it on time.
 
-If you enjoy it, register for $10 (exactly) with Sandbox Software, Dept. 100, P.O. Box 1992. Registered readers get a library card with their own name on it and our thanks, in under one hundred words.
+If you enjoy it, register for $10 (exactly) with Sandbox Software, Dept. 100, P.O. Box 000. Registered readers get a library card with their own name on it and our thanks, in under one hundred words.
 
 FILES ON THIS DISK
  BRIEF.GAM    the game

@@ -40,7 +40,7 @@ time.
 If you enjoy it, register for
 $10 (exactly) with Sandbox
 Software, Dept. 100, P.O. Box
-1992. Registered readers get a
+000. Registered readers get a
 library card with their own
 name on it and our thanks, in
 under one hundred words.
