@@ -229,7 +229,49 @@ export async function home(bot: Bot): Promise<void> {
   });
 }
 
+/** Is any of these monsters still about? */
+const alive = (bot: Bot, mons: number[]) => bot.sim.w.mm.some((m) => mons.includes(m.monnum));
+const SPONGE_A = [MON.spongeA0, MON.spongeA1, MON.spongeA2, MON.spongeA3];
+const SPONGE_B = [MON.spongeB0, MON.spongeB1, MON.spongeB2, MON.spongeB3];
+/** IV. Scrubbus Maximus: the rosemary and the washcloth on the way, over the drain, the demon sponge cleansed top and bottom, the pink one, her rack. */
 export async function shower(bot: Bot): Promise<void> {
   expect(bot, 5, 'the shower');
-  throw new Error('todo');
+  expect(bot, 5, 'the reckoning');
+  await carefully(bot, 'the rosemary on the caddy', 20, async () => {
+    if (process.env.BOT_THROW) bot.say(`brine ${brine(bot)} at the start`);
+    await must(bot, bot.walk(5, 'under the first tiles'), 'tiles');
+    await must(bot, bot.hop('up', 12), 'the rosemary on the caddy');
+    await must(bot, bot.walk(6, 'the end of the tiles'), 'end');
+    await must(bot, bot.hop('right', 10, 'right', 9), 'the rosemary up on the next shelf');
+    if (bot.at.y !== 4) throw new Error(`not up on the caddy (${bot.at.y})`);
+    await must(bot, bot.walk(7.2, 'off the tiles'), 'off');
+    await must(bot, bot.walk(8, 'the dry washcloth'), 'washcloth');
+  });
+  await carefully(bot, 'over the drain', 20, async () => {
+    await must(bot, bot.walk(10.8, 'the edge of the drain'), 'edge');
+    await must(bot, bot.hop('right', 12, 'right', 16), 'over the drain');
+    await must(bot, bot.land(), 'land');
+    if (bot.at.y === 9) await must(bot, bot.hop('up', 12), 'up to the rosemary on the caddy');
+    await must(bot, bot.walk(17, 'the end of the tiles'), 'end');
+    await must(bot, bot.hop('right', 4, 'right', 20), 'the rosemary on the last shelf');
+    if (bot.at.y !== 6) throw new Error(`not up on the last shelf (${bot.at.y})`);
+    await must(bot, bot.walk(21, 'down off the tiles'), 'down');
+  });
+  if (process.env.BOT_THROW) bot.say(`brine ${brine(bot)} before the sponge`);
+  await carefully(bot, 'Scrubbus Maximus', 60, async () => {
+    for (let k = 0; k < 40 && (alive(bot, SPONGE_A) || alive(bot, SPONGE_B)); k++) {
+      if (brine(bot) <= 0) throw new Error('out of brine');
+      await must(bot, bot.hold('space', 2), 'a throw');
+      await must(bot, bot.wait(12), 'the splash flies');
+      if (process.env.BOT_THROW) bot.say(`threw: brine ${brine(bot)} sponge ${bot.sim.w.mm.filter((m) => m.monnum >= MON.spongeA0 && m.monnum <= MON.spongeB3).map((m) => m.monnum).join(',')} splash ${bot.sim.w.mm.filter((m) => m.monnum === MON.brine).length}`);
+    }
+    if (alive(bot, SPONGE_A) || alive(bot, SPONGE_B)) throw new Error('the demon sponge still stands');
+    bot.say('Scrubbus Maximus cleansed');
+  });
+  await carefully(bot, 'the pink one', 30, async () => {
+    await must(bot, bot.walk(23.6, 'under the pink one'), 'pink');
+    await must(bot, bot.hop('up', 6), 'the pink one');
+    if (pink(bot) < 1) throw new Error('no pink one');
+    await leave(bot, bot.walk(31, 'her silver rack'), 'her rack');
+  });
 }
