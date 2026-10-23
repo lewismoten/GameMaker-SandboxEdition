@@ -135,6 +135,13 @@ formats from their published descriptions and from Game-Maker's own source.
   Credits); none of their code is used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
+- **Real names in the games.** The games name some real hardware, software and products of
+  their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
+  OPL3, AMI BIOS, PKUNZIP, ZMODEM, Renegade BBS, the Remington Noiseless typewriter, Autodesk
+  Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
+  song lyrics and his 100 Word Stories (in *KEEP IT BRIEF!*) are quoted word for word. These
+  are trademarks of their respective owners; no endorsement is implied. Every other store,
+  arcade, brand, product and publication in the games is made up.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
   License, so this fork leaves it out. The README says where to get it.
