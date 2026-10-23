@@ -7,26 +7,43 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { BLEN, BLOCK_COUNTS, CHARBL, TRANSPARENT, orientIndex, parseBlocks, type Block, type BlockKind } from '../src/formats/blocks';
-import { parseCharacter, type Sequence } from '../src/formats/character';
+import { parseCharacter, type Frame, type Sequence } from '../src/formats/character';
 import { parsePalette } from '../src/formats/palette';
 import { chezPicture } from '../../games/kit/chez';
 import type { CastSprite } from '../src/cast/castSprite';
+import type { Pixels } from '../../games/kit/pixels';
+import { docLeo, FULL } from '../../games/teddy/src/sprites/people';
+import { propSprite } from '../../games/teddy/src/sprites/klown';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
-/** A hero from its .CHR (`seq`: the sequence to play, else the one that walks furthest right). */
-type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number };
+/**
+ * A hero from its .CHR: `seq` the sequence it walks on with (else the one that walks furthest
+ * right); on stage it turns to face you with its idle sequence (0), or `front`, blocks of its
+ * .CBL one grid per frame.
+ */
+type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][] };
+/** Drawn by a game's own drawing code (in its palette `pal`): walking frames, then facing you. */
+type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]; ms?: number; still?: boolean };
 /** Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame. */
 type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean };
-type Source = ChrSource | BlockSource | { chez: true } | { tinHeart: true };
+type Source = ChrSource | BlockSource | DrawnSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
   teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal', seq: 5 },
   gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal', seq: 5 },
-  leo: { game: 'tickle', chr: 'leo.chr', cbl: 'tickle.cbl', pal: 'lab.pal', seq: 5 },
-  chez: { chez: true },
+  // Doc Leo as Teddy's games draw him, in the whole costume: a waddle on, a wave hello
+  leo: { game: 'teddy', pal: 'klub.pal', walk: [docLeo(FULL)], front: [docLeo(FULL), docLeo(FULL, true)], ms: 400 },
+  // THE CHEZ as it drives in Quest for the Round Tuit: from the side, then its front
+  chez: { game: 'realm', chr: 'chez.chr', cbl: 'pip.cbl', pal: 'flats.pal', seq: 8, front: [[[19]], [[20]]] },
   chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200 },
   rootbeer: { game: 'teddy', file: 'klub.bbl', pal: 'klub.pal', frames: [[[76, 77], [79, 81]], [[76, 77], [80, 81]]], ms: 160, still: true },
   tinHeart: { tinHeart: true },
+  // the costume Gwinn runs off with on stage (Teddy's Little Big Adventure's intro)
+  'prop:hat': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('hat')], still: true },
+  'prop:tie': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('tie')], still: true },
+  'prop:shoes': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('shoes')], still: true },
+  'prop:chicken': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('chicken')], still: true },
+  'prop:nose': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('nose')], still: true },
   doghouse: { game: 'teddy', file: 'street.bbl', pal: 'street.pal', frames: [[[86, 87], [89, 91], [92, 95]]], still: true },
   joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal', seq: 8 },
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal', seq: 8 },
@@ -78,6 +95,8 @@ interface Raw {
   palette: Uint8Array;
   ms: number;
   walk: boolean;
+  /** How many of `frames` are the walk; the rest face you. */
+  nWalk?: number;
   hop?: boolean;
   tick?: boolean;
 }
@@ -98,14 +117,26 @@ function raw(s: Source): Raw {
   if ('chr' in s) {
     const seqs = parseCharacter(disk(s.game, s.chr)).sequences;
     const blocks = parseBlocks(disk(s.game, s.cbl), BLOCK_COUNTS.cbl);
-    const seq = seqs[s.seq ?? walkRight(seqs)];
-    const frames = played(seq).map((f) => {
+    const draw = (f: Frame) => {
       const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
       put(px, BLEN, blocks[f.pic1], f.orient & 15, 0, 0);
       put(px, BLEN, blocks[f.pic2], (f.orient >> 4) & 15, 0, BLEN);
       return px;
-    });
-    return { width: BLEN, height: BLEN * 2, frames, palette, ms: s.ms ?? 140, walk: true };
+    };
+    const walk = played(seqs[s.seq ?? walkRight(seqs)]).map(draw);
+    // facing you: the grids given (bottom-aligned in the 20x40 frame), or the idle sequence
+    const front = s.front
+      ? s.front.map((grid) => {
+          const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
+          grid.forEach((row, r) => put(px, BLEN, blocks[row[0]], 0, 0, (2 - grid.length + r) * BLEN));
+          return px;
+        })
+      : played(seqs[0]).map(draw);
+    return { width: BLEN, height: BLEN * 2, frames: [...walk, ...front], nWalk: walk.length, palette, ms: s.ms ?? 140, walk: true };
+  }
+  if ('walk' in s) {
+    const all = [...s.walk, ...(s.front ?? [])];
+    return { width: all[0].w, height: all[0].h, frames: all.map((p) => Uint8Array.from(p.px)), nWalk: s.walk.length, palette, ms: s.ms ?? 200, walk: !s.still };
   }
   const kind = s.file.split('.').pop()!.toLowerCase() as BlockKind;
   const blocks = parseBlocks(disk(s.game, s.file), BLOCK_COUNTS[kind]);
@@ -137,6 +168,7 @@ export function castSprite(s: Source): CastSprite {
     frames: r.frames.map((f) => Buffer.from(f.slice(top * r.width, bottom * r.width).map((c) => (c === TRANSPARENT ? 0 : index.get(c)!))).toString('base64')),
     ms: r.ms,
     walk: r.walk,
+    ...(r.nWalk !== undefined && r.nWalk < r.frames.length ? { nWalk: r.nWalk } : {}),
     ...(r.hop ? { hop: true } : {}),
     ...(r.tick ? { tick: true } : {}),
   };
