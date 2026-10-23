@@ -4,11 +4,17 @@
 // See catalog.ts for the ids, store.ts for how they are kept, start.ts for the gm-achievement event.
 import type { Session } from '../engine/scene';
 import { EDIT_KINDS } from './catalog';
-import { notePlayed } from './goals';
+import { notePlayed, noteWatched } from './goals';
 import { tally, unlockAchievement } from './store';
 
 export { unlockAchievement, progress, tally } from './store';
 export { notePlayed, noteWatched } from './goals';
+
+/** A walkthrough played to its end. */
+export function watchedWalkthrough(gameId: string): void {
+  unlockAchievement('watch-one');
+  void noteWatched(gameId);
+}
 
 /** A file of one of your games was changed: counts its kind (every block set counts as blocks). */
 export function editedFile(name: string): void {

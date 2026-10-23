@@ -12,6 +12,7 @@ import type { PictureScreen } from '../../retro/view/picture';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
 import type { LiveRecorder } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';
+import { unlockAchievement } from '../../achievements';
 
 /** What a recording keeps: everything (graphics letterboxed into 720x400) or one mode. */
 export type RecordMode = 'all' | 'graphics' | 'text';
@@ -377,6 +378,7 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     r.mix.dispose();
     if (!blob.size) return toast('The recording came out empty: nothing was shown while it ran.', 'error');
     saveBlob(`${r.name}-${stamp()}.${r.recorder.ext}`, blob);
+    unlockAchievement('record-video');
     const fmt = r.recorder.ext === 'mp4' ? 'MP4' : 'WebM, as this browser can’t make MP4';
     toast(`Saved the recording (${fmt}, ${(blob.size / 1e6).toFixed(1)} MB).`);
   }

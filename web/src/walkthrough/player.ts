@@ -16,6 +16,7 @@ import { WalkAudio, WalkRun } from './runtime';
 import { canExport, exportWalkthrough } from './exportVideo';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
+import { unlockAchievement, watchedWalkthrough } from '../achievements';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -218,6 +219,7 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
         playing = false;
         showPlay();
         status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : 'The end. Thanks for watching!';
+        if (!r.error) watchedWalkthrough(entry.id);
       }
     })();
   };
@@ -322,6 +324,7 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
         },
       });
       saveBlob(name, res.blob);
+      unlockAchievement('download-mp4');
       status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {
       status.textContent = (e as Error).name === 'AbortError' ? 'Video cancelled.' : `The video could not be made: ${(e as Error).message}`;
