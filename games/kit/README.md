@@ -27,8 +27,11 @@ Making the files:
 - `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
 - `license.ts` — `LICENSE.TXT` for every disk (what's real, what's story, the MIT License), in 30-column pages.
-- `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`), ray traced
-  with `sdftext.ts` (extruded, beveled 3D lettering) and reduced to 256 colors with `quantize.ts` (median cut, ordered dither).
+- `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`): a sandbox with a
+  sand castle, a red pail and a blue shovel that pats the sand, then -= S A N D B O X =- drops in, a letter at a time, in
+  THE SANDBOX BBS colors over chrome SOFTWARE. Ray traced with `raytrace.ts` (boxes, cones, discs, spheres, capsules and
+  triangles, Phong shading, hard shadows; only what moves is traced again each frame) and `sdftext.ts` (extruded, beveled
+  3D lettering), and reduced to 256 colors with `quantize.ts` (median cut, ordered dither).
 - `bard.ts` — The Bard of Bizarre's logo sting for his games' `title.lst` (`BARD.FLI`): stage curtains part on the logo,
   Doc Leo's photo pops in, a lute strums notes, the tagline types out, fade to black.
 - `reel.ts` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores
