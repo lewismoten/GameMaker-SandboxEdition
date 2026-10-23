@@ -303,7 +303,7 @@
   margin: 8px 0;
 }
 
-/* the Bard's collections on the Bizarre tab, sharing rows where they fit (home.ts pack()) */
+/* the Bard's collections on the Bizarre tab and the makers on Gameware and Shareware, sharing rows where they fit (home.ts pack()) */
 .lib-tiles > .lib-sub {
   grid-column: 1 / -1;
   align-self: end;
@@ -318,6 +318,18 @@
 
 .lib-tiles > .lib-sub:first-child {
   margin-top: 0;
+}
+
+/* under a maker's heading, the tiles leave the maker out (home.ts pack()) */
+.lib-by-maker .tile-meta {
+  display: none;
+}
+
+/* a maker's game count, after the name */
+.lib-sub-count {
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .lib-none {

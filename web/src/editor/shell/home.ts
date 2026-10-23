@@ -18,7 +18,8 @@ import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type Home
 import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
 import { icon, type IconName } from './homeIcons';
-import { packCollections } from './homePack';
+import { packCollections, packGroups } from './homePack';
+import { byMaker } from './homeAuthors';
 import { wantsTouchControls } from '../../player/touch';
 import { findOriginal, isImported } from './homeOrigin';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
@@ -286,6 +287,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
   };
 
+  /** Gameware and Shareware: their games under who made them (homeAuthors.ts). */
+  const byMakerTab = () => current === 'gameware' || current === 'shareware';
   /** The grid's columns when the collections were last packed into it (0: not packed). */
   let packedCols = 0;
   /**
@@ -294,6 +297,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
    */
   const pack = () => {
     const heads = [...tiles.querySelectorAll<HTMLElement>(':scope > .lib-sub')];
+    // the makers' names are in their headings, so the tiles leave them out (back in a search's plain list)
+    tiles.classList.toggle('lib-by-maker', !!heads.length && byMakerTab() && !search.value.trim());
     if (!heads.length || search.value.trim()) {
       if (packedCols) for (const el of tiles.children) (el as HTMLElement).style.gridArea = '';
       packedCols = 0;
@@ -304,10 +309,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     packedCols = cols;
     const groups = heads.map((head) => ({ head, items: [...tiles.querySelectorAll<HTMLElement>(`:scope > .card[data-group="${head.dataset.group}"]`)] }));
     const order: HTMLElement[] = [];
-    for (const p of packCollections(
-      groups.map((g) => g.items.length),
-      cols,
-    )) {
+    const sizes = groups.map((g) => g.items.length);
+    for (const p of byMakerTab() ? packGroups(sizes, cols) : packCollections(sizes, cols)) {
       const { head, items } = groups[p.index];
       head.style.gridArea = `${p.head.row} / ${p.head.col} / auto / span ${p.head.span}`;
       items.forEach((el, i) => (el.style.gridArea = `${p.tiles[i].row} / ${p.tiles[i].col}`));
@@ -449,13 +452,24 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
     else {
       const tile = (g: HomeGame) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) });
-      // the Bard's games under his collections, in the flyer's order
-      // (packed into as few rows as they fit, pack() above), each tile telling its collection
-      const sections = c === 'bizarre' ? byCollection(gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))) : [];
+      // the Bard's games under his collections, in the flyer's order, and Gameware and
+      // Shareware by who made them (homeAuthors.ts), packed into as few rows as they fit
+      // (pack() above), each tile telling its group
+      const sections: { name: string; count?: number; games: { g: HomeGame }[] }[] =
+        c === 'bizarre'
+          ? byCollection(gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g })))
+          : byMakerTab()
+            ? byMaker(gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
+            : [];
       cards =
         sections.length > 1
           ? sections.flatMap((sec, n) => [
-              h('h3', { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } }, sec.name),
+              h(
+                'h3',
+                { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
+                sec.name,
+                sec.count ? h('span', { class: 'lib-sub-count' }, ` · ${sec.count} game${sec.count === 1 ? '' : 's'}`) : null,
+              ),
               ...sec.games.map((x) => {
                 const t = tile(x.g);
                 t.dataset.group = String(n);
