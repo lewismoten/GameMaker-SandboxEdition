@@ -222,7 +222,7 @@ export const DOGHOUSE = pages(
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
-  backyard: ["Fetch Doc Leo's fedora, dig", 'under the fence. WOOF at Gwinn!', 'NEW: HOP SPEAK DIG FETCH'],
+  backyard: ["Fetch Doc Leo's fedora, dig", 'under the fence. WOOF at Gwinn!', 'NEW: HOP DIG F:FETCH SPACE:WOOF'],
   street: ['Green tie. Watch sprinklers;', 'borrow a book at the Dog House.', 'NEW: HIGH FIVE (1)'],
   park: ['Red sneakers. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (2)'],
   city: ['Rubber chicken! Spin the', 'revolving doors; play dead!', 'NEW: SPIN (3)  PLAY DEAD (4)'],
