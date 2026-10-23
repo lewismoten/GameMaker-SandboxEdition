@@ -74,7 +74,7 @@ async function hdiutilDmg(o: MacAppOptions, file: string): Promise<void> {
 
 async function write(o: MacAppOptions): Promise<void> {
   const base = join(out, appName(o.title).replace(/\.app$/, ''));
-  const date = new Date(Date.UTC(2026, 0, 1));
+  const date = new Date(Date.UTC(2026, 0, 1, 12));
   if (udzo) await hdiutilDmg(o, `${base}.dmg`);
   else writeFileSync(`${base}.dmg`, await macAppDmg(o, date));
   if (process.argv.includes('--zip')) writeFileSync(`${base}.zip`, await macAppZip(o, date));

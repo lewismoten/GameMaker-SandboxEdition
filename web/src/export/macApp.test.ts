@@ -9,6 +9,7 @@ import { codeDirectories, hash } from './macSign';
 import { appName, bundleId, infoPlist, macAppDmg, macAppFiles, macAppZip } from './macApp';
 import { encodeRgbaPng, icns } from './macIcon';
 import { readZip } from '../project/zip';
+import { udzo } from './udif';
 
 const player = new Uint8Array(readFileSync(resolve(__dirname, '../../public/mac/GameMakerPlayer')));
 const enc = new TextEncoder();
@@ -47,6 +48,20 @@ describe('iso9660', () => {
     expect(rr.get('run')).toBe(0o100755);
     expect(rr.get('Info.plist')).toBe(0o100644);
     expect(rr.get('Applications')).toBe(0o120755);
+  });
+});
+
+describe('udif', () => {
+  it('compresses a disk into chunks and ends with the koly trailer', async () => {
+    const disk = new Uint8Array(3 * 1024 * 1024);
+    disk.fill(7, 0, 1000);
+    const dmg = await udzo(disk);
+    expect(dmg.length).toBeLessThan(10000);
+    const k = new DataView(dmg.buffer, dmg.byteOffset + dmg.length - 512, 512);
+    expect(k.getUint32(0)).toBe(0x6b6f6c79); // "koly"
+    expect(k.getUint32(492 + 4)).toBe(disk.length / 512);
+    const xml = new TextDecoder().decode(dmg.subarray(k.getUint32(216 + 4), k.getUint32(216 + 4) + k.getUint32(224 + 4)));
+    expect(xml).toContain('<key>blkx</key>');
   });
 });
 

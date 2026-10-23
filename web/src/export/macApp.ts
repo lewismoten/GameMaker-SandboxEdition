@@ -5,8 +5,9 @@
 // game, and an icon drawn from the game. The player's ad-hoc signature is re-sealed for the
 // new Info.plist and resources (macSign.ts), so the app's signature is valid.
 //
-// It comes as a disk image (.dmg: an ISO 9660 + Rock Ridge image, iso9660.ts, that opens
-// to the app beside an Applications shortcut to drag it onto) or a .zip (the Finder's
+// It comes as a disk image (.dmg: an ISO 9660 + Rock Ridge image, iso9660.ts, compressed
+// as a UDZO image, udif.ts, that opens to the app beside an Applications shortcut to drag
+// it onto) or a .zip (the Finder's
 // Archive Utility unzips it to the app, still executable).
 //
 // The app is not notarized by Apple (that needs a paid Apple Developer ID), so the first
@@ -18,6 +19,7 @@ import { gamePicture, type FileSource } from '../gfx/levelPicture';
 import { createZip } from '../project/zip';
 import { SITE_URL } from '../seo/site';
 import { createIso } from './iso9660';
+import { udzo } from './udif';
 import { dsStore } from './dsStore';
 import { macIcon, type IconColors } from './macIcon';
 import { resealPlayer } from './macSign';
@@ -160,10 +162,11 @@ export async function macAppZip(o: MacAppOptions, date?: Date): Promise<Uint8Arr
 export async function macAppDmg(o: MacAppOptions, date?: Date): Promise<Uint8Array> {
   const { name, files } = await macAppFiles(o);
   const window = dsStore({ x: 200, y: 140, width: 600, height: 380, iconSize: 128, icons: { [name]: [160, 170], Applications: [440, 170] } });
-  return createIso(
+  const iso = createIso(
     [...files.map((f) => ({ path: f.path, data: f.data, mode: f.mode })), { path: 'Applications', symlink: '/Applications', mode: 0o755 }, { path: '.DS_Store', data: window, mode: 0o644 }],
     { volume: name.replace(/\.app$/, '').slice(0, 32), date, application: 'GAME-MAKER: SANDBOX EDITION' },
   );
+  return udzo(iso);
 }
 
 /** The player program, from where the web app is served. */
