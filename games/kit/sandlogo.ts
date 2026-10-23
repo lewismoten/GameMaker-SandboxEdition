@@ -64,21 +64,22 @@ const FADE_IN = 5;
 const PATS = [2, 9];
 const PAT = 8;
 /** The nine pieces of -= S A N D B O X =- drop in one after another. */
-const DROP_START = 14;
+const DROP_START = 13;
 const DROP_STAGGER = 2;
 const DROP = 8;
-const SOFT_START = 33; // SOFTWARE zooms in
+const SOFT_START = 32; // SOFTWARE zooms in
 const SOFT = 8;
-const SWEEP_START = 38; // the highlight crosses the letters
-const SWEEP = 9;
+const SWEEP_START = 37; // the highlight crosses the letters
+const SWEEP = 8;
 const SPARKLES: [number, number][] = [
   // frame, piece (S A N D B O X are 1..7)
-  [39, 1],
-  [42, 4],
-  [45, 7],
+  [38, 1],
+  [41, 4],
+  [44, 7],
 ];
-const HOLD_END = 49;
+const HOLD_END = 47;
 const FADE = 7;
+/** 54 frames, as long as the sting always was, so the walkthroughs' timelines stay put. */
 const FRAMES = HOLD_END + FADE;
 
 // ---- light, sky and lawn --------------------------------------------------------------
