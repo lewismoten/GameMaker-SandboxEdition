@@ -50,7 +50,7 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for $5: you get
-  a tape of the song and a
+  a mustard seed sticker and a
   packet of real mustard seeds.
   Send a check (US funds) to:
 
