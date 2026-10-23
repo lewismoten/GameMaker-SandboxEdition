@@ -88,13 +88,13 @@ describe('the two eggs kept apart from the dozen', () => {
   it('says how cracked the rotten egg is', () => {
     expect(tapsText(0)).toBe('whole');
     expect(tapsText(5)).toBe('cracked 5/13');
-    expect(tapsText(13)).toBe('diamond heart');
+    expect(tapsText(13)).toBe('IOU note');
   });
 
   it('says what each tap does', () => {
     expect(tapMessage(1)).toMatch(/^Tap 1 of 13\. .*wobbles/);
     expect(tapMessage(9)).toMatch(/glints/);
-    expect(tapMessage(13)).toMatch(/crumbles.*diamond heart/);
+    expect(tapMessage(13)).toMatch(/crumbles.*IOU one diamond heart.*Joe/);
     expect(new Set(Array.from({ length: 13 }, (_, i) => tapMessage(i + 1))).size).toBe(13);
   });
 });
