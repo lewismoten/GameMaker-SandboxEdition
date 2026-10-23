@@ -444,10 +444,10 @@ export function patio(): LevelMap {
       '.....#....................#...',
       '.....##..................##...',
       '..............@...............',
-      '.P...y........u.........y...P.',
+      '.P............u.............P.',
       '..............................',
     ],
-    L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', y: 'tennis', '@': { tile: 'patio', mark: 'arrive' } }),
+    L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', '@': { tile: 'patio', mark: 'arrive' } }),
   );
   m.mon(12, 7, MON.pawL).mon(19, 7, MON.pawR).mon(14, 8, MON.tail);
   return m;

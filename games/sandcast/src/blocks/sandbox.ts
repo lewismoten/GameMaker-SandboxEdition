@@ -24,10 +24,11 @@ export function addSandbox(): void {
     drawEasterEgg(sand(11), { ink: WATER[0], shell: WATER.slice(5, 9), paint: [PINK[1], PINK[2]], accent: YELLOW[4], white: STEEL[7] }, 'dots'),
     { score: 50, touch: 'sand0' },
   );
-  // Packed courtyard sand inside the castles: pressed squares.
+  // Packed courtyard sand inside the castles: pressed squares, a shade darker than the sand
+  // outside so the walls and towers stand out against the courtyard.
   bg.add(
     'court',
-    sandTexture(21, 6, SAND, 0.14).map((x, y, c) => (x % 10 === 0 || y % 10 === 0 ? SAND[5] : x % 10 === 1 || y % 10 === 1 ? SAND[7] : c)),
+    sandTexture(21, 5, SAND, 0.14).map((x, y, c) => (x % 10 === 0 || y % 10 === 0 ? SAND[4] : x % 10 === 1 || y % 10 === 1 ? SAND[6] : c)),
   );
   // Damp sand (dark): paths, beaches.
   bg.add('damp', sandTexture(22, 3, OCHRE, 0.2));

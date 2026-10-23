@@ -11,7 +11,7 @@ import { SOLID, bg, onSand, sprite20 } from './common';
 export function addPatio(): void {
   // ---------------------------------------------------------------- the patio, where Gwinn naps
   function flagstone(seed: number): Pixels {
-    const p = tile(GREY[1]);
+    const p = tile(GREY[0]);
     const r = rng(seed);
     const stones = [
       [0, 0, 11, 8],
@@ -21,7 +21,8 @@ export function addPatio(): void {
       [12, 12, 8, 8],
     ];
     for (const [x, y, w, h] of stones) {
-      const s = 3 + Math.floor(r() * 2);
+      // dark slate (1-2 of the grey ramp), so Teddy's tan coat stands out against it at dusk
+      const s = 1 + Math.floor(r() * 2);
       p.rect(x + 1, y + 1, w - 1, h - 1, shade(GREY, s));
       p.rect(x + 1, y + 1, w - 1, 1, shade(GREY, s + 1));
       p.rect(x + 1, y + h - 1, w - 1, 1, shade(GREY, s - 1));
@@ -56,7 +57,7 @@ export function addPatio(): void {
       if (full) p.disc(8, 8, 2, WATER[7]).set(7, 7, WATER[9]);
       p.rect(5, 1, 10, 2, RED[4]);
       for (const x of [6, 9, 12]) p.rect(x, 1, 1, 2, STEEL[7]);
-      return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GREY[3] : c));
+      return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GREY[1] : c));
     };
     bg.add('bowl', mk(true), { solid: SOLID, effect: SEQ.splash, eamt: 3, score: 20, touch: 'bowlDry' });
     bg.add('bowlDry', mk(false), { solid: SOLID });

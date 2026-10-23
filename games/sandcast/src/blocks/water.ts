@@ -175,7 +175,12 @@ export function addWater(): void {
     const low = sandTexture(131, 3, OCHRE, 0.2);
     for (let k = 0; k < 3; k++) low.line(2 + k * 6, 4 + k * 5, 8 + k * 5, 6 + k * 5, OCHRE[5]);
     bg.add('flat', low, { next: 'flatWet', ntime: 150 });
-    const wet = low.crop(0, 0, 20, 20).map((x, y, c) => ((x + y * 3) % 7 === 0 ? WATER[5] : c === OCHRE[3] ? OCHRE[2] : c));
+    // The tell, one beat before the flood: the sand darkens, puddles shine and a line of foam
+    // creeps in along the top, so a player can see the tide coming and wait by choice.
+    const wet = low
+      .crop(0, 0, 20, 20)
+      .map((x, y, c) => ((x + y * 3) % 5 === 0 ? WATER[5] : (x * 7 + y * 11) % 13 === 0 ? WATER[7] : c === OCHRE[3] ? OCHRE[2] : c))
+      .map((x, y, c) => (y < 3 + Math.round(Math.sin(x / 2.5) * 1.2) ? (y === 0 || (x + y) % 4 ? WATER[8] : WATER[9]) : c));
     bg.add('flatWet', wet, { next: 'flatSea', ntime: 25 });
     bg.add('flatSea', water(0, 133, 3), { next: 'flatEbb', ntime: 110, grav: UP, hp: -1 });
     const ebb = water(1, 134, 4).map((x, y, c) => ((x * 3 + y * 5) % 4 === 0 ? OCHRE[3] : c));
