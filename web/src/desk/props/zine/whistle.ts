@@ -1,5 +1,5 @@
 // A little plastic toy whistle, the prize out of a cereal box, lying on the desk behind the
-// shareware catalog. Pick it up: under it is THE BIT BUCKET UNDERGROUND, a photocopied
+// shareware catalog. Pick it up: under it is NO CARRIER, a photocopied
 // hacker zine about the desk PC's power tools (zine.ts). The first time is an achievement.
 import "./zine.css"; // (the whistle's place on the desk, and the zine's look)
 import { h } from "../../../editor/core/ui";

@@ -1,4 +1,4 @@
-// THE BIT BUCKET UNDERGROUND #3, a photocopied and stapled hacker zine about the desk PC's
+// NO CARRIER #3, a photocopied and stapled hacker zine about the desk PC's
 // power tools (zinePages.ts), opened from the toy whistle (whistle.ts): one page at a time,
 // flipped with the buttons, the arrow keys or Page Up / Page Down, Esc to put it down. The
 // text is real text; the cut-out ransom-note headings are read as their words.
