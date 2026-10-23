@@ -21,8 +21,9 @@ const timed = (ms: number, f: (ctx: CanvasRenderingContext2D, p: number) => void
 };
 
 const shootingStar = timed(900, (ctx, p) => {
-  const x = 30 + p * 190;
-  const y = 40 + p * 80;
+  // across the right of the view, where the monitor doesn't hide it
+  const x = 120 + p * 180;
+  const y = 30 + p * 70;
   const g = ctx.createLinearGradient(x - 60, y - 25, x, y);
   g.addColorStop(0, "rgba(255,255,255,0)");
   g.addColorStop(1, "rgba(255,255,255,0.95)");
@@ -38,7 +39,7 @@ const shootingStar = timed(900, (ctx, p) => {
 
 // Carl: big red eyes, a striped body and smug little wings, on the glass and going by
 const carl = timed(1700, (ctx, p) => {
-  const x = -20 + p * (VIEW.w + 40);
+  const x = 100 + p * (VIEW.w - 80);
   const y = 220 + Math.sin(p * 18) * 14 - p * 60;
   const flap = Math.sin(p * 120) > 0 ? 1 : 0.6;
   ctx.fillStyle = "rgba(220,235,255,0.7)";

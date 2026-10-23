@@ -66,7 +66,7 @@ const closeBubble = () => {
   bubble?.remove();
   bubble = undefined;
   removeEventListener("resize", closeBubble);
-  removeEventListener("scroll", closeBubble, true);
+  removeEventListener("scroll", closeBubble);
   removeEventListener("keydown", escape, true);
 };
 const escape = (e: KeyboardEvent) => e.key === "Escape" && bubble && closeBubble();
@@ -108,7 +108,7 @@ export function say(anchor: Element, text: string, extra?: Node): void {
   b.classList.add(above ? "above" : "below");
   bubbleTimer = window.setTimeout(closeBubble, 2600 + text.length * 45);
   addEventListener("resize", closeBubble);
-  addEventListener("scroll", closeBubble, true);
+  addEventListener("scroll", closeBubble); // the page scrolling (not a list inside it)
   addEventListener("keydown", escape, true);
 }
 
