@@ -43,6 +43,7 @@ export function river(): Level {
   tree(2);
   m.set(7, 39, 'picnic');
   m.set(10, 39, 'signSwim');
+  m.set(8, 39, 'signHopE');
   // The rapids, x 12..29: stepping stones; the waterwheel at the end.
   for (let x = 12; x < 30; x++) {
     m.set(x, 39, 'sky3');

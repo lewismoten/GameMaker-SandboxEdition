@@ -204,6 +204,8 @@ export function riverTiles(): Tiles {
   );
   t.air('signSwim', sign(sky(3), 'NO\nSWIM'));
   t.air('signMill', sign(sky(3), 'MILL'));
+  // the stepping stones' hint: hop up and along at once (E), as the manual's key table says
+  t.air('signHopE', sign(sky(3), 'E TO\nHOP'));
   t.air(
     'picnic',
     (() => {
