@@ -58,7 +58,7 @@ THIS IS SHAREWARE
   If it made you laugh, or made
   you put the cheesecake back,
   register for $5: you get a
-  tape of the monologue and the
+  3:17 A.M. sticker and the
   Bard's own recipe for a
   dairy-free cheesecake (it is
   mostly cashews and hope).
