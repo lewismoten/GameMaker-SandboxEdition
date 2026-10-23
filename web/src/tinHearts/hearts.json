@@ -9,6 +9,7 @@
     "mustard": { "map": "mound.map", "at": [3, 11] },
     "needle": { "map": "tailor.map", "at": [35, 17] },
     "realm": { "map": "port.map", "at": [10, 33] },
+    "reckoning": { "map": "bedroom.map", "at": [5, 9] },
     "remote": { "map": "den.map", "at": [30, 16] },
     "risi": { "map": "kitchen.map", "at": [25, 11] },
     "sleuth": { "map": "act1.map", "at": [11, 56] },
@@ -19,5 +20,5 @@
     "tickle": { "map": "tower.map", "at": [43, 23] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["depth", "loofah", "maximus", "reckoning", "sandcast", "sweats"]
+  "pending": ["depth", "loofah", "maximus", "sandcast", "sweats"]
 }
