@@ -505,9 +505,11 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('spellS', spell(0), hurt(-6, 0));
   const pigeon = (f: number) => {
     const p = P();
-    blob(p, 9, 14, 5, 3.6, R('grey'), 1, 3);
-    blob(p, 14, 10 + f, 2.6, 2.4, R('grey'), 1, 3);
-    p.set(15, 9 + f, ink)
+    // a slate-dark rock dove, so it reads against the sunset roofs: pale wing bars, a green sheen
+    blob(p, 9, 14, 5, 3.6, R('grey'), 0, 1);
+    blob(p, 14, 10 + f, 2.6, 2.4, R('grey'), 0, 2);
+    p.line(6, 13, 11, 13, c('grey', 3)).line(6, 15, 10, 15, c('grey', 3));
+    p.set(15, 9 + f, c('marble', 3))
       .set(17, 11 + f, c('ochre', 2))
       .rect(12, 12, 3, 1, c('laurel', 2));
     p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('grey', 1));

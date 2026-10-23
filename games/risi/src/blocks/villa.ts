@@ -16,7 +16,7 @@ import { micro, microWidth } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { AIR, AIR_NEEDED, CHEESE, CHEESE_NEEDED, MON } from '../ids';
-import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, marble, outside, sparkle, wreath } from './common';
+import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, outside, sparkle, wreath } from './common';
 
 /** Ticks between the clouds from under Rufus's table. */
 export const GAS_EVERY = 46;
@@ -55,12 +55,13 @@ export function buildVilla(pal: Pal): BlockBook {
   for (let xx = 0; xx < 20; xx++) frieze.set(xx, 14 + Math.round(Math.sin(xx / 2) * 2), c('pompeii', 2));
   frieze.rect(0, 18, 20, 2, c('ink', 0)).rect(0, 9, 20, 1, c('gold', 0));
   book.add('frieze', frieze, air);
-  // the walk row: the dado, dark below, marble-veined
+  // the walk row: a plain marble dado under a gold molding, calm behind the guests and the dogs
   const dado = (seed: number) => {
-    const p = wall(seed);
-    const m = marble(x, seed + 100, 0, 2);
-    p.blit(m.crop(0, 12, 20, 8), 0, 12);
-    p.rect(0, 12, 20, 1, c('ochre', 3)).rect(0, 13, 20, 1, c('ink', 0));
+    const p = P();
+    const r = rng(seed);
+    for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(R('marble'), 1, 2, 0.45 + (r() - 0.5) * 0.1 + y / 80, xx, y));
+    p.rect(0, 0, 20, 1, c('ink', 0)).rect(0, 1, 20, 1, c('ochre', 3)).rect(0, 2, 20, 1, c('ochre', 1));
+    p.rect(0, 18, 20, 2, c('marble', 0));
     return p;
   };
   const base = dado(3);

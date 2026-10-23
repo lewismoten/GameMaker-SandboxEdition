@@ -160,11 +160,11 @@ export function buildVocs(): Record<string, Uint8Array> {
     lowNoise(41, (t) => 0.7 * Math.exp(-t * 6) + 0.05),
     { envelope: env(0.004, 1.2) },
   );
-  // a drum's boing
+  // a drum's boing (the baths' score sound, so it plays often: kept about 5 dB under the rest)
   vocs.boing = sample(
     0.5,
     osc.sine((t) => 160 + Math.sin(t * 40) * 40 * Math.exp(-t * 4) + t * 120),
-    { envelope: env(0.003, 1) },
+    { envelope: env(0.003, 1), gain: 0.5 },
   );
   // a drip of hot water hissing
   vocs.hiss = sample(
@@ -285,11 +285,12 @@ const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
     die: 'ridetis',
     gain: 'crowd',
     spend: 'rimshot',
-    kill: 'quis',
+    // a joke landing pops; "...sed quis ridet?" is sung once, for the comic mask
+    kill: 'pop',
     step: 'pat',
     life: 'tantara',
     help: 'gulp',
-    score: 'chime',
+    score: 'quis',
   },
 };
 

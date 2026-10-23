@@ -323,7 +323,13 @@ export function buildCampus(pal: Pal): BlockBook {
         [14, 15, 5],
         [10, 8, 5],
       ] as const)
-        blob(p, sx, sy, rr, rr - 1, R('stone'), 0, 3);
+        blob(p, sx, sy, rr + 1, rr, R('ink'), 0, 0);
+      for (const [sx, sy, rr] of [
+        [6, 14, 5],
+        [14, 15, 5],
+        [10, 8, 5],
+      ] as const)
+        blob(p, sx, sy, rr, rr - 1, R('stone'), 0, 2);
       p.rect(2, 9, 16, 6, c('marble', 3)).frame(2, 9, 16, 6, c('ink', 0));
       micro(p, 3, 10, 'SAXA', c('ink', 0));
     } else {
