@@ -2,6 +2,7 @@
 // with how to get it (the BBS) and the author's registration notice.
 import { h, clear } from '../../editor/core/ui';
 import { creditLine, type CatalogEntry } from '../../project/files';
+import { sizeText, storageLine, zipBytes, zipName } from '../../project/diskFacts';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 
 const STYLE = `
@@ -51,7 +52,6 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
       if (e.key === 'Escape') close();
     };
     window.addEventListener('keydown', onKey, true);
-    const kb = (n?: number) => (n ? `${Math.round((n * 0.58) / 1024)}K` : '');
     const paper = h(
       'article',
       { class: 'paper-catalog', 'aria-label': 'Shareware catalog' },
@@ -74,7 +74,9 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
             null,
             h('div', { class: 'title' }, g.title, actions.downloaded(g.id) ? h('span', { class: 'got' }, '  ✓ on your hard disk') : null),
             h('div', { class: 'meta' }, creditLine(g) || 'Author unknown'),
-            h('div', { class: 'meta' }, `${(g.exe ?? g.id).replace(/\.EXE$/i, '')}.ZIP  ·  ${kb(g.bytes)}  ·  ${g.price === 'Freeware' ? 'FREEWARE' : g.price ? `Register: ${g.price}` : 'Shareware'}  ·  ${soundLine(g)}`),
+            h('div', { class: 'meta' }, `${g.price === 'Freeware' ? 'FREEWARE' : g.price ? `Register: ${g.price}` : 'Shareware'}  ·  ${soundLine(g)}`),
+            // what a buyer weighed first: the disks (or the ZIP on a BBS) and the room on the hard disk
+            h('div', { class: 'meta' }, `${storageLine(g)}  ·  BBS: ${zipName(g)}, ${sizeText(zipBytes(g))}`),
             g.blurb ? h('p', { style: 'margin:6px 0 0' }, g.blurb) : null,
             h(
               'button',
