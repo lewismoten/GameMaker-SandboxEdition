@@ -5,7 +5,10 @@ import { channelNotes, removeChannel, setStartProgram, startProgram } from '../.
 import { RHYTHM_CHANNELS, DRUM_NAMES } from '../../../formats/cmfSong';
 import { TRACK_COLORS, type MusicDoc } from './doc';
 import { instLabel, instShortLabel } from './instrument';
-import { PRESETS } from './sbi';
+import { presetName } from './sbi';
+import { presetById } from '../../../audio/oplPresets';
+import { DRUM_KIT, slotOfChannel } from '../../../audio/oplDrumPresets';
+import { applyToTrack, pickPreset } from './presetPicker';
 
 export class TrackList {
   readonly el = h('div', { class: 'mus-tracks', role: 'list', 'aria-label': 'Tracks' });
@@ -34,7 +37,6 @@ export class TrackList {
   private addTrack(ch: number): void {
     const doc = this.doc;
     const song = doc.song;
-    const drum = RHYTHM_CHANNELS.includes(ch);
     doc.edit(() => {
       doc.extra.add(ch);
       // its own instrument unless the channel's default one is free
@@ -42,7 +44,10 @@ export class TrackList {
       const taken = doc.tracks().some((c) => c !== ch && startProgram(song, c) === p);
       if (!song.instruments[p] || taken) {
         if (song.instruments.length < 128) {
-          song.instruments.push((drum ? PRESETS.pluck : PRESETS.piano).slice());
+          // a drum starts with its kit sound, a melody track with the piano
+          const slot = doc.rhythm ? slotOfChannel(ch) : undefined;
+          const start = (slot && DRUM_KIT.find((d) => d.drum === slot)) || presetById('piano')!;
+          song.instruments.push(start.patch.slice());
           setStartProgram(song, ch, song.instruments.length - 1);
         }
       }
@@ -78,6 +83,8 @@ export class TrackList {
       const silent = !doc.sounds(ch);
       const drum = doc.rhythm && RHYTHM_CHANNELS.includes(ch);
       const p = startProgram(song, ch);
+      // a drum's name is the drum: its sound (the preset it matches) goes under it
+      const sound = drum && song.instruments[p] ? presetName(song.instruments[p]) : undefined;
       const bank = h(
         'select',
         { 'aria-label': `Instrument for ${doc.trackName(ch)}`, title: instLabel(doc, p) },
@@ -108,13 +115,29 @@ export class TrackList {
             'span',
             { class: 'mus-track-text' },
             h('b', null, doc.trackName(ch)),
-            h('small', null, `${silent ? 'silent · ' : ''}${notes} note${notes === 1 ? '' : 's'}`),
+            h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
           ),
         ),
         h(
           'div',
           { class: 'mus-track-tools' },
           bank,
+          h(
+            'button',
+            {
+              class: 'mus-ms',
+              title: 'Choose a preset sound',
+              'aria-label': `Choose a preset sound for ${doc.trackName(ch)}`,
+              'data-presets': String(ch),
+              onclick: async () => {
+                const preset = await pickPreset(doc, { ch, label: doc.trackName(ch), current: song.instruments[p] });
+                if (preset) applyToTrack(doc, ch, preset);
+                // back to this track's button (the list was drawn again), where Ctrl+Z undoes it
+                this.el.querySelector<HTMLElement>(`[data-presets="${ch}"]`)?.focus();
+              },
+            },
+            '🎹',
+          ),
           this.onEditInstrument
             ? h(
                 'button',
@@ -179,7 +202,10 @@ export class TrackList {
           },
           '＋ Add track',
         );
+    // keep the keyboard on a track's preset button when the list is drawn again (after undo)
+    const had = this.el.contains(document.activeElement) ? document.activeElement?.getAttribute('data-presets') : null;
     clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add));
+    if (had) this.el.querySelector<HTMLElement>(`[data-presets="${had}"]`)?.focus();
     if (this.adding) add.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 }

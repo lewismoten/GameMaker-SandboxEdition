@@ -15,7 +15,6 @@ import {
   maxOf,
   MULT,
   MULT_VALUES,
-  PRESETS,
   presetName,
   setAdditive,
   setFeedback,
@@ -24,6 +23,7 @@ import {
   type Half,
 } from './sbi';
 import { noteName } from './roll/layout';
+import { pickPreset } from './presetPicker';
 
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
@@ -221,21 +221,25 @@ export class InstrumentPanel {
       );
     });
     const add = h(
-      'select',
-      { 'aria-label': `Add an instrument for ${doc.trackName(doc.track)} from the presets`, disabled: song.instruments.length >= 128 },
-      h('option', { value: '' }, '＋ New instrument…'),
-      ...Object.keys(PRESETS).map((k) => h('option', { value: k }, cap(k))),
+      'button',
+      {
+        type: 'button',
+        class: 'mus-inst-new',
+        disabled: song.instruments.length >= 128,
+        title: `Add an instrument for ${doc.trackName(doc.track)} from the presets`,
+        onclick: async () => {
+          const preset = await pickPreset(doc, { ch: doc.track, label: `new for ${doc.trackName(doc.track)}` });
+          if (!preset || song.instruments.length >= 128) return;
+          doc.edit(() => {
+            song.instruments.push(preset.patch.slice());
+            setStartProgram(song, doc.track, song.instruments.length - 1);
+          });
+          this.show(song.instruments.length - 1);
+          this.list.querySelector<HTMLElement>('[aria-current="true"]')?.focus();
+        },
+      },
+      '＋ New instrument…',
     );
-    add.addEventListener('change', () => {
-      const preset = PRESETS[add.value];
-      if (!preset) return;
-      doc.edit(() => {
-        song.instruments.push(preset.slice());
-        setStartProgram(song, doc.track, song.instruments.length - 1);
-      });
-      this.show(song.instruments.length - 1);
-      this.tryIt();
-    });
     clear(this.list, h('ul', null, ...items), add);
   }
 
@@ -254,17 +258,22 @@ export class InstrumentPanel {
     const mine = this.program === p;
 
     const loadPreset = h(
-      'select',
-      { 'aria-label': 'Replace this instrument with a preset', disabled: !inst },
-      h('option', { value: '' }, 'Load a preset…'),
-      ...Object.keys(PRESETS).map((k) => h('option', { value: k }, cap(k))),
+      'button',
+      {
+        type: 'button',
+        disabled: !inst,
+        title: 'Replace this instrument with a preset (every track that uses it changes)',
+        'data-presets': '',
+        onclick: async () => {
+          if (!inst) return;
+          const preset = await pickPreset(doc, { ch: tryCh, label: instLabel(doc, p), current: inst });
+          if (!preset) return;
+          doc.edit(() => inst.set(preset.patch.subarray(0, 11)));
+          this.editor.querySelector<HTMLElement>('[data-presets]')?.focus();
+        },
+      },
+      '🎹 Presets…',
     );
-    loadPreset.addEventListener('change', () => {
-      const preset = PRESETS[loadPreset.value];
-      if (!preset || !inst) return;
-      doc.edit(() => inst.set(preset.subarray(0, 11)));
-      this.tryIt();
-    });
     const pickTrack = (c: number) => {
       this.keepSel = true;
       doc.selectTrack(c);

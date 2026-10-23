@@ -250,6 +250,6 @@ describe('SBI instrument settings', () => {
     setFeedback(inst, 5);
     expect(getFeedback(inst)).toBe(5);
     expect(inst[10] & 1).toBe(0);
-    expect(presetName(INSTRUMENTS.bass)).toBe('bass');
+    expect(presetName(INSTRUMENTS.bass)).toBe('Bass');
   });
 });
