@@ -181,10 +181,11 @@ export function tailorBlocks(pal: Pal): Kit {
     const p = panel(47 + part);
     if (part === 0) p.line(10, 0, 10, 3, c('wood', 1)).line(4, 5, 16, 5, c('wood', 2));
     for (let y = part ? 0 : 5; y < (part ? 18 : 20); y++) {
-      const w = 5 + (part ? 1 + y / 6 : (y - 5) / 6);
+      const w = 5 + (part ? y + 15 : y - 5) / 12; // one flare down both blocks, no step at the seam
       for (let x = Math.round(10 - w); x <= Math.round(10 + w); x++) p.set(x, y, shadeAt(R(col), 0, 3, 0.8 - Math.abs(x - 10) / 12 - (x % 4 === 0 ? 0.2 : 0), x, y));
     }
-    if (part) p.rect(4, 17, 13, 1, c('gold', 2));
+    const hem = 5 + 32 / 12;
+    if (part) p.rect(Math.round(10 - hem), 17, Math.round(10 + hem) - Math.round(10 - hem) + 1, 1, c('gold', 2));
     return p;
   };
   book.add('robe0', robe('purple', 0), air);

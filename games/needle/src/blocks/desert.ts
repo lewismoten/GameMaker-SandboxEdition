@@ -130,7 +130,7 @@ export function desertBlocks(pal: Pal): Kit {
     const ang = Math.PI * (1.0 + (a / 6) * 1.0);
     for (let t = 0; t < 10; t++) crown.set(10 + Math.cos(ang) * t, 12 + Math.sin(ang) * t * 0.7 + t * t * 0.04, c('leaf', 1 + (t % 3)));
   }
-  crown.rect(9, 12, 3, 8, c('wood', 2));
+  crown.rect(8, 12, 4, 8, c('wood', 2)); // as wide as the trunk's top, where it meets it
   book.add('palmTop', crown, air);
   // the oasis pool: one long drink, then it is just a pool (both are water you can stand in)
   const pool = (drunk: boolean) => {
@@ -173,9 +173,10 @@ export function desertBlocks(pal: Pal): Kit {
   };
   // three blocks of tent roof over a doorway; the door is the way on
   for (let part = 0; part < 3; part++) book.add(`tent${part}`, tent(part), air);
-  const tentWall = (door: boolean, sign: boolean) => {
+  // the walls carry on the roof's stripes: part 0..2 is which block of the three it is under
+  const tentWall = (door: boolean, sign: boolean, part = 1) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, Math.floor(x / 6) % 2 === 0 ? c('purple', 2) : c('cloth', 3));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, Math.floor((part * 20 + x) / 6) % 2 === 0 ? c('purple', 2) : c('cloth', 3));
     if (door) for (let y = 3; y < 20; y++) for (let x = 4; x < 16; x++) p.set(x, y, shadeAt(R('wood'), 0, 2, y / 30, x, y));
     if (sign) {
       // a shop sign: a spool of thread with a needle through it
@@ -186,8 +187,10 @@ export function desertBlocks(pal: Pal): Kit {
     }
     return p;
   };
-  book.add('tentWall', tentWall(false, false), air);
+  book.add('tentWall', tentWall(false, false, 0), air);
   book.add('tentSign', tentWall(false, true), air);
   book.add('tentDoor', tentWall(true, false), air);
+  // the right-hand wall (added last, so the blocks before keep their numbers)
+  book.add('tentWallR', tentWall(false, false, 2), air);
   return k;
 }

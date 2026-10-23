@@ -203,7 +203,7 @@ export function cityBlocks(pal: Pal): Kit {
     for (let t = 0; t < 10; t++) crown.set(10 + Math.cos(ang) * t, 12 + Math.sin(ang) * t * 0.7 + t * t * 0.04, c('leaf', 1 + (t % 3)));
   }
   for (const [x, y] of [[9, 13], [11, 14], [10, 15]]) crown.disc(x, y, 1.4, c('wood', 3));
-  crown.rect(9, 12, 3, 8, c('wood', 2));
+  crown.rect(8, 12, 4, 8, c('wood', 2)); // as wide as the trunk's top, where it meets it
   book.add('palmTop', crown, air);
 
   // ---------- the well ----------

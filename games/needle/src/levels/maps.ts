@@ -273,7 +273,7 @@ export function desert(book: BlockBook): Level {
   m.set(65, 8, 'B').set(68, 7, '*').set(73, 9, 'b').set(71, 6, 'L');
   m.row(7, 70, 72, 'l');
   // the tailor's tent at the end of the road
-  m.text(76, 7, '[|]').text(76, 8, 'tTt').text(76, 9, 'tdt');
+  m.text(76, 7, '[|]').text(76, 8, 'tTt').text(76, 9, 'tdt').col(78, 8, 9, 'tentWallR');
   m.mon(MON.goat, 58, 5).mon(MON.vulture, 63, 3).mon(MON.vulture, 18, 3);
   m.link(77, 9, 'next');
   return { m, start: at(3, 9), size: [W, H] };
