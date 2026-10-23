@@ -438,6 +438,14 @@ export function openPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'
   };
 }
 
+/**
+ * Starts reading a game's whole pack (when it has one), so the many files that are about to
+ * be read one by one (a box's paper, a manual's pictures) come in one request instead.
+ */
+export function warmPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): void {
+  openPack(entry, base);
+}
+
 /** One file from a pack being read: once it arrives, or undefined if the pack ends (or fails) without it. */
 function fromPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, name: string, base: string): Promise<Uint8Array | undefined> | undefined {
   let resolve!: (b: Uint8Array | undefined) => void;

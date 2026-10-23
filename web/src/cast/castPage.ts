@@ -35,7 +35,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
     h(
       'div',
       { class: 'cast-pic' },
-      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
+      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, loading: 'lazy', decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
     ),
     h(
       'div',
