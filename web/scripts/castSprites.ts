@@ -14,6 +14,7 @@ import type { CastSprite } from '../src/cast/castSprite';
 import type { Pixels } from '../../games/kit/pixels';
 import { docLeo, FULL } from '../../games/teddy/src/sprites/people';
 import { propSprite } from '../../games/teddy/src/sprites/klown';
+import { docLeoWalk } from './castLeoSide';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
 /**
@@ -21,21 +22,30 @@ import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castT
  * right); on stage it turns to face you with its idle sequence (0), or `front`, blocks of its
  * .CBL one grid per frame.
  */
-type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][] };
+type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][]; acts?: Record<string, number> };
 /** Drawn by a game's own drawing code (in its palette `pal`): walking frames, then facing you. */
-type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]; ms?: number; still?: boolean };
+type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]; acts?: Record<string, Pixels[]>; ms?: number; still?: boolean };
 /** Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame. */
-type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean };
+type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean; mirror?: boolean; height?: number };
 type Source = ChrSource | BlockSource | DrawnSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
   teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal', seq: 5 },
   gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal', seq: 5 },
   // Doc Leo as Teddy's games draw him, in the whole costume: a waddle on, a wave hello
-  leo: { game: 'teddy', pal: 'klub.pal', walk: [docLeo(FULL)], front: [docLeo(FULL), docLeo(FULL, true)], ms: 400 },
+  leo: {
+    game: 'teddy',
+    pal: 'klub.pal',
+    walk: [0, 1, 2, 3].map((n) => docLeoWalk(n)),
+    front: [docLeo(FULL), docLeo(FULL, true)],
+    // hatless (Gwinn has it) until Teddy brings it back
+    acts: { bareWalk: [0, 1, 2, 3].map((n) => docLeoWalk(n, false)), bareSide: [docLeoWalk(1, false)], side: [docLeoWalk(1)] },
+    ms: 170,
+  },
   // THE CHEZ as it drives in Quest for the Round Tuit: from the side, then its front
   chez: { game: 'realm', chr: 'chez.chr', cbl: 'pip.cbl', pal: 'flats.pal', seq: 8, front: [[[19]], [[20]]] },
-  chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200 },
+  // drawn swimming left round the eddy: turned round to walk on forwards
+  chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200, mirror: true },
   rootbeer: { game: 'teddy', file: 'klub.bbl', pal: 'klub.pal', frames: [[[76, 77], [79, 81]], [[76, 77], [80, 81]]], ms: 160, still: true },
   tinHeart: { tinHeart: true },
   // the costume Gwinn runs off with on stage (Teddy's Little Big Adventure's intro)
@@ -43,6 +53,10 @@ export const CAST_SPRITES: Record<string, Source> = {
   'prop:tie': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('tie')], still: true },
   'prop:shoes': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('shoes')], still: true },
   'prop:chicken': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('chicken')], still: true },
+  // the child who carries Loaf #13 home (Loaf #13's home level), and the needle Brother Camel
+  // tries (the eye level's needle, its eye and a little of its shaft)
+  'prop:girl': { game: 'loaf', file: 'loaf.mbl', pal: 'home.pal', frames: [[[33], [35]], [[34], [36]]], ms: 180 },
+  'prop:needle': { game: 'needle', file: 'eye.bbl', pal: 'eye.pal', frames: [[[60, 65], [62, 63], [44, 45]]], still: true, height: 52 },
   'prop:nose': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('nose')], still: true },
   doghouse: { game: 'teddy', file: 'street.bbl', pal: 'street.pal', frames: [[[86, 87], [89, 91], [92, 95]]], still: true },
   joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal', seq: 8 },
@@ -51,7 +65,7 @@ export const CAST_SPRITES: Record<string, Source> = {
   watt: { game: 'logic', chr: 'watt.chr', cbl: 'watt.cbl', pal: 'watt.pal', seq: 8 },
   bard: { game: 'goat', file: 'goat.mbl', pal: 'stable.pal', frames: [[[40]], [[41]]], ms: 220 },
   carl: { game: 'carl', chr: 'carl.chr', cbl: 'carl.cbl', pal: 'couch.pal', seq: 5 },
-  goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal', seq: 8 },
+  goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal', seq: 8, acts: { scream: 9, faint: 1 } },
   seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal', seq: 5 },
   loaf: { game: 'loaf', chr: 'loaf.chr', cbl: 'loaf.cbl', pal: 'hill.pal', seq: 5 },
   camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal', seq: 5 },
@@ -97,6 +111,9 @@ interface Raw {
   walk: boolean;
   /** How many of `frames` are the walk; the rest face you. */
   nWalk?: number;
+  /** Named extra sequences (a scream, a faint) after the walk and the front: [first frame, count]. */
+  acts?: Record<string, [number, number]>;
+  mirror?: boolean;
   hop?: boolean;
   tick?: boolean;
 }
@@ -132,11 +149,23 @@ function raw(s: Source): Raw {
           return px;
         })
       : played(seqs[0]).map(draw);
-    return { width: BLEN, height: BLEN * 2, frames: [...walk, ...front], nWalk: walk.length, palette, ms: s.ms ?? 140, walk: true };
+    const frames = [...walk, ...front];
+    const acts: Record<string, [number, number]> = {};
+    for (const [name, seq] of Object.entries(s.acts ?? {})) {
+      const more = played(seqs[seq]).map(draw);
+      acts[name] = [frames.length, more.length];
+      frames.push(...more);
+    }
+    return { width: BLEN, height: BLEN * 2, frames, nWalk: walk.length, ...(s.acts ? { acts } : {}), palette, ms: s.ms ?? 140, walk: true };
   }
   if ('walk' in s) {
     const all = [...s.walk, ...(s.front ?? [])];
-    return { width: all[0].w, height: all[0].h, frames: all.map((p) => Uint8Array.from(p.px)), nWalk: s.walk.length, palette, ms: s.ms ?? 200, walk: !s.still };
+    const acts: Record<string, [number, number]> = {};
+    for (const [name, more] of Object.entries(s.acts ?? {})) {
+      acts[name] = [all.length, more.length];
+      all.push(...more);
+    }
+    return { width: all[0].w, height: all[0].h, frames: all.map((p) => Uint8Array.from(p.px)), nWalk: s.walk.length, ...(s.acts ? { acts } : {}), palette, ms: s.ms ?? 200, walk: !s.still };
   }
   const kind = s.file.split('.').pop()!.toLowerCase() as BlockKind;
   const blocks = parseBlocks(disk(s.game, s.file), BLOCK_COUNTS[kind]);
@@ -147,7 +176,9 @@ function raw(s: Source): Raw {
     grid.forEach((row, r) => row.forEach((b, c) => b >= 0 && put(px, cols * BLEN, blocks[b], 0, c * BLEN, r * BLEN)));
     return px;
   });
-  return { width: cols * BLEN, height: rows * BLEN, frames, palette, ms: s.ms ?? 200, walk: !s.still };
+  // cut to `height` rows from the top (a needle shortened to fit the stage)
+  const height = Math.min(rows * BLEN, s.height ?? rows * BLEN);
+  return { width: cols * BLEN, height, frames: frames.map((f) => f.slice(0, cols * BLEN * height)), palette, ms: s.ms ?? 200, walk: !s.still, mirror: s.mirror };
 }
 
 /** Trimmed to the rows any frame draws on, recolored to only the colors used (0 is see-through). */
@@ -169,6 +200,8 @@ export function castSprite(s: Source): CastSprite {
     ms: r.ms,
     walk: r.walk,
     ...(r.nWalk !== undefined && r.nWalk < r.frames.length ? { nWalk: r.nWalk } : {}),
+    ...(r.acts ? { acts: r.acts } : {}),
+    ...(r.mirror ? { mirror: true } : {}),
     ...(r.hop ? { hop: true } : {}),
     ...(r.tick ? { tick: true } : {}),
   };

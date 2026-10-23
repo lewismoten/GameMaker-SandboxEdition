@@ -14,6 +14,10 @@ export interface CastSprite {
   walk: boolean;
   /** How many of `frames` are its walk; the rest are it facing you (else it faces you in its first frame). */
   nWalk?: number;
+  /** Named extra moves (the goat's scream and faint): [first frame, count]. */
+  acts?: Record<string, [number, number]>;
+  /** Drawn facing left: turned round on stage. */
+  mirror?: boolean;
   /** Hops along instead of walking (the tin heart). */
   hop?: boolean;
   /** Ticks as it goes: a tick-tock on each frame (when the stage's sound is on). */
