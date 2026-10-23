@@ -31,7 +31,7 @@ const DESC: Record<string, string> = {
   'HOBO2.GIF': 'Hobo clown on a sunny Main Street.',
   'HOBO3.JPG': 'Hobo clown and a rubber chicken.',
   'COLONIAL.GIF': 'The SysOp in colonial dress with General Washington. Huzzah!',
-  'DOGHOUSE.JPG': "The Dog House: the SysOp's Little Free Library.",
+  'DOGHOUSE.JPG': "The Dog House: the SysOp's little lending library.",
   'LIBRARY.GIF': 'The Dog House again, in 16 colors.',
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",
 };

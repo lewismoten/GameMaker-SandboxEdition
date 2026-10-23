@@ -169,10 +169,10 @@ const LISTED: CastMember[] = [
   {
     id: 'doghouse',
     name: 'The Dog House',
-    role: 'Lewis’s dog-themed little free library (and the Tiny Pockets Library inside)',
-    hi: 'Take a book, share a book. Snacks in the drawer. Woof!',
+    role: 'Lewis’s dog-themed little lending library (and the Tiny Pockets Library inside)',
+    hi: 'Take a book, leave a book. Snacks in the drawer. Woof!',
     art: { game: 'teddy', width: 164, height: 182, alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks' },
-    bio: 'Lewis’s little free library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, share a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
+    bio: 'Lewis’s little lending library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, leave a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
     appears: [
       { game: 'teddy', as: 'on Maple Street, with a Teddy-sized room inside' },
       { game: 'teddy2', as: 'in the cast cartoon at dusk' },

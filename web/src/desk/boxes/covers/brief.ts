@@ -1,4 +1,4 @@
-// KEEP IT BRIEF!'s cover: The Dog House at night, a little free library on a post, its red
+// KEEP IT BRIEF!'s cover: The Dog House at night, a little lending library on a post, its red
 // door flung open on a library much bigger than the box. A whirlwind of torn-out word slips
 // pours from the door, and Mystery Robot Joe, the tin night librarian, stands in the warm
 // light with a stack of words in his arms and his tally counter heart glowing.

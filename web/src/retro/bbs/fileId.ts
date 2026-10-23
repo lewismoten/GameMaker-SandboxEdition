@@ -132,7 +132,7 @@ const TAGLINES = [
   'Better than third-period study hall.',
   'Tested by the SysOp\'s corgi: two paws up!',
   'No QEMM tweaking required.',
-  'Scanned with McAfee SCAN. Clean as a whistle',
+  'Virus-scanned. Clean as a whistle',
   'Play it before Mom needs the phone line.',
   'Joystick optional. Fun mandatory.',
   'Bring snacks. You will be here a while.',
