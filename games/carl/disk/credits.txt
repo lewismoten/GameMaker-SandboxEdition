@@ -10,10 +10,10 @@ Bizarre (Lewis Moten as his
 hobo clown, Doc Leo).
 
 Lyrics: ChatGPT, from Lewis's
-prompt. Music: (credit
-pending). This game's FM
-music and sung clips are made
-from the recording.
+prompt. Music: Riffusion (now
+Google Flow Music). This
+game's FM music and sung clips
+are made from the recording.
 Title and cover art: drawn
 for this game by Claude Opus
 5.5 (none came with the
