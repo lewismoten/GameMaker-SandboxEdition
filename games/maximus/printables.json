@@ -822,25 +822,11 @@
   ],
   "stickers": [
     {
-      "text": "COURIERS",
-      "sub": "DELIVER",
-      "shape": "badge",
-      "color": "#0b1030",
-      "ink": "#f0a020"
-    },
-    {
-      "text": "10",
-      "sub": "STAR-SHARDS",
-      "shape": "star",
-      "color": "#f0a020",
-      "ink": "#0b1030"
-    },
-    {
       "text": "COURIER MAX",
       "sub": "WE DELIVER",
-      "shape": "badge",
-      "color": "#0b1030",
-      "ink": "#f0a020",
+      "shape": "cut",
+      "color": "#f0a020",
+      "ink": "#0b1030",
       "hero": {
         "chr": "courier.chr",
         "cbl": "courier.cbl",
@@ -850,9 +836,9 @@
     {
       "text": "GLOOP MOTHER",
       "sub": "HANDLE WITH CARE",
-      "shape": "circle",
-      "color": "#f0a020",
-      "ink": "#0b1030",
+      "shape": "cut",
+      "color": "#d63a8a",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "land.mbl",
         "pal": "citadel.pal",
@@ -862,7 +848,7 @@
     {
       "text": "PIRATE ACE",
       "sub": "SPACE IS NOT SAFE",
-      "shape": "rect",
+      "shape": "cut",
       "color": "#1d2a6b",
       "ink": "#f0a020",
       "sprite": {
@@ -876,7 +862,7 @@
       "sub": "IT SEES YOU",
       "shape": "star",
       "color": "#7a2bbf",
-      "ink": "#fff",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "space.mbl",
         "pal": "citadel.pal",
@@ -886,14 +872,82 @@
     {
       "text": "SNAPWEED",
       "sub": "DON'T WATER IT",
-      "shape": "rect",
+      "shape": "cut",
       "color": "#2f8f4a",
-      "ink": "#0b1030",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "land.mbl",
         "pal": "citadel.pal",
         "grid": [[34]]
       }
+    },
+    {
+      "text": "SPACE JELLY",
+      "sub": "DO NOT SPREAD",
+      "shape": "cut",
+      "color": "#28a8c8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "land.mbl",
+        "pal": "citadel.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "MEW?",
+      "sub": "MOON KITTEN",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#0b1030",
+      "sprite": {
+        "blocks": "land.mbl",
+        "pal": "citadel.pal",
+        "grid": [[40]]
+      }
+    },
+    {
+      "text": "BOO!",
+      "sub": "FRIENDLY GHOST",
+      "shape": "cut",
+      "color": "#8a8fd8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "land.mbl",
+        "pal": "citadel.pal",
+        "grid": [[76]]
+      }
+    },
+    {
+      "text": "SEA BUNNY",
+      "sub": "IT'S A REAL THING",
+      "shape": "cut",
+      "color": "#ff8fc8",
+      "ink": "#0b1030",
+      "sprite": {
+        "blocks": "sea.mbl",
+        "pal": "citadel.pal",
+        "grid": [[36]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "station.bbl",
+        "pal": "home.pal",
+        "grid": [[39]],
+        "under": 0
+      }
+    },
+    {
+      "text": "10",
+      "sub": "STAR-SHARDS",
+      "shape": "star",
+      "color": "#f0a020",
+      "ink": "#0b1030"
     }
   ],
   "news": [
