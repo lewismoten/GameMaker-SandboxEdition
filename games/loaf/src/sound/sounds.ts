@@ -1,3 +1,6 @@
+// The effects are levelled to about -15 dB RMS (the roll and the crunch were hot, the crumble and
+// the holy shimmer quiet), near the sung clips.
+//
 // The sound sets: a PC speaker sound for every effect, each backed by a Sound Blaster .VOC. The
 // little noises are synthesized here (the soft whump of dough rising, a crusty roll, a crunchy
 // bite, a loaf crumbling, a crumb's chime and a holy crumb's shimmer, the creak of wicker, a
@@ -52,11 +55,11 @@ export type Place = 'hill' | 'wicker' | 'baskets' | 'home';
 export function buildVocs(): Record<string, Uint8Array> {
   const vocs: Record<string, Uint8Array> = {};
   // rising: a soft, swelling whump of dough with a little upward whistle of steam
-  vocs.puff = sample(0.36, mix([lowNoise(21, (t) => 0.05 + t * 0.5), 0.6], [osc.sine((t) => 180 + t * 700), 0.5]), { envelope: env(0.12, 1.6) });
+  vocs.puff = sample(0.36, mix([lowNoise(21, (t) => 0.05 + t * 0.5), 0.6], [osc.sine((t) => 180 + t * 700), 0.5]), { envelope: env(0.12, 1.6), gain: 0.65 });
   // rolling: two crusty bumps
   vocs.roll = sample(0.22, mix([gate(lowNoise(22, 0.3), 0, 0.05), 0.8], [gate(lowNoise(23, 0.25), 0.11, 0.16), 0.7], [osc.sine((t) => 110 - t * 120), 0.3]), {
     envelope: () => 1,
-    gain: 0.7,
+    gain: 0.42,
   });
   // a bite: a crunch of crust
   vocs.crunch = sample(
@@ -67,7 +70,7 @@ export function buildVocs(): Record<string, Uint8Array> {
       [gate(lowNoise(26, 0.6), 0.11, 0.15), 0.6],
       [voice((t) => 300 - t * 300, 600, 1000, 7), 0.25],
     ),
-    { envelope: env(0.005, 1) },
+    { envelope: env(0.005, 1), gain: 0.55 },
   );
   // crumbling to crumbs: a long patter
   const grit = lowNoise(31, 0.6);
@@ -76,9 +79,9 @@ export function buildVocs(): Record<string, Uint8Array> {
     (t) => {
       const k = Math.floor(t * 40);
       const v = grit(t);
-      return rng(k * 7 + 1)() < 0.5 - t * 0.4 ? v * Math.exp(-(t * 40 - k) * 6) : 0;
+      return rng(k * 7 + 1)() < 0.8 - t * 0.5 ? v * Math.exp(-(t * 40 - k) * 6) : 0;
     },
-    { envelope: env(0.01, 0.8), gain: 0.8 },
+    { envelope: env(0.01, 0.8), gain: 1 },
   );
   // a crumb: a tiny chime
   vocs.chime = sample(0.4, mix([osc.sine(1760), 0.5], [osc.sine(2637), 0.3]), { envelope: env(0.005, 2.6) });
@@ -86,7 +89,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.holy = sample(
     0.7,
     (t) => [1397, 1760, 2093, 2637].reduce((s, f, i) => s + (t > i * 0.06 ? Math.sin(2 * Math.PI * f * t) * Math.exp(-(t - i * 0.06) * 6) * 0.3 : 0), 0),
-    { envelope: env(0.005, 1.2) },
+    { envelope: env(0.005, 1.2), gain: 1.4 },
   );
   // wicker: a creak
   vocs.creak = sample(0.4, (t) => Math.sin(2 * Math.PI * (140 + Math.sin(t * 40) * 30) * t) * (Math.sin(t * 380) > 0.2 ? 1 : 0.2) * 0.7, {
@@ -101,6 +104,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   // a fish flops
   vocs.flop = sample(0.3, mix([gate(lowNoise(27, 0.4), 0, 0.04), 0.8], [gate(lowNoise(28, 0.4), 0.14, 0.18), 0.6], [osc.sine((t) => 300 - t * 500), 0.3]), {
     envelope: env(0.005, 1),
+    gain: 0.72,
   });
   // a sip of water
   vocs.sip = sample(0.28, mix([gate(lowNoise(29, 0.2), 0, 0.12), 0.4], [osc.sine((t) => 500 + t * 900), 0.4]), { envelope: env(0.05, 1) });

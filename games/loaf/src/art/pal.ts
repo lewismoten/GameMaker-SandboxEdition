@@ -60,11 +60,12 @@ const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
     mul: [0.84, 0.74, 0.62],
     add: [8, 2, 0],
   },
+  // the sky behind the ground line is a deep rose-violet, so the orange fox and the baskets stand out
   dusk: {
     sky: [
-      [64, 40, 110],
+      [40, 26, 84],
       [255, 170, 100],
-      [214, 96, 110],
+      [134, 62, 112],
     ],
     mul: [0.9, 0.74, 0.74],
     add: [18, 0, 10],

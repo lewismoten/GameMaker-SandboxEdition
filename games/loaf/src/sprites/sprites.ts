@@ -221,6 +221,9 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
+  // A pale outline instead of the dark one (the same pixels, so the same reach), so a critter
+  // reads on the dark wicker and against the dusk.
+  const lit = (p: Pixels) => outline(p, c('crumb', 0));
   // Big hungry things are solid (they push the loaf away) and take a bite.
   const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
 
@@ -330,7 +333,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 14, 12, 2.4, 2.2, pal.r('earth'), 0, 3);
     p.line(16, 12, 19, 14, c('earth', 0)).set(14, 11, c('white', 2));
     p.line(15, 10, 17, 7 + f, ink);
-    return done(p);
+    return lit(p);
   };
   book.add('weevil0', weevil(0), hurt(-4));
   book.add('weevil1', weevil(1), hurt(-4));
@@ -345,7 +348,7 @@ export function buildMonsterBlocks(pal: Pal) {
       .set(15, 11, ink);
     p.line(17, 13, 19, 12 - f, c('white', 1)).line(17, 13, 19, 14 + f, c('white', 1));
     p.line(8, 17, 7 + f, 18, c('grey', 1)).line(12, 17, 13 - f, 18, c('grey', 1));
-    return done(p);
+    return lit(p);
   };
   book.add('mouse0', mouse(0), hurt(-6));
   book.add('mouse1', mouse(1), hurt(-6));
@@ -377,7 +380,7 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(14, 7, 14, 5, c('fur', 0)).line(16, 7, 17, 5, c('fur', 0)).rect(17, 11, 3, 1, c('fur', 2)).set(19, 11, ink).set(16, 9, ink);
     blob(p, 11, 14, 3, 1.4, pal.r('white'), 1, 2);
     p.line(7, 15, 6 + f * 2, 19, ink).line(13, 15, 14 - f * 2, 19, ink);
-    return done(p);
+    return lit(p);
   };
   book.add('fox0', fox(0), hurt(-8));
   book.add('fox1', fox(1), hurt(-8));
@@ -419,7 +422,7 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     blob(p, 10, 10, 1.4, 3, pal.r('earth'), 1, 3);
     for (const s of [-1, 1]) blob(p, 10 + s * (f ? 4 : 3), f ? 8 : 10, f ? 3.6 : 2.6, f ? 3 : 4, pal.r('sand'), 0, 3);
-    return done(p);
+    return lit(p);
   };
   book.add('moth0', moth(0), hurt(-2));
   book.add('moth1', moth(1), hurt(-2));
