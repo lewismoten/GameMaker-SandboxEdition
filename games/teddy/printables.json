@@ -254,7 +254,7 @@
     {
       "text": "GOOD BOY",
       "sub": "TEDDY",
-      "shape": "badge",
+      "shape": "cut",
       "color": "#1d5fb8",
       "ink": "#ffffff",
       "hero": {
@@ -264,64 +264,126 @@
       }
     },
     {
-      "text": "HONK!",
-      "sub": "PARK GOOSE",
-      "shape": "circle",
-      "color": "#ffd23f",
-      "ink": "#2a1408",
-      "sprite": {
-        "blocks": "park.mbl",
-        "pal": "park.pal",
-        "grid": [[31]]
-      }
-    },
-    {
       "text": "NO NOSE, NO SHOW",
       "sub": "GWINN",
-      "shape": "star",
+      "shape": "cut",
       "color": "#d9381e",
       "ink": "#ffffff",
       "sprite": {
         "blocks": "klub.mbl",
         "pal": "klub.pal",
-        "grid": [[44]]
+        "grid": [[48]]
+      }
+    },
+    {
+      "text": "HONK!",
+      "sub": "PARK GOOSE",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "park.mbl",
+        "pal": "park.pal",
+        "grid": [[33]]
       }
     },
     {
       "text": "BARK FIRST",
       "sub": "BACKYARD SQUIRREL",
-      "shape": "rect",
-      "color": "#fff6e0",
-      "ink": "#2a1408",
+      "shape": "cut",
+      "color": "#8a5a2b",
+      "ink": "#fff6e0",
       "sprite": {
         "blocks": "backyard.mbl",
         "pal": "backyard.pal",
-        "grid": [[28]]
+        "grid": [[30]]
       }
     },
     {
       "text": "NOT MOVING",
       "sub": "MAPLE STREET CAT",
-      "shape": "rect",
-      "color": "#ffd23f",
+      "shape": "cut",
+      "color": "#f2a81d",
       "ink": "#2a1408",
       "sprite": {
         "blocks": "street.mbl",
         "pal": "street.pal",
-        "grid": [[28]]
+        "grid": [[30]]
       }
     },
     {
       "text": "HIGH FIVE!",
-      "sub": "DOC LEO'S GREEN TIE",
-      "shape": "circle",
+      "sub": "TEDDY'S BEST TRICK",
+      "shape": "star",
       "color": "#1d5fb8",
       "ink": "#ffd23f",
       "sprite": {
         "blocks": "street.mbl",
         "pal": "street.pal",
-        "grid": [[35]]
+        "grid": [[33]]
       }
+    },
+    {
+      "text": "THE CHEZ",
+      "sub": "DOC LEO'S RIDE",
+      "shape": "cut",
+      "color": "#d6362a",
+      "ink": "#ffffff",
+      "px": 4,
+      "noMini": true,
+      "sprite": {
+        "blocks": "backyard.bbl",
+        "pal": "backyard.pal",
+        "grid": [[91, 92]],
+        "under": [[12, 12]]
+      }
+    },
+    {
+      "text": "FETCH IT!",
+      "sub": "DOC LEO'S NOSE",
+      "shape": "cut",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "noMini": true,
+      "sprite": {
+        "blocks": "backyard.bbl",
+        "pal": "backyard.pal",
+        "grid": [[93]],
+        "under": 35
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "backyard.bbl",
+        "pal": "backyard.pal",
+        "grid": [[98]],
+        "under": 34
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "park.bbl",
+        "pal": "park.pal",
+        "grid": [[101]],
+        "under": 93
+      }
+    },
+    {
+      "text": "WOOF!",
+      "sub": "CLEARS OUT PESTS",
+      "shape": "bubble",
+      "color": "#ffffff",
+      "ink": "#2a1408"
     }
   ],
   "news": [
