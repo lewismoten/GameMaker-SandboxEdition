@@ -552,6 +552,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h('a', { href: '#/cast' }, 'Meet the cast\u00a0→'),
       ' · ',
       h('a', { href: '#/achievements' }, 'What you’ve done\u00a0→'),
+      ' · ',
+      h('a', { href: '#/credits' }, 'Credits\u00a0→'),
     ),
   ];
   // when Getting started has no room beside the library, a link in the library's header opens it

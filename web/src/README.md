@@ -6,7 +6,7 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   simulated DOS PC running the ported designers; no DOS or x86 code runs) or **today's web** interface
   (`editor/`), whichever the visitor used last (`localStorage` `gm-ui`).
   [`urlState.ts`](urlState.ts) keeps the place in the hash (`#/`, `#/game/cd:nebula`,
-  `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/mac`, `#/windows`,
+  `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/credits`, `#/mac`, `#/windows`,
   `#/linux`, `#/desk`), so a reload or a shared
   link comes back to it; [`seo/route.ts`](seo/route.ts) keeps the page's title and share
   tags in step with what is on screen.
@@ -31,6 +31,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`export/`](export) | Publishing a game: as an offline web app, a single web page, or a DOS folder with PLAYGAME; plus the service worker. The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`), `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`). |
 | [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp) | The `#/mac`, `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it does, removing it. |
 | [`cast/`](cast) | The Cast page (`#/cast`): the regulars of the new games on a stage, walking with their own sprites, and the games each appears in (`cameos.json` for new cameos). |
+| [`credits/`](credits) | The Credits page (`#/credits`): the npm packages (`deps.json`, written from the lockfile by `scripts/credits.ts`), the third-party pieces, who the original source credits for each part of RSD Game-Maker, the games' authors, the AI tools and the people, and The Bard of Bizarre's table of who made what. Tests check each against the lockfile, `code/` and the games' credits. |
 | [`saves/`](saves) | The home page's "Saves & scores" panel: a game's saved games (with a map of the saved level) and high scores. |
 | [`media/`](media) | Demo playback (`.REC`), previews, demos added for CD games, the attract mode and the demos' sound choice; saving the screen as video (MP4), animated GIF or WAV. |
 | [`walkthrough/`](walkthrough) | A Sandbox game's walkthrough: played on the real engine, deterministically, in a player with chapters, and rendered to an MP4 with its soundtrack. |
