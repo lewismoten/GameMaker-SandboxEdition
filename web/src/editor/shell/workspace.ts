@@ -365,7 +365,7 @@ export class Workspace {
           ),
           !isGam && h('button', { onclick: () => void this.rename(file) }, 'Rename'),
           h('button', { onclick: () => void this.duplicate(file) }, 'Duplicate'),
-          h('button', { onclick: () => download(file.toUpperCase(), this.project.files.get(file)!) }, 'Download'),
+          h('button', { onclick: () => download(file.toUpperCase(), this.project.files.get(file)!), title: `Save ${file.toUpperCase()} to your computer` }, 'Download file'),
           !isGam && h('button', { class: 'danger', onclick: () => void this.remove(file) }, 'Delete'),
         ),
       ),

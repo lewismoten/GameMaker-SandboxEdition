@@ -48,6 +48,7 @@ dialog.modal:has(.download-chooser) {
 
 .download-chooser label {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 8px;
