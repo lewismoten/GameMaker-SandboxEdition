@@ -126,7 +126,7 @@ export function buildScreens(
     'LOST: ONE MITTEN,',
     'BLUE. JAMIE ST.',
     '',
-    'TIMEOUT ARCADE,',
+    'BLEEPS ARCADE,',
     'LAVALE MALL:',
     'NEW GAMES IN!',
   ]);
@@ -184,7 +184,7 @@ export function buildScreens(
       ['END HOUSE', 'READS THE COMICS FIRST. THEN COMPLAINS.'],
       ['LEOTA ST', ''],
       ['BLUE HOUSE', 'BY 7 AM. "7 MEANS 6:59."'],
-      ['YELLOW HOUSE', 'PAYS IN QUARTERS. (SAVE THEM FOR TIMEOUT.)'],
+      ['YELLOW HOUSE', 'PAYS IN QUARTERS. (SAVE THEM FOR BLEEPS.)'],
       ['', ''],
       ['NO PAPER', 'BIG PETE, BOWDEN DR. HE THROWS IT BACK.'],
       ['SNOW DAY', 'PAPERS FIRST. THEN SHOVELS. - R.'],
@@ -284,13 +284,13 @@ export function buildScreens(
   centered(won1, 184, 'in ones, still a little damp.', c('snow', 6));
   save('won1.gif', won1);
 
-  // ---------------- Timeout: the change from the mall lot, in quarters
+  // ---------------- Bleeps: the change from the mall lot, in quarters
   const arc = new Pixels(W, H, c('ink', 0));
   gradient(arc, 0, 0, W, 40, pal.r('nightsky'), 0, 2);
   // the marquee
   arc.rect(70, 6, 180, 30, c('ink', 1)).frame(70, 6, 180, 30, c('gold', 2));
   for (let x = 72; x < 248; x += 4) arc.set(x, 8, pal.r('bulbs')[(x >> 2) % 4]).set(x + 2, 33, pal.r('bulbs')[((x >> 2) + 2) % 4]);
-  outlined(arc, 160 - textWidth('TIMEOUT', 2) / 2, 13, 'TIMEOUT', c('orange', 3), c('coat', 0), 2);
+  outlined(arc, 160 - textWidth('BLEEPS', 2) / 2, 13, 'BLEEPS', c('orange', 3), c('coat', 0), 2);
   // a row of cabinets, screens glowing
   for (let k = 0; k < 5; k++) {
     const x = 14 + k * 62;
@@ -317,7 +317,7 @@ export function buildScreens(
   scaleBlit(arc, spr.get('up0')!, 140, 110, 3);
   arc.rect(0, 170, W, 30, c('ink', 0));
   centered(arc, 175, 'The change from the lot went to', c('snow', 6));
-  centered(arc, 186, 'Timeout, one quarter at a time.', c('snow', 6));
+  centered(arc, 186, 'Bleeps, one quarter at a time.', c('snow', 6));
   save('arcade.gif', arc);
 
   const won2 = new Pixels(W, H);

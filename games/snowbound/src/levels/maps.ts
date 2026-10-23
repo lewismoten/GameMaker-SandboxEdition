@@ -445,7 +445,7 @@ export function bowdenDrive(book: BlockBook) {
 }
 
 // ------------------------------------------------------------------ level 4
-/** LaVale Mall, 8 PM: the lot, the squall, the Timeout arcade and Bits & Bytes Software. */
+/** LaVale Mall, 8 PM: the lot, the squall, the Bleeps arcade and Bits & Bytes Software. */
 export function lavaleMall(book: BlockBook) {
   const m = new MapBuilder(book);
   const X = 10;
@@ -465,7 +465,7 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 40, 13, 'storeDoor')
     .set(X + 42, 13, 'boxWindow');
   m.set(X + 24, 13, 'mallDoor').set(X + 25, 13, 'mallDoor');
-  // Timeout, the arcade, with its chasing marquee
+  // Bleeps, the arcade, with its chasing marquee
   for (let i = 0; i < 3; i++) m.set(X + 17 + i, 12, `arcade0${i}`);
   m.set(X + 17, 13, 'arcadeWin')
     .set(X + 18, 13, 'arcadeDoor')
@@ -477,7 +477,7 @@ export function lavaleMall(book: BlockBook) {
   // the History Fair table on the walk, and the corkboard on the wall behind it
   m.set(X + 27, 14, 'fairMan').set(X + 28, 14, 'fairBell').set(X + 29, 14, 'fairFlag');
   m.set(X + 32, 13, 'board0').set(X + 33, 13, 'board1');
-  // Timeout's snack bar: root beer, and only root beer
+  // Bleeps' snack bar: root beer, and only root beer
   m.set(X + 16, 14, 'rootBeer');
   m.patch(X, 16, ['BB_LB_BBBBLBBB_BBBLBBBB_BBBLBBBB__BBBLBBB_BBBBLBBB_BBBLBB_B']);
   // the fire lane

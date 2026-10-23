@@ -122,7 +122,7 @@
             {
               "x": 28,
               "y": 13,
-              "label": "Timeout, the arcade: $1 a game",
+              "label": "Bleeps, the arcade: $1 a game",
               "kind": "shop"
             },
             {
@@ -134,7 +134,7 @@
             {
               "x": 26,
               "y": 14,
-              "label": "Root beer: the whole Timeout menu",
+              "label": "Root beer: the whole Bleeps menu",
               "kind": "shop"
             },
             {
@@ -236,7 +236,7 @@
             },
             {
               "q": "I'm freezing.",
-              "a": "Grab hot cocoa, or the root beer outside Timeout (35 warmth each). If you go home cold, the street starts over with fresh snow, and your coffee can stays full."
+              "a": "Grab hot cocoa, or the root beer outside Bleeps (35 warmth each). If you go home cold, the street starts over with fresh snow, and your coffee can stays full."
             }
           ]
         },
@@ -296,7 +296,7 @@
       "columns": [
         "<p>FORT ASHBY - A storm that came in overnight left a foot and a half of snow across Mineral County, closing schools and sending state plow crews out on every road before dawn.</p><p>Residents of Gale Street, Dunn Drive and Leota Street woke to find cars buried to the mirrors.</p>",
         "<p>Neighbors want front walks cleared as well as driveways. \"Grandma's coming at noon and my steps are a skating rink,\" one Leota Street resident said. \"Somebody is going to make a fortune today.\"</p><p>Jamie Street is closed to traffic and open to sleds.</p>",
-        "<p>Over the line in LaVale, Maryland, stores plan to open on time. The Timeout arcade promises the heat will be on.</p><p>A local software shop reports one copy of a popular game-making kit left in the window at $89. The price goes up in January.</p>"
+        "<p>Over the line in LaVale, Maryland, stores plan to open on time. The Bleeps arcade promises the heat will be on.</p><p>A local software shop reports one copy of a popular game-making kit left in the window at $89. The price goes up in January.</p>"
       ],
       "briefs": [
         ["SHOVELING FOR HIRE", "A sign has gone up at Gale and Dunn: one dollar a scoop, founder and operator on duty."],
@@ -328,7 +328,7 @@
         },
         {
           "date": "8:00 PM",
-          "html": "<p>LaVale lot keeps filling back in. Good. Count: almost there. DO NOT spend it all at Timeout.</p>"
+          "html": "<p>LaVale lot keeps filling back in. Good. Count: almost there. DO NOT spend it all at Bleeps.</p>"
         }
       ]
     },

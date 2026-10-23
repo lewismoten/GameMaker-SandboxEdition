@@ -1,5 +1,5 @@
 // LaVale Mall: its walls and glass doors, the window with THE  box in it, the store door
-// and register (which only opens with $89 in your pocket), and Timeout, the arcade, with its
+// and register (which only opens with $89 in your pocket), and Bleeps, the arcade, with its
 // chasing marquee and a door that takes a dollar a game.
 import { Pixels } from '../../../kit/pixels';
 import { gradient, shadeAt, speckle } from '../art/draw';
@@ -82,14 +82,14 @@ export function addMall(k: Ctx) {
   book.add('storeDoor', storeDoor(false), { solid: SOLID, effect: MONEY, eamt: -89, score: 8900, touch: 'storeOpen' });
   book.add('storeOpen', storeDoor(true));
 
-  // Timeout, the arcade: a marquee with chasing bulbs, two glowing cabinets in the
+  // Bleeps, the arcade: a marquee with chasing bulbs, two glowing cabinets in the
   // windows, and a door that eats four quarters ($1) a push for a game - and warms you up.
   const marquee = (frame: number) => {
     const big = new Pixels(60, 20);
     for (let t = 0; t < 3; t++) big.blit(mallWall(t + 31), t * 20, 0);
     big.rect(1, 3, 58, 15, c('ink', 0));
     for (let x = 2; x < 58; x += 2) big.set(x, 3, c('bulbs', (x / 2 + frame) % 4)).set(x, 17, c('bulbs', (x / 2 + frame + 2) % 4));
-    const label = 'TIMEOUT';
+    const label = 'BLEEPS';
     const x = Math.floor((60 - microWidth(label, 2)) / 2);
     micro(big, x + 1, 7, label, c('orange', 0), 2);
     micro(big, x, 6, label, frame ? c('orange', 3) : c('gold', 3), 2);
@@ -123,7 +123,7 @@ export function addMall(k: Ctx) {
   return { mallWall };
 }
 
-/** Timeout's snack bar sells exactly one thing: a frosty mug of root beer on the walk out
+/** Bleeps' snack bar sells exactly one thing: a frosty mug of root beer on the walk out
  * front, which warms you up like cocoa (don't ask how). Added last so older blocks keep
  * their numbers. */
 export function addSnack(k: Ctx, { sidewalk }: { sidewalk: (seed: number) => Pixels }): void {
