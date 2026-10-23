@@ -162,8 +162,10 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     share and sell Game-Maker and the games you make with it, with no limit on people, fees
     or royalties; just keep the copyright and license notice with the program. The
     registration fees, order forms and Sandbox Software's address in the Sandbox games are part
-    of their 1990s story: the games are free. The CD's shareware games are still their
-    authors' own, which is why they are play-only here.</p>
+    of their 1990s story: the games are free. The Sandbox and Bard of Bizarre games were all
+    made in 2026 for Game-Maker: Sandbox Edition; each is presented as a fictional release
+    from the 1990s year it gives. The CD's shareware games are still their authors' own, and
+    really are from the 1990s, which is why they are play-only here.</p>
     <h3>Sandbox Software games</h3>
     <p>The Sandbox games were written and built by <b>Claude Opus 5.5</b>: the code that builds
     them, their pictures, music, sounds and words. Many are drawn from Lewis “Lewie” Moten
