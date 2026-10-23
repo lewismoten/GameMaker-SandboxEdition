@@ -293,7 +293,9 @@ export function mountain(book: BlockBook): Level {
   m.set(3, 16, 'T').set(8, 16, ',').set(12, 14, 'T').set(21, 12, ',').set(33, 10, 'T').set(49, 10, 'T').set(57, 12, 'T').set(53, 12, ',');
   // the walls of boulders (four high: a hop can't clear them; faith moves them two at a time)
   m.col(24, 9, 12, 'X').col(31, 7, 10, 'X').col(46, 7, 10, 'X');
-  // faith, a golden glimmer at a time
+  // faith, a golden glimmer at a time: one for every boulder, each wall's four on the way up to
+  // it, so a seed that bumps the high boulders too is never left short
+  m.set(25, 11, '$').set(33, 9, '$').set(36, 7, '$');
   m.set(5, 15, '$').set(9, 16, '$').set(14, 12, '$').set(20, 11, '$').set(27, 9, '$').set(29, 8, '$').set(38, 6, '$').set(41, 7, '$').set(44, 9, '$');
   // sunbeams, dew, and a golden flower on the peak
   m.text(16, 10, '*').text(36, 4, '*..*').set(52, 10, '*').set(18, 14, 'd').set(40, 8, '1').set(60, 9, '*');

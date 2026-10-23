@@ -322,13 +322,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('lifeCave', golden(cave(72)), { effect: LIFE, eamt: 1, score: 100, touch: 'cave' });
 
   // ---------- hazards ----------
-  // Thistles prick.
+  // Thistles prick. A prick is the whole block, so the tall middle head reaches its top edge
+  // and the art fills the block: it hurts only where a thistle is seen.
   const thistle = (bg: Pixels) => {
-    for (let k = 0; k < 4; k++) bg.line(10, 19, 4 + k * 4, 10 + (k % 2) * 3, c('leaf', 1));
+    for (let k = 0; k < 4; k++) bg.line(10, 19, 4 + k * 4, 7 + (k % 2) * 3, c('leaf', 1));
     for (const [x, y] of [
-      [5, 9],
-      [10, 6],
-      [15, 9],
+      [5, 6],
+      [10, 3],
+      [15, 6],
     ]) {
       blob(bg, x, y + 2, 2.6, 2, R('leaf'), 0, 2);
       bg.disc(x, y, 2.2, c('purple', 1)).set(x, y - 1, c('purple', 2));
