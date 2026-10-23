@@ -368,11 +368,14 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         // The designers take the whole window; afterwards, go back to how the user had it.
         // vga stays in the monitor like the real thing.
         onModeChange: (mode: MonitorMode) =>
+          computer?.powered &&
           setZoom(mode === "gfx" ? "gfx" : enlarged ? "manual" : false),
         onDisksChanged: (insert) => void refreshDisks(insert),
         onGame: (game) => keyCard.show(game),
         // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
+        // (a PC switched off says nothing more)
         onProgram: (p) =>
+          computer?.powered &&
           deskView.set({
             run: !p
               ? "dos"
@@ -437,19 +440,15 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   let poweringOn: Promise<void> | undefined;
+  let switchingOff = false;
   async function power(onlyOn = false): Promise<void> {
+    // the tube still collapsing from switching off: the switch is waiting to be pressed again
+    if (switchingOff) return;
     // still loading the PC's insides from the first press: that press switches it on
     if (poweringOn && !computer?.powered) return poweringOn;
     if (computer?.powered) {
-      if (!onlyOn) {
-        // switching off: the tube collapses to a line, then a dot; then the simplest honest "reset"
-        crt.classList.add("switching-off");
-        powerLed.classList.remove("on");
-        spk.power(false);
-        // a cold start: the address forgets the disk and the program too
-        deskView.set({ disk: undefined, run: undefined, open: undefined });
-        setTimeout(() => location.reload(), 1700);
-      } else computer.focus();
+      if (!onlyOn) switchOff();
+      else computer.focus();
       return;
     }
     desk.dataset.power = "on";
@@ -460,8 +459,50 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     setTurbo(turbo);
     poweringOn = loadPc().then((pc) => pc.powerOn());
     await poweringOn;
+    if (!computer?.powered) return; // switched off again while it booted
     setTurbo(turbo);
     if (!deskView.get("run")) deskView.set({ run: "dos" });
+  }
+
+  /**
+   * The power switch, off. Every sound stops at once and whatever was running stops where it
+   * is (Computer.powerOff); the tube collapses to a line, then a dot; then the PC is done
+   * with (its screen, keyboard, timers) and the desk is as it was before it was first
+   * switched on: no disk in A:, the CD back in its box, the lights out, the address
+   * forgetting the disk and the program. Switching on again cold-boots a new PC.
+   */
+  function switchOff(): void {
+    const pc = computer;
+    if (!pc) return;
+    switchingOff = true;
+    pc.powerOff();
+    powerLed.classList.remove("on");
+    powerBtn.setAttribute("aria-pressed", "false");
+    spk.power(false);
+    modem.power(false);
+    deskView.set({ disk: undefined, run: undefined, open: undefined });
+    crt.classList.add("switching-off");
+    setTimeout(() => {
+      crt.classList.remove("switching-off");
+      removeWarp();
+      removeWarp = () => {};
+      capture?.dispose();
+      capture = undefined;
+      pc.dispose();
+      computer = undefined;
+      pcLoad = undefined;
+      poweringOn = undefined;
+      keyCard.show(undefined);
+      showInDrive(undefined);
+      lastDisk = undefined;
+      cd.setDisc(undefined);
+      desk.querySelector(".gm-box")?.classList.remove("cd-in");
+      enlarged = false;
+      desk.dataset.zoom = "false";
+      desk.dataset.power = "off";
+      setTurbo(turbo);
+      switchingOff = false;
+    }, 1700);
   }
 
   /** Types a command at the prompt (booting first if needed). */
