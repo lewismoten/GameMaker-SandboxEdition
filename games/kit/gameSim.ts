@@ -23,6 +23,11 @@ import { parseMonsters } from '../../web/src/formats/monster';
 import { parseMap } from '../../web/src/formats/map';
 import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '../../web/src/formats/game';
 import type { RecordedKey } from '../../web/src/formats/recording';
+import { LASTSND, parseSoundSet } from '../../web/src/formats/sound';
+import { vocMs } from './clips';
+
+/** PLAYGAME's game clock. */
+export const TICKS_PER_SECOND = 18.2;
 
 /** A built disk's files (in games/<id>/disk), by lower-case name. */
 export function readDisk(diskDir: string): Map<string, Uint8Array> {
@@ -66,6 +71,7 @@ interface State {
   trail: number[];
   segments: SceneKeys[];
   segmentTicks: number[];
+  clip: GameSim['clip'];
 }
 
 export class GameSim {
@@ -92,6 +98,11 @@ export class GameSim {
   private rand = new Rand(0);
   ended: 'won' | 'lost' | undefined;
   deaths = 0;
+  /**
+   * The .VOC clip the Sound Blaster is playing (PlaySbVocFile: a new one cuts it off), with
+   * the game clock tick it ends on; a scene's exit or intro picture cuts it too (ShowGraphic).
+   */
+  clip: { name: string; until: number } | undefined;
 
   constructor(
     readonly files: Map<string, Uint8Array>,
@@ -126,7 +137,17 @@ export class GameSim {
     }
     const f = (slot: number) => this.file(scene, slot);
     this.rand = new Rand(this.seed);
-    const w = createWorld(parseMap(f(1)!), { play: () => true }, this.rand.next);
+    // the exit picture of the scene left, or this one's intro, frees the sample
+    if (this.game.scenes[prev]?.files[10] || this.game.scenes[scene].files[9]) this.clip = undefined;
+    const snd = f(7) && parseSoundSet(f(7)!);
+    const play = (n: number): boolean => {
+      if (!snd || n < 0 || n >= LASTSND) return false;
+      const name = snd.digital[n];
+      const voc = name && name[0] !== ' ' ? this.files.get(`${name.toLowerCase()}.voc`) : undefined;
+      if (voc) this.clip = { name, until: this.clock + Math.ceil((vocMs(voc) / 1000) * TICKS_PER_SECOND) };
+      return true;
+    };
+    const w = createWorld(parseMap(f(1)!), { play }, this.rand.next);
     w.bg = padBlocks(parseBlocks(f(2)!, NBACK), NBACK);
     w.mblk = padBlocks(f(4) ? parseBlocks(f(4)!, NMON) : undefined, NMON);
     w.cblk = padBlocks(parseBlocks(f(6)!, NCHR), NCHR);
@@ -229,6 +250,25 @@ export class GameSim {
     return undefined;
   }
 
+  /** Game ticks until the clip playing now ends (0 when none is). */
+  get clipTicksLeft(): number {
+    return this.clip ? Math.max(0, this.clip.until - this.clock) : 0;
+  }
+
+  /**
+   * Stands still until the clip playing now has played to the end, so the bot's next sound
+   * (a jump, a pickup) doesn't cut it off: a level's start clip, say. Returns what a tick
+   * returned if play left the scene meanwhile.
+   */
+  async waitForClip(): Promise<'link' | 'dead' | 'end' | undefined> {
+    this.releaseAll();
+    while (this.clipTicksLeft > 0) {
+      const r = await this.tick();
+      if (r) return r;
+    }
+    return undefined;
+  }
+
   /** The character's block and the pixels past it. */
   get pos(): { x: number; y: number; sx: number; sy: number } {
     const c = this.w.chr;
@@ -276,6 +316,7 @@ export class GameSim {
       trail: [...this.trail],
       segments: this.segments.map((s) => ({ scene: s.scene, keys: s.keys.slice() })),
       segmentTicks: [...this.segmentTicks],
+      clip: this.clip && { ...this.clip },
     };
   }
 
@@ -299,6 +340,7 @@ export class GameSim {
     this.trail = [...s.trail];
     this.segments = s.segments.map((x) => ({ scene: x.scene, keys: x.keys.slice() }));
     this.segmentTicks = [...s.segmentTicks];
+    this.clip = s.clip && { ...s.clip };
   }
 }
 
