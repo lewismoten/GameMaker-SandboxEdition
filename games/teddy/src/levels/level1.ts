@@ -8,6 +8,7 @@ import { P } from '../art/pal';
 import { LevelMap, type Level } from './level';
 import { GROUND, backyardTiles, bandOf } from './level1Tiles';
 import { backyardBeasts } from './level1Beasts';
+import { addTinHeart } from '../sprites/hidden';
 
 export function backyard(): Level {
   const bs = backyardTiles();
@@ -155,6 +156,8 @@ export function backyard(): Level {
   m.mon(41, 39, 'gwinnBall');
   m.mon(fence - 2, GROUND, 'plug');
   m.mon(fence - 1, GROUND, 'plug');
+  // a tin heart in the grass by Doc Leo's back door, just behind where Teddy starts (100 points)
+  m.set(5, 39, addTinHeart(bs, m.get(5, 39)));
   m.mark('start', 6, 39);
   m.mark('exit', car, 39);
   void P;
