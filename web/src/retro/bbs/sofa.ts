@@ -122,6 +122,7 @@ function lounge(t: Term): void {
   t.line('|07THE GREAT DAIRY RECKONING OF 3:17 A.M., CLEANSE ME, O LOOFAH,');
   t.line('|07I SCREAMED, SHE SMIRKED and SHAKESPEARE IN SWEATPANTS,');
   t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
+  t.line("|07And VENI, VIDI, RISI!, six songs in Latin by Lewis's group Veni, Vidi, Risi!");
   t.line('|07Free! Hit F.');
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
