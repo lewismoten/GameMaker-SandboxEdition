@@ -13,20 +13,36 @@ export function buildMonsterBlocks(pal: Pal) {
   const c = pal.c;
   const snow = pal.r('snow');
   const hurtBy = (hp: number) => ({ chHitPt: hp });
+  /**
+   * A one-pixel rim of pale snow around a sprite's edge: on a daytime street it melts into
+   * the snow, but on LaVale's dark lot at night it keeps Biscuit, Pete and the carts in view.
+   */
+  const rim = (src: Pixels) => {
+    const p = new Pixels(src.w, src.h, T);
+    p.px.set(src.px);
+    const solid = (x: number, y: number) => {
+      const v = src.get(x, y);
+      return v !== T && v !== -1;
+    };
+    return p.map((x, y, v) => (v === T && (solid(x - 1, y) || solid(x + 1, y) || solid(x, y - 1) || solid(x, y + 1)) ? c('snow', 4) : v));
+  };
 
-  // Snowballs: theirs hurt, yours don't touch you.
-  const ball = (spin: number) => {
+  // Snowballs: theirs hurt (packed hard, gray with grit from the plow banks), yours don't
+  // touch you (bright white, with a red thread from your mitten), so the two read apart.
+  const ball = (spin: number, mine: boolean) => {
     const p = new Pixels(20, 20, T);
     blob(p, 10, 14, 3, 1, pal.r('ink'), 0, 1);
-    p.disc(10, 10, 4.4, c('ink', 1));
-    blob(p, 10, 10, 3.6, 3.6, snow, 2, 6);
+    p.disc(10, 10, 4.4, c('ink', mine ? 1 : 0));
+    blob(p, 10, 10, 3.6, 3.6, snow, mine ? 3 : 1, mine ? 6 : 4);
     p.set(9 + spin, 8, c('snow', 6));
+    if (mine) p.set(11 - spin, 11, c('coat', 3)).set(12 - spin, 11 + spin, c('coat', 2));
+    else p.set(11 - spin, 11, c('asphalt', 1)).set(8 + spin, 12, c('asphalt', 2));
     return p;
   };
-  book.add('ball0', ball(0), hurtBy(-5));
-  book.add('ball1', ball(1), hurtBy(-5));
-  book.add('myBall0', ball(0));
-  book.add('myBall1', ball(1));
+  book.add('ball0', ball(0, false), hurtBy(-5));
+  book.add('ball1', ball(1, false), hurtBy(-5));
+  book.add('myBall0', ball(0, true));
+  book.add('myBall1', ball(1, true));
   const poof = (r: number) => {
     const p = new Pixels(20, 20, T);
     for (let a = 0; a < 8; a++) {
@@ -54,7 +70,7 @@ export function buildMonsterBlocks(pal: Pal) {
     '...kdllllllldddk',
   ];
   dogKey.r = c('coat', 3);
-  const dog = (legs: string[]) => sprite([...DOG, ...legs], dogKey, 20, 20, 0, 20 - DOG.length - legs.length);
+  const dog = (legs: string[]) => rim(sprite([...DOG, ...legs], dogKey, 20, 20, 0, 20 - DOG.length - legs.length));
   book.add('dog0', dog(['...kddkkkkkkkddk', '...kdk......kdk', '...kk.......kk']), hurtBy(-8));
   book.add('dog1', dog(['...kddkkkkkkkddk', '..kdk........kdk', '.kk..........kk']), hurtBy(-8));
   book.add('dogRun0', dog(['...kddkkkkkkkddk', '...kdk......kdk', '...kk.......kk']));
@@ -62,10 +78,10 @@ export function buildMonsterBlocks(pal: Pal) {
 
   // Big Pete, the bully: green coat, blue beanie, no shovel.
   const bk = keyFor(pal, 'bully');
-  const pete = (legs: string[]) => kidPic([...HEAD_DOWN, ...BODY_FRONT, ...legs], bk);
+  const pete = (legs: string[]) => rim(kidPic([...HEAD_DOWN, ...BODY_FRONT, ...legs], bk));
   book.add('bully0', pete(LEGS_A), hurtBy(-2));
   book.add('bully1', pete(LEGS_B), hurtBy(-2));
-  const run = (legs: string[]) => kidPic([...HEAD_SIDE, ...BODY_SIDE, ...legs], bk);
+  const run = (legs: string[]) => rim(kidPic([...HEAD_SIDE, ...BODY_SIDE, ...legs], bk));
   book.add('bullyRun0', run(LEGS_SIDE_A));
   book.add('bullyRun1', run(LEGS_SIDE_B));
   const cry = (k: number) => {
@@ -159,8 +175,8 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 8, 5, 6, 1.5, snow, 4, 6);
     return p;
   };
-  book.add('cart0', cart(0), hurtBy(-4));
-  book.add('cart1', cart(1), hurtBy(-4));
+  book.add('cart0', rim(cart(0)), hurtBy(-4));
+  book.add('cart1', rim(cart(1)), hurtBy(-4));
 
   // Another kid on a toboggan, cutting across the hill.
   const sledder = (f: number) => {

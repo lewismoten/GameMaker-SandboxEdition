@@ -41,12 +41,14 @@ export function buildSounds(): SoundFiles {
     vocs[name] = voc;
   };
 
-  // A shovel scoop and a little coin: "shhk-ting".
+  // A shovel scoop and a little coin: "shhk-tik". It plays on every dollar, a scoop every
+  // third of a second while you dig, so it is short and soft: a scrape and a quiet tick
+  // that is over before the next scoop, never a ringing bell stacking up.
   add(
     SND.money,
     'scoop',
-    speaker((i) => (i < 6 ? 180 + i * 40 : i < 9 ? 0 : i < 20 ? 1568 : 0)),
-    sample(0.42, mix([gate(lowNoise(3, 0.35), 0, 0.14, true), 0.7], [bell(1568, 0.12, 0.5), 0.35], [bell(2349, 0.16, 0.4), 0.2]), { envelope: () => 1 }),
+    speaker((i) => (i < 4 ? 180 + i * 50 : i < 6 ? 0 : i < 10 ? 1568 : 0)),
+    sample(0.24, mix([gate(lowNoise(3, 0.35), 0, 0.11, true), 0.6], [bell(1568, 0.09, 0.14), 0.22], [bell(2349, 0.11, 0.12), 0.1]), { envelope: () => 1 }),
   );
   // The register at Bits & Bytes: "ka-CHING!"
   add(
