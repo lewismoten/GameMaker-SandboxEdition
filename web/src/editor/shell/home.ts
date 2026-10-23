@@ -64,7 +64,7 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[]
     id: 'bizarre',
     icon: 'music',
     name: 'Bizarre',
-    lead: 'Songs by The Bard of Bizarre, Lewis “Lewie” Moten III’s song project with his hobo clown Doc Leo as its face, turned into games: Lewis dreams up each song and AI tools write and record it. Shareware from The Sofa BBS in the story, but free to change for real (MIT): play them, edit a copy to see how they were made, and read each one’s notice for the song behind it.',
+    lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools write and record it, and you can play it, read its notice, or edit a copy (they’re MIT) to see how it was made.',
   },
 ];
 
