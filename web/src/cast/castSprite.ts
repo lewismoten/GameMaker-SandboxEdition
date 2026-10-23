@@ -12,6 +12,10 @@ export interface CastSprite {
   ms: number;
   /** Walks on (a hero or monster); false: a thing that is simply there (The Dog House). */
   walk: boolean;
+  /** Hops along instead of walking (the tin heart). */
+  hop?: boolean;
+  /** Ticks as it goes: a tick-tock on each frame (when the stage's sound is on). */
+  tick?: boolean;
 }
 
 /** The frames as canvases of their own size, ready to draw scaled with smoothing off. */

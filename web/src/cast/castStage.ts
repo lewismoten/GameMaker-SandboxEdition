@@ -69,6 +69,34 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   let raf = 0;
   let visible = true;
 
+  // sound: off until asked for (a tick-tock for the tin heart)
+  let audio: AudioContext | undefined;
+  let sound = false;
+  let lastFrame = -1;
+  function tickTock(n: number): void {
+    if (!sound) return;
+    audio ??= new AudioContext();
+    const t = audio.currentTime;
+    const osc = audio.createOscillator();
+    const gain = audio.createGain();
+    osc.type = 'square';
+    osc.frequency.value = n % 2 ? 1400 : 1000;
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    osc.connect(gain).connect(audio.destination);
+    osc.start(t);
+    osc.stop(t + 0.06);
+  }
+  const soundBtn = h('button', {
+    type: 'button',
+    'aria-pressed': 'false',
+    onclick: () => {
+      sound = !sound;
+      soundBtn.setAttribute('aria-pressed', String(sound));
+      soundBtn.textContent = sound ? '🔊 Sound on' : '🔈 Sound off';
+      if (sound) void (audio ??= new AudioContext()).resume();
+    },
+  }, '🔈 Sound off');
   const playBtn = h('button', { type: 'button', class: 'cast-stage-play', onclick: () => setPlaying(!playing) });
   const prevBtn = h('button', { type: 'button', 'aria-label': 'Previous character', onclick: () => go(at - 1, true) }, '◀');
   const nextBtn = h('button', { type: 'button', 'aria-label': 'Next character', onclick: () => go(at + 1, true) }, '▶');
@@ -130,9 +158,13 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     const alpha = !s.sprite.walk && phase !== 'talk' ? Math.min(1, Math.max(0, (now - t0) / 600)) : 1;
     ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - alpha : alpha;
     // a shadow under them, then the sprite standing on the boards
+    const lift = s.sprite.hop && moving ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : 0;
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(Math.round(x) + 2, FLOOR, s.sprite.w - 4, 2);
-    ctx.drawImage(frame, Math.round(x), FLOOR - s.sprite.h + 1);
+    ctx.drawImage(frame, Math.round(x), FLOOR - s.sprite.h + 1 - lift);
+    const n = s.frames.indexOf(frame);
+    if (s.sprite.tick && n !== lastFrame && playing) tickTock(n);
+    lastFrame = n;
     ctx.globalAlpha = 1;
   }
 
@@ -185,7 +217,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     { class: 'cast-stage', 'aria-labelledby': 'cast-stage-h' },
     h('h2', { id: 'cast-stage-h' }, 'On stage'),
     h('div', { class: 'cast-stage-box' }, canvas, bubble),
-    h('div', { class: 'cast-stage-controls' }, prevBtn, playBtn, nextBtn, pick),
+    h('div', { class: 'cast-stage-controls' }, prevBtn, playBtn, nextBtn, pick, soundBtn),
   );
 
   new IntersectionObserver(([e]) => {

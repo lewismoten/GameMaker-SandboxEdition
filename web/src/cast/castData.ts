@@ -2,6 +2,11 @@
 // edition's new games, and the three kinds of games on the home page. Each picture is drawn
 // from a game's own files by scripts/castArt.ts into public/cast/<id>.png (a few hundred bytes
 // each); a test checks every "Appears in" game is in the catalog under the title given here.
+//
+// New cameos go in cameos.json: { "<member id>": [{ "game": "<game id>", "as": "what they do" }] }.
+// They are added to that member's "Seen in" after the ones below (a game already listed is
+// kept once). A cameo in a game not in CAST_GAMES fails the test: add the game there first.
+import CAMEOS from './cameos.json';
 
 export type Family = 'sandbox' | 'bizarre';
 
@@ -54,7 +59,7 @@ export interface CastMember {
   appears: Appearance[];
 }
 
-export const CAST: CastMember[] = [
+const LISTED: CastMember[] = [
   {
     id: 'teddy',
     name: 'Teddy',
@@ -103,7 +108,7 @@ export const CAST: CastMember[] = [
     name: 'Doc Leo',
     role: 'Hobo clown, PhD in Comedic Science',
     hi: 'Nose on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
-    art: { game: 'teddy', width: 212, height: 160, alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash' },
+    art: { game: 'teddy', width: 224, height: 147, alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash' },
     bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, a red nose, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. Nose on: showtime. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
@@ -174,6 +179,15 @@ export const CAST: CastMember[] = [
       { game: 'brief', as: 'the whole library, behind the red door' },
       { game: 'logic', as: 'a photo on Watt’s board' },
     ],
+  },
+  {
+    id: 'tinHeart',
+    name: 'The tin heart',
+    role: 'Small, riveted, ticking. Hidden somewhere.',
+    hi: 'Tick… tock… Yes, I have a heart. I am a heart. Find me!',
+    art: { game: 'teddy', width: 14, height: 12, alt: 'The tin heart: a small grey riveted tin heart with a shine on its corner' },
+    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one. One is tucked away in many of the games, so it is something to look for: listen for the tick-tock.',
+    appears: [],
   },
   {
     id: 'joe',
@@ -305,6 +319,12 @@ export const CAST: CastMember[] = [
     ],
   },
 ];
+
+/** Everyone, with the cameos from cameos.json added to their games. */
+export const CAST: CastMember[] = LISTED.map((m) => {
+  const more = ((CAMEOS as Record<string, Appearance[]>)[m.id] ?? []).filter((a) => !m.appears.some((b) => b.game === a.game));
+  return more.length ? { ...m, appears: [...m.appears, ...more] } : m;
+});
 
 /** The families a member belongs to, from the games they appear in. */
 export const familiesOf = (m: CastMember): Family[] => [...new Set(m.appears.map((a) => CAST_GAMES[a.game][1] as Family))];

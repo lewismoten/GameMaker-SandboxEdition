@@ -11,18 +11,20 @@ import { parseCharacter, type Sequence } from '../src/formats/character';
 import { parsePalette } from '../src/formats/palette';
 import { chezPicture } from '../../games/kit/chez';
 import type { CastSprite } from '../src/cast/castSprite';
+import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
 /** A hero from its .CHR (`seq`: the sequence to play, else the one that walks furthest right). */
 type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number };
 /** Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame. */
 type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean };
-type Source = ChrSource | BlockSource | { chez: true };
+type Source = ChrSource | BlockSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
   teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal' },
   gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal' },
   leo: { game: 'tickle', chr: 'leo.chr', cbl: 'tickle.cbl', pal: 'lab.pal' },
   chez: { chez: true },
+  tinHeart: { tinHeart: true },
   doghouse: { game: 'teddy', file: 'street.bbl', pal: 'street.pal', frames: [[[86, 87], [89, 91], [92, 95]]], still: true },
   joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal' },
   bard: { game: 'goat', file: 'goat.mbl', pal: 'stable.pal', frames: [[[40]], [[41]]], ms: 220 },
@@ -71,6 +73,8 @@ interface Raw {
   palette: Uint8Array;
   ms: number;
   walk: boolean;
+  hop?: boolean;
+  tick?: boolean;
 }
 
 function raw(s: Source): Raw {
@@ -79,6 +83,11 @@ function raw(s: Source): Raw {
     const palette = new Uint8Array(768);
     [[0, 0, 0], [42, 8, 4], [58, 16, 9], [63, 32, 22], [34, 4, 3], [8, 12, 20], [40, 48, 56], [4, 4, 6], [6, 6, 7], [50, 52, 56], [12, 12, 14], [63, 44, 0], [52, 4, 4], [61, 61, 60]].forEach((c, i) => palette.set(c, i * 3));
     return { width: car.w, height: car.h, frames: [Uint8Array.from(car.px)], palette, ms: 200, walk: true };
+  }
+  if ('tinHeart' in s) {
+    const palette = new Uint8Array(768);
+    TIN_HEART_PAL.forEach((c, i) => palette.set(c, i * 3));
+    return { width: TIN_HEART_W, height: TIN_HEART_H, frames: tinHeartFrames(TRANSPARENT), palette, ms: 500, walk: true, hop: true, tick: true };
   }
   const palette = parsePalette(disk(s.game, s.pal));
   if ('chr' in s) {
@@ -123,6 +132,8 @@ export function castSprite(s: Source): CastSprite {
     frames: r.frames.map((f) => Buffer.from(f.slice(top * r.width, bottom * r.width).map((c) => (c === TRANSPARENT ? 0 : index.get(c)!))).toString('base64')),
     ms: r.ms,
     walk: r.walk,
+    ...(r.hop ? { hop: true } : {}),
+    ...(r.tick ? { tick: true } : {}),
   };
 }
 

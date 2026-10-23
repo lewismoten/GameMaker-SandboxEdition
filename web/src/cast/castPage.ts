@@ -41,17 +41,20 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
       h('p', { class: 'cast-role' }, m.role),
       h('p', { class: 'cast-bio' }, m.bio),
     ),
-    h('div', { class: 'cast-seen-box' }, h('p', { class: 'cast-seen-h' }, 'Seen in:'), seenIn(m.appears)),
-    h(
-      'details',
-      { class: 'cast-appears' },
-      h('summary', null, `What ${m.appears.length === 1 ? 'they do there' : `they do in each of the ${m.appears.length} games`}`),
+    m.appears.length
+      ? h('div', { class: 'cast-seen-box' }, h('p', { class: 'cast-seen-h' }, 'Seen in:'), seenIn(m.appears))
+      : h('p', { class: 'cast-seen-box cast-seen-h' }, 'Seen in: hidden here and there. Listen for the tick-tock.'),
+    m.appears.length > 0 &&
       h(
-        'ul',
-        null,
-        m.appears.map((a) => h('li', { class: `fam-${CAST_GAMES[a.game][1]}` }, h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]), h('span', { class: 'cast-as' }, ` — ${a.as}`))),
+        'details',
+        { class: 'cast-appears' },
+        h('summary', null, `What ${m.appears.length === 1 ? 'they do there' : `they do in each of the ${m.appears.length} games`}`),
+        h(
+          'ul',
+          null,
+          m.appears.map((a) => h('li', { class: `fam-${CAST_GAMES[a.game][1]}` }, h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]), h('span', { class: 'cast-as' }, ` — ${a.as}`))),
+        ),
       ),
-    ),
   );
 }
 

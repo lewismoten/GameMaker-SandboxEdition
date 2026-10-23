@@ -13,6 +13,7 @@ import { parsePalette } from '../src/formats/palette';
 import { heroPixels, type LevelPicture } from '../src/gfx/levelPicture';
 import { encodeIndexedPng } from './gameShots';
 import { chezPicture } from '../../games/kit/chez';
+import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
 /** THE CHEZ's colors (6-bit VGA): tomato red, a black roof, white steel wheels. */
 const CHEZ_PAL: [number, number, number][] = [
@@ -48,17 +49,20 @@ type Source =
   | { game: string; chr: string; cbl: string; pal: string; seq?: number }
   /** THE CHEZ's shared side view (games/kit/chez.ts) at `chez` times its 40x20, in its own colors. */
   | { game: string; chez: number }
+  /** The tin heart (castTinHeart.ts), `tinHeart` times its size. */
+  | { game: string; tinHeart: number }
   /** Blocks of a .bbl/.mbl/.cbl laid out in rows (-1 for none), in a palette. */
   | { game: string; blocks: string; pal: string; grid: number[][] };
 
 export const CAST_ART: Record<string, Source> = {
   teddy: { game: 'teddy', fli: 'cast.fli', frame: 40, crop: [22, 12, 156, 156] },
   gwinn: { game: 'teddy', fli: 'cast.fli', frame: 62, crop: [168, 26, 146, 146] },
-  leo: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [56, 8, 212, 160] },
+  leo: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [44, 23, 224, 147] },
   chicken: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [206, 56, 60, 112] },
   chez: { game: 'teddy', chez: 3 },
   doghouse: { game: 'teddy', fli: 'cast.fli', frame: 185, crop: [36, 14, 164, 182] },
   lewis: { game: 'sandcast', fli: 'sysop.fli', frame: 182, crop: [6, 16, 180, 180] },
+  tinHeart: { game: 'teddy', tinHeart: 1 },
   bard: { game: 'carl', gif: 'bardpic.gif', crop: [178, 12, 120, 112] },
   joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal' },
   carl: { game: 'carl', chr: 'carl.chr', cbl: 'carl.cbl', pal: 'couch.pal' },
@@ -88,6 +92,15 @@ function trim(pic: LevelPicture): LevelPicture {
 
 export function castPicture(s: Source): LevelPicture | undefined {
   if ('chez' in s) return trim(chezArt(s.chez));
+  if ('tinHeart' in s) {
+    const k = s.tinHeart;
+    const [art] = tinHeartFrames(TRANSPARENT);
+    const pixels = new Uint8Array(TIN_HEART_W * k * TIN_HEART_H * k);
+    for (let y = 0; y < TIN_HEART_H * k; y++) for (let x = 0; x < TIN_HEART_W * k; x++) pixels[y * TIN_HEART_W * k + x] = art[Math.floor(y / k) * TIN_HEART_W + Math.floor(x / k)];
+    const palette = new Uint8Array(768);
+    TIN_HEART_PAL.forEach((c, i) => palette.set(c, i * 3));
+    return { width: TIN_HEART_W * k, height: TIN_HEART_H * k, pixels, palette };
+  }
   if ('chr' in s || 'blocks' in s) {
     const pic = sprite(s);
     return pic && trim(pic);
@@ -133,7 +146,7 @@ function sprite(s: Source): LevelPicture | undefined {
   for (const [id, s] of Object.entries(CAST_ART)) {
     const pic = castPicture(s);
     if (!pic) throw new Error(`${id}: nothing to draw from ${s.game}`);
-    const png = encodeIndexedPng(pic, 'blocks' in s || 'chr' in s || 'chez' in s ? TRANSPARENT : undefined);
+    const png = encodeIndexedPng(pic, 'blocks' in s || 'chr' in s || 'chez' in s || 'tinHeart' in s ? TRANSPARENT : undefined);
     writeFileSync(join(dir, `${id}.png`), png);
     console.log(`${id}.png ${pic.width}x${pic.height} ${png.length} bytes`);
   }
