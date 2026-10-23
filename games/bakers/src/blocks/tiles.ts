@@ -532,7 +532,7 @@ export function buildTileSet(style: Style): TileSet {
   // the two eggs (carried, they go in the save): the rotten one costs thirteen points to pick
   // up (the smell), the pastry one is worth a life (and plays the music box)
   t.add('eggRotten', on(fl, eggRotten()), { obj: true, touch: 'floor', score: -13 });
-  t.add('eggFaberge', on(fl, eggFaberge()), { obj: true, touch: 'floor', effect: 1, eamt: 1, score: 1776 });
+  t.add('eggJeweled', on(fl, eggFaberge()), { obj: true, touch: 'floor', effect: 1, eamt: 1, score: 1776 });
 
   t.add('floor', fl);
   t.add('floor2', fl2);
