@@ -71,13 +71,13 @@ export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
 
 /** The V# view's size line: the ZIP, its time on the phone line, and the room it takes unzipped. */
 export function sizeAbout(g: CatalogEntry): string {
-  return `|07  |14${commas(zipBytes(g))}|07 bytes, about |14${downloadLine(zipBytes(g), '|07, |14')}|07. Unzipped: |14${sizeText(installedBytes(g))}|07.`;
+  return `|07  |14${commas(zipBytes(g))}|07 bytes: |14${downloadLine(zipBytes(g), '|07, |14')}|07. Unzipped: |14${sizeText(installedBytes(g))}|07.`;
 }
 
 async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const size = zipBytes(g);
   const seconds = size / CPS;
-  t.line(`|07Protocol: |15Zmodem|07.  ${zipName(g)} is |14${commas(size)}|07 bytes: about |14${downloadLine(size, '|07, |14')}|07.`);
+  t.line(`|15Zmodem|07.  ${zipName(g)}, |14${commas(size)}|07 bytes: |14${downloadLine(size, '|07, |14')}|07.`);
   t.line('|07Starting transfer... (Esc to abort)');
   const s = h.screen;
   const row = s.cursorY;

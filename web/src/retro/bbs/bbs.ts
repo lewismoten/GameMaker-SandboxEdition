@@ -614,7 +614,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   }
   const seconds = size / CPS;
   t.line(
-    `|07Protocol: |15Zmodem|07.  ${zipName(g)} is |14${commas(size)}|07 bytes: about |14${downloadLine(size, "|07, |14")}|07.`,
+    `|15Zmodem|07.  ${zipName(g)}, |14${commas(size)}|07 bytes: |14${downloadLine(size, "|07, |14")}|07.`,
   );
   t.line("|07Starting transfer... (Esc to abort)");
   const s = h.screen;
