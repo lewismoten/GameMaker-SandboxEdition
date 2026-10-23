@@ -6,6 +6,7 @@ import { attr, COLS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
 import { sofaFiles } from './sofaFiles';
+import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
 
@@ -52,6 +53,7 @@ function menu(t: Term): void {
   t.line('|14   W |07... |15Who\'s on |07(see every line)');
   t.line('|14   L |07... |15The lounge |07(news from the SysOps)');
   t.line('|14   F |07... |15File library |07(free downloads from our regulars)');
+  t.line('|14   P |07... |15GIF pictures |07(THE CHEZ and the Bard of Bizarre logo)');
   t.line('|14   X |07... |15Exit |07(log off)');
   t.line();
 }
@@ -81,13 +83,14 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   t.line(`|07There are |14${CALLERS.length + 1}|07 users online right now.`);
   menu(t);
   for (;;) {
-    t.print('|11Make your selection (T,W,L,F or ? for help, X to exit): |15');
+    t.print('|11Make your selection (T,W,L,F,P or ? for help, X to exit): |15');
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'T') await teleconference(t, h, name);
     else if (k === 'W') whosOn(t, name, line);
     else if (k === 'L') lounge(t);
     else if (k === 'F') await sofaFiles(t, h);
+    else if (k === 'P') await sofaPictures(t, h);
     else if (k === '?') menu(t);
     else if (k === 'X' || k === 'Escape') {
       t.line();
@@ -123,7 +126,7 @@ function lounge(t: Term): void {
   t.line('|07I SCREAMED, SHE SMIRKED and SHAKESPEARE IN SWEATPANTS,');
   t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
   t.line("|07And VENI, VIDI, RISI!, six songs in Latin by Lewis's group Veni, Vidi, Risi!");
-  t.line('|07Free! Hit F.');
+  t.line('|07Free! Hit F.  And in GIF pictures (hit P): THE CHEZ, DOC LEO\'s CitiCar.');
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
 }

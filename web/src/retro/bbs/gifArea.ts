@@ -14,6 +14,7 @@ import { boxBottom, boxRow, boxTop, modemSignal, sleep, type Term } from './term
 import { Pager, pageLabel } from './pager';
 import { caption, decodePicture, formatLabel, GALLERY, galleryBytes, paintPicture, type GalleryFile } from './gallery';
 import { recordDownload, updateAccount } from './ratio';
+import { downloadLine } from '../../project/diskFacts';
 
 /** 14,400 bps: GIFs and JPEGs are compressed already, so V.42bis can't squeeze them further. */
 export const GIF_CPS = 1440;
@@ -70,9 +71,11 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
   }
 }
 
-async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void> {
+/** Downloads a picture (from the Sandbox BBS's GIF Gallery or The Sofa's GIF area) into C:\IMAGES, painting it as it arrives. */
+export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void> {
   const real = f.bytes / GIF_CPS;
-  t.line(`|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, about |14${Math.max(1, Math.round(real / 60))}|07 minute(s) at 14,400 bps.`);
+  if (f.board === 'sofa') t.line(`|15Zmodem|07.  ${f.name}, |14${commas(f.bytes)}|07 bytes: |14${downloadLine(f.bytes, '|07, |14')}|07.`);
+  else t.line(`|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, about |14${Math.max(1, Math.round(real / 60))}|07 minute(s) at 14,400 bps.`);
   let bytes: Uint8Array;
   try {
     bytes = await galleryBytes(f.name);
@@ -120,7 +123,7 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
   t.line(`|10Transfer complete. |07${f.name} saved in C:\\IMAGES.`);
   h.downloads.setDir('IMAGES', true); // made with the first picture
   h.downloads.add(f.name);
-  updateAccount((a) => recordDownload(a, bytes.length, true)); // the SysOp's snapshots: FREE
+  if (!f.board) updateAccount((a) => recordDownload(a, bytes.length, true)); // the SysOp's snapshots: FREE (The Sofa keeps no ratio)
   t.line(`|07After you log off, type |15VPIC \\IMAGES\\${f.name}|07 to look at it again.`);
   t.line();
 }
