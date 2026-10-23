@@ -4,12 +4,13 @@ import { compileHouse } from '../src/levels/board';
 import { buildMonsterBlocks, buildWattBlocks } from '../src/sprites/sprites';
 import { buildWatt } from '../src/characters/watt';
 import { playSolution } from './verify';
+import { lagFailures } from './lag';
 
 const only = process.argv[2];
 const mb = buildMonsterBlocks();
 const cb = buildWattBlocks();
 let bad = 0;
-// Solid parts must be felt at their very edge: Watt rolls 4 pixels a tick and PLAYGAME
+// Solid parts must be felt at their very edge: Watt rolls up to 6 pixels a tick and PLAYGAME
 // notices a touch a tick late, so a gap at the edge lets him reach the current inside.
 mb.names.forEach((name, i) => {
   if (!mb.defs[i].solid) return;
@@ -54,4 +55,15 @@ for (const room of compileHouse(BOARDS, mb)) {
     }
   }
 }
+// A person taps slower than the bot: every board must also work with up to 9 ticks
+// (half a second) between rolls (tools/lag.ts). SKIPLAG=1 skips this slower pass.
+if (!process.env.SKIPLAG)
+  for (let lag = 1; lag <= 9; lag++) {
+    const fails = await lagFailures(lag, only);
+    if (fails.length) {
+      console.log(`FAIL at ${lag} ticks of lag: ${fails.join(', ')}`);
+      bad++;
+    }
+  }
+if (!process.env.SKIPLAG && !bad) console.log('every board also works tapping with up to 9 ticks of lag');
 if (bad) process.exitCode = 1;

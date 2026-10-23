@@ -280,7 +280,7 @@ export const BOARDS: BoardSpec[] = [
     solution: 'LLLL D $D RRR D $U RRR D $U RRR R',
     hint: 'The corridor is wired end to end, and the current never stops!',
     answer:
-      'It does stop, for a moment: a 555 is high twice as long as it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one.',
+      'It does stop, for a moment: a 555 is high a little longer than it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one.',
   },
   {
     file: 'opener',

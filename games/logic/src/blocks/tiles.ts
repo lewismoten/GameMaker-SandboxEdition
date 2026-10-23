@@ -43,10 +43,11 @@ export type BatteryKind = 'steady' | 'pulse' | 'antipulse' | 'dead' | 'astable';
 /** Ticks a pulse battery stays on and off. */
 export const PULSE_ON = 27;
 export const PULSE_OFF = 27;
-/** A 555 wired astable with R1 = R2: high for 0.693(R1+R2)C, low for 0.693(R2)C, so its
- * output is high twice as long as it is low (it can never get under half). */
+/** A 555 wired astable with R1 an eighth of R2: high for 0.693(R1+R2)C, low for 0.693(R2)C,
+ * so its output is high a little longer than it is low (it can never get under half). The
+ * low stretch is long enough to cross the night-light's corridor at a relaxed tapping pace. */
 export const ASTABLE_HIGH = 72;
-export const ASTABLE_LOW = 36;
+export const ASTABLE_LOW = 64;
 /** Ticks between sparks: one every 5 ticks at 4 pixels a tick leaves no gap. */
 export const SPARK_EVERY = 5;
 
@@ -351,7 +352,7 @@ export interface Battery {
   kind: BatteryKind;
   /** The monster (spark) it gives birth to. */
   mon: number;
-  /** A 555's ticks high (it is low half as long). */
+  /** A 555's ticks high (a given high is low half as long; the default is low 64 of 72). */
   high?: number;
 }
 

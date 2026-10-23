@@ -20,7 +20,11 @@
       "sprite": {
         "blocks": "watt.cbl",
         "pal": "watt.pal",
-        "grid": [[0]]
+        "grid": [
+          [
+            0
+          ]
+        ]
       }
     },
     {
@@ -32,7 +36,11 @@
       "sprite": {
         "blocks": "watt.cbl",
         "pal": "watt.pal",
-        "grid": [[7]]
+        "grid": [
+          [
+            7
+          ]
+        ]
       }
     },
     {
@@ -44,7 +52,11 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[35]]
+        "grid": [
+          [
+            35
+          ]
+        ]
       }
     },
     {
@@ -56,7 +68,11 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[34]]
+        "grid": [
+          [
+            34
+          ]
+        ]
       }
     },
     {
@@ -68,7 +84,11 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[27]]
+        "grid": [
+          [
+            27
+          ]
+        ]
       }
     },
     {
@@ -80,7 +100,11 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[40]]
+        "grid": [
+          [
+            40
+          ]
+        ]
       }
     },
     {
@@ -92,7 +116,11 @@
       "sprite": {
         "blocks": "attic.bbl",
         "pal": "watt.pal",
-        "grid": [[65]],
+        "grid": [
+          [
+            65
+          ]
+        ],
         "under": 1
       }
     },
@@ -105,7 +133,11 @@
       "sprite": {
         "blocks": "attic.bbl",
         "pal": "watt.pal",
-        "grid": [[115]],
+        "grid": [
+          [
+            115
+          ]
+        ],
         "under": 1
       }
     },
@@ -186,7 +218,7 @@
             },
             {
               "q": "The Night-Light: The corridor is wired end to end, and the current never stops!",
-              "a": "It does stop, for a moment: a 555 is high twice as long as it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one."
+              "a": "It does stop, for a moment: a 555 is high a little longer than it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one."
             }
           ]
         },

@@ -105,7 +105,7 @@ Bump into a switch, button or fuse to work it.`,
 Roll onto the outlet to go on to the next board. Gold screws and outlets give you a spare battery.`,
   `CHIPS AND GADGETS
  555 TIMER: pulses its wire,
-  on twice as long as off.
+  on a bit longer than off.
   Its red OUT light goes
   dark when the current
   does. Roll in right

@@ -7,9 +7,13 @@ import { KEY, SND } from '../ids';
 import type { BlockSet } from '../blocks/sets';
 
 const MIRROR = 0x40;
-/** Pixels a frame: five frames a block. A bump then reaches 8 pixels into a switch, short
- * of the wire running through its middle (rows/columns 8..11). */
-export const STEP = 4;
+/**
+ * Pixels each of a roll's five frames moves (20 in all). Watt eases off the mark, 3, 3, 2,
+ * then rolls 6, 6: PLAYGAME notices a touch a frame late, so a bump into a switch must not
+ * go past 8 pixels the frame after it first touches, or a bead of current passing through
+ * the switch's middle (rows/columns 7..12) could reach him whatever the spark's phase.
+ */
+export const STEPS = [3, 3, 2, 6, 6];
 
 export const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12, reboot: 13 } as const;
 
@@ -42,7 +46,8 @@ export function buildWatt(cb: BlockSet, bombMonster: number): Character {
   set(S[3], [f('blink', 2), f('down0', 2)], { key: KEY.space, sound: SND.score, norepeat: 1 });
   set(S[4], [f('down0', 1)], { key: 0 });
 
-  const roll = (dx: number, dy: number, a: string, b: string, mirror = false) => [a, b, a, b, a].map((p) => f(p, 1, { x: dx * STEP, y: dy * STEP, mirror }));
+  const roll = (dx: number, dy: number, a: string, b: string, mirror = false) =>
+    [a, b, a, b, a].map((p, i) => f(p, 1, { x: dx * STEPS[i], y: dy * STEPS[i], mirror }));
   // ground: a move can't be cut short, so Watt always ends squarely on a block.
   // norepeat: one block per press. PLAYGAME only reads a released key between moves, so a
   // tap would otherwise often roll two blocks.
