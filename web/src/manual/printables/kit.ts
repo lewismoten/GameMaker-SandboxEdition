@@ -156,6 +156,28 @@ export async function portrait(entry: CatalogEntry, p: Portrait): Promise<string
   }
 }
 
+/** Clears the ground round a thing drawn on it: pixels that match the plain ground, reached from the edge. */
+function cutAway(px: Uint8Array, ground: Int16Array, w: number, h: number): void {
+  const seen = new Uint8Array(px.length);
+  const stack: number[] = [];
+  const push = (i: number) => {
+    if (seen[i]) return;
+    seen[i] = 1;
+    if (px[i] === TRANSPARENT || px[i] === ground[i]) stack.push(i);
+  };
+  for (let x = 0; x < w; x++) push(x), push((h - 1) * w + x);
+  for (let y = 0; y < h; y++) push(y * w), push(y * w + w - 1);
+  while (stack.length) {
+    const i = stack.pop()!;
+    px[i] = TRANSPARENT;
+    const x = i % w;
+    if (x > 0) push(i - 1);
+    if (x < w - 1) push(i + 1);
+    if (i >= w) push(i - w);
+    if (i < px.length - w) push(i + w);
+  }
+}
+
 /** Blocks from one of the game's block files, laid out in a grid, as a PNG data URL (transparent background). */
 export async function spriteArt(entry: CatalogEntry, s: SpriteArt): Promise<string | undefined> {
   const [blB, palB] = await Promise.all([s.blocks, s.pal].map((f) => fetchFile(entry, f)));
@@ -165,16 +187,27 @@ export async function spriteArt(entry: CatalogEntry, s: SpriteArt): Promise<stri
     const blocks = parseBlocks(blB, ext === 'cbl' ? CHARBL : ext === 'bbl' ? BACKBL : MONBL);
     const cols = Math.max(1, ...s.grid.map((r) => r.length));
     const rows = s.grid.length;
+    const grid = s.flip ? s.grid.map((r) => [...r, ...Array<number>(cols - r.length).fill(-1)].reverse()) : s.grid;
     const px = new Uint8Array(cols * BLEN * rows * BLEN).fill(TRANSPARENT);
-    s.grid.forEach((row, gy) =>
+    const W = cols * BLEN;
+    const ground = new Int16Array(px.length).fill(-1);
+    grid.forEach((row, gy) =>
       row.forEach((n, gx) => {
         const b = n >= 0 ? blocks[n] : undefined;
         if (!b) return;
-        for (let y = 0; y < BLEN; y++) for (let x = 0; x < BLEN; x++) px[(gy * BLEN + y) * cols * BLEN + gx * BLEN + x] = b.pixels[y * BLEN + x];
+        const u = typeof s.under === 'number' ? s.under : s.under?.[gy]?.[s.flip ? row.length - 1 - gx : gx];
+        const under = u !== undefined && u >= 0 ? blocks[u] : undefined;
+        for (let y = 0; y < BLEN; y++)
+          for (let x = 0; x < BLEN; x++) {
+            const at = (gy * BLEN + y) * W + gx * BLEN + (s.flip ? BLEN - 1 - x : x);
+            px[at] = b.pixels[y * BLEN + x];
+            if (under) ground[at] = under.pixels[y * BLEN + x];
+          }
       }),
     );
+    if (s.under !== undefined) cutAway(px, ground, W, rows * BLEN);
     const c = document.createElement('canvas');
-    paintIndexed(c, px, cols * BLEN, rows * BLEN, parsePalette(palB), true);
+    paintIndexed(c, px, W, rows * BLEN, parsePalette(palB), true);
     return c.toDataURL();
   } catch {
     return undefined;
