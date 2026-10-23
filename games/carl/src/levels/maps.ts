@@ -265,6 +265,7 @@ export function theBed(book: BlockBook): Level {
     .row(9, 15, 26, 'blanket')
     .row(10, 15, 26, 'bedFrame');
   m.mon(MON.ear, 16, 7);
+  m.set(12, 4, 'signBuzz');
   // he swats in his sleep, flings a slipper, and the ceiling fan turns
   m.mon(MON.swatter, 19, 5).mon(MON.fan, 22, 1).mon(MON.slipper, 28, 6);
   m.each('crumbW', [

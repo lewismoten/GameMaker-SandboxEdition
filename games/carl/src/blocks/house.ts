@@ -722,5 +722,11 @@ export function buildHouse(pal: Pal): BlockBook {
   micro(card, 4, 5, 'SPC', c('eye', 2));
   micro(card, 3, 11, 'ROLL', c('ink', 0));
   book.add('signRoll', card, AIR);
+  // (last too) and one on the bedroom wall by his pillow: B to buzz (it wakes a sleeping ear)
+  const card2 = paper();
+  card2.rect(2, 3, 16, 14, c('wood', 1)).rect(3, 4, 14, 12, c('white', 3));
+  micro(card2, 8, 5, 'B', c('eye', 2));
+  micro(card2, 3, 11, 'BUZZ', c('ink', 0));
+  book.add('signBuzz', card2, AIR);
   return book;
 }
