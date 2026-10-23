@@ -4,6 +4,7 @@
 // or somebody's answering machine). Pittsburgh, December 1994: local calls are seven
 // digits; 1 + area code + number works too.
 import type { PhoneSounds } from "./sounds";
+import { deskMs } from "../../../retro/dos/deskClock";
 import { VOICES, type Voice } from "./voice";
 
 /** What a call can do on the line; the dial pad provides it (phone.ts). */
@@ -226,7 +227,7 @@ async function timeAndTemperature(line: CallLine): Promise<void> {
   await ring(line, 1);
   for (let i = 0; i < 6; i++) {
     // the next ten-second mark far enough off to say it first
-    const at = new Date(Math.ceil((Date.now() + 6500) / 10000) * 10000);
+    const at = new Date(Math.ceil((deskMs() + 6500) / 10000) * 10000); // the room's clock (TIME can set it)
     const hour = at.getHours() % 12 || 12;
     const min = at.getMinutes();
     const sec = at.getSeconds();
@@ -235,7 +236,7 @@ async function timeAndTemperature(line: CallLine): Promise<void> {
       VOICES.timeLady,
       `${i % 2 ? "" : "Allegheny Savings time and temperature. "}At the tone, the time will be ${hour} ${minutes}${sec ? ` and ${sec} seconds` : ", exactly"}.`,
     );
-    await line.wait(Math.max(0, (at.getTime() - Date.now()) / 1000));
+    await line.wait(Math.max(0, (at.getTime() - deskMs()) / 1000));
     await line.wait(line.sounds.beep());
     if (i % 2 === 0)
       await line.say(VOICES.timeLady, "The temperature is 28 degrees.");
