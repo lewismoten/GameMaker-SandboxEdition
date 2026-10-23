@@ -240,7 +240,7 @@ export function wicker(book: BlockBook): Level {
 
 /** 3. Twelve baskets full: at dusk, gather up every empty basket on the hillside; the twelfth takes you in. */
 export function baskets(book: BlockBook): Level {
-  const W = 72;
+  const W = 79;
   const H = 12;
   const m = new MapBuilder(book, 'earth');
   m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
@@ -261,9 +261,11 @@ export function baskets(book: BlockBook): Level {
   m.mon(MON.gull, 48, 3).mon(MON.man, 61, 9);
   m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e');
   m.mon(MON.owl, 60, 2);
-  // the twelfth basket
-  m.set(68, 9, 'B').set(66, 9, ',');
-  m.link(68, 9, 'next');
+  // the twelfth basket, and the big harvest basket it opens into: a long roll inside to the
+  // way on, so "Nothing's ever wasted." is sung to the end
+  m.set(66, 9, 'B').set(64, 9, ',');
+  m.row(7, 67, 77, 'm').fill(67, 8, 10, 2, 'i').col(77, 8, 9, 'W');
+  m.link(76, 9, 'next');
   return { m, start: at(2, 9), size: [W, H] };
 }
 

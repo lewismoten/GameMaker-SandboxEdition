@@ -169,7 +169,10 @@ export async function theBaskets(bot: Bot): Promise<void> {
     if (baskets(bot) - start < n) throw new Error(`${baskets(bot) - start} baskets gathered by ${where}`);
   };
   await carefully(bot, 'the first baskets', 10, async () => {
-    await must(bot, bot.walk(7, 'the first basket'), 'basket 1');
+    // the first basket sings "twelve baskets full": let it, before the next hop puffs over it
+    await must(bot, bot.until('right', () => baskets(bot) - start >= 1, 'the first basket', 60), 'basket 1');
+    await must(bot, bot.sim.waitForClip(), 'the first basket sings');
+    await must(bot, bot.walk(7, 'over the first basket'), 'over basket 1');
     await must(bot, bot.walk(9, 'under the stone'), 'stone');
     await must(bot, bot.hop('up', 10), 'up to the basket on the stone');
     await must(bot, bot.walk(16, 'the third basket'), 'basket 3');
@@ -203,8 +206,8 @@ export async function theBaskets(bot: Bot): Promise<void> {
     gathered(11, 'the twelfth');
   });
   await carefully(bot, 'into the twelfth basket', 12, async () => {
-    await must(bot, bot.hop('right', 12, 'right', 66.5), 'over the disciple');
-    await leave(bot, bot.walk(69, 'the twelfth basket'), 'the twelfth basket');
+    await must(bot, bot.hop('right', 12, 'right', 64.5), 'over the disciple');
+    await leave(bot, bot.walk(77, 'the twelfth basket'), 'into the twelfth basket and through it');
   });
 }
 
