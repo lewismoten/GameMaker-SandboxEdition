@@ -234,7 +234,7 @@ async function timeAndTemperature(line: CallLine): Promise<void> {
     const minutes = min === 0 ? "o’clock" : min < 10 ? `oh ${min}` : `${min}`;
     await line.say(
       VOICES.timeLady,
-      `${i % 2 ? "" : "Allegheny Savings time and temperature. "}At the tone, the time will be ${hour} ${minutes}${sec ? ` and ${sec} seconds` : ", exactly"}.`,
+      `${i % 2 ? "" : "Riverbend Savings & Loan time and temperature. "}At the tone, the time will be ${hour} ${minutes}${sec ? ` and ${sec} seconds` : ", exactly"}.`,
     );
     await line.wait(Math.max(0, (at.getTime() - deskMs()) / 1000));
     await line.wait(line.sounds.beep());

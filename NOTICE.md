@@ -159,7 +159,7 @@ formats from their published descriptions and from Game-Maker's own source.
   All rights reserved") and is not covered by the MIT License. It is included as it came
   on the original Game-Maker CD, and "Export for DOS" adds it to exported games the way
   Game-Maker's own Transfer utility did. It will be removed if Creative asks.
-- The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
+- The desk's hardware brands (BOOMTONE, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
   numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
