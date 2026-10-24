@@ -384,16 +384,27 @@ async function pageSysop(t: Term, h: RetroHost): Promise<void> {
   t.line();
 }
 
+/** How many new uploads the "New in the sand pile" bulletin lists before "...and N more". */
+const NEWEST_SHOWN = 6;
+
 /** The bulletins: news from the SysOp, picked by number. */
 async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
-  const newest = catalog.filter((g) => g.original);
+  // the newest few (by year, latest first), so the bulletin fits a screen; N lists them all
+  const fresh = catalog.filter((g) => g.original);
+  const newest = fresh
+    .map((g, i) => ({ g, i }))
+    .sort((x, y) => (y.g.year ?? 0) - (x.g.year ?? 0) || y.i - x.i)
+    .slice(0, NEWEST_SHOWN)
+    .map((x) => x.g);
   const items: [string, string[]][] = [
     [
       'New in the sand pile',
       [
         '|07Fresh uploads from |15Sandbox Software|07, made with Game-Maker:',
         ...newest.map((g) => `|14  ${g.title.padEnd(34)}|07${g.price ? `Reg. ${g.price}` : 'Shareware'}`),
-        '|07Press |15N|07 at the main menu to scan just the new files.',
+        fresh.length > newest.length
+          ? `|07...and |14${fresh.length - newest.length}|07 more. Press |15N|07 at the main menu to scan all the new files.`
+          : '|07Press |15N|07 at the main menu to scan just the new files.',
       ],
     ],
     [
