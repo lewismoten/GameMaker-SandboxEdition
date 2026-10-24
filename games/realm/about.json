@@ -44,5 +44,6 @@
     ],
     "award": { "title": "Shareware Gem", "from": "Diskette Digest" },
     "poster": { "gif": "title.gif", "caption": "Somebody has to get around to it." }
-  }
+  },
+  "sameEverySide": ["flats.mon#10"]
 }
