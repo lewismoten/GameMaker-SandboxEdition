@@ -374,7 +374,11 @@ export function gwinn(f: number): Shape[] {
   ];
 }
 
-/** Doc Leo, hobo clown: grey fedora, navy corduroy jacket, purple shirt, green tie, red sneakers, and the rubber chicken on its leash. */
+/**
+ * Doc Leo, hobo clown: grey fedora, white face paint round his eyes and mouth, his own nose
+ * sunburned pink, painted stubble, navy corduroy jacket, purple shirt, green tie, red sneakers,
+ * and the rubber chicken on its leash.
+ */
 export function docLeo(f: number): Shape[] {
   const navy: Material = { color: rgb(36, 48, 100), diffuse: 1, spec: 0.2, shine: 10 };
   const shirt: Material = {
@@ -387,7 +391,11 @@ export function docLeo(f: number): Shape[] {
     color: (p) => {
       const front = p[1] > 0.66;
       if (front && p[2] < 0.66 && Math.abs(p[0] - 0.5) < 0.05) return rgb(250, 250, 250); // the white mouth
-      if (p[2] < 0.65) return rgb(90, 90, 110); // ash beard
+      // white round each eye, the eye dark in the middle
+      const ex = Math.abs(Math.abs(p[0] - 0.5) - 0.035);
+      const ez = p[2] - 0.695;
+      if (front && ex * ex + ez * ez < 0.0006) return ex * ex + ez * ez < 0.00008 ? rgb(30, 26, 30) : rgb(250, 250, 250);
+      if (p[2] < 0.65) return rgb(90, 90, 110); // painted stubble
       return rgb(240, 196, 170);
     },
     diffuse: 1,
@@ -407,7 +415,7 @@ export function docLeo(f: number): Shape[] {
     { d: F.cap([0.38, 0.6, 0.5], [0.34, 0.66, 0.32], 0.035), mat: navy },
     { d: F.cap([0.62, 0.6, 0.5], [0.67, 0.68, 0.36], 0.035), mat: navy },
     { d: F.sphere([0.5, 0.6, 0.66], 0.095), mat: skin },
-    { d: F.sphere([0.5, 0.69, 0.66], 0.03), mat: red }, // the nose: play mode
+    { d: F.sphere([0.5, 0.69, 0.665], 0.025), mat: { color: rgb(236, 140, 130), diffuse: 1, spec: 0.3, shine: 20 } }, // his own nose, sunburned
     { d: F.cyl([0.5, 0.6, 0.745], 0.15, 0.008, 0.004), mat: hat },
     { d: F.cyl([0.5, 0.6, 0.79], 0.085, 0.045, 0.02), mat: hat },
   ];
