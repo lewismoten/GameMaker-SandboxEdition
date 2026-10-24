@@ -314,8 +314,11 @@ formats from their published descriptions and from Game-Maker's own source.
   AdLib's `STANDARD.BNK` settings (PIANO1, BRASS1, BDRUM1). They were replaced with original
   patches in October 2026. Some of the original RSD songs in `cd/` and `runtime/` use
   AdLib's BRASS1 settings; they are kept as RSD released them.
-- **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
-  the IBM PC BIOS font.
+- **8×8 text font**: Daniel Hepper's `font8x8_basic`, plus accented letters and symbols
+  from his `font8x8_ext_latin` and `font8x8_misc` and Greek letters from his `font8x8_greek`
+  (`web/src/gfx/cp437Glyphs.ts`), all in the public domain, derived from the IBM PC BIOS
+  font. The other code page 437 glyphs (card suits, notes, arrows, math signs) were drawn for
+  this project.
 - **Caveat** (the handwriting in the Owner's Guide's registration record,
   `web/src/manual/regRecord.ts`), a font by Impallari Type ("Copyright 2014 The Caveat
   Project Authors"), under the SIL Open Font License 1.1. Its 600 weight, cut to Latin-1

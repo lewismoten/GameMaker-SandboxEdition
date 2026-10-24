@@ -1,6 +1,6 @@
 // 8x8 bitmap font for printable ASCII (0x20-0x7E), from Daniel Hepper's public domain
 // font8x8_basic (derived from the IBM PC BIOS font that GameMaker's GetROMFont used).
-// Each glyph is 8 rows; bit 0 of a row is the leftmost pixel.
+// Each glyph is 8 rows; bit 0 of a row is the leftmost pixel. gfx/cp437Glyphs.ts adds the rest of CP437.
 
 const GLYPHS =
   '0000000000000000 183c3c1818001800 3636000000000000 36367f367f363600 0c3e031e301f0c00 006333180c666300 1c361c6e3b336e00 0606030000000000 ' +

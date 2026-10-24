@@ -22,10 +22,10 @@ export const PIECE_GROUPS: PieceGroup[] = [
     title: 'In the site',
     pieces: [
       {
-        name: 'font8x8_basic',
+        name: 'font8x8_basic, font8x8_ext_latin, font8x8_greek and font8x8_misc',
         license: 'Public domain',
         by: 'Daniel Hepper, from the IBM PC BIOS font',
-        what: 'The 8×8 text font on the game screen (web/src/gfx/font8x8.ts).',
+        what: 'The 8×8 text font on the game screen and the PC’s text screens (web/src/gfx/font8x8.ts; its accented letters, Greek letters and some symbols in web/src/gfx/cp437Glyphs.ts).',
         url: 'https://github.com/dhepper/font8x8',
       },
       {
