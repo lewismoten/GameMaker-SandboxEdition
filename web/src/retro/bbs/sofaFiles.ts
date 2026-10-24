@@ -4,18 +4,15 @@
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { commas } from '../dos/vfs';
-import { toCp437 } from '../text/cp437';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { gameDiz, isSofaFile } from './fileId';
 import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from './pager';
 import { Term, sleep } from './term';
+import { expectText, progress } from './transfer';
 import { dosDir } from '../../project/dosDir';
-import { MODEM_CPS, PLAYER_EXE_BYTES, downloadLine, sizeText, installedBytes, zipBytes, zipName } from '../../project/diskFacts';
+import { PLAYER_EXE_BYTES, downloadLine, sizeText, installedBytes, zipBytes, zipName } from '../../project/diskFacts';
 
-/** 14,400 bps with V.42bis, in characters per second, and how much faster than life it runs. */
-const CPS = MODEM_CPS[14400];
-const TIME_COMPRESSION = 25;
 /** Bytes per second PKUNZIP inflates and writes to the hard disk. */
 const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
 
@@ -81,26 +78,12 @@ export function sizeAbout(g: CatalogEntry): string {
 
 async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const size = zipBytes(g);
-  const seconds = size / CPS;
   t.line(`|15Zmodem|07.  ${zipName(g)}, |14${commas(size)}|07 bytes: |14${downloadLine(size, '|07, |14')}|07.`);
-  t.line('|07Starting transfer... (Esc to abort)');
-  const s = h.screen;
-  const row = s.cursorY;
-  const start = performance.now();
-  const total = (seconds * 1000) / TIME_COMPRESSION;
-  for (;;) {
-    if (h.keys.poll()?.key === 'Escape') {
-      t.line();
-      t.line('|12Transfer aborted.');
-      return;
-    }
-    const f = Math.min(1, (performance.now() - start) / total);
-    const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
-    s.cursorY = row;
-    s.cursorX = 0;
-    t.print(`|15${zipName(g).padEnd(12)} |10${toCp437(bar)} |14${commas(Math.round(size * f)).padStart(9)} |07bytes  ${CPS} cps`);
-    if (f >= 1) break;
-    await sleep(120);
+  t.line(`|07Starting transfer: ${expectText(size)}. |08(Esc aborts, Space skips ahead)`);
+  if ((await progress(t, h, zipName(g), size)).aborted) {
+    t.line();
+    t.line('|12Transfer aborted.');
+    return;
   }
   t.line();
   t.line('|10Transfer complete.');
@@ -114,15 +97,16 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
 async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const s = h.screen;
   const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
-  t.line(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}`);
-  t.line(`|07Searching ZIP: ${zipName(g)}`);
+  // PKUNZIP runs on this PC: its words show at once
+  t.local(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}\n`);
+  t.local(`|07Searching ZIP: ${zipName(g)}\n`);
   const files: [string, number][] = [
     ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as [string, number]] : []),
     ...g.files.map((f, i): [string, number] => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)]),
     ['FILE_ID.DIZ', 450],
   ];
   for (const [name, size] of files) {
-    t.print(`|07  Inflating: ${name.padEnd(13)}`);
+    t.local(`|07  Inflating: ${name.padEnd(13)}`);
     const x = s.cursorX;
     const ms = (size / rate) * 1000;
     const start = performance.now();
@@ -132,6 +116,6 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
       if (f < 1) await sleep(Math.min(100, ms / 4));
     }
     s.write(x, s.cursorY, attr(7, 0), '    ');
-    t.line();
+    t.local('\n');
   }
 }

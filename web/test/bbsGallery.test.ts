@@ -7,7 +7,9 @@ import list from '../src/retro/bbs/gallery.json';
 import { decodeGif } from '../src/formats/gif';
 import { decodePartialGif } from '../src/formats/gifProgressive';
 import { modeFor, nearestColor, placeIn } from '../src/retro/view/picture';
-import { bytesAt, GIF_CPS, GIF_TIME_COMPRESSION } from '../src/retro/bbs/gifArea';
+import { cps } from '../src/retro/bbs/lineSpeed';
+
+const GIF_CPS = cps('file', 14400);
 import { decodePicture, GALLERY, SOFA_GIFS } from '../src/retro/bbs/gallery';
 import { decodePartialJpeg } from '../src/formats/jpeg';
 
@@ -112,16 +114,9 @@ describe('picture screen', () => {
 });
 
 describe('gallery download', () => {
-  it('arrives at 14,400 bps, sped up, never past the end', () => {
-    expect(bytesAt(0, 1000)).toBe(0);
-    expect(bytesAt(1000, 1e6)).toBe(GIF_CPS * GIF_TIME_COMPRESSION);
-    expect(bytesAt(60_000, 5000)).toBe(5000);
-    expect(bytesAt(-5, 5000)).toBe(0);
-  });
-
   it('takes about as long as it did at 14,400 bps', () => {
     for (const f of small) {
-      const seconds = f.bytes / (GIF_CPS * GIF_TIME_COMPRESSION);
+      const seconds = f.bytes / GIF_CPS;
       expect(seconds, f.name).toBeGreaterThan(3);
       expect(seconds, f.name).toBeLessThan(35);
     }
