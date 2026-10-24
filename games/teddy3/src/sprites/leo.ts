@@ -102,6 +102,28 @@ const PASS = [
 ];
 const PASS_SHOES = ['.....oRRwRRRo.......', '....oRRRRRRRRo......', '....owwwwwwwwo......', '....oooooooooo......'];
 
+/** Rows mirrored left to right (the other leg's turn). */
+const mirrorRows = (rows: string[]) => rows.map((r) => [...r].reverse().join(''));
+// the other mid-stride (the patched leg behind now), and passing on the other leg (the patch
+// and the lit heel swap sides); the strides drop him a pixel lower than the passes, so he bobs
+const STRIDE_B = mirrorRows(STRIDE);
+const STRIDE_B_SHOES = mirrorRows(STRIDE_SHOES);
+const PASS_B = [
+  '.....otttttttttto...',
+  '.....oTttttttttto...',
+  '......otttttddto....',
+  '......otttttddto....',
+  '......otttttto......',
+  '......otttttto......',
+  '......otttTtto......',
+  '......otttttto......',
+  '......oTttttto......',
+  '......oooooooo......',
+];
+const PASS_B_SHOES = ['......oRRRwRRo......', '.....oRRRRRRRRo.....', '.....owwwwwwwwo.....', '.....oooooooooo.....'];
+/** A stride's legs, one row shorter (the hip row doubled up): he is lowest at a stride. */
+const low = (legs: string[]) => [legs[0], ...legs.slice(2)];
+
 /** Overwrites part of an ASCII row. */
 const patch = (row: string, x: number, s: string) => row.slice(0, x) + s + row.slice(x + s.length);
 
@@ -212,8 +234,11 @@ export const LEO: Record<string, Pixels> = {
   frontBlink: docLeo(false, BLINK),
   wave: docLeo(true),
   hurt: docLeo(false, OUCH),
-  walk1: S(figure(FACE, STRIDE, STRIDE_SHOES, { swing: 1 })),
+  // the walk: stride, pass, the other stride, pass on the other leg (the chicken swings)
+  walk1: S(figure(FACE, low(STRIDE), STRIDE_SHOES, { swing: 1 })),
   walk2: S(figure(FACE, PASS, PASS_SHOES)),
+  walk3: S(figure(FACE, low(STRIDE_B), STRIDE_B_SHOES, { swing: 2 })),
+  walk4: S(figure(FACE, PASS_B, PASS_B_SHOES, { swing: 1 })),
   hop: hop(),
   squawk: squawk(),
   twist1: twist(0),

@@ -10,7 +10,7 @@ export const JACK = { shut: 22, rattle: 6, up: 14 };
 
 export function funhouseBeasts() {
   const b = newBestiary();
-  b.pic('jackShut', jackShut()).pic('jackRattle', jackShut(true)).pic('jackUp', jackUp(), { hp: -8 }).pic('jackLatched', jackLatched());
+  b.pic('jackShut', jackShut()).pic('jackRattle', jackShut(true)).pic('jackUp', jackUp(), { hp: -10 }).pic('jackLatched', jackLatched());
   const shut: [string, number] = ['jackShut', JACK.shut];
   const rattle: [string, number] = ['jackRattle', JACK.rattle];
   const up: [string, number] = ['jackUp', JACK.up];

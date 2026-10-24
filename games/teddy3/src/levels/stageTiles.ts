@@ -40,6 +40,17 @@ export function flatPanel(up = false): Pixels {
   return p;
 }
 
+/** A black velvet wing (a spotlight waits behind it between sweeps); `top`: with its pelmet. */
+export function wing(top: boolean): Pixels {
+  const p = new Pixels(20, 20, c('ink', 1));
+  for (const x of [3, 9, 15]) p.rect(x, 0, 2, 20, c('ink', 0));
+  if (top) p.rect(0, 0, 20, 4, c('red', 0)).rect(0, 4, 20, 1, c('gold', 0));
+  return p;
+}
+
+/** A spotlight's track: a rail along the bottom of the block (the trolley rides under it). */
+export const rail = (p: Pixels) => p.rect(0, 17, 20, 2, c('metal', 2)).rect(0, 19, 20, 1, c('metal', 0));
+
 export function stageTiles(): Tiles {
   const t = new Tiles();
   const bg = tent();
@@ -94,24 +105,11 @@ export function stageTiles(): Tiles {
   );
 
   // Black velvet wings: the lights wait behind them between sweeps.
-  const wing = (() => {
-    const p = new Pixels(20, 20, c('ink', 1));
-    for (const x of [3, 9, 15]) p.rect(x, 0, 2, 20, c('ink', 0));
-    return p;
-  })();
-  t.air('wing', wing);
-  t.air(
-    'wingTop',
-    (() => {
-      const p = copy(wing);
-      p.rect(0, 0, 20, 4, c('red', 0)).rect(0, 4, 20, 1, c('gold', 0));
-      return p;
-    })(),
-  );
+  t.air('wing', wing(false));
+  t.air('wingTop', wing(true));
 
   // The lights' track: a rail at the bottom of the block (the trolley rides under it), and a
   // rise where the climbing light's track steps up.
-  const rail = (p: Pixels) => p.rect(0, 17, 20, 2, c('metal', 2)).rect(0, 19, 20, 1, c('metal', 0));
   t.air('track', rail(copy(bg)));
   t.air(
     'trackUp',

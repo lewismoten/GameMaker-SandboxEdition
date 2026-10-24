@@ -6,9 +6,9 @@ import { CTR } from '../../src/ids';
 import { MILL_AT } from '../../src/levels/mill';
 
 /** Up on a paddle until level with the floor at `row` (standing on the row above it). */
-const level = (row: number): Order => ({ until: `level with the floor at row ${row}`, maxTicks: 120, check: (s: Sim) => s.pos.y <= (row - 1) * 20 });
+export const level = (row: number): Order => ({ until: `level with the floor at row ${row}`, maxTicks: 120, check: (s: Sim) => s.pos.y <= (row - 1) * 20 });
 /** A wheel's paddle just starting up its near side at column x, bottom row `bottom`. */
-const rising = (s: Sim, x: number, bottom: number) =>
+export const rising = (s: Sim, x: number, bottom: number) =>
   s.w.mm.some((m, i) => {
     const name = s.scene.names?.[m.monnum] ?? '';
     const mi = s.w.mi[i];
@@ -16,7 +16,7 @@ const rising = (s: Sim, x: number, bottom: number) =>
     return CORNERS.some((c) => name === `wheel${c}`) && mi.curx[0] === x && mi.curx[1] === 0 && y <= bottom * 20 && y >= bottom * 20 - 2;
   });
 /** Waits on the floor beside a wheel for a paddle to come up level with it, and steps on. */
-const board = (x: number, bottom: number): Order[] => [
+export const board = (x: number, bottom: number): Order[] => [
   { until: `a paddle level at ${x}`, maxTicks: 200, check: (s) => rising(s, x, bottom) },
   { walk: x, maxTicks: 20, grab: false },
 ];

@@ -67,7 +67,7 @@ export function buildLeo(): Character {
   set(S[LSEQ.fetch], [f('twist1', 3), f('front', 3)], { key: KEY.f, sound: SND.fetch, ground: 1, norepeat: 1 });
   set(S[LSEQ.drop], [f('front', 1)], { key: 0 });
 
-  const walk = (dx: number, mirror: boolean) => ['walk1', 'walk2', 'walk1', 'walk2'].map((p) => f(p, 1, { x: dx, mirror }));
+  const walk = (dx: number, mirror: boolean) => ['walk1', 'walk2', 'walk3', 'walk4'].map((p) => f(p, 1, { x: dx, mirror }));
   set(S[LSEQ.right], walk(LSTEP, false), { key: KEY.right, jstkMov: 3 });
   set(S[LSEQ.left], walk(-LSTEP, true), { key: KEY.left, jstkMov: 7 });
   set(S[LSEQ.hop], [f('hop', 1, { y: -LHOP })], { key: KEY.up, jstkMov: 1, sound: SND.hop });

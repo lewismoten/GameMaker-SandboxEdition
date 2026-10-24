@@ -21,7 +21,7 @@ import { hillSong } from '../sound/hillSong';
 /** Where things are, for the bot's route (and the car's row on each level of the climb). */
 export const HILL = {
   start: 2,
-  geese: 5,
+  geese: 6,
   dock: 9,
   stern: 10,
   farBank: 18,

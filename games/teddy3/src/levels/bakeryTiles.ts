@@ -19,6 +19,7 @@ import { baker } from '../sprites/bakery';
 import { bubble } from '../sprites/townfolk';
 import { leoOn } from '../sprites/leo';
 import { micro } from '../art/draw';
+import { decorTiles } from './bakeryDecor';
 
 export const G = 40;
 /** The bakery's ceiling row (its roof is the row above). */
@@ -123,6 +124,7 @@ export function bakeryTiles(): Tiles {
   // Inside: white tiles, a tiled ceiling, a checkered floor; the cellar under it.
   const tiles = wallpaper('peach', 'tiles', 78, 'paint');
   t.air('tiles', tiles);
+  decorTiles(t, tiles);
   t.wall(
     'ceiling',
     (() => {

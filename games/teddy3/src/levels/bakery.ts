@@ -14,6 +14,7 @@
 import { LevelMap, type Level } from './level';
 import { CEIL, G, LOFT, bakeryTiles } from './bakeryTiles';
 import { bakeryBeasts } from './bakeryBeasts';
+import { decorate } from './bakeryDecor';
 import { bandAt } from './common';
 import { bakerySong } from '../sound/bakerySong';
 
@@ -161,6 +162,8 @@ export function bakery(): Level {
   const [e0, e1] = BAKERY.express;
   belt(e0, e1, 'express', LOFT);
   for (const x of BAKERY.sacks) m.set(x, LOFT, 'sackLoft');
+
+  decorate(m, x0 + 1, x1 - 1, G, LOFT + 1);
 
   // Monsters.
   m.mon(BAKERY.belt2 + 1, 37, 'rackMouse');

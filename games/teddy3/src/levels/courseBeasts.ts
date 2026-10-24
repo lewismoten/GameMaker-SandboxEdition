@@ -1,7 +1,8 @@
 // Level 16's monsters: the course's stations. Wind-up mice (WOOF), soft dirt at the fence's
 // foot (dig), the see-saw (and the kid on its other end), the station door and its button,
 // Professor Pratfall's practice pies (play dead), Honker's "SIT?" (sit pretty: a heart wins
-// him over) and the turnstile (spin), and the last button, hidden in a wisp of scent (sniff it
+// him over) and the turnstile (spin); a spotlight (play dead), a water wheel's paddles and a
+// balloon pump's balloon dogs (rides); and the last button, hidden in a wisp of scent (sniff it
 // out), whose spark opens the flap into the dark ring for a few seconds.
 import { Pixels } from '../../../kit/pixels';
 import { over, sprite } from '../art/draw';
@@ -14,9 +15,24 @@ import { askBubble, kid } from '../sprites/folks';
 import { pie } from '../sprites/klubfolk';
 import { doorOpen, doorShut, seesawEnd } from '../sprites/gadgets';
 import { SPARK, wiredButton, wiredDoor } from './parts';
+import { SAW_DOWN, SAW_UP, seesawPlank } from './seesaw';
+import { LIGHT, sweepTicks, type Beam } from './stageBeasts';
+import { spotEnd, spotLamp } from '../sprites/spotlight';
+import { wheel } from './millBeasts';
+import { paddle, paddleBack } from '../sprites/mill';
 
-/** The see-saw's rise, in blocks. */
-export const RISE = 3;
+/** Gwinn's spotlight on the course: its home in the wing, and its sweep out toward Teddy and back. */
+export const SPOT: Beam = {
+  x: 66,
+  y: 39,
+  path: [
+    [-4, 0, 3],
+    [0, 0, 3],
+  ],
+  every: 80,
+};
+/** Ticks between balloons at the pump (each lives a little less). */
+export const PUMP_EVERY = 56;
 
 const K = { o: P.c('ink', 0), m: P.c('metal', 1), M: P.c('metal', 3), r: P.c('red', 2), R: P.c('red', 3), y: P.c('yellow', 3) };
 const turnstile = (k: number) =>
@@ -67,8 +83,8 @@ const flap = (open: boolean) => {
 
 export function courseBeasts() {
   const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('rat')) b.pic(name, px, { hp: -6 }).pic(`${name}Run`, px);
-  b.pic('pie1', pie(0), { hp: -8 }).pic('pie2', pie(1), { hp: -8 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('rat')) b.pic(name, px, { hp: -8 }).pic(`${name}Run`, px);
+  b.pic('pie1', pie(0), { hp: -10 }).pic('pie2', pie(1), { hp: -10 });
   b.pic('endR', seesawEnd(true), { solid: 15 });
   const kidEnd = new Pixels(20, 20, 255);
   over(kidEnd, kid('girl').crop(0, 0, 20, 14), 0, 0);
@@ -111,27 +127,11 @@ export function courseBeasts() {
     path: [[6, 0, 9]],
     end: -1,
   });
-  // the see-saw: its riding end (starts high) and the kid's end (starts low), slow at the bottom
-  b.add('saw', {
-    pics: [['endR', 50]],
-    power: POWER.friend,
-    path: [
-      [0, RISE - 1, 2],
-      [0, RISE, 1],
-      [0, RISE - 1, 1],
-      [0, 0, 2],
-    ],
-  });
-  b.add('sawKid', {
-    pics: [['endKid', 50]],
-    power: POWER.friend,
-    path: [
-      [0, -1, 1],
-      [0, -RISE, 2],
-      [0, -1, 2],
-      [0, 0, 1],
-    ],
-  });
+  // the see-saw: its riding end (starts high) and the kid's end (starts low), each slow as it
+  // leaves the bottom and the top, and the plank on the fulcrum tilting in step
+  b.add('saw', { pics: [['endR', 50]], power: POWER.friend, path: SAW_DOWN });
+  b.add('sawKid', { pics: [['endKid', 50]], power: POWER.friend, path: SAW_UP });
+  seesawPlank(b, 'plank', 1, false);
   // station 1: the door and its button
   wiredButton(b, 'btnDoor', [[1, 1]]);
   wiredDoor(b, 'door', 'doorShut', 'doorOpen');
@@ -176,30 +176,34 @@ export function courseBeasts() {
     upscore: 100,
   });
   b.add('turnSpun', { pics: [['turnSpun', 50]], power: POWER.friend, end: 0 });
-  // the lift up to the high platform: it waits until Teddy hops on (a touch beats it), then
-  // rises four blocks and stays up there
-  b.pic(
-    'lift',
-    (() => {
-      const p = new Pixels(20, 20, 255);
-      p.rect(0, 0, 20, 5, P.c('gold', 2)).rect(0, 0, 20, 1, P.c('gold', 3)).rect(0, 5, 20, 1, P.c('ink', 0));
-      p.rect(2, 6, 2, 14, P.c('metal', 1)).rect(16, 6, 2, 14, P.c('metal', 1));
-      return p;
-    })(),
-    { solid: 15 },
-  );
-  b.add('liftIdle', { pics: [['lift', 50]], power: POWER.pest, becomes: 'liftUp' });
-  b.add('liftUp', {
-    pics: [['lift', 50]],
-    power: POWER.friend,
+  // The MEANWHILE stretch. Gwinn's spotlight: a sweep is its lamp and its beam's end going out
+  // of the wing together and back (the end at a standing dog's head: play dead under it).
+  b.pic('lampLit', spotLamp(true), { hp: -8 }).pic('lampDark', spotLamp(false));
+  b.pic('endLit', spotEnd(true), { hp: -8 }).pic('endDark', spotEnd(false));
+  if (sweepTicks(SPOT.path) > SPOT.every) throw new Error('course: the light sweeps longer than its turn');
+  b.add('lampS', { pics: [['lampLit', 50]], power: LIGHT, path: SPOT.path, end: -1, becomes: 'lampOff' });
+  b.add('endS', { pics: [['endLit', 50]], power: LIGHT, path: SPOT.path, end: -1, becomes: 'endOff' });
+  b.add('lampOff', { pics: [['lampDark', 50]], power: 0, end: 6 });
+  b.add('endOff', { pics: [['endDark', 50]], power: 0, end: 3 });
+  // The mill's water wheel, rising on its right side up to the crates.
+  b.pic('paddle', paddle(), { solid: 15 }).pic('paddleFlat', paddleBack(false)).pic('paddleEdge', paddleBack(true));
+  wheel(b, 'wheel', 'right');
+  // Doc Leo's balloon pump: a balloon dog blows up in the floor under the pump, rises fast
+  // six blocks (lifting whoever stands there), bobs a moment (step off), and pops; one at a
+  // time, so the next is never in the way of the last.
+  b.add('pumpBalloon', {
+    pics: [
+      ['balloon1', 4],
+      ['balloon2', 4],
+    ],
+    power: POWER.ride,
     path: [
-      [0, 0, 1],
-      [0, -4, 2],
+      [0, -6, 4],
+      [0, -5, 1],
     ],
     end: -1,
-    becomes: 'liftTop',
+    becomes: 'balloonPop',
   });
-  b.add('liftTop', { pics: [['lift', 50]], power: POWER.friend });
   // station 9: the last button, hidden in a wisp of scent: sniffed out, it rises to its
   // place on the post; its spark opens the flap for a few seconds (push it again if need be)
   wiredButton(b, 'btnFlap', [[4, 1]]);

@@ -3,14 +3,18 @@
 // every trick from all three adventures, station by station: WOOF at wind-up mice; high-five a
 // button to open a door (the garage); DIG under a fence; ride a see-saw (the park); a fast belt
 // (the bakery: E at its end); red and blue blinking boards over a ball pit (the funhouse); PLAY
-// DEAD under Professor Pratfall's practice pies; SIT PRETTY for Honker; SPIN the turnstile; and
-// at last a lift to the high platform, where Teddy SNIFFs out the hidden button whose flap into the ring stays open only a few seconds.
+// DEAD under Professor Pratfall's practice pies; SIT PRETTY for Honker; SPIN the turnstile. Then
+// a station for each of the others' MEANWHILE ideas: PLAY DEAD under Gwinn's spotlight, ride a
+// paddle of the mill's water wheel up a stack of crates, and stand on Doc Leo's balloon pump
+// to float up to the high platform, where Teddy SNIFFs out the hidden button whose flap into
+// the ring stays open only a few seconds.
 // In the dark middle of the ring: SURPRISE! (the ending).
 //
 // The blocks are in courseTiles.ts, the monsters in courseBeasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
 import { G, courseTiles } from './courseTiles';
-import { courseBeasts } from './courseBeasts';
+import { PUMP_EVERY, SPOT, courseBeasts } from './courseBeasts';
+import { WHEEL } from './millBeasts';
 import { courseSong } from '../sound/courseSong';
 
 /** Where things are, for the bot's route. */
@@ -31,11 +35,15 @@ export const COURSE = {
   prof: 53,
   sit: 56,
   turn: 59,
-  lift: 61,
+  /** The MEANWHILE stretch: the spotlight's wing, the water wheel's rising column, the crates it lifts Teddy onto, the balloon pump. */
+  wing: SPOT.x,
+  wheel: 72,
+  ledge: 73,
+  pump: 77,
   high: 35,
-  scent: 64,
-  flap: 68,
-  ring: 75,
+  scent: 80,
+  flap: 84,
+  ring: 91,
 };
 
 export function course(): Level {
@@ -47,7 +55,7 @@ export function course(): Level {
   m.rect(0, G, 100, 1, 'floor');
   m.rect(0, G + 1, 100, 59, 'floor');
   m.rect(0, 25, 1, G - 25, 'canvas');
-  m.rect(82, 25, 1, G - 25, 'canvas');
+  m.rect(C.flap + 14, 25, 1, G - 25, 'canvas');
   m.set(3, 37, 'signTitleL').set(4, 37, 'signTitleR');
 
   // 1: the door in a crate wall, its button beside it.
@@ -68,6 +76,7 @@ export function course(): Level {
   m.set(C.step, 38, 'step');
   m.mon(C.saw, 35, 'saw');
   m.set(C.saw + 1, 39, 'fulcrum');
+  m.mon(C.saw + 1, 39, 'plank_0');
   m.mon(C.saw + 2, 38, 'sawKid');
   m.rect(C.crates, 35, C.beltEnd - C.crates + 1, 5, (x, y) => ((x + y) % 3 ? 'crate' : 'crateRed'));
 
@@ -97,12 +106,42 @@ export function course(): Level {
   m.mon(C.sit, 39, 'rope');
   m.mon(C.turn, 39, 'turnstile');
 
-  // 9: the lift to the high platform, the scent hiding the last button, the flap, and the
-  // dark ring beyond, a drop down onto its sawdust.
-  m.mon(C.lift, 39, 'liftIdle');
-  m.rect(C.lift + 1, C.high, C.flap - C.lift - 1, G - C.high, (x, y) => ((x + y) % 3 ? 'crate' : 'crateRed'));
-  m.set(C.lift + 1, C.high - 2, 'signSniffL').set(C.lift + 2, C.high - 2, 'signSniffR');
+  // 9: Gwinn's spotlight, out of a wing toward Teddy and back (play dead as it passes).
+  m.set(60, 37, 'signLightL').set(61, 37, 'signLightR');
+  m.set(C.wing, 30, 'wingTop');
+  for (let y = 31; y < G; y++) m.set(C.wing, y, 'wing');
+  for (const [k, row] of [
+    [0, SPOT.y - 1],
+    [1, SPOT.y],
+  ] as const) {
+    const home = `home${k}`;
+    bs.add(home, bs.pic('wing'), { ...bs.def('wing'), birthMon: beasts.id(k ? 'endS' : 'lampS'), birthTime: SPOT.every });
+    m.set(C.wing, row, home);
+  }
+  m.mon(C.wing, SPOT.y - 1, 'lampS').mon(C.wing, SPOT.y, 'endS');
+  for (let x = C.wing + SPOT.path[0][0]; x < C.wing; x++) m.set(x, SPOT.y - 2, 'track');
+
+  // 10: the mill's water wheel, rising on its right side up to a stack of crates.
+  const n = WHEEL.size;
+  m.set(C.wheel - 2, G - n - 2, 'signWheelL').set(C.wheel - 1, G - n - 2, 'signWheelR');
+  for (let by = 0; by < 3; by++) for (let bx = 0; bx < 3; bx++) m.set(C.wheel - n + 1 + bx, G - n + 1 + by, `hub${bx}${by}`);
+  m.mon(C.wheel, G, 'wheelUp');
+  m.mon(C.wheel, G - n, 'wheelTop');
+  m.mon(C.wheel - n, G - n, 'wheelDown');
+  m.mon(C.wheel - n, G, 'wheelBottom');
+  m.rect(C.ledge, G - n, 3, n, (x, y) => ((x + y) % 3 ? 'crate' : 'crateRed'));
+
+  // 11: Doc Leo's balloon pump: a balloon dog lifts Teddy up to the high platform; the scent
+  // hiding the last button, the flap, and the dark ring beyond, a drop down onto its sawdust.
+  m.set(C.pump - 1, 37, 'signPumpL').set(C.pump, 37, 'signPumpR');
+  m.set(C.pump, G, 'pump');
+  bs.def('pump').birthMon = beasts.id('pumpBalloon');
+  bs.def('pump').birthTime = PUMP_EVERY;
+  m.rect(C.pump + 1, C.high, C.flap - C.pump - 1, G - C.high, (x, y) => ((x + y) % 3 ? 'crate' : 'crateRed'));
+  m.set(C.pump + 1, C.high - 2, 'signSniffL').set(C.pump + 2, C.high - 2, 'signSniffR');
   m.mon(C.scent, C.high - 1, 'scentButton');
+  // and the last wind-up mouse, between the button and the flap
+  m.mon(C.scent + 1, C.high - 1, 'mouse');
   for (let y = C.high - 4; y < C.high - 1; y++) m.set(C.flap, y, `flap0${y - C.high + 4}`);
   for (let y = 20; y < C.high - 4; y++) m.set(C.flap, y, 'canvas');
   for (let y = C.high; y < G; y++) m.set(C.flap, y, 'canvas');
@@ -124,9 +163,12 @@ export function course(): Level {
     [51, 39],
     [55, 39],
     [58, 39],
-    [63, 34],
+    [64, 39],
     [70, 39],
-    [72, 39],
+    [74, 35],
+    [79, 34],
+    [86, 39],
+    [88, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.mark('start', 2, 39);

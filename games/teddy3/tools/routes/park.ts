@@ -26,6 +26,8 @@ export const route: Order[] = [
   { walk: PARK.streamers },
   { trick: 'f', after: 8 },
   { until: 'has the streamers', check: (s) => s.w.ci.meter[CTR.clues] > 1 },
-  { walk: 52 },
+  { walk: 51 },
+  // on the low branch, wait for a disc to sail by below, then go past the kid before the next throw
+  { until: 'a disc sails by', maxTicks: 60, check: (s) => s.monsters('disc').some((m) => m.x <= 51 && m.x >= 49) },
   { walk: PARK.car + 1, dodge: ['disc'] },
 ];

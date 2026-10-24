@@ -296,6 +296,10 @@
             {
               "q": "I'm stuck in a pothole.",
               "a": "Bump (Up) out of it."
+            },
+            {
+              "q": "The big hill needs two charges.",
+              "a": "Its charger is down on the low road, a step below the street. Drive down, wait for two pulses, then bump (Up) back up."
             }
           ]
         },
@@ -446,6 +450,14 @@
             {
               "q": "Where's the last button?",
               "a": "Up on the high platform, hidden in a faint wisp. Sniff (S), then high five it and run for the flap."
+            },
+            {
+              "q": "The spotlight keeps finding Teddy.",
+              "a": "Play dead (hold 4) as it comes: it goes over him. Then go on past the wing while it is still out."
+            },
+            {
+              "q": "How do I get up to the high platform?",
+              "a": "Stand on Doc Leo's balloon pump and wait: a balloon dog blows up under Teddy and floats him up. Step off at the top."
             }
           ]
         },

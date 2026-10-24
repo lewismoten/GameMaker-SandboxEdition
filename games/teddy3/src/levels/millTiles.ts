@@ -31,7 +31,7 @@ function beamOver(p: Pixels): Pixels {
  * The hub and spokes of a wheel (3x3, inside its ring of paddles), over per-cell bases. With
  * `floor`, a beam runs across its top row (a ledge): the floor Teddy steps off onto.
  */
-function hub(t: Tiles, name: string, base: (bx: number, by: number) => Pixels, floor: boolean): void {
+export function hub(t: Tiles, name: string, base: (bx: number, by: number) => Pixels, floor: boolean): void {
   const p = canvas(3, 3, base);
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2;

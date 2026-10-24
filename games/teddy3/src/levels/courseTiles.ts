@@ -8,7 +8,8 @@ import { speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { boxFace, c, copy, r } from '../blocks/tiles';
 import { wideSign } from './common';
-import { tent } from './stageTiles';
+import { rail, tent, wing } from './stageTiles';
+import { hub } from './millTiles';
 import { art } from './parts';
 import { leoOn } from '../sprites/leo';
 import { KLUB } from '../sprites/klubfolk';
@@ -25,15 +26,10 @@ export function courseTiles(): Tiles {
   for (let k = 0; k < 3; k++) dark.set((k * 7 + 3) % 20, (k * 11 + 5) % 20, c('purple', 0));
   t.air('dark', dark);
   // the sawdust ring floor, a crate (walls and stacks), the canvas wall at the ends
-  t.wall(
-    'floor',
-    (() => {
-      const p = new Pixels(20, 20);
-      speckle(p, 0, 0, 20, 20, r('hay'), 1, 2, 5, 0.3);
-      p.rect(0, 0, 20, 2, c('hay', 3)).rect(0, 2, 20, 1, c('hay', 0));
-      return p;
-    })(),
-  );
+  const floor = new Pixels(20, 20);
+  speckle(floor, 0, 0, 20, 20, r('hay'), 1, 2, 5, 0.3);
+  floor.rect(0, 0, 20, 2, c('hay', 3)).rect(0, 2, 20, 1, c('hay', 0));
+  t.wall('floor', floor);
   t.wall('crate', boxFace('wood', 3, 7));
   t.wall('crateRed', boxFace('red', 2, 9));
   t.wall(
@@ -167,6 +163,22 @@ export function courseTiles(): Tiles {
       p.rect(0, 0, 2, 60, c('ink', 0));
     },
   );
+  // The MEANWHILE stretch, a station for each of the others' ideas: Gwinn's spotlight (its
+  // wing and track), the mill's water wheel (its hub and spokes), and Doc Leo's balloon pump,
+  // a brass valve in the floor that blows up a balloon dog under whoever stands on it.
+  t.air('wing', wing(false));
+  t.air('wingTop', wing(true));
+  t.air('track', rail(copy(bg)));
+  hub(t, 'hub', () => bg, false);
+  t.wall(
+    'pump',
+    (() => {
+      const p = copy(floor);
+      p.rect(3, 0, 14, 3, c('gold', 2)).rect(3, 0, 14, 1, c('gold', 3)).rect(3, 3, 14, 1, c('ink', 0));
+      p.rect(8, 4, 4, 6, c('gold', 1)).rect(9, 4, 1, 6, c('gold', 3));
+      return p;
+    })(),
+  );
   // Signs.
   const signs: [string, string][] = [
     ['Title', 'THE TEDDY\nCOURSE!'],
@@ -176,6 +188,9 @@ export function courseTiles(): Tiles {
     ['Belt', 'FAST BELT\nE AT END'],
     ['Boards', 'RED, THEN\nBLUE'],
     ['Pies', 'PIES!\n4: DUCK'],
+    ['Light', 'LIGHTS!\n4: DUCK'],
+    ['Wheel', 'RIDE A\nPADDLE UP'],
+    ['Pump', 'STAND ON\nTHE PUMP'],
     ['Sniff', 'LAST ONE:\nSNIFF (S)'],
   ];
   for (const [name, words] of signs) {

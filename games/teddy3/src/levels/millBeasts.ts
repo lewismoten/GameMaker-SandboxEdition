@@ -22,7 +22,7 @@ export const CORNERS = ['Up', 'Top', 'Down', 'Bottom'] as const;
  * in step with its path (a path corner takes one tick more than the move itself), so it
  * shows the solid paddle only while it rises.
  */
-function wheel(b: Bestiary, name: string, rises: 'left' | 'right'): void {
+export function wheel(b: Bestiary, name: string, rises: 'left' | 'right'): void {
   const { size: n, speed } = WHEEL;
   const along = rises === 'left' ? 1 : -1;
   type Seg = { dx: number; dy: number; speed: number; pic: string };

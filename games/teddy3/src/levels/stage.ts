@@ -9,7 +9,7 @@
 // lashed down across the way (CHEW its rope). Test: two lights out of step over one stretch,
 // a slow one and a quick one; past the dressing rooms a pigeon struts in a light's way (BOOF
 // it first, or it walks into her while she lies flat); then up onto the stacked road cases,
-// where a light sweeps the top and another pigeon struts, with the bone at the far end.
+// where a light sweeps the top and another pigeon struts, with a balloon dog at the far end.
 // Twist: a light that climbs: it comes down the crate step from the riser to the floor and
 // goes back up, so she flops on whichever level she is on as it passes (or follows it up).
 // On the riser a quick light sweeps over the cake crumbs and a pigeon is after them (BOOF it
@@ -95,7 +95,7 @@ export function stage(): Level {
   m.set(STAGE.hall + 2, 39, 'propTable');
 
   // Then up the prop crates onto the stacked road cases, where a light sweeps the top and a
-  // pigeon struts (BOOF it), and the bone at the far end.
+  // pigeon struts (BOOF it), and a balloon dog at the far end (bones are scarce now).
   const c = STAGE.crates;
   m.set(c, 39, 'crate')
     .set(c + 1, 39, 'crate')
@@ -137,7 +137,7 @@ export function stage(): Level {
     [STAGE.pigeon + 2, 37],
   ];
   for (const [x, y] of treats) m.treat(x, y);
-  m.treat(STAGE.casesEnd, 35, 'bone');
+  m.mon(STAGE.casesEnd, 35, 'poodle');
   m.mark('start', STAGE.start, 39);
   m.mark('exit', STAGE.spot, 37);
   return {

@@ -15,7 +15,7 @@ export const WELL = { rise: 7 };
 
 export function digBeasts() {
   const b = newBestiary();
-  b.pic('mole1', mole(0), { hp: -6 }).pic('mole2', mole(1), { hp: -6 }).pic('moleDive', moleDive());
+  b.pic('mole1', mole(0), { hp: -8 }).pic('mole2', mole(1), { hp: -8 }).pic('moleDive', moleDive());
   b.pic('roots', roots(cave()), { solid: 15 });
   b.pic('clay', clay(false), { solid: 15 }).pic('clayCracked', clay(true), { solid: 15 });
   b.pic('bucket', wellBucket(), { solid: 15 });

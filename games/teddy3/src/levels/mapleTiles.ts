@@ -1,14 +1,16 @@
 // Level 2's background blocks, Maple Street on a spring morning, seen from the road at THE
 // CHEZ's size: little clapboard houses in three colors with their porches, maples, picket
 // fences, the sidewalk, the road with its chargers, speed bump, pothole and two hills, and
-// at the top of the second hill, the gate of Puddlewick Park.
+// at the top of the second hill, the gate of Puddlewick Park; and the low road, a lane a step
+// down beside the street with a charger in it.
 import { Pixels } from '../../../kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { c, cloud, copy, dirt, grassTop, hedge, picket, r, sky } from '../blocks/tiles';
 import { bandAt, sign, wideSign } from './common';
 import { art } from './parts';
-import { roadBlocks } from './roadParts';
+import { PULSE, chargerPic, roadBlocks } from './roadParts';
+import { CTR } from '../ids';
 
 /** The road's row: THE CHEZ drives on row 39. */
 export const G = 40;
@@ -123,5 +125,20 @@ export function mapleTiles(): Tiles {
   t.air('signBumpL', bumpL);
   t.air('signBumpR', bumpR);
   t.air('signPark', sign(low, 'PARK', 'right'));
+
+  // The low road: a lane a step down from the street, its stone retaining wall behind, and a
+  // charger in it (the only one before the big hill).
+  const wall = new Pixels(20, 20, c('stone', 1));
+  for (let y = 0; y < 20; y += 5) {
+    wall.rect(0, y, 20, 1, c('stone', 0));
+    for (let x = (y / 5) % 2 ? 5 : 0; x < 20; x += 10) wall.rect(x, y, 1, 5, c('stone', 0));
+  }
+  wall.rect(0, 0, 20, 2, c('stone', 3));
+  t.air('laneWall', wall);
+  t.air('chargerLane', chargerPic(wall, true), { effect: CTR.charge, eamt: 1, next: 'chargerLaneDim', ntime: 1 });
+  t.air('chargerLaneDim', chargerPic(wall, false), { next: 'chargerLane', ntime: PULSE });
+  const [laneL, laneR] = wideSign(walk, 'LOW ROAD:\nCHARGER v');
+  t.air('signLaneL', laneL);
+  t.air('signLaneR', laneR);
   return t;
 }

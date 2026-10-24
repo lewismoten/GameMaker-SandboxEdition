@@ -16,7 +16,7 @@ import { road, sign, wideSign } from './common';
 import { CTR } from '../ids';
 
 /** Ticks between a charger's pulses (each pulse is one charge for a car parked there). */
-export const PULSE = 22;
+export const PULSE = 15;
 
 /** Asphalt with a dashed line, its top edge lit (the road the car drives on). */
 export function roadTop(seed: number, dashes = true): Pixels {
@@ -71,7 +71,7 @@ export function bolt(p: Pixels, x: number, y: number, col = c('yellow', 3)): Pix
 }
 
 /** A charger post over `base`, its light lit (the pulse) or dim. */
-function chargerPic(base: Pixels, lit: boolean): Pixels {
+export function chargerPic(base: Pixels, lit: boolean): Pixels {
   const p = copy(base);
   p.rect(8, 3, 5, 17, c('metal', 1)).rect(8, 3, 1, 17, c('metal', 3));
   p.rect(5, 2, 11, 9, c('paint', 3)).frame(5, 2, 11, 9, c('ink', 0));

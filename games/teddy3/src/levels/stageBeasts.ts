@@ -122,8 +122,8 @@ export const BEAMS: Record<string, Beam> = {
 
 export function stageBeasts() {
   const b = newBestiary();
-  b.pic('lampLit', spotLamp(true), { hp: -6 }).pic('lampDark', spotLamp(false));
-  b.pic('endLit', spotEnd(true), { hp: -6 }).pic('endDark', spotEnd(false));
+  b.pic('lampLit', spotLamp(true), { hp: -8 }).pic('lampDark', spotLamp(false));
+  b.pic('endLit', spotEnd(true), { hp: -8 }).pic('endDark', spotEnd(false));
   for (const [name, beam] of Object.entries(BEAMS)) {
     if (sweepTicks(beam.path) > beam.every) throw new Error(`stage: light ${name} sweeps longer than its turn`);
     b.add(`lamp${name}`, { pics: [['lampLit', 50]], power: LIGHT, path: beam.path, end: -1, becomes: 'lampOff' });
@@ -139,7 +139,7 @@ export function stageBeasts() {
   b.add('knotChewed', { pics: [['knotChewed', 50]], power: 0, end: 8 });
 
   // Pigeons on the road cases and after the cake crumbs; a BOOF sends them up into the rigging.
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -5 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -6 });
   for (const name of ['pigeon', 'pigeonLow', 'pigeonHigh'])
     b.add(name, {
       pics: [

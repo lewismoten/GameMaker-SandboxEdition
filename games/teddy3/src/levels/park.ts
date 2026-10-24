@@ -57,6 +57,7 @@ export function park(): Level {
   m.mon(PARK.sawA - 3, LOW, 'kidUp');
   m.mon(PARK.sawA, LOW - 3, 'sawDown');
   m.set(PARK.sawA - 1, LOW, 'step');
+  m.mon(PARK.sawA - 2, 39, 'plankA_0').mon(PARK.sawA - 1, 39, 'plankA_1');
   for (let y = 36; y < 40; y++) m.set(PARK.hedge, y, 'hedgeWall').set(PARK.hedge + 1, y, 'hedgeWall');
   m.set(PARK.hedge, 35, 'hedgeTop').set(PARK.hedge + 1, 35, 'hedgeTop');
 
@@ -70,6 +71,7 @@ export function park(): Level {
   m.set(PARK.bank, LOW, 'step');
   for (const rider of [PARK.sawB, PARK.sawC]) {
     m.set(rider + 1, G, 'rock').set(rider + 1, 39, 'fulcrum');
+    m.mon(rider + 1, 39, 'plank_0');
     m.mon(rider + 2, LOW - 3, 'kidDown');
     m.mon(rider, LOW, 'sawUp');
   }

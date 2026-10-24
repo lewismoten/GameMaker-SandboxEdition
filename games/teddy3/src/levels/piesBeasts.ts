@@ -20,9 +20,9 @@ export const PIES: [string, number, number, boolean][] = [
 
 export function piesBeasts() {
   const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -5 });
-  b.pic('pie1', pie(0), { hp: -8 }).pic('pie2', pie(1), { hp: -8 });
-  b.pic('skid1', skidPie(0), { hp: -8 }).pic('skid2', skidPie(1), { hp: -8 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -6 });
+  b.pic('pie1', pie(0), { hp: -10 }).pic('pie2', pie(1), { hp: -10 });
+  b.pic('skid1', skidPie(0), { hp: -10 }).pic('skid2', skidPie(1), { hp: -10 });
   for (const [name, reach, speed, low] of PIES)
     b.add(name, {
       pics: [

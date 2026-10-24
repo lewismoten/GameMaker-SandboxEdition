@@ -4,6 +4,9 @@ import { at, leap } from './helpers';
 import type { Sim } from '../../../kit/sceneSim';
 import { mapBlock, shownBlock } from '../../../../web/src/engine/world';
 import { COURSE } from '../../src/levels/course';
+import { G } from '../../src/levels/courseTiles';
+import { WHEEL } from '../../src/levels/millBeasts';
+import { board, level } from './mill';
 
 /** Has the board at column x just come back (solid, with most of its time still to go)? */
 const fresh = (s: Sim, x: number) => shownBlock(s.w, mapBlock(s.w, x, 40)).solid !== 0 && s.w.nxtchg[mapBlock(s.w, x, 40)] - s.w.clock > 16;
@@ -40,11 +43,22 @@ export const route: Order[] = [
   { trick: 'sit', after: 30 },
   { walk: COURSE.turn - 1 },
   { trick: 'spin', after: 30 },
-  { walk: COURSE.lift - 1 },
-  { hop: 6, dir: 'right', dirFor: 4, after: 4 },
-  { until: 'up on the high platform', maxTicks: 80, check: (s) => s.pos.by <= COURSE.high - 1 && s.monsters('liftTop').length > 0 },
+  // the spotlight: wait out of its reach until it comes out of the wing, then go to meet it,
+  // play dead as it passes over, and go on past the wing while it is still out
+  { walk: COURSE.wing - 5 },
+  { until: 'the light comes out', maxTicks: 100, check: (s) => s.monsters('endS').some((m) => m.x < COURSE.wing) },
+  { walk: COURSE.wheel - 1, dodge: ['endS'] },
+  // the water wheel up to the crates, and down to the balloon pump
+  ...board(COURSE.wheel, G),
+  level(G - WHEEL.size),
+  { walk: COURSE.ledge + 2 },
+  { walk: COURSE.pump - 1 },
+  { until: 'the pump is clear', maxTicks: 80, check: (s) => !s.monsters('pumpBalloon').some((m) => m.y >= COURSE.high) },
+  { walk: COURSE.pump, maxTicks: 20 },
+  { until: 'up on a balloon dog', maxTicks: 120, check: (s) => s.pos.by <= COURSE.high - 2 },
   { walk: COURSE.scent - 1 },
   { face: 'right' },
+  { trick: 'space', after: 16 },
   { trick: 's', after: 30 },
   { until: 'the button is up', maxTicks: 60, check: (s) => s.monsters('btnFlap').length > 0 },
   { trick: 'five', after: 4 },

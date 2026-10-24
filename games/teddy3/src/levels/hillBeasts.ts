@@ -20,11 +20,11 @@ export const GULLY_LIFE = 56;
 export const POND_RUN = 6;
 
 /** A cow's walk, in ticks: in the road, turning away, out in the field, turning back. */
-export const COW = { road: 36, out: 6, field: 45, back: 6 };
+export const COW = { road: 24, out: 6, field: 45, back: 6 };
 
 export function hillBeasts() {
   const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('goose')) b.pic(name, px, name === 'gooseRun' ? {} : { hp: -6 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('goose')) b.pic(name, px, name === 'gooseRun' ? {} : { hp: -8 });
   pacer(
     b,
     'goose',
@@ -46,10 +46,10 @@ export function hillBeasts() {
   b.pic('cow0', cow(0), solid).pic('cow1', cow(1), solid).pic('cowOut', cowTurn(), solid);
   b.pic('cowIn', cowTurn()).pic('cowFar0', cowFar(0)).pic('cowFar1', cowFar(1));
   const walk: [string, number][] = [
-    ['cow0', 9],
-    ['cow1', 9],
-    ['cow0', 9],
-    ['cow1', 9],
+    ['cow0', COW.road / 4],
+    ['cow1', COW.road / 4],
+    ['cow0', COW.road / 4],
+    ['cow1', COW.road / 4],
     ['cowOut', COW.out],
     ['cowFar0', 12],
     ['cowFar1', 12],

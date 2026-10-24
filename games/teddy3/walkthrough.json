@@ -12,11 +12,11 @@
   },
   {
    "scene": 3,
-   "keys": "Ak0PzQE5ArkQTRfNARIEkgxNAkgIyBJICMgJzQFNC0gIyAbNAU0OzQFNGc0mOQK5EE0UzQ5NC0gIyAtICMgazQ=="
+   "keys": "Ak0PzQE5ArkQTRfNARIEkgxNAkgIyBJICMgJzQFNC0gIyAbNAU0nzSc5ArkQTRzNEk0ISAjIBs0BTQhICMgLSAjICc0hOQK5EE0YSAjIEs0="
   },
   {
    "scene": 4,
-   "keys": "AU0szQESBJJLTQPNH00CSAjIE80/TQPNJxIGkgBNBs1IEgaSAE0GzQFNM80LEgSSd00DzRlNAkgIyATNEzkCuRBNCM0BIQKhCE0azQFNHc0="
+   "keys": "AU0szQESBJIjTQPNEE0CSAjIFM0bTQPNHRIGkgBNBs0qEgaSAE0GzQFNM80LEgSSOU0DzRpNAkgIyATNATkCuRBNCM0BIQKhCE0XzSFNIM0="
   },
   {
    "scene": 5,
@@ -32,7 +32,7 @@
   },
   {
    "scene": 8,
-   "keys": "AU0DzQE5ArkQTRrNATkCuRVNAxIDkg5ICMgDzSg5ArkQTRfNAU0IzSNNAkgIyARICMgGzQFNBs0OTQpICMgZzRo5ArkVTQYSA5IKSAjICEgIyAtICMgKSAjIBs0QOQK5EE0ASALIJc0="
+   "keys": "AU0DzQE5ArkQTRrNATkCuRVNAxIDkg5ICMgDzSg5ArkQTRfNAU0IzSNNAkgIyARICMgGzQFNBs0KTQpICMgZzRU5ArkVTQYSA5IKSAjICEgIyAtICMgKSAjIBs0ZOQK5EE0ASALIJc0="
   },
   {
    "scene": 9,
@@ -52,7 +52,7 @@
   },
   {
    "scene": 13,
-   "keys": "ATkCuRBNFM0iTQjNIk0CSAjIBEgIyAbNAU0HSAjIC0gIyAnNK00RzR9NCEgIyAlICMgISAjIBs0BTQESApIJzQE5ArkVTQYSA5IKSAjICEgIyAPNATkCuRBNBhIKkgZICMgJzVZNE0gIyAtICMgdzQ=="
+   "keys": "ATkCuRBNFM0iTQjNIk0CSAjIBEgIyAbNAU0HSAjIC0gIyAnNB00RzQFNCEgIyAlICMgISAjIBs0BTQESApIJzQo5ArkVTQYSA5IKSAjICEgIyAPNHzkCuRBNBhIDkgxICMgESAbIBc0kTRNICMgLSAjIHc0="
   },
   {
    "scene": 14,
@@ -64,11 +64,11 @@
   },
   {
    "scene": 16,
-   "keys": "AU0ezQECAoI+TR3NAAUQhQBNH80AAgKCO00jzRhNA80ySwvLAUsUywE5ArkMSx7LVAICgjtLFMsABQKFAEsXywAFD4UASxHLACECoQgFAoUATRLNAAUQhQBNFs0AAgKCO004zQ=="
+   "keys": "AU0ezQECAoI+TR3NAAUQhQBNH80AAgKCO00jzRhNA80ySwrLAUsUywE5ArkMSx7LVQICgjtLFMsABQKFAEsXywAFD4UASxHLACECoQgFAoUATRLNAAUQhQBNFs0AAgKCO004zQ=="
   },
   {
    "scene": 17,
-   "keys": "AU0IzRc5ArkQTRTNAU0BzQMCAoIUTRLNAVAC0BRNARIKkgLNAUgGyAZNAkgIyATNARIEkhpNA80nEgaSAE0GzQFNBM0BTQ3NARIKkgBNBs0BTQrND00MzQhNDM0WTQzNAU0JzQAFAoUBTQDNAAUChQFNAM0ABQaFAU0bzQEDAoMeTQzNAQQChB5NCM0BTQFIBsgEzSJNCc0BTQHNAx8Cnx4CAoIETQJICMgrzQ=="
+   "keys": "AU0IzRc5ArkQTRTNAU0BzQMCAoIUTRLNAVAC0BRNARIKkgLNAUgGyAZNAkgIyATNARIEkgpNA80TEgaSAE0GzQFNBM0BTQ3NARIKkgBNBs0BTQrNAU0MzQRNDM0WTQzNAU0PzQAFAoUBTQDNAAUChQFNAM0ABQeFAU0VzQEDAoMeTQzNAQQChB5NDM0DTQXNAAUChQFNAM0ABQKFAU0AzQAFHYUBTQDNAAUChQFNAM0ABQKFAU0AzQAFAoUBTQDNAAUChQFNI80dTQTNO00MzQFNA80VTQTNNE0IzQFNAc0DOQK5EB8Cnx4CAoIETQJICMgrzQ=="
   }
  ],
  "chapters": [
@@ -139,7 +139,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 54424,
+  "frames": 54638,
   "chapters": [
    {
     "title": "Opening",
@@ -159,67 +159,67 @@
    },
    {
     "title": "Level 3: Puddlewick Park",
-    "frame": 9232
+    "frame": 9614
    },
    {
     "title": "Level 4: Gwinn's Invitations",
-    "frame": 12445
+    "frame": 12244
    },
    {
     "title": "Level 5: Downtown",
-    "frame": 14917
+    "frame": 14716
    },
    {
     "title": "Level 6: Doc Leo's Balloons",
-    "frame": 18114
+    "frame": 17913
    },
    {
     "title": "Level 7: The River Road",
-    "frame": 20763
+    "frame": 20562
    },
    {
     "title": "Level 8: The Old Mill",
-    "frame": 23151
+    "frame": 22950
    },
    {
     "title": "Level 9: Gwinn's Buried Treasure",
-    "frame": 25965
+    "frame": 25764
    },
    {
     "title": "Level 10: Pie Practice",
-    "frame": 28330
+    "frame": 28129
    },
    {
     "title": "Level 11: The Funhouse",
-    "frame": 31335
+    "frame": 31134
    },
    {
     "title": "Level 12: Lookout Hill",
-    "frame": 34225
+    "frame": 34024
    },
    {
     "title": "Level 13: Firefly Meadow",
-    "frame": 36964
+    "frame": 36525
    },
    {
     "title": "Level 14: Gwinn Hides Backstage",
-    "frame": 39406
+    "frame": 38967
    },
    {
     "title": "Level 15: Doc Leo Hangs the Lights",
-    "frame": 42098
+    "frame": 41659
    },
    {
     "title": "Level 16: The Teddy Course",
-    "frame": 45476
+    "frame": 45037
    },
    {
     "title": "Ending",
-    "frame": 48356
+    "frame": 48570
    },
    {
     "title": "Credits",
-    "frame": 51295
+    "frame": 51509
    }
   ]
  }

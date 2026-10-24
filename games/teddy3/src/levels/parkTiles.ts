@@ -62,7 +62,6 @@ export function parkTiles(): Tiles {
   const fulcrum = (base: Pixels) => {
     const p = copy(base);
     for (let y = 6; y < 20; y++) p.rect(10 - Math.floor((y - 6) / 2), y, 1 + Math.floor((y - 6) / 2) * 2, 1, c('metal', y < 8 ? 3 : 1));
-    p.rect(0, 5, 20, 2, c('wood', 3));
     return p;
   };
   t.air('fulcrum', fulcrum(lawn));
