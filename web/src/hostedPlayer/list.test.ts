@@ -45,6 +45,15 @@ describe('parseGameList', () => {
     ]);
   });
 
+  it('takes autoplay from a game, or from the list when the game says nothing', () => {
+    const list = parseGameList(
+      JSON.stringify({ autoplay: true, games: [{ folder: 'a/' }, { folder: 'b/', autoplay: false }, { folder: 'c/', autoplay: 'yes' }] }),
+      'https://example.com/games.json',
+    );
+    expect(list.games.map((g) => g.autoplay)).toEqual([true, false, true]);
+    expect(parseGameList(JSON.stringify({ games: [{ folder: 'a/' }] }), 'https://example.com/games.json').games[0].autoplay).toBeUndefined();
+  });
+
   it('rejects text that is not a list', () => {
     expect(() => parseGameList('not json', LIST)).toThrow(/not valid JSON/);
     expect(() => parseGameList('{"games": 3}', LIST)).toThrow(/no "games" array/);

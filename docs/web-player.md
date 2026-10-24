@@ -61,6 +61,7 @@ A plain array of games (without `"title"`) works too. For each game:
 | `"author"` | no     | Shown under the title.                                                                                                          |
 | `"year"`   | no     | Shown under the title.                                                                                                          |
 | `"about"`  | no     | A line about the game, shown under the title.                                                                                   |
+| `"autoplay"` | no  | `true` starts the game at once, without its "Play" screen. Set it on the list itself (beside `"games"`) for every game; a game's own setting wins. |
 
 A web host cannot list a folder, so the player works out which files a game needs from the
 `.GAM`: every level's files and its high-score file, then the files those name (a sound set's
@@ -74,6 +75,10 @@ A file nothing names, such as an extra picture a text screen does not list, need
   a folder's name).
 - `player.html?game=nebula` starts that game: a listed game's id or folder, or a folder beside
   the page (`?game=castle`, or `?game=old/CASTLE.GAM` for a game file with another name).
+- `player.html?game=nebula&autoplay=1` starts it at once, without the "Play" screen
+  (`&autoplay=0` keeps the screen, whatever the list says). Browsers keep the sound off until
+  the visitor's first click or key press, so the game starts silent and the first touch turns
+  the sound on. After the game ends, the "Play" screen comes back as usual.
 - `player.html?list=more.json` reads another list. Lists and folders typed into `?game=` must
   be on the same site as the player.
 

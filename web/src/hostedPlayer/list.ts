@@ -5,10 +5,13 @@
 //
 //   { "title": "My old games",
 //     "games": [ { "id": "nebula", "title": "Nebula", "folder": "nebula/", "gam": "NEBULA.GAM",
-//                  "files": ["NEBULA.MAP", …], "author": "…", "year": 1994, "about": "…" } ] }
+//                  "files": ["NEBULA.MAP", …], "author": "…", "year": 1994, "about": "…",
+//                  "autoplay": true } ],
+//     "autoplay": false }
 //
 // A bare array of games is taken too. Only "folder" is needed: the id is the folder's last
-// part, the title the folder's name, and the .gam the one in "files" or <id>.gam.
+// part, the title the folder's name, and the .gam the one in "files" or <id>.gam. "autoplay"
+// (the list's, or a game's own, which wins) starts a game without its click-to-play screen.
 
 /** One game of the list, with its folder resolved to an address. */
 export interface ListedGame {
@@ -24,6 +27,8 @@ export interface ListedGame {
   author?: string;
   year?: number;
   about?: string;
+  /** Start without the click-to-play screen (the list's setting when the game has none). */
+  autoplay?: boolean;
 }
 
 export interface GameList {
@@ -97,6 +102,7 @@ function readGame(raw: unknown, base: string): ListedGame | undefined {
   if (year) game.year = year;
   const about = text(r.about);
   if (about) game.about = about;
+  if (typeof r.autoplay === 'boolean') game.autoplay = r.autoplay;
   return game;
 }
 
@@ -122,7 +128,7 @@ export function parseGameList(json: string, base: string): GameList {
     let id = g.id;
     for (let n = 2; seen.has(id); n++) id = `${g.id}-${n}`;
     seen.add(id);
-    games.push({ ...g, id });
+    games.push({ ...g, id, ...(g.autoplay === undefined && typeof obj.autoplay === 'boolean' ? { autoplay: obj.autoplay } : {}) });
   }
   const list: GameList = { games };
   const title = text(obj.title, 80);
