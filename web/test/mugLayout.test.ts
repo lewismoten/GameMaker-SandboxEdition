@@ -7,7 +7,7 @@ import { MARGIN, MUG_SIZES, PAPERS, circumference } from '../src/desk/mug/mugSiz
 const paper = (id: string) => PAPERS.find((p) => p.id === id)!;
 const size = (id: string) => MUG_SIZES.find((s) => s.id === id)!;
 const BBS = 640 / 224; // a short, wide ANSI logo
-const GAME = 320 / 268; // a game's title screen over its band
+const GAME = 344 / 240; // a game's badge (gameBadge.ts BADGE_W x BADGE_H)
 
 describe('mug sizes', () => {
   it('match the blank makers’ templates', () => {
