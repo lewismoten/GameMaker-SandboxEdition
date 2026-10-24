@@ -5,7 +5,7 @@
 // shares its map, else the one it leads to, else the one that leads to it. A game can also
 // name its places itself in printables.json ("worldMap": { "groups": [...] }). Folded scenes
 // are listed on their place's land by name and number; the map's "Every scene" view keeps them all.
-import { ENDTYPE, NOSCENE, STARTTYPE, type Game, type Link } from '../../formats/game';
+import { ENDTYPE, NOSCENE, STARTTYPE, type Game, type Link, SCENEDESCLEN } from '../../formats/game';
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import type { WorldMapHints } from './types';
 
@@ -120,13 +120,24 @@ export function placesGame(game: Game, g: Grouping): Game {
   };
 }
 
+/**
+ * A scene's name as a label: the .GAM keeps 19 letters, so a name that fills them was likely
+ * cut ("The Garage Door Ope"); it ends at its last whole word with an ellipsis instead.
+ */
+export function sceneLabel(desc: string): string {
+  const name = desc.trim() || 'Untitled';
+  if (name.length < SCENEDESCLEN - 1) return name;
+  const space = name.lastIndexOf(' ');
+  return `${space > 6 ? name.slice(0, space) : name}…`;
+}
+
 /** What a place's land says about the scenes folded into it: "6 Grandma Pim", one name once ("11, 16 Ms. Pagely"). */
 export function placeLabels(game: Game, g: Grouping, place: number): string[] {
   const own = g.labels.get(place);
   if (own) return own;
   const byName = new Map<string, number[]>();
   for (const i of g.folded.get(place) ?? []) {
-    const name = game.scenes[i].desc.trim() || 'Untitled';
+    const name = sceneLabel(game.scenes[i].desc);
     byName.set(name, [...(byName.get(name) ?? []), i]);
   }
   return [...byName].map(([name, ids]) => `${ids.join(', ')} ${name}`);

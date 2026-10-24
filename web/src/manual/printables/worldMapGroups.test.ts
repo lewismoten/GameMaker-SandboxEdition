@@ -5,7 +5,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ADVTYPE, ENDTYPE, STARTTYPE, emptyLink, emptyScene, newGame, parseGame, type Game } from '../../formats/game';
 import { graphOf } from '../../editor/editors/integrator/layoutCells';
-import { groupScenes, hintProblems, isBlackPalette, placeLabels, placesGame, sceneRefs } from './worldMapGroups';
+import { groupScenes, hintProblems, isBlackPalette, placeLabels, placesGame, sceneRefs, sceneLabel } from './worldMapGroups';
 import type { PrintablesFile } from './types';
 
 /** A game from [name, type, palette, map, links to] rows. */
@@ -102,4 +102,12 @@ describe('every game’s World Map', () => {
         if (place(a) !== place(b)) expect(player.pairs.some(([x, y]) => (x === place(a) && y === place(b)) || (x === place(b) && y === place(a)))).toBe(true);
     });
   }
+});
+
+describe('sceneLabel', () => {
+  it('ends a name cut at the .GAM’s 19 letters at its last whole word', () => {
+    expect(sceneLabel('The Garage Door Ope')).toBe('The Garage Door…');
+    expect(sceneLabel('Grandma Pim')).toBe('Grandma Pim');
+    expect(sceneLabel('  ')).toBe('Untitled');
+  });
 });
