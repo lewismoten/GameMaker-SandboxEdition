@@ -73,7 +73,7 @@ export function groupsPanel(o: {
       name: `Group ${groups.length + 1}`,
       cols: 2,
       rows: 1,
-      blocksFor: (c, r) => `Block ${start} at the top left, then ${blocksText(neighborGroup('', start, c, r, count).cells)}, row by row.`,
+      blocksFor: (c, r) => `Takes ${blocksText(neighborGroup('', start, c, r, count).cells)}, row by row from the top left.`,
     });
     if (r) add(neighborGroup(r.name, start, r.cols, r.rows, count));
   }
@@ -86,7 +86,7 @@ export function groupsPanel(o: {
       name: `Group ${groups.length + 1}`,
       ...fit,
       blocksFor: (c, r) =>
-        `${blocksText(picked.slice(0, c * r))} in the order picked, row by row${picked.length > c * r ? ` (${picked.length - c * r} left out)` : ''}.`,
+        `Takes ${blocksText(picked.slice(0, c * r))} in the order picked, row by row${picked.length > c * r ? ` (${picked.length - c * r} left out)` : ''}.`,
     });
     const g = r && groupOf(r.name, picked, r.cols, r.rows, count);
     if (g) add(g);
