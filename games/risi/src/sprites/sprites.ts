@@ -15,6 +15,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
+import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 import { CHEESE, CROWN, LAUGHS } from '../ids';
 
 export { T, outline };
@@ -517,9 +518,12 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('grey', 1));
     return done(p);
   };
-  book.add('pigeon0', pigeon(0), solid);
-  book.add('pigeon1', pigeon(1), solid);
-  book.add('pigeonS', pigeon(0), hurt(-4));
+  // Pigeons are solid only at their sides: Marcus landing on one slides down beside it onto the
+  // roof instead of being pushed down into the tiles under it.
+  const sides = SOLLEF | SOLRIG;
+  book.add('pigeon0', pigeon(0), { solid: sides });
+  book.add('pigeon1', pigeon(1), { solid: sides });
+  book.add('pigeonS', pigeon(0), hurt(-4, sides));
   /** Doc Leo's face: rose-red nose and cheeks, white mouth and eyes, a heavy ash beard. */
   const leoFace = (p: Pixels, x: number, y: number, f: number) => {
     blob(p, x, y, 3.6, 3.8, R('skin'), 2, 4);
