@@ -3,7 +3,7 @@
 // a chain of overlapping felt balls along a gentle curve, splatted into a depth buffer and lit
 // like the eggs (eggArt.ts), so it turns with them in the viewer and sits on the shelf beside
 // them. Under black light it takes the same glowing covering the eggs do (eggUv.ts), cast
-// onto it from its middle.
+// onto it from its middle (squeezed into the pile's height, so its ink lands on the felt).
 import { TEX_H, TEX_W, type EggBox } from './eggArt';
 
 type V3 = [number, number, number];
@@ -109,7 +109,7 @@ export function drawPile(g: CanvasRenderingContext2D, turn: number, box: EggBox,
     let rgb: number[] = LOGS[b.log].rgb;
     if (tex) {
       const u = (Math.atan2(ox, oz) / (Math.PI * 2) + 1.25) % 1;
-      const ti = (Math.min(TEX_H - 1, Math.max(0, Math.floor(((Y + 1) / 2) * TEX_H))) * TEX_W + Math.min(TEX_W - 1, Math.floor(u * TEX_W))) * 4;
+      const ti = (Math.min(TEX_H - 1, Math.max(0, Math.floor((0.1 + (Y + 0.05) * 0.65) * TEX_H))) * TEX_W + Math.min(TEX_W - 1, Math.floor(u * TEX_W))) * 4;
       rgb = [tex.data[ti], tex.data[ti + 1], tex.data[ti + 2]];
     } else if (gap > 0.025 && gap < 0.055 && (ox * 9 + oz * 9 + Y * 9) % 1 < 0.55 && (ox * 9 + oz * 9 + Y * 9) % 1 > 0) rgb = [214, 168, 112];
     if (gap < 0.09) shade *= 0.62 + 0.38 * Math.max(0, gap / 0.09);
