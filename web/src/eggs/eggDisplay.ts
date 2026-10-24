@@ -1,6 +1,6 @@
 // The felt eggs on the desk's wall: a small shadow box standing on the top game shelf that
 // holds each egg found so far (two rows, seven and six, when all thirteen are in), and, once
-// all three Teddy eggs are, his little trophy at the end (teddyTrophy.ts). Until the first
+// all three Teddy eggs are, the one he laid himself at the end (teddyEgg.ts, eggPile.ts). Until the first
 // one, there is nothing at all; the box only ever shows the eggs that are in it (never how
 // many could be). Clicking it opens the viewer (eggViewer.ts). Once every felt egg is in, a
 // little cake stand beside it holds the eggs kept apart from them, if any are found (bonus.ts,
@@ -10,7 +10,7 @@ import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
 import { drawEgg, eggTexture } from './eggArt';
 import { drawOdor, drawPile } from './eggPile';
-import { TROPHY_CAPTION, drawTeddyTrophy, hasTeddyTrophy } from './teddyTrophy';
+import { TEDDY_EGG, hasTeddyEgg } from './teddyEgg';
 
 const CELL_W = 30;
 const CELL_H = 40;
@@ -68,34 +68,30 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     shown = key;
     box.hidden = !found.length;
     const n = found.length;
-    const trophy = hasTeddyTrophy(found.map((e) => e.egg.game));
+    // Teddy's own is a bonus, never one of the felt eggs or their count
+    const special = hasTeddyEgg(found.map((e) => e.egg.game));
     const eggs = n === 1 ? 'a felt egg' : `${n} felt eggs`;
-    box.setAttribute('aria-label', `Shadow box with ${eggs}${trophy ? ' and a little trophy of Teddy' : ''}: take a closer look`);
-    box.title = trophy ? `${n} felt eggs. ${TROPHY_CAPTION}.` : n === 1 ? 'A felt egg' : `${n} felt eggs`;
+    box.setAttribute('aria-label', `Shadow box with ${eggs}${special ? ' and Teddy’s special egg' : ''}: take a closer look`);
+    box.title = special ? `${n} felt eggs. ${TEDDY_EGG.caption}.` : n === 1 ? 'A felt egg' : `${n} felt eggs`;
     const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+    const at = { x: 2 * k, y: 4 * k, w: (CELL_W - 4) * k, h: (CELL_H - 6) * k };
     const teddy = () => {
-      const c = h('canvas', { class: 'egg-trophy', width: CELL_W * k, height: CELL_H * k });
+      // the little pile with its whiff, at the end
+      const c = h('canvas', { class: 'egg-special', width: CELL_W * k, height: CELL_H * k });
       const g = c.getContext('2d')!;
-      g.scale(k, k);
-      drawTeddyTrophy(g, CELL_W, CELL_H);
+      drawPile(g, 0.35, at, 80);
+      drawOdor(g, at);
       return c;
     };
     clear(
       row,
       ...found.map((e, i) => {
-        const pile = e.egg.look.shape === 'pile';
-        const c = h('canvas', { class: 'egg-mini', width: CELL_W * k, height: CELL_H * k, 'data-shape': pile ? 'pile' : null });
-        const g = c.getContext('2d')!;
-        // each sits turned a little its own way, showing its appliqué (Teddy's pile, its whiff)
-        const at = { x: 2 * k, y: 4 * k, w: (CELL_W - 4) * k, h: (CELL_H - 6) * k };
-        const turn = (i % 3) * 0.35 - 0.35;
-        if (pile) {
-          drawPile(g, turn, at, 80);
-          drawOdor(g, at);
-        } else drawEgg(g, eggTexture(e.egg.look), turn, at, 80);
+        const c = h('canvas', { class: 'egg-mini', width: CELL_W * k, height: CELL_H * k });
+        // each sits turned a little its own way, showing its appliqué
+        drawEgg(c.getContext('2d')!, eggTexture(e.egg.look), (i % 3) * 0.35 - 0.35, at, 80);
         return c;
       }),
-      trophy ? teddy() : null,
+      special ? teddy() : null,
     );
   };
 

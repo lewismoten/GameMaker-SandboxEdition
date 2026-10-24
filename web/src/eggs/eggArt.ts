@@ -232,6 +232,22 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
         3,
       );
       break;
+    case 'confetti': {
+      // confetti French knots in every color, and gold rickrack round the waist
+      const colors = ['#ffd23f', '#e8443a', '#3a8fe0', '#4fc06a', '#ff8a2a', '#ff7fb0', '#ffffff'];
+      scatter(70, 0.08, 0.98, (x, y, i) => {
+        g.fillStyle = colors[i % colors.length];
+        g.beginPath();
+        g.arc(x, y, 2.4, 0, Math.PI * 2);
+        g.fill();
+      });
+      g.strokeStyle = look.thread;
+      g.lineWidth = 3;
+      g.beginPath();
+      for (let x = 0; x <= TEX_W; x += 8) g.lineTo(x, waist + ((x / 8) % 2 ? -6 : 6));
+      g.stroke();
+      break;
+    }
   }
   // running stitches along the bands' edges
   for (const y of [waist - 13, waist + 13, TEX_H * 0.16 - 6, TEX_H * 0.16 + 6])
@@ -533,16 +549,28 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       g.fill();
       g.restore();
       break;
+    case 'cake':
+      // a birthday cake: a frosted layer with a cream drip, and three yarn candles lit
+      blob(() => g.rect(-22, -6, 44, 26));
+      g.fillStyle = '#fff4fa';
+      g.fillRect(-22, -6, 44, 5);
+      for (let k = 0; k < 4; k++) {
+        g.beginPath();
+        g.arc(-16.5 + k * 11, -1, 5.5, 0, Math.PI);
+        g.fill();
+      }
+      ['#3a8fe0', '#ffd23f', '#e8443a'].forEach((col, i) => {
+        const cx = -12 + i * 12;
+        g.fillStyle = col;
+        g.fillRect(cx - 2, -22, 4, 16);
+        g.fillStyle = '#ffb02e';
+        g.beginPath();
+        g.ellipse(cx, -26, 2.6, 4, 0, 0, Math.PI * 2);
+        g.fill();
+      });
+      break;
   }
   g.restore();
-}
-
-/** Where an egg is drawn, in the context's pixels. */
-export interface EggBox {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
 }
 
 /** The egg's half-width at height y (-1 top .. 1 bottom), as a fraction of its half-height. */
@@ -552,7 +580,7 @@ export const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) 
  * Draws the egg turned by `turn` radians (0 shows the front appliqué) into a w x h box at
  * (x, y) of the given context, through an offscreen buffer of at most `res` rows.
  */
-export function drawEgg(g: CanvasRenderingContext2D, tex: ImageData, turn: number, box: EggBox, res = 300): void {
+export function drawEgg(g: CanvasRenderingContext2D, tex: ImageData, turn: number, box: { x: number; y: number; w: number; h: number }, res = 300): void {
   const H = Math.max(16, Math.min(res, Math.round(box.h)));
   const W = Math.max(12, Math.round((H * box.w) / box.h));
   const img = new ImageData(W, H);

@@ -1,10 +1,16 @@
-// Teddy's Lay-an-Egg Egg is no egg shape at all: three chubby little felt sausages in browns,
-// piled across and on each other, with a cartoon whiff of odor rising off it. Each sausage is
-// a chain of overlapping felt balls along a gentle curve, splatted into a depth buffer and lit
-// like the eggs (eggArt.ts), so it turns with them in the viewer and sits on the shelf beside
-// them. Under black light it takes the same glowing covering the eggs do (eggUv.ts), cast
-// onto it from its middle (squeezed into the pile's height, so its ink lands on the felt).
-import { TEX_H, TEX_W, type EggBox } from './eggArt';
+// Teddy's special egg, The Lay-an-Egg Egg (teddyEgg.ts), is no egg shape at all: three chubby
+// little felt sausages in browns, piled across and on each other, with a cartoon whiff of odor
+// rising off it. Each sausage is a chain of overlapping felt balls along a gentle curve,
+// splatted into a depth buffer and lit like the eggs (eggArt.ts), so it turns on the viewer's
+// cards and sits at the end of the shadow box beside them.
+
+/** Where it is drawn, in the context's pixels. */
+interface PileBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
 
 type V3 = [number, number, number];
 interface Ball {
@@ -49,10 +55,9 @@ const hash = (x: number, y: number, z: number) => {
 
 /**
  * Draws the pile turned by `turn` radians into a w x h box at (x, y), through an offscreen
- * buffer of at most `res` rows. With `tex` (a covering from eggUv.ts) it shows that covering's
- * colors in place of its own browns.
+ * buffer of at most `res` rows.
  */
-export function drawPile(g: CanvasRenderingContext2D, turn: number, box: EggBox, res = 300, tex?: ImageData): void {
+export function drawPile(g: CanvasRenderingContext2D, turn: number, box: PileBox, res = 300): void {
   const H = Math.max(16, Math.min(res, Math.round(box.h)));
   const W = Math.max(12, Math.round((H * box.w) / box.h));
   const half = H / 2;
@@ -107,11 +112,7 @@ export function drawPile(g: CanvasRenderingContext2D, turn: number, box: EggBox,
     let gap = 1;
     for (const q of NEAR[i >= 0 ? i : 0]) gap = Math.min(gap, Math.hypot(ox - q.x, Y - q.y, oz - q.z) - q.r);
     let rgb: number[] = LOGS[b.log].rgb;
-    if (tex) {
-      const u = (Math.atan2(ox, oz) / (Math.PI * 2) + 1.25) % 1;
-      const ti = (Math.min(TEX_H - 1, Math.max(0, Math.floor((0.1 + (Y + 0.05) * 0.65) * TEX_H))) * TEX_W + Math.min(TEX_W - 1, Math.floor(u * TEX_W))) * 4;
-      rgb = [tex.data[ti], tex.data[ti + 1], tex.data[ti + 2]];
-    } else if (gap > 0.025 && gap < 0.055 && (ox * 9 + oz * 9 + Y * 9) % 1 < 0.55 && (ox * 9 + oz * 9 + Y * 9) % 1 > 0) rgb = [214, 168, 112];
+    if (gap > 0.025 && gap < 0.055 && (ox * 9 + oz * 9 + Y * 9) % 1 < 0.55 && (ox * 9 + oz * 9 + Y * 9) % 1 > 0) rgb = [214, 168, 112];
     if (gap < 0.09) shade *= 0.62 + 0.38 * Math.max(0, gap / 0.09);
     // felt: a fuzz of lighter and darker fibers
     shade *= 0.92 + 0.16 * hash(Math.round(ox * 70 + Y * 23), Math.round(Y * 70 - oz * 19), Math.round(oz * 70 + ox * 17));
@@ -136,7 +137,7 @@ export function drawPile(g: CanvasRenderingContext2D, turn: number, box: EggBox,
  * The whiff off the top of the pile in the same box: three wavy green-gray lines of yarn
  * drifting up and fading, over and over, `time` seconds in. Without a time they hold still.
  */
-export function drawOdor(g: CanvasRenderingContext2D, box: EggBox, time?: number): void {
+export function drawOdor(g: CanvasRenderingContext2D, box: PileBox, time?: number): void {
   const half = box.h / 2;
   const cx = box.x + box.w / 2;
   const base = box.y + half * 0.85; // just over the top sausage

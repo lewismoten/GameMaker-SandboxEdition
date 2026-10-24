@@ -31,10 +31,8 @@ export interface EggLook {
   band: string;
   patch: string;
   thread: string;
-  pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds' | 'plain';
-  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'none';
-  /** Not egg-shaped at all: a little pile of felt sausages (eggPile.ts). */
-  shape?: 'pile';
+  pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds' | 'confetti';
+  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'cake';
 }
 
 export interface Egg {
@@ -181,12 +179,12 @@ export const EGGS: readonly Egg[] = [
   {
     game: 'teddy3',
     gameTitle: "Teddy's Little Biggest Adventure",
-    name: 'The Lay-an-Egg Egg',
+    name: 'The Birthday Egg',
     description:
-      'Chocolate-brown felt rolled into three chubby little sausages and piled up, sewn in tan thread where they touch, with curls of green-gray yarn rising off the top. Technically, an egg.',
-    credits: ['Starring Teddy, who laid it on command', 'Doc Leo, who said "Lay an egg!"', 'Stitched by Claude Opus 5.5'],
-    lore: 'On walks Teddy hunches up like a little rabbit, so Doc Leo tells him, "Lay an egg!", like the candy bunny that lays chocolate ones. This time he did, right in the hedge. A note pinned beside it: "Good boy. Still ONE MORE to find. Not that kind."',
-    look: { felt: '#7a4a28', band: '#5a3418', patch: '#8c5a34', thread: '#d6a870', pattern: 'plain', motif: 'none', shape: 'pile' },
+      'Lilac felt sprinkled with confetti knots in every color, a pink felt birthday cake appliquéd on each side with three yarn candles, and a collar of gold rickrack with a tiny brass tag that reads "3".',
+    credits: ['Starring Teddy, the biggest he has ever been', 'Party planned by Gwinn and Doc Leo, who never once said so', 'Stitched by Claude Opus 5.5'],
+    lore: 'Tucked in with the lost party hats in the hedge: a place card in Doc Leo\'s hand. "ONE MORE CHAIR AT THE TABLE. Keep it for whoever is still coming." Teddy sat in it anyway.',
+    look: { felt: '#b48ce0', band: '#ffd23f', patch: '#f59ac0', thread: '#ffffff', pattern: 'confetti', motif: 'cake' },
     detect: { block: 149 },
   },
   {

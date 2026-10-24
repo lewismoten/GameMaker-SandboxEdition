@@ -1,7 +1,7 @@
 // EGG.EXE: an unlisted program on the desk PC (not in HELP, not in any folder) for testing the
 // felt eggs. Lists all thirteen (and, once all of them are in, the two kept apart in bonus.ts),
-// where each stands, and adds or breaks them; a line under the list says when Teddy's trophy
-// is in the shadow box (all three Teddy eggs found, teddyTrophy.ts). On the rotten egg's row, ← → (or - +) crack it a
+// where each stands, and adds or breaks them; a line under the list says when Teddy's special
+// egg is in the shadow box (all three Teddy eggs found, teddyEgg.ts; never a row of its own). On the rotten egg's row, ← → (or - +) crack it a
 // tap at a time, O crumbles it open and 0 makes it whole (bonus.ts eggTaps). T opens the tin
 // heart ledger (tinHearts/tinHeartExe.ts), a page of its own. It only changes what is kept in localStorage (eggState.ts, bonus.ts), never a game's save.
 // Game-Maker's text UI style.
@@ -9,7 +9,7 @@ import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '../retro/text/cp437';
 import { eggStates, setOverride, type EggState } from './eggState';
-import { hasTeddyTrophy } from './teddyTrophy';
+import { hasTeddyEgg } from './teddyEgg';
 
 const STATE_TEXT: Record<EggState['status'], string> = {
   saved: 'Found in a save',
@@ -77,28 +77,28 @@ export async function runEggExe(ui: Ui): Promise<void> {
   const w = 72;
   let n = -1;
   let y = 0;
-  // one more line under the note while Teddy's trophy is in the shadow box
-  let trophy = false;
+  // one more line under the note while Teddy's special egg is in the shadow box
+  let special = false;
   const frame = () => {
     s.fill(0, 0, 79, 24, attr(7, 0), 176);
     s.write(0, 0, TITLEATTR, toCp437(' EGG.EXE  Egg Inspector 1.0'.padEnd(55) + 'Sandbox Software 1995 ').slice(0, 80));
-    const rows = n + 4 + (trophy ? 1 : 0);
+    const rows = n + 4 + (special ? 1 : 0);
     y = Math.max(2, Math.floor((24 - rows) / 2));
     s.window(x, y, w, rows, MENUATTR, SHADATTR);
     s.write(x + Math.floor((w - 16) / 2), y - 1, attr(15, 1), ' FELT EGG LEDGER ');
     s.write(x + 2, y, attr(15, 1), 'Game'.padEnd(29) + 'Egg'.padEnd(24) + 'State');
     s.write(x + 2, y + 1, MENUATTR, 'Ä'.repeat(w - 4));
     s.write(x + 2, y + n + 3, attr(7, 1), toCp437('Changes here never touch a saved game.'));
-    if (trophy) s.write(x + 2, y + n + 4, attr(14, 1), toCp437('All three Teddy eggs: his little trophy is in the box.'));
+    if (special) s.write(x + 2, y + n + 4, attr(14, 1), toCp437('All three Teddy eggs: he laid one of his own for the box.'));
   };
   let cur = 0;
   for (;;) {
     const list = await ledger();
-    const hasTrophy = hasTeddyTrophy(list.filter((e) => e.found).map((e) => e.key));
+    const hasSpecial = hasTeddyEgg(list.filter((e) => e.found).map((e) => e.key));
     // every egg found (or one broken) here: the ledger grows (or shrinks) to fit
-    if (list.length !== n || hasTrophy !== trophy) {
+    if (list.length !== n || hasSpecial !== special) {
       n = list.length;
-      trophy = hasTrophy;
+      special = hasSpecial;
       cur = Math.min(cur, n - 1);
       frame();
     }
