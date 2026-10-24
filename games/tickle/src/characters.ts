@@ -74,7 +74,7 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.rightD], walk(STEP, false), { key: KEY.d, sound: SND.step });
   set(S[SEQ.leftA], walk(-STEP, true), { key: KEY.a, sound: SND.step });
   // hopping
-  const hop = [f({ pose: 'hop', y: -HOP })];
+  const hop = [f({ pose: 'climb', y: -HOP })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
   set(S[SEQ.hopW], hop, { key: KEY.w, sound: SND.hop });
   const side = (dx: number, mirror: boolean) => [f({ pose: 'hopSide', x: dx, y: -HOP, mirror }), f({ pose: 'hopSide', x: dx, y: -HOP, mirror })];

@@ -29,7 +29,8 @@ export const RAT_HIGH = 11;
 // ---------------------------------------------------------------------------------------------
 
 export interface LeoPose {
-  view: 'front' | 'side';
+  /** Facing you, side on (walking right), or from behind (climbing). */
+  view: 'front' | 'side' | 'rear';
   /** Walking stride (0..3) in side view. */
   stride?: number;
   /** What his arms do. */
@@ -52,6 +53,7 @@ export function leoArt(pal: Pal) {
   return (o: LeoPose): Pixels => {
     const p = new Pixels(20, 40, T);
     const side = o.view === 'side';
+    const rear = o.view === 'rear';
     const dy = o.crouch ?? 0;
     const hx = (o.back ? -1 : 0) + (side ? 0 : 0);
     // ---- legs and sneakers
@@ -98,7 +100,10 @@ export function leoArt(pal: Pal) {
       const cx = side ? 10 : 10;
       for (let x = Math.round(cx - half); x <= cx + half; x++) p.set(x, y, c('coat', x < cx - half + 2 ? 2 : y > hem - 3 ? 3 : 4));
     }
-    if (!side) {
+    if (rear) {
+      // the coat's back seam
+      p.line(10, top + 3, 10, hem - 1, c('coat', 2));
+    } else if (!side) {
       for (let y = top; y < top + 9; y++) p.rect(8, y, 4, 1, c('purple', 1));
       for (let y = top; y < top + 8; y++) p.rect(9, y, 2, 1, c('tie', y < top + 2 ? 2 : 1));
       p.set(9, top + 8, c('tie', 1)).set(10, top + 8, c('tie', 0));
@@ -146,36 +151,43 @@ export function leoArt(pal: Pal) {
     const fx = side ? 11 : 10 + hx;
     const face = o.face ?? 'smile';
     // collar
-    p.rect(7, top - 1, 6, 1, c('purple', 2));
+    p.rect(7, top - 1, 6, 1, rear ? c('coat', 3) : c('purple', 2));
     if (side) blob(p, fx, hy + 4.5, 4, 5, pal.r('skin'), 1, 3);
     else blob(p, fx, hy + 4.5, 5, 5, pal.r('skin'), 1, 3);
-    // the ash beard: stubble over the jaw
-    for (let y = hy + 5; y < hy + 10; y++)
-      for (let x = fx - 5; x <= fx + 5; x++) if (p.get(x, y) !== T && (x + y) % 2 === 0 && (y > hy + 6 || Math.abs(x - fx) > 3)) p.set(x, y, c('navy', 1));
-    // the white mouth patch, and the mouth
-    const mx = side ? fx + 2 : fx;
-    p.rect(mx - (side ? 1 : 2), hy + 6, side ? 3 : 5, 3, c('paint', 1));
-    if (face === 'laugh') p.rect(mx - (side ? 0 : 1), hy + 6, side ? 2 : 3, 3, c('nose', 0)).set(mx, hy + 6, c('paint', 1));
-    else if (face === 'ouch' || face === 'dazed') p.rect(mx - 1, hy + 8, 3, 1, ink).set(mx, hy + 7, ink);
-    else if (face === 'grin')
-      p.rect(mx - 2, hy + 7, 5, 1, ink)
-        .set(mx - 2, hy + 6, ink)
-        .set(mx + 2, hy + 6, ink);
-    else
-      p.set(mx - 1, hy + 7, ink)
-        .set(mx, hy + 8, ink)
-        .set(mx + 1, hy + 7, ink);
-    // eyes: white patches, and pupils (shut for a blink and a laugh)
-    const eyes = side ? [fx + 1] : [fx - 2, fx + 2];
-    for (const ex of eyes) {
-      p.rect(ex - 1, hy + 2, 2, 2, c('paint', 1));
-      if (face === 'blink' || face === 'laugh') p.rect(ex - 1, hy + 3, 2, 1, ink);
-      else if (face === 'dazed') p.set(ex - 1, hy + 2, ink).set(ex, hy + 3, ink);
-      else p.set(ex, hy + 3, ink);
-      p.rect(ex - 1, hy + 1, 2, 1, ink);
+    if (rear) {
+      // the back of his head: ash hair down to the neck, his ears either side
+      for (let y = hy; y < hy + 6; y++)
+        for (let x = fx - 5; x <= fx + 5; x++)
+          if (p.get(x, y) !== T && !(y >= hy + 3 && y <= hy + 4 && Math.abs(x - fx) >= 4)) p.set(x, y, c('grey', y < hy + 2 ? 2 : 1));
+    } else {
+      // the ash beard: stubble over the jaw
+      for (let y = hy + 5; y < hy + 10; y++)
+        for (let x = fx - 5; x <= fx + 5; x++) if (p.get(x, y) !== T && (x + y) % 2 === 0 && (y > hy + 6 || Math.abs(x - fx) > 3)) p.set(x, y, c('navy', 1));
+      // the white mouth patch, and the mouth
+      const mx = side ? fx + 2 : fx;
+      p.rect(mx - (side ? 1 : 2), hy + 6, side ? 3 : 5, 3, c('paint', 1));
+      if (face === 'laugh') p.rect(mx - (side ? 0 : 1), hy + 6, side ? 2 : 3, 3, c('nose', 0)).set(mx, hy + 6, c('paint', 1));
+      else if (face === 'ouch' || face === 'dazed') p.rect(mx - 1, hy + 8, 3, 1, ink).set(mx, hy + 7, ink);
+      else if (face === 'grin')
+        p.rect(mx - 2, hy + 7, 5, 1, ink)
+          .set(mx - 2, hy + 6, ink)
+          .set(mx + 2, hy + 6, ink);
+      else
+        p.set(mx - 1, hy + 7, ink)
+          .set(mx, hy + 8, ink)
+          .set(mx + 1, hy + 7, ink);
+      // eyes: white patches, and pupils (shut for a blink and a laugh)
+      const eyes = side ? [fx + 1] : [fx - 2, fx + 2];
+      for (const ex of eyes) {
+        p.rect(ex - 1, hy + 2, 2, 2, c('paint', 1));
+        if (face === 'blink' || face === 'laugh') p.rect(ex - 1, hy + 3, 2, 1, ink);
+        else if (face === 'dazed') p.set(ex - 1, hy + 2, ink).set(ex, hy + 3, ink);
+        else p.set(ex, hy + 3, ink);
+        p.rect(ex - 1, hy + 1, 2, 1, ink);
+      }
+      // the red nose
+      p.disc(side ? fx + 4 : fx + 0.5, hy + 5, 1.3, c('nose', 1)).set(side ? fx + 4 : fx, hy + 4, c('nose', 2));
     }
-    // the red nose
-    p.disc(side ? fx + 4 : fx + 0.5, hy + 5, 1.3, c('nose', 1)).set(side ? fx + 4 : fx, hy + 4, c('nose', 2));
     // ---- the fedora: chewed brim, dented crown, a few pins on the band
     if (!o.hatless) {
       const by = hy - 1 + (o.back ? 1 : 0);
@@ -232,6 +244,7 @@ export function buildCharBlocks(pal: Pal) {
   add('grin', { view: 'front', face: 'grin' });
   for (let s = 0; s < 4; s++) add(`walk${s}`, { view: 'side', stride: s });
   add('hop', { view: 'front', arms: 'up', hop: true, face: 'grin' });
+  add('climb', { view: 'rear', arms: 'up', hop: true });
   add('hopSide', { view: 'side', arms: 'up', hop: true, face: 'grin' });
   add('pin', { view: 'front', arms: 'press', crouch: 4, face: 'grin' });
   add('tickle0', { view: 'front', arms: 'wiggle0', face: 'laugh' });
