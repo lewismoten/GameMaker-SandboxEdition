@@ -220,7 +220,7 @@ export function introFli(): Uint8Array {
   for (let t = 0; t < 14; t++) {
     const p = counter();
     scaleBlit(p, gwinn(t % 2), 230 - t * 4, 100 - Math.min(t, 6) * 3, 3, true);
-    say(p, ['The family recipe. Twelve ingredients.', "(Gwinn has two n's.)"]);
+    say(p, ['The family recipe. Twelve ingredients.', '(Gwinn is very interested.)']);
     frames.push(p);
   }
   for (let t = 0; t < 12; t++) {

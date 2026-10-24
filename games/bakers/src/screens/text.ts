@@ -14,7 +14,7 @@ The British never recovered.
 Historians say it was the French, the weather and General Washington. Historians were not there.`,
   `This year, Gwinn ate the card.
 
-(Gwinn has two n's. The card had twelve ingredients. She got all twelve, and the corner.)
+(The card had twelve ingredients. She got all twelve, and the corner.)
 
 There is one other copy: the kitchen itself.`,
   `Ebenezer kept every ingredient in the old family kitchen under the bakery, and he built it to keep out Redcoats: false walls, doors that swing one way, floors that slide, walls on timers.
@@ -65,7 +65,7 @@ Recipe: the Baker family, est. 1776 (allegedly)`,
     `STARRING
 Doc Leo, PhD (Comedic Science), as himself
 Teddy, a corgi who knows left from right
-Gwinn (two n's), as the dog who ate the card
+Gwinn, as the dog who ate the card
 THE CHEZ, a 1976 CitiCar, as the getaway car`,
     `...and a great many mice, toy Redcoats, rolling pins, and one 250-year-old yeast named Gerald.
 
