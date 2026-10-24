@@ -31,7 +31,7 @@ interface Spec {
   boss: BossName;
   bossHits: number;
   shot: string;
-  foes: { name: string; wander: number; rush: number; hits: number; thru?: number; path?: [number, number, number][] }[];
+  foes: { name: string; wander: number; rush: number; hits: number; thru?: number; path?: [number, number, number, number?][] }[];
   plan: (m: MonBook) => DungeonPlan;
   piece: string;
   /**
@@ -78,9 +78,10 @@ const SPECS: Spec[] = [
         rush: 0,
         hits: 2,
         thru: 0,
+        // the eel faces right; it turns round (mirrored) to swim back
         path: [
-          [3, 0, 1],
-          [0, 0, 1],
+          [3, 0, 1, 0],
+          [0, 0, 1, 4],
         ],
       },
     ],
