@@ -40,7 +40,7 @@ function kazoo(): Uint8Array {
   return sample(0.45, mix([band(v, 0.15, 0.7), 0.8], [osc.noise(11), 0.12]), { envelope: (u) => Math.min(1, u * 10) * (1 - u) ** 0.4, gain: 1 });
 }
 
-/** A fife: Yankee Doodle went to town (the first bar, the important part). */
+/** A fife: Yankee Doodle went to town (the first bar, the important part; traditional, public domain). */
 function fife(): Uint8Array {
   const tune = [523, 523, 587, 659, 523, 659, 587];
   const step = 0.13;
