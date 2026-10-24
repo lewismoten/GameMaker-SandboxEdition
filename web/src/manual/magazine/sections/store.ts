@@ -1,6 +1,7 @@
 // The store: a mail-order catalog page of the Sandbox mugs and tumblers. They are the desk
 // mug's (desk/mug/): its sizes (mugSizes.ts MUG_SIZES), its pictures (mugArt.ts MUG_DESIGNS:
-// the BBS's ANSI art and the Sandbox Software games' title screens) and its colors inside.
+// the BBS's ANSI art and badges cut from the Sandbox Software games' title screens) and its
+// colors inside.
 // Nothing is sold: the store prints a sublimation wrap free, so the page shows no prices.
 // Each size links go:store/<size id> (the print page with it); the mug viewer is go:store.
 import { MUG_SIZES } from '../../../desk/mug/mugSizes';
@@ -16,7 +17,7 @@ const SIZE_WORDS: Record<string, string> = {
   '20oz': 'The picture wraps all the way round.',
 };
 
-/** The Sandbox Software games whose title screens go on a mug (desk/mug/gameMugArt.ts GAME_MUGS). */
+/** The Sandbox Software games with a mug badge (desk/mug/gameMugArt.ts GAME_MUGS). */
 const GAME_MUGS = ['teddy', 'sandcast', 'logic', 'snowbound', 'maximus', 'year2000', 'blaster', 'sleuth'];
 /** The ones pictured on the page. */
 const PICTURED = ['teddy', 'sandcast', 'logic', 'snowbound'];
@@ -48,12 +49,12 @@ function storePage(ctx: MagContext) {
         rows(MUG_SIZES.map(sizeRow)),
         grid(
           PICTURED.filter((id) => ctx.game(id)).map((id) => [
-            shot(id, 'title', `${ctx.game(id)!.title}, its title screen: the picture on its mug`, `[${ctx.game(id)!.title}](go:store)`),
+            shot(id, 'title', `${ctx.game(id)!.title}, its title screen: its mug’s badge is cut from it`, `[${ctx.game(id)!.title}](go:store)`),
           ]),
           0.18,
         ),
         p(
-          `**THE PICTURES.** The Sandbox Software title screens, hero and all: ${titles.join(', ')}. Or the board’s own ANSI art from THE -= S A N D B O X =- BBS: ${BBS_PICTURES.join(', ')}. Put a different one on the back if you like.`,
+          `**THE PICTURES.** Badges cut from the Sandbox Software title screens, hero and all: ${titles.join(', ')}. Or the board’s own ANSI art from THE -= S A N D B O X =- BBS: ${BBS_PICTURES.join(', ')}. Put a different one on the back if you like.`,
         ),
         card(
           'MAIL-ORDER FORM',

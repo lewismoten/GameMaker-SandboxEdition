@@ -161,7 +161,7 @@ export function openMugViewer(): Promise<void> {
           h('h3', null, 'Picture'),
           h('p', { class: 'mugv-note' }, 'The same picture on the front and the back. ANSI art from the board itself, in the VGA text font and its 16 colors:'),
           h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'bbs')),
-          h('p', { class: 'mugv-note' }, 'Or a Sandbox Software game: its title screen and its hero, from the game’s own files:'),
+          h('p', { class: 'mugv-note' }, 'Or a Sandbox Software game: a badge of its title and its hero, from the game’s own files:'),
           h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'game')),
           h('h3', null, 'Mug'),
           h('div', { class: 'mugv-chips' }, ...sizePicks),

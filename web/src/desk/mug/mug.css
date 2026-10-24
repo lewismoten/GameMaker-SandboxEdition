@@ -169,6 +169,11 @@
   image-rendering: pixelated;
 }
 
+/* a game's badge is see-through round the edge: show it on the mug's white */
+.mugv-design[data-group='game'] img {
+  background: #f7f5ee;
+}
+
 .mugv-design span {
   font-size: 12px;
 }
