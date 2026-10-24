@@ -11,7 +11,9 @@ import { Machine } from '../engine/machine';
 import { Recorder } from '../engine/recorder';
 import { gameNameOf, loadGameFile, play } from '../engine/game';
 import { sceneFile, type Session } from '../engine/scene';
-import { drawDefaultScreen, gVertMenu } from '../engine/menus';
+import { drawDefaultScreen, gVertMenu, highScoreFile, readHighScores } from '../engine/menus';
+import { serializeHighScores } from '../formats/highscore';
+import { fillBlankScores } from './madeUpScores';
 import { match, RGB_BLUE, showGraphic } from '../engine/showGraphic';
 import { newCharInfo } from '../engine/world';
 import { AudioEngine } from '../audio/engine';
@@ -265,7 +267,12 @@ export async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walk
     rand: () => (walk.rand.per === 'scene' ? seeded(walk.rand.seed) : shared),
     onScene: (scene) => {
       rec.enterScene(scene);
-      if (scene === 1) return chapter(FRONT_CHAPTERS.ending);
+      if (scene === 1) {
+        // the ending: a fresh disk's empty Top Ten gets made-up callers' scores (madeUpScores.ts)
+        const name = highScoreFile(s.gameName);
+        m.files.set(name, serializeHighScores(fillBlankScores(readHighScores(m, s.gameName), s.ci.score, walk.rand.seed)));
+        return chapter(FRONT_CHAPTERS.ending);
+      }
       const title = marks.get(scene);
       if (title !== undefined) {
         marks.delete(scene);
@@ -274,6 +281,7 @@ export async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walk
     },
   };
   hooks.onSession?.(s);
+  await m.need(highScoreFile(s.gameName)); // loaded now, so the ending can fill it in (onScene)
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors });
   const song = async (slot: number) => {
