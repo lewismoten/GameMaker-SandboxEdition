@@ -66,7 +66,6 @@
   "warning hazard-art s6 Block 41 hurts through its whole cell, but its art fills 17% of it",
   "warning hurt-lock s2 Monster 9 holds the hero while it hurts: once it touches him, no key gets him away (first at (33, 10))",
   "warning hurt-lock s7 Monster 22 holds the hero while it hurts: once it touches him, no key gets him away (first at (37, 12))",
-  "warning hurt-lock s7 Monster 38 pushes the hero inside a wall beside it, first at (42, 11)",
   "warning start-threat s5 Monster 25 starts 1 blocks from where the hero comes in"
  ],
  "depth": [

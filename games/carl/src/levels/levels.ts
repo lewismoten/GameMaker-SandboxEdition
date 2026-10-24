@@ -28,5 +28,5 @@ export const LEVELS: LevelDef[] = [
   { file: 'bed', desc: 'Joins Me in Bed', set: 'house', light: 'night', build: theBed, snd: 'bed', song: 'bed', mons: { wind: 24 }, view: [10, 5] },
   { file: 'window', desc: 'The Open Window', set: 'yard', light: 'yard', build: theWindow, snd: 'yard', song: 'window', mons: { patrol: 6 }, view: [0, 3] },
   { file: 'wild', desc: 'Carl Has Seen Things', set: 'yard', light: 'doc', build: theWild, snd: 'wild', song: 'wild', mons: { patrol: 6 }, view: [13, 6] },
-  { file: 'aux', desc: 'The Aux Cord', set: 'house', light: 'gloom', build: theAux, snd: 'aux', song: 'aux', mons: { wind: 14, mop: 6 }, view: [36, 5] },
+  { file: 'aux', desc: 'The Aux Cord', set: 'house', light: 'gloom', build: theAux, snd: 'aux', song: 'aux', mons: { wind: 14, mop: 4 }, view: [36, 5] },
 ];
