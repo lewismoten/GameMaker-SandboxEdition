@@ -30,10 +30,14 @@ export async function walkDialog(project: Project): Promise<void> {
   const status = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
   const list = h('ol', { class: 'wd-list', 'aria-label': 'Scenes the bot played' });
   const watchBtn = h('button', { type: 'button', onclick: () => void watch() }, '▶ Watch');
+  let stoppedMap: string | undefined;
+  const mapLink = h('a', { class: 'wd-map', hidden: true }, '🗺 See where the bot got to on the map (Level check 🩺)');
   const runBtn = h('button', { type: 'button', class: 'primary', onclick: () => (running ? running.cancel() : void run()) }, '🤖 Make it');
 
   const render = () => {
     watchBtn.hidden = !saved?.walk?.timeline.frames;
+    mapLink.hidden = !stoppedMap;
+    if (stoppedMap) mapLink.href = `#/p/${project.id}/${encodeURIComponent(stoppedMap)}`;
     if (!saved) {
       status.textContent =
         'No walkthrough yet. The bot plays every scene on the real engine, trying bot styles from quickest to most thorough until one gets through.';
@@ -75,6 +79,20 @@ export async function walkDialog(project: Project): Promise<void> {
         scenes: result.scenes.map(({ heat: _h, ...s }) => s),
       };
       project.setExtras(project.gam, SECTION, saved);
+      // where the bot stopped, on that scene's map: the Level check panel shows its heat map
+      const stuck = result.scenes.find((x) => x.heat);
+      const mapName = stuck && project.game().scenes[stuck.scene]?.files[1];
+      if (stuck?.heat && mapName && project.files.has(mapName)) {
+        const { keepBotHeat } = await import('../editors/map/check/checkPanel');
+        keepBotHeat(
+          project,
+          project.files.resolve(mapName) ?? mapName,
+          stuck.scene,
+          stuck.heat,
+          `The walkthrough bot got this far in ${stuck.name} and found no way on`,
+        );
+        stoppedMap = project.files.resolve(mapName) ?? mapName;
+      }
     } catch (e) {
       if ((e as Error).name !== 'AbortError') toast(`The walkthrough bot failed: ${(e as Error).message}`, 'error');
     } finally {
@@ -94,8 +112,10 @@ export async function walkDialog(project: Project): Promise<void> {
   }
 
   render();
-  await modal<void>('Make a walkthrough', () =>
-    h(
+  await modal<void>('Make a walkthrough', (close) => {
+    // going to the map closes this
+    mapLink.onclick = () => close(undefined);
+    return h(
       'div',
       { class: 'stack wd' },
       h(
@@ -117,7 +137,8 @@ export async function walkDialog(project: Project): Promise<void> {
       ),
       status,
       list,
-    ),
-  );
+      mapLink,
+    );
+  });
   running?.cancel();
 }

@@ -71,6 +71,24 @@ export function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean
 }
 
 const pack = (a: Uint8Array) => String.fromCharCode(...[...a].map((v) => 48 + v));
+
+/** Keeps a heat map that the walkthrough bot made as this map's last check, with a note saying so. */
+export function keepBotHeat(project: Project, map: string, scene: number, heat: Uint32Array, note: string): void {
+  const run = { heat, first: Int32Array.from(heat, (h) => (h ? 0 : -1)) };
+  const saved: Saved = {
+    when: new Date().toISOString(),
+    budget: 0,
+    heat: pack(heatSteps(run, false)),
+    soon: pack(heatSteps(run, false)),
+    stuck: [],
+    deaths: [],
+    findings: [{ check: 'coverage', severity: 'warning', title: note, where: { scene, map } }],
+    places: 0,
+    complete: false,
+    ms: 0,
+  };
+  project.setExtras(map, SECTION, saved);
+}
 const unpack = (s: string) => Uint8Array.from(s, (c) => c.charCodeAt(0) - 48);
 
 export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean; toggle(on?: boolean): void } {
