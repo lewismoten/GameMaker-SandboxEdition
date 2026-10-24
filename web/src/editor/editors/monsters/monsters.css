@@ -27,6 +27,10 @@
 .mon-who h2 {
   margin: 0;
 }
+.mon-name-field input {
+  width: 12em;
+  max-width: 100%;
+}
 .mon-anim {
   flex: 1 1 300px;
   min-width: 0;

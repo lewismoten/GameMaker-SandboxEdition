@@ -13,7 +13,8 @@ import { actorAt, allItems, emptyScene, normalizeScene, textItem, type ActorItem
 import { drawText, fitText, restBox, textAt, textSize, textWarnings, wrapText } from './sceneText';
 import { mergePalettes, sceneAssets, walkSequence } from './sceneAssets';
 import { mirrored, renderScene, sceneFli } from './sceneRender';
-import { generateScene, MONSTER_NAMES, storyText, type GenerateSource } from './sceneGenerate';
+import { generateScene, storyText, type GenerateSource } from './sceneGenerate';
+import { MONSTER_NAMES } from '../../monsters/monsterNames';
 
 /** A one-level game in memory: a red/blue hero walking right, two monsters on the map, a story. */
 function fixture(): GenerateSource {

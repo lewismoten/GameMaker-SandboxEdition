@@ -22,6 +22,7 @@ import {
 } from './sceneModel';
 import { fitText, textWarnings } from './sceneText';
 import { findItem, monstersWithPictures, partnerFile, type SceneCtx } from './sceneCtx';
+import { monsterName } from '../../monsters/monsterNames';
 
 const MOTIONS: [TextMotion, string][] = [
   ['still', 'Still'],
@@ -309,7 +310,10 @@ function actorFields(ctx: SceneCtx, it: ActorItem, edit: Edit): HTMLElement {
           ),
           selectField<number>(
             'Monster',
-            monstersWithPictures(ctx.project, src.mon).map((i): [number, string] => [i, `Monster ${i}`]),
+            monstersWithPictures(ctx.project, src.mon).map((i): [number, string] => {
+              const name = monsterName(ctx.project, src.mon, i);
+              return [i, name ? `Monster ${i}: ${name}` : `Monster ${i}`];
+            }),
             () => src.index,
             (v) => edit<ActorItem>((a) => a.source.type === 'mon' && (a.source.index = v)),
           ),

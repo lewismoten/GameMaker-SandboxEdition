@@ -19,6 +19,7 @@ import { MapTools, type ToolMode } from './tools/toolController';
 import { findBlock, floodCells, replaceAll } from './tools/cellOps';
 import { checkPanel } from './check/checkPanel';
 import { simulate } from '../palette/colorVision';
+import { monsterName } from '../monsters/monsterNames';
 import './mapExport.css';
 import './tools/mapTools.css';
 
@@ -226,11 +227,12 @@ registerEditor(['map'], (host, project, file) => {
       monPicker,
       ...mons.map((m, i) => {
         const pic = firstPic(m);
+        const name = monsterName(project, monName, i);
         return h(
           'button',
           {
             class: mode === 'monster' && i === monBrush ? 'selected' : '',
-            title: `Monster ${i}`,
+            title: name ? `Monster ${i}: ${name}` : `Monster ${i}`,
             onclick: () => ((monBrush = i), setMode('monster'), rebuildMonsters()),
           },
           pic >= 0 ? blockCanvas(mblk[pic].pixels, chooser.palette, { transparent: true, className: 'checker' }) : h('span', null, '—'),

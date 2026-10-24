@@ -1,4 +1,5 @@
-// Monster editor (MONEDIT.EXE): 64 monsters with animation, strength and movement.
+// Monster editor (MONEDIT.EXE): 64 monsters with animation, strength and movement, and a
+// name for each (monsterNames.ts: kept in the companion file, never in the .mon).
 import './monsters.css';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
@@ -15,6 +16,7 @@ import { monsterPathEditor } from './monsterPathEditor';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
+import { monsterName, setMonsterName } from './monsterNames';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
 
@@ -82,9 +84,14 @@ registerEditor(['mon'], (host, project, file) => {
       list,
       ...mons.map((m, i) => {
         const p = firstPic(m);
+        const name = monsterName(project, file, i);
         return h(
           'button',
-          { class: i === current ? 'selected' : '', title: `Monster ${i}`, onclick: () => ((current = i), (anim = 0), render()) },
+          {
+            class: i === current ? 'selected' : '',
+            title: name ? `Monster ${i}: ${name}` : `Monster ${i}`,
+            onclick: () => ((current = i), (anim = 0), render()),
+          },
           p >= 0 ? blockCanvas(mblk[p].pixels, chooser.palette, { transparent: true }) : h('span', { class: 'meta' }, '·'),
           h('small', null, i),
         );
@@ -127,6 +134,23 @@ registerEditor(['mon'], (host, project, file) => {
     render();
   }
 
+  /** The monster's name: for the designer and the Scene maker's Cast, never written to the .mon. */
+  function nameField(): HTMLElement {
+    const i = current;
+    const input = h('input', {
+      type: 'text',
+      value: monsterName(project, file, i),
+      maxLength: 40,
+      placeholder: 'e.g. Scorpion',
+      title: 'What you call this monster: shown in the editor and in a Cast scene, never saved in the game’s files',
+    });
+    input.addEventListener('change', () => {
+      setMonsterName(project, file, i, input.value);
+      renderList();
+    });
+    return h('label', { class: 'field mon-name-field' }, h('span', null, 'Name'), input);
+  }
+
   function renderDetail(): void {
     const m = mons[current];
     const frames = m.pic.slice(0, LASTSL);
@@ -143,7 +167,7 @@ registerEditor(['mon'], (host, project, file) => {
           'div',
           { class: 'mon-who' },
           preview,
-          h('div', null, h('h2', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot')),
+          h('div', { class: 'mon-name' }, h('h2', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot'), nameField()),
         ),
         h(
           'div',

@@ -31,7 +31,8 @@ export const SHOW: Chapter = {
   credits; your characters and monsters moving with their own pictures along a path, turning
   round when they walk the other way; and blocks set on the picture. Drag anything on the
   picture to move it. <i>Generate…</i> starts you off with an intro (the title over the first
-  level, the hero walking across), a cast (everyone in turn, close up, with a name card) or the
+  level, the hero walking across), a cast (everyone in turn, close up, with a name card: a monster’s is the Name you
+  give it in the monster editor, kept with your editor notes and never in the game’s files) or the
   story typed over your levels, all from the game’s own files and all yours to change.</p>
   <ul>
     <li><b>Every change is the real file.</b> The scene is written into the <code>.FLI</code>

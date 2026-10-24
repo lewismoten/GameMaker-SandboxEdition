@@ -17,6 +17,7 @@ import { splitTitle } from '../../../../project/gameTitle';
 import { SCENE_H, SCENE_W, emptyScene, newId, textItem, type ActorItem, type Background, type Scene, type TextItem } from './sceneModel';
 import { fitText, linesOf, textSize, wrapText } from './sceneText';
 import { backgroundOf, gamePalette, type SceneSource } from './sceneAssets';
+import { monsterName } from '../../monsters/monsterNames';
 
 export type Generator = 'intro' | 'cast' | 'story';
 
@@ -25,9 +26,6 @@ export interface GenerateSource extends SceneSource {
   name?: string;
   extras?<T>(file: string, section: string, fallback: T): T;
 }
-
-/** Where monster names are kept in the companion, under the .mon: an array by monster number. */
-export const MONSTER_NAMES = 'names';
 
 const COLS = SCENE_W / BLEN;
 const ROWS = SCENE_H / BLEN;
@@ -116,12 +114,8 @@ function intro(src: GenerateSource): Scene {
   return s;
 }
 
-/** Monster names kept in the companion (`MONSTER_NAMES`), if any. */
-function monsterName(src: GenerateSource, mon: string, i: number): string {
-  const names = src.extras?.<unknown>(mon, MONSTER_NAMES, undefined);
-  const n = Array.isArray(names) && typeof names[i] === 'string' ? names[i].trim() : '';
-  return (n || `MONSTER ${i}`).toUpperCase();
-}
+/** A monster's name kept in the companion (monsters/monsterNames.ts), or MONSTER n. */
+const castName = (src: GenerateSource, mon: string, i: number): string => (monsterName(src, mon, i) || `MONSTER ${i}`).toUpperCase();
 
 const stem = (file: string) => file.replace(/\.[^.]*$/, '').toUpperCase();
 
@@ -164,7 +158,7 @@ function cast(src: GenerateSource, max = 10): Scene {
             faces: 'right',
             mirror: true,
           },
-          name: monsterName(src, monF, i),
+          name: castName(src, monF, i),
         });
       }
     } catch {

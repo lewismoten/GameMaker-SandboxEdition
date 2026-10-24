@@ -121,7 +121,8 @@ in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items), 
 8x8 font, text motions, and the warnings and fit that keep text inside 320x200), `sceneAssets.ts`
 (the game's pictures, maps and sprites, sprite colors matched into each background's palette),
 `sceneRender.ts` (frames, fades and the `.FLI`) and `sceneGenerate.ts` (Intro, Cast and Story
-made from the game's files); `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
+made from the game's files; a monster's name for its Cast card is the one the monster editor
+keeps in the companion, `editors/monsters/monsterNames.ts`); `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
 picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
 
 The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows a level as seen in
