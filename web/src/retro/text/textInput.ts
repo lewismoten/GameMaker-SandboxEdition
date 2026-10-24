@@ -26,6 +26,11 @@ export class TextKeys {
    */
   gate?: () => Promise<void> | undefined;
 
+  /** Resolves once the gate is open (what was sent is all on the screen). */
+  async settled(): Promise<void> {
+    for (let w = this.gate?.(); w; w = this.gate?.()) await w;
+  }
+
   /** True while a program is being stopped (see abort). */
   get stopping(): boolean {
     return this.aborting;
@@ -107,6 +112,8 @@ export function key(k: string): Key {
 
 /** Reads a line at the cursor, echoing to the screen. Returns null for Ctrl+C. */
 export async function readLine(screen: TextScreen, keys: TextKeys, history: string[] = [], maxLen = 120, a = 7): Promise<string | null> {
+  // the prompt before it may still be arriving (the BBS on a slow line): start where it ends
+  if (keys.gate) await keys.settled();
   let line = '';
   let pos = 0;
   let h = history.length;

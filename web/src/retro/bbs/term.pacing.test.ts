@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Term } from './term';
-import { TextKeys, key } from '../text/textInput';
+import { TextKeys, key, readLine } from '../text/textInput';
 import { DEFAULT_SPEED, setLineSpeed } from './lineSpeed';
 import type { TextScreen } from '../text/textScreen';
 import { PacedQueue } from './pacedQueue';
@@ -20,6 +20,9 @@ function fakeScreen() {
       for (let yy = y; yy <= y1; yy++) for (let xx = x; xx <= x1; xx++) s.put(xx, yy, ch, a);
     },
     write: () => undefined,
+    print(text: string, a = 7) {
+      for (const ch of text) s.put(s.cursorX++, s.cursorY, ch.charCodeAt(0), a);
+    },
     markDirty: () => undefined,
     row: (y: number) => String.fromCharCode(...s.chars.subarray(y * 80, y * 80 + 80)).trimEnd(),
   };
@@ -140,5 +143,27 @@ describe('PacedQueue', () => {
     expect(out).toEqual([...Array(50).keys()]);
     expect(done).toBe(true);
     expect(q.idle).toBe(true);
+  });
+});
+
+describe('readLine on a slow line', () => {
+  beforeEach(() => vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] }));
+  afterEach(() => {
+    vi.useRealTimers();
+    setLineSpeed(DEFAULT_SPEED);
+  });
+
+  it('echoes after the prompt, once the prompt has arrived', async () => {
+    const { screen, keys, t } = setup();
+    setLineSpeed(1200);
+    t.connected = true;
+    t.line('A LIST OF FILES');
+    t.print('Name: ');
+    const read = readLine(screen as unknown as TextScreen, keys);
+    keys.type('ZOE\n');
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(await read).toBe('ZOE');
+    expect(screen.row(1)).toBe('Name: ZOE');
+    t.close();
   });
 });
