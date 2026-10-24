@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "ARIIkgBNCM0JTRFICsgLzQZNCkgKyAZICsgOSArID0gKyAfNBhIIkgBNDc0DEgiSAE0JzQMSCJIATQnNAxIIkgBNCs0DTQfNEU0OzQ0SBJIATRXNA00NzQZIBsgJTSJICsgPSArIGM1MTRjNBkgOyARICsgJEgiSAE0VzQRNA80GEgqSAE0OzQNLBMsGSA7IBBIIkgBNCs0DTQZICsgGSArIBM0ITQXNBhIKkgBNAM0UTQ=="
+   "keys": "ARIIkgBNCM0JTRFICsgLzQZNCkgKyAZICsgOSArID0gKyAfNBhIIkgBNDc0DEgiSAE0JzQMSCJIATQnNAxIIkgBNCs0DTQfNEU0OzQ0SBJIATRXNA00NzQZIBsgJTSJICsgPSArIGM0KTQZICsgSzQZIDsgESArICRIIkgBNCc0GTQPNBhIKkgBNBs0DSwTLBkgOyAkSCJIATQrNA00HSArIBkgKyATNCE0FzQYSCpIATQDNF00="
   },
   {
    "scene": 3,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19927,
+  "frames": 19720,
   "chapters": [
    {
     "title": "Opening",
@@ -59,23 +59,23 @@
    },
    {
     "title": "Level 2: Deep Down in the Dust",
-    "frame": 6150
+    "frame": 5943
    },
    {
     "title": "Level 3: The Mountain",
-    "frame": 10018
+    "frame": 9811
    },
    {
     "title": "Level 4: The Palm of God's Hand",
-    "frame": 12348
+    "frame": 12141
    },
    {
     "title": "Ending",
-    "frame": 15080
+    "frame": 14873
    },
    {
     "title": "Credits",
-    "frame": 17839
+    "frame": 17632
    }
   ]
  }

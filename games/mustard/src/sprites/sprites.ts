@@ -9,6 +9,7 @@ import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import type { Pal } from '../art/pal';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T };
 
@@ -199,8 +200,10 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Big loud things are solid (they push the seed away) and hurt to bump into.
-  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
+  // Big loud things are solid (they push the seed away) and hurt to bump into. Not SOLTOP: on a
+  // monster that is the side that pushes the hero under it (PLAYGAME's ChkMonChr), into the
+  // ground. SOLBOT still lets the seed stand on one's back.
+  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: SOLBOT | SOLLEF | SOLRIG });
 
   // Raindrops: catch one and it is a drop of water (and a sip).
   const drop = (f: number) => {

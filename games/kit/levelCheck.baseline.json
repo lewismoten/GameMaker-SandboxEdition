@@ -446,9 +446,7 @@
   "warning waits s37 Lift monster 38 takes 13.2 s to go round: a hero who just missed it waits that long",
   "warning waits s44 Lift monster 38 takes 13.2 s to go round: a hero who just missed it waits that long"
  ],
- "mustard": [
-  "warning hurt-lock s2 Landing on monster 19 sinks the hero into the ground under it, first at (55, 12)"
- ],
+ "mustard": [],
  "needle": [
   "warning hurt-lock s3 Monster 8 holds the hero while it hurts: once it touches him, no key gets him away (first at (22, 11))",
   "warning hurt-lock s4 Monster 13 holds the hero while it hurts: once it touches him, no key gets him away (first at (15, 17))",
