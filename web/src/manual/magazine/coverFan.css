@@ -1,0 +1,117 @@
+/* Covers fanned out small (coverFan.ts): each a little letter-size cover with the red
+   masthead, turned a few degrees from the one under it. */
+.mag-fan {
+  display: flex;
+  justify-content: center;
+  padding: 0.6em 0 1.2em 2.8em;
+  font-size: 1.15em;
+}
+
+.mag-mini {
+  --mini-paper: #121218;
+  --mini-ink: #f6f2e6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  box-sizing: border-box;
+  width: 9.5em;
+  aspect-ratio: 8.5 / 11;
+  margin-left: -2.8em;
+  padding: 0.5em 0.5em 0.6em;
+  border: 0.1em solid #141210;
+  background: var(--mini-paper);
+  color: var(--mini-ink);
+  box-shadow: 0.25em 0.3em 0 rgba(0, 0, 0, 0.4);
+  transform: rotate(var(--turn, 0deg));
+  transform-origin: 50% 120%;
+  overflow: hidden;
+}
+
+.mag-mini.tone-cyan {
+  --mini-paper: #1b3f9a;
+}
+.mag-mini.tone-pink {
+  --mini-paper: #c2185b;
+}
+.mag-mini.tone-yellow {
+  --mini-paper: #ffd31a;
+  --mini-ink: #141210;
+}
+.mag-mini.tone-white {
+  --mini-paper: #fbf8ef;
+  --mini-ink: #141210;
+}
+.mag-mini.tone-news {
+  --mini-paper: #2f8f3a;
+}
+
+.mag-mini-mast {
+  color: var(--red);
+  -webkit-text-stroke: 0.03em #fff;
+  text-shadow: 0.05em 0.05em 0 #000;
+  font:
+    900 1.12em/0.9 Impact,
+    'Arial Black',
+    sans-serif;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mag-mini-issue {
+  font:
+    700 0.5em/1.1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.mag-mini-line {
+  padding-right: 2.2em;
+  font:
+    900 0.85em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  text-transform: uppercase;
+}
+
+/* the top cover shows its whole line */
+.mag-mini:last-child .mag-mini-line {
+  padding-right: 0;
+}
+
+/* three screenshots on the cover, drawn as colored blocks */
+.mag-mini-shots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25em;
+  margin-top: auto;
+}
+
+.mag-mini-shots i {
+  aspect-ratio: 4 / 3;
+  border: 0.12em solid #c3c3c3;
+  background: linear-gradient(#5a8fe0 0 55%, #3f9a3f 55% 70%, #8a5a2b 70%);
+}
+
+.mag-mini-shots i:nth-child(2) {
+  background: linear-gradient(#0c0c14 0 60%, #e33 60% 66%, #3a2f6a 66%);
+}
+
+.mag-mini-shots i:nth-child(3) {
+  grid-column: span 2;
+  aspect-ratio: 8 / 3;
+  background: linear-gradient(90deg, #f6f2e6 0 30%, #9cc0ff 30% 70%, #ffd31a 70%);
+}
+
+@container (max-width: 560px) {
+  .mag-fan {
+    padding-left: 2.6em;
+    font-size: 0.62em;
+  }
+
+  .mag-mini {
+    margin-left: -2.6em;
+  }
+}

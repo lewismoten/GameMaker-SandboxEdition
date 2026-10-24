@@ -1,0 +1,126 @@
+/* A reply card's postage side (replyMail.ts): white card, black type, the facing marks at the
+   top and the stack of thick bars under "no postage necessary". */
+.mag-reply {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 10.5em;
+  grid-template-areas:
+    'head stamp'
+    'permit stamp'
+    'paid stamp'
+    'to stamp';
+  align-content: start;
+  column-gap: 1em;
+  padding: 2em 1.6em 1.8em;
+  border: 0.18em dashed #141210;
+  background: #fff;
+  color: #141210;
+  font:
+    700 0.9em/1.25 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mag-reply p {
+  margin: 0;
+}
+
+/* the facing identification marks: tall thin bars along the top edge */
+.mag-reply-fim {
+  position: absolute;
+  top: 0;
+  right: 12em;
+  width: 3.2em;
+  height: 1em;
+  background: repeating-linear-gradient(90deg, #141210 0 0.22em, transparent 0.22em 0.5em);
+}
+
+.mag-reply-head {
+  grid-area: head;
+  font:
+    900 2.6em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.mag-reply-permit {
+  grid-area: permit;
+  margin-top: 0.3em !important;
+}
+
+.mag-reply-paid {
+  grid-area: paid;
+  margin-top: 0.6em !important;
+  font-size: 0.85em;
+}
+
+.mag-reply-to {
+  grid-area: to;
+  margin: 1.4em 0 0 4em;
+  font:
+    700 1.35em/1.35 'Courier New',
+    Courier,
+    monospace;
+  font-style: normal;
+}
+
+.mag-reply-stamp {
+  grid-area: stamp;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+
+.mag-reply-stamp p {
+  padding: 0.4em;
+  border: 0.12em solid #141210;
+  font-size: 0.8em;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.mag-reply-bars {
+  height: 9.5em;
+  background: repeating-linear-gradient(180deg, #141210 0 0.7em, transparent 0.7em 1.2em);
+}
+
+/* on its own page it takes the room left under the card */
+.mag-body > .mag-reply {
+  flex: 1 1 auto;
+  max-height: 24em;
+  align-content: center;
+}
+
+@container (max-width: 560px) {
+  .mag-reply {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'stamp'
+      'head'
+      'permit'
+      'paid'
+      'to';
+  }
+
+  .mag-reply-fim {
+    display: none;
+  }
+
+  .mag-reply-bars {
+    height: 3em;
+  }
+
+  .mag-reply-to {
+    margin-left: 0;
+    font-size: 1.05em;
+  }
+
+  .mag-body > .mag-reply {
+    max-height: none;
+  }
+
+  .mag-reply-head {
+    font-size: 2em;
+  }
+}

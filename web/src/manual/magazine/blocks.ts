@@ -1,6 +1,6 @@
 // Builders for the magazine's blocks (types.ts Block), so a section reads like the page it
 // makes: head('…'), p('…'), side('…', [...]), shot('teddy', 'level', '…'), card(…), ad(…).
-import type { Block, Inline, ListingRow, MagPage, Tone, ArtId, ShotView } from './types';
+import type { Block, Callout, Inline, ListingRow, MagPage, MiniCover, Tone, ArtId, ShotView } from './types';
 import type { Go } from './go';
 
 type HeadOpts = { kicker?: string; deck?: Inline; size?: 'xl' | 'l' | 'm' | 's'; level?: 1 | 2 | 3 };
@@ -66,6 +66,12 @@ export const ultimatePiece = (alt: string, o: { go?: Go; float?: 'left' | 'right
 /** A line set huge (a price, a phone number), with a small note beside it. */
 export const big = (text: string, side?: Inline): Block => ({ t: 'big', text, side });
 export const rule = (): Block => ({ t: 'rule' });
+/** A picture with numbered spots on it and their key below. */
+export const callouts = (id: ArtId, alt: string, spots: Callout[]): Block => ({ t: 'callouts', art: id, alt, spots });
+/** Covers fanned out small, named together by `alt`. */
+export const covers = (alt: string, list: MiniCover[]): Block => ({ t: 'covers', alt, covers: list });
+/** A reply card's postage side, addressed to the lines of `to`. */
+export const reply = (to: string[]): Block => ({ t: 'reply', to });
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */
 export const adPage = (id: string, advertiser: string, blocks: Block[], tone: Tone = 'white'): MagPage => ({ id, kind: 'ad', title: advertiser, tone, blocks });

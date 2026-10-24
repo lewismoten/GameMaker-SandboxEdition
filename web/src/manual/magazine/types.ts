@@ -80,7 +80,28 @@ export type Block =
    * cover it sits in a corner with a starburst (`burst`) that links to `page`, the page about it.
    */
   | { t: 'disc'; go: Go; alt: string; caption?: Inline; cover?: { burst: string; page: Go } }
+  /** A picture with numbered spots on it and a key to them below (callouts.ts): an ad's tour of a product. */
+  | { t: 'callouts'; art: ArtId; alt: string; spots: Callout[] }
+  /** Back issues and ones to come, fanned out small (coverFan.ts): a subscription ad's stack of covers. */
+  | { t: 'covers'; alt: string; covers: MiniCover[] }
+  /** A reply card's postage side (replyMail.ts): BUSINESS REPLY MAIL, its bars, and who it goes to. */
+  | { t: 'reply'; to: string[] }
   | { t: 'rule' };
+
+/** One numbered spot on a `callouts` picture: where (percent of its width and height) and what it is. */
+export interface Callout {
+  x: number;
+  y: number;
+  title: string;
+  text: Inline;
+}
+
+/** One small cover in a `covers` fan: its issue line, its big cover line, and its paper. */
+export interface MiniCover {
+  issue: string;
+  line: string;
+  tone: Tone;
+}
 
 /**
  * What a `shot` shows of a game: its title screen, its first level, or one of Game-Maker's design

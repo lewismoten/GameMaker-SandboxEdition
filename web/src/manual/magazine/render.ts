@@ -6,10 +6,13 @@ import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { artElement } from './art';
+import { calloutsFigure } from './callouts';
+import { coverFan } from './coverFan';
 import { discFigure } from './disc';
 import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
 import { MAG } from './masthead';
+import { replyMail } from './replyMail';
 import type { Block, Inline, PlacedPage, ShotView } from './types';
 
 export interface RenderEnv {
@@ -239,6 +242,12 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         (go, ...kids) => goLink(go, where, ...kids),
         (text) => inline(text, where),
       );
+    case 'callouts':
+      return calloutsFigure(b, (text) => inline(text, where));
+    case 'covers':
+      return coverFan(b);
+    case 'reply':
+      return replyMail(b);
     case 'rule':
       return h('hr');
   }
