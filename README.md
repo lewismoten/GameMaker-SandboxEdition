@@ -16,6 +16,12 @@ desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker
 - **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
   original menus and designers, a BBS to dial, and the games' boxes, disks and manuals on
   the shelf; or *today's web* editor with point-and-click editors for every part of a game.
+- **Help making good games:** the map editor's Level check plays each scene on the real
+  engine, draws a heat map of where the hero got, marks places a player can get stuck and
+  offers one-click fixes; the block, monster and sound editors show its findings as badges,
+  a Before You Upload checklist ticks itself, and a bot can make a walkthrough of your game.
+  The Game-Maker box holds *The Ultimate Owner's Guide*, an advanced booklet on level design,
+  tricks from the new games and these tools.
 - **A port, not a PC emulator:** Game-Maker and its PLAYGAME player are re-implemented in
   TypeScript from the released C source, and no DOS or x86 code runs. The desk's PC is a
   simulation; some hardware is emulated (VGA mode 13h, the OPL2 FM sound chip).
@@ -30,7 +36,8 @@ desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker
   Shovel, In The Year 2000!, Teddy's Little Big Adventure, Teddy's Little Bigger Adventure,
   Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT BRIEF! The Tiny Pockets Library,
   Depth Perception and Quest for the Round Tuit. Each comes with a manual, box art,
-  printable extras and hidden felt eggs to find.
+  printable extras (among them a fold-out World Map and Level Maps), a hidden tin heart and
+  felt eggs to find.
 - **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
   monologues, dressed as 1995 shareware from The Sofa BBS: eleven by The Bard of Bizarre
   (Third Goat from the Left, Mustard Seed Hustle, Thread the Needle, Brother Camel, Loaf
@@ -46,6 +53,9 @@ desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker
   credits on the real engine, with chapters, ready to download as an MP4.
 - **The desk PC's utilities:** HEXEDIT, BACKUP, SAVEHACK and GMCRACK, in 1990s dress but
   mainly for looking inside game files, saved games and registration while debugging.
+- **The BBSes:** a modem with a line speed to pick (300 baud to unlimited), a tic-tac-toe
+  door game played a move a call, and a TTY call to the neighbor in Baudot.
+- **Achievements** for what you make, play and find, on the web and in the desk's ACHIEVE.EXE.
 - **Sharing:** export a game as a one-page web game, an installable web app, or a folder
   that runs in DOSBox, or download any game, your own too, as a Mac app, a Windows program
   or a Linux folder that plays offline in its own window (built in the browser; see the
