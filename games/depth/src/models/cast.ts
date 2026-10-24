@@ -293,7 +293,7 @@ export function double(f: number): Shape[] {
 
 // ---------------------------------------------------------------- friends
 
-/** Teddy, the Pembroke Welsh corgi: red-gold, white blaze and chest, his right ear taller. Built
+/** Teddy, the Pembroke Welsh corgi: red-gold, white blaze and chest, ears up. Built
  * for a camera high above: big head in front, ears up, the body behind it. */
 export function teddy(f: number): Shape[] {
   const fur = rgb(220, 128, 52);
@@ -316,7 +316,7 @@ export function teddy(f: number): Shape[] {
     { d: F.sphere([0.5, 0.66, 0.34], 0.16), mat: furMat },
     { d: F.ell([0.5, 0.82, 0.29], 0.08, 0.08, 0.065), mat: { color: white, diffuse: 1, spec: 0.2, shine: 10 } },
     { d: F.sphere([0.5, 0.9, 0.31], 0.03), mat: black },
-    { d: F.cap([0.4, 0.62, 0.44], [0.3, 0.6, 0.68], 0.065, 0.012), mat: furMat }, // his right ear, the tall one
+    { d: F.cap([0.4, 0.62, 0.44], [0.31, 0.6, 0.62], 0.065, 0.012), mat: furMat }, // the ears, a matched pair
     { d: F.cap([0.6, 0.62, 0.44], [0.69, 0.6, 0.62], 0.065, 0.012), mat: furMat },
     { d: F.sphere([0.445, 0.79, 0.4], 0.026), mat: black },
     { d: F.sphere([0.555, 0.79, 0.4], 0.026), mat: black },
