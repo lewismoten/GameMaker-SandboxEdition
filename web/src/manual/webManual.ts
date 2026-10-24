@@ -170,7 +170,11 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Game-Maker, and <code>dos.html?game=</code> with a game’s id opens that game in it.
     <b>Web</b> brings you back here.</p>
     <p>The games you change on the desk or in DOS are the same games you see here, so you can
-    switch between them at any time.</p>`,
+    switch between them at any time.</p>
+    <p>On the wall shelf stands this month’s <b>TURBO BUTTON</b>, a mid-1990s game magazine: the
+    news that Game-Maker’s source code is free, interviews, hints for every game, the games
+    listed, reviews, BBS listings and ads. Its order forms and listings open the games and pages
+    they name. <a href="#/magazine">Read TURBO BUTTON here</a>, or print it.</p>`,
   ],
   [
     'ultimate',

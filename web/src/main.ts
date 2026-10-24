@@ -26,6 +26,8 @@ const content = h('div', { class: 'content', id: 'content' });
 let workspace: Workspace | undefined;
 let disposeDesk: (() => void) | undefined;
 let ui: Ui = 'desk';
+/** The magazine at #/magazine, put away when the route moves on. */
+let disposeMagazine: (() => void) | undefined;
 
 function savedUi(): Ui {
   try {
@@ -61,6 +63,8 @@ async function startDesk(hash?: string): Promise<void> {
   app.classList.remove('modern');
   workspace?.dispose();
   workspace = undefined;
+  disposeMagazine?.();
+  disposeMagazine = undefined;
   document.title = 'Game-Maker 1994';
   // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
   const deskHash = hash ?? (parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk');
@@ -118,7 +122,11 @@ function startModern(hash?: string): void {
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the guide on small screens, the cast, achievements, the credits, playing offline and the source code', title: 'More' }, '⋯'),
+        h(
+          'summary',
+          { 'aria-label': 'More: the guide on small screens, the cast, achievements, the credits, playing offline and the source code', title: 'More' },
+          '⋯',
+        ),
         h(
           'div',
           { class: 'topbar-menu' },
@@ -194,7 +202,16 @@ async function route(): Promise<void> {
   }
   workspace?.dispose();
   workspace = undefined;
+  disposeMagazine?.();
+  disposeMagazine = undefined;
   clear(titleSlot);
+  if (kind === 'magazine') {
+    const { renderMagazinePage } = await import('./manual/magazine/viewer');
+    if (ui !== 'modern') return;
+    document.title = `TURBO BUTTON magazine · ${PRODUCT}`;
+    disposeMagazine = renderMagazinePage(content, parseHash(location.hash).params.page);
+    return;
+  }
   if (kind === 'cast') {
     const { renderCast } = await import('./cast/castPage');
     if (ui !== 'modern') return;
@@ -276,16 +293,26 @@ function notHere(): void {
   );
 }
 
-window.addEventListener('hashchange', () => void route());
+window.addEventListener('hashchange', () => {
+  // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
+  // page of today's web from the desk (the desk itself never changes the hash with a hashchange)
+  const [kind] = parseHash(location.hash).path;
+  if (ui === 'modern' && kind === 'desk') void startDesk(location.hash);
+  else if (ui === 'desk' && kind !== 'desk' && (/^#\/?$/.test(location.hash) || MODERN_PATHS.includes(kind ?? ''))) {
+    disposeDesk?.();
+    disposeDesk = undefined;
+    startModern();
+  } else void route();
+});
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
+/** The pages of today's web an address can name. */
+const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine'];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash)
-  ? !!startHash
-  : ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');
 /** The interface this address (or the last visit) chooses. */
 function startChosen(): void {
   // #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)

@@ -569,6 +569,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       ' · ',
       h('a', { href: '#/credits' }, 'Credits\u00a0→'),
       ' · ',
+      h('a', { href: '#/magazine', title: 'TURBO BUTTON, a 1990s game magazine: hints, reviews and every game' }, 'The magazine\u00a0→'),
+      ' · ',
       h('a', { href: './dos.html', title: 'The 1994 PC on its own: straight into Game-Maker, without the desk' }, 'DOS Game-Maker\u00a0→'),
       ' · ',
       h(
