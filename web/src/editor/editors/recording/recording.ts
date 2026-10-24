@@ -84,11 +84,26 @@ async function newRecording(project: Project): Promise<string | undefined> {
 
 registerMaker('rec', { label: '⏺ Record one by playing…', run: newRecording });
 
+/** A new recording the walkthrough bot plays (botDemoDialog.ts). */
+async function botRecording(project: Project): Promise<string | undefined> {
+  const { botDemoDialog } = await import('./botDemoDialog');
+  const bytes = await botDemoDialog(project);
+  if (!bytes) return undefined;
+  const name = project.freeName('botdemo', 'rec');
+  project.files.set(name, bytes);
+  toast(`Recorded ${name.toUpperCase()}. Set it as the start scene’s demo recording to show it on the title screen.`);
+  return name;
+}
+
+registerMaker('rec', { label: '🤖 Let the bot play…', run: botRecording });
+
 registerEditor(['rec'], (host, project, file) => {
   let keys: RecordedKey[] = parseRecording(project.files.get(file)!);
   const undo: Uint8Array[] = [];
   const uses = project.usesOf(file).some((u) => u.scene === 0 && u.slot === 11);
-  const summary = h('p', { class: 'hint' });
+  // the words go in a span: the shell may fold the hint on a phone, adding a More button to it (shell/hintFold.ts)
+  const summaryText = h('span');
+  const summary = h('p', { class: 'hint' }, summaryText);
   const undoButton = h('button', { title: 'Undo the last change', disabled: true, onclick: () => restore() }, '↶ Undo');
   const raw = h('div');
   const store = (next: RecordedKey[]) => {
@@ -114,7 +129,7 @@ registerEditor(['rec'], (host, project, file) => {
     const during = read
       ? ` (plus ${read} screen key${read === 1 ? '' : 's'}: pressed during a between-scene screen, timed in DOS by key checks, and used up by the screen, so the game never saw ${read === 1 ? 'it' : 'them'})`
       : '';
-    summary.textContent = `${presses} key presses (${keys.length} of ${RECLEN} key events) over ${clock(new TimeMap(1, [], screens).play(duration(events)))} of play${during}. ${
+    summaryText.textContent = `${presses} key presses (${keys.length} of ${RECLEN} key events) over ${clock(new TimeMap(1, [], screens).play(duration(events)))} of play${during}. ${
       uses ? 'This is the title screen’s demo.' : 'Choose it as the start scene’s “Demo recording” to show it on the title screen.'
     }`;
     undoButton.disabled = !undo.length;
@@ -146,6 +161,18 @@ registerEditor(['rec'], (host, project, file) => {
           },
         },
         '⏺ Record again',
+      ),
+      h(
+        'button',
+        {
+          title: 'The walkthrough bot plays a scene you choose, and its keys become this demo',
+          onclick: async () => {
+            const { botDemoDialog } = await import('./botDemoDialog');
+            const bytes = await botDemoDialog(project, 'Let the bot record it again');
+            if (bytes) store(parseRecording(bytes));
+          },
+        },
+        '🤖 Let the bot play…',
       ),
       undoButton,
     ),
