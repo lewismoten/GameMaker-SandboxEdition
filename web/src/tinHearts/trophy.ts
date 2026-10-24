@@ -73,6 +73,9 @@ function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number, w: nu
     const lines = allAlong ? ['PRESENTED BY', 'MYSTERY ROBOT JOE', 'WHO HAD ONE ALL ALONG'] : ['PRESENTED BY', 'MYSTERY ROBOT JOE'];
     const fs = Math.min(ph * (allAlong ? 0.2 : 0.26), (pw * 0.92) / Math.max(...lines.map((l) => l.length)) / 0.62);
     g.font = `600 ${Math.round(fs)}px Georgia, 'Times New Roman', serif`;
+    // the estimate above is for average letters; capitals run wider, so measure and shrink to the plate
+    const widest = Math.max(...lines.map((l) => g.measureText(l).width));
+    if (widest > pw * 0.92) g.font = `600 ${Math.floor((fs * pw * 0.92) / widest)}px Georgia, 'Times New Roman', serif`;
     lines.forEach((l, i) => g.fillText(l, cx, py + (ph * (i + 0.55)) / lines.length));
   } else {
     g.fillStyle = 'rgba(58, 42, 8, 0.7)';
