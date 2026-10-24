@@ -3,7 +3,9 @@
 // room's time (ticking each second, the date in its window): the visitor's own, unless DOS's
 // TIME or DATE set it (retro/dos/deskClock.ts), and then its tooltip and name say so.
 // It hangs on the wall left of the desk, so it only shows when the window is wide enough to
-// have wall there (stage.ts sets .wide-wall).
+// have wall there (stage.ts sets .wide-wall). Its numbers, ticks and hands are lume paint:
+// under the black light (blacklight.ts) they glow green (wallClock.css), and at night the dark
+// clears over the face (roomLight.ts) so the glow shows.
 import './wallClock.css';
 import { h } from '../../editor/core/ui';
 import { deskClockSet, deskNow } from '../../retro/dos/deskClock';
@@ -12,7 +14,7 @@ const CX = 90;
 const CY = 262;
 
 const hand = (cls: string, len: number, back: number, width: number, color: string) =>
-  `<g class="${cls}"><rect x="${CX - width / 2}" y="${CY - len}" width="${width}" height="${len + back}" rx="${width / 2}" fill="${color}"/></g>`;
+  `<g class="${cls}"><rect class="wc-lume" x="${CX - width / 2}" y="${CY - len}" width="${width}" height="${len + back}" rx="${width / 2}" fill="${color}"/></g>`;
 
 export function wallClock(): HTMLElement {
   const ticks = Array.from({ length: 60 }, (_, i) => {
@@ -21,12 +23,12 @@ export function wallClock(): HTMLElement {
     const r1 = big ? 58 : 62;
     const x = (r: number) => (CX + Math.sin(a) * r).toFixed(1);
     const y = (r: number) => (CY - Math.cos(a) * r).toFixed(1);
-    return `<line x1="${x(r1)}" y1="${y(r1)}" x2="${x(66)}" y2="${y(66)}" stroke="#222" stroke-width="${big ? 3 : 1}"/>`;
+    return `<line class="wc-lume" x1="${x(r1)}" y1="${y(r1)}" x2="${x(66)}" y2="${y(66)}" stroke="#222" stroke-width="${big ? 3 : 1}"/>`;
   }).join('');
   const numbers = [12, 3, 6, 9]
     .map((n) => {
       const a = (n * Math.PI) / 6;
-      return `<text x="${CX + Math.sin(a) * 46}" y="${CY - Math.cos(a) * 46 + 7}" text-anchor="middle" font-size="20" font-weight="800" font-family="Arial Black, Arial, sans-serif" fill="#222">${n}</text>`;
+      return `<text class="wc-lume" x="${CX + Math.sin(a) * 46}" y="${CY - Math.cos(a) * 46 + 7}" text-anchor="middle" font-size="20" font-weight="800" font-family="Arial Black, Arial, sans-serif" fill="#222">${n}</text>`;
     })
     .join('');
   const holes = Array.from({ length: 6 }, (_, i) => `<ellipse cx="${CX}" cy="${372 + i * 22}" rx="4" ry="5" fill="#050506"/>`).join('');
@@ -57,7 +59,7 @@ export function wallClock(): HTMLElement {
     <rect x="${CX - 32}" y="326" width="64" height="20" rx="4" fill="url(#wc-chrome)"/>
     <rect x="${CX + 80}" y="${CY - 9}" width="10" height="18" rx="3" fill="url(#wc-chrome)"/>
     <circle cx="${CX}" cy="${CY}" r="84" fill="url(#wc-chrome)"/>
-    <circle cx="${CX}" cy="${CY}" r="72" fill="url(#wc-face)" stroke="#8a8f96" stroke-width="1.5"/>
+    <circle class="wc-face" cx="${CX}" cy="${CY}" r="72" fill="url(#wc-face)" stroke="#8a8f96" stroke-width="1.5"/>
     ${ticks}
     ${numbers}
     <text x="${CX}" y="${CY - 20}" text-anchor="middle" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial, sans-serif" fill="#139c93">QUARTZ</text>

@@ -20,4 +20,34 @@
     width: 100%;
     height: auto;
   }
+
+  /* lume paint: under the black light the numbers, ticks and hands glow green */
+  .wall-clock .wc-lume {
+    transition:
+      fill 0.6s,
+      stroke 0.6s,
+      filter 0.6s;
+  }
+
+  .desk.bl-uv .wall-clock text.wc-lume,
+  .desk.bl-uv .wall-clock rect.wc-lume {
+    fill: #9dff7a;
+    filter: drop-shadow(0 0 1.5px #6dff4a) drop-shadow(0 0 4px rgb(80 255 60 / 0.6));
+  }
+
+  .desk.bl-uv .wall-clock line.wc-lume {
+    stroke: #9dff7a;
+    filter: drop-shadow(0 0 1.5px #6dff4a);
+  }
+
+  /* the second hand's red paint glows hot pink under UV */
+  .desk.bl-uv .wall-clock .wc-sec rect.wc-lume {
+    fill: #ff4fa0;
+    filter: drop-shadow(0 0 2px #ff3b8f);
+  }
+
+  /* at night under the tube, the white face takes the black light's violet */
+  .desk.bl-uv.rl-dark .wall-clock .wc-face {
+    fill: #2b1f4d;
+  }
 }
