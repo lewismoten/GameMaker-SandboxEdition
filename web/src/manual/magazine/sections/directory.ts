@@ -139,7 +139,7 @@ function pages(ctx: MagContext): MagPage[] {
       listing(firstSandbox),
     ]),
     dept([
-      head('Sandbox Software, continued', { size: 's', level: 3 }),
+      head('Sandbox Software, continued', { size: 's', level: 2 }),
       listing(moreSandbox),
       grid(
         [
@@ -180,7 +180,7 @@ function pages(ctx: MagContext): MagPage[] {
           kicker: 'Song-games · from The Sofa BBS',
           deck: 'Shareware games from the songs and monologues of The Bard of Bizarre, and from the six Latin songs of Veni, Vidi, Risi! Free in [The Sofa’s file library](go:bbs/sofa) and in the [Bard’s catalog](go:catalog/bard).',
           size: 'm',
-          level: 3,
+          level: 2,
         }),
         listing(g.bizarre),
       ],
@@ -190,9 +190,9 @@ function pages(ctx: MagContext): MagPage[] {
       [
         head('Gameware', {
           kicker: 'On the Game-Maker CD',
-          deck: 'Sample games that came with Game-Maker, free to play, to take apart in the designers and to learn from.',
+          deck: 'Samples that came with Game-Maker: free to play, take apart and learn from.',
           size: 'm',
-          level: 3,
+          level: 2,
         }),
         head('Recreational Software Designs', { kicker: 'The makers of Game-Maker', size: 's', level: 3 }),
         listing(g.rsd),
@@ -203,13 +203,13 @@ function pages(ctx: MagContext): MagPage[] {
     ),
     dept(
       [
-        head('Gameware, continued', { kicker: 'A-J Games', size: 's', level: 3 }),
+        head('Gameware, continued', { kicker: 'A-J Games', size: 's', level: 2 }),
         listing(g.ajGameware),
         head('Shareware', {
           kicker: 'On the Game-Maker CD',
           deck: 'Try before you buy: play it free, and if you like it, register with the author. Also in the sand pile on [THE -= S A N D B O X =- BBS](go:bbs/sandbox).',
           size: 'm',
-          level: 3,
+          level: 2,
         }),
         listing(g.otherShareware),
       ],
@@ -217,7 +217,7 @@ function pages(ctx: MagContext): MagPage[] {
     ),
     dept(
       [
-        head('Shareware, continued', { kicker: 'A-J Games', size: 's', level: 3 }),
+        head('Shareware, continued', { kicker: 'A-J Games', size: 's', level: 2 }),
         listing(g.ajShareware),
         note(
           'Authors and fees are as each game’s own files give them. Registration addresses are left out: the CD’s shareware is in the paper [shareware catalog](go:catalog/shareware) on the desk.',

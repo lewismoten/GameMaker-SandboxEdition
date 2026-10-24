@@ -725,7 +725,7 @@
 
 /* a listing with a small screenshot at its left */
 .mag-rows li.has-shot {
-  grid-template-columns: 6.5em 1fr auto;
+  grid-template-columns: 6em 1fr auto;
   gap: 0 0.7em;
   /* room enough that a row's links and the next row's title are 24px targets apart in a spread */
   padding: 0.6em 0;
