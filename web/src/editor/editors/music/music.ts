@@ -14,6 +14,7 @@ import { VelocityField } from './velocity';
 import { startProgram } from '../../../formats/cmfEdit';
 import { MUS_TABS, loadTab, saveTab, stepTab, type MusTab } from './tabs';
 import './music.css';
+import { fitToPane } from '../../core/fitPane';
 import { viewState } from '../../../urlState';
 
 registerEditor(['cmf'], (host, project, file) => {
@@ -269,6 +270,7 @@ registerEditor(['cmf'], (host, project, file) => {
   });
 
   clear(host, root);
+  fitToPane(root);
   showTab(tab);
   refresh();
   if (!doc.song.notes.length && !doc.tracks().length) toast('An empty song: add a track to start.');

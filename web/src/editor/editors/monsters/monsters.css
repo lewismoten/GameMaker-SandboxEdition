@@ -10,7 +10,7 @@
   top: var(--ws-sticky-top, 0px);
 }
 .mon-side .mon-list {
-  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 210px));
+  max-height: max(240px, var(--room, calc(var(--ws-vh, 100dvh) - 210px)));
   grid-template-columns: repeat(auto-fill, 44px);
 }
 .mon-top {
@@ -100,6 +100,10 @@
    window's height, so a monster fits without scrolling. */
 @media (min-width: 1000px) and (min-height: 640px) {
   .mon-detail {
+    /* ends at the window's bottom edge (fitPane.ts); a long path scrolls here, not the page */
+    max-height: max(320px, var(--room, none));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     display: grid;
     grid-template-columns: clamp(240px, 30%, 320px) minmax(0, 1fr);
     gap: 12px;
@@ -135,7 +139,7 @@
   }
   .mon-detail .mpath-left {
     flex: 0 1 auto;
-    width: clamp(200px, calc(var(--ws-vh, 100dvh) - 600px), 760px);
+    width: clamp(200px, calc(var(--room, calc(var(--ws-vh, 100dvh) - 270px)) - 340px), 760px);
   }
   .mon-detail .mpath-side {
     flex: 1 1 150px;
@@ -160,7 +164,7 @@
     max-width: 120px;
   }
   .mon-detail .mpath-left {
-    width: clamp(170px, calc(var(--ws-vh, 100dvh) - 600px), 760px);
+    width: clamp(170px, calc(var(--room, calc(var(--ws-vh, 100dvh) - 270px)) - 340px), 760px);
   }
   .mon-detail .mpath-side {
     min-height: 170px;

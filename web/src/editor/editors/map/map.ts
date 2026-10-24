@@ -130,7 +130,7 @@ registerEditor(['map'], (host, project, file) => {
       role: 'region',
       'aria-label': 'The map (scroll with the arrow keys)',
       style:
-        'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 240px - var(--map-tools-h, 60px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+        'overflow:auto;max-height:max(280px, var(--map-room, calc(100dvh - 320px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
     },
     h('div', { class: 'mt-stack' }, canvas, over),
   );
@@ -143,14 +143,14 @@ registerEditor(['map'], (host, project, file) => {
   const picker = rovingGrid(
     h('div', {
       class: 'block-picker',
-      style: 'max-height:max(120px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.55))',
+      style: 'max-height:max(120px, calc(var(--side-room, 360px) * 0.56))',
     }),
     'Blocks to paint with',
   );
   const monPicker = rovingGrid(
     h('div', {
       class: 'block-picker',
-      style: 'max-height:max(100px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.4))',
+      style: 'max-height:max(100px, calc(var(--side-room, 360px) * 0.44))',
     }),
     'Monsters to place',
   );
@@ -852,13 +852,27 @@ registerEditor(['map'], (host, project, file) => {
     ),
   );
   rebuild();
-  // the map and the pickers give up the height of a file toolbar that wraps onto a second row
-  const fieldsBar = scroller.closest('.row')?.previousElementSibling as HTMLElement | null;
-  const barSize = new ResizeObserver(() => fieldsBar && host.style.setProperty('--map-tools-h', `${fieldsBar.offsetHeight}px`));
-  if (fieldsBar) barSize.observe(fieldsBar);
-  // the blocks and monsters give up the height of the tool panel above them
-  const panelSize = new ResizeObserver(() => host.style.setProperty('--mt-panel-h', `${tools.panel.hidden ? 0 : tools.panel.offsetHeight + 8}px`));
-  panelSize.observe(tools.panel);
+  // One screen: the map, and the blocks and monsters lists, end at the editor's bottom edge,
+  // measured from where they start (below the tip, file toolbar and tool panel, whatever
+  // their height), so the editor pane itself needn't scroll.
+  const sideCol = picker.parentElement!;
+  const fit = () => {
+    const main = host.closest('main');
+    if (!main) return;
+    const pad = parseFloat(getComputedStyle(main).paddingBottom) || 0;
+    const top = (el: Element) => el.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop;
+    const bottom = main.clientHeight - pad - 4;
+    const room = Math.round(bottom - top(scroller) - status.offsetHeight - 10);
+    const fixed = sideCol.scrollHeight - picker.offsetHeight - monPicker.offsetHeight;
+    const side = Math.round(bottom - top(sideCol) - fixed);
+    if (host.style.getPropertyValue('--map-room') !== `${room}px`) host.style.setProperty('--map-room', `${room}px`);
+    if (host.style.getPropertyValue('--side-room') !== `${side}px`) host.style.setProperty('--side-room', `${side}px`);
+    // a long Level check report scrolls the side column by itself (mapTools.css)
+    host.style.setProperty('--side-col-room', `${Math.round(bottom - top(sideCol))}px`);
+  };
+  const fitter = new ResizeObserver(() => requestAnimationFrame(fit));
+  for (const el of [host, sideCol, tools.panel, check.el]) fitter.observe(el);
+  addEventListener('resize', fit);
   const onKey = (e: KeyboardEvent) => {
     const t = e.target as HTMLElement | null;
     if (t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || t?.closest('dialog')) return;
@@ -913,7 +927,7 @@ registerEditor(['map'], (host, project, file) => {
   });
   return () => {
     window.removeEventListener('keydown', onKey);
-    barSize.disconnect();
-    panelSize.disconnect();
+    fitter.disconnect();
+    removeEventListener('resize', fit);
   };
 });

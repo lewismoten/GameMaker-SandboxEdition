@@ -11,6 +11,7 @@ import { fileField } from '../../widgets/filePicker';
 import { History } from '../../core/history';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { fitToPane } from '../../core/fitPane';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -313,6 +314,7 @@ registerEditor(['snd'], (host, project, file) => {
     ),
     h('div', { class: 'snd-layout' }, list, detail),
   );
+  fitToPane(list, detail);
   render();
   const onKey = (e: KeyboardEvent) => {
     const t = e.target;

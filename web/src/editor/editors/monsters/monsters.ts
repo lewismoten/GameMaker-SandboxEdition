@@ -14,6 +14,7 @@ import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from 
 import { monsterPathEditor } from './monsterPathEditor';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { fitToPane } from '../../core/fitPane';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
 
@@ -330,6 +331,7 @@ registerEditor(['mon'], (host, project, file) => {
     ),
     h('div', { class: 'mon-layout' }, h('div', { class: 'mon-side' }, list), detail),
   );
+  fitToPane(list, detail);
   render();
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;

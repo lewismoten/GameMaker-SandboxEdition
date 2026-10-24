@@ -10,6 +10,7 @@ import { parsePalette, paletteCss, serializePalette, defaultPalette } from '../.
 import { decodeGif, isGif } from '../../../formats/gif';
 import { spread as spreadRange } from './ramps';
 import { paletteTools } from './paletteTools';
+import { fitToPane } from '../../core/fitPane';
 import './palette.css';
 
 registerEditor(['pal'], (host, project, file) => {
@@ -211,10 +212,12 @@ registerEditor(['pal'], (host, project, file) => {
           },
           'Reset to default colors',
         ),
+        tools.uses,
       ),
     ),
     tools.el,
   );
+  fitToPane(tools.uses);
   refresh();
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement) return;

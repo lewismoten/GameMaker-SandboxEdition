@@ -2,7 +2,8 @@
 .pal-tools {
   margin-top: 12px;
 }
-.pal-tools summary {
+.pal-tools summary,
+.pal-uses-panel summary {
   cursor: pointer;
   font-weight: 600;
   min-height: 24px;
@@ -34,7 +35,12 @@
   padding: 2px 6px;
   text-align: left;
 }
-.pal-tools h3 {
+.pal-uses-panel {
+  max-height: max(160px, var(--room, 240px));
+  overflow-y: auto;
+}
+.pal-tools h3,
+.pal-uses-panel h3 {
   margin: 8px 0 4px;
   font-size: 1em;
 }

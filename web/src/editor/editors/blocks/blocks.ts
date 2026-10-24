@@ -33,6 +33,7 @@ import { applyRecolor, recolorDialog } from './recolorDialog';
 import { edgeSetDialog } from './edgeSetDialog';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { fitToPane } from '../../core/fitPane';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -641,6 +642,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     );
   }
 
+  // the three columns each end at the window's bottom edge and scroll by themselves (blocks.css)
+  const columns = [
+    h('div', { class: 'blk-picker' }, picker),
+    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, badges.el, insight.el),
+    h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
+  ];
   clear(
     host,
     h(
@@ -649,14 +656,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       h('p', { class: 'hint' }, sprites ? 'Color 255 is transparent. ' : '', 'Pick a block, paint it, then set how it behaves.'),
       chooser.el,
     ),
-    h(
-      'div',
-      { class: 'blk' },
-      h('div', { class: 'blk-picker' }, picker),
-      h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, badges.el, insight.el),
-      h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
-    ),
+    h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
+  fitToPane(...columns);
   renderPicker();
   renderSwatches();
   renderBlock();

@@ -28,7 +28,7 @@
   top: calc(8px + var(--ws-sticky-top, 0px));
 }
 .blk-picker .block-picker {
-  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 210px));
+  max-height: max(240px, var(--room, calc(var(--ws-vh, 100dvh) - 210px)));
   grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
 }
 .blk-picker .block-picker button {
@@ -69,8 +69,14 @@
   .blk-side {
     position: sticky;
     top: 8px;
-    max-height: max(320px, calc(var(--ws-vh, 100dvh) - 200px));
+    max-height: max(320px, var(--room, calc(var(--ws-vh, 100dvh) - 200px)));
     overflow: auto;
+    overscroll-behavior: contain;
+  }
+  /* the tools, the block and what's below it (insight, textures) */
+  .blk-paint {
+    max-height: max(320px, var(--room, calc(var(--ws-vh, 100dvh) - 200px)));
+    overflow-y: auto;
     overscroll-behavior: contain;
   }
 }

@@ -25,6 +25,7 @@ import { gamePreview } from '../../widgets/mediaShared';
 import { blankScreen, mediaThumb, pictureScreen, screenCanvas, textPages, TEXT_PAGE_LINES, type ScreenPicture } from '../../widgets/mediaPictures';
 import { clipKind, clipTiming, clipWidth, MAX_SLIDES, moveEntry, showLength, type ClipFacts, type ClipTiming, type Then } from './slideTimeline';
 import { timelineInput } from './timelineInput';
+import { fitToPane } from '../../core/fitPane';
 
 const MEDIA_KINDS: FileKind[] = ['gif', 'fli', 'bkd', 'txt', 'lst'];
 const THUMB_W = 112;
@@ -631,6 +632,7 @@ registerEditor(['lst'], (host, project, file) => {
     ),
     binBox,
   );
+  fitToPane(bin);
   render();
 
   // Other editors may add or change the files shown here.

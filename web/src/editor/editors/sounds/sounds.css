@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 190px));
+  max-height: max(240px, var(--room, calc(var(--ws-vh, 100dvh) - 190px)));
   overflow-y: auto;
   padding: 2px;
 }
@@ -52,6 +52,14 @@
 .snd-top .file-field {
   flex: 1 1 260px;
 }
+/* wider than a phone: the effect ends at the window's bottom edge (fitPane.ts) */
+@media (min-width: 641px) {
+  .snd-detail {
+    max-height: max(320px, var(--room, none));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 @media (max-width: 640px) {
   .snd-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -66,7 +74,7 @@
   display: block;
   width: auto;
   max-width: min(100%, 504px);
-  max-height: clamp(130px, calc(var(--ws-vh, 100dvh) - 650px), 220px);
+  max-height: clamp(130px, calc(var(--room, calc(var(--ws-vh, 100dvh) - 170px)) - 480px), 220px);
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #000;
@@ -97,7 +105,7 @@
     padding: 3px 8px;
   }
   .snd-pitch {
-    max-height: clamp(100px, calc(var(--ws-vh, 100dvh) - 650px), 220px);
+    max-height: clamp(100px, calc(var(--room, calc(var(--ws-vh, 100dvh) - 170px)) - 480px), 220px);
   }
 }
 /* each part's own play button, with what the game does with it (or that it is empty) */

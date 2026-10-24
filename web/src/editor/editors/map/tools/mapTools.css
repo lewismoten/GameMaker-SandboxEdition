@@ -80,6 +80,15 @@
   min-height: 28px;
   padding: 3px 8px;
 }
+/* wide screens: the side column (Level check, tool options, blocks, monsters) ends at the
+   editor's bottom edge and scrolls by itself when it must (map.ts measures the room) */
+@media (min-width: 901px) {
+  .mt-side-col {
+    max-height: var(--side-col-room, none);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 .block-picker.mt-brushes {
   grid-template-columns: repeat(auto-fill, 68px);
   max-height: 150px;
