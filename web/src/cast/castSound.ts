@@ -1,5 +1,5 @@
 // The cast stage's sound: Teddy's Little Big Adventure's title song on the OPL2 (its own .CMF,
-// played by the site's music worklet), its digitized effects (a bark, a yip, the chicken's
+// played by the site's music worklet, so it is always the Teddy games' theme: games/kit/teddyTheme.ts), its digitized effects (a bark, a yip, the chicken's
 // squeak, the horn, a giggle, things landing) and a few made here (footsteps, the tin heart's
 // tick-tock, THE CHEZ's electric whirr). It follows the site's demo sound choice
 // (media/demoAudio.ts: "None" keeps it quiet) and only starts from a gesture on the stage.
