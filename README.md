@@ -31,13 +31,13 @@ desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker
 - **The CD's games:** the sample "gameware" (edit a copy) and the shareware (play only,
   with their authors' notices). CD games that shipped without a title demo get one recorded
   for this edition, kept apart from their original files.
-- **Twelve new Sandbox Software games** built for this fork, entirely in code
+- **Thirteen new Sandbox Software games** built for this fork, entirely in code
   ([games/](games)): Maximus: The Hundred Worlds, Sandcastle Knight, Snowbound: The $89
   Shovel, In The Year 2000!, Teddy's Little Big Adventure, Teddy's Little Bigger Adventure,
-  Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT BRIEF! The Tiny Pockets Library,
-  Depth Perception and Quest for the Round Tuit. Each comes with a manual, box art,
-  printable extras (among them a fold-out World Map and Level Maps), a hidden tin heart and
-  felt eggs to find.
+  Teddy's Little Biggest Adventure, Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT
+  BRIEF! The Tiny Pockets Library, Depth Perception and Quest for the Round Tuit. Each comes
+  with a manual, box art, printable extras (among them a fold-out World Map and Level Maps)
+  and a hidden tin heart, and most hide a felt egg to find.
 - **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
   monologues, dressed as 1995 shareware from The Sofa BBS: eleven by The Bard of Bizarre
   (Third Goat from the Left, Mustard Seed Hustle, Thread the Needle, Brother Camel, Loaf
