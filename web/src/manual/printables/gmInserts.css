@@ -604,6 +604,16 @@
   height: auto;
 }
 
+/* the big grid takes the height the rest of the sheet leaves it (narrower than the sheet, centered) */
+.gmg-map {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.gmg-map svg {
+  height: 100%;
+}
+
 .pp-gmg line {
   stroke: #8dbbe3;
   stroke-width: 0.09;
