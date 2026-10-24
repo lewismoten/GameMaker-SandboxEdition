@@ -1,0 +1,135 @@
+/* Opening a game from another site: the visitor's yes-or-no, the wait, errors (dialogs.ts),
+   and the "not a true DOS environment" note (notice.ts). Self-contained, since the note also
+   shows on dos.html, which has none of the editor's styles. */
+.gm-link {
+  --gl-bg: #f6f7fa;
+  --gl-text: #1a1d29;
+  --gl-muted: #4f566a;
+  --gl-border: #9aa2b8;
+  --gl-accent: #1f3fbf;
+  --gl-accent-text: #ffffff;
+  --gl-focus: #b35900;
+  --gl-danger: #a3221b;
+  color: var(--gl-text);
+  background: var(--gl-bg);
+  font:
+    16px/1.45 system-ui,
+    sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .gm-link {
+    --gl-bg: #1b1e28;
+    --gl-text: #e6e8ef;
+    --gl-muted: #aab1c5;
+    --gl-border: #4a5170;
+    --gl-accent: #8ea4ff;
+    --gl-accent-text: #0b0d14;
+    --gl-focus: #ffb347;
+    --gl-danger: #ff8a80;
+  }
+}
+:root[data-theme='dark'] .gm-link {
+  --gl-bg: #1b1e28;
+  --gl-text: #e6e8ef;
+  --gl-muted: #aab1c5;
+  --gl-border: #4a5170;
+  --gl-accent: #8ea4ff;
+  --gl-accent-text: #0b0d14;
+  --gl-focus: #ffb347;
+  --gl-danger: #ff8a80;
+}
+
+dialog.gm-link {
+  box-sizing: border-box;
+  width: min(34rem, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--gl-border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
+}
+dialog.gm-link::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+.gm-link h2 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+}
+.gm-link p {
+  margin: 0 0 10px;
+}
+.gm-link .gm-link-small {
+  color: var(--gl-muted);
+  font-size: 0.9rem;
+}
+.gm-link .gm-link-error {
+  color: var(--gl-danger);
+  font-weight: 600;
+}
+.gm-link .gm-link-what {
+  overflow-wrap: anywhere;
+}
+.gm-link-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.gm-link button,
+.gm-link .gm-link-button {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 6px 14px;
+  border: 1px solid var(--gl-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--gl-text);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.gm-link button.gm-link-primary {
+  background: var(--gl-accent);
+  border-color: var(--gl-accent);
+  color: var(--gl-accent-text);
+  font-weight: 600;
+}
+.gm-link a {
+  color: var(--gl-accent);
+}
+.gm-link button:focus-visible,
+.gm-link a:focus-visible {
+  outline: 3px solid var(--gl-focus);
+  outline-offset: 2px;
+}
+
+/* the note: at the bottom of the window, out of the way, until it is read */
+.gm-link.gm-not-dos {
+  position: fixed;
+  z-index: 2147483000;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: min(36rem, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 12px 16px;
+  border: 1px solid var(--gl-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.45);
+}
+.gm-not-dos h2 {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.gm-not-dos p {
+  font-size: 0.92rem;
+}
+.gm-not-dos .gm-link-buttons {
+  margin-top: 8px;
+}
