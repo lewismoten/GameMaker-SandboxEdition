@@ -18,8 +18,9 @@ const NOTE_NAMES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 
 const noteName = (n: number) => `${NOTE_NAMES[n % 12]}${Math.floor(n / 12) - 1}`;
 
 /**
- * A select of the tracks that have notes (the tune's track), starting on `ch` when it has a
- * tune, else on the track that sounds highest (most often the tune). Each says its range.
+ * A select of the tracks that have notes (the tune's track), starting on the track that sounds
+ * highest (most often the tune: the track being edited is often the bass), or on `ch` when no
+ * melodic track has notes. Each says its range.
  */
 export function tuneTrackSelect(doc: MusicDoc, ch: number): HTMLSelectElement {
   const song = doc.song;
@@ -28,7 +29,7 @@ export function tuneTrackSelect(doc: MusicDoc, ch: number): HTMLSelectElement {
   const median = (c: number) => keys(c).sort((a, b) => a - b)[Math.floor(keys(c).length / 2)];
   const drum = (c: number) => doc.rhythm && c >= 11;
   const melodic = tracks.filter((c) => !drum(c));
-  const start = tracks.includes(ch) && !drum(ch) ? ch : (melodic.sort((a, b) => median(b) - median(a))[0] ?? tracks[0]);
+  const start = melodic.sort((a, b) => median(b) - median(a))[0] ?? (tracks.includes(ch) ? ch : tracks[0]);
   return h(
     'select',
     null,
