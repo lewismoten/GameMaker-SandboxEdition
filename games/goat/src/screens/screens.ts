@@ -36,7 +36,7 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     outlined(p, 160 - textWidth('THIRD GOAT', 3) / 2, 6, 'THIRD GOAT', c('gold', 3), ink, 3, c('gold', 1));
     outlined(p, 160 - textWidth('FROM THE LEFT', 2) / 2, 34, 'FROM THE LEFT', c('gold', 3), ink, 2, c('gold', 1));
     p.rect(0, 186, W, 14, c('night', 0));
-    centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, c('cloth', 3));
+    centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, c('cloth', 3));
     save('title.gif', p, own);
   }
 

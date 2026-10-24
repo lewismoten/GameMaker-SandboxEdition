@@ -13,6 +13,18 @@ import { buildScreenPalette, type Pal } from '../art/pal';
 import { bigStar, H, skyline, stars, twinkle, W } from './night';
 import { CARDS } from './text';
 
+/** The PC's music notes (CP437 13 and 14, which the 8x8 font here lacks), outlined: one note, or two beamed. */
+const NOTES = { one: [0x3f, 0x33, 0x3f, 0x30, 0x30, 0x70, 0xf0, 0xe0], two: [0x7f, 0x63, 0x7f, 0x63, 0x63, 0x67, 0xe6, 0xc0] };
+function musicNote(p: Pixels, x: number, y: number, two: boolean, fill: number, edge: number): void {
+  const rows = two ? NOTES.two : NOTES.one;
+  const on = (r: number, b: number) => r >= 0 && r < 8 && b >= 0 && b < 8 && (rows[r] >> (7 - b)) & 1;
+  for (let r = -1; r < 9; r++)
+    for (let b = -1; b < 9; b++) {
+      if (on(r, b)) p.set(x + b, y + r, fill);
+      else if ([-1, 0, 1].some((dy) => [-1, 0, 1].some((dx) => on(r + dy, b + dx)))) p.set(x + b, y + r, edge);
+    }
+}
+
 /** Clear pixels in sprites. */
 const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
@@ -251,7 +263,7 @@ export function storyFli(cast: Cast): Uint8Array {
       if (sing)
         for (let n = 0; n < 3; n++) {
           const t = (k - 14 + n * 4) % 12;
-          outlined(p, 140 - t * 2 - n * 10, 20 - t * 2 + n * 4, n % 2 ? '\x0e' : '\x0d', c('gold', 3), c('ink', 0));
+          musicNote(p, 140 - t * 2 - n * 10, 20 - t * 2 + n * 4, n % 2 === 1, c('gold', 3), c('ink', 0));
         }
       // the goat by the hay, chewing all night long
       const chew = k >= 28;
