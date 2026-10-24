@@ -153,6 +153,8 @@
   font-weight: normal;
 }
 .pal-warn-fix,
+.pal-warn-dismiss,
+.pal-dismissed-toggle,
 .pal-warn-more,
 .pal-vision-undo {
   min-height: 24px;
@@ -167,4 +169,16 @@
 }
 .pal-warn-go > span:last-child {
   margin-left: 4px;
+}
+.pal-dismissed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.pal-dismissed .pal-warns {
+  align-self: stretch;
+}
+.pal-is-dismissed .pal-warn-go {
+  border-style: dashed;
 }

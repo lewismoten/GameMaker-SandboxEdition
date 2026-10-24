@@ -3,6 +3,8 @@
 // (colorVision.ts, after Machado et al. 2009); the colors that become hard to tell apart there
 // (visionWarnings.ts), each showing where on the map when clicked; and a one-click fix where one
 // is safe. A fix only changes palette colors, so it saves like any other edit and undoes with ↶.
+// A warning meant to be can be dismissed (visionDismissed.ts): it leaves the list and the count,
+// and the "dismissed" toggle shows it again.
 import { h, clear, toast } from '../../core/ui';
 import { BLEN, TRANSPARENT } from '../../../formats/blocks';
 import { MLEN, MWID } from '../../../formats/map';
@@ -15,6 +17,7 @@ import { arrival } from '../integrator/board';
 import { unlockAchievement } from '../../../achievements';
 import { VIEWS, simulate, type View } from './colorVision';
 import { analyze, fixFor, warnings, whereTouch, type Analysis, type Warning } from './visionWarnings';
+import { dismissKey, dismissed, setDismissed, splitDismissed } from './visionDismissed';
 
 export interface VisionContext {
   project: Project;
@@ -78,6 +81,7 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
   let center = scene ? arrivalCell(scene) : 0;
   let marked: number[] | undefined;
   let showAll = false;
+  let showDismissed = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let fixTimer: ReturnType<typeof setTimeout> | undefined;
   let list: Warning[] = [];
@@ -119,6 +123,7 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
   const caption = h('figcaption', { class: 'meta' });
   const count = h('p', { class: 'pal-vision-count', role: 'status' });
   const items = h('ul', { class: 'pal-warns' });
+  const gone = h('div', { class: 'pal-dismissed' });
   const done = h('p', { class: 'meta pal-vision-done', hidden: true });
   const shot = scene
     ? h('figure', { class: 'pal-vision-fig' }, canvas, caption)
@@ -138,6 +143,7 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
     count,
     done,
     items,
+    gone,
   );
 
   // with no level: the whole palette's ramps
@@ -222,25 +228,14 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
     viewBtns.forEach((b, i) => b.setAttribute('aria-pressed', String(VIEWS[i].id === view)));
     draw();
     const found = warnings(pal, current());
-    list = view === 'normal' ? found : found.filter((w) => w.views.includes(view));
+    const split = splitDismissed(view === 'normal' ? found : found.filter((w) => w.views.includes(view)), dismissed(project, file), scene?.names.mon);
+    list = split.open;
     const where = view === 'normal' ? 'in any view' : `with ${SHORT[view]}`;
     count.textContent = list.length ? `${list.length} to look at ${where}` : `Nothing to look at ${where}.`;
     const shown = showAll ? list : list.slice(0, FIRST);
     clear(
       items,
-      ...shown.map((w) => {
-        const colors = w.kind === 'pair' ? [w.a, w.b] : w.kind === 'monster' ? [w.color, w.behind] : w.step;
-        return h(
-          'li',
-          { 'data-id': w.id },
-          h(
-            'button',
-            { type: 'button', class: 'pal-warn-go', title: 'Show where, and select the color', onclick: () => show(w) },
-            ...colors.map(swatch),
-            h('span', null, text(w)),
-          ),
-        );
-      }),
+      ...shown.map((w) => entry(w, false)),
       list.length > shown.length
         ? h(
             'li',
@@ -260,7 +255,65 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
           )
         : null,
     );
+    if (!split.dismissed.length) showDismissed = false;
+    clear(
+      gone,
+      ...(split.dismissed.length
+        ? [
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'pal-dismissed-toggle',
+                'aria-expanded': String(showDismissed),
+                'aria-controls': 'pal-dismissed-list',
+                title: 'Warnings marked as meant to be',
+                onclick: () => {
+                  showDismissed = !showDismissed;
+                  update();
+                },
+              },
+              `${split.dismissed.length} dismissed · ${showDismissed ? 'hide' : 'show'}`,
+            ),
+            h(
+              'ul',
+              { class: 'pal-warns', id: 'pal-dismissed-list', 'aria-label': 'Dismissed warnings', hidden: !showDismissed },
+              ...split.dismissed.map((w) => entry(w, true)),
+            ),
+          ]
+        : []),
+    );
     findFixes(shown);
+  }
+
+  /** One warning: a button that shows where, and one that dismisses it (or flags it again). */
+  function entry(w: Warning, isDismissed: boolean): HTMLElement {
+    const colors = w.kind === 'pair' ? [w.a, w.b] : w.kind === 'monster' ? [w.color, w.behind] : w.step;
+    const key = dismissKey(w, scene?.names.mon);
+    return h(
+      'li',
+      { 'data-id': isDismissed ? undefined : w.id, class: isDismissed ? 'pal-is-dismissed' : undefined },
+      h(
+        'button',
+        { type: 'button', class: 'pal-warn-go', title: 'Show where, and select the color', onclick: () => show(w) },
+        ...colors.map(swatch),
+        h('span', null, text(w)),
+      ),
+      h(
+        'button',
+        {
+          type: 'button',
+          class: 'pal-warn-dismiss',
+          title: isDismissed ? 'List this warning again' : 'You chose these colors on purpose: the list and the count leave this out',
+          onclick: () => {
+            setDismissed(project, file, key, !isDismissed);
+            update();
+            toast(isDismissed ? 'Flagged again.' : 'Dismissed: it is kept under “dismissed”.');
+          },
+        },
+        isDismissed ? '↺ Flag it again' : w.kind === 'ramp' ? '✓ The steps are meant to be close' : '✓ They’re meant to look alike',
+      ),
+    );
   }
 
   /** One warning at a time, so the page stays responsive: a ✨ button where a safe fix exists. */

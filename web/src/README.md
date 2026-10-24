@@ -124,6 +124,11 @@ in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items), 
 made from the game's files); `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
 picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
 
+The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows a level as seen in
+grayscale and with color-vision differences (`colorVision.ts`) and lists colors that look alike
+there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a designer dismissed as meant to
+look alike, in the companion file on the `.pal`.
+
 **Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`,
 which calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`,
 the game's files, a manifest and a service worker), `exportSinglePage.ts` (`standalone.html`
