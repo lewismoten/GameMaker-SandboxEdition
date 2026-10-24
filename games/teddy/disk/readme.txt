@@ -94,7 +94,7 @@ SAYING THANKS
   Designs. For Teddy, for
   Gwinn (yes, even Gwinn), and
   for Doc Leo and every
-  friendly clown in every Klown
-  Klub.
+  friendly clown in every
+  Klown Klub.
 
 Woof!

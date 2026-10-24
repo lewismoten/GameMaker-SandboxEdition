@@ -20,13 +20,13 @@ export const STORY = pages(
     '',
     'His person is Doc Leo, a',
     'friendly hobo clown and a',
-    'proud member of the Klown',
-    'Klub. Doc Leo twists balloon',
-    'animals, does magic tricks,',
-    'and marches in every parade',
-    'in town. Tonight is the',
-    "Klub's Big Show, and Doc Leo",
-    'is the star.',
+    'proud member of the',
+    'Klown Klub. Doc Leo twists',
+    'balloon animals, does magic',
+    'tricks, and marches in every',
+    'parade in town. Tonight is',
+    "the Klown Klub's Big Show,",
+    'and Doc Leo is the star.',
     '',
     '',
   ],
@@ -37,12 +37,12 @@ export const STORY = pages(
     'still learning. (SIT? Nope.)',
     '',
     'Doc Leo drove ahead to the',
-    'Klub in his little red 1976',
-    'CitiCar. Then Gwinn found his',
-    'costume suitcase on the back',
-    'step, and ran all over town',
-    'with it. Out flew the FEDORA,',
-    'the GREEN TIE, the RED',
+    'Klown Klub in his little red',
+    '1976 CitiCar. Then Gwinn found',
+    'his costume suitcase on the',
+    'back step, and ran all over',
+    'town with it. Out flew the',
+    'FEDORA, the GREEN TIE, the RED',
     'SNEAKERS, the RUBBER CHICKEN',
     '(on its leash) and the RED',
     'NOSE. Balloon dogs too.',
@@ -175,11 +175,11 @@ export const WON = pages([
   '',
   'Then he orders a root beer.',
   '(He always orders root beer.)',
-  'The crowd roars, the Klown',
-  'Klub parades out into the',
-  'night with Teddy up on the',
-  'CitiCar roof, and Gwinn chases',
-  'the confetti.',
+  'The crowd roars, the',
+  'Klown Klub parades out into',
+  'the night with Teddy up on',
+  'the CitiCar roof, and Gwinn',
+  'chases the confetti.',
   "Who's a good boy? TEDDY IS.",
 ]);
 
@@ -330,8 +330,8 @@ SAYING THANKS
   Designs. For Teddy, for
   Gwinn (yes, even Gwinn), and
   for Doc Leo and every
-  friendly clown in every Klown
-  Klub.
+  friendly clown in every
+  Klown Klub.
 
 Woof!
 `.replace(/^\n/, '');
