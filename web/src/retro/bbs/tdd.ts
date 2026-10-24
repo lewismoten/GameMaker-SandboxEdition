@@ -121,7 +121,7 @@ async function dialAndRing(t: Term, h: Host, number: string): Promise<void> {
 
 /** The modem's own words before the call: the reset and the dial command. */
 async function modemSetup(t: Term, number: string): Promise<boolean> {
-  t.line(`|15TERMINAL 2.1  |07Modem on COM2 ready.${tdd ? '  |14TDD mode (Baudot 45.45)' : ''}`);
+  t.line(`|15TERMINAL 2.1  |07Modem on COM2 ready.${tdd ? '  |14TDD mode (Baudot 45.45)' : ''}|07`);
   t.line();
   modemSignal('ready');
   await t.typeSlowly('ATZ');
@@ -203,6 +203,8 @@ export async function ttyCall(t: Term, h: Host, number: string): Promise<void> {
       if (r.end) {
         await sleep(1500);
         t.line('|08(She hung up. TERMINAL hangs up the line.)');
+        t.print('|07Press a key… ');
+        await t.key();
         break;
       }
     }
