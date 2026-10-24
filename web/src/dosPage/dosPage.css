@@ -536,8 +536,8 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
 @media (max-width: 600px) {
   .dos-bar {
     min-height: 48px;
-    gap: 6px;
-    padding: 0 8px;
+    gap: 4px;
+    padding: 0 6px;
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -548,7 +548,9 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
     overflow: hidden;
     clip-path: inset(50%);
   }
+  /* never squeezed under the Desk | DOS | Web switch: the bar scrolls instead */
   .dos-controls {
+    flex: none;
     gap: 4px;
   }
   .dos-controls > .dos-primary .dos-word {
@@ -559,7 +561,7 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
     clip-path: inset(50%);
   }
   .dos-btn {
-    padding: 2px 6px;
+    padding: 2px 4px;
   }
   .dos-foot {
     padding: 2px 8px;
