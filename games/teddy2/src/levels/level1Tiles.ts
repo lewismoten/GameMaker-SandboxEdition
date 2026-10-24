@@ -247,7 +247,7 @@ export function houseTiles(): Tiles {
       blob(p, 10, 15, 10, 5, r('purple'), 0, 3);
       blob(p, 10, 15, 6, 2, r('purple'), 0, 1);
       p.rect(7, 13, 1, 1, c('pink', 3)).rect(12, 14, 1, 1, c('yellow', 3)).rect(4, 12, 1, 1, c('blue', 3));
-      micro(p, 2, 2, 'GWINN', c('purple', 1));
+      micro(p, 1, 2, 'GWINN', c('purple', 1));
       return p;
     })(),
   );
@@ -257,7 +257,7 @@ export function houseTiles(): Tiles {
       const p = copy(L());
       blob(p, 10, 16, 8, 4, r('blue'), 0, 3);
       blob(p, 10, 16, 5, 2, r('blue'), 1, 2);
-      micro(p, 2, 4, 'TEDDY', c('blue', 1));
+      micro(p, 1, 4, 'TEDDY', c('blue', 1));
       return p;
     })(),
   );

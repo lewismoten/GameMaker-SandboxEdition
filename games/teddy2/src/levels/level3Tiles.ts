@@ -209,7 +209,8 @@ export function nightTiles(): Tiles {
   for (const x of [14, 64]) {
     wagon.disc(x, 35, 5, c('ink', 0)).ring(x, 35, 3, c('wood', 2));
   }
-  micro(wagon, 8, 28, klubArt('KLOWN KLUB  TO THE FAIR'), c('yellow', 3));
+  const wagonSide = klubArt('KLOWN KLUB HAYRIDE');
+  micro(wagon, 40 - Math.floor((wagonSide.length * 4 - 1) / 2), 28, wagonSide, c('yellow', 3));
   const wc = cut(wagon);
   for (let by = 0; by < 2; by++) for (let bx = 0; bx < 4; bx++) t.air(`wagon${bx}${by}`, wc[by][bx]);
   const truck = canvas(2, 2, (_bx, by) => skyAt(38 + by));
