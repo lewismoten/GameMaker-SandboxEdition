@@ -192,7 +192,7 @@ export interface FigureLook {
   hat?: { kind: 'fedora' | 'crown' | 'cap' | 'santa' | 'top' | 'tricorn' | 'beret' | 'bandana' | 'helmet'; color: [string, number] };
   shirt: [string, number];
   pants?: [string, number];
-  /** Clown faces: whiteface, auguste (pink and red), hobo (ash beard, white mouth). */
+  /** Clown faces: whiteface, auguste (pink and red), hobo (Doc Leo: painted stubble, white mouth, his own sunburned nose). */
   face?: 'plain' | 'whiteface' | 'auguste' | 'hobo' | 'shades' | 'sad' | 'happy' | 'eyepatch';
   beard?: [string, number];
   tie?: [string, number];
@@ -238,14 +238,15 @@ export function figure(f: FigureLook, step = 0): Pixels {
       .line(hx, hy + 1, hx + 6, hy + 3, O);
   else p.set(hx + 1, hy + 3, eye).set(hx + 4, hy + 3, eye);
   if (f.glasses) p.frame(hx, hy + 2, 3, 3, c('brass', 2)).frame(hx + 3, hy + 2, 3, 3, c('brass', 2));
-  if (f.face === 'whiteface' || f.face === 'auguste' || f.face === 'hobo') p.rect(hx + 2, hy + 3, 2, 2, c('red', 3)); // the red nose
+  if (f.face === 'whiteface' || f.face === 'auguste') p.rect(hx + 2, hy + 3, 2, 2, c('red', 3)); // the red nose
+  if (f.face === 'hobo') p.rect(hx + 2, hy + 3, 2, 2, c('pink', 2)); // his own nose, sunburned
   if (f.face === 'auguste')
     p.set(hx, hy + 4, c('pink', 2))
       .set(hx + 5, hy + 4, c('pink', 2))
       .rect(hx + 1, hy + 5, 4, 1, c('red', 2));
   if (f.face === 'hobo') {
     p.rect(hx, hy + 5, 6, 1, c('night', 2)).rect(hx + 2, hy + 5, 2, 1, c('paper', 4));
-    p.set(hx, hy + 3, c('red', 3)).set(hx + 5, hy + 3, c('red', 3));
+    p.set(hx, hy + 3, c('pink', 2)).set(hx + 5, hy + 3, c('pink', 2));
   } else if (f.face === 'sad')
     p.rect(hx + 2, hy + 5, 2, 1, O)
       .set(hx + 1, hy + 6, O)
@@ -458,12 +459,13 @@ export function figureSide(f: FigureLook, step = 0): Pixels {
   else if (f.face === 'eyepatch') p.rect(hx + 3, hy + 2, 3, 2, O).line(hx, hy + 1, hx + 3, hy + 2, O);
   else p.set(hx + 4, hy + 3, O);
   if (f.glasses) p.frame(hx + 3, hy + 2, 3, 3, c('brass', 2)).rect(hx + 1, hy + 3, 2, 1, c('brass', 2));
-  if (f.face === 'whiteface' || f.face === 'auguste' || f.face === 'hobo') p.rect(hx + 6, hy + 3, 2, 2, c('red', 3)); // the red nose
+  if (f.face === 'whiteface' || f.face === 'auguste') p.rect(hx + 6, hy + 3, 2, 2, c('red', 3)); // the red nose
+  if (f.face === 'hobo') p.rect(hx + 6, hy + 3, 2, 2, c('pink', 2)); // his own nose, sunburned
   if (f.face === 'auguste') p.set(hx + 3, hy + 4, c('pink', 2)).rect(hx + 3, hy + 5, 3, 1, c('red', 2));
   if (f.face === 'hobo')
     p.rect(hx + 2, hy + 5, 4, 1, c('night', 2))
       .rect(hx + 4, hy + 5, 2, 1, c('paper', 4))
-      .set(hx + 3, hy + 4, c('red', 3));
+      .set(hx + 3, hy + 4, c('pink', 2));
   else if (f.face === 'sad') p.rect(hx + 4, hy + 5, 2, 1, O).set(hx + 3, hy + 6, O);
   else if (f.face === 'happy' || f.face === 'auguste' || f.face === 'whiteface') p.set(hx + 3, hy + 5, O).rect(hx + 4, hy + 6, 2, 1, O);
   else p.rect(hx + 4, hy + 5, 2, 1, f.face === 'shades' ? O : c('red', 1));
