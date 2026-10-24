@@ -679,6 +679,12 @@ registerEditor(['map'], (host, project, file) => {
       if (monName && n.has(normalize(monName))) mons = parseMonsters(project.files.get(monName)!);
       rebuild();
     },
+    selection: () => tools.selection,
+    paint: (cells) => {
+      remember();
+      for (const [c, b] of cells) map.blocks[c] = b;
+      changedCells(cells.map(([c]) => c));
+    },
   });
   const checkBtn = h(
     'button',

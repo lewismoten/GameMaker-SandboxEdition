@@ -4,7 +4,8 @@ import { TRANSPARENT, newBlockSet } from '../../../formats/blocks';
 import { MLEN } from '../../../formats/map';
 import { blockUse } from '../sceneData';
 import { artBox, contrastColor, fillHazard, outline } from './blockArt';
-import { airBlock, ladderBlock, ladderCells } from './mapFixes';
+import { airBlock, ladderBlock, ladderCells, makeMaze } from './mapFixes';
+import { findMazes } from '../checks/mazeCheck';
 import { testGame, WALL } from '../testGame';
 import { parseMap } from '../../../formats/map';
 import { BACKBL, parseBlocks } from '../../../formats/blocks';
@@ -52,5 +53,17 @@ describe('the level check’s generators', () => {
     const rung = ladderBlock(bg, use, air)!;
     expect(rung.make?.grav).toBe(1);
     expect(newBlockSet('bbl')[rung.n].grav).toBe(0);
+  });
+
+  it('makes a maze with landmarks and prizes that the maze check sees as a maze', () => {
+    const bg = newBlockSet('bbl');
+    bg[1].solid = 15;
+    bg[5].scorePts = 10;
+    const blocks = new Uint8Array(10000).fill(1);
+    for (const [c, b] of makeMaze({ x: 10, y: 10, w: 21, h: 15 }, 1, 0, [7, 8], 5, 3)) blocks[c] = b;
+    const [m] = findMazes(blocks, bg);
+    expect(m.deadEnds.length).toBeGreaterThanOrEqual(6);
+    expect(m.landmarks).toBeGreaterThan(0);
+    expect(m.paying).toBeGreaterThan(0);
   });
 });

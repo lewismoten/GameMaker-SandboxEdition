@@ -14,6 +14,7 @@ import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
 import { uploadChecklist } from '../../../widgets/uploadChecklist';
+import { mazeFor } from '../../../check/generators/mazeFor';
 
 export interface CheckHost {
   project: Project;
@@ -27,6 +28,10 @@ export interface CheckHost {
   goTo(cell: number): void;
   /** A fix changed these files: read them again. */
   reload(files: string[]): void;
+  /** The cells selected with the Select tool, if any. */
+  selection(): { x: number; y: number; w: number; h: number } | undefined;
+  /** Paints [cell, block] pairs as one step of the map's own Undo. */
+  paint(cells: [number, number][]): void;
 }
 
 /** What the companion keeps of the last check of a map. */
@@ -152,6 +157,27 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     ),
     bar,
     status,
+    h(
+      'details',
+      { class: 'lc-gen' },
+      h('summary', null, 'Make…'),
+      h('p', { class: 'meta' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
+      h(
+        'button',
+        {
+          type: 'button',
+          onclick: () => {
+            const r = host.selection();
+            if (!r || r.w < 7 || r.h < 7) return toast('Select an area at least 7 blocks each way first.', 'error');
+            const cells = mazeFor(project, file, r);
+            if (!cells) return toast('This map needs a wall block and a floor block to build a maze from.', 'error');
+            host.paint(cells);
+            toast('A maze, with landmarks at its crossroads and prizes in some dead ends. Run the check to try it.');
+          },
+        },
+        '▦ A maze with landmarks',
+      ),
+    ),
     toggles,
     legend,
     counts,
