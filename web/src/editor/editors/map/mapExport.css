@@ -19,8 +19,8 @@
   border-left: 1px solid var(--border);
 }
 .map-export-modes button[aria-checked='true'] {
-  background: var(--focus);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-text);
 }
 .map-export-screen {
   gap: 10px;

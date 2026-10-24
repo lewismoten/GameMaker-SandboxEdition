@@ -78,7 +78,8 @@
   margin: 6cqw 0 0;
   padding: 1.6cqw 5cqw;
   background: var(--mc-acc);
-  color: var(--mc-bg);
+  /* the box color, a shade deeper, so small print still reads (4.5:1) on a light accent */
+  color: color-mix(in srgb, var(--mc-bg) 80%, #000);
   font:
     900 4.4cqw/1 'Arial Black',
     Arial,

@@ -59,6 +59,8 @@ body:has(.dos-page) {
 
 .dos-back {
   flex: none;
+  min-width: 24px;
+  justify-content: center;
   min-height: 28px;
   display: inline-flex;
   align-items: center;
