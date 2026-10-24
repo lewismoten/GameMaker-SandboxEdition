@@ -18,14 +18,18 @@ export const grid = (cells: Block[][], min?: number): Block => ({ t: 'grid', cel
 /** A boxed sidebar; `level` is its heading's level (3 by default; 2 on a page whose only heading is its title). */
 export const side = (title: string, blocks: Block[], tone: Tone = 'yellow', level?: 2 | 3): Block => ({ t: 'side', title, tone, blocks, level });
 export const pull = (text: Inline, by?: string): Block => ({ t: 'pull', text, by });
-/** A screenshot drawn from the game itself: its title screen, the first level, or a design tool on it. */
-export const shot = (game: string, view: ShotView, alt: string, caption?: Inline, tilt?: number): Block => ({
+/**
+ * A screenshot drawn from the game itself: its title screen, the first level, or a design tool on
+ * it. `float` sets it at one side, with the rest of its cell's text wrapping around it.
+ */
+export const shot = (game: string, view: ShotView, alt: string, caption?: Inline, tilt?: number, float?: 'left' | 'right'): Block => ({
   t: 'shot',
   game,
   view,
   alt,
   caption,
   tilt,
+  float,
 });
 export const art = (id: ArtId, alt: string, caption?: Inline): Block => ({ t: 'art', art: id, alt, caption });
 /** A cast member's portrait (public/cast/<id>.png), at its own pixel size `w` x `h`. */

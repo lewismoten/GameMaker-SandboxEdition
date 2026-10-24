@@ -665,6 +665,27 @@
   display: none;
 }
 
+/* a screenshot at one side of its cell, the cell's text wrapping around it */
+.mag-cell:has(> .mag-shot.float-left, > .mag-shot.float-right) {
+  display: flow-root;
+}
+
+.mag-cell:has(> .mag-shot.float-left, > .mag-shot.float-right) > * + * {
+  margin-top: 0.6em;
+}
+
+.mag-shot.float-left,
+.mag-shot.float-right {
+  width: min(46%, 16em);
+  margin: 0.3em 1.1em 0.5em 0;
+  float: left;
+}
+
+.mag-shot.float-right {
+  margin: 0.3em 0 0.5em 1.1em;
+  float: right;
+}
+
 .mag-page figcaption {
   margin-top: 0.35em;
   font:
@@ -1280,6 +1301,13 @@
 
   .mag-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mag-shot.float-left,
+  .mag-shot.float-right {
+    width: 100%;
+    margin: 0.3em 0 0.5em;
+    float: none;
   }
 
   .mag-masthead h1 {

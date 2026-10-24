@@ -60,7 +60,8 @@ export type Block =
   | { t: 'grid'; cells: Block[][]; min?: number }
   | { t: 'side'; title: string; tone?: Tone; blocks: Block[]; level?: 2 | 3 }
   | { t: 'pull'; text: Inline; by?: string }
-  | { t: 'shot'; game: string; view: ShotView; alt: string; caption?: Inline; tilt?: number }
+  /** A screenshot; `float` sets it beside the text that follows it in its cell, which wraps around it. */
+  | { t: 'shot'; game: string; view: ShotView; alt: string; caption?: Inline; tilt?: number; float?: 'left' | 'right' }
   | { t: 'art'; art: ArtId; alt: string; caption?: Inline }
   /** A cast member's portrait: public/cast/<id>.png (cast/castData.ts), drawn from a game's own files. */
   | { t: 'cast'; id: string; alt: string; w: number; h: number; caption?: Inline }

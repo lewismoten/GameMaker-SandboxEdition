@@ -137,7 +137,7 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
     case 'pull':
       return h('blockquote', { class: 'mag-pull' }, h('p', null, ...inline(b.text, where)), b.by ? h('footer', null, `— ${b.by}`) : null);
     case 'shot':
-      return shotFigure(b.game, b.view, b.alt, env, pending, 'mag-shot', b.caption, b.tilt);
+      return shotFigure(b.game, b.view, b.alt, env, pending, b.float ? `mag-shot float-${b.float}` : 'mag-shot', b.caption, b.tilt);
     case 'art':
       return h('figure', { class: `mag-art art-${b.art}` }, artElement(b.art, b.alt), b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null);
     case 'cast':
