@@ -19,8 +19,9 @@ import { stage } from './levels/stage';
 import { balloon } from './levels/balloon';
 import { pies } from './levels/pies';
 import { rigging } from './levels/rigging';
+import { course } from './levels/course';
 
-export const LEVELS: (() => Level)[] = [garage, maple, park, invite, bakery, balloon, road, mill, dig, pies, funhouse, hill, meadow, stage, rigging];
+export const LEVELS: (() => Level)[] = [garage, maple, park, invite, bakery, balloon, road, mill, dig, pies, funhouse, hill, meadow, stage, rigging, course];
 
 export const TITLE = 'TEDDY 3: BIGGEST!';
 
