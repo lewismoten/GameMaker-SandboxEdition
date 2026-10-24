@@ -54,6 +54,7 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
     year: entry.year,
     company: entry.company,
     blurb: entry.blurb,
+    bot: walk.bot,
     url: gameUrl(entry),
     chapters: walk.timeline.chapters,
     fps: walk.timeline.fps,
@@ -89,12 +90,12 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
 }
 
 /** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show. */
-export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void): Promise<void> {
+export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void, given?: Walkthrough): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f));
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given);
   } finally {
     release?.();
   }
@@ -105,8 +106,10 @@ async function watch(
   loadFiles: () => Promise<GameFiles>,
   onReady: (() => void) | undefined,
   onLose: (f: () => void) => void,
+  given?: Walkthrough,
 ): Promise<void> {
-  const [walk, files] = await Promise.all([loadWalkthrough(entry), loadFiles()]);
+  // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
+  const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
   if (!walk || !entry.gam) {
     toast(`${entry.title} has no walkthrough.`);
     return;
@@ -114,6 +117,8 @@ async function watch(
   const gam = entry.gam;
   const tl = walk.timeline;
   const total = tl.frames;
+  /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */
+  const ended = (r: WalkRun | undefined) => !!r && (r.done || (!!walk.partial && r.frame >= total));
 
   const canvas = h('canvas', { class: 'wt-canvas', width: 320, height: 200, 'aria-hidden': 'true' });
   const busy = h('div', { class: 'wt-busy', hidden: true });
@@ -225,8 +230,8 @@ async function watch(
   };
 
   const showPlay = () => {
-    playBtn.textContent = playing ? '❚❚ Pause' : run?.done ? '↺ Watch again' : '▶ Play';
-    playBtn.setAttribute('aria-label', playing ? 'Pause' : run?.done ? 'Watch again from the start' : 'Play');
+    playBtn.textContent = playing ? '❚❚ Pause' : ended(run) ? '↺ Watch again' : '▶ Play';
+    playBtn.setAttribute('aria-label', playing ? 'Pause' : ended(run) ? 'Watch again from the start' : 'Play');
     screen.classList.toggle('paused', !playing);
   };
 
@@ -244,24 +249,25 @@ async function watch(
     stepping = true;
     const r = run;
     void (async () => {
-      for (let i = 0; i < n; i++) if (!(await r.step(i === n - 1))) break;
+      for (let i = 0; i < n && !ended(r); i++) if (!(await r.step(i === n - 1))) break;
       stepping = false;
       if (r !== run) return;
       showTime();
-      if (r.done) {
+      if (ended(r)) {
         playing = false;
         showPlay();
+        const end = r.done ? 'The end. Thanks for watching!' : 'This is as far as the bot got.';
         // eslint-disable-next-line @typescript-eslint/no-base-to-string -- whatever was thrown, as text
-        status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : 'The end. Thanks for watching!';
-        if (!r.error) watchedWalkthrough(entry.id);
+        status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : end;
+        if (!r.error && r.done) watchedWalkthrough(entry.id);
       }
     })();
   };
 
   const setPlaying = (on: boolean) => {
-    if (on && run?.done) {
+    if (on && ended(run)) {
       fresh();
-      void run
+      void run!
         .start()
         .then(() => run!.step(true))
         .then(showTime);
@@ -289,7 +295,7 @@ async function watch(
     busy.textContent = `Skipping to ${target.title}…`;
     status.textContent = `Skipping to ${target.title}…`;
     let r = run!;
-    if (r.done || r.chapters.length > i || r.frame > target.frame) r = fresh();
+    if (ended(r) || r.chapters.length > i || r.frame > target.frame) r = fresh();
     await r.start();
     let n = 0;
     while (!closed && r === run && r.chapters.length <= i && (await r.step(false, SKIP_MS))) {

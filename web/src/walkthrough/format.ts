@@ -43,6 +43,10 @@ export interface Walkthrough {
   story?: boolean;
   segments: WalkSegment[];
   chapters: WalkChapterMark[];
+  /** Made by the editor's walkthrough bot (not the game's own), for any Game-Maker game. */
+  bot?: boolean;
+  /** The bot got only partway: play stops at timeline.frames, where it got to. */
+  partial?: boolean;
   /** Written by the tool from a run through the real engine. */
   timeline: {
     fps: number;
@@ -135,6 +139,8 @@ export interface YoutubeInfo {
   chapters: WalkChapter[];
   fps: number;
   frames: number;
+  /** Made by the walkthrough bot for a game that isn't a Sandbox game: no Sandbox credits. */
+  bot?: boolean;
 }
 
 /** YouTube's title limit is 100 characters. */
@@ -150,7 +156,9 @@ export function youtubeText(o: YoutubeInfo): YoutubeText {
     `${o.gameTitle}, played from power-on to the credits: the opening, the story, every level and the ending, with the game's own music and sound effects. No commentary.`,
     '',
     ...(o.blurb ? [o.blurb, ''] : []),
-    `${o.gameTitle} is a Sandbox Software game for Game-Maker: Sandbox Edition, a game in the style of a ${o.year ?? 1995} DOS release that runs in Recreational Software Designs' Game-Maker 3.0 (PLAYGAME) and in the web app. It was written and built by Claude Opus 5.5 (Anthropic): the code that builds it, its pictures, music, sounds and words. Much of it is drawn from Lewis "Lewie" Moten III: his blog writing, photos he provided, and conversations about his interests, experiences and hobbies. Lewis directed the game and playtested it as it came together.`,
+    o.bot
+      ? `${o.gameTitle} is a game made with Recreational Software Designs' Game-Maker 3.0${o.company ? ` by ${o.company}` : ''}. This walkthrough was played by the walkthrough bot of Game-Maker: Sandbox Edition, which tries every key from every place the hero can stand on the real engine and keeps the way through.`
+      : `${o.gameTitle} is a Sandbox Software game for Game-Maker: Sandbox Edition, a game in the style of a ${o.year ?? 1995} DOS release that runs in Recreational Software Designs' Game-Maker 3.0 (PLAYGAME) and in the web app. It was written and built by Claude Opus 5.5 (Anthropic): the code that builds it, its pictures, music, sounds and words. Much of it is drawn from Lewis "Lewie" Moten III: his blog writing, photos he provided, and conversations about his interests, experiences and hobbies. Lewis directed the game and playtested it as it came together.`,
     '',
     `Play it in your browser: ${o.url}`,
     '',
