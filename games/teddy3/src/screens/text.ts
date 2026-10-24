@@ -224,7 +224,7 @@ export const LOST = pages([
  * The felt egg's page (shown on the way out of where it hides). The egg's description,
  * credits and lore are its entry in the web app's egg registry (web/src/eggs/eggs.ts).
  */
-export const EGG = pages(['(The egg is still being hidden.)']);
+export const EGG = pages(['(Still hiding.)']);
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
