@@ -251,6 +251,7 @@ export const CARDS: Record<string, string[]> = {
   farm: ['MEANWHILE... dawn. Gwinn finds', 'a farm. So many chickens!', 'RIDE THE HAY ELEVATOR'],
   show: ['The dog show! Gwinn is in', 'the Best Behaved ring. Uh-oh.', 'EVERY TRICK YOU KNOW'],
   midway: ['THE FAIR! Earn tickets with', 'tricks. THE BIG DROP takes 3.', 'NEW: TICKETS FOR TRICKS'],
+  lot: ['MEANWHILE... noon. Gwinn has', 'made it to the Fair. So WINDY!', 'NEW: RIDE THE WIND'],
   maze: ['A corn maze! Sniff out her', 'paw prints: they show the way.', 'STEPS GO UP, HOLES GO DOWN'],
   river: ['The rubber chicken is in the', 'river! Sit for the miller.', 'NEW: SWIM WITH THE CURRENT'],
   main: ['Her leash is on the gazebo!', 'Ring bells with a high five.', 'NEW: RING THE BELL (1)'],

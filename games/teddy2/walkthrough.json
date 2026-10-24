@@ -32,10 +32,14 @@
   },
   {
    "scene": 8,
-   "keys": "AU0ozQFIBsgISAbICEgGyAhIBsgISAbICAICghhNK80BAwKDKE0UEgqSD80BTQHNAx8Cnx5NB80BTRjNAU0BzQMEAoQUTQfNAU0kzQFNAUgGyAXNmgFNDM0BIQKhCk0LzQFNJkgIyBHN"
+   "keys": "AU0qzQFNAc0DOQK5FE04zQFNGs0ABQKFAU0AzQAFCIUBTRTNAU0kzQFNAUgGyATNG00CzQFNAc0DOQK5FE0qzRVLBMsCSxTLLksCSAjIEMsoSwJICMgUyyRLAkgIyBTLJEsCSAjIFMskSwJICMgyyw=="
   },
   {
    "scene": 9,
+   "keys": "AU0ozQFIBsgISAbICEgGyAhIBsgISAbICAICghhNK80BAwKDKE0UEgqSD80BTQHNAx8Cnx5NB80BTRjNAU0BzQMEAoQUTQfNAU0kzQFNAUgGyAXNmgFNDM0BIQKhCk0LzQFNJkgIyBHN"
+  },
+  {
+   "scene": 10,
    "keys": "AU0UzQEEAoQGTQJICMgOSAjIBEgCyARICMgCEgqSGM0BTSnNAAUChQFNAM0ABQmFAU0RzQAFAoUBTQDNAAUChQFNAM0ABQeFAU0fzQAFAoUBTQDNAAUFhQFNA80BOQK5FE0JzQAFAoUBTQDNAAUHhQFNJ80BAgKCHk0gzQEDAoMyTSzNAU0BSAbIBM0KTSDN"
   }
  ],
@@ -66,16 +70,20 @@
   },
   {
    "scene": 8,
-   "title": "Level 7: The Fair Midway"
+   "title": "Level 7: Gwinn Signs Up"
   },
   {
    "scene": 9,
-   "title": "Level 8: The Dog Show"
+   "title": "Level 8: The Fair Midway"
+  },
+  {
+   "scene": 10,
+   "title": "Level 9: The Dog Show"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 31226,
+  "frames": 34612,
   "chapters": [
    {
     "title": "Opening",
@@ -110,20 +118,24 @@
     "frame": 16847
    },
    {
-    "title": "Level 7: The Fair Midway",
+    "title": "Level 7: Gwinn Signs Up",
     "frame": 19802
    },
    {
-    "title": "Level 8: The Dog Show",
-    "frame": 22826
+    "title": "Level 8: The Fair Midway",
+    "frame": 23183
+   },
+   {
+    "title": "Level 9: The Dog Show",
+    "frame": 26207
    },
    {
     "title": "Ending",
-    "frame": 25260
+    "frame": 28641
    },
    {
     "title": "Credits",
-    "frame": 27862
+    "frame": 31243
    }
   ]
  }

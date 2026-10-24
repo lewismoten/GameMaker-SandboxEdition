@@ -1,6 +1,6 @@
 // Writes games/teddy2/walkthrough.json: the bot plays every level's route (tools/route.ts)
 // the way check.ts does, one key segment a level, and games/kit/walkthrough.ts checks the
-// whole run on the real engine (title, story, all eight levels, the dog show, the credits).
+// whole run on the real engine (title, story, all nine levels, the dog show, the credits).
 // The routes never go near the felt egg (Gwinn's den behind the hedge on Main Street).
 //   cd web && npx vite-node ../games/teddy2/tools/walkthrough.ts
 import { buildCharacter, CB } from '../src/characters/character';

@@ -1,4 +1,4 @@
-// Level 8: The Dog Show, at night in the Fair's show barn. Spin through the turnstile into
+// Level 9: The Dog Show, at night in the Fair's show barn. Spin through the turnstile into
 // the ring, climb the A-frame, go through the tunnel, go round the hoop (Teddy retired from
 // hoops), play dead under the popcorn, bark the rival poodle off, play dead under the
 // second stand's popcorn, ring the judges' bell to

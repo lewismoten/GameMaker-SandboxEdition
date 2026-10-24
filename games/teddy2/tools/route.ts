@@ -1,6 +1,20 @@
 // The bot's way through each level (also the source of the title demo).
 import type { Order } from './bot';
 import { CTR } from '../src/ids';
+import { mapBlock, shownBlock } from '../../../web/src/engine/world';
+import type { Sim } from '../../kit/sceneSim';
+import { GRAV } from '../src/levels/level';
+import { SHELTERS, UPDRAFT } from '../src/levels/levelLot';
+
+/** Is a gust blowing (gravity right) at map cell (x, y) right now? */
+const gusting = (s: Sim, x: number, y: number) => (shownBlock(s.w, mapBlock(s.w, x, y)).grav & GRAV.right) !== 0;
+/** Wait for the gust over the roofs to blow, then for it to drop: the start of a calm. */
+const calm = (x: number): Order[] => [
+  { until: `it gusts at ${x}`, maxTicks: 80, check: (s) => gusting(s, x, 32) },
+  { until: `the calm at ${x}`, maxTicks: 40, check: (s) => !gusting(s, x, 32) },
+];
+/** Shelter to shelter over the roofs in the calms, then the last dash to the bandstand. */
+const roofs = (): Order[] => SHELTERS.flatMap((x, i) => [...calm(x - 2), { walk: i + 1 < SHELTERS.length ? SHELTERS[i + 1] + 1 : 41 }]);
 
 export const ROUTES: Record<string, Order[]> = {
   house: [
@@ -79,6 +93,23 @@ export const ROUTES: Record<string, Order[]> = {
     { walk: 75 },
     { hop: 6, dir: 'right', dirFor: 4 },
     { walk: 85 },
+  ],
+  lot: [
+    { walk: 15 },
+    { face: 'right' },
+    { trick: 'space', after: 20 },
+    { walk: 36 },
+    { walk: 50, dodge: ['pie'] },
+    { walk: 61 },
+    { hop: 6, dir: 'right', dirFor: 4 },
+    { until: 'over the creek', maxTicks: 80, check: (s) => s.pos.bx > 72 && s.pos.by === 39 },
+    { walk: 74 },
+    { face: 'right' },
+    { trick: 'space', after: 20 },
+    { walk: UPDRAFT },
+    { until: 'up in the updraft', maxTicks: 100, check: (s) => s.pos.by <= 29 },
+    { walk: SHELTERS[0] + 1 },
+    ...roofs(),
   ],
   midway: [
     { walk: 11 },

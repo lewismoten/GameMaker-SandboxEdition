@@ -1,4 +1,4 @@
-// The soundtrack: thirteen short FM songs for the Sound Blaster. "Teddy's Theme" from the
+// The soundtrack: fourteen short FM songs for the Sound Blaster. "Teddy's Theme" from the
 // first adventure runs through Teddy's songs, and Gwinn has a theme of her own now (a
 // sneaky minor tune that can't sit still) for her MEANWHILE... levels. Main Street plays
 // Yankee Doodle on a fife for Founders' Day. Each voice is its own OPL2 channel; chords
@@ -246,7 +246,25 @@ export function mazeSong(): Uint8Array {
   return tune(104, [v(0, pluck, join(m1, m2, m3, m4), 100), v(1, pad, a, 50), v(2, pad, b, 50), v(3, pad, c, 50), v(4, BASS, bass(chords, 'half'), 95)]);
 }
 
-/** Level 7, the midway: a carnival on the calliope, chromatic runs and all. */
+/**
+ * Gwinn Signs Up, the Fair's back lot at noon: her theme sneaking in on the calliope before
+ * the gates open, over an oompah, while the wind whistles up and down above it.
+ */
+export function lotSong(): Uint8Array {
+  const chords = [...GWINN_CHORDS, ...GWINN_CHORDS];
+  const [a, b, c] = comp(chords, 'r q q q', -1);
+  const wind = times(2, 'E6 w, r h, A5 h, C6 w, r w, D6 h, B5 h, r w, E6 w, r w');
+  return tune(126, [
+    v(0, CALLIOPE, join(GWINN_A, GWINN_B, GWINN_A, GWINN_B), 105),
+    v(1, organ, a, 55),
+    v(2, organ, b, 55),
+    v(3, organ, c, 55),
+    v(4, TUBA, bass(chords, 'oompah'), 115),
+    v(5, WHISTLE, wind, 45),
+  ]);
+}
+
+/** Level 8, the midway: a carnival on the calliope, chromatic runs and all. */
 export function midwaySong(): Uint8Array {
   const chords = ['C', 'C', 'G7', 'G7', 'G7', 'G7', 'C', 'C', 'F', 'F', 'C', 'A7', 'D7', 'G7', 'C', 'C'];
   const m1 = join(
@@ -274,7 +292,7 @@ export function midwaySong(): Uint8Array {
   ]);
 }
 
-/** Level 8, the dog show: a fanfare, Teddy's Theme, then Gwinn's, side by side at last. */
+/** Level 9, the dog show: a fanfare, Teddy's Theme, then Gwinn's, side by side at last. */
 export function showSong(): Uint8Array {
   const chords = ['C', 'F', 'C', 'G7', ...THEME_CHORDS, ...GWINN_CHORDS, 'F', 'G7', 'C', 'C'];
   const fan = 'C5 e, C5 e, C5 e, E5 e, G5 q, C6 q, A5 e, A5 e, A5 e, C6 e, F5 h, G5 e, G5 e, G5 e, B5 e, D6 q, B5 q, G5 h, G4 h';
