@@ -45,7 +45,7 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    const hit = await cache.match(req, { ignoreSearch: true });
+    const hit = await cache.match(req, { ignoreSearch: true, ignoreVary: true }); // a host's Vary: Origin would miss a module script's request
     if (hit) return hit;
     try {
       const res = await fetch(req);
