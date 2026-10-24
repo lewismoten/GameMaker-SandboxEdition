@@ -570,6 +570,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h('a', { href: '#/credits' }, 'Credits\u00a0→'),
       ' · ',
       h('a', { href: './dos.html', title: 'The 1994 PC on its own: straight into Game-Maker, without the desk' }, 'DOS Game-Maker\u00a0→'),
+      ' · ',
+      h(
+        'a',
+        { href: './player/', title: 'One web page that plays old Game-Maker game folders on any web host; try it with the games here' },
+        'Web player\u00a0→',
+      ),
     ),
   ];
   // when Getting started has no room beside the library, a link in the library's header opens it

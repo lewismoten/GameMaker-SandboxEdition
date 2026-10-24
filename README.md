@@ -65,6 +65,11 @@ desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker
   `window.open` and `postMessage` can open a game here to play or edit, on the desk, in DOS
   Game-Maker or on the web, after the visitor says yes. See
   [Opening games from your site](docs/embed.md).
+- **A web player for your old games:** one `.html` file to put on any web host beside your
+  Game-Maker game folders. It lists them from an optional `games.json`, starts one from
+  `?game=<name>`, and keeps high scores and saved games in the browser, with export and
+  import. [Try it with the games here](https://lewismoten.github.io/GameMaker-SandboxEdition/player/)
+  or see [The web player](docs/web-player.md).
 
 ## Screenshots
 
