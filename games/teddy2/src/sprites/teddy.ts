@@ -321,6 +321,30 @@ export const POSES: Record<string, Pixels> = {
     '..owwowwwwwowwo.....',
     '...oo.oooooo.oo.....',
   ]),
+  // Hopping up (or climbing) from behind: the loaf, legs tucked.
+  backHop: S(
+    [
+      '..............o.....',
+      '...o.........oto....',
+      '..oto........oto....',
+      '..otto......totto...',
+      '..otttooooootttoo...',
+      '...otTTTTTTTTtto....',
+      '...otttttttttto.....',
+      '..otttttttttttto....',
+      '..otttttttttttto....',
+      '..otttTTTTTTtttto...',
+      '..ottwwwwwwwwttoo...',
+      '..ootwwwwwwwwwtoo...',
+      '.owwtwwwwWwwwtwwo...',
+      '..ooowwwWWWwwooo....',
+      '....owwwwwwwwo......',
+      '...owwo....owwo.....',
+      '...oo......oo.......',
+    ],
+    undefined,
+    1,
+  ),
   // Hopping straight up: legs tucked, ears flying.
   frontHop: S(
     [

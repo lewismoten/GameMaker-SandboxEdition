@@ -60,13 +60,13 @@ export function buildCharacter(): Character {
   const walk = (dx: number, mirror: boolean) => ['walk1', 'stand', 'walk2', 'stand'].map((p) => f(p, 1, { x: dx, mirror }));
   set(S[SEQ.right], walk(STEP, false), { key: KEY.right, jstkMov: 3 });
   set(S[SEQ.left], walk(-STEP, true), { key: KEY.left, jstkMov: 7 });
-  set(S[SEQ.hop], [f('frontHop', 1, { y: -HOP })], { key: KEY.up, jstkMov: 1, sound: SND.hop });
+  set(S[SEQ.hop], [f('backHop', 1, { y: -HOP })], { key: KEY.up, jstkMov: 1, sound: SND.hop });
   // The same moves on W/A/D, and Q/E hop up and sideways at once (Game-Maker follows one
   // key at a time, so Up and Right held together can't). Down/dig has no S copy: the
   // twenty sequences are all taken.
   set(S[SEQ.rightD], walk(STEP, false), { key: KEY.d });
   set(S[SEQ.leftA], walk(-STEP, true), { key: KEY.a });
-  set(S[SEQ.hopW], [f('frontHop', 1, { y: -HOP })], { key: KEY.w, sound: SND.hop });
+  set(S[SEQ.hopW], [f('backHop', 1, { y: -HOP })], { key: KEY.w, sound: SND.hop });
   set(S[SEQ.hopLeft], [f('walk1', 1, { x: -STEP, y: -HOP, mirror: true }), f('walk2', 1, { x: -STEP, y: -HOP, mirror: true })], {
     key: KEY.q,
     jstkMov: 8,
