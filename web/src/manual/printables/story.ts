@@ -190,6 +190,17 @@ async function journal(it: JournalItem): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ ID card
+/**
+ * The card's printed band. The Klown Klub letters its name with backwards K's, so those are
+ * drawn mirrored; screen readers get the name as plain text.
+ */
+function idBand(org: string, style: string): HTMLElement {
+  const parts = org.split(/(K(?=LOWN|LUB))/i);
+  if (parts.length === 1) return h('div', { class: 'id-band', style }, org);
+  const lettered = parts.map((s, i) => (i % 2 ? h('span', { class: 'id-k' }, s) : s));
+  return h('div', { class: 'id-band', style }, h('span', { class: 'id-sr' }, org), h('span', { 'aria-hidden': 'true' }, ...lettered));
+}
+
 async function idCard(ctx: PrintContext, it: IdCardItem): Promise<Sheet[]> {
   const photo = it.photo ? await ctx.shot(it.photo) : undefined;
   const face = it.portrait ? await portrait(ctx.entry, it.portrait) : undefined;
@@ -199,7 +210,7 @@ async function idCard(ctx: PrintContext, it: IdCardItem): Promise<Sheet[]> {
     3.375,
     2.125,
     'id',
-    h('div', { class: 'id-band', style }, it.org),
+    idBand(it.org, style),
     h(
       'div',
       { class: 'id-body' },
