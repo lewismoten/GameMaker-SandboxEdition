@@ -38,9 +38,35 @@ function measure(ctx: CanvasRenderingContext2D, text: string): number {
   return w;
 }
 
+// The Klown Klub letters its name with backwards K's, on the box as everywhere it is printed.
+const KLUB_K = /K(?=LOWN|LUB)/gi;
+
+/** Draws `s` left-aligned at `at` (the club's K's mirrored); returns its width. */
+function plain(ctx: CanvasRenderingContext2D, s: string, at: number, y: number, outline: boolean): number {
+  let x = at;
+  const draw = (t: string) => {
+    if (outline) ctx.strokeText(t, x, y);
+    ctx.fillText(t, x, y);
+    x += ctx.measureText(t).width;
+  };
+  let last = 0;
+  for (const m of s.matchAll(KLUB_K)) {
+    draw(s.slice(last, m.index));
+    const kw = ctx.measureText(m[0]).width;
+    ctx.save();
+    ctx.translate(2 * x + kw, 0);
+    ctx.scale(-1, 1);
+    draw(m[0]);
+    ctx.restore();
+    last = m.index + 1;
+  }
+  draw(s.slice(last));
+  return x - at;
+}
+
 /** Draws a line that may hold the marked name, honoring the text alignment. */
 function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: number, outline = false): void {
-  if (!line.includes(NAME_MARK)) {
+  if (!line.includes(NAME_MARK) && !/K(?=LOWN|LUB)/i.test(line)) {
     if (outline) ctx.strokeText(line, x, y);
     return ctx.fillText(line, x, y);
   }
@@ -57,10 +83,23 @@ function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: num
       ctx.fillStyle = fill;
       rest = part.slice(1);
     }
-    ctx.fillText(rest, at, y);
-    at += ctx.measureText(rest).width;
+    at += plain(ctx, rest, at, y, outline && !line.includes(NAME_MARK));
   }
   ctx.textAlign = align;
+}
+
+/**
+ * fillText (and strokeText, with `outline`) for one line of box text that may name the Klown
+ * Klub, whose K's are drawn backwards; `maxWidth` squeezes it as fillText would.
+ */
+export function boxText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth?: number, outline = false): void {
+  const w = measure(ctx, text);
+  if (maxWidth === undefined || w <= maxWidth) return drawLine(ctx, text, x, y, outline);
+  ctx.save();
+  ctx.translate(x, 0);
+  ctx.scale(maxWidth / w, 1);
+  drawLine(ctx, text, 0, y, outline);
+  ctx.restore();
 }
 
 /**

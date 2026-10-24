@@ -36,6 +36,7 @@ import {
   barcode,
   wrapLines,
   roundRect,
+  boxText,
 } from './boxPaint';
 
 export interface BoxFaces {
@@ -234,9 +235,8 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     );
     b.strokeStyle = 'rgba(0,0,0,0.7)';
     b.lineWidth = 4;
-    b.strokeText(s.caption, x + shotW / 2, shotTop + shotH + 26);
     b.fillStyle = box.ink;
-    b.fillText(s.caption, x + shotW / 2, shotTop + shotH + 26);
+    boxText(b, s.caption, x + shotW / 2, shotTop + shotH + 26, undefined, true);
   });
   b.textAlign = 'left';
 
@@ -307,7 +307,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     b.fillStyle = box.accent;
     b.fillText('✔', cx, cy);
     b.fillStyle = box.ink;
-    b.fillText(c, cx + 18, cy, textW / 2 - 24);
+    boxText(b, c, cx + 18, cy, textW / 2 - 24);
   });
   // system requirements
   b.fillStyle = 'rgba(0,0,0,0.6)';
