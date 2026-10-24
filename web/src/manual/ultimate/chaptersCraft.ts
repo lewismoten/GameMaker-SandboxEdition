@@ -42,11 +42,17 @@ export const CRAFT: Chapter = {
     <li><b>Monsters turn round too.</b> A monster that paces with a side view needs its return
     leg mirrored (orientation 4 on that corner of its path). Chasers and wanderers turn on their
     own.</li>
+    <li><b>Monsters walking up and down</b> a map seen from above need a back and a front. A
+    monster has one picture for its whole path, so give each leg a monster of its own: one walks
+    its leg, dies after its path and becomes the next, drawn the way that one goes, and the last
+    becomes the first again. Only do this with a monster the hero can’t kill, because a killed
+    monster becomes the next one too.</li>
   </ul>
   <p>The one exception is something that looks the same from every side on purpose: a ball, a
-  blob, a ship that always flies nose first. The Level check (chapter 14) flags a hero who
-  walks sideways facing you, one whose head doesn’t turn, and a monster that never turns
-  round.</p>
+  word bubble, a ship that always flies nose first. The Level check (chapter 14) flags a hero
+  who walks sideways facing you, one whose head doesn’t turn, one who climbs a ladder showing
+  his front or side, and a monster that never turns round; press <b>Looks the same from every
+  side</b> on a finding and it stops asking about that one.</p>
   <h2>Room to move</h2>
   <p>The hero is a block wide and two blocks tall, and the screen is only 16 by 10 blocks. Leave
   air around him: passages three blocks high where he can jump, gaps he can clear with a

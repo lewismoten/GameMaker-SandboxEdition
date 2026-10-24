@@ -1,6 +1,9 @@
 // The editor's Level check (web/src/editor/check), static part only (no playtest), on a game's
 // built disk, against a baseline of findings already looked at: only an error or warning that
 // is not in levelCheck.baseline.json fails, so known false alarms don't. Infos are not checked.
+// A game's about.json "sameEverySide" lists heroes and monsters meant to look the same from
+// every side ("ship.chr", "hive.mon#0"), which the facing check leaves alone, as the editor's
+// own list does.
 //
 //   cd web && npx vite-node ../games/kit/levelCheck.ts <id>            new findings exit 1
 //   cd web && npx vite-node ../games/kit/levelCheck.ts <id> --update   write <id>'s baseline
@@ -16,7 +19,9 @@ const baselinePath = join(here, 'levelCheck.baseline.json');
 
 /** One finding as a baseline line: severity, check, scene and title. */
 async function staticFindings(id: string): Promise<string[]> {
-  const r = await runChecks(new GameFiles(readDisk(join(here, '..', id, 'disk'))), { play: false });
+  const about = join(here, '..', id, 'about.json');
+  const same = existsSync(about) ? ((JSON.parse(readFileSync(about, 'utf8')) as { sameEverySide?: string[] }).sameEverySide ?? []) : [];
+  const r = await runChecks(new GameFiles(readDisk(join(here, '..', id, 'disk'))), { play: false, sameEverySide: same });
   const lines = r.findings.filter((f) => f.severity !== 'info').map((f) => `${f.severity} ${f.check} s${f.where.scene ?? '-'} ${f.title}`);
   return [...new Set(lines)].sort();
 }

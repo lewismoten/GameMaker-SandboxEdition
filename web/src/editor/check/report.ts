@@ -49,6 +49,8 @@ export interface CheckOptions {
   budgetMs?: number;
   progress?: (what: string, done: number, total: number) => boolean | void;
   now?: () => number;
+  /** Heroes and monsters marked as looking the same from every side (facing.ts sameKey). */
+  sameEverySide?: string[];
 }
 
 export function summarize(r: SceneRun, map?: string): RunSummary {
@@ -76,10 +78,11 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   const scenes = opt.scene === undefined ? all : all.filter((s) => s.scene === opt.scene);
   const findings: Finding[] = [];
   const gives = counterSources(all);
+  const same = new Set(opt.sameEverySide);
   for (const d of scenes) {
     findings.push(...counters(d, gives));
     for (const c of [...blockChecks, ...monsterChecks]) findings.push(...c(d));
-    findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...facing(d, all), ...jumps(d), ...soundChecks(d, files));
+    findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...facing(d, all, same), ...jumps(d), ...soundChecks(d, files));
     findings.push(...(await landings(d, game, files)));
   }
   if (opt.scene === undefined) findings.push(...controls(files), ...endingChecks(game), ...variety(all), ...mechanics(all));

@@ -63,7 +63,9 @@ Checking the games:
   chapter marks it was recorded with, and cut off no clip.
 - `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
   `levelCheck.baseline.json` fails. After looking at new findings and judging them fine (or after tuning the checks), run
-  `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline.
+  `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline. A game's about.json
+  `"sameEverySide"` (`["ship.chr", "hive.mon#0"]`) lists heroes and monsters meant to look the same from every side,
+  which the facing check leaves alone (the editor keeps the same list in the companion file).
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), without writing anything.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data

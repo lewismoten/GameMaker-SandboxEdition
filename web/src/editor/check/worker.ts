@@ -6,7 +6,7 @@ import { runChecks, type CheckOptions, type Report } from './report';
 
 export interface CheckRequest {
   files: [string, Uint8Array][];
-  options: Pick<CheckOptions, 'scene' | 'play' | 'budgetMs'>;
+  options: Pick<CheckOptions, 'scene' | 'play' | 'budgetMs' | 'sameEverySide'>;
 }
 
 export type CheckMessage =

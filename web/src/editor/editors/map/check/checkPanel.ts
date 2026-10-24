@@ -16,6 +16,7 @@ import { fixFor } from '../../../check/generators/fixes';
 import { uploadChecklist } from '../../../widgets/uploadChecklist';
 import { unlockAchievement } from '../../../../achievements';
 import { mazeFor } from '../../../check/generators/mazeFor';
+import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
 
 export interface CheckHost {
   project: Project;
@@ -259,6 +260,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     const info = CHECKS[f.check];
     const cell = f.where.cell ?? f.where.cells?.[0];
     const fix = fixFor(f, project);
+    const same = sameKeyOf(f);
     return h(
       'li',
       { class: `lc-item lc-${f.severity}` },
@@ -297,6 +299,24 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
             `✨ ${fix.label}`,
           )
         : null,
+      same
+        ? h(
+            'button',
+            {
+              type: 'button',
+              class: 'lc-fix',
+              title: 'For a ball, a word or anything drawn to look the same from every side: the check stops asking about it.',
+              onclick: () => {
+                markSame(project, same);
+                if (saved) saved.findings = saved.findings.filter((x) => sameKeyOf(x) !== same);
+                if (saved) project.setExtras(file, SECTION, saved);
+                render();
+                toast(`${same} is marked as the same from every side.`);
+              },
+            },
+            'Looks the same from every side',
+          )
+        : null,
     );
   }
 
@@ -318,11 +338,15 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     bar.removeAttribute('value');
     status.textContent = 'Starting the bot…';
     const t0 = performance.now();
-    running = startCheck(project.files, { scene: host.scene, play: host.scene !== undefined, budgetMs: budget * 1000 }, (what) => {
-      const s = (performance.now() - t0) / 1000;
-      bar.value = Math.min(1, s / budget);
-      status.textContent = `${what} (${s.toFixed(0)} of ${budget} s)`;
-    });
+    running = startCheck(
+      project.files,
+      { scene: host.scene, play: host.scene !== undefined, budgetMs: budget * 1000, sameEverySide: sameEverySide(project) },
+      (what) => {
+        const s = (performance.now() - t0) / 1000;
+        bar.value = Math.min(1, s / budget);
+        status.textContent = `${what} (${s.toFixed(0)} of ${budget} s)`;
+      },
+    );
     try {
       const report = await running.done;
       keep(report);

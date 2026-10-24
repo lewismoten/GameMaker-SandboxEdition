@@ -6,6 +6,7 @@ import './uploadChecklist.css';
 import { h, modal } from '../core/ui';
 import type { Project } from '../core/project';
 import { CHECKS, type CheckId, type Finding } from '../check/findings';
+import { sameEverySide } from '../check/sameEverySide';
 import { runChecks } from '../check/report';
 import { guideLink } from './guideLink';
 import { unlockAchievement } from '../../achievements';
@@ -22,6 +23,7 @@ export interface ChecklistItem {
 
 export const APPENDIX_B: ChecklistItem[] = [
   { text: 'The first minute is fun; the hero’s speed feels right to someone new', checks: ['hero-speed', 'response'] },
+  { text: 'The hero faces the way he walks; pacing monsters turn round', checks: ['facing'] },
   { text: 'Every jump has a block to spare; every landing is in sight before the jump', checks: ['blind-drop', 'hazard-landing'], play: true },
   { text: 'Each level asks a little more; the last is the best, not the meanest', checks: ['curve'], play: true },
   { text: 'Long levels are split into scenes, so a death costs little', checks: ['checkpoints'], play: true, full: true },
@@ -76,7 +78,7 @@ export async function uploadChecklist(project: Project): Promise<void> {
   const ticks = new Set(project.extras<number[]>(project.gam, SECTION, []));
   let fileFindings: Finding[] = [];
   try {
-    fileFindings = (await runChecks(project.files, { play: false })).findings;
+    fileFindings = (await runChecks(project.files, { play: false, sameEverySide: sameEverySide(project) })).findings;
   } catch {
     /* a game without levels: every item is the designer's */
   }

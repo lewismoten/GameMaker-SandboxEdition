@@ -1,7 +1,7 @@
 // The facing check: a hero who walks sideways facing the player, and one whose head doesn’t turn.
 import { describe, expect, it } from 'vitest';
 import { BLEN } from '../../formats/blocks';
-import { facing } from './checks/facing';
+import { facing, sameKey } from './checks/facing';
 import { scenesOf } from './sceneData';
 import { testGame } from './testGame';
 
@@ -30,6 +30,11 @@ describe('the facing check', () => {
   it('finds a head that doesn’t turn when only the bottom block is mirrored', () => {
     const d = scene(side, 0x40);
     expect(facing(d, [d]).map((f) => f.title)).toEqual(['The hero faces the same way walking left and right']);
+  });
+
+  it('leaves alone a hero marked as looking the same from every side', () => {
+    const d = scene(front, 0x44);
+    expect(facing(d, [d], new Set([sameKey('test.chr')]))).toEqual([]);
   });
 
   it('passes a side view mirrored both ways', () => {

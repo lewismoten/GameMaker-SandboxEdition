@@ -10,10 +10,10 @@ describe('the Before You Upload checklist', () => {
   });
 
   it('ticks a line only when its checks found nothing, and leaves play lines for the playtest', () => {
-    const stuck = APPENDIX_B[5];
+    const stuck = APPENDIX_B[6];
     expect(itemState(stuck, [{ check: 'stuck', severity: 'error', title: '', where: {} }], true)).toEqual({ kind: 'problems', count: 1 });
     expect(itemState(stuck, [], true).kind).toBe('clear');
     expect(itemState(stuck, [], false).kind).toBe('unchecked');
-    expect(itemState(APPENDIX_B[16], [], true).kind).toBe('manual');
+    expect(itemState(APPENDIX_B[17], [], true).kind).toBe('manual');
   });
 });
