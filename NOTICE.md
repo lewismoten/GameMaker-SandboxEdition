@@ -156,6 +156,60 @@ game folder opens in the browser unchanged.
   **The Imperial March** (1980), which is under copyright and not licensed by this project.
   It is kept as those games were distributed in the 1990s, unaltered, as part of their
   authors' original files.
+- **Pictures in the CD's games.** Most of the CD games' pictures are drawn or rendered, but
+  some are scanned photographs, paintings or frames of film. None of them name a source, so
+  these were traced in October 2026 by looking at them and searching by text; where a source
+  is not certain it says "likely" or "appears to be". They are kept unaltered, as their
+  authors distributed them, and are not licensed by this project:
+  - *Nebula* (`cd/gameware/nebula`, RSD): `BLUE.GIF` is the **Blue Marble**, the photograph
+    of the Earth taken by the crew of Apollo 17 in 1972
+    ([NASA](https://en.wikipedia.org/wiki/The_Blue_Marble)), also small in `MENU.GIF` and
+    `NOVA.FLI`. `SATRING.GIF` is a **Voyager 1** picture of Saturn's crescent and rings
+    (1980, frame C3501159, the same picture as `cd/picture/space/planets/C3501159.GIF`),
+    tinted blue. `YELOSUN.GIF`, `YELOLOW.GIF`, `YELOBYE.FLI`, `NOVA.FLI` and `MENU.GIF` appear
+    to be a **Voyager 1** color picture of Jupiter's moon **Io** (1979) with a volcanic plume
+    on its edge ([NASA/JPL](https://photojournal.jpl.nasa.gov/target/io)). These NASA pictures
+    are in the **public domain** in the US. The green planet in `GREENHI.FLI`, `GREENBYE.FLI`
+    and `HISCORE.GIF` is a planet photograph tinted green, likely also from NASA (possibly
+    Mars); its source was not identified.
+  - *Woman Warrior and the Outer Limits* (`cd/gameware/outerlim`) and *Woman Warrior and the
+    Attack From Below* (`cd/gameware/warrior`), by Sheldon Chase for KD Software: their title
+    pictures (`OLSTART.GIF`, `WARRIOR.GIF`, and the same collage in their `MENU.FLI`,
+    `MENUBOX.FLI` and `TEXTBOX.FLI`) and the ending picture `OLENDING.GIF` are frames
+    captured from the television series
+    [**The Outer Limits**](https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series))
+    (1963–1965). The game's own story screen says it "uses parts from two episodes",
+    ["The Cry of Silence"](https://en.wikipedia.org/wiki/Cry_of_Silence) (1964), whose star
+    June Havoc the woman appears to be, and
+    ["The Zanti Misfits"](https://en.wikipedia.org/wiki/The_Zanti_Misfits) (1963). The series
+    is **under copyright** (today MGM's), not licensed by this project.
+  - *Paper Airplane* (`cd/sharware/paperair`), by Matt Bell: its title picture `GMTITLE.GIF`
+    is **The Nazgûl** by **Ted Nasmith** (gouache, first published in the 1990 Tolkien
+    Calendar; [tednasmith.com](https://www.tednasmith.com/?p=214)), scanned with the title
+    lettered over it. `OPENPAP.GIF`, a falcon turning into an F-16, may be **Jody Sjogren**'s
+    *Metamorphosis II: Falconfyre* (1986;
+    [Wright State University](https://wright.libraryhost.com/repositories/2/top_containers/6194)),
+    which was not confirmed. The figure of cloud over a runway in `ENDPAP.GIF` is a painting or
+    photo collage whose source was not identified. All are **under copyright**, not licensed by
+    this project.
+  - *Sample* (`cd/gameware/sample`, RSD): `SAMPLE.GIF`, also in `MENUBKG.FLI` and
+    `TEXTBKG.FLI`, is a **painting** of tropical birds (a long-billed orange bird, a
+    blue-and-yellow macaw, a hummingbird and egrets) whose artist was not identified;
+    presumably under copyright.
+  - *Houses* (`cd/gameware/houses`, RSD): `HOUSES.GIF` and `BKG.GIF` are a **photograph** of a
+    boathouse with a canoe on a pond; its source was not identified.
+  - *Glubada Pond* (`cd/gameware/glub`): `OCEAN.GIF` (also in `END.FLI`) is the CD's own
+    picture library's `cd/picture/nature/OCEAN1.GIF`, a beach photograph; `POND.GIF` is its
+    `cd/picture/nature/AMER01_I.GIF`, a mountain lake; and `WATER.GIF` is another photograph.
+    Their sources were not identified.
+  - *RSD's title picture* (`GMTITLE.GIF`, "Recreational Software Designs' Game-Maker
+    Presents:", in many of the CD's games) is lettered over a **photograph of clouds** whose
+    source was not identified.
+- **The CD's picture and animation libraries** (`cd/picture`, `cd/animate`) are a collection
+  of 1990s GIF pictures and FLI animations of mixed and mostly unrecorded origin: NASA
+  pictures (Voyager, Magellan, Viking, the Space Shuttle) alongside photographs of cars,
+  places and animals whose photographers are not named and which are likely under copyright.
+  They are kept as Andy Stone released them and are not on the website.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
   Bell and others). Shareware games are shown play-only, with their authors' original
