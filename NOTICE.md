@@ -373,6 +373,13 @@ formats from their published descriptions and from Game-Maker's own source.
   _TURBO BUTTON_, its prices and its coupons. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
+- **TURBO BUTTON's Game-Maker ad** (its inside front cover, `web/src/manual/magazine/sections/ads.ts`)
+  takes its look from the full-page Game-Maker ad by RSD and KD Software in _Computer Gaming
+  World_ #99 (October 1992), page 55
+  ([Internet Archive](https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up)):
+  a hot pink page, big condensed serif headlines, a grid of screenshots and an order coupon.
+  Its words, pictures and coupon are new; nothing of the original ad is reproduced, and the
+  page links to the original.
 - **The level check** (`web/src/editor/check`): its heat map's six colors are taken from
   **viridis**, the color map by Stéfan van der Walt and Nathaniel Smith (CC0, public domain
   dedication), chosen because it reads with every kind of color vision; its monster contrast is
