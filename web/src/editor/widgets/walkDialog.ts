@@ -2,7 +2,7 @@
 // scene in a Web Worker, with progress and Stop, and says which bot style got through each
 // scene, or where it stopped. The walkthrough is kept in the project's companion file (never
 // in the game's files) and opens in the walkthrough player, which can save it as an MP4. A scene
-// the author has played (Level check's Record my play, check/walk/mine.ts) can use that play
+// the author has played (Level check's Play and record, check/walk/mine.ts) can use that play
 // ("Mine") or the bot's ("Bot"); a play that no longer reaches an exit is said so, and the bot
 // plays that scene.
 import { h, clear, modal, selectField, toast } from '../core/ui';
@@ -43,7 +43,7 @@ export async function walkDialog(project: Project): Promise<void> {
       ...(plays.length
         ? [
             h('h3', null, 'Your plays'),
-            h('p', { class: 'meta' }, 'Scenes you played and kept (Level check 🩺, Record my play). Mine plays your keys there; Bot lets the bot play it.'),
+            h('p', { class: 'meta' }, 'Scenes you played and kept (Level check 🩺, Play and record). Mine plays your keys there; Bot lets the bot play it.'),
             h(
               'ul',
               { class: 'wd-list wd-mine' },

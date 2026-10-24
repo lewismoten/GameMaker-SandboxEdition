@@ -45,10 +45,11 @@ export const CHECK: Chapter = {
   the marks work from the keyboard too. Zoomed out to 25% or 10%, the marks become small
   filled squares in the same colors, and the tooltip finds the nearest one.</p>
   <h2>Your own heat map</h2>
-  <p>The bot tries everything, but it can’t tell which places matter. Press <b>▶ Play this map
-  and record my heat map</b> and play the scene yourself: everywhere your hero goes, and how
-  long it stays, is kept as your own heat map, saved with the project’s editor notes (never in
-  the game’s files) and added to each time you play. Then choose what to <b>Show</b>: the bot’s
+  <p>The bot tries everything, but it can’t tell which places matter. Press <b>▶ Play and
+  record</b> and play the scene yourself: it opens at this scene, and everywhere your hero goes,
+  and how long it stays, is kept as your own heat map, saved with the project’s editor notes
+  (never in the game’s files) and added to each time you play. The same session can keep your
+  play for the walkthrough too (see below). Then choose what to <b>Show</b>: the bot’s
   heat map, yours, both combined, or <b>Compare</b>, which colors the places only the bot
   reached orange, the places only you reached blue, and the places you both reached light
   gray. A line underneath says how much of the bot’s ground you’ve covered (a place counts when
@@ -133,18 +134,22 @@ export const CHECK: Chapter = {
   telling you a scene you thought was easy isn’t.</p>
   <h2>Your own play, and watching the bot</h2>
   <p>Where the bot can’t get through, or plays a scene in a way you would rather not show, play
-  it yourself. In the map’s Level check, <b>● Record my play</b> opens the game at this
-  scene. Play it to an exit; a death starts the scene over, and the last try is the one kept.
-  The editor keeps the keys you pressed, tick by tick, with the project’s editor notes. In
-  <b>🤖 Make a walkthrough…</b>, each scene you played can use <b>Mine</b> or <b>Bot</b>. The
-  bot plays your keys from wherever the walkthrough has got to and plays the rest itself, and
-  the whole walkthrough is checked on the engine as before. If your play no longer reaches an
-  exit (you changed the map since, or the hero arrives carrying something else), the list says
-  so and the bot plays that scene instead.</p>
+  it yourself. <b>▶ Play and record</b>, in the map’s Level check, is one session for both
+  jobs: while you play, your heat map grows, and the keys you press are kept tick by tick. A
+  death starts the scene over. When you reach an exit, play stops and offers <b>✓ Keep this
+  play for the walkthrough</b> beside <b>↺ Try again</b>; keep another try later and it
+  replaces the one before. <b>■ Done</b> ends the session. In <b>🤖 Make a walkthrough…</b>,
+  each scene you kept a play of can use <b>Mine</b> or <b>Bot</b>. The bot plays your keys
+  from wherever the walkthrough has got to and plays the rest itself, and the whole
+  walkthrough is checked on the engine as before. If your play no longer reaches an exit (you
+  changed the map since, or the hero arrives carrying something else), the list says so and
+  the bot plays that scene instead.</p>
   <p><b>▶ Watch the bot</b> plays the bot’s route through this scene in the walkthrough player,
   with play, pause and a seek bar: the game’s walkthrough, started at this scene, or, when it
-  has no route here yet, one the bot makes for this scene alone. <b>▶ Watch my play</b> plays
-  yours the same way, so you can compare the two.</p>
+  has no route here yet, one the bot makes for this scene alone. A route made that way stays
+  as it was when you edit the map, so the panel says <i>The map changed since the bot’s route
+  was made</i>, and <b>↻ Make the bot’s route again</b> lets it look again. <b>▶ Watch my
+  play</b> plays yours the same way, so you can compare the two.</p>
   <h2>First steps for a first game</h2>
   <p>A game started as <b>▶ Ready to play</b> comes with <b>🎓 First steps</b>, beside Play
   test: ten small jobs that make the starter yours. Play it, change a color, draw a block,
