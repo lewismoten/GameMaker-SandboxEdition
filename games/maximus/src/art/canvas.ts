@@ -4,6 +4,7 @@
 import { Pixels, rng, dither } from '../../../kit/pixels';
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { CLEAR } from './draw';
+import { textInk } from '../../../kit/textBounds';
 
 export class Canvas extends Pixels {
   constructor(w = 320, h = 200, fill = 0) {
@@ -14,13 +15,18 @@ export class Canvas extends Pixels {
   text(x: number, y: number, s: string, color: number | number[], o: { scale?: number; shadow?: number; outline?: number; spacing?: number } = {}): number {
     const k = o.scale ?? 1;
     const ramp = Array.isArray(color) ? color : [color];
+    const ink = textInk(this, s);
     const glyphs = (dx: number, dy: number, col: (row: number) => number) => {
       let cx = x + dx;
       for (const ch of s) {
         const code = ch.charCodeAt(0);
         for (let row = 0; row < 8; row++) {
           const bits = FONT8X8[code * 8 + row];
-          for (let b = 0; b < 8; b++) if (bits & (1 << b)) this.rect(cx + b * k, y + dy + row * k, k, k, col(row));
+          for (let b = 0; b < 8; b++)
+            if (bits & (1 << b)) {
+              this.rect(cx + b * k, y + dy + row * k, k, k, col(row));
+              if (!dx && !dy) ink?.add(cx + b * k, y + row * k, k, k);
+            }
         }
         cx += (8 + (o.spacing ?? 0)) * k;
       }
@@ -39,7 +45,9 @@ export class Canvas extends Pixels {
       ])
         glyphs(dx, dy, () => o.outline!);
     if (o.shadow !== undefined) glyphs(k, k, () => o.shadow!);
-    return glyphs(0, 0, (row) => ramp[Math.min(ramp.length - 1, Math.floor((row / 8) * ramp.length))]);
+    const end = glyphs(0, 0, (row) => ramp[Math.min(ramp.length - 1, Math.floor((row / 8) * ramp.length))]);
+    ink?.end();
+    return end;
   }
 
   /** Width in pixels of a string. */

@@ -2,6 +2,7 @@
 // ASCII sprites, the PC's 8x8 font (at any scale) and a 3x5 font for silkscreen labels.
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels, dither } from '../../../kit/pixels';
+import { textInk } from '../../../kit/textBounds';
 
 export const CLEAR = 255;
 
@@ -78,13 +79,19 @@ export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
 
 /** Text in the PC font; returns the width drawn. */
 export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  const ink = textInk(p, s);
+  const dot = (dx: number, dy: number, dw: number, dh: number) => {
+    p.rect(dx, dy, dw, dh, col);
+    ink?.add(dx, dy, dw, dh);
+  };
   [...s].forEach((ch, i) => {
     const g = ch.charCodeAt(0) & 255;
     for (let row = 0; row < 8; row++) {
       const bits = FONT8X8[g * 8 + row];
-      for (let b = 0; b < 8; b++) if (bits & (1 << b)) p.rect(x + (i * 8 + b) * scale, y + row * scale, scale, scale, col);
+      for (let b = 0; b < 8; b++) if (bits & (1 << b)) dot(x + (i * 8 + b) * scale, y + row * scale, scale, scale);
     }
   });
+  ink?.end();
   return s.length * 8 * scale;
 }
 
@@ -173,12 +180,18 @@ const MICRO: Record<string, string> = {
 };
 
 export function micro(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  const ink = textInk(p, s);
+  const dot = (dx: number, dy: number, dw: number, dh: number) => {
+    p.rect(dx, dy, dw, dh, col);
+    ink?.add(dx, dy, dw, dh);
+  };
   let cx = x;
   for (const ch of s.toUpperCase()) {
     const g = MICRO[ch] ?? MICRO['?'];
-    for (let i = 0; i < 15; i++) if (g[i] === '1') p.rect(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale, col);
+    for (let i = 0; i < 15; i++) if (g[i] === '1') dot(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale);
     cx += 4 * scale;
   }
+  ink?.end();
   return cx - x;
 }
 

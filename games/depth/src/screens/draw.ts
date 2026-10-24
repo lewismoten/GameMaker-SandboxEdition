@@ -6,6 +6,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { toBytes, type Picture } from '../render/image';
 import { Matcher, medianCut, putColors, type Col } from '../render/quant';
 import type { V } from '../render/tracer';
+import { textInk } from '../../../kit/textBounds';
 
 /** Draws text (8x8 font scaled by `s`) in color c, with an optional dark outline and drop shadow. */
 export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1, o: { outline?: V; shadow?: V; alpha?: number } = {}): number {
@@ -23,9 +24,14 @@ export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1,
     const base = (ch.charCodeAt(0) & 0xff) * 8;
     for (let row = 0; row < 8; row++) {
       const bits = FONT8X8[base + row];
-      for (let b = 0; b < 8; b++) if (bits & (1 << b)) plot(cx + b * s + dx, y + row * s + dy, col, a);
+      for (let b = 0; b < 8; b++)
+        if (bits & (1 << b)) {
+          plot(cx + b * s + dx, y + row * s + dy, col, a);
+          if (!dx && !dy) ink?.add(cx + b * s, y + row * s, s, s);
+        }
     }
   };
+  const ink = textInk(p, str);
   let cx = x;
   for (const ch of str) {
     if (o.shadow) glyph(cx, ch, o.shadow, s, s, 0.7);
@@ -44,6 +50,7 @@ export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1,
     glyph(cx, ch, c, 0, 0, o.alpha ?? 1);
     cx += 8 * s;
   }
+  ink?.end();
   return cx - x;
 }
 

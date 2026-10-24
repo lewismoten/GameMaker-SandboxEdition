@@ -7,6 +7,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { medianCutPalette } from '../../../kit/quantize';
 import { Canvas, type RGB, mix } from '../art/rgb';
+import { textInk } from '../../../kit/textBounds';
 
 /** Game-Maker's RGBPurple/RGBBlue/RGBRed (6-bit). */
 const PURPLE: RGB = [50, 10, 50];
@@ -50,10 +51,12 @@ export class Screen {
   }
 
   private glyphs(x: number, y: number, s: string, col: RGB | ((x: number, y: number) => RGB), scale: number): number {
+    const ink = textInk(this, s);
     let cx = x;
     for (const ch of s) {
       const base = (ch.charCodeAt(0) & 0xff) * 8;
       const on = (r: number, b: number) => r >= 0 && r < 8 && b >= 0 && b < 8 && (FONT8X8[base + r] >> b) & 1;
+      if (ink) for (let r = 0; r < 8; r++) for (let b = 0; b < 8; b++) if (on(r, b)) ink.add(cx + b * scale, y + r * scale, scale, scale);
       if (scale === 1) {
         for (let r = 0; r < 8; r++) for (let b = 0; b < 8; b++) if (on(r, b)) this.cv.set(cx + b, y + r, typeof col === 'function' ? col(cx + b, y + r) : col);
       } else {
@@ -80,6 +83,7 @@ export class Screen {
       }
       cx += 8 * scale;
     }
+    ink?.end();
     return cx - x;
   }
 
@@ -92,6 +96,9 @@ export class Screen {
     const h = Math.ceil(8 * scale + 8);
     const mask = new Screen(w, h);
     mask.text(4, 4, s, [255, 255, 255], scale);
+    const ink = textInk(this, s);
+    ink?.add(x, y, s.trimEnd().length * 8 * scale, 8 * scale);
+    ink?.end();
     const a = (px: number, py: number) => (px < 0 || py < 0 || px >= w || py >= h ? 0 : mask.cv.alpha(px, py));
     // shadow, then outline, then the bevelled face
     for (let py = 0; py < h; py++)

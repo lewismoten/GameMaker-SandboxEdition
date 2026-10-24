@@ -56,7 +56,7 @@ Checking the games:
 
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
   any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
-  byte, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts` and `levelCheck.ts`; then `tinHearts.ts check`
+  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts` and `levelCheck.ts`; then `tinHearts.ts check`
   and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`. The
   secret game is left out unless named.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
@@ -84,6 +84,12 @@ Checking the games:
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
+- `textBounds.ts` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
+  `text`) report each string's ink, and a build run with `TEXT_BOUNDS=<file>` writes every string that runs past its
+  picture (or a clip area the helper was given) and is never shown whole there; a scroll or a drop-in shown whole in
+  another frame is fine. Off, it changes no pixel. `cd web && npx vite-node ../games/kit/textBoundsCheck.ts [<id>...]
+[--moving]` builds into a temp folder and lists them; `checkGames.ts` reads it from its rebuild (the `bounds` column).
+  A text helper in a new game should report its ink the same way (`textInk(p, s)`, `add`, `end`).
 - `clips.ts` — does every digitized clip play to the end? A walkthrough's run, with its sound written down, checked
   for a clip cut off by the scene ending or by the next sound; `walkthrough.ts` runs it on every
   walkthrough it writes (failing on a cut clip when the game asks), and `cd web && npx vite-node ../games/kit/clipCheck.ts <id>...` runs it alone.

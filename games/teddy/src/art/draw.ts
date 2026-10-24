@@ -2,6 +2,7 @@
 // textures, ASCII sprites, the PC's 8x8 font and a 3x5 font for tiny signs.
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels, dither, rng } from '../../../kit/pixels';
+import { textInk } from '../../../kit/textBounds';
 
 export const CLEAR = 255;
 
@@ -106,19 +107,25 @@ export function klubArt(s: string): string {
 
 /** Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. */
 export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  const ink = textInk(p, s);
+  const dot = (dx: number, dy: number, dw: number, dh: number) => {
+    p.rect(dx, dy, dw, dh, col);
+    ink?.add(dx, dy, dw, dh);
+  };
   let cx = x;
   for (const ch of s) {
     const base = (ch.charCodeAt(0) & 0xff) * 8;
     for (let row = 0; row < 8; row++) {
       if (ch === MIRROR_K) {
-        for (let b = 0; b < 8; b++) if (BACKWARDS_K[row][b] === '#') p.rect(cx + b * scale, y + row * scale, scale, scale, col);
+        for (let b = 0; b < 8; b++) if (BACKWARDS_K[row][b] === '#') dot(cx + b * scale, y + row * scale, scale, scale);
         continue;
       }
       const bits = FONT8X8[base + row];
-      for (let b = 0; b < 8; b++) if (bits & (1 << b)) p.rect(cx + b * scale, y + row * scale, scale, scale, col);
+      for (let b = 0; b < 8; b++) if (bits & (1 << b)) dot(cx + b * scale, y + row * scale, scale, scale);
     }
     cx += 8 * scale;
   }
+  ink?.end();
   return cx - x;
 }
 
@@ -201,12 +208,18 @@ const MICRO: Record<string, string> = {
 
 /** 3x5 letters, 1px apart. Returns the width drawn. */
 export function micro(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  const ink = textInk(p, s);
+  const dot = (dx: number, dy: number, dw: number, dh: number) => {
+    p.rect(dx, dy, dw, dh, col);
+    ink?.add(dx, dy, dw, dh);
+  };
   let cx = x;
   for (const ch of s.toUpperCase()) {
     const g = MICRO[ch] ?? MICRO[' '];
-    for (let i = 0; i < 15; i++) if (g[i] === '1') p.rect(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale, col);
+    for (let i = 0; i < 15; i++) if (g[i] === '1') dot(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale);
     cx += 4 * scale;
   }
+  ink?.end();
   return cx - x - scale;
 }
 

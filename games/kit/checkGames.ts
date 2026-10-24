@@ -5,6 +5,8 @@
 //   check   tools/check.ts (the bot wins without losing a life)
 //   walk    kit/walkCheck.ts (walkthrough.json replays to the ending, frames and chapters as
 //           recorded, no voice clip cut off: clipCheck's check)
+//   bounds  no text is cut off by the edge of its picture (kit/textBounds.ts: the rebuild runs
+//           with TEXT_BOUNDS on; with --quick, kit/textBoundsCheck.ts builds on its own)
 //   text    kit/textfitCheck.ts      hidden  kit/hiddenView.ts      level  kit/levelCheck.ts
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
 // then once: kit/tinHearts.ts check and kit/syncCheck.ts (levelSecrets.json and box hours).
@@ -19,6 +21,7 @@ import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { describe, readBounds } from './textBounds';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -72,11 +75,21 @@ function diskDiff(a: string, b: string): string[] {
   });
 }
 
+/** Text the last rebuild found cut off at the edge of its picture, per game. */
+const boundsOf = new Map<string, Status>();
+
 function rebuild(id: string): Status {
   const out = mkdtempSync(join(tmpdir(), 'gm-check-'));
+  const report = `${out}-bounds.json`;
   try {
     const before = dirtyFiles(id);
-    if (step('build', `../games/${id}/build.ts`, [], { GAME_DISK_OUT: out }) === 'FAIL') return 'FAIL';
+    if (step('build', `../games/${id}/build.ts`, [], { GAME_DISK_OUT: out, TEXT_BOUNDS: report }) === 'FAIL') return 'FAIL';
+    const { cut } = readBounds(report);
+    if (cut.length) {
+      console.log(`  bounds: ${cut.length} text cut off at the edge of its picture:`);
+      for (const o of cut.slice(0, 20)) console.log(`    ${describe(o)}`);
+    }
+    boundsOf.set(id, cut.length ? 'FAIL' : 'ok');
     const problems = diskDiff(out, join(gamesDir, id, 'disk')).map((n) => `disk/${n} differs from a fresh build`);
     const after = dirtyFiles(id);
     if (after !== before) problems.push(`the build changed committed files:\n${after}`);
@@ -88,10 +101,11 @@ function rebuild(id: string): Status {
     return problems.length ? 'FAIL' : 'ok';
   } finally {
     rmSync(out, { recursive: true, force: true });
+    rmSync(report, { force: true });
   }
 }
 
-const COLS = ['build', 'check', 'walk', 'text', 'hidden', 'level'] as const;
+const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level'] as const;
 type Row = Record<(typeof COLS)[number], Status> & { sec: number };
 const rows = new Map<string, Row>();
 const t0 = Date.now();
@@ -100,6 +114,7 @@ for (const id of games) {
   console.log(`== ${id}`);
   const row: Row = {
     build: quick ? 'skip' : rebuild(id),
+    bounds: quick ? step('bounds', '../games/kit/textBoundsCheck.ts', [id]) : (boundsOf.get(id) ?? 'FAIL'),
     check: has(id, 'tools/check.ts') ? step('check', `../games/${id}/tools/check.ts`) : 'skip',
     walk: has(id, 'walkthrough.json') ? step('walk', '../games/kit/walkCheck.ts', [id]) : 'skip',
     text: step('text', '../games/kit/textfitCheck.ts', [id]),

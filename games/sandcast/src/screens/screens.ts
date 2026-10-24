@@ -10,6 +10,7 @@ import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW 
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
 import { wattCameo } from '../../../kit/cameos';
+import { textInk } from '../../../kit/textBounds';
 
 export const W = 320;
 export const H = 200;
@@ -21,6 +22,7 @@ export function screen(c = BLACK): Pixels {
 
 /** 8x8 text from the PC's ROM font, optionally scaled, with an optional drop shadow. */
 export function text(p: Pixels, x: number, y: number, s: string, color: number | ((gx: number, gy: number) => number), scale = 1, shadow = -1): Pixels {
+  const ink = textInk(p, s);
   [...s].forEach((ch, i) => {
     const g = FONT8X8.subarray(ch.charCodeAt(0) * 8, ch.charCodeAt(0) * 8 + 8);
     for (let gy = 0; gy < 8; gy++)
@@ -28,11 +30,13 @@ export function text(p: Pixels, x: number, y: number, s: string, color: number |
         if (!(g[gy] & (1 << gx))) continue;
         const px = x + (i * 8 + gx) * scale;
         const py = y + gy * scale;
+        ink?.add(px, py, scale, scale);
         if (shadow >= 0) p.rect(px + scale, py + scale, scale, scale, shadow);
         for (let sy = 0; sy < scale; sy++)
           for (let sx = 0; sx < scale; sx++) p.set(px + sx, py + sy, typeof color === 'number' ? color : color(gx * scale + sx, gy * scale + sy));
       }
   });
+  ink?.end();
   return p;
 }
 
