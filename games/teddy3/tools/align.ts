@@ -1,0 +1,46 @@
+// Checks the multi-block objects on the built disk's maps (games/kit/align.ts): every grid of
+// parts named <name><col><row> (the washer, the bike, the charger...),
+// the three-block clouds, the pairs (Top over Bot, L beside R), THE CHEZ and Doc Leo beside it,
+// and that their art joins up across the block edges. Run by tools/check.ts.
+import { alignGame, gridParts, shape, sizesOf, type PartRule } from '../../kit/align';
+import { LEVELS } from '../src/game';
+
+// a bone or treat lying on a part is still that part; an animation phase (wheel00_1) too
+const strip = (n: string) => n.replace(/^(treat|bone)~/, '').replace(/_\d+$/, '');
+const GRID = /^([A-Za-z]+?)(\d)(\d)$/;
+
+/** Joins with a hard edge on purpose (looked at). */
+const SEAM_OK: string[] = [];
+
+export function align(): number {
+  const names = new Map<string, string[]>();
+  for (const make of LEVELS) {
+    const l = make();
+    names.set(`${l.file}.map`, l.bs.names);
+    if (l.nook) names.set(l.nook.map, l.bs.names);
+  }
+  // sizes per level: a name can mean another object elsewhere
+  const RULES = (map: string): PartRule[] => [
+    gridParts(GRID, sizesOf(new Set((names.get(map) ?? []).filter(Boolean).map(strip)), GRID), (o, c, r) => `${o}${c}${r}`),
+    {
+      part: 'cloud0',
+      need: [
+        [1, 0, 'cloud1'],
+        [2, 0, 'cloud2'],
+      ],
+    },
+    {
+      part: 'cloud2',
+      need: [
+        [-1, 0, 'cloud1'],
+        [-2, 0, 'cloud0'],
+      ],
+    },
+    ...shape('THE CHEZ', [
+      ['carRoofL', 'carRoofR'],
+      [/^car(Door|Open)$/, 'carBack'],
+    ]),
+    ...shape('Doc Leo', [['leoWant'], ['leoHead'], ['leoBody']]),
+  ];
+  return alignGame('teddy3', (m) => names.get(m)?.map((n) => n && strip(n)), RULES, { seamOk: SEAM_OK });
+}
