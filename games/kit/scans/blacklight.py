@@ -7,7 +7,9 @@
 # ink, with bold black outlines soft at the edges like the flocking on a felt black-light
 # poster, the glasses, eyes and mouth inked the same way, and DOC LEO across the bottom in
 # 70s lettering. Two pictures: the day one, muted velvet colors in plain light, and the
-# night one, glowing under the tube. Only those go in git (web/public/desk/).
+# night one, glowing under the tube; and each again with him glancing left and right with a
+# brief smile, which the desk shows now and then (blacklight.ts). Only those go in git
+# (web/public/desk/).
 #
 # Run once (needs Pillow and NumPy; the photo in .for-lewis):
 #   python3 games/kit/scans/blacklight.py
@@ -55,7 +57,11 @@ FEATURES = dict(
     mouth=[(258, 508), (272, 478), (304, 462), (342, 456), (380, 462), (412, 478), (426, 508), (410, 532), (378, 538),
            (342, 540), (306, 538), (274, 532)],
     frown=[(298, 512), (318, 500), (342, 496), (366, 500), (386, 512)],
+    # the brief smile of a glance (the frown turned up, a little wider)
+    smile=[(290, 496), (314, 512), (342, 518), (370, 512), (394, 496)],
 )
+# how far the pupils move for a glance left or right (700-scale; the eyes are 62 wide)
+GLANCE = 14
 UV_GREEN = (120, 255, 60)  # (the title's outer glow)
 
 INK = {
@@ -190,8 +196,9 @@ def mask(draw) -> np.ndarray:
     return np.asarray(m.resize((700, 700), Image.LANCZOS), float) / 255
 
 
-def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
-    """The cartoon face (FEATURES): fills into ink and level, the black ink lines into black."""
+def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray, look: int = 0) -> None:
+    """The cartoon face (FEATURES): fills into ink and level, the black ink lines into black.
+    `look`: 0 straight at you, frowning; -1 or 1 glancing left or right with a smile."""
     F = FEATURES
     pts = lambda line: [(x * 2, y * 2) for x, y in line]
 
@@ -222,13 +229,13 @@ def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
         [d.ellipse(sc(F[k]), outline=255, width=8) for k in ('eyeL', 'eyeR')],
         [d.arc(sc(F[k]), 180, 360, fill=255, width=16) for k in ('eyeL', 'eyeR')],  # the lids
         [d.line(pts(F[k]), fill=255, width=34, joint='curve') for k in ('browL', 'browR')],
-        d.line(pts(F['frown']), fill=255, width=12, joint='curve'),
+        d.line(pts(F['smile' if look else 'frown']), fill=255, width=12, joint='curve'),
         d.line(pts(F['nostrils']), fill=255, width=8, joint='curve'),
     ))
-    # the pupils, looking at you
+    # the pupils, looking at you (or to one side, for a glance)
     for k in ('eyeL', 'eyeR'):
         x0, y0, x1, y1 = F[k]
-        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2 - 1  # (up under the lid: a relaxed look)
+        cx, cy = (x0 + x1) / 2 + look * GLANCE, (y0 + y1) / 2 - 1  # (up under the lid: a relaxed look)
         lines = np.maximum(lines, mask(lambda d, sc, cx=cx, cy=cy: d.ellipse(sc((cx - 9, cy - 9, cx + 9, cy + 9)), fill=255)))
     soft_lines = np.asarray(Image.fromarray((lines * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6)), float) / 255
     black[:] = np.maximum(black, soft_lines)
@@ -298,7 +305,7 @@ def fedora(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
     black[:] = np.maximum(black, lines)
 
 
-def portrait() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def portrait(look: int = 0) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """The inks (0-255), how bright each is, and the black flocking over them (0 to 1)."""
     photo = Image.open(PHOTO).convert('RGB')
     side = 700
@@ -322,7 +329,7 @@ def portrait() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     group = np.where(np.isin(lab, skin), 100, lab)
     line = soft(boundaries(group) & (inside > 0.02), 7, 1.8)
     black = line.copy()
-    features(ink, level, black)
+    features(ink, level, black, look)
     fedora(ink, level, black)
     # crop to the poster's portrait, the full width of the photo
     hgt = int(side * ART_H / W)
@@ -360,12 +367,12 @@ def velvet(rng: np.random.Generator) -> np.ndarray:
     return np.clip(VELVET + nap + sheen, 0, 255)
 
 
-def compose(night: bool) -> Image.Image:
+def compose(night: bool, look: int = 0) -> Image.Image:
     rng = np.random.default_rng(1994)
     ink = np.zeros((H, W, 3))
     level = np.zeros((H, W))
     black = np.zeros((H, W))
-    ink[:ART_H], level[:ART_H], black[:ART_H] = portrait()
+    ink[:ART_H], level[:ART_H], black[:ART_H] = portrait(look)
     ti, tl = title((W, H - ART_H))
     ink[ART_H:], level[ART_H:] = ti, tl
     base = velvet(rng)
@@ -386,9 +393,9 @@ def compose(night: bool) -> Image.Image:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, night in (('day', False), ('night', True)):
-        img = compose(night)
-        img.save(OUT / f'docleo-blacklight-{name}.webp', quality=86, method=6)
-        print('wrote', name)
+        for suffix, look in (('', 0), ('-left', -1), ('-right', 1)):
+            compose(night, look).save(OUT / f'docleo-blacklight-{name}{suffix}.webp', quality=86, method=6)
+            print('wrote', name + suffix)
 
 
 if __name__ == '__main__':

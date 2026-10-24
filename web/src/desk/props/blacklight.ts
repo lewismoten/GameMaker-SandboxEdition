@@ -6,7 +6,8 @@
 // were, and with the desk lamp on the room is a little brighter. The tube is a switch: on or
 // off whatever the hour (remembered for the visit; by day it only glows dimly), and the felt
 // eggs on the shelf show patterns only black light brings out (eggGlow.ts). Pressed, the
-// poster's tube flickers (desk-blacklight).
+// poster's tube flickers (desk-blacklight). Once in a long while Doc Leo glances to one side
+// and smiles, for a moment, then goes back to his sad hobo look (glance prints, same script).
 import { h } from '../../editor/core/ui';
 import { watchDaylight } from '../room/daylight';
 import { flash, pressable, say, stillMotion, turns } from './propKit';
@@ -30,11 +31,18 @@ const choose = (on: boolean) => {
   }
 };
 
+/** The print's picture: straight ahead, or glancing left or right with a smile. */
+const printSrc = (when: 'day' | 'night', look: '' | '-left' | '-right' = '') => `./desk/docleo-blacklight-${when}${look}.webp`;
+
+/** Doc Leo's glance: rare, brief. Seconds until the next one, and how long it lasts. */
+const GLANCE_EVERY = [90, 300] as const;
+const GLANCE_MS = 1600;
+
 /** The two prints (games/kit/scans/blacklight.py, from Lewis's own hobo clown photo). */
 const PRINT = (when: 'day' | 'night') =>
   h('img', {
     class: `bl-print ${when}`,
-    src: `./desk/docleo-blacklight-${when}.webp`,
+    src: printSrc(when),
     alt: '',
     width: 360,
     height: 540,
@@ -102,6 +110,28 @@ export function blackLight(desk: HTMLElement): () => void {
   );
   tube.setAttribute('role', 'switch'); // (pressable makes it a button first)
   const glow = eggGlow(desk);
+  // now and then he glances aside and smiles (not with reduced motion, nor in a hidden tab)
+  let glanceTimer = 0;
+  const prints = [...poster.querySelectorAll<HTMLImageElement>('.bl-print')];
+  const look = (side: '' | '-left' | '-right') => prints.forEach((img) => (img.src = printSrc(img.classList.contains('night') ? 'night' : 'day', side)));
+  const nextGlance = () => {
+    const [lo, hi] = GLANCE_EVERY;
+    glanceTimer = window.setTimeout(
+      () => {
+        if (!stillMotion() && document.visibilityState === 'visible') {
+          look(Math.random() < 0.5 ? '-left' : '-right');
+          glanceTimer = window.setTimeout(() => {
+            look('');
+            nextGlance();
+          }, GLANCE_MS);
+        } else nextGlance();
+      },
+      (lo + Math.random() * (hi - lo)) * 1000,
+    );
+  };
+  // the glance pictures, loaded ahead so the swap is instant
+  for (const when of ['day', 'night'] as const) for (const side of ['-left', '-right'] as const) new Image().src = printSrc(when, side);
+  nextGlance();
   const stop = watchDaylight((light) => {
     night = light < 0.5;
     show();
@@ -111,6 +141,7 @@ export function blackLight(desk: HTMLElement): () => void {
     offTube();
     stop();
     glow.dispose();
+    clearTimeout(glanceTimer);
     desk.classList.remove('bl-night', 'bl-uv');
     for (const el of [dim, tube, poster]) el.remove();
   };
