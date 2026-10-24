@@ -36,7 +36,8 @@ Not every game has every file (Sandcastle Knight calls `ids.ts` `rules.ts`). Lar
 are split by area, with an index module that calls the parts in order: a Game-Maker block's
 number is the order it was added to its set, so the order of those calls is part of the file
 format. The sequel `teddy2` shares the first adventure's drawing helpers, block sets, monster
-builder and cast portraits: its copies of those files re-export `games/teddy/src`.
+builder and cast portraits: its copies of those files re-export `games/teddy/src`. The finale `teddy3`
+re-exports the sequel's in the same way, with its own palette (the sequel's ramps first, then new ones).
 
 ## Building and checking
 
@@ -113,6 +114,8 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | sleuth    | `npx vite-node ../games/sleuth/tools/check.ts`       | plays the whole case (`--quick`, `--wrong <who>`, `--walk out.rec`)             |
 | teddy     | `npx vite-node ../games/teddy/tools/check.ts`        | the bot plays every level (`TEDDY_WALK=<file>` writes the run as a .rec)        |
 | teddy2    | `npx vite-node ../games/teddy2/tools/check.ts`       | the bot plays all eight levels, Teddy's and Gwinn's (`TEDDY2_WALK=<file>`)      |
+| teddy3    | `npx vite-node ../games/teddy3/tools/check.ts`       | the bot plays all sixteen stops, all four heroes (`TEDDY3_WALK=<file>`)         |
+| teddy3    | `npx vite-node ../games/teddy3/tools/one.ts <file>`  | the bot plays one level module alone, before it joins the game                  |
 | year2000  | `npx vite-node ../games/year2000/tools/check.ts`     | the bot plays all six levels in a row (`GOD=1` keeps it alive)                  |
 | year2000  | `npx vite-node ../games/year2000/tools/gendemo.ts`   | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 
@@ -198,6 +201,18 @@ A rung bell's DING is a monster that drops onto what hangs below it and starts i
 a grain hoist, a velvet rope coming down), solid monsters carry the dog up as lifts (THE BIG DROP rides
 21 blocks), rapids are water with gravity to the side, and the felt egg is behind a hedge you can only
 reach by walking off the left end of the map, which wraps round to the right.
+
+**Teddy's Little Biggest Adventure** (`teddy3`). The finale: Teddy's birthday, a list of errands
+across every place from the first two games, and a surprise party in the Big Top. Sixteen stops and
+four heroes, each a character file of its own: `teddy.chr` and `gwinn.chr` from the sequel, `leo.chr`
+(Doc Leo, two blocks tall: a SQUAWK, a balloon dog born in the block under his shoes that lifts him
+six blocks, and a pratfall that leaves only his bottom block) and `chez.chr` (THE CHEZ at half size:
+drive, bump, honk). The car's charge is a counter: a charger is a block that animates between a
+one-tick "pulse" picture that adds a charge and a dim one, and a hill's foot is a counter gate that
+opens into an up-gravity slope. Buttons send a spark monster down a wire to the door monster it
+beats; see-saw ends, mill paddles, the ferry and the rigging lift are solid monsters that only ever
+carry the hero up; blinking floors are two block families half a beat apart. Each level is
+`src/levels/<file>{,Tiles,Beasts}.ts` with its route in `tools/routes/<file>.ts`.
 
 **Ohm Sweet Ohm** (`logic`). Watt the repair robot rolls through twenty circuit boards. All the
 boards of a room share one map, each in its own screen-sized window, and each outlet links back
