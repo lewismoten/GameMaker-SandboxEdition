@@ -191,6 +191,6 @@ export function mill(): Level {
     view: [14, 32],
     pose: [17, 36, 'frontBeg'],
     song: millSong,
-    card: ["The Klub's banner! Up in", "the old mill's loft.", 'NEW: THE WATER WHEEL'],
+    card: ["The Klown Klub's banner! Up in", "the old mill's loft.", 'NEW: THE WATER WHEEL'],
   };
 }

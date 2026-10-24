@@ -1,8 +1,8 @@
 {
-  "pitch": "It's Teddy's birthday and nobody says so: run Doc Leo's errands across every place from the first two adventures, and MEANWHILE... play as Gwinn and Doc Leo planning his surprise, and drive THE CHEZ.",
+  "pitch": "It's Teddy's birthday and nobody says so: run Doc Leo's errands across every place from the first two adventures, and MEANWHILE... play as Gwinn and Doc Leo planning his surprise, and drive THE\u00a0CHEZ.",
   "keys": {
-    "Up": "Hop (THE CHEZ: bump)",
-    "Space": "WOOF! (Gwinn: BOOF! Doc Leo: SQUAWK! THE CHEZ: HONK!)",
+    "Up": "Hop (THE\u00a0CHEZ: bump)",
+    "Space": "WOOF! (Gwinn: BOOF! Doc Leo: SQUAWK! THE\u00a0CHEZ: HONK!)",
     "Down": "Dig (Gwinn digs BIG)",
     "F": "Fetch",
     "S": "Sniff",
@@ -52,7 +52,7 @@
     },
     {
       "text": "HONK!",
-      "sub": "THE CHEZ",
+      "sub": "THE\u00a0CHEZ",
       "shape": "cut",
       "color": "#d9381e",
       "ink": "#ffffff",
@@ -159,7 +159,7 @@
   "news": [
     {
       "head": "Teddy's back for the big one",
-      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Sixteen stops, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE CHEZ, which you get to drive. Mind the charge.</p>"
+      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Sixteen stops, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE\u00a0CHEZ, which you get to drive. Mind the charge.</p>"
     },
     {
       "head": "Letters: \"Is it really Teddy's birthday?\"",
@@ -206,7 +206,7 @@
           "y": 31,
           "w": 16,
           "h": 10,
-          "caption": "THE CHEZ on Maple Street"
+          "caption": "THE\u00a0CHEZ on Maple Street"
         },
         {
           "map": "invite.map",
@@ -261,11 +261,11 @@
           "hints": [
             {
               "q": "Who am I playing?",
-              "a": "The card before each stop says. Teddy runs the errands; MEANWHILE... stops are Gwinn or Doc Leo; on the road you drive THE CHEZ."
+              "a": "The card before each stop says. Teddy runs the errands; MEANWHILE... stops are Gwinn or Doc Leo; on the road you drive THE\u00a0CHEZ."
             },
             {
               "q": "I fetched the errand. Now what?",
-              "a": "Bring it to Doc Leo at THE CHEZ at the end of the stop. The car door opens for it."
+              "a": "Bring it to Doc Leo at THE\u00a0CHEZ at the end of the stop. The car door opens for it."
             },
             {
               "q": "A button does nothing.",
