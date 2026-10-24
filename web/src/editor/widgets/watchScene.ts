@@ -74,7 +74,7 @@ export async function watchBot(
   const name = sceneName(project, scene);
   const saved = project.extras<SavedWalk | undefined>(project.gam, 'walkthrough', undefined);
   if (saved?.walk?.timeline.frames && saved.walk.segments.some((s) => s.scene === scene))
-    return play(project, `${name}: the walkthrough bot`, project.files.copy(), saved.walk, scene);
+    return play(project, `${name}, the walkthrough bot`, project.files.copy(), saved.walk, scene);
   const routes = project.extras<Record<string, BotRoute>>(project.gam, ROUTES, {});
   let route: Walkthrough | undefined = routes[scene]?.walk;
   if (!route) {
@@ -88,7 +88,7 @@ export async function watchBot(
     project.setExtras(project.gam, ROUTES, { ...routes, [scene]: { when: new Date().toISOString(), walk: route } satisfies BotRoute });
     say(`The bot found a way through ${name}.`);
   }
-  return play(project, `${name}: the bot`, startedAt(project, scene), route, scene);
+  return play(project, `${name}, the bot`, startedAt(project, scene), route, scene);
 }
 
 /** Forgets the route the bot made for `scene` alone (the map changed: it is made again when next watched). */
@@ -105,5 +105,5 @@ export async function watchMine(project: Project, scene: number, say: (what: str
   const walk = await inWorker(project, scene, say, oneScene(project.id, scene, name, mine.keys, mine.next === 1, false), signal);
   if (!walk) return say('Your play could not be played back.');
   say('');
-  return play(project, `${name}: your play`, startedAt(project, scene), walk, scene);
+  return play(project, `${name}, your play`, startedAt(project, scene), walk, scene);
 }
