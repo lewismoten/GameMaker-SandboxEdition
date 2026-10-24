@@ -6,6 +6,7 @@ import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { artElement } from './art';
+import { discFigure } from './disc';
 import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
 import { MAG } from './masthead';
@@ -231,6 +232,12 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         h('p', { class: 'mag-mast-issue' }, h('span', null, b.issue), h('span', null, b.price)),
         h('h1', null, b.name),
         h('p', { class: 'mag-mast-tag' }, b.tagline),
+      );
+    case 'disc':
+      return discFigure(
+        b,
+        (go, ...kids) => goLink(go, where, ...kids),
+        (text) => inline(text, where),
       );
     case 'rule':
       return h('hr');

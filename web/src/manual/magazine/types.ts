@@ -75,6 +75,11 @@ export type Block =
   | { t: 'piece'; game?: string; piece: 'hintbook' | 'ultimate'; alt: string; go?: Go; float?: 'left' | 'right' }
   /** A line set huge, not a heading: an ad's price or phone number, with a small note beside it. */
   | { t: 'big'; text: string; side?: Inline }
+  /**
+   * The issue's cover-mounted CD (disc.ts), turning slowly, a link to `go` named by `alt`. On the
+   * cover it sits in a corner with a starburst (`burst`) that links to `page`, the page about it.
+   */
+  | { t: 'disc'; go: Go; alt: string; caption?: Inline; cover?: { burst: string; page: Go } }
   | { t: 'rule' };
 
 /**
