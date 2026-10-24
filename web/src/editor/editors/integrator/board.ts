@@ -4,8 +4,7 @@
 // live board and for Export PNG.
 import type { Project } from '../../core/project';
 import { NOSCENE, sceneKind, type Game, type Point } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
-import { WORLD, CARD_UNITS } from './layoutCells';
+import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 
 /** Board pixels per integrator unit, and the card size on the board. */
@@ -55,15 +54,7 @@ interface BoardView {
   levelOf: (i: number) => HTMLCanvasElement | undefined;
 }
 
-/** Where the hero arrives in a scene: the "to" block of the first scene that links to it. */
-export function arrival(game: Game, i: number): Point {
-  for (const s of game.scenes) {
-    if (s.gametype === NOSCENE) continue;
-    const l = s.links.find((x) => x.toScene === i);
-    if (l) return l.to;
-  }
-  return { x: MLEN >> 1, y: MWID >> 1 };
-}
+export { arrival } from './layoutCells';
 
 /** The scenes in use (not NOSCENE), in order. */
 export const usedScenes = (game: Game) => game.scenes.map((_, i) => i).filter((i) => game.scenes[i].gametype !== NOSCENE);

@@ -9,10 +9,9 @@ import './worldMap.css';
 import { h } from '../../editor/core/ui';
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
 import { ENDTYPE, NOSCENE, STARTTYPE, parseGame, type Game, type Point } from '../../formats/game';
-import { MLEN, MWID } from '../../formats/map';
 import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
 import { autoArrange } from '../../editor/editors/integrator/integratorLayout';
-import { graphOf } from '../../editor/editors/integrator/layoutCells';
+import { arrival, graphOf } from '../../editor/editors/integrator/layoutCells';
 import { graphicShot, levelShot } from '../../editor/editors/integrator/integratorArt';
 import { hashString, sheet, type PrintContext, type Sheet } from './kit';
 import { CELL, bounds, cardRects, folds, tiles, type Rect } from './worldMapLayout';
@@ -34,16 +33,6 @@ const PAGE = { w: 105, h: 80, overlap: 3 };
 const R = 5.2;
 const LAND = { rx: 13.5, ry: 11.6 };
 const KIND = { start: '#c58a00', end: '#a8281f', scene: '#2f5a3a' };
-
-/** Where the hero arrives in a scene: the "to" block of the first link into it (as the integrator shows it). */
-function arrival(game: Game, i: number): Point {
-  for (const s of game.scenes) {
-    if (s.gametype === NOSCENE) continue;
-    const l = s.links.find((x) => x.toScene === i);
-    if (l) return l.to;
-  }
-  return { x: MLEN >> 1, y: MWID >> 1 };
-}
 
 /** The game and just the files its cards need (maps, blocks, palettes, title and end screens). */
 async function loadWorld(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {

@@ -4,6 +4,17 @@
 // scenes on a grid of card cells: as trees from the start scene (across or down), along a
 // snaking reading order, packed in groups around hubs. integratorLayout.ts judges them.
 import { NOSCENE, STARTTYPE, ENDTYPE, type Game, type Point } from '../../../formats/game';
+import { MLEN, MWID } from '../../../formats/map';
+
+/** Where the hero arrives in a scene: the "to" block of the first scene that links to it. */
+export function arrival(game: Game, i: number): Point {
+  for (const s of game.scenes) {
+    if (s.gametype === NOSCENE) continue;
+    const l = s.links.find((x) => x.toScene === i);
+    if (l) return l.to;
+  }
+  return { x: MLEN >> 1, y: MWID >> 1 };
+}
 
 /** The integrator world (WX, WORLDTOP, WLEN, WWID) and the range movescene() lets Pos take. */
 export const WORLD = { x: 5, y: 29, w: 310, h: 165 };
