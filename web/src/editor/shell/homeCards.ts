@@ -26,6 +26,7 @@ import { projectDownloadButton } from './projectExport';
 import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
+import { lookId } from './lookId';
 
 // Loaded when first used, so the list of games shows without them: the demo player (and
 // the game engine with it), the keyboard map and the manual with the paper in the box.
@@ -388,24 +389,39 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   return tile;
 }
 
-/** Makes an editable copy of a CD game and opens it. */
-async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promise<void> {
+/**
+ * Makes an editable copy of a CD game, or picks the copy you have already: the project's id,
+ * or undefined when cancelled. Edit a copy, and Make a copy on a game opened to look inside (released.ts).
+ */
+export async function copyCatalogGame(
+  entry: CatalogEntry | undefined,
+  title: string,
+  gam: string | null,
+  loadFiles: () => Promise<GameFiles>,
+  name = title,
+): Promise<string | undefined> {
   // already have a copy? offer it first, so a second one is made only on purpose
-  if (game.entry) {
-    const pick = await chooseCopy(game.title, game.entry.id, game.gam);
+  if (entry) {
+    const pick = await chooseCopy(title, entry.id, gam);
     if (!pick) return;
-    if (pick !== 'new') return nav.openProject(pick.id);
+    if (pick !== 'new') return pick.id;
   }
   // a demo added for this edition goes in only if asked for (offerAddedDemo, media/addedDemo.ts)
   const { offerAddedDemo } = await import('../../media/addedDemo');
-  const files = await offerAddedDemo(game.entry, await game.files(), game.gam);
+  const files = await offerAddedDemo(entry, await loadFiles(), gam);
   if (!files) return;
-  toast(`Copying ${game.title}…`);
+  toast(`Copying ${title}…`);
   const p = Project.fromFiles(files, name);
-  if (game.gam) p.gam = game.gam;
+  if (gam) p.gam = gam;
   await p.saveNow();
-  rememberOrigin(p.id, game.entry?.id);
-  nav.openProject(p.id);
+  rememberOrigin(p.id, entry?.id);
+  return p.id;
+}
+
+/** Makes an editable copy of a CD game and opens it. */
+async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promise<void> {
+  const id = await copyCatalogGame(game.entry, game.title, game.gam, () => game.files(), name);
+  if (id) nav.openProject(id);
 }
 
 /** The small menu of less-used actions. */
@@ -472,12 +488,28 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
             svgIcon('edit'),
             'Edit a copy',
           ),
+      lookInside(game, e.id, nav),
       keys,
       isBizarreGame(e) ? notice : null,
       hasManual(game) ? loadingButton('manual', 'Manual', `Read the ${game.title} manual`, (ready) => openGameManual(e, ready)) : null,
       hasMapsOnly(game) ? loadingButton('map', 'Maps', `The ${game.title} World Map and Level Maps`, (ready) => openGameMaps(e, ready)) : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
+}
+
+/** 🔍 Look inside: the game's files in the editor as released, changing nothing (released.ts); a change offers a copy. */
+function lookInside(game: HomeGame, id: string, nav: HomeNav): HTMLElement {
+  return h(
+    'button',
+    {
+      class: 'with-ico',
+      title: 'Open its files in the editor as released, without making a copy',
+      'aria-label': `Look inside ${game.title}: its files as released, without making a copy`,
+      onclick: () => nav.openProject(lookId(id)),
+    },
+    svgIcon('search'),
+    'Look inside',
+  );
 }
 
 /** “Demo video”: the demo in a dialog, where it can also be saved as a video. */

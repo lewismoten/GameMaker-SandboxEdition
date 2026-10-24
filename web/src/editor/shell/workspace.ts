@@ -22,6 +22,7 @@ import { noteOpened, quickOpen } from './quickOpen';
 import { usedByLine, deleteMessage } from './usedBy';
 import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
+import { readOnlyBar } from './released';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -110,9 +111,15 @@ export class Workspace {
   private unlisten: () => void;
   /** The beginner's checklist, in games started from the starter (firstSteps.ts). */
   private firstSteps?: FirstStepsPanel;
+  /** A game opened to look inside (released.ts): its bar over the editor, and no ways to add, rename or delete files. */
+  private readonly bar: HTMLElement | null;
+  private get looking(): boolean {
+    return !!this.project.readOnly;
+  }
 
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
+    this.bar = readOnlyBar(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
@@ -231,12 +238,14 @@ export class Workspace {
       h(
         'div',
         { class: 'side-files', id: 'side-files' },
-        h(
-          'div',
-          { class: 'toolbar side-actions' },
-          h('button', { onclick: () => void this.newFile() }, '+ Add a file…'),
-          h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
-        ),
+        this.looking
+          ? null
+          : h(
+              'div',
+              { class: 'toolbar side-actions' },
+              h('button', { onclick: () => void this.newFile() }, '+ Add a file…'),
+              h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
+            ),
         h(
           'div',
           { class: 'toolbar side-actions' },
@@ -302,7 +311,7 @@ export class Workspace {
         'h2',
         { class: 'file-kind' },
         head,
-        k === 'gam'
+        k === 'gam' || this.looking
           ? null
           : h(
               'button',
@@ -321,7 +330,7 @@ export class Workspace {
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
           h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, n),
           h('button', { class: 'icon-btn', title: `Edit ${n}`, 'aria-label': `Edit ${n}`, onclick: () => this.open(n) }, '✎'),
-          n === p.gam
+          n === p.gam || this.looking
             ? null
             : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
         ),
@@ -391,8 +400,10 @@ export class Workspace {
     this.renderSidebar();
     const body = h('div');
     const isGam = file === this.project.gam;
+    const changes = !this.looking;
     clear(
       this.main,
+      this.bar,
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
@@ -424,14 +435,14 @@ export class Workspace {
             keyboardIcon(),
           ),
           fileActions([
-            ...(isGam ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
-            { label: 'Duplicate', run: () => void this.duplicate(file) },
+            ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
+            ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
             {
               label: 'Download file',
               run: () => download(file.toUpperCase(), this.project.files.get(file)!),
               title: `Save ${file.toUpperCase()} to your computer`,
             },
-            ...(isGam ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
+            ...(isGam || !changes ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
       ),
@@ -468,6 +479,7 @@ export class Workspace {
 
   /** On the game's own page: one-click ways into the files that make the game its own (can be hidden). */
   private nextSteps(): HTMLElement | null {
+    if (this.looking) return null; // its bar offers the copy that would be changed
     const key = `gm-next-hidden-${this.project.id}`;
     try {
       if (localStorage.getItem(key)) return null;
@@ -566,6 +578,7 @@ export class Workspace {
     const levelName = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
     clear(
       this.main,
+      this.bar,
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },

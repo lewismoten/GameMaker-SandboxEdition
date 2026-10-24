@@ -3,11 +3,15 @@
 import { Project } from './editor/core/project';
 import { loadProject } from './project/storage';
 import type { Workspace } from './editor/shell/workspace';
+import { lookedAt } from './editor/shell/lookId';
 
 export { renderHome } from './editor/shell/home';
 
-/** Opens a game saved in this browser in the workspace; undefined when it is not there. */
+/** Opens a game saved in this browser in the workspace, or a finished game to look inside; undefined when it is not there. */
 export async function openStored(id: string, host: HTMLElement, file?: string): Promise<Workspace | undefined> {
+  // a finished game opened to look inside (#/p/look:<id>), never stored here
+  const look = lookedAt(id);
+  if (look) return (await import('./editor/shell/released')).openReleased(look, host, file);
   const [stored, { Workspace }] = await Promise.all([loadProject(id), import('./editor/shell/workspace')]);
   if (!stored) return undefined;
   const project = Project.fromFiles(stored.files, stored.record.name, id, stored.record.companion);

@@ -51,7 +51,7 @@ function rememberUi(next: Ui): void {
 function webShowing(): string | undefined {
   const [kind, id] = parseHash(location.hash).path;
   if (kind === 'game' && id?.startsWith('cd:')) return id;
-  if (kind === 'p' && id) return `project:${id}`;
+  if (kind === 'p' && id) return id.startsWith('look:') ? `cd:${id.slice(5)}` : `project:${id}`;
   return undefined;
 }
 
