@@ -12,7 +12,8 @@ import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
 import { keyRoles, movesFor, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
 import { driveMove } from './drive';
-import { getsAway } from './escape';
+import { frees, getsAway } from './escape';
+import { canLeave, stuckAreas } from './stuck';
 import type { Game, Link } from '../../formats/game';
 
 const CELLS = MLEN * MWID;
@@ -75,6 +76,8 @@ export interface Place {
   worth: number;
   /** Every move tried from here ended in a death: the hero is doomed here, not stuck. */
   doomed?: boolean;
+  /** In what looked like a stuck area, but a key or two held a while gets the hero out (frees()). */
+  freed?: boolean;
 }
 
 export interface ExitReach {
@@ -415,6 +418,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   };
 
   addPlace();
+  const startSnap = places[0].snap!;
   let stopped = false;
   let lastReport = now();
   for (;;) {
@@ -451,7 +455,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     }
   }
   for (const p of places) p.snap = undefined;
-  return {
+  const ex: Exploration = {
     scene,
     places,
     heat,
@@ -466,6 +470,41 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     moves,
     links: game.scenes[scene].links,
   };
+  await confirmStuck(ex, sim, startSnap, baseMap, bg);
+  return ex;
+}
+
+/**
+ * Before an area is called a place to get stuck, the hero is taken to its way in again (the
+ * moves that found it, replayed from the start) and every key, and every two keys together, is
+ * held for a few lengths of time: a hop steered just so, or a key with a walk, may get him out
+ * where the explorer's own moves didn't. Places of an area he gets out of are marked freed.
+ */
+async function confirmStuck(ex: Exploration, sim: SceneSim, start: Snap, map: Uint8Array, bg: Block[]): Promise<void> {
+  const areas = stuckAreas(ex, map, bg).slice(0, 12);
+  if (!areas.length) return;
+  const ok = canLeave(ex);
+  // cells with a way out, but none of a stuck area's (a cell can be both, carrying a key or not)
+  const trapped = new Set(areas.flatMap((a) => a.cells));
+  const way = new Set(ex.places.flatMap((p, i) => (ok[i] && !trapped.has(p.cell) ? [p.cell] : [])));
+  const keys = [...new Set(ex.moves.flatMap((m) => m.steps.flatMap((s) => s.keys)))];
+  const tick = async () => {
+    const t = await sim.tick();
+    return t === 'dead' ? 'dead' : t ? t.link : undefined;
+  };
+  for (const a of areas) {
+    const chain: number[] = [];
+    for (let p = a.entry; ex.places[p].via; p = ex.places[p].via!.parent) chain.unshift(p);
+    sim.restore(start);
+    for (const p of chain) {
+      const v = ex.places[p].via!;
+      await driveMove(sim, ex.moves[v.move], { tick, limit: v.ticks });
+    }
+    if (await frees(sim, keys, way)) {
+      const cells = new Set(a.cells);
+      for (const p of ex.places) if (cells.has(p.cell)) p.freed = true;
+    }
+  }
 }
 
 /** What the hero is touching that would do this: a block in its cells, else the monster nearest. */

@@ -36,3 +36,31 @@ export async function getsAway(sim: SceneSim, moves: Move[]): Promise<boolean> {
   sim.restore(snap);
   return away;
 }
+
+/**
+ * Whether holding a key, or two together, for 1 to 24 ticks (the first then let go, the other
+ * held on a while) brings the hero to rest alive on one of the `way` cells, or to a link.
+ */
+export async function frees(sim: SceneSim, keys: number[], way: Set<number>): Promise<boolean> {
+  const w = sim.w;
+  const snap = sim.snapshot();
+  try {
+    for (const k1 of keys)
+      for (const k2 of [0, ...keys.filter((k) => k !== k1)])
+        for (const hold of [1, 3, 6, 12, 24]) {
+          sim.restore(snap);
+          sim.hold(k2 ? [k2, k1] : [k1]);
+          for (let t = 0; t < 100; t++) {
+            if (t === hold) sim.hold(k2 ? [k2] : []);
+            if (t === hold + 40) sim.hold([]);
+            const r = await sim.tick();
+            if (r === 'dead' || w.chr.cseq === DIESEQ) break;
+            if (r) return true;
+            if (w.ci.gravy === 0 && t > hold && way.has(w.chr.y[0] * 100 + w.chr.x[0])) return true;
+          }
+        }
+    return false;
+  } finally {
+    sim.restore(snap);
+  }
+}

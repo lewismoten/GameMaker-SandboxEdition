@@ -2,7 +2,8 @@
 // from (no exit, no link back), grouped into areas with the likeliest reason: a pit, a drop
 // that only goes one way, or a lock whose key the hero can no longer get. A place is only
 // called stuck when every place it leads to was tried, so a run cut short by its time budget
-// doesn't report false alarms, and a place the hero only dies from is a death, not a softlock.
+// doesn't report false alarms, a place the hero only dies from is a death, not a softlock, and
+// one the explorer found a way out of with held keys (explore.ts confirmStuck) is no trap.
 import { BACKBL, type Block } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
 import type { Exploration } from './explore';
@@ -68,7 +69,7 @@ export function stuckAreas(ex: Exploration, map: Uint8Array, bg: Block[]): Stuck
   while (q.length) for (const pr of back[q.pop()!]) if (!unknown[pr] && !ok[pr]) ((unknown[pr] = 1), q.push(pr));
   // a place where every move dies (a death sequence under way, a hold that kills) costs a life,
   // and the scene starts over: that is a death, not a softlock
-  const stuck = ex.places.map((p, i) => !ok[i] && !unknown[i] && !p.doomed);
+  const stuck = ex.places.map((p, i) => !ok[i] && !unknown[i] && !p.doomed && !p.freed);
   const locks = lockBlocks(bg);
   // areas: stuck places joined by their moves
   const area = new Int32Array(n).fill(-1);
