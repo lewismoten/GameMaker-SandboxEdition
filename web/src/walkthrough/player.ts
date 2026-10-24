@@ -127,17 +127,20 @@ async function watch(
   const timeEl = h('span', { class: 'wt-time', 'aria-live': 'off' });
   const bar = h('div', { class: 'wt-bar-fill' });
   const ticks = tl.chapters.slice(1).map((c) => h('span', { class: 'wt-bar-tick', style: `left:${(100 * c.frame) / total}%` }));
+  // the position bar is a seek bar: touch, click or drag it to jump there; arrows step 10 s
+  const hover = h('span', { class: 'wt-bar-hover', hidden: true });
   const progress = h(
     'div',
     {
       class: 'wt-bar',
-      role: 'progressbar',
-      'aria-label': 'Walkthrough position',
+      role: 'slider',
+      tabindex: 0,
+      'aria-label': 'Walkthrough position: touch or drag to jump',
       'aria-valuemin': '0',
       'aria-valuemax': String(Math.round(total / WALKTHROUGH_FPS)),
     },
-    bar,
-    ...ticks,
+    h('span', { class: 'wt-bar-track' }, bar, ...ticks),
+    hover,
   );
   const speeds = [1, 2, 4].map((v) =>
     h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`),
@@ -283,34 +286,93 @@ async function watch(
     showPlay();
   };
 
-  /** Jumps to chapter `i`: from the start again if it is behind, as fast as the game goes, nothing drawn. */
-  const seek = async (i: number) => {
-    if (seeking) return;
+  /** Jumps to chapter `i`'s start. */
+  const seek = (i: number) => seekTo(tl.chapters[i].frame);
+
+  /**
+   * Jumps to video frame `to`: from the start again if it is behind, as fast as the game goes
+   * with nothing drawn, first to its chapter (a chapter starts when play enters its scene, so
+   * the run finds it however long the skip took) and then on through the chapter by game time.
+   */
+  const seekTo = async (to: number) => {
+    if (seeking || !run) return;
+    to = Math.max(0, Math.min(total - 1, Math.round(to)));
+    const i = chapterAt(to);
     const target = tl.chapters[i];
+    const where = to === target.frame ? target.title : `${target.title}, ${clock(to / WALKTHROUGH_FPS)}`;
     seeking = true;
     while (stepping) await new Promise((r) => setTimeout(r, 5));
     playing = false;
     audio.setMuted(true);
     busy.hidden = false;
-    busy.textContent = `Skipping to ${target.title}…`;
-    status.textContent = `Skipping to ${target.title}…`;
-    let r = run!;
-    if (ended(r) || r.chapters.length > i || r.frame > target.frame) r = fresh();
+    busy.textContent = `Skipping to ${where}…`;
+    status.textContent = `Skipping to ${where}…`;
+    let r = run;
+    if (ended(r) || r.frame > to || r.chapters.length > i + 1) r = fresh();
     await r.start();
     let n = 0;
-    while (!closed && r === run && r.chapters.length <= i && (await r.step(false, SKIP_MS))) {
+    const breathe = async () => {
       if (++n % 200 === 0) await new Promise((res) => setTimeout(res, 0));
+    };
+    if (r.chapters.length <= i) {
+      while (!closed && r === run && r.chapters.length <= i && (await r.step(false, SKIP_MS))) await breathe();
+      r.frame = target.frame;
     }
+    // on through the chapter: big steps by game time, then frame by frame
+    const base = r.frame;
+    const t0 = r.time;
+    const at = () => base + Math.round((r.time - t0) / FRAME_MS);
+    while (!closed && r === run && !ended(r) && at() + SKIP_MS / FRAME_MS < to && (await r.step(false, SKIP_MS))) await breathe();
+    r.frame = at();
+    while (!closed && r === run && !ended(r) && r.frame < to - 1 && (await r.step(false))) await breathe();
     if (r !== run || closed) return;
-    r.frame = target.frame;
     await r.step(true);
     busy.hidden = true;
     seeking = false;
     audio.setMuted(!sound);
-    status.textContent = `${target.title}.`;
+    status.textContent = `${where}.`;
     showTime();
     setPlaying(true);
   };
+
+  const frameAt = (clientX: number) => {
+    const b = progress.getBoundingClientRect();
+    return (Math.max(0, Math.min(b.width, clientX - b.left)) / Math.max(1, b.width)) * total;
+  };
+  /** Where a finger or the pointer is over the bar: a mark there, and the time it would jump to. */
+  const showHover = (clientX: number | undefined) => {
+    hover.hidden = clientX === undefined;
+    if (clientX === undefined) return;
+    const f = frameAt(clientX);
+    hover.style.left = `${(100 * f) / total}%`;
+    hover.textContent = clock(f / WALKTHROUGH_FPS);
+  };
+  let dragging = false;
+  progress.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    progress.setPointerCapture(e.pointerId);
+    showHover(e.clientX);
+  });
+  progress.addEventListener('pointermove', (e) => showHover(e.clientX));
+  progress.addEventListener('pointerup', (e) => {
+    if (!dragging) return;
+    dragging = false;
+    showHover(undefined);
+    void seekTo(frameAt(e.clientX));
+  });
+  progress.addEventListener('pointercancel', () => {
+    dragging = false;
+    showHover(undefined);
+  });
+  progress.addEventListener('pointerleave', () => !dragging && showHover(undefined));
+  progress.addEventListener('keydown', (e) => {
+    const step = { ArrowLeft: -10, ArrowRight: 10, PageDown: -60, PageUp: 60 }[e.key];
+    const now = run?.frame ?? 0;
+    const to = e.key === 'Home' ? 0 : e.key === 'End' ? total - 1 : step !== undefined ? now + step * WALKTHROUGH_FPS : undefined;
+    if (to === undefined) return;
+    e.preventDefault();
+    void seekTo(to);
+  });
 
   playBtn.addEventListener('click', () => setPlaying(!playing));
   screen.addEventListener('click', () => !seeking && setPlaying(!playing));
