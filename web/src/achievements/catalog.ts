@@ -173,9 +173,9 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'egg-teddy',
-    title: 'Best in show',
-    desc: 'Found the felt eggs in all three Teddy adventures: his little trophy is in the shadow box.',
-    icon: '🏆',
+    title: 'Lay an egg!',
+    desc: 'Found the felt eggs in all three Teddy adventures, so Teddy laid a special one of his own for the shadow box.',
+    icon: '💩',
     category: 'playing',
     hidden: true,
     hint: 'A corgi with three adventures, and something soft in each.',
