@@ -126,9 +126,9 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
   const name = (p: Pixels, drop: number, sub: boolean) => {
     outlined(p, 160 - textWidth('VENI, VIDI, RISI!', 2) / 2, drop, 'VENI, VIDI, RISI!', 1, 3, 2, 3);
     if (sub) {
-      outlined(p, 160 - textWidth('I CAME, I SAW, I LAUGHED') / 2, drop + 18, 'I CAME, I SAW, I LAUGHED', 2, 3);
+      outlined(p, 160 - textWidth('I CAME, I SAW, I LAUGHED') / 2, drop + 22, 'I CAME, I SAW, I LAUGHED', 2, 3);
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
