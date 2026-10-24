@@ -1,6 +1,7 @@
 // The paper every Sandbox Software box has, made from the game's catalog entry, manual and
 // disk: registration postcard, key card, catalog, BBS ad, warranty card, newsletter, hint
 // book offer (the sticker sheet is in stickers.ts).
+import { scoopIssue } from './scoopIssue';
 import { sandboxMarkEl } from './sandboxMark';
 import { h } from '../../editor/core/ui';
 import { parseCharacter } from '../../formats/character';
@@ -443,7 +444,11 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
         .slice(0, 1)
         .map((n) => h('article', { class: 'nl-story small' }, h('h3', null, n.head), html('div', '', n.html))),
     );
-  const issue = 3 + (hashString(ctx.entry.id) % 5);
+  // numbered among the games everyone sees, so finding a secret game never renumbers the rest
+  const issue = scoopIssue(
+    ctx.entry.id,
+    family.filter((g) => (g.original as { secret?: boolean } | undefined)?.secret !== true),
+  );
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
   const tip = tips.length ? tips[hashString(ctx.entry.id) % tips.length] : undefined;

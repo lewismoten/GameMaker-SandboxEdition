@@ -4,6 +4,7 @@
 // game's hint book, and a back-issue order form for every box's Sandbox Scoop newsletter.
 // Hint book questions are looked up in the games' printables.json (ctx.games); the felt egg and
 // tin heart sections are never quoted, so nothing here gives away where they hide.
+import { scoopIssue } from '../../printables/scoopIssue';
 import { adPage, adframe, card, cols, grid, head, hint, list, note, p, piece, rows, shot, side } from '../blocks';
 import type { Block, ListingRow, MagContext, MagGame, MagPage, MagSection } from '../types';
 
@@ -256,23 +257,15 @@ const bookAds = (ctx: MagContext): MagPage[] => {
   return [page(books.slice(0, half), 1), page(books.slice(half), 2)];
 };
 
-/** The newsletter's issue number, as its box prints it (printables/kit.ts hashString). */
-function scoopNo(id: string): number {
-  let x = 2166136261;
-  for (let i = 0; i < id.length; i++) x = Math.imul(x ^ id.charCodeAt(i), 16777619);
-  return 3 + ((x >>> 0) % 5);
-}
-
 const backIssues = (ctx: MagContext): MagPage => {
-  const issues: ListingRow[] = ctx.games
-    .filter((g) => g.kind === 'sandbox' && g.manual)
-    .map((g) => ({
-      title: `The Scoop from ${g.title}`,
-      go: `go:newsletter/${g.id}`,
-      by: `Vol. 1, No. ${scoopNo(g.id)}`,
-      price: '$1.00',
-      blurb: g.news?.length ? `“${g.news[0]}”` : undefined,
-    }));
+  const boxed = ctx.games.filter((g) => g.kind === 'sandbox' && g.manual);
+  const issues: ListingRow[] = boxed.map((g) => ({
+    title: `The Scoop from ${g.title}`,
+    go: `go:newsletter/${g.id}`,
+    by: `Vol. 1, No. ${scoopIssue(g.id, boxed)}`,
+    price: '$1.00',
+    blurb: g.news?.length ? `“${g.news[0]}”` : undefined,
+  }));
   return {
     id: 'back-issues',
     kind: 'dept',
