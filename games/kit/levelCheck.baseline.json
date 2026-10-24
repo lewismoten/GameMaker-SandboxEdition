@@ -450,17 +450,8 @@
   "warning hurt-lock s2 Landing on monster 19 sinks the hero into the ground under it, first at (55, 12)"
  ],
  "needle": [
-  "warning hurt-lock s2 Landing on monster 0 sinks the hero into the ground under it, first at (12, 12)",
-  "warning hurt-lock s2 Landing on monster 2 sinks the hero into the ground under it, first at (13, 12)",
-  "warning hurt-lock s2 Landing on monster 20 sinks the hero into the ground under it, first at (52, 12)",
-  "warning hurt-lock s2 Landing on monster 4 sinks the hero into the ground under it, first at (61, 12)",
-  "warning hurt-lock s3 Landing on monster 8 sinks the hero into the ground under it, first at (21, 12)",
-  "warning hurt-lock s3 Landing on monster 9 sinks the hero into the ground under it, first at (69, 7)",
-  "warning hurt-lock s4 Landing on monster 13 sinks the hero into the ground under it, first at (14, 18)",
-  "warning hurt-lock s4 Landing on monster 14 sinks the hero into the ground under it, first at (19, 10)",
-  "warning hurt-lock s4 Landing on monster 16 sinks the hero into the ground under it, first at (40, 18)",
+  "warning hurt-lock s3 Monster 8 holds the hero while it hurts: once it touches him, no key gets him away (first at (22, 11))",
   "warning hurt-lock s4 Monster 13 holds the hero while it hurts: once it touches him, no key gets him away (first at (15, 17))",
-  "warning hurt-lock s5 Landing on monster 16 sinks the hero into the ground under it, first at (17, 16)",
   "warning hurt-lock s5 Monster 16 holds the hero while it hurts: once it touches him, no key gets him away (first at (18, 15))"
  ],
  "realm": [

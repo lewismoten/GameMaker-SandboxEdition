@@ -12,6 +12,7 @@ import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import type { Pal } from '../art/pal';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T };
 
@@ -261,8 +262,10 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Hazards are solid (they push the camel back) and hurt to bump into.
-  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
+  // Hazards are solid (they push the camel back) and hurt to bump into. A monster's SOLTOP side
+  // is the one that pushes a camel below it (ChkMonChr), into the ground he walks on, so
+  // they leave it out: he can still stand on one's back (SOLBOT) but is never pushed under it.
+  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: SOLBOT | SOLLEF | SOLRIG });
   const person = (p: Pixels, x: number, robe: string, head: string, f: number) => {
     // a robed figure, side on, walking right
     p.line(x - 2, 14, x - 3 + f, 19, c(robe, 0)).line(x + 2, 14, x + 3 - f, 19, c(robe, 0));
