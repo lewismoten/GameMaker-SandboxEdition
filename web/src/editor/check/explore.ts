@@ -12,6 +12,7 @@ import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
 import { keyRoles, movesFor, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
 import { driveMove } from './drive';
+import { getsAway } from './escape';
 import type { Game, Link } from '../../formats/game';
 
 const CELLS = MLEN * MWID;
@@ -72,6 +73,8 @@ export interface Place {
   dropIn?: number;
   /** What the hero has gathered by here: things carried, counters and score (a bot that collects). */
   worth: number;
+  /** Every move tried from here ended in a death: the hero is doomed here, not stuck. */
+  doomed?: boolean;
 }
 
 export interface ExitReach {
@@ -272,6 +275,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     return id;
   };
 
+  /** Hurt-lock tests run (by cell and culprit; -1 once one found a lock), and how many more may run. */
+  const lockTests = new Map<string, number>();
+  let lockTestsLeft = 150;
   /** One tick, with everything the checks watch for. Returns 'dead', a link, or undefined. */
   const hurtRun = { n: 0, at: -1, x: 0, y: 0 };
   const scoreRun = { n: 0, heal: 0 };
@@ -282,7 +288,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const hp = w.ci.hitpts;
     const score = w.ci.score;
     const before = sim.px;
-    const r = await sim.tick();
+    const t = await sim.tick();
+    // the death sequence has started: nothing the player does stops it (touch.ts sets it at 0 hit points)
+    const r = t === undefined && w.chr.cseq === DIESEQ ? 'dead' : t;
     ticks++;
     moveTicks++;
     const tick = w.clock - startClock;
@@ -302,17 +310,29 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       const my = mi.cury[0] * BLEN + mi.cury[1];
       if (Math.abs(mx - pos.x) < BLEN + 4 && my - pos.y < BLEN + 4 && pos.y - my < BLEN * 2 + 4) monsters.add(l);
     }
-    // hurt on tick after tick without getting away: something holds the hero while it hurts
+    // hurt on tick after tick without getting away: something may hold the hero while it hurts.
+    // PLAYGAME hurts on every tick of a touch, so a bot standing in a foe's way is hurt as long as
+    // it stands there; it is only a lock when none of the moves gets the hero away (escape.ts).
     if (w.ci.hitpts < hp && w.chr.cseq !== DIESEQ) {
       if (hurtRun.n === 0) Object.assign(hurtRun, { at: cellOf(), x: pos.x, y: pos.y });
       hurtRun.n++;
-      if (hurtRun.n >= 8 && Math.abs(pos.x - hurtRun.x) < BLEN && Math.abs(pos.y - hurtRun.y) < BLEN)
-        note({
-          kind: 'hurt-lock',
-          cell: hurtRun.at,
-          detail: `Lost hit points ${hurtRun.n} ticks running without moving a block`,
-          source: culprit(w, sim, 'hurt'),
-        });
+      if (hurtRun.n === 8 && Math.abs(pos.x - hurtRun.x) < BLEN && Math.abs(pos.y - hurtRun.y) < BLEN) {
+        const source = culprit(w, sim, 'hurt');
+        const k = `${hurtRun.at}:${source ?? ''}`;
+        const tried = lockTests.get(k) ?? 0;
+        if (tried >= 0 && tried < 3 && lockTestsLeft > 0) {
+          lockTestsLeft--;
+          const away = await getsAway(sim, moves);
+          lockTests.set(k, away ? tried + 1 : -1);
+          if (!away)
+            note({
+              kind: 'hurt-lock',
+              cell: hurtRun.at,
+              detail: 'Something holds the hero while it hurts: no key gets him away',
+              source,
+            });
+        }
+      }
     } else if (w.chr.cseq !== HURTSEQ) hurtRun.n = 0;
     // points or health every tick: a touch that never uses itself up
     if (w.ci.score > score) scoreRun.n++;
@@ -377,7 +397,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   };
 
   /** Plays one move from the place restored. Returns the places it ended in, and links reached. */
-  const play = async (m: Move): Promise<{ to: number[]; exits: number[] }> => {
+  const play = async (m: Move): Promise<{ to: number[]; exits: number[]; dead?: boolean }> => {
     const to: number[] = [];
     const startY = w.chr.y[0];
     fall = undefined;
@@ -388,7 +408,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     moveTicks = 0;
     const r = await driveMove(sim, m, { tick: step, carried: () => to.push(addPlace()) });
     if (typeof r.end === 'number') return { to, exits: [r.end] };
-    if (r.end === 'dead') return { to, exits: [] };
+    if (r.end === 'dead') return { to, exits: [], dead: true };
     const drop = w.chr.y[0] - startY > 2 ? w.chr.y[0] - startY : undefined;
     to.push(addPlace(drop));
     return { to, exits: [] };
@@ -405,11 +425,15 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       break;
     }
     const p = places[id];
+    let tried = 0;
+    let deaths = 0;
     for (const [mi, m] of moves.entries()) {
       if (m.waits && !p.waits && !opt.waitEverywhere) continue;
       sim.restore(p.snap!);
       via = { parent: id, move: mi, ticks: 0 };
       const r = await play(m);
+      tried++;
+      if (r.dead) deaths++;
       for (const t of r.to) if (t >= 0 && t !== id && !p.out.includes(t)) p.out.push(t);
       for (const e of r.exits) if (!p.exits.includes(e)) p.exits.push(e);
       if (reachedStop) break;
@@ -417,6 +441,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     // a place is tried once: its snapshot (a few kilobytes) is no longer needed
     p.snap = undefined;
     p.done = true;
+    if (tried && deaths === tried && !reachedStop) p.doomed = true;
     if (now() - lastReport > 200) {
       lastReport = now();
       if (opt.progress?.(places.length, queue.length - head + fresh.length + heap.size)) {

@@ -104,7 +104,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
     const check = KIND[i.kind as keyof typeof KIND];
     out.push({
       check,
-      severity: check === 'hurt-lock' ? 'error' : check === 'blind-drop' ? 'info' : 'warning',
+      severity: check === 'blind-drop' ? 'info' : 'warning',
       title: `${i.detail} at ${at(i.cell)}${i.source ? ` (${i.source})` : ''}`,
       detail: list.length > 1 ? `And ${list.length - 1} more like it${i.source ? '' : ' nearby'}.` : undefined,
       where: { ...where, cell: i.cell, cells: list.map((l) => l.cell) },
