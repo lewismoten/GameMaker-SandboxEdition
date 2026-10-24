@@ -1447,6 +1447,11 @@
   max-width: 7em;
 }
 
+/* the Floppy Barn's stack of bare disks (blankDisk.ts) */
+.mag-halfad-frame .mag-art.art-blankdisk {
+  max-width: 8em;
+}
+
 /* a small ad's coupon */
 .mag-halfad-frame .mag-card h3 {
   font-size: 1.7em;

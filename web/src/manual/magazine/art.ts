@@ -1,5 +1,6 @@
 // The magazine's drawn pictures (types.ts ArtId): THE CHEZ (desk/props/chezArt.ts), the Sandbox
-// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, and the desk's
+// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, a stack of bare bulk
+// disks (blankDisk.ts), and the desk's
 // modem (modemArt.ts), speakers and disk box drawn as the desk draws them
 // (speakerArt.ts, diskBoxArt.ts) and the game pad as the desk's (desk/pc/gamePadArt.ts) for the hardware ads; the Sound Boaster card and its before
 // and after faces (soundCardArt.ts); and a snapshot of the 1994 desk itself
@@ -11,6 +12,7 @@ import { sandboxMarkEl } from '../printables/sandboxMark';
 import { hashString } from '../printables/kit';
 import type { ArtId, WebShot } from './types';
 import { deskShotImg } from './deskShot';
+import { blankDiskArt } from './blankDisk';
 import { diskBoxArt } from './diskBoxArt';
 import { gamePadArt } from '../../desk/pc/gamePadArt';
 import { joeyDrawing } from './joeyDrawing';
@@ -66,6 +68,8 @@ export function artElement(id: ArtId, alt: string): Element {
     }
     case 'disk':
       return svg('0 0 100 100', DISK, alt);
+    case 'blankdisk':
+      return blankDiskArt(alt);
     case 'modem':
       return modemArt(alt);
     case 'speakers':

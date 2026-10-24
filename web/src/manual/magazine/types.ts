@@ -149,12 +149,14 @@ export type WebShot = (typeof WEB_SHOTS)[number];
  * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
  * The boaster ones are the Sound Boaster ad's (soundCardArt.ts): its card, and a face before and after.
  * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
+ * blankdisk is a stack of bulk disks with no labels, for the Floppy Barn ad (blankDisk.ts).
  */
 export type ArtId =
   | 'chez'
   | 'sandbox'
   | 'barcode'
   | 'disk'
+  | 'blankdisk'
   | 'modem'
   | 'speakers'
   | 'diskbox'
