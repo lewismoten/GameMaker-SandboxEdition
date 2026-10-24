@@ -46,6 +46,7 @@ npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when t
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the rebuild compare
+npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
 ```
 
 After changing a game, rebuild it and run its checks (`npm run check:games -- --game <id>` runs
