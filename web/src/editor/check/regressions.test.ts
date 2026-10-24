@@ -21,6 +21,9 @@ function at(id: string, rev: string) {
   return { files, game, scenes: scenesOf(game, files) };
 }
 
+/** Lets the test worker answer vitest between long probes (they never wait on a timer). */
+const breathe = () => new Promise((r) => setTimeout(r, 0));
+
 const SINK = 'Landing on';
 const PUSH = 'pushes the hero inside';
 
@@ -29,6 +32,7 @@ async function sinks(id: string, rev: string, scene: number, kind?: string): Pro
   const g = at(id, rev);
   const d = g.scenes.find((s) => s.scene === scene)!;
   const f = await landings(d, g.game, g.files);
+  await breathe();
   return f.filter((x) => (kind ? x.title.includes(kind) : !x.title.includes('holds'))).map((x) => x.where.monster!.n);
 }
 
@@ -36,7 +40,10 @@ async function sinks(id: string, rev: string, scene: number, kind?: string): Pro
 async function allSinks(id: string, rev: string): Promise<string[]> {
   const g = at(id, rev);
   const out: string[] = [];
-  for (const d of g.scenes) for (const f of await landings(d, g.game, g.files)) if (!f.title.includes('holds')) out.push(`${d.scene}:${f.where.monster!.n}`);
+  for (const d of g.scenes) {
+    for (const f of await landings(d, g.game, g.files)) if (!f.title.includes('holds')) out.push(`${d.scene}:${f.where.monster!.n}`);
+    await breathe();
+  }
   return out;
 }
 
