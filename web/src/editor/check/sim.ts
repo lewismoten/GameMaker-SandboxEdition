@@ -4,15 +4,16 @@
 // explorer (explore.ts) tries moves from a snapshot and takes them back. Nothing here
 // changes how the engine plays: it only calls it.
 import { moveCharGrav, moveChars, handleJoystick } from '../../engine/character';
-import { simKeyPress } from '../../engine/keys';
+import { resetKeys, simKeyPress } from '../../engine/keys';
 import { blockBirthMonsters, moveAllMonsters } from '../../engine/monsters';
 import { updateCharDrawState } from '../../engine/render';
-import { loadScene, startSceneInits } from '../../engine/scene';
+import { loadScene, setStartKey, startSceneInits } from '../../engine/scene';
 import { changeBlocks } from '../../engine/scene';
 import { changeScroll, drawScroll, initScroll } from '../../engine/scroll';
 import { getTouchBlocks } from '../../engine/touch';
-import { LASTMM, LASTMON, MLEN, newCharInfo, type CharInfo, type MonInfo, type World } from '../../engine/world';
-import { BACKBL } from '../../formats/blocks';
+import { MWID } from '../../formats/map';
+import { LASTMM, LASTMON, MLEN, OFFSCRN, SCRNBLEN, SCRNBWID, newCharInfo, type CharInfo, type MonInfo, type World } from '../../engine/world';
+import { BACKBL, CHARBL } from '../../formats/blocks';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../../formats/game';
 
 /** Where a scene's files come from (a GameFiles, or a plain map of names). */
@@ -177,6 +178,39 @@ export class SceneSim {
     initScroll(w, game.scenes[scene].scroll);
     this.baseMap = w.map.slice();
     this.baseMon = w.mapMon.slice();
+  }
+
+  /**
+   * Puts the hero at a cell, at rest, as a scene's start does (startSceneInits' character part):
+   * his screen position is set afresh and the view centred on him, so nothing on the next tick
+   * reads where he was before (a stale screen position would let a monster there push him).
+   * Monsters and blocks carry on as they were. For probes that drop the hero somewhere.
+   */
+  place(x: number, y: number): void {
+    const { w } = this;
+    const { chr, ci } = w;
+    chr.x = [x, 0];
+    chr.y = [y, 0];
+    chr.cseq = 0;
+    chr.cframe = -1;
+    ci.netx = 5;
+    ci.nety = 0;
+    ci.gravx = ci.gravy = 0;
+    ci.scrx = ci.oldx = ci.nextx = OFFSCRN;
+    ci.scry = ci.oldy = ci.nexty = OFFSCRN;
+    ci.topthere = ci.bottomthere = false;
+    ci.curtop = ci.curbottom = CHARBL;
+    ci.nextAni = w.clock;
+    w.mx = (x - SCRNBLEN / 2 + MLEN) % MLEN;
+    w.my = (y - SCRNBWID / 2 + MWID) % MWID;
+    this.held.clear();
+    this.pending = [];
+    resetKeys(w);
+    setStartKey(w.keydn, chr.sequences[0].key);
+    moveCharGrav(w, true);
+    handleJoystick(w, true);
+    initScroll(w, this.game.scenes[this.scene].scroll);
+    this.doScroll = false;
   }
 
   /** Told every key event (scan, bit 7 = released), as a walkthrough records them. */

@@ -1,12 +1,12 @@
 // The level check's monster checks: crowded screens, enemies much faster than the hero, a
 // threat in reach of the start, chasers with no lifetime, monsters the color of the scenery
-// (on the scene's own palette), solid monsters that hurt (they hold the hero while they hurt),
-// monsters that score or heal every tick, and lifts that make the hero wait.
-import { BLEN, MONBL, type Block } from '../../../formats/blocks';
+// (on the scene's own palette), monsters that score or heal every tick, and lifts that make the
+// hero wait (solid, harmless monsters that carry him up, down or over a gap; not ground pacers). (Monsters that hold the hero while they hurt are found by playing: landings.ts.)
+import { BLEN, MONBL, SOLTOP, type Block } from '../../../formats/blocks';
 import { CHARBL } from '../../../formats/blocks';
 import type { Character } from '../../../formats/character';
 import { LASTMON, MAXMARCH, type Monster } from '../../../formats/monster';
-import { MLEN } from '../../../formats/map';
+import { MLEN, MWID } from '../../../formats/map';
 import { at, type Finding } from '../findings';
 import { linksInto } from '../playtest';
 import { contrastRatio, luminance, topColors, type SceneData } from '../sceneData';
@@ -194,6 +194,45 @@ export function contrast(d: SceneData): Finding[] {
   return out;
 }
 
+/** Ticks of one round of the monster's animation, and how many of them show a picture that `fits`. */
+export function animTicks(m: Monster, mbl: Block[], fits: (b: Block) => boolean): { all: number; fit: number } {
+  let all = 0;
+  let fit = 0;
+  for (const [p, t] of m.pic) {
+    if (p >= MONBL || p < 0) break;
+    const ticks = Math.max(1, t);
+    all += ticks;
+    if (mbl[p] && fits(mbl[p])) fit += ticks;
+  }
+  return { all, fit };
+}
+
+/**
+ * Whether a solid monster on its march carries the hero somewhere he couldn't walk: up or down
+ * two blocks or more, or over a path mostly without floor under it (a moving platform). One that
+ * paces on the ground (a foe that walks or charges) is no lift to wait for.
+ */
+export function carries(d: SceneData, m: Monster): boolean {
+  const corners = [{ x: 0, y: 0 }, ...m.march[0].slice(0, MAXMARCH).filter((c, i, all) => c.pic && all.slice(0, i).every((q) => q.pic))];
+  const ys = corners.map((c) => c.y);
+  if (Math.max(...ys) - Math.min(...ys) >= 2) return true;
+  const x0 = Math.min(...corners.map((c) => c.x));
+  const x1 = Math.max(...corners.map((c) => c.x));
+  // a platform: most of its path is over open air (a pacer that passes a hole or two isn't)
+  for (const p of placed(d).filter((q) => d.mon[q.monnum] === m)) {
+    let air = 0;
+    let all = 0;
+    for (const y of new Set(ys))
+      for (let x = x0; x <= x1; x++) {
+        const below = d.map.blocks[((p.cury + y + 1 + MWID) % MWID) * MLEN + ((p.curx + x + MLEN) % MLEN)];
+        all++;
+        if (!(d.bbl[below].solid & SOLTOP)) air++;
+      }
+    if (air * 2 >= all) return true;
+  }
+  return false;
+}
+
 export function monsterTouches(d: SceneData): Finding[] {
   const out: Finding[] = [];
   for (const n of new Set(placed(d).map((p) => p.monnum))) {
@@ -202,24 +241,26 @@ export function monsterTouches(d: SceneData): Finding[] {
     const cells = placed(d)
       .filter((p) => p.monnum === n)
       .map((p) => p.cury * MLEN + p.curx);
-    if (blocks.some((b) => b.solid && b.chHitPt < 0))
-      out.push({
-        check: 'hurt-lock',
-        severity: 'warning',
-        title: `Monster ${n} is solid and hurts: it can hold the hero against it while it hurts`,
-        detail: 'Make the hurting picture not solid, or give the Hurt sequence frames that move the hero back out of reach.',
-        where: { scene: d.scene, map: d.names.map, monster: { file: d.names.mon ?? '', n }, cells },
-      });
-    // a monster that is never used up by a touch (power 100 or more) gives what it gives every tick
-    if (m.power >= 100 && blocks.some((b) => b.scorePts > 0 || b.chHitPt > 0))
+    // a monster that is never used up by a touch (power 100 or more) gives what it gives on every
+    // tick its giving picture shows; a pat on one frame of a long round is a slow, fair trickle
+    const gives = (b: Block) => b.scorePts > 0 || b.chHitPt > 0;
+    if (m.power >= 100 && blocks.some(gives)) {
+      const what = blocks.some((b) => b.scorePts > 0) ? 'points' : 'health';
+      const { all, fit } = animTicks(m, d.mbl, gives);
+      const often = fit * 2 >= all;
       out.push({
         check: 'every-tick',
-        severity: 'warning',
-        title: `Monster ${n} gives ${blocks.some((b) => b.scorePts > 0) ? 'points' : 'health'} on every tick it touches the hero`,
-        detail: 'Its power is 100 or more, so a touch never uses it up. Lower its power, or move the reward to a block.',
+        severity: often ? 'warning' : 'info',
+        title: often
+          ? `Monster ${n} gives ${what} on every tick it touches the hero`
+          : `Monster ${n} gives ${what} on ${fit} tick${fit === 1 ? '' : 's'} of every ${all} it touches the hero`,
+        detail: often
+          ? 'Its power is 100 or more, so a touch never uses it up. Lower its power, or move the reward to a block.'
+          : 'Only one picture of its round gives, so a hero who stays by it gets a slow trickle. Fine for a friend who pats; lower its power if it should give once.',
         where: { scene: d.scene, map: d.names.map, monster: { file: d.names.mon ?? '', n }, cells },
       });
-    if (m.towards === 0 && blocks.some((b) => b.solid)) {
+    }
+    if (m.towards === 0 && blocks.some((b) => b.solid) && !hostile(m, d.mbl) && carries(d, m)) {
       const t = marchTicks(m);
       if (t > WAIT_TICKS * 2)
         out.push({
