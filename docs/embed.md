@@ -206,7 +206,9 @@ than its directory says is refused.
   message.
 - **Only your window.** In the postMessage way, Game-Maker listens only to the window that
   opened it (or the page that frames it), and only to the origin in `from=` when you give one.
-  It answers only that origin.
+  It answers only the sender's origin. Two exceptions carry nothing private: the first
+  `gm-ready`, which holds only the limits, goes to any origin unless `from=` names one, and a
+  page with no origin of its own (a local file) can only be answered with `*`.
 - **Shareware stays as released.** A game that matches one of the CD's shareware games plays
   from the site's own copy, with its author's notice. It is never kept or opened to edit.
 
