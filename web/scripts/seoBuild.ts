@@ -41,7 +41,7 @@ import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
 import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
 export const HEAD_MARK = '<!--SEO:HEAD-->';
-export const BODY_MARK = '<!--SEO:BODY-->';
+const BODY_MARK = '<!--SEO:BODY-->';
 // Around what the marks became in play.html, so a game's page can swap in its own.
 const HEAD_START = '<!--seo:head-->';
 const HEAD_END = '<!--/seo:head-->';
@@ -212,7 +212,7 @@ function playBody(catalog: CdCatalogEntry[]): string {
 }
 
 /** play-<id>.html: the game's own tags, with <meta name="gm:game"> telling play.ts which game. */
-export function gameHead(g: CdCatalogEntry): string {
+function gameHead(g: CdCatalogEntry): string {
   const meta = metaTags({
     title: pageTitle(g),
     description: gameDescription(g),
@@ -249,7 +249,7 @@ export function gameHead(g: CdCatalogEntry): string {
  * A game's readable page text. A shareware game's notice stays in the game (shown before it
  * starts) and out of this text: the CD's notices give their authors' 1994 home addresses.
  */
-export function gameBody(g: CdCatalogEntry): string {
+function gameBody(g: CdCatalogEntry): string {
   const what = g.original ? 'A new shareware game' : g.kind === 'shareware' ? 'Shareware from the 90s' : 'A sample game that came with Game-Maker 3.0';
   return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(g.title)}</h1>
@@ -291,7 +291,7 @@ function gameImage(cdRoot: string, g: CdCatalogEntry, files = cdFiles(cdRoot)): 
   });
 }
 
-export function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
+function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
   const urls = [
     { loc: SITE_URL, priority: '1.0' },
     { loc: `${SITE_URL}dos.html`, priority: '0.7' },

@@ -17,7 +17,7 @@ interface Manifest {
 const person = (p: string | { name?: string } | undefined) => (typeof p === 'string' ? p.replace(/\s*[<(].*$/, '').trim() : p?.name);
 
 /** A repository field as a web address. */
-export function repoUrl(r: Manifest['repository']): string | undefined {
+function repoUrl(r: Manifest['repository']): string | undefined {
   const raw = typeof r === 'string' ? r : r?.url;
   if (!raw) return undefined;
   const short = /^(?:github:)?([\w.-]+\/[\w.-]+)$/.exec(raw);

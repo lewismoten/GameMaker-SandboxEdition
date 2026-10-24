@@ -62,7 +62,7 @@ type Source =
   /** Blocks of a .bbl/.mbl/.cbl laid out in rows (-1 for none), in a palette. */
   | { game: string; blocks: string; pal: string; grid: number[][] };
 
-export const CAST_ART: Record<string, Source> = {
+const CAST_ART: Record<string, Source> = {
   teddy: { game: 'teddy', fli: 'cast.fli', frame: 40, crop: [22, 12, 156, 156] },
   gwinn: { game: 'teddy', fli: 'cast.fli', frame: 62, crop: [168, 26, 146, 146] },
   leo: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [44, 23, 224, 147] },

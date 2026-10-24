@@ -56,7 +56,7 @@ type BlockSource = {
 };
 type Source = ChrSource | BlockSource | DrawnSource | PaintSource | { chez: true } | { tinHeart: true };
 
-export const CAST_SPRITES: Record<string, Source> = {
+const CAST_SPRITES: Record<string, Source> = {
   teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal', seq: 5 },
   gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal', seq: 5 },
   // Doc Leo as Teddy's games draw him, in the whole costume: a waddle on, a wave hello

@@ -110,7 +110,7 @@ const NOTICE_WORDS = /shareware|freeware|regist/i;
  * Fields no source states are left out rather than guessed. Old .gam files often name
  * their title scene "Title Screen" or a version number, so titles live here too.
  */
-export interface GameInfo {
+interface GameInfo {
   title: string;
   author?: string;
   company?: string;
@@ -413,7 +413,7 @@ function slimOriginal(o: OriginalExtras): OriginalExtras {
 }
 
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
-export function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
+function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
   const original = e.original && (e.original.manual || e.original.printables) ? { manual: e.original.manual, printables: e.original.printables } : undefined;
   return e.notice || original ? { notice: e.notice, original } : undefined;
 }

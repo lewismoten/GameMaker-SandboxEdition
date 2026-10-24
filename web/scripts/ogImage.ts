@@ -169,7 +169,7 @@ const MIDDLE_DOT = [0, 0, 0, 0x18, 0x18, 0, 0, 0];
 const ASCII: Record<string, string> = { '‘': "'", '’': "'", '“': '"', '”': '"', '–': '-', '—': '-', '…': '...', é: 'e', è: 'e', á: 'a', ö: 'o', ü: 'u' };
 
 /** Characters the font has (and the middle dot), so text measures one cell per character. */
-export const fontText = (s: string): string =>
+const fontText = (s: string): string =>
   [...s]
     .map((c) => ASCII[c] ?? c)
     .join('')
