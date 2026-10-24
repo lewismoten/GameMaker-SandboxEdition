@@ -50,17 +50,18 @@ export const SOFA_BBS: HalfAd = halfAd(
   { sub: 'Pittsburgh’s place to kick back.', small: 'All 8 lines busy? Keep trying. Dials from the desk’s TERMINAL only.', tone: 'pink' },
 );
 
-/** Mouse pads, one with THE CHEZ on it. */
+/** Mouse pads, one with THE CHEZ on it; its button lays any of them on the desk's own pad. */
 export const MOUSE_PADS: HalfAd = halfAd(
   'Square Deal Pad Co.',
   'YOUR MOUSE DESERVES A NICER FLOOR',
   [
     grid(
       [
-        [art('chez', 'THE CHEZ, a little tomato-red car with a black roof, as printed on a mouse pad')],
+        [art('chez', 'THE CHEZ, a little tomato-red car with a black roof, as printed on a mouse pad'), big('$6.95', 'each, plus $2 shipping')],
         [
           list(['**THE CHEZ** in tomato red', '**Graph paper**, for mapping levels', '**Night sky**, for space games', '**Plain blue**, for grown-ups']),
-          big('$6.95', 'each, plus $2 shipping'),
+          p('Already on your desk? Pick one here.'),
+          button('go:mousepad', 'Change your mouse pad'),
         ],
       ],
       0.25,

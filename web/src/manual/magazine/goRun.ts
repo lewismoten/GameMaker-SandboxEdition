@@ -1,9 +1,10 @@
 // Runs a magazine link that opens something on top of the page rather than going to an
 // address: a game's box at its hint book, newsletter or manual, the catalogs in the Game-Maker
-// box, The Ultimate Owner's Guide, the mug and tumbler store, another page of the issue, and on
-// the desk the disk to play, the BBS and the props. Anything else is left to the link's href.
+// box, The Ultimate Owner's Guide, the mug and tumbler store, the mouse pad chooser, another
+// page of the issue, and on the desk the disk to play, the BBS and the props. Anything else
+// is left to the link's href.
 import type { CatalogEntry } from '../../project/files';
-import { parseGo, type Where } from './go';
+import { goHref, parseGo, type Where } from './go';
 
 /** What the desk does for the magazine lying on it (desk.ts). */
 export interface DeskHooks {
@@ -11,7 +12,7 @@ export interface DeskHooks {
   /** Runs TERMINAL; with a board ('sandbox', 'sofa'), it dials that board. */
   bbs(board?: string): void;
   gm(): void;
-  /** Looks at a prop (modem, diskbox, speakers, gamepad, mug, gmbox, catalog), opening it where it opens. */
+  /** Looks at a prop (modem, diskbox, speakers, gamepad, mousepad, mug, gmbox, catalog), opening it where it opens. */
   look(prop: string): void;
 }
 
@@ -79,6 +80,23 @@ export function runGo(go: string, env: GoEnv): boolean {
         return openSublimation({ design: loadMug().design, size: arg });
       })();
       return true;
+    case 'mousepad': {
+      // the chooser opens over the page; its "See it on the desk" puts the magazine down there
+      const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      void import('../../desk/pc/padChooser').then(({ openPadChooser }) =>
+        openPadChooser({
+          opener,
+          deskHref: goHref(go, env.where),
+          onSeeIt: desk
+            ? () => {
+                env.close();
+                desk.look('mousepad');
+              }
+            : undefined,
+        }),
+      );
+      return true;
+    }
     case 'play':
       if (!desk || !entry) return false;
       env.close();

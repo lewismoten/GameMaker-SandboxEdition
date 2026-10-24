@@ -711,10 +711,19 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     if (prop === 'gmbox') return void openGmBox();
     if (prop === 'diskbox') return void flip();
     if (prop === 'mug') return void import('./mug/mugViewer').then((m) => m.openMugViewer());
-    const el = prop === 'modem' ? modem.el : prop === 'speakers' ? spk.right : prop === 'gamepad' ? desk.querySelector<HTMLElement>('.game-pad') : undefined;
+    const el =
+      prop === 'modem'
+        ? modem.el
+        : prop === 'speakers'
+          ? spk.right
+          : prop === 'gamepad'
+            ? desk.querySelector<HTMLElement>('.game-pad')
+            : prop === 'mousepad'
+              ? desk.querySelector<HTMLElement>('.mouse-pad')
+              : undefined;
     if (!el) return;
     el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    (el.querySelector<HTMLElement>('button') ?? el).focus({ preventScroll: true });
+    (el.querySelector<HTMLElement>('button, [role="button"]') ?? el).focus({ preventScroll: true });
     el.classList.add('desk-look');
     setTimeout(() => el.classList.remove('desk-look'), 3000);
   }
