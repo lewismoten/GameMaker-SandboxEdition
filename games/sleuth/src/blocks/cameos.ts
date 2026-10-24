@@ -50,9 +50,11 @@ export function addCameos(add: Add) {
       p.rect(2, 2, 18, 17, c('black', 1)).rect(2, 2, 18, 1, c('gold', 3)).rect(2, 18, 18, 1, c('gold', 3)).rect(2, 2, 1, 17, c('gold', 3));
       // the chewed-up grey fedora
       p.rect(7, 3, 6, 2, c('grey', 4)).rect(5, 5, 10, 1, c('grey', 3)).set(8, 4, c('velvet', 5));
-      // the face: stubble, a red nose, a white mouth patch, a grin
+      // the face: stubble, white round the eyes, his own nose, sunburned cheeks, a white mouth patch, a grin
       p.rect(7, 6, 6, 4, c('skin', 4)).rect(7, 9, 6, 1, c('grey', 2));
-      p.set(8, 7, c('black', 0)).set(11, 7, c('black', 0)).rect(9, 7, 2, 2, c('velvet', 6));
+      p.rect(7, 6, 2, 2, c('paper', 5)).rect(11, 6, 2, 2, c('paper', 5));
+      p.set(8, 7, c('black', 0)).set(11, 7, c('black', 0)).rect(9, 7, 2, 2, c('skin', 2));
+      p.set(7, 8, c('velvet', 7)).set(12, 8, c('velvet', 7));
       p.rect(8, 9, 4, 1, c('paper', 5)).set(9, 9, c('velvet', 2)).set(10, 9, c('velvet', 2));
       // navy corduroy over a purple shirt and a green tie
       p.rect(6, 10, 8, 5, c('navy', 2)).rect(8, 10, 4, 5, c('plum', 3)).rect(9, 10, 2, 4, c('green', 3));
