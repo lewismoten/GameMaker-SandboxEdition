@@ -12,7 +12,7 @@ import { CARPET, KEY, MON, POWER, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
-const MIRROR = 0x40; // the block flipped left-right
+const MIRROR = 0x44; // both blocks flipped left-right (low nibble the top, high nibble the bottom)
 
 /** Pixels a tick walking. */
 export const STEP = 4;
