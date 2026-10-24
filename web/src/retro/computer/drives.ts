@@ -17,6 +17,7 @@ import { h } from '../../editor/core/ui';
 import type { GmInstallEntry } from '../../../scripts/cdGames';
 import { MonitorMode, ComputerOptions, AUTOEXEC, CONFIG_SYS } from './setup';
 import bbsGifs from '../bbs/gallery.json';
+import { TTY_INFO } from '../bbs/ttyInfo';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
 import { dosDir } from '../../project/dosDir';
 
@@ -201,8 +202,9 @@ export abstract class ComputerDrives {
             file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
             textFile(
               'PHONE.LST',
-              'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-0177  14400 N81  Major BBS, 8 lines\n',
+              'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-0177  14400 N81  Major BBS, 8 lines\nMRS. NOVAK NEXT DOOR         1-412-555-0156  45.45 TDD  TTY (Baudot)\n',
             ),
+            textFile('TTYINFO.TXT', TTY_INFO.join('\n') + '\n'),
           ]),
           liveFolder('DOWNLOAD', async () => {
             const cat = await this.catalog();

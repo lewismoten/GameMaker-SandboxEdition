@@ -1,6 +1,7 @@
 // TERMINAL.EXE: a dialing directory of (recreated) Pittsburgh BBSes. THE -= S A N D B O X =-
 // BBS, a Renegade board, has the CD's shareware games to read about and "download" into
-// C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/bbs/sofa.ts).
+// C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/bbs/sofa.ts); and Mrs.
+// Novak next door has a TTY, which takes the modem's TDD mode (retro/bbs/tdd.ts).
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
@@ -38,6 +39,8 @@ import { PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from '..
 import { sizeAbout } from './sofaFiles';
 import { statusBps } from './lineSpeed';
 import { cpsText, expectText, progress } from './transfer';
+import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
+import { TTY_PHONE } from './ttyTalk';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
@@ -59,6 +62,13 @@ const DIRECTORY = [
     software: 'Major BBS, 8 lines',
     run: runSofa,
     busy: sofaBusy,
+  },
+  {
+    // a TTY, not a BBS: Baudot needs TDD mode (tdd.ts)
+    name: '|15Mrs. Novak next door',
+    number: TTY_PHONE,
+    software: 'TTY (Baudot)',
+    tty: true,
   },
 ];
 
@@ -87,14 +97,15 @@ async function terminal(t: Term, h: RetroHost): Promise<void> {
     DIRECTORY.forEach((d, i) =>
       t.line(
         boxRow(
-          `|14 ${i + 1}  ${d.name}${' '.repeat(Math.max(0, 28 - visible(d.name).length))} |07${d.number.padEnd(15)} |10${statusBps().padEnd(6)} |07${d.software}`,
+          `|14 ${i + 1}  ${d.name}${' '.repeat(Math.max(0, 28 - visible(d.name).length))} |07${d.number.padEnd(15)} |10${('tty' in d ? '45.45' : statusBps()).padEnd(6)} |07${d.software}`,
           '03',
         ),
       ),
     );
     t.line(boxBottom('03'));
     t.line();
-    t.print('|11Dial which entry? |07(|151|07-|15' + DIRECTORY.length + '|07, |15Esc|07 to quit) |15');
+    t.line(`|11Modem mode: |15${tddMode() ? 'TDD |07(TTY calls: Baudot, 45.45 baud)' : 'DATA |07(BBS calls)'}`);
+    t.print('|11Dial which entry? |07(|151|07-|15' + DIRECTORY.length + '|07, |15M|07 mode, |15I|07 TTY info, |15Esc|07 to quit) |15');
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     const entry = DIRECTORY[Number(k) - 1];
@@ -103,7 +114,15 @@ async function terminal(t: Term, h: RetroHost): Promise<void> {
       s.clear();
       return;
     }
+    if (k === 'M') toggleTddMode();
+    if (k === 'I') await ttyInfoPage(t, h);
     if (!entry) continue;
+    if ('tty' in entry || tddMode()) {
+      // a TTY on the line (or TDD mode calling a BBS, which answers in a modem's tones)
+      if ('tty' in entry) await ttyCall(t, h, entry.number);
+      else await bbsInTdd(t, h, entry.number);
+      continue;
+    }
     s.clear(attr(7, 0));
     const result = await dial(t, h, entry.number, entry.busy());
     if (result !== 'connect') {
