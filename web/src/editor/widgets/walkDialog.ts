@@ -8,6 +8,7 @@ import type { CatalogEntry } from '../../project/files';
 import type { Walkthrough } from '../../walkthrough/format';
 import { STRATEGIES, type SceneOutcome } from '../check/walk/autoWalk';
 import { startWalk, type RunningWalk } from '../check/walk/walkClient';
+import { unlockAchievement } from '../../achievements';
 import './walkDialog.css';
 
 /** What the companion keeps: the walkthrough and how each scene went. */
@@ -79,6 +80,7 @@ export async function walkDialog(project: Project): Promise<void> {
         scenes: result.scenes.map(({ heat: _h, ...s }) => s),
       };
       project.setExtras(project.gam, SECTION, saved);
+      if (result.walk?.timeline.frames) unlockAchievement('make-walk');
       // where the bot stopped, on that scene's map: the Level check panel shows its heat map
       const stuck = result.scenes.find((x) => x.heat);
       const mapName = stuck && project.game().scenes[stuck.scene]?.files[1];

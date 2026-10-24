@@ -14,6 +14,7 @@ import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
 import { uploadChecklist } from '../../../widgets/uploadChecklist';
+import { unlockAchievement } from '../../../../achievements';
 import { mazeFor } from '../../../check/generators/mazeFor';
 
 export interface CheckHost {
@@ -289,6 +290,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
                 undo.push({ files: before.filter(([n]) => changed.includes(n)), what: fix.label });
                 undoBtn.hidden = false;
                 host.reload(changed);
+                unlockAchievement('check-fix');
                 toast(`${fix.label}: done. Run the check again to see the difference.`);
               },
             },
@@ -324,6 +326,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     try {
       const report = await running.done;
       keep(report);
+      unlockAchievement('check-run');
     } catch (e) {
       if ((e as Error).name !== 'AbortError') toast(`The level check failed: ${(e as Error).message}`, 'error');
       else status.textContent = 'Stopped.';

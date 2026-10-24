@@ -8,6 +8,7 @@ import type { Project } from '../core/project';
 import { CHECKS, type CheckId, type Finding } from '../check/findings';
 import { runChecks } from '../check/report';
 import { guideLink } from './guideLink';
+import { unlockAchievement } from '../../achievements';
 
 /** One line of Appendix B, and the checks that can speak for it. */
 export interface ChecklistItem {
@@ -82,6 +83,11 @@ export async function uploadChecklist(project: Project): Promise<void> {
   const saved = savedFindings(project);
   const findings = [...fileFindings, ...saved.findings];
   const played = saved.maps > 0 && saved.checked === saved.maps;
+  const boxes: HTMLInputElement[] = [];
+  /** Every line ticked, by the checks or by hand. */
+  const allTicked = () => {
+    if (boxes.every((b) => b.checked)) unlockAchievement('check-upload');
+  };
   await modal<void>('Before You Upload', () =>
     h(
       'div',
@@ -103,7 +109,9 @@ export async function uploadChecklist(project: Project): Promise<void> {
           const st = itemState(item, findings, played);
           const auto = st.kind === 'clear' && item.full;
           const box = h('input', { type: 'checkbox', checked: auto || ticks.has(i), disabled: auto, id: `upl-${i}` });
+          boxes.push(box);
           box.addEventListener('change', () => {
+            allTicked();
             if (box.checked) ticks.add(i);
             else ticks.delete(i);
             project.setExtras(
