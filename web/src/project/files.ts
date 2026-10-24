@@ -14,6 +14,8 @@ export class GameFiles {
   onChange?: (name: string) => void;
   /** Set while files are still arriving: the game waits for one it needs (engine/machine.ts, need). */
   stream?: FileStream;
+  /** Asked before set or delete changes a file; throws to refuse (a game opened to look inside, editor/core/readOnly.ts). */
+  guard?: (name: string) => void;
 
   constructor(entries?: Iterable<[string, Uint8Array]>) {
     if (entries) for (const [n, b] of entries) this.files.set(normalize(n), b);
@@ -38,6 +40,7 @@ export class GameFiles {
 
   set(name: string, bytes: Uint8Array): void {
     const n = normalize(name);
+    this.guard?.(n);
     this.files.set(n, bytes);
     this.onChange?.(n);
   }
@@ -73,6 +76,7 @@ export class GameFiles {
 
   delete(name: string): void {
     const n = normalize(name);
+    this.guard?.(n);
     this.files.delete(n);
     this.onChange?.(n);
   }
