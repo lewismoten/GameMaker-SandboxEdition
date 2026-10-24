@@ -15,6 +15,8 @@ export interface OverlayState {
   outline?: { cells?: { x: number; y: number }[]; rect?: CellRect };
   /** The level check's heat map: a step of HEAT_COLORS per cell (0 = never reached). */
   heat?: Uint8Array;
+  /** The level check's "Gray level": the map editor draws the map itself in grayscale under the heat map. */
+  gray?: boolean;
   /** The level check's marks: stuck areas, deaths, a finding's cells, and the one in focus. */
   marks?: { cell: number; kind: 'stuck' | 'death' | 'finding' | 'focus' }[];
 }

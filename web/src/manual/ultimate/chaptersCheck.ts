@@ -24,7 +24,10 @@ export const CHECK: Chapter = {
   with a legend beside it. Switch it to <i>how soon it got there</i> to see the order a player
   is likely to find things. The useful part is what stays <i>uncolored</i>: a room you built
   that the bot never entered is a room no player will see either. Turn the heat map and the
-  marks on and off with the boxes above the list.</p>
+  marks on and off with the boxes above the list. Tick <b>Gray level</b> to draw the map in
+  shades of gray, from the lightness of each color in the scene’s palette, so the heat map’s
+  colors stand out from the blocks under them. It only changes how the editor shows the map, and
+  the editor remembers it for every map.</p>
   <h2>Stuck spots</h2>
   <p>Places the hero can reach but never leave are hatched, with the likeliest reason: a pit
   with no way up, a drop that only goes one way, or a lock whose key can no longer be had. A

@@ -91,6 +91,22 @@ export function keepBotHeat(project: Project, map: string, scene: number, heat: 
   };
   project.setExtras(map, SECTION, saved);
 }
+/** "Gray level" is a way of looking, not part of the game, so it is kept per viewer (all maps). */
+const GRAY_KEY = 'gm-map-gray';
+function readGray(): boolean {
+  try {
+    return localStorage.getItem(GRAY_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+function writeGray(on: boolean): void {
+  try {
+    localStorage.setItem(GRAY_KEY, on ? '1' : '0');
+  } catch {
+    /* remembered for this visit only */
+  }
+}
 const unpack = (s: string) => Uint8Array.from(s, (c) => c.charCodeAt(0) - 48);
 
 export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean; toggle(on?: boolean): void } {
@@ -99,6 +115,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   let budget = saved?.budget ?? 15;
   let running: RunningCheck | undefined;
   let showHeat = true;
+  let gray = readGray();
   let soon = false;
   let showMarks = true;
   let filter: Severity | 'all' = 'all';
@@ -121,14 +138,22 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     legend.querySelector('.lc-legend-label')!.textContent = soon ? 'Reached:' : 'Time spent:';
     legend.querySelector('.lc-legend-ends')!.textContent = soon ? 'late → early' : 'a moment → a lot';
   };
+  const grayToggle = toggle(
+    'Gray level',
+    () => gray,
+    (v) => ((gray = v), writeGray(v), paint()),
+    'Draws the map in its palette’s lightness only, so the heat map’s colors stand out. The map’s files are not changed.',
+  );
+  const grayBox = grayToggle.querySelector('input')!;
   const toggles = h(
     'div',
     { class: 'lc-toggles' },
     toggle(
       'Heat map',
       () => showHeat,
-      (v) => ((showHeat = v), paint()),
+      (v) => ((showHeat = v), (grayBox.disabled = !v), paint()),
     ),
+    grayToggle,
     selectField(
       'Color by',
       [
@@ -204,16 +229,17 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     list,
   );
 
-  function toggle(label: string, get: () => boolean, set: (v: boolean) => void): HTMLLabelElement {
+  function toggle(label: string, get: () => boolean, set: (v: boolean) => void, title?: string): HTMLLabelElement {
     const input = h('input', { type: 'checkbox', checked: get() });
     input.addEventListener('change', () => set(input.checked));
-    return h('label', { class: 'check' }, input, h('span', null, label));
+    return h('label', { class: 'check', title }, input, h('span', null, label));
   }
 
   let focus: number | undefined;
   function paint(): void {
     const ov = host.overlay;
     ov.heat = saved && showHeat ? unpack(soon ? saved.soon : saved.heat) : undefined;
+    ov.gray = !!ov.heat && gray;
     const marks: NonNullable<OverlayState['marks']> = [];
     if (saved && showMarks) {
       for (const c of saved.stuck) marks.push({ cell: c, kind: 'stuck' });
@@ -394,6 +420,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
       if (on) paint();
       else {
         host.overlay.heat = undefined;
+        host.overlay.gray = undefined;
         host.overlay.marks = undefined;
         host.redraw();
       }

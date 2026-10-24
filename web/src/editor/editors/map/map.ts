@@ -18,6 +18,7 @@ import { drawOverlay, type OverlayState } from './tools/overlay';
 import { MapTools, type ToolMode } from './tools/toolController';
 import { findBlock, floodCells, replaceAll } from './tools/cellOps';
 import { checkPanel } from './check/checkPanel';
+import { simulate } from '../palette/colorVision';
 import './mapExport.css';
 import './tools/mapTools.css';
 
@@ -96,6 +97,18 @@ registerEditor(['map'], (host, project, file) => {
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
   let monImgs: HTMLCanvasElement[] = [];
+  // the Level check's "Gray level": the map on screen in the palette's lightness only, so the
+  // heat map's colors stand out (made when first asked for; exports always draw in color)
+  let gray: { bg: HTMLCanvasElement[]; mon: HTMLCanvasElement[] } | undefined;
+  let drawnGray = false;
+  const onScreen = () => {
+    if (!overlay.gray) return { bg: bgImgs, mon: monImgs };
+    if (!gray) {
+      const pal = simulate(chooser.palette, 'gray');
+      gray = { bg: blockImages(bg, pal), mon: blockImages(mblk, pal, true) };
+    }
+    return gray;
+  };
   const save = debounce(() => project.files.set(file, serializeMap(map)), 300);
   // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change
   const history = new History<Uint8Array>();
@@ -174,6 +187,7 @@ registerEditor(['map'], (host, project, file) => {
   function rebuild(): void {
     bgImgs = blockImages(bg, chooser.palette);
     monImgs = blockImages(mblk, chooser.palette, true);
+    gray = undefined;
     clear(
       picker,
       ...bg.map((b, i) =>
@@ -231,11 +245,13 @@ registerEditor(['map'], (host, project, file) => {
     canvas.width = MLEN * s;
     canvas.height = MWID * s;
     ctx.imageSmoothingEnabled = false;
-    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) ctx.drawImage(bgImgs[map.blocks[y * MLEN + x]] ?? bgImgs[0], x * s, y * s, s, s);
+    const { bg: bgI, mon: monI } = onScreen();
+    drawnGray = !!overlay.gray;
+    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) ctx.drawImage(bgI[map.blocks[y * MLEN + x]] ?? bgI[0], x * s, y * s, s, s);
     map.monsters.forEach((m) => {
       if (m.monnum >= LASTMON) return;
       const pic = firstPic(mons[m.monnum]);
-      if (pic >= 0) ctx.drawImage(monImgs[pic], m.curx * s, m.cury * s, s, s);
+      if (pic >= 0) ctx.drawImage(monI[pic], m.curx * s, m.cury * s, s, s);
       else {
         ctx.strokeStyle = '#f0f';
         ctx.strokeRect(m.curx * s + 2, m.cury * s + 2, s - 4, s - 4);
@@ -449,14 +465,15 @@ registerEditor(['map'], (host, project, file) => {
     if (x < 0 || y < 0 || x >= MLEN || y >= MWID) return;
     map.blocks[y * MLEN + x] = v;
     const s = BLEN * zoom;
-    ctx.drawImage(bgImgs[v], x * s, y * s, s, s);
+    ctx.drawImage(onScreen().bg[v], x * s, y * s, s, s);
   }
 
   /** Cells the tools changed: draw just them (with the links over them) and save. */
   function changedCells(cells: number[]): void {
     if (!cells.length) return;
     const s = BLEN * zoom;
-    for (const i of cells) ctx.drawImage(bgImgs[map.blocks[i]] ?? bgImgs[0], (i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
+    const bgI = onScreen().bg;
+    for (const i of cells) ctx.drawImage(bgI[map.blocks[i]] ?? bgI[0], (i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
     if (cells.length > 400) draw();
     else redrawOverlay();
     save();
@@ -663,7 +680,7 @@ registerEditor(['map'], (host, project, file) => {
     file,
     scene: set.scenes[0],
     overlay,
-    redraw: () => redrawOverlay(),
+    redraw: () => (!!overlay.gray !== drawnGray ? draw() : redrawOverlay()),
     goTo: (c) => {
       const s = BLEN * zoom;
       const x = c % MLEN;
