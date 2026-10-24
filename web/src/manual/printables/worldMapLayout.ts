@@ -19,9 +19,10 @@ export interface Rect {
 /**
  * Integrator positions (the .GAM's world units) to card rectangles in map units, with the
  * closest two cards one cell apart: a spread-out layout is drawn tighter, a crowded one
- * (more scenes than the DOS world holds) is spread so no card covers another.
+ * (more scenes than the DOS world holds) is spread so no card covers another. A taller
+ * `cell` and `card` leave room under each card (for the names a place lists).
  */
-export function cardRects(pos: Map<number, Point>, origin: Point = { x: 0, y: 0 }): Map<number, Rect> {
+export function cardRects(pos: Map<number, Point>, origin: Point = { x: 0, y: 0 }, cell = CELL, card = CARD): Map<number, Rect> {
   const ids = [...pos.keys()];
   if (!ids.length) return new Map();
   let k = Infinity;
@@ -37,9 +38,9 @@ export function cardRects(pos: Map<number, Point>, origin: Point = { x: 0, y: 0 
   const out = new Map<number, Rect>();
   for (const i of ids) {
     const p = pos.get(i)!;
-    const cx = origin.x + ((p.x - x0) / CARD_UNITS.w / k) * CELL.w;
-    const cy = origin.y + ((p.y - y0) / CARD_UNITS.h / k) * CELL.h;
-    out.set(i, { x: cx + (CELL.w - CARD.w) / 2, y: cy + (CELL.h - CARD.h) / 2, w: CARD.w, h: CARD.h });
+    const cx = origin.x + ((p.x - x0) / CARD_UNITS.w / k) * cell.w;
+    const cy = origin.y + ((p.y - y0) / CARD_UNITS.h / k) * cell.h;
+    out.set(i, { x: cx + (cell.w - card.w) / 2, y: cy + (cell.h - card.h) / 2, w: card.w, h: card.h });
   }
   return out;
 }

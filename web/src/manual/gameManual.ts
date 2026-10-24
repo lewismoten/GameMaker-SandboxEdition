@@ -42,7 +42,7 @@ const MAP_PIECES = new Set(['worldmap', 'levelmaps']);
  */
 export async function openGameMaps(listed: CatalogEntry, onReady?: () => void): Promise<void> {
   const entry = await withDetails(listed);
-  const ctx: PrintContext = { entry, family: [], printables: {}, manual: { title: '', pages: [] }, shot: shotCache(entry) };
+  const ctx: PrintContext = { entry, family: [], printables: entry.original?.printables ?? {}, manual: { title: '', pages: [] }, shot: shotCache(entry) };
   const items = boxItems(ctx).filter((i) => MAP_PIECES.has(i.id));
   onReady?.();
   await openBox(`${entry.title}: maps`, [], items, { trayHeading: 'Maps' });

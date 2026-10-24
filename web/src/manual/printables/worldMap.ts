@@ -1,7 +1,8 @@
-// The fold-out World Map in every Sandbox Software box (and with a Bard of Bizarre game's maps): every scene of the game as a card
+// The fold-out World Map in every Sandbox Software box (and with a Bard of Bizarre game's maps): every place of the game as a card
 // (its number and name and a picture of where you arrive) and an arrow for every way from
-// one scene to another, laid out by the Game Integrator's Auto-arrange from the game's own
-// .GAM. It's drawn as one SVG in tenths of an inch, so it prints at full size: a big game
+// one place to another, laid out by the Game Integrator's Auto-arrange from the game's own
+// .GAM. A scene that is only a conversation or a passage is folded into its place and listed
+// on its land (worldMapGroups.ts); the "Every scene" view shows every scene as a card. It's drawn as one SVG in tenths of an inch, so it prints at full size: a big game
 // prints as an overview page plus pages to trim and tape together (A1, B1, ... like a road
 // atlas), each the same SVG looking at its own part. On screen it comes folded and opens
 // into a map you can zoom and drag around.
@@ -15,7 +16,9 @@ import { autoArrange } from '../../editor/editors/integrator/integratorLayout';
 import { arrival, graphOf } from '../../editor/editors/integrator/layoutCells';
 import { graphicShot, levelShot } from '../../editor/editors/integrator/integratorArt';
 import { hashString, sheet, type PrintContext, type Sheet } from './kit';
-import { CELL, bounds, cardRects, folds, tiles, type Rect } from './worldMapLayout';
+import { CARD, CELL, bounds, cardRects, folds, tiles, type Rect } from './worldMapLayout';
+import { groupScenes, isBlackPalette, placeLabels, placesGame } from './worldMapGroups';
+import type { WorldMapHints } from './types';
 import { INK, PAPER, blobPath, lookOf, mix, regions, scatter, trailBetween, type Look, type Terrain } from './worldMapTerrain';
 import { SERIF, TERRAIN_NAMES, agedPaper, cartouche, compassRose, el, freshCopy, glyph, scaleBar } from './worldMapArt';
 import { panZoom } from './panZoom';
@@ -34,6 +37,24 @@ const PAGE = { w: 105, h: 80, overlap: 3 };
 const R = 5.2;
 const LAND = { rx: 13.5, ry: 11.6 };
 const KIND = { start: '#c58a00', end: '#a8281f', scene: '#2f5a3a' };
+/** A line of the names a place lists, how many lines at most, and about how many letters fit on one. */
+const LINE = 1.45;
+const MOST_LINES = 5;
+const LINE_CHARS = 42;
+
+/** Names joined with dots into lines of about LINE_CHARS letters; what doesn't fit is counted. */
+function wrapNames(names: string[]): string[] {
+  const lines: string[] = [];
+  let k = 0;
+  for (; k < names.length; k++) {
+    const last = lines.length - 1;
+    if (last >= 0 && lines[last].length + 3 + names[k].length <= LINE_CHARS) lines[last] += ` · ${names[k]}`;
+    else if (lines.length < MOST_LINES) lines.push(names[k]);
+    else break;
+  }
+  if (k < names.length) lines[lines.length - 1] += ` · and ${names.length - k} more`;
+  return lines;
+}
 
 /** The game and just the files its cards need (maps, blocks, palettes, title and end screens). */
 async function loadWorld(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
@@ -88,7 +109,6 @@ interface World {
   W: number;
   H: number;
   svg: SVGSVGElement;
-  scenes: number;
 }
 
 /** The colors of a picture, 0xRRGGBB -> how many of every 4th pixel are that color. */
@@ -109,12 +129,24 @@ interface Place {
   kind: 'start' | 'end' | 'scene';
   look: Look;
   pic?: HTMLCanvasElement;
+  /** The names it lists under its ribbon, a line each. */
+  names: string[];
 }
 
-/** The whole map as an SVG, `W` x `H` tenths of an inch. */
-function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
+/**
+ * The whole map as an SVG, `W` x `H` tenths of an inch: the player's places, or with `every`
+ * every scene as the Game Integrator shows them.
+ */
+function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: WorldMapHints | undefined, every: boolean): World {
+  const black = (i: number) => isBlackPalette(files.get(scenes.scenes[i].files[0]?.toLowerCase() ?? ''));
+  const grouping = every ? undefined : groupScenes(scenes, graphOf(scenes), black, hints);
+  const game = grouping ? placesGame(scenes, grouping) : scenes;
   const graph = graphOf(game);
-  const rects = cardRects(autoArrange(game), { x: M, y: HEAD + 4 });
+  const names = new Map<number, string[]>();
+  if (grouping) for (const i of new Set([...grouping.folded.keys(), ...grouping.labels.keys()])) names.set(i, wrapNames(placeLabels(scenes, grouping, i)));
+  // room under every card for the longest list
+  const room = Math.max(0, ...[...names.values()].map((l) => l.length)) * LINE;
+  const rects = cardRects(autoArrange(game), { x: M, y: HEAD + 4 }, { w: CELL.w, h: CELL.h + room }, { w: CARD.w, h: CARD.h + room });
   const b = bounds(rects.values());
   const W = Math.max(PAGE.w, b.x + b.w + M);
   const H = Math.max(PAGE.h, b.y + b.h + FOOT + M - 4);
@@ -130,8 +162,8 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
   for (const [i, r] of rects) {
     const s = game.scenes[i];
     const kind = s.gametype === STARTTYPE ? 'start' : s.gametype === ENDTYPE ? 'end' : 'scene';
-    const pic = kind === 'scene' ? levelShot(files, s, arrival(game, i), 7, 7) : (graphicShot(files, s.files[0]) ?? graphicShot(files, s.files[2]));
-    places.set(i, { i, c: { x: r.x + r.w / 2, y: r.y + r.h / 2 - 1.2 }, kind, look: lookOf(colorsOf(pic)), pic });
+    const pic = kind === 'scene' ? levelShot(files, s, arrival(scenes, i), 7, 7) : (graphicShot(files, s.files[0]) ?? graphicShot(files, s.files[2]));
+    places.set(i, { i, c: { x: r.x + r.w / 2, y: r.y + CARD.h / 2 - 1.2 }, kind, look: lookOf(colorsOf(pic)), pic, names: names.get(i) ?? [] });
   }
   const svg = el('svg', { xmlns: NS, viewBox: `0 0 ${W} ${H}`, class: 'wm-svg', 'font-family': SERIF }) as SVGSVGElement;
   const paper = agedPaper(W, H, seed, accent);
@@ -149,7 +181,11 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
 
   // the land: ripples off the coast, the coast, then each country's color over it
   const all = [...places.values()];
-  const blob = (p: Place, grow = 0) => blobPath(p.c.x, p.c.y + 1.2, LAND.rx + grow, LAND.ry + grow, seed + p.i * 7919);
+  // a place that lists names reaches further south to hold them
+  const blob = (p: Place, grow = 0) => {
+    const d = (p.names.length * LINE) / 2;
+    return blobPath(p.c.x, p.c.y + 1.2 + d, LAND.rx + grow, LAND.ry + grow + d, seed + p.i * 7919);
+  };
   const ripples = el('g', { class: 'wm-ripples', fill: 'none', stroke: RIPPLE, 'stroke-width': 0.14 });
   for (const p of all) ripples.append(el('path', { d: blob(p, 1.3) }), el('path', { d: blob(p, 2.6), 'stroke-dasharray': '1.4 0.8' }));
   const coast = el('g', { class: 'wm-coast', fill: 'none', stroke: INK, 'stroke-width': 0.7, 'stroke-linecap': 'round' });
@@ -161,7 +197,12 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
   svg.append(ripples, coast, land);
 
   // each country's little drawings, off the places and the trails
-  const avoid = [...all.map((p) => ({ p: { x: p.c.x, y: p.c.y + 1.8 }, r: R + 3 })), ...trails.flatMap((t) => t.t.samples.map((p) => ({ p, r: 1.8 })))];
+  const nameLine = (p: Place, k: number) => p.c.y + R + 0.5 + 4.1 + LINE * (k + 1);
+  const avoid = [
+    ...all.map((p) => ({ p: { x: p.c.x, y: p.c.y + 1.8 }, r: R + 3 })),
+    ...trails.flatMap((t) => t.t.samples.map((p) => ({ p, r: 1.8 }))),
+    ...all.flatMap((p) => p.names.flatMap((_, k) => Array.from({ length: 13 }, (_, j) => ({ p: { x: p.c.x - 12 + j * 2, y: nameLine(p, k) - 0.4 }, r: 1.3 })))),
+  ];
   const marks = el('g', { class: 'wm-terrain' });
   const used = new Set<Terrain>();
   for (const p of all) {
@@ -325,6 +366,27 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
         fit(foot, 34),
       ),
     );
+    // who and what else is here: the scenes folded into it
+    p.names.forEach((line, k) =>
+      g.append(
+        el(
+          'text',
+          {
+            class: 'wm-here',
+            x,
+            y: nameLine(p, k),
+            'font-size': 1.1,
+            fill: INK,
+            'text-anchor': 'middle',
+            stroke: PAPER,
+            'stroke-width': 0.4,
+            'paint-order': 'stroke',
+            ...(line.length * 1.1 * 0.48 > 21.5 ? { textLength: 21.5, lengthAdjust: 'spacingAndGlyphs' } : {}),
+          },
+          line,
+        ),
+      ),
+    );
     svg.append(g);
   }
 
@@ -335,12 +397,13 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
       3.5,
       Math.min(W - 2 * M, 78),
       entry.title,
-      `A Map of the Known World · ${graph.nodes.length} scenes · ${entry.company ?? 'Sandbox Software'}`,
+      `A Map of the Known World · ${every ? `${graph.nodes.length} scenes` : `${all.filter((p) => p.kind === 'scene').length} places`} · ${entry.company ?? 'Sandbox Software'}`,
       navy,
       accent,
     ),
   );
-  svg.append(legend(M - 6, H - FOOT - 3, [...used], accent));
+  svg.append(legend(M - 6, H - FOOT - 3, [...used], accent, names.size > 0));
+  if (grouping?.hostOf.size) svg.setAttribute('data-folded', String(grouping.hostOf.size));
   svg.append(compassRose(W - 13, H - 10.5, 5.2, accent));
 
   // fold creases, as on a map that has been folded and opened, then the border over everything
@@ -356,11 +419,11 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
       el('line', { x1: 0, y1: y + 0.2, x2: W, y2: y + 0.2, stroke: '#5a40201f' }),
     );
   svg.append(creases, border);
-  return { W, H, svg, scenes: graph.nodes.length };
+  return { W, H, svg };
 }
 
-/** The key in the bottom corner: places, start and end, the two kinds of trail, the countries drawn. */
-function legend(x: number, y: number, terrains: Terrain[], accent: string): SVGElement {
+/** The key in the bottom corner: places, start and end, the two kinds of trail, the countries drawn, the names a place lists. */
+function legend(x: number, y: number, terrains: Terrain[], accent: string, lists: boolean): SVGElement {
   const g = el('g', { class: 'wm-legend', 'font-size': 1.35, fill: INK });
   const w = 72;
   g.append(
@@ -392,6 +455,8 @@ function legend(x: number, y: number, terrains: Terrain[], accent: string): SVGE
     el('text', { x: c2 + 8, y: row(1) }, 'One way only'),
   );
   g.append(scaleBar(x + 2, row(3), CELL.w));
+  if (lists)
+    g.append(el('text', { x: c2 + 4, y: row(3), 'font-size': 1.1 }, '12 The Shop'), el('text', { x: c2 + 13, y: row(3) }, 'Who and what you meet there'));
   // the countries this map draws, a little drawing and its name
   terrains.slice(0, 3).forEach((t, k) => {
     const gx = c2 + 1.4 + k * 11.5;
@@ -450,10 +515,10 @@ function tileSheet(world: World, t: Rect & { name: string; col: number; row: num
  * scaled to one page, with the atlas grid), then, for a map bigger than a page, the pages
  * that print it at full size.
  */
-export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
+export async function worldMap(ctx: PrintContext, every = false): Promise<Sheet[]> {
   const loaded = await loadWorld(ctx.entry);
   if (!loaded) return [];
-  const world = drawWorld(ctx.entry, loaded.game, loaded.files);
+  const world = drawWorld(ctx.entry, loaded.game, loaded.files, ctx.printables.worldMap, every);
   const grid = tileGrid(world.W, world.H);
   const full = freshCopy(world.svg);
   if (grid) full.append(grid);
@@ -465,36 +530,61 @@ export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
   return sheets;
 }
 
-/** On screen: a folded map that opens into one you can zoom (buttons, wheel, keys) and drag around. */
-export function worldMapScreen(sheets: Sheet[]): HTMLElement {
+/**
+ * On screen: a folded map that opens into one you can zoom (buttons, wheel, keys) and drag
+ * around. With `other` (and a map that folds scenes away), a button swaps it for the map of
+ * every scene and back; `other(every)` gives that view's sheets and what printing then prints.
+ */
+export function worldMapScreen(sheets: Sheet[], other?: (every: boolean) => Promise<Sheet[]>): HTMLElement {
   const s = sheets[0];
   if (!s) return h('p', { class: 'gmb-loading' }, 'This game has no scenes to map.');
-  const map = freshCopy(s.el);
-  map.classList.add('wm-screen-sheet');
-  const pz = panZoom(map, s.w, 'The World Map: drag to look around');
-  const pages = sheets.length > 1 ? sheets.length - 1 : 1;
-  const bar = h(
-    'div',
-    { class: 'wm-bar' },
-    ...pz.buttons,
-    h(
-      'span',
-      null,
-      `${s.w.toFixed(1)}" × ${s.h.toFixed(1)}" · prints as ${pages > 1 ? `an overview and ${pages} pages to tape together` : 'one page'} · drag to look around, ctrl+scroll to zoom`,
-    ),
-  );
+  const holder = h('div', { class: 'wm-fold' });
+  const folds = !!s.el.querySelector('svg[data-folded]');
+  const show = (s: Sheet, pages: number, every: boolean) => {
+    const map = freshCopy(s.el);
+    map.classList.add('wm-screen-sheet');
+    const pz = panZoom(map, s.w, every ? 'The World Map, every scene: drag to look around' : 'The World Map: drag to look around');
+    const swap =
+      other && folds
+        ? h(
+            'button',
+            {
+              type: 'button',
+              class: 'wm-every',
+              'aria-pressed': String(every),
+              title: 'Every scene as its own card, as the Game Integrator shows them',
+              onclick: async () => {
+                const next = await other(!every);
+                if (next[0]) show(next[0], next.length > 1 ? next.length - 1 : 1, !every);
+              },
+            },
+            'Every scene',
+          )
+        : undefined;
+    const bar = h(
+      'div',
+      { class: 'wm-bar' },
+      ...pz.buttons,
+      ...(swap ? [swap] : []),
+      h(
+        'span',
+        null,
+        `${s.w.toFixed(1)}" × ${s.h.toFixed(1)}" · prints as ${pages > 1 ? `an overview and ${pages} pages to tape together` : 'one page'} · drag to look around, ctrl+scroll to zoom`,
+      ),
+    );
+    holder.replaceChildren(bar, pz.view);
+    holder.classList.add('open');
+    // a readable start: places about 150 px across (or the whole map when that's smaller)
+    requestAnimationFrame(() => pz.setZoom(Math.max(pz.view.clientWidth - 24, Math.min(s.w * 100, pz.view.clientWidth * 2.4))));
+  };
 
   // folded: the title panel on top of a stack of folds
   const face = freshCopy(s.el);
   face.classList.add('wm-face');
   face.style.width = `${Math.max(1, s.w / 8.5) * 340}px`;
-  const holder = h('div', { class: 'wm-fold' });
   const open = () => {
     dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-world-map' } }));
-    holder.replaceChildren(bar, pz.view);
-    holder.classList.add('open');
-    // a readable start: places about 150 px across (or the whole map when that's smaller)
-    requestAnimationFrame(() => pz.setZoom(Math.max(pz.view.clientWidth - 24, Math.min(s.w * 100, pz.view.clientWidth * 2.4))));
+    show(s, sheets.length > 1 ? sheets.length - 1 : 1, false);
   };
   const folded = h('div', { class: 'wm-folded', 'aria-hidden': 'true', onclick: open }, h('div', { class: 'wm-face-crop' }, face));
   holder.append(folded, h('button', { type: 'button', class: 'fo-btn wm-open', onclick: open }, 'Unfold the map'));
