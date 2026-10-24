@@ -7,7 +7,7 @@ import type { HalfAd } from '../types';
 import { SOFA_PHONE } from './bbsListings';
 import { readerServiceNo } from './readerService';
 
-/** A swap meet for used games and shareware, at the fire hall. */
+/** A swap meet for used games and shareware, at the Mineral County Fairgrounds. */
 export const SWAP_MEET: HalfAd = halfAd(
   'Tri-County Game Swap',
   'TRI-COUNTY GAME SWAP',
@@ -21,7 +21,7 @@ export const SWAP_MEET: HalfAd = halfAd(
             'The shareware table: bring blank disks and copy all you like',
           ]),
         ],
-        [big('SAT. 9–3', 'at the fire hall'), p('**Tables $5** · browsing free · hot dogs by the junior firefighters'), p('Info: 555-0142')],
+        [big('SAT. 9–3', 'at the Mineral County Fairgrounds'), p('**Tables $5** · browsing free · hot dogs by the junior firefighters'), p('Info: 555-0142')],
       ],
       0.3,
     ),
