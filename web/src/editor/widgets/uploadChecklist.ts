@@ -58,8 +58,8 @@ export function itemState(item: ChecklistItem, findings: Finding[], played: bool
   return { kind: item.play && !played ? 'unchecked' : 'clear', count: 0 };
 }
 
-/** The findings of the last Level check of every map, from the companion file. */
-function savedFindings(project: Project): { findings: Finding[]; maps: number; checked: number } {
+/** The findings of the last Level check of every map, from the companion file (`all`: every one, not just the play checks'). */
+function savedFindings(project: Project, all = false): { findings: Finding[]; maps: number; checked: number } {
   const maps = project.files.byExtension('map');
   let checked = 0;
   const findings: Finding[] = [];
@@ -67,11 +67,13 @@ function savedFindings(project: Project): { findings: Finding[]; maps: number; c
     const s = project.extras<{ findings?: Finding[] } | undefined>(m, 'levelCheck', undefined);
     if (!s) continue;
     checked++;
-    findings.push(
-      ...(s.findings ?? []).filter((f) =>
-        ['stuck', 'unreachable', 'link-unreached', 'blind-drop', 'hazard-landing', 'hurt-lock', 'every-tick', 'checkpoints', 'curve'].includes(f.check),
-      ),
-    );
+    if (all) findings.push(...(s.findings ?? []).map((f) => ({ ...f, where: { ...f.where, map: f.where.map ?? m } })));
+    else
+      findings.push(
+        ...(s.findings ?? []).filter((f) =>
+          ['stuck', 'unreachable', 'link-unreached', 'blind-drop', 'hazard-landing', 'hurt-lock', 'every-tick', 'checkpoints', 'curve'].includes(f.check),
+        ),
+      );
   }
   return { findings, maps: maps.length, checked };
 }
@@ -107,6 +109,19 @@ export async function uploadChecklist(project: Project): Promise<void> {
         guideLink({ chapter: 'upload', section: 'Before You Upload' }, '📒 Appendix B in the guide'),
       ),
       h(
+        'div',
+        { class: 'toolbar' },
+        h(
+          'button',
+          {
+            type: 'button',
+            title: 'Every finding of the game’s files and of each map’s last Level check, by kind, with a CSV file and a printable checklist',
+            onclick: () => void gameReport(project, fileFindings),
+          },
+          '📋 Every map’s findings as a report…',
+        ),
+      ),
+      h(
         'ol',
         { class: 'upl-list' },
         ...APPENDIX_B.map((item, i) => {
@@ -139,4 +154,19 @@ export async function uploadChecklist(project: Project): Promise<void> {
       ),
     ),
   );
+}
+
+/** The whole game's findings (its files', and every map's last Level check) as a report, each finding once. */
+async function gameReport(project: Project, fileFindings: Finding[]): Promise<void> {
+  const { openReport } = await import('./checkReport');
+  await openReport({
+    project,
+    findings: () => {
+      const seen = new Set<string>();
+      return [...fileFindings, ...savedFindings(project, true).findings].filter((f) => {
+        const k = `${f.check}|${f.title}|${f.where.map ?? f.where.file ?? ''}`;
+        return !seen.has(k) && !!seen.add(k);
+      });
+    },
+  });
 }
