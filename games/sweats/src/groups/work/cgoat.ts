@@ -349,7 +349,9 @@ export const cgoat: Monologue = {
     placePicture(m, 'maker', 10, 7, 1, 2);
     m.set(11, 8, 'P');
     m.set(7, 5, '&').set(14, 5, 'S').set(11, 4, 'notice');
-    m.mon(CGOAT_MON.static, 8, 8);
+    // (it paces three blocks right: from 7 it turns before the microwave, so a push off its side
+    // never puts him inside the microwave)
+    m.mon(CGOAT_MON.static, 7, 8);
     // the fridge, flung open (its top a ledge); the empty creamer keeps hopping out of it
     placePicture(m, 'fridge', 17, 7, 2, 3);
     m.set(18, 6, '&').set(21, 3, 'y');

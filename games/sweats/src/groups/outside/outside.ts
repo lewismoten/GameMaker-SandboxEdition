@@ -323,7 +323,9 @@ export const outside: Monologue = {
     m.mon(OUT_MON.receipt, 50, 2);
     m.mon(OUT_MON.jogger, 56, 9);
     m.set(60, 9, '%').set(64, 9, '$');
-    m.mon(OUT_MON.ped, 63, 9);
+    // (it paces three blocks right: from 62 it turns a block short of the bush, so a push off
+    // its side never puts him inside the bush)
+    m.mon(OUT_MON.ped, 62, 9);
     // the bush, and in it the rest of the receipt
     m.set(67, 9, 'B');
     m.link(67 + OFF, 9, 'next');

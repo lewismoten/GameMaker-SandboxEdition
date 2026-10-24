@@ -479,9 +479,6 @@
   "warning start-threat s4 Monster 8 starts 2 blocks from where the hero comes in"
  ],
  "sweats": [
-  "warning hurt-lock s16 Landing on monster 13 sinks the hero into the ground under it, first at (11, 9)",
-  "warning hurt-lock s19 Landing on monster 13 sinks the hero into the ground under it, first at (69, 11)",
-  "warning hurt-lock s9 Landing on monster 16 sinks the hero into the ground under it, first at (38, 13)",
   "warning sounds s2 Sound 5 (cheer.voc) plays on every score pickup: 1.4 s long, -17 dB"
  ],
  "teddy": [

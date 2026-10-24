@@ -12,7 +12,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline, makeBook };
 export type SpriteBook = ReturnType<typeof makeBook>;
@@ -217,8 +217,12 @@ export function buildCharBlocks(pal: Pal) {
   return book;
 }
 
-/** Hurting things are solid (they push him away) and cost composure. */
-export const hurts = (hp: number, solid = 15) => ({ chHitPt: hp, solid });
+/**
+ * Hurting things are solid (they push him away) and cost composure. Not SOLTOP: on a monster
+ * that is the side that pushes the hero under it (PLAYGAME's ChkMonChr), into the floor; SOLBOT
+ * still lets him stand on one.
+ */
+export const hurts = (hp: number, solid = SOLBOT | SOLLEF | SOLRIG) => ({ chHitPt: hp, solid });
 /**
  * Solid only at the sides, for a foe he could land on (hurts(hp, SIDES)): PLAYGAME pushes a hero
  * on a monster's top past it without checking walls, down into the floor under it, so this one
