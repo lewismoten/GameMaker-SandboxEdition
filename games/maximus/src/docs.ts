@@ -247,6 +247,30 @@ export function about(b: Built): object {
         caption: "Courier's chart of the first sector: the gate, the station and the asteroid belt",
       },
     },
+    // the facing check leaves these alone (games/kit/levelCheck.ts): the walker robots, the
+    // saucers, the winged fighters, the face-balls and the orbs look the same from every side
+    sameEverySide: [
+      'heart.mon#17',
+      'heart.mon#54',
+      'land1.mon#24',
+      'land1.mon#54',
+      'land2.mon#24',
+      'land2.mon#54',
+      'mech1.mon#17',
+      'mech1.mon#54',
+      'mech2.mon#17',
+      'mech2.mon#54',
+      'sea1.mon#14',
+      'sea1.mon#54',
+      'sea2.mon#14',
+      'sea2.mon#54',
+      'space1.mon#11',
+      'space1.mon#32',
+      'space1.mon#54',
+      'space2.mon#11',
+      'space2.mon#32',
+      'space2.mon#54',
+    ],
   };
 }
 
