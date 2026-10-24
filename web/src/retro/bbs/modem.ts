@@ -1,7 +1,16 @@
-// What a 14,400 bps modem sounded like through its speaker when it dialed a BBS: dial
-// tone, touch-tones, the ring, the answering modem's 2100 Hz tone, the V.8 / V.32bis
-// handshake (FSK chirps, the "bing-bong" tones, then the hiss of training), and silence
-// once the speaker turns off at CONNECT. Everything is band-limited like a phone line.
+// What a modem sounded like through its speaker when it dialed a BBS: dial tone,
+// touch-tones, the ring, then the handshake of the line speed picked (lineSpeed.ts), and
+// silence once the speaker turns off at CONNECT. Everything is band-limited like a phone line.
+// The handshakes, slowest to fastest:
+//   300 (Bell 103): one steady 2225 Hz answer tone, the caller's 1270 Hz joins it, connected.
+//   1200 (Bell 212A): the 2225 Hz tone, then a short burst of scrambled data.
+//   2400 (V.22bis): the 2100 Hz answer tone with its phase flips, a "bong", a longer hiss.
+//   4800, 9600 (V.32) and 14,400 (V.32bis): the answer tone, the "bing-bong" (1800 Hz, then
+//     600 + 3000 Hz), then the echo canceller's long hiss.
+//   28,800 and 33,600 (V.34): the answer tone wobbling at 15 Hz (ANSam), the V.8 chirps,
+//     the line-probing chord, then training.
+//   56K (V.90): all of V.34's, then a second, longer round of probing and training.
+import { lineSpeed, type LineSpeed } from './lineSpeed';
 import { pcOutput } from '../computer/pcAudio';
 
 export const DTMF: Record<string, [number, number]> = {
@@ -70,15 +79,18 @@ export class Line {
     }
   }
 
-  /** The answer tone (ANSam): 2100 Hz, amplitude modulated at 15 Hz, phase flips every 450 ms. */
-  answerTone(start: number, dur: number): void {
+  /**
+   * The answer tone: 2100 Hz with a phase flip every 450 ms (V.25), and from V.34 on
+   * amplitude modulated at 15 Hz as well (`wobble`: ANSam).
+   */
+  answerTone(start: number, dur: number, wobble = true): void {
     const g = this.envelope(start, dur, 0.13);
     const am = this.ctx.createGain();
     am.gain.value = 0.8;
     const lfo = this.ctx.createOscillator();
     lfo.frequency.value = 15;
     const depth = this.ctx.createGain();
-    depth.gain.value = 0.2;
+    depth.gain.value = wobble ? 0.2 : 0;
     lfo.connect(depth).connect(am.gain);
     const o = this.ctx.createOscillator();
     o.frequency.value = 2100;
@@ -103,6 +115,13 @@ export class Line {
     o.connect(g);
     o.start(start);
     o.stop(start + dur);
+  }
+
+  /** V.34 line probing: a short chord of tones 150 Hz apart across the line, heard as a "pling". */
+  probe(start: number, dur = 0.16): void {
+    const freqs: number[] = [];
+    for (let f = 450; f <= 3300; f += 150) freqs.push(f);
+    this.tones(freqs, start, dur, 0.012);
   }
 
   /** Scrambled data: the hiss of training and of the data that follows. */
@@ -175,64 +194,86 @@ export function busySounds(ctx: AudioContext | undefined, number: string): numbe
   return end;
 }
 
-export function dialSounds(ctx: AudioContext | undefined, number: string): CallTimeline {
+export function dialSounds(ctx: AudioContext | undefined, number: string, speed: LineSpeed = lineSpeed()): CallTimeline {
   const digits = keypadDigits(number);
   // The same timeline drives the screen when there is no sound.
-  let t = 0;
-  const at: {
-    tone: number;
-    digits: number[];
-    rings: number[];
-    answer: number;
-    v8: number;
-    v32: number;
-    train: number;
-    connect: number;
-  } = {
-    tone: 0,
-    digits: [],
-    rings: [],
-    answer: 0,
-    v8: 0,
-    v32: 0,
-    train: 0,
-    connect: 0,
-  };
-  t += 1.1; // dial tone
+  let t = 1.1; // dial tone
+  const digitAt: number[] = [];
   for (const _ of digits) {
-    at.digits.push(t);
+    digitAt.push(t);
     t += 0.17;
   }
   t += 0.9; // the exchange connects the call
-  at.rings.push(t);
+  const rings = [t];
   t += 2.0 + 1.3; // a ring and the silence after it
-  at.answer = t;
-  t += 2.6; // answer tone
-  at.v8 = t;
-  t += 1.0;
-  at.v32 = t;
-  t += 0.9;
-  at.train = t;
-  t += 2.6;
-  at.connect = t;
-
-  if (ctx) {
-    const line = new Line(ctx);
-    const t0 = ctx.currentTime + 0.05;
-    line.tones([350, 440], t0 + at.tone, 1.0, 0.1);
-    digits.split('').forEach((d, i) => line.tones(DTMF[d], t0 + at.digits[i], 0.1, 0.12));
-    for (const r of at.rings) line.tones([440, 480], t0 + r, 2.0, 0.07);
-    line.answerTone(t0 + at.answer, 2.5);
-    // V.8: the caller's call menu, the answerer's joint menu.
-    line.fsk(1180, 980, t0 + at.v8, 0.55);
-    line.fsk(1850, 1650, t0 + at.v8 + 0.35, 0.6);
-    // V.32bis start-up: AA (1800 Hz) and AC (600 + 3000 Hz), the "bing-bong".
-    line.tones([600, 3000], t0 + at.v32, 0.3, 0.09);
-    line.tones([1800], t0 + at.v32 + 0.3, 0.3, 0.1);
-    line.tones([600, 3000], t0 + at.v32 + 0.6, 0.25, 0.09);
-    // Echo canceller training, a short pause, then rate negotiation and data.
-    line.hiss(t0 + at.train, 1.3, 0.24, 1700);
-    line.hiss(t0 + at.train + 1.45, 1.05, 0.2, 1900);
+  const answer = t;
+  const line = ctx ? new Line(ctx) : undefined;
+  const t0 = ctx ? ctx.currentTime + 0.05 : 0;
+  if (line) {
+    line.tones([350, 440], t0, 1.0, 0.1);
+    digits.split('').forEach((d, i) => line.tones(DTMF[d], t0 + digitAt[i], 0.1, 0.12));
+    for (const r of rings) line.tones([440, 480], t0 + r, 2.0, 0.07);
   }
-  return { rings: at.rings, answer: at.answer, connect: at.connect };
+  /** Schedules a sound `dt` seconds after `t` (when there is a line to hear it on). */
+  const at = (dt: number, play: (l: Line, when: number) => void) => line && play(line, t0 + t + dt);
+  const v32 = () => {
+    // AA (1800 Hz) and AC (600 + 3000 Hz): the "bing-bong"
+    at(0, (l, w) => l.tones([600, 3000], w, 0.3, 0.09));
+    at(0.3, (l, w) => l.tones([1800], w, 0.3, 0.1));
+    at(0.6, (l, w) => l.tones([600, 3000], w, 0.25, 0.09));
+    t += 0.9;
+  };
+  const v34 = () => {
+    at(0, (l, w) => l.answerTone(w, 2.5, true));
+    t += 2.6;
+    // V.8: the caller's call menu, the answerer's joint menu
+    at(0, (l, w) => l.fsk(1180, 980, w, 0.55));
+    at(0.35, (l, w) => l.fsk(1850, 1650, w, 0.6));
+    t += 1.0;
+    // line probing, twice, then training
+    at(0, (l, w) => l.probe(w));
+    at(0.35, (l, w) => l.probe(w));
+    at(0.6, (l, w) => l.hiss(w, 1.2, 0.22, 1800));
+    t += 1.9;
+  };
+  if (speed === 300) {
+    // Bell 103: the answering modem's mark tone, the caller's joins it, and that is all
+    at(0, (l, w) => l.tones([2225], w, 2.6, 0.12));
+    at(1.6, (l, w) => l.tones([1270], w, 1.0, 0.1));
+    t += 2.6;
+  } else if (speed === 1200) {
+    // Bell 212A: the 2225 Hz tone, then scrambled ones at 1200 and 2400 Hz
+    at(0, (l, w) => l.tones([2225], w, 2.0, 0.12));
+    t += 2.1;
+    at(0, (l, w) => l.hiss(w, 0.8, 0.18, 1800));
+    t += 0.9;
+  } else if (speed === 2400) {
+    // V.22bis: the 2100 Hz answer tone, an unscrambled "bong", then the scrambled hiss
+    at(0, (l, w) => l.answerTone(w, 2.5, false));
+    t += 2.6;
+    at(0, (l, w) => l.tones([1200, 2400], w, 0.45, 0.08));
+    at(0.5, (l, w) => l.hiss(w, 1.4, 0.2, 1800));
+    t += 2.0;
+  } else if (speed === 4800 || speed === 9600 || speed === 14400) {
+    // V.32 and V.32bis: the answer tone, the bing-bong, the echo canceller's training
+    at(0, (l, w) => l.answerTone(w, 2.5, false));
+    t += 2.6;
+    v32();
+    at(0, (l, w) => l.hiss(w, 1.3, 0.24, 1700));
+    at(1.45, (l, w) => l.hiss(w, speed === 14400 ? 1.05 : 0.7, 0.2, 1900));
+    t += speed === 14400 ? 2.6 : 2.2;
+  } else if (speed === 28800 || speed === 33600) {
+    v34();
+    at(0, (l, w) => l.hiss(w, 1.1, 0.2, 1900));
+    t += 1.2;
+  } else {
+    // V.90 (56K, and the fastest line there is): V.34's start, then a second round of
+    // probing for the digital line and a longer training
+    v34();
+    at(0, (l, w) => l.probe(w, 0.25));
+    at(0.3, (l, w) => l.hiss(w, 1.6, 0.18, 2100));
+    at(2.0, (l, w) => l.hiss(w, 0.9, 0.2, 1700));
+    t += 3.0;
+  }
+  return { rings, answer, connect: t };
 }
