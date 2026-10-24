@@ -128,8 +128,8 @@ preserve what was there.
   - **Gwinn** (two n's) is the troublemaker dog.
   - **Teddy** is the corgi; his ears match (neither is shorter).
   - **Doc Leo** is never "Dr. Leo".
-  - **Klown Klub** is always the whole name, never "Klub" alone; wherever it is lettered in a
-    picture (signs, box art), both K's are drawn backwards.
+  - **Clown Club** is the club's name, spelled normally (never "Klown Klub"); wherever it is
+    lettered in a picture (signs, box art), the "o" in "Clown" is drawn as a red rubber nose.
   - **THE CHEZ** is a tomato-red 1976½ CitiCar with a black roof and only the door window
     from the side. It has two charcoal stripes with red between them and a white pinstripe,
     stepping up in an S behind the door; white wheels; square bumpers; and the charge port
