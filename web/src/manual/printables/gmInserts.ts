@@ -7,8 +7,9 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './gmInserts.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
-import { BBS_PHONE, hashString, html, sandboxBanner, sandboxLogo, sheet, type Sheet } from './kit';
+import { BBS_PHONE, html, sandboxBanner, sandboxLogo, sheet, type Sheet } from './kit';
 import { PLAYGAME_KEYS } from './keys';
+import { SERIAL } from '../../retro/gmReg/registration';
 
 /** Sandbox Software's (made-up) numbers and addresses, as printed on the support card. */
 export const SUPPORT = {
@@ -97,7 +98,7 @@ export async function registrationCard(): Promise<Sheet[]> {
   const line = (label: string, cls = '') => h('div', { class: `grc-line ${cls}` }, h('span', null, label), h('i'));
   const boxes = (label: string, ...opts: string[]) =>
     h('div', { class: 'grc-row' }, h('span', null, label), ...opts.map((o) => h('span', { class: 'grc-box' }, h('i'), o)));
-  const serial = `GMSE-30-${String(hashString('game-maker-se') % 100000).padStart(5, '0')}`;
+  const serial = String(SERIAL); // this copy's, as GM REGISTER and the BBS's RSD line read it
   const form = sheet(
     7,
     4.25,
