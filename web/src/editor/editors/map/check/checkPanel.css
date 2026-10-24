@@ -119,3 +119,7 @@
   flex-direction: column;
   gap: 4px;
 }
+/* the panel's flex rows above would otherwise show while hidden */
+.lc-panel [hidden] {
+  display: none;
+}
