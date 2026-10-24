@@ -66,7 +66,7 @@ const REGULARS: (MixedSticker & { game: string })[] = [
   {
     game: 'sandcast',
     text: 'GWINN',
-    sub: "TWO N'S",
+    sub: 'ZOOMIES!',
     shape: 'cut',
     color: '#f6a9c8',
     ink: '#3a1a20',

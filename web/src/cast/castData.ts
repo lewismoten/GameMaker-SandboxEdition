@@ -90,7 +90,7 @@ const LISTED: CastMember[] = [
   {
     id: 'gwinn',
     name: 'Gwinn',
-    role: 'Teddy’s big sister and sister-in-mischief (two n’s)',
+    role: 'Teddy’s big sister and sister-in-mischief',
     hi: 'It wasn’t me. (It was me.) Zoomies!',
     art: { game: 'teddy', width: 146, height: 146, alt: 'Gwinn, a chocolate-brown dog with amber eyes, a big grin and a pink collar' },
     bio: 'Chocolate-brown, amber-eyed, pink collar, adopted, and usually the one causing the trouble: she is the reason most of these games have a plot. She scattered the costume, flattened the sandcastles with her zoomies and ate a recipe card. She knows one trick (zoomies) and a SIT she has not quite learned. She is not allowed in the library, and she is in the library.',

@@ -115,11 +115,7 @@ export const EGGS: readonly Egg[] = [
     name: 'The Heraldry Egg',
     description:
       "Forest-green felt quartered in gold diamonds like a herald's coat, a silver felt sword laid over a scrap of treasure map, and a road of brown backstitch winding all the way around the shell.",
-    credits: [
-      "Questmaster Gwinn (two n's, three quests, never once asked for directions)",
-      'Map inked by Lewis "Lewie" Moten III',
-      'Roads curved by Claude Opus 5.5',
-    ],
+    credits: ['Questmaster Gwinn (three quests, never once asked for directions)', 'Map inked by Lewis "Lewie" Moten III', 'Roads curved by Claude Opus 5.5'],
     lore: 'The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a line the cartographer was far too polite to finish: "Taken from the Redcoats, fair and square, on a Tuesday, by..."',
     look: { felt: '#2f5d3a', band: '#d8b04a', patch: '#c9ced6', thread: '#f4e7c0', pattern: 'diamonds', motif: 'sword' },
     detect: { block: 149 },
@@ -174,7 +170,7 @@ export const EGGS: readonly Egg[] = [
     name: 'The Second Paw Egg',
     description:
       'Butterscotch felt walked all over with little brown paw prints, a white felt bone appliquéd on each side with a red bow tied round it, and a collar of blue rickrack with a tiny brass tag that reads "2".',
-    credits: ['Starring Teddy, a little bigger this time', "Stunts by Gwinn (two n's), uncredited at her own request"],
+    credits: ['Starring Teddy, a little bigger this time', 'Stunts by Gwinn, uncredited at her own request'],
     lore: 'Buried with the bone: a wooden spoon, well gnawed and still sticky. Teddy will not say where he got it, but he keeps looking toward the kitchen and licking his nose.',
     look: { felt: '#e3a857', band: '#3a6fc4', patch: '#fbf6ea', thread: '#5a3216', pattern: 'pawprints', motif: 'bone' },
     detect: { block: 149 },
