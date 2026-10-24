@@ -25,11 +25,15 @@ export interface MagGame {
   blurb?: string;
   /** It has a manual box (and so a newsletter and catalog in it). */
   manual: boolean;
+  /** Its hint book's own title, e.g. 'The Royal Hint Book'. */
+  hintBook?: string;
   /** Its box has a hint book: the hint book's questions, by section. */
   hints?: { head: string; hints: { q: string; a: string }[] }[];
   /** Box tagline and features, for the Sandbox games. */
   tagline?: string;
   features?: string[];
+  /** The headlines of its own stories in its box's newsletter, The Sandbox Scoop. */
+  news?: string[];
 }
 
 /** One game in a listing (`rows` block). */

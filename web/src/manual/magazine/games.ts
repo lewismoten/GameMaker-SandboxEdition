@@ -13,6 +13,7 @@ const kindOf = (g: Entry): MagGame['kind'] =>
 
 interface HintBookItem {
   kind: 'hintbook';
+  title?: string;
   sections?: { head: string; hints: { q: string; a: string }[] }[];
 }
 
@@ -31,9 +32,11 @@ export function magGames(entries: readonly Entry[]): MagGame[] {
         price: g.price,
         blurb: g.blurb,
         manual: !!g.original?.manual,
+        hintBook: book?.title,
         hints: book?.sections?.map((s) => ({ head: s.head, hints: s.hints.map(({ q, a }) => ({ q, a })) })),
         tagline: g.original?.box?.tagline,
         features: g.original?.box?.features,
+        news: g.original?.printables?.news?.map((n) => n.head),
       };
     });
 }
