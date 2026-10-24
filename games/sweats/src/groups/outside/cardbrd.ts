@@ -133,7 +133,7 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   shelf.rect(0, 0, 20, 3, c('wood', 2)).rect(0, 3, 20, 1, c('wood', 0));
   shelf.rect(2, 6, 4, 6, c('orange', 2)).rect(2, 6, 4, 1, c('green', 1));
   shelf.disc(12, 9, 3, c('white', 2)).set(11, 8, c('ink', 0)).set(13, 8, c('ink', 0));
-  micro(shelf, 4, 14, 'GIFTS', c('gold', 2));
+  micro(shelf, 1, 14, 'GIFTS', c('gold', 2));
   book.add('giftShelf', shelf, { solid: LEDGE, grav: GRAV.down });
   // the emergency exit: its sign glowing (his new best friend), the door it opens on
   const sign = wall(108);
@@ -169,8 +169,8 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   plotThing(book, 'hWall', 'sword', (p) => {
     p.line(4, 16, 15, 5, c('metal', 2)).line(5, 16, 16, 5, c('metal', 1)).set(16, 4, c('white', 2));
     p.line(3, 12, 8, 17, c('gold', 2)).line(2, 18, 4, 16, c('red', 1));
-    p.rect(12, 14, 6, 4, c('white', 2));
-    micro(p, 12, 13, '$12', c('red', 1));
+    p.rect(9, 14, 11, 6, c('white', 2));
+    micro(p, 9, 15, '$12', c('red', 1));
   });
   loot(book, pal, 'hBase', LATE);
   coinOn(book, pal, 'hWall');

@@ -179,9 +179,9 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
     p.rect(3, 11, 14, 2, c('wood', 3)).rect(9, 13, 2, 7, c('metal', 1)).rect(5, 19, 10, 1, c('metal', 1));
     p.rect(4, 9, 12, 2, c('white', 1));
     for (const x of [5, 8, 11, 14]) p.rect(x, 7, 2, 2, c('yellow', 2)).set(x, 5, c('wood', 4)).set(x, 6, c('wood', 4));
-    p.rect(6, 1, 8, 4, c('white', 2));
+    p.rect(2, 0, 16, 5, c('white', 2));
   });
-  micro(sample, 6, 1, 'FREE', c('red', 1));
+  micro(sample, 3, 0, 'FREE', c('red', 1));
   book.add('sample', sample, AIR);
   // a stack of nested carts by the door
   const carts = over(storeWall(pal).rect(0, 15, 20, 5, c('lino', 0)).rect(0, 15, 20, 1, c('lino', 1)), pal, (p) => {
