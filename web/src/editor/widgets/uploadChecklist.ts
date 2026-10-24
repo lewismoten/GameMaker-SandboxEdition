@@ -31,7 +31,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   { text: 'Long levels are split into scenes, so a death costs little', checks: ['checkpoints'], play: true, full: true },
   { text: 'Every danger shows before it can kill; hazard blocks fill their cells', checks: ['hazard-art', 'start-threat'] },
   { text: 'Nowhere to get stuck: every pit has a way out, every lock its key', checks: ['stuck', 'counters', 'link-unreached'], play: true, full: true },
-  { text: 'Two or three enemies on a screen, each with a job; birth blocks rest', checks: ['density', 'births'], full: true },
+  { text: 'Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest', checks: ['density', 'births'], full: true },
   {
     text: 'Enemies stand out in every palette; a touch costs little and pushes clear',
     checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers'],

@@ -15,8 +15,10 @@ export const LEVELS: Chapter = {
   <p>Give each level one new idea and walk it through three beats. First show it where a
   mistake is cheap: the first spring sits over flat floor. Then ask for it under a little
   pressure: a spring over a pit. Then turn it: a spring that throws the hero past a key they
-  must come back for. A mechanic used once, in its plainest form, is a feature the game forgot
-  to finish. The last level is where every idea comes back together.</p>
+  must come back for. A mechanic used once, in its plainest form, often feels like an idea left
+  half explored, so ask whether it could come back with a twist. Sometimes the answer is no: a
+  one-off surprise, a single silly level, a joke told once can be the best moment in a game. The
+  last level is a fine place for every idea to come back together.</p>
   <h2>Never trap the player</h2>
   <p>A player should always be able to go on or go back. Getting stuck with no way out but
   <kbd>Esc</kbd> is the one mistake nobody forgives, because the only fix is to start again.</p>
@@ -52,21 +54,24 @@ export const LEVELS: Chapter = {
     <li><b>Reachable treasure.</b> Collect every item in your own game at least once. A coin
     sealed behind a log reads as a mistake, not a secret; if it is scenery, draw it as
     scenery.</li>
-    <li><b>No padding.</b> Every enemy should teach, test or guard something. Three more
-    monsters dropped beside the exit don’t make a level harder, only meaner.</li>
-    <li><b>Fair speeds.</b> An enemy much faster than the hero has to be easy to read: a
-    straight path, a clear warning. Never start a level with a threat already in reach.</li>
+    <li><b>No padding.</b> An enemy usually earns its place by teaching, testing or guarding
+    something. Three more monsters dropped beside the exit tend to make a level meaner rather
+    than harder.</li>
+    <li><b>Fair speeds.</b> An enemy much faster than the hero is fairest when it is easy to
+    read: a straight path, a clear warning. A threat already in reach at the start usually feels
+    unfair; give the player a moment to look around, unless the ambush is the joke.</li>
   </ul>
   <h2>Mazes with a compass</h2>
-  <p>A maze is fun while the player is making choices and miserable once they are only
-  guessing. Give it landmarks: a different floor color for each wing, a sign at the
+  <p>A maze is fun while the player is making choices and wearing once they are only guessing.
+  Unless getting lost is the point, give it landmarks: a different floor color for each wing, a sign at the
   crossroads, the goal glimpsed through a window early on. Keep dead ends short, or put
   something in them worth the walk. Draw your maze on paper and trace the route; if your
   pencil gets lost, so will the player.</p>
   <h2>Waiting is not a challenge</h2>
   <p>A hazard that blocks the way on a timer (a burst of lightning, a lift, a crusher) should
-  open again within about three seconds. Longer, and the player is only standing there. If the
-  wait must be long, give them something to do meanwhile: a coin to grab, a foe to dodge.</p>
+  usually open again within about three seconds. Longer, and the player is mostly standing
+  there. A pause can build tension, and a long one can be right; then give them something to do
+  meanwhile: a coin to grab, a foe to dodge.</p>
   <h2>Detours worth taking</h2>
   <p>The best levels offer a choice: the safe way on, or a risky side path with a prize. Keep
   the side path optional, and its way back as fair as its way in; an extra life that costs two
@@ -75,8 +80,9 @@ export const LEVELS: Chapter = {
   <h2>Controls the level teaches</h2>
   <p>Arrow keys and a fire key need no lesson; anything more does. Put the lesson in the level:
   a sign that says <i>Press Space to dig</i> right where the first digging is. And make every
-  key answer at once: a sequence whose first frame waits half a second feels broken, however
-  good it looks.</p>
+  key answer quickly: a sequence whose first frame waits half a second can feel broken, however
+  good it looks, unless the wind-up is the point of a heavy move. A key kept secret on purpose is
+  a different thing, and a fine one: then let a clue lead to it.</p>
   <h2>An ending, not an ad</h2>
   <p>The last screen the player sees is the one they will tell friends about. Make it a real
   scene with its own music and a thank-you. If you want to sell a sequel, say so after the

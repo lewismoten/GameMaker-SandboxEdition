@@ -18,8 +18,8 @@ export const CRAFT: Chapter = {
   <p>The hero’s speed is set by his walk frames: how many pixels each frame moves him, and how
   many ticks it waits (a tick is 1/18 of a second). Four pixels every tick is about 73 pixels a
   second, a screen in a little over four seconds: a good place to start. Much slower and the
-  game drags, however lovely the scenery; a frame can’t move him more than 11 pixels a tick
-  anyway.</p>
+  game can drag, however lovely the scenery, unless a heavy, careful hero is the idea; a frame
+  can’t move him more than 11 pixels a tick anyway.</p>
   <ul>
     <li><b>Steady, not twitchy.</b> Give every walk frame the same move and the same pause. A
     jumpy frame in the middle of a cycle makes the hero feel slippery.</li>
@@ -29,8 +29,9 @@ export const CRAFT: Chapter = {
     <li><b>Momentum</b> for ice, space or a vehicle, where a little slide is the point.</li>
   </ul>
   <h2>Face the way you walk</h2>
-  <p>A hero drawn only from the front, sliding left and right with his legs going, is the first
-  thing a player notices and the surest sign of a rushed game. Draw him four ways:</p>
+  <p>A hero drawn only from the front, sliding left and right with his legs going, is one of the
+  first things a player notices, and often reads as a rushed game. Most heroes look best drawn
+  four ways:</p>
   <ul>
     <li><b>A side view for walking.</b> Draw him facing right and give the left walk the same
     frames mirrored (orientation 4). A hero two blocks tall needs <i>both</i> blocks mirrored, or
@@ -51,7 +52,8 @@ export const CRAFT: Chapter = {
     too, so chain only monsters the hero can’t kill.</li>
   </ul>
   <p>The one exception is something that looks the same from every side on purpose: a ball, a
-  word bubble, a ship that always flies nose first. The Level check (chapter 14) flags a hero
+  word bubble, a ship that always flies nose first, a cardboard cutout that slides as a joke.
+  The Level check (chapter 14) asks about a hero
   who walks sideways facing you, one whose head doesn’t turn, one who climbs a ladder showing
   his front or side, and a monster that never turns round; press <b>Looks the same from every
   side</b> on a finding and it stops asking about that one.</p>
@@ -71,9 +73,9 @@ export const CRAFT: Chapter = {
     <li><b>Not:</b> P, H, J, K, L, O, the number keys 6 to 0, or anything right of them. The CD’s
     old habit of P to pick up and D to drop sends the right hand across the board; pick up with
     Space or Down, and drop on a left-hand key, instead.</li>
-    <li><b>Few of them.</b> Arrows, Space and two or three more are as many as players keep in
-    their heads. The Level check (chapter 14) warns about a key the right hand has to leave the
-    arrows for.</li>
+    <li><b>Few of them.</b> Arrows, Space and two or three more are as many as most players keep
+    in their heads. The Level check (chapter 14) asks about a key the right hand has to leave the
+    arrows for; a key pressed once in a while, like a map or a menu, can sit anywhere.</li>
   </ul>
   <h2>Room to move</h2>
   <p>The hero is a block wide and two blocks tall, and the screen is only 16 by 10 blocks. Leave
@@ -83,11 +85,13 @@ export const CRAFT: Chapter = {
   that appears at the screen’s edge as he arrives is a wall he couldn’t see.</p>
   <h2>A difficulty curve, not a cliff</h2>
   <ul>
-    <li><b>Ramp up evenly.</b> Each level should ask for one thing more than the last, and the
-    last level should feel like the best one, not the cruelest.</li>
+    <li><b>Ramp up evenly.</b> Most games do well to ask for one thing more each level, and
+    to make the last level feel like the best one, not the cruelest. A breather level, or a
+    gentle game that never gets hard, can be just as right on purpose.</li>
     <li><b>A scene is a checkpoint.</b> When the hero dies he starts the <i>scene</i> over. A
     long, hard level costs a lot each time; split it into scenes joined by links, and the
-    player keeps what he earned.</li>
+    player keeps what he earned. A long final run with no rest can be the point, as long as it
+    is meant.</li>
     <li><b>No surprise deaths.</b> Show a danger before it can kill: a hazard in plain sight,
     a crack in a false floor, a monster seen pacing before it pounces. A player should die
     because he slipped, never because he couldn’t have known.</li>
@@ -96,19 +100,23 @@ export const CRAFT: Chapter = {
   </ul>
   <h2>Fair enemies</h2>
   <ul>
-    <li><b>Few at a time.</b> Two or three enemies on the screen at once is a fight; eight is
-    noise. Count them on the map with the 16 by 10 view in mind.</li>
+    <li><b>Few at a time.</b> Two or three enemies on the screen at once is usually plenty: the
+    player can read each one. Eight at once tends to blur into noise, but a swarm can be the
+    point of a level, a wave to survive or a shooter’s big moment. Count them on the map with
+    the 16 by 10 view in mind, and decide which you mean.</li>
     <li><b>Births that stop.</b> A birth block keeps giving birth for as long as the hero is
-    near, so give it a long time between births, or let its block animate to a quiet one after
-    a while. Don’t make a killed enemy turn into another hostile one by accident: “becomes” is
+    near. Unless a flood is the idea, give it a long time between births, or let its block
+    animate to a quiet one after a while. Don’t make a killed enemy turn into another hostile one by accident: “becomes” is
     for stages, not for multiplying.</li>
     <li><b>Easy to see.</b> Draw enemies from ramps the background doesn’t use, with a dark
-    outline, so none of them hides against the scenery.</li>
+    outline, so none of them hides against the scenery by accident. A camouflaged foe can be a
+    fair trick when the game hints at it first.</li>
     <li><b>One hit, one hurt.</b> A strong monster hurts on every tick it overlaps the hero, so
     a slow escape costs many hit points. Keep the hurt small and give the Hurt sequence frames
     that move the hero back a few pixels, out of reach.</li>
     <li><b>Chasers that let go.</b> A monster that chases forever turns a level into a race.
-    Give chasers a lifetime, or a chase speed a little slower than the hero’s walk.</li>
+    If a race isn’t what you want, give chasers a lifetime, or a chase speed a little slower
+    than the hero’s walk.</li>
   </ul>
   <h2>A final boss worth the trip</h2>
   <p>End on an event. Build the boss as a chain of monsters joined by “becomes”, one stage per
@@ -118,7 +126,8 @@ export const CRAFT: Chapter = {
   <h2>Variety</h2>
   <p>Each scene can load its own palette, block set, monsters and music, so use them: a new
   place, a new enemy and a new item every level or two. A gimmick (flying, skiing, a puzzle
-  room) is a great change of pace for one level; a whole game of it gets old fast.</p>
+  room) is a great change of pace for one level; a whole game of it can get old, unless the
+  gimmick is the game. One look all the way through can be a style too, if it is chosen.</p>
   <h2>Polish that players notice</h2>
   <ul>
     <li><b>Smooth cycles.</b> Walk and idle cycles should loop with no jump between the last
@@ -127,8 +136,8 @@ export const CRAFT: Chapter = {
     <li><b>Readable colors.</b> Keep strong contrast between what can hurt, what can be
     walked on and what is only scenery. Look at a level with your eyes half shut: what stands
     out should be what matters. Avoid busy patterns of black and white behind the hero.</li>
-    <li><b>Sounds you can hear a hundred times.</b> The sounds a player makes constantly should
-    be short and soft; save the loud and long ones for rare events. Music should fit the place,
+    <li><b>Sounds you can hear a hundred times.</b> The sounds a player makes constantly
+    usually wear best short and soft, with the loud and long ones kept for rare events. Music should fit the place,
     and because each level’s song starts over on every death, its opening should wear well.</li>
   </ul>
   <h2>Finish the idea</h2>
@@ -136,7 +145,7 @@ export const CRAFT: Chapter = {
   gap. Fill in the storyline, instructions and credits; make the won screen; play it through
   from the title one last time. Then hand it to friends and watch without helping. Every place
   they frown is your to-do list.</p>
-  ${tip('Rule of thumb:', 'If you have to explain it, the game hasn’t. Put the explanation in the level.')}`,
+  ${tip('Rules of thumb, not rules:', 'Everything in this chapter is a habit that makes most games better, and every one of them can be broken on purpose. If you have to explain it, the game hasn’t; put the explanation in the level.')}`,
 };
 
 export const UPLOAD: Chapter = {
@@ -144,7 +153,7 @@ export const UPLOAD: Chapter = {
   title: 'Before You Upload',
   head: 'Appendix B',
   newPage: true,
-  html: `${opening('Appendix B', 'Before You Upload', 'Tear this page out, or copy it. Tick every box before your game leaves your hard disk.')}
+  html: `${opening('Appendix B', 'Before You Upload', 'Tear this page out, or copy it. Tick every box before your game leaves your hard disk. A line you broke on purpose counts as ticked.')}
   <table class="ug-check">
     <tr><th aria-label="Done"></th><th>Check</th></tr>
     <tr><td>☐</td><td>The first minute is fun; the hero’s speed feels right to someone new</td></tr>
@@ -154,7 +163,7 @@ export const UPLOAD: Chapter = {
     <tr><td>☐</td><td>Long levels are split into scenes, so a death costs little</td></tr>
     <tr><td>☐</td><td>Every danger shows before it can kill; hazard blocks fill their cells</td></tr>
     <tr><td>☐</td><td>Nowhere to get stuck: every pit has a way out, every lock its key</td></tr>
-    <tr><td>☐</td><td>Two or three enemies on a screen, each with a job; birth blocks rest</td></tr>
+    <tr><td>☐</td><td>Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest</td></tr>
     <tr><td>☐</td><td>Enemies stand out in every palette; a touch costs little and pushes clear</td></tr>
     <tr><td>☐</td><td>Every item can be reached; mazes have landmarks; no wait over 3 seconds</td></tr>
     <tr><td>☐</td><td>The final boss has stages; the ending is a real scene, not an ad</td></tr>

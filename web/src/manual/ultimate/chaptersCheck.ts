@@ -38,11 +38,16 @@ export const CHECK: Chapter = {
   than its cell, opposite blocks side by side, hurts that hold the hero, scores that pay every
   tick, counters that run out before their gate, crowded screens, chasers that never let go,
   keys never taught, long waits, a hero who walks sideways facing you and a monster that never
-  turns round, and more. Each is marked a problem, a warning or a note; the
-  buttons at the top show one kind at a time. Click a finding to go to its place on the map.
+  turns round, and more. Each is marked a problem, a warning, a suggestion or a note; the
+  buttons at the top show one kind at a time. Problems and warnings are facts the bot
+  measured: the hero can get stuck here, this exit is never reached, this block hurts through
+  its whole cell. 💡 Suggestions, and many notes, are design habits instead (crowded screens,
+  an idea used once, a chaser that never lets go, a long scene, a slow hero): prompts to look
+  again, not rules. Many great games break one on purpose, and the check can’t know which. Click a finding to go to its place on the map.
   Each one says, in a line, why players mind, and its 📒 link opens the part of this guide that
   explains it. When you have looked at a finding and it is how you want it (a boss meant to
-  hold on, a maze meant to confuse), <b>✓ Mark as checked: it’s meant to be</b> takes it out of
+  hold on, a swarm meant to overwhelm, a maze meant to confuse), <b>✓ That’s on purpose</b> on
+  a suggestion, or <b>✓ Mark as checked: it’s meant to be</b> on anything else, takes it out of
   the list, the counts, the badges and Before You Upload; <b>N accepted · show</b> lists those
   again, each with a button to put it back.</p>
   <h2>✨ Fixes, and Undo</h2>
