@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0FzQYSCpIATQjNB00PzQZICMgzEgySAE0azQNNBc0MTQNICsgSzQZIDMgJTRTNCEgIyAlND80GSAjICU0NSArIDc0KTQNICsgFzQZNA80PEgSSAE0GzQNNHs0GTQ3NNE0ZzQYSDJIATRvNA0sBywZLCssGSAjICU0LzQZIDMgJTQhICsgLSArI"
+   "keys": "AU0FzQYSCpIATQjNB00PzQZICMgzEgySAE0azQNNBc0MTQNICsgSzQZIDMgJTRTNCEgIyAlND80GSAjICU0NSArIDc0KTQNICsgFzQZNA80PEgSSAE0GzQNNHs0GTQ3NKE0ZzQYSDJIATRnNA0sAywZLCssGSAjICU0KzQZIDMgJTQhICsgLSArI"
   },
   {
    "scene": 3,
-   "keys": "AU0UzQZICMgJTSPNBkgIyAlNDc0NUD7QHEsMSArIB0gKyApICsgMSArIDEgKyAdICsgGSArIBMsGSAjICUsUywYQCpAASwXLA00VSArIDc0GEgySAE0PzQNNCs0eEgySAE0WzQNICMgJTQ3NBlBA0AtLCssGSAjICU0ZzQZICMgJTQ/NMEgWyABLCcsDTQTNA0gIyAlNCUgKyA3NBkgNyABL"
+   "keys": "AU0UzQZICMgJTSPNBkgIyAlNDc0NUD7QHEsMSArIB0gKyApICsgMSArIDEgKyAdICsgJSArIA8sJSAjICUsUywYQCpAASwXLA00VSArIDc0GEgySAE0PzQNNCs0YEgySAE0WzQNICMgJTQ3NBlBA0AtLCssGSAjICU0ZzQZICMgJTQ/NNkgWyABLCcsDTQPNA0gIyAlNCEgKyApICsgHzQZIDcgASw=="
   },
   {
    "scene": 4,
@@ -20,7 +20,7 @@
   },
   {
    "scene": 5,
-   "keys": "AU0FzQZIDsgHTS3NEk0GzRASDJIATRnNA00HzQYSBpIATQTNBRIGkgBNBM0FEgaSAE0EzQUSBpIATQTNBU0NSArIBc0GTRzNBkgOyAdNLc0GEgySAE0czQNN"
+   "keys": "AU0FzQZIDsgHTS3NEk0GzRASDJIATRnNA00IzQYSBpIATQTNBRIGkgBNBM0FEgaSAE0EzQUSBpIATQTNBU0NSArIBc0GTRzNBkgOyAdNLc0GEgySAE0czQNN"
   }
  ],
  "chapters": [
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 20139,
+  "frames": 20146,
   "chapters": [
    {
     "title": "Opening",
@@ -59,23 +59,23 @@
    },
    {
     "title": "Level 2: The Wicker Wasteland",
-    "frame": 5771
+    "frame": 5719
    },
    {
     "title": "Level 3: Twelve Baskets Full",
-    "frame": 9428
+    "frame": 9432
    },
    {
     "title": "Level 4: The Way Home",
-    "frame": 13271
+    "frame": 13275
    },
    {
     "title": "Ending",
-    "frame": 15341
+    "frame": 15348
    },
    {
     "title": "Credits",
-    "frame": 18051
+    "frame": 18058
    }
   ]
  }
