@@ -9,5 +9,9 @@
   "exe": "LOAF.EXE",
   "sound": "sb",
   "tinHeart": { "map": "wicker.map", "at": [19, 3] },
-  "easterEgg": { "map": "baskets.map", "at": [43, 11] }
+  "easterEgg": { "map": "baskets.map", "at": [43, 11] },
+  "acceptedFindings": [
+    "hurt-lock s2 Monster 7 holds the hero while it hurts",
+    "hurt-lock s4 Monster 12 holds the hero while it hurts"
+  ]
 }

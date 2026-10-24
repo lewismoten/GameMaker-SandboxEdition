@@ -64,8 +64,6 @@
  "brief": [],
  "carl": [
   "warning hazard-art s6 Block 41 hurts through its whole cell, but its art fills 17% of it",
-  "warning hurt-lock s2 Monster 9 holds the hero while it hurts: once it touches him, no key gets him away (first at (33, 10))",
-  "warning hurt-lock s7 Monster 22 holds the hero while it hurts: once it touches him, no key gets him away (first at (37, 12))",
   "warning start-threat s5 Monster 25 starts 1 blocks from where the hero comes in"
  ],
  "depth": [
@@ -79,7 +77,6 @@
   "warning hazard-art s19 Block 28 hurts through its whole cell, but its art fills 19% of it",
   "warning hazard-art s19 Block 39 hurts through its whole cell, but its art fills 13% of it",
   "warning hazard-art s19 Block 40 hurts through its whole cell, but its art fills 12% of it",
-  "warning hurt-lock s18 Monster 13 holds the hero while it hurts: once it touches him, no key gets him away (first at (60, 49))",
   "warning start-threat s10 Monster 8 starts 2 blocks from where the hero comes in",
   "warning start-threat s12 Monster 5 starts 2 blocks from where the hero comes in",
   "warning start-threat s16 Monster 2 starts 2 blocks from where the hero comes in",
@@ -367,7 +364,6 @@
   "warning hazard-art s89 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hurt-lock s48 Monster 37 pushes the hero inside a wall beside it, first at (47, 65)",
   "warning hurt-lock s61 Monster 38 pushes the hero inside a wall beside it, first at (49, 65)",
-  "warning hurt-lock s9 Monster 10 holds the hero while it hurts: once it touches him, no key gets him away (first at (43, 57))",
   "warning hurt-lock s95 Monster 38 pushes the hero inside a wall beside it, first at (54, 74)",
   "warning hurt-lock s97 Monster 38 pushes the hero inside a wall beside it, first at (13, 54)",
   "warning hurt-lock s99 Monster 37 pushes the hero inside a wall beside it, first at (68, 53)",
@@ -431,11 +427,7 @@
   "warning start-threat s8 Monster 14 starts 2 blocks from where the hero comes in"
  ],
  "mustard": [],
- "needle": [
-  "warning hurt-lock s3 Monster 8 holds the hero while it hurts: once it touches him, no key gets him away (first at (22, 11))",
-  "warning hurt-lock s4 Monster 13 holds the hero while it hurts: once it touches him, no key gets him away (first at (15, 17))",
-  "warning hurt-lock s5 Monster 16 holds the hero while it hurts: once it touches him, no key gets him away (first at (18, 15))"
- ],
+ "needle": [],
  "realm": [
   "warning density s36 6 enemies on one screen at (42, 24)",
   "warning start-threat s2 Monster 11 starts 2 blocks from where the hero comes in",
@@ -443,7 +435,6 @@
  ],
  "reckoning": [
   "warning hazard-art s5 Block 88 hurts through its whole cell, but its art fills 20% of it",
-  "warning hurt-lock s4 Monster 14 holds the hero while it hurts: once it touches him, no key gets him away (first at (4, 11))",
   "warning start-threat s4 Monster 14 starts 3 blocks from where the hero comes in"
  ],
  "remote": [],
@@ -482,8 +473,6 @@
  ],
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
-  "warning hurt-lock s4 Monster 17 holds the hero while it hurts: once it touches him, no key gets him away (first at (19, 13))",
-  "warning hurt-lock s4 Monster 18 holds the hero while it hurts: once it touches him, no key gets him away (first at (18, 13))",
   "warning start-threat s5 Monster 9 starts 2 blocks from where the hero comes in"
  ],
  "year2000": [

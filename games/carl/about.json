@@ -10,5 +10,9 @@
   "sound": "sb",
   "tinHeart": { "map": "bed.map", "at": [5, 12] },
   "easterEgg": { "map": "bed.map", "at": [34, 12] },
-  "sameEverySide": ["couch.mon#29", "walls.mon#29", "bed.mon#29", "aux.mon#29"]
+  "sameEverySide": ["couch.mon#29", "walls.mon#29", "bed.mon#29", "aux.mon#29"],
+  "acceptedFindings": [
+    "hurt-lock s2 Monster 9 holds the hero while it hurts",
+    "hurt-lock s7 Monster 22 holds the hero while it hurts"
+  ]
 }

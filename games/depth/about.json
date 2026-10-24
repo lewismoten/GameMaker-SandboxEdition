@@ -89,5 +89,8 @@
     "depth.mon#5",
     "depth.mon#6",
     "depth.mon#20"
+  ],
+  "acceptedFindings": [
+    "hurt-lock s18 Monster 13 holds the hero while it hurts"
   ]
 }
