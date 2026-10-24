@@ -350,7 +350,7 @@ export function figure(f: FigureLook, step = 0): Pixels {
 
 // ------------------------------------------------------------------ the household dogs
 
-/** Teddy the corgi from the side: red-gold, white blaze and chest, ears up (the right one taller). */
+/** Teddy the corgi from the side: red-gold, white blaze and chest, ears up, a matched pair. */
 export function corgi(step = 0, flip = false): Pixels {
   const p = blank();
   const O = c('ink', 0);
@@ -361,7 +361,7 @@ export function corgi(step = 0, flip = false): Pixels {
   p.rect(3, 10, 13, 6, O).rect(4, 11, 11, 4, fur).rect(4, 11, 11, 1, lite).rect(9, 13, 5, 2, white);
   // head
   p.rect(13, 6, 6, 7, O).rect(14, 7, 4, 5, fur).rect(16, 9, 3, 3, white).set(18, 10, O).set(15, 8, O);
-  p.rect(13, 2, 2, 5, O).rect(16, 3, 2, 4, O).set(13, 3, c('pink', 2)).set(16, 4, c('pink', 2));
+  p.rect(13, 3, 2, 4, O).rect(16, 3, 2, 4, O).set(13, 4, c('pink', 2)).set(16, 4, c('pink', 2));
   // legs (short!) and a fluffy rump
   const a = step ? 1 : 0;
   p.rect(5 + a, 16, 2, 3, fur)
