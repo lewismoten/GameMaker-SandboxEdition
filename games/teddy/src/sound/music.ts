@@ -197,7 +197,8 @@ export function citySong(): Uint8Array {
   const chords = ['Am', 'Dm', 'E7', 'Am', 'Am', 'Dm', 'E7', 'Am', 'F', 'C', 'Dm', 'E7', 'Am', 'Dm', 'E7', 'Am'];
   const m1 = 'A4 e, C5 e, E5 e, A5 e, G5 q, E5 q, F5 e, E5 e, D5 e, F5 e, A5 h, G#5 q, B5 q, D6 q, B5 q, A5 h, r h';
   const m2 = 'E5 e, E5 e, r e, E5 e, C5 q, A4 q, D5 e, D5 e, r e, D5 e, F5 q, A5 q, G#5 e, F5 e, E5 e, D5 e, B4 q, G#4 q, A4 h, r h';
-  const m3 = 'C5 e, F5 e, A5 e, C6 e, A5 q, F5 q, G5 e, E5 e, C5 e, E5 e, G5 h, F5 e, D5 e, A4 e, D5 e, F5 q, A5 q, G#5 e, B5 e, E5 e, G#5 e, B5 h';
+  // The bridge borrows Teddy's Theme's hop (games/kit/teddyTheme.ts), in F.
+  const m3 = 'A4 e, C5 e, F5 q, D5 e, C5 e, A4 q, C5 e, E5 e, G5 e, C6 e, G5 h, F5 e, D5 e, A4 e, D5 e, F5 q, A5 q, G#5 e, B5 e, E5 e, G#5 e, B5 h';
   const m4 = 'A5 q, G5 e, E5 e, C5 q, A4 q, F5 q, D5 e, A4 e, F4 q, D5 q, E5 e, G#5 e, B5 e, G#5 e, E5 q, D5 q, A4 h, r h';
   const [a, b, c] = comp(chords, 're e q re e q', -1);
   return tune(138, [
