@@ -137,6 +137,8 @@ registerEditor(['pal'], (host, project, file) => {
       s.num.value = String(pal[selected * 3 + c]);
     });
     tools.refresh();
+    // the check only while it is shown (opening its tab catches up)
+    if (!visionPane.hidden) vision?.refresh();
   }
 
   const spread = () => {
@@ -163,9 +165,9 @@ registerEditor(['pal'], (host, project, file) => {
 
   const gifs = project.files.byExtension('gif').filter((g) => isGif(project.files.get(g)!));
   let gifChoice = gifs[0] ?? '';
-  const side = h(
+  const editPane = h(
     'div',
-    { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' },
+    { class: 'stack', id: 'pal-pane-edit', role: 'tabpanel', 'aria-labelledby': 'pal-tab-edit' },
     h('div', { class: 'row', style: 'align-items:center' }, preview, label),
     colorBox.el,
     ...sliders.map((s) => s.row),
@@ -217,6 +219,66 @@ registerEditor(['pal'], (host, project, file) => {
     ),
     tools.uses,
   );
+  // the column's second tab, the color vision check, loads the first time it is opened
+  let vision: { el: HTMLElement; refresh: () => void; dispose: () => void } | undefined;
+  const visionPane = h(
+    'div',
+    { class: 'stack', id: 'pal-pane-vision', role: 'tabpanel', 'aria-labelledby': 'pal-tab-vision', hidden: true },
+    h('p', { class: 'meta' }, 'Loading…'),
+  );
+  const tabs = [
+    { id: 'edit', label: 'Color', pane: editPane },
+    { id: 'vision', label: 'Color vision', pane: visionPane },
+  ].map((t) => ({
+    ...t,
+    btn: h(
+      'button',
+      { type: 'button', role: 'tab', id: `pal-tab-${t.id}`, class: 'pal-tab', 'aria-controls': t.pane.id, onclick: () => pick(t.id, true) },
+      t.label,
+    ),
+  }));
+  function pick(id: string, focus = false): void {
+    for (const t of tabs) {
+      const on = t.id === id;
+      t.btn.setAttribute('aria-selected', String(on));
+      t.btn.tabIndex = on ? 0 : -1;
+      t.pane.hidden = !on;
+      if (on && focus) t.btn.focus();
+    }
+    view.set({ tab: id === 'edit' ? undefined : id });
+    if (id === 'vision') vision?.refresh();
+    if (id === 'vision' && !vision)
+      void import('./visionPanel').then(({ visionPanel }) => {
+        if (vision || !host.isConnected) return;
+        vision = visionPanel({
+          project,
+          file,
+          pal,
+          select: (i) => {
+            selected = i;
+            rangeEnd = undefined;
+            refresh();
+          },
+          remember: () => remember(),
+          changed: () => {
+            save();
+            refresh();
+          },
+          undo: () => step(true),
+        });
+        clear(visionPane, vision.el);
+      });
+  }
+  const tabList = h('div', { class: 'pal-tabs', role: 'tablist', 'aria-label': 'Palette tools' }, ...tabs.map((t) => t.btn));
+  tabList.addEventListener('keydown', (e) => {
+    const k = tabs.findIndex((t) => t.btn === document.activeElement);
+    const to = e.key === 'ArrowRight' ? k + 1 : e.key === 'ArrowLeft' ? k - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -2;
+    if (k < 0 || to === -2) return;
+    e.preventDefault();
+    pick(tabs[(to + tabs.length) % tabs.length].id, true);
+  });
+  const side = h('div', { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' }, tabList, editPane, visionPane);
+  pick(view.get('tab') === 'vision' ? 'vision' : 'edit');
   const row = h('div', { class: 'row pal-row' }, h('div', { class: 'panel', style: 'flex:0 1 auto' }, swatches), side);
   clear(
     host,
@@ -244,5 +306,6 @@ registerEditor(['pal'], (host, project, file) => {
   return () => {
     window.removeEventListener('keydown', onKey);
     tools.dispose();
+    vision?.dispose();
   };
 });

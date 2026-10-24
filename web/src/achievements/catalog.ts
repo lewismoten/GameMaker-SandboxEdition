@@ -117,6 +117,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'make-walk', title: 'Let the bot play', desc: 'Made a walkthrough of your game with the 🤖 walkthrough bot.', icon: '🤖', category: 'making' },
   { id: 'sfx-maker', title: 'Bleeps and bloops', desc: 'Saved a sound with the 🎛 sound effect maker.', icon: '🎛️', category: 'making' },
   { id: 'first-steps', title: 'First steps', desc: 'Ticked every step of the 🎓 First steps list in a new game.', icon: '🎓', category: 'making' },
+  { id: 'palette-vision', title: 'Seen by everyone', desc: 'Applied a ✨ fix from the palette’s Color vision check.', icon: '👓', category: 'making' },
 
   // playing
   { id: 'play-first', title: 'Player one', desc: 'Played a game.', icon: '🎮', category: 'playing' },

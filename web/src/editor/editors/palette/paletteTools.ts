@@ -134,7 +134,8 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; uses: HTMLEl
     rightCap.textContent = compareSel.selectedOptions[0]?.textContent ?? '';
     makeBtn.hidden = !compareSel.value.startsWith('v:');
     if (!shot) return;
-    paintIndexed(left, shot.pixels, shot.width, shot.height, pal);
+    // a copy: draw.ts keeps a color table per palette object, and this one changes in place
+    paintIndexed(left, shot.pixels, shot.width, shot.height, pal.slice());
     paintIndexed(right, shot.pixels, shot.width, shot.height, other());
   }
   sceneSel.addEventListener('change', redraw);
