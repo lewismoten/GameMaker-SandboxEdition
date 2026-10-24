@@ -3,7 +3,7 @@
 //    the background, except for the line drawing characters C0h-DFh, which repeat their
 //    eighth column so boxes join up (as the VGA's Line Graphics Enable did).
 //  - mode 13h: 320x200, one pixel per palette index.
-import { FONT_CP437 } from '../retro/text/cp437';
+import { FONT_CP437 } from '../gfx/cp437Glyphs';
 import { COLS, ROWS, type TextScreen } from '../retro/text/textScreen';
 import type { Vga } from '../vga/shared/vga';
 
