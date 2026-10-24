@@ -9,5 +9,6 @@
   "exe": "CARL.EXE",
   "sound": "sb",
   "tinHeart": { "map": "bed.map", "at": [5, 12] },
-  "easterEgg": { "map": "bed.map", "at": [34, 12] }
+  "easterEgg": { "map": "bed.map", "at": [34, 12] },
+  "sameEverySide": ["couch.mon#29", "walls.mon#29", "bed.mon#29", "aux.mon#29"]
 }
