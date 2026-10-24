@@ -513,14 +513,14 @@ const LAB: Key = baseKey({
   y: C('gold', 2),
 });
 
-/** Teddy sitting, facing you: huge upright ears (his right one a little taller), white blaze, grin. */
+/** Teddy sitting, facing you: huge upright ears, a matched pair, white blaze, grin. */
 const TEDDY_SIT = [
   '....................',
-  '...KK...............',
-  '..KOK.........KK....',
-  '..KOpK.......KOK....',
-  '..KOppK.....KpOK....',
-  '..KOOpOKKKKKOpOK....',
+  '....................',
+  '...KK.........KK....',
+  '...KOK.......KOK....',
+  '...KOpK.....KpOK....',
+  '...KOpOKKKKKOpOK....',
   '...KOOOOOwwOOOOK....',
   '...KOOkOOwwOOkOK....',
   '...KOOOOwwwwOOOK....',
