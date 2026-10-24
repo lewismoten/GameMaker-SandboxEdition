@@ -1,6 +1,6 @@
 // Notes taped to the wall under the phone, for a kid who lets themselves in after school:
-// who to call and when, and a sticky note about the door. Click to read them larger.
-// The numbers are 555-01xx, the range kept for made-up numbers.
+// who to call and when, how to call Mrs. Novak's TTY, and a sticky note about the door.
+// Click to read them larger. The numbers are 555-01xx, the range kept for made-up numbers.
 import './phoneNotes.css';
 import { h } from '../../editor/core/ui';
 
@@ -10,6 +10,7 @@ const NUMBERS: [string, string][] = [
   ['Dad’s pager', '555-0199'],
   ['Grandma', '555-0123'],
   ['Jenny (sitter)', '867-5309'],
+  ['Mrs. Novak (TTY)', '555-0156'],
 ];
 
 /** The card and the sticky note (also shown beside the phone's keypad: phone/dialPad.ts). */
@@ -23,6 +24,11 @@ export function notes(): HTMLElement {
       h('div', { class: 'pn-head' }, 'IMPORTANT NUMBERS'),
       h('ul', null, ...NUMBERS.map(([who, num]) => h('li', null, h('span', null, who), h('b', null, num)))),
       h('p', { class: 'pn-pager' }, 'Page Dad: dial, wait for the beeps, punch in the house phone number, then press #'),
+      h(
+        'p',
+        { class: 'pn-pager pn-tty' },
+        'Mrs. Novak next door is Deaf and uses a TTY: it types over the phone. Call her from the computer (TERMINAL, press M for TDD mode). Type, end your turn with GA; SK means bye. Grandma calls her through the relay.',
+      ),
       h('p', { class: 'pn-warn' }, 'Do NOT call us at work unless it’s an EMERGENCY!!'),
       h('p', { class: 'pn-911' }, 'Real emergency → 911'),
       h('p', { class: 'pn-sign' }, '♥ Mom'),
@@ -65,7 +71,7 @@ export function phoneNotes(): HTMLElement {
       class: 'phone-notes',
       onclick: readLarger,
       title: 'Notes under the phone: who to call (click to read)',
-      'aria-label': 'Notes under the phone: phone numbers for Mom, Dad, Grandma and the sitter, and don’t answer the door',
+      'aria-label': 'Notes under the phone: phone numbers for Mom, Dad, Grandma, the sitter and Mrs. Novak’s TTY, and don’t answer the door',
     },
     h('div', { class: 'pn-small', 'aria-hidden': 'true' }, notes()),
   );

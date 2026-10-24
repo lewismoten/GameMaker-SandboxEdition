@@ -129,6 +129,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
           onKey = done;
           signal.addEventListener('abort', stop, { once: true });
         }),
+      caption: (who, text) => pad?.caption(who, text),
       hush() {
         if ('speechSynthesis' in window) speechSynthesis.cancel();
       },

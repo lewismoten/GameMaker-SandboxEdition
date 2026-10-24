@@ -1,11 +1,12 @@
 // Who answers when you dial from the wall phone: the numbers on Mom's notes, the BBSes
-// (a modem screeches at you), the ratings council on the game boxes, time & temperature,
-// the weather line, the movie line, 911, and anyone else (not in service, no answer, busy,
-// or somebody's answering machine). Pittsburgh, December 1994: local calls are seven
-// digits; 1 + area code + number works too.
+// (a modem screeches at you), Mrs. Novak's TTY (its Baudot warble), the ratings council on
+// the game boxes, time & temperature, the weather line, the movie line, 911, and anyone
+// else (not in service, no answer, busy, or somebody's answering machine). Pittsburgh,
+// December 1994: local calls are seven digits; 1 + area code + number works too.
 import type { PhoneSounds } from './sounds';
 import { deskMs } from '../../../retro/dos/deskClock';
 import { VOICES, type Voice } from '../../../audio/voices';
+import { GREETING, TTY_LOCAL } from '../../../retro/bbs/ttyTalk';
 
 /** What a call can do on the line; the dial pad provides it (phone.ts). */
 export interface CallLine {
@@ -19,6 +20,8 @@ export interface CallLine {
   keysUntilPound(seconds: number): Promise<string>;
   /** The next key pressed, or "" when `seconds` pass with none. */
   nextKey(seconds: number): Promise<string>;
+  /** Shows words on the keypad's caption line without saying them (what a TTY's tones spell). */
+  caption(who: string, text: string): void;
   /** Stops talking mid-sentence (a key pressed during a menu). */
   hush(): void;
   /** The other end hangs up. */
@@ -62,6 +65,24 @@ const modem: Call = async (line) => {
   line.status('SCREEEE-EEE…');
   await line.wait(line.sounds.modemAnswer());
   line.ended('A modem answered. Try the computer’s TERMINAL instead.');
+};
+
+/**
+ * Mrs. Novak next door answers on her TTY: no voice, just the warble of Baudot as she types.
+ * A hearing caller needs a TTY too (the computer's TERMINAL, in TDD mode) or the relay.
+ */
+const tty: Call = async (line) => {
+  await ring(line, 2);
+  line.status('Silence…');
+  await line.wait(1.5);
+  for (const text of [GREETING, 'HELLO Q GA']) {
+    line.status('A warble of two tones: a TTY typing');
+    line.caption('TTY tones', text);
+    await line.wait(line.sounds.tty(text));
+    line.status('A TTY call: she reads her calls. Type back from a TTY, or call through the relay.');
+    await line.wait(4);
+  }
+  line.ended('Mrs. Novak hung up. Try TERMINAL in TDD mode.');
 };
 
 const busy: Call = async (line) => {
@@ -190,6 +211,8 @@ const DIRECTORY: Record<string, Call> = {
   '5557263': modem,
   '5550177': modem,
   '5550142': modem,
+  // Mrs. Novak next door, on her TTY (Mom's notes)
+  [TTY_LOCAL]: tty,
   // the ratings council on the back of the game boxes
   '18005550142': async (line) => {
     await ring(line, 1);

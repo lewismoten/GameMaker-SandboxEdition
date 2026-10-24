@@ -1,10 +1,11 @@
 // What you hear on the wall phone: the dial tone, touch-tones, ringing and busy signals,
 // the three rising tones before "the number you have reached is not in service", the
 // off-hook howler, answering machine and pager beeps, hold music, a modem screeching on
-// the line, and (out loud, in the room) the phone's bell and a fire engine's siren.
+// the line, a TTY's Baudot, and (out loud, in the room) the phone's bell and a fire engine's siren.
 import { output } from '../../../audio/output';
 import { audioContext, unlock } from '../../../audio/context';
 import { dataNoise, DTMF, Line } from '../../../retro/bbs/modem';
+import { baudotSeconds, encodeBaudot, playBaudot } from '../../../retro/bbs/baudot';
 
 let shared: AudioContext | undefined;
 
@@ -176,6 +177,14 @@ export class PhoneSounds {
     l.answerTone(t + 4, 2.5);
     l.fsk(1850, 1650, t + 6.6, 0.7);
     return 7.6;
+  }
+
+  /** A TTY typing `text`: Baudot's two tones at 45.45 baud. Returns its length (s). */
+  tty(text: string): number {
+    const [l, t] = this.line();
+    const codes = encodeBaudot(text);
+    playBaudot(l, codes, t, 0.1);
+    return baudotSeconds(codes) + 0.05;
   }
 
   /** Two modems talking, loud in your ear, as they sound at the line's speed: returns its length (s). */
