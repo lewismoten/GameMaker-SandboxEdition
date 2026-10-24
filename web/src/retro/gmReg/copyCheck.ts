@@ -8,7 +8,7 @@
 // not headings, tables, lists, boxed notes or captions. test/gmRegistration.test.ts checks every
 // answer against the guide.
 
-export interface CopyQuestion {
+interface CopyQuestion {
   /** The page number printed at the foot of the Owner's Guide page. */
   page: number;
   paragraph: number;

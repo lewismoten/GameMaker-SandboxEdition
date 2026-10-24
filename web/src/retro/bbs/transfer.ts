@@ -16,7 +16,7 @@ export function expectText(bytes: number, share = 1): string {
 }
 
 /** "45 s", "3 min 20 s", "1 hr 4 min". */
-export function timeText(sec: number): string {
+function timeText(sec: number): string {
   const s = Math.max(1, Math.round(sec));
   if (s < 60) return `${s} s`;
   const m = Math.floor(s / 60);

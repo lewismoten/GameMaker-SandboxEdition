@@ -29,7 +29,7 @@ export const DTMF: Record<string, [number, number]> = {
 };
 
 /** Moments in the call (seconds from the start) the terminal can show. */
-export interface CallTimeline {
+interface CallTimeline {
   rings: number[];
   /** The answering modem picks up. */
   answer: number;

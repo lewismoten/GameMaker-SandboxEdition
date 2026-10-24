@@ -11,7 +11,7 @@ import { GROUP, GREETS } from './gmcrackText';
 export const GM30_SERIAL = 1337 * 1029 + 4;
 export const GM30_REG_NAME = 'DiGiTAL DUNE';
 export const GM30_REG_NUMBER = registrationNumber(GM30_REG_NAME, GM30_SERIAL);
-export const GM30_RELEASED = '08/12/95';
+const GM30_RELEASED = '08/12/95';
 /** The four ZIPs, about a 1.44 MB disk each. */
 export const GM30_PARTS = ['GM30-1.ZIP', 'GM30-2.ZIP', 'GM30-3.ZIP', 'GM30-4.ZIP'];
 export const GM30_PART_BYTES = 1_421_312;

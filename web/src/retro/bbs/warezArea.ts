@@ -19,7 +19,7 @@ import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
 import { account, filePoints, recordDownload, updateAccount } from './ratio';
 
-export interface WarezFile {
+interface WarezFile {
   name: string;
   size: number;
   /** A text file's lines (CP437 is applied when read). */
@@ -29,7 +29,7 @@ export interface WarezFile {
   part?: number;
 }
 
-export interface WarezRelease {
+interface WarezRelease {
   /** The download's id, and its folder: C:\DOWNLOAD\<ID>. */
   id: string;
   /** The name in the listing (a multi-ZIP release's set name). */
@@ -91,7 +91,7 @@ export const ACCESS_CODE = 'DUNE';
 export const accessOk = (typed: string): boolean => typed.replace(/\s+/g, '').toUpperCase() === ACCESS_CODE;
 
 /** Wrong codes before the SysOp breaks in and says it. */
-export const SYSOP_HELPS_AFTER = 2;
+const SYSOP_HELPS_AFTER = 2;
 
 /** A text file's bytes: CP437, CR LF line ends. */
 export function textBytes(lines: string[]): Uint8Array {

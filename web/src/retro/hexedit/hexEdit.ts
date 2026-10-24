@@ -38,10 +38,10 @@ import { leafAt, sectionAt, type Leaf, type Structure } from './structure';
 import { describe } from './structureMedia';
 import { listFolder, openFile, pathOf, type HexFile } from './hexFiles';
 
-export const HEXEDIT_TITLE = 'HEXEDIT 1.1';
+const HEXEDIT_TITLE = 'HEXEDIT 1.1';
 const COPYRIGHT = 'HEXEDIT 1.1  Hex file editor.  (C) 1994 Sandbox Software.  Freeware.';
 
-export const HEXEDIT_HELP = [
+const HEXEDIT_HELP = [
   COPYRIGHT,
   '',
   'Views and edits any file byte by byte.  For Game-Maker files it names the',
@@ -367,7 +367,7 @@ async function goTo(h: RetroHost, t: State): Promise<void> {
 }
 
 /** Text, or hex bytes typed as pairs ("47 4D"); quotes force text. */
-export function searchBytes(a: string): Uint8Array {
+function searchBytes(a: string): Uint8Array {
   const q = /^"(.*)"?$/.exec(a);
   if (!q && /^[0-9a-f]{2}( ?[0-9a-f]{2})*$/i.test(a)) return Uint8Array.from(a.replace(/ /g, '').match(/../g)!, (x) => parseInt(x, 16));
   const text = toCp437(q ? q[1].replace(/"$/, '') : a);

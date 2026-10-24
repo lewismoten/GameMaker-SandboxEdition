@@ -58,9 +58,6 @@ export const TOOLS: Tool[] = [
 
 const pathText = (p: { drive: string; parts: string[] }) => `${p.drive}:\\${p.parts.join('\\')}`;
 
-/** Loads every designer (fetched ahead, so they work offline later). */
-export const loadDesigners = () => Promise.all(Object.values(PORTED).map((load) => load()));
-
 /** Game-Maker worked in the current game area; start pickers there or in C:\GM. */
 export function gameArea(h: RetroHost): { drive: string; parts: string[] } {
   const w = h.workDir();
@@ -177,7 +174,7 @@ async function design(h: RetroHost): Promise<void> {
 }
 
 /** Picks a file in a game folder (or makes a new one), then shows the designer. */
-export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
+async function runTool(h: RetroHost, tool: Tool): Promise<void> {
   registeredTo = undefined; // each designer was its own .EXE, in graphics mode
   drawDesktop(h);
   const ported = PORTED[tool.exe];

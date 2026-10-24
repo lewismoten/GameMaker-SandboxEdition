@@ -14,7 +14,7 @@ import { backupNow } from '../../project/saveData';
 import { Project } from '../../editor/core/project';
 import { dosDir } from '../../project/dosDir';
 
-export interface HexEntry {
+interface HexEntry {
   name: string;
   dir: boolean;
   size: number;
@@ -34,7 +34,7 @@ export interface HexFile {
 }
 
 /** The .BAK name a file is backed up to (TEDDY.GAM → TEDDY.BAK), as DOS editors did. */
-export const bakOf = (name: string): string => `${name.replace(/\.[^.]*$/, '')}.BAK`.toUpperCase();
+const bakOf = (name: string): string => `${name.replace(/\.[^.]*$/, '')}.BAK`.toUpperCase();
 
 export const pathOf = (drive: string, parts: string[], name?: string): string => `${drive}:\\${[...parts, ...(name ? [name] : [])].join('\\')}`;
 

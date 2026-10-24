@@ -15,9 +15,9 @@ export const RED = attr(12, 1);
 export const DIM = attr(3, 1);
 export const FRAME = attr(3, 1);
 export const BAR = attr(0, 3);
-export const BAR_KEY = attr(4, 3);
+const BAR_KEY = attr(4, 3);
 export const WARN = attr(15, 4);
-export const SHADOW = attr(8, 0);
+const SHADOW = attr(8, 0);
 
 /** Text in CP437, cut or padded to `w` columns. */
 export const cell = (text: string, w: number): string => toCp437(text).slice(0, w).padEnd(w);
@@ -61,7 +61,7 @@ export interface ListRow {
   a?: number;
 }
 
-export interface ListOptions {
+interface ListOptions {
   x: number;
   y: number;
   w: number;

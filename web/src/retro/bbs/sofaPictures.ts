@@ -14,7 +14,7 @@ import { Pager, pageLabel, readNumber } from './pager';
 import type { Term } from './term';
 
 /** A picture's lines in the listing: name, size, picture and colors, then what it is. */
-export function pictureEntry(f: GalleryFile, i: number, got: boolean): string[] {
+function pictureEntry(f: GalleryFile, i: number, got: boolean): string[] {
   const desc = wrapWords(f.desc, 52);
   return [
     `|14${String(i + 1).padStart(2)} ${got ? '|10*' : ' '}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(9)} |03${`${f.width}x${f.height}`} |13${formatLabel(f)}${f.format === 'GIF' ? ', interlaced' : ''}`,

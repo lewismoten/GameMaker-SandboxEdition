@@ -7,10 +7,10 @@ export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */
 export const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
-export const DD_BYTES = 737_280;
+const DD_BYTES = 737_280;
 
 /** original: the games made for this project, on professionally printed labels. */
-export type DiskKind = 'rsd' | 'gameware' | 'original' | 'project' | 'blank';
+type DiskKind = 'rsd' | 'gameware' | 'original' | 'project' | 'blank';
 
 export interface Disk {
   id: string;

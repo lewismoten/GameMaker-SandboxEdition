@@ -12,7 +12,7 @@ import { progress, unlockAchievement } from '../../achievements';
 import { boxBottom, boxRow, boxRule, boxTop, type Term } from './term';
 import { callIn, loadState, MIN_WAIT_MS, play, rematch, saveState, stillOnline, turn, winLine, type DoorState } from './ticTacToe';
 
-export const DOOR_NAME = 'TIC-TAC-TOE BY MODEM v1.2';
+const DOOR_NAME = 'TIC-TAC-TOE BY MODEM v1.2';
 const RIVAL = 'SCROLLMASTER';
 const RIVAL_FROM = 'Highland Park, PA';
 const WAIT_MIN = MIN_WAIT_MS / 60_000;
@@ -45,7 +45,7 @@ export function sandboxCall(): () => void {
 }
 
 /** What the board's door menu leads to: back to the main menu, or the caller hung up. */
-export type DoorExit = 'menu' | 'hangup';
+type DoorExit = 'menu' | 'hangup';
 
 /** The Door Games menu. */
 export async function doorGames(t: Term, name: string): Promise<DoorExit> {

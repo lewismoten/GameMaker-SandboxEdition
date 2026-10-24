@@ -5,7 +5,7 @@
 // offers to stop it.
 import type { Computer } from './computer';
 
-export interface LeaveOptions {
+interface LeaveOptions {
   /** The disk in drive A: is write-protected (a designer's work there goes to a copy on C:). */
   readOnlyA: boolean;
   /** A short message for the page to show (a toast, a status line). */

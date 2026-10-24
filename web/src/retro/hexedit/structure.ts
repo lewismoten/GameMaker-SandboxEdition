@@ -12,7 +12,7 @@ import { ADV_FILES, END_FILES, START_FILES } from '../../formats/game';
 import { SEQUENCE_NAMES } from '../../formats/character';
 import { SOUND_NAMES } from '../../formats/sound';
 
-export type FieldType = 'u8' | 'i8' | 'u16' | 'i16' | 'u24' | 'u32' | 'i32' | 'vlq' | 'str' | 'text' | 'raw';
+type FieldType = 'u8' | 'i8' | 'u16' | 'i16' | 'u24' | 'u32' | 'i32' | 'vlq' | 'str' | 'text' | 'raw';
 
 const SIZE: Partial<Record<FieldType, number>> = { u8: 1, i8: 1, u16: 2, i16: 2, u24: 3, u32: 4, i32: 4 };
 
@@ -111,7 +111,7 @@ export function decode(bytes: Uint8Array, off: number, type: FieldType, len: num
 }
 
 /** The field holding byte `off` (binary search), or undefined between fields. */
-export function fieldIndexAt(st: Structure, off: number): number {
+function fieldIndexAt(st: Structure, off: number): number {
   const f = st.fields;
   let lo = 0;
   let hi = f.length - 1;

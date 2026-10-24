@@ -8,7 +8,7 @@ import { toCp437 } from '../text/cp437';
 import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
 import { unlockAchievement } from '../../achievements';
 
-export interface ShellHost {
+interface ShellHost {
   screen: TextScreen;
   keys: TextKeys;
   fs: FileSystem;

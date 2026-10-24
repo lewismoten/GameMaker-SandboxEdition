@@ -38,7 +38,7 @@ import {
 const TITLE = 'BACKUP 2.1  Saved-game backup for Game-Maker games';
 const COPYRIGHT = 'Copyright (C) 1995 Sandbox Software.  Freeware.';
 /** What BACKUP labels its backups (the date is kept beside the label). */
-export const BACKUP_LABEL = 'BACKUP.EXE';
+const BACKUP_LABEL = 'BACKUP.EXE';
 
 const stamp = (when: number) => dosStamp(deskDate(when));
 const plural = (n: number, one: string, many = `${one}s`) => `${num(n)} ${n === 1 ? one : many}`;

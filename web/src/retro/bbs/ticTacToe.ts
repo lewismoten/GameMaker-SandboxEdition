@@ -30,7 +30,7 @@ const LINES = [
 
 export const emptyBoard = (): Board => Array<string>(9).fill(' ');
 
-export const freeCells = (b: Board): number[] => b.flatMap((c, i) => (c === ' ' ? [i] : []));
+const freeCells = (b: Board): number[] => b.flatMap((c, i) => (c === ' ' ? [i] : []));
 
 /** The three cells in a row, if somebody has them. */
 export function winLine(b: Board): number[] | undefined {
@@ -80,13 +80,13 @@ export const replyDelay = (rand: () => number = Math.random): number => MIN_WAIT
 
 // ---- the saved game ------------------------------------------------------------------------
 
-export interface DoorRecord {
+interface DoorRecord {
   wins: number;
   losses: number;
   draws: number;
 }
 
-export interface DoorGame {
+interface DoorGame {
   board: Board;
   /** Who moved first this game (they take turns from game to game). */
   first: Mark;

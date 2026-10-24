@@ -13,13 +13,13 @@ export const DIZ_LINES = 10;
 export const DIZ_NAME = 'FILE_ID.DIZ';
 
 /** The SysOp's handle (Lewis): short for Vesuvian Doppelganger, a Magic: The Gathering card. */
-export const SYSOP_HANDLE = 'vesuvian';
+const SYSOP_HANDLE = 'vesuvian';
 
 const RULE = '-'.repeat(DIZ_WIDTH);
 const SIGNOFF = 'Uploaded by %s to THE SANDBOX BBS';
 
 /** The Sofa's own upload: a game from ../games under another publisher (The Bard of Bizarre's). */
-export const SOFA_UPLOADER = 'DOC LEO';
+const SOFA_UPLOADER = 'DOC LEO';
 export const isSofaFile = (g: CatalogEntry) => !!g.original && !isSandboxGame(g);
 
 /** The last line of a Warez release's DIZ: who couriered it to which board (the scene's way). */
@@ -83,7 +83,7 @@ function headline(title: string, tag = '[1/1]'): string {
 const center = (text: string) => `${' '.repeat(Math.max(0, Math.floor((DIZ_WIDTH - text.length) / 2)))}${text}`.slice(0, DIZ_WIDTH);
 
 /** Always within the limits, however long the parts were. */
-export function fitDiz(lines: string[]): string[] {
+function fitDiz(lines: string[]): string[] {
   return lines.slice(0, DIZ_LINES).map((l) => ascii(l).slice(0, DIZ_WIDTH).trimEnd());
 }
 

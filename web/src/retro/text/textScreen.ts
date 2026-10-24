@@ -31,7 +31,7 @@ const VGA16: [number, number, number][] = [
 /** attr = foreground + background * 16 */
 export const attr = (fg: number, bg: number) => (fg & 15) | ((bg & 15) << 4);
 
-export interface SavedRegion {
+interface SavedRegion {
   x: number;
   y: number;
   w: number;

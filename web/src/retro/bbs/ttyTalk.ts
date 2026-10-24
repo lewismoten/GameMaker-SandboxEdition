@@ -52,7 +52,7 @@ export const GOODBYE = 'OK THX FOR CALLING. TELL UR MOM I SAID HI. BYE NOW SK SK
 /** After this many turns she offers to wrap up. */
 const WRAP_UP = 7;
 
-export interface TtyTalk {
+interface TtyTalk {
   turns: number;
   said: Set<Topic>;
   otherwise: number;
