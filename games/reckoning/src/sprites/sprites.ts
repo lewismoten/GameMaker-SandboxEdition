@@ -249,7 +249,7 @@ export function buildMonsterBlocks(pal: Pal) {
       p.line(x, 15, x + (f ? d : 0), 19, c(fur, 0));
     blob(p, 9, 12, 7, 3.6, pal.r(fur), 0, 3);
     blob(p, 15, 8 + f, 3.4, 3, pal.r(fur), 0, 3);
-    p.line(13, 5 + f, 13, tall ? 0 : 2, c(fur, 2)).line(17, 5 + f, 18, tall ? 1 : 3, c(fur, 2));
+    p.line(13, 5 + f, 13, tall ? 1 : 2, c(fur, 2)).line(17, 5 + f, 18, tall ? 1 : 3, c(fur, 2));
     blob(p, 15, 11, 2.2, 1.6, pal.r(chest), 1, 2);
     p.set(16, 7 + f, ink)
       .set(19, 9 + f, ink)
