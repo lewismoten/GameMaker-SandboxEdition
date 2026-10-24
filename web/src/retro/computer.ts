@@ -12,7 +12,6 @@ import type { PlayerHandle } from '../player/player';
 import { GameFiles } from '../project/files';
 import { loadProject, loadSaveData, writeSaveFile } from '../project/storage';
 import { Project } from '../editor/core/project';
-import { loadEditor } from '../editor/editors/registry';
 import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
 import { PictureScreen } from './view/picture';
@@ -401,10 +400,12 @@ export class Computer extends ComputerFolders {
         ),
       );
       // The editors are their own download, fetched the first time the PC opens one.
-      void loadEditor(kindOf(fileName)).then((editor) => {
-        if (!body.isConnected) return;
-        cleanup = editor(body, project, fileName);
-      });
+      void import('../editor/editors/registry')
+        .then(({ loadEditor }) => loadEditor(kindOf(fileName)))
+        .then((editor) => {
+          if (!body.isConnected) return;
+          cleanup = editor(body, project, fileName);
+        });
     });
   }
 
