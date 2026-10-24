@@ -61,6 +61,30 @@ export const ACTORS: Chapter = {
     <li><b>A voice of his own.</b> Each sequence plays one sound from the scene’s set when it
     starts, so a “talk” key can say a line.</li>
   </ul>
+  <h2>Facing four ways, and mirroring</h2>
+  <p>Chapter 11 says why a hero should face the way he walks. Here is how, in the Character
+  Maker’s Sequences tab:</p>
+  <ol>
+    <li><b>Draw one side.</b> Make the walk right first, frame by frame. Click a frame to see
+    the whole hero in it, both blocks together, three times size beside the stage. The stage
+    plays the walk at the game’s speed while you work; pause it and it holds the frame you are
+    editing.</li>
+    <li><b>Mirror it.</b> Under the frames, choose <i>Make the mirrored sequence in</i>, pick
+    the empty slot for the walk left, and press <b>Make it</b>. Every move goes left instead of
+    right and both blocks of every frame are mirrored (orientation 4 on each). The sound, the
+    flags and the joystick come along, turned round; a Right arrow key becomes Left when Left
+    is free.</li>
+    <li><b>Or mirror it on blocks of its own.</b> Choose <i>as new mirrored blocks</i> and the
+    pictures are copied, mirrored, into empty blocks of the set instead. Use this when the
+    other side should differ, such as a hand that carries something or a short ear that stays
+    on one side.</li>
+    <li><b>Keep the two in step.</b> The two sequences stay linked. Change the walk right and
+    the bar under its frames says the mirror is out of step; <b>Update the mirrored
+    sequence</b> re-makes it, moves, pauses and pictures. Repaint a block in the block painter
+    and its mirror block offers <b>Apply to the mirror too</b>.</li>
+    <li><b>Draw the front and back yourself.</b> Mirroring only swaps left and right. The
+    walk down and the walk up need pictures of their own.</li>
+  </ol>
   <h2>Characters who talk</h2>
   <p>For a friend who has something to say:</p>
   <ul>
