@@ -373,6 +373,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   let poweringOn: Promise<void> | undefined;
   let switchingOff = false;
   async function power(onlyOn = false): Promise<void> {
+    // a desk already left (a click, a key or restore() arriving late) never switches its PC on
+    if (!desk.isConnected) return;
     // the tube still collapsing from switching off: the switch is waiting to be pressed again
     if (switchingOff) return;
     // still loading the PC's insides from the first press: that press switches it on
@@ -709,7 +711,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     if (prop === 'gmbox') return void openGmBox();
     if (prop === 'diskbox') return void flip();
     if (prop === 'mug') return void import('./mug/mugViewer').then((m) => m.openMugViewer());
-    const el = prop === 'modem' ? modem.el : prop === 'speakers' ? spk.right : undefined;
+    const el = prop === 'modem' ? modem.el : prop === 'speakers' ? spk.right : prop === 'gamepad' ? desk.querySelector<HTMLElement>('.game-pad') : undefined;
     if (!el) return;
     el.scrollIntoView({ block: 'center', behavior: 'smooth' });
     (el.querySelector<HTMLElement>('button') ?? el).focus({ preventScroll: true });
@@ -812,7 +814,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unTrophy?.();
     removeWarp();
     capture?.dispose();
-    computer?.screen.destroy();
-    computer?.keys.detach();
+    // the PC goes with the desk: whatever it runs stops, and its sound with it (a game, the
+    // BBS's modem, a beep), its timers and keys too. Coming back makes a new desk with the PC
+    // off, as before; one switching off already is disposed of by switchOff's own timer.
+    if (computer && !switchingOff) shutDown(computer);
+    else if (!computer) void pcLoad?.then(shutDown); // still loading: switched off once it is
   };
+}
+
+/** A desk's PC when the desk is left: switched off (every sound cut) and disposed of. */
+function shutDown(pc: Computer): void {
+  pc.powerOff();
+  pc.dispose();
 }

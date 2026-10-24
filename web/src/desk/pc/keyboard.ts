@@ -248,6 +248,9 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
   const crt = () => desk()?.querySelector<HTMLElement>('.crt') ?? document.querySelector<HTMLElement>('.crt');
   /** Where a clicked key goes: what has the focus on the PC's screen, else the screen itself. */
   const target = (): HTMLElement | null => {
+    // a desk taken off the page (releaseAll below, as you leave for today's web) has no PC to
+    // press keys on: asking for one here would switch the old desk's PC on, BIOS beep and all
+    if (!board.isConnected) return null;
     const screen = crt();
     if (!screen) return null;
     const inside = () => (document.activeElement instanceof HTMLElement && screen.contains(document.activeElement) ? document.activeElement : null);
