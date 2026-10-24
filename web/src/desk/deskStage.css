@@ -185,10 +185,17 @@
     border-radius: 4px;
   }
 
-  .catalog-prop {
+  /* the catalog and the magazine lying at the desk's left front (room/paperStack.css): the
+     eye straight out from x 720 (676px across from the stack's corner), so their sides head
+     for the desk's vanishing point (720, -784) */
+  .desk-scene .paper-stack {
+    --ps-vp-x: 676px;
     position: absolute;
     left: 44px;
-    top: 506px;
+    top: 576px;
+  }
+
+  .paper-stack .ps-toggle {
     z-index: 1;
   }
 
@@ -197,20 +204,6 @@
     left: 202px;
     top: 522px;
     z-index: 1;
-  }
-
-  /* this month's TURBO BUTTON, standing face out at the end of the lower wall shelf */
-  .magazine-prop {
-    position: absolute;
-    left: 252px;
-    top: 341px;
-    z-index: 0;
-    --tilt: 5deg;
-  }
-
-  .magazine-prop .mag-cover-mini {
-    width: 64px;
-    height: 84px;
   }
 
   .desk-mug {

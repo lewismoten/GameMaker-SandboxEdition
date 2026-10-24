@@ -31,6 +31,7 @@ import { phoneNotes } from './room/phoneNotes';
 import { wallClock } from './room/wallClock';
 import { wasteBasket } from './room/wasteBasket';
 import { roomDoor } from './room/roomDoor';
+import { paperStack } from './room/paperStack';
 import { captureStub } from './pc/captureStub';
 import { deskProps } from './props';
 import { EDITION, FORK_NOTE } from '../edition';
@@ -201,38 +202,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h(
         'div',
         { class: 'desk-left' },
-        h(
-          'button',
-          {
-            class: 'prop catalog-prop',
-            onclick: () => void catalog(),
-            'aria-label': 'Shareware catalog: games made with Game-Maker',
-          },
-          h(
-            'div',
-            { class: 'paper', 'aria-hidden': 'true' },
-            'SHAREWARE',
-            h('br'),
-            'CATALOG',
-            h('em', null, 'Games made with Game-Maker · Fall 1994 · call our BBS!'),
-          ),
-          h('span', { class: 'caption' }, 'Shareware catalog'),
-        ),
-        h(
-          'button',
-          {
-            class: 'prop magazine-prop',
-            onclick: () => void magazine(),
-            'aria-label': 'TURBO BUTTON magazine: hints, reviews and every game',
-          },
-          h(
-            'div',
-            { class: 'mag-cover-mini', 'aria-hidden': 'true' },
-            h('b', null, 'TURBO', h('br'), 'BUTTON'),
-            h('em', null, 'GAME-MAKER’S SOURCE CODE SET FREE!'),
-          ),
-          h('span', { class: 'caption' }, 'TURBO BUTTON magazine'),
-        ),
+        paperStack({ catalog: () => void catalog(), magazine: () => void magazine() }),
         h(
           'button',
           {
@@ -719,7 +689,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     );
   }
 
-  /** The magazine lying on the desk (open=magazine); its links play disks, call the BBS and look at the props. */
+  /** The magazine lying on the desk with the catalog (open=magazine); its links play disks, call the BBS and look at the props. */
   const magazine = () =>
     opened('magazine', async () =>
       (await import('../manual/magazine/viewer')).openMagazine({
