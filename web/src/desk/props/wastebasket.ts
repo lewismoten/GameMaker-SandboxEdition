@@ -20,7 +20,7 @@ const DRAFTS: Draft[] = [
   { text: 'A floppy labelled DO NOT USE. It goes back in the basket. Again.', scrawl: ['DO NOT USE'], floppy: true },
   { text: 'A boss design: a toaster with feelings. Margin note: needs more feelings.', scrawl: ['BOSS: toaster', 'w/ feelings'] },
   { text: 'A hero sprite that is just a square. The square is very brave.', scrawl: ['HERO', '■ (brave)'] },
-  { text: 'A doodle of Teddy with both ears the same. Wrong! One is a little shorter.', scrawl: ['TEDDY v1', '(ears wrong)'] },
+  { text: 'A doodle of Teddy with a long, swishy tail. Wrong! He has a fluffy rump and no tail at all.', scrawl: ['TEDDY v1', '(tail??)'] },
   { text: 'A shopping list: graph paper, more graph paper, a better eraser.', scrawl: ['graph paper', 'MORE graph paper'] },
   { text: 'Tooth marks! Gwinn got to this draft first. The level is now… abstract.', scrawl: ['LEV~L 3', '(chewed)'], chewed: true },
   { text: 'A soggy instruction sheet. Gwinn has reviewed it: two paws down.', scrawl: ['HOW TO PL~', '(slobber)'], chewed: true },

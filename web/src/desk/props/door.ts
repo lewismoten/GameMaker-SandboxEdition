@@ -5,12 +5,12 @@ import { h } from '../../editor/core/ui';
 import { flash, hitArea, pressable, say, stillMotion, turns } from './propKit';
 import { roomSound } from './propSound';
 
-// Teddy: red-gold with a white blaze, his right ear (on your left) a little taller
+// Teddy: red-gold with a white blaze, his two big ears up (they match)
 const TEDDY = `<svg viewBox="0 0 120 120" aria-hidden="true">
   <path d="M22 52 L30 4 L56 40 Z" fill="#d98b3a" stroke="#7a4518" stroke-width="2"/>
   <path d="M31 16 L48 40 L28 46 Z" fill="#f2c6a0"/>
-  <path d="M98 54 L92 16 L68 42 Z" fill="#d98b3a" stroke="#7a4518" stroke-width="2"/>
-  <path d="M92 27 L76 43 L94 48 Z" fill="#f2c6a0"/>
+  <path d="M98 52 L90 4 L64 40 Z" fill="#d98b3a" stroke="#7a4518" stroke-width="2"/>
+  <path d="M89 16 L72 40 L92 46 Z" fill="#f2c6a0"/>
   <ellipse cx="60" cy="68" rx="40" ry="36" fill="#d98b3a" stroke="#7a4518" stroke-width="2"/>
   <path d="M54 34 q6 -4 12 0 l6 40 q-12 6 -24 0 z" fill="#fbf6ec"/>
   <ellipse cx="60" cy="88" rx="22" ry="16" fill="#fbf6ec"/>
@@ -44,7 +44,7 @@ interface Visit {
 
 const VISITS: Visit[] = [
   { sound: 'rattle', text: 'Rattle, rattle. It’s locked from this side: DO NOT DISTURB, MAKING GAMES.' },
-  { sound: 'creak', peek: TEDDY, text: 'Teddy noses the door open, one ear up and one a little shorter. No snacks on the floor. He leaves.' },
+  { sound: 'creak', peek: TEDDY, text: 'Teddy noses the door open, both ears up, and checks the floor for snacks. None. He leaves.' },
   { sound: 'knock', text: 'Knock knock! “Dinner in ten minutes!” (It’s always ten more minutes.)' },
   { sound: 'creak', peek: GWINN, text: 'Gwinn pokes her head in with a sock in her mouth. It wasn’t her. (It was her.)' },
   { sound: 'honk', text: 'Honk honk! A bike horn out in the hall: Doc Leo, saying hi on his way past.' },
