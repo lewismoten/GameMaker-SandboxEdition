@@ -11,6 +11,7 @@ import { MLEN, MWID } from '../../formats/map';
 import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
 import { keyRoles, movesFor, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
+import { driveMove } from './drive';
 import type { Game, Link } from '../../formats/game';
 
 const CELLS = MLEN * MWID;
@@ -24,6 +25,14 @@ export interface ExploreOptions {
   now?: () => number;
   /** Move every monster every tick, however far away (slower). */
   exact?: boolean;
+  /** Only these of the character's moves (a bot's style: walk and hop, walk only…). */
+  moveFilter?: (m: Move) => boolean;
+  /** Wait at every place, not only near lifts and timed blocks. */
+  waitEverywhere?: boolean;
+  /** Cells to head for: places nearer them are tried first. */
+  goal?: number[];
+  /** Stop as soon as a link this accepts is taken (a bot after the next scene). */
+  stopAt?: (link: number, toScene: number) => boolean;
 }
 
 /** Where the hero comes into the scene, and with what. */
@@ -137,7 +146,22 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const w = sim.w;
   const bg = w.bg;
   const gravity = bg.some((b) => b.grav !== 0);
-  const moves = movesFor(keyRoles(w.chr, gravity), gravity);
+  const moves = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => !opt.moveFilter || opt.moveFilter(m));
+  const goal = opt.goal?.map((c) => ({ x: c % MLEN, y: Math.floor(c / MLEN) }));
+  /** Blocks from the nearest goal cell (wrapping as the map does). */
+  const distance = (cell: number) => {
+    const x = cell % MLEN;
+    const y = Math.floor(cell / MLEN);
+    let best = Infinity;
+    for (const g of goal ?? []) {
+      const dx = Math.abs(g.x - x);
+      const dy = Math.abs(g.y - y);
+      best = Math.min(best, Math.min(dx, MLEN - dx) + Math.min(dy, MWID - dy));
+    }
+    return best;
+  };
+  const heap = new PlaceHeap();
+  let reachedStop = false;
   const timed = timedBlocks(bg);
   // blocks that refuse a touch while a counter is short (locks), and the counters they read
   const gateCounters = [...new Set(bg.filter((b) => (b.effect >= 20 || b.effect === 3) && b.eamt < 0).map((b) => b.effect))];
@@ -237,7 +261,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     });
     index.set(key, id);
     if (timedHere && !index.has(`${spot}#first`)) index.set(`${spot}#first`, id);
-    (newCells ? fresh : queue).push(id);
+    if (goal) heap.push(id, distance(cellOf()) * 1000 + (w.clock - startClock) / 100);
+    else (newCells ? fresh : queue).push(id);
     return id;
   };
 
@@ -339,20 +364,15 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
           world: w,
           via: had?.via ?? { ...via!, ticks: moveTicks },
         });
+      if (opt.stopAt?.(link, l.toScene)) reachedStop = true;
       return link;
     }
     return undefined;
   };
 
-  const resting = (last: { x: number; y: number }) => {
-    const p = sim.px;
-    return w.ci.gravx === 0 && w.ci.gravy === 0 && p.x === last.x && p.y === last.y && (w.chr.cseq === 0 || w.curkey === 0);
-  };
-
   /** Plays one move from the place restored. Returns the places it ended in, and links reached. */
   const play = async (m: Move): Promise<{ to: number[]; exits: number[] }> => {
     const to: number[] = [];
-    const out: number[] = [];
     const startY = w.chr.y[0];
     fall = undefined;
     landedAt = -1;
@@ -360,77 +380,40 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     scoreRun.n = scoreRun.heal = 0;
     newCells = 0;
     moveTicks = 0;
-    const end = (r: 'dead' | number | undefined) => {
-      if (typeof r === 'number') out.push(r);
-      return r !== undefined;
-    };
-    for (const s of m.steps) {
-      sim.hold(s.keys);
-      const cell = cellOf();
-      let airborne = false;
-      for (let t = 0; t < s.max; t++) {
-        const r = await step();
-        if (end(r)) return { to, exits: out };
-        if (w.ci.gravy !== 0) airborne = true;
-        if (s.until === 'cell' && cellOf() !== cell) break;
-        // landed again, or never left the ground
-        if (s.until === 'land' && w.ci.gravy === 0 && (airborne ? t > 1 : t >= 4)) break;
-      }
-    }
-    // let go and settle; a hero carried along (a lift) is dropped off at places on the way
-    sim.hold([]);
-    let last = sim.px;
-    let still = 0;
-    let carried = 0;
-    let sameCell = 0;
-    let cell = cellOf();
-    for (let t = 0; t < 90; t++) {
-      const r = await step();
-      if (end(r)) return { to, exits: out };
-      const p = sim.px;
-      if (resting(last)) {
-        if (++still >= 2) break;
-      } else still = 0;
-      // bobbing in one cell (an updraft, water) is as still as the hero gets there
-      if (cellOf() === cell) {
-        if (++sameCell >= 18) break;
-      } else {
-        sameCell = 0;
-        cell = cellOf();
-      }
-      if (w.ci.gravy === 0 && (p.x !== last.x || p.y !== last.y) && ++carried % 9 === 0) to.push(addPlace());
-      last = p;
-    }
+    const r = await driveMove(sim, m, { tick: step, carried: () => to.push(addPlace()) });
+    if (typeof r.end === 'number') return { to, exits: [r.end] };
+    if (r.end === 'dead') return { to, exits: [] };
     const drop = w.chr.y[0] - startY > 2 ? w.chr.y[0] - startY : undefined;
     to.push(addPlace(drop));
-    return { to, exits: out };
+    return { to, exits: [] };
   };
 
   addPlace();
   let stopped = false;
   let lastReport = now();
   for (;;) {
-    const id = fresh.length ? fresh.shift()! : head < queue.length ? queue[head++] : -1;
-    if (id < 0) break;
+    const id = goal ? heap.pop() : fresh.length ? fresh.shift()! : head < queue.length ? queue[head++] : -1;
+    if (id < 0 || reachedStop) break;
     if (places.length >= maxNodes || now() - t0 > budget) {
       stopped = true;
       break;
     }
     const p = places[id];
     for (const [mi, m] of moves.entries()) {
-      if (m.waits && !p.waits) continue;
+      if (m.waits && !p.waits && !opt.waitEverywhere) continue;
       sim.restore(p.snap!);
       via = { parent: id, move: mi, ticks: 0 };
       const r = await play(m);
       for (const t of r.to) if (t >= 0 && t !== id && !p.out.includes(t)) p.out.push(t);
       for (const e of r.exits) if (!p.exits.includes(e)) p.exits.push(e);
+      if (reachedStop) break;
     }
     // a place is tried once: its snapshot (a few kilobytes) is no longer needed
     p.snap = undefined;
     p.done = true;
     if (now() - lastReport > 200) {
       lastReport = now();
-      if (opt.progress?.(places.length, queue.length - head + fresh.length)) {
+      if (opt.progress?.(places.length, queue.length - head + fresh.length + heap.size)) {
         stopped = true;
         break;
       }
@@ -445,7 +428,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     monsters,
     exits: [...exits.values()],
     incidents,
-    complete: !stopped,
+    complete: !stopped && !reachedStop,
     ticks,
     ms: now() - t0,
     gravity,
@@ -479,4 +462,48 @@ function culprit(w: World, sim: SceneSim, what: 'hurt' | 'score' | 'heal'): stri
     }
   }
   return best;
+}
+
+/** Places by priority, lowest first (a binary heap). */
+class PlaceHeap {
+  private ids: number[] = [];
+  private keys: number[] = [];
+  get size(): number {
+    return this.ids.length;
+  }
+  push(id: number, key: number): void {
+    let i = this.ids.length;
+    this.ids.push(id);
+    this.keys.push(key);
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (this.keys[p] <= key) break;
+      this.ids[i] = this.ids[p];
+      this.keys[i] = this.keys[p];
+      i = p;
+    }
+    this.ids[i] = id;
+    this.keys[i] = key;
+  }
+  pop(): number {
+    if (!this.ids.length) return -1;
+    const top = this.ids[0];
+    const id = this.ids.pop()!;
+    const key = this.keys.pop()!;
+    if (this.ids.length) {
+      let i = 0;
+      for (;;) {
+        const l = i * 2 + 1;
+        if (l >= this.ids.length) break;
+        const c = l + 1 < this.ids.length && this.keys[l + 1] < this.keys[l] ? l + 1 : l;
+        if (this.keys[c] >= key) break;
+        this.ids[i] = this.ids[c];
+        this.keys[i] = this.keys[c];
+        i = c;
+      }
+      this.ids[i] = id;
+      this.keys[i] = key;
+    }
+    return top;
+  }
 }

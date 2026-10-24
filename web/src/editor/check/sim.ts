@@ -179,15 +179,20 @@ export class SceneSim {
     this.baseMon = w.mapMon.slice();
   }
 
+  /** Told every key event (scan, bit 7 = released), as a walkthrough records them. */
+  onKey?: (key: number) => void;
+
   press(scan: number): void {
     if (this.held.has(scan)) return;
     this.held.add(scan);
     this.pending.push(scan);
+    this.onKey?.(scan);
   }
 
   release(scan: number): void {
     if (!this.held.delete(scan)) return;
     this.pending.push(scan | 0x80);
+    this.onKey?.(scan | 0x80);
   }
 
   /** Holds exactly these keys from now on. */
@@ -205,7 +210,7 @@ export class SceneSim {
     if (!w.noMons) {
       // BlocBirthMon does nothing on a tick no birth block is due (its scan finds no flag),
       // so it is skipped then: the same play, a good deal faster
-      if (w.blkMon.some((b) => b.nexttime <= w.clock)) blockBirthMonsters(w);
+      if (w.blkMon.some((b) => b.nexttime <= w.clock)) this.births();
       this.moveMonsters();
     }
     const chr = w.chr;
@@ -257,6 +262,47 @@ export class SceneSim {
     }
     moveAllMonsters(w);
     for (let i = 0; i < frozen.length; i += 2) w.mm[frozen[i]].monnum = frozen[i + 1];
+  }
+
+  /** Engine-exact BlocBirthMon (no flags pass: plain calls), with the fast path below. */
+  fastBirths = true;
+
+  /**
+   * BlocBirthMon. Many old block sets have every block "give birth" to monster 64 (none) every
+   * tick, so the engine's scan calls BirthMon for every cell near the screen, each time only
+   * moving FirstEmptyMM to the first empty slot (the slot it fills stays empty, and a real
+   * birth later sets every field of it again). When no block due names a real monster this
+   * does just that, and the due times, without the scan; otherwise the engine's own runs.
+   */
+  private births(): void {
+    const w = this.w;
+    if (!this.fastBirths) return blockBirthMonsters(w);
+    const due = w.blkMon.filter((b) => b.nexttime <= w.clock);
+    if (due.some((b) => (w.bg[b.blnum].birthMon & 0xff) !== LASTMON)) return blockBirthMonsters(w);
+    const flagged = new Set<number>();
+    for (const b of due) {
+      b.nexttime += w.bg[b.blnum].birthTime;
+      flagged.add(b.blnum);
+    }
+    // the cells the engine scans: the screen and half a screen round it
+    let any = false;
+    for (let lx = w.mx - 8; lx < w.mx + 24 && !any; lx++)
+      for (let ly = w.my - 5; ly < w.my + 15; ly++) {
+        const x = (lx + MLEN) % MLEN;
+        const y = (ly + 100) % 100;
+        if (flagged.has(w.blkmap[w.map[y * MLEN + x]] ?? BACKBL)) {
+          any = true;
+          break;
+        }
+      }
+    if (!any) return;
+    let t = w.firstEmptyMM;
+    for (let n = 0; n <= LASTMM; n++) {
+      if (t >= 0 && t < LASTMM && w.mm[t].monnum === LASTMON) break;
+      t++;
+      if (t >= LASTMM) t = 0;
+    }
+    w.firstEmptyMM = Math.max(0, t);
   }
 
   /** chklnk: the first of the scene's links whose From cell the character overlaps. */
