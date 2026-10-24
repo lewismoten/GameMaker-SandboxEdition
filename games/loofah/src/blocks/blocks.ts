@@ -630,7 +630,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const bathTop = paper(78);
   bathTop.rect(2, 2, 16, 18, c('wood', 2)).rect(2, 2, 16, 2, c('wood', 0));
   for (let k = 0; k < 6; k++) bathTop.set(4 + k * 2, 1, c('steam', 3));
-  text(bathTop, 6, 9, 'WC', c('gold', 2));
+  text(bathTop, 2, 9, 'WC', c('gold', 2));
   book.add('bathTop', bathTop, air);
 
   // ---------- IV. Scrubbus Maximus (the shower, at midnight) ----------
