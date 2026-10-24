@@ -88,7 +88,7 @@ function teddyScene(reel: Reel): void {
     p.blit(outline(t, c('ink', 0)), 0, 0, CLEAR);
     big(p, 'TEDDY', 24, 250);
     say(p, 'RED-GOLD CORGI.', 52, undefined, 250);
-    say(p, 'ONE EAR TALLER.', 64, undefined, 250);
+    say(p, 'ALL EARS.', 64, undefined, 250);
     say(p, 'A TON OF TRICKS.', 76, undefined, 250);
     if (f >= 20) {
       say(p, 'KNOWS LEFT', 150, c('yellow', 3), 250);
