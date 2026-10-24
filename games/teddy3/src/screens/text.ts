@@ -224,7 +224,38 @@ export const LOST = pages([
  * The felt egg's page (shown on the way out of where it hides). The egg's description,
  * credits and lore are its entry in the web app's egg registry (web/src/eggs/eggs.ts).
  */
-export const EGG = pages(['(Still hiding.)']);
+export const EGG = pages(
+  [
+    'Lilac felt sprinkled with',
+    'confetti knots in every',
+    'color, a pink felt birthday',
+    'cake appliqued on each side',
+    'with three yarn candles, and',
+    'a collar of gold rickrack',
+    'with a tiny brass tag that',
+    'reads "3".',
+    '',
+    'Tucked in with the lost party',
+    'hats: a place card in Doc',
+    'Leo\'s hand. "ONE MORE CHAIR',
+    'AT THE TABLE. Keep it for',
+    'whoever is still coming."',
+    'Teddy sat in it anyway.',
+  ],
+  [
+    'STARRING',
+    '',
+    'Teddy, the biggest he',
+    'has ever been',
+    '',
+    'Party planned by Gwinn',
+    'and Doc Leo, who never',
+    'once said so',
+    '',
+    'Stitched by',
+    'Claude Opus 5.5',
+  ],
+);
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {

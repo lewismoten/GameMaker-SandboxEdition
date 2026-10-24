@@ -10,6 +10,7 @@
 //
 // The blocks are in parkTiles.ts, the monsters in parkBeasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
+import type { GameMap } from '../../../../web/src/formats/map';
 import { G, parkTiles } from './parkTiles';
 import { parkBeasts } from './parkBeasts';
 import { bandAt } from './common';
@@ -20,6 +21,16 @@ import { parkSong } from '../sound/music';
 const LOW = 38;
 
 export const PARK = { sawA: 15, hedge: 16, bank: 20, sawB: 21, sawC: 24, highBank: 27, superSaw: 42, branch: 43, streamers: 45, disc: 56, car: 60 };
+
+/** The hedge hollow: the gap at the hedge's foot, and the room's top-left inside block. */
+const HOLLOW = { gap: 66, room: [30, 64] as [number, number] };
+
+/** The park after the hollow: the egg taken. */
+function afterHollow(m: LevelMap, egg: [number, number]): GameMap {
+  const map = structuredClone(m.done());
+  map.blocks[egg[1] * 100 + egg[0]] = m.bs.id('hollow');
+  return map;
+}
 
 export function park(): Level {
   const bs = parkTiles();
@@ -119,6 +130,18 @@ export function park(): Level {
   m.rect(0, 30, 1, 10, 'edgeHedge');
   m.set(0, 29, 'edgeHedgeTop');
 
+  // The hedge hollow: a gap at the hedge's foot past THE CHEZ, off the way to anywhere, and
+  // inside (a room of its own, deep under the park) the felt egg among the lost party things.
+  m.set(HOLLOW.gap, 39, 'hollowGap');
+  const [rx, ry] = HOLLOW.room;
+  m.rect(rx - 4, ry - 4, 22, 13, 'edgeHedge');
+  m.rect(rx, ry, 14, 5, 'hollow');
+  m.rect(rx, ry + 5, 14, 1, 'hollowFloor');
+  m.set(rx + 5, ry + 4, 'favors1').set(rx + 9, ry + 4, 'favors2');
+  const egg: [number, number] = [rx + 7, ry + 4];
+  m.set(egg[0], egg[1], 'keepsake');
+  for (let y = ry; y < ry + 5; y++) m.set(rx + 12, y, 'hollowOut');
+
   // Monsters.
   m.mon(45, 31, 'squirrel');
   m.mon(25, 32, 'poodle');
@@ -156,6 +179,18 @@ export function park(): Level {
     view: [18, 34],
     pose: [23, 38, 'frontHop'],
     song: parkSong,
+    egg: { x: egg[0], y: egg[1] },
+    nook: {
+      map: 'parkb.map',
+      after: afterHollow(m, egg),
+      door: { x: HOLLOW.gap, y: 39 },
+      room: { x: rx + 1, y: ry + 4 },
+      out: { x: rx + 12, y: ry + 4 },
+      // back out beside THE CHEZ's door (from the hedge side its back end is in the way)
+      back: { x: PARK.car - 2, y: 39 },
+      title: 'The Hedge Hollow',
+      card: 'egg.lst',
+    },
     card: ['Streamers! Off the kite in', 'the big oak. Ride a see-saw.', 'NEW: SEE-SAWS GO UP AND DOWN'],
   };
 }

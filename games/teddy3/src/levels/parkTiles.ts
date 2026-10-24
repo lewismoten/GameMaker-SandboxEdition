@@ -145,5 +145,63 @@ export function parkTiles(): Tiles {
   const [deadL, deadR] = wideSign(lawn, 'DISC!\n4: DUCK');
   t.air('signDeadL', deadL);
   t.air('signDeadR', deadR);
+
+  // The hedge hollow, past THE CHEZ: a corgi-sized gap at the foot of the park's end hedge
+  // (walk in and it is a room of its own), and inside, where the park's lost party things
+  // blow, the felt egg (park.ts).
+  t.air(
+    'hollowGap',
+    (() => {
+      const p = hedge(false, 61);
+      blob(p, 10, 13, 8, 9, r('leaf'), 0, 0, 1);
+      p.rect(2, 13, 16, 7, c('leaf', 0));
+      return p;
+    })(),
+  );
+  const inside = (() => {
+    const p = new Pixels(20, 20, c('leaf', 0));
+    speckle(p, 0, 0, 20, 20, r('leaf'), 0, 1, 62, 0.3);
+    return p;
+  })();
+  t.air('hollow', inside);
+  t.wall(
+    'hollowFloor',
+    (() => {
+      const p = dirt(63, true);
+      p.rect(0, 0, 20, 3, c('leaf', 1));
+      for (let x = 1; x < 20; x += 4) p.set(x, 3, c('leaf', 2));
+      return p;
+    })(),
+  );
+  // the lost party things: a striped party hat and a paper horn; a popped balloon and its ribbon
+  t.air(
+    'favors1',
+    (() => {
+      const p = copy(inside);
+      for (let k = 0; k < 9; k++) p.rect(4 - Math.floor(k / 3), 10 + k, 1 + 2 * Math.floor(k / 3) + 1, 1, c(k % 3 ? 'blue' : 'yellow', 2));
+      p.set(4, 9, c('red', 3));
+      p.rect(9, 16, 9, 2, c('red', 2)).rect(17, 15, 2, 4, c('yellow', 3));
+      return p;
+    })(),
+  );
+  t.air(
+    'favors2',
+    (() => {
+      const p = copy(inside);
+      blob(p, 6, 17, 4, 2, r('purple'), 1, 2);
+      p.line(9, 17, 12, 12, c('pink', 3)).line(12, 12, 15, 17, c('pink', 3));
+      p.rect(14, 16, 4, 3, c('frost', 2));
+      return p;
+    })(),
+  );
+  // the way back out: daylight at the end of the leafy tunnel
+  t.air(
+    'hollowOut',
+    (() => {
+      const p = copy(inside);
+      p.rect(5, 4, 10, 16, c('grass', 3)).rect(7, 2, 6, 2, c('grass', 4));
+      return p;
+    })(),
+  );
   return t;
 }

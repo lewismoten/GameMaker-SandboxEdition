@@ -461,6 +461,7 @@
   "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places"
  ],
  "teddy3": [
+  "warning contrast s20 Monster 35 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning density s15 7 enemies on one screen at (68, 28)",
   "warning every-tick s13 Block 15 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s3 Block 110 gives 1 on counter 22 on every tick the hero touches it",
