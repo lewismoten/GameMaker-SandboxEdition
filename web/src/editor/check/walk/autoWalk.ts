@@ -130,15 +130,20 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
   let scene = first.toScene;
   let entry: Entry = { start: first.to, ci: startCharInfo(), clock: 1 };
   const seen = new Set<number>([scene]);
+  const taken = new Map<string, number>();
   let cancelled = false;
   for (let guard = 0; guard < 200 && scene !== 1; guard++) {
     const s = game.scenes[scene];
     const name = s.desc.trim() || `Scene ${scene}`;
-    const ways = s.links.filter((l) => l.toScene < game.scenes.length && (l.toScene === 1 || (l.toScene > 1 && !seen.has(l.toScene))));
+    const level = (l: { toScene: number }) => l.toScene === 1 || (l.toScene > 1 && l.toScene < game.scenes.length);
+    // a scene not played yet (or the won scene); else back the way a hub game goes (a side room
+    // returns to the hub), each way taken at most twice so the bot can't go round for ever
+    let ways = s.links.filter((l) => level(l) && (l.toScene === 1 || !seen.has(l.toScene)));
+    if (!ways.length) ways = s.links.filter((l) => level(l) && l.toScene !== scene && (taken.get(`${scene}>${l.toScene}`) ?? 0) < 2);
     const outcome: SceneOutcome = { scene, name, tried: [] };
     out.scenes.push(outcome);
     if (!ways.length) {
-      out.stopped = `${name} has no link to a scene not yet played.`;
+      out.stopped = `${name} has no way on that the bot hasn’t taken already.`;
       break;
     }
     const goal = ways.map((l) => l.from.y * MLEN + l.from.x);
@@ -197,6 +202,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       break;
     }
     seen.add(link.toScene);
+    taken.set(`${scene}>${link.toScene}`, (taken.get(`${scene}>${link.toScene}`) ?? 0) + 1);
     entry = { start: link.to, ci: replay.ci, clock: replay.clock, prev: replay.world };
     scene = link.toScene;
   }
