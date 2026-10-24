@@ -31,6 +31,7 @@ import { isBizarreGame } from '../../project/bizarre';
 // the game engine with it), the keyboard map and the manual with the paper in the box.
 const demoPreview = () => import('../../media/demoPreview');
 const openGameManual = async (entry: CatalogEntry, onReady?: () => void) => (await import('../../manual/gameManual')).openGameManual(entry, undefined, onReady);
+const openGameMaps = async (entry: CatalogEntry, onReady?: () => void) => (await import('../../manual/gameManual')).openGameMaps(entry, onReady);
 
 /**
  * A button that loads something before it opens (the manual's box, made from the game's
@@ -268,6 +269,11 @@ export function hasManual(game: HomeGame): boolean {
   return !!game.entry?.original?.manual;
 }
 
+/** Maps without a box: the Bard of Bizarre's song-games have no manual, but they have a World Map and Level Maps. */
+export function hasMapsOnly(game: HomeGame): boolean {
+  return !!game.entry && !hasManual(game) && isBizarreGame(game.entry);
+}
+
 /**
  * Plays the game's demo inside `screen` (an element holding the picture), with the demos'
  * sound choice (None · SB · PC, media/demoAudio.ts) over it; returns a function that stops it. `onState` hears when it plays and stops.
@@ -376,6 +382,7 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
     );
   tools.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));
   if (hasManual(game)) tools.append(icon('manual', 'Read the manual', () => void openGameManual(game.entry!)));
+  else if (hasMapsOnly(game)) tools.append(icon('map', 'Maps: the World Map and Level Maps', () => void openGameMaps(game.entry!)));
 
   return tile;
 }
@@ -467,6 +474,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       keys,
       isBizarreGame(e) ? notice : null,
       hasManual(game) ? loadingButton('manual', 'Manual', `Read the ${game.title} manual`, (ready) => openGameManual(e, ready)) : null,
+      hasMapsOnly(game) ? loadingButton('map', 'Maps', `The ${game.title} World Map and Level Maps`, (ready) => openGameMaps(e, ready)) : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
 }

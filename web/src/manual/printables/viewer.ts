@@ -38,6 +38,8 @@ type PrintMode = 'item' | 'booklet' | 'all';
 export interface BoxOptions {
   /** How the manual is bound: two staples in the fold (a shareware booklet), or a plastic comb. */
   binding?: 'staples' | 'comb';
+  /** The tray's heading (a box's contents by default; a folder of maps has no manual). */
+  trayHeading?: string;
 }
 
 const COMB_HOW = 'two pages a side: fold the stack, or cut it and bind it';
@@ -48,6 +50,7 @@ const COMB_GAP = 0.07;
 
 export function openBox(title: string, pages: BookPage[], items: BoxItem[], options: BoxOptions = {}): Promise<void> {
   const comb = options.binding === 'comb';
+  const trayHeading = options.trayHeading ?? 'What’s in the box';
   return new Promise((resolve) => {
     let current = 'manual';
     let at = 0;
@@ -220,7 +223,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const entries: { id: string; title: string; note?: string; icon: string; promised?: boolean }[] = [
       { id: 'manual', title: 'Manual', note: `${pages.length - 2} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
       ...items,
-    ];
+    ].filter((it) => it.id !== 'manual' || pages.length); // no pages: a folder of extras, no manual
     for (const it of entries)
       tray.append(
         h(
@@ -264,7 +267,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       else if (mode === 'item' && isBook()) out.push(...manualSingle(book));
       else {
         const list = mode === 'all' ? items : items.filter((i) => i.id === current);
-        if (mode === 'all') out.push(...manualSingle());
+        if (mode === 'all' && pages.length) out.push(...manualSingle());
         for (const it of list)
           if (it.pages) out.push(...manualSingle(await bookletOf(it)));
           else for (const s of await it.render()) out.push(sheetPage(s));
@@ -288,7 +291,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       { class: 'gmb-print-menu', hidden: true },
       h('button', { onclick: () => void print('item') }, 'This piece'),
       bookletBtn,
-      h('button', { onclick: () => void print('all') }, 'Everything in the box'),
+      h('button', { onclick: () => void print('all') }, pages.length ? 'Everything in the box' : 'Everything here'),
     );
 
     // ---- the frame: a modal box; the page under it can't be reached until it closes
@@ -333,7 +336,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         h('div', { class: 'gmb-print-wrap' }, h('button', { onclick: () => (menu.hidden = !menu.hidden), 'aria-haspopup': 'menu' }, '🖨 Print…'), menu),
         h('button', { onclick: close }, 'Close (Esc)'),
       ),
-      h('div', { class: 'gmb-main' }, h('nav', { class: 'gmb-tray', 'aria-label': 'What’s in the box' }, h('h2', null, 'What’s in the box'), tray), stage),
+      h('div', { class: 'gmb-main' }, h('nav', { class: 'gmb-tray', 'aria-label': trayHeading }, h('h2', null, trayHeading), tray), stage),
     );
     film.mount(overlay);
     lens.mount(overlay);
@@ -343,7 +346,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         shut.push(el);
       }
     document.body.append(overlay, printRoot);
-    select('manual');
+    if (!pages.length) bookletBtn.hidden = true;
+    select(pages.length ? 'manual' : (items[0]?.id ?? 'manual'));
     tray.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
   });
 }

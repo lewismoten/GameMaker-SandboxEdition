@@ -13,6 +13,9 @@ Printing (🖨 Print…): this piece, the manual as a booklet (two pages a side 
 turned sideways: print double-sided, fold the stack and staple the fold), or everything. The
 browser's own Print command prints the manual page by page.
 
+A game with no manual (the Bard of Bizarre's song-games) gets a 🗺 Maps button instead, which
+opens the same viewer with only the World Map and Level Maps (`openGameMaps`).
+
 ## Extras every game gets
 
 Made from the catalog entry, the manual and the disk. Turn any off with `"skip"`.

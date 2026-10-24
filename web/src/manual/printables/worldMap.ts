@@ -1,4 +1,4 @@
-// The fold-out World Map in every Sandbox Software box: every scene of the game as a card
+// The fold-out World Map in every Sandbox Software box (and with a Bard of Bizarre game's maps): every scene of the game as a card
 // (its number and name and a picture of where you arrive) and an arrow for every way from
 // one scene to another, laid out by the Game Integrator's Auto-arrange from the game's own
 // .GAM. It's drawn as one SVG in tenths of an inch, so it prints at full size: a big game
@@ -340,7 +340,15 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
 
   // the title cartouche, the key, the scale and the compass
   svg.append(
-    cartouche(W / 2, 3.5, Math.min(W - 2 * M, 78), entry.title, `A Map of the Known World · ${graph.nodes.length} scenes · Sandbox Software`, navy, accent),
+    cartouche(
+      W / 2,
+      3.5,
+      Math.min(W - 2 * M, 78),
+      entry.title,
+      `A Map of the Known World · ${graph.nodes.length} scenes · ${entry.company ?? 'Sandbox Software'}`,
+      navy,
+      accent,
+    ),
   );
   svg.append(legend(M - 6, H - FOOT - 3, [...used], accent));
   svg.append(compassRose(W - 13, H - 10.5, 5.2, accent));
