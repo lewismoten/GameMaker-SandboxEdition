@@ -7,7 +7,7 @@ import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { icon } from './homeIcons';
-import { editors, fileInfo } from '../editors/registry';
+import { loadEditor, type EditorFn } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
@@ -334,6 +334,7 @@ export class Workspace {
 
   /** Adds a file of one kind: new, from the library, or from your computer. */
   private async addOfKind(kind: FileKind): Promise<void> {
+    await import('../tools/all'); // the converters and recorders offered beside New
     const name = await pickFile(this.project, kind, { adding: true, title: `Add ${KIND_LABELS[kind].toLowerCase()}`, actions: this.makers(kind) });
     if (name) this.open(name);
   }
@@ -415,7 +416,25 @@ export class Workspace {
       isGam ? this.nextSteps() : usedByLine(this.project, file),
       body,
     );
-    const editor = editors[kindOf(file)] ?? fileInfo;
+    void this.mountEditor(body, file);
+  }
+
+  /** Puts the file's editor in body, fetching it the first time a file of its kind opens (a note shows if that takes a moment). */
+  private async mountEditor(body: HTMLElement, file: string): Promise<void> {
+    const wait = h('p', { class: 'hint', role: 'status' }, 'Opening the editor…');
+    const slow = window.setTimeout(() => body.append(wait), 150);
+    let editor: EditorFn;
+    try {
+      editor = await loadEditor(kindOf(file));
+    } catch (e) {
+      console.error(e);
+      editor = () =>
+        clear(body, h('p', { class: 'hint' }, `The editor could not be loaded (${(e as Error).message}). Check the connection and open the file again.`));
+    } finally {
+      window.clearTimeout(slow);
+      wait.remove();
+    }
+    if (!body.isConnected || this.current !== file) return; // another file (or the player) took its place
     try {
       this.cleanup = editor(body, this.project, file) || undefined;
       foldHint(body.querySelector<HTMLElement>('p.hint'));
