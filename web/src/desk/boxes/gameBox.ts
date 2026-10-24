@@ -75,11 +75,13 @@ interface Shot {
  */
 async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promise<Shot[]> {
   const { captions } = await gameFacts(entry, box);
+  // a scene's name in the .gam is cut at 19 letters: about.json "captions" can give it whole
+  const own = (box as { captions?: string[] }).captions ?? [];
   const views = (box.shots ?? []).slice(0, 3);
   const shots: Shot[] = await Promise.all(
     views.map(async ([m, x, y], i) => ({
       shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined,
-      caption: captions[i] ?? '',
+      caption: own[i] || (captions[i] ?? ''),
     })),
   );
   const good = shots.filter((s) => s.shot);
