@@ -130,8 +130,8 @@ function coatRack(under: Pixels): Pixels {
 function lawyerDesk(under: Pixels): Pixels {
   const p = on(under);
   p.rect(0, 9, 20, 7, c('wood', 1)).rect(0, 9, 20, 1, c('wood', 3));
-  p.rect(5, 5, 10, 4, c('paper', 4));
-  micro(p, 6, 5, 'WILL', c('ink', 0));
+  p.rect(2, 4, 16, 6, c('paper', 4));
+  micro(p, 3, 5, 'WILL', c('ink', 0));
   return p;
 }
 

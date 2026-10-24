@@ -164,7 +164,7 @@ function cloud(dy: number): Pixels {
     [15, 11, 3.5],
   ])
     blob(p, x, y + dy, s, s * 0.8, r('grey'), 3, 5);
-  micro(p, 3, 13 + dy, 'CLOUD', c('blue', 1));
+  micro(p, 1, 13 + dy, 'CLOUD', c('blue', 1));
   return p;
 }
 

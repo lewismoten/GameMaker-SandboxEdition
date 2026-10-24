@@ -363,8 +363,8 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       parquet,
       (() => {
         const p = blank();
-        p.rect(8, 4, 4, 10, c('green', 3)).rect(8, 12, 8, 4, c('green', 3)).rect(8, 4, 4, 2, c('paper', 4)).rect(14, 12, 2, 4, c('red', 3));
-        micro(p, 2, 16, 'ONE', c('ink', 0));
+        p.rect(8, 3, 4, 10, c('green', 3)).rect(8, 11, 8, 4, c('green', 3)).rect(8, 3, 4, 2, c('paper', 4)).rect(14, 11, 2, 4, c('red', 3));
+        micro(p, 2, 15, 'ONE', c('ink', 0));
         return p;
       })(),
     ),
