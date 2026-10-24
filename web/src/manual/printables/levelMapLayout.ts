@@ -1,11 +1,12 @@
 // The arithmetic behind the printed Level Maps (levelMaps.ts): which scenes share a map, the part
-// of the 100 x 100 map a level really uses, the ground drawn over the blocks that must stay
+// of the 100 x 100 map a level really uses and the part of it the player sees (levelViews.ts), the ground drawn over the blocks that must stay
 // hidden (levelSecrets.ts), the marks for where you arrive and the ways out, and how the maps
 // pack onto printed pages. No DOM, so it is tested on the real disks.
 import { BACKBL, parseBlocks, type Block } from '../../formats/blocks';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../../formats/game';
 import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
+import type { SeenRect } from './levelViews';
 
 /** The scenes that play on one map with one block set: one Level Map. */
 interface MapGroup {
@@ -107,6 +108,28 @@ export function hideSecrets(cells: ArrayLike<number>, blocks: Block[], secret: R
     out[i] = [...around].sort((a, b2) => b2[1] - a[1] || a[0] - b2[0])[0]?.[0] ?? filler;
   }
   return { cells: out, hidden };
+}
+
+/**
+ * The used area cut down to what the player sees (`seen`, from levelViews.json) with `pad` cells
+ * round it, but never so far that a mark (an arrival or a way out) is cut off.
+ */
+export function seenArea(used: Rect, seen: SeenRect, marks: { x: number; y: number; w: number; h: number }[], pad = 1): Rect {
+  let x0 = seen[0];
+  let y0 = seen[1];
+  let x1 = seen[0] + seen[2] - 1;
+  let y1 = seen[1] + seen[3] - 1;
+  for (const m of marks) {
+    x0 = Math.min(x0, m.x);
+    y0 = Math.min(y0, m.y);
+    x1 = Math.max(x1, m.x + m.w - 1);
+    y1 = Math.max(y1, m.y + m.h - 1);
+  }
+  x0 = Math.max(used.x, x0 - pad);
+  y0 = Math.max(used.y, y0 - pad);
+  x1 = Math.min(used.x + used.w - 1, x1 + pad);
+  y1 = Math.min(used.y + used.h - 1, y1 + pad);
+  return x1 < x0 || y1 < y0 ? used : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
 }
 
 type MarkKind = 'start' | 'exit' | 'end';
@@ -232,15 +255,26 @@ export interface Level {
   group: MapGroup;
   /** Its background blocks with the secret ones drawn as ground. */
   cells: Uint8Array;
+  /** The part printed: what the player sees when that is known, else `whole`. */
   area: Rect;
+  /** Every block of the map in use (usedArea). */
+  whole: Rect;
   marks: LevelMark[];
   name: string;
   /** The scene whose palette and monsters draw it. */
   scene: number;
 }
 
-/** The levels to map: one per map file and block set, secrets hidden, cropped and marked. */
-export function levelsOf(game: Game, files: { get(n: string): Uint8Array | undefined }, secret: Record<string, number[]>): Level[] {
+/**
+ * The levels to map: one per map file and block set, secrets hidden, cropped and marked. `views`
+ * (levelViews.json's boxes by "map|bbl") crops each to what the player sees.
+ */
+export function levelsOf(
+  game: Game,
+  files: { get(n: string): Uint8Array | undefined },
+  secret: Record<string, number[]>,
+  views: Record<string, SeenRect> = {},
+): Level[] {
   return mapGroups(game).flatMap((group): Level[] => {
     const mapB = files.get(group.map);
     const bblB = files.get(group.bbl);
@@ -250,6 +284,8 @@ export function levelsOf(game: Game, files: { get(n: string): Uint8Array | undef
     const marks = levelMarks(game, group.scenes, hidden);
     const first = game.scenes[group.scenes[0]];
     const name = group.scenes.length > 1 ? `${first.desc || 'Untitled'} and ${group.scenes.length - 1} more` : first.desc || 'Untitled';
-    return [{ group, cells, area: usedArea(cells, marks), marks, name, scene: group.scenes[0] }];
+    const whole = usedArea(cells, marks);
+    const seen = views[`${group.map}|${group.bbl}`];
+    return [{ group, cells, area: seen ? seenArea(whole, seen, marks) : whole, whole, marks, name, scene: group.scenes[0] }];
   });
 }

@@ -1,10 +1,10 @@
-// The printed Level Maps' arithmetic: shared maps, the part in use, hidden cells, marks and page
+// The printed Level Maps' arithmetic: shared maps, the part in use and the part seen, hidden cells, marks and page
 // packing.
 import { describe, expect, it } from 'vitest';
 import { emptyBlock } from '../../formats/blocks';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Scene } from '../../formats/game';
 import { MLEN, MWID } from '../../formats/map';
-import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, packPages, usedArea } from './levelMapLayout';
+import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, packPages, seenArea, usedArea } from './levelMapLayout';
 
 const scene = (gametype: number, files: string[], links: [number, number, number, number, number][] = []): Scene =>
   ({
@@ -54,6 +54,16 @@ describe('Level Maps layout', () => {
     expect(usedArea(cells)).toEqual({ x: 29, y: 19, w: 14, h: 8 });
     expect(usedArea(cells, [{ x: 50, y: 20 }], 0)).toEqual({ x: 30, y: 20, w: 21, h: 6 });
     expect(usedArea(blank(3))).toEqual({ x: 0, y: 0, w: MLEN, h: MWID });
+  });
+
+  it('crops further to what the player sees, a block round it, keeping every mark and staying in the used part', () => {
+    const used = { x: 0, y: 0, w: 100, h: 75 };
+    // a level along the top: sky above and ground below it are cut away
+    expect(seenArea(used, [0, 28, 100, 22], [])).toEqual({ x: 0, y: 27, w: 100, h: 24 });
+    // a way out below what was seen still shows
+    expect(seenArea(used, [10, 28, 40, 22], [{ x: 60, y: 55, w: 2, h: 1 }])).toEqual({ x: 9, y: 27, w: 54, h: 30 });
+    // never past the used part
+    expect(seenArea({ x: 5, y: 5, w: 20, h: 20 }, [0, 0, 100, 100], [])).toEqual({ x: 5, y: 5, w: 20, h: 20 });
   });
 
   it('marks arrivals and ways out, joining a row of door blocks, and the end its own kind', () => {

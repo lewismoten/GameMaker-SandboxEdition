@@ -1,5 +1,6 @@
 // Level Maps: every map the game's levels play on, drawn whole from its own blocks, palette and
-// monsters (gfx/levelPicture.ts scenePixels), cropped to the part in use, with where you arrive
+// monsters (gfx/levelPicture.ts scenePixels), cropped to the part the player sees (levelViews.ts;
+// "Every block of the map" shows all of the part in use), with where you arrive
 // and the ways out marked (levelMapLayout.ts). Tin hearts and eggs are drawn as the ground they
 // sit on and never marked (levelSecrets.ts). Small maps share a printed page; a big one gets a
 // page of its own and, if wanted, full-size pages to tape together (A1, B1... as the World Map
@@ -16,6 +17,7 @@ import { tiles } from './worldMapLayout';
 import { el, SERIF } from './worldMapArt';
 import { levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
+import { listedViews } from './levelViews';
 import { panZoom } from './panZoom';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
@@ -363,54 +365,93 @@ async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], pai
 export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live(): Promise<HTMLElement> } | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
-  let loaded: Promise<{ game: Game; levels: Level[]; paint: Painter; full: boolean } | undefined> | undefined;
+  let loaded: Promise<Loaded | undefined> | undefined;
   const load = () =>
     (loaded ??= loadLevels(ctx.entry).then((x) => {
       if (!x) return undefined;
-      const levels = levelsOf(x.game, x.files, secret);
-      return { game: x.game, levels, paint: painter(x.game, x.files), full: pageCounts(x.game, levels).full <= MOST_PAGES };
+      const seen = levelsOf(x.game, x.files, secret, listedViews(ctx.entry.id));
+      const every = seen.map((l) => ({ ...l, area: l.whole }));
+      return { game: x.game, seen, every, paint: painter(x.game, x.files), full: pageCounts(x.game, seen).full <= MOST_PAGES, all: false };
     }));
   return {
     async render() {
       const x = await load();
-      return x ? printSheets(ctx.entry, x.game, x.levels, x.paint, x.full) : [];
+      return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.full) : [];
     },
     async live() {
       const x = await load();
-      if (!x?.levels.length) return h('p', { class: 'gmb-loading' }, 'This game has no levels to map.');
+      if (!x?.seen.length) return h('p', { class: 'gmb-loading' }, 'This game has no levels to map.');
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
-      return levelViewer(x.game, x.levels, x.paint, x);
+      return levelViewer(x);
     },
   };
 }
 
+/** A game's levels, loaded: cropped to what the player sees and whole, and which to print. */
+interface Loaded {
+  game: Game;
+  seen: Level[];
+  every: Level[];
+  paint: Painter;
+  /** Print big maps full size too. */
+  full: boolean;
+  /** Print and show every block of each map, not only the part the player sees. */
+  all: boolean;
+}
+
 /** On screen: a list of the maps, and the one picked in a view to zoom and drag. */
-function levelViewer(game: Game, levels: Level[], paint: Painter, opts: { full: boolean }): HTMLElement {
+function levelViewer(opts: Loaded): HTMLElement {
+  const { game, paint } = opts;
+  const levels = () => (opts.all ? opts.every : opts.seen);
   const holder = h('div', { class: 'lm-view' });
   const list = h('ul', { class: 'lm-list', 'aria-label': 'Maps' });
   const stage = h('div', { class: 'lm-stage' });
-  const counts = pageCounts(game, levels);
-  const fullBox = h('input', {
-    type: 'checkbox',
-    id: 'lm-full',
-    checked: opts.full,
-    onchange: (e: Event) => (opts.full = (e.target as HTMLInputElement).checked),
-  });
-  const anyBig = counts.full > counts.overviews;
-  const printNote = h(
-    'p',
-    { class: 'lm-print' },
-    `Prints on ${counts.overviews} page${counts.overviews === 1 ? '' : 's'}.`,
-    anyBig ? h('label', { for: 'lm-full' }, fullBox, ` Big maps full size too (${counts.full} pages, to trim and tape)`) : null,
-  );
+  const printNote = h('p', { class: 'lm-print' });
+  const notePrint = () => {
+    const counts = pageCounts(game, levels());
+    const fullBox = h('input', {
+      type: 'checkbox',
+      id: 'lm-full',
+      checked: opts.full,
+      onchange: (e: Event) => (opts.full = (e.target as HTMLInputElement).checked),
+    });
+    printNote.replaceChildren(
+      `Prints on ${counts.overviews} page${counts.overviews === 1 ? '' : 's'}.`,
+      counts.full > counts.overviews ? h('label', { for: 'lm-full' }, fullBox, ` Big maps full size too (${counts.full} pages, to trim and tape)`) : '',
+    );
+  };
+  notePrint();
+  // the whole map, for authors: only offered where the crop cut something off
+  const cropped = opts.seen.some((l) => l.area.w !== l.whole.w || l.area.h !== l.whole.h);
+  const everyNote = cropped
+    ? h(
+        'p',
+        { class: 'lm-print' },
+        h(
+          'label',
+          { for: 'lm-every' },
+          h('input', {
+            type: 'checkbox',
+            id: 'lm-every',
+            checked: opts.all,
+            onchange: (e: Event) => {
+              opts.all = (e.target as HTMLInputElement).checked;
+              notePrint();
+              void show(Math.max(0, shown));
+            },
+          }),
+          ' Every block of the map, not just what the player sees',
+        ),
+      )
+    : null;
   let shown = -1;
   const show = async (i: number) => {
     shown = i;
     for (const [k, li] of [...list.children].entries()) li.querySelector('button')?.setAttribute('aria-current', String(k === i));
-    const l = levels[i];
+    const l = levels()[i];
     stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Drawing the map…'));
     const url = await paint(l);
-    if (shown !== i) return;
+    if (shown !== i || levels()[i] !== l) return;
     const pad = 3;
     const room = labelRoom(game, l);
     const w = l.area.w + pad * 2;
@@ -445,10 +486,10 @@ function levelViewer(game: Game, levels: Level[], paint: Painter, opts: { full: 
     );
     requestAnimationFrame(() => pz.setZoom(Math.min(Math.max(pz.view.clientWidth - 24, 300), w * 20)));
   };
-  levels.forEach((l, i) =>
+  opts.seen.forEach((l, i) =>
     list.append(h('li', null, h('button', { type: 'button', onclick: () => void show(i) }, h('b', null, sceneList(game, l)), ` ${l.name}`))),
   );
-  holder.append(h('div', { class: 'lm-side' }, list, printNote), stage);
+  holder.append(h('div', { class: 'lm-side' }, list, printNote, everyNote), stage);
   void show(0);
   return holder;
 }
