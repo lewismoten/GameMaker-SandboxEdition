@@ -151,7 +151,7 @@ export function coverRgb(t: number): Uint8Array {
   rect(204, 30, 26, 32, [40, 90, 80]);
   ellipse(217, 50, 10, 9, (nx, ny) => shade([230, 140, 60], nx, ny));
   for (let k = 0; k < 7; k++) rect(209 + k * 0.3, 36 + k, 6 - k * 0.8, 1, [220, 130, 50]);
-  for (let k = 0; k < 9; k++) rect(221 - k * 0.1, 33 + k, 6 - k * 0.6, 1, [220, 130, 50]);
+  for (let k = 0; k < 7; k++) rect(219 + k * 0.5, 36 + k, 6 - k * 0.8, 1, [220, 130, 50]);
   put(213, 48, [20, 20, 20]);
   put(221, 48, [20, 20, 20]);
   put(217, 55, [20, 20, 20]);
@@ -336,7 +336,7 @@ export function coverRgb(t: number): Uint8Array {
     ellipse(tx, ty, 10, 9, (nx, ny) => shade([235, 140, 60], nx, ny));
     rect(tx - 2, ty - 8, 4, 16, [250, 248, 240]);
     for (let k = 0; k < 8; k++) rect(tx - 9 + k * 0.3, ty - 15 + k, 5 - k * 0.5, 1, [230, 130, 50]);
-    for (let k = 0; k < 11; k++) rect(tx + 5 - k * 0.2, ty - 19 + k, 5 - k * 0.4, 1, [230, 130, 50]);
+    for (let k = 0; k < 8; k++) rect(tx + 4 + k * 0.2, ty - 15 + k, 5 - k * 0.5, 1, [230, 130, 50]);
     put(tx - 5, ty - 2, [20, 20, 20]);
     put(tx + 4, ty - 2, [20, 20, 20]);
     rect(tx - 1, ty + 3, 3, 2, [20, 20, 20]);
