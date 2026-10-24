@@ -68,6 +68,15 @@ game folder opens in the browser unchanged.
   *modern web* editor and player. AI assistance did most of the porting and code
   generation: reading the original C source, writing the TypeScript, building the Sandbox
   Software games in code, and testing them, directed and reviewed by Lewis.
+- **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
+  directed, from no one else's code, art, data or recordings: the desk modem's line speeds
+  and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
+  with Mrs. Novak (see "TTYs" below); the Sandbox BBS's door game, TIC-TAC-TOE BY MODEM, and
+  its make-believe opponent SCROLLMASTER; the printable World Map and Level Maps, drawn from
+  each game's own files; the editor's level check, its generators (the maze, the one-click
+  fixes, the block-art helpers) and its walkthrough bot (see "The level check" below); opening
+  games that other sites link to or send (`web/src/linkIn`, `docs/embed.md`); and the new
+  opening of Teddy's Theme (`games/kit/teddyTheme.ts`), an original tune for the Teddy games.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
@@ -112,7 +121,11 @@ game folder opens in the browser unchanged.
   (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
   Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from
   two of Lewis's photos of himself, over many rounds of his corrections, with
-  `games/kit/scans/blacklight.py`.
+  `games/kit/scans/blacklight.py` (Python with Pillow and NumPy). Its glance frames, in which
+  Doc Leo now and then looks to one side and smiles, were drawn the same way from the same
+  photo. The poster's DOC LEO lettering is set in **Phosphate** (Steve Jackaman and Ashley
+  Muir; © International TypeFounders, Inc.), a typeface that comes with macOS: only the
+  lettering's pixels are in the poster pictures, and no font file is in the repository.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
@@ -125,6 +138,10 @@ game folder opens in the browser unchanged.
   - *The desk's wall phone*: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
     opening of **Für Elise** by Ludwig van Beethoven (about 1810, published 1867), public
     domain.
+  - *Teddy's Little Biggest Adventure*: its ending song (`games/teddy3/src/sound/music.ts`)
+    plays **Happy Birthday to You**, the tune of "Good Morning to All" by Mildred J. Hill
+    (1893), public domain in the US; arrangement by the game, which credits it on its
+    credits screen.
   - *A hidden bonus on the site*: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
     Doodle**, the same traditional tune, public domain.
   - *RSD's sample music on the CD* quotes public-domain works: `GMMOONLT.CMF` is the first
@@ -186,8 +203,8 @@ These files are cut from those recordings (each game's `tools/cutClips.py` cuts 
     FLATUS, NEMO, PISCIS, QUIS, RIDETIS, SUMMA, TECTA, TER, TITUS, VICTORIA.
 
 Each of those games' LICENSE.TXT names its clips under "VOICE CLIPS: NOT MIT", its readme and
-credits say so, and the Windows, Mac, Linux, DOS and web-app downloads' notices repeat it
-(`web/src/export/recordedAudio.ts`). **Everything else in each game is MIT licensed**: the
+credits say so, and the Windows, Mac, Linux, DOS and web-app downloads' notices repeat it, as
+does the one-page download's text (`web/src/export/recordedAudio.ts`). **Everything else in each game is MIT licensed**: the
 code, levels, art, text, the other sound effects (made in code) and the FM (CMF) music
 arranged or composed by Claude. Certified Rat Tickler has no recording, so none of it is
 affected.
@@ -242,6 +259,12 @@ formats from their published descriptions and from Game-Maker's own source.
   used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
+- **Modem sounds** on the desk (`web/src/retro/bbs/modem.ts`, `lineSpeed.ts`): the dial tone,
+  touch-tones (the standard DTMF pairs), rings and each line speed's handshake are
+  synthesized in code from the published standards: **Bell 103** (300 baud) and **Bell 212A**
+  (1200), the Bell System's, and the ITU-T's **V.22bis** (2400), **V.32** and **V.32bis**
+  (4800 to 14,400), **V.8** and **V.34** (28,800 and 33,600) and **V.90** (56K). No recording of
+  a modem is used. The names are their owners'; nothing else of theirs is used.
 - **TTYs (text telephones)** on the desk (`web/src/retro/bbs/baudot.ts`, `tdd.ts`,
   `ttyInfo.ts`): the 5-bit Baudot code at 45.45 baud, its 1400/1800 Hz tones and its US
   figures table follow ITU-T Recommendation V.18 (1994) and ANSI/TIA-825. The code table was
@@ -253,8 +276,9 @@ formats from their published descriptions and from Game-Maker's own source.
   Mrs. Novak and her number (555-0156) are made up.
 - **Real names in the games.** The games name some real hardware, software and products of
   their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
-  OPL3, AMI BIOS, PKUNZIP, ZMODEM, Renegade BBS, the Remington Noiseless typewriter, Autodesk
-  Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
+  OPL3, AMI BIOS, PKZIP and PKUNZIP, Xmodem, Ymodem and ZMODEM, Renegade BBS, QEMM, the 286 to Pentium, Windows 3.1 and NT, OS/2, the ATI, Trident, Tseng and
+  Paradise Super VGA cards (from RSD's own system requirements), the Remington Noiseless
+  typewriter, Autodesk Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
   song lyrics and his 100 Word Stories (in *KEEP IT BRIEF!*) are quoted word for word. These
   are trademarks of their respective owners; no endorsement is implied. Every other store,
   arcade, brand, product and publication in the games is made up.
@@ -429,6 +453,10 @@ and test; none of their code ships in the app except Vite's small module runtime
 helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
 they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
+
+The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the developer's
+computer with Pillow (MIT-CMU License) and NumPy (BSD); the Caveat font was cut down with
+fontTools (MIT). Only their output is committed.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,

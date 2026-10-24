@@ -53,6 +53,43 @@ export const PIECE_GROUPS: PieceGroup[] = [
         by: 'The chip is Yamaha’s; the emulation is this project’s own',
         what: 'Plays the CMF music (web/src/audio/opl.ts). No emulator’s code was adapted.',
       },
+      {
+        name: 'Modem handshakes',
+        license: 'Published standards (no code or recordings used)',
+        by: 'The Bell System (Bell 103, Bell 212A) and the ITU-T (V.22bis, V.32, V.32bis, V.8, V.34, V.90)',
+        what: 'The sounds the desk’s modem makes at each line speed, synthesized from the standards’ tones (web/src/retro/bbs/modem.ts).',
+      },
+      {
+        name: 'TTY Baudot code',
+        license: 'Published standards (no code used)',
+        by: 'ITU-T V.18 (1994) and ANSI/TIA-825; cross-checked against Asterisk’s tdd.c (GPL v2, Digium), none of it copied',
+        what: 'The 45.45-baud text-telephone code for TERMINAL’s TTY calls (web/src/retro/bbs/baudot.ts). Period facts from Gallaudet University, the FCC and Ultratec; Ultratec and Turbo Code are Ultratec, Inc.’s names, and Turbo Code is only named.',
+      },
+      {
+        name: 'viridis',
+        license: 'CC0 (public domain dedication)',
+        by: 'Stéfan van der Walt and Nathaniel Smith',
+        what: 'The six colors of the level check’s heat map, which read with every kind of color vision (web/src/editor/check).',
+        url: 'https://bids.github.io/colormap/',
+      },
+      {
+        name: 'WCAG 2 contrast ratio',
+        license: 'W3C formula (no code used)',
+        by: 'The W3C’s Web Content Accessibility Guidelines',
+        what: 'How the level check measures a monster against the scenery behind it.',
+      },
+      {
+        name: 'Mr. Yuck',
+        license: 'Trademark of UPMC Children’s Hospital of Pittsburgh',
+        by: 'A simple drawing in tribute, not the original artwork',
+        what: 'The green poison-warning sticker on the desk’s phone.',
+      },
+      {
+        name: 'Phosphate',
+        license: 'Comes with macOS; no font file included',
+        by: 'Steve Jackaman and Ashley Muir, © International TypeFounders, Inc.',
+        what: 'The DOC LEO lettering on the desk’s black-light poster, drawn into its pictures by Claude with Pillow and NumPy (games/kit/scans/blacklight.py).',
+      },
     ],
   },
   {
@@ -77,6 +114,12 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Public domain',
         by: 'Ludwig van Beethoven, about 1810 (published 1867)',
         what: 'Its opening is the hold music on the desk phone’s business lines (web/src/desk/room/phone/sounds.ts).',
+      },
+      {
+        name: 'Happy Birthday to You',
+        license: 'Public domain',
+        by: 'The tune of “Good Morning to All”, Mildred J. Hill, 1893',
+        what: 'The ending song of Teddy’s Little Biggest Adventure (games/teddy3), arranged for the game.',
       },
       {
         name: 'Yankee Doodle (again)',
