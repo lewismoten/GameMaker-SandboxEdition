@@ -29,7 +29,7 @@ export function foldHint(hint: HTMLElement | null): void {
     hint.classList.toggle('folded', !open);
     btn.textContent = open ? 'Less' : 'More';
     btn.setAttribute('aria-expanded', String(open));
-    btn.setAttribute('aria-label', open ? 'Fold the tip to one line' : 'Show the whole tip');
+    btn.title = open ? 'Fold the tip to one line' : 'Show the whole tip';
     fits();
   };
   // a tip that fits on its line anyway needs no More (measured folded, all on one line)
