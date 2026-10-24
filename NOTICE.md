@@ -226,6 +226,15 @@ formats from their published descriptions and from Game-Maker's own source.
   used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
+- **TTYs (text telephones)** on the desk (`web/src/retro/bbs/baudot.ts`, `tdd.ts`,
+  `ttyInfo.ts`): the 5-bit Baudot code at 45.45 baud, its 1400/1800 Hz tones and its US
+  figures table follow ITU-T Recommendation V.18 (1994) and ANSI/TIA-825. The code table was
+  cross-checked against Asterisk's `main/tdd.c` (GPL v2, Digium); none of its code is used.
+  The period facts are from Gallaudet University's Technology Access Program (TTY Basics,
+  V.18 notes), the FCC (relay service nationwide from July 26, 1993), and Ultratec.
+  **Ultratec** and **Turbo Code** are Ultratec, Inc.'s names; Turbo Code (U.S. Patent
+  5,432,837) is named only as the historical protocol, and nothing of it is implemented.
+  Mrs. Novak and her number (555-0156) are made up.
 - **Real names in the games.** The games name some real hardware, software and products of
   their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
   OPL3, AMI BIOS, PKUNZIP, ZMODEM, Renegade BBS, the Remington Noiseless typewriter, Autodesk
