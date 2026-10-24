@@ -1,0 +1,143 @@
+/* RSD's registration confirmation (regConfirm.ts): a dot-matrix letter on green-bar paper and
+   a wallet card. Sizes in cqw, so they hold on screen and in print. */
+.pp-sheet.pp-rcf {
+  padding: 4cqw 8cqw;
+  background:
+    radial-gradient(circle at 1.6cqw 1.6cqw, #d8cfb4 0.7cqw, transparent 0.8cqw) left top / 3.2cqw 3.2cqw repeat-y,
+    radial-gradient(circle at 1.6cqw 1.6cqw, #d8cfb4 0.7cqw, transparent 0.8cqw) right top / 3.2cqw 3.2cqw repeat-y,
+    repeating-linear-gradient(#fdfcf6 0 4cqw, #eef3e6 4cqw 8cqw);
+  color: #2a2a2a;
+  font:
+    1.9cqw/1.5 'Courier New',
+    Courier,
+    monospace;
+}
+
+.pp-rcf p {
+  margin: 0 0 1.4cqw;
+}
+
+.pp-rcf h3 {
+  margin: 0 0 1.6cqw;
+  font-size: 2.2cqw;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.rcf-lh {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.6cqw;
+  padding-bottom: 1cqw;
+  border-bottom: 0.2cqw dashed #777;
+  text-align: center;
+}
+
+.rcf-lh b {
+  font-size: 2.3cqw;
+  letter-spacing: 0.08em;
+}
+
+.rcf-keyed,
+.rcf-nums {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2cqw 2cqw;
+  margin: 0 0 1.4cqw 4cqw;
+}
+
+.rcf-keyed dt,
+.rcf-nums dt {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.rcf-keyed dd,
+.rcf-nums dd {
+  margin: 0;
+}
+
+.rcf-sign {
+  margin-top: 2cqw;
+}
+
+.pp-rcf .rcf-note {
+  font-size: 1.5cqw;
+  font-style: italic;
+}
+
+/* the wallet card at the foot, 3⅜" x 2⅛" on the 8½" page, dashed round for the scissors;
+   inside it, sizes are in the card's own width */
+.rcf-cut {
+  width: 39.7cqw;
+  margin: 2cqw auto 1cqw;
+  container-type: inline-size;
+}
+
+.pp-rcf .rcf-scissors {
+  margin: 0 0 0.6em;
+  font-size: 4.4cqw;
+  text-align: center;
+}
+
+.rcf-card {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 3.375 / 2.125;
+  outline: 1px dashed #555;
+  outline-offset: 2.4cqw;
+  border-radius: 4cqw;
+  overflow: hidden;
+  background: linear-gradient(160deg, #fffaf0, #f2e9d2);
+  box-shadow: inset 0 0 0 0.4cqw #c9bc98;
+  color: #18150f;
+  font:
+    5cqw/1.3 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.rcf-band {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 4cqw 6cqw 3cqw;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.rcf-band b {
+  color: #f2e600;
+  font:
+    italic 900 6.4cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.rcf-band span {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pp-rcf .rcf-name {
+  margin: 5cqw 6cqw 3cqw;
+  padding-bottom: 1cqw;
+  border-bottom: 0.5cqw solid #18150f;
+  font:
+    600 9cqw/1.1 Caveat,
+    'Comic Sans MS',
+    cursive;
+}
+
+.rcf-card .rcf-nums {
+  margin: 0 6cqw;
+  font-family: 'Courier New', monospace;
+}
+
+.pp-rcf .rcf-foot {
+  margin: auto 0 0;
+  padding: 2cqw 6cqw 3cqw;
+  font-size: 3.8cqw;
+  font-style: italic;
+  white-space: nowrap;
+}
