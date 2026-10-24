@@ -75,8 +75,8 @@ export const TESTING: Chapter = {
     <li><b>Let the bot go first.</b> In this edition the map editor’s Level check (🩺) plays a
     scene on the real engine, trying every key from every spot the hero can stand on. It colors
     the map where the hero got to, marks the places with no way out, and lists what players
-    would mind, each with the page of this guide that explains it. It can’t tell you whether
-    the game is fun; that is still the friends’ job.</li>
+    would mind, each with the page of this guide that explains it (Chapter 14). It can’t tell
+    you whether the game is fun; that is still the friends’ job.</li>
   </ul>
   <h2>Writing a hint book</h2>
   <p>A good hint book answers the questions players really ask, in the words they would use:
