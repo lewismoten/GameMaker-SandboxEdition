@@ -13,7 +13,8 @@ export interface Fold {
   content: HTMLElement;
 }
 
-export function footer(folds: Fold[], status: HTMLElement): HTMLElement {
+/** `extra`: shown before the status line (the modem speed's hint). */
+export function footer(folds: Fold[], status: HTMLElement, extra?: HTMLElement): HTMLElement {
   const all: HTMLDetailsElement[] = [];
   const row = h('footer', { class: 'dos-foot' });
   for (const f of folds) {
@@ -41,6 +42,7 @@ export function footer(folds: Fold[], status: HTMLElement): HTMLElement {
   }
   // the whole line as its title, whatever it says now
   new MutationObserver(() => (status.title = status.textContent ?? '')).observe(status, { childList: true, characterData: true, subtree: true });
+  if (extra) row.append(extra);
   row.append(status);
   return row;
 }

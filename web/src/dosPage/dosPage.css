@@ -450,6 +450,45 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
   padding: 0 10px;
 }
 
+/* the ⋯ menu's modem speed (lineSpeed.ts) */
+.dos-speed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 10px;
+}
+
+.dos-speed select {
+  min-height: 28px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: var(--dos-btn);
+  color: var(--dos-text);
+  font: inherit;
+}
+
+/* the footer's "speed it up" hint: as much of it as the row has room for */
+.dos-line-hint-live {
+  display: contents;
+}
+
+.dos-line-hint {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-color: var(--dos-accent);
+  color: var(--dos-accent);
+}
+
+.dos-line-hint[hidden] {
+  display: none;
+}
+
 /* narrower windows: Full screen as an icon, a shorter title */
 @media (max-width: 1279px) {
   .dos-full .dos-word {

@@ -28,6 +28,7 @@ import { viewSwitch } from '../viewSwitch';
 import { placeNotes } from '../achievements/toast';
 import { footer } from './footer';
 import { moreMenu } from './moreMenu';
+import { speedHint, speedItem } from './lineSpeed';
 import { leaveProgram } from '../retro/leaveProgram';
 
 const root = document.querySelector<HTMLElement>('#dos')!;
@@ -237,13 +238,20 @@ const links = h('ul', { class: 'dos-links' }, ...LINKS.map(([href, what]) => h('
 turboBtn.classList.add('dos-icon-only');
 soundBtn.classList.add('dos-icon-only');
 fullBtn.classList.add('dos-full');
-const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS and the Owner’s Guide', [
+const lineSpeed = speedItem();
+const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS, the modem speed and the Owner’s Guide', [
   resetBtn,
   h('label', { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' }, blaster, 'Sound Blaster card'),
   cdBtn,
   bbsBtn,
+  lineSpeed.item,
   guideBtn,
 ]);
+// a long wait on a slow line: the footer offers a faster one
+const lineHint = speedHint(() => {
+  (more as HTMLDetailsElement).open = true;
+  lineSpeed.select.focus();
+});
 
 clear(
   root,
@@ -268,6 +276,7 @@ clear(
         { icon: '🔗', word: 'Links', name: 'Links to this page', content: links },
       ],
       status,
+      lineHint,
     ),
   ),
 );
