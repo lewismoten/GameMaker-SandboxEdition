@@ -116,6 +116,7 @@ export const ZINE: ZinePage[] = [
       ['Dad at work', '555-0187', "Gus at the shop: Dad's out on a job, try his pager"],
       ["Dad's pager", '555-0199', 'punch in a number and #... and Dad calls back. Not happy.'],
       ['Grandma', '555-0123', "let it ring. And ring. She's SO happy you called"],
+      ['Mrs. Novak (next door)', '555-0156', 'her TTY: just warbling tones on the phone. Type to her from TERMINAL (M for TDD mode), end with GA'],
       ['Jenny (sitter)', '867-5309', "busy. Always busy. She's on the other line"],
       ['Time & temp', '555-0111', "the time, by the room's clock"],
       ['Weather', '555-0112', "snow. It's always snow"],
