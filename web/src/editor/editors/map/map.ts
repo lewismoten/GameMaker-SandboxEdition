@@ -17,6 +17,7 @@ import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Hand
 import { drawOverlay, type OverlayState } from './tools/overlay';
 import { MapTools, type ToolMode } from './tools/toolController';
 import { findBlock, floodCells, replaceAll } from './tools/cellOps';
+import { checkPanel } from './check/checkPanel';
 import './mapExport.css';
 import './tools/mapTools.css';
 
@@ -656,6 +657,47 @@ registerEditor(['map'], (host, project, file) => {
   }
   syncToggles();
 
+  // the level check: a panel beside the map, its heat map and marks on the overlay
+  const check = checkPanel({
+    project,
+    file,
+    scene: set.scenes[0],
+    overlay,
+    redraw: () => redrawOverlay(),
+    goTo: (c) => {
+      const s = BLEN * zoom;
+      const x = c % MLEN;
+      const y = Math.floor(c / MLEN);
+      scroller.scrollTo({ left: x * s - scroller.clientWidth / 2, top: y * s - scroller.clientHeight / 2, behavior: 'smooth' });
+      status.textContent = `(${x}, ${y}) block ${map.blocks[c]}`;
+    },
+    reload: (names) => {
+      const n = new Set(names.map((x) => normalize(x)));
+      if (n.has(normalize(file))) Object.assign(map, parseMap(project.files.get(file)!));
+      if (bblName && n.has(normalize(bblName))) bg = loadBlocks(bblName, 'bbl');
+      if (mblName && n.has(normalize(mblName))) mblk = loadBlocks(mblName, 'mbl');
+      if (monName && n.has(normalize(monName))) mons = parseMonsters(project.files.get(monName)!);
+      rebuild();
+    },
+  });
+  const checkBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'mt-tool',
+      'aria-label': 'Level check',
+      'aria-pressed': 'false',
+      title: 'Level check: let a bot play this scene and show where it went and what players would mind',
+      onclick: () => {
+        check.toggle();
+        checkBtn.setAttribute('aria-pressed', String(check.shown()));
+        if (check.shown()) check.el.scrollIntoView({ block: 'nearest' });
+      },
+    },
+    '🩺',
+    h('span', { class: 'mt-label' }, 'Check'),
+  );
+
   const modeBar = h('div', { class: 'toolbar mt-modes' });
   function setMode(m: Mode): void {
     mode = m;
@@ -685,6 +727,7 @@ registerEditor(['map'], (host, project, file) => {
       gridBtn,
       findBtn,
       replaceBtn,
+      checkBtn,
       undoBtn,
       redoBtn,
     );
@@ -792,6 +835,7 @@ registerEditor(['map'], (host, project, file) => {
       h(
         'div',
         { class: 'stack mt-side-col', style: 'flex:0 1 260px' },
+        check.el,
         tools.panel,
         h('strong', null, 'Blocks'),
         picker,

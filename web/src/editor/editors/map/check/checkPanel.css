@@ -1,0 +1,110 @@
+/* The map editor's Level check panel: run controls, heat map legend and the findings list. */
+.lc-panel {
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  max-height: calc(var(--ws-vh, 100dvh) - 200px);
+  overflow: auto;
+  min-width: 0;
+}
+.lc-title {
+  margin: 0;
+  font-size: 1rem;
+}
+.lc-panel .hint,
+.lc-status {
+  margin: 0;
+}
+.lc-panel button {
+  min-height: 28px;
+}
+.lc-progress {
+  width: 100%;
+  height: 10px;
+}
+.lc-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lc-toggles .check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  font-weight: normal;
+}
+.lc-toggles .check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.lc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 0.85rem;
+}
+.lc-ramp {
+  display: inline-flex;
+}
+.lc-ramp i {
+  width: 16px;
+  height: 12px;
+}
+.lc-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.lc-count[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.lc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lc-item {
+  border-left: 4px solid var(--border);
+  padding: 4px 0 4px 8px;
+}
+.lc-error {
+  border-left-color: var(--danger);
+}
+.lc-warning {
+  border-left-color: #c77700;
+}
+.lc-go {
+  display: block;
+  width: 100%;
+  text-align: left;
+  min-height: 24px;
+  padding: 4px 6px;
+  font-weight: normal;
+  white-space: normal;
+}
+.lc-sev {
+  font-weight: bold;
+}
+.lc-detail,
+.lc-why {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.lc-why .guide-link {
+  display: inline-block;
+  min-height: 24px;
+  line-height: 24px;
+}
+.lc-fix {
+  margin-top: 4px;
+}

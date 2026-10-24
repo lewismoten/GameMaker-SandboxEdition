@@ -9,7 +9,8 @@ export interface CheckRequest {
   options: Pick<CheckOptions, 'scene' | 'play' | 'budgetMs'>;
 }
 
-export type CheckMessage = { kind: 'progress'; what: string; done: number; total: number } | { kind: 'done'; report: Report } | { kind: 'error'; message: string };
+export type CheckMessage =
+  { kind: 'progress'; what: string; done: number; total: number } | { kind: 'done'; report: Report } | { kind: 'error'; message: string };
 
 const post = (m: CheckMessage) => (self as unknown as Worker).postMessage(m);
 
