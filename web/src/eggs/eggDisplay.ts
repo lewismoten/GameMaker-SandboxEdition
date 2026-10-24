@@ -9,6 +9,7 @@ import './eggs.css';
 import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
 import { drawEgg, eggTexture } from './eggArt';
+import { drawOdor, drawPile } from './eggPile';
 import { TROPHY_CAPTION, drawTeddyTrophy, hasTeddyTrophy } from './teddyTrophy';
 
 const CELL_W = 30;
@@ -82,10 +83,16 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     clear(
       row,
       ...found.map((e, i) => {
-        const c = h('canvas', { class: 'egg-mini', width: CELL_W * k, height: CELL_H * k });
+        const pile = e.egg.look.shape === 'pile';
+        const c = h('canvas', { class: 'egg-mini', width: CELL_W * k, height: CELL_H * k, 'data-shape': pile ? 'pile' : null });
         const g = c.getContext('2d')!;
-        // each sits turned a little its own way, showing its appliqué
-        drawEgg(g, eggTexture(e.egg.look), (i % 3) * 0.35 - 0.35, { x: 2 * k, y: 4 * k, w: (CELL_W - 4) * k, h: (CELL_H - 6) * k }, 80);
+        // each sits turned a little its own way, showing its appliqué (Teddy's pile, its whiff)
+        const at = { x: 2 * k, y: 4 * k, w: (CELL_W - 4) * k, h: (CELL_H - 6) * k };
+        const turn = (i % 3) * 0.35 - 0.35;
+        if (pile) {
+          drawPile(g, turn, at, 80);
+          drawOdor(g, at);
+        } else drawEgg(g, eggTexture(e.egg.look), turn, at, 80);
         return c;
       }),
       trophy ? teddy() : null,

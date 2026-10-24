@@ -50,7 +50,12 @@ export function eggGlow(desk: HTMLElement): { update(): void; dispose(): void } 
         height: `${r.height / k}px`,
       });
       const id = `egg-uv-${i}`;
-      svg.innerHTML = `<defs><clipPath id="${id}"><ellipse cx="10" cy="15" rx="8.6" ry="11.2"/></clipPath></defs><g clip-path="url(#${id})">${UV_SVG[ink.pattern](ink.ink)}</g>`;
+      // Teddy's pile of felt sausages (eggs/eggPile.ts) is low and wide, not an egg
+      const shape =
+        egg.dataset.shape === 'pile'
+          ? '<ellipse cx="10" cy="22" rx="8.6" ry="3"/><ellipse cx="10" cy="18" rx="5.4" ry="2.8"/>'
+          : '<ellipse cx="10" cy="15" rx="8.6" ry="11.2"/>';
+      svg.innerHTML = `<defs><clipPath id="${id}">${shape}</clipPath></defs><g clip-path="url(#${id})">${UV_SVG[ink.pattern](ink.ink)}</g>`;
       layer!.append(svg);
     });
     perch.append(layer);

@@ -2,9 +2,11 @@
 // turn it yourself; still when the system asks for reduced motion), with the game it was
 // found in, the egg itself, the names it carries and its piece of the mystery. With the desk's
 // black light on, the room stays dark and each egg shows its fluorescent ink (eggUv.ts).
+// Teddy's third egg is a little pile of felt sausages instead (eggPile.ts), with a whiff rising.
 // Once all three Teddy eggs are found, their cards show his little trophy (teddyTrophy.ts).
 import { h, clear } from '../editor/core/ui';
 import { drawEgg, eggTexture, EGG_ASPECT } from './eggArt';
+import { drawOdor, drawPile } from './eggPile';
 import { uvInk, uvTexture } from './eggUv';
 import type { EggState } from './eggState';
 import { TEDDY_GAMES, TROPHY_CAPTION, drawTeddyTrophy, hasTeddyTrophy } from './teddyTrophy';
@@ -31,7 +33,8 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
     const next = h('button', { type: 'button', onclick: () => go(1) }, 'Next egg →');
     const count = h('span');
 
-    const draw = () => {
+    const pile = () => found[at].egg.look.shape === 'pile';
+    const draw = (t: number) => {
       const r = stage.getBoundingClientRect();
       const k = Math.min(2, window.devicePixelRatio || 1);
       const w = Math.max(160, Math.round(r.width));
@@ -51,7 +54,12 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
       g.beginPath();
       g.ellipse(w / 2 + ew * 0.06, top + eh * 0.98, ew * 0.42, eh * 0.06, 0, 0, Math.PI * 2);
       g.fill();
-      drawEgg(g, tex, turn, { x: (w - ew) / 2, y: top, w: ew, h: eh }, Math.round(Math.min(360, eh * k)));
+      const box = { x: (w - ew) / 2, y: top, w: ew, h: eh };
+      const res = Math.round(Math.min(360, eh * k));
+      if (pile()) {
+        drawPile(g, turn, box, res, uv ? tex : undefined);
+        drawOdor(g, box, still ? undefined : t / 1000);
+      } else drawEgg(g, tex, turn, box, res);
     };
     const frame = (t: number) => {
       const dt = Math.min(0.1, (t - last) / 1000);
@@ -60,7 +68,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
         turn += spin * dt;
         dirty = true;
       }
-      if (dirty) draw();
+      if (dirty || (pile() && !still)) draw(t);
       dirty = false;
       raf = requestAnimationFrame(frame);
     };
@@ -83,7 +91,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
       const ink = uv ? uvInk(at) : undefined;
       canvas.setAttribute(
         'aria-label',
-        `${e.egg.name}, a felt egg, turning${uv ? (ink ? ', glowing under the black light' : ', dark under the black light') : ''}`,
+        `${e.egg.name}, ${e.egg.look.shape === 'pile' ? 'a little pile of felt sausages with a whiff rising' : 'a felt egg'}, turning${uv ? (ink ? ', glowing under the black light' : ', dark under the black light') : ''}`,
       );
       clear(
         card,
