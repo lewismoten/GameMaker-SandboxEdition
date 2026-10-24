@@ -20,6 +20,8 @@ export interface BoxItem {
   render(): Promise<Sheet[]>;
   /** A special on-screen presentation (e.g. a fold-out that unfolds). */
   screen?(sheets: Sheet[]): HTMLElement;
+  /** Its own on-screen view, built without rendering every sheet (`render` is then only for printing). */
+  live?(): Promise<HTMLElement>;
   /** Shows the red film button. */
   redFilm?: boolean;
   /**
@@ -161,6 +163,14 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     };
     const showItem = async (item: BoxItem) => {
       stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Unfolding…'));
+      if (item.live) {
+        const view = await item.live();
+        if (current !== item.id) return;
+        shownSheets = [];
+        stage.replaceChildren(view);
+        stage.scrollTop = 0;
+        return;
+      }
       const sheets = await item.render();
       if (current !== item.id) return;
       shownSheets = sheets;

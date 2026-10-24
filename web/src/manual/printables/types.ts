@@ -12,7 +12,8 @@ export type GeneratedKind =
   | 'newsletter' // The Sandbox Scoop
   | 'hintoffer' // the hint book order slip (only when the game has a hint book)
   | 'stickers' // a sheet of stickers to cut out
-  | 'worldmap'; // the fold-out World Map: every scene and the ways between them, from the .GAM
+  | 'worldmap' // the fold-out World Map: every scene and the ways between them, from the .GAM
+  | 'levelmaps'; // Level Maps: every level's real map, cropped, with arrivals and ways out marked
 
 /** A spot on a map, in blocks (0-99), with a label. */
 export interface MapMark {
