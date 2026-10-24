@@ -6,8 +6,9 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 
 **▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
-This fork is kept by Lewis Moten, who was one of Game-Maker's original buyers in 1992. The
-desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker](docs/history.md).
+This fork is kept by Lewis Moten, who shoveled Fort Ashby's driveways in the winter of 1992
+to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: see
+[Lewis and Game-Maker](docs/history.md).
 
 ![The 1994 desk: a PC showing the Snowbound title screen, a shelf of game boxes, a disk box, a night window with the moon, a wristwatch clock and a door](web/public/og-image.png)
 
