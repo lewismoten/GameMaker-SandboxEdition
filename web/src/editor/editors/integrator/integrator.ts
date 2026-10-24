@@ -12,6 +12,7 @@
 // algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
+import { uploadChecklist } from '../../widgets/uploadChecklist';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
@@ -639,6 +640,17 @@ registerEditor(['gam'], (host, project, file) => {
           (v) => ((s.desc = v.slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
           { maxLength: SCENEDESCLEN - 1 },
         ),
+        kind === 'start'
+          ? h(
+              'div',
+              { class: 'toolbar' },
+              h(
+                'button',
+                { onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the level check can tell' },
+                '☑ Before you upload…',
+              ),
+            )
+          : null,
         kind === 'adventure' || kind === 'unused'
           ? h(
               'div',

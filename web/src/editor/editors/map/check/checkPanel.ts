@@ -13,6 +13,7 @@ import { CHECKS, at, type Finding, type Severity } from '../../../check/findings
 import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
+import { uploadChecklist } from '../../../widgets/uploadChecklist';
 
 export interface CheckHost {
   project: Project;
@@ -143,6 +144,11 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
       ),
       runBtn,
       undoBtn,
+      h(
+        'button',
+        { type: 'button', onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the checks can tell' },
+        '☑ Before you upload…',
+      ),
     ),
     bar,
     status,
