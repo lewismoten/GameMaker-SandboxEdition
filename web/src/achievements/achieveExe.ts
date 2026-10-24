@@ -1,6 +1,7 @@
 // ACHIEVE.EXE on the desk PC (C:\DOS): the same achievements as the web's "What you've done"
 // page (achievements/page.ts), as a 1995 text-mode merit badge log in Game-Maker's colors.
-// ←→ (or Tab) pick a part, ↑↓ an entry; the line under the list says what earned it, and when.
+// ←→ (or Tab) pick a part, ↑↓ an entry (a long part scrolls); the line under the list says what
+// earned it, and when.
 // Hidden ones read "???" with their hint until they are unlocked.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
@@ -31,6 +32,7 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
   unlockAchievement('desk-achieve');
   let cat = 0;
   let cur = 0;
+  let first = 0; // the top row shown, when a part is longer than the window
   try {
     for (;;) {
       const r = await loadAchievements();
@@ -49,9 +51,11 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
       s.write(X + 2, TOP + 1, MENUATTR, 'Ä'.repeat(W - 4));
       const list = ACHIEVEMENTS.filter((a) => a.category === CATEGORIES[cat].id);
       cur = Math.min(cur, list.length - 1);
-      for (let i = 0; i < ROWS; i++) {
+      first = Math.max(0, Math.min(first, cur, list.length - ROWS), cur - ROWS + 1);
+      for (let r0 = 0; r0 < ROWS; r0++) {
+        const i = first + r0;
         const a = list[i];
-        const row = TOP + 2 + i;
+        const row = TOP + 2 + r0;
         const at = i === cur ? CURATTR : MENUATTR;
         s.fill(X + 1, row, X + W - 2, row, i === cur && a ? CURATTR : MENUATTR);
         if (!a) continue;
@@ -66,6 +70,9 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
           toCp437(`${when ? '√' : '·'} ${fit(t.title, 30)} ${fit(t.desc, 30)} ${right.padStart(8)}`),
         );
       }
+      // more above or below
+      if (first > 0) s.write(X + W - 2, TOP + 2, attr(14, 1), toCp437('↑'));
+      if (first + ROWS < list.length) s.write(X + W - 2, TOP + 1 + ROWS, attr(14, 1), toCp437('↓'));
       // the chosen one in full
       const a = list[cur];
       const when = r.unlocked[a.id];
@@ -88,7 +95,7 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
         attr(7, 1),
         toCp437(fit(`${state}   ${CATEGORIES[cat].title}: ${inPart} of ${list.length}   In all: ${done} of ${ACHIEVEMENTS.length}`, W - 4)),
       );
-      s.write(0, 24, BARATTR, toCp437(' ←→ Part  ↑↓ Choose  Esc Quit').padEnd(80).slice(0, 80));
+      s.write(0, 24, BARATTR, toCp437(' ←→ Part  ↑↓ Choose  PgUp PgDn Page  Esc Quit').padEnd(80).slice(0, 80));
 
       const k = await ui.keys.next();
       const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;
@@ -96,8 +103,10 @@ export async function runAchieveExe(ui: Ui): Promise<void> {
       else if (key === 'ArrowUp') cur = (cur + list.length - 1) % list.length;
       else if (key === 'Home') cur = 0;
       else if (key === 'End') cur = list.length - 1;
-      else if (key === 'ArrowRight' || key === 'Tab') ((cat = (cat + 1) % CATEGORIES.length), (cur = 0));
-      else if (key === 'ArrowLeft') ((cat = (cat + CATEGORIES.length - 1) % CATEGORIES.length), (cur = 0));
+      else if (key === 'PageDown') cur = Math.min(list.length - 1, cur + ROWS);
+      else if (key === 'PageUp') cur = Math.max(0, cur - ROWS);
+      else if (key === 'ArrowRight' || key === 'Tab') ((cat = (cat + 1) % CATEGORIES.length), (cur = first = 0));
+      else if (key === 'ArrowLeft') ((cat = (cat + CATEGORIES.length - 1) % CATEGORIES.length), (cur = first = 0));
       else if (key === 'Escape' || key === 'Q') break;
     }
   } finally {
