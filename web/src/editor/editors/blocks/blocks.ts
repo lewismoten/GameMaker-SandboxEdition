@@ -194,6 +194,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     insight.refresh(true);
     groups.refresh(true);
     badges.refresh();
+    mirrorBar?.refresh();
   }
 
   // ---- pixel canvas -------------------------------------------------------
@@ -233,6 +234,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (!preview && pickerCanvases[current]) paintBlock(pickerCanvases[current], blocks[current].pixels, pal(), { transparent: sprites });
     if (!preview) insight?.refresh();
     if (!preview) groups?.refresh();
+    if (!preview) mirrorBar?.refresh();
   }
 
   /** Sets a pixel and its mirror images. */
@@ -698,10 +700,31 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     );
   }
 
+  // character blocks: "Apply to the mirror too" for a block with a linked mirror (character/blockMirrorBar.ts)
+  const mirrorSlot = h('div', { style: 'display:contents' });
+  let mirrorBar: { el: HTMLElement; refresh(): void } | undefined;
+  if (kind === 'cbl')
+    void import('../character/blockMirrorBar').then((m) => {
+      mirrorBar = m.blockMirrorBar({
+        project,
+        file,
+        blocks,
+        current: () => current,
+        setPixels: (i, px) => {
+          undo[i].push(blocks[i].pixels.slice());
+          redo[i].length = 0;
+          blocks[i].pixels.set(px);
+          if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
+          changed();
+        },
+      });
+      mirrorSlot.append(mirrorBar.el);
+    });
+
   // the three columns each end at the window's bottom edge and scroll by themselves (blocks.css)
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
-    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, groups.el, sprites ? null : textures, badges.el, insight.el),
+    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, mirrorSlot, groups.el, sprites ? null : textures, badges.el, insight.el),
     h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
   ];
   clear(
