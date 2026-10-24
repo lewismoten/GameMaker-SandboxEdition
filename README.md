@@ -6,6 +6,9 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 
 **▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
+This fork is kept by Lewis Moten, who was one of Game-Maker's original buyers in 1992. The
+desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker](docs/history.md).
+
 ![The 1994 desk: a PC showing the Snowbound title screen, a shelf of game boxes, a disk box, a night window with the moon, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
@@ -57,6 +60,8 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 | The home page's Sandbox games | Editing Snowbound's neighborhood map |
 | ![Snowbound being played: the kid with his shovel on a snowy street, under the level's "1. Gale Street" briefing](docs/screenshots/web-play.png) | ![The Bizarre tab: twelve games from comic songs, with Third Goat from the Left's demo in the side panel](docs/screenshots/web-bizarre.png) |
 | Playing Snowbound | The Bizarre games |
+| ![The original DOS Game-Maker 3.0 running in the browser: its red and blue menu bar, with the Map Maker's menu open (By Gregory Stone, Copyright 1994) over Snowbound's disk](docs/screenshots/dos-gm-mapmaker.png) | ![Game-Maker's copy check in the browser: it asks for a word from the Owner's Guide, which is open beside it with the paragraph marked, and the registration card on the right](docs/screenshots/dos-gm-copycheck.png) |
+| The original DOS Game-Maker, running in the browser | Its copy check, with the Owner's Guide beside it |
 
 ## Run it yourself
 
