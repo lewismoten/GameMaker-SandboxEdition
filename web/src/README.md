@@ -116,6 +116,13 @@ and pitch. The demo recordings editor's Let the bot play… (`editors/recording/
 runs `botDemoWorker.ts` (through `botDemoClient.ts`): the walkthrough bot plays to the chosen
 scene, and `botDemo.ts` plays its walkthrough on the engine and writes the keys down at the demo
 recorder's ticks as a `.REC`.
+The animation editor's Scene maker (`editors/animation/scene/`) draws an `.FLI` from a scene kept
+in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items), `sceneText.ts` (the
+8x8 font, text motions, and the warnings and fit that keep text inside 320x200), `sceneAssets.ts`
+(the game's pictures, maps and sprites, sprite colors matched into each background's palette),
+`sceneRender.ts` (frames, fades and the `.FLI`) and `sceneGenerate.ts` (Intro, Cast and Story
+made from the game's files); `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
+picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
 
 **Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`,
 which calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`,
