@@ -10,7 +10,7 @@ import { defaultPalette } from '../../../../formats/palette';
 import { decodeFliFrames } from '../../../../formats/fliFrames';
 import { textBytes } from '../../../../formats/binary';
 import { actorAt, allItems, emptyScene, normalizeScene, textItem, type ActorItem, type Scene, type TextItem } from './sceneModel';
-import { fitText, restBox, textAt, textSize, textWarnings, wrapText } from './sceneText';
+import { drawText, fitText, restBox, textAt, textSize, textWarnings, wrapText } from './sceneText';
 import { mergePalettes, sceneAssets, walkSequence } from './sceneAssets';
 import { mirrored, renderScene, sceneFli } from './sceneRender';
 import { generateScene, MONSTER_NAMES, storyText, type GenerateSource } from './sceneGenerate';
@@ -102,6 +102,15 @@ describe('text', () => {
     expect(textWarnings(fitText(textItem('SUPERCALIFRAGILISTIC', { scale: 4 })))).toEqual([]);
     expect(textWarnings(fitText(textItem('EDGE', { align: 'left', x: 300, y: -5 })))).toEqual([]);
     expect(wrapText('one two three', 7)).toBe('one two\nthree');
+  });
+
+  it('draws typographic quotes as the font’s plain ones', () => {
+    const draw = (text: string) => {
+      const px = new Uint8Array(64 * 16);
+      drawText(px, 64, 16, textItem(text, { scale: 1, outline: -1, align: 'left', color: 9 }), 0, 0);
+      return px;
+    };
+    expect(draw('IT\u2019S')).toEqual(draw("IT'S"));
   });
 
   it('slides in to rest, types a letter at a time, and scrolls right across', () => {

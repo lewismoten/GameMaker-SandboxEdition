@@ -7,6 +7,15 @@ import { SCENE_H, SCENE_W, type TextItem } from './sceneModel';
 
 const GLYPH = 8;
 
+/** Typographic marks the PC font has plain forms of. */
+const PLAIN: Record<string, string> = { '\u2018': "'", '\u2019': "'", '\u201c': '"', '\u201d': '"', '\u2013': '-', '\u2014': '-', '\u2026': '.' };
+
+/** The font's glyph for a letter: its own up to 255, a plain mark for a typographic one, else "?". */
+const glyphOf = (ch: string): number => {
+  const c = (PLAIN[ch] ?? ch).charCodeAt(0);
+  return c < 256 ? c : 63;
+};
+
 /** Lines of the text as typed. */
 export const linesOf = (text: string): string[] => text.replace(/\r/g, '').split('\n');
 
@@ -143,8 +152,7 @@ export function drawText(px: Uint8Array, w: number, h: number, it: TextItem, x: 
     const ly = y + pad + row * lineHeight(s);
     for (let i = 0; i < line.length; i++) {
       if (shown++ >= letters) return;
-      const code = line.charCodeAt(i);
-      const glyph = (code < 256 ? code : 63) * 8;
+      const glyph = glyphOf(line[i]) * 8;
       for (let gy = 0; gy < GLYPH; gy++) {
         const bits = FONT8X8[glyph + gy];
         for (let gx = 0; gx < GLYPH; gx++) if (bits & (1 << gx)) dots.push([lx + (i * GLYPH + gx) * s, ly + gy * s]);

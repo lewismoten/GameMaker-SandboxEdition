@@ -3,3 +3,4 @@ export {};
 import './importPicture';
 import './vocMaker';
 import './songMaker';
+import '../editors/animation/scene/sceneMaker';

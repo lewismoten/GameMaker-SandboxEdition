@@ -1,0 +1,350 @@
+/* The animation maker: the picture and its transport beside the settings, the timeline under both. */
+.fli-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fli-tabs {
+  align-self: flex-start;
+}
+
+.fli-tabs [aria-selected='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.scn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px 16px;
+  max-width: 1280px;
+}
+
+.scn-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.scn-monitor {
+  max-width: min(640px, max(320px, calc((var(--ws-vh, 100dvh) - 520px) * 4 / 3 + 28px)));
+}
+
+.scn-stage {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 8px;
+  cursor: grab;
+}
+
+.scn-stage:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.scn-side {
+  min-width: 0;
+}
+
+.scn-inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.scn-inspector h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.scn-text {
+  width: 100%;
+  min-height: 60px;
+  font-family: ui-monospace, 'Courier New', monospace;
+  text-transform: none;
+  resize: vertical;
+}
+
+.scn-warn,
+.scn-warnings {
+  padding: 6px 10px;
+  border-left: 4px solid var(--danger);
+  border-radius: 4px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.scn-warn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.scn-warn[hidden],
+.scn-warnings[hidden] {
+  display: none;
+}
+
+.scn-warnings ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.scn-warnings button {
+  min-height: 24px;
+  padding: 0 8px;
+}
+
+.scn-color {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 12px;
+}
+
+.scn-color-label {
+  min-width: 52px;
+  color: var(--muted);
+}
+
+.scn-swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.scn-swatch.none {
+  background: repeating-linear-gradient(45deg, transparent 0 4px, var(--border) 4px 6px) !important;
+}
+
+.scn-keys {
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.scn-keys caption {
+  caption-side: top;
+  text-align: left;
+  color: var(--muted);
+  padding-bottom: 4px;
+}
+
+.scn-keys th {
+  font-weight: 600;
+  text-align: left;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.scn-keys td {
+  padding: 2px 4px;
+}
+
+.scn-keys input {
+  width: 64px;
+  min-height: 26px;
+}
+
+.scn-icon {
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0 6px;
+}
+
+.scn-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.scn-add .spacer {
+  flex: 1;
+}
+
+.scn-info {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* the timeline: a heading column, then the bars across the scene's frames */
+.scn-timeline-box {
+  overflow-y: auto;
+  max-height: max(160px, var(--room, 260px));
+}
+
+.scn-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.scn-lane {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+}
+
+.scn-lane-head {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.scn-lane-name {
+  flex: 1;
+  min-width: 0;
+  min-height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 12px;
+}
+
+.scn-bars {
+  position: relative;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--panel-2);
+}
+
+.scn-ruler-row .scn-bars {
+  height: 24px;
+  background: transparent;
+}
+
+.scn-ruler {
+  position: absolute;
+  inset: 0;
+  cursor: col-resize;
+  border-bottom: 1px solid var(--border);
+  touch-action: none;
+}
+
+.scn-tick {
+  position: absolute;
+  top: 2px;
+  padding-left: 3px;
+  border-left: 1px solid var(--border);
+  font:
+    10px/1.6 ui-monospace,
+    'Courier New',
+    monospace;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.scn-bar {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0 8px 0 6px;
+  overflow: hidden;
+  border: 1px solid var(--accent);
+  border-right-width: 4px;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  touch-action: none;
+  cursor: grab;
+}
+
+.scn-bar span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scn-bar.selected {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.scn-head {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: #e0301e;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scn-empty {
+  margin: 4px 0 0;
+}
+
+.scn-generate {
+  max-width: 460px;
+}
+
+.scn-gen-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.scn-gen-choice span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* wide windows: the settings beside the picture, the timeline under both */
+@media (min-width: 1000px) {
+  .scn {
+    grid-template-columns: auto minmax(300px, 1fr);
+  }
+  .scn-main {
+    width: min(640px, max(320px, calc((var(--ws-vh, 100dvh) - 470px) * 4 / 3 + 28px)));
+  }
+  .scn-monitor {
+    max-width: none;
+  }
+  /* as tall as the picture's column: its height adds nothing to the row, then fills it */
+  .scn-side {
+    height: 0;
+    min-height: 100%;
+    overflow-y: auto;
+  }
+  .scn-bottom {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .scn-lane {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+}

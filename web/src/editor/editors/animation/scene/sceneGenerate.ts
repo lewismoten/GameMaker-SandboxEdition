@@ -119,7 +119,7 @@ function intro(src: GenerateSource): Scene {
 /** Monster names kept in the companion (`MONSTER_NAMES`), if any. */
 function monsterName(src: GenerateSource, mon: string, i: number): string {
   const names = src.extras?.<unknown>(mon, MONSTER_NAMES, undefined);
-  const n = Array.isArray(names) && typeof names[i] === 'string' ? (names[i]).trim() : '';
+  const n = Array.isArray(names) && typeof names[i] === 'string' ? names[i].trim() : '';
   return (n || `MONSTER ${i}`).toUpperCase();
 }
 
@@ -208,6 +208,8 @@ export function storyText(src: SceneSource): string | undefined {
 
 function story(src: GenerateSource): Scene {
   const s = emptyScene();
+  // 23 frames a second: letters typed at a reading pace
+  s.speed = 3;
   s.fadeIn = 6;
   s.fadeOut = 6;
   const text = (storyText(src) ?? `${titleOf(src)}\n\nTHE STORY STARTS HERE. WRITE IT IN THIS TEXT.`).toUpperCase();

@@ -2,7 +2,8 @@
 // after another, each for the same time (the speed, in 1/70 s: the VGA's vertical
 // retraces). Play, pause and step through it; delete, duplicate and reorder frames, change
 // the speed, add frames from pictures, and export frames as PNG. Every change is written
-// back as an .FLI with only what changed between frames, as Animator did.
+// back as an .FLI with only what changed between frames, as Animator did. The Scene maker
+// tab builds one instead from moving text, characters, monsters and blocks (scene/).
 import './animation.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
@@ -15,6 +16,8 @@ import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFr
 import { createZip } from '../../../project/zip';
 import { encodeAnimatedGif } from '../../../media/gifEncode';
 import { framesToVideo } from '../../../media/frames';
+import type { Project } from '../../core/project';
+import { sceneEditor, storedScene } from './scene/sceneEditor';
 
 const RETRACE = 70;
 const SPEEDS: [number, string][] = [
@@ -35,7 +38,8 @@ function framePng(f: FliFrame, w: number, hgt: number): Promise<Uint8Array> {
   );
 }
 
-registerEditor(['fli'], (host, project, file) => {
+/** The frames view: the animation as a strip of whole frames. */
+function framesView(host: HTMLElement, project: Project, file: string): () => void {
   let anim: FliFrames = decodeFliFrames(project.files.get(file)!);
   const base = file.replace(/\.fli$/, '');
   const undo: FliFrames[] = [];
@@ -412,4 +416,56 @@ registerEditor(['fli'], (host, project, file) => {
   render();
   if (urlFrame === undefined) play();
   return () => pause();
+}
+
+// Two ways to work on an .FLI: its frames, or the scene the animation maker draws it from
+// (scene/sceneEditor.ts). It opens on the maker when the animation was made there; the
+// address keeps which (…/INTRO.FLI?view=scene).
+registerEditor(['fli'], (host, project, file) => {
+  const view = viewState(['p', project.id, file]);
+  let mode: 'frames' | 'scene' = view.get('view') === 'scene' || (view.get('view') !== 'frames' && storedScene(project, file)) ? 'scene' : 'frames';
+  const body = h('div', { class: 'fli-body' });
+  let cleanup: (() => void) | undefined;
+  const tabs = (['frames', 'scene'] as const).map((m) =>
+    h(
+      'button',
+      {
+        type: 'button',
+        role: 'tab',
+        id: `fli-tab-${m}`,
+        'aria-controls': 'fli-panel',
+        title:
+          m === 'frames'
+            ? 'Every frame of the animation, to step through and change'
+            : 'Build the animation from text, characters, monsters and blocks on a timeline',
+        onclick: () => show(m),
+      },
+      m === 'frames' ? '🎞 Frames' : '🎬 Scene maker',
+    ),
+  );
+  const show = (m: 'frames' | 'scene') => {
+    cleanup?.();
+    mode = m;
+    view.set({ view: m === 'scene' ? 'scene' : storedScene(project, file) ? 'frames' : undefined, frame: undefined });
+    tabs.forEach((t, i) => {
+      const on = (i === 0) === (m === 'frames');
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    body.setAttribute('aria-labelledby', `fli-tab-${m}`);
+    cleanup = m === 'frames' ? framesView(body, project, file) : sceneEditor(body, project, file);
+  };
+  const tablist = h('div', { class: 'seg fli-tabs', role: 'tablist', 'aria-label': 'Work on' }, ...tabs);
+  tablist.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const next = mode === 'frames' ? 'scene' : 'frames';
+    show(next);
+    tabs[next === 'frames' ? 0 : 1].focus();
+  });
+  body.id = 'fli-panel';
+  body.setAttribute('role', 'tabpanel');
+  clear(host, h('div', { class: 'fli-wrap' }, tablist, body));
+  show(mode);
+  return () => cleanup?.();
 });
