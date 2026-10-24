@@ -115,7 +115,7 @@ const SUMMARY: Record<string, string> = {
   orb: 'A static-filled call from Chara 4 leads to a derelict planet. Is anyone still there?',
   pac: 'PAC spits power orbs through the dangerous Andims. Good luck, PAC!',
   paperair: 'A tiny radio-controlled plane with a TV camera, and a job only it can do.',
-  parsec3d: 'Find the power crystal of XON (say "zon") past a dangerous alien race.',
+  parsec3d: 'Find the power crystal of XON (say "zon") past a dangerous alien race. Get out your red/blue 3D glasses!',
   signhdg: 'Hedrick H. Hogg must bring one hundred crumpets to tea with the Queen.',
   zoom: "A spell gone wrong makes A-J Bear's cousin Zoom super. As told by A-J himself.",
   goat: 'The holy night, from the goat nobody painted. Eat anything, scream your fainting cousins stiff, find your place.',

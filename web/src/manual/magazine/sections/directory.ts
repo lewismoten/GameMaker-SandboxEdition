@@ -66,7 +66,7 @@ export const ONE_LINE: Record<string, string> = {
   signhdg: 'Hedrick H. Hogg must bring one hundred crumpets to tea with the Queen.',
   zoom: 'Grandpa Merlin’s spell went awry, and cousin Zoom became super. A-J tells the story.',
   congress: 'Fight through The City and InflationLand to stop the Majority Leader.',
-  parsec3d: 'PARSEC and his jetpack suit hunt the power crystal of XON, past the OCTAXON.',
+  parsec3d: 'PARSEC and his jetpack suit hunt the power crystal of XON, past the OCTAXON. Red/blue 3D glasses make it pop.',
   orb: 'A voice hails Chara 4, a mechanical world of intelligent machines, the Orbs among them.',
   paperair: 'Fly a radio-controlled paper airplane 900 miles to the patent office before XEMTX.',
 };
