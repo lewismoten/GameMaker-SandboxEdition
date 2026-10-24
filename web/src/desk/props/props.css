@@ -513,12 +513,13 @@
     pointer-events: none;
   }
 
-  .desk.bl-night .bl-dim {
+  /* (with the overhead light on, the room is lit: the wall isn't dimmed) */
+  .desk.bl-night:not(.rl-lit) .bl-dim {
     opacity: 1;
   }
 
   /* the desk lamp on takes the edge off the dark */
-  .desk.bl-night:has(.desk-lamp.on) .bl-dim {
+  .desk.bl-night:not(.rl-lit):has(.desk-lamp.on) .bl-dim {
     opacity: 0.7;
   }
 
@@ -676,7 +677,7 @@
   }
 
   /* switched off at night, the poster is just in the dark */
-  .desk.bl-night:not(.bl-uv) .bl-print.day {
+  .desk.bl-night:not(.bl-uv):not(.rl-lit) .bl-print.day {
     filter: brightness(0.6);
   }
 
