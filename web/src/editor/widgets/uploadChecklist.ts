@@ -38,7 +38,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   { text: 'Every item can be reached; mazes have landmarks; no wait over 3 seconds', checks: ['unreachable', 'waits', 'maze'], play: true },
   { text: 'The final boss has stages; the ending is a real scene, not an ad', checks: ['ending'] },
   { text: 'Something new every level or two; the gimmick has its own level', checks: ['variety'] },
-  { text: 'Any key beyond the arrows and fire is taught in the game itself', checks: ['controls'], full: true },
+  { text: 'Any key beyond the arrows and fire is taught in the game itself, and sits under the left hand', checks: ['controls', 'reach'], full: true },
   { text: 'Animations loop smoothly; menu, F2 and text screens are readable', checks: [] },
   { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },

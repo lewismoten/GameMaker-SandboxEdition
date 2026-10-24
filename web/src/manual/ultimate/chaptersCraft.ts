@@ -55,6 +55,26 @@ export const CRAFT: Chapter = {
   who walks sideways facing you, one whose head doesn’t turn, one who climbs a ladder showing
   his front or side, and a monster that never turns round; press <b>Looks the same from every
   side</b> on a finding and it stops asking about that one.</p>
+  <h2>Keys under the hands</h2>
+  <p>A player’s right hand rests on the arrow keys and stays there; the left rests at the
+  bottom-left of the keyboard. Every key a level asks for should sit under one of those hands,
+  so nobody looks down in the middle of a jump. The Game-Maker games on the CD agree on most of
+  it: every one moves with the arrows, almost all jump with Up, and most fire with Space and jump
+  sideways with 7 and 9 on the keypad.</p>
+  <ul>
+    <li><b>Moving:</b> the arrows, with Home and PgUp (keypad 7 and 9) to jump up-left and
+    up-right. Give the same moves to W A S D and Q E too, and the game plays left-handed.</li>
+    <li><b>The main action:</b> Space, under either thumb.</li>
+    <li><b>A few more:</b> keys the left hand reaches without moving while the right steers:
+    Z, X, C, V and B along the bottom row, then F, G, R, T, or 1 to 5. Keep a key’s job the same
+    in every level.</li>
+    <li><b>Not:</b> P, H, J, K, L, O, the number keys 6 to 0, or anything right of them. The CD’s
+    old habit of P to pick up and D to drop sends the right hand across the board; pick up with
+    Space or Down, and drop on a left-hand key, instead.</li>
+    <li><b>Few of them.</b> Arrows, Space and two or three more are as many as players keep in
+    their heads. The Level check (chapter 14) warns about a key the right hand has to leave the
+    arrows for.</li>
+  </ul>
   <h2>Room to move</h2>
   <p>The hero is a block wide and two blocks tall, and the screen is only 16 by 10 blocks. Leave
   air around him: passages three blocks high where he can jump, gaps he can clear with a
@@ -139,7 +159,7 @@ export const UPLOAD: Chapter = {
     <tr><td>☐</td><td>Every item can be reached; mazes have landmarks; no wait over 3 seconds</td></tr>
     <tr><td>☐</td><td>The final boss has stages; the ending is a real scene, not an ad</td></tr>
     <tr><td>☐</td><td>Something new every level or two; the gimmick has its own level</td></tr>
-    <tr><td>☐</td><td>Any key beyond the arrows and fire is taught in the game itself</td></tr>
+    <tr><td>☐</td><td>Any key beyond the arrows and fire is taught in the game itself, and sits under the left hand</td></tr>
     <tr><td>☐</td><td>Animations loop smoothly; menu, <kbd>F2</kbd> and text screens are readable</td></tr>
     <tr><td>☐</td><td>Frequent sounds are short; no voice line is cut off; music fits</td></tr>
     <tr><td>☐</td><td>Storyline, instructions, credits, won and lost screens are filled in</td></tr>

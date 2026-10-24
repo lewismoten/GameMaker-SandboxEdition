@@ -115,6 +115,11 @@ export const CHECKS = {
   contrast: { name: 'Hard-to-see monsters', why: 'An enemy the color of the scenery hits players who never saw it.', guide: C('Fair enemies') },
   sounds: { name: 'Loud or long frequent sounds', why: 'A sound heard a hundred times has to be short and soft.', guide: C('Polish that players notice') },
   controls: { name: 'Keys never taught', why: 'A key the game never shows is a key most players never find.', guide: L('Controls the level teaches') },
+  reach: {
+    name: 'Keys out of reach',
+    why: 'A key the hand has to leave its place for is a key pressed late, or not at all.',
+    guide: C('Keys under the hands'),
+  },
   response: { name: 'Slow keys', why: 'A key that waits before it answers feels broken.', guide: L('Controls the level teaches') },
   facing: {
     name: 'Facing the way it walks',
