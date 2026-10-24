@@ -241,7 +241,7 @@ export const EGG = pages(
     'keeps looking toward the',
     'kitchen and licking his nose.',
   ],
-  ['STARRING', '', 'Teddy, a little bigger', 'this time', '', "Stunts by Gwinn (two n's),", 'uncredited at her own', 'request'],
+  ['STARRING', '', 'Teddy, a little bigger', 'this time', '', 'Stunts by Gwinn,', 'uncredited at her own', 'request'],
 );
 
 /** Lines under each level card (yellow lines start with NEW). */
