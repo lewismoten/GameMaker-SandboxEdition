@@ -4,6 +4,7 @@ import { GameFiles } from '../../project/files';
 import { parseBlocks, serializeBlocks, BACKBL } from '../../formats/blocks';
 import { hazardArt, opposites, everyTickBlocks, waits } from './checks/blockChecks';
 import { mentions } from './checks/gameChecks';
+import { sealed } from './checks/sealed';
 import { runChecks } from './report';
 import { scenesOf } from './sceneData';
 import { COIN, SPIKES, testGame } from './testGame';
@@ -53,6 +54,12 @@ describe('the level check’s file checks', () => {
     const f = waits(sceneOf(t));
     expect(f).toHaveLength(1);
     expect(f[0].title).toContain('4.9 s');
+  });
+
+  it('finds a coin sealed in a wall without playing', () => {
+    const t = testGame(['##########', '#........#', '#........#', '#E.S.....#', '##########', '#c########', '##########']);
+    const f = sealed(sceneOf(t), t.game);
+    expect(f.map((x) => x.where.cell)).toEqual([501]);
   });
 
   it('knows a key is named in the text', () => {

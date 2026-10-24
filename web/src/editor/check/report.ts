@@ -5,6 +5,7 @@ import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
 import { characterChecks, controls, endingChecks, soundChecks, variety } from './checks/gameChecks';
 import { monsterChecks, startThreat } from './checks/monsterChecks';
+import { sealed } from './checks/sealed';
 import { curve, playFindings } from './checks/playChecks';
 import { sortFindings, type Finding } from './findings';
 import { gameOf, playtestGame, playtestScene, type SceneRun } from './playtest';
@@ -76,7 +77,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   for (const d of scenes) {
     findings.push(...counters(d, gives));
     for (const c of [...blockChecks, ...monsterChecks]) findings.push(...c(d));
-    findings.push(...startThreat(d, game), ...characterChecks(d), ...soundChecks(d, files));
+    findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...soundChecks(d, files));
   }
   if (opt.scene === undefined) findings.push(...controls(files), ...endingChecks(game), ...variety(all));
   const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
