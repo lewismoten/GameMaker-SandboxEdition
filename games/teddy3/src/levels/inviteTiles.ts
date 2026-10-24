@@ -5,7 +5,7 @@
 // dirt at its foot and a tunnel under it, the brick walk-up's fire escape, and the Klown
 // Klub's party van, whose back door takes the three RSVPs one at a time.
 import { Pixels } from '../../../kit/pixels';
-import { blob, micro, over } from '../art/draw';
+import { blob, klubArt, micro, over } from '../art/draw';
 import { Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';
 import { bandAt, road, sidewalk, sign, wideSign } from './common';
@@ -219,8 +219,8 @@ export function inviteTiles(): Tiles {
     p.rect(114, 26, 5, 3, c('gold', 3)).rect(116, 30, 4, 4, c('ink', 1));
     for (let x = 8; x < 56; x += 11)
       for (const y of [12, 18]) p.disc(x + (y === 18 ? 5 : 0), y, 2, c(['blue', 'yellow', 'green', 'pink'][((x / 11) | 0) % 4], 2));
-    micro(p, 62, 10, 'KLOWN', c('red', 1));
-    micro(p, 64, 16, 'KLUB', c('red', 1));
+    micro(p, 62, 10, klubArt('KLOWN'), c('red', 1));
+    micro(p, 64, 16, klubArt('KLUB'), c('red', 1));
     // the back door's three latches, each with a card slot and its number
     for (let k = 0; k < 3; k++) {
       const x = k * 20;
