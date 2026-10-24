@@ -87,7 +87,9 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
     return at.y * MLEN + at.x;
   }
 
-  const sceneSel = h('select', { 'aria-label': 'Level to check' }, ...scenes.map((d) => h('option', { value: String(d.scene) }, d.name)));
+  // two levels of one name tell apart by scene number
+  const label = (d: SceneData) => (scenes.filter((x) => x.name === d.name).length > 1 ? `${d.name} (scene ${d.scene})` : d.name);
+  const sceneSel = h('select', { 'aria-label': 'Level to check' }, ...scenes.map((d) => h('option', { value: String(d.scene) }, label(d))));
   sceneSel.addEventListener('change', () => {
     scene = scenes.find((d) => String(d.scene) === sceneSel.value) ?? scenes[0];
     center = arrivalCell(scene);
