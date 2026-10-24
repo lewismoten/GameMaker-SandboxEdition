@@ -96,7 +96,7 @@ export const CREDITS = withCreditPage(
       '  .......... a rubber chicken',
       'Teddy ..... a corgi who knows',
       '  his left from his right',
-      "Gwinn .. two n's, one sock",
+      'Gwinn ..... one sock',
       'THE CHEZ .. a 1976 1/2 CitiCar',
       '  (charge port: rear passenger',
       '  side, for reasons)',

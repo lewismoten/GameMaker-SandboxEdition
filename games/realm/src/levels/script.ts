@@ -115,7 +115,7 @@ Bring the pieces to Deadline Keep, beyond the Dawdle Flats. And do come back and
 
 TEDDY is a corgi. Red and white, ears like two sails, and he knows his left from his right. Last seen in the Whistling Woods east of the river.
 
-GWINN is chocolate brown, a pit and lab, pink collar. Two n's in Gwinn. She's particular about that. She likes to dig on the beach south of Someday Harbor.
+GWINN is chocolate brown, a pit and lab, pink collar. She likes to dig on the beach south of Someday Harbor.
 
 Find them. They'll come home on their own once they're found. Dogs know the way, they just don't feel like it. Then come to the kennel gate.`,
   ),
@@ -372,7 +372,7 @@ Then he trots off home to the kennel in Laterburg, ears up, like it was his idea
     'Gwinn',
     'harbor',
     'The Beach',
-    `It's Gwinn! Two n's.
+    `It's Gwinn!
 
 She drops what she was digging up at your feet. It's a sock. You did not need a sock.
 
@@ -450,7 +450,7 @@ THE HERALDRY EGG. Forest-green felt quartered in gold diamonds like a herald's c
 
 Stitched inside the lining:
 
-Questmaster Gwinn (two n's, three quests, never once asked for directions)
+Questmaster Gwinn (three quests, never once asked for directions)
 
 Map inked by Lewis "Lewie" Moten III
 
