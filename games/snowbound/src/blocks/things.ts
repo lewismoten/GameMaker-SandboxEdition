@@ -174,8 +174,17 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
     const p = lit ? lot(53) : yardBase(113);
     const [board, edge, arr] = lit ? [c('glow', 3), c('glow', 0), c('orange', 3)] : [c('wood', 3), c('wood', 0), c('coat', 3)];
     p.rect(9, 11, 2, 9, c('wood', 1));
-    p.rect(1, 3, 18, 9, board).frame(1, 3, 18, 9, edge).rect(1, 2, 18, 1, c('snow', 6));
-    micro(p, 10 - Math.floor(microWidth(label) / 2), 5, label, c('ink', 0));
+    if (lit && label.startsWith('M')) {
+      // the whole block wide, so the M can be five pixels across with its V showing (the
+      // 3x5 font's M reads as an H at this size)
+      p.rect(0, 3, 20, 9, board).rect(0, 3, 20, 1, edge).rect(0, 11, 20, 1, edge).rect(0, 2, 20, 1, c('snow', 6));
+      const x = 10 - Math.ceil((microWidth(label) + 2) / 2);
+      ['10001', '11011', '10101', '10001', '10001'].forEach((row, y) => [...row].forEach((b, dx) => b === '1' && p.set(x + dx, 5 + y, c('ink', 0))));
+      micro(p, x + 6, 5, label.slice(1), c('ink', 0));
+    } else {
+      p.rect(1, 3, 18, 9, board).frame(1, 3, 18, 9, edge).rect(1, 2, 18, 1, c('snow', 6));
+      micro(p, 10 - Math.floor(microWidth(label) / 2), 5, label, c('ink', 0));
+    }
     const ay = 15;
     if (arrow === '>')
       p.line(13, ay, 18, ay, arr)
