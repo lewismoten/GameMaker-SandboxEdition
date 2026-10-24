@@ -5,6 +5,7 @@ import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, 
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
+import { hintBookCover } from './hintCover';
 import type {
   ChartItem,
   HintBookItem,
@@ -76,36 +77,8 @@ async function mapItem(ctx: PrintContext, it: MapItem): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ hint book
-/** A hint book's cover (also drawn small in the magazine's hint book ads). */
-export function hintBookCover(ctx: PrintContext, it: HintBookItem): Sheet {
-  return sheet(
-    5.5,
-    8.5,
-    'hb hb-cover',
-    h('div', { class: 'hb-band' }, 'OFFICIAL'),
-    h('h2', null, it.title),
-    h('p', { class: 'hb-sub' }, ctx.entry.title),
-    h(
-      'div',
-      { class: 'hb-howto' },
-      h('b', null, 'HOW TO USE THIS BOOK'),
-      h('p', null, it.intro ?? 'Find your question, then lay the red film over the answer below it. Only read what you need!'),
-      redCode('Like this: you found it!'),
-    ),
-    ctx.printables.skip?.includes('worldmap')
-      ? null
-      : h(
-          'p',
-          { class: 'hb-mapref' },
-          h('b', null, 'LOST? '),
-          'Unfold the World Map that came in your box: it shows every scene, numbered, and every way from one to the next.',
-        ),
-    h('p', { class: 'hb-foot' }, 'SANDBOX SOFTWARE · RED FILM INCLUDED'),
-  );
-}
-
 async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
-  const cover = hintBookCover(ctx, it);
+  const cover = await hintBookCover(ctx, it);
   // flow the questions onto pages, measured in a real hint book page off screen
   const blocks: HTMLElement[] = it.sections.flatMap((s) => [
     h('h3', null, s.head),

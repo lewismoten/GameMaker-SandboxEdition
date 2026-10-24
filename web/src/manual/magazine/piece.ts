@@ -1,12 +1,12 @@
 // A piece of the paper in a box, drawn small for the magazine's `piece` block: a game's hint
-// book cover, made by the same code the box viewer uses (printables/story.ts), or The Ultimate
+// book cover, made by the same code the box viewer uses (printables/hintCover.ts), or The Ultimate
 // Owner's Guide's black and gold cover (ultimate/ultimateItem.ts). Loaded when a page with a
 // piece is drawn, so the magazine's own chunk stays light.
 import '../printables/paper.css';
 import '../printables/items.css';
 import { withDetails, type CatalogEntry } from '../../project/files';
 import { sheet, shotCache, type PrintContext } from '../printables/kit';
-import { hintBookCover } from '../printables/story';
+import { hintBookCover } from '../printables/hintCover';
 import type { HintBookItem } from '../printables/types';
 import { ultimateCover } from '../ultimate/ultimateItem';
 
@@ -19,5 +19,5 @@ export async function pieceSheet(listed: CatalogEntry | undefined, piece: 'hintb
   const book = printables.items?.find((i): i is HintBookItem => i.kind === piece);
   if (!book) return undefined;
   const ctx: PrintContext = { entry, family: [], printables, manual: { title: '', pages: [] }, shot: shotCache(entry) };
-  return hintBookCover(ctx, book).el;
+  return (await hintBookCover(ctx, book)).el;
 }

@@ -1,0 +1,163 @@
+/* A hint book's cover (hintCover.ts): the series' band, price slot, how-to box and logo
+   round the game's hero and scene, on its box's colors (--hb-bg, --hb-acc). */
+.pp-sheet.pp-hb.pp-hb-cover {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4cqw;
+  background:
+    var(--grain, none), radial-gradient(120% 70% at 50% 40%, color-mix(in srgb, var(--hb-bg, #1d2b52) 80%, #fff), transparent 70%),
+    linear-gradient(160deg, var(--hb-bg, #1d2b52), color-mix(in srgb, var(--hb-bg, #1d2b52) 45%, #000)) !important;
+  color: #fff;
+  text-align: center;
+}
+
+.hb-band {
+  flex: none;
+  margin: -7cqw -8cqw 4cqw;
+  padding: 2.4cqw 2cqw 2cqw;
+  border-bottom: 1cqw solid #fff;
+  background: #d81e1e;
+  font:
+    900 5cqw 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: 0.3em;
+}
+
+/* the price slot: the same round sticker on every book, on the picture's corner */
+.hb-price {
+  position: absolute;
+  top: 1cqw;
+  right: -4cqw;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 15cqw;
+  height: 15cqw;
+  border: 0.6cqw solid #18150f;
+  border-radius: 50%;
+  background: #ffd23f;
+  color: #18150f;
+  transform: rotate(12deg);
+  box-shadow: 0.6cqw 0.8cqw 0 rgba(0, 0, 0, 0.4);
+  line-height: 1;
+}
+
+.hb-price span {
+  font:
+    700 2.2cqw Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+}
+
+.hb-price b {
+  font:
+    900 3.6cqw 'Arial Black',
+    Impact,
+    sans-serif;
+}
+
+.pp-sheet.pp-hb-cover h2 {
+  flex: none;
+  margin: 0;
+  padding: 0 4cqw;
+  color: var(--hb-acc, #f2b632);
+  font:
+    900 8cqw/1.05 'Arial Black',
+    Impact,
+    sans-serif;
+  text-shadow: 0.5cqw 0.5cqw 0 rgba(0, 0, 0, 0.55);
+}
+
+.hb-sub {
+  flex: none;
+  margin: 1.2cqw 0 3cqw;
+  font:
+    italic 3.6cqw Georgia,
+    serif;
+}
+
+/* the game's scene in a frame, the hero standing in front of it, as big as the room left */
+.hb-art {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 30cqw;
+  margin: 0 2cqw 2cqw;
+}
+
+.hb-scene {
+  position: absolute;
+  inset: 7cqw 0 0;
+  width: 100%;
+  height: calc(100% - 7cqw);
+  box-sizing: border-box;
+  border: 1cqw solid var(--hb-acc, #f2b632);
+  object-fit: cover;
+  image-rendering: pixelated;
+  box-shadow: 1cqw 1.2cqw 0 rgba(0, 0, 0, 0.45);
+}
+
+.hb-art.empty::before {
+  content: '';
+  position: absolute;
+  inset: 7cqw 0 0;
+  border: 1cqw solid var(--hb-acc, #f2b632);
+  background: color-mix(in srgb, var(--hb-acc, #f2b632) 25%, #000);
+}
+
+.hb-hero {
+  position: absolute;
+  bottom: -2cqw;
+  left: 50%;
+  height: 100%;
+  max-width: 44%;
+  object-fit: contain;
+  object-position: bottom;
+  transform: translateX(-50%);
+  image-rendering: pixelated;
+  /* a white sticker edge, then its shadow, so he stands out from any scene */
+  filter: drop-shadow(0.5cqw 0 0 #fff) drop-shadow(-0.5cqw 0 0 #fff) drop-shadow(0 0.5cqw 0 #fff) drop-shadow(0 -0.5cqw 0 #fff)
+    drop-shadow(1cqw 1.2cqw 0 rgba(0, 0, 0, 0.5));
+}
+
+.hb-howto {
+  flex: none;
+  margin: 2cqw 0 0;
+  padding: 3cqw 4cqw;
+  background: #f6f1e2;
+  color: #18150f;
+  text-align: left;
+}
+
+.hb-howto p {
+  margin: 0.8cqw 0;
+}
+
+.hb-mapref {
+  flex: none;
+  margin: 3cqw 0 0;
+  padding: 2cqw 4cqw;
+  border: 0.5cqw dashed currentColor;
+  font:
+    2.9cqw/1.35 Arial,
+    sans-serif;
+  text-align: left;
+}
+
+.hb-foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 3cqw;
+  font:
+    700 2.4cqw Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.hb-logo {
+  font-size: 2.8cqw;
+  color: #fff;
+}

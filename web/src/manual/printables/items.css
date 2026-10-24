@@ -1233,67 +1233,6 @@
     serif;
 }
 
-.pp-sheet.pp-hb-cover {
-  background: var(--grain, none), linear-gradient(160deg, #1d2b52, #0b1020) !important;
-  color: #fff;
-  text-align: center;
-}
-
-.hb-band {
-  margin: 0 -8cqw 6cqw;
-  padding: 2cqw;
-  background: #d81e1e;
-  font:
-    900 5cqw 'Arial Black',
-    Impact,
-    sans-serif;
-  letter-spacing: 0.3em;
-}
-
-.pp-sheet.pp-hb-cover h2 {
-  margin: 0;
-  color: #f2b632;
-  font:
-    900 8cqw/1.05 'Arial Black',
-    Impact,
-    sans-serif;
-}
-
-.hb-sub {
-  font:
-    italic 3.6cqw Georgia,
-    serif;
-}
-
-.hb-howto {
-  margin: 8cqw 0 0;
-  padding: 4cqw;
-  background: #f6f1e2;
-  color: #18150f;
-  text-align: left;
-}
-
-.hb-mapref {
-  margin: 4cqw 0 0;
-  padding: 2.4cqw 4cqw;
-  border: 0.5cqw dashed currentColor;
-  font:
-    2.9cqw/1.35 Arial,
-    sans-serif;
-  text-align: left;
-}
-
-.hb-foot {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 5cqw;
-  font:
-    700 2.4cqw Arial,
-    sans-serif;
-  letter-spacing: 0.2em;
-}
-
 .pp-hb-page h3 {
   margin: 0 0 2cqw;
   padding-bottom: 0.8cqw;

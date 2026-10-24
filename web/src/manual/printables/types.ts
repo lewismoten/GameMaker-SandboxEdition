@@ -61,7 +61,21 @@ export interface MapItem extends ItemBase {
 export interface HintBookItem extends ItemBase {
   kind: 'hintbook';
   intro?: string;
+  /** What the cover shows, when the automatic pick (hintCoverArt.ts) is poor. */
+  cover?: HintCover;
   sections: { head: string; hints: { q: string; a: string; sketch?: HintSketch }[] }[];
+}
+
+/**
+ * A hint book cover's art. `hero`: a character file (its scene's blocks and palette are
+ * found), or the three files. `scene`: "title" (the title screen), a GIF of the game's, or a
+ * map window [map, x, y] (16 x 10 blocks). Colors are CSS colors; the box's are the default.
+ */
+export interface HintCover {
+  hero?: string | Portrait;
+  scene?: string | [map: string, x: number, y: number];
+  background?: string;
+  accent?: string;
 }
 
 /**
