@@ -23,13 +23,16 @@ export interface TextOverflow {
 
 export interface TextBoundsReport {
   overflows: TextOverflow[];
-  /** `${w}x${h} ${at} ${s}` for strings drawn wholly inside somewhere: a scroll or a type-on. */
-  shown: string[];
+  /**
+   * Where each string (`${w}x${h} ${at} ${s}`) was drawn wholly inside, as the ink's top-left
+   * corners: a scroll or a drop-in shows its words whole in other frames.
+   */
+  shown: Record<string, [number, number][]>;
 }
 
 const file = typeof process !== 'undefined' ? process.env.TEXT_BOUNDS : undefined;
 const overflows: TextOverflow[] = [];
-const shown = new Set<string>();
+const shown = new Map<string, Set<string>>();
 /** A string from one drawing call (its innermost game frame) on pictures of one size. */
 const key = (w: number, h: number, at: string, s: string) => `${w}x${h} ${at.split(' < ')[0]} ${s}`;
 
@@ -49,7 +52,10 @@ function caller(): string {
 
 if (file)
   process.on('exit', () => {
-    const report: TextBoundsReport = { overflows, shown: [...shown] };
+    const report: TextBoundsReport = {
+      overflows,
+      shown: Object.fromEntries([...shown].map(([k, at]) => [k, [...at].map((xy) => xy.split(',').map(Number) as [number, number])])),
+    };
     writeFileSync(file, JSON.stringify(report));
   });
 
@@ -80,8 +86,11 @@ export class TextInk {
     // Half a pixel of slack: scaled fonts land on fractional positions that round inside.
     const out = this.x0 < ax0 - 0.5 || this.y0 < ay0 - 0.5 || this.x1 > ax1 + 0.5 || this.y1 > ay1 + 0.5;
     const at = caller();
-    if (!out) shown.add(key(this.w, this.h, at, this.s));
-    else overflows.push({ s: this.s, w: this.w, h: this.h, ink: [this.x0, this.y0, this.x1, this.y1].map((v) => Math.round(v)) as Box, area: this.area, at });
+    if (!out) {
+      const k = key(this.w, this.h, at, this.s);
+      if (!shown.has(k)) shown.set(k, new Set());
+      shown.get(k)!.add(`${Math.round(this.x0)},${Math.round(this.y0)}`);
+    } else overflows.push({ s: this.s, w: this.w, h: this.h, ink: [this.x0, this.y0, this.x1, this.y1].map((v) => Math.round(v)) as Box, area: this.area, at });
   }
 }
 
@@ -96,17 +105,18 @@ export function textInk(p: { readonly w: number; readonly h: number }, s: string
 
 /**
  * Splits a report's overflows into cut text (never drawn wholly inside, from that call at that
- * picture size) and moving text (a scroll or type-on that is wholly shown in another frame).
+ * picture size) and moving text (a scroll or drop-in that is wholly shown in another frame, more
+ * than two pixels away: an outline's edge one pixel past a fill that just fits is cut, not moving).
  * Cut text drawn more than once (an outline, a frame of a cartoon) is one entry, its ink the
  * union of every drawing.
  */
 function judge(r: TextBoundsReport): { cut: TextOverflow[]; moving: TextOverflow[] } {
-  const seen = new Set(r.shown);
+  const far = (o: TextOverflow) => (r.shown[key(o.w, o.h, o.at, o.s)] ?? []).some(([x, y]) => Math.abs(x - o.ink[0]) > 2 || Math.abs(y - o.ink[1]) > 2);
   const cut = new Map<string, TextOverflow>();
   const moving: TextOverflow[] = [];
   for (const o of r.overflows) {
     const k = key(o.w, o.h, o.at, o.s);
-    if (seen.has(k)) {
+    if (far(o)) {
       moving.push(o);
       continue;
     }
