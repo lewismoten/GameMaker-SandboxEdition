@@ -232,7 +232,7 @@
      "hints": [
       {
        "q": "I'm low on light.",
-       "a": "THE CHEZ is plugged in at the parking lot. Stand below its rear wheel and push up against the charge port: it charges you, and keeps charging."
+       "a": "THE\u00a0CHEZ is plugged in at the parking lot. Stand below its rear wheel and push up against the charge port: it charges you, and keeps charging."
       },
       {
        "q": "The steam keeps getting me.",

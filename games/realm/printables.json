@@ -5,7 +5,7 @@
     "Down": "Walk down",
     "Left": "Walk left",
     "Right": "Walk right",
-    "Space": "Swing your sword (THE CHEZ: honk)",
+    "Space": "Swing your sword (THE\u00a0CHEZ: honk)",
     "Z": "Toot the Kazoo of Haste",
     "T": "Drink a tonic",
     "Enter": "Pick up what you stand on",
@@ -87,7 +87,7 @@
       }
     },
     {
-      "text": "THE CHEZ",
+      "text": "THE\u00a0CHEZ",
       "sub": "1976½",
       "shape": "cut",
       "color": "#d6362a",
@@ -169,11 +169,11 @@
           "marks": [
             { "x": 22, "y": 80, "label": "Nowish: Pip's village", "kind": "start" },
             { "x": 31, "y": 44, "label": "Laterburg: the King, the market, the Royal Library", "kind": "shop" },
-            { "x": 14, "y": 46, "label": "Someday Harbor: the long pier, THE CHEZ", "kind": "shop" },
+            { "x": 14, "y": 46, "label": "Someday Harbor: the long pier, THE\u00a0CHEZ", "kind": "shop" },
             { "x": 40, "y": 24, "label": "The Snooze Barrows: the first piece", "kind": "goal" },
             { "x": 50, "y": 44, "label": "Teddy's clearing in the Whistling Woods", "kind": "note" },
             { "x": 15, "y": 61, "label": "Gwinn digs on this beach", "kind": "note" },
-            { "x": 70, "y": 49, "label": "Where THE CHEZ comes ashore", "kind": "note" },
+            { "x": 70, "y": 49, "label": "Where THE\u00a0CHEZ comes ashore", "kind": "note" },
             { "x": 79, "y": 60, "label": "Eventually Falls: Hattie's, Doc Leo's tent", "kind": "shop" },
             { "x": 78, "y": 38, "label": "The Putoff Mines: the third piece", "kind": "goal" },
             { "x": 84, "y": 75, "label": "Sir Reginald's glade", "kind": "note" },
@@ -261,7 +261,7 @@
             },
             {
               "q": "How do I get across to Far Putoff?",
-              "a": "In THE CHEZ. The second piece of the Tuit is full of lightning: carry it to Professor Fiddlesticks' garage in Someday Harbor and walk into the garage door."
+              "a": "In THE\u00a0CHEZ. The second piece of the Tuit is full of lightning: carry it to Professor Fiddlesticks' garage in Someday Harbor and walk into the garage door."
             },
             { "q": "The bridge on the Flats is under water!", "a": "It's the tide. Wait a few seconds and it drains again." },
             { "q": "The Putoff Mines' door won't let me in.", "a": "It wants a lamp: 40 gold at Hattie's stall in Eventually Falls." },
