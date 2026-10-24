@@ -97,7 +97,7 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
     outlined(p, 160 - textWidth('SHE SMIRKED', 2) / 2, drop + 20, 'SHE SMIRKED', 3, 0, 2, 2);
     if (sub) {
       p.rect(0, 186, W, 14, 0);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
