@@ -321,7 +321,12 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
   article.querySelector('.guide-open-ultimate')?.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
   // #/help/ultimate?chapter=levels opens the guide at that chapter (the level check links here)
   const chapter = hashParam('chapter');
-  if (id === 'ultimate' && chapter) void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide(chapter));
+  if (id === 'ultimate' && chapter)
+    void import('./ultimate/openUltimate').then((m) => {
+      // closing the guide comes back to its Open button, not to the top of the page
+      article.querySelector<HTMLElement>('.guide-open-ultimate')?.focus({ preventScroll: true });
+      return m.openUltimateGuide(chapter);
+    });
   decorateBbsName(article);
   clear(el, h('div', { class: 'guide' }, toc, article));
 }

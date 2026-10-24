@@ -214,8 +214,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       // turned straight to a chapter (a level check's guide link), else where it was left
       const anchor = item.openAt?.();
       const page = anchor ? p.findIndex((pg) => pg.anchors?.includes(anchor)) : -1;
-      if (page >= 0) marks.set(item.id, page);
       openBook(item.id, p, false);
+      if (page >= 0) at = page; // after openBook, which keeps the page it is open at when it is already open
       showManual();
     };
 
