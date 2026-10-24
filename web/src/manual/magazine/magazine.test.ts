@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { cdCatalog, cdSecretCatalog } from '../../../scripts/cdGames';
 import { CHAPTERS } from '../ultimate/plan';
 import { buildIssue, SECTIONS } from './issue';
+import { GUIDE_CHAPTERS } from './sections/houseAd';
 import { magContext, magGames } from './games';
 import { GUIDE_SECTIONS, goProblem, type GoKnown } from './go';
 import { linksIn, plain } from './inline';
@@ -106,6 +107,17 @@ function walk(b: Block, text: string[], links: string[]): void {
     case 'masthead':
       text.push(b.name, b.tagline, b.issue, b.price);
       break;
+    case 'callouts':
+      text.push(b.alt);
+      for (const s of b.spots) (text.push(s.title), t(s.text));
+      break;
+    case 'covers':
+      text.push(b.alt);
+      for (const c of b.covers) text.push(c.issue, c.line);
+      break;
+    case 'reply':
+      text.push(...b.to);
+      break;
     case 'rule':
       break;
   }
@@ -161,6 +173,10 @@ describe('TURBO BUTTON', async () => {
     const { links } = read(issue);
     expect(links.length).toBeGreaterThan(50);
     expect(links.map((l) => goProblem(l, known)).filter(Boolean)).toEqual([]);
+  });
+
+  it('lists The Ultimate Owner’s Guide’s chapters as the guide has them', () => {
+    expect(GUIDE_CHAPTERS).toEqual(CHAPTERS.map((c) => [c.id, c.title]));
   });
 
   it('knows the Guide’s sections', () => {

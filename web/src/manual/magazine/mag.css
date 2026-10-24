@@ -966,6 +966,7 @@
 
 .mag-adframe h2 {
   font-size: 3em;
+  text-wrap: balance;
   color: var(--red);
   text-shadow: 0.05em 0.05em 0 #141210;
 }
@@ -1292,6 +1293,11 @@
 
   .mag-adframe h2 {
     font-size: 2em;
+  }
+
+  /* the starburst takes more of a phone's line */
+  .mag-burst + h2 {
+    padding-right: 3.2em;
   }
 
   .kind-back .mag-adframe {
