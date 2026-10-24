@@ -137,7 +137,7 @@ export function stageTiles(): Tiles {
     'crate',
     (() => {
       const p = boxFace('wood', 2, 7);
-      micro(p, 2, 8, 'PROPS', c('ink', 0));
+      micro(p, 1, 8, 'PROPS', c('ink', 0));
       return p;
     })(),
   );
