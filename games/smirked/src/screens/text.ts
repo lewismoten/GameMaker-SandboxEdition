@@ -243,8 +243,14 @@ const CREDITS_TEXT = page(
     '3.0 files. Made with GAME-',
     'MAKER by Recreational',
     'Software Designs.',
+    '',
+    "The organ's opening quotes",
+    'the Toccata and Fugue in D',
+    'minor, BWV 565, credited to',
+    'J. S. Bach (about 1704):',
+    'public domain.',
   ],
-  2,
+  3,
 );
 
 /** The credits: the whole song (liner notes), the credits, and the FREE TO SHARE page (kit/license.ts). */
@@ -344,7 +350,12 @@ CREDITS (NOW)
   in the song. Built by Claude
   with GAME-MAKER 3.0 by
   Recreational Software
-  Designs.
+  Designs. The haunted
+  house's organ opens with
+  the Toccata and Fugue in D
+  minor, BWV 565, credited to
+  J. S. Bach (about 1704), in
+  the public domain.
 
 So yeah. The date went well.
 `.replace(/^\n/, '');

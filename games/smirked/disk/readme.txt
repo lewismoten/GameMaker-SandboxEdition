@@ -90,6 +90,11 @@ CREDITS (NOW)
   in the song. Built by Claude
   with GAME-MAKER 3.0 by
   Recreational Software
-  Designs.
+  Designs. The haunted
+  house's organ opens with
+  the Toccata and Fugue in D
+  minor, BWV 565, credited to
+  J. S. Bach (about 1704), in
+  the public domain.
 
 So yeah. The date went well.
