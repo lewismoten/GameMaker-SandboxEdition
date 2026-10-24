@@ -10,8 +10,9 @@
 // Resting the pointer on a mark tells what it means (markInfo.ts); the legend lists each mark,
 // and its buttons step through them from the keyboard. The author can also play the scene and
 // keep a heat map of their own (myHeatControls.ts), shown instead of, with, or against the bot's.
-// checkExtras.ts adds the report (a dialog, a CSV and a printable checklist), watching the bot's
-// route or the author's play, and recording a play for the walkthrough.
+// checkExtras.ts adds the report (a dialog, a CSV and a printable checklist), Play and record
+// (the author's heat map and a play for the walkthrough, in one session), and watching the
+// bot's route or the author's play.
 import './checkPanel.css';
 import { h, clear, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
@@ -258,7 +259,6 @@ export function checkPanel(host: CheckHost): {
   const mineUi = myHeatControls({
     project,
     file,
-    scene: host.scene,
     botSteps,
     mySteps: (m) => heatSteps(m, soon),
     changed: () => paint(),
@@ -300,7 +300,15 @@ export function checkPanel(host: CheckHost): {
     status,
     progressLine,
     said,
-    checkExtras({ project, file, scene: host.scene, findings: () => saved?.findings ?? [], item: (f, acc) => item(f, acc), filter: () => filter }),
+    checkExtras({
+      project,
+      file,
+      scene: host.scene,
+      findings: () => saved?.findings ?? [],
+      item: (f, acc) => item(f, acc),
+      filter: () => filter,
+      addedHeat: (ticks) => mineUi.added(ticks),
+    }),
     mineUi.el,
     h(
       'details',

@@ -1,20 +1,17 @@
-// The Level check panel's "my heat map" controls: play this map and record where you went
-// (playRecord.ts), choose whose heat map shows (the bot's, yours, both combined, or compared),
-// the coverage line with a button to the next area the bot reached and you haven't, and Clear.
-// The recording is kept in the companion file under the map (section "myHeat"), growing with
-// each session.
+// The Level check panel's "my heat map" controls: choose whose heat map shows (the bot's, yours,
+// both combined, or compared), the coverage line with a button to the next area the bot reached
+// and you haven't, and Clear. The heat map is recorded by "Play and record" (checkExtras.ts,
+// widgets/playScene.ts) and kept in the companion file under the map (section "myHeat"),
+// growing with each session.
 import { h, selectField, toast, confirmDialog } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import { at } from '../../../check/findings';
-import { coverage, coverageText, mergeMine, unpackMine, type MyHeat, type MyHeatSaved } from './myHeat';
+import { MY_HEAT, coverage, coverageText, unpackMine, type MyHeat, type MyHeatSaved } from './myHeat';
 import type { HeatView } from './markInfo';
-
-const SECTION = 'myHeat';
 
 export interface MyHeatHost {
   project: Project;
   file: string;
-  scene: number | undefined;
   /** The bot's heat steps as shown (undefined before a check). */
   botSteps(): Uint8Array | undefined;
   /** The author's steps, as the panel colors them. */
@@ -25,24 +22,21 @@ export interface MyHeatHost {
   say(text: string): void;
 }
 
-export function myHeatControls(host: MyHeatHost): { el: HTMLElement; view(): HeatView; mine(): MyHeat | undefined; refresh(): void } {
+export function myHeatControls(host: MyHeatHost): {
+  el: HTMLElement;
+  view(): HeatView;
+  mine(): MyHeat | undefined;
+  refresh(): void;
+  added(ticks: number): void;
+} {
   const { project, file } = host;
-  let kept = project.extras<MyHeatSaved | undefined>(file, SECTION, undefined);
+  const load = () => project.extras<MyHeatSaved | undefined>(file, MY_HEAT, undefined);
+  let kept = load();
   let mine = kept ? unpackMine(kept) : undefined;
   let view: HeatView = 'bot';
   let next = -1;
   let missed: number[] = [];
 
-  const recBtn = h(
-    'button',
-    {
-      type: 'button',
-      disabled: host.scene === undefined,
-      title: 'Play this map’s scene yourself; where you go is kept as your own heat map, added to each time',
-      onclick: () => void record(),
-    },
-    '▶ Play this map and record my heat map',
-  );
   const viewField = selectField(
     'Show',
     [
@@ -70,25 +64,21 @@ export function myHeatControls(host: MyHeatHost): { el: HTMLElement; view(): Hea
     line,
     h('div', { class: 'toolbar' }, nextBtn, clearBtn),
   );
-  const el = h('div', { class: 'lc-mine-wrap' }, h('div', { class: 'toolbar' }, recBtn), box);
+  const el = h('div', { class: 'lc-mine-wrap' }, box);
 
-  async function record(): Promise<void> {
-    if (host.scene === undefined) return;
-    const { playAndRecord } = await import('./playRecord');
-    const rec = await playAndRecord(project, host.scene, file);
-    if (!rec) return;
-    kept = mergeMine(kept, rec);
-    project.setExtras(file, SECTION, kept);
-    mine = unpackMine(kept);
+  /** A Play and record session added `ticks` of play to the kept heat map. */
+  function added(ticks: number): void {
+    kept = load();
+    mine = kept ? unpackMine(kept) : undefined;
     if (view === 'bot') view = host.botSteps() ? 'compare' : 'mine';
     sync();
     host.changed();
-    toast(`Kept ${Math.round(rec.ticks / 18.2)} s of play in your heat map.`);
+    toast(`Kept ${Math.round(ticks / 18.2)} s of play in your heat map.`);
   }
 
   async function clearMine(): Promise<void> {
     if (!(await confirmDialog('Clear my heat map', 'Forget everywhere you’ve been on this map? The bot’s heat map stays.', 'Clear'))) return;
-    project.setExtras(file, SECTION, undefined);
+    project.setExtras(file, MY_HEAT, undefined);
     kept = undefined;
     mine = undefined;
     view = 'bot';
@@ -126,5 +116,5 @@ export function myHeatControls(host: MyHeatHost): { el: HTMLElement; view(): Hea
   }
 
   sync();
-  return { el, view: () => (kept ? view : 'bot'), mine: () => mine, refresh: sync };
+  return { el, view: () => (kept ? view : 'bot'), mine: () => mine, refresh: sync, added };
 }

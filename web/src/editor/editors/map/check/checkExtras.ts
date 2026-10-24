@@ -1,13 +1,16 @@
 // The Level check panel's report and play buttons: "Open as a report…" (the findings in a
 // large dialog with the CSV and printable checklists, widgets/checkReport.ts), and for this
-// map's scene "Watch the bot" (its route, made for this scene alone if the bot has none yet),
-// "Record my play" (the author plays the scene to an exit; the keys are kept for Make a
-// walkthrough) and "Watch my play" (widgets/playScene.ts, watchScene.ts). Each loads when first
+// map's scene "Play and record" (the author plays the scene: where they go is added to their
+// heat map, and a try that reaches an exit can be kept for Make a walkthrough;
+// widgets/playScene.ts), "Watch the bot" (its route, made for this scene alone if the bot has
+// none yet), with "Make the bot's route again" when the map changed since that route was made
+// (check/walk/botRoutes.ts), and "Watch my play" (widgets/watchScene.ts). Each loads when first
 // used.
 import { h, confirmDialog, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { Finding, Kind } from '../../../check/findings';
-import { keepPlay, myPlays } from '../../../check/walk/mine';
+import { myPlays } from '../../../check/walk/mine';
+import { routeState } from '../../../check/walk/botRoutes';
 
 export interface ExtrasHost {
   project: Project;
@@ -19,6 +22,8 @@ export interface ExtrasHost {
   item: (f: Finding, accepted: boolean) => HTMLElement;
   /** The kind the panel shows now. */
   filter: () => Kind | 'all';
+  /** A Play and record session added `ticks` of play to this map's heat map. */
+  addedHeat: (ticks: number) => void;
 }
 
 export function checkExtras(host: ExtrasHost): HTMLElement {
@@ -40,15 +45,30 @@ export function checkExtras(host: ExtrasHost): HTMLElement {
   );
   const watchBotBtn = h('button', { type: 'button', onclick: () => void watchBot() }, '▶ Watch the bot');
   const watchMineBtn = h('button', { type: 'button', onclick: () => void watchMine() }, '▶ Watch my play');
-  const recordBtn = h(
+  const remakeBtn = h(
     'button',
-    { type: 'button', title: 'Play this scene to an exit; your keys are kept for Make a walkthrough', onclick: () => void record() },
-    '● Record my play',
+    { type: 'button', title: 'Let the bot look for a route through this scene again (up to a minute)', onclick: () => void remake() },
+    '↻ Make the bot’s route again',
   );
+  const playBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'primary',
+      title: 'Play this scene yourself: where you go is added to your heat map, and a try that reaches an exit can be kept for Make a walkthrough',
+      onclick: () => void playAndRecord(),
+    },
+    '▶ Play and record',
+  );
+  const routeLine = h('p', { class: 'meta lc-status' });
   const mineLine = h('p', { class: 'meta lc-status' });
 
   const refresh = () => {
     const scene = host.scene;
+    const route = scene === undefined ? undefined : routeState(project, scene);
+    remakeBtn.hidden = route?.from !== 'scene';
+    routeLine.hidden = !(route?.from === 'scene' && route.stale);
+    routeLine.textContent = 'The map changed since the bot’s route was made.';
     const mine = scene === undefined ? undefined : myPlays(project)[scene];
     watchMineBtn.hidden = !mine;
     mineLine.hidden = !mine;
@@ -69,6 +89,7 @@ export function checkExtras(host: ExtrasHost): HTMLElement {
     } finally {
       busy = undefined;
       btn.textContent = label;
+      refresh();
     }
   };
 
@@ -92,19 +113,38 @@ export function checkExtras(host: ExtrasHost): HTMLElement {
       await m.watchMine(project, host.scene, say, signal);
     });
 
-  async function record(): Promise<void> {
+  const remake = () =>
+    job(remakeBtn, '↻ Make the bot’s route again', async (signal) => {
+      if (host.scene === undefined) return;
+      const m = await import('../../../widgets/watchScene');
+      await m.makeBotRoute(project, host.scene, say, signal);
+    });
+
+  async function playAndRecord(): Promise<void> {
     if (host.scene === undefined) return;
     const { playScene } = await import('../../../widgets/playScene');
-    const take = await playScene(project, host.scene);
-    if (!take) return;
-    keepPlay(project, take);
+    const r = await playScene(project, host.scene, host.file);
+    if (r.heatTicks) host.addedHeat(r.heatTicks);
     refresh();
-    toast('Your play is kept: Make a walkthrough plays it for this scene.');
+    if (r.kept) toast('Your play is kept: Make a walkthrough plays it for this scene.');
   }
 
-  const playing = h('div', { class: 'toolbar lc-plays', role: 'group', 'aria-label': 'Watch and play this scene' }, watchBotBtn, recordBtn, watchMineBtn);
-  const el = h('div', { class: 'stack lc-extras' }, h('div', { class: 'toolbar' }, reportBtn), playing, mineLine, said);
+  const playing = h(
+    'div',
+    { class: 'toolbar lc-plays', role: 'group', 'aria-label': 'Play and watch this scene' },
+    playBtn,
+    watchBotBtn,
+    remakeBtn,
+    watchMineBtn,
+  );
+  const el = h('div', { class: 'stack lc-extras' }, h('div', { class: 'toolbar' }, reportBtn), playing, routeLine, mineLine, said);
   playing.hidden = host.scene === undefined;
   refresh();
+  // a map edit can leave the bot's route behind: look again once the edits pause
+  let later: ReturnType<typeof setTimeout> | undefined;
+  const off = project.onChange(() => {
+    clearTimeout(later);
+    later = setTimeout(() => (el.isConnected ? refresh() : off()), 500);
+  });
   return el;
 }

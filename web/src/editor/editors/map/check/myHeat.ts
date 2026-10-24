@@ -9,6 +9,9 @@ import { touchedCells } from '../../../check/sim';
 
 const CELLS = MLEN * MWID;
 
+/** The map's companion section the author's heat map is kept in. */
+export const MY_HEAT = 'myHeat';
+
 /** What the companion keeps (section "myHeat" of the map): sparse, so a short run stays small. */
 export interface MyHeatSaved {
   when: string;
