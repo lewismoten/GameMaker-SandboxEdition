@@ -70,7 +70,7 @@ export const INSTRUCTIONS = [
     'and 9) hop up and sideways;',
     'steer as you fall.',
     '',
-    'SPACE or H: Hallelujah!',
+    'SPACE: Hallelujah!',
   ]),
   page([
     'ROOTS: soft dust gives way to',

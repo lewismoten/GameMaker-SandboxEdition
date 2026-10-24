@@ -113,7 +113,6 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
     f({ pic: 'front', pause: 2 }),
   ];
   set(S[SEQ.joy], joy, { key: KEY.space, sound: SND.joy, norepeat: 1, jstkMov: JOY.any, jstkBut: 1 });
-  set(S[SEQ.joyH], joy, { key: KEY.h, sound: SND.joy, norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // health

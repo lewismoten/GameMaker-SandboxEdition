@@ -2,7 +2,7 @@
 // The little noises are synthesized here (a soft spring for every hop, the scritch of a root, a
 // drip, a chime, a sip of dew, an "eep!", a wilting sigh, a pop, stone crumbling); the singing
 // is cut from the song itself (clips.ts): "...the mustard seed hustle!" or "...got the greatest
-// feet!" for an extra life, "Hallelujah!" for Space and H (up in the sky, "keep the mustard
+// feet!" for an extra life, "Hallelujah!" for Space (up in the sky, "keep the mustard
 // seed hustle alive!"), "Keep on hustlin'" as the sidewalk cracks open, and "Tiny faith can
 // move mountains" each time a boulder moves.
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
