@@ -14,6 +14,7 @@ import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
 import { SEQ, STRAW } from '../ids';
+import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline };
 
@@ -428,13 +429,16 @@ export function buildMonsterBlocks(pal: Pal) {
     if (stage >= 3) p.rect(7, 7, 6, 2, c('berry', 2)).set(5, 16, c('berry', 2));
     return done(p);
   };
+  // The Devil is solid only at his sides: a man who jumps onto his head slides down beside him
+  // (a singe or two) instead of being pushed down into the floor under him.
+  const devil = SOLLEF | SOLRIG;
   for (let s = 0; s < 4; s++) {
-    book.add(`devilA${s}a`, devilA(s, 0), hurt(-12));
-    book.add(`devilA${s}b`, devilA(s, 1), hurt(-12));
+    book.add(`devilA${s}a`, devilA(s, 0), hurt(-12, devil));
+    book.add(`devilA${s}b`, devilA(s, 1), hurt(-12, devil));
   }
   for (let s = 0; s < 4; s++) {
-    book.add(`devilB${s}a`, devilB(s, 0), hurt(-12));
-    book.add(`devilB${s}b`, devilB(s, 1), hurt(-12));
+    book.add(`devilB${s}a`, devilB(s, 0), hurt(-12, devil));
+    book.add(`devilB${s}b`, devilB(s, 1), hurt(-12, devil));
   }
   // a milkshake flying (tumbling), and its splat
   const shake = (f: number) => {
