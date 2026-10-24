@@ -18,6 +18,7 @@ import { MAXIMUS } from './sections/maximus';
 import { SPOTLIGHT } from './sections/spotlight';
 import { BBS_LISTINGS } from './sections/bbsListings';
 import { STORE } from './sections/store';
+import { MUG_AD } from './sections/mugAd';
 import { HARDWARE } from './sections/hardware';
 import { READER_SERVICE } from './sections/readerService';
 import { BACK_COVER } from './sections/backCover';
@@ -44,6 +45,7 @@ export const SECTIONS: MagSection[] = [
   SPOTLIGHT,
   BBS_LISTINGS,
   STORE,
+  MUG_AD,
   HARDWARE,
   READER_SERVICE,
   BACK_COVER,

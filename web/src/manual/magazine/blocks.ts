@@ -72,6 +72,8 @@ export const callouts = (id: ArtId, alt: string, spots: Callout[]): Block => ({ 
 export const covers = (alt: string, list: MiniCover[]): Block => ({ t: 'covers', alt, covers: list });
 /** A reply card's postage side, addressed to the lines of `to`. */
 export const reply = (to: string[]): Block => ({ t: 'reply', to });
+/** A row of mugs, each with a desk mug picture (`design`, a mugArt.ts id) and its name. */
+export const mugs = (list: { design: string; name: string }[]): Block => ({ t: 'mugs', mugs: list });
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */
 export const adPage = (id: string, advertiser: string, blocks: Block[], tone: Tone = 'white'): MagPage => ({ id, kind: 'ad', title: advertiser, tone, blocks });

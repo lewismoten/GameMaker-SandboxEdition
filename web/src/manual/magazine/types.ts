@@ -86,6 +86,11 @@ export type Block =
   | { t: 'covers'; alt: string; covers: MiniCover[] }
   /** A reply card's postage side (replyMail.ts): BUSINESS REPLY MAIL, its bars, and who it goes to. */
   | { t: 'reply'; to: string[] }
+  /**
+   * A row of mugs (mugShelf.ts), each with one of the desk mug's pictures (desk/mug/mugArt.ts
+   * MUG_DESIGNS, by its id) and what that picture is, for its alt text.
+   */
+  | { t: 'mugs'; mugs: { design: string; name: string }[] }
   | { t: 'rule' };
 
 /** One numbered spot on a `callouts` picture: where (percent of its width and height) and what it is. */

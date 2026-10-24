@@ -118,6 +118,9 @@ function walk(b: Block, text: string[], links: string[]): void {
     case 'reply':
       text.push(...b.to);
       break;
+    case 'mugs':
+      text.push(...b.mugs.flatMap((m) => [m.design, m.name]));
+      break;
     case 'rule':
       break;
   }

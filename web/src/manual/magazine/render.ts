@@ -12,6 +12,7 @@ import { discFigure } from './disc';
 import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
 import { MAG } from './masthead';
+import { mugShelf } from './mugShelf';
 import { postnetCode } from './postnet';
 import { replyMail } from './replyMail';
 import type { Block, Inline, PlacedPage, ShotView } from './types';
@@ -251,6 +252,8 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       return coverFan(b);
     case 'reply':
       return replyMail(b);
+    case 'mugs':
+      return mugShelf(b, pending);
     case 'rule':
       return h('hr');
   }
