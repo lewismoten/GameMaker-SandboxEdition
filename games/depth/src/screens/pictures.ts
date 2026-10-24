@@ -198,10 +198,11 @@ export function castPicture(labels = true): Picture {
     [[3.0, -0.5, 0], 'THE CHEZ'],
   ];
   const c = CAST_CAM;
-  for (const [p, s] of names) {
-    const sx = project(c.eye, c.look, p);
-    text(pic, Math.round(sx - s.length * 4), 186, s, rgb(255, 230, 160), 1, { outline: INK });
-  }
+  // each name under its actor, pushed apart where two would run together (Gwinn stands close to Doc Leo)
+  const at = names.map(([p, s]) => ({ s, x: Math.round(project(c.eye, c.look, p) - s.length * 4) })).sort((a, b) => a.x - b.x);
+  for (let i = 1; i < at.length; i++) at[i].x = Math.max(at[i].x, at[i - 1].x + at[i - 1].s.length * 8 + 8);
+  const over = Math.max(0, at[at.length - 1].x + at[at.length - 1].s.length * 8 - 316);
+  for (const l of at) text(pic, l.x - over, 186, l.s, rgb(255, 230, 160), 1, { outline: INK });
   return pic;
 }
 
