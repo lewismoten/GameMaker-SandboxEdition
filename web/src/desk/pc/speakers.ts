@@ -1,6 +1,6 @@
 // A pair of small beige computer speakers either side of the monitor. The right one has
 // the controls: a volume knob (drag it, scroll it or use the arrow keys), a power LED
-// that lights with the PC, and a headphone jack. Under them, the Sound Blaster switch.
+// that lights with the PC, and a headphone jack. Under them, the Sound Boaster switch.
 import './speakers.css';
 import { h } from '../../editor/core/ui';
 import { getVolume, setVolume } from '../../audio/output';
@@ -47,7 +47,7 @@ export function speakers(pc?: BlasterPc): { left: HTMLElement; right: HTMLElemen
     { class: 'speaker right' },
     grille(),
     h('div', { class: 'spk-controls' }, knob(), led, h('span', { class: 'spk-jack', title: 'Headphones' })),
-    // under the controls: the Sound Blaster switch (the card is in the PC; the switch is where you can reach it)
+    // under the controls: the Sound Boaster switch (the card is in the PC; the switch is where you can reach it)
     blasterSwitch(pc),
   );
   return { left, right, power: (on) => led.classList.toggle('on', on) };
