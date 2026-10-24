@@ -39,7 +39,11 @@ function drawCheck(g: CanvasRenderingContext2D, s: number, st: OverlayState): vo
     const x = (m.cell % MLEN) * s;
     const y = Math.floor(m.cell / MLEN) * s;
     g.lineWidth = Math.max(1, s / 10);
-    if (m.kind === 'stuck') {
+    if (s < 8 && m.kind !== 'focus') {
+      // zoomed far out (25%, 10%): too small to hatch or outline, a filled dot in the mark's color
+      g.fillStyle = SMALL[m.kind];
+      g.fillRect(x, y, s, s);
+    } else if (m.kind === 'stuck') {
       // red-orange hatching: stands out from every heat color
       g.strokeStyle = '#ff3b1f';
       g.beginPath();
@@ -68,9 +72,16 @@ function drawCheck(g: CanvasRenderingContext2D, s: number, st: OverlayState): vo
       g.beginPath();
       g.arc(x + s / 2, y + s / 2, s * 0.45, 0, Math.PI * 2);
       g.stroke();
-    } else dashed(g, x - s, y - s, s * 3, s * 3, '#ffd400');
+    } else {
+      // the picked place: at least 16 pixels across, so it shows at every zoom
+      const r = Math.max(s * 3, 16);
+      dashed(g, x + s / 2 - r / 2, y + s / 2 - r / 2, r, r, '#ffd400');
+    }
   }
 }
+
+/** The marks' colors when drawn as filled dots (zoomed out): stuck red-orange, deaths white, findings cyan. */
+const SMALL = { stuck: '#ff3b1f', death: '#fff', finding: '#00e0ff' } as const;
 
 /** Draws the overlay; `imgs` are the background blocks' pictures. */
 export function drawOverlay(c: HTMLCanvasElement, zoom: number, st: OverlayState, imgs: HTMLCanvasElement[]): void {

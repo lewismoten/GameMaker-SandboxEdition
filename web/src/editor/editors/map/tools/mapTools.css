@@ -196,3 +196,21 @@
     grid-template-columns: repeat(6, 44px);
   }
 }
+/* the Level check's tooltip over the map (map.ts): never takes the pointer */
+.mt-tip {
+  position: fixed;
+  z-index: 50;
+  max-width: min(320px, calc(100vw - 8px));
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 0.85rem;
+  line-height: 1.35;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+  pointer-events: none;
+}
+.mt-tip[hidden] {
+  display: none;
+}
