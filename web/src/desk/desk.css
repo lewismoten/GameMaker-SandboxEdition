@@ -823,18 +823,6 @@
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
-/* the CD rests in its box until it is in the drive */
-.gm-box.cd-in .cd-disc {
-  opacity: 0;
-  transform: translateX(30px) scale(0.6);
-}
-
-.gm-box .cd-disc {
-  transition:
-    opacity 0.4s,
-    transform 0.4s;
-}
-
 /* buttons for the disk in drive A:, hanging under the drive */
 .drive-actions {
   position: absolute;
@@ -1294,57 +1282,6 @@
   }
 }
 
-/* the Owner's Guide, lying on the desk */
-.manual-prop {
-  --tilt: 5deg;
-  width: 96px;
-}
-
-.manual-prop .booklet-cover {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  height: 124px;
-  padding: 0 0 8px;
-  overflow: hidden;
-  border-radius: 1px 3px 3px 1px;
-  background: #f0a090;
-  box-shadow:
-    inset 4px 0 0 rgba(0, 0, 0, 0.12),
-    2px 2px 0 #f4efdf,
-    3px 3px 0 #d9d2bc,
-    0 10px 16px rgba(0, 0, 0, 0.45);
-  color: #18150f;
-  text-align: left;
-}
-
-.manual-prop .booklet-cover strong {
-  padding: 8px 6px 6px;
-  background: #0b0b0b;
-  color: #f2e600;
-  font:
-    italic 900 13px/1 'Arial Black',
-    Arial,
-    sans-serif;
-  text-shadow: 1px 1px 0 #1f9a3a;
-}
-
-.manual-prop .booklet-cover span {
-  margin-top: 14px;
-  padding: 0 6px;
-  font:
-    700 12px/1.1 Helvetica,
-    Arial,
-    sans-serif;
-}
-
-.manual-prop .booklet-cover em {
-  padding: 0 6px;
-  font:
-    10px 'Times New Roman',
-    serif;
-}
-
 /* sticky note switching to today's web */
 .sticky {
   position: absolute;
@@ -1589,43 +1526,6 @@
     Helvetica,
     sans-serif;
   text-align: center;
-}
-
-.gm-box .cd-disc {
-  position: absolute;
-  left: -26px;
-  bottom: 34px;
-  z-index: 3;
-  width: 74px;
-  height: 74px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, #222 0 7%, #c9ced6 7% 16%, transparent 16%),
-    radial-gradient(circle, transparent 0 30%, rgba(255, 255, 255, 0.95) 30% 97%, #aab 97%), conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
-  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
-}
-
-.gm-box .cd-disc svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.gm-box .cd-disc .cd-title {
-  fill: #000080;
-  font:
-    900 11px 'Arial Black',
-    Arial,
-    sans-serif;
-}
-
-.gm-box .cd-disc .cd-small {
-  fill: #b0103a;
-  font:
-    700 5.4px Arial,
-    Helvetica,
-    sans-serif;
-  letter-spacing: 0.02em;
 }
 
 /* the external modem (desk/pc/modem.ts), sitting on top of the case */

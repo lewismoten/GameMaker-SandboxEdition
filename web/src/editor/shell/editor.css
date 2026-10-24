@@ -1047,65 +1047,9 @@ dialog.modal .buttons {
   }
 }
 
-.hero-text em {
-  color: #ff8fb0;
-  font:
-    italic 700 13px/1 Arial,
-    sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.hero-logo {
-  margin: 6px 0 10px;
-  color: #f5e600;
-  font:
-    italic 900 clamp(38px, 7vw, 72px)/0.95 'Arial Black',
-    Impact,
-    sans-serif;
-  letter-spacing: -0.01em;
-  text-shadow:
-    4px 4px 0 #1f9a3a,
-    6px 6px 0 #000;
-  transform: skewX(-6deg);
-}
-
-.hero-text p {
-  max-width: 46ch;
-  margin: 0 0 18px;
-  color: #e7e2ff;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 button.big {
   padding: 12px 18px;
   font-size: 16px;
-}
-
-.hero-screen {
-  padding: 14px;
-  border-radius: 16px;
-  background: linear-gradient(160deg, #e8e1cc, #b6ad93);
-  box-shadow:
-    inset 0 2px 0 #fff8,
-    0 10px 20px rgba(0, 0, 0, 0.4);
-}
-
-.hero-screen canvas {
-  display: block;
-  width: 100%;
-  aspect-ratio: 8 / 5;
-  border-radius: 10px;
-  background: #000;
-  box-shadow: inset 0 0 20px #000;
-  image-rendering: pixelated;
 }
 
 .card .card-shot {

@@ -422,25 +422,6 @@ main.credits-page .credits-callout p + p {
 
 /* ---- game authors: a group's intro and two title screens, then its list ---- */
 
-main.credits-page .credits-group-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: start;
-}
-
-main.credits-page .credits-group-head > .credits-group-text {
-  display: contents;
-}
-
-main.credits-page .credits-group-text > p {
-  margin: 0 0 12px;
-}
-
-main.credits-page .credits-group-head .credits-group-text > p {
-  margin: 0;
-}
-
 main.credits-page .credits-games-box {
   margin-top: 8px;
 }
@@ -590,7 +571,6 @@ main.credits-page .bard-table thead th {
   }
 
   main.credits-page .credits-lead-row,
-  main.credits-page .credits-group-head,
   main.credits-page .credits-person {
     grid-template-columns: minmax(0, 1fr);
   }

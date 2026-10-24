@@ -387,8 +387,7 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
   margin-left: 0.35em;
 }
 
-.dos-icon-only .dos-word,
-.dos-sr {
+.dos-icon-only .dos-word {
   position: absolute;
   width: 1px;
   height: 1px;
