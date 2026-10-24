@@ -60,5 +60,24 @@
       "title": "The Home Computer",
       "caption": "Board 19: two pink switches, four relays, and only one right answer"
     }
-  }
+  },
+  "sameEverySide": [
+    "attic.mon#46",
+    "attic.mon#53",
+    "attic.mon#54",
+    "attic.mon#56",
+    "garage.mon#46",
+    "garage.mon#47",
+    "garage.mon#50",
+    "garage.mon#52",
+    "garage.mon#53",
+    "garage.mon#54",
+    "kitchen.mon#47",
+    "kitchen.mon#48",
+    "kitchen.mon#51",
+    "kitchen.mon#52",
+    "kitchen.mon#53",
+    "living.mon#46",
+    "living.mon#52"
+  ]
 }
