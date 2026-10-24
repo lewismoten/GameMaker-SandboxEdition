@@ -1,7 +1,8 @@
 # Tin hearts (and cameos): the recipe
 
 Every Sandbox Software game and every Bard of Bizarre game hides one **tin heart**: a small riveted
-tin heart with a clock face, a nod to the Tin Man and to Lewis's pacemaker (no secret: the cast page and TURBO BUTTON say so). Find them all and Mystery Robot Joe leaves a diamond
+tin heart with a clock face, a nod to the Tin Man and to Lewis's pacemaker (no secret: the cast page and
+TURBO BUTTON say so). Find them all and Mystery Robot Joe leaves a diamond
 heart trophy on the desk. The web counts a game as soon as its `about.json` declares a heart.
 
 In Game-Maker 3.0 a block has no id or sound of its own, so a heart is just a block that gives points
@@ -95,20 +96,19 @@ Draw each with the kit, recolored into the host's palette by nearest color (`kit
 `hostPal` is the host's 768-byte palette; pass `{ use: [...] }` to keep a cameo to the host's
 sprite colors.
 
-| who                              | helper                                                        | notes                                                                              |
-| -------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Mystery Robot Joe                | `joeCameo(hostPal, 'down' \| 'up' \| 'side', step)`           | tin box robot, bulb, glasses, bow tie; a librarian, a counter of things            |
-| Watt                             | `wattCameo(hostPal, 'down' \| 'up' \| 'side', step)`          | repair robot on treads; likes fuse boxes, chargers, circuit boards                 |
+| who | helper | notes |
+| --- | ------ | ----- |
+| Mystery Robot Joe | `joeCameo(hostPal, 'down' \| 'up' \| 'side', step)` | tin box robot, bulb, glasses, bow tie; a librarian, a counter of things |
+| Watt | `wattCameo(hostPal, 'down' \| 'up' \| 'side', step)` | repair robot on treads; likes fuse boxes, chargers, circuit boards |
 | Will (Shakespeare in Sweatpants) | `willCameo(hostPal, { face: 'front' \| 'side', arms, mood })` | bald, ruff, velvet doublet, grey sweatpants, fuzzy slippers; a playwright visiting |
-| Teenage Lewie (Snowbound)        | `lewieCameo(hostPal, 'down0' \| 'side0' …)`                   | red knit hat, red coat, snow shovel; helping out                                   |
-| Carl the fly                     | `carlPic(colors, pose)` in `kit/carlCameo.ts`                 | drawn straight in the host's ramps; "the bug" on any circuit board                 |
-| THE CHEZ                         | `kit/chez.ts`                                                 | the red CitiCar, two blocks, at a curb or in a lot                                 |
+| Teenage Lewie (Snowbound) | `lewieCameo(hostPal, 'down0' \| 'side0' …)` | red knit hat, red coat, snow shovel; helping out |
+| Carl the fly | `carlPic(colors, pose)` in `kit/carlCameo.ts` | drawn straight in the host's ramps; "the bug" on any circuit board |
+| THE CHEZ | `kit/chez.ts` | the red CitiCar, two blocks, at a curb or in a lot |
 
 A game that draws in its own style (as Quest for the Round Tuit draws its townsfolk) may redraw a
 character instead, keeping the look in the table.
 
 The rules (low risk, as for the heart):
-
 - Use free block slots only; never renumber blocks a map, monster or save already uses. Add new
   blocks at the end of a set.
 - A cameo is scenery: not solid unless it stands where a wall already was, with no touch effect and
