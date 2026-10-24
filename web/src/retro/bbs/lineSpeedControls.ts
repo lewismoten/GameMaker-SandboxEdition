@@ -1,7 +1,8 @@
-// The modem's line speed as page controls (retro/bbs/lineSpeed.ts): radio buttons for the desk
-// modem's little menu, a select for the DOS page's ⋯ menu. Both follow a change made anywhere.
+// The modem's line speed as page controls (lineSpeed.ts), for the desk and dos.html alike:
+// radio buttons for the desk modem's little menu, a select for the DOS page's ⋯ menu. Both
+// follow a change made anywhere.
 import { h } from '../../editor/core/ui';
-import { LINE_SPEEDS, lineSpeed, setLineSpeed, speedWords, type LineSpeed } from '../../retro/bbs/lineSpeed';
+import { LINE_SPEEDS, lineSpeed, setLineSpeed, speedWords, type LineSpeed } from './lineSpeed';
 
 const value = (s: LineSpeed) => String(s);
 const parse = (v: string): LineSpeed => (v === 'unlimited' ? v : (Number(v) as LineSpeed));

@@ -7,7 +7,7 @@
 import { h } from '../../editor/core/ui';
 import type { ModemSignal } from '../../retro/bbs/term';
 import { hintText, speedLabel, speedWords } from '../../retro/bbs/lineSpeed';
-import { speedRadios } from './lineSpeedControls';
+import { speedRadios } from '../../retro/bbs/lineSpeedControls';
 
 const LIGHTS = ['HS', 'AA', 'CD', 'OH', 'RD', 'SD', 'TR', 'MR'] as const;
 type Light = (typeof LIGHTS)[number];

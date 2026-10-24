@@ -2,7 +2,7 @@
 // select in the ⋯ menu, and the "speed it up" hint (retro/bbs/lineSpeed.ts) is a small button
 // in the footer row that opens the menu at it. Shown once a call, gone after a while.
 import { h } from '../editor/core/ui';
-import { speedSelect } from '../desk/pc/lineSpeedControls';
+import { speedSelect } from '../retro/bbs/lineSpeedControls';
 import { hintText } from '../retro/bbs/lineSpeed';
 
 const HINT_MS = 14_000;
