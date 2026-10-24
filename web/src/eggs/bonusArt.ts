@@ -5,7 +5,7 @@
 // (rose glaze, piped icing, gold leaf, a nest of spun sugar, a clockwork baker on top).
 // The shells are painted flat and wrapped round the egg shape pixel by pixel, like the felt
 // eggs (eggArt.ts), but lit with a sheen and a bump map so icing stands up and cracks sink.
-import { EGG_ASPECT, TEX_H, TEX_W } from './eggArt';
+import { EGG_ASPECT, radiusAt, rng, TEX_H, TEX_W } from './eggArt';
 
 export { EGG_ASPECT };
 
@@ -26,16 +26,6 @@ export interface Shell {
   gloss: number;
   /** How strongly `height` bends the light. */
   bump: number;
-}
-
-function rng(seed: number): () => number {
-  let s = seed >>> 0 || 1;
-  return () => {
-    s ^= s << 13;
-    s ^= s >>> 17;
-    s ^= s << 5;
-    return (s >>> 0) / 4294967296;
-  };
 }
 
 const canvas = (w: number, h: number) => {
@@ -92,8 +82,6 @@ const readLayer = (c: HTMLCanvasElement): Float32Array => {
 };
 
 // ---- the shell, wrapped and lit -----------------------------------------------------------
-
-const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) * (1 + 0.13 * y);
 
 /** Draws a shell turned by `turn` radians into `box`, through a buffer of at most `res` rows. */
 export function drawShell(g: CanvasRenderingContext2D, shell: Shell, turn: number, box: Box, res = 300): void {

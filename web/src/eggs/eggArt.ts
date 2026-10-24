@@ -6,8 +6,8 @@ import type { EggLook } from './eggs';
 export const TEX_W = 512;
 export const TEX_H = 256;
 
-/** A small seeded random, so an egg's fibers come out the same each time. */
-function rng(seed: number): () => number {
+/** A small seeded random, so an egg's fibers (and a bonus egg's paint) come out the same each time. */
+export function rng(seed: number): () => number {
   let s = seed >>> 0 || 1;
   return () => {
     s ^= s << 13;
@@ -538,7 +538,7 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
 }
 
 /** The egg's half-width at height y (-1 top .. 1 bottom), as a fraction of its half-height. */
-const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) * (1 + 0.13 * y);
+export const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) * (1 + 0.13 * y);
 
 /**
  * Draws the egg turned by `turn` radians (0 shows the front appliqué) into a w x h box at
