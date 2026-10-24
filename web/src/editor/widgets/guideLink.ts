@@ -13,6 +13,8 @@ const TITLES: Record<GuideRef['chapter'], string> = {
   blocks: 'Blocks That Behave',
   logic: 'Counters, Gates and Puzzles',
   show: 'Title Screens and Demos',
+  tricks: 'Tricks From the Sandbox Games',
+  check: 'The Level Check and the Walkthrough Bot',
 };
 
 export function guideLink(g: GuideRef, label?: string): HTMLAnchorElement {

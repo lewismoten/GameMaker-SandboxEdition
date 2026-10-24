@@ -6,7 +6,7 @@ export type Severity = 'error' | 'warning' | 'info';
 
 /** A chapter of The Ultimate Owner's Guide (manual/ultimate/plan.ts ids) and a heading in it. */
 export interface GuideRef {
-  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'show';
+  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'show' | 'tricks' | 'check';
   section: string;
 }
 
@@ -72,8 +72,16 @@ export const CHECKS = {
     guide: L('Hazards that hit where they are drawn'),
   },
   opposites: { name: 'Opposite blocks side by side', why: 'One tap too many takes the hero the wrong way with no warning.', guide: L('Opposites apart') },
-  'hurt-lock': { name: 'Hurts that hold', why: 'Something that holds the hero while it hurts drains a life with no way to dodge.', guide: C('Fair enemies') },
-  'every-tick': { name: 'Scores or heals every tick', why: 'Standing still to farm points or health breaks the game’s balance.', guide: C('Fair enemies') },
+  'hurt-lock': {
+    name: 'Hurts that hold',
+    why: 'Something that holds the hero while it hurts drains a life with no way to dodge.',
+    guide: { chapter: 'tricks', section: 'Hurts that happen once' },
+  },
+  'every-tick': {
+    name: 'Scores or heals every tick',
+    why: 'Standing still to farm points or health breaks the game’s balance.',
+    guide: { chapter: 'tricks', section: 'Cameos that say hello once' },
+  },
   counters: {
     name: 'Counters that run out',
     why: 'Running out of breath, keys or faith before the gate that needs them is a trap.',
