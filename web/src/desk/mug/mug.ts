@@ -57,7 +57,8 @@ export function deskMug(open: () => void): HTMLElement {
   const back = h('canvas', { class: 'mug-layer' });
   const front = h('canvas', { class: 'mug-layer' });
   const pencils = h('div', { class: 'mug-layer' });
-  pencils.innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${PENCILS}</svg>`;
+  pencils.innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><g>${PENCILS}</g></svg>`;
+  const pencilGroup = pencils.querySelector('svg > g')!;
   const el = h('div', { class: 'desk-mug mug-prop', role: 'button', tabindex: '0' }, back, pencils, front);
   const paint = () => {
     const choice = loadMug();
@@ -70,6 +71,11 @@ export function deskMug(open: () => void): HTMLElement {
     const rot = -wrapAngle(size, at.centers[1]);
     // the body fills the same space whatever the size: a taller mug is drawn a little narrower
     const radius = Math.min(31, (70 * size.diameter) / (2 * size.height));
+    const top = 144 - (radius * 2 * size.height) / size.diameter;
+    // the pencils stand in it whatever its size: their ends just inside the rim (they are drawn
+    // for a rim at y 74), drawn together on a narrow tumbler so they fit its mouth
+    const squeeze = Math.min(1, (radius * 1.6) / 36);
+    pencilGroup.setAttribute('transform', `translate(41 ${(top - 74).toFixed(2)}) scale(${squeeze.toFixed(3)} 1) translate(-41 0)`);
     for (const [c, layer] of [
       [back, 'back'],
       [front, 'front'],
@@ -84,7 +90,7 @@ export function deskMug(open: () => void): HTMLElement {
         colors: colorsOf(choice.color),
         rot,
         cx: 41,
-        top: 144 - (radius * 2 * size.height) / size.diameter,
+        top,
         radius,
         layer,
       });
