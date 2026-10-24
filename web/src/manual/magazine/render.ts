@@ -141,9 +141,9 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null,
       );
     case 'piece': {
-      const frame = b.go ? goLink(b.go, where) : h('span', { role: 'img' });
+      // a link is named by its words (hidden text, so it is not at odds with the printed piece's); a picture by its label
+      const frame = b.go ? goLink(b.go, where, h('span', { class: 'sr-only' }, b.alt)) : h('span', { role: 'img', 'aria-label': b.alt });
       frame.classList.add('mag-piece-frame');
-      frame.setAttribute('aria-label', b.alt);
       const fig = h('figure', { class: `mag-piece${b.float ? ` float-${b.float}` : ''}` }, frame);
       const entry = b.game ? env.entry(b.game) : undefined;
       if (!entry && b.piece !== 'ultimate') fig.classList.add('none');
