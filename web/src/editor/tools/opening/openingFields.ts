@@ -1,4 +1,4 @@
-// The opening's fields, shared by "+ Make a new game" and the start scene's "Opening…":
+// The opening's fields, shared by "+ Make a new game" and the start scene's "🎬 Opening sting…":
 // the "Made with Game-Maker" card as an animation, a still picture or none, and an optional
 // name or studio for a "<name> PRESENTS" card. Small and DOM-only, so the home page can
 // show it without loading the card renderer.

@@ -657,6 +657,21 @@ registerEditor(['gam'], (host, project, file) => {
                 },
                 '🤖 Make a walkthrough…',
               ),
+              h(
+                'button',
+                {
+                  onclick: async () => {
+                    const { openingDialog } = await import('../../tools/opening/openingDialog');
+                    if (!(await openingDialog(project, s, game.scenes))) return;
+                    save();
+                    draw();
+                    renderSide();
+                    renderPanel();
+                  },
+                  title: 'Add, change or remove the “Made with Game-Maker: Sandbox Edition” card (and a “presents” card) that plays before the title',
+                },
+                '🎬 Opening sting…',
+              ),
             )
           : null,
         kind === 'adventure' || kind === 'unused'

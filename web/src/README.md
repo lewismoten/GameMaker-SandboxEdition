@@ -125,7 +125,7 @@ made from the game's files; a monster's name for its Cast card is the one the mo
 keeps in the companion, `editors/monsters/monsterNames.ts`); `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
 picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
 
-A new game's opening (`tools/opening/`): "+ Make a new game" and the start scene's 🎬 Opening…
+A new game's opening (`tools/opening/`): "+ Make a new game" and the start scene's 🎬 Opening sting…
 (`openingDialog.ts`) offer the "Made with Game-Maker: Sandbox Edition" card as an animation, a
 still picture or none, and a "<name> PRESENTS" card (`openingFields.ts`). The card is made once by
 `games/kit/madewith.ts` into `public/opening/`; `openingCards.ts` fetches it and draws the presents

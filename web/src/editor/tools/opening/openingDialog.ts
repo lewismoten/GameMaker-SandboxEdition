@@ -1,4 +1,4 @@
-// The start scene's "🎬 Opening…": adds the "Made with Game-Maker: Sandbox Edition" card
+// The start scene's "🎬 Opening sting…": adds the "Made with Game-Maker: Sandbox Edition" card
 // (and a "<name> PRESENTS" card) to a game that has none, changes it, or takes it out again.
 // The integrator saves the scene afterwards; the cards' own files are written here.
 import { h, modal, toast } from '../../core/ui';
@@ -11,7 +11,7 @@ import { openingOf, removeOpening } from './openingWire';
 export async function openingDialog(project: Project, start: Scene, scenes: Scene[]): Promise<boolean> {
   const had = openingOf(project, start);
   const fields = openingFields(had ? { style: had.style, name: had.name } : undefined);
-  const action = await modal<'apply' | 'remove'>(had ? 'Opening' : 'Add an opening', (close) =>
+  const action = await modal<'apply' | 'remove'>(had ? 'Opening sting' : 'Add an opening sting', (close) =>
     h(
       'form',
       {
