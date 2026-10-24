@@ -111,11 +111,15 @@ export function buildGame(levels: Level[], startAt?: string): Game {
       level.files.map((f, k) => (k === 0 ? DARK : k === 9 ? '' : f)),
     );
     drive.links[0] = { ...level.links[0] };
-    level.links[0] = { toScene: at + 2, from: l.exit, to: l.exit };
-    level.links[1] = { toScene: at, from: n.door, to: n.room };
+    // the nook's door first and the way out second: the order the Integrator's arranger
+    // reads the scenes in, so it lays the nook out with no links crossing (the engine takes
+    // whichever link Teddy touches, so the order changes nothing in play)
+    const out = { toScene: at + 2, from: l.exit, to: l.exit };
+    level.links[0] = { toScene: at, from: n.door, to: n.room };
+    level.links[1] = out;
     level.files[10] = '';
     room.links[0] = { toScene: at + 1, from: n.out, to: n.back };
-    again.links[0] = { ...level.links[0] };
+    again.links[0] = { ...out };
     game.scenes.push(room, again, drive);
   });
 
