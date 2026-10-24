@@ -1,5 +1,5 @@
 // Totals counted from the games catalog: every Sandbox game played, every Bard of Bizarre game
-// played, every walkthrough watched. The catalog given out (loadGameList) already leaves out a
+// played, every Teddy game finished, every walkthrough watched. The catalog given out (loadGameList) already leaves out a
 // game that is kept out of sight until it is found, so such a game never counts, and is never
 // named, until the lists show it anyway.
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
@@ -10,7 +10,10 @@ import { currentAchievements, loadAchievements, progress, remember } from './sto
 type Listed = Pick<CatalogEntry, 'id' | 'original' | 'company' | 'series' | 'walkthrough'>;
 
 /** Which set of the record each catalog goal counts. */
-export const GOAL_SET: Partial<Record<Goal, string>> = { sandbox: 'played', bizarre: 'played', walkthroughs: 'watched' };
+export const GOAL_SET: Partial<Record<Goal, string>> = { sandbox: 'played', bizarre: 'played', teddy: 'finished', walkthroughs: 'watched' };
+
+/** A Teddy game: Sandbox Software's teddy, teddy2, teddy3… (a new one counts once the catalog lists it). */
+const isTeddyGame = (g: Listed) => isSandboxGame(g) && /^teddy\d*$/.test(g.id);
 
 /** The catalog games a goal counts. */
 export function goalTargets(catalog: readonly Listed[], goal: Goal): string[] {
@@ -19,9 +22,11 @@ export function goalTargets(catalog: readonly Listed[], goal: Goal): string[] {
       ? isSandboxGame
       : goal === 'bizarre'
         ? isBizarreGame
-        : goal === 'walkthroughs'
-          ? (g: Listed) => !!g.original && !!g.walkthrough
-          : () => false;
+        : goal === 'teddy'
+          ? isTeddyGame
+          : goal === 'walkthroughs'
+            ? (g: Listed) => !!g.original && !!g.walkthrough
+            : () => false;
   return catalog.filter((g) => pick(g as CatalogEntry)).map((g) => g.id);
 }
 
@@ -48,6 +53,14 @@ export async function notePlayed(gameId: string | undefined): Promise<void> {
   const id = gameId?.replace(/^game:/, '');
   if (!id || gameId?.startsWith('project:')) return;
   await remember('played', id);
+  await refreshGoals();
+}
+
+/** A catalog game was played to its ending (the Game Won scene). */
+export async function noteFinished(gameId: string | undefined): Promise<void> {
+  const id = gameId?.replace(/^game:/, '');
+  if (!id || gameId?.startsWith('project:')) return;
+  await remember('finished', id);
   await refreshGoals();
 }
 

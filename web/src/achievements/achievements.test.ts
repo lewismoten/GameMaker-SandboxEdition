@@ -150,6 +150,43 @@ describe('achievements catalog', () => {
   });
 });
 
+describe('where they fire', () => {
+  // every id the site fires by name: unlockAchievement('x'), progress('x', …), tally('x', …),
+  // a prop's achieve('x') or pressable(…, { id: 'x' }), and a gm-achievement event's detail
+  const src = join(__dirname, '..');
+  const fired = new Set<string>();
+  const walk = (dir: string) => {
+    for (const f of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, f.name);
+      if (f.isDirectory()) walk(p);
+      else if (/\.ts$/.test(f.name) && !/\.test\.ts$/.test(f.name)) {
+        const text = readFileSync(p, 'utf8');
+        const res = [
+          /\b(?:unlockAchievement|achieve|progress|tally)\('([\w-]+)'/g,
+          /\{ id: '([\w-]+)'(?:, title|\s*\})/g,
+          /detail: \{ id: '([\w-]+)' \}/g,
+          /^\s*\w+: '(desk-[\w-]+)',$/gm, // DESK_PROGRAMS
+        ];
+        for (const re of res) for (const m of text.matchAll(re)) fired.add(m[1]);
+      }
+    }
+  };
+  walk(src);
+
+  it('fires only ids the catalog has', () => {
+    const unknown = [...fired].filter((id) => /^(desk|bbs|tty|check|make|watch|print|play|link)-/.test(id) && !achievementById(id));
+    expect(unknown).toEqual([]);
+  });
+
+  it('fires every achievement somewhere', () => {
+    // the ones fired from a computed id or a count: the Download chooser's export-<kind>, the
+    // derived totals, and the tin hearts and felt eggs counted in start.ts
+    const counted = (id: string) => /^export-/.test(id) || !!achievementById(id)?.from || /^(heart|egg)-/.test(id);
+    const never = ACHIEVEMENTS.filter((a) => !fired.has(a.id) && !counted(a.id)).map((a) => a.id);
+    expect(never).toEqual([]);
+  });
+});
+
 describe('derived totals', () => {
   const catalog = [
     { id: 'a', original: {}, company: 'Sandbox Software', walkthrough: 'w/a.json' },
@@ -162,6 +199,18 @@ describe('derived totals', () => {
     expect(goalTargets(catalog, 'sandbox')).toEqual(['a', 'b']);
     expect(goalTargets(catalog, 'bizarre')).toEqual(['c']);
     expect(goalTargets(catalog, 'walkthroughs')).toEqual(['a', 'c']);
+  });
+
+  it('counts every listed Teddy game, so a new one in the catalog raises the total', () => {
+    const teddies = [
+      { id: 'teddy', original: {}, company: 'Sandbox Software' },
+      { id: 'teddy2', original: {}, company: 'Sandbox Software' },
+      { id: 'teddyfan', original: {}, company: 'Sandbox Software' },
+      { id: 'teddy4' },
+    ] as never[];
+    expect(goalTargets(teddies, 'teddy')).toEqual(['teddy', 'teddy2']);
+    expect(goalTargets([...teddies, { id: 'teddy3', original: {}, company: 'Sandbox Software' }] as never[], 'teddy')).toEqual(['teddy', 'teddy2', 'teddy3']);
+    expect(goalProgress(goalTargets(teddies, 'teddy'), ['teddy'])).toEqual({ n: 1, of: 2 });
   });
 
   it('counts only listed games as done (one played but not listed adds nothing)', () => {

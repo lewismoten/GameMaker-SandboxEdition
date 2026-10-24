@@ -4,7 +4,7 @@
 // See catalog.ts for the ids, store.ts for how they are kept, start.ts for the gm-achievement event.
 import type { Session } from '../engine/scene';
 import { EDIT_KINDS } from './catalog';
-import { notePlayed, noteWatched } from './goals';
+import { noteFinished, notePlayed, noteWatched } from './goals';
 import { tally, unlockAchievement } from './store';
 
 export { unlockAchievement, progress, tally } from './store';
@@ -48,8 +48,10 @@ export function playAchievements(saveId: string | undefined): { onSession?: (s: 
     onSession: (s) => (session = s),
     onScene: (scene) => {
       if (!session || session.rec.playing) return;
-      if (scene === 1) unlockAchievement('play-finish');
-      else if (!counted) {
+      if (scene === 1) {
+        unlockAchievement('play-finish');
+        void noteFinished(saveId);
+      } else if (!counted) {
         counted = true;
         unlockAchievement('play-first');
         void notePlayed(saveId);

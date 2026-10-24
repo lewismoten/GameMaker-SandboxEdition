@@ -15,12 +15,12 @@ export const CATEGORIES: { id: Category; title: string; blurb: string }[] = [
   { id: 'playing', title: 'Playing', blurb: 'The games on the shelf and the BBS.' },
   { id: 'watching', title: 'Watching', blurb: 'Walkthroughs and recordings.' },
   { id: 'desk', title: 'The 1994 desk', blurb: 'The PC, DOS and the programs on it.' },
-  { id: 'fun', title: 'Around the site', blurb: 'The cast and the help pages.' },
+  { id: 'fun', title: 'Around the site', blurb: 'The cast, the help pages and what comes in the boxes.' },
   { id: 'found', title: 'Found it', blurb: 'Little things to find. Look around.' },
 ];
 
 /** What a derived total counts (goals.ts). */
-export type Goal = 'sandbox' | 'bizarre' | 'walkthroughs' | 'hearts' | 'eggs';
+export type Goal = 'sandbox' | 'bizarre' | 'teddy' | 'walkthroughs' | 'hearts' | 'eggs';
 
 export interface Achievement {
   id: string;
@@ -75,6 +75,8 @@ export const DESK_PROPS = [
   'desk-aurora',
   'desk-mailtruck',
   'desk-zine',
+  'desk-light',
+  'desk-glance',
 ] as const;
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
@@ -108,6 +110,10 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     items: EXPORT_PLATFORMS,
     unit: 'platforms',
   },
+  { id: 'check-run', title: 'Check-up', desc: 'Ran the Level check on a map.', icon: '🩺', category: 'making' },
+  { id: 'check-fix', title: 'Quick fix', desc: 'Applied a ✨ fix from the Level check.', icon: '✨', category: 'making' },
+  { id: 'check-upload', title: 'Ready to upload', desc: 'Ticked every box on the Before You Upload checklist.', icon: '✅', category: 'making' },
+  { id: 'make-walk', title: 'Let the bot play', desc: 'Made a walkthrough of your game with the 🤖 walkthrough bot.', icon: '🤖', category: 'making' },
 
   // playing
   { id: 'play-first', title: 'Player one', desc: 'Played a game.', icon: '🎮', category: 'playing' },
@@ -129,6 +135,15 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '🎻',
     category: 'playing',
     from: 'bizarre',
+    unit: 'games',
+  },
+  {
+    id: 'play-teddy',
+    title: 'Good dog!',
+    desc: 'Played every Teddy game all the way to its ending.',
+    icon: '🐶',
+    category: 'playing',
+    from: 'teddy',
     unit: 'games',
   },
   { id: 'saves-panel', title: 'Keeping score', desc: 'Looked through a game’s saves and high scores.', icon: '🏆', category: 'playing' },
@@ -165,6 +180,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     from: 'walkthroughs',
     unit: 'walkthroughs',
   },
+  { id: 'watch-seek', title: 'Skip ahead', desc: 'Jumped around a walkthrough with its seek bar.', icon: '⏭️', category: 'watching' },
+  { id: 'watch-bot', title: 'Robot rerun', desc: 'Watched a walkthrough the 🤖 walkthrough bot made, as far as it got.', icon: '📽️', category: 'watching' },
   { id: 'record-video', title: 'Rolling', desc: 'Recorded a video of the screen.', icon: '🎥', category: 'watching' },
   { id: 'download-mp4', title: 'Director’s cut', desc: 'Downloaded a walkthrough as an MP4 video.', icon: '🎞️', category: 'watching' },
 
@@ -206,6 +223,19 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     hidden: true,
     hint: 'Somebody on the Sandbox is waiting for your move.',
   },
+  {
+    id: 'bbs-door-three',
+    title: 'Best of three',
+    desc: 'Played three games of tic-tac-toe by modem, rematches and all.',
+    icon: '🔁',
+    category: 'desk',
+    of: 3,
+    unit: 'games',
+  },
+  { id: 'tty-call', title: 'Typed hello', desc: 'Called Mrs. Novak’s TTY from TERMINAL in TDD mode.', icon: '📠', category: 'desk' },
+  { id: 'tty-sk', title: 'SK SK', desc: 'Talked with Mrs. Novak on her TTY until you both signed off with SK.', icon: '👋', category: 'desk' },
+  { id: 'tty-wallphone', title: 'Wrong kind of phone', desc: 'Dialed Mrs. Novak from the wall phone and heard her TTY warble.', icon: '☎️', category: 'desk' },
+  { id: 'desk-time-reset', title: 'Back to now', desc: 'Set the PC’s clock back to the real time with TIME RESET.', icon: '⏰', category: 'desk' },
   { id: 'desk-hexedit', title: 'Byte by byte', desc: 'Looked inside a file with HEXEDIT.', icon: '🔢', category: 'desk' },
   { id: 'desk-savehack', title: 'Save scummer', desc: 'Ran SAVEHACK, the saved game editor.', icon: '🛠️', category: 'desk' },
   { id: 'desk-backup', title: 'Safe and sound', desc: 'Ran BACKUP.', icon: '🗄️', category: 'desk' },
@@ -236,6 +266,9 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     items: HELP_PAGES,
     unit: 'pages',
   },
+  { id: 'print-level-maps', title: 'Map reader', desc: 'Opened a game’s Level Maps.', icon: '🗺️', category: 'fun' },
+  { id: 'print-world-map', title: 'Fold-out', desc: 'Unfolded a game’s World Map.', icon: '🧭', category: 'fun' },
+  { id: 'link-in', title: 'Special delivery', desc: 'Opened a game sent from another site.', icon: '📬', category: 'fun' },
 
   // found it (the desk's room; reported by gm-achievement events)
   {
@@ -417,6 +450,24 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     category: 'found',
     hidden: true,
     hint: 'A cereal-box prize is hiding on the desk.',
+  },
+  {
+    id: 'desk-light',
+    title: 'Who turned on the lights?',
+    desc: 'Flipped the overhead light switch on the wall.',
+    icon: '🔆',
+    category: 'found',
+    hidden: true,
+    hint: 'Somewhere on the wall, a switch is waiting.',
+  },
+  {
+    id: 'desk-glance',
+    title: 'Caught looking',
+    desc: 'Caught Doc Leo glancing aside and smiling on his velvet poster.',
+    icon: '😉',
+    category: 'found',
+    hidden: true,
+    hint: 'Keep an eye on the velvet poster. Now and then it looks back.',
   },
 ];
 
