@@ -121,7 +121,7 @@ export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'mus
 export type WebShot = (typeof WEB_SHOTS)[number];
 
 /** Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web. */
-export type ArtId = 'chez' | 'sandbox' | 'barcode' | 'disk' | 'modem' | 'speakers' | 'diskbox' | 'desk' | `web-${WebShot}`;
+export type ArtId = 'chez' | 'sandbox' | 'barcode' | 'disk' | 'modem' | 'speakers' | 'diskbox' | 'desk' | 'gamepad' | `web-${WebShot}`;
 
 export interface MagPage {
   /** For go:mag/<id> links; a section's first page gets the section's id. */

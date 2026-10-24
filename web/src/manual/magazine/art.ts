@@ -1,7 +1,7 @@
 // The magazine's drawn pictures (types.ts ArtId): THE CHEZ (desk/props/chezArt.ts), the Sandbox
 // Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, and the desk's
 // modem (modemArt.ts), speakers and disk box drawn as the desk draws them
-// (speakerArt.ts, diskBoxArt.ts) for the hardware ads; and a snapshot of the 1994 desk itself
+// (speakerArt.ts, diskBoxArt.ts) and the game pad as the desk's (desk/pc/gamePadArt.ts) for the hardware ads; and a snapshot of the 1994 desk itself
 // (deskShot.ts) and screenshots of today's web (webShots.ts).
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
@@ -10,6 +10,7 @@ import { hashString } from '../printables/kit';
 import type { ArtId, WebShot } from './types';
 import { deskShotImg } from './deskShot';
 import { diskBoxArt } from './diskBoxArt';
+import { gamePadArt } from '../../desk/pc/gamePadArt';
 import { modemArt } from './modemArt';
 import { speakerArt } from './speakerArt';
 import { webShotImg } from './webShots';
@@ -69,6 +70,8 @@ export function artElement(id: ArtId, alt: string): Element {
       return diskBoxArt(alt);
     case 'desk':
       return deskShotImg(alt);
+    case 'gamepad':
+      return gamePadArt({ shaft: true, alt });
     case 'chez': {
       const k = 8;
       const c = h('canvas', { width: 44 * k, height: 24 * k });

@@ -11,7 +11,7 @@ export interface DeskHooks {
   /** Runs TERMINAL; with a board ('sandbox', 'sofa'), it dials that board. */
   bbs(board?: string): void;
   gm(): void;
-  /** Looks at a prop (modem, diskbox, speakers, mug, gmbox, catalog), opening it where it opens. */
+  /** Looks at a prop (modem, diskbox, speakers, gamepad, mug, gmbox, catalog), opening it where it opens. */
   look(prop: string): void;
 }
 

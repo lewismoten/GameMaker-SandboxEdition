@@ -1,5 +1,6 @@
 // Full-page ads for the desk's hardware: the modem and its line speeds (retro/bbs/lineSpeed.ts),
-// the disk box, and the ILLOGITECH speakers with the Sound Blaster switch (desk/pc/). The makers
+// the disk box, the ILLOGITECH speakers with the Sound Blaster switch, and the GRAVITAS game pad
+// (desk/pc/). The makers
 // are made up (only the historical names stay: Sound Blaster, VGA, MS-DOS); prices are part of
 // the story, and each ad's button looks at its prop on the desk, where it is free.
 import { LINE_SPEEDS, connectLine, speedWords } from '../../../retro/bbs/lineSpeed';
@@ -183,9 +184,81 @@ const speakersAd = () =>
     'yellow',
   );
 
+const gamePadAd = () =>
+  adPage(
+    'hardware-4',
+    'Gravitas',
+    [
+      adframe(
+        'IT’S NUTS HOW WELL IT PLAYS',
+        [
+          grid(
+            [
+              [
+                art(
+                  'gamepad',
+                  'The GRAVITAS PC GamePad, light gray and shaped like a peanut in its shell: a purple eight-way d-pad on the left end, red, yellow, green and blue buttons in a diamond on the right, and its white joystick shaft lying unscrewed in front of it',
+                ),
+              ],
+              [
+                p(
+                  'Arcade games were made for thumbs. The **GRAVITAS PC GamePad** puts a real game pad on your PC, ergonomically shaped like your favorite snack.',
+                ),
+                list([
+                  'A **purple 8-way d-pad** that rocks under your thumb, diagonals and all',
+                  '**Four buttons**, red, yellow, green and blue, right where your other thumb lands',
+                  'Plugs into the **game port** on your sound card or I/O card. Nothing to install',
+                ]),
+              ],
+            ],
+            0.3,
+          ),
+          side(
+            'A STICK WHEN YOU WANT ONE',
+            [
+              p(
+                'The joystick shaft **screws into the middle of the d-pad**. Twist it in for a flight game; twist it out for everything else. Most players leave it in the desk drawer.',
+              ),
+            ],
+            'yellow',
+          ),
+          side(
+            'FOUR BUTTONS, ONE PLUG',
+            [
+              p(
+                'A PC game port has room for two joysticks. The pad borrows the **second joystick’s button lines** for buttons 3 and 4, so one plug gives you four. Games that read two buttons get red and yellow; Game-Maker games read the d-pad and those two.',
+              ),
+            ],
+            'cyan',
+          ),
+          card(
+            'SHELL OUT FOR THE BEST',
+            [
+              'GRAVITAS PC GamePad, 8-way d-pad, 4 buttons, screw-in shaft ..... **$24.95**',
+              'GRAVITAS Joystick, two-button flight stick ..... **$33.95**',
+              'Now in Honey Roasted Purple',
+            ],
+            {
+              fields: ['Name', 'City, State, ZIP'],
+              go: 'go:desk/gamepad',
+              button: 'Play with the pad on the desk',
+            },
+          ),
+        ],
+        {
+          burst: '4 BUTTONS!',
+          sub: 'From Gravitas: *serious about fun.*',
+          small: `${FREE} Not edible. Do not dip in chocolate. The pad is on the desk, free, left of the keyboard, with its shaft lying beside it.`,
+          tone: 'white',
+        },
+      ),
+    ],
+    'pink',
+  );
+
 export const HARDWARE: MagSection = {
   id: 'hardware',
   title: 'Hardware',
   toc: false,
-  pages: (ctx) => [modemAd(), diskBoxAd(ctx), speakersAd()],
+  pages: (ctx) => [modemAd(), diskBoxAd(ctx), speakersAd(), gamePadAd()],
 };

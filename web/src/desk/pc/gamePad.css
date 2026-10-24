@@ -65,7 +65,7 @@
     order: 1;
     width: min(300px, 86%);
     /* clear of the keyboard's front edge, which its tilt brings forward further on a wider screen */
-    margin: max(14px, 6%) auto 13%;
+    margin: max(14px, 6%) auto 2%;
   }
 
   .kb-tray .gp-cord {

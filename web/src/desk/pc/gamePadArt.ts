@@ -1,4 +1,5 @@
-// The GRAVITAS GamePad drawn (gamePadArt.css): a gray two-lobed pad, its purple d-pad on the
+// The GRAVITAS GamePad drawn (gamePadArt.css): a gray pad shaped like a peanut in its shell (a
+// faint net of shell texture, two round lobes pinched at the waist), its purple d-pad on the
 // left with the brass socket the joystick shaft screws into, and four colored buttons in a
 // diamond on the right. A picture only, sized by its box: the desk's pad (gamePad.ts) and its
 // large controls press it, and TURBO BUTTON's ad (manual/magazine/sections/hardware.ts) shows it.
@@ -13,8 +14,8 @@ export const PAD_BUTTONS = [
   { n: 4, color: 'blue', at: 'top' },
 ] as const;
 
-/** The shell's outline in its 200 x 100 box: two round lobes and a narrow waist. */
-const SHELL = 'M50 3C75 3 84 21 100 21S125 3 150 3a47 47 0 0 1 0 94C125 97 116 79 100 79S75 97 50 97a47 47 0 0 1 0-94Z';
+/** The shell's outline in its 200 x 100 box: two round lobes pinched in at the waist, a peanut in its shell. */
+const SHELL = 'M50 3C76 3 83 29 100 29S124 3 150 3a47 47 0 0 1 0 94C124 97 117 71 100 71S76 97 50 97a47 47 0 0 1 0-94Z';
 
 /** The rows of grip dots round each lobe's outer edge. */
 function gripDots(): string {
@@ -37,10 +38,12 @@ let made = 0;
 const shellSvg = (id: string) => `<svg class="gp-shell" viewBox="0 0 200 100" aria-hidden="true">
   <defs>
     <linearGradient id="${id}" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#eeeeec"/><stop offset="0.55" stop-color="#d4d4d1"/><stop offset="1" stop-color="#a9a9a6"/></linearGradient>
+    <pattern id="${id}-net" width="7" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-14)"><path d="M0 3Q1.75 0.6 3.5 3T7 3M1.75 6Q3.5 3.6 5.25 6" fill="none" stroke="#5a5040" stroke-opacity="0.09" stroke-width="0.6"/></pattern>
   </defs>
   <path d="${SHELL}" fill="#7d7d7a" transform="translate(0 2.5)"/>
   <path d="${SHELL}" fill="url(#${id})" stroke="#8e8e8a" stroke-width="0.8"/>
-  <path d="M97 47 105 78.6" stroke="#9a9a96" stroke-width="0.9"/>
+  <path d="${SHELL}" fill="url(#${id}-net)"/>
+  <path d="M97.5 48 103 70.6" stroke="#9a9a96" stroke-width="0.9"/>
   <circle cx="50" cy="50" r="30" fill="#c4c4c0" stroke="#a3a39f" stroke-width="0.8"/>
   <circle cx="150" cy="50" r="30" fill="#cdcdc9" stroke="#adada9" stroke-width="0.6"/>
   <g fill="#8f8f8b">${gripDots()}</g>
@@ -57,7 +60,7 @@ const shellSvg = (id: string) => `<svg class="gp-shell" viewBox="0 0 200 100" ar
 export function gamePadArt(opts: { shaft?: boolean; alt?: string } = {}): HTMLElement {
   const art = h(
     'span',
-    { class: 'gp-art', ...(opts.alt ? { role: 'img', 'aria-label': opts.alt } : { 'aria-hidden': 'true' }) },
+    { class: `gp-art${opts.shaft ? ' with-shaft' : ''}`, ...(opts.alt ? { role: 'img', 'aria-label': opts.alt } : { 'aria-hidden': 'true' }) },
     h('span', { class: 'gp-shell-box' }),
     h('span', { class: 'gp-dpad', dataset: { pos: '0' } }, h('span', { class: 'gp-cross' }), h('span', { class: 'gp-socket' })),
     ...PAD_BUTTONS.map((b) => h('span', { class: `gp-btn ${b.color} at-${b.at}`, dataset: { b: String(b.n) } })),

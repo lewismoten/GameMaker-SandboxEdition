@@ -146,6 +146,11 @@
     0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
+/* room under the pad for the shaft lying in front of it */
+.gp-art.with-shaft {
+  margin-bottom: 11%;
+}
+
 /* the joystick shaft, unscrewed and lying in front of the pad: a white tube, its brass screw end toward the pad */
 .gp-shaft {
   position: absolute;
@@ -174,4 +179,9 @@
   .gp-btn {
     transition: transform 0.05s;
   }
+}
+
+/* in TURBO BUTTON's ad (an art block): the column sets its width, not the drawing */
+.mag-art.art-gamepad {
+  container-type: inline-size;
 }

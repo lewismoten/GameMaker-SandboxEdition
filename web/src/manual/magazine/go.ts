@@ -35,7 +35,7 @@ export type Where = 'desk' | 'web';
 /** What each kind takes. */
 const NEEDS_GAME = new Set<GoKind>(['play', 'game', 'manual', 'hints', 'newsletter']);
 export const CATALOGS = ['sandbox', 'bard', 'shareware'] as const;
-export const DESK_PROPS = ['', 'modem', 'diskbox', 'speakers', 'mug', 'gmbox', 'catalog'] as const;
+export const DESK_PROPS = ['', 'modem', 'diskbox', 'speakers', 'gamepad', 'mug', 'gmbox', 'catalog'] as const;
 /** The boards TERMINAL dials by name (retro/bbs/bbs.ts); '' opens its dialing directory. */
 export const BBS_BOARDS = ['', 'sandbox', 'sofa'] as const;
 export const ROUTES = ['cast', 'credits', 'achievements', 'mac', 'windows', 'linux'] as const;
