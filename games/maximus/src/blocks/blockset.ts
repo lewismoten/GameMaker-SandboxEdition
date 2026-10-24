@@ -56,6 +56,17 @@ export class SetBuilder {
     return i;
   }
 
+  /** Gives the slot of block `old` (which nothing may point to) to a new block. */
+  swap(old: string, name: string, p: Pixels, props: BlockProps = {}): number {
+    const i = this.id(old);
+    if (this.links.some((l) => l.next === old || l.touch === old)) throw new Error(`${this.name}: ${old} is still pointed to`);
+    this.names.delete(old);
+    this.used.delete(i);
+    this.links = this.links.filter((l) => l.i !== i);
+    Object.assign(this.blocks[i], emptyBlock(i));
+    return this.add(name, p, props, i);
+  }
+
   id(name: string): number {
     const i = this.names.get(name);
     if (i === undefined) throw new Error(`${this.name}: no block ${name}`);

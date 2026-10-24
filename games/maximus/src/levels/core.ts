@@ -58,10 +58,10 @@ export function maelstromMap(s: SetBuilder, ms: MonsterSet): MaelstromResult {
   for (let y = end.y - 4; y <= end.y - 1; y++) for (let x = end.x - 3; x <= end.x + 3; x++) g.set(x, y, s.id(`hull:${(x + y) & 3}`), true);
   const citadel = { x: end.x, y: end.y - 1 };
   g.set(citadel.x, citadel.y, s.id('dock'), true);
-  // supplies along the way
+  // loot along the way, but no hearts: the storm costs what it costs
   for (let k = 0; k < 14; k++) {
     const p = path[8 + Math.floor((k * (path.length - 16)) / 14)];
-    g.set(wx(p.x + Math.floor(r() * 9) - 4), p.y, s.id(k % 3 === 0 ? 'p:heart' : k % 3 === 1 ? 'p:credit' : 'p:gem'));
+    g.set(wx(p.x + Math.floor(r() * 9) - 4), p.y, s.id(k % 3 === 1 ? 'p:credit' : 'p:gem'));
   }
   // the storm: all 200 monster slots, indestructible rocks and lightning (weapons are
   // useless here - there is no free slot left for a single bolt)
@@ -91,7 +91,12 @@ export interface HeartResult {
   exit: P;
 }
 
-/** The Heart: a long hall, the Guardian's armored face across it, the exit beyond. */
+/**
+ * The Heart: a long hall, the Guardian's armored face across it, the exit beyond. Down the
+ * Guardian's middle runs the seal, which opens only to the Core's light: the Heart Eye
+ * circles before it, and three hits (plasma, a shield orb, or ramming it) set that light
+ * free as the Core Light (src/characters/fauna/heart.ts), which flies to the courier.
+ */
 export function heartMap(s: SetBuilder, ms: MonsterSet): HeartResult {
   const r = rng(4747);
   const g = new Grid();
@@ -133,16 +138,26 @@ export function heartMap(s: SetBuilder, ms: MonsterSet): HeartResult {
   g.set(exit.x, exit.y, id('teleport'), true);
   g.set(exit.x, exit.y - 1, id('teleport'), true);
   g.set(exit.x - 1, exit.y, id('p:oneup'), true);
-  // the Guardian: a wall of armor plates across the whole hall at x 76..78; the Heart's
-  // eye roams in front of it. Plasma cracks plates (twice each); the eye falls only to a
-  // shield orb.
+  // the Guardian: armor plates on either side of the seal at x 76..78 (plasma cracks a
+  // plate twice; shouldering into one cracks it too, for a few hit points). The seal down
+  // the middle opens a block at a touch, once the Core Light has charged it.
   const plate = ms.index.get('Guardian Plate')!;
-  for (let y = top; y < floor; y++) for (let x = 76; x <= 78; x++) if ((x + y) % 2 === 0 || x === 77) g.place(plate, x, y);
-  g.place(ms.index.get('Heart Eye')!, 70, 46);
-  g.place(ms.index.get('Overseer')!, 60, 42);
+  for (let y = top; y < floor; y++) {
+    for (const x of [76, 78]) if ((x + y) % 2 === 0) g.place(plate, x, y);
+    g.set(77, y, id('seal'), true);
+  }
+  // behind the Guardian, the Core's own reactor waits by the exit
+  g.set(82, top + 6, id('reactor:0'));
+  g.set(83, top + 6, id('reactor:1'));
+  g.set(82, top + 7, id('reactor:2'));
+  g.set(83, top + 7, id('reactor:3'));
+  // the eye circles in front of the seal and swoops at a courier who comes near; the
+  // Tesla Orbs keep to the near half of the hall, clear of the fight (they would snuff
+  // out the eye or its spark)
+  g.place(ms.index.get('Heart Eye')!, 68, 52);
   g.place(ms.index.get('Hunter-Killer')!, 50, 44);
   g.place(ms.index.get('Hunter-Killer')!, 40, 44);
-  for (let k = 0; k < 6; k++) g.place(ms.index.get('Tesla Orb')!, 24 + k * 9, floor - 6 - (k % 2) * 4);
+  for (let k = 0; k < 4; k++) g.place(ms.index.get('Tesla Orb')!, 24 + k * 9, floor - 6 - (k % 2) * 4);
   void r;
   return { grid: g, arrive, back, exit };
 }

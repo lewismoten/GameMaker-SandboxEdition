@@ -35,7 +35,7 @@ SCENE FILE-NAME POOL
   Limit: 65,520 bytes
          (PLAYGAME clamps it
          at 0xFFF0)
-  Used:  2922 bytes
+  Used:  2952 bytes
   Where: MAXIMUS.GAM
 
 LINKS PER SCENE
@@ -68,17 +68,20 @@ MONSTERS PLACED ON A MAP
   Used:  200 in the Maelstrom
          (every slot: not one
          left for a shot);
-         7327 in all
+         6705 in all
   Where: MAEL.MAP
 
 MONSTERS IN A .MON
   Limit: 64
-  Used:  64 in each of 8 files
-         (512 monsters: 4
+  Used:  64 in each of 9 files
+         (576 monsters: 4
          families of 44
          creatures, each in an
          easy and a hard
-         edition, plus the
+         edition, the Heart's
+         own file with the
+         boss's three later
+         phases, plus the
          courier's own shots
          and loot)
   Where: *.MON
@@ -106,10 +109,10 @@ PATH CORNERS PER MONSTER
 
 MONSTER BLOCKS IN A .MBL
   Limit: 100
-  Used:  100 in each of 4
+  Used:  100 in each of 5
          files
-  Where: LAND/SEA/SPACE/
-         MECH.MBL
+  Where: LAND/SEA/SPACE/MECH/
+         HEART.MBL
 
 BACKGROUND BLOCKS IN A .BBL
   Limit: 150

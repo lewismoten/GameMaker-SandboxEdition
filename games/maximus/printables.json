@@ -711,6 +711,10 @@
             {
               "q": "Something in the Maelstrom cannot be hurt.",
               "a": "The Phantom, magma and tumbling asteroids cannot be hurt at all. Keep moving."
+            },
+            {
+              "q": "The Guardian's seal won't open.",
+              "a": "Only the Core's own light opens it. Crack the Heart Eye three times: a plasma bolt or a shield orb does it cleanly, and ramming it works but hurts. Each time it reels away, then comes back faster. The third time its light flies to you, and the seal opens at a touch."
             }
           ]
         },

@@ -10,8 +10,10 @@ import { monsterSet, type MonsterSet } from './characters/bestiary';
 import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from './characters/chars';
 import { heartMap, maelstromMap } from './levels/core';
+import { tidyUnreachable } from './levels/tidy';
 import { homeMap } from './levels/home';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './characters/fauna';
+import { heartFauna } from './characters/fauna/heart';
 import { Grid, W, reachable } from './levels/mapkit';
 import { clearAround, placeFormation, ringCells, wordCells } from './levels/flock';
 import { oceanSet } from './blocks/ocean';
@@ -23,6 +25,7 @@ import { oceanPlanet } from './levels/seaplanet';
 import { spaceSet } from './blocks/space';
 import { galaxyMap, sectorMap } from './levels/spacemaps';
 import { stationSet } from './blocks/station';
+import { heartSet } from './blocks/heartSet';
 import { stationPlanet } from './levels/stationmap';
 import { surfaceSet } from './blocks/surface';
 import { SCENE, SECTORS, allWorlds, type WorldKind } from './universe';
@@ -63,7 +66,7 @@ export function buildGame(): Built {
   const put = (name: string, bytes: Uint8Array) => files.set(name.toLowerCase(), bytes);
 
   // ---------------------------------------------------------------- block sets
-  const sets = { surface: surfaceSet(), ocean: oceanSet(), station: stationSet(), space: spaceSet() };
+  const sets = { surface: surfaceSet(), ocean: oceanSet(), station: stationSet(), space: spaceSet(), heart: heartSet() };
 
   // ---------------------------------------------------------------- monsters (two editions per family)
   const fam = {
@@ -82,11 +85,19 @@ export function buildGame(): Built {
     put(`${name}1.mon`, serializeMonsters(a.mon));
     put(`${name}2.mon`, serializeMonsters(b.mon));
   }
+  // the Heart's own file: the machines' hard edition with the boss's later phases (heart.ts)
+  {
+    const h = monsterSet('heart', heartFauna());
+    monsters.heart = h;
+    put('heart.mbl', serializeBlocks(h.mbl));
+    put('heart.mon', serializeMonsters(h.mon));
+  }
   // nests give birth to their family's young
   const nests: [SetBuilder, MonsterSet, string[], number[]][] = [
     [sets.surface, monsters.land1, ['Digger', 'Hive Bee', 'Hatchling', 'Vent Shot'], [110, 150, 130, 70]],
     [sets.ocean, monsters.sea1, ['Clam Spit', 'Polyp', 'Hatchling', 'Vent Spark'], [80, 90, 140, 70]],
     [sets.station, monsters.mech1, ['Turret Shot', 'Nanite Swarm', 'Bot Hatchling', 'Turret Shot'], [60, 150, 130, 45]],
+    [sets.heart, monsters.heart, ['Turret Shot', 'Nanite Swarm', 'Bot Hatchling', 'Turret Shot'], [60, 150, 130, 45]],
   ];
   for (const [s, ms, names, times] of nests)
     names.forEach((n, k) => {
@@ -271,6 +282,7 @@ export function buildGame(): Built {
           ['door', 'field:on', 'field:off', 'field:on2', 'laser:v', 'laser:v0', 'laser:h', 'laser:h0', 'glass', 'plat:off'].some(
             (nm) => s.has(nm) && s.id(nm) === b,
           );
+        if (world.kind !== 'rover') tidyUnreachable(p.grid, s, bbl[setName], p.arrive, world.kind !== 'ocean', p.caveFloor);
         const bad = checkPlanet(p, bbl[setName], passable, world.kind === 'surface' || world.kind === 'station');
         if (bad.length) problems.push(`${world.name}: ${bad.join(', ')}`);
         const famName = famOf(world.kind);
@@ -278,7 +290,11 @@ export function buildGame(): Built {
         populate(p.grid, bbl[setName], ms, spotsOf(p), {
           seed: w.scene,
           level: sec.level,
-          count: Math.round(Math.min(190, 70 + sec.level * 24 + (world.shard !== undefined ? 20 : 0)) * (world.kind === 'rover' ? 0.5 : 1)),
+          // the outer two sectors are capped, so they stay as busy as The Shallows and the
+          // pressure moves to the hard monster edition, thinner springs and the Core
+          count: Math.round(
+            Math.min(sec.level >= 4 ? 130 : 190, 70 + sec.level * 24 + (world.shard !== undefined ? 20 : 0)) * (world.kind === 'rover' ? 0.5 : 1),
+          ),
           species: 2 + Math.min(3, sec.level),
           rover: world.kind === 'rover',
         });
@@ -323,7 +339,7 @@ export function buildGame(): Built {
   }
   // the citadel's vault holds the way to the Heart instead of a prize
   citadel.grid.set(citadel.vault!.x, citadel.vault!.y, sets.station.id('teleport'), true);
-  const heart = heartMap(sets.station, monsters.mech2);
+  const heart = heartMap(sets.heart, monsters.heart);
   {
     const sc = setup(SCENE.maelstrom, 'The Maelstrom', { pal: 'mael.pal', map: 'mael.map', bbl: 'space.bbl', mon: 'space2.mon', mbl: 'space.mbl', chr: 'pod' });
     sc.links[0] = link(SCENE.galaxy, maelstrom.exitWarp, galaxy.coreArrive);
@@ -371,9 +387,9 @@ export function buildGame(): Built {
     const sc = setup(SCENE.heart, 'Heart of Maximus', {
       pal: 'heart.pal',
       map: 'heart.map',
-      bbl: 'station.bbl',
-      mon: 'mech2.mon',
-      mbl: 'mech.mbl',
+      bbl: 'heart.bbl',
+      mon: 'heart.mon',
+      mbl: 'heart.mbl',
       chr: 'courier',
     });
     sc.links[0] = link(SCENE.end, heart.exit, { x: 0, y: 0 });
@@ -387,7 +403,7 @@ export function buildGame(): Built {
       biome: 'core',
       arrive: heart.arrive,
       map: heart.grid,
-      bbl: 'station',
+      bbl: 'heart',
       chr: 'courier',
       palette: buildPalette(ROLES, themeFor('core', 9)).pal,
     });

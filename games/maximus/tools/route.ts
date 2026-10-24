@@ -5,9 +5,10 @@
 // the chart's corners meet (the felt egg is in there): every route is planned with that
 // corner of the chart walled off.
 import { buildGame, type Built, type SceneInfo } from '../src/game';
-import { ITEM_BASE, MODULES, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
+import { ITEM_BASE, MODULES, SCAN, SEAL_COUNTER, SEQ, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
 import { SCENE } from '../src/universe';
 import { field, idx, seek, wrap, type Grab, type P, type SeekOpts } from './drive';
+import { fightEye } from './heartFight';
 import type { Live } from './live';
 
 export interface Stop {
@@ -17,9 +18,9 @@ export interface Stop {
 
 /** The knot where the galaxy chart's corners meet (src/levels/spacemaps.ts): kept well clear of. */
 const KNOT = { x: 0, y: 99, r: 9 };
-/** Top up at a healing spring when below this many hit points, to this many. */
-const HEAL_BELOW = 150;
-const HEAL_TO = 300;
+/** Drink at a world's healing spring (one long drink, then it runs dry) when below this many hit points. */
+const HEAL_BELOW = 200;
+const HEAL_TO = 1000;
 
 export class Route {
   readonly b: Built = buildGame();
@@ -234,12 +235,29 @@ export class Route {
     const i = d.w.map.findIndex((n) => n === id);
     if (i < 0) return;
     const spring = { x: i % 100, y: Math.floor(i / 100) };
+    // a spring behind a credit door isn't worth the credits the vault door needs
+    if (!this.reaches(info, spring, false)) {
+      this.status('the spring is behind a credit door: no drink');
+      return;
+    }
+    const fields = this.gates(info);
+    const door = s.has('door') ? s.id('door') : -1;
     const r = await seek(
       d,
       spring,
-      this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(info.scene, -1), maxTicks: 1500, grab: this.grab(info.scene) }),
+      this.opts({
+        mode: 'walk',
+        tall: 2,
+        passable: (b) => b !== door && fields(b),
+        avoid: this.avoidLinks(info.scene, -1),
+        maxTicks: 2000,
+        grab: this.grab(info.scene),
+      }),
     );
-    if (!r.arrived || d.dead) return;
+    if (!r.arrived || d.dead) {
+      if (!d.dead) this.status(`could not reach the spring (best ${r.best})`);
+      return;
+    }
     const hp0 = d.w.ci.hitpts;
     let last = hp0;
     let flat = 0;
@@ -339,8 +357,11 @@ export class Route {
 
   /**
    * The Heart: across the hall to the Guardian, lance the plates in the row it fires along,
-   * then through what is left at floor height (plates crack and fall as the courier shoulders
-   * into them, a few hit points a touch, with a plasma bolt now and then), and on to the exit.
+   * then fight the Heart Eye from the foot of the seal: a plasma bolt whenever it comes level
+   * on the right (it swoops, then chases; a touch cracks it too, for hit points), until its
+   * spark has charged the seal. Then through the seal and what is left of the plates at floor
+   * height (plates crack and fall as the courier shoulders into them, a few hit points a
+   * touch, with a plasma bolt now and then), and on to the exit.
    */
   async heart(): Promise<void> {
     const d = this.d;
@@ -370,6 +391,8 @@ export class Route {
           await wait(7);
         }
         this.status(`lanced the Guardian (${this.plates().size} plates left)`);
+        await fightEye(d, this.b.monsters.heart);
+        this.status(`the Heart Eye is broken: seal charge ${d.w.ci.meter[SEAL_COUNTER] - 1}`);
         for (let round = 0; round < 80 && d.pos.bx < 79 && !d.dead; round++) {
           const p = this.plates();
           // the plates at the courier's height (rows 54 and 55)

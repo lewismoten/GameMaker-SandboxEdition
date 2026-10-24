@@ -10,6 +10,12 @@ export const EGG_BLOCK = 129;
 
 /** Counters: 1 lives, 3 money (credits), 5..19 sequence ammo, 20..29 the star-shards. */
 export const SHARD_COUNTER = 20;
+/**
+ * The Heart's seal rides on the last shard's counter: it is 1 once the Pearl shard is found,
+ * and a seal block refuses a touch that would leave it at 0, so the seal holds until the
+ * Core Light adds its charge.
+ */
+export const SEAL_COUNTER = SHARD_COUNTER + 9;
 export const MONEY = 3;
 
 /** The ten courier modules, by inventory block (ITEM_BASE + n). */
