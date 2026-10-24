@@ -1,5 +1,5 @@
-// A link to the part of The Ultimate Owner's Guide that explains a level check finding: it
-// opens the guide in the box viewer at the chapter, naming the section to read.
+// A link to the part of The Ultimate Owner's Guide that explains a level check finding: the
+// site's guide page in a new tab, opening the guide at the chapter, naming the section to read.
 import { h } from '../core/ui';
 import type { GuideRef } from '../check/findings';
 
@@ -16,19 +16,17 @@ const TITLES: Record<GuideRef['chapter'], string> = {
 };
 
 export function guideLink(g: GuideRef, label?: string): HTMLAnchorElement {
-  const a = h(
+  // a new tab of the site's guide page, which opens the guide at the chapter: the editor stays as
+  // it is, and the editor (also on the DOS page's PC) loads none of the box viewer
+  return h(
     'a',
     {
       class: 'guide-link',
-      href: `#/help/ultimate?chapter=${g.chapter}`,
-      title: `The Ultimate Owner’s Guide, “${TITLES[g.chapter]}”: ${g.section}`,
+      href: `./#/help/ultimate?chapter=${g.chapter}`,
+      target: '_blank',
+      rel: 'noopener',
+      title: `The Ultimate Owner’s Guide, “${TITLES[g.chapter]}”: ${g.section} (opens in a new tab)`,
     },
     label ?? `📒 Guide: ${g.section}`,
   );
-  // opened over the editor, which stays where it is
-  a.addEventListener('click', (e) => {
-    e.preventDefault();
-    void import('../../manual/ultimate/openUltimate').then((m) => m.openUltimateGuide(g.chapter));
-  });
-  return a;
 }
