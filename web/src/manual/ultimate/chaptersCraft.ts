@@ -43,10 +43,12 @@ export const CRAFT: Chapter = {
     leg mirrored (orientation 4 on that corner of its path). Chasers and wanderers turn on their
     own.</li>
     <li><b>Monsters walking up and down</b> a map seen from above need a back and a front. A
-    monster has one picture for its whole path, so give each leg a monster of its own: one walks
-    its leg, dies after its path and becomes the next, drawn the way that one goes, and the last
-    becomes the first again. Only do this with a monster the hero can’t kill, because a killed
-    monster becomes the next one too.</li>
+    monster has one picture for its whole path, so chain monsters that die after their path and
+    become the next. Mind PLAYGAME’s quirk: the monster it becomes first walks the
+    <i>old</i> monster’s first leg. So give each link the pictures of one leg but the path of the
+    leg after it, and place a starter with a zero-length path that becomes the link holding the
+    first leg. Each link starts its animation over, and a killed monster becomes the next one
+    too, so chain only monsters the hero can’t kill.</li>
   </ul>
   <p>The one exception is something that looks the same from every side on purpose: a ball, a
   word bubble, a ship that always flies nose first. The Level check (chapter 14) flags a hero

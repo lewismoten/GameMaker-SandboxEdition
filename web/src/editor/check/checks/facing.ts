@@ -237,7 +237,7 @@ function monsterFacing(d: SceneData, same: Set<string>): Finding[] {
         check: 'facing',
         severity: 'warning',
         title: `Monster ${n} walks up and down the map showing the same side`,
-        detail: `A monster has one picture for its whole path, so give each leg its own monster: one walks a leg and “becomes” the next (it dies after its path), each drawn the way it goes. Only for a monster the hero can’t kill: a killed one becomes the next too. ${fine}`,
+        detail: `A monster has one picture for its whole path, so chain monsters that die after their path and “become” the next, each drawn the way one leg goes (the guide shows how: the one it becomes walks the old one’s first leg). Only for a monster the hero can’t kill: a killed one becomes the next too. ${fine}`,
         where,
       });
   });
