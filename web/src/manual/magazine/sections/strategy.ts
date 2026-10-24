@@ -212,7 +212,7 @@ const cdPage = (ctx: MagContext): MagPage => {
 
 /** One game's hint book coupon. */
 function bookCard(g: MagGame): Block {
-  return card((g.hintBook ?? `${g.title} Hint Book`).toUpperCase(), [`For [${g.title}](go:play/${g.id})`, '$5.95 · **FREE with registration**'], {
+  return card((g.hintBook ?? `${g.title} Hint Book`).toUpperCase(), [`For [${g.title}](go:play/${g.id}) · $5.95 · **FREE with registration**`], {
     go: `go:hints/${g.id}`,
     button: 'Open the hint book',
     tone: 'yellow',

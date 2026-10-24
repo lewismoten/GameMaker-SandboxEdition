@@ -310,11 +310,7 @@ export const REVIEWS: MagSection = {
       blocks: [
         head('Gamers’ Reviews, continued', { kicker: 'Shareware and gameware', size: 'm', level: 2 }),
         grid(REVIEWS_B.slice(2).map(review), 0.4),
-        head('From the gameware drawer', {
-          size: 's',
-          level: 3,
-          deck: 'The free games in the box. Play them, then open them in Game-Maker.',
-        }),
+        head('From the gameware drawer: free in the box', { size: 's', level: 3 }),
         grid(REVIEWS_GAMEWARE.map(review), 0.4),
       ],
     },

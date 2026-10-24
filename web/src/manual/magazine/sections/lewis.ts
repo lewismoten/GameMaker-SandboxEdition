@@ -52,13 +52,13 @@ export const LEWIS: MagSection = {
         side(
           'Lewis, winter of 1992',
           [
-            list([
-              'Age: 16',
-              'Town: Fort Ashby, West Virginia',
-              'Computer: his brother’s IBM PS/2, a 286',
-              'Game-Maker: $89 + $4 shipping, by money order',
-              'Paid for by: shoveling snow after the December 11 storm',
-            ]),
+            grid(
+              [
+                [list(['Age: 16', 'Town: Fort Ashby, West Virginia', 'Computer: his brother’s IBM PS/2, a 286'])],
+                [list(['Game-Maker: $89 + $4 shipping, by money order', 'Paid for by: shoveling snow after the December 11 storm'])],
+              ],
+              0.3,
+            ),
           ],
           'cyan',
           2,
