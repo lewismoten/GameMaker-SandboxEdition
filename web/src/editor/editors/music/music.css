@@ -874,3 +874,8 @@ dialog.modal .mus-preset[hidden],
 .mus-acc .buttons {
   flex-wrap: wrap;
 }
+dialog.modal .mus-acc label.check {
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+}
