@@ -31,10 +31,10 @@ const K = {
   y: YELLOW[3],
 };
 
-// His right ear (on our left as he faces us) always stands a little taller than the left.
+// His ears stand up, a matched pair.
 const FRONT = [
-  ' kk      rR         ',
-  ' kOk    rRRr     kk ',
+  '         rR         ',
+  ' kk     rRRr     kk ',
   ' kOk   kkRrkk   kOk ',
   ' kOpk kShSSSsk kpOk ',
   ' kOppkkSSSSSskkppOk ',
@@ -57,8 +57,8 @@ const FRONT_LEGS = {
   b: ['    kWWk    kWWk    ', '    kWWk    kkkk    ', '    kkkk            '],
 };
 const BACK = [
-  '         rR      kk ',
-  ' kk     rRRr    kOk ',
+  '         rR         ',
+  ' kk     rRRr     kk ',
   ' kOk   kkRrkk   kOk ',
   ' kOOk kSSRrSsk kOOk ',
   ' kOOOkkSSRrSskkOOOk ',
@@ -130,8 +130,8 @@ for (const st of STEPS) cb.add(`right_${st}`, corgi(SIDE, SIDE_LEGS[st]));
 // Idle: an ear flick and a head tilt.
 {
   const rows = FRONT.slice();
-  rows[0] = '  kk     rR         ';
-  rows[1] = '  kOk   rRRr     kk ';
+  rows[0] = '         rR         ';
+  rows[1] = '  kk    rRRr     kk ';
   rows[2] = '  kOk  kkRrkk   kOk ';
   rows[3] = '  kpOk kShSSSsk kpOk';
   cb.add('idle_sway', corgi(rows, FRONT_LEGS.stand));
