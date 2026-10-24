@@ -148,6 +148,7 @@ export type WebShot = (typeof WEB_SHOTS)[number];
 /**
  * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
  * The boaster ones are the Sound Boaster ad's (soundCardArt.ts): its card, and a face before and after.
+ * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
  */
 export type ArtId =
   | 'chez'
@@ -162,6 +163,7 @@ export type ArtId =
   | 'boaster'
   | 'boaster-before'
   | 'boaster-after'
+  | 'joey'
   | `web-${WebShot}`;
 
 export interface MagPage {

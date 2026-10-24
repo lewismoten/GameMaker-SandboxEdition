@@ -4,7 +4,7 @@
 // boards' own: the octopus needs slime (Octolris's help screen), the hearts sit in their maps
 // whatever the time, the Sandbox BBS has one line (bbsListings.ts), and the correction's keys
 // are PLAYGAME's (mailBag.test.ts reads the engine). Readers are made up: a handle and a town.
-import { a, card, cols, head, note, p, side } from '../blocks';
+import { a, art, card, cols, grid, head, note, p, side } from '../blocks';
 import type { Block, MagSection } from '../types';
 
 /** The correction: the key the preview issue named for the score, and the one that shows it. */
@@ -16,6 +16,8 @@ interface Letter {
   text: string;
   from: string;
   reply: string;
+  /** What came in the envelope with it, drawn beside the letter. */
+  drawing?: { alt: string };
 }
 
 const LETTERS: Letter[] = [
@@ -45,6 +47,9 @@ const LETTERS: Letter[] = [
     kicker: '★ Letter of the month',
     text: 'Here is my drawing of Teddy driving THE CHEZ to the moon. The yellow part is cheese. Can you put it in a game?',
     from: 'JOEY, age 8, Cumberland, Md.',
+    drawing: {
+      alt: 'Joey’s crayon drawing, taped up: Teddy the corgi, orange and white with both big ears standing up, grins out of the door window of THE CHEZ, a little red boxy car with a black roof, two dark stripes and white wheels, as it zooms past the stars to a big yellow cheese moon full of holes. Crayon letters say TEDDY + THE CHEZ GO TO THE MOON, by Joey, age 8.',
+    },
     reply:
       'Joey, it is taped up over the art desk, and the whole staff agrees the moon has never looked more delicious. We can’t put it in a game, but you can: Game-Maker’s block editor draws pictures one dot at a time. Start with the cheese.',
   },
@@ -57,7 +62,13 @@ const LETTERS: Letter[] = [
   },
 ];
 
-const letter = (l: Letter): Block[] => [head(l.title, { size: 's', level: 3, kicker: l.kicker }), p(l.text), p(`*— ${l.from}*`), a('TB', l.reply)];
+const letter = (l: Letter): Block[] => [
+  head(l.title, { size: 's', level: 3, kicker: l.kicker }),
+  ...(l.drawing ? [art('joey', l.drawing.alt)] : []),
+  p(l.text),
+  p(`*— ${l.from}*`),
+  a('TB', l.reply),
+];
 
 export const MAIL_BAG: MagSection = {
   id: 'mailbag',
@@ -76,19 +87,25 @@ export const MAIL_BAG: MagSection = {
           deck: 'Our free preview issue went around the computer swap meet, and the mailbox has not been empty since. Letters may be edited for length. Drawings are never edited.',
         }),
         cols(2, LETTERS.flatMap(letter)),
-        side(
-          'OOPS!',
+        grid([
           [
-            p(
-              `In our preview issue we told you to press F${CORRECTION.said} to check your score. F${CORRECTION.said} turns the sound effects off. (Press it again and they come back.) Your score is on the status screen: press **F${CORRECTION.right}**. Sorry, Kevin.`,
+            side(
+              'OOPS!',
+              [
+                p(
+                  `In our preview issue we told you to press F${CORRECTION.said} to check your score. F${CORRECTION.said} turns the sound effects off. (Press it again and they come back.) Your score is on the status screen: press **F${CORRECTION.right}**. Sorry, Kevin.`,
+                ),
+              ],
+              'pink',
             ),
           ],
-          'pink',
-        ),
-        card('Write to us', ['Mail Bag, TURBO BUTTON, P.O. Box 000', 'Or leave a message for the SysOp on THE -= S A N D B O X =- BBS.'], {
-          go: 'go:bbs/sandbox',
-          button: 'Dial the Sandbox BBS',
-        }),
+          [
+            card('Write to us', ['Mail Bag, TURBO BUTTON, P.O. Box 000', 'Or leave a message for the SysOp on THE -= S A N D B O X =- BBS.'], {
+              go: 'go:bbs/sandbox',
+              button: 'Dial the Sandbox BBS',
+            }),
+          ],
+        ]),
         note('Readers, handles and hometowns are part of the story the 1994 desk tells.'),
       ],
     },

@@ -1,0 +1,20 @@
+/* Joey's crayon drawing in the Mail Bag (joeyDrawing.ts): taped up a little crooked, beside his
+   letter with the letter's words running round it. On a phone it sits under the letter's heading. */
+.mag-art.art-joey {
+  --tilt: 2.5deg;
+  float: right;
+  width: 50%;
+  margin: 0.2em 0 0.3em 0.8em;
+}
+
+.joey-drawing {
+  filter: drop-shadow(0.12em 0.18em 0.12em rgba(0, 0, 0, 0.35));
+}
+
+@container (max-width: 560px) {
+  .mag-art.art-joey {
+    width: min(70%, 18em);
+    float: none;
+    margin: 0.4em auto 0.6em;
+  }
+}
