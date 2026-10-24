@@ -104,6 +104,10 @@ The block set editor (`editors/blocks/`) and the character editor share block gr
 group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
 (`animClip.ts` builds them from block chains, monsters and character sequences;
 `animPlayer.ts` plays them).
+The character editor makes a sequence's mirror (`editors/character/characterMirror.ts`, pure:
+both blocks of each frame mirrored and each move's x negated, on the same blocks turned or on
+new mirrored blocks; `characterMirrorPanel.ts`, its bar) and keeps the links between a
+sequence and its twin, and a block and its mirror, in the companion file.
 
 **Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`,
 which calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`,
