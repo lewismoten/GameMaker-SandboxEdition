@@ -24,6 +24,25 @@ export const SHOW: Chapter = {
     <li>Left to themselves, a <code>.GIF</code> stays up 15 seconds, a backdrop 20, a text page 90,
     and an <code>.FLI</code> plays once and moves on.</li>
   </ul>
+  <h2>Animations of your own</h2>
+  <p>Open any <code>.FLI</code> and choose <b>Scene maker</b> (or make a new animation with
+  <i>Make a scene…</i>). A scene is a background, a map view or a color, with tracks on a
+  timeline: words in the PC’s own 8 by 8 letters that slide in, type out or roll up like
+  credits; your characters and monsters moving with their own pictures along a path, turning
+  round when they walk the other way; and blocks set on the picture. Drag anything on the
+  picture to move it. <i>Generate…</i> starts you off with an intro (the title over the first
+  level, the hero walking across), a cast (everyone in turn, close up, with a name card) or the
+  story typed over your levels, all from the game’s own files and all yours to change.</p>
+  <ul>
+    <li><b>Every change is the real file.</b> The scene is written into the <code>.FLI</code>
+    PLAYGAME plays, 320 by 200 in 256 colors; the scene itself stays with this edition, so the
+    animation opens just as you left it.</li>
+    <li><b>Mind the edges.</b> A word that runs off the screen is cut off in the game. The maker
+    lists such text, says by how much, and outlines it in red when you choose it; <i>Fit it inside</i> wraps it, then shrinks
+    it, then moves it in.</li>
+    <li><b>Colors.</b> Each background brings its palette. Sprites keep their colors when the
+    picture has room for them, and otherwise take the nearest. Fades hide a change of picture.</li>
+  </ul>
   <h2>Demos</h2>
   <p>Leave the menu alone for 30 seconds and PLAYGAME plays the demo recording named in scene 0,
   then comes back to the menu. A recording keeps only the keys, each with the game tick it was
