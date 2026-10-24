@@ -31,6 +31,8 @@ import { blockInsight } from './blockInsight';
 import { openInEditor } from '../../core/uses';
 import { applyRecolor, recolorDialog } from './recolorDialog';
 import { edgeSetDialog } from './edgeSetDialog';
+import { checkBadges } from '../../widgets/checkBadges';
+import { normalize } from '../../../project/files';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -105,6 +107,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   });
   const pal = () => chooser.palette;
   const insight = blockInsight({ project, file, blocks, current: () => current, pal, sprites, open: (f) => openInEditor(project, f) });
+  // level check notes on this block: hazard art smaller than its cell, a hard-to-see monster picture…
+  const badges = checkBadges(project, file, (f) => f.where.block?.n === current && normalize(f.where.block.file) === normalize(file));
 
   // ---- block picker -------------------------------------------------------
   const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks');
@@ -133,6 +137,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     renderProps();
     refreshUndo();
     insight.refresh(true);
+    badges.refresh();
   }
 
   // ---- pixel canvas -------------------------------------------------------
@@ -648,7 +653,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       'div',
       { class: 'blk' },
       h('div', { class: 'blk-picker' }, picker),
-      h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, insight.el),
+      h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, badges.el, insight.el),
       h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
     ),
   );
