@@ -1,6 +1,6 @@
 // The Ultimate Owner's Guide, chapters 6 to 8: sound sets, digitized voice and FM music.
 // Checked against PLAYGAME and SBMUSIC (code/GM), web/src/engine/touch.ts, web/src/audio
-// (cmfPlayer.ts, oplPresets.ts) and the games' kit (games/kit/songFx.ts, song/cutclips.py).
+// (cmfPlayer.ts, oplPresets.ts, sfxSynth.ts) and the games' kit (games/kit/songFx.ts, song/cutclips.py).
 import { opening, tip, type Chapter } from './chapter';
 
 export const SOUND_SETS: Chapter = {
@@ -44,6 +44,15 @@ export const SOUND_SETS: Chapter = {
   tick) only a speaker tune, and save the Sound Blaster for the lines that matter. A Fly Named
   Carl keeps its flying and buzzing on the speaker so they never cut off a lyric, and the tin
   heart that hides in the Sandbox games ticks only on the speaker for the same reason.</p>
+  <h2>🎛 The sound effect maker</h2>
+  <p>In the sound set editor, <b>🎛 Make one with the sound effect maker…</b> builds a
+  <code>.VOC</code> for the slot you are on. Start from a preset (jump, coin, hurt, explosion,
+  power-up, laser and more; each press gives a new take), roll 🎲 Random, or 🧬 Mutate the one
+  you have. Then shape it with sliders: pitch, slide, a jump in pitch, vibrato, the attack, hold
+  and decay, repeats and tone. It saves an 8-bit, 11&nbsp;kHz <code>.VOC</code>, names it in the
+  slot, and can draw the same effect as the slot’s PC speaker steps, so players without a card
+  hear it too. The sliders’ settings stay with the project’s editor notes, so the sound set and
+  .VOC editors can reopen them later.</p>
   ${tip('Pro tip:', 'A player can turn sound effects off with <kbd>F4</kbd> and music with <kbd>F3</kbd>. Make sure nothing in your game can only be understood by ear.')}`,
 };
 

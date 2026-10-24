@@ -3,7 +3,8 @@
 // sound editors, the self-ticking Before You Upload list, the Integrator's 🤖 Make a walkthrough,
 // and the links from the editor into this guide. Checked against web/src/editor/check
 // (explore.ts, stuck.ts, findings.ts, generators/fixes.ts, walk/autoWalk.ts) and its panels
-// (editors/map/check/checkPanel.ts, widgets/checkBadges.ts, uploadChecklist.ts, walkDialog.ts).
+// (editors/map/check/checkPanel.ts, widgets/checkBadges.ts, uploadChecklist.ts, walkDialog.ts),
+// and the First steps checklist of a new starter game (editor/shell/firstSteps.ts).
 import { opening, tip, type Chapter } from './chapter';
 
 export const CHECK: Chapter = {
@@ -79,6 +80,12 @@ export const CHECK: Chapter = {
   <p>A stop is not proof of a broken game. Riddles, secret doors and tight timing beat the bot
   often: of the 31 games on the original CD, it plays 2 from start to end. It is best at
   telling you a scene you thought was easy isn’t.</p>
+  <h2>First steps for a first game</h2>
+  <p>A game started as <b>▶ Ready to play</b> comes with <b>🎓 First steps</b>, beside Play
+  test: ten small jobs that make the starter yours. Play it, change a color, draw a block,
+  build the level, change the hero and a monster, give it a sound, add a way to win and a Game
+  won screen, then run the Level check. Each step ticks itself the moment the game changes,
+  opens the file to do it in, and links to the page of this guide that explains it.</p>
   <h2>What is still your job</h2>
   <p>No check can tell you whether the first minute is fun, whether the story hangs together,
   whether a joke lands, or whether the boss is a good fight rather than merely a long one. The

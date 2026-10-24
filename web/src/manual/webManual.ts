@@ -64,6 +64,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       monsters and hero, on a fresh map of its own.</li>
       <li><b>↶ Undo</b> and <b>↷ Redo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd> and
       <kbd>Ctrl</kbd>+<kbd>Y</kbd>) take back changes in the editor you are in.</li>
+      <li>A game started as <b>▶ Ready to play</b> has <b>🎓 First steps</b> beside Play test: ten
+      small jobs that make the starter your own (a color, a block, the level, the hero, a monster, a
+      sound, a way to win…). Each ticks itself when you do it, and opens the file to do it in.</li>
     </ul>`,
   ],
   [
@@ -89,7 +92,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       <tr><td>A picture (<code>.GIF</code>)</td><td><b>Convert a picture…</b> takes any image, fits it to 320×200 and reduces it to 256 colors (or to one of your palettes), with or without dithering.</td></tr>
       <tr><td>An animation (<code>.FLI</code>)</td><td><b>From an animated GIF or pictures…</b> turns an animated GIF, or several pictures in order, into an FLI at the speed you choose.</td></tr>
       <tr><td>Music (<code>.CMF</code>)</td><td><b>Compose a song…</b>: pick a mood, key, length and speed and press Compose for a new tune; edit the notes if you like.</td></tr>
-      <tr><td>A Sound Blaster sound (<code>.VOC</code>)</td><td><b>Record with the microphone…</b> or <b>Make a sound effect…</b>, then add a robot, chipmunk, deep, radio or echo effect.</td></tr>
+      <tr><td>A Sound Blaster sound (<code>.VOC</code>)</td><td><b>Record with the microphone…</b>, then add a robot, chipmunk, deep, radio or echo effect. Or the <b>🎛 Sound effect maker…</b> (also in the sound set editor): start from a preset (jump, coin, hurt, explosion, power-up…), 🎲 Random or 🧬 Mutate, and shape it with sliders for pitch, slide, vibrato and decay. From the sound set it fills in the slot, and can draw the same effect for the PC speaker.</td></tr>
       <tr><td>PC speaker sounds (<code>.SND</code>)</td><td>In the sound set editor, press a recipe (heal, coin, laser, explosion…) for a new take on it, and change it with higher, lower, faster, echo, mutate and more. The recipe that suits each of the game’s own nine sounds is highlighted.</td></tr>
       <tr><td>A demo (<code>.REC</code>)</td><td><b>Record one by playing…</b> starts the game in its first level and records your keys; watch it back, and trim the end. Choose it as the start scene’s demo recording.</td></tr>
     </table>`,
