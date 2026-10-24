@@ -38,5 +38,35 @@
       ["course.map", 30, 30]
     ],
     "rating": "Ages 6 and up"
-  }
+  },
+  "sameEverySide": [
+    "garage.mon#32",
+    "garage.mon#43",
+    "road.mon#58",
+    "road.mon#59",
+    "dig.mon#30",
+    "hill.mon#30",
+    "hill.mon#31",
+    "stage.mon#27",
+    "stage.mon#28",
+    "stage.mon#29",
+    "stage.mon#30",
+    "stage.mon#31",
+    "stage.mon#32",
+    "stage.mon#33",
+    "stage.mon#34",
+    "stage.mon#35",
+    "stage.mon#36",
+    "stage.mon#37",
+    "stage.mon#38",
+    "stage.mon#39",
+    "stage.mon#40",
+    "rigging.mon#27",
+    "rigging.mon#28",
+    "rigging.mon#30",
+    "course.mon#34",
+    "course.mon#44",
+    "course.mon#45",
+    "course.mon#55"
+  ]
 }
