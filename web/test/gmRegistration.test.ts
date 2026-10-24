@@ -1,3 +1,4 @@
+// Game-Maker's registration and copy check, as CHK.C and TELLREG#.C worked them out.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CARD_NAME_MAX, DEFAULT_REG, SERIAL, cardCheck, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';

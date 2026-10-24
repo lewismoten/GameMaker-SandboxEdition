@@ -1,3 +1,4 @@
+// The mail-in registration card: what it asks, the number it brings back, and no real address.
 import { describe, expect, it } from 'vitest';
 import { CARD_NAME_MAX, SERIAL, cardCheck, checkRegistration, regFile } from '../src/retro/gmReg/registration';
 import { OWNER_ADDRESS, RSD_ADDRESS, mailCheck, replyTo } from '../src/retro/gmReg/mailCard';

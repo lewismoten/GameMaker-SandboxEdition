@@ -1,3 +1,4 @@
+// plainError: failed downloads and a full browser said plainly.
 import { describe, expect, it } from 'vitest';
 import { plainError } from '../src/editor/core/plainError';
 

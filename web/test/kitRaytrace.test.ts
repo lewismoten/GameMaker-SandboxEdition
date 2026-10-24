@@ -1,3 +1,4 @@
+// games/kit/raytrace: shapes, placing, groups, shadows and the camera.
 import { describe, expect, it } from 'vitest';
 import { blocked, Box, Camera, Capsule, Cone, Group, nearest, norm, placed, Ring, rotY, Sphere, Tri, type Material } from '../../games/kit/raytrace';
 

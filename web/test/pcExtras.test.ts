@@ -1,3 +1,5 @@
+// PcExtras, what GMCRACK and registration changed on the desk PC: PLAYGAME.REG kept (or kept
+// deleted), and merging what was stored.
 import { describe, expect, it } from 'vitest';
 import { PcExtras, type PcExtrasState } from '../src/retro/hacks/pcExtras';
 import { DEFAULT_REG, checkRegistration } from '../src/retro/gmReg/registration';

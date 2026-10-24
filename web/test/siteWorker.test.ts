@@ -1,3 +1,4 @@
+// The site's service worker: how it groups and versions files, and that its source parses.
 import { describe, expect, it } from 'vitest';
 import { groupKey, groupOf, siteWorkerSource, WORKER_GROUP_OF } from '../src/siteWorker';
 

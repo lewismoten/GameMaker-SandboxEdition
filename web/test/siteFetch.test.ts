@@ -1,3 +1,4 @@
+// Fetching hosted files: the catalog once, retries, shared requests and the gzip copies.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fetchGameFile, loadCatalog, loadCatalogList, loadHostedGame, withDetails } from '../src/project/files';
 

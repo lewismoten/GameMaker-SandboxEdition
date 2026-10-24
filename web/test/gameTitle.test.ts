@@ -1,3 +1,5 @@
+// splitTitle: a game's title split into the big main name and the small rest, as boxes and manuals
+// print it.
 import { describe, expect, it } from 'vitest';
 import { splitTitle } from '../src/project/gameTitle';
 

@@ -1,3 +1,4 @@
+// urlState: parsing, formatting and merging the address's hash.
 import { describe, expect, it } from 'vitest';
 import { formatHash, parseHash, withParams } from '../src/urlState';
 

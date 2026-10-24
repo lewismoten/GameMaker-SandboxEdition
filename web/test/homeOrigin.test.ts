@@ -1,3 +1,4 @@
+// A copy's health report on the home page leaves out the problems its original already had.
 import { describe, expect, it } from 'vitest';
 import { findOriginal, splitInherited } from '../src/editor/shell/homeOrigin';
 import type { Issue } from '../src/project/health';

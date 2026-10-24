@@ -1,3 +1,4 @@
+// Game packs (.gmpak): written and read back, and handed out file by file as they arrive.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { gzipSync } from 'node:zlib';
 import { PackReader, decodePack, encodePack } from '../src/project/gamePack';
