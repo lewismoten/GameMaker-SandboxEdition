@@ -623,6 +623,34 @@
     transition: none;
   }
 
+  /* the Game-Maker box under the tube: its lettering glows in its inks, the box art sinks to violet */
+  .gm-box .retail,
+  .gm-box .retail :is(.banner strong, .banner em, .tagline, .edition-ribbon, .rsd-badge) {
+    transition:
+      filter 0.8s,
+      color 0.8s,
+      text-shadow 0.8s;
+  }
+
+  /* only the box art sinks to violet: a filter on the box would dim its lettering too */
+  .desk.bl-uv.bl-night .gm-box .retail {
+    background: #4a2a5e;
+  }
+
+  .desk.bl-uv.bl-night .gm-box .retail > :not(.banner, .tagline, .edition-ribbon, .rsd-badge) {
+    filter: brightness(0.5) saturate(0.7) hue-rotate(-20deg);
+  }
+
+  .desk.bl-uv .gm-box .banner strong {
+    color: #fffb5a;
+    text-shadow: 0 0 6px rgb(240 255 60 / 0.9);
+  }
+
+  .desk.bl-uv .gm-box :is(.banner em, .tagline, .edition-ribbon, .rsd-badge) {
+    color: #efe6ff;
+    text-shadow: 0 0 5px rgb(200 170 255 / 0.9);
+  }
+
   /* the glowing print, there after dark (and while the tube flickers) */
   .bl-poster .bl-print.night {
     opacity: 0;

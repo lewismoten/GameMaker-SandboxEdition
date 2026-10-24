@@ -43,6 +43,7 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   // every poster on the wall glows under the black light
   { sel: '.wall-poster .wp-sheet', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   { sel: '.desk-scene > .poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  { sel: '.gm-box .retail', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   // and so do the game boxes' lettering and stickers (boxes/boxUv.ts): their own print keeps the rest dim
   { sel: '.game-shelf .shelf-box', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   // and the title on the printed label of the disk in front in the disk box (disks/diskLabel.css)
