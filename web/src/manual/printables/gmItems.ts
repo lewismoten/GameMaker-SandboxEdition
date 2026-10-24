@@ -27,7 +27,7 @@ function contextFor(entry: CatalogEntry, family: CatalogEntry[]): PrintContext {
 }
 
 /** The keys of Game-Maker's own tools, as the original help screens (code/GM/*.HLP) give them. */
-export const DESIGNER_KEYS: [tool: string, keys: [string, string][]][] = [
+const DESIGNER_KEYS: [tool: string, keys: [string, string][]][] = [
   [
     'Everywhere',
     [

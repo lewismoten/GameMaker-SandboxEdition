@@ -13,7 +13,7 @@ import { CHAPTERS, ULTIMATE_TITLE, chapterStarts, planBook } from './plan';
 import { fillFigures } from './ultimateFigures';
 
 /** The front cover: black and gold, for the designer who has read the first guide twice. */
-export function ultimateCover(): HTMLElement {
+function ultimateCover(): HTMLElement {
   return h(
     'div',
     { class: 'ug-cover' },
@@ -71,7 +71,7 @@ const PAGE_CLASS = 'ug-page';
 const notesPage = (): HTMLElement[] => [h('h2', null, 'Notes'), h('div', { class: 'mp-ruled' })];
 
 /** Every page of the guide, laid out in the real page styles (needs a document to measure in). */
-export async function ultimatePages(): Promise<BookPage[]> {
+async function ultimatePages(): Promise<BookPage[]> {
   const host = h('div', { class: 'gmb-measure gmb-pages', 'aria-hidden': 'true' });
   document.body.append(host);
   try {

@@ -33,7 +33,7 @@ export const CHAPTERS: Chapter[] = [
   UPLOAD,
 ];
 
-export interface BookPlan {
+interface BookPlan {
   /** Note pages added before the back cover. */
   notes: number;
   /** Every page, covers included: a multiple of four. */

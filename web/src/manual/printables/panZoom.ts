@@ -2,7 +2,7 @@
 // zoom with the buttons, ctrl+scroll or the + and - keys, and the arrow keys scroll it.
 import { h } from '../../editor/core/ui';
 
-export interface PanZoom {
+interface PanZoom {
   /** The scrolling view, holding `content`. */
   view: HTMLElement;
   /** Zoom out, zoom in, Fit and Actual size. */

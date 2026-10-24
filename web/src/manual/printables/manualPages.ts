@@ -51,7 +51,7 @@ async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLEleme
 }
 
 /** After any paragraph giving a P.O. Box, a printed note that it is made up. */
-export function markFictionalAddresses(root: HTMLElement): number {
+function markFictionalAddresses(root: HTMLElement): number {
   let n = 0;
   const blocks = [...root.querySelectorAll('p, li, td, div')].filter(
     (b) => /P\.?\s?O\.?\s+Box/i.test(b.textContent ?? '') && !b.querySelector('p, li, td, div'),

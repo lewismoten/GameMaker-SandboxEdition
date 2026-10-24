@@ -125,7 +125,7 @@ function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, h
 }
 
 /** One word (with the space after it) hidden in noise, as a canvas `PX` pixels to the em. */
-export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;
@@ -387,7 +387,7 @@ export function redSketch(sketch: HintSketch): HTMLElement {
  * the red as white and anything a little darker as dark. (Where it isn't supported the film
  * just multiplies by red.)
  */
-export const RED_VIEW_ID = 'rf-red-view';
+const RED_VIEW_ID = 'rf-red-view';
 
 function ensureRedView(): void {
   if (document.getElementById(RED_VIEW_ID)) return;
@@ -409,7 +409,7 @@ function ensureRedView(): void {
 }
 
 /** How much the red film view stretches the red channel (1 = plain red film). */
-export const RED_VIEW_GAIN = 4;
+const RED_VIEW_GAIN = 4;
 
 /** Red through the on-screen film for a color, 0-255 (see ensureRedView). */
 export function throughRedView(color: string): number {

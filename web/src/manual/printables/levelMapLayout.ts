@@ -8,7 +8,7 @@ import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
 
 /** The scenes that play on one map with one block set: one Level Map. */
-export interface MapGroup {
+interface MapGroup {
   /** The map file, lower case. */
   map: string;
   bbl: string;
@@ -109,10 +109,10 @@ export function hideSecrets(cells: ArrayLike<number>, blocks: Block[], secret: R
   return { cells: out, hidden };
 }
 
-export type MarkKind = 'start' | 'exit' | 'end';
+type MarkKind = 'start' | 'exit' | 'end';
 
 /** A mark on a Level Map: where you arrive (in `scenes`), or a way out (to `scenes`). */
-export interface LevelMark extends Point {
+interface LevelMark extends Point {
   kind: MarkKind;
   scenes: number[];
   /** Cells across and down: side-by-side cells going the same way are one mark (a wide door). */
@@ -150,7 +150,7 @@ export function levelMarks(game: Game, scenes: number[], hidden: ReadonlySet<num
 }
 
 /** Marks of one kind to the same scenes on touching cells (a row of door blocks) as one mark round them all. */
-export function joinNeighbors(marks: LevelMark[]): LevelMark[] {
+function joinNeighbors(marks: LevelMark[]): LevelMark[] {
   const key = (m: LevelMark) => `${m.kind}:${m.scenes.join(',')}`;
   const left = [...marks];
   const out: LevelMark[] = [];

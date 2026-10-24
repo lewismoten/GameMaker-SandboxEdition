@@ -15,7 +15,7 @@ import type { StickerSpec } from './types';
 type Special = 'bbs' | 'gm' | 'sandbox';
 
 /** What a sticker sheet needs to make its cutting-machine files. */
-export interface CutFiles {
+interface CutFiles {
   page: number;
   pages: number;
   /** Size of the picture (with bleed) and of the cut lines, in inches. */
@@ -26,7 +26,7 @@ export interface CutFiles {
   name: string;
 }
 
-export const cutFilesOf = new WeakMap<HTMLElement, CutFiles>();
+const cutFilesOf = new WeakMap<HTMLElement, CutFiles>();
 
 const DPI_PRINT = 300;
 const DPI_SCREEN = 150;

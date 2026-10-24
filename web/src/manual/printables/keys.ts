@@ -57,7 +57,7 @@ function plain(s: string): string {
     .trim();
 }
 
-export interface CardKey {
+interface CardKey {
   key: string;
   does: string;
 }
@@ -110,7 +110,7 @@ const DIR_OF_KEY: Record<string, Dir> = {
 /** Letters that stand in for directions when their moves agree. */
 const LETTER_DIR: Record<string, Dir> = { W: 'up', A: 'left', S: 'down', D: 'right', Q: 'up-left', E: 'up-right', Z: 'down-left', C: 'down-right' };
 
-export const DIR_ORDER: Dir[] = ['up', 'down', 'left', 'right', 'up-left', 'up-right', 'down-left', 'down-right'];
+const DIR_ORDER: Dir[] = ['up', 'down', 'left', 'right', 'up-left', 'up-right', 'down-left', 'down-right'];
 export const DIR_ARROW: Record<Dir, string> = {
   up: '↑',
   down: '↓',
@@ -130,7 +130,7 @@ function dirOfMotion(dx: number, dy: number): Dir | undefined {
   return (v && h ? `${v}-${h}` : v || h) || undefined;
 }
 
-export interface MoveRow {
+interface MoveRow {
   dir: Dir;
   /** Card labels of the keys that move this way ("Up", "W"); the pad key is implied for arrows. */
   keys: string[];

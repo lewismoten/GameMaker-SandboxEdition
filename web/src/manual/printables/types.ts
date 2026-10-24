@@ -16,7 +16,7 @@ export type GeneratedKind =
   | 'levelmaps'; // Level Maps: every level's real map, cropped, with arrivals and ways out marked
 
 /** A spot on a map, in blocks (0-99), with a label. */
-export interface MapMark {
+interface MapMark {
   x: number;
   y: number;
   label: string;
@@ -222,7 +222,7 @@ export interface SpriteArt {
 }
 
 /** A story for The Sandbox Scoop newsletter. */
-export interface NewsStory {
+interface NewsStory {
   head: string;
   html: string;
   /** Also run it in the other games' newsletters (it doesn't talk about this box). */

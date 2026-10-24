@@ -171,7 +171,7 @@ function levelTiles(l: Level) {
 }
 
 /** How many pages the maps print on: overviews only, and with the big ones full size too. */
-export function pageCounts(levels: Level[]): { overviews: number; full: number } {
+function pageCounts(levels: Level[]): { overviews: number; full: number } {
   const placed = packPages(
     levels.map((l) => (fits(l) ? { w: l.area.w * FULL, h: l.area.h * FULL + CAPTION } : { w: Infinity, h: Infinity })),
     AREA,

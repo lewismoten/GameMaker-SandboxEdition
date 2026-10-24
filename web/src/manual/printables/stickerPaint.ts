@@ -71,7 +71,7 @@ export function fit(
   return best;
 }
 
-export function drawLines(
+function drawLines(
   g: CanvasRenderingContext2D,
   fitted: { lines: string[]; size: number },
   cx: number,
@@ -157,7 +157,7 @@ function solidOf(w: number, h: number, draw: (g: CanvasRenderingContext2D, S: nu
 }
 
 /** A die-cut around a drawing `w` x `h` inches: a colored rim at the cut line, white inside, then the drawing. */
-export function dieCutOf(name: string, w: number, h: number, rim: string, draw: (g: CanvasRenderingContext2D, S: number) => void): Sticker {
+function dieCutOf(name: string, w: number, h: number, rim: string, draw: (g: CanvasRenderingContext2D, S: number) => void): Sticker {
   const geom = cutGeom(solidOf(w, h, draw));
   return {
     name,
@@ -193,7 +193,7 @@ export function dieCut(name: string, img: Art, px: number, words: Words | undefi
 // ------------------------------------------------------------------ shaped stickers
 
 /** Size of a shaped sticker: [w, h] in inches. Tall rects hold a character. */
-export function stickerSize(shape: StickerShape, tall = false): [number, number] {
+function stickerSize(shape: StickerShape, tall = false): [number, number] {
   switch (shape) {
     case 'circle':
     case 'star':

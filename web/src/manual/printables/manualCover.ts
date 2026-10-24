@@ -10,7 +10,7 @@ import { mapShot } from '../../gfx/gameShots';
 import { portrait, sandboxLogo, splitTitle } from './kit';
 
 /** What the manual is called on its cover: "Courier Manual" from "Maximus - Courier Manual". */
-export function manualKind(entry: CatalogEntry): string {
+function manualKind(entry: CatalogEntry): string {
   const t = entry.original?.manual?.title ?? '';
   const i = t.lastIndexOf(' - ');
   return i >= 0 ? t.slice(i + 3).trim() : 'Player’s Manual';
@@ -40,7 +40,7 @@ function coverArt(entry: CatalogEntry): Promise<{ shot?: string; hero?: string }
 }
 
 /** The title's size in cqw: as big as fits, its longest word on one line (Arial Black is about 0.74 em a letter). */
-export function titleSize(title: string): number {
+function titleSize(title: string): number {
   const longest = Math.max(...title.split(/\s+/).map((w) => w.length), 1);
   const lines = title.length > 14 ? 0.8 : 1;
   return Math.round(Math.min(15 * lines, 84 / (longest * 0.74)) * 10) / 10;

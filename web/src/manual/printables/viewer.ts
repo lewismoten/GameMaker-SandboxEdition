@@ -35,7 +35,7 @@ export interface BoxItem {
 
 type PrintMode = 'item' | 'booklet' | 'all';
 
-export interface BoxOptions {
+interface BoxOptions {
   /** How the manual is bound: two staples in the fold (a shareware booklet), or a plastic comb. */
   binding?: 'staples' | 'comb';
   /** The tray's heading (a box's contents by default; a folder of maps has no manual). */

@@ -262,7 +262,7 @@ function sticker(cx: number, cy: number, r: number): string {
   </g>`;
 }
 
-export const COVER_ALT =
+const COVER_ALT =
   'Owner’s Guide cover: GAME-MAKER, Sandbox Edition, Version 3.0, in white on a blue blueprint of a hero drawn pixel by pixel, a joystick, and a diskette. ' +
   'The bottom of the blueprint is peeled back to show a game made with Game-Maker. A red sticker reads Technical Support, 1-800-555-0176, 9 AM to 6 PM Eastern, Monday to Friday.';
 

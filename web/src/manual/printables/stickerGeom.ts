@@ -156,7 +156,7 @@ function signedArea(pts: Pt[]): number {
 }
 
 /** A polygon moved `d` outward along its edges (mitered corners, capped at 4d), or inward for d < 0. */
-export function offsetPolygon(pts: Pt[], d: number): Pt[] {
+function offsetPolygon(pts: Pt[], d: number): Pt[] {
   if (!d) return pts;
   // outward is to the left of each edge of a clockwise polygon on the page (y down); flip for the other way round
   const s = signedArea(pts) > 0 ? 1 : -1;

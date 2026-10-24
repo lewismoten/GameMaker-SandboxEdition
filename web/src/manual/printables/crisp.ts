@@ -11,7 +11,7 @@
 //     instead of vanishing.
 // Clicking (or Enter on) a shot shows it enlarged at a whole scale.
 
-export interface CrispPlan {
+interface CrispPlan {
   /** Device pixels the drawn picture covers. */
   devW: number;
   devH: number;

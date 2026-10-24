@@ -110,7 +110,7 @@ export function circleEdge(c: Point, r: number, to: Point): Point {
   return { x: c.x + (dx / len) * r, y: c.y + (dy / len) * r };
 }
 
-export interface Trail {
+interface Trail {
   /** The SVG path: a gentle curve from one place's edge to the other's. */
   d: string;
   /** Its middle, and the direction it runs there (radians), for an arrowhead. */

@@ -151,7 +151,7 @@ export function placedOutline(p: Placed, grow = 0): Pt[] {
  * The outline of a sticker as SVG path data, grown by `grow` inches (negative shrinks), with
  * every coordinate multiplied by `scale` (pixels or SVG units per inch) and shifted by `ox, oy`.
  */
-export function shapePath(p: Placed, grow = 0, scale = 1, ox = 0, oy = 0): string {
+function shapePath(p: Placed, grow = 0, scale = 1, ox = 0, oy = 0): string {
   const pts = placedOutline(p, grow);
   return `M${pts.map(([x, y]) => `${f(x * scale + ox)} ${f(y * scale + oy)}`).join('L')}Z`;
 }
