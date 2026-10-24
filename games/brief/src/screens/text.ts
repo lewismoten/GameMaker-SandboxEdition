@@ -117,7 +117,7 @@ He wrote every one of them for Laurence Simon's weekly 100 Word Stories challeng
 Two of these stories first went up under the name Mystery Robot Joe. He has a job now.`,
   `Game design, art, music and every block of the library: Claude Opus 5.5
 
-Starring Mystery Robot Joe, Teddy (a corgi who knows left from right), Gwinn (two n's) and Doc Leo, PhD (Comedic Science).
+Starring Mystery Robot Joe, Teddy (a corgi who knows left from right), Gwinn and Doc Leo, PhD (Comedic Science).
 
 THE CHEZ, the CitiCar, is parked out front. It is charging. It is always charging.`,
   `Published by Sandbox Software. Late fees not included.
