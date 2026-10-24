@@ -5,6 +5,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CHECKLIST, WEB_EDITION } from './webEdition';
+import { WEB_SHOTS } from '../types';
 
 const repo = join(__dirname, '../../../../..');
 const gm = join(repo, 'code/GM');
@@ -19,9 +20,9 @@ describe('the web edition feature', async () => {
   const pages = await WEB_EDITION.pages({ games: [], game: () => undefined });
   const text = JSON.stringify(pages);
 
-  it('runs three to five pages', () => {
+  it('runs three to six pages', () => {
     expect(pages.length).toBeGreaterThanOrEqual(3);
-    expect(pages.length).toBeLessThanOrEqual(5);
+    expect(pages.length).toBeLessThanOrEqual(6);
   });
 
   it('names only features whose modules exist', () => {
@@ -43,6 +44,19 @@ describe('the web edition feature', async () => {
     expect(text).toContain('"art":"desk"');
     const shot = join(repo, 'web/public/magazine/desk-1994.webp');
     expect(statSync(shot).size).toBeLessThan(300_000);
+  });
+
+  it('shows every screenshot of today’s web, each under 150 KB and all of them under 1 MB', () => {
+    let total = 0;
+    for (const shot of WEB_SHOTS) {
+      expect(text, shot).toContain(`"art":"web-${shot}"`);
+      const file = join(repo, `web/public/magazine/web-${shot}.webp`);
+      expect(existsSync(file), file).toBe(true);
+      const { size } = statSync(file);
+      expect(size, file).toBeLessThan(150_000);
+      total += size;
+    }
+    expect(total).toBeLessThan(1_000_000);
   });
 
   it('puts ™ on Game-Maker only', () => {

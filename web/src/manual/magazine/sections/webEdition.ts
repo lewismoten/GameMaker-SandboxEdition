@@ -3,7 +3,7 @@
 // edition in 1995). Every feature it names is in the code: CHECKLIST gives each one's module,
 // and webEdition.test.ts checks that the files are there. Sources: README.md, web/src/README.md,
 // docs/embed.md and the original code/GM, which has no undo, no music or FLI maker and reads
-// pictures only from GIFs.
+// pictures only from GIFs. Its tour page shows today's web in real screenshots (webShots.ts).
 import { art, button, cols, grid, head, list, note, p, pull, rows, side } from '../blocks';
 import type { ListingRow, MagSection } from '../types';
 
@@ -234,6 +234,89 @@ export const WEB_EDITION: MagSection = {
           ],
           0.3,
         ),
+      ],
+    },
+    {
+      kind: 'article',
+      blocks: [
+        head('The Grand Tour', {
+          kicker: 'Game-Maker Goes Online, continued',
+          size: 'l',
+          level: 2,
+          deck: 'We pointed the office camera at the screen. Every picture is the real thing: Snowbound, opened with **Edit a copy**.',
+        }),
+        grid(
+          [
+            [
+              art(
+                'web-games',
+                'Today’s web, the Games page: Snowbound’s title screen playing at the left with its Play and Edit a copy buttons, and at the right a shelf of Sandbox Software games, each with its title screen, on tabs for my games, gameware, Sandbox, shareware and Bizarre',
+                '**The Games shelf.** Every game on tabs: yours, the CD’s, Sandbox Software’s, the shareware and the Bard of Bizarre’s. Play one, or press **Edit a copy**.',
+              ),
+            ],
+            [
+              side(
+                'Where everything is',
+                [
+                  p(
+                    'The files of the game run down the left. Click one and its editor opens in the middle: a map, a set of blocks, a hero, a song. **Play test** starts the game from any of them.',
+                  ),
+                  button('go:editor', 'Open today’s web'),
+                ],
+                'yellow',
+              ),
+            ],
+          ],
+          0.3,
+        ),
+        grid(
+          [
+            [
+              art(
+                'web-map',
+                'The map editor on jamie.map: a snowy street lined with pine trees, snowmen and flags, a toolbar of drawing tools above it, and the Level check, the blocks and the monsters at the right',
+                '**The map editor.** Jamie Street block by block, the Level check a click away.',
+              ),
+            ],
+            [
+              art(
+                'web-blocks',
+                'The block editor on snow.bbl: the background blocks in a column at the left, block 33, a snowman, blown up for painting in the middle, and the palette and the block’s solid sides at the right',
+                '**The block editor.** The snowman, blown up for painting, solid on all four sides.',
+              ),
+            ],
+            [
+              art(
+                'web-character',
+                'The character editor on kid.chr, its Sequences tab: the hero’s moves listed at the left, the Idle sequence playing in a preview, and its four frames along the bottom',
+                '**The character editor.** The kid’s moves, frame by frame, playing as you change them.',
+              ),
+            ],
+            [
+              art(
+                'web-monster',
+                'The monster editor on jamie.mon: the monsters in a grid at the left, monster 3, a dog, with its two animation frames, its power and lives, set to wander randomly, and a map to draw its path on',
+                '**The monster editor.** A dog that wanders the street: its frames, power and path.',
+              ),
+            ],
+            [
+              art(
+                'web-music',
+                'The music editor on jamie.cmf: the tracks Brass, Lead and Bass at the left, a piano roll of colored notes over five bars, and Play, Loop, Accompany and Copy tune on the toolbar',
+                '**The music editor.** Jamie Street’s tune on a piano roll, Accompany… on the toolbar.',
+              ),
+            ],
+            [
+              art(
+                'web-scene',
+                'The scene maker on intro.fli: the kid with his shovel over the name card KID on a black screen, and a timeline below with a bar for the background, each cast member and each name',
+                '**The scene maker.** A cast roll it roughed out from Snowbound’s own files.',
+              ),
+            ],
+          ],
+          0.28,
+        ),
+        pull('“Seven windows on one game, in one browser tab, and not a boot disk in sight.”'),
       ],
     },
     {

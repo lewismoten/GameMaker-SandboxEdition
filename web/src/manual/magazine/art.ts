@@ -2,15 +2,16 @@
 // Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, a line drawing of the
 // desk's modem, and the desk's speakers and disk box drawn as the desk draws them
 // (speakerArt.ts, diskBoxArt.ts) for the hardware ads; and a snapshot of the 1994 desk itself
-// (deskShot.ts).
+// (deskShot.ts) and screenshots of today's web (webShots.ts).
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
 import { hashString } from '../printables/kit';
-import type { ArtId } from './types';
+import type { ArtId, WebShot } from './types';
 import { deskShotImg } from './deskShot';
 import { diskBoxArt } from './diskBoxArt';
 import { speakerArt } from './speakerArt';
+import { webShotImg } from './webShots';
 
 const SVG = 'http://www.w3.org/2000/svg';
 /** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
@@ -48,8 +49,11 @@ const MODEM =
   [0, 1, 2, 3, 4, 5].map((i) => `<circle cx="${82 + i * 5}" cy="46" r="1.6"/>`).join('') +
   '</g><text x="16" y="49" font-size="8" fill="#3f3" font-family="monospace">14400</text>';
 
+const isWebShot = (id: ArtId): id is `web-${WebShot}` => id.startsWith('web-');
+
 /** A picture for the page; THE CHEZ is drawn on a canvas and handed over as an image (it prints). */
 export function artElement(id: ArtId, alt: string): Element {
+  if (isWebShot(id)) return webShotImg(id.slice(4) as WebShot, alt);
   switch (id) {
     case 'barcode':
       return barcode(alt);
