@@ -33,6 +33,11 @@ Making the files:
   THE SANDBOX BBS colors over chrome SOFTWARE. Ray traced with `raytrace.ts` (boxes, cones, discs, spheres, capsules and
   triangles, Phong shading, hard shadows; only what moves is traced again each frame) and `sdftext.ts` (extruded, beveled
   3D lettering), and reduced to 256 colors with `quantize.ts` (median cut, ordered dither).
+- `madewith.ts` — the "Made with Game-Maker: Sandbox Edition" sting the web editor offers new games (not a Sandbox game's):
+  yellow GAME-MAKER letters drop onto a floor of the site's blue blocks between MADE WITH and SANDBOX EDITION, then fade.
+  Ray traced like `sandlogo.ts`; run it once (`cd web && npx vite-node ../games/kit/madewith.ts`, `PREVIEW=<folder>` for
+  frame PNGs) to write `web/public/opening/madewith.fli` and its still `madewith.gif`, which the app ships. The web app
+  never imports it.
 - `bard.ts` — The Bard of Bizarre's logo sting for his games' `title.lst` (`BARD.FLI`): stage curtains part on the logo,
   Doc Leo's photo pops in, a lute strums notes, the tagline types out, fade to black.
 - `reel.ts` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores

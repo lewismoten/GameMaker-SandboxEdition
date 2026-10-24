@@ -75,8 +75,13 @@ game folder opens in the browser unchanged.
   its make-believe opponent SCROLLMASTER; the printable World Map and Level Maps, drawn from
   each game's own files; the editor's level check, its generators (the maze, the one-click
   fixes, the block-art helpers) and its walkthrough bot (see "The level check" below); opening
-  games that other sites link to or send (`web/src/linkIn`, `docs/embed.md`); and the new
-  opening of Teddy's Theme (`games/kit/teddyTheme.ts`), an original tune for the Teddy games.
+  games that other sites link to or send (`web/src/linkIn`, `docs/embed.md`); the new
+  opening of Teddy's Theme (`games/kit/teddyTheme.ts`), an original tune for the Teddy games;
+  and the "Made with Game-Maker: Sandbox Edition" opening sting the editor offers new games
+  (`games/kit/madewith.ts`, shipped as `web/public/opening/madewith.fli` and `.gif`, ray
+  traced like the Sandbox Software sting), and the "PRESENTS" card the editor draws for a
+  game's maker (`web/src/editor/tools/opening`). Like everything else added here they are under
+  the MIT License, so the games they open can carry them anywhere.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
