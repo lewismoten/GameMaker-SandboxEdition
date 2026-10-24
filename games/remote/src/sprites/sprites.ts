@@ -3,7 +3,7 @@
 // blue slippers), walking four ways, shouting "WHERE'S THE REMOTE?!" with your hands on your
 // cheeks, clicking an empty thumb at the TV, checking your hand, hurt, and flopped; and
 // everything else that moves: the shout, dust bunnies, the cat, Teddy the corgi (red-gold, a
-// white blaze, the right ear taller than the left), toast and its crumbs, a cockroach, lost
+// white blaze, ears up), toast and its crumbs, a cockroach, lost
 // socks, floating pennies, the tiny raccoon, the mustard seed in its red sneakers, lint, the
 // third goat, and the furniture of the living room ride. Every sprite is drawn from shapes and
 // given a dark outline.
