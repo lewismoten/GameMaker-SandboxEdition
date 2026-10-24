@@ -41,6 +41,7 @@ import { statusBps } from './lineSpeed';
 import { cpsText, expectText, progress } from './transfer';
 import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
 import { TTY_PHONE } from './ttyTalk';
+import { doorGames, sandboxCall } from './ticTacToeDoor';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
@@ -136,12 +137,16 @@ async function terminal(t: Term, h: RetroHost): Promise<void> {
     await sleep(700);
     t.connected = true;
     if (entry.run === runSofa) unlockAchievement('desk-bbs');
+    // the Sandbox's one line: its door game's other player calls in only while you're off it
+    const leave = entry.run === runSandbox ? sandboxCall() : undefined;
     try {
       await entry.run(t, h);
     } catch (e) {
       // someone picked up the phone: the board stopped mid-call
       if (!(e instanceof NoCarrier)) throw e;
       await t.dropped();
+    } finally {
+      leave?.();
     }
     await t.hangUp();
     t.line();
@@ -202,6 +207,9 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     if (k === 'F' || k === 'N') {
       // N: a new files scan, just the newest uploads (the Sandbox Software games)
       await files(t, h, k === 'N' ? catalog.filter((g) => g.original) : catalog, k === 'N' ? 'New Files Scan' : 'The Sand Pile: Game-Maker Shareware');
+      show = true;
+    } else if (k === 'D') {
+      if ((await doorGames(t, name)) === 'hangup') return;
       show = true;
     } else if (k === 'P') {
       await gifGallery(t, h);
@@ -317,7 +325,7 @@ function mainMenu(t: Term): void {
     ['N', 'New Files Scan', 'S', 'System Information'],
     ['Y', 'Your Statistics', 'C', 'Page the SysOp'],
     ['P', 'Picture Gallery (GIF files)', '?', 'Redisplay this menu'],
-    ['', '', 'G', 'Goodbye (log off)'],
+    ['D', 'Door Games', 'G', 'Goodbye (log off)'],
   ];
   t.line(boxRow(''));
   for (const [a, la, b, lb] of rows) t.line(boxRow(`    ${a ? item(a, la) : ' '.repeat(34)}${item(b, lb)}`));
