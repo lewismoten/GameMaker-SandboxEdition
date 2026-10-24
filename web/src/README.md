@@ -9,9 +9,10 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/credits`, `#/mac`, `#/windows`,
   `#/linux`, `#/desk`), so a reload or a shared
   link comes back to it; [`seo/route.ts`](seo/route.ts) keeps the page's title and share
-  tags in step with what is on screen.
+  tags in step with what is on screen. `?open=<url>` and `?receive` open a game sent by another site
+  ([`linkIn/`](linkIn), [`docs/embed.md`](../../docs/embed.md)).
 - `dos.html` → [`dosPage/dosPage.ts`](dosPage/dosPage.ts): DOS Game-Maker, the desk's PC on
-  its own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`). It loads no
+  its own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`; `?project=<id>&run=play|design` a game kept in this browser). It loads no
   desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the site lead to it.
   [`viewSwitch.ts`](viewSwitch.ts) is the Desk | DOS | Web switch in all three headers.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
@@ -42,6 +43,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`eggs/`](eggs) | The felt eggs hidden in the Sandbox games: which are found (`eggState.ts`, from saved games), the shadow box on the desk, its viewer, and `EGG.EXE`. |
 | [`editor/`](editor) | Today's web interface (see below). |
 | [`desk/`](desk) | The 1994 desk: `desk.ts` lays out the scene (`stage.ts` scales it to the window); `pc/` the case, CRT, keyboard, mouse tray, modem (click its speed to pick the line speed), speakers with the Sound Blaster switch, and capture card; `boxes/` the retail boxes and shelf; `disks/` the disk box; `mug/` the BBS mug; `room/` the window, poster, clipping, clock, door, the wall phone (`room/phone/`) and props. |
+| [`linkIn/`](linkIn) | Opening a game sent by another site ([`docs/embed.md`](../../docs/embed.md)): `?open=<url>` fetches it, `?receive` takes it from the opener with postMessage (`receive.ts`); `protocol.ts` checks the addresses, messages and limits, `unpack.ts` reads the files (zip, pack, exported page) without trusting them, `dialogs.ts` asks the visitor first, `keep.ts` keeps it as a new Imported game, and `notice.ts` is the "not a real DOS PC" note for the desk and `dos.html`. |
 | [`dosPage/`](dosPage) | DOS Game-Maker (`dos.html`): the PC's page with its one-row bar and ⋯ menu (`moreMenu.ts`), disk menu (`diskMenu.ts`), and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line. |
 | [`retro/`](retro) | The PC, shared by the desk and `dos.html`, importing nothing from `desk/` (the page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its picture; `gmReg/regSide.ts` puts the Owner's Guide and registration card beside its monitor for the copy check). What runs on it: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound; `lineSpeed.ts` is the modem's speed, 300 baud to Unlimited, `pacedQueue.ts` sends the boards' text and `transfer.ts` their files at it, and `lineSpeedControls.ts` picks it on the desk's modem and in `dos.html`'s ⋯ menu); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
 | [`vga/`](vga) | Game-Maker's eight designers ported from their C source (PALCHOS, BLOCEDIT, MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR). One file per `.EXE` at the top (each exports `program`); a large designer's parts are in a folder of the same name, and `shared/` has the VGA screen, block routines and Game-Maker's look. |

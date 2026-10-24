@@ -51,6 +51,10 @@ desk, the BBSes and *Snowbound* come from those years: see [Lewis and Game-Maker
   or a Linux folder that plays offline in its own window (built in the browser; see the
   [Mac](mac/README.md), [Windows](win/README.md) and [Linux](linux/README.md) notes).
   Everything is saved in your browser and works offline.
+- **Opening games from other sites:** a link (`?open=<address of the game>`) or a page using
+  `window.open` and `postMessage` can open a game here to play or edit, on the desk, in DOS
+  Game-Maker or on the web, after the visitor says yes. See
+  [Opening games from your site](docs/embed.md).
 
 ## Screenshots
 
