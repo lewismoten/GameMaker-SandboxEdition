@@ -1,9 +1,9 @@
 // surprise.fli, the ending (won.lst plays it before the party picture): the Big Top is dark;
 // Teddy pads into the ring and sniffs (cake!); the lights come up and everyone shouts
-// SURPRISE! There's a banner, balloons, the biggest cake with the bakery's candles, the Klown
-// Klub, the geese and Doc Leo, and Gwinn brings her best bone and SITS. On purpose.
+// SURPRISE! There's a banner, balloons, the biggest cake with the bakery's candles, the Clown
+// Club, the geese and Doc Leo, and Gwinn brings her best bone and SITS. On purpose.
 import { Pixels, rng } from '../../../kit/pixels';
-import { blob, centered, klubArt, micro, outlined, scaleBlit } from '../art/draw';
+import { blob, centered, micro, outlined, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';
 import { KLUB, gwinnSits } from '../sprites/klubfolk';
 import { CRITTERS } from '../sprites/critters';
@@ -76,7 +76,7 @@ export function party(f: number, bannerX = 42): Pixels {
   for (let i = 0; i < 10; i++)
     balloon(p, i < 5 ? 14 + i * 14 : 236 + (i - 5) * 16, 70 + Math.floor(R() * 20), ['red', 'yellow', 'blue', 'green', 'pink'][i % 5], ((f + i) % 4) - 2);
   cake(p, 160, 152, f);
-  // the Klown Klub at the left, Doc Leo at the right in his best fedora, the geese up front
+  // the Clown Club at the left, Doc Leo at the right in his best fedora, the geese up front
   scaleBlit(p, KLUB.honker, 0, 72, 2);
   scaleBlit(p, KLUB.bubbles, 34, 76, 2);
   scaleBlit(p, KLUB.pratfall, 68, 70, 2);
@@ -129,7 +129,7 @@ export function surpriseFli(): Uint8Array {
       gwinnAt(p, f % 2 ? 'gwinnRun1' : 'gwinnRun2', 300 - Math.min(f, 10) * 10, 140, 2);
       confetti(p, f);
       const bounce = f < 6 ? 6 - f : 0;
-      centered(p, 8 - bounce * 2, klubArt('SURPRISE!'), c('yellow', 3), 3, c('red', 1));
+      centered(p, 8 - bounce * 2, 'SURPRISE!', c('yellow', 3), 3, c('red', 1));
     });
   // Gwinn brings her best bone, with a bow on it, and drops it at his paws. Then she SITS.
   for (let f = 0; f < 30; f++)

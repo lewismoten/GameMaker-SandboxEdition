@@ -1,7 +1,7 @@
 // Level 12's background blocks, Lookout Hill at sunset, at THE CHEZ's size: the road climbing
 // in steps (the shared road blocks: chargers, hill feet, potholes), the pond at the bottom
 // with the ferry's jetty and the gully near the top (the River Road's water blocks), a
-// pasture fence where the cow grazes, pines, and at the top, the Klown Klub's Big Top.
+// pasture fence where the cow grazes, pines, and at the top, the Clown Club's Big Top.
 import { blob } from '../art/draw';
 import { Tiles } from './level';
 import { c, cloud, copy, dirt, hedge, picket, r, sky } from '../blocks/tiles';
@@ -50,7 +50,7 @@ export function hillTiles(): Tiles {
     },
   );
 
-  // The Klown Klub's Big Top, 6x5: a striped tent with its flag, the gate open below.
+  // The Clown Club's Big Top, 6x5: a striped tent with its flag, the gate open below.
   art(
     t,
     'bigTop',

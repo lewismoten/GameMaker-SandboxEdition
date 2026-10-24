@@ -35,7 +35,7 @@ export const STORY = pages(
     'Street, Puddlewick Park,',
     'Downtown, the river, the old',
     'mill, the Fair, and up Lookout',
-    "Hill to the Klown Klub's Big",
+    "Hill to the Clown Club's Big",
     'Top.',
     '',
     'Fetch what is on the list at',
@@ -128,7 +128,7 @@ const CREDITS_TEXT = pages(
     'Starring Teddy as himself,',
     'Gwinn as herself, Doc Leo as',
     'the friendliest hobo clown in',
-    'the Klown Klub, and THE CHEZ,',
+    'the Clown Club, and THE CHEZ,',
     'his red 1976 CitiCar.',
   ],
   [
@@ -175,7 +175,7 @@ export const WON = pages(
     '    S U R P R I S E !',
     '',
     'Everybody is there. The',
-    'Klown Klub. The miller. The',
+    'Clown Club. The miller. The',
     'Town Crier. The geese (invited',
     'Gwinn, sort of). Doc Leo, in',
     'his best fedora. And Gwinn,',
@@ -368,7 +368,7 @@ SAYING THANKS
   birthday; for Gwinn, who kept
   a secret; and for Doc Leo and
   every friendly clown in every
-  Klown Klub.
+  Clown Club.
 
 Woof! Boof! SQUAWK! Honk!
 `.replace(/^\n/, '');

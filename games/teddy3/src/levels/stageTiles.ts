@@ -1,8 +1,8 @@
-// Level 14's background blocks: backstage at the Klown Klub's Big Top at night. The tent's
+// Level 14's background blocks: backstage at the Clown Club's Big Top at night. The tent's
 // canvas in dark violet stripes, the rigging overhead, the stage floor, black velvet wings
 // where the spotlights wait between sweeps (the two home blocks of each light give birth to
 // its sweep), the lights' tracks, draped prop tables to flop under, prop crates, a scenery
-// flat lashed down by its foot, the riser with its crate step, Klown Klub members setting up
+// flat lashed down by its foot, the riser with its crate step, Clown Club members setting up
 // (Professor Pratfall at the light board, Juggles practicing, Honker with the party horns),
 // and the cake table, whose long tablecloth hides Gwinn's spot.
 import { Pixels } from '../../../kit/pixels';

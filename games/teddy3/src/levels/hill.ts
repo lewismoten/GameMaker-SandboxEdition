@@ -1,5 +1,5 @@
 // Level 12: Lookout Hill at sunset, the last road trip and the hardest: THE CHEZ climbs to the
-// Klown Klub's Big Top, and every driving idea comes back. Plugged in at the bottom, honk the
+// Clown Club's Big Top, and every driving idea comes back. Plugged in at the bottom, honk the
 // geese, take the ferry over the pond, bump through a pothole and spend the charge on the first
 // hill. The new twist is a cow: she stands in the road and a honk doesn't move her, but she
 // ambles off into the field after a moment (wait for her). Then the long climb: three hills in
@@ -182,6 +182,6 @@ export function hill(): Level {
     view: [24, 34],
     pose: [27, 38, 'car0'],
     song: hillSong,
-    card: ['Up Lookout Hill to the', "Klown Klub's Big Top.", 'NEW: COWS (WAIT FOR THEM)'],
+    card: ['Up Lookout Hill to the', "Clown Club's Big Top.", 'NEW: COWS (WAIT FOR THEM)'],
   };
 }

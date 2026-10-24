@@ -1,8 +1,8 @@
 // What the finale's cartoons (FLIs) are built with: a reel of frames over a background, its
-// captions in the Klub's lettering, and the big pictures of the cast drawn from their sprites.
+// captions in the Club's lettering, and the big pictures of the cast drawn from their sprites.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
-import { centered, klubArt, scaleBlit } from '../art/draw';
+import { centered, clubArt, scaleBlit } from '../art/draw';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
 import { LEO } from '../sprites/leo';
@@ -34,7 +34,7 @@ export class Reel {
 /** A line of words, white on a black edge, centered (two lines: y 10 and 22). */
 export const caption = (p: Pixels, words: string, y = 10, col = c('paint', 3)) => {
   if (words.length > 38) throw new Error(`Caption over 38 columns: "${words}"`);
-  centered(p, y, klubArt(words), col, 1, c('ink', 0));
+  centered(p, y, clubArt(words), col, 1, c('ink', 0));
 };
 
 export const teddyAt = (p: Pixels, pose: string, x: number, y: number, s = 3, flip = false) => scaleBlit(p, POSES[pose], x, y, s, flip);

@@ -2,10 +2,10 @@
 // art): brick shopfronts with awnings to stand on, the friends standing in their doorways
 // (hidden behind shut doors, which are monsters, until Gwinn BOOFs the doorbell) with an
 // RSVP card held out (walk into the doorway and it is hers), the alley's tall fence with soft
-// dirt at its foot and a tunnel under it, the brick walk-up's fire escape, and the Klown
-// Klub's party van, whose back door takes the three RSVPs one at a time.
+// dirt at its foot and a tunnel under it, the brick walk-up's fire escape, and the Clown
+// Club's party van, whose back door takes the three RSVPs one at a time.
 import { Pixels } from '../../../kit/pixels';
-import { blob, klubArt, micro, over } from '../art/draw';
+import { NOSE, blob, micro, over } from '../art/draw';
 import { Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';
 import { bandAt, road, sidewalk, sign, wideSign } from './common';
@@ -206,7 +206,7 @@ export function inviteTiles(): Tiles {
   );
   t.air('signUp', sign(sky(3), 'UP', 'up'));
 
-  // The Klown Klub's party van, facing right: polka dots, a red stripe, the cab and its
+  // The Clown Club's party van, facing right: polka dots, a red stripe, the cab and its
   // wheels. Its back door is three blocks deep (three latches, one RSVP each); past them,
   // the seat that is Gwinn's goal.
   const van = (open: boolean) => {
@@ -219,8 +219,8 @@ export function inviteTiles(): Tiles {
     p.rect(114, 26, 5, 3, c('gold', 3)).rect(116, 30, 4, 4, c('ink', 1));
     for (let x = 8; x < 56; x += 11)
       for (const y of [12, 18]) p.disc(x + (y === 18 ? 5 : 0), y, 2, c(['blue', 'yellow', 'green', 'pink'][((x / 11) | 0) % 4], 2));
-    micro(p, 62, 10, klubArt('KLOWN'), c('red', 1));
-    micro(p, 64, 16, klubArt('KLUB'), c('red', 1));
+    micro(p, 62, 10, `CL${NOSE}WN`, c('red', 1));
+    micro(p, 65, 16, 'CLUB', c('red', 1));
     // the back door's three latches, each with a card slot and its number
     for (let k = 0; k < 3; k++) {
       const x = k * 20;

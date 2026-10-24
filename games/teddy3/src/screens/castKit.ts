@@ -2,7 +2,7 @@
 // portraits' extra ramps, a polygon fill, a twisted rope leash, a reel whose frames may each
 // bring their own palette (palette cycling), and captions.
 import { Pixels } from '../../../kit/pixels';
-import { centered, klubArt } from '../art/draw';
+import { centered, clubArt } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
 export const W = 320;
@@ -80,8 +80,8 @@ export class CastReel {
   }
 }
 
-export const say = (p: Pixels, words: string, y: number, col = c('paint', 3), cx = W / 2) => centered(p, y, klubArt(words), col, 1, c('ink', 0), cx);
-export const big = (p: Pixels, words: string, y: number, cx = W / 2) => centered(p, y, klubArt(words), c('yellow', 3), 2, c('ink', 0), cx);
+export const say = (p: Pixels, words: string, y: number, col = c('paint', 3), cx = W / 2) => centered(p, y, clubArt(words), col, 1, c('ink', 0), cx);
+export const big = (p: Pixels, words: string, y: number, cx = W / 2) => centered(p, y, clubArt(words), c('yellow', 3), 2, c('ink', 0), cx);
 
 /** The palette with a ramp's colors rotated `step` places (palette cycling). */
 export function cycled(name: string, step: number, base: Uint8Array = CP.pal): Uint8Array {

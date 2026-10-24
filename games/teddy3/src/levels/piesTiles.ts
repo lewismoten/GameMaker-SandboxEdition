@@ -1,6 +1,6 @@
-// Level 10's background blocks: the Klown Klub's practice tent at the Fairgrounds, one
+// Level 10's background blocks: the Clown Club's practice tent at the Fairgrounds, one
 // afternoon. Red and cream canvas, a scalloped valance under the roof, a sawdust floor, the
-// pie targets (well splatted), four Klub members at pie practice (each one a loop of poses:
+// pie targets (well splatted), four Club members at pie practice (each one a loop of poses:
 // the pie comes out of the block that shows the throw), the little stage, Professor
 // Pratfall's bakery stall up on the balcony over it, the birthday cake, and the back flap
 // out, which only opens for the cake.

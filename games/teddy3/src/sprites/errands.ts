@@ -53,7 +53,7 @@ export const ERRANDS: Record<string, string[]> = {
     'owwwwwwwwwwo',
     'oooooooooooo',
   ],
-  // The Klown Klub's banner, rolled up and tied with a ribbon.
+  // The Clown Club's banner, rolled up and tied with a ribbon.
   banner: [
     '..........oo',
     '........oowo',

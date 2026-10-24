@@ -1,4 +1,4 @@
-// Level 6: MEANWHILE... Doc Leo's Balloons, at noon in the Klown Klub's hall. Doc Leo needs
+// Level 6: MEANWHILE... Doc Leo's Balloons, at noon in the Clown Club's hall. Doc Leo needs
 // the big bag of party balloons from the loft under the rafters. His rubber chicken's SQUAWK
 // clears the pigeons off the floor; then the new idea: twist a balloon dog (1) and it inflates
 // under his shoes and floats him up six blocks, then bobs and pops. Teach: up onto the first

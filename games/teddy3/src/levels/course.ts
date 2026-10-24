@@ -1,5 +1,5 @@
 // Level 16: The Teddy Course, the finale, inside the Big Top at night. Doc Leo's last errand
-// takes Teddy into the dark tent, where the Klown Klub has built him an obstacle course out of
+// takes Teddy into the dark tent, where the Clown Club has built him an obstacle course out of
 // every trick from all three adventures, station by station: WOOF at wind-up mice; high-five a
 // button to open a door (the garage); DIG under a fence; ride a see-saw (the park); a fast belt
 // (the bakery: E at its end); red and blue blinking boards over a ball pit (the funhouse); PLAY

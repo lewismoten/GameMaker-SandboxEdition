@@ -1,4 +1,4 @@
-// Level 14: MEANWHILE... Gwinn Hides Backstage, at the Klown Klub's Big Top on Lookout Hill,
+// Level 14: MEANWHILE... Gwinn Hides Backstage, at the Clown Club's Big Top on Lookout Hill,
 // at night. The surprise party is nearly ready and Teddy is on his way up the hill: Gwinn has
 // to get to her hiding spot under the cake table's long tablecloth without being seen too
 // early. The new idea is the spotlights: the crew is testing the stage lights, and each one

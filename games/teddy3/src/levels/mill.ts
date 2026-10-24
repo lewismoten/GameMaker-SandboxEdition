@@ -1,5 +1,5 @@
 // Level 8: The Old Mill, on a summer afternoon (the mill by the river from the sequel). The
-// Klown Klub left its banner up in the mill loft after the Fair. The new idea is the water
+// Clown Club left its banner up in the mill loft after the Fair. The new idea is the water
 // wheel: a paddle coming up the near side of a wheel is a lift (stand on it at the bottom,
 // step off at the top). Teach: stand by the first wheel and a paddle lifts Teddy up to the
 // sill. Test: the next two wheels rise through holes in the floors, so Teddy must step on
@@ -191,6 +191,6 @@ export function mill(): Level {
     view: [14, 32],
     pose: [17, 36, 'frontBeg'],
     song: millSong,
-    card: ["The Klown Klub's banner! Up in", "the old mill's loft.", 'NEW: THE WATER WHEEL'],
+    card: ["The Clown Club's banner! Up in", "the old mill's loft.", 'NEW: THE WATER WHEEL'],
   };
 }

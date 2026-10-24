@@ -1,4 +1,4 @@
-// Level 6's background blocks, the Klown Klub's hall at noon (where the first adventure's Big
+// Level 6's background blocks, the Clown Club's hall at noon (where the first adventure's Big
 // Show was planned): striped wallpaper and show posters, the plank floor, shelves of costume
 // boxes stacked up the wall, the prop cabinet, the high loft under the rafters, Juggles
 // practicing up on a shelf, and the back door.
@@ -67,7 +67,7 @@ export function balloonTiles(): Tiles {
   );
   t.air('box', boxFace('hay', 2, 23, false));
   t.air('boxPink', boxFace('pink', 2, 25, false));
-  // a show poster: the Klown Klub's Big Show, with a corgi on it
+  // a show poster: the Clown Club's Big Show, with a corgi on it
   art(
     t,
     'poster',

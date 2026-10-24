@@ -1,4 +1,4 @@
-// Pie Practice's pictures (Level 10): the Klown Klub's pie throwers in their poses, facing
+// Pie Practice's pictures (Level 10): the Clown Club's pie throwers in their poses, facing
 // left (holding a pie, winding up high or low, letting fly), the custard pies (one flying at
 // head height, one skidding along the floor) and the birthday cake Doc Leo fetches from
 // Professor Pratfall's bakery tent.
@@ -27,7 +27,7 @@ export type Who = 'honker' | 'bubbles' | 'twirly' | 'juggles';
 export type Pose = 'ready' | 'up' | 'throw' | 'low' | 'lowThrow';
 
 /**
- * A Klown Klub member at pie practice (20x40, facing left): `ready` holds a pie, `up` winds
+ * A Clown Club member at pie practice (20x40, facing left): `ready` holds a pie, `up` winds
  * up over the head (a head-high pie is coming), `low` winds up down by the knees (a pie
  * skidding along the floor), and the throws let go with a whoosh.
  */

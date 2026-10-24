@@ -1,4 +1,4 @@
-// Level 10's monsters: the Klown Klub's practice pies (custard, thrown at head height: PRATFALL
+// Level 10's monsters: the Clown Club's practice pies (custard, thrown at head height: PRATFALL
 // and they sail over; or skidding along the floor: hop them), each thrower's with its own
 // reach and speed, and the pigeons after the crumbs (the rubber chicken's SQUAWK sends them
 // off). A pie only stings a little, and it is gone once it lands.

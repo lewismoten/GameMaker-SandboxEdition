@@ -98,6 +98,6 @@ SAYING THANKS
   birthday; for Gwinn, who kept
   a secret; and for Doc Leo and
   every friendly clown in every
-  Klown Klub.
+  Clown Club.
 
 Woof! Boof! SQUAWK! Honk!

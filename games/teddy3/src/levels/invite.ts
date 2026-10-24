@@ -6,7 +6,7 @@
 // strutting in front of it (each one uses up a BOOF). Twist: Professor Pratfall lives up a
 // fire escape in the alley behind a tall fence: big-dig the soft dirt at its foot, crawl
 // under, climb the fire escape and BOOF the pigeon and the bell on the top landing. Then the
-// Klown Klub's party van, where Juggles is waiting: its back door has three latches, and
+// Clown Club's party van, where Juggles is waiting: its back door has three latches, and
 // each takes one RSVP. With fewer, a latch stays shut (the sign says so), and every door and
 // the tunnel back are still there to go round again. Her goal is the seat past the latches.
 //
@@ -104,7 +104,7 @@ export function invite(): Level {
   m.mon(d, ESC.top - 2, 'doorTop').mon(d, ESC.top - 1, 'bellDoor');
   m.mon(d - 2, ESC.top - 1, 'pigeonShort');
 
-  // The lot past the alley: a goose, the sign, Juggles, and the Klown Klub's party van.
+  // The lot past the alley: a goose, the sign, Juggles, and the Clown Club's party van.
   const v = INVITE.latch;
   m.mon(v - 7, 39, 'goose');
   m.set(v - 5, 39, 'signVanL').set(v - 4, 39, 'signVanR');

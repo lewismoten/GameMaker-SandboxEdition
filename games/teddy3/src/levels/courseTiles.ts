@@ -1,7 +1,7 @@
 // Level 16's background blocks, The Teddy Course, inside the Big Top at night: the tent's
 // canvas, the sawdust ring floor, crate walls and stacks, the little dirt mound and fence
 // to dig under, the see-saw's step and fulcrum, the fast belt, the ball pit and its blinking
-// boards (two beats), the station signs the Klown Klub painted, the flap into the dark ring,
+// boards (two beats), the station signs the Clown Club painted, the flap into the dark ring,
 // and the ring itself, dark, with the party waiting (and nobody making a sound).
 import { Pixels } from '../../../kit/pixels';
 import { speckle } from '../art/draw';
@@ -149,7 +149,7 @@ export function courseTiles(): Tiles {
   const [prof0, prof1] = leoOn(KLUB.pratfall.flipX(), bg, bg);
   t.air('profTop', prof0);
   t.air('profBot', prof1);
-  // Station 7 and 8 are the Klub's own asks (monsters): SIT?, and the turnstile.
+  // Station 7 and 8 are the Club's own asks (monsters): SIT?, and the turnstile.
   // Station 9: the tent flap into the dark ring, and the ring's edge.
   art(
     t,

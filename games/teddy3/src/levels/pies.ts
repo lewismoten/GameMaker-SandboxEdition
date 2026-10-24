@@ -1,6 +1,6 @@
-// Level 10: MEANWHILE... Pie Practice, one afternoon in the Klown Klub's practice tent at the
+// Level 10: MEANWHILE... Pie Practice, one afternoon in the Clown Club's practice tent at the
 // Fairgrounds. Doc Leo has to fetch the birthday cake from Professor Pratfall's bakery stall,
-// and the way there runs right through the Klub's pie-throwing practice. The new idea is the
+// and the way there runs right through the Club's pie-throwing practice. The new idea is the
 // PRATFALL (hold 4): flat on his back, only his feet's block is left, so a pie thrown at head
 // height sails over. Teach: Twirly throws one slow pie at a time, and she winds up first (the
 // pie goes up over her head). Test: Bubbles throws high and low by turns: a high wind-up is a
