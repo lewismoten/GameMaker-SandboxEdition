@@ -197,32 +197,51 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(0, 0, 1),
     corner(0, 0, 1),
   ]);
-  // Lily strolls her route and back, whistling, smirking now and then; in the woods she pats you
-  const lilyPics: [number, number][] = o.pats
-    ? [
-        [n('lilyPat!'), 1],
-        [n('lilyPat'), 4],
-        [n('lily0'), 5],
-        [n('lily1'), 5],
-        [n('lilySmirk'), 10],
-        [n('lily0'), 5],
-        [n('lily1'), 5],
-      ]
-    : [
-        [n('lily0'), 5],
-        [n('lily1'), 5],
-        [n('lily0'), 5],
-        [n('lily1'), 5],
-        [n('lilySmirk'), 12],
-      ];
+  // Lily strolls her route and back, whistling, smirking now and then; in the woods she pats you.
+  // A monster shows one picture set for its whole path, so each leg is its own monster, drawn the
+  // way she walks it (side on, mirrored going left; her back going up; face on coming down), and
+  // each becomes the next at its end. Nothing can knock her over (power 200), so the chain holds.
+  const lilyPics = (way: 'front' | 'side' | 'back'): [number, number][] => {
+    const [w0, w1] = way === 'front' ? ['lily0', 'lily1'] : way === 'side' ? ['lilySide0', 'lilySide1'] : ['lilyBack0', 'lilyBack1'];
+    // walking away she can't smirk at you
+    const smirk = way === 'back' ? w0 : 'lilySmirk';
+    return o.pats
+      ? [
+          [n('lilyPat!'), 1],
+          [n('lilyPat'), 4],
+          [n(w0), 5],
+          [n(w1), 5],
+          [n(smirk), 10],
+          [n(w0), 5],
+          [n(w1), 5],
+        ]
+      : [
+          [n(w0), 5],
+          [n(w1), 5],
+          [n(w0), 5],
+          [n(w1), 5],
+          [n(smirk), 12],
+        ];
+  };
   const route = o.lily ?? [[4, 0]];
-  const there = [corner(0, 0, 1), ...route.map(([x, y], i) => corner(x, y, 1, x < (route[i - 1]?.[0] ?? 0) ? 4 : 0))];
-  const back = [...route]
-    .reverse()
-    .slice(1)
-    .map(([x, y]) => corner(x, y, 1, 4));
-  set[MON.lily] = mon(lilyPics, { power: 200, thru: 0 }, [...there, ...back, corner(0, 0, 1, 4)]);
-  set[MON.lilyNear] = mon(lilyPics, { power: 200, thru: 1, towards: 1 });
+  const stops: [number, number][] = [[0, 0], ...route, ...[...route].reverse().slice(1), [0, 0]];
+  const legs = stops.slice(1).map(([x, y], i) => [x - stops[i][0], y - stops[i][1]] as const);
+  if (MON.lilyLegs + legs.length > 64) throw new Error(`Lily's ${legs.length} legs don't fit in the monster slots`);
+  // A monster that becomes another at the end of its path (PLAYGAME's MonEndPath) walks the old
+  // one's first corner, then dies at the end of its own: so each leg's monster holds the NEXT
+  // leg's corner. She starts (MON.lily, on the map) with a standstill that hands over to the last
+  // leg's monster, which walks that standstill too and hands over to the first leg's.
+  const leg = (k: number) => MON.lilyLegs + (k % legs.length);
+  const cornerOf = (k: number) => {
+    const [dx, dy] = legs[k % legs.length];
+    return corner(dx, dy, 1, Math.abs(dx) >= Math.abs(dy) && dx < 0 ? 4 : 0);
+  };
+  const wayOf = ([dx, dy]: readonly [number, number]) => (Math.abs(dx) >= Math.abs(dy) ? 'side' : dy < 0 ? 'back' : 'front');
+  legs.forEach((l, k) => {
+    set[leg(k)] = mon(lilyPics(wayOf(l)), { power: 200, thru: 0, end: -1, newmon: leg(k + 1) }, [cornerOf(k + 1)]);
+  });
+  set[MON.lily] = mon(lilyPics(wayOf(legs[0])), { power: 200, thru: 0, end: -1, newmon: leg(legs.length - 1) }, [corner(0, 0, 1)]);
+  set[MON.lilyNear] = mon(lilyPics('front'), { power: 200, thru: 1, towards: 1 });
   set[MON.bat] = mon(stings('bat0', 'bat1', 4), { power: 150, thru: 0 }, pace(2, 1, true));
   set[MON.ghost] = mon(stings('ghost0', 'ghost1', 8), { power: 150, thru: 0 }, pace(o.ghost ?? 5, 1));
   // A tackle (120) floors the werewolf guy (115) for three seconds: stars, then he's up and after you again.

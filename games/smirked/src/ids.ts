@@ -52,6 +52,11 @@ export const MON = {
   helmetSpin: 24,
   /** A witch you already said sorry to, taped back up by the staff: she can go over again. */
   witchTaped: 25,
+  /**
+   * Lily's stroll after its first leg: one monster a leg (26, 27, ...), each drawn the way she
+   * walks it and becoming the next at its end; the last becomes Lily (6) again.
+   */
+  lilyLegs: 26,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

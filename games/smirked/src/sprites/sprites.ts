@@ -234,11 +234,67 @@ export function buildCharBlocks(pal: Pal, withSword = false) {
   return book;
 }
 
-/** Lily's look: a lavender unicorn hoodie, pigtails, glitter, and a caramel apple as big as her head. */
+/**
+ * Lily's look: a lavender unicorn hoodie, pigtails, glitter, and a caramel apple as big as her
+ * head. Face on (front), or strolling: side on to the right (mirror it for left) or from behind
+ * (going up the map).
+ */
 export function lilyArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
-  return (o: { step?: number; mood?: 'plain' | 'smirk' | 'pat' | 'whistle'; apple?: boolean; badge?: boolean } = {}): Pixels => {
+  const legs = (p: Pixels, step: number, side: boolean) => {
+    for (const [x, d] of [
+      [side ? 8 : 7, step === 1 ? -1 : 0],
+      [side ? 10 : 11, step === 2 ? -1 : 0],
+    ] as const) {
+      // a stride: side on, the legs swing apart on alternate steps
+      const sx = side ? (x < 9 ? -1 : 1) * (step === 0 ? 0 : step === 1 ? 1 : -1) : 0;
+      p.rect(x + sx, 15 + (side ? 0 : d), 2, 3, c('purple', 1));
+      if (side) p.rect(x + sx, 18, 3, 2, c('white', 2)).set(x + sx + 2, 18, c('purple', 2));
+      else p.rect(x - 1 + (x > 9 ? 1 : 0), 18 + d, 3, 2, c('white', 2));
+    }
+  };
+  const sideOn = (step: number): Pixels => {
+    const p = new Pixels(20, 20, T);
+    legs(p, step, true);
+    // the hoodie, side on, and the unicorn's rainbow tail at its back
+    for (let y = 9; y <= 15; y++) for (let x = 7; x < 13; x++) p.set(x, y, c('hoodie', x === 7 || x === 12 ? 1 : 2));
+    for (let k = 0; k < 4; k++) p.set(6 - (k >> 1), 12 + k, c('rainbow', k));
+    // the hood, the horn pointing ahead, the mane down the back of the hood
+    blob(p, 10, 6, 4.2, 4.4, pal.r('hoodie'), 1, 3);
+    p.line(12, 2, 14, -1, c('white', 2)).set(13, 1, c('gold', 2)).set(14, 0, c('white', 1));
+    for (let k = 0; k < 6; k++) p.set(6, 3 + k, c('rainbow', k)).set(7, 2 + k, c('rainbow', (k + 2) % 6));
+    // her face at the front of the hood, a pigtail out the back
+    blob(p, 11.5, 7, 2.2, 2.4, pal.r('skin'), 2, 3);
+    p.set(12, 6, ink).set(12, 8, c('pink', 1)).set(13, 8, c('pink', 1)).set(10, 8, c('gold', 2));
+    p.set(7, 9, c('lhair', 1)).set(6, 10, c('lhair', 1));
+    // her arm out front, holding the caramel apple on its stick
+    p.rect(11, 12, 3, 2, c('hoodie', 3)).set(14, 13, c('skin', 3));
+    blob(p, 16, 11, 3, 3, pal.r('apple'), 0, 2);
+    p.rect(13, 12, 6, 2, c('caramel', 1)).rect(13, 12, 6, 1, c('caramel', 2)).line(15, 14, 15, 16, c('board', 3));
+    return outline(p, ink);
+  };
+  const behind = (step: number): Pixels => {
+    const p = new Pixels(20, 20, T);
+    legs(p, step, false);
+    // the back of the hoodie and its little rainbow tail
+    for (let y = 9; y <= 15; y++) for (let x = 6; x < 14; x++) p.set(x, y, c('hoodie', x === 6 || x === 13 ? 1 : 2));
+    for (let k = 0; k < 3; k++) p.set(9, 13 + k, c('rainbow', k)).set(10, 13 + k, c('rainbow', k + 1));
+    // the hood from behind: the horn's tip over the top, the mane down the middle
+    blob(p, 10, 6, 4.6, 4.4, pal.r('hoodie'), 1, 3);
+    p.line(10, 2, 11, -1, c('white', 2)).set(11, 0, c('white', 1));
+    for (let k = 0; k < 7; k++) p.set(9, 2 + k, c('rainbow', k % 6)).set(10, 3 + k, c('rainbow', (k + 2) % 6));
+    // pigtails out both sides, and the apple peeking past her
+    p.set(5, 9, c('lhair', 1)).set(5, 8, c('lhair', 1)).set(14, 9, c('lhair', 1)).set(14, 8, c('lhair', 1));
+    blob(p, 3, 11, 2.4, 3, pal.r('apple'), 0, 2);
+    p.rect(1, 12, 4, 2, c('caramel', 1));
+    return outline(p, ink);
+  };
+  return (
+    o: { step?: number; mood?: 'plain' | 'smirk' | 'pat' | 'whistle'; apple?: boolean; badge?: boolean; view?: 'front' | 'side' | 'back' } = {},
+  ): Pixels => {
+    if (o.view === 'side') return sideOn(o.step ?? 0);
+    if (o.view === 'back') return behind(o.step ?? 0);
     const p = new Pixels(20, 20, T);
     const step = o.step ?? 0;
     // little sneakers, leggings
@@ -633,5 +689,10 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('witchTaped1', taped(1));
   // the witch landing flat, worth nothing yet (the falling witch stays a while; a sorry is said once she lies still)
   book.add('flatFalling', flat(1));
+  // Lily strolling side on (mirrored going left) and away from you (going up the map)
+  book.add('lilySide0', lily({ view: 'side', step: 1 }));
+  book.add('lilySide1', lily({ view: 'side', step: 2 }));
+  book.add('lilyBack0', lily({ view: 'back', step: 1 }));
+  book.add('lilyBack1', lily({ view: 'back', step: 2 }));
   return book;
 }
