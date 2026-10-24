@@ -1,5 +1,5 @@
 // The Mac app's icon (Contents/Resources/AppIcon.icns), drawn without a canvas so the web
-// app and mac/package.ts make the same one: a rounded tile in the shape of a macOS icon
+// app and web/scripts/macDmg.ts make the same one: a rounded tile in the shape of a macOS icon
 // with a little 4:3 screen showing the game (its first level, as the home page's tiles do,
 // or its title picture), saved as PNGs inside an .icns file.
 //
