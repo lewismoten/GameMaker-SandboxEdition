@@ -218,8 +218,8 @@ export function streetTiles(): Tiles {
     'litter',
     (() => {
       const p = copy(lawn);
-      p.rect(2, 16, 5, 4, c('paint', 3)).rect(10, 17, 4, 3, c('green', 2)).rect(15, 15, 3, 5, c('paint', 2));
-      micro(p, 3, 16, 'N', c('ink', 1));
+      p.rect(2, 15, 5, 5, c('paint', 3)).rect(10, 17, 4, 3, c('green', 2)).rect(15, 15, 3, 5, c('paint', 2));
+      micro(p, 3, 15, 'N', c('ink', 1));
       return p;
     })(),
   );

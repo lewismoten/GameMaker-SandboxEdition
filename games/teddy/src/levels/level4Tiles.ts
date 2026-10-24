@@ -138,8 +138,9 @@ export function cityTiles(): Tiles {
     'subway',
     (() => {
       const p = copy(t.pic('brick'));
-      p.rect(1, 3, 18, 9, c('green', 0)).frame(1, 3, 18, 9, c('paint', 3));
-      micro(p, 2, 5, 'SUBWY', c('paint', 3));
+      // five letters take 19 of the block's 20 pixels: the sign runs edge to edge, banded top and bottom
+      p.rect(0, 3, 20, 9, c('green', 0)).rect(0, 3, 20, 1, c('paint', 3)).rect(0, 11, 20, 1, c('paint', 3));
+      micro(p, 1, 5, 'SUBWY', c('paint', 3));
       return p;
     })(),
   );
