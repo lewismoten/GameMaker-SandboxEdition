@@ -61,10 +61,12 @@ const path = (c: CanvasRenderingContext2D, pts: Pt[]) => {
 
 /** Doc Leo at the wheel, seen through the door window: his chewed fedora, white face paint round
  * his eye and his grin, his own nose sunburned pink. */
-function docLeo(c: CanvasRenderingContext2D): void {
+function docLeo(c: CanvasRenderingContext2D, seat: Pt = [0, 0]): void {
   c.save();
   path(c, CHEZ_WINDOW);
   c.clip();
+  // the seat: moved back (toward the rear, smaller x) and down, he sits clear of the windshield
+  c.translate(seat[0], seat[1]);
   // the corduroy jacket's shoulder and the green tie
   c.fillStyle = '#7a5a32';
   c.fillRect(17, 6.6, 6, 2);
@@ -113,9 +115,11 @@ function docLeo(c: CanvasRenderingContext2D): void {
 
 /**
  * Draws THE CHEZ with its box's bottom left on the ground at (x, ground), `k` pixels to the
- * kit's unit, facing left (driving right to left, the passenger side showing).
+ * kit's unit, facing left (driving right to left, the passenger side showing). `seat` moves Doc
+ * Leo in the kit's units (back is negative x): a close-up sits him back from the windshield so
+ * his face and hat show whole in the door window.
  */
-export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number, k: number): void {
+export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number, k: number, seat?: Pt): void {
   c.save();
   // mirrored: the kit's x runs nose-right; facing left, unit u lands at x + (40 - u) * k
   c.translate(x + 40 * k, ground - 20 * k);
@@ -183,7 +187,7 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
   c.fillStyle = glass;
   path(c, CHEZ_WINDOW);
   c.fill();
-  docLeo(c);
+  docLeo(c, seat);
   c.strokeStyle = '#d8eef8';
   c.lineWidth = 0.35;
   c.beginPath();

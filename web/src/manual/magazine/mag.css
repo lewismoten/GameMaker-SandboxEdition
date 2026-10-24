@@ -1,0 +1,1035 @@
+/* TURBO BUTTON: a mid-90s game magazine. The viewer's chrome follows the site's theme; the
+   pages stay printed paper in light and dark. A page's sizes are in em of its type, which is
+   a fraction of the page's width (.mag-sheet is the container), so a page looks the same at
+   any size and in print. On a narrow screen the page keeps its type at reading size and runs
+   long instead (.flow). */
+
+/* ---- the viewer ---------------------------------------------------------------------- */
+.mag-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg, #11131a);
+  color: var(--text, #e6e8ef);
+}
+
+.mag-viewer.where-web {
+  height: calc(100dvh - 56px);
+}
+
+.mag-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(10, 8, 6, 0.9);
+}
+
+.mag-overlay .mag-viewer {
+  background: transparent;
+}
+
+.mag-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 12px;
+  background: var(--panel, #1b1e28);
+  border-bottom: 1px solid var(--border, #343a4f);
+}
+
+.mag-bar-title {
+  padding: 4px 8px;
+  background: #b5121b;
+  color: #fff;
+  font:
+    900 18px/1 Impact,
+    'Arial Black',
+    'Helvetica Neue',
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.mag-spacer {
+  flex: 1;
+}
+
+.mag-bar button,
+.mag-toc summary {
+  min-height: 32px;
+  min-width: 32px;
+  padding: 4px 10px;
+  border: 1px solid var(--border, #343a4f);
+  border-radius: 6px;
+  background: var(--bg, #11131a);
+  color: var(--text, #e6e8ef);
+  font: inherit;
+  cursor: pointer;
+}
+
+.mag-bar button[aria-pressed='true'] {
+  background: var(--accent, #6d8bff);
+  color: var(--accent-text, #0b0d14);
+}
+
+.mag-bar button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mag-bar :focus-visible,
+.mag-stage:focus-visible,
+.mag-toc-list button:focus-visible {
+  outline: 3px solid var(--focus, #ff9d00);
+  outline-offset: 2px;
+}
+
+.mag-counter {
+  min-width: 9em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.mag-toc {
+  position: relative;
+}
+
+.mag-toc summary {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+}
+
+.mag-toc summary::-webkit-details-marker {
+  display: none;
+}
+
+.mag-toc nav,
+.mag-print-menu {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 4px);
+  left: 0;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(70vh, 560px);
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid var(--border, #343a4f);
+  border-radius: 8px;
+  background: var(--panel, #1b1e28);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.mag-toc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mag-toc-list button {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mag-toc-list button:hover,
+.mag-toc-list button[aria-current='true'] {
+  background: var(--accent-soft, #1f2748);
+}
+
+.mag-toc-list small {
+  color: var(--muted, #9aa2b8);
+  font-variant-numeric: tabular-nums;
+}
+
+.mag-print-wrap {
+  position: relative;
+}
+
+.mag-print-menu {
+  left: auto;
+  right: 0;
+  width: 220px;
+}
+
+.mag-print-menu button {
+  display: block;
+  width: 100%;
+  margin: 2px 0;
+  text-align: left;
+}
+
+.mag-stage {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.mag-loading {
+  margin: auto;
+  color: var(--muted, #9aa2b8);
+}
+
+.mag-spread {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+
+.mag-spread.alone-right {
+  padding-left: var(--pw);
+}
+
+.mag-spread.alone-left {
+  padding-right: var(--pw);
+}
+
+.mag-sheet {
+  container-type: inline-size;
+  width: var(--pw);
+  aspect-ratio: 8.5 / 11;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.mag-spread .mag-sheet + .mag-sheet {
+  box-shadow:
+    inset 1.5em 0 1.5em -1.5em rgba(0, 0, 0, 0.35),
+    0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.flow .mag-sheet {
+  aspect-ratio: auto;
+}
+
+.flow .mag-spread {
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .mag-bar-title,
+  .mag-zoom,
+  .mag-wide-only {
+    display: none;
+  }
+
+  .mag-counter {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .mag-stage {
+    padding: 8px 0;
+  }
+}
+
+/* ---- the printed page ------------------------------------------------------------------- */
+.mag-page {
+  --ink: #141210;
+  --red: #d61f26;
+  --blue: #1b3f9a;
+  --yellow: #ffd31a;
+  --paper: #fbf8ef;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font:
+    1.8cqw/1.36 'Times New Roman',
+    Times,
+    serif;
+  color-scheme: light;
+}
+
+.flow .mag-page {
+  height: auto;
+  font-size: max(1.8cqw, 15px);
+}
+
+.mag-page.tone-news {
+  --paper: #f3eedd;
+}
+.mag-page.tone-pink {
+  --paper: #ffe3ea;
+}
+.mag-page.tone-yellow {
+  --paper: #fff2b0;
+}
+.mag-page.tone-cyan {
+  --paper: #dff3fb;
+}
+.mag-page.tone-black {
+  --paper: #121218;
+  --ink: #f6f2e6;
+}
+
+/* the halftone dots of cheap color printing, faint over the paper */
+.mag-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.07) 22%, transparent 24%);
+  background-size: 0.45em 0.45em;
+}
+
+.mag-page.tone-black::before {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 22%, transparent 24%);
+}
+
+.mag-in {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 3.4em 3.2em 3.2em;
+}
+
+.flow .mag-in {
+  height: auto;
+  padding: 3em 1.2em 3em;
+}
+
+.mag-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.8em;
+  min-height: 0;
+}
+
+/* a full-page ad fills its page */
+.kind-ad .mag-body > .mag-adframe:only-child {
+  flex: 1;
+  justify-content: space-around;
+}
+
+/* the cover: masthead at the top, the cover lines spread down the page */
+.kind-cover .mag-body {
+  justify-content: space-between;
+}
+
+.mag-body > * {
+  margin: 0;
+}
+
+.mag-runhead {
+  position: absolute;
+  top: 1.3em;
+  left: 3.2em;
+  right: 3.2em;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.3em;
+  border-bottom: 0.25em solid var(--red);
+  font:
+    900 0.8em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.mag-adlabel {
+  position: absolute;
+  top: 1.2em;
+  right: 3.2em;
+  font:
+    0.62em/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.25em;
+  opacity: 0.6;
+}
+
+.mag-folio {
+  position: absolute;
+  bottom: 1.2em;
+  left: 3.2em;
+  right: 3.2em;
+  display: flex;
+  justify-content: space-between;
+  font:
+    0.72em/1 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mag-folio span:first-child {
+  font-weight: 700;
+  font-size: 1.3em;
+}
+
+.mag-page :where(h1, h2, h3) {
+  margin: 0;
+  font-family: Impact, 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+}
+
+.mag-head .mag-kicker {
+  display: inline-block;
+  margin: 0 0 0.35em;
+  padding: 0.15em 0.5em;
+  background: var(--red);
+  color: #fff;
+  font:
+    700 0.85em/1.1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mag-head h1,
+.mag-head h2,
+.mag-head h3 {
+  font-size: 2.2em;
+  text-transform: uppercase;
+}
+
+.mag-head.size-xl :where(h1, h2, h3) {
+  font-size: 3.6em;
+  color: var(--red);
+  text-shadow: 0.06em 0.06em 0 var(--ink);
+}
+
+.mag-head.size-l :where(h1, h2, h3) {
+  font-size: 2.7em;
+}
+
+.mag-head.size-s :where(h1, h2, h3) {
+  font-size: 1.4em;
+  border-bottom: 0.12em solid var(--ink);
+  padding-bottom: 0.1em;
+}
+
+.mag-deck {
+  margin: 0.4em 0 0;
+  font:
+    italic 1.2em/1.3 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.mag-page p {
+  margin: 0 0 0.55em;
+}
+
+.mag-drop::first-letter {
+  float: left;
+  margin: 0.05em 0.08em 0 0;
+  font:
+    900 3.4em/0.8 Impact,
+    'Arial Black',
+    sans-serif;
+  color: var(--red);
+}
+
+.mag-cols {
+  column-gap: 1.4em;
+  column-rule: 0.06em solid rgba(0, 0, 0, 0.35);
+}
+
+.mag-cols.n2 {
+  columns: 2;
+}
+
+.mag-cols.n3 {
+  columns: 3;
+}
+
+.mag-cols > * {
+  break-inside: avoid-column;
+}
+
+.mag-q {
+  font:
+    700 1em/1.3 Helvetica,
+    Arial,
+    sans-serif;
+  color: var(--blue);
+}
+
+.tone-black .mag-q {
+  color: #8fb4ff;
+}
+
+.mag-who {
+  font-family: Helvetica, Arial, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.mag-list {
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.mag-list li {
+  margin-bottom: 0.3em;
+}
+
+.mag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min, 28cqw), 1fr));
+  gap: 1em;
+  align-items: start;
+}
+
+.mag-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  min-width: 0;
+}
+
+.mag-side {
+  padding: 0.8em 1em;
+  border: 0.2em solid var(--ink);
+  background: #fff2b0;
+  color: #141210;
+  box-shadow: 0.35em 0.35em 0 var(--ink);
+  break-inside: avoid;
+}
+
+.mag-side.tone-cyan {
+  background: #cfeefa;
+}
+.mag-side.tone-pink {
+  background: #ffd3de;
+}
+.mag-side.tone-white {
+  background: #fff;
+}
+.mag-side.tone-news {
+  background: #f3eedd;
+}
+.mag-side.tone-black {
+  background: #121218;
+  color: #f6f2e6;
+}
+
+.mag-side h3 {
+  margin-bottom: 0.4em;
+  font-size: 1.3em;
+  text-transform: uppercase;
+}
+
+.mag-pull {
+  margin: 0.4em 2em;
+  padding: 0.5em 0;
+  border-top: 0.3em solid var(--red);
+  border-bottom: 0.3em solid var(--red);
+  font:
+    italic 700 1.6em/1.2 Georgia,
+    serif;
+  text-align: center;
+}
+
+.mag-pull p {
+  margin: 0;
+}
+
+.mag-pull footer {
+  margin-top: 0.3em;
+  font:
+    0.55em/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* a screenshot on a beveled monitor-gray frame */
+.mag-shot,
+.mag-art {
+  margin: 0;
+  transform: rotate(var(--tilt, 0deg));
+}
+
+.mag-bevel {
+  display: block;
+  padding: 0.4em;
+  background: #c3c3c3;
+  border: 0.2em solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: 0.3em 0.3em 0 rgba(0, 0, 0, 0.45);
+}
+
+.mag-bevel img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 320 / 192;
+  object-fit: cover;
+  image-rendering: pixelated;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 4px), #0c0c14;
+}
+
+.mag-shot.none {
+  display: none;
+}
+
+.mag-page figcaption {
+  margin-top: 0.35em;
+  font:
+    italic 0.85em/1.25 Georgia,
+    serif;
+}
+
+.mag-art svg,
+.mag-art img,
+.mag-art .mag-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mag-art.art-barcode {
+  width: 9em;
+  align-self: flex-end;
+}
+
+.mag-art.art-sandbox {
+  width: 8em;
+  align-self: center;
+}
+
+/* listings: a game per line, the price at the right, dot leaders */
+.mag-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mag-rows li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 0.6em;
+  padding: 0.35em 0;
+  border-bottom: 0.06em dotted rgba(0, 0, 0, 0.5);
+}
+
+.mag-row-title {
+  font:
+    700 1.05em/1.2 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mag-row-price {
+  font:
+    900 1.05em/1.2 Impact,
+    'Arial Black',
+    sans-serif;
+  color: var(--red);
+}
+
+.mag-row-by,
+.mag-row-blurb,
+.mag-row-more {
+  grid-column: 1 / -1;
+  font-size: 0.9em;
+}
+
+.mag-row-by {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.75em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.mag-row-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1em;
+}
+
+/* a hint, its answer printed upside down */
+.mag-hint {
+  padding: 0.5em 0.8em;
+  border: 0.12em dashed var(--ink);
+  background: rgba(255, 255, 255, 0.5);
+  break-inside: avoid;
+}
+
+.mag-hint-a {
+  transform: rotate(180deg);
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* an order card with a dotted cut line */
+.mag-card {
+  position: relative;
+  padding: 1em 1.2em;
+  border: 0.18em dashed var(--ink);
+  background: #fff;
+  color: #141210;
+  font:
+    0.95em/1.35 'Courier New',
+    Courier,
+    monospace;
+  break-inside: avoid;
+}
+
+.mag-card.tone-yellow {
+  background: #fff6c2;
+}
+.mag-card.tone-pink {
+  background: #ffe6ec;
+}
+.mag-card.tone-cyan {
+  background: #e3f6fd;
+}
+
+.mag-card h3 {
+  margin-bottom: 0.5em;
+  font-size: 1.4em;
+  letter-spacing: 0.04em;
+}
+
+.mag-scissors {
+  position: absolute;
+  top: -0.85em;
+  left: 1em;
+  padding: 0 0.2em;
+  background: inherit;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.mag-field {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.mag-field i {
+  flex: 1;
+  border-bottom: 0.08em solid #141210;
+}
+
+/* links: a tap target each; buttons stand out like a coupon's "mail today" */
+.mag-page a {
+  color: var(--blue);
+  text-decoration-thickness: 0.08em;
+}
+
+.tone-black a,
+.mag-adframe.tone-black a {
+  color: #9cc0ff;
+}
+
+.mag-page a:focus-visible {
+  outline: 0.2em solid #ff9d00;
+  outline-offset: 0.1em;
+}
+
+.mag-body > a.mag-go,
+.mag-cell > a.mag-go,
+.mag-side > a.mag-go,
+.mag-card > a.mag-go,
+.mag-adframe > a.mag-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 24px;
+  margin: 0.3em 0.4em 0 0;
+  padding: 0.35em 0.9em;
+  border: 0.15em solid #141210;
+  background: var(--yellow);
+  color: #141210;
+  box-shadow: 0.2em 0.2em 0 #141210;
+  font:
+    900 1em/1.1 Impact,
+    'Arial Black',
+    sans-serif;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.mag-page a.mag-solo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.mag-note,
+.mag-small {
+  font:
+    0.78em/1.3 Helvetica,
+    Arial,
+    sans-serif;
+  opacity: 0.85;
+}
+
+.mag-page hr {
+  width: 100%;
+  border: 0;
+  border-top: 0.2em solid var(--ink);
+}
+
+/* a full-page ad: a thick frame, a starburst, shouting type */
+.mag-adframe {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  min-height: 0;
+  padding: 1.6em 1.6em 1.2em;
+  border: 0.45em solid var(--ink);
+  background: #fff;
+  color: #141210;
+}
+
+.mag-adframe.tone-cyan {
+  background: #dff3fb;
+}
+.mag-adframe.tone-yellow {
+  background: #fff2b0;
+}
+.mag-adframe.tone-pink {
+  background: #ffe3ea;
+}
+.mag-adframe.tone-black {
+  background: #121218;
+  color: #f6f2e6;
+  border-color: var(--yellow);
+}
+
+.mag-adframe h2 {
+  font-size: 3em;
+  color: var(--red);
+  text-shadow: 0.05em 0.05em 0 #141210;
+}
+
+.mag-adframe.tone-black h2 {
+  color: var(--yellow);
+  text-shadow: 0.05em 0.05em 0 var(--red);
+}
+
+.mag-ad-sub {
+  margin: 0;
+  font:
+    700 1.35em/1.25 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mag-burst {
+  position: absolute;
+  top: -1.2em;
+  right: -0.8em;
+  display: grid;
+  place-items: center;
+  width: 6.4em;
+  height: 6.4em;
+  background: var(--yellow);
+  color: var(--red);
+  clip-path: polygon(
+    50% 0,
+    61% 18%,
+    81% 9%,
+    79% 30%,
+    100% 33%,
+    86% 50%,
+    100% 67%,
+    79% 70%,
+    81% 91%,
+    61% 82%,
+    50% 100%,
+    39% 82%,
+    19% 91%,
+    21% 70%,
+    0 67%,
+    14% 50%,
+    0 33%,
+    21% 30%,
+    19% 9%,
+    39% 18%
+  );
+  font:
+    900 1.15em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  text-align: center;
+  transform: rotate(12deg);
+}
+
+/* the cover */
+.mag-page.kind-cover .mag-in {
+  padding: 1.6em 2em 2em;
+}
+
+.mag-masthead h1 {
+  font-size: 7.4em;
+  line-height: 0.85;
+  color: var(--red);
+  -webkit-text-stroke: 0.03em #fff;
+  text-shadow:
+    0.04em 0.04em 0 var(--yellow),
+    0.08em 0.08em 0 #000;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.mag-mast-issue {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 0.3em;
+  font:
+    700 0.85em/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mag-mast-tag {
+  margin: 0.3em 0 0;
+  text-align: center;
+  font:
+    italic 700 1.2em/1 Georgia,
+    serif;
+  color: var(--yellow);
+}
+
+.kind-cover .mag-list {
+  padding: 0;
+  list-style: none;
+  font:
+    1.35em/1.25 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.kind-cover .mag-list li {
+  margin-bottom: 0.35em;
+  padding-left: 0.8em;
+  border-left: 0.35em solid var(--yellow);
+}
+
+.kind-cover .mag-list a {
+  color: var(--yellow);
+}
+
+.kind-cover .mag-head.size-xl h2 {
+  font-size: 4.2em;
+  color: var(--yellow);
+  text-shadow: 0.05em 0.05em 0 var(--red);
+}
+
+.kind-cover .mag-deck a,
+.kind-cover .mag-deck {
+  color: #fff;
+}
+
+/* a stub page: its stamp */
+.mag-stamp {
+  position: absolute;
+  right: 2em;
+  bottom: 5em;
+  padding: 0.3em 0.7em;
+  border: 0.25em solid rgba(214, 31, 38, 0.75);
+  color: rgba(214, 31, 38, 0.75);
+  font:
+    900 1.6em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  letter-spacing: 0.1em;
+  transform: rotate(-12deg);
+}
+
+/* phones: one column, cells stacked */
+@container (max-width: 560px) {
+  .mag-cols.n2,
+  .mag-cols.n3 {
+    columns: 1;
+  }
+
+  .mag-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mag-masthead h1 {
+    font-size: 4.2em;
+  }
+
+  .mag-head.size-xl :where(h1, h2, h3),
+  .kind-cover .mag-head.size-xl h2 {
+    font-size: 2.4em;
+  }
+
+  .mag-adframe h2 {
+    font-size: 2em;
+  }
+
+  .mag-pull {
+    margin: 0.4em 0;
+  }
+}
+
+/* ---- printing: a page to a letter sheet -------------------------------------------------- */
+.mag-print {
+  display: none;
+}
+
+@page mag {
+  size: 8.5in 11in;
+  margin: 0;
+}
+
+@media print {
+  html.mag-printing body > *:not(.mag-print) {
+    display: none !important;
+  }
+
+  html.mag-printing .mag-print {
+    display: block;
+  }
+
+  .mag-print-sheet {
+    page: mag;
+    container-type: inline-size;
+    width: 8.5in;
+    height: 11in;
+    break-after: page;
+    overflow: hidden;
+  }
+
+  .mag-print .mag-page {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+.mag-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

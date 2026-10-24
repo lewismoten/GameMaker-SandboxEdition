@@ -1,0 +1,204 @@
+// Draws the magazine's pages (types.ts) as HTML: each block as its printed piece (headlines,
+// columns, boxed sidebars, beveled screenshots, order cards with a dotted cut line, ads), the
+// running head and the folio. Links are real <a href>s (go.ts goHref) carrying their go: target
+// in data-go, which the viewer runs (goRun.ts) when it opens something on top instead.
+import { h } from '../../editor/core/ui';
+import type { CatalogEntry } from '../../project/files';
+import { decorateBbsName } from '../../retro/bbs/bbsName';
+import { artElement } from './art';
+import { goHref, parseGo, type Where } from './go';
+import { runs } from './inline';
+import { MAG } from './masthead';
+import type { Block, Inline, PlacedPage } from './types';
+
+export interface RenderEnv {
+  where: Where;
+  /** The catalog entry of a listed game, for its screenshots. */
+  entry(id: string): CatalogEntry | undefined;
+}
+
+/** THE CHEZ is never split across lines (keepTogether.ts), nor is a phone number. */
+const keep = (s: string) => s.replace(/THE CHEZ/g, 'THE\u00a0CHEZ').replace(/\b1-\d{3}-555-[\dA-Z]{4}\b/g, (n) => n.replace(/-/g, '\u2011'));
+
+export function goLink(go: string, where: Where, ...children: (Node | string)[]): HTMLAnchorElement {
+  const outside = parseGo(go)?.kind === 'url';
+  return h(
+    'a',
+    { class: 'mag-go', href: goHref(go, where), dataset: { go }, target: outside ? '_blank' : undefined, rel: outside ? 'noopener' : undefined },
+    ...children,
+  );
+}
+
+function inline(text: Inline, where: Where): Node[] {
+  const list = runs(text);
+  return list.map((r) => {
+    const t = keep(r.text);
+    if (r.go) {
+      const a = goLink(r.go, where, t);
+      // a link on a line of its own is a target of its own: at least 24px tall
+      if (list.length === 1) a.classList.add('mag-solo');
+      return a;
+    }
+    if (r.b) return h('b', null, t);
+    if (r.i) return h('i', null, t);
+    return document.createTextNode(t);
+  });
+}
+
+/** Screenshots, drawn once per game and view and kept as pictures (so they print). */
+const shots = new Map<string, Promise<string | undefined>>();
+function shotUrl(entry: CatalogEntry, view: 'title' | 'level'): Promise<string | undefined> {
+  const key = `${entry.id}:${view}`;
+  let p = shots.get(key);
+  if (!p) {
+    p = import('../../gfx/gameShots').then(async ({ renderShot, renderTitle }) => {
+      const c = document.createElement('canvas');
+      const ok = view === 'title' ? await renderTitle(entry, c) : await renderShot(entry, c, 10, 6);
+      // no title screen: the level instead
+      if (!ok && view === 'title' && (await renderShot(entry, c, 10, 6))) return c.toDataURL();
+      return ok ? c.toDataURL() : undefined;
+    });
+    shots.set(key, p);
+  }
+  return p;
+}
+
+function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLElement {
+  const { where } = env;
+  const all = (list: Block[]) => list.map((x) => block(x, env, pending));
+  switch (b.t) {
+    case 'head': {
+      const tag: 'h1' | 'h2' | 'h3' = b.level === 1 ? 'h1' : b.level === 3 ? 'h3' : 'h2';
+      return h(
+        'div',
+        { class: `mag-head size-${b.size ?? 'm'}` },
+        b.kicker ? h('p', { class: 'mag-kicker' }, b.kicker) : null,
+        h(tag, null, keep(b.text)),
+        b.deck ? h('p', { class: 'mag-deck' }, ...inline(b.deck, where)) : null,
+      );
+    }
+    case 'p':
+      return h('p', { class: [b.drop ? 'mag-drop' : '', b.lead ? 'mag-lead' : ''].join(' ').trim() || undefined }, ...inline(b.text, where));
+    case 'qa':
+      return h('p', { class: b.who ? 'mag-a' : 'mag-q' }, b.who ? h('b', { class: 'mag-who' }, `${b.who}: `) : null, ...inline(b.text, where));
+    case 'list':
+      return h(b.ordered ? 'ol' : 'ul', { class: 'mag-list' }, ...b.items.map((it) => h('li', null, ...inline(it, where))));
+    case 'cols':
+      return h('div', { class: `mag-cols n${b.n}` }, ...all(b.blocks));
+    case 'grid':
+      return h('div', { class: 'mag-grid', style: `--min:${(b.min ?? 0.28) * 100}cqw` }, ...b.cells.map((c) => h('div', { class: 'mag-cell' }, ...all(c))));
+    case 'side':
+      return h('aside', { class: `mag-side tone-${b.tone ?? 'yellow'}`, 'aria-label': b.title }, h('h3', null, keep(b.title)), ...all(b.blocks));
+    case 'pull':
+      return h('blockquote', { class: 'mag-pull' }, h('p', null, ...inline(b.text, where)), b.by ? h('footer', null, `— ${b.by}`) : null);
+    case 'shot': {
+      const img = h('img', { alt: b.alt, width: 320, height: 192 });
+      const fig = h(
+        'figure',
+        { class: 'mag-shot', style: b.tilt ? `--tilt:${b.tilt}deg` : undefined },
+        h('span', { class: 'mag-bevel' }, img),
+        b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null,
+      );
+      const entry = env.entry(b.game);
+      if (entry)
+        pending.push(
+          shotUrl(entry, b.view).then((url) => {
+            if (url) img.src = url;
+            else fig.classList.add('none');
+          }),
+        );
+      else fig.classList.add('none');
+      return fig;
+    }
+    case 'art':
+      return h('figure', { class: `mag-art art-${b.art}` }, artElement(b.art, b.alt), b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null);
+    case 'rows':
+      return h(
+        'ul',
+        { class: 'mag-rows' },
+        ...b.rows.map((r) =>
+          h(
+            'li',
+            null,
+            h('span', { class: 'mag-row-title' }, r.go ? goLink(r.go, where, keep(r.title)) : keep(r.title)),
+            r.price ? h('span', { class: 'mag-row-price' }, r.price) : null,
+            r.by || r.kind ? h('span', { class: 'mag-row-by' }, [r.by, r.kind].filter(Boolean).join(' · ')) : null,
+            r.blurb ? h('span', { class: 'mag-row-blurb' }, ...inline(r.blurb, where)) : null,
+            r.more?.length ? h('span', { class: 'mag-row-more' }, ...r.more.map(([label, go]) => goLink(go, where, label))) : null,
+          ),
+        ),
+      );
+    case 'hint':
+      return h(
+        'div',
+        { class: 'mag-hint' },
+        h('p', { class: 'mag-hint-q' }, h('b', null, 'Q: '), ...inline(b.q, where)),
+        h('p', { class: 'mag-hint-a', title: 'Turn the page over to read it' }, h('b', null, 'A: '), keep(b.a)),
+      );
+    case 'card':
+      return h(
+        'div',
+        { class: `mag-card tone-${b.tone ?? 'white'}` },
+        h('span', { class: 'mag-scissors', 'aria-hidden': 'true' }, '✂'),
+        h('h3', null, keep(b.title)),
+        ...b.lines.map((l) => h('p', null, ...inline(l, where))),
+        ...(b.fields ?? []).map((f) => h('p', { class: 'mag-field' }, h('span', null, f), h('i', { 'aria-hidden': 'true' }))),
+        b.go ? goLink(b.go, where, b.button ?? 'Send it') : null,
+      );
+    case 'adframe':
+      return h(
+        'div',
+        { class: `mag-adframe tone-${b.tone ?? 'white'}` },
+        b.burst ? h('span', { class: 'mag-burst' }, b.burst) : null,
+        h('h2', null, keep(b.head)),
+        b.sub ? h('p', { class: 'mag-ad-sub' }, ...inline(b.sub, where)) : null,
+        ...all(b.blocks),
+        b.small ? h('p', { class: 'mag-small' }, ...inline(b.small, where)) : null,
+      );
+    case 'button': {
+      const a = goLink(b.go, where, keep(b.label));
+      a.classList.add('mag-btn');
+      return a;
+    }
+    case 'note':
+      return h('p', { class: 'mag-note' }, ...inline(b.text, where));
+    case 'masthead':
+      return h(
+        'header',
+        { class: 'mag-masthead' },
+        h('p', { class: 'mag-mast-issue' }, h('span', null, b.issue), h('span', null, b.price)),
+        h('h1', null, b.name),
+        h('p', { class: 'mag-mast-tag' }, b.tagline),
+      );
+    case 'rule':
+      return h('hr');
+  }
+}
+
+/** A page, and a promise that its screenshots are in (for printing). */
+export function renderPage(pg: PlacedPage, env: RenderEnv): { el: HTMLElement; ready: Promise<unknown> } {
+  const pending: Promise<unknown>[] = [];
+  const body = pg.blocks.map((b) => block(b, env, pending));
+  const plainPage = pg.kind === 'cover' || pg.kind === 'back';
+  const el = h(
+    'article',
+    {
+      class: `mag-page kind-${pg.kind} tone-${pg.tone ?? 'white'}${pg.stub ? ' stub' : ''}`,
+      'aria-label': pg.folio === 1 ? 'Front cover' : pg.kind === 'back' ? 'Back cover' : `Page ${pg.folio}`,
+      dataset: { page: pg.id },
+    },
+    h(
+      'div',
+      { class: 'mag-in' },
+      pg.head ? h('div', { class: 'mag-runhead', 'aria-hidden': 'true' }, h('span', null, MAG.name), h('span', null, pg.head)) : null,
+      pg.kind === 'ad' ? h('div', { class: 'mag-adlabel', 'aria-hidden': 'true' }, 'ADVERTISEMENT') : null,
+      h('div', { class: 'mag-body' }, ...body),
+      pg.stub ? h('div', { class: 'mag-stamp', 'aria-hidden': 'true' }, 'IN THE NEXT DRAFT') : null,
+      plainPage
+        ? null
+        : h('div', { class: 'mag-folio', 'aria-hidden': 'true' }, h('span', null, String(pg.folio)), h('span', null, `${MAG.name} · ${MAG.issue}`)),
+    ),
+  );
+  decorateBbsName(el);
+  return { el, ready: Promise.all(pending) };
+}

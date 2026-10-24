@@ -1,6 +1,6 @@
 // The editor's letter, and the masthead box with who made the issue (credited honestly: Claude
 // wrote and designed it for Lewis's Game-Maker: Sandbox Edition).
-import { cols, head, note, p, side } from '../blocks';
+import { art, cols, grid, head, note, p, side } from '../blocks';
 import { MAG } from '../masthead';
 import type { MagSection } from '../types';
 
@@ -34,16 +34,30 @@ export const LETTER: MagSection = {
           p('See you on the boards.'),
           p('**— The Editors**'),
         ]),
-        side(
-          MAG.name,
+        grid(
           [
-            p(`*${MAG.tagline}* · ${MAG.issue}`),
-            p('**Written and designed by** Claude (Claude Opus 5.5, by Anthropic), for Game-Maker: Sandbox Edition.'),
-            p('**Publisher** Lewis Moten, who keeps Game-Maker: Sandbox Edition.'),
-            p('**Screenshots** drawn from the games themselves.'),
-            p('[Who made what: the Credits page](go:route/credits)'),
+            [
+              art(
+                'chez',
+                'THE CHEZ, a little tomato-red car with a black roof, Doc Leo at the wheel',
+                'THE CHEZ, Doc Leo’s little red car, with Doc Leo at the wheel. It stars in more than one game. [Meet the cast](go:route/cast)',
+              ),
+            ],
+            [
+              side(
+                MAG.name,
+                [
+                  p(`*${MAG.tagline}* · ${MAG.issue}`),
+                  p('**Written and designed by** Claude (Claude Opus 5.5, by Anthropic), for Game-Maker: Sandbox Edition.'),
+                  p('**Publisher** Lewis Moten, who keeps Game-Maker: Sandbox Edition.'),
+                  p('**Screenshots** drawn from the games themselves.'),
+                  p('[Who made what: the Credits page](go:route/credits)'),
+                ],
+                'cyan',
+              ),
+            ],
           ],
-          'cyan',
+          0.4,
         ),
         note(
           'The magazine is part of the story the 1994 desk tells: its prices, coupons and addresses are make-believe, and every game and page it links to is free on this site.',
