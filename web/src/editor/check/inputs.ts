@@ -22,7 +22,8 @@ export interface Move {
 
 export interface KeyRoles {
   move: { scan: number; dx: number; dy: number }[];
-  jump: { scan: number; dx: number }[];
+  /** `hold`: holding the key keeps it going (it repeats and can't stall), so a long hold climbs or flies. */
+  jump: { scan: number; dx: number; hold?: boolean }[];
   /** Keys whose sequence stays in place: fire, tricks, pick up. */
   act: number[];
 }
@@ -52,8 +53,12 @@ export function keyRoles(chr: Character, gravity: boolean): KeyRoles {
       dx += f.x;
       dy += f.y;
     }
-    if (action.kind === 'move') roles.move.push({ scan, dx: Math.sign(dx), dy: Math.sign(dy) });
-    else if (action.kind === 'jump') roles.jump.push({ scan, dx: Math.sign(dx) });
+    // a sequence that moves and comes back (up and down again) is played like a jump
+    const moves = s.frames.some((f) => f.pic2 !== CHARBL + 1 && f.pic2 !== MONBL && (f.x || f.y));
+    const hold = !s.norepeat && !s.ground;
+    if (action.kind === 'action' && moves && !dx && !dy) roles.jump.push({ scan, dx: 0, hold });
+    else if (action.kind === 'move') roles.move.push({ scan, dx: Math.sign(dx), dy: Math.sign(dy) });
+    else if (action.kind === 'jump') roles.jump.push({ scan, dx: Math.sign(dx), hold });
     // a trick that neither moves the hero, fires anything nor picks up can't take them anywhere new
     else if (action.kind === 'fire' || action.kind === 'pickup' || (action.kind === 'action' && (dx || dy))) roles.act.push(scan);
   }
@@ -71,7 +76,7 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
   }
   // a jump tapped or held a while, alone, steered from the start (running) or after it
   for (const j of roles.jump)
-    for (const press of [1, 6]) {
+    for (const press of j.hold ? [1, 6, 18] : [1, 6]) {
       out.push({ name: `jump ${j.scan} ${press}`, steps: [{ keys: [j.scan], until: 'ticks', max: press }] });
       if (j.dx === 0)
         for (const m of sideways) {
