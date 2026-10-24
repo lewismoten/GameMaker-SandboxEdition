@@ -99,7 +99,7 @@ export async function ultimatePages(): Promise<BookPage[]> {
       { kind: 'text', head: head('Contents'), body: contents(starts), cls: PAGE_CLASS },
       ...text.map((body, i): BookPage => {
         ch = opens[i].at(-1) ?? ch;
-        return { kind: 'text', head: head(CHAPTERS[ch].head), body, cls: PAGE_CLASS };
+        return { kind: 'text', head: head(CHAPTERS[ch].head), body, cls: PAGE_CLASS, anchors: opens[i].map((c) => CHAPTERS[c].id) };
       }),
       ...Array.from({ length: plan.notes }, (): BookPage => ({ kind: 'notes', head: head('Notes'), body: notesPage() })),
       { kind: 'cover', body: [backCover()] },
@@ -109,9 +109,21 @@ export async function ultimatePages(): Promise<BookPage[]> {
   }
 }
 
+let wanted: string | undefined;
+
+/** The next time the guide is opened, it turns to this chapter (an id in plan.ts CHAPTERS). */
+export function openAtChapter(id: string | undefined): void {
+  wanted = id;
+}
+
 /** The guide as a piece in the Game-Maker box. */
 export function ultimateItem(): BoxItem {
   return {
+    openAt: () => {
+      const id = wanted;
+      wanted = undefined;
+      return id;
+    },
     id: 'ultimate',
     title: ULTIMATE_TITLE,
     note: 'Advanced tips and tricks, stapled',

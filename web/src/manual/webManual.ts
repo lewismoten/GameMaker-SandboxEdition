@@ -3,6 +3,7 @@ import './webManual.css';
 import { h, clear } from '../editor/core/ui';
 import { decorateBbsName } from '../retro/bbs/bbsName';
 import { MORE_GAMES_TITLE, moreGamesHtml } from '../credits/moreGames';
+import { hashParam } from '../urlState';
 
 const SECTIONS: [id: string, title: string, html: string][] = [
   [
@@ -315,6 +316,9 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
     h('nav', { 'aria-label': 'Guide contents' }, h('a', { href: '#/' }, '← Home'), ...SECTIONS.map(([, t], i) => link(i, t))),
   );
   article.querySelector('.guide-open-ultimate')?.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
+  // #/help/ultimate?chapter=levels opens the guide at that chapter (the level check links here)
+  const chapter = hashParam('chapter');
+  if (id === 'ultimate' && chapter) void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide(chapter));
   decorateBbsName(article);
   clear(el, h('div', { class: 'guide' }, toc, article));
 }

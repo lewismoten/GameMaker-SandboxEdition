@@ -27,6 +27,8 @@ export interface BoxItem {
    * manual. `render` then gives only its cover, for the box's list of pieces.
    */
   pages?(): Promise<BookPage[]>;
+  /** The chapter (BookPage.anchors) to open the booklet at, asked each time it is first shown. */
+  openAt?(): string | undefined;
 }
 
 type PrintMode = 'item' | 'booklet' | 'all';
@@ -196,6 +198,10 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Opening…'));
       const p = await bookletOf(item);
       if (current !== item.id) return;
+      // turned straight to a chapter (a level check's guide link), else where it was left
+      const anchor = item.openAt?.();
+      const page = anchor ? p.findIndex((pg) => pg.anchors?.includes(anchor)) : -1;
+      if (page >= 0) marks.set(item.id, page);
       openBook(item.id, p, false);
       showManual();
     };
