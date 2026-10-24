@@ -216,3 +216,28 @@ export function agedPaper(W: number, H: number, seed: number, accent: string): S
   out.push(b);
   return out;
 }
+
+let copies = 0;
+
+/**
+ * A copy of a drawing with its own ids (clip paths, gradients): Chrome draws no clip path whose
+ * first match in the page is inside something hidden, as the screen's copy is while printing.
+ */
+export function freshCopy<T extends Element>(node: T): T {
+  const copy = node.cloneNode(true) as T;
+  const tag = `-c${++copies}`;
+  const ids = new Set<string>();
+  copy.querySelectorAll('[id]').forEach((e) => {
+    ids.add(e.id);
+    e.id += tag;
+  });
+  if (!ids.size) return copy;
+  copy.querySelectorAll('*').forEach((e) => {
+    for (const a of ['clip-path', 'fill', 'mask', 'href']) {
+      const v = e.getAttribute(a);
+      const m = v && /^url\(#([^)]+)\)$/.exec(v);
+      if (m && ids.has(m[1])) e.setAttribute(a, `url(#${m[1]}${tag})`);
+    }
+  });
+  return copy;
+}

@@ -17,7 +17,7 @@ import { graphicShot, levelShot } from '../../editor/editors/integrator/integrat
 import { hashString, sheet, type PrintContext, type Sheet } from './kit';
 import { CELL, bounds, cardRects, folds, tiles, type Rect } from './worldMapLayout';
 import { INK, PAPER, blobPath, lookOf, mix, regions, scatter, trailBetween, type Look, type Terrain } from './worldMapTerrain';
-import { SERIF, TERRAIN_NAMES, agedPaper, cartouche, compassRose, el, glyph, scaleBar } from './worldMapArt';
+import { SERIF, TERRAIN_NAMES, agedPaper, cartouche, compassRose, el, freshCopy, glyph, scaleBar } from './worldMapArt';
 import { panZoom } from './panZoom';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -426,7 +426,7 @@ function tileGrid(W: number, H: number): SVGElement | undefined {
 
 /** One printed page: the map's SVG looking at tile `t`, with its name and where it joins. */
 function tileSheet(world: World, t: Rect & { name: string; col: number; row: number }, count: { cols: number; rows: number }): Sheet {
-  const svg = world.svg.cloneNode(true) as SVGSVGElement;
+  const svg = freshCopy(world.svg);
   svg.querySelector('.wm-tiles')?.remove();
   svg.setAttribute('viewBox', `${t.x} ${t.y} ${t.w} ${t.h}`);
   const joins = [
@@ -457,7 +457,7 @@ export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
   if (!loaded) return [];
   const world = drawWorld(ctx.entry, loaded.game, loaded.files);
   const grid = tileGrid(world.W, world.H);
-  const full = world.svg.cloneNode(true) as SVGSVGElement;
+  const full = freshCopy(world.svg);
   if (grid) full.append(grid);
   const ts = tiles(world.W, world.H, PAGE.w, PAGE.h, PAGE.overlap);
   const cols = Math.max(...ts.map((t) => t.col)) + 1;
@@ -471,7 +471,7 @@ export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
 export function worldMapScreen(sheets: Sheet[]): HTMLElement {
   const s = sheets[0];
   if (!s) return h('p', { class: 'gmb-loading' }, 'This game has no scenes to map.');
-  const map = s.el.cloneNode(true) as HTMLElement;
+  const map = freshCopy(s.el);
   map.classList.add('wm-screen-sheet');
   const pz = panZoom(map, s.w, 'The World Map: drag to look around');
   const pages = sheets.length > 1 ? sheets.length - 1 : 1;
@@ -487,7 +487,7 @@ export function worldMapScreen(sheets: Sheet[]): HTMLElement {
   );
 
   // folded: the title panel on top of a stack of folds
-  const face = s.el.cloneNode(true) as HTMLElement;
+  const face = freshCopy(s.el);
   face.classList.add('wm-face');
   face.style.width = `${Math.max(1, s.w / 8.5) * 340}px`;
   const holder = h('div', { class: 'wm-fold' });
