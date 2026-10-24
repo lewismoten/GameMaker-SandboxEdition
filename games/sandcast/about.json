@@ -60,5 +60,6 @@
       "title": "Map of the Sandbox",
       "caption": "Five castles, the tide pool and the hose: the whole backyard"
     }
-  }
+  },
+  "sameEverySide": ["sandcast.mon#24", "sandcast.mon#9"]
 }
