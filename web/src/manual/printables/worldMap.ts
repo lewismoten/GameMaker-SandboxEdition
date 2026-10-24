@@ -555,7 +555,9 @@ export function worldMapScreen(sheets: Sheet[], other?: (every: boolean) => Prom
               title: 'Every scene as its own card, as the Game Integrator shows them',
               onclick: async () => {
                 const next = await other(!every);
-                if (next[0]) show(next[0], next.length > 1 ? next.length - 1 : 1, !every);
+                if (!next[0]) return;
+                show(next[0], next.length > 1 ? next.length - 1 : 1, !every);
+                holder.querySelector<HTMLElement>('.wm-every')?.focus(); // the new bar's button keeps the keyboard's place
               },
             },
             'Every scene',
