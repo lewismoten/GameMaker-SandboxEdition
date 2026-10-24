@@ -279,8 +279,6 @@ const MICRO: Record<string, string> = {
   '<': '001010100010001',
   _: '000000000000111',
   '\\': '100100010001001',
-  // micro, for the capacitors' 100µF
-  '\u00b5': '101101101111100',
 };
 
 export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pixels {
