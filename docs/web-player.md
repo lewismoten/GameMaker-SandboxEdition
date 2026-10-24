@@ -8,7 +8,9 @@ reads is an optional `games.json` that lists the folders.
 Try it with this project's games at
 <https://lewismoten.github.io/GameMaker-SandboxEdition/player/>, and download it from
 <https://lewismoten.github.io/GameMaker-SandboxEdition/web-player.html> (or with "Download this
-player" at the bottom of any copy of it).
+player" at the bottom of any copy of it). Any game's Download button offers it too, as "Web
+player": a .zip with the player as `index.html`, the game's folder and a `games.json` listing
+it, ready to put on a host, or the player alone.
 
 ## Setting it up
 

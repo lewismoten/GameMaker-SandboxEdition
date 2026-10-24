@@ -133,7 +133,8 @@ look alike, in the companion file on the `.pal`.
 **Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`,
 which calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`,
 the game's files, a manifest and a service worker), `exportSinglePage.ts` (`standalone.html`
-with the game embedded, built by `../scripts/singlePageBuild.ts`), `exportDos.ts` (the files
+with the game embedded, built by `../scripts/singlePageBuild.ts`), `exportWebPlayer.ts` (the web player, `web-player.html`, with the
+game's folder and a `games.json`), `exportDos.ts` (the files
 plus the CD's `XFERPLAY.EXE`, renamed after the game), and the Mac, Windows and Linux
 downloads (`macApp.ts`, `winApp.ts`, `linuxApp.ts`), which put the single page into the
 players in `../public/mac`, `win` and `linux`, with `THIRD-PARTY-NOTICES.txt` (`notices.ts`).
