@@ -75,7 +75,8 @@ Checking the games:
   (check, scene and title without where it was first seen, `web/src/editor/check/accepted.ts`); they never fail, as
   the map panel's "Mark as checked: it's meant to be" ("That's on purpose" on a suggestion) leaves them out.
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
-  `playtime.ts` would write), without writing anything.
+  `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
+  (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
