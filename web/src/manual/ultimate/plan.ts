@@ -12,8 +12,6 @@ import { LEVELS } from './chaptersLevels';
 import { TRICKS } from './chaptersTricks';
 import { CHECK } from './chaptersCheck';
 
-export const ULTIMATE_TITLE = 'The Ultimate Owner’s Guide';
-
 export const CHAPTERS: Chapter[] = [
   PALETTES,
   BLOCKS,

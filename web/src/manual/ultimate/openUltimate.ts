@@ -5,7 +5,7 @@ export async function openUltimateGuide(chapter?: string): Promise<void> {
   const [{ openDosManual }, { showInBox }, { openAtChapter }] = await Promise.all([
     import('../dosManual'),
     import('../../desk/boxes/boxList'),
-    import('./ultimateGuide'),
+    import('./ultimateItem'),
   ]);
   openAtChapter(chapter);
   showInBox(() => void openDosManual(), 'ultimate');

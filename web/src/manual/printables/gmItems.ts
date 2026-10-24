@@ -17,7 +17,7 @@ import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, suppo
 import { PLAYGAME_KEYS } from './keys';
 import { mixedStickers, stickerScreen } from './stickers';
 import { gmStickerSpecs } from './gmStickers';
-import { ultimateItem } from '../ultimate/ultimateGuide';
+import { ultimateItem } from '../ultimate/ultimateItem';
 
 /** Game-Maker SE as if it were one more catalog entry, for the generic cards. */
 const GM_ENTRY: CatalogEntry = { id: 'gamemaker-se', title: PRODUCT, kind: 'gameware', path: '', gam: null, files: [], price: '$0.00', year: 1995 };
