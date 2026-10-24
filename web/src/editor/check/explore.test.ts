@@ -59,4 +59,21 @@ describe('the level check explorer', () => {
     expect(run.won).toBe(true);
     expect(run.runs.map((r) => r.scene)).toEqual([2]);
   });
+
+  it('calls a pit the hero only dies in a death, not a place to get stuck', async () => {
+    // the same pit, its floor spikes that hurt on every tick: in it, every move ends in a death
+    const t = testGame(ROWS.map((r, y) => (y === 7 ? '######^^##' : r)));
+    const ex = await explore(t.game, 2, t, { start: { x: 3, y: 3 }, ci: startCharInfo(), clock: 1 });
+    expect(ex.complete).toBe(true);
+    expect(ex.incidents.some((i) => i.kind === 'death')).toBe(true);
+    expect(stuckAreas(ex, parseMap(t.files.get('test.map')!).blocks, parseBlocks(t.files.get('test.bbl')!, BACKBL))).toHaveLength(0);
+  });
+
+  it('knows spikes the hero can step off don’t hold him', async () => {
+    // spikes on the open floor by the start: the bot walks and waits on them, but a step gets away
+    const t = testGame(['##########', '#........#', '#........#', '#E.S^^...#', '##########']);
+    const ex = await explore(t.game, 2, t, { start: { x: 3, y: 3 }, ci: startCharInfo(), clock: 1 }, { waitEverywhere: true });
+    expect(ex.places.some((p) => p.cell === cell(6, 3) && p.hp < 100)).toBe(true);
+    expect(ex.incidents.filter((i) => i.kind === 'hurt-lock')).toHaveLength(0);
+  });
 });
