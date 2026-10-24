@@ -127,10 +127,13 @@ preserve what was there.
   - **Gwinn** (two n's) is the troublemaker dog.
   - **Teddy** is the corgi; one ear is drawn shorter on purpose.
   - **Doc Leo** is never "Dr. Leo".
+  - **Klown Klub** is always the whole name, never "Klub" alone; wherever it is lettered in a
+    picture (signs, box art), both K's are drawn backwards.
   - **THE CHEZ** is a tomato-red 1976½ CitiCar with a black roof and only the door window
     from the side. It has two charcoal stripes with red between them and a white pinstripe,
     stepping up in an S behind the door; white wheels; square bumpers; and the charge port
-    at the rear passenger side. Draw it with `games/kit/chez.ts`.
+    at the rear passenger side. Draw it with `games/kit/chez.ts`. Keep "THE CHEZ" together on one line
+    (a non-breaking space on the site; never wrapped between the words in a game).
 - **Bard of Bizarre credits:** music and vocals made with Riffusion (now Google Flow
   Music); lyrics shaped by ChatGPT from the maintainer's prompts. Exceptions are noted in
   NOTICE.md. Riffusion, Producer.ai and Google Flow Music are one service under successive
