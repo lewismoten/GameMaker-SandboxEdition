@@ -8,7 +8,6 @@ import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
 import { screenKeys } from './screenKeys';
-import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
 import { parseGame } from '../formats/game';
@@ -140,7 +139,10 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   keys.addEventListener('click', (e) => {
     e.stopPropagation();
     keys.blur();
-    showKeyMap(files.stream ? withCharacters(files, gamFile) : files, gamFile, opts.title ?? 'Game', () => canvas.focus());
+    // the dialog's code comes with the first press (most players never open it)
+    void import('../editor/keymap/keyMapView').then(({ showKeyMap }) =>
+      showKeyMap(files.stream ? withCharacters(files, gamFile) : files, gamFile, opts.title ?? 'Game', () => canvas.focus()),
+    );
   });
   // ...and beside it, keys to click or tap (F-keys a Mac or the browser keeps, Esc, arrows)
   let unkeys: (() => void) | undefined;
