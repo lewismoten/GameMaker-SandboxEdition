@@ -50,7 +50,9 @@ export const PALETTES: Chapter = {
   protanopia, deuteranopia or tritanopia see it. It lists the colors that touch on the map, or
   a monster and the scenery it stands in, that look alike there, and ramp steps too close to
   see. Click one to see where; ✨ makes the safe change, usually one color a little lighter or
-  darker, and Undo puts it back.</p>
+  darker, and Undo puts it back. Two colors you chose to look alike, such as a texture’s two
+  hues of one lightness, can be dismissed with <b>✓ They’re meant to look alike</b>; the
+  <b>dismissed</b> toggle under the list shows them again.</p>
   <h2>Colors the program goes looking for</h2>
   <p>Game-Maker and PLAYGAME draw some things in whatever color of your palette is
   <i>nearest</i> to a color they have in mind. If your palette has nothing close, they settle
