@@ -2,9 +2,8 @@
 // BBS, a Renegade board, has the CD's shareware games to read about and "download" into
 // C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/bbs/sofa.ts).
 import type { RetroHost } from '../host';
-import { attr, COLS, ROWS } from '../text/textScreen';
+import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
-import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import type { CatalogEntry } from '../../project/files';
 import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
@@ -35,13 +34,13 @@ import { pcExtras } from '../hacks/pcExtras';
 import { unlockAchievement } from '../../achievements';
 import { pcOutput } from '../computer/pcAudio';
 import { dosDir } from '../../project/dosDir';
-import { MODEM_CPS, PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from '../../project/diskFacts';
+import { PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from '../../project/diskFacts';
 import { sizeAbout } from './sofaFiles';
+import { statusBps } from './lineSpeed';
+import { cpsText, expectText, progress } from './transfer';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
-const CPS = MODEM_CPS[14400]; // 14,400 bps with V.42bis, in characters per second
-const TIME_COMPRESSION = 25; // nobody wants to wait ten minutes
 
 // ---- the dialing directory -----------------------------------------------------------
 
@@ -68,6 +67,14 @@ const visible = (s: string) => s.replace(/\|\d\d/g, '');
 
 export async function runTerminal(h: RetroHost): Promise<void> {
   const t = new Term(h);
+  try {
+    await terminal(t, h);
+  } finally {
+    t.close(); // stopped mid-call: nothing more arrives
+  }
+}
+
+async function terminal(t: Term, h: RetroHost): Promise<void> {
   const s = h.screen;
   for (;;) {
     s.resetPalette();
@@ -79,7 +86,10 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     t.line(boxRule('03'));
     DIRECTORY.forEach((d, i) =>
       t.line(
-        boxRow(`|14 ${i + 1}  ${d.name}${' '.repeat(Math.max(0, 28 - visible(d.name).length))} |07${d.number.padEnd(15)} |1014400  |07${d.software}`, '03'),
+        boxRow(
+          `|14 ${i + 1}  ${d.name}${' '.repeat(Math.max(0, 28 - visible(d.name).length))} |07${d.number.padEnd(15)} |10${statusBps().padEnd(6)} |07${d.software}`,
+          '03',
+        ),
       ),
     );
     t.line(boxBottom('03'));
@@ -114,7 +124,7 @@ export async function runTerminal(h: RetroHost): Promise<void> {
       if (!(e instanceof NoCarrier)) throw e;
       await t.dropped();
     }
-    t.connected = false;
+    await t.hangUp();
     t.line();
     t.line('|12NO CARRIER');
     modemSignal('hangup');
@@ -142,8 +152,10 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
   const minutesLeft = () => Math.max(1, 60 - Math.floor((performance.now() - online) / 60000));
 
   // The logon screen.
-  s.cursorX = 0;
-  s.cursorY = sandboxLogin(s);
+  t.art((s) => {
+    s.cursorX = 0;
+    s.cursorY = sandboxLogin(s);
+  });
   t.print('|14Enter your handle, or |15GUEST|14: |15');
   const name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
   t.line();
@@ -162,7 +174,7 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
 
   let show = true;
   for (;;) {
-    if (show) mainMenu(t, s);
+    if (show) mainMenu(t);
     show = false;
     t.print(`|06[|14Sandbox|06] |07Time left: |14${minutesLeft()}|07 min |06: |15`);
     const k = await t.key();
@@ -243,10 +255,7 @@ function wrap(text: string, width: number): string[] {
 
 /** Renegade-style: the last few callers after logon. */
 async function lastCallers(t: Term, name: string): Promise<void> {
-  const s = t.screenRef;
-  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
-  s.cursorX = 0;
-  s.cursorY = 0;
+  t.clear();
   t.line(`|07Logon #|141,994|07 · Welcome${name === 'GUEST' ? '' : ' back'}, |15${name}|07!`);
   t.line();
   t.line(boxTop('Last Few Callers'));
@@ -275,12 +284,12 @@ async function lastCallers(t: Term, name: string): Promise<void> {
   await t.key();
 }
 
-function mainMenu(t: Term, s: RetroHost['screen']): void {
-  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
-  s.cursorX = 0;
-  s.cursorY = 0;
-  sandBanner(s, BBS_NAME);
-  s.cursorY = 1;
+function mainMenu(t: Term): void {
+  t.clear();
+  t.art((s) => {
+    sandBanner(s, BBS_NAME);
+    s.cursorY = 1;
+  });
   t.line(boxTop('Main Menu'));
   const item = (key: string, label: string) => `|06[|14${key}|06] |07${label.padEnd(30)}`;
   const rows: [string, string, string, string][] = [
@@ -521,27 +530,12 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
     t.line();
     return;
   }
-  const seconds = size / CPS;
   t.line(`|15Zmodem|07.  ${zipName(g)}, |14${commas(size)}|07 bytes: |14${downloadLine(size, '|07, |14')}|07.`);
-  t.line('|07Starting transfer... (Esc to abort)');
-  const s = h.screen;
-  const row = s.cursorY;
-  const start = performance.now();
-  const total = (seconds * 1000) / TIME_COMPRESSION;
-  for (;;) {
-    const k = h.keys.poll();
-    if (k?.key === 'Escape') {
-      t.line();
-      t.line('|12Transfer aborted.');
-      return;
-    }
-    const f = Math.min(1, (performance.now() - start) / total);
-    const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
-    s.cursorY = row;
-    s.cursorX = 0;
-    t.print(`|15${zipName(g).padEnd(12)} |10${toCp437(bar)} |14${commas(Math.round(size * f)).padStart(9)} |07bytes  ${CPS} cps`);
-    if (f >= 1) break;
-    await sleep(120);
+  t.line(`|07Starting transfer: ${expectText(size)}. |08(Esc aborts, Space skips ahead)`);
+  if ((await progress(t, h, zipName(g), size)).aborted) {
+    t.line();
+    t.line('|12Transfer aborted.');
+    return;
   }
   t.line();
   t.line('|10Transfer complete.');
@@ -560,15 +554,16 @@ const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
 async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const s = h.screen;
   const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
-  t.line(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}`);
-  t.line(`|07Searching ZIP: ${zipName(g)}`);
+  // PKUNZIP runs on this PC: its words show at once
+  t.local(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}\n`);
+  t.local(`|07Searching ZIP: ${zipName(g)}\n`);
   const files: [string, number][] = [
     ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as [string, number]] : []),
     ...g.files.map((f, i): [string, number] => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)]),
     ['FILE_ID.DIZ', 450],
   ];
   for (const [name, size] of files) {
-    t.print(`|07  Inflating: ${name.padEnd(13)}`);
+    t.local(`|07  Inflating: ${name.padEnd(13)}`);
     const x = s.cursorX;
     const ms = (size / rate) * 1000;
     const start = performance.now();
@@ -578,17 +573,17 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
       if (f < 1) await sleep(Math.min(100, ms / 4));
     }
     s.write(x, s.cursorY, attr(7, 0), '    ');
-    t.line();
+    t.local('\n');
   }
 }
 
 // ---- uploads ----------------------------------------------------------------------------
 
-/** Protocols for an upload: key, name, characters per second at 14,400 bps. */
+/** Protocols for an upload: key, name, and how much of the line it uses (Zmodem streams; Xmodem waits for an ACK every 128 bytes). */
 const PROTOCOLS: [string, string, number][] = [
-  ['Z', 'Zmodem', 1650],
-  ['Y', 'Ymodem', 1580],
-  ['X', 'Xmodem', 1190],
+  ['Z', 'Zmodem', 1],
+  ['Y', 'Ymodem', 0.96],
+  ['X', 'Xmodem', 0.72],
 ];
 
 /** The file to send, picked on C: in the terminal (a folder lists itself). */
@@ -636,7 +631,7 @@ async function upload(t: Term, h: RetroHost): Promise<void> {
   t.line(boxTop('Upload to the Sand Pile'));
   t.line(boxRow(`  |07Every upload earns |14${RATIO}|07 file points. Thanks for giving back!`));
   t.line(boxRule());
-  for (const [k, name, cps] of PROTOCOLS) t.line(boxRow(`  |06[|14${k}|06] |07${name.padEnd(8)} |08${cps} cps`));
+  for (const [k, name, share] of PROTOCOLS) t.line(boxRow(`  |06[|14${k}|06] |07${name.padEnd(8)} |08${cpsText(share)}`));
   t.line(boxRow('  |06[|14Q|06] |07Quit'));
   t.line(boxBottom());
   t.print('|11Protocol: |15');
@@ -644,7 +639,7 @@ async function upload(t: Term, h: RetroHost): Promise<void> {
   t.line(k.length === 1 ? k : '');
   const protocol = PROTOCOLS.find(([key]) => key === k);
   if (!protocol) return;
-  const [, proto, cps] = protocol;
+  const [, proto, share] = protocol;
   const file = await pickFile(t, h);
   if (!file) {
     t.line('|07Upload cancelled.');
@@ -653,30 +648,17 @@ async function upload(t: Term, h: RetroHost): Promise<void> {
   t.print('|11Describe it in one line: |15');
   await readLine(s, h.keys, [], 45, attr(15, 0));
   t.line();
-  t.line(`|07Begin your |15${proto}|07 upload of |15${file.name}|07 now (|14${commas(file.size)}|07 bytes). |08Ctrl-X aborts.`);
+  t.line(
+    `|07Begin your |15${proto}|07 upload of |15${file.name}|07 now (|14${commas(file.size)}|07 bytes, ${expectText(file.size, share)}). |08Ctrl-X aborts, Space skips ahead.`,
+  );
   t.status(` TERMINAL 2.1 │ Sending ${file.path} by ${proto}`);
   modemSignal('send');
-  const row = s.cursorY;
-  const start = performance.now();
-  // long enough to see it going, whatever the size
-  const total = Math.max(9000, ((file.size / cps) * 1000) / TIME_COMPRESSION);
   const cutAt = 0.35 + Math.random() * 0.3;
-  for (;;) {
-    const key = h.keys.poll();
-    if (key?.key === 'Escape' || (key?.ctrl && key.key.toUpperCase() === 'X')) {
-      t.line();
-      t.line('|12Upload aborted.');
-      t.status(statusLine('Online'));
-      return;
-    }
-    const f = Math.min(cutAt, (performance.now() - start) / total);
-    const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
-    s.cursorY = row;
-    s.cursorX = 0;
-    t.print(`|15${file.name.padEnd(12)} |10${toCp437(bar)} |14${commas(Math.round(file.size * f)).padStart(9)} |07bytes  ${cps} cps`);
-    modemSignal('send');
-    if (f >= cutAt) break;
-    await sleep(120);
+  if ((await progress(t, h, file.name, file.size, { stopAt: cutAt, ctrlX: true, send: true, share })).aborted) {
+    t.line();
+    t.line('|12Upload aborted.');
+    t.status(statusLine('Online'));
+    return;
   }
   // somebody in the house wants the phone
   updateAccount((a) => ({ ...a, ulTries: a.ulTries + 1 }));

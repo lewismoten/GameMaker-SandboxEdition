@@ -2,7 +2,7 @@
 // board people called to hang out: who's on which line, and a live teleconference where
 // the other callers chat while you type.
 import type { RetroHost } from '../host';
-import { attr, COLS } from '../text/textScreen';
+import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
 import { sofaFiles } from './sofaFiles';
@@ -61,8 +61,10 @@ function menu(t: Term): void {
 export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   const s = h.screen;
   const line = 3 + Math.floor(Math.random() * 4);
-  s.cursorX = 0;
-  s.cursorY = sofaLogin(s, line, LINES);
+  t.art((s) => {
+    s.cursorX = 0;
+    s.cursorY = sofaLogin(s, line, LINES);
+  });
   t.line('|07If you already have a User-ID on this system, type it in and press ENTER.');
   t.print('|07Otherwise type |15"new"|07: |15');
   let name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase();
@@ -76,9 +78,7 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
     await readLine(s, h.keys, [], 16, attr(0, 0));
     t.line();
   }
-  s.fill(0, 0, COLS - 1, 23, attr(7, 0));
-  s.cursorX = 0;
-  s.cursorY = 0;
+  t.clear();
   t.line(`|15Welcome to The Sofa, |14${name}|15!  |07You are on line |14${String(line).padStart(2, '0')}|07.`);
   t.line(`|07There are |14${CALLERS.length + 1}|07 users online right now.`);
   menu(t);
@@ -133,7 +133,8 @@ function lounge(t: Term): void {
 
 /** The main channel: others talk every few seconds; type a line and press ENTER to talk. */
 async function teleconference(t: Term, h: RetroHost, name: string): Promise<void> {
-  const s = h.screen;
+  // the board sends no faster than the line takes it: a slow line just sees less of the flood
+  const lineFree = () => t.backlog < 0.5;
   const here = CALLERS.filter(([, doing]) => doing === 'Teleconference').map(([n]) => n);
   t.line();
   t.line('|15You are in the Main channel of Teleconference.');
@@ -149,10 +150,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   let burstAt = 0;
   let round = 0;
   const prompt = () => t.print(`|11: |15${typed}`);
-  const eraseLine = () => {
-    s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
-    s.cursorX = 0;
-  };
+  const eraseLine = () => t.eraseLine();
   const say = (text: string) => {
     eraseLine();
     t.line(text);
@@ -167,7 +165,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
       burstAt = now;
     }
     if (burst.length) {
-      while (burst.length && now >= burstAt + burst[0].wait) {
+      while (burst.length && now >= burstAt + burst[0].wait && lineFree()) {
         burstAt += burst[0].wait;
         say(burst.shift()!.text);
       }
@@ -179,11 +177,15 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
     } else {
       // The flood: far too fast to read.
       while (now > spamAt) {
+        if (!lineFree()) {
+          spamAt = now + 70;
+          break;
+        }
         say(`|12From ${SPAMMER}: |15${spamLine()}`);
         spamAt += 70 + Math.random() * 90;
       }
     }
-    if (!burst.length && now > pleaAt) {
+    if (!burst.length && now > pleaAt && lineFree()) {
       const [who, text] = PLEAS[plea++ % PLEAS.length];
       say(`|14From ${who}: |07${text}`);
       pleaAt = now + 2200 + Math.random() * 3000;
