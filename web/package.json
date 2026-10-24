@@ -9,6 +9,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "check:games": "vite-node ../games/kit/checkGames.ts",
     "typecheck": "tsc --noEmit",
     "format": "cd .. && prettier --write .",
     "format:check": "cd .. && prettier --check .",
