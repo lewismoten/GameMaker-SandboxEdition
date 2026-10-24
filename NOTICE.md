@@ -231,9 +231,11 @@ formats from their published descriptions and from Game-Maker's own source.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
   the IBM PC BIOS font.
 - **Caveat** (the handwriting in the Owner's Guide's registration record,
-  `web/src/manual/regRecord.ts`), a font by Impallari Type under the SIL Open Font License
-  1.1, is loaded from Google Fonts when that page is shown; it isn't included in this
-  repository or in exported games.
+  `web/src/manual/regRecord.ts`), a font by Impallari Type ("Copyright 2014 The Caveat
+  Project Authors"), under the SIL Open Font License 1.1. Its 600 weight, cut to Latin-1
+  with fontTools (its name and license kept inside it), is kept with the site as
+  `web/src/manual/fonts/caveat-600.woff2`, with the license beside it (`Caveat-OFL.txt`), so
+  the page asks no font server for it. It isn't in exported games.
 - **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
   one service under its successive names) and **DeepAI** are their owners' names for the
   tools used to make the Bard of Bizarre songs and art (see Credits); none of their code is

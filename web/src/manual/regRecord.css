@@ -1,4 +1,15 @@
 /* The Owner's Guide's registration record (regRecord.ts): printed lines, written in by hand. */
+
+/* The pen: Caveat by Impallari Type (SIL Open Font License 1.1, fonts/Caveat-OFL.txt), its
+   600 weight cut to Latin-1 and kept with the site, so it loads from here and not a font server.
+   The browser fetches it only when a hand-written line is shown. */
+@font-face {
+  font-family: Caveat;
+  src: url('./fonts/caveat-600.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+
 .mpage .rr {
   margin: 2cqw 0 0;
   padding: 1.2cqw 2cqw 1cqw;

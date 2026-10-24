@@ -32,7 +32,7 @@ export const PIECE_GROUPS: PieceGroup[] = [
         name: 'Caveat',
         license: 'SIL Open Font License 1.1',
         by: 'Impallari Type',
-        what: 'The handwriting on the Owner’s Guide’s registration record. Loaded from Google Fonts when that page is shown; not included in the site or in exported games.',
+        what: 'The handwriting on the Owner’s Guide’s registration record. Its 600 weight, cut to Latin-1, is kept with the site (web/src/manual/fonts), so no font server is asked for it; not in exported games.',
         url: 'https://fonts.google.com/specimen/Caveat',
       },
       {
