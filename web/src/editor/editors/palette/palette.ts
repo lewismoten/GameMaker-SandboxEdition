@@ -22,8 +22,17 @@ registerEditor(['pal'], (host, project, file) => {
   let rangeEnd: number | undefined;
   const save = () => project.files.set(file, serializePalette(pal));
   const history = new History<Uint8Array>();
-  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
-  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  // icons, so the tools stay one row in a short window
+  const undoBtn = h(
+    'button',
+    { class: 'pal-icon', title: 'Undo (Ctrl+Z)', 'aria-label': 'Undo', 'aria-keyshortcuts': 'Control+Z', disabled: true, onclick: () => step(true) },
+    '↶',
+  );
+  const redoBtn = h(
+    'button',
+    { class: 'pal-icon', title: 'Redo (Ctrl+Y)', 'aria-label': 'Redo', 'aria-keyshortcuts': 'Control+Y', disabled: true, onclick: () => step(false) },
+    '↷',
+  );
   let lastRecord = 0;
   /** Call before a change; a slider drag (changes less than a second apart) is one step. */
   const remember = (coalesce = false) => {
@@ -61,7 +70,12 @@ registerEditor(['pal'], (host, project, file) => {
     return {
       range,
       num,
-      row: h('label', { class: 'field' }, h('span', null, name), h('div', { class: 'row', style: 'align-items:center;gap:6px;flex-wrap:nowrap' }, range, num)),
+      row: h(
+        'label',
+        { class: 'field pal-slider' },
+        h('span', null, name),
+        h('div', { class: 'row', style: 'align-items:center;gap:6px;flex-wrap:nowrap' }, range, num),
+      ),
     };
   });
 
@@ -149,6 +163,61 @@ registerEditor(['pal'], (host, project, file) => {
 
   const gifs = project.files.byExtension('gif').filter((g) => isGif(project.files.get(g)!));
   let gifChoice = gifs[0] ?? '';
+  const side = h(
+    'div',
+    { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' },
+    h('div', { class: 'row', style: 'align-items:center' }, preview, label),
+    colorBox.el,
+    ...sliders.map((s) => s.row),
+    h(
+      'div',
+      { class: 'toolbar' },
+      h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'),
+      tools.rampBtn,
+      // together, so they wrap as a pair
+      h('span', { class: 'pal-undo' }, undoBtn, redoBtn),
+    ),
+    gifs.length
+      ? h(
+          'div',
+          { class: 'toolbar' },
+          fileField(
+            project,
+            'Copy colors from picture',
+            ['gif'],
+            () => gifChoice,
+            (v) => v && (gifChoice = v),
+            { allowNone: false },
+          ),
+          h(
+            'button',
+            {
+              onclick: () => {
+                remember();
+                pal.set(decodeGif(project.files.get(gifChoice)!).palette);
+                save();
+                refresh();
+              },
+            },
+            'Copy',
+          ),
+        )
+      : null,
+    h(
+      'button',
+      {
+        onclick: () => {
+          remember();
+          pal.set(defaultPalette());
+          save();
+          refresh();
+        },
+      },
+      'Reset to default colors',
+    ),
+    tools.uses,
+  );
+  const row = h('div', { class: 'row pal-row' }, h('div', { class: 'panel', style: 'flex:0 1 auto' }, swatches), side);
   clear(
     host,
     h(
@@ -156,68 +225,12 @@ registerEditor(['pal'], (host, project, file) => {
       { class: 'hint' },
       'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks.',
     ),
-    h(
-      'div',
-      { class: 'row' },
-      h('div', { class: 'panel', style: 'flex:0 1 auto' }, swatches),
-      h(
-        'div',
-        { class: 'panel stack', style: 'flex:1 1 260px;max-width:420px' },
-        h('div', { class: 'row', style: 'align-items:center' }, preview, label),
-        colorBox.el,
-        ...sliders.map((s) => s.row),
-        h(
-          'div',
-          { class: 'toolbar' },
-          h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'),
-          tools.rampBtn,
-          undoBtn,
-          redoBtn,
-        ),
-        gifs.length
-          ? h(
-              'div',
-              { class: 'toolbar' },
-              fileField(
-                project,
-                'Copy colors from picture',
-                ['gif'],
-                () => gifChoice,
-                (v) => v && (gifChoice = v),
-                { allowNone: false },
-              ),
-              h(
-                'button',
-                {
-                  onclick: () => {
-                    remember();
-                    pal.set(decodeGif(project.files.get(gifChoice)!).palette);
-                    save();
-                    refresh();
-                  },
-                },
-                'Copy',
-              ),
-            )
-          : null,
-        h(
-          'button',
-          {
-            onclick: () => {
-              remember();
-              pal.set(defaultPalette());
-              save();
-              refresh();
-            },
-          },
-          'Reset to default colors',
-        ),
-        tools.uses,
-      ),
-    ),
+    row,
     tools.el,
   );
-  fitToPane(swatches, tools.uses);
+  // the colors and the column beside them leave room for the folded re-light panel below
+  requestAnimationFrame(() => row.style.setProperty('--below', `${Math.ceil(tools.el.getBoundingClientRect().bottom - row.getBoundingClientRect().bottom)}px`));
+  fitToPane(swatches, side);
   refresh();
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement) return;

@@ -1,4 +1,32 @@
-/* Palette editor helpers: the re-lit comparison and the blocks that use a color. */
+/* Palette editor helpers: the column beside the colors, the re-lit comparison and the blocks
+   that use a color. */
+.pal-slider {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.pal-slider > span {
+  flex: 0 0 3.2em;
+}
+.pal-slider > .row {
+  flex: 1;
+  min-width: 0;
+}
+.pal-undo {
+  display: inline-flex;
+  gap: 8px;
+}
+.pal-icon {
+  min-width: 36px;
+  font-size: 1.15em;
+}
+/* side by side (wide windows), the column scrolls by itself (--room: core/fitPane.ts) */
+@media (min-width: 901px) {
+  .pal-side {
+    max-height: max(240px, calc(var(--room, 100dvh) - var(--below, 0px)));
+    overflow-y: auto;
+  }
+}
 .pal-tools {
   margin-top: 12px;
 }
@@ -36,8 +64,13 @@
   text-align: left;
 }
 .pal-uses-panel {
-  max-height: max(96px, var(--room, 240px));
+  max-height: 240px;
   overflow-y: auto;
+}
+@media (min-width: 901px) {
+  .pal-uses-panel {
+    max-height: none;
+  }
 }
 .pal-tools h3,
 .pal-uses-panel h3 {

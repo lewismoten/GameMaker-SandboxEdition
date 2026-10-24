@@ -537,7 +537,7 @@ canvas.pixel {
 
 /* the palette editor's own grid: as big as fits the window (--room: core/fitPane.ts) */
 .swatches.pal-swatches {
-  width: min(512px, calc(var(--room, calc(100dvh - 230px)) - 20px), calc(100vw - 64px));
+  width: min(512px, calc(var(--room, calc(100dvh - 230px)) - var(--below, 0px) - 20px), calc(100vw - 64px));
   min-width: 256px;
   max-width: none;
 }
