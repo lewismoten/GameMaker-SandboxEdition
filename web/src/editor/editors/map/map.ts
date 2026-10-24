@@ -42,6 +42,15 @@ const TOOLS: [Mode, string, string, string, string][] = [
   ['pan', '✋', 'Scroll', '', 'Touch screens: drag to scroll the map instead of drawing'],
 ];
 
+/** The map's zoom choices: down to 10% (a block 2 pixels across) to see a whole map at once. */
+const ZOOMS: [number, string][] = [
+  [0.1, '10%'],
+  [0.25, '25%'],
+  [0.5, '50%'],
+  [1, '100%'],
+  [2, '200%'],
+];
+
 /** A remembered on/off choice (the grid); off when storage is unavailable. */
 function readPref(key: string): boolean {
   try {
@@ -93,7 +102,7 @@ registerEditor(['map'], (host, project, file) => {
   // (…/PLANET1.MAP?x=40&y=12&zoom=2)
   const view = viewState(['p', project.id, file]);
   const urlZoom = Number(view.get('zoom'));
-  let zoom = [0.5, 1, 2].includes(urlZoom) ? urlZoom : 1;
+  let zoom = ZOOMS.some(([z]) => z === urlZoom) ? urlZoom : 1;
   let bgImgs: HTMLCanvasElement[] = [];
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
@@ -254,15 +263,25 @@ registerEditor(['map'], (host, project, file) => {
       if (m.monnum >= LASTMON) return;
       const pic = firstPic(mons[m.monnum]);
       if (pic >= 0) ctx.drawImage(monI[pic], m.curx * s, m.cury * s, s, s);
-      else {
+      else if (s < 8) {
+        // zoomed far out: too small to outline, a filled dot
+        ctx.fillStyle = '#f0f';
+        ctx.fillRect(m.curx * s, m.cury * s, s, s);
+      } else {
         ctx.strokeStyle = '#f0f';
         ctx.strokeRect(m.curx * s + 2, m.cury * s + 2, s - 4, s - 4);
       }
     });
     monCount.textContent = `${map.monsters.filter((m) => m.monnum < LASTMON).length} of ${LASTMM} monster slots used`;
     for (const mk of linkMarks()) {
+      const color = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
+      if (s < 8) {
+        ctx.fillStyle = color;
+        ctx.fillRect(mk.x * s, mk.y * s, s, s);
+        continue;
+      }
       ctx.lineWidth = 2;
-      ctx.strokeStyle = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
+      ctx.strokeStyle = color;
       ctx.strokeRect(mk.x * s + 1, mk.y * s + 1, s - 2, s - 2);
     }
     redrawOverlay();
@@ -843,11 +862,7 @@ registerEditor(['map'], (host, project, file) => {
       chooser.el,
       selectField(
         'Zoom',
-        [
-          [0.5, '50%'],
-          [1, '100%'],
-          [2, '200%'],
-        ] as [number, string][],
+        ZOOMS,
         () => zoom,
         (v) => ((zoom = v), view.set({ zoom: v === 1 ? undefined : v }), draw()),
       ),
