@@ -127,11 +127,25 @@ export function cartouche(cx: number, y: number, w: number, title: string, sub: 
     el('path', { d: plate(0.7), fill: 'none', stroke: accent, 'stroke-width': 0.2 }),
     el('path', { d: plate(1.1), fill: 'none', stroke: accent, 'stroke-width': 0.08 }),
   );
-  const big = Math.min(4.6, (w - 8) / Math.max(4, title.length * 0.86));
+  // bold serif capitals run about an em wide with their spacing; a long title is also held
+  // to the plate (textLength), whatever font the printer has
+  const room = w - 8;
+  const big = Math.min(4.6, room / Math.max(4, title.length * 0.98));
+  const long = title.length * big * 0.98 > room * 0.9;
   g.append(
     el(
       'text',
-      { x: cx, y: y + 6.4, 'text-anchor': 'middle', 'font-family': SERIF, 'font-size': big, 'font-weight': 700, 'letter-spacing': big * 0.08, fill: accent },
+      {
+        x: cx,
+        y: y + 6.4,
+        'text-anchor': 'middle',
+        'font-family': SERIF,
+        'font-size': big,
+        'font-weight': 700,
+        'letter-spacing': big * 0.08,
+        fill: accent,
+        ...(long ? { textLength: room, lengthAdjust: 'spacingAndGlyphs' } : {}),
+      },
       title.toUpperCase(),
     ),
     el(
