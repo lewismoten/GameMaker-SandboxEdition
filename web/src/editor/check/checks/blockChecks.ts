@@ -1,12 +1,14 @@
 // The level check's block checks, from a scene's map and background blocks alone: hazard art
-// that doesn't fill its cell, opposite blocks touching, touches that score or heal every tick,
-// counters that can run out before the gate that reads them, timed blocks that make the hero
-// wait, and birth blocks that never rest.
+// that doesn't fill its cell, opposite blocks touching, touches that score or heal every tick
+// (where the hero can get to them, and not goals: a link on the cell ends the scene),
+// counters that can run out before the gate that reads them, timed blocks in the way that make
+// the hero wait, and birth blocks that never rest.
 import { BACKBL, BLEN, type Block } from '../../../formats/blocks';
 import { MLEN, MWID } from '../../../formats/map';
 import { at, type Finding } from '../findings';
 import { blockUse, topColors, type SceneData } from '../sceneData';
 import { mazes } from './mazeCheck';
+import { openFrom } from './sealed';
 
 /** A tick of the game clock, and the three seconds a timed wait may last. */
 export const TICK_S = 1 / 18.2;
@@ -107,6 +109,11 @@ export function opposites(d: SceneData): Finding[] {
 
 export function everyTickBlocks(d: SceneData): Finding[] {
   const use = blockUse(d.map);
+  const links = new Set(d.links);
+  // a scene the hero leaves the moment he comes in (he lands on a link) has nothing to farm
+  if (d.entries.length && d.entries.every((c) => links.has(c) || links.has(c - MLEN))) return [];
+  // only where the hero can get to, and not on a link: touching one ends the scene (a goal)
+  const reach = d.entries.length ? openFrom(d.map.blocks, d.bbl, d.entries) : undefined;
   const out: Finding[] = [];
   for (let n = 0; n < BACKBL; n++) {
     const b = d.bbl[n];
@@ -120,12 +127,14 @@ export function everyTickBlocks(d: SceneData): Finding[] {
             ? `${b.eamt} on counter ${b.effect}`
             : '';
     if (!gives) continue;
+    const cells = cellsOf(d, n).filter((c) => !links.has(c) && (!reach || reach[c]));
+    if (!cells.length) continue;
     out.push({
       check: 'every-tick',
       severity: 'warning',
       title: `Block ${n} gives ${gives} on every tick the hero touches it`,
       detail: 'It never turns into another block when touched, so standing on it farms it. Set “becomes when touched” to a plain block.',
-      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
+      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells },
     });
   }
   return out;
@@ -203,7 +212,9 @@ export function waits(d: SceneData): Finding[] {
     const cycle = blockCycle(d.bbl, n);
     if (!cycle.length || cycle[cycle.length - 1].n === cycle[0].n) continue;
     cycle.forEach((c) => done.add(c.n));
-    const shut = (c: { n: number }) => d.bbl[c.n].solid !== 0 || d.bbl[c.n].chHitPt < 0;
+    // shut: solid or hurting, unless a touch clears it (snow the hero shovels through)
+    const clears = (k: number) => d.bbl[k].touchBl !== k && d.bbl[k].touchBl < BACKBL && !d.bbl[d.bbl[k].touchBl].solid;
+    const shut = (c: { n: number }) => (d.bbl[c.n].solid !== 0 || d.bbl[c.n].chHitPt < 0) && !clears(c.n);
     if (!cycle.some(shut) || cycle.every(shut)) continue;
     // the longest run of shut steps, round the loop
     let best = 0;
@@ -213,6 +224,14 @@ export function waits(d: SceneData): Finding[] {
       best = Math.max(best, t);
     }
     if (best <= WAIT_TICKS) continue;
+    // only a wait when it stands in the way: with its cells shut for good, a link the hero
+    // could get to before is out of reach (a timed block off the way on is scenery)
+    if (d.entries.length && d.links.length) {
+      const shutCells = new Set(cycle.flatMap((c) => cellsOf(d, c.n)));
+      const open = openFrom(d.map.blocks, d.bbl, d.entries);
+      const without = openFrom(d.map.blocks, d.bbl, d.entries, shutCells);
+      if (!d.links.some((l) => open[l] && !without[l])) continue;
+    }
     out.push({
       check: 'waits',
       severity: best > WAIT_TICKS * 2 ? 'warning' : 'info',

@@ -18,8 +18,8 @@ export function passable(bg: Block[]): boolean[] {
   );
 }
 
-/** Cells joined to `from` through passable blocks (the map wraps, as PLAYGAME's does). */
-export function openFrom(blocks: Uint8Array, bg: Block[], from: number[]): Uint8Array {
+/** Cells joined to `from` through passable blocks (the map wraps, as PLAYGAME's does), never through `closed`. */
+export function openFrom(blocks: Uint8Array, bg: Block[], from: number[], closed?: Set<number>): Uint8Array {
   const ok = passable(bg);
   const seen = new Uint8Array(blocks.length);
   const stack = from.filter((c) => c >= 0 && c < blocks.length);
@@ -29,7 +29,7 @@ export function openFrom(blocks: Uint8Array, bg: Block[], from: number[]): Uint8
     const x = c % MLEN;
     const y = Math.floor(c / MLEN);
     for (const n of [y * MLEN + ((x + 1) % MLEN), y * MLEN + ((x + MLEN - 1) % MLEN), ((y + 1) % MWID) * MLEN + x, ((y + MWID - 1) % MWID) * MLEN + x])
-      if (!seen[n] && ok[blocks[n]]) ((seen[n] = 1), stack.push(n));
+      if (!seen[n] && ok[blocks[n]] && !closed?.has(n)) ((seen[n] = 1), stack.push(n));
   }
   return seen;
 }
