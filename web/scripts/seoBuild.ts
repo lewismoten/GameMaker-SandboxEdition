@@ -245,6 +245,10 @@ export function gameHead(g: CdCatalogEntry): string {
   return `${HEAD_START}<meta name="gm:game" content="${escapeHtml(g.id)}" />\n    ${meta}\n    ${jsonLdScript(ld)}\n    ${STYLE}${HEAD_END}`;
 }
 
+/**
+ * A game's readable page text. A shareware game's notice stays in the game (shown before it
+ * starts) and out of this text: the CD's notices give their authors' 1994 home addresses.
+ */
 export function gameBody(g: CdCatalogEntry): string {
   const what = g.original ? 'A new shareware game' : g.kind === 'shareware' ? 'Shareware from the 90s' : 'A sample game that came with Game-Maker 3.0';
   return `${BODY_START}<main class="seo-static">
@@ -254,7 +258,7 @@ export function gameBody(g: CdCatalogEntry): string {
       ${readable(g.blurb) ? `<p>${escapeHtml(g.blurb!)}</p>` : ''}
       <p>Play ${escapeHtml(g.title)} right here in your browser — nothing to download or install — with a keyboard, a game controller or touch controls.</p>
       <noscript><p><strong>The game runs in your browser: please turn on JavaScript to play.</strong></p></noscript>
-      ${g.kind === 'shareware' && g.notice ? `<details><summary>Shareware: the author’s notice</summary><pre style="white-space:pre-wrap;font:13px monospace">${escapeHtml(g.notice)}</pre></details>` : ''}
+      ${g.kind === 'shareware' && g.notice ? `<p>Shareware: the author’s notice and how to register are in the game, shown before it starts.</p>` : ''}
       <p><a href="./play.html">More games to play</a> · <a href="./">${escapeHtml(PRODUCT)}</a>: make your own game in your browser.</p>
       <p class="seo-note">Made with <a href="./">${escapeHtml(PRODUCT)}</a> · <a href="${REPO_URL}">source code</a> · ${escapeHtml(FORK_NOTE)}.</p>
     </main>${BODY_END}`;
