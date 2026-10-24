@@ -60,7 +60,7 @@ export function titleScreen(): Screen {
   sc.fancy(Math.round(160 - (word.length * 8 * scale) / 2), 18, word, scale, GOLD);
   sc.centered(52, 'A Realm of Procrastia Adventure', [250, 236, 210], 1, [30, 16, 40]);
   sc.text(4, 190, 'SANDBOX SOFTWARE', [255, 230, 160], 1, [0, 0, 0]);
-  sc.text(260, 190, '(c) 1996', [255, 230, 160], 1, [0, 0, 0]);
+  sc.text(252, 190, '(c) 1996', [255, 230, 160], 1, [0, 0, 0]);
   return sc;
 }
 
@@ -236,7 +236,7 @@ export function wonScreens(): Screen[] {
   a.cv.tint((c) => mix(c, [255, 220, 160], 0.15));
   stand(a.cv, hero.get('down0')!, 110, 196, 3);
   stand(a.cv, people('king'), 210, 196, 3);
-  parchment(a.cv, 30, 4, 290, 50, 11);
+  parchment(a.cv, 12, 4, 308, 50, 11);
   ['THE ROUND TUIT IS WHOLE AGAIN!', 'King Dillydally gets around to', 'everything at once. Even the roof.'].forEach((l, i) =>
     a.text(160 - l.length * 4, 12 + i * 12, l, INK),
   );
