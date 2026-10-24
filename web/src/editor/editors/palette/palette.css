@@ -36,7 +36,7 @@
   text-align: left;
 }
 .pal-uses-panel {
-  max-height: max(160px, var(--room, 240px));
+  max-height: max(96px, var(--room, 240px));
   overflow-y: auto;
 }
 .pal-tools h3,

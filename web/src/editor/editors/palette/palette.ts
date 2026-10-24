@@ -217,7 +217,7 @@ registerEditor(['pal'], (host, project, file) => {
     ),
     tools.el,
   );
-  fitToPane(tools.uses);
+  fitToPane(swatches, tools.uses);
   refresh();
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement) return;
