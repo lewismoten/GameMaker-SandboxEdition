@@ -761,6 +761,11 @@
   opacity: 0.8;
 }
 
+/* the contents page: a line a section, set close */
+.kind-contents .mag-rows li {
+  padding: 0.12em 0;
+}
+
 /* a listing with a small screenshot at its left */
 .mag-rows li.has-shot {
   grid-template-columns: 6em 1fr auto;

@@ -21,8 +21,14 @@ export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
     blocks: [
       head('Contents', { kicker: 'In this issue', size: 'l', level: 1 }),
       { t: 'rows', rows: toc.map((e) => ({ title: e.title, go: `go:mag/${e.page}`, blurb: e.blurb, price: `p. ${e.folio}` })) },
-      side('Advertiser index', [grid(halves(ads.map((a) => p(`[${a.title}](go:mag/${a.page}) · ${a.folio}`))), 0.3)], 'cyan'),
-      note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),
+      side(
+        'Advertiser index',
+        [
+          grid(halves(ads.map((a) => p(`[${a.title}](go:mag/${a.page}) · ${a.folio}`))), 0.3),
+          note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),
+        ],
+        'cyan',
+      ),
     ],
   };
 }
