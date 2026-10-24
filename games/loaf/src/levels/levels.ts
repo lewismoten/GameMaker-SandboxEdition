@@ -41,7 +41,7 @@ export const LEVELS: LevelDef[] = [
     form: 'loaf',
     snd: 'baskets',
     song: 'baskets',
-    mons: { feet: 2, fox: 5 },
+    mons: { feet: 2, fox: 4 },
     view: [1, 4],
   },
   { file: 'home', desc: 'The Way Home', light: 'night', build: home, form: 'bundle', snd: 'home', song: 'home', mons: { girl: 0, dog: 2 }, view: [24, 4] },

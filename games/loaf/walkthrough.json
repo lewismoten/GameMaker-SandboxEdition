@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "AU0UzQZICMgJTSPNBkgIyAlNDc0NUD7QHEsMSArIB0gKyApICsgMSArIDEgKyAdICsgJSArIA8sJSAjICUsUywYQCpAASwXLA00VSArIDc0GEgySAE0PzQNNCs0YEgySAE0WzQNICMgJTQ3NBlBA0AtLCssGSAjICU0ZzQZICMgJTQ/NNkgWyABLCcsDTQPNA0gIyAlNCEgKyApICsgHzQZIDcgASw=="
+   "keys": "AU0UzQZICMgJTSPNBkgIyAlNDc0NUD7QHEsMSArIB0gKyApICsgMSArIDEgKyAdICsgJSArIA8sJSAjICUsUywYQCpAASwXLA00VSArIDc0GEgySAE0PzQNNCs0YEgySAE0WzQNICMgJTQ3NBlBA0AtLCcsDTQXNA0gIyAlNGc0GSAjICU0PzR5IFsgASwnLA00DzQNICMgJTQzNBkgNyABL"
   },
   {
    "scene": 4,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 20146,
+  "frames": 19972,
   "chapters": [
    {
     "title": "Opening",
@@ -63,19 +63,19 @@
    },
    {
     "title": "Level 3: Twelve Baskets Full",
-    "frame": 9432
+    "frame": 9257
    },
    {
     "title": "Level 4: The Way Home",
-    "frame": 13275
+    "frame": 13100
    },
    {
     "title": "Ending",
-    "frame": 15348
+    "frame": 15173
    },
    {
     "title": "Credits",
-    "frame": 18058
+    "frame": 17884
    }
   ]
  }
