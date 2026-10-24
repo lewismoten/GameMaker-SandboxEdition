@@ -223,9 +223,9 @@ if (!only.length || only.includes('mechanics')) {
     await sim.run(2);
     put(sim, info.vault!.x, info.vault!.y);
     await sim.run(4);
-    sim.press(SCAN.p);
+    sim.press(SCAN.g);
     await sim.run(8);
-    sim.release(SCAN.p);
+    sim.release(SCAN.g);
     await sim.run(4);
     if (!sim.w.ci.inv.includes(ITEM_BASE)) report.push(`module: picking up the Plasma Lance failed (inventory ${sim.w.ci.inv.join(',')})`);
     if (!sim.w.ci.seqon[SEQ.plasma]) report.push('module: the lance key is not enabled after pickup');
@@ -276,7 +276,7 @@ if (!only.length || only.includes('mechanics')) {
     await sim.run(10);
     sim.release(SCAN.right);
     if (sim.pos.x <= x0) report.push('controls: after holding fire, the courier would not walk');
-    for (const k of [SCAN.z, SCAN.x, SCAN.c, SCAN.v, SCAN.h, SCAN.w, SCAN.t, SCAN.p, SCAN.up]) {
+    for (const k of [SCAN.z, SCAN.x, SCAN.c, SCAN.v, SCAN.r, SCAN.w, SCAN.t, SCAN.g, SCAN.up]) {
       sim.press(k);
       await sim.run(12);
       sim.release(k);

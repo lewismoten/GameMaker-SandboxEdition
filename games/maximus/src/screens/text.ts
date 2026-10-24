@@ -52,7 +52,7 @@ Q/E Dash Boots
 C Shield Emitter (guard orb)
 F Hover Pack
 V Mine Layer
-H Med Kit
+R Med Kit
 W Flak Cannon
 Q/E Hydro Jets (diving bell)
 Up Spring Shocks (rover)
@@ -174,9 +174,9 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / O ... pick up / drop
+  G / B ... pick up / drop
   Q / E ... dash left/right
-  Z X C V H W  module weapons
+  Z X C V R W  module weapons
   F ....... hover
   T ....... hail
   F1 F2 ... help, status

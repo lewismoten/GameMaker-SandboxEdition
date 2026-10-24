@@ -8,11 +8,11 @@
     "C": "Shield Emitter",
     "F": "Hover Pack",
     "V": "Mine Layer",
-    "H": "Med Kit",
+    "R": "Med Kit",
     "W": "Flak Cannon",
     "T": "Hail (say hello)",
-    "P": "Pick up a module",
-    "O": "Drop a module"
+    "G": "Pick up a module",
+    "B": "Drop a module"
   },
   "items": [
     {
@@ -731,7 +731,7 @@
             },
             {
               "q": "Plot me a course.",
-              "a": "Fly to the corner of the galaxy chart and come at the knot from below. The two rocks in the middle of its south face are only a picture: fly straight up through them. Inside, press P to pick up the felt egg, then touch the beacon.",
+              "a": "Fly to the corner of the galaxy chart and come at the knot from below. The two rocks in the middle of its south face are only a picture: fly straight up through them. Inside, press G to pick up the felt egg, then touch the beacon.",
               "sketch": {
                 "rows": [
                   "o oooo",

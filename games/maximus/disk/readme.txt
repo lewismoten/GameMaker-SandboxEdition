@@ -71,9 +71,9 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / O ... pick up / drop
+  G / B ... pick up / drop
   Q / E ... dash left/right
-  Z X C V H W  module weapons
+  Z X C V R W  module weapons
   F ....... hover
   T ....... hail
   F1 F2 ... help, status
@@ -104,7 +104,7 @@ THE MODULES
   Shield Emitter  C
   Hover Pack      F
   Mine Layer      V
-  Med Kit         H
+  Med Kit         R
   Flak Cannon     W
   Hydro Jets      Q / E (sub)
   Spring Shocks   Up (rover)
