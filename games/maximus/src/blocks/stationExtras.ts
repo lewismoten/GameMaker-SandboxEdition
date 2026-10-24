@@ -91,25 +91,19 @@ export function stationExtras(s: SetBuilder): void {
       return outline(p, OUTLINE);
     })(),
   );
-  D(
-    'chair',
-    (() => {
-      const p = sprite();
-      shade(p, new Mask().rect(6, 4, 3, 12).rect(6, 12, 9, 3), R('accent').slice(0, 4));
-      p.rect(13, 15, 2, 5, t[1]).rect(6, 15, 2, 5, t[1]);
-      return outline(p, OUTLINE);
-    })(),
-  );
-  D(
-    'medbay',
-    (() => {
-      const p = sprite();
-      shade(p, new Mask().rect(1, 12, 18, 4), [WHITE, S('pearl', 1), S('pearl', 2)]);
-      p.rect(9, 3, 2, 7, S('heart', 2)).rect(6, 5, 8, 3, S('heart', 2));
-      return outline(p, OUTLINE);
-    })(),
-    { chHitPt: 1 },
-  );
+  // (the chair's slot went to the spent medbay: quarters set a second table instead)
+  // The medbay: one treatment (like a surface world's spring), 100 hit points, then its cross
+  // goes dark until Max comes back aboard. It mended 1 a tick for as long as he stood there.
+  const medbay = (lit: boolean) => {
+    const p = sprite();
+    shade(p, new Mask().rect(1, 12, 18, 4), [WHITE, S('pearl', 1), S('pearl', 2)]);
+    const cross = lit ? S('heart', 2) : t[1];
+    p.rect(9, 3, 2, 7, cross).rect(6, 5, 8, 3, cross);
+    return outline(p, OUTLINE);
+  };
+  const bay = panel(201 + s.count);
+  s.add('medbay', over(bay, medbay(true)), { chHitPt: 100, touch: 'medbay:spent' });
+  s.add('medbay:spent', over(bay, medbay(false)));
   D(
     'robotarm',
     (() => {
