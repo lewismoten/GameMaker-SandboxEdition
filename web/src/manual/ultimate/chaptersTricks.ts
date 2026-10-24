@@ -101,6 +101,12 @@ export const TRICKS: Chapter = {
     <li><b>A stinging frame.</b> In Where’s the Remote?!, one frame of each monster’s
     animation carries the hurt and shows for a single tick; the rest are harmless.</li>
   </ul>
+  <p>A solid hazard needs one more care. A solid monster puts a hero it touches right beside
+  it, on the side it pushes him out of, and never looks for walls there. Its Top side
+  (SOLTOP) pushes him <i>under</i> it, so a hazard with that side set sinks a hero who lands on
+  it into the floor, where it goes on hurting him. Leave out SOLTOP on hazards (keep SOLBOT and
+  the sides): he still stands on its back and is pushed off its sides. And keep pacers a block
+  clear of walls, or one that walks up against a wall shoves him inside it.</p>
   <h2>Cameos that say hello once</h2>
   <p>Certified Rat Tickler has old friends from other Sandbox games wandering through. Each is a
   monster of power 50 whose block is worth 250 points. On the first touch it pays and becomes
