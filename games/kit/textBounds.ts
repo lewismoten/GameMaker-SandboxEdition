@@ -1,6 +1,7 @@
 // The text-bounds audit: the games' text helpers report the ink box of every string they
 // draw, and with TEXT_BOUNDS=<file> set a build writes the strings whose ink runs past their
-// picture (or past a clip area the helper was given) to that file as JSON when it exits.
+// picture (or past a clip area the helper was given), or that use a character the PC font draws
+// as an empty box (a curly quote), to that file as JSON when it exits.
 // Off (the usual case) it records nothing and costs one check per string; it never changes a
 // pixel. textBoundsCheck.ts runs the builds and reads the files.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -21,7 +22,12 @@ export interface TextOverflow {
   at: string;
   /** Every call from the game code down to the helper (an outline and its fill differ). */
   via: string;
+  /** Characters the 8x8 font draws as an empty box (a curly quote, an accent), if any. */
+  missing?: string;
 }
+
+/** What the PC font draws (printable ASCII), and the mirrored K the Teddy games letter by hand. */
+const pcFont = (ch: string) => /[\x20-\x7e\ua4d8]/.test(ch);
 
 export interface TextBoundsReport {
   overflows: TextOverflow[];
@@ -81,6 +87,7 @@ export class TextInk {
     private readonly h: number,
     private readonly s: string,
     private readonly area: Box,
+    private readonly has: (ch: string) => boolean,
   ) {}
 
   /** A lit rectangle of the string (a font pixel, scaled). */
@@ -97,7 +104,19 @@ export class TextInk {
     // Half a pixel of slack: scaled fonts land on fractional positions that round inside.
     const out = this.x0 < ax0 - 0.5 || this.y0 < ay0 - 0.5 || this.x1 > ax1 + 0.5 || this.y1 > ay1 + 0.5;
     const { at, via } = caller();
-    if (!out) {
+    const missing = [...new Set(this.s)].filter((ch) => !this.has(ch)).join('');
+    if (missing)
+      overflows.push({
+        s: this.s,
+        w: this.w,
+        h: this.h,
+        ink: [this.x0, this.y0, this.x1, this.y1].map((v) => Math.round(v)) as Box,
+        area: this.area,
+        at,
+        via,
+        missing,
+      });
+    else if (!out) {
       const k = key(this.w, this.h, via, this.s);
       if (!shown.has(k)) shown.set(k, new Set());
       shown.get(k)!.add(`${Math.round(this.x0)},${Math.round(this.y0)}`);
@@ -108,11 +127,12 @@ export class TextInk {
 
 /**
  * A recorder for one string drawn on picture `p`, or undefined when the audit is off. `clip`
- * is an area inside the picture the text must keep to (a frame, a sign's face).
+ * is an area inside the picture the text must keep to (a frame, a sign's face); `has` says
+ * which characters the font draws (the PC font's printable ASCII unless a helper says).
  */
-export function textInk(p: { readonly w: number; readonly h: number }, s: string, clip?: Box): TextInk | undefined {
+export function textInk(p: { readonly w: number; readonly h: number }, s: string, clip?: Box, has: (ch: string) => boolean = pcFont): TextInk | undefined {
   if (!file || !s.trim()) return undefined;
-  return new TextInk(p.w, p.h, s, clip ?? [0, 0, p.w, p.h]);
+  return new TextInk(p.w, p.h, s, clip ?? [0, 0, p.w, p.h], has);
 }
 
 /**
@@ -129,7 +149,7 @@ function judge(r: TextBoundsReport): { cut: TextOverflow[]; moving: TextOverflow
   const moving: TextOverflow[] = [];
   for (const o of r.overflows) {
     const k = key(o.w, o.h, o.via, o.s);
-    if (far(o)) {
+    if (!o.missing && far(o)) {
       moving.push(o);
       continue;
     }
@@ -142,6 +162,8 @@ function judge(r: TextBoundsReport): { cut: TextOverflow[]; moving: TextOverflow
 
 /** One line about an overflow: the string, its ink box, the area and where it was drawn. */
 export function describe(o: TextOverflow): string {
+  if (o.missing)
+    return `"${o.s}" has ${[...o.missing].map((ch) => `U+${ch.charCodeAt(0).toString(16).toUpperCase()}`).join(' ')}, a box in the PC font (${o.w}x${o.h}) at ${o.at}`;
   return `"${o.s}" ink ${o.ink.join(',')} outside ${o.area.join(',')} (${o.w}x${o.h}) at ${o.at}`;
 }
 

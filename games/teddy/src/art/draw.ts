@@ -208,7 +208,7 @@ const MICRO: Record<string, string> = {
 
 /** 3x5 letters, 1px apart. Returns the width drawn. */
 export function micro(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
-  const ink = textInk(p, s);
+  const ink = textInk(p, s, undefined, (ch) => ch in MICRO || ch.toUpperCase() in MICRO);
   const dot = (dx: number, dy: number, dw: number, dh: number) => {
     p.rect(dx, dy, dw, dh, col);
     ink?.add(dx, dy, dw, dh);
