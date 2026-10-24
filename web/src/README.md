@@ -65,7 +65,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 ## Main flows
 
 **Desk or modern UI.** `main.ts` is a tiny entry: it loads `desk/desk.ts` or
-`modernUi.ts` (today's home, guide and workspace) only for the interface being shown, and the
+`modernUi.ts` (today's home and workspace; the Guide is its own download) only for the interface being shown, and the
 editors (`editor/editors/registry.ts` `loadEditor`) one at a time, as files of each kind are opened, so each interface is its own
 download. `offline.ts` registers the service worker (`siteWorker.ts`), which precaches only
 the app shell and caches games as they are used; a new deploy waits for the visitor to say

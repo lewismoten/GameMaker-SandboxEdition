@@ -171,7 +171,7 @@ async function route(): Promise<void> {
     path: [kind, id, file],
   } = parseHash(location.hash);
   content.removeAttribute('role');
-  const { renderHome, renderWebManual, openStored } = await modernUi();
+  const { renderHome, openStored } = await modernUi();
   if (ui !== 'modern') return;
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
@@ -239,6 +239,8 @@ async function route(): Promise<void> {
     content.setAttribute('role', 'main');
     const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
     document.title = `${title ? `${title[0].toUpperCase()}${title.slice(1)} · ` : ''}Guide · ${PRODUCT}`;
+    const { renderWebManual } = await import('./manual/webManual');
+    if (ui !== 'modern') return;
     renderWebManual(content, id);
     return;
   }

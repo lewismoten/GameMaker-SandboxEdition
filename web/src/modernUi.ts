@@ -5,7 +5,6 @@ import { loadProject } from './project/storage';
 import type { Workspace } from './editor/shell/workspace';
 
 export { renderHome } from './editor/shell/home';
-export { renderWebManual } from './manual/webManual';
 
 /** Opens a game saved in this browser in the workspace; undefined when it is not there. */
 export async function openStored(id: string, host: HTMLElement, file?: string): Promise<Workspace | undefined> {
