@@ -90,6 +90,13 @@ export function loafArt(pal: Pal) {
           dot(u + k * 0.05, -0.72 + k * 0.06, c('crumb', 1));
           if (k > -3) dot(u + k * 0.05 + 0.04, -0.72 + k * 0.06 + 0.05, c('crust', 2));
         }
+      // from behind: the score marks run down its back
+      if (o.face === 'none')
+        for (const u of [-0.45, 0, 0.45])
+          for (let k = -3; k <= 3; k++) {
+            dot(u + k * 0.05, -0.15 + k * 0.06, c('crumb', 1));
+            if (k > -3) dot(u + k * 0.05 + 0.04, -0.15 + k * 0.06 + 0.05, c('crust', 2));
+          }
       // flour dust
       for (const [u, v] of [
         [-0.6, -0.3],
@@ -192,7 +199,7 @@ export function loafArt(pal: Pal) {
   return { body };
 }
 
-/** The loaf's poses for one form: front, blink, roll (four quarter turns), rise, rise sideways, hunker, bread (singing), hurt, crumbling. */
+/** The loaf's poses for one form: front, blink, roll (four quarter turns), rise, rise sideways, hunker, bread (singing), hurt, crumbling; then each form's back (climb). */
 export function buildCharBlocks(pal: Pal) {
   const book = makeBook('cbl');
   const a = loafArt(pal);
@@ -213,6 +220,8 @@ export function buildCharBlocks(pal: Pal) {
     book.add(k('crumble0'), a.body({ face: 'front', wrapped, mood: 'sad', crumble: 0.35 }));
     book.add(k('crumble1'), a.body({ face: 'front', wrapped, mood: 'sad', crumble: 1 }));
   }
+  // rising, and climbing the weave: the back of the loaf (its crust, or the cloth's knot), going away
+  for (const form of ['loaf', 'bundle'] as Form[]) book.add(`${form}.climb`, a.body({ face: 'none', wrapped: form === 'bundle', rise: 1.6 }));
   return book;
 }
 

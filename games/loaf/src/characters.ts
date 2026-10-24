@@ -67,8 +67,8 @@ export function buildLoaf(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   set(S[SEQ.left], roll(-STEP, true), { key: KEY.left, jstkMov: JOY.left });
   set(S[SEQ.rightD], roll(STEP, false), { key: KEY.d });
   set(S[SEQ.leftA], roll(-STEP, true), { key: KEY.a });
-  // rising, like good dough
-  const rise = [f({ pic: 'rise', y: -RISE })];
+  // rising, like good dough (and climbing the weave): it shows its back, going up and away
+  const rise = [f({ pic: 'climb', y: -RISE })];
   set(S[SEQ.rise], rise, { key: KEY.up, jstkMov: JOY.up, sound: SND.rise });
   set(S[SEQ.riseW], rise, { key: KEY.w, sound: SND.rise });
   const side = (dx: number, mirror: boolean) => [f({ pic: 'riseSide', x: dx, y: -RISE, mirror }), f({ pic: 'riseSide', x: dx, y: -RISE, mirror })];
