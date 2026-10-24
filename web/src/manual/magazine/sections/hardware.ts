@@ -6,6 +6,7 @@
 import { LINE_SPEEDS, connectLine, speedWords } from '../../../retro/bbs/lineSpeed';
 import { adPage, adframe, art, card, grid, list, p, side } from '../blocks';
 import type { MagContext, MagSection } from '../types';
+import '../gravitasAd.css';
 
 const FREE = 'Prices are part of the story.';
 
@@ -184,52 +185,37 @@ const speakersAd = () =>
     'yellow',
   );
 
+// The GRAVITAS ad has the look of a 1990s game pad ad (gravitasAd.css): a deep purple page with
+// a glossy grid floor, a spaced serif headline with one word in hot pink, two pads tilted over
+// each other with their buttons lit, and the pitch at the bottom right beside a small coupon.
 const gamePadAd = () =>
   adPage(
     'hardware-4',
     'Gravitas',
     [
       adframe(
-        'IT’S NUTS HOW WELL IT PLAYS',
+        'Winning isn’t everything…',
         [
-          grid(
-            [
-              [
-                art(
-                  'gamepad',
-                  'The GRAVITAS PC GamePad, light gray and shaped like a peanut in its shell: a purple eight-way d-pad on the left end, red, yellow, green and blue buttons in a diamond on the right, and its white joystick shaft lying unscrewed in front of it',
-                ),
-              ],
-              [
-                p(
-                  'Arcade games were made for thumbs. The **GRAVITAS PC GamePad** puts a real game pad on your PC, ergonomically shaped like your favorite snack.',
-                ),
-                list([
-                  'A **purple 8-way d-pad** that rocks under your thumb, diagonals and all',
-                  '**Four buttons**, red, yellow, green and blue, right where your other thumb lands',
-                  'Plugs into the **game port** on your sound card or I/O card. Nothing to install',
-                ]),
-              ],
-            ],
-            0.3,
+          art(
+            'gamepad',
+            'A GRAVITAS PC GamePad, light gray and shaped like a peanut in its shell, tilted on a shiny purple floor: its joystick shaft is out, so the brass socket shows in the middle of the purple d-pad, and its red, yellow, green and blue buttons glow',
           ),
+          art('gamepad', 'A second GRAVITAS PC GamePad tilted under the first, its white joystick shaft screwed into the d-pad and standing straight up'),
           side(
-            'A STICK WHEN YOU WANT ONE',
+            'GRAVITAS PC GAMEPAD',
             [
-              p(
-                'The joystick shaft **screws into the middle of the d-pad**. Twist it in for a flight game; twist it out for everything else. Most players leave it in the desk drawer.',
-              ),
+              list([
+                '**Four buttons:** red, yellow, green and blue',
+                'A **joystick shaft that screws in** for flight games',
+                'A purple **8-way d-pad**, diagonals and all',
+                'Plugs into your **game port**. Nothing to install',
+                'Ergonomically shaped like **your favorite snack**',
+              ]),
+              p('Four buttons on one plug: the pad borrows the second joystick’s button lines. Game-Maker games read the d-pad, red and yellow.'),
+              p('**GRAVITAS**'),
+              p('*serious about fun.*'),
             ],
-            'yellow',
-          ),
-          side(
-            'FOUR BUTTONS, ONE PLUG',
-            [
-              p(
-                'A PC game port has room for two joysticks. The pad borrows the **second joystick’s button lines** for buttons 3 and 4, so one plug gives you four. Games that read two buttons get red and yellow; Game-Maker games read the d-pad and those two.',
-              ),
-            ],
-            'cyan',
+            'black',
           ),
           card(
             'SHELL OUT FOR THE BEST',
@@ -237,6 +223,7 @@ const gamePadAd = () =>
               'GRAVITAS PC GamePad, 8-way d-pad, 4 buttons, screw-in shaft ..... **$24.95**',
               'GRAVITAS Joystick, two-button flight stick ..... **$33.95**',
               'Now in Honey Roasted Purple',
+              'Not edible. Do not dip in chocolate.',
             ],
             {
               fields: ['Name', 'City, State, ZIP'],
@@ -246,14 +233,13 @@ const gamePadAd = () =>
           ),
         ],
         {
-          burst: '4 BUTTONS!',
-          sub: 'From Gravitas: *serious about fun.*',
-          small: `${FREE} Not edible. Do not dip in chocolate. The pad is on the desk, free, left of the keyboard, with its shaft lying beside it.`,
-          tone: 'white',
+          sub: 'But it’s **nuts** how well it plays!',
+          small: `${FREE} The pad is on the desk, free, left of the keyboard, with its shaft lying beside it.`,
+          tone: 'black',
         },
       ),
     ],
-    'pink',
+    'black',
   );
 
 export const HARDWARE: MagSection = {
