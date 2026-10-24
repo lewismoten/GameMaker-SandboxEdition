@@ -228,8 +228,9 @@ export function roofs(book: BlockBook): Level {
   m.set(27, 7, 'titulus3').set(31, 7, 'magusChimney').mon(MON.sagax, 31, 6).set(33, 7, 'rcoin');
   // E: SAXA, a titulus, the wreath up high
   m.set(35, 5, 'saxa').set(37, 5, 'titulus0').set(39, 2, 'rwreath');
-  // F: a titulus, a chimney, a pigeon, grapes, a titulus
-  m.set(44, 7, 'titulus1').set(46, 7, 'chimney').mon(MON.pigeon, 47, 7).set(48, 5, 'rgrapes').set(50, 7, 'titulus2');
+  // F: a titulus, a chimney, a pigeon, grapes, a titulus (the pigeon paces a block clear of
+  // the chimney and the step, so its side push never puts Marcus inside either)
+  m.set(44, 7, 'titulus1').set(45, 7, 'chimney').mon(MON.pigeon, 47, 7).set(48, 5, 'rgrapes').set(50, 7, 'titulus2');
   // G: SAXA on the step up, a titulus, the tavern
   m.set(52, 6, 'titulus3').set(54, 6, 'saxa');
   m.set(56, 5, 'tavernSign').set(56, 6, 'tavern');
