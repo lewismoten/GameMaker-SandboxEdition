@@ -115,15 +115,37 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
  * Draws all six sides. With `shots` false the screenshots are left blank, so nothing of
  * the game but its .gam is downloaded (the shelf shows most boxes spine out).
  */
-export async function drawBox(entry: CatalogEntry, { shots: withShots = true } = {}): Promise<BoxFaces | undefined> {
+export async function drawBox(entry: CatalogEntry, { shots = true } = {}): Promise<BoxFaces | undefined> {
+  const sides = await paintBox(entry, shots, false);
+  if (!sides) return undefined;
+  const url = Object.fromEntries(Object.entries(sides).map(([k, c]) => [k, c.toDataURL()]));
+  return url as unknown as BoxFaces;
+}
+
+/**
+ * Only the box's printed lettering, seals and stickers, in place on otherwise clear sides:
+ * the background, the cover painting, the screenshots and the wear left out. Under the black
+ * light these are what glow (boxUv.ts).
+ */
+export function drawBoxLetters(entry: CatalogEntry): Promise<BoxSides | undefined> {
+  return paintBox(entry, false, true);
+}
+
+type BoxSides = Record<keyof BoxFaces, HTMLCanvasElement>;
+
+/** The six sides on canvases; with `letters`, only what is lettered (drawBoxLetters). */
+async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolean): Promise<BoxSides | undefined> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
   const [shots, info, art] = await Promise.all([
     boxShots(entry, box, withShots),
     boxInfo(entry),
-    coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44),
+    letters ? undefined : coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44),
   ]);
+  // what is painted under the lettering: none of it in `letters`
+  const ground = (ctx: CanvasRenderingContext2D, w: number, h: number) => !letters && background(ctx, box, w, h);
+  const worn = (...args: Parameters<typeof wear>) => !letters && wear(...args);
   const sb = entry.original?.sound === 'sb';
   const title = entry.title;
   const company = entry.company ?? 'Sandbox Software';
@@ -132,7 +154,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   const [front, f] = canvas(W, H);
   const fw = front.width;
   const fh = front.height;
-  background(f, box, fw, fh);
+  ground(f, fw, fh);
   if (art) {
     f.drawImage(art, 0, 44);
     // shade the sky behind the title and the ground behind the badges, as box printers did
@@ -140,7 +162,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     f.fillRect(0, 44, fw, 290);
     f.fillStyle = shadeFade(f, fh - 200, fh, 0, 0.8);
     f.fillRect(0, fh - 200, fw, 200);
-  } else {
+  } else if (!letters) {
     sunburst(f, box, fw / 2, 190);
     framedShot(f, shots[0]?.shot, 100, 336, fw - 200, -0.02);
   }
@@ -194,7 +216,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   ratingSeal(f, 22, fh - 92, 52, box.rating);
   platformBadge(f, 86, fh - 94, 178);
   diskIcons(f, 276, fh - 62, 26, info.disks, box.ink);
-  wear(f, fw, fh, `${entry.id}/front`, { creases: 2 });
+  worn(f, fw, fh, `${entry.id}/front`, { creases: 2 });
   const sticker = box.sticker ?? {};
   priceSticker(f, fw - 134, 6, sticker.store ?? 'Bits & Bytes Software', sticker.price ?? '$4.99');
 
@@ -202,7 +224,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   const [back, b] = canvas(W, H);
   const bw = back.width;
   const bh = back.height;
-  background(b, box, bw, bh);
+  ground(b, bw, bh);
   // the cover painting, faint behind the title and the screenshots
   if (art) {
     b.save();
@@ -227,7 +249,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   b.lineJoin = 'round';
   shots.forEach((s, i) => {
     const x = shotX + i * (shotW + gap);
-    framedShot(b, s.shot, x, shotTop + (i % 2) * 4, shotW, [-0.025, 0.02, -0.012][i]);
+    if (!letters) framedShot(b, s.shot, x, shotTop + (i % 2) * 4, shotW, [-0.025, 0.02, -0.012][i]);
     if (!s.caption) return;
     b.font = SANS(
       fit(b, s.caption, (px) => SANS(px, 700), shotW + 8, 13),
@@ -294,12 +316,12 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   // a dark panel so the story reads over the background
   b.fillStyle = BACK_TEXT;
   roundRect(b, textX - 14, top, textW + 28, plan.height, 10);
-  b.fill();
+  if (!letters) b.fill();
   layout(plan, true);
   // what the box promises, every bit of it true
   b.fillStyle = BACK_TEXT;
   roundRect(b, textX - 14, claimsY - 15, textW + 28, claimRows * claimH + 8, 8);
-  b.fill();
+  if (!letters) b.fill();
   b.font = SANS(12.5, 700);
   claims.forEach((c, i) => {
     const cx = textX + (i % 2) * (textW / 2);
@@ -311,7 +333,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   });
   // system requirements
   b.fillStyle = 'rgba(0,0,0,0.6)';
-  b.fillRect(24, reqY, bw - 244, reqH);
+  if (!letters) b.fillRect(24, reqY, bw - 244, reqH);
   b.fillStyle = '#fff';
   b.font = SANS(14, 900);
   b.fillText('SYSTEM REQUIREMENTS', 36, reqY + 20);
@@ -342,12 +364,12 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   );
   b.fillStyle = box.ink;
   b.fillText(copyright(entry), 24, copyY);
-  wear(b, bw, bh, `${entry.id}/back`, { creases: 1 });
+  worn(b, bw, bh, `${entry.id}/back`, { creases: 1 });
 
   // ---- spines (title runs along them) and ends; the spine faces out on the shelf, so it is the most sun-faded
-  const spine = (sub: string, side: string): string => {
+  const spine = (sub: string, side: string): HTMLCanvasElement => {
     const [c, s] = canvas(D, H);
-    background(s, box, c.width, c.height);
+    ground(s, c.width, c.height);
     s.fillStyle = '#0b0b0b';
     s.fillRect(0, 0, c.width, 96);
     drawSandboxMark(s, c.width / 2 - 22, 5, 44);
@@ -367,12 +389,12 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     ); // a long price shrinks to the spine
     s.textAlign = 'center';
     s.fillText(sub, c.width / 2, c.height - 24);
-    wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'left' ? 0.2 : 0.1, creases: 0 });
-    return c.toDataURL();
+    worn(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'left' ? 0.2 : 0.1, creases: 0 });
+    return c;
   };
-  const end = (lines: string[], side: string, withBadge = false): string => {
+  const end = (lines: string[], side: string, withBadge = false): HTMLCanvasElement => {
     const [c, s] = canvas(W, D);
-    background(s, box, c.width, c.height);
+    ground(s, c.width, c.height);
     // the bottom carries the platform badge too, for a box lying flat on a store table
     const left = withBadge ? 184 : 0;
     if (withBadge) platformBadge(s, 16, (c.height - platformBadgeHeight(s, 152, info.disks)) / 2, 152, info.disks);
@@ -388,12 +410,12 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
       700,
     );
     if (lines[1]) s.fillText(lines[1], mid, c.height - 16);
-    wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'top' ? 0.2 : 0.05, creases: 0 });
-    return c.toDataURL();
+    worn(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'top' ? 0.2 : 0.05, creases: 0 });
+    return c;
   };
   return {
-    front: front.toDataURL(),
-    back: back.toDataURL(),
+    front,
+    back,
     left: spine(entry.price ? `MSRP ${entry.price}` : 'SHAREWARE', 'left'),
     right: spine(sb ? 'SOUND BLASTER' : 'PC SPEAKER', 'right'),
     top: end([title.toUpperCase(), company.toUpperCase()], 'top'),

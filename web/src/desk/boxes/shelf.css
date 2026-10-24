@@ -129,3 +129,23 @@
     display: none;
   }
 }
+
+/* under the black light: each box's glowing print (boxUv.ts) over it, half seen by day and
+   fully at night, when the room's dark lifts off the boxes (roomLight.ts) */
+.game-shelf .bface img.buv {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+.desk.bl-uv .game-shelf .bface img.buv {
+  opacity: 0.5;
+}
+
+.desk.bl-uv.bl-night .game-shelf .bface img.buv,
+.desk.bl-flicker .game-shelf .bface img.buv,
+.desk.bl-blink .game-shelf .bface img.buv {
+  opacity: 1;
+  transition: none;
+}

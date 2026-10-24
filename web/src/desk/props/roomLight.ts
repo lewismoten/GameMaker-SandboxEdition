@@ -43,6 +43,10 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   // every poster on the wall glows under the black light
   { sel: '.wall-poster .wp-sheet', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   { sel: '.desk-scene > .poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  // and so do the game boxes' lettering and stickers (boxes/boxUv.ts): their own print keeps the rest dim
+  { sel: '.game-shelf .shelf-box', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  // and the title on the printed label of the disk in front in the disk box (disks/diskLabel.css)
+  { sel: '.disk-box .floppy.peek.front .label.printed .p-banner', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   // the wall clock's lume numbers and hands, glowing under the black light or still charged
   { sel: '.wall-clock .wc-face', spread: 0, when: (d) => d.classList.contains('bl-uv') || !!d.querySelector('.wall-clock.wc-glowing') },
   // the night outside is as dark as it is, whatever the room's light: the window is never dimmed
