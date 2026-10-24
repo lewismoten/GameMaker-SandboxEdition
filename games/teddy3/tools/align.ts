@@ -14,8 +14,8 @@ const GRID = /^([A-Za-z]+?)(\d)(\d)$/;
 const SEAM_EDGES = ['gate10|gate20', 'lamp01/lamp02', 'bigHub01/bigHub02', 'wellTop00/wellTop01', 'wellTop10/wellTop11', 'wellTop20/wellTop21'];
 /** Objects whose stripes, awnings or sky bands change right at block edges (looked at): the Big
  * Top's red and white stripes, the midway's booths and arch (as in the sequel), the willow, the
- * party cake's tiers. */
-const SEAM_OBJECTS = ['bigTop', 'booth', 'toss', 'stand', 'arch', 'willow', 'cake'];
+ * party cake's tiers, and the striped wallpaper behind the Klown Klub's poster and rack. */
+const SEAM_OBJECTS = ['bigTop', 'booth', 'toss', 'stand', 'arch', 'willow', 'cake', 'poster', 'rack'];
 const SEAM_OK: string[] = [
   ...SEAM_EDGES,
   ...SEAM_OBJECTS.flatMap((o) =>

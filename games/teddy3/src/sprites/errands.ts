@@ -97,6 +97,21 @@ export const ERRANDS: Record<string, string[]> = {
   bestBone: ['..oo......oo', '.owwo....owo', '.owwwooooowo', '..owwwwwwwwo', '.owwwwwwwwo.', 'owwoooooowwo', 'owo.rr...owo', '.o.rRRr...o.', '....rr......'],
   // An RSVP card: YES!
   rsvp: ['oooooooooooo', 'owwwwwwwwwwo', 'owbwbwbbbwwo', 'owbwbwbwwwwo', 'owwbwwbbwwwo', 'owwbwwbwwwwo', 'owwbwwbbbwwo', 'owwwwwwwwwwo', 'oooooooooooo'],
+  // A big bag of party balloons, tied at the neck, three poking out of the top.
+  balloons: [
+    '..rr.bb.yy..',
+    '.rRRbBByYYy.',
+    '.rRrbBbyYyy.',
+    '..rr.bb.yy..',
+    '...o..o.o...',
+    '....o.oo....',
+    '...oooooo...',
+    '..oVVVVVVo..',
+    '.oVVvVVVVVo.',
+    '.oVVVVVVvVo.',
+    '.oVVVVVVVVo.',
+    '..oooooooo..',
+  ],
   // The plug for the Big Top's lights.
   plug: [
     '....oo.oo...',

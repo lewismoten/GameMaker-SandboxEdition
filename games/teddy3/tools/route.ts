@@ -13,5 +13,6 @@ import { route as funhouse } from './routes/funhouse';
 import { route as hill } from './routes/hill';
 import { route as meadow } from './routes/meadow';
 import { route as stage } from './routes/stage';
+import { route as balloon } from './routes/balloon';
 
-export const ROUTES: Record<string, Order[]> = { garage, maple, park, invite, bakery, road, mill, dig, funhouse, hill, meadow, stage };
+export const ROUTES: Record<string, Order[]> = { garage, maple, park, invite, bakery, balloon, road, mill, dig, funhouse, hill, meadow, stage };
