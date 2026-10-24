@@ -6,6 +6,7 @@
   "price": "$15",
   "blurb": "Opening night at the Paragon Theatre, 1936: the star dies on stage in Act III, stabbed with a trick dagger that wasn't. Inspector Ada Penn has until dawn to search the empty theater, question five suspects and name the killer.",
   "exe": "FINAL.EXE",
+  "sameEverySide": ["paragon.mon#2"],
   "sound": "sb",
   "egg": { "counter": 25, "atLeast": 2 },
   "tinHeart": { "map": "act2.map", "at": [75, 19] },
