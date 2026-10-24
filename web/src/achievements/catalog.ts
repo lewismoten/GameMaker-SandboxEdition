@@ -266,8 +266,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     items: HELP_PAGES,
     unit: 'pages',
   },
-  { id: 'print-level-maps', title: 'Map reader', desc: 'Opened a game’s Level Maps.', icon: '🗺️', category: 'fun' },
-  { id: 'print-world-map', title: 'Fold-out', desc: 'Unfolded a game’s World Map.', icon: '🧭', category: 'fun' },
+  { id: 'print-level-maps', title: 'Map reader', desc: 'Opened a game’s Level Maps.', icon: '🧭', category: 'fun' },
+  { id: 'print-world-map', title: 'Fold-out', desc: 'Unfolded a game’s World Map.', icon: '🗺️', category: 'fun' },
   { id: 'link-in', title: 'Special delivery', desc: 'Opened a game sent from another site.', icon: '📬', category: 'fun' },
 
   // found it (the desk's room; reported by gm-achievement events)
