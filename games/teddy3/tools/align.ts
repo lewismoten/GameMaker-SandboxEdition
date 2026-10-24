@@ -9,9 +9,9 @@ import { LEVELS } from '../src/game';
 const strip = (n: string) => n.replace(/^(treat|bone)~/, '').replace(/_\d+$/, '');
 const GRID = /^([A-Za-z]+?)(\d)(\d)$/;
 
-/** Joins with a hard edge on purpose (looked at). */
-/** The park gate's sign board ends at a block edge. */
-const SEAM_OK: string[] = ['gate10|gate20'];
+/** Hard edges on purpose: the park gate's sign board ends at a block edge, and the far trees
+ * meet the lawn behind the lamppost. */
+const SEAM_OK: string[] = ['gate10|gate20', 'lamp01/lamp02'];
 
 export function align(): number {
   const names = new Map<string, string[]>();

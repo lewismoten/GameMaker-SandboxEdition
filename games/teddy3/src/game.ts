@@ -6,8 +6,9 @@ import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from 
 import type { Level } from './levels/level';
 import { garage } from './levels/garage';
 import { maple } from './levels/maple';
+import { park } from './levels/park';
 
-export const LEVELS: (() => Level)[] = [garage, maple];
+export const LEVELS: (() => Level)[] = [garage, maple, park];
 
 export const TITLE = 'TEDDY 3: BIGGEST!';
 

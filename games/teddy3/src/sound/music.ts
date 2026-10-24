@@ -17,9 +17,11 @@ import {
   brass,
   comp,
   join,
+  lead,
   organ,
   pad,
   piano,
+  pluck,
   strings,
   times,
   tune,
@@ -114,6 +116,20 @@ export function mapleSong(): Uint8Array {
     lead: organ,
     comp: BANJO,
     rhythm: 're e re e re e re e',
+    style: 'walk',
+    beat: backbeat(16),
+  });
+}
+
+/** Level 3, Puddlewick Park: the theme on a whistle over plucked strings, swinging along. */
+export function parkSong(): Uint8Array {
+  return arrange({
+    bpm: 120,
+    mel: join(TEDDY, TEDDY),
+    chords: twice(THEME_CHORDS),
+    lead: WHISTLE,
+    comp: pluck,
+    rhythm: 'q re e q re e',
     style: 'walk',
     beat: backbeat(16),
   });

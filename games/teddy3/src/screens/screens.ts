@@ -241,7 +241,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('lost.txt', LOST);
   lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
   levels.forEach((l, i) => {
-    put(`${l.file}.gif`, gif(card(l, i + 1, CARDS[l.file] ?? []), buildPalette(l.time).pal));
+    put(`${l.file}.gif`, gif(card(l, i + 1, l.card ?? CARDS[l.file] ?? []), buildPalette(l.time).pal));
     lst(`${l.file}.lst`, [[`${l.file}.gif`, 30]]);
   });
   if (levels.some((l) => l.egg)) {
@@ -256,7 +256,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('title.cmf', titleSong());
   put('menu.cmf', menuSong());
   put('story.cmf', storySong());
-  for (const l of levels) put(`${l.file}.cmf`, LEVEL_SONGS[l.file]());
+  for (const l of levels) put(`${l.file}.cmf`, (l.song ?? LEVEL_SONGS[l.file])());
   put('won.cmf', wonSong());
   put('lost.cmf', lostSong());
   put('readme.txt', README);

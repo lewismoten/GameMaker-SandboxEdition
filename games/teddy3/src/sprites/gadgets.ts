@@ -207,3 +207,20 @@ export function beacon(on: boolean): Pixels {
     2,
   );
 }
+
+/** A see-saw's end: the plank's last stretch with its red handle, standing on its top edge. */
+export function seesawEnd(flip = false): Pixels {
+  const rows = [
+    'oooooooooooooooooooo',
+    'oJJJJJJJJJJJJJJJJJJo',
+    'ojjjjjjjjjjjjjjjjjjo',
+    'ohhhhhhhhhhhhhhhhhho',
+    'oooooooooooooooooooo',
+    '....oRRo....oRRo....',
+    '....oqqo....oqqo....',
+    '....oqqooooooqqo....',
+    '....oqqqqqqqqqqo....',
+    '.....oooooooooo.....',
+  ];
+  return sprite(flip ? rows.map((r) => [...r].reverse().join('')) : rows, K, 0, 0);
+}

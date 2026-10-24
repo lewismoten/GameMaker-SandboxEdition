@@ -21,6 +21,10 @@ export interface Level {
   hero: Hero;
   /** The cartoon shown on the way out (none by default). */
   outro?: string;
+  /** The lines under the level card (yellow when they start with NEW); else text.ts CARDS. */
+  card?: string[];
+  /** The level's song; else music.ts LEVEL_SONGS. */
+  song?: () => Uint8Array;
   title: string;
   time: TimeOfDay;
   bs: BlockSet;
