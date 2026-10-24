@@ -16,6 +16,13 @@ const thirds = <T>(list: T[]): T[][] => {
   return [list.slice(0, n), list.slice(n, 2 * n), list.slice(2 * n)];
 };
 
+/** Each advertiser once, with every page it has an ad on (a real index's "· 32, 55"). */
+const advertisers = (ads: TocEntry[]): [string, TocEntry[]][] => {
+  const by = new Map<string, TocEntry[]>();
+  for (const a of ads) by.set(a.title, [...(by.get(a.title) ?? []), a]);
+  return [...by];
+};
+
 /** The page itself, from the issue's contents and advertisers. */
 export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
   return {
@@ -27,7 +34,7 @@ export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
       side(
         'Advertiser index',
         [
-          grid(thirds(ads.map((a) => p(`[${a.title}](go:mag/${a.page}) · ${a.folio}`))), 0.2),
+          grid(thirds(advertisers(ads).map(([title, at]) => p(`${title} · ${at.map((a) => `[${a.folio}](go:mag/${a.page})`).join(', ')}`))), 0.2),
           note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),
         ],
         'cyan',
