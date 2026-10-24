@@ -5,7 +5,8 @@
 // real key events, so F-keys a Mac or the browser keeps (F4, F5, F6...) still reach it.
 // Behind the function keys lies Game-Maker's printed key template, as software of the
 // day shipped: what Esc and the F-keys do while a game plays. Its words are buttons too,
-// the keyboard-reachable way to press those keys.
+// the keyboard-reachable way to press those keys. On a phone, where the board is too small to
+// tap, a strip of finger-sized keys under the PC (keyStrip) presses the ones a game asks for.
 import './keyboard.css';
 import { h } from '../../editor/core/ui';
 import { GLOBAL_KEYS } from '../../editor/keymap/keyMap';
@@ -96,7 +97,20 @@ const TOP = 1;
 /** The template's word for each key: PLAYGAME's own (GLOBAL_KEYS), spelled out a little. */
 const TEMPLATE: Record<string, string> = { F8: 'Joy', F9: 'Setup' };
 
-export function keyboard(onClick: () => void): HTMLElement {
+/** The phone's strip: [label, KeyboardEvent.code, its name]. */
+const STRIP: [string, string, string][] = [
+  ['Esc', 'Escape', 'Press Esc: leave the level'],
+  ['F1', 'F1', 'Press F1: help'],
+  ['Enter', 'Enter', 'Press Enter'],
+  ['Space', 'Space', 'Press Space'],
+  ['←', 'ArrowLeft', 'Press the left arrow'],
+  ['↑', 'ArrowUp', 'Press the up arrow'],
+  ['↓', 'ArrowDown', 'Press the down arrow'],
+  ['→', 'ArrowRight', 'Press the right arrow'],
+];
+
+/** The keyboard, and the phone's strip of large keys that press the same keys on the PC. */
+export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTMLElement } {
   const board = h('div', {
     class: 'keyboard',
     role: 'group',
@@ -188,7 +202,12 @@ export function keyboard(onClick: () => void): HTMLElement {
   const off = () => desk()?.dataset.power === 'off';
   /** Pointers holding a key down, so a finger can hold Shift while another taps a letter. */
   const holding = new Map<number, string>();
-  board.addEventListener('pointerdown', (e) => {
+  const strip = h(
+    'div',
+    { class: 'key-strip', role: 'group', 'aria-label': 'Keys to press on the PC', onclick: onClick },
+    ...STRIP.map(([label, code, name]) => h('button', { type: 'button', class: 'ks-key', dataset: { code }, title: name, 'aria-label': name }, label)),
+  );
+  const down = (e: PointerEvent) => {
     const el = (e.target as Element).closest<HTMLElement>('[data-code]');
     if (!el || e.button > 0) return;
     // the PC keeps the focus (and a switched-off PC just switches on, from the click)
@@ -199,27 +218,33 @@ export function keyboard(onClick: () => void): HTMLElement {
     holding.set(e.pointerId, code);
     click();
     vk.press(code);
-  });
+  };
+  board.addEventListener('pointerdown', down);
+  strip.addEventListener('pointerdown', down);
   const lift = (e: PointerEvent) => {
     const code = holding.get(e.pointerId);
     if (code === undefined) return;
     holding.delete(e.pointerId);
     vk.release(code);
   };
-  board.addEventListener('pointerup', lift);
-  board.addEventListener('pointercancel', lift);
-  board.addEventListener('lostpointercapture', lift);
-  // the template's words from the keyboard (Enter or Space on a focused word): a quick tap
-  template.addEventListener('click', (e) => {
-    const el = (e.target as Element).closest<HTMLElement>('[data-code]');
-    if (!el || e.detail !== 0 || off()) return;
-    const code = el.dataset.code!;
-    vk.press(code);
-    setTimeout(() => vk.release(code), 90);
-  });
-  // Enter or Space on a word must not also reach the game as itself
-  template.addEventListener('keydown', (e) => e.stopPropagation());
-  template.addEventListener('keyup', (e) => e.stopPropagation());
+  for (const el of [board, strip]) {
+    el.addEventListener('pointerup', lift);
+    el.addEventListener('pointercancel', lift);
+    el.addEventListener('lostpointercapture', lift);
+  }
+  for (const el of [template, strip]) {
+    // the template's words and the strip's keys from the keyboard (Enter or Space on one): a quick tap
+    el.addEventListener('click', (e) => {
+      const key = (e.target as Element).closest<HTMLElement>('[data-code]');
+      if (!key || e.detail !== 0 || off()) return;
+      const code = key.dataset.code!;
+      vk.press(code);
+      setTimeout(() => vk.release(code), 90);
+    });
+    // Enter or Space on a word must not also reach the game as itself
+    el.addEventListener('keydown', (e) => e.stopPropagation());
+    el.addEventListener('keyup', (e) => e.stopPropagation());
+  }
 
   const press = (e: KeyboardEvent, down: boolean) => keys.get(e.code)?.forEach((el) => el.classList.toggle('down', down));
   const onDown = (e: KeyboardEvent) => press(e, true);
@@ -235,7 +260,7 @@ export function keyboard(onClick: () => void): HTMLElement {
     watch.disconnect();
   });
   requestAnimationFrame(() => board.parentElement && watch.observe(document.body, { childList: true, subtree: true }));
-  return board;
+  return { board, strip };
 }
 
 let clickCtx: AudioContext | undefined;

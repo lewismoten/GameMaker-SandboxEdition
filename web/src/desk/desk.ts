@@ -118,6 +118,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   const box = h('div', { class: 'box' });
   // the playing game's key card, taped to the monitor
+  // the PC's keyboard, and (on a phone) the strip of large keys under the PC
+  const keys = keyboard(() => void power(true));
   const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
   const spk = speakers({
     gamePlaying: () => computer?.gamePlaying ?? false,
@@ -270,7 +272,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
-        keyboardTray(keyboard(() => void power(true))),
+        keyboardTray(keys.board),
+        keys.strip,
         // the screen takes every key (Tab too), so it comes last when tabbing: the case,
         // tray and monitor buttons come first and CSS puts them back in their places
         h(
