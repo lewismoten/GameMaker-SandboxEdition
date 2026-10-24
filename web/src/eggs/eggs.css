@@ -43,7 +43,8 @@
   }
 }
 
-.egg-mini {
+.egg-mini,
+.egg-trophy {
   display: block;
   width: 30px;
   height: 40px;
@@ -77,10 +78,11 @@
   .desk-scene > .egg-perch .egg-row {
     flex-wrap: wrap;
     gap: 2px 1px;
-    max-width: calc(6 * 20px + 5 * 1px);
+    max-width: calc(7 * 20px + 6 * 1px);
   }
 
-  .desk-scene > .egg-perch .egg-mini {
+  .desk-scene > .egg-perch .egg-mini,
+  .desk-scene > .egg-perch .egg-trophy {
     width: 20px;
     height: 27px;
   }
@@ -232,6 +234,20 @@
 
 .eggv-card ul {
   padding-left: 1.2em;
+}
+
+/* Teddy's trophy, on his three eggs' cards once all three are found (teddyTrophy.ts) */
+.eggv-trophy {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 14px 0 0;
+}
+
+.eggv-trophy canvas {
+  flex: none;
+  width: 48px;
+  height: 64px;
 }
 
 /* the mystery: a typed slip of paper */

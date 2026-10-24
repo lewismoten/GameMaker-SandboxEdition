@@ -36,11 +36,12 @@ function settle(f: () => void, ms = 600): () => void {
 
 async function watchCounts(): Promise<void> {
   await loadAchievements();
-  const [{ heartStates, watchHearts }, { eggStates, EGGS_CHANGED }, { SAVES_CHANGED }, { CATALOG_CHANGED }] = await Promise.all([
+  const [{ heartStates, watchHearts }, { eggStates, EGGS_CHANGED }, { SAVES_CHANGED }, { CATALOG_CHANGED }, { hasTeddyTrophy }] = await Promise.all([
     import('../tinHearts/tinHearts'),
     import('../eggs/eggState'),
     import('../project/storage'),
     import('../project/catalogWatch'),
+    import('../eggs/teddyTrophy'),
   ]);
   // only finds made in a game count, not ones EGG.EXE adds by hand
   const hearts = async () => {
@@ -53,6 +54,7 @@ async function watchCounts(): Promise<void> {
     const s = await eggStates().catch(() => []);
     const n = s.filter((x) => x.inSave).length;
     if (n) unlockAchievement('egg-first');
+    if (hasTeddyTrophy(s.filter((x) => x.inSave).map((x) => x.egg.game))) unlockAchievement('egg-teddy');
     if (s.length && n) progress('egg-all', n, s.length);
   };
   const onHearts = settle(() => void hearts());

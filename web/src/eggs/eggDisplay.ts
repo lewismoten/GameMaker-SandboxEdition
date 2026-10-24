@@ -1,13 +1,15 @@
 // The felt eggs on the desk's wall: a small shadow box standing on the top game shelf that
-// holds each egg found so far (two rows of six, a dozen, when they are all in). Until the
-// first one, there is nothing at all; the box only ever shows the eggs that are in it (never
-// how many could be). Clicking it opens the viewer (eggViewer.ts). Once all twelve are in, a
-// little cake stand beside it holds the eggs kept apart from the dozen, if any are found
-// (bonus.ts, loaded only then; bonusViewer.ts).
+// holds each egg found so far (two rows, seven and six, when all thirteen are in), and, once
+// all three Teddy eggs are, his little trophy at the end (teddyTrophy.ts). Until the first
+// one, there is nothing at all; the box only ever shows the eggs that are in it (never how
+// many could be). Clicking it opens the viewer (eggViewer.ts). Once every felt egg is in, a
+// little cake stand beside it holds the eggs kept apart from them, if any are found (bonus.ts,
+// loaded only then; bonusViewer.ts).
 import './eggs.css';
 import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
 import { drawEgg, eggTexture } from './eggArt';
+import { TROPHY_CAPTION, drawTeddyTrophy, hasTeddyTrophy } from './teddyTrophy';
 
 const CELL_W = 30;
 const CELL_H = 40;
@@ -17,7 +19,7 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
   const row = h('span', { class: 'egg-row', 'aria-hidden': 'true' });
   box.append(row);
   place(box);
-  // once the dozen is complete, a little cake stand beside it for any eggs kept apart (bonus.ts)
+  // once every felt egg is in, a little cake stand beside it for any eggs kept apart (bonus.ts)
   const stand = h('button', { type: 'button', class: 'egg-stand', hidden: true });
   box.after(stand);
   let found: EggState[] = [];
@@ -65,9 +67,18 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     shown = key;
     box.hidden = !found.length;
     const n = found.length;
-    box.setAttribute('aria-label', `Shadow box with ${n === 1 ? 'a felt egg' : `${n} felt eggs`}: take a closer look`);
-    box.title = n === 1 ? 'A felt egg' : `${n} felt eggs`;
+    const trophy = hasTeddyTrophy(found.map((e) => e.egg.game));
+    const eggs = n === 1 ? 'a felt egg' : `${n} felt eggs`;
+    box.setAttribute('aria-label', `Shadow box with ${eggs}${trophy ? ' and a little trophy of Teddy' : ''}: take a closer look`);
+    box.title = trophy ? `${n} felt eggs. ${TROPHY_CAPTION}.` : n === 1 ? 'A felt egg' : `${n} felt eggs`;
     const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+    const teddy = () => {
+      const c = h('canvas', { class: 'egg-trophy', width: CELL_W * k, height: CELL_H * k });
+      const g = c.getContext('2d')!;
+      g.scale(k, k);
+      drawTeddyTrophy(g, CELL_W, CELL_H);
+      return c;
+    };
     clear(
       row,
       ...found.map((e, i) => {
@@ -77,6 +88,7 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
         drawEgg(g, eggTexture(e.egg.look), (i % 3) * 0.35 - 0.35, { x: 2 * k, y: 4 * k, w: (CELL_W - 4) * k, h: (CELL_H - 6) * k }, 80);
         return c;
       }),
+      trophy ? teddy() : null,
     );
   };
 

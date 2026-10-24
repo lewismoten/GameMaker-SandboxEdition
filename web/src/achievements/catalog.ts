@@ -171,6 +171,15 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     hidden: true,
     hint: 'Something soft is tucked away in a game.',
   },
+  {
+    id: 'egg-teddy',
+    title: 'Best in show',
+    desc: 'Found the felt eggs in all three Teddy adventures: his little trophy is in the shadow box.',
+    icon: '🏆',
+    category: 'playing',
+    hidden: true,
+    hint: 'A corgi with three adventures, and something soft in each.',
+  },
   { id: 'egg-all', title: 'A full basket', desc: 'Found every felt egg.', icon: '🧺', category: 'playing', hidden: true, hint: 'There is more than one.' },
 
   // watching

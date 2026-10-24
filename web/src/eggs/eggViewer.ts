@@ -2,10 +2,12 @@
 // turn it yourself; still when the system asks for reduced motion), with the game it was
 // found in, the egg itself, the names it carries and its piece of the mystery. With the desk's
 // black light on, the room stays dark and each egg shows its fluorescent ink (eggUv.ts).
+// Once all three Teddy eggs are found, their cards show his little trophy (teddyTrophy.ts).
 import { h, clear } from '../editor/core/ui';
 import { drawEgg, eggTexture, EGG_ASPECT } from './eggArt';
 import { uvInk, uvTexture } from './eggUv';
 import type { EggState } from './eggState';
+import { TEDDY_GAMES, TROPHY_CAPTION, drawTeddyTrophy, hasTeddyTrophy } from './teddyTrophy';
 
 const UV_WORDS = ['dots', 'stripes', 'a zigzag', 'little stars', 'a tiny smiling face'];
 
@@ -63,6 +65,16 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
       raf = requestAnimationFrame(frame);
     };
 
+    // with all three of Teddy's eggs found, his trophy shows on their cards
+    const trophy = hasTeddyTrophy(found.map((e) => e.egg.game));
+    const trophyFigure = () => {
+      const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+      const c = h('canvas', { width: 48 * k, height: 64 * k, 'aria-hidden': 'true' });
+      const g = c.getContext('2d')!;
+      g.scale(k, k);
+      drawTeddyTrophy(g, 48, 64);
+      return h('figure', { class: 'eggv-trophy' }, c, h('figcaption', null, `${TROPHY_CAPTION}.`));
+    };
     const show = () => {
       const e = found[at];
       tex = textureOf(at);
@@ -89,6 +101,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
         h('ul', null, ...e.egg.credits.map((c) => h('li', null, c))),
         h('h3', null, 'Tucked in with it'),
         h('p', { class: 'eggv-lore' }, e.egg.lore),
+        trophy && (TEDDY_GAMES as readonly string[]).includes(e.egg.game) ? trophyFigure() : null,
       );
       prev.disabled = next.disabled = found.length < 2;
       count.textContent = found.length > 1 ? `${at + 1} of ${found.length} found` : '';
