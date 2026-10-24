@@ -40,6 +40,9 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   { sel: '.crt', spread: 0.3, when: (d) => d.dataset.power === 'on' },
   { sel: '.lamp-glow.on', spread: 0 },
   { sel: '.bl-poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  // every poster on the wall glows under the black light
+  { sel: '.wall-poster .wp-sheet', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  { sel: '.desk-scene > .poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   // the wall clock's lume numbers and hands, glowing under the black light or still charged
   { sel: '.wall-clock .wc-face', spread: 0, when: (d) => d.classList.contains('bl-uv') || !!d.querySelector('.wall-clock.wc-glowing') },
   // the night outside is as dark as it is, whatever the room's light: the window is never dimmed

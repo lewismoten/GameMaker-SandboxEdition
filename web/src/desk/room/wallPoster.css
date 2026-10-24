@@ -78,3 +78,25 @@
     display: none;
   }
 }
+
+/* under the black light: the poster's glowing print over it, half seen by day, full at night */
+.wall-poster .wp-uv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+.desk.bl-uv .wall-poster .wp-uv {
+  opacity: 0.5;
+}
+
+.desk.bl-uv.bl-night .wall-poster .wp-uv,
+.desk.bl-flicker .wall-poster .wp-uv,
+.desk.bl-blink .wall-poster .wp-uv {
+  opacity: 1;
+  transition: none;
+}

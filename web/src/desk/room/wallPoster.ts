@@ -3,13 +3,15 @@
 // picture from the game ({ gif: 'title.gif' }) or a stretch of a map
 // ({ map: ['galaxy.map', x, y, w, h] } in blocks, drawn as a creased fold-out map);
 // without one the game's title screen becomes the poster. It hangs in the black-light
-// poster's place (props/blacklight.ts), which comes back when the disk is out.
+// poster's place (props/blacklight.ts), which comes back when the disk is out. Under the black
+// light its glowing print (posterUv.ts) shows over it (wallPoster.css).
 import './wallPoster.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { mapShot } from '../../gfx/gameShots';
 import type { BoxExtras } from '../boxes/boxFacts';
 import { seeded } from '../boxes/boxFacts';
+import { uvPoster } from './posterUv';
 
 type Poster = NonNullable<BoxExtras['poster']>;
 
@@ -165,6 +167,7 @@ export async function showWallPoster(gameId: string): Promise<void> {
   const img = h('img', { src: canvas.toDataURL(), alt: '', draggable: false });
   img.style.width = `${Math.round(canvas.width * fit)}px`;
   img.style.height = `${Math.round(canvas.height * fit)}px`;
+  const uv = h('img', { class: 'wp-uv', src: uvPoster(canvas).toDataURL(), alt: '', draggable: false });
   const tilt = (seeded(gameId)() - 0.5) * 3;
   scene.append(
     h(
@@ -176,7 +179,7 @@ export async function showWallPoster(gameId: string): Promise<void> {
         'aria-label': `${entry.title} poster`,
       },
       // the sheet itself, its two tacks in its own top corners
-      h('span', { class: 'wp-sheet' }, img),
+      h('span', { class: 'wp-sheet' }, img, uv),
     ),
   );
 }

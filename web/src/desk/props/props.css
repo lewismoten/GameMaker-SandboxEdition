@@ -596,8 +596,21 @@
   }
 
   /* a game's poster up in its place: the tube only casts a dim violet light on it */
-  .desk.bl-uv .wall-poster img {
-    filter: brightness(0.92) saturate(0.95) drop-shadow(0 0 14px rgba(150, 80, 255, 0.35));
+  .desk.bl-uv .wall-poster .wp-sheet {
+    filter: drop-shadow(0 0 14px rgba(150, 80, 255, 0.35));
+  }
+
+  /* the snow-shoveling poster under the tube: its paper glows lavender and its inks pop */
+  .desk-scene > .poster {
+    transition: filter 0.8s;
+  }
+
+  .desk.bl-uv .desk-scene > .poster {
+    filter: saturate(1.4) contrast(1.1) drop-shadow(0 0 12px rgba(150, 80, 255, 0.35));
+  }
+
+  .desk.bl-uv.bl-night .desk-scene > .poster {
+    filter: brightness(0.75) contrast(1.35) saturate(2) hue-rotate(-14deg) sepia(0.15) drop-shadow(0 0 14px rgba(150, 80, 255, 0.5));
   }
 
   /* the glowing print, there after dark (and while the tube flickers) */
