@@ -76,8 +76,7 @@ export function manArt(pal: Pal) {
     if (back) {
       // the back of his head: the shaggy bowl cut all the way down, ears and his glasses' arms
       for (let x = hx - 4; x <= hx + 4; x++)
-        for (let y = hy - 2; y <= hy + 3; y++)
-          if ((x - hx - 0.5) ** 2 / 20 + (y - hy) ** 2 / 17 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
+        for (let y = hy - 2; y <= hy + 3; y++) if ((x - hx - 0.5) ** 2 / 20 + (y - hy) ** 2 / 17 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
       p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
       p.set(hx - 4, hy - 1, c('metal', 2)).set(hx + 4, hy - 1, c('metal', 2));
     }
