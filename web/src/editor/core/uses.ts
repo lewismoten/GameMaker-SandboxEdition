@@ -57,7 +57,7 @@ export function scriptUses(project: Project, file: string): Use[] {
 }
 
 /** The level scenes that use `file` in `slot`, with the file each has in `other`. */
-function partners(project: Project, file: string, slot: number, other: number): { scene: number; file: string }[] {
+export function partners(project: Project, file: string, slot: number, other: number): { scene: number; file: string }[] {
   const n = normalize(file);
   const out: { scene: number; file: string }[] = [];
   project.game().scenes.forEach((s, i) => {

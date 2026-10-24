@@ -9,6 +9,7 @@ import { BLEN } from '../../../formats/blocks';
 import type { Palette } from '../../../formats/palette';
 import { TICK_HZ } from './blockAnim';
 import { clipTicks, isStill, nextChange, stepAt, tickOf, type Clip } from './animClip';
+import './animPlayer.css';
 
 export interface AnimPlayer {
   el: HTMLElement;
@@ -77,12 +78,16 @@ export function animPlayer(o: {
     }
     const around = clipTicks(c);
     status.textContent = isStill(c)
-      ? 'Does not change over time.'
+      ? ''
       : `Showing ${[...new Set(shown.filter((b) => b >= 0))].join(', ') || 'nothing'}${around ? `; ${(around / TICK_HZ).toFixed(1)} s around` : ''}.`;
   }
 
+  /** The tick last drawn while playing: the picture only changes on a new tick. */
+  let drawn = -1;
   function loop(): void {
-    draw();
+    const t = nowTick();
+    if (t !== drawn) draw();
+    drawn = t;
     raf = requestAnimationFrame(loop);
   }
 
@@ -100,7 +105,7 @@ export function animPlayer(o: {
     playBtn.textContent = playing ? '⏸ Pause' : '▶ Play';
     playBtn.title = playing ? 'Pause the animation' : 'Play the animation';
     playBtn.setAttribute('aria-pressed', String(playing));
-    playBtn.disabled = stepBtn.disabled = still;
+    controls.hidden = still;
     if (playing && !still) loop();
     else draw();
   }
@@ -129,7 +134,8 @@ export function animPlayer(o: {
     sync();
   }
 
-  const el = h('div', { class: 'anim-player' }, choiceLabel, canvas, h('div', { class: 'row anim-player-controls' }, playBtn, stepBtn, status));
+  const controls = h('div', { class: 'row anim-player-controls' }, playBtn, stepBtn, status);
+  const el = h('div', { class: 'anim-player' }, choiceLabel, canvas, controls);
 
   return {
     el,
@@ -146,7 +152,7 @@ export function animPlayer(o: {
       restart();
     },
     redraw() {
-      if (!playing) draw();
+      draw();
     },
     dispose() {
       cancelAnimationFrame(raf);

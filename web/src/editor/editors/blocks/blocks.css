@@ -165,11 +165,6 @@
   height: 180px;
   border: 1px solid var(--border);
 }
-.blk-anim {
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--border);
-}
 .blk-insight h3 {
   margin: 10px 0 4px;
   font-size: 1em;
@@ -207,4 +202,77 @@ dialog.modal label.recolor-check {
   height: auto;
   margin-top: 8px;
   border: 1px solid var(--border);
+}
+
+/* the block being painted, among the blocks picked for a group */
+.blk-picker .block-picker button.current {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+/* Groups (groupsPanel.ts): the group assembled, its animation, and the ways to make groups */
+.blk-groups summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 24px;
+}
+.blk-groups-body {
+  margin-top: 8px;
+}
+.blk-groups-body p {
+  margin: 0;
+}
+.blk-group-list ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+}
+.blk-group-list li {
+  margin: 2px 0;
+}
+.blk-anim-figure .anim-player-canvas {
+  min-width: 80px;
+}
+.group-mini {
+  display: inline-grid;
+  flex: none;
+  border: 1px solid var(--border);
+}
+.group-mini canvas,
+.group-mini span {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+.group-suggest-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  max-height: min(50vh, 420px);
+  overflow: auto;
+}
+.group-suggest-list li {
+  margin: 4px 0;
+}
+.group-paint-area {
+  max-width: min(100%, 86vw);
+  overflow: auto;
+}
+.group-paint-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  cursor: crosshair;
+  touch-action: none;
+}
+.group-paint-color {
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.blk-group-anim {
+  margin: 0;
+}
+.blk-group-anim[hidden] {
+  display: none;
 }

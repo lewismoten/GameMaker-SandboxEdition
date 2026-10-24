@@ -34,6 +34,7 @@ import { edgeSetDialog } from './edgeSetDialog';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
+import { groupsPanel } from './groupsPanel';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -91,6 +92,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const urlBlock = view.num('block');
   let current = urlBlock !== undefined && urlBlock >= 0 && urlBlock < blocks.length ? urlBlock : 0;
   let color = sprites ? 0 : 1;
+  /** The blocks picked in the list for a group (Shift- or Ctrl-click), in order; `anchor` starts a Shift run. */
+  let picked: number[] = [current];
+  let anchor = current;
   let tool: Tool = 'draw';
   // each block keeps its own undo and redo (its pixels), so switching blocks never undoes another's paint
   const undo: Uint8Array[][] = blocks.map(() => []);
@@ -109,11 +113,64 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const pal = () => chooser.palette;
   const insight = blockInsight({ project, file, blocks, current: () => current, pal, sprites, open: (f) => openInEditor(project, f) });
   // level check notes on this block: hazard art smaller than its cell, a hard-to-see monster picture…
+  const groups = groupsPanel({
+    project,
+    file,
+    kind,
+    blocks,
+    sprites,
+    pal,
+    current: () => current,
+    select: (i) => {
+      picked = [i];
+      anchor = i;
+      select(i);
+    },
+    picked: () => picked,
+    color: () => color,
+    setColor: (c) => {
+      color = c;
+      renderSwatches();
+    },
+    apply: (parts) => {
+      for (const [i, px] of parts) {
+        undo[i].push(blocks[i].pixels.slice());
+        if (undo[i].length > 50) undo[i].shift();
+        redo[i].length = 0;
+        blocks[i].pixels.set(px);
+        if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
+      }
+      changed();
+      insight.refresh(true);
+    },
+  });
   const badges = checkBadges(project, file, (f) => f.where.block?.n === current && normalize(f.where.block.file) === normalize(file));
 
   // ---- block picker -------------------------------------------------------
-  const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks');
+  // Shift-click picks a run of blocks, Ctrl/Cmd-click one more (for a group); a click picks one
+  const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks', { multiselect: true });
   const pickerCanvases: HTMLCanvasElement[] = [];
+  function pick(i: number, e: MouseEvent): void {
+    if (e.shiftKey) {
+      const [a, b] = anchor <= i ? [anchor, i] : [i, anchor];
+      picked = Array.from({ length: b - a + 1 }, (_, k) => a + k);
+      if (anchor > i) picked.reverse();
+    } else if (e.ctrlKey || e.metaKey) {
+      picked = picked.includes(i) ? picked.filter((p) => p !== i) : [...picked, i];
+      if (!picked.length) picked = [i];
+      anchor = i;
+    } else {
+      picked = [i];
+      anchor = i;
+    }
+    select(i);
+  }
+  function markPicker(): void {
+    [...picker.children].forEach((b, j) => {
+      b.classList.toggle('selected', picked.includes(j) || j === current);
+      b.classList.toggle('current', j === current);
+    });
+  }
   function renderPicker(): void {
     pickerCanvases.length = 0;
     clear(
@@ -121,23 +178,21 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ...blocks.map((b, i) => {
         const c = blockCanvas(b.pixels, pal(), { transparent: sprites, className: sprites ? 'checker' : '' });
         pickerCanvases.push(c);
-        return h(
-          'button',
-          { class: i === current ? 'selected' : '', title: `Block ${i}`, 'aria-label': `Block ${i}`, onclick: () => select(i) },
-          c,
-          h('small', null, i),
-        );
+        return h('button', { title: `Block ${i}`, 'aria-label': `Block ${i}`, onclick: (e: MouseEvent) => pick(i, e) }, c, h('small', null, i));
       }),
     );
+    markPicker();
   }
   function select(i: number): void {
     current = i;
+    if (!picked.includes(i)) picked = [i];
     view.set({ block: i });
-    [...picker.children].forEach((b, j) => b.classList.toggle('selected', j === i));
+    markPicker();
     renderBlock();
     renderProps();
     refreshUndo();
     insight.refresh(true);
+    groups.refresh(true);
     badges.refresh();
   }
 
@@ -177,6 +232,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
     if (!preview && pickerCanvases[current]) paintBlock(pickerCanvases[current], blocks[current].pixels, pal(), { transparent: sprites });
     if (!preview) insight?.refresh();
+    if (!preview) groups?.refresh();
   }
 
   /** Sets a pixel and its mirror images. */
@@ -645,7 +701,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   // the three columns each end at the window's bottom edge and scroll by themselves (blocks.css)
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
-    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, badges.el, insight.el),
+    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, groups.el, sprites ? null : textures, badges.el, insight.el),
     h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
   ];
   clear(
@@ -653,7 +709,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     h(
       'div',
       { class: 'blk-head' },
-      h('p', { class: 'hint' }, sprites ? 'Color 255 is transparent. ' : '', 'Pick a block, paint it, then set how it behaves.'),
+      h(
+        'p',
+        { class: 'hint' },
+        sprites ? 'Color 255 is transparent. ' : '',
+        'Pick a block, paint it, then set how it behaves. Shift- or Ctrl-click blocks to group them.',
+      ),
       chooser.el,
     ),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
@@ -677,5 +738,6 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   return () => {
     window.removeEventListener('keydown', onKey);
     insight.dispose();
+    groups.dispose();
   };
 });

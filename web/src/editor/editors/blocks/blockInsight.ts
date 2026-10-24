@@ -1,13 +1,16 @@
-// The block painter's look-and-check panel: the block tiled 3 x 3 (to see its seams), its
-// animation playing with PLAYGAME's timing (background blocks), and where it is used. Only
-// shows things; the block set is never changed here.
+// The block painter's look-and-check panel: the block tiled 3 x 3 (to see its seams), the
+// animations it is in playing with PLAYGAME's timing (its own chain, the monsters or the hero's
+// sequences that show it; animPlayer.ts), and where it is used. Only shows things; the block set
+// is never changed here.
 import { h, clear } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
-import { BLEN, type Block } from '../../../formats/blocks';
+import { BLEN, type Block, type BlockKind } from '../../../formats/blocks';
 import type { Palette } from '../../../formats/palette';
 import type { Project } from '../../core/project';
 import { blockUses } from '../../core/uses';
-import { blockAnim, describeAnim, TICK_HZ } from './blockAnim';
+import { blockAnim, describeAnim } from './blockAnim';
+import { animPlayer } from './animPlayer';
+import { clipsFor } from './blockClips';
 
 interface Insight {
   el: HTMLElement;
@@ -30,11 +33,11 @@ export function blockInsight(o: {
     role: 'img',
     'aria-label': 'The block repeated 3 by 3, to check that its edges meet',
   });
-  const anim = h('canvas', { class: `pixel blk-anim${o.sprites ? ' checker' : ''}`, role: 'img', 'aria-label': 'The block’s animation as the game plays it' });
+  const kind = o.file.split('.').pop()!.toLowerCase() as BlockKind;
+  const player = animPlayer({ blocks: () => o.blocks, pal: o.pal, transparent: o.sprites, label: 'The block’s animation as the game plays it', scale: 4 });
   const animText = h('p', { class: 'meta blk-anim-text', 'aria-live': 'off' });
   const usesList = h('ul', { class: 'blk-uses' });
   const usesHead = h('h3', null, 'Used in');
-  let timer: ReturnType<typeof setTimeout> | undefined;
   let refreshUses: ReturnType<typeof setTimeout> | undefined;
 
   function drawTile(): void {
@@ -45,19 +48,17 @@ export function blockInsight(o: {
   }
 
   function playAnim(): void {
-    clearTimeout(timer);
-    const a = blockAnim(o.blocks, o.current());
-    animText.textContent = describeAnim(a);
-    let k = 0;
-    const show = () => {
-      const s = a.steps[k];
-      paintIndexed(anim, o.blocks[s.block].pixels, BLEN, BLEN, o.pal(), o.sprites);
-      if (!Number.isFinite(s.ticks)) return;
-      k = k + 1 < a.steps.length ? k + 1 : a.loopTo;
-      if (k < 0) return;
-      timer = setTimeout(show, (s.ticks * 1000) / TICK_HZ);
-    };
-    show();
+    const cur = o.current();
+    const clips = clipsFor(o.project, o.file, kind, o.blocks, cur);
+    player.show(clips, cur);
+    animText.textContent =
+      kind === 'bbl'
+        ? describeAnim(blockAnim(o.blocks, cur))
+        : clips.length
+          ? ''
+          : kind === 'mbl'
+            ? 'No monster of the scenes that use this set shows this block, so it has no animation yet.'
+            : 'No sequence of the character shows this block yet.';
   }
 
   function listUses(): void {
@@ -89,9 +90,9 @@ export function blockInsight(o: {
       'div',
       { class: 'blk-insight-row' },
       h('figure', null, tile, h('figcaption', { class: 'meta' }, 'Tiled 3 × 3')),
-      o.file.endsWith('.bbl') ? h('figure', null, anim, h('figcaption', { class: 'meta' }, 'In the game')) : null,
+      h('figure', { class: 'blk-anim-figure' }, player.el, h('figcaption', { class: 'meta' }, 'In the game')),
     ),
-    o.file.endsWith('.bbl') ? animText : null,
+    animText,
     usesHead,
     usesList,
   );
@@ -100,14 +101,14 @@ export function blockInsight(o: {
     el,
     refresh(all = false) {
       drawTile();
-      if (!all) return;
-      if (o.file.endsWith('.bbl')) playAnim();
+      if (!all) return player.redraw();
+      playAnim();
       // map and monster files are read again, so only once a burst of changes settles
       clearTimeout(refreshUses);
       refreshUses = setTimeout(listUses, 300);
     },
     dispose() {
-      clearTimeout(timer);
+      player.dispose();
       clearTimeout(refreshUses);
     },
   };
