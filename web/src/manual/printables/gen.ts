@@ -25,6 +25,7 @@ import { CHARBL } from '../../formats/blocks';
 import { DIR_ARROW, DIR_PAD, PLAYGAME_KEYS, manualKeyText, splitKeys, type BoundKey, type Dir } from './keys';
 import { redCode } from './redFilm';
 import { paginate } from './paginate';
+import { measured } from './fitSheet';
 
 const ISSUE_DATE = 'Fall 1995';
 
@@ -541,22 +542,15 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
 
 /** Takes stories off the end of `cols` until the rest end above the sheet's foot; returns them in order. */
 function overflowStories(front: Sheet, cols: HTMLElement, stories: HTMLElement[]): HTMLElement[] {
-  const host = h('div', { class: 'gmb-measure' });
-  document.body.append(host);
   const moved: HTMLElement[] = [];
-  try {
-    front.el.style.width = '850px';
-    host.replaceChildren(front.el);
+  measured(front, () => {
     const foot = front.el.querySelector('.nl-foot')!;
     const over = () => cols.getBoundingClientRect().bottom > foot.getBoundingClientRect().top - 6;
     for (let i = stories.length - 1; i > 0 && over(); i--) {
       stories[i].remove();
       moved.unshift(stories[i]);
     }
-  } finally {
-    host.remove();
-    front.el.style.width = '';
-  }
+  });
   return moved;
 }
 
@@ -570,7 +564,11 @@ export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<S
   const bg = shot ? await ctx.shot({ map: shot[0], x: shot[1], y: shot[2], w: 16, h: 10 }) : undefined;
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const hints = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
-  const sample = hints[hashString(g.id + 'card') % Math.max(1, hints.length)];
+  // the sample question: the game's own pick, or the next one that leaves the card room for the rest
+  const first = hashString(g.id + 'card') % Math.max(1, hints.length);
+  const samples = hints.map((_, k) => hints[(first + k) % hints.length]);
+  const sampleEl = (q: (typeof hints)[number] | undefined) => (q ? h('p', { class: 'ho-sample' }, h('b', null, 'Q. '), q.q, h('br'), redCode(q.a)) : null);
+  let sample = sampleEl(samples[0]);
   const style = `--ho-bg:${box?.background ?? '#18150f'};--ho-accent:${box?.accent ?? '#f2b632'};--ho-ink:${box?.ink ?? '#fff'}`;
   const front = sheet(
     6,
@@ -603,7 +601,7 @@ export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<S
       { class: 'ho-msg' },
       h('h3', null, 'Can’t get past it?'),
       h('p', null, `Our ${main} hint book answers your questions without spoiling the rest. Try it on this one:`),
-      sample ? h('p', { class: 'ho-sample' }, h('b', null, 'Q. '), sample.q, h('br'), redCode(sample.a)) : null,
+      sample,
       h('p', { class: 'ho-price' }, h('s', null, '$5.95'), ' ', h('b', null, 'FREE with registration')),
       h('p', { class: 'ho-in' }, `It’s already in this box: look for “${bookTitle}”.`),
     ),
@@ -615,5 +613,14 @@ export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<S
       fictionalNote(),
     ),
   );
+  measured(back, (over) => {
+    const shortest = [...samples].sort((a, b) => a.q.length + a.a.length - (b.q.length + b.a.length))[0];
+    for (const q of [...samples.slice(1), shortest]) {
+      if (!sample || !over()) break;
+      const next = sampleEl(q)!;
+      sample.replaceWith(next);
+      sample = next;
+    }
+  });
   return [front, back];
 }

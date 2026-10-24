@@ -1,21 +1,30 @@
-// Keeps a poster's pictures on its paper: when a sheet's contents would run off its foot, its
-// pictures are made smaller until everything fits. Measured once, off screen, as the hint book
+// Keeps what's printed on its paper: when a sheet's contents would run off its foot, its
+// pictures are made smaller (or its parts chosen) until everything fits. Measured once, off screen, as the hint book
 // and the catalog measure their pages; a sheet that fits is left exactly as it was.
 import { h } from '../../editor/core/ui';
 import type { Sheet } from './kit';
 
-/**
- * Calls `size(f)` with the largest f in [min, 1] that keeps everything on `s` (f = 1: the
- * pictures' full size). Does nothing when the sheet fits as it is.
- */
-export function fitSheet(s: Sheet, size: (f: number) => void, min = 0.2): void {
+/** Runs `use` with `s` laid out off screen; `over()` tells whether its contents run off it. */
+export function measured<T>(s: Sheet, use: (over: () => boolean) => T): T {
   const host = h('div', { class: 'gmb-measure' });
   document.body.append(host);
   try {
     s.el.style.width = '850px';
     host.replaceChildren(s.el);
     const inner = s.el.firstElementChild as HTMLElement;
-    const over = () => inner.scrollHeight > inner.clientHeight + 1;
+    return use(() => inner.scrollHeight > inner.clientHeight + 1);
+  } finally {
+    host.remove();
+    s.el.style.width = '';
+  }
+}
+
+/**
+ * Calls `size(f)` with the largest f in [min, 1] that keeps everything on `s` (f = 1: the
+ * pictures' full size). Does nothing when the sheet fits as it is.
+ */
+export function fitSheet(s: Sheet, size: (f: number) => void, min = 0.2): void {
+  measured(s, (over) => {
     if (!over()) return;
     let lo = min;
     let hi = 1;
@@ -26,10 +35,7 @@ export function fitSheet(s: Sheet, size: (f: number) => void, min = 0.2): void {
       else lo = mid;
     }
     size(lo);
-  } finally {
-    host.remove();
-    s.el.style.width = '';
-  }
+  });
 }
 
 /** A size for fitSheet: `part`, whose pictures scale with its width, narrowed and centered. */
