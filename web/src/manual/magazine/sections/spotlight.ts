@@ -156,7 +156,7 @@ export const SPOTLIGHT: MagSection = {
             'Tin hearts',
             [
               p(
-                `A small riveted tin heart with a clock face hides in all ${heartGames(ctx).length} Sandbox and Bard of Bizarre games: a nod to the Tin Man, who went all the way to Oz to get one. Touch it and it counts.`,
+                `A small riveted tin heart with a clock face hides in all ${heartGames(ctx).length} Sandbox and Bard of Bizarre games: a nod to the Tin Man, who went all the way to Oz to get one, and to Lewis’s own heart, which has kept time with a pacemaker since February 2014, the year Game-Maker’s source was set free. Touch it and it counts.`,
               ),
               p(
                 '**Look for** a glint in a corner, off the beaten path. In some games, **listen for** a tick-tock. Find every one and Mystery Robot Joe has a thank-you waiting on the desk.',
