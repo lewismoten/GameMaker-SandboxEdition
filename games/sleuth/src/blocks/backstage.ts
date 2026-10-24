@@ -8,7 +8,7 @@
 // when all three are right; the safe door's touch costs 3 from that counter, and
 // Game-Maker refuses a touch that a counter can't pay for (it would leave it at nothing).
 import { Pixels, rng } from '../../../kit/pixels';
-import { micro } from '../art/draw';
+import { micro, microWidth } from '../art/draw';
 import { c } from '../art/pal';
 import { CTR } from '../ids';
 import { Add, S, on, wallFace } from './painters';
@@ -22,8 +22,10 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
       for (let x = 2; x < 19; x += 4) p.set(x, 2, c('glow', 4));
       p.rect(0, 13, 20, 7, c('wood', 2)).rect(0, 13, 20, 1, c('wood', 4));
       if (letter) {
-        p.rect(2, 4, 16, 9, c('paper', 5));
-        letter.forEach((l, i) => micro(p, 3, 4 + i * 5, l, c('navy', 0)));
+        // a five-letter line is wider than the mirror's glass: the letter covers its frame
+        const wide = letter.some((l) => microWidth(l) > 16);
+        p.rect(wide ? 0 : 2, 4, wide ? 20 : 16, 9, c('paper', 5));
+        letter.forEach((l, i) => micro(p, microWidth(l) > 16 ? 1 : 3, 4 + i * 5, l, c('navy', 0)));
       } else {
         p.disc(6, 16, 2, c('velvet', 4));
         p.rect(12, 15, 4, 3, c('gold', 3));

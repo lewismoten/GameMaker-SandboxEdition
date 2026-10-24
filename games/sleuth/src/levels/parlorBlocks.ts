@@ -6,7 +6,7 @@
 // block collects it (and the right answer passes over one worth 5000).
 import { Pixels } from '../../../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from '../blocks/blockset';
-import { CLEAR, blob, microC, pool, speckle } from '../art/draw';
+import { CLEAR, blob, microC, microWidth, pool, speckle } from '../art/draw';
 import { c, ramp as r } from '../art/pal';
 import { T, boards, clone, footlight, stageBoards, wallFace, wallTop } from '../blocks/painters';
 import { addItems, symbol } from '../blocks/items';
@@ -71,12 +71,15 @@ function icon(p: Pixels, x: number, y: number, kind: string): void {
   }
 }
 
-/** A card on the floor, 40x20: an icon on the left and a word on the right. */
+/**
+ * A card on the floor, 40x20: an icon on the left and a word on the right. A word too long to
+ * sit beside the icon inside the card's inner frame (21 pixels) is centered on its own.
+ */
 function card(word: string, iconKind?: string, floor = boards(11)): Pixels {
   const p = new Pixels(40, 20);
   p.blit(floor, 0, 0).blit(floor, 20, 0);
   p.rect(1, 2, 38, 16, c('paper', 4)).frame(1, 2, 38, 16, c('gold', 2)).frame(2, 3, 36, 14, c('paper', 2));
-  if (iconKind) {
+  if (iconKind && microWidth(word) <= 21) {
     icon(p, 4, 4, iconKind);
     microC(p, 27, 8, word, c('velvet', 2));
   } else microC(p, 20, 8, word, c('velvet', 2));
