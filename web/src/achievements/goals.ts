@@ -4,7 +4,7 @@
 // named, until the lists show it anyway.
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
-import { ACHIEVEMENTS, type Goal } from './catalog';
+import type { Goal } from './catalog';
 import { currentAchievements, loadAchievements, progress, remember } from './store';
 
 type Listed = Pick<CatalogEntry, 'id' | 'original' | 'company' | 'series' | 'walkthrough'>;
@@ -40,6 +40,7 @@ export function goalProgress(targets: readonly string[], done: readonly string[]
 export async function refreshGoals(catalog?: readonly Listed[]): Promise<void> {
   const list = catalog ?? (await loadGameList().catch(() => []));
   const r = currentAchievements() ?? (await loadAchievements());
+  const { ACHIEVEMENTS } = await import('./catalog');
   for (const a of ACHIEVEMENTS) {
     const set = a.from && GOAL_SET[a.from];
     if (!set) continue;

@@ -3,7 +3,7 @@
 //   notePlayed(saveId), noteWatched(gameId), editedFile(name).
 // See catalog.ts for the ids, store.ts for how they are kept, start.ts for the gm-achievement event.
 import type { Session } from '../engine/scene';
-import { EDIT_KINDS } from './catalog';
+import { EDIT_KINDS } from './editKinds';
 import { noteFinished, notePlayed, noteWatched } from './goals';
 import { tally, unlockAchievement } from './store';
 

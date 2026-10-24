@@ -7,6 +7,7 @@
 // No text here names a game that the catalog keeps out of sight, or says how many there are.
 
 import type { AchievementRecord } from './store';
+import { EDIT_KINDS } from './editKinds';
 
 export type Category = 'making' | 'playing' | 'watching' | 'desk' | 'fun' | 'found';
 
@@ -46,7 +47,7 @@ export interface Achievement {
 }
 
 /** The editors whose files count toward "every kind of file" (all block sets count as blocks). */
-export const EDIT_KINDS = ['gam', 'pal', 'bbl', 'mon', 'chr', 'map', 'snd', 'txt'] as const;
+export { EDIT_KINDS };
 /** The Download chooser's platforms that count toward "every platform". */
 export const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as const;
 /** The help pages for downloaded games. */
