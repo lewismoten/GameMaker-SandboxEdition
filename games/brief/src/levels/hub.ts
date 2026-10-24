@@ -175,7 +175,7 @@ const READING_ROOM = [
  * The Lost and Found, behind the loose shelf in the Stacks' far corner (a shelf block without
  * Game-Maker's solid flag: it only looks like the rest). Umbrellas, one sock, a spare rubber
  * chicken, a charge cable with a tag, Teddy asleep on somebody's sweater, and in a shoebox the
- * felt egg: a Pick-up block, so it is Joe's only if he pockets it (P).
+ * felt egg: a Pick-up block, so it is Joe's only if he pockets it (Space).
  */
 const LOST = [
   'SSSSSSLLLLSSSSSS',
