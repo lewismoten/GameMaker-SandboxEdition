@@ -13,10 +13,17 @@ Vocational Technical High School in Baltimore; in West Virginia I went to Frankf
 School. Our house was on a hill. My brother bought an IBM PS/2, a 286, with Mom's help, and
 I used it often.
 
-I made friends at a video rental store in town that had a pool table and arcade machines,
-and I was a junior firefighter: I listened to the fire radios, dried and rolled hoses, rode
-the brush truck once, and dropped suction hoses into the river at the fairgrounds during
-night drills.
+I made friends at a video rental store in town that had a pool table, and the arcade
+machines were further into town, upstairs at a place across from the convenience store. I
+painted ceramics at the ceramic shop, and I was a junior firefighter at the volunteer fire
+department on the corner: I listened to the fire radios, dried and rolled hoses, rode the
+brush truck once, and dropped suction hoses into the river at the fairgrounds during night
+drills. We flew model rockets at the fairgrounds too.
+
+Across from the grocery store was a little library, one big eight-sided room and a copier,
+and next to it a hardware store where I bought bits for my router and scroll saw for
+woodworking. There was a pizza shop at the bottom of the hill where I lived, and a friend
+who also had a computer, where we played games.
 
 ## Moten Snow to Software Operations, 1992
 

@@ -29,7 +29,7 @@ export const LEWIS: MagSection = {
           q('What did a kid do for fun in Fort Ashby?'),
           a(
             L,
-            'I made friends at a video rental store in town that had a pool table and arcade machines. And I was a junior firefighter. I listened to the fire radios, dried and rolled hoses, rode the brush truck once, and dropped suction hoses into the river at the fairgrounds during night drills.',
+            'I made friends at a video rental store in town that had a pool table, and the arcade machines were further into town, upstairs at a place across from the convenience store. I painted ceramics at the ceramic shop, and I was a junior firefighter at the volunteer fire department on the corner: I listened to the fire radios, dried and rolled hoses, rode the brush truck once, and dropped suction hoses into the river at the fairgrounds during night drills. We flew model rockets at the fairgrounds, too. There was a little library across from the grocery store, one big eight-sided room and a copier, next to a hardware store where I bought bits for my router and scroll saw. And a pizza shop at the bottom of my hill, and a friend with a computer, where we played games.',
           ),
           q('And then you saw the ad.'),
           a(L, 'In October 1992 a game magazine advertised RSD Game-Maker for $89 plus $4 shipping. The next issue listed it at $129. I was 16.'),
