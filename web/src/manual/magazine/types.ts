@@ -92,7 +92,32 @@ export type Block =
    * MUG_DESIGNS, by its id) and what that picture is, for its alt text.
    */
   | { t: 'mugs'; mugs: { design: string; name: string }[] }
+  /**
+   * Where a jumped article stops or picks up, as magazines split a long story: `on` ends its page
+   * with "Continued on page N ▸", `from` starts the rest at the back of the book with the story's
+   * headline again and "▸ Continued from page N". `page` is the other end's page id; issue.ts
+   * fills in `folio`, its number, once every page has one (pageRefs.ts).
+   */
+  | { t: 'jump'; dir: 'on' | 'from'; page: string; title?: string; folio?: number }
+  | HalfAd
+  /** Editorial in two thirds of the page, and a small ad standing up the last third. */
+  | { t: 'beside'; blocks: Block[]; ad: HalfAd }
   | { t: 'rule' };
+
+/**
+ * A small ad sharing an editorial page (half of it, or a third in a `beside`), framed and
+ * labelled ADVERTISEMENT; listed in the advertiser index under `advertiser`.
+ */
+export interface HalfAd {
+  t: 'halfad';
+  advertiser: string;
+  head: string;
+  sub?: Inline;
+  blocks: Block[];
+  small?: Inline;
+  tone?: Tone;
+  burst?: string;
+}
 
 /** One numbered spot on a `callouts` picture: where (percent of its width and height) and what it is. */
 export interface Callout {

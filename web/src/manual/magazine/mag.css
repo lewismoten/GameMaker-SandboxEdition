@@ -920,7 +920,8 @@
 .mag-cell > a.mag-go,
 .mag-side > a.mag-go,
 .mag-card > a.mag-go,
-.mag-adframe > a.mag-go {
+.mag-adframe > a.mag-go,
+.mag-halfad-frame > a.mag-go {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1308,6 +1309,185 @@
 
 .look-classic a:not(.mag-btn, .mag-card > a.mag-go) {
   color: var(--ink);
+}
+
+/* ---- jumps: a story continued later in the issue ------------------------------------------ */
+.mag-jump.on {
+  margin: 0;
+  text-align: right;
+  font:
+    italic 700 0.95em/1 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mag-page .mag-jump a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.mag-jump.from {
+  border-top: 0.25em solid var(--ink);
+  padding-top: 0.35em;
+}
+
+.mag-jump.from h2 {
+  font-size: 1.7em;
+  text-transform: uppercase;
+}
+
+.mag-jump.from p {
+  margin: 0.15em 0 0;
+  font:
+    italic 700 0.9em/1 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+/* ---- small ads on editorial pages: half a page, or a third standing beside the story ------- */
+.mag-halfad {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 0.4em;
+}
+
+.mag-halfad-label {
+  margin: 0 0 0.25em;
+  text-align: center;
+  font:
+    0.62em/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.25em;
+  opacity: 0.7;
+}
+
+.mag-halfad-frame {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0.55em;
+  min-height: 0;
+  padding: 1em 1.2em 0.8em;
+  border: 0.3em solid #141210;
+  background: #fff;
+  color: #141210;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.12em;
+}
+
+.mag-halfad-frame.tone-cyan {
+  background: #dff3fb;
+}
+.mag-halfad-frame.tone-yellow {
+  background: #fff2b0;
+}
+.mag-halfad-frame.tone-pink {
+  background: #ffe3ea;
+}
+.mag-halfad-frame.tone-black {
+  background: #121218;
+  color: #f6f2e6;
+  border-color: var(--yellow);
+}
+
+.mag-halfad-frame h3 {
+  font-size: 2.5em;
+  text-wrap: balance;
+  color: var(--red);
+}
+
+.mag-halfad-frame.tone-black h3 {
+  color: var(--yellow);
+}
+
+.mag-halfad-frame .mag-burst {
+  top: -0.9em;
+  right: -0.6em;
+  width: 5.4em;
+  height: 5.4em;
+  font-size: 0.95em;
+}
+
+.mag-halfad-frame .mag-burst + h3 {
+  padding-right: 2.4em;
+}
+
+.mag-halfad-frame .mag-ad-sub {
+  font-size: 1.2em;
+}
+
+.mag-halfad-frame .mag-list {
+  font-size: 1.1em;
+}
+
+/* a small ad's picture stays small */
+.mag-halfad-frame .mag-art {
+  max-width: 15em;
+  justify-self: center;
+}
+
+/* a hint book standing in a third-page ad fills most of its width */
+.mag-halfad-frame > .mag-piece {
+  width: 62%;
+  align-self: center;
+}
+
+.mag-halfad-frame .mag-art.art-disk {
+  max-width: 7em;
+}
+
+/* a small ad's coupon */
+.mag-halfad-frame .mag-card h3 {
+  font-size: 1.7em;
+}
+
+.mag-halfad-frame.tone-black a:not(.mag-btn) {
+  color: var(--yellow);
+}
+
+/* the advertiser index lists the small ads too, so its lines sit closer */
+.kind-contents .mag-side .mag-cell > p {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.mag-beside {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.2em;
+  min-height: 0;
+}
+
+.mag-beside-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  min-width: 0;
+}
+
+.mag-beside > .mag-halfad {
+  margin-top: 0;
+}
+
+.flow .mag-halfad,
+.flow .mag-beside {
+  flex: none;
+}
+
+@container (max-width: 560px) {
+  .mag-beside {
+    grid-template-columns: 1fr;
+  }
+
+  .mag-halfad-frame h3 {
+    font-size: 1.6em;
+  }
 }
 
 /* phones: one column, cells stacked */

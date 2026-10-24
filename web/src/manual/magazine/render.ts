@@ -15,7 +15,7 @@ import { MAG } from './masthead';
 import { mugShelf } from './mugShelf';
 import { postnetCode } from './postnet';
 import { replyMail } from './replyMail';
-import type { Block, Inline, PlacedPage, ShotView } from './types';
+import type { Block, HalfAd, Inline, PlacedPage, ShotView } from './types';
 
 export interface RenderEnv {
   where: Where;
@@ -254,9 +254,43 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       return replyMail(b);
     case 'mugs':
       return mugShelf(b, pending);
+    case 'jump': {
+      const n = b.folio === undefined ? '' : ` ${b.folio}`;
+      if (b.dir === 'on') {
+        const a = goLink(`go:mag/${b.page}`, where, `Continued on page${n} ▸`);
+        a.classList.add('mag-solo');
+        return h('p', { class: 'mag-jump on' }, a);
+      }
+      const a = goLink(`go:mag/${b.page}`, where, `▸ Continued from page${n}`);
+      a.classList.add('mag-solo');
+      return h('div', { class: 'mag-jump from' }, h('h2', null, keep(b.title ?? '')), h('p', null, a));
+    }
+    case 'halfad':
+      return halfAdBox(b, env, pending);
+    case 'beside':
+      return h('div', { class: 'mag-beside' }, h('div', { class: 'mag-beside-main' }, ...all(b.blocks)), halfAdBox(b.ad, env, pending));
     case 'rule':
       return h('hr');
   }
+}
+
+/** A small ad on an editorial page: labelled ADVERTISEMENT over its own frame, set apart from the story. */
+function halfAdBox(b: HalfAd, env: RenderEnv, pending: Promise<unknown>[]): HTMLElement {
+  const { where } = env;
+  return h(
+    'aside',
+    { class: 'mag-halfad', 'aria-label': `Advertisement: ${b.advertiser}` },
+    h('p', { class: 'mag-halfad-label', 'aria-hidden': 'true' }, 'ADVERTISEMENT'),
+    h(
+      'div',
+      { class: `mag-halfad-frame tone-${b.tone ?? 'white'}` },
+      b.burst ? h('span', { class: 'mag-burst' }, b.burst) : null,
+      h('h3', null, keep(b.head)),
+      b.sub ? h('p', { class: 'mag-ad-sub' }, ...inline(b.sub, where)) : null,
+      ...b.blocks.map((x) => block(x, env, pending)),
+      b.small ? h('p', { class: 'mag-small' }, ...inline(b.small, where)) : null,
+    ),
+  );
 }
 
 /** A page, and a promise that its screenshots are in (for printing). */

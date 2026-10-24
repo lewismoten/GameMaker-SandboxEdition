@@ -1,6 +1,6 @@
 // Builders for the magazine's blocks (types.ts Block), so a section reads like the page it
 // makes: head('…'), p('…'), side('…', [...]), shot('teddy', 'level', '…'), card(…), ad(…).
-import type { Block, Callout, Inline, ListingRow, MagPage, MiniCover, Tone, ArtId, ShotView } from './types';
+import type { Block, Callout, HalfAd, Inline, ListingRow, MagPage, MiniCover, Tone, ArtId, ShotView } from './types';
 import type { Go } from './go';
 
 type HeadOpts = { kicker?: string; deck?: Inline; size?: 'xl' | 'l' | 'm' | 's'; level?: 1 | 2 | 3 };
@@ -78,6 +78,21 @@ export const covers = (alt: string, list: MiniCover[]): Block => ({ t: 'covers',
 export const reply = (to: string[]): Block => ({ t: 'reply', to });
 /** A row of mugs, each with a desk mug picture (`design`, a mugArt.ts id) and its name. */
 export const mugs = (list: { design: string; name: string }[]): Block => ({ t: 'mugs', mugs: list });
+
+/** "Continued on page N ▸": the story picks up on the page `page` (its id; issue.ts numbers it). */
+export const jumpOn = (page: string): Block => ({ t: 'jump', dir: 'on', page });
+/** The rest of a jumped story: its headline `title` again, and "▸ Continued from page N" (`page`, where it left off). */
+export const jumpFrom = (page: string, title: string): Block => ({ t: 'jump', dir: 'from', page, title });
+/** A small ad on an editorial page, framed and labelled ADVERTISEMENT: half the page, or a third in `beside`. */
+export const halfAd = (advertiser: string, head: string, blocks: Block[], o: { sub?: Inline; small?: Inline; tone?: Tone; burst?: string } = {}): HalfAd => ({
+  t: 'halfad',
+  advertiser,
+  head,
+  blocks,
+  ...o,
+});
+/** Editorial in two thirds of the page with a small ad standing up the last third. */
+export const beside = (blocks: Block[], ad: HalfAd): Block => ({ t: 'beside', blocks, ad });
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */
 export const adPage = (id: string, advertiser: string, blocks: Block[], tone: Tone = 'white'): MagPage => ({ id, kind: 'ad', title: advertiser, tone, blocks });
