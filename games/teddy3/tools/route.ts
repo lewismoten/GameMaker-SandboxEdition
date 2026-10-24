@@ -8,5 +8,9 @@ import { route as invite } from './routes/invite';
 import { route as bakery } from './routes/bakery';
 import { route as mill } from './routes/mill';
 import { route as dig } from './routes/dig';
+import { route as road } from './routes/road';
+import { route as funhouse } from './routes/funhouse';
+import { route as hill } from './routes/hill';
+import { route as meadow } from './routes/meadow';
 
-export const ROUTES: Record<string, Order[]> = { garage, maple, park, invite, bakery, mill, dig };
+export const ROUTES: Record<string, Order[]> = { garage, maple, park, invite, bakery, road, mill, dig, funhouse, hill, meadow };

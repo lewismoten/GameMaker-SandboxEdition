@@ -1,5 +1,5 @@
-// Level 2's monsters: geese crossing Maple Street in no hurry (a peck stings; a HONK sends
-// them flapping off the road).
+// Level 2's monsters: geese crossing Maple Street in no hurry (a HONK sends them flapping off
+// the road; a goose that pecks the car flaps off too, so it never pecks twice).
 import { POWER } from '../ids';
 import { newBestiary } from './level';
 import { pacer } from './common';
@@ -15,7 +15,7 @@ export function mapleBeasts() {
       ['goose1', 6],
       ['goose2', 6],
     ],
-    POWER.honk - 1,
+    POWER.pest,
     2,
     'gooseOff',
     1,

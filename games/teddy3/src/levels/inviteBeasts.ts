@@ -98,7 +98,8 @@ export function inviteBeasts() {
     path: [[5, -8, 8]],
     end: -1,
   });
-  // A goose minding the lot by the van: only a BOOF moves a goose (off it flaps).
+  // A goose minding the lot by the van: a BOOF sends it flapping off (and so does one peck:
+  // it never pecks twice).
   pacer(
     b,
     'goose',
@@ -106,7 +107,7 @@ export function inviteBeasts() {
       ['goose1', 6],
       ['goose2', 6],
     ],
-    POWER.boof - 1,
+    POWER.pest,
     3,
     'gooseOff',
     1,
