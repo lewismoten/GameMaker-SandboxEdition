@@ -224,7 +224,7 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
       title: `Landing on monster ${n} sinks the hero into the ground under it, first at ${at(cells[0])}`,
       detail: top
         ? 'Its solid top (SOLTOP) pushes a hero who touches it from above down under it, with no check for the floor, where it hurts him until he hops out. Leave out SOLTOP on hazards (keep SOLBOT and the sides): he still stands on its back and is pushed off its sides.'
-        : 'Its solid side pushes a hero who lands on it down into the block beside it, with no check for walls. Keep it a block clear of walls and solid blocks.',
+        : 'Its solid side pushes a hero who lands on it down into the block beside it, with no check for walls. Keep it two blocks clear of walls and solid blocks (one is sometimes enough).',
       where: { ...where, cell: cells[0], cells, monster: { file: d.names.mon ?? '', n } },
       ...(top ? { fix: 'no-soltop' as const } : {}),
     });
@@ -235,7 +235,7 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
       severity: 'warning',
       title: `Monster ${n} pushes the hero inside a wall beside it, first at ${at(cells[0])}`,
       detail:
-        'A solid monster’s side push puts him next to it with no check for walls, so where it walks up against a wall or solid block, a hero beside it (standing in the gap, or landing on it) ends up inside the block. Keep pacers a block clear of walls: end the path a block short, or move the wall.',
+        'A solid monster’s side push puts him next to it with no check for walls, so where it walks up against a wall or solid block, a hero beside it (standing in the gap, or landing on it) ends up inside the block. Keep pacers clear of walls: end the path two blocks short (one is sometimes enough), or move the wall, and run the check again.',
       where: { ...where, cell: cells[0], cells, monster: { file: d.names.mon ?? '', n } },
     });
   for (const [n, cells] of holds)
