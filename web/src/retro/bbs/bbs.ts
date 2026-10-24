@@ -43,6 +43,7 @@ import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
 import { TTY_PHONE } from './ttyTalk';
 import { doorGames, sandboxCall } from './ticTacToeDoor';
 import { words } from '../../keepTogether';
+import { rsdLine } from './rsdLine';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
@@ -234,7 +235,10 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     } else if (k === 'S') await systemInfo(t, catalog.length);
     else if (k === 'Y') yourStats(t, name, minutesLeft());
     else if (k === 'C') await pageSysop(t, h);
-    else if (k === '?' || k === 'Enter') show = true;
+    else if (k === 'R') {
+      await rsdLine(t, h);
+      show = true;
+    } else if (k === '?' || k === 'Enter') show = true;
     else if (k === 'G' || k === 'Escape') {
       t.print('|14Leave the sandbox? |15[Y/n] ');
       const yes = (await t.key()) !== 'N';
@@ -334,7 +338,8 @@ function mainMenu(t: Term): void {
     ['N', 'New Files Scan', 'S', 'System Information'],
     ['Y', 'Your Statistics', 'C', 'Page the SysOp'],
     ['P', 'Picture Gallery (GIF files)', '?', 'Redisplay this menu'],
-    ['D', 'Door Games', 'G', 'Goodbye (log off)'],
+    ['D', 'Door Games', 'R', 'Register Game-Maker (RSD)'],
+    ['', '', 'G', 'Goodbye (log off)'],
   ];
   t.line(boxRow(''));
   for (const [a, la, b, lb] of rows) t.line(boxRow(`    ${a ? item(a, la) : ' '.repeat(34)}${item(b, lb)}`));
@@ -461,7 +466,15 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
         '|07Source: |11https://github.com/lewismoten/GameMaker-SandboxEdition',
       ],
     ],
-    ['Made with Game-Maker', ['|07Every game in the sand pile was built with Game-Maker by', '|07Recreational Software Designs. No programming needed!']],
+    [
+      'Made with Game-Maker',
+      [
+        '|07Every game in the sand pile was built with Game-Maker by',
+        '|07Recreational Software Designs. No programming needed!',
+        "|07Own a copy? Press |15R|07 at the main menu to reach RSD's registration",
+        '|07line: your name and serial number get your registration number.',
+      ],
+    ],
     [
       'Other boards in the 412',
       [
