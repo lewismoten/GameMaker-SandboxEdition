@@ -67,7 +67,8 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
     const o = dx < 0 ? MIRROR : 0;
     return [f({ pic: 'side0', x: dx, y: dy, orient: o }), f({ pic: 'side1', x: dx, y: dy, orient: o })];
   };
-  const vert = (dy: number) => [f({ pic: 'front0', y: dy }), f({ pic: 'front1', y: dy })];
+  // up the screen shows his back, down it his face
+  const vert = (dy: number) => (dy < 0 ? [f({ pic: 'back0', y: dy }), f({ pic: 'back1', y: dy })] : [f({ pic: 'front0', y: dy }), f({ pic: 'front1', y: dy })]);
   set(S[SEQ.right], side(STEP, 0), { key: KEY.right, jstkMov: JOY.right, sound: SND.fly });
   set(S[SEQ.left], side(-STEP, 0), { key: KEY.left, jstkMov: JOY.left, sound: SND.fly });
   set(S[SEQ.up], vert(-STEP), { key: KEY.up, jstkMov: JOY.up, sound: SND.fly });

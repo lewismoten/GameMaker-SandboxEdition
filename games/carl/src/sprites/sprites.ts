@@ -17,7 +17,7 @@ import { EARS } from '../ids';
 export { T, outline };
 
 export interface FlyPose {
-  view: 'front' | 'side';
+  view: 'front' | 'side' | 'back';
   /** Wings: 0 up, 1 down (a blur either way). */
   wing?: number;
   mood?: 'smug' | 'blink' | 'grin' | 'ouch' | 'splat' | 'buzz';
@@ -86,6 +86,25 @@ export function flyArt(pal: Pal) {
       }
       // antennae
       p.set(8, 3, ink).set(7, 2, ink).set(12, 3, ink).set(13, 2, ink);
+    } else if (o.view === 'back') {
+      // flying away (up the screen): his back, the backs of his eyes, the wings over it all
+      for (const s of [-1, 1]) for (let k = 0; k < 3; k++) p.line(10 + s * 2, 14 + k, 10 + s * (5 + k), 18 + (k % 2), ink);
+      blob(p, 10, 14, 4.5, 4.5, R('fly'), 0, 3);
+      for (let y = 13; y < 19; y += 2) p.line(7, y, 13, y, c('fly', 4));
+      blob(p, 10, 8.5, 6, 4.6, R('fly'), 0, 3);
+      for (const ex of [6.2, 13.8]) blob(p, ex, 6.8, 3.4, 3.2, R('eye'), 0, 1);
+      p.set(10, 9, c('fly', 4)).set(10, 10, c('fly', 4));
+      p.set(8, 3, ink).set(7, 2, ink).set(12, 3, ink).set(13, 2, ink);
+      if (w === 0)
+        wings(p, [
+          [6, 9, 5, 2.4, -1.1],
+          [14, 9, 5, 2.4, 1.1],
+        ]);
+      else
+        wings(p, [
+          [5, 12, 5, 2.2, -0.5],
+          [15, 12, 5, 2.2, 0.5],
+        ]);
     } else {
       // facing right: abdomen, thorax, head, the big eye in front
       for (let k = 0; k < 3; k++) p.line(9 + k * 2, 13, 8 + k * 3, 18 - (k % 2), ink);
@@ -124,7 +143,7 @@ export function flyArt(pal: Pal) {
   return { body };
 }
 
-/** Carl's poses: front (wings up and down), a smug blink, flying sideways, hurt, splat, buzzing, grinning. */
+/** Carl's poses: front (wings up and down), a smug blink, flying sideways, hurt, splat, buzzing, grinning, and his back flying up. */
 export function buildCharBlocks(pal: Pal) {
   const book = makeBook('cbl');
   const a = flyArt(pal);
@@ -140,6 +159,8 @@ export function buildCharBlocks(pal: Pal) {
   book.add('buzz0', a.body({ view: 'front', wing: 0, mood: 'buzz' }));
   book.add('buzz1', a.body({ view: 'front', wing: 1, mood: 'buzz' }));
   book.add('rollSide', a.body({ view: 'side', wing: 1, mood: 'grin' }));
+  book.add('back0', a.body({ view: 'back', wing: 0 }));
+  book.add('back1', a.body({ view: 'back', wing: 1 }));
   return book;
 }
 
