@@ -1,7 +1,7 @@
 // Pictures for the Sound Boaster ad (sections/soundCardAd.ts): the card itself, a green 8-bit
 // ISA board with its FM music chip, its digital sound chip, a crystal, jumpers, gold fingers
 // and a metal bracket of jacks, a volume wheel and the joystick/MIDI port; and a player's face
-// before it (the PC speaker) and after. Sound Boaster and Recreative Labs are made up.
+// before it (the PC speaker) and after. Sound Boaster and Overcreative Labs are made up.
 import './soundCardArt.css';
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -49,10 +49,10 @@ function card(): string {
     `<rect x="8" y="58" width="12" height="16" rx="1.5" fill="#3a3a3c"/><g stroke="#77777a" stroke-width="0.8">${[61, 64, 67, 70].map((y) => `<line x1="9" x2="19" y1="${y}" y2="${y}"/>`).join('')}</g>` +
     `<path d="M8 84 L20 86 V124 L8 126 Z" fill="#2a2a2c"/><g fill="#c9a640">${[90, 96, 102, 108, 114, 120].map((y) => `<circle cx="12" cy="${y}" r="1"/><circle cx="16" cy="${y + 2}" r="1"/>`).join('')}</g>` +
     // the chips, the crystal, capacitors and jumpers
-    chip(140, 24, 58, 28, 'RL-FM9', 'FM MUSIC') +
-    chip(212, 24, 50, 24, 'RL-DSP', 'DIGITAL SOUND') +
-    chip(98, 66, 34, 18, 'RL-AMP', '4 W') +
-    chip(214, 70, 40, 20, 'RL-ROM', '1995') +
+    chip(140, 24, 58, 28, 'OL-FM9', 'FM MUSIC') +
+    chip(212, 24, 50, 24, 'OL-DSP', 'DIGITAL SOUND') +
+    chip(98, 66, 34, 18, 'OL-AMP', '4 W') +
+    chip(214, 70, 40, 20, 'OL-ROM', '1995') +
     `<rect x="272" y="30" width="18" height="8" rx="4" fill="#c9ccd2"/><text x="281" y="36" font-size="4" text-anchor="middle" font-family="Arial">14.3</text>` +
     cap(56, 28) +
     cap(68, 40, '#1b1b1d') +
@@ -63,7 +63,7 @@ function card(): string {
     `<text x="282" y="99" font-size="4.5" fill="#e8f5e8" font-family="Arial" text-anchor="middle">IRQ 7 · 220h</text>` +
     // the name, as big as the board allows
     `<text x="36" y="118" font-size="17" font-weight="900" fill="#f4f1e6" font-family="'Arial Black', Arial, sans-serif" letter-spacing="0.5">SOUND BOASTER</text>` +
-    `<text x="38" y="126" font-size="5.2" fill="#cfe8d6" font-family="Arial, sans-serif">RECREATIVE LABS · SOUND BLASTER COMPATIBLE · REV. A</text>` +
+    `<text x="38" y="126" font-size="5.2" fill="#cfe8d6" font-family="Arial, sans-serif">OVERCREATIVE LABS · SOUND BLASTER COMPATIBLE · REV. A</text>` +
     `<g transform="rotate(-8 60 60)"><rect x="36" y="52" width="46" height="20" fill="#ffd400"/><text x="59" y="60" font-size="5" font-weight="700" text-anchor="middle" font-family="Arial">Q.C. PASSED</text><text x="59" y="67" font-size="4" text-anchor="middle" font-family="Arial">and it knows it</text></g>`
   );
 }

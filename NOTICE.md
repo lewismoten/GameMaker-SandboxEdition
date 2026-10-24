@@ -354,7 +354,7 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Illogitech**, the brand on the desk's speakers and in their _TURBO BUTTON_ ad, is a made-up
   parody name. It is not a real company or product, and no connection with or endorsement by
   any company is implied.
-- **Sound Boaster** and its maker **Recreative Labs**, the sound card brand on the desk speakers'
+- **Sound Boaster** and its maker **Overcreative Labs**, the sound card brand on the desk speakers'
   switch and in its _TURBO BUTTON_ ad, are made-up parody names. They are not a real company or
   product, and no connection with or endorsement by any company is implied. The desk PC's card
   is "Sound Blaster compatible", as the clone cards of the time said; Sound Blaster is Creative

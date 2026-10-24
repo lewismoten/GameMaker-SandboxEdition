@@ -1,5 +1,5 @@
 // A full-page ad for the desk PC's sound card in the 1995 magazine's voice: Sound Boaster by
-// Recreative Labs, a made-up parody brand (NOTICE.md), Sound Blaster compatible as the clone
+// Overcreative Labs, a made-up parody brand (NOTICE.md), Sound Blaster compatible as the clone
 // cards were. Its joke is the card that brags, and its pitch the before and after of every
 // 1995 sound card ad: the PC speaker's beep beside the card's boom. The price is part of the
 // story; the button goes to the real switch under the desk's right speaker (desk/pc/blasterSwitch.ts).
@@ -9,7 +9,7 @@ import type { MagSection } from '../types';
 const soundCardAd = () =>
   adPage(
     'sound-card-ad',
-    'Recreative Labs',
+    'Overcreative Labs',
     [
       adframe(
         'SOUND BOASTER',
@@ -58,9 +58,9 @@ const soundCardAd = () =>
         ],
         {
           burst: 'HEAR THE DIFFERENCE!',
-          sub: 'From Recreative Labs: *we would tell you how good it is, but the card already did.*',
+          sub: 'From Overcreative Labs: *we would tell you how good it is, but the card already did.*',
           small:
-            'Prices are part of the story; Sound Boaster and Recreative Labs are made up. The card is in the desk PC, free: flip its switch on the right speaker, then start a game again.',
+            'Prices are part of the story; Sound Boaster and Overcreative Labs are made up. The card is in the desk PC, free: flip its switch on the right speaker, then start a game again.',
           tone: 'white',
         },
       ),
@@ -70,7 +70,7 @@ const soundCardAd = () =>
 
 export const SOUND_CARD_AD: MagSection = {
   id: 'sound-card-ad',
-  title: 'Recreative Labs',
+  title: 'Overcreative Labs',
   toc: false,
   pages: () => [soundCardAd()],
 };
