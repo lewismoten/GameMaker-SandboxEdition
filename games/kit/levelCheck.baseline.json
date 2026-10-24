@@ -503,6 +503,14 @@
   "warning contrast s13 Monster 23 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places"
  ],
+ "teddy3": [
+  "warning density s15 7 enemies on one screen at (68, 28)",
+  "warning every-tick s13 Block 15 gives 1 on counter 22 on every tick the hero touches it",
+  "warning every-tick s3 Block 110 gives 1 on counter 22 on every tick the hero touches it",
+  "warning every-tick s3 Block 16 gives 1 on counter 22 on every tick the hero touches it",
+  "warning every-tick s8 Block 15 gives 1 on counter 22 on every tick the hero touches it",
+  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 19 places"
+ ],
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
   "warning hurt-lock s2 Landing on monster 4 sinks the hero into the ground under it, first at (11, 12)",
