@@ -429,7 +429,10 @@ export function sectorCards(k: number, worlds: { world: World; scene: number; sc
     // left: the planet and what the courier knows about it
     planetArt(card, 26, 30, 20, world.biome, scene, { rings: scene % 5 === 0 });
     card.text(54, 12, `SECTOR ${k + 1}`, C('grey')[4]);
-    card.text(54, 22, sec.name.toUpperCase(), C('cyan')[6]);
+    // the sector's name, on two lines when one would run under the scan panel (x 160)
+    const secName = sec.name.toUpperCase();
+    const cut = Canvas.width(secName) > 104 ? secName.lastIndexOf(' ', 13) : -1;
+    (cut > 0 ? [secName.slice(0, cut), secName.slice(cut + 1)] : [secName]).forEach((l, j) => card.text(54, 22 + j * 10, l, C('cyan')[6]));
     const name = world.name.toUpperCase();
     const scale = Canvas.width(name, 2) <= 150 ? 2 : 1;
     card.text(6, 58, name, C('yellow').slice(3).reverse(), { scale, outline: 0 });
