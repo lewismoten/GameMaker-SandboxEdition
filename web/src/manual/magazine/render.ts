@@ -12,6 +12,7 @@ import { discFigure } from './disc';
 import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
 import { MAG } from './masthead';
+import { postnetCode } from './postnet';
 import { replyMail } from './replyMail';
 import type { Block, Inline, PlacedPage, ShotView } from './types';
 
@@ -209,6 +210,8 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         h('h3', null, keep(b.title)),
         ...b.lines.map((l) => h('p', null, ...inline(l, where))),
         ...(b.fields ?? []).map((f) => h('p', { class: 'mag-field' }, h('span', null, f), h('i', { 'aria-hidden': 'true' }))),
+        // a card that is filled in and mailed has the post office's bar code under its address
+        b.fields?.length ? postnetCode() : null,
         b.go ? goLink(b.go, where, b.button ?? 'Send it') : null,
       );
     case 'adframe':

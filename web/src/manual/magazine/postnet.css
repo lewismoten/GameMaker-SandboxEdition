@@ -1,0 +1,25 @@
+/* The POSTNET bar code under a card's address (postnet.ts): black bars, the same size on every
+   reply card and order card. */
+.mag-postnet {
+  display: block;
+  width: 10em;
+  height: 0.7em;
+  margin: 0.45em 0 0.15em;
+}
+
+.mag-postnet svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: #141210;
+}
+
+/* on an order card it floats at the right of the card's button line, under the address fields */
+.mag-card:has(> .mag-postnet) {
+  display: flow-root;
+}
+
+.mag-card > .mag-postnet {
+  float: right;
+  margin: 0.85em 0 0 1em;
+}

@@ -8,7 +8,8 @@
     'head stamp'
     'permit stamp'
     'paid stamp'
-    'to stamp';
+    'to stamp'
+    'bars stamp';
   align-content: start;
   column-gap: 1em;
   padding: 2em 1.6em 1.8em;
@@ -65,6 +66,12 @@
   font-style: normal;
 }
 
+/* the address's bar code, lined up under it */
+.mag-reply > .mag-postnet {
+  grid-area: bars;
+  margin-left: 4em;
+}
+
 .mag-reply-stamp {
   grid-area: stamp;
   display: flex;
@@ -100,7 +107,8 @@
       'head'
       'permit'
       'paid'
-      'to';
+      'to'
+      'bars';
   }
 
   .mag-reply-fim {
@@ -109,6 +117,10 @@
 
   .mag-reply-bars {
     height: 3em;
+  }
+
+  .mag-reply > .mag-postnet {
+    margin-left: 0;
   }
 
   .mag-reply-to {
