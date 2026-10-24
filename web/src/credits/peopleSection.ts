@@ -49,6 +49,12 @@ export function peopleSection(): HTMLElement {
         ],
       ),
       tool('DeepAI', 'paid commercial plan', 'The Bard of Bizarre’s rooster logo and the desk’s “Moten Snow-to-Software Operations” poster.'),
+      tool('ChatGPT-6.1 Sol', 'OpenAI', 'Reviews of the fork, TURBO BUTTON and the games’ content, now and then, which Lewis brings back as notes.'),
+      tool(
+        'Google Gemini 3',
+        'Google',
+        'A sounding board for ideas: 1990s nostalgia and Lewis’s memories, home-office supplies of the time, how the CMF music format worked, what came in a 1990s software box, how a save editor might look, and getting more out of a game. It drew the ASCII-art can in LUNCHMEAT’s flood on The Sofa.',
+      ),
       tool('Whisper', 'OpenAI · MIT License', 'Word timings for cutting the voice clips. Runs on the developer’s computer; nothing ships.'),
     ),
     h('p', { class: 'muted' }, 'None of these tools’ code is used in the site or the games.'),

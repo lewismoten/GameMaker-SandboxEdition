@@ -68,6 +68,13 @@ game folder opens in the browser unchanged.
   _modern web_ editor and player. AI assistance did most of the porting and code
   generation: reading the original C source, writing the TypeScript, building the Sandbox
   Software games in code, and testing them, directed and reviewed by Lewis.
+- **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
+  the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
+  Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the
+  time, how the CMF music format worked, what came in a 1990s software box, how a save editor
+  might look, and ways to get more out of a game. Gemini 3 drew the ASCII-art can in
+  LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
+  to the project as notes and ideas, through Lewis.
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
   directed, from no one else's code, art, data or recordings: the desk modem's line speeds
   and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
@@ -317,8 +324,8 @@ formats from their published descriptions and from Game-Maker's own source.
   the page asks no font server for it. It isn't in exported games.
 - **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
   one service under its successive names) and **DeepAI** are their owners' names for the
-  tools used to make the Bard of Bizarre songs and art (see Credits); none of their code is
-  used.
+  tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for
+  the tools Lewis reviews and brainstorms with (see Credits); none of their code is used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
 - **Modem sounds** on the desk (`web/src/retro/bbs/modem.ts`, `lineSpeed.ts`): the dial tone,
