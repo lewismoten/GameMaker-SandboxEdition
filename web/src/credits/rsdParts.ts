@@ -3,14 +3,14 @@
 // at a time. A part whose files name no one is Recreational Software Designs'.
 // rsdParts.test.ts checks every file exists and holds its quote.
 
-export interface RsdSource {
+interface RsdSource {
   /** Path from the repository root. */
   file: string;
   /** A few words exactly as the file has them (runs of spaces count as one). */
   quote: string;
 }
 
-export interface RsdPart {
+interface RsdPart {
   part: string;
   /** Who is credited, as the source names them. */
   who: string;

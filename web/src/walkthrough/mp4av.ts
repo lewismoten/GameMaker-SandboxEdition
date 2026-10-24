@@ -13,7 +13,7 @@ export interface AvSample {
   key: boolean;
 }
 
-export interface AvVideo {
+interface AvVideo {
   width: number;
   height: number;
   timescale: number;
@@ -22,7 +22,7 @@ export interface AvVideo {
   samples: AvSample[];
 }
 
-export interface AvAudio {
+interface AvAudio {
   codec: 'aac' | 'opus';
   sampleRate: number;
   channels: number;

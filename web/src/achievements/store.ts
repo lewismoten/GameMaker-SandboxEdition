@@ -17,7 +17,7 @@ export const SAVE_ID = 'site:achievements';
 export const FILE = 'achievements.json';
 export const ACHIEVEMENTS_CHANGED = 'gm-achievements-changed';
 /** A CustomEvent with detail { id } for each new unlock. */
-export const ACHIEVEMENT_UNLOCKED = 'gm-achievement-unlocked';
+const ACHIEVEMENT_UNLOCKED = 'gm-achievement-unlocked';
 
 export interface AchievementRecord {
   /** id -> Date.now() of the unlock. */
@@ -28,7 +28,7 @@ export interface AchievementRecord {
   sets: Record<string, string[]>;
 }
 
-export const emptyRecord = (): AchievementRecord => ({ unlocked: {}, progress: {}, sets: {} });
+const emptyRecord = (): AchievementRecord => ({ unlocked: {}, progress: {}, sets: {} });
 
 /** The record read back from its file; anything malformed is dropped. */
 export function parseRecord(bytes: Uint8Array | undefined): AchievementRecord {

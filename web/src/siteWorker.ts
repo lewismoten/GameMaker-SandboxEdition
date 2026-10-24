@@ -29,7 +29,7 @@ export function groupOf(path: string): string | undefined {
   return `${parts[0]}/`;
 }
 
-export interface SiteWorkerOptions {
+interface SiteWorkerOptions {
   /** Changes whenever anything in the build does (the worker's file must change for browsers to update). */
   version: string;
   /** Installed up front: the pages and what they load before showing anything, the icons and manifest. */

@@ -121,7 +121,7 @@ export function demoNeeds(gam: Uint8Array | undefined): string[] {
   }
 }
 
-export interface StreamedGame {
+interface StreamedGame {
   files: GameFiles;
   /** The .gam is in: the game can be shown (its other files keep coming). */
   started: Promise<void>;

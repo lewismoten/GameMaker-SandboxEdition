@@ -4,7 +4,7 @@
 import { decodeGame, readSinglePage } from '../export/singlePage';
 import { GameFiles } from './files';
 
-export interface PageGame {
+interface PageGame {
   title: string;
   gam: string;
   files: GameFiles;

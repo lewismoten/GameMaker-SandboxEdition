@@ -4,7 +4,7 @@ import './linkIn.css';
 import { h } from '../editor/core/ui';
 import { mb, type Mode, type Target } from './protocol';
 
-export const EMBED_DOC = 'https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md';
+const EMBED_DOC = 'https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md';
 
 const WHERE: Record<Target, string> = {
   desk: 'on the 1994 desk',
@@ -58,7 +58,7 @@ export function waitingDialog(text: string, onCancel: () => void): { close: () =
   };
 }
 
-export interface AskInfo {
+interface AskInfo {
   /** Who is asking: a host name, or "a local file" (protocol.ts originLabel). */
   from: string;
   /** A page that sent the files, or a link whose files are at `from`. */

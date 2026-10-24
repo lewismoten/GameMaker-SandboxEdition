@@ -15,7 +15,7 @@ export interface Sender {
 }
 
 /** The window that may send a game: the one that opened this page, else the page this one is framed in. */
-export function peerWindow(): Window | undefined {
+function peerWindow(): Window | undefined {
   if (window.opener && window.opener !== window) return window.opener as Window;
   if (window.parent && window.parent !== window) return window.parent;
   return undefined;

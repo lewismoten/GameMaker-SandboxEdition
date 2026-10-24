@@ -32,7 +32,7 @@ interface Section {
   flags: number;
 }
 
-export interface PeLayout {
+interface PeLayout {
   /** Offset of "PE\0\0". */
   pe: number;
   machine: number;
@@ -98,7 +98,7 @@ function directory(exe: Uint8Array, l: PeLayout, i: number): { rva: number; size
 const sectionAt = (l: PeLayout, rva: number) => l.sections.find((s) => rva >= s.va && rva < s.va + Math.max(s.vsize, s.raw));
 
 /** File offset of an RVA. */
-export function rvaToOffset(l: PeLayout, rva: number): number {
+function rvaToOffset(l: PeLayout, rva: number): number {
   const s = sectionAt(l, rva);
   if (!s) throw new Error(`RVA ${rva.toString(16)} is in no section.`);
   return s.ptr + (rva - s.va);

@@ -181,7 +181,7 @@ export interface CatalogEntry {
 }
 
 /** The publisher of the games made for this project (games/<id>/about.json "company"). */
-export const SANDBOX_COMPANY = 'Sandbox Software';
+const SANDBOX_COMPANY = 'Sandbox Software';
 
 /**
  * A Sandbox Software game: one of ours, with its box, disk and manual. Other games built in
@@ -281,7 +281,7 @@ function trimFileCache(): void {
  * fetch for a file, or undefined when there is none (GIFs are compressed already) or this
  * browser cannot unpack it.
  */
-export function packedUrl(url: string, gz: boolean | undefined): string | undefined {
+function packedUrl(url: string, gz: boolean | undefined): string | undefined {
   return gz && !/\.gif$/i.test(url) && typeof DecompressionStream !== 'undefined' ? `${url}.gz` : undefined;
 }
 
@@ -361,7 +361,7 @@ function trimPacks(): void {
 }
 
 /** Where a hosted game's pack is, or undefined when it has none (or this browser cannot unpack it). */
-export function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): string | undefined {
+function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): string | undefined {
   return entry.pack && typeof DecompressionStream !== 'undefined' ? `${base}${entry.path}${entry.pack}` : undefined;
 }
 

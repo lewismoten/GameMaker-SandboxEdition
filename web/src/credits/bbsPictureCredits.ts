@@ -7,7 +7,7 @@ const NICKY =
   'Photo: Nicky Foster, Front Royal-Warren County Chamber of Commerce: a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop';
 const LEWIS = 'Photo: Lewis Moten';
 
-export interface PictureCredit {
+interface PictureCredit {
   alt: string;
   credit: string;
 }

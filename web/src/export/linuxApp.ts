@@ -23,7 +23,7 @@ import type { IndexedImage } from '../formats/gif';
 
 export type LinuxArch = 'x86_64' | 'aarch64';
 export const LINUX_ARCHES: LinuxArch[] = ['x86_64', 'aarch64'];
-export const LINUX_PLAYER_PATHS: Record<LinuxArch, string> = { x86_64: 'linux/GameMakerPlayer-x86_64', aarch64: 'linux/GameMakerPlayer-aarch64' };
+const LINUX_PLAYER_PATHS: Record<LinuxArch, string> = { x86_64: 'linux/GameMakerPlayer-x86_64', aarch64: 'linux/GameMakerPlayer-aarch64' };
 
 export interface LinuxAppOptions {
   title: string;
@@ -99,7 +99,7 @@ exec xdg-open "$here/game.html"
 `;
 }
 
-export function installScript(o: Pick<LinuxAppOptions, 'title' | 'id'>): string {
+function installScript(o: Pick<LinuxAppOptions, 'title' | 'id'>): string {
   const id = linuxId(o.id);
   return `#!/bin/sh
 # Installs ${o.title.replace(/[\r\n]+/g, ' ')}: copies it to ~/.local/share/GameMaker/${id}/app and adds it
@@ -133,7 +133,7 @@ echo "Installed $title. It is in your applications menu (Games); to remove it, r
 `;
 }
 
-export function uninstallScript(o: Pick<LinuxAppOptions, 'title' | 'id'>): string {
+function uninstallScript(o: Pick<LinuxAppOptions, 'title' | 'id'>): string {
   const id = linuxId(o.id);
   return `#!/bin/sh
 # Removes ${o.title.replace(/[\r\n]+/g, ' ')} from the applications menu and ~/.local/share/GameMaker/${id}/app.
@@ -182,7 +182,7 @@ is the most future-proof. More: ${SITE_URL}#/linux
 }
 
 /** icon.png: the Mac icon's picture at 256 pixels, cropped as the Windows one is. */
-export async function linuxIcon(picture: IndexedImage | undefined, colors?: IconColors): Promise<Uint8Array> {
+async function linuxIcon(picture: IndexedImage | undefined, colors?: IconColors): Promise<Uint8Array> {
   return encodeRgbaPng(shrink(drawIcon(picture, colors), 1024, 56, 56, 912, 256), 256, 256);
 }
 

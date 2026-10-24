@@ -40,7 +40,7 @@ export const CAST_GAMES = {
   tickle: ['Certified Rat Tickler', 'bizarre'],
 } as const satisfies Record<string, readonly [string, Family]>;
 
-export type CastGame = keyof typeof CAST_GAMES;
+type CastGame = keyof typeof CAST_GAMES;
 
 export interface Appearance {
   game: CastGame;

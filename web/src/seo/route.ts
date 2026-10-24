@@ -6,7 +6,7 @@ import { ROUTES, type RouteName } from './site';
 
 const GENERIC_TITLES = new Set(['Game-Maker 1994', 'Game-Maker: Sandbox Edition', '']);
 
-export function routeOf(hash: string, modern: boolean): RouteName {
+function routeOf(hash: string, modern: boolean): RouteName {
   if (!modern) return 'desk';
   if (hash.startsWith('#/help')) return 'guide';
   if (hash.startsWith('#/cast')) return 'cast';
@@ -32,7 +32,7 @@ const property = (p: string) => () => {
   return m;
 };
 
-export function syncRouteMeta(): void {
+function syncRouteMeta(): void {
   const app = document.getElementById('app');
   const route = routeOf(location.hash, !!app?.classList.contains('modern'));
   const info = ROUTES[route];
@@ -62,7 +62,7 @@ function schedule(): void {
   });
 }
 
-export function watchRouteMeta(): void {
+function watchRouteMeta(): void {
   window.addEventListener('hashchange', schedule);
   const observer = new MutationObserver(schedule);
   const title = document.head.querySelector('title');

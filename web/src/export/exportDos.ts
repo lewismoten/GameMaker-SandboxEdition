@@ -9,7 +9,7 @@ import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
 import { parseSoundSet } from '../formats/sound';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 
-export interface DosExportOptions {
+interface DosExportOptions {
   title: string;
   gam: string;
   /** Where the built Game-Maker: Sandbox Edition app is served from (its dos/ folder is used). */

@@ -13,7 +13,7 @@ const CACHE = 'gm-site';
 /** localStorage: the copy was asked for: "started", or the version (offline.json) it was finished for. */
 const WANTED_KEY = 'gm-offline';
 
-export interface OfflineManifest {
+interface OfflineManifest {
   version: string;
   /** Installed by the service worker anyway: never removed by removeOffline. */
   shell: string[];
@@ -21,7 +21,7 @@ export interface OfflineManifest {
   files: [string, number, number][];
 }
 
-export interface OfflineFile {
+interface OfflineFile {
   path: string;
   wire: number;
   stored: number;
@@ -55,7 +55,7 @@ export interface OfflineStatus {
 const siteBase = () => new URL('./', location.href);
 const urlOf = (path: string) => new URL(path, siteBase()).href;
 
-export async function loadManifest(): Promise<OfflineManifest | undefined> {
+async function loadManifest(): Promise<OfflineManifest | undefined> {
   try {
     const res = await fetch(urlOf('offline.json'), { cache: 'no-cache' });
     if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
@@ -160,7 +160,7 @@ export interface OfflineProgress {
   totalBytes: number;
 }
 
-export type OfflineResult = { ok: true } | { ok: false; reason: 'cancelled' | 'quota' | 'network' | 'space'; message: string };
+type OfflineResult = { ok: true } | { ok: false; reason: 'cancelled' | 'quota' | 'network' | 'space'; message: string };
 
 /** Room for this many more bytes, as far as the browser tells (true when it does not say). */
 export function hasRoom(status: Pick<OfflineStatus, 'usage' | 'quota'>, bytes: number): boolean {

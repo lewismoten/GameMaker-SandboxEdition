@@ -9,7 +9,7 @@ import { recordedAudioNotice, recordedClips } from './recordedAudio';
 // Files a game writes while being played; exported pages start fresh.
 const SAVE_DATA = /^(game\d\.sav|savnames\.dat|data\d+\.rec)$/;
 
-export interface SinglePageOptions {
+interface SinglePageOptions {
   title: string;
   gam: string;
   /** Where the Game-Maker: Sandbox Edition app is served from (its standalone.html is the template). */

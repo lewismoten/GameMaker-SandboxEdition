@@ -13,7 +13,7 @@ import { receiveFiles, reply, replyError, type Sender } from './receive';
 import { unpackGame, type UnpackedGame } from './unpack';
 
 /** Where to go once the game is kept: a project of this browser's, or a catalog game. */
-export interface Destination {
+interface Destination {
   target: Target;
   mode: Mode;
   project?: string;

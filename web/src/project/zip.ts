@@ -128,7 +128,7 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
 }
 
 /** Limits for a zip from somewhere untrusted (linkIn/): more entries or bytes than these throw. */
-export interface ZipLimits {
+interface ZipLimits {
   maxEntries: number;
   /** Unpacked bytes in all, as the directory says and as actually inflated. */
   maxBytes: number;

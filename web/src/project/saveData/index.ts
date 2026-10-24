@@ -12,7 +12,7 @@ export * from './backups';
 export * from './newGame';
 export * from './saveLevel';
 
-export interface SaveSlot {
+interface SaveSlot {
   slot: number;
   /** The name typed when saving ('' when never named). */
   name: string;
@@ -73,7 +73,7 @@ export async function writeSlotBytes(game: string, slot: number, bytes: Uint8Arr
   await writeSaveFile(game, saveFileName(slot), bytes);
 }
 
-export async function writeSlotName(game: string, slot: number, name: string): Promise<void> {
+async function writeSlotName(game: string, slot: number, name: string): Promise<void> {
   const files = await loadSaveData(game);
   const names = parseSlotNames(files[SLOT_NAMES_FILE]);
   if (names[slot] === name) return;

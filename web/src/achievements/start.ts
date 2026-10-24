@@ -6,7 +6,7 @@ import { refreshGoals } from './goals';
 import { listenToOtherTabs, loadAchievements, progress, unlockAchievement } from './store';
 
 /** The event other code fires to unlock one: new CustomEvent(ACHIEVEMENT_EVENT, { detail: { id } }). */
-export const ACHIEVEMENT_EVENT = 'gm-achievement';
+const ACHIEVEMENT_EVENT = 'gm-achievement';
 
 let started = false;
 

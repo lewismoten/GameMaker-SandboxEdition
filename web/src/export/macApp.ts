@@ -25,7 +25,7 @@ import { macIcon, type IconColors } from './macIcon';
 import { resealPlayer } from './macSign';
 import { thirdPartyNotices } from './notices';
 
-export const PLAYER_PATH = 'mac/GameMakerPlayer';
+const PLAYER_PATH = 'mac/GameMakerPlayer';
 const EXECUTABLE = 'GameMakerPlayer';
 
 export interface MacAppOptions {
@@ -48,7 +48,7 @@ export interface MacAppOptions {
   colors?: IconColors;
 }
 
-export interface MacAppFile {
+interface MacAppFile {
   path: string;
   data?: Uint8Array;
   mode: number;

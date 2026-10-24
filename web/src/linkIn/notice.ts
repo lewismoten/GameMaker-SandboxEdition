@@ -4,8 +4,8 @@
 import './linkIn.css';
 import { h } from '../editor/core/ui';
 
-export const NOT_DOS_TITLE = 'This is not a real DOS PC';
-export const NOT_DOS_TEXT =
+const NOT_DOS_TITLE = 'This is not a real DOS PC';
+const NOT_DOS_TEXT =
   'Game-Maker and its PLAYGAME player are re-implemented here in the browser, from their released C source; no DOS or x86 code runs. A game that relies on how real DOS or a real PC behaves may act differently here. To run the original programs, use DOSBox.';
 
 const KEY = 'gm-not-dos-notice';

@@ -6,7 +6,7 @@
 // text in the folder. A Bard of Bizarre game's notices begin with its non-commercial voice
 // clips (recordedAudio.ts).
 
-export type NoticePlatform = 'windows' | 'mac' | 'linux';
+type NoticePlatform = 'windows' | 'mac' | 'linux';
 
 const MIT = `Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

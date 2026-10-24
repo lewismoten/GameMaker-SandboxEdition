@@ -21,14 +21,14 @@ const CSMAGIC_CODEDIRECTORY = 0xfade0c02;
 const SLOT_INFO = 1;
 const SLOT_RESOURCES = 3;
 
-export type HashName = 'SHA-1' | 'SHA-256';
+type HashName = 'SHA-1' | 'SHA-256';
 
 export async function hash(name: HashName, data: Uint8Array): Promise<Uint8Array> {
   return new Uint8Array(await crypto.subtle.digest(name, data as BufferSource));
 }
 
 /** Where each architecture's Mach-O image starts and ends in the file (one, if it is not universal). */
-export function machSlices(bin: Uint8Array): [start: number, end: number][] {
+function machSlices(bin: Uint8Array): [start: number, end: number][] {
   const dv = new DataView(bin.buffer, bin.byteOffset, bin.byteLength);
   if (dv.getUint32(0) === FAT_MAGIC) {
     const n = dv.getUint32(4);

@@ -9,7 +9,7 @@ import { normalize } from '../project/files';
 import { LinkError, MAX_FILES, MAX_FILE_BYTES, MAX_TOTAL_BYTES } from './protocol';
 
 /** The bytes at `url`, at most `cap` of them; undefined for a 404 when `optional`. */
-export async function fetchCapped(url: string, cap: number, optional = false): Promise<Uint8Array | undefined> {
+async function fetchCapped(url: string, cap: number, optional = false): Promise<Uint8Array | undefined> {
   let res: Response;
   try {
     res = await fetch(url, { credentials: 'omit', redirect: 'follow', mode: 'cors' });
@@ -57,7 +57,7 @@ export function urlFileName(url: string): string {
 }
 
 /** Every file a .gam names (each scene's files and its high score file), and the files those name in turn. */
-export function gamNeeds(gamName: string, gam: Uint8Array): string[] {
+function gamNeeds(gamName: string, gam: Uint8Array): string[] {
   const names = new Set<string>();
   for (const s of parseGame(gam).scenes) for (const f of s.files) if (f) names.add(normalize(f));
   names.add(normalize(`${gamName.replace(/\.[^.]*$/, '')}.his`));

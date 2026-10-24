@@ -26,7 +26,7 @@ export interface SinglePageGame {
 }
 
 /** What the exporter knows about the game, for the page's tags and text (see pageSeo.ts). */
-export type PageInfo = Omit<ExportMeta, 'title' | 'notice'>;
+type PageInfo = Omit<ExportMeta, 'title' | 'notice'>;
 
 export const TITLE_MARK = '<!--GM:TITLE-->';
 export const GAME_MARK = '<!--GM:GAME-->';

@@ -23,13 +23,13 @@
 // never drops what a newer one wrote.
 import { normalize, type GameFiles } from './files';
 
-export const COMPANION_FORMAT = 'gamemaker-companion';
-export const COMPANION_VERSION = 1;
+const COMPANION_FORMAT = 'gamemaker-companion';
+const COMPANION_VERSION = 1;
 /** The extension of the companion in a backup zip: <game>.GMX holds JSON. */
-export const COMPANION_EXT = 'gmx';
+const COMPANION_EXT = 'gmx';
 
 /** One game file's extras: section name -> whatever its editor keeps there. */
-export type FileExtras = Record<string, unknown>;
+type FileExtras = Record<string, unknown>;
 
 export interface Companion {
   format: typeof COMPANION_FORMAT;
@@ -98,11 +98,11 @@ export function renameInCompanion(c: Companion, from: string, to: string): void 
 }
 
 /** The companion's name in a backup: the .gam's stem with .GMX. */
-export function companionFileName(gam: string): string {
+function companionFileName(gam: string): string {
   return `${normalize(gam).replace(/\.[^.]*$/, '')}.${COMPANION_EXT}`;
 }
 
-export function isCompanionFile(name: string): boolean {
+function isCompanionFile(name: string): boolean {
   return normalize(name).endsWith(`.${COMPANION_EXT}`);
 }
 

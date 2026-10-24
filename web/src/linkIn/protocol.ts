@@ -13,8 +13,7 @@ export type Target = 'desk' | 'dos' | 'web';
 /** To play it, or to change a copy of it. */
 export type Mode = 'play' | 'edit';
 
-export const TARGETS: readonly Target[] = ['desk', 'dos', 'web'];
-export const MODES: readonly Mode[] = ['play', 'edit'];
+const TARGETS: readonly Target[] = ['desk', 'dos', 'web'];
 
 /** The most files one game may bring (the CD's biggest game folders have a few hundred). */
 export const MAX_FILES = 1024;
@@ -73,7 +72,7 @@ export function parseLinkRequest(search: string, hash: string, base: string): Li
 }
 
 /** An address the page may fetch a game from: http or https only (no data:, blob:, file: or javascript:). */
-export function fetchableUrl(url: string, base: string): string | undefined {
+function fetchableUrl(url: string, base: string): string | undefined {
   try {
     const u = new URL(url.trim(), base);
     return /^https?:$/.test(u.protocol) ? u.href : undefined;
@@ -83,7 +82,7 @@ export function fetchableUrl(url: string, base: string): string | undefined {
 }
 
 /** A received file's bytes, or undefined when the value is not bytes. */
-export function asBytes(v: unknown): Uint8Array | undefined {
+function asBytes(v: unknown): Uint8Array | undefined {
   if (v instanceof ArrayBuffer) return new Uint8Array(v);
   if (ArrayBuffer.isView(v)) return new Uint8Array(v.buffer, v.byteOffset, v.byteLength);
   return undefined;

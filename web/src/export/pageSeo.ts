@@ -19,7 +19,7 @@ export interface ExportMeta extends GameSeo {
 }
 
 /** The page still needs a web engine: a browser, or the one a Windows, Mac or Linux download wraps it in. */
-export const PAGE_CAVEAT =
+const PAGE_CAVEAT =
   'It plays offline, but it still runs on a web engine (a browser, or the one built into Windows, macOS or Linux), so a future change to browsers or web standards could break or change it. The DOS download, in DOSBox, is the most future-proof.';
 
 /** Tags for the page <head> (the <title> is already there). */

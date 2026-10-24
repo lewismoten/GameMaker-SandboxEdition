@@ -24,7 +24,7 @@ const SKIP_MS = (40 * 1000) / TICK_RATE;
 const walkCache = new Map<string, Promise<Walkthrough | undefined>>();
 
 /** The game's walkthrough (its catalog entry names it), loaded once. */
-export function loadWalkthrough(entry: CatalogEntry): Promise<Walkthrough | undefined> {
+function loadWalkthrough(entry: CatalogEntry): Promise<Walkthrough | undefined> {
   const path = entry.walkthrough;
   if (!path) return Promise.resolve(undefined);
   let p = walkCache.get(path);
@@ -45,9 +45,9 @@ const slug = (s: string) =>
     .toLowerCase() || 'game';
 
 /** The address of the game's page in the web app. */
-export const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
+const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
 
-export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
+function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
   return youtubeText({
     gameTitle: entry.title,
     year: entry.year,
@@ -62,7 +62,7 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
 }
 
 /** What "Copy for YouTube" puts on the clipboard: the title, a blank line, then the description (its chapter list last). */
-export const youtubeClipboard = (yt: { title: string; description: string }) => `${yt.title}\n\n${yt.description}`;
+const youtubeClipboard = (yt: { title: string; description: string }) => `${yt.title}\n\n${yt.description}`;
 
 /** Copies `text`: the Clipboard API, else a selected textarea inside `inside` (a modal dialog keeps the rest of the page inert). */
 async function copyText(text: string, inside: HTMLElement): Promise<boolean> {

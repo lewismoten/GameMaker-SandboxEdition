@@ -6,7 +6,7 @@ import { h, clear } from '../editor/core/ui';
 import { loadDisks, type Disk } from '../retro/dos/disks';
 import type { Computer } from '../retro/computer';
 
-export interface DiskMenuHost {
+interface DiskMenuHost {
   pc(): Computer | undefined;
   /** The PC, switched on (whatever it is running). */
   on(): Promise<Computer | undefined>;

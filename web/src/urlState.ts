@@ -7,7 +7,7 @@
 
 export type ParamValue = string | number | boolean | null | undefined;
 
-export interface HashRoute {
+interface HashRoute {
   /** The path's parts, decoded: '#/p/abc/NEBULA.MON' → ['p', 'abc', 'NEBULA.MON']. */
   path: string[];
   /** The settings after the ?, decoded. */

@@ -140,7 +140,7 @@ export class WalkAudio extends AudioEngine {
 }
 
 /** The PC the walkthrough plays on: its own clock, no live input, "hit any key" screens held `hold` seconds. */
-export class WalkMachine extends Machine {
+class WalkMachine extends Machine {
   time = 0;
   /** Called when the game asks for the next frame (it is idle until then). */
   asked?: () => void;
@@ -231,7 +231,7 @@ export class SegmentRecorder extends Recorder {
   }
 }
 
-export interface WalkHooks {
+interface WalkHooks {
   /** A chapter starts (index into the chapters as they come: the opening, the story, the game's, the ending, the credits). */
   onChapter?: (title: string) => void;
   onSession?: (s: Session) => void;
@@ -242,10 +242,10 @@ const SCAN_DOWN = 80;
 const SCAN_ENTER = 28;
 
 /** The chapters the front end adds around the game's own. */
-export const FRONT_CHAPTERS = { opening: 'Opening', story: 'Story', ending: 'Ending', credits: 'Credits' };
+const FRONT_CHAPTERS = { opening: 'Opening', story: 'Story', ending: 'Ending', credits: 'Credits' };
 
 /** The walkthrough itself: PLAYGAME's front end (runGame) with a viewer who knows what to pick. */
-export async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough, hooks: WalkHooks = {}): Promise<void> {
+async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough, hooks: WalkHooks = {}): Promise<void> {
   const game = loadGameFile(m, gamFile);
   const rec = new SegmentRecorder(walk);
   const shared = seeded(walk.rand.seed);

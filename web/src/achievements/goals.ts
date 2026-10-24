@@ -10,7 +10,7 @@ import { currentAchievements, loadAchievements, progress, remember } from './sto
 type Listed = Pick<CatalogEntry, 'id' | 'original' | 'company' | 'series' | 'walkthrough'>;
 
 /** Which set of the record each catalog goal counts. */
-export const GOAL_SET: Partial<Record<Goal, string>> = { sandbox: 'played', bizarre: 'played', teddy: 'finished', walkthroughs: 'watched' };
+const GOAL_SET: Partial<Record<Goal, string>> = { sandbox: 'played', bizarre: 'played', teddy: 'finished', walkthroughs: 'watched' };
 
 /** A Teddy game: Sandbox Software's teddy, teddy2, teddy3… (a new one counts once the catalog lists it). */
 const isTeddyGame = (g: Listed) => isSandboxGame(g) && /^teddy\d*$/.test(g.id);

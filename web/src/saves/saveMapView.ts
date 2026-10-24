@@ -19,7 +19,7 @@ export interface Camera {
   zoom: number;
 }
 
-export interface MapViewOptions {
+interface MapViewOptions {
   map: SaveMap;
   /** The accessible name ("Teddy in Level 2 at block 6, 39"), kept up to date by setHero's caller. */
   label: string;

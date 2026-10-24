@@ -49,11 +49,11 @@ export interface Achievement {
 /** The editors whose files count toward "every kind of file" (all block sets count as blocks). */
 export { EDIT_KINDS };
 /** The Download chooser's platforms that count toward "every platform". */
-export const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as const;
+const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as const;
 /** The help pages for downloaded games. */
-export const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
+const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
 /** The modem speeds that count toward connecting and downloading at every speed (retro/bbs/lineSpeed.ts; Unlimited isn't one). */
-export const MODEM_SPEEDS = ['300', '1200', '2400', '4800', '9600', '14400', '28800', '33600', '56000'] as const;
+const MODEM_SPEEDS = ['300', '1200', '2400', '4800', '9600', '14400', '28800', '33600', '56000'] as const;
 /** The desk props another part of the room reports with a gm-achievement event. */
 export const DESK_PROPS = [
   'desk-clock',

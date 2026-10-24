@@ -9,7 +9,7 @@ export interface Piece {
   url?: string;
 }
 
-export interface PieceGroup {
+interface PieceGroup {
   id: string;
   title: string;
   note?: string;

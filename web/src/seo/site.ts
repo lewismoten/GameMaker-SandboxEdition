@@ -11,7 +11,7 @@ export const OG_IMAGE = `${SITE_URL}og-image.png`;
 export const OG_IMAGE_ALT = 'A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box.';
 
 /** For description tags (search results show about 160 characters). */
-export const SITE_DESCRIPTION =
+const SITE_DESCRIPTION =
   'Make DOS-style games in your browser with no programming: a free, open-source remake of RSD Game-Maker 3.0 (1994). Play 90s shareware and export your own games.';
 /** The longer version, for text on the page. */
 export const SITE_ABOUT =
@@ -135,7 +135,7 @@ export function clip(text: string, max: number): string {
   return one.length > max ? `${one.slice(0, max - 1).replace(/\s+\S*$/, '')}…` : one;
 }
 
-export interface PageMeta {
+interface PageMeta {
   title: string;
   description: string;
   /** Absolute canonical address (left out when unknown, e.g. an exported game). */
@@ -219,7 +219,7 @@ export function repoJsonLd(): Record<string, unknown> {
 }
 
 /** What made a game: this app, its site and its source code. */
-export function madeWith(): Record<string, unknown> {
+function madeWith(): Record<string, unknown> {
   return { '@type': 'SoftwareApplication', name: PRODUCT, url: SITE_URL, sameAs: [REPO_URL], applicationCategory: 'GameApplication' };
 }
 

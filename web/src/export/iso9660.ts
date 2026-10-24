@@ -10,7 +10,7 @@
 // stored "both-endian" (little-endian then big-endian). Names in the plain ISO records are
 // made-up 8.3 names; systems that read Rock Ridge show the NM names instead.
 
-export interface IsoEntry {
+interface IsoEntry {
   /** Path inside the image, '/'-separated, without a leading '/'. Folders are implied. */
   path: string;
   /** File contents (none for a symbolic link). */
@@ -21,7 +21,7 @@ export interface IsoEntry {
   symlink?: string;
 }
 
-export interface IsoOptions {
+interface IsoOptions {
   /** The volume's name, shown under the mounted disk (up to 32 characters). */
   volume: string;
   date?: Date;

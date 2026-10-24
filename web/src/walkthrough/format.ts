@@ -25,7 +25,7 @@ export interface WalkChapterMark {
   title: string;
 }
 
-export interface WalkChapter {
+interface WalkChapter {
   title: string;
   /** The video frame (at WALKTHROUGH_FPS) where it starts. */
   frame: number;
@@ -124,12 +124,12 @@ export function youtubeChapters(chapters: WalkChapter[], fps: number, totalFrame
   return out;
 }
 
-export interface YoutubeText {
+interface YoutubeText {
   title: string;
   description: string;
 }
 
-export interface YoutubeInfo {
+interface YoutubeInfo {
   gameTitle: string;
   year?: number;
   company?: string;

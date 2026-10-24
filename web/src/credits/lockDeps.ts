@@ -2,7 +2,7 @@
 // which of web/package.json's own packages pull it in. Pure, so scripts/credits.ts writes
 // deps.json with it and deps.test.ts checks deps.json against the lockfile with it.
 
-export interface LockPackage {
+interface LockPackage {
   version?: string;
   license?: string;
   dev?: boolean;

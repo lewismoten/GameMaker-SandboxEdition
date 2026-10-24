@@ -30,7 +30,7 @@ export const BARD_COLUMNS: { key: BardColumn; short: string; long: string }[] = 
   { key: 'logo', short: 'Logo: DeepAI', long: 'The Bard of Bizarre logo, made with DeepAI' },
 ];
 
-export interface BardGame {
+interface BardGame {
   id: string;
   title: string;
   made: BardColumn[];

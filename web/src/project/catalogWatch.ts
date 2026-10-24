@@ -31,7 +31,7 @@ async function check(): Promise<void> {
 }
 
 /** Looks again now (one look at a time, in order). */
-export function checkCatalog(): Promise<void> {
+function checkCatalog(): Promise<void> {
   return (chain = chain.then(check, check).catch(() => undefined));
 }
 
