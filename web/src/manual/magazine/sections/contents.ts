@@ -10,8 +10,11 @@ export const CONTENTS: MagSection = {
   pages: () => [{ kind: 'contents', blocks: [] }],
 };
 
-/** A list in two columns, the first the longer. */
-const halves = <T>(list: T[]): T[][] => [list.slice(0, Math.ceil(list.length / 2)), list.slice(Math.ceil(list.length / 2))];
+/** A list in three columns, the first ones the longer. */
+const thirds = <T>(list: T[]): T[][] => {
+  const n = Math.ceil(list.length / 3);
+  return [list.slice(0, n), list.slice(n, 2 * n), list.slice(2 * n)];
+};
 
 /** The page itself, from the issue's contents and advertisers. */
 export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
@@ -24,7 +27,7 @@ export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
       side(
         'Advertiser index',
         [
-          grid(halves(ads.map((a) => p(`[${a.title}](go:mag/${a.page}) · ${a.folio}`))), 0.3),
+          grid(thirds(ads.map((a) => p(`[${a.title}](go:mag/${a.page}) · ${a.folio}`))), 0.2),
           note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),
         ],
         'cyan',

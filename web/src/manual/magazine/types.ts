@@ -120,8 +120,24 @@ export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | '
 export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'music', 'scene'] as const;
 export type WebShot = (typeof WEB_SHOTS)[number];
 
-/** Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web. */
-export type ArtId = 'chez' | 'sandbox' | 'barcode' | 'disk' | 'modem' | 'speakers' | 'diskbox' | 'desk' | 'gamepad' | `web-${WebShot}`;
+/**
+ * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
+ * The boaster ones are the Sound Boaster ad's (soundCardArt.ts): its card, and a face before and after.
+ */
+export type ArtId =
+  | 'chez'
+  | 'sandbox'
+  | 'barcode'
+  | 'disk'
+  | 'modem'
+  | 'speakers'
+  | 'diskbox'
+  | 'desk'
+  | 'gamepad'
+  | 'boaster'
+  | 'boaster-before'
+  | 'boaster-after'
+  | `web-${WebShot}`;
 
 export interface MagPage {
   /** For go:mag/<id> links; a section's first page gets the section's id. */

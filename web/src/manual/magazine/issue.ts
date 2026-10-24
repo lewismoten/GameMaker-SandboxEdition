@@ -21,6 +21,7 @@ import { BBS_LISTINGS } from './sections/bbsListings';
 import { STORE } from './sections/store';
 import { MUG_AD } from './sections/mugAd';
 import { HARDWARE } from './sections/hardware';
+import { SOUND_CARD_AD } from './sections/soundCardAd';
 import { READER_SERVICE } from './sections/readerService';
 import { BACK_COVER } from './sections/backCover';
 import { houseAd } from './sections/houseAd';
@@ -49,6 +50,7 @@ export const SECTIONS: MagSection[] = [
   STORE,
   MUG_AD,
   HARDWARE,
+  SOUND_CARD_AD,
   READER_SERVICE,
   BACK_COVER,
 ];

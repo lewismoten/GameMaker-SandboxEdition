@@ -787,6 +787,11 @@
   padding: 0.12em 0;
 }
 
+/* and its advertiser index in three columns, set a little closer than body text */
+.kind-contents .mag-side .mag-cell {
+  gap: 0.3em;
+}
+
 /* a listing with a small screenshot at its left */
 .mag-rows li.has-shot {
   grid-template-columns: 6em 1fr auto;
