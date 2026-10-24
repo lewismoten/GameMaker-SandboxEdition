@@ -8,9 +8,10 @@ here.
 ## Fort Ashby, 1990
 
 My family moved to Fort Ashby, in Mineral County, West Virginia, in November 1990, during
-the county's hunting-week break from school. I started high school at Eastern Vocational
-Technical High School that fall. Our house was on a hill, and the family computer was an
-IBM PS/2 that I shared with my mom.
+the county's hunting-week break from school. Before the move I had been at Eastern
+Vocational Technical High School in Baltimore; in West Virginia I went to Frankfort High
+School. Our house was on a hill. My brother bought an IBM PS/2, a 286, with Mom's help, and
+I used it often.
 
 I made friends at a video rental store in town that had a pool table and arcade machines,
 and I was a junior firefighter: I listened to the fire radios, dried and rolled hoses, rode
@@ -32,7 +33,8 @@ Once the box arrived I went from moving snow to making software. I built tile-ba
 adventure games and learned how game logic works. Its sound editor stuck with me most: you
 drew a sound's wave with the mouse, and a few bytes became an 8-bit sound effect.
 
-I graduated in May 1994 and left for Pittsburgh in June.
+I graduated in May 1994, and my parents gave me a 486 with a CD-ROM drive as a graduation
+gift. I left for Pittsburgh in June.
 
 ## Later
 

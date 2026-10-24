@@ -24,7 +24,7 @@ export const LEWIS: MagSection = {
           q('Where were you when you first heard of Game-Maker?'),
           a(
             L,
-            'Fort Ashby, in Mineral County, West Virginia. My family moved there in November 1990, during the county’s hunting-week break from school, and I started high school at Eastern Vocational Technical High School that fall. Our house was on a hill, and the family computer was an IBM PS/2 that I shared with my mom.',
+            'Fort Ashby, in Mineral County, West Virginia. My family moved there in November 1990, during the county’s hunting-week break from school, and I went to Frankfort High School; before the move I had been at Eastern Vocational Technical High School in Baltimore. Our house was on a hill. My brother bought an IBM PS/2, a 286, with Mom’s help, and I used it often.',
           ),
           q('What did a kid do for fun in Fort Ashby?'),
           a(
@@ -76,7 +76,7 @@ export const LEWIS: MagSection = {
         head('The Sound That Kept Coming Back', { kicker: 'The Interview, continued', size: 'l', level: 2 }),
         cols(2, [
           q('Where did life take you after high school?'),
-          a(L, 'I graduated in May 1994 and left for Pittsburgh in June.'),
+          a(L, 'I graduated in May 1994, and my parents gave me a 486 with a CD-ROM drive as a graduation gift. I left for Pittsburgh in June.'),
           q('Did Game-Maker leave with you?'),
           a(
             L,
