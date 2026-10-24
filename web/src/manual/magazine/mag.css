@@ -347,7 +347,8 @@
 }
 
 /* a full-page ad fills its page */
-.kind-ad .mag-body > .mag-adframe:only-child {
+.kind-ad .mag-body > .mag-adframe:only-child,
+.kind-back .mag-body > .mag-adframe:only-child {
   flex: 1;
   justify-content: space-around;
 }
@@ -812,7 +813,7 @@
   opacity: 0.85;
 }
 
-/* an order card with a dotted cut line */
+/* an order card with a dotted cut line: white card stock (a coupon may be colored) */
 .mag-card {
   position: relative;
   padding: 1em 1.2em;
@@ -872,6 +873,11 @@
 .tone-black a,
 .mag-adframe.tone-black a {
   color: #9cc0ff;
+}
+
+/* a light ad frame on a black page keeps dark-paper links */
+.tone-black .mag-adframe:not(.tone-black) a:not(.mag-btn, .mag-card > .mag-go) {
+  color: var(--blue);
 }
 
 .mag-page a:focus-visible {
@@ -959,9 +965,19 @@
   text-shadow: 0.05em 0.05em 0 #141210;
 }
 
-/* the back cover's board name is set on one line, like a strip of its terminal screen */
+/* a headline clears the starburst in the corner */
+.mag-burst + h2 {
+  padding-right: 2em;
+}
+
+/* the back cover: set large to fill its page, the board's name on one line like a strip of its
+   terminal screen */
+.kind-back .mag-adframe {
+  font-size: 1.4em;
+}
+
 .kind-back .mag-adframe h2 {
-  font-size: 2.5em;
+  font-size: 1.5em;
 }
 
 .mag-adframe.tone-black h2 {
@@ -983,8 +999,10 @@
   right: -0.8em;
   display: grid;
   place-items: center;
+  box-sizing: border-box;
   width: 6.4em;
   height: 6.4em;
+  padding: 0 1em;
   background: var(--yellow);
   color: var(--red);
   clip-path: polygon(
@@ -1210,10 +1228,13 @@
   font-size: 2.9em;
 }
 
+/* the order form: a tear-out coupon on white paper, set apart from the pink */
 .look-classic .mag-card {
   padding: 0.8em 1em;
   border: 0.2em dashed var(--ink);
-  background: transparent;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0.3em 0.3em 0 rgba(0, 0, 0, 0.35);
   font:
     0.85em/1.35 Helvetica,
     Arial,
@@ -1233,7 +1254,7 @@
 }
 
 .look-classic .mag-scissors {
-  background: var(--paper);
+  background: #fff;
 }
 
 .look-classic .mag-note {
@@ -1266,6 +1287,10 @@
 
   .mag-adframe h2 {
     font-size: 2em;
+  }
+
+  .kind-back .mag-adframe {
+    font-size: 1em;
   }
 
   /* a board's name in a phone's headline may wrap */

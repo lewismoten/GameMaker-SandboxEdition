@@ -1,8 +1,8 @@
 // The issue's own full-page ads: Game-Maker: Sandbox Edition (inside the front cover), "send
-// away for Game-Maker", The Ultimate Owner's Guide order page, and Sandbox Software with The
+// away for Game-Maker" (in the look of the 1992 Game-Maker ads), The Ultimate Owner's Guide order page, and Sandbox Software with The
 // Bard of Bizarre and a card to send away for their catalogs. Prices are in the story; every
 // coupon's button opens the real thing here, free.
-import { adPage, adframe, big, button, card, grid, head, list, note, p, shot, ultimatePiece } from '../blocks';
+import { adPage, adframe, big, button, card, grid, head, list, note, p, shot, side, ultimatePiece } from '../blocks';
 import type { MagSection } from '../types';
 
 const MAIL = 'Sandbox Software · P.O. Box 000 · Pittsburgh, PA 15213 (a fictional address: nothing to mail, it is all free here)';
@@ -14,22 +14,76 @@ const RS_SANDBOX_EDITION = 1;
 const ORIGINAL_AD = 'go:url/https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up';
 
 /**
- * The inside front cover, laid out like the full-page Game-Maker ads of 1992: hot pink, a big
- * condensed serif headline, two big screens and a row of five small ones, a second headline,
- * the pitch on the left with the price, the order line and coupon on the right. The words
- * and pictures are this edition's own.
+ * The inside front cover: Game-Maker: Sandbox Edition on a blueprint-blue frame, two games made
+ * with it, what this edition adds, and the ways in. Its order form is the send-away ad's.
  */
 export const SANDBOX_EDITION_AD: MagSection = {
   id: 'ad-sandbox-edition',
   title: 'Game-Maker: Sandbox Edition',
   toc: false,
   pages: () => [
+    adPage(
+      'ad-sandbox-edition',
+      'Game-Maker: Sandbox Edition',
+      [
+        adframe(
+          'EVERY GAME YOU EVER LOVED STARTED AS A BLANK SCREEN.',
+          [
+            grid(
+              [
+                [shot('teddy', 'title', 'Teddy’s Little Big Adventure, its title screen', 'Made with it: Teddy’s Little Big Adventure.', -2)],
+                [shot('snowbound', 'title', 'Snowbound: The $89 Shovel, its title screen', 'Made with it: Snowbound: The $89 Shovel.', 2)],
+              ],
+              0.3,
+            ),
+            p(
+              '**Game-Maker™: Sandbox Edition** is RSD Game-Maker 3.0, set free and brought up to date. Draw the blocks, the monsters and the hero, lay out the map, add the sounds and the music, and play it. No programming.',
+            ),
+            side(
+              'New in this edition',
+              [
+                list([
+                  'Make games in your web browser, or in DOS Game-Maker on the 1994 desk.',
+                  'The Level check plays your scene and shows where players get stuck.',
+                  'The walkthrough bot plays a level first, before anyone else does.',
+                  'Export to DOS, the web, Mac, Windows and Linux.',
+                ]),
+              ],
+              'white',
+            ),
+            grid([[button('go:editor', 'Start a game now')], [button('go:desk', 'Visit the 1994 desk')], [button('go:guide/start', 'Read the Guide')]], 0.25),
+            p('Want it in a box? Send away for it: [the order form is on page 8](go:mag/ad-send-away).'),
+          ],
+          {
+            burst: 'FREE TO PLAY!',
+            sub: 'The blank screen is yours.',
+            small: 'Based on RSD Game-Maker 3.0 by Recreational Software Designs. Free here, in your web browser.',
+            tone: 'cyan',
+          },
+        ),
+      ],
+      'black',
+    ),
+  ],
+};
+
+/**
+ * "Send away for Game-Maker", laid out like the full-page Game-Maker ads of 1992: hot pink, a
+ * big condensed serif headline, two big screens and a row of five small ones, a second
+ * headline, the pitch on the left with the price, the order line on the right, and the order
+ * form on a white tear-out coupon. The words and pictures are this edition's own.
+ */
+export const SEND_AWAY_AD: MagSection = {
+  id: 'ad-send-away',
+  title: 'Send away for Game-Maker',
+  toc: false,
+  pages: () => [
     {
       ...adPage(
-        'ad-sandbox-edition',
-        'Game-Maker: Sandbox Edition',
+        'ad-send-away',
+        'Send away for Game-Maker',
         [
-          head('Every game you ever loved\nstarted as a blank screen.', { size: 'xl' }),
+          head('Yes! I want to make\nmy own games!', { size: 'xl' }),
           grid(
             [
               [
@@ -61,12 +115,12 @@ export const SANDBOX_EDITION_AD: MagSection = {
             ],
             0.15,
           ),
-          head('Game-Maker: Sandbox Edition™\nThe blank screen is yours.', { size: 'l' }),
+          head('Game-Maker™: Sandbox Edition\nThe whole studio in one box.', { size: 'l' }),
           grid(
             [
               [
                 p(
-                  'The whole design studio, in one kit: a palette, blocks, monsters, heroes, maps, sounds, music and the scenes that link them into a game. No programming. Bring ideas and a mouse.',
+                  'A palette, blocks, monsters, heroes, maps, sounds, music and the scenes that link them into a game. No programming. Bring ideas and a mouse.',
                 ),
                 list([
                   'Draw blocks, monsters and heroes pixel by pixel.',
@@ -74,32 +128,32 @@ export const SANDBOX_EDITION_AD: MagSection = {
                   'Draw a sound with the mouse and hear it; write FM music.',
                   'The Level check plays your scene and shows where players get stuck.',
                   'Export to DOS, the web, Mac, Windows and Linux.',
+                  'In the box: the disks, the Owner’s Guide, The Ultimate Owner’s Guide, a reference card, a keyboard template, a map grid pad, a poster and stickers.',
                 ]),
-                p('Not sure a level is fair? Let the walkthrough bot play it first, before anyone else does.'),
                 big('$89', 'plus $4 shipping. Free here.'),
                 note(
-                  'The fine print: the address and prices are part of the story. It is free here, in your web browser or at [the 1994 desk](go:desk); start with [the Guide](go:guide/start). Based on RSD Game-Maker 3.0 by Recreational Software Designs.',
+                  'Address, phone and prices are part of the story. Free here: [the box on the desk](go:desk/gmbox), [DOS Game-Maker](go:dos), [the Guide](go:guide/start). Based on RSD Game-Maker 3.0 by Recreational Software Designs.',
                 ),
               ],
               [
-                p('ORDER GAME-MAKER BY MODEM:'),
-                big('1-412-555-SAND', 'the Sandbox BBS'),
+                p('ORDER GAME-MAKER TOLL FREE:'),
+                big('1-800-555-0133', 'voice orders'),
                 card(
                   'ORDER FROM: Sandbox Software, P.O. Box 000, Pittsburgh, PA 15213',
                   [
                     'Send me ___ copies at $89 each = $____',
                     'Shipping and handling ......... + $4.00',
                     '**Total enclosed** $____ ☐ Check ☐ Money order',
-                    'Choose: ☐ 3½" disks ☐ CD-ROM',
+                    'Choose: ☐ 3½" disks ☐ CD-ROM · By modem: 1-412-555-SAND',
                   ],
                   {
-                    fields: ['Signature', 'Name', 'Address', 'City/State/ZIP', 'Phone'],
+                    fields: ['Signature', 'Name', 'Address', 'City/State/ZIP'],
                     go: 'go:editor',
                     button: 'Start a game now, free',
                   },
                 ),
                 note(
-                  `Reader Service #${String(RS_SANDBOX_EDITION).padStart(3, '0')} · See the original 1992 ad: [Computer Gaming World #99, page 55 (Internet Archive)](${ORIGINAL_AD})`,
+                  `Reader Service #${String(RS_SANDBOX_EDITION).padStart(3, '0')} · The original 1992 ad: [Computer Gaming World #99, page 55](${ORIGINAL_AD})`,
                 ),
               ],
             ],
@@ -110,46 +164,6 @@ export const SANDBOX_EDITION_AD: MagSection = {
       ),
       look: 'classic',
     },
-  ],
-};
-
-export const SEND_AWAY_AD: MagSection = {
-  id: 'ad-send-away',
-  title: 'Send away for Game-Maker',
-  toc: false,
-  pages: () => [
-    adPage(
-      'ad-send-away',
-      'Send away for Game-Maker',
-      [
-        adframe(
-          'YES! I WANT TO MAKE MY OWN GAMES!',
-          [
-            p(
-              'The complete Game-Maker SE 3.0 kit: the program disks, the Owner’s Guide, The Ultimate Owner’s Guide, a quick reference card, a keyboard template, a map grid pad, a poster and a sticker sheet. Everything a game designer needs, in one box.',
-            ),
-            card(
-              'ORDER FORM',
-              [
-                'Game-Maker SE 3.0 ........ **$89.00**',
-                'Shipping and handling ..... **$4.00**',
-                'Choose: ☐ 3½" disks  ☐ CD-ROM',
-                'Send a money order to: ' + MAIL,
-              ],
-              { fields: ['Name', 'Address', 'City, State, ZIP', 'Age'], go: 'go:desk/gmbox', button: 'Open the box on the desk', tone: 'yellow' },
-            ),
-            grid([[button('go:editor', 'Or start a game on the web now')], [button('go:dos', 'Open DOS Game-Maker')]]),
-          ],
-          {
-            burst: 'ONLY $89!',
-            sub: 'Mail the coupon today. Allow 4 to 6 weeks for delivery, or none at all: it is already on this site.',
-            small: 'Prices are part of the story. Game-Maker: Sandbox Edition is free.',
-            tone: 'yellow',
-          },
-        ),
-      ],
-      'white',
-    ),
   ],
 };
 
@@ -187,7 +201,7 @@ export const ULTIMATE_AD: MagSection = {
                   card(
                     'ORDER THE ULTIMATE OWNER’S GUIDE',
                     ['The advanced booklet ..... **$19.95**', 'Item UOG-3 · Ships with every Game-Maker SE box', 'Send a money order to: ' + MAIL],
-                    { fields: ['Name', 'Address', 'City, State, ZIP'], go: 'go:ultimate', button: 'Open The Ultimate Owner’s Guide', tone: 'pink' },
+                    { fields: ['Name', 'Address', 'City, State, ZIP'], go: 'go:ultimate', button: 'Open The Ultimate Owner’s Guide' },
                   ),
                 ],
               ],
@@ -235,7 +249,6 @@ export const CATALOGS_AD: MagSection = {
               fields: ['Name', 'Address', 'City, State, ZIP'],
               go: 'go:catalog/sandbox',
               button: 'Open the Sandbox Software catalog',
-              tone: 'cyan',
             }),
             grid([[button('go:catalog/bard', 'Open The Bard of Bizarre catalog')], [button('go:catalog/shareware', 'The desk’s shareware catalog')]]),
             note(

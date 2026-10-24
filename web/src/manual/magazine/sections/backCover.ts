@@ -1,5 +1,5 @@
 // The back cover: a full-page ad for THE -= S A N D B O X =- BBS.
-import { adPage, adframe, art, button, grid, list, p } from '../blocks';
+import { adPage, adframe, art, big, button, grid, list } from '../blocks';
 import type { MagSection } from '../types';
 
 export const BACK_COVER: MagSection = {
@@ -15,7 +15,7 @@ export const BACK_COVER: MagSection = {
           adframe(
             'THE -= S A N D B O X =- BBS',
             [
-              p('**1-412-555-SAND** · 14,400 baud'),
+              big('1-412-555-SAND', '14,400 baud'),
               list([
                 'Every Sandbox Software game, free to download',
                 'Message bases, bulletins from the SysOp and the GIF Gallery',
