@@ -225,6 +225,8 @@ export function wonFli(): Uint8Array {
     frames.push(frame(p));
   }
   const last = desk((g) => dos(g, boot));
+  // on a dark banner, so it doesn't run into the poster and the window either side
+  last.rect(62, 15, 224, 26, c('ink', 0)).frame(62, 15, 224, 26, c('slime', 3));
   outlined(last, 70, 20, 'SYSTEM CLEAN!', c('slime', 5), c('ink', 0), 2);
   for (let i = 0; i < 2; i++) frames.push(frame(last));
   // On the desk the whole time, in a brass frame: the team's real mascot, Teddy, scanned in

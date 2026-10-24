@@ -278,10 +278,13 @@ const MICRO: Record<string, string> = {
   '>': '100010001010100',
   '<': '001010100010001',
   _: '000000000000111',
+  '\\': '100100010001001',
+  // micro, for the capacitors' 100µF
+  '\u00b5': '101101101111100',
 };
 
 export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pixels {
-  const ink = textInk(p, s);
+  const ink = textInk(p, s, undefined, (ch) => ch in MICRO || ch.toUpperCase() in MICRO);
   const dot = (dx: number, dy: number, dw: number, dh: number) => {
     p.rect(dx, dy, dw, dh, c);
     ink?.add(dx, dy, dw, dh);
