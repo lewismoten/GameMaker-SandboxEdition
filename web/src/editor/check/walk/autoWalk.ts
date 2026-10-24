@@ -4,7 +4,9 @@
 // everywhere) until one reaches a link to a scene not seen yet (or the won scene) without
 // dying. The path it found is played again from the scene's start on the same engine, the keys
 // it pressed kept tick by tick, and that state carries into the next scene. Where no style gets
-// through, it stops there and says so: the walkthrough ends where the bot got to.
+// through, it stops there and says so: the walkthrough ends where the bot got to. A scene the
+// author has played (mine.ts) is played with the author's keys instead, when they still reach
+// an exit from where the walkthrough has got to; else the bot plays it.
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Game } from '../../../formats/game';
 import { MLEN } from '../../../formats/map';
@@ -13,9 +15,10 @@ import { driveMove, type Outcome } from '../drive';
 import { explore, type Entry, type Exploration, type ExploreOptions, type Via } from '../explore';
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource, type Snap } from '../sim';
+import { replayMine } from './mine';
 
 export interface Strategy {
-  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector';
+  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
   name: string;
   /** Only for scenes with gravity (true) or without (false). */
   gravity?: boolean;
@@ -35,6 +38,9 @@ export const STRATEGIES: Strategy[] = [
   { id: 'collector', name: 'Collect everything, then go on', share: 0.8, options: () => ({}) },
 ];
 
+/** The author's own play of a scene (not one of the bot's styles). */
+export const MINE: Strategy = { id: 'mine', name: 'Your play', share: 0, options: () => ({}) };
+
 export interface SceneOutcome {
   scene: number;
   name: string;
@@ -47,6 +53,8 @@ export interface SceneOutcome {
   next?: number;
   /** Where the bot went, for a scene it couldn't get through (the heat map). */
   heat?: Uint32Array;
+  /** The author's play of the scene was used, or was asked for but no longer reaches an exit (the bot played it). */
+  mine?: 'used' | 'broke';
 }
 
 export interface AutoWalk {
@@ -65,6 +73,10 @@ export interface AutoWalkOptions {
   seed?: number;
   /** Told the scene, the style and how far along; return true to stop. */
   progress?: (scene: number, strategy: string, places: number) => boolean | void;
+  /** The author's own plays to use, by scene: their keys (encodeKeys), from the scene's entry. */
+  mine?: Record<number, string>;
+  /** Stop after this many scenes (1: just the first scene). */
+  maxScenes?: number;
 }
 
 /** The places from the start to `id`, by the moves that reached each. */
@@ -207,8 +219,17 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       }
       return false;
     };
+    // the author's own play, if it still gets out from here
+    const myKeys = opt.mine?.[scene];
+    if (myKeys !== undefined) {
+      opt.progress?.(scene, MINE.name, 0);
+      const r = await replayMine(game, files, scene, entry, myKeys, seed);
+      const l = r && s.links[r.link];
+      if (r && l && level(l) && l.toScene !== scene) found = { replay: r, strategy: MINE };
+      outcome.mine = found ? 'used' : 'broke';
+    }
     // a side room with no new way on: what it holds is why the hero came
-    if (backOnly) await collect();
+    if (backOnly && !found) await collect();
     const gravity = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w.bg.some((b) => b.grav !== 0);
     for (const st of found ? [] : STRATEGIES) {
       if (st.id === 'collector' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
@@ -261,6 +282,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       out.won = true;
       break;
     }
+    if (opt.maxScenes && out.scenes.length >= opt.maxScenes) break;
     seen.add(link.toScene);
     remember(scene, biggest);
     arrived.add(`${link.toScene}@${link.to.x},${link.to.y}`);
