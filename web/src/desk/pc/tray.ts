@@ -1,13 +1,14 @@
-// The keyboard tray: a slide-out shelf under the desk top holding the keyboard and, on
-// its mouse pad, a two-button ball mouse with its cord running back under the desk. The
-// mouse is the PC's mouse: drag it around the pad to move the pointer, press it to click.
-// The handle slides the tray in under the desk and out again.
+// The keyboard tray: a slide-out shelf under the desk top holding the keyboard, the game pad
+// left of it (gamePad.ts) and, on its mouse pad, a two-button ball mouse with its cord running
+// back under the desk. The mouse is the PC's mouse: drag it around the pad to move the
+// pointer, press it to click. The handle slides the tray in under the desk and out again.
 import './tray.css';
 import { h } from '../../editor/core/ui';
 import { output } from '../../audio/output';
 import { audioContext, unlock } from '../../audio/context';
 import { SANDBOX_COLORS } from '../../retro/bbs/bbsName';
 import { deskMouse } from '../../input/deskMouse';
+import { deskGamePad } from './gamePad';
 
 const CGA = ['#000', '#00a', '#0a0', '#0aa', '#a00', '#a0a', '#a50', '#aaa', '#555', '#55f', '#5f5', '#5ff', '#f55', '#f5f', '#ff5', '#fff'];
 
@@ -271,6 +272,7 @@ export function keyboardTray(keyboard: HTMLElement): HTMLElement {
         'div',
         { class: 'tray-plane' },
         h('div', { class: 'tray-slab', 'aria-hidden': 'true' }, h('span', { class: 'tray-runner l' }), h('span', { class: 'tray-runner r' })),
+        deskGamePad(),
         keyboard,
         mousePad(),
       ),

@@ -1,0 +1,197 @@
+/* The game pad on the keyboard tray (gamePad.ts) and its large controls (gamePadPanel.ts). The
+   drawing itself is gamePadArt.css. */
+.game-pad {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 40px;
+  background: none;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.game-pad:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 4px;
+}
+
+.game-pad .gp-shell {
+  filter: drop-shadow(3px 9px 6px rgba(0, 0, 0, 0.5));
+}
+
+.game-pad-spot {
+  position: relative;
+}
+
+/* its cord, from the back of the pad off the back of the tray to the PC's game port */
+.gp-cord,
+.gp-cord svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.gp-cord path {
+  fill: none;
+  stroke: #4c4c50;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+/* the stage: on the tray's board left of the keyboard (tray.css widens the board for it), the
+   pad's own 200 x 100 pixels laid flat and tilted back with the board */
+@media (min-width: 961px) {
+  .tray-plane .game-pad-spot {
+    position: absolute;
+    left: -132px;
+    top: 42px;
+    width: 200px;
+  }
+}
+
+/* phones: under the keyboard, big enough to press with a thumb, the shaft lying under it */
+@media (max-width: 960px) {
+  .kb-tray {
+    flex-wrap: wrap;
+  }
+
+  .kb-tray .game-pad-spot {
+    order: 1;
+    width: min(300px, 86%);
+    /* clear of the keyboard's front edge, which its tilt brings forward further on a wider screen */
+    margin: max(14px, 6%) auto 13%;
+  }
+
+  .kb-tray .gp-cord {
+    display: none;
+  }
+}
+
+/* ---- the large controls ---- */
+.gp-panel {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 65;
+  box-sizing: border-box;
+  width: min(380px, calc(100vw - 32px));
+  padding: 8px 12px 10px;
+  border: 1px solid #5a5242;
+  border-radius: 10px;
+  background: #221d16;
+  color: #f3eedf;
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.gp-panel[hidden] {
+  display: none;
+}
+
+.gp-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gp-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #5a5242;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gp-close:hover {
+  background: #3a3226;
+}
+
+.gp-panel-pad {
+  position: relative;
+  margin: 8px 0 6px;
+  touch-action: none;
+  user-select: none;
+}
+
+.gp-panel-note {
+  margin: 0;
+  color: #d9d1bb;
+  font-size: 13px;
+}
+
+/* the d-pad's eight ways, over its drawn box at (25, 25) to (75, 75) */
+.gp-dirs {
+  position: absolute;
+  left: 12.5%;
+  top: 25%;
+  width: 25%;
+  height: 50%;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.gp-way,
+.gp-face {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gp-way {
+  border-radius: 4px;
+}
+
+.gp-face {
+  position: absolute;
+  width: 8.5%;
+  height: 17%;
+  border-radius: 50%;
+}
+
+.gp-face.at-left {
+  left: 61.25%;
+  top: 41.5%;
+}
+
+.gp-face.at-bottom {
+  left: 69.75%;
+  top: 58.5%;
+}
+
+.gp-face.at-right {
+  left: 78.25%;
+  top: 41.5%;
+}
+
+.gp-face.at-top {
+  left: 69.75%;
+  top: 24.5%;
+}
+
+.gp-way:hover,
+.gp-face:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.gp-way:focus-visible,
+.gp-face:focus-visible,
+.gp-close:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 1px;
+}

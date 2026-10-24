@@ -86,10 +86,11 @@
       0 10px 10px rgba(0, 0, 0, 0.55);
   }
 
-  /* the tray itself: a wood-grain board with a raised lip along the front */
+  /* the tray itself: a wood-grain board with a raised lip along the front, running on past
+     the plane's left end to hold the game pad left of the keyboard (gamePad.css) */
   .tray-slab {
     position: absolute;
-    inset: 0;
+    inset: 0 0 0 -150px;
     border-radius: 0 0 6px 6px;
     background:
       linear-gradient(rgba(0, 0, 0, 0.55), transparent 40px), repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.07) 0 3px, transparent 3px 13px),
