@@ -3,7 +3,9 @@
 // walkthrough, started at this scene's chapter; or, when that has no route here, one the bot
 // makes for this scene alone in its worker, kept in the companion), and the author's own play
 // of it (check/walk/mine.ts). A one-scene walkthrough plays with the game started at the
-// scene, as the play test starts it, and is checked and timed in the worker first.
+// scene, as the play test starts it, and is checked and timed in the worker first. A route made
+// for one scene keeps a fingerprint of the scene's files, so the panel
+// can say when the map changed since and offer to make it again (check/walk/botRoutes.ts).
 import { toast } from '../core/ui';
 import type { Project } from '../core/project';
 import { GameFiles, type CatalogEntry } from '../../project/files';
@@ -11,16 +13,8 @@ import { serializeGame } from '../../formats/game';
 import type { Walkthrough } from '../../walkthrough/format';
 import { myPlays, oneScene } from '../check/walk/mine';
 import { startWalk } from '../check/walk/walkClient';
+import { botRoutes, keepBotRoute, walkthroughThrough } from '../check/walk/botRoutes';
 import { startingAt } from '../editors/integrator/startAt';
-import type { SavedWalk } from './walkDialog';
-
-/** A route the bot made for one scene alone (section "botRoutes" of the .gam, by scene). */
-interface BotRoute {
-  when: string;
-  walk: Walkthrough;
-}
-
-const ROUTES = 'botRoutes';
 
 const sceneName = (project: Project, scene: number) => project.game().scenes[scene]?.desc.trim() || `Scene ${scene}`;
 
@@ -53,11 +47,18 @@ async function inWorker(
   return result.walk?.timeline.frames ? result.walk : undefined;
 }
 
-/** Whether the bot has a route through `scene` to show: in the game's walkthrough, or one made for the scene alone. */
-export function botHasRoute(project: Project, scene: number): boolean {
-  const saved = project.extras<SavedWalk | undefined>(project.gam, 'walkthrough', undefined);
-  if (saved?.walk?.timeline.frames && saved.walk.segments.some((s) => s.scene === scene)) return true;
-  return !!project.extras<Record<string, BotRoute>>(project.gam, ROUTES, {})[scene];
+/** Has the bot make a route through `scene` alone now, in its worker, and keeps it (replacing any). True when it found one. */
+export async function makeBotRoute(project: Project, scene: number, say: (what: string) => void, signal?: AbortSignal): Promise<boolean> {
+  const name = sceneName(project, scene);
+  say('Starting the bot…');
+  const walk = await inWorker(project, scene, say, undefined, signal);
+  if (!walk) {
+    say(`The bot found no way through ${name} in a minute: the Level check’s heat map shows where it can go.`);
+    return false;
+  }
+  keepBotRoute(project, scene, walk);
+  say(`The bot found a way through ${name}.`);
+  return true;
 }
 
 /**
@@ -72,29 +73,11 @@ export async function watchBot(
   signal?: AbortSignal,
 ): Promise<void> {
   const name = sceneName(project, scene);
-  const saved = project.extras<SavedWalk | undefined>(project.gam, 'walkthrough', undefined);
-  if (saved?.walk?.timeline.frames && saved.walk.segments.some((s) => s.scene === scene))
-    return play(project, `${name}, the walkthrough bot`, project.files.copy(), saved.walk, scene);
-  const routes = project.extras<Record<string, BotRoute>>(project.gam, ROUTES, {});
-  let route: Walkthrough | undefined = routes[scene]?.walk;
-  if (!route) {
-    if (!(await make())) return;
-    say('Starting the bot…');
-    route = await inWorker(project, scene, say, undefined, signal);
-    if (!route) {
-      say(`The bot found no way through ${name} in a minute: the Level check’s heat map shows where it can go.`);
-      return;
-    }
-    project.setExtras(project.gam, ROUTES, { ...routes, [scene]: { when: new Date().toISOString(), walk: route } satisfies BotRoute });
-    say(`The bot found a way through ${name}.`);
-  }
-  return play(project, `${name}, the bot`, startedAt(project, scene), route, scene);
-}
-
-/** Forgets the route the bot made for `scene` alone (the map changed: it is made again when next watched). */
-export function forgetBotRoute(project: Project, scene: number): void {
-  const { [scene]: _gone, ...rest } = project.extras<Record<string, BotRoute>>(project.gam, ROUTES, {});
-  project.setExtras(project.gam, ROUTES, Object.keys(rest).length ? rest : undefined);
+  const whole = walkthroughThrough(project, scene);
+  if (whole) return play(project, `${name}, the walkthrough bot`, project.files.copy(), whole, scene);
+  if (!botRoutes(project)[scene] && (!(await make()) || !(await makeBotRoute(project, scene, say, signal)))) return;
+  const route = botRoutes(project)[scene]?.walk;
+  if (route) return play(project, `${name}, the bot`, startedAt(project, scene), route, scene);
 }
 
 /** Plays the author's own kept play of `scene`. */
