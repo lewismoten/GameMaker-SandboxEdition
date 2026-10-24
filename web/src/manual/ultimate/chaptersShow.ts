@@ -23,6 +23,11 @@ export const SHOW: Chapter = {
     pause in seconds. A line with no pause waits for a key, and <kbd>Esc</kbd> skips the rest.</li>
     <li>Left to themselves, a <code>.GIF</code> stays up 15 seconds, a backdrop 20, a text page 90,
     and an <code>.FLI</code> plays once and moves on.</li>
+    <li>A studio sting goes first in the title slide show, the way the Sandbox games open on
+    their sand castle. A game you start in this edition can open on a “Made with Game-Maker:
+    Sandbox Edition” card and a “YOUR NAME PRESENTS” card, as an animation or a still picture; the
+    start scene’s <b>🎬 Opening sting…</b> adds them to any game, changes them, or takes them out.
+    Keep a sting short: the player sees it every time.</li>
   </ul>
   <h2>Animations of your own</h2>
   <p>Open any <code>.FLI</code> and choose <b>Scene maker</b> (or make a new animation with

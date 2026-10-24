@@ -36,7 +36,16 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     `<h3>Your games</h3>
     <p><b>+ Make a new game</b> asks for a title and how to start: <b>Ready to play</b> gives you a
     first level with scenery, monsters, a hero and sounds borrowed from the CD library, to change
-    as you like; <b>Empty</b> gives you just a title and an ending. <b>Open game folder…</b>, <b>Open files or
+    as you like; <b>Empty</b> gives you just a title and an ending.</p>
+    <p>It also asks how the game opens. <b>Animation</b> (the usual) plays a four-second “Made with
+    Game-Maker: Sandbox Edition” card before your title screen; <b>Still picture</b> shows the same
+    card as one picture for four seconds; <b>None</b> leaves it out. Type <b>your name or studio</b>
+    and a “YOUR NAME PRESENTS” card follows it, drawn to fit the screen. They are your game’s own
+    files (<code>MADEWITH.FLI</code>, <code>PRESENTS.FLI</code> and the title slide show
+    <code>TITLE.LST</code>), so they play in DOS and in every copy you download. To change or remove
+    them later, or to add them to a game made before, open the start scene in the
+    <code>.GAM</code> and choose <b>🎬 Opening sting…</b>.</p>
+    <p><b>Open game folder…</b>, <b>Open files or
     .zip…</b>, or dropping files on the page imports an original game: the folder with its
     <code>.GAM</code>, <code>.MAP</code>, <code>.BBL</code> and other files.</p>
     <p>Games you open from elsewhere are listed under <b>Imported</b>; the rest are under
