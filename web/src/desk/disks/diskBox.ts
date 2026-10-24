@@ -92,7 +92,7 @@ export function diskFacts(d: Disk): string {
     d.kind === 'rsd'
       ? 'One of the games RSD made with Game-Maker'
       : d.kind === 'original'
-        ? 'Shareware from Sandbox Software, our own games: play them or open them in Game-Maker'
+        ? 'Shareware from Sandbox Software, this edition’s own games: play them or open them in Game-Maker'
         : d.kind === 'gameware'
           ? 'Free gameware from the Game-Maker CD'
           : d.kind === 'project'

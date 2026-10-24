@@ -38,7 +38,7 @@ export const PALETTES: Chapter = {
   stray color. Then a night palette is the same ramps, each shade darkened and nudged toward
   blue, and every block follows along.</p>
   <figure data-fig="compare"></figure>
-  <p>Keep a few ramps out of the tint on purpose. Our games mark their lamp light, lit
+  <p>Keep a few ramps out of the tint on purpose. The Sandbox games mark their lamp light, lit
   windows, stars and gold as <i>glowing</i> ramps that stay bright in every palette, so at
   night they shine instead of going dim. In Snowbound the window light even gets brighter
   after dark.</p>
@@ -66,7 +66,7 @@ export const PALETTES: Chapter = {
   pictures between scenes fade in the same way. Inside a level the palette never changes, so
   a flash of lightning or the lights going out is done with blocks instead (Chapter 2). Between
   levels, an <code>.FLI</code> animation can change its colors from frame to frame: a frame
-  that changes only the palette costs very little, which is how our cartoons and logo stings
+  that changes only the palette costs very little, which is how the Sandbox cartoons and logo stings
   fade in and out.</p>
   ${tip('Pro tip:', 'Check a new palette on the menu and the <kbd>F2</kbd> screen, not just in the level. That is where a missing blue shows up first.')}`,
 };

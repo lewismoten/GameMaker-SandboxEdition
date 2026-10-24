@@ -96,7 +96,7 @@ export const LOGIC: Chapter = {
   no sound, no change. That one rule is the heart of Game-Maker logic.</p>
   <p>Make a <b>locked gate</b>: a block solid on all sides that takes, say, 3 from special
   counter 1 and becomes an open doorway. Bumping it with fewer than 3 does nothing; with 3 or
-  more it opens and the 3 are spent. Our games are full of these:</p>
+  more it opens and the 3 are spent. The Sandbox games are full of these:</p>
   <ul>
     <li>Third Goat from the Left: the place in the line at the manger opens for enough wool.</li>
     <li>Certified Rat Tickler: each gate wants more carpet than the last.</li>
