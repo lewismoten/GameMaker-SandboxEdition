@@ -298,10 +298,10 @@ function sniffer(c: Ctx, x: number, y: number, s: number): void {
     c.strokeStyle = lo;
     c.stroke();
   }
-  // the ears, pricked forward; his right one stands taller
+  // the ears, pricked forward, both the same height
   for (const [bx, tx, ty] of [
-    [hx - 24, hx - 22, hy - 84],
-    [hx + 4, hx + 22, hy - 94],
+    [hx - 24, hx - 22, hy - 92],
+    [hx + 4, hx + 22, hy - 92],
   ]) {
     poly(c, [bx - 14, hy - 16, tx, ty, bx + 18, hy - 22]);
     fill(
