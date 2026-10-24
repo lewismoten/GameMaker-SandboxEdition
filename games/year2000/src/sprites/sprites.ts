@@ -163,7 +163,8 @@ function popPic(k: number): Pixels {
   return p;
 }
 
-function mowerPic(k: number): Pixels {
+/** The robo-mower face on: it mows up and down the lawn toward you. */
+function mowerFrontPic(k: number): Pixels {
   const p = blankS();
   oval(p, 10, 17, 8, 2, C('grey', 1));
   p.rect(3, 6, 14, 10, C('red', 2)).rect(3, 6, 14, 3, C('red', 4));
@@ -176,6 +177,31 @@ function mowerPic(k: number): Pixels {
   p.line(4, by, 16, by, C('chrome', 6));
   for (let x = 4 + k * 2; x < 17; x += 4) p.set(x, by + 1, C('green', 4)).set(x + 1, by - 1, C('green', 3));
   p.rect(2, 8, 2, 6, C('grey', 1)).rect(16, 8, 2, 6, C('grey', 1));
+  outline(p, K());
+  return p;
+}
+
+/** The robo-mower side on, facing right (mirrored going left): it mows along the lawn. */
+function mowerPic(k: number): Pixels {
+  const p = blankS();
+  oval(p, 10, 18, 8, 1.5, C('grey', 1));
+  p.rect(3, 8, 13, 7, C('red', 2)).rect(3, 8, 13, 2, C('red', 4));
+  // the nose slopes down to the blade deck
+  p.rect(16, 10, 1, 5, C('red', 2)).rect(17, 12, 1, 3, C('red', 2));
+  blob(p, 10, 6, 4, 3, R('chrome'), 3, 7);
+  p.rect(11, 5, 1, 2, C('grey', 0));
+  p.line(9, 3, 9, 0, C('chrome', 5));
+  p.set(9, 0, k ? C('red', 4) : C('gold', 5));
+  // spinning blades under the nose, clippings thrown out the back
+  p.line(13, 16, 18, 16, C('chrome', 6));
+  for (let x = 13 + k; x < 19; x += 2) p.set(x, 17, C('green', 4));
+  p.set(1, 12 + k, C('green', 4))
+    .set(0, 14 - k, C('green', 3))
+    .set(2, 15 - k, C('green', 4));
+  for (const x of [6, 13]) {
+    oval(p, x, 15, 2.2, 2.2, C('grey', 2));
+    p.set(x, 15, C('chrome', 6)).set(x - 1 + 2 * k, 14 + k, C('chrome', 4));
+  }
   outline(p, K());
   return p;
 }
@@ -306,17 +332,22 @@ function faxbotPic(k: number): Pixels {
   return p;
 }
 
+/** The security robot side on, facing right (mirrored going left), its visor light sweeping. */
 function secbotPic(k: number): Pixels {
   const p = blankS();
   oval(p, 10, 18, 6, 1.5, C('grey', 1));
-  p.rect(5, 8, 10, 9, C('denim', 2)).rect(5, 8, 10, 2, C('denim', 4));
+  p.rect(6, 8, 8, 9, C('denim', 2)).rect(6, 8, 8, 2, C('denim', 4));
   blob(p, 10, 6, 5, 4, R('chrome'), 3, 7);
-  p.rect(7, 5, 6, 2, C('grey', 0))
-    .set(8 + k * 3, 5, C('red', 4))
-    .set(9 + k * 3, 5, C('red', 4));
-  p.rect(9, 1, 2, 2, k ? C('red', 4) : C('denim', 4));
-  micro(p, 6, 11, 'SEC', C('gold', 4));
-  p.rect(6, 17, 3, 2, C('grey', 2)).rect(11, 17, 3, 2, C('grey', 2));
+  // the visor wraps round the front of the dome
+  p.rect(11, 5, 4, 2, C('grey', 0))
+    .set(12 + k, 5, C('red', 4))
+    .set(13 + k, 5, C('red', 4));
+  p.rect(8, 1, 2, 2, k ? C('red', 4) : C('denim', 4));
+  // a gold badge on the chest and an arm swinging
+  p.rect(12, 11, 2, 2, C('gold', 4));
+  p.rect(9 - k, 10, 2, 5, C('denim', 1));
+  // walking feet
+  p.rect(k ? 7 : 6, 17, 3, 2, C('grey', 2)).rect(k ? 10 : 11, 17, 3, 2, C('grey', 2));
   outline(p, K());
   return p;
 }
@@ -538,5 +569,6 @@ export function buildMonsterBlocks(): BlockSet {
   two('skaterSafe', skaterPic);
   two('dinoSafe', dinoPic);
   two('buggySafe', buggyPic);
+  two('mowerFront', mowerFrontPic, { hp: -2 });
   return s;
 }

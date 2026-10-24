@@ -57,7 +57,7 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.pop, { pics: anim('pop', 2), power: 100, end: 6 });
 
   def(MON.mowerH, { pics: anim('mower', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(5, 0, 2) });
-  def(MON.mowerV, { pics: anim('mower', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 4, 2) });
+  def(MON.mowerV, { pics: anim('mowerFront', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 4, 2) });
   def(MON.mowerBox, {
     pics: anim('mower', 2),
     power: ROBOT,
@@ -65,10 +65,10 @@ export function buildMonsters(mb: BlockSet): Monster[] {
     score: 100,
     end: 900,
     march: [
-      [0, 3, 2, 0],
-      [4, 3, 2, 0],
-      [4, 0, 2, 0],
-      [0, 0, 2, 0],
+      [0, 3, 2, O.left],
+      [4, 3, 2, O.right],
+      [4, 0, 2, O.right],
+      [0, 0, 2, O.left],
     ],
   });
   def(MON.dog, { pics: anim('dog', 3), power: CHASER, towards: 2, becomes: MON.pop, score: 150 });
@@ -103,10 +103,10 @@ export function buildMonsters(mb: BlockSet): Monster[] {
     becomes: MON.pop,
     score: 200,
     march: [
-      [5, 0, 2, 0],
-      [5, 4, 2, 0],
-      [0, 4, 2, 0],
-      [0, 0, 2, 0],
+      [5, 0, 2, O.right],
+      [5, 4, 2, O.right],
+      [0, 4, 2, O.left],
+      [0, 0, 2, O.left],
     ],
   });
   def(MON.cart, { pics: anim('cart', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(7, 0, 4) });
