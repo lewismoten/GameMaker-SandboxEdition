@@ -37,7 +37,9 @@ export async function verifyWalk(
   let after = -1;
   while (run.frame < limit && (await run.step(false))) {
     if (run.frame % 600 === 0 && opts.progress?.(run.frame)) break;
-    if (rec.keysLeft === 0 && !scenes.includes(1)) {
+    // (counted from the scene the bot stopped in: before that, a scene with no keys of its own is still to come)
+    const there = scenes.length >= walk.segments.length + (walk.partial ? 1 : 0);
+    if (rec.keysLeft === 0 && there && !scenes.includes(1)) {
       if (after < 0) after = run.frame;
       else if (run.frame - after > 5 * WALKTHROUGH_FPS) break;
     }
