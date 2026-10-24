@@ -612,6 +612,32 @@
   align-self: center;
 }
 
+/* a cast member's portrait: the game's own pixels, scaled up whole, on a dotted backdrop */
+.mag-cast {
+  margin: 0;
+}
+
+.mag-cast-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 6em;
+  padding: 0.4em;
+  background:
+    radial-gradient(rgba(0, 0, 0, 0.18) 18%, transparent 20%) 0 0 / 0.5em 0.5em,
+    #fff8e0;
+  border: 0.12em solid #000;
+}
+
+.mag-cast-frame img {
+  display: block;
+  width: min(100%, calc(var(--w) * 1px));
+  height: auto;
+  max-height: 9em;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
 /* listings: a game per line, the price at the right, dot leaders */
 .mag-rows {
   margin: 0;
@@ -655,6 +681,36 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   opacity: 0.8;
+}
+
+/* a listing with a small screenshot at its left */
+.mag-rows li.has-shot {
+  grid-template-columns: 6.5em 1fr auto;
+  gap: 0 0.7em;
+}
+
+.mag-rows li.has-shot > .mag-row-shot {
+  grid-row: 1 / span 4;
+  grid-column: 1;
+  margin: 0.15em 0 0;
+}
+
+.mag-rows li.has-shot > .mag-row-title {
+  grid-column: 2;
+}
+
+.mag-rows li.has-shot > :is(.mag-row-by, .mag-row-blurb, .mag-row-more) {
+  grid-column: 2 / -1;
+}
+
+.mag-row-shot .mag-bevel {
+  padding: 0.2em;
+  border-width: 0.12em;
+  box-shadow: 0.15em 0.15em 0 rgba(0, 0, 0, 0.45);
+}
+
+.mag-row-shot.none {
+  visibility: hidden;
 }
 
 .mag-row-more {

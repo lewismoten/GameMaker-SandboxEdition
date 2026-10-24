@@ -63,6 +63,36 @@ function shotUrl(entry: CatalogEntry, view: 'title' | 'level'): Promise<string |
   return p;
 }
 
+/** A screenshot on its beveled frame, filled in once drawn (hidden when the game has none). */
+function shotFigure(
+  game: string,
+  view: 'title' | 'level',
+  alt: string,
+  env: RenderEnv,
+  pending: Promise<unknown>[],
+  cls: string,
+  caption?: Inline,
+  tilt?: number,
+): HTMLElement {
+  const img = h('img', { alt, width: 320, height: 192 });
+  const fig = h(
+    'figure',
+    { class: cls, style: tilt ? `--tilt:${tilt}deg` : undefined },
+    h('span', { class: 'mag-bevel' }, img),
+    caption ? h('figcaption', null, ...inline(caption, env.where)) : null,
+  );
+  const entry = env.entry(game);
+  if (entry)
+    pending.push(
+      shotUrl(entry, view).then((url) => {
+        if (url) img.src = url;
+        else fig.classList.add('none');
+      }),
+    );
+  else fig.classList.add('none');
+  return fig;
+}
+
 function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLElement {
   const { where } = env;
   const all = (list: Block[]) => list.map((x) => block(x, env, pending));
@@ -91,27 +121,21 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       return h('aside', { class: `mag-side tone-${b.tone ?? 'yellow'}`, 'aria-label': b.title }, h('h3', null, keep(b.title)), ...all(b.blocks));
     case 'pull':
       return h('blockquote', { class: 'mag-pull' }, h('p', null, ...inline(b.text, where)), b.by ? h('footer', null, `— ${b.by}`) : null);
-    case 'shot': {
-      const img = h('img', { alt: b.alt, width: 320, height: 192 });
-      const fig = h(
-        'figure',
-        { class: 'mag-shot', style: b.tilt ? `--tilt:${b.tilt}deg` : undefined },
-        h('span', { class: 'mag-bevel' }, img),
-        b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null,
-      );
-      const entry = env.entry(b.game);
-      if (entry)
-        pending.push(
-          shotUrl(entry, b.view).then((url) => {
-            if (url) img.src = url;
-            else fig.classList.add('none');
-          }),
-        );
-      else fig.classList.add('none');
-      return fig;
-    }
+    case 'shot':
+      return shotFigure(b.game, b.view, b.alt, env, pending, 'mag-shot', b.caption, b.tilt);
     case 'art':
       return h('figure', { class: `mag-art art-${b.art}` }, artElement(b.art, b.alt), b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null);
+    case 'cast':
+      return h(
+        'figure',
+        { class: 'mag-cast' },
+        h(
+          'span',
+          { class: 'mag-cast-frame' },
+          h('img', { src: `./cast/${b.id}.png`, alt: b.alt, width: b.w, height: b.h, style: `--w:${b.w * Math.max(1, Math.floor(120 / Math.max(b.w, b.h)))}` }),
+        ),
+        b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null,
+      );
     case 'rows':
       return h(
         'ul',
@@ -119,7 +143,8 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         ...b.rows.map((r) =>
           h(
             'li',
-            null,
+            { class: r.shot ? 'has-shot' : undefined },
+            r.shot ? shotFigure(r.shot.game, r.shot.view, r.shot.alt, env, pending, 'mag-row-shot') : null,
             h('span', { class: 'mag-row-title' }, r.go ? goLink(r.go, where, keep(r.title)) : keep(r.title)),
             r.price ? h('span', { class: 'mag-row-price' }, r.price) : null,
             r.by || r.kind ? h('span', { class: 'mag-row-by' }, [r.by, r.kind].filter(Boolean).join(' · ')) : null,

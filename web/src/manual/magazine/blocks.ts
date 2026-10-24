@@ -27,6 +27,8 @@ export const shot = (game: string, view: 'title' | 'level', alt: string, caption
   tilt,
 });
 export const art = (id: ArtId, alt: string, caption?: Inline): Block => ({ t: 'art', art: id, alt, caption });
+/** A cast member's portrait (public/cast/<id>.png), at its own pixel size `w` x `h`. */
+export const portrait = (id: string, alt: string, w: number, h: number, caption?: Inline): Block => ({ t: 'cast', id, alt, w, h, caption });
 export const rows = (r: ListingRow[]): Block => ({ t: 'rows', rows: r });
 /** A hint: the answer is printed upside down under the question. */
 export const hint = (q: Inline, a: string, game?: string): Block => ({ t: 'hint', q, a, game });

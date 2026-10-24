@@ -56,6 +56,7 @@ function walk(b: Block, text: string[], links: string[]): void {
       links.push(`go:game/${b.game}`);
       break;
     case 'art':
+    case 'cast':
       text.push(b.alt);
       t(b.caption);
       break;
@@ -65,6 +66,7 @@ function walk(b: Block, text: string[], links: string[]): void {
         t(r.blurb);
         if (r.go) links.push(r.go);
         for (const [label, go] of r.more ?? []) (text.push(label), links.push(go));
+        if (r.shot) (text.push(r.shot.game, r.shot.alt), links.push(`go:game/${r.shot.game}`));
       }
       break;
     case 'hint':

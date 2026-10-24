@@ -47,6 +47,8 @@ export interface ListingRow {
   blurb?: Inline;
   /** A small extra link, e.g. ['Hint book', 'go:hints/teddy']. */
   more?: [label: string, go: Go][];
+  /** A small screenshot at the row's left, drawn from that listed game (like a `shot` block). */
+  shot?: { game: string; view: 'title' | 'level'; alt: string };
 }
 
 export type Block =
@@ -60,6 +62,8 @@ export type Block =
   | { t: 'pull'; text: Inline; by?: string }
   | { t: 'shot'; game: string; view: 'title' | 'level'; alt: string; caption?: Inline; tilt?: number }
   | { t: 'art'; art: ArtId; alt: string; caption?: Inline }
+  /** A cast member's portrait: public/cast/<id>.png (cast/castData.ts), drawn from a game's own files. */
+  | { t: 'cast'; id: string; alt: string; w: number; h: number; caption?: Inline }
   | { t: 'rows'; rows: ListingRow[] }
   | { t: 'hint'; game?: string; q: Inline; a: string }
   | { t: 'card'; title: string; lines: Inline[]; fields?: string[]; go?: Go; button?: string; tone?: Tone }
