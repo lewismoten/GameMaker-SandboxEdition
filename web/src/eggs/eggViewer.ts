@@ -2,24 +2,28 @@
 // turn it yourself; still when the system asks for reduced motion), with the game it was
 // found in, the egg itself, the names it carries and its piece of the mystery. With the desk's
 // black light on, the room stays dark and each egg shows its fluorescent ink (eggUv.ts).
-// Once all three Teddy eggs are found, their cards show the one he laid himself, turning with
-// its whiff rising (teddyEgg.ts, eggPile.ts).
+// Once all three Teddy eggs are found, the one he laid himself follows the felt eggs as a page
+// of its own, turning with its whiff rising (teddyEgg.ts, eggPile.ts); it is never one of them.
 import { h, clear } from '../editor/core/ui';
 import { drawEgg, eggTexture, EGG_ASPECT } from './eggArt';
 import { uvInk, uvTexture } from './eggUv';
 import type { EggState } from './eggState';
 import { drawOdor, drawPile } from './eggPile';
-import { TEDDY_EGG, TEDDY_GAMES, hasTeddyEgg } from './teddyEgg';
+import { TEDDY_EGG, hasTeddyEgg } from './teddyEgg';
 
 const UV_WORDS = ['dots', 'stripes', 'a zigzag', 'little stars', 'a tiny smiling face'];
 
 export function openEggViewer(found: EggState[], start = 0): Promise<void> {
   return new Promise((resolve) => {
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let at = Math.max(0, Math.min(found.length - 1, start));
+    // with all three of Teddy's eggs found, the one he laid himself is a last page of its own
+    const special = hasTeddyEgg(found.map((e) => e.egg.game));
+    const pages = found.length + (special ? 1 : 0);
+    let at = Math.max(0, Math.min(pages - 1, start));
+    const onSpecial = () => at === found.length;
     const uv = !!document.querySelector('.desk.bl-uv');
     const textureOf = (i: number) => (uv ? uvTexture(eggTexture(found[i].egg.look), i) : eggTexture(found[i].egg.look));
-    let tex = textureOf(at);
+    let tex = onSpecial() ? undefined : textureOf(at);
     let turn = 0;
     let spin = still ? 0 : 0.6; // radians a second
     let drag: { x: number; turn: number } | undefined;
@@ -48,6 +52,14 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
       const eh = Math.min(hh * 0.78, (w * 0.8) / EGG_ASPECT);
       const ew = eh * EGG_ASPECT;
       const top = (hh - eh) / 2 - hh * 0.03;
+      if (!tex) {
+        // Teddy's: the little pile turning, its whiff rising (still under reduced motion)
+        const ph = Math.min(hh * 0.8, w * 0.9);
+        const box = { x: (w - ph * 0.75) / 2, y: (hh - ph) / 2, w: ph * 0.75, h: ph };
+        drawPile(g, 0.35 + turn, box, Math.round(Math.min(360, ph * k)));
+        drawOdor(g, box, still ? undefined : performance.now() / 1000);
+        return;
+      }
       // its shadow on the table
       g.fillStyle = uv ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.4)';
       g.beginPath();
@@ -62,56 +74,33 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
         turn += spin * dt;
         dirty = true;
       }
-      if (dirty) draw();
+      if (dirty || (!tex && !still)) draw();
       dirty = false;
-      if (special && !still && specialCanvas?.isConnected) drawSpecial(t / 1000);
       raf = requestAnimationFrame(frame);
     };
 
-    // with all three of Teddy's eggs found, the one he laid himself turns on their cards, its
-    // whiff rising (still under reduced motion); a bonus, not one of the felt eggs
-    const special = hasTeddyEgg(found.map((e) => e.egg.game));
-    const SW = 72;
-    const SH = 96;
-    let specialCanvas: HTMLCanvasElement | undefined;
-    const drawSpecial = (time?: number) => {
-      const c = specialCanvas;
-      if (!c) return;
-      const k = c.width / SW;
-      const g = c.getContext('2d')!;
-      g.clearRect(0, 0, c.width, c.height);
-      const box = { x: 0, y: 0, w: SW * k, h: SH * k };
-      drawPile(g, time === undefined ? 0.35 : 0.35 + time * 0.6, box, 120);
-      drawOdor(g, box, time);
-    };
-    const specialFigure = () => {
-      const k = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
-      specialCanvas = h('canvas', {
-        width: SW * k,
-        height: SH * k,
-        role: 'img',
-        'aria-label': `${TEDDY_EGG.name}, a little pile of felt sausages with a whiff rising${still ? '' : ', turning'}`,
-      });
-      drawSpecial(still ? undefined : performance.now() / 1000);
-      return h(
-        'figure',
-        { class: 'eggv-special' },
-        specialCanvas,
-        h(
-          'figcaption',
-          null,
-          h('strong', null, TEDDY_EGG.name),
-          h('span', null, `${TEDDY_EGG.caption}. ${TEDDY_EGG.description}`),
-          h('span', { class: 'eggv-special-credits' }, `Stitched inside: ${TEDDY_EGG.credits.join('; ')}.`),
-          h('span', { class: 'eggv-lore' }, TEDDY_EGG.lore),
-        ),
-      );
-    };
     const show = () => {
-      const e = found[at];
-      tex = textureOf(at);
       turn = 0;
       dirty = true;
+      count.textContent = pages > 1 ? (onSpecial() ? 'Teddy’s special egg' : `${at + 1} of ${found.length} found`) : '';
+      prev.disabled = next.disabled = pages < 2;
+      if (onSpecial()) {
+        tex = undefined;
+        canvas.setAttribute('aria-label', `${TEDDY_EGG.name}, a little pile of felt sausages with a whiff rising${still ? '' : ', turning'}`);
+        clear(
+          card,
+          h('h2', { id: 'eggv-title' }, TEDDY_EGG.name),
+          h('p', { class: 'eggv-where' }, `${TEDDY_EGG.caption}. Not one of the felt eggs.`),
+          h('p', null, TEDDY_EGG.description),
+          h('h3', null, 'Stitched inside'),
+          h('ul', null, ...TEDDY_EGG.credits.map((c) => h('li', null, c))),
+          h('h3', null, 'Tucked in with it'),
+          h('p', { class: 'eggv-lore' }, TEDDY_EGG.lore),
+        );
+        return;
+      }
+      const e = found[at];
+      tex = textureOf(at);
       const ink = uv ? uvInk(at) : undefined;
       canvas.setAttribute(
         'aria-label',
@@ -133,13 +122,10 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
         h('ul', null, ...e.egg.credits.map((c) => h('li', null, c))),
         h('h3', null, 'Tucked in with it'),
         h('p', { class: 'eggv-lore' }, e.egg.lore),
-        special && (TEDDY_GAMES as readonly string[]).includes(e.egg.game) ? specialFigure() : null,
       );
-      prev.disabled = next.disabled = found.length < 2;
-      count.textContent = found.length > 1 ? `${at + 1} of ${found.length} found` : '';
     };
     const go = (d: number) => {
-      at = (at + d + found.length) % found.length;
+      at = (at + d + pages) % pages;
       show();
     };
 

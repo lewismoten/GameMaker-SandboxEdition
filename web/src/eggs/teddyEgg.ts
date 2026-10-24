@@ -1,7 +1,7 @@
 // Teddy's special egg, The Lay-an-Egg Egg: once the felt eggs of all three of his adventures
 // are found, Teddy lays one of his own, a little pile of felt sausages with a whiff rising
-// (eggPile.ts). It sits at the end of the shadow box (eggDisplay.ts), turns on those three
-// eggs' cards in the viewer (eggViewer.ts), and EGG.EXE says so. It is a bonus: never one of
+// (eggPile.ts). It sits at the end of the shadow box (eggDisplay.ts), has a page of its own
+// after the felt eggs in the viewer (eggViewer.ts), and EGG.EXE says so. It is a bonus: never one of
 // the felt eggs (eggs.ts), so never in their count or in anything they unlock.
 
 /** The games whose felt eggs earn it, in order. */
