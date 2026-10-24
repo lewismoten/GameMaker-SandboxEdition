@@ -92,8 +92,8 @@ export function morningFli(): Uint8Array {
       teddy(p, f < 12 ? 'frontTilt' : 'frontBeg', 214);
       // the letter in his hand
       p.rect(156, 104, 18, 13, c('paint', 3)).frame(156, 104, 18, 13, c('ink', 0)).rect(159, 108, 12, 1, c('ink', 1)).rect(159, 111, 9, 1, c('ink', 1));
-      caption(p, f < 12 ? 'DOC LEO HAS NEWS: THE KLOWN' : "BUT TEDDY WON'T GO WITHOUT", f < 12 ? 10 : 10);
-      caption(p, f < 12 ? 'KLUB PLAYS THE FAIR TONIGHT!' : 'HIS BIG SISTER.', 22);
+      caption(p, f < 12 ? 'DOC LEO HAS NEWS: THE KLOWN KLUB' : "BUT TEDDY WON'T GO WITHOUT", f < 12 ? 10 : 10);
+      caption(p, f < 12 ? 'PLAYS THE FAIR TONIGHT!' : 'HIS BIG SISTER.', 22);
     });
   // the logo drops in, bouncing, over the dawn
   for (let f = 0; f < 14; f++) {

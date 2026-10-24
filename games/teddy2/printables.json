@@ -266,7 +266,7 @@
     "cbl": "gwinn.cbl",
     "pal": "farm.pal"
    },
-   "back": "If found wandering, please return to Doc Leo and THE CHEZ, the little red car by the show barn. She will come for a corn dog. She will come for anything, really."
+   "back": "If found wandering, please return to Doc Leo and THE\u00a0CHEZ, the little red car by the show barn. She will come for a corn dog. She will come for anything, really."
   },
   {
    "kind": "hintbook",
@@ -283,7 +283,7 @@
       },
       {
        "q": "I found the thing Gwinn dropped. Now what?",
-       "a": "Bring it to Doc Leo at THE CHEZ, his little red car, at the end of the stop. Its door opens for it: hop in and he drives on."
+       "a": "Bring it to Doc Leo at THE\u00a0CHEZ, his little red car, at the end of the stop. Its door opens for it: hop in and he drives on."
       },
       {
        "q": "How do Gwinn's levels end?",
@@ -308,7 +308,7 @@
       },
       {
        "q": "What is in the attic?",
-       "a": "Bounce on Doc Leo's bed upstairs: it sends you up through the hatch. A balloon dog and a lot of boxes marked KLUB."
+       "a": "Bounce on Doc Leo's bed upstairs: it sends you up through the hatch. A balloon dog and a lot of boxes marked WIGS."
       }
      ]
     },
