@@ -60,6 +60,10 @@ export class Term {
     if (!on) this.lost = undefined;
     if (on && !this.live) newCall();
     this.live = on;
+    if (typeof window !== 'undefined') {
+      removeEventListener('gm-line-speed', this.onSpeed);
+      if (on) addEventListener('gm-line-speed', this.onSpeed);
+    }
     if (on) this.h.keys.gate = () => (this.line$.idle ? undefined : this.line$.drain());
     else {
       this.line$.flush();
@@ -277,7 +281,16 @@ export class Term {
     }
   }
 
+  /** The status bar's words, to show a new line speed in. */
+  private statusText = '';
+
+  /** The speed changed (on the modem, or the DOS page's menu): the status bar says so. */
+  private onSpeed = () => {
+    if (this.statusText) this.status(this.statusText.replace(/│ \d+ N81 │/, `│ ${statusBps()} N81 │`));
+  };
+
   status(text: string): void {
+    this.statusText = text;
     this.h.screen.write(0, ROWS - 1, attr(0, 3), toCp437(text).padEnd(COLS).slice(0, COLS));
   }
 
