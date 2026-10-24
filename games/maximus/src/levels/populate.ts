@@ -4,7 +4,7 @@
 // in the sky, droppers on ceilings. Up to 200 per map (Game-Maker's LASTMM).
 import { rng } from '../../../kit/pixels';
 import { LASTMM } from '../../../../web/src/formats/map';
-import type { Block } from '../../../../web/src/formats/blocks';
+import { SOLLEF, SOLRIG, type Block } from '../../../../web/src/formats/blocks';
 import { Grid, W, H, wx, wy } from './mapkit';
 import type { Creature, MonsterSet, Placement } from '../characters/bestiary';
 
@@ -32,6 +32,9 @@ function reach(c: Creature): number {
   return Math.max(0, ...c.move.corners.map((k) => k[0]));
 }
 
+/** A solid-sided creature on a sideways path (a ferry slab). */
+const slides = (c: Creature) => reach(c) > 0 && ((c.block?.solid ?? 0) & (SOLLEF | SOLRIG)) !== 0;
+
 export function populate(
   g: Grid,
   bbl: Block[],
@@ -45,6 +48,14 @@ export function populate(
     const b = bbl[g.get(x, y)];
     return (b.solid & 14) === 0 && b.chHitPt >= 0 && !b.obj && b.effect === 0;
   };
+  const wall = (x: number, y: number) => (bbl[g.get(x, y)].solid & (SOLLEF | SOLRIG)) !== 0;
+  /** The nearest shift (up to 3 blocks) at which a slab gliding `run` blocks right from x has no
+   * wall on its rows (its own and the one above) from a block before it to a block past its turn. */
+  const clearShift = (x: number, y: number, run: number) =>
+    [0, -1, 1, -2, 2, -3, 3].find((d) => {
+      for (let k = -1; k <= run + 1; k++) if (wall(x + d + k, y) || wall(x + d + k, y - 1)) return false;
+      return true;
+    });
   const far = (x: number, y: number) => {
     let dx = Math.abs(x - spots.avoid.x);
     dx = Math.min(dx, W - dx);
@@ -152,7 +163,12 @@ export function populate(
         if (s) ok = put(mon, s.x, s.y - 1);
       } else if (place === 'platform') {
         const s = spots.liquid[Math.floor(r() * spots.liquid.length)] ?? spots.caveAir[Math.floor(r() * spots.caveAir.length)];
-        if (s) ok = put(mon, s.x - 2, s.y - 2);
+        if (s) {
+          // a slab that glides sideways turns a block clear of walls: PLAYGAME's side push puts
+          // a courier beside it with no wall check, so at a wall it would shove him inside
+          const x = s.x - 2 + (slides(c) ? (clearShift(s.x - 2, s.y - 2, reach(c)) ?? NaN) : 0);
+          if (!Number.isNaN(x)) ok = put(mon, x, s.y - 2);
+        }
       }
       if (ok) n++;
     }
