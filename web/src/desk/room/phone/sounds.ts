@@ -19,7 +19,7 @@ function audio(): AudioContext | undefined {
   }
 }
 
-/** Für Elise's opening, the hold music on every business line (note, beats). */
+/** Für Elise's opening (Beethoven, about 1810: public domain), the hold music on every business line (note, beats). */
 const FUR_ELISE: [number, number][] = [
   [76, 1],
   [75, 1],

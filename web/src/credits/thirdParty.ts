@@ -56,6 +56,31 @@ export const PIECE_GROUPS: PieceGroup[] = [
     ],
   },
   {
+    id: 'credits-melodies',
+    title: 'Public-domain melodies',
+    note: 'The music is arranged and synthesized for this project, so there is no recording to credit. These few pieces quote older tunes whose compositions are in the public domain in the US.',
+    pieces: [
+      {
+        name: 'Yankee Doodle',
+        license: 'Public domain',
+        by: 'Traditional American tune, 18th century',
+        what: 'The fife on Main Street in Teddy’s Little Bigger Adventure (games/teddy2, MAIN.CMF), arranged for the game.',
+      },
+      {
+        name: 'Toccata and Fugue in D minor, BWV 565',
+        license: 'Public domain',
+        by: 'Credited to J. S. Bach, about 1704',
+        what: 'The haunted house organ’s opening mordent in I Screamed, She Smirked (games/smirked: TITLE.CMF, STORY.CMF, FOYER.CMF), arranged for the game.',
+      },
+      {
+        name: 'Für Elise',
+        license: 'Public domain',
+        by: 'Ludwig van Beethoven, about 1810 (published 1867)',
+        what: 'Its opening is the hold music on the desk phone’s business lines (web/src/desk/room/phone/sounds.ts).',
+      },
+    ],
+  },
+  {
     id: 'credits-players',
     title: 'In the Mac, Windows and Linux players',
     pieces: [

@@ -113,6 +113,18 @@ game folder opens in the browser unchanged.
   Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from
   two of Lewis's photos of himself, over many rounds of his corrections, with
   `games/kit/scans/blacklight.py`.
+- **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
+  this project (there is no recording to credit), but a few pieces quote older tunes whose
+  compositions are in the public domain in the US:
+  - *Teddy's Little Bigger Adventure*: `games/teddy2/disk/main.cmf` (Main Street) quotes
+    **Yankee Doodle**, a traditional American tune (18th century), public domain; arrangement
+    by the game.
+  - *I Screamed, She Smirked*: `games/smirked/disk/title.cmf`, `story.cmf` and `foyer.cmf`
+    open with the mordent of the **Toccata and Fugue in D minor**, BWV 565, credited to
+    J. S. Bach (about 1704), public domain; arrangement by the game.
+  - *The desk's wall phone*: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
+    opening of **Für Elise** by Ludwig van Beethoven (about 1810, published 1867), public
+    domain.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
   Bell and others). Shareware games are shown play-only, with their authors' original
