@@ -136,7 +136,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
               class: 'sc-another sc-link',
               onclick: () => void copyLink(game),
               title: 'Copy a link that opens this page on this game',
-              'aria-label': `Copy a link to ${game.title}`,
+              'aria-label': `Copy link to ${game.title}`,
             },
             icon('link'),
             'Copy link',
@@ -156,7 +156,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
 
     const setPlaying = (on: boolean) => {
       playBtn.textContent = on ? '■ Stop demo' : '▶ Watch demo';
-      playBtn.setAttribute('aria-label', `${on ? 'Stop' : 'Play'} the ${game.title} demo here`);
+      playBtn.setAttribute('aria-label', `${on ? 'Stop' : 'Watch'} demo of ${game.title} here`);
       playBtn.setAttribute('aria-pressed', String(on));
       if (!on) demo = undefined;
     };

@@ -210,8 +210,9 @@ async function watch(
       null,
       h(
         'button',
-        { type: 'button', class: 'wt-chapter', onclick: () => void seek(i), 'aria-label': `${c.title}, at ${clock(c.frame / WALKTHROUGH_FPS)}` },
+        { type: 'button', class: 'wt-chapter', onclick: () => void seek(i) },
         h('span', { class: 'wt-chapter-time' }, clock(c.frame / WALKTHROUGH_FPS)),
+        ' ',
         h('span', { class: 'wt-chapter-title' }, c.title),
       ),
     ),

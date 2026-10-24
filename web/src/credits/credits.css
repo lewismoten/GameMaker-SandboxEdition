@@ -309,6 +309,14 @@ main.credits-page figcaption {
   line-height: 1.35;
 }
 
+/* a file link alone on its line in a caption: a 24px target, however it wraps */
+main.credits-page figcaption > a {
+  display: inline-block;
+  min-height: 24px;
+  padding-block: 4px;
+  overflow-wrap: anywhere;
+}
+
 main.credits-page .credits-thumbs {
   display: flex;
   flex-wrap: wrap;

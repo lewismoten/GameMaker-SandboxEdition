@@ -147,7 +147,7 @@ export function healthNote(target: HealthTarget): HTMLElement {
     note.textContent = `ⓘ Notes on its files (${n})`;
     note.setAttribute(
       'aria-label',
-      `${target.title}: notes on its files, ${issues.length ? countLabel(issues) : `${n} note${n === 1 ? '' : 's'}`}. Show them.`,
+      `Notes on its files (${n}) for ${target.title}: ${issues.length ? countLabel(issues) : `${n} note${n === 1 ? '' : 's'}`}. Show them.`,
     );
     note.hidden = false;
   });
