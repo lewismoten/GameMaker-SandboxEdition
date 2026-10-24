@@ -374,7 +374,7 @@ function telemarketerPic(k: number): Pixels {
   // A headset and a big old telephone handset.
   p.line(6, 2, 6, 6, C('grey', 1)).line(6, 6, 8, 7, C('grey', 1));
   p.rect(13, 9 + k, 4, 2, C('red', 3)).rect(15, 7 + k, 2, 6, C('red', 3));
-  micro(p, 7, 12, '1-800', C('grey', 0));
+  micro(p, 4, 12, '800', C('grey', 0));
   outline(p, K());
   return p;
 }

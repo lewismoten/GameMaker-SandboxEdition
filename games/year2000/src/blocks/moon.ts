@@ -132,7 +132,7 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone' | 'cpu650
     // Dex's own project: a "pocket telephone". The judges have their doubts.
     p.rect(8, 3, 4, 10, C('grey', 1)).rect(9, 4, 2, 2, C('neon', 2)).line(11, 3, 12, 0, C('grey', 2));
     for (let y = 7; y < 12; y += 2) p.set(9, y, C('grey', 5)).set(10, y, C('grey', 5));
-    micro(p, 1, 14, 'POCKET', C('denim', 1));
+    micro(p, 1, 14, 'PHONE', C('denim', 1));
   }
   return p;
 }
@@ -140,8 +140,9 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone' | 'cpu650
 function judgeTable(done: boolean, label = 'PAGES'): Pixels {
   const p = on('gym');
   p.rect(0, 4, 20, 14, C('denim', 2)).rect(0, 4, 20, 3, C('denim', 4));
-  p.rect(2, 9, 16, 6, C('paper', 2));
-  micro(p, 2, 10, done ? 'OK!' : label, done ? C('green', 2) : C('red', 3));
+  // the card runs edge to edge: PAGES and COVER take 19 of the block's 20 pixels
+  p.rect(0, 9, 20, 6, C('paper', 2));
+  micro(p, 1, 10, done ? 'OK!' : label, done ? C('green', 2) : C('red', 3));
   if (!done) micro(p, 2, 14, 'HERE', C('denim', 1));
   void PAGES_NEEDED;
   return p;
@@ -150,7 +151,7 @@ function judgeTable(done: boolean, label = 'PAGES'): Pixels {
 function podium(): Pixels {
   const p = on('gym');
   p.rect(3, 6, 14, 13, C('gold', 3)).rect(3, 6, 14, 3, C('gold', 5));
-  micro(p, 8, 11, '1', C('gold', 1), 2);
+  micro(p, 8, 8, '1', C('gold', 1), 2);
   p.disc(10, 3, 2.5, C('gold', 5));
   p.rect(9, 3, 2, 4, C('gold', 4));
   return p;

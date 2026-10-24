@@ -269,7 +269,7 @@ function launchSign(): Pixels {
   const p = on('concrete');
   p.rect(1, 3, 18, 12, C('night', 0)).frame(1, 3, 18, 12, C('chrome', 5));
   micro(p, 3, 5, 'MOON', C('gold', 5));
-  micro(p, 3, 10, '-> GO', C('neon', 3));
+  micro(p, 3, 10, '->GO', C('neon', 3));
   p.rect(9, 15, 2, 4, C('chrome', 3));
   return p;
 }

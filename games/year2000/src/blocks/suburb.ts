@@ -88,10 +88,11 @@ function doghouse(floor: Floor): Pixels {
   const p = on(floor);
   for (let y = 2; y < 9; y++) p.rect(10 - (y - 1) * 1.3, y, (y - 1) * 2.6, 1, C('chrome', 4 + (y % 2)));
   p.rect(3, 9, 14, 9, C('sky', 3));
-  oval(p, 10, 15, 3.5, 4, C('night', 0));
+  oval(p, 10, 16.5, 3.5, 3, C('night', 0));
   p.rect(6, 17, 8, 1, C('night', 0));
-  p.rect(4, 10, 12, 3, C('paper', 2));
-  micro(p, 5, 10, 'SPRKY', C('denim', 1));
+  // the name board is wider than the house: five letters take 19 pixels
+  p.rect(0, 9, 20, 5, C('paper', 2));
+  micro(p, 1, 9, 'SPRKY', C('denim', 1));
   return p;
 }
 
@@ -114,9 +115,9 @@ export function mowerDock(floor: Floor, label = 'MOW'): Pixels {
 function paperCannon(floor: Floor): Pixels {
   const p = on(floor);
   oval(p, 10, 16, 7, 2, C('grey', 1));
-  p.rect(5, 8, 10, 8, C('purple', 2)).rect(5, 8, 10, 2, C('purple', 4));
+  p.rect(2, 8, 16, 8, C('purple', 2)).rect(2, 8, 16, 2, C('purple', 4));
   p.rect(8, 13, 4, 7, C('grey', 1));
-  micro(p, 6, 10, 'NEWS', C('paper', 2));
+  micro(p, 3, 10, 'NEWS', C('paper', 2));
   return p;
 }
 
@@ -167,10 +168,11 @@ function tollBot(floor: Floor): Pixels {
 
 function pillStand(floor: Floor, k: number): Pixels {
   const p = on(floor);
-  p.rect(1, 3, 18, 15, C('pink', 2)).rect(1, 3, 18, 3, C('pink', 4));
-  p.rect(1, 8, 18, 10, C('paper', 2));
+  // edge to edge: DRIVE's five letters take 19 of the block's 20 pixels
+  p.rect(0, 3, 20, 15, C('pink', 2)).rect(0, 3, 20, 3, C('pink', 4));
+  p.rect(0, 8, 20, 10, C('paper', 2));
   micro(p, 2, 9, k === 0 ? 'FOOD' : 'PILL', C('pink', 1));
-  micro(p, 2, 13, k === 0 ? 'PILL' : 'DRIVE', C('denim', 1));
+  micro(p, 2 - (k === 0 ? 0 : 1), 13, k === 0 ? 'PILL' : 'DRIVE', C('denim', 1));
   return p;
 }
 

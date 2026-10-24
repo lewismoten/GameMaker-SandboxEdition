@@ -142,7 +142,7 @@ export function storyScreens(a: Art): Pixels[] {
     p.rect(126, 116, 14, 26, C('grey', 1)).rect(128, 118, 10, 8, C('neon', 2)).line(138, 116, 142, 104, C('grey', 2));
     scaleBlit(p, a.dex, 190, 40, 5);
     chromeCentered(p, 160 - 10, '', 2);
-    caption(p, ['DEX DYNAMO, AGE 11, WROTE THE BEST', 'SCIENCE FAIR REPORT IN THE SOLAR SYSTEM:', '"THE POCKET TELEPHONE." 20 WHOLE PAGES.']);
+    caption(p, ['DEX DYNAMO, 11, WROTE THE BEST SCIENCE', 'FAIR REPORT IN THE SOLAR SYSTEM:', '"THE POCKET TELEPHONE." 20 WHOLE PAGES.']);
     out.push(p);
   }
   // 3. Sparky ate it.
@@ -274,7 +274,7 @@ export function wonScreen2(a: Art): Pixels {
     '',
     'SPARKY ATE THE TROPHY.',
   ];
-  p.rect(30, 52, 260, lines.length * 11 + 10, C('night', 0));
+  p.rect(16, 52, 288, lines.length * 11 + 10, C('night', 0));
   lines.forEach((s, i) => centeredText(p, 58 + i * 11, s, i === lines.length - 1 ? C('gold', 5) : C('grey', 7)));
   scaleBlit(p, a.dex, 34, 140, 2);
   scaleBlit(p, a.sparky, 262, 158, 2, true);
