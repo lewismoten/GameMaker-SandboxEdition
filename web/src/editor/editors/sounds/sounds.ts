@@ -3,7 +3,7 @@
 import './sounds.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { h, clear, numberField, debounce } from '../../core/ui';
+import { h, clear, numberField, debounce, selectField, toast } from '../../core/ui';
 import { AudioEngine } from '../../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../../tools/speakerFx';
@@ -12,10 +12,14 @@ import { History } from '../../core/history';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
+import { decodeVoc } from '../../../formats/voc';
+import { vocToSpeaker, type SpeakerFit } from '../../../audio/vocToSpeaker';
 
 const MAXF = 8192;
 const MINF = 64;
 const audio = new AudioEngine();
+/** How a .voc longer than the 36 steps becomes PC speaker steps (kept while the page is open). */
+let fit: SpeakerFit = 'whole';
 
 // Frequencies are drawn on a log scale, as pitch is heard.
 const toY = (f: number, hgt: number) => (f < MINF ? hgt : hgt - (Math.log2(f / MINF) / Math.log2(MAXF / MINF)) * hgt);
@@ -58,6 +62,17 @@ registerEditor(['snd'], (host, project, file) => {
   const vocOf = (i: number) => {
     const name = snd.digital[i];
     return name && name[0] !== ' ' && project.files.has(`${name}.voc`) ? `${name}.voc` : undefined;
+  };
+  /** Slot i's .voc as PC speaker steps, or undefined when it has none or it can't be read. */
+  const fromVoc = (i: number): Uint16Array | undefined => {
+    const voc = vocOf(i);
+    if (!voc) return undefined;
+    try {
+      const d = decodeVoc(project.files.get(voc)!);
+      return vocToSpeaker(d.samples, d.sampleRate, fit);
+    } catch {
+      return undefined;
+    }
   };
   const hasSpeaker = (i: number) => snd.freqs[i].some((v) => v > 0);
   // A slot is silent when it has neither a .voc file nor any PC speaker step.
@@ -191,6 +206,78 @@ registerEditor(['snd'], (host, project, file) => {
     canvas.addEventListener('pointerup', () => (renderList(), renderPlay()));
     draw();
 
+    // the slot's .voc as a PC speaker sound: heard first, drawn as outlines, then kept if liked
+    let preview: Uint16Array | undefined;
+    const drawPreview = () => {
+      draw();
+      if (!preview) return;
+      ctx.strokeStyle = '#00e0ff';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < NUMFREQ; i++) {
+        if (!preview[i]) continue;
+        const y = toY(preview[i], H);
+        ctx.strokeRect(i * 14 + 1, y + 1, 12, H - y - 1);
+      }
+    };
+    const convState = h('p', { class: 'hint snd-state', 'aria-live': 'polite' });
+    const convert = () => {
+      preview = fromVoc(current);
+      if (!preview) toast('That .voc file could not be read.', 'error');
+      return preview;
+    };
+    const previewBtn = h(
+      'button',
+      {
+        title: 'Hear this effect’s .voc as the PC speaker would play it: one tone at a time, on or off (the outlines show it)',
+        onclick: async () => {
+          if (!convert()) return;
+          drawPreview();
+          applyBtn.disabled = false;
+          convState.textContent = preview!.some((v) => v)
+            ? 'The outlines show it. Use it if you like it (Undo takes it back).'
+            : 'The .voc is too quiet to turn into PC speaker steps.';
+          await audio.resume();
+          audio.stopVoc();
+          audio.playSpeaker(preview!);
+        },
+      },
+      '▶ Preview as PC speaker',
+    );
+    const applyBtn = h(
+      'button',
+      {
+        disabled: true,
+        title: 'Replace the PC speaker steps below with the preview (Undo takes it back)',
+        onclick: () => {
+          if (!preview && !convert()) return;
+          remember();
+          f.set(preview!);
+          save();
+          renderDetail();
+          renderList();
+          void playSpeaker(current);
+          toast('The PC speaker version is made from the .voc. Undo (Ctrl+Z) takes it back.');
+        },
+      },
+      '✓ Use it for the PC speaker',
+    );
+    const fitField = selectField<SpeakerFit>(
+      'Fit',
+      [
+        ['whole', 'The whole sound, sped up'],
+        ['start', 'Its first ¼ second, as timed'],
+      ],
+      () => fit,
+      (v) => {
+        fit = v;
+        if (preview) previewBtn.click();
+      },
+      'The PC speaker sound lasts a quarter of a second: speed a longer .voc up to fit, or keep its start',
+    );
+    const convPart = vocOf(current)
+      ? h('div', { class: 'snd-part', role: 'group', 'aria-label': 'Make the PC speaker version from the .voc' }, previewBtn, fitField, applyBtn, convState)
+      : null;
+
     const digital = snd.digital[current];
     // 🎛 the sound effect maker: a new .voc for this slot (or this slot's own, made by it, changed)
     const ownVoc = vocOf(current);
@@ -258,6 +345,7 @@ registerEditor(['snd'], (host, project, file) => {
           { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
         h('div', { class: 'snd-part' }, vocBtn, vocState),
+        convPart,
         h('div', { class: 'snd-part' }, makerBtn),
       ),
       h(

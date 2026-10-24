@@ -53,6 +53,15 @@ export const SOUND_SETS: Chapter = {
   slot, and can draw the same effect as the slot’s PC speaker steps, so players without a card
   hear it too. The sliders’ settings stay with the project’s editor notes, so the sound set and
   .VOC editors can reopen them later.</p>
+  <h2>A .VOC as a PC speaker tune</h2>
+  <p>The game plays a slot’s <code>.VOC</code> on a Sound Blaster and its 36 speaker steps on a
+  PC speaker, so the two should sound alike. In the sound set editor, a slot with a
+  <code>.VOC</code> has <b>▶ Preview as PC speaker</b>: it finds the strongest pitch in each
+  step of the recording, leaves the quiet parts silent (the speaker can only be on or off), and
+  plays the result, drawn as outlines over the steps. Noisy sounds, like a crash, hop around
+  their pitch. Choose <b>Fit</b>: the whole sound sped up to a quarter of a second, or just its
+  first quarter second as timed. If you like it, <b>✓ Use it for the PC speaker</b> puts it in
+  the slot; Undo takes it back.</p>
   ${tip('Pro tip:', 'A player can turn sound effects off with <kbd>F4</kbd> and music with <kbd>F3</kbd>. Make sure nothing in your game can only be understood by ear.')}`,
 };
 
