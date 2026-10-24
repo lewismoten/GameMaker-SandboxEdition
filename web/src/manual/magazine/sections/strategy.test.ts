@@ -45,6 +45,15 @@ describe('the strategy guide', async () => {
     }
   });
 
+  it('lists the back issues in order, by volume and then number', () => {
+    const page = pages.find((pg) => pg.id === 'back-issues')!;
+    const by = [...blocks(page.blocks)].flatMap((b) => (b.t === 'rows' ? b.rows.map((r) => r.by ?? '') : []));
+    const keys = by.map((s) => /Vol\. (\d+), No\. (\d+)/.exec(s)!.slice(1).map(Number));
+    expect(keys.length).toBe(boxed.length);
+    const sorted = [...keys].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    expect(keys).toEqual(sorted);
+  });
+
   it('gives every Bard of Bizarre song-game a tip', () => {
     const text = JSON.stringify(pages);
     for (const g of ctx.games.filter((x) => x.kind === 'bizarre')) expect(text, g.id).toContain(`go:play/${g.id}`);

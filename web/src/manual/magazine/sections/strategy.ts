@@ -259,13 +259,17 @@ const bookAds = (ctx: MagContext): MagPage[] => {
 
 const backIssues = (ctx: MagContext): MagPage => {
   const boxed = ctx.games.filter((g) => g.kind === 'sandbox' && g.manual);
-  const issues: ListingRow[] = boxed.map((g) => ({
-    title: `The Scoop from ${g.title}`,
-    go: `go:newsletter/${g.id}`,
-    by: `Vol. 1, No. ${scoopIssue(g.id, boxed)}`,
-    price: '$1.00',
-    blurb: g.news?.length ? `“${g.news[0]}”` : undefined,
-  }));
+  // in issue order (every one is Vol. 1), reading down the first column and then the second
+  const issues: ListingRow[] = boxed
+    .map((g) => ({ g, no: scoopIssue(g.id, boxed) }))
+    .sort((a, b) => a.no - b.no)
+    .map(({ g, no }) => ({
+      title: `The Scoop from ${g.title}`,
+      go: `go:newsletter/${g.id}`,
+      by: `Vol. 1, No. ${no}`,
+      price: '$1.00',
+      blurb: g.news?.length ? `“${g.news[0]}”` : undefined,
+    }));
   return {
     id: 'back-issues',
     kind: 'dept',
