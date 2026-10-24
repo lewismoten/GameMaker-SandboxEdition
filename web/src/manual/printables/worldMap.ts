@@ -492,6 +492,7 @@ export function worldMapScreen(sheets: Sheet[]): HTMLElement {
   face.style.width = `${Math.max(1, s.w / 8.5) * 340}px`;
   const holder = h('div', { class: 'wm-fold' });
   const open = () => {
+    dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-world-map' } }));
     holder.replaceChildren(bar, pz.view);
     holder.classList.add('open');
     // a readable start: places about 150 px across (or the whole map when that's smaller)

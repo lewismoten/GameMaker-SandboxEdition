@@ -308,6 +308,11 @@ async function openLinked(req: LinkRequest): Promise<void> {
     else void startDesk('#/desk');
     return;
   }
+  // stored before the page may go elsewhere
+  const ach = await import('./achievements/store');
+  await ach.loadAchievements();
+  ach.unlockAchievement('link-in');
+  await ach.achievementsWritten();
   const url = destinationUrl(dest);
   if (url) {
     location.replace(url);

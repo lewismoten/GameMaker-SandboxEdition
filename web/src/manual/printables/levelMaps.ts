@@ -311,6 +311,7 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
     async live() {
       const x = await load();
       if (!x?.levels.length) return h('p', { class: 'gmb-loading' }, 'This game has no levels to map.');
+      dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
       return levelViewer(x.game, x.levels, x.paint, x);
     },
   };

@@ -264,6 +264,7 @@ async function watch(
         // eslint-disable-next-line @typescript-eslint/no-base-to-string -- whatever was thrown, as text
         status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : end;
         if (!r.error && r.done) watchedWalkthrough(entry.id);
+        if (!r.error && walk.bot) unlockAchievement('watch-bot');
       }
     })();
   };
@@ -359,6 +360,7 @@ async function watch(
     if (!dragging) return;
     dragging = false;
     showHover(undefined);
+    unlockAchievement('watch-seek');
     void seekTo(frameAt(e.clientX));
   });
   progress.addEventListener('pointercancel', () => {
@@ -372,6 +374,7 @@ async function watch(
     const to = e.key === 'Home' ? 0 : e.key === 'End' ? total - 1 : step !== undefined ? now + step * WALKTHROUGH_FPS : undefined;
     if (to === undefined) return;
     e.preventDefault();
+    unlockAchievement('watch-seek');
     void seekTo(to);
   });
 
