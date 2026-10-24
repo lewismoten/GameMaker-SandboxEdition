@@ -201,7 +201,8 @@ export function* leaves(st: Structure, bytes: Uint8Array): Generator<Leaf> {
 
 // ---------------------------------------------------------------- building a structure
 
-const hex = (n: number, w = 2) => n.toString(16).toUpperCase().padStart(w, '0');
+/** A number in upper-case hex, `w` digits at least. */
+export const hex = (n: number, w = 2) => n.toString(16).toUpperCase().padStart(w, '0');
 
 export class Builder {
   fields: Field[] = [];

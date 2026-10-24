@@ -2,9 +2,7 @@
 // entry point, describe(), which picks a format by the file's name and first bytes.
 // The fields follow the layouts written up at the top of formats/fli.ts, gif.ts, voc.ts
 // and cmf.ts.
-import { Builder, GM_FORMATS, part, readVlq, text, type Describer, type Structure } from './structure';
-
-const hex = (n: number, w = 2) => n.toString(16).toUpperCase().padStart(w, '0');
+import { Builder, GM_FORMATS, hex, part, readVlq, text, type Describer, type Structure } from './structure';
 
 const FLI_CHUNKS: Record<number, string> = {
   4: 'COLOR_256',

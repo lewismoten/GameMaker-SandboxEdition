@@ -34,7 +34,7 @@ import {
   statusLine,
   type ListRow,
 } from '../hacks/dosUi';
-import { leafAt, sectionAt, type Leaf, type Structure } from './structure';
+import { hex, leafAt, sectionAt, type Leaf, type Structure } from './structure';
 import { describe } from './structureMedia';
 import { listFolder, openFile, pathOf, type HexFile } from './hexFiles';
 
@@ -58,7 +58,6 @@ const HEX_X = 11;
 const ASC_X = 61;
 const TOP = 2;
 
-const hex = (n: number, w = 2) => n.toString(16).toUpperCase().padStart(w, '0');
 const hexX = (i: number) => HEX_X + i * 3 + (i >= 8 ? 1 : 0);
 
 export async function runHexEdit(h: RetroHost, args: string[]): Promise<void> {
