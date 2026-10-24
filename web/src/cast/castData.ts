@@ -122,7 +122,7 @@ const LISTED: CastMember[] = [
     bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, wire glasses, white greasepaint round his eyes and mouth, his own nose and cheeks sunburned pink, painted gray stubble, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
-      { game: 'teddy2', as: 'beside THE CHEZ at every stop' },
+      { game: 'teddy2', as: 'beside THE\u00a0CHEZ at every stop' },
       { game: 'teddy3', as: 'a hero at last: balloon dogs, pratfalls and the party lights' },
       { game: 'realm', as: 'the jester in Eventually Falls' },
       { game: 'brief', as: 'in the library, day and night' },
@@ -139,14 +139,14 @@ const LISTED: CastMember[] = [
   },
   {
     id: 'chez',
-    name: 'THE CHEZ',
+    name: 'THE\u00a0CHEZ',
     role: 'A tomato-red 1976½ CitiCar. Always charging.',
     hi: 'Ah-OOO-gah! Don’t mind me, I’m charging. I am always charging.',
     art: {
       game: 'teddy',
       width: 120,
       height: 56,
-      alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels',
+      alt: 'THE\u00a0CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels',
     },
     bio: 'Lewis’s own electric car: a tomato-red 1976½ CitiCar, about half the length of anything parked next to it, with a black roof and racing stripes (they make the car go faster). It pulls a parade float at its usual few miles an hour, clears the road with an ah-OOO-gah, and turns up at a curb in nearly every Sandbox game. It is charging. It is always charging.',
     appears: [
@@ -270,7 +270,7 @@ const LISTED: CastMember[] = [
       height: 180,
       alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo',
     },
-    bio: 'Teddy and Gwinn’s person, THE CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
+    bio: 'Teddy and Gwinn’s person, THE\u00a0CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
     appears: [
       { game: 'sandcast', as: 'SysOp of the secret BBS, in a selfie with Teddy' },
       { game: 'teddy', as: 'a snapshot at the gazebo with Teddy' },

@@ -17,11 +17,12 @@ import { recordDownload, updateAccount } from './ratio';
 import { downloadLine } from '../../project/diskFacts';
 import { cps, slowWait } from './lineSpeed';
 import { cpsText, expectText } from './transfer';
+import { words } from '../../keepTogether';
 
 function wrap(text: string, width: number): string[] {
   const out: string[] = [];
   let line = '';
-  for (const word of text.split(/\s+/)) {
+  for (const word of words(text)) {
     if ((line + ' ' + word).trim().length > width) {
       out.push(line);
       line = word;

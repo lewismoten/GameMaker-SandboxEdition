@@ -22,6 +22,9 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
 
 Every module starts with a comment saying what it is for. Code ported from the original C
 source names the file it came from (`code/GM/*.C` in the repository root).
+[`keepTogether.ts`](keepTogether.ts) is the one phrase no word wrap splits, THE CHEZ: the
+canvases' and BBS screens' wrappers split their text with its `words()`; HTML text uses a
+no-break space.
 
 ## Folders
 

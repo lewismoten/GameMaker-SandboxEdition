@@ -38,7 +38,7 @@ export const TRICKS: Chapter = {
   scene that uses it puts the hero in the driver’s seat. Score, counters and inventory ride
   along.</p>
   <ul>
-    <li><b>Driving THE CHEZ.</b> In Quest for the Round Tuit, the Dawdle Flats load
+    <li><b>Driving THE\u00a0CHEZ.</b> In Quest for the Round Tuit, the Dawdle Flats load
     <code>CHEZ.CHR</code>. Its arrow sequences move 5 pixels every tick. Hit points stand for the battery’s charge, and Space is a horn: its frame gives birth
     to a honk monster that flies ahead and clears gulls out of the road.</li>
     <li><b>Sledding.</b> Snowbound’s sled has momentum on every sequence. Steering moves a pixel

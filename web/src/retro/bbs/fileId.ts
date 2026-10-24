@@ -7,6 +7,7 @@
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import { installedBytes, sizeText } from '../../project/diskFacts';
 import type { GalleryFile } from './gallery';
+import { words } from '../../keepTogether';
 
 export const DIZ_WIDTH = 45;
 export const DIZ_LINES = 10;
@@ -43,7 +44,7 @@ export function ascii(text: string): string {
 export function wrapWords(text: string, width: number): string[] {
   const out: string[] = [];
   let line = '';
-  for (const word of text.split(/\s+/).filter(Boolean)) {
+  for (const word of words(text).filter(Boolean)) {
     const w = word.slice(0, width);
     if (line && line.length + 1 + w.length > width) {
       out.push(line);

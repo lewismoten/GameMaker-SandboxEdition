@@ -37,7 +37,7 @@ export const ROUTES = {
   cast: {
     title: `The cast · ${PRODUCT}`,
     description:
-      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
+      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE\u00a0CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
   },
   credits: {
     title: `Credits · ${PRODUCT}`,

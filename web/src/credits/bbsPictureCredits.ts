@@ -14,9 +14,9 @@ interface PictureCredit {
 
 const teddy = 'Teddy the corgi lying on a pale floor, mouth open in a smile, ears up';
 const library = 'A little red and white lending-library box on a post, its door open on rows of books, above a box of seed packets';
-const chezLights = 'THE CHEZ, a small red wedge-shaped CitiCar, at dusk, strung with colored Christmas lights and a big bow on its hood';
-const chezTeddy = 'Lewis holding Teddy the corgi in his arms, standing in front of THE CHEZ, a small red CitiCar, on a town street';
-const chezPlug = 'THE CHEZ, a small red wedge-shaped CitiCar, plugged in at a public charging station beside a red sedan';
+const chezLights = 'THE\u00a0CHEZ, a small red wedge-shaped CitiCar, at dusk, strung with colored Christmas lights and a big bow on its hood';
+const chezTeddy = 'Lewis holding Teddy the corgi in his arms, standing in front of THE\u00a0CHEZ, a small red CitiCar, on a town street';
+const chezPlug = 'THE\u00a0CHEZ, a small red wedge-shaped CitiCar, plugged in at a public charging station beside a red sedan';
 const leoWalk = 'Doc Leo, the hobo clown, in white mouth makeup and a dark jacket, walking a rubber chicken on a leash down the middle of a road';
 const leoNose = 'Lewis looking up at a round red clown nose on his own nose, a ceiling fan behind him';
 

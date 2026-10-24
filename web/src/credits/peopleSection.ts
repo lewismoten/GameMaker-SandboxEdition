@@ -85,11 +85,11 @@ export function peopleSection(): HTMLElement {
               ext('https://oneadayuntilthedayidie.com/', '100 Word Stories Podcast'),
               '. Laurence and the podcast’s writers and listeners chose the topics: each week’s winner picks the next one.',
             ),
-            h('li', null, 'The Bard of Bizarre is his: the songs’ and monologues’ prompts, and the Doc Leo and THE CHEZ photos.'),
+            h('li', null, 'The Bard of Bizarre is his: the songs’ and monologues’ prompts, and the Doc Leo and THE\u00a0CHEZ photos.'),
             h(
               'li',
               null,
-              'The photos on the BBSes are his, except one shot of him holding Teddy in front of THE CHEZ, taken by Nicky Foster (see Pictures on the BBS, below).',
+              'The photos on the BBSes are his, except one shot of him holding Teddy in front of THE\u00a0CHEZ, taken by Nicky Foster (see Pictures on the BBS, below).',
             ),
             h('li', null, 'The Sandbox BBS is named after the board he ran in Pittsburgh in the 1990s.'),
           ),

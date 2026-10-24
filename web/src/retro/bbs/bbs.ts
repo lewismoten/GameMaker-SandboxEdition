@@ -42,6 +42,7 @@ import { cpsText, expectText, progress } from './transfer';
 import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
 import { TTY_PHONE } from './ttyTalk';
 import { doorGames, sandboxCall } from './ticTacToeDoor';
+import { words } from '../../keepTogether';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
@@ -271,7 +272,7 @@ function leechWarning(t: Term): void {
 function wrap(text: string, width: number): string[] {
   const out: string[] = [];
   let line = '';
-  for (const word of text.split(/\s+/)) {
+  for (const word of words(text)) {
     if ((line + ' ' + word).trim().length > width) {
       out.push(line);
       line = word;

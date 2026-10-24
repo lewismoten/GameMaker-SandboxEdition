@@ -5,6 +5,7 @@ import type { CatalogEntry } from '../../project/files';
 import { type BoxExtras } from './boxFacts';
 import { bbsNameWidth, paintBbsName } from '../../retro/bbs/bbsName';
 import { drawSandboxMark } from '../../manual/printables/sandboxMark';
+import { words } from '../../keepTogether';
 
 export type Box = NonNullable<NonNullable<CatalogEntry['original']>['box']> & BoxExtras;
 
@@ -69,7 +70,7 @@ function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: num
 export function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lineHeight: number, outline = false): number {
   for (const para of marked(text).split(/\n+/)) {
     let line = '';
-    for (const word of para.split(/\s+/)) {
+    for (const word of words(para)) {
       const test = line ? `${line} ${word}` : word;
       if (measure(ctx, test) > width && line) {
         drawLine(ctx, line, x, y, outline);
@@ -245,7 +246,7 @@ export function wrapLines(ctx: CanvasRenderingContext2D, text: string, width: nu
   let n = 0;
   for (const para of marked(text).split(/\n+/)) {
     let line = '';
-    for (const word of para.split(/\s+/)) {
+    for (const word of words(para)) {
       const test = line ? `${line} ${word}` : word;
       if (measure(ctx, test) > width && line) (n++, (line = word));
       else line = test;

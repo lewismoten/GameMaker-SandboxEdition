@@ -359,7 +359,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'desk-chez',
     title: 'Honk honk',
-    desc: 'Caught THE CHEZ driving past the window and got a honk from Doc Leo.',
+    desc: 'Caught THE\u00a0CHEZ driving past the window and got a honk from Doc Leo.',
     icon: '🚗',
     category: 'found',
     hidden: true,
