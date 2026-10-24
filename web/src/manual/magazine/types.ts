@@ -90,7 +90,7 @@ export type Block =
 export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map';
 
 /** Pictures drawn for the magazine (art.ts). */
-export type ArtId = 'chez' | 'sandbox' | 'barcode' | 'disk' | 'modem' | 'speakers' | 'diskbox';
+export type ArtId = 'chez' | 'sandbox' | 'barcode' | 'disk' | 'modem' | 'speakers' | 'diskbox' | 'desk';
 
 export interface MagPage {
   /** For go:mag/<id> links; a section's first page gets the section's id. */

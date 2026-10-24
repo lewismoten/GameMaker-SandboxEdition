@@ -1,11 +1,13 @@
 // The magazine's drawn pictures (types.ts ArtId): THE CHEZ (desk/props/chezArt.ts), the Sandbox
 // Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, and simple line drawings
-// of the desk's modem, speakers and disk box for the hardware ads.
+// of the desk's modem, speakers and disk box for the hardware ads; and a snapshot of the 1994
+// desk itself (deskShot.ts).
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
 import { hashString } from '../printables/kit';
 import type { ArtId } from './types';
+import { deskShotImg } from './deskShot';
 
 const SVG = 'http://www.w3.org/2000/svg';
 /** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
@@ -70,6 +72,8 @@ export function artElement(id: ArtId, alt: string): Element {
       return svg('0 0 120 90', SPEAKERS, alt);
     case 'diskbox':
       return svg('0 0 120 90', DISKBOX, alt);
+    case 'desk':
+      return deskShotImg(alt);
     case 'chez': {
       const k = 8;
       const c = h('canvas', { width: 44 * k, height: 24 * k });
