@@ -1221,6 +1221,73 @@
   box-shadow: 0 120px 0 #999;
 }
 
+/* TURBO BUTTON, the magazine (manual/magazine/): a tiny cover */
+.magazine-prop {
+  --tilt: -3deg;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform: rotate(var(--tilt));
+  transition: transform 0.15s;
+}
+
+.magazine-prop:hover,
+.magazine-prop:focus-visible {
+  transform: rotate(0deg) scale(1.06);
+}
+
+.magazine-prop .mag-cover-mini {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 96px;
+  height: 124px;
+  padding: 5px 4px;
+  background: radial-gradient(circle at 70% 75%, rgba(255, 211, 26, 0.35), transparent 45%), #121218;
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.55);
+  color: #ffd31a;
+  text-align: left;
+}
+
+.magazine-prop .mag-cover-mini b {
+  font:
+    900 15px/0.85 Impact,
+    'Arial Black',
+    sans-serif;
+  color: #d61f26;
+  -webkit-text-stroke: 0.4px #fff;
+}
+
+.magazine-prop .mag-cover-mini em {
+  font:
+    700 7px/1.05 Helvetica,
+    Arial,
+    sans-serif;
+  font-style: normal;
+}
+
+/* a prop the magazine pointed at (look=modem…): a moment's glow */
+.desk-look {
+  outline: 3px solid #ffd400;
+  outline-offset: 6px;
+  border-radius: 4px;
+  animation: desk-look 1s ease-in-out 3;
+}
+
+@keyframes desk-look {
+  50% {
+    outline-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-look {
+    animation: none;
+  }
+}
+
 /* a poster on the wall */
 .poster {
   position: absolute;

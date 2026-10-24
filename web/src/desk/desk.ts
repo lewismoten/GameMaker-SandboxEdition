@@ -221,6 +221,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         h(
           'button',
           {
+            class: 'prop magazine-prop',
+            onclick: () => void magazine(),
+            'aria-label': 'TURBO BUTTON magazine: hints, reviews and every game',
+          },
+          h(
+            'div',
+            { class: 'mag-cover-mini', 'aria-hidden': 'true' },
+            h('b', null, 'TURBO', h('br'), 'BUTTON'),
+            h('em', null, 'GAME-MAKER’S SOURCE CODE SET FREE!'),
+          ),
+          h('span', { class: 'caption' }, 'TURBO BUTTON magazine'),
+        ),
+        h(
+          'button',
+          {
             class: 'prop disk-box',
             onclick: () => void flip(),
             'aria-label': 'Disk box: pick a game to put in drive A',
@@ -700,9 +715,42 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     );
   }
 
+  /** The magazine lying on the desk (open=magazine); its links play disks, call the BBS and look at the props. */
+  const magazine = () =>
+    opened('magazine', async () =>
+      (await import('../manual/magazine/viewer')).openMagazine({
+        where: 'desk',
+        desk: {
+          play: (id) => void insertOriginal(id),
+          bbs: () => void command('C:\nTERMINAL'),
+          gm: () => void startGameMaker(),
+          look,
+        },
+      }),
+    );
+
+  /** Turns to a prop on the desk (look=modem…, from the magazine's ads): opens what opens, points out the rest. */
+  function look(prop: string): void {
+    if (prop === 'catalog') return void catalog();
+    if (prop === 'gmbox') return void openGmBox();
+    if (prop === 'diskbox') return void flip();
+    if (prop === 'mug') return void import('./mug/mugViewer').then((m) => m.openMugViewer());
+    const el = prop === 'modem' ? modem.el : prop === 'speakers' ? spk.right : undefined;
+    if (!el) return;
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    (el.querySelector<HTMLElement>('button') ?? el).focus({ preventScroll: true });
+    el.classList.add('desk-look');
+    setTimeout(() => el.classList.remove('desk-look'), 3000);
+  }
+
   /** Comes back to what the address describes: the disk in A:, the program running, what is open. */
   async function restore(): Promise<void> {
     const { disk, run, open } = wanted;
+    const looking = deskView.get('look');
+    if (looking) {
+      deskView.set({ look: undefined });
+      look(looking);
+    }
     if (!disk && !run && !open) return;
     if (!disks.length) await refreshDisks();
     const d = disk ? disks.find((x) => x.id === disk) : undefined;
@@ -717,6 +765,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     else if (run === 'bbs') await command('C:\nTERMINAL');
     else if (run) await power(true);
     if (open === 'catalog') void catalog();
+    else if (open === 'magazine') void magazine();
     else if (open === 'gm-box') void openGmBox();
     else if (open === 'gm-manual') void dosManual();
     else if (open?.startsWith('manual:')) {

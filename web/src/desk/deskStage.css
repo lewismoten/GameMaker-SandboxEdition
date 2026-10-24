@@ -199,6 +199,20 @@
     z-index: 1;
   }
 
+  /* this month's TURBO BUTTON, standing face out at the end of the lower wall shelf */
+  .magazine-prop {
+    position: absolute;
+    left: 252px;
+    top: 341px;
+    z-index: 0;
+    --tilt: 5deg;
+  }
+
+  .magazine-prop .mag-cover-mini {
+    width: 64px;
+    height: 84px;
+  }
+
   .desk-mug {
     position: absolute;
     left: 1040px;
