@@ -54,6 +54,7 @@ export const LETTER: MagSection = {
                   p('[Who made what: the Credits page](go:route/credits)'),
                 ],
                 'cyan',
+                2,
               ),
             ],
           ],

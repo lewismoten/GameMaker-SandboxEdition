@@ -140,7 +140,7 @@ const hintPages = (ctx: MagContext): MagPage[] => {
         head('TIPS & TRICKS', {
           kicker: 'The Strategy Guide',
           size: 'xl',
-          level: 1,
+          level: 2,
           deck: 'Stuck behind a fence, a gate or a corgi? The answers come straight from the official hint books, printed upside down so you only read the one you need.',
         }),
         grid(first, 0.4),

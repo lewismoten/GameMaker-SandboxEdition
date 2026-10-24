@@ -28,6 +28,7 @@ export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
           note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),
         ],
         'cyan',
+        2,
       ),
     ],
   };
