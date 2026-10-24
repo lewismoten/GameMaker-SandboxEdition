@@ -125,6 +125,20 @@ game folder opens in the browser unchanged.
   - *The desk's wall phone*: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
     opening of **Für Elise** by Ludwig van Beethoven (about 1810, published 1867), public
     domain.
+  - *A hidden bonus on the site*: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
+    Doodle**, the same traditional tune, public domain.
+  - *RSD's sample music on the CD* quotes public-domain works: `GMMOONLT.CMF` is the first
+    movement of Beethoven's Piano Sonata No. 14, the **Moonlight** (1801); `GMRANGE.CMF` is
+    **Home on the Range** (Daniel E. Kelley, music, and Brewster M. Higley, words, 1872).
+  - *The shareware games A-J's Quest (`cd/sharware/ajquest`) and Ralph's game
+    (`cd/sharware/fluffyr`)* use `GMFAIRY.CMF`, the **Dance of the Sugar Plum Fairy** from
+    Tchaikovsky's *The Nutcracker* (1892), public domain.
+- **Third-party music under copyright.** Three shareware games on the CD by A-J Games,
+  *Bounerim* (`cd/sharware/bounerm`), Ralph's game (`cd/sharware/fluffyr`) and *Sign of the
+  Hedgehog* (`cd/sharware/signhdg`), include `SND7.CMF`, an arrangement of John Williams's
+  **The Imperial March** (1980), which is under copyright and not licensed by this project.
+  It is kept as those games were distributed in the 1990s, unaltered, as part of their
+  authors' original files.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
   Bell and others). Shareware games are shown play-only, with their authors' original

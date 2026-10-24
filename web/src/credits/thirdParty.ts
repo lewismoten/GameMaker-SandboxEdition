@@ -57,8 +57,8 @@ export const PIECE_GROUPS: PieceGroup[] = [
   },
   {
     id: 'credits-melodies',
-    title: 'Public-domain melodies',
-    note: 'The music is arranged and synthesized for this project, so there is no recording to credit. These few pieces quote older tunes whose compositions are in the public domain in the US.',
+    title: 'Melodies from older music',
+    note: 'The site’s own music is arranged and synthesized for this project, so there is no recording to credit. These pieces quote older tunes whose compositions are in the public domain in the US; the last is a third-party game’s, still under copyright.',
     pieces: [
       {
         name: 'Yankee Doodle',
@@ -77,6 +77,36 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Public domain',
         by: 'Ludwig van Beethoven, about 1810 (published 1867)',
         what: 'Its opening is the hold music on the desk phone’s business lines (web/src/desk/room/phone/sounds.ts).',
+      },
+      {
+        name: 'Yankee Doodle (again)',
+        license: 'Public domain',
+        by: 'Traditional American tune, 18th century',
+        what: 'A music box in a hidden bonus on the site (web/src/eggs/musicBox.ts).',
+      },
+      {
+        name: 'Piano Sonata No. 14, the Moonlight (first movement)',
+        license: 'Public domain',
+        by: 'Ludwig van Beethoven, 1801',
+        what: 'RSD’s sample song GMMOONLT.CMF on the CD.',
+      },
+      {
+        name: 'Home on the Range',
+        license: 'Public domain',
+        by: 'Daniel E. Kelley (music) and Brewster M. Higley (words), 1872',
+        what: 'RSD’s sample song GMRANGE.CMF on the CD.',
+      },
+      {
+        name: 'Dance of the Sugar Plum Fairy (The Nutcracker)',
+        license: 'Public domain',
+        by: 'Pyotr Ilyich Tchaikovsky, 1892',
+        what: 'GMFAIRY.CMF in the shareware games A-J’s Quest and Ralph’s game on the CD.',
+      },
+      {
+        name: 'The Imperial March',
+        license: 'Under copyright, not licensed by this project',
+        by: 'John Williams, 1980',
+        what: 'SND7.CMF in three A-J Games shareware games on the CD (Bounerim, Ralph’s game, Sign of the Hedgehog), kept unaltered as their authors distributed them.',
       },
     ],
   },
