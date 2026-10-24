@@ -533,7 +533,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('pigeon0', pigeon(0), { solid: sides });
   book.add('pigeon1', pigeon(1), { solid: sides });
   book.add('pigeonS', pigeon(0), hurt(-4, sides));
-  /** Doc Leo's face: rose-red nose and cheeks, white mouth and eyes, a heavy ash beard. */
+  /** Doc Leo's face: his own nose and cheeks sunburned, white paint round the mouth and eyes, painted stubble. */
   const leoFace = (p: Pixels, x: number, y: number, f: number) => {
     blob(p, x, y, 3.6, 3.8, R('skin'), 2, 4);
     for (let k = -3; k <= 3; k++) p.set(x + k, y + 2 + (Math.abs(k) > 2 ? -1 : 0), c('grey', 1)).set(x + k, y + 3, c('grey', 1));
@@ -542,9 +542,9 @@ export function buildMonsterBlocks(pal: Pal) {
       .disc(x + 2, y - 1, 1, c('marble', 3))
       .set(x - 2, y - 1, ink)
       .set(x + 2, y - 1 + f, ink);
-    p.disc(x, y + 1, 1.2, c('red', 3))
-      .set(x - 3, y + 1, c('red', 2))
-      .set(x + 3, y + 1, c('red', 2));
+    p.disc(x, y + 1, 1.2, c('tile', 3))
+      .set(x - 3, y + 1, c('tile', 2))
+      .set(x + 3, y + 1, c('tile', 2));
     p.line(x - 3, y - 3, x - 1, y - 2, ink).line(x + 1, y - 2, x + 3, y - 3, ink);
   };
   // Doc Leo the philosopher: a navy cloak over his purple tunic, red sneakers, a scroll, and
