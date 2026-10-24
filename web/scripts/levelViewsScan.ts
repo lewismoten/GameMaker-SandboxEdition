@@ -4,13 +4,16 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { BACKBL, CHARBL, MONBL, parseBlocks } from '../src/formats/blocks';
 import { parseGame, type Game } from '../src/formats/game';
 import type { LevelViews } from '../src/manual/printables/levelViews';
 
 /** Bump when the scan itself changes what it finds, so every game reads as out of date. */
 const VERSION = 1;
-/** The disk files a scene's play reads. */
-const PLAY_FILES = /\.(gam|map|bbl|mbl|mon|chr|cbl|pal)$/;
+/** The disk files that say how a scene plays (a palette doesn't). */
+const PLAY_FILES = /\.(gam|map|bbl|mbl|mon|chr|cbl)$/;
+/** Block sets, and how many blocks each holds: only their numbers count, not their pictures. */
+const BLOCK_SETS: Record<string, number> = { bbl: BACKBL, mbl: MONBL, cbl: CHARBL };
 
 export interface Disk {
   game: Game;
@@ -24,16 +27,26 @@ export function readDisk(dir: string): Disk | undefined {
   return gam ? { game: parseGame(files.get(gam)!), files } : undefined;
 }
 
-/** What a game's seen areas depend on: the scan's version, every file play reads, its walkthrough and about.json. */
+/**
+ * What a game's seen areas depend on: the scan's version, how its scenes play (the game, maps,
+ * monsters, heroes and every block's numbers, but no picture or palette), its walkthrough and
+ * where its tin heart and Easter egg are. Redrawing art leaves it the same.
+ */
 export function levelViewsHash(gamesDir: string, id: string): string | undefined {
   const d = readDisk(join(gamesDir, id, 'disk'));
   if (!d) return undefined;
   const h = createHash('sha1').update(`v${VERSION}`);
-  for (const n of [...d.files.keys()].filter((k) => PLAY_FILES.test(k)).sort()) h.update(n).update(d.files.get(n)!);
-  for (const n of ['walkthrough.json', 'about.json']) {
-    const p = join(gamesDir, id, n);
-    h.update(n).update(existsSync(p) ? readFileSync(p) : '');
+  for (const n of [...d.files.keys()].filter((k) => PLAY_FILES.test(k)).sort()) {
+    const b = d.files.get(n)!;
+    const count = BLOCK_SETS[n.slice(-3)];
+    h.update(n);
+    if (count) for (const { pixels: _, ...rest } of parseBlocks(b, count)) h.update(JSON.stringify({ ...rest, xtra: [...rest.xtra] }));
+    else h.update(b);
   }
+  const walk = join(gamesDir, id, 'walkthrough.json');
+  h.update(existsSync(walk) ? readFileSync(walk) : '');
+  const about = JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')) as { tinHeart?: unknown; easterEgg?: unknown };
+  h.update(JSON.stringify([about.tinHeart, about.easterEgg]));
   return h.digest('hex').slice(0, 16);
 }
 

@@ -11,7 +11,7 @@ export type SeenRect = [number, number, number, number];
 /** Per game: the hash of the disk it was scanned from, and the seen box of each "map|bbl". */
 export type LevelViews = Record<string, { hash: string; maps: Record<string, SeenRect> }>;
 
-const LISTED = VIEWS as LevelViews;
+const LISTED = VIEWS as unknown as LevelViews;
 
 /** A game's seen boxes by "map|bbl" (lower case), or undefined when it wasn't scanned. */
 export const listedViews = (id: string): Record<string, SeenRect> | undefined => LISTED[id]?.maps;
