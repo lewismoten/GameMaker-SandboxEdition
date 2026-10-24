@@ -10,6 +10,8 @@
 // Resting the pointer on a mark tells what it means (markInfo.ts); the legend lists each mark,
 // and its buttons step through them from the keyboard. The author can also play the scene and
 // keep a heat map of their own (myHeatControls.ts), shown instead of, with, or against the bot's.
+// checkExtras.ts adds the report (a dialog, a CSV and a printable checklist), watching the bot's
+// route or the author's play, and recording a play for the walkthrough.
 import './checkPanel.css';
 import { h, clear, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
@@ -30,6 +32,7 @@ import { MLEN, MWID } from '../../../../formats/map';
 import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
 import { COMPARE_COLORS, combineSteps, compareSteps } from './myHeat';
 import { myHeatControls } from './myHeatControls';
+import { checkExtras } from './checkExtras';
 
 export interface CheckHost {
   project: Project;
@@ -297,6 +300,7 @@ export function checkPanel(host: CheckHost): {
     status,
     progressLine,
     said,
+    checkExtras({ project, file, scene: host.scene, findings: () => saved?.findings ?? [], item: (f, acc) => item(f, acc), filter: () => filter }),
     mineUi.el,
     h(
       'details',
