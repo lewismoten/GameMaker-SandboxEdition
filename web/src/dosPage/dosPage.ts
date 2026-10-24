@@ -10,7 +10,7 @@
 //   dos.html?game=<id>   that game's disk in drive A:, open in Game-Maker (ids as play.html?game=<id>);
 //                        an unknown id, or a secret game not yet found in this browser, gets plain GM
 //   dos.html?run=dos     stays at the C:\> prompt
-//   dos.html?run=bbs     calls the BBS
+//   dos.html?run=bbs     calls the BBS (&dial=sandbox or &dial=sofa dials that board)
 //   dos.html?game=<id>&run=play, dos.html?project=<id>&run=play|design
 //                        plays (or designs) a catalog game, or a game kept in this browser (a
 //                        game sent by another site lands here, with &linked=1: see linkIn/)
@@ -348,7 +348,9 @@ if (params.has('linked')) void import('../linkIn/notice').then((m) => m.notTrueD
 void powerOn().then(async () => {
   if (!pc?.powered) return; // switched off while it booted
   if (run === 'dos') return;
-  if (run === 'bbs') return command('C:\nTERMINAL');
+  // dial=sandbox or dial=sofa: TERMINAL dials that board (the magazine's BBS listings)
+  const dial = /^[a-z]+$/.test(params.get('dial') ?? '') ? ` ${params.get('dial')!.toUpperCase()}` : '';
+  if (run === 'bbs') return command(`C:\nTERMINAL${dial}`);
   const action = run === 'play' ? 'play' : 'design';
   if (project && (await disks.openDisk(`project:${project}`, action))) return;
   if (game && (await disks.openDisk(`cd:${game}`, action))) return;

@@ -8,7 +8,8 @@ import { parseGo, type Where } from './go';
 /** What the desk does for the magazine lying on it (desk.ts). */
 export interface DeskHooks {
   play(id: string): void;
-  bbs(): void;
+  /** Runs TERMINAL; with a board ('sandbox', 'sofa'), it dials that board. */
+  bbs(board?: string): void;
   gm(): void;
   /** Looks at a prop (modem, diskbox, speakers, mug, gmbox, catalog), opening it where it opens. */
   look(prop: string): void;
@@ -86,7 +87,7 @@ export function runGo(go: string, env: GoEnv): boolean {
     case 'bbs':
       if (!desk) return false;
       env.close();
-      desk.bbs();
+      desk.bbs(arg || undefined);
       return true;
     case 'dos':
       if (!desk || arg) return false;

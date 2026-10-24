@@ -12,7 +12,7 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   tags in step with what is on screen. `?open=<url>` and `?receive` open a game sent by another site
   ([`linkIn/`](linkIn), [`docs/embed.md`](../../docs/embed.md)).
 - `dos.html` → [`dosPage/dosPage.ts`](dosPage/dosPage.ts): DOS Game-Maker, the desk's PC on
-  its own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`; `?project=<id>&run=play|design` a game kept in this browser). It loads no
+  its own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`, with `&dial=sandbox` or `&dial=sofa` to dial that board; `?project=<id>&run=play|design` a game kept in this browser). It loads no
   desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the site lead to it.
   [`viewSwitch.ts`](viewSwitch.ts) is the Desk | DOS | Web switch in all three headers.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game

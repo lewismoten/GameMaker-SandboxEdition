@@ -722,7 +722,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         where: 'desk',
         desk: {
           play: (id) => void insertOriginal(id),
-          bbs: () => void command('C:\nTERMINAL'),
+          bbs: (board) => void command(`C:\nTERMINAL${board ? ` ${board.toUpperCase()}` : ''}`),
           gm: () => void startGameMaker(),
           look,
         },

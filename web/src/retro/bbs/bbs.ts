@@ -52,6 +52,7 @@ const PHONE = '1-412-555-SAND';
 const DIRECTORY = [
   {
     // the board's name in its colors, without the BBS (every entry here is one)
+    id: 'SANDBOX',
     name: `|07THE ${SANDBOX_ANSI}`,
     number: PHONE,
     software: 'Renegade',
@@ -59,6 +60,7 @@ const DIRECTORY = [
     busy: () => false,
   },
   {
+    id: 'SOFA',
     name: '|15The Sofa',
     number: SOFA_PHONE,
     software: 'Major BBS, 8 lines',
@@ -67,6 +69,7 @@ const DIRECTORY = [
   },
   {
     // a TTY, not a BBS: Baudot needs TDD mode (tdd.ts)
+    id: 'NOVAK',
     name: '|15Mrs. Novak next door',
     number: TTY_PHONE,
     software: 'TTY (Baudot)',
@@ -77,17 +80,21 @@ const DIRECTORY = [
 /** Text without its |NN color codes. */
 const visible = (s: string) => s.replace(/\|\d\d/g, '');
 
-export async function runTerminal(h: RetroHost): Promise<void> {
+/** TERMINAL, or TERMINAL SANDBOX / TERMINAL SOFA (or an entry's number) to dial that board at once. */
+export async function runTerminal(h: RetroHost, args: string[] = []): Promise<void> {
   const t = new Term(h);
+  const want = (args[0] ?? '').toUpperCase();
+  const at = DIRECTORY.findIndex((d, i) => d.id === want || String(i + 1) === want);
   try {
-    await terminal(t, h);
+    await terminal(t, h, at >= 0 ? String(at + 1) : undefined);
   } finally {
     t.close(); // stopped mid-call: nothing more arrives
   }
 }
 
-async function terminal(t: Term, h: RetroHost): Promise<void> {
+async function terminal(t: Term, h: RetroHost, dialFirst?: string): Promise<void> {
   const s = h.screen;
+  let preset = dialFirst;
   for (;;) {
     s.resetPalette();
     s.clear(attr(7, 0));
@@ -108,7 +115,8 @@ async function terminal(t: Term, h: RetroHost): Promise<void> {
     t.line();
     t.line(`|11Modem mode: |15${tddMode() ? 'TDD |07(TTY calls: Baudot, 45.45 baud)' : 'DATA |07(BBS calls)'}`);
     t.print('|11Dial which entry? |07(|151|07-|15' + DIRECTORY.length + '|07, |15M|07 mode, |15I|07 TTY info, |15Esc|07 to quit) |15');
-    const k = await t.key();
+    const k = preset ?? (await t.key());
+    preset = undefined;
     t.line(k.length === 1 ? k : '');
     const entry = DIRECTORY[Number(k) - 1];
     if (k === 'Escape' || k === 'Q') {

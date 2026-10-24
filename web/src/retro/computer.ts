@@ -156,7 +156,7 @@ export class Computer extends ComputerFolders {
           this.screen.clear();
           break;
         case 'terminal':
-          await (await import('./bbs/bbs')).runTerminal(this);
+          await (await import('./bbs/bbs')).runTerminal(this, _args);
           break;
         case 'vpic':
           await (await import('./view/vpic')).runVpic(this, _args);

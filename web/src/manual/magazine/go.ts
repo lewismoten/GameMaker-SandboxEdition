@@ -36,6 +36,8 @@ export type Where = 'desk' | 'web';
 const NEEDS_GAME = new Set<GoKind>(['play', 'game', 'manual', 'hints', 'newsletter']);
 export const CATALOGS = ['sandbox', 'bard', 'shareware'] as const;
 export const DESK_PROPS = ['', 'modem', 'diskbox', 'speakers', 'mug', 'gmbox', 'catalog'] as const;
+/** The boards TERMINAL dials by name (retro/bbs/bbs.ts); '' opens its dialing directory. */
+export const BBS_BOARDS = ['', 'sandbox', 'sofa'] as const;
 export const ROUTES = ['cast', 'credits', 'achievements', 'mac', 'windows', 'linux'] as const;
 /** The web Guide's sections (manual/webManual.ts SECTIONS; a test keeps them in step). */
 export const GUIDE_SECTIONS = [
@@ -117,9 +119,11 @@ export function goProblem(go: string, known: GoKnown): string | undefined {
                     ? /^[\w-]*$/.test(arg)
                     : kind === 'dos'
                       ? arg === '' || known.games.has(arg)
-                      : kind === 'bbs' || kind === 'editor'
-                        ? /^[\w-]*$/.test(arg)
-                        : false;
+                      : kind === 'bbs'
+                        ? (BBS_BOARDS as readonly string[]).includes(arg)
+                        : kind === 'editor'
+                          ? /^[\w-]*$/.test(arg)
+                          : false;
   return ok ? undefined : `leads nowhere: ${go}`;
 }
 
@@ -151,7 +155,7 @@ export function goHref(go: string, where: Where): string {
     case 'ultimate':
       return arg ? `#/help/ultimate?chapter=${arg}` : '#/help/ultimate';
     case 'bbs':
-      return where === 'desk' ? '#/desk?run=bbs' : './dos.html?run=bbs';
+      return where === 'desk' ? '#/desk?run=bbs' : `./dos.html?run=bbs${arg ? `&dial=${arg}` : ''}`;
     case 'desk':
       return deskHash(arg);
     case 'store':
