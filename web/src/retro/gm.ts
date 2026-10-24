@@ -327,8 +327,9 @@ async function utilities(h: RetroHost): Promise<void> {
       }
       const to = await askText(h, 'Enter Path to Transfer Game to:', 12, 'A:\\');
       if (to === null) continue;
-      if (to.trim().toUpperCase() !== 'A:\\' && to.trim().toUpperCase() !== 'A:') {
-        await errorBox(h, 'This PC can only transfer games to drive A:.', '(C)ontinue');
+      // any path on drive A: will do (A:, A:\ or A:\BLASTER): the floppy holds one game, at its root
+      if (!/^A:(\\[^\\]*)?\\?$/i.test(to.trim())) {
+        await errorBox(h, 'This PC can only transfer games to drive A:.', 'Type A:\\ (or A:\\NAME).  (C)ontinue');
         continue;
       }
       await h.transferToFloppy(game);
