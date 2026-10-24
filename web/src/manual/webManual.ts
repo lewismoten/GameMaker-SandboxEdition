@@ -15,7 +15,20 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <p>Everything is kept in this browser. Nothing is uploaded. Use <b>Download .zip</b> to
     keep a copy of a game elsewhere.</p>
     <div class="tip">New to Game-Maker? Play a sample game, then choose <b>Edit a copy</b> and
-    change something small, such as a block or a monster’s speed, and play it again.</div>`,
+    change something small, such as a block or a monster’s speed, and play it again.</div>
+    <h3>The two printed guides</h3>
+    <p>The Game-Maker box holds two guides written for the DOS version. Their menus and keys
+    are DOS Game-Maker’s, but what they teach holds here too, since this edition makes the
+    same games.</p>
+    <ul>
+      <li><b>The Owner’s Guide</b> explains every part of a game (palettes, blocks, maps,
+      monsters, the hero, sounds and music) and how they fit together.
+      <br /><button type="button" class="guide-open-owners">📖 Open the Owner’s Guide</button></li>
+      <li><b>The Ultimate Owner’s Guide</b> is about designing a game people enjoy: a hero who
+      feels right, levels that teach, fair enemies, keys under the hands, music and sound, and
+      play-testing. Its checklists are the ones the Level check uses.
+      <br /><button type="button" class="guide-open-ultimate">📒 Open The Ultimate Owner’s Guide</button></li>
+    </ul>`,
   ],
   [
     'home',
@@ -321,7 +334,9 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
     h('summary', null, h('span', null, 'Contents: '), title),
     h('nav', { 'aria-label': 'Guide contents' }, h('a', { href: '#/' }, '← Home'), ...SECTIONS.map(([, t], i) => link(i, t))),
   );
-  article.querySelector('.guide-open-ultimate')?.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
+  for (const b of article.querySelectorAll('.guide-open-ultimate'))
+    b.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
+  for (const b of article.querySelectorAll('.guide-open-owners')) b.addEventListener('click', () => void import('./dosManual').then((m) => m.openDosManual()));
   // #/help/ultimate?chapter=levels opens the guide at that chapter (the level check links here)
   const chapter = hashParam('chapter');
   if (id === 'ultimate' && chapter)
