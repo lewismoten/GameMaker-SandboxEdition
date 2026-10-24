@@ -1,6 +1,6 @@
 // Teddy's colors: one set of named ramps shared by every block, sprite and screen, and a
 // palette per time of day. The art never changes between levels; the .PAL does, so the
-// same town goes from a pink morning in the backyard to the Klown Klub's lights at night.
+// same town goes from a pink morning in the backyard to the Clown Club's lights at night.
 import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];

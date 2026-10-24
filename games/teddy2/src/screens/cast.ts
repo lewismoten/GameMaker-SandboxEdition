@@ -9,7 +9,7 @@
 // those frames are nothing but a color chunk each and cost the file almost nothing.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, centered, gradient, klubArt, micro, outline, outlined, scaleBlit, speckle } from '../art/draw';
+import { CLEAR, centered, gradient, clubArt, micro, outline, outlined, scaleBlit, speckle } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { drawArt } from './castArt';
 import { CITICAR } from './castCar';
@@ -65,8 +65,8 @@ class Reel {
   }
 }
 
-const say = (p: Pixels, words: string, y: number, col = c('paint', 3), cx = W / 2) => centered(p, y, klubArt(words), col, 1, c('ink', 0), cx);
-const big = (p: Pixels, words: string, y: number, cx = W / 2) => centered(p, y, klubArt(words), c('yellow', 3), 2, c('ink', 0), cx);
+const say = (p: Pixels, words: string, y: number, col = c('paint', 3), cx = W / 2) => centered(p, y, clubArt(words), col, 1, c('ink', 0), cx);
+const big = (p: Pixels, words: string, y: number, cx = W / 2) => centered(p, y, clubArt(words), c('yellow', 3), 2, c('ink', 0), cx);
 
 /** Scene 1: Teddy, grinning up at the camera on the kitchen floor. */
 function teddyScene(reel: Reel): void {

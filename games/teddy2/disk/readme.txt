@@ -3,11 +3,11 @@ TEDDY'S LITTLE BIGGER ADVENTURE
   (c) 1996 Sandbox Software
 
 The morning after the
-Klown Klub's Big Show, Gwinn's
+Clown Club's Big Show, Gwinn's
 bed is empty. Her collar is
 gone, and a trail of confetti
 leads out the doggy door.
-Tonight the Klown Klub plays
+Tonight the Clown Club plays
 the Tri-County Fair, and Teddy
 won't go without his big
 sister.
@@ -90,6 +90,6 @@ SAYING THANKS
   Gwinn (who sat, once), and
   for Doc Leo and every
   friendly clown in every
-  Klown Klub.
+  Clown Club.
 
 Woof! Boof!

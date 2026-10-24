@@ -15,7 +15,7 @@ export const STORY = pages(
   [
     'The Big Show was a BIG hit.',
     '',
-    'The Klown Klub paraded until',
+    'The Clown Club paraded until',
     'midnight. Teddy rode on the',
     "roof of Doc Leo's CitiCar,",
     'THE CHEZ. Gwinn chased the',
@@ -32,7 +32,7 @@ export const STORY = pages(
   ],
   [
     'And Doc Leo has news: the',
-    'Klown Klub is booked at the',
+    'Clown Club is booked at the',
     'TRI-COUNTY FAIR, tonight, way',
     'out past the river. The Big',
     'Show was big. This show is',
@@ -139,7 +139,7 @@ const CREDITS_TEXT = pages(
     'Gwinn as herself (sorry,',
     'everybody). Doc Leo, still',
     'the friendliest hobo clown in',
-    'the Klown Klub. And THE CHEZ,',
+    'the Clown Club. And THE CHEZ,',
     'his red 1976 CitiCar.',
   ],
   [
@@ -183,7 +183,7 @@ export const WON = pages(
     'BLUE.',
   ],
   [
-    'Then the Klown Klub takes the',
+    'Then the Clown Club takes the',
     'stage. Teddy opens with every',
     'trick he knows (and a sniff).',
     'Doc Leo pulls a dove out of',
@@ -267,11 +267,11 @@ TEDDY'S LITTLE BIGGER ADVENTURE
   (c) 1996 Sandbox Software
 
 The morning after the
-Klown Klub's Big Show, Gwinn's
+Clown Club's Big Show, Gwinn's
 bed is empty. Her collar is
 gone, and a trail of confetti
 leads out the doggy door.
-Tonight the Klown Klub plays
+Tonight the Clown Club plays
 the Tri-County Fair, and Teddy
 won't go without his big
 sister.
@@ -354,7 +354,7 @@ SAYING THANKS
   Gwinn (who sat, once), and
   for Doc Leo and every
   friendly clown in every
-  Klown Klub.
+  Clown Club.
 
 Woof! Boof!
 `.replace(/^\n/, '');

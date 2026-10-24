@@ -1,6 +1,6 @@
 // The back lot's background blocks, the Tri-County Fair at noon before the gates open, on a
-// windy day: the Fair's ride truck (Gwinn rode in on it), Juggles practicing by the Klown
-// Klub's trailer, the costume line and the big fan drying it (a breeze: air whose gravity
+// windy day: the Fair's ride truck (Gwinn rode in on it), Juggles practicing by the Clown
+// Club's trailer, the costume line and the big fan drying it (a breeze: air whose gravity
 // points right, two pictures taking turns), the bandstand where the dog show signs dogs up
 // (its stage too high to hop onto), Professor Pratfall's pie target under it, the exhibit
 // hall and the poultry barn (fronts to walk past, roofs to walk on), the creek between them
@@ -9,7 +9,7 @@
 // come and go (air that blows right, then goes calm, then stirs: three pictures in a ring,
 // the windsocks on the vents with them).
 import { Pixels } from '../../../kit/pixels';
-import { blob, klubArt, micro } from '../art/draw';
+import { blob, clubArt, micro } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, planks, r, sky, tuft } from '../blocks/tiles';
 import { sign, water, wideSign } from './common';
@@ -82,7 +82,7 @@ export function lotTiles(): Tiles {
   for (const n of ['cab00', 'cab10', 'cab01', 'cab11', 'carL0', 'carR0', 'gondola', 'carR1']) t.air(n, farm.pic(n));
   t.air('signFolks', sign(sky(3), 'SHOW\nFOLKS'));
 
-  // Juggles, practicing (two pictures taking turns), and the Klown Klub's trailer.
+  // Juggles, practicing (two pictures taking turns), and the Clown Club's trailer.
   for (const ph of [0, 1]) {
     const [a, b] = halves(juggler(ph), sky(3), sky(3));
     t.air(`juggles${ph}Top`, a, { next: `juggles${1 - ph}Top`, ntime: 7 });
@@ -94,7 +94,7 @@ export function lotTiles(): Tiles {
   for (let x = 8; x < 76; x += 12)
     for (const y of [14, 24]) trailer.disc(x + (y === 24 ? 6 : 0), y, 2, c(['blue', 'yellow', 'green', 'pink'][((x / 12) % 4) | 0], 2));
   trailer.rect(56, 12, 12, 22, c('wood', 2)).rect(58, 14, 8, 8, c('sky', 6));
-  micro(trailer, 10, 28, klubArt('KLOWN KLUB'), c('red', 1));
+  micro(trailer, 10, 27, clubArt('CLOWN CLUB'), c('red', 1));
   trailer.disc(20, 35, 4, c('ink', 0)).ring(20, 35, 1, c('metal', 3));
   trailer.disc(46, 35, 4, c('ink', 0)).ring(46, 35, 1, c('metal', 3));
   const tc = cut(trailer);

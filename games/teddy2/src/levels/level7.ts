@@ -1,6 +1,6 @@
 // Level 8: The Fair Midway, at sunset. Gwinn entered herself in the dog show (number 13!)
 // and her entry card blew to the top of THE BIG DROP. The ride takes three tickets, and the
-// Klown Klub's booths pay tickets for tricks: ring the High Striker's bell (climb its pegs
+// Clown Club's booths pay tickets for tricks: ring the High Striker's bell (climb its pegs
 // and high five it), sit pretty for Bubbles, spin for Twirly, and sniff under the bleachers.
 // The carousel's horses lift Teddy to its canopy, and a trampoline bounces him up to a perch. THE CHEZ is parked by the show barn.
 //

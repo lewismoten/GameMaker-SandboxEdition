@@ -3,7 +3,7 @@
 // the gust that takes her dog show entry card, and at the end, fireworks and the Fair parade with THE CHEZ in front.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, blob, centered, klubArt, micro, outlined, scaleBlit } from '../art/draw';
+import { CLEAR, blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';
 import { citiCar } from '../sprites/klown';
 import { docLeo, FULL } from '../sprites/people';
@@ -31,7 +31,7 @@ class Reel {
   }
 }
 
-const caption = (p: Pixels, words: string, y = 10) => centered(p, y, klubArt(words), c('paint', 3), 1, c('ink', 0));
+const caption = (p: Pixels, words: string, y = 10) => centered(p, y, clubArt(words), c('paint', 3), 1, c('ink', 0));
 
 /** Doc Leo's living room at dawn: wallpaper, the window, Teddy's bed and Gwinn's (empty). */
 function livingRoom(): Pixels {
@@ -59,7 +59,7 @@ function livingRoom(): Pixels {
 /**
  * The opening cartoon: the morning after the Big Show. Teddy wakes; Gwinn's bed is empty;
  * a trail of confetti leads out the doggy door; Teddy sniffs it. Doc Leo comes in with a
- * letter: the Klown Klub is booked at the Fair tonight. Then the logo drops in.
+ * letter: the Clown Club is booked at the Fair tonight. Then the logo drops in.
  */
 export function morningFli(): Uint8Array {
   const r = new Reel(livingRoom());
@@ -92,7 +92,7 @@ export function morningFli(): Uint8Array {
       teddy(p, f < 12 ? 'frontTilt' : 'frontBeg', 214);
       // the letter in his hand
       p.rect(156, 104, 18, 13, c('paint', 3)).frame(156, 104, 18, 13, c('ink', 0)).rect(159, 108, 12, 1, c('ink', 1)).rect(159, 111, 9, 1, c('ink', 1));
-      caption(p, f < 12 ? 'DOC LEO HAS NEWS: THE KLOWN KLUB' : "BUT TEDDY WON'T GO WITHOUT", f < 12 ? 10 : 10);
+      caption(p, f < 12 ? 'DOC LEO HAS NEWS: THE CLOWN CLUB' : "BUT TEDDY WON'T GO WITHOUT", f < 12 ? 10 : 10);
       caption(p, f < 12 ? 'PLAYS THE FAIR TONIGHT!' : 'HIS BIG SISTER.', 22);
     });
   // the logo drops in, bouncing, over the dawn
@@ -150,7 +150,7 @@ export function finaleFli(): Uint8Array {
 }
 
 /**
- * After Gwinn's night out: the Klown Klub's hay wagon rolls off into the night behind its
+ * After Gwinn's night out: the Clown Club's hay wagon rolls off into the night behind its
  * pickup, a brown head and a pink tongue poking up out of the hay.
  */
 export function wagonFli(): Uint8Array {
@@ -179,7 +179,7 @@ export function wagonFli(): Uint8Array {
       for (const ww of [wx + 20, wx + 100]) p.disc(ww, 158, 9, c('ink', 1)).ring(ww, 158, 4, c('wood', 2));
       // Gwinn in the hay, ears flapping
       if (f > 8) scaleBlit(p, GWINN[f % 4 < 2 ? 'gwinn1' : 'gwinn3'].crop(0, 0, 20, 11), wx + 60, 112 + bob - (f % 6 === 0 ? 2 : 0), 2);
-      caption(p, f < 24 ? 'MEANWHILE, THE KLOWN KLUB' : 'GWINN RIDES IN THE HAY.', 10);
+      caption(p, f < 24 ? 'MEANWHILE, THE CLOWN CLUB' : 'GWINN RIDES IN THE HAY.', 10);
       caption(p, f < 24 ? 'WAGON HEADS FOR THE FAIR...' : 'ALL NIGHT. DOWN BACK ROADS.', 22);
     });
   return r.fli(6);

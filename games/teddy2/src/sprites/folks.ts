@@ -208,7 +208,7 @@ export function flyingDisc(phase: number): Pixels {
   return p;
 }
 
-/** A juggling busker from the Klown Klub (20x40): Juggles, tossing bowling pins. */
+/** A juggling busker from the Clown Club (20x40): Juggles, tossing bowling pins. */
 export function juggler(phase: number): Pixels {
   return S(
     [

@@ -285,7 +285,7 @@ export function houseTiles(): Tiles {
       return p;
     })(),
   );
-  // A framed photo of the Klown Klub over the couch.
+  // A framed photo of the Clown Club over the couch.
   t.air(
     'klubPhoto',
     (() => {

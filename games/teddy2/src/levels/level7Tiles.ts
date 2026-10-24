@@ -1,11 +1,11 @@
 // Level 7's background blocks, the Tri-County Fair's midway at sunset: the gate arch, the
-// High Striker tower (pegs to climb; its bell is a monster), the Klown Klub's booths with
+// High Striker tower (pegs to climb; its bell is a monster), the Clown Club's booths with
 // striped awnings (each run by a friend from the Big Show), the carousel, THE BIG DROP
 // (a lattice tower 24 blocks tall; its ticket gate takes three tickets, the way Game-Maker
 // refuses a touch the counter can't pay for), a trampoline (hop onto it and the air above
 // carries Teddy up to a perch of treats), the food row, and the show barn.
 import { Pixels } from '../../../kit/pixels';
-import { blob, klubArt, micro, speckle } from '../art/draw';
+import { blob, clubArt, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, r, sky } from '../blocks/tiles';
 import { sign } from './common';
@@ -97,7 +97,7 @@ export function midwayTiles(): Tiles {
     for (let x = 0; x < 60; x += 8) blob(b, x + 4, 14, 4, 3, (x >> 3) % 2 ? [c('paint', 2), c('paint', 3)] : [c(col, 1), c(col, 2)], 0, 1);
     b.rect(2, 14, 3, 46, c('wood', 1)).rect(55, 14, 3, 46, c('wood', 1));
     b.rect(0, 44, 60, 16, c(col, 1)).rect(0, 44, 60, 2, c(col, 3));
-    micro(b, 30 - Math.floor((words.length * 4 - 1) / 2), 50, klubArt(words), c('paint', 3));
+    micro(b, 30 - Math.floor((words.length * 4 - 1) / 2), 50, clubArt(words), c('paint', 3));
     // prizes on the shelf: plush corgis and pink pit-lab plushies
     for (const [x, k] of [
       [8, 'corgi'],
@@ -113,7 +113,7 @@ export function midwayTiles(): Tiles {
   booth('toss', 'blue', 'RING TOSS');
   booth('wheel', 'green', 'SPIN TO WIN');
   booth('food', 'red', 'CORN DOGS');
-  // the Klown Klub's people running them
+  // the Clown Club's people running them
   const fig = (name: string, px: Pixels) => {
     const [a, b] = halves(px, sky(3), sky(3));
     t.air(`${name}Top`, a);

@@ -5,7 +5,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, blob, centered, gradient, klubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
+import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { saveSlots } from '../../../kit/saveSlots';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
@@ -47,7 +47,7 @@ export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
-/** A big puffy sky with the town far away and the Klown Klub's big top on the horizon. */
+/** A big puffy sky with the town far away and the Clown Club's big top on the horizon. */
 export function landscape(seed = 1, bigTop = true): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, 130, SP.r('sky'), 0, 7);
@@ -64,7 +64,7 @@ export function landscape(seed = 1, bigTop = true): Pixels {
     for (let wy = 128 - h + 4; wy < 124; wy += 6) for (let wx = x + 2; wx < x + 12; wx += 4) if (R() < 0.4) p.rect(wx, wy, 2, 2, c('sky', 6));
   }
   if (bigTop) {
-    // the Klown Klub's big top: red and white stripes, a flag
+    // the Clown Club's big top: red and white stripes, a flag
     const cx = 236;
     for (let y = 0; y < 34; y++) {
       const half = 4 + y * 1.1;
@@ -204,8 +204,8 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);
   outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);
-  outlined(p, 16, 132, klubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
-  lines.forEach((s, i) => text(p, 16, 154 + i * 10, klubArt(s), cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
+  outlined(p, 16, 132, clubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
+  lines.forEach((s, i) => text(p, 16, 154 + i * 10, clubArt(s), cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
   return p;
 }
 

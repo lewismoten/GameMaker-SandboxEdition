@@ -3,7 +3,7 @@
 // raccoon out of the alley's trash, crosses the park by lamplight (flop when the owl
 // swoops), knocks a pile of boxes flat with her zoomies, digs big under the playground's
 // tall fence, gets past a skunk, chews the rope on the hay wagon's tailgate and hops into
-// the hay: the Klown Klub's wagon, bound for the Fair. Corn dogs smell like the Fair.
+// the hay: the Clown Club's wagon, bound for the Fair. Corn dogs smell like the Fair.
 //
 // The blocks are in level3Tiles.ts, the monsters in level3Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
