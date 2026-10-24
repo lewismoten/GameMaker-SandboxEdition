@@ -65,7 +65,10 @@ Checking the games:
   `levelCheck.baseline.json` fails. After looking at new findings and judging them fine (or after tuning the checks), run
   `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline. A game's about.json
   `"sameEverySide"` (`["ship.chr", "hive.mon#0"]`) lists heroes and monsters meant to look the same from every side,
-  which the facing check leaves alone (the editor keeps the same list in the companion file).
+  which the facing check leaves alone (the editor keeps the same list in the companion file). Its `"acceptedFindings"`
+  (`["hurt-lock s2 Monster 9 holds the hero while it hurts"]`) lists findings kept on purpose, by the editor's stable key
+  (check, scene and title without where it was first seen, `web/src/editor/check/accepted.ts`); they never fail, as
+  the map panel's "Mark as checked: it's meant to be" leaves them out.
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), without writing anything.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
