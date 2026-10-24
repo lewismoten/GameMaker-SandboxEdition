@@ -1,8 +1,9 @@
-// Text in the animation maker: the PC's 8x8 font (gfx/font8x8.ts, the BIOS font PLAYGAME's
-// text used) at a whole-number scale, with an outline, placed by its motion at each frame.
+// Text in the animation maker: the PC's 8x8 font (gfx/cp437Glyphs.ts, the BIOS font PLAYGAME's
+// text used, with every CP437 glyph) at a whole-number scale, with an outline, placed by its motion at each frame.
 // Also the checks that keep it inside the 320x200 frame: what runs off which edge, and a fix
 // that wraps, shrinks and moves a text until it fits.
-import { FONT8X8 } from '../../../../gfx/font8x8';
+import { FONT_CP437 } from '../../../../gfx/cp437Glyphs';
+import { toCp437 } from '../../../../retro/text/cp437';
 import { SCENE_H, SCENE_W, type TextItem } from './sceneModel';
 
 const GLYPH = 8;
@@ -10,10 +11,11 @@ const GLYPH = 8;
 /** Typographic marks the PC font has plain forms of. */
 const PLAIN: Record<string, string> = { '\u2018': "'", '\u2019': "'", '\u201c': '"', '\u201d': '"', '\u2013': '-', '\u2014': '-', '\u2026': '.' };
 
-/** The font's glyph for a letter: its own up to 255, a plain mark for a typographic one, else "?". */
+/** The font's glyph for a letter: ASCII as itself, a symbol or accent as its CP437 code, a typographic mark as its plain form, else "?". */
 const glyphOf = (ch: string): number => {
-  const c = (PLAIN[ch] ?? ch).charCodeAt(0);
-  return c < 256 ? c : 63;
+  const plain = PLAIN[ch] ?? ch;
+  const code = toCp437(plain);
+  return code.length === 1 && (code !== plain || plain.charCodeAt(0) < 128) ? code.charCodeAt(0) : 63;
 };
 
 /** Lines of the text as typed. */
@@ -154,7 +156,7 @@ export function drawText(px: Uint8Array, w: number, h: number, it: TextItem, x: 
       if (shown++ >= letters) return;
       const glyph = glyphOf(line[i]) * 8;
       for (let gy = 0; gy < GLYPH; gy++) {
-        const bits = FONT8X8[glyph + gy];
+        const bits = FONT_CP437[glyph + gy];
         for (let gx = 0; gx < GLYPH; gx++) if (bits & (1 << gx)) dots.push([lx + (i * GLYPH + gx) * s, ly + gy * s]);
       }
     }

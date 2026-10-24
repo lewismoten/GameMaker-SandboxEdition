@@ -1,6 +1,6 @@
 // Mode 13h emulation: a 320x200 framebuffer of palette indices plus a 256 entry
 // 6-bit VGA palette, presented on an HTML canvas.
-import { FONT8X8 } from './font8x8';
+import { FONT_CP437 } from './cp437Glyphs';
 import { BLEN, TRANSPARENT, orientIndex } from '../formats/blocks';
 import { PALETTE_SIZE, vga8 } from '../formats/palette';
 
@@ -126,11 +126,11 @@ export class Screen {
     }
   }
 
-  /** GPutChar: transparent background, 8x8 glyph. */
+  /** GPutChar: transparent background, 8x8 glyph from the BIOS font (GetROMFont), all of CP437. */
   putChar(x: number, y: number, col: number, code: number): void {
     const base = (code & 0xff) * 8;
     for (let row = 0; row < 8; row++) {
-      const bits = FONT8X8[base + row];
+      const bits = FONT_CP437[base + row];
       if (!bits) continue;
       for (let b = 0; b < 8; b++) if (bits & (1 << b)) this.point(x + b, y + row, col);
     }
