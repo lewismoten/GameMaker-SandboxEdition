@@ -125,7 +125,7 @@ preserve what was there.
 - **Spelling:** these notes are for you, not the player. Don't repeat them in game or site
   text ("two n's", "no clown nose", "never Dr."); just get them right.
   - **Gwinn** (two n's) is the troublemaker dog.
-  - **Teddy** is the corgi; one ear is drawn shorter on purpose.
+  - **Teddy** is the corgi; his ears match (neither is shorter).
   - **Doc Leo** is never "Dr. Leo".
   - **Klown Klub** is always the whole name, never "Klub" alone; wherever it is lettered in a
     picture (signs, box art), both K's are drawn backwards.
