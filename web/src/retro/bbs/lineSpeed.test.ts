@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { connectLine, cps, DEFAULT_SPEED, LINE_SPEEDS, lineSpeed, setLineSpeed, speedLabel, statusBps } from './lineSpeed';
+import { connectLine, cps, DEFAULT_SPEED, LINE_SPEEDS, lineSpeed, setLineSpeed, speedLabel, speedWords, statusBps } from './lineSpeed';
 
 describe('line speed', () => {
   afterEach(() => setLineSpeed(DEFAULT_SPEED));
@@ -37,10 +37,20 @@ describe('line speed', () => {
     expect(connectLine(2400)).toBe('CONNECT 2400');
     expect(connectLine(14400)).toBe('CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS');
     expect(connectLine(28800)).toMatch(/V34/);
+    expect(connectLine(56000)).toBe('CONNECT 53333/ARQ/V90/LAPM/V42BIS');
+  });
+
+  it('says kbps from 9600 up, to keep the label short', () => {
+    expect(speedLabel(4800)).toBe('4,800');
+    expect(speedLabel(14400)).toBe('14.4 kbps');
+    expect(speedLabel(33600)).toBe('33.6 kbps');
+    expect(speedLabel(56000)).toBe('56 kbps');
+    expect(speedWords(2400)).toBe('2,400 baud');
+    expect(speedWords(56000)).toBe('56 kbps');
   });
 
   it('ignores a speed that is not on the list', () => {
-    setLineSpeed(56000 as never);
+    setLineSpeed(19200 as never);
     expect(lineSpeed()).toBe(14400);
   });
 });

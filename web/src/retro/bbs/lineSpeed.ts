@@ -3,9 +3,9 @@
 // page's ⋯ menu), kept per visitor, and announced with a 'gm-line-speed' event. Unlimited
 // is today's speed: no wait at all.
 
-export type LineSpeed = 300 | 1200 | 2400 | 9600 | 14400 | 28800 | 'unlimited';
+export type LineSpeed = 300 | 1200 | 2400 | 4800 | 9600 | 14400 | 28800 | 33600 | 56000 | 'unlimited';
 
-export const LINE_SPEEDS: readonly LineSpeed[] = [300, 1200, 2400, 9600, 14400, 28800, 'unlimited'];
+export const LINE_SPEEDS: readonly LineSpeed[] = [300, 1200, 2400, 4800, 9600, 14400, 28800, 33600, 56000, 'unlimited'];
 
 export const DEFAULT_SPEED: LineSpeed = 14400;
 
@@ -16,15 +16,20 @@ const KEY = 'gm-line-speed';
  * 300 to 2400 bps: no error correction, so each byte goes as 10 bits (a start and a stop
  * bit), less a little for Zmodem's headers: about bps / 10.4. 9600 and up: V.42's LAPM link
  * drops the start and stop bits (8 bits a byte), less framing and Zmodem: about bps / 8.7.
- * At 2400 and 14,400 these match what diskFacts.ts has always said (230 and 1650 cps).
+ * At 2400 and 14,400 these match what diskFacts.ts has always said (230 and 1650 cps). A
+ * "56K" modem (V.90, 1998) never got 56,000 down a phone line: the FCC's power limit held it
+ * to 53,333 at best, and a good line delivered about 5,000 characters a second.
  */
 const FILE_CPS: Record<Exclude<LineSpeed, 'unlimited'>, number> = {
   300: 29,
   1200: 115,
   2400: 230,
+  4800: 460,
   9600: 1100,
   14400: 1650,
   28800: 3300,
+  33600: 3850,
+  56000: 5000,
 };
 
 /**
@@ -77,14 +82,16 @@ export function cps(kind: 'file' | 'text', speed: LineSpeed = lineSpeed()): numb
   return speed >= 9600 ? Math.round(file * TEXT_GAIN) : speed / 10;
 }
 
-/** "2,400" or "UNLIMITED", for the modem's front and the menus. */
+/** "2,400", "14.4 kbps", "56 kbps" or "UNLIMITED", for the modem's front and the menus (kbps from 9600 up, to keep it short). */
 export function speedLabel(speed: LineSpeed = lineSpeed()): string {
-  return speed === 'unlimited' ? 'UNLIMITED' : speed.toLocaleString('en-US');
+  if (speed === 'unlimited') return 'UNLIMITED';
+  return speed >= 9600 ? `${Number((speed / 1000).toFixed(1))} kbps` : speed.toLocaleString('en-US');
 }
 
-/** "2,400 baud", "Unlimited": for sentences and accessible names. */
+/** "2,400 baud", "14.4 kbps", "Unlimited": for sentences and accessible names. */
 export function speedWords(speed: LineSpeed = lineSpeed()): string {
-  return speed === 'unlimited' ? 'Unlimited' : `${speedLabel(speed)} baud`;
+  if (speed === 'unlimited') return 'Unlimited';
+  return speed >= 9600 ? speedLabel(speed) : `${speedLabel(speed)} baud`;
 }
 
 /** What the modem says when it connects at that speed (the protocols of the time). */
@@ -96,12 +103,18 @@ export function connectLine(speed: LineSpeed = lineSpeed()): string {
       return 'CONNECT 1200'; // Bell 212A
     case 2400:
       return 'CONNECT 2400'; // V.22bis
+    case 4800:
+      return 'CONNECT 4800/ARQ/V32/LAPM/V42BIS';
     case 9600:
       return 'CONNECT 9600/ARQ/V32/LAPM/V42BIS';
     case 14400:
       return 'CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS';
     case 28800:
       return 'CONNECT 28800/ARQ/V34/LAPM/V42BIS';
+    case 33600:
+      return 'CONNECT 33600/ARQ/V34/LAPM/V42BIS';
+    case 56000:
+      return 'CONNECT 53333/ARQ/V90/LAPM/V42BIS'; // the most a "56K" modem ever connected at
     default:
       // as fast as the serial port goes: the modem reports the PC's side of the line
       return 'CONNECT 115200/ARQ/V34/LAPM/V42BIS';
