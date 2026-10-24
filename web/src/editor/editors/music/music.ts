@@ -131,6 +131,23 @@ registerEditor(['cmf'], (host, project, file) => {
       },
       'Fit',
     ),
+    // drawing a tune, then a band around it, or the tune again faster or slower
+    h(
+      'button',
+      {
+        title: 'Generate accompaniment: bass, chords and drums around one track’s tune',
+        onclick: () => void import('./accompanyDialog').then((m) => m.accompanyDialog(doc)),
+      },
+      '🎼 Accompany…',
+    ),
+    h(
+      'button',
+      {
+        title: 'Copy melody to a new song: faster or slower, transposed, with a new band',
+        onclick: () => void import('./copyTuneDialog').then((m) => m.copyTuneDialog(doc)),
+      },
+      '⧉ Copy tune…',
+    ),
   );
   const bar = h('div', { class: 'mus-bar' }, h('div', { class: 'toolbar' }, playBtn, toStart, loopBtn, time), rollTools);
   const options = h(

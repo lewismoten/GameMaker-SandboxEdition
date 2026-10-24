@@ -226,7 +226,7 @@ export function accompany(src: CmfSong, o: AccompanyOptions): Accompaniment {
     { ch: melody, what: 'the tune' },
     { ch: bassCh, what: `bass (${presetName(song, bassCh)})` },
     ...compChs.map((ch) => ({ ch, what: `${'arp' in comp ? 'arpeggio' : 'chords'} (${presetName(song, ch)})` })),
-    ...(grooves.length ? [{ ch: 11, what: 'drums (channels 12-16)' }] : []),
+    ...(grooves.length ? [{ ch: 11, what: 'drums' }] : []),
   ];
   return { song, key, chords, style, melody, parts };
 }

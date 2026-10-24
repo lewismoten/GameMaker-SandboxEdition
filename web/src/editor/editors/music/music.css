@@ -835,3 +835,42 @@ dialog.modal .mus-preset[hidden],
 .mus-preset:has(input:checked) small {
   color: var(--text);
 }
+
+/* Generate accompaniment and Copy melody to a new song (accompanyDialog.ts, copyTuneDialog.ts) */
+.mus-acc {
+  max-width: 560px;
+}
+.mus-acc-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: end;
+}
+.mus-acc-pick select,
+.mus-acc-pick input[type='number'] {
+  min-height: 28px;
+  max-width: 100%;
+}
+.mus-acc-result {
+  min-height: 6em;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.mus-acc-result p {
+  margin: 0 0 6px;
+}
+.mus-acc-chords {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  word-spacing: 2px;
+  overflow-wrap: anywhere;
+}
+.mus-acc-parts {
+  margin: 0 0 6px;
+  padding-left: 1.2em;
+  font-size: 13px;
+}
+.mus-acc .buttons {
+  flex-wrap: wrap;
+}
