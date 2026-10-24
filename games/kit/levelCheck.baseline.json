@@ -54,6 +54,8 @@
   "warning density s9 10 enemies on one screen at (0, 8)",
   "warning density s9 6 enemies on one screen at (0, 76)",
   "warning density s9 7 enemies on one screen at (0, 54)",
+  "warning facing s2 The hero walks left and right facing the player",
+  "warning facing s4 The hero walks left and right facing the player",
   "warning opposites s11 Blocks 63 and 65 pull opposite ways and touch in 2 places",
   "warning start-threat s10 Monster 59 starts 3 blocks from where the hero comes in",
   "warning start-threat s13 Monster 58 starts 3 blocks from where the hero comes in",
@@ -70,6 +72,10 @@
   "warning start-threat s5 Monster 25 starts 1 blocks from where the hero comes in"
  ],
  "depth": [
+  "warning facing s2 The hero faces the same way walking left and right",
+  "warning facing s2 The hero shows the same picture walking up or down as another way",
+  "warning facing s4 The hero faces the same way walking left and right",
+  "warning facing s4 The hero shows the same picture walking up or down as another way",
   "warning hazard-art s17 Block 0 hurts through its whole cell, but its art fills 19% of it",
   "warning hazard-art s17 Block 18 hurts through its whole cell, but its art fills 12% of it",
   "warning hazard-art s17 Block 28 hurts through its whole cell, but its art fills 19% of it",

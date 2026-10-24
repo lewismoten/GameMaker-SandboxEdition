@@ -116,6 +116,11 @@ export const CHECKS = {
   sounds: { name: 'Loud or long frequent sounds', why: 'A sound heard a hundred times has to be short and soft.', guide: C('Polish that players notice') },
   controls: { name: 'Keys never taught', why: 'A key the game never shows is a key most players never find.', guide: L('Controls the level teaches') },
   response: { name: 'Slow keys', why: 'A key that waits before it answers feels broken.', guide: L('Controls the level teaches') },
+  facing: {
+    name: 'Facing the way it walks',
+    why: 'A hero who slides sideways facing the player looks like a corner was cut.',
+    guide: C('Face the way you walk'),
+  },
   'hero-speed': { name: 'Hero speed', why: 'A slow hero makes every level drag; an uneven walk feels slippery.', guide: C('A hero who feels right') },
   curve: {
     name: 'Difficulty curve',

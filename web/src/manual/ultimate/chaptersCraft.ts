@@ -28,6 +28,25 @@ export const CRAFT: Chapter = {
     <li><b>One step per press</b> for puzzle games on a grid, so a held key doesn’t overshoot.</li>
     <li><b>Momentum</b> for ice, space or a vehicle, where a little slide is the point.</li>
   </ul>
+  <h2>Face the way you walk</h2>
+  <p>A hero drawn only from the front, sliding left and right with his legs going, is the first
+  thing a player notices and the surest sign of a rushed game. Draw him four ways:</p>
+  <ul>
+    <li><b>A side view for walking.</b> Draw him facing right and give the left walk the same
+    frames mirrored (orientation 4). A hero two blocks tall needs <i>both</i> blocks mirrored, or
+    his head keeps looking the wrong way.</li>
+    <li><b>A front view</b> for standing still, and for walking down the screen when the game
+    is seen from above.</li>
+    <li><b>A back view</b> for walking up the screen, climbing a ladder or going in at a
+    door.</li>
+    <li><b>Monsters turn round too.</b> A monster that paces with a side view needs its return
+    leg mirrored (orientation 4 on that corner of its path). Chasers and wanderers turn on their
+    own.</li>
+  </ul>
+  <p>The one exception is something that looks the same from every side on purpose: a ball, a
+  blob, a ship that always flies nose first. The Level check (chapter 14) flags a hero who
+  walks sideways facing you, one whose head doesn’t turn, and a monster that never turns
+  round.</p>
   <h2>Room to move</h2>
   <p>The hero is a block wide and two blocks tall, and the screen is only 16 by 10 blocks. Leave
   air around him: passages three blocks high where he can jump, gaps he can clear with a
@@ -101,6 +120,7 @@ export const UPLOAD: Chapter = {
   <table class="ug-check">
     <tr><th aria-label="Done"></th><th>Check</th></tr>
     <tr><td>☐</td><td>The first minute is fun; the hero’s speed feels right to someone new</td></tr>
+    <tr><td>☐</td><td>The hero faces the way he walks; pacing monsters turn round</td></tr>
     <tr><td>☐</td><td>Every jump has a block to spare; every landing is in sight before the jump</td></tr>
     <tr><td>☐</td><td>Each level asks a little more; the last is the best, not the meanest</td></tr>
     <tr><td>☐</td><td>Long levels are split into scenes, so a death costs little</td></tr>

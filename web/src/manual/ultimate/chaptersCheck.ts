@@ -34,7 +34,8 @@ export const CHECK: Chapter = {
   <p>The list below the map holds about thirty kinds of finding: blind drops, hazard art smaller
   than its cell, opposite blocks side by side, hurts that hold the hero, scores that pay every
   tick, counters that run out before their gate, crowded screens, chasers that never let go,
-  keys never taught, long waits and more. Each is marked a problem, a warning or a note; the
+  keys never taught, long waits, a hero who walks sideways facing you and a monster that never
+  turns round, and more. Each is marked a problem, a warning or a note; the
   buttons at the top show one kind at a time. Click a finding to go to its place on the map.
   Each one says, in a line, why players mind, and its 📒 link opens the part of this guide that
   explains it.</p>
