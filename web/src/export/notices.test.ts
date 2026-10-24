@@ -1,3 +1,4 @@
+// The third-party notices: they name what each player contains and travel in every download.
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

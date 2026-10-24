@@ -1,3 +1,5 @@
+// The printed Level Maps' arithmetic: shared maps, the part in use, hidden cells, marks and page
+// packing.
 import { describe, expect, it } from 'vitest';
 import { emptyBlock } from '../../formats/blocks';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Scene } from '../../formats/game';

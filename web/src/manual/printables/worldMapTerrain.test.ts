@@ -1,3 +1,4 @@
+// The World Map's land: countries from colors, and coasts and trails drawn the same every time.
 import { describe, expect, it } from 'vitest';
 import { blobPath, circleEdge, hsl, lookOf, mix, regions, scatter, terrainOf, trailBetween } from './worldMapTerrain';
 

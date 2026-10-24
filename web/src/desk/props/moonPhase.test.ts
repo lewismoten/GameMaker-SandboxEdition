@@ -1,3 +1,4 @@
+// The moon in the desk's window: its phase on real dates, and how it is named.
 import { describe, expect, it } from 'vitest';
 import { moonPhase } from './moonPhase';
 

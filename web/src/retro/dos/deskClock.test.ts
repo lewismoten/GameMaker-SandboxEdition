@@ -1,3 +1,4 @@
+// TIME and DATE: printed and read as DOS 6.22 did.
 import { describe, expect, it } from 'vitest';
 import { dosDate, dosTime, parseDosDate, parseDosTime } from './deskClock';
 

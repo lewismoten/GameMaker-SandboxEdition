@@ -1,3 +1,4 @@
+// The BBS file lists' pages: what fits on a page, the keys, and the summary lines.
 import { describe, expect, it } from 'vitest';
 import { dizSummary, Pager, pageKeys, pageLabel, paginate, readNumber, uploadDate } from './pager';
 import type { Term } from './term';

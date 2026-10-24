@@ -1,3 +1,4 @@
+// The Download chooser puts the visitor's own system first.
 import { describe, expect, it } from 'vitest';
 import { visitorSystem } from './download';
 

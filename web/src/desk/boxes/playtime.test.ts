@@ -1,3 +1,5 @@
+// The boxes' hours of gameplay: counted from each walkthrough's level chapters, and every box's
+// claim in step with games/kit/playtime.ts.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';

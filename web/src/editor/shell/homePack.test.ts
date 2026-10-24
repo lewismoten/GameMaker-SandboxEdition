@@ -1,3 +1,4 @@
+// How the home page packs its collections of tiles into rows.
 import { describe, expect, it } from 'vitest';
 import { packCollections } from './homePack';
 

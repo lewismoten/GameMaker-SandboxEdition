@@ -1,3 +1,4 @@
+// DOS folder and program names for games: 8.3 names, shortened as DOS did, and none the same.
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';

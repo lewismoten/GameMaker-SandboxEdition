@@ -1,3 +1,5 @@
+// The Bard of Bizarre flyer: its story, its credits in the Credits page's words, and the games
+// sorted into collections.
 import { describe, expect, it } from 'vitest';
 import { BARD_CREDIT, byCollection, flyerBlurb } from './bardCatalog';
 

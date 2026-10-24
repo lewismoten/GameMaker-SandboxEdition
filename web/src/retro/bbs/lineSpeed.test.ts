@@ -1,3 +1,4 @@
+// The modem's line speed: remembered, and how fast files and text move at each speed.
 import { afterEach, describe, expect, it } from 'vitest';
 import { timeWarp, warpCount, connectLine, cps, DEFAULT_SPEED, LINE_SPEEDS, lineSpeed, setLineSpeed, speedLabel, speedWords, statusBps } from './lineSpeed';
 

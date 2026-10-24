@@ -1,3 +1,5 @@
+// Level Maps keep the secrets: levelSecrets.json matches the games, and no map draws or marks a tin
+// heart or an egg.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';

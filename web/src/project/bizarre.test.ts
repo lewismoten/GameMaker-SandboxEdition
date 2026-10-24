@@ -1,3 +1,4 @@
+// The Bard of Bizarre collection: which games are the Bard's, and when they get a tab of their own.
 import { describe, expect, it } from 'vitest';
 import { BARD, BIZARRE_MIN, hasBizarreTab, isBizarreGame } from './bizarre';
 
