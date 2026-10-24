@@ -11,7 +11,6 @@ import { MONBL } from '../../../formats/blocks';
 import { DIESEQ } from '../../../formats/character';
 import type { Game } from '../../../formats/game';
 import { MLEN, MWID } from '../../../formats/map';
-import { monPicNum } from '../../../engine/monsters';
 import { LASTMM, LASTMON, bgBlock } from '../../../engine/world';
 import { at, type Finding } from '../findings';
 import { getsAway } from '../escape';
@@ -21,7 +20,7 @@ import { SceneSim, type FileSource } from '../sim';
 import type { SceneData } from '../sceneData';
 
 /** Ticks after the hero comes in at which monsters are probed (they move on between). */
-const MOMENTS = [0, 20, 40];
+const MOMENTS = [0, 10, 20, 30, 40, 50];
 /** Placed copies of one monster probed, and monsters (by number) a scene. */
 const SLOTS_EACH = 2;
 const MONSTERS = 16;
@@ -36,7 +35,8 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
   } catch {
     return [];
   }
-  sim.freezeBeyond = { x: 24, y: 15 };
+  // every monster moves (the hero is put down far from where he came in, among ones the explorer would freeze)
+  sim.freezeBeyond = { x: 0, y: 0 };
   const w = sim.w;
   const gravity = w.bg.some((b) => b.grav !== 0);
   const moves = movesFor(keyRoles(w.chr, gravity), gravity);
@@ -46,10 +46,8 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
     const c = w.chr;
     return shownSolid(c.x[0], c.y[0]) && (c.x[1] === 0 || shownSolid(c.x[0] + 1, c.y[0]));
   };
-  const picOf = (l: number) => {
-    const p = monPicNum(w, l);
-    return p < MONBL ? w.mblk[p] : undefined;
-  };
+  /** Some picture of the monster is solid on top: something to land on. */
+  const solidTop = (n: number) => !!w.mon[n]?.pic.some(([p]) => p < MONBL && (w.mblk[p]?.solid ?? 0) & 1);
   // which slots to probe: placed monsters with a picture that hurts, a few of each
   const each = new Map<number, number[]>();
   for (let l = 0; l < LASTMM; l++) {
@@ -71,26 +69,32 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
   /** Plays from the hero's new place: did he sink into the ground, or get held while hurt? */
   const watch = async (n: number, landing: boolean, toward: number[]) => {
     const start = { x: w.chr.x[0], y: w.chr.y[0] };
+    let touched = false;
     sim.hold(toward);
     for (let t = 0; t < 40; t++) {
       const hp = w.ci.hitpts;
       const r = await sim.tick();
-      if (r || w.chr.cseq === DIESEQ) return;
+      if (r) return;
       const cell = w.chr.y[0] * MLEN + w.chr.x[0];
       // pushed far on the first ticks: something else was where he was put
       if (t <= 1 && (Math.abs(w.chr.x[0] - start.x) > 2 || Math.abs(w.chr.y[0] - start.y) > 4)) return;
+      // (a hero who lands on it and sinks may be dying by then: he sank all the same)
       if (landing && inside()) {
         sinks.set(n, [...(sinks.get(n) ?? []), cell]);
         return;
       }
-      if (w.ci.hitpts < hp) {
-        // the first touch: can he get away from here? (tried a few times a monster, once it holds)
+      if (w.chr.cseq === DIESEQ) return;
+      if (w.ci.hitpts < hp && !touched) {
+        touched = true;
+        // the first touch: can he get away from here? (tried a few times a monster, until one holds)
         const k = tested.get(n) ?? 0;
-        if (k < 0 || k >= 3) return;
-        const away = await getsAway(sim, moves);
-        tested.set(n, away ? k + 1 : -1);
-        if (!away) holds.set(n, [...(holds.get(n) ?? []), cell]);
-        return;
+        if (k >= 0 && k < 3) {
+          const away = await getsAway(sim, moves);
+          tested.set(n, away ? k + 1 : -1);
+          if (!away) holds.set(n, [...(holds.get(n) ?? []), cell]);
+        }
+        // a landing goes on: he may sink into the ground a while after the first bite
+        if (!landing) return;
       }
     }
   };
@@ -102,14 +106,29 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
       const mi = w.mi[l];
       const mx = mi.curx[0];
       const my = mi.cury[0];
-      const pic = picOf(l);
-      // dropped from three blocks over it (open air, and inside the map: it wraps at the top)
-      if (gravity && pic && pic.solid & 1 && my >= 4 && !shownSolid(mx, my - 2) && !shownSolid(mx, my - 3) && !shownSolid(mx, my - 4)) {
-        sim.place(mx, my - 3);
-        w.chr.x[1] = mi.curx[1];
-        await watch(n, true, []);
-        sim.restore(snap);
-      }
+      // dropped from three blocks over it, and from two, over where it is and where it will be when
+      // he comes down (it walks on while he falls); in open air, inside the map (it wraps at the top)
+      if (gravity && solidTop(n))
+        for (const [h, fall] of [
+          [3, 10],
+          [3, 0],
+          [2, 7],
+          [2, 0],
+        ]) {
+          sim.restore(snap);
+          for (let t = 0; t < fall; t++) if (await sim.tick()) break;
+          const fx = w.mi[l].curx;
+          const fy = w.mi[l].cury[0];
+          const alive = w.mm[l].monnum === n;
+          sim.restore(snap);
+          if (!alive || fy < h + 1) continue;
+          let open = true;
+          for (let k = 2; k <= h + 1; k++) if (shownSolid(fx[0], fy - k)) open = false;
+          if (!open) continue;
+          sim.place(fx[0], fy - h);
+          w.chr.x[1] = fx[1];
+          await watch(n, true, []);
+        }
       // walked into from two blocks to the side, standing on ground as the monster is
       for (const side of [-1, 1]) {
         const hx = mx + side * 2;

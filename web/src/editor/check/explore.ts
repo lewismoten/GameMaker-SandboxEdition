@@ -275,9 +275,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     return id;
   };
 
-  /** Hurt-lock tests run (by cell and culprit; -1 once one found a lock), and how many more may run. */
+  /** Hurt-lock tests run (by culprit, else cell; -1 once one found a lock), and how many more may run. */
   const lockTests = new Map<string, number>();
-  let lockTestsLeft = 150;
+  let lockTestsLeft = 40;
   /** One tick, with everything the checks watch for. Returns 'dead', a link, or undefined. */
   const hurtRun = { n: 0, at: -1, x: 0, y: 0 };
   const scoreRun = { n: 0, heal: 0 };
@@ -318,9 +318,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       hurtRun.n++;
       if (hurtRun.n === 8 && Math.abs(pos.x - hurtRun.x) < BLEN && Math.abs(pos.y - hurtRun.y) < BLEN) {
         const source = culprit(w, sim, 'hurt');
-        const k = `${hurtRun.at}:${source ?? ''}`;
+        const k = source ?? `cell ${hurtRun.at}`;
         const tried = lockTests.get(k) ?? 0;
-        if (tried >= 0 && tried < 3 && lockTestsLeft > 0) {
+        if (tried >= 0 && tried < 2 && lockTestsLeft > 0) {
           lockTestsLeft--;
           const away = await getsAway(sim, moves);
           lockTests.set(k, away ? tried + 1 : -1);
