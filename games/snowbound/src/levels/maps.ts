@@ -37,10 +37,7 @@ const LEGEND: Record<string, string> = {
   $: 'bill',
   '5': 'tip',
   h: 'signHill',
-  t: 'signTown',
   m: 'signMall',
-  H: 'signHome',
-  w: 'signPlow',
   u: 'signBus',
   '~': 'slope',
   ':': 'slopeT',
@@ -53,8 +50,6 @@ const LEGEND: Record<string, string> = {
   X: 'finish',
   Q: 'slopeBill',
   q: 'slopeCocoa',
-  '[': 'parkedL',
-  ']': 'parkedR',
 };
 
 export interface LinkSpec {
@@ -496,11 +491,13 @@ export function lavaleMall(book: BlockBook) {
   // the fire lane
   m.fill(X, 17, 60, 1, '=').fill(X, 18, 60, 1, '-');
   m.patch(X, 19, ['BBBB_BBLBB_BBBBBLBBB_BBBBBLBBBB__BBBLBBBB_BBBBBLBB_BBBB_BBBB']);
-  // the lot: three rows of buried cars with lamp islands; some cars still need digging out
+  // the lot: three rows of buried cars with lamp islands; some cars still need digging out.
+  // Each row is its own color (blue, green, tan) so you can tell where you are.
   for (const [row, y] of [21, 26, 31].entries()) {
+    const car = ['blueCar', 'greenCar', 'tanCar'][row];
     for (let k = 0; k < 11; k++) {
       const cx = X + 2 + k * 5 + (k >= 5 ? 3 : 0);
-      m.set(cx, y, '[').set(cx + 1, y, ']');
+      m.set(cx, y, `${car}L`).set(cx + 1, y, `${car}R`);
       if ((k + row) % 2 === 0) m.set(cx, y + 1, 'P').set(cx + 1, y + 1, 'P');
       else if ((k + row) % 3 === 0) m.set(cx - 1, y, 'P');
     }
@@ -514,6 +511,8 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 57, 37, 'T')
     .set(X, 36, 'u');
   m.set(X + 52, 27, 'c');
+  // lost on the far right? a sign by the trees points back up to the mall
+  m.set(X + 59, 29, 'signMallBack');
   // meltwater frozen along the back of the lot: an icy lane that slides you east toward the
   // stores (quick, but nothing to shovel on it and the lot's buried cars to steer past)
   m.fill(X + 6, 37, 44, 1, '>');

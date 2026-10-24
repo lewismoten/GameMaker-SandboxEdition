@@ -33,5 +33,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   addWoods(k, painters, treats);
   addChez(k, painters);
   addHidden(k, painters, pal.pal);
+  // the back row's tan cars, in the last two slots (the set is full at 150)
+  treats.car('tanCar', 'glow', 1);
   return k.book;
 }

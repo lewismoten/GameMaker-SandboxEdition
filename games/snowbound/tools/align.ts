@@ -87,7 +87,7 @@ export function align(): number {
     })),
     ...[...book.index.keys()].filter((n) => /^st.*0$/.test(n) && book.index.has(n.slice(0, -1) + '1')).flatMap((n) => run([n, n.slice(0, -1) + '1'])),
     ...run(['board0', 'board1']),
-    ...run(['parkedL', 'parkedR']),
+    ...['blueCar', 'greenCar', 'tanCar'].flatMap((n) => run([`${n}L`, `${n}R`])),
     ...run(['chezL', 'chezR']),
     { part: 'fairMan', need: [[1, 0, /^fairBell[LR]?$/]] },
     {
