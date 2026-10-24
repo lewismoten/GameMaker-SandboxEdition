@@ -19,11 +19,11 @@ night drills.
 
 ## Moten Snow to Software Operations, 1992
 
-In October 1992, _Computer Gaming World_ #99 advertised RSD Game-Maker for $89 plus
-shipping. The next issue listed it at $129.
+In October 1992, _Computer Gaming World_ #99 advertised RSD Game-Maker for $89 plus $4
+shipping. The next issue listed it at $129. I was 16.
 
-That December a nor'easter snowed the area in (the _Mineral Daily News-Tribune_ ran
-"Keyser area is snowbound" on December 11), and the snow became my first business. From
+On December 11, 1992, a nor'easter snowed the area in (the _Mineral Daily News-Tribune_
+ran "Keyser area is snowbound" that day), and the snow became my first business. From
 December 1992 to February 1993 I shoveled driveways around Fort Ashby: finding customers,
 setting prices, scheduling the work and doing it well in the cold. When I had the money I
 bought a money order and sent it off for Game-Maker.
