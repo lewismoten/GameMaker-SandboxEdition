@@ -600,17 +600,27 @@
     filter: drop-shadow(0 0 14px rgba(150, 80, 255, 0.35));
   }
 
-  /* the snow-shoveling poster under the tube: its paper glows lavender and its inks pop */
-  .desk-scene > .poster {
-    transition: filter 0.8s;
+  /* the snow-shoveling poster under the tube: its glowing print (room/motenUv.ts) over it,
+     half seen by day, full at night: lettering and inks glow, the paper turns lavender */
+  .desk-scene > .poster img.poster-uv {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-color: #cbbcff;
+    box-shadow: 0 0 14px rgba(150, 80, 255, 0.45);
+    opacity: 0;
+    transition: opacity 0.8s;
   }
 
-  .desk.bl-uv .desk-scene > .poster {
-    filter: saturate(1.4) contrast(1.1) drop-shadow(0 0 12px rgba(150, 80, 255, 0.35));
+  .desk.bl-uv .desk-scene > .poster img.poster-uv {
+    opacity: 0.5;
   }
 
-  .desk.bl-uv.bl-night .desk-scene > .poster {
-    filter: brightness(0.75) contrast(1.35) saturate(2) hue-rotate(-14deg) sepia(0.15) drop-shadow(0 0 14px rgba(150, 80, 255, 0.5));
+  .desk.bl-uv.bl-night .desk-scene > .poster img.poster-uv,
+  .desk.bl-flicker .desk-scene > .poster img.poster-uv,
+  .desk.bl-blink .desk-scene > .poster img.poster-uv {
+    opacity: 1;
+    transition: none;
   }
 
   /* the glowing print, there after dark (and while the tube flickers) */
