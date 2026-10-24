@@ -405,7 +405,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(4, 15, 0, 13 - f, c('tile', 2));
     p.set(6 + f, 18, c('mouse', 0)).set(11 - f, 18, c('mouse', 0));
     if (cheese) p.rect(15, 15, 4, 3, c('cheese', 2)).set(16, 16, c('cheese', 0));
-    return done(p);
+    // lamplight along its edge (gold keeps its light at night), so a gray mouse reads on the
+    // dark kitchen floor; the same pixels, so the same reach
+    return outline(p, c('gold', 1));
   };
   book.add('mouse0', mouse(0, true), solid);
   book.add('mouse1', mouse(1, true), solid);
