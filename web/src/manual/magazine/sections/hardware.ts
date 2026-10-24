@@ -45,7 +45,6 @@ const modemAd = () =>
             fields: ['Name', 'City, State, ZIP'],
             go: 'go:desk/modem',
             button: 'Look at the modem on the desk',
-            tone: 'yellow',
           }),
         ],
         {
@@ -97,7 +96,6 @@ const diskBoxAd = (ctx: MagContext) =>
             fields: ['Name', 'City, State, ZIP'],
             go: 'go:desk/diskbox',
             button: 'Open the disk box on the desk',
-            tone: 'pink',
           }),
         ],
         {
@@ -147,7 +145,6 @@ const speakersAd = () =>
             fields: ['Name', 'City, State, ZIP'],
             go: 'go:desk/speakers',
             button: 'Look at the speakers on the desk',
-            tone: 'cyan',
           }),
         ],
         {

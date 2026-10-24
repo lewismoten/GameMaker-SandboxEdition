@@ -15,7 +15,6 @@ const HOUSE: (() => MagPage)[] = [
             fields: ['Name', 'Address', 'City, State, ZIP'],
             go: 'go:mag/contents',
             button: 'Back to the contents',
-            tone: 'yellow',
           }),
         ],
         { burst: 'SAVE 58%!', tone: 'yellow' },

@@ -171,7 +171,7 @@ function pages(ctx: MagContext): MagPage[] {
           'Every box holds its manual, a key card, *The Sandbox Scoop* newsletter and a sticker sheet. Stuck? Ask for the hint book.',
           'Nothing to mail: every game here plays free.',
         ],
-        { fields: ['Name', 'Address', 'City, State, ZIP'], go: 'go:catalog/sandbox', button: 'Open the Sandbox Software catalog', tone: 'yellow' },
+        { fields: ['Name', 'Address', 'City, State, ZIP'], go: 'go:catalog/sandbox', button: 'Open the Sandbox Software catalog' },
       ),
     ]),
     dept(

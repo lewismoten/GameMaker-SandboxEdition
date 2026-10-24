@@ -33,7 +33,11 @@ export const portrait = (id: string, alt: string, w: number, h: number, caption?
 export const rows = (r: ListingRow[]): Block => ({ t: 'rows', rows: r });
 /** A hint: the answer is printed upside down under the question. */
 export const hint = (q: Inline, a: string, game?: string): Block => ({ t: 'hint', q, a, game });
-/** An order card with a dotted cut line: lines of text, blank fields to fill in, and a link. */
+/**
+ * An order card with a dotted cut line: lines of text, blank fields to fill in, and a link. Order
+ * forms, postcards and registration cards are white card stock (the default); give `tone` only
+ * to a small coupon.
+ */
 export const card = (title: string, lines: Inline[], o: { fields?: string[]; go?: Go; button?: string; tone?: Tone } = {}): Block => ({
   t: 'card',
   title,

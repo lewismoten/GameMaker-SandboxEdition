@@ -34,7 +34,7 @@ export const READER_SERVICE: MagSection = {
           card(
             'FREE PRODUCT INFORMATION',
             ENTRIES.map(([label, go], i) => `[${String(i + 1).padStart(3, '0')}](${go}) ${label}`),
-            { fields: ['Name', 'Age', 'Computer', 'Favorite game'], tone: 'cyan' },
+            { fields: ['Name', 'Age', 'Computer', 'Favorite game'] },
           ),
           grid([[p('☐ I own a modem  ☐ I call BBSes  ☐ I make my own games')], [p('☐ 286  ☐ 386  ☐ 486  ☐ Sound Blaster  ☐ VGA')]]),
           note('Nothing to mail: the card is part of the story.'),
