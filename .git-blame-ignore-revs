@@ -13,3 +13,6 @@ aeadb8977f0c8adf7580ce8c1c41915bbbf415c4
 f20dce2e0146ddf35f5f56747d8059d657af90dc
 # loofah: format the back view
 0da43d70445e5688c57380bf34d21b5b2e58e328
+
+# NOTICE.md: undo Prettier restyling made by mistake (only formatting changes)
+4e1f4429d5386a5642777721b1d4e965a2917221
