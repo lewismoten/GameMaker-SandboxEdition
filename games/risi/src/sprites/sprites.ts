@@ -21,8 +21,8 @@ import { CHEESE, CROWN, LAUGHS } from '../ids';
 export { T, outline };
 
 export interface ManPose {
-  /** front: to you; side: walking right (mirror for left). */
-  face: 'front' | 'side';
+  /** front: to you; side: walking right (mirror for left); back: away from you (climbing). */
+  face: 'front' | 'side' | 'back';
   /** Walk cycle (0..3); legs apart on 1 and 3. */
   step?: number;
   mood?: 'calm' | 'blink' | 'worry' | 'ouch' | 'shout' | 'swoon' | 'bliss' | 'laugh';
@@ -93,6 +93,12 @@ export function marcusArt(pal: Pal) {
     const hx = side ? 11 : 10;
     const hy = 4 + crouch;
     blob(p, hx + 0.5, hy + 0.5, 3.8, 3.8, pal.r('skin'), 1, 4);
+    // from behind: the curls cover his head, his ears either side, no face
+    const back = o.face === 'back';
+    if (back)
+      blob(p, hx + 0.5, hy, 3.6, 3.4, pal.r('hair'), 0, 2)
+        .set(hx - 3, hy + 1, c('skin', 2))
+        .set(hx + 4, hy + 1, c('skin', 2));
     for (const [cx, cy] of [
       [-3, -3],
       [-1, -4],
@@ -104,14 +110,16 @@ export function marcusArt(pal: Pal) {
       if (!(side && cx > 2)) p.disc(hx + cx, hy + cy, 1.3, c('hair', (cx + cy) % 2 ? 1 : 2));
     if (side) p.disc(hx - 3, hy, 1.4, c('hair', 1));
     const ey = hy;
-    const eyes = side ? [hx + 2] : [hx - 1, hx + 2];
+    const eyes = back ? [] : side ? [hx + 2] : [hx - 1, hx + 2];
     for (const ex of eyes) {
       if (mood === 'blink' || mood === 'bliss' || mood === 'swoon' || mood === 'laugh') p.set(ex - 1, ey, ink).set(ex, ey, ink);
       else if (mood === 'ouch') p.set(ex - 1, ey - 1, ink).set(ex, ey, ink);
       else p.set(ex, ey, ink).set(ex, ey - 1, mood === 'worry' ? ink : c('toga', 3));
     }
     const mx = side ? hx + 2 : hx + 0.5;
-    if (mood === 'shout' || mood === 'ouch' || mood === 'laugh') p.rect(Math.round(mx) - 1, hy + 2, 3, 2, ink).set(Math.round(mx), hy + 3, c('red', 2));
+    if (back) {
+      // no mouth to show
+    } else if (mood === 'shout' || mood === 'ouch' || mood === 'laugh') p.rect(Math.round(mx) - 1, hy + 2, 3, 2, ink).set(Math.round(mx), hy + 3, c('red', 2));
     else if (mood === 'worry')
       p.set(mx - 1, hy + 3, ink)
         .set(mx, hy + 2, ink)
@@ -154,7 +162,8 @@ export function buildMarcusBlocks(pal: Pal) {
   book.add('blink', a.body({ face: 'front', mood: 'blink' }));
   book.add('worry', a.body({ face: 'front', mood: 'worry', arms: 'gut', sweat: 2 }));
   for (let s = 0; s < 4; s++) book.add(`walk${s}`, a.body({ face: 'side', step: s }));
-  book.add('hop', a.body({ face: 'front', arms: 'up', mood: 'shout' }));
+  // Up hops, and on a ladder climbs: his back, arms up
+  book.add('hop', a.body({ face: 'back', arms: 'up' }));
   book.add('hopSide', a.body({ face: 'side', arms: 'up', step: 1, mood: 'worry' }));
   book.add('sneak0', a.body({ face: 'side', crouch: true, step: 0, mood: 'worry' }));
   book.add('sneak1', a.body({ face: 'side', crouch: true, step: 1, mood: 'worry' }));
