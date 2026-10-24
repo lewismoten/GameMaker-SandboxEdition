@@ -16,6 +16,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
+import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline };
 
@@ -511,10 +512,13 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(4 - f, 18, 5, 2, c('ink', 1)).rect(11 + f, 18, 5, 2, c('ink', 1));
     return done(p);
   };
-  book.add('deanA0', deanA(0), hurt(-8));
-  book.add('deanA1', deanA(1), hurt(-8));
-  book.add('deanB0', deanB(0), hurt(-8));
-  book.add('deanB1', deanB(1), hurt(-8));
+  // Dean Dour is solid only at his sides: Doc Leo landing on his head slides down beside him
+  // (a frown or two) instead of being pushed down into the floor under him.
+  const dour = { chHitPt: -8, solid: SOLLEF | SOLRIG };
+  book.add('deanA0', deanA(0), dour);
+  book.add('deanA1', deanA(1), dour);
+  book.add('deanB0', deanB(0), dour);
+  book.add('deanB1', deanB(1), dour);
   // ---- the sewer alligator (A: snout, B: tail), swimming in the channel
   const gatorA = (f: number) => {
     const p = P();
