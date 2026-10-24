@@ -110,6 +110,15 @@ function startModern(hash?: string): void {
         ),
         h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
         h('a', { class: 'nav-link hide-tiny', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
+        h(
+          'a',
+          {
+            class: 'hide-narrow nav-link',
+            href: '#/magazine',
+            title: 'TURBO BUTTON, the shareware gamer’s monthly: news, interviews, reviews, hints and every game',
+          },
+          'Magazine',
+        ),
       ),
       h(
         'button',
@@ -124,13 +133,17 @@ function startModern(hash?: string): void {
         { class: 'topbar-more show-narrow' },
         h(
           'summary',
-          { 'aria-label': 'More: the guide on small screens, the cast, achievements, the credits, playing offline and the source code', title: 'More' },
+          {
+            'aria-label': 'More: the guide on small screens, the magazine, the cast, achievements, the credits, playing offline and the source code',
+            title: 'More',
+          },
           '⋯',
         ),
         h(
           'div',
           { class: 'topbar-menu' },
           h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
+          h('a', { href: '#/magazine' }, '📰 TURBO BUTTON magazine'),
           h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('a', { href: '#/credits' }, '📜 Credits'),

@@ -104,9 +104,9 @@
 .topbar .topbar-menu > :hover {
   background: var(--panel-2);
 }
-/* below 900px the cast, achievements, desk, offline and source links move into it, so the
-   header stays one row on tablets too */
-@media (max-width: 900px) {
+/* below 1200px the cast, achievements, credits, magazine, offline and source links move into
+   it, so the header stays one row on tablets and small laptops too */
+@media (max-width: 1199px) {
   .topbar .hide-narrow {
     display: none;
   }
@@ -150,7 +150,7 @@
   white-space: nowrap;
 }
 
-/* the bar's page links (Games, Cast, Achievements, Credits, Guide): each its own target, with a thin rule
+/* the bar's page links (Games, Cast, Achievements, Credits, Guide, Magazine): each its own target, with a thin rule
    centred between neighbours so they don't read as one phrase */
 .topbar-nav {
   display: flex;
@@ -166,7 +166,7 @@
   border-left: 1px solid color-mix(in srgb, currentColor 40%, transparent);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1199px) {
   /* only Games and Guide are left in the bar: one rule between them */
   .topbar-nav > a.nav-link {
     padding: 4px 6px;
