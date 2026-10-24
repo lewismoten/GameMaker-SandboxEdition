@@ -20,6 +20,8 @@ import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 import { noteOpened, quickOpen } from './quickOpen';
 import { usedByLine, deleteMessage } from './usedBy';
+import { firstStepsState, notePlayed } from './firstSteps';
+import type { FirstStepsPanel } from './firstStepsPanel';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -106,6 +108,8 @@ export class Workspace {
   private cleanup?: () => void;
   private player?: PlayerHandle;
   private unlisten: () => void;
+  /** The beginner's checklist, in games started from the starter (firstSteps.ts). */
+  private firstSteps?: FirstStepsPanel;
 
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
@@ -149,7 +153,22 @@ export class Workspace {
     };
     document.addEventListener('keydown', onHelpKey);
     this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey));
+    if (firstStepsState(project)) void this.loadFirstSteps();
   }
+
+  /** The First steps panel (its own chunk, loaded only for games that have the checklist). */
+  private async loadFirstSteps(): Promise<void> {
+    const { firstStepsPanel } = await import('./firstStepsPanel');
+    if (this.disposed) return;
+    this.firstSteps = firstStepsPanel(this.project, {
+      open: (f) => this.open(f),
+      play: () => this.play(true),
+      upload: () => void import('../widgets/uploadChecklist').then((m) => m.uploadChecklist(this.project)),
+    });
+    this.renderSidebar();
+  }
+
+  private disposed = false;
 
   private unbind?: () => void;
 
@@ -166,6 +185,8 @@ export class Workspace {
   }
 
   dispose(): void {
+    this.disposed = true;
+    this.firstSteps?.dispose();
     this.cleanup?.();
     this.player?.stop();
     this.unlisten();
@@ -205,6 +226,7 @@ export class Workspace {
           this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
         ),
         this.playButton(),
+        this.firstSteps?.button(),
       ),
       h(
         'div',
@@ -532,6 +554,7 @@ export class Workspace {
   /** Play tests the game: from the level being edited when a level's map is open, else from the title screen. Stop goes back to that file. */
   private play(fromTitle = false, back = this.current): void {
     const level = fromTitle ? undefined : this.levelHere(back);
+    notePlayed(this.project);
     setHashParams({ play: fromTitle ? 'title' : true });
     this.cleanup?.();
     this.cleanup = undefined;
