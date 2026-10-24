@@ -150,6 +150,23 @@ export const BLOCKS: Chapter = {
     frame is showing, so each frame needs the same touch settings.</li>
   </ul>
   <figure data-fig="chain"></figure>
+  <h2>Big pictures: groups, and watching them move</h2>
+  <p>A sign, a mirror or a poster is several blocks that only make sense together, and so is a
+  monster two blocks wide. In the block editor, Shift-click or Ctrl-click the blocks and choose
+  <b>Group picked blocks</b>, or use <b>Group with neighbors</b> for a run of blocks in a row,
+  and give the group a name and its blocks across and down. <b>Suggest groups</b> looks for them for you:
+  background blocks that always sit together on the maps, monsters placed side by side that move
+  in step, and the hero’s top and bottom blocks. Nothing is added until you tick it.</p>
+  <p>While you paint a block of a group, the whole group is shown around it; click a neighbor
+  to paint that one. <b>Edit as one picture</b> joins the group into one canvas, where a line or
+  a fill runs straight across the block edges, and Apply puts each part back in its block (with
+  an Undo for the whole group). Groups are notes for you: they live beside the game, never in it,
+  and DOS never sees them.</p>
+  <p>Under <b>Preview &amp; uses</b>, the animation the block is in plays at the game’s own 18
+  ticks a second: its chain, the monster that shows it, or the hero’s sequence; the group’s
+  animation plays in the Groups panel. Each stroke shows up in it at once, so you can fix a frame and watch
+  the whole cycle. Pause it, or step one frame at a time; it starts paused if your computer is
+  set to reduce motion.</p>
   <h2>Blocks that give birth</h2>
   <p>A background block can give birth to a monster every so many ticks: a cannon, a nest, a
   leaky pipe. Like animation, the timer belongs to the block number, and only blocks within
