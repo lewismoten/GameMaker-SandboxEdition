@@ -76,7 +76,19 @@ export const PIECE_GROUPS: PieceGroup[] = [
         name: 'WCAG 2 contrast ratio',
         license: 'W3C formula (no code used)',
         by: 'The W3C’s Web Content Accessibility Guidelines',
-        what: 'How the level check measures a monster against the scenery behind it.',
+        what: 'How the level check measures a monster against the scenery behind it, and the Color vision check’s grayscale.',
+      },
+      {
+        name: 'Color vision simulation',
+        license: 'Published matrices (no code used)',
+        by: 'Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes, IEEE TVCG, 2009',
+        what: 'How the palette editor’s Color vision check shows a level with protanopia, deuteranopia or tritanopia (web/src/editor/editors/palette/colorVision.ts).',
+      },
+      {
+        name: 'CIELAB and ΔE (CIE 1976)',
+        license: 'Published standard (no code used)',
+        by: 'The International Commission on Illumination (CIE); sRGB curve from IEC 61966-2-1',
+        what: 'How the Color vision check measures whether two colors look alike.',
       },
       {
         name: 'sfxr (the idea)',

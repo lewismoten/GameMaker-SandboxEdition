@@ -315,6 +315,15 @@ formats from their published descriptions and from Game-Maker's own source.
   dedication), chosen because it reads with every kind of color vision; its monster contrast is
   the **relative luminance and contrast ratio** of the W3C's Web Content Accessibility
   Guidelines (WCAG) 2. Both are used as published; no code of theirs is included.
+- **The palette editor's Color vision check** (`web/src/editor/editors/palette/colorVision.ts`)
+  simulates protanopia, deuteranopia and tritanopia with the severity-1.0 matrices published
+  by **Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes**, "A
+  Physiologically-based Model for Simulation of Color Vision Deficiency" (IEEE Transactions
+  on Visualization and Computer Graphics 15(6), 2009), applied in linear RGB. Its grayscale is
+  the WCAG 2 relative luminance above, and it measures how alike two colors look with the
+  CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's
+  (IEC 61966-2-1) transfer curve. All are published formulas and numbers; no code of theirs
+  is included.
 - **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
   `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
   ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
