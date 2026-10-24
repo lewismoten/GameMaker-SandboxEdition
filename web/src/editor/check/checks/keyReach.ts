@@ -58,7 +58,7 @@ export function keyReach(files: GameFiles): Finding[] {
       severity: 'warning',
       title: `${scanName(k.scan)} (${does}) makes the right hand leave the arrows`,
       detail:
-        'Put actions where the left hand rests while the right steers: Space first, then Z, X, C, V or B, then A to G, Q to T or 1 to 5 if W A S D don’t move the hero.',
+        'Fine for a key pressed now and then. For one needed in the thick of play, the left hand’s keys work well while the right steers: Space first, then Z, X, C, V or B, then A to G, Q to T or 1 to 5 if W A S D don’t move the hero.',
       where: { file: k.uses[0]?.chrs[0] },
     });
   }

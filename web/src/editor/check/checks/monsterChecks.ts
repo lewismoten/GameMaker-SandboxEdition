@@ -92,7 +92,7 @@ export function density(d: SceneData): Finding[] {
       check: 'density',
       severity: w.n > 5 ? 'warning' : 'info',
       title: `${w.n} enemies on one screen at ${at(w.y * MLEN + w.x)}`,
-      detail: 'Two or three on a screen is a fight; more is noise. Give each a job, or spread them out.',
+      detail: 'Is the crowd the point here? If not, two or three at a time, each with a job, is easier to read; spread the rest out.',
       where: {
         scene: d.scene,
         map: d.names.map,
@@ -120,8 +120,8 @@ export function speed(d: SceneData): Finding[] {
       severity: chases ? 'warning' : 'info',
       title: `Monster ${n} moves ${v} px a tick, ${(v / hero).toFixed(1)} times the hero’s ${hero.toFixed(1)}${chases ? ', chasing' : ''}`,
       detail: chases
-        ? 'A chaser faster than the hero can’t be outrun. Slow it below the walk, or give it a lifetime.'
-        : 'Fine on a straight, easy-to-read path; unfair on a winding one.',
+        ? 'A chaser faster than the hero can’t be outrun. If that isn’t the idea, slow it below the walk, or give it a lifetime.'
+        : 'Fine on a straight, easy-to-read path; on a winding one, players may only learn it by dying.',
       where: {
         scene: d.scene,
         map: d.names.map,
@@ -145,7 +145,7 @@ export function startThreat(d: SceneData, game: Game): Finding[] {
       check: 'start-threat',
       severity: 'warning',
       title: `Monster ${near.monnum} starts ${Math.max(Math.abs(near.curx - l.to.x), Math.abs(near.cury - l.to.y))} blocks from where the hero comes in`,
-      detail: `The hero enters at ${at(l.to.y * MLEN + l.to.x)}. Give the player a moment before the first threat.`,
+      detail: `The hero enters at ${at(l.to.y * MLEN + l.to.x)}. Unless it is meant to meet them at the door, a moment before the first threat helps.`,
       where: { scene: d.scene, map: d.names.map, cell: near.cury * MLEN + near.curx, monster: { file: d.names.mon ?? '', n: near.monnum } },
     });
   }
@@ -180,7 +180,7 @@ export function contrast(d: SceneData): Finding[] {
       check: 'contrast',
       severity: c.ratio < 1.3 ? 'warning' : 'info',
       title: `Monster ${n} is hard to see against the scenery (contrast ${c.ratio.toFixed(1)} : 1)`,
-      detail: `Worst where it is placed at ${at(c.cell)}. A dark or bright outline from the palette makes it stand out.`,
+      detail: `Worst where it is placed at ${at(c.cell)}. Unless it is meant to hide, a dark or bright outline from the palette makes it stand out.`,
       where: {
         scene: d.scene,
         map: d.names.map,
@@ -267,7 +267,7 @@ export function monsterTouches(d: SceneData): Finding[] {
           check: 'waits',
           severity: t > WAIT_TICKS * 4 ? 'warning' : 'info',
           title: `Lift monster ${n} takes ${(t * TICK_S).toFixed(1)} s to go round: a hero who just missed it waits that long`,
-          detail: 'Speed up its empty legs, or make it wait at the bottom for the hero.',
+          detail: 'If the wait isn’t meant, speed up its empty legs, or make it wait at the bottom for the hero.',
           where: { scene: d.scene, map: d.names.map, monster: { file: d.names.mon ?? '', n }, cells },
           fix: 'shorten-cycle',
         });

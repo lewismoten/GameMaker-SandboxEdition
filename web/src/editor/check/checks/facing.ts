@@ -131,7 +131,7 @@ function heroFacing(d: SceneData): Finding[] {
       severity: 'warning',
       title: 'The hero walks left and right facing the player',
       detail:
-        'A face-on picture sliding sideways looks unfinished. Draw a side view for the walks (mirror one side for the other). Only something that looks the same from every side, like a ball, should keep one picture.',
+        'A face-on picture sliding sideways can look unfinished; a side view for the walks (mirror one side for the other) usually reads better. Something that looks the same from every side, like a ball, can keep one picture: mark it so.',
       where,
     });
   } else if (sameSet(w.left, w.right) && w.left.every((h) => mirrorAlike(h) < FACE_ON)) {
@@ -152,7 +152,7 @@ function heroFacing(d: SceneData): Finding[] {
         check: 'facing',
         severity: 'warning',
         title: 'The hero shows the same picture walking up or down as another way',
-        detail: 'A hero who walks all over the map needs four views: a back walking up, a front walking down and a side each way.',
+        detail: 'A hero who walks all over the map usually reads best with four views: a back walking up, a front walking down and a side each way.',
         where,
       });
   }
@@ -181,7 +181,7 @@ function heroClimb(d: SceneData): Finding[] {
         severity: 'warning',
         title: sideOn ? 'The hero climbs side on' : 'The hero climbs facing the player',
         detail:
-          'On a ladder the up key climbs, so its frames should show his back (arms up, the back of his head). The same frames show when he hops, which reads fine as a jump away.',
+          'On a ladder the up key climbs, so its frames usually show his back (arms up, the back of his head). The same frames show when he hops, which reads fine as a jump away.',
         where,
       });
   }

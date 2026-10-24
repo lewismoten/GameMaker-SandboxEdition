@@ -257,7 +257,7 @@ export function births(d: SceneData): Finding[] {
       check: 'births',
       severity: b.birthTime < 18 ? 'warning' : 'info',
       title: `Block ${n} gives birth to monster ${b.birthMon} every ${(b.birthTime * TICK_S).toFixed(1)} s`,
-      detail: 'It keeps on while the hero is near. Give it a longer time, or let the block animate to a quiet one.',
+      detail: 'It keeps on while the hero is near. If a flood isn’t the idea, give it a longer time, or let the block animate to a quiet one.',
       where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
     });
   }
@@ -283,7 +283,7 @@ export function telegraph(d: SceneData): Finding[] {
       check: 'telegraph',
       severity: 'info',
       title: `Hazard block ${n} is mostly the same color as safe block ${like}`,
-      detail: 'Give hurting blocks a color of their own, the same in every level.',
+      detail: 'Unless it is a trick on purpose, give hurting blocks a color of their own, the same in every level.',
       where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
     });
   }

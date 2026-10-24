@@ -69,7 +69,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
         check: 'unreachable',
         severity: 'info',
         title: `${foes} enemies are where the hero never goes`,
-        detail: 'An enemy nobody meets is padding: give it a job or take it out.',
+        detail: 'If nobody is meant to meet them, they could go; if they guard a secret, keep them.',
         where: { ...where, cells: far.filter((p) => hostile(d.mon[p.monnum], d.mbl)).map((p) => p.cury * MLEN + p.curx) },
       });
   }
@@ -116,7 +116,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
       check: 'checkpoints',
       severity: 'info',
       title: `Even the bot’s quickest way through takes ${minutes.toFixed(1)} minutes`,
-      detail: 'A death starts the scene over. Split a long scene with a link so the player keeps what they earned.',
+      detail: 'A death starts the scene over. If it isn’t meant as one long run, a link partway splits it, so the player keeps what they earned.',
       where,
     });
   if (!ex.complete)
@@ -148,7 +148,8 @@ export function curve(runs: SceneRun[]): Finding[] {
       check: 'curve',
       severity: 'warning',
       title: `The bot finishes each scene with more hit points than the last (${hp.join(' → ')})`,
-      detail: 'Healing outpaces harm, so the game gets easier as it goes. Spread healing where the hard parts end, and fewer of them late.',
+      detail:
+        'Healing outpaces harm, so the game gets easier as it goes. If that isn’t the plan, spread healing where the hard parts end, and less of it late.',
       where: {},
       fix: 'spread-healing',
     },

@@ -1,6 +1,7 @@
-// What the level check reports: a finding says what is wrong, where, how much it matters, why
-// players mind, and which part of The Ultimate Owner's Guide explains it. Each check has an id
-// here with its guide section, so the panel, the badges and the upload checklist agree.
+// What the level check reports: a finding says what is wrong (or worth a second look), where, how
+// much it matters, why players mind, and which part of The Ultimate Owner's Guide explains it. Each check has an id
+// here with its guide section, so the panel, the badges and the upload checklist agree. A check
+// marked `taste` measures a design preference, not a fault, so its words ask rather than rule.
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -47,6 +48,12 @@ export interface CheckInfo {
   /** Why players mind, in one line. */
   why: string;
   guide: GuideRef;
+  /**
+   * A design preference rather than a fact: a measure many games do well to follow, which a
+   * game can break on purpose (a swarm, a one-off surprise, a maze meant to confuse). The panel
+   * calls its warnings suggestions and offers “That’s on purpose” to dismiss one.
+   */
+  taste?: true;
 }
 
 const L = (section: string): GuideRef => ({ chapter: 'levels', section });
@@ -58,7 +65,8 @@ export const CHECKS = {
   'link-unreached': { name: 'Exits never reached', why: 'A link the hero can’t touch is a door to nowhere.', guide: L('Never trap the player') },
   'blind-drop': {
     name: 'Blind drops',
-    why: 'A fall faster than the view, or to a landing off screen, is a guess, not a choice.',
+    why: 'A fall faster than the view, or to a landing off screen, is more guess than choice. A leap of faith the game has taught can be fun.',
+    taste: true,
     guide: L('Look before you leap'),
   },
   'hazard-landing': {
@@ -89,56 +97,119 @@ export const CHECKS = {
   },
   telegraph: {
     name: 'Hazards that look safe',
-    why: 'A hazard drawn in the colors of safe ground can’t be told apart the first time.',
+    why: 'A hazard drawn in the colors of safe ground is hard to spot the first time. A trick floor can be fun if the game plays fair with it.',
+    taste: true,
     guide: L('Hazards that hit where they are drawn'),
   },
   mechanics: {
     name: 'Mechanics used once',
-    why: 'An idea used once, in its plainest form, is a feature the game forgot to finish.',
+    why: 'A mechanic that comes back with a twist often lands better than one used once, plainly; a one-off can still be a fine surprise.',
+    taste: true,
     guide: L('Teach, test, twist'),
   },
-  maze: { name: 'Mazes', why: 'A maze where every passage looks the same is guessing, not choosing.', guide: L('Mazes with a compass') },
-  waits: { name: 'Long waits', why: 'Standing still for a lift or a timed block isn’t a challenge; it is waiting.', guide: L('Waiting is not a challenge') },
-  density: { name: 'Crowded screens', why: 'More than two or three enemies on a screen is noise, not a fight.', guide: C('Fair enemies') },
+  maze: {
+    name: 'Mazes',
+    why: 'A maze where every passage looks the same can turn choosing into guessing. Some mazes are meant to confuse; is this one?',
+    guide: L('Mazes with a compass'),
+    taste: true,
+  },
+  waits: {
+    name: 'Long waits',
+    why: 'Standing still for a lift or a timed block can feel like waiting, not playing. A pause can build tension; is this one meant?',
+    guide: L('Waiting is not a challenge'),
+    taste: true,
+  },
+  density: {
+    name: 'Crowded screens',
+    why: 'Two or three foes at once is usually plenty to read; a crowd can blur into noise. A swarm can be the point of a level, though.',
+    guide: C('Fair enemies'),
+    taste: true,
+  },
   speed: {
     name: 'Enemies faster than the hero',
-    why: 'A foe much faster than the hero can’t be escaped, only memorized.',
+    why: 'A foe much faster than the hero is hard to escape, and often learned only by dying. A clear, readable path makes it fair.',
+    taste: true,
     guide: L('Everything on the map has a job'),
   },
   'start-threat': {
     name: 'A threat at the start',
-    why: 'A level that hurts before the player has moved feels unfair.',
+    why: 'A level that hurts before the player has moved often feels unfair; a moment to look around helps.',
+    taste: true,
     guide: L('Everything on the map has a job'),
   },
-  chasers: { name: 'Chasers that never let go', why: 'A monster that chases forever turns a level into a race.', guide: C('Fair enemies') },
-  births: { name: 'Births that never rest', why: 'A birth block that keeps giving birth floods the screen.', guide: C('Fair enemies') },
-  contrast: { name: 'Hard-to-see monsters', why: 'An enemy the color of the scenery hits players who never saw it.', guide: C('Fair enemies') },
-  sounds: { name: 'Loud or long frequent sounds', why: 'A sound heard a hundred times has to be short and soft.', guide: C('Polish that players notice') },
-  controls: { name: 'Keys never taught', why: 'A key the game never shows is a key most players never find.', guide: L('Controls the level teaches') },
+  chasers: {
+    name: 'Chasers that never let go',
+    why: 'A monster that chases forever turns a level into a race. Is that the idea? A lifetime or a slower chase gives players a breather.',
+    guide: C('Fair enemies'),
+    taste: true,
+  },
+  births: {
+    name: 'Births that never rest',
+    why: 'A birth block that keeps giving birth can flood the screen. A wave to survive can be the point; is it here?',
+    guide: C('Fair enemies'),
+    taste: true,
+  },
+  contrast: {
+    name: 'Hard-to-see monsters',
+    why: 'An enemy the color of the scenery can hit players who never saw it. Camouflage can be a fair trick when the game hints at it.',
+    guide: C('Fair enemies'),
+    taste: true,
+  },
+  sounds: {
+    name: 'Loud or long frequent sounds',
+    why: 'A sound heard a hundred times usually wears best short and soft; a long one can be a signature, if it stays welcome.',
+    guide: C('Polish that players notice'),
+    taste: true,
+  },
+  controls: {
+    name: 'Keys never taught',
+    why: 'A key the game never shows is a key many players never find. A hidden key can be a secret, if that is the plan.',
+    guide: L('Controls the level teaches'),
+    taste: true,
+  },
   reach: {
     name: 'Keys out of reach',
-    why: 'A key the hand has to leave its place for is a key pressed late, or not at all.',
+    why: 'A key the hand has to leave its place for is often pressed late. Fine for a rare key; is this one needed in the thick of play?',
+    taste: true,
     guide: C('Keys under the hands'),
   },
-  response: { name: 'Slow keys', why: 'A key that waits before it answers feels broken.', guide: L('Controls the level teaches') },
+  response: {
+    name: 'Slow keys',
+    why: 'A key that waits before it answers can feel broken. A wind-up can suit a heavy move; is the wait meant?',
+    guide: L('Controls the level teaches'),
+    taste: true,
+  },
   facing: {
     name: 'Facing the way it walks',
-    why: 'A hero who slides sideways facing the player looks like a corner was cut.',
+    why: 'A hero who slides sideways facing the player can look like a corner was cut. Something drawn the same from every side is fine.',
+    taste: true,
     guide: C('Face the way you walk'),
   },
-  'hero-speed': { name: 'Hero speed', why: 'A slow hero makes every level drag; an uneven walk feels slippery.', guide: C('A hero who feels right') },
+  'hero-speed': {
+    name: 'Hero speed',
+    why: 'A slow hero can make levels drag, and an uneven walk can feel slippery, unless the weight is the point.',
+    guide: C('A hero who feels right'),
+    taste: true,
+  },
   curve: {
     name: 'Difficulty curve',
-    why: 'Levels should ask a little more each time; a curve that only gets easier loses players.',
+    why: 'Most games ask a little more each level. One that only gets easier can lose players, unless a gentle wind-down is the plan.',
+    taste: true,
     guide: C('A difficulty curve, not a cliff'),
   },
   checkpoints: {
     name: 'Long scenes',
-    why: 'A death starts the scene over, so a long scene costs a lot each time.',
+    why: 'A death starts the scene over, so a long scene costs a lot each time. Long can be right for a finale; is this one meant?',
+    taste: true,
     guide: C('A difficulty curve, not a cliff'),
   },
   ending: { name: 'Ending and screens', why: 'A game with no won screen, credits or instructions feels unfinished.', guide: L('An ending, not an ad') },
-  variety: { name: 'Variety', why: 'Every level the same blocks, monsters and song gets old fast.', guide: C('Variety') },
+  variety: {
+    name: 'Variety',
+    why: 'Something new every level or two keeps a game lively; one look all the way through can be a style of its own.',
+    guide: C('Variety'),
+    taste: true,
+  },
   coverage: {
     name: 'How far the check got',
     why: 'Parts the bot didn’t reach in time weren’t checked.',
@@ -147,6 +218,12 @@ export const CHECKS = {
 } satisfies Record<string, CheckInfo>;
 
 export type CheckId = keyof typeof CHECKS;
+
+/** How the panel and badges name a finding: a taste check's warning is a suggestion. */
+export type Kind = Severity | 'suggestion';
+
+export const kindOf = (f: Pick<Finding, 'check' | 'severity'>): Kind =>
+  f.severity === 'warning' && (CHECKS[f.check] as CheckInfo).taste ? 'suggestion' : f.severity;
 
 export const SEVERITY_ORDER: Record<Severity, number> = { error: 0, warning: 1, info: 2 };
 

@@ -45,7 +45,7 @@ export function controls(files: GameFiles): Finding[] {
       title: `The ${k.name} key (${does}) isn’t named on any text screen`,
       detail: pictures
         ? 'The instructions are a picture, which the check can’t read: make sure it shows this key.'
-        : 'Name it in the instructions, or on a sign in the level where it is first needed.',
+        : 'Unless it is a secret, name it in the instructions, or on a sign in the level where it is first needed.',
       where: { file: k.uses[0]?.chrs[0] },
       fix: 'key-sign',
     });
@@ -78,7 +78,7 @@ export function characterChecks(d: SceneData): Finding[] {
         check: 'response',
         severity: 'warning',
         title: `${scanName(scan)} (${action.title.toLowerCase()}) waits ${(t / 18.2).toFixed(1)} s before anything happens`,
-        detail: 'Make its first frame move, or shorten the first pause.',
+        detail: 'If it should feel instant, make its first frame move, or shorten the first pause.',
         where,
       });
   }
@@ -88,7 +88,7 @@ export function characterChecks(d: SceneData): Finding[] {
       check: 'hero-speed',
       severity: 'info',
       title: `The hero walks ${v.toFixed(1)} px a tick (${Math.round(v * 18.2)} px a second)`,
-      detail: 'About 4 px a tick crosses a screen in four seconds; much slower makes the game drag.',
+      detail: 'About 4 px a tick crosses a screen in four seconds. Slower can suit a heavy or careful hero; is that the feel you want?',
       where,
     });
   for (let i = 5; i < MAXSEQ; i++) {
@@ -104,7 +104,7 @@ export function characterChecks(d: SceneData): Finding[] {
         check: 'hero-speed',
         severity: 'info',
         title: `The ${scanName(s.key >> 8)} walk moves unevenly (${[...steps].join(', ')} px per tick of pause)`,
-        detail: 'Give every walk frame the same move and pause, so the hero doesn’t feel slippery.',
+        detail: 'Unless the stagger is meant, give every walk frame the same move and pause, so the hero doesn’t feel slippery.',
         where,
       });
   }
@@ -149,7 +149,7 @@ export function soundChecks(d: SceneData, files: GameFiles): Finding[] {
       check: 'sounds',
       severity: st.seconds > 1.2 ? 'warning' : 'info',
       title: `Sound ${n} (${name}.voc) plays on ${what}: ${st.seconds.toFixed(1)} s long, ${Math.round(st.db)} dB`,
-      detail: 'Sounds a player hears a hundred times should be short and soft; save long or loud ones for rare events.',
+      detail: 'Does it wear well a hundred times? Frequent sounds usually work best short and soft, with long or loud ones kept for rare events.',
       where: { scene: d.scene, sound: { file: d.names.snd ?? '', n } },
     });
   }
@@ -180,7 +180,7 @@ export function variety(scenes: SceneData[]): Finding[] {
       check: 'variety',
       severity: 'info',
       title: `All ${scenes.length} levels share the same ${same.map((k) => ({ bbl: 'blocks', mon: 'monsters', pal: 'palette' })[k]).join(' and ')}`,
-      detail: 'A new place, enemy or item every level or two keeps the game fresh.',
+      detail: 'Is one look the style? If not, a new place, enemy or item every level or two keeps the game fresh.',
       where: {},
     },
   ];
@@ -218,7 +218,8 @@ export function mechanics(scenes: SceneData[]): Finding[] {
       check: 'mechanics',
       severity: 'info',
       title: `Block ${n} ${list[0].what}, and is used in just ${list[0].cells.length === 1 ? 'one place' : 'two places'} in the whole game`,
-      detail: 'Teach it, test it, then twist it: use it again where it asks something new.',
+      detail:
+        'Used once: is that on purpose? A one-off can be a fine surprise. If it isn’t one, it could come back where it asks something new: teach it, test it, twist it.',
       where: { scene: list[0].scene, map: list[0].map, cell: list[0].cells[0], cells: list[0].cells },
     });
   }
@@ -237,7 +238,7 @@ export function jumps(d: SceneData): Finding[] {
       check: 'hero-speed',
       severity: 'info',
       title: `${scanName(scan)} (${action.title.toLowerCase()}) can be cut off by another key in mid-air`,
-      detail: 'Mark the jump’s sequence as one that can’t be interrupted, so it always finishes.',
+      detail: 'Another key can stop the jump partway. To have it always finish, mark its sequence as one that can’t be interrupted.',
       where: { scene: d.scene, file: d.names.chr },
     });
   }
