@@ -1,5 +1,5 @@
 // Full-page ads for the desk's hardware: the modem and its line speeds (retro/bbs/lineSpeed.ts),
-// the disk box, and the BOOMTONE speakers with the Sound Blaster switch (desk/pc/). The makers
+// the disk box, and the ILLOGITECH speakers with the Sound Blaster switch (desk/pc/). The makers
 // are made up (only the historical names stay: Sound Blaster, VGA, MS-DOS); prices are part of
 // the story, and each ad's button looks at its prop on the desk, where it is free.
 import { LINE_SPEEDS, connectLine, speedWords } from '../../../retro/bbs/lineSpeed';
@@ -112,10 +112,10 @@ const diskBoxAd = (ctx: MagContext) =>
 const speakersAd = () =>
   adPage(
     'hardware-3',
-    'BOOMTONE',
+    'Illogitech',
     [
       adframe(
-        'BOOMTONE SPEAKERS',
+        'ILLOGITECH SPEAKERS',
         [
           grid(
             [
@@ -141,7 +141,7 @@ const speakersAd = () =>
             ],
             'yellow',
           ),
-          card('ORDER BOOMTONE', ['Stereo speakers, pair ..... **$29.95**', 'Plugs into your sound card'], {
+          card('ORDER ILLOGITECH', ['Stereo speakers, pair ..... **$29.95**', 'Plugs into your sound card'], {
             fields: ['Name', 'City, State, ZIP'],
             go: 'go:desk/speakers',
             button: 'Look at the speakers on the desk',

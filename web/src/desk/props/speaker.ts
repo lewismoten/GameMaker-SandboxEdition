@@ -14,7 +14,7 @@ export function speakerProp(speaker: HTMLElement): () => void {
   const line = turns(LINES);
   return pressable(
     speaker,
-    'BOOMTONE left speaker: give it a tap',
+    'ILLOGITECH left speaker: give it a tap',
     () => {
       roomSound.thump();
       flash(speaker, 'thump', 450);
