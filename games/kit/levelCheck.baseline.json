@@ -102,10 +102,7 @@
   "warning unreachable s8 3 of block 8 are sealed in, first at (43, 39)"
  ],
  "goat": [],
- "loaf": [
-  "warning hurt-lock s2 Monster 7 holds the hero while it hurts: once it touches him, no key gets him away (first at (15, 11))",
-  "warning hurt-lock s4 Monster 12 holds the hero while it hurts: once it touches him, no key gets him away (first at (27, 11))"
- ],
+ "loaf": [],
  "logic": [
   "warning births s2 Block 69 gives birth to monster 46 every 0.3 s",
   "warning births s2 Block 70 gives birth to monster 47 every 0.3 s",
