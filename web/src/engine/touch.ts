@@ -10,15 +10,15 @@ import { pushKey } from './keys';
 import { BACKBL, BLEN, INF_REPEAT, LASTSND, MAXSEQ, MLEN, MWID, i16, mapBlock, shownBlock, u16, type Coord, type TouchBlocks, type World } from './world';
 
 // Sound slots DoBlockTouchChar and moveallmons play.
-export const HELPSOUND = 0;
+const HELPSOUND = 0;
 export const KILLSOUND = 1;
-export const ADDMONEYSOUND = 2;
-export const SUBMONEYSOUND = 3;
-export const ADDLIFESOUND = 4;
-export const ADDSCORESOUND = 5;
-export const SUBSCORESOUND = 6;
-export const ADDOTHERSOUND = 7;
-export const SUBOTHERSOUND = 8;
+const ADDMONEYSOUND = 2;
+const SUBMONEYSOUND = 3;
+const ADDLIFESOUND = 4;
+const ADDSCORESOUND = 5;
+const SUBSCORESOUND = 6;
+const ADDOTHERSOUND = 7;
+const SUBOTHERSOUND = 8;
 
 export function doSound(w: World, n: number): boolean {
   return n >= 0 && n < LASTSND ? w.sound.play(n) : false;

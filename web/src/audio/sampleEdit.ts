@@ -8,7 +8,7 @@ export interface Span {
   end: number;
 }
 
-export const clamp1 = (v: number): number => (v > 1 ? 1 : v < -1 ? -1 : v);
+const clamp1 = (v: number): number => (v > 1 ? 1 : v < -1 ? -1 : v);
 
 /** The span limited to the sound, start <= end; the whole sound when empty or missing. */
 export function spanOf(s: Float32Array, span?: Span): Span {
@@ -70,7 +70,7 @@ export function gain(s: Float32Array, g: number): Float32Array {
   return s.map((v) => clamp1(v * g));
 }
 
-export function peakOf(s: Float32Array): number {
+function peakOf(s: Float32Array): number {
   let p = 0;
   for (const v of s) p = Math.max(p, Math.abs(v));
   return p;

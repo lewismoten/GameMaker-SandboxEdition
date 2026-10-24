@@ -14,7 +14,7 @@ import { parseGame } from '../formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 
-export interface PlayerOptions extends RunOptions {
+interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
   title?: string;
   /** Called when the game ends (Quit in the menu, or an error). */

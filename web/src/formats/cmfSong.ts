@@ -22,7 +22,7 @@
 // unedited song is written back byte for byte.
 import { isCmf } from './cmf';
 
-export type EvType = 'on' | 'off' | 'program' | 'mode' | 'raw';
+type EvType = 'on' | 'off' | 'program' | 'mode' | 'raw';
 
 /** One event of the stream. */
 export interface Ev {

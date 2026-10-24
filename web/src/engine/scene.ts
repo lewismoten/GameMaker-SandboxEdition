@@ -93,7 +93,7 @@ export function sceneFile(game: Game, scene: number, slot: number): string | und
   return game.scenes[scene]?.files[slot] || undefined;
 }
 
-export interface LoadedScene {
+interface LoadedScene {
   world: World;
   sounds?: SoundSet;
   song?: Uint8Array;
@@ -326,7 +326,7 @@ async function missingFiles(s: Session, files: string[]): Promise<void> {
   await m.pauseTimeKey(20);
 }
 
-export interface SceneResult {
+interface SceneResult {
   ok: boolean;
   link: number;
   /**

@@ -3,7 +3,7 @@
 // real time), otherwise by playing them in real time into MediaRecorder (MP4 or WebM).
 import { LiveRecorder, Mp4Encoder } from './video';
 
-export interface FrameSource {
+interface FrameSource {
   width: number;
   height: number;
   count: number;
@@ -14,7 +14,7 @@ export interface FrameSource {
   timescale: number;
 }
 
-export interface VideoFile {
+interface VideoFile {
   blob: Blob;
   ext: 'mp4' | 'webm';
 }

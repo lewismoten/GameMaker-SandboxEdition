@@ -56,7 +56,7 @@ function writeMarch(w: Writer, m: March): void {
   w.i16(m.x).i16(m.y).i16(m.pic).i16(m.orient);
 }
 
-export function readMonster(r: Reader): Monster {
+function readMonster(r: Reader): Monster {
   const used = r.i16();
   const fly = r.i16();
   const jump = r.i16();
@@ -79,7 +79,7 @@ export function readMonster(r: Reader): Monster {
   return { used, fly, jump, stick, power, thru, pic, lasttime, newmon, upscore, xtra, activate, end, towards, close, march, cur };
 }
 
-export function writeMonster(w: Writer, m: Monster): void {
+function writeMonster(w: Writer, m: Monster): void {
   w.i16(m.used).i16(m.fly).i16(m.jump).i16(m.stick).u8(m.power).i8(m.thru);
   for (const [p, t] of m.pic) w.i16(p).i16(t);
   w.u32(m.lasttime).i8(m.newmon).i16(m.upscore).bytes(m.xtra, 21).i16(m.activate).i16(m.end).i16(m.towards).i16(m.close[0]).i16(m.close[1]);

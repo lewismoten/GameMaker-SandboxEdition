@@ -3,7 +3,7 @@
 // VGA designer, a game) moves its own pointer by that much, as the mouse driver did.
 
 /** dx, dy in 320x200 screen pixels (fractions allowed); buttons: 1 = left, 2 = right. */
-export type DeskMouseListener = (dx: number, dy: number, buttons: number) => void;
+type DeskMouseListener = (dx: number, dy: number, buttons: number) => void;
 
 const listeners = new Set<DeskMouseListener>();
 

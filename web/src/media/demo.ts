@@ -65,7 +65,7 @@ function loadSkip(): boolean {
   }
 }
 
-export interface DemoOptions {
+interface DemoOptions {
   title: string;
   files: GameFiles;
   gam: string;

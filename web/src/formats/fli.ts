@@ -12,7 +12,7 @@
 // the FLC chunks 4 COLOR_256 and 7 SS2 (word-oriented delta), which FLI.CPP does not.
 import { PALETTE_SIZE } from './palette';
 
-export interface FliAnimation {
+interface FliAnimation {
   width: number;
   height: number;
   frameCount: number;
@@ -23,7 +23,7 @@ export interface FliAnimation {
   bytes: Uint8Array;
 }
 
-export interface FliCanvas {
+interface FliCanvas {
   pixels: Uint8Array;
   /** 6-bit palette, 768 bytes. */
   palette: Uint8Array;

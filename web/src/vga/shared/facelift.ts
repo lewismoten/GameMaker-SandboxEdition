@@ -158,7 +158,7 @@ export function palFindCol(red: number, green: number, blue: number, colors: RGB
 }
 
 /** RainbowCols: the spectrum Game-Maker starts new palettes with. */
-export function rainbowCols(): RGBdata[] {
+function rainbowCols(): RGBdata[] {
   const colors: RGBdata[] = [];
   const add = 2;
   let red = 0,

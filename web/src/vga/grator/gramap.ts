@@ -53,7 +53,7 @@ const bytes2pal = (b: Uint8Array, into: RGBdata[]) => {
 };
 
 /** What the link map needs from the Integrator. */
-export interface LinkMapHost {
+interface LinkMapHost {
   h: RetroHost;
   work: WorkArea;
   scns: Scene[];

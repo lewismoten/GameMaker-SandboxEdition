@@ -11,7 +11,7 @@ import { lzwDecode, lzwEncode, type IndexedImage } from './gif';
 import { PALETTE_SIZE, vga8, type Palette } from './palette';
 
 /** A GIF read from as many of its bytes as there are so far. */
-export interface PartialGif {
+interface PartialGif {
   width: number;
   height: number;
   /** 6-bit VGA values (the DAC), as decodeGif() gives them. */

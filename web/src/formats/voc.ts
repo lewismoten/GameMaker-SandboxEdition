@@ -17,7 +17,7 @@
 // Other types (4 marker, 5 text) are skipped. The sample rate for a time constant tc is
 // 1,000,000 / (256 - tc).
 
-export interface DecodedVoc {
+interface DecodedVoc {
   sampleRate: number;
   samples: Float32Array;
 }

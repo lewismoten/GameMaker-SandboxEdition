@@ -31,7 +31,7 @@ export interface Mp4Sample {
   key: boolean;
 }
 
-export interface Mp4Track {
+interface Mp4Track {
   width: number;
   height: number;
   /** Units a second for durations (e.g. 70 for the VGA's retraces, or 1000 for ms). */

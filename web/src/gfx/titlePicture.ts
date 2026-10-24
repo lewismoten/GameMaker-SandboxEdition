@@ -104,7 +104,7 @@ function graphicPixels(files: FileSource, name: string, depth = 0): LevelPicture
 }
 
 /** The title graphic file names a game's title pictures may come from: its title, then its menu screen. */
-export function titleFiles(game: Game): string[] {
+function titleFiles(game: Game): string[] {
   const start = game.scenes.find((s) => s.gametype === STARTTYPE);
   return start ? [start.files[TITLE], start.files[MENU]].filter(Boolean) : [];
 }

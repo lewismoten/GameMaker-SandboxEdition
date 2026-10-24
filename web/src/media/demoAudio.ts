@@ -14,7 +14,7 @@ import type { Session } from '../engine/scene';
 
 export type DemoAudio = 'none' | 'blaster' | 'speaker';
 
-export const DEMO_AUDIO: readonly DemoAudio[] = ['none', 'blaster', 'speaker'];
+const DEMO_AUDIO: readonly DemoAudio[] = ['none', 'blaster', 'speaker'];
 
 export const DEMO_AUDIO_LABEL: Record<DemoAudio, string> = {
   none: 'None',
@@ -137,7 +137,7 @@ export class DemoAudioEngine extends AudioEngine {
 
 let groups = 0;
 
-export interface DemoAudioPickerOptions {
+interface DemoAudioPickerOptions {
   /** Short labels (Off · SB · PC), for over a small picture; the full names stay for screen readers. */
   compact?: boolean;
   /** The group's name for screen readers (default "Demo sound"). */

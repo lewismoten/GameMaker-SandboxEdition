@@ -16,7 +16,7 @@ export interface GifFrame {
   ms: number;
 }
 
-export interface GifOptions {
+interface GifOptions {
   /** 0 = loop forever (the default); otherwise how many times to repeat. */
   loops?: number;
 }

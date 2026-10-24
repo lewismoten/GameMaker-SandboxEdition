@@ -2,7 +2,7 @@
 // again the moment it moves, so it never sits on top of the playing. Only a mouse counts:
 // touch and pen have no pointer to hide.
 
-export const CURSOR_IDLE_MS = 1000;
+const CURSOR_IDLE_MS = 1000;
 
 /** Starts hiding the pointer over `el` while it is idle; returns a function that stops. */
 export function hideIdleCursor(el: HTMLElement, idleMs = CURSOR_IDLE_MS): () => void {

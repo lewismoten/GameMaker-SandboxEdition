@@ -4,7 +4,7 @@ import { Reader } from './binary';
 
 export const CMF_GAMEMAKER_CLOCK = 146;
 
-export interface CmfFile {
+interface CmfFile {
   version: number;
   ticksPerBeat: number;
   /** Ticks per second the song was converted for. */

@@ -7,7 +7,7 @@ import { type Ev, type Note, type CmfSong, RHYTHM_CHANNELS, noteEnd, streamEvent
 
 // ---- preview ---------------------------------------------------------------------------
 
-export interface PreviewPart {
+interface PreviewPart {
   from: number;
   to: number;
   /** Silence before this part. */
