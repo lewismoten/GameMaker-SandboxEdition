@@ -116,3 +116,31 @@
     outline-offset: 2px;
   }
 }
+
+/* the lock lights over the keypad: a green LED and its name, as on a 101-key board */
+.kb-locks {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  pointer-events: none;
+}
+
+.kb-lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.kb-lock .led {
+  margin: 0;
+}
+
+.kb-lock-name {
+  font:
+    600 6px/1 system-ui,
+    sans-serif;
+  color: #6f6a5c;
+  letter-spacing: 0.02em;
+}

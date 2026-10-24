@@ -7,6 +7,9 @@
 // day shipped: what Esc and the F-keys do while a game plays. Its words are buttons too,
 // the keyboard-reachable way to press those keys. On a phone, where the board is too small to
 // tap, a strip of finger-sized keys under the PC (keyStrip) presses the ones a game asks for.
+// Over the keypad, the Num Lock, Caps Lock and Scroll Lock lights: each lock key turns its own
+// on and off (as the real keyboard reports it, when it does), Num Lock comes on when the PC
+// starts, as a 1994 BIOS left it, and all three are dark while the PC is off.
 import './keyboard.css';
 import { h } from '../../editor/core/ui';
 import { GLOBAL_KEYS } from '../../editor/keymap/keyMap';
@@ -181,6 +184,62 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
   template.append(h('span', { class: 'kt-brand' }, 'GAME-MAKER SE'));
   board.prepend(template);
 
+  // ---- the lock lights over the keypad ----
+  const LOCKS: [string, string, string][] = [
+    ['NumLock', 'Num Lock', 'Num'],
+    ['CapsLock', 'Caps Lock', 'Caps'],
+    ['ScrollLock', 'Scroll Lock', 'Scroll'],
+  ];
+  const locked = new Map<string, boolean>(LOCKS.map(([code]) => [code, code === 'NumLock']));
+  const lights = h('div', { class: 'kb-locks', role: 'group', 'aria-label': 'Lock lights' });
+  lights.style.left = `${(19.25 * UNIT).toFixed(2)}%`;
+  lights.style.width = `${(3.75 * UNIT).toFixed(2)}%`;
+  lights.style.top = `${((TOP + 0.05) / DEPTH) * 100}%`;
+  lights.style.height = `${(0.8 / DEPTH) * 100}%`;
+  const leds = new Map<string, HTMLElement>();
+  for (const [code, name, short] of LOCKS) {
+    const led = h('span', { class: 'led green' });
+    leds.set(code, led);
+    lights.append(h('span', { class: 'kb-lock', title: name }, led, h('span', { class: 'kb-lock-name' }, short)));
+  }
+  board.append(lights);
+  const showLocks = () => {
+    const on = !off();
+    for (const [code, led] of leds) {
+      const lit = on && locked.get(code) === true;
+      led.classList.toggle('on', lit);
+      led.parentElement!.setAttribute('aria-label', `${led.parentElement!.title}: ${lit ? 'on' : 'off'}`);
+    }
+  };
+  /**
+   * A lock key went down (typed, or clicked: a clicked key's event comes past here too): the
+   * real keyboard's own state when it reports a change, else a toggle.
+   */
+  const lockKey = (code: string, e: KeyboardEvent) => {
+    if (!leds.has(code)) return;
+    const real = e.isTrusted ? e.getModifierState(code) : undefined;
+    locked.set(code, real !== undefined && real !== locked.get(code) ? real : !locked.get(code));
+    showLocks();
+  };
+  // power on: Num Lock on, as the BIOS leaves it; power off: all dark
+  let wasOff: boolean | undefined;
+  const power = new MutationObserver(() => {
+    const now = off();
+    if (wasOff === true && !now) {
+      locked.set('NumLock', true);
+      locked.set('CapsLock', false);
+      locked.set('ScrollLock', false);
+    }
+    wasOff = now;
+    showLocks();
+  });
+  requestAnimationFrame(() => {
+    const d = desk();
+    wasOff = off();
+    showLocks();
+    if (d) power.observe(d, { attributes: true, attributeFilter: ['data-power'] });
+  });
+
   // ---- pressing keys with the pointer ----
   const desk = () => board.closest<HTMLElement>('.desk');
   const crt = () => desk()?.querySelector<HTMLElement>('.crt') ?? document.querySelector<HTMLElement>('.crt');
@@ -247,7 +306,10 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
   }
 
   const press = (e: KeyboardEvent, down: boolean) => keys.get(e.code)?.forEach((el) => el.classList.toggle('down', down));
-  const onDown = (e: KeyboardEvent) => press(e, true);
+  const onDown = (e: KeyboardEvent) => {
+    press(e, true);
+    if (!e.repeat && !off()) lockKey(e.code, e);
+  };
   const onUp = (e: KeyboardEvent) => press(e, false);
   window.addEventListener('keydown', onDown);
   window.addEventListener('keyup', onUp);
@@ -258,6 +320,7 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
     window.removeEventListener('keyup', onUp);
     vk.releaseAll();
     watch.disconnect();
+    power.disconnect();
   });
   requestAnimationFrame(() => board.parentElement && watch.observe(document.body, { childList: true, subtree: true }));
   return { board, strip };
