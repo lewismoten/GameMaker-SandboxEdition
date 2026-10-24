@@ -17,7 +17,7 @@ import { MAG } from './masthead';
 import { renderPage, type RenderEnv } from './render';
 import { runGo, type DeskHooks } from './goRun';
 import type { Where } from './go';
-import type { Issue } from './types';
+import type { Issue, PlacedPage } from './types';
 
 interface Loaded {
   issue: Issue;
@@ -181,7 +181,14 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     const shown = spreadAt(at, issue.pages.length, two());
     const list = which === 'all' ? issue.pages : which === 'page' ? [issue.pages[shown[0]]] : shown.map((i) => issue!.pages[i]);
     const made = list.map((pg) => renderPage(pg, env));
-    printRoot.replaceChildren(...made.map((m) => h('div', { class: 'mag-print-sheet' }, m.el)));
+    // each sheet an anchor, so a saved PDF's page links (a jump's "Continued on page N", the
+    // contents) still go to their page within the PDF
+    const sheetId = (pg: PlacedPage) => `mag-sheet-${issue!.pages.indexOf(pg) + 1}`;
+    printRoot.replaceChildren(...made.map((m, i) => h('div', { class: 'mag-print-sheet', id: sheetId(list[i]) }, m.el)));
+    for (const a of printRoot.querySelectorAll<HTMLAnchorElement>('a[data-go^="go:mag/"]')) {
+      const to = issue.pages[pageAt(a.dataset.go!.slice('go:mag/'.length))];
+      if (to && list.includes(to)) a.href = `#${sheetId(to)}`;
+    }
     document.body.append(printRoot);
     document.documentElement.classList.add('mag-printing');
     await Promise.all(made.map((m) => m.ready));

@@ -23,6 +23,9 @@ const advertisers = (ads: TocEntry[]): [string, TocEntry[]][] => {
   return [...by];
 };
 
+/** The name's last word joined to what follows, so its page numbers never wrap away from it. */
+const keepTail = (title: string): string => title.replace(/ (\S+)$/, '\u00a0$1');
+
 /** The page itself, from the issue's contents and advertisers. */
 export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
   return {
@@ -34,7 +37,12 @@ export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
       side(
         'Advertiser index',
         [
-          grid(thirds(advertisers(ads).map(([title, at]) => p(`${title} · ${at.map((a) => `[${a.folio}](go:mag/${a.page})`).join(', ')}`))), 0.2),
+          grid(
+            thirds(
+              advertisers(ads).map(([title, at]) => p(`${keepTail(title)}\u00a0·\u00a0${at.map((a) => `[${a.folio}](go:mag/${a.page})`).join(',\u00a0')}`)),
+            ),
+            0.2,
+          ),
           note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),
         ],
         'cyan',
