@@ -543,7 +543,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('bathOpen', bathDoor(true), { grav: GRAV.none });
   const bathTop = wall(84);
   bathTop.rect(2, 2, 16, 18, c('wood', 3)).rect(2, 2, 16, 2, c('wood', 1)).rect(4, 6, 12, 12, c('wood', 2));
-  text(bathTop, 6, 8, 'WC', c('cheese', 3));
+  text(bathTop, 2, 8, 'WC', c('cheese', 3));
   book.add('bathTop', bathTop, air);
   // the bathroom past the door: its tiled wall, and the toilet at the back (where the act ends)
   const bathWall = () => {
