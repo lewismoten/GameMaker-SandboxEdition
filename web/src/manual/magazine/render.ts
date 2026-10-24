@@ -105,7 +105,18 @@ function shotFigure(
 
 function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLElement {
   const { where } = env;
-  const all = (list: Block[]) => list.map((x) => block(x, env, pending));
+  // a question and the answer after it stay together: never the question at a column's foot
+  // and its answer at the top of the next
+  const all = (list: Block[]) =>
+    list.flatMap((x, i) => {
+      const next = list[i + 1];
+      if (x.t === 'qa' && x.who) {
+        const prev = list[i - 1];
+        if (prev?.t === 'qa' && !prev.who) return [];
+      }
+      if (x.t === 'qa' && !x.who && next?.t === 'qa' && next.who) return [h('div', { class: 'mag-qa' }, block(x, env, pending), block(next, env, pending))];
+      return [block(x, env, pending)];
+    });
   switch (b.t) {
     case 'head': {
       const tag: 'h1' | 'h2' | 'h3' = b.level === 1 ? 'h1' : b.level === 3 ? 'h3' : 'h2';

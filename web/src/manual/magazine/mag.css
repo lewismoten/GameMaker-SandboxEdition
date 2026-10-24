@@ -492,7 +492,13 @@
   break-inside: avoid-column;
 }
 
+/* a question with its answer (render.ts): kept in one column, the question never left alone at a foot */
+.mag-qa {
+  break-inside: avoid-column;
+}
+
 .mag-q {
+  break-after: avoid;
   font:
     700 1em/1.3 Helvetica,
     Arial,
