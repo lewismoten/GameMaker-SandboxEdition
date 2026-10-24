@@ -3,6 +3,7 @@
 // the box's colors, what kind of manual it is, one framed screenshot (a different one from the
 // box front) with the hero standing on its frame, and the small print. Sized in cqw, so the
 // same element fits the booklet page and the little manual beside the box in the box viewer.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './manualCover.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';

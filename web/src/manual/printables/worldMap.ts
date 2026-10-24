@@ -5,6 +5,7 @@
 // prints as an overview page plus pages to trim and tape together (A1, B1, ... like a road
 // atlas), each the same SVG looking at its own part. On screen it comes folded and opens
 // into a map you can zoom and drag around.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './worldMap.css';
 import { h } from '../../editor/core/ui';
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';

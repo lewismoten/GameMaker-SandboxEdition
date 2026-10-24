@@ -4,6 +4,7 @@
 // sit on and never marked (levelSecrets.ts). Small maps share a printed page; a big one gets a
 // page of its own and, if wanted, full-size pages to tape together (A1, B1... as the World Map
 // does). Nothing is drawn until the piece is opened or printed, and on screen only the map shown.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './levelMaps.css';
 import { h } from '../../editor/core/ui';
 import { paintIndexed } from '../../editor/core/draw';

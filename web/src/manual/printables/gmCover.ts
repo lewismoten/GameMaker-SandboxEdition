@@ -4,6 +4,7 @@
 // to show a real game screen underneath, one of the Sandbox games made with Game-Maker.
 // One SVG on a 550 x 850 sheet (5.5 x 8.5 inches), so it scales with the page and prints; it
 // is shown as an image so its ids stay its own when the page is copied for print.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './gmCover.css';
 
 export const COVER_W = 550;

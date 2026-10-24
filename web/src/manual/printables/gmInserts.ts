@@ -3,6 +3,7 @@
 // carries the bonus games), the product registration card, the license agreement, a
 // keyboard template, a pad of map planning grids and the customer support card. Every phone,
 // fax and BBS number and every address on them is made up (555 numbers are kept for fiction).
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './gmInserts.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';

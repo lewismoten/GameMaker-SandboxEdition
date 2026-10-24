@@ -4,6 +4,7 @@
 // last, told by its blurb), how to get them from The Sofa BBS, a registration coupon (in the
 // story only) and the honest small print about how the songs and pictures were made (the same
 // words as the site's credits, manual/webManual.ts).
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './bardCatalog.css';
 import { h } from '../../editor/core/ui';
 import { fetchGameFile, loadCatalog, type CatalogEntry } from '../../project/files';

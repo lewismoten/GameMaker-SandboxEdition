@@ -1,6 +1,7 @@
 // The Ultimate Owner's Guide as a piece in the Game-Maker box (gmItems.ts): its title, its
 // black and gold cover (the box's picture of it) and the chapter to open at. Its pages, with
 // every chapter, load from ultimateGuide.ts only when the guide is opened.
+import '../printables/paper.css'; // first: this piece's own styles build on the paper's
 import './ultimateCover.css';
 import { h } from '../../editor/core/ui';
 import { sheet } from '../printables/kit';

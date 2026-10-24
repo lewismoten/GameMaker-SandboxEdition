@@ -4,6 +4,7 @@
 // game's characters again in miniature in the gaps. Every sticker is drawn on a canvas, so the
 // same art makes the sheet you see and print, and the files for a cutting machine (a PNG with
 // bleed and an SVG of cut lines). Each kind is drawn in stickerPaint.ts, laid out in stickerArt.ts.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './stickers.css';
 import { h } from '../../editor/core/ui';
 import { portrait, sheet, spriteArt, splitTitle, type PrintContext, type Sheet } from './kit';

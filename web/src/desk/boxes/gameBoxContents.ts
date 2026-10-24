@@ -3,8 +3,8 @@
 // the manual (its own cover, manual/printables/manualCover.ts) and, on the right, the printed
 // extras listed as the Game-Maker box lists its inserts (boxList.ts), each opening the manual's
 // box at that piece.
-import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
+import './gameBoxContents.css';
 import { h } from '../../editor/core/ui';
 import { warmPack, type CatalogEntry } from '../../project/files';
 import { CATALOG_CHANGED } from '../../project/catalogWatch';

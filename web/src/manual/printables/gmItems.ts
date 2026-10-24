@@ -4,6 +4,7 @@
 // registration card, license, customer support), Sandbox Software's catalog, The Bard of
 // Bizarre's (bardCatalog.ts), the BBS ad, a
 // poster of games made with Game-Maker and a sticker sheet that mixes every Sandbox game's heroes.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './gmItems.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
