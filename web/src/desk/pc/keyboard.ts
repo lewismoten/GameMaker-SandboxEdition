@@ -212,13 +212,16 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
     }
   };
   /**
-   * A lock key went down (typed, or clicked: a clicked key's event comes past here too): the
-   * real keyboard's own state when it reports a change, else a toggle.
+   * A lock key's event (typed, or clicked: a clicked key's event comes past here too). Caps
+   * Lock typed on the real keyboard says its own state, on its key-down and its key-up alike (a
+   * Mac sends only a key-down turning it on and only a key-up turning it off); otherwise a
+   * key-down toggles the light (a Mac never reports Num Lock or Scroll Lock).
    */
   const lockKey = (code: string, e: KeyboardEvent) => {
     if (!leds.has(code)) return;
-    const real = e.isTrusted ? e.getModifierState(code) : undefined;
-    locked.set(code, real !== undefined && real !== locked.get(code) ? real : !locked.get(code));
+    if (code === 'CapsLock' && e.isTrusted) locked.set(code, e.getModifierState('CapsLock'));
+    else if (e.type === 'keydown') locked.set(code, !locked.get(code));
+    else return;
     showLocks();
   };
   // power on: Num Lock on, as the BIOS leaves it; power off: all dark
@@ -306,11 +309,24 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
   }
 
   const press = (e: KeyboardEvent, down: boolean) => keys.get(e.code)?.forEach((el) => el.classList.toggle('down', down));
-  const onDown = (e: KeyboardEvent) => {
+  /** The real Caps Lock key's down and up don't pair up on a Mac: its cap only dips for a moment. */
+  const dip = (e: KeyboardEvent) => {
     press(e, true);
+    setTimeout(() => press(e, false), 120);
+  };
+  const realCaps = (e: KeyboardEvent) => e.code === 'CapsLock' && e.isTrusted;
+  const onDown = (e: KeyboardEvent) => {
+    if (realCaps(e)) dip(e);
+    else press(e, true);
     if (!e.repeat && !off()) lockKey(e.code, e);
   };
-  const onUp = (e: KeyboardEvent) => press(e, false);
+  const onUp = (e: KeyboardEvent) => {
+    if (realCaps(e)) {
+      if (!off()) lockKey(e.code, e);
+      return;
+    }
+    press(e, false);
+  };
   window.addEventListener('keydown', onDown);
   window.addEventListener('keyup', onUp);
   // Stop listening when the desk is taken off the page.
