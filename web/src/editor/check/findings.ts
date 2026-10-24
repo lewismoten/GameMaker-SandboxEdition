@@ -29,7 +29,7 @@ export interface Where {
 }
 
 /** A one-click suggestion the panel can offer for a finding (generators/*.ts). */
-export type FixId = 'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark';
+export type FixId = 'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark' | 'no-soltop';
 
 export interface Finding {
   check: CheckId;
