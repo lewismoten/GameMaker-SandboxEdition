@@ -57,7 +57,7 @@ const REGULARS: (MixedSticker & { game: string })[] = [
   {
     game: 'realm',
     text: 'TEDDY',
-    sub: 'ONE EAR SHORTER',
+    sub: 'VERY GOOD BOY',
     shape: 'cut',
     color: '#e8862a',
     ink: '#ffffff',

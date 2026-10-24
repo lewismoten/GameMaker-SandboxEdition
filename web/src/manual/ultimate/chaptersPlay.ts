@@ -76,8 +76,8 @@ export const ACTORS: Chapter = {
     is free.</li>
     <li><b>Or mirror it on blocks of its own.</b> Choose <i>as new mirrored blocks</i> and the
     pictures are copied, mirrored, into empty blocks of the set instead. Use this when the
-    other side should differ, such as a hand that carries something or a short ear that stays
-    on one side.</li>
+    other side should differ, such as a hand that carries something or a bag slung on one
+    shoulder.</li>
     <li><b>Keep the two in step.</b> The two sequences stay linked. Change the walk right and
     the bar under its frames says the mirror is out of step; <b>Update the mirrored
     sequence</b> re-makes it, moves, pauses and pictures. Repaint a block in the block painter

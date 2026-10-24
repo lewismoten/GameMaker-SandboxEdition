@@ -173,7 +173,7 @@ export function renderCast(el: HTMLElement): void {
       h(
         'p',
         { class: 'lead' },
-        'The same faces keep turning up in this edition’s new games: a corgi with one ear shorter than the other, his sister-in-mischief, a friendly hobo clown, a tomato-red electric car that is always charging, and a goat nobody painted. Here is who they are, and where to find them.',
+        'The same faces keep turning up in this edition’s new games: a red-gold corgi with a big grin, his sister-in-mischief, a friendly hobo clown, a tomato-red electric car that is always charging, and a goat nobody painted. Here is who they are, and where to find them.',
       ),
       castStage(CAST, state),
       families(),
