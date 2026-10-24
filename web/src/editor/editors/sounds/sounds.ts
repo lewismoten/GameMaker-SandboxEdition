@@ -3,7 +3,7 @@
 import './sounds.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { h, clear, numberField, debounce, selectField, toast } from '../../core/ui';
+import { h, clear, numberField, debounce, toast } from '../../core/ui';
 import { AudioEngine } from '../../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../../tools/speakerFx';
@@ -13,13 +13,12 @@ import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
 import { decodeVoc } from '../../../formats/voc';
-import { vocToSpeaker, type SpeakerFit } from '../../../audio/vocToSpeaker';
+import { vocToSpeaker } from '../../../audio/vocToSpeaker';
+import { fitChoice, setSlotFit, slotFit } from './speakerFit';
 
 const MAXF = 8192;
 const MINF = 64;
 const audio = new AudioEngine();
-/** How a .voc longer than the 36 steps becomes PC speaker steps (kept while the page is open). */
-let fit: SpeakerFit = 'whole';
 
 // Frequencies are drawn on a log scale, as pitch is heard.
 const toY = (f: number, hgt: number) => (f < MINF ? hgt : hgt - (Math.log2(f / MINF) / Math.log2(MAXF / MINF)) * hgt);
@@ -69,7 +68,18 @@ registerEditor(['snd'], (host, project, file) => {
     if (!voc) return undefined;
     try {
       const d = decodeVoc(project.files.get(voc)!);
-      return vocToSpeaker(d.samples, d.sampleRate, fit);
+      return vocToSpeaker(d.samples, d.sampleRate, slotFit(project, file, i));
+    } catch {
+      return undefined;
+    }
+  };
+  /** Slot i's .voc length in seconds, or undefined when it has none or it can't be read. */
+  const vocSeconds = (i: number): number | undefined => {
+    const voc = vocOf(i);
+    if (!voc) return undefined;
+    try {
+      const d = decodeVoc(project.files.get(voc)!);
+      return d.sampleRate ? d.samples.length / d.sampleRate : undefined;
     } catch {
       return undefined;
     }
@@ -261,21 +271,17 @@ registerEditor(['snd'], (host, project, file) => {
       },
       '✓ Use it for the PC speaker',
     );
-    const fitField = selectField<SpeakerFit>(
-      'Fit',
-      [
-        ['whole', 'The whole sound, sped up'],
-        ['start', 'Its first ¼ second, as timed'],
-      ],
-      () => fit,
+    // remembered per slot in the companion file; a preview showing is made again with the new fit
+    const fitField = fitChoice(
+      () => slotFit(project, file, current),
       (v) => {
-        fit = v;
+        setSlotFit(project, file, current, v);
         if (preview) previewBtn.click();
       },
-      'The PC speaker sound lasts a quarter of a second: speed a longer .voc up to fit, or keep its start',
+      vocSeconds(current),
     );
     const convPart = vocOf(current)
-      ? h('div', { class: 'snd-part', role: 'group', 'aria-label': 'Make the PC speaker version from the .voc' }, previewBtn, fitField, applyBtn, convState)
+      ? h('div', { class: 'snd-part', role: 'group', 'aria-label': 'Make the PC speaker version from the .voc' }, fitField, previewBtn, applyBtn, convState)
       : null;
 
     const digital = snd.digital[current];
