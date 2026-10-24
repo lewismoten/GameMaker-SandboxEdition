@@ -648,7 +648,7 @@ export function buildMonsterBlocks(pal: Pal) {
     if (laugh) {
       face(p, 10, 6 - f, { laugh: true });
       p.line(4, 11, 1, 6 - f * 2, c('skin', 2)).line(16, 11, 19, 6 - f * 2, c('skin', 2));
-      micro(p, 14, 0, f ? 'HA' : '', c('gold', 3));
+      micro(p, 13, 0, f ? 'HA' : '', c('gold', 3));
     } else {
       face(p, 10, 6, { stern: true });
       p.rect(5, 12, 10, 2, c('grey', 3));

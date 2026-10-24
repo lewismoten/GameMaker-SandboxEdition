@@ -187,7 +187,7 @@ export function buildThermae(pal: Pal): BlockBook {
       p.set(14, 3 - f, c('ink', 0))
         .line(13, 1 - f, 15, 1 - f, c('ink', 0))
         .disc(16, 5 - f, 1, c('ink', 0));
-      micro(p, 15, 0, f ? 'O!' : '', c('gold', 3));
+      micro(p, 13, 0, f ? 'O!' : '', c('gold', 3));
     } else if (done) sparkle(x, p, 27, 6);
     else micro(p, 6, 8, String(SCALES_NEEDED), c('ink', 0));
     return p;
