@@ -1,5 +1,5 @@
 // Full-page ads for the desk's hardware: the modem and its line speeds (retro/bbs/lineSpeed.ts),
-// the disk box, the ILLOGITECH speakers with the Sound Blaster switch, and the GRAVITAS game pad
+// the disk box, the ILLOGITECH speakers with the SOUND BOASTER switch, and the GRAVITAS game pad
 // (desk/pc/). The makers
 // are made up (only the historical names stay: Sound Blaster, VGA, MS-DOS); prices are part of
 // the story, and each ad's button looks at its prop on the desk, where it is free.
@@ -143,7 +143,7 @@ const speakersAd = () =>
               [
                 art(
                   'speakers',
-                  'A pair of beige Illogitech computer speakers with dark cloth grilles: the left one has the brand on it, the right one a volume knob, a green power light, a headphone jack and a Sound Blaster switch set to on',
+                  'A pair of beige Illogitech computer speakers with dark cloth grilles: the left one has the brand on it, the right one a volume knob, a green power light, a headphone jack and a Sound Boaster switch set to on',
                 ),
               ],
               [
@@ -158,10 +158,10 @@ const speakersAd = () =>
             0.3,
           ),
           side(
-            'THE SOUND BLASTER SWITCH',
+            'THE SOUND BOASTER SWITCH',
             [
               p(
-                'Under the knob is a switch that puts the Sound Blaster card in or takes it out. **On:** music and digital sound. **Off:** every sound on the PC speaker, and no music, the way a PC without the card heard it.',
+                'Under the knob is a switch that puts the Sound Boaster card in or takes it out. **On:** music and digital sound. **Off:** every sound on the PC speaker, and no music, the way a PC without the card heard it.',
               ),
               p('Games look for the card as they start, so flip it, then start your game again to hear the difference.'),
             ],
@@ -176,7 +176,7 @@ const speakersAd = () =>
         {
           burst: 'TURN IT UP!',
           sub: 'From Illogitech: *big sound for little rooms.*',
-          small: `${FREE} The speakers are on the desk, free, with the Sound Blaster switch under the right one’s knob.`,
+          small: `${FREE} The speakers are on the desk, free, with the Sound Boaster switch under the right one’s knob.`,
           tone: 'white',
         },
       ),
