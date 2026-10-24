@@ -4,6 +4,7 @@ import { h } from '../../editor/core/ui';
 import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
+import { fitSheet } from './fitSheet';
 import type {
   ChartItem,
   HintBookItem,
@@ -51,18 +52,27 @@ async function mapItem(ctx: PrintContext, it: MapItem): Promise<Sheet[]> {
     }
   }
   const [w, hh] = it.landscape ? [11, 8.5] : [8.5, 11];
-  return [
-    sheet(
-      w,
-      hh,
-      `map ${it.landscape ? 'land' : ''}`,
-      h('header', { class: 'map-head' }, h('h2', null, it.heading ?? it.title), it.intro ? h('p', null, it.intro) : null),
-      h('div', { class: `map-panels n${it.panels.length} c${it.columns ?? 2}` }, ...panels),
-      key.length ? h('ol', { class: 'map-key' }, ...key) : null,
-      it.legend?.length ? h('div', { class: 'map-legend' }, ...it.legend.map((l) => h('p', null, l))) : null,
-      h('div', { class: 'map-compass', 'aria-hidden': 'true' }, 'N'),
-    ),
-  ];
+  const grid = h('div', { class: `map-panels n${it.panels.length} c${it.columns ?? 2}` }, ...panels);
+  const s = sheet(
+    w,
+    hh,
+    `map ${it.landscape ? 'land' : ''}`,
+    h('header', { class: 'map-head' }, h('h2', null, it.heading ?? it.title), it.intro ? h('p', null, it.intro) : null),
+    grid,
+    key.length ? h('ol', { class: 'map-key' }, ...key) : null,
+    it.legend?.length ? h('div', { class: 'map-legend' }, ...it.legend.map((l) => h('p', null, l))) : null,
+    h('div', { class: 'map-compass', 'aria-hidden': 'true' }, 'N'),
+  );
+  // many pictures (or a long key) would run off the sheet: they go in rows of one height
+  // instead (the first one larger), as tall as the sheet allows
+  fitSheet(s, (f) => {
+    grid.classList.add('fit');
+    for (const [i, el] of [...grid.children].entries()) {
+      const ar = parseFloat((el as HTMLElement).style.getPropertyValue('--ar')) || 1.6;
+      Object.assign((el as HTMLElement).style, { width: `calc(${ar} * ${(f * (i ? 40 : 60)).toFixed(2)}cqw)`, maxWidth: '100%', margin: '0' });
+    }
+  });
+  return [s];
 }
 
 // ------------------------------------------------------------------ hint book

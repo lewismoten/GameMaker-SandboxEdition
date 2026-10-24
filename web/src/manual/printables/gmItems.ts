@@ -17,6 +17,7 @@ import { bardCatalog } from './bardCatalog';
 import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
 import { mixedStickers, stickerScreen } from './stickers';
+import { fitSheet, narrower } from './fitSheet';
 import { gmStickerSpecs } from './gmStickers';
 import { ultimateItem } from '../ultimate/ultimateItem';
 
@@ -162,32 +163,43 @@ async function keyCard(): Promise<Sheet[]> {
 /** A poster of the games Sandbox Software made with Game-Maker. */
 async function poster(): Promise<Sheet[]> {
   const shots = await sandboxShots();
-  return [
-    sheet(
-      11,
-      17,
-      'gmp',
-      h('div', { class: 'gmp-top' }, h('span', null, 'MADE WITH'), h('b', null, 'GAME-MAKER'), h('em', null, 'Sandbox Edition')),
+  const grid = h(
+    'div',
+    { class: 'gmp-grid' },
+    ...shots.map((s) =>
       h(
-        'div',
-        { class: 'gmp-grid' },
-        ...shots.map((s) =>
-          h(
-            'figure',
-            null,
-            h('img', { src: s.canvas.toDataURL(), alt: s.title, width: s.canvas.width, height: s.canvas.height }),
-            h('figcaption', null, h('b', null, s.title), h('span', null, s.feature)),
-          ),
-        ),
-      ),
-      h(
-        'div',
-        { class: 'gmp-bottom' },
-        sandboxLogo('gmp-logo'),
-        h('p', null, 'No programming. Just blocks, monsters, maps and your imagination.', h('br'), 'Download them all on ', sandboxBanner(), ` ${BBS_PHONE}`),
+        'figure',
+        null,
+        h('img', { src: s.canvas.toDataURL(), alt: s.title, width: s.canvas.width, height: s.canvas.height }),
+        h('figcaption', null, h('b', null, s.title), h('span', null, s.feature)),
       ),
     ),
-  ];
+  );
+  const s = sheet(
+    11,
+    17,
+    'gmp',
+    h('div', { class: 'gmp-top' }, h('span', null, 'MADE WITH'), h('b', null, 'GAME-MAKER'), h('em', null, 'Sandbox Edition')),
+    grid,
+    h(
+      'div',
+      { class: 'gmp-bottom' },
+      sandboxLogo('gmp-logo'),
+      h(
+        'p',
+        null,
+        'No programming. Just blocks, monsters, maps and your imagination.',
+        h('br'),
+        'Download them all on ',
+        sandboxBanner(),
+        ' ',
+        h('span', { style: 'white-space: nowrap' }, BBS_PHONE),
+      ),
+    ),
+  );
+  // every game's picture on the poster, its foot included
+  fitSheet(s, narrower(grid), 0.4);
+  return [s];
 }
 
 /** The paper in the Game-Maker SE box, in tray order. */

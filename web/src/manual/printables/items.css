@@ -1100,6 +1100,19 @@
   margin: 0 auto;
 }
 
+/* more pictures than fit (story.ts sizes them): rows of one height, centered */
+.map-panels.fit {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* and a long key on a wide sheet takes three columns */
+.pp-land .map-panels.fit ~ .map-key {
+  columns: 3;
+}
+
 /* a tall map never runs off the sheet */
 .map-panels.n1 .map-panel {
   width: min(100%, calc(var(--ar) * 100cqw));
