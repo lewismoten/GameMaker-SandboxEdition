@@ -79,7 +79,7 @@ export function sizeAbout(g: CatalogEntry): string {
 async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const size = zipBytes(g);
   t.line(`|15Zmodem|07.  ${zipName(g)}, |14${commas(size)}|07 bytes: |14${downloadLine(size, '|07, |14')}|07.`);
-  t.line(`|07Starting transfer: ${expectText(size)}. |08(Esc aborts, Space skips ahead)`);
+  t.line(`|07Starting transfer: ${expectText(size)}. |08(Esc aborts, Space skips)`);
   if ((await progress(t, h, zipName(g), size)).aborted) {
     t.line();
     t.line('|12Transfer aborted.');

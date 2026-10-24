@@ -133,6 +133,11 @@ export function slowWait(seconds: number): void {
   announce('gm-line-hint', lineSpeed());
 }
 
-/** The hint's words: on the desk the modem's speed is clicked; the DOS page has it in a menu. */
+/**
+ * The hint's words. On the desk the modem's speed is clicked; on the DOS page the hint is a
+ * button in a narrow footer, so it leads with what clicking it does.
+ */
 export const hintText = (where: 'desk' | 'page' = 'desk', speed: LineSpeed = lineSpeed()) =>
-  `This is how long it really took at ${speedWords(speed)}. ${where === 'desk' ? "Click the modem's speed" : 'Click here'} to speed it up!`;
+  where === 'desk'
+    ? `This is how long it really took at ${speedWords(speed)}. Click the modem's speed to speed it up!`
+    : `Click here to speed it up! This is how long it really took at ${speedWords(speed)}.`;

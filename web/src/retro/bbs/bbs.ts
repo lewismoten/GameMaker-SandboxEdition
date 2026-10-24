@@ -152,6 +152,7 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
   const minutesLeft = () => Math.max(1, 60 - Math.floor((performance.now() - online) / 60000));
 
   // The logon screen.
+  t.clear(); // ESC[2J first, then the picture
   t.art((s) => {
     s.cursorX = 0;
     s.cursorY = sandboxLogin(s);
@@ -531,7 +532,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
     return;
   }
   t.line(`|15Zmodem|07.  ${zipName(g)}, |14${commas(size)}|07 bytes: |14${downloadLine(size, '|07, |14')}|07.`);
-  t.line(`|07Starting transfer: ${expectText(size)}. |08(Esc aborts, Space skips ahead)`);
+  t.line(`|07Starting transfer: ${expectText(size)}. |08(Esc aborts, Space skips)`);
   if ((await progress(t, h, zipName(g), size)).aborted) {
     t.line();
     t.line('|12Transfer aborted.');
@@ -648,9 +649,8 @@ async function upload(t: Term, h: RetroHost): Promise<void> {
   t.print('|11Describe it in one line: |15');
   await readLine(s, h.keys, [], 45, attr(15, 0));
   t.line();
-  t.line(
-    `|07Begin your |15${proto}|07 upload of |15${file.name}|07 now (|14${commas(file.size)}|07 bytes, ${expectText(file.size, share)}). |08Ctrl-X aborts, Space skips ahead.`,
-  );
+  t.line(`|07Begin your |15${proto}|07 upload of |15${file.name}|07 now (|14${commas(file.size)}|07 bytes).`);
+  t.line(`|07It takes ${expectText(file.size, share)}. |08Ctrl-X aborts, Space skips ahead.`);
   t.status(` TERMINAL 2.1 │ Sending ${file.path} by ${proto}`);
   modemSignal('send');
   const cutAt = 0.35 + Math.random() * 0.3;

@@ -61,6 +61,7 @@ function menu(t: Term): void {
 export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   const s = h.screen;
   const line = 3 + Math.floor(Math.random() * 4);
+  t.clear(); // ESC[2J first, then the picture
   t.art((s) => {
     s.cursorX = 0;
     s.cursorY = sofaLogin(s, line, LINES);
