@@ -46,7 +46,7 @@ import {
 type Kit = Parameters<typeof v>[1];
 
 /** A song from a melody over chords: comping, a bass line and an optional backbeat. */
-function arrange(o: {
+export function arrange(o: {
   bpm: number;
   mel: string;
   chords: string[];
@@ -73,8 +73,8 @@ function arrange(o: {
   return tune(o.bpm, voices);
 }
 
-const TEDDY = join(THEME_A, THEME_B);
-const twice = <T>(xs: T[]) => [...xs, ...xs];
+export const TEDDY = join(THEME_A, THEME_B);
+export const twice = <T>(xs: T[]) => [...xs, ...xs];
 
 /** Title: Teddy's Theme as a bouncy march on the calliope, then Doc Leo's, then home. */
 export function titleSong(): Uint8Array {
