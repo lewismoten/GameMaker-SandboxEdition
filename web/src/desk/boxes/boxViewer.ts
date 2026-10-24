@@ -49,8 +49,10 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     const apply = () => {
       model.style.transform = `translate(${px}px, ${py}px) scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
     };
+    // with reduced motion asked for, the box holds still until it is turned by hand or key
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const spin = () => {
-      if (auto) {
+      if (auto && !still) {
         ry += 0.25;
         apply();
       }

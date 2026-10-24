@@ -18,7 +18,8 @@ export function openMugViewer(): Promise<void> {
       return -wrapAngle(sizeOf(choice.size), printPlacement(sizeOf(choice.size), art.width / art.height).centers[0]);
     };
     let rot = facing();
-    let spin = 0.5; // radians a second
+    // radians a second; none with reduced motion asked for (drag to turn it)
+    let spin = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 0.5;
     let drag: { x: number; rot: number } | undefined;
     let raf = 0;
     let last = performance.now();
