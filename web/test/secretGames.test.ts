@@ -35,7 +35,7 @@ describe('secret games', () => {
     expect(secretsListed()).toBe(false);
   });
 
-  it('adds games/extra.json once all twelve eggs are found', async () => {
+  it('adds games/extra.json once every felt egg is found', async () => {
     found.all = true;
     expect((await withSecretGames(list)).map((g) => g.id)).toEqual(['teddy', 'logic', 'bakers']);
     expect(fetches).toEqual(['./games/extra.json']);
