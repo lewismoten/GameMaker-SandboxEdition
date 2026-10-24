@@ -227,8 +227,11 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
     clearTimeout(idle);
     onKey = undefined;
     sounds?.stop();
+    // hung up from the keypad (Esc or its button): back to the phone on the wall
+    const wasOnPad = !!pad && (pad.el.contains(document.activeElement) || document.activeElement === document.body);
     pad?.close();
     pad = undefined;
+    if (wasOnPad) el.focus({ preventScroll: true });
     state = 'hung-up';
     phoneLine.offHook = false;
     el.classList.remove('off-hook');

@@ -70,7 +70,7 @@ export function deskModem(onClick: () => void): DeskModem {
 
   const showSpeed = () => {
     brand.textContent = `DATA/FAX ${speedLabel()}`;
-    const name = `Modem speed: ${speedWords()}. Change it`;
+    const name = `DATA/FAX ${speedLabel()}: the modem's speed, ${speedWords()}. Change it`;
     speed.setAttribute('aria-label', name);
     speed.title = name;
   };

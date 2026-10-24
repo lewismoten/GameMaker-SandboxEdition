@@ -138,7 +138,7 @@ function mousePad(): HTMLElement {
       class: 'ball-mouse',
       role: 'button',
       tabindex: '0',
-      'aria-label': "The PC's mouse: drag it on the pad to move the pointer; Enter clicks, arrow keys roll it",
+      'aria-label': "SQUEAK, the PC's mouse: drag it on the pad to move the pointer; Enter clicks, arrow keys roll it",
       title: "Drag the mouse to move the PC's pointer; press its left or right button to click",
     },
     h('span', { class: 'mouse-btn left' }),

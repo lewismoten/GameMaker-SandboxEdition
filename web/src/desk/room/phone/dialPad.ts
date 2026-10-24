@@ -49,7 +49,8 @@ export function openDialPad(press: (k: string) => void, hangUp: () => void): Dia
       {
         class: 'pp-key',
         onclick: () => press(k),
-        'aria-label': k === '*' ? 'star' : k === '#' ? 'pound' : k,
+        // what the key shows (2 ABC), so a voice user can say it; * and # by name
+        'aria-label': k === '*' ? 'star' : k === '#' ? 'pound' : `${k} ${letters}`.trim(),
       },
       h('b', null, k),
       h('small', null, letters || ' '),

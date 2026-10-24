@@ -145,16 +145,18 @@ export function keyboard(onClick: () => void): HTMLElement {
     const name = k[0];
     const g = GLOBAL_KEYS.find((gk) => gk.name === name);
     if (g) {
+      const shown = TEMPLATE[name] ?? g.short;
       const label = h(
         'button',
         {
           type: 'button',
           class: `kt-label kt-${name.toLowerCase()}`,
           title: `${name}: ${g.title}`,
-          'aria-label': `Press ${name}: ${g.title}`,
+          // the word printed on the template first when the key's title doesn't say it (QUIT, JOY)
+          'aria-label': g.title.toLowerCase().includes(shown.toLowerCase()) ? `Press ${name}: ${g.title}` : `${shown}: press ${name}, ${g.title}`,
           dataset: { code: k[2] },
         },
-        TEMPLATE[name] ?? g.short,
+        shown,
       );
       label.style.left = `${((x + 0.1 + k[1] / 2) / 14.95) * 100}%`;
       template.append(label);
