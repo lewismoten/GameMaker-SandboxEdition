@@ -4,8 +4,13 @@
 // and webEdition.test.ts checks that the files are there. Sources: README.md, web/src/README.md,
 // docs/embed.md and the original code/GM, which has no undo, no music or FLI maker and reads
 // pictures only from GIFs. Its tour page shows today's web in real screenshots (webShots.ts).
-import { art, button, cols, grid, head, list, note, p, pull, rows, side } from '../blocks';
+// Its last page jumps to the back of the book (WEB_EDITION_JUMP); both halves share a page with a small ad.
+import { art, button, cols, grid, head, jumpFrom, jumpOn, list, note, p, pull, rows, side } from '../blocks';
 import type { ListingRow, MagSection } from '../types';
+import { BLANK_DISKS, MOUSE_PADS } from './smallAds';
+
+/** Where the feature picks up at the back of the book (WEB_EDITION_JUMP). */
+const JUMP = 'web-edition-jump';
 
 /** One line of the feature checklist: what it is, whether the 1995 box had it, and the module that does it now. */
 interface Feature {
@@ -192,53 +197,6 @@ export const WEB_EDITION: MagSection = {
     {
       kind: 'article',
       blocks: [
-        head('Games That Go Anywhere', { kicker: 'Game-Maker Goes Online, continued', size: 'l', level: 2 }),
-        cols(2, [
-          p(
-            'One **Download** button hands your game over however you like: a single web page that plays from a double-click, an installable web app, a folder that plays in DOS, or a **Mac app, a Windows program or a Linux folder** that plays in its own window, offline. The native players are built right in the browser.',
-          ),
-          p(
-            'Got a shelf of old Game-Maker games? The **web player** is one .html file to put on a web host beside your game folders. It lists them from an optional games.json, starts one from a link, and keeps high scores and saved games in the browser. Another site can also **link a game in** to be played or edited here, once the visitor says yes.',
-          ),
-          p(
-            'Everything you make is **saved in your browser**, and the whole site can be kept for **offline** play. Saved games and high scores have a panel of their own. On a phone or tablet the player puts a **touch pad and buttons** over the screen, a panel of **on-screen keys** sends F1 to F10 even where the computer would rather keep them, and a **gamepad** works as the joystick.',
-          ),
-          p(
-            'The site is built to be used from the keyboard as well as the mouse, with labels for screen readers, and today’s web comes in light and dark. **Achievements** keep score of what you make, play and find. And the 1994 desk is a world of its own: TERMINAL dials [the Sandbox BBS](go:bbs/sandbox) at any modem speed from 300 baud up, and the PC has HEXEDIT, VPIC and other tools for poking around inside game files.',
-          ),
-        ]),
-        pull('“A game you make tonight can be on a Mac, a PC and a phone by breakfast.”'),
-        grid(
-          [
-            [
-              side(
-                'Get it out the door',
-                [
-                  list([
-                    '[Sharing a game](go:guide/export)',
-                    '[Playing offline](go:guide/offline)',
-                    '[Mac](go:route/mac) · [Windows](go:route/windows) · [Linux](go:route/linux)',
-                  ]),
-                  button('go:url/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md', 'Opening games from your site'),
-                ],
-                'cyan',
-              ),
-            ],
-            [
-              side(
-                'Keep score',
-                [p('See what you have earned so far, on the web or with ACHIEVE.EXE on the desk.'), button('go:route/achievements', 'Achievements')],
-                'yellow',
-              ),
-            ],
-          ],
-          0.3,
-        ),
-      ],
-    },
-    {
-      kind: 'article',
-      blocks: [
         head('The Grand Tour', {
           kicker: 'Game-Maker Goes Online, continued',
           size: 'l',
@@ -342,6 +300,75 @@ export const WEB_EDITION: MagSection = {
         note(
           'Game-Maker™ is RSD Game-Maker 3.0 by Recreational Software Designs, whose source Andy Stone released under the MIT License in 2014. The Sandbox Edition is by Lewis Moten; its web port was written with Claude.',
         ),
+      ],
+    },
+    {
+      id: 'web-edition-6',
+      kind: 'article',
+      blocks: [
+        head('Games That Go Anywhere', { kicker: 'Game-Maker Goes Online, continued', size: 'l', level: 2 }),
+        cols(2, [
+          p(
+            'One **Download** button hands your game over however you like: a single web page that plays from a double-click, an installable web app, a folder that plays in DOS, or a **Mac app, a Windows program or a Linux folder** that plays in its own window, offline. The native players are built right in the browser.',
+          ),
+          p(
+            'Got a shelf of old Game-Maker games? The **web player** is one .html file to put on a web host beside your game folders. It lists them from an optional games.json, starts one from a link, and keeps high scores and saved games in the browser. Another site can also **link a game in** to be played or edited here, once the visitor says yes.',
+          ),
+        ]),
+        pull('“A game you make tonight can be on a Mac, a PC and a phone by breakfast.”'),
+        jumpOn(JUMP),
+        MOUSE_PADS,
+      ],
+    },
+  ],
+};
+
+/** The rest of the feature, at the back of the book, over Floppy Barn's ad. */
+export const WEB_EDITION_JUMP: MagSection = {
+  id: JUMP,
+  title: 'Feature: Game-Maker Goes Online, continued',
+  toc: false,
+  dept: 'FEATURE',
+  pages: () => [
+    {
+      kind: 'article',
+      blocks: [
+        jumpFrom('web-edition-6', 'Game-Maker Goes Online'),
+        cols(2, [
+          p(
+            'Everything you make is **saved in your browser**, and the whole site can be kept for **offline** play. Saved games and high scores have a panel of their own. On a phone or tablet the player puts a **touch pad and buttons** over the screen, a panel of **on-screen keys** sends F1 to F10 even where the computer would rather keep them, and a **gamepad** works as the joystick.',
+          ),
+          p(
+            'The site is built to be used from the keyboard as well as the mouse, with labels for screen readers, and today’s web comes in light and dark. **Achievements** keep score of what you make, play and find. And the 1994 desk is a world of its own: TERMINAL dials [the Sandbox BBS](go:bbs/sandbox) at any modem speed from 300 baud up, and the PC has HEXEDIT, VPIC and other tools for poking around inside game files.',
+          ),
+        ]),
+        grid(
+          [
+            [
+              side(
+                'Get it out the door',
+                [
+                  list([
+                    '[Sharing a game](go:guide/export)',
+                    '[Playing offline](go:guide/offline)',
+                    '[Mac](go:route/mac) · [Windows](go:route/windows) · [Linux](go:route/linux)',
+                  ]),
+                  button('go:url/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md', 'Opening games from your site'),
+                ],
+                'cyan',
+              ),
+            ],
+            [
+              side(
+                'Keep score',
+                [p('See what you have earned so far, on the web or with ACHIEVE.EXE on the desk.'), button('go:route/achievements', 'Achievements')],
+                'yellow',
+              ),
+            ],
+          ],
+          0.3,
+        ),
+        BLANK_DISKS,
       ],
     },
   ],

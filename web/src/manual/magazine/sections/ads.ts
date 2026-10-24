@@ -52,7 +52,7 @@ export const SANDBOX_EDITION_AD: MagSection = {
               'white',
             ),
             grid([[button('go:editor', 'Start a game now')], [button('go:desk', 'Visit the 1994 desk')], [button('go:guide/start', 'Read the Guide')]], 0.25),
-            p('Want it in a box? Send away for it: [the order form is on page 8](go:mag/ad-send-away).'),
+            p('Want it in a box? Send away for it: [the order form is on page {page:ad-send-away}](go:mag/ad-send-away).'),
           ],
           {
             burst: 'FREE TO PLAY!',

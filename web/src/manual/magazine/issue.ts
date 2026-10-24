@@ -1,6 +1,8 @@
 // The issue: its name and number, its sections in running order, and putting them together
 // (page numbers, the contents page, the advertiser index, house ads to fill out whole
-// folded sheets). No DOM, so tests build the whole issue in Node.
+// folded sheets, and the page numbers pages give each other: pageRefs.ts). Jumped stories'
+// back halves (the *_JUMP sections) run at the back of the book. No DOM, so tests build the
+// whole issue in Node.
 import type { Issue, MagContext, MagPage, MagSection, PlacedPage, TocEntry } from './types';
 import { COVER } from './sections/cover';
 import { SANDBOX_EDITION_AD, SEND_AWAY_AD, ULTIMATE_AD, CATALOGS_AD } from './sections/ads';
@@ -9,9 +11,9 @@ import { LETTER } from './sections/letter';
 import { MAIL_BAG } from './sections/mailBag';
 import { NEWS } from './sections/news';
 import { FREE_CD } from './sections/freeCd';
-import { LEWIS } from './sections/lewis';
-import { CLAUDE } from './sections/claude';
-import { WEB_EDITION } from './sections/webEdition';
+import { LEWIS, LEWIS_JUMP } from './sections/lewis';
+import { CLAUDE, CLAUDE_JUMP } from './sections/claude';
+import { WEB_EDITION, WEB_EDITION_JUMP } from './sections/webEdition';
 import { STRATEGY } from './sections/strategy';
 import { DIRECTORY } from './sections/directory';
 import { REVIEWS } from './sections/reviews';
@@ -25,6 +27,7 @@ import { SOUND_CARD_AD } from './sections/soundCardAd';
 import { READER_SERVICE } from './sections/readerService';
 import { BACK_COVER } from './sections/backCover';
 import { houseAd } from './sections/houseAd';
+import { halfAds, numberRefs } from './pageRefs';
 
 /** The running order. The contents page is filled in once every page has its number. */
 export const SECTIONS: MagSection[] = [
@@ -47,6 +50,10 @@ export const SECTIONS: MagSection[] = [
   MAXIMUS,
   SPOTLIGHT,
   BBS_LISTINGS,
+  // the back of the book: where the jumped stories pick up
+  LEWIS_JUMP,
+  CLAUDE_JUMP,
+  WEB_EDITION_JUMP,
   STORE,
   MUG_AD,
   HARDWARE,
@@ -83,9 +90,10 @@ export async function buildIssue(ctx: MagContext, sections: MagSection[] = SECTI
       };
       if (i === 0 && s.toc !== false) toc.push({ section: s.id, page: placed.id, title: s.title, blurb: s.blurb, folio });
       if ((pg.kind === 'ad' || pg.kind === 'back') && pg.title) ads.push({ section: s.id, page: placed.id, title: pg.title, folio });
+      for (const ad of halfAds(pg.blocks)) ads.push({ section: s.id, page: placed.id, title: ad.advertiser, folio });
       pages.push(placed);
     });
   const at = pages.findIndex((pg) => pg.section === CONTENTS.id);
   if (at >= 0) pages[at] = { ...pages[at], ...contentsPage(toc, ads), folio: pages[at].folio, section: CONTENTS.id, id: CONTENTS.id };
-  return { pages, toc, ads };
+  return { pages: numberRefs(pages), toc, ads };
 }

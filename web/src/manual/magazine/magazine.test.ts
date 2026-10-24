@@ -11,6 +11,7 @@ import { GUIDE_CHAPTERS } from './sections/houseAd';
 import { magContext, magGames } from './games';
 import { GUIDE_SECTIONS, goProblem, type GoKnown } from './go';
 import { linksIn, plain } from './inline';
+import { halfAds } from './pageRefs';
 import type { Block, Issue } from './types';
 
 const repo = join(__dirname, '../../../..');
@@ -121,6 +122,20 @@ function walk(b: Block, text: string[], links: string[]): void {
     case 'mugs':
       text.push(...b.mugs.flatMap((m) => [m.design, m.name]));
       break;
+    case 'jump':
+      text.push(b.title ?? '');
+      links.push(`go:mag/${b.page}`);
+      break;
+    case 'halfad':
+      text.push(b.advertiser, b.head, b.burst ?? '');
+      t(b.sub);
+      t(b.small);
+      b.blocks.forEach((c) => walk(c, text, links));
+      break;
+    case 'beside':
+      b.blocks.forEach((c) => walk(c, text, links));
+      walk(b.ad, text, links);
+      break;
     case 'rule':
       break;
   }
@@ -160,8 +175,12 @@ describe('TURBO BUTTON', async () => {
     const contents = issue.pages.find((pg) => pg.kind === 'contents')!;
     const rows = contents.blocks.find((b) => b.t === 'rows');
     expect(rows?.t === 'rows' && rows.rows.map((r) => [r.title, r.price])).toEqual(issue.toc.map((e) => [e.title, `p. ${e.folio}`]));
-    // and every full-page ad is in the advertiser index
-    expect(issue.ads.map((a) => a.folio)).toEqual(issue.pages.filter((pg) => pg.kind === 'ad' || (pg.kind === 'back' && pg.title)).map((pg) => pg.folio));
+    // and every full-page ad, and every small ad on an editorial page, is in the advertiser index
+    const advertised = issue.pages.flatMap((pg) => [
+      ...(pg.kind === 'ad' || (pg.kind === 'back' && pg.title) ? [pg.folio] : []),
+      ...halfAds(pg.blocks).map(() => pg.folio),
+    ]);
+    expect(issue.ads.map((a) => a.folio)).toEqual(advertised);
   });
 
   it('links only to games, pages and openers that are there', () => {

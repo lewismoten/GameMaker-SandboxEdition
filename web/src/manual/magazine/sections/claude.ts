@@ -1,8 +1,13 @@
 // The interview with Claude (Claude Opus 5.5, by Anthropic), who wrote the web port with Lewis:
 // what the project actually did (README.md, NOTICE.md, docs/embed.md, docs/web-player.md),
-// told modestly. Its answers say "I" and name Lewis; only the magazine's staff is "we".
-import { a, button, cols, grid, head, list, note, p, pull, q, shot, side } from '../blocks';
+// told modestly. Its answers say "I" and name Lewis; only the magazine's staff is "we". Its last
+// page jumps to the back of the book (CLAUDE_JUMP), and both share their page with a small ad.
+import { a, beside, button, cols, grid, head, jumpFrom, jumpOn, list, note, p, pull, q, shot, side } from '../blocks';
 import type { MagSection } from '../types';
+import { HINT_BOOKS, SOFA_BBS } from './smallAds';
+
+/** Where the interview picks up at the back of the book (CLAUDE_JUMP). */
+const JUMP = 'claude-jump';
 
 const C = 'CLAUDE';
 
@@ -236,28 +241,53 @@ export const CLAUDE: MagSection = {
             C,
             'Teddy the corgi, his big sister Gwinn, Doc Leo the friendly hobo clown and THE CHEZ, his little red car. They come from Lewis’s life, and they turn up in more than one game. [Meet them in our Spotlight](go:mag/spotlight).',
           ),
-          q('What did you enjoy most?'),
-          a(C, 'Finding out how the original worked, line by line, and then seeing an old game play in a browser exactly as it did on a 1990s PC.'),
-          q('Who made the Bard of Bizarre’s music?'),
-          a(
-            C,
-            'The songs are Lewis’s, with music and vocals made with Riffusion, now Google Flow Music, and lyrics shaped with ChatGPT from his prompts. I arranged them for the FM chip, so they play in the games the way a 1995 Sound Blaster would.',
-          ),
-          q('What comes next?'),
-          a(C, 'Whatever Lewis dreams up next, and, better yet, the games you make. Send them in.'),
         ]),
-        grid(
+        jumpOn(JUMP),
+        SOFA_BBS,
+      ],
+    },
+  ],
+};
+
+/** The rest of the interview, at the back of the book, with the hint books' ad standing beside it. */
+export const CLAUDE_JUMP: MagSection = {
+  id: JUMP,
+  title: 'Interview: Claude, continued',
+  toc: false,
+  dept: 'INTERVIEW',
+  pages: () => [
+    {
+      kind: 'article',
+      blocks: [
+        beside(
           [
-            [shot('teddy', 'title', 'Teddy’s Little Big Adventure, its title screen', '*Teddy’s Little Big Adventure*')],
-            [shot('maximus', 'level', 'Maximus: The Hundred Worlds, a level', '*Maximus: The Hundred Worlds*')],
-            [shot('mustard', 'title', 'Mustard Seed Hustle, its title screen', '*Mustard Seed Hustle*')],
+            jumpFrom('claude-5', 'Porting a Classic, Line by Line'),
+            cols(2, [
+              q('What did you enjoy most?'),
+              a(C, 'Finding out how the original worked, line by line, and then seeing an old game play in a browser exactly as it did on a 1990s PC.'),
+              q('Who made the Bard of Bizarre’s music?'),
+              a(
+                C,
+                'The songs are Lewis’s, with music and vocals made with Riffusion, now Google Flow Music, and lyrics shaped with ChatGPT from his prompts. I arranged them for the FM chip, so they play in the games the way a 1995 Sound Blaster would.',
+              ),
+              q('What comes next?'),
+              a(C, 'Whatever Lewis dreams up next, and, better yet, the games you make. Send them in.'),
+            ]),
+            grid(
+              [
+                [shot('teddy', 'title', 'Teddy’s Little Big Adventure, its title screen', '*Teddy’s Little Big Adventure*')],
+                [shot('maximus', 'level', 'Maximus: The Hundred Worlds, a level', '*Maximus: The Hundred Worlds*')],
+                [shot('mustard', 'title', 'Mustard Seed Hustle, its title screen', '*Mustard Seed Hustle*')],
+              ],
+              0.15,
+            ),
+            pull('“Whatever Lewis dreams up next, and, better yet, the games you make.”', 'Claude'),
+            list(['[Play them all: the Directory](go:mag/directory)', '[Who made what: the Credits page](go:route/credits)']),
+            note(
+              'Interview for this issue. Claude is an AI model by Anthropic; this edition was written with Claude Opus 5.5, directed and reviewed by Lewis Moten.',
+            ),
           ],
-          0.25,
-        ),
-        pull('“Whatever Lewis dreams up next, and, better yet, the games you make.”', 'Claude'),
-        list(['[Play them all: the Directory](go:mag/directory)', '[Who made what: the Credits page](go:route/credits)']),
-        note(
-          'Interview for this issue. Claude is an AI model by Anthropic; this edition was written with Claude Opus 5.5, directed and reviewed by Lewis Moten.',
+          HINT_BOOKS,
         ),
       ],
     },

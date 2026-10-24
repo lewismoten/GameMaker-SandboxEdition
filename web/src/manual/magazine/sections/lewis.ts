@@ -1,7 +1,12 @@
 // The interview with Lewis, for this issue: a Q&A in his voice built only from his own account
-// of those years (docs/history.md). Anything beyond it stays general.
-import { a, button, cols, grid, head, list, note, p, pull, q, shot, side } from '../blocks';
+// of those years (docs/history.md). Anything beyond it stays general. Its third page jumps to
+// the back of the book (LEWIS_JUMP), as magazines ran a long story, and shares both pages with small ads.
+import { a, button, cols, grid, head, jumpFrom, jumpOn, list, note, p, pull, q, shot, side } from '../blocks';
 import type { MagSection } from '../types';
+import { FUN_NIGHT, SWAP_MEET } from './smallAds';
+
+/** Where the interview picks up at the back of the book (LEWIS_JUMP). */
+const JUMP = 'lewis-jump';
 
 const L = 'LEWIS';
 
@@ -110,6 +115,27 @@ export const LEWIS: MagSection = {
             L,
             'Its sound editor kept coming back in my own projects. A UFO game I began in Second Life in 2009, where you hunt for aliens with a flashlight, came to the web with drawn sound effects in the spirit of Game-Maker’s. I sent data between two devices as sound, from memories of cassette drives and a 2400 baud modem that tied up the phone line. I planned a GPS scavenger hunt with sound effects made from 36 bytes of data. And I built a web page that lets you draw a sound effect with the mouse.',
           ),
+        ]),
+        pull('“Draw the wave, hear the effect.”', 'Lewis Moten'),
+        jumpOn(JUMP),
+        SWAP_MEET,
+      ],
+    },
+  ],
+};
+
+/** The rest of the interview, at the back of the book, sharing its page with the Klown Klub. */
+export const LEWIS_JUMP: MagSection = {
+  id: JUMP,
+  title: 'Interview: Lewis Moten, continued',
+  toc: false,
+  dept: 'INTERVIEW',
+  pages: () => [
+    {
+      kind: 'article',
+      blocks: [
+        jumpFrom('lewis-3', 'The Snow Became My First Business'),
+        cols(2, [
           q('What is the 1994 desk in the Sandbox Edition about?'),
           a(
             L,
@@ -123,7 +149,6 @@ export const LEWIS: MagSection = {
             'Andy Stone released Game-Maker’s source code under the MIT License in 2014. This edition turns that source into a version that runs in a web browser, keeps the original file formats, and adds new games made with it.',
           ),
         ]),
-        pull('“Draw the wave, hear the effect.”', 'Lewis Moten'),
         grid([
           [
             side(
@@ -147,6 +172,7 @@ export const LEWIS: MagSection = {
         note(
           'Interview for this issue. Lewis’s answers are drawn from his own account of those years, “Lewis and Game-Maker”, in the Sandbox Edition’s notes.',
         ),
+        FUN_NIGHT,
       ],
     },
   ],
