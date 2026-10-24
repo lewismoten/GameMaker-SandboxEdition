@@ -649,6 +649,14 @@ registerEditor(['gam'], (host, project, file) => {
                 { onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the level check can tell' },
                 '☑ Before you upload…',
               ),
+              h(
+                'button',
+                {
+                  onclick: () => void import('../../widgets/walkDialog').then((m) => m.walkDialog(project)),
+                  title: 'Let a bot play the whole game and keep it as a walkthrough to watch or save as a video',
+                },
+                '🤖 Make a walkthrough…',
+              ),
             )
           : null,
         kind === 'adventure' || kind === 'unused'

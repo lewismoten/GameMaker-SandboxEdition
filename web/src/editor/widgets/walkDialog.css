@@ -1,0 +1,14 @@
+/* The Make a walkthrough dialog (walkDialog.ts). */
+.wd {
+  max-width: 560px;
+}
+.wd-list {
+  margin: 0;
+  padding-left: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.wd-stop {
+  color: var(--danger);
+}
