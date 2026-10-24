@@ -98,6 +98,11 @@ function walk(b: Block, text: string[], links: string[]): void {
       text.push(b.label);
       links.push(b.go);
       break;
+    case 'disc':
+      text.push(b.alt, b.cover?.burst ?? '');
+      t(b.caption);
+      links.push(b.go, ...(b.cover ? [b.cover.page] : []));
+      break;
     case 'masthead':
       text.push(b.name, b.tagline, b.issue, b.price);
       break;

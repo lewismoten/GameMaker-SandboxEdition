@@ -1,6 +1,7 @@
 // The front cover: the masthead, the big news, the cover lines and a stack of screenshots.
 import { art, grid, head, list, shot } from '../blocks';
 import { MAG } from '../masthead';
+import { disc } from './freeCd';
 import type { MagSection } from '../types';
 
 export const COVER: MagSection = {
@@ -35,6 +36,7 @@ export const COVER: MagSection = {
           '**Shareware Game of the Month** [Reviews](go:mag/reviews)',
           '**Who’s calling?** [BBS Listings](go:mag/bbs)',
         ]),
+        disc({ cover: true }),
         art('barcode', 'A bar code with the issue number'),
       ],
     },

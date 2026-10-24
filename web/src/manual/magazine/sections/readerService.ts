@@ -3,6 +3,7 @@
 import { adPage, card, grid, head, note, p } from '../blocks';
 import type { Go } from '../go';
 import type { MagSection } from '../types';
+import { DISC_GO } from './freeCd';
 
 const ENTRIES: [label: string, go: Go][] = [
   ['Game-Maker: Sandbox Edition', 'go:editor'],
@@ -17,6 +18,7 @@ const ENTRIES: [label: string, go: Go][] = [
   ['The speakers', 'go:desk/speakers'],
   ['Mugs and tumblers', 'go:store'],
   ['The cast', 'go:route/cast'],
+  ['The free CD: the original Game-Maker source', DISC_GO],
 ];
 
 export const READER_SERVICE: MagSection = {
