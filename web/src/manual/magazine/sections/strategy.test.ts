@@ -1,11 +1,12 @@
 // The strategy guide finds every hint it quotes in the games' own hint books, gives every
-// Sandbox box its hint book ad and newsletter back issue, and never quotes a secret's hiding place.
+// Sandbox box its hint book ad and newsletter back issue, prints readers' tricks only where the
+// hint books bear them out, and never quotes a secret's hiding place.
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { cdCatalog } from '../../../../scripts/cdGames';
 import { magContext, magGames } from '../games';
 import type { Block } from '../types';
-import { STRATEGY } from './strategy';
+import { READER_TRICKS, STRATEGY } from './strategy';
 
 const ctx = magContext(magGames(cdCatalog(join(__dirname, '../../../../../cd'))));
 
@@ -52,6 +53,24 @@ describe('the strategy guide', async () => {
     expect(keys.length).toBe(boxed.length);
     const sorted = [...keys].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
     expect(keys).toEqual(sorted);
+  });
+
+  it('prints reader tricks the hint books bear out, never from a secrets section', () => {
+    expect(READER_TRICKS.length).toBeGreaterThanOrEqual(2);
+    const text = JSON.stringify(pages);
+    for (const t of READER_TRICKS) {
+      const g = ctx.game(t.game);
+      expect(g?.kind, t.game).toBe('sandbox');
+      const found = (g?.hints ?? []).flatMap((s) => s.hints.map((h) => ({ head: s.head, ...h }))).find((h) => h.q.trim().startsWith(t.q));
+      expect(found, t.q).toBeDefined();
+      expect(found!.head, t.q).not.toMatch(/egg|secret|heart/i);
+      for (const f of t.facts) {
+        expect(found!.a, f).toContain(f);
+        expect(t.text, f).toContain(f);
+      }
+      expect(t.from).toMatch(/^[A-Z][A-Z ]+, [A-Z][a-z]+, [A-Z][a-z.A-Z]+\.$/);
+      expect(text).toContain(t.text);
+    }
   });
 
   it('gives every Bard of Bizarre song-game a tip', () => {

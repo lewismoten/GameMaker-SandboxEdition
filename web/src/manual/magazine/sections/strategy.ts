@@ -40,6 +40,44 @@ const PICKS: [id: string, questions: string[]][] = [
   ['brief', ['Clown Alley:']],
 ];
 
+/**
+ * Tricks readers sent in, each one a hint book answer told in a reader's words: `q` is the start
+ * of the hint book's question and `facts` are words of its answer the trick repeats (the
+ * strategy test checks both, and that none comes from a secrets section).
+ */
+export const READER_TRICKS: { game: string; q: string; facts: string[]; text: string; from: string }[] = [
+  {
+    game: 'snowbound',
+    q: 'What is a snow fort worth?',
+    facts: ['100 points', '$2'],
+    text: 'Don’t walk around a snow fort. Walk right into it! It falls flat for 100 points, and the pile it leaves shovels up for $2 more toward the shovel.',
+    from: 'PLOWBOY, Frostburg, Md.',
+  },
+  {
+    game: 'sleuth',
+    q: 'Is the plaque worth reading?',
+    facts: ['1,776 points', 'middle'],
+    text: 'Read the plaque. Push against its middle and it is worth exactly 1,776 points. My dad says that is a history joke.',
+    from: 'STAGEHAND, Erie, Pa.',
+  },
+  {
+    game: 'realm',
+    q: 'What does the kazoo do?',
+    facts: ['Press Z', 'bosses included', 'Lyra', 'ten notes for ten gold'],
+    text: 'Press Z to play the kazoo. The note flies straight ahead and beats nearly anything, bosses included. Lyra sells reeds in Someday Harbor, ten notes for ten gold.',
+    from: 'KAZOO KID, Morgantown, W.Va.',
+  },
+];
+
+/** The reader tricks as a box: each with its game, the trick, and who sent it. */
+function trickBox(ctx: MagContext): Block {
+  const cells = READER_TRICKS.flatMap((t) => {
+    const g = ctx.game(t.game);
+    return g ? [[p(`[${g.title}](go:play/${g.id}): ${t.text}`), p(`*— ${t.from}*`)]] : [];
+  });
+  return side('Reader tricks', [grid(cells, 0.2), note('Send yours to TURBO BUTTON, P.O. Box 000. We try every trick before we print it.')], 'yellow');
+}
+
 /** One Sandbox game's corner: its name (to play it), two hints, and its hint book. */
 function sandboxCell(ctx: MagContext, id: string, questions: string[], max = 2): Block[] | undefined {
   const g = ctx.game(id);
@@ -150,7 +188,7 @@ const hintPages = (ctx: MagContext): MagPage[] => {
     {
       kind: 'dept',
       tone: 'white',
-      blocks: [head('More Sandbox Software hints', { kicker: 'Tips & Tricks', size: 'm', level: 2 }), grid(second, 0.4)],
+      blocks: [head('More Sandbox Software hints', { kicker: 'Tips & Tricks', size: 'm', level: 2 }), grid(second, 0.4), trickBox(ctx)],
     },
     {
       kind: 'dept',
