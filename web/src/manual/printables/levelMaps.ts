@@ -56,12 +56,60 @@ async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: Gam
 /** The scene numbers of a level, short: "3", "3, 11", "5–9". */
 const sceneList = (game: Game, l: Level) => markLabel(game, l.group.scenes);
 
+/** A mark's label: its text and width, and where it sits (paper units, `s` a block from `ox`, `oy`). */
+interface MarkLabel {
+  text: string;
+  /** Its middle, kept over the picture. */
+  x: number;
+  w: number;
+  /** Arrivals' labels sit over the mark, the ways out under it. */
+  up: boolean;
+  /** 0 next to the mark; further out when it would cover another label. */
+  lane: number;
+}
+
+const LANE = 1.8;
+
+/** The labels of a level's marks, laid out so none covers another or runs off the picture. */
+function markLabels(game: Game, l: Level, ox: number, s: number): MarkLabel[] {
+  const left = ox;
+  const right = ox + l.area.w * s;
+  const labels = l.marks.map((m) => {
+    const text = `${m.kind === 'start' ? '▶' : m.kind === 'end' ? '⚑' : '→'}${m.kind === 'end' ? '' : markLabel(game, m.scenes)}`;
+    const w = Math.min(14, text.length * 0.6 + 0.8);
+    const mid = ox + (m.x + (m.w - 1) / 2 - l.area.x + 0.5) * s;
+    const x = w >= right - left ? (left + right) / 2 : Math.min(Math.max(mid, left + w / 2), right - w / 2);
+    return { text, x, w, up: m.kind === 'start', lane: 0 };
+  });
+  // in order across, each label takes the first lane out where it covers no other
+  const lanes: { up: boolean; lane: number; from: number; to: number }[] = [];
+  for (const lb of [...labels].sort((a, b) => a.x - b.x)) {
+    const from = lb.x - lb.w / 2 - 0.2;
+    const to = lb.x + lb.w / 2 + 0.2;
+    while (lanes.some((o) => o.up === lb.up && o.lane === lb.lane && o.from < to && from < o.to)) lb.lane++;
+    lanes.push({ up: lb.up, lane: lb.lane, from, to });
+  }
+  return labels;
+}
+
+/** The room a level's labels need over and under its picture, past the first lane. */
+function labelRoom(game: Game, l: Level): { above: number; below: number } {
+  const labels = markLabels(game, l, 0, FULL);
+  const most = (up: boolean) => Math.max(0, ...labels.filter((x) => x.up === up).map((x) => x.lane));
+  // (a label over the top row already reaches into the caption's last unit: lanes start past it)
+  return { above: most(true) ? most(true) * LANE + 1 : 0, below: most(false) * LANE };
+}
+
 /** The marks of a level drawn over its picture, `s` paper units a block, from (`ox`, `oy`); sizes stay the same on paper. */
 function marksSvg(game: Game, l: Level, ox: number, oy: number, s: number): SVGElement {
   const g = el('g', { class: 'lm-marks', 'font-family': 'Arial, Helvetica, sans-serif' });
   const px = (x: number) => ox + (x - l.area.x + 0.5) * s;
   const py = (y: number) => oy + (y - l.area.y + 0.5) * s;
-  for (const m of l.marks) {
+  const labels = markLabels(game, l, ox, s);
+  // the lines from moved labels back to their marks go under every label
+  const leaders = el('g', { class: 'lm-leaders' });
+  g.append(leaders);
+  for (const [i, m] of l.marks.entries()) {
     // the middle of the mark, and its box (at least a block, and big enough to see)
     const x = px(m.x + (m.w - 1) / 2);
     const y = py(m.y + (m.h - 1) / 2);
@@ -74,15 +122,26 @@ function marksSvg(game: Game, l: Level, ox: number, oy: number, s: number): SVGE
         ? el('circle', { cx: x, cy: y, r: bw * 0.42, fill: 'none', stroke, 'stroke-width': width })
         : el('rect', { x: x - bw / 2, y: y - bh / 2, width: bw, height: bh, rx: m.kind === 'start' ? bh / 2 : 0, fill: 'none', stroke, 'stroke-width': width });
     g.append(shape('#fff', 0.42), shape(color, 0.24));
-    const text = `${m.kind === 'start' ? '▶' : m.kind === 'end' ? '⚑' : '→'}${m.kind === 'end' ? '' : markLabel(game, m.scenes)}`;
-    const tw = Math.min(14, text.length * 0.6 + 0.8);
-    const ty = m.kind === 'start' ? y - box / 2 - 1.9 : y + box / 2 + 0.25;
+    const { text, x: lx, w: tw, lane } = labels[i];
+    const ty = m.kind === 'start' ? y - box / 2 - 1.9 - lane * LANE : y + box / 2 + 0.25 + lane * LANE;
+    // a label moved off its mark points back to it
+    if (lane || Math.abs(lx - x) > tw / 2)
+      leaders.append(
+        el('line', {
+          x1: x,
+          y1: m.kind === 'start' ? y - box / 2 : y + box / 2,
+          x2: Math.min(Math.max(x, lx - tw / 2 + 0.4), lx + tw / 2 - 0.4),
+          y2: m.kind === 'start' ? ty + 1.6 : ty,
+          stroke: color,
+          'stroke-width': 0.2,
+        }),
+      );
     g.append(
-      el('rect', { x: x - tw / 2, y: ty, width: tw, height: 1.6, rx: 0.4, fill: color, stroke: '#fff', 'stroke-width': 0.15 }),
+      el('rect', { x: lx - tw / 2, y: ty, width: tw, height: 1.6, rx: 0.4, fill: color, stroke: '#fff', 'stroke-width': 0.15 }),
       el(
         'text',
         {
-          x,
+          x: lx,
           y: ty + 1.2,
           'font-size': 1.1,
           'font-weight': 700,
@@ -161,6 +220,13 @@ function pageSheet(entry: CatalogEntry, tag: string, body: SVGElement[], w = PAG
 /** Does a level fit a page at full size? */
 const fits = (l: Level) => l.area.w * FULL <= AREA.w && l.area.h * FULL + CAPTION <= AREA.h;
 
+/** A level's box on a shared page: its caption, the room its labels need, and its map at full size. */
+function levelBox(game: Game, l: Level): { w: number; h: number } {
+  if (!fits(l)) return { w: Infinity, h: Infinity };
+  const room = labelRoom(game, l);
+  return { w: l.area.w * FULL, h: l.area.h * FULL + CAPTION + room.above + room.below };
+}
+
 /** The scale a big level prints at on a page of its own. */
 const fitScale = (l: Level) => Math.min(AREA.w / l.area.w, (AREA.h - CAPTION) / l.area.h);
 /** A big level drawn much smaller than full size on its page also prints full size, in parts. */
@@ -172,9 +238,9 @@ function levelTiles(l: Level) {
 }
 
 /** How many pages the maps print on: overviews only, and with the big ones full size too. */
-function pageCounts(levels: Level[]): { overviews: number; full: number } {
+function pageCounts(game: Game, levels: Level[]): { overviews: number; full: number } {
   const placed = packPages(
-    levels.map((l) => (fits(l) ? { w: l.area.w * FULL, h: l.area.h * FULL + CAPTION } : { w: Infinity, h: Infinity })),
+    levels.map((l) => levelBox(game, l)),
     AREA,
     GAP,
   );
@@ -215,7 +281,7 @@ function painter(game: Game, files: GameFiles): Painter {
 async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], paint: Painter, full: boolean): Promise<Sheet[]> {
   const urls = new Map<Level, string>();
   for (const l of levels) urls.set(l, await paint(l));
-  const boxes = levels.map((l) => (fits(l) ? { w: l.area.w * FULL, h: l.area.h * FULL + CAPTION } : { w: Infinity, h: Infinity }));
+  const boxes = levels.map((l) => levelBox(game, l));
   const placed = packPages(boxes, AREA, GAP);
   const pages = new Map<number, SVGElement[]>();
   const out: Sheet[] = [];
@@ -230,7 +296,7 @@ async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], pai
       if (fits(l)) {
         const x = MARGIN + p.x;
         const y = HEAD + p.y;
-        body.push(captionSvg(game, l, x, y, Math.max(l.area.w * FULL, 30)), levelSvg(game, l, url, x, y + CAPTION, FULL));
+        body.push(captionSvg(game, l, x, y, Math.max(l.area.w * FULL, 30)), levelSvg(game, l, url, x, y + CAPTION + labelRoom(game, l).above, FULL));
         return;
       }
       // a big level: fitted to the page (its atlas grid over it when it also prints full size)
@@ -302,7 +368,7 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
     (loaded ??= loadLevels(ctx.entry).then((x) => {
       if (!x) return undefined;
       const levels = levelsOf(x.game, x.files, secret);
-      return { game: x.game, levels, paint: painter(x.game, x.files), full: pageCounts(levels).full <= MOST_PAGES };
+      return { game: x.game, levels, paint: painter(x.game, x.files), full: pageCounts(x.game, levels).full <= MOST_PAGES };
     }));
   return {
     async render() {
@@ -323,7 +389,7 @@ function levelViewer(game: Game, levels: Level[], paint: Painter, opts: { full: 
   const holder = h('div', { class: 'lm-view' });
   const list = h('ul', { class: 'lm-list', 'aria-label': 'Maps' });
   const stage = h('div', { class: 'lm-stage' });
-  const counts = pageCounts(levels);
+  const counts = pageCounts(game, levels);
   const fullBox = h('input', {
     type: 'checkbox',
     id: 'lm-full',
@@ -346,8 +412,9 @@ function levelViewer(game: Game, levels: Level[], paint: Painter, opts: { full: 
     const url = await paint(l);
     if (shown !== i) return;
     const pad = 3;
+    const room = labelRoom(game, l);
     const w = l.area.w + pad * 2;
-    const ht = l.area.h + pad * 2 + 1;
+    const ht = l.area.h + pad * 2 + 1 + room.above + room.below;
     const svg = el(
       'svg',
       {
@@ -358,7 +425,7 @@ function levelViewer(game: Game, levels: Level[], paint: Painter, opts: { full: 
         'aria-label': `Map of scene ${sceneList(game, l)}, ${l.name}`,
       },
       el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
-      levelSvg(game, l, url, pad, pad + 1, 1),
+      levelSvg(game, l, url, pad, pad + 1 + room.above, 1),
     );
     const map = h('div', { class: 'lm-map' }, svg);
     const pz = panZoom(map, w / 10, `Map of ${l.name}: drag to look around`, 400);
