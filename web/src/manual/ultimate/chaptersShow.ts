@@ -72,6 +72,11 @@ export const TESTING: Chapter = {
     <li><b>Give yourself plenty.</b> Raise the starting lives and hit points in a copy of the
     character while testing, and test once more with the real numbers at the end.</li>
     <li><b>Keep a save at each level.</b> Ten save slots are plenty for a whole game.</li>
+    <li><b>Let the bot go first.</b> In this edition the map editor’s Level check (🩺) plays a
+    scene on the real engine, trying every key from every spot the hero can stand on. It colors
+    the map where the hero got to, marks the places with no way out, and lists what players
+    would mind, each with the page of this guide that explains it. It can’t tell you whether
+    the game is fun; that is still the friends’ job.</li>
   </ul>
   <h2>Writing a hint book</h2>
   <p>A good hint book answers the questions players really ask, in the words they would use:
