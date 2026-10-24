@@ -41,7 +41,10 @@ export const CHECK: Chapter = {
   turns round, and more. Each is marked a problem, a warning or a note; the
   buttons at the top show one kind at a time. Click a finding to go to its place on the map.
   Each one says, in a line, why players mind, and its 📒 link opens the part of this guide that
-  explains it.</p>
+  explains it. When you have looked at a finding and it is how you want it (a boss meant to
+  hold on, a maze meant to confuse), <b>✓ Mark as checked: it’s meant to be</b> takes it out of
+  the list, the counts, the badges and Before You Upload; <b>N accepted · show</b> lists those
+  again, each with a button to put it back.</p>
   <h2>✨ Fixes, and Undo</h2>
   <p>Many findings offer a one-click fix: stretch the hazard art to fill its cell, outline a
   monster in a standout color, add a ladder out of a pit, open a one-block gap, shorten a

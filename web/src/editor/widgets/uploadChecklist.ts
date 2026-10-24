@@ -1,12 +1,14 @@
 // "Before You Upload": The Ultimate Owner's Guide's Appendix B as a checklist that ticks
 // itself where the level check can tell (the file checks, run now, and the last Level check of
 // each map, kept in the companion file), and leaves the rest for the designer to tick. Those
-// ticks are kept in the companion file too (editor-only, never in the game's files).
+// ticks are kept in the companion file too (editor-only, never in the game's files). Findings
+// the designer accepted as meant to be (check/accepted.ts) don't count against a line.
 import './uploadChecklist.css';
 import { h, modal } from '../core/ui';
 import type { Project } from '../core/project';
 import { CHECKS, type CheckId, type Finding } from '../check/findings';
 import { sameEverySide } from '../check/sameEverySide';
+import { acceptedFindings, openFindings } from '../check/accepted';
 import { runChecks } from '../check/report';
 import { guideLink } from './guideLink';
 import { unlockAchievement } from '../../achievements';
@@ -83,7 +85,7 @@ export async function uploadChecklist(project: Project): Promise<void> {
     /* a game without levels: every item is the designer's */
   }
   const saved = savedFindings(project);
-  const findings = [...fileFindings, ...saved.findings];
+  const findings = openFindings([...fileFindings, ...saved.findings], acceptedFindings(project));
   const played = saved.maps > 0 && saved.checked === saved.maps;
   const boxes: HTMLInputElement[] = [];
   /** Every line ticked, by the checks or by hand. */

@@ -123,3 +123,17 @@
 .lc-panel [hidden] {
   display: none;
 }
+.lc-fix + .lc-accept {
+  margin-left: 4px;
+}
+.lc-accepted {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lc-accepted-toggle {
+  align-self: flex-start;
+}
+.lc-is-accepted {
+  border-left-style: dashed;
+}

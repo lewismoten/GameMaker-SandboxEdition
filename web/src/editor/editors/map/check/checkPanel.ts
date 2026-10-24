@@ -1,8 +1,10 @@
 // The map editor's Level check panel: runs the level check (editor/check) on this map's scene
 // in a Web Worker, shows where the bot went as a heat map over the map, marks stuck areas,
 // deaths and each finding's cells, and lists the findings: a click goes to the place, a link
-// opens the guide's chapter, and a fix button offers the matching generator. The last check of
-// this map is kept in the project's companion file (editor-only), so it is there next time.
+// opens the guide's chapter, and a fix button offers the matching generator. A finding meant to
+// be can be marked as checked (check/accepted.ts): it leaves the list and the counts, and the
+// "accepted" toggle shows it again. The last check of this map is kept in the project's
+// companion file (editor-only), so it is there next time.
 import './checkPanel.css';
 import { h, clear, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
@@ -17,6 +19,7 @@ import { uploadChecklist } from '../../../widgets/uploadChecklist';
 import { unlockAchievement } from '../../../../achievements';
 import { mazeFor } from '../../../check/generators/mazeFor';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
+import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
 
 export interface CheckHost {
   project: Project;
@@ -119,6 +122,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   let soon = false;
   let showMarks = true;
   let filter: Severity | 'all' = 'all';
+  let showAccepted = false;
   const undo: { files: [string, Uint8Array | undefined][]; what: string }[] = [];
 
   const status = h('p', { class: 'meta lc-status', role: 'status', 'aria-live': 'polite' });
@@ -126,6 +130,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   const runBtn = h('button', { type: 'button', class: 'primary', onclick: () => (running ? stop() : void run()) }, '▶ Run check');
   const undoBtn = h('button', { type: 'button', hidden: true, onclick: () => undoFix() }, '↶ Undo fix');
   const list = h('ol', { class: 'lc-list', 'aria-label': 'Findings' });
+  const acceptedBox = h('div', { class: 'lc-accepted' });
   const counts = h('div', { class: 'lc-counts', role: 'group', 'aria-label': 'Show findings' });
   const legend = h(
     'div',
@@ -227,6 +232,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     legend,
     counts,
     list,
+    acceptedBox,
   );
 
   function toggle(label: string, get: () => boolean, set: (v: boolean) => void, title?: string): HTMLLabelElement {
@@ -244,7 +250,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     if (saved && showMarks) {
       for (const c of saved.stuck) marks.push({ cell: c, kind: 'stuck' });
       for (const c of saved.deaths) marks.push({ cell: c, kind: 'death' });
-      for (const f of saved.findings)
+      for (const f of split().open)
         for (const c of (f.where.cells ?? (f.where.cell !== undefined ? [f.where.cell] : [])).slice(0, 40)) marks.push({ cell: c, kind: 'finding' });
     }
     if (focus !== undefined) marks.push({ cell: focus, kind: 'focus' });
@@ -254,11 +260,15 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     host.redraw();
   }
 
+  /** The saved findings, those still open and those accepted as meant to be. */
+  const split = () => splitAccepted(saved?.findings ?? [], acceptedFindings(project));
+
   function render(): void {
     if (!saved) {
       status.textContent = host.scene === undefined ? 'No scene plays this map yet, so only its files can be checked.' : 'Not checked yet.';
       clear(list);
       clear(counts);
+      clear(acceptedBox);
       toggles.hidden = true;
       legend.hidden = true;
       return;
@@ -266,30 +276,63 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     toggles.hidden = false;
     const when = new Date(saved.when);
     status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.`;
-    const by = (s: Severity) => saved!.findings.filter((f) => f.severity === s).length;
+    const { open, accepted } = split();
+    const by = (s: Severity) => open.filter((f) => f.severity === s).length;
     clear(
       counts,
       ...(['all', 'error', 'warning', 'info'] as const).map((s) =>
         h(
           'button',
           { type: 'button', class: 'lc-count', 'aria-pressed': String(filter === s), onclick: () => ((filter = s), render()) },
-          s === 'all' ? `All ${saved!.findings.length}` : `${ICON[s]} ${by(s)} ${SEVERITY[s].toLowerCase()}${by(s) === 1 ? '' : 's'}`,
+          s === 'all' ? `All ${open.length}` : `${ICON[s]} ${by(s)} ${SEVERITY[s].toLowerCase()}${by(s) === 1 ? '' : 's'}`,
         ),
       ),
     );
-    const shown = saved.findings.filter((f) => filter === 'all' || f.severity === filter);
-    clear(list, ...(shown.length ? shown.map(item) : [h('li', { class: 'meta' }, saved.findings.length ? 'None of these.' : 'Nothing to report.')]));
+    const shown = open.filter((f) => filter === 'all' || f.severity === filter);
+    clear(list, ...(shown.length ? shown.map((f) => item(f)) : [h('li', { class: 'meta' }, open.length ? 'None of these.' : 'Nothing to report.')]));
+    if (!accepted.length) showAccepted = false;
+    clear(
+      acceptedBox,
+      ...(accepted.length
+        ? [
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'lc-accepted-toggle',
+                'aria-expanded': String(showAccepted),
+                'aria-controls': 'lc-accepted-list',
+                title: 'Findings marked as checked: they are meant to be',
+                onclick: () => ((showAccepted = !showAccepted), render()),
+              },
+              `${accepted.length} accepted · ${showAccepted ? 'hide' : 'show'}`,
+            ),
+            h(
+              'ol',
+              { class: 'lc-list', id: 'lc-accepted-list', 'aria-label': 'Accepted findings', hidden: !showAccepted },
+              ...accepted.map((f) => item(f, true)),
+            ),
+          ]
+        : []),
+    );
     paint();
   }
 
-  function item(f: Finding): HTMLElement {
+  /** Accepts a finding as meant to be, or (with `on` false) brings it back to the list. */
+  function accept(f: Finding, on: boolean): void {
+    setAccepted(project, findingKey(f), on);
+    render();
+    toast(on ? 'Marked as checked: the finding is kept under “accepted”.' : 'The finding is back in the list.');
+  }
+
+  function item(f: Finding, accepted = false): HTMLElement {
     const info = CHECKS[f.check];
     const cell = f.where.cell ?? f.where.cells?.[0];
     const fix = fixFor(f, project);
     const same = sameKeyOf(f);
     return h(
       'li',
-      { class: `lc-item lc-${f.severity}` },
+      { class: `lc-item lc-${f.severity}${accepted ? ' lc-is-accepted' : ''}` },
       h(
         'button',
         {
@@ -304,7 +347,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
       ),
       f.detail ? h('p', { class: 'lc-detail' }, f.detail) : null,
       h('p', { class: 'lc-why' }, h('strong', null, `${info.name}. `), info.why, ' ', guideLink(info.guide)),
-      fix
+      fix && !accepted
         ? h(
             'button',
             {
@@ -325,7 +368,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
             `✨ ${fix.label}`,
           )
         : null,
-      same
+      same && !accepted
         ? h(
             'button',
             {
@@ -343,6 +386,18 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
             'Looks the same from every side',
           )
         : null,
+      h(
+        'button',
+        {
+          type: 'button',
+          class: 'lc-fix lc-accept',
+          title: accepted
+            ? 'Puts this finding back in the list and the counts.'
+            : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
+          onclick: () => accept(f, !accepted),
+        },
+        accepted ? '↺ Not meant to be: list it again' : '✓ Mark as checked: it’s meant to be',
+      ),
     );
   }
 

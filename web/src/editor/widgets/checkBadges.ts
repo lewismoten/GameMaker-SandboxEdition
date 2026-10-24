@@ -1,6 +1,7 @@
 // Level check badges for the block, monster and sound editors: the file checks (editor/check)
 // run on the scenes that use the file, and the findings about the item being edited show as
-// small notes beside it, each with why players mind and a link to the guide. Only reads.
+// small notes beside it, each with why players mind and a link to the guide. Findings the
+// designer accepted as meant to be (check/accepted.ts) are left out. Only reads.
 import { h, clear, debounce } from '../core/ui';
 import type { Project } from '../core/project';
 import { normalize } from '../../project/files';
@@ -10,6 +11,7 @@ import { blockChecks, counterSources, counters } from '../check/checks/blockChec
 import { monsterChecks } from '../check/checks/monsterChecks';
 import { soundChecks } from '../check/checks/gameChecks';
 import { guideLink } from './guideLink';
+import { acceptedFindings, openFindings } from '../check/accepted';
 import './checkBadges.css';
 
 /** The file checks' findings for the scenes that use `file`. */
@@ -29,9 +31,9 @@ export function fileFindings(project: Project, file: string): Finding[] {
     for (const c of [...blockChecks, ...monsterChecks]) out.push(...c(d));
     out.push(...soundChecks(d, project.files));
   }
-  // the same finding from several scenes once
+  // the same finding from several scenes once (after leaving out the accepted ones, which are per scene)
   const seen = new Set<string>();
-  return out.filter((f) => !seen.has(f.title) && seen.add(f.title));
+  return openFindings(out, acceptedFindings(project)).filter((f) => !seen.has(f.title) && seen.add(f.title));
 }
 
 export function checkBadges(project: Project, file: string, about: (f: Finding) => boolean): { el: HTMLElement; refresh(): void } {
