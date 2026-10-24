@@ -341,7 +341,7 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('goat0', goat(0), hello);
   book.add('goat1', goat(1), hello);
-  // Doc Leo, hobo clown: grey fedora, ash beard, red nose, navy corduroy, purple shirt, teal tie,
+  // Doc Leo, hobo clown: grey fedora, painted stubble, his own nose sunburned, navy corduroy, purple shirt, teal tie,
   // red sneakers, and the rubber chicken on its leash. Side on, walking right (mirrored for
   // left), the chicken trotting behind; f 0 is a stride, f 1 the legs passing.
   const leo = (f: number) => {
@@ -366,10 +366,11 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
     p.rect(13, 8, 1, 5, c('purple', 2)).rect(13, 9, 1, 3, c('teal', 2));
     // the near arm, back to the leash
     p.line(10, 9, 8, 12, c('navy', 1)).set(8, 12, c('skin', 3));
-    // the head in profile: ash beard, white mouth, the red nose out front, one eye
+    // the head in profile: painted stubble, white mouth, his own sunburned nose out front, one eye in white paint
     blob(p, 11, 4.5, 3, 3, pal.r('skin'), 2, 4);
     p.rect(10, 6, 4, 2, c('grey', 0)).set(12, 5, c('grey', 0)).set(13, 6, c('white', 2));
-    p.set(14, 4, c('red', 3)).set(15, 4, c('red', 2)).set(14, 5, c('red', 2)).set(12, 3, ink).set(9, 4, c('skin', 1));
+    p.set(13, 3, c('white', 2)).set(12, 2, c('white', 2));
+    p.set(14, 4, c('pink', 1)).set(15, 4, c('pink', 1)).set(14, 5, c('pink', 0)).set(12, 3, ink).set(9, 4, c('skin', 1));
     // the fedora, side on: crown and brim
     p.rect(8, 0, 6, 2, c('grey', 2)).rect(7, 2, 9, 1, c('grey', 1)).rect(8, 1, 6, 1, c('grey', 0));
     return done(p);
