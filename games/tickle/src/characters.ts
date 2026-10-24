@@ -108,7 +108,7 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pose: 'laugh0', pause: 4 }),
     f({ pose: 'grin', pause: 3 }),
   ];
-  set(S[SEQ.laugh], laugh, { key: KEY.l, sound: SND.laugh, norepeat: 1 });
+  set(S[SEQ.laugh], laugh, { key: KEY.c, sound: SND.laugh, norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // rapport (health)
