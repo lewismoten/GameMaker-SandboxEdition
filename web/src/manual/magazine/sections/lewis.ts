@@ -61,6 +61,7 @@ export const LEWIS: MagSection = {
             ]),
           ],
           'cyan',
+          2,
         ),
       ],
     },

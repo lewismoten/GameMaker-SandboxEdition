@@ -15,7 +15,8 @@ export const list = (items: Inline[], ordered = false): Block => ({ t: 'list', i
 export const cols = (n: 2 | 3, blocks: Block[]): Block => ({ t: 'cols', n, blocks });
 /** Cells side by side, wrapping below `min` (a fraction of the page width, default 0.28). */
 export const grid = (cells: Block[][], min?: number): Block => ({ t: 'grid', cells, min });
-export const side = (title: string, blocks: Block[], tone: Tone = 'yellow'): Block => ({ t: 'side', title, tone, blocks });
+/** A boxed sidebar; `level` is its heading's level (3 by default; 2 on a page whose only heading is its title). */
+export const side = (title: string, blocks: Block[], tone: Tone = 'yellow', level?: 2 | 3): Block => ({ t: 'side', title, tone, blocks, level });
 export const pull = (text: Inline, by?: string): Block => ({ t: 'pull', text, by });
 /** A screenshot drawn from the game itself: its title screen, the first level, or a design tool on it. */
 export const shot = (game: string, view: ShotView, alt: string, caption?: Inline, tilt?: number): Block => ({

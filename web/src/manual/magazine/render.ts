@@ -122,7 +122,12 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
     case 'grid':
       return h('div', { class: 'mag-grid', style: `--min:${(b.min ?? 0.28) * 100}cqw` }, ...b.cells.map((c) => h('div', { class: 'mag-cell' }, ...all(c))));
     case 'side':
-      return h('aside', { class: `mag-side tone-${b.tone ?? 'yellow'}`, 'aria-label': b.title }, h('h3', null, keep(b.title)), ...all(b.blocks));
+      return h(
+        'aside',
+        { class: `mag-side tone-${b.tone ?? 'yellow'}`, 'aria-label': b.title },
+        h(b.level === 2 ? 'h2' : 'h3', null, keep(b.title)),
+        ...all(b.blocks),
+      );
     case 'pull':
       return h('blockquote', { class: 'mag-pull' }, h('p', null, ...inline(b.text, where)), b.by ? h('footer', null, `— ${b.by}`) : null);
     case 'shot':

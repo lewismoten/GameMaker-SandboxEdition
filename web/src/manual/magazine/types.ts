@@ -58,7 +58,7 @@ export type Block =
   | { t: 'list'; items: Inline[]; ordered?: boolean }
   | { t: 'cols'; n: 2 | 3; blocks: Block[] }
   | { t: 'grid'; cells: Block[][]; min?: number }
-  | { t: 'side'; title: string; tone?: Tone; blocks: Block[] }
+  | { t: 'side'; title: string; tone?: Tone; blocks: Block[]; level?: 2 | 3 }
   | { t: 'pull'; text: Inline; by?: string }
   | { t: 'shot'; game: string; view: ShotView; alt: string; caption?: Inline; tilt?: number }
   | { t: 'art'; art: ArtId; alt: string; caption?: Inline }
