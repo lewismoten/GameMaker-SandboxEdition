@@ -56,11 +56,11 @@ const FEET = 8;
 /** How far a ribbon's tails reach past its band. */
 const TAIL = 14;
 
-const OUTLINE = rgb('#120f1a');
+export const OUTLINE = rgb('#120f1a');
 const WHITE = rgb('#ffffff');
 
 /** '#rrggbb' as a packed pixel. */
-function rgb(hex: string, k = 1): number {
+export function rgb(hex: string, k = 1): number {
   const n = parseInt(hex.slice(1, 7), 16);
   const f = (v: number) => Math.max(0, Math.min(255, Math.round(v * k)));
   return (0xff << 24) | (f(n & 255) << 16) | (f((n >> 8) & 255) << 8) | f(n >> 16);
@@ -185,12 +185,12 @@ export function trimSprite(src: Rgba): Rgba | undefined {
 }
 
 /** A blank picture. */
-function blank(width: number, height: number): Rgba {
+export function blank(width: number, height: number): Rgba {
   return { width, height, data: new Uint32Array(width * height) };
 }
 
 /** Draws `src` at (dx, dy), `k` times its size, skipping its see-through pixels; `flip` turns it round. */
-function stamp(dst: Rgba, src: Rgba, dx: number, dy: number, k = 1, flip = false): void {
+export function stamp(dst: Rgba, src: Rgba, dx: number, dy: number, k = 1, flip = false): void {
   for (let y = 0; y < src.height * k; y++)
     for (let x = 0; x < src.width * k; x++) {
       const sx = Math.floor(x / k);
@@ -245,7 +245,7 @@ function text(dst: Rgba, s: string, x: number, y: number, color: number): void {
  * A ribbon from x0 to x1 (exclusive) and y0 to y1: its band in `fill` edged in `edge`, the whole
  * outlined, and a folded tail tucked behind each end, lower down, its end cut in a notch.
  */
-function ribbon(dst: Rgba, x0: number, x1: number, y0: number, y1: number, fill: number, edge: number, shade: number): void {
+export function ribbon(dst: Rgba, x0: number, x1: number, y0: number, y1: number, fill: number, edge: number, shade: number): void {
   const h = y1 - y0;
   const drop = Math.min(8, Math.round(h / 3));
   // the tails, behind
@@ -273,6 +273,30 @@ function ribbon(dst: Rgba, x0: number, x1: number, y0: number, y1: number, fill:
   rect(dst, x0, y0 + 2, x1 - x0, h - 4, fill);
 }
 
+/**
+ * A round medallion centered at (cx, cy): `inside(dx, dy)` gives the picture's pixel that far
+ * from the middle out to `picR`, then `rings` ([outer radius, color], innermost first).
+ * Outside the last ring nothing is drawn.
+ */
+export function medallion(
+  dst: Rgba,
+  cx: number,
+  cy: number,
+  picR: number,
+  rings: [r: number, color: number][],
+  inside: (dx: number, dy: number) => number,
+): void {
+  const outer = rings[rings.length - 1]?.[0] ?? picR;
+  for (let y = 0; y < dst.height; y++)
+    for (let x = 0; x < dst.width; x++) {
+      const dx = x - cx + 0.5;
+      const dy = y - cy + 0.5;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d > outer) continue;
+      dst.data[y * dst.width + x] = d <= picR ? inside(Math.floor(dx), Math.floor(dy)) : (rings.find(([r]) => d <= r)?.[1] ?? OUTLINE);
+    }
+}
+
 /** The badge: the title screen, the hero's sprite (if it has one) and the box's colors. */
 export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: BoxColors, look: BadgeLook): Rgba {
   const out = blank(BADGE_W, BADGE_H);
@@ -292,20 +316,11 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
     [RING - 1, accent],
     [RING, OUTLINE],
   ];
-  for (let y = 0; y < BADGE_H; y++)
-    for (let x = 0; x < BADGE_W; x++) {
-      const dx = x - BADGE_CX + 0.5;
-      const dy = y - BADGE_CY + 0.5;
-      const d = Math.sqrt(dx * dx + dy * dy);
-      if (d > RING) continue;
-      let v: number;
-      if (d <= PIC_R) {
-        const ix = sx + Math.floor(dx);
-        const iy = sy + Math.floor(dy);
-        v = ix >= 0 && iy >= 0 && ix < screen.width && iy < screen.height ? lut[pixels[iy * screen.width + ix]] : fill;
-      } else v = rings.find(([r]) => d <= r)?.[1] ?? OUTLINE;
-      out.data[y * BADGE_W + x] = v;
-    }
+  medallion(out, BADGE_CX, BADGE_CY, PIC_R, rings, (dx, dy) => {
+    const ix = sx + dx;
+    const iy = sy + dy;
+    return ix >= 0 && iy >= 0 && ix < screen.width && iy < screen.height ? lut[pixels[iy * screen.width + ix]] : fill;
+  });
   const left = look.side === 'left';
   // the bottom scroll, over the screen's own copyright line, a little away from the hero
   const maker = 'SANDBOX SOFTWARE';
