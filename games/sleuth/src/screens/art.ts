@@ -273,6 +273,8 @@ export function actCard(view: Pixels, title: string, time: string, lines: string
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if ((x + y) % 2 === 0 && y > 70) p.set(x, y, c('black', 0));
   p.rect(16, 74, 288, 116, c('black', 0)).frame(16, 74, 288, 116, c('gold', 2)).frame(18, 76, 284, 112, c('gold', 0));
   outlined(p, 160 - title.length * 12, 12, title, c('gold', 4), c('black', 0), 3);
+  // the time on a dark plate, so props on the stage behind it don't run into its letters
+  p.rect(160 - time.length * 8 - 6, 41, time.length * 16 + 12, 22, c('black', 0)).frame(160 - time.length * 8 - 6, 41, time.length * 16 + 12, 22, c('gold', 0));
   centered(p, 44, time, c('paper', 5), 2, c('black', 0));
   lines.forEach((l, i) => text(p, 24, 86 + i * 12, l, l.includes('EVIDENCE') || l.startsWith('Find') ? c('glow', 4) : c('paper', 5)));
   void ink;
