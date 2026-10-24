@@ -14,7 +14,8 @@ import { marchTicks, pictures } from '../checks/monsterChecks';
 import type { Finding } from '../findings';
 import { blockUse, scenesOf, topColors, type SceneData } from '../sceneData';
 import { contrastColor, fillHazard, outline } from './blockArt';
-import { airBlock, ladderBlock, ladderCells } from './mapFixes';
+import { airBlock, ladderBlock, ladderCells, landmarkBlocks, placeLandmarks } from './mapFixes';
+import { findMazes } from '../checks/mazeCheck';
 
 export interface Fix {
   label: string;
@@ -185,6 +186,26 @@ function make(f: Finding, project: Project): Fix | undefined {
           game.scenes[0].files[6] = txt;
           files.set(project.gam, serializeGame(game));
           return [txt, project.gam];
+        },
+      };
+    }
+    case 'landmark': {
+      const mapName = d?.names.map;
+      if (!d || !mapName || f.where.cell === undefined) return undefined;
+      const maze = findMazes(d.map.blocks, d.bbl).find((m) => m.cells.includes(f.where.cell!));
+      if (!maze) return undefined;
+      const marks = landmarkBlocks(d.map.blocks, d.bbl, new Set(maze.cells.map((c) => d.map.blocks[c])));
+      const place = placeLandmarks(maze.junctions, marks);
+      if (!marks.length || !place.length) return undefined;
+      return {
+        label: `Put ${place.length} landmarks at the crossroads`,
+        detail: `Paints blocks ${[...new Set(place.map(([, b]) => b))].join(', ')} (already on this map) at crossroads at least 6 blocks apart.`,
+        files: [mapName],
+        apply: () => {
+          const map = parseMap(files.get(mapName)!);
+          for (const [c, b] of place) map.blocks[c] = b;
+          files.set(mapName, serializeMap(map));
+          return [mapName];
         },
       };
     }

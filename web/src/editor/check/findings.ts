@@ -79,6 +79,7 @@ export const CHECKS = {
     why: 'Running out of breath, keys or faith before the gate that needs them is a trap.',
     guide: { chapter: 'logic', section: 'Counters, Gates and Puzzles' },
   },
+  maze: { name: 'Mazes', why: 'A maze where every passage looks the same is guessing, not choosing.', guide: L('Mazes with a compass') },
   waits: { name: 'Long waits', why: 'Standing still for a lift or a timed block isn’t a challenge; it is waiting.', guide: L('Waiting is not a challenge') },
   density: { name: 'Crowded screens', why: 'More than two or three enemies on a screen is noise, not a fight.', guide: C('Fair enemies') },
   speed: {

@@ -32,7 +32,7 @@ export const APPENDIX_B: ChecklistItem[] = [
     checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers'],
     full: true,
   },
-  { text: 'Every item can be reached; mazes have landmarks; no wait over 3 seconds', checks: ['unreachable', 'waits'], play: true },
+  { text: 'Every item can be reached; mazes have landmarks; no wait over 3 seconds', checks: ['unreachable', 'waits', 'maze'], play: true },
   { text: 'The final boss has stages; the ending is a real scene, not an ad', checks: ['ending'] },
   { text: 'Something new every level or two; the gimmick has its own level', checks: ['variety'] },
   { text: 'Any key beyond the arrows and fire is taught in the game itself', checks: ['controls'], full: true },

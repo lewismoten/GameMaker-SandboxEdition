@@ -6,6 +6,7 @@ import { BACKBL, BLEN, type Block } from '../../../formats/blocks';
 import { MLEN, MWID } from '../../../formats/map';
 import { at, type Finding } from '../findings';
 import { blockUse, topColors, type SceneData } from '../sceneData';
+import { mazes } from './mazeCheck';
 
 /** A tick of the game clock, and the three seconds a timed wait may last. */
 export const TICK_S = 1 / 18.2;
@@ -251,4 +252,4 @@ export function counterSources(scenes: SceneData[]): Set<number> {
   return out;
 }
 
-export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births];
+export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes];
