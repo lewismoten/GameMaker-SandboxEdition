@@ -17,7 +17,6 @@ import {
   brass,
   comp,
   join,
-  lead,
   organ,
   pad,
   piano,
