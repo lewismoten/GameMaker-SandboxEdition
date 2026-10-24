@@ -100,6 +100,8 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
   const watch = async (n: number, into: Map<number, number[]> | undefined, toward: number[], l = LASTMM) => {
     const start = { x: w.chr.x[0], y: w.chr.y[0] };
     const push = into === pushes;
+    // holds are tried from walks and from landings on a solid top, a few times a monster
+    const holdTest = !push && (!into || (solidOf(n) & SOLTOP) !== 0);
     let touched = false;
     let stuck = 0;
     sim.hold(toward);
@@ -118,7 +120,7 @@ export async function landings(d: SceneData, game: Game, files: FileSource): Pro
         return;
       }
       if (w.chr.cseq === DIESEQ) return;
-      if (w.ci.hitpts < hp && !touched && !push) {
+      if (w.ci.hitpts < hp && !touched && holdTest) {
         touched = true;
         // the first touch: can he get away from here? (tried a few times a monster, until one holds)
         const k = tested.get(n) ?? 0;

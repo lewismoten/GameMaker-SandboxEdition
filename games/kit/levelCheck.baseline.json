@@ -66,6 +66,7 @@
   "warning hazard-art s6 Block 41 hurts through its whole cell, but its art fills 17% of it",
   "warning hurt-lock s2 Monster 9 holds the hero while it hurts: once it touches him, no key gets him away (first at (33, 10))",
   "warning hurt-lock s7 Monster 22 holds the hero while it hurts: once it touches him, no key gets him away (first at (37, 12))",
+  "warning hurt-lock s7 Monster 38 pushes the hero inside a wall beside it, first at (42, 11)",
   "warning start-threat s5 Monster 25 starts 1 blocks from where the hero comes in"
  ],
  "depth": [
@@ -104,10 +105,16 @@
   "warning unreachable s8 1 of block 149 is sealed in, first at (64, 40)",
   "warning unreachable s8 3 of block 8 are sealed in, first at (43, 39)"
  ],
- "goat": [],
+ "goat": [
+  "warning hurt-lock s4 Monster 10 pushes the hero inside a wall beside it, first at (42, 9)",
+  "warning hurt-lock s4 Monster 8 pushes the hero inside a wall beside it, first at (42, 9)"
+ ],
  "loaf": [
   "warning hurt-lock s2 Monster 7 holds the hero while it hurts: once it touches him, no key gets him away (first at (15, 11))",
-  "warning hurt-lock s4 Monster 12 holds the hero while it hurts: once it touches him, no key gets him away (first at (26, 11))"
+  "warning hurt-lock s3 Monster 10 pushes the hero inside a wall beside it, first at (19, 22)",
+  "warning hurt-lock s3 Monster 9 pushes the hero inside a wall beside it, first at (27, 10)",
+  "warning hurt-lock s4 Monster 12 holds the hero while it hurts: once it touches him, no key gets him away (first at (26, 11))",
+  "warning hurt-lock s4 Monster 12 pushes the hero inside a wall beside it, first at (24, 11)"
  ],
  "logic": [
   "warning births s2 Block 69 gives birth to monster 46 every 0.3 s",
@@ -362,7 +369,12 @@
   "warning hazard-art s64 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hazard-art s78 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hazard-art s89 Block 43 hurts through its whole cell, but its art fills 21% of it",
+  "warning hurt-lock s48 Monster 37 pushes the hero inside a wall beside it, first at (47, 65)",
+  "warning hurt-lock s61 Monster 38 pushes the hero inside a wall beside it, first at (49, 65)",
   "warning hurt-lock s9 Monster 10 holds the hero while it hurts: once it touches him, no key gets him away (first at (43, 57))",
+  "warning hurt-lock s95 Monster 38 pushes the hero inside a wall beside it, first at (54, 74)",
+  "warning hurt-lock s97 Monster 38 pushes the hero inside a wall beside it, first at (13, 54)",
+  "warning hurt-lock s99 Monster 37 pushes the hero inside a wall beside it, first at (68, 53)",
   "warning opposites s10 Blocks 33 and 35 pull opposite ways and touch in 1 place",
   "warning opposites s10 Blocks 33 and 37 pull opposite ways and touch in 6 places",
   "warning opposites s10 Blocks 35 and 107 pull opposite ways and touch in 6 places",
