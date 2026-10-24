@@ -10,6 +10,7 @@ import { NEWS } from './sections/news';
 import { FREE_CD } from './sections/freeCd';
 import { LEWIS } from './sections/lewis';
 import { CLAUDE } from './sections/claude';
+import { WEB_EDITION } from './sections/webEdition';
 import { STRATEGY } from './sections/strategy';
 import { DIRECTORY } from './sections/directory';
 import { REVIEWS } from './sections/reviews';
@@ -34,6 +35,7 @@ export const SECTIONS: MagSection[] = [
   LEWIS,
   ULTIMATE_AD,
   CLAUDE,
+  WEB_EDITION,
   CATALOGS_AD,
   STRATEGY,
   DIRECTORY,
