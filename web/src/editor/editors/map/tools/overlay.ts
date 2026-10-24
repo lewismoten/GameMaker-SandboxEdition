@@ -19,7 +19,7 @@ export interface OverlayState {
   marks?: { cell: number; kind: 'stuck' | 'death' | 'finding' | 'focus' }[];
 }
 
-/** The heat map's steps, least visited to most: viridis, readable with any color vision. */
+/** The heat map's steps, least visited to most: from viridis (van der Walt and Smith, CC0; NOTICE.md), readable with any color vision. */
 export const HEAT_COLORS = ['#440154', '#414487', '#2a788e', '#22a884', '#7ad151', '#fde725'];
 
 function drawCheck(g: CanvasRenderingContext2D, s: number, st: OverlayState): void {

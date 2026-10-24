@@ -83,7 +83,7 @@ export function blockUse(map: GameMap): Uint32Array {
   return n;
 }
 
-/** WCAG relative luminance of a palette color (6-bit VGA components). */
+/** WCAG 2 relative luminance of a palette color (6-bit VGA components), as the W3C defines it (NOTICE.md). */
 export function luminance(pal: Uint8Array, i: number): number {
   const lin = (v: number) => {
     const c = (v * 255) / 63 / 255;

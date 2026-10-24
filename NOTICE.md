@@ -270,6 +270,11 @@ formats from their published descriptions and from Game-Maker's own source.
   numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
+- **The level check** (`web/src/editor/check`): its heat map's six colors are taken from
+  **viridis**, the color map by Stéfan van der Walt and Nathaniel Smith (CC0, public domain
+  dedication), chosen because it reads with every kind of color vision; its monster contrast is
+  the **relative luminance and contrast ratio** of the W3C's Web Content Accessibility
+  Guidelines (WCAG) 2. Both are used as published; no code of theirs is included.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
