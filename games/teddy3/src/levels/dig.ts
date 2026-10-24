@@ -16,6 +16,7 @@
 // the well, so there is always a way on; there is room under the bucket's lowest point.
 //
 // The blocks are in digTiles.ts, the monsters in digBeasts.ts; this file lays out the map.
+import { addEasterEgg } from '../sprites/hidden';
 import { LevelMap, type Level } from './level';
 import { S, digTiles, skyAt } from './digTiles';
 import { bandAt } from './common';
@@ -114,6 +115,8 @@ export function dig(): Level {
   m.rect(c0, ROW.cavern + 1, DIG.step - c0, 1, 'rock');
   m.mon(c0 + 2, ROW.cavern, 'roots');
   m.mon(c0, ROW.cavern, 'poodle');
+  // the decorated Easter egg, tucked behind the roots with the balloon dog
+  m.set(c0 + 1, ROW.cavern, addEasterEgg(bs, m.get(c0 + 1, ROW.cavern), 'dots', 'yellow', 'blue'));
   m.mon(DIG.downA + 5, ROW.cavern, 'mole');
   for (const x of [DIG.downA + 3, DIG.downA + 12, DIG.step - 2]) m.set(x, ROW.cavern, 'mushroom');
   m.set(DIG.down, ROW.cavern + 1, 'cave').mon(DIG.down, ROW.cavern + 1, 'clay');

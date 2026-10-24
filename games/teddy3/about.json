@@ -1,0 +1,42 @@
+{
+  "title": "Teddy's Little Biggest Adventure",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1997,
+  "price": "$15",
+  "blurb": "It's Teddy's birthday, and nobody says so. Run Doc Leo's errands across every place from the first two adventures as Teddy, and MEANWHILE... play as Gwinn and Doc Leo planning his surprise, and drive THE CHEZ.",
+  "exe": "TEDDY3.EXE",
+  "sound": "sb",
+  "tinHeart": { "map": "meadow.map", "at": [45, 31] },
+  "easterEgg": { "map": "dig.map", "at": [20, 33] },
+  "label": {
+    "background": "#fff6e0",
+    "band": "#7a3fb8",
+    "ink": "#2a1408",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "hours": 4,
+    "background": "#2a1a5e",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "The littlest dog. The biggest day.",
+    "back": "It's Teddy's birthday. Nobody says so.\n\nDoc Leo hands him a list of errands. Gwinn's bed is empty (again). So off they go in THE CHEZ: the garage, Maple Street, Puddlewick Park, Downtown, the river and the old mill, the Fair's funhouse, a firefly meadow, and up Lookout Hill to the Klown Klub's Big Top.\n\nTeddy doesn't know what you know. Every so often the story says MEANWHILE... and YOU are Gwinn, delivering invitations and digging up her best bone, or Doc Leo, twisting balloon dogs and ducking practice pies. Between stops you drive THE CHEZ: honk, bump, and mind the charge. And at the very end, in the dark Big Top, the Klub has built Teddy a course of every trick he knows.",
+    "features": [
+      "Sixteen stops: the trilogy's biggest adventure, from dawn in the garage to a surprise under the Big Top",
+      "Play as Teddy, as Gwinn, and for the first time as Doc Leo: SQUAWK the rubber chicken, ride a balloon dog up, and PRATFALL under the pies",
+      "Drive THE CHEZ, the little red CitiCar: honk the geese off the road, bump the potholes, plug in at the chargers and climb the hills on charge",
+      "Buttons and timed doors, see-saws, conveyor belts, water wheels, drawbridges and a ferry, blinking floors, spotlights and the rigging lift",
+      "Every place and friend from the first two adventures, from Puddlewick Park to the Klown Klub",
+      "The Teddy Course: a finale built from every trick in all three games",
+      "Sound Blaster music for every stop, with all four heroes' themes, and Happy Birthday at the end"
+    ],
+    "shots": [
+      ["park.map", 18, 30],
+      ["balloon.map", 6, 28],
+      ["maple.map", 20, 30],
+      ["course.map", 30, 30]
+    ],
+    "rating": "Ages 6 and up"
+  }
+}

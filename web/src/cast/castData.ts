@@ -25,6 +25,7 @@ export const CAST_GAMES = {
   snowbound: ['Snowbound: The $89 Shovel', 'sandbox'],
   teddy: ['Teddy’s Little Big Adventure', 'sandbox'],
   teddy2: ['Teddy’s Little Bigger Adventure', 'sandbox'],
+  teddy3: ['Teddy’s Little Biggest Adventure', 'sandbox'],
   year2000: ['In The Year 2000!', 'sandbox'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
@@ -72,6 +73,7 @@ const LISTED: CastMember[] = [
     appears: [
       { game: 'teddy', as: 'the hero, fetching Doc Leo’s costume' },
       { game: 'teddy2', as: 'the hero, on Gwinn’s trail to the fair' },
+      { game: 'teddy3', as: 'the birthday boy, running errands' },
       { game: 'sandcast', as: 'the corgi knight, rebuilding the castles' },
       { game: 'realm', as: 'a royal hound' },
       { game: 'brief', as: 'napping on a sweater in Lost and Found' },
@@ -95,6 +97,7 @@ const LISTED: CastMember[] = [
     appears: [
       { game: 'teddy', as: 'the one who ran off with the suitcase' },
       { game: 'teddy2', as: 'the hero of the MEANWHILE… levels' },
+      { game: 'teddy3', as: 'keeping a secret (almost) and digging up her best bone' },
       { game: 'sandcast', as: 'on the loose, asleep across doorways' },
       { game: 'realm', as: 'a royal hound' },
       { game: 'brief', as: 'in the library, where she is not allowed' },
@@ -120,6 +123,7 @@ const LISTED: CastMember[] = [
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
       { game: 'teddy2', as: 'beside THE CHEZ at every stop' },
+      { game: 'teddy3', as: 'a hero at last: balloon dogs, pratfalls and the party lights' },
       { game: 'realm', as: 'the jester in Eventually Falls' },
       { game: 'brief', as: 'in the library, day and night' },
       { game: 'depth', as: 'ray-traced, chicken and all' },
@@ -148,6 +152,7 @@ const LISTED: CastMember[] = [
     appears: [
       { game: 'teddy', as: 'waiting at the end of every level' },
       { game: 'teddy2', as: 'leading the fair parade' },
+      { game: 'teddy3', as: 'yours to drive, minding the charge' },
       { game: 'realm', as: 'yours to drive across the Dawdle Flats' },
       { game: 'brief', as: 'at the curb, on its charger' },
       { game: 'depth', as: 'ray-traced in the Teapot Temple' },
@@ -169,6 +174,7 @@ const LISTED: CastMember[] = [
     appears: [
       { game: 'teddy', as: 'a costume piece to fetch' },
       { game: 'teddy2', as: 'lost, circling the river eddy' },
+      { game: 'teddy3', as: 'squawking at pigeons' },
       { game: 'realm', as: 'the lost-chicken quest' },
       { game: 'brief', as: 'a spare in Lost and Found' },
       { game: 'depth', as: 'on Doc Leo’s leash' },

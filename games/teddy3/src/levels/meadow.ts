@@ -12,6 +12,7 @@
 // dog and treats behind it. Then through the tunnel and out to THE CHEZ by the road.
 //
 // The blocks are in meadowTiles.ts, the monsters in meadowBeasts.ts; this file lays out the map.
+import { addTinHeart } from '../sprites/hidden';
 import { LevelMap, type Level } from './level';
 import { G, HEDGE, meadowTiles } from './meadowTiles';
 import { meadowBeasts } from './meadowBeasts';
@@ -158,6 +159,8 @@ export function meadow(): Level {
   // Monsters and treats.
   m.mon(43, 31, 'raccoon');
   m.mon(46, 31, 'poodle');
+  // the tin heart, ticking away at the end of the high branch
+  m.set(45, 31, addTinHeart(bs, m.get(45, 31)));
   const treats: [number, number][] = [
     [6, 39],
     [8, 39],
@@ -174,7 +177,6 @@ export function meadow(): Level {
     [43, 35],
     [40, 33],
     [44, 31],
-    [45, 31],
     [52, 39],
     [56, 39],
     [59, 39],
