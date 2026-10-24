@@ -137,7 +137,7 @@ export const SPOTLIGHT: MagSection = {
           kicker: 'Easter eggs',
           size: 'l',
           level: 2,
-          deck: 'The very first easter eggs were game makers hiding their names where only a curious player would find them. The Sandbox and Bard of Bizarre games keep up the habit. We won’t tell you where. We’ll tell you what to look for.',
+          deck: 'In 1980 Atari left its programmers’ names off its games, so Warren Robinett hid “Created by Warren Robinett” in a secret room of Adventure for the Atari 2600. A player found it; Atari’s Steve Wright said to keep it and called it an Easter egg. Little hidden surprises go back even further, to 1973’s Moonlander. The Sandbox and Bard of Bizarre games keep up the habit. We won’t tell you where. We’ll tell you what to look for.',
         }),
         cols(2, [
           side(

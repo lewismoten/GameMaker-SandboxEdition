@@ -340,7 +340,7 @@ formats from their published descriptions and from Game-Maker's own source.
   their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
   OPL3, AMI BIOS, PKZIP and PKUNZIP, Xmodem, Ymodem and ZMODEM, Renegade BBS, QEMM, the 286 to Pentium, Windows 3.1 and NT, OS/2, the ATI, Trident, Tseng and
   Paradise Super VGA cards (from RSD's own system requirements), the Remington Noiseless
-  typewriter, Autodesk Animator and the CitiCar, an electric car Sebring-Vanguard built in the 1970s (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
+  typewriter, Autodesk Animator and the CitiCar, an electric car Sebring-Vanguard built in the 1970s (Lewis's own car, THE CHEZ). The TURBO BUTTON magazine's history of Easter eggs names the Atari 2600 and its games Adventure (Warren Robinett, 1980) and Moonlander (1973). Brand names also appear where Lewis's
   song lyrics and his 100 Word Stories (in _KEEP IT BRIEF!_) are quoted word for word. These
   are trademarks of their respective owners; no endorsement is implied. Every other store,
   arcade, brand, product and publication in the games is made up.
