@@ -20,7 +20,10 @@ export const CHECK: Chapter = {
   score and inventory the hero would bring. From every place the hero comes to rest it tries
   every move the character has, each place once. Choose how long it may play: Quick (15
   seconds), Thorough (a minute) or Exhaustive (four minutes). When it is done it says how many
-  places it tried, and whether it tried every move from every one or the time ran out first.</p>
+  places it tried, and whether it tried every move from every one or the time ran out first.
+  While it plays, a bar fills and says how long is left: <i>up to</i> the time you chose, or
+  <i>about</i> so many seconds once the places still waiting to be tried are clearly running
+  out, with the count of places tried so far.</p>
   <h2>The heat map</h2>
   <p>The map is colored where the bot went, from dark for a moment to bright for a long while,
   with a legend beside it. Switch it to <i>how soon it got there</i> to see the order a player
@@ -29,7 +32,29 @@ export const CHECK: Chapter = {
   marks on and off with the boxes above the list. Tick <b>Gray level</b> to draw the map in
   shades of gray, from the lightness of each color in the scene’s palette, so the heat map’s
   colors stand out from the blocks under them. It only changes how the editor shows the map, and
-  the editor remembers it for every map.</p>
+  the editor remembers it for every map. The heat map fills in about once a second while the
+  check runs, so you can watch the bot spread out from the start, and its deaths appear as it
+  finds them.</p>
+  <h2>The marks</h2>
+  <p>On top of the heat map: a white <b>✕</b> where the hero died (the tooltip says how many
+  tries ended there), red <b>hatching</b> over a stuck spot, a cyan <b>○</b> on each cell a
+  finding is about, and a dashed yellow square around the place you picked from the list.
+  Rest the pointer on a cell and a tooltip says what each mark there is, and what the heat
+  color means (<i>Time spent: a lot</i>). The legend under the heat map lists each kind of
+  mark with how many there are; press one to go to the next, and its meaning is read out, so
+  the marks work from the keyboard too. Zoomed out to 25% or 10%, the marks become small
+  filled squares in the same colors, and the tooltip finds the nearest one.</p>
+  <h2>Your own heat map</h2>
+  <p>The bot tries everything, but it can’t tell which places matter. Press <b>▶ Play this map
+  and record my heat map</b> and play the scene yourself: everywhere your hero goes, and how
+  long it stays, is kept as your own heat map, saved with the project’s editor notes (never in
+  the game’s files) and added to each time you play. Then choose what to <b>Show</b>: the bot’s
+  heat map, yours, both combined, or <b>Compare</b>, which colors the places only the bot
+  reached orange, the places only you reached blue, and the places you both reached light
+  gray. A line underneath says how much of the bot’s ground you’ve covered (a place counts when
+  you passed within a block of it) and how many areas it found that you haven’t;
+  <b>→ Next place you haven’t been</b> takes you to each. Keep playing until the orange is
+  only where you don’t mind a player not going. <b>Clear my heat map</b> starts yours again.</p>
   <h2>Stuck spots</h2>
   <p>Places the hero can reach but never leave are hatched, with the likeliest reason: a pit
   with no way up, a drop that only goes one way, or a lock whose key can no longer be had. A
