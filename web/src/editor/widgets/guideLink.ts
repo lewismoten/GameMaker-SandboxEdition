@@ -3,7 +3,7 @@
 import { h } from '../core/ui';
 import type { GuideRef } from '../check/findings';
 
-const TITLES: Record<GuideRef['chapter'], string> = {
+export const GUIDE_TITLES: Record<GuideRef['chapter'], string> = {
   craft: 'Designing With a Goal',
   levels: 'Levels Players Forgive',
   upload: 'Before You Upload',
@@ -27,7 +27,7 @@ export function guideLink(g: GuideRef, label?: string): HTMLAnchorElement {
       href: `./#/help/ultimate?chapter=${g.chapter}`,
       target: '_blank',
       rel: 'noopener',
-      title: `The Ultimate Owner’s Guide, “${TITLES[g.chapter]}”: ${g.section} (opens in a new tab)`,
+      title: `The Ultimate Owner’s Guide, “${GUIDE_TITLES[g.chapter]}”: ${g.section} (opens in a new tab)`,
     },
     label ?? `📒 Guide: ${g.section}`,
   );
