@@ -159,7 +159,7 @@
  "news": [
   {
    "head": "Teddy's back, and this time Gwinn's playable",
-   "html": "<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Eight levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>"
+   "html": "<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Nine levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>"
   },
   {
    "head": "Letters: \"Why did Teddy stop rolling over?\"",
@@ -287,7 +287,7 @@
       },
       {
        "q": "How do Gwinn's levels end?",
-       "a": "She is following her nose to the Fair. Look for her ride at the end: the hay wagon, then the Fair's ride truck. Hop in."
+       "a": "She is following her nose to the Fair. Look for her ride at the end: the hay wagon, then the Fair's ride truck. Hop in. At the Fair itself, she is headed for the dog show's sign-up table."
       }
      ]
     },
@@ -398,7 +398,24 @@
      ]
     },
     {
-     "head": "7. The Fair Midway",
+     "head": "7. Meanwhile: Gwinn Signs Up",
+     "hints": [
+      {
+       "q": "The creek is too wide to hop.",
+       "a": "Stand by the fan on the bank and hop up into its breeze (E): it carries Gwinn right across. Fall in, and the current brings her back to the bank to try again."
+      },
+      {
+       "q": "How do I get up to the bandstand?",
+       "a": "Not from the ground. Keep going right, past the poultry barn, to the fan lying face up: step on it and it blows Gwinn up onto the roof. The way back to the bandstand is over the roofs."
+      },
+      {
+       "q": "The wind keeps blowing me back!",
+       "a": "Watch the windsocks. Wait behind a vent while they stand out; when they hang limp, run for the next vent. A gust never hurts, it only pushes."
+      }
+     ]
+    },
+    {
+     "head": "8. The Fair Midway",
      "hints": [
       {
        "q": "How do I earn tickets?",
@@ -411,7 +428,7 @@
      ]
     },
     {
-     "head": "8. The Dog Show",
+     "head": "9. The Dog Show",
      "hints": [
       {
        "q": "The popcorn keeps hitting me.",
