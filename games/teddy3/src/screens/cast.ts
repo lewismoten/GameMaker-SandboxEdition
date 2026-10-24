@@ -123,7 +123,7 @@ function gwinnScene(reel: CastReel): void {
     }
     big(p, 'GWINN', 4, 250);
     if (f < 24) {
-      say(p, "BIG SISTER. TWO N'S.", 170);
+      say(p, 'BIG SISTER. BIG IDEAS.', 170);
       say(p, 'KEEPING A BIG SECRET.', 182, c('yellow', 3));
     } else if (f < 40) {
       say(p, 'SIT, GWINN! SIT!', 170, c('yellow', 3));
@@ -201,8 +201,8 @@ function leoScene(reel: CastReel): void {
       say(p, 'A HOBO CLOWN, AND HIS', 170);
       say(p, 'RUBBER CHICKEN ON A LEASH.', 182);
     } else {
-      say(p, 'NO CLOWN NOSE. A HOBO JUST', 170, c('yellow', 3));
-      say(p, 'GETS A SUNBURN.', 182, c('yellow', 3));
+      say(p, 'A SUNBURNED NOSE, AND A', 170, c('yellow', 3));
+      say(p, 'FEDORA FULL OF JOKES.', 182, c('yellow', 3));
     }
     reel.add(p);
   }
