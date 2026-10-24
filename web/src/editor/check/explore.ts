@@ -11,7 +11,7 @@ import { MLEN, MWID } from '../../formats/map';
 import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
 import { keyRoles, movesFor, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
-import type { Game } from '../../formats/game';
+import type { Game, Link } from '../../formats/game';
 
 const CELLS = MLEN * MWID;
 
@@ -22,6 +22,8 @@ export interface ExploreOptions {
   /** Told now and then how far it has got; return true to stop. */
   progress?: (nodes: number, queued: number) => boolean | void;
   now?: () => number;
+  /** Move every monster every tick, however far away (slower). */
+  exact?: boolean;
 }
 
 /** Where the hero comes into the scene, and with what. */
@@ -101,6 +103,8 @@ export interface Exploration {
   gravity: boolean;
   /** The moves tried (Via.move indexes them). */
   moves: Move[];
+  /** The scene's links, from the .gam file. */
+  links: Link[];
 }
 
 /** Block numbers whose animation changes how they hold, push or hurt the hero (timed doors, lifts). */
@@ -128,6 +132,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const budget = opt.budgetMs ?? 10_000;
   const maxNodes = opt.maxNodes ?? 20_000;
   const sim = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev);
+  // monsters a screen and a half away hold still (sim.ts freezeBeyond)
+  sim.freezeBeyond = opt.exact ? { x: 0, y: 0 } : { x: 24, y: 15 };
   const w = sim.w;
   const bg = w.bg;
   const gravity = bg.some((b) => b.grav !== 0);
@@ -444,6 +450,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     ms: now() - t0,
     gravity,
     moves,
+    links: game.scenes[scene].links,
   };
 }
 

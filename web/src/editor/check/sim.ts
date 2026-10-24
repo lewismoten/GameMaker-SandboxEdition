@@ -206,7 +206,7 @@ export class SceneSim {
       // BlocBirthMon does nothing on a tick no birth block is due (its scan finds no flag),
       // so it is skipped then: the same play, a good deal faster
       if (w.blkMon.some((b) => b.nexttime <= w.clock)) blockBirthMonsters(w);
-      moveAllMonsters(w);
+      this.moveMonsters();
     }
     const chr = w.chr;
     if (this.pending.length && (!chr.sequences[chr.cseq].ground || chr.cframe === 0)) for (const k of this.pending.splice(0)) simKeyPress(w, k);
@@ -223,6 +223,40 @@ export class SceneSim {
     if (dead) return 'dead';
     const link = this.linkTouched();
     return link < MAXSCENELINKS ? { link } : undefined;
+  }
+
+  /**
+   * Monsters farther than this from the hero (blocks across, down) hold still while the
+   * explorer plays, their clocks moved on so they pick up where they were; 0 moves them all.
+   * Far monsters can't touch the hero (only ones on screen do), so this only shifts when
+   * distant lifts and patrols are where they are: the explorer's trade of exactness for speed.
+   */
+  freezeBeyond = { x: 0, y: 0 };
+
+  private moveMonsters(): void {
+    const w = this.w;
+    const { x: fx, y: fy } = this.freezeBeyond;
+    if (!fx) return moveAllMonsters(w);
+    const frozen: number[] = [];
+    const cx = w.chr.x[0];
+    const cy = w.chr.y[0];
+    for (let l = 0; l < LASTMM; l++) {
+      const mm = w.mm[l];
+      if (mm.monnum >= LASTMON) continue;
+      const mi = w.mi[l];
+      let dx = Math.abs(mi.curx[0] - cx);
+      let dy = Math.abs(mi.cury[0] - cy);
+      if (dx > MLEN / 2) dx = MLEN - dx;
+      if (dy > 50) dy = 100 - dy;
+      if (dx <= fx && dy <= fy) continue;
+      frozen.push(l, mm.monnum);
+      mm.monnum = LASTMON;
+      mi.nextMove++;
+      mi.nextAni++;
+      mi.birthTime++;
+    }
+    moveAllMonsters(w);
+    for (let i = 0; i < frozen.length; i += 2) w.mm[frozen[i]].monnum = frozen[i + 1];
   }
 
   /** chklnk: the first of the scene's links whose From cell the character overlaps. */
