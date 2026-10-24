@@ -53,6 +53,7 @@ export function openDialPad(press: (k: string) => void, hangUp: () => void): Dia
         'aria-label': k === '*' ? 'star' : k === '#' ? 'pound' : `${k} ${letters}`.trim(),
       },
       h('b', null, k),
+      ' ', // between the digit and its letters, for the text (not drawn: the key is a flex column)
       h('small', null, letters || ' '),
     );
   const memory = SPEED_DIAL.map(([name, digits]) =>
