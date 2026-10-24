@@ -12,11 +12,17 @@
   },
   "tinHeart": {
     "map": "home.map",
-    "at": [53, 43]
+    "at": [
+      53,
+      43
+    ]
   },
   "easterEgg": {
     "map": "home.map",
-    "at": [64, 43]
+    "at": [
+      64,
+      43
+    ]
   },
   "label": {
     "background": "#0b1030",
@@ -41,11 +47,31 @@
       "Pushes Game-Maker to every limit - see LIMITS.TXT"
     ],
     "shots": [
-      ["w12.map", 36, 40],
-      ["w48.map", 34, 62],
-      ["galaxy.map", 46, 48],
-      ["w60.map", 28, 34],
-      ["heart.map", 68, 38]
+      [
+        "w12.map",
+        36,
+        40
+      ],
+      [
+        "w48.map",
+        34,
+        62
+      ],
+      [
+        "galaxy.map",
+        46,
+        48
+      ],
+      [
+        "w60.map",
+        28,
+        34
+      ],
+      [
+        "heart.map",
+        68,
+        38
+      ]
     ],
     "rating": "Ages 8 and up",
     "hours": 11,
@@ -64,7 +90,13 @@
       "from": "Megapixel Monthly"
     },
     "poster": {
-      "map": ["sector1.map", 0, 0, 40, 40],
+      "map": [
+        "sector1.map",
+        0,
+        0,
+        40,
+        40
+      ],
       "title": "Sector 1 Chart",
       "caption": "Courier's chart of the first sector: the gate, the station and the asteroid belt"
     }
