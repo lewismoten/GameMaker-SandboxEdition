@@ -205,6 +205,8 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       version: 1,
       game: gameId,
       rand: { seed, per: 'scene' },
+      bot: true,
+      partial: !out.won || undefined,
       segments,
       chapters,
       timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] },
