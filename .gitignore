@@ -12,3 +12,6 @@ __pycache__/
 
 # Mac apps and disk images built by web/scripts/macDmg.ts
 /dist/
+
+# DOSBox drive C: laid out by web/scripts/dosbox.ts
+/dosbox/
