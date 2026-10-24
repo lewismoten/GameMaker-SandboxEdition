@@ -76,7 +76,8 @@ export function cropCenterX(screenW: number, centerX?: number): number {
  * The title's lettering inside `box`: every pixel except the background, which is whatever
  * reaches the box's edge through colors found on that edge (and the holes inside letters
  * drawn in those colors), less specks such as stars and snowflakes. Returns the lettering's
- * own bounds and a mask over them, or undefined if the box holds none.
+ * own bounds and a mask over them (1 lettering, 2 a hole: background caught between letters,
+ * which the ribbon's color fills), or undefined if the box holds none.
  */
 export function titleMask(
   img: Pick<Indexed, 'width' | 'height' | 'pixels'>,
@@ -138,6 +139,20 @@ export function titleMask(
       for (const i of cells) kind[i] = v;
     },
   );
+  // a pocket of the background caught between letters (sky, a cloud) is a hole, not lettering:
+  // a color found on the box's edge that is mostly background
+  const tally = new Map<number, [bg: number, letter: number]>();
+  for (let i = 0; i < bw * bh; i++) {
+    const v = at(i % bw, Math.floor(i / bw));
+    const n = tally.get(v) ?? [0, 0];
+    n[kind[i] === 2 ? 1 : 0]++;
+    tally.set(v, n);
+  }
+  const isHole = (i: number) => {
+    const v = at(i % bw, Math.floor(i / bw));
+    const [bg, letter] = tally.get(v)!;
+    return edge.has(v) && bg > letter;
+  };
   let [lx0, ly0, lx1, ly1] = [bw, bh, -1, -1];
   for (let i = 0; i < bw * bh; i++)
     if (kind[i] === 2) {
@@ -149,7 +164,11 @@ export function titleMask(
   const w = lx1 - lx0 + 1;
   const h = ly1 - ly0 + 1;
   const mask = new Uint8Array(w * h);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) mask[y * w + x] = kind[(ly0 + y) * bw + lx0 + x] === 2 ? 1 : 0;
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const i = (ly0 + y) * bw + lx0 + x;
+      mask[y * w + x] = kind[i] !== 2 ? 0 : isHole(i) ? 2 : 1;
+    }
   return { x: x0 + lx0, y: y0 + ly0, w, h, mask };
 }
 
@@ -300,7 +319,10 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   if (t) {
     const letters = blank(t.w, t.h);
     for (let y = 0; y < t.h; y++)
-      for (let x = 0; x < t.w; x++) if (t.mask[y * t.w + x]) letters.data[y * t.w + x] = lut[pixels[(t.y + y) * screen.width + t.x + x]];
+      for (let x = 0; x < t.w; x++) {
+        const m = t.mask[y * t.w + x];
+        if (m) letters.data[y * t.w + x] = m === 2 ? fill : lut[pixels[(t.y + y) * screen.width + t.x + x]];
+      }
     const lined = outlined(letters, [OUTLINE]);
     const width = Math.min(BADGE_W - 2 * TAIL - 4, Math.max(lined.width + 10, 2 * RING + 16));
     const lx = Math.round(BADGE_CX - lined.width / 2);

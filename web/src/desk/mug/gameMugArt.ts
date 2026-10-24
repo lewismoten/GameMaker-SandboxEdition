@@ -19,7 +19,7 @@ export interface GameMug extends BadgeLook {
 /** The games, in the box's order. */
 export const GAME_MUGS: GameMug[] = [
   { game: 'maximus', hero: 'courier', title: [0, 16, 320, 94], centerX: 205 },
-  { game: 'teddy', hero: 'teddy', title: [16, 0, 304, 82], centerX: 150 },
+  { game: 'teddy', hero: 'teddy', title: [16, 0, 304, 82], centerX: 200, side: 'left' },
   { game: 'year2000', hero: 'dex', title: [8, 2, 312, 90], centerX: 160 },
   { game: 'blaster', hero: 'ship', title: [4, 6, 316, 90], centerX: 160 },
   { game: 'logic', hero: 'watt', title: [6, 10, 312, 86], centerX: 170, side: 'left', hide: [[0, 0, 112, 10]] },
