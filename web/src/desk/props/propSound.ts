@@ -243,6 +243,23 @@ export const roomSound = {
       noise(o, i * 0.32, 0.12, 900 * hi, 0.08, 2);
     }
   },
+  /** A small vehicle's horn: a quick toot-toot (the mail jeep pulling away). */
+  toot(): void {
+    const o = open();
+    if (!o) return;
+    for (const at of [0, 0.22]) {
+      tone(o, at, 0.14, 520, 510, 0.06, 'square');
+      tone(o, at, 0.14, 655, 645, 0.04, 'square');
+    }
+  },
+  /** A dog sniffing at the gap under a door, then an envelope sliding across the floor and landing. */
+  slide(): void {
+    const o = open();
+    if (!o) return;
+    for (let i = 0; i < 3; i++) noise(o, i * 0.13, 0.07, 2600, 0.07, 3);
+    noise(o, 0.5, 0.55, 1400, 0.09, 0.8, 4200);
+    tone(o, 1.05, 0.06, 160, 90, 0.12);
+  },
   /** A soft shimmer, rising and falling (the northern lights). */
   shimmer(seconds = 4): void {
     const o = open();
