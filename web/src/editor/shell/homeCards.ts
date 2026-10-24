@@ -71,10 +71,11 @@ function loadingButton(ico: IconName, name: string, ariaLabel: string, open: (re
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
  * preview). The dev server only learns of those pages when restarted, so in development
- * the shared player page is used instead, which plays the same.
+ * the shared player page is used instead, which plays the same. ?autoplay: the Play
+ * already pressed here starts the game, with no second Play on that page.
  */
 export function playLink(id: string): string {
-  return import.meta.env?.DEV ? `./play.html?game=${encodeURIComponent(id)}` : `./${gamePage(id)}`;
+  return import.meta.env?.DEV ? `./play.html?game=${encodeURIComponent(id)}&autoplay` : `./${gamePage(id)}?autoplay`;
 }
 
 /** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
