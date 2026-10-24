@@ -3,7 +3,7 @@
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, bubble, docLeo, figure, floor, mirror, on, plinth, rot90, sign, wall } from '../../art/kit';
+import { blank, bubble, docLeoSide, figure, figureBack, figureSide, floor, on, plinth, rot90, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
@@ -183,10 +183,11 @@ function art(a: Area): void {
   a.monster(
     'doc',
     [
-      [mirror(docLeo(0)), 4],
-      [mirror(docLeo(1)), 4],
+      [docLeoSide(0), 4],
+      [docLeoSide(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [5, 0, 2],
         [-5, 0, 2],
@@ -234,12 +235,19 @@ function art(a: Area): void {
     ),
   );
   sign(['PLEASE DO NOT', 'POP THE ART'], 3, { board: 'brass' }).forEach((px, i) => a.solid(`gal${i}`, px));
-  a.monster(
+  const guide = (arms: 'up' | 'down', view = figure) => view({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun', arms });
+  a.walker(
     'guide',
-    [
-      [figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun', arms: 'up' }), 6],
-      [figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun' }), 6],
-    ],
+    {
+      front: [
+        [guide('up'), 6],
+        [guide('down'), 6],
+      ],
+      back: [
+        [guide('up', figureBack), 6],
+        [guide('down', figureBack), 6],
+      ],
+    },
     {
       path: [
         [0, 3, 1],
@@ -320,7 +328,7 @@ function art(a: Area): void {
       ],
     },
   );
-  const peton = (s: number) => figure({ face: 'auguste', shirt: ['paper', 4], tie: ['red', 3], pants: ['ink', 1], hair: ['ink', 1] }, s);
+  const peton = (s: number) => figureSide({ face: 'auguste', shirt: ['paper', 4], tie: ['red', 3], pants: ['ink', 1], hair: ['ink', 1] }, s);
   a.monster(
     'peton',
     [
@@ -328,6 +336,7 @@ function art(a: Area): void {
       [peton(1), 5],
     ],
     {
+      faces: 'right',
       path: [
         [0, 2, 1],
         [4, 0, 1],
@@ -343,10 +352,11 @@ function art(a: Area): void {
   a.monster(
     'leo',
     [
-      [docLeo(0), 6],
-      [docLeo(1), 6],
+      [docLeoSide(0), 6],
+      [docLeoSide(1), 6],
     ],
     {
+      faces: 'right',
       path: [
         [6, 0, 1],
         [0, -2, 1],

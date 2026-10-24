@@ -31,12 +31,19 @@ export interface Window {
   words: number;
 }
 
+/** Which way a side-on monster's pictures look. */
+type Facing = 'left' | 'right';
+/** Orientation 4: the picture mirrored left to right. */
+const MIRRORED = 4;
+
 export class Area {
   readonly tiles = new BlockSet(150, false);
   readonly mb = new BlockSet(100, true);
   readonly mons = new Bestiary(this.mb);
   readonly map: GameMap = newMap();
   private placed = 0;
+  /** The way each side-on monster's pictures face, so its patrols turn it round. */
+  private faces = new Map<string, Facing>();
 
   constructor(readonly file: string) {
     // the felt egg, in its shoebox: the same block in every set, so the inventory shows it
@@ -64,22 +71,60 @@ export class Area {
 
   /**
    * Monster blocks (frames) and the monster. `hazard`: touching it fines Joe a point a tick
-   * (score; the shushers and their friends never touch the words he carries).
+   * (score; the shushers and their friends never touch the words he carries). `faces`: the
+   * way a side-on monster's pictures look; it is mirrored on the moves that go the other way.
    */
-  monster(name: string, frames: [Pixels, number][], def: Partial<MonDef> & { hazard?: boolean; pickup?: number } = {}): string {
-    const pics: [string, number][] = frames.map(([px0, t], i) => {
-      // Every hazard shares one tell: a red outline flashes on its odd frames, so a finer
-      // never looks like the friendly folk who walk the same kind of loop.
+  monster(name: string, frames: [Pixels, number][], def: Partial<MonDef> & { hazard?: boolean; pickup?: number; faces?: Facing } = {}): string {
+    const pics = this.frames(name, frames, def);
+    const { hazard, pickup, path, faces, ...rest } = def;
+    if (faces) this.faces.set(name, faces);
+    this.mons.add(name, { pics, power: pickup ? 1 : 150, end: 0, ...rest, ...(path ? { path: loop(name, path, faces) } : {}) });
+    void hazard;
+    return name;
+  }
+
+  /**
+   * Somebody walking a loop that goes up and down the map as well as across: a chain of
+   * monsters, one per move, each drawn the way it goes (its back going up, its front coming
+   * down, its side across: drawn facing right, mirrored going left). Each walks its move, dies
+   * at its end and becomes the next; the last becomes the first, at the start again. Only for
+   * folk Joe can't beat (he has nothing to beat them with), since a beaten one would become
+   * the next as well. The first link is `name`, which the map places.
+   */
+  walker(
+    name: string,
+    views: { front: [Pixels, number][]; back: [Pixels, number][]; side?: [Pixels, number][] },
+    def: Partial<MonDef> & { hazard?: boolean; path: [number, number, number][] },
+  ): string {
+    const { hazard, path, ...rest } = def;
+    loop(name, path); // it must come back to where it started
+    const front = this.frames(name, views.front, def);
+    const back = this.frames(`${name}^`, views.back, def);
+    const side = views.side && this.frames(`${name}>`, views.side, def);
+    const link = (k: number) => (k ? `${name}~${k}` : name);
+    path.forEach(([dx, dy, speed], k) => {
+      const pics = dy < 0 ? back : dy > 0 ? front : side;
+      if (!pics) throw new Error(`${name}: walks across with no side view`);
+      const orient = dy === 0 && dx < 0 ? MIRRORED : 0;
+      this.mons.add(link(k), { pics, power: 150, ...rest, end: -1, path: [[dx, dy, speed, orient]], becomes: link((k + 1) % path.length) });
+    });
+    void hazard;
+    return name;
+  }
+
+  /**
+   * Monster blocks for a monster's frames, named `prefix#n`. A hazard's odd frames flash a red
+   * outline, the tell every hazard shares, so a finer never looks like the friendly folk who
+   * walk the same kind of loop.
+   */
+  private frames(prefix: string, frames: [Pixels, number][], def: { hazard?: boolean; pickup?: number }): [string, number][] {
+    return frames.map(([px0, t], i) => {
       const px = def.hazard && i % 2 === 1 ? outline(px0, c('red', 3)) : px0;
-      const pn = `${name}#${i}`;
+      const pn = `${prefix}#${i}`;
       const bd: BlockDef = def.hazard ? { score: -1 } : def.pickup ? { effect: CTR.words, eamt: def.pickup, score: def.pickup } : {};
       if (!this.mb.has(pn)) this.mb.add(pn, px, bd);
       return [pn, t];
     });
-    const { hazard, pickup, path, ...rest } = def;
-    this.mons.add(name, { pics, power: pickup ? 1 : 150, end: 0, ...rest, ...(path ? { path: loop(name, path) } : {}) });
-    void hazard;
-    return name;
   }
 
   /**
@@ -90,7 +135,7 @@ export class Area {
     const name = called ?? `${base}@${path.map((p) => p.join(',')).join(';')}`;
     if (!this.mons.has(name)) {
       const d = this.mons.defs[this.mons.id(base)];
-      this.mons.add(name, { ...d, path: loop(name, path) });
+      this.mons.add(name, { ...d, path: loop(name, path, this.faces.get(base)) });
     }
     return name;
   }
@@ -178,15 +223,27 @@ export class Area {
 /**
  * A patrol written as moves (each relative to the last corner) as Game-Maker stores it:
  * corners as offsets from the start. The moves must come back to the start, because when a
- * march starts over its first corner is measured from wherever the monster is.
+ * march starts over its first corner is measured from wherever the monster is. Given the way
+ * the pictures `faces`, a move against it is mirrored (orientation 4), and a move straight up
+ * or down keeps the way the monster last went across.
  */
-function loop(name: string, moves: [number, number, number, number?][]): [number, number, number, number?][] {
+function loop(name: string, moves: [number, number, number, number?][], faces?: Facing): [number, number, number, number?][] {
+  const across = (dx: number) => (dx > 0 === (faces === 'right') ? 0 : MIRRORED);
+  const turned = moves.map((_, i) => {
+    if (!faces) return undefined;
+    // straight up or down: the last move across before it (round the loop)
+    for (let k = 0; k < moves.length; k++) {
+      const m = moves[(i - k + moves.length) % moves.length];
+      if (m[0]) return across(m[0]);
+    }
+    return undefined;
+  });
   let x = 0;
   let y = 0;
-  const out = moves.map(([dx, dy, speed, o]): [number, number, number, number?] => {
+  const out = moves.map(([dx, dy, speed, o], i): [number, number, number, number?] => {
     x += dx;
     y += dy;
-    return [x, y, speed, o];
+    return [x, y, speed, o ?? turned[i]];
   });
   if (x || y) throw new Error(`${name}: its patrol does not come back to where it started`);
   if (out.length > 10) throw new Error(`${name}: more than 10 corners`);

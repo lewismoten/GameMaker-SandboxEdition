@@ -3,7 +3,7 @@
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, figure, floor, gwinn, mirror, on, sign, wall } from '../../art/kit';
+import { blank, figure, figureBack, floor, gwinn, mirror, on, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
@@ -50,8 +50,8 @@ function cannon(under: Pixels): Pixels {
   return p;
 }
 
-const pirate = (step: number, color: string) =>
-  figure({ shirt: [color, 3], pants: ['brown', 1], hat: { kind: 'bandana', color: ['red', 3] }, beard: ['ink', 1], face: 'eyepatch' }, step);
+const pirate = (step: number, color: string, view = figure) =>
+  view({ shirt: [color, 3], pants: ['brown', 1], hat: { kind: 'bandana', color: ['red', 3] }, beard: ['ink', 1], face: 'eyepatch' }, step);
 
 function parrot(frame: number): Pixels {
   const p = blank();
@@ -193,6 +193,7 @@ function art(a: Area): void {
       [parrot(1), 5],
     ],
     {
+      faces: 'right',
       hazard: true,
       path: [
         [4, 0, 2],
@@ -202,12 +203,18 @@ function art(a: Area): void {
       ],
     },
   );
-  a.monster(
+  a.walker(
     'jim',
-    [
-      [pirate(0, 'blue'), 6],
-      [pirate(1, 'blue'), 6],
-    ],
+    {
+      front: [
+        [pirate(0, 'blue'), 6],
+        [pirate(1, 'blue'), 6],
+      ],
+      back: [
+        [pirate(0, 'blue', figureBack), 6],
+        [pirate(1, 'blue', figureBack), 6],
+      ],
+    },
     {
       path: [
         [0, 3, 1],
@@ -263,6 +270,7 @@ function art(a: Area): void {
       [fish(1), 6],
     ],
     {
+      faces: 'left',
       path: [
         [3, 0, 1],
         [0, 1, 1],
@@ -327,6 +335,7 @@ function art(a: Area): void {
       [fishy(1), 3],
     ],
     {
+      faces: 'left',
       path: [
         [6, 0, 3],
         [-6, 0, 3],

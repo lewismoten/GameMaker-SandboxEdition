@@ -447,6 +447,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       [corgi(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [5, 0, 2],
         [-5, 0, 2],
@@ -460,6 +461,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       [gwinn(1, true), 3],
     ],
     {
+      faces: 'left',
       path: [
         [-5, 0, 3],
         [5, 0, 3],

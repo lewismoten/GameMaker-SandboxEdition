@@ -3,13 +3,13 @@
 import { Pixels } from '../../../../kit/pixels';
 import { outline, bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, corgi, figure, floor, on, sign, wall } from '../../art/kit';
+import { blank, corgi, figure, figureBack, figureSide, floor, on, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
 
-const professor = (step = 0, arms: 'down' | 'up' = 'down') =>
-  figure({ shirt: ['paper', 4], pants: ['grey', 2], hair: ['grey', 4], hairStyle: 'wild', glasses: true, arms }, step);
+const professor = (step = 0, arms: 'down' | 'up' = 'down', view = figure) =>
+  view({ shirt: ['paper', 4], pants: ['grey', 2], hair: ['grey', 4], hairStyle: 'wild', glasses: true, arms }, step);
 
 function pipes(seed: number): Pixels {
   const p = new Pixels(20, 20, c('grey', 1));
@@ -79,7 +79,7 @@ function halfProfessor(): Pixels {
 }
 
 const sally = (step: number) =>
-  figure({ shirt: ['pink', 2], dress: true, hair: ['yellow', 3], hairStyle: 'pigtails', skin: 'tin', face: 'happy', small: true }, step);
+  figureSide({ shirt: ['pink', 2], dress: true, hair: ['yellow', 3], hairStyle: 'pigtails', skin: 'tin', face: 'happy', small: true }, step);
 
 function peapod(under: Pixels): Pixels {
   const p = on(under);
@@ -167,7 +167,7 @@ function exception(frame: number): Pixels {
   return p;
 }
 
-const reporter = (step: number) => figure({ shirt: ['brown', 2], pants: ['ink', 1], hat: { kind: 'fedora', color: ['brown', 1] }, arms: 'out' }, step);
+const reporter = (step: number) => figureSide({ shirt: ['brown', 2], pants: ['ink', 1], hat: { kind: 'fedora', color: ['brown', 1] }, arms: 'out' }, step);
 
 function art(a: Area): void {
   // Great Minds, Strange Priorities
@@ -185,12 +185,18 @@ function art(a: Area): void {
   tools.line(8, 17, 17, 14, c('red', 3)).rect(14, 12, 4, 3, c('grey', 4));
   a.prop('tools', 'labtile', tools, false);
   sign(['EUREKA!', 'PLEASE STAND', 'BACK'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`eureka${i}`, px));
-  a.monster(
+  a.walker(
     'inventor',
-    [
-      [professor(0, 'up'), 6],
-      [professor(1, 'up'), 6],
-    ],
+    {
+      front: [
+        [professor(0, 'up'), 6],
+        [professor(1, 'up'), 6],
+      ],
+      back: [
+        [professor(0, 'up', figureBack), 6],
+        [professor(1, 'up', figureBack), 6],
+      ],
+    },
     {
       path: [
         [0, 3, 1],
@@ -205,6 +211,7 @@ function art(a: Area): void {
       [reporter(1), 4],
     ],
     {
+      faces: 'right',
       hazard: true,
       path: [
         [5, 0, 1],
@@ -226,6 +233,7 @@ function art(a: Area): void {
       [sally(1), 5],
     ],
     {
+      faces: 'right',
       path: [
         [3, 0, 1],
         [0, 2, 1],
@@ -316,6 +324,7 @@ function art(a: Area): void {
       [goggled(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [5, 0, 2],
         [-5, 0, 2],

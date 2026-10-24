@@ -3,7 +3,7 @@
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, figure, floor, gwinn, on, sign, wall } from '../../art/kit';
+import { blank, figure, figureSide, floor, gwinn, on, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
@@ -111,7 +111,7 @@ function tornado(frame: number): Pixels {
 }
 
 function dancer(step: number): Pixels {
-  return figure({ shirt: ['yellow', 3], pants: ['blue', 2], hair: ['ink', 1], arms: step ? 'up' : 'out', face: 'happy' }, step);
+  return figureSide({ shirt: ['yellow', 3], pants: ['blue', 2], hair: ['ink', 1], arms: step ? 'up' : 'out', face: 'happy' }, step);
 }
 
 function seated(under: Pixels, shirt: string, hair: [string, number]): Pixels {
@@ -143,7 +143,7 @@ function lamp(under: Pixels, lit: boolean): Pixels {
 }
 
 const courier = (step: number) =>
-  figure({ shirt: ['yellow', 1], pants: ['brown', 1], hat: { kind: 'cap', color: ['brown', 2] }, arms: 'out', hair: ['ink', 1] }, step);
+  figureSide({ shirt: ['yellow', 1], pants: ['brown', 1], hat: { kind: 'cap', color: ['brown', 2] }, arms: 'out', hair: ['ink', 1] }, step);
 
 function closetShelf(): Pixels {
   const p = new Pixels(20, 20, c('ink', 1));
@@ -246,6 +246,7 @@ function art(a: Area): void {
       [dancer(1), 6],
     ],
     {
+      faces: 'right',
       path: [
         [2, 0, 1],
         [-2, 0, 1],
@@ -270,6 +271,7 @@ function art(a: Area): void {
       [courier(1), 5],
     ],
     {
+      faces: 'right',
       path: [
         [0, 3, 1],
         [3, 0, 1],
@@ -313,6 +315,7 @@ function art(a: Area): void {
       [gwinn(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [5, 0, 2],
         [-5, 0, 2],

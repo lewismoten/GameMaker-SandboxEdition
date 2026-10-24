@@ -37,31 +37,11 @@
       "A thirty-third book. Exactly one hundred words. Your turn."
     ],
     "shots": [
-      [
-        "library.map",
-        0,
-        0
-      ],
-      [
-        "clown.map",
-        16,
-        0
-      ],
-      [
-        "future.map",
-        32,
-        0
-      ],
-      [
-        "other.map",
-        64,
-        0
-      ],
-      [
-        "after.map",
-        16,
-        0
-      ]
+      ["library.map", 0, 0],
+      ["clown.map", 16, 0],
+      ["future.map", 32, 0],
+      ["other.map", 64, 0],
+      ["after.map", 16, 0]
     ],
     "rating": "Ages 8 and up",
     "hours": 17,
@@ -80,15 +60,41 @@
       "from": "Diskette Digest Readers' Choice"
     },
     "poster": {
-      "map": [
-        "library.map",
-        0,
-        0,
-        16,
-        10
-      ],
+      "map": ["library.map", 0, 0, 16, 10],
       "title": "The Reading Room",
       "caption": "Eight wing doors, eight wing stamps, one jammed Word Counter"
     }
-  }
+  },
+  "sameEverySide": [
+    "clown.mon#2",
+    "clown.mon#5",
+    "clown.mon#6",
+    "clown.mon#7",
+    "clown.mon#8",
+    "lab.mon#6",
+    "lab.mon#8",
+    "lab.mon#9",
+    "docks.mon#4",
+    "docks.mon#5",
+    "docks.mon#7",
+    "docks.mon#8",
+    "yard.mon#3",
+    "yard.mon#4",
+    "yard.mon#5",
+    "living.mon#1",
+    "living.mon#2",
+    "living.mon#5",
+    "after.mon#1",
+    "after.mon#3",
+    "after.mon#4",
+    "after.mon#5",
+    "after.mon#6",
+    "other.mon#1",
+    "other.mon#2",
+    "other.mon#3",
+    "other.mon#7",
+    "future.mon#4",
+    "future.mon#5",
+    "future.mon#6"
+  ]
 }

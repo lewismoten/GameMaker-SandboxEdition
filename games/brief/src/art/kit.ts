@@ -386,24 +386,189 @@ export function gwinn(step = 0, flip = false): Pixels {
   return flip ? p.flipX() : p;
 }
 
+const DOC_LEO: FigureLook = {
+  hat: { kind: 'fedora', color: ['grey', 2] },
+  face: 'hobo',
+  glasses: true,
+  shirt: ['purple', 2],
+  tie: ['green', 3],
+  pants: ['blue', 1],
+  hair: ['brown', 1],
+};
+
 /** Doc Leo, hobo clown: chewed fedora, ash beard, purple shirt, green tie, red sneakers. */
 export function docLeo(step = 0): Pixels {
-  const p = figure(
-    {
-      hat: { kind: 'fedora', color: ['grey', 2] },
-      face: 'hobo',
-      glasses: true,
-      shirt: ['purple', 2],
-      tie: ['green', 3],
-      pants: ['blue', 1],
-      hair: ['brown', 1],
-    },
-    step,
-  );
+  const p = figure(DOC_LEO, step);
   // red sneakers with the suit
   p.rect(6, 19, 3, 1, c('red', 3)).rect(11, 19, 3, 1, c('red', 3));
   // the rubber chicken on its leash
   p.line(16, 15, 18, 18, c('red', 2)).rect(17, 17, 3, 2, c('yellow', 3)).set(19, 16, c('orange', 2));
+  return p;
+}
+
+/** The same little person from behind, walking away up the map: the back of the head, no face. */
+export function figureBack(f: FigureLook, step = 0): Pixels {
+  const p = figure({ ...f, face: 'plain', tie: undefined, glasses: false, beard: undefined }, step);
+  const hx = 7;
+  const hy = 2 + (f.small ? 4 : 0);
+  const skin = f.face === 'whiteface' ? c('paper', 4) : c(f.skin ?? 'skin', 2);
+  const hair = f.hair && f.hairStyle !== 'bald' ? c(f.hair[0], f.hair[1]) : skin;
+  p.rect(hx, hy + 1, 6, 5, hair);
+  // the ears, and the neck under short hair
+  p.set(hx - 1, hy + 3, skin).set(hx + 6, hy + 3, skin);
+  if (hair !== skin && f.hairStyle !== 'long') p.rect(hx + 1, hy + 5, 4, 1, skin);
+  return p;
+}
+
+/** Two pixels wide, from (x0, y0) down to (x1, y1): a limb drawn at a slant. */
+function limb(p: Pixels, x0: number, y0: number, x1: number, y1: number, col: number): void {
+  for (let y = y0; y <= y1; y++) {
+    const x = Math.round(x0 + ((x1 - x0) * (y - y0)) / Math.max(1, y1 - y0));
+    p.rect(x, y, 2, 1, col);
+  }
+}
+
+/**
+ * The same little person from the side, walking right (mirror it to walk left): one eye, the
+ * nose in front, hair at the back, one arm swinging and the legs striding (`step` 0) or passing
+ * (`step` 1). Same size, colors and outfits as `figure`.
+ */
+export function figureSide(f: FigureLook, step = 0): Pixels {
+  const p = blank();
+  const O = c('ink', 0);
+  const s = f.small ? 2 : 0;
+  const skin = f.face === 'whiteface' ? c('paper', 4) : c(f.skin ?? 'skin', 2);
+  const hx = 7;
+  const hy = 2 + s * 2;
+  // head, the nose poking out in front
+  p.rect(hx - 1, hy, 8, 7, O);
+  p.rect(hx, hy + 1, 6, 5, skin);
+  p.set(hx + 6, hy + 3, skin);
+  // hair, over the top and down the back
+  if (f.hair && f.hairStyle !== 'bald') {
+    const hc = c(f.hair[0], f.hair[1]);
+    p.rect(hx, hy, 6, 2, hc).rect(hx, hy + 1, 2, 3, hc);
+    if (f.hairStyle === 'long') p.rect(hx - 1, hy + 1, 2, 7, hc);
+    if (f.hairStyle === 'bun') p.rect(hx - 2, hy - 1, 3, 3, hc);
+    if (f.hairStyle === 'pigtails') p.rect(hx - 3, hy + 2, 3, 3, hc);
+    if (f.hairStyle === 'wild') p.rect(hx - 3, hy, 3, 4, hc).rect(hx, hy - 1, 6, 1, hc);
+  }
+  // face: one eye, looking ahead
+  if (f.face === 'shades') p.rect(hx + 3, hy + 2, 4, 2, O);
+  else if (f.face === 'eyepatch') p.rect(hx + 3, hy + 2, 3, 2, O).line(hx, hy + 1, hx + 3, hy + 2, O);
+  else p.set(hx + 4, hy + 3, O);
+  if (f.glasses) p.frame(hx + 3, hy + 2, 3, 3, c('brass', 2)).rect(hx + 1, hy + 3, 2, 1, c('brass', 2));
+  if (f.face === 'whiteface' || f.face === 'auguste' || f.face === 'hobo') p.rect(hx + 6, hy + 3, 2, 2, c('red', 3)); // the red nose
+  if (f.face === 'auguste') p.set(hx + 3, hy + 4, c('pink', 2)).rect(hx + 3, hy + 5, 3, 1, c('red', 2));
+  if (f.face === 'hobo')
+    p.rect(hx + 2, hy + 5, 4, 1, c('night', 2))
+      .rect(hx + 4, hy + 5, 2, 1, c('paper', 4))
+      .set(hx + 3, hy + 4, c('red', 3));
+  else if (f.face === 'sad') p.rect(hx + 4, hy + 5, 2, 1, O).set(hx + 3, hy + 6, O);
+  else if (f.face === 'happy' || f.face === 'auguste' || f.face === 'whiteface') p.set(hx + 3, hy + 5, O).rect(hx + 4, hy + 6, 2, 1, O);
+  else p.rect(hx + 4, hy + 5, 2, 1, f.face === 'shades' ? O : c('red', 1));
+  if (f.beard) p.rect(hx + 2, hy + 4, 5, 3, c(f.beard[0], f.beard[1])).set(hx + 5, hy + 5, c('red', 1));
+  // hats
+  if (f.hat) {
+    const hc = c(f.hat.color[0], f.hat.color[1]);
+    const hd = c(f.hat.color[0], Math.max(0, f.hat.color[1] - 2));
+    switch (f.hat.kind) {
+      case 'fedora':
+        p.rect(hx - 2, hy, 11, 1, hd)
+          .rect(hx, hy - 3, 6, 3, hc)
+          .rect(hx, hy - 1, 6, 1, c('red', 1));
+        break;
+      case 'crown':
+        p.rect(hx, hy - 2, 6, 2, c('brass', 3))
+          .set(hx, hy - 3, c('brass', 4))
+          .set(hx + 2, hy - 3, c('brass', 4))
+          .set(hx + 5, hy - 3, c('brass', 4))
+          .set(hx + 4, hy - 1, c('red', 3));
+        break;
+      case 'cap':
+        p.rect(hx, hy - 1, 6, 2, hc).rect(hx + 6, hy, 3, 1, hd);
+        break;
+      case 'santa':
+        p.rect(hx - 1, hy, 8, 1, c('paper', 4))
+          .rect(hx, hy - 2, 6, 2, c('red', 3))
+          .rect(hx - 2, hy - 3, 2, 2, c('red', 3))
+          .set(hx - 3, hy - 2, c('paper', 4));
+        break;
+      case 'top':
+        p.rect(hx - 1, hy, 8, 1, hd)
+          .rect(hx, hy - 5, 6, 5, hc)
+          .rect(hx, hy - 2, 6, 1, c('red', 2));
+        break;
+      case 'tricorn':
+        p.rect(hx - 2, hy - 1, 10, 2, hc)
+          .set(hx - 2, hy - 2, hc)
+          .set(hx + 7, hy - 2, hc)
+          .rect(hx + 1, hy - 3, 4, 2, hc);
+        break;
+      case 'beret':
+        p.rect(hx - 1, hy - 1, 7, 2, hc).set(hx + 2, hy - 2, hc);
+        break;
+      case 'bandana':
+        p.rect(hx, hy - 1, 6, 2, hc)
+          .set(hx - 1, hy + 1, hc)
+          .set(hx - 2, hy + 2, hc);
+        break;
+      case 'helmet':
+        p.rect(hx - 1, hy - 2, 8, 3, hc).rect(hx - 1, hy, 8, 1, hd);
+        break;
+    }
+  }
+  // body, side on: narrower than face on
+  const by = hy + 7;
+  const bh = f.small ? 5 : 6;
+  const shirt = c(f.shirt[0], f.shirt[1]);
+  p.rect(hx, by, 7, bh, O);
+  p.rect(hx + 1, by, 5, bh - 1, shirt);
+  if (f.tie) p.rect(hx + 5, by, 1, 4, c(f.tie[0], f.tie[1]));
+  // legs, striding or passing
+  const ly = by + bh;
+  if (f.dress) {
+    const dc = c(f.shirt[0], Math.max(0, f.shirt[1] - 1));
+    for (let y = ly - 1; y < 19; y++) {
+      const w = Math.min(2, Math.floor((y - ly + 1) / 2));
+      p.rect(hx + 1 - w, y, 5 + w * 2, 1, dc);
+    }
+    if (step) p.rect(hx + 2, 19, 3, 1, O);
+    else p.rect(hx, 19, 2, 1, O).rect(hx + 5, 19, 2, 1, O);
+  } else {
+    const pc = c(...(f.pants ?? ['blue', 1]));
+    if (step) p.rect(hx + 2, ly, 3, 19 - ly, pc).rect(hx + 2, 19, 4, 1, O);
+    else {
+      limb(p, hx + 1, ly, hx - 1, 18, pc);
+      limb(p, hx + 4, ly, hx + 6, 18, pc);
+      p.rect(hx - 1, 19, 3, 1, O).rect(hx + 6, 19, 3, 1, O);
+    }
+  }
+  // the near arm: swinging, held out in front, or raised
+  const arm = c(f.shirt[0], Math.max(0, f.shirt[1] - 1));
+  if (f.arms === 'up')
+    p.rect(hx + 5, by, 2, 2, arm)
+      .rect(hx + 7, by - 4, 2, 5, arm)
+      .rect(hx + 7, by - 5, 2, 1, skin);
+  else if (f.arms === 'out') p.rect(hx + 3, by + 1, 6, 2, arm).rect(hx + 9, by + 1, 2, 2, skin);
+  else {
+    const x1 = step ? hx + 2 : hx + 4;
+    limb(p, hx + 2, by + 1, x1, by + 4, arm);
+    p.rect(x1, by + 5, 2, 1, skin);
+  }
+  return p;
+}
+
+/** Doc Leo side on, walking right: red sneakers, and the rubber chicken trotting behind. */
+export function docLeoSide(step = 0): Pixels {
+  const p = figureSide(DOC_LEO, step);
+  p.map((_x, y, k) => (y === 19 && k === c('ink', 0) ? c('red', 3) : k));
+  // the chicken on its leash, behind him
+  const bob = step ? 1 : 0;
+  p.line(8, 15, 4, 16 + bob, c('red', 2));
+  p.rect(0, 17 - bob, 3, 2, c('yellow', 3))
+    .set(3, 16 - bob, c('yellow', 3))
+    .set(4, 16 - bob, c('orange', 2));
   return p;
 }
 
