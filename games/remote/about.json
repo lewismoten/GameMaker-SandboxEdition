@@ -9,5 +9,19 @@
   "exe": "REMOTE.EXE",
   "sound": "sb",
   "tinHeart": { "map": "den.map", "at": [30, 16] },
-  "easterEgg": { "map": "void.map", "at": [32, 4] }
+  "easterEgg": { "map": "void.map", "at": [32, 4] },
+  "sameEverySide": [
+    "den.mon#10",
+    "den.mon#17",
+    "den.mon#19",
+    "kitchen.mon#10",
+    "kitchen.mon#17",
+    "kitchen.mon#19",
+    "ride.mon#10",
+    "ride.mon#17",
+    "ride.mon#19",
+    "void.mon#10",
+    "void.mon#17",
+    "void.mon#19"
+  ]
 }
