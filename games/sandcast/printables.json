@@ -8,7 +8,7 @@
     "F": "Toss a tennis ball",
     "B": "Throw a splash of water",
     "Space": "Fling a clod of sand",
-    "P": "Pick up"
+    "G": "Pick up"
   },
   "items": [
     {
@@ -159,7 +159,7 @@
           "hints": [
             {
               "q": "Where is the shovel?",
-              "a": "Right beside Teddy's toy chest in the southwest corner, where you start. Press P to pick it up."
+              "a": "Right beside Teddy's toy chest in the southwest corner, where you start. Press G to pick it up."
             },
             {
               "q": "How do I get into Anthill Keep?",
@@ -226,7 +226,7 @@
             },
             {
               "q": "Just show me where to dig.",
-              "a": "Pick up the shovel (P) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press P to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
+              "a": "Pick up the shovel (G) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press G to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
               "sketch": {
                 "rows": [
                   "---------|",

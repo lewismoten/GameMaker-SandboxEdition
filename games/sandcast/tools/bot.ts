@@ -16,7 +16,7 @@ export const SCAN = {
   right: 0x4d,
   space: 0x39,
   b: 0x30,
-  p: 0x19,
+  g: 0x22,
   f: 0x21,
   spin: 0x04,
 } as const;

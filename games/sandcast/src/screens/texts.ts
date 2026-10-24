@@ -43,12 +43,12 @@ This morning she came through the sandbox at full speed. Every castle fell flat.
 
 Then she flopped down on the patio for a nap, right on top of the Crown of the Sandbox.
 
-Your shovel lies by the toy chest. Stand on it and press P, then dig through the dunes to Anthill Keep.
+Your shovel lies by the toy chest. Stand on it and press G, then dig through the dunes to Anthill Keep.
 `);
 
 export const HELP = wrap(`
 |ARROWS or W A S D  walk
-|P      pick up
+|G      pick up
 |SPACE  fling sand (shovel)
 |B      throw water (bucket)
 |F      toss a tennis ball
@@ -110,7 +110,7 @@ Two flags lift this gate, one on each half. Hose currents flow one way only: rid
 
 Gwinn tipped the kiddie pool over, and now the beach has real tides.
 
-Find the bucket (P). Balloons fill it; B throws water. Crabs flip for water. With the bucket, walk into a dashed outline to pack a wall.
+Find the bucket (G). Balloons fill it; B throws water. Crabs flip for water. With the bucket, walk into a dashed outline to pack a wall.
 
 Bring 3 golden shells to the sea gate. Mind the tide!
 `),
@@ -221,7 +221,7 @@ Teddy is a Pembroke Welsh Corgi, the knight of the backyard sandbox. His big sis
 To play, run SANDCAST.EXE. Press F1 while playing for help.
 
 |  Arrows or W A S D .. walk
-|  P ....... pick up
+|  G ....... pick up
 |  SPACE ... fling sand
 |  B ....... throw water
 |  F ....... toss a tennis ball

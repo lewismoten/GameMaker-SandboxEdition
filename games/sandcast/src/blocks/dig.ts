@@ -1,5 +1,5 @@
 // Gwinn's dig: a pocket of wet sand under one lone dune in the sandbox, where something
-// felt was buried. The egg itself (an object Teddy picks up with P), the word pressed into
+// felt was buried. The egg itself (an object Teddy picks up with G), the word pressed into
 // the sand where it lay, the little sandcastle that only lets Teddy by once he carries it,
 // and the paw prints that lead to the dune.
 import { OCHRE, PINK, RED, SAND, WATER, WOOD } from '../art/palette';

@@ -68,7 +68,7 @@ export function addPickups(): Pixels {
     bg.add('starfish', onSand(73, p), { score: 500, effect: CTR.toys, eamt: 1, touch: 'sand0' });
   }
   {
-    // A tennis ball: P picks it up, F tosses it. Gwinn will drop anything for one.
+    // A tennis ball: G picks it up, F tosses it. Gwinn will drop anything for one.
     const p = sprite20();
     ball(p, 10, 11, 5, YELLOW, 3);
     for (let y = 5; y < 17; y++) for (let x = 4; x < 16; x++) if (Math.hypot(x - 10, y - 11) <= 5 && dither(x, y, 0.35)) p.set(x, y, GRASS[5]);
@@ -167,7 +167,7 @@ export function addPickups(): Pixels {
     bg.add('balloon', onSand(77, p), { effect: SEQ.splash, eamt: 3, score: 20, touch: 'sand0' });
   }
   {
-    // The shovel (picked up with P; Space flings sand; dig dunes by walking into them).
+    // The shovel (picked up with G; Space flings sand; dig dunes by walking into them).
     const p = art(
       [
         '',

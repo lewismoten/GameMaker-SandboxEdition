@@ -62,7 +62,7 @@ Press F1 while playing for
 help.
 
   Arrows or W A S D .. walk
-  P ....... pick up
+  G ....... pick up
   SPACE ... fling sand
   B ....... throw water
   F ....... toss a tennis ball
