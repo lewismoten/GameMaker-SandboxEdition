@@ -125,6 +125,14 @@ made from the game's files; a monster's name for its Cast card is the one the mo
 keeps in the companion, `editors/monsters/monsterNames.ts`); `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
 picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
 
+A new game's opening (`tools/opening/`): "+ Make a new game" and the start scene's 🎬 Opening…
+(`openingDialog.ts`) offer the "Made with Game-Maker: Sandbox Edition" card as an animation, a
+still picture or none, and a "<name> PRESENTS" card (`openingFields.ts`). The card is made once by
+`games/kit/madewith.ts` into `public/opening/`; `openingCards.ts` fetches it and draws the presents
+card with the Scene maker's renderer, and `openingWire.ts` puts them first in the title `.LST` as
+the game's own files (what was added is kept in the companion, so it comes out again exactly). The
+Sandbox, CD and imported games never get one.
+
 The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows a level as seen in
 grayscale and with color-vision differences (`colorVision.ts`) and lists colors that look alike
 there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a designer dismissed as meant to
