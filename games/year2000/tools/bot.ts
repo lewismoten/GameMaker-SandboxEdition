@@ -4,7 +4,24 @@
 import { MLEN } from '../../../web/src/formats/map';
 import { INF_REPEAT } from '../../../web/src/formats/character';
 import type { Sim } from './sim';
-import { SEQ } from '../src/ids';
+import { MON, SEQ } from '../src/ids';
+
+/** Traffic and other unzappable movers that hurt on a bump: the bot looks both ways for these. */
+const TRAFFIC = new Set<number>([
+  MON.carR,
+  MON.carL,
+  MON.fastR,
+  MON.fastL,
+  MON.truckR,
+  MON.truckL,
+  MON.citicar,
+  MON.skater,
+  MON.skaterV,
+  MON.dino,
+  MON.dinoV,
+  MON.buggy,
+  MON.buggyV,
+]);
 
 export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
 const DIRS: [number, number, number][] = [
@@ -60,7 +77,7 @@ export class Bot {
 
   /** Breadth-first path from Dex's cell to any goal cell; returns cells (excluding the start). */
   path(goals: Set<number>): [number, number][] | null {
-    const { bx, by } = this.sim.pos;
+    const { bx, by } = this.cell();
     const start = by * MLEN + bx;
     const prev = new Map<number, number>([[start, -1]]);
     const q = [start];
@@ -125,10 +142,35 @@ export class Bot {
     if (this.sim.isHeld(SCAN.space)) this.sim.release(SCAN.space);
   }
 
+  /** The cell Dex is mostly in (a tube or a belt can leave him between cells). */
+  cell(): { bx: number; by: number } {
+    const p = this.sim.pos;
+    return { bx: Math.round(p.x / 20), by: Math.round(p.y / 20) };
+  }
+
+  /** Taps toward the grid, a frame (5 pixels) at a time, until Dex is within 2 pixels of it. */
+  private async align(): Promise<boolean> {
+    const sim = this.sim;
+    for (let t = 0; t < 12; t++) {
+      const p = sim.pos;
+      const { bx, by } = this.cell();
+      const ex = bx * 20 - p.x;
+      const ey = by * 20 - p.y;
+      const k = Math.abs(ex) > 2 ? (ex > 0 ? SCAN.right : SCAN.left) : Math.abs(ey) > 2 ? (ey > 0 ? SCAN.down : SCAN.up) : 0;
+      if (!k) return true;
+      sim.press(k);
+      if (!(await this.tick())) return false;
+      sim.release(k);
+      for (let i = 0; i < 4; i++) if (!(await this.tick())) return false;
+    }
+    return true;
+  }
+
   /** Walks one block in a direction. */
   private async step(nx: number, ny: number): Promise<boolean> {
     const sim = this.sim;
-    const { bx, by } = sim.pos;
+    if ((sim.pos.fx || sim.pos.fy) && !(await this.align())) return false;
+    const { bx, by } = this.cell();
     const dir = DIRS.find(([dx, dy]) => bx + dx === nx && by + dy === ny);
     if (!dir) return false;
     for (const [, , k] of DIRS) if (k !== dir[2]) sim.release(k);
@@ -141,7 +183,7 @@ export class Bot {
     for (let t = 0; t < 40; t++) {
       if (!(await this.tick())) return false;
       const p = sim.pos;
-      if (p.bx === nx && p.by === ny && p.fx === 0 && p.fy === 0) {
+      if (Math.abs(p.x - nx * 20) <= 2 && Math.abs(p.y - ny * 20) <= 2) {
         return true;
       }
     }
@@ -164,7 +206,7 @@ export class Bot {
     const w = this.w;
     for (let mm = 0; mm < w.mm.length; mm++) {
       const n = w.mm[mm].monnum;
-      if (n >= 64 || (w.mon[n]?.power ?? 0) < 200) continue;
+      if (!TRAFFIC.has(n)) continue;
       const mi = w.mi[mm];
       const mx = mi.curx[0] * 20 + mi.curx[1];
       const my = mi.cury[0] * 20 + mi.cury[1];

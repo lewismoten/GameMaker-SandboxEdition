@@ -67,7 +67,13 @@ export function bbsNameWidth(ctx: CanvasRenderingContext2D, size: number, full =
  * Paints the name on a canvas, on a black strip, its left (or center) at x and its
  * baseline at y. Returns the width it took.
  */
-export function paintBbsName(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, opts: { full?: boolean; align?: 'left' | 'center' } = {}): number {
+export function paintBbsName(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+  opts: { full?: boolean; align?: 'left' | 'center' } = {},
+): number {
   const full = opts.full ?? true;
   const runs: [string, number][] = [
     ...(full ? ([['THE ', WORDS]] as [string, number][]) : []),

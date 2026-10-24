@@ -13,6 +13,8 @@ import { join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
+import { recordedAudioNotice, recordedClips } from '../src/export/recordedAudio';
+import { fictionNote } from '../src/export/fiction';
 import { boxColors, iconPicture } from '../src/export/macApp';
 import { folderName, LINUX_ARCHES, linuxTarGz, type LinuxAppOptions, type LinuxArch } from '../src/export/linuxApp';
 import { GameFiles } from '../src/project/files';
@@ -30,7 +32,10 @@ const flags = new Set(['--all']);
 const valued = new Set(['--html', '--title', '--id', '--out']);
 const ids = process.argv.slice(2).filter((a, i, all) => !flags.has(a) && !valued.has(a) && !valued.has(all[i - 1]));
 const out = resolve(arg('--out') ?? resolve(web, '../dist/linux'));
-const players = Object.fromEntries(LINUX_ARCHES.map((a) => [a, new Uint8Array(readFileSync(resolve(web, `public/linux/GameMakerPlayer-${a}`)))])) as Record<LinuxArch, Uint8Array>;
+const players = Object.fromEntries(LINUX_ARCHES.map((a) => [a, new Uint8Array(readFileSync(resolve(web, `public/linux/GameMakerPlayer-${a}`)))])) as Record<
+  LinuxArch,
+  Uint8Array
+>;
 
 async function write(o: Omit<LinuxAppOptions, 'players'>): Promise<void> {
   const file = join(out, `${folderName(o.title)}.tar.gz`);
@@ -47,7 +52,13 @@ async function main(): Promise<void> {
     return;
   }
   const catalog = cdCatalog(cd);
-  const named = ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  const named = ids.map(
+    (id) =>
+      catalog.find((e) => e.id === id) ??
+      (() => {
+        throw new Error(`No game "${id}" in the catalog.`);
+      })(),
+  );
   for (const e of named) if (!catalogDownloadable(e)) throw new Error(`"${e.id}" is another author's game; it is offered play-only, without downloads.`);
   // the same games the web app's Download button offers
   const picked = process.argv.includes('--all') ? catalog.filter(catalogDownloadable) : named;
@@ -64,7 +75,9 @@ async function main(): Promise<void> {
       html: page,
       author: e.author ?? e.company,
       year: e.year,
+      fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
+      audio: recordedAudioNotice(recordedClips(new GameFiles(entries))),
       colors: boxColors(e.original?.box),
     });
   }

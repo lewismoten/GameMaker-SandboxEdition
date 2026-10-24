@@ -27,8 +27,8 @@ export function paintEgg(cv: Canvas, cx: number, cy: number, h: number): void {
       const u = (x - cx) / rx;
       const v = (y - cy) / ry;
       // the herald's quartering: gold diamonds on green
-      const dx = Math.abs(((x - cx) / (3.2 * s) + 100.5) % 1 - 0.5);
-      const dy = Math.abs(((y - cy) / (3.2 * s) + 100.5) % 1 - 0.5);
+      const dx = Math.abs((((x - cx) / (3.2 * s) + 100.5) % 1) - 0.5);
+      const dy = Math.abs((((y - cy) / (3.2 * s) + 100.5) % 1) - 0.5);
       let c = dx + dy < 0.22 ? GOLD : FELT;
       // felt fuzz and the round shading of the shell
       const fuzz = tnoise(x * 3, y * 3, 2.5, 20, 7) * 0.18;
@@ -76,7 +76,14 @@ export function nestBlock(ground: (x: number, y: number) => RGB): Canvas {
   cv.ellipse(10, 14.6, 5.4, 2, [70, 52, 24]);
   for (let k = 0; k < 14; k++) {
     const a = (k / 14) * Math.PI * 2;
-    cv.line(10 + Math.cos(a) * 7, 15 + Math.sin(a) * 2.8, 10 + Math.cos(a + 0.9) * 5, 15 + Math.sin(a + 0.9) * 2.2, 0.6, k % 2 ? [214, 180, 96] : [168, 132, 60]);
+    cv.line(
+      10 + Math.cos(a) * 7,
+      15 + Math.sin(a) * 2.8,
+      10 + Math.cos(a + 0.9) * 5,
+      15 + Math.sin(a + 0.9) * 2.2,
+      0.6,
+      k % 2 ? [214, 180, 96] : [168, 132, 60],
+    );
   }
   return cv;
 }

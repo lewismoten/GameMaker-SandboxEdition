@@ -25,6 +25,11 @@ export const ROUTES = {
     description:
       'Sit down at a mid-90s PC: switch it on, run Game-Maker from C:\\GM, pick a game from the disk box or the shareware catalog, and play or design it just like in 1994 — in your browser.',
   },
+  dos: {
+    title: `DOS Game-Maker · ${PRODUCT}`,
+    description:
+      'Go straight to the 1994 PC: it boots into Game-Maker from its CD, with a disk menu of games to play or change, the Owner’s Guide, and a BBS to call. No desk around it, and it shares the desk’s saves.',
+  },
   guide: {
     title: `Guide · ${PRODUCT}`,
     description: `How to use ${PRODUCT}: making blocks, monsters and characters, building maps and scenes, sounds and music, testing and exporting your game for the web or DOS.`,
@@ -33,6 +38,15 @@ export const ROUTES = {
     title: `The cast · ${PRODUCT}`,
     description:
       'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
+  },
+  credits: {
+    title: `Credits · ${PRODUCT}`,
+    description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, the software and third-party pieces, the AI tools and the people, and who made what in The Bard of Bizarre’s games.`,
+  },
+  achievements: {
+    title: `What you’ve done · ${PRODUCT}`,
+    description:
+      'Your achievements: games made, played and finished, walkthroughs watched, tin hearts found and the programs tried on the 1994 desk, with when each was unlocked. Kept in your browser.',
   },
   mac: {
     title: `Playing the games on a Mac · ${PRODUCT}`,

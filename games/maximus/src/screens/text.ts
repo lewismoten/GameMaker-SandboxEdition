@@ -36,10 +36,10 @@ SECTOR CHARTS
 Fly into the middle of a planet to land. Planets with a gold signal beside them hold a shard. The planet card shows a long-range scan: green is you, gold is the vault. Trading posts sell supplies: nudge a pad to buy, one of each per visit. A jump ring behind gates takes you on to the next sector.
 
 ON FOOT
-Left/Right walk (the number pad's 4/6/8/2 work as arrows too). Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. P picks things up. To go back to orbit, walk into the uplink beacon.
+Left/Right walk (the number pad's 4/6/8/2 work as arrows too). Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. P picks things up and O drops one. To go back to orbit, walk into the uplink beacon.
 
 UNDER THE SEA
-The diving bell swims with the arrows and coasts when you let go. Surface at the buoy to leave.
+The diving bell swims with the arrows and holds still when you let go. Surface at the buoy to leave.
 
 ROVER WORLDS
 The rover drives fast and rides the lifts. With Spring Shocks, Up makes it jump.
@@ -59,7 +59,10 @@ Up Spring Shocks (rover)
 T Hail (say hello)
 
 VAULTS
-Credit doors cost 10 credits to open. Force fields blink on and off. Crystal walls shatter at a touch.
+Credit doors cost 10 credits to open. Force fields blink on and off. Crystal walls shatter at a touch. A healing spring in the caves mends 100 hit points in one drink, then runs dry until you land again.
+
+THE HEART
+A seal of light bars the way out. Crack the Heart Eye three times (plasma, a shield orb, or ramming it, which hurts) and its light will come to you and open the seal.
 
 KEYS
 F1 help  F2 status
@@ -149,7 +152,7 @@ Send ${price} (check or money order, US funds) to:
 
   Sandbox Software
   Attn: Maximus Registration
-  P.O. Box 4217
+  P.O. Box 000
   Pittsburgh, PA 15213
 
 Please tell us where you got your copy.
@@ -171,7 +174,7 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / D ... pick up / drop
+  P / O ... pick up / drop
   Q / E ... dash left/right
   Z X C V H W  module weapons
   F ....... hover

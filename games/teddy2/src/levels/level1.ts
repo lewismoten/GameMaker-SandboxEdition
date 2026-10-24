@@ -9,6 +9,7 @@
 import { LevelMap, type Level } from './level';
 import { ATTIC, BASE, G, UP, art, houseTiles } from './level1Tiles';
 import { houseBeasts } from './level1Beasts';
+import { addTinHeart } from '../sprites/hidden';
 import { bandAt } from './common';
 import { sky } from '../blocks/tiles';
 
@@ -16,7 +17,12 @@ export function house(): Level {
   const bs = houseTiles();
   const beasts = houseBeasts();
   // THE CHEZ in the driveway, Doc Leo beside it, waiting for the collar.
-  bs.chez(() => sky(3), 'collar', sky(bandAt(37, G)), () => sky(3));
+  bs.chez(
+    () => sky(3),
+    'collar',
+    sky(bandAt(37, G)),
+    () => sky(3),
+  );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => `sky${bandAt(y, G)}`);
   for (const [cx, cy] of [
@@ -99,6 +105,7 @@ export function house(): Level {
   m.set(9, 36, 'klubPhoto');
   m.set(12, 38, 'tv00').set(12, 39, 'tv01');
   m.set(6, 37, 'signSniff').set(7, 37, 'signSniffR');
+  m.set(2, 37, 'signWoof').set(3, 37, 'signWoofR');
   for (const x of [2, 4, 6, 11, 13]) m.set(x, 39, x === 4 || x === 6 ? 'rug' : 'confetti');
   // The hall: stairs up (ledges), the coat on its hook.
   // (the stairwell's top is ledges too, so Teddy comes up through it and walks on it)
@@ -167,8 +174,13 @@ export function house(): Level {
   m.rect(72, G, 20, 1, 'drive');
   const car = 77;
   m.set(car - 2, 38, 'charger00').set(car - 2, 39, 'charger01');
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
   // a hedge closes the yard off at both ends (the map wraps around)
   m.rect(90, 30, 10, 10, 'hedgeWall');
   m.rect(90, 29, 10, 1, 'hedgeTop');
@@ -240,6 +252,9 @@ export function house(): Level {
   for (const [x, y] of treats) m.treat(x, y);
   bs.def('toaster').birthMon = beasts.id('toast');
   bs.def('toaster').birthTime = 70;
+  // a tin heart up in the attic by the boxes, for a dog who bounces up through the hatch
+  // from Doc Leo's bed (100 points)
+  m.set(8, ATTIC - 1, addTinHeart(bs, m.get(8, ATTIC - 1)));
   m.mark('start', 4, 39);
   m.mark('exit', car, 39);
   void art;

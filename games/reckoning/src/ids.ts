@@ -55,6 +55,17 @@ export const MON = {
   straw: 28,
   /** Smoke curling up off the floor. Harmless. */
   smoke: 29,
+  /** The Devil striding to a new spot between stages (splashes bounce off while he moves). */
+  devilA1m: 30,
+  devilA2m: 31,
+  devilA3m: 32,
+  devilB1m: 33,
+  devilB2m: 34,
+  devilB3m: 35,
+  /** A milkshake from the second spout over the throne: a higher lob at the floor where he stands. */
+  shake2: 36,
+  /** A carton of almond milk set on the crate past the pit, now and then: so he never runs dry. */
+  carton: 37,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

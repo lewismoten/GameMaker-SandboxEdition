@@ -20,6 +20,21 @@ export class TextKeys {
   private aborting = false;
   private target?: EventTarget;
   enabled = true;
+  /**
+   * Something to wait for before a key is handed over (the BBS terminal's screen catching up
+   * with the line), or undefined when there is nothing. Keys typed meanwhile stay queued.
+   */
+  gate?: () => Promise<void> | undefined;
+
+  /** Resolves once the gate is open (what was sent is all on the screen). */
+  async settled(): Promise<void> {
+    for (let w = this.gate?.(); w; w = this.gate?.()) await w;
+  }
+
+  /** True while a program is being stopped (see abort). */
+  get stopping(): boolean {
+    return this.aborting;
+  }
 
   private onKey = (e: Event) => {
     const k = e as KeyboardEvent;
@@ -53,6 +68,8 @@ export class TextKeys {
 
   next(): Promise<Key> {
     if (this.aborting) return Promise.reject(new ProgramAborted());
+    const wait = this.gate?.();
+    if (wait) return wait.then(() => this.next());
     const k = this.queue.shift();
     if (k) return Promise.resolve(k);
     return new Promise((resolve, reject) => this.waiters.push({ resolve, reject }));
@@ -95,6 +112,8 @@ export function key(k: string): Key {
 
 /** Reads a line at the cursor, echoing to the screen. Returns null for Ctrl+C. */
 export async function readLine(screen: TextScreen, keys: TextKeys, history: string[] = [], maxLen = 120, a = 7): Promise<string | null> {
+  // the prompt before it may still be arriving (the BBS on a slow line): start where it ends
+  if (keys.gate) await keys.settled();
   let line = '';
   let pos = 0;
   let h = history.length;

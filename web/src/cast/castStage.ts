@@ -16,6 +16,7 @@ import { currentRoute, type ViewState } from '../urlState';
 import { spriteCanvases, type CastSprite } from './castSprite';
 import type { CastMember } from './castData';
 import { StageSound, type Effect } from './castSound';
+import { unlockAchievement } from '../achievements';
 
 /** The stage in its own pixels; the canvas is scaled up with smoothing off. */
 const W = 160;
@@ -147,20 +148,34 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     type: 'button',
     class: 'cast-stage-sound',
     onclick: () => {
-      sound.set(!sound.wanted);
+      // wanted but not started yet (no gesture until now): this click starts it, not turns it off
+      if (sound.wanted && !sound.playing) sound.start();
+      else sound.set(!sound.wanted);
       showSound();
     },
   });
   const showSound = () => {
-    soundBtn.setAttribute('aria-pressed', String(sound.wanted));
-    soundBtn.textContent = sound.wanted ? '🔊 Sound on' : '🔇 Sound off';
+    soundBtn.setAttribute('aria-pressed', String(sound.playing));
+    soundBtn.textContent = sound.playing
+      ? '🔊 Sound on'
+      : sound.wanted
+        ? `🔈 ${matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click'} for sound`
+        : '🔇 Sound off';
   };
   const playBtn = h('button', { type: 'button', class: 'cast-stage-play', onclick: () => setPlaying(!playing) });
   const prevBtn = h('button', { type: 'button', 'aria-label': 'Previous character', onclick: () => go(at - 1, true) }, '◀');
   const nextBtn = h('button', { type: 'button', 'aria-label': 'Next character', onclick: () => go(at + 1, true) }, '▶');
-  const pick = h('select', { 'aria-label': 'Pick a character', onchange: () => go(lineup.findIndex((m) => m.id === pick.value), true) });
+  const pick = h('select', {
+    'aria-label': 'Pick a character',
+    onchange: () =>
+      go(
+        lineup.findIndex((m) => m.id === pick.value),
+        true,
+      ),
+  });
 
   const current = () => lineup[at];
+  let paraded = 0;
   const spriteOf = (m: CastMember | { id: string }) => sprites.get(m.id);
   const centre = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
   const has = (...ids: string[]) => ids.every((id) => sprites.has(id));
@@ -216,6 +231,9 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   /** Someone on stage now: walking on when playing, else standing in the light. */
   function go(i: number, chosen = false): void {
     if (!lineup.length) return;
+    // the whole parade, start to end with no one picked: an achievement
+    paraded = chosen ? 0 : paraded + 1;
+    if (paraded > lineup.length) unlockAchievement('cast-parade');
     at = (i + lineup.length) % lineup.length;
     const m = current();
     pick.value = m.id;
@@ -288,20 +306,58 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   }
 
   /** A frame standing on the boards at x (bottom at the floor, `lift` above it), turned round or squeezed. */
-  function put(img: HTMLCanvasElement, px: number, lift = 0, left = false, squeeze = 1): number {
+  /**
+   * A frame with a soft light rim round it (the stage is dark, and so are some outlines: Carl's,
+   * Joe's, the camel's), made once per frame.
+   */
+  const rims = new WeakMap<HTMLCanvasElement, HTMLCanvasElement>();
+  function rimmed(img: HTMLCanvasElement): HTMLCanvasElement {
+    let out = rims.get(img);
+    if (!out) {
+      out = document.createElement('canvas');
+      out.width = img.width + 2;
+      out.height = img.height + 2;
+      const c = out.getContext('2d')!;
+      for (const [dx, dy] of [
+        [0, 1],
+        [2, 1],
+        [1, 0],
+        [1, 2],
+      ])
+        c.drawImage(img, dx, dy);
+      c.globalCompositeOperation = 'source-in';
+      c.fillStyle = 'rgba(232,226,255,0.55)';
+      c.fillRect(0, 0, out.width, out.height);
+      c.globalCompositeOperation = 'source-over';
+      c.drawImage(img, 1, 1);
+      rims.set(img, out);
+    }
+    return out;
+  }
+
+  function put(img0: HTMLCanvasElement, px: number, lift = 0, left = false, squeeze = 1, tilt = 0): number {
+    const img = rimmed(img0);
+    px -= 1;
+    lift -= 1;
     const top = FLOOR - img.height + 1 - lift;
     const w = Math.max(1, Math.round(img.width * squeeze));
     const ox = Math.round(px + (img.width - w) / 2);
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(ox + 2, FLOOR, Math.max(1, w - 4), 2);
+    ctx.save();
+    // rocking on its bottom (the Easter egg)
+    if (tilt) {
+      ctx.translate(ox + w / 2, FLOOR);
+      ctx.rotate(tilt);
+      ctx.translate(-(ox + w / 2), -FLOOR);
+    }
     if (left) {
-      ctx.save();
       ctx.translate(ox + w, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(img, 0, top, w, img.height);
-      ctx.restore();
     } else ctx.drawImage(img, ox, top, w, img.height);
-    return top;
+    ctx.restore();
+    return top + 1;
   }
 
   const cycle = (frames: HTMLCanvasElement[], now: number, ms: number) => frames[Math.floor(now / ms) % frames.length];
@@ -403,8 +459,15 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     if (!gone) {
       ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - fade : fade;
       // a waddle for one who walks on in a single frame, a hop for the tin heart
-      const lift = moving ? (s.sprite.hop ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : s.walk.length === 1 ? Math.floor(now / 160) % 2 : 0) : 0;
-      const top = put(frame, x, lift + Math.round(up), left, squeeze);
+      const lift = moving
+        ? s.sprite.hop
+          ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7)
+          : s.walk.length === 1
+            ? Math.floor(now / 160) % 2
+            : 0
+        : 0;
+      const tilt = moving && s.sprite.wobble ? Math.sin(now / 140) * 0.28 : 0;
+      const top = put(frame, x, lift + Math.round(up), left, squeeze, tilt);
       ctx.globalAlpha = 1;
       // Gwinn has Doc Leo's hat in her mouth, all the way off
       if (isGwinn(m)) {
@@ -503,8 +566,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
           if (loafGag(m) || m.id === 'goat' || needleGag(m)) {
             into('post', now);
             if (m.id === 'goat') sound.effect('goat/scream');
-          }
-          else {
+          } else {
             into('exit', now);
             say(undefined);
           }
@@ -552,7 +614,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   );
   // the sound starts with a tap on the stage or its controls (browsers, and iPhones most of all,
   // only let it start from a gesture)
-  root.addEventListener('click', () => sound.start());
+  root.addEventListener('click', () => (sound.start(), showSound()));
   canvas.addEventListener('click', () => setPlaying(!playing));
 
   const seen = new IntersectionObserver(([e]) => {
@@ -575,8 +637,9 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   };
   window.addEventListener('hashchange', onLeave);
 
-  fetch('./cast/sprites.json')
+  void fetch('./cast/sprites.json')
     .then((r) => (r.ok ? (r.json() as Promise<Record<string, CastSprite>>) : {}))
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- without it the chain's value is unknown
     .catch(() => ({}) as Record<string, CastSprite>)
     .then((all) => {
       for (const [id, sprite] of Object.entries(all)) {

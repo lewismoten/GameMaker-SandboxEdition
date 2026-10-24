@@ -57,7 +57,7 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
       const a = on ? CURATTR : MENUATTR;
       s.fill(x + 1, row, x + w - 2, row, a);
       if (!e && !p) continue;
-      s.write(x + 2, row, on ? a : e ? a : attr(8, 1), toCp437((e ?? p)!.title.slice(0, 40).padEnd(42)));
+      s.write(x + 2, row, on ? a : e ? a : attr(8, 1), toCp437((e ?? p).title.slice(0, 40).padEnd(42)));
       s.write(x + 44, row, on ? a : e ? STATE_ATTR[e.status] : attr(8, 1), toCp437(e ? STATE_TEXT[e.status] : 'not hidden yet').padEnd(15));
     }
     // more above or below: arrows on the frame
@@ -65,7 +65,12 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
     if (top + shown < rows) s.write(x + w - 3, y + 1 + shown, MENUATTR, '\x19');
     const found = list.filter((h) => h.found).length;
     s.fill(x + 1, y + shown + 2, x + w - 2, y + shown + 3, MENUATTR);
-    s.write(x + 2, y + shown + 2, MENUATTR, toCp437(`Found ${found} of ${list.length}.${found === list.length && list.length ? ' The trophy is on the desk.' : ''}`));
+    s.write(
+      x + 2,
+      y + shown + 2,
+      MENUATTR,
+      toCp437(`Found ${found} of ${list.length}.${found === list.length && list.length ? ' The trophy is on the desk.' : ''}`),
+    );
     s.write(x + 2, y + shown + 3, attr(7, 1), toCp437('Changes here never touch a saved game.'));
     s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose  Enter Find/Lose  S Set all  C Clear all  R Reset  Esc Back').padEnd(80).slice(0, 80));
     const k = await ui.keys.next();

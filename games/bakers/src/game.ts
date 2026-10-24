@@ -38,7 +38,11 @@ export function arrivedWith(level: number): number | undefined {
 }
 
 export const introName = (room: Room) =>
-  room.spec.cupboard ? `egg${room.spec.cupboard.scene}.lst` : room.spec.interlude ? `${room.spec.file}in.lst` : `in${String(room.spec.level).padStart(2, '0')}.lst`;
+  room.spec.cupboard
+    ? `egg${room.spec.cupboard.scene}.lst`
+    : room.spec.interlude
+      ? `${room.spec.file}in.lst`
+      : `in${String(room.spec.level).padStart(2, '0')}.lst`;
 
 /** The picture shown on the way out (only an interlude has one). */
 export const outroName = (room: Room) => (room.spec.interlude ? `${room.spec.file}out.lst` : '');
@@ -50,7 +54,20 @@ function noLinks(): Link[] {
 export function sceneFiles(room: Room): string[] {
   const s = room.spec;
   const hero = s.hero ?? 'leo';
-  return [`${s.file}.pal`, `${s.file}.map`, `${s.style}.bbl`, `${s.file}.mon`, 'mons.mbl', `${hero}.chr`, `${hero}.cbl`, 'leo.snd', `${s.song}.cmf`, introName(room), outroName(room), ...new Array(9).fill('')];
+  return [
+    `${s.file}.pal`,
+    `${s.file}.map`,
+    `${s.style}.bbl`,
+    `${s.file}.mon`,
+    'mons.mbl',
+    `${hero}.chr`,
+    `${hero}.cbl`,
+    'leo.snd',
+    `${s.song}.cmf`,
+    introName(room),
+    outroName(room),
+    ...new Array(9).fill(''),
+  ];
 }
 
 function scene(desc: string, files: string[], x: number, y: number): Scene {
@@ -76,7 +93,21 @@ function pos(room: Room): { x: number; y: number } {
 export function buildGame(rooms: Room[]): Game {
   const game = newGame(TITLE);
   const [title, end] = game.scenes;
-  title.files = ['title.lst', 'title.cmf', 'menu.gif', 'menu.cmf', 'story.lst', 'story.cmf', 'help.lst', 'credits.lst', 'scores.gif', 'loadgame.gif', 'savegame.gif', 'demo.rec', ...new Array(8).fill('')];
+  title.files = [
+    'title.lst',
+    'title.cmf',
+    'menu.gif',
+    'menu.cmf',
+    'story.lst',
+    'story.cmf',
+    'help.lst',
+    'credits.lst',
+    'scores.gif',
+    'loadgame.gif',
+    'savegame.gif',
+    'demo.rec',
+    ...new Array(8).fill(''),
+  ];
   end.desc = 'The Thirteenth';
   end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];
 

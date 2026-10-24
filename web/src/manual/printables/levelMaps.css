@@ -1,0 +1,151 @@
+/* Level Maps (levelMaps.ts): printed pages of SVG, and on screen a list of the maps beside the
+   one picked, in a view to zoom and drag (panZoom.ts, styled with the World Map's .wm-view). */
+.pp-sheet.pp-lm {
+  background: #fffdf7;
+}
+
+.pp-sheet.pp-lm .lm-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lm-view {
+  display: flex;
+  gap: 12px;
+  align-self: stretch;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  color: #efe5cc;
+  font:
+    13px system-ui,
+    sans-serif;
+}
+
+.lm-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 220px;
+  flex: none;
+  min-height: 0;
+}
+
+.lm-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lm-list button {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lm-list button:hover {
+  border-color: #c9c1a680;
+}
+
+.lm-list button[aria-current='true'] {
+  background: #efe9d6;
+  color: #1d1a14;
+}
+
+.lm-print {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.lm-print label {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.lm-print input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: none;
+}
+
+.lm-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.lm-stage .wm-view {
+  animation: none;
+  background: #fffdf7;
+}
+
+.lm-map {
+  max-width: none;
+  user-select: none;
+}
+
+.lm-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lm-legend {
+  margin: 0;
+  font-size: 12px;
+}
+
+.lm-k {
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.lm-k-start {
+  background: #17762f;
+}
+
+.lm-k-exit {
+  background: #1d4e9e;
+}
+
+.lm-k-end {
+  background: #b3261e;
+}
+
+@media (max-width: 700px) {
+  .lm-view {
+    flex-direction: column;
+  }
+
+  .lm-side {
+    width: auto;
+  }
+
+  .lm-list {
+    max-height: 132px;
+    flex: none;
+  }
+}

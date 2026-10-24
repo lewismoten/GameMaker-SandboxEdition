@@ -2,7 +2,25 @@
 
 // ---- chords -------------------------------------------------------------------------------
 
-export const PC: Record<string, number> = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
+export const PC: Record<string, number> = {
+  C: 0,
+  'C#': 1,
+  Db: 1,
+  D: 2,
+  'D#': 3,
+  Eb: 3,
+  E: 4,
+  F: 5,
+  'F#': 6,
+  Gb: 6,
+  G: 7,
+  'G#': 8,
+  Ab: 8,
+  A: 9,
+  'A#': 10,
+  Bb: 10,
+  B: 11,
+};
 /** Per quality: the chord's tones (from the root) and the three the comping voices play (thirds, sevenths and a color; the bass has the root). */
 export const QUALITY: Record<string, { tones: number[]; comp: number[] }> = {
   '': { tones: [0, 4, 7], comp: [0, 4, 7] },
@@ -268,7 +286,16 @@ export const BUZZ: Sec = {
 export const SNAP: Sec = {
   name: 'snap',
   chords: ['Dm7', 'Dm7', 'Dm7', 'Dm7', 'Dm7', 'Dm7', 'Dm7', 'Dm7'],
-  tune: ['A5 q., G5 e, E5 q, D5 q', 'r w', 'C5 e, D5 e, F5 e, A5 e, ~C6 q, A5 q', 'r w', 'A5 q., G5 e, E5 q, D5 q', 'r h, F5 q, E5 q', 'D5 e, F5 e, A5 e, C6 e, B5 q, G5 q', 'A5 w'],
+  tune: [
+    'A5 q., G5 e, E5 q, D5 q',
+    'r w',
+    'C5 e, D5 e, F5 e, A5 e, ~C6 q, A5 q',
+    'r w',
+    'A5 q., G5 e, E5 q, D5 q',
+    'r h, F5 q, E5 q',
+    'D5 e, F5 e, A5 e, C6 e, B5 q, G5 q',
+    'A5 w',
+  ],
 };
 
 /** Last call: a wistful jazz waltz in A minor. */
@@ -276,5 +303,22 @@ export const WALTZ: Sec = {
   name: 'waltz',
   bpb: 3,
   chords: ['Am7', 'Am7', 'Dm7', 'G7', 'Cmaj7', 'Fmaj7', 'Bm7b5', 'E7', 'Am7', 'Am7', 'Dm7', 'G7', 'Cmaj7', 'Fmaj7', 'Bm7b5 E7', 'Am7'],
-  tune: ['E5 h, A5 q', 'G5 h.', 'F5 h, D5 q', 'B4 h.', 'G5 q, E5 q, C5 q', 'A5 h, F5 q', 'D5 q, F5 q, A5 q', 'G#5 h.', 'A5 h, E5 q', 'C6 h, B5 q', 'A5 q, F5 q, D5 q', 'B4 h, D5 q', 'G5 h, E5 q', 'A5 q, C6 q, A5 q', 'F5 q, D5 q, B4 e, G#4 e', 'A4 h.'],
+  tune: [
+    'E5 h, A5 q',
+    'G5 h.',
+    'F5 h, D5 q',
+    'B4 h.',
+    'G5 q, E5 q, C5 q',
+    'A5 h, F5 q',
+    'D5 q, F5 q, A5 q',
+    'G#5 h.',
+    'A5 h, E5 q',
+    'C6 h, B5 q',
+    'A5 q, F5 q, D5 q',
+    'B4 h, D5 q',
+    'G5 h, E5 q',
+    'A5 q, C6 q, A5 q',
+    'F5 q, D5 q, B4 e, G#4 e',
+    'A4 h.',
+  ],
 };

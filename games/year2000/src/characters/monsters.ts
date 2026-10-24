@@ -48,6 +48,10 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   const ROBOT = 120;
   // Chasers short-circuit when they bump into Dex (power under 100): one hit and done.
   const CHASER = 90;
+  // Traffic, skaters, dinosaurs and buggies: one bump, one hit (see car() and off() below).
+  const TRAFFIC = 95;
+  /** The harmless copy a bumped skater, dinosaur or buggy becomes: it backs away, then leaves. */
+  const off = (n: number, pic: string, t: number) => def(n, { pics: anim(`${pic}Safe`, t), power: 100, towards: -3, end: 54 });
 
   def(MON.zap, { pics: anim('zap', 2), power: 150, towards: 9, end: 12, becomes: MON.pop });
   def(MON.pop, { pics: anim('pop', 2), power: 100, end: 6 });
@@ -74,16 +78,22 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.alien2, { pics: anim('alien2', 5), power: 50, towards: RANDOM(1), becomes: MON.beam });
   def(MON.beam, { pics: anim('beam', 2), power: 100, end: 16 });
 
-  // Hover cars come out of the tunnels and fly their lane, 30 blocks.
+  // Hover cars come out of the tunnels and fly their lane, 30 blocks. A car that clips
+  // Dex hurts him once (power under 100), then honks and swerves on as a harmless copy
+  // (power 100, so touching him can't end it) that finishes the lane and is gone.
   const lane = (speed: number, dir: 1 | -1): [number, number, number, number][] => [[30 * dir, 0, speed, dir > 0 ? O.right : O.left]];
-  def(MON.carR, { pics: anim('carR', 2), power: 250, thru: false, end: -1, march: lane(4, 1) });
-  def(MON.carL, { pics: anim('carR', 2), power: 250, thru: false, end: -1, march: lane(4, -1) });
-  def(MON.fastR, { pics: anim('carT', 1), power: 250, thru: false, end: -1, march: lane(7, 1) });
-  def(MON.fastL, { pics: anim('carT', 1), power: 250, thru: false, end: -1, march: lane(7, -1) });
-  def(MON.truckR, { pics: anim('truck', 3), power: 250, thru: false, end: -1, march: lane(3, 1) });
-  def(MON.truckL, { pics: anim('truck', 3), power: 250, thru: false, end: -1, march: lane(3, -1) });
+  const car = (n: number, swerve: number, pic: string, t: number, speed: number, dir: 1 | -1) => {
+    def(n, { pics: anim(pic, t), power: TRAFFIC, thru: false, end: -1, becomes: swerve, march: lane(speed, dir) });
+    def(swerve, { pics: anim(`${pic}Safe`, t), power: 100, thru: false, end: -1, march: lane(speed, dir) });
+  };
+  car(MON.carR, MON.carRSwerve, 'carR', 2, 4, 1);
+  car(MON.carL, MON.carLSwerve, 'carR', 2, 4, -1);
+  car(MON.fastR, MON.fastRSwerve, 'carT', 1, 7, 1);
+  car(MON.fastL, MON.fastLSwerve, 'carT', 1, 7, -1);
+  car(MON.truckR, MON.truckRSwerve, 'truck', 3, 3, 1);
+  car(MON.truckL, MON.truckLSwerve, 'truck', 3, 3, -1);
   // The CitiCar takes the slow lane: 1976 top speed, and still no exhaust.
-  def(MON.citicar, { pics: anim('citicar', 4), power: 250, thru: false, end: -1, march: lane(2, 1) });
+  car(MON.citicar, MON.citicarSwerve, 'citicar', 4, 2, 1);
   def(MON.faxbot, { pics: anim('faxbot', 2), power: CHASER, towards: RANDOM(2), becomes: MON.pop, score: 150 });
 
   def(MON.secbot, { pics: anim('secbot', 4), power: CHASER, towards: 2, end: 500, becomes: MON.pop, score: 200 });
@@ -102,28 +112,33 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.cart, { pics: anim('cart', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(7, 0, 4) });
   def(MON.cartV, { pics: anim('cart', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 6, 4) });
   def(MON.shopper, { pics: anim('shopper', 5), power: CHASER, towards: RANDOM(1), becomes: MON.pop, score: 100 });
-  def(MON.skater, { pics: anim('skater', 2), power: 250, march: back(8, 0, 5) });
-  def(MON.skaterV, { pics: anim('skater', 2), power: 250, march: back(0, 6, 5) });
+  def(MON.skater, { pics: anim('skater', 2), power: TRAFFIC, becomes: MON.skaterOff, march: back(8, 0, 5) });
+  def(MON.skaterV, { pics: anim('skater', 2), power: TRAFFIC, becomes: MON.skaterOff, march: back(0, 6, 5) });
+  off(MON.skaterOff, 'skater', 2);
 
   def(MON.telemarketer, { pics: anim('tele', 4), power: CHASER, towards: 2, becomes: MON.pop, score: 200 });
   def(MON.static, { pics: anim('static', 1), power: CHASER, towards: RANDOM(2), becomes: MON.pop, score: 150 });
   def(MON.fish, { pics: anim('fish', 4), power: ROBOT, becomes: MON.pop, score: 100, march: back(5, 0, 2) });
   def(MON.fishV, { pics: anim('fish', 4), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 4, 2) });
-  def(MON.dino, { pics: anim('dino', 4), power: 250, march: back(6, 0, 3) });
-  def(MON.dinoV, { pics: anim('dino', 4), power: 250, march: back(0, 5, 3) });
+  def(MON.dino, { pics: anim('dino', 4), power: TRAFFIC, becomes: MON.dinoOff, march: back(6, 0, 3) });
+  def(MON.dinoV, { pics: anim('dino', 4), power: TRAFFIC, becomes: MON.dinoOff, march: back(0, 5, 3) });
+  off(MON.dinoOff, 'dino', 4);
   def(MON.grandma, { pics: anim('grandma', 8), power: 50, becomes: MON.beam });
 
   def(MON.meteor, { pics: anim('meteor', 2), power: 90, thru: false, end: -1, becomes: MON.boom, march: [[-7, 10, 5, O.right]] });
   def(MON.meteorL, { pics: anim('meteor', 2), power: 90, thru: false, end: -1, becomes: MON.boom, march: [[7, 10, 5, O.left]] });
   def(MON.boom, { pics: anim('boom', 3), power: 100, end: 8 });
-  def(MON.buggy, { pics: anim('buggy', 2), power: 250, march: back(8, 0, 3) });
-  def(MON.buggyV, { pics: anim('buggy', 2), power: 250, march: back(0, 6, 3) });
+  def(MON.buggy, { pics: anim('buggy', 2), power: TRAFFIC, becomes: MON.buggyOff, march: back(8, 0, 3) });
+  def(MON.buggyV, { pics: anim('buggy', 2), power: TRAFFIC, becomes: MON.buggyOff, march: back(0, 6, 3) });
+  off(MON.buggyOff, 'buggy', 2);
 
   def(MON.lava, { pics: anim('lava', 3), power: 60, towards: RANDOM(1), end: 110 });
-  // Sparky: three zaps to calm him down, and he drops the cover page.
+  // Sparky: three zaps to calm him down, and he drops the cover page. He never bites;
+  // the volcanoes are the danger. Each zap changes his game: first he roams the gym, then
+  // he plays keep-away (corner him against a project or a wall), then he gets the zoomies.
   def(MON.sparky, { pics: anim('sparky', 2), power: 140, towards: RANDOM(3), becomes: MON.sparky2, score: 500 });
-  def(MON.sparky2, { pics: anim('sparkyMad', 2), power: 140, towards: RANDOM(4), becomes: MON.sparky3, score: 750 });
-  def(MON.sparky3, { pics: anim('sparkyMad', 1), power: 140, towards: RANDOM(5), becomes: MON.sparkyDizzy, score: 1000 });
+  def(MON.sparky2, { pics: anim('sparkyMad', 2), power: 140, towards: -3, becomes: MON.sparky3, score: 750 });
+  def(MON.sparky3, { pics: anim('sparkyMad', 1), power: 140, towards: RANDOM(6), becomes: MON.sparkyDizzy, score: 1000 });
   // Dizzy for a moment (no zap can touch him), then he lets go of the cover page.
   def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.cover });
   // The cover page: tough enough that lava can't hurt it (only a careless zap can).

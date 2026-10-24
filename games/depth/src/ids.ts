@@ -79,4 +79,21 @@ export const MON = {
   pop: 19, // something de-rendered
   wireV: 20,
   shard: 21, // the Count's shard, thrown at you
+  stolen: 22, // the blue lens the Count swallowed, coughed up when he flees to the far plane
 } as const;
+
+/**
+ * Count Polygon's stages, each a run of monsters a ray takes him through: whole, cracked
+ * (blinking), shattered (blinking faster), then the next stage's whole. The first of each
+ * run is the MON.count number; the rest follow from 23 up. The point takes two rays.
+ */
+export const COUNT_RUNS: number[][] = [
+  [MON.count1, 23, 24],
+  [MON.count2, 25, 26],
+  [MON.count3, 27, 28],
+  [MON.count4, 29, 30],
+  [MON.count5, 31],
+];
+/** Every Count Polygon monster in the near half of the fight, and in the far half. */
+export const COUNT_NEAR = [...COUNT_RUNS[0], ...COUNT_RUNS[1]];
+export const COUNT_FAR = [...COUNT_RUNS[2], ...COUNT_RUNS[3], ...COUNT_RUNS[4]];

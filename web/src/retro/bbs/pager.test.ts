@@ -5,8 +5,7 @@ import type { Term } from './term';
 /** A terminal that only remembers the lines printed since the last clear. */
 function fakeTerm() {
   const lines: string[] = [];
-  const screenRef = { cursorX: 0, cursorY: 0, fill: () => lines.splice(0) };
-  return { lines, t: { screenRef, line: (l = '') => lines.push(l) } as unknown as Term };
+  return { lines, t: { clear: () => lines.splice(0), line: (l = '') => lines.push(l) } as unknown as Term };
 }
 
 describe('paginate', () => {

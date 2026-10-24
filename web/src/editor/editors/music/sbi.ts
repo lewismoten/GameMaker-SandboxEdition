@@ -1,7 +1,7 @@
 // The settings in an SBI instrument record that SBFMDRV loads into the OPL2 chip
 // (bytes 0..10: two operators and the feedback/connection byte). Bytes 11..15 are unused
 // by the driver and kept as they are.
-import { INSTRUMENTS } from '../../../audio/compose';
+import { findPreset } from '../../../audio/oplPresets';
 
 /** 0 = modulator (first operator), 1 = carrier (second operator). */
 export type Half = 0 | 1;
@@ -83,14 +83,7 @@ export const setFeedback = (inst: Uint8Array, v: number) => (inst[10] = (inst[10
 export const getAdditive = (inst: Uint8Array) => (inst[10] & 1) === 1;
 export const setAdditive = (inst: Uint8Array, v: boolean) => (inst[10] = (inst[10] & ~1) | (v ? 1 : 0));
 
-export const PRESETS = INSTRUMENTS as Record<string, Uint8Array>;
-
-/** The preset an instrument matches, if any. */
+/** The name of the preset an instrument matches (its first 11 bytes), if any. */
 export function presetName(inst: Uint8Array): string | undefined {
-  for (const [name, p] of Object.entries(PRESETS)) {
-    let same = true;
-    for (let i = 0; i < 11 && same; i++) same = p[i] === inst[i];
-    if (same) return name;
-  }
-  return undefined;
+  return findPreset(inst)?.name;
 }

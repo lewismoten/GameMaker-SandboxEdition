@@ -4,11 +4,14 @@
 // shuffleboard, test pattern, sea floor, jungle, tar pits and launch pad.
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, SOLID } from './book';
-import { blob, gradient, oval, shadeAt } from '../art/draw';
+import { T, blob, gradient, oval, shadeAt } from '../art/draw';
 import { FLOORS } from './floors';
 import { micro } from '../art/font';
 import { CTR, MON } from '../ids';
-import { C } from '../art/pal';
+import { C, PAL } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { wattCameo } from '../../../kit/cameos';
 import { neonSign, rocket } from '../art/bigart';
 import { addEgg, addHatch } from './egg';
 import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
@@ -365,6 +368,34 @@ export function citySet(): BlockSet {
   // closet's teal light showing through the mortar.
   s.add('xwallGlow', exchangeGlow());
   addHatch(s);
+  addKeepsakes(s);
   addEgg(s, 'concrete');
   return s;
+}
+
+/**
+ * Keepsakes and a visitor, added before the felt egg's fixed block: a tin heart tucked behind
+ * the food court's tables at PILLS (a glint crosses it now and then) and a painted Easter egg in
+ * the sand in a corner of Florida, each a few points and gone when touched (the floor under it
+ * is its touch block), with no sound of its own; and Watt, the repair robot from Ohm Sweet Ohm,
+ * tinkering with the Exchange's switchboard (scenery, solid like the wall he stands by).
+ */
+function addKeepsakes(s: BlockSet): void {
+  const tin = { ink: C('grey', 0), tin: [C('chrome', 3), C('chrome', 5), C('chrome', 6)], white: C('grey', 7), dark: C('chrome', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    s.add(`tinHeart${k || ''}`, drawTinHeart(on('tile'), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'tile',
+      score: 100,
+    });
+  const egg = { ink: C('purple', 0), shell: PAL.r('pink').slice(2), paint: [C('teal', 2), C('teal', 4)], accent: C('gold', 4), white: C('grey', 7) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    s.add(`easterEgg${k || ''}`, drawEasterEgg(on('beach'), egg, 'zigzag', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'beach',
+      score: 50,
+    });
+  s.add('watt', on('marble').blit(wattCameo(PAL.pal, 'up', 0), 0, 0, T), { solid: SOLID });
 }

@@ -19,7 +19,7 @@ describe('dosDir', () => {
   it('shortens the way DOS did when there is no program name', () => {
     expect(dosDir({ id: 'reckoning' })).toBe('RECKON~1');
   });
-  it("gives every game in games/ a valid folder and program name, no two the same", () => {
+  it('gives every game in games/ a valid folder and program name, no two the same', () => {
     const dirs = games.map(dosDir);
     for (const [i, g] of games.entries()) {
       expect(isDosFileName(dirs[i]), `${g.id}: ${dirs[i]}`).toBe(true);

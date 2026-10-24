@@ -1,23 +1,18 @@
-// The sticker sheet: the game's title, screenshots, its monsters and heroes drawn from its own
-// block files, Sandbox Software's own stickers, the Sandbox BBS and Game-Maker: Sandbox
-// Edition. Every sticker is drawn on a canvas, so the same art makes the sheet you see and
-// print, and the files for a cutting machine (a PNG with bleed and an SVG of cut lines).
+// The sticker sheet: the game's title on a floppy, its heroes, monsters, pets and props cut out
+// round their own pixel-art outlines (drawn from its block files), its catchphrases in bursts and
+// bubbles, a screenshot on a little TV, and Sandbox Software's mark, packed edge to edge with the
+// game's characters again in miniature in the gaps. Every sticker is drawn on a canvas, so the
+// same art makes the sheet you see and print, and the files for a cutting machine (a PNG with
+// bleed and an SVG of cut lines). Each kind is drawn in stickerPaint.ts, laid out in stickerArt.ts.
+import './stickers.css';
 import { h } from '../../editor/core/ui';
-import { PRODUCT } from '../../edition';
-import { BBS_PHONE, portrait, sheet, spriteArt, splitTitle, type PrintContext, type Sheet } from './kit';
-import { BLEED, CUT_H, CUT_W, cutSvg, layoutStickers, pngWithDpi, shapePath, sheetBounds, stickerSize, type Placed, type StickerShape } from './stickerArt';
+import { portrait, sheet, spriteArt, splitTitle, type PrintContext, type Sheet } from './kit';
+import { BLEED, CUT_H, CUT_W, cutSvg, layoutStickers, pngWithDpi, sheetBounds, type Placed } from './stickerArt';
+import { outline } from './stickerGeom';
+import { bbsSticker, dieCut, floppy, gmSticker, polyPath, sandboxSticker, shaped, tvShot, type Sticker, type Words } from './stickerPaint';
 import type { StickerSpec } from './types';
 
-type Special = 'bbs' | 'gm';
-
-interface Sticker {
-  spec: StickerSpec;
-  special?: Special;
-  shape: StickerShape;
-  /** A picture: a map window (fills the sticker) or a sprite (sits on the sticker). */
-  img?: HTMLImageElement | HTMLCanvasElement;
-  kind: 'text' | 'shot' | 'sprite';
-}
+type Special = 'bbs' | 'gm' | 'sandbox';
 
 /** What a sticker sheet needs to make its cutting-machine files. */
 export interface CutFiles {
@@ -49,7 +44,7 @@ async function loadImage(src: string | undefined): Promise<HTMLImageElement | un
 /** A sprite without its empty margins, so a small creature fills its sticker. */
 function trim(img: HTMLImageElement): HTMLCanvasElement {
   const c = h('canvas', { width: img.width, height: img.height });
-  const g = c.getContext('2d')!;
+  const g = c.getContext('2d', { willReadFrequently: true })!;
   g.drawImage(img, 0, 0);
   const a = g.getImageData(0, 0, img.width, img.height).data;
   let [x0, y0, x1, y1] = [img.width, img.height, -1, -1];
@@ -67,201 +62,57 @@ function trim(img: HTMLImageElement): HTMLCanvasElement {
   return out;
 }
 
-const RAINBOW = ['#ff5555', '#ffff55', '#55ff55', '#55ffff', '#5555ff', '#ff55ff', '#ffaa00'];
-const BLACK_FONT = '"Arial Black", "Arial Bold", Arial, sans-serif';
+/** A sticker spec, from this game or (on a sheet that mixes games) from another game's files. */
+export type MixedSticker = StickerSpec & { special?: Special; from?: PrintContext };
 
-/** Lines of text at the largest size (px) that fits maxW x maxH, splitting on spaces into up to 3 lines. */
-function fit(
-  g: CanvasRenderingContext2D,
-  text: string,
-  maxW: number,
-  maxH: number,
-  weight: string,
-  family: string,
-  lh = 1.05,
-): { lines: string[]; size: number } {
-  const words = text.split(/\s+/).filter(Boolean);
-  let best = { lines: [text], size: 1 };
-  for (let n = 1; n <= Math.min(3, words.length); n++) {
-    // split the words into n lines of balanced length
-    const lines: string[] = [];
-    const per = Math.ceil(text.length / n);
-    let cur = '';
-    for (const w of words) {
-      if (cur && (cur + ' ' + w).length > per && lines.length < n - 1) {
-        lines.push(cur);
-        cur = w;
-      } else cur = cur ? `${cur} ${w}` : w;
+const nameOf = (s: StickerSpec) => [s.text, s.sub].filter(Boolean).join(' ') || 'Picture';
+const wordsOf = (s: StickerSpec): Words => ({ text: s.text, sub: s.sub, color: s.color ?? '#ffffff', ink: s.ink ?? '#111111' });
+
+/** A die-cut's pixel size: about 1.15" tall (smaller by `shrink` steps, to fit one sheet), never more than 9/150" a pixel. */
+const dieCutPx = (img: HTMLCanvasElement, words: boolean, shrink: number) =>
+  Math.max(3, Math.min(9, Math.round(((words ? 1.15 : 1.3) * 150) / img.height)) - shrink);
+
+/** The little cut-out of a character that fills a gap: no words, about half an inch. */
+function mini(name: string, img: HTMLCanvasElement, color: string): Sticker {
+  return dieCut(`${name} (small)`, img, Math.max(2, Math.min(4, Math.round((0.55 * 150) / Math.max(img.height, img.width * 0.8)))), {
+    text: '',
+    color,
+    ink: color,
+  });
+}
+
+/** A spec made ready: its picture loaded, its kind and shape chosen. Also its mini, if it has a character. */
+async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined, shrink = 0): Promise<{ sticker: Sticker; mini?: Sticker }> {
+  if (spec.special === 'bbs') return { sticker: bbsSticker() };
+  if (spec.special === 'gm') return { sticker: gmSticker() };
+  if (spec.special === 'sandbox') return { sticker: sandboxSticker() };
+  const name = nameOf(spec);
+  const words = wordsOf(spec);
+  const shape = spec.shape ?? 'rect';
+  if (ctx && (spec.hero || spec.sprite)) {
+    const src = spec.hero ? await portrait(ctx.entry, spec.hero) : await spriteArt(ctx.entry, spec.sprite!);
+    const loaded = await loadImage(src);
+    const img = loaded && trim(loaded);
+    if (img) {
+      const px = spec.px ? Math.max(3, spec.px - shrink) : dieCutPx(img, !!(spec.text || spec.sub), shrink);
+      const sticker = shape === 'cut' ? dieCut(name, img, px, words) : shaped(name, shape, words, img);
+      return { sticker, mini: spec.noMini ? undefined : mini(name, img, words.color) };
     }
-    lines.push(cur);
-    g.font = `${weight} 100px ${family}`;
-    const widest = Math.max(...lines.map((l) => g.measureText(l).width));
-    const size = Math.min((100 * maxW) / widest, maxH / (lines.length * lh));
-    if (size > best.size * 1.08) best = { lines, size };
   }
-  return best;
-}
-
-function drawLines(
-  g: CanvasRenderingContext2D,
-  fitted: { lines: string[]; size: number },
-  cx: number,
-  cy: number,
-  weight: string,
-  family: string,
-  lh = 1.05,
-): void {
-  g.font = `${weight} ${fitted.size}px ${family}`;
-  g.textAlign = 'center';
-  g.textBaseline = 'middle';
-  const total = fitted.lines.length * fitted.size * lh;
-  fitted.lines.forEach((l, i) => g.fillText(l, cx, cy - total / 2 + (i + 0.5) * fitted.size * lh));
-}
-
-/** One sticker, cut shape at p, painted `bleed` inches past its cut line. */
-function drawSticker(g: CanvasRenderingContext2D, p: Placed, st: Sticker, S: number, bleed: number): void {
-  const s = st.spec;
-  const x = p.x * S;
-  const y = p.y * S;
-  const w = p.w * S;
-  const hh = p.h * S;
-  const b = bleed * S;
-  const color = s.color ?? '#ffffff';
-  const ink = s.ink ?? '#111111';
-  g.save();
-  g.clip(new Path2D(shapePath(p, bleed, S)));
-  g.fillStyle = color;
-  g.fillRect(x - b, y - b, w + 2 * b, hh + 2 * b);
-
-  if (st.special === 'bbs') {
-    g.fillStyle = '#000';
-    g.fillRect(x - b, y - b, w + 2 * b, hh + 2 * b);
-    const mono = '"Courier New", Courier, monospace';
-    g.font = `700 100px ${mono}`;
-    g.font = `700 ${Math.min(w * 0.085, (100 * w * 0.88) / g.measureText('THE -= SANDBOX =- BBS').width)}px ${mono}`;
-    g.textBaseline = 'middle';
-    g.textAlign = 'left';
-    const parts: [string, string][] = [['THE -= ', '#aaaaaa'], ...[...'SANDBOX'].map((c, i): [string, string] => [c, RAINBOW[i]]), [' =- BBS', '#aaaaaa']];
-    const total = parts.reduce((t, [c]) => t + g.measureText(c).width, 0);
-    let tx = x + (w - total) / 2;
-    for (const [c, col] of parts) {
-      g.fillStyle = col;
-      g.fillText(c, tx, y + hh * 0.24);
-      tx += g.measureText(c).width;
-    }
-    g.fillStyle = '#ffff55';
-    drawLines(g, fit(g, BBS_PHONE, w * 0.86, hh * 0.26, '700', mono), x + w / 2, y + hh * 0.52, '700', mono);
-    g.fillStyle = '#55ffff';
-    drawLines(g, fit(g, '14,400 BAUD · 24 HOURS', w * 0.8, hh * 0.12, '700', mono), x + w / 2, y + hh * 0.78, '700', mono);
-  } else if (st.special === 'gm') {
-    const grad = g.createLinearGradient(0, y, 0, y + hh);
-    grad.addColorStop(0, '#24398f');
-    grad.addColorStop(1, '#0b1030');
-    g.fillStyle = grad;
-    g.fillRect(x - b, y - b, w + 2 * b, hh + 2 * b);
-    // a row of little blocks, like the block editor's palette
-    const n = 8;
-    const bw = (w * 0.7) / n;
-    for (let i = 0; i < n; i++) {
-      g.fillStyle = RAINBOW[i % RAINBOW.length];
-      g.fillRect(x + w * 0.15 + i * bw + bw * 0.1, y + hh * 0.13, bw * 0.8, bw * 0.8);
-    }
-    const head = fit(g, 'GAME-MAKER', w * 0.82, hh * 0.3, '900', BLACK_FONT);
-    g.fillStyle = '#d81e1e';
-    drawLines(g, head, x + w / 2 + head.size * 0.06, y + hh * 0.46 + head.size * 0.06, '900', BLACK_FONT);
-    g.fillStyle = '#f2b632';
-    drawLines(g, head, x + w / 2, y + hh * 0.46, '900', BLACK_FONT);
-    g.fillStyle = '#fff';
-    drawLines(
-      g,
-      fit(g, PRODUCT.split(': ')[1].toUpperCase(), w * 0.7, hh * 0.13, '700', 'Arial, sans-serif'),
-      x + w / 2,
-      y + hh * 0.68,
-      '700',
-      'Arial, sans-serif',
-    );
-    g.fillStyle = '#55ffff';
-    drawLines(g, fit(g, 'MAKE YOUR OWN GAMES', w * 0.6, hh * 0.08, '700', 'Arial, sans-serif'), x + w / 2, y + hh * 0.82, '700', 'Arial, sans-serif');
-  } else if (st.kind === 'shot' && st.img) {
-    // a screenshot fills the sticker, past the cut line into the bleed
-    const k = Math.max((w + 2 * b) / st.img.width, (hh + 2 * b) / st.img.height);
-    g.imageSmoothingEnabled = false;
-    g.drawImage(st.img, x + w / 2 - (st.img.width * k) / 2, y + hh / 2 - (st.img.height * k) / 2, st.img.width * k, st.img.height * k);
-  } else if (st.kind === 'sprite' && st.img) {
-    const labelled = !!(s.text || s.sub);
-    const round = p.shape === 'circle' || p.shape === 'star';
-    const bandTop = y + hh * (p.shape === 'star' ? 0.6 : round ? 0.66 : 0.72);
-    const artBottom = labelled ? bandTop : y + hh;
-    // sunburst behind the character
-    const cx = x + w / 2;
-    const cy = (y + artBottom) / 2 + hh * 0.02;
-    g.fillStyle = 'rgba(255,255,255,0.18)';
-    for (let i = 0; i < 18; i++) {
-      const a = (Math.PI * 2 * i) / 18;
-      const r = Math.max(w, hh);
-      g.beginPath();
-      g.moveTo(cx, cy);
-      g.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
-      g.lineTo(cx + r * Math.cos(a + Math.PI / 18), cy + r * Math.sin(a + Math.PI / 18));
-      g.fill();
-    }
-    const areaW = w * (round ? 0.56 : 0.74);
-    const areaH = (artBottom - y) * 0.8;
-    const k = Math.min(areaW / st.img.width, areaH / st.img.height);
-    const iw = st.img.width * k;
-    const ih = st.img.height * k;
-    g.imageSmoothingEnabled = false;
-    g.save();
-    g.shadowColor = 'rgba(0,0,0,0.45)';
-    g.shadowOffsetX = S * 0.03;
-    g.shadowOffsetY = S * 0.03;
-    g.drawImage(st.img, cx - iw / 2, cy - ih / 2, iw, ih);
-    g.restore();
-    if (labelled) {
-      g.fillStyle = ink;
-      g.fillRect(x - b, bandTop, w + 2 * b, y + hh + b - bandTop);
-      g.fillStyle = color;
-      const bandH = y + hh - bandTop;
-      // round stickers narrow toward the bottom, so their words sit higher and narrower
-      const inset = p.shape === 'star' ? 0.5 : round ? 0.62 : 0.86;
-      const lift = round ? 0.06 : 0;
-      if (s.text)
-        drawLines(
-          g,
-          fit(g, s.text, w * inset, bandH * (s.sub ? 0.36 : 0.5), '900', BLACK_FONT),
-          cx,
-          bandTop + bandH * ((s.sub ? 0.28 : 0.4) - lift),
-          '900',
-          BLACK_FONT,
-        );
-      if (s.sub)
-        drawLines(
-          g,
-          fit(g, s.sub, w * inset * (p.shape === 'star' ? 0.6 : round ? 0.7 : 0.9), bandH * (s.text ? 0.17 : 0.4), '700', 'Arial, sans-serif'),
-          cx,
-          bandTop + bandH * ((s.text ? 0.6 : 0.4) - lift),
-          '700',
-          'Arial, sans-serif',
-        );
-    }
-  } else {
-    // words on color
-    const inset = p.shape === 'circle' ? 0.66 : p.shape === 'star' ? 0.6 : 0.8;
-    g.fillStyle = ink;
-    const main = fit(g, s.text, w * inset, hh * (s.sub ? 0.42 : 0.55), '900', BLACK_FONT);
-    drawLines(g, main, x + w / 2, y + hh * (s.sub ? 0.43 : 0.5), '900', BLACK_FONT);
-    if (s.sub) drawLines(g, fit(g, s.sub, w * inset * 0.9, hh * 0.12, '700', 'Arial, sans-serif'), x + w / 2, y + hh * 0.7, '700', 'Arial, sans-serif');
+  if (ctx && spec.shot) {
+    const img = await loadImage(await ctx.shot(spec.shot));
+    if (img) return { sticker: tvShot(name, trimToCanvas(img)) };
   }
-  g.restore();
-  // the printed keyline just inside the edge
-  g.save();
-  g.strokeStyle = st.kind === 'shot' ? '#ffffff' : st.special === 'bbs' ? '#555555' : ink;
-  g.lineWidth = S * 0.025;
-  g.stroke(new Path2D(shapePath(p, -0.07, S)));
-  g.restore();
+  return { sticker: shaped(name, shape === 'cut' ? 'burst' : shape, words) };
 }
 
-/** A sheet of stickers on a canvas. Screen: no bleed, dashed cut lines. Cutting machine: bleed, cropped to the stickers. */
+function trimToCanvas(img: HTMLImageElement): HTMLCanvasElement {
+  const c = h('canvas', { width: img.width, height: img.height });
+  c.getContext('2d')!.drawImage(img, 0, 0);
+  return c;
+}
+
+/** One sheet's stickers on a canvas. Screen: no bleed, dashed cut lines. Cutting machine: bleed, cropped to the stickers. */
 function drawPage(page: Placed[], list: Sticker[], dpi: number, forCutting: boolean): HTMLCanvasElement {
   const bleed = forCutting ? BLEED : 0;
   const [bx, by, bw, bh] = forCutting ? sheetBounds(page, BLEED) : [0, 0, CUT_W, CUT_H];
@@ -269,13 +120,28 @@ function drawPage(page: Placed[], list: Sticker[], dpi: number, forCutting: bool
   c.width = Math.round(bw * dpi);
   c.height = Math.round(bh * dpi);
   const g = c.getContext('2d')!;
-  g.translate(-bx * dpi, -by * dpi);
-  for (const p of page) drawSticker(g, p, list[p.index], dpi, bleed);
-  if (!forCutting) {
-    g.strokeStyle = 'rgba(60,60,60,0.75)';
-    g.lineWidth = dpi * 0.012;
-    g.setLineDash([dpi * 0.05, dpi * 0.04]);
-    for (const p of page) g.stroke(new Path2D(shapePath(p, 0.05, dpi)));
+  for (const p of page) {
+    const st = list[p.index];
+    g.save();
+    // whole device pixels, so pixel art lands on the pixel grid
+    g.translate(Math.round((p.x - bx) * dpi), Math.round((p.y - by) * dpi));
+    g.save();
+    g.clip(polyPath(outline(st.geom, bleed), dpi));
+    st.paint(g, dpi, bleed);
+    g.restore();
+    if (st.keyline) {
+      // the printed keyline just inside the edge
+      g.strokeStyle = st.keyline;
+      g.lineWidth = dpi * 0.025;
+      g.stroke(polyPath(outline(st.geom, -0.07), dpi));
+    }
+    if (!forCutting) {
+      g.strokeStyle = 'rgba(60,60,60,0.75)';
+      g.lineWidth = dpi * 0.012;
+      g.setLineDash([dpi * 0.05, dpi * 0.04]);
+      g.stroke(polyPath(outline(st.geom, 0.03), dpi));
+    }
+    g.restore();
   }
   return c;
 }
@@ -284,66 +150,73 @@ function toBlob(c: HTMLCanvasElement): Promise<Blob> {
   return new Promise((ok, fail) => c.toBlob((b) => (b ? ok(b) : fail(new Error('no picture'))), 'image/png'));
 }
 
-async function stickerList(ctx: PrintContext): Promise<Sticker[]> {
-  const g = ctx.entry;
-  const box = g.original?.box;
-  const [main, sub] = splitTitle(g.title);
-  const specs: (StickerSpec & { special?: Special })[] = [
-    { text: main.toUpperCase(), sub, shape: 'badge', color: box?.background, ink: box?.accent },
-    ...(ctx.printables.stickers ?? []).filter((s) => s.sprite || s.hero),
-    ...(box?.shots ?? [])
-      .slice(0, 2)
-      .map(([map, x, y], i): StickerSpec => ({ text: '', shape: i ? 'circle' : 'rect', shot: { map, x: x + 4, y: y + 2, w: 8, h: 6 } })),
-    ...(ctx.printables.stickers ?? []).filter((s) => !s.sprite && !s.hero),
-    { text: 'I ♥ SHAREWARE', shape: 'rect', color: '#d81e1e', ink: '#fff' },
-    { text: 'REGISTERED', sub: 'PLAYER', shape: 'star', color: '#1f9a3a', ink: '#fff' },
-    { text: '', shape: 'rect', special: 'bbs' },
-    { text: 'SANDBOX', sub: 'SOFTWARE', shape: 'circle', color: '#f2b632', ink: '#1a1208' },
-    { text: '', shape: 'badge', special: 'gm' },
+/** A game's own sheet: its title on a floppy, its stickers, a screenshot on a TV, then Sandbox Software's. */
+function gameSpecs(ctx: PrintContext): MixedSticker[] {
+  const box = ctx.entry.original?.box;
+  const shot = box?.shots?.[0];
+  return [
+    ...(ctx.printables.stickers ?? []),
+    ...(shot ? [{ text: 'Screenshot', shot: { map: shot[0], x: shot[1] + 3, y: shot[2] + 2, w: 10, h: 7 } }] : []),
+    { text: 'I ♥ SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
+    { text: '', special: 'sandbox' },
   ];
-  return Promise.all(specs.map((spec) => resolveSticker(spec, ctx)));
 }
 
 export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
-  return stickerSheets(await stickerList(ctx), ctx.entry.id);
+  const box = ctx.entry.original?.box;
+  const [main, sub] = splitTitle(ctx.entry.title);
+  const title = floppy(
+    `${ctx.entry.title} disk`,
+    main.toUpperCase(),
+    sub,
+    box?.background ?? '#1d3f7a',
+    box?.accent && box.accent !== box.background ? darkOf(box) : '#111',
+  );
+  return fitted(
+    gameSpecs(ctx).map((spec): MixedSticker => ({ ...spec, from: ctx })),
+    ctx.entry.id,
+    [title],
+  );
 }
 
-/** A sticker drawn from another game's files (for a sheet that mixes games, like Game-Maker's). */
-export type MixedSticker = StickerSpec & { special?: Special; from?: PrintContext };
+/**
+ * The stickers on as few sheets as they fit: if they spill onto a second sheet, the die-cuts are
+ * drawn a step smaller (fewer 1/150" per pixel, so still crisp) and laid out again.
+ */
+async function fitted(specs: MixedSticker[], id: string, extra: Sticker[] = []): Promise<Sheet[]> {
+  for (let shrink = 0; ; shrink++) {
+    const made = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from, shrink)));
+    const list = [...extra, ...made.map((m) => m.sticker)];
+    const minis = made.flatMap((m) => (m.mini ? [m.mini] : []));
+    if (shrink >= 3 || layoutStickers(list.map((s) => s.geom)).length === 1) return stickerSheets(list, minis, id);
+  }
+}
+
+/** The title's ink on the floppy's cream label: the box's darker color. */
+function darkOf(box: { background?: string; accent?: string }): string {
+  const lum = (c = '#000') => {
+    const n = parseInt(c.replace('#', '').padEnd(6, '0').slice(0, 6), 16);
+    return ((n >> 16) & 255) * 0.3 + ((n >> 8) & 255) * 0.59 + (n & 255) * 0.11;
+  };
+  const dark = [box.background, box.accent].filter((c): c is string => !!c).sort((a, b) => lum(a) - lum(b))[0];
+  return dark && lum(dark) < 140 ? dark : '#111';
+}
 
 /** A sheet of stickers whose pictures come from several games: each spec names the game it is drawn from. */
 export async function mixedStickers(specs: MixedSticker[], base: string): Promise<Sheet[]> {
-  const list = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from)));
-  return stickerSheets(list, base);
+  return fitted(specs, base);
 }
 
-async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined): Promise<Sticker> {
-  const shape = spec.shape ?? 'rect';
-  if (ctx && (spec.hero || spec.sprite)) {
-    const src = spec.hero ? await portrait(ctx.entry, spec.hero) : await spriteArt(ctx.entry, spec.sprite!);
-    const img = await loadImage(src);
-    return { spec, shape, img: img && trim(img), kind: img ? 'sprite' : 'text' };
-  }
-  if (ctx && spec.shot) {
-    const img = await loadImage(await ctx.shot(spec.shot));
-    return { spec, shape, img, kind: img ? 'shot' : 'text' };
-  }
-  return { spec, shape, kind: 'text', special: spec.special };
-}
-
-function stickerSheets(list: Sticker[], id: string): Sheet[] {
+function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
+  const all = [...list, ...minis];
   const pages = layoutStickers(
-    list.map((s) => {
-      const [w, h_] = stickerSize(s.shape, s.kind === 'sprite');
-      return { w, h: h_, shape: s.shape };
-    }),
+    list.map((s) => s.geom),
+    minis.map((s) => s.geom),
   );
-  const names = list.map((s) =>
-    s.special === 'bbs' ? 'Sandbox BBS' : s.special === 'gm' ? PRODUCT : [s.spec.text, s.spec.sub].filter(Boolean).join(' ') || 'Picture',
-  );
+  const names = all.map((s) => s.name);
   const base = id.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
   return pages.map((page, i) => {
-    const art = drawPage(page, list, DPI_SCREEN, false);
+    const art = drawPage(page, all, DPI_SCREEN, false);
     const s = sheet(
       8.5,
       11,
@@ -355,7 +228,11 @@ function stickerSheets(list: Sticker[], id: string): Sheet[] {
         h('span', null, 'Cut along the dotted lines. Stick on your disk box, your folder, your little brother.'),
         pages.length > 1 ? h('em', null, `Sheet ${i + 1} of ${pages.length}`) : null,
       ),
-      h('img', { class: 'stk-art', src: art.toDataURL(), alt: `Stickers: ${page.map((p) => names[p.index]).join(', ')}` }),
+      h('img', {
+        class: 'stk-art',
+        src: art.toDataURL(),
+        alt: `Stickers: ${[...new Set(page.map((p) => names[p.index].replace(/ \(small\)$/, '')))].join(', ')}`,
+      }),
       h('p', { class: 'stk-foot' }, 'Plain paper and a glue stick work; label paper is better. Have a cutting machine? Use the Print Then Cut files.'),
     );
     const [, , pw, ph] = sheetBounds(page, BLEED);
@@ -368,10 +245,9 @@ function stickerSheets(list: Sticker[], id: string): Sheet[] {
       name: `${base}-stickers${pages.length > 1 ? `-${i + 1}` : ''}`,
       svg: () => cutSvg(page, names),
       png: async () =>
-        new Blob(
-          [pngWithDpi(new Uint8Array(await (await toBlob(drawPage(page, list, DPI_PRINT, true))).arrayBuffer()), DPI_PRINT) as Uint8Array<ArrayBuffer>],
-          { type: 'image/png' },
-        ),
+        new Blob([pngWithDpi(new Uint8Array(await (await toBlob(drawPage(page, all, DPI_PRINT, true))).arrayBuffer()), DPI_PRINT) as Uint8Array<ArrayBuffer>], {
+          type: 'image/png',
+        }),
     });
     return s;
   });

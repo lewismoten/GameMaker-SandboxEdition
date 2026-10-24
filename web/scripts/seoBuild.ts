@@ -4,7 +4,7 @@
 // browsers without JavaScript). The build also writes robots.txt, sitemap.xml and
 // llms.txt (https://llmstxt.org), which the dev server serves too.
 //
-// index.html and play.html mark where it goes with <!--SEO:HEAD--> and <!--SEO:BODY-->.
+// index.html, play.html and dos.html mark where it goes with <!--SEO:HEAD--> and <!--SEO:BODY-->.
 //
 // Every bundled game also gets its own play page, play-<id>.html next to play.html (made
 // from the built play.html, so it loads the same player), with the game's title,
@@ -147,6 +147,26 @@ function indexBody(catalog: CdCatalogEntry[]): string {
     </main>`;
 }
 
+/** dos.html: the PC on its own (src/dosPage). */
+function dosHead(): string {
+  return `${metaTags({ ...ROUTES.dos, url: `${SITE_URL}dos.html`, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT })}\n    ${STYLE}`;
+}
+
+function dosBody(): string {
+  return `<main class="seo-static">
+      <h1>DOS Game-Maker</h1>
+      <p>${escapeHtml(ROUTES.dos.description)}</p>
+      <noscript><p><strong>The PC runs in your browser: please turn on JavaScript.</strong></p></noscript>
+      <h2>Links to this page</h2>
+      <ul>
+        <li><a href="./dos.html">dos.html</a>: boots straight into Game-Maker.</li>
+        <li><a href="./dos.html?game=teddy">dos.html?game=&lt;id&gt;</a>: puts that game’s disk in drive A: and opens it in Game-Maker.</li>
+        <li><a href="./dos.html?run=dos">dos.html?run=dos</a>: stays at the DOS prompt; <a href="./dos.html?run=bbs">dos.html?run=bbs</a> calls the BBS.</li>
+      </ul>
+      <p>Back to <a href="./">${escapeHtml(PRODUCT)}</a>, or sit down at the whole 1994 desk.</p>
+    </main>`;
+}
+
 /** play.html: what each game is, so the page can name itself before the game loads. */
 function playHead(catalog: CdCatalogEntry[]): string {
   const meta = metaTags({ ...ROUTES.player, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
@@ -230,7 +250,7 @@ export function gameBody(g: CdCatalogEntry): string {
   return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(g.title)}</h1>
       <p>${escapeHtml(what)}${credit(g) ? ` · ${escapeHtml(credit(g))}` : ''}${g.price ? ` · registration ${escapeHtml(g.price)}` : ''}</p>
-      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" alt="${escapeHtml(g.title)}: its title screen" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
+      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" loading="lazy" alt="${escapeHtml(g.title)}: its title screen" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
       ${readable(g.blurb) ? `<p>${escapeHtml(g.blurb!)}</p>` : ''}
       <p>Play ${escapeHtml(g.title)} right here in your browser — nothing to download or install — with a keyboard, a game controller or touch controls.</p>
       <noscript><p><strong>The game runs in your browser: please turn on JavaScript to play.</strong></p></noscript>
@@ -268,7 +288,11 @@ function gameImage(cdRoot: string, g: CdCatalogEntry, files = cdFiles(cdRoot)): 
 }
 
 export function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
-  const urls = [{ loc: SITE_URL, priority: '1.0' }, ...playable(catalog).map((g) => ({ loc: playUrl(g.id), priority: g.original ? '0.8' : '0.6' }))];
+  const urls = [
+    { loc: SITE_URL, priority: '1.0' },
+    { loc: `${SITE_URL}dos.html`, priority: '0.7' },
+    ...playable(catalog).map((g) => ({ loc: playUrl(g.id), priority: g.original ? '0.8' : '0.6' })),
+  ];
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${escapeHtml(u.loc).replace(/&#38;/g, '&amp;')}</loc><lastmod>${lastmod}</lastmod><priority>${u.priority}</priority></url>`).join('\n')}
@@ -318,6 +342,7 @@ ${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games
 
 ${[
   mdLink(PRODUCT, SITE_URL, 'opens on the 1994 desk or today’s web editor, whichever the visitor used last'),
+  mdLink('DOS Game-Maker', `${SITE_URL}dos.html`, 'the 1994 PC on its own, straight into Game-Maker; dos.html?game=<id> opens a game in it'),
   mdLink('Guide', `${SITE_URL}#/help`, 'how to use the editor: blocks, monsters, characters, maps and scenes, sounds and music, testing and exporting'),
   mdLink(
     'Player',
@@ -398,6 +423,7 @@ export function seoPages(cdRoot: string): Plugin {
     },
     transformIndexHtml(html, ctx: IndexHtmlTransformContext) {
       if (!html.includes(HEAD_MARK)) return html;
+      if (/dos\.html$/.test(ctx.filename) || ctx.path.endsWith('dos.html')) return html.replace(HEAD_MARK, dosHead()).replace(BODY_MARK, dosBody());
       const catalog = cdCatalog(cdRoot);
       const g = pageGame(catalog, ctx.path);
       const play = !!g || /play\.html$/.test(ctx.filename) || ctx.path.endsWith('play.html');

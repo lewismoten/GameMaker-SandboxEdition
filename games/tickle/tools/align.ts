@@ -16,7 +16,13 @@ const RULES: PartRule[] = [
   ...[1, 2, 3, 4].map((i): PartRule => ({ part: `board${i}`, need: [[0, 1, 'boardTray']] })),
   ...(['desk', 'bench'] as const).flatMap((t): PartRule[] => [
     ...pair(t, t, `${t}Leg`, 0, 1),
-    { part: `${t}Mid`, need: [[-1, 0, new RegExp(`^${t}(Mid)?$`)], [1, 0, new RegExp(`^${t}(Mid)?$`)]] },
+    {
+      part: `${t}Mid`,
+      need: [
+        [-1, 0, new RegExp(`^${t}(Mid)?$`)],
+        [1, 0, new RegExp(`^${t}(Mid)?$`)],
+      ],
+    },
   ]),
 ];
 

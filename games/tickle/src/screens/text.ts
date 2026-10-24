@@ -109,6 +109,17 @@ export const INSTRUCTIONS = [
     'F3 music     F4 sound',
     'F5 save F6 load  ESC quit',
   ]),
+  page([
+    'AT THE TOP OF THE TOWER',
+    "Mortimer, Dean Dour's own rat,",
+    'guards the balcony door in a',
+    'little mortarboard. He is the',
+    'most serious rat in the city:',
+    'one pin and tickle only half',
+    'wins him over. He wriggles',
+    'free, grinning, still wary.',
+    'Pin him and tickle him again.',
+  ]),
 ].join('\n');
 
 /** Each level's card: its name, where, and two lines of the song. */
@@ -182,7 +193,9 @@ the city and up a tower in a
 storm, every rat you tickle
 joins the laughing carpet. Doors
 open only for a carpet big
-enough. Avoid Dean Dour.
+enough. Avoid Dean Dour, and at
+the top win over his own rat,
+Mortimer: it takes two goes.
 
 No rats are harmed. They love
 it. Listen: 50 kHz!
@@ -224,7 +237,7 @@ THIS IS SHAREWARE
 
   If it made you cackle,
   register for ${price}: you get a
-  tape of the song and your own
+  rat sticker and your own
   CERTIFIED RAT TICKLER wallet
   card. Send a check (US funds)
   to:

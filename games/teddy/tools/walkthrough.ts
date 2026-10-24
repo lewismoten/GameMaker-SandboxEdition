@@ -21,7 +21,16 @@ for (const [i, make] of LEVELS.entries()) {
   // the simulator seeds each level's monsters with 1, as the walkthrough does (rand below)
   const play = (ci: CharInfo) => {
     const sim = new Sim(
-      { map: l.map.done(), bbl: l.bs.build(), mbl: l.beasts.mb.build(), mon: l.beasts.build(), chr, cbl, links: [{ from: l.exit, to: l.exit }], names: l.beasts.names },
+      {
+        map: l.map.done(),
+        bbl: l.bs.build(),
+        mbl: l.beasts.mb.build(),
+        mon: l.beasts.build(),
+        chr,
+        cbl,
+        links: [{ from: l.exit, to: l.exit }],
+        names: l.beasts.names,
+      },
       l.start,
       ci,
     );

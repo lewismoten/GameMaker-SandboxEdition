@@ -74,7 +74,9 @@ function leg(p: Pixels, hip: number, foot: number, col: number, top: number): vo
     p.rect(x, y, 3, 1, col);
   }
   // the red sneaker, toe forward
-  p.rect(foot, 36, 5, 2, K.R).rect(foot + 1, 36, 1, 1, K.w).rect(foot, 38, 6, 1, K.w);
+  p.rect(foot, 36, 5, 2, K.R)
+    .rect(foot + 1, 36, 1, 1, K.w)
+    .rect(foot, 38, 6, 1, K.w);
 }
 
 /** Frame `n` (0-3) of Doc Leo walking right, 20x40, CLEAR around him. */

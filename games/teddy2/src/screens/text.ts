@@ -131,6 +131,8 @@ const CREDITS_TEXT = pages(
     '',
     'Design, art, music and',
     'programming: Claude',
+    'Yankee Doodle: traditional',
+    'American tune, public domain.',
     '',
     'Starring Teddy as himself,',
     'a little bigger this time.',
@@ -139,13 +141,11 @@ const CREDITS_TEXT = pages(
     'the friendliest hobo clown',
     'in the Klown Klub. And THE',
     'CHEZ, his red 1976 CitiCar.',
-    '',
-    '',
   ],
   [
     'No dogs were rushed. Gwinn',
     'did all of her own stunts,',
-    'and some of everybody else\'s.',
+    "and some of everybody else's.",
     '',
     'Made with GAME-MAKER 3.0 by',
     'Recreational Software',
@@ -160,17 +160,7 @@ const CREDITS_TEXT = pages(
     'the next adventure, a poster',
     'of Teddy AND Gwinn, and our',
   ],
-  [
-    'thanks.',
-    '',
-    'Sandbox Software',
-    'Dept. WOOF WOOF',
-    'P.O. Box 1995',
-    'Pittsburgh, PA 15213',
-    '',
-    '(A made-up address. Please',
-    'do not mail anything.)',
-  ],
+  ['thanks.', '', 'Sandbox Software', 'Dept. WOOF WOOF', 'P.O. Box 000', 'Pittsburgh, PA 15213', '', '(A made-up address. Please', 'do not mail anything.)'],
 );
 
 export const WON = pages(
@@ -257,10 +247,11 @@ export const EGG = pages(
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
   house: ["Gwinn's bed is empty! Sniff", 'out her collar. Doc Leo waits.', 'NEW: SNIFF (S)'],
-  night: ['MEANWHILE... last night. YOU', 'are Gwinn. Follow your nose!', 'NEW: BOOF CHEW DIG ZOOMIES'],
+  night: ['MEANWHILE... last night. YOU', 'are Gwinn. Follow your nose!', 'NEW: SPACE BOOF 1 CHEW 3 ZOOM'],
   farm: ['MEANWHILE... dawn. Gwinn finds', 'a farm. So many chickens!', 'RIDE THE HAY ELEVATOR'],
   show: ['The dog show! Gwinn is in', 'the Best Behaved ring. Uh-oh.', 'EVERY TRICK YOU KNOW'],
   midway: ['THE FAIR! Earn tickets with', 'tricks. THE BIG DROP takes 3.', 'NEW: TICKETS FOR TRICKS'],
+  lot: ['MEANWHILE... noon. Gwinn has', 'made it to the Fair. So WINDY!', 'NEW: RIDE THE WIND'],
   maze: ['A corn maze! Sniff out her', 'paw prints: they show the way.', 'STEPS GO UP, HOLES GO DOWN'],
   river: ['The rubber chicken is in the', 'river! Sit for the miller.', 'NEW: SWIM WITH THE CURRENT'],
   main: ['Her leash is on the gazebo!', 'Ring bells with a high five.', 'NEW: RING THE BELL (1)'],
@@ -346,7 +337,7 @@ THIS IS SHAREWARE
 
     Sandbox Software
     Dept. WOOF WOOF
-    P.O. Box 1995
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   (This is a fictional address

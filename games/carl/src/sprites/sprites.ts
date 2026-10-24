@@ -115,7 +115,8 @@ export function flyArt(pal: Pal) {
     if (o.flat) {
       const src = p.px.slice();
       p.px.fill(T);
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (src[y * 20 + x] !== T) p.set(x, Math.round(19 - (19 - y) * (1 - o.flat * 0.7)), src[y * 20 + x]);
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < 20; x++) if (src[y * 20 + x] !== T) p.set(x, Math.round(19 - (19 - y) * (1 - o.flat * 0.7)), src[y * 20 + x]);
     }
     if (mood === 'ouch') p.px.forEach((v, i) => v !== T && v !== ink && v !== c('white', 3) && v < 255 && R('fly').includes(v) && (p.px[i] = c('red', 2)));
     return outline(p, ink);
@@ -150,6 +151,8 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
+  /** A swatting thing: the dark outline, then a pale rim round it, so it reads on the night's and the gloom's walls. */
+  const rimmed = (p: Pixels) => outline(done(p), c('rim', 0));
   /** A hazard: hurts on touch (half again what's written: a fly's patience is short) and shoves Carl back. */
   const hurt = (hp: number, solid = 15) => ({ chHitPt: -Math.round(hp * 1.5), solid });
 
@@ -157,13 +160,22 @@ export function buildMonsterBlocks(pal: Pal) {
   // the dish towel, twisted into a rat tail, cocked and snapped
   const towel = (f: number) => {
     const p = P();
-    const pts = f === 0 ? Array.from({ length: 16 }, (_, k) => [3 + k * 0.4, 18 - k] as const) : Array.from({ length: 18 }, (_, k) => [1 + k, 12 + Math.sin(k / 2.5) * 3] as const);
+    const pts =
+      f === 0
+        ? Array.from({ length: 16 }, (_, k) => [3 + k * 0.4, 18 - k] as const)
+        : Array.from({ length: 18 }, (_, k) => [1 + k, 12 + Math.sin(k / 2.5) * 3] as const);
     pts.forEach(([x, y], k) => {
       const w = k < 6 ? 2 : k < 12 ? 1.4 : 0.8;
       p.disc(x, y, w, c(k % 4 < 2 ? 'red' : 'white', k % 4 < 2 ? 2 : 3));
     });
-    if (f) for (const [x, y] of [[18, 7], [19, 16], [16, 5]]) p.set(x, y, c('white', 3));
-    return done(p);
+    if (f)
+      for (const [x, y] of [
+        [18, 7],
+        [19, 16],
+        [16, 5],
+      ])
+        p.set(x, y, c('white', 3));
+    return rimmed(p);
   };
   book.add('towel0', towel(0), hurt(10));
   book.add('towel1', towel(1), hurt(10));
@@ -186,7 +198,7 @@ export function buildMonsterBlocks(pal: Pal) {
     const spread = f ? 0.4 : 1.4;
     for (let k = 0; k < 4; k++) p.line(7 + k * 2.4, 11, 7 + k * 2.4 + (k - 1.5) * spread, 17 - (f ? 2 : 0), c('skin', k % 2 ? 2 : 1));
     if (f) blob(p, 10, 18, 3, 1.6, R('chip'), 1, 3);
-    return done(p);
+    return rimmed(p);
   };
   book.add('reach0', reach(0), hurt(8));
   book.add('reach1', reach(1), hurt(8));
@@ -202,8 +214,15 @@ export function buildMonsterBlocks(pal: Pal) {
       for (let x = 5; x < 18; x += 3) p.set(x, flip ? y0 : y0 + 4, c('skin', 0));
       p.rect(flip ? 0 : 16, flip ? y0 + 1 : y0 - 1, 4, 3, c('skin', 2));
     }
-    if (shut) for (const [x, y] of [[0, 9], [19, 10], [1, 5], [18, 14]]) p.set(x, y, c('white', 3));
-    return done(p);
+    if (shut)
+      for (const [x, y] of [
+        [0, 9],
+        [19, 10],
+        [1, 5],
+        [18, 14],
+      ])
+        p.set(x, y, c('white', 3));
+    return rimmed(p);
   };
   book.add('clap0', clap(false), hurt(12));
   book.add('clap1', clap(true), hurt(12));
@@ -216,8 +235,14 @@ export function buildMonsterBlocks(pal: Pal) {
       const y = 10 + Math.sin(ang) * t;
       p.disc(x, y, 2.2, c(t % 5 < 2 ? 'shirt' : 'white', 2));
     }
-    if (f) for (const [x, y] of [[8, 16], [13, 17], [17, 15]]) p.set(x, y, c('white', 3)).set(x, y + 1, c('white', 2));
-    return done(p);
+    if (f)
+      for (const [x, y] of [
+        [8, 16],
+        [13, 17],
+        [17, 15],
+      ])
+        p.set(x, y, c('white', 3)).set(x, y + 1, c('white', 2));
+    return rimmed(p);
   };
   book.add('swat0', swatter(0), hurt(12));
   book.add('swat1', swatter(1), hurt(12));
@@ -228,8 +253,13 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 9, 13, 7, 4, R('fur'), 1, 3);
     blob(p, 14, 7 - f, 3.6, 3.4, R('fur'), 1, 3);
     // the ears: the right one stands taller
-    p.line(12, 4 - f, 11, 0, c('fur', 2)).line(13, 4 - f, 12, 0, c('fur', 2)).line(16, 4 - f, 18, 1 - f, c('fur', 2)).line(15, 4 - f, 17, 1 - f, c('fur', 2));
-    p.rect(14, 8 - f, 3, 3, c('white', 3)).set(16, 6 - f, ink).set(18, 8 - f, ink);
+    p.line(12, 4 - f, 11, 0, c('fur', 2))
+      .line(13, 4 - f, 12, 0, c('fur', 2))
+      .line(16, 4 - f, 18, 1 - f, c('fur', 2))
+      .line(15, 4 - f, 17, 1 - f, c('fur', 2));
+    p.rect(14, 8 - f, 3, 3, c('white', 3))
+      .set(16, 6 - f, ink)
+      .set(18, 8 - f, ink);
     if (f) p.line(16, 10, 19, 9, c('red', 2)).line(16, 11, 19, 11, c('white', 3));
     p.rect(5, 15, 7, 2, c('white', 3));
     for (const x of [4, 7, 11, 13]) p.rect(x, 16, 2, 4 - f * 2, c('fur', 1));
@@ -254,11 +284,19 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('loaf1', loaf(1), { scorePts: 250 });
   const goat = (f: number) => {
     const p = P();
-    for (const [x, d] of [[5, 1], [8, -1], [12, 1], [15, -1]]) p.line(x, 14, x + (f ? d : 0), 18, c('white', 0));
+    for (const [x, d] of [
+      [5, 1],
+      [8, -1],
+      [12, 1],
+      [15, -1],
+    ])
+      p.line(x, 14, x + (f ? d : 0), 18, c('white', 0));
     blob(p, 10, 11, 7, 4, R('white'), 1, 3);
     const hy = f ? 12 : 7;
     blob(p, 16, hy, 3, 2.6, R('white'), 1, 3);
-    p.line(15, hy - 3, 13, hy - 6, c('grey', 2)).line(17, hy - 3, 16, hy - 6, c('grey', 2)).set(17, hy, ink);
+    p.line(15, hy - 3, 13, hy - 6, c('grey', 2))
+      .line(17, hy - 3, 16, hy - 6, c('grey', 2))
+      .set(17, hy, ink);
     return done(p);
   };
   book.add('goat0', goat(0));
@@ -266,9 +304,15 @@ export function buildMonsterBlocks(pal: Pal) {
   const seed = (f: number) => {
     const p = P();
     const y = f ? 10 : 13;
-    p.rect(7, y + 5, 3, 2, c('red', 2)).rect(11, y + 5, 3, 2, c('red', 2)).set(9, y + 5, c('white', 3)).set(13, y + 5, c('white', 3));
+    p.rect(7, y + 5, 3, 2, c('red', 2))
+      .rect(11, y + 5, 3, 2, c('red', 2))
+      .set(9, y + 5, c('white', 3))
+      .set(13, y + 5, c('white', 3));
     blob(p, 10, y, 4, 4.6, R('gold'), 0, 3, 1.2);
-    p.set(9, y - 1, ink).set(12, y - 1, ink).set(10, y + 2, ink).set(11, y + 2, ink);
+    p.set(9, y - 1, ink)
+      .set(12, y - 1, ink)
+      .set(10, y + 2, ink)
+      .set(11, y + 2, ink);
     p.line(11, y - 5, 12, y - 7, c('leaf', 2));
     return done(p);
   };
@@ -310,7 +354,14 @@ export function buildMonsterBlocks(pal: Pal) {
       blob(p, 10.5 + tw * 0.5, 11, 2.6, 4.6, R('skin'), 0, 1);
       p.line(10 + tw, 8, 11 + tw, 14, c('skin', 0));
     }
-    if (state === 'twitch0' || state === 'twitch1') for (const [x, y] of [[2, 4], [17, 5], [3, 15], [18, 14]]) p.line(x, y, x + (x < 10 ? -2 : 2), y, c('white', 3));
+    if (state === 'twitch0' || state === 'twitch1')
+      for (const [x, y] of [
+        [2, 4],
+        [17, 5],
+        [3, 15],
+        [18, 14],
+      ])
+        p.line(x, y, x + (x < 10 ? -2 : 2), y, c('white', 3));
     if (state === 'zzz') micro(p, 13, 0, 'Z', c('white', 3));
     return done(p);
   };
@@ -335,7 +386,7 @@ export function buildMonsterBlocks(pal: Pal) {
     s.rect(4, 8, 8, 4, c('white', 3)).rect(3, 15, 15, 1, c('ink', 1));
     if (f) p.map((x, y) => s.get(y, 19 - x));
     else p.blit(s, 0, 0, T);
-    return done(p);
+    return rimmed(p);
   };
   book.add('slipper0', slipper(0), hurt(10, 0));
   book.add('slipper1', slipper(1), hurt(10, 0));
@@ -345,7 +396,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 7, 3, 2, R('wood'), 1, 3);
     const span = f ? 9 : 4;
     p.rect(10 - span, 8, span * 2, 2, c('wood', 2)).rect(10 - span, 8, span * 2, 1, c('wood', 3));
-    return done(p);
+    return rimmed(p);
   };
   book.add('fan0', fan(0), hurt(14));
   book.add('fan1', fan(1), hurt(14));
@@ -353,7 +404,13 @@ export function buildMonsterBlocks(pal: Pal) {
   // ---- the living room in gloom ----
   const puff = (ramp: string, f: number) => {
     const p = P();
-    for (const [x, y, r] of [[7, 12, 5], [12, 9, 5.5], [14, 14, 4], [8, 7, 3.4]] as const) blob(p, x + f, y - f, r, r * 0.8, R(ramp), 0, 2);
+    for (const [x, y, r] of [
+      [7, 12, 5],
+      [12, 9, 5.5],
+      [14, 14, 4],
+      [8, 7, 3.4],
+    ] as const)
+      blob(p, x + f, y - f, r, r * 0.8, R(ramp), 0, 2);
     return done(p);
   };
   book.add('sage0', puff('smoke', 0), hurt(4, 0));
@@ -380,7 +437,9 @@ export function buildMonsterBlocks(pal: Pal) {
   const mopperB = (f: number) => {
     const p = P();
     for (let y = 0; y < 18; y++) p.rect(4 - Math.floor(y / 6), y, 12 + Math.floor(y / 3), 1, c('purple', y % 6 === 0 ? 1 : 2));
-    p.rect(9, 4, 2, 10, c('purple', 0)).rect(14, 4 + f, 4, 3, c('skin', 2)).line(17, 0, 17, 20, c('wood', 2));
+    p.rect(9, 4, 2, 10, c('purple', 0))
+      .rect(14, 4 + f, 4, 3, c('skin', 2))
+      .line(17, 0, 17, 20, c('wood', 2));
     p.rect(5, 18, 4, 2, c('grey', 1)).rect(11, 18, 4, 2, c('grey', 1));
     return done(p);
   };
@@ -425,7 +484,16 @@ export function buildMonsterBlocks(pal: Pal) {
       p.line(10 + Math.cos(a) * 3, 10 + Math.sin(a) * 3, 10 + Math.cos(a) * 9, 10 + Math.sin(a) * 9, c('skin', 2));
     }
     p.line(14, 13, 18, 10 + f * 2, c('skin', 2)).rect(7, 16, 7, 4, c('shirt', 2));
-    for (const [x, y] of f ? [[2, 4], [3, 8]] : [[17, 3], [18, 7]]) p.line(x, y, x + 1, y + 2, c('white', 3));
+    for (const [x, y] of f
+      ? [
+          [2, 4],
+          [3, 8],
+        ]
+      : [
+          [17, 3],
+          [18, 7],
+        ])
+      p.line(x, y, x + 1, y + 2, c('white', 3));
     return done(p);
   };
   book.add('wave0', wave(0), hurt(6));
@@ -437,7 +505,10 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 13, 8, 5 - f, R('leaf'), 1, 3);
     blob(p, 6, 8 - f, 2.6, 2.6, R('leaf'), 1, 3);
     blob(p, 14, 8 - f, 2.6, 2.6, R('leaf'), 1, 3);
-    p.disc(6, 7 - f, 1.2, c('gold', 3)).disc(14, 7 - f, 1.2, c('gold', 3)).set(6, 7 - f, ink).set(14, 7 - f, ink);
+    p.disc(6, 7 - f, 1.2, c('gold', 3))
+      .disc(14, 7 - f, 1.2, c('gold', 3))
+      .set(6, 7 - f, ink)
+      .set(14, 7 - f, ink);
     p.line(5, 14, 15, 14, ink);
     if (f) p.rect(9, 14, 3, 2, c('pink', 2));
     p.rect(2, 17, 5, 2, c('leaf', 1)).rect(13, 17, 5, 2, c('leaf', 1));
@@ -459,7 +530,10 @@ export function buildMonsterBlocks(pal: Pal) {
     for (let x = 2; x < 13; x++) p.set(x, 11, c('shirt', x % 2 ? 2 : 3));
     blob(p, 14, 11, 2.6, 2, R('shirt'), 1, 3);
     blob(p, 17, 10.5, 2, 2, R('leaf'), 1, 3);
-    for (const [dy, s] of [[-1, 1], [1, -1]] as const) {
+    for (const [dy, s] of [
+      [-1, 1],
+      [1, -1],
+    ] as const) {
       blob(p, 12 - (f ? 2 : 0), 11 + dy * (f ? 5 : 3), 5, 1.6, R('wing'), 1, 2);
       blob(p, 15, 11 + s * (f ? 3 : 5), 4, 1.4, R('wing'), 1, 2);
     }
@@ -494,11 +568,21 @@ export function buildMonsterBlocks(pal: Pal) {
   // the buzz: sound waves and a BZZ
   const buzz = (f: number) => {
     const p = P();
-    for (let k = 0; k < 3; k++) for (let a = -0.9; a <= 0.9; a += 0.06) p.set(4 + Math.cos(a) * (4 + k * 4 + f), 10 + Math.sin(a) * (4 + k * 4 + f), c('gold', 3 - k));
+    for (let k = 0; k < 3; k++)
+      for (let a = -0.9; a <= 0.9; a += 0.06) p.set(4 + Math.cos(a) * (4 + k * 4 + f), 10 + Math.sin(a) * (4 + k * 4 + f), c('gold', 3 - k));
     micro(p, 1, 1 + f * 12, 'BZZ', c('white', 3));
     return p;
   };
   book.add('buzz0', buzz(0));
   book.add('buzz1', buzz(1));
+  // (last too) his hand grabbing for the aux cord at the stereo: fingers spread, then snatching
+  book.add('grab0', reach(0), hurt(8));
+  book.add('grab1', reach(1), hurt(8));
+  // (last, so every other block keeps its number) Loaf #13 and the seed flying off: the same
+  // pictures, worth nothing, so brushing past them as they go doesn't score every tick
+  book.add('loafOff0', loaf(0));
+  book.add('loafOff1', loaf(1));
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
   return book;
 }

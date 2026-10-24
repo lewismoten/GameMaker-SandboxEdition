@@ -40,7 +40,10 @@ function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number, ramp =
   p.set(x, y, pal.c(ramp, 3));
   for (let k = 1; k <= size; k++) {
     const col = pal.c(ramp, Math.max(0, 3 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }
 
@@ -64,8 +67,11 @@ const sprite = (set: Map<string, Pixels>, name: string) => {
 /** The bat detector's dial: blue 22 on the left, red 50 on the right, the needle at `joy` (0 dread .. 1 joy). */
 function detector(p: Pixels, pal: Pal, x: number, y: number, joy: number): void {
   const c = pal.c;
-  p.rect(x, y, 64, 44, c('ink', 0)).rect(x + 1, y + 1, 62, 42, c('steel', 1)).rect(x + 4, y + 4, 56, 26, c('paper', 2));
-  for (let a = Math.PI; a <= Math.PI * 2; a += 0.04) for (let r = 18; r < 22; r++) p.set(x + 32 + Math.cos(a) * r, y + 28 + Math.sin(a) * r, a < Math.PI * 1.5 ? c('blue', 2) : c('red', 2));
+  p.rect(x, y, 64, 44, c('ink', 0))
+    .rect(x + 1, y + 1, 62, 42, c('steel', 1))
+    .rect(x + 4, y + 4, 56, 26, c('paper', 2));
+  for (let a = Math.PI; a <= Math.PI * 2; a += 0.04)
+    for (let r = 18; r < 22; r++) p.set(x + 32 + Math.cos(a) * r, y + 28 + Math.sin(a) * r, a < Math.PI * 1.5 ? c('blue', 2) : c('red', 2));
   const a = Math.PI * (1.15 + 0.7 * joy);
   p.line(x + 32, y + 28, x + 32 + Math.cos(a) * 20, y + 28 + Math.sin(a) * 20, c('ink', 0));
   micro(p, x + 5, y + 33, '22', c('blue', 3));
@@ -141,7 +147,13 @@ export function storyFli(cast: Cast): Uint8Array {
   bg.rect(236, 106, 70, 26, c('paper', 0)).rect(240, 104, 62, 4, c('ink', 1)).rect(240, 128, 62, 2, c('ink', 1));
   const L = (n: string) => cast.leo(n);
   const lines = (k: number) =>
-    k < 22 ? ['I earned a paper', 'in dorsal delight.'] : k < 44 ? ['Two hours of training', 'in how to pin right.'] : k < 62 ? ['I am a certified rat tickler.', 'Certificate in hand.'] : ['No rats yet... but I will', 'answer when fate demands!'];
+    k < 22
+      ? ['I earned a paper', 'in dorsal delight.']
+      : k < 44
+        ? ['Two hours of training', 'in how to pin right.']
+        : k < 62
+          ? ['I am a certified rat tickler.', 'Certificate in hand.']
+          : ['No rats yet... but I will', 'answer when fate demands!'];
   const scene = (p: Pixels, k: number) => {
     // the screen: the course, typing out
     const screen = ['RAT TICKLING', 'SELF-PACED', '', 'LESSON 3:', 'THE PIN'];
@@ -226,8 +238,9 @@ export function certFli(cast: Cast): Uint8Array {
     p.line(cx - 6, cy + 10 * s, cx - 12, cy + 26 * s, c('red', 1)).line(cx - 5, cy + 10 * s, cx - 11, cy + 26 * s, c('red', 2));
     p.line(cx + 6, cy + 10 * s, cx + 12, cy + 26 * s, c('red', 1)).line(cx + 5, cy + 10 * s, cx + 11, cy + 26 * s, c('red', 2));
     for (let a = 0; a < Math.PI * 2; a += 0.02) {
-      const rr2 = (18 + (Math.floor(a * 24 / Math.PI) % 2) * 2) * s;
-      for (let d = 0; d < rr2; d += 0.7) p.set(cx + Math.cos(a) * d * Math.abs(Math.cos(spin)), cy + Math.sin(a) * d, c('gold', d > rr2 - 3 ? 3 : d > 12 * s ? 1 : 2));
+      const rr2 = (18 + (Math.floor((a * 24) / Math.PI) % 2) * 2) * s;
+      for (let d = 0; d < rr2; d += 0.7)
+        p.set(cx + Math.cos(a) * d * Math.abs(Math.cos(spin)), cy + Math.sin(a) * d, c('gold', d > rr2 - 3 ? 3 : d > 12 * s ? 1 : 2));
     }
     if (Math.abs(Math.cos(spin)) > 0.6) {
       const rat = sprite(cast.mons, 'lab.giggle0');
@@ -432,7 +445,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       const p = new Pixels(W, H);
       gradient(p, 0, 0, W, 110, pal.r('night'), flash ? 3 : 0, flash ? 5 : 2);
       // the tower
-      for (let y = 10; y < 110; y++) for (let x = 120; x < 200; x++) p.set(x, y, (x % 12 === 0 || y % 10 === 0) ? c('stone', 0) : c('stone', 1));
+      for (let y = 10; y < 110; y++) for (let x = 120; x < 200; x++) p.set(x, y, x % 12 === 0 || y % 10 === 0 ? c('stone', 0) : c('stone', 1));
       p.rect(110, 70, 100, 6, c('stone', 3));
       for (let x = 112; x < 208; x += 8) p.rect(x, 76, 3, 14, c('stone', 2));
       p.rect(110, 90, 100, 4, c('stone', 3));

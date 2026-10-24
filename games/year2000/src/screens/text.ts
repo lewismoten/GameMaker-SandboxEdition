@@ -45,10 +45,10 @@ Walk through when they're off!
 GLASS TUBES and MOONWALK BELTS
 carry you along - fast.
 
-ROBOTS can be zapped. Cars,
-buggies, dinosaurs and
-meteors can NOT. Get out of
-the way!
+ROBOTS can be zapped. CARS,
+buggies, dinos and skaters
+hurt once, then swerve or
+back off. METEORS just hurt!
 
 On the Moon, your moon suit
 makes you hop and glide. Let
@@ -180,7 +180,7 @@ HINTS
 -----
 * Phone booths cost a quarter. Keep one in your pocket!
 * Wait for the laser fences to blink off.
-* You can't zap a car. Don't try. Seriously.
+* Zapping a car only makes it swerve. Save your charge for robots.
 * In the Teleport-A-Phone Exchange, booth number 4 is out of order. Try another number - you'll get there eventually.
 * Read the teletype in the exchange hall. It knows a thing or two.
 * Grandpa's CitiCar likes a honk.
@@ -192,8 +192,7 @@ You may copy it and give it to your friends, upload it to your favorite BBS, and
 
   Sandbox Software
   Attn: Registrations
-  1234 Tomorrow Lane,
-  Suite 2000
+  P.O. Box 000
   Pittsburgh, PA 15213
 
 (This address is made up! Sandbox Software is part of a 1990s-style recreation. Please don't mail anything; registration is free and everything is already in the box.)

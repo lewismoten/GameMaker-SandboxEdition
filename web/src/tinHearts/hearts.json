@@ -1,9 +1,29 @@
 {
   "hearts": {
     "blaster": { "map": "s2a.map", "at": [16, 70] },
-    "logic": { "map": "attic.map", "at": [3, 7] },
-    "realm": { "map": "port.map", "at": [10, 33] },
-    "sleuth": { "map": "act1.map", "at": [11, 56] }
+    "brief": { "map": "other.map", "at": [34, 22] },
+    "carl": { "map": "bed.map", "at": [5, 12] },
+    "depth": { "map": "l2near.map", "at": [59, 59] },
+    "goat": { "map": "field.map", "at": [52, 16] },
+    "loaf": { "map": "wicker.map", "at": [19, 3] },
+    "logic": { "map": "attic.map", "at": [32, 44] },
+    "loofah": { "map": "home.map", "at": [40, 5] },
+    "maximus": { "map": "home.map", "at": [53, 43] },
+    "mustard": { "map": "dust.map", "at": [43, 18] },
+    "needle": { "map": "tailor.map", "at": [35, 17] },
+    "realm": { "map": "port.map", "at": [9, 25] },
+    "reckoning": { "map": "fridge.map", "at": [44, 15] },
+    "remote": { "map": "den.map", "at": [30, 16] },
+    "risi": { "map": "kitchen.map", "at": [25, 11] },
+    "sandcast": { "map": "keep.map", "at": [32, 1] },
+    "sleuth": { "map": "act2.map", "at": [75, 19] },
+    "smirked": { "map": "parade.map", "at": [3, 3] },
+    "snowbound": { "map": "gale.map", "at": [13, 24] },
+    "sweats": { "map": "hive.map", "at": [81, 15] },
+    "teddy": { "map": "backyard.map", "at": [78, 37] },
+    "teddy2": { "map": "house.map", "at": [8, 25] },
+    "tickle": { "map": "tower.map", "at": [43, 23] },
+    "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["brief", "carl", "depth", "goat", "loaf", "loofah", "maximus", "mustard", "needle", "reckoning", "remote", "risi", "sandcast", "smirked", "snowbound", "sweats", "teddy", "teddy2", "tickle", "year2000"]
+  "pending": []
 }

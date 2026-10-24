@@ -1,26 +1,66 @@
 {
   "tinHeart": [
     { "game": "blaster", "as": "tucked against the edge of the Address Bus" },
-    { "game": "sleuth", "as": "dropped behind the lobby bar" },
+    { "game": "sleuth", "as": "glinting in the dark under the stage" },
     { "game": "realm", "as": "in the grass by Someday Harbor’s lighthouse" },
-    { "game": "logic", "as": "on The Home Computer’s board" }
+    { "game": "logic", "as": "in the crawlspace behind The Home Computer" },
+    { "game": "smirked", "as": "in a far corner of the crypt" },
+    { "game": "teddy", "as": "up on the Klown Car’s roof" },
+    { "game": "goat", "as": "in the grass in the far corner of the shepherds’ field" },
+    { "game": "needle", "as": "under the tailor’s sewing table" },
+    { "game": "tickle", "as": "on the tower’s floor, in the far corner" },
+    { "game": "teddy2", "as": "up in the attic, by the boxes" },
+    { "game": "mustard", "as": "in a pocket of air down in the dust" },
+    { "game": "carl", "as": "under the bedroom desk" },
+    { "game": "snowbound", "as": "in the snow by the backyard snowman" },
+    { "game": "loaf", "as": "up in a dark corner of the wicker wasteland" },
+    { "game": "risi", "as": "on the kitchen floor, under a shelf" },
+    { "game": "remote", "as": "on the living room carpet, in the far corner" },
+    { "game": "year2000", "as": "tucked behind the food court tables at Mega Mall 2000" },
+    { "game": "brief", "as": "in a reading nook behind the Other Dimensions shelves" },
+    { "game": "reckoning", "as": "at the back of the fridge, past the milk" },
+    { "game": "loofah", "as": "on a little shelf high on the stairwell wall at home" },
+    { "game": "sandcast", "as": "dropped in a corner of Anthill Keep" },
+    { "game": "sweats", "as": "on a bookcase shelf at The Hive" },
+    { "game": "depth", "as": "in a corner of the Glass Garden’s pond room" },
+    { "game": "maximus", "as": "up under the training deck’s windows, past the practice range" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
-    { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" }
+    { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" },
+    { "game": "smirked", "as": "peeking out of the gift shop’s curtains" },
+    { "game": "snowbound", "as": "declaiming outside Bleeps at LaVale Mall" },
+    { "game": "remote", "as": "a signed head shot on the living room wall" },
+    { "game": "maximus", "as": "visiting Maxima Station’s pod bay" }
   ],
   "watt": [
-    { "game": "blaster", "as": "blinking on Memory Lane" }
+    { "game": "blaster", "as": "blinking on Memory Lane" },
+    { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" },
+    { "game": "carl", "as": "seeing to the stereo’s left speaker" },
+    { "game": "year2000", "as": "tinkering with the Teleport Exchange’s switchboard" },
+    { "game": "brief", "as": "seeing to the inventor’s wiring in the Laboratory" },
+    { "game": "sandcast", "as": "perched on a sandcastle in the BBS file area" },
+    { "game": "depth", "as": "beside THE CHEZ in Teapot Temple, minding its charge port" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
     { "game": "logic", "as": "the bug in The Home Computer’s chip" }
   ],
   "joe": [
-    { "game": "realm", "as": "night librarian by the Royal Library’s door" }
+    { "game": "realm", "as": "night librarian by the Royal Library’s door" },
+    { "game": "tickle", "as": "counting rats by the course’s chalkboard" },
+    { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" },
+    { "game": "risi", "as": "at the top of the theater’s stands, counting the laughs" },
+    { "game": "loofah", "as": "taking stock in the forest-dark aisle at 3 a.m." },
+    { "game": "maximus", "as": "keeping count at the training deck’s practice range" }
   ],
   "lewie": [
-    { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" }
+    { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
+    { "game": "teddy", "as": "by Puddlewick Park’s gate with his shovel, helping plant the flower beds" },
+    { "game": "goat", "as": "mucking out the stable’s back corner, shovel and all" },
+    { "game": "loaf", "as": "out in the village at night, shovel and all" },
+    { "game": "reckoning", "as": "a photo in the hall with the family’s, red knit hat and all" },
+    { "game": "sweats", "as": "in the audience at The Hive’s open mic" }
   ],
   "leo": [
     { "game": "sleuth", "as": "a playbill in the lobby" }

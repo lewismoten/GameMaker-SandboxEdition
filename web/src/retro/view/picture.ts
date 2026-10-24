@@ -1,5 +1,6 @@
-// A 256-color graphics screen for showing pictures: VGA's 320x200 (mode 13h) or the SVGA
-// 640x400 mode most 1994 cards had (VESA mode 100h), with the BIOS font for a line of
+// A 256-color graphics screen for showing pictures: VGA's 320x200 (mode 13h), the SVGA
+// 640x400 mode most 1994 cards had (VESA mode 100h) or 640x480 (VESA 101h, for the 640x480
+// GIFs that were the BBS standard by then), with the BIOS font for a line of
 // text. Text mode can't show a picture, so the BBS's view-while-downloading and VPIC switch
 // the monitor to one of these, then back.
 //
@@ -7,9 +8,9 @@
 // pixels are a little taller than wide, drawn from a whole-number upscale so they stay even.
 import { FONT_CP437 } from '../text/cp437';
 
-/** The screen mode a picture of this size needs: 320x200 if it fits there, else 640x400. */
+/** The screen mode a picture of this size needs: 320x200 if it fits there, 640x400, or 640x480 for one taller than 400. */
 export function modeFor(width: number, height: number): [number, number] {
-  return width <= 320 && height <= 200 ? [320, 200] : [640, 400];
+  return width <= 320 && height <= 200 ? [320, 200] : height <= 400 ? [640, 400] : [640, 480];
 }
 
 /** Where a picture goes on the screen: centered, shrunk (keeping its shape) if it's too big. */

@@ -13,6 +13,9 @@ import { T, type SpriteBook } from '../../common/sprites';
 import { POWER } from '../../ids';
 import { FLUFF } from './ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 export const HOME_RAMPS: Ramp[] = [
   // the wallpaper: dusty rose with cream stripes
   ['rose', 4, [96, 56, 64], [232, 196, 190]],
@@ -42,7 +45,14 @@ export function wallpaper(pal: Pal, seed: number): Pixels {
       const stripe = x % 10;
       p.set(x, y, stripe === 0 || stripe === 1 ? c('rose', 3) : stripe === 2 ? c('rose', 1) : c('rose', r() < 0.05 ? 1 : 2));
     }
-  for (const [dx, dy] of [[6, 5], [6, 15]]) p.set(dx, dy - 1, c('rose', 3)).set(dx - 1, dy, c('rose', 3)).set(dx + 1, dy, c('rose', 3)).set(dx, dy + 1, c('rose', 3));
+  for (const [dx, dy] of [
+    [6, 5],
+    [6, 15],
+  ])
+    p.set(dx, dy - 1, c('rose', 3))
+      .set(dx - 1, dy, c('rose', 3))
+      .set(dx + 1, dy, c('rose', 3))
+      .set(dx, dy + 1, c('rose', 3));
   return p;
 }
 
@@ -95,9 +105,13 @@ export function buildHouse(book: BlockBook, pal: Pal): void {
   // a shelf on the wall (a ledge: hop up through it, stand on it)
   const shelf = wallpaper(pal, 6);
   shelf.rect(0, 0, 20, 3, c('wood', 3)).rect(0, 0, 20, 1, c('wood', 4)).rect(0, 3, 20, 1, c('wood', 0));
-  for (const x of [3, 15]) shelf.line(x, 4, x, 10, c('metal', 1)).line(x, 4, x + (x < 10 ? 4 : -4), 4, c('metal', 1)).line(x, 10, x + (x < 10 ? 4 : -4), 4, c('metal', 0));
+  for (const x of [3, 15])
+    shelf
+      .line(x, 4, x, 10, c('metal', 1))
+      .line(x, 4, x + (x < 10 ? 4 : -4), 4, c('metal', 1))
+      .line(x, 10, x + (x < 10 ? 4 : -4), 4, c('metal', 0));
   book.add('shelf', shelf, { solid: LEDGE, grav: GRAV.down });
-  for (const bg of ['wall', 'wallB']) loot(book, pal, bg);
+  for (const bg of ['wall', 'wallB']) loot(book, pal, bg, LATE);
   spotlight(book, pal, 'wallB');
 }
 
@@ -111,7 +125,11 @@ export function homeWindow(pal: Pal): Pixels {
   p.disc(26, 10, 4, c('ice', 2)).disc(24.4, 8.8, 3.4, c('night', 0));
   const r = rng(14);
   for (let k = 0; k < 24; k++) p.set(7 + Math.floor(r() * 26), 4 + Math.floor(r() * 24), c('white', r() < 0.5 ? 2 : 1));
-  p.rect(7, 26, 8, 6, c('night', 1)).line(7, 26, 11, 22, c('night', 1)).line(11, 22, 15, 26, c('night', 1)).rect(18, 24, 10, 8, c('night', 1)).rect(21, 27, 2, 2, c('gold', 2));
+  p.rect(7, 26, 8, 6, c('night', 1))
+    .line(7, 26, 11, 22, c('night', 1))
+    .line(11, 22, 15, 26, c('night', 1))
+    .rect(18, 24, 10, 8, c('night', 1))
+    .rect(21, 27, 2, 2, c('gold', 2));
   p.line(7, 26, 11, 22, c('white', 2)).line(11, 22, 15, 26, c('white', 2)).rect(18, 24, 10, 1, c('white', 2));
   p.rect(19, 4, 2, 28, c('white', 1)).rect(7, 17, 26, 2, c('white', 1));
   p.rect(5, 31, 30, 3, c('ice', 2)).rect(3, 34, 34, 3, c('white', 1)).rect(3, 37, 34, 1, c('white', 0));

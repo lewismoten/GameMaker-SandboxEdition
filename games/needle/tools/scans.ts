@@ -22,9 +22,13 @@ const shots = readdirSync(FRAMES)
 if (shots.length !== 14) throw new Error(`expected 14 cover frames, found ${shots.length}`);
 
 shots.forEach((shot, i) => {
-  const r = spawnSync('ffmpeg', ['-v', 'error', '-i', join(FRAMES, shot), '-vf', `scale=${W}:${H}:flags=area,format=rgb24`, '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], {
-    maxBuffer: 64 << 20,
-  });
+  const r = spawnSync(
+    'ffmpeg',
+    ['-v', 'error', '-i', join(FRAMES, shot), '-vf', `scale=${W}:${H}:flags=area,format=rgb24`, '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
+    {
+      maxBuffer: 64 << 20,
+    },
+  );
   if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr}`);
   const dir = mkdtempSync(join(tmpdir(), 'scan-'));
   const ppm = join(dir, 'in.ppm');

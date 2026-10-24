@@ -226,6 +226,17 @@ export async function present(b: Built): Promise<void> {
 
 /** A starting top ten, so the high score screen is not empty on a fresh disk. */
 export function startingScores(): Uint8Array {
-  const names = ['Max', 'Ada Starling', 'Doc Leo', 'Captain Rook', 'Teddy the Corgi', 'The Night Shift', 'Gwinn', 'Letter Carrier', 'Courier 9', 'Sandbox Crew'];
+  const names = [
+    'Max',
+    'Ada Starling',
+    'Doc Leo',
+    'Captain Rook',
+    'Teddy the Corgi',
+    'The Night Shift',
+    'Gwinn',
+    'Letter Carrier',
+    'Courier 9',
+    'Sandbox Crew',
+  ];
   return serializeHighScores(names.map((name, i) => ({ score: Math.round(250000 / (i + 1) / 10) * 10, name })));
 }

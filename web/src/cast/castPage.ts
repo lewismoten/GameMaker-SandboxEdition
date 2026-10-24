@@ -8,7 +8,8 @@ import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './ca
 import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
 import { pageToc } from '../pageToc';
-import { heartProgress } from '../tinHearts/progress';
+import { heartProgress, joeAllAlong } from '../tinHearts/progress';
+import { unlockAchievement } from '../achievements';
 
 const FILTERS: [Family | 'all', string][] = [
   ['all', 'Everyone'],
@@ -34,7 +35,14 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
     h(
       'div',
       { class: 'cast-pic' },
-      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
+      h('img', {
+        src: `./cast/${m.id}.png`,
+        ...shown(m),
+        alt: m.art.alt,
+        loading: 'lazy',
+        decoding: 'async',
+        class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined,
+      }),
     ),
     h(
       'div',
@@ -43,6 +51,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
       h('p', { class: 'cast-role' }, m.role),
       h('p', { class: 'cast-bio' }, m.bio),
       m.id === 'tinHeart' && heartProgress(),
+      m.id === 'joe' && joeAllAlong(),
     ),
     m.appears.length
       ? h('div', { class: 'cast-seen-box' }, h('p', { class: 'cast-seen-h' }, 'Seen in:'), seenIn(m.appears))
@@ -55,7 +64,14 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
         h(
           'ul',
           null,
-          m.appears.map((a) => h('li', { class: `fam-${CAST_GAMES[a.game][1]}` }, h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]), h('span', { class: 'cast-as' }, ` — ${a.as}`))),
+          m.appears.map((a) =>
+            h(
+              'li',
+              { class: `fam-${CAST_GAMES[a.game][1]}` },
+              h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]),
+              h('span', { class: 'cast-as' }, ` — ${a.as}`),
+            ),
+          ),
         ),
       ),
   );
@@ -107,6 +123,7 @@ const families = () =>
 
 /** The cast page into `el`. */
 export function renderCast(el: HTMLElement): void {
+  unlockAchievement('cast-visit');
   const state = viewState(['cast']);
   const want = state.get('family');
   let family: Family | 'all' = FILTERS.some(([f]) => f === want) ? (want as Family) : 'all';
@@ -186,6 +203,8 @@ export function renderCast(el: HTMLElement): void {
       apply();
     }
     target.classList.add('cast-picked');
-    requestAnimationFrame(() => target.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+    requestAnimationFrame(() =>
+      target.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }),
+    );
   }
 }

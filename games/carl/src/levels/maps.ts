@@ -108,22 +108,34 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 function room(m: MapBuilder, W: number, H: number): void {
   // the rooms next door: the same wallpaper, wainscot, ceiling and shag
   m.surround(W, H, (_x, y) => (y <= 0 ? 'ceil' : y <= 6 ? 'paper' : y === 7 ? 'rail' : y < H - 1 ? 'panel' : 'shag'));
-  m.row(0, 0, W - 1, 'ceil').fill(1, 1, W - 2, 6, 'paper').row(7, 1, W - 2, 'rail').fill(1, 8, W - 2, H - 9, 'panel').row(H - 1, 0, W - 1, 'shag');
+  m.row(0, 0, W - 1, 'ceil')
+    .fill(1, 1, W - 2, 6, 'paper')
+    .row(7, 1, W - 2, 'rail')
+    .fill(1, 8, W - 2, H - 9, 'panel')
+    .row(H - 1, 0, W - 1, 'shag');
   m.col(0, 0, H - 1, 'side').col(W - 1, 0, H - 1, 'side');
 }
 
 /** A window at (x, y) (two blocks wide, two tall); `night` for the bedroom's. */
 function window(m: MapBuilder, x: number, y: number): void {
-  m.set(x, y, 'winTL').set(x + 1, y, 'winTR').set(x, y + 1, 'winBL').set(x + 1, y + 1, 'winBR');
+  m.set(x, y, 'winTL')
+    .set(x + 1, y, 'winTR')
+    .set(x, y + 1, 'winBL')
+    .set(x + 1, y + 1, 'winBR');
 }
 
 /** The couch from x0 (ten blocks), the man on it at x0 + 4 (gloomy or not). */
 function couch(m: MapBuilder, x0: number, glum: boolean): void {
-  m.row(8, x0 + 1, x0 + 8, 'couchBack').row(9, x0 + 1, x0 + 8, 'seat').row(10, x0, x0 + 9, 'couchBase');
+  m.row(8, x0 + 1, x0 + 8, 'couchBack')
+    .row(9, x0 + 1, x0 + 8, 'seat')
+    .row(10, x0, x0 + 9, 'couchBase');
   m.col(x0, 8, 9, 'armL').col(x0 + 9, 8, 9, 'armR');
   const mx = x0 + 4;
   m.set(mx, 7, glum ? 'glumTL' : 'manTL').set(mx + 1, 7, glum ? 'glumTR' : 'manTR');
-  m.set(mx, 8, 'manML').set(mx + 1, 8, 'manMR').set(mx, 9, 'manBL').set(mx + 1, 9, 'manBR');
+  m.set(mx, 8, 'manML')
+    .set(mx + 1, 8, 'manMR')
+    .set(mx, 9, 'manBL')
+    .set(mx + 1, 9, 'manBR');
 }
 
 /** The floor lamp at x (its shade at row y). */
@@ -158,10 +170,18 @@ export function theCouch(book: BlockBook): Level {
   // a wall shelf with pizza
   m.set(31, 5, 'shelfTop').set(31, 4, 'pizzaP');
   // the TV on its stand, rabbit ears, pizza on top
-  m.set(34, 7, 'tvTL0').set(35, 7, 'tvTR0').set(34, 8, 'tvBL').set(35, 8, 'tvBR').set(34, 9, 'sideTable').set(35, 9, 'sideTable').set(34, 10, 'sideTable').set(35, 10, 'sideTable');
+  m.set(34, 7, 'tvTL0')
+    .set(35, 7, 'tvTR0')
+    .set(34, 8, 'tvBL')
+    .set(35, 8, 'tvBR')
+    .set(34, 9, 'sideTable')
+    .set(35, 9, 'sideTable')
+    .set(34, 10, 'sideTable')
+    .set(35, 10, 'sideTable');
   m.set(34, 6, 'rabbitEars').set(35, 6, 'pizzaP');
   // the dish towel, snapping (Space: a barrel roll makes it miss)
   m.mon(MON.towel, 39, 5).mon(MON.towel, 43, 2);
+  m.set(37, 3, 'signRoll');
   m.set(41, 1, 'donutW');
   m.set(44, 5, 'shelfTop').set(44, 4, 'candyP');
   m.set(46, 10, 'sideTable').set(46, 9, 'candy').set(50, 10, 'plant').set(51, 10, 'pizza');
@@ -182,7 +202,11 @@ export function theWalls(book: BlockBook): Level {
   const H = 12;
   const m = new MapBuilder(book, 'side');
   m.surround(W, H, (_x, y) => (y <= 0 ? 'ceil' : y < H - 1 ? 'tiles' : 'shag'));
-  m.row(0, 0, W - 1, 'ceil').fill(1, 1, W - 2, 10, 'tiles').row(H - 1, 0, W - 1, 'shag').col(0, 0, H - 1, 'side').col(W - 1, 0, H - 1, 'side');
+  m.row(0, 0, W - 1, 'ceil')
+    .fill(1, 1, W - 2, 10, 'tiles')
+    .row(H - 1, 0, W - 1, 'shag')
+    .col(0, 0, H - 1, 'side')
+    .col(W - 1, 0, H - 1, 'side');
   m.each('tilesB', [
     [3, 3],
     [17, 4],
@@ -228,11 +252,20 @@ export function theBed(book: BlockBook): Level {
   room(m, W, H);
   // the desk and the laptop ("Carl watches me work")
   m.row(9, 2, 6, 'desk').set(4, 8, 'laptop');
+  // a tin heart tucked under the desk, an Easter egg on the floor past the foot of the bed
+  m.set(3, 10, 'tinHeart').set(32, 10, 'easterEgg');
   // the nightstand: the alarm clock, a soda
   m.fill(12, 9, 2, 2, 'nightstand').set(12, 8, 'alarm').set(13, 8, 'soda');
   // the bed: his head on the pillow (his ear is up top), the blanket
-  m.col(14, 6, 10, 'headboard').set(15, 8, 'sleepL').set(16, 8, 'sleepR').row(8, 17, 25, 'blanket').set(26, 8, 'blanketEnd').row(9, 15, 26, 'blanket').row(10, 15, 26, 'bedFrame');
+  m.col(14, 6, 10, 'headboard')
+    .set(15, 8, 'sleepL')
+    .set(16, 8, 'sleepR')
+    .row(8, 17, 25, 'blanket')
+    .set(26, 8, 'blanketEnd')
+    .row(9, 15, 26, 'blanket')
+    .row(10, 15, 26, 'bedFrame');
   m.mon(MON.ear, 16, 7);
+  m.set(12, 4, 'signBuzz');
   // he swats in his sleep, flings a slipper, and the ceiling fan turns
   m.mon(MON.swatter, 19, 5).mon(MON.fan, 22, 1).mon(MON.slipper, 28, 6);
   m.each('crumbW', [
@@ -240,7 +273,7 @@ export function theBed(book: BlockBook): Level {
     [24, 3],
     [33, 2],
   ]);
-  m.set(30, 4, 'shelfTop').set(30, 3, 'sodaW');
+  m.set(30, 4, 'shelfTop');
   // Teddy asleep in his dog bed (his big ear counts too)
   m.set(35, 10, 'dogBedL').set(36, 10, 'dogBedR');
   m.mon(MON.dogEar, 36, 9);
@@ -250,7 +283,9 @@ export function theBed(book: BlockBook): Level {
   // out into the night, long enough for "I've opened the window" to play before the scene ends
   m.set(W - 1, 3, 'sashTop').set(W - 1, 4, 'sash');
   const OUT = 7;
-  m.fill(W, 0, OUT, H, 'night').row(4, W, W + OUT - 2, 'nightAir').set(W + 4, 1, 'moon');
+  m.fill(W, 0, OUT, H, 'night')
+    .row(4, W, W + OUT - 2, 'nightAir')
+    .set(W + 4, 1, 'moon');
   m.surround(W + OUT, H, (x, y) => (x >= W || x <= -30 ? 'night' : y <= 0 ? 'ceil' : y <= 6 ? 'paper' : y === 7 ? 'rail' : y < H - 1 ? 'panel' : 'shag'));
   m.link(W + OUT - 2, 4, 'next');
   return { m, start: at(4, 5), size: [W + OUT, H] };
@@ -258,12 +293,18 @@ export function theBed(book: BlockBook): Level {
 
 /** 4. The open window: the backyard, to the tall grass. */
 export function theWindow(book: BlockBook): Level {
-  const W = 60;
+  const W = 74;
   const H = 14;
   const m = new MapBuilder(book, 'earth');
   // the rest of the house to the left, more sky over the yard, the ground going on
   m.surround(W, H, (x, y) => (y >= 12 ? (y === 12 ? 'grass' : 'earth') : y < 0 ? 'skyWall' : x < 0 ? (y === 0 ? 'eaveWall' : 'sidingWall') : 'sky'));
-  m.row(0, 1, W - 2, 'skyHi').fill(1, 1, W - 2, 11, 'sky').row(12, 0, W - 1, 'grass').col(0, 0, 11, 'sidingWall').set(0, 0, 'eaveWall').col(W - 1, 0, 11, 'tallWall').fill(0, 13, W, 1, 'earth');
+  m.row(0, 1, W - 2, 'skyHi')
+    .fill(1, 1, W - 2, 11, 'sky')
+    .row(12, 0, W - 1, 'grass')
+    .col(0, 0, 11, 'sidingWall')
+    .set(0, 0, 'eaveWall')
+    .col(W - 1, 0, 11, 'tallWall')
+    .fill(0, 13, W, 1, 'earth');
   m.each('cloud', [
     [14, 2],
     [27, 1],
@@ -284,13 +325,18 @@ export function theWindow(book: BlockBook): Level {
   m.col(37, 6, 11, 'trunk').fill(34, 2, 7, 3, 'leaves').row(5, 34, 40, 'branch');
   m.mon(MON.bird, 32, 1);
   // the picnic table: pie and lemonade
-  m.row(10, 42, 45, 'picnic').set(42, 11, 'picnicLeg').set(45, 11, 'picnicLeg').set(43, 9, 'pie').set(45, 9, 'lemonade');
+  m.row(10, 42, 45, 'picnic').set(42, 11, 'picnicLeg').set(45, 11, 'picnicLeg').set(43, 9, 'pie');
   m.set(50, 11, 'birdbath');
   m.mon(MON.wasp, 47, 3).mon(MON.bird, 44, 6);
-  // gusts again, and the tall grass: the wild
+  // gusts again, and the neighbor's clothesline: two more towels snapping, a robin over it
   m.fill(52, 2, 2, 9, 'calm');
-  m.fill(56, 6, 3, 6, 'tall').set(57, 9, 'wild');
-  m.link(57, 9, 'next');
+  m.set(55, 6, 'postTop').col(55, 7, 11, 'post').set(64, 6, 'postTop').col(64, 7, 11, 'post');
+  m.row(6, 56, 63, 'line').set(57, 6, 'towelB').set(62, 6, 'towelR');
+  m.mon(MON.towel, 59, 7).mon(MON.towel, 61, 4).mon(MON.bird, 56, 2);
+  // a last gust, and the tall grass: the wild
+  m.fill(66, 2, 2, 9, 'calm');
+  m.fill(70, 6, 3, 6, 'tall').set(71, 9, 'wild');
+  m.link(71, 9, 'next');
   return { m, start: at(6, 5), size: [W, H] };
 }
 
@@ -301,7 +347,11 @@ export function theWild(book: BlockBook): Level {
   const m = new MapBuilder(book, 'earth');
   // the wild goes on past the stems and the rocks, under more sky
   m.surround(W, H, (_x, y) => (y >= 12 ? (y === 12 ? 'grass' : 'earth') : y < 0 ? 'skyWall' : 'tall'));
-  m.row(0, 1, W - 2, 'skyHi').fill(1, 1, W - 2, 11, 'sky').row(12, 0, W - 1, 'grass').col(0, 0, 11, 'stem').col(W - 1, 0, 11, 'rock');
+  m.row(0, 1, W - 2, 'skyHi')
+    .fill(1, 1, W - 2, 11, 'sky')
+    .row(12, 0, W - 1, 'grass')
+    .col(0, 0, 11, 'stem')
+    .col(W - 1, 0, 11, 'rock');
   // the crew's boom microphones poke in from above
   m.set(20, 0, 'boomPole').set(20, 1, 'boom').set(42, 0, 'boomPole').set(42, 1, 'boomPole').set(42, 2, 'boom');
   // tall grass stems, the third goat grazing
@@ -324,7 +374,6 @@ export function theWild(book: BlockBook): Level {
   m.row(11, 33, 36, 'log');
   m.mon(MON.spider, 34, 2);
   m.set(40, 1, 'web');
-  m.set(42, 11, 'flower');
   // the desert: Brother Camel resting, a cactus
   m.row(12, 46, 57, 'dune').row(13, 46, 57, 'sand');
   m.set(50, 11, 'cactus').set(50, 10, 'cactusTop');
@@ -384,7 +433,12 @@ export function theAux(book: BlockBook): Level {
   // at the top of the gap; Carl takes it and dives straight down with it to the receiver, long
   // enough for "Carl's got the aux cord now" to play before the scene ends
   m.col(48, 3, 10, 'speaker').col(50, 3, 10, 'speaker').set(49, 10, 'receiver');
+  // Watt (Ohm Sweet Ohm) at the left speaker's foot, seeing to its wiring
+  m.set(47, 10, 'watt');
   m.set(49, 3, 'aux');
+  // the last stand: his hand reaches out over the stereo, and again right over the cord (roll
+  // past each)
+  m.mon(MON.grab, 44, 1).mon(MON.grab, 49, 2);
   m.link(49, 9, 'won');
   return { m, start: at(4, 5), size: [W, H] };
 }

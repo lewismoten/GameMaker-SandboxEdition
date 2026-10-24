@@ -22,6 +22,8 @@ export interface HealthTarget {
   original?: HealthTarget;
   /** Every file read, split into the copy's own problems and those that came with the original. */
   deepSplit?(): Promise<{ own: Issue[]; inherited: Issue[] }>;
+  /** Plain notes about the game that aren't file problems (e.g. a demo added in place of a missing one). */
+  notes?(): Promise<string[]>;
 }
 
 const cache = new Map<string, Promise<Issue[]>>();
@@ -29,7 +31,7 @@ const cache = new Map<string, Promise<Issue[]>>();
 function cached(key: string, run: () => Promise<Issue[]>): Promise<Issue[]> {
   let p = cache.get(key);
   if (!p) {
-    p = run().catch((e: Error) => [{ severity: 'warning', kind: 'unreadable', message: `The game could not be checked: ${e.message}` } as Issue]);
+    p = run().catch((e: Error) => [{ severity: 'warning', kind: 'unreadable', message: `The game could not be checked: ${e.message}` }]);
     cache.set(key, p);
   }
   return p;
@@ -38,6 +40,7 @@ function cached(key: string, run: () => Promise<Issue[]>): Promise<Issue[]> {
 /** A game from the CD or the Sandbox collection, served from ./games/. */
 export function catalogTarget(g: CatalogEntry): HealthTarget {
   const quick = async (): Promise<Issue[]> => {
+    if (g.health) return g.health; // checked when the site was built
     const wanted = g.files.filter((n) => QUICK_CHECK_FILE.test(n));
     const loaded = new Map<string, Uint8Array>();
     await Promise.all(
@@ -136,12 +139,16 @@ function countLabel(issues: Issue[]): string {
  * something worth knowing, that opens the report. Nothing to fix there: it plays as it did.
  */
 export function healthNote(target: HealthTarget): HTMLElement {
-  const note = h('button', { class: 'health-note', type: 'button', hidden: true, onclick: () => void showHealthReport(target) }) as HTMLButtonElement;
+  const note = h('button', { class: 'health-note', type: 'button', hidden: true, onclick: () => void showHealthReport(target) });
   // checked straight away: the panel shows one game at a time
-  void target.quick().then((issues) => {
-    if (!issues.length) return;
-    note.textContent = `ⓘ Notes on its files (${issues.length})`;
-    note.setAttribute('aria-label', `${target.title}: notes on its files, ${countLabel(issues)}. Show them.`);
+  void Promise.all([target.quick(), target.notes?.() ?? []]).then(([issues, notes]) => {
+    const n = issues.length + notes.length;
+    if (!n) return;
+    note.textContent = `ⓘ Notes on its files (${n})`;
+    note.setAttribute(
+      'aria-label',
+      `${target.title}: notes on its files, ${issues.length ? countLabel(issues) : `${n} note${n === 1 ? '' : 's'}`}. Show them.`,
+    );
     note.hidden = false;
   });
   return note;
@@ -162,8 +169,13 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
     body,
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
   ]);
-  const failed = (e: Error) => ({ own: [{ severity: 'error', kind: 'unreadable', message: `The check failed: ${e.message}` } as Issue], inherited: [] as Issue[] });
-  const { own: issues, inherited } = await (target.deepSplit ? target.deepSplit() : target.deep().then((own) => ({ own, inherited: [] as Issue[] }))).catch(failed);
+  const failed = (e: Error) => ({
+    own: [{ severity: 'error', kind: 'unreadable', message: `The check failed: ${e.message}` } as Issue],
+    inherited: [] as Issue[],
+  });
+  const { own: issues, inherited } = await (target.deepSplit ? target.deepSplit() : target.deep().then((own) => ({ own, inherited: [] as Issue[] }))).catch(
+    failed,
+  );
   const errors = issues.filter((i) => i.severity === 'error').length;
   const from = target.original?.title ?? 'the original';
   const came = inherited.length
@@ -207,6 +219,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
       ),
     );
   };
+  const notes = (await target.notes?.().catch(() => [])) ?? [];
   body.replaceChildren(
     h('p', { class: `health-summary ${target.released ? (issues.length ? 'warning' : 'ok') : (worstSeverity(issues) ?? 'ok')}` }, summary),
     ...groups(issues, !!target.released),
@@ -215,6 +228,16 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
           h('h3', { class: 'health-inherited' }, `Inherited from ${from}`),
           h('p', { class: 'meta' }, `${from} had these as it was released, and it plays as it did in DOS. Nothing to fix unless you want to.`),
           ...groups(inherited, true),
+        ]
+      : []),
+    ...(notes.length
+      ? [
+          h(
+            'section',
+            null,
+            h('h4', null, 'About this edition'),
+            h('ul', null, ...notes.map((n) => h('li', { class: 'warning' }, h('span', { class: 'sev', 'aria-label': 'note' }, 'ⓘ'), ' ', n))),
+          ),
         ]
       : []),
   );

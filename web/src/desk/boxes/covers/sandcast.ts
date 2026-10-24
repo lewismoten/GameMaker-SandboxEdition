@@ -14,10 +14,15 @@ function burst(c: Ctx, r: () => number, x: number, y: number, rr: number, color:
     const l = rr * (0.75 + r() * 0.3);
     const ex = x + Math.cos(a) * l;
     const ey = y + Math.sin(a) * l + l * 0.08;
-    stroke(c, lin(c, x, y, ex, ey, [
-      [0, 'rgba(0,0,0,0)'],
-      [1, color],
-    ]), 2.5, [x + Math.cos(a) * l * 0.2, y + Math.sin(a) * l * 0.2, ex, ey]);
+    stroke(
+      c,
+      lin(c, x, y, ex, ey, [
+        [0, 'rgba(0,0,0,0)'],
+        [1, color],
+      ]),
+      2.5,
+      [x + Math.cos(a) * l * 0.2, y + Math.sin(a) * l * 0.2, ex, ey],
+    );
     fill(c, '#fff', () => c.arc(ex, ey, 2.2, 0, Math.PI * 2));
   }
   c.restore();
@@ -47,11 +52,14 @@ function flag(c: Ctx, x: number, y: number, fw: number): void {
 /** A sand tower with crenellations. */
 function tower(c: Ctx, x: number, y: number, tw: number, th: number): void {
   poly(c, [x - tw / 2, y, x - tw / 2 + 4, y - th, x + tw / 2 - 4, y - th, x + tw / 2, y]);
-  fill(c, lin(c, x - tw / 2, 0, x + tw / 2, 0, [
-    [0, '#8a5a2a'],
-    [0.35, '#f2c886'],
-    [1, '#9a6a34'],
-  ]));
+  fill(
+    c,
+    lin(c, x - tw / 2, 0, x + tw / 2, 0, [
+      [0, '#8a5a2a'],
+      [0.35, '#f2c886'],
+      [1, '#9a6a34'],
+    ]),
+  );
   const n = 4;
   for (let i = 0; i < n; i++) {
     const bx = x - tw / 2 + 4 + (i * (tw - 8)) / (n - 0.5);
@@ -82,10 +90,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   for (let i = 0; i < 16; i++) {
     const px = i * 40;
     poly(c, [px, 380, px, 318, px + 17, 306, px + 34, 318, px + 34, 380]);
-    fill(c, lin(c, 0, 306, 0, 380, [
-      [0, '#6a5a6a'],
-      [1, '#2a2430'],
-    ]));
+    fill(
+      c,
+      lin(c, 0, 306, 0, 380, [
+        [0, '#6a5a6a'],
+        [1, '#2a2430'],
+      ]),
+    );
   }
   // the lawn and the sandbox
   c.fillStyle = lin(c, 0, 370, 0, h, [
@@ -96,18 +107,24 @@ const paint = (c: Ctx, w: number, h: number): void => {
   poly(c, [10, 420, 590, 420, 640, h, -40, h]);
   fill(c, '#7a4a20');
   poly(c, [26, 432, 574, 432, 620, h, -20, h]);
-  fill(c, lin(c, 0, 432, 0, h, [
-    [0, '#c8945a'],
-    [1, '#f0c888'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 432, 0, h, [
+      [0, '#c8945a'],
+      [1, '#f0c888'],
+    ]),
+  );
   // the castle
   const base = 470;
   poly(c, [190, base, 200, 380, 420, 380, 430, base]);
-  fill(c, lin(c, 190, 0, 430, 0, [
-    [0, '#8a5a2a'],
-    [0.4, '#eec080'],
-    [1, '#8a5a2a'],
-  ]));
+  fill(
+    c,
+    lin(c, 190, 0, 430, 0, [
+      [0, '#8a5a2a'],
+      [0.4, '#eec080'],
+      [1, '#8a5a2a'],
+    ]),
+  );
   blob(c, [282, base, 282, 420, 310, 404, 338, 420, 338, base]);
   fill(c, '#3a2410');
   tower(c, 200, base, 56, 120);
@@ -117,10 +134,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   glow(c, 310, 300, 140, '#ffc070', 0.25);
   // Teddy's tennis ball
   ell(c, 120, 600, 15, 15);
-  fill(c, rad(c, 114, 594, 18, [
-    [0, '#f8ffb0'],
-    [1, '#a8c020'],
-  ]));
+  fill(
+    c,
+    rad(c, 114, 594, 18, [
+      [0, '#f8ffb0'],
+      [1, '#a8c020'],
+    ]),
+  );
   stroke(c, '#fff', 2, [108, 592, 118, 600, 130, 606]);
   // Gwinn peeking from the fence corner, Teddy the knight front and center
   dog(c, 70, 470, 0.62, GWINN);
@@ -128,11 +148,14 @@ const paint = (c: Ctx, w: number, h: number): void => {
   // his toy shovel, planted like a sword
   stroke(c, '#d81e1e', 9, [490, 640, 520, 470]);
   poly(c, [508, 476, 534, 470, 548, 420, 522, 404, 500, 444]);
-  fill(c, lin(c, 500, 0, 548, 0, [
-    [0, '#c81818'],
-    [0.5, '#ff6a50'],
-    [1, '#901010'],
-  ]));
+  fill(
+    c,
+    lin(c, 500, 0, 548, 0, [
+      [0, '#c81818'],
+      [0.5, '#ff6a50'],
+      [1, '#901010'],
+    ]),
+  );
   finish(c, w, h, 'sandcast', 0.5);
 };
 export default paint;

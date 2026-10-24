@@ -11,7 +11,7 @@ import './character.css';
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
 import { blockButton } from '../../widgets/blockChooser';
-import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
+import { h, clear, numberField, selectField, checkField, debounce, confirmDialog } from '../../core/ui';
 import { History } from '../../core/history';
 import { drawBlockTo } from '../../core/draw';
 import { paletteChooser } from '../blocks/blocks';
@@ -31,8 +31,9 @@ import {
 import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../../formats/sound';
 import { scanName } from '../../../input/scancodes';
 import { viewState } from '../../../urlState';
-import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, travel } from './characterLogic';
+import { bottomOrient, firesMonster, insertFrame, mirroredFrames, normalOrient, setFrames, topOrient, travel } from './characterLogic';
 import { frameCard, keyPicker, type FrameContext } from './characterFrames';
+import { stageBackdrop } from './characterStage';
 
 const JOY_DIRS: [number, string][] = [
   [0, 'No joystick'],
@@ -302,7 +303,10 @@ registerEditor(['chr'], (host, project, file) => {
         i === 5 ? h('div', { class: 'chr-list-head' }, 'Your moves') : null,
         h(
           'button',
-          { class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`, onclick: () => ((current = i), view.set({ sequence: i }), renderList(), renderDetail()) },
+          {
+            class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`,
+            onclick: () => ((current = i), view.set({ sequence: i }), renderList(), renderDetail()),
+          },
           h('span', { class: 'chr-seq-thumb checker' }, spriteCanvas(s.frames[0] && frameCount(s) ? s.frames[0] : undefined, 1)),
           h('span', { class: 'chr-seq-name' }, h('b', null, `${i}`), ' ', seqName(i)),
           s.key && i < 5 ? h('kbd', null, scanName(s.key >> 8)) : null,
@@ -317,14 +321,17 @@ registerEditor(['chr'], (host, project, file) => {
   let timer: ReturnType<typeof setTimeout> | undefined;
   let playing = true;
   let frameCards: HTMLElement[] = [];
+  const backdrop = stageBackdrop(project, file, STAGE_W, STAGE_H, () => animate(chr.sequences[current]));
 
   function drawStage(seq: Sequence, i: number, pos: { x: number; y: number }, burst: string): void {
     const ctx = stage.getContext('2d')!;
-    ctx.fillStyle = '#05061a';
-    ctx.fillRect(0, 0, STAGE_W, STAGE_H);
-    ctx.fillStyle = '#12163a';
-    for (let x = 0; x < STAGE_W; x += BLEN) ctx.fillRect(x, 0, 1, STAGE_H);
-    for (let y = 0; y < STAGE_H; y += BLEN) ctx.fillRect(0, y, STAGE_W, 1);
+    if (!backdrop.draw(ctx)) {
+      ctx.fillStyle = '#05061a';
+      ctx.fillRect(0, 0, STAGE_W, STAGE_H);
+      ctx.fillStyle = '#12163a';
+      for (let x = 0; x < STAGE_W; x += BLEN) ctx.fillRect(x, 0, 1, STAGE_H);
+      for (let y = 0; y < STAGE_H; y += BLEN) ctx.fillRect(0, y, STAGE_W, 1);
+    }
     const f = seq.frames[i];
     if (!f) return;
     const at = (n: number, o: number, x: number, y: number) => {
@@ -391,6 +398,36 @@ registerEditor(['chr'], (host, project, file) => {
     travelChanged: (seq) => (stageInfo.textContent = describeTravel(seq)),
   };
 
+  /** "Facing the other way, from…": fills this sequence with another one's frames mirrored (a walk left from a walk right). */
+  function mirrorFrom(seq: Sequence, n: number): HTMLElement | null {
+    const sources = chr.sequences.map((_, i) => i).filter((i) => i !== current && frameCount(chr.sequences[i]) > 0);
+    if (!sources.length) return null;
+    const sel = h('select', { 'aria-label': 'Sequence to mirror' }, ...sources.map((i) => h('option', { value: String(i) }, `${i}. ${seqName(i)}`)));
+    const go = h(
+      'button',
+      {
+        title: 'Replace these frames with the chosen sequence’s, facing the other way: moves go left instead of right, blocks mirrored',
+        onclick: async () => {
+          const src = chr.sequences[Number(sel.value)];
+          if (
+            n &&
+            !(await confirmDialog(
+              'Mirror a sequence',
+              `Replace this sequence’s ${n} frame${n === 1 ? '' : 's'} with ${seqName(Number(sel.value))}’s, facing the other way?`,
+              'Replace',
+            ))
+          )
+            return;
+          edit(() => setFrames(seq, mirroredFrames(src)));
+          renderList();
+          renderDetail();
+        },
+      },
+      'Make it',
+    );
+    return h('div', { class: 'toolbar chr-mirror' }, h('span', { class: 'chr-muted' }, 'Facing the other way, from'), sel, go);
+  }
+
   // ---------------------------------------------------------------- sequence detail
   const detail = h('div', { class: 'chr-detail' });
 
@@ -455,6 +492,7 @@ registerEditor(['chr'], (host, project, file) => {
           playBtn,
           h('button', { onclick: () => ((playing = true), (playBtn.textContent = '❚❚ Pause'), animate(seq)) }, '⟲ Restart'),
           soundToggle,
+          backdrop.el,
           stageInfo,
         ),
       ),
@@ -463,6 +501,7 @@ registerEditor(['chr'], (host, project, file) => {
         { class: 'chr-frames-wrap' },
         h('h3', null, 'Frames ', h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · hover a block to turn or flip it, click it to change it`)),
         h('div', { class: 'chr-frames' }, ...frameCards, addFrame),
+        mirrorFrom(seq, n),
       ),
       h(
         'div',

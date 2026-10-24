@@ -77,7 +77,7 @@ disk.put('demo.rec', await demoRecording(boards[0], rooms[0].tiles, mb, cb, chr)
 disk.put('readme.txt', readme('$12'));
 const start = process.env.OHM_START ? BOARDS.findIndex((s) => s.file === process.env.OHM_START) : 0;
 disk.put('ohmsweet.gam', serializeGame(buildGame(rooms, Math.max(0, start))));
-disk.put('license.txt', licenseText("Ohm Sweet Ohm"));
+disk.put('license.txt', licenseText('Ohm Sweet Ohm'));
 disk.write();
 for (const r of rooms)
   console.log(

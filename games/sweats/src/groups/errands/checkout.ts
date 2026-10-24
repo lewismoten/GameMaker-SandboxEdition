@@ -73,20 +73,25 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
   type Goods = 'cans' | 'boxes' | 'eggs';
   const shelf = (goods: Goods, lip: boolean, seed: number) => {
     const p = new Pixels(20, 20);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (x % 4 === 1 && y % 4 === 1) ? c('lino', 0) : c('lino', 1));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, x % 4 === 1 && y % 4 === 1 ? c('lino', 0) : c('lino', 1));
     const r = rng(seed);
     const labels = ['red', 'green', 'yellow', 'navy', 'orange', 'teal'];
     if (goods === 'cans')
       for (let x = 1; x < 19; x += 5) {
         const l = labels[Math.floor(r() * labels.length)];
-        p.rect(x, 9, 4, 8, c('metal', 2)).rect(x, 11, 4, 4, c(l, 2)).rect(x, 12, 4, 1, c(l, 3)).rect(x + 3, 9, 1, 8, c('metal', 0));
+        p.rect(x, 9, 4, 8, c('metal', 2))
+          .rect(x, 11, 4, 4, c(l, 2))
+          .rect(x, 12, 4, 1, c(l, 3))
+          .rect(x + 3, 9, 1, 8, c('metal', 0));
         p.rect(x, 4, 4, 5, c('metal', 1)).rect(x, 5, 4, 3, c(labels[(Math.floor(r() * 6) + 1) % 6], 1));
       }
     if (goods === 'boxes')
       for (let x = 1; x < 19; x += 6) {
         const l = labels[Math.floor(r() * labels.length)];
         const h = 9 + Math.floor(r() * 4);
-        p.rect(x, 17 - h, 5, h, c(l, 2)).rect(x, 17 - h, 5, 2, c(l, 3)).rect(x + 4, 17 - h, 1, h, c(l, 1));
+        p.rect(x, 17 - h, 5, h, c(l, 2))
+          .rect(x, 17 - h, 5, 2, c(l, 3))
+          .rect(x + 4, 17 - h, 1, h, c(l, 1));
         p.rect(x + 1, 12 - Math.floor(h / 3), 3, 2, c('white', 2));
       }
     if (goods === 'eggs')
@@ -126,14 +131,24 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
   cut(book, 'selfSign', selfSign, wall(), () => AIR);
   const pennants = wall();
   pennants.line(0, 2, 10, 4, c('metal', 0)).line(10, 4, 19, 2, c('metal', 0));
-  for (const [x, y, col] of [[2, 3, 'red'], [8, 4, 'yellow'], [14, 4, 'teal']] as const) for (let k = 0; k < 6; k++) pennants.rect(x + Math.floor(k / 2), y + k, 4 - Math.floor(k / 1.5), 1, c(col, 2));
+  for (const [x, y, col] of [
+    [2, 3, 'red'],
+    [8, 4, 'yellow'],
+    [14, 4, 'teal'],
+  ] as const)
+    for (let k = 0; k < 6; k++) pennants.rect(x + Math.floor(k / 2), y + k, 4 - Math.floor(k / 1.5), 1, c(col, 2));
   book.add('pennants', pennants, AIR);
 
   // ---------- the dairy cooler: a lit glass case of milk ----------
   const coolerTop = wall();
   coolerTop.rect(0, 2, 20, 18, c('metal', 1)).rect(0, 2, 20, 2, c('metal', 2)).rect(0, 6, 20, 10, c('navy', 1));
   micro(coolerTop, 3, 8, 'MILK', c('white', 2));
-  for (const [x, y] of [[1, 7], [17, 12], [18, 7]]) coolerTop.rect(x, y, 2, 2, c('white', 2));
+  for (const [x, y] of [
+    [1, 7],
+    [17, 12],
+    [18, 7],
+  ])
+    coolerTop.rect(x, y, 2, 2, c('white', 2));
   book.add('coolerTop', coolerTop, { solid: LEDGE, grav: GRAV.down });
   const coolerDoor = (cartons: boolean) => {
     const p = new Pixels(20, 20);
@@ -142,11 +157,17 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
     p.rect(2, 18, 16, 2, c('metal', 1));
     if (!cartons)
       for (const x of [3, 9]) {
-        p.rect(x, 9, 5, 9, c('white', 2)).rect(x + 1, 7, 3, 2, c('white', 1)).rect(x + 1, 6, 3, 1, c('navy', 2)).rect(x, 12, 5, 3, c('teal', 1));
+        p.rect(x, 9, 5, 9, c('white', 2))
+          .rect(x + 1, 7, 3, 2, c('white', 1))
+          .rect(x + 1, 6, 3, 1, c('navy', 2))
+          .rect(x, 12, 5, 3, c('teal', 1));
       }
     else
       for (const x of [3, 8, 12]) {
-        p.rect(x, 11, 4, 7, c('white', 2)).set(x + 1, 10, c('white', 1)).set(x + 2, 10, c('white', 1)).rect(x, 13, 4, 2, c(x === 8 ? 'pink' : 'red', 2));
+        p.rect(x, 11, 4, 7, c('white', 2))
+          .set(x + 1, 10, c('white', 1))
+          .set(x + 2, 10, c('white', 1))
+          .rect(x, 13, 4, 2, c(x === 8 ? 'pink' : 'red', 2));
       }
     for (let k = 0; k < 6; k++) p.set(3 + k, 2 + k, c('white', 2));
     return p;
@@ -165,7 +186,9 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
   // a stack of nested carts by the door
   const carts = over(storeWall(pal).rect(0, 15, 20, 5, c('lino', 0)).rect(0, 15, 20, 1, c('lino', 1)), pal, (p) => {
     for (const dx of [0, 3, 6]) {
-      p.line(2 + dx, 8, 12 + dx, 8, c('red', 2)).line(3 + dx, 9, 3 + dx, 15, c('metal', 2)).line(12 + dx, 8, 11 + dx, 15, c('metal', 2));
+      p.line(2 + dx, 8, 12 + dx, 8, c('red', 2))
+        .line(3 + dx, 9, 3 + dx, 15, c('metal', 2))
+        .line(12 + dx, 8, 11 + dx, 15, c('metal', 2));
       p.line(3 + dx, 12, 11 + dx, 12, c('metal', 1)).line(3 + dx, 15, 11 + dx, 15, c('metal', 2));
     }
     p.disc(5, 17, 1.5, c('ink', 1)).disc(16, 17, 1.5, c('ink', 1));
@@ -180,8 +203,17 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
     // the pole and its light
     p.rect(8, 6, 3, 18, c('metal', 1)).rect(9, 6, 1, 18, c('metal', 2));
     const lamp = k.light === 'go' ? 'green' : 'red';
-    p.rect(5, 0, 9, 7, c(lamp, k.light === 'off' ? 0 : 3)).rect(5, 0, 9, 2, c(lamp, k.light === 'off' ? 1 : 3)).rect(6, 2, 2, 4, c('white', k.light === 'off' ? 0 : 2));
-    if (k.light === 'on') for (const [x, y] of [[2, 1], [16, 1], [1, 5], [17, 5]]) p.set(x, y, c('red', 3)).set(x + (x < 9 ? 1 : -1), y, c('red', 2));
+    p.rect(5, 0, 9, 7, c(lamp, k.light === 'off' ? 0 : 3))
+      .rect(5, 0, 9, 2, c(lamp, k.light === 'off' ? 1 : 3))
+      .rect(6, 2, 2, 4, c('white', k.light === 'off' ? 0 : 2));
+    if (k.light === 'on')
+      for (const [x, y] of [
+        [2, 1],
+        [16, 1],
+        [1, 5],
+        [17, 5],
+      ])
+        p.set(x, y, c('red', 3)).set(x + (x < 9 ? 1 : -1), y, c('red', 2));
     p.rect(11, 12, 6, 6, c('white', 2));
     micro(p, 12, 13, k.light === 'go' ? '1' : '4', ink);
     // the screen
@@ -197,7 +229,10 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
     // the bag rack and the bagging area (the scale that knows every item's sins)
     p.rect(21, 24, 2, 34, c('metal', 0)).rect(36, 24, 2, 34, c('metal', 0)).rect(21, 24, 17, 2, c('metal', 2));
     for (const x of [24, 30]) {
-      p.rect(x, 26, 6, 15, c('white', 1)).rect(x + 1, 27, 4, 13, c('white', 2)).rect(x, 26, 1, 4, c('white', 0)).rect(x + 5, 26, 1, 4, c('white', 0));
+      p.rect(x, 26, 6, 15, c('white', 1))
+        .rect(x + 1, 27, 4, 13, c('white', 2))
+        .rect(x, 26, 1, 4, c('white', 0))
+        .rect(x + 5, 26, 1, 4, c('white', 0));
     }
     p.rect(20, 43, 20, 3, c('metal', 2)).rect(20, 46, 20, 14, c('metal', 1)).rect(20, 46, 20, 1, c('metal', 0));
     micro(p, 23, 50, 'BAGS', c('metal', 0));
@@ -206,14 +241,45 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
   };
   const back = (_col: number, row: number) => (row === 2 ? base : wall());
   // kiosk A: UNEXPECTED ITEM (its screen breeds the warnings)
-  cut(book, 'kioskA', kiosk({ light: 'on', text: ['ITEM', '???'], textCol: c('red', 1) }), back, (col, row) => (col === 0 && row === 1 ? { ...AIR, birthMon: CM.unexpected, birthTime: 150 } : col === 0 && row === 0 ? { ...AIR, next: 'kioskOff', ntime: 6 } : AIR), [[0, 0], [0, 1], [1, 1], [0, 2], [1, 2]]);
+  cut(
+    book,
+    'kioskA',
+    kiosk({ light: 'on', text: ['ITEM', '???'], textCol: c('red', 1) }),
+    back,
+    (col, row) =>
+      col === 0 && row === 1 ? { ...AIR, birthMon: CM.unexpected, birthTime: 150 } : col === 0 && row === 0 ? { ...AIR, next: 'kioskOff', ntime: 6 } : AIR,
+    [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [0, 2],
+      [1, 2],
+    ],
+  );
   // its light flashing ASSISTANCE NEEDED
-  book.add('kioskOff', wall().blit(kiosk({ light: 'off', text: ['', ''], textCol: 0 }).crop(0, 0, 20, 20), 0, 0, 255), { ...AIR, next: 'kioskA.0.0', ntime: 6 });
+  book.add('kioskOff', wall().blit(kiosk({ light: 'off', text: ['', ''], textCol: 0 }).crop(0, 0, 20, 20), 0, 0, 255), {
+    ...AIR,
+    next: 'kioskA.0.0',
+    ntime: 6,
+  });
   // kiosk B: locked out, HELP (its scanner shoots BEEPs at the barcode)
-  cut(book, 'kioskB', kiosk({ light: 'on', text: ['HELP', 'LOCK'], textCol: c('red', 1) }), back, (_c, row) => (row === 2 ? { ...AIR, birthMon: CM.beep, birthTime: 110 } : AIR), [[0, 1], [0, 2]]);
+  cut(
+    book,
+    'kioskB',
+    kiosk({ light: 'on', text: ['HELP', 'LOCK'], textCol: c('red', 1) }),
+    back,
+    (_c, row) => (row === 2 ? { ...AIR, birthMon: CM.beep, birthTime: 110 } : AIR),
+    [
+      [0, 1],
+      [0, 2],
+    ],
+  );
   // the last self-checkout: SCAN. PAY. GO. (the gate: it takes all four groceries)
   const last = (open: boolean) => kiosk({ light: 'go', text: open ? ['THANK', 'YOU!'] : ['SCAN', 'PAY'], textCol: c('navy', 1) });
-  cut(book, 'kioskC', last(false), back, () => AIR, [[0, 0], [0, 1]]);
+  cut(book, 'kioskC', last(false), back, () => AIR, [
+    [0, 0],
+    [0, 1],
+  ]);
   const cabinet = (open: boolean) => {
     const p = base.crop(0, 0, 20, 20).blit(last(open).crop(0, 40, 20, 20), 0, 0, 255);
     if (open) {
@@ -306,7 +372,10 @@ export function checkoutSprites(book: SpriteBook, pal: Pal): void {
   // the slowest employee on earth: hunched in his orange vest, the weight of a thousand lost carts
   const clerk = (f: number) => {
     const p = clear();
-    p.rect(6, 15, 3, 5, c('navy', 1)).rect(11 + f, 15, 3, 5, c('navy', 1)).rect(5, 19, 4, 1, ink).rect(11 + f, 19, 4, 1, ink);
+    p.rect(6, 15, 3, 5, c('navy', 1))
+      .rect(11 + f, 15, 3, 5, c('navy', 1))
+      .rect(5, 19, 4, 1, ink)
+      .rect(11 + f, 19, 4, 1, ink);
     p.rect(5, 8, 10, 8, c('teal', 1)).rect(6, 8, 8, 8, c('orange', 2)).rect(9, 8, 2, 8, c('teal', 1)).rect(11, 10, 3, 2, c('white', 2));
     blob(p, 9, 6, 3.4, 3.2, pal.r('skin'), 1, 3);
     p.rect(6, 2, 7, 2, c('hair', 0)).set(7, 6, ink).set(10, 6, ink).rect(7, 5, 2, 1, c('skin', 1)).rect(10, 5, 2, 1, c('skin', 1));
@@ -340,7 +409,11 @@ export function checkoutSprites(book: SpriteBook, pal: Pal): void {
     }
     return done(p);
   };
-  for (const [s, name] of [[0, 'jugA'], [1, 'jugB'], [2, 'jugC']] as const) {
+  for (const [s, name] of [
+    [0, 'jugA'],
+    [1, 'jugB'],
+    [2, 'jugC'],
+  ] as const) {
     book.add(`${name}0`, jug(s, 0), hurts(-8));
     book.add(`${name}1`, jug(s, 1), hurts(-8));
   }
@@ -400,15 +473,24 @@ export const checkout: Monologue = {
     const W = 74 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 2; x < W; x += 5) m.set(x, 0, '*');
-    m.fill(0, 1, W, 9, '.').row(2, 0, W - 1, '-').row(3, 0, W - 1, 'pennants').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
+    m.fill(0, 1, W, 9, '.')
+      .row(2, 0, W - 1, '-')
+      .row(3, 0, W - 1, 'pennants')
+      .row(10, 0, W - 1, '_')
+      .row(11, 0, W - 1, '=')
+      .row(12, 0, W - 1, '#');
     // the way in: the spotlight, the carts by the door
     m.set(2, 10, '!').set(4, 10, 'k').set(5, 10, '$');
     // aisle three: shelves from the floor to row 5, ledges on rows 8 and 5
     m.set(11, 2, 'aisle3.0.0').set(12, 2, 'aisle3.1.0');
     for (let x = 7; x <= 18; x++) {
       const odd = x % 2 === 1;
-      m.set(x, 5, odd ? 'C' : 'X').set(x, 6, odd ? 'x' : 'c').set(x, 7, odd ? 'c' : 'x');
-      m.set(x, 8, odd ? 'X' : 'C').set(x, 9, odd ? 'c' : 'x').set(x, 10, odd ? 'x' : 'c');
+      m.set(x, 5, odd ? 'C' : 'X')
+        .set(x, 6, odd ? 'x' : 'c')
+        .set(x, 7, odd ? 'c' : 'x');
+      m.set(x, 8, odd ? 'X' : 'C')
+        .set(x, 9, odd ? 'c' : 'x')
+        .set(x, 10, odd ? 'x' : 'c');
     }
     m.set(9, 7, '1');
     m.set(10, 4, '%').set(13, 4, 'b').set(16, 4, '2');
@@ -420,7 +502,10 @@ export const checkout: Monologue = {
     m.set(23, 10, '3').set(24, 3, 'b');
     // the free-sample taster and its coffee; the self-checkouts
     m.set(27, 10, 's').set(28, 10, 'm');
-    for (const [name, x] of [['kioskA', 31], ['kioskB', 37]] as const) {
+    for (const [name, x] of [
+      ['kioskA', 31],
+      ['kioskB', 37],
+    ] as const) {
       m.set(x, 8, 'kioskA.0.0');
       m.set(x, 9, `${name}.0.1`).set(x, 10, `${name}.0.2`);
       m.set(x + 1, 9, 'kioskA.1.1').set(x + 1, 10, 'kioskA.1.2');
@@ -435,7 +520,10 @@ export const checkout: Monologue = {
     m.mon(CM.jugA, 53, 10);
     // aisle five: the eggs on top of a low shelf, Doc Leo shopping
     m.set(61, 2, 'aisle3.0.0').set(62, 2, 'aisle5.1.0');
-    for (let x = 58; x <= 67; x++) m.set(x, 8, x % 2 ? 'X' : 'C').set(x, 9, 'e').set(x, 10, x % 2 ? 'c' : 'e');
+    for (let x = 58; x <= 67; x++)
+      m.set(x, 8, x % 2 ? 'X' : 'C')
+        .set(x, 9, 'e')
+        .set(x, 10, x % 2 ? 'c' : 'e');
     m.set(60, 7, '%').set(64, 7, '4').set(66, 7, '%');
     m.mon(MON.leo, 59, 10);
     // the last self-checkout: SCAN, PAY, GO

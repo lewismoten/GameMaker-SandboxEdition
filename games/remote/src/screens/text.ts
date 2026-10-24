@@ -26,7 +26,16 @@ export const SONG_CREDIT = `lyrics shaped by ChatGPT from Lewis Moten's prompt; 
 
 /** The song, word for word (the clean lyrics; each line broken in two at its comma or dash). */
 export const LYRICS: Record<string, string[]> = {
-  verse1: ['I sat down with snacks,', '  the couch is a throne,', 'Netflix is loaded,', "  I'm in the zone.", 'But fate has struck', '  with cruel delight-', 'The remote is gone,', '  it vanished from sight.'],
+  verse1: [
+    'I sat down with snacks,',
+    '  the couch is a throne,',
+    'Netflix is loaded,',
+    "  I'm in the zone.",
+    'But fate has struck',
+    '  with cruel delight-',
+    'The remote is gone,',
+    '  it vanished from sight.',
+  ],
   chorus1: [
     "Where's the remote?!",
     '  I just had it here!',
@@ -41,7 +50,16 @@ export const LYRICS: Record<string, string[]> = {
     'Where remotes disappear',
     '  and dreams are blown.',
   ],
-  verse2: ['I flipped the blanket,', '  I kicked the floor,', 'Opened the fridge-', '  who knows anymore?', 'Called my mom', '  just in case she knew,', 'She said "Check your hand,"', '  but nope, not true.'],
+  verse2: [
+    'I flipped the blanket,',
+    '  I kicked the floor,',
+    'Opened the fridge-',
+    '  who knows anymore?',
+    'Called my mom',
+    '  just in case she knew,',
+    'She said "Check your hand,"',
+    '  but nope, not true.',
+  ],
   chorus2: [
     "Where's the remote?!",
     '  Is it playing a game?',
@@ -56,7 +74,16 @@ export const LYRICS: Record<string, string[]> = {
     'Straight into the void',
     '  of eternal doom.',
   ],
-  bridge: ['I found ten pennies,', '  three pens, a spoon,', 'A sock from Christmas,', '  a tiny raccoon (??)', 'But no clicker,', '  no buttons, no guide-', 'Just existential panic', '  on the living room ride.'],
+  bridge: [
+    'I found ten pennies,',
+    '  three pens, a spoon,',
+    'A sock from Christmas,',
+    '  a tiny raccoon (??)',
+    'But no clicker,',
+    '  no buttons, no guide-',
+    'Just existential panic',
+    '  on the living room ride.',
+  ],
   final: [
     "Where's the remote?!",
     "  My will's worn thin.",
@@ -129,10 +156,10 @@ export const INSTRUCTIONS = [
   ]),
   page([
     'THE RIDE: the spinning rug',
-    'carries you round. Press PLAY',
-    'on the VCR, get off at the',
-    'EXIT and sit back down on',
-    'the couch.',
+    'carries you round. Off at the',
+    'far top corner, PLAY on the',
+    'VCR, back through the ride,',
+    'out at the EXIT, and sit.',
     '',
     'PATIENCE is your health. The',
     "cat swipes; Teddy's kiss, the",
@@ -200,7 +227,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits: the whole song (liner notes), the credits, and the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'));
+export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'), true);
 
 export function readme(price: string): string {
   return `
@@ -256,9 +283,9 @@ THIS IS SHAREWARE
 
   If it made you check your own
   couch, register for ${price}: you
-  get a tape of the song and a
-  roll of duct tape for your
-  remote. Send a check (US
+  get a couch-cushion sticker
+  and a roll of duct tape for
+  your remote. Send a check (US
   funds) to:
 
     The Bard of Bizarre
@@ -269,7 +296,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

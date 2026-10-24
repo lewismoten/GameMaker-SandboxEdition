@@ -43,9 +43,11 @@ const ROBOTS = new Set<number>([
   MON.sparky2,
   MON.sparky3,
 ]);
-const ITEMS = /^(page|quarter|remote|zapper|battery|keycard|pass|cola)_/;
+const ITEMS = /^(page|quarter|pill|remote|zapper|battery|keycard|pass|cola)_/;
 let totalTicks = 0;
 let deaths = 0;
+/** Pages carried into the Science Fair (the judges take 20 of them there). */
+let pagesAtFair = 0;
 
 for (const [i, l] of LEVELS.entries()) {
   const set = SETS[l.set]();
@@ -54,6 +56,8 @@ for (const [i, l] of LEVELS.entries()) {
   const map = lm.done();
   const names = set.names;
   const avoid = new Set(['booth_door'].map((n) => set.id(n)));
+  // never the tin heart or the Easter egg: they're left for the player to find
+  set.names.forEach((n, i) => /^(tinHeart|easterEgg)\d*$/.test(n) && avoid.add(i));
   const links: SimScene['links'] = [];
   if (l.file === 'exchange') for (const [from, to] of DIALS) links.push({ from: lm.at(from), to: lm.at(to) });
   links.push({ from: lm.at('exit'), to: { x: 0, y: 0 } });
@@ -65,6 +69,7 @@ for (const [i, l] of LEVELS.entries()) {
   const opts = { god, zapAt: (n: number) => ROBOTS.has(n), avoid };
   let bot = new Bot(sim, opts);
   const pages0 = ci.meter[CTR.pages];
+  if (l.file === 'school') pagesAtFair = pages0 - 1;
   const lives0 = ci.lives;
   let outcome = '';
 
@@ -75,7 +80,7 @@ for (const [i, l] of LEVELS.entries()) {
       const roomOf = (p: { x: number; y: number }) => [...lm.marks].find(([, [x, y]]) => x === p.x && y === p.y)?.[0] ?? 'hall';
       for (let room = roomOf(arrival); room !== 'launch'; room = roomOf(arrival)) {
         const door = DOOR[room];
-        await bot.collect(names, (n) => /^quarter_/.test(n), 'quarters');
+        await bot.collect(names, (n) => /^(quarter|pill)_/.test(n), 'quarters and pills');
         if (!(await bot.goTo([[lm.at(door).x, lm.at(door).y]], door))) return false;
         if (sim.link < 0) return false;
         const to = links[sim.link].to;
@@ -139,6 +144,9 @@ for (const [i, l] of LEVELS.entries()) {
     `${i + 1}. ${l.desc.padEnd(18)} ${outcome}  ${(sim.ticks / 18.2).toFixed(0)}s  pages ${pages0 - 1}->${ci.meter[CTR.pages] - 1}  quarters ${ci.meter[CTR.quarters] - 1}  zap ${ci.meter[SEQ.zap]}  hp ${ci.hitpts}  lives ${lives0}->${ci.lives}  score ${ci.score}`,
   );
   for (const s of bot.log) console.log('   ', s);
-  if (!outcome.startsWith('EXIT')) break;
+  if (!outcome.startsWith('EXIT')) throw new Error(`year2000: ${l.desc}: ${outcome}`);
 }
-console.log(`${(totalTicks / 18.2 / 60).toFixed(1)} minutes; ${ci.meter[CTR.pages] - 1} pages (need ${PAGES_NEEDED}); deaths ${deaths}`);
+console.log(`${(totalTicks / 18.2 / 60).toFixed(1)} minutes; ${pagesAtFair} pages at the fair (need ${PAGES_NEEDED}); deaths ${deaths}`);
+// The bot must win clean: every level exited, every page found, and no life lost.
+if (!god && deaths) throw new Error(`year2000: the bot lost ${deaths} ${deaths === 1 ? 'life' : 'lives'}`);
+if (pagesAtFair < PAGES_NEEDED) throw new Error(`year2000: only ${pagesAtFair} of ${PAGES_NEEDED} pages reached the fair`);

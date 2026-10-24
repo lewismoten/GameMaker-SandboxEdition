@@ -5,10 +5,7 @@
   flex-direction: column;
   gap: 2.4cqw;
   padding: 5cqw 6cqw 4cqw;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(242, 182, 50, 0.18), transparent 30%),
-    var(--grain, none),
-    #fbefcb;
+  background: radial-gradient(circle at 12% 8%, rgba(242, 182, 50, 0.18), transparent 30%), var(--grain, none), #fbefcb;
   color: #2a1036;
   font:
     3.1cqw/1.35 Georgia,

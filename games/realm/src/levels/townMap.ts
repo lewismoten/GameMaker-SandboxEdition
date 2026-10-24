@@ -24,12 +24,42 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
 
   // ================================================================ Nowish (x 0-49)
   hedgeAround(p, 0, 49, [
-    [10, 7], [33, 7], [36, 10], [36, 31], [33, 34], [25, 34], [25, 40], [20, 40], [20, 34], [10, 34], [7, 31], [7, 10],
+    [10, 7],
+    [33, 7],
+    [36, 10],
+    [36, 31],
+    [33, 34],
+    [25, 34],
+    [25, 40],
+    [20, 40],
+    [20, 34],
+    [10, 34],
+    [7, 31],
+    [7, 10],
   ]);
-  p.cm.path('street', [[22, 40], [22, 27], [19, 24], [19, 14], [15, 14], [15, 13]]);
-  p.cm.path('street', [[19, 18], [26, 18], [29, 15], [29, 14]]);
-  p.cm.path('street', [[22, 27], [14, 27], [14, 26]]);
-  p.cm.path('street', [[22, 30], [30, 30]]);
+  p.cm.path('street', [
+    [22, 40],
+    [22, 27],
+    [19, 24],
+    [19, 14],
+    [15, 14],
+    [15, 13],
+  ]);
+  p.cm.path('street', [
+    [19, 18],
+    [26, 18],
+    [29, 15],
+    [29, 14],
+  ]);
+  p.cm.path('street', [
+    [22, 27],
+    [14, 27],
+    [14, 26],
+  ]);
+  p.cm.path('street', [
+    [22, 30],
+    [30, 30],
+  ]);
   p.stamp('cottA', 14, 11, 2, 2); // Grandma Pim's
   p.stamp('cottC', 21, 9, 2, 2);
   p.stamp('cottB', 28, 12, 2, 2);
@@ -40,8 +70,28 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
   for (let y = 22; y <= 26; y++) p.row('crops', 26, 33, y);
   p.row('fenceH', 25, 34, 21);
   p.row('fenceH', 25, 34, 27);
-  flowers(p, [[13, 13], [17, 13], [24, 11], [27, 14], [12, 21], [17, 21], [16, 28], [26, 32]]);
-  trees(p, [[9, 9], [34, 9], [9, 29], [34, 31], [25, 8], [11, 14], [32, 18], [17, 32], [29, 32], [8, 23]]);
+  flowers(p, [
+    [13, 13],
+    [17, 13],
+    [24, 11],
+    [27, 14],
+    [12, 21],
+    [17, 21],
+    [16, 28],
+    [26, 32],
+  ]);
+  trees(p, [
+    [9, 9],
+    [34, 9],
+    [9, 29],
+    [34, 31],
+    [25, 8],
+    [11, 14],
+    [32, 18],
+    [17, 32],
+    [29, 32],
+    [8, 23],
+  ]);
   p.put('barrels', 31, 14);
   p.put('barrels', 23, 12);
   p.npc(npc('grandma'), [13, 13], TALK.gran, [13, 14]);
@@ -57,12 +107,36 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
 
   // ================================================================ Laterburg (x 50-99)
   hedgeAround(p, 50, 99, [
-    [60, 5], [88, 5], [91, 8], [91, 60], [88, 63], [78, 63], [78, 68], [71, 68], [71, 63], [61, 63], [58, 60], [58, 8],
+    [60, 5],
+    [88, 5],
+    [91, 8],
+    [91, 60],
+    [88, 63],
+    [78, 63],
+    [78, 68],
+    [71, 68],
+    [71, 63],
+    [61, 63],
+    [58, 60],
+    [58, 8],
   ]);
   // the Garden Court: a curtain wall with its gate open to the street. (The roof was always
   // going to go on next year.)
-  p.cm.path('wall', [[72, 26], [61, 26], [61, 7], [88, 7], [88, 26], [77, 26]]);
-  for (const [x, y] of [[60, 6], [87, 6], [60, 25], [87, 25]] as Pt[]) p.stamp('ctower', x, y, 2, 2, true);
+  p.cm.path('wall', [
+    [72, 26],
+    [61, 26],
+    [61, 7],
+    [88, 7],
+    [88, 26],
+    [77, 26],
+  ]);
+  for (const [x, y] of [
+    [60, 6],
+    [87, 6],
+    [60, 25],
+    [87, 25],
+  ] as Pt[])
+    p.stamp('ctower', x, y, 2, 2, true);
   p.stamp('throne', 74, 9, 1, 2, true);
   p.put('carpetTop', 74, 11);
   p.col('carpet', 74, 12, 25);
@@ -72,19 +146,74 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
   p.put('signT', 69, 13);
   p.stamp('kennel', 82, 9, 2, 2);
   p.put('kgate', 83, 11);
-  p.cm.path('hedge', [[64, 17], [71, 17]]);
-  p.cm.path('hedge', [[78, 17], [85, 17]]);
-  p.cm.path('hedge', [[64, 21], [71, 21]]);
-  p.cm.path('hedge', [[78, 21], [85, 21]]);
-  flowers(p, [[64, 19], [66, 19], [68, 19], [70, 19], [79, 19], [81, 19], [83, 19], [85, 19], [72, 14], [76, 14], [64, 24], [85, 24]]);
-  trees(p, [[63, 9], [86, 13], [63, 14], [79, 13]]);
+  p.cm.path('hedge', [
+    [64, 17],
+    [71, 17],
+  ]);
+  p.cm.path('hedge', [
+    [78, 17],
+    [85, 17],
+  ]);
+  p.cm.path('hedge', [
+    [64, 21],
+    [71, 21],
+  ]);
+  p.cm.path('hedge', [
+    [78, 21],
+    [85, 21],
+  ]);
+  flowers(p, [
+    [64, 19],
+    [66, 19],
+    [68, 19],
+    [70, 19],
+    [79, 19],
+    [81, 19],
+    [83, 19],
+    [85, 19],
+    [72, 14],
+    [76, 14],
+    [64, 24],
+    [85, 24],
+  ]);
+  trees(p, [
+    [63, 9],
+    [86, 13],
+    [63, 14],
+    [79, 13],
+  ]);
   // the main street, two blocks wide; the market square; the side streets
-  for (const x of [74, 75]) p.cm.path('street', [[x, 27], [x, 68]]);
-  p.cm.region('street', [[64, 34], [85, 34], [85, 43], [64, 43]]);
-  p.cm.path('street', [[64, 39], [61, 39], [61, 48]]);
-  p.cm.path('street', [[85, 39], [87, 39], [87, 48]]);
-  p.cm.path('street', [[74, 53], [65, 53], [65, 58]]);
-  p.cm.path('street', [[75, 53], [84, 53], [84, 58]]);
+  for (const x of [74, 75])
+    p.cm.path('street', [
+      [x, 27],
+      [x, 68],
+    ]);
+  p.cm.region('street', [
+    [64, 34],
+    [85, 34],
+    [85, 43],
+    [64, 43],
+  ]);
+  p.cm.path('street', [
+    [64, 39],
+    [61, 39],
+    [61, 48],
+  ]);
+  p.cm.path('street', [
+    [85, 39],
+    [87, 39],
+    [87, 48],
+  ]);
+  p.cm.path('street', [
+    [74, 53],
+    [65, 53],
+    [65, 58],
+  ]);
+  p.cm.path('street', [
+    [75, 53],
+    [84, 53],
+    [84, 58],
+  ]);
   p.stamp('fountain', 74, 37, 2, 2);
   // the market: Brokk's swords, Mother Tansy's tonics
   p.stamp('stallR', 66, 31, 2, 1, true);
@@ -101,11 +230,38 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
   p.stamp('library', 86, 45, 3, 3);
   p.put('lgate', 87, 48);
   for (const [k, x, y] of [
-    ['cottA', 64, 28], ['cottB', 84, 28], ['cottC', 66, 46], ['cottB', 80, 46], ['cottA', 59, 55], ['cottC', 67, 58], ['cottB', 81, 58], ['cottA', 88, 55], ['cottC', 70, 47], ['cottA', 77, 47],
+    ['cottA', 64, 28],
+    ['cottB', 84, 28],
+    ['cottC', 66, 46],
+    ['cottB', 80, 46],
+    ['cottA', 59, 55],
+    ['cottC', 67, 58],
+    ['cottB', 81, 58],
+    ['cottA', 88, 55],
+    ['cottC', 70, 47],
+    ['cottA', 77, 47],
   ] as [string, number, number][])
     p.stamp(k, x, y, 2, 2);
-  trees(p, [[59, 29], [90, 29], [59, 37], [90, 36], [63, 51], [86, 51], [72, 60], [78, 59], [60, 61], [89, 61]]);
-  flowers(p, [[70, 44], [79, 44], [62, 37], [88, 42], [69, 61], [80, 62]]);
+  trees(p, [
+    [59, 29],
+    [90, 29],
+    [59, 37],
+    [90, 36],
+    [63, 51],
+    [86, 51],
+    [72, 60],
+    [78, 59],
+    [60, 61],
+    [89, 61],
+  ]);
+  flowers(p, [
+    [70, 44],
+    [79, 44],
+    [62, 37],
+    [88, 42],
+    [69, 61],
+    [80, 62],
+  ]);
   // the people of Laterburg
   p.npc(npc('king'), [74, 10], TALK.king, [74, 12]);
   p.npc(npc('kennel'), [81, 12], TALK.kennel, [81, 13]);

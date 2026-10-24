@@ -15,11 +15,17 @@ import { gateArt } from './gateArt';
 import { C as color } from '../art/pal';
 import { Pixels } from '../../../kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 
 export function portBook(bridges: [number, number][]): BlockBook {
   const book = new BlockBook('port', { [BLK.egg]: 'egg' });
   townGround(book, { water: true });
-  for (const [wm, rm] of bridges) book.add(bridgeName(wm, rm), paintBridge(wm, rm, (x, y) => cobble(x, y), quay), {});
+  for (const [wm, rm] of bridges)
+    book.add(
+      bridgeName(wm, rm),
+      paintBridge(wm, rm, (x, y) => cobble(x, y), quay),
+      {},
+    );
   book.add('signT', signpost(), {});
   book.add('counter', counter(), { solid: ALL });
   cottage(book, 'cottA', STYLE.thatch, 11);
@@ -32,14 +38,35 @@ export function portBook(bridges: [number, number][]): BlockBook {
       [222, 222, 228],
       [255, 255, 255],
     ];
-    tower(cv, 10, 12, 7, 42, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
+    tower(
+      cv,
+      10,
+      12,
+      7,
+      42,
+      w,
+      [
+        [120, 30, 26],
+        [180, 50, 40],
+        [230, 100, 80],
+      ],
+      11,
+    );
     for (const y of [30, 44]) cv.rect(3, y, 14, 4, [190, 50, 40]);
     cv.rect(5.5, 15, 9, 5, [255, 236, 140]);
   });
   // piers: planks over the water (walkable), the long pier's posts
   book.add('pier', pier(false));
   book.add('pierEnd', pier(true));
-  cutBlocks(book, 'boat', 2, 1, (cv) => boat(cv), () => true, (x, y) => water(x, y, 10));
+  cutBlocks(
+    book,
+    'boat',
+    2,
+    1,
+    (cv) => boat(cv),
+    () => true,
+    (x, y) => water(x, y, 10),
+  );
   // the fog bank at the end of the long pier: the foghorn clears it
   gate(book, 'fog', C.fog, 1, fogBank(), pier(false), true);
   // Professor Fiddlesticks' garage, THE CHEZ inside, and the charge gate at its door
@@ -131,7 +158,7 @@ export function portBook(bridges: [number, number][]): BlockBook {
   buyChain(book, 'reeds', 10, { effect: SEQ.kazoo, eamt: 10 }, wares.reeds);
   buyChain(book, 'lamp', 40, { effect: C.lamp, eamt: 1, score: 100 }, wares.lamp);
   buyChain(book, 'feather', 100, { effect: 1, eamt: 1 }, wares.feather);
-  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 150, touch: 'bed2' });
+  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 60, touch: 'bed2' });
   book.add('bed2', counter(wares.bedUsed), { solid: ALL });
   // the hermit's stone: it has more to say to anyone carrying the egg
   gate(book, 'eggstone', C.egg, 1, gateArt.stone(false), gateArt.stone(true), true);
@@ -139,8 +166,36 @@ export function portBook(bridges: [number, number][]): BlockBook {
   // a tin heart in the grass by the lighthouse: a glint crosses it now and then; 100 points
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, tinHeart(k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'grass', score: 100, dither: 0 });
+  // a painted Easter egg in the grass on the far bank of Eventually Pond: a glint crosses it
+  // now and then; 50 points, no sound (added last, so no block before it moves)
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, easterEgg(k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'grass',
+      score: 50,
+      dither: 0,
+    });
   void plain;
   return book;
+}
+
+/** The painted Easter egg (kit/easterEgg.ts) in the fixed sprite colors, on the grass. */
+function easterEgg(frame: number): Canvas {
+  const cv = plain((x, y) => grass(x, y));
+  const cols: RGB[] = [
+    color('outline'),
+    color('purple', 1),
+    color('purple', 2),
+    color('purple', 3),
+    color('gold', 2),
+    color('gold', 3),
+    color('white', 0),
+    color('white', 1),
+  ];
+  const p = drawEasterEgg(new Pixels(20, 20, 255), { ink: 0, shell: [1, 2, 3], paint: [4, 5], accent: 6, white: 7 }, 'stars', frame);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (p.get(x, y) !== 255) cv.blend(x, y, cols[p.get(x, y)]);
+  return cv;
 }
 
 /** The tin heart (kit/tinHeart.ts) in the fixed sprite colors, on the grass. */

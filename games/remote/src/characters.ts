@@ -26,7 +26,10 @@ export const DIAG = 3;
 type F = Partial<Frame> & { pic: number };
 function frames(list: F[]): Frame[] {
   const out = Array.from({ length: 10 }, () => emptyFrame(true));
-  list.forEach((f, i) => (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? CHARBL, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }));
+  list.forEach(
+    (f, i) =>
+      (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? CHARBL, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }),
+  );
   return out;
 }
 
@@ -48,8 +51,27 @@ export function buildHero(cb: ReturnType<typeof buildCharBlocks>): Character {
     { pic: n('blink'), pause: 3 },
   ]);
   // Flopping back into nothing (a life lost).
-  set(SEQ.die, [{ pic: n('ouch'), pause: 4 }, { pic: n('flop0'), pause: 6 }, { pic: n('flop1'), pause: 6 }, { pic: n('flop2'), pause: 6 }, { pic: n('flop3'), pause: 30 }], { sound: SND.die });
-  set(SEQ.hurt, [{ pic: n('hurt'), pause: 1 }, { pic: n('ouch'), pause: 2 }, { pic: n('hurt'), pause: 1 }, { pic: n('down0'), pause: 1 }], { sound: SND.hurt });
+  set(
+    SEQ.die,
+    [
+      { pic: n('ouch'), pause: 4 },
+      { pic: n('flop0'), pause: 6 },
+      { pic: n('flop1'), pause: 6 },
+      { pic: n('flop2'), pause: 6 },
+      { pic: n('flop3'), pause: 30 },
+    ],
+    { sound: SND.die },
+  );
+  set(
+    SEQ.hurt,
+    [
+      { pic: n('hurt'), pause: 1 },
+      { pic: n('ouch'), pause: 2 },
+      { pic: n('hurt'), pause: 1 },
+      { pic: n('down0'), pause: 1 },
+    ],
+    { sound: SND.hurt },
+  );
   set(3, [{ pic: n('down0') }], { key: 0 });
   set(4, [{ pic: n('down0') }], { key: 0 });
   const walk = (i: number, key: number, joy: number, dx: number, dy: number, view: 'up' | 'down' | 'side', mirror = false) =>
@@ -82,9 +104,27 @@ export function buildHero(cb: ReturnType<typeof buildCharBlocks>): Character {
     { key: KEY.space, sound: SND.shout, norepeat: 1, ground: 1, jstkMov: JOY.any, jstkBut: 1 },
   );
   // B: click an imaginary remote at the TV. Nothing happens. Of course.
-  set(SEQ.click, [{ pic: n('click'), pause: 4 }, { pic: n('side0'), pause: 2 }, { pic: n('click'), pause: 4 }, { pic: n('side0'), pause: 2 }], { key: KEY.b, sound: SND.click, norepeat: 1, jstkBut: 2 });
+  set(
+    SEQ.click,
+    [
+      { pic: n('click'), pause: 4 },
+      { pic: n('side0'), pause: 2 },
+      { pic: n('click'), pause: 4 },
+      { pic: n('side0'), pause: 2 },
+    ],
+    { key: KEY.b, sound: SND.click, norepeat: 1, jstkBut: 2 },
+  );
   // C: check your hand. Nope.
-  set(SEQ.hand, [{ pic: n('palm'), pause: 12 }, { pic: n('blink'), pause: 3 }, { pic: n('palm'), pause: 10 }, { pic: n('down0'), pause: 2 }], { key: KEY.c, sound: SND.hand, norepeat: 1, jstkBut: 4 });
+  set(
+    SEQ.hand,
+    [
+      { pic: n('palm'), pause: 12 },
+      { pic: n('blink'), pause: 3 },
+      { pic: n('palm'), pause: 10 },
+      { pic: n('down0'), pause: 2 },
+    ],
+    { key: KEY.c, sound: SND.hand, norepeat: 1, jstkBut: 4 },
+  );
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // patience (hit points)
@@ -113,7 +153,13 @@ function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []):
 /** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
 const pace = (run: number, speed: number): March[] => [corner(0, 0, speed), corner(run, 0, speed, 0), corner(0, 0, speed, 4)];
 /** Round a box `w` x `h` blocks (clockwise from its top-left), facing the way it goes. */
-const loop = (w: number, h: number, speed: number): March[] => [corner(0, 0, speed), corner(w, 0, speed, 0), corner(w, h, speed, 0), corner(0, h, speed, 4), corner(0, 0, speed, 4)];
+const loop = (w: number, h: number, speed: number): March[] => [
+  corner(0, 0, speed),
+  corner(w, 0, speed, 0),
+  corner(w, h, speed, 0),
+  corner(0, h, speed, 4),
+  corner(0, 0, speed, 4),
+];
 
 /** Wander at random, `speed` pixels a tick (towards >= 64). */
 const wander = (speed: number) => speed << 6;
@@ -158,12 +204,18 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.raccoon] = mon(anim('raccoon0', 'raccoon1', 4), { power: 50, thru: 1, towards: wander(1), newmon: MON.raccoonBye });
   set[MON.raccoonBye] = mon([[n('raccoonBye'), 4]], { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(4, -3, 3, 0)]);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 1, newmon: MON.seedBye }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.seedBye] = mon(anim('seed1', 'seed0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
+  set[MON.seedBye] = mon(anim('seedBye1', 'seedBye0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
   set[MON.lint] = mon(stings('lint0', 'lint1', 4), { power: 110, thru: 1, towards: wander(1), newmon: MON.poof, upscore: 15 });
   set[MON.goat] = mon(anim('goat0', 'goat1', 12), { power: 200, thru: 1 }, pace(2, 1));
   const [rw, rh] = o.ride ?? [8, 2];
   set[MON.recliner] = mon(stings('recliner0', 'recliner1', 8), { power: 200, thru: 0 }, loop(rw, rh, 2));
-  set[MON.ottoman] = mon(stings('ottoman0', 'ottoman1', 4), { power: 200, thru: 0 }, [corner(0, 0, 2), corner(-rw, 0, 2, 4), corner(-rw, -rh, 2, 4), corner(0, -rh, 2, 0), corner(0, 0, 2, 0)]);
+  set[MON.ottoman] = mon(stings('ottoman0', 'ottoman1', 4), { power: 200, thru: 0 }, [
+    corner(0, 0, 2),
+    corner(-rw, 0, 2, 4),
+    corner(-rw, -rh, 2, 4),
+    corner(0, -rh, 2, 0),
+    corner(0, 0, 2, 0),
+  ]);
   set[MON.lampshade] = mon(stings('lampshade0', 'lampshade1', 3), { power: 200, thru: 0 }, pace(4, 2));
   set[MON.popcorn] = mon(stings('popcorn0', 'popcorn1', 2), { power: 150, thru: 1, towards: wander(2) });
   set[MON.rider] = mon(anim('raccoon0', 'raccoon1', 3), { power: 50, thru: 1, newmon: MON.raccoonBye }, loop(3, 1, 2));

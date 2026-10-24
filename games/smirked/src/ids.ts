@@ -13,7 +13,7 @@ export const MON = {
   witch: 4,
   /** The witch, flat on her back, her broomstick broken: walk over and say sorry (counter 21). */
   witchFlat: 5,
-  /** Lily, eight, in a unicorn hoodie, strolling ahead with a caramel apple like it's Target. */
+  /** Lily, eight, in a unicorn hoodie, strolling ahead with a caramel apple like she's at a big-box store. */
   lily: 6,
   /** A rubber bat bobbing on a string. */
   bat: 7,
@@ -42,6 +42,16 @@ export const MON = {
   bill: 19,
   /** The witch toppling over (the tackle passes on before she lands, so it doesn't knock her flat twice). */
   witchFalls: 20,
+  /** The kid, helmet knocked off the first time, scooping it up ("Not yet!"): he can't be hit or hurt you. */
+  knightGrab: 21,
+  /** The kid again, helmet jammed back on crooked with tape: quicker and stings harder. Knock it off once more. */
+  knight2: 22,
+  /** The werewolf guy, tackled: on his back, mask askew, seeing stars. Harmless, and back up after a moment. */
+  wolfDazed: 23,
+  /** The helmet knocked off the second time, spinning to land at your feet (nothing can knock it away in the air). */
+  helmetSpin: 24,
+  /** A witch you already said sorry to, taped back up by the staff: she can go over again. */
+  witchTaped: 25,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

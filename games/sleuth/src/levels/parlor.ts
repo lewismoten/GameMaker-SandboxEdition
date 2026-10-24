@@ -77,16 +77,17 @@ const GR = [
   '#.E.......a..s.#',
   '#ww#############',
 ];
+// Ada comes in at the middle (8, 5): the three question cards are two steps from her.
 const IV = [
   '################',
   '#p.....PP.....p#',
   '#......PP......#',
   '#......TT......#',
   '#..............#',
+  '#....11...22...#',
   '#..............#',
-  '#.11........22.#',
-  '#..............#',
-  '#.E....33......#',
+  '#......33......#',
+  '#.E............#',
   '#ww#############',
 ];
 const WHO = [
@@ -252,13 +253,13 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
       const r2 = ROUND2[who]!;
       stamp(o, IV, (ch, x, y) => {
         const wf = wallOrFloor(ch, x, y, 'rug');
-        if (wf) return wf;
-        if (ch === 'p') return 'plant';
+        if (wf) return wf === 'wallpaper' ? `wallpaper_${who}` : wf;
+        if (ch === 'p') return `prop_${who}`;
         if (ch === 'P') return `por_${who}${x - 7 + (y - 1) * 2}`;
         if (ch === 'T') return `table${x - 7}`;
         if (ch === 'E') return 'exit';
         const q = Number(ch) - 1;
-        const half = ch === '3' ? x - 7 : ch === '1' ? x - 2 : x - 12;
+        const half = ch === '3' ? x - 7 : ch === '1' ? x - 5 : x - 10;
         cards[q].push({ x: o.x + x, y: o.y + y });
         if (round === 'r1') return `q_${CARDS.r1[q][0]}${half}`;
         const ask = r2[q];

@@ -13,7 +13,8 @@ import { musicBox } from './musicBox';
 
 const IOU = {
   name: 'An IOU',
-  description: 'Under thirteen taps of rotten shell: no recipe, no jewel. Just a little folded note on yellowed onionskin in a very careful hand: "IOU one (1) diamond heart. Ask for it back: Joe." It is signed with a rivet. Mystery Robot Joe, it seems, borrowed the family\'s heart of the matter, and keeps a tally counter where his own should be. Whatever he is counting, he will hand it back when the count comes out right. The smell, it turns out, was a guard dog.',
+  description:
+    'Under thirteen taps of rotten shell: no recipe, no jewel. Just a little folded note on yellowed onionskin in a very careful hand: "IOU one (1) diamond heart. Ask for it back: Joe." It is signed with a rivet. Mystery Robot Joe, it seems, borrowed the family\'s heart of the matter, and keeps a tally counter where his own should be. Whatever he is counting, he will hand it back when the count comes out right. The smell, it turns out, was a guard dog.',
 };
 
 /** What a tap says, for those who cannot see the egg crack. */
@@ -26,7 +27,15 @@ export function tapMessage(taps: number): string {
 }
 
 type Shard = { pts: [number, number][]; cx: number; cy: number; vx: number; vy: number; spin: number };
-type Puff = { born: number; life: number; x: number; phase: number; sprite: number; behind: boolean; /** held at this point of its rise (reduced motion) */ at?: number };
+type Puff = {
+  born: number;
+  life: number;
+  x: number;
+  phase: number;
+  sprite: number;
+  behind: boolean;
+  /** held at this point of its rise (reduced motion) */ at?: number;
+};
 
 export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
   return new Promise((resolve) => {
@@ -57,7 +66,11 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     const prev = h('button', { type: 'button', onclick: () => go(-1) }, '← Previous egg');
     const next = h('button', { type: 'button', onclick: () => go(1) }, 'Next egg →');
     const count = h('span');
-    const mute = h('button', { type: 'button', class: 'eggv-mute', 'aria-pressed': String(music.muted()), onclick: () => setMute(!music.muted()) }, 'Mute music box');
+    const mute = h(
+      'button',
+      { type: 'button', class: 'eggv-mute', 'aria-pressed': String(music.muted()), onclick: () => setMute(!music.muted()) },
+      'Mute music box',
+    );
     const extra = h('div', { class: 'eggv-extra' });
 
     const egg = () => found[at].egg;
@@ -106,7 +119,10 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
           const b = pt(c + 1, r);
           const cc = pt(c + 1, r + 1);
           const d = pt(c, r + 1);
-          for (const tri of [[a, b, cc], [a, cc, d]] as [number, number][][]) {
+          for (const tri of [
+            [a, b, cc],
+            [a, cc, d],
+          ] as [number, number][][]) {
             const cx = (tri[0][0] + tri[1][0] + tri[2][0]) / 3;
             const cy = (tri[0][1] + tri[1][1] + tri[2][1]) / 3;
             // only pieces of the egg itself
@@ -229,13 +245,29 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
       if (!rotten() || hatched || crumble) return;
       if (still) {
         // a haze that holds still
-        if (!puffs.length) puffs = [0.12, 0.3, 0.46, 0.22, 0.38].map((t, i) => ({ born: 0, life: 4, at: t, x: [-0.6, 0.3, -0.1, 0.7, -0.4][i], phase: i, sprite: i % 4, behind: i % 2 === 0 }));
+        if (!puffs.length)
+          puffs = [0.12, 0.3, 0.46, 0.22, 0.38].map((t, i) => ({
+            born: 0,
+            life: 4,
+            at: t,
+            x: [-0.6, 0.3, -0.1, 0.7, -0.4][i],
+            phase: i,
+            sprite: i % 4,
+            behind: i % 2 === 0,
+          }));
         return;
       }
       puffs = puffs.filter((p) => clock - p.born < p.life);
       while (nextPuff <= clock) {
         const r = Math.random();
-        puffs.push({ born: nextPuff, life: 3.2 + r * 1.8, x: Math.random() * 2 - 1, phase: Math.random() * 6, sprite: Math.floor(Math.random() * 4), behind: Math.random() < 0.4 });
+        puffs.push({
+          born: nextPuff,
+          life: 3.2 + r * 1.8,
+          x: Math.random() * 2 - 1,
+          phase: Math.random() * 6,
+          sprite: Math.floor(Math.random() * 4),
+          behind: Math.random() < 0.4,
+        });
         nextPuff += Math.max(0.18, 0.5 - taps * 0.02);
       }
     };
@@ -261,11 +293,21 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     const label = () => {
       if (tappable()) {
         canvas.setAttribute('role', 'button');
-        canvas.setAttribute('aria-label', taps ? `The Rotten Egg, cracked ${taps} of ${TAPS} times: press Enter to tap it again` : `The Rotten Egg, giving off green clouds of stench: press Enter to tap it`);
+        canvas.setAttribute(
+          'aria-label',
+          taps
+            ? `The Rotten Egg, cracked ${taps} of ${TAPS} times: press Enter to tap it again`
+            : `The Rotten Egg, giving off green clouds of stench: press Enter to tap it`,
+        );
         hint.textContent = taps ? `${TAPS - taps} more ${TAPS - taps === 1 ? 'tap' : 'taps'}…` : 'Tap the egg · drag or ← → to turn it';
       } else {
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', rotten() ? 'A folded note on yellowed paper: IOU one (1) diamond heart, ask for it back, Joe. Signed with a rivet' : 'A pastry egg in rose glaze and piped icing on a nest of spun sugar, a tiny clockwork baker turning on top');
+        canvas.setAttribute(
+          'aria-label',
+          rotten()
+            ? 'A folded note on yellowed paper: IOU one (1) diamond heart, ask for it back, Joe. Signed with a rivet'
+            : 'A pastry egg in rose glaze and piped icing on a nest of spun sugar, a tiny clockwork baker turning on top',
+        );
         hint.textContent = 'Drag or use ← → to turn it';
       }
     };
@@ -284,7 +326,11 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
       clear(
         card,
         h('h2', { id: 'eggv-title' }, open ? IOU.name : e.egg.name),
-        h('p', { class: 'eggv-where' }, `${e.status === 'added' ? 'From' : 'Found in'} ${e.egg.gameTitle}${open ? ', inside the Rotten Egg' : ''}${e.status === 'added' ? ' (added by hand)' : ''}`),
+        h(
+          'p',
+          { class: 'eggv-where' },
+          `${e.status === 'added' ? 'From' : 'Found in'} ${e.egg.gameTitle}${open ? ', inside the Rotten Egg' : ''}${e.status === 'added' ? ' (added by hand)' : ''}`,
+        ),
         h('p', null, open ? IOU.description : e.egg.description),
         h('h3', null, 'Credits'),
         h('ul', null, ...e.egg.credits.map((c) => h('li', null, c))),

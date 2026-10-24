@@ -292,6 +292,7 @@ export function backyardTiles(): Tiles {
 
   // Hint signs on stakes.
   t.air('signHop', sign(tuft(sky(3), 80), 'HOP', 'up'));
+  t.air('signSteer', sign(tuft(sky(3), 85), 'Q/E', 'up'));
   t.air('signWoof', sign(tuft(sky(3), 81), 'WOOF!'));
   t.air('signDig', sign(tuft(sky(3), 82), 'DIG', 'down'));
   t.air('signFetch', sign(tuft(sky(3), 83), 'F!'));

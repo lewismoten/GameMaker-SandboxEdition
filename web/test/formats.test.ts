@@ -27,18 +27,25 @@ function filesWith(ext: string, root = gameware): string[] {
 
 const roundTrip = (ext: string, parse: (b: Uint8Array) => Uint8Array) => {
   const files = filesWith(ext);
-  it.skipIf(files.length === 0)(`round-trips every ${ext} file byte for byte`, () => {
-    for (const f of files) {
-      const bytes = new Uint8Array(readFileSync(f));
-      if (truncated(bytes)) continue;
-      const out = parse(bytes);
-      // Short files (older .snd without digital names, a trimmed .cbl) are written at full size.
-      expect(out.length, f).toBeGreaterThanOrEqual(bytes.length);
-      expect(out.subarray(0, bytes.length), f).toEqual(bytes);
-      expect(out.subarray(bytes.length).every((v) => v === 0), f).toBe(true);
-    }
-    // reads every such file on the CD: give it room on a busy machine
-  }, 30_000);
+  it.skipIf(files.length === 0)(
+    `round-trips every ${ext} file byte for byte`,
+    () => {
+      for (const f of files) {
+        const bytes = new Uint8Array(readFileSync(f));
+        if (truncated(bytes)) continue;
+        const out = parse(bytes);
+        // Short files (older .snd without digital names, a trimmed .cbl) are written at full size.
+        expect(out.length, f).toBeGreaterThanOrEqual(bytes.length);
+        expect(out.subarray(0, bytes.length), f).toEqual(bytes);
+        expect(
+          out.subarray(bytes.length).every((v) => v === 0),
+          f,
+        ).toBe(true);
+      }
+      // reads every such file on the CD: give it room on a busy machine
+    },
+    30_000,
+  );
 };
 
 describe('binary formats', () => {

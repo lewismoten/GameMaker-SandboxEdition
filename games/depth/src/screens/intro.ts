@@ -43,7 +43,9 @@ export function introFrames(): { frames: Picture[]; speed: number } {
   const rayAt: V = [2.1, -2.4, 0.62];
   const goldAt: V = [-2.6, -1.6, 0.35];
   const world = (extra: Shape[], lit = 1, gold = true, rollA = 0.5) =>
-    stage(titleSet([...rayModel('y', rollA, band(lit), rayAt, 0.62), gold ? new Sphere(goldAt, 0.35, MAT.gold) : lowPoly(goldAt, 0.4), ...extra]), { env: SKY });
+    stage(titleSet([...rayModel('y', rollA, band(lit), rayAt, 0.62), gold ? new Sphere(goldAt, 0.35, MAT.gold) : lowPoly(goldAt, 0.4), ...extra]), {
+      env: SKY,
+    });
 
   // A: the render comes in line by line, as it did overnight
   const full = still(world([], 0), camera, 4, 20, 21);
@@ -112,7 +114,10 @@ export function toFli(frames: Picture[], speed: number, fadeIn = 3, fadeOut = 4)
   const distinct = [...byPic.values()];
   const pal = new Uint8Array(768);
   putColors(pal, 0, medianCut(distinct, 256));
-  const m = new Matcher(pal, Array.from({ length: 256 }, (_, i) => i));
+  const m = new Matcher(
+    pal,
+    Array.from({ length: 256 }, (_, i) => i),
+  );
   const cache = new Map<Uint8Array, Uint8Array>();
   const indexed = bytes.map((b) => {
     let v = cache.get(b);

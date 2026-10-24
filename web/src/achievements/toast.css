@@ -1,0 +1,257 @@
+/* the "achievement unlocked" note (achievements/toast.ts) */
+.ach-toasts {
+  position: fixed;
+  inset: auto;
+  top: 60px;
+  right: 16px;
+  left: auto;
+  bottom: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(320px, calc(100vw - 32px));
+  z-index: 200;
+  pointer-events: none;
+}
+
+.ach-toasts:empty {
+  display: none;
+}
+
+.ach-toast {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 10px 10px 12px;
+  border: 1px solid var(--border, #b6bdcc);
+  border-left: 4px solid var(--accent, #1f3fbf);
+  border-radius: 10px;
+  background: var(--panel, #e9ecf2);
+  color: var(--text, #1a1d29);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+  animation: ach-in 0.25s ease-out;
+}
+
+.ach-toast-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.ach-toast-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ach-toast-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted, #4f566a);
+}
+
+.ach-toast-desc {
+  color: var(--muted, #4f566a);
+}
+
+.ach-toast-link {
+  align-self: flex-start;
+  margin-top: 2px;
+  color: var(--accent, #1f3fbf);
+  font-weight: 600;
+}
+
+.ach-toast-close {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ach-toast-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.ach-toast-close:focus-visible,
+.ach-toast-link:focus-visible {
+  outline: 2px solid var(--accent, #1f3fbf);
+  outline-offset: 2px;
+}
+
+/* the desk: sticky notes stuck to the desk's front panel (placed by toast.ts), in a stack:
+   the newest on top, the one before peeking out behind it; pointing at the stack or tabbing
+   into it fans the older one up and out. Nothing is pressed on that panel, so the notes take
+   their own clicks (the pause while pointed at, the close button). */
+.ach-toasts.ach-desk {
+  display: grid;
+  width: min(200px, calc(100vw - 32px));
+}
+
+.ach-desk .ach-toast {
+  grid-area: 1 / 1;
+  align-self: start;
+  border: 0;
+  border-radius: 0;
+  background: #ffe86b;
+  color: #3a3100;
+  box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.4);
+  transform: rotate(-3deg);
+  font:
+    700 13px/1.25 'Comic Sans MS',
+    'Marker Felt',
+    cursive;
+  animation-name: ach-stick;
+  transition: transform 0.2s;
+}
+
+/* two at a time (the oldest waits); the older one tucked behind, a corner showing */
+.ach-desk .ach-toast:nth-last-child(n + 3) {
+  display: none;
+}
+
+/* a narrow window stacks the room in a column and the notes sit over it at the bottom:
+   there, clicks go through them to what is under them, all but the close button */
+@media (max-width: 960px) {
+  .ach-desk .ach-toast {
+    pointer-events: none;
+  }
+
+  .ach-desk .ach-toast-close {
+    pointer-events: auto;
+  }
+}
+
+.ach-desk .ach-toast {
+  padding: 8px 8px 8px 10px;
+}
+
+.ach-desk .ach-toast:nth-last-child(2) {
+  transform: translate(14px, 2px) rotate(3deg);
+}
+
+.ach-desk:hover .ach-toast:nth-last-child(2),
+.ach-desk:focus-within .ach-toast:nth-last-child(2) {
+  transform: translate(10px, calc(-100% - 6px)) rotate(2deg);
+}
+
+.ach-desk .ach-toast-kicker,
+.ach-desk .ach-toast-desc {
+  color: #5a4d00;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 11px;
+}
+
+.ach-desk .ach-toast-icon {
+  font-size: 22px;
+}
+
+.ach-desk .ach-toast-close:focus-visible {
+  outline-color: #3a3100;
+}
+
+/* placed by the page (toast.ts placeNotes; the DOS page): two at a time, side by side, each
+   one line; clicks go through them to what is under them, all but the close button */
+.ach-toasts.ach-placed {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.ach-placed .ach-toast {
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 8px;
+  pointer-events: none;
+}
+
+.ach-placed .ach-toast:nth-last-child(n + 3) {
+  display: none;
+}
+
+.ach-placed .ach-toast-close {
+  pointer-events: auto;
+}
+
+.ach-placed .ach-toast-icon {
+  font-size: 20px;
+}
+
+.ach-placed .ach-toast-text {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ach-placed .ach-toast-text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ach-placed .ach-toast-text > strong {
+  flex: none;
+  max-width: 100%;
+}
+
+.ach-placed .ach-toast-link {
+  display: none;
+}
+
+/* "Achievement unlocked" is still read out */
+.ach-placed .ach-toast-kicker {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@keyframes ach-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes ach-stick {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ach-toast,
+  .ach-desk .ach-toast {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* a phone: two at a time is plenty */
+@media (max-width: 600px) {
+  .ach-toast:nth-last-child(n + 3) {
+    display: none;
+  }
+}

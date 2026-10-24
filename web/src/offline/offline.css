@@ -1,0 +1,14 @@
+/* The Offline dialog (offlineDialog.ts). */
+.offline-copy {
+  max-width: 34rem;
+}
+.offline-copy progress {
+  display: block;
+  width: 100%;
+  height: 14px;
+  margin: 8px 0 4px;
+  accent-color: var(--accent, #4f7cff);
+}
+.offline-copy .offline-note {
+  font-weight: 600;
+}

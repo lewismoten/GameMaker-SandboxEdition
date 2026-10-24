@@ -51,6 +51,12 @@ export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {
   g.place(ms.index.get('Deck Rat')!, L + 37, y);
   g.place(ms.index.get('Crawler')!, L + 42, y);
   g.set(L + 44, y - 5, id('p:heart'));
+  // Mystery Robot Joe keeps count at the practice range
+  g.set(L + 31, y, id('joe'));
+  // up under the windows past the range, for a courier who jets up to look: a tin heart, and a
+  // painted Easter egg over the steam pipe
+  g.set(L + 47, top + 1, id('tinHeart'));
+  g.set(L + 58, top + 1, id('easterEgg'));
   // 5. crouch under the steam pipe (a low gap: roll through or hop over)
   for (let x = L + 53; x <= L + 55; x++) g.set(x, y - 2, id('pipe:wall'));
   g.set(L + 54, y, id('p:credit'));
@@ -75,6 +81,8 @@ export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {
   sign(L + 76, 'help');
   for (let x = L + 69; x <= L + 80; x += 4) g.set(x, uy, id('console:1'));
   g.set(R - 6, uy, id('p:medkit'));
+  // Will the playwright, visiting, between the pod bay's consoles
+  g.set(L + 75, uy, id('will'));
   // pod bay: the airlock
   const uplink = { x: R - 2, y: uy };
   g.set(uplink.x, uplink.y, id('airlock'), true);

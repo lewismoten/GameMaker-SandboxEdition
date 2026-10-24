@@ -9,6 +9,8 @@ import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from 
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../../tools/speakerFx';
 import { fileField } from '../../widgets/filePicker';
 import { History } from '../../core/history';
+import { checkBadges } from '../../widgets/checkBadges';
+import { normalize } from '../../../project/files';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -127,14 +129,14 @@ registerEditor(['snd'], (host, project, file) => {
       playBtn.title = playBtn.disabled
         ? 'Nothing to play yet: draw some PC speaker steps or pick a .voc file'
         : voc
-          ? `With a Sound Blaster the game plays ${name!.toUpperCase()}.VOC (G)`
+          ? `With a Sound Blaster the game plays ${name.toUpperCase()}.VOC (G)`
           : 'The game plays the PC speaker sound (G)';
       speakerBtn.disabled = !hasSpeaker(current);
       speakerBtn.title = speakerBtn.disabled ? '' : 'Play only the PC speaker sound (P)';
       speakerState.hidden = !speakerBtn.disabled;
       speakerState.textContent = 'No PC speaker sound yet: draw the steps below or make one.';
       vocBtn.disabled = !voc;
-      vocBtn.title = voc ? `Play only ${name!.toUpperCase()}.VOC (V)` : '';
+      vocBtn.title = voc ? `Play only ${name.toUpperCase()}.VOC (V)` : '';
       vocState.classList.toggle('snd-empty', !voc);
       vocState.textContent = voc
         ? 'Played instead of the PC speaker sound on a Sound Blaster.'
@@ -287,8 +289,11 @@ registerEditor(['snd'], (host, project, file) => {
     );
   }
 
+  // level check notes on this sound: long or loud for something that plays all the time
+  const badges = checkBadges(project, file, (f) => f.where.sound?.n === current && normalize(f.where.sound.file) === normalize(file));
   function render(): void {
     view.set({ sound: current });
+    badges.refresh();
     renderList();
     renderDetail();
   }
@@ -304,13 +309,15 @@ registerEditor(['snd'], (host, project, file) => {
         `A sound set holds ${LASTSND} effects. The first nine are played by the game itself; the rest can be attached to character sequences.`,
       ),
       h('div', { class: 'toolbar' }, undoBtn, redoBtn),
+      badges.el,
     ),
     h('div', { class: 'snd-layout' }, list, detail),
   );
   render();
   const onKey = (e: KeyboardEvent) => {
     const t = e.target;
-    const typing = t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || (t instanceof HTMLElement && t.isContentEditable);
+    const typing =
+      t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || (t instanceof HTMLElement && t.isContentEditable);
     // P, V and G play the PC speaker sound, the .voc, or the effect as the game would
     if (!e.ctrlKey && !e.metaKey && !e.altKey && !typing && !document.querySelector('dialog[open]') && host.isConnected) {
       const k = e.key.toLowerCase();

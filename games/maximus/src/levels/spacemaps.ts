@@ -181,14 +181,7 @@ export function galaxyMap(s: SetBuilder): GalaxyResult {
   // a knot of asteroids where the chart's four corners meet (the map wraps, so it sits
   // split across all four), as far from the Core as space goes. Its south face is only a
   // picture of rock; inside, something felt floats beside a beacon.
-  const knot = [
-    'r.RRRR.',
-    'RRRBRRr',
-    '.RREvR.',
-    'rRvvvRr',
-    '.RRFFRR',
-    '..r..r.',
-  ];
+  const knot = ['r.RRRR.', 'RRRBRRr', '.RREvR.', 'rRvvvRr', '.RRFFRR', '..r..r.'];
   const kx = 97;
   const ky = 96;
   const rocks = [0, 1, 2, 3, 4].map((k) => s.id(`rock:${k}`));

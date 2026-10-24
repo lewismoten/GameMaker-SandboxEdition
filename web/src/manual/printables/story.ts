@@ -4,7 +4,19 @@ import { h } from '../../editor/core/ui';
 import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
-import type { ChartItem, HintBookItem, IdCardItem, JournalItem, LetterItem, MapItem, MapPanel, NewspaperItem, PrintableItem, RecipeItem, StarChartItem } from './types';
+import type {
+  ChartItem,
+  HintBookItem,
+  IdCardItem,
+  JournalItem,
+  LetterItem,
+  MapItem,
+  MapPanel,
+  NewspaperItem,
+  PrintableItem,
+  RecipeItem,
+  StarChartItem,
+} from './types';
 
 // ------------------------------------------------------------------ maps
 async function mapPanel(ctx: PrintContext, p: MapPanel, start: number): Promise<HTMLElement> {
@@ -83,7 +95,15 @@ async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
   // flow the questions onto pages, measured in a real hint book page off screen
   const blocks: HTMLElement[] = it.sections.flatMap((s) => [
     h('h3', null, s.head),
-    ...s.hints.map((q) => h('div', { class: 'hb-q' }, h('p', null, h('b', null, 'Q. '), q.q), h('p', { class: 'hb-a' }, redCode(q.a)), q.sketch ? h('p', { class: 'hb-a' }, redSketch(q.sketch)) : null)),
+    ...s.hints.map((q) =>
+      h(
+        'div',
+        { class: 'hb-q' },
+        h('p', null, h('b', null, 'Q. '), q.q),
+        h('p', { class: 'hb-a' }, redCode(q.a)),
+        q.sketch ? h('p', { class: 'hb-a' }, redSketch(q.sketch)) : null,
+      ),
+    ),
   ]);
   const host = h('div', { class: 'gmb-measure' });
   document.body.append(host);
@@ -312,7 +332,7 @@ async function starChart(ctx: PrintContext, it: StarChartItem): Promise<Sheet[]>
       8.5,
       'sc',
       h('header', { class: 'sc-head' }, h('b', null, it.heading), h('span', null, 'FOLD-OUT GALAXY CHART · COURIER ISSUE')),
-      svg as unknown as HTMLElement,
+      svg,
       inset,
       legend,
       h('div', { class: 'sc-folds', 'aria-hidden': 'true' }, h('i'), h('i'), h('i')),
@@ -383,7 +403,12 @@ async function recipe(it: RecipeItem): Promise<Sheet[]> {
       'ol',
       { class: 'rc-lines' },
       ...rows.map(({ n, l }) =>
-        h('li', { class: l ? '' : 'rc-blank' }, h('span', { class: 'rc-n' }, `${n}.`), l ? h('span', null, h('b', null, l.name), ': ', l.line, l.note ? h('sup', null, `${n}`) : null) : h('span', { class: 'rc-rule' }, '')),
+        h(
+          'li',
+          { class: l ? '' : 'rc-blank' },
+          h('span', { class: 'rc-n' }, `${n}.`),
+          l ? h('span', null, h('b', null, l.name), ': ', l.line, l.note ? h('sup', null, `${n}`) : null) : h('span', { class: 'rc-rule' }, ''),
+        ),
       ),
     ),
     it.stamp ? h('div', { class: 'rc-stamp', 'aria-hidden': 'true' }, it.stamp) : null,
@@ -393,7 +418,7 @@ async function recipe(it: RecipeItem): Promise<Sheet[]> {
     5,
     'rc rc-back',
     h('header', { class: 'rc-head' }, h('b', null, 'Notes'), h('span', null, 'added by the family since')),
-    h('ol', { class: 'rc-notes' }, ...it.lines.filter((l) => l.note).map((l) => h('li', null, h('sup', null, `${l.n}`), ' ', l.note!))),
+    h('ol', { class: 'rc-notes' }, ...it.lines.filter((l) => l.note).map((l) => h('li', null, h('sup', null, `${l.n}`), ' ', l.note))),
     it.back ? h('p', { class: 'rc-last' }, it.back) : null,
     h('div', { class: 'rc-ring', 'aria-hidden': 'true' }),
   );

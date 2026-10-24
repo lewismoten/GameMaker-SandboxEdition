@@ -95,7 +95,20 @@
   grid-template-rows: auto 1fr;
   background: radial-gradient(ellipse at 35% 45%, #3b3226, #17130e 75%);
   color: #f4ead2;
-  font: 16px/1.45 Georgia, 'Times New Roman', serif;
+  font:
+    16px/1.45 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.eggv.uv {
+  /* the desk's black light is on: a dark room, and the glow is the egg's own */
+  background: radial-gradient(ellipse at 35% 45%, #2a1446, #0b0614 75%);
+}
+
+.eggv-uv-note {
+  color: #d9b8ff;
+  font-style: italic;
 }
 
 .eggv-bar {
@@ -120,7 +133,9 @@
   border-radius: 6px;
   background: #2c241a;
   color: #f4ead2;
-  font: 600 14px system-ui, sans-serif;
+  font:
+    600 14px system-ui,
+    sans-serif;
   cursor: pointer;
 }
 
@@ -179,7 +194,9 @@
   bottom: 4px;
   margin: 0;
   text-align: center;
-  font: 13px system-ui, sans-serif;
+  font:
+    13px system-ui,
+    sans-serif;
   color: #c9b98f;
 }
 
@@ -192,13 +209,17 @@
 
 .eggv-where {
   margin: 0 0 14px;
-  font: 600 14px system-ui, sans-serif;
+  font:
+    600 14px system-ui,
+    sans-serif;
   color: #d8c08a;
 }
 
 .eggv-card h3 {
   margin: 16px 0 4px;
-  font: 700 12px system-ui, sans-serif;
+  font:
+    700 12px system-ui,
+    sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #c9b98f;
@@ -219,7 +240,10 @@
   padding: 12px 14px;
   background: #f1e6c8;
   color: #2a2014;
-  font: 15px/1.5 'Courier New', Courier, monospace;
+  font:
+    15px/1.5 'Courier New',
+    Courier,
+    monospace;
   transform: rotate(-0.8deg);
   box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.5);
 }
@@ -229,7 +253,9 @@
   align-items: center;
   gap: 8px;
   margin-top: 18px;
-  font: 14px system-ui, sans-serif;
+  font:
+    14px system-ui,
+    sans-serif;
 }
 
 @media (max-width: 760px) {

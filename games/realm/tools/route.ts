@@ -1,6 +1,7 @@
 // The main quest, as the bot plays it: Nowish, the King's writ, the Snooze Barrows, a steel
 // sword, the Soggy Vaults, THE CHEZ across the Dawdle Flats, a lamp, the Putoff Mines and
-// Deadline Keep. No side quests beyond what the money needs, no egg.
+// Deadline Keep, where Lord Deadline fights on out of his armor. No side quests beyond what the
+// money needs, no egg.
 import { Bot } from './bot';
 
 type Step = (b: Bot) => Promise<void>;
@@ -41,7 +42,8 @@ function bossParts(b: Bot): { slot: number; x: number; y: number }[] {
   w.mm.forEach((m, i) => {
     if (m.monnum >= 64) return;
     const pic = w.mon[m.monnum]?.pic[Math.max(0, w.mi[i].curPic)]?.[0] ?? 100;
-    if (pic < 100 && w.mblk[pic].solid !== 0) out.push({ slot: i, x: Math.round(w.mi[i].curx[0] + w.mi[i].curx[1] / 20), y: Math.round(w.mi[i].cury[0] + w.mi[i].cury[1] / 20) });
+    if (pic < 100 && w.mblk[pic].solid !== 0)
+      out.push({ slot: i, x: Math.round(w.mi[i].curx[0] + w.mi[i].curx[1] / 20), y: Math.round(w.mi[i].cury[0] + w.mi[i].cury[1] / 20) });
   });
   return out;
 }
@@ -77,7 +79,7 @@ async function bossFight(b: Bot, x: number, y: number, name: string, face: 'up' 
     const t = open[0];
     if (!t) throw new Error(`${name}: no way to reach a part`);
     if (p.x !== t.sx || p.y !== t.sy || p.sx || p.sy) {
-      const g = await b.goto(t.sx, t.sy, process.env.BOSS_LOG ? `next to ${t.x},${t.y}` : "");
+      const g = await b.goto(t.sx, t.sy, process.env.BOSS_LOG ? `next to ${t.x},${t.y}` : '');
       if (g) throw new Error(`${name}: ${g}`);
     }
     if (!b.stepTouchesLink(face)) {
@@ -97,6 +99,26 @@ async function bossFight(b: Bot, x: number, y: number, name: string, face: 'up' 
   if (bossParts(b).length) throw new Error(`${name}: still standing`);
   b.boss = false;
   b.say(`${name} beaten (never more than ${far} blocks from where the fight began)`);
+}
+
+/** Lord Deadline on foot (the only monster whose attack has six corners: addDuelist in src/build/dungeons.ts). */
+function runnerSlot(b: Bot): number {
+  return b.sim.w.mm.findIndex((m) => {
+    const mon = m.monnum < 64 ? b.sim.w.mon[m.monnum] : undefined;
+    return mon?.activate === 2 && mon.march[1][5]?.pic === 2 && mon.march[1][2]?.pic === 4;
+  });
+}
+
+/** Lord Deadline's second act: out of his armor and on foot, he runs at Pip; swing till he drops. */
+async function onFoot(b: Bot): Promise<void> {
+  const runner = () => runnerSlot(b);
+  b.say('Lord Deadline, on foot');
+  for (let k = 0; k < 600 && runner() >= 0; k++) {
+    const r = (await b.fight(4)) ?? (await b.wait(1));
+    if (r) throw new Error(`Lord Deadline on foot: ${r}`);
+  }
+  if (runner() >= 0) throw new Error('Lord Deadline on foot: still running');
+  b.say('Lord Deadline caught');
 }
 
 export const steel: Step = async (b) => {
@@ -153,6 +175,7 @@ export const keep: Step = async (b) => {
   await b.retry(async () => {
     await b.goto(50, 35, 'through the sockets', set([50, 39], [50, 38], [50, 37]));
     await bossFight(b, 50, 19, 'Lord Deadline');
+    await onFoot(b);
     await b.goto(50, 15, 'the Round Tuit');
   });
 };

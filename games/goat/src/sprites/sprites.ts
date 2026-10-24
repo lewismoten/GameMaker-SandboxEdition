@@ -30,6 +30,31 @@ function outline(p: Pixels, ink: number): Pixels {
   return p;
 }
 
+/**
+ * Moonlight on her back: the top pixel of every column of the sprite (its outline there)
+ * turns pale, so she reads on the night grass. Only colors change, never the shape, so
+ * what she touches stays the same.
+ */
+function rim(p: Pixels, pale: number): Pixels {
+  for (let x = 0; x < p.w; x++)
+    for (let y = 0; y < p.h; y++)
+      if (p.px[y * p.w + x] !== T) {
+        p.px[y * p.w + x] = pale;
+        break;
+      }
+  return p;
+}
+
+/** An outline drawn inside a shape's own edge (its touch mask stays as it was). */
+function inline(p: Pixels, ink: number): Pixels {
+  const src = p.px.slice();
+  const empty = (x: number, y: number) => x < 0 || y < 0 || x >= p.w || y >= p.h || src[y * p.w + x] === T;
+  for (let y = 0; y < p.h; y++)
+    for (let x = 0; x < p.w; x++)
+      if (src[y * p.w + x] !== T && (empty(x - 1, y) || empty(x + 1, y) || empty(x, y - 1) || empty(x, y + 1))) p.px[y * p.w + x] = ink;
+  return p;
+}
+
 interface Coat {
   /** Fur ramp and the shades used for shadow, body and highlight. */
   fur: string;
@@ -68,7 +93,10 @@ export function goatArt(pal: Pal) {
     p.rect(12, 6 + oy, 3, 5, c(k.fur, k.hi - 1));
     blob(p, 15, 6 + oy, 3.4 * s, 2.7 * s, fur(k), k.lo, k.hi, 1.1);
     p.rect(16, 6 + oy + chew, 3, 2, c(k.fur, k.hi - 1));
-    if (k.horns) p.line(13, 4 + oy, 12, 2 + oy, c('horn', 1)).line(14, 4 + oy, 13, 1 + oy, c('horn', 2)).set(11, 3 + oy, c('horn', 1));
+    if (k.horns)
+      p.line(13, 4 + oy, 12, 2 + oy, c('horn', 1))
+        .line(14, 4 + oy, 13, 1 + oy, c('horn', 2))
+        .set(11, 3 + oy, c('horn', 1));
     p.line(13, 6 + oy, 11, 8 + oy, c(k.fur, k.lo)); // the ear, hanging back
     p.set(16, 5 + oy, ink);
     p.set(18, 6 + oy + chew, c('pink', 1));
@@ -101,8 +129,8 @@ export function goatArt(pal: Pal) {
     return outline(p, ink);
   };
 
-  /** From behind. */
-  const back = (k: Coat, legs: number): Pixels => {
+  /** From behind. flick: the right ear flicked up. */
+  const back = (k: Coat, legs: number, flick = false): Pixels => {
     const p = new Pixels(20, 20, T);
     const sw = legs === 0 ? 0 : legs === 1 ? 1 : -1;
     for (const [x, d] of [
@@ -116,7 +144,7 @@ export function goatArt(pal: Pal) {
     }
     blob(p, 10, 12, 5.5, 4.5, fur(k), k.lo, k.hi, 1.1);
     blob(p, 10, 6, 3.6, 3.2, fur(k), k.lo, k.hi - 1, 1.1);
-    p.line(7, 6, 4, 8, c(k.fur, k.lo)).line(13, 6, 16, 8, c(k.fur, k.lo));
+    p.line(7, 6, 4, 8, c(k.fur, k.lo)).line(13, 6, 16, flick ? 5 : 8, c(k.fur, k.lo));
     if (k.horns) p.line(8, 4, 6, 1, c('horn', 2)).line(12, 4, 14, 1, c('horn', 2));
     p.set(10, 16, c(k.fur, k.hi)).set(10, 15, c(k.fur, k.hi));
     return outline(p, ink);
@@ -147,9 +175,10 @@ export function goatArt(pal: Pal) {
 export const HERO = { fur: 'goat', lo: 1, hi: 5, horns: true, beard: true } as const;
 
 export function buildCharBlocks(pal: Pal) {
-  const book = makeBook('cbl');
+  const made = makeBook('cbl');
   const g = goatArt(pal);
   const c = pal.c;
+  const book = { ...made, add: (name: string, pic: Pixels) => made.add(name, rim(pic, c('star', 1))) };
   book.add('side0', g.side(HERO, 0));
   book.add('side1', g.side(HERO, 1));
   book.add('side2', g.side(HERO, 2));
@@ -208,7 +237,15 @@ export function buildMonsterBlocks(pal: Pal) {
       p.line(x, 14, x + d, 18, c('ink', 1)).set(x + d, 19, ink);
     const body = shorn ? pal.r('pink') : pal.r('wool');
     blob(p, 9, 12, shorn ? 5 : 6.5, shorn ? 3.2 : 4.5, body, 0, shorn ? 2 : 3, 1.1);
-    if (!shorn) for (const [x, y] of [[5, 9], [8, 8], [11, 8], [13, 10], [6, 14]]) blob(p, x, y, 2, 2, pal.r('wool'), 1, 3, 1.2);
+    if (!shorn)
+      for (const [x, y] of [
+        [5, 9],
+        [8, 8],
+        [11, 8],
+        [13, 10],
+        [6, 14],
+      ])
+        blob(p, x, y, 2, 2, pal.r('wool'), 1, 3, 1.2);
     blob(p, 15, 9, 2.6, 2.3, pal.r('ink'), 1, 1);
     p.set(16, 8, c('cloth', 3)).line(14, 8, 12, 10, c('ink', 1));
     return outline(p, ink);
@@ -246,8 +283,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(10, 16, c('red', 2)).set(12, 16, c('red', 2));
     return outline(p, ink);
   };
-  book.add('pigeon0', pigeon(true), hurt(-3));
-  book.add('pigeon1', pigeon(false), hurt(-3));
+  book.add('pigeon0', rim(pigeon(true), c('star', 1)), hurt(-3));
+  book.add('pigeon1', rim(pigeon(false), c('star', 1)), hurt(-3));
   const feathers = (f: number) => {
     const p = new Pixels(20, 20, T);
     for (let k = 0; k < 6; k++) {
@@ -282,15 +319,16 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     return outline(p, ink);
   };
-  for (const part of ['rear', 'front'] as const) for (const f of [0, 1]) book.add(`${part}${f}`, camel(part, f), { ...solid, ...hurt(-6) });
+  for (const part of ['rear', 'front'] as const) for (const f of [0, 1]) book.add(`${part}${f}`, camel(part, f), { ...solid, ...hurt(-8) });
   const spit = (f: number) => {
     const p = new Pixels(20, 20, T);
     blob(p, 10, 10, 3, 2.4, pal.r('cloth'), 1, 3, 1.2);
     for (let k = 0; k < 3; k++) p.set(13 + k * 2, 9 + ((k + f) % 2), c('cloth', 2));
-    return p;
+    // edged in green-brown, so it shows on the pale sand
+    return inline(p, c('olive', 0));
   };
-  book.add('spit0', spit(0), hurt(-4));
-  book.add('spit1', spit(1), hurt(-4));
+  book.add('spit0', spit(0), hurt(-5));
+  book.add('spit1', spit(1), hurt(-5));
   const splat = new Pixels(20, 20, T);
   for (let a = 0; a < 6.28; a += 0.7) splat.line(10, 12, 10 + Math.cos(a) * 5, 12 + Math.sin(a) * 3, c('cloth', 2));
   book.add('splat', splat);
@@ -325,39 +363,57 @@ export function buildMonsterBlocks(pal: Pal) {
   // The donkey (in all the paintings) and the ox (who gets the praise).
   const beast = (fur: string, kind: 'donkey' | 'ox', f: number) => {
     const p = new Pixels(20, 20, T);
-    for (const x of [4, 6, 12, 14]) p.rect(x, 14, 2, 5, c(fur, 0)).set(x, 19, ink).set(x + 1, 19, ink);
+    for (const x of [4, 6, 12, 14])
+      p.rect(x, 14, 2, 5, c(fur, 0))
+        .set(x, 19, ink)
+        .set(x + 1, 19, ink);
     blob(p, 9, 10, 8, 5, pal.r(fur), 0, 3, 1.1);
     blob(p, 16, 7 - f, 3.5, 3, pal.r(fur), 1, 3, 1.1);
     p.set(17, 6 - f, ink);
-    if (kind === 'donkey') p.line(15, 4 - f, 14, 0, c(fur, 2)).line(16, 4 - f, 16, 0, c(fur, 2)).rect(17, 8 - f, 3, 2, c('cloth', 2));
-    else p.line(14, 4 - f, 12, 1, c('horn', 2)).line(17, 4 - f, 19, 1, c('horn', 2)).rect(17, 8 - f, 3, 2, c('pink', 1));
+    if (kind === 'donkey')
+      p.line(15, 4 - f, 14, 0, c(fur, 2))
+        .line(16, 4 - f, 16, 0, c(fur, 2))
+        .rect(17, 8 - f, 3, 2, c('cloth', 2));
+    else
+      p.line(14, 4 - f, 12, 1, c('horn', 2))
+        .line(17, 4 - f, 19, 1, c('horn', 2))
+        .rect(17, 8 - f, 3, 2, c('pink', 1));
     p.line(1, 7, 0, 12, c(fur, 1));
     return outline(p, ink);
   };
-  book.add('donkey0', beast('donkey', 'donkey', 0), { ...solid, ...hurt(-5) });
-  book.add('donkey1', beast('donkey', 'donkey', 1), { ...solid, ...hurt(-5) });
-  book.add('ox0', beast('ox', 'ox', 0), solid);
-  book.add('ox1', beast('ox', 'ox', 1), solid);
+  // lantern light along their backs
+  const lamp = c('glow', 2);
+  book.add('donkey0', rim(beast('donkey', 'donkey', 0), lamp), { ...solid, ...hurt(-6) });
+  book.add('donkey1', rim(beast('donkey', 'donkey', 1), lamp), { ...solid, ...hurt(-6) });
+  book.add('ox0', rim(beast('ox', 'ox', 0), lamp), solid);
+  book.add('ox1', rim(beast('ox', 'ox', 1), lamp), solid);
 
   // The line at the manger, all facing Him: goats and lambs, still.
-  book.add('lineGoat', g.back({ fur: 'goat', lo: 0, hi: 4, horns: true, beard: false }, 0), solid);
+  // The line at the manger breathes: an ear flicks now and then, a lamb's head bobs.
+  const liner = { fur: 'goat', lo: 0, hi: 4, horns: true, beard: false };
+  book.add('lineGoat', rim(g.back(liner, 0), lamp), solid);
+  book.add('lineGoat1', rim(g.back(liner, 0, true), lamp), solid);
   book.add('lineBrown', g.back({ fur: 'camel', lo: 0, hi: 3, horns: true, beard: false }, 0), solid);
-  const lineLamb = new Pixels(20, 20, T);
-  for (const x of [7, 12]) lineLamb.rect(x, 15, 1, 4, c('ink', 1));
-  blob(lineLamb, 10, 12, 5, 4.5, pal.r('wool'), 0, 3, 1.1);
-  blob(lineLamb, 10, 6, 3, 2.6, pal.r('ink'), 1, 1);
-  book.add('lineLamb', outline(lineLamb, ink), solid);
+  const lineLamb = (bob: number) => {
+    const p = new Pixels(20, 20, T);
+    for (const x of [7, 12]) p.rect(x, 15, 1, 4, c('ink', 1));
+    blob(p, 10, 12, 5, 4.5, pal.r('wool'), 0, 3, 1.1);
+    blob(p, 10, 6 + bob, 3, 2.6, pal.r('ink'), 1, 1);
+    return rim(outline(p, ink), lamp);
+  };
+  book.add('lineLamb', lineLamb(0), solid);
+  book.add('lineLamb1', lineLamb(1), solid);
 
-  // The Bard of Bizarre's rooster, spectacles and all, out for a stroll.
+  // The Bard of Bizarre, a white chicken with an orange beak, spectacles and all, out for a stroll.
   const rooster = (f: number) => {
     const p = new Pixels(20, 20, T);
-    p.line(9, 15, 9 - f, 19, c('gold', 1)).line(12, 15, 12 + f, 19, c('gold', 1));
-    blob(p, 10, 11, 5, 4.5, pal.r('cloth'), 1, 3, 1.1);
+    p.line(9, 15, 9 - f, 19, c('beak', 1)).line(12, 15, 12 + f, 19, c('beak', 1));
+    blob(p, 10, 11, 5, 4.5, pal.r('feather'), 1, 3, 1.1);
     p.line(4, 8, 3, 4, c('red', 2)).line(5, 8, 4, 5, c('blue', 2)).line(6, 8, 6, 5, c('red', 1));
-    blob(p, 14, 6, 3, 3, pal.r('cloth'), 1, 3, 1.1);
+    blob(p, 14, 6, 3, 3, pal.r('feather'), 1, 3, 1.1);
     p.rect(13, 1, 4, 2, c('red', 2)).set(14, 0, c('red', 2)).set(16, 0, c('red', 2));
     p.frame(12, 4, 3, 3, c('blue', 2)).frame(15, 4, 3, 3, c('blue', 2));
-    p.set(18, 7, c('gold', 3)).set(19, 7, c('gold', 2)).rect(15, 9, 2, 2, c('red', 2));
+    p.set(18, 7, c('beak', 2)).set(19, 7, c('beak', 1)).rect(15, 9, 2, 2, c('red', 2));
     return outline(p, ink);
   };
   book.add('rooster0', rooster(0));

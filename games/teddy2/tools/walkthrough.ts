@@ -1,6 +1,6 @@
 // Writes games/teddy2/walkthrough.json: the bot plays every level's route (tools/route.ts)
 // the way check.ts does, one key segment a level, and games/kit/walkthrough.ts checks the
-// whole run on the real engine (title, story, all eight levels, the dog show, the credits).
+// whole run on the real engine (title, story, all nine levels, the dog show, the credits).
 // The routes never go near the felt egg (Gwinn's den behind the hedge on Main Street).
 //   cd web && npx vite-node ../games/teddy2/tools/walkthrough.ts
 import { buildCharacter, CB } from '../src/characters/character';
@@ -22,7 +22,15 @@ for (const [i, make] of LEVELS.entries()) {
   // the simulator seeds each level's monsters with 1, as the walkthrough does (rand below)
   const play = (ci: CharInfo) => {
     const sim = new Sim(
-      { map: l.map.done(), bbl: l.bs.build(), mbl: l.beasts.mb.build(), mon: l.beasts.build(), ...heroes[l.hero], links: [{ from: l.exit, to: l.exit }], names: l.beasts.names },
+      {
+        map: l.map.done(),
+        bbl: l.bs.build(),
+        mbl: l.beasts.mb.build(),
+        mon: l.beasts.build(),
+        ...heroes[l.hero],
+        links: [{ from: l.exit, to: l.exit }],
+        names: l.beasts.names,
+      },
       l.start,
       ci,
     );

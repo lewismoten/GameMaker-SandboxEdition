@@ -30,6 +30,7 @@ describe('site service worker', () => {
   });
 
   it('runs the same grouping in the worker', () => {
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval -- runs the worker's generated source, as the browser would
     const [worker, key] = new Function(`${WORKER_GROUP_OF}; return [groupOf, groupKey];`)() as [(p: string) => string | undefined, (g: string) => string];
     for (const p of PATHS) expect(worker(p)).toBe(groupOf(p));
     for (const p of PATHS) expect(key(p)).toBe(groupKey(p));
@@ -37,7 +38,13 @@ describe('site service worker', () => {
   });
 
   it('writes a worker that parses, with the shell, groups and hashed files in it', () => {
-    const src = siteWorkerSource({ version: 'v1', precache: ['./', 'index.html', 'assets/main-abc.js'], groups: { 'index.html': 'h1' }, assets: ['assets/main-abc.js'] });
+    const src = siteWorkerSource({
+      version: 'v1',
+      precache: ['./', 'index.html', 'assets/main-abc.js'],
+      groups: { 'index.html': 'h1' },
+      assets: ['assets/main-abc.js'],
+    });
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval -- only parses the generated worker
     expect(() => new Function(src)).not.toThrow();
     expect(src).toContain('const PRECACHE = ["","index.html","assets/main-abc.js"]');
     expect(src).toContain('"index.html":"h1"');

@@ -55,7 +55,7 @@ const pointField = (ctx: LinksContext, p: Point, label: string, sceneForMap: num
       },
       '⌖',
     ),
-  );;
+  );
 
 /** The links table, as a panel. */
 export function linksPanel(ctx: LinksContext, s: Scene, kind: 'start' | 'adventure' | 'unused'): HTMLElement {

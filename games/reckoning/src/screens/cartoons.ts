@@ -195,7 +195,7 @@ export function storyFli(cast: Cast): Uint8Array {
         scaleBlit(p, M(`walk${k % 4}`), 20 + k * 5, 112, 2);
         if (k >= 10 && k < 20) say(p, pal, 90, 40, 'CRACKLE!', 'white', 2, 2);
         if (k >= 18) say(p, pal, 220, 8, 'moo...', 'cream', 1);
-        caption(p, pal, k < 10 ? ['Or maybe I\'ll just eat it', 'in the dark...'] : ['Thunder. Somewhere,', 'a cow moos ominously.']);
+        caption(p, pal, k < 10 ? ["Or maybe I'll just eat it", 'in the dark...'] : ['Thunder. Somewhere,', 'a cow moos ominously.']);
       },
       1,
       1,
@@ -305,7 +305,12 @@ export function howtoFli(cast: Cast): Uint8Array {
   const scene = (p: Pixels, k: number) => {
     // the toy blocks on the floor; he tiptoes and hops over them
     if (k < 30)
-      for (const [x, col] of [[100, 'red'], [108, 'pjs'], [116, 'cheese']] as const) p.rect(x, 148, 6, 4, c(col, 2)).rect(x, 147, 6, 1, c(col, 3));
+      for (const [x, col] of [
+        [100, 'red'],
+        [108, 'pjs'],
+        [116, 'cheese'],
+      ] as const)
+        p.rect(x, 148, 6, 4, c(col, 2)).rect(x, 147, 6, 1, c(col, 3));
     let x = 10 + k * 5;
     let y = 112;
     let pose = `walk${k % 4}`;
@@ -443,7 +448,12 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       outlined(p, 160 - textWidth('THE END', 3) / 2, 14, 'THE END', c('cream', 3), c('ink', 0), 3, c('crust', 0));
       // the empty plate, with crumbs
       p.rect(220, 96, 30, 3, c('white', 2));
-      for (const [x, y] of [[226, 94], [233, 95], [241, 94]]) p.set(x, y, c('crust', 2));
+      for (const [x, y] of [
+        [226, 94],
+        [233, 95],
+        [241, 94],
+      ])
+        p.set(x, y, c('crust', 2));
       scaleBlit(p, M(k % 12 < 6 ? 'bliss' : 'worry'), 90, 112, 2);
       if (k >= 10) say(p, pal, 236, 76, '(of the cheesecake)', 'white', 2);
       caption(p, pal, ['Was it worth it?', 'Ask him at 3:17 tomorrow.']);

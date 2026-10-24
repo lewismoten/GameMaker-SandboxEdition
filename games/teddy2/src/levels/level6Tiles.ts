@@ -24,7 +24,10 @@ function stalks(base: Pixels, seed: number, top: boolean): Pixels {
       p.line(x0, y, x0 - 3, y + 3, c('green', 2)).line(x0 + 1, y + 2, x0 + 4, y + 5, c('green', 0));
     }
     if (!top && R() < 0.4) blob(p, x0 + 2, 10 + R() * 6, 1.5, 3, r('yellow'), 1, 3);
-    if (top) p.rect(x0 - 1, 2, 4, 4, c('hay', 3)).set(x0, 0, c('hay', 2)).set(x0 + 1, 1, c('hay', 2));
+    if (top)
+      p.rect(x0 - 1, 2, 4, 4, c('hay', 3))
+        .set(x0, 0, c('hay', 2))
+        .set(x0 + 1, 1, c('hay', 2));
   }
   return p;
 }
@@ -40,11 +43,14 @@ export function mazeTiles(): Tiles {
   t.air('hedgeTop', hedge(true, 21, sky(bandRow(29))));
   t.wall('hedgeWall', hedge(false, 25));
   t.wall('lot', road(false, 4));
-  t.wall('lotLine', (() => {
-    const p = road(false, 5);
-    p.rect(9, 0, 2, 20, c('paint', 3));
-    return p;
-  })());
+  t.wall(
+    'lotLine',
+    (() => {
+      const p = road(false, 5);
+      p.rect(9, 0, 2, 20, c('paint', 3));
+      return p;
+    })(),
+  );
 
   // The maze. Dark rows between the stalks are the paths.
   const row = (() => {

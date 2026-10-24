@@ -89,7 +89,12 @@ export function musicBox(): MusicBox {
   const pluck = (at: number, midi: number, vel: number) => {
     if (!ctx || !master) return;
     const f = 440 * Math.pow(2, (midi - 69) / 12);
-    for (const [ratio, amp, decay] of [[1, 1, 1.9], [2, 0.12, 0.5], [3, 0.05, 0.25], [6.27, 0.22, 0.09]]) {
+    for (const [ratio, amp, decay] of [
+      [1, 1, 1.9],
+      [2, 0.12, 0.5],
+      [3, 0.05, 0.25],
+      [6.27, 0.22, 0.09],
+    ]) {
       if (f * ratio > ctx.sampleRate / 2.2) continue;
       const o = ctx.createOscillator();
       o.frequency.value = f * ratio;
@@ -158,7 +163,7 @@ export function musicBox(): MusicBox {
 
   return {
     play: () => {
-      if (ctx && master) master.gain.cancelScheduledValues(ctx.currentTime), master.gain.setValueAtTime(0.22, ctx.currentTime);
+      if (ctx && master) (master.gain.cancelScheduledValues(ctx.currentTime), master.gain.setValueAtTime(0.22, ctx.currentTime));
       play();
     },
     stop,

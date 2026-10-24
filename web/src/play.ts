@@ -9,6 +9,7 @@ import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './pr
 import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 import { registerServiceWorker } from './offline';
+import { playAchievements, playWrote } from './achievements';
 
 interface BundleManifest {
   id: string;
@@ -41,14 +42,16 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
 
 /** A shot of the game's first level, for the start screen (drawn while you read it). */
 async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
-  const { renderShot } = await import('./desk/boxes/boxArt');
+  const { renderShot } = await import('./gfx/gameShots');
   const c = document.createElement('canvas');
   c.width = 320;
   c.height = 200;
   return (await renderShot(entry, c, 16, 10)) ? c.toDataURL() : undefined;
 }
 
-async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string; poster?: Promise<string | undefined> } | undefined> {
+async function choose(): Promise<
+  { id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string; poster?: Promise<string | undefined> } | undefined
+> {
   const params = new URLSearchParams(location.search);
   const gameId = params.get('game') ?? pageGame;
   const projectId = params.get('project');
@@ -101,8 +104,9 @@ async function main(): Promise<void> {
       notice: game.notice,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
-      onFileWrite: (name, bytes) => void writeSaveFile(game.id, name, bytes),
+      onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),
       saveId: game.id,
+      ...playAchievements(game.id),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
         if (game.back) location.href = game.back;

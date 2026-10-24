@@ -341,14 +341,33 @@ export function spaceSet(): SetBuilder {
       s.add(`warp${f}:${part}`, over(voidBg(42, 0), pic.crop(dx, dy, 20, 20)), { next: `warp${1 - f}:${part}`, ntime: 3 });
   }
   for (let k = 0; k < 5; k++) s.add(`rock:${k}`, asteroid(500 + k, 60 + k), { solid: SOLID });
-  const bigRock = over(
-    voidBg(66, 0),
-    (() => {
-      const p = sprite();
-      shade(p, new Mask().rect(0, 0, 20, 20), R('rock').slice(0, 5), { dither: true, seed: 4 });
-      return p;
-    })(),
-  );
+  // solid asteroid rock: a seamless lumpy face with pits and cracks, so a canyon wall of it
+  // reads as rock rather than a flat grid
+  const bigRock = (() => {
+    const rock = R('rock');
+    const lump = tileNoise(71, 20, 2);
+    const grain = tileNoise(72, 20, 5);
+    const p = tex((x, y) => {
+      const v = lump(x, y) * 0.7 + grain(x, y) * 0.3;
+      const k = Math.floor(v * 3);
+      return dither(x, y, v * 3 - k) ? rock[Math.min(3, k + 1)] : rock[Math.min(3, k)];
+    });
+    // pits: a dark bowl lit on its lower rim
+    for (const [cx, cy, rr] of [
+      [6, 7, 2.4],
+      [15, 14, 1.6],
+    ] as const) {
+      fill(p, new Mask().ellipse(cx, cy, rr, rr * 0.8), rock[0]);
+      fill(p, new Mask().ellipse(cx + 0.6, cy + 0.6, rr * 0.6, rr * 0.45), rock[1]);
+      p.set(Math.round(cx), Math.round(cy + rr * 0.8), rock[4]);
+    }
+    // a crack that runs off the tile's edges at matching rows, so it joins its neighbors
+    for (let x = 0; x < 20; x++) {
+      const y = 17 + Math.round(Math.sin((x / 20) * Math.PI * 2) * 1.5);
+      if (x % 7 !== 3) p.set(x, y, rock[0]);
+    }
+    return p;
+  })();
   s.add('rock:big', bigRock, { solid: SOLID });
   // the same rock, but only a picture of one: the pod flies straight through
   s.add('rock:fake', bigRock);

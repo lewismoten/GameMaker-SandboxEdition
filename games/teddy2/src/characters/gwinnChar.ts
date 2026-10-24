@@ -32,14 +32,23 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 }
 
 /** Gwinn's walking speed in pixels per tick (Teddy's is 5). */
-export const GSTEP = 7;
+export const GSTEP = 6;
 /** Her hop: a stronger push per tick while Up is held (Teddy's is 11). */
 export const GHOP = 12;
 
 export function buildGwinn(): Character {
   const ch = newCharacter();
   const S = ch.sequences;
-  set(S[GSEQ.idle], [f('gFront', 30), f('gFrontBlink', 3), f('gFront', 20), f('gWiggle', 4), f('gFront', 4), f('gWiggle', 4), f('gFront', 26), f('gFrontBlink', 3)]);
+  set(S[GSEQ.idle], [
+    f('gFront', 30),
+    f('gFrontBlink', 3),
+    f('gFront', 20),
+    f('gWiggle', 4),
+    f('gFront', 4),
+    f('gWiggle', 4),
+    f('gFront', 26),
+    f('gFrontBlink', 3),
+  ]);
   set(S[GSEQ.die], [f('gHurt', 3), f('gFront', 5), f('gSleep', 8), f('gSleep', 30, { top: 'zzz' })], { sound: SND.sleep, jstkBut: 0 });
   set(S[GSEQ.hurt], [f('gHurt', 2), f('gFront', 1), f('gHurt', 2), f('gFront', 1)], { sound: SND.yelp, jstkBut: 0 });
   set(S[GSEQ.fetch], [f('gChew1', 3), f('gFront', 3)], { key: KEY.f, sound: SND.fetch, ground: 1, norepeat: 1 });

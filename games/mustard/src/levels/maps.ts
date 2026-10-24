@@ -18,6 +18,7 @@ const LEGEND: Record<string, string> = {
   '=': 'grassTop',
   ':': 'dust',
   ';': 'dustTop',
+  '~': 'gustCalm',
   r: 'root',
   R: 'rock',
   K: 'rockDust',
@@ -132,6 +133,29 @@ export class MapBuilder {
     return this;
   }
 
+  /** Rows y0..y1 in a deeper sky: each block with a `~shift` copy (blocks.ts DUSK_TONED) becomes it. */
+  tone(y0: number, y1: number, shift: number): this {
+    const names = new Map([...this.book.index].map(([name, n]) => [n, name]));
+    for (let y = y0; y <= y1; y++)
+      for (let x = 0; x < 100 - ORIGIN; x++) {
+        const i = (y + ORIGIN) * 100 + x + ORIGIN;
+        const deeper = this.book.index.get(`${names.get(this.map.blocks[i])}~${shift}`);
+        if (deeper !== undefined) this.map.blocks[i] = deeper;
+      }
+    return this;
+  }
+
+  /** Row y blended from tone `from` (top) to `to` (bottom): each block with a `~from` + `to` copy (blocks.ts SKY_BLENDS) becomes it. */
+  blend(y: number, from: number, to: number): this {
+    const names = new Map([...this.book.index].map(([name, n]) => [n, name.replace(/~\d$/, '')]));
+    for (let x = 0; x < 100 - ORIGIN; x++) {
+      const i = (y + ORIGIN) * 100 + x + ORIGIN;
+      const blended = this.book.index.get(`${names.get(this.map.blocks[i])}~${from}to${to}`);
+      if (blended !== undefined) this.map.blocks[i] = blended;
+    }
+    return this;
+  }
+
   mon(id: number, x: number, y: number): this {
     if (this.monCount >= 200) throw new Error('Too many monsters');
     this.map.monsters[this.monCount++] = { monnum: id, status: 0, xtra: 0, curx: x + ORIGIN, cury: y + ORIGIN, extra: 0 };
@@ -170,7 +194,12 @@ export function mound(book: BlockBook): Level {
   const H = 13;
   const m = new MapBuilder(book, 'soil');
   // sky, the ground (standing row 9), soil under it, a soil border all round
-  m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 1, W - 2, '=').fill(0, 11, W, 2, '#').col(0, 0, 10, '#').col(W - 1, 0, 10, '#');
+  m.fill(1, 0, W - 2, 2, '^')
+    .fill(1, 2, W - 2, 8, '.')
+    .row(10, 1, W - 2, '=')
+    .fill(0, 11, W, 2, '#')
+    .col(0, 0, 10, '#')
+    .col(W - 1, 0, 10, '#');
   m.set(9, 2, 'w').set(41, 3, 'w').set(66, 2, 'w');
   // the mound the seed hops out of
   m.row(8, 3, 5, '#').row(9, 2, 6, '#').set(3, 7, ',').set(5, 7, ',');
@@ -190,9 +219,11 @@ export function mound(book: BlockBook): Level {
   m.text(48, 9, 'p.,..q.x..,');
   for (const x of [50, 56]) m.row(7, x, x + 1, 'L');
   m.text(50, 4, '*..d..*').text(52, 1, '{}');
-  m.set(59, 6, 'U').col(59, 7, 9, 'u').set(60, 6, 'U').col(60, 7, 9, 'u').set(62, 4, 'L').set(62, 3, '1');
+  m.set(59, 6, 'U').col(59, 7, 9, 'u').set(60, 6, 'U').col(60, 7, 9, 'u');
+  // the flowerpot tower: two pots stacked, up to a leaf high over the garden and the golden flower
+  m.set(61, 7, 'U').col(61, 8, 9, 'u').set(61, 4, 'U').col(61, 5, 6, 'u').set(62, 2, 'L').set(62, 1, '1');
   // the sunny patch at the end of the garden: the way on
-  m.text(64, 9, ',..@.,').text(64, 6, '*');
+  m.text(64, 9, ',..@.,').text(64, 7, '*');
   m.mon(MON.beetleR, 8, 9);
   m.peacock(21, 9);
   m.mon(MON.crow, 40, 1).mon(MON.bee, 51, 7).mon(MON.beetleR, 48, 9).mon(MON.crow, 56, 1);
@@ -221,10 +252,14 @@ export function dust(book: BlockBook): Level {
   m.fill(39, 9, 5, 2, 'c').row(11, 39, 43, '#').set(41, 10, 'o');
   // groundwater in the dust itself
   m.set(32, 4, 'O').set(45, 15, 'O');
+  // a tin heart in a pocket of air by the buried junk, a short dig from the last drop
+  m.set(41, 16, 'tinHeart');
   m.mon(MON.ant, 4, 8).mon(MON.worm, 12, 15).mon(MON.mole, 26, 15).mon(MON.ant, 20, 6).mon(MON.worm, 39, 10);
   // up through the crack into the daylight, and along the sidewalk to the sunny spot: the walk
   // there lets "Keep on hustlin'" (the crack opening) play out before the level ends
-  m.fill(36, -2, W - 37, 2, 'Y').set(44, -1, 'daylightUp').set(40, -1, 'y');
+  m.fill(36, -2, W - 37, 2, 'Y')
+    .set(44, -1, 'daylightUp')
+    .set(40, -1, 'y');
   m.link(40, -1, 'next');
   return { m, start: at(2, 2), size: [W, H] };
 }
@@ -234,7 +269,11 @@ export function mountain(book: BlockBook): Level {
   const W = 64;
   const H = 20;
   const m = new MapBuilder(book, 'crag');
-  m.fill(1, 0, W - 2, 3, '^').fill(1, 3, W - 2, 16, '.').col(0, 0, 19, 'M').col(W - 1, 0, 19, 'M').row(19, 0, W - 1, 'M');
+  m.fill(1, 0, W - 2, 3, '^')
+    .fill(1, 3, W - 2, 16, '.')
+    .col(0, 0, 19, 'M')
+    .col(W - 1, 0, 19, 'M')
+    .row(19, 0, W - 1, 'M');
   m.set(6, 2, 'w').set(30, 3, 'w').set(52, 2, 'w');
   // the ground under each stretch: [from x, to x, top row]
   const steps: [number, number, number][] = [
@@ -254,7 +293,9 @@ export function mountain(book: BlockBook): Level {
   m.set(3, 16, 'T').set(8, 16, ',').set(12, 14, 'T').set(21, 12, ',').set(33, 10, 'T').set(49, 10, 'T').set(57, 12, 'T').set(53, 12, ',');
   // the walls of boulders (four high: a hop can't clear them; faith moves them two at a time)
   m.col(24, 9, 12, 'X').col(31, 7, 10, 'X').col(46, 7, 10, 'X');
-  // faith, a golden glimmer at a time
+  // faith, a golden glimmer at a time: one for every boulder, each wall's four on the way up to
+  // it, so a seed that bumps the high boulders too is never left short
+  m.set(25, 11, '$').set(33, 9, '$').set(36, 7, '$');
   m.set(5, 15, '$').set(9, 16, '$').set(14, 12, '$').set(20, 11, '$').set(27, 9, '$').set(29, 8, '$').set(38, 6, '$').set(41, 7, '$').set(44, 9, '$');
   // sunbeams, dew, and a golden flower on the peak
   m.text(16, 10, '*').text(36, 4, '*..*').set(52, 10, '*').set(18, 14, 'd').set(40, 8, '1').set(60, 9, '*');
@@ -272,8 +313,12 @@ export function sky(book: BlockBook): Level {
   const W = 26;
   const H = 46;
   const m = new MapBuilder(book, 'soil');
-  m.fill(1, 0, W - 2, 44, '.').col(0, 0, 45, '#').col(W - 1, 0, 45, '#').row(44, 1, W - 2, '=').row(45, 0, W - 1, '#');
-  m.set(5, 30, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
+  m.fill(1, 0, W - 2, 44, '.')
+    .col(0, 0, 45, '#')
+    .col(W - 1, 0, 45, '#')
+    .row(44, 1, W - 2, '=')
+    .row(45, 0, W - 1, '#');
+  m.set(2, 33, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
   // the great plant's stalk, up the middle
   m.col(12, 18, 43, '[').col(13, 18, 43, ']');
   // its branches, every three rows (hop up through them)
@@ -282,13 +327,24 @@ export function sky(book: BlockBook): Level {
   m.set(15, 37, 'n').set(10, 39, 'd').text(9, 32, '*').set(16, 36, '*');
   // the evening breeze lifts on the right, to the nest branch
   m.col(22, 20, 33, 'z').row(20, 14, 20, '-').set(16, 20, 'n').set(20, 23, '*');
-  m.row(17, 9, 15, '-').row(14, 4, 15, '-').set(15, 13, '1').set(9, 16, '*');
-  // and on the left, up past the rain cloud to the clouds
+  m.row(17, 9, 15, '-').row(14, 1, 15, '-').set(15, 13, '1').set(9, 16, '*');
+  // the top branch, where the breeze gusts on a rhythm and blows a plant off its right end:
+  // hop up and cross while it's calm
+  m.fill(6, 12, 9, 2, '~');
+  // side branches off the long one, up to the left, with two sunbeams
+  m.row(31, 5, 10, '-').row(28, 2, 7, '-').set(3, 27, '*').set(6, 26, '*');
+  // and on the left, up past the rain cloud to the clouds (the top branch runs on to the wall
+  // under the breeze, so drifting off its left side lands on the branch, not far below)
   m.col(5, 5, 13, 'z').text(16, 9, '{}').text(8, 6, '()()').set(9, 5, 'Q');
   // the palm of God's hand: light that lifts into it
   m.row(3, 6, 19, 'g');
   for (let k = 0; k < 24; k++) m.set(9 + (k % 8), Math.floor(k / 8), `hand${k}`);
   m.mon(MON.squirrel, 9, 36).mon(MON.bird, 15, 36).mon(MON.bird, 16, 19).mon(MON.crow, 8, 10).mon(MON.squirrel, 9, 16).mon(MON.bee, 17, 27);
+  // a painted Easter egg at the foot of the great plant, far over on the left
+  m.set(1, 43, 'easterEgg');
+  // the evening deepens toward the top (the light around the palm stays bright)
+  m.tone(4, 15, 2).tone(16, 29, 1);
+  m.blend(4, 0, 2).blend(16, 2, 1).blend(30, 1, 0);
   m.link(13, 1, 'won');
   return { m, start: at(12, 43), size: [W, H] };
 }

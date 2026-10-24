@@ -3,6 +3,7 @@
 // and your games) and D: (the Game-Maker CD), filled lazily from the game files.
 // The PC is one class in layers, each extending the one before: drives -> folders (game
 // folders on the disks) -> Computer (power, running programs, in computer.ts).
+import './monitor.css';
 import { TextScreen } from '../text/textScreen';
 import { TextKeys } from '../text/textInput';
 import { Shell } from '../dos/shell';
@@ -16,6 +17,7 @@ import { h } from '../../editor/core/ui';
 import type { GmInstallEntry } from '../../../scripts/cdGames';
 import { MonitorMode, ComputerOptions, AUTOEXEC, CONFIG_SYS } from './setup';
 import bbsGifs from '../bbs/gallery.json';
+import { TTY_INFO } from '../bbs/ttyInfo';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
 import { dosDir } from '../../project/dosDir';
 
@@ -53,8 +55,14 @@ export abstract class ComputerDrives {
     // Draw the text as large as it is shown, so it stays sharp at any size.
     // (measured as shown, after any scaling of the desk around it)
     const fit = () => this.screen.setScale((this.textEl.getBoundingClientRect().width * devicePixelRatio) / 640);
-    new ResizeObserver(fit).observe(this.textEl);
-    addEventListener('resize', () => requestAnimationFrame(fit));
+    const watch = new ResizeObserver(fit);
+    watch.observe(this.textEl);
+    const onResize = () => requestAnimationFrame(fit);
+    addEventListener('resize', onResize);
+    this.unwatch = () => {
+      watch.disconnect();
+      removeEventListener('resize', onResize);
+    };
     this.screen.clear(0);
     this.screen.cursorVisible = false;
     this.keys.attach(this.textEl);
@@ -69,6 +77,21 @@ export abstract class ComputerDrives {
     this.fs.onAccess = (drive) => this.opts.onDriveAccess?.(drive);
     this.buildDrives();
     this.setMode('off');
+  }
+
+  private unwatch: () => void;
+
+  /**
+   * Done with this PC (switched off): its screen's timers, its keyboard, its listeners and
+   * its picture on the monitor all go. Switching on again makes a new one.
+   */
+  dispose(): void {
+    this.unwatch();
+    this.keys.detach();
+    this.screen.destroy();
+    this.vgaScreen?.destroy();
+    this.vgaScreen = undefined;
+    this.textEl.closest('.crt-picture')?.remove();
   }
 
   focus(): void {
@@ -116,13 +139,17 @@ export abstract class ComputerDrives {
   protected buildDrives(): void {
     // `date`: when the folder came to be (a download's arrival); the CD's are as shipped
     const gameFolder = (g: CatalogEntry, date = DOS_DATE): DosNode =>
-      folder(g.id, async () => {
-        const nodes = g.files.map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
-        // Sizes come from the files themselves, loaded when the folder is opened.
-        const files = await this.catalogFiles(g);
-        for (const n of nodes) n.size = files.get(n.name.toLowerCase())?.length ?? 0;
-        return nodes;
-      }, date);
+      folder(
+        g.id,
+        async () => {
+          const nodes = g.files.map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
+          // Sizes come from the files themselves, loaded when the folder is opened.
+          const files = await this.catalogFiles(g);
+          for (const n of nodes) n.size = files.get(n.name.toLowerCase())?.length ?? 0;
+          return nodes;
+        },
+        date,
+      );
 
     this.fs.addDrive({
       letter: 'A',
@@ -136,7 +163,14 @@ export abstract class ComputerDrives {
           const exe = d.disk.gam.replace(/\.gam$/i, '.exe');
           nodes.unshift(
             file(exe, 160_598, {
-              run: { kind: 'game', title: d.disk.title, gam: d.disk.gam, files: async () => new Map(d.files.entries()), diskId: d.disk.id, saveId: d.disk.id.startsWith('cd:') ? `game:${d.disk.id.slice(3)}` : undefined },
+              run: {
+                kind: 'game',
+                title: d.disk.title,
+                gam: d.disk.gam,
+                files: async () => new Map(d.files.entries()),
+                diskId: d.disk.id,
+                saveId: d.disk.id.startsWith('cd:') ? `game:${d.disk.id.slice(3)}` : undefined,
+              },
             }),
           );
         }
@@ -149,74 +183,94 @@ export abstract class ComputerDrives {
       label: 'GAMEMAKER',
       free: 48_234_496,
       // waits for what the BBS put on C: before this visit (kept in the browser)
-      root: () => this.downloads.ready.then(() => [
-        folder('DOS', () =>
-          ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) =>
-            file(n, 20_000 + n.length * 1357),
-          ).concat(file('BACKUP.EXE', 36_802, { run: { kind: 'backup' } }), file('HEXEDIT.EXE', 41_216, { run: { kind: 'hexedit' } })),
-        ),
-        folder('CDROM', () => [file('CDROM.SYS', 18_432)]),
-        liveFolder('GM', () => this.gmFolder(true)),
-        folder('COMM', () => [
-          file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }),
-          file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
-          textFile(
-            'PHONE.LST',
-            'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-0177  14400 N81  Major BBS, 8 lines\n',
-          ),
-        ]),
-        liveFolder('DOWNLOAD', async () => {
-          const cat = await this.catalog();
-          const dl = this.downloads;
-          await deskFilesReady(); // which games GMCRACK cracked
-          const games = dl.list().flatMap((id) => {
-            const g = cat.find((c) => c.id === id);
-            if (!g) return [];
-            const date = dl.date(id) ?? DOS_DATE;
-            // DEL takes files out one by one; RD removes the emptied folder (and the download)
-            const gone = (n: DosNode) => {
-              n.remove = () => dl.deleteFile(id, n.name);
-              return !dl.isDeleted(id, n.name);
-            };
-            const node = liveFolder(dosDir(g), async () => {
-              // the .EXE (or GMCRACK's patched one and the .BAK), CONFIG.BAT and the rest, and FILE_ID.DIZ
-              const own = gameDownloadNodes(g, date, { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` });
-              // one of each name (a CD game brought its own FILE_ID.DIZ; the BBS's ZIP wrote over it)
-              const files = (await gameFolder(g, date).list!()).filter((n) => !own.some((o) => o.name === n.name));
-              return [...own, ...files].filter(gone);
-            }, date);
-            node.remove = () => dl.remove(id);
-            return [node];
-          });
-          // and the BBS's Warez area (GMCRACK, SAVEHACK, GM30)
-          return [...games, ...utilityFolders(dl, liveFolder)];
-        }),
-        // pictures from the BBS's GIF Gallery; the folder is made with the first one
-        ...(this.downloads.hasDir('IMAGES') || bbsGifs.some((f) => this.downloads.has(f.name))
-          ? [
-              Object.assign(
-                liveFolder('IMAGES', async () => [
-                  ...bbsGifs
-                    .filter((f) => this.downloads.has(f.name))
-                    .map((f) =>
-                      file(f.name, f.bytes, {
-                        date: this.downloads.date(f.name) ?? DOS_DATE,
-                        read: () => fetch(`./bbs/${f.name}`).then(async (r) => (r.ok ? new Uint8Array(await r.arrayBuffer()) : new Uint8Array())),
-                        remove: () => this.downloads.remove(f.name),
-                      }),
-                    ),
-                  ...(await imagesDiz(this.downloads)), // the newest picture's FILE_ID.DIZ
-                ],
-                  this.downloads.dirDate('IMAGES'),
-                ),
-                { remove: () => this.downloads.setDir('IMAGES', false) },
+      root: () =>
+        this.downloads.ready.then(() => [
+          folder('DOS', () =>
+            ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM']
+              .map((n) => file(n, 20_000 + n.length * 1357))
+              .concat(
+                file('BACKUP.EXE', 36_802, { run: { kind: 'backup' } }),
+                file('HEXEDIT.EXE', 41_216, { run: { kind: 'hexedit' } }),
+                file('ACHIEVE.EXE', 22_418, { run: { kind: 'achieve' } }),
+                file('OFFLINE.EXE', 18_944, { run: { kind: 'offline' } }),
               ),
-            ]
-          : []),
-        textFile('AUTOEXEC.BAT', AUTOEXEC.join('\n') + '\n'),
-        textFile('CONFIG.SYS', CONFIG_SYS.join('\n') + '\n'),
-        file('COMMAND.COM', 54_645),
-      ]),
+          ),
+          folder('CDROM', () => [file('CDROM.SYS', 18_432)]),
+          liveFolder('GM', () => this.gmFolder(true)),
+          folder('COMM', () => [
+            file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }),
+            file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
+            textFile(
+              'PHONE.LST',
+              'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-0177  14400 N81  Major BBS, 8 lines\nMRS. NOVAK NEXT DOOR         1-412-555-0156  45.45 TDD  TTY (Baudot)\n',
+            ),
+            textFile('TTYINFO.TXT', TTY_INFO.join('\n') + '\n'),
+          ]),
+          liveFolder('DOWNLOAD', async () => {
+            const cat = await this.catalog();
+            const dl = this.downloads;
+            await deskFilesReady(); // which games GMCRACK cracked
+            const games = dl.list().flatMap((id) => {
+              const g = cat.find((c) => c.id === id);
+              if (!g) return [];
+              const date = dl.date(id) ?? DOS_DATE;
+              // DEL takes files out one by one; RD removes the emptied folder (and the download)
+              const gone = (n: DosNode) => {
+                n.remove = () => dl.deleteFile(id, n.name);
+                return !dl.isDeleted(id, n.name);
+              };
+              const node = liveFolder(
+                dosDir(g),
+                async () => {
+                  // the .EXE (or GMCRACK's patched one and the .BAK), CONFIG.BAT and the rest, and FILE_ID.DIZ
+                  const own = gameDownloadNodes(g, date, {
+                    kind: 'game',
+                    title: g.title,
+                    gam: g.gam!,
+                    files: () => this.catalogFiles(g),
+                    notice: g.notice,
+                    saveId: `game:${g.id}`,
+                  });
+                  // one of each name (a CD game brought its own FILE_ID.DIZ; the BBS's ZIP wrote over it)
+                  const files = (await gameFolder(g, date).list!()).filter((n) => !own.some((o) => o.name === n.name));
+                  return [...own, ...files].filter(gone);
+                },
+                date,
+              );
+              node.remove = () => dl.remove(id);
+              return [node];
+            });
+            // and the BBS's Warez area (GMCRACK, SAVEHACK, GM30)
+            return [...games, ...utilityFolders(dl, liveFolder)];
+          }),
+          // pictures from the BBS's GIF Gallery; the folder is made with the first one
+          ...(this.downloads.hasDir('IMAGES') || bbsGifs.some((f) => this.downloads.has(f.name))
+            ? [
+                Object.assign(
+                  liveFolder(
+                    'IMAGES',
+                    async () => [
+                      ...bbsGifs
+                        .filter((f) => this.downloads.has(f.name))
+                        .map((f) =>
+                          file(f.name, f.bytes, {
+                            date: this.downloads.date(f.name) ?? DOS_DATE,
+                            read: () => fetch(`./bbs/${f.name}`).then(async (r) => (r.ok ? new Uint8Array(await r.arrayBuffer()) : new Uint8Array())),
+                            remove: () => this.downloads.remove(f.name),
+                          }),
+                        ),
+                      ...(await imagesDiz(this.downloads)), // the newest picture's FILE_ID.DIZ
+                    ],
+                    this.downloads.dirDate('IMAGES'),
+                  ),
+                  { remove: () => this.downloads.setDir('IMAGES', false) },
+                ),
+              ]
+            : []),
+          textFile('AUTOEXEC.BAT', AUTOEXEC.join('\n') + '\n'),
+          textFile('CONFIG.SYS', CONFIG_SYS.join('\n') + '\n'),
+          file('COMMAND.COM', 54_645),
+        ]),
     });
 
     this.fs.addDrive({

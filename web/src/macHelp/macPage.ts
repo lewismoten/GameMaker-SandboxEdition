@@ -5,15 +5,16 @@
 import './macPage.css';
 import { h, clear } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
+import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
-const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
-  h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
+const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) => h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
 
 const kbd = (text: string) => h('kbd', null, text);
 
 /** The page into `el`. */
 export function renderMacHelp(el: HTMLElement): void {
+  tally('help-all', 'mac');
   clear(
     el,
     h(
@@ -132,6 +133,16 @@ export function renderMacHelp(el: HTMLElement): void {
             h('a', { href: `${REPO_URL}/tree/HEAD/mac`, target: '_blank', rel: 'noopener' }, 'mac folder of the project’s source code'),
             ', and the code that builds each app in your browser is in the same project.',
           ),
+        ),
+      ),
+
+      section(
+        'mac-future',
+        'Will it keep working?',
+        h(
+          'p',
+          null,
+          'The download is a convenience: it plays offline and keeps its saved games on your computer. It is not a frozen copy, though. It wraps the same web page as this site in a small native window and plays it with WebKit, the web engine built into macOS. It still depends on that engine, so a future macOS or WebKit update could break the game or change how it plays. The DOS download, played in DOSBox, is the most future-proof way to keep a game.',
         ),
       ),
 

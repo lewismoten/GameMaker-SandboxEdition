@@ -8,6 +8,7 @@ import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
+import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
@@ -16,6 +17,8 @@ import './workspace.css';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
+import { noteOpened, quickOpen } from './quickOpen';
+import { usedByLine, deleteMessage } from './usedBy';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -133,6 +136,12 @@ export class Workspace {
     document.addEventListener('pointerdown', onDown);
     // ? lists the open editor's keyboard shortcuts (not while typing or play testing)
     const onHelpKey = (e: KeyboardEvent) => {
+      // Ctrl+P / ⌘P: the quick switcher (instead of printing the page)
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'p' && !this.player && !document.querySelector('dialog[open]')) {
+        e.preventDefault();
+        void this.quickOpen();
+        return;
+      }
       if (this.player || !wantsShortcuts(e)) return;
       e.preventDefault();
       void showShortcuts(this.current ? kindOf(this.current) : undefined);
@@ -142,6 +151,12 @@ export class Workspace {
   }
 
   private unbind?: () => void;
+
+  /** The quick switcher (Ctrl+P): opens the file chosen. */
+  private async quickOpen(): Promise<void> {
+    const f = await quickOpen(this.project);
+    if (f) this.open(f);
+  }
 
   private listed = new Set<string>();
 
@@ -227,7 +242,7 @@ export class Workspace {
           first?.click();
         }
       },
-    }) as HTMLInputElement;
+    });
     return h('div', { class: 'file-search' }, input, h('span', { class: 'file-search-count', 'aria-live': 'polite' }));
   })();
 
@@ -333,6 +348,7 @@ export class Workspace {
     this.player?.stop();
     this.player = undefined;
     this.current = file;
+    noteOpened(this.project, file);
     this.sidebar.classList.remove('open');
     // a new file starts at its top (phones scroll the window, wide screens the editor)
     window.scrollTo(0, 0);
@@ -362,18 +378,39 @@ export class Workspace {
           { class: 'toolbar' },
           h(
             'button',
-            { class: 'keys-btn', title: 'Keyboard shortcuts (?)', 'aria-label': 'Keyboard shortcuts', 'aria-keyshortcuts': 'Shift+?', onclick: () => void showShortcuts(kindOf(file)) },
+            {
+              class: 'keys-btn',
+              title: 'Open a file by name (Ctrl+P)',
+              'aria-label': 'Open a file by name',
+              'aria-keyshortcuts': 'Control+P Meta+P',
+              onclick: () => void this.quickOpen(),
+            },
+            h('span', { 'aria-hidden': 'true' }, '⌕'),
+          ),
+          h(
+            'button',
+            {
+              class: 'keys-btn',
+              title: 'Keyboard shortcuts (?)',
+              'aria-label': 'Keyboard shortcuts',
+              'aria-keyshortcuts': 'Shift+?',
+              onclick: () => void showShortcuts(kindOf(file)),
+            },
             keyboardIcon(),
           ),
           fileActions([
             ...(isGam ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             { label: 'Duplicate', run: () => void this.duplicate(file) },
-            { label: 'Download file', run: () => download(file.toUpperCase(), this.project.files.get(file)!), title: `Save ${file.toUpperCase()} to your computer` },
+            {
+              label: 'Download file',
+              run: () => download(file.toUpperCase(), this.project.files.get(file)!),
+              title: `Save ${file.toUpperCase()} to your computer`,
+            },
             ...(isGam ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
       ),
-      isGam ? this.nextSteps() : null,
+      isGam ? this.nextSteps() : usedByLine(this.project, file),
       body,
     );
     const editor = editors[kindOf(file)] ?? fileInfo;
@@ -463,7 +500,11 @@ export class Workspace {
     const level = this.levelHere();
     const name = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
     return level
-      ? h('button', { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` }, '▶ Play this level')
+      ? h(
+          'button',
+          { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` },
+          '▶ Play this level',
+        )
       : h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test');
   }
 
@@ -489,7 +530,11 @@ export class Workspace {
           'div',
           { class: 'toolbar' },
           level && h('button', { onclick: () => this.play(true, back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
-          h('button', { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' }, 'Stop'),
+          h(
+            'button',
+            { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' },
+            'Stop',
+          ),
         ),
       ),
       host,
@@ -547,6 +592,9 @@ export class Workspace {
   private async addFiles(): Promise<void> {
     const list = await pickFiles({ multiple: true });
     const files = await loadFileList(list);
+    // a backup's <game>.GMX adds its editor-only extras, not a file
+    const extras = takeCompanion(files);
+    for (const [file, sections] of Object.entries(extras?.files ?? {})) for (const [k, v] of Object.entries(sections)) this.project.setExtras(file, k, v);
     for (const [n, b] of files.entries()) this.project.files.set(n, b);
     if (files.size) toast(`Added ${files.size} file(s).`);
     this.renderSidebar();
@@ -559,6 +607,7 @@ export class Workspace {
     const p = this.project;
     p.files.set(name, p.files.get(file)!);
     p.files.delete(file);
+    p.renameExtras(file, name);
     // Point the scenes that used the old name at the new one.
     const game = p.game();
     let changed = false;
@@ -582,9 +631,7 @@ export class Workspace {
   }
 
   private async remove(file: string): Promise<void> {
-    const uses = this.project.usesOf(file);
-    const note = uses.length ? ` It is used by ${uses.length} scene slot(s).` : '';
-    if (!(await confirmDialog('Delete file', `Delete ${file}?${note}`, 'Delete'))) return;
+    if (!(await confirmDialog('Delete file', deleteMessage(this.project, file), 'Delete'))) return;
     this.project.files.delete(file);
     this.open(this.project.gam);
   }
@@ -592,6 +639,6 @@ export class Workspace {
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
     const title = this.project.game().scenes[0]?.desc || this.project.name;
-    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true });
+    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
   }
 }

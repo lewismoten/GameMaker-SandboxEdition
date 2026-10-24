@@ -13,7 +13,7 @@ export interface ColorChoiceOptions {
   /** The CSS color a swatch shows. */
   css(i: number): string;
   /** A swatch's name (by default "Color 12"). */
-  name?(i: number): string;
+  name?: (i: number) => string;
 }
 
 export interface ColorChoice {
@@ -24,13 +24,17 @@ export interface ColorChoice {
 
 export function colorChoice(o: ColorChoiceOptions): ColorChoice {
   const name = o.name ?? ((i: number) => `Color ${i}`);
-  const num = h('input', { type: 'number', min: 0, max: 255, class: 'color-choice-num', 'aria-label': 'Color number (0 to 255)' }) as HTMLInputElement;
+  const num = h('input', { type: 'number', min: 0, max: 255, class: 'color-choice-num', 'aria-label': 'Color number (0 to 255)' });
   num.addEventListener('change', () => {
     const v = Math.round(Number(num.value));
     if (Number.isFinite(v)) o.set(Math.max(0, Math.min(255, v)));
     refresh();
   });
-  const bigger = h('button', { type: 'button', class: 'color-choice-big', title: 'Choose from bigger swatches', onclick: () => void openBigger() }, 'Bigger colors');
+  const bigger = h(
+    'button',
+    { type: 'button', class: 'color-choice-big', title: 'Choose from bigger swatches', onclick: () => void openBigger() },
+    'Bigger colors',
+  );
   const refresh = () => (num.value = String(o.get()));
 
   const openBigger = () =>

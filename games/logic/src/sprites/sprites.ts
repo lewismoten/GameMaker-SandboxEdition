@@ -155,27 +155,37 @@ function citiCarPic(part: number, lit: boolean, flash = false): Pixels {
   const S = 0.85;
   const ox = 10;
   const oy = 3;
-  chezSide(w, ox, oy, {
-    body: [c('red', 1), c('red', 2), c('red', 3)],
-    trim: c('red', 0),
-    glass: [c('teal', 1), c('teal', 4)],
-    roof: c('ink', 0),
-    tire: c('ink', 0),
-    hub: c('metal', 3),
-    rim: c('paper', 3),
-    bumper: c('ink', 0),
-    lamp: c('orange', 3),
-    tail: c('red', 4),
-    stripe: c('ink', 2),
-    pin: c('paper', 3),
-    lens: lit ? c('yellow', 3) : c('metal', 4),
-  }, 'right', S);
+  chezSide(
+    w,
+    ox,
+    oy,
+    {
+      body: [c('red', 1), c('red', 2), c('red', 3)],
+      trim: c('red', 0),
+      glass: [c('teal', 1), c('teal', 4)],
+      roof: c('ink', 0),
+      tire: c('ink', 0),
+      hub: c('metal', 3),
+      rim: c('paper', 3),
+      bumper: c('ink', 0),
+      lamp: c('orange', 3),
+      tail: c('red', 4),
+      stripe: c('ink', 2),
+      pin: c('paper', 3),
+      lens: lit ? c('yellow', 3) : c('metal', 4),
+    },
+    'right',
+    S,
+  );
   // the cord: along the wire, up into the plug at the tail, and around to the far side
   w.rect(0, 9, 14, 2, c('ink', 0)).rect(0, 9, 14, 1, c('metal', 1));
   w.rect(13, 8, 3, 4, c('metal', 2)).rect(13, 8, 3, 1, c('metal', 4));
   // the parade flag on its whip antenna, at the back of the roof
   const fx = Math.round(ox + 8.5 * S);
-  w.line(fx, 3, fx, 0, c('metal', 4)).set(fx + 1, 0, c('red', 3)).set(fx + 2, 0, c('paper', 3)).set(fx + 3, 0, c('red', 3));
+  w.line(fx, 3, fx, 0, c('metal', 4))
+    .set(fx + 1, 0, c('red', 3))
+    .set(fx + 2, 0, c('paper', 3))
+    .set(fx + 3, 0, c('red', 3));
   if (lit) {
     const hx = Math.round(ox + CHEZ_LAMP[0] * S);
     const hy = Math.round(oy + CHEZ_LAMP[1] * S);

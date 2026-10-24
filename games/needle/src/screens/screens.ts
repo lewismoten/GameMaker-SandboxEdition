@@ -44,7 +44,8 @@ export function palm(p: Pixels, pal: Pal, x: number, base: number, h = 70): void
   const ty = base - h;
   for (let a = 0; a < 8; a++) {
     const ang = Math.PI * (0.95 + (a / 7) * 1.1);
-    for (let t = 0; t < 26; t++) p.rect(Math.round(tx + Math.cos(ang) * t), Math.round(ty + Math.sin(ang) * t * 0.6 + t * t * 0.03), 2, 2, c('leaf', 1 + (t % 3)));
+    for (let t = 0; t < 26; t++)
+      p.rect(Math.round(tx + Math.cos(ang) * t), Math.round(ty + Math.sin(ang) * t * 0.6 + t * t * 0.03), 2, 2, c('leaf', 1 + (t % 3)));
   }
 }
 

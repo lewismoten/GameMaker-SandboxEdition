@@ -70,7 +70,7 @@
   }
 }
 
-/* the header's ⋯ menu (the desk and the source), on phones only */
+/* the header's ⋯ menu (the cast, the desk, offline, the source), on phones and tablets */
 .topbar .show-narrow {
   display: none;
 }
@@ -125,8 +125,74 @@
 .topbar .topbar-menu > :hover {
   background: var(--panel-2);
 }
-@media (max-width: 600px) {
+/* below 900px the cast, achievements, desk, offline and source links move into it, so the
+   header stays one row on tablets too */
+@media (max-width: 900px) {
+  .topbar .hide-narrow {
+    display: none;
+  }
   .topbar .show-narrow {
     display: block;
+  }
+}
+
+/* the game list's tagline in the bar, shortened with … when the bar is crowded */
+.topbar-tagline {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  opacity: 0.8;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-tagline a {
+  color: inherit;
+}
+
+.topbar > :nth-child(2) {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.topbar > a,
+.topbar > button {
+  white-space: nowrap;
+}
+
+/* there for screen readers, not drawn */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* the bar's page links (Cast, Achievements, Credits, Guide): each its own target, with a thin rule
+   centred between neighbours so they don't read as one phrase */
+.topbar-nav {
+  display: flex;
+  align-items: center;
+}
+
+.topbar-nav > a.nav-link {
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+.topbar-nav > a.nav-link + a.nav-link {
+  border-left: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+}
+
+@media (max-width: 900px) {
+  /* only Guide is left in the bar: no rule beside it */
+  .topbar-nav > a.nav-link {
+    padding: 4px 6px;
+  }
+  .topbar-nav > a.nav-link + a.nav-link {
+    border-left: 0;
   }
 }

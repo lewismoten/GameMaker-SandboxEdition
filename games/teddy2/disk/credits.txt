@@ -4,6 +4,8 @@ Version 1.0, 1996
 
 Design, art, music and
 programming: Claude
+Yankee Doodle: traditional
+American tune, public domain.
 
 Starring Teddy as himself,
 a little bigger this time.
@@ -12,8 +14,6 @@ everybody). Doc Leo, still
 the friendliest hobo clown
 in the Klown Klub. And THE
 CHEZ, his red 1976 CitiCar.
-
-
 No dogs were rushed. Gwinn
 did all of her own stunts,
 and some of everybody else's.
@@ -34,7 +34,7 @@ thanks.
 
 Sandbox Software
 Dept. WOOF WOOF
-P.O. Box 1995
+P.O. Box 000
 Pittsburgh, PA 15213
 
 (A made-up address. Please

@@ -6,7 +6,7 @@ import type { Story } from '../stories';
 import { PAGE, page, wrap } from './pages';
 
 export const STORY = page([
-  `Behind the little red door of The Dog House, a little free library on a post, there is a library much bigger than the box.
+  `Behind the little red door of The Dog House, a little lending library on a post, there is a library much bigger than the box.
 
 Every book on its shelves holds exactly one hundred words.
 
@@ -77,6 +77,18 @@ Walk into a door, a book or a page to use it.`,
  librarian's love
  language. Stay out of
  their way.`,
+  `WORD LOCKS
+ Late in the library, a
+ brass turnstile marked 20
+ guards a corner of a book.
+ It turns only for a reader
+ carrying 20 words. It
+ takes them, and the floor
+ behind it hands them
+ straight back.
+
+ So pick up what you can
+ reach first.`,
   `THE RESERVE STACKS
  The purple STAX door in
  the reading room leads
@@ -99,8 +111,8 @@ The Tiny Pockets Library
 
 Thirty-two 100 Word Stories by Lewis Moten, word for word.
 
-He wrote every one of them for Laurence Simon's weekly 100 Word Stories challenge, in 2009-2014 and 2026.`,
-  `Thank you, Laurence Simon, for one hundred words a week, every week, for more than a thousand weeks.
+He wrote every one of them for Laurence Simon's weekly 100 Word Stories challenge on the 100 Word Stories Podcast, in 2009-2014 and 2026.`,
+  `Thank you, Laurence Simon, for one hundred words a week, every week, for more than a thousand weeks, and the podcast's writers and listeners, whose weekly winners chose the next topic.
 
 Two of these stories first went up under the name Mystery Robot Joe. He has a job now.`,
   `Game design, art, music and every block of the library: Claude Opus 5.5
@@ -179,7 +191,7 @@ const COMPLAINTS = [
   'I DO NOT GIVE PARTIAL CREDIT.',
   'BREVITY IS THE SOUL OF WIT. I AM THE SOUL OF BREVITY.',
   'WORDS ARE MONEY. SPEND THEM ALL ON ONE BOOK.',
-  'IF YOU FIND A WORD UNDER THE RUG, IT IS GWINN\'S.',
+  "IF YOU FIND A WORD UNDER THE RUG, IT IS GWINN'S.",
   'EVERY WORD COUNTS. I SHOULD KNOW.',
   'THE ELLIPSIS IS NOT THREE WORDS...',
   'TITLES ARE FREE. DO NOT GET USED TO IT.',
@@ -244,12 +256,12 @@ Type BRIEF at the DOS prompt (it runs PLAYGAME with BRIEF.GAM).
 WHAT IS IT?
 Every book in the library behind The Dog House's red door holds exactly one hundred words, and last night every word fell out of every book. As Mystery Robot Joe, the night librarian, pick the words up and put thirty-two stories back together.
 
-The stories are Lewis Moten's 100 Word Stories, written for Laurence Simon's weekly 100 Word Stories challenge, word for word.
+The stories are Lewis Moten's 100 Word Stories, written for Laurence Simon's weekly 100 Word Stories challenge on the 100 Word Stories Podcast, word for word. Each week's topic was set by Laurence or chosen by the last week's winner.
 
 THIS IS SHAREWARE
 Copy this disk for a friend, upload it to your favorite BBS, put it on a shareware disk: all of the files, unchanged. Please return it on time.
 
-If you enjoy it, register for $10 (exactly) with Sandbox Software, Dept. 100, P.O. Box 1992. Registered readers get a library card with their own name on it and our thanks, in under one hundred words.
+If you enjoy it, register for $10 (exactly) with Sandbox Software, Dept. 100, P.O. Box 000. Registered readers get a library card with their own name on it and our thanks, in under one hundred words.
 
 FILES ON THIS DISK
  BRIEF.GAM    the game

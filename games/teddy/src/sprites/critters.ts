@@ -119,9 +119,9 @@ export const CRITTERS: Record<string, Pixels> = {
     'oGo.........oGo.',
     'oo...........oo.',
   ]),
-  // A pigeon, bobbing; and flapping.
-  pigeon1: S(['....oo...', '...oGHo..', '...oGkGy.', '...oGGo..', '.ooovGGo.', 'oGGGGvGo.', '.oGGGGGo.', '..ooGGo..', '...y.y...'], 6),
-  pigeon2: S(['.........', '....oo...', '...oGHo..', '...oGkGy.', '.oooGGo..', 'oGGGvGGo.', '.oGGGGGo.', '..ooGGo..', '...y.y...'], 6),
+  // A pigeon, bobbing (a white wing bar, so it shows on downtown's brick); and flapping.
+  pigeon1: S(['....oo...', '...oGHo..', '...oGkGy.', '...oGGo..', '.ooovGGo.', 'oGGGGvGo.', '.oGwwwGo.', '..ooGGo..', '...y.y...'], 6),
+  pigeon2: S(['.........', '....oo...', '...oGHo..', '...oGkGy.', '.oooGGo..', 'oGGGvGGo.', '.oGwwwGo.', '..ooGGo..', '...y.y...'], 6),
   pigeonFly1: S(['o.........o', 'Go.......oG', 'hGo.oo..oGh', '.hGoGHooGh.', '..oGGkGyo..', '..oGGGGo...', '...oGGo....', '....oo.....'], undefined, 4),
   pigeonFly2: S(['...........', '...........', '....oo.....', '.ooGGHo.oo.', 'oGGGGkGyGGo', 'Gh.oGGGo.hG', '...oGGo....', '....oo.....'], undefined, 4),
   // A goose: big, white, and in charge of the bridge.

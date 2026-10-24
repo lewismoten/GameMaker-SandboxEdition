@@ -1,6 +1,6 @@
 // Level 5: THE MOON. One small step for a kid... and then a big hop, because in a moon
 // suit Dex floats along in one-sixth gravity and drifts when he stops. The Moon is busy
-// in the year 2000: moon buggies, McMoon's, meteor showers every afternoon, and the
+// in the year 2000: moon buggies, the Crater Cafe, meteor showers every afternoon, and the
 // friendliest aliens you ever met. The Moon School airlock wants a Moon Pass, which is
 // waiting at the Visitor Center, up in meteor alley.
 import { LevelMap, type Legend } from './mapkit';
@@ -72,9 +72,9 @@ const ROWS = [
   row('................>>>>>>>>>>v.r'), // 17
   row('....r.....CC..............v'), // 18
   row('..a.......CC.....q........v....p'), // 19
-  row('..........................v'), // 20
+  row('..........1...............v'), // 20
   row('.....z......r.............v....r'), // 21
-  row('..1..................1'), // 22
+  row('..1'), // 22 (the second buggy patrols row 20, clear of where the belt drops Dex)
   row('.....CC.........r..............KKK'), // 23
   row('.....CC...p..........*.........KKK'), // 24
   row('...F...........r'), // 25

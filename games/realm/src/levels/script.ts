@@ -2,7 +2,15 @@
 // pages (talk.ts); a blank line starts a new paragraph.
 import type { Talk } from './talk';
 
-const t = (id: string, who: string, name: string, theme: Talk['theme'], place: string, text: string, gift?: Talk['gift']): Talk => ({ id, who, name, theme, place, text, gift });
+const t = (id: string, who: string, name: string, theme: Talk['theme'], place: string, text: string, gift?: Talk['gift']): Talk => ({
+  id,
+  who,
+  name,
+  theme,
+  place,
+  text,
+  gift,
+});
 
 export const TALK = {
   // ---------------------------------------------------------------- Nowish
@@ -163,6 +171,8 @@ Here is one hundred gold: the Finder's Fee, which the library has been meaning t
 
 Wood does for slimes and bats. Crabs, eels, golems and anything in a helmet want steel. Anything Lord Deadline built wants steel twice.
 
+A boss won't let you walk into him. Tap the arrow toward him to face him, then swing.
+
 I'd make you a shield, but I've been putting it off.`,
   ),
   barkeep: t(
@@ -171,7 +181,7 @@ I'd make you a shield, but I've been putting it off.`,
     'Barnaby, the Pony',
     'laterburg',
     'The Procrastinating Pony',
-    `Welcome to the Procrastinating Pony! A bed's ten gold at the counter: sleep it off, wake up whole.
+    `Welcome to the Procrastinating Pony! A bed's ten gold at the counter: sleep it off, wake up a good deal better.
 
 Root beer? Family recipe. A dozen ingredients and a thirteenth nobody will name. Gran swore it's why we won a war once. Nobody talks about it.
 
@@ -230,7 +240,9 @@ She runs on lightning. Her charge port is on the rear passenger side, for reason
 
 She'll cross the Dawdle Flats, forty leagues of tidal mud nobody has ever finished walking. But she's flat. Bring me anything with lightning in it and I'll open the garage door.
 
-They say there's lightning in the Soggy Vaults. Charging takes one mile per hour. Per hour.`,
+They say there's lightning in the Soggy Vaults. Charging takes one mile per hour. Per hour.
+
+Arrows drive her. SPACE squeezes the horn: ah-OOO-gah! Crabs can't stand it. And when the low causeway goes puddly, the tide's coming in: wait for it to drain.`,
   ),
   salt: t(
     'salt',
@@ -419,7 +431,9 @@ Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink
 
 The third piece of the Round Tuit was the key that wound it up.
 
-Three pieces. One Round Tuit. All that's left is to get around to Deadline Keep, south of Eventually Falls, past the Gloomwood.`,
+Three pieces. One Round Tuit. All that's left is to get around to Deadline Keep, south of Eventually Falls, past the Gloomwood.
+
+A night at the Falls first, maybe. They say Lord Deadline fights twice: once in his armor, and once without it.`,
     'piece',
   ),
   // ---------------------------------------------------------------- the felt egg

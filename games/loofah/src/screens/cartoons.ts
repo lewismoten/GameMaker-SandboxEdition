@@ -95,7 +95,8 @@ function steam(p: Pixels, pal: Pal, k: number, seed = 5, n = 12, bottom = 170): 
 function mirror(p: Pixels, pal: Pal, x: number, y: number, w: number, h: number, fog: number, words: string, write: number): void {
   const c = pal.c;
   p.rect(x - 3, y - 3, w + 6, h + 6, c('gold', 1)).rect(x, y, w, h, c('metal', 1));
-  for (let yy = y; yy < y + h; yy++) for (let xx = x; xx < x + w; xx++) if ((xx * 7 + yy * 13) % 100 < fog * 100) p.set(xx, yy, c('fog', (xx + yy) % 3 ? 0 : 1));
+  for (let yy = y; yy < y + h; yy++)
+    for (let xx = x; xx < x + w; xx++) if ((xx * 7 + yy * 13) % 100 < fog * 100) p.set(xx, yy, c('fog', (xx + yy) % 3 ? 0 : 1));
   const shown = words.slice(0, Math.round(words.length * write));
   if (shown) micro(p, Math.round(x + w / 2 - microWidth(words, 2) / 2), Math.round(y + h / 2 - 5), shown, c('demon', 3), 2);
 }
@@ -182,7 +183,7 @@ export function storyFli(cast: Cast): Uint8Array {
       scaleBlit(p, M(k < 12 ? `walk${k % 4}` : 'throw0'), 20 + Math.min(12, k) * 7, 112, 2);
       steam(p, pal, k + 28);
       if (k >= 16) say(p, pal, 180, 50, '*wink*', 'eye', 1);
-      caption(p, pal, k < 12 ? ['But I, I didn\'t listen.', 'I thought, it\'s just a loofah.'] : ['I reached out with', 'my mortal hand...']);
+      caption(p, pal, k < 12 ? ["But I, I didn't listen.", "I thought, it's just a loofah."] : ['I reached out with', 'my mortal hand...']);
     });
   // 3. The scrub. Lightning. Grapefruit and betrayal.
   for (let k = 0; k < 28; k++) {
@@ -244,7 +245,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   };
   const M = (name: string) => sprite(cast.man, name);
   const N = (name: string) => sprite(cast.mons, name);
-  const words = (p: Pixels, x: number, y: number, w: string, ramp = 'coral') => outlined(p, Math.round(x - textWidth(w) / 2), y, w, c(ramp, ramp === 'coral' ? 4 : 3), ink);
+  const words = (p: Pixels, x: number, y: number, w: string, ramp = 'coral') =>
+    outlined(p, Math.round(x - textWidth(w) / 2), y, w, c(ramp, ramp === 'coral' ? 4 : 3), ink);
   const r = new Reel(pal.pal);
   const K = 30;
   const scene: ((p: Pixels, k: number) => void)[] = [
@@ -253,13 +255,24 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
       for (let d = 0; d < 3; d++) scaleBlit(p, N(`drip${k % 2}`), 40 + d * 90, STRIP + ((k * 9 + d * 37) % 100), 2);
       scaleBlit(p, N(k % 6 < 3 ? 'towel0' : 'towel1'), 220, STRIP + 80, 2);
       const x = 20 + k * 5;
-      scaleBlit(p, M(k >= 14 && k < 22 ? 'hopSide' : `walk${k % 4}`), x, STRIP + 80 - (k >= 14 && k < 22 ? Math.round(Math.sin(((k - 14) / 8) * Math.PI) * 30) : 0), 2);
+      scaleBlit(
+        p,
+        M(k >= 14 && k < 22 ? 'hopSide' : `walk${k % 4}`),
+        x,
+        STRIP + 80 - (k >= 14 && k < 22 ? Math.round(Math.sin(((k - 14) / 8) * Math.PI) * 30) : 0),
+        2,
+      );
       if (k % 6 >= 3) words(p, 240, STRIP + 60, 'AAAAH!', 'white');
     },
     // 2. owls' eyes in the forest-dark aisle, a wild loofah hopping at him
     (p, k) => {
       spotlight(p, pal, 60 + k * 4, STRIP + 90, 50, STRIP, 174);
-      for (const [x, y] of [[40, 20], [150, 10], [260, 30]]) if (k % 10 < 8) scaleBlit(p, N('owl0'), x, STRIP + y, 2);
+      for (const [x, y] of [
+        [40, 20],
+        [150, 10],
+        [260, 30],
+      ])
+        if (k % 10 < 8) scaleBlit(p, N('owl0'), x, STRIP + y, 2);
       scaleBlit(p, M(`walk${k % 4}`), 40 + k * 4, STRIP + 80, 2);
       scaleBlit(p, N(`feral${(k >> 1) % 2}`), 260 - k * 3, STRIP + 80, 2);
       if (k >= 12) words(p, 260 - k * 3, STRIP + 60, 'GRRR', 'gourd');

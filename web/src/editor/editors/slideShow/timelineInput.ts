@@ -132,7 +132,8 @@ export function timelineInput(ctx: TimelineInput): { dragging(): boolean } {
     if (d.drag.from === 'clip' && overBin) return ctx.remove(d.drag.index);
     if (d.at < 0) return;
     if (d.drag.from === 'media') ctx.insert(d.drag.name, d.at);
-    else if (d.at !== d.drag.index && d.at !== d.drag.index + 1) ctx.commit(moveEntry(ctx.entries(), d.drag.index, d.at), d.at > d.drag.index ? d.at - 1 : d.at);
+    else if (d.at !== d.drag.index && d.at !== d.drag.index + 1)
+      ctx.commit(moveEntry(ctx.entries(), d.drag.index, d.at), d.at > d.drag.index ? d.at - 1 : d.at);
   };
 
   /** Dragging a clip's edge: its seconds follow the width. */

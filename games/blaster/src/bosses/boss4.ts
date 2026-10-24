@@ -83,7 +83,7 @@ export function bossCrash(art: StageArt): Leg {
   g.hatch(2, 2, false).hatch(13, 2, false);
   g.stamp(12, 3, 'arm', 2, 5);
   for (let c = 1; c < 15; c++) if (c < 5 || c > 10) g.set(c, 6, 'sector');
-  g.pickup(1, 9, 'repair').pickup(14, 9, 'nova').pickup(14, 7, 'repair');
+  g.pickup(1, 9, 'repair').pickup(14, 9, 'nova');
   return {
     file: 's4c',
     kitFile: 'b4',

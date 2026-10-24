@@ -154,6 +154,8 @@ export function livingRoom(book: BlockBook): Level {
   m.patch(0, 0, map.lines);
   // dust bunnies under everything, and the cat prowling
   m.mon(MON.bunny, 4, 12).mon(MON.bunny, 20, 3).mon(MON.bunny, 14, 13).mon(MON.cat, 18, 9);
+  // Will the playwright's signed head shot on the wall, and a tin heart in the far corner
+  m.set(20, 0, 'willShot').set(28, 14, 'tinHeart');
   m.link(29, 10, 'next');
   return { m, start: at(8, 6), size: [map.w, map.h] };
 }
@@ -236,36 +238,82 @@ const VOID: Record<string, string> = {
   '>': 'sign',
 };
 
-/** 3. The void between the cushions: ten pennies and the pay TV. */
+/**
+ * Stitches a trail of gold arrows into the void's plain fabric along the shortest way from
+ * `from` to `to` (every `every` steps, at a turn or on a straight), so the way to the pay TV
+ * can always be found.
+ */
+function trail(m: MapBuilder, lines: string[], from: [number, number], to: [number, number], every: number): void {
+  const W = lines[0].length;
+  const open = (x: number, y: number) => y >= 0 && y < lines.length && x >= 0 && x < W && !'~-iIU>'.includes(lines[y][x]);
+  const prev = new Map<number, number>();
+  const q = [from[1] * W + from[0]];
+  prev.set(q[0], -1);
+  while (q.length) {
+    const c = q.shift()!;
+    const x = c % W;
+    const y = Math.floor(c / W);
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const k = (y + dy) * W + x + dx;
+      if (open(x + dx, y + dy) && !prev.has(k)) (prev.set(k, c), q.push(k));
+    }
+  }
+  const path: number[] = [];
+  for (let c = to[1] * W + to[0]; c !== -1; c = prev.get(c)!) {
+    if (!prev.has(c)) throw new Error('No way to the pay TV');
+    path.unshift(c);
+  }
+  for (let i = 3; i < path.length - 1; i += every) {
+    // the first plain fabric from here on
+    while (i < path.length - 1 && !'o8'.includes(lines[Math.floor(path[i] / W)][path[i] % W])) i++;
+    if (i >= path.length - 1) break;
+    const [a, b] = [path[i], path[i + 1]];
+    const d = b - a === 1 ? 'R' : b - a === -1 ? 'L' : b > a ? 'D' : 'U';
+    m.set(a % W, Math.floor(a / W), `trail${d}`);
+  }
+}
+
+/**
+ * 3. The void between the cushions: ten pennies and the pay TV. Its fabric runs two blocks wide
+ * (one-wide halls left no room to step round a sock), and two socks drift through it, not three.
+ */
 export function theVoid(book: BlockBook): Level {
   const map = rows([
     '~~~~~~~~-~~~~~~~~~~i~~~~~~~~~-~~~~~~',
-    '~oo8o$o~~~~~~-~~~~~~~~~~~I~~~~~~~~~~',
-    '~o~~~~o~~oo8oo$oo~~~~~~o8oo/ooo~~-~~',
-    '~o~-~~oo%o~~~~~~o~~~~~~o~~~~~~o~~~~~',
-    '~$~~~~~~~o~~-~~~&~~~~oo8~~~~~~$~~~~~',
-    '~o~~~U~~~7~~~~~~o~~~~o~~~~~~~~o~~~~~',
-    '~oo/o~~~~o~~~~~~oo%oo8oooo$~~~oo~~~~',
-    '~~~~o~~~~ooo~~~~~~~~~~~~~~o~~~~o~~-~',
-    '~-~~o~~~~~~o~~~-~~~~~i~~~~o~~~~6~~~~',
-    '~~~~$~~~~~~oo8o!o~~~~~~~~~o~~~~o~~~~',
-    '~~oo%ooooN~~~~~~o~~~~~~~~~s~~~~o~~~~',
-    '~~o~~~~~o~~~~~~~ooo$oo8oooo~~~~o~~~~',
-    '~~o~-~~~o~~~I~~~~~~~~~~~~~~~~~~^~~~~',
-    '~~/~~~~~ooo9oo$oo%o~~~~~~~~~~~~o~~~~',
-    '~~o~~~~~~~~~~~~~~~o~~~-~~~oooo8o~~~~',
-    '~~$oo+o8~~~~~~U~~~o~~~~~~~o~~~~~~~-~',
-    '~~~~~~~o~~~~~~~~~~oo&o$ooo~~~~~~~~~~',
-    '~~i~~~~o~~~~-~~~~~~~~~~~~~~~>oo<oo~~',
+    '~oo8o$oo~~~~~-~~~~~~~~~~~I~~~~~~~~~~',
+    '~ooo8oo8~oo8oo$ooo~~~~~o8oo/ooo8~-~~',
+    '~oo-~~oo%ooo8oo8oo~~~~~o8oo8oooo~~~~',
+    '~$8~~~oo8oo~-~~~&8~~~oo8o~~~~~$o~~~~',
+    '~oo~~U~~~78~~~~~oo~~~o8o~~~~~~o8~~~~',
+    '~oo/oo~~~oo~~~~~oo%oo8oooo$8~~ooo~~~',
+    '~o8oo8~~~oooo~~~o8oo8oo8oooo~~oo8~-~',
+    '~-~~oo~~~o8oo~~-~~~~~i~~~~oo~~~6o~~~',
+    '~~~~$o~~~~~oo8o!oo~~~~~~~~o8~~~oo~~~',
+    '~~oo%ooooNo8oo8oo8~~~~~~~~so~~~o8~~~',
+    '~~oo8oo8oo~~~~~~ooo$oo8ooooo~~~oo~~~',
+    '~~o8-~~~o8~~I~~~oo8oo8oo8oo~~~~^o~~~',
+    '~~/o~~~~ooo9oo$oo%oo~~~~~~~~~~~o8~~~',
+    '~~oo~~~~oo8oo8oo8oo8~~-~~~oooo8oo~~~',
+    '~~$oo+o8o~~~~~U~~~oo~~~~~~o8oo8o~~-~',
+    '~~8oo8oo8~~~~~~~~~oo&o$ooo8~~~~~~~~~',
+    '~~i~~~~oo~~~-~~~~~o8oo8oo8~~>oo<oo~~',
     '~~~~~~~oooooooooooo$oooooooooo~~~~~~',
     '~~~~-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
   ]);
   const m = new MapBuilder(book, 'void', VOID);
   m.patch(0, 0, map.lines);
-  m.mon(MON.sock, 12, 2).mon(MON.sock, 20, 11).mon(MON.sock, 26, 2).mon(MON.lint, 9, 10).mon(MON.lint, 22, 18);
+  trail(m, map.lines, [1, 1], [29, 17], 7);
+  m.mon(MON.sock, 12, 2).mon(MON.sock, 20, 11).mon(MON.lint, 9, 10).mon(MON.lint, 22, 18);
   m.mon(MON.penny, 16, 6).mon(MON.penny, 12, 13).mon(MON.penny, 10, 18);
   m.mon(MON.raccoon, 4, 10).mon(MON.seed, 31, 9).mon(MON.goat, 17, 11);
   // the pay TV's picture is the way home: two steps on through it, so its warming up plays out
+  // an Easter egg at the far bend of the fabric, past the pen nobody wants
+  m.set(30, 2, 'easterEgg');
   m.link(33, 17, 'next');
   return { m, start: at(1, 1), size: [map.w, map.h] };
 }
@@ -287,16 +335,18 @@ const RIDE: Record<string, string> = {
 };
 
 /**
- * 4. The living room ride: in at the gap, press PLAY on the VCR, off at the EXIT (the tape must
- * be playing) and along the front of the couch to sit back down: the walk from the EXIT lets
- * "There you are, you sneaky guy." play out before the fade.
+ * 4. The living room ride: in at the gap, round with the whirling furniture to the only way out
+ * at the top (by the far corner), along the shelf wall past the popcorn to press PLAY on the
+ * VCR, back down through the ride, off at the EXIT (the tape must be playing) and along the
+ * front of the couch to sit back down: the walk from the EXIT lets "There you are, you sneaky
+ * guy." play out before the fade.
  */
 export function theRide(book: BlockBook): Level {
   const map = rows([
     '#PPPPOPPPPPPKPPPPTPPPPPOPPPPP#',
     '#WQQWWWWWWWW{}yWWWWWWWWWlWWWW#',
     '#.....,............,.........#',
-    '#ooooooooooo...oooooooooooooo#',
+    '#oooooooooooooooooooooo...ooo#',
     '#o>>>>>>>>>>>>>>>>>>>>>>>>>Vo#',
     '#o^.......................,Vo#',
     '#o^.....,.....H............Vo#',
@@ -312,7 +362,13 @@ export function theRide(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'wallTop', RIDE);
   m.patch(0, 0, map.lines);
-  m.mon(MON.recliner, 4, 5).mon(MON.ottoman, 24, 8).mon(MON.lampshade, 16, 6).mon(MON.popcorn, 20, 2).mon(MON.popcorn, 7, 11).mon(MON.rider, 6, 6);
+  m.mon(MON.recliner, 4, 5)
+    .mon(MON.ottoman, 24, 8)
+    .mon(MON.lampshade, 16, 6)
+    .mon(MON.popcorn, 20, 2)
+    .mon(MON.popcorn, 7, 11)
+    .mon(MON.popcorn, 9, 2)
+    .mon(MON.rider, 6, 6);
   m.link(21, 12, 'won');
   return { m, start: at(13, 14), size: [map.w, map.h] };
 }

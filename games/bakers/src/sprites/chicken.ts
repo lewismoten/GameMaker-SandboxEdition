@@ -24,18 +24,30 @@ function side(step: number, pose: ChickPose): Pixels {
   const lift = step ? 1 : 0;
   const leg = c('orange', 2);
   // legs and feet
-  p.line(8, 14, 7 - lift, 17, leg).line(11, 14, 12 + lift, 17, leg).rect(5 - lift, 17, 3, 1, leg).rect(11 + lift, 17, 3, 1, leg);
+  p.line(8, 14, 7 - lift, 17, leg)
+    .line(11, 14, 12 + lift, 17, leg)
+    .rect(5 - lift, 17, 3, 1, leg)
+    .rect(11 + lift, 17, 3, 1, leg);
   // tail, body, wing
   p.rect(2, 7 - lift, 2, 2, c('yellow', 3)).set(1, 6 - lift, c('yellow', 3));
   blob(p, 8.5, 11 - lift, 6, 4, r('yellow'), 1, 3);
-  if (pose === 'flap') p.line(7, 9 - lift, 3, 2, c('yellow', 2)).line(8, 9 - lift, 5, 2, c('yellow', 2)).line(9, 9 - lift, 7, 3, c('yellow', 1));
+  if (pose === 'flap')
+    p.line(7, 9 - lift, 3, 2, c('yellow', 2))
+      .line(8, 9 - lift, 5, 2, c('yellow', 2))
+      .line(9, 9 - lift, 7, 3, c('yellow', 1));
   else p.rect(5, 11 - lift, 6, 2, c('yellow', 1));
   // the harness: a red strap round the chest, a brass ring for the leash
   p.rect(11, 8 - lift, 1, 6, c('red', 3)).set(11, 11 - lift, c('brass', 3));
   // head
   p.disc(14, 6 - lift, 3, c('yellow', 3)).set(13, 4 - lift, c('yellow', 4));
-  p.set(13, 2 - lift, c('red', 3)).set(14, 2 - lift, c('red', 3)).set(15, 3 - lift, c('red', 3)).set(16, 8 - lift, c('red', 2));
-  if (pose === 'squawk') p.line(17, 5 - lift, 19, 3 - lift, c('orange', 2)).line(17, 7 - lift, 19, 9 - lift, c('orange', 2)).set(17, 6 - lift, c('red', 1));
+  p.set(13, 2 - lift, c('red', 3))
+    .set(14, 2 - lift, c('red', 3))
+    .set(15, 3 - lift, c('red', 3))
+    .set(16, 8 - lift, c('red', 2));
+  if (pose === 'squawk')
+    p.line(17, 5 - lift, 19, 3 - lift, c('orange', 2))
+      .line(17, 7 - lift, 19, 9 - lift, c('orange', 2))
+      .set(17, 6 - lift, c('red', 1));
   else p.rect(17, 6 - lift, 2, 1, c('orange', 2)).set(17, 7 - lift, c('orange', 1));
   if (pose === 'blink') p.set(15, 5 - lift, c('yellow', 1));
   else p.set(15, 5 - lift, ink());
@@ -47,7 +59,10 @@ function front(step: number, pose: ChickPose): Pixels {
   const p = new Pixels(20, 20, CLEAR);
   const lift = step ? 1 : 0;
   const leg = c('orange', 2);
-  p.line(8, 15, 8, 17, leg).line(12, 15, 12, 17, leg).rect(6 + lift, 17, 3, 1, leg).rect(11 + lift, 17, 3, 1, leg);
+  p.line(8, 15, 8, 17, leg)
+    .line(12, 15, 12, 17, leg)
+    .rect(6 + lift, 17, 3, 1, leg)
+    .rect(11 + lift, 17, 3, 1, leg);
   if (pose === 'flap') {
     p.line(5, 11, 1, 4, c('yellow', 2)).line(5, 12, 2, 6, c('yellow', 2)).line(15, 11, 19, 4, c('yellow', 2)).line(15, 12, 18, 6, c('yellow', 2));
   } else {
@@ -70,7 +85,10 @@ function back(step: number, pose: ChickPose): Pixels {
   const p = new Pixels(20, 20, CLEAR);
   const lift = step ? 1 : 0;
   const leg = c('orange', 2);
-  p.line(8, 15, 8, 17, leg).line(12, 15, 12, 17, leg).rect(7 - lift, 17, 2, 1, leg).rect(12 - lift, 17, 2, 1, leg);
+  p.line(8, 15, 8, 17, leg)
+    .line(12, 15, 12, 17, leg)
+    .rect(7 - lift, 17, 2, 1, leg)
+    .rect(12 - lift, 17, 2, 1, leg);
   if (pose === 'flap') p.line(5, 11, 1, 4, c('yellow', 2)).line(15, 11, 19, 4, c('yellow', 2));
   blob(p, 10, 12 - lift * 0.5, 5.5, 4.5, r('yellow'), 1, 3);
   p.rect(9, 14, 3, 3, c('yellow', 3)).set(10, 17, c('yellow', 2));
@@ -124,7 +142,10 @@ export function buildChickenBlocks(): BlockSet {
   b.add('blink', reggie('down', 0, 'blink'));
   b.add('squash', reggieBounce(false));
   b.add('stretch', reggieBounce(true));
-  b.add('hurt', recolor(reggie('down', 0), (v) => (v === c('ink', 0) ? v : c('red', 4))));
+  b.add(
+    'hurt',
+    recolor(reggie('down', 0), (v) => (v === c('ink', 0) ? v : c('red', 4))),
+  );
   b.add('dead', reggieFlat(false));
   b.add('dead2', reggieFlat(true));
   return b;

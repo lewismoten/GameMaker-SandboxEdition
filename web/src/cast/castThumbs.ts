@@ -17,7 +17,7 @@ function picture(id: string): Promise<HTMLCanvasElement | undefined> {
     p = catalog.then(async (list) => {
       const entry = list.find((g) => g.id === id);
       if (!entry) return undefined;
-      const { renderShot } = await import('../desk/boxes/boxArt');
+      const { renderShot } = await import('../gfx/gameShots');
       const canvas = document.createElement('canvas');
       return (await renderShot(entry, canvas, COLS, ROWS).catch(() => false)) ? canvas : undefined;
     });

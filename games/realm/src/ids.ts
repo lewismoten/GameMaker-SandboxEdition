@@ -73,6 +73,8 @@ export const POWER = {
   foeEasy: 90,
   slashWood: 130,
   foeHard: 98,
+  /** A tonic's sparkle: over every foe and shot, under Pip (so touching him drinks it). */
+  tonic: 99,
   slashSteel: 160,
   boss: 150,
   note: 200,

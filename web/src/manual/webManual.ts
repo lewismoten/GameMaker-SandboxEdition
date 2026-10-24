@@ -2,6 +2,8 @@
 import './webManual.css';
 import { h, clear } from '../editor/core/ui';
 import { decorateBbsName } from '../retro/bbs/bbsName';
+import { MORE_GAMES_TITLE, moreGamesHtml } from '../credits/moreGames';
+import { hashParam } from '../urlState';
 
 const SECTIONS: [id: string, title: string, html: string][] = [
   [
@@ -41,7 +43,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <h3>Bizarre</h3>
     <p>Games made from the songs of The Bard of Bizarre. They are listed with the shareware
     until there are four or more, then get a tab of their own. Unlike the shareware they are
-    this project’s own and free to change (MIT): <b>Edit a copy</b> works as it does for the
+    this project’s own and free to change (MIT, except their voice clips, which are for personal, non-commercial use
+    only): <b>Edit a copy</b> works as it does for the
     Sandbox games, and <b>Notice</b> tells the song behind each one.</p>`,
   ],
   [
@@ -122,20 +125,38 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'offline',
     'Offline and installing',
-    `<p>After your first visit, Game-Maker: Sandbox Edition works without a connection. To install it
-    as an app, use your browser’s <b>Install</b> or <b>Add to Home Screen</b> command.
-    Your games stay in the browser you made them in.</p>`,
+    `<p>Each part of Game-Maker: Sandbox Edition works without a connection once you have
+    opened it: a game you played, the desk, an editor. To take all of it with you, choose
+    <b>⤓ Offline</b> at the top of the page (in the <b>⋯</b> menu on a phone or tablet) and download everything at
+    once: it says how big it is first, and can remove the copy again. On the 1994 desk, type
+    <code>OFFLINE</code> at the DOS prompt. To install it as an app, use your browser’s
+    <b>Install</b> or <b>Add to Home Screen</b> command. Your games stay in the browser you
+    made them in.</p>`,
   ],
   [
     'desk',
     'The 1994 desk',
-    `<p><b>💾 1994 desk</b> shows Game-Maker the way it was used in DOS: a PC with a DOS
-    prompt, Game-Maker’s text menus, a box of diskettes, the CD, a shareware catalog and
-    a BBS to call. It is a simulation, not a PC emulator: no DOS program runs. Game-Maker’s
+    `<p><b>Desk</b>, in the header’s <b>Desk | DOS | Web</b> switch, shows Game-Maker the way
+    it was used in DOS: a PC with a DOS prompt, Game-Maker’s text menus, a box of diskettes,
+    the CD, a shareware catalog and a BBS to call. It is a simulation, not a PC emulator: no DOS program runs. Game-Maker’s
     tools are rebuilt from their original source code, and the rest is made to look and act
     the way it did. The <b>Owner’s Guide</b> on the desk explains it.</p>
-    <p>The games you change on the desk are the same games you see here, so you can switch
-    between the two at any time.</p>`,
+    <p><b>DOS</b> is the same PC on its own, without the desk: it starts straight in
+    Game-Maker, and <code>dos.html?game=</code> with a game’s id opens that game in it.
+    <b>Web</b> brings you back here.</p>
+    <p>The games you change on the desk or in DOS are the same games you see here, so you can
+    switch between them at any time.</p>`,
+  ],
+  [
+    'ultimate',
+    'The Ultimate Owner’s Guide',
+    `<p>The Game-Maker box on the desk holds a second, advanced manual for power users: palette
+    swaps, blocks that act as switches and timers, gates that need a counter, monsters as actors,
+    sound sets slot by slot, voice clips that aren’t cut off, FM music tricks, demos and
+    play-testing. Every tip is how PLAYGAME really plays a game, so it holds here and in DOS.</p>
+    <p><button type="button" class="guide-open-ultimate">📒 Open The Ultimate Owner’s Guide</button></p>
+    <p>It opens in the box with everything else that came in it, and prints as a booklet: choose
+    <b>🖨 Print…</b>, then <b>This booklet, two pages a side</b>.</p>`,
   ],
   [
     'credits',
@@ -162,8 +183,10 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     share and sell Game-Maker and the games you make with it, with no limit on people, fees
     or royalties; just keep the copyright and license notice with the program. The
     registration fees, order forms and Sandbox Software's address in the Sandbox games are part
-    of their 1990s story: the games are free. The CD's shareware games are still their
-    authors' own, which is why they are play-only here.</p>
+    of their 1990s story: the games are free. The Sandbox and Bard of Bizarre games were all
+    made in 2026 for Game-Maker: Sandbox Edition; each is presented as a fictional release
+    from the 1990s year it gives. The CD's shareware games are still their authors' own, and
+    really are from the 1990s, which is why they are play-only here.</p>
     <h3>Sandbox Software games</h3>
     <p>The Sandbox games were written and built by <b>Claude Opus 5.5</b>: the code that builds
     them, their pictures, music, sounds and words. Many are drawn from Lewis “Lewie” Moten
@@ -219,14 +242,16 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Veni, Vidi, Risi! is Lewis’s group of comic songs in Latin: its lyrics were shaped with ChatGPT from Lewis’s prompts and its music and vocals made with Riffusion (now Google Flow Music); the
     game Veni, Vidi, Risi! takes its sung clips and FM score from those recordings, and its code, pictures (the title and cover art among them) and FM arrangements were made by Claude Opus 5.5. Third Goat from the
     Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
-    came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
+    came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai, Riffusion’s later name (Google bought it, and it is now Google Flow Music).
     The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly
     Named Carl, Cleanse Me, O Loofah, But Leave My Soul and I Screamed, She Smirked, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy
     Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made
     with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn
     from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was
     made for the game); its code, pictures and levels were made by <b>Claude Opus 5.5</b>, with
-    Lewis directing and playtesting.</p>
+    Lewis directing and playtesting. The recordings were made on Riffusion’s free plan, whose terms
+    allow only personal, non-commercial uses, so the voice clips cut from them are not MIT licensed
+    and are never sold; the rest of each game is MIT.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
     <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
     and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN,
@@ -250,10 +275,13 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     sample and shareware games belong to their authors. PKUNZIP was PKWARE's and VPIC Bob
     Montgomery's; the ones on the desk are look-alikes. Sandbox Software, its BBS and the
     desk's hardware brands are made up.</p>
+    <p>Everyone and everything that went into it, from the CD games’ authors to the tools, is on
+    the <a href="#/credits">Credits page</a>.</p>
     <p>The full credits, history and license are in
     <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
     and <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE" target="_blank" rel="noopener">LICENSE</a>.</p>`,
   ],
+  ['more-games', MORE_GAMES_TITLE, moreGamesHtml()],
 ];
 
 /**
@@ -287,6 +315,10 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
     h('summary', null, h('span', null, 'Contents: '), title),
     h('nav', { 'aria-label': 'Guide contents' }, h('a', { href: '#/' }, '← Home'), ...SECTIONS.map(([, t], i) => link(i, t))),
   );
+  article.querySelector('.guide-open-ultimate')?.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
+  // #/help/ultimate?chapter=levels opens the guide at that chapter (the level check links here)
+  const chapter = hashParam('chapter');
+  if (id === 'ultimate' && chapter) void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide(chapter));
   decorateBbsName(article);
   clear(el, h('div', { class: 'guide' }, toc, article));
 }

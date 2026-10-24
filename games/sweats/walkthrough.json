@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "AU0BzUtNE80kTRnNBjkDuQxNI80GOQO5DE1LzQYQDJAASwDLBDkDuQxLEssGOQO5DEseywY5A7kMTTfNBk0NzQdNDc0GOQO5DE0MzQZIDMgETQXNBhIMkgBNAM0ETQPNBk0NzRFND80GSAzICRIMkgBNCc0GTRbNBk0="
+   "keys": "AU0BzUtNE80GTRnNBjkDuQxNI80GOQO5DE1LzQYQDJAASwDLBDkDuQxLEssGOQO5DEseywY5A7kMTTfNBk0NzQdNDc0GOQO5DE0MzQZIDMgETQXNBhIMkgBNAM0ETQPNBk0NzRFND80GSAzICRIMkgBNCc0GTRbNBk0="
   },
   {
    "scene": 4,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 7,
-   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+   "keys": "AUsKywZIDMgJTRzNBk0GzQZLAcsGSw/LBhAMkABLAMsISyPLBks="
   },
   {
    "scene": 8,
@@ -40,7 +40,7 @@
   },
   {
    "scene": 10,
-   "keys": "AU0BzS1NCc0GEgySAE0AzQZNA80GTQvNDDkDuVpNEc0GEgySAE0AzQZLAssGTQvNDE0HzQZLA8sMOQO5DE0czQY5A7kMTQ/NBkgMyARIDMgIOQO5VE0IzQ45A7kMTQXNBjkDuQxNFM0GEgySAE0AzQZNCM0GTQbNDDkDuQxNDM0GOQO5DE0ZzQZNCM0GEgySAE0NzQNNAs0GTRTNBk0="
+   "keys": "AU0BzS1NCc0GEgySAE0AzQZNA80GTQvNDDkDuWBNEc0GEgySAE0AzQZLAssGTQvNDE0HzQZLA8sGOQO5DE0czQY5A7kMTQ/NBkgMyARIDMgIOQO5Wk0IzQ45A7kMTQXNBjkDuQxNFM0GEgySAE0AzQZNCM0GTQbNDDkDuQxNDM0GOQO5DE0ZzQZNCM0GEgySAE0NzQNNAs0GTRTNBk0="
   },
   {
    "scene": 11,
@@ -48,7 +48,7 @@
   },
   {
    "scene": 12,
-   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+   "keys": "AUsKywZIDMgJTRzNBk0GzQZLAcsGSw/LBhAMkABLAMsISyPLBks="
   },
   {
    "scene": 13,
@@ -64,7 +64,7 @@
   },
   {
    "scene": 16,
-   "keys": "AU0BzTtNE80GEgySAE0AzTc5A7mEATkDuQxNHM0GTRzNBk0NzQYSDJIATQPNBk0RzQY5A7kMTQrNBjkDuQxNI82IATkDuQxNHM0GEgySAE0AzQhLAMsGTRLNBjkDuQxNCs0qOQO5DE0PzQY5A7kMTRTNBk0="
+   "keys": "AU0BzbkBTRPNBhIMkgBNAM0MOQO5MTkDuQxNGc0GTRzNBk0NzQYSDJIATQPNBk0RzQY5A7kMTQrNBjkDuQxNI82LATkDuQxNHM0GEgySAE0AzQhLAMsGTRLNBjkDuQxNCs0qOQO5DE0PzQY5A7kMTRTNBk0="
   },
   {
    "scene": 17,
@@ -72,7 +72,7 @@
   },
   {
    "scene": 18,
-   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+   "keys": "AUsKywZIDMgJTRzNBk0GzQZLAcsGSw/LBhAMkABLAMsISyPLBks="
   },
   {
    "scene": 19,
@@ -84,15 +84,15 @@
   },
   {
    "scene": 21,
-   "keys": "AU0BzUNNNUgKyATNDjkDuQxND80GOQO5DE0ozQY5A7kMOQO5DE0ozQZLCssGSAzIBE0FzQZNEs0HOQO5DE0PzQY5A7kMTR1ICsglzQZNGc0GSAzIBE0FzQZNCM0ROQO5DE0jzQZN"
+   "keys": "AU0BzUNNNEgKyAXNDTkDuQxND80GOQO5DE0ozQY5A7kMOQO5DE0ozQZLCssGSAzIBE0FzQZNEs0HOQO5DE0PzQY5A7kMTR1ICsglzQZNGc0GSAzIBE0FzQZNCM0ROQO5DE0jzQZN"
   },
   {
    "scene": 22,
-   "keys": "AU0BzTNNJ80GSAzIBk1GzQZIDMgEOQO5DE0IzQZIDMgDTQLNBk0HzQZNBM0WSwLLAzkDuQxNB80GOQO5DBIMkgBNCM0DOQO5DE0GzQZIDMgETQfNBkgMyANNAs0GTQjNEU0DzTsSDJIATQPNBjkDuQwSDJIATQbNCU0ZzQZNOM0MTSjNBk0PzQZN"
+   "keys": "AU0BzTNNJ80GSAzIBk1GzQZIDMgEOQO5DE0IzQZIDMgDTQLNBk0HzQZNBM0WSwLLAzkDuQxNB80GOQO5DBIMkgBNCM0DOQO5DE0GzQZIDMgETQfNBkgMyANNAs0GTQjNEU0DzTsSDJIATQPNBjkDuQwSDJIATQbNCU0ZzQZNOM0GTQrNBk0JzQY5A7kMTQXNBjkDuQxNBs0GOQO5DE0HzQY5A7kMTQPNBk0PzQZN"
   },
   {
    "scene": 23,
-   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+   "keys": "AUsKywZIDMgJTRzNBk0GzQZLAcsGSw/LBhAMkABLAMsISyPLBks="
   }
  ],
  "chapters": [
@@ -187,7 +187,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 93236,
+  "frames": 73628,
   "chapters": [
    {
     "title": "Opening",
@@ -207,91 +207,91 @@
    },
    {
     "title": "2. The Coffee Goat in the Breakroom",
-    "frame": 10807
+    "frame": 10709
    },
    {
     "title": "3. The Office Chair That Tried to Kill Me",
-    "frame": 13785
+    "frame": 13687
    },
    {
     "title": "4. Gerald the Ficus is Dead",
-    "frame": 17144
+    "frame": 17046
    },
    {
     "title": "Intermission 1",
-    "frame": 19471
+    "frame": 19373
    },
    {
     "title": "5. The Day the Self-Checkout Tried to Destroy Me",
-    "frame": 25561
+    "frame": 20511
    },
    {
     "title": "6. How I Earned a Nod from the Smoking Cashier",
-    "frame": 29242
+    "frame": 24192
    },
    {
     "title": "7. I Don’t Work Here, But Emotionally I Do",
-    "frame": 32729
+    "frame": 27678
    },
    {
     "title": "8. I Held in a Fart and Killed a Bird",
-    "frame": 36290
+    "frame": 31257
    },
    {
     "title": "Intermission 2",
-    "frame": 39544
+    "frame": 34511
    },
    {
     "title": "9. She Took the Blanket (and Left My Soul on the Floor)",
-    "frame": 45635
+    "frame": 35650
    },
    {
     "title": "10. Wore All the Weird Socks",
-    "frame": 49170
+    "frame": 39185
    },
    {
     "title": "11. How the Cat Won the Pizza War",
-    "frame": 52566
+    "frame": 42581
    },
    {
     "title": "12. Janet, This Is Not About You (It’s About the Itch)",
-    "frame": 55863
+    "frame": 45878
    },
    {
     "title": "13. Double Tap for Justice",
-    "frame": 59760
+    "frame": 49775
    },
    {
     "title": "Intermission 3",
-    "frame": 62941
+    "frame": 52957
    },
    {
     "title": "14. This Is Why I Don’t Go Outside",
-    "frame": 69031
+    "frame": 54096
    },
    {
     "title": "15. The Ants Have Spoken",
-    "frame": 71928
+    "frame": 56995
    },
    {
     "title": "16. The Day I Fought Cardboard",
-    "frame": 75250
+    "frame": 60319
    },
    {
     "title": "17. Shelter Me Gently, You Wounded Beast",
-    "frame": 78334
+    "frame": 63401
    },
    {
     "title": "The Curtain Call",
-    "frame": 81899
+    "frame": 67243
    },
    {
     "title": "Ending",
-    "frame": 87989
+    "frame": 68381
    },
    {
     "title": "Credits",
-    "frame": 90668
+    "frame": 71060
    }
   ]
  }

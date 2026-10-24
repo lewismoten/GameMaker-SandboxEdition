@@ -12,6 +12,8 @@ import { fileField } from '../../widgets/filePicker';
 import { MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
 import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '../../../formats/monster';
 import { monsterPathEditor } from './monsterPathEditor';
+import { checkBadges } from '../../widgets/checkBadges';
+import { normalize } from '../../../project/files';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
 
@@ -290,8 +292,11 @@ registerEditor(['mon'], (host, project, file) => {
     animate();
   }
 
+  // level check notes on this monster: contrast, speed, hurts that hold, long lift rounds
+  const badges = checkBadges(project, file, (f) => f.where.monster?.n === current && normalize(f.where.monster.file) === normalize(file));
   function render(): void {
     view.set({ monster: current });
+    badges.refresh();
     renderList();
     renderDetail();
   }
@@ -307,6 +312,7 @@ registerEditor(['mon'], (host, project, file) => {
         'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
       ),
       h('div', { class: 'toolbar' }, undoBtn, redoBtn),
+      badges.el,
       fileField(
         project,
         'Monster blocks',

@@ -59,7 +59,13 @@ export function cardPicture(n: number, title: string, line: string, advice: stri
   let eye: V = [0.6, 6.2, 2.3];
   let look: V = [0.6, 0, 0.5];
   if (n === 1) {
-    shapes.push(...wallRow(id, -4, 5, -3), ...ray(0.6, 1.2), ...place(C.teddy(2), -1.6, 0.9, 1.4, 0.4), new Sphere([2.8, -0.6, 0.5], 0.5, MAT.chrome), new Sphere([-3, -1.2, 0.45], 0.45, MAT.chrome));
+    shapes.push(
+      ...wallRow(id, -4, 5, -3),
+      ...ray(0.6, 1.2),
+      ...place(C.teddy(2), -1.6, 0.9, 1.4, 0.4),
+      new Sphere([2.8, -0.6, 0.5], 0.5, MAT.chrome),
+      new Sphere([-3, -1.2, 0.45], 0.45, MAT.chrome),
+    );
     shapes.push(cube(2, -2, nearCube), cube(3, -2, nearCube), cube(-2, -2, farCube));
   } else if (n === 2) {
     shapes.push(...wallRow(id, -4, 5, -3), ...place(C.gwinn(2), -1.2, 0.9, 1.5, 0.3), ...ray(1.4, 1.0, 1, FAR_COL));
@@ -100,7 +106,10 @@ export function cardPicture(n: number, title: string, line: string, advice: stri
     shapes.push(...place(C.count(0, 0), 0.5, -3, 2.4, 0, 0.4), ...ray(0.5, 1.2), new Sphere([0.5, -40, 1], 1.2, glowMat(rgb(255, 255, 255), 2)));
   }
   const world = stage(shapes, { env: t.env, sky: t.sky, ground: t.ground, keyColor: t.key, fog: { color: mix(t.sky, [1, 1, 1], 0.2), scale: 30, from: 6 } });
-  world.backdrop = (d) => (n === 6 ? mix(rgb(4, 4, 18), rgb(30, 60, 120), Math.max(0, 1 - Math.abs(d[2]) * 4)) : studio(d, { boxes: false, top: t.sky, horizon: mix(t.sky, [1, 1, 1], 0.5) }));
+  world.backdrop = (d) =>
+    n === 6
+      ? mix(rgb(4, 4, 18), rgb(30, 60, 120), Math.max(0, 1 - Math.abs(d[2]) * 4))
+      : studio(d, { boxes: false, top: t.sky, horizon: mix(t.sky, [1, 1, 1], 0.5) });
   const pic = still(world, cam(eye, look, 0.75), 4, 20, n);
   bloom(pic, 0.95, 2.5, 0.45);
   card(pic, title, line, advice, n);
@@ -138,7 +147,13 @@ export function textPage(base: Picture, tint: V = rgb(248, 246, 255)): Picture {
 /** How to play, before its pages: sharp is solid, a blur isn't there. */
 export function howtoPicture(): Picture {
   const t = THEMES.checker;
-  const shapes: Shape[] = [floor(), cube(-1.2, -0.6, nearCube), cube(-0.2, -0.6, nearCube), ...ray(1.5, 1.1, 1.1), new Cylinder(-2.6, 1.0, 0.42, -0.02, 0.03, glowMat(FAR_COL, 0.8))];
+  const shapes: Shape[] = [
+    floor(),
+    cube(-1.2, -0.6, nearCube),
+    cube(-0.2, -0.6, nearCube),
+    ...ray(1.5, 1.1, 1.1),
+    new Cylinder(-2.6, 1.0, 0.42, -0.02, 0.03, glowMat(FAR_COL, 0.8)),
+  ];
   for (const x of [1.4, 2.4, 3.4]) shapes.push(cube(x, -6, farCube, { h: 1.4 }));
   const world = stage(shapes, { env: t.env });
   // a long lens focused on the near cubes: the far ones fall out of focus
@@ -162,7 +177,14 @@ function project(eye: V, look: V, p: V, fov = CAST_CAM.fov): number {
 /** The cast, under Doc Leo's spotlight. */
 export function castPicture(labels = true): Picture {
   // seen from the south (+y), so east is on the left: THE CHEZ at the east end, nose first
-  const shapes: Shape[] = [floor(), ...citicar(0, 0, 1.3, [1.7, -0.9, 0]), ...place(C.teddy(2), 0.65, 1.0, 1.8, 0.3), ...place(C.gwinn(2), -0.65, 0.9, 1.8, -0.1), ...place(C.docLeo(0), -2.0, 0.5, 2.0, -0.2), ...ray(-3.25, 1.1, 1.0)];
+  const shapes: Shape[] = [
+    floor(),
+    ...citicar(0, 0, 1.3, [1.7, -0.9, 0]),
+    ...place(C.teddy(2), 0.65, 1.0, 1.8, 0.3),
+    ...place(C.gwinn(2), -0.65, 0.9, 1.8, -0.1),
+    ...place(C.docLeo(0), -2.0, 0.5, 2.0, -0.2),
+    ...ray(-3.25, 1.1, 1.0),
+  ];
   const world = stage(shapes, { points: [{ at: [0.5, 3, 5], color: rgb(255, 240, 210), radius: 0.3, reach: 6 }], keyColor: rgb(120, 120, 150) });
   const pic = still(world, cam(CAST_CAM.eye, CAST_CAM.look, CAST_CAM.fov), 4, 20, 5);
   bloom(pic, 0.9, 2.5, 0.5);
@@ -237,7 +259,11 @@ export function eggPicture(): Picture {
     new Cylinder(0, 0, 0.6, 0, 0.35, MAT.marble(rgb(240, 236, 244), rgb(120, 110, 150))),
     ...[-1, 1].map((k) => cube(k * 2.2 - 0.5, -1.2, { ...MAT.chrome }, { h: 2 })),
   ];
-  const world = stage(shapes, { env: THEMES.mirror.env, points: [{ at: [0.6, -2, 5], color: rgb(255, 245, 220), radius: 0.3, reach: 6 }], keyColor: rgb(110, 100, 150) });
+  const world = stage(shapes, {
+    env: THEMES.mirror.env,
+    points: [{ at: [0.6, -2, 5], color: rgb(255, 245, 220), radius: 0.3, reach: 6 }],
+    keyColor: rgb(110, 100, 150),
+  });
   const pic = still(world, cam([0, 6, 2.6], [0, 0, 1.0], 0.75), 6, 30, 13);
   bloom(pic, 0.85, 3, 0.6);
   flare(pic, 186, 54, 0.45);

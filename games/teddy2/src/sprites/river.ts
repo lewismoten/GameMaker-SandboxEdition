@@ -83,7 +83,12 @@ export function hook(): Pixels {
 
 /** A flour sack, slumped. */
 export function sack(): Pixels {
-  return sprite(['....oooo....', '...oLLLLo...', '..oLLLLLLo..', '.oLLluLLLLo.', '.oLLLLLLLLo.', 'oLLLLLLLLLLo', 'oLLLLLLlLLLo', '.oooooooooo.'], K, undefined, 12);
+  return sprite(
+    ['....oooo....', '...oLLLLo...', '..oLLLLLLo..', '.oLLluLLLLo.', '.oLLLLLLLLo.', 'oLLLLLLLLLLo', 'oLLLLLLlLLLo', '.oooooooooo.'],
+    K,
+    undefined,
+    12,
+  );
 }
 
 /** Doc Leo's rubber chicken, bobbing on the water in its red harness. */
@@ -96,5 +101,10 @@ export function chickenFloat(bob: number): Pixels {
 
 /** A fish leaping (the arc is its path). */
 export function fish(k: number): Pixels {
-  return sprite(k ? ['..oo....', '.oxxoo.o', 'oxXxxxoo', '.oxxoo.o', '..oo....'] : ['....oo..', 'o.ooxxo.', 'ooxxxXxo', 'o.ooxxo.', '....oo..'], { ...K, x: c('stone', 3), X: c('fur', 2) }, 6, 8);
+  return sprite(
+    k ? ['..oo....', '.oxxoo.o', 'oxXxxxoo', '.oxxoo.o', '..oo....'] : ['....oo..', 'o.ooxxo.', 'ooxxxXxo', 'o.ooxxo.', '....oo..'],
+    { ...K, x: c('stone', 3), X: c('fur', 2) },
+    6,
+    8,
+  );
 }

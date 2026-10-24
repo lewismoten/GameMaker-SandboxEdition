@@ -1,6 +1,6 @@
 // Stage 4: THE HARD DISK. Leg A "The Platter" spins under the ship (rows of data streams
 // that shove it left and right); leg B "Bad Sectors" crawls with virus. Then the Head Crash.
-import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
+import { SPIN, S_CURVE, SWEEP, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { diskArt, diskTiles, diskVirus } from '../blocks/disk4';
@@ -20,8 +20,8 @@ function virus4(b: Parameters<typeof diskVirus>[0], p: Parameters<typeof diskVir
   swooper(b, 'skullR', S_CURVE(1, 6), { pic: 'skull', score: 160 });
   swooper(b, 'skullSL', SWEEP(-1, 7), { pic: 'skull', score: 160 });
   swooper(b, 'skullSR', SWEEP(1, 7), { pic: 'skull', score: 160 });
-  swooper(b, 'skullZ', ZIGZAG(1, 5), { pic: 'skull', score: 160 });
-  swooper(b, 'skullD', HOVER_DROP(9), { pic: 'skull', score: 160 });
+  // the hard disk's own move: skulls looping round like the platter
+  swooper(b, 'skullO', SPIN(5), { pic: 'skull', score: 170 });
   stalker(b, 'slug', { hp: 4, speed: 1, score: 400 });
   heavy(b, 'tank', { hp: 6, score: 600, speed: 1 });
   heavy(b, 'tankL', { hp: 6, score: 600, speed: 2, dx: -9, pic: 'tank' });
@@ -68,7 +68,7 @@ function legA(g: Grid): void {
   g.mon(6, 55, 'tank');
   spin(g, 58, 58, 'L');
   g.pickup(9, 60, 'repair');
-  conga(g, 8, 62, 5, 'skullZ');
+  conga(g, 8, 62, 5, 'skullO');
   g.hatch(3, 66).hatch(12, 67);
   spin(g, 70, 71, 'R', 1, 8);
   spin(g, 70, 71, 'L', 9, 14);
@@ -90,7 +90,7 @@ function legB(g: Grid): void {
   g.pickup(6, 24, 'nova');
   spin(g, 26, 26, 'R');
   g.stamp(2, 28, 'arm', 2, 5);
-  conga(g, 8, 30, 5, 'skullD');
+  conga(g, 8, 30, 5, 'skullO');
   g.fence(4, 14, 36, 'A');
   for (const [c, d] of [
     [5, 39],
@@ -103,7 +103,7 @@ function legB(g: Grid): void {
   g.hatch(2, 43).hatch(13, 44);
   g.mon(8, 46, 'slug');
   g.turret(7, 49, 'flak').turret(4, 51, 'sweep').turret(11, 51, 'sweep');
-  g.pickup(8, 53, 'repair').pickup(2, 54, 'bit').pickup(13, 54, 'bit');
+  g.pickup(8, 53, 'bit').pickup(2, 54, 'bit').pickup(13, 54, 'bit');
   spin(g, 56, 57, 'L');
   g.mon(8, 60, 'tank');
   conga(g, 7, 62, 4, 'skullR');
@@ -168,7 +168,7 @@ export function stage4(): Stage {
         kind: 'scroll',
         grid: a,
         kit: ks,
-        card: ['The platter spins: data', 'streams shove you hard.', 'Steer against them!'],
+        card: ['The platter spins: data', 'streams shove you hard.', 'Steer against them! Skulls', 'loop around with it.'],
       },
       {
         file: 's4b',

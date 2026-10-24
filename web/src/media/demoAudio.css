@@ -83,7 +83,9 @@
   border-color: rgb(255 212 0 / 0.7);
   background: rgb(10 10 40 / 0.75);
   color: #fff;
-  font: 700 12px/1.4 system-ui, sans-serif;
+  font:
+    700 12px/1.4 system-ui,
+    sans-serif;
 }
 
 .demo-audio.compact[role] label:has(input:checked) {
@@ -116,7 +118,9 @@
   border-radius: 999px;
   background: rgb(0 0 0 / 0.78);
   color: #ffd400;
-  font: 600 13px/1.2 system-ui, sans-serif;
+  font:
+    600 13px/1.2 system-ui,
+    sans-serif;
   pointer-events: auto;
   cursor: pointer;
 }

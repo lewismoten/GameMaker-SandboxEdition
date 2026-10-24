@@ -12,7 +12,22 @@ import { loadScene, restoreSaved, savedState, startSceneInits, type Saved } from
 import { currentFrame, moveCharGrav, updateCharScreenPos } from '../../engine/character';
 import { calcDraw, monPicNum } from '../../engine/monsters';
 import { renderWorld, VISIBLE_H, VISIBLE_W } from '../../engine/render';
-import { BLEN, CHARBL, LASTMM, LASTMON, MLEN, MONBL, MWID, OFFSCRN, SCRNBLEN, SCRNBWID, mapBlock, newCharInfo, shownBlock, type World } from '../../engine/world';
+import {
+  BLEN,
+  CHARBL,
+  LASTMM,
+  LASTMON,
+  MLEN,
+  MONBL,
+  MWID,
+  OFFSCRN,
+  SCRNBLEN,
+  SCRNBWID,
+  mapBlock,
+  newCharInfo,
+  shownBlock,
+  type World,
+} from '../../engine/world';
 import { TRANSPARENT, orientIndex } from '../../formats/blocks';
 import { LASTSL } from '../../formats/monster';
 import { Recorder } from '../../engine/recorder';
@@ -53,7 +68,8 @@ export function saveLevels(game: Game): SaveLevel[] {
   while (queue.length) {
     const from = queue.shift()!;
     add(from);
-    for (const l of game.scenes[from]?.links ?? []) if (l.toScene !== NOSCENE && game.scenes[l.toScene] && !seen.has(l.toScene)) (seen.add(l.toScene), queue.push(l.toScene));
+    for (const l of game.scenes[from]?.links ?? [])
+      if (l.toScene !== NOSCENE && game.scenes[l.toScene] && !seen.has(l.toScene)) (seen.add(l.toScene), queue.push(l.toScene));
   }
   game.scenes.forEach((_, i) => add(i));
   return [...out.values()];
@@ -72,7 +88,14 @@ function readGame(files: FileSource, gam: string): Game {
   }
 }
 
-const session = (files: FileSource, game: Game, rand: () => number) => ({ m: { files }, game, rand: () => rand, ci: newCharInfo(), rec: new Recorder(), sndClock: 0 });
+const session = (files: FileSource, game: Game, rand: () => number) => ({
+  m: { files },
+  game,
+  rand: () => rand,
+  ci: newCharInfo(),
+  rec: new Recorder(),
+  sndClock: 0,
+});
 
 /** The save loaded the way F6 loads it (restoreSaved). Throws SaveFormatError when its level's files are missing. */
 export function savedWorld(files: FileSource, gam: string, save: SavedGame, rand: () => number = Math.random): World {
@@ -239,7 +262,7 @@ export function saveMap(files: FileSource, gam: string, save: SavedGame): SaveMa
         if (v === TRANSPARENT) continue;
         let px = x + xx;
         let py = y + yy;
-        if (wrapIt) (px = wrap(px, outW), py = wrap(py, outH));
+        if (wrapIt) ((px = wrap(px, outW)), (py = wrap(py, outH)));
         else if (px < 0 || py < 0 || px >= outW || py >= outH) continue;
         out[py * outW + px] = v;
       }
@@ -262,6 +285,7 @@ export function saveMap(files: FileSource, gam: string, save: SavedGame): SaveMa
   const heroOffset = { x: chr.x[1], y: chr.y[1] - BLEN };
   const fits = new Uint8Array(MLEN * MWID);
   for (let y = 0; y < MWID; y++)
-    for (let x = 0; x < MLEN; x++) fits[y * MLEN + x] = !shownBlock(w, mapBlock(w, x, y)).solid && !shownBlock(w, mapBlock(w, x, wrap(y - 1, MWID))).solid ? 1 : 0;
+    for (let x = 0; x < MLEN; x++)
+      fits[y * MLEN + x] = !shownBlock(w, mapBlock(w, x, y)).solid && !shownBlock(w, mapBlock(w, x, wrap(y - 1, MWID))).solid ? 1 : 0;
   return { width, height, pixels, palette: Uint8Array.from(w.palette), view: { x: w.mx, y: w.my }, hero, heroSprite, heroOffset, fits };
 }

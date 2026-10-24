@@ -43,7 +43,8 @@ export function feltEgg(p: Pixels, cx: number, cy: number, rx: number, ry: numbe
       };
       if (!check(-0.66, -0.4)) check(0.48, 0.74);
       // the gold curtain-tie: a twisted cord round the middle
-      if (v >= 0.16 && v < (small ? 0.3 : 0.28)) col = small ? ((x + y) % 3 === 0 ? c('gold', 2) : c('gold', 5)) : (x + y) % 4 === 0 ? c('gold', 1) : (x + y) % 4 === 1 ? c('gold', 3) : c('gold', 5);
+      if (v >= 0.16 && v < (small ? 0.3 : 0.28))
+        col = small ? ((x + y) % 3 === 0 ? c('gold', 2) : c('gold', 5)) : (x + y) % 4 === 0 ? c('gold', 1) : (x + y) % 4 === 1 ? c('gold', 3) : c('gold', 5);
       if (edge) col = shadeAt(velvet, 0, 2, light, x, y);
       p.set(x, y, col);
     }
@@ -51,12 +52,19 @@ export function feltEgg(p: Pixels, cx: number, cy: number, rx: number, ry: numbe
     // the comedy mask: white face, black eyes and a big grin; the tie's tassel
     const mx = Math.round(cx) - 3;
     const my = Math.round(cy - ry * 0.32);
-    p.rect(mx + 1, my, 5, 1, c('paper', 5)).rect(mx, my + 1, 7, 2, c('paper', 5)).rect(mx + 1, my + 3, 5, 1, c('paper', 5));
+    p.rect(mx + 1, my, 5, 1, c('paper', 5))
+      .rect(mx, my + 1, 7, 2, c('paper', 5))
+      .rect(mx + 1, my + 3, 5, 1, c('paper', 5));
     p.set(mx + 1, my + 1, c('black', 0)).set(mx + 5, my + 1, c('black', 0));
-    p.set(mx + 2, my + 2, c('black', 0)).set(mx + 3, my + 3, c('black', 0)).set(mx + 4, my + 2, c('black', 0));
+    p.set(mx + 2, my + 2, c('black', 0))
+      .set(mx + 3, my + 3, c('black', 0))
+      .set(mx + 4, my + 2, c('black', 0));
     const tx = Math.round(cx + rx * 0.45);
     const ty = Math.round(cy + ry * 0.24);
-    p.set(tx, ty, c('gold', 5)).set(tx, ty + 1, c('gold', 4)).set(tx - 1, ty + 2, c('gold', 3)).set(tx + 1, ty + 2, c('gold', 3));
+    p.set(tx, ty, c('gold', 5))
+      .set(tx, ty + 1, c('gold', 4))
+      .set(tx - 1, ty + 2, c('gold', 3))
+      .set(tx + 1, ty + 2, c('gold', 3));
     return p;
   }
   // close-up: running stitches along the trim, then the mask and the tassel

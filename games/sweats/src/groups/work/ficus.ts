@@ -37,7 +37,13 @@ function paper(pal: Pal, seed: number): Pixels {
   const r = rng(seed);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, c('rose', x % 10 < 5 ? 2 : r() < 0.05 ? 1 : 2));
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (x % 10 === 4 || x % 10 === 5) p.set(x, y, c('rose', 1));
-  for (const [x, y] of [[2, 4], [7, 14]]) p.set(x, y, c('red', 2)).set(x + 1, y, c('green', 2)).set(x, y + 1, c('green', 1));
+  for (const [x, y] of [
+    [2, 4],
+    [7, 14],
+  ])
+    p.set(x, y, c('red', 2))
+      .set(x + 1, y, c('green', 2))
+      .set(x, y + 1, c('green', 1));
   return p;
 }
 
@@ -63,7 +69,7 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   book.add('paper', paper(pal, 50), AIR);
   book.add('paperBase', paperBase(pal), AIR);
   const floor = new Pixels(20, 20);
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) floor.set(x, y, c('wood', ((x + (Math.floor(y / 5) % 2) * 9) % 18 === 0 ? 1 : (y % 5 === 0 ? 2 : 3))));
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) floor.set(x, y, c('wood', (x + (Math.floor(y / 5) % 2) * 9) % 18 === 0 ? 1 : y % 5 === 0 ? 2 : 3));
   floor.rect(0, 0, 20, 1, c('wood', 4));
   book.add('hardwood', floor, { solid: SOLID });
   const crown = paper(pal, 52);
@@ -75,7 +81,12 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   win.rect(4, 2, 12, 14, c('white', 2));
   for (let y = 3; y < 15; y++) for (let x = 5; x < 15; x++) win.set(x, y, shadeAt(R('night'), 0, 2, y / 14, x, y));
   win.rect(9, 3, 1, 12, c('white', 2)).rect(5, 8, 10, 1, c('white', 2)).set(7, 5, c('white', 2)).set(12, 11, c('yellow', 2));
-  win.rect(1, 1, 18, 1, c('wood', 1)).rect(1, 2, 4, 15, c('red', 1)).rect(15, 2, 4, 15, c('red', 1)).rect(2, 2, 1, 15, c('red', 2)).rect(16, 2, 1, 15, c('red', 2));
+  win
+    .rect(1, 1, 18, 1, c('wood', 1))
+    .rect(1, 2, 4, 15, c('red', 1))
+    .rect(15, 2, 4, 15, c('red', 1))
+    .rect(2, 2, 1, 15, c('red', 2))
+    .rect(16, 2, 1, 15, c('red', 2));
   book.add('curtains', win, AIR);
   // the front door he came in by: the sticky note on it ("Be gentle with Gerald, he's moody")
   const front = paperBase(pal);
@@ -97,7 +108,13 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
     blob(gerald, x, y, 1.8, 1.1, R('crisp'), 0, 2);
   }
   for (let k = 0; k < 8; k++) gerald.set(16 + r() * 22, 37 + r() * 2, c('crisp', 1));
-  addPicture(book, 'gerald', gerald, (_c, row) => (row ? paperBase(pal) : paper(pal, 55)), (_c, row) => (row ? AIR : { solid: LEDGE, grav: GRAV.down }));
+  addPicture(
+    book,
+    'gerald',
+    gerald,
+    (_c, row) => (row ? paperBase(pal) : paper(pal, 55)),
+    (_c, row) => (row ? AIR : { solid: LEDGE, grav: GRAV.down }),
+  );
   // the shelf of the dead: the fern that witnessed unspeakable horrors, the succulents shriveled
   // like ancient scrolls (a ledge; crispy leaves let go of it)
   const shelf = paper(pal, 56);
@@ -113,11 +130,24 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   const phono = paperBase(pal);
   phono.rect(3, 9, 14, 4, c('wood', 2)).rect(4, 8, 12, 1, c('ink', 1)).rect(5, 13, 1, 7, c('wood', 1)).rect(14, 13, 1, 7, c('wood', 1));
   phono.line(15, 7, 11, 8, c('metal', 2)).set(10, 8, c('red', 2));
-  for (const [x, y] of [[4, 3], [11, 1], [16, 4]]) phono.rect(x, y, 1, 4, c('ink', 0)).rect(x - 2, y + 3, 2, 2, c('ink', 0)).set(x + 1, y, c('ink', 0));
+  for (const [x, y] of [
+    [4, 3],
+    [11, 1],
+    [16, 4],
+  ])
+    phono
+      .rect(x, y, 1, 4, c('ink', 0))
+      .rect(x - 2, y + 3, 2, 2, c('ink', 0))
+      .set(x + 1, y, c('ink', 0));
   book.add('phono', phono, AIR);
   // the sofa (2 x 1, its cushions a ledge), a crocheted blanket over the back
   const sofa = new Pixels(40, 20, 255);
-  sofa.rect(0, 4, 40, 12, c('teal', 1)).rect(0, 4, 5, 14, c('teal', 0)).rect(35, 4, 5, 14, c('teal', 0)).rect(4, 9, 32, 5, c('teal', 2)).rect(20, 9, 1, 5, c('teal', 0));
+  sofa
+    .rect(0, 4, 40, 12, c('teal', 1))
+    .rect(0, 4, 5, 14, c('teal', 0))
+    .rect(35, 4, 5, 14, c('teal', 0))
+    .rect(4, 9, 32, 5, c('teal', 2))
+    .rect(20, 9, 1, 5, c('teal', 0));
   sofa.rect(8, 2, 14, 5, c('yellow', 1));
   for (let x = 8; x < 22; x += 2) sofa.set(x, 2 + (x % 4 ? 1 : 3), c('red', 2));
   sofa.rect(2, 16, 2, 4, c('wood', 0)).rect(36, 16, 2, 4, c('wood', 0));
@@ -149,18 +179,41 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   // a lamppost (two tall), its pool of light
   const post = new Pixels(20, 40, 255);
   post.rect(9, 6, 2, 34, c('grey', 1)).rect(5, 2, 10, 4, c('grey', 2)).rect(6, 6, 8, 2, c('spot', 2));
-  for (let y = 8; y < 34; y++) for (let x = 0; x < 20; x++) if (Math.abs(x - 10) < (y - 8) * 0.3 + 3 && (x + y) % 3 === 0 && post.get(x, y) === 255) post.set(x, y, c('spot', 0));
-  addPicture(book, 'lamppost', post, (_c, row) => (row ? lot : night(pal, 64)), () => AIR);
+  for (let y = 8; y < 34; y++)
+    for (let x = 0; x < 20; x++) if (Math.abs(x - 10) < (y - 8) * 0.3 + 3 && (x + y) % 3 === 0 && post.get(x, y) === 255) post.set(x, y, c('spot', 0));
+  addPicture(
+    book,
+    'lamppost',
+    post,
+    (_c, row) => (row ? lot : night(pal, 64)),
+    () => AIR,
+  );
   // the drugstore's sign on its pole, glowing (2 x 1)
   const sign = new Pixels(40, 20, 255);
   sign.rect(1, 1, 38, 13, c('white', 2)).frame(1, 1, 38, 13, c('red', 1)).rect(18, 14, 4, 6, c('grey', 1));
   micro(sign, 3, 3, 'DRUGSTORE', c('red', 1));
   micro(sign, 11, 8, 'OPEN', c('blue', 1));
-  addPicture(book, 'drugSign', sign, (col) => night(pal, 65 + col), () => AIR);
+  addPicture(
+    book,
+    'drugSign',
+    sign,
+    (col) => night(pal, 65 + col),
+    () => AIR,
+  );
   // Peggy's car, its trunk up (2 x 1)
   const car = new Pixels(40, 20, 255);
-  car.rect(0, 6, 40, 9, c('navy', 1)).rect(0, 6, 40, 1, c('navy', 2)).rect(2, 0, 36, 3, c('navy', 2)).line(2, 3, 2, 6, c('ink', 1)).line(37, 3, 37, 6, c('ink', 1));
-  car.rect(2, 7, 36, 4, c('ink', 1)).rect(4, 15, 7, 5, c('ink', 0)).rect(29, 15, 7, 5, c('ink', 0)).rect(6, 16, 3, 3, c('metal', 1)).rect(31, 16, 3, 3, c('metal', 1));
+  car
+    .rect(0, 6, 40, 9, c('navy', 1))
+    .rect(0, 6, 40, 1, c('navy', 2))
+    .rect(2, 0, 36, 3, c('navy', 2))
+    .line(2, 3, 2, 6, c('ink', 1))
+    .line(37, 3, 37, 6, c('ink', 1));
+  car
+    .rect(2, 7, 36, 4, c('ink', 1))
+    .rect(4, 15, 7, 5, c('ink', 0))
+    .rect(29, 15, 7, 5, c('ink', 0))
+    .rect(6, 16, 3, 3, c('metal', 1))
+    .rect(31, 16, 3, 3, c('metal', 1));
   car.rect(0, 11, 3, 2, c('red', 3)).rect(37, 11, 3, 2, c('red', 3));
   blob(car, 12, 7, 4, 2, R('green'), 0, 3);
   blob(car, 26, 7, 3.4, 2, R('green'), 1, 3);
@@ -192,7 +245,14 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
     } else {
       p.rect(3, 0, 14, 20, c('night', 0)).rect(3, 0, 1, 20, c('wood', 0)).rect(16, 0, 1, 20, c('wood', 0));
       p.rect(7, 14, 6, 5, c('red', 1)).rect(6, 13, 8, 2, c('red', 2));
-      for (const [x, y] of [[8, 11], [10, 9], [12, 11], [9, 12], [11, 12]]) p.rect(x, y, 2, 3, c('green', 2));
+      for (const [x, y] of [
+        [8, 11],
+        [10, 9],
+        [12, 11],
+        [9, 12],
+        [11, 12],
+      ])
+        p.rect(x, y, 2, 3, c('green', 2));
     }
     return p;
   };
@@ -269,9 +329,22 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
   // Peggy: grey curls, cat-eye glasses, a lilac cardigan, cash only, no questions asked
   const peggy = (f: number) => {
     const p = P();
-    p.rect(5, 8, 10, 9, c('purple', 2)).rect(5, 8, 10, 1, c('purple', 3)).rect(9, 9, 2, 8, c('white', 2)).rect(6, 17, 3, 3, c('navy', 1)).rect(11, 17, 3, 3, c('navy', 1));
+    p.rect(5, 8, 10, 9, c('purple', 2))
+      .rect(5, 8, 10, 1, c('purple', 3))
+      .rect(9, 9, 2, 8, c('white', 2))
+      .rect(6, 17, 3, 3, c('navy', 1))
+      .rect(11, 17, 3, 3, c('navy', 1));
     blob(p, 10, 4.5, 3.4, 3.4, pal.r('skin'), 2, 4);
-    for (const [x, y] of [[6, 2], [8, 1], [10, 0], [12, 1], [14, 2], [6, 4], [14, 4]]) p.disc(x, y + 1, 1.3, c('grey', 3));
+    for (const [x, y] of [
+      [6, 2],
+      [8, 1],
+      [10, 0],
+      [12, 1],
+      [14, 2],
+      [6, 4],
+      [14, 4],
+    ])
+      p.disc(x, y + 1, 1.3, c('grey', 3));
     p.rect(7, 4, 3, 2, c('pink', 1)).rect(11, 4, 3, 2, c('pink', 1)).set(8, 5, ink).set(12, 5, ink).rect(9, 7, 3, 1, c('red', 1));
     p.rect(14, 10, 4, 3, c('green', 1 + f)).rect(15, 12, 3, 2, c('white', 2));
     return outline(p, ink);
@@ -281,7 +354,13 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
 }
 
 export function ficusMonsters(set: Monster[], mb: SpriteBook): void {
-  set[FICUS_MON.leaf] = mon(anim(mb, 'leaf0', 'leaf1', 5), { power: POWER.foe, thru: 0, end: -1, newmon: FICUS_MON.puff }, [corner(0, 0, 1), corner(-1, 1, 1), corner(1, 1, 1), corner(-1, 1, 1), corner(1, 1, 1)]);
+  set[FICUS_MON.leaf] = mon(anim(mb, 'leaf0', 'leaf1', 5), { power: POWER.foe, thru: 0, end: -1, newmon: FICUS_MON.puff }, [
+    corner(0, 0, 1),
+    corner(-1, 1, 1),
+    corner(1, 1, 1),
+    corner(-1, 1, 1),
+    corner(1, 1, 1),
+  ]);
   set[FICUS_MON.gnat] = mon(anim(mb, 'gnat0', 'gnat1', 2), { power: POWER.foe, thru: 1, newmon: FICUS_MON.puff }, pace(3, 1));
   set[FICUS_MON.cart] = mon(anim(mb, 'pcart0', 'pcart1', 2), { power: POWER.tough, thru: 1 }, pace(4, 2));
   set[FICUS_MON.peggy] = mon(anim(mb, 'peggy0', 'peggy1', 16), { power: POWER.friend, thru: 0, newmon: FICUS_MON.peggyOff }, still);
@@ -320,7 +399,11 @@ export const ficus: Monologue = {
     const OFF = 6;
     const W = 64 + OFF;
     // the house, inside: crown molding, wallpaper, the hardwood floor
-    m.row(0, 0, W - 1, '^').fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, 'slab');
+    m.row(0, 0, W - 1, '^')
+      .fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, 'slab');
     // in by the front door (the sticky note), the spotlight, a coffee
     m.set(0, 9, 'frontDoor').set(2, 9, '!').set(4, 9, 'm');
     // the living room: Gerald, keeled over (gnats over his soil), the shelf of the dead

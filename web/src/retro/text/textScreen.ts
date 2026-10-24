@@ -10,8 +10,22 @@ const CH = 16; // 8x8 glyphs drawn double height, like a 400 line VGA text scree
 
 /** Default VGA text colors, as 6-bit DAC values. */
 const VGA16: [number, number, number][] = [
-  [0, 0, 0], [0, 0, 42], [0, 42, 0], [0, 42, 42], [42, 0, 0], [42, 0, 42], [42, 21, 0], [42, 42, 42],
-  [21, 21, 21], [21, 21, 63], [21, 63, 21], [21, 63, 63], [63, 21, 21], [63, 21, 63], [63, 63, 21], [63, 63, 63],
+  [0, 0, 0],
+  [0, 0, 42],
+  [0, 42, 0],
+  [0, 42, 42],
+  [42, 0, 0],
+  [42, 0, 42],
+  [42, 21, 0],
+  [42, 42, 42],
+  [21, 21, 21],
+  [21, 21, 63],
+  [21, 63, 21],
+  [21, 63, 63],
+  [63, 21, 21],
+  [63, 21, 63],
+  [63, 63, 21],
+  [63, 63, 63],
 ];
 
 /** attr = foreground + background * 16 */
@@ -203,8 +217,7 @@ export class TextScreen {
   }
 
   restore(r: SavedRegion): void {
-    for (let yy = 0; yy < r.h; yy++)
-      for (let xx = 0; xx < r.w; xx++) this.put(r.x + xx, r.y + yy, r.chars[yy * r.w + xx], r.attrs[yy * r.w + xx]);
+    for (let yy = 0; yy < r.h; yy++) for (let xx = 0; xx < r.w; xx++) this.put(r.x + xx, r.y + yy, r.chars[yy * r.w + xx], r.attrs[yy * r.w + xx]);
   }
 
   snapshot(): SavedRegion {

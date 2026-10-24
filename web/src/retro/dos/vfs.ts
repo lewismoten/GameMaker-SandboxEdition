@@ -1,5 +1,6 @@
 // A small DOS file system for the retro PC: drives of 8.3 named files and folders,
 // filled lazily from game disks, the installed Game-Maker and the CD.
+import { deskNow } from './deskClock';
 
 export interface DosNode {
   name: string; // upper case 8.3
@@ -22,12 +23,24 @@ export type ProgramRef =
   | { kind: 'egg' }
   | { kind: 'terminal' }
   | { kind: 'vpic' }
-  | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string; /** GMCRACK "patched" this .EXE: the group's intro first. */ cracked?: string }
+  | {
+      kind: 'game';
+      title: string;
+      gam: string;
+      files: () => Promise<Map<string, Uint8Array>>;
+      notice?: string;
+      editable?: boolean;
+      diskId?: string;
+      /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string;
+      /** GMCRACK "patched" this .EXE: the group's intro first. */ cracked?: string;
+    }
   | { kind: 'install'; /** GM30\INSTALL.EXE from the BBS's Warez area, not the CD's. */ from?: 'warez' }
   | { kind: 'gmcrack' }
   | { kind: 'savehack' }
   | { kind: 'backup' }
   | { kind: 'hexedit' }
+  | { kind: 'achieve' }
+  | { kind: 'offline' }
   | { kind: 'batch'; lines: string[] };
 
 export interface Drive {
@@ -43,10 +56,11 @@ export interface Drive {
 export const DOS_DATE = new Date(1994, 9, 20, 11, 42);
 
 /**
- * The PC's clock. The desk lives in 1994-95: today's month, day and time (as the wall clock
- * shows them), in the year after DOS_DATE, so nothing new is ever older than the install.
+ * The PC's clock (deskClock.ts: TIME and DATE can set it). The desk lives in 1994-95: today's
+ * month, day and time (as the wall clock shows them), in the year after DOS_DATE, so nothing
+ * new is ever older than the install.
  */
-export function deskDate(now: Date | number = new Date()): Date {
+export function deskDate(now: Date | number = deskNow()): Date {
   const d = new Date(now);
   d.setFullYear(1994);
   if (d < DOS_DATE) d.setFullYear(1995);
@@ -109,7 +123,14 @@ export function dosMatch(pattern: string, name: string): boolean {
     const dot = n.indexOf('.');
     return dot < 0 ? [n, ''] : [n.slice(0, dot), n.slice(dot + 1)];
   };
-  const part = (p: string, n: string) => new RegExp(`^${p.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.?')}$`, 'i').test(n);
+  const part = (p: string, n: string) =>
+    new RegExp(
+      `^${p
+        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*/g, '.*')
+        .replace(/\?/g, '.?')}$`,
+      'i',
+    ).test(n);
   const [pb, pe] = split(pattern);
   const [nb, ne] = split(name);
   return part(pb, nb) && part(pe, ne);

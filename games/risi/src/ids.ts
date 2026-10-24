@@ -36,6 +36,9 @@ export const MON = {
   gaul2: 13,
   /** An arrow loosed from the hill, falling. */
   arrow: 14,
+  /** The second wave: two more warriors who rally at the edge of the field, then charge to the wide ditch. */
+  gaulW: 50,
+  gaulW2: 51,
   /** A crow over the field. Harmless. */
   crow: 15,
   // ---- III. the rooftops (Titus Torquet Lingua)
@@ -56,6 +59,8 @@ export const MON = {
   fanOff: 23,
   /** A scalding bubble rising out of the hot pool. */
   bubble: 24,
+  /** A drop of hot water off the steamy vault, falling to the walkway (it hisses). */
+  drip: 43,
   /** A senator floating on his back in the pool: solid, stand on him. */
   bather: 25,
   // ---- VI. the theater (Silentium Ridentium)
@@ -71,7 +76,11 @@ export const MON = {
   /** Doc Leo again, the theater's jester. A hello is points. */
   jester: 29,
   jesterOff: 30,
-  /** Emperor Gravis, two blocks tall (A his laurel and stern face, B his toga and throne), four jokes each half. */
+  /**
+   * Emperor Gravis, two blocks tall (A his laurel and stern face, B his toga and throne), four
+   * jokes each half. After the second and the third he shuffles his throne two blocks back
+   * toward his heralds (the "m" stages: no joke lands while he shuffles).
+   */
   gravisA0: 31,
   gravisA1: 32,
   gravisA2: 33,
@@ -85,6 +94,17 @@ export const MON = {
   thud: 40,
   /** The laurel crown, dropped when his top half laughs: the stage's altar takes it. */
   crown: 41,
+  gravisA2m: 44,
+  gravisA3m: 45,
+  gravisB2m: 46,
+  gravisB3m: 47,
+  /**
+   * His "SILENTIUM!": a hush the herald's horn behind him blows over his head; it swoops down
+   * and rolls along the boards at Marcus's feet. Hop it: jokes pass through it, and it stings.
+   */
+  hush: 48,
+  /** His empty throne, when he has laughed himself off it. */
+  throne: 49,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

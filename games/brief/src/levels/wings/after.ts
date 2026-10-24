@@ -36,10 +36,11 @@ function mirror(under: Pixels): Pixels {
   const p = on(under);
   p.rect(3, 0, 14, 20, c('brass', 2)).rect(5, 2, 10, 16, c('sky', 4));
   const me = joe('down', 0);
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) {
-    const v = me.get(x, y);
-    if (v !== 255 && x >= 2 && x < 18 && y < 18 && (x - 2) % 2 === 0) p.set(5 + Math.floor((x - 2) / 2) * 1.25, 2 + Math.floor(y * 0.8), v);
-  }
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const v = me.get(x, y);
+      if (v !== 255 && x >= 2 && x < 18 && y < 18 && (x - 2) % 2 === 0) p.set(5 + Math.floor((x - 2) / 2) * 1.25, 2 + Math.floor(y * 0.8), v);
+    }
   p.line(6, 3, 8, 6, c('paper', 4));
   return p;
 }
@@ -82,10 +83,16 @@ function owl(under: Pixels): Pixels {
 
 function lollipopGuild(under: Pixels): Pixels {
   const p = on(under);
-  const hair: [string, number][] = [['orange', 2], ['yellow', 3], ['brown', 2]];
+  const hair: [string, number][] = [
+    ['orange', 2],
+    ['yellow', 3],
+    ['brown', 2],
+  ];
   for (let i = 0; i < 3; i++) {
     const x = 2 + i * 6;
-    p.rect(x, 10, 4, 4, c('skin', 3)).rect(x, 9, 4, 2, c(hair[i][0], hair[i][1])).rect(x - 1, 14, 6, 5, c(['blue', 'green', 'red'][i], 3));
+    p.rect(x, 10, 4, 4, c('skin', 3))
+      .rect(x, 9, 4, 2, c(hair[i][0], hair[i][1]))
+      .rect(x - 1, 14, 6, 5, c(['blue', 'green', 'red'][i], 3));
     p.disc(x + 4, 6, 2, c(['pink', 'yellow', 'teal'][i], 3)).rect(x + 4, 8, 1, 5, c('paper', 4));
   }
   return p;
@@ -183,8 +190,35 @@ function art(a: Area): void {
   a.solid('mirror', mirror(a.tiles.pic('mist')));
   a.prop('villager', 'mist', figure({ shirt: ['orange', 2], pants: ['brown', 1], hair: ['ink', 1], arms: 'up' }));
   sign(['WISDOM:', '2 DAYS UP', 'NO REFUNDS'], 3, { board: 'wood', ink: 'paper' }).forEach((px, i) => a.solid(`wisdom${i}`, px));
-  a.monster('puff', [[mistPuff(0), 9], [mistPuff(1), 9]], { path: [[4, 0, 1], [-4, 0, 1]] });
-  a.monster('goat', [[goat(0), 4], [goat(1), 4]], { hazard: true, path: [[0, 3, 1], [3, 0, 1], [0, -3, 1], [-3, 0, 1]] });
+  a.monster(
+    'puff',
+    [
+      [mistPuff(0), 9],
+      [mistPuff(1), 9],
+    ],
+    {
+      path: [
+        [4, 0, 1],
+        [-4, 0, 1],
+      ],
+    },
+  );
+  a.monster(
+    'goat',
+    [
+      [goat(0), 4],
+      [goat(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 3, 1],
+        [3, 0, 1],
+        [0, -3, 1],
+        [-3, 0, 1],
+      ],
+    },
+  );
 
   // The Ledger of the Woods
   a.tile('forest', floor('night', 3));
@@ -195,9 +229,29 @@ function art(a: Area): void {
   a.solid('ledger', ledger(a.tiles.pic('forest')));
   a.solid('fire0', campfire(0, a.tiles.pic('forest')), { next: 'fire1', ntime: 4 });
   a.solid('fire1', campfire(1, a.tiles.pic('forest')), { next: 'fire0', ntime: 4 });
-  sign(['ONLY YOU CAN', 'BALANCE THE', 'BOOKS'], 3, { board: 'brown', ink: 'paper' }).forEach((px, i) => a.solid(`smokey${i}`, px));
-  a.monster('hoot', [[hoot(0), 4], [hoot(1), 4]], { hazard: true, path: [[0, 4, 2], [0, -4, 2]] });
-  a.patrol('hoot', [[5, 0, 2], [-5, 0, 2]], 'hootH');
+  sign(['ONLY YOU CAN', 'BALANCE THE', 'BOOKS'], 3, { board: 'brown', ink: 'paper' }).forEach((px, i) => a.solid(`ranger${i}`, px));
+  a.monster(
+    'hoot',
+    [
+      [hoot(0), 4],
+      [hoot(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 4, 2],
+        [0, -4, 2],
+      ],
+    },
+  );
+  a.patrol(
+    'hoot',
+    [
+      [5, 0, 2],
+      [-5, 0, 2],
+    ],
+    'hootH',
+  );
 
   // Silence Has Teeth
   a.tile('cellfloor', floor('stone', 9));
@@ -207,7 +261,22 @@ function art(a: Area): void {
   a.solid('celldoor', cellDoor());
   a.prop('warden', 'cellfloor', figure({ shirt: ['blue', 1], pants: ['ink', 1], hat: { kind: 'cap', color: ['blue', 0] }, face: 'plain' }));
   sign(['QUIET HOURS:', 'ALWAYS'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`quiet${i}`, px));
-  a.monster('echo', [[echo(0), 6], [echo(1), 6]], { hazard: true, path: [[5, 0, 1], [0, 2, 1], [-5, 0, 1], [0, -2, 1]] });
+  a.monster(
+    'echo',
+    [
+      [echo(0), 6],
+      [echo(1), 6],
+    ],
+    {
+      hazard: true,
+      path: [
+        [5, 0, 1],
+        [0, 2, 1],
+        [-5, 0, 1],
+        [0, -2, 1],
+      ],
+    },
+  );
 
   // The Incomplete Idiot
   a.tile('den', floor('carpet', 3, 'green'));
@@ -217,16 +286,45 @@ function art(a: Area): void {
   a.solid('phd', diploma());
   a.prop('wife', 'den', figure({ shirt: ['teal', 3], dress: true, hair: ['grey', 4], hairStyle: 'bun', glasses: true, face: 'happy' }));
   sign(['THE DAILY', 'COMPLETE', 'IDIOT'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`daily${i}`, px));
-  a.monster('paper', [[flyingPaper(0), 3], [flyingPaper(1), 3]], { hazard: true, path: [[6, 0, 2], [-6, 0, 2]] });
+  a.monster(
+    'paper',
+    [
+      [flyingPaper(0), 3],
+      [flyingPaper(1), 3],
+    ],
+    {
+      hazard: true,
+      path: [
+        [6, 0, 2],
+        [-6, 0, 2],
+      ],
+    },
+  );
 
   // the hallway's guest: Doc Leo, after hours, with his rubber chicken
-  a.monster('leoNight', [[docLeo(0), 6], [docLeo(1), 6]], { path: [[5, 0, 1], [-5, 0, 1]] });
+  a.monster(
+    'leoNight',
+    [
+      [docLeo(0), 6],
+      [docLeo(1), 6],
+    ],
+    {
+      path: [
+        [5, 0, 1],
+        [-5, 0, 1],
+      ],
+    },
+  );
 }
 
 export const AFTER: WingSpec = {
   wing: WINGS[5],
   tint: 'purple',
-  stamp: [['red', 1], ['brass', 3], ['paper', 4]],
+  stamp: [
+    ['red', 1],
+    ['brass', 3],
+    ['paper', 4],
+  ],
   signs: [
     ['AFTER HOURS:', 'WHISPER', 'QUIETER'],
     ['PLEASE RETURN', 'THE SILENCE', 'BY MIDNIGHT'],
@@ -262,7 +360,7 @@ export const AFTER: WingSpec = {
         P: { tile: '.', mon: 'puff' },
         G: { tile: '.', mon: 'goat' },
       },
-      note: 'A village, a mountain shrouded in mist, a wise one at the top. Two days\' climb. Mind the goat. The view from the top is very reflective.',
+      note: "A village, a mountain shrouded in mist, a wise one at the top. Two days' climb. Mind the goat. The view from the top is very reflective.",
       twist: {
         grid: [
           ['rock0', 'shack', 'mirror', 'rock1'],
@@ -293,9 +391,9 @@ export const AFTER: WingSpec = {
         l: 'ledger',
         g: 'guild',
         f: 'fire0',
-        '1': 'smokey0',
-        '2': 'smokey1',
-        '3': 'smokey2',
+        '1': 'ranger0',
+        '2': 'ranger1',
+        '3': 'ranger2',
         H: { tile: '.', mon: 'hootH' },
         h: { tile: '.', mon: 'hoot' },
       },
@@ -313,13 +411,13 @@ export const AFTER: WingSpec = {
       floor: 'cellfloor',
       rows: [
         '#wwwBww123wBwww#',
-        '#o............+#',
-        '#.~..........o.#',
+        '#o..........#*+#',
+        '#.~.........o#%#',
         '#*.c....S......#',
         '#..............#',
         '#+..o...@.....~#',
         '#..............#',
-        '#o..+.....*..o.#',
+        '#o..+........o.#',
         '#~...........+.E',
         '#X######D######L',
       ],
@@ -333,7 +431,7 @@ export const AFTER: WingSpec = {
         '3': 'quiet2',
         S: { tile: '.', mon: 'echo' },
       },
-      note: 'Alone. In the dark. No one to tell to be quiet. The echoes are the noisiest thing in the universe, and they fine you for listening.',
+      note: 'Alone. In the dark. No one to tell to be quiet. The echoes fine you for listening. The corner has a word lock: carry 20 words and it lets you in.',
       twist: {
         grid: [
           ['bars', 'cellwall', 'celldoor'],

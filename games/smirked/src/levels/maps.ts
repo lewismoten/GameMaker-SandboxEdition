@@ -95,7 +95,6 @@ function rows(lines: string[]): { w: number; h: number; lines: string[] } {
   return { w, h: lines.length, lines };
 }
 
-
 // How many blocks of walk-in hall lie behind each level's door, link at the far end: at five
 // ticks a block, enough for the door's voice to finish before the scene changes.
 export const FOG_HALL = 7;
@@ -178,6 +177,10 @@ const CRYPT: Record<string, string> = {
   j: 'juiceS',
   g: 'glowstickS',
   S: 'staffDoor',
+  h: 'tinHeart',
+  '1': 'getDown0',
+  '2': 'getDown1',
+  '3': 'getDown2',
 };
 
 /** Where the papier-mache witches stand. */
@@ -193,12 +196,12 @@ export const WITCHES: [number, number][] = [
 export function zombieParade(book: BlockBook): Level {
   const map = rows([
     '#WWLWWWWLWWWWWLWWWWLWWWWWLWWWWW#',
-    '#.....t.u.t.......,.....c....$.#',
+    '#h....t.u.t.......,.....c....$.#',
     '#..$..........*........l.u....,#',
     '#..fff....,......c.........x...#',
     '#.........t.l.u.......*........#',
     '#.,..j.............,.......fff.#',
-    '#........c....x......t.u.t.....#',
+    '#.123....c....x........u.......#',
     '#....................g.........#',
     '#....,.....*.........,.........S',
     '#..t.u.t.......c.........$.....#',
@@ -242,12 +245,13 @@ const WOODS: Record<string, string> = {
   p: 'plush',
   m: 'mugs',
   R: 'register',
+  E: 'egg',
 };
 
 export function fakeWoods(book: BlockBook): Level {
   const map = rows([
     '#HHhHHHhHHHHhHHHhHHHHhHHHhHHHHhHH#',
-    '#..,..T....,.w...B.....T..,..t...#',
+    '#..,..T....,.w...B.....T..,..t..E#',
     '#.$...t..l..,w..$..T....w..*..,..#',
     '#.,..wwww..T.w....l..k..w..B..j..#',
     '#..T...........e.....,..w....t$..#',
@@ -256,7 +260,7 @@ export function fakeWoods(book: BlockBook): Level {
     '#....T...e....,......B.....,.....#',
     '#.,.....wwwww....t...l.....wwww..#',
     '#..$.T.......B....,....$.....T...#',
-    '#.....,..l.....j....t.....e....,.#',
+    '#.....,..l.....*....t.....e....,.#',
     '#.t..k.....T.....,.....,.ssppmm..#',
     '#..,..$.*....,.....l...........$.#',
     '#.J...T....,...e......*...,......R',
@@ -265,7 +269,14 @@ export function fakeWoods(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'wallTop', WOODS);
   m.patch(0, 0, map.lines);
-  m.mon(MON.lily, 2, 1).mon(MON.werewolf, 20, 9).mon(MON.spider, 9, 1).mon(MON.spider, 24, 9).mon(MON.carl, 15, 11).mon(MON.bill, 7, 9).mon(MON.bill, 19, 13).mon(MON.bill, 27, 3);
+  m.mon(MON.lily, 2, 1)
+    .mon(MON.werewolf, 20, 9)
+    .mon(MON.spider, 9, 1)
+    .mon(MON.spider, 24, 9)
+    .mon(MON.carl, 15, 11)
+    .mon(MON.bill, 7, 9)
+    .mon(MON.bill, 19, 13)
+    .mon(MON.bill, 28, 3);
   // the way through, past the register: "I get a souvenir sword"
   m.hall(34, 13, 1, 0, SHOP_HALL, '.', 'next');
   return { m, start: at(1, 2), size: [map.w + SHOP_HALL, map.h] };
@@ -289,6 +300,7 @@ const HALL: Record<string, string> = {
   j: 'juiceC',
   L: 'loafC',
   r: 'remoteC',
+  W: 'willCurtain',
 };
 
 export function lastHall(book: BlockBook): Level {
@@ -296,11 +308,11 @@ export function lastHall(book: BlockBook): Level {
     '##############E###############',
     ...Array.from({ length: EXIT_HALL - 1 }, () => '##############.###############'),
     '#VVVVVVVVVVVVV.VVVVVVVVVVVVVV#',
-    '#sspmmVVVVVVVVXVVVVVVVVVsspmm#',
+    '#sspmmVVWVVVVVXVVVVVVVVVsspmm#',
     '#.....,......................#',
     '#..L....*.........*......r...#',
     '#.....pp.....,......mm.......#',
-    '#..j..........$..........,...#',
+    '#..*..........$..........,...#',
     '#.......,.........*..........#',
     '#..ss.......dD........ss..$..#',
     '#.....$.................,....#',
@@ -311,7 +323,10 @@ export function lastHall(book: BlockBook): Level {
   const m = new MapBuilder(book, 'wallTop', HALL);
   m.patch(0, 0, map.lines);
   const y = HALL_TOP;
-  m.mon(MON.knight, 22, 3 + y).mon(MON.lilyNear, 16, 10 + y).mon(MON.bat, 4, 5 + y).mon(MON.bat, 25, 6 + y);
+  m.mon(MON.knight, 22, 3 + y)
+    .mon(MON.lilyNear, 16, 10 + y)
+    .mon(MON.bat, 4, 5 + y)
+    .mon(MON.bat, 25, 6 + y);
   // up the exit corridor to the sign at its end: "the emergency exit sign"
   m.link(14, 1, 'won');
   return { m, start: at(14, 10 + y), size: [map.w, map.h] };

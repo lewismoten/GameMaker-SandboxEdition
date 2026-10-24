@@ -12,7 +12,13 @@ export function prefetchWhenIdle(loaders: (() => Promise<unknown>)[], delay = 30
   const idle: Idle = (window as unknown as { requestIdleCallback?: Idle }).requestIdleCallback ?? ((cb) => window.setTimeout(cb, 200));
   const next = (i: number) => {
     if (i >= loaders.length) return;
-    idle(() => void loaders[i]().catch(() => undefined).then(() => next(i + 1)), { timeout: 5000 });
+    idle(
+      () =>
+        void loaders[i]()
+          .catch(() => undefined)
+          .then(() => next(i + 1)),
+      { timeout: 5000 },
+    );
   };
   window.setTimeout(() => next(0), delay);
 }

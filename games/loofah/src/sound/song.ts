@@ -40,13 +40,48 @@ export const BPM = 89;
 // ---- the patches --------------------------------------------------------------------------
 
 /** The singer: a dark baritone (vibrato on both operators, a half-sine modulator). */
-const SINGER = sbi({ modChar: 0x61, carChar: 0x61, modLevel: 0x1a, carLevel: 0x00, modAD: 0x63, carAD: 0x74, modSR: 0x15, carSR: 0x16, modWave: 1, feedback: 0x0c });
+const SINGER = sbi({
+  modChar: 0x61,
+  carChar: 0x61,
+  modLevel: 0x1a,
+  carLevel: 0x00,
+  modAD: 0x63,
+  carAD: 0x74,
+  modSR: 0x15,
+  carSR: 0x16,
+  modWave: 1,
+  feedback: 0x0c,
+});
 /** His twin without the vibrato: the choir. */
 const CHOIR = detuned(SINGER);
 /** Ringing power chords: full feedback, a half-sine modulator into a pulse-wave carrier (fuzz). */
-const FUZZ = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x0c, carLevel: 0x03, modAD: 0xf2, carAD: 0xf3, modSR: 0x2a, carSR: 0x1a, modWave: 1, carWave: 3, feedback: 0x0e });
+const FUZZ = sbi({
+  modChar: 0x21,
+  carChar: 0x21,
+  modLevel: 0x0c,
+  carLevel: 0x03,
+  modAD: 0xf2,
+  carAD: 0xf3,
+  modSR: 0x2a,
+  carSR: 0x1a,
+  modWave: 1,
+  carWave: 3,
+  feedback: 0x0e,
+});
 /** Palm-muted: the same fuzz, dying away fast. */
-const CHUG = sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x0c, carLevel: 0x03, modAD: 0xf6, carAD: 0xf7, modSR: 0x58, carSR: 0x48, modWave: 1, carWave: 3, feedback: 0x0e });
+const CHUG = sbi({
+  modChar: 0x01,
+  carChar: 0x01,
+  modLevel: 0x0c,
+  carLevel: 0x03,
+  modAD: 0xf6,
+  carAD: 0xf7,
+  modSR: 0x58,
+  carSR: 0x48,
+  modWave: 1,
+  carWave: 3,
+  feedback: 0x0e,
+});
 /** A picked bass, eighths. */
 const PICK = sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x14, carLevel: 0x00, modAD: 0xf5, carAD: 0xf4, modSR: 0x36, carSR: 0x36, feedback: 0x0c });
 /** The cathedral organ, and its swell from a whisper to full (8 steps). */
@@ -378,16 +413,35 @@ const goth = (n: number, last = 'fill') => [...new Array(n - 1).fill('goth'), la
 
 /** A verse: the guitars chug, the organ arpeggio. */
 const verse = (a: Arranger, s: Section, o: { vel?: number; shift?: number; lite?: boolean } = {}) =>
-  a.section(s, { gtr: o.lite ? 'ring' : 'chug', sing: 'solo', org: o.lite ? 'hold' : 'arp', bass: o.lite ? 'long' : 'eighths', drums: goth(s.tune.length), vel: o.vel ?? 98, shift: o.shift });
+  a.section(s, {
+    gtr: o.lite ? 'ring' : 'chug',
+    sing: 'solo',
+    org: o.lite ? 'hold' : 'arp',
+    bass: o.lite ? 'long' : 'eighths',
+    drums: goth(s.tune.length),
+    vel: o.vel ?? 98,
+    shift: o.shift,
+  });
 /** A chorus: the choir, ringing chords, the full kit. */
 const chorus = (a: Arranger, s: Section, o: { vel?: number; shift?: number; lite?: boolean } = {}) =>
-  a.section(s, { gtr: 'ring', sing: 'choir', org: 'hold', bass: o.lite ? 'long' : 'eighths', drums: ['crash', ...(o.lite ? goth : drive)(s.tune.length - 1)], vel: o.vel ?? 106, shift: o.shift });
+  a.section(s, {
+    gtr: 'ring',
+    sing: 'choir',
+    org: 'hold',
+    bass: o.lite ? 'long' : 'eighths',
+    drums: ['crash', ...(o.lite ? goth : drive)(s.tune.length - 1)],
+    vel: o.vel ?? 106,
+    shift: o.shift,
+  });
 /** The menu plays the whole song, so it is written lighter (a CMF must fit in 20 KB). */
 const LITE = { lite: true } as const;
 /** The tribal intro: toms and organ, the bell. */
 function intro(a: Arranger, bars = 2): void {
   const at = a.bar * 4;
-  a.section({ name: 'intro', chords: new Array(bars).fill('Fm'), tune: new Array(bars).fill('r w') }, { gtr: 'none', sing: 'none', org: 'hold', bass: 'long', drums: ['tribal'], vel: 96 });
+  a.section(
+    { name: 'intro', chords: new Array(bars).fill('Fm'), tune: new Array(bars).fill('r w') },
+    { gtr: 'none', sing: 'none', org: 'hold', bass: 'long', drums: ['tribal'], vel: 96 },
+  );
   a.toll(at, 2);
 }
 /** Verse 2 with its pickup ("There it") in the bar before it. */
@@ -399,7 +453,10 @@ export function titleSong(): Uint8Array {
   intro(a);
   a.swell('Fm', 2).roll(2);
   chorus(a, CHORUS);
-  a.section({ name: 'tag', chords: ['Fm', 'Fm'], tune: ['r w', 'r w'] }, { gtr: 'ring', sing: 'none', org: 'none', bass: 'long', drums: ['crash', 'none'], vel: 100 });
+  a.section(
+    { name: 'tag', chords: ['Fm', 'Fm'], tune: ['r w', 'r w'] },
+    { gtr: 'ring', sing: 'none', org: 'none', bass: 'long', drums: ['crash', 'none'], vel: 100 },
+  );
   return a.cmf();
 }
 
@@ -438,9 +495,15 @@ export function levelSongs(): Uint8Array[] {
   // Scrubbus Maximus: the organ alone, the bridge crashing in, chorus 1 and then up a half step
   const four = new Arranger();
   four.swell('Fm', 2);
-  four.section({ ...BRIDGE, name: 'scrubbus', chords: BRIDGE.chords.slice(0, 2), tune: BRIDGE.tune.slice(0, 2) }, { gtr: 'none', sing: 'solo', org: 'hold', bass: 'long', drums: ['half'], vel: 100 });
+  four.section(
+    { ...BRIDGE, name: 'scrubbus', chords: BRIDGE.chords.slice(0, 2), tune: BRIDGE.tune.slice(0, 2) },
+    { gtr: 'none', sing: 'solo', org: 'hold', bass: 'long', drums: ['half'], vel: 100 },
+  );
   four.roll(1);
-  four.section({ ...BRIDGE, name: 'brine', chords: BRIDGE.chords.slice(2), tune: BRIDGE.tune.slice(2) }, { gtr: 'ring', sing: 'choir', org: 'arp', bass: 'eighths', drums: ['crash', ...drive(4)], vel: 108 });
+  four.section(
+    { ...BRIDGE, name: 'brine', chords: BRIDGE.chords.slice(2), tune: BRIDGE.tune.slice(2) },
+    { gtr: 'ring', sing: 'choir', org: 'arp', bass: 'eighths', drums: ['crash', ...drive(4)], vel: 108 },
+  );
   chorus(four, CHORUS, { vel: 110 });
   four.roll(1, [54, 52, 49, 47]);
   chorus(four, CHORUS, { vel: 114, shift: 1 });
@@ -453,7 +516,10 @@ export function wonSong(): Uint8Array {
   a.section({ name: 'pickup', chords: ['C'], tune: ['r w'] }, { gtr: 'ring', sing: 'none', org: 'hold', bass: 'eighths', drums: ['fill'], vel: 100 });
   chorus(a, CHORUS2, { vel: 108 });
   const at = a.bar * 4;
-  a.section({ ...OUTRO, name: 'never', chords: OUTRO.chords.slice(5), tune: OUTRO.tune.slice(5) }, { gtr: 'ring', sing: 'choir', org: 'hold', bass: 'long', drums: ['goth', 'goth', 'crash', 'none'], vel: 100 });
+  a.section(
+    { ...OUTRO, name: 'never', chords: OUTRO.chords.slice(5), tune: OUTRO.tune.slice(5) },
+    { gtr: 'ring', sing: 'choir', org: 'hold', bass: 'long', drums: ['goth', 'goth', 'crash', 'none'], vel: 100 },
+  );
   a.toll(at + 12, 2);
   return a.cmf();
 }
@@ -461,7 +527,10 @@ export function wonSong(): Uint8Array {
 /** Lost: "I'm sleeping alone with a washcloth of shame", slow, the organ and the bell. */
 export function lostSong(): Uint8Array {
   const a = new Arranger(76);
-  a.section({ ...OUTRO, name: 'alone', chords: OUTRO.chords.slice(0, 5), tune: OUTRO.tune.slice(0, 5) }, { gtr: 'none', sing: 'solo', org: 'hold', bass: 'long', drums: ['heart'], vel: 88 });
+  a.section(
+    { ...OUTRO, name: 'alone', chords: OUTRO.chords.slice(0, 5), tune: OUTRO.tune.slice(0, 5) },
+    { gtr: 'none', sing: 'solo', org: 'hold', bass: 'long', drums: ['heart'], vel: 88 },
+  );
   a.toll((a.bar - 1) * 4, 2, 41);
   return a.cmf();
 }
@@ -480,7 +549,14 @@ export function wholeSong(): Uint8Array {
   a.section(BRIDGE, { gtr: 'ring', sing: 'choir', org: 'hold', bass: 'long', drums: ['half', 'half', 'crash', ...goth(4)], vel: 104 });
   a.swell('Fm', 1);
   chorus(a, CHORUS2, { vel: 106, lite: true });
-  a.section(OUTRO, { gtr: 'ring', sing: 'solo', org: 'hold', bass: 'long', drums: ['goth', 'goth', 'goth', 'goth', 'goth', 'goth', 'goth', 'crash', 'none'], vel: 96 });
+  a.section(OUTRO, {
+    gtr: 'ring',
+    sing: 'solo',
+    org: 'hold',
+    bass: 'long',
+    drums: ['goth', 'goth', 'goth', 'goth', 'goth', 'goth', 'goth', 'crash', 'none'],
+    vel: 96,
+  });
   a.toll((a.bar - 2) * 4, 3, 41);
   return a.cmf();
 }

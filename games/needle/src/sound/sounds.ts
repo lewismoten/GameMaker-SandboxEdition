@@ -52,9 +52,36 @@ export type Place = 'city' | 'desert' | 'tailor' | 'eye';
 export function buildVocs(): Record<string, Uint8Array> {
   const vocs: Record<string, Uint8Array> = {};
   // a hop: two hooves, clip-clop
-  vocs.clop = sample(0.28, mix([gate(osc.sine((t) => 420 - t * 900), 0, 0.06), 0.8], [gate(osc.sine((t) => 520 - (t - 0.12) * 900), 0.12, 0.18), 0.7], [lowNoise(2, 0.6), 0.15]), { envelope: env(0.005, 0.6) });
+  vocs.clop = sample(
+    0.28,
+    mix(
+      [
+        gate(
+          osc.sine((t) => 420 - t * 900),
+          0,
+          0.06,
+        ),
+        0.8,
+      ],
+      [
+        gate(
+          osc.sine((t) => 520 - (t - 0.12) * 900),
+          0.12,
+          0.18,
+        ),
+        0.7,
+      ],
+      [lowNoise(2, 0.6), 0.15],
+    ),
+    // softer than the singing: it is heard on every hop
+    { envelope: env(0.005, 0.6), gain: 0.6 },
+  );
   // kneeling: a low camel grumble, "hrrrmph"
-  vocs.grumble = sample(0.5, voice((t) => 95 + 20 * Math.sin(t * 40) - t * 30, 500, 1100, 4, 0.12), { envelope: env(0.04, 1.2) });
+  vocs.grumble = sample(
+    0.5,
+    voice((t) => 95 + 20 * Math.sin(t * 40) - t * 30, 500, 1100, 4, 0.12),
+    { envelope: env(0.04, 1.2) },
+  );
   // a coin given: a bright clink
   vocs.clink = sample(0.35, mix([osc.sine(2093), 0.5], [osc.sine(3136), 0.3], [osc.sine(4186), 0.15]), { envelope: env(0.002, 2.6) });
   // a chime (points)
@@ -62,9 +89,17 @@ export function buildVocs(): Record<string, Uint8Array> {
   // a long drink of water
   vocs.sip = sample(0.36, mix([gate(lowNoise(5, 0.2), 0, 0.16), 0.4], [osc.sine((t) => 380 + t * 700), 0.4]), { envelope: env(0.05, 1) });
   // hurt: a startled bleat
-  vocs.bleat = sample(0.4, voice((t) => 330 + 30 * Math.sin(t * 60), 700, 1800, 5, 0.06), { envelope: env(0.03, 1.1) });
+  vocs.bleat = sample(
+    0.4,
+    voice((t) => 330 + 30 * Math.sin(t * 60), 700, 1800, 5, 0.06),
+    { envelope: env(0.03, 1.1) },
+  );
   // fainting: a long, sinking sigh
-  vocs.sigh = sample(1.0, voice((t) => 260 - t * 140, 600, 1000, 6, 0.08), { envelope: env(0.06, 0.9) });
+  vocs.sigh = sample(
+    1.0,
+    voice((t) => 260 - t * 140, 600, 1000, 6, 0.08),
+    { envelope: env(0.06, 0.9) },
+  );
   // a star caught: a twinkle
   vocs.twinkle = sample(0.45, mix([osc.sine((t) => 1800 + 900 * Math.sin(t * 50)), 0.5], [osc.sine(3600), 0.2]), { envelope: env(0.01, 1.8) });
   for (const name of CLIPS) vocs[name] = clipVoc(name);
@@ -79,17 +114,33 @@ export function buildSoundSet(place: Place): SoundSet {
     set.digital[n] = name;
   };
   add(SND.help, 'sip', SPEAKER.rise(400, 900));
-  add(SND.kill, 'twinkle', speaker((i) => (i < 6 ? 1800 + (i % 2) * 600 : 0)));
+  add(
+    SND.kill,
+    'twinkle',
+    speaker((i) => (i < 6 ? 1800 + (i % 2) * 600 : 0)),
+  );
   add(SND.money, 'clink', SPEAKER.coin());
-  add(SND.pay, 'gold', speaker((i) => (i < 5 ? 2000 - i * 200 : 0)));
+  add(
+    SND.pay,
+    'gold',
+    speaker((i) => (i < 5 ? 2000 - i * 200 : 0)),
+  );
   add(SND.life, 'thread', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
-  add(SND.score, 'chime', speaker((i) => (i < 6 ? 1319 : i < 14 ? 1976 : 0)));
+  add(
+    SND.score,
+    'chime',
+    speaker((i) => (i < 6 ? 1319 : i < 14 ? 1976 : 0)),
+  );
   add(SND.lose, 'sigh', SPEAKER.fall(600, 200));
   // a counter up (a grace, a spool) is the PC speaker's alone: a soul's thanks (a grace) comes
   // the very tick after the coin, and a .VOC there would cut "Drop that gold..." 50 ms in
   set.freqs[SND.gain] = speaker((i) => (i < 8 ? 900 + i * 120 : 0));
   add(SND.spend, place === 'eye' ? 'humpdown' : 'squeeze', SPEAKER.noise(3, 60, 300));
-  add(SND.hop, 'clop', speaker((i) => (i < 3 ? 500 : i < 6 ? 0 : i < 9 ? 600 : 0)));
+  add(
+    SND.hop,
+    'clop',
+    speaker((i) => (i < 3 ? 500 : i < 6 ? 0 : i < 9 ? 600 : 0)),
+  );
   add(SND.kneel, 'grumble', SPEAKER.noise(4, 70, 160));
   add(SND.hurt, 'bleat', SPEAKER.warble(500, 80, 2.4));
   add(SND.faint, 'sigh', SPEAKER.fall(500, 100));

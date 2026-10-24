@@ -1,6 +1,8 @@
 /* The cast page (#/cast). */
 
 main.cast {
+  --cast-sprite-lit: #eef1f7;
+  --cast-sprite-bg: #b9c1d3;
   --fam-sandbox: #b8860b;
   --fam-bizarre: #8e3bb5;
   --fam-cd: #2f7d4f;
@@ -12,6 +14,8 @@ main.cast {
 }
 
 :root[data-theme='dark'] main.cast {
+  --cast-sprite-lit: #8a90a8;
+  --cast-sprite-bg: #3a3f55;
   --fam-sandbox: #f0c040;
   --fam-bizarre: #d29bf0;
   --fam-cd: #6fd39a;
@@ -19,6 +23,8 @@ main.cast {
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme='auto'] main.cast {
+    --cast-sprite-lit: #8a90a8;
+    --cast-sprite-bg: #3a3f55;
     --fam-sandbox: #f0c040;
     --fam-bizarre: #d29bf0;
     --fam-cd: #6fd39a;
@@ -163,6 +169,11 @@ main.cast .lead {
   border-radius: 8px;
   background: #0b0b18;
   overflow: hidden;
+}
+
+/* sprites stand in a soft light, so dark outlines (Carl's, Joe's) read in either theme */
+.cast-pic:has(img.sprite) {
+  background: radial-gradient(circle at 50% 60%, var(--cast-sprite-lit) 0%, var(--cast-sprite-bg) 75%);
 }
 
 .cast-pic img {
@@ -331,7 +342,6 @@ main.cast .lead {
   min-width: 6.5rem;
 }
 
-
 /* ---- seen in ---- */
 
 .cast-seen-box {
@@ -382,4 +392,9 @@ main.cast .lead {
   overflow: hidden;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+/* Mystery Robot Joe is tin gray: he stands against the reading room's warm wood paneling */
+#cast-joe .cast-pic {
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 26px), radial-gradient(circle at 50% 55%, #c98a4b 0%, #7a4a22 80%);
 }

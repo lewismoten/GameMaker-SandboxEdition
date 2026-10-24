@@ -1,0 +1,767 @@
+/* The Owner's Guide and the registration card beside the monitor while GM asks (regSide.ts) */
+.rs {
+  --rs-paper: #f5f0e0;
+  --rs-ink: #1d1a14;
+  --rs-red: #a3121a;
+  --rs-line: #9e967c;
+  --rs-focus: #1f5fd1;
+}
+
+.rs-panel {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 6px;
+  color: var(--rs-ink);
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  animation: rs-in 260ms ease-out;
+}
+
+.rs-panel[hidden] {
+  display: none;
+}
+
+@keyframes rs-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+/* the guide: a page on a dark clipboard-like tray */
+.rs-manual {
+  gap: 6px;
+  padding: 8px 10px 10px;
+  background: #2b2620;
+  color: #f1ead6;
+}
+
+.rs-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rs-head h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.rs-sub {
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.rs-ask {
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: #3d362c;
+  font-size: 13px;
+}
+
+.rs-page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  container-type: inline-size;
+}
+
+/* the page as wide as the panel, its type no smaller than 13px: a tall page scrolls */
+.rs-page .mpage {
+  width: 100%;
+  height: auto;
+  min-height: calc(100cqw * 8.5 / 5.5);
+  max-width: none;
+  aspect-ratio: auto;
+  cursor: default;
+  background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.4), transparent 60%), var(--rs-paper);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.rs-page .mpage-in {
+  position: relative;
+  inset: auto;
+  box-sizing: border-box;
+  min-height: calc(100cqw * 8.5 / 5.5);
+  padding: max(8cqw, 30px) 8.5cqw max(10cqw, 36px);
+  font-size: max(3.05cqw, 13px);
+  line-height: 1.38;
+}
+
+/* tables, notes and captions: readable too */
+.rs-page .mpage table,
+.rs-page .mpage .note {
+  font-size: max(2.35cqw, 12px);
+}
+
+.rs-page .mpage figcaption {
+  font-size: max(2.1cqw, 11px);
+}
+
+.rs-page .mpage .runhead {
+  top: 4cqw;
+  left: 8.5cqw;
+  right: 8.5cqw;
+  font-size: max(2.4cqw, 11px);
+}
+
+.rs-page .mpage .folio {
+  bottom: 4.2cqw;
+  font-size: max(2.5cqw, 11px);
+}
+
+.rs-page .rs-mark {
+  background: linear-gradient(transparent 8%, rgba(255, 214, 10, 0.42) 8%, rgba(255, 214, 10, 0.42) 92%, transparent 92%);
+  box-shadow:
+    -0.6cqw 0 0 rgba(255, 214, 10, 0.42),
+    0.6cqw 0 0 rgba(255, 214, 10, 0.42);
+}
+
+.rs-page .rs-word {
+  padding: 0 0.3cqw;
+  border-radius: 0.4cqw;
+  background: #ff9d3b;
+  color: inherit;
+  box-shadow: 0 0 0 0.25cqw #c45f00;
+}
+
+/* the answer typed here goes to GM: for touch screens without a keyboard */
+.rs-answer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rs-answer[hidden],
+.rs-wide .rs-answer {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .rs-wide .rs-answer:not([hidden]) {
+    display: flex;
+  }
+}
+
+.rs-answer label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rs .rs-answer-in {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid #8d846b;
+  border-radius: 4px;
+  background: #fffdf4;
+  color: var(--rs-ink);
+  font:
+    600 16px 'Courier New',
+    monospace;
+  text-transform: uppercase;
+}
+
+.rs-loading {
+  margin: 40px 0;
+}
+
+.rs-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.rs-btn {
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid #8d846b;
+  border-radius: 4px;
+  background: linear-gradient(#f4efe1, #d9d1b8);
+  color: var(--rs-ink);
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.rs-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.rs-btn[aria-pressed='true'] {
+  background: linear-gradient(#ffe36b, #f0c419);
+}
+
+.rs-x {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font:
+    22px/1 system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.rs-x:hover {
+  background: rgba(127, 127, 127, 0.25);
+}
+
+.rs :focus-visible {
+  outline: 3px solid var(--rs-focus);
+  outline-offset: 2px;
+}
+
+.rs-manual :focus-visible {
+  outline-color: #ffd23f;
+}
+
+/* the card: cream stock, the red band of the box insert */
+.rs-card {
+  overflow: auto;
+  color-scheme: light;
+  background: var(--rs-paper);
+  border-top: 6px solid var(--rs-red);
+}
+
+.rs-card-head {
+  padding: 8px 8px 6px 14px;
+  border-bottom: 2px solid var(--rs-ink);
+}
+
+.rs-brand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.rs-brand b {
+  color: var(--rs-red);
+  font:
+    800 15px Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.rs-brand span {
+  font-size: 12px;
+}
+
+.rs-card-body {
+  padding: 10px 14px 4px;
+}
+
+.rs-card h2 {
+  margin: 0 0 4px;
+  font:
+    700 17px Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.rs-lead,
+.rs-serial {
+  margin: 0 0 8px;
+}
+
+.rs-serial b {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+}
+
+.rs-form {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rs-form label {
+  font-weight: 600;
+}
+
+.rs-form label small {
+  font-weight: 400;
+  color: #4a4436;
+}
+
+.rs .rs-in {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 5px 4px 3px;
+  border: 0;
+  border-bottom: 1.5px solid var(--rs-ink);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.55);
+  color: #12305e;
+  font:
+    600 17px 'Comic Sans MS',
+    'Bradley Hand',
+    'Segoe Print',
+    cursive;
+}
+
+.rs .rs-num {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.08em;
+}
+
+.rs .rs-in[aria-invalid='true'] {
+  border-bottom-color: var(--rs-red);
+  background: #fbe3e1;
+}
+
+.rs-msg {
+  min-height: 0;
+  margin: 0;
+  font-weight: 600;
+}
+
+.rs-msg:empty {
+  display: none;
+}
+
+.rs-msg.error {
+  color: var(--rs-red);
+}
+
+.rs-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.rs-apply {
+  border-color: #6d0b10;
+  background: linear-gradient(#c8242c, var(--rs-red));
+  color: #fff;
+}
+
+.rs-card [hidden] {
+  display: none !important;
+}
+
+/* the mail-in card: cream card stock with the red band, the printed lines in type */
+.rs-postcard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 8px;
+  padding: 0 10px 10px;
+  border: 1px solid var(--rs-line);
+  background: #fffbea;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  rotate: -0.4deg;
+}
+
+.rs-pc-band {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  margin: 0 -10px 4px;
+  padding: 4px 10px;
+  background: var(--rs-red);
+  color: #fff;
+  font:
+    12px Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.rs-pc-band b {
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.rs-printed,
+.rs-keyed {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 10px;
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.rs-printed dt,
+.rs-keyed dt {
+  font:
+    700 11px/1.8 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rs-printed dd,
+.rs-keyed dd {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.rs-name-l {
+  font-weight: 600;
+}
+
+.rs-name-l small,
+.rs-filled small,
+.rs-pick small {
+  font-weight: 400;
+  color: #4a4436;
+}
+
+.rs-hand {
+  color: #12305e;
+  font:
+    600 16px 'Comic Sans MS',
+    'Bradley Hand',
+    'Segoe Print',
+    cursive;
+}
+
+.rs-filled {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.rs-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 0 0 4px;
+  border: 0;
+}
+
+.rs-pick legend {
+  width: 100%;
+  padding: 0;
+  font-weight: 600;
+}
+
+.rs-pick label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  cursor: pointer;
+}
+
+.rs-pick input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--rs-red);
+}
+
+/* an earlier reply's number, written in by hand */
+.rs-byhand {
+  margin: 0 0 6px;
+}
+
+.rs-byhand summary {
+  min-height: 28px;
+  padding: 4px 0;
+  color: #12305e;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* the address side going into the mail: Business Reply Mail to RSD */
+.rs-brm {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  margin: 2px 0 8px;
+  padding: 10px;
+  border: 1px solid var(--rs-line);
+  background: #fffbea;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  font:
+    12px Helvetica,
+    Arial,
+    sans-serif;
+  animation: rs-flip 500ms ease-out;
+}
+
+@keyframes rs-flip {
+  from {
+    transform: perspective(600px) rotateY(-80deg);
+    opacity: 0.4;
+  }
+}
+
+.rs-brm p {
+  margin: 0;
+}
+
+.rs-from {
+  display: flex;
+  flex-direction: column;
+}
+
+.rs-from .rs-hand {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.rs-nopost {
+  width: 84px;
+  padding: 4px;
+  border: 1px solid var(--rs-ink);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.rs-bars {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rs-bars i {
+  height: 5px;
+  background: var(--rs-ink);
+}
+
+.rs-brm-h {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  padding: 4px 0;
+  border-block: 2px solid var(--rs-ink);
+}
+
+.rs-brm-h b {
+  font:
+    900 17px Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.rs-brm-h span,
+.rs-brm-h small {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rs-to {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 22%;
+  font-size: 13px;
+}
+
+.rs-to span:first-child {
+  font-weight: 800;
+}
+
+.rs-postmark {
+  position: absolute;
+  bottom: 14px;
+  left: 8px;
+  padding: 10px 6px;
+  border: 2px solid rgba(26, 58, 140, 0.75);
+  border-radius: 50%;
+  color: rgba(26, 58, 140, 0.8);
+  font:
+    800 11px Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+  rotate: -14deg;
+  animation: rs-stamp 300ms 450ms ease-in both;
+}
+
+@keyframes rs-stamp {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+.rs-days {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.rs-days b {
+  font:
+    italic 700 16px Georgia,
+    'Times New Roman',
+    serif;
+}
+
+/* RSD's reply: a dot-matrix letter on tractor-feed paper */
+.rs-letter {
+  margin: 2px 0 8px;
+  padding: 10px 26px 10px;
+  background:
+    radial-gradient(circle at 9px 9px, #d8cfb4 4px, transparent 4.5px) left top / 18px 18px repeat-y,
+    radial-gradient(circle at 9px 9px, #d8cfb4 4px, transparent 4.5px) right top / 18px 18px repeat-y,
+    repeating-linear-gradient(#fdfcf6 0 18px, #eef3e6 18px 36px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  color: #2a2a2a;
+  font:
+    13px/1.45 'Courier New',
+    Courier,
+    monospace;
+  animation: rs-in 400ms ease-out;
+}
+
+.rs-letter p {
+  margin: 0 0 6px;
+}
+
+.rs-lh {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed #777;
+  text-align: center;
+}
+
+.rs-lh b {
+  letter-spacing: 0.06em;
+}
+
+.rs-lh span {
+  font-size: 11px;
+}
+
+.rs-letter h3 {
+  margin: 0 0 4px;
+  font:
+    700 14px 'Courier New',
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rs-letter h3:focus {
+  outline: none;
+}
+
+.rs-keyed {
+  padding: 4px 6px;
+  border: 1px solid #555;
+}
+
+.rs-keyed dd {
+  font-size: 15px;
+}
+
+.rs-sign {
+  font-style: italic;
+}
+
+.rs-letter .rs-actions {
+  flex-wrap: wrap;
+  font-family: system-ui, sans-serif;
+}
+
+.rs-note {
+  margin: 4px 14px 12px;
+  font-size: 12px;
+  color: #4a4436;
+}
+
+.rs-reopen {
+  position: fixed;
+  z-index: 60;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 14px;
+  border: 1px solid #6d0b10;
+  border-radius: 999px;
+  background: var(--rs-paper);
+  color: var(--rs-ink);
+  font:
+    600 14px system-ui,
+    sans-serif;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+.rs-reopen.rs-unreg {
+  border: 2px solid #6d0b10;
+  border-radius: 4px;
+  background: var(--rs-red);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  rotate: 2deg;
+}
+
+.rs-reopen[hidden] {
+  display: none;
+}
+
+.rs-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* narrow windows: a sheet over the bottom of the window, one at a time */
+.rs-narrow .rs-panel {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 62dvh;
+  border-radius: 12px 12px 0 0;
+}
+
+.rs-narrow .rs-manual {
+  height: 62dvh;
+}
+
+.rs-swap[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-panel,
+  .rs-brm,
+  .rs-postmark,
+  .rs-letter {
+    animation: none;
+  }
+}
+
+/* in the mail and back again: the card's own words say what's going on */
+.rs-card:not([data-stage='card']) .rs-lead {
+  display: none;
+}

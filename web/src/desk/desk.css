@@ -17,9 +17,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   color: #f4f1e6;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%),
-    repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%), repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
   font:
     14px/1.4 system-ui,
     sans-serif;
@@ -27,7 +25,7 @@
 
 /* the desk top */
 .desk::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   right: 0;
@@ -35,11 +33,7 @@
   height: 38%;
   z-index: 0;
   background:
-    repeating-linear-gradient(
-      176deg,
-      rgba(0, 0, 0, 0.08) 0 3px,
-      transparent 3px 11px
-    ),
+    repeating-linear-gradient(176deg, rgba(0, 0, 0, 0.08) 0 3px, transparent 3px 11px),
     linear-gradient(180deg, #5a3a1f 0, var(--wood-b) 6px, var(--wood-a) 100%);
   box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.45);
 }
@@ -57,7 +51,7 @@
   margin: 0;
   font:
     700 16px/1 ui-monospace,
-    "Courier New",
+    'Courier New',
     monospace;
   letter-spacing: 0.25em;
   color: #ffd400;
@@ -66,6 +60,39 @@
 
 .desk-bar .spacer {
   flex: 1;
+}
+
+/* the Desk | DOS | Web switch (src/viewSwitch.ts) on the desk's wall, at the same top right as in
+   today's web header (its height, padding and the theme button's room after the switch) */
+.desk-bar {
+  box-sizing: border-box;
+  min-height: 50px;
+}
+
+.desk-bar .view-switch-end {
+  flex: none;
+  width: 44px;
+}
+
+@media (max-width: 600px) {
+  .desk-bar {
+    min-height: 48px;
+    gap: 6px;
+    padding: 0 8px;
+  }
+  /* one row on a phone: the logo and the switch (the edition line and the touch tip go) */
+  .desk-bar > span:not(.view-switch-end):not(.spacer) {
+    display: none;
+  }
+  .desk-bar h1 {
+    white-space: nowrap;
+  }
+}
+
+/* the Desk | DOS | Web switch (src/viewSwitch.ts) on the desk's wall */
+.desk-bar .view-switch {
+  color: #efe9d6;
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .desk-bar .touch-tip {
@@ -153,12 +180,7 @@
   width: 92%;
   padding: 5.5% 5.5% 9%;
   border-radius: 22px 22px 16px 16px;
-  background: linear-gradient(
-    160deg,
-    var(--plastic-hi),
-    var(--plastic) 40%,
-    var(--plastic-lo)
-  );
+  background: linear-gradient(160deg, var(--plastic-hi), var(--plastic) 40%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
     inset 0 -4px 0 var(--plastic-edge),
@@ -201,7 +223,7 @@
   background: #253;
 }
 
-.desk[data-power="on"] .monitor .monitor-led {
+.desk[data-power='on'] .monitor .monitor-led {
   background: var(--led-green);
   box-shadow: 0 0 8px var(--led-green);
 }
@@ -228,67 +250,35 @@
 
 /* the picture bulges with the glass (desk/pc/crtWarp.ts) */
 .crt .crt-picture {
-  position: absolute;
-  inset: 0;
   filter: url(#crt-warp);
-}
-
-.crt canvas.crt-text {
-  position: absolute;
-  /* overscan: real monitors showed a black border around the picture */
-  inset: 3.5% 4%;
-  width: 92%;
-  height: 93%;
-  image-rendering: pixelated;
-  outline: none;
-  filter: saturate(1.15) contrast(1.05);
 }
 
 /* On the desk the screen is smaller than the 640x400 picture: blend pixels rather than
    dropping rows of them, so text stays readable. A wider black border leaves room for
    the bulge of the glass. */
-.desk[data-zoom="false"] .crt canvas.crt-text {
+.desk[data-zoom='false'] .crt canvas.crt-text {
   inset: 4% 4.5%;
   width: 91%;
   height: 92%;
   image-rendering: auto;
 }
 
-.desk[data-power="off"] .crt canvas.crt-text {
+.desk[data-power='off'] .crt canvas.crt-text {
   opacity: 0;
-}
-
-.crt .crt-layer {
-  position: absolute;
-  inset: 0;
-  background: #000;
 }
 
 /* scanlines and glass glare */
 .crt::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
   background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.07) 0 1px,
-      transparent 1px 4px
-    ),
-    radial-gradient(
-      120% 90% at 30% 15%,
-      rgba(255, 255, 255, 0.09),
-      transparent 45%
-    ),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 4px),
+    radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%),
     /* the tube curves away from you: darker toward the corners */
-    radial-gradient(
-        farthest-corner at 50% 50%,
-        transparent 60%,
-        rgba(0, 0, 0, 0.18) 85%,
-        rgba(0, 0, 0, 0.45) 100%
-      );
+    radial-gradient(farthest-corner at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 85%, rgba(0, 0, 0, 0.45) 100%);
   box-shadow:
     inset 0 0 30px 6px rgba(0, 0, 0, 0.55),
     inset 0 0 2px 1px rgba(255, 255, 255, 0.08);
@@ -308,32 +298,156 @@
   z-index: 2;
 }
 
-.desk[data-power="on"] .crt .power-hint {
+.desk[data-power='on'] .crt .power-hint {
   display: none;
 }
 
-.crt-game {
-  width: 100%;
-  height: 100%;
-}
-
-/* the designers' 320x200 VGA picture, filling the tube like the text does (vga/shared/vga.ts) */
-.crt .crt-vga {
-  position: absolute;
-  inset: 3.5% 4%;
-}
-
-.desk[data-zoom="false"] .crt .crt-vga {
+.desk[data-zoom='false'] .crt .crt-vga {
   inset: 6% 6.5%;
 }
 
-.crt-vga .vga-screen {
-  display: block;
-  width: 100%;
-  height: 100%;
-  outline: none;
-  cursor: none;
-  touch-action: none;
+.monitor-stand {
+  order: 1;
+}
+
+.pc > .case {
+  order: 2;
+  z-index: 1; /* the modem on top of it stays in front of the monitor */
+}
+
+.pc > .kb-tray {
+  order: 3;
+}
+
+.monitor {
+  position: relative;
+  width: 92%;
+  padding: 5.5% 5.5% 9%;
+  border-radius: 22px 22px 16px 16px;
+  background: linear-gradient(160deg, var(--plastic-hi), var(--plastic) 40%, var(--plastic-lo));
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -4px 0 var(--plastic-edge),
+    0 18px 30px rgba(0, 0, 0, 0.45);
+}
+
+.monitor .brand {
+  position: absolute;
+  left: 7%;
+  bottom: 3%;
+  font:
+    700 11px/1 ui-monospace,
+    monospace;
+  letter-spacing: 0.3em;
+  color: #6d6553;
+}
+
+.monitor .enlarge {
+  position: absolute;
+  right: 13%;
+  bottom: 1.6%;
+  padding: 1px 6px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 3px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  color: #3c372b;
+  font:
+    700 12px/1.2 system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.monitor .monitor-led {
+  position: absolute;
+  right: 8%;
+  bottom: 3.6%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #253;
+}
+
+.desk[data-power='on'] .monitor .monitor-led {
+  background: var(--led-green);
+  box-shadow: 0 0 8px var(--led-green);
+}
+
+.screen-bezel {
+  position: relative;
+  padding: 3.5%;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #4c473c, #2e2a22);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+.crt {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 18px / 22px;
+  background: var(--glass);
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px #000;
+  cursor: text;
+}
+
+/* the picture bulges with the glass (desk/pc/crtWarp.ts) */
+.crt .crt-picture {
+  filter: url(#crt-warp);
+}
+
+/* On the desk the screen is smaller than the 640x400 picture: blend pixels rather than
+   dropping rows of them, so text stays readable. A wider black border leaves room for
+   the bulge of the glass. */
+.desk[data-zoom='false'] .crt canvas.crt-text {
+  inset: 4% 4.5%;
+  width: 91%;
+  height: 92%;
+  image-rendering: auto;
+}
+
+.desk[data-power='off'] .crt canvas.crt-text {
+  opacity: 0;
+}
+
+/* scanlines and glass glare */
+.crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 4px),
+    radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%),
+    /* the tube curves away from you: darker toward the corners */
+    radial-gradient(farthest-corner at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 85%, rgba(0, 0, 0, 0.45) 100%);
+  box-shadow:
+    inset 0 0 30px 6px rgba(0, 0, 0, 0.55),
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.08);
+  z-index: 3;
+}
+
+.crt .power-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c7d70;
+  font:
+    15px ui-monospace,
+    monospace;
+  z-index: 2;
+}
+
+.desk[data-power='on'] .crt .power-hint {
+  display: none;
+}
+
+.desk[data-zoom='false'] .crt .crt-vga {
+  inset: 6% 6.5%;
 }
 
 .monitor-stand {
@@ -358,19 +472,8 @@
   border-radius: 6px;
   background:
     /* a seam between the front bezel and the cover */
-    linear-gradient(
-      180deg,
-      transparent 10px,
-      rgba(0, 0, 0, 0.18) 10px 11px,
-      rgba(255, 255, 255, 0.5) 11px 12px,
-      transparent 12px
-    ),
-    linear-gradient(
-      180deg,
-      var(--plastic-hi),
-      var(--plastic) 45%,
-      var(--plastic-lo)
-    );
+    linear-gradient(180deg, transparent 10px, rgba(0, 0, 0, 0.18) 10px 11px, rgba(255, 255, 255, 0.5) 11px 12px, transparent 12px),
+    linear-gradient(180deg, var(--plastic-hi), var(--plastic) 45%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
     inset 0 -5px 0 var(--plastic-edge),
@@ -381,7 +484,7 @@
 
 /* the top of the case, seen from slightly above */
 .case::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 1.5%;
   right: 1.5%;
@@ -393,17 +496,13 @@
 
 /* air vents along the bottom */
 .case::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 22px;
   bottom: 10px;
   width: 38%;
   height: 12px;
-  background: repeating-linear-gradient(
-    90deg,
-    #6f6855 0 3px,
-    transparent 3px 8px
-  );
+  background: repeating-linear-gradient(90deg, #6f6855 0 3px, transparent 3px 8px);
   border-radius: 2px;
   opacity: 0.55;
 }
@@ -447,7 +546,7 @@
 }
 
 .case button.case-btn:active,
-.case button.case-btn[aria-pressed="true"] {
+.case button.case-btn[aria-pressed='true'] {
   transform: translateY(2px);
   box-shadow:
     inset 0 1px 0 #fff,
@@ -527,8 +626,7 @@
 }
 
 .seg-display.lit svg {
-  filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9))
-    drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
+  filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9)) drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
 }
 
 .drives {
@@ -757,7 +855,7 @@
 }
 
 .drive-actions::before {
-  content: "";
+  content: '';
   position: absolute;
   right: 90px;
   bottom: 100%;
@@ -799,11 +897,7 @@
   /* tilting it back doesn't shrink its box: give back the space it no longer covers */
   margin-bottom: -11%;
   border-radius: 6px 6px 10px 10px;
-  background: linear-gradient(
-    var(--plastic-hi),
-    var(--plastic) 60%,
-    var(--plastic-lo)
-  );
+  background: linear-gradient(var(--plastic-hi), var(--plastic) 60%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
     inset 0 -6px 0 var(--plastic-edge),
@@ -968,13 +1062,7 @@
   height: 66px;
   clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
   background:
-    linear-gradient(
-      100deg,
-      rgba(255, 255, 255, 0.22),
-      transparent 30%,
-      transparent 75%,
-      rgba(255, 255, 255, 0.1)
-    ),
+    linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 30%, transparent 75%, rgba(255, 255, 255, 0.1)),
     linear-gradient(rgba(120, 124, 134, 0.42), rgba(70, 72, 80, 0.62));
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.35),
@@ -1035,9 +1123,7 @@
   top: 106px;
   bottom: 0;
   border-radius: 2px 2px 6px 6px;
-  background:
-    linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 40%),
-    linear-gradient(#e6e0cf, #cfc7b1 55%, #b2aa93);
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 40%), linear-gradient(#e6e0cf, #cfc7b1 55%, #b2aa93);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.7),
     inset 0 -3px 0 rgba(0, 0, 0, 0.2),
@@ -1046,7 +1132,7 @@
 
 /* its lock, with the key slot */
 .disk-box .bx-front::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   top: 14px;
@@ -1054,17 +1140,12 @@
   height: 16px;
   margin-left: -8px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 30%,
-    #fff,
-    #c9ccd0 35%,
-    #7c8086 80%
-  );
+  background: radial-gradient(circle at 35% 30%, #fff, #c9ccd0 35%, #7c8086 80%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .disk-box .bx-front::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   top: 18px;
@@ -1080,16 +1161,10 @@
   top: 16px;
   padding: 2px 5px 1px;
   border-radius: 1px;
-  background:
-    linear-gradient(
-      rgba(255, 255, 255, 0.28),
-      transparent 45%,
-      rgba(0, 0, 0, 0.25)
-    ),
-    var(--tape, #17181c);
+  background: linear-gradient(rgba(255, 255, 255, 0.28), transparent 45%, rgba(0, 0, 0, 0.25)), var(--tape, #17181c);
   color: #f4f4f0;
   font:
-    700 8px/1 "Courier New",
+    700 8px/1 'Courier New',
     monospace;
   letter-spacing: 0.08em;
   text-shadow:
@@ -1128,7 +1203,7 @@
     8px 8px 0 #cfc8af,
     0 12px 18px rgba(0, 0, 0, 0.45);
   font:
-    700 13px/1.15 "Courier New",
+    700 13px/1.15 'Courier New',
     ui-monospace,
     monospace;
   text-align: left;
@@ -1138,12 +1213,12 @@
   display: block;
   margin-top: 8px;
   font:
-    400 10px/1.3 "Courier New",
+    400 10px/1.3 'Courier New',
     monospace;
 }
 
 .catalog-prop .paper::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 8px;
   top: 10px;
@@ -1190,7 +1265,7 @@
 /* push-pins */
 .poster::before,
 .poster::after {
-  content: "";
+  content: '';
   position: absolute;
   top: -4px;
   width: 10px;
@@ -1243,7 +1318,7 @@
   background: #0b0b0b;
   color: #f2e600;
   font:
-    italic 900 13px/1 "Arial Black",
+    italic 900 13px/1 'Arial Black',
     Arial,
     sans-serif;
   text-shadow: 1px 1px 0 #1f9a3a;
@@ -1261,7 +1336,7 @@
 .manual-prop .booklet-cover em {
   padding: 0 6px;
   font:
-    10px "Times New Roman",
+    10px 'Times New Roman',
     serif;
 }
 
@@ -1279,8 +1354,8 @@
   box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.35);
   transform: rotate(6deg);
   font:
-    700 13px/1.2 "Comic Sans MS",
-    "Marker Felt",
+    700 13px/1.2 'Comic Sans MS',
+    'Marker Felt',
     cursive;
   text-align: left;
   cursor: pointer;
@@ -1292,11 +1367,11 @@
 
 /* ---- zoomed screen (graphic designers, full screen games) ----------------------------- */
 
-.desk:not([data-zoom="false"]) .desk-scene {
+.desk:not([data-zoom='false']) .desk-scene {
   z-index: 60;
 }
 
-.desk:not([data-zoom="false"]) .crt {
+.desk:not([data-zoom='false']) .crt {
   position: fixed;
   inset: 0;
   z-index: 60;
@@ -1304,12 +1379,12 @@
   border-radius: 0;
 }
 
-.desk:not([data-zoom="false"]) .crt::after {
+.desk:not([data-zoom='false']) .crt::after {
   display: none;
 }
 
 /* full screen is a flat picture */
-.desk:not([data-zoom="false"]) .crt .crt-picture {
+.desk:not([data-zoom='false']) .crt .crt-picture {
   filter: none;
 }
 
@@ -1317,107 +1392,12 @@
   display: none;
 }
 
-.desk[data-zoom="manual"] .zoom-exit {
+.desk[data-zoom='manual'] .zoom-exit {
   position: fixed;
   right: 12px;
   bottom: 12px;
   z-index: 61;
   display: block;
-}
-
-/* graphic designers shown "in VGA" on the PC */
-.vga-editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: #000;
-  color: #c8c8c8;
-}
-
-.vga-titlebar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  background: #840000;
-  color: #fff;
-  font:
-    700 13px/1.4 ui-monospace,
-    "Courier New",
-    monospace;
-  letter-spacing: 0.06em;
-}
-
-.vga-titlebar .spacer {
-  flex: 1;
-}
-
-.vga-titlebar button {
-  padding: 2px 8px;
-  border: 2px outset #d0d0d0;
-  border-radius: 0;
-  background: #b8b8b8;
-  color: #000;
-  font:
-    700 12px ui-monospace,
-    monospace;
-  cursor: pointer;
-}
-
-.vga-body {
-  flex: 1;
-  overflow: auto;
-  padding: 12px;
-  /* Game-Maker's FACELIFT greys for the designers' surfaces */
-  --bg: #000;
-  --panel: #858585;
-  --panel-2: #707070;
-  --text: #000;
-  --muted: #1d1d1d;
-  --border: #4a4a4a;
-  --accent: #ae0000;
-  --accent-text: #fff;
-  --accent-soft: #b9b9b9;
-  --focus: #ffd400;
-  background: #000;
-  color: #000;
-  font:
-    13px/1.35 ui-monospace,
-    "Courier New",
-    monospace;
-}
-
-.vga-body .hint {
-  color: #c8c8c8;
-}
-
-.vga-body .panel,
-.vga-body .block-picker,
-.vga-body .swatches {
-  border: 3px outset #b0b0b0;
-  border-radius: 0;
-  background: var(--panel);
-}
-
-.vga-body button {
-  border: 2px outset #d0d0d0;
-  border-radius: 0;
-  background: #b4b4b4;
-  color: #000;
-}
-
-.vga-body button.primary {
-  background: #ae0000;
-  color: #fff;
-}
-
-.vga-body input,
-.vga-body select,
-.vga-body textarea {
-  border: 2px inset #9a9a9a;
-  border-radius: 0;
-  background: #d8d8d8;
-  color: #000;
 }
 
 /* ---- overlays (disk box, catalog) --------------------------------------------------- */
@@ -1530,7 +1510,7 @@
   margin-top: 2px;
   color: #f2e600;
   font:
-    italic 900 21px/1 "Arial Black",
+    italic 900 21px/1 'Arial Black',
     Arial,
     sans-serif;
   letter-spacing: -0.03em;
@@ -1616,13 +1596,7 @@
   border-radius: 50%;
   background:
     radial-gradient(circle, #222 0 7%, #c9ced6 7% 16%, transparent 16%),
-    radial-gradient(
-      circle,
-      transparent 0 30%,
-      rgba(255, 255, 255, 0.95) 30% 97%,
-      #aab 97%
-    ),
-    conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
+    radial-gradient(circle, transparent 0 30%, rgba(255, 255, 255, 0.95) 30% 97%, #aab 97%), conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
   box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
 }
 
@@ -1635,7 +1609,7 @@
 .gm-box .cd-disc .cd-title {
   fill: #000080;
   font:
-    900 11px "Arial Black",
+    900 11px 'Arial Black',
     Arial,
     sans-serif;
 }
@@ -1663,14 +1637,160 @@
 }
 
 .case > .modem:hover,
-.case > .modem:focus-visible {
+.case > .modem:focus-within {
   transform: translateY(-3px);
+}
+
+/* the whole modem dials; the speed on its front is a button of its own, over it */
+.modem-dial {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.modem-dial:focus-visible,
+.modem-speed:focus-visible,
+.modem-hint:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 2px;
+}
+
+.modem-speed {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #c9ccd2;
+  font:
+    700 7px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.modem-speed:hover,
+.modem.menu-open .modem-speed {
+  border-color: #6a6d75;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* the speeds, and the hint about them: on the page over the room (bright when its light is
+   off), placed under the modem by modem.ts, over the case's front, never the screen */
+.modem-menu,
+.modem-hint {
+  position: fixed;
+  z-index: 1000;
+  color-scheme: light;
+  box-sizing: border-box;
+  border: 2px solid #2a2418;
+  border-radius: 10px;
+  background: #fffbe9;
+  color: #2a2418;
+  box-shadow: 3px 5px 0 rgba(0, 0, 0, 0.35);
+  font:
+    600 13px/1.3 'Trebuchet MS',
+    system-ui,
+    sans-serif;
+  text-align: left;
+}
+
+.modem-menu {
+  padding: 4px 10px 6px;
+}
+
+.modem-menu[hidden],
+.modem-hint[hidden] {
+  display: none;
+}
+
+.speed-radios {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.speed-radios legend {
+  padding: 2px 0;
+  font-weight: 700;
+}
+
+.speed-choice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.speed-choice input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #8a1414;
+}
+
+.modem-hint {
+  width: 250px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 12px;
+  animation: prop-pop 0.18s ease-out;
+}
+
+.modem-hint p {
+  margin: 0 0 6px;
+}
+
+.modem-hint-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modem-hint-actions button {
+  min-height: 26px;
+  padding: 2px 8px;
+  border: 1px solid #2a2418;
+  border-radius: 6px;
+  background: #fff;
+  color: #2a2418;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modem-hint-actions .modem-hint-warp {
+  background: #ffd23f;
+}
+
+.modem-hint-actions button:focus-visible {
+  outline: 2px solid #8a1414;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modem-hint {
+    animation: none;
+  }
 }
 
 .modem-body {
   position: relative;
-  height: 44px;
-  padding: 6px 8px 0;
+  box-sizing: border-box;
+  height: 50px;
+  padding: 26px 8px 0;
   border-radius: 6px 6px 3px 3px;
   background: linear-gradient(#3b3d42, #1f2024 70%);
   box-shadow:
@@ -1679,19 +1799,9 @@
   text-align: left;
 }
 
-.modem-brand {
-  display: block;
-  color: #c9ccd2;
-  font:
-    700 7px/1 system-ui,
-    sans-serif;
-  letter-spacing: 0.12em;
-}
-
 .modem-lights {
   display: flex;
   justify-content: space-between;
-  margin-top: 7px;
 }
 
 .mlight {
@@ -1718,4 +1828,22 @@
 .mled.on {
   background: #ff4b36;
   box-shadow: 0 0 5px #ff4b36;
+}
+
+/* ---- the picture's glow on the bezel (pc/screenGlow.ts): each edge of the glass casts the
+   color of the picture nearest it onto the plastic, faint by day, plain after dark ---- */
+.desk[data-zoom='false'][data-power='on'] .crt {
+  --glow-a: 0.3;
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px #000,
+    0 -5px 14px -3px rgb(var(--glow-t, 0 0 0) / var(--glow-a)),
+    5px 0 14px -3px rgb(var(--glow-r, 0 0 0) / var(--glow-a)),
+    0 5px 14px -3px rgb(var(--glow-b, 0 0 0) / var(--glow-a)),
+    -5px 0 14px -3px rgb(var(--glow-l, 0 0 0) / var(--glow-a));
+  transition: box-shadow 0.25s linear;
+}
+
+.desk.rl-dark[data-zoom='false'][data-power='on'] .crt {
+  --glow-a: 0.75;
 }

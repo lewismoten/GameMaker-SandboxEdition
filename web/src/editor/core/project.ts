@@ -5,8 +5,11 @@ import { parseGame, serializeGame, newGame, type Game } from '../../formats/game
 import { defaultPalette, parsePalette, type Palette } from '../../formats/palette';
 import { decodeGif, isGif } from '../../formats/gif';
 import { debounce } from './ui';
+import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
+import { editedFile, unlockAchievement } from '../../achievements';
 
-export type FileKind = 'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
+export type FileKind =
+  'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
 
 export const KIND_LABELS: Record<FileKind, string> = {
   gam: 'Game (integrator)',
@@ -43,33 +46,43 @@ export class Project {
   private listeners = new Set<(name: string) => void>();
   private cachedGame?: { bytes: Uint8Array; game: Game };
   saving = Promise.resolve();
+  /** Editor-only extras (project/companion.ts); undefined until loaded or first changed (saving then keeps the stored one). */
+  companion?: Companion;
+  private extrasListeners = new Set<(file: string, section: string) => void>();
 
-  constructor(id: string, name: string, gam: string, files: GameFiles) {
+  constructor(id: string, name: string, gam: string, files: GameFiles, companion?: Companion) {
     this.id = id;
     this.name = name;
     this.gam = gam;
     this.files = files;
+    this.companion = companion;
     files.onChange = (n) => {
+      editedFile(n);
       this.persist();
       for (const l of this.listeners) l(n);
     };
   }
 
   static create(name: string): Project {
+    unlockAchievement('make-new');
     const files = new GameFiles();
-    const gam = `${normalize(name).replace(/[^a-z0-9]/g, '').slice(0, 8) || 'game'}.gam`;
+    const gam = `${
+      normalize(name)
+        .replace(/[^a-z0-9]/g, '')
+        .slice(0, 8) || 'game'
+    }.gam`;
     files.set(gam, serializeGame(newGame(name)));
     return new Project(newId(), name, gam, files);
   }
 
-  static fromFiles(files: GameFiles, name?: string, id = newId()): Project {
+  static fromFiles(files: GameFiles, name?: string, id = newId(), companion?: Companion): Project {
     let gam = files.mainGame();
     if (!gam) {
       gam = 'game.gam';
       files.set(gam, serializeGame(newGame(name ?? 'My Game')));
     }
     const title = name ?? (parseGame(files.get(gam)!).scenes[0]?.desc || gam);
-    return new Project(id, title, gam, files);
+    return new Project(id, title, gam, files, companion);
   }
 
   onChange(fn: (name: string) => void): () => void {
@@ -78,12 +91,37 @@ export class Project {
   }
 
   private persist = debounce(() => {
-    this.saving = saveProject(this.id, this.name, this.gam, this.files).catch((e) => console.error('Autosave failed', e));
+    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).catch((e) => console.error('Autosave failed', e));
   }, 400);
 
   saveNow(): Promise<void> {
-    this.saving = saveProject(this.id, this.name, this.gam, this.files);
+    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion);
     return this.saving;
+  }
+
+  /** One section of a file's editor-only extras (e.g. the terrains of forest.bbl). */
+  extras<T>(file: string, section: string, fallback: T): T {
+    return this.companion ? getSection(this.companion, file, section, fallback) : fallback;
+  }
+
+  /** Changes one section of a file's extras and autosaves (the game's files are not touched). */
+  setExtras(file: string, section: string, value: unknown): void {
+    this.companion ??= emptyCompanion();
+    setSection(this.companion, file, section, value);
+    this.persist();
+    for (const l of this.extrasListeners) l(file, section);
+  }
+
+  /** A file was renamed: its extras follow it. */
+  renameExtras(from: string, to: string): void {
+    if (!this.companion) return;
+    renameInCompanion(this.companion, from, to);
+    this.persist();
+  }
+
+  onExtrasChange(fn: (file: string, section: string) => void): () => void {
+    this.extrasListeners.add(fn);
+    return () => this.extrasListeners.delete(fn);
   }
 
   game(): Game {
@@ -137,7 +175,11 @@ export class Project {
 
   /** A file name not yet used, e.g. "level2.map". */
   freeName(base: string, ext: string): string {
-    const stem = base.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 8) || 'new';
+    const stem =
+      base
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '')
+        .slice(0, 8) || 'new';
     if (!this.files.has(`${stem}.${ext}`)) return `${stem}.${ext}`;
     for (let i = 1; i < 1000; i++) {
       const s = `${stem.slice(0, 8 - String(i).length)}${i}`;

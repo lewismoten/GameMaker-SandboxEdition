@@ -14,16 +14,9 @@ import { boxBottom, boxRow, boxTop, modemSignal, sleep, type Term } from './term
 import { Pager, pageLabel } from './pager';
 import { caption, decodePicture, formatLabel, GALLERY, galleryBytes, paintPicture, type GalleryFile } from './gallery';
 import { recordDownload, updateAccount } from './ratio';
-
-/** 14,400 bps: GIFs and JPEGs are compressed already, so V.42bis can't squeeze them further. */
-export const GIF_CPS = 1440;
-/** Real time: a 20K picture takes 14 seconds to paint in, as it did (Space skips ahead). */
-export const GIF_TIME_COMPRESSION = 1;
-
-/** How many bytes have arrived `ms` after the transfer started (at the board's sped-up rate). */
-export function bytesAt(ms: number, size: number, cps = GIF_CPS * GIF_TIME_COMPRESSION): number {
-  return Math.max(0, Math.min(size, Math.floor((ms / 1000) * cps)));
-}
+import { downloadLine } from '../../project/diskFacts';
+import { cps, slowWait } from './lineSpeed';
+import { cpsText, expectText } from './transfer';
 
 function wrap(text: string, width: number): string[] {
   const out: string[] = [];
@@ -70,9 +63,10 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
   }
 }
 
-async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void> {
-  const real = f.bytes / GIF_CPS;
-  t.line(`|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, about |14${Math.max(1, Math.round(real / 60))}|07 minute(s) at 14,400 bps.`);
+/** Downloads a picture (from the Sandbox BBS's GIF Gallery or The Sofa's GIF area) into C:\IMAGES, painting it as it arrives. */
+export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void> {
+  if (f.board === 'sofa') t.line(`|15Zmodem|07.  ${f.name}, |14${commas(f.bytes)}|07 bytes: |14${downloadLine(f.bytes, '|07, |14')}|07.`);
+  else t.line(`|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, ${expectText(f.bytes)}.`);
   let bytes: Uint8Array;
   try {
     bytes = await galleryBytes(f.name);
@@ -81,18 +75,23 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
     return;
   }
   t.line('|07Starting transfer. Your viewer shows it as it comes in. |08(Esc aborts, Space skips ahead)');
-  t.print('');
+  await t.drain(); // the words above, before the screen turns to the picture
   await sleep(900);
+  t.print(''); // a dropped call ends it here
   const [sw, sh] = modeFor(f.width, f.height);
   const scr = h.pictureMode(sw, sh);
+  slowWait(bytes.length / cps('file'));
   let got = 0;
   let aborted = false;
-  let start = performance.now();
+  let last = performance.now();
   try {
     for (;;) {
       t.print(''); // a dropped call ends the transfer
-      got = bytesAt(performance.now() - start, bytes.length);
-      const pic = decodePicture(bytes.subarray(0, got));
+      const now = performance.now();
+      // at the line speed of the moment (Unlimited: all at once)
+      got = Number.isFinite(cps('file')) ? Math.min(bytes.length, got + ((now - last) / 1000) * cps('file')) : bytes.length;
+      last = now;
+      const pic = decodePicture(bytes.subarray(0, Math.floor(got)));
       if (pic) paintPicture(scr, pic);
       modemSignal('receive');
       const k = scr.poll();
@@ -100,8 +99,8 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
         aborted = true;
         break;
       }
-      if (k === ' ') start = performance.now() - (bytes.length / GIF_CPS / GIF_TIME_COMPRESSION) * 1000; // skip to the end
-      if (got >= bytes.length) break;
+      if (k === ' ') got = bytes.length; // skip to the end (painted on the next round)
+      if (got >= bytes.length && k !== ' ') break;
       await sleep(80);
     }
     if (!aborted) {
@@ -112,7 +111,7 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
     h.leavePictureMode();
   }
   const bar = '█'.repeat(Math.round((got / bytes.length) * 30)).padEnd(30, '░');
-  t.line(`|15${f.name.padEnd(12)} |10${toCp437(bar)} |14${commas(got).padStart(9)} |07bytes  ${GIF_CPS} cps`);
+  t.line(`|15${f.name.padEnd(12)} |10${toCp437(bar)} |14${commas(Math.floor(got)).padStart(9)} |07bytes  ${cpsText()}`);
   if (aborted) {
     t.line('|12Transfer aborted.');
     return;
@@ -120,7 +119,7 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
   t.line(`|10Transfer complete. |07${f.name} saved in C:\\IMAGES.`);
   h.downloads.setDir('IMAGES', true); // made with the first picture
   h.downloads.add(f.name);
-  updateAccount((a) => recordDownload(a, bytes.length, true)); // the SysOp's snapshots: FREE
+  if (!f.board) updateAccount((a) => recordDownload(a, bytes.length, true)); // the SysOp's snapshots: FREE (The Sofa keeps no ratio)
   t.line(`|07After you log off, type |15VPIC \\IMAGES\\${f.name}|07 to look at it again.`);
   t.line();
 }

@@ -50,36 +50,6 @@
     "progressive": false
   },
   {
-    "name": "HOBO1.GIF",
-    "bytes": 11328,
-    "width": 192,
-    "height": 200,
-    "format": "GIF",
-    "colors": 16,
-    "gray": true,
-    "progressive": false
-  },
-  {
-    "name": "HOBO2.GIF",
-    "bytes": 14571,
-    "width": 320,
-    "height": 200,
-    "format": "GIF",
-    "colors": 8,
-    "gray": true,
-    "progressive": false
-  },
-  {
-    "name": "HOBO3.JPG",
-    "bytes": 7204,
-    "width": 320,
-    "height": 174,
-    "format": "JPEG",
-    "colors": 256,
-    "gray": true,
-    "progressive": false
-  },
-  {
     "name": "COLONIAL.GIF",
     "bytes": 44609,
     "width": 304,
@@ -118,5 +88,153 @@
     "colors": 16777216,
     "gray": false,
     "progressive": false
+  },
+  {
+    "name": "CHEZXMAS.GIF",
+    "bytes": 32426,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "CHEZTED.GIF",
+    "bytes": 37630,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "CHEZPLUG.GIF",
+    "bytes": 39869,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "THECHEZ1.GIF",
+    "bytes": 124282,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "THECHEZ2.GIF",
+    "bytes": 140743,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "THECHEZ3.GIF",
+    "bytes": 149365,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 96,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "BARDLOGO.GIF",
+    "bytes": 35991,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 64,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "LEOCHICK.GIF",
+    "bytes": 128966,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 192,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "NEWNOSE.GIF",
+    "bytes": 138395,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 192,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "LEOWALK.GIF",
+    "bytes": 30547,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "LEONOSE.GIF",
+    "bytes": 30609,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "HOBO1.GIF",
+    "bytes": 11328,
+    "width": 192,
+    "height": 200,
+    "format": "GIF",
+    "colors": 16,
+    "gray": true,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "HOBO2.GIF",
+    "bytes": 14571,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 8,
+    "gray": true,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "HOBO3.JPG",
+    "bytes": 7204,
+    "width": 320,
+    "height": 174,
+    "format": "JPEG",
+    "colors": 256,
+    "gray": true,
+    "progressive": false,
+    "board": "sofa"
   }
 ]

@@ -5,6 +5,7 @@ import type { TextScreen } from '../text/textScreen';
 import { readLine, type TextKeys } from '../text/textInput';
 import { commas, deskDate, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
 import { toCp437 } from '../text/cp437';
+import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
 
 export interface ShellHost {
   screen: TextScreen;
@@ -112,11 +113,9 @@ export class Shell {
         this.out('Largest executable program size        567K (580,112 bytes)');
         return;
       case 'DATE':
-        this.out(`Current date is ${deskDate().toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' }).replace(',', '')}`);
-        return;
+        return this.setClock('date', rest);
       case 'TIME':
-        this.out(`Current time is ${new Date().toLocaleTimeString('en-US')}`);
-        return;
+        return this.setClock('time', rest);
       case 'HELP':
       case '?':
         return this.help();
@@ -166,7 +165,7 @@ export class Shell {
     const wide = args.some((a) => /^\/W$/i.test(a));
     const pause = args.some((a) => /^\/P$/i.test(a));
     const target = args.find((a) => !a.startsWith('/')) ?? '';
-    let { drive, parts } = resolvePath(target, this.drive, this.cwdOf);
+    const { drive, parts } = resolvePath(target, this.drive, this.cwdOf);
     let pattern: RegExp | undefined;
     let list = await this.host.fs.listDir(drive, parts);
     // When the last part is not a folder but looks like a wildcard or file name, list its
@@ -191,11 +190,18 @@ export class Shell {
     this.out();
     const lines: string[] = [];
     // Folders below the root list the . and .. entries first.
-    if (parts.length) lines.push(...(['.', '..'].map((n) => (wide ? `[${n}]`.padEnd(16) : dirLine({ name: n, dir: true, size: 0, date: new Date(1994, 9, 20, 11, 42) })))));
+    if (parts.length)
+      lines.push(...['.', '..'].map((n) => (wide ? `[${n}]`.padEnd(16) : dirLine({ name: n, dir: true, size: 0, date: new Date(1994, 9, 20, 11, 42) }))));
     // DIR /W: names in five 16-column cells a line.
     if (wide) {
       const cells = [...lines.splice(0), ...items.map(dirWide)];
-      for (let i = 0; i < cells.length; i += 5) lines.push(cells.slice(i, i + 5).join('').trimEnd());
+      for (let i = 0; i < cells.length; i += 5)
+        lines.push(
+          cells
+            .slice(i, i + 5)
+            .join('')
+            .trimEnd(),
+        );
     } else lines.push(...items.map(dirLine));
     let shown = 0;
     for (const l of lines) {
@@ -316,6 +322,57 @@ export class Shell {
     this.screen.print(text.endsWith('\n') ? text : text + '\n');
   }
 
+  /**
+   * TIME and DATE, as in DOS 6.22: show the room's clock and ask for a new one (Enter keeps
+   * it), or take it on the command line (TIME 11:30p, DATE 12-25-94). RESET (or /LOCAL), this
+   * PC's own words, goes back to the real local time, on the command line or at the prompt.
+   */
+  private async setClock(what: 'time' | 'date', arg: string): Promise<void> {
+    const time = what === 'time';
+    const show = () => (time ? dosTime(deskNow()) : dosDate(deskDate()));
+    if (/^\/\?$/.test(arg)) {
+      this.out(time ? 'Displays or sets the system time.' : 'Displays or sets the system date.');
+      this.out();
+      this.out(time ? 'TIME [time | RESET]' : 'DATE [date | RESET]');
+      this.out();
+      this.out(time ? '  time    hours:minutes[:seconds[.hundredths]][a|p]' : '  date    month-day-year');
+      this.out('  RESET   Go back to the real local time (/LOCAL works too)');
+      this.out();
+      this.out(
+        `Type ${time ? 'TIME' : 'DATE'} with no parameters to display the current ${what} and a prompt for a new one. Press ENTER to keep the same ${what}.`,
+      );
+      return;
+    }
+    const reset = () => {
+      resetDeskClock();
+      this.out(`Current ${what} is ${show()}`);
+      this.out('(the real local time)');
+    };
+    const isReset = (text: string) => /^(reset|\/local)$/i.test(text.trim());
+    if (isReset(arg)) return reset();
+    const set = (text: string): boolean => {
+      const to = time ? parseDosTime(text, deskNow()) : parseDosDate(text, deskNow());
+      if (!to) {
+        this.out(time ? 'Invalid time' : 'Invalid date');
+        return false;
+      }
+      setDeskClock(to);
+      return true;
+    };
+    if (arg) {
+      set(arg);
+      return;
+    }
+    this.out(`Current ${what} is ${show()}`);
+    for (;;) {
+      this.screen.print(time ? 'Enter new time: ' : 'Enter new date (mm-dd-yy): ');
+      const line = await readLine(this.screen, this.host.keys, [], 20);
+      this.screen.print('\n');
+      if (line !== null && isReset(line)) return reset();
+      if (line === null || !line.trim() || set(line)) return;
+    }
+  }
+
   private help(): void {
     for (const l of [
       'DIR [path] [/W] [/P]   List files          CD [path]   Change folder',
@@ -323,6 +380,7 @@ export class Shell {
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
       'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
+      'TIME [11:30p]  DATE [12-25-94]  Set the clock    TIME RESET  Real time again',
       '',
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
@@ -330,6 +388,8 @@ export class Shell {
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',
+      "ACHIEVE     What you've done so far: your merit badges",
+      'OFFLINE     Copy the whole site here, to use with no connection',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);

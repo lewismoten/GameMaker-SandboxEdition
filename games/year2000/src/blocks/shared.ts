@@ -25,7 +25,7 @@ const over = (bg: Pixels, fg: Pixels) => bg.blit(fg, 0, 0, T);
 const ITEM_DEFS: Record<ItemName, BlockDef> = {
   page: { effect: CTR.pages, eamt: 1, score: 100 },
   quarter: { effect: CTR.quarters, eamt: 1, score: 25 },
-  pill: { hp: 30, score: 10 },
+  pill: { hp: 20, score: 10 },
   battery: { effect: CTR.zap, eamt: 6, score: 10 },
   zapper: { effect: CTR.zap, eamt: 15, score: 250 },
   cola: { effect: CTR.lives, eamt: 1, score: 500 },
@@ -40,8 +40,17 @@ export function addFloors(set: BlockSet, floors: Floor[]): void {
   for (const f of floors) set.add(f, on(f));
 }
 
+/**
+ * A food pill heals less the further Dex gets (it's the same pill; the trip gets harder):
+ * the suburb 20, the Skyway 15, the mall 12, the exchange's rooms 10, the Moon and the school 8.
+ */
+const PILL_HP: Partial<Record<Floor, number>> = { deck: 15, tile: 12, marble: 10, beach: 10, jungle: 10, moon: 8, metal: 8, gym: 8 };
+
 export function addItems(set: BlockSet, floor: Floor, items: ItemName[], suffix = floor as string): void {
-  for (const it of items) set.add(`${it}_${suffix}`, over(on(floor, 7), ITEM_PICS[it]()), { ...ITEM_DEFS[it], touch: floor });
+  for (const it of items) {
+    const def = it === 'pill' && PILL_HP[floor] ? { ...ITEM_DEFS[it], hp: PILL_HP[floor] } : ITEM_DEFS[it];
+    set.add(`${it}_${suffix}`, over(on(floor, 7), ITEM_PICS[it]()), { ...def, touch: floor });
+  }
 }
 
 /** Phone booths: red roof with PHONE, glass doors. The working ones take a quarter and teleport you. */

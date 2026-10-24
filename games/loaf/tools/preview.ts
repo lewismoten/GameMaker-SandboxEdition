@@ -30,7 +30,9 @@ for (const l of LEVELS) {
   const lit = buildBlocks(pal).finish();
   const { m, start, size } = l.build(book);
   const map = m.build();
-  const pic = renderRegion(map, lit, buildMonsterBlocks(pal).blocks, buildMonsters(mb, l.mons), ORIGIN, ORIGIN, size[0], size[1], [{ pixels: buildCharBlocks(pal).blocks[cb.n(`${l.form}.front`)].pixels, x: start[0], y: start[1] }]);
+  const pic = renderRegion(map, lit, buildMonsterBlocks(pal).blocks, buildMonsters(mb, l.mons), ORIGIN, ORIGIN, size[0], size[1], [
+    { pixels: buildCharBlocks(pal).blocks[cb.n(`${l.form}.front`)].pixels, x: start[0], y: start[1] },
+  ]);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 2);
 }
 console.log(`${book.index.size} blocks; previews in ${out}`);

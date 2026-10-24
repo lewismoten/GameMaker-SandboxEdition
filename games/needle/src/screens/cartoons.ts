@@ -34,7 +34,10 @@ function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number, ramp =
   p.set(x, y, pal.c(ramp, 2));
   for (let k = 1; k <= size; k++) {
     const col = pal.c(ramp, Math.max(0, 2 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }
 
@@ -65,8 +68,16 @@ function bigNeedle(p: Pixels, pal: Pal, cx: number, top: number, bottom: number,
   const head = 60 * s;
   for (let y = top; y < bottom; y++) {
     const t = y - top;
-    const w = t < head * 0.45 ? (t / (head * 0.45)) * 15 * s : t < head ? 15 * s - ((t - head * 0.45) / (head * 0.55)) * 5 * s : bottom - y < 30 * s ? ((bottom - y) / (30 * s)) * 10 * s : 10 * s;
-    for (let x = Math.round(cx - w); x <= Math.round(cx + w); x++) p.set(x, y, pal.r('gold')[Math.max(0, Math.min(4, Math.round(4 - ((x - cx + w) / (2 * w + 1)) * 3 + (x % 7 === 0 ? 0.5 : 0))))]);
+    const w =
+      t < head * 0.45
+        ? (t / (head * 0.45)) * 15 * s
+        : t < head
+          ? 15 * s - ((t - head * 0.45) / (head * 0.55)) * 5 * s
+          : bottom - y < 30 * s
+            ? ((bottom - y) / (30 * s)) * 10 * s
+            : 10 * s;
+    for (let x = Math.round(cx - w); x <= Math.round(cx + w); x++)
+      p.set(x, y, pal.r('gold')[Math.max(0, Math.min(4, Math.round(4 - ((x - cx + w) / (2 * w + 1)) * 3 + (x % 7 === 0 ? 0.5 : 0))))]);
   }
   const ey = Math.round(top + head * 0.62);
   const rx = 12 * s;
@@ -193,7 +204,12 @@ export function storyFli(cast: Cast): Uint8Array {
     scaleBlit(p, cast.camel(pose === 'hurt' ? 'dream' : pose), 70, 72, 2);
     if (k >= 54) {
       shout(p, pal, 100, 44, 'ME?!');
-      if (k % 4 < 2) for (const [x, y] of [[60, 70], [118, 66]]) p.line(x, y, x + (x < 100 ? -6 : 6), y - 6, c('red', 2));
+      if (k % 4 < 2)
+        for (const [x, y] of [
+          [60, 70],
+          [118, 66],
+        ])
+          p.line(x, y, x + (x < 100 ? -6 : 6), y - 6, c('red', 2));
     }
     caption(p, pal, lines(k));
   };
@@ -316,7 +332,15 @@ export function howtoFli(cast: Cast): Uint8Array {
       p.disc(Math.round(140 + t * 40), Math.round(110 - Math.sin(t * Math.PI) * 24 + t * 26), 3, c('gold', 3));
       if (k >= 21) for (let s = 0; s < 3; s++) twinkle(p, pal, 150 + s * 12, 100 - s * 6, 2, 'grace');
     }
-    caption(p, pal, k < 16 ? ['Walk up to the poor', 'and give them the gold.'] : k < 30 ? ['Every coin given', 'is a grace.'] : ['A grace opens an eye gate:', 'then DOWN, and Z or C to crawl.']);
+    caption(
+      p,
+      pal,
+      k < 16
+        ? ['Walk up to the poor', 'and give them the gold.']
+        : k < 30
+          ? ['Every coin given', 'is a grace.']
+          : ['A grace opens an eye gate:', 'then DOWN, and Z or C to crawl.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);
@@ -371,7 +395,15 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       const inside = x >= 170;
       if (!inside) scaleBlit(p, cast.camel(k < 8 ? `walk${k % 3}` : `crawl${k % 2}`, 'bare'), x, ey - 44, 2);
       if (inside) for (let a = 0; a < 14; a++) p.line(210, ey, 210 + Math.cos(a * 0.45) * 140, ey + Math.sin(a * 0.45) * 140, c('heaven', 4 + (a % 2)));
-      caption(p, pal, k < 10 ? ['Thread the needle,', 'Brother Camel...'] : k < 34 ? ['...tuck your humps', 'and squeeze on through!'] : ['Hump down...', 'thread up... mercy come!']);
+      caption(
+        p,
+        pal,
+        k < 10
+          ? ['Thread the needle,', 'Brother Camel...']
+          : k < 34
+            ? ['...tuck your humps', 'and squeeze on through!']
+            : ['Hump down...', 'thread up... mercy come!'],
+      );
     };
     const first = new Pixels(W, H);
     first.px.set(night.px);
@@ -394,8 +426,13 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
         p.rect(Math.round(160 + hx * 5), Math.round(84 + hy * 5), 2, 2, c('red', (Math.floor(t * 20) % 2) + 2));
       }
       scaleBlit(p, cast.camel(k > 28 && k % 6 < 3 ? 'dream' : 'stand', 'bare'), 140, 52, 2);
-      for (const [x, y, d] of [[40, 30, 0], [270, 40, 1], [70, 120, 1]] as const) if (k > 20) scaleBlit(p, sprite(cast.mons, `dove${(k + d) % 2}`), x + (d ? -1 : 1) * (k - 20), y, 2, d === 1);
-      caption(p, pal, k < 26 ? ['Let the Spirit pull you apart,', "then stitch you whole..."] : ["...with Heaven's seam.", 'Even a camel can dream!']);
+      for (const [x, y, d] of [
+        [40, 30, 0],
+        [270, 40, 1],
+        [70, 120, 1],
+      ] as const)
+        if (k > 20) scaleBlit(p, sprite(cast.mons, `dove${(k + d) % 2}`), x + (d ? -1 : 1) * (k - 20), y, 2, d === 1);
+      caption(p, pal, k < 26 ? ['Let the Spirit pull you apart,', 'then stitch you whole...'] : ["...with Heaven's seam.", 'Even a camel can dream!']);
     };
     const first = new Pixels(W, H);
     first.px.set(dawn.px);

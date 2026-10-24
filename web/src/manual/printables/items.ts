@@ -8,6 +8,7 @@ import { foldOut, renderItem } from './story';
 import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } from './gen';
 import { stickerScreen, stickers } from './stickers';
 import { worldMap, worldMapScreen } from './worldMap';
+import { levelMaps } from './levelMaps';
 
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
@@ -35,6 +36,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     redFilm: it.kind === 'hintbook',
   }));
   const book = own.find((i) => i.kind === 'hintbook');
+  const levels = levelMaps(ctx);
   const gen: (BoxItem & { kind: GeneratedKind })[] = [
     {
       kind: 'worldmap',
@@ -45,6 +47,19 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       render: () => worldMap(ctx),
       screen: worldMapScreen,
     },
+    ...(levels
+      ? [
+          {
+            kind: 'levelmaps' as const,
+            id: 'levelmaps',
+            title: 'Level Maps',
+            note: 'Every level’s real map, start and ways out marked',
+            icon: '🧭',
+            render: () => levels.render(),
+            live: () => levels.live(),
+          },
+        ]
+      : []),
     { kind: 'keycard', id: 'keycard', title: 'Key card', note: 'Quick reference for your keyboard', icon: '⌨️', render: () => keycard(ctx) },
     { kind: 'postcard', id: 'postcard', title: 'Registration card', note: 'Postcard, already marked paid', icon: '📮', render: () => postcard(ctx) },
     { kind: 'warranty', id: 'warranty', title: 'License & warranty', note: 'Keep this card', icon: '📜', render: () => warranty(ctx) },
@@ -68,6 +83,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
             note: 'Stuck? Get the hint book',
             icon: '💡',
             render: () => hintOffer(ctx, book.title),
+            redFilm: true,
           },
         ]
       : []),

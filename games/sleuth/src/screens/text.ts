@@ -107,7 +107,7 @@ Copy it for your friends and upload it to your favorite BBS. If you enjoy it, pl
 
 Sandbox Software
 Dept. CURTAIN
-P.O. Box 1995
+P.O. Box 000
 Pittsburgh, PA 15213
 
 (A made-up address. Please do not mail anything.)`;
@@ -193,7 +193,7 @@ Umbrella taken out by owner at 9:05."
 It was never brought back. The raincoat is still on its hook.`,
   umbrella: `UMBRELLA, TAG #13
 
-Found in the dark under the stage. Wet, black, a cloakroom tag on the handle: #13.
+Found in the old prop vault beyond the dark under the stage, stood behind a trunk. Wet, black, a cloakroom tag on the handle: #13.
 
 Furled inside it: the TRICK dagger. Its blunt blade slides into the handle when it is pushed.`,
   safe_ms: `MANUSCRIPT
@@ -402,7 +402,7 @@ He went down the aisle from F-9, through the pit gate and the pit door, under th
 
 He put the real dagger on the prop table and slid the trick one into his umbrella. His ticket stub fell under the table.
 
-Then, hearing the crew, he left the umbrella in the dark under the stage and was back in his seat for the bell.
+Then, hearing the crew, he stood the umbrella in the old prop vault beyond the trap room and was back in his seat for the bell.
 
 At 9:48 Lila Fontaine did the rest without knowing it.
 \f
@@ -448,8 +448,8 @@ export const ACT_CARDS = {
       '',
       'Find 4 more: in the cloakroom,',
       "the booth, Victor's safe and the",
-      'dark under the stage. Then back',
-      'to the green room.',
+      'prop vault past the dark under',
+      'the stage. Then the green room.',
     ],
   },
 };
@@ -519,7 +519,7 @@ THIS IS SHAREWARE
 
     Sandbox Software
     Dept. CURTAIN
-    P.O. Box 1995
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   (This is a fictional address for this game - there is no real Sandbox Software to mail. Please do not send money anywhere.)

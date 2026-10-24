@@ -22,16 +22,21 @@ export function kitchenBackdrop(pal: Pal, fx = 210, seed = 3, open = 1): Pixels 
   for (let y = 0; y < 150; y += 14) p.rect(0, y, W, 1, c('dark', 0));
   for (let x = 0; x < W; x += 14) p.rect(x, 0, 1, 150, c('dark', 0));
   // the floor
-  for (let y = 150; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (Math.floor((x - 160) / (12 + (y - 150) / 2) + 100) + Math.floor((y - 150) / 6)) % 2 ? c('dark', 3) : c('dark', 1));
+  for (let y = 150; y < H; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, (Math.floor((x - 160) / (12 + (y - 150) / 2) + 100) + Math.floor((y - 150) / 6)) % 2 ? c('dark', 3) : c('dark', 1));
   // the fridge and its glow
   if (open > 0) {
     for (let y = 150; y < H; y++) {
       const spread = (y - 150) * 2 + 30;
       for (let x = Math.round(fx - spread * 1.6); x < fx + 70; x++) if ((x + y) % 2 === 0) p.set(x, y, c('glow', 2));
     }
-    p.rect(fx, 24, 70, 136, c('white', 0)).rect(fx + 4, 28, 62, 128, c('glow', 4)).rect(fx + 4, 28, 62, 30, c('glow', 5));
+    p.rect(fx, 24, 70, 136, c('white', 0))
+      .rect(fx + 4, 28, 62, 128, c('glow', 4))
+      .rect(fx + 4, 28, 62, 30, c('glow', 5));
     for (const y of [64, 96, 128]) p.rect(fx + 4, y, 62, 2, c('glow', 3));
-    p.rect(fx + 70, 18, 22, 148, c('glow', 3)).rect(fx + 72, 40, 18, 2, c('white', 2)).rect(fx + 72, 90, 18, 2, c('white', 2));
+    p.rect(fx + 70, 18, 22, 148, c('glow', 3))
+      .rect(fx + 72, 40, 18, 2, c('white', 2))
+      .rect(fx + 72, 90, 18, 2, c('white', 2));
   }
   const r = rng(seed);
   for (let i = 0; i < 6; i++) p.set(Math.floor(r() * W), Math.floor(r() * 140), c('dark', 4));
@@ -44,7 +49,8 @@ export function cheesecake(p: Pixels, pal: Pal, cx: number, cy: number, s = 1, a
   if (aura)
     for (let k = 0; k < 14; k++) {
       const a = (k / 14) * Math.PI * 2 + aura * 0.3;
-      for (let r = 9 * s; r < (16 + (k % 2) * 6) * s; r++) if (r % 2 === 0) p.set(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.75, c('aura', (k + aura) % 2 ? 2 : 3));
+      for (let r = 9 * s; r < (16 + (k % 2) * 6) * s; r++)
+        if (r % 2 === 0) p.set(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.75, c('aura', (k + aura) % 2 ? 2 : 3));
     }
   for (let x = -12 * s; x <= 12 * s; x++) p.rect(cx + x, cy + 6 * s, 1, Math.max(1, Math.round(s)), c('white', 2));
   for (let y = -5 * s; y < 6 * s; y++) {
@@ -80,7 +86,12 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     p.rect(24, 6, 272, 190, c('parch', 4)).frame(24, 6, 272, 190, c('parch', 1));
     for (let y = 8; y < 194; y += 3) p.set(25, y, c('parch', 2)).set(294, y + 1, c('parch', 2));
     // a few graham crumbs in the corner
-    for (const [cx, cy] of [[284, 186], [288, 180], [280, 182]]) blob(p, cx, cy, 2, 1.6, pal.r('crust'), 1, 3);
+    for (const [cx, cy] of [
+      [284, 186],
+      [288, 180],
+      [280, 182],
+    ])
+      blob(p, cx, cy, 2, 1.6, pal.r('crust'), 1, 3);
     centered(p, 14, heading, c('brown', 1), 2);
     return p;
   };

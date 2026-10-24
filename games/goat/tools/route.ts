@@ -2,7 +2,8 @@
 // cousin in the wall, through Bethlehem's alley (laundry, census), across the caravan's
 // camel lanes and past the cousin on the ridge, and into the stable to the empty place,
 // third from the left.
-import { Bot } from './bot';
+import { ORIGIN } from '../src/levels/maps';
+import { BLOCK, Bot } from './bot';
 
 const expect = (bot: Bot, scene: number, what: string) => {
   if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
@@ -42,7 +43,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
         await stretch();
       } catch (e) {
         why = String(e).split('\n')[0];
-        if (process.env.BOT_WHY) console.log(`${label} forage ${forage} wait ${wait}: ${String(e).split("\n")[0]}\n${bot.log.slice(-40).join("\n")}`);
+        if (process.env.BOT_WHY) console.log(`${label} forage ${forage} wait ${wait}: ${String(e).split('\n')[0]}\n${bot.log.slice(-40).join('\n')}`);
         continue;
       } finally {
         bot.forage = true;
@@ -69,8 +70,6 @@ export async function theField(bot: Bot): Promise<void> {
   await carefully(bot, 'the field', 12, async () => {
     await must(bot, bot.take(11, 4, 'down', 'a thistle'), 'thistle');
     await must(bot, bot.take(19, 4, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.take(13, 13, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.goto(4, 14, 'the thistles and the star in the lower field'), 'lower field');
     await must(bot, bot.take(17, 9, 'down', 'hay'), 'hay');
     await must(bot, bot.goto(24, 8, 'the gap in the wall'), 'gap');
   });
@@ -80,9 +79,7 @@ export async function theField(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'beyond the wall', 12, async () => {
     await must(bot, bot.take(31, 9, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.take(28, 16, 'up', 'wool on the thorns'), 'wool');
     await must(bot, bot.goto(36, 13, 'the goat bell'), 'bell');
-    await must(bot, bot.take(35, 1, 'down', 'wool on the thorns'), 'wool');
   });
   await carefully(bot, 'the double wall', 10, async () => {
     await must(bot, bot.goto(37, 8, 'the double wall'), 'wall');
@@ -93,8 +90,6 @@ export async function theField(bot: Bot): Promise<void> {
   });
   await carefully(bot, "the shepherds' camp", 12, async () => {
     await must(bot, bot.take(42, 5, 'down', 'wool on the thorns'), 'wool');
-    await must(bot, bot.goto(43, 16, 'hay and a thistle by the camp'), 'hay');
-    await must(bot, bot.take(50, 14, 'left', 'wool on the thorns'), 'wool');
   });
   if (bot.wool < 5) throw new Error(`only ${bot.wool} wool`);
   const r = await bot.goto(51, 8, 'the road to Bethlehem');
@@ -172,9 +167,22 @@ export async function theStable(bot: Bot): Promise<void> {
     await must(bot, bot.goto(12, 9, 'the rope at the foot of the aisle'), 'aisle');
   });
   if (bot.wool < 5) throw new Error(`only ${bot.wool} wool at the manger`);
-  // five wool drops the rope ("Hey..."), and she walks up the aisle into her place
-  let r = await bot.push('up', 4);
-  bot.say('offered the wool');
-  if (!r) r = await bot.goto(12, 4, 'third from the left');
-  if (r !== 'end') throw new Error(`the stable's end: ${r}`);
+  // five wool drops the rope ("Hey..."), she walks up the aisle, and at its head she waits,
+  // as a player would, until the line is open and nobody leans in, then steps into her place
+  await carefully(bot, 'the gap in the line', 12, async () => {
+    const r = await bot.push('up', 4);
+    if (r) throw new Error(`the rope: ${r}`);
+    bot.say('offered the wool');
+    await must(bot, bot.goto(12, 5, 'the head of the aisle'), 'aisle');
+    const place = bot.sim.blockAt(12 + ORIGIN, 4 + ORIGIN);
+    const open = BLOCK.get('placeOpen')!;
+    let waited = 0;
+    while (bot.sim.w.blkmap[place] !== open || bot.sim.w.nxtchg[place] - bot.sim.w.clock < 8) {
+      if (await bot.tick()) throw new Error('a scene change while waiting for the gap');
+      if (++waited > 200) throw new Error('the gap never opened');
+    }
+    bot.say(`the gap opened (waited ${waited} ticks at the head of the aisle)`);
+    const end = await bot.goto(12, 4, 'third from the left');
+    if (end !== 'end') throw new Error(`the stable's end: ${end}`);
+  });
 }

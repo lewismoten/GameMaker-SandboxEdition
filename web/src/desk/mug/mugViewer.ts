@@ -166,9 +166,9 @@ export function openMugViewer(): Promise<void> {
           h(
             'button',
             { type: 'button', class: 'mugv-make', onclick: () => void openSublimation({ design: choice.design, size: choice.size }) },
-            '🖨 Make your own: print the sublimation sheet',
+            '🖨 Make your own: print a sublimation page',
           ),
-          h('p', { class: 'mugv-note' }, 'Mirrored, at the real size of a blank’s print area, on Letter or A4. Press it onto a sublimation mug.'),
+          h('p', { class: 'mugv-note' }, 'Choose each mug’s front and back, at the real size, on Letter or Legal. Press it onto a sublimation mug.'),
         ),
       ),
     );

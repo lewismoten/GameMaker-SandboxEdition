@@ -79,7 +79,15 @@ export function buildArea(o: {
     scenes.unshift({
       id: sc.id,
       desc: sc.desc,
-      files: { pal: `${o.name}.pal`, map: `${o.name}.map`, bbl: `${o.name}.bbl`, mon: `${o.name}.mon`, mbl: o.mbl ?? 'people.mbl', cmf: sc.cmf, intro: sc.intro },
+      files: {
+        pal: `${o.name}.pal`,
+        map: `${o.name}.map`,
+        bbl: `${o.name}.bbl`,
+        mon: `${o.name}.mon`,
+        mbl: o.mbl ?? 'people.mbl',
+        cmf: sc.cmf,
+        intro: sc.intro,
+      },
       links,
     });
   }

@@ -12,9 +12,13 @@ export interface FileAction {
 
 export function fileActions(acts: FileAction[]): HTMLElement {
   const cls = (a: FileAction) => (a.danger ? 'danger' : '');
-  const wide = h('span', { class: 'file-acts' }, ...acts.map((a) => h('button', { type: 'button', class: cls(a), title: a.title, onclick: () => a.run() }, a.label)));
+  const wide = h(
+    'span',
+    { class: 'file-acts' },
+    ...acts.map((a) => h('button', { type: 'button', class: cls(a), title: a.title, onclick: () => a.run() }, a.label)),
+  );
   const summary = h('summary', { title: 'More actions', 'aria-label': `File actions: ${acts.map((a) => a.label.toLowerCase()).join(', ')}` }, '⋯');
-  const more = h('details', { class: 'file-more' }) as HTMLDetailsElement;
+  const more = h('details', { class: 'file-more' });
   const shut = () => {
     more.open = false;
     summary.focus();
@@ -23,15 +27,19 @@ export function fileActions(acts: FileAction[]): HTMLElement {
     'div',
     { class: 'file-more-menu' },
     ...acts.map((a) =>
-      h('button', {
-        type: 'button',
-        class: cls(a),
-        title: a.title,
-        onclick: () => {
-          more.open = false;
-          a.run();
+      h(
+        'button',
+        {
+          type: 'button',
+          class: cls(a),
+          title: a.title,
+          onclick: () => {
+            more.open = false;
+            a.run();
+          },
         },
-      }, a.label),
+        a.label,
+      ),
     ),
   );
   more.append(summary, menu);

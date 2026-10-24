@@ -73,6 +73,9 @@ const LEGEND: Record<string, string> = {
   S: 'step',
   '@': 'holyN0',
   '!': 'door',
+  '1': 'tinHeart',
+  E: 'egg',
+  Z: 'lewie',
 };
 
 export interface LinkSpec {
@@ -170,7 +173,12 @@ export function hillside(book: BlockBook): Level {
   const W = 70;
   const H = 12;
   const m = new MapBuilder(book, 'earth');
-  m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
+  m.fill(1, 0, W - 2, 2, '^')
+    .fill(1, 2, W - 2, 8, '.')
+    .row(10, 0, W - 1, '=')
+    .row(11, 0, W - 1, '#')
+    .col(0, 0, 11, '#')
+    .col(W - 1, 0, 11, '#');
   m.set(15, 1, 'w').set(33, 2, 'w').set(55, 1, 'w');
   crowdBand(m, 9, 18, true);
   crowdBand(m, 22, 31);
@@ -178,6 +186,8 @@ export function hillside(book: BlockBook): Level {
   // the fig tree and its shade, and the basket Loaf #13 was left in
   m.fill(1, 4, 9, 6, 'h').fill(1, 1, 11, 2, 'v').row(3, 2, 10, 'F').col(9, 4, 9, 'U');
   m.text(3, 2, '*.$').set(8, 2, '*');
+  // a low bough off the trunk, up from the basket's rim, so the crumbs on the branch can be reached
+  m.row(5, 6, 8, 'bough');
   m.set(2, 9, 'W').set(2, 8, 'm').set(6, 9, 'W').set(6, 8, 'm').fill(3, 8, 3, 2, 'i');
   // the first of the crowd: a hungry man stomping, crumbs dropped in the grass
   m.text(11, 6, '*..*').set(19, 7, '*');
@@ -215,20 +225,25 @@ export function wicker(book: BlockBook): Level {
   // a chaff plug into R2
   m.col(9, 3, 4, 'z');
   m.fill(10, 1, 8, 4, 'o').set(14, 2, '%').set(11, 4, '+').set(15, 4, '+').set(12, 1, '|');
+  // a tin heart up in R2's far corner, a tall hop over the way down
+  m.set(17, 1, '1');
   // down the weave into R3, the long room with a weevil and a mouse
   m.col(17, 5, 9, 'Y');
   m.fill(8, 8, 17, 5, 'o').set(9, 11, '%').set(22, 11, '%').text(12, 12, '+oo+').set(18, 8, '|');
+  // the weave hangs two blocks into R3, so a hop from under it catches hold and climbs back up
+  m.col(17, 8, 9, 'Y');
   m.mon(MON.weevil, 10, 12).mon(MON.mouse, 18, 12);
   // R4, through the chaff to the west, a holy crumb on a basket bottom
   m.col(7, 11, 12, 'z');
   m.fill(1, 7, 6, 6, 'o').row(10, 1, 4, 'b').set(2, 9, '%').set(5, 12, 'J');
   // the weave down from R3 to R5, the bottom room
   m.col(25, 10, 19, 'Y');
-  m.fill(18, 17, 13, 4, 'o').set(20, 19, '%').set(28, 19, '%').set(24, 20, 'J').text(21, 17, '|oo|');
-  m.mon(MON.mouse, 19, 20).mon(MON.moth, 26, 18);
+  m.fill(18, 17, 13, 4, 'o').set(23, 19, '%').set(28, 19, '%').set(24, 20, 'J').text(21, 17, '|oo|');
+  m.mon(MON.mouse, 18, 20).mon(MON.moth, 26, 18);
   // the weave up the east wall to the lid, a side room on the way
   m.col(31, 3, 20, 'Y');
-  m.fill(26, 6, 5, 3, 'o').set(28, 7, '%').set(26, 8, '+');
+  // (four rows tall, so the weevil can be hopped where it turns)
+  m.fill(26, 5, 5, 4, 'o').set(28, 7, '%').set(26, 8, '+');
   m.mon(MON.weevil, 26, 8);
   // the lid, and out on top of the basket in the light coming in (no gravity, like the weave):
   // a few rolls along its rim to the way on, so "I'm still bread!" is sung to the end
@@ -243,57 +258,79 @@ export function baskets(book: BlockBook): Level {
   const W = 79;
   const H = 12;
   const m = new MapBuilder(book, 'earth');
-  m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
+  m.fill(1, 0, W - 2, 2, '^')
+    .fill(1, 2, W - 2, 8, '.')
+    .row(10, 0, W - 1, '=')
+    .row(11, 0, W - 1, '#')
+    .col(0, 0, 11, '#')
+    .col(W - 1, 0, 11, '#');
   m.set(12, 1, 'w').set(40, 2, 'w');
   crowdBand(m, 14, 22, true);
+  // a brother loaf still being passed hand to hand over the crowd at dusk: say hello
+  m.mon(MON.brother, 12, 3);
   crowdBand(m, 40, 50);
   // the baskets: on the grass, on stones, up in an olive tree, over the fire
   m.set(5, 9, 'e').set(9, 7, '_').set(9, 6, 'e');
   m.set(13, 9, 'e').set(16, 9, 'O').set(18, 9, 'e');
+  // the fox's den under the stones: it trots out and back, and stops to sniff at each end
   m.set(22, 8, 'R').set(22, 9, 'R').set(23, 7, '_').set(24, 7, '_').set(24, 6, 'e');
-  m.mon(MON.fox, 25, 9);
+  m.mon(MON.fox, 23, 9);
   m.set(30, 9, 'e').set(34, 9, 'e');
   m.mon(MON.seed, 32, 9);
   // the fire and its warm air up to the fig branches, a basket at the top
   m.set(37, 8, 'R').set(37, 9, 'R').set(38, 9, 'x').col(38, 2, 8, 'u');
   m.col(43, 3, 9, 'T').fill(39, 0, 8, 2, 'v').row(2, 39, 44, 'F').set(45, 2, 'e').set(42, 1, '$');
   m.set(48, 9, 'e').set(51, 9, 'l').set(52, 9, 'j').set(54, 9, 'e');
-  m.mon(MON.gull, 48, 3).mon(MON.man, 61, 9);
+  // a painted egg at the foot of the fig tree
+  m.set(41, 9, 'E');
+  m.mon(MON.gull, 48, 3).mon(MON.man, 62, 9);
   m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e');
   m.mon(MON.owl, 60, 2);
   // the twelfth basket, and the big harvest basket it opens into: a long roll inside to the
   // way on, so "Nothing's ever wasted." is sung to the end
   m.set(66, 9, 'B').set(64, 9, ',');
   m.row(6, 67, 77, 'm').row(7, 67, 77, 'W').fill(67, 8, 10, 2, 'i').col(77, 8, 9, 'W');
+  // (its mouth is only the twelfth basket: no hopping over it into the harvest basket)
+  m.set(67, 8, 'W');
   m.link(76, 9, 'next');
   return { m, start: at(2, 9), size: [W, H] };
 }
 
 /** 4. The way home: through the village at night, wrapped in the child's cloth, to her door. */
 export function home(book: BlockBook): Level {
-  const W = 74;
+  const W = 76;
   const H = 13;
   const m = new MapBuilder(book, 'earth');
-  m.fill(1, 0, W - 2, 3, 't').fill(1, 3, W - 2, 7, '.').row(10, 0, W - 1, 'r').fill(0, 11, W, 2, 's').col(0, 0, 12, '#').col(W - 1, 0, 12, '#');
+  m.fill(1, 0, W - 2, 3, 't')
+    .fill(1, 3, W - 2, 7, '.')
+    .row(10, 0, W - 1, 'r')
+    .fill(0, 11, W, 2, 's')
+    .col(0, 0, 12, '#')
+    .col(W - 1, 0, 12, '#');
   // the first houses: their roofs to stand on, lamplight in the windows
   m.fill(4, 7, 8, 3, 'A').row(6, 3, 12, 'p').set(6, 8, 'q').set(9, 8, 'd').set(7, 5, '@').set(10, 5, '*');
   m.set(14, 9, 'k').set(16, 9, 'P').set(16, 8, 'Q');
+  // Teenage Lewie (Snowbound), out late with his shovel, helping out
+  m.set(13, 9, 'Z');
   m.mon(MON.dog, 15, 9);
-  // the brook and its stepping stones
-  m.fill(23, 10, 7, 2, '-').set(24, 10, 'S').set(26, 10, 'S').set(28, 10, 'S');
+  // the brook and its stepping stones (one block deep: slip in and hop out again)
+  m.fill(23, 10, 7, 1, '-').set(24, 10, 'S').set(26, 10, 'S').set(28, 10, 'S');
   // the well, and Brother Camel kneeling by it
   m.set(33, 9, 'y').set(33, 8, '@');
   m.mon(MON.camelA, 35, 9).mon(MON.camelB, 36, 9);
-  // more houses; a lamp with its moth
-  m.fill(39, 7, 9, 3, 'A').row(6, 38, 48, 'p').set(41, 8, 'q').set(45, 8, 'q').text(40, 5, '*...*');
-  m.set(49, 9, 'k').set(51, 8, '@');
-  m.mon(MON.moth, 48, 7).mon(MON.dog, 41, 9).mon(MON.owl, 44, 1);
-  // the child, walking home ahead of you
-  m.mon(MON.girlA, 52, 8).mon(MON.girlB, 52, 9);
+  // more houses, a holy crumb at the end of their roofs, and a lamp
+  m.fill(39, 7, 9, 3, 'A').row(6, 38, 48, 'p').set(41, 8, 'q').set(45, 8, 'q').text(40, 5, '*...*').set(48, 5, '@');
+  m.set(49, 9, 'k');
+  m.mon(MON.dog, 41, 9).mon(MON.owl, 44, 1);
+  // the last beat: her family's dog minds the doorstep, sniffing at each end of it, while the
+  // child waits at the door; from the roof's end, hop down past the dog when it stops
+  m.mon(MON.dog, 50, 9);
+  m.mon(MON.girlA, 57, 8).mon(MON.girlB, 57, 9);
   // home: her door, and the long lamplit room inside to Mama at the far end, so "Mama, look
   // what I've got..." is sung to the end
-  m.row(4, 57, 72, 'p').row(5, 58, 71, 'M').col(58, 6, 8, 'M').set(58, 9, '!').col(71, 6, 9, 'M').set(60, 3, 'k');
-  m.fill(59, 6, 12, 3, 'room').row(9, 59, 70, 'roomFloor').set(62, 6, 'roomLamp').set(67, 6, 'roomLamp').set(70, 8, 'mamaTop').set(70, 9, 'mamaLow');
-  m.link(70, 9, 'won').link(70, 8, 'won');
+  m.row(4, 57, 74, 'p').row(5, 58, 73, 'M').col(58, 6, 8, 'M').set(58, 9, '!').col(73, 6, 9, 'M').set(60, 3, 'k');
+  m.mon(MON.moth, 61, 2);
+  m.fill(59, 6, 14, 3, 'room').row(9, 59, 72, 'roomFloor').set(62, 6, 'roomLamp').set(68, 6, 'roomLamp').set(72, 8, 'mamaTop').set(72, 9, 'mamaLow');
+  m.link(72, 9, 'won').link(72, 8, 'won');
   return { m, start: at(2, 9), size: [W, H] };
 }

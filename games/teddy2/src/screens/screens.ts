@@ -16,7 +16,22 @@ import { docLeo, type Costume } from '../sprites/people';
 import { citiCar } from '../sprites/klown';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
-import { farmSong, houseSong, lostSong, mainSong, mazeSong, menuSong, midwaySong, nightSong, riverSong, showSong, storySong, titleSong, wonSong } from '../sound/music';
+import {
+  farmSong,
+  houseSong,
+  lostSong,
+  mainSong,
+  mazeSong,
+  menuSong,
+  lotSong,
+  midwaySong,
+  nightSong,
+  riverSong,
+  showSong,
+  storySong,
+  titleSong,
+  wonSong,
+} from '../sound/music';
 import { CREDITS, EGG, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
 import { gwinnSits } from '../sprites/klubfolk';
@@ -256,6 +271,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('river.cmf', riverSong());
   put('farm.cmf', farmSong());
   put('maze.cmf', mazeSong());
+  put('lot.cmf', lotSong());
   put('midway.cmf', midwaySong());
   put('show.cmf', showSong());
   put('won.cmf', wonSong());

@@ -2,6 +2,8 @@
 import { SUPPLIES } from '../../src/groups/outside/ants';
 import { PROPS } from '../../src/groups/outside/cardbrd';
 import { MENDS } from '../../src/groups/outside/umbrella';
+import { UMBR_MON } from '../../src/groups/outside/ids';
+import { ORIGIN } from '../../src/levels/maps';
 import { SCRAPS } from '../../src/groups/outside/outside';
 import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
@@ -17,7 +19,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the pedestrian', 0, async () => {
       await must(bot, bot.walk(17, 'the coin'), 'coin');
-      await declaim(bot, 'IT\'S MY RECEIPT!');
+      await declaim(bot, "IT'S MY RECEIPT!");
       await must(bot, bot.walk(25, 'to the first minivan'), 'van');
       await must(bot, bot.hop('right', 12, 'right', 27), 'onto the first minivan');
       await must(bot, bot.walk(28, 'the coin on its roof'), 'roof');
@@ -43,7 +45,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the jogger, the last pedestrian', 0, async () => {
       await must(bot, bot.walk(60, 'the jogger, the dollar'), 'jogger');
-      await declaim(bot, 'IT\'S MY RECEIPT!');
+      await declaim(bot, "IT'S MY RECEIPT!");
       await must(bot, bot.walk(64, 'the coin'), 'coin');
       if (plot(bot) < SCRAPS) throw new Error(`only ${plot(bot)} scraps`);
       bot.say(`tips ${tips(bot)}`);
@@ -88,7 +90,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(53, 'the coin, the prayer candle'), 'candle');
       await declaim(bot, 'opera');
       await must(bot, bot.walk(58, 'the coin'), 'coin');
-      await declaim(bot, 'the king\'s hat');
+      await declaim(bot, "the king's hat");
       await declaim(bot, 'the king');
       if (plot(bot) < SUPPLIES) throw new Error(`only ${plot(bot)} supplies`);
       await must(bot, bot.walk(64, 'the cupboard'), 'the cupboard');
@@ -113,7 +115,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(31, 'the coin under the beam'), 'coin');
       await must(bot, bot.walk(29, 'back under the beam'), 'beam');
       await must(bot, bot.hop('up', 12), 'up onto the beam');
-      await must(bot, bot.walk(30, 'the witch\'s hat'), 'hat');
+      await must(bot, bot.walk(30, "the witch's hat"), 'hat');
       await must(bot, bot.walk(34, 'down, the broomstick'), 'broom');
     });
     await carefully(bot, 'the werewolf mask', 0, async () => {
@@ -122,7 +124,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the werewolf');
     });
     await carefully(bot, 'the spiderwebs, Lily', 3, async () => {
-      await must(bot, bot.walk(49, 'through the webs, Lily\'s pat, the coffee'), 'webs');
+      await must(bot, bot.walk(49, "through the webs, Lily's pat, the coffee"), 'webs');
     });
     await carefully(bot, 'the gift shop', 0, async () => {
       await must(bot, bot.walk(54, 'under the gift shelf'), 'shelf');
@@ -180,6 +182,22 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the storm', 0, async () => {
       await must(bot, bot.walk(57, 'through the gusts, a coin, the coffee'), 'gusts');
+    });
+    await carefully(bot, 'the wounded beast, thrashing', 0, async () => {
+      await must(bot, bot.walk(59, 'up to the thrashing canopy'), 'canopy');
+      // a word at a time, stepping after it as the wind drags it about, until it settles
+      const words = ['there, there', 'shelter me gently', 'you wounded beast', 'hush now', 'easy'];
+      for (const word of words) {
+        const w = bot.sim.w;
+        const wild = w.mi
+          .map((mi, i) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, n: w.mm[i].monnum }))
+          .find((m) => m.n >= UMBR_MON.canopy && m.n < UMBR_MON.canopyCalm);
+        if (!wild) break;
+        if (wild.x - bot.px.x / 20 > 3) await must(bot, bot.walk(wild.x - 2.5, 'after the canopy'), 'after it');
+        await declaim(bot, word);
+      }
+      const w = bot.sim.w;
+      if (w.mm.some((m) => m.monnum >= UMBR_MON.canopy && m.monnum < UMBR_MON.canopyCalm)) throw new Error('the canopy is still thrashing');
     });
     await carefully(bot, 'the last stand', 0, async () => {
       await must(bot, bot.walk(65, 'under the storm clouds, a coin, a dollar'), 'clouds');

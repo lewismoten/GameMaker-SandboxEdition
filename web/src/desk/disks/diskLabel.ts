@@ -5,7 +5,7 @@ import './diskLabel.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
-import { mapShot } from '../boxes/boxArt';
+import { mapShot } from '../../gfx/gameShots';
 import { portrait } from '../../manual/printables/kit';
 
 interface LabelArt {

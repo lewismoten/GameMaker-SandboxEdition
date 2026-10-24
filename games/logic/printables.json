@@ -12,6 +12,136 @@
   ],
   "stickers": [
     {
+      "text": "WATT",
+      "sub": "OHM SWEET OHM",
+      "shape": "cut",
+      "color": "#e08a3c",
+      "ink": "#0d3a24",
+      "sprite": {
+        "blocks": "watt.cbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "text": "ZAP!",
+      "sub": "WATT HAPPENED?",
+      "shape": "burst",
+      "color": "#ffd23c",
+      "ink": "#111111",
+      "sprite": {
+        "blocks": "watt.cbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "text": "NORMALLY OPEN",
+      "sub": "A RELAY'S MOTTO",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "parts.mbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            35
+          ]
+        ]
+      }
+    },
+    {
+      "text": "REDLINE!",
+      "sub": "TOO MUCH CURRENT",
+      "shape": "cut",
+      "color": "#d81e1e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "parts.mbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            34
+          ]
+        ]
+      }
+    },
+    {
+      "text": "ALL GREEN",
+      "sub": "THE GAUGE SAYS SO",
+      "shape": "circle",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "parts.mbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            27
+          ]
+        ]
+      }
+    },
+    {
+      "text": "READY.",
+      "sub": "PRESS ANY KEY",
+      "shape": "cut",
+      "color": "#0d3a24",
+      "ink": "#7cff9a",
+      "sprite": {
+        "blocks": "parts.mbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            40
+          ]
+        ]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "attic.bbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            65
+          ]
+        ],
+        "under": 1
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "attic.bbl",
+        "pal": "watt.pal",
+        "grid": [
+          [
+            115
+          ]
+        ],
+        "under": 1
+      }
+    },
+    {
       "text": "THINK BEFORE YOU ROLL",
       "sub": "Ohm Sweet Ohm",
       "shape": "badge",
@@ -21,7 +151,7 @@
     {
       "text": "DANGER: LIVE CURRENT",
       "sub": "Watt says so",
-      "shape": "badge",
+      "shape": "burst",
       "color": "#ffd23c",
       "ink": "#111111"
     }
@@ -50,16 +180,16 @@
               "a": "Either switch opens the gate: two wires into one gate means either will do. The left switch puts live current right in front of the gate (turn it off again if you use it). The right one keeps its current inside the housing."
             },
             {
-              "q": "The Coffee Maker: I turned the top switch on and now I am stuck down by the bottom switch!",
-              "a": "Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire."
-            },
-            {
               "q": "The Dishwasher: The second switch fences me away from the second gate!",
               "a": "Two gates, one after the other. Open the first with the switch at the top left. For the second, slip around behind its switch BEFORE you turn it on, and bump it from below: then the live wire is behind you."
             },
             {
               "q": "The Fridge: I rolled through the arrow and now I cannot get back to the switch.",
               "a": "The arrow is a diode: you can only go through it the way it points. Before you go through, turn the switch on, wait for the gate to open, and turn the switch OFF again."
+            },
+            {
+              "q": "The Coffee Maker: I turned the top switch on and now I am stuck down by the bottom switch!",
+              "a": "Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire."
             }
           ]
         },
@@ -88,7 +218,7 @@
             },
             {
               "q": "The Night-Light: The corridor is wired end to end, and the current never stops!",
-              "a": "It does stop, for a moment: a 555 is high twice as long as it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one."
+              "a": "It does stop, for a moment: a 555 is high a little longer than it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one."
             }
           ]
         },
@@ -100,7 +230,7 @@
               "a": "Start the battery, and wait for the gate to open. Then bump the fuse next to the battery: it blows and the wire goes dead for good. Blow it too early and the gate never opens."
             },
             {
-              "q": "The Shop Vac: Once I roll over the arrow I can never get back to the battery.",
+              "q": "The Wet-Dry Vac: Once I roll over the arrow I can never get back to the battery.",
               "a": "Start the battery first, then roll over the arrow. The fuse is on the far side: blow it once the gate has opened, and the wire in front of the gate goes dead."
             },
             {

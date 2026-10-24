@@ -9,6 +9,7 @@ import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
+import { wattCameo } from '../../../kit/cameos';
 
 export const W = 320;
 export const H = 200;
@@ -229,6 +230,8 @@ export function filesScreen(title: string): Pixels {
   }
   // Above PLAYGAME's message line (y 185, x 40..272), right of the slots.
   castleArt(p, 282, 174, 0.32, 9);
+  // Watt, the repair robot from Ohm Sweet Ohm, perched on the castle, seeing to the file area.
+  stamp(p, wattCameo(DAY, 'side', 0), 2, 262, 109);
   return p;
 }
 

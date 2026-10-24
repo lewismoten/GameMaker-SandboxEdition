@@ -62,17 +62,26 @@ export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
     { title: 'Characters', rows: [...UNDO, [['←', '→'], 'Switch between At the start and Sequences (on the tabs)'], GRID] },
     { title: 'A sequence’s key', rows: [[['Click', 'any key'], 'Click the key button, then press the key that runs the sequence']] },
   ],
-  map: [{ title: 'Map', rows: [...UNDO, GRID] }],
+  map: [
+    {
+      title: 'Map',
+      rows: [
+        ...UNDO,
+        [['B', 'L', 'R', 'F', 'I'], 'Paint, Line, Rectangle, Fill, Pick a block from the map'],
+        [['S', 'T', 'P', 'H', 'M'], 'Select, Terrain, Stamp, Building, Monsters'],
+        [['G'], 'Show or hide the block grid'],
+        [[`${MOD}+C`, `${MOD}+X`, `${MOD}+V`], 'Copy, cut or paste the selected blocks (on any map)'],
+        [['Delete'], 'Fill the selection with the chosen block'],
+        [['Esc'], 'Drop the selection, or stop pasting'],
+        [['Right-click'], 'Erase with a terrain; remove a monster'],
+        GRID,
+      ],
+    },
+  ],
   snd: [
     {
       title: 'Sound set',
-      rows: [
-        [['P'], 'Play the PC speaker sound'],
-        [['V'], 'Play the .voc'],
-        [['G'], 'Play it as the game would'],
-        [['Esc'], 'Stop'],
-        ...UNDO,
-      ],
+      rows: [[['P'], 'Play the PC speaker sound'], [['V'], 'Play the .voc'], [['G'], 'Play it as the game would'], [['Esc'], 'Stop'], ...UNDO],
     },
   ],
   bkd: [{ title: 'Backdrop', rows: [...UNDO, [['←', '→', '↑', '↓'], 'Move the view on the backdrop (Shift: 20 pixels at a time)']] }],
@@ -147,6 +156,7 @@ const COMMON: Group = {
   title: 'Everywhere',
   rows: [
     [['?'], 'Show this list'],
+    [[`${MOD}+P`], 'Open a file by name (recent files first)'],
     [['Tab', 'Shift+Tab'], 'Move between controls'],
     [['Esc'], 'Close a dialog or the Files list'],
   ],
@@ -197,7 +207,13 @@ export function showShortcuts(kind?: FileKind): Promise<void> {
       'div',
       // it scrolls on small screens, so it takes focus for the arrow keys
       { class: 'keys-list', role: 'region', 'aria-label': 'Shortcuts', tabIndex: 0 },
-      kind && kind !== 'other' ? h('p', { class: 'hint' }, own.length ? `${KIND_LABELS[kind]}, and every editor:` : `${KIND_LABELS[kind]} has no keys of its own; these work everywhere:`) : null,
+      kind && kind !== 'other'
+        ? h(
+            'p',
+            { class: 'hint' },
+            own.length ? `${KIND_LABELS[kind]}, and every editor:` : `${KIND_LABELS[kind]} has no keys of its own; these work everywhere:`,
+          )
+        : null,
       ...own.map(table),
       table(COMMON),
     ),

@@ -18,7 +18,8 @@ const into = (desc: string) => {
   (sim as unknown as { enter: (s: number, p: number, l: number) => void }).enter(to, from, link);
 };
 const set = (...cells: [number, number][]) => new Set(cells.map(([x, y]) => `${x},${y}`));
-const say = (s: string) => console.log(`${s}: dogs ${sim.meter(C.dogs)} book ${sim.meter(C.book)} chick ${sim.meter(C.chick)} gold ${sim.money} kazoo ${sim.meter(SEQ.kazoo)}`);
+const say = (s: string) =>
+  console.log(`${s}: dogs ${sim.meter(C.dogs)} book ${sim.meter(C.book)} chick ${sim.meter(C.chick)} gold ${sim.money} kazoo ${sim.meter(SEQ.kazoo)}`);
 // steel and plenty of tonics for the trip
 sim.ci.meter[SEQ.steel] = 30000;
 sim.ci.meter[SEQ.tonic] = 20;

@@ -6,9 +6,11 @@ import {
   flipHOrient,
   flipVOrient,
   insertFrame,
+  mirroredFrames,
   moveFrame,
   normalOrient,
   rotateOrient,
+  setFrames,
   travel,
   withBottomOrient,
   withTopOrient,
@@ -75,5 +77,22 @@ describe('frame list editing', () => {
     for (let i = 0; i < 20; i++) insertFrame(seq, 0);
     expect(frameCount(seq)).toBe(MAXFRAME);
     expect(insertFrame(seq, 0)).toBe(false);
+  });
+});
+
+describe('mirroredFrames', () => {
+  it('turns a walk right into a walk left', () => {
+    const c = newCharacter();
+    const right = c.sequences[5];
+    const f = (x: number, orient: number) => ({ x, y: -2, orient, pic1: 0, pic2: 1, pause: 3, extra: new Uint8Array(5) });
+    setFrames(right, [f(4, 0), f(4, 1 | (2 << 4))]);
+    const left = mirroredFrames(right);
+    expect(left.map((x) => x.x)).toEqual([-4, -4]);
+    expect(left.map((x) => x.y)).toEqual([-2, -2]);
+    expect(left[0].orient).toBe(4 | (4 << 4));
+    expect(left[1].orient & 15).toBe(flipHOrient(1));
+    expect(left[1].orient >> 4).toBe(flipHOrient(2));
+    // the source is untouched
+    expect(right.frames[0].x).toBe(4);
   });
 });

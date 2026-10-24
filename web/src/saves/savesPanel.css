@@ -549,7 +549,10 @@ dialog.modal .sv-inf {
   border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font: italic 700 11px/1 Georgia, 'Times New Roman', serif;
+  font:
+    italic 700 11px/1 Georgia,
+    'Times New Roman',
+    serif;
   cursor: help;
 }
 .sv-tip:hover,
@@ -667,7 +670,10 @@ dialog.modal .sv-inf {
   height: 16px;
   border: 1px solid currentColor;
   border-radius: 50%;
-  font: italic 700 10px/1 Georgia, 'Times New Roman', serif;
+  font:
+    italic 700 10px/1 Georgia,
+    'Times New Roman',
+    serif;
 }
 .sv-about {
   max-width: 40em;

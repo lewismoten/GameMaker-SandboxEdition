@@ -83,7 +83,7 @@ export function courier(): CharSet {
     joy: [5, 2],
     frames: [F('land', { pause: 1 }), F('kneel', { pause: 3 }), F('kneelItem', { pause: 3 })],
   });
-  setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [F('kneelItem', { pause: 3 }), F('kneel', { pause: 2 })] });
+  setSeq(c, SEQ.drop, { key: 'o', sound: SND.drop, frames: [F('kneelItem', { pause: 3 }), F('kneel', { pause: 2 })] });
   const steps = [5, 5, 4, 5, 5, 4];
   setSeq(c, SEQ.right, { key: 'right', joy: [3, 0], frames: walkPics.map(([t, b], k) => ({ top: t, bottom: b, x: steps[k] })) });
   setSeq(c, SEQ.left, { key: 'left', joy: [7, 0], frames: walkPics.map(([t, b], k) => ({ top: t, bottom: b, x: -steps[k], o: L })) });

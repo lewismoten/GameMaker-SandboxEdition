@@ -65,7 +65,7 @@ export function hub(): LevelMap {
       '.~~~~~~~~~~~~~.........',
       '.~~~~~~~~~~~~~..MTTM...',
       '..~~~~~~~~~~~...#!##...',
-      '...~~~~~~~~...r........',
+      '...~~~~~~~~............',
       '...........r...........',
       '..o....................',
       '.......d.......$.......',
@@ -165,16 +165,7 @@ export function dig(): LevelMap {
   m.stamp(
     0,
     0,
-    [
-      'WWWWWWWWW',
-      'WWWWLWWWW',
-      'WWW,c,WWW',
-      'WW,,,,,WW',
-      'W,,,E,,,W',
-      'W,,,@,,,W',
-      'WW,,,,,WW',
-      'WWWWWWWWW',
-    ],
+    ['WWWWWWWWW', 'WWWWLWWWW', 'WWW,c,WWW', 'WW,,,,,WW', 'W,,,E,,,W', 'W,,,@,,,W', 'WW,,,,,WW', 'WWWWWWWWW'],
     L({
       ',': 'damp',
       W: 'packed',
@@ -229,12 +220,19 @@ export function keep(): LevelMap {
       '9': { tile: 'court', mon: MON.gwinNap },
     }),
   );
+  // A tin heart dropped in the far northeast corner, by the dunes.
+  m.set(32, 1, 'tinHeart');
+  // A can of tennis balls beside Gwinn's doorway nap, so a ball is always at hand for her.
+  m.set(15, 6, 'ballCan');
   return m;
 }
 
 // ================================================================= 2. Hosewater Moat
-// The castle stands on an island. Fill the ford with sand, or run the crumbling bridge;
-// the hose current carries you out again. A lazy river runs around the edge.
+// The castle stands on an island, and the hose has cut the island in two. Fill the ford with
+// sand (or run the crumbling bridge) to reach the south half and its tower; the east current
+// carries you off again. Round on the north bank, a current runs down across the moat to the
+// north half and its tower, and a channel down the west side carries you back south to the
+// gate. Two flags lift it. A lazy river runs around the edge.
 export function moat(): LevelMap {
   const m = new LevelMap('grass', 3);
   m.stamp(
@@ -253,7 +251,7 @@ export function moat(): LevelMap {
       'G........~~..#____#!##____#..~~...o...vG',
       'G..*.....~~..#____________#..~~.......vG',
       'G........~~..#__*______*__#..~~..*....vG',
-      'G...o....bb..#_____h______#..>>>>.....vG',
+      'G...o....bb..#____________#..>>>>.....vG',
       'G........~~..#____________#..~~.......vG',
       'G....o...~~..#____________#..~~....A..vG',
       'G........~~.o######P#######o.~~.......vG',
@@ -282,6 +280,17 @@ export function moat(): LevelMap {
       q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
+  // Only two towers here (the keep had four): the northwest and southeast rings are plain sand.
+  m.set(11, 7, 'sand').set(28, 17, 'sand');
+  // The hose cuts the island in two: a channel runs down the west side (north to south only)
+  // and the moat floods the east side.
+  m.rect(11, 10, 2, 2, 'flow_down').rect(27, 10, 2, 2, 'water');
+  // The current from the north bank down across the moat, and a clear way to it from the east.
+  m.rect(20, 4, 1, 2, 'flow_down').set(31, 3, 'sand');
+  // A toy pail where the east current lets go, so Teddy comes to rest square against it.
+  m.set(34, 12, 'pail');
+  // A painted Easter egg in the far southwest corner, past the ice pop.
+  m.set(1, 28, 'easterEgg');
   return m;
 }
 
@@ -341,6 +350,8 @@ export function lagoon(): LevelMap {
       '9': { tile: 'sand', mon: MON.gwinNap },
     }),
   );
+  // A can of tennis balls by Gwinn's nap in the barrier gap.
+  m.set(14, 11, 'ballCan');
   // The sea runs on past the bottom of the map.
   m.rect(0, 29, 40, 8, 'water');
   return m;
@@ -399,6 +410,13 @@ export function burrows(): LevelMap {
     }),
   );
   roughen(m, 51);
+  // where a beetle patrols, the gallery stays a full three blocks high, so there is room to pass it
+  for (const [x0, x1, y0, y1] of [
+    [9, 16, 3, 5],
+    [4, 11, 18, 20],
+    [32, 39, 18, 20],
+  ])
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (['roots', 'earth', 'glow'].includes(m.get(x, y))) m.set(x, y, 'sand');
   return m;
 }
 
@@ -423,15 +441,20 @@ function roughen(m: LevelMap, seed: number): void {
 }
 
 // ================================================================= 5. Gwinn's patio
+// Three beats to the crown: her left paw guards the narrow path up her west side (splash it
+// twice); her snores blow down that path now and then (walk up between gusts); and her
+// right paw is curled across the crown's nook above her head (splashed once, it starts
+// swiping back and forth; splash it again and she tucks it in).
 export const CAT_AT = { x: 13, y: 3 };
 export function patio(): LevelMap {
   const m = new LevelMap('grass', 6);
   m.ring(0, 6, 32, 16, 'brick');
   m.rect(1, 7, 30, 14, 'patio');
   m.rect(11, 0, 10, 7, 'brick');
-  m.rect(12, 1, 8, 2, 'patio');
-  m.rect(12, 3, 1, 4, 'patio').rect(19, 3, 1, 4, 'patio');
-  m.set(15, 1, 'crown').mark('crown', 15, 1);
+  m.rect(12, 1, 8, 1, 'patio');
+  m.set(12, 2, 'patio');
+  m.rect(12, 3, 1, 4, 'snore');
+  m.set(19, 1, 'crown').mark('crown', 19, 1);
   for (let by = 0; by < 4; by++) for (let bx = 0; bx < 6; bx++) m.set(CAT_AT.x + bx, CAT_AT.y + by, `cat${bx}${by}`);
   m.stamp(
     1,
@@ -449,12 +472,12 @@ export function patio(): LevelMap {
       '.....#....................#...',
       '.....##..................##...',
       '..............@...............',
-      '.P...y........u.........y...P.',
+      '.P............u.............P.',
       '..............................',
     ],
-    L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', y: 'tennis', '@': { tile: 'patio', mark: 'arrive' } }),
+    L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', '@': { tile: 'patio', mark: 'arrive' } }),
   );
-  m.mon(12, 7, MON.pawL).mon(19, 7, MON.pawR).mon(14, 8, MON.tail);
+  m.mon(12, 7, MON.pawL).mon(16, 1, MON.pawR).mon(14, 8, MON.tail);
   return m;
 }
 
@@ -462,7 +485,7 @@ export function patio(): LevelMap {
 export function bbs(): LevelMap {
   const m = new LevelMap('ansiWall', 7);
   m.rect(1, 1, 22, 12, 'ansiFloor');
-  const letters = ['ltrT', 'ltrH', 'ltrE', 'ltrDashEq', 'ltrS', 'ltrA', 'ltrN', 'ltrD', 'ltrB', 'ltrO', 'ltrX', 'ltrEqDash', 'ltrB', 'ltrB', 'ltrS'];
+  const letters = ['ltrT', 'ltrH', 'ltrE', 'ltrEq', 'ltrS', 'ltrA', 'ltrN', 'ltrD', 'ltrB', 'ltrO', 'ltrX', 'ltrEq', 'ltrB', 'ltrB', 'ltrS'];
   letters.forEach((name, i) => m.set(4 + i, 1, name));
   m.stamp(
     1,

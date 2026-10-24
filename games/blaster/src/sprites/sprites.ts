@@ -75,6 +75,110 @@ export const mite = (k: Record<string, number>): Pair =>
     ],
   );
 
+/** Brain Shard: a jagged splinter of GLITCH's brain with one glowing eye. */
+export const shard = (k: Record<string, number>): Pair =>
+  two(
+    k,
+    [
+      '......o...',
+      '.....o4o..',
+      '....o424o.',
+      '...o42224o',
+      '..o4222cc4',
+      '.o422cccww',
+      'o4222cccww',
+      '.o4222cc22',
+      '..o422222o',
+      '...o4224o.',
+      '....o42o..',
+      '.....oo...',
+    ],
+    [
+      '.....o....',
+      '....o4o...',
+      '...o424o..',
+      '..o42224oo',
+      '.o4222cc44',
+      'o422ccc22w',
+      '.o222ccc22',
+      '..o4222c22',
+      '...o42222o',
+      '....o424o.',
+      '.....o4o..',
+      '......o...',
+    ],
+  );
+
+/** Opcode: a tiny instruction chip with pins and glowing hex digits that flicker. */
+export const opcode = (k: Record<string, number>): Pair =>
+  two(
+    k,
+    [
+      '.....o.o.o',
+      '.....s.s.s',
+      '..oooooooo',
+      'ss12222222',
+      '.o2cc2c2cc',
+      'ss2c22c2c2',
+      '.o2cc2cc2c',
+      'ss2c22c22c',
+      '.o12222222',
+      '..oooooooo',
+      '.....s.s.s',
+      '.....o.o.o',
+    ],
+    [
+      '.....o.o.o',
+      '.....S.S.S',
+      '..oooooooo',
+      'SS12222222',
+      '.o22c2cc22',
+      'SS2c2c22c2',
+      '.o22c2cc2c',
+      'SS2c2c2c22',
+      '.o12222222',
+      '..oooooooo',
+      '.....S.S.S',
+      '.....o.o.o',
+    ],
+  );
+
+/** Clock Spike: a jagged bolt off the CPU's clock that dives like a wasp. */
+export const spike = (k: Record<string, number>): Pair =>
+  two(
+    k,
+    [
+      '.........o',
+      '........oc',
+      '.......oc4',
+      '......oc44',
+      '.....oc434',
+      '....oc4334',
+      '...ow43332',
+      '....o4333y',
+      '.....o433y',
+      '......o43y',
+      '.......o4y',
+      '........oy',
+      '.........o',
+    ],
+    [
+      '.........o',
+      '........ow',
+      '.......ow4',
+      '......oc44',
+      '.....oc434',
+      '....oc4334',
+      '...oc43332',
+      '....o433yy',
+      '.....o43yy',
+      '......o4yy',
+      '.......oyy',
+      '........oy',
+      '.........o',
+    ],
+  );
+
 /** Byte Biter: a chomping ball. */
 export const biter = (k: Record<string, number>): Pair => {
   const top = ['......oooo', '....oo4444', '...o444444', '..o4442444', '..o442cc44', '.o442coc42', '.o42222242', '.o22222222'];

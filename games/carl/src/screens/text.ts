@@ -93,16 +93,18 @@ export const INSTRUCTIONS = [
     'The big clock breaks at 24.',
   ]),
   page([
-    'A soda, lemonade or a flower',
-    'mends your patience; a donut',
+    'A soda or a flower mends',
+    'your patience; a donut',
     'is an extra life. Crumbs are',
     'points. Say hi to Loaf #13',
     'and the mustard seed.',
-    '',
     'The stove, the fan, the',
     'flytrap, the frog, the mop',
     'and the smoke all get you.',
     'Wind gusts push you back.',
+    'At the stereo his hand grabs',
+    'for the aux cord: roll it a',
+    'MISS, twice.',
     '',
     'F1 help      F2 counters',
     'F3 music     F4 sound',
@@ -117,7 +119,7 @@ export const CARDS: { title: string; where: string; lines: [string, string] }[] 
   { title: '3. IN BED', where: 'The bedroom, 3:47 AM', lines: ['Carl buzzes near my ear', "like he's reading my head."] },
   { title: '4. THE WINDOW', where: 'The backyard', lines: ["I've opened the window.", "I've begged him to leave."] },
   { title: '5. SEEN THINGS', where: 'The wild (a documentary)', lines: ['Some say flies live', '24 hours. Carl...'] },
-  { title: '6. THE AUX CORD', where: 'The living room, in gloom', lines: ["I tried sage, essential", 'oils... now I mop the floor.'] },
+  { title: '6. THE AUX CORD', where: 'The living room, in gloom', lines: ['I tried sage, essential', 'oils... now I mop the floor.'] },
 ];
 
 const CREDITS_TEXT = page(
@@ -126,8 +128,8 @@ const CREDITS_TEXT = page(
     'by The Bard of Bizarre, 1995',
     'Shareware from The Sofa BBS',
     '',
-    "Based on the song \"There's a",
-    'Fly in the Room (And It\'s',
+    'Based on the song "There\'s a',
+    "Fly in the Room (And It's",
     'Winning)", recorded as "A Fly',
     'Named Carl", by The Bard of',
     'Bizarre (Lewis Moten as his',
@@ -158,7 +160,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -216,11 +218,11 @@ THIS IS SHAREWARE
 
   If Carl made you laugh,
   register for ${price}: you get a
-  tape of the song and a
-  genuine rolled-up magazine
-  (lightly used, never hit
-  anything). Send a check (US
-  funds) to:
+  Carl sticker (he will land on
+  it) and a genuine rolled-up
+  magazine (lightly used, never
+  hit anything). Send a check
+  (US funds) to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
@@ -230,7 +232,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

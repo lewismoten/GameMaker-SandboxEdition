@@ -59,5 +59,5 @@ const sounds = buildSounds();
 disk.put('final.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
 disk.put('demo.rec', await demoRecording(disk.files));
-disk.put('license.txt', licenseText("Final Curtain"));
+disk.put('license.txt', licenseText('Final Curtain'));
 disk.write();

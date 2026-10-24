@@ -37,7 +37,10 @@ function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number, ramp =
   p.set(x, y, pal.c(ramp, 2));
   for (let k = 1; k <= size; k++) {
     const col = pal.c(ramp, Math.max(0, 2 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }
 
@@ -147,7 +150,13 @@ export function storyFli(cast: Cast): Uint8Array {
   const r = new Reel(pal.pal);
   const Hh = (n: string) => sprite(cast.hero, n);
   const lines = (k: number) =>
-    k < 20 ? ['I sat down with snacks,', 'the couch is a throne,'] : k < 38 ? ["Netflix is loaded,", "I'm in the zone."] : k < 54 ? ['But fate has struck', 'with cruel delight-'] : ['The remote is gone,', 'it vanished from sight.'];
+    k < 20
+      ? ['I sat down with snacks,', 'the couch is a throne,']
+      : k < 38
+        ? ['Netflix is loaded,', "I'm in the zone."]
+        : k < 54
+          ? ['But fate has struck', 'with cruel delight-']
+          : ['The remote is gone,', 'it vanished from sight.'];
   const scene = (p: Pixels, k: number) => {
     // you walk in with a bowl of popcorn and sit down in the middle
     const sitting = k >= 16;
@@ -278,7 +287,11 @@ export function howtoFli(cast: Cast): Uint8Array {
         say(p, pal, 90, 70, "WHERE'S THE REMOTE?!");
       }
     }
-    caption(p, pal, k < 28 ? ['Push into a thing to search it.', 'Six spots open the baby gate.'] : ['SPACE shouts. The shout blows', 'dust bunnies and lint away.']);
+    caption(
+      p,
+      pal,
+      k < 28 ? ['Push into a thing to search it.', 'Six spots open the baby gate.'] : ['SPACE shouts. The shout blows', 'dust bunnies and lint away.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);

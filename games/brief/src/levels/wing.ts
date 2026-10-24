@@ -71,6 +71,17 @@ export interface CompiledWing {
   spines: { x: number; y: number }[];
   door: { x: number; y: number };
   books: CompiledBook[];
+  /** A quiet nook behind a gap in the hallway's shelves (levels/hidden.ts), if the wing has one. */
+  nook?: Nook;
+}
+
+/** The nook: its own scene, two screens wide and scrolling, so its far end is never on screen as Joe comes in. */
+export interface Nook {
+  /** The gap in the hallway's shelves (a link into the nook). */
+  gap: { x: number; y: number };
+  /** Where Joe comes in, and the way back out to the hallway. */
+  entry: { x: number; y: number };
+  out: { x: number; y: number };
 }
 
 /** A bookshelf: three shelves of books of every color. */
@@ -113,6 +124,22 @@ function edge(tint: string): Pixels {
 }
 
 /** THE END: a closed book with a brass lock reading 100, then open, then open and counted. */
+/** Words a word lock wants to see before it turns. */
+export const LOCK_WORDS = 20;
+
+/** A word lock: a brass turnstile with a slot, stamped with the words it wants to see. */
+function lockPic(under: Pixels, tint: string): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(under.px);
+  bevel(p, 2, 1, 16, 18, r('brass'), 3, 1);
+  p.rect(4, 3, 12, 7, c(tint, 1)).frame(4, 3, 12, 7, c('ink', 0));
+  micro(p, 6, 4, String(LOCK_WORDS), c('paper', 4));
+  // the turnstile's arms
+  p.rect(3, 12, 14, 2, c('tin', 4)).rect(9, 10, 2, 8, c('tin', 3));
+  p.disc(10, 13, 1.5, c('ink', 0));
+  return p;
+}
+
 function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(under.px);
@@ -129,7 +156,14 @@ function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): 
     p.rect(9, 5, 2, 11, c('paper', 1));
     micro(p, 3, 7, 'THE', c('ink', 0));
     micro(p, 11, 7, 'END', c('ink', 0));
-    if (state === 'done') for (const [x, y] of [[4, 2], [15, 2], [1, 1], [18, 17]]) p.set(x, y, c('yellow', 3));
+    if (state === 'done')
+      for (const [x, y] of [
+        [4, 2],
+        [15, 2],
+        [1, 1],
+        [18, 17],
+      ])
+        p.set(x, y, c('yellow', 3));
     p.rect(3, 12, 6, 1, c('grey', 3)).rect(11, 12, 6, 1, c('grey', 3));
   }
   return p;
@@ -144,7 +178,6 @@ function bookmark(under: Pixels): Pixels {
   p.rect(8, 0, 1, 16, c('red', 4));
   return p;
 }
-
 
 /** The wing's rubber stamp on its ink pad, and a fresh SHELVED impression beside it. */
 function stampDesk(spec: WingSpec, under: Pixels): Pixels {
@@ -176,17 +209,56 @@ function table(under: Pixels, half: 0 | 1): Pixels {
   return p;
 }
 
-const HALL = [
-  'SSSSSSNNNNSSSSSS',
-  'SS1SS2SSSS3SS4SS',
-  'S..............S',
-  'S.Tt........G..S',
-  'S..............S',
-  'S.......@......S',
-  'S..........Tt..S',
-  'S..............S',
-  'S..............S',
-  'SSKKKSSSDSQQQSSS',
+/** The hallway, in four furniture arrangements (wing by wing), so no two halls in a row match. */
+const HALLS = [
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S.Tt........G..S',
+    'S..............S',
+    'S.......@......S',
+    'S..........Tt..S',
+    'S..............S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S..G........Tt.S',
+    'S..............S',
+    'S.......@......S',
+    'S.Tt...........S',
+    'S.....ss..ss...S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S..............S',
+    'S.ss..Tt..G.ss.S',
+    'S.......@......S',
+    'S..............S',
+    'S..........Tt..S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S.G..ss..ss.Tt.S',
+    'S..............S',
+    'S.......@......S',
+    'S.Tt...........S',
+    'S..........Tt..S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
 ];
 
 export function compileWing(spec: WingSpec, index: number): CompiledWing {
@@ -203,7 +275,9 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
   door.rect(5, 3, 10, 6, c('sky', 4)).rect(14, 11, 2, 2, c('brass', 3));
   micro(door, 4, 14, 'OUT', c('ink', 0));
   a.tile('door', on(shelf(index * 13 + 9, tint), door));
-  sign([wing.name.toUpperCase()], 4, { board: tint, ink: 'paper', edge: 'brass' }).forEach((px, i) => a.solid(`name${i}`, on(shelf(index * 13 + 11, tint), px)));
+  sign([wing.name.toUpperCase()], 4, { board: tint, ink: 'paper', edge: 'brass' }).forEach((px, i) =>
+    a.solid(`name${i}`, on(shelf(index * 13 + 11, tint), px)),
+  );
   spec.signs.forEach((lines, s) => sign(lines, 3).forEach((px, i) => a.solid(`sign${s}${i}`, on(shelf(index * 13 + 5, tint), px))));
   a.solid('tableL', table(hallFloor, 0));
   a.solid('tableR', table(hallFloor, 1));
@@ -227,9 +301,9 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     Q: 'shelf',
   };
   for (let k = 0; k < 4; k++) hallLegend[String(k + 1)] = { tile: `spine${k}`, mark: `spine${k}` };
-  const hall = a.window(0, 0, HALL, hallLegend, 'hall');
+  const hall = a.window(0, 0, HALLS[index % HALLS.length], hallLegend, 'hall');
   for (let i = 0; i < 4; i++) a.set(6 + i, 0, `name${i}`);
-  for (let i = 0; i < 3; i++) a.set(2 + i, 9, `sign0${i}`), a.set(10 + i, 9, `sign1${i}`);
+  for (let i = 0; i < 3; i++) (a.set(2 + i, 9, `sign0${i}`), a.set(10 + i, 9, `sign1${i}`));
   if (spec.guest) a.monAt(4, 7, spec.guest);
 
   if (spec.books.length !== 4 || spec.books.some((b, i) => b.n !== wing.books[i])) throw new Error(`${wing.id}: books out of order`);
@@ -242,13 +316,22 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     a.tile(`endOpen${tag}`, endPage('open', under, tint), { effect: wingCounter(index), eamt: 1, touch: `endDone${tag}`, score: 0 });
     a.tile(`endLink${tag}`, bookmark(under));
     a.solid(`end${tag}`, endPage('shut', under, tint), { effect: CTR.words, eamt: -WORDS_PER_BOOK, touch: `endOpen${tag}` });
-    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o']) if (ch in b.legend) throw new Error(`${wing.id} book ${k + 1}: "${ch}" means something else in every book`);
+    // A word lock (%): a turnstile into a nook that only turns for a reader carrying
+    // LOCK_WORDS words. It takes them, and the floor behind it hands them straight back.
+    const locked = b.rows.some((row) => row.includes('%'));
+    if (locked) {
+      a.tile(`unlock${tag}`, on(under), { effect: CTR.words, eamt: LOCK_WORDS, touch: b.floor });
+      a.solid(`lock${tag}`, lockPic(under, tint), { effect: CTR.words, eamt: -LOCK_WORDS, touch: `unlock${tag}` });
+    }
+    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o', '%'])
+      if (ch in b.legend) throw new Error(`${wing.id} book ${k + 1}: "${ch}" means something else in every book`);
     const legend: Record<string, Cell> = {
       '#': 'edge',
       '.': '.',
       E: { tile: `end${tag}`, mark: 'page' },
       L: { tile: `endLink${tag}`, mark: 'end' },
       X: 'edge',
+      ...(locked ? { '%': `lock${tag}` } : {}),
       ...b.legend,
     };
     const win = a.window(ox, 0, b.rows, legend, b.floor);
@@ -258,10 +341,16 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     if (!end || !page) throw new Error(`${wing.id} book ${k + 1}: needs an E and an L`);
     if (Math.abs(end.x - page.x) + Math.abs(end.y - page.y) !== 1) throw new Error(`${wing.id} book ${k + 1}: L goes right behind E`);
     // the bookmark is walled in: the only way onto it is through the open page
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
       const x = end.x + dx;
       const y = end.y + dy;
-      if ((x !== page.x || y !== page.y) && y <= 9 && x >= ox && x < ox + WIN_W && !a.tiles.def(a.get(x, y)).solid) throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
+      if ((x !== page.x || y !== page.y) && y <= 9 && x >= ox && x < ox + WIN_W && !a.tiles.def(a.get(x, y)).solid)
+        throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
     }
     return { spec: b, win, end, page };
   });

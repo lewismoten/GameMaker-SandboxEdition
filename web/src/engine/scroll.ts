@@ -7,7 +7,23 @@
 // Timing: ChangeScroll runs once per 18.2 Hz game tick and picks a speed; DrawScroll
 // runs on every 145.6 Hz timer interrupt and moves the view a little each time.
 import { inScreenBounds } from './touch';
-import { BLEN, LASTMM, LASTMON, MLEN, MWID, OFFSCRN, SCROLLPERMOVE, SCRSPDX, SCRSPDY, SIZEX, SIZEY, sign, type BresScroll, type Coord, type World } from './world';
+import {
+  BLEN,
+  LASTMM,
+  LASTMON,
+  MLEN,
+  MWID,
+  OFFSCRN,
+  SCROLLPERMOVE,
+  SCRSPDX,
+  SCRSPDY,
+  SIZEX,
+  SIZEY,
+  sign,
+  type BresScroll,
+  type Coord,
+  type World,
+} from './world';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../formats/blocks';
 
 /**
@@ -150,8 +166,8 @@ function shiftEverything(w: World, shift: Coord): void {
   }
 }
 
-/** DrawScroll: one 1/145.6 s scroll step. */
-export function drawScroll(w: World): void {
+/** DrawScroll: one 1/145.6 s scroll step. Returns how many new 4 pixel edge strips it took. */
+export function drawScroll(w: World): number {
   const sc = w.scroll;
   sc.movx += bresenhamScroll(sc.bx);
   sc.movy += bresenhamScroll(sc.by);
@@ -206,6 +222,7 @@ export function drawScroll(w: World): void {
     w.my = (w.my - 1 + MWID) % MWID;
   }
   if (shift.x || shift.y) shiftEverything(w, shift);
+  return (Math.abs(shift.x) + Math.abs(shift.y)) / 4;
 }
 
 export { SOLBOT, SOLTOP, SOLRIG };

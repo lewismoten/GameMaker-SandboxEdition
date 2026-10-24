@@ -44,7 +44,7 @@ a discount.
 SEND $12 (check or money
 order) TO:
  Sandbox Software
- P.O. Box 1995
+ P.O. Box 000
  Pittsburgh, PA 15213
 (Our mailbox is make-believe,
 and so is this address.)

@@ -90,14 +90,15 @@ export function mainBeasts() {
   b.add('bucket', {
     pics: [['bucket', 50]],
     power: POWER.friend,
-    // up, a slow bob at the top (time to step off), down again, and a bob at the bottom
+    // a bob at the bottom first (time to step on), up, a slow bob at the top (time to step
+    // off), and back down empty at twice the speed
     path: [
+      [0, -1, 1],
+      [0, 0, 1],
       [0, -6, 2],
       [0, -5, 1],
       [0, -6, 1],
-      [0, 0, 2],
-      [0, -1, 1],
-      [0, 0, 1],
+      [0, 0, 4],
     ],
   });
 

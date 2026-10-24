@@ -20,7 +20,8 @@ if (cmd === 'find') {
   for (const id of ids) {
     const found = findHearts(id);
     if (!found.length) console.log(`${id}: no tin heart on any map (draw it with kit/tinHeart.ts drawTinHeart)`);
-    for (const f of found) console.log(`${id}: scene ${f.scene}, block ${f.block}:  "tinHeart": { "map": "${f.place.map}", "at": [${f.place.at.join(', ')}] },`);
+    for (const f of found)
+      console.log(`${id}: scene ${f.scene}, block ${f.block}:  "tinHeart": { "map": "${f.place.map}", "at": [${f.place.at.join(', ')}] },`);
   }
 } else if (cmd === 'check') {
   const m = buildManifest(abouts);

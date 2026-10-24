@@ -5,7 +5,25 @@ import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const NAMES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const nm = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;
-const ROOTS: Record<string, number> = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
+const ROOTS: Record<string, number> = {
+  C: 0,
+  'C#': 1,
+  Db: 1,
+  D: 2,
+  'D#': 3,
+  Eb: 3,
+  E: 4,
+  F: 5,
+  'F#': 6,
+  Gb: 6,
+  G: 7,
+  'G#': 8,
+  Ab: 8,
+  A: 9,
+  'A#': 10,
+  Bb: 10,
+  B: 11,
+};
 
 /** Chord tones (MIDI) of e.g. "Am", "Fmaj7", "G7", "Dsus4", "Cadd9", around octave 4. */
 function chord(name: string): number[] {
@@ -71,18 +89,34 @@ function pad(chords: string[], oct = 0, rhythm = 'w'): [string, string, string] 
   const out: [string[], string[], string[]] = [[], [], []];
   for (const c of chords) {
     const t = chord(c).map((n) => n + 12 * oct);
-    for (let v = 0; v < 3; v++)
-      for (const len of rhythm.split(' ')) out[v].push(len.startsWith('r') ? `r ${len.slice(1)}` : `${nm(t[v])} ${len}`);
+    for (let v = 0; v < 3; v++) for (const len of rhythm.split(' ')) out[v].push(len.startsWith('r') ? `r ${len.slice(1)}` : `${nm(t[v])} ${len}`);
   }
   return out.map((v) => v.join(', ')) as [string, string, string];
 }
 
-const SYNTH = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1a, carLevel: 0x00, modAD: 0xf2, carAD: 0xf3, modSR: 0x24, carSR: 0x26, modWave: 1, feedback: 0x0c });
+const SYNTH = sbi({
+  modChar: 0x21,
+  carChar: 0x21,
+  modLevel: 0x1a,
+  carLevel: 0x00,
+  modAD: 0xf2,
+  carAD: 0xf3,
+  modSR: 0x24,
+  carSR: 0x26,
+  modWave: 1,
+  feedback: 0x0c,
+});
 const GLASS = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x1c, carLevel: 0x00, modAD: 0xf6, carAD: 0xf4, modSR: 0x34, carSR: 0x25, feedback: 0x06 });
 const DRUM = sbi({ modChar: 0x00, carChar: 0x00, modLevel: 0x0b, carLevel: 0x00, modAD: 0xf8, carAD: 0xf6, modSR: 0x88, carSR: 0x88, feedback: 0x0e });
 const HAT = sbi({ modChar: 0x0f, carChar: 0x0e, modLevel: 0x00, carLevel: 0x08, modAD: 0xf9, carAD: 0xf8, modSR: 0xf9, carSR: 0xf8, feedback: 0x0e });
 
-const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({ channel, instrument, notes, velocity, transpose });
+const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
+  channel,
+  instrument,
+  notes,
+  velocity,
+  transpose,
+});
 
 /** A kick on 1 and 3, a snare-ish hit on 2 and 4 (an FM thump and a noisy tick). */
 const kick = (bars: number) => Array.from({ length: bars }, () => 'C2 q, r q, C2 e, C2 e, r q').join(', ');
@@ -190,24 +224,58 @@ function checkerSong(): Uint8Array {
   });
 }
 
-/** The Glass Garden: dreamy, E major with a lift. */
+/** The Glass Garden: dreamy, E major with a lift; a B section drifts to C# minor and back. */
 function glassSong(): Uint8Array {
   return build({
     bpm: 100,
-    chords: ['Emaj7', 'C#m7', 'Amaj7', 'B', 'Emaj7', 'G#m', 'Amaj7', 'Bsus4'],
-    tune: ['G#5 q, B5 q, D#6 h', 'C#6 q, B5 q, G#5 h', 'A5 q, C#6 q, E6 q, C#6 q', 'B5 w', 'E6 q., D#6 e, B5 h', 'B5 q, G#5 q, D#5 h', 'E5 q, A5 q, C#6 q, E6 q', 'F#5 w'],
+    chords: ['Emaj7', 'C#m7', 'Amaj7', 'B', 'Emaj7', 'G#m', 'Amaj7', 'Bsus4', 'C#m7', 'G#m', 'Amaj7', 'Emaj7', 'F#m7', 'B', 'C#m7', 'B'],
+    tune: [
+      'G#5 q, B5 q, D#6 h',
+      'C#6 q, B5 q, G#5 h',
+      'A5 q, C#6 q, E6 q, C#6 q',
+      'B5 w',
+      'E6 q., D#6 e, B5 h',
+      'B5 q, G#5 q, D#5 h',
+      'E5 q, A5 q, C#6 q, E6 q',
+      'F#5 w',
+      'E6 q, C#6 q, G#5 h',
+      'D#6 q, B5 q, G#5 h',
+      'C#6 q, E6 q, A5 h',
+      'B5 q, G#5 q, E5 h',
+      'F#5 q, A5 q, C#6 q, E6 q',
+      'D#6 h, F#5 h',
+      'G#5 q, C#6 q, E6 q, G#6 q',
+      'F#6 h, D#6 h',
+    ],
     lead: GLASS,
     arp: 'up',
     bass: 'beat',
   });
 }
 
-/** The Hall of Mirrors: an eerie waltz-time feel in D minor (in fours, lopsided). */
+/** The Hall of Mirrors: an eerie waltz-time feel in D minor (in fours, lopsided); the B section turns to F major for a moment. */
 function mirrorSong(): Uint8Array {
   return build({
     bpm: 108,
-    chords: ['Dm', 'Dm', 'Gm', 'A7', 'Bb', 'Gm', 'Em', 'A7'],
-    tune: ['D5 q, F5 q, A5 q, D6 q', 'C#6 q, A5 q, F5 q, E5 q', 'D5 q, G5 q, Bb5 q, D6 q', 'C#6 h, A5 h', 'Bb5 q, D6 q, F6 q, D6 q', 'Bb5 q, G5 q, D5 q, Bb4 q', 'G5 q, E5 q, B4 q, G4 q', 'A4 w'],
+    chords: ['Dm', 'Dm', 'Gm', 'A7', 'Bb', 'Gm', 'Em', 'A7', 'F', 'C', 'Dm', 'A7', 'Bb', 'C', 'Gm', 'A7'],
+    tune: [
+      'D5 q, F5 q, A5 q, D6 q',
+      'C#6 q, A5 q, F5 q, E5 q',
+      'D5 q, G5 q, Bb5 q, D6 q',
+      'C#6 h, A5 h',
+      'Bb5 q, D6 q, F6 q, D6 q',
+      'Bb5 q, G5 q, D5 q, Bb4 q',
+      'G5 q, E5 q, B4 q, G4 q',
+      'A4 w',
+      'F5 q, A5 q, C6 q, A5 q',
+      'G5 q, E5 q, C5 q, E5 q',
+      'F5 q, A5 q, D6 q, F6 q',
+      'E6 h, C#6 h',
+      'D6 q, Bb5 q, F5 q, D5 q',
+      'E5 q, G5 q, C6 q, E6 q',
+      'D6 q, Bb5 q, G5 q, D5 q',
+      'E5 h, C#5 h',
+    ],
     arp: 'updown',
     bass: 'beat',
   });
@@ -240,12 +308,29 @@ function peaksSong(): Uint8Array {
   });
 }
 
-/** Teapot Temple: jaunty, G major, a tea-time march. */
+/** Teapot Temple: jaunty, G major, a tea-time march; the B section steps up to C. */
 function teapotSong(): Uint8Array {
   return build({
     bpm: 126,
-    chords: ['G', 'D7', 'G', 'C', 'G', 'Em', 'A7', 'D7'],
-    tune: ['B4 e, D5 e, G5 q, B5 q, G5 q', 'A5 e, F#5 e, D5 q, C5 q, A4 q', 'B4 e, D5 e, G5 q, B5 e, A5 e, G5 q', 'E5 q, G5 q, C6 h', 'D6 q, B5 q, G5 q, D5 q', 'E5 q, G5 q, B5 q, G5 q', 'C#5 q, E5 q, A5 q, G5 q', 'F#5 q, A5 q, D6 h'],
+    chords: ['G', 'D7', 'G', 'C', 'G', 'Em', 'A7', 'D7', 'C', 'G', 'Am', 'D7', 'C', 'G', 'A7', 'D7'],
+    tune: [
+      'B4 e, D5 e, G5 q, B5 q, G5 q',
+      'A5 e, F#5 e, D5 q, C5 q, A4 q',
+      'B4 e, D5 e, G5 q, B5 e, A5 e, G5 q',
+      'E5 q, G5 q, C6 h',
+      'D6 q, B5 q, G5 q, D5 q',
+      'E5 q, G5 q, B5 q, G5 q',
+      'C#5 q, E5 q, A5 q, G5 q',
+      'F#5 q, A5 q, D6 h',
+      'E5 e, G5 e, C6 q, E6 q, C6 q',
+      'D6 q, B5 q, G5 h',
+      'C6 e, B5 e, A5 q, E5 q, A5 q',
+      'F#5 q, A5 q, D6 q, C6 q',
+      'E6 q., D6 e, C6 q, G5 q',
+      'B5 q, D6 q, G6 h',
+      'G5 q, E5 q, C#5 q, A4 q',
+      'D5 q, F#5 q, A5 q, C6 q',
+    ],
     arp: 'eighths',
     bass: 'beat',
     lead: INSTRUMENTS.brass,
@@ -285,7 +370,16 @@ function wonSong(): Uint8Array {
   return build({
     bpm: 112,
     chords: ['C', 'F', 'G', 'C', 'Am', 'F', 'G7', 'C'],
-    tune: ['C5 q, E5 q, G5 q, C6 q', 'A5 q, C6 q, F6 h', 'D6 q, B5 q, G5 q, D6 q', 'E6 w', 'C6 q, A5 q, E5 q, A5 q', 'F5 q, A5 q, C6 h', 'B5 q, D6 q, F6 q, D6 q', 'C6 w'],
+    tune: [
+      'C5 q, E5 q, G5 q, C6 q',
+      'A5 q, C6 q, F6 h',
+      'D6 q, B5 q, G5 q, D6 q',
+      'E6 w',
+      'C6 q, A5 q, E5 q, A5 q',
+      'F5 q, A5 q, C6 h',
+      'B5 q, D6 q, F6 q, D6 q',
+      'C6 w',
+    ],
     lead: INSTRUMENTS.brass,
     drums: true,
   });

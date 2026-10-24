@@ -194,18 +194,7 @@ function dim(x1: number, y1: number, x2: number, y2: number, label: string, side
 }
 
 /** A hero drawn in a 10 x 10 grid, as in the Block Designer (1 = a filled pixel). */
-const HERO = [
-  '0001111000',
-  '0011111100',
-  '0011010100',
-  '0001111000',
-  '0000110000',
-  '0111111110',
-  '1001111001',
-  '0001111000',
-  '0011001100',
-  '0110000110',
-];
+const HERO = ['0001111000', '0011111100', '0011010100', '0001111000', '0000110000', '0111111110', '1001111001', '0001111000', '0011001100', '0110000110'];
 
 function blockDrawing(x: number, y: number, cell: number): string {
   const n = HERO.length;

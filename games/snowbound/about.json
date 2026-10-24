@@ -7,6 +7,8 @@
   "blurb": "Fort Ashby, West Virginia, December 1992. Shovel the whole neighborhood at $1 a scoop, sled down Jamie Street, and get $89 to LaVale Mall before the price of Game-Maker goes up.",
   "exe": "SNOWBND.EXE",
   "sound": "sb",
+  "tinHeart": { "map": "gale.map", "at": [13, 24] },
+  "easterEgg": { "map": "bowden.map", "at": [59, 31] },
   "label": {
     "background": "#f4f8ff",
     "band": "#1d4f91",

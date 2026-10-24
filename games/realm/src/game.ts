@@ -75,9 +75,19 @@ export function assemble(specs: SceneSpec[], front: Front): { game: Game; ids: M
     const sc = emptyScene(ADVTYPE);
     sc.desc = s.desc.slice(0, 19);
     const f = s.files;
-    sc.files = [f.pal, f.map, f.bbl, f.mon ?? '', f.mbl ?? '', f.chr ?? 'pip.chr', f.cbl ?? 'pip.cbl', f.snd ?? 'realm.snd', f.cmf ?? '', f.intro ?? '', f.exit ?? ''].concat(
-      new Array(9).fill(''),
-    );
+    sc.files = [
+      f.pal,
+      f.map,
+      f.bbl,
+      f.mon ?? '',
+      f.mbl ?? '',
+      f.chr ?? 'pip.chr',
+      f.cbl ?? 'pip.cbl',
+      f.snd ?? 'realm.snd',
+      f.cmf ?? '',
+      f.intro ?? '',
+      f.exit ?? '',
+    ].concat(new Array(9).fill(''));
     if (s.links.length > MAXSCENELINKS) throw new Error(`${s.id}: ${s.links.length} links (20 at most)`);
     sc.links = Array.from({ length: MAXSCENELINKS }, (_, k): Link => {
       const l = s.links[k];

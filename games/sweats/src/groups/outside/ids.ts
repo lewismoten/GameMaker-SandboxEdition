@@ -78,4 +78,12 @@ export const UMBR_MON = {
   /** A splash where a drop lands, a puff where a word scatters a tag or a bag. */
   splash: F + 4,
   poof: F + 5,
+  /**
+   * The finale: the wounded beast's torn canopy, loose on the wind and thrashing before its stand.
+   * Each word gentles it (wild, then flapping, then drooping), and the third lets it settle.
+   */
+  canopy: F + 6,
+  canopy2: F + 7,
+  canopy3: F + 8,
+  canopyCalm: F + 9,
 } as const;

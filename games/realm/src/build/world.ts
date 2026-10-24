@@ -30,10 +30,15 @@ export function buildWorld(cast: Cast) {
   worldTerrain(book);
   for (const [wm, rm] of bridgeCombos(plan.cm)) book.add(bridgeName(wm, rm), paintBridge(wm, rm), {});
   worldFeatures(book);
-  book.add('egg', eggBlock((x, y) => grass(x, y)), { obj: 1 });
+  book.add(
+    'egg',
+    eggBlock((x, y) => grass(x, y)),
+    { obj: 1 },
+  );
   const keepOut = [...Object.values(plan.spot), ...plan.stamps.map((s) => [s.x, s.y] as [number, number])];
   const clear = (x: number, y: number) => {
-    for (let dy = -2; dy <= 3; dy++) for (let dx = -2; dx <= 3; dx++) for (const l of ['water', 'road', 'forest', 'rock']) if (plan.cm.in(l, x + dx, y + dy)) return false;
+    for (let dy = -2; dy <= 3; dy++)
+      for (let dx = -2; dx <= 3; dx++) for (const l of ['water', 'road', 'forest', 'rock']) if (plan.cm.in(l, x + dx, y + dy)) return false;
     return keepOut.every(([sx, sy]) => Math.abs(sx - x) > 4 || Math.abs(sy - y) > 4);
   };
   const ground = resolveGround(plan.cm, book, {
@@ -52,7 +57,8 @@ export function buildWorld(cast: Cast) {
     console.log('world: layers meet in', ground.conflicts.filter(([, , l]) => !(l.includes('water') && l.includes('road'))).slice(0, 8));
   const map: GameMap = newMap();
   map.blocks.set(ground.blocks);
-  for (const s of plan.stamps) for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
+  for (const s of plan.stamps)
+    for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
   const blocks = book.finish();
 
   const mb = peopleSheet();
@@ -60,12 +66,16 @@ export function buildWorld(cast: Cast) {
   const solid = (x: number, y: number) => blocks[map.blocks[y * 100 + x]].solid !== 0;
   const slime = book2.n('slime');
   const bat = book2.n('bat');
+  const goblin = book2.n('goblin');
+  // (lighter on the Nowish-Laterburg road, which the quest crosses again and again; goblins
+  // on the road south to the Keep)
   scatter(map, solid, 77, [
-    [slime, 24, 54, 34, 72, 4],
-    [slime, 14, 36, 28, 44, 3],
+    [slime, 24, 54, 34, 72, 3],
+    [slime, 14, 36, 28, 44, 2],
     [bat, 34, 26, 44, 34, 3],
     [slime, 70, 40, 78, 56, 4],
-    [bat, 72, 62, 80, 72, 4],
+    [bat, 72, 62, 80, 72, 2],
+    [goblin, 70, 64, 82, 76, 3],
   ]);
   // the royal hounds and Sir Reginald, each a talk (walk into them) that sends them home
   const world: SceneSpec['links'] = [];

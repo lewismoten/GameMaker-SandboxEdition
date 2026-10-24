@@ -5,8 +5,10 @@
 //
 // New cameos go in cameos.json: { "<member id>": [{ "game": "<game id>", "as": "what they do" }] }.
 // They are added to that member's "Seen in" after the ones below (a game already listed is
-// kept once). A cameo in a game not in CAST_GAMES fails the test: add the game there first.
+// kept once). The Easter egg's and the tin heart's games come from each game's about.json
+// (hidden.json, scripts/castHidden.ts), so a new game shows up with no edit here. A cameo in a game not in CAST_GAMES fails the test: add the game there first.
 import CAMEOS from './cameos.json';
+import HIDDEN from './hidden.json';
 
 export type Family = 'sandbox' | 'bizarre';
 
@@ -108,7 +110,12 @@ const LISTED: CastMember[] = [
     name: 'Doc Leo',
     role: 'Hobo clown, PhD in Comedic Science',
     hi: 'Nose on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
-    art: { game: 'teddy', width: 224, height: 147, alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash' },
+    art: {
+      game: 'teddy',
+      width: 224,
+      height: 147,
+      alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash',
+    },
     bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, a red nose, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. Nose on: showtime. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
@@ -131,7 +138,12 @@ const LISTED: CastMember[] = [
     name: 'THE CHEZ',
     role: 'A tomato-red 1976½ CitiCar. Always charging.',
     hi: 'Ah-OOO-gah! Don’t mind me, I’m charging. I am always charging.',
-    art: { game: 'teddy', width: 120, height: 56, alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels' },
+    art: {
+      game: 'teddy',
+      width: 120,
+      height: 56,
+      alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels',
+    },
     bio: 'Lewis’s own electric car: a tomato-red 1976½ CitiCar, about half the length of anything parked next to it, with a black roof and racing stripes (they make the car go faster). It pulls a parade float at its usual few miles an hour, clears the road with an ah-OOO-gah, and turns up at a curb in nearly every Sandbox game. It is charging. It is always charging.',
     appears: [
       { game: 'teddy', as: 'waiting at the end of every level' },
@@ -169,10 +181,15 @@ const LISTED: CastMember[] = [
   {
     id: 'doghouse',
     name: 'The Dog House',
-    role: 'Lewis’s dog-themed little free library (and the Tiny Pockets Library inside)',
-    hi: 'Take a book, share a book. Snacks in the drawer. Woof!',
-    art: { game: 'teddy', width: 164, height: 182, alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks' },
-    bio: 'Lewis’s little free library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, share a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
+    role: 'Lewis’s dog-themed little lending library (and the Tiny Pockets Library inside)',
+    hi: 'Take a book, leave a book. Snacks in the drawer. Woof!',
+    art: {
+      game: 'teddy',
+      width: 164,
+      height: 182,
+      alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks',
+    },
+    bio: 'Lewis’s little lending library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, leave a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
     appears: [
       { game: 'teddy', as: 'on Maple Street, with a Teddy-sized room inside' },
       { game: 'teddy2', as: 'in the cast cartoon at dusk' },
@@ -203,7 +220,16 @@ const LISTED: CastMember[] = [
     role: 'Small, riveted, ticking. Hidden somewhere.',
     hi: 'Tick… tock… Yes, I have a heart. I am a heart. Find me!',
     art: { game: 'teddy', width: 14, height: 12, alt: 'The tin heart: a small grey riveted tin heart with a shine on its corner' },
-    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one. One is tucked away in many of the games, so it is something to look for: listen for the tick-tock.',
+    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one. One is hidden in every Sandbox and Bard of Bizarre game, so it is something to look for: listen for the tick-tock.',
+    appears: [],
+  },
+  {
+    id: 'easterEgg',
+    name: 'The Easter egg',
+    role: 'Hand-painted. Hidden. Not a chicken’s.',
+    hi: 'Zigzags on this side, stars on the other. Don’t tell anyone where I am.',
+    art: { game: 'teddy', width: 20, height: 19, alt: 'A painted Easter egg: a rose shell with blue zigzags, yellow dots and a white glint' },
+    bio: 'Somebody dyed it, painted it by hand (bands, zigzags, dots or stars) and tucked it away: one is hidden in every Sandbox and Bard of Bizarre game. Touch it for a few points and the satisfaction of having looked behind the couch. Nobody knows who keeps hiding them. (Not the Easter Bunny. He has an alibi.)',
     appears: [],
   },
   {
@@ -232,7 +258,12 @@ const LISTED: CastMember[] = [
     name: 'Lewis “Lewie” Moten III',
     role: 'The person behind all of them',
     hi: 'Hi, I’m Lewis. The dogs are mine, the car is mine, and the clown… is also me.',
-    art: { game: 'sandcast', width: 180, height: 180, alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo' },
+    art: {
+      game: 'sandcast',
+      width: 180,
+      height: 180,
+      alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo',
+    },
     bio: 'Teddy and Gwinn’s person, THE CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
     appears: [
       { game: 'sandcast', as: 'SysOp of the secret BBS, in a selfie with Teddy' },
@@ -367,11 +398,22 @@ const LISTED: CastMember[] = [
   },
 ];
 
-/** Everyone, with the cameos from cameos.json added to their games. */
+/** A hidden thing's place, from its game's about.json (hidden.json): only the level, never where on it. */
+const hiddenOn = (map: string) => `hidden somewhere on the ${map.replace(/\.map$/i, '').replace(/[_-]+/g, ' ')} map`;
+
+/**
+ * Everyone, with the cameos from cameos.json added to their games, and the hidden things (the
+ * Easter egg, the tin heart) in every game whose about.json places one (hidden.json, made by
+ * scripts/castHidden.ts), in cameos.json's words where it has some.
+ */
 export const CAST: CastMember[] = LISTED.map((m) => {
-  const more = ((CAMEOS as Record<string, Appearance[]>)[m.id] ?? []).filter((a) => !m.appears.some((b) => b.game === a.game));
+  const said = (CAMEOS as Record<string, Appearance[]>)[m.id] ?? [];
+  const placed = ((HIDDEN as unknown as Record<string, [string, string][]>)[m.id] ?? [])
+    .filter(([game]) => game in CAST_GAMES)
+    .map(([game, map]) => said.find((a) => a.game === game) ?? { game: game as CastGame, as: hiddenOn(map) });
+  const more = [...placed, ...said].filter((a, i, all) => !m.appears.some((b) => b.game === a.game) && all.findIndex((b) => b.game === a.game) === i);
   return more.length ? { ...m, appears: [...m.appears, ...more] } : m;
 });
 
 /** The families a member belongs to, from the games they appear in. */
-export const familiesOf = (m: CastMember): Family[] => [...new Set(m.appears.map((a) => CAST_GAMES[a.game][1] as Family))];
+export const familiesOf = (m: CastMember): Family[] => [...new Set(m.appears.map((a) => CAST_GAMES[a.game][1]))];

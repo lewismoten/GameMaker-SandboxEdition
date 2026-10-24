@@ -57,10 +57,12 @@ export function serializeSlideList(entries: SlideEntry[]): Uint8Array {
 /** Splits a .txt file into the 31 character lines Display_File shows (fgets with a 32 byte buffer). */
 export function textLines(bytes: Uint8Array): string[] {
   // Text mode: CRLF -> LF and Ctrl-Z ends the file.
-  const text = latin1Text(bytes).replace(/\x1a.*$/s, '').replace(/\r\n/g, '\n');
+  const text = latin1Text(bytes)
+    .replace(/\x1a.*$/s, '')
+    .replace(/\r\n/g, '\n');
   const lines: string[] = [];
   // fgets(buf, 32, fp): up to 31 chars, stopping after (and keeping) a newline.
-  for (let i = 0; i < text.length; ) {
+  for (let i = 0; i < text.length;) {
     let end = i;
     while (end < text.length && end - i < 31) {
       if (text[end++] === '\n') break;

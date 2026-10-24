@@ -99,7 +99,9 @@ export function banquet(book: BlockBook): Level {
   const m = new MapBuilder(book, 'outside');
   m.row(0, 1, W - 2, 'frieze');
   for (let x = 1; x < W - 1; x++) m.col(x, 1, 8, x % 8 === 3 ? 'wallB' : 'wall');
-  m.row(9, 1, W - 2, 'base').row(10, 0, W - 1, 'floor').row(11, 0, W - 1, 'under');
+  m.row(9, 1, W - 2, 'base')
+    .row(10, 0, W - 1, 'floor')
+    .row(11, 0, W - 1, 'under');
   // columns and hanging lamps
   for (const x of [7, 21, 34, 44]) m.set(x, 0, 'colTop').col(x, 1, 8, 'col').set(x, 9, 'colBase');
   for (const x of [11, 27, 40]) m.set(x, 1, 'hang0');
@@ -139,13 +141,25 @@ export function banquet(book: BlockBook): Level {
 
 /** II. The battle: the horde behind, the ladder and palisade, the archers, the ditch, the gate. */
 export function battle(book: BlockBook): Level {
-  const W = 56;
+  const W = 74;
   const H = 13;
   const m = new MapBuilder(book, 'outside');
   m.fill(1, 0, W - 2, 2, 'skyHi');
   for (let x = 1; x < W - 1; x++) m.col(x, 2, 7, 'sky');
-  for (const [x, y] of [[6, 3], [17, 2], [29, 4], [38, 2], [47, 3]]) m.set(x, y, 'skyCloud');
-  m.row(8, 1, W - 2, 'hills').row(9, 1, W - 2, 'field').row(10, 0, W - 1, 'grass').fill(0, 11, W, 2, 'dirt');
+  for (const [x, y] of [
+    [6, 3],
+    [17, 2],
+    [29, 4],
+    [38, 2],
+    [47, 3],
+    [58, 2],
+    [67, 4],
+  ])
+    m.set(x, y, 'skyCloud');
+  m.row(8, 1, W - 2, 'hills')
+    .row(9, 1, W - 2, 'field')
+    .row(10, 0, W - 1, 'grass')
+    .fill(0, 11, W, 2, 'dirt');
   // rocks, the eagle standard, the camp's tents and a cup
   m.set(7, 9, 'rock').set(10, 9, 'aquila').set(12, 9, 'rock');
   m.set(14, 9, 'tentL').set(15, 9, 'tentR').set(17, 9, 'wcup');
@@ -159,13 +173,21 @@ export function battle(book: BlockBook): Level {
   m.mon(MON.crow, 30, 3);
   // the ditch: in, along, out (melius est hic manere!)
   m.fill(43, 10, 4, 2, 'ditch').set(44, 11, 'ditchSign');
+  // the second field: a rock, a coin, the eagle, the second archers' tower, a bush
+  m.set(49, 9, 'rock').set(51, 9, 'wcoin').set(53, 9, 'aquila');
+  m.set(55, 8, 'towerTop').set(55, 9, 'tower');
+  m.set(57, 9, 'bush');
+  // the wide ditch: in, along, out, with the second wave on his heels
+  m.fill(59, 10, 5, 2, 'ditch').set(61, 11, 'ditchSign');
   // THE CHEZ, parked by the gate: QVID EST?
-  m.set(48, 9, 'chezL').set(49, 9, 'chezR').set(50, 9, 'quid');
+  m.set(66, 9, 'chezL').set(67, 9, 'chezR').set(68, 9, 'quid');
   // the gate
-  m.col(51, 5, 7, 'gateTower').set(51, 8, 'gateTop').set(51, 9, 'gateWay').fill(52, 5, 3, 5, 'gateTower');
-  m.link(51, 9, 'next');
-  // the Gaulish horde, right behind him
+  m.col(69, 5, 7, 'gateTower').set(69, 8, 'gateTop').set(69, 9, 'gateWay').fill(70, 5, 3, 5, 'gateTower');
+  m.link(69, 9, 'next');
+  // the Gaulish horde, right behind him; the second wave rallies at the edge of the field, then
+  // charges after him to the wide ditch
   m.mon(MON.gaul, 0, 9).mon(MON.gaul2, -2, 9);
+  m.mon(MON.gaulW, -1, 9).mon(MON.gaulW2, -2, 9);
   return { m, start: at(4, 9), size: [W, H] };
 }
 
@@ -220,7 +242,10 @@ export function kitchen(book: BlockBook): Level {
   const W = 50;
   const H = 12;
   const m = new MapBuilder(book, 'outside');
-  m.row(0, 1, W - 2, 'beams').fill(1, 1, W - 2, 8, 'kwall').row(9, 1, W - 2, 'kbase').fill(0, 10, W, 2, 'kfloor');
+  m.row(0, 1, W - 2, 'beams')
+    .fill(1, 1, W - 2, 8, 'kwall')
+    .row(9, 1, W - 2, 'kbase')
+    .fill(0, 10, W, 2, 'kfloor');
   for (const x of [8, 19, 33]) m.set(x, 0, 'garlic');
   for (const x of [14, 27, 43]) m.set(x, 0, 'pots');
   // the hearth by the door; the first mouse
@@ -236,19 +261,23 @@ export function kitchen(book: BlockBook): Level {
   m.row(5, 22, 27, 'kshelf').set(24, 4, 'armarium').set(26, 4, 'will');
   // the second mouse by its hole; a cupboard down low
   m.set(30, 9, 'hole').mon(MON.mouse, 29, 9).set(34, 9, 'armariumLow');
-  // a shelf of jars, ants on it, a cupboard at its end; milk underneath
-  m.row(7, 36, 39, 'kshelfJars').mon(MON.ant, 36, 6).set(39, 6, 'armarium').set(37, 9, 'milk');
+  // a shelf of jars, ants on it, a cupboard at its end
+  m.row(7, 36, 39, 'kshelfJars').mon(MON.ant, 36, 6).set(39, 6, 'armarium');
   // the third mouse
   m.set(42, 9, 'hole').mon(MON.mouse, 41, 9);
   // the crown of cheese
   m.set(45, 9, 'corona');
+  // a tin heart on the floor under the shelf
+  m.set(23, 9, 'tinHeart');
   m.link(47, 9, 'next');
   return { m, start: at(4, 9), size: [W, H] };
 }
 
 /** One pool from x0 to x1: the surface on the walk row, the water, the pool's floor. */
 function pool(m: MapBuilder, x0: number, x1: number, hot: boolean, walk: number): void {
-  m.row(walk, x0, x1, hot ? 'hotTop' : 'poolTop').row(walk + 1, x0, x1, hot ? 'hotPlain' : 'pool').row(walk + 2, x0, x1, 'poolFloor');
+  m.row(walk, x0, x1, hot ? 'hotTop' : 'poolTop')
+    .row(walk + 1, x0, x1, hot ? 'hotPlain' : 'pool')
+    .row(walk + 2, x0, x1, 'poolFloor');
 }
 
 /** V. The baths: pools, steam, drums, benches of cheering mice, seven golden scales, her basin. */
@@ -260,14 +289,21 @@ export function baths(book: BlockBook): Level {
   m.row(0, 1, W - 2, 'vault');
   m.fill(1, 1, W - 2, walk - 1, 'bwall');
   for (const x of [4, 13, 26, 46, 57]) m.set(x, 5, 'bniche');
-  m.row(walk, 1, W - 2, 'bbase').row(walk + 1, 0, W - 1, 'bfloor').row(walk + 2, 0, W - 1, 'bfloor2');
-  for (const x of [16, 37, 53]) m.set(x, 0, 'bcolTop').col(x, 1, walk - 1, 'bcol').set(x, walk, 'bcolBase');
+  m.row(walk, 1, W - 2, 'bbase')
+    .row(walk + 1, 0, W - 1, 'bfloor')
+    .row(walk + 2, 0, W - 1, 'bfloor2');
+  for (const x of [16, 37, 53])
+    m.set(x, 0, 'bcolTop')
+      .col(x, 1, walk - 1, 'bcol')
+      .set(x, walk, 'bcolBase');
   m.set(4, 8, 'linteum');
   // the cold pool: a scale on its floor
   pool(m, 6, 10, false, walk);
   m.set(8, walk + 1, 'scalePool');
   // a bench of cheering mice, a scale between them
   m.row(8, 12, 14, 'bench').mon(MON.fan, 12, 7).set(13, 7, 'scale').mon(MON.fan, 14, 7);
+  // a painted egg rolled under it
+  m.set(14, walk, 'egg');
   // the steam vent up to a high bench: a scale and a wreath
   m.set(18, walk + 1, 'vent').col(18, 3, walk, 'steam0');
   m.row(4, 19, 21, 'bench').set(20, 3, 'scale').set(21, 3, 'bwreath');
@@ -279,14 +315,16 @@ export function baths(book: BlockBook): Level {
   m.set(29, walk + 1, 'hot').set(34, walk + 1, 'hot');
   m.mon(MON.bather, 31, walk).set(33, walk + 1, 'scaleHot');
   m.set(38, 8, 'strigil');
+  // wet stains high on the wall, where the steam gathers: hot drips fall from them to the walkway
+  m.set(27, 1, 'bwallDrip').set(44, 1, 'bwallDrip');
   // the second drum: a bench, a scale
   m.set(40, walk, 'drum').col(40, 5, walk - 1, 'boing0');
   m.row(5, 41, 43, 'bench').set(42, 4, 'scale');
   // the second cold pool: a scale
   pool(m, 45, 49, false, walk);
   m.set(47, walk + 1, 'scalePool');
-  // another bench of mice, grapes
-  m.row(8, 50, 51, 'bench').mon(MON.fan, 50, 7).set(51, 7, 'bgrapes');
+  // another bench of mice
+  m.row(8, 50, 51, 'bench').mon(MON.fan, 50, 7);
   m.set(52, 8, 'bcoin');
   // her golden basin: six scales; the diva sings in it
   m.set(55, walk, 'basinL0').set(56, walk, 'basinR');
@@ -313,9 +351,11 @@ export function theater(book: BlockBook): Level {
     for (let x = x0; x <= x1; x++) m.col(x, top + 1, 12, 'riser');
   }
   m.set(1, 5, 'cabbageRow');
+  // Mystery Robot Joe at the top of the stands, counting the laughs
+  m.set(1, 4, 'joe');
   // the audience: stone faces on every step, and one in the orchestra
   m.mon(MON.stony, 4, 4).mon(MON.stony, 8, 6).mon(MON.stony, 10, 8).mon(MON.stony, 12, 8).mon(MON.stony, 15, 10).mon(MON.stony, 20, 11);
-  m.set(18, 9, 'mask').set(22, 8, 'tgrapes');
+  m.set(18, 9, 'mask').set(22, 8, 'tcoin');
   // the stairs up to the stage, shut until five laugh
   m.set(24, 11, 'stairs');
   // the stage and its painted front
@@ -323,9 +363,12 @@ export function theater(book: BlockBook): Level {
   m.row(1, 25, W - 2, 'fronsTop').fill(25, 2, W - 26, 7, 'frons');
   for (const x of [26, 33, 41]) m.col(x, 2, 8, 'fronsCol');
   m.set(29, 7, 'fronsDoor').set(29, 8, 'fronsDoor');
-  // Doc Leo the jester; Emperor Gravis; the box behind him that throws decrees; the altar
-  m.mon(MON.jester, 28, 8);
-  m.mon(MON.gravisA0, 36, 7).mon(MON.gravisB0, 36, 8);
+  // Doc Leo the jester at the foot of the stage stairs (out of the way of the hushes); Emperor
+  // Gravis; the imperial box behind him; the altar
+  m.mon(MON.jester, 23, 11);
+  m.mon(MON.gravisA0, 33, 7).mon(MON.gravisB0, 33, 8);
+  // the herald's horn behind the throne, over his head: "SILENTIUM!"
+  m.set(39, 6, 'horn');
   m.set(38, 4, 'decreeBox');
   m.set(40, 8, 'altar');
   m.link(42, 8, 'won');

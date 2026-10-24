@@ -224,6 +224,8 @@ export function galeStreet(book: BlockBook) {
     m.set(x, y, 'pineDrawn');
   m.patch(18, 36, ['TT....TTT', 'T......TT', 'T......TT', 'TT....TTT']);
   m.set(22, 38, 'feltEgg').set(25, 37, 'toboggan');
+  // a tin heart in the snow by your backyard snowman, off the paper route
+  m.set(13, 24, 'tinHeart');
   m.link(25, 37, 'woods', 24, 37);
   // Dunn Drive runs north-south past the house, plowed down to the asphalt.
   m.fill(8, 4, 2, 27, 'a');
@@ -254,6 +256,7 @@ export function galeStreet(book: BlockBook) {
 export function jamieHill(book: BlockBook) {
   const m = new MapBuilder(book);
   const x0 = 30;
+  // Below the first steep band, four open rows to feel the drift before the first rock.
   const rows = [
     'TTTTTTTTTTTTTTTTTTTTTTTT',
     'T,,,,,,,,,,,,,,,,,,,,,,T',
@@ -263,8 +266,8 @@ export function jamieHill(book: BlockBook) {
     'T!!!!!!!!!!!!!!!!!!!!!!T',
     'T~~~~~~~~~~Q~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'TY~~~~~R~~~~~~~~~~~~~YYT',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
+    'TY~~~~~~~~~~~~~~~~~~~YYT',
+    'T~~~~~~~~~~~~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~R~~~~~~~T',
     'T~~~~~~Q~~~~~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~~~~~~~~~T',
@@ -364,8 +367,9 @@ export function jamieHill(book: BlockBook) {
 
 // ------------------------------------------------------------------ level 3
 /**
- * Bowden Drive, 4:30 PM: a long row of customers, two plows and a car, the snowball war in
- * the park, and the frozen creek. East end: the road to LaVale.
+ * Bowden Drive, 4:30 PM: two customers left on the long north side, two plows and a car,
+ * the snowball war in the park, Big Pete by the footbridge, and two more customers across
+ * the frozen creek. East end: the road to LaVale.
  */
 export function bowdenDrive(book: BlockBook) {
   const m = new MapBuilder(book);
@@ -374,15 +378,17 @@ export function bowdenDrive(book: BlockBook) {
   // houses all along the north side
   m.fill(X, 21, 74, 3, 'T');
   m.fill(X, 24, 74, 1, 's').fill(X, 25, 74, 1, 's');
+  // Most of Bowden Drive got home early and dug out its own: two customers are left on the
+  // north side, and two more wait across the creek.
   const north: [number, 'red' | 'blue' | 'yellow', boolean, 'D' | 'a'][] = [
-    [2, 'red', false, 'D'],
+    [2, 'red', false, 'a'],
     [9, 'blue', true, 'D'],
     [16, 'yellow', true, 'a'],
-    [23, 'red', false, 'D'],
-    [30, 'blue', false, 'D'],
+    [23, 'red', false, 'a'],
+    [30, 'blue', false, 'a'],
     [37, 'red', false, 'a'],
     [44, 'yellow', true, 'D'],
-    [52, 'blue', true, 'D'],
+    [52, 'blue', true, 'a'],
   ];
   north.forEach(([x, color, left, snow], i) => {
     const h = m.house(X + x, 21, color, left, i % 3 !== 2);
@@ -393,7 +399,6 @@ export function bowdenDrive(book: BlockBook) {
   m.set(X + 59, 23, 'b')
     .set(X + 62, 23, 'n')
     .set(X + 66, 23, 'b');
-  m.set(X + 24, 25, '5'); // the Kellers leave a tip on the walk
   m.set(X + 35, 25, 'y').set(X + 57, 25, 'y');
   m.patch(X + 13, 25, ['vv'])
     .patch(X + 42, 25, ['vv'])
@@ -410,9 +415,9 @@ export function bowdenDrive(book: BlockBook) {
     '..........T.........................c..........T..........................',
     'T....F.........b...........T...............................T......F....T..',
     '...............................................b...........................',
-    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
-    '>>>>>>>>$>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#>>>>>>>>>>>>>>$>>>>>>>>>>>>>>>>>>>',
-    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
+    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>##>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
+    '>>>>>>>>$>>>>>>>>>>>>>>>>>>>>>>>>>>>>##>>>>>>>>>>>>>>$>>>>>>>>>>>>>>>>>>>',
+    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>##>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
     '..........................................................................',
   ]);
   // south of the creek: two more customers
@@ -422,6 +427,8 @@ export function bowdenDrive(book: BlockBook) {
     .fill(X + 25, 41, 21, 3, 'T')
     .fill(X + 51, 41, 23, 3, 'T');
   m.fill(X, 44, 74, 2, '.');
+  // a path through the pines beside each house, from the creek bank down to its driveway
+  m.fill(X + 19, 41, 1, 3, '.').fill(X + 51, 41, 1, 3, '.');
   for (const h of [s1, s2]) m.fill(h.garage, 44, 2, 2, 'D').set(h.door, 44, 'S');
   m.set(X + 30, 44, 'c')
     .set(X + 60, 45, 'n')
@@ -437,6 +444,8 @@ export function bowdenDrive(book: BlockBook) {
   m.vehicle(MON.plowAR, MON.plowBR, X + 1, 27);
   m.vehicle(MON.plow2AR, MON.plow2BR, X + 40, 27);
   m.vehicle(MON.carAR, MON.carBR, X + 20, 28);
+  // a painted Easter egg by the park's snowman, through the gap in the far bank
+  m.set(X + 53, 31, 'easterEgg');
   m.mon(MON.bully, X + 40, 33)
     .mon(MON.dog, X + 12, 34)
     .mon(MON.dog, X + 60, 32)
@@ -465,6 +474,8 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 40, 13, 'storeDoor')
     .set(X + 42, 13, 'boxWindow');
   m.set(X + 24, 13, 'mallDoor').set(X + 25, 13, 'mallDoor');
+  // Will the playwright, visiting from Shakespeare in Sweatpants, declaiming outside Bleeps
+  m.set(X + 21, 13, 'will');
   // Bleeps, the arcade, with its chasing marquee
   for (let i = 0; i < 3; i++) m.set(X + 17 + i, 12, `arcade0${i}`);
   m.set(X + 17, 13, 'arcadeWin')
@@ -475,7 +486,9 @@ export function lavaleMall(book: BlockBook) {
   m.fill(X, 14, 60, 2, 's');
   m.patch(X, 15, ['  SSS        SSS        SSS                  SSS      SSS']);
   // the History Fair table on the walk, and the corkboard on the wall behind it
-  m.set(X + 27, 14, 'fairMan').set(X + 28, 14, 'fairBell').set(X + 29, 14, 'fairFlag');
+  m.set(X + 27, 14, 'fairMan')
+    .set(X + 28, 14, 'fairBell')
+    .set(X + 29, 14, 'fairFlag');
   m.set(X + 32, 13, 'board0').set(X + 33, 13, 'board1');
   // Bleeps' snack bar: root beer, and only root beer
   m.set(X + 16, 14, 'rootBeer');
@@ -501,6 +514,9 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 57, 37, 'T')
     .set(X, 36, 'u');
   m.set(X + 52, 27, 'c');
+  // meltwater frozen along the back of the lot: an icy lane that slides you east toward the
+  // stores (quick, but nothing to shovel on it and the lot's buried cars to steer past)
+  m.fill(X + 6, 37, 44, 1, '>');
   m.fill(X, 38, 60, 7, 'T');
   m.fill(X - 1, 11, 1, 34, 'T').fill(X + 60, 11, 1, 34, 'T');
   // traffic: the plow sweeps the fire lane; another works the middle aisle; carts roll free
@@ -512,6 +528,6 @@ export function lavaleMall(book: BlockBook) {
     [X + 30, 33],
   ])
     m.mon(MON.cart, x, y);
-  m.mon(MON.bully, X + 50, 31).mon(MON.dog, X + 20, 34);
+  m.mon(MON.bully, X + 50, 34).mon(MON.dog, X + 20, 34);
   return { m, start: [X + 1, 36] as [number, number] };
 }

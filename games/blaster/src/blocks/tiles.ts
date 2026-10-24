@@ -91,6 +91,8 @@ function beam(a: StageArt, on: boolean, phase: number): Pixels {
   const p = a.pal;
   const t = copy(a.floor(2));
   if (on) {
+    // a heat haze over the whole cell: the ship is burned anywhere in it, so it all looks hot
+    for (let y = 1; y < 19; y++) for (let x = (y + phase) % 3; x < 20; x += 3) t.set(x, y, p.c('glow', 1));
     for (let x = 0; x < 20; x++) {
       const y = 10 + Math.round(Math.sin(x * 0.9 + phase) * 2);
       t.rect(x, y - 1, 1, 3, p.c('glow', 2));

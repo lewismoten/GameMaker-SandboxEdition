@@ -6,16 +6,17 @@
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
+import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
-const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
-  h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
+const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) => h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
 
 const kbd = (text: string) => h('kbd', null, text);
 const cmd = (text: string) => h('pre', { class: 'mac-cmd' }, h('code', null, text));
 
 /** The page into `el`. */
 export function renderLinuxHelp(el: HTMLElement): void {
+  tally('help-all', 'linux');
   clear(
     el,
     h(
@@ -35,7 +36,15 @@ export function renderLinuxHelp(el: HTMLElement): void {
         h(
           'ol',
           null,
-          h('li', null, 'Extract the downloaded .tar.gz: double-click it and choose ', kbd('Extract'), ', or right-click it and choose ', kbd('Extract Here'), '. You get a folder named after the game.'),
+          h(
+            'li',
+            null,
+            'Extract the downloaded .tar.gz: double-click it and choose ',
+            kbd('Extract'),
+            ', or right-click it and choose ',
+            kbd('Extract Here'),
+            '. You get a folder named after the game.',
+          ),
           h(
             'li',
             null,
@@ -60,11 +69,7 @@ export function renderLinuxHelp(el: HTMLElement): void {
       section(
         'linux-needs',
         'What it needs',
-        h(
-          'p',
-          null,
-          'The window uses WebKitGTK, the web engine of GNOME’s browser, which most desktops already have. If yours does not, install it:',
-        ),
+        h('p', null, 'The window uses WebKitGTK, the web engine of GNOME’s browser, which most desktops already have. If yours does not, install it:'),
         h(
           'ul',
           null,
@@ -117,6 +122,16 @@ export function renderLinuxHelp(el: HTMLElement): void {
             h('a', { href: `${REPO_URL}/tree/HEAD/linux`, target: '_blank', rel: 'noopener' }, 'linux folder of the project’s source code'),
             ', and the scripts are plain text you can read in the folder.',
           ),
+        ),
+      ),
+
+      section(
+        'linux-future',
+        'Will it keep working?',
+        h(
+          'p',
+          null,
+          'The download is a convenience: it plays offline and keeps its saved games on your computer. It is not a frozen copy, though. It wraps the same web page as this site in a small native window and plays it with WebKitGTK, the web engine most Linux desktops already have. It still depends on that engine, so a future Linux or WebKitGTK update could break the game or change how it plays. The DOS download, played in DOSBox, is the most future-proof way to keep a game.',
         ),
       ),
 

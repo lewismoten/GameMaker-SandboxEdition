@@ -28,7 +28,15 @@ import { BLANKET_MON } from './ids';
 export const SOULS = 5;
 
 /** Night: the house in blue moonlight. */
-export const NIGHT: Lighting = { sky: [[6, 8, 26], [60, 70, 120], [24, 30, 60]], mul: [0.66, 0.74, 0.98], add: [0, 4, 22] };
+export const NIGHT: Lighting = {
+  sky: [
+    [6, 8, 26],
+    [60, 70, 120],
+    [24, 30, 60],
+  ],
+  mul: [0.66, 0.74, 0.98],
+  add: [0, 4, 22],
+};
 
 export function blanketBlocks(book: BlockBook, pal: Pal): void {
   const { c, r: R } = pal;
@@ -50,8 +58,20 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
     // the throw pillow, tear-stained
     blob(pic, 20, 17, 7, 5, R('quilt'), 1, 3);
     pic.set(14, 12, c('quilt', 3)).set(26, 12, c('quilt', 3)).set(14, 22, c('quilt', 3)).set(26, 22, c('quilt', 3));
-    for (const [x, y] of [[18, 16], [20, 18], [22, 15], [19, 20]]) pic.set(x, y, c('ice', 1));
-    addPicture(book, 'chair', pic, (col, row) => (row ? wall(31 + col) : wall(33 + col)), (_col, row) => (row ? { solid: SOLID } : AIR));
+    for (const [x, y] of [
+      [18, 16],
+      [20, 18],
+      [22, 15],
+      [19, 20],
+    ])
+      pic.set(x, y, c('ice', 1));
+    addPicture(
+      book,
+      'chair',
+      pic,
+      (col, row) => (row ? wall(31 + col) : wall(33 + col)),
+      (_col, row) => (row ? { solid: SOLID } : AIR),
+    );
   }
   // the photo on the wall: the burrito of warmth (two heads out of one rolled-up blanket)
   {
@@ -78,7 +98,12 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
     for (const y of [0, 20, 40]) pic.rect(2 + lean(y), y, 36, 3, c('wood', 4)).rect(2 + lean(y), y + 3, 36, 1, c('wood', 1));
     // the flu: a box of tissues; the books; the cabinet door hanging off one hinge, the screws
     pic.rect(9, 11, 9, 7, c('ice', 2)).rect(12, 9, 3, 2, c('white', 2));
-    for (const [x, h, k] of [[22, 13, 'red'], [25, 11, 'teal'], [28, 14, 'gold']] as const) pic.rect(x, 39 - h, 3, h, c(k, 1)).rect(x, 39 - h, 1, h, c(k, 2));
+    for (const [x, h, k] of [
+      [22, 13, 'red'],
+      [25, 11, 'teal'],
+      [28, 14, 'gold'],
+    ] as const)
+      pic.rect(x, 39 - h, 3, h, c(k, 1)).rect(x, 39 - h, 1, h, c(k, 2));
     pic.line(9, 44, 21, 58, c('wood', 3)).line(10, 44, 22, 58, c('wood', 2)).line(21, 44, 9, 58, c('wood', 1));
     for (const x of [26, 29, 32]) pic.set(x, 56, c('metal', 2)).set(x, 57, c('metal', 1));
     addPicture(book, 'case', pic, wall(36), (_col, row) => (row === 2 ? { solid: SOLID } : { solid: LEDGE, grav: GRAV.down }));
@@ -101,7 +126,15 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
   rad.rect(0, 14, 20, 6, c('white', 1)).rect(0, 14, 20, 1, c('white', 2));
   for (let x = 2; x < 19; x += 4) rad.rect(x, 4, 3, 15, c('metal', 1)).rect(x, 4, 1, 15, c('metal', 2));
   rad.rect(1, 17, 18, 2, c('metal', 0));
-  for (const [x, y] of [[3, 5], [7, 9], [11, 6], [15, 10], [8, 4], [16, 5]]) rad.set(x, y, c('ice', 2)).set(x + 1, y, c('ice', 1));
+  for (const [x, y] of [
+    [3, 5],
+    [7, 9],
+    [11, 6],
+    [15, 10],
+    [8, 4],
+    [16, 5],
+  ])
+    rad.set(x, y, c('ice', 2)).set(x + 1, y, c('ice', 1));
   book.add('radiator', rad, { solid: SOLID });
   // the nightstand with its little lamp (solid: stand on it)
   const stand = wall(40);
@@ -123,7 +156,15 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
     // where the blanket was: a dotted outline, and frost on the colder side
     for (let x = 10; x < 54; x += 3) bed.set(x, 18, c('quilt', 1)).set(x, 25, c('quilt', 1));
     for (let y = 18; y < 26; y += 3) bed.set(10, y, c('quilt', 1)).set(53, y, c('quilt', 1));
-    for (const [x, y] of [[14, 21], [22, 23], [30, 20], [38, 22], [46, 21], [26, 24]]) bed.set(x, y, c('ice', 1)).set(x + 1, y, c('ice', 2));
+    for (const [x, y] of [
+      [14, 21],
+      [22, 23],
+      [30, 20],
+      [38, 22],
+      [46, 21],
+      [26, 24],
+    ])
+      bed.set(x, y, c('ice', 1)).set(x + 1, y, c('ice', 2));
     bed.rect(0, 10, 5, 30, c('wood', 2)).rect(0, 10, 5, 2, c('wood', 4)).rect(1, 14, 2, 20, c('wood', 1));
   }
   addPicture(book, 'bed', bed, wall(42), () => AIR);
@@ -133,7 +174,15 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
       // the sheet turned down, a thin one, waiting
       p.rect(0, 0, 20, 8, c('white', 2)).line(0, 7, 19, 3, c('ice', 2)).rect(5, 8, 15, 5, c('white', 1));
     } else {
-      for (const [x, y] of [[7, 2], [12, 4], [16, 1]]) p.set(x, y, c('ice', 2)).set(x - 1, y + 1, c('ice', 2)).set(x + 1, y + 1, c('ice', 2)).set(x, y + 2, c('ice', 2));
+      for (const [x, y] of [
+        [7, 2],
+        [12, 4],
+        [16, 1],
+      ])
+        p.set(x, y, c('ice', 2))
+          .set(x - 1, y + 1, c('ice', 2))
+          .set(x + 1, y + 1, c('ice', 2))
+          .set(x, y + 2, c('ice', 2));
     }
     return p;
   };
@@ -209,7 +258,13 @@ export function blanketSprites(book: SpriteBook, pal: Pal): void {
 export function blanketMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // chills drift in off the window, down to the floor and away to the left
-  set[BLANKET_MON.chill] = mon(anim(mb, 'chill0', 'chill1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: BLANKET_MON.fluff }, [corner(0, 0, 1), corner(-1, 2, 1), corner(-2, 4, 1), corner(-3, 6, 1), corner(-9, 6, 1, 4)]);
+  set[BLANKET_MON.chill] = mon(anim(mb, 'chill0', 'chill1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: BLANKET_MON.fluff }, [
+    corner(0, 0, 1),
+    corner(-1, 2, 1),
+    corner(-2, 4, 1),
+    corner(-3, 6, 1),
+    corner(-9, 6, 1, 4),
+  ]);
   set[BLANKET_MON.key] = mon(anim(mb, 'key0', 'key1', 4), { power: POWER.foe, thru: 1, newmon: BLANKET_MON.fluff }, pace(3, 2));
   set[BLANKET_MON.newA] = mon(anim(mb, 'new0a', 'new0b', 8), { power: POWER.foe, thru: 1, newmon: BLANKET_MON.newB }, pace(3, 1));
   set[BLANKET_MON.newB] = mon(anim(mb, 'new1a', 'new1b', 6), { power: POWER.foe, thru: 1, newmon: BLANKET_MON.newC }, pace(2, 1));
@@ -253,7 +308,10 @@ export const blanket: Monologue = {
     const W = 64 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 4; x < W; x += 10) m.set(x, 0, '*');
-    m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     const win = (x: number, y: number, draft: boolean) => (placePicture(m, 'win', x, y, 2, 2), draft && m.set(x + 1, y, 'W'));
     // the living room: the thermostat, the armchair and its throw pillow, a shelf, the photo
     m.set(2, 9, '!').set(4, 5, 't');

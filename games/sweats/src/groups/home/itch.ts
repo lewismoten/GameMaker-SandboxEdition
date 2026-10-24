@@ -26,11 +26,22 @@ import type { Monologue } from '../types';
 import { houseMonsters, wallpaper } from './house';
 import { ITCH_MON } from './ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** The napkin, the car keys, the tinted glasses, the hand sanitizer. */
 export const KIT = 4;
 
 /** A clear afternoon over the lot. */
-export const AFTERNOON: Lighting = { sky: [[70, 120, 200], [214, 232, 250], [140, 184, 236]], mul: [1, 1, 1], add: [0, 0, 0] };
+export const AFTERNOON: Lighting = {
+  sky: [
+    [70, 120, 200],
+    [214, 232, 250],
+    [140, 184, 236],
+  ],
+  mul: [1, 1, 1],
+  add: [0, 0, 0],
+};
 
 /** The bank's brick back wall (`curb`: the walking row, a strip of sidewalk at its foot). */
 function brickWall(pal: Pal, seed: number, curb: boolean): Pixels {
@@ -64,7 +75,7 @@ export function itchBlocks(book: BlockBook, pal: Pal): void {
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) lot.set(x, y, c('asphalt', r() < 0.3 ? 0 : 1));
   lot.rect(0, 0, 20, 1, c('asphalt', 2)).rect(8, 4, 12, 2, c('yellow', 1));
   book.add('lot', lot, { solid: SOLID });
-  loot(book, pal, 'brickB');
+  loot(book, pal, 'brickB', LATE);
   // the bank's sign over its back door, in stone
   {
     const pic = new Pixels(60, 20, 255);
@@ -102,7 +113,17 @@ export function itchBlocks(book: BlockBook, pal: Pal): void {
     if (open) {
       // the door open, alone at last: he strikes gold
       p.rect(2, 0, 16, 12, c('ink', 1)).rect(2, 0, 2, 12, c('teal', 2));
-      for (const [x, y] of [[9, 4], [13, 7], [7, 9], [12, 2]]) p.set(x, y, c('gold', 3)).set(x - 1, y, c('gold', 2)).set(x + 1, y, c('gold', 2)).set(x, y - 1, c('gold', 2)).set(x, y + 1, c('gold', 2));
+      for (const [x, y] of [
+        [9, 4],
+        [13, 7],
+        [7, 9],
+        [12, 2],
+      ])
+        p.set(x, y, c('gold', 3))
+          .set(x - 1, y, c('gold', 2))
+          .set(x + 1, y, c('gold', 2))
+          .set(x, y - 1, c('gold', 2))
+          .set(x, y + 1, c('gold', 2));
     } else p.rect(6, 4, 6, 1, c('metal', 2));
     return p;
   };
@@ -134,7 +155,12 @@ export function itchBlocks(book: BlockBook, pal: Pal): void {
   plotThing(book, 'wall', 'kit1', (p) => {
     // the napkin, folded fifteen times, to the size of a cork
     p.rect(7, 12, 6, 6, c('white', 2)).line(7, 12, 12, 17, c('white', 0)).rect(7, 17, 6, 1, c('white', 0));
-    for (const [x, y] of [[4, 8], [15, 9], [10, 6]]) p.set(x, y, c('gold', 3));
+    for (const [x, y] of [
+      [4, 8],
+      [15, 9],
+      [10, 6],
+    ])
+      p.set(x, y, c('gold', 3));
   });
   plotThing(book, 'brickB', 'kit2', (p) => {
     // the car keys on their ring
@@ -165,7 +191,9 @@ export function itchSprites(book: SpriteBook, pal: Pal): void {
     for (let x = 4; x < 17; x += 3) p.rect(x, 15, 2, 2 + ((x + f) % 2), c('white', 1));
     face(p, pal, 10, 8, { angry: true });
     // the feather, waving
-    p.line(15, 11, 19, 4 + f * 2, c('pink', 2)).line(16, 10, 18, 6 + f * 2, c('pink', 1)).line(17, 11, 19, 7 + f * 2, c('pink', 1));
+    p.line(15, 11, 19, 4 + f * 2, c('pink', 2))
+      .line(16, 10, 18, 6 + f * 2, c('pink', 1))
+      .line(17, 11, 19, 7 + f * 2, c('pink', 1));
     return outline(p, ink);
   };
   book.add('ghost0', ghost(0), hurts(-5));
@@ -205,7 +233,10 @@ export function itchSprites(book: SpriteBook, pal: Pal): void {
     const p = P();
     p.rect(3, 9, 13, 6, c('red', 1)).rect(3, 9, 13, 1, c('red', 2)).line(3, 9, 6, 3, c('red', 1)).line(6, 3, 11, 3, c('red', 1));
     blob(p, 11, 7, 3.2, 3.2, pal.r('skin'), 1, 4);
-    p.set(10 + f, 7, c('ink', 0)).set(12 + f, 7, c('ink', 0)).set(11, 9, c('ink', 0)).set(11, 4, c('yellow', 2));
+    p.set(10 + f, 7, c('ink', 0))
+      .set(12 + f, 7, c('ink', 0))
+      .set(11, 9, c('ink', 0))
+      .set(11, 4, c('yellow', 2));
     p.line(16, 9, 18, 5, c('metal', 1));
     for (const x of [5, 14]) p.disc(x, 17, 2.2, c('ink', 0)).set(x, 17, c('metal', 2));
     return outline(p, ink);
@@ -217,9 +248,17 @@ export function itchSprites(book: SpriteBook, pal: Pal): void {
 export function itchMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   set[ITCH_MON.ghost] = mon(anim(mb, 'ghost0', 'ghost1', 6), { power: POWER.foe, thru: 1, newmon: ITCH_MON.fluff }, bob(2, 1));
-  set[ITCH_MON.tsk] = mon(anim(mb, 'tsk0', 'tsk1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: ITCH_MON.fluff }, [corner(0, 0, 1), corner(-1, 1, 1), corner(-6, 1, 1, 4)]);
+  set[ITCH_MON.tsk] = mon(anim(mb, 'tsk0', 'tsk1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: ITCH_MON.fluff }, [
+    corner(0, 0, 1),
+    corner(-1, 1, 1),
+    corner(-6, 1, 1, 4),
+  ]);
   set[ITCH_MON.brow] = mon(anim(mb, 'brow0', 'brow1', 4), { power: POWER.foe, thru: 1, newmon: ITCH_MON.fluff }, pace(3, 1));
-  set[ITCH_MON.honk] = mon(anim(mb, 'honk0', 'honk1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: ITCH_MON.fluff }, [corner(0, 0, 2), corner(-1, 1, 2), corner(-10, 1, 2, 4)]);
+  set[ITCH_MON.honk] = mon(anim(mb, 'honk0', 'honk1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: ITCH_MON.fluff }, [
+    corner(0, 0, 2),
+    corner(-1, 1, 2),
+    corner(-10, 1, 2, 4),
+  ]);
   set[ITCH_MON.toddler] = mon(anim(mb, 'toddler0', 'toddler1', 20), { power: POWER.tough, thru: 1 }, still);
 }
 
@@ -263,10 +302,19 @@ export const itch: Monologue = {
     const W = 64 + OFF;
     const IN = 18;
     // indoors: Janet's dining room
-    m.row(0, 0, IN - 1, '^').set(5, 0, '*').set(14, 0, '*');
-    m.fill(0, 1, IN, 8, '.').row(9, 0, IN - 1, '_').row(10, 0, IN - 1, '=').row(11, 0, IN - 1, '#');
+    m.row(0, 0, IN - 1, '^')
+      .set(5, 0, '*')
+      .set(14, 0, '*');
+    m.fill(0, 1, IN, 8, '.')
+      .row(9, 0, IN - 1, '_')
+      .row(10, 0, IN - 1, '=')
+      .row(11, 0, IN - 1, '#');
     // outdoors: the sky, the bank's brick back wall, the lot
-    m.fill(IN, 0, W - IN, 3, 's').row(3, IN, W - 1, 'r').fill(IN, 4, W - IN, 5, 'k').row(9, IN, W - 1, 'K').fill(IN, 10, W - IN, 2, 'a');
+    m.fill(IN, 0, W - IN, 3, 's')
+      .row(3, IN, W - 1, 'r')
+      .fill(IN, 4, W - IN, 5, 'k')
+      .row(9, IN, W - 1, 'K')
+      .fill(IN, 10, W - IN, 2, 'a');
     m.set(2, 9, '!');
     placePicture(m, 'win', 3, 3, 2, 2);
     // the dinner table: Janet (TSK), the napkin to fold, an itch ghost over the table

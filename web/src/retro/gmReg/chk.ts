@@ -11,6 +11,7 @@ import { pcExtras } from '../hacks/pcExtras';
 import { NAME_MAX, NUMBER_MAX, SERIAL, cardCheck, checkRegistration, regFile } from './registration';
 import { QUESTIONS, questionFor, rightAnswer } from './copyCheck';
 import { setRegDesk, type RegAsk } from './regDesk';
+import { unlockAchievement } from '../../achievements';
 
 const GMTOPBAR = '                           G A M E  -  M A K E R  SE 3.00                       ';
 const MAIN_BAR = '     Play        Design      Utilities      About        Quit         Help      ';
@@ -177,6 +178,7 @@ export async function chk(h: RetroHost, args: string[]): Promise<string | undefi
   }
   if (r.kind === 'check') {
     if (!(await manualCheck(h))) return undefined;
+    unlockAchievement('desk-copycheck');
     // registered with the card while GM asked: "Registered To:" the name
     const now = checkRegistration(store.reg);
     if (now.kind === 'registered') return now.userName;

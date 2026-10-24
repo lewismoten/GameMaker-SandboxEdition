@@ -49,17 +49,39 @@ export function barrowsPlan(mons: MonBook): DungeonPlan {
   const p = new Plan('barrows', ['wall', 'pool']);
   rock(p);
   oct(p, 42, 72, 58, 84); // the way in
-  hall(p, [[50, 72], [50, 64]]);
+  hall(p, [
+    [50, 72],
+    [50, 64],
+  ]);
   oct(p, 36, 50, 64, 64, 3); // the Hall of Snores
-  hall(p, [[36, 57], [28, 57], [28, 48]]);
+  hall(p, [
+    [36, 57],
+    [28, 57],
+    [28, 48],
+  ]);
   oct(p, 22, 38, 34, 48); // west: the foghorn
-  hall(p, [[64, 57], [72, 57], [72, 48]]);
+  hall(p, [
+    [64, 57],
+    [72, 57],
+    [72, 48],
+  ]);
   oct(p, 66, 38, 78, 48); // east: the treasure
-  hall(p, [[50, 50], [50, 44]]);
+  hall(p, [
+    [50, 50],
+    [50, 44],
+  ]);
   oct(p, 38, 30, 62, 44, 3); // Sir Snoozalot's chamber
-  hall(p, [[50, 30], [50, 26]]);
+  hall(p, [
+    [50, 30],
+    [50, 26],
+  ]);
   // a bog in the hall, roots and bones
-  p.cm.region('pool', [[45, 56], [55, 56], [55, 59], [45, 59]]);
+  p.cm.region('pool', [
+    [45, 56],
+    [55, 56],
+    [55, 59],
+    [45, 59],
+  ]);
   // the Royal Writ's seal on the door north
   p.put('writdoor', 49, 67);
   p.put('writdoor', 50, 67);
@@ -76,13 +98,33 @@ export function barrowsPlan(mons: MonBook): DungeonPlan {
   p.put('heartpot', 67, 46);
   p.put('rubble', 30, 46);
   p.put('rubble', 68, 40);
-  for (const [x, y] of [[40, 34], [60, 34], [40, 41], [60, 41]] as Pt[]) p.put('pillar', x, y);
+  for (const [x, y] of [
+    [40, 34],
+    [60, 34],
+    [40, 41],
+    [60, 41],
+  ] as Pt[])
+    p.put('pillar', x, y);
   p.put('vent', 45, 31);
   p.put('vent', 55, 31);
   p.put('piece1', 50, 26);
-  foes(p, mons.n('bat'), [[40, 54], [58, 60], [45, 62], [70, 43]]);
-  foes(p, mons.n('wight'), [[52, 54], [26, 44], [74, 45], [44, 38], [56, 38]]);
-  foes(p, mons.n('slime'), [[46, 78], [30, 40]]);
+  foes(p, mons.n('bat'), [
+    [40, 54],
+    [58, 60],
+    [45, 62],
+    [70, 43],
+  ]);
+  foes(p, mons.n('wight'), [
+    [52, 54],
+    [26, 44],
+    [74, 45],
+    [44, 38],
+    [56, 38],
+  ]);
+  foes(p, mons.n('slime'), [
+    [46, 78],
+    [30, 40],
+  ]);
   boss(p, mons, 'snoozalot', 49, 28);
   return { plan: p, start: [50, 81], exits: [[50, 83]], piece: [50, 26] };
 }
@@ -92,21 +134,70 @@ export function vaultsPlan(mons: MonBook): DungeonPlan {
   const p = new Plan('vaults', ['wall', 'pool']);
   rock(p);
   oct(p, 44, 16, 56, 26); // in from the pier
-  hall(p, [[50, 26], [50, 32]]);
+  hall(p, [
+    [50, 26],
+    [50, 32],
+  ]);
   oct(p, 34, 32, 66, 48, 3); // the flooded nave
-  p.cm.region('pool', [[38, 38], [47, 38], [47, 44], [38, 44]]);
-  p.cm.region('pool', [[53, 38], [62, 38], [62, 44], [53, 44]]);
-  hall(p, [[34, 40], [26, 40], [26, 56]]);
+  p.cm.region('pool', [
+    [38, 38],
+    [47, 38],
+    [47, 44],
+    [38, 44],
+  ]);
+  p.cm.region('pool', [
+    [53, 38],
+    [62, 38],
+    [62, 44],
+    [53, 44],
+  ]);
+  hall(p, [
+    [34, 40],
+    [26, 40],
+    [26, 56],
+  ]);
   oct(p, 18, 56, 34, 70); // the west cistern, a current through it
-  p.cm.region('pool', [[22, 62], [30, 62], [30, 66], [22, 66]]);
-  hall(p, [[66, 40], [74, 40], [74, 56]]);
+  p.cm.region('pool', [
+    [22, 62],
+    [30, 62],
+    [30, 66],
+    [22, 66],
+  ]);
+  hall(p, [
+    [66, 40],
+    [74, 40],
+    [74, 56],
+  ]);
   oct(p, 66, 56, 82, 70); // the east cistern
-  hall(p, [[34, 64], [42, 64], [42, 72], [50, 72]]);
-  hall(p, [[66, 64], [58, 64], [58, 72], [50, 72]]);
+  hall(p, [
+    [34, 64],
+    [42, 64],
+    [42, 72],
+    [50, 72],
+  ]);
+  hall(p, [
+    [66, 64],
+    [58, 64],
+    [58, 72],
+    [50, 72],
+  ]);
   oct(p, 40, 72, 60, 86, 3); // the Kraken's pool
-  p.cm.region('pool', [[43, 79], [47, 79], [47, 83], [43, 83]]);
-  p.cm.region('pool', [[53, 79], [57, 79], [57, 83], [53, 83]]);
-  hall(p, [[50, 86], [50, 90]]);
+  p.cm.region('pool', [
+    [43, 79],
+    [47, 79],
+    [47, 83],
+    [43, 83],
+  ]);
+  p.cm.region('pool', [
+    [53, 79],
+    [57, 79],
+    [57, 83],
+    [53, 83],
+  ]);
+  hall(p, [
+    [50, 86],
+    [50, 90],
+  ]);
   p.put('stairs', 50, 17);
   p.put('torch', 46, 18);
   p.put('torch', 54, 18);
@@ -116,12 +207,34 @@ export function vaultsPlan(mons: MonBook): DungeonPlan {
   p.put('heartpot', 32, 58);
   p.put('bigchest', 80, 68);
   p.put('heartpot', 68, 68);
-  for (const [x, y] of [[36, 34], [64, 34], [36, 46], [64, 46], [42, 75], [58, 75]] as Pt[]) p.put('pillar', x, y);
+  for (const [x, y] of [
+    [36, 34],
+    [64, 34],
+    [36, 46],
+    [64, 46],
+    [42, 75],
+    [58, 75],
+  ] as Pt[])
+    p.put('pillar', x, y);
   p.put('vent', 45, 85);
   p.put('vent', 55, 85);
   p.put('piece2', 50, 90);
-  foes(p, mons.n('crab'), [[40, 35], [60, 35], [44, 46], [56, 47], [24, 59], [76, 62], [70, 66], [46, 76], [54, 76]]);
-  foes(p, mons.n('eel'), [[42, 41], [58, 41], [26, 64]]);
+  foes(p, mons.n('crab'), [
+    [40, 35],
+    [60, 35],
+    [44, 46],
+    [56, 47],
+    [24, 59],
+    [76, 62],
+    [70, 66],
+    [46, 76],
+    [54, 76],
+  ]);
+  foes(p, mons.n('eel'), [
+    [42, 41],
+    [58, 41],
+    [26, 64],
+  ]);
   boss(p, mons, 'kraken', 49, 86);
   return { plan: p, start: [50, 19], exits: [[50, 17]], piece: [50, 90] };
 }
@@ -131,20 +244,60 @@ export function minesPlan(mons: MonBook): DungeonPlan {
   const p = new Plan('mines', ['wall', 'pool']);
   rock(p);
   oct(p, 44, 74, 56, 84); // the adit
-  hall(p, [[50, 74], [50, 66]]);
+  hall(p, [
+    [50, 74],
+    [50, 66],
+  ]);
   oct(p, 30, 52, 70, 66, 3); // the great gallery, a lava seam down the middle
-  p.cm.path('pool', [[33, 59], [46, 59]]);
-  p.cm.path('pool', [[54, 59], [67, 59]]);
-  hall(p, [[30, 56], [22, 56], [22, 40]]);
+  p.cm.path('pool', [
+    [33, 59],
+    [46, 59],
+  ]);
+  p.cm.path('pool', [
+    [54, 59],
+    [67, 59],
+  ]);
+  hall(p, [
+    [30, 56],
+    [22, 56],
+    [22, 40],
+  ]);
   oct(p, 14, 30, 30, 40); // the old workings: the Tome of Tomorrow
-  p.cm.region('pool', [[18, 34], [22, 34], [22, 37], [18, 37]]);
-  hall(p, [[70, 56], [78, 56], [78, 40]]);
+  p.cm.region('pool', [
+    [18, 34],
+    [22, 34],
+    [22, 37],
+    [18, 37],
+  ]);
+  hall(p, [
+    [70, 56],
+    [78, 56],
+    [78, 40],
+  ]);
   oct(p, 70, 30, 86, 40); // the timber stopes
-  hall(p, [[50, 52], [50, 44]]);
+  // no way north from the gallery: the old cart track runs on west from the stopes, into the
+  // engine room's side (the Barrows go straight up; the Mines make you go round)
+  hall(p, [
+    [70, 35],
+    [62, 35],
+  ]);
   oct(p, 38, 26, 62, 44, 3); // Tick-Tock's engine room
-  p.cm.region('pool', [[40, 37], [44, 37], [44, 41], [40, 41]]);
-  p.cm.region('pool', [[56, 37], [60, 37], [60, 41], [56, 41]]);
-  hall(p, [[50, 26], [50, 22]]);
+  p.cm.region('pool', [
+    [40, 37],
+    [44, 37],
+    [44, 41],
+    [40, 41],
+  ]);
+  p.cm.region('pool', [
+    [56, 37],
+    [60, 37],
+    [60, 41],
+    [56, 41],
+  ]);
+  hall(p, [
+    [50, 26],
+    [50, 22],
+  ]);
   p.put('lampdoor', 49, 70);
   p.put('lampdoor', 50, 70);
   p.put('stairs', 50, 83);
@@ -155,14 +308,45 @@ export function minesPlan(mons: MonBook): DungeonPlan {
   p.put('heartpot', 28, 38);
   p.put('bigchest', 84, 32);
   p.put('heartpot', 72, 38);
-  for (let x = 72; x <= 84; x += 3) p.put('floor2', x, 35);
-  p.row('spikes', 76, 80, 44);
-  for (const [x, y] of [[40, 29], [60, 29], [32, 54], [68, 54], [32, 64], [68, 64]] as Pt[]) p.put('pillar', x, y);
+  for (let x = 63; x <= 84; x += 3) p.put('floor2', x, 35);
+  // fallen timbers and spoil heaps in the gallery: cover from the golems
+  for (const [x, y] of [
+    [40, 55],
+    [60, 56],
+    [45, 64],
+    [55, 63],
+  ] as Pt[])
+    p.put('rubble', x, y);
+  // (spikes by the big chest, not across the way through: the cart track is the only road on)
+  p.row('spikes', 80, 82, 32);
+  for (const [x, y] of [
+    [40, 29],
+    [60, 29],
+    [32, 54],
+    [68, 54],
+    [32, 64],
+    [68, 64],
+  ] as Pt[])
+    p.put('pillar', x, y);
   p.put('vent', 45, 27);
   p.put('vent', 55, 27);
   p.put('piece3', 50, 22);
-  foes(p, mons.n('golem'), [[36, 55], [64, 55], [40, 63], [60, 63], [22, 34], [80, 36], [44, 32], [56, 32]]);
-  foes(p, mons.n('bat'), [[48, 57], [52, 62], [18, 32], [82, 33]]);
+  foes(p, mons.n('golem'), [
+    [36, 55],
+    [64, 55],
+    [40, 63],
+    [60, 63],
+    [22, 34],
+    [80, 36],
+    [44, 32],
+    [56, 32],
+  ]);
+  foes(p, mons.n('bat'), [
+    [48, 57],
+    [52, 62],
+    [18, 32],
+    [82, 33],
+  ]);
   boss(p, mons, 'ticktock', 49, 24);
   return { plan: p, start: [50, 81], exits: [[50, 83]], piece: [50, 22] };
 }
@@ -172,16 +356,49 @@ export function keepPlan(mons: MonBook): DungeonPlan {
   const p = new Plan('keep', ['wall', 'pool']);
   rock(p);
   oct(p, 42, 76, 58, 86); // the gatehouse
-  hall(p, [[50, 76], [50, 70]]);
+  hall(p, [
+    [50, 76],
+    [50, 70],
+  ]);
   oct(p, 36, 56, 64, 70, 3); // the clock court
-  p.cm.region('pool', [[40, 60], [45, 60], [45, 66], [40, 66]]);
-  p.cm.region('pool', [[55, 60], [60, 60], [60, 66], [55, 66]]);
-  hall(p, [[36, 63], [28, 63], [28, 48], [36, 48]]);
-  hall(p, [[64, 63], [72, 63], [72, 48], [64, 48]]);
+  p.cm.region('pool', [
+    [40, 60],
+    [45, 60],
+    [45, 66],
+    [40, 66],
+  ]);
+  p.cm.region('pool', [
+    [55, 60],
+    [60, 60],
+    [60, 66],
+    [55, 66],
+  ]);
+  hall(p, [
+    [36, 63],
+    [28, 63],
+    [28, 48],
+    [36, 48],
+  ]);
+  hall(p, [
+    [64, 63],
+    [72, 63],
+    [72, 48],
+    [64, 48],
+  ]);
   oct(p, 36, 42, 64, 54, 3); // the Hall of Sockets
-  hall(p, [[50, 42], [50, 36]], 1);
+  hall(
+    p,
+    [
+      [50, 42],
+      [50, 36],
+    ],
+    1,
+  );
   oct(p, 38, 20, 62, 36, 3); // the throne of Lord Deadline
-  hall(p, [[50, 20], [50, 15]]);
+  hall(p, [
+    [50, 20],
+    [50, 15],
+  ]);
   // the three sockets across the way north: each opens for its piece
   p.put('socket1', 49, 39);
   p.put('socket2', 49, 38);
@@ -190,21 +407,52 @@ export function keepPlan(mons: MonBook): DungeonPlan {
   p.put('socket2', 50, 38);
   p.put('socket3', 50, 37);
   p.put('stairs', 50, 85);
-  for (const [x, y] of [[44, 78], [56, 78], [40, 44], [60, 44], [42, 22], [58, 22]] as Pt[]) p.put('torch', x, y);
-  for (const [x, y] of [[38, 58], [62, 58], [38, 68], [62, 68], [44, 25], [56, 25], [44, 32], [56, 32]] as Pt[]) p.put('pillar', x, y);
+  for (const [x, y] of [
+    [44, 78],
+    [56, 78],
+    [40, 44],
+    [60, 44],
+    [42, 22],
+    [58, 22],
+  ] as Pt[])
+    p.put('torch', x, y);
+  for (const [x, y] of [
+    [38, 58],
+    [62, 58],
+    [38, 68],
+    [62, 68],
+    [44, 25],
+    [56, 25],
+    [44, 32],
+    [56, 32],
+  ] as Pt[])
+    p.put('pillar', x, y);
   p.col('floor2', 50, 21, 34);
   p.col('floor2', 50, 43, 53);
-  p.put('heartpot', 30, 50);
+  // (the west hall carves a block further west than the east one: these sit against it)
+  p.put('heartpot', 29, 50);
   p.put('heartpot', 70, 50);
-  p.put('bigchest', 30, 60);
+  p.put('bigchest', 29, 60);
   p.put('chest', 70, 60);
   p.row('spikes', 43, 46, 80);
   p.row('spikes', 54, 57, 80);
   p.put('vent', 45, 21);
   p.put('vent', 55, 21);
   p.put('tuit', 50, 15);
-  foes(p, mons.n('goblin'), [[44, 58], [56, 58], [30, 55], [70, 55], [42, 46], [58, 46]]);
-  foes(p, mons.n('tick'), [[46, 64], [54, 64], [44, 30], [56, 30]]);
+  foes(p, mons.n('goblin'), [
+    [44, 58],
+    [56, 58],
+    [28, 55],
+    [70, 55],
+    [42, 46],
+    [58, 46],
+  ]);
+  foes(p, mons.n('tick'), [
+    [46, 64],
+    [54, 64],
+    [44, 30],
+    [56, 30],
+  ]);
   boss(p, mons, 'deadline', 49, 17);
   return { plan: p, start: [50, 83], exits: [[50, 85]], piece: [50, 15] };
 }

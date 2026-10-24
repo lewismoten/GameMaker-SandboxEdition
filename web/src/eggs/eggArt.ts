@@ -170,7 +170,13 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
         g.rotate((i % 5) * 0.5 - 1);
         g.beginPath();
         g.ellipse(0, 3, 5, 4, 0, 0, Math.PI * 2);
-        for (const [dx, dy] of [[-5, -3], [-2, -6], [2, -6], [5, -3]]) g.ellipse(dx, dy, 1.8, 2.2, 0, 0, Math.PI * 2);
+        for (const [dx, dy] of [
+          [-5, -3],
+          [-2, -6],
+          [2, -6],
+          [5, -3],
+        ])
+          g.ellipse(dx, dy, 1.8, 2.2, 0, 0, Math.PI * 2);
         g.fill();
         g.restore();
       });
@@ -218,9 +224,13 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
           g.lineTo(x + 6, TEX_H * v);
           g.fill();
         }
-      stitch(() => {
-        for (let x = 0; x <= TEX_W; x += 4) g.lineTo(x, TEX_H * 0.24 + Math.sin((x / TEX_W) * Math.PI * 6) * 6 + Math.sin((x / TEX_W) * Math.PI * 2) * 4);
-      }, '#8a5a2b', 3);
+      stitch(
+        () => {
+          for (let x = 0; x <= TEX_W; x += 4) g.lineTo(x, TEX_H * 0.24 + Math.sin((x / TEX_W) * Math.PI * 6) * 6 + Math.sin((x / TEX_W) * Math.PI * 2) * 4);
+        },
+        '#8a5a2b',
+        3,
+      );
       break;
   }
   // running stitches along the bands' edges
@@ -263,7 +273,13 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
   switch (look.motif) {
     case 'paw':
       blob(() => g.ellipse(0, 8, 16, 13, 0, 0, Math.PI * 2));
-      for (const [dx, dy] of [[-18, -10], [-7, -20], [7, -20], [18, -10]]) blob(() => g.ellipse(dx, dy, 6, 7, 0, 0, Math.PI * 2));
+      for (const [dx, dy] of [
+        [-18, -10],
+        [-7, -20],
+        [7, -20],
+        [18, -10],
+      ])
+        blob(() => g.ellipse(dx, dy, 6, 7, 0, 0, Math.PI * 2));
       break;
     case 'castle':
       blob(() => {
@@ -364,10 +380,11 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       g.strokeStyle = '#111';
       g.lineWidth = 2;
       g.beginPath();
-      for (const s of [-1, 1]) for (const dy of [-6, 2, 10]) {
-        g.moveTo(0, dy);
-        g.lineTo(s * 20, dy + (dy - 2) * 0.6);
-      }
+      for (const s of [-1, 1])
+        for (const dy of [-6, 2, 10]) {
+          g.moveTo(0, dy);
+          g.lineTo(s * 20, dy + (dy - 2) * 0.6);
+        }
       g.stroke();
       blob(() => g.ellipse(0, 4, 12, 15, 0, 0, Math.PI * 2));
       g.fillStyle = '#111';
@@ -377,7 +394,14 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       break;
     case 'bookworm': {
       // a green bookworm curled in a hump, in red reading glasses
-      const segs: [number, number][] = [[-22, 14], [-14, 6], [-6, -2], [2, -4], [10, 2], [16, 10]];
+      const segs: [number, number][] = [
+        [-22, 14],
+        [-14, 6],
+        [-6, -2],
+        [2, -4],
+        [10, 2],
+        [16, 10],
+      ];
       for (const [sx, sy] of segs) blob(() => g.ellipse(sx, sy, 7, 7, 0, 0, Math.PI * 2));
       blob(() => g.ellipse(20, -6, 9, 9, 0, 0, Math.PI * 2));
       g.strokeStyle = '#d23a2e';
@@ -430,19 +454,38 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       break;
     case 'cube': {
       // a cube in three shades, so it reads as solid
-      const top = [[0, -24], [22, -12], [0, 0], [-22, -12]];
-      const left = [[-22, -12], [0, 0], [0, 26], [-22, 14]];
-      const right = [[22, -12], [0, 0], [0, 26], [22, 14]];
+      const top = [
+        [0, -24],
+        [22, -12],
+        [0, 0],
+        [-22, -12],
+      ];
+      const left = [
+        [-22, -12],
+        [0, 0],
+        [0, 26],
+        [-22, 14],
+      ];
+      const right = [
+        [22, -12],
+        [0, 0],
+        [0, 26],
+        [22, 14],
+      ];
       const face = (pts: number[][], color: string) => {
         g.fillStyle = color;
         g.beginPath();
         pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py)));
         g.closePath();
         g.fill();
-        stitch(() => {
-          pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py)));
-          g.closePath();
-        }, look.thread, 1.2);
+        stitch(
+          () => {
+            pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py)));
+            g.closePath();
+          },
+          look.thread,
+          1.2,
+        );
       };
       face(top, '#b89cf2');
       face(left, look.patch);

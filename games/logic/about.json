@@ -8,7 +8,8 @@
   "exe": "OHMSWEET.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
-  "tinHeart": { "map": "attic.map", "at": [3, 7] },
+  "tinHeart": { "map": "attic.map", "at": [32, 44] },
+  "easterEgg": { "map": "attic.map", "at": [27, 50] },
   "label": {
     "background": "#0d3a24",
     "band": "#e08a3c",

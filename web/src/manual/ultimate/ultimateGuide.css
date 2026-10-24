@@ -1,0 +1,430 @@
+/* The Ultimate Owner's Guide (ultimateGuide.ts): a black and gold power-user cover, and the
+   few things its pages add to the printed booklet style. Sizes in cqw: the page is the container. */
+
+.ug-cover {
+  --ug-gold: #d8b25a;
+  --ug-foil: linear-gradient(170deg, #fbefb4 0%, #e2b851 32%, #8f6619 52%, #e9c66a 70%, #fff3c4 100%);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7cqw 8cqw 6cqw;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 0.4cqw, transparent 0.4cqw 1.2cqw),
+    radial-gradient(120% 80% at 50% 35%, #2a241b, #0b0906 70%);
+  color: var(--ug-gold);
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* a double gold rule inside the trim */
+.ug-cover::before,
+.ug-cover::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 0.45cqw solid var(--ug-gold);
+}
+
+.ug-cover::before {
+  inset: 3cqw;
+}
+
+.ug-cover::after {
+  inset: 4.4cqw;
+  border-width: 0.18cqw;
+}
+
+.ug-band {
+  display: flex;
+  align-self: stretch;
+  justify-content: space-between;
+  padding-bottom: 1.4cqw;
+  border-bottom: 0.25cqw solid var(--ug-gold);
+  font:
+    700 2.6cqw/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.35em;
+}
+
+.ug-blocks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9cqw;
+  width: 22cqw;
+  margin: 9cqw 0 6cqw;
+  transform: rotate(45deg);
+}
+
+.ug-blocks i {
+  aspect-ratio: 1;
+  background: var(--ug-foil);
+  box-shadow:
+    inset -0.5cqw -0.5cqw 0 rgba(0, 0, 0, 0.35),
+    inset 0.4cqw 0.4cqw 0 rgba(255, 255, 255, 0.35);
+}
+
+.ug-blocks .ug-b1 {
+  opacity: 0.75;
+}
+
+.ug-blocks .ug-b3 {
+  opacity: 0.45;
+}
+
+.ug-blocks .ug-b4 {
+  background: none;
+  box-shadow: inset 0 0 0 0.3cqw var(--ug-gold);
+}
+
+.mpage .ug-cover h1.ug-name,
+.ug-cover .ug-name {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--ug-gold);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.ug-name span {
+  display: block;
+}
+
+.ug-the {
+  font:
+    italic 6cqw/1 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.ug-ultimate {
+  margin: 1.5cqw 0 1cqw;
+  background: var(--ug-foil);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font:
+    900 14.5cqw/1 'Arial Black',
+    Impact,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  filter: drop-shadow(0 0.5cqw 0 rgba(0, 0, 0, 0.8));
+}
+
+.ug-owners {
+  font:
+    7.4cqw/1.05 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.ug-for {
+  margin: 5cqw 0 0;
+  padding: 1.6cqw 4cqw;
+  border-block: 0.25cqw solid var(--ug-gold);
+  font:
+    italic 4.2cqw/1.1 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: 0.04em;
+}
+
+.ug-topics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1cqw 3cqw;
+  margin: 5cqw 0 0;
+  padding: 0;
+  list-style: none;
+  font:
+    700 2.5cqw/1.3 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ug-topics li::before {
+  content: '◆ ';
+  font-size: 0.8em;
+}
+
+.ug-foot {
+  position: absolute;
+  left: 8cqw;
+  right: 8cqw;
+  bottom: 7.5cqw;
+  margin: 0;
+  font:
+    2.3cqw/1.4 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+/* the back cover */
+.ug-back {
+  justify-content: center;
+  gap: 4cqw;
+}
+
+.ug-back-quote {
+  margin: 0;
+  font:
+    italic 4.6cqw/1.3 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.ug-back-list {
+  margin: 0;
+  padding: 3cqw 0;
+  border-block: 0.25cqw solid var(--ug-gold);
+  columns: 2;
+  column-gap: 4cqw;
+  list-style: none;
+  font:
+    2.6cqw/1.6 Helvetica,
+    Arial,
+    sans-serif;
+  text-align: left;
+}
+
+.ug-back-small {
+  margin: 0;
+  font:
+    2.2cqw/1.4 Helvetica,
+    Arial,
+    sans-serif;
+  opacity: 0.85;
+}
+
+/* the cover as a picture in the box's list */
+.pp-ug-thumb {
+  background: #0b0906;
+}
+
+/* ---- the pages: set a little tighter than the Owner's Guide */
+.gmb-pages .mpage.ug-page .mpage-in {
+  font-size: 2.8cqw;
+  line-height: 1.34;
+}
+
+.mpage .ug-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* a chapter's opening: a big number beside a rule, then the heading */
+.mpage .ug-open {
+  margin-top: 5cqw;
+}
+
+.mpage .mp-flow > .ug-open:first-child {
+  margin-top: 1cqw;
+}
+
+.mpage .ug-num {
+  display: block;
+  padding-bottom: 0.6cqw;
+  border-bottom: 0.6cqw solid #18150f;
+  font:
+    700 10cqw/1 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mpage .ug-num.ug-appx {
+  font-size: 6cqw;
+}
+
+.mpage .ug-open h1 {
+  margin-top: 1.6cqw;
+}
+
+.mpage .ug-lead {
+  font-style: italic;
+  font-size: 1.08em;
+}
+
+.mpage table.ug-toc td:last-child,
+.mpage table.ug-toc th:last-child {
+  text-align: right;
+}
+
+.mpage table.ug-patches code {
+  font-size: 2.3cqw;
+  white-space: nowrap;
+}
+
+.mpage table.ug-check td:first-child {
+  width: 3cqw;
+}
+
+.mpage figure img.ug-pix {
+  image-rendering: pixelated;
+}
+
+/* the palette figures (paletteFigures.ts): each picture over its whole palette */
+.mpage .ug-palcols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.4cqw;
+}
+
+.mpage .ug-two .ug-palcols {
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4cqw 2.4cqw;
+}
+
+.mpage .ug-palcol {
+  min-width: 0;
+  text-align: center;
+}
+
+.mpage figure .ug-palcol img {
+  width: 100%;
+}
+
+.mpage figure .ug-palcol img.ug-palgrid {
+  margin-top: 0.6cqw;
+  border-width: 0.15cqw;
+}
+
+.mpage .ug-palcol b {
+  display: block;
+  font:
+    700 2.3cqw/1.2 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mpage .ug-palcol small {
+  display: block;
+  font:
+    italic 1.9cqw/1.2 'Times New Roman',
+    Times,
+    serif;
+}
+
+.mpage .ug-palkey {
+  margin: 0.8cqw 0 0;
+  font:
+    1.9cqw/1.3 Helvetica,
+    Arial,
+    sans-serif;
+  text-align: center;
+}
+
+.mpage figure.ug-before table {
+  width: auto;
+  margin: 0 auto 1cqw;
+}
+
+.mpage figure.ug-before th,
+.mpage figure.ug-before td {
+  vertical-align: middle;
+}
+
+.mpage figure.ug-before img.ug-strip-sw {
+  width: auto;
+  height: 3cqw;
+  border-width: 0.15cqw;
+}
+
+.mpage .ug-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2cqw;
+  margin-bottom: 2cqw;
+}
+
+.mpage .ug-box {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 14cqw;
+  padding: 0.8cqw 1.4cqw;
+  border: 0.3cqw solid #18150f;
+  background: #fffdf4;
+  font-size: 2.6cqw;
+  line-height: 1.2;
+}
+
+.mpage .ug-box small {
+  font-size: 2.1cqw;
+  font-style: italic;
+}
+
+.mpage .ug-arrow {
+  font:
+    italic 2.3cqw/1 'Times New Roman',
+    Times,
+    serif;
+}
+
+.mpage .ug-strip {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  border: 0.3cqw solid #18150f;
+}
+
+.mpage .ug-strip span {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-right: 0.15cqw solid #8d8470;
+  font-size: 3.4cqw;
+  line-height: 1;
+}
+
+.mpage .ug-strip .ug-cell-gate {
+  background: repeating-linear-gradient(45deg, #18150f 0 0.4cqw, #fffdf4 0.4cqw 1.2cqw);
+  color: transparent;
+}
+
+.mpage .ug-strip .ug-cell-floor {
+  background: #ebe3c8;
+}
+
+.mpage .ug-strip .ug-cell-link {
+  border-right: 0;
+  background: #18150f;
+  color: #f5f0e0;
+}
+
+.mpage .ug-strip-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.8cqw;
+  font:
+    italic 2.1cqw/1.2 'Times New Roman',
+    Times,
+    serif;
+}
+
+.mpage table.ug-patches td:first-child small {
+  font-size: 2.2cqw;
+  font-style: italic;
+}
+
+.mpage .ug-wink {
+  margin-top: 3cqw;
+  font-style: italic;
+  text-align: center;
+}

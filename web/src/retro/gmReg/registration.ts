@@ -37,7 +37,7 @@ export function registrationNumber(name: string, serial: number): number {
   for (let j = 7; j < 18; j++) second += n[j];
   for (let j = 18; j < 30; j++) third += n[j];
   // unsigned long arithmetic: everything wraps at 2^32 (serial * first stays below 2^53)
-  return (((serial >>> 0) * first + second * 1143 + (third ^ 0x16ac)) % U32 + U32) % U32;
+  return ((((serial >>> 0) * first + second * 1143 + (third ^ 0x16ac)) % U32) + U32) % U32;
 }
 
 /** TELLREG#.C: "This in an invalid serial number!" unless serial - 4 is a multiple of 1029. */
@@ -92,7 +92,7 @@ export const DEFAULT_REG = regFile('', SERIAL, '0');
 export const CARD_NAME_MAX = NAME_MAX - 1;
 
 /**
- * The desk's registration card (desk/pc/regSide.ts) checks the name and number in plain words
+ * The desk's registration card (retro/gmReg/regSide.ts) checks the name and number in plain words
  * before writing PLAYGAME.REG as regi() did. The number is the reply to the mailed card
  * (registrationNumber), so one that doesn't fit the name is turned away rather than written.
  */
@@ -103,6 +103,7 @@ export function cardCheck(name: string, number: string): string | undefined {
   if (n.length > CARD_NAME_MAX) return `The name can be at most ${CARD_NAME_MAX} letters long.`;
   if (!k) return 'Write the registration number from the reply card. No number yet? Mail the card.';
   if (!/^\d+$/.test(k)) return 'The registration number is digits only.';
-  if (Number(k) !== registrationNumber(n, SERIAL)) return 'That number doesn’t fit this name. Write the name exactly as on the reply card, or mail the card again.';
+  if (Number(k) !== registrationNumber(n, SERIAL))
+    return 'That number doesn’t fit this name. Write the name exactly as on the reply card, or mail the card again.';
   return undefined;
 }

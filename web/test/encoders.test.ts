@@ -13,9 +13,15 @@ describe('encoders', () => {
     for (let i = 0; i < samples.length; i += 97) expect(Math.abs(voc.samples[i] - samples[i])).toBeLessThan(0.02);
   });
 
-  it('writes CMF songs at Game-Maker\'s clock', () => {
+  it("writes CMF songs at Game-Maker's clock", () => {
     const inst = Uint8Array.from({ length: 16 }, (_, i) => i);
-    const bytes = encodeCmf({ instruments: [inst], events: [{ tick: 0, data: [0x90, 60, 100] }, { tick: 300, data: [0x80, 60, 0] }] });
+    const bytes = encodeCmf({
+      instruments: [inst],
+      events: [
+        { tick: 0, data: [0x90, 60, 100] },
+        { tick: 300, data: [0x80, 60, 0] },
+      ],
+    });
     const cmf = parseCmf(bytes);
     expect(cmf.clockTicks).toBe(CMF_GAMEMAKER_CLOCK);
     expect([...cmf.instruments[0]]).toEqual([...inst]);

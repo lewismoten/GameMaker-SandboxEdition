@@ -62,18 +62,32 @@ export function drawEasterEgg(p: Pixels, c: EggColors, pattern: EggPattern = 'zi
           if (y === 10) v = paint(0);
         } else if (pattern === 'stars') {
           if (y === 9 || y === 12) v = paint(0);
-          for (const [sx, sy] of [[7, 5], [12, 6], [9, 15], [13, 15], [6, 14]])
+          for (const [sx, sy] of [
+            [7, 5],
+            [12, 6],
+            [9, 15],
+            [13, 15],
+            [6, 14],
+          ])
             if ((x === sx && Math.abs(y - sy) <= 1) || (y === sy && Math.abs(x - sx) <= 1)) v = accent;
         }
         p.set(x + dx, y + dy, v);
       } else if (at(x - 1, y) || at(x + 1, y) || at(x, y - 1) || at(x, y + 1)) p.set(x + dx, y + dy, c.ink);
     }
   // the highlight near the top left
-  p.set(7 + dx, 5 + dy, c.white).set(7 + dx, 6 + dy, hi).set(8 + dx, 4 + dy, hi);
+  p.set(7 + dx, 5 + dy, c.white)
+    .set(7 + dx, 6 + dy, hi)
+    .set(8 + dx, 4 + dy, hi);
   // the shine: a glint sliding down the left side
   if (frame > 0) {
     const gy = [0, 9, 13][frame] ?? 13;
-    for (const [x, y] of [[5, gy], [5, gy - 1], [6, gy], [5, gy + 1]] as [number, number][]) if (at(x, y)) p.set(x + dx, y + dy, x === 5 && y === gy ? c.white : hi);
+    for (const [x, y] of [
+      [5, gy],
+      [5, gy - 1],
+      [6, gy],
+      [5, gy + 1],
+    ] as [number, number][])
+      if (at(x, y)) p.set(x + dx, y + dy, x === 5 && y === gy ? c.white : hi);
   }
   return p;
 }

@@ -69,7 +69,14 @@ function clipping(right: boolean): Pixels {
   microC(w, 30, 2, 'COURIER 1931', c('black', 0));
   microC(w, 30, 8, "PIKE'S PLAY:", c('black', 0));
   microC(w, 30, 14, right ? 'RAVEN BRIDE' : 'RAYEN BRINE', c('black', 0));
-  if (!right) for (const [x, y] of [[15, 13], [18, 18], [42, 13], [48, 18]]) w.set(x, y, c('grey', 3)); // blotted ink
+  if (!right)
+    for (const [x, y] of [
+      [15, 13],
+      [18, 18],
+      [42, 13],
+      [48, 18],
+    ])
+      w.set(x, y, c('grey', 3)); // blotted ink
   return w;
 }
 

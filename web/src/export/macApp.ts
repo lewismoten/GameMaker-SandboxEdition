@@ -39,8 +39,12 @@ export interface MacAppOptions {
   version?: string;
   author?: string;
   year?: number;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
+  fiction?: string;
   /** Shown on the app's icon (iconPicture). */
   picture?: IndexedImage;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts), first in its notices. */
+  audio?: string;
   colors?: IconColors;
 }
 
@@ -55,19 +59,28 @@ const xml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 /** The app's folder name: the title, without the characters a Mac file name cannot have. */
 export function appName(title: string): string {
-  const name = title.replace(/[/:\\\u0000-\u001f]+/g, '-').replace(/^[.\s]+|\s+$/g, '').slice(0, 64).trim() || 'Game';
+  const name =
+    title
+      .replace(/[/:\\\u0000-\u001f]+/g, '-')
+      .replace(/^[.\s]+|\s+$/g, '')
+      .slice(0, 64)
+      .trim() || 'Game';
   return `${name}.app`;
 }
 
 export function bundleId(id: string): string {
-  const clean = id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || 'game';
+  const clean =
+    id
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'game';
   return `com.lewismoten.gamemaker.${clean}`;
 }
 
-export function infoPlist(o: Pick<MacAppOptions, 'title' | 'id' | 'version' | 'author' | 'year'>): string {
+export function infoPlist(o: Pick<MacAppOptions, 'title' | 'id' | 'version' | 'author' | 'year' | 'fiction'>): string {
   const version = o.version ?? '1.0';
   const by = [o.author, o.year].filter(Boolean).join(', ');
-  const credits = `${by ? `By ${by}.\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
+  const credits = `${by ? `By ${by}.\n\n` : ''}${o.fiction ? `${o.fiction}\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
   const copyright = by ? `© ${[o.year, o.author].filter(Boolean).join(' ')}` : '';
   const entries: [string, string][] = [
     ['CFBundleDevelopmentRegion', 'en'],
@@ -148,18 +161,25 @@ export async function macAppFiles(o: MacAppOptions): Promise<{ name: string; fil
 
 /** THIRD-PARTY-NOTICES.txt, beside the app in the .zip and on the .dmg (notices.ts). */
 export const NOTICES_FILE = 'THIRD-PARTY-NOTICES.txt';
-export const macNotices = () => new TextEncoder().encode(thirdPartyNotices('mac'));
+export const macNotices = (audio?: string) => new TextEncoder().encode(thirdPartyNotices('mac', audio));
 
 /** The disk image's Finder window: the app, an Applications shortcut to drag it onto, and the notices below. */
 export function dmgWindow(name: string): Uint8Array {
-  return dsStore({ x: 200, y: 140, width: 600, height: 440, iconSize: 128, icons: { [name]: [160, 170], Applications: [440, 170], [NOTICES_FILE]: [300, 330] } });
+  return dsStore({
+    x: 200,
+    y: 140,
+    width: 600,
+    height: 440,
+    iconSize: 128,
+    icons: { [name]: [160, 170], Applications: [440, 170], [NOTICES_FILE]: [300, 330] },
+  });
 }
 
 /** The app in a .zip (Archive Utility makes the app from it, executable), with its notices. */
 export async function macAppZip(o: MacAppOptions, date?: Date): Promise<Uint8Array> {
   const { files } = await macAppFiles(o);
   return createZip(
-    [...files.map((f) => ({ name: f.path, data: f.data!, mode: 0o100000 | f.mode })), { name: NOTICES_FILE, data: macNotices(), mode: 0o100644 }],
+    [...files.map((f) => ({ name: f.path, data: f.data!, mode: 0o100000 | f.mode })), { name: NOTICES_FILE, data: macNotices(o.audio), mode: 0o100644 }],
     date,
   );
 }
@@ -171,7 +191,7 @@ export async function macAppDmg(o: MacAppOptions, date?: Date): Promise<Uint8Arr
     [
       ...files.map((f) => ({ path: f.path, data: f.data, mode: f.mode })),
       { path: 'Applications', symlink: '/Applications', mode: 0o755 },
-      { path: NOTICES_FILE, data: macNotices(), mode: 0o644 },
+      { path: NOTICES_FILE, data: macNotices(o.audio), mode: 0o644 },
       { path: '.DS_Store', data: dmgWindow(name), mode: 0o644 },
     ],
     { volume: name.replace(/\.app$/, '').slice(0, 32), date, application: 'GAME-MAKER: SANDBOX EDITION' },
@@ -191,6 +211,12 @@ export function boxColors(box: { background?: string } | undefined): IconColors 
   const m = box?.background && /^#([0-9a-f]{6})$/i.exec(box.background);
   if (!m) return undefined;
   const n = parseInt(m[1], 16);
-  const dark = [16, 8, 0].map((s) => Math.round(((n >> s) & 255) * 0.45).toString(16).padStart(2, '0')).join('');
-  return { top: box!.background!, bottom: `#${dark}` };
+  const dark = [16, 8, 0]
+    .map((s) =>
+      Math.round(((n >> s) & 255) * 0.45)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('');
+  return { top: box.background!, bottom: `#${dark}` };
 }

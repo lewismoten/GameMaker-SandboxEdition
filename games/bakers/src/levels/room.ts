@@ -111,7 +111,7 @@ const BASE: Record<string, string> = {
   z: 'kazoo',
   t: 'tricorn',
   q: 'eggRotten',
-  f: 'eggFaberge',
+  f: 'eggJeweled',
 };
 
 const WALLISH = new Set(['#', '%']);

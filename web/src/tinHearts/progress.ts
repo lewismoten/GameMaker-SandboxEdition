@@ -8,9 +8,25 @@ export function heartProgress(className = 'cast-role cast-hearts'): HTMLElement 
   const el = h('p', { class: className, 'aria-live': 'polite' });
   const update = async () => {
     const { found, total } = await heartCount().catch(() => ({ found: 0, total: 0 }));
-    el.textContent = total ? (found >= total ? `You have found all ${total}. Mystery Robot Joe left something on the shelf.` : `You have found ${found} of ${total}.`) : '';
+    el.textContent = total
+      ? found >= total
+        ? `You have found all ${total}. Mystery Robot Joe left something on the shelf.`
+        : `You have found ${found} of ${total}.`
+      : '';
   };
   // once the card is gone (the page left), stop listening
+  const stop = watchHearts(() => (el.isConnected ? void update() : stop()));
+  void update();
+  return el;
+}
+
+/** One more line for Mystery Robot Joe's card, shown only once every tin heart is found. */
+export function joeAllAlong(className = 'cast-role cast-joe-heart'): HTMLElement {
+  const el = h('p', { class: className, hidden: true }, 'Turns out he had a golden heart all along.');
+  const update = async () => {
+    const { found, total } = await heartCount().catch(() => ({ found: 0, total: 0 }));
+    el.hidden = !(total && found >= total);
+  };
   const stop = watchHearts(() => (el.isConnected ? void update() : stop()));
   void update();
   return el;

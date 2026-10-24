@@ -32,7 +32,7 @@ export interface RunOptions {
   onSession?: (s: Session) => void;
   /** Called every frame while a level is being played. */
   onFrame?: Session['onFrame'];
-  /** Emulated PC speed (shared object: change ticksPerSecond at any time). */
+  /** Emulated PC speed (shared object: change slowPc at any time). */
   speed?: SpeedSetting;
   /** A touch changed a map cell while the player played (never during a demo's playback). */
   onTouched?: Session['onTouched'];
@@ -164,7 +164,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
         break;
       case 7: // idle on the menu: run the demo recording
         await m.need(file(0, 11));
-        if (file(0, 11) && s.rec.initPlayback(m.files.get(file(0, 11)!))) {
+        if (file(0, 11) && s.rec.initPlayback(m.files.get(file(0, 11)))) {
           menuScreen = undefined;
           m.audio.stopSong();
           await play(s, 0);

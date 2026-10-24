@@ -32,6 +32,9 @@ const EAT = new Map([
   [n('dusty'), 3],
 ]);
 
+/** The tin heart and the Easter egg: left for the player to find (the bot never takes or steps on them). */
+const KEEPSAKES = new Set([...BLOCK].filter(([name]) => /^(tinHeart|easterEgg)\d*$/.test(name)).map(([, i]) => i));
+
 export class Bot {
   log: string[] = [];
   /** Extra cost per cell (a camel's line of spit). */
@@ -61,7 +64,9 @@ export class Bot {
 
   say(s: string): void {
     const p = this.sim.pos;
-    this.log.push(`[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} hp ${this.sim.ci.hitpts} wool ${this.wool} breath ${this.breath}`);
+    this.log.push(
+      `[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} hp ${this.sim.ci.hitpts} wool ${this.wool} breath ${this.breath}`,
+    );
   }
 
   async wait(k: number): Promise<string | undefined> {
@@ -84,6 +89,7 @@ export class Bot {
     const shown = this.sim.shown(x, y);
     const b = this.sim.blockAt(x, y);
     const extra = (this.avoid.get(`${x},${y}`) ?? 0) + (this.crowd?.has(y * 100 + x) ? 30 : 0);
+    if (KEEPSAKES.has(b)) return undefined;
     if (shown.solid) {
       const d = EAT.get(this.sim.w.blkmap[b]) ?? EAT.get(b);
       return d === undefined ? undefined : 1 + d + extra;
@@ -173,6 +179,7 @@ export class Bot {
         const y = (my + by) % 100;
         const n = this.sim.blockAt(x, y);
         const b = this.sim.shown(x, y);
+        if (KEEPSAKES.has(n)) continue;
         if (b.touchBl === (this.sim.w.blkmap[n] ?? n) || b.chHitPt < 0 || b.scorePts < 0 || (b.effect && b.eamt < 0)) continue;
         if (b.scorePts > 0 || b.chHitPt > 0 || (b.effect && b.eamt > 0)) out.push({ x, y });
       }
@@ -218,7 +225,12 @@ export class Bot {
           if (!best || extra < best.extra || (extra === best.extra && a < best.d)) best = { at: c, stand: s, d: a, extra };
         }
       }
-      if (process.env.BOT_GATHER) console.log(`[${this.sim.scene}] gather to ${tx - ORIGIN},${ty - ORIGIN} from ${p.x - ORIGIN},${p.y - ORIGIN} view ${this.sim.w.mx},${this.sim.w.my}: ${this.lootInView().map((c) => `${c.x - ORIGIN},${c.y - ORIGIN}`).join(' ')} -> ${best ? `${best.at.x - ORIGIN},${best.at.y - ORIGIN} +${best.extra}` : 'none'}`);
+      if (process.env.BOT_GATHER)
+        console.log(
+          `[${this.sim.scene}] gather to ${tx - ORIGIN},${ty - ORIGIN} from ${p.x - ORIGIN},${p.y - ORIGIN} view ${this.sim.w.mx},${this.sim.w.my}: ${this.lootInView()
+            .map((c) => `${c.x - ORIGIN},${c.y - ORIGIN}`)
+            .join(' ')} -> ${best ? `${best.at.x - ORIGIN},${best.at.y - ORIGIN} +${best.extra}` : 'none'}`,
+        );
       if (!best) return undefined;
       spent += best.extra;
       const { at, stand } = best;
@@ -226,7 +238,8 @@ export class Bot {
       this.forage = false;
       try {
         let r = await this.goto(stand.x - ORIGIN, stand.y - ORIGIN, `loot at ${at.x - ORIGIN},${at.y - ORIGIN}`);
-        if (!r && (stand.x !== at.x || stand.y !== at.y)) r = await this.push(stand.x < at.x ? 'right' : stand.x > at.x ? 'left' : stand.y < at.y ? 'down' : 'up');
+        if (!r && (stand.x !== at.x || stand.y !== at.y))
+          r = await this.push(stand.x < at.x ? 'right' : stand.x > at.x ? 'left' : stand.y < at.y ? 'down' : 'up');
         if (r) return r;
       } finally {
         this.forage = was;

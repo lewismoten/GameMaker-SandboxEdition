@@ -60,7 +60,7 @@ THIS IS SHAREWARE
   If it made you laugh, or made
   you buy your own loofah,
   register for $5: you get a
-  tape of the song and a bar of
+  loofah sticker and a bar of
   the Bard's own unscented,
   uncursed soap. Send a check
   (US funds) to:
@@ -73,7 +73,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

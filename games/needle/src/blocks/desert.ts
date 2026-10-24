@@ -3,6 +3,7 @@
 // clock), a slot canyon with eye gates cut in it (one grace each, then on his knees), an oasis
 // with palms and a pool, cactus that pricks, dry brush that sends tumbleweeds, two travelers
 // and some children to give gold to, and at the end of the road the tailor's tent.
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { dither } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
@@ -35,7 +36,12 @@ export function desertBlocks(pal: Pal): Kit {
     const p = sky(10 + kind, 3);
     for (let x = 0; x < 20; x++) {
       const top = kind === 0 ? 12 + Math.round(Math.sin(x / 5) * 2) : kind === 1 ? (x > 3 && x < 17 ? 4 : 14) : 16 - Math.round(Math.abs(Math.sin(x / 7)) * 4);
-      for (let y = top; y < 20; y++) p.set(x, y, kind === 1 ? shadeAt(R('sand'), 1, 3, 0.4 + (x / 20) * 0.4 + (y % 4 === 0 ? -0.2 : 0), x, y) : shadeAt(R('sand'), 3, 5, 0.3 + (y - top) / 20, x, y));
+      for (let y = top; y < 20; y++)
+        p.set(
+          x,
+          y,
+          kind === 1 ? shadeAt(R('sand'), 1, 3, 0.4 + (x / 20) * 0.4 + (y % 4 === 0 ? -0.2 : 0), x, y) : shadeAt(R('sand'), 3, 5, 0.3 + (y - top) / 20, x, y),
+        );
     }
     return p;
   };
@@ -59,7 +65,8 @@ export function desertBlocks(pal: Pal): Kit {
   // sandstone: layered, warm
   const rock = (seed: number, top: boolean) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sand'), 0, 2, 0.5 + Math.sin(y / 2.2 + Math.sin((x + seed) / 5)) * 0.35, x, y));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sand'), 0, 2, 0.5 + Math.sin(y / 2.2 + Math.sin((x + seed) / 5)) * 0.35, x, y));
     if (top) p.rect(0, 0, 20, 2, c('sand', 4)).rect(0, 2, 20, 1, c('sand', 1));
     return p;
   };
@@ -132,7 +139,7 @@ export function desertBlocks(pal: Pal): Kit {
   }
   crown.rect(8, 12, 4, 8, c('wood', 2)); // as wide as the trunk's top, where it meets it
   book.add('palmTop', crown, air);
-  // the oasis pool: one long drink, then it is just a pool (both are water you can stand in)
+  // the oasis pool: one drink a block (the road is long, the water is shared), then it is just a pool (both are water you can stand in)
   const pool = (drunk: boolean) => {
     const p = sky(43);
     for (let x = 0; x < 20; x++) p.rect(x, 12, 1, 8, c('water', (x + (drunk ? 1 : 0)) % 5 === 0 ? 3 : 2));
@@ -141,13 +148,17 @@ export function desertBlocks(pal: Pal): Kit {
     blob(p, 2, 11, 3, 2, R('leaf'), 1, 3);
     return p;
   };
-  book.add('pool', pool(false), { hp: 40, score: 10, grav: GRAV.down, touch: 'poolDrunk' });
+  book.add('pool', pool(false), { hp: 15, score: 10, grav: GRAV.down, touch: 'poolDrunk' });
   book.add('poolDrunk', pool(true), { grav: GRAV.down });
 
   // ---------- the poor, the gates, good things ----------
   addSoul(k, 'nomad', () => sky(51));
   addSoul(k, 'kids', () => sky(52));
-  addGate(k, (seed) => rock(seed, false), () => shade.crop(0, 0, 20, 20));
+  addGate(
+    k,
+    (seed) => rock(seed, false),
+    () => shade.crop(0, 0, 20, 20),
+  );
   addGoodThings(k, () => sky(53));
   // and in the canyon's shade
   book.add('bgS', shade.crop(0, 0, 20, 20), air);
@@ -192,5 +203,29 @@ export function desertBlocks(pal: Pal): Kit {
   book.add('tentDoor', tentWall(true, false), air);
   // the right-hand wall (added last, so the blocks before keep their numbers)
   book.add('tentWallR', tentWall(false, false, 2), air);
+  // a painted Easter egg, up in the shade of the slot canyon's first room (a few points, no sound of its own)
+  for (let f = 0; f < EGG_SHINE_FRAMES; f++)
+    book.add(
+      `egg${f || ''}`,
+      drawEasterEgg(
+        shade.crop(0, 0, 20, 20),
+        {
+          ink: c('ink', 0),
+          shell: [c('blue', 1), c('blue', 2), c('blue', 3)],
+          paint: [c('gold', 2), c('gold', 3)],
+          accent: c('white', 2),
+          white: c('white', 2),
+        },
+        'stars',
+        f,
+      ),
+      {
+        score: 50,
+        touch: 'shade',
+        grav: GRAV.down,
+        next: `egg${(f + 1) % EGG_SHINE_FRAMES || ''}`,
+        ntime: f ? 3 : 60,
+      },
+    );
   return k;
 }

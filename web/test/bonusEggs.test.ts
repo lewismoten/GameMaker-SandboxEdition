@@ -5,7 +5,20 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 const saves: Record<string, Record<string, Uint8Array>> = {};
 vi.mock('../src/project/storage', () => ({ loadSaveData: async (id: string) => saves[id] ?? {} }));
 
-import { BONUS_EGGS, bonusKey, bonusStates, bonusStatus, clampTaps, eggTaps, isHatched, parseTaps, setEggTaps, tapsText, TAPS, TAPS_KEY } from '../src/eggs/bonus';
+import {
+  BONUS_EGGS,
+  bonusKey,
+  bonusStates,
+  bonusStatus,
+  clampTaps,
+  eggTaps,
+  isHatched,
+  parseTaps,
+  setEggTaps,
+  tapsText,
+  TAPS,
+  TAPS_KEY,
+} from '../src/eggs/bonus';
 import { EGGS } from '../src/eggs/eggs';
 import { eggStates, OVERRIDES_KEY } from '../src/eggs/eggState';
 import { tapMessage } from '../src/eggs/bonusViewer';
@@ -17,7 +30,11 @@ describe('the two eggs kept apart from the dozen', () => {
   beforeEach(() => {
     store.clear();
     for (const k of Object.keys(saves)) delete saves[k];
-    vi.stubGlobal('localStorage', { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, String(v)), removeItem: (k: string) => void store.delete(k) });
+    vi.stubGlobal('localStorage', {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, String(v)),
+      removeItem: (k: string) => void store.delete(k),
+    });
   });
   afterEach(() => vi.unstubAllGlobals());
 
@@ -50,7 +67,7 @@ describe('the two eggs kept apart from the dozen', () => {
     expect((await bonusStates()).some((s) => s.found)).toBe(false);
   });
 
-  it('reads the rotten egg\'s tap count, clamped', () => {
+  it("reads the rotten egg's tap count, clamped", () => {
     expect(parseTaps('7', null)).toBe(7);
     expect(parseTaps('99', null)).toBe(TAPS);
     expect(parseTaps('-3', null)).toBe(0);

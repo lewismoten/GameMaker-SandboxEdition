@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * README spell it out to fit their columns; about.json says the same in its blurb).
  */
 export const SONG_CREDIT =
-  "lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai";
+  "lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai (formerly Riffusion, now Google Flow Music)";
 
 export const STORY = [
   page([
@@ -28,8 +28,8 @@ export const STORY = [
     'The smallest thing in all the',
     'land, but it can grow tall.',
     '',
-    'But here I am, just sittin\'',
-    'still, waitin\' for a sign,',
+    "But here I am, just sittin'",
+    "still, waitin' for a sign,",
     "While that little seed's been",
     "hustlin', workin' overtime!",
     '',
@@ -62,11 +62,13 @@ export const INSTRUCTIONS = [
     'mountain and grow all the way',
     "up to the palm of God's hand.",
     '',
-    'LEFT/RIGHT or A D walk (slow',
-    'but sure). UP or W hops: hold',
-    'it to go higher. Q and E (or',
-    'keypad 7 and 9) hop up and',
-    'sideways; steer as you fall.',
+    'LEFT/RIGHT or A D walk: slow',
+    'but sure as a seed, quicker',
+    'once you have grown. UP or W',
+    'hops: hold it longer to hop',
+    'higher. Q and E (or keypad 7',
+    'and 9) hop up and sideways;',
+    'steer as you fall.',
     '',
     'SPACE or H: Hallelujah!',
   ]),
@@ -94,6 +96,18 @@ export const INSTRUCTIONS = [
     'you; a golden mustard flower',
     'is an extra life.',
     '',
+    'High up the great plant the',
+    'evening breeze gusts. When',
+    'the leaves shiver, a gust is',
+    'coming that blows you off',
+    'the branch: wait, and cross',
+    "while it's calm.",
+    '',
+    'Cornered in a tunnel? Push',
+    'roots up into the dust and',
+    'let the mole go by.',
+  ]),
+  page([
     "It don't shout, it don't brag:",
     'you have no way to fight. Big',
     'loud things hurt to bump',
@@ -127,8 +141,10 @@ const CREDITS_TEXT = page(
     "the Bard's gospel oddities.",
     '',
     "Lyrics: ChatGPT, from Lewis's",
-    'prompt. Music: Riffusion.',
-    'Animated cover: Producer.ai.',
+    'prompt. Music: Riffusion (now',
+    'Google Flow Music). Animated',
+    'cover: the same tool, by then',
+    'called Producer.ai.',
     "This game's FM music, its",
     'sung clips and the title',
     'cartoon are made from them.',
@@ -150,7 +166,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -206,7 +222,7 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for ${price}: you get
-  a tape of the song and a
+  a mustard seed sticker and a
   packet of real mustard seeds.
   Send a check (US funds) to:
 
@@ -218,7 +234,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,
@@ -232,7 +250,8 @@ CREDITS (NOW)
   Bizarre); music made with
   Riffusion (now Google Flow
   Music); animated cover made
-  with Producer.ai.
+  with Producer.ai, Riffusion's
+  later name.
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made

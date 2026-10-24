@@ -32,7 +32,8 @@ export function newGameSave(files: FileSource, gam: string, rand: () => number =
   const startLink = 0;
   const start = game.scenes[0]?.links[startLink];
   const scene = start?.toScene ?? 0xffff;
-  if (!start || scene < 2 || scene >= game.scenes.length) throw new SaveFormatError('This game has no start: link the title scene to its first level in the integrator.');
+  if (!start || scene < 2 || scene >= game.scenes.length)
+    throw new SaveFormatError('This game has no start: link the title scene to its first level in the integrator.');
   const s = { m: { files }, game, rand: () => rand, ci: newCharInfo(), rec: new Recorder(), sndClock: 1, timerCounter: 1 };
   startGameInits(s as unknown as Parameters<typeof startGameInits>[0]);
   s.rec.initRecord();

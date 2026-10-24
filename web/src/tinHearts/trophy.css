@@ -54,3 +54,29 @@
     transition: none;
   }
 }
+
+/* what Joe says in the trophy scene (reveal.ts): a speech card over the top of the picture */
+.trophy-say {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #f4ead2;
+  color: #2a2014;
+  font:
+    600 16px/1.4 Georgia,
+    'Times New Roman',
+    serif;
+  text-align: center;
+  white-space: pre-line;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+}
+
+.trophy-say[hidden] {
+  display: none;
+}

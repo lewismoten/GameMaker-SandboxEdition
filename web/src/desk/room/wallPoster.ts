@@ -2,11 +2,12 @@
 // drive, like the ones that came folded up in the box. about.json "box".poster names a
 // picture from the game ({ gif: 'title.gif' }) or a stretch of a map
 // ({ map: ['galaxy.map', x, y, w, h] } in blocks, drawn as a creased fold-out map);
-// without one the game's title screen becomes the poster.
+// without one the game's title screen becomes the poster. It hangs in the black-light
+// poster's place (props/blacklight.ts), which comes back when the disk is out.
 import './wallPoster.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { mapShot } from '../boxes/boxArt';
+import { mapShot } from '../../gfx/gameShots';
 import type { BoxExtras } from '../boxes/boxFacts';
 import { seeded } from '../boxes/boxFacts';
 
@@ -153,7 +154,11 @@ export async function showWallPoster(gameId: string): Promise<void> {
   if (shown !== gameId) return;
   scene.querySelector('.wall-poster')?.remove();
   if (!canvas) return;
+  // as big as fits in the black-light poster's frame (200 x 204 on the stage), its shape kept
+  const fit = Math.min(200 / canvas.width, 204 / canvas.height);
   const img = h('img', { src: canvas.toDataURL(), alt: '', draggable: false });
+  img.style.width = `${Math.round(canvas.width * fit)}px`;
+  img.style.height = `${Math.round(canvas.height * fit)}px`;
   const tilt = (seeded(gameId)() - 0.5) * 3;
   scene.append(
     h(
@@ -164,7 +169,8 @@ export async function showWallPoster(gameId: string): Promise<void> {
         title: `${entry.title} — ${poster.map ? 'the fold-out map from the box' : 'the poster from the box'}`,
         'aria-label': `${entry.title} poster`,
       },
-      img,
+      // the sheet itself, its two tacks in its own top corners
+      h('span', { class: 'wp-sheet' }, img),
     ),
   );
 }

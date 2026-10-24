@@ -33,15 +33,15 @@ it again in the air to climb
 higher. Down curls into a
 ball. Space fires your blaster
 the way you last moved. P
-picks things up. To go back to
-orbit, walk into the uplink
-beacon.
+picks things up and O drops
+one. To go back to orbit, walk
+into the uplink beacon.
 
 UNDER THE SEA
 The diving bell swims with the
-arrows and coasts when you let
-go. Surface at the buoy to
-leave.
+arrows and holds still when
+you let go. Surface at the
+buoy to leave.
 
 ROVER WORLDS
 The rover drives fast and
@@ -67,7 +67,18 @@ VAULTS
 Credit doors cost 10 credits
 to open. Force fields blink on
 and off. Crystal walls shatter
-at a touch.
+at a touch. A healing spring
+in the caves mends 100 hit
+points in one drink, then runs
+dry until you land again.
+
+THE HEART
+A seal of light bars the way
+out. Crack the Heart Eye three
+times (plasma, a shield orb,
+or ramming it, which hurts)
+and its light will come to you
+and open the seal.
 
 KEYS
 F1 help F2 status

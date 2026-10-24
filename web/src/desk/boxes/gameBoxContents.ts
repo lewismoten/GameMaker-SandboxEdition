@@ -6,7 +6,7 @@
 import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
 import { h } from '../../editor/core/ui';
-import type { CatalogEntry } from '../../project/files';
+import { warmPack, type CatalogEntry } from '../../project/files';
 import { CATALOG_CHANGED } from '../../project/catalogWatch';
 import { loadDisks, type Disk } from '../../retro/dos/disks';
 import { boxItems } from '../../manual/printables/items';
@@ -36,6 +36,8 @@ const closeViewerThen = (then: () => void) => () => {
 export function sandboxBoxContents(entry: CatalogEntry, _front: string | undefined, hooks: BoxContentsHooks): HTMLElement {
   const insert = closeViewerThen(hooks.insert);
   const open = closeViewerThen(hooks.open);
+  // its paper (the world map, the key card…) reads many of the game's files: all in one go
+  warmPack(entry);
 
   // the disks: disk 1 in front, the rest of the set fanned behind it
   const diskSet = h('button', { class: 'bc-disks', onclick: insert, title: 'Put disk 1 in drive A: and play' });

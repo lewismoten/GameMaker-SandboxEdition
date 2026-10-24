@@ -79,10 +79,11 @@ export function coverRgb(t: number): Uint8Array {
         if (y + 0.5 >= Math.min(y0, y1) && y + 0.5 < Math.max(y0, y1)) xs.push(x0 + ((y + 0.5 - y0) / (y1 - y0)) * (x1 - x0));
       }
       xs.sort((a, b) => a - b);
-      for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.ceil(xs[k] - 0.5); x <= Math.floor(xs[k + 1] - 0.5); x++) {
-        const col = c(x, y);
-        if (col) put(x, y, col);
-      }
+      for (let k = 0; k + 1 < xs.length; k += 2)
+        for (let x = Math.ceil(xs[k] - 0.5); x <= Math.floor(xs[k + 1] - 0.5); x++) {
+          const col = c(x, y);
+          if (col) put(x, y, col);
+        }
     }
   };
   const shade = (base: RGB, nx: number, ny: number, k = 1): RGB => {
@@ -143,16 +144,53 @@ export function coverRgb(t: number): Uint8Array {
     return mixc([(WALL[0] - n) * board * lit, (WALL[1] - n) * board * lit, (WALL[2] - n) * board * lit], [200, 200, 255], flash * 0.35);
   };
   // the main house
-  poly([[52, 150], [52, 92], [196, 88], [196, 150]], siding);
+  poly(
+    [
+      [52, 150],
+      [52, 92],
+      [196, 88],
+      [196, 150],
+    ],
+    siding,
+  );
   // its roof, steep, a little crooked
-  poly([[44, 94], [122, 50], [204, 90]], (x, y) => mixc([ROOF[0] + (y % 4 === 0 ? 10 : 0), ROOF[1], ROOF[2] + (x % 6 === 0 ? 8 : 0)], [200, 200, 255], flash * 0.3));
+  poly(
+    [
+      [44, 94],
+      [122, 50],
+      [204, 90],
+    ],
+    (x, y) => mixc([ROOF[0] + (y % 4 === 0 ? 10 : 0), ROOF[1], ROOF[2] + (x % 6 === 0 ? 8 : 0)], [200, 200, 255], flash * 0.3),
+  );
   // the tower on the left with its witch's-hat roof
-  poly([[60, 150], [60, 64], [94, 62], [94, 150]], siding);
-  poly([[54, 66], [77, 18], [100, 64]], (_x, y) => mixc([ROOF[0] + (y % 5 === 0 ? 12 : 0), ROOF[1], ROOF[2] + 4], [200, 200, 255], flash * 0.3));
+  poly(
+    [
+      [60, 150],
+      [60, 64],
+      [94, 62],
+      [94, 150],
+    ],
+    siding,
+  );
+  poly(
+    [
+      [54, 66],
+      [77, 18],
+      [100, 64],
+    ],
+    (_x, y) => mixc([ROOF[0] + (y % 5 === 0 ? 12 : 0), ROOF[1], ROOF[2] + 4], [200, 200, 255], flash * 0.3),
+  );
   line(77, 18, 77, 10, [40, 30, 40], 1);
   line(74, 12, 80, 12, [40, 30, 40], 1);
   // a dormer on the right
-  poly([[146, 82], [162, 64], [178, 80]], () => ROOF);
+  poly(
+    [
+      [146, 82],
+      [162, 64],
+      [178, 80],
+    ],
+    () => ROOF,
+  );
   rect(152, 76, 20, 14, siding);
   // trim
   line(52, 92, 196, 88, WALL_LIGHT, 2);
@@ -206,7 +244,14 @@ export function coverRgb(t: number): Uint8Array {
   for (let x = 0; x < W; x += 9) {
     if (x > 95 && x < 150) continue;
     rect(x, 132, 5, 14, [150, 140, 150]);
-    poly([[x, 132], [x + 2.5, 128], [x + 5, 132]], () => [150, 140, 150]);
+    poly(
+      [
+        [x, 132],
+        [x + 2.5, 128],
+        [x + 5, 132],
+      ],
+      () => [150, 140, 150],
+    );
   }
   rect(0, 136, 96, 2, [130, 120, 130]);
   rect(150, 136, W - 150, 2, [130, 120, 130]);
@@ -232,8 +277,22 @@ export function coverRgb(t: number): Uint8Array {
     rect(x - 1, y - 9 * s, 2, 3 * s, [60, 110, 40]);
     const f = flick(10 + k);
     const lit: RGB = [255, 230 * f, 90 * f];
-    poly([[x - 5 * s, y - 2 * s], [x - 2 * s, y - 2 * s], [x - 3.5 * s, y - 4.5 * s]], () => lit);
-    poly([[x + 2 * s, y - 2 * s], [x + 5 * s, y - 2 * s], [x + 3.5 * s, y - 4.5 * s]], () => lit);
+    poly(
+      [
+        [x - 5 * s, y - 2 * s],
+        [x - 2 * s, y - 2 * s],
+        [x - 3.5 * s, y - 4.5 * s],
+      ],
+      () => lit,
+    );
+    poly(
+      [
+        [x + 2 * s, y - 2 * s],
+        [x + 5 * s, y - 2 * s],
+        [x + 3.5 * s, y - 4.5 * s],
+      ],
+      () => lit,
+    );
     rect(x - 5 * s, y + 1 * s, 10 * s, 2 * s, lit);
   };
   jack(150, 160, 0.9, 0);
@@ -256,8 +315,24 @@ export function coverRgb(t: number): Uint8Array {
     const flap = Math.sin(t * 60 + k * 2) > 0 ? -3 : 2;
     const s = 1 + (k % 2) * 0.4;
     ellipse(bx, by, 2 * s, 1.6 * s, () => [10, 6, 14]);
-    poly([[bx - 1, by], [bx - 9 * s, by + flap * s], [bx - 5 * s, by + 2], [bx - 2, by + 1]], () => [10, 6, 14]);
-    poly([[bx + 1, by], [bx + 9 * s, by + flap * s], [bx + 5 * s, by + 2], [bx + 2, by + 1]], () => [10, 6, 14]);
+    poly(
+      [
+        [bx - 1, by],
+        [bx - 9 * s, by + flap * s],
+        [bx - 5 * s, by + 2],
+        [bx - 2, by + 1],
+      ],
+      () => [10, 6, 14],
+    );
+    poly(
+      [
+        [bx + 1, by],
+        [bx + 9 * s, by + flap * s],
+        [bx + 5 * s, by + 2],
+        [bx + 2, by + 1],
+      ],
+      () => [10, 6, 14],
+    );
   }
 
   // ---- Lily, on the left: calm as can be
@@ -272,19 +347,55 @@ export function coverRgb(t: number): Uint8Array {
     ellipse(lx - 5, ly + 41, 6, 3, () => [250, 250, 250]);
     ellipse(lx + 5, ly + 41, 6, 3, () => [250, 250, 250]);
     // the hoodie
-    poly([[lx - 15, ly + 28], [lx - 12, ly - 2], [lx + 12, ly - 2], [lx + 15, ly + 28]], (x, y) => (x < lx - 6 ? mixc(HOOD_DARK, HOOD, (y - ly) / 40 + 0.3) : HOOD));
+    poly(
+      [
+        [lx - 15, ly + 28],
+        [lx - 12, ly - 2],
+        [lx + 12, ly - 2],
+        [lx + 15, ly + 28],
+      ],
+      (x, y) => (x < lx - 6 ? mixc(HOOD_DARK, HOOD, (y - ly) / 40 + 0.3) : HOOD),
+    );
     rect(lx - 1, ly, 2, 26, HOOD_DARK);
     // a pocket and a little unicorn patch
     rect(lx - 9, ly + 14, 18, 8, [170, 140, 220]);
     ellipse(lx, ly + 6, 3, 3, () => [255, 255, 255]);
     // the hood up, the rainbow mane down the back, the horn
     ellipse(lx, ly - 14, 15, 15, (nx, ny) => shade(HOOD, nx, ny));
-    const RB: RGB[] = [[240, 70, 80], [255, 160, 60], [255, 230, 80], [100, 210, 110], [90, 150, 255], [170, 110, 240]];
+    const RB: RGB[] = [
+      [240, 70, 80],
+      [255, 160, 60],
+      [255, 230, 80],
+      [100, 210, 110],
+      [90, 150, 255],
+      [170, 110, 240],
+    ];
     for (let k = 0; k < 6; k++) ellipse(lx + 13 + k * 0.5, ly - 22 + k * 5, 3.5, 3.5, () => RB[k]);
-    poly([[lx - 3, ly - 27], [lx + 3, ly - 27], [lx + 1, ly - 46]], (x, y) => ((y + x) % 4 < 2 ? [255, 255, 255] : [255, 220, 120]));
+    poly(
+      [
+        [lx - 3, ly - 27],
+        [lx + 3, ly - 27],
+        [lx + 1, ly - 46],
+      ],
+      (x, y) => ((y + x) % 4 < 2 ? [255, 255, 255] : [255, 220, 120]),
+    );
     // ears
-    poly([[lx - 12, ly - 24], [lx - 6, ly - 28], [lx - 13, ly - 34]], () => HOOD);
-    poly([[lx + 6, ly - 28], [lx + 11, ly - 24], [lx + 10, ly - 34]], () => HOOD);
+    poly(
+      [
+        [lx - 12, ly - 24],
+        [lx - 6, ly - 28],
+        [lx - 13, ly - 34],
+      ],
+      () => HOOD,
+    );
+    poly(
+      [
+        [lx + 6, ly - 28],
+        [lx + 11, ly - 24],
+        [lx + 10, ly - 34],
+      ],
+      () => HOOD,
+    );
     // her face in the hood
     ellipse(lx, ly - 12, 10, 10, (nx, ny) => shade([250, 206, 168], nx, ny, 0.6));
     // pigtails
@@ -328,23 +439,63 @@ export function coverRgb(t: number): Uint8Array {
     const FL_DARK: RGB = [110, 18, 26];
     const NAVY: RGB = [40, 52, 110];
     // khakis and sneakers, knees knocking
-    poly([[mx - 18, my + 46], [mx - 2, my + 46], [mx - 1 + shake, my + 70], [mx - 14, my + 80], [mx - 20, my + 80]], () => [214, 190, 140]);
-    poly([[mx + 2, my + 46], [mx + 18, my + 46], [mx + 20, my + 80], [mx + 14, my + 80], [mx + 1 - shake, my + 70]], () => [196, 172, 124]);
+    poly(
+      [
+        [mx - 18, my + 46],
+        [mx - 2, my + 46],
+        [mx - 1 + shake, my + 70],
+        [mx - 14, my + 80],
+        [mx - 20, my + 80],
+      ],
+      () => [214, 190, 140],
+    );
+    poly(
+      [
+        [mx + 2, my + 46],
+        [mx + 18, my + 46],
+        [mx + 20, my + 80],
+        [mx + 14, my + 80],
+        [mx + 1 - shake, my + 70],
+      ],
+      () => [196, 172, 124],
+    );
     ellipse(mx - 15, my + 80, 9, 4, () => [230, 230, 236]);
     ellipse(mx + 16, my + 80, 9, 4, () => [230, 230, 236]);
     // the flannel shirt
-    poly([[mx - 24, my + 48], [mx - 22, my + 4], [mx + 22, my + 4], [mx + 24, my + 48]], (x, y) => {
-      const lineV = (x - mx + 100) % 8 < 2;
-      const lineH = (y - my + 100) % 8 < 2;
-      const base = x > mx + 10 ? FL_DARK : FL;
-      return lineV && lineH ? [20, 24, 60] : lineV || lineH ? mixc(base, NAVY, 0.6) : base;
-    });
+    poly(
+      [
+        [mx - 24, my + 48],
+        [mx - 22, my + 4],
+        [mx + 22, my + 4],
+        [mx + 24, my + 48],
+      ],
+      (x, y) => {
+        const lineV = (x - mx + 100) % 8 < 2;
+        const lineH = (y - my + 100) % 8 < 2;
+        const base = x > mx + 10 ? FL_DARK : FL;
+        return lineV && lineH ? [20, 24, 60] : lineV || lineH ? mixc(base, NAVY, 0.6) : base;
+      },
+    );
     rect(mx - 24, my + 44, 48, 4, [60, 40, 26]);
     rect(mx - 2, my + 44, 5, 4, [230, 190, 80]);
     // the collar and the neck
     rect(mx - 5, my, 10, 6, [240, 196, 160]);
-    poly([[mx - 8, my + 4], [mx, my + 12], [mx - 2, my + 4]], () => FL_DARK);
-    poly([[mx + 8, my + 4], [mx, my + 12], [mx + 2, my + 4]], () => FL_DARK);
+    poly(
+      [
+        [mx - 8, my + 4],
+        [mx, my + 12],
+        [mx - 2, my + 4],
+      ],
+      () => FL_DARK,
+    );
+    poly(
+      [
+        [mx + 8, my + 4],
+        [mx, my + 12],
+        [mx + 2, my + 4],
+      ],
+      () => FL_DARK,
+    );
     // the head: wide eyes, eyebrows up, mouth open in a scream, sweat flying
     ellipse(mx, my - 14, 15, 17, (nx, ny) => shade([248, 200, 160], nx, ny, 0.7));
     ellipse(mx, my - 26, 15, 9, (nx, ny) => (ny < 0.2 ? shade([110, 70, 40], nx, ny) : undefined));
@@ -355,14 +506,34 @@ export function coverRgb(t: number): Uint8Array {
     }
     ellipse(mx, my - 3, 6, 7, (_nx, ny) => (ny > 0.4 ? [200, 60, 70] : [60, 16, 24]));
     rect(mx - 5, my - 9, 10, 2, [255, 255, 255]);
-    for (const [dx, dy] of [[-17, -20], [18, -24], [20, -12]]) {
+    for (const [dx, dy] of [
+      [-17, -20],
+      [18, -24],
+      [20, -12],
+    ]) {
       ellipse(mx + dx + shake, my + dy, 1.6, 2.4, () => [170, 220, 255]);
     }
     // arms out to the left, both fists on the sword's grip, the blade held up at the house
     const gx = mx - 30 + shake;
     const gy = my + 12;
-    poly([[mx - 20, my + 6], [mx - 14, my + 14], [gx + 4, gy + 6], [gx, gy - 2]], () => FL);
-    poly([[mx + 20, my + 8], [mx + 22, my + 18], [gx + 10, gy + 8], [gx + 8, gy]], () => FL_DARK);
+    poly(
+      [
+        [mx - 20, my + 6],
+        [mx - 14, my + 14],
+        [gx + 4, gy + 6],
+        [gx, gy - 2],
+      ],
+      () => FL,
+    );
+    poly(
+      [
+        [mx + 20, my + 8],
+        [mx + 22, my + 18],
+        [gx + 10, gy + 8],
+        [gx + 8, gy],
+      ],
+      () => FL_DARK,
+    );
     ellipse(gx, gy, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
     ellipse(gx + 7, gy + 3, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
     // the foam sword: grey blade pointed up and away, yellow crossguard, the price tag still on

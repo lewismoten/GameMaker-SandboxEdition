@@ -24,7 +24,11 @@ export function addRoute(k: Ctx, { yardBase, sidewalk }: Painters): void {
   for (let i = 0; i < 5; i++) {
     const y = 16 - i * 2;
     const x = 2 + (i % 2);
-    bundle.rect(x, y, 16, 2, c('grey', 5)).rect(x, y + 1, 16, 1, c('concrete', 2)).set(x, y, c('concrete', 2)).set(x + 15, y + 1, c('concrete', 1));
+    bundle
+      .rect(x, y, 16, 2, c('grey', 5))
+      .rect(x, y + 1, 16, 1, c('concrete', 2))
+      .set(x, y, c('concrete', 2))
+      .set(x + 15, y + 1, c('concrete', 1));
   }
   // the top paper: masthead, a headline and two columns of type
   bundle.rect(2, 3, 17, 6, c('grey', 5)).frame(2, 3, 17, 6, c('concrete', 1));

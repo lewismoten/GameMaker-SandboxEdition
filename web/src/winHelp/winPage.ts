@@ -6,15 +6,16 @@
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
+import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
-const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
-  h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
+const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) => h('section', { 'aria-labelledby': id }, h('h2', { id }, title), ...body);
 
 const kbd = (text: string) => h('kbd', null, text);
 
 /** The page into `el`. */
 export function renderWinHelp(el: HTMLElement): void {
+  tally('help-all', 'windows');
   clear(
     el,
     h(
@@ -31,7 +32,11 @@ export function renderWinHelp(el: HTMLElement): void {
       section(
         'win-warning',
         'What the warning means',
-        h('p', null, 'When you first run the program, Windows may say: “Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting.”'),
+        h(
+          'p',
+          null,
+          'When you first run the program, Windows may say: “Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting.”',
+        ),
         h(
           'p',
           null,
@@ -83,7 +88,11 @@ export function renderWinHelp(el: HTMLElement): void {
           h('li', null, 'Double-click the program. If Windows says it protected your PC, click ', kbd('More info'), '.'),
           h('li', null, 'Click ', kbd('Run anyway'), '.'),
         ),
-        h('p', null, 'From then on the game opens like any other program. Nothing is installed: keep the file wherever you like, such as your Desktop or Documents folder.'),
+        h(
+          'p',
+          null,
+          'From then on the game opens like any other program. Nothing is installed: keep the file wherever you like, such as your Desktop or Documents folder.',
+        ),
         h(
           'p',
           null,
@@ -124,7 +133,11 @@ export function renderWinHelp(el: HTMLElement): void {
         h(
           'ul',
           null,
-          h('li', null, 'It is a small window that plays the game. Inside is the same player as this website, with the game built in. F11 or Alt+Enter switches to full screen.'),
+          h(
+            'li',
+            null,
+            'It is a small window that plays the game. Inside is the same player as this website, with the game built in. F11 or Alt+Enter switches to full screen.',
+          ),
           h('li', null, 'It installs nothing, changes no Windows settings and never asks for administrator rights.'),
           h('li', null, 'Saved games and high scores stay on your PC. Nothing is uploaded.'),
           h(
@@ -139,6 +152,16 @@ export function renderWinHelp(el: HTMLElement): void {
             h('a', { href: `${REPO_URL}/tree/HEAD/win`, target: '_blank', rel: 'noopener' }, 'win folder of the project’s source code'),
             ', and the code that builds each program in your browser is in the same project.',
           ),
+        ),
+      ),
+
+      section(
+        'win-future',
+        'Will it keep working?',
+        h(
+          'p',
+          null,
+          'The download is a convenience: it plays offline and keeps its saved games on your computer. It is not a frozen copy, though. It wraps the same web page as this site in a small native window and plays it with Microsoft Edge WebView2, the web engine built into Windows 10 and 11. It still depends on that engine, so a future Windows or WebView2 update could break the game or change how it plays. The DOS download, played in DOSBox, is the most future-proof way to keep a game.',
         ),
       ),
 

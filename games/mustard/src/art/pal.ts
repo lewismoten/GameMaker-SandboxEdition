@@ -6,7 +6,7 @@
 import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];
-export type Light = 'dawn' | 'under' | 'day' | 'gold' | 'plain';
+export type Light = 'dawn' | 'garden' | 'under' | 'day' | 'gold' | 'plain';
 
 /** [name, shades, dark, light, mid?, glows?] */
 const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
@@ -38,12 +38,62 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
 /** Each place's sky (top to bottom) and how the rest is lit. */
 const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // the cover: a deep rose wall fading to pink, the light warm
-  dawn: { sky: [[150, 62, 70], [246, 176, 172], [216, 120, 122]], mul: [1, 0.92, 0.9], add: [16, 4, 6] },
+  dawn: {
+    sky: [
+      [150, 62, 70],
+      [246, 176, 172],
+      [216, 120, 122],
+    ],
+    mul: [1, 0.92, 0.9],
+    add: [16, 4, 6],
+  },
+  // the garden level: the cover's rose a step deeper, so the yellow seed stands out against it
+  garden: {
+    sky: [
+      [124, 46, 62],
+      [228, 146, 150],
+      [184, 86, 100],
+    ],
+    mul: [1, 0.92, 0.9],
+    add: [16, 4, 6],
+  },
   // underground: the "sky" is the dark of the earth itself
-  under: { sky: [[28, 16, 12], [92, 62, 42], [56, 36, 26]], mul: [0.82, 0.76, 0.72], add: [6, 2, 0] },
-  day: { sky: [[70, 130, 214], [214, 236, 250], [140, 190, 240]], mul: [1, 1, 1], add: [0, 0, 0] },
-  gold: { sky: [[120, 60, 110], [255, 214, 130], [236, 130, 96]], mul: [1, 0.9, 0.74], add: [20, 8, 0] },
-  plain: { sky: [[70, 130, 214], [214, 236, 250], [140, 190, 240]], mul: [1, 1, 1], add: [0, 0, 0] },
+  under: {
+    sky: [
+      [28, 16, 12],
+      [92, 62, 42],
+      [56, 36, 26],
+    ],
+    mul: [0.82, 0.76, 0.72],
+    add: [6, 2, 0],
+  },
+  day: {
+    sky: [
+      [70, 130, 214],
+      [214, 236, 250],
+      [140, 190, 240],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
+  gold: {
+    sky: [
+      [120, 60, 110],
+      [255, 214, 130],
+      [236, 130, 96],
+    ],
+    mul: [1, 0.9, 0.74],
+    add: [20, 8, 0],
+  },
+  plain: {
+    sky: [
+      [70, 130, 214],
+      [214, 236, 250],
+      [140, 190, 240],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
 };
 
 export interface Pal {

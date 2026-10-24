@@ -117,7 +117,10 @@ export function cashierBlocks(book: BlockBook, pal: Pal): void {
     post.rect(3, y, 14, 6, c(col, 2)).frame(3, y, 14, 6, ink);
     micro(post, right ? 5 : 11, y + 1, '7', c('white', 2));
     const tip = right ? 18 : 1;
-    for (let k = 0; k < 3; k++) post.rect(right ? tip - k - 1 : tip + k, y + 3 - k, 1, 1 + k * 2 - 1 || 1, c(col, 2)).rect(right ? tip - k - 1 : tip + k, y + 2 - k + 1, 1, k * 2 + 1, c(col, 2));
+    for (let k = 0; k < 3; k++)
+      post
+        .rect(right ? tip - k - 1 : tip + k, y + 3 - k, 1, 1 + k * 2 - 1 || 1, c(col, 2))
+        .rect(right ? tip - k - 1 : tip + k, y + 2 - k + 1, 1, k * 2 + 1, c(col, 2));
     post.line(right ? 10 : 6, y + 3, right ? 14 : 10, y + 3, c('white', 2));
   };
   arrow(1, true, 'navy');
@@ -129,7 +132,11 @@ export function cashierBlocks(book: BlockBook, pal: Pal): void {
   // the dumpsters, behind which the cashier smokes
   const dump = clear(40, 20);
   for (const x of [1, 21]) {
-    dump.rect(x, 6, 18, 12, c('green', 1)).rect(x, 6, 18, 2, c('green', 2)).rect(x - 1, 4, 20, 3, c('green', 0)).rect(x + 2, 9, 14, 1, c('green', 0));
+    dump
+      .rect(x, 6, 18, 12, c('green', 1))
+      .rect(x, 6, 18, 2, c('green', 2))
+      .rect(x - 1, 4, 20, 3, c('green', 0))
+      .rect(x + 2, 9, 14, 1, c('green', 0));
     dump.disc(x + 3, 18, 1.5, ink).disc(x + 15, 18, 1.5, ink);
   }
   micro(dump, 4, 11, 'TRASH', c('green', 3));
@@ -153,17 +160,40 @@ export function cashierBlocks(book: BlockBook, pal: Pal): void {
     // the corral rails, the carts already in it (and, opened, his, locked in with a mighty clank)
     p.rect(1, 21, 38, 2, c('metal', 2)).rect(1, 30, 38, 2, c('metal', 1)).rect(1, 21, 2, 19, c('metal', 1)).rect(37, 21, 2, 19, c('metal', 1));
     for (const dx of open ? [4, 9, 22, 27] : [22, 27]) {
-      p.line(dx, 25, dx + 9, 25, c('red', 2)).line(dx + 1, 26, dx + 1, 35, c('metal', 2)).line(dx + 9, 25, dx + 8, 35, c('metal', 2)).line(dx + 1, 35, dx + 8, 35, c('metal', 2));
+      p.line(dx, 25, dx + 9, 25, c('red', 2))
+        .line(dx + 1, 26, dx + 1, 35, c('metal', 2))
+        .line(dx + 9, 25, dx + 8, 35, c('metal', 2))
+        .line(dx + 1, 35, dx + 8, 35, c('metal', 2));
       p.disc(dx + 2, 37, 1.2, ink).disc(dx + 8, 37, 1.2, ink);
     }
-    if (open) for (const [x, y] of [[3, 20], [14, 19], [8, 23]]) p.set(x, y, c('gold', 3)).set(x + 1, y - 1, c('gold', 3)).set(x - 1, y + 1, c('gold', 3));
+    if (open)
+      for (const [x, y] of [
+        [3, 20],
+        [14, 19],
+        [8, 23],
+      ])
+        p.set(x, y, c('gold', 3))
+          .set(x + 1, y - 1, c('gold', 3))
+          .set(x - 1, y + 1, c('gold', 3));
     return outline(p, ink);
   };
   // the golden light pouring down on it (or possibly the glow of someone's vape)
   const beam = skyHigh.crop(0, 0, 20, 20);
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y * 3) % 4 === 0 || (x > 5 && x < 15 && (x + y) % 2 === 0)) beam.set(x, y, c('spot', x > 6 && x < 13 ? 1 : 0));
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) if ((x + y * 3) % 4 === 0 || (x > 5 && x < 15 && (x + y) % 2 === 0)) beam.set(x, y, c('spot', x > 6 && x < 13 ? 1 : 0));
   book.add('beam', beam, AIR);
-  cut(book, 'cartReturn', corral(false), (col, row) => glowSky(70 + col + row * 2), () => AIR, [[0, 0], [1, 0], [1, 1]]);
+  cut(
+    book,
+    'cartReturn',
+    corral(false),
+    (col, row) => glowSky(70 + col + row * 2),
+    () => AIR,
+    [
+      [0, 0],
+      [1, 0],
+      [1, 1],
+    ],
+  );
   const gateOpen = glowSky(72).blit(corral(true).crop(0, 20, 20, 20), 0, 0, T);
   book.add('cartReturnOpen', gateOpen, { grav: GRAV.none });
   gate(book, 'cartReturnGate', glowSky(72).blit(corral(false).crop(0, 20, 20, 20), 0, 0, T), 'cartReturnOpen', SCARS);
@@ -174,26 +204,41 @@ export function cashierBlocks(book: BlockBook, pal: Pal): void {
     draw(t);
     p.blit(outline(t, ink), 0, 0, T);
   };
-  plotThing(book, 'skyLow', 'rogueCart', thing((p) => {
-    // the cart, alone, abandoned, rogue, with its cold, wobbly eyes
-    p.line(1, 6, 4, 6, c('red', 2)).line(4, 6, 6, 9, c('metal', 2));
-    p.rect(6, 8, 13, 2, c('red', 2)).line(6, 10, 8, 16, c('metal', 2)).line(18, 10, 17, 16, c('metal', 2));
-    for (let x = 8; x < 18; x += 3) p.line(x, 10, x, 15, c('metal', 1));
-    p.line(8, 13, 17, 13, c('metal', 1)).line(8, 16, 17, 16, c('metal', 2));
-    p.disc(9, 18, 1.4, ink).disc(16, 18, 1.4, ink);
-    p.disc(10, 4, 2.2, c('white', 2)).disc(15, 4, 2.2, c('white', 2)).set(11, 5, ink).set(14, 3, ink);
-  }));
-  plotThing(book, 'skyLow', 'receipt', thing((p) => {
-    for (let y = 2; y < 18; y++) p.rect(5 + Math.round(Math.sin(y / 3) * 2), y, 9, 1, c('white', y % 2 ? 2 : 1));
-    for (let y = 4; y < 16; y += 2) p.rect(7 + Math.round(Math.sin(y / 3) * 2), y, 3 + ((y * 5) % 4), 1, c('grey', 1));
-    p.rect(6, 17, 9, 1, c('grey', 2));
-  }));
-  plotThing(book, 'skyLow', 'flipflop', thing((p) => {
-    // the traitorous flip-flop, folded like a politician mid-scandal
-    for (let k = 0; k < 14; k++) p.rect(3 + k, 13 - Math.round(Math.abs(k - 7) * 0.9), 2, 4, c('pink', 2));
-    p.line(10, 6, 7, 12, c('teal', 2)).line(10, 6, 13, 12, c('teal', 2));
-    p.set(15, 4, c('lcd', 2)).set(16, 6, c('lcd', 2));
-  }));
+  plotThing(
+    book,
+    'skyLow',
+    'rogueCart',
+    thing((p) => {
+      // the cart, alone, abandoned, rogue, with its cold, wobbly eyes
+      p.line(1, 6, 4, 6, c('red', 2)).line(4, 6, 6, 9, c('metal', 2));
+      p.rect(6, 8, 13, 2, c('red', 2)).line(6, 10, 8, 16, c('metal', 2)).line(18, 10, 17, 16, c('metal', 2));
+      for (let x = 8; x < 18; x += 3) p.line(x, 10, x, 15, c('metal', 1));
+      p.line(8, 13, 17, 13, c('metal', 1)).line(8, 16, 17, 16, c('metal', 2));
+      p.disc(9, 18, 1.4, ink).disc(16, 18, 1.4, ink);
+      p.disc(10, 4, 2.2, c('white', 2)).disc(15, 4, 2.2, c('white', 2)).set(11, 5, ink).set(14, 3, ink);
+    }),
+  );
+  plotThing(
+    book,
+    'skyLow',
+    'receipt',
+    thing((p) => {
+      for (let y = 2; y < 18; y++) p.rect(5 + Math.round(Math.sin(y / 3) * 2), y, 9, 1, c('white', y % 2 ? 2 : 1));
+      for (let y = 4; y < 16; y += 2) p.rect(7 + Math.round(Math.sin(y / 3) * 2), y, 3 + ((y * 5) % 4), 1, c('grey', 1));
+      p.rect(6, 17, 9, 1, c('grey', 2));
+    }),
+  );
+  plotThing(
+    book,
+    'skyLow',
+    'flipflop',
+    thing((p) => {
+      // the traitorous flip-flop, folded like a politician mid-scandal
+      for (let k = 0; k < 14; k++) p.rect(3 + k, 13 - Math.round(Math.abs(k - 7) * 0.9), 2, 4, c('pink', 2));
+      p.line(10, 6, 7, 12, c('teal', 2)).line(10, 6, 13, 12, c('teal', 2));
+      p.set(15, 4, c('lcd', 2)).set(16, 6, c('lcd', 2));
+    }),
+  );
 
   loot(book, pal, 'skyLow');
   spotlight(book, pal, 'skyLow');
@@ -221,7 +266,10 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
   const devil = (f: number) => {
     const p = clear();
     blob(p, 9, 12, 4, 4.5, pal.r('red'), 1, 3);
-    p.set(6, 7 - f, c('red', 3)).set(5, 6 - f, c('red', 3)).set(12, 7 - f, c('red', 3)).set(13, 6 - f, c('red', 3));
+    p.set(6, 7 - f, c('red', 3))
+      .set(5, 6 - f, c('red', 3))
+      .set(12, 7 - f, c('red', 3))
+      .set(13, 6 - f, c('red', 3));
     p.line(15, 4, 15, 18, c('gold', 1)).line(14, 4, 14, 6, c('gold', 1)).line(16, 4, 16, 6, c('gold', 1));
     p.line(5, 15, 2, 18 + f, c('red', 1)).set(1, 18 + f, c('red', 2));
     p.line(5, 9 + f, 1, 7 + f, c('red', 1)).line(13, 9 - f, 17, 10, c('red', 1));
@@ -237,7 +285,10 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
     for (let k = 0; k < 14; k++) {
       const x = 3 + Math.floor(r() * 14);
       const y = 3 + Math.floor(r() * 14);
-      p.rect(x, y, 2, 2, ink).set(x - 1, y - 1 + f, c('white', 2)).set(x + 2, y - 1 + f, c('white', 2)).set(x, y, c('red', 2));
+      p.rect(x, y, 2, 2, ink)
+        .set(x - 1, y - 1 + f, c('white', 2))
+        .set(x + 2, y - 1 + f, c('white', 2))
+        .set(x, y, c('red', 2));
     }
     return p;
   };
@@ -257,7 +308,9 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
     // the driver, one-handed, corn on the cob
     blob(p, 30, 4.5, 2.4, 2.4, pal.r('skin'), 1, 3);
     p.set(31, 4, ink);
-    p.rect(26, 5 + f, 2, 5, c('yellow', 2)).rect(26, 5 + f, 2, 1, c('green', 2)).set(27, 7 + f, c('yellow', 3));
+    p.rect(26, 5 + f, 2, 5, c('yellow', 2))
+      .rect(26, 5 + f, 2, 1, c('green', 2))
+      .set(27, 7 + f, c('yellow', 3));
     if (f) micro(p, 6, 9, 'BEEP', c('van', 0));
     return done(p);
   };
@@ -293,7 +346,11 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
   // a gust of wind off the hill
   const gust = (f: number) => {
     const p = clear();
-    for (const [y, w] of [[6, 14], [10, 10], [14, 16]]) {
+    for (const [y, w] of [
+      [6, 14],
+      [10, 10],
+      [14, 16],
+    ]) {
       p.line(2 + f * 2, y, 2 + w, y, c('white', 2));
       p.set(2 + w + 1, y - 1, c('white', 1)).set(2 + w + 1, y - 2, c('white', 1));
     }
@@ -308,9 +365,13 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
     p.rect(5, 8, 10, 8, c('red', 2)).rect(5, 8, 10, 1, c('red', 3)).rect(11, 10, 3, 2, c('white', 2));
     blob(p, 10, 5 + f, 3.4, 3.2, pal.r('skin'), 1, 4);
     p.rect(6, 1 + f, 8, 3, c('hair', 0)).rect(5, 2 + f, 2, 7, c('hair', 0));
-    p.rect(9, 6 + f, 1, 1, ink).rect(12, 6 + f, 1, 1, ink).rect(10, 8 + f, 3, 1, c('skin', 1));
+    p.rect(9, 6 + f, 1, 1, ink)
+      .rect(12, 6 + f, 1, 1, ink)
+      .rect(10, 8 + f, 3, 1, c('skin', 1));
     p.line(14, 9, 16, 7, c('red', 2)).rect(16, 6, 3, 1, c('white', 2)).set(19, 6, c('orange', 3));
-    p.set(18, 3 - f, c('grey', 2)).set(17, 1 - f, c('grey', 2)).set(19, 2 - f, c('grey', 3));
+    p.set(18, 3 - f, c('grey', 2))
+      .set(17, 1 - f, c('grey', 2))
+      .set(19, 2 - f, c('grey', 3));
     return done(p);
   };
   book.add('cashier0', cashier(0), hello);
@@ -320,7 +381,13 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
 export function cashierMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: CM.poof };
   set[CM.devil] = mon(anim(mb, 'devil0', 'devil1', 7), foe, pace(3, 1));
-  set[CM.gnats] = mon(anim(mb, 'gnats0', 'gnats1', 2), { ...foe, thru: 0 }, [corner(0, 0, 1), corner(2, -1, 1, 0), corner(3, 0, 1, 0), corner(1, 1, 1, 4), corner(0, 0, 1, 4)]);
+  set[CM.gnats] = mon(anim(mb, 'gnats0', 'gnats1', 2), { ...foe, thru: 0 }, [
+    corner(0, 0, 1),
+    corner(2, -1, 1, 0),
+    corner(3, 0, 1, 0),
+    corner(1, 1, 1, 4),
+    corner(0, 0, 1, 4),
+  ]);
   // the van reverses two blocks into the lane and pulls forward again: no word stops it
   const reverse = [corner(0, 0, 2), corner(-2, 0, 2, 0), corner(0, 0, 1, 0)];
   set[CM.vanRear] = mon(anim(mb, 'vanRear0', 'vanRear1', 5), { power: POWER.tough, thru: 0 }, reverse);
@@ -329,8 +396,22 @@ export function cashierMonsters(set: Monster[], mb: SpriteBook): void {
   set[CM.goose] = mon(anim(mb, 'goose0', 'goose1', 6), foe, pace(3, 1));
   set[CM.gust] = mon(anim(mb, 'gust0', 'gust1', 3), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 3), corner(-8, 0, 3, 0)]);
   set[CM.poof] = mon(anim(mb, 'poof0', 'poof1', 3), { power: POWER.friend, thru: 0, end: 8 });
-  set[CM.cashier] = mon([[mb.n('cashier0'), 40], [mb.n('cashier1'), 8]], { power: POWER.friend, thru: 0, newmon: CM.cashierOff }, still);
-  set[CM.cashierOff] = mon([[mb.n('cashier1'), 12], [mb.n('cashier0'), 30]], { power: POWER.tough, thru: 0, end: 60 }, still);
+  set[CM.cashier] = mon(
+    [
+      [mb.n('cashier0'), 40],
+      [mb.n('cashier1'), 8],
+    ],
+    { power: POWER.friend, thru: 0, newmon: CM.cashierOff },
+    still,
+  );
+  set[CM.cashierOff] = mon(
+    [
+      [mb.n('cashier1'), 12],
+      [mb.n('cashier0'), 30],
+    ],
+    { power: POWER.tough, thru: 0, end: 60 },
+    still,
+  );
 }
 
 export const cashier: Monologue = {
@@ -378,7 +459,14 @@ export const cashier: Monologue = {
     ground(42, 53, 10);
     ground(54, W - 1, 9);
     // the clouds
-    for (const [x, y] of [[5, 1], [19, 3], [33, 1], [47, 2], [62, 1]]) m.set(x, y, 'cloud.0.0').set(x + 1, y, 'cloud.1.0');
+    for (const [x, y] of [
+      [5, 1],
+      [19, 3],
+      [33, 1],
+      [47, 2],
+      [62, 1],
+    ])
+      m.set(x, y, 'cloud.0.0').set(x + 1, y, 'cloud.1.0');
     // the mega-mart behind him: the sign, the wall, the doors out
     m.fill(0, 6, 3, 6, 'F');
     m.set(0, 6, 'megaSign.0.0').set(1, 6, 'megaSign.1.0').set(2, 6, 'megaSign.2.0');

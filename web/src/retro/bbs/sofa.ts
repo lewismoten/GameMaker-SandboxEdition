@@ -2,10 +2,11 @@
 // board people called to hang out: who's on which line, and a live teleconference where
 // the other callers chat while you type.
 import type { RetroHost } from '../host';
-import { attr, COLS } from '../text/textScreen';
+import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
 import { sofaFiles } from './sofaFiles';
+import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
 
@@ -49,9 +50,10 @@ function menu(t: Term): void {
   t.line('|13          ─────────────────── |15The Sofa |13─ |15Top Menu |13───────────────────');
   t.line();
   t.line('|14   T |07... |15Teleconference |07(talk with the other callers)');
-  t.line('|14   W |07... |15Who\'s on |07(see every line)');
+  t.line("|14   W |07... |15Who's on |07(see every line)");
   t.line('|14   L |07... |15The lounge |07(news from the SysOps)');
   t.line('|14   F |07... |15File library |07(free downloads from our regulars)');
+  t.line('|14   P |07... |15GIF pictures |07(THE CHEZ and the Bard of Bizarre logo)');
   t.line('|14   X |07... |15Exit |07(log off)');
   t.line();
 }
@@ -59,8 +61,11 @@ function menu(t: Term): void {
 export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   const s = h.screen;
   const line = 3 + Math.floor(Math.random() * 4);
-  s.cursorX = 0;
-  s.cursorY = sofaLogin(s, line, LINES);
+  t.clear(); // ESC[2J first, then the picture
+  t.art((s) => {
+    s.cursorX = 0;
+    s.cursorY = sofaLogin(s, line, LINES);
+  });
   t.line('|07If you already have a User-ID on this system, type it in and press ENTER.');
   t.print('|07Otherwise type |15"new"|07: |15');
   let name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase();
@@ -74,20 +79,19 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
     await readLine(s, h.keys, [], 16, attr(0, 0));
     t.line();
   }
-  s.fill(0, 0, COLS - 1, 23, attr(7, 0));
-  s.cursorX = 0;
-  s.cursorY = 0;
+  t.clear();
   t.line(`|15Welcome to The Sofa, |14${name}|15!  |07You are on line |14${String(line).padStart(2, '0')}|07.`);
   t.line(`|07There are |14${CALLERS.length + 1}|07 users online right now.`);
   menu(t);
   for (;;) {
-    t.print('|11Make your selection (T,W,L,F or ? for help, X to exit): |15');
+    t.print('|11Make your selection (T,W,L,F,P or ? for help, X to exit): |15');
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'T') await teleconference(t, h, name);
     else if (k === 'W') whosOn(t, name, line);
     else if (k === 'L') lounge(t);
     else if (k === 'F') await sofaFiles(t, h);
+    else if (k === 'P') await sofaPictures(t, h);
     else if (k === '?') menu(t);
     else if (k === 'X' || k === 'Escape') {
       t.line();
@@ -123,14 +127,15 @@ function lounge(t: Term): void {
   t.line('|07I SCREAMED, SHE SMIRKED and SHAKESPEARE IN SWEATPANTS,');
   t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
   t.line("|07And VENI, VIDI, RISI!, six songs in Latin by Lewis's group Veni, Vidi, Risi!");
-  t.line('|07Free! Hit F.');
+  t.line("|07Free! Hit F.  And in GIF pictures (hit P): THE CHEZ, DOC LEO's CitiCar.");
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
 }
 
 /** The main channel: others talk every few seconds; type a line and press ENTER to talk. */
 async function teleconference(t: Term, h: RetroHost, name: string): Promise<void> {
-  const s = h.screen;
+  // the board sends no faster than the line takes it: a slow line just sees less of the flood
+  const lineFree = () => t.backlog < 0.5;
   const here = CALLERS.filter(([, doing]) => doing === 'Teleconference').map(([n]) => n);
   t.line();
   t.line('|15You are in the Main channel of Teleconference.');
@@ -146,10 +151,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   let burstAt = 0;
   let round = 0;
   const prompt = () => t.print(`|11: |15${typed}`);
-  const eraseLine = () => {
-    s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
-    s.cursorX = 0;
-  };
+  const eraseLine = () => t.eraseLine();
   const say = (text: string) => {
     eraseLine();
     t.line(text);
@@ -164,7 +166,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
       burstAt = now;
     }
     if (burst.length) {
-      while (burst.length && now >= burstAt + burst[0].wait) {
+      while (burst.length && now >= burstAt + burst[0].wait && lineFree()) {
         burstAt += burst[0].wait;
         say(burst.shift()!.text);
       }
@@ -176,11 +178,15 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
     } else {
       // The flood: far too fast to read.
       while (now > spamAt) {
+        if (!lineFree()) {
+          spamAt = now + 70;
+          break;
+        }
         say(`|12From ${SPAMMER}: |15${spamLine()}`);
         spamAt += 70 + Math.random() * 90;
       }
     }
-    if (!burst.length && now > pleaAt) {
+    if (!burst.length && now > pleaAt && lineFree()) {
       const [who, text] = PLEAS[plea++ % PLEAS.length];
       say(`|14From ${who}: |07${text}`);
       pleaAt = now + 2200 + Math.random() * 3000;

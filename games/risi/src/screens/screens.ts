@@ -40,7 +40,9 @@ export function portico(pal: Pal, seed = 3): Pixels {
     const h = 128 + Math.round(Math.sin(x / 31 + seed) * 6 + Math.sin(x / 13) * 3);
     p.rect(x, h, 1, 150 - h, c('grape', 0));
   }
-  for (let y = 150; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (Math.floor((x - 160) / (14 + (y - 150) / 2) + 100) + Math.floor((y - 150) / 7)) % 2 ? c('marble', 3) : c('ink', 1));
+  for (let y = 150; y < H; y++)
+    for (let x = 0; x < W; x++)
+      p.set(x, y, (Math.floor((x - 160) / (14 + (y - 150) / 2) + 100) + Math.floor((y - 150) / 7)) % 2 ? c('marble', 3) : c('ink', 1));
   for (const x of [26, 294]) column(p, pal, x, 30, 150);
   p.rect(0, 0, W, 24, c('marble', 2)).rect(0, 24, W, 2, c('marble', 3)).rect(0, 26, W, 1, c('vein', 0));
   for (let x = 4; x < W; x += 14) p.rect(x, 27, 6, 3, c('marble', 1));

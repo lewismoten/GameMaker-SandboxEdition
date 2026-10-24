@@ -35,7 +35,11 @@ export interface LinuxAppOptions {
   players: Record<LinuxArch, Uint8Array>;
   author?: string;
   year?: number;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
+  fiction?: string;
   picture?: IndexedImage;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts), first in its notices. */
+  audio?: string;
   colors?: IconColors;
 }
 
@@ -51,7 +55,13 @@ export function folderName(title: string): string {
 }
 
 export function linuxId(id: string): string {
-  return id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64) || 'game';
+  return (
+    id
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64) || 'game'
+  );
 }
 
 /** A shell word: the text in single quotes. */
@@ -143,10 +153,10 @@ fi
 `;
 }
 
-export function readme(o: Pick<LinuxAppOptions, 'title' | 'id' | 'author' | 'year'>): string {
+export function readme(o: Pick<LinuxAppOptions, 'title' | 'id' | 'author' | 'year' | 'fiction'>): string {
   const by = byLine(o);
   return `${o.title}${by ? ` (${by})` : ''}
-Made with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs'
+${o.fiction ? `${o.fiction}\n` : ''}Made with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs'
 Game-Maker 3.0 (1994): ${SITE_URL}
 
 TO PLAY
@@ -165,7 +175,9 @@ IT NEEDS WebKitGTK (most desktops already have it):
 Without it, play.sh opens the game in your web browser instead.
 
 Saved games and high scores are kept in ~/.local/share/GameMaker/${linuxId(o.id)}.
-The game loads nothing from the internet. More: ${SITE_URL}#/linux
+The game loads nothing from the internet. It plays in WebKitGTK, so a future update
+to it or to your system could break or change the game; the DOS download, in DOSBox,
+is the most future-proof. More: ${SITE_URL}#/linux
 `;
 }
 
@@ -187,7 +199,7 @@ export async function linuxAppFiles(o: LinuxAppOptions): Promise<{ name: string;
       text('install.sh', installScript(o), 0o755),
       text('uninstall.sh', uninstallScript(o), 0o755),
       text('README.txt', readme(o)),
-      text('THIRD-PARTY-NOTICES.txt', thirdPartyNotices('linux')),
+      text('THIRD-PARTY-NOTICES.txt', thirdPartyNotices('linux', o.audio)),
       text('game.html', o.html),
       { path: `${name}/icon.png`, data: await linuxIcon(o.picture, o.colors), mode: 0o644 },
       ...LINUX_ARCHES.map((a) => ({ path: `${name}/GameMakerPlayer-${a}`, data: o.players[a], mode: 0o755 })),

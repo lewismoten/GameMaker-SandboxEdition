@@ -303,7 +303,7 @@
   margin: 8px 0;
 }
 
-/* the Bard's collections on the Bizarre tab, sharing rows where they fit (home.ts pack()) */
+/* the Bard's collections on the Bizarre tab and the makers on Gameware and Shareware, sharing rows where they fit (home.ts pack()) */
 .lib-tiles > .lib-sub {
   grid-column: 1 / -1;
   align-self: end;
@@ -318,6 +318,18 @@
 
 .lib-tiles > .lib-sub:first-child {
   margin-top: 0;
+}
+
+/* under a maker's heading, the tiles leave the maker out (home.ts pack()) */
+.lib-by-maker .tile-meta {
+  display: none;
+}
+
+/* a maker's game count, after the name */
+.lib-sub-count {
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .lib-none {
@@ -421,25 +433,21 @@
   main.home {
     display: grid;
     grid-template-columns: minmax(320px, 28%) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, max-content) minmax(0, 1fr);
+    grid-template-rows: minmax(0, max-content) minmax(0, 1fr);
     gap: 0 24px;
     max-width: 1720px;
     padding: 14px 24px 16px;
   }
 
-  .home-intro {
-    grid-column: 1 / -1;
-  }
-
   .home .library {
     grid-column: 2;
-    grid-row: 2 / 4;
+    grid-row: 1 / 3;
     min-height: 0;
   }
 
   .home-start {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 2;
     align-self: start;
     max-height: calc(100% - 12px);
     margin: 12px 0 0;
@@ -771,7 +779,9 @@ a.button.with-ico {
   border-radius: 6px;
   background: #0b0d14;
   color: #fff;
-  font: 600 12px/1.3 system-ui, sans-serif;
+  font:
+    600 12px/1.3 system-ui,
+    sans-serif;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   opacity: 0;

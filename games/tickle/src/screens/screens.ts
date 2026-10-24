@@ -41,9 +41,12 @@ export function labBackdrop(pal: Pal, floor = 160, seed = 3, flash = false): Pix
       x = nx;
     }
   }
-  p.rect(wx + 34, 18, 4, 92, c('stone', 1)).rect(wx, 82, 72, 3, c('stone', 1)).rect(wx - 4, 108, 80, 4, c('stone', 2));
+  p.rect(wx + 34, 18, 4, 92, c('stone', 1))
+    .rect(wx, 82, 72, 3, c('stone', 1))
+    .rect(wx - 4, 108, 80, 4, c('stone', 2));
   // the floor
-  for (let y = floor; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (Math.floor(x / 20) + Math.floor((y - floor) / 10)) % 2 ? c('tile', 1) : c('grey', 0));
+  for (let y = floor; y < H; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, (Math.floor(x / 20) + Math.floor((y - floor) / 10)) % 2 ? c('tile', 1) : c('grey', 0));
   // shelves of flasks along the back
   p.rect(10, 70, 120, 3, c('wood', 1));
   for (let k = 0; k < 7; k++) {

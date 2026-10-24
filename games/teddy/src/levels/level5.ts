@@ -21,7 +21,8 @@ export function klub(): Level {
   bs.def('bubblesBot').birthMon = beasts.id('bubble');
   bs.def('bubblesBot').birthTime = 30;
   bs.def('launcherBot').birthMon = beasts.id('pie');
-  bs.def('launcherBot').birthTime = 40;
+  // the finale's barrage: a pie every 30 ticks down the tunnel, a beat to play dead to
+  bs.def('launcherBot').birthTime = 30;
   const m = new LevelMap(bs, beasts, 'sky0');
   const pick = (() => {
     const R = rng(23);

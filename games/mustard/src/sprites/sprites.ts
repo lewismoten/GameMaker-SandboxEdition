@@ -91,15 +91,29 @@ export function seedArt(pal: Pal) {
     const ey = Math.round(cy - 1);
     const eyes = o.face === 'front' ? [Math.round(cx) - 2, Math.round(cx) + 2] : [Math.round(cx) + 1, Math.round(cx) + 4];
     for (const ex of eyes) {
-      if (wilt) p.set(ex - 1, ey - 1, ink).set(ex + 1, ey + 1, ink).set(ex, ey, ink).set(ex + 1, ey - 1, ink).set(ex - 1, ey + 1, ink);
+      if (wilt)
+        p.set(ex - 1, ey - 1, ink)
+          .set(ex + 1, ey + 1, ink)
+          .set(ex, ey, ink)
+          .set(ex + 1, ey - 1, ink)
+          .set(ex - 1, ey + 1, ink);
       else if (o.blink || o.mood === 'joy') p.rect(ex - 1, ey, 2, 1, ink);
       else p.rect(ex, ey - 1, 1, 2, ink).set(ex, ey - 1, c('white', 2));
     }
     const mx = o.face === 'front' ? Math.round(cx) : Math.round(cx) + 2;
     const my = ey + 3;
-    if (o.mood === 'joy') p.rect(mx - 1, my - 1, 3, 2, c('red', 1)).set(mx - 2, my - 1, ink).set(mx + 2, my - 1, ink);
-    else if (o.mood === 'ouch' || wilt) p.rect(mx - 1, my, 3, 1, ink).set(mx - 2, my + 1, ink).set(mx + 2, my + 1, ink);
-    else p.set(mx - 1, my, ink).set(mx, my + 1, ink).set(mx + 1, my, ink);
+    if (o.mood === 'joy')
+      p.rect(mx - 1, my - 1, 3, 2, c('red', 1))
+        .set(mx - 2, my - 1, ink)
+        .set(mx + 2, my - 1, ink);
+    else if (o.mood === 'ouch' || wilt)
+      p.rect(mx - 1, my, 3, 1, ink)
+        .set(mx - 2, my + 1, ink)
+        .set(mx + 2, my + 1, ink);
+    else
+      p.set(mx - 1, my, ink)
+        .set(mx, my + 1, ink)
+        .set(mx + 1, my, ink);
     // rosy cheeks
     if (o.face === 'front' && !wilt) p.set(Math.round(cx) - 4, ey + 2, c('clay', 3)).set(Math.round(cx) + 4, ey + 2, c('clay', 3));
     if (o.mood === 'ouch') p.px.forEach((v, i) => v !== T && v !== ink && v !== c('white', 2) && (p.px[i] = c('red', 3)));
@@ -125,7 +139,17 @@ export function seedArt(pal: Pal) {
     // the bud, like a little lemon
     blob(p, bx, by, 3.2, 4, pal.r('seed'), 1, 4, 1.2);
     p.set(bx, by - 4, c('leaf', 2));
-    if (mood === 'joy') for (const [x, y] of [[3, 3], [17, 2], [16, 6]]) p.set(x, y, c('sun', 3)).set(x - 1, y, c('sun', 1)).set(x + 1, y, c('sun', 1)).set(x, y - 1, c('sun', 1)).set(x, y + 1, c('sun', 1));
+    if (mood === 'joy')
+      for (const [x, y] of [
+        [3, 3],
+        [17, 2],
+        [16, 6],
+      ])
+        p.set(x, y, c('sun', 3))
+          .set(x - 1, y, c('sun', 1))
+          .set(x + 1, y, c('sun', 1))
+          .set(x, y - 1, c('sun', 1))
+          .set(x, y + 1, c('sun', 1));
     if (mood === 'ouch') p.px.forEach((v, i) => v !== T && (p.px[i] = c('red', 3)));
     return outline(p, ink);
   };
@@ -187,10 +211,17 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(9, y + 7, c('white', 2));
     return done(p);
   };
-  book.add('drop0', drop(0), { effect: 20, eamt: 1, chHitPt: 4, scorePts: 10 });
-  book.add('drop1', drop(1), { effect: 20, eamt: 1, chHitPt: 4, scorePts: 10 });
+  book.add('drop0', drop(0), { effect: 20, eamt: 1, chHitPt: 2, scorePts: 10 });
+  book.add('drop1', drop(1), { effect: 20, eamt: 1, chHitPt: 2, scorePts: 10 });
   const splash = P();
-  for (const [x, y] of [[5, 14], [8, 12], [12, 12], [15, 14], [10, 11]]) splash.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
+  for (const [x, y] of [
+    [5, 14],
+    [8, 12],
+    [12, 12],
+    [15, 14],
+    [10, 11],
+  ])
+    splash.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
   splash.rect(4, 17, 13, 1, c('water', 1));
   book.add('splash', splash);
 
@@ -266,7 +297,9 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 15, 13, 3, 2.4, pal.r('pink'), 1, 3);
     p.rect(3, 4, 11, 3, c('sun', 1)).rect(4, 3, 9, 1, c('sun', 2)).disc(13, 5, 1.6, c('white', 2));
     if (f) p.line(15, 5, 19, 3, c('sun', 3)).line(15, 6, 19, 7, c('sun', 3));
-    p.set(12, 10, ink).rect(14 + f, 17, 4, 2, c('pink', 2)).rect(2, 17, 4, 2, c('pink', 2));
+    p.set(12, 10, ink)
+      .rect(14 + f, 17, 4, 2, c('pink', 2))
+      .rect(2, 17, 4, 2, c('pink', 2));
     return done(p);
   };
   book.add('mole0', mole(0), hurt(-5));
@@ -288,10 +321,15 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(10, 12, 10 + Math.cos(a) * 4, 12 + Math.sin(a) * 4, c('stone', 0)).set(7, 9, c('stone', 5));
     return done(p);
   };
-  book.add('pebble0', pebble(0), hurt(-5));
-  book.add('pebble1', pebble(1), hurt(-5));
+  book.add('pebble0', pebble(0), hurt(-8));
+  book.add('pebble1', pebble(1), hurt(-8));
   const puff = P();
-  for (const [x, y, r] of [[6, 14, 3], [12, 13, 3.5], [9, 10, 2.5]]) blob(puff, x, y, r, r * 0.8, pal.r('dust'), 1, 3);
+  for (const [x, y, r] of [
+    [6, 14, 3],
+    [12, 13, 3.5],
+    [9, 10, 2.5],
+  ])
+    blob(puff, x, y, r, r * 0.8, pal.r('dust'), 1, 3);
   book.add('dust', puff);
   // The eagle: wide wings, a scream you can see.
   const eagle = (f: number) => {
@@ -306,8 +344,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(8, 14, 5, 2, c('white', 1));
     return done(p);
   };
-  book.add('eagle0', eagle(0), hurt(-6));
-  book.add('eagle1', eagle(1), hurt(-6));
+  book.add('eagle0', eagle(0), hurt(-10));
+  book.add('eagle1', eagle(1), hurt(-10));
   // A white goat with her horns, third from the left in another song. Friendly.
   const goat = (f: number) => {
     const p = P();
@@ -330,12 +368,15 @@ export function buildMonsterBlocks(pal: Pal) {
     for (let k = 0; k < 9; k++) blob(p, 4 + Math.sin(k / 2) * 2, 15 - k * 1.4, 2.6, 1.6, pal.r('clay'), 0, 2);
     blob(p, 11, 14, 4, 3.5, pal.r('clay'), 0, 3);
     blob(p, 15, 10, 2.8, 2.6, pal.r('clay'), 0, 3);
-    p.set(16, 9, ink).set(14, 7, c('clay', 1)).line(13, 18, 12 + f, 19, c('clay', 0)).line(9, 18, 8 - f, 19, c('clay', 0));
+    p.set(16, 9, ink)
+      .set(14, 7, c('clay', 1))
+      .line(13, 18, 12 + f, 19, c('clay', 0))
+      .line(9, 18, 8 - f, 19, c('clay', 0));
     if (f) micro(p, 16, 1, '!', c('red', 3));
     return done(p);
   };
-  book.add('squirrel0', squirrel(0), hurt(-4));
-  book.add('squirrel1', squirrel(1), hurt(-4));
+  book.add('squirrel0', squirrel(0), hurt(-8));
+  book.add('squirrel1', squirrel(1), hurt(-8));
   // Birds of the air, come to lodge in the branches: a hello is worth points, and off they go.
   const bird = (f: number, flying: boolean) => {
     const p = P();

@@ -59,10 +59,18 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
         }
       break;
     case 'tile':
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, x % 10 === 0 || y % 10 === 0 ? c('grey', 2) : (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('grey', 5) : k[k.length - 2]);
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < 20; x++)
+          // two close tones, so the white word slips stand out on them
+          p.set(
+            x,
+            y,
+            x % 10 === 0 || y % 10 === 0 ? k[Math.max(0, k.length - 4)] : (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? k[k.length - 3] : k[k.length - 2],
+          );
       break;
     case 'marble':
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, Math.sin(x * 0.5 + y * 0.8 + Math.sin(y * 0.6) * 2 + seed) > 0.85 ? c('grey', 3) : c('grey', 5));
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < 20; x++) p.set(x, y, Math.sin(x * 0.5 + y * 0.8 + Math.sin(y * 0.6) * 2 + seed) > 0.85 ? c('grey', 3) : c('grey', 5));
       p.rect(0, 0, 20, 1, c('grey', 4)).rect(0, 0, 1, 20, c('grey', 4));
       break;
     case 'grass':
@@ -72,7 +80,8 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
       for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.12 ? c('sand', 1) : R() < 0.1 ? c('sand', 3) : c('sand', 2));
       break;
     case 'water':
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, Math.sin(x * 0.6 + y * 1.3 + seed) > 0.7 ? c('blue', 4) : shadeAt(r('blue'), 1, 2, y / 20, x, y));
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < 20; x++) p.set(x, y, Math.sin(x * 0.6 + y * 1.3 + seed) > 0.7 ? c('blue', 4) : shadeAt(r('blue'), 1, 2, y / 20, x, y));
       break;
     case 'stone':
       for (let y = 0; y < 20; y++)
@@ -99,7 +108,8 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
       for (let i = 0; i < 5; i++) p.set(Math.floor(R() * 20), Math.floor(R() * 20), R() < 0.5 ? c('paper', 4) : c(tint, 4));
       break;
     case 'mist':
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(r('grey'), 3, 5, 0.5 + 0.5 * Math.sin(x * 0.4 + seed) * Math.cos(y * 0.3 + seed), x, y));
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(r('grey'), 3, 5, 0.5 + 0.5 * Math.sin(x * 0.4 + seed) * Math.cos(y * 0.3 + seed), x, y));
       break;
     case 'road':
       for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.1 ? c('grey', 2) : c('grey', 1));
@@ -214,21 +224,36 @@ export function figure(f: FigureLook, step = 0): Pixels {
     if (f.hairStyle === 'long') p.rect(hx - 1, hy + 1, 1, 7, hc).rect(hx + 6, hy + 1, 1, 7, hc);
     if (f.hairStyle === 'bun') p.rect(hx + 1, hy - 2, 4, 2, hc);
     if (f.hairStyle === 'pigtails') p.rect(hx - 2, hy + 2, 2, 3, hc).rect(hx + 6, hy + 2, 2, 3, hc);
-    if (f.hairStyle === 'wild') p.rect(hx - 2, hy, 2, 4, hc).rect(hx + 6, hy, 2, 4, hc).rect(hx, hy - 1, 6, 1, hc);
+    if (f.hairStyle === 'wild')
+      p.rect(hx - 2, hy, 2, 4, hc)
+        .rect(hx + 6, hy, 2, 4, hc)
+        .rect(hx, hy - 1, 6, 1, hc);
   }
   // face
   const eye = O;
   if (f.face === 'shades') p.rect(hx, hy + 2, 6, 2, O);
-  else if (f.face === 'eyepatch') p.rect(hx, hy + 2, 3, 2, O).set(hx + 4, hy + 3, eye).line(hx, hy + 1, hx + 6, hy + 3, O);
+  else if (f.face === 'eyepatch')
+    p.rect(hx, hy + 2, 3, 2, O)
+      .set(hx + 4, hy + 3, eye)
+      .line(hx, hy + 1, hx + 6, hy + 3, O);
   else p.set(hx + 1, hy + 3, eye).set(hx + 4, hy + 3, eye);
   if (f.glasses) p.frame(hx, hy + 2, 3, 3, c('brass', 2)).frame(hx + 3, hy + 2, 3, 3, c('brass', 2));
   if (f.face === 'whiteface' || f.face === 'auguste' || f.face === 'hobo') p.rect(hx + 2, hy + 3, 2, 2, c('red', 3)); // the red nose
-  if (f.face === 'auguste') p.set(hx, hy + 4, c('pink', 2)).set(hx + 5, hy + 4, c('pink', 2)).rect(hx + 1, hy + 5, 4, 1, c('red', 2));
+  if (f.face === 'auguste')
+    p.set(hx, hy + 4, c('pink', 2))
+      .set(hx + 5, hy + 4, c('pink', 2))
+      .rect(hx + 1, hy + 5, 4, 1, c('red', 2));
   if (f.face === 'hobo') {
     p.rect(hx, hy + 5, 6, 1, c('night', 2)).rect(hx + 2, hy + 5, 2, 1, c('paper', 4));
     p.set(hx, hy + 3, c('red', 3)).set(hx + 5, hy + 3, c('red', 3));
-  } else if (f.face === 'sad') p.rect(hx + 2, hy + 5, 2, 1, O).set(hx + 1, hy + 6, O).set(hx + 4, hy + 6, O);
-  else if (f.face === 'happy' || f.face === 'auguste' || f.face === 'whiteface') p.set(hx + 1, hy + 5, O).rect(hx + 2, hy + 6, 2, 1, O).set(hx + 4, hy + 5, O);
+  } else if (f.face === 'sad')
+    p.rect(hx + 2, hy + 5, 2, 1, O)
+      .set(hx + 1, hy + 6, O)
+      .set(hx + 4, hy + 6, O);
+  else if (f.face === 'happy' || f.face === 'auguste' || f.face === 'whiteface')
+    p.set(hx + 1, hy + 5, O)
+      .rect(hx + 2, hy + 6, 2, 1, O)
+      .set(hx + 4, hy + 5, O);
   else if (f.face !== 'shades') p.rect(hx + 2, hy + 5, 2, 1, c('red', 1));
   else p.rect(hx + 2, hy + 5, 2, 1, O);
   if (f.beard) p.rect(hx, hy + 4, 6, 3, c(f.beard[0], f.beard[1])).rect(hx + 2, hy + 5, 2, 1, c('red', 1));
@@ -238,28 +263,44 @@ export function figure(f: FigureLook, step = 0): Pixels {
     const hd = c(f.hat.color[0], Math.max(0, f.hat.color[1] - 2));
     switch (f.hat.kind) {
       case 'fedora':
-        p.rect(hx - 2, hy, 10, 1, hd).rect(hx, hy - 3, 6, 3, hc).rect(hx, hy - 1, 6, 1, c('red', 1));
+        p.rect(hx - 2, hy, 10, 1, hd)
+          .rect(hx, hy - 3, 6, 3, hc)
+          .rect(hx, hy - 1, 6, 1, c('red', 1));
         break;
       case 'crown':
-        p.rect(hx, hy - 2, 6, 2, c('brass', 3)).set(hx, hy - 3, c('brass', 4)).set(hx + 2, hy - 3, c('brass', 4)).set(hx + 5, hy - 3, c('brass', 4)).set(hx + 3, hy - 1, c('red', 3));
+        p.rect(hx, hy - 2, 6, 2, c('brass', 3))
+          .set(hx, hy - 3, c('brass', 4))
+          .set(hx + 2, hy - 3, c('brass', 4))
+          .set(hx + 5, hy - 3, c('brass', 4))
+          .set(hx + 3, hy - 1, c('red', 3));
         break;
       case 'cap':
         p.rect(hx, hy - 1, 6, 2, hc).rect(hx + 5, hy, 3, 1, hd);
         break;
       case 'santa':
-        p.rect(hx - 1, hy, 8, 1, c('paper', 4)).rect(hx, hy - 2, 6, 2, c('red', 3)).rect(hx + 5, hy - 3, 2, 2, c('red', 3)).set(hx + 7, hy - 2, c('paper', 4));
+        p.rect(hx - 1, hy, 8, 1, c('paper', 4))
+          .rect(hx, hy - 2, 6, 2, c('red', 3))
+          .rect(hx + 5, hy - 3, 2, 2, c('red', 3))
+          .set(hx + 7, hy - 2, c('paper', 4));
         break;
       case 'top':
-        p.rect(hx - 1, hy, 8, 1, hd).rect(hx, hy - 5, 6, 5, hc).rect(hx, hy - 2, 6, 1, c('red', 2));
+        p.rect(hx - 1, hy, 8, 1, hd)
+          .rect(hx, hy - 5, 6, 5, hc)
+          .rect(hx, hy - 2, 6, 1, c('red', 2));
         break;
       case 'tricorn':
-        p.rect(hx - 2, hy - 1, 10, 2, hc).set(hx - 2, hy - 2, hc).set(hx + 7, hy - 2, hc).rect(hx + 1, hy - 3, 4, 2, hc);
+        p.rect(hx - 2, hy - 1, 10, 2, hc)
+          .set(hx - 2, hy - 2, hc)
+          .set(hx + 7, hy - 2, hc)
+          .rect(hx + 1, hy - 3, 4, 2, hc);
         break;
       case 'beret':
         p.rect(hx - 1, hy - 1, 7, 2, hc).set(hx + 3, hy - 2, hc);
         break;
       case 'bandana':
-        p.rect(hx, hy - 1, 6, 2, hc).set(hx + 6, hy + 1, hc).set(hx + 7, hy + 2, hc);
+        p.rect(hx, hy - 1, 6, 2, hc)
+          .set(hx + 6, hy + 1, hc)
+          .set(hx + 7, hy + 2, hc);
         break;
       case 'helmet':
         p.rect(hx - 1, hy - 2, 8, 3, hc).rect(hx - 1, hy, 8, 1, hd);
@@ -276,9 +317,21 @@ export function figure(f: FigureLook, step = 0): Pixels {
   if (f.tie) p.rect(hx + 2, by, 2, 4, c(f.tie[0], f.tie[1]));
   // arms
   const arm = c(f.shirt[0], Math.max(0, f.shirt[1] - 1));
-  if (f.arms === 'up') p.rect(hx - 3, by - 4, 2, 5, arm).rect(hx + 7, by - 4, 2, 5, arm).rect(hx - 3, by - 5, 2, 1, skin).rect(hx + 7, by - 5, 2, 1, skin);
-  else if (f.arms === 'out') p.rect(hx - 5, by + 1, 4, 2, arm).rect(hx + 7, by + 1, 4, 2, arm).rect(hx - 6, by + 1, 1, 2, skin).rect(hx + 11, by + 1, 1, 2, skin);
-  else p.rect(hx - 3, by + 1, 2, 4, arm).rect(hx + 7, by + 1, 2, 4, arm).rect(hx - 3, by + 5, 2, 1, skin).rect(hx + 7, by + 5, 2, 1, skin);
+  if (f.arms === 'up')
+    p.rect(hx - 3, by - 4, 2, 5, arm)
+      .rect(hx + 7, by - 4, 2, 5, arm)
+      .rect(hx - 3, by - 5, 2, 1, skin)
+      .rect(hx + 7, by - 5, 2, 1, skin);
+  else if (f.arms === 'out')
+    p.rect(hx - 5, by + 1, 4, 2, arm)
+      .rect(hx + 7, by + 1, 4, 2, arm)
+      .rect(hx - 6, by + 1, 1, 2, skin)
+      .rect(hx + 11, by + 1, 1, 2, skin);
+  else
+    p.rect(hx - 3, by + 1, 2, 4, arm)
+      .rect(hx + 7, by + 1, 2, 4, arm)
+      .rect(hx - 3, by + 5, 2, 1, skin)
+      .rect(hx + 7, by + 5, 2, 1, skin);
   // legs
   const ly = by + bh;
   const lh = 20 - ly - 1;
@@ -310,7 +363,10 @@ export function corgi(step = 0, flip = false): Pixels {
   p.rect(13, 2, 2, 5, O).rect(16, 3, 2, 4, O).set(13, 3, c('pink', 2)).set(16, 4, c('pink', 2));
   // legs (short!) and a fluffy rump
   const a = step ? 1 : 0;
-  p.rect(5 + a, 16, 2, 3, fur).rect(12 - a, 16, 2, 3, fur).rect(5 + a, 19, 2, 1, white).rect(12 - a, 19, 2, 1, white);
+  p.rect(5 + a, 16, 2, 3, fur)
+    .rect(12 - a, 16, 2, 3, fur)
+    .rect(5 + a, 19, 2, 1, white)
+    .rect(12 - a, 19, 2, 1, white);
   p.rect(2, 11, 2, 3, lite);
   return flip ? p.flipX() : p;
 }
@@ -332,7 +388,18 @@ export function gwinn(step = 0, flip = false): Pixels {
 
 /** Doc Leo, hobo clown: chewed fedora, ash beard, purple shirt, green tie, red sneakers. */
 export function docLeo(step = 0): Pixels {
-  const p = figure({ hat: { kind: 'fedora', color: ['grey', 2] }, face: 'hobo', glasses: true, shirt: ['purple', 2], tie: ['green', 3], pants: ['blue', 1], hair: ['brown', 1] }, step);
+  const p = figure(
+    {
+      hat: { kind: 'fedora', color: ['grey', 2] },
+      face: 'hobo',
+      glasses: true,
+      shirt: ['purple', 2],
+      tie: ['green', 3],
+      pants: ['blue', 1],
+      hair: ['brown', 1],
+    },
+    step,
+  );
   // red sneakers with the suit
   p.rect(6, 19, 3, 1, c('red', 3)).rect(11, 19, 3, 1, c('red', 3));
   // the rubber chicken on its leash

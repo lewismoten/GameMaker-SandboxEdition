@@ -2,7 +2,7 @@
 // C:\IMAGES. "VPIC FILE.GIF" shows one; plain "VPIC" lists the pictures in the current folder
 // to pick from. JPEGs are shown as 1994 viewers on a 256-color card did: grays as VGA's 64
 // shades, color dithered to a color cube. The picture is shown in 320x200 VGA if it fits
-// there, otherwise 640x400, centered and (if bigger than that) shrunk to fit; any key goes back.
+// there, otherwise 640x400 (640x480 for a taller one), centered and (if bigger than that) shrunk to fit; any key goes back.
 import type { RetroHost } from '../host';
 import type { DosNode } from '../dos/vfs';
 import { commas, resolvePath } from '../dos/vfs';

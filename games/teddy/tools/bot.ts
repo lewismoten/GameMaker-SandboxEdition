@@ -10,7 +10,14 @@ import { KEEPSAKE, SCAN } from '../src/ids';
 import { Sim } from '../../kit/sceneSim';
 
 export type Order =
-  | { walk: number; hop?: number; maxTicks?: number; /** false: no hopping for treats on the way */ grab?: boolean }
+  | {
+      walk: number;
+      hop?: number;
+      maxTicks?: number;
+      /** false: no hopping for treats on the way */ grab?: boolean;
+      /** monsters to play dead under when one flies in close at Teddy's height */
+      dodge?: string[];
+    }
   | { hop: number; dir?: 'left' | 'right'; dirFor?: number; after?: number }
   | { trick: keyof typeof SCAN; hold?: number; after?: number }
   | { wait: number }
@@ -142,7 +149,31 @@ export async function runRoute(sim: Sim, route: Order[], label = '', rec = new R
       let stuck = 0;
       let lastX = sim.pos.x;
       let t = 0;
+      const incoming = () =>
+        (o.dodge ?? []).some((n) =>
+          sim
+            .monsters(n)
+            .some(
+              (m) =>
+                m.y === sim.pos.by &&
+                (dir === 'right' ? m.x - sim.pos.bx : sim.pos.bx - m.x) >= 0 &&
+                (dir === 'right' ? m.x - sim.pos.bx : sim.pos.bx - m.x) <= 2,
+            ),
+        );
       while (!done() && t++ < (o.maxTicks ?? 600) && !sim.dead && sim.link < 0) {
+        if (incoming()) {
+          // something flying in at head height: flop down until it has gone over
+          sim.release(key);
+          sim.press(SCAN.dead);
+          let n = 0;
+          while (incoming() && n++ < 60) await tick();
+          await tick(2);
+          sim.release(SCAN.dead);
+          await tick(2);
+          say('played dead under it');
+          sim.press(key);
+          continue;
+        }
         const grab = o.grab === false || ban === false ? undefined : await tryGrab(sim, rec, dir, ban);
         if (grab) {
           grabs.push(grab.cell);
@@ -217,7 +248,12 @@ export async function runRoute(sim: Sim, route: Order[], label = '', rec = new R
  * builds the level's Sim and Recorder afresh around a copy of the character's info; the
  * copy that finished is returned for the next level.
  */
-export async function playLevel(make: (ci: CharInfo) => { sim: Sim; rec: Recorder }, route: Order[], label: string, ci: CharInfo): Promise<RunResult & { sim: Sim; rec: Recorder; ci: CharInfo }> {
+export async function playLevel(
+  make: (ci: CharInfo) => { sim: Sim; rec: Recorder },
+  route: Order[],
+  label: string,
+  ci: CharInfo,
+): Promise<RunResult & { sim: Sim; rec: Recorder; ci: CharInfo }> {
   const ban = new Set<string>();
   for (;;) {
     const mine = structuredClone(ci);

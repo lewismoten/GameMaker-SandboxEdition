@@ -224,7 +224,17 @@ export function titleSong(): Uint8Array {
 /** Story pages: verse 1, slow and soulful (a flute over electric piano; brushes in the second half). */
 export function storySong(): Uint8Array {
   const w = new Writer(96);
-  const soft: Omit<Part, 'section' | 'drums'> = { lead: FLUTE, up: 12, leadVel: 95, second: 'none', bass: 'whole', bassVel: 80, comp: 'x q, x q, x q, x q', compPatch: EPIANO, compVel: 48 };
+  const soft: Omit<Part, 'section' | 'drums'> = {
+    lead: FLUTE,
+    up: 12,
+    leadVel: 95,
+    second: 'none',
+    bass: 'whole',
+    bassVel: 80,
+    comp: 'x q, x q, x q, x q',
+    compPatch: EPIANO,
+    compVel: 48,
+  };
   w.part({ ...soft, section: INTRO, comp: 'x w', compPatch: INSTRUMENTS.pad, drums: ['none'] });
   w.part({ ...soft, section: VERSE1A, drums: ['none'] });
   w.part({ ...soft, section: ending(VERSE1B, bar('0:D4 2:C4 4:r')), drums: ['soft'], drumVel: 55 });
@@ -238,19 +248,49 @@ export function storySong(): Uint8Array {
  */
 export function levelSongs(): Uint8Array[] {
   const one = new Writer(BPM);
-  const l1: Omit<Part, 'section' | 'drums'> = { ...BAND, lead: REED, second: 'none', comp: 'r e, x e, r e, x e, r e, x e, r e, x e', compPatch: EPIANO, compVel: 58 };
+  const l1: Omit<Part, 'section' | 'drums'> = {
+    ...BAND,
+    lead: REED,
+    second: 'none',
+    comp: 'r e, x e, r e, x e, r e, x e, r e, x e',
+    compPatch: EPIANO,
+    compVel: 58,
+  };
   one.part({ ...l1, section: INTRO, drums: ['shuffle', 'rockFill'] });
   one.part({ ...l1, section: VERSE1A, drums: n(8, 'shuffle', 'rockFill') });
   one.part({ ...l1, section: VERSE1B, lead: VOICE, second: 'double', secondPatch: ORGAN, drums: n(8, 'shuffle', 'rockFill') });
 
   const two = new Writer(BPM);
-  const l2: Omit<Part, 'section' | 'drums'> = { lead: OUD, leadVel: 118, second: 'double', secondPatch: INSTRUMENTS.pluck, secondVel: 60, bass: 'eighths', bassVel: 95, comp: 'x e, r e, r q, x e, r e, r q', compPatch: INSTRUMENTS.brass, compVel: 58 };
+  const l2: Omit<Part, 'section' | 'drums'> = {
+    lead: OUD,
+    leadVel: 118,
+    second: 'double',
+    secondPatch: INSTRUMENTS.pluck,
+    secondVel: 60,
+    bass: 'eighths',
+    bassVel: 95,
+    comp: 'x e, r e, r q, x e, r e, r q',
+    compPatch: INSTRUMENTS.brass,
+    compVel: 58,
+  };
   two.part({ ...l2, section: vamp(['C', 'G7']), drums: ['camel'] });
   two.part({ ...l2, section: CHORUS1, drums: ['camel'] });
   two.part({ ...l2, section: CHORUS1, lead: VOICE, secondPatch: OUD, drums: n(8, 'camel', 'rockFill') });
 
   const three = new Writer(BPM);
-  const l3: Omit<Part, 'section' | 'drums'> = { lead: CELESTA, up: 12, leadVel: 110, second: 'double', secondPatch: INSTRUMENTS.pluck, secondVel: 60, bass: 'walk', bassVel: 92, comp: 'r q, x q, r q, x q', compPatch: EPIANO, compVel: 52 };
+  const l3: Omit<Part, 'section' | 'drums'> = {
+    lead: CELESTA,
+    up: 12,
+    leadVel: 110,
+    second: 'double',
+    secondPatch: INSTRUMENTS.pluck,
+    secondVel: 60,
+    bass: 'walk',
+    bassVel: 92,
+    comp: 'r q, x q, r q, x q',
+    compPatch: EPIANO,
+    compVel: 52,
+  };
   three.part({ ...l3, section: vamp(['C', 'C']), drums: ['half', 'rockFill'] });
   three.part({ ...l3, section: VERSE2A, drums: n(8, 'shuffle', 'rockFill') });
   three.part({ ...l3, section: VERSE2B, lead: REED, up: 0, drums: n(12, 'shuffle', 'rockFill') });
@@ -269,7 +309,17 @@ export function wonSong(): Uint8Array {
   const w = new Writer(BPM);
   w.part({ ...REVIVAL, section: sec(['F#7'], ['0:r 7:B4']), drums: ['clapFill'] });
   w.part({ ...REVIVAL, section: FINAL2, drums: clap(8) });
-  w.part({ ...REVIVAL, section: OUTRO, lead: FLUTE, up: 12, second: 'none', comp: 'x w', compPatch: INSTRUMENTS.strings, drums: ['soft', 'soft', 'soft', 'none'], drumVel: 60 });
+  w.part({
+    ...REVIVAL,
+    section: OUTRO,
+    lead: FLUTE,
+    up: 12,
+    second: 'none',
+    comp: 'x w',
+    compPatch: INSTRUMENTS.strings,
+    drums: ['soft', 'soft', 'soft', 'none'],
+    drumVel: 60,
+  });
   return w.cmf();
 }
 
@@ -298,7 +348,16 @@ export function wholeSong(): Uint8Array {
   const w = new Writer(BPM);
   // lighter comping in the verses so the whole song fits a .CMF under 20,000 bytes
   const verse: Omit<Part, 'section' | 'drums'> = { ...BAND, second: 'none', comp: 'r q, x q, r q, x q' };
-  w.part({ ...BAND, section: INTRO, lead: INSTRUMENTS.brass, second: 'none', comp: 'x w', compPatch: INSTRUMENTS.pad, bass: 'whole', drums: ['crash', 'rockFill'] });
+  w.part({
+    ...BAND,
+    section: INTRO,
+    lead: INSTRUMENTS.brass,
+    second: 'none',
+    comp: 'x w',
+    compPatch: INSTRUMENTS.pad,
+    bass: 'whole',
+    drums: ['crash', 'rockFill'],
+  });
   w.part({ ...verse, section: VERSE1A, lead: REED, drums: n(8, 'shuffle', 'rockFill') });
   w.part({ ...verse, section: VERSE1B, drums: n(8, 'shuffle', 'rockFill') });
   w.part({ ...BAND, section: CHORUS1, drums: clap(8) });
@@ -306,10 +365,29 @@ export function wholeSong(): Uint8Array {
   w.part({ ...verse, section: VERSE2A, lead: REED, drums: n(8, 'shuffle', 'rockFill') });
   w.part({ ...verse, section: VERSE2B, drums: n(12, 'shuffle', 'rockFill') });
   w.part({ ...BAND, section: LATE, drums: ['rockFill'] });
-  w.part({ ...BAND, section: BRIDGE, lead: INSTRUMENTS.brass, second: 'none', bass: 'half', comp: 'x q, r q, x q, r q', compPatch: INSTRUMENTS.strings, drums: n(8, 'march', 'rockFill') });
+  w.part({
+    ...BAND,
+    section: BRIDGE,
+    lead: INSTRUMENTS.brass,
+    second: 'none',
+    bass: 'half',
+    comp: 'x q, r q, x q, r q',
+    compPatch: INSTRUMENTS.strings,
+    drums: n(8, 'march', 'rockFill'),
+  });
   w.part({ ...REVIVAL, section: LEAP, drums: ['clapFill'] });
   w.part({ ...REVIVAL, section: FINAL, drums: clap(8) });
   w.part({ ...REVIVAL, section: FINAL2, drums: clap(8) });
-  w.part({ ...REVIVAL, section: OUTRO, lead: FLUTE, up: 12, second: 'none', comp: 'x w', compPatch: INSTRUMENTS.strings, drums: ['soft', 'soft', 'soft', 'none'], drumVel: 60 });
+  w.part({
+    ...REVIVAL,
+    section: OUTRO,
+    lead: FLUTE,
+    up: 12,
+    second: 'none',
+    comp: 'x w',
+    compPatch: INSTRUMENTS.strings,
+    drums: ['soft', 'soft', 'soft', 'none'],
+    drumVel: 60,
+  });
   return w.cmf();
 }

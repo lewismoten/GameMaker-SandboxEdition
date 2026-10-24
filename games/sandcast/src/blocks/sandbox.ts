@@ -1,21 +1,34 @@
 // The sandbox itself: sand floors, the wooden frame and the lawn around it, the toy chest,
 // and the dunes Teddy digs through with his shovel (dune -> dune1 -> sand, each touch
 // spending a shovel counter and the second one paying out a scoop of sand).
-import { GRASS, OCHRE, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
+import { GRASS, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
+import { drawTinHeart } from '../../../kit/tinHeart';
+import { drawEasterEgg } from '../../../kit/easterEgg';
 import { CTR } from '../rules';
-import { Pixels, bevel, pebbles, ripples, rng, sandTexture, shade, tile } from '../art/draw';
+import { Pixels, bevel, ripples, rng, sandTexture, shade, tile } from '../art/draw';
 import { SOLID, bg, sand } from './common';
 
 export function addSandbox(): void {
   // ---------------------------------------------------------------- sand floors
   bg.add('sand0', sand(11));
   bg.add('sand1', ripples(sand(12), 3));
-  bg.add('sand2', pebbles(sand(13), 5, 2));
-  bg.add('sand3', sand(14));
-  // Packed courtyard sand inside the castles: pressed squares.
+  // Blocks 2 and 3 were two more sand floors (pebbles, and a plain one like sand0); the floors
+  // mix sand0 and sand1 now, and the two slots hold the keepsakes: a tin heart and a painted
+  // Easter egg, each lying on the sand, a few points, gone when touched, no sound of their own.
+  bg.add('tinHeart', drawTinHeart(sand(11), { ink: STEEL[0], tin: [STEEL[3], STEEL[5], STEEL[6]], white: STEEL[7], dark: STEEL[1] }), {
+    score: 100,
+    touch: 'sand0',
+  });
+  bg.add(
+    'easterEgg',
+    drawEasterEgg(sand(11), { ink: WATER[0], shell: WATER.slice(5, 9), paint: [PINK[1], PINK[2]], accent: YELLOW[4], white: STEEL[7] }, 'dots'),
+    { score: 50, touch: 'sand0' },
+  );
+  // Packed courtyard sand inside the castles: pressed squares, a shade darker than the sand
+  // outside so the walls and towers stand out against the courtyard.
   bg.add(
     'court',
-    sandTexture(21, 6, SAND, 0.14).map((x, y, c) => (x % 10 === 0 || y % 10 === 0 ? SAND[5] : x % 10 === 1 || y % 10 === 1 ? SAND[7] : c)),
+    sandTexture(21, 5, SAND, 0.14).map((x, y, c) => (x % 10 === 0 || y % 10 === 0 ? SAND[4] : x % 10 === 1 || y % 10 === 1 ? SAND[6] : c)),
   );
   // Damp sand (dark): paths, beaches.
   bg.add('damp', sandTexture(22, 3, OCHRE, 0.2));
@@ -108,5 +121,5 @@ export function addSandbox(): void {
     return p;
   }
   bg.add('dune', dune(0), { solid: SOLID, effect: CTR.shovel, eamt: -1, touch: 'dune1' });
-  bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, touch: 'sand2' });
+  bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, touch: 'sand1' });
 }

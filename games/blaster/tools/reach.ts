@@ -1,0 +1,43 @@
+// Flood-fills every leg from its start over cells that aren't solid blocks, and reports any
+// pickup or way out the ship can't reach (scrolling strips run 16 columns wide):
+//   cd web && npx vite-node ../games/blaster/tools/reach.ts
+import { STAGES } from '../src/stages/stages';
+import { buildLeg, startOf, type Leg } from '../src/stages/stage';
+import { MLEN, MWID } from '../../../web/src/formats/map';
+import { PICKUPS } from '../src/blocks/tiles';
+import { X0 } from '../src/stages/mapkit';
+
+function audit(l: Leg): string[] {
+  const b = buildLeg(l);
+  const solid = (x: number, y: number) => x < X0 || x > X0 + 15 || y < 0 || y >= MWID || (b.bbl[b.map.blocks[y * MLEN + x]].solid ?? 0) !== 0;
+  const seen = new Set<number>();
+  const s = startOf(l);
+  const todo = [[s.x, s.y]];
+  while (todo.length) {
+    const [x, y] = todo.pop()!;
+    const k = y * MLEN + x;
+    if (seen.has(k) || solid(x, y)) continue;
+    seen.add(k);
+    todo.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+  }
+  const out: string[] = [];
+  const names = l.kit.bs.names;
+  for (let y = 0; y < MWID; y++)
+    for (let x = X0; x <= X0 + 15; x++) {
+      const n = names[b.map.blocks[y * MLEN + x]];
+      if ((PICKUPS as readonly string[]).includes(n) && !seen.has(y * MLEN + x)) out.push(`${n} at ${x},${y} unreachable`);
+    }
+  if (!l.grid.links.some((p) => seen.has(p.y * MLEN + p.x))) out.push('no way out reachable');
+  return out;
+}
+
+let bad = 0;
+for (const make of STAGES) {
+  const st = make();
+  for (const l of [...st.legs, ...(st.side ? [st.side.room] : [])]) {
+    const r = audit(l);
+    bad += r.length;
+    console.log(`${l.file} ${l.title}: ${r.length ? r.join('; ') : 'every pickup and the way out reachable'}`);
+  }
+}
+if (bad) throw new Error(`${bad} reachability problems`);

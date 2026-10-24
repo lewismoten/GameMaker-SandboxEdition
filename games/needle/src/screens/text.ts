@@ -24,7 +24,7 @@ export const SONG_CREDIT = "lyrics shaped by ChatGPT from Lewis Moten's prompts;
 export const STORY = [
   page([
     "I was mindin' my humps by the",
-    'city gate, chewin\' my cud,',
+    "city gate, chewin' my cud,",
     "ponderin' fate. Then came a",
     'rich man, all gold and pride,',
     'said he kept the law - every',
@@ -50,7 +50,7 @@ export const STORY = [
     'his saddle, his fancy shoes',
     `and ${GOLD_START} gold coins in the bags.`,
     '',
-    'Was He talkin\' about you?',
+    "Was He talkin' about you?",
     'Your double-wide stride?',
     '',
     'Only one way to find out.',
@@ -60,7 +60,7 @@ export const STORY = [
 export const INSTRUCTIONS = [
   page([
     'Give the gold away, slim down',
-    "on the spiritual side, and go",
+    'on the spiritual side, and go',
     'through the eye of a needle.',
     '',
     'LEFT/RIGHT or A D walk. UP or',
@@ -86,7 +86,8 @@ export const INSTRUCTIONS = [
     'one grace to open, then you',
     'crawl through on your knees.',
     `The eye of the needle takes`,
-    `${EYE_GRACE} graces. Keep enough!`,
+    `${EYE_GRACE} graces, but it blinks:`,
+    'go in while it is wide open.',
     '',
     'THREAD: spools in the shop.',
     'A frayed thread takes a spool',
@@ -96,7 +97,7 @@ export const INSTRUCTIONS = [
   page([
     'Sandstorms blow you back:',
     'wait out the gusts behind a',
-    'boulder. The Spirit\'s',
+    "boulder. The Spirit's",
     'updraft lifts you up.',
     '',
     'You have no way to fight. Hop',
@@ -159,7 +160,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -221,7 +222,7 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for ${price}: you get
-  a tape of the song and a
+  a camel sticker and a
   sewing needle big enough for
   a camel (almost).
   Send a check (US funds) to:
@@ -234,7 +235,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

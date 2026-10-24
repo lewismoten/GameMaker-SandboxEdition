@@ -12,6 +12,7 @@
 // algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
+import { uploadChecklist } from '../../widgets/uploadChecklist';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
@@ -79,7 +80,10 @@ registerEditor(['gam'], (host, project, file) => {
     else draw();
   });
   // small, so the toolbar keeps to one line
-  for (const [b, name] of [[undo.undoBtn, 'Undo'], [undo.redoBtn, 'Redo']] as const) {
+  for (const [b, name] of [
+    [undo.undoBtn, 'Undo'],
+    [undo.redoBtn, 'Redo'],
+  ] as const) {
     b.textContent = name === 'Undo' ? '↶' : '↷';
     b.setAttribute('aria-label', name);
     b.classList.add('grator-undo');
@@ -284,7 +288,10 @@ registerEditor(['gam'], (host, project, file) => {
     fit();
   }
   /** A tool's symbol and name; on a narrow board only the symbol shows (the name stays its label). */
-  const toolFace = (symbol: string, name: string) => [h('span', { class: 'grator-sym', 'aria-hidden': 'true' }, symbol), h('span', { class: 'grator-label' }, name)];
+  const toolFace = (symbol: string, name: string) => [
+    h('span', { class: 'grator-sym', 'aria-hidden': 'true' }, symbol),
+    h('span', { class: 'grator-label' }, name),
+  ];
   function renderTools(): void {
     const crowded = overlapping();
     const saved = gapSavings(game);
@@ -335,7 +342,11 @@ registerEditor(['gam'], (host, project, file) => {
       undo.undoBtn,
       undo.redoBtn,
       h('span', { class: 'grator-spacer' }),
-      h('button', { title: 'Download a picture of all the scenes and links', 'aria-label': 'Download PNG', onclick: () => void exportPng() }, ...toolFace('⬇', 'PNG')),
+      h(
+        'button',
+        { title: 'Download a picture of all the scenes and links', 'aria-label': 'Download PNG', onclick: () => void exportPng() },
+        ...toolFace('⬇', 'PNG'),
+      ),
     );
   }
   /** Zoom controls float over the board's corner, like a map's. */
@@ -430,7 +441,16 @@ registerEditor(['gam'], (host, project, file) => {
   // ← widens the panel (the handle moves left), → narrows it; Page Up/Down take bigger steps, Home is narrowest and End widest
   handle.addEventListener('keydown', (e) => {
     const w = Math.round(side.getBoundingClientRect().width);
-    const next: Record<string, number> = { ArrowLeft: w + 20, ArrowUp: w + 20, ArrowRight: w - 20, ArrowDown: w - 20, PageUp: w + 80, PageDown: w - 80, Home: 160, End: 640 };
+    const next: Record<string, number> = {
+      ArrowLeft: w + 20,
+      ArrowUp: w + 20,
+      ArrowRight: w - 20,
+      ArrowDown: w - 20,
+      PageUp: w + 80,
+      PageDown: w - 80,
+      Home: 160,
+      End: 640,
+    };
     if (!(e.key in next)) return;
     e.preventDefault();
     setSideW(Math.max(160, Math.min(640, next[e.key])));
@@ -519,10 +539,7 @@ registerEditor(['gam'], (host, project, file) => {
       if (sideBody.firstChild !== panel || sideBody.childNodes.length !== 1) clear(sideBody, panel);
       return;
     }
-    clear(
-      sideBody,
-      now === 'screens' ? screensGrid(screens, screenOf, pick, edit) : songsList(songs, (f) => project.files.has(f), songButton, pick),
-    );
+    clear(sideBody, now === 'screens' ? screensGrid(screens, screenOf, pick, edit) : songsList(songs, (f) => project.files.has(f), songButton, pick));
   }
 
   // ---- scenes --------------------------------------------------------------------------
@@ -623,6 +640,25 @@ registerEditor(['gam'], (host, project, file) => {
           (v) => ((s.desc = v.slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
           { maxLength: SCENEDESCLEN - 1 },
         ),
+        kind === 'start'
+          ? h(
+              'div',
+              { class: 'toolbar' },
+              h(
+                'button',
+                { onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the level check can tell' },
+                '☑ Before you upload…',
+              ),
+              h(
+                'button',
+                {
+                  onclick: () => void import('../../widgets/walkDialog').then((m) => m.walkDialog(project)),
+                  title: 'Let a bot play the whole game and keep it as a walkthrough to watch or save as a video',
+                },
+                '🤖 Make a walkthrough…',
+              ),
+            )
+          : null,
         kind === 'adventure' || kind === 'unused'
           ? h(
               'div',
@@ -699,9 +735,7 @@ registerEditor(['gam'], (host, project, file) => {
             ),
           )
         : null,
-      kind === 'end'
-        ? null
-        : linksPanel({ project, game, scene: selected, sceneOptions, changed, rerender: renderPanel }, s, kind),
+      kind === 'end' ? null : linksPanel({ project, game, scene: selected, sceneOptions, changed, rerender: renderPanel }, s, kind),
     );
   }
 

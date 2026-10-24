@@ -14,8 +14,20 @@ export const L12: RoomSpec = {
   song: 'cistern',
   card: ['The glass is very clean.', 'The downpipe goes down.', 'Two latches. Two spoons.'],
   legend: {
-    '1': { mon: (b) => KINDS.pin(b, [[4, 0, 2], [-4, 0, 2]]) },
-    '2': { mon: (b) => KINDS.knife(b, [[0, 2, 2], [0, -2, 2]]) },
+    '1': {
+      mon: (b) =>
+        KINDS.pin(b, [
+          [4, 0, 2],
+          [-4, 0, 2],
+        ]),
+    },
+    '2': {
+      mon: (b) =>
+        KINDS.knife(b, [
+          [0, 2, 2],
+          [0, -2, 2],
+        ]),
+    },
   },
   rows: [
     '####################################',

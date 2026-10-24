@@ -31,7 +31,9 @@ function stove(p: Pixels, glow = 0): void {
   p.rect(SX, 44, SW, GAP_TOP - 44, c('ink', 0)).rect(SX + 2, 44, SW - 4, GAP_TOP - 46, iron(1));
   for (const bx of [SX + 30, SX + 80]) p.rect(bx, 32, 30, 4, iron(0)).rect(bx + 4, 30, 22, 2, iron(1));
   // oven door with a brass handle, a firebox with a glow
-  p.rect(SX + 12, 54, 74, 60, iron(0)).rect(SX + 14, 56, 70, 56, iron(2)).rect(SX + 20, 62, 58, 2, c('brass', 3));
+  p.rect(SX + 12, 54, 74, 60, iron(0))
+    .rect(SX + 14, 56, 70, 56, iron(2))
+    .rect(SX + 20, 62, 58, 2, c('brass', 3));
   p.rect(SX + 98, 60, 44, 40, iron(0)).rect(SX + 100, 62, 40, 36, c('ink', 0));
   for (let i = 0; i < 4; i++) p.rect(SX + 104 + i * 9, 66, 4, 28, glow ? c('orange', 2 + (i % 2)) : c('red', 1));
   micro(p, SX + 20, 120, 'E. BAKER  1777', c('brass', 3));
@@ -69,15 +71,23 @@ export function stoveInFli(): Uint8Array {
   leo(first, false);
   say(first, ['The sugar hid under the stove', 'when the tax man came. In 1773.']);
   reel.fadeIn(first, 8).add(first, 22);
-  reel.frame(bg, (p) => {
-    leo(p, false);
-    say(p, ['Doc Leo will not fit under there.', '']);
-  }, 18);
-  reel.frame(bg, (p) => {
-    leo(p, true);
-    headline(p, 20, '!', 3, c('yellow', 3), c('red', 2), 128);
-    say(p, ['Sir Reginald Cluckington III', 'will.']);
-  }, 20);
+  reel.frame(
+    bg,
+    (p) => {
+      leo(p, false);
+      say(p, ['Doc Leo will not fit under there.', '']);
+    },
+    18,
+  );
+  reel.frame(
+    bg,
+    (p) => {
+      leo(p, true);
+      headline(p, 20, '!', 3, c('yellow', 3), c('red', 2), 128);
+      say(p, ['Sir Reginald Cluckington III', 'will.']);
+    },
+    20,
+  );
   // the toss: up out of Doc Leo's hand and down to the gap
   away = true;
   const from = { x: 112, y: 64 };
@@ -104,12 +114,16 @@ export function stoveInFli(): Uint8Array {
       say(p, ['In he goes.', '']);
     });
   }
-  reel.frame(bg, (p) => {
-    leo(p, false);
-    // two little eyes in the dark
-    p.rect(SX + 70, GAP_TOP + 8, 2, 2, c('yellow', 4)).rect(SX + 76, GAP_TOP + 8, 2, 2, c('yellow', 4));
-    say(p, ['In he goes.', '']);
-  }, 14);
+  reel.frame(
+    bg,
+    (p) => {
+      leo(p, false);
+      // two little eyes in the dark
+      p.rect(SX + 70, GAP_TOP + 8, 2, 2, c('yellow', 4)).rect(SX + 76, GAP_TOP + 8, 2, 2, c('yellow', 4));
+      say(p, ['In he goes.', '']);
+    },
+    14,
+  );
   reel.fadeOut(8);
   return reel.fli(5);
 }
@@ -146,19 +160,27 @@ export function stoveOutFli(): Uint8Array {
     { x: SX - 64, y: FLOOR + 1, s: 'squash' },
   ];
   hops.forEach((h, i) => {
-    reel.frame(bg, (p) => {
-      leo(p, false);
-      big(p, jug, SX + 12, FLOOR + 2, false, 2);
-      big(p, h.s === 'squash' ? reggieBounce(false) : reggieBounce(true), h.x, h.y);
-      headline(p, 8, 'SQUEAK!', 3, c('yellow', 3), c('red', 2), 220);
-      say(p, ['Sir Reginald Cluckington III,', 'with the sugar. Untaxed.']);
-    }, i % 4 === 0 ? 3 : 2);
+    reel.frame(
+      bg,
+      (p) => {
+        leo(p, false);
+        big(p, jug, SX + 12, FLOOR + 2, false, 2);
+        big(p, h.s === 'squash' ? reggieBounce(false) : reggieBounce(true), h.x, h.y);
+        headline(p, 8, 'SQUEAK!', 3, c('yellow', 3), c('red', 2), 220);
+        say(p, ['Sir Reginald Cluckington III,', 'with the sugar. Untaxed.']);
+      },
+      i % 4 === 0 ? 3 : 2,
+    );
   });
-  reel.frame(bg, (p) => {
-    leo(p, true);
-    big(p, jug, 100, FLOOR + 2, false, 2);
-    say(p, ['Not bad for a chicken.', 'Squeak.']);
-  }, 26);
+  reel.frame(
+    bg,
+    (p) => {
+      leo(p, true);
+      big(p, jug, 100, FLOOR + 2, false, 2);
+      say(p, ['Not bad for a chicken.', 'Squeak.']);
+    },
+    26,
+  );
   reel.fadeOut(8);
   return reel.fli(5);
 }

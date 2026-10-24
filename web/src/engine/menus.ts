@@ -16,7 +16,17 @@ import { PALETTE_SIZE } from '../formats/palette';
  * opened mid-level, where this port's keyboard also queues the keys gameplay used
  * (PLAYGAME's own keyboard interrupt kept those out of the BIOS buffer).
  */
-export async function gVertMenu(m: Machine, x: number, y: number, dy: number, count: number, color: number, idleSeconds = Infinity, choice = 1, flushKeys = true): Promise<number> {
+export async function gVertMenu(
+  m: Machine,
+  x: number,
+  y: number,
+  dy: number,
+  count: number,
+  color: number,
+  idleSeconds = Infinity,
+  choice = 1,
+  flushKeys = true,
+): Promise<number> {
   // Rows are 1-based, so the marker for row c sits at y - 8 + c*dy, as in the C.
   const rowY = (c: number) => y - 8 + c * dy;
   let prev = m.screen.getCol(x, rowY(choice));

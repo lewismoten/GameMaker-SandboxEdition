@@ -42,7 +42,9 @@ const TRUMPET = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x18, carLevel: 0x
 /** The singer, muted for the patter: darker, shorter. */
 const MUTED = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1f, carLevel: 0x02, modAD: 0x83, carAD: 0xa6, modSR: 0x37, carSR: 0x38, feedback: 0x0c });
 /** The trombone an octave under the trumpet in the choruses (its vibrato twin, so the two beat). */
-const TROMBONE = detuned(sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1a, carLevel: 0x00, modAD: 0x62, carAD: 0x84, modSR: 0x15, carSR: 0x16, feedback: 0x0c }));
+const TROMBONE = detuned(
+  sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1a, carLevel: 0x00, modAD: 0x62, carAD: 0x84, modSR: 0x15, carSR: 0x16, feedback: 0x0c }),
+);
 /** The brass section's stabs and hits (the comping voices in the choruses). */
 const BRASS = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1b, carLevel: 0x04, modAD: 0x85, carAD: 0xa5, modSR: 0x25, carSR: 0x26, feedback: 0x0c });
 /** The brass swelling up on a held chord ("I bonded... with the emergency... exit sign"). */
@@ -50,9 +52,31 @@ const SWELL = sweep(BRASS, 8, { mod: 34, car: 22 }, { mod: 22, car: 3 });
 /** Stride piano: a bright, honky pluck. */
 const PIANO = sbi({ modChar: 0x01, carChar: 0x11, modLevel: 0x1c, carLevel: 0x03, modAD: 0xf3, carAD: 0xf2, modSR: 0x44, carSR: 0x55, feedback: 0x0a });
 /** The haunted house's pipe organ. */
-const PIPES = sbi({ modChar: 0x22, carChar: 0x21, modLevel: 0x16, carLevel: 0x03, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, carWave: 1, feedback: 0x08 });
+const PIPES = sbi({
+  modChar: 0x22,
+  carChar: 0x21,
+  modLevel: 0x16,
+  carLevel: 0x03,
+  modAD: 0xf0,
+  carAD: 0xf0,
+  modSR: 0x0f,
+  carSR: 0x0f,
+  carWave: 1,
+  feedback: 0x08,
+});
 /** Strings for the bridge: a soft-edged pad. */
-const STRINGS = sbi({ modChar: 0x61, carChar: 0x61, modLevel: 0x1e, carLevel: 0x04, modAD: 0x53, carAD: 0x63, modSR: 0x06, carSR: 0x07, modWave: 1, feedback: 0x08 });
+const STRINGS = sbi({
+  modChar: 0x61,
+  carChar: 0x61,
+  modLevel: 0x1e,
+  carLevel: 0x04,
+  modAD: 0x53,
+  carAD: 0x63,
+  modSR: 0x06,
+  carSR: 0x07,
+  modWave: 1,
+  feedback: 0x08,
+});
 /** Celesta: the sneaky pizzicato in the werewolf verse and the "mild scares" twinkle. */
 const CELESTA = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x1c, carLevel: 0x00, modAD: 0xf6, carAD: 0xf4, modSR: 0x34, carSR: 0x25, feedback: 0x06 });
 /** The tuba: oompah. */
@@ -420,7 +444,14 @@ function verse(a: Arranger, s: Section, vel = 96): void {
 }
 
 function chorus(a: Arranger, s: Section, o: { vel?: number; shift?: number; comp?: Comp } = {}): void {
-  a.section(s, { comp: o.comp ?? 'brass', sing: 'brass', bass: 'walk', drums: [...many(s.tune.length - 1, 'show', 'push'), 'fill'], vel: o.vel ?? 106, shift: o.shift });
+  a.section(s, {
+    comp: o.comp ?? 'brass',
+    sing: 'brass',
+    bass: 'walk',
+    drums: [...many(s.tune.length - 1, 'show', 'push'), 'fill'],
+    vel: o.vel ?? 106,
+    shift: o.shift,
+  });
 }
 
 /** Bars of the band alone. */
@@ -444,7 +475,10 @@ export function titleSong(): Uint8Array {
   a.toccata();
   a.roll(1).hit('C');
   bigChorus(a);
-  a.section({ name: 'tag', chords: ['C', 'C'], tune: ['r h, G4 e, G4 e, C5 e, C5 e', '~C5 h, r h'] }, { comp: 'swell', sing: 'brass', bass: 'hold', drums: ['half', 'none'], vel: 104 });
+  a.section(
+    { name: 'tag', chords: ['C', 'C'], tune: ['r h, G4 e, G4 e, C5 e, C5 e', '~C5 h, r h'] },
+    { comp: 'swell', sing: 'brass', bass: 'hold', drums: ['half', 'none'], vel: 104 },
+  );
   a.howl(a.bar * 4 - 3.5, 90);
   return a.cmf();
 }
@@ -562,7 +596,17 @@ export function wholeSong(): Uint8Array {
 /** Every song, by file name, for the build and the preview. */
 export function allSongs(): Record<string, Uint8Array> {
   const levels = levelSongs();
-  return { title: titleSong(), story: storySong(), foyer: levels[0], parade: levels[1], webs: levels[2], exit: levels[3], won: wonSong(), lost: lostSong(), menu: wholeSong() };
+  return {
+    title: titleSong(),
+    story: storySong(),
+    foyer: levels[0],
+    parade: levels[1],
+    webs: levels[2],
+    exit: levels[3],
+    won: wonSong(),
+    lost: lostSong(),
+    menu: wholeSong(),
+  };
 }
 
 export { voicing, root };

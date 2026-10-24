@@ -15,7 +15,12 @@ import { propSprite } from '../sprites/klown';
 function pawArrow(dir: 'up' | 'down' | 'left' | 'right'): Pixels {
   const ink = P.c('gwinn', 1);
   const p = new Pixels(20, 20, 255);
-  const paw = (x: number, y: number) => p.rect(x, y + 1, 3, 2, ink).set(x - 1, y, ink).set(x + 1, y - 1, ink).set(x + 3, y, ink);
+  const paw = (x: number, y: number) =>
+    p
+      .rect(x, y + 1, 3, 2, ink)
+      .set(x - 1, y, ink)
+      .set(x + 1, y - 1, ink)
+      .set(x + 3, y, ink);
   const pts: [number, number][] =
     dir === 'right'
       ? [
@@ -50,8 +55,8 @@ function pawArrow(dir: 'up' | 'down' | 'left' | 'right'): Pixels {
 
 export function mazeBeasts() {
   const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('rat')) b.pic(name, px, { hp: -5 });
-  for (const name of ['crow1', 'crow2'] as const) b.pic(name, FARM[name], { hp: -5 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('rat')) b.pic(name, px, { hp: -8 });
+  for (const name of ['crow1', 'crow2'] as const) b.pic(name, FARM[name], { hp: -8 });
   for (const d of ['up', 'down', 'left', 'right'] as const) b.pic(`paws_${d}`, pawArrow(d));
   b.pic('stick', propSprite('stick'), { effect: CTR.clues, eamt: 1, score: 500 });
   b.pic('stickAir', propSprite('stick'));

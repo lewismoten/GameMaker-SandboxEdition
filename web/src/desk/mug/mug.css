@@ -220,99 +220,6 @@
   margin: 0;
 }
 
-/* sublimation order form: a row a picture, a column a mug size */
-.subl-order {
-  width: 100%;
-  margin: 12px 0 8px;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.subl-order caption {
-  margin-bottom: 6px;
-  color: #ffd23f;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.subl-order thead th {
-  padding: 0 2px 4px;
-  color: rgba(246, 239, 224, 0.8);
-  font-weight: 600;
-  line-height: 1.15;
-  vertical-align: bottom;
-}
-
-.subl-order thead th:first-child {
-  text-align: left;
-}
-
-.subl-order tbody tr {
-  border-top: 1px solid rgba(246, 239, 224, 0.12);
-}
-
-.subl-order tbody th {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 4px 4px 0;
-  font-weight: 600;
-  text-align: left;
-}
-
-.subl-order tbody th img {
-  flex: none;
-  width: 64px;
-  height: auto;
-  image-rendering: pixelated;
-  background: #000;
-}
-
-.subl-order td {
-  padding: 2px;
-  text-align: center;
-}
-
-.subl-order input {
-  width: 3.4em;
-  padding: 4px 2px;
-  border: 1px solid #8a7a5c;
-  border-radius: 5px;
-  background: #f3ead6;
-  color: #2a1d14;
-  font:
-    700 13px system-ui,
-    sans-serif;
-  text-align: center;
-}
-
-.subl-order input:not(:placeholder-shown) {
-  border-color: #ffd23f;
-  background: #fff3c4;
-}
-
-.subl-order tfoot th,
-.subl-order tfoot td {
-  padding-top: 6px;
-  border-top: 2px solid rgba(246, 239, 224, 0.4);
-  color: #ffe9a8;
-  font-weight: 700;
-  text-align: center;
-}
-
-.subl-order tfoot th {
-  text-align: left;
-}
-
-.mugv .subl-png {
-  margin-left: 6px;
-  padding: 2px 8px;
-  font-size: 12px;
-}
-
 /* sublimation sheet */
 .subl {
   z-index: 61;
@@ -355,42 +262,6 @@
     sans-serif;
 }
 
-.subl-design {
-  display: grid;
-  grid-template-columns: 96px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.subl-design b {
-  display: block;
-  font-size: 13px;
-}
-
-.subl-design small {
-  display: block;
-  color: rgba(246, 239, 224, 0.7);
-  font-size: 11px;
-}
-
-.subl-qty {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mugv .subl-qty button {
-  width: 28px;
-  padding: 3px 0;
-}
-
-.subl-qty output {
-  min-width: 1.4em;
-  text-align: center;
-  font-weight: 700;
-}
-
 .subl-status {
   min-height: 2.8em;
   color: #ffe9a8;
@@ -416,7 +287,92 @@
   padding-left: 18px;
 }
 
-.subl-pages {
+.mugv-bar h2 {
+  margin: 0;
+  font:
+    700 17px Georgia,
+    serif;
+}
+
+.subl-actual {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-left: 4px solid #ffd23f;
+  background: rgba(255, 210, 63, 0.12);
+}
+
+.subl-row select,
+.subl-mug select,
+.subl-mug input {
+  max-width: 100%;
+  padding: 5px;
+  color: #2a1d14;
+  background: #f3ead6;
+  border-radius: 5px;
+  font:
+    13px system-ui,
+    sans-serif;
+}
+
+.subl-check {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 12px;
+}
+
+.subl-mugs {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.subl-mug {
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid rgba(200, 184, 150, 0.4);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.subl-mug-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subl-mug-head select {
+  flex: 1;
+  min-width: 0;
+}
+
+.mugv .subl-mug-head button {
+  padding: 4px 9px;
+}
+
+.subl-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.subl-mug label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.subl-sides select {
+  width: 100%;
+}
+
+.subl-mug > label {
+  margin-top: 6px;
+}
+
+.subl-preview {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -426,21 +382,49 @@
   padding: 18px;
 }
 
-.subl-pages figure {
+.subl-preview figure {
   margin: 0;
   text-align: center;
 }
 
-.subl-page {
+.subl-views {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  width: min(500px, 100%);
+}
+
+.subl-views > div span {
   display: block;
-  width: min(420px, 80vw);
+  color: #ffd23f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.subl-3d {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.subl-views figcaption {
+  grid-column: 1 / -1;
+}
+
+.subl-sheet svg {
+  display: block;
+  width: min(460px, 100%);
   height: auto;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
 }
 
-.subl-pages figcaption {
+.subl-page-fig {
+  width: min(460px, 100%);
+}
+
+.subl-preview figcaption {
   margin-top: 6px;
-  color: rgba(246, 239, 224, 0.7);
+  color: rgba(246, 239, 224, 0.75);
   font-size: 12px;
 }
 
@@ -459,6 +443,16 @@
 
   .mugv-side,
   .subl-side {
+    overflow: visible;
+  }
+
+  /* one scroll for the whole composer: the previews follow the controls at their full height */
+  .subl-side,
+  .subl-preview {
+    flex: none;
+  }
+
+  .subl-preview {
     overflow: visible;
   }
 }

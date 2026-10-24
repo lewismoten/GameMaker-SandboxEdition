@@ -13,12 +13,48 @@ export interface Theme {
 }
 
 export const THEMES: Record<string, Theme> = {
-  nowish: { bg: [[40, 70, 44], [16, 30, 22]], ribbon: [46, 110, 60] },
-  laterburg: { bg: [[40, 46, 96], [14, 16, 40]], ribbon: [150, 34, 40] },
-  harbor: { bg: [[30, 76, 110], [10, 28, 52]], ribbon: [30, 80, 140] },
-  falls: { bg: [[70, 50, 90], [24, 16, 36]], ribbon: [110, 60, 130] },
-  wild: { bg: [[54, 76, 40], [20, 30, 16]], ribbon: [120, 90, 40] },
-  dark: { bg: [[40, 24, 44], [10, 6, 14]], ribbon: [90, 20, 30] },
+  nowish: {
+    bg: [
+      [40, 70, 44],
+      [16, 30, 22],
+    ],
+    ribbon: [46, 110, 60],
+  },
+  laterburg: {
+    bg: [
+      [40, 46, 96],
+      [14, 16, 40],
+    ],
+    ribbon: [150, 34, 40],
+  },
+  harbor: {
+    bg: [
+      [30, 76, 110],
+      [10, 28, 52],
+    ],
+    ribbon: [30, 80, 140],
+  },
+  falls: {
+    bg: [
+      [70, 50, 90],
+      [24, 16, 36],
+    ],
+    ribbon: [110, 60, 130],
+  },
+  wild: {
+    bg: [
+      [54, 76, 40],
+      [20, 30, 16],
+    ],
+    ribbon: [120, 90, 40],
+  },
+  dark: {
+    bg: [
+      [40, 24, 44],
+      [10, 6, 14],
+    ],
+    ribbon: [90, 20, 30],
+  },
 };
 
 /** Plum ink for the words: Game-Maker prints text pages in the entry nearest purple. */
@@ -113,7 +149,7 @@ export function talkPage(name: string, portrait: Canvas, theme: Theme, place = '
   const fx = 4;
   const fy = 0;
   cv.rrect(fx + 2, fy + 3, fw, fh, 6, [0, 0, 0]);
-  cv.rrect(fx, fy, fw, fh, 6, (x, y) => mix([255, 226, 120], [150, 100, 30], clamp01(((x - fx) + (y - fy)) / 80)));
+  cv.rrect(fx, fy, fw, fh, 6, (x, y) => mix([255, 226, 120], [150, 100, 30], clamp01((x - fx + (y - fy)) / 80)));
   cv.rrect(fx + 3, fy + 3, fw - 6, fh - 6, 4, (_x, y) => mix(mix(theme.bg[0], [255, 255, 255], 0.25), theme.bg[0], clamp01((y - fy) / fh)));
   const bx = Math.round(fx + fw / 2 - big.w / 2);
   const by = fy + 4;

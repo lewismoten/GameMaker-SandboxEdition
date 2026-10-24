@@ -13,7 +13,7 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
     return undefined;
   }
   const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
-  return { title, gam: p.record.gam, files: async () => p.files, project: true };
+  return { title, gam: p.record.gam, files: async () => p.files, project: true, companion: () => p.record.companion };
 }
 
 /** Opens the chooser for a game of yours. */
@@ -29,5 +29,9 @@ export function projectDownloadButton(id: string, title: string): HTMLElement {
 
 /** The ⋯ More menu's item. */
 export function projectDownloadItem(id: string): HTMLElement {
-  return h('button', { 'aria-haspopup': 'dialog', onclick: () => void downloadProject(id), title: 'Download it to play on Windows, a Mac, Linux, the web or DOS, or its files' }, 'Download…');
+  return h(
+    'button',
+    { 'aria-haspopup': 'dialog', onclick: () => void downloadProject(id), title: 'Download it to play on Windows, a Mac, Linux, the web or DOS, or its files' },
+    'Download…',
+  );
 }

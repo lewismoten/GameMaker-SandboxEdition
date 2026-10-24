@@ -15,10 +15,22 @@ import { MB, CB } from './src/sprites/sprites';
 import { buildMonsters } from './src/characters/monsters';
 import { buildCharacter } from './src/characters/character';
 import { buildSounds } from './src/sound/sounds';
-import { BURROW, DAY, DUSK } from './src/art/palette';
+import { BURROW, DAY, DUSK, MOAT } from './src/art/palette';
 import * as levels from './src/levels/levels';
 import { buildGame } from './src/game';
-import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, snapFli, titleScreen, wonFli } from './src/screens/screens';
+import {
+  filesScreen,
+  gif,
+  introFli,
+  zoomiesFli,
+  lostScreen,
+  menuScreen,
+  messageScreen,
+  scoreScreen,
+  snapFli,
+  titleScreen,
+  wonFli,
+} from './src/screens/screens';
 import { sysopFli } from './src/screens/sysop';
 import { CREDITS, DUG, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
@@ -37,6 +49,7 @@ disk.put('sandcast.snd', buildSounds());
 disk.put('sandcast.pal', DAY);
 disk.put('burrow.pal', BURROW);
 disk.put('dusk.pal', DUSK);
+disk.put('moat.pal', MOAT);
 // the pass-through scene's palette (Up from the dig, src/game.ts): all black, so its map never shows
 disk.put('dark.pal', new Uint8Array(768));
 
@@ -85,7 +98,7 @@ lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
 const L = {
   hub: { name: 'sandbox.map', desc: 'The Sandbox', map: levels.hub(), pal: 'sandcast.pal', pos: { x: 150, y: 80 } },
   keep: { name: 'keep.map', desc: 'Anthill Keep', map: levels.keep(), pal: 'sandcast.pal', pos: { x: 60, y: 120 } },
-  moat: { name: 'moat.map', desc: 'Hosewater Moat', map: levels.moat(), pal: 'sandcast.pal', pos: { x: 240, y: 120 } },
+  moat: { name: 'moat.map', desc: 'Hosewater Moat', map: levels.moat(), pal: 'moat.pal', pos: { x: 240, y: 120 } },
   lagoon: { name: 'lagoon.map', desc: 'Low Tide Lagoon', map: levels.lagoon(), pal: 'sandcast.pal', pos: { x: 240, y: 40 } },
   burrows: { name: 'burrows.map', desc: 'Beetle Burrows', map: levels.burrows(), pal: 'burrow.pal', pos: { x: 60, y: 40 } },
   patio: { name: 'patio.map', desc: "Gwinn's Nap", map: levels.patio(), pal: 'dusk.pal', pos: { x: 60, y: 160 } },
@@ -134,5 +147,5 @@ const game = buildGame(L, {
 });
 disk.put('sandcast.gam', serializeGame(game));
 disk.put('readme.txt', README);
-disk.put('license.txt', licenseText("Sandcastle Knight"));
+disk.put('license.txt', licenseText('Sandcastle Knight'));
 disk.write();

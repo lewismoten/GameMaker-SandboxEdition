@@ -49,7 +49,11 @@ export const osc = {
 };
 
 /** Renders `seconds` of a synth through an envelope (attack, decay to 0) as a .VOC. */
-export function sample(seconds: number, voice: Synth, opts: { rate?: number; attack?: number; gain?: number; envelope?: (t: number) => number } = {}): Uint8Array {
+export function sample(
+  seconds: number,
+  voice: Synth,
+  opts: { rate?: number; attack?: number; gain?: number; envelope?: (t: number) => number } = {},
+): Uint8Array {
   const rate = opts.rate ?? 11025;
   const n = Math.round(seconds * rate);
   const out = new Float32Array(n);

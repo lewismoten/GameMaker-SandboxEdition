@@ -23,17 +23,7 @@ import { showGraphic } from '../../../engine/showGraphic';
 import { normalize } from '../../../project/files';
 import { gamePreview } from '../../widgets/mediaShared';
 import { blankScreen, mediaThumb, pictureScreen, screenCanvas, textPages, TEXT_PAGE_LINES, type ScreenPicture } from '../../widgets/mediaPictures';
-import {
-  clipKind,
-  clipTiming,
-  clipWidth,
-  MAX_SLIDES,
-  moveEntry,
-  showLength,
-  type ClipFacts,
-  type ClipTiming,
-  type Then,
-} from './slideTimeline';
+import { clipKind, clipTiming, clipWidth, MAX_SLIDES, moveEntry, showLength, type ClipFacts, type ClipTiming, type Then } from './slideTimeline';
 import { timelineInput } from './timelineInput';
 
 const MEDIA_KINDS: FileKind[] = ['gif', 'fli', 'bkd', 'txt', 'lst'];
@@ -554,7 +544,13 @@ registerEditor(['lst'], (host, project, file) => {
           used.get(n) ? h('span', { class: 'sl-media-used' }, `×${used.get(n)}`) : null,
         );
       }),
-      names.length ? null : h('p', { class: 'meta sl-bin-empty' }, 'This game has no pictures, animations or text screens yet. Add one with the buttons above: from the CD’s library, from your computer, or a new text screen.'),
+      names.length
+        ? null
+        : h(
+            'p',
+            { class: 'meta sl-bin-empty' },
+            'This game has no pictures, animations or text screens yet. Add one with the buttons above: from the CD’s library, from your computer, or a new text screen.',
+          ),
     );
   };
 
@@ -640,7 +636,7 @@ registerEditor(['lst'], (host, project, file) => {
   // Other editors may add or change the files shown here.
   const off = project.onChange((n) => {
     if (n === file || input.dragging()) return;
-    if (MEDIA_KINDS.includes(clipKind(n) as FileKind)) refreshSoon();
+    if (MEDIA_KINDS.includes(clipKind(n))) refreshSoon();
   });
   let soon: ReturnType<typeof setTimeout> | undefined;
   const refreshSoon = () => {

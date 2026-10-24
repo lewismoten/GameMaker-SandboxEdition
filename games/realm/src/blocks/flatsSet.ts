@@ -49,24 +49,48 @@ export function flatsBook(bridges: [number, number][]): BlockBook {
   const book = new BlockBook('flats', { [BLK.egg]: 'egg' });
   const plain = (fn: (x: number, y: number) => RGB) => new Canvas(20, 20).shade(fn, 2);
   book.add('mud', plain(mud));
-  book.add('mud1', plain((x, y) => (speck(Math.floor(x / 3), Math.floor(y / 3), 7, 11) > 0.8 && Math.min(x, y, 20 - x, 20 - y) > 3 ? mix(mud(x, y), [240, 230, 210], 0.6) : mud(x, y))));
+  book.add(
+    'mud1',
+    plain((x, y) =>
+      speck(Math.floor(x / 3), Math.floor(y / 3), 7, 11) > 0.8 && Math.min(x, y, 20 - x, 20 - y) > 3 ? mix(mud(x, y), [240, 230, 210], 0.6) : mud(x, y),
+    ),
+  );
   book.add('weed', weed());
   addFamily(book, { layer: 'water', shader: channel, diag: true, rough: 1, seed: 71, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
   addFamily(book, { layer: 'road', shader: causeway, diag: true, rough: 0.4, seed: 73 });
   addFamily(book, { layer: 'rock', shader: reef, rough: 1.6, seed: 75, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
-  for (const [wm, rm] of bridges) book.add(`bridge:${wm}:${rm}`, paintBridge(wm, rm, (x, y) => cobble(x, y), channel), {});
-  // the low causeway: dry for twenty seconds, under water for eight
+  for (const [wm, rm] of bridges)
+    book.add(
+      `bridge:${wm}:${rm}`,
+      paintBridge(wm, rm, (x, y) => cobble(x, y), channel),
+      {},
+    );
+  // the low causeway: dry for seventeen seconds, then three seconds awash (puddles over the
+  // planks: still passable, a warning), then three under water
   const deck = (x: number, y: number): RGB => (y % 4 < 0.7 ? [86, 58, 34] : mix([150, 108, 62], [190, 146, 92], tnoise(x, y, 2.5, 20, 9)));
-  book.add('tideDry', plain(deck), { next: 'tideWet', ntime: 364 });
-  book.add('tideWet', plain((x, y) => mix(water(x, y, 6), deck(x, y), 0.25)), { solid: ALL, next: 'tideDry', ntime: 146 });
-  book.add('charger', charger(false), { solid: ALL, hp: 60, score: 50, touch: 'chargerUsed' });
+  book.add('tideDry', plain(deck), { next: 'tideDamp', ntime: 310 });
+  book.add(
+    'tideDamp',
+    plain((x, y) => (tnoise(x, y, 4, 20, 13) > 0.55 ? mix(water(x, y, 6), deck(x, y), 0.45) : deck(x, y))),
+    { next: 'tideWet', ntime: 54 },
+  );
+  book.add(
+    'tideWet',
+    plain((x, y) => mix(water(x, y, 6), deck(x, y), 0.25)),
+    { solid: ALL, next: 'tideDry', ntime: 54 },
+  );
+  book.add('charger', charger(false), { solid: ALL, hp: 30, score: 50, touch: 'chargerUsed' });
   book.add('chargerUsed', charger(true), { solid: ALL });
   book.add('sign', sign(), { solid: ALL });
-  book.add('egg', (() => {
-    const cv = plain(mud);
-    paintEgg(cv, 10, 10, 15);
-    return cv;
-  })(), { obj: 1, effect: C.egg, eamt: 1 });
+  book.add(
+    'egg',
+    (() => {
+      const cv = plain(mud);
+      paintEgg(cv, 10, 10, 15);
+      return cv;
+    })(),
+    { obj: 1, effect: C.egg, eamt: 1 },
+  );
   return book;
 }
 

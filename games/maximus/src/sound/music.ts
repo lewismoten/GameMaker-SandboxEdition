@@ -23,7 +23,8 @@ const I = {
   choir: sbi({ modChar: 0xe2, carChar: 0x61, modLevel: 0x24, carLevel: 0x00, modAD: 0x53, carAD: 0x63, modSR: 0x04, carSR: 0x05, modWave: 0, feedback: 0x0e }),
   flute: sbi({ modChar: 0x61, carChar: 0x61, modLevel: 0x30, carLevel: 0x00, modAD: 0x72, carAD: 0x73, modSR: 0x06, carSR: 0x06, feedback: 0x0e }),
   // rhythm section (single-operator drums read the modulator half)
-  kick: sbi({ modChar: 0x00, carChar: 0x00, modLevel: 0x0b, carLevel: 0x00, modAD: 0xa8, carAD: 0xd6, modSR: 0x4c, carSR: 0x4f, feedback: 0x00 }),
+  // the games' own kick (web/src/audio/oplDrumPresets.ts, Kick (punchy))
+  kick: sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x0e, carLevel: 0x00, modAD: 0xf8, carAD: 0xf7, modSR: 0x77, carSR: 0x57, feedback: 0x08 }),
   snare: sbi({ modChar: 0x0c, carChar: 0x00, modLevel: 0x00, carLevel: 0x00, modAD: 0xf8, carAD: 0x00, modSR: 0xb5, carSR: 0x00, feedback: 0x00 }),
   tom: sbi({ modChar: 0x04, carChar: 0x00, modLevel: 0x00, carLevel: 0x00, modAD: 0xf7, carAD: 0x00, modSR: 0xb5, carSR: 0x00, feedback: 0x00 }),
   cymbal: sbi({ modChar: 0x01, carChar: 0x00, modLevel: 0x02, carLevel: 0x00, modAD: 0xf5, carAD: 0x00, modSR: 0x16, carSR: 0x00, feedback: 0x00 }),
@@ -71,6 +72,8 @@ export interface SongSpec {
   bassC?: number;
   /** Repeat the chart this many times (melody too). */
   repeat?: number;
+  /** A second section: the song plays A A B A instead of A twice (each part 8 bars, its melody exactly that long). */
+  b?: { chart: string; melody: string };
 }
 
 const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25, t: 1 / 3 };
@@ -249,6 +252,10 @@ export const SONGS: SongSpec[] = [
     lead: 'flute',
     chart: 'G | C | G | D | Em | C | G:D | G',
     melody: 'D5 q, G5 q, B5 q, A5 q, G5 h, E5 q, G5 q, D5 h., B4 q, A4 h, D5 h, E5 q, D5 q, B4 q, G4 q, C5 h, E5 h, D5 q, B4 q, A4 q, B4 q, G4 w',
+    b: {
+      chart: 'Em | C | G | D | C | G | Am | D',
+      melody: 'B4 q, E5 q, G5 q, E5 q, C5 h, E5 h, D5 q, G5 q, B5 q, G5 q, A5 h., F#5 q, E5 q, G5 q, C6 q, B5 q, B5 h, G5 h, A5 q, G5 q, E5 q, C5 q, D5 w',
+    },
   },
   {
     name: 'ember',
@@ -258,6 +265,11 @@ export const SONGS: SongSpec[] = [
     chart: 'Am | Am | F | G | Am | Am | F | E',
     melody:
       'A4 e, A4 e, C5 e, A4 e, E5 q, D5 e, C5 e, B4 e, B4 e, C5 e, D5 e, E5 h, F5 e, E5 e, D5 e, C5 e, D5 q, B4 q, G4 e, A4 e, B4 e, D5 e, C5 q, B4 q, A4 e, A4 e, C5 e, A4 e, E5 q, A5 q, G5 e, F5 e, E5 e, D5 e, C5 q, D5 q, E5 h., r q, G#4 q, B4 q, E5 h',
+    b: {
+      chart: 'F | G | Em | Am | F | G | E | E7',
+      melody:
+        'C5 e, F5 e, A5 e, F5 e, C6 q, A5 q, B5 e, A5 e, G5 e, D5 e, B4 h, E5 e, G5 e, B5 e, G5 e, E5 q, D5 q, C5 q, E5 q, A5 h, A5 e, G5 e, F5 e, A5 e, C6 q, F5 q, D6 e, C6 e, B5 e, A5 e, G5 h, G#5 q, B5 q, E6 q, D6 q, B5 h, G#5 h',
+    },
   },
   {
     name: 'shallows',
@@ -267,6 +279,10 @@ export const SONGS: SongSpec[] = [
     pad: 'choir',
     chart: 'Dmaj7 | Bm7 | Gmaj7 | A | Dmaj7 | Bm7 | Em7 | A7',
     melody: 'F#5 q., E5 e, D5 q, A4 q, B4 h, D5 h, E5 q., D5 e, B4 q, G4 q, A4 w, F#5 q., G5 e, A5 q, F#5 q, D5 h, B4 h, G5 q, F#5 q, E5 q, D5 q, E5 w',
+    b: {
+      chart: 'Gmaj7 | F#m7 | Em7 | Dmaj7 | Gmaj7 | F#m7 | Em7 | A7',
+      melody: 'B5 h, A5 q, F#5 q, A5 h., E5 q, G5 q, F#5 q, E5 q, B4 q, F#5 w, D6 h, C#6 q, B5 q, A5 h, F#5 h, G5 q, A5 q, B5 q, G5 q, E5 h, C#5 h',
+    },
   },
   {
     name: 'glass',
@@ -275,6 +291,10 @@ export const SONGS: SongSpec[] = [
     lead: 'glass',
     chart: 'C#m | A | E | B | C#m | A | F#m | G#',
     melody: 'G#5 q, E5 q, C#5 q, E5 q, A5 h, G#5 h, E5 q, B4 q, E5 q, G#5 q, F#5 w, G#5 q, B5 q, C#6 q, B5 q, A5 h, E5 h, F#5 q, A5 q, G#5 q, F#5 q, D#5 w',
+    b: {
+      chart: 'A | B | G#m | C#m | F#m | B | E | G#',
+      melody: 'C#6 h, B5 q, A5 q, D#6 h, B5 h, G#5 q, B5 q, D#6 q, B5 q, C#6 w, A5 q, F#5 q, C#6 q, A5 q, B5 h, D#5 h, E5 q, G#5 q, B5 q, E6 q, D#6 h., C6 q',
+    },
   },
   {
     name: 'black',
@@ -284,6 +304,10 @@ export const SONGS: SongSpec[] = [
     pad: 'strings',
     chart: 'Cm | Ab | Fm | G | Cm | Ab | Db | G',
     melody: 'G4 h., Ab4 q, G4 h, Eb4 h, F4 h., G4 q, D4 w, G4 h, C5 h, Bb4 q, Ab4 q, G4 h, F4 h, Ab4 h, B3 w',
+    b: {
+      chart: 'Ab | Bb | Eb | Cm | Fm | Db | Ab:G | G',
+      melody: 'C5 h., Eb5 q, D5 h, Bb4 h, Eb5 h., G4 q, C5 w, Ab4 h, C5 h, Db5 h., F4 q, Eb4 h, D4 h, G4 w',
+    },
   },
   {
     name: 'ocean',
@@ -293,6 +317,10 @@ export const SONGS: SongSpec[] = [
     pad: 'choir',
     chart: 'Am7 | Fmaj7 | Cmaj7 | G | Am7 | Fmaj7 | Dm7 | E7',
     melody: 'E5 h, A5 h, G5 q, E5 q, C5 h, D5 q, E5 q, G5 q, A5 q, B5 w, C6 h, B5 q, A5 q, G5 h, E5 h, F5 q, E5 q, D5 q, C5 q, B4 w',
+    b: {
+      chart: 'Dm7 | G7 | Cmaj7 | Fmaj7 | Dm7 | E7 | Am7 | E7',
+      melody: 'F5 q, A5 q, C6 q, A5 q, B5 h, G5 h, E5 q, G5 q, B5 q, C6 q, A5 w, D6 h, C6 q, A5 q, G#5 h, B5 h, A5 h., E5 q, G#5 w',
+    },
   },
   {
     name: 'station',
@@ -302,6 +330,11 @@ export const SONGS: SongSpec[] = [
     chart: 'Em | Em | C | D | Em | Em | Am | B',
     melody:
       'E5 e, r e, E5 e, G5 e, r e, E5 e, D5 q, B4 e, r e, B4 e, D5 e, E5 h, C5 e, r e, C5 e, E5 e, G5 q, F#5 q, D5 e, E5 e, F#5 e, A5 e, F#5 q, D5 q, E5 e, r e, E5 e, G5 e, B5 q, A5 q, G5 e, F#5 e, E5 e, D5 e, E5 h, C5 q, E5 q, A5 h, B4 q, D#5 q, F#5 h',
+    b: {
+      chart: 'C | D | Bm | Em | C | D | B7 | B7',
+      melody:
+        'G5 e, r e, G5 e, E5 e, C5 q, E5 q, F#5 e, r e, F#5 e, A5 e, D6 h, B5 e, A5 e, F#5 e, D5 e, B4 h, E5 e, r e, E5 e, G5 e, B5 h, C6 e, B5 e, A5 e, G5 e, E5 q, C5 q, D5 e, F#5 e, A5 e, D6 e, C6 q, A5 q, D#5 e, F#5 e, A5 e, B5 e, D#6 h, B5 h, r h',
+    },
   },
   {
     name: 'rover',
@@ -310,6 +343,11 @@ export const SONGS: SongSpec[] = [
     lead: 'lead',
     chart: 'E | D | A | E | E | D | A | B',
     melody: 'B4 e, E5 e, G#5 e, B5 e, A5 q, G#5 q, F#5 e, E5 e, D5 e, F#5 e, A5 h, C#5 e, E5 e, A5 e, C#6 e, B5 q, A5 q, G#5 e, F#5 e, E5 e, F#5 e, G#5 h',
+    b: {
+      chart: 'C#m | A | E | B | C#m | A | F# | B',
+      melody:
+        'C#5 e, E5 e, G#5 e, C#6 e, B5 q, G#5 q, A5 e, C#6 e, E6 e, C#6 e, A5 h, G#5 e, B5 e, E6 e, B5 e, G#5 q, E5 q, F#5 e, A5 e, B5 e, D#6 e, F#6 h, E6 e, D#6 e, C#6 e, B5 e, C#6 q, G#5 q, A5 e, B5 e, C#6 e, E6 e, A5 h, F#5 e, A#5 e, C#6 e, F#6 e, E6 q, C#6 q, D#6 h, B5 h',
+    },
   },
   {
     name: 'storm',
@@ -347,9 +385,31 @@ export const SONGS: SongSpec[] = [
   },
 ];
 
+/** Beats in a chart and in a melody line. */
+const chartBeats = (chart: string) => chart.split('|').filter((b) => b.trim()).length * 4;
+const lineBeats = (line: string) => parseLine(line).reduce((n, p) => Math.max(n, p.at + p.len), 0);
+
+/** A song with a B section laid out as A A B A, played once through. */
+function withB(s: SongSpec): SongSpec {
+  if (!s.b) return s;
+  // a melody may be a half or a quarter of its part's chart: it is played again to fill it
+  const fill = (what: string, chart: string, line: string) => {
+    const n = chartBeats(chart) / lineBeats(line);
+    if (!Number.isInteger(n)) throw new Error(`${s.name} ${what}: the melody is ${lineBeats(line)} beats, the chart ${chartBeats(chart)}`);
+    return Array.from({ length: n }, () => line).join(', ');
+  };
+  if (s.harmony) throw new Error(`${s.name}: a harmony line can't follow a B section yet`);
+  const a = fill('A', s.chart, s.melody);
+  const b = fill('B', s.b.chart, s.b.melody);
+  return { ...s, chart: [s.chart, s.chart, s.b.chart, s.chart].join(' | '), melody: [a, a, b, a].join(', '), repeat: 1 };
+}
+
 export function buildSongs(): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
-  for (const s of SONGS) out.set(`${s.name}.cmf`, arrange({ ...s, chart: s.chart.replace(/\/[A-G]#?b?/g, '') }));
+  for (const s of SONGS) {
+    const song = withB(s);
+    out.set(`${s.name}.cmf`, arrange({ ...song, chart: song.chart.replace(/\/[A-G]#?b?/g, '') }));
+  }
   return out;
 }
 

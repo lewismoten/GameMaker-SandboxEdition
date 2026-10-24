@@ -35,10 +35,32 @@ const BANDO2 = detuned(REED);
 /** Pizzicato strings: plucked, short. */
 const PIZZ = sbi({ modChar: 0x02, carChar: 0x01, modLevel: 0x1a, carLevel: 0x00, modAD: 0xf8, carAD: 0xf6, modSR: 0x55, carSR: 0x56, feedback: 0x06 });
 /** The pipe organ, and its swell (8 steps, opening up out of nothing). */
-const ORGAN = sbi({ modChar: 0x21, carChar: 0xa2, modLevel: 0x12, carLevel: 0x0a, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, carWave: 1, feedback: 0x03 });
+const ORGAN = sbi({
+  modChar: 0x21,
+  carChar: 0xa2,
+  modLevel: 0x12,
+  carLevel: 0x0a,
+  modAD: 0xf0,
+  carAD: 0xf0,
+  modSR: 0x0f,
+  carSR: 0x0f,
+  carWave: 1,
+  feedback: 0x03,
+});
 const SWELL = sweep(ORGAN, 8, { mod: 50, car: 46 }, { mod: 10, car: 4 });
 /** The choir: "aah", and its twin; the Devil's cackle is the same voice, opened up and short. */
-const AAH = sbi({ modChar: 0x61, carChar: 0x21, modLevel: 0x1e, carLevel: 0x00, modAD: 0x62, carAD: 0x63, modSR: 0x14, carSR: 0x15, modWave: 1, feedback: 0x06 });
+const AAH = sbi({
+  modChar: 0x61,
+  carChar: 0x21,
+  modLevel: 0x1e,
+  carLevel: 0x00,
+  modAD: 0x62,
+  carAD: 0x63,
+  modSR: 0x14,
+  carSR: 0x15,
+  modWave: 1,
+  feedback: 0x06,
+});
 const AAH2 = detuned(AAH);
 const HA = waved(leveled(AAH, { mod: 0x14 }), 2, 0);
 const HA2 = detuned(HA);
@@ -47,7 +69,18 @@ const HUSH = sweep(AAH, 8, { car: 0 }, { car: 42 });
 /** Brass: the oom-pah, the hits, the sad trombone. */
 const BRASS = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x16, carLevel: 0x00, modAD: 0x75, carAD: 0x75, modSR: 0x17, carSR: 0x17, feedback: 0x0e });
 /** The cow: a nasal reed, low. */
-const MOO = sbi({ modChar: 0x31, carChar: 0x21, modLevel: 0x18, carLevel: 0x00, modAD: 0x52, carAD: 0x63, modSR: 0x08, carSR: 0x08, modWave: 1, feedback: 0x0c });
+const MOO = sbi({
+  modChar: 0x31,
+  carChar: 0x21,
+  modLevel: 0x18,
+  carLevel: 0x00,
+  modAD: 0x52,
+  carAD: 0x63,
+  modSR: 0x08,
+  carSR: 0x08,
+  modWave: 1,
+  feedback: 0x0c,
+});
 /** The bass drum as the bass; a deep kick for the cracks of thunder. */
 const BOOM = boomPatch({ decay: 4, release: 5, growl: 0x1c });
 const THUD = boomPatch({ decay: 9, release: 10, growl: 0x14 });
@@ -75,7 +108,10 @@ const fold = (pc: number, lo: number) => lo + ((pc - lo + 120) % 12);
 /** Four voices, low to high, in G3..F#5 (a seventh chord keeps its seventh on top). */
 function voicing(name: string, shift = 0): number[] {
   const { pc, iv } = shape(name);
-  const low = iv.slice(0, 3).map((i) => fold(pc + i + shift, 55)).sort((a, b) => a - b);
+  const low = iv
+    .slice(0, 3)
+    .map((i) => fold(pc + i + shift, 55))
+    .sort((a, b) => a - b);
   const top = iv[3] === 12 ? low[0] + 12 : fold(pc + iv[3] + shift, 63);
   return [...low, top];
 }
@@ -247,14 +283,16 @@ class Arranger {
             if (b === 2 || (span === 2 && b === 1)) fx.note(VOICES[3], t + b + 0.5, 0.25, v[3], vel - 34, 0.8);
           }
         if (p.comp === 'pizz') for (let b = 0; b < span * 2; b++) fx.note(VOICES[b % 4], t + b / 2, 0.3, v[[0, 2, 1, 3][b % 4]], vel - 36 - (b % 2) * 10, 0.5);
-        if (p.comp === 'celesta') fx.harp(VOICES, t, span, [v[0] + 12, v[1] + 12, v[2] + 12, v[3] + 12, v[2] + 12, v[1] + 12], 1 / 2, (j) => vel - 42 + (j % 4 === 0 ? 8 : 0));
+        if (p.comp === 'celesta')
+          fx.harp(VOICES, t, span, [v[0] + 12, v[1] + 12, v[2] + 12, v[3] + 12, v[2] + 12, v[1] + 12], 1 / 2, (j) => vel - 42 + (j % 4 === 0 ? 8 : 0));
         if (p.comp === 'organ' || p.comp === 'choir') v.forEach((n, j) => fx.note(VOICES[j], t, span, n, vel - 30 + j * 2, 0.98));
         if (p.comp === 'swell') {
           v.forEach((n, j) => fx.note(VOICES[j], t, span, n, vel - 20, 0.98));
           fx.swell(VOICES, t, span * 0.9, SWELL);
         }
         if (p.comp === 'oompah')
-          for (let b = 0; b < span; b++) if (b % 2) v.slice(0, 3).forEach((n, j) => fx.note(VOICES[j], t + b, 0.4, n, vel - 30, 0.7));
+          for (let b = 0; b < span; b++)
+            if (b % 2) v.slice(0, 3).forEach((n, j) => fx.note(VOICES[j], t + b, 0.4, n, vel - 30, 0.7));
             else v.slice(0, 3).forEach((n, j) => fx.note(VOICES[j], t + b + 0.5, 0.3, n, vel - 38, 0.7));
         const r = root(name, shift);
         if (p.bass === 'long') fx.boom(t, span, r, vel);
@@ -282,7 +320,10 @@ class Arranger {
     this.fx.drumRoll(DRUM.cymbal, at, beats, 1 / 4, 20, vel);
     this.fx.drumRoll(DRUM.tom, at, beats, 1 / 6, 40, vel, [38, 38, 41, 38]);
     const hit = this.bar * 4;
-    this.fx.program(DRUM.kick, hit, THUD).boom(hit, 2, 26, 127).program(DRUM.kick, hit + 2, BOOM);
+    this.fx
+      .program(DRUM.kick, hit, THUD)
+      .boom(hit, 2, 26, 127)
+      .program(DRUM.kick, hit + 2, BOOM);
     this.fx.drumRoll(DRUM.cymbal, hit, 1 / 4, 1 / 4, 127, 127);
     return this;
   }

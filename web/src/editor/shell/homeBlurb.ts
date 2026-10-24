@@ -9,10 +9,8 @@ const WRITTEN: Record<string, string> = {
   library: 'Pictures, monsters, heroes and sounds from the Game-Maker CD, ready to build your own game with.',
   terrain:
     'Not really a game: roam a scene built from the Terrain picture blocks and get ideas of what Game-Maker can do. Pick up the laser gun first, and stay clear of your own bombs.',
-  tutor:
-    'Not a game but a tour of Game-Maker’s features: walk around one scene to see scrolling, solid blocks, one-way doors and more at work.',
-  houses:
-    'Shows how to build houses out of the HOUSES blocks, and how the hero can change into another character: follow the green path to change.',
+  tutor: 'Not a game but a tour of Game-Maker’s features: walk around one scene to see scrolling, solid blocks, one-way doors and more at work.',
+  houses: 'Shows how to build houses out of the HOUSES blocks, and how the hero can change into another character: follow the green path to change.',
   zark: 'An evil race from Alpha Centauri is coming to wreck your newly terraformed base on Venus. Take the most powerful ship on the planet and prepare for trouble.',
   bcuda:
     'Classified: an Iraqi fleet carrying parts for a nuclear weapon has been sunk. As the submarine “Barracuda”, recover the pieces from the wrecks before the Iraqi warships do.',
@@ -20,8 +18,7 @@ const WRITTEN: Record<string, string> = {
     'Evil Fang Duck has set out to take over the land of Norumbega and fill it with ducks. Peach, the fastest land lobster around, sneaks in armed only with a claw gun.',
   ajquest:
     'Evil Prince Ostro has captured A-J Bear and his hedgehog Hedge. Escape the warehouse, get past the giant pretzels and win the frozen princes’ crowns to save Beartown.',
-  congress:
-    'The congressmen are coming! Fight through The City, InflationLand, the IRS Office and RecessionLand to stop the Majority Leader taxing the city.',
+  congress: 'The congressmen are coming! Fight through The City, InflationLand, the IRS Office and RecessionLand to stop the Majority Leader taxing the city.',
   heart:
     'Earth’s labs on newly terraformed Venus have sent “Patchwork Heart”, a self-propelled ball of uranium, deep into the planet’s crust to destroy the monsters that appeared there.',
   zoom: 'A-J Bear tells how his cousin Zoom became super. It was all an accident: Zoom walked into Grandpa Merlin’s den in the middle of a spell.',
@@ -42,7 +39,7 @@ const MAX = 220;
 function wholeSentences(text: string): string {
   const cut = text.endsWith('…') ? text.slice(0, -1) : text;
   if (cut === text && text.length <= MAX) return text;
-  const ends = [...`${cut} `.matchAll(/[.!?]["')]?(?=\s)/g)].map((m) => m.index! + m[0].length).filter((i) => i >= 40);
+  const ends = [...`${cut} `.matchAll(/[.!?]["')]?(?=\s)/g)].map((m) => m.index + m[0].length).filter((i) => i >= 40);
   const last = ends.filter((i) => i <= MAX).pop() ?? ends[0];
   return last ? cut.slice(0, last) : text;
 }

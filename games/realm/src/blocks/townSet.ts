@@ -83,21 +83,28 @@ export function townBook(): BlockBook {
     book.add(`ped${k}c`, pedestal(k, true), { solid: ALL });
   }
   // the royal kennel, and the gate that opens when both hounds have been found
-  cutBlocks(book, 'kennel', 2, 2, (cv) => {
-    shadow(cv, 3, 6, 34, 30);
-    cv.rect(4, 18, 32, 18, (x, y) => mix([170, 110, 60], [120, 76, 40], clamp01((y - 18) / 18 + tnoise(x, y, 2.5, 20, 3) * 0.2)));
-    cv.poly(
-      [
-        [1, 20],
-        [20, 4],
-        [39, 20],
-      ],
-      (x, y) => mix([200, 60, 50], [120, 30, 26], clamp01((x - 1) / 40 + (y - 4) / 40)),
-    );
-    cv.rrect(15, 24, 10, 12, 4, [40, 26, 18]);
-    cv.rrect(12, 15, 16, 5, 1, [240, 220, 170]);
-    cv.rect(14, 17, 12, 1, [120, 70, 40]);
-  }, (x, y) => !(x === 1 && y === 1));
+  cutBlocks(
+    book,
+    'kennel',
+    2,
+    2,
+    (cv) => {
+      shadow(cv, 3, 6, 34, 30);
+      cv.rect(4, 18, 32, 18, (x, y) => mix([170, 110, 60], [120, 76, 40], clamp01((y - 18) / 18 + tnoise(x, y, 2.5, 20, 3) * 0.2)));
+      cv.poly(
+        [
+          [1, 20],
+          [20, 4],
+          [39, 20],
+        ],
+        (x, y) => mix([200, 60, 50], [120, 30, 26], clamp01((x - 1) / 40 + (y - 4) / 40)),
+      );
+      cv.rrect(15, 24, 10, 12, 4, [40, 26, 18]);
+      cv.rrect(12, 15, 16, 5, 1, [240, 220, 170]);
+      cv.rect(14, 17, 12, 1, [120, 70, 40]);
+    },
+    (x, y) => !(x === 1 && y === 1),
+  );
   gate(book, 'kgate', C.dogs, 2, kennelGate(false), kennelGate(true), false);
   gate(book, 'lgate', C.book, 1, rope(false), rope(true), false);
   // the market's wares: walk in once to pay, again to take
@@ -105,7 +112,7 @@ export function townBook(): BlockBook {
   stall(book, 'stallG', [40, 120, 70]);
   buyChain(book, 'sword', 80, { effect: SEQ.steel, eamt: STEEL_SWINGS, score: 200 }, wares.sword);
   buyChain(book, 'tonic', 15, { effect: SEQ.tonic, eamt: 1 }, wares.tonicOne);
-  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 150, touch: 'bed2' });
+  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 60, touch: 'bed2' });
   book.add('bed2', counter(wares.bedUsed), { solid: ALL });
   fountain(book);
   eggBlocks(book, false);

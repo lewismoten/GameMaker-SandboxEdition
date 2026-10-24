@@ -37,7 +37,8 @@ export function heartPlace(a: AboutForHearts): HeartPlace | string | undefined {
   if (t === undefined) return undefined;
   if (!t || typeof t.map !== 'string' || !/^[a-z0-9_-]{1,8}\.map$/i.test(t.map)) return 'tinHeart.map must be the map file, like "port.map"';
   const at = t.at;
-  if (!Array.isArray(at) || at.length !== 2 || !at.every((n) => Number.isInteger(n) && n >= 0) || at[0] >= 100 || at[1] >= 100) return 'tinHeart.at must be [column, row] on the 100x100 map';
+  if (!Array.isArray(at) || at.length !== 2 || !at.every((n) => Number.isInteger(n) && n >= 0) || at[0] >= 100 || at[1] >= 100)
+    return 'tinHeart.at must be [column, row] on the 100x100 map';
   return { map: t.map.toLowerCase(), at: [at[0], at[1]] };
 }
 
@@ -59,9 +60,13 @@ export function buildManifest(abouts: Record<string, AboutForHearts>): HeartMani
 /** hearts.json as the generator writes it: one game a line. */
 export function manifestText(m: HeartManifest): string {
   const ids = Object.keys(m.hearts);
-  const lines = ids.map((id, i) => `    ${JSON.stringify(id)}: { "map": ${JSON.stringify(m.hearts[id].map)}, "at": [${m.hearts[id].at.join(', ')}] }${i < ids.length - 1 ? ',' : ''}`);
+  const lines = ids.map(
+    (id, i) =>
+      `    ${JSON.stringify(id)}: { "map": ${JSON.stringify(m.hearts[id].map)}, "at": [${m.hearts[id].at.join(', ')}] }${i < ids.length - 1 ? ',' : ''}`,
+  );
   return `{\n  "hearts": {\n${lines.join('\n')}\n  },\n  "pending": [${m.pending.map((p) => JSON.stringify(p)).join(', ')}]\n}\n`;
 }
 
 /** Is a touch at cell (x, y) of map file `map` the heart at `place`? */
-export const isHeartAt = (place: HeartPlace, map: string | undefined, x: number, y: number): boolean => !!map && map.toLowerCase() === place.map && x === place.at[0] && y === place.at[1];
+export const isHeartAt = (place: HeartPlace, map: string | undefined, x: number, y: number): boolean =>
+  !!map && map.toLowerCase() === place.map && x === place.at[0] && y === place.at[1];

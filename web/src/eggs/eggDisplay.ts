@@ -37,13 +37,15 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     extra = (await bonusStates()).filter((e) => e.found);
     // how far the rotten egg was tapped (the viewer, or EGG.EXE): its cracks, or the IOU inside
     const taps = eggTaps();
-    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'iou' : 'rotten') : 'pastry') as 'rotten' | 'iou' | 'pastry');
+    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'iou' : 'rotten') : 'pastry'));
     const key = `${items.join(',')}:${taps}`;
     if (key === standShown) return;
     standShown = key;
     stand.hidden = !items.length;
     if (!items.length) return;
-    const names = items.map((i) => (i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'iou' ? 'an IOU note' : 'a pastry egg'));
+    const names = items.map((i) =>
+      i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'iou' ? 'an IOU note' : 'a pastry egg',
+    );
     stand.setAttribute('aria-label', `Cake stand with ${names.join(' and ')}: take a closer look`);
     stand.title = 'A cake stand';
     const W = 56;

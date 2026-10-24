@@ -23,7 +23,7 @@ import { buildPalette, type Lighting, type Pal } from './src/art/pal';
 import { BlockBook } from './src/common/blocks';
 import { buildPoet, commonMonsters } from './src/common/characters';
 import { MapBuilder, type LinkSpec } from './src/levels/maps';
-import { buildCharBlocks, commonSprites, makeBook, type SpriteBook } from './src/common/sprites';
+import { buildCharBlocks, commonSprites, makeBook, rimFoes, type SpriteBook } from './src/common/sprites';
 import { demoRecording } from './src/demo';
 import { GROUPS, HIVE_GROUP, SCENES, type SceneDef } from './src/scenes';
 import { buildArt, type CardView } from './src/screens/art';
@@ -46,6 +46,7 @@ function blockSets(g: Group, pal: Pal) {
   const mb: SpriteBook = makeBook('mbl');
   commonSprites(mb, pal);
   g.sprites(mb, pal);
+  rimFoes(mb, pal);
   if (mb.index.size > 100) throw new Error(`${g.id}.mbl: ${mb.index.size} monster blocks (100 at most)`);
   return { book, bbl: book.finish(), mb };
 }
@@ -116,7 +117,20 @@ built.forEach(({ def, map, links }) => {
   const scene: Scene = emptyScene(ADVTYPE);
   scene.desc = def.desc.slice(0, 19);
   scene.pos = { x: def.pos[0], y: def.pos[1] };
-  scene.files = [`${def.pal}.pal`, `${def.mapFile}.map`, `${g.id}.bbl`, `${def.mapFile}.mon`, `${g.id}.mbl`, 'poet.chr', 'poet.cbl', `${def.snd}.snd`, `${def.song}.cmf`, def.intro ?? '', def.exit ?? '', ...new Array(9).fill('')];
+  scene.files = [
+    `${def.pal}.pal`,
+    `${def.mapFile}.map`,
+    `${g.id}.bbl`,
+    `${def.mapFile}.mon`,
+    `${g.id}.mbl`,
+    'poet.chr',
+    'poet.cbl',
+    `${def.snd}.snd`,
+    `${def.song}.cmf`,
+    def.intro ?? '',
+    def.exit ?? '',
+    ...new Array(9).fill(''),
+  ];
   if (links.length > MAXSCENELINKS) throw new Error(`${def.file}: too many links`);
   scene.links = Array.from({ length: MAXSCENELINKS }, (_, k) => {
     const spec = links[k];
@@ -133,7 +147,21 @@ built.forEach(({ def, map, links }) => {
 });
 
 const start = game.scenes[0];
-start.files = ['title.lst', 'title.cmf', 'menu.gif', 'menu.cmf', 'story.lst', 'story.cmf', 'howto.lst', 'credits.lst', 'hiscore.gif', 'loadgame.gif', 'savegame.gif', 'demo.rec', ...new Array(8).fill('')];
+start.files = [
+  'title.lst',
+  'title.cmf',
+  'menu.gif',
+  'menu.cmf',
+  'story.lst',
+  'story.cmf',
+  'howto.lst',
+  'credits.lst',
+  'hiscore.gif',
+  'loadgame.gif',
+  'savegame.gif',
+  'demo.rec',
+  ...new Array(8).fill(''),
+];
 start.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: built[0].start[0], y: built[0].start[1] } };
 const end = game.scenes[1];
 end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];
@@ -143,11 +171,83 @@ disk.put('sweats.gam', serializeGame(game));
 for (const [name, bytes] of Object.entries(buildArt({ cards, poet: cb.pics, mons: sets.get(HIVE_GROUP.id)!.mb.pics }))) disk.put(name, bytes);
 for (const name of ['title', 'menu', 'story', 'won', 'lost']) disk.put(`${name}.cmf`, songs[name]);
 disk.put('demo.rec', demoRecording());
+// the voice clips cut from the free-plan Riffusion recordings: personal, non-commercial only (kit/license.ts)
+const RECORDED_VOCS = [
+  'ants_l',
+  'ants_o',
+  'ants_p',
+  'ants_w',
+  'bird_l',
+  'bird_o',
+  'bird_p',
+  'bird_w',
+  'blnkt_l',
+  'blnkt_o',
+  'blnkt_p',
+  'blnkt_w',
+  'cart_l',
+  'cart_o',
+  'cart_p',
+  'cart_w',
+  'chair_l',
+  'chair_o',
+  'chair_p',
+  'chair_w',
+  'ficus_l',
+  'ficus_o',
+  'ficus_p',
+  'ficus_w',
+  'goat_l',
+  'goat_o',
+  'goat_p',
+  'goat_w',
+  'itch_l',
+  'itch_o',
+  'itch_p',
+  'itch_w',
+  'kale_l',
+  'kale_o',
+  'kale_p',
+  'kale_w',
+  'like_l',
+  'like_o',
+  'like_p',
+  'like_w',
+  'lily_l',
+  'lily_o',
+  'lily_p',
+  'lily_w',
+  'out_l',
+  'out_o',
+  'out_p',
+  'out_w',
+  'pen_l',
+  'pen_o',
+  'pen_p',
+  'pen_w',
+  'pizza_l',
+  'pizza_o',
+  'pizza_p',
+  'pizza_w',
+  'plate_l',
+  'plate_o',
+  'plate_p',
+  'plate_w',
+  'socks_l',
+  'socks_o',
+  'socks_p',
+  'socks_w',
+  'umbr_l',
+  'umbr_o',
+  'umbr_p',
+  'umbr_w',
+];
 disk.put(
   'license.txt',
   licenseText(
     'Shakespeare in Sweatpants',
     `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The monologues are The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
+    RECORDED_VOCS,
   ),
 );
 disk.write();

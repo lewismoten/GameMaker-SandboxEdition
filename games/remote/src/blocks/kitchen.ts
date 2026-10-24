@@ -36,7 +36,12 @@ export function kitchenBlocks(ctx: Ctx): void {
       p.rect(1, 0, 18, 8, c('white', 1)).rect(2, 1, 11, 6, ink).rect(14, 1, 4, 3, c('ink', 1));
       if (what === 'micro0') micro(p, 3, 2, '12:0', c('led', 1));
     }
-    if (what === 'stove') for (const [x, y] of [[5, 3], [14, 3]]) p.ring(x, y, 3, ink).ring(x, y, 1.5, c('crt', 1));
+    if (what === 'stove')
+      for (const [x, y] of [
+        [5, 3],
+        [14, 3],
+      ])
+        p.ring(x, y, 3, ink).ring(x, y, 1.5, c('crt', 1));
     if (what === 'cereal') p.rect(3, 0, 6, 8, c('yellow', 2)).rect(11, 1, 6, 7, c('blue', 2)).set(5, 3, c('red', 2)).set(13, 4, c('white', 2));
     if (what === 'drawer' || what === 'drawerOpen') {
       p.rect(1, 10, 18, 4, c('wood', 4)).rect(9, 11, 2, 1, c('silver', 2));
@@ -69,9 +74,18 @@ export function kitchenBlocks(ctx: Ctx): void {
       if (open) {
         p.rect(1, 0, 18, 18, c('screen', 3));
         for (const y of [5, 11]) p.rect(1, y, 18, 1, c('silver', 2));
-        p.rect(3, 1, 3, 4, c('red', 2)).rect(7, 2, 3, 3, c('green', 2)).rect(12, 6, 5, 5, c('white', 1)).rect(3, 12, 5, 5, c('yellow', 2)).rect(11, 13, 2, 4, c('blue', 2));
+        p.rect(3, 1, 3, 4, c('red', 2))
+          .rect(7, 2, 3, 3, c('green', 2))
+          .rect(12, 6, 5, 5, c('white', 1))
+          .rect(3, 12, 5, 5, c('yellow', 2))
+          .rect(11, 13, 2, 4, c('blue', 2));
       } else {
-        for (const [x, y, k] of [[3, 3, 'red'], [8, 9, 'blue'], [4, 13, 'green']] as const) p.rect(x, y, 3, 3, c(k, 2));
+        for (const [x, y, k] of [
+          [3, 3, 'red'],
+          [8, 9, 'blue'],
+          [4, 13, 'green'],
+        ] as const)
+          p.rect(x, y, 3, 3, c(k, 2));
       }
     }
     return p;
@@ -112,7 +126,7 @@ export function kitchenBlocks(ctx: Ctx): void {
   // a slice of cold pizza on a plate: patience
   const pizza = lino(27);
   pizza.disc(10, 10, 7, c('white', 2));
-  for (let y = 5; y < 15; y++) pizza.rect(10 - (y - 5) / 2, y, (y - 5) + 1, 1, c('yellow', 2));
+  for (let y = 5; y < 15; y++) pizza.rect(10 - (y - 5) / 2, y, y - 5 + 1, 1, c('yellow', 2));
   pizza.disc(9, 11, 1.2, c('red', 2)).disc(11, 13, 1.2, c('red', 2)).rect(5, 14, 10, 2, c('orange', 1));
   book.add('pizza', pizza, { hp: 20, score: 25, touch: 'lino' });
   // Mom's number on fridge magnets (counter 21)
@@ -140,5 +154,4 @@ export function kitchenBlocks(ctx: Ctx): void {
   };
   book.add('phone', phone(false), { solid: SOLID, effect: DIGITS, eamt: -DIGITS_NEEDED, score: 500, touch: 'phoneDone' });
   book.add('phoneDone', phone(true));
-
 }

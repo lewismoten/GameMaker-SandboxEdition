@@ -65,7 +65,8 @@ export function gameLabels(files: FileSource, gam: string): GameLabels | undefin
       const name = s.files[slot]?.toLowerCase();
       if (!name || seen.has(name)) continue;
       seen.add(name);
-      for (const b of read(i, slot, (x) => parseBlocks(x, count)) ?? []) if (b.effect > 2 && b.effect < METERS) counterUse.set(b.effect, (counterUse.get(b.effect) ?? 0) + 1);
+      for (const b of read(i, slot, (x) => parseBlocks(x, count)) ?? [])
+        if (b.effect > 2 && b.effect < METERS) counterUse.set(b.effect, (counterUse.get(b.effect) ?? 0) + 1);
     }
   });
   return {

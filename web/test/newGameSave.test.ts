@@ -27,7 +27,7 @@ function disk(id: string) {
 const ids = readdirSync(games).filter((id) => existsSync(join(games, id, 'disk')) && readdirSync(join(games, id, 'disk')).some((n) => /\.gam$/i.test(n)));
 const seeded = () => {
   let x = 1;
-  return () => ((x = (x * 16807) % 2147483647) / 2147483647);
+  return () => (x = (x * 16807) % 2147483647) / 2147483647;
 };
 
 describe('a new saved game', () => {
@@ -44,7 +44,7 @@ describe('a new saved game', () => {
       expect(save.linkin).toBe(0);
       expect(save.world.chr.x[0]).toBe(link.to.x);
       expect(save.world.chr.y[0]).toBe(link.to.y);
-      const chr = parseCharacter(files.get(game.scenes[link.toScene].files[5]!)!);
+      const chr = parseCharacter(files.get(game.scenes[link.toScene].files[5])!);
       const ci = save.world.ci;
       expect(ci.score).toBe(0);
       expect(ci.hitpts).toBe(chr.meter[0]);

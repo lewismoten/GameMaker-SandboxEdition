@@ -10,7 +10,7 @@ import { MON } from '../ids';
 import { addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 /** Ticks between melons rolling off the cart. */
-export const MELON_EVERY = 110;
+export const MELON_EVERY = 180;
 
 export function cityBlocks(pal: Pal): Kit {
   const k = kit(pal);
@@ -51,7 +51,8 @@ export function cityBlocks(pal: Pal): Kit {
     for (let y = 5; y < 18; y += 6)
       for (let x = 2 + (kind % 2) * 3; x < 17; x += 6) {
         let wall = true;
-        for (let yy = y - 1; yy < y + 4; yy++) for (let xx = x - 1; xx < x + 3; xx++) if (p.get(xx, yy) < c('stone', 0) || p.get(xx, yy) > c('stone', 5)) wall = false;
+        for (let yy = y - 1; yy < y + 4; yy++)
+          for (let xx = x - 1; xx < x + 3; xx++) if (p.get(xx, yy) < c('stone', 0) || p.get(xx, yy) > c('stone', 5)) wall = false;
         if (wall) p.rect(x, y, 2, 3, c('stone', 2));
       }
     return p;
@@ -64,7 +65,8 @@ export function cityBlocks(pal: Pal): Kit {
     for (let row = 0; row < 4; row++)
       for (let kk = -1; kk < 3; kk++) {
         const x = kk * 10 + (row % 2) * 5;
-        for (let y = row * 5 + 1; y < row * 5 + 4; y++) for (let xx = x + 1; xx < x + 9; xx++) p.set(xx, y, shadeAt(R('stone'), 3, 4, 0.3 + ((xx * 7 + y * 3 + seed) % 7) / 10, xx, y));
+        for (let y = row * 5 + 1; y < row * 5 + 4; y++)
+          for (let xx = x + 1; xx < x + 9; xx++) p.set(xx, y, shadeAt(R('stone'), 3, 4, 0.3 + ((xx * 7 + y * 3 + seed) % 7) / 10, xx, y));
       }
     if (top) p.rect(0, 0, 20, 1, c('stone', 5)).rect(0, 1, 20, 1, c('stone', 4));
     return p;
@@ -118,6 +120,12 @@ export function cityBlocks(pal: Pal): Kit {
   micro(sign, 5, 6, 'EYE', c('ink', 0));
   micro(sign, 3, 12, 'GATE', c('ink', 0));
   book.add('gateSign', sign, { solid: SOLID });
+  // under it, how to go through: hump down, then crawl (the keys, as the help page gives them)
+  const how = wall(10, false);
+  how.rect(1, 3, 18, 13, c('wood', 3)).frame(1, 3, 18, 13, c('wood', 1));
+  micro(how, 3, 4, 'DOWN', c('ink', 0));
+  micro(how, 5, 10, 'Z/C', c('ink', 0));
+  book.add('kneelSign', how, { solid: SOLID });
 
   // ---------- the market ----------
   const awning = (stripe: string) => {
@@ -144,7 +152,13 @@ export function cityBlocks(pal: Pal): Kit {
     const back = sky(24 + goods);
     for (let y = 0; y < 6; y++) for (let x = 0; x < 20; x++) p.set(x, y, back.get(x, y));
     if (goods === 0) for (const x of [3, 9, 15]) (blob(p, x, 3, 2.6, 3, R('red'), 0, 2), p.rect(x - 1, 0, 3, 1, c('red', 1)));
-    if (goods === 1) for (const [x, col] of [[4, 'blue'], [10, 'purple'], [16, 'gold']] as const) p.rect(x - 3, 1, 6, 5, c(col, 2)).rect(x - 3, 1, 6, 1, c(col, 3));
+    if (goods === 1)
+      for (const [x, col] of [
+        [4, 'blue'],
+        [10, 'purple'],
+        [16, 'gold'],
+      ] as const)
+        p.rect(x - 3, 1, 6, 5, c(col, 2)).rect(x - 3, 1, 6, 1, c(col, 3));
     if (goods === 2) for (const x of [3, 8, 13, 17]) blob(p, x, 4, 2.4, 2, R(x % 2 ? 'gold' : 'leaf'), 1, 3);
     return p;
   };
@@ -164,7 +178,10 @@ export function cityBlocks(pal: Pal): Kit {
   crate.rect(1, 1, 18, 1, c('wood', 4));
   book.add('crate', crate, { solid: SOLID });
   const pots = sky(29);
-  for (const [x, h, col] of [[5, 7, 'red'], [14, 9, 'stone']] as const) {
+  for (const [x, h, col] of [
+    [5, 7, 'red'],
+    [14, 9, 'stone'],
+  ] as const) {
     blob(pots, x, 19 - h / 2, 4, h / 2, R(col), 1, 3);
     pots.rect(x - 1, 19 - h - 2, 3, 2, c(col, 1));
   }
@@ -187,7 +204,12 @@ export function cityBlocks(pal: Pal): Kit {
   // laundry on a line between the roofs (scenery)
   const laundry = sky(33, 2);
   laundry.line(0, 3, 19, 5, c('wood', 1));
-  for (const [x, col] of [[3, 'blue'], [9, 'white'], [15, 'red']] as const) laundry.rect(x - 2, 4 + Math.floor(x / 8), 5, 7, c(col, 2)).rect(x - 2, 4 + Math.floor(x / 8), 5, 1, c(col, 1));
+  for (const [x, col] of [
+    [3, 'blue'],
+    [9, 'white'],
+    [15, 'red'],
+  ] as const)
+    laundry.rect(x - 2, 4 + Math.floor(x / 8), 5, 7, c(col, 2)).rect(x - 2, 4 + Math.floor(x / 8), 5, 1, c(col, 1));
   book.add('laundry', laundry, air);
   // a stair of stone up to the roofs (solid steps)
   const step = pavers(4, true);
@@ -202,7 +224,12 @@ export function cityBlocks(pal: Pal): Kit {
     const ang = Math.PI * (1.0 + (a / 6) * 1.0);
     for (let t = 0; t < 10; t++) crown.set(10 + Math.cos(ang) * t, 12 + Math.sin(ang) * t * 0.7 + t * t * 0.04, c('leaf', 1 + (t % 3)));
   }
-  for (const [x, y] of [[9, 13], [11, 14], [10, 15]]) crown.disc(x, y, 1.4, c('wood', 3));
+  for (const [x, y] of [
+    [9, 13],
+    [11, 14],
+    [10, 15],
+  ])
+    crown.disc(x, y, 1.4, c('wood', 3));
   crown.rect(8, 12, 4, 8, c('wood', 2)); // as wide as the trunk's top, where it meets it
   book.add('palmTop', crown, air);
 

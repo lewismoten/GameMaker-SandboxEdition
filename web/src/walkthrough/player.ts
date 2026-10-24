@@ -16,6 +16,7 @@ import { WalkAudio, WalkRun } from './runtime';
 import { canExport, exportWalkthrough } from './exportVideo';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
+import { unlockAchievement, watchedWalkthrough } from '../achievements';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -37,7 +38,12 @@ export function loadWalkthrough(entry: CatalogEntry): Promise<Walkthrough | unde
   return p;
 }
 
-const slug = (s: string) => s.replace(/['’]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'game';
+const slug = (s: string) =>
+  s
+    .replace(/['’]/g, '')
+    .replace(/[^\w]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase() || 'game';
 
 /** The address of the game's page in the web app. */
 export const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
@@ -48,6 +54,7 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
     year: entry.year,
     company: entry.company,
     blurb: entry.blurb,
+    bot: walk.bot,
     url: gameUrl(entry),
     chapters: walk.timeline.chapters,
     fps: walk.timeline.fps,
@@ -64,7 +71,11 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
     await navigator.clipboard.writeText(text);
     return true;
   } catch {
-    const ta = h('textarea', { readonly: true, 'aria-hidden': 'true', tabindex: '-1', style: 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0' }, text) as HTMLTextAreaElement;
+    const ta = h(
+      'textarea',
+      { readonly: true, 'aria-hidden': 'true', tabindex: '-1', style: 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0' },
+      text,
+    );
     inside.append(ta);
     ta.select();
     let ok = false;
@@ -79,19 +90,26 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
 }
 
 /** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show. */
-export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void): Promise<void> {
+export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void, given?: Walkthrough): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f));
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given);
   } finally {
     release?.();
   }
 }
 
-async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady: (() => void) | undefined, onLose: (f: () => void) => void): Promise<void> {
-  const [walk, files] = await Promise.all([loadWalkthrough(entry), loadFiles()]);
+async function watch(
+  entry: CatalogEntry,
+  loadFiles: () => Promise<GameFiles>,
+  onReady: (() => void) | undefined,
+  onLose: (f: () => void) => void,
+  given?: Walkthrough,
+): Promise<void> {
+  // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
+  const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
   if (!walk || !entry.gam) {
     toast(`${entry.title} has no walkthrough.`);
     return;
@@ -99,16 +117,34 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
   const gam = entry.gam;
   const tl = walk.timeline;
   const total = tl.frames;
+  /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */
+  const ended = (r: WalkRun | undefined) => !!r && (r.done || (!!walk.partial && r.frame >= total));
 
-  const canvas = h('canvas', { class: 'wt-canvas', width: 320, height: 200, 'aria-hidden': 'true' }) as HTMLCanvasElement;
+  const canvas = h('canvas', { class: 'wt-canvas', width: 320, height: 200, 'aria-hidden': 'true' });
   const busy = h('div', { class: 'wt-busy', hidden: true });
   const screen = h('div', { class: 'wt-screen', title: 'Play or pause' }, canvas, busy);
   const playBtn = h('button', { class: 'primary wt-play', type: 'button' });
   const timeEl = h('span', { class: 'wt-time', 'aria-live': 'off' });
   const bar = h('div', { class: 'wt-bar-fill' });
   const ticks = tl.chapters.slice(1).map((c) => h('span', { class: 'wt-bar-tick', style: `left:${(100 * c.frame) / total}%` }));
-  const progress = h('div', { class: 'wt-bar', role: 'progressbar', 'aria-label': 'Walkthrough position', 'aria-valuemin': '0', 'aria-valuemax': String(Math.round(total / WALKTHROUGH_FPS)) }, bar, ...ticks);
-  const speeds = [1, 2, 4].map((v) => h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`));
+  // the position bar is a seek bar: touch, click or drag it to jump there; arrows step 10 s
+  const hover = h('span', { class: 'wt-bar-hover', hidden: true });
+  const progress = h(
+    'div',
+    {
+      class: 'wt-bar',
+      role: 'slider',
+      tabindex: 0,
+      'aria-label': 'Walkthrough position: touch or drag to jump',
+      'aria-valuemin': '0',
+      'aria-valuemax': String(Math.round(total / WALKTHROUGH_FPS)),
+    },
+    h('span', { class: 'wt-bar-track' }, bar, ...ticks),
+    hover,
+  );
+  const speeds = [1, 2, 4].map((v) =>
+    h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`),
+  );
   const soundPick = demoAudioPicker({ label: 'Sound', className: 'wt-sound' });
   const chapterList = h('ol', { class: 'wt-chapters' });
   const status = h('p', { class: 'meta wt-status', role: 'status' });
@@ -117,9 +153,15 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
     'select',
     { class: 'wt-export-pick', 'aria-label': 'What to put in the MP4' },
     h('option', { value: 'all' }, `Whole walkthrough (${clock(total / WALKTHROUGH_FPS)})`),
-    ...tl.chapters.map((c, i) => h('option', { value: String(i) }, `Only ${c.title} (${clock(((tl.chapters[i + 1]?.frame ?? total) - c.frame) / WALKTHROUGH_FPS)})`)),
+    ...tl.chapters.map((c, i) =>
+      h('option', { value: String(i) }, `Only ${c.title} (${clock(((tl.chapters[i + 1]?.frame ?? total) - c.frame) / WALKTHROUGH_FPS)})`),
+    ),
   );
-  const exportBtn = h('button', { type: 'button', class: 'wt-export-btn', title: '320×200 at 60 frames a second with the sound picked, made frame by frame (faster than real time)' }, '⬇ Download MP4');
+  const exportBtn = h(
+    'button',
+    { type: 'button', class: 'wt-export-btn', title: '320×200 at 60 frames a second with the sound picked, made frame by frame (faster than real time)' },
+    '⬇ Download MP4',
+  );
   const exportBar = h('progress', { class: 'wt-export-progress', max: 1, value: 0, hidden: true, 'aria-label': 'Making the MP4' });
   const yt = walkthroughText(entry, walk);
   const ytText = youtubeClipboard(yt);
@@ -191,8 +233,8 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
   };
 
   const showPlay = () => {
-    playBtn.textContent = playing ? '❚❚ Pause' : run?.done ? '↺ Watch again' : '▶ Play';
-    playBtn.setAttribute('aria-label', playing ? 'Pause' : run?.done ? 'Watch again from the start' : 'Play');
+    playBtn.textContent = playing ? '❚❚ Pause' : ended(run) ? '↺ Watch again' : '▶ Play';
+    playBtn.setAttribute('aria-label', playing ? 'Pause' : ended(run) ? 'Watch again from the start' : 'Play');
     screen.classList.toggle('paused', !playing);
   };
 
@@ -210,22 +252,28 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
     stepping = true;
     const r = run;
     void (async () => {
-      for (let i = 0; i < n; i++) if (!(await r.step(i === n - 1))) break;
+      for (let i = 0; i < n && !ended(r); i++) if (!(await r.step(i === n - 1))) break;
       stepping = false;
       if (r !== run) return;
       showTime();
-      if (r.done) {
+      if (ended(r)) {
         playing = false;
         showPlay();
-        status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : 'The end. Thanks for watching!';
+        const end = r.done ? 'The end. Thanks for watching!' : 'This is as far as the bot got.';
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string -- whatever was thrown, as text
+        status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : end;
+        if (!r.error && r.done) watchedWalkthrough(entry.id);
       }
     })();
   };
 
   const setPlaying = (on: boolean) => {
-    if (on && run?.done) {
+    if (on && ended(run)) {
       fresh();
-      void run!.start().then(() => run!.step(true)).then(showTime);
+      void run!
+        .start()
+        .then(() => run!.step(true))
+        .then(showTime);
     }
     playing = on;
     audio.pauseMusic(!on);
@@ -238,34 +286,93 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
     showPlay();
   };
 
-  /** Jumps to chapter `i`: from the start again if it is behind, as fast as the game goes, nothing drawn. */
-  const seek = async (i: number) => {
-    if (seeking) return;
+  /** Jumps to chapter `i`'s start. */
+  const seek = (i: number) => seekTo(tl.chapters[i].frame);
+
+  /**
+   * Jumps to video frame `to`: from the start again if it is behind, as fast as the game goes
+   * with nothing drawn, first to its chapter (a chapter starts when play enters its scene, so
+   * the run finds it however long the skip took) and then on through the chapter by game time.
+   */
+  const seekTo = async (to: number) => {
+    if (seeking || !run) return;
+    to = Math.max(0, Math.min(total - 1, Math.round(to)));
+    const i = chapterAt(to);
     const target = tl.chapters[i];
+    const where = to === target.frame ? target.title : `${target.title}, ${clock(to / WALKTHROUGH_FPS)}`;
     seeking = true;
     while (stepping) await new Promise((r) => setTimeout(r, 5));
     playing = false;
     audio.setMuted(true);
     busy.hidden = false;
-    busy.textContent = `Skipping to ${target.title}…`;
-    status.textContent = `Skipping to ${target.title}…`;
-    let r = run!;
-    if (r.done || r.chapters.length > i || r.frame > target.frame) r = fresh();
+    busy.textContent = `Skipping to ${where}…`;
+    status.textContent = `Skipping to ${where}…`;
+    let r = run;
+    if (ended(r) || r.frame > to || r.chapters.length > i + 1) r = fresh();
     await r.start();
     let n = 0;
-    while (!closed && r === run && r.chapters.length <= i && (await r.step(false, SKIP_MS))) {
+    const breathe = async () => {
       if (++n % 200 === 0) await new Promise((res) => setTimeout(res, 0));
+    };
+    if (r.chapters.length <= i) {
+      while (!closed && r === run && r.chapters.length <= i && (await r.step(false, SKIP_MS))) await breathe();
+      r.frame = target.frame;
     }
+    // on through the chapter: big steps by game time, then frame by frame
+    const base = r.frame;
+    const t0 = r.time;
+    const at = () => base + Math.round((r.time - t0) / FRAME_MS);
+    while (!closed && r === run && !ended(r) && at() + SKIP_MS / FRAME_MS < to && (await r.step(false, SKIP_MS))) await breathe();
+    r.frame = at();
+    while (!closed && r === run && !ended(r) && r.frame < to - 1 && (await r.step(false))) await breathe();
     if (r !== run || closed) return;
-    r.frame = target.frame;
     await r.step(true);
     busy.hidden = true;
     seeking = false;
     audio.setMuted(!sound);
-    status.textContent = `${target.title}.`;
+    status.textContent = `${where}.`;
     showTime();
     setPlaying(true);
   };
+
+  const frameAt = (clientX: number) => {
+    const b = progress.getBoundingClientRect();
+    return (Math.max(0, Math.min(b.width, clientX - b.left)) / Math.max(1, b.width)) * total;
+  };
+  /** Where a finger or the pointer is over the bar: a mark there, and the time it would jump to. */
+  const showHover = (clientX: number | undefined) => {
+    hover.hidden = clientX === undefined;
+    if (clientX === undefined) return;
+    const f = frameAt(clientX);
+    hover.style.left = `${(100 * f) / total}%`;
+    hover.textContent = clock(f / WALKTHROUGH_FPS);
+  };
+  let dragging = false;
+  progress.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    progress.setPointerCapture(e.pointerId);
+    showHover(e.clientX);
+  });
+  progress.addEventListener('pointermove', (e) => showHover(e.clientX));
+  progress.addEventListener('pointerup', (e) => {
+    if (!dragging) return;
+    dragging = false;
+    showHover(undefined);
+    void seekTo(frameAt(e.clientX));
+  });
+  progress.addEventListener('pointercancel', () => {
+    dragging = false;
+    showHover(undefined);
+  });
+  progress.addEventListener('pointerleave', () => !dragging && showHover(undefined));
+  progress.addEventListener('keydown', (e) => {
+    const step = { ArrowLeft: -10, ArrowRight: 10, PageDown: -60, PageUp: 60 }[e.key];
+    const now = run?.frame ?? 0;
+    const to = e.key === 'Home' ? 0 : e.key === 'End' ? total - 1 : step !== undefined ? now + step * WALKTHROUGH_FPS : undefined;
+    if (to === undefined) return;
+    e.preventDefault();
+    void seekTo(to);
+  });
 
   playBtn.addEventListener('click', () => setPlaying(!playing));
   screen.addEventListener('click', () => !seeking && setPlaying(!playing));
@@ -318,10 +425,13 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
           exportBar.value = done / all;
           const secs = (performance.now() - began) / 1000;
           const left = done > 0 ? (secs / done) * (all - done) : 0;
-          status.textContent = done ? `Making the video: ${Math.round((100 * done) / all)}% (${clock(done / WALKTHROUGH_FPS)} of ${clock(all / WALKTHROUGH_FPS)}), about ${clock(left)} to go.` : 'Making the video: getting to the start…';
+          status.textContent = done
+            ? `Making the video: ${Math.round((100 * done) / all)}% (${clock(done / WALKTHROUGH_FPS)} of ${clock(all / WALKTHROUGH_FPS)}), about ${clock(left)} to go.`
+            : 'Making the video: getting to the start…';
         },
       });
       saveBlob(name, res.blob);
+      unlockAchievement('download-mp4');
       status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {
       status.textContent = (e as Error).name === 'AbortError' ? 'Video cancelled.' : `The video could not be made: ${(e as Error).message}`;
@@ -381,12 +491,7 @@ async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, o
         status,
         ytDetails,
       ),
-      h(
-        'aside',
-        { class: 'wt-side', 'aria-label': 'Chapters' },
-        h('h3', null, 'Chapters'),
-        chapterList,
-      ),
+      h('aside', { class: 'wt-side', 'aria-label': 'Chapters' }, h('h3', null, 'Chapters'), chapterList),
     ),
   );
   closed = true;

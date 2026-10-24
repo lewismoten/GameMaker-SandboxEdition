@@ -67,7 +67,10 @@ export async function gamesAndSaves(games: HackGame[]): Promise<GameWithSaves[]>
 
 /** A game by what was typed: its DOS name, its id or its save id (any case). */
 export function findGame<T extends HackGame>(games: T[], name: string): T | undefined {
-  const want = name.trim().toUpperCase().replace(/\.(EXE|GAM)$/, '');
+  const want = name
+    .trim()
+    .toUpperCase()
+    .replace(/\.(EXE|GAM)$/, '');
   if (!want) return undefined;
   return games.find((g) => g.dos === want) ?? games.find((g) => g.id.toUpperCase() === want || g.save.toUpperCase() === want);
 }

@@ -55,6 +55,8 @@ const LEGEND: Record<string, string> = {
   o: 'well',
   q: 'sandal',
   T: 'tentP',
+  '&': 'troughField',
+  $: 'signScream',
   U: 'tentB',
   Y: 'tentR',
   D: 'tentDoor',
@@ -62,8 +64,8 @@ const LEGEND: Record<string, string> = {
   '2': 'giftFrank',
   '3': 'giftMyrrh',
   '=': 'water',
-  '<': 'camelL',
-  '>': 'camelR',
+  '<': 'camelLRest',
+  '>': 'camelRRest',
   S: 'stall',
   '-': 'beam',
   '|': 'rail',
@@ -158,7 +160,7 @@ export interface Level {
 
 const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
-/** 1. The shepherds' field: out of the fold (eat the rope), past the fainting cousin in the wall. */
+/** 1. The shepherds' field: out of the fold (eat the rope), past the fainting cousin in the wall (16 rows: one pen's worth shorter than it was). */
 export function field(book: BlockBook): Level {
   const m = new MapBuilder(book, 'rock');
   m.patch(
@@ -178,23 +180,25 @@ export function field(book: BlockBook): Level {
       '#.....:...R.......X......#.......t.....##..R.......#',
       '#..W..:..........,.......#..O........H.##.......t..#',
       '#.....:....*......O......#.....R.......##.,........#',
-      '#..R..:......W...........#..........b..##....O.....#',
-      '#.....::::::::...t.......#....X........##.........W#',
-      '#..t.....,...:...........#.........,...##..H.......#',
-      '#.....H......:....R......#..W..........##......R...#',
-      '#..*.........:.......O...#.......*.....##.t........#',
-      '#............:...........#.............##..........#',
+      '#..R..:......W..t........#..W.......b..##....O....W#',
+      '#.....::::::::...t.......#....X........##.........*#',
       '####################################################',
     ],
     52,
   );
+  // a stone trough beside the path before each wall the cousins stand in: a sip of breath
+  m.set(22, 7, '&').set(35, 7, '&');
+  // and a sign by the first cousin: SPACE screams
+  m.set(24, 7, '$');
   // the lambs in the fold, a cousin in the gap, more cousins grazing beyond
   m.mon(MON.lamb, 3, 3).mon(MON.lamb, 5, 2).mon(MON.lamb, 4, 6);
   m.mon(MON.goat, 25, 8);
   // two more stand nose to tail in the passage through the double wall: two screams
   m.mon(MON.goat, 39, 8).mon(MON.goat, 40, 8);
-  m.mon(MON.cousin, 30, 4).mon(MON.cousin, 33, 15);
-  m.mon(MON.lamb, 10, 16).mon(MON.lamb, 30, 12);
+  m.mon(MON.cousin, 30, 4).mon(MON.cousin, 33, 12);
+  m.mon(MON.lamb, 10, 13).mon(MON.lamb, 30, 10);
+  // a tin heart in the grass, in the far corner past the shepherds' camp
+  m.set(50, 14, 'tinHeart');
   m.link(51, 8, 'next');
   return { m, start: at(3, 4) };
 }
@@ -244,6 +248,8 @@ export function town(book: BlockBook): Level {
   ])
     m.mon(k ? MON.walker2 : MON.walker, x, y);
   m.mon(MON.pigeon, 18, 4).mon(MON.pigeon, 27, 10).mon(MON.pigeon, 35, 6).mon(MON.pigeon, 6, 9);
+  // two doorsteps off the alley, so it isn't one block wide all the way down
+  m.set(32, 16, 'c').set(34, 20, 'c');
   // a cousin, in town to be counted, asleep on her feet in the alley
   m.mon(MON.goat, 33, 14);
   m.link(33, 21, 'next');
@@ -284,7 +290,11 @@ export function caravan(book: BlockBook): Level {
     40,
   );
   // the tents' lower halves, and each tent's own doorway down to the ground
-  for (const [x0, n] of [[3, 'P'], [12, 'B'], [21, 'R']] as const) {
+  for (const [x0, n] of [
+    [3, 'P'],
+    [12, 'B'],
+    [21, 'R'],
+  ] as const) {
     for (let x = x0; x < x0 + 6; x++) m.set(x, 10, x === x0 + 3 ? `tentDoor${n}Low` : `tent${n}Low`);
     if (n !== 'P') m.set(x0 + 3, 9, `tentDoor${n}`);
   }
@@ -296,6 +306,8 @@ export function caravan(book: BlockBook): Level {
   m.mon(MON.wiseman, 12, 13);
   m.mon(MON.goat, 19, 15);
   m.mon(MON.cousin, 8, 17).mon(MON.rooster, 30, 3);
+  // a painted Easter egg half in the sand by the west rocks
+  m.set(1, 16, 'easterEgg');
   m.link(39, 21, 'next');
   return { m, start: at(0, 1) };
 }
@@ -325,7 +337,8 @@ export function stable(book: BlockBook): Level {
     ],
     30,
   );
-  // the line, all facing the manger: goat, goat, (you), goat, lamb, then the donkey and the ox
+  // the line, all facing the manger: goat, goat, (you), goat, lamb, then the donkey and the ox;
+  // now and then the two goats either side jostle together and close the place (blocks.ts)
   // the empty place, up an aisle roped off at its foot: the rope drops for five wool and the
   // gift's "Hey..." plays out as she walks up into her place (four blocks, a second and a half)
   m.set(12, 4, 'placeOpen').set(9, 3, 'dusty');
@@ -334,6 +347,10 @@ export function stable(book: BlockBook): Level {
   m.mon(MON.donkey, 15, 4).mon(MON.ox, 16, 4);
   m.mon(MON.lamb, 2, 6).mon(MON.lamb, 25, 12).mon(MON.lamb, 3, 12);
   m.mon(MON.pigeon, 8, 7).mon(MON.pigeon, 20, 11).mon(MON.rooster, 17, 9);
+  // two more pigeons by the foot of the aisle, to peck at a goat who stands waiting there
+  m.mon(MON.pigeon, 8, 11).mon(MON.pigeon, 17, 6);
+  // Teenage Lewie, visiting from Snowbound with his shovel, mucking out the back corner
+  m.set(28, 12, 'lewie');
   m.link(12, 4, 'won');
   return { m, start: at(1, 9) };
 }

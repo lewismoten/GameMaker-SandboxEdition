@@ -1,125 +1,171 @@
-// Stickers drawn on a canvas and laid out on Print Then Cut sheets. One drawing makes the sheet
-// on screen and on paper, the picture with bleed for a cutting machine (PNG) and its cut lines
-// (SVG), so the three always match. Sizes are in inches.
+// Stickers laid out on Print Then Cut sheets, packed tight in any shape (stickerGeom.ts), and
+// their cut lines (SVG). One layout makes the sheet on screen and on paper, the picture with
+// bleed for a cutting machine (PNG) and its cut lines, so the three always match. Sizes are in inches.
 
-export type StickerShape = 'circle' | 'rect' | 'star' | 'badge';
+import { edgeDistance, inside, outline, type Pt, type StickerGeom } from './stickerGeom';
+
+export type { StickerGeom, StickerShape } from './stickerGeom';
 
 /** Cricut's largest Print Then Cut area; Silhouette and Brother machines take it too. */
 export const CUT_W = 6.75;
 export const CUT_H = 9.25;
 /** Color printed past the cut line, so a cut a hair off never shows white paper. */
 export const BLEED = 1 / 16;
-/** Space between cut lines (enough for the bleed and the blade). */
-export const GAP = 0.25;
-const MARGIN = 0.1;
+/** The least space between two cut lines: both bleeds and a little white for the blade. */
+export const GAP = 0.2;
+/** The packing grid, in inches. */
+const CELL = 0.05;
 
-export interface Placed {
-  /** Which sticker (index into the list given to layout). */
+/** A sticker on its sheet: its cut shape's top-left at (x, y) inches. */
+export interface Placed extends StickerGeom {
+  /** Which sticker: an index into the list given to layout, then into its fillers. */
   index: number;
-  /** Top-left of the cut shape on its sheet, in inches. */
   x: number;
   y: number;
-  w: number;
-  h: number;
-  shape: StickerShape;
 }
 
-/** Size of a sticker by shape: [w, h] in inches. Tall rects and badges hold a character. */
-export function stickerSize(shape: StickerShape, tall = false): [number, number] {
-  if (shape === 'circle' || shape === 'star') return [1.6, 1.6];
-  if (tall) return [1.35, 1.6];
-  if (shape === 'badge') return [1.9, 1.3];
-  return [1.9, 1.4];
-}
+/** A sticker's footprint on the packing grid: rows of [row, from, to) cells, from its top-left cell. */
+type Footprint = [number, number, number][];
 
-/** Shelf packing: rows left to right, centered, new sheet when the area is full. */
-export function layoutStickers(sizes: { w: number; h: number; shape: StickerShape }[], areaW = CUT_W, areaH = CUT_H): Placed[][] {
-  const pages: Placed[][] = [];
-  let page: Placed[] = [];
-  let row: Placed[] = [];
-  let y = MARGIN;
-  const flushRow = () => {
-    if (!row.length) return;
-    const rowH = Math.max(...row.map((p) => p.h));
-    const used = row.reduce((s, p) => s + p.w, 0) + GAP * (row.length - 1);
-    let x = (areaW - used) / 2;
-    for (const p of row) {
-      p.x = x;
-      p.y = y + (rowH - p.h) / 2;
-      x += p.w + GAP;
+function footprint(g: StickerGeom): Footprint {
+  // every cell within half the gap of the cut line (plus half a cell's diagonal, so cells that only
+  // touch count too); two stickers whose footprints miss each other are a full gap apart
+  const cut = outline(g);
+  const r = GAP / 2 + CELL * 0.71;
+  const cols = Math.ceil((g.w + 2 * r) / CELL) + 1;
+  const rows = Math.ceil((g.h + 2 * r) / CELL) + 1;
+  const o = Math.ceil(r / CELL);
+  const out: Footprint = [];
+  for (let j = 0; j < rows; j++) {
+    let from = -1;
+    for (let i = 0; i <= cols; i++) {
+      const x = (i - o + 0.5) * CELL;
+      const y = (j - o + 0.5) * CELL;
+      const on = i < cols && (inside(cut, x, y) || edgeDistance(cut, x, y) <= r);
+      if (on && from < 0) from = i;
+      if (!on && from >= 0) {
+        out.push([j - o, from - o, i - o]);
+        from = -1;
+      }
     }
-    page.push(...row);
-    y += rowH + GAP;
-    row = [];
+  }
+  return out;
+}
+
+/** One sheet's packing grid: which cells are taken, and how many free cells run right from each. */
+class Grid {
+  readonly cols = Math.floor(CUT_W / CELL);
+  readonly rows = Math.floor(CUT_H / CELL);
+  readonly taken = new Uint8Array(this.cols * this.rows);
+  readonly run = new Int32Array(this.cols * this.rows);
+  constructor() {
+    this.update();
+  }
+  update(): void {
+    for (let j = 0; j < this.rows; j++) {
+      let n = 0;
+      for (let i = this.cols - 1; i >= 0; i--) {
+        n = this.taken[j * this.cols + i] ? 0 : n + 1;
+        this.run[j * this.cols + i] = n;
+      }
+    }
+  }
+  /** The first top-left cell (row by row) where the sticker fits, its bleed inside the sheet. */
+  find(g: StickerGeom, fp: Footprint): [number, number] | undefined {
+    const m = Math.ceil(BLEED / CELL);
+    const maxI = Math.floor((CUT_W - g.w - BLEED) / CELL);
+    const maxJ = Math.floor((CUT_H - g.h - BLEED) / CELL);
+    for (let j = m; j <= maxJ; j++)
+      for (let i = m; i <= maxI; i++) {
+        let ok = true;
+        for (const [dj, a, b] of fp) {
+          const row = j + dj;
+          if (row < 0 || row >= this.rows) continue;
+          const lo = Math.max(0, i + a);
+          const hi = Math.min(this.cols, i + b);
+          if (hi > lo && this.run[row * this.cols + lo] < hi - lo) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) return [i, j];
+      }
+    return undefined;
+  }
+  take(i: number, j: number, fp: Footprint): void {
+    for (const [dj, a, b] of fp) {
+      const row = j + dj;
+      if (row < 0 || row >= this.rows) continue;
+      for (let x = Math.max(0, i + a); x < Math.min(this.cols, i + b); x++) this.taken[row * this.cols + x] = 1;
+    }
+    this.update();
+  }
+}
+
+/**
+ * Packs stickers onto as few Print Then Cut sheets as they need: biggest first, each in the first
+ * place it fits, so shapes nest into each other's gaps. Then `fillers` (small extras) go into
+ * whatever room is left on every sheet, round and round, until none fits or `maxFill` are down.
+ */
+export function layoutStickers(stickers: StickerGeom[], fillers: StickerGeom[] = [], maxFill = 60): Placed[][] {
+  const pages: { grid: Grid; placed: Placed[] }[] = [];
+  const order = stickers.map((_, i) => i).sort((a, b) => stickers[b].w * stickers[b].h - stickers[a].w * stickers[a].h || a - b);
+  const put = (page: { grid: Grid; placed: Placed[] }, g: StickerGeom, fp: Footprint, index: number): boolean => {
+    const at = page.grid.find(g, fp);
+    if (!at) return false;
+    page.grid.take(at[0], at[1], fp);
+    page.placed.push({ ...g, index, x: at[0] * CELL, y: at[1] * CELL });
+    return true;
   };
-  sizes.forEach((s, index) => {
-    const rowW = row.reduce((t, p) => t + p.w + GAP, 0);
-    if (row.length && MARGIN + rowW + s.w > areaW - MARGIN) flushRow();
-    const rowH = Math.max(s.h, ...row.map((p) => p.h));
-    if (y + rowH > areaH - MARGIN && (page.length || row.length)) {
-      // this row doesn't fit: the row so far goes on this sheet only if it fits alone
-      if (row.length && y + Math.max(...row.map((p) => p.h)) <= areaH - MARGIN) flushRow();
-      pages.push(page);
-      page = [];
-      y = MARGIN;
+  for (const i of order) {
+    const fp = footprint(stickers[i]);
+    if (pages.some((p) => put(p, stickers[i], fp, i))) continue;
+    const page = { grid: new Grid(), placed: [] };
+    pages.push(page);
+    if (!put(page, stickers[i], fp, i)) throw new Error('A sticker is bigger than the sheet');
+  }
+  if (!pages.length) return [];
+  const prints = fillers.map(footprint);
+  let left = maxFill;
+  for (const page of pages) {
+    for (let placed = true; placed && left > 0;) {
+      placed = false;
+      for (let f = 0; f < fillers.length && left > 0; f++)
+        if (put(page, fillers[f], prints[f], stickers.length + f)) {
+          placed = true;
+          left--;
+        }
     }
-    row.push({ index, x: 0, y: 0, w: s.w, h: s.h, shape: s.shape });
-  });
-  flushRow();
-  if (page.length) pages.push(page);
-  return pages;
+  }
+  return pages.map((p) => p.placed);
 }
 
 const f = (n: number) => String(Math.round(n * 1000) / 1000);
 
-/** Corner radius of a shape, in inches. */
-function radius(shape: StickerShape): number {
-  return shape === 'badge' ? 0.32 : shape === 'rect' ? 0.14 : 0;
+/** A sticker's outline on its sheet, grown by `grow` inches. */
+export function placedOutline(p: Placed, grow = 0): Pt[] {
+  return outline(p, grow).map(([x, y]): Pt => [p.x + x, p.y + y]);
 }
 
 /**
  * The outline of a sticker as SVG path data, grown by `grow` inches (negative shrinks), with
  * every coordinate multiplied by `scale` (pixels or SVG units per inch) and shifted by `ox, oy`.
  */
-export function shapePath(p: Pick<Placed, 'x' | 'y' | 'w' | 'h' | 'shape'>, grow = 0, scale = 1, ox = 0, oy = 0): string {
-  const x = (p.x - grow) * scale + ox;
-  const y = (p.y - grow) * scale + oy;
-  const w = (p.w + 2 * grow) * scale;
-  const h = (p.h + 2 * grow) * scale;
-  if (p.shape === 'circle') {
-    const rx = w / 2;
-    const ry = h / 2;
-    return `M${f(x)} ${f(y + ry)}A${f(rx)} ${f(ry)} 0 1 0 ${f(x + w)} ${f(y + ry)}A${f(rx)} ${f(ry)} 0 1 0 ${f(x)} ${f(y + ry)}Z`;
-  }
-  if (p.shape === 'star') {
-    // a starburst seal: shallow points a blade can follow
-    const cx = x + w / 2;
-    const cy = y + h / 2;
-    const n = 14;
-    const outer = w / 2;
-    const inner = outer - Math.min(0.16 * scale, outer * 0.16);
-    const pts: string[] = [];
-    for (let i = 0; i < n * 2; i++) {
-      const a = (Math.PI * i) / n - Math.PI / 2;
-      const r = i % 2 ? inner : outer;
-      pts.push(`${f(cx + r * Math.cos(a))} ${f(cy + r * Math.sin(a))}`);
-    }
-    return `M${pts.join('L')}Z`;
-  }
-  const r = Math.max(0, Math.min(w / 2, h / 2, (radius(p.shape) + grow) * scale));
-  return (
-    `M${f(x + r)} ${f(y)}H${f(x + w - r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + w)} ${f(y + r)}V${f(y + h - r)}` +
-    `A${f(r)} ${f(r)} 0 0 1 ${f(x + w - r)} ${f(y + h)}H${f(x + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x)} ${f(y + h - r)}` +
-    `V${f(y + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + r)} ${f(y)}Z`
-  );
+export function shapePath(p: Placed, grow = 0, scale = 1, ox = 0, oy = 0): string {
+  const pts = placedOutline(p, grow);
+  return `M${pts.map(([x, y]) => `${f(x * scale + ox)} ${f(y * scale + oy)}`).join('L')}Z`;
 }
 
-/** Bounding box of a sheet's stickers grown by `grow`: [x, y, w, h] in inches. */
+/** Bounding box of a sheet's stickers' outlines grown by `grow`: [x, y, w, h] in inches. */
 export function sheetBounds(page: Placed[], grow = 0): [number, number, number, number] {
-  const x0 = Math.min(...page.map((p) => p.x)) - grow;
-  const y0 = Math.min(...page.map((p) => p.y)) - grow;
-  const x1 = Math.max(...page.map((p) => p.x + p.w)) + grow;
-  const y1 = Math.max(...page.map((p) => p.y + p.h)) + grow;
+  let [x0, y0, x1, y1] = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const p of page)
+    for (const [x, y] of placedOutline(p, grow)) {
+      x0 = Math.min(x0, x);
+      y0 = Math.min(y0, y);
+      x1 = Math.max(x1, x);
+      y1 = Math.max(y1, y);
+    }
   return [x0, y0, x1 - x0, y1 - y0];
 }
 
@@ -131,9 +177,8 @@ export function cutSvg(page: Placed[], names: string[] = []): string {
   const [bx, by, bw, bh] = sheetBounds(page);
   const S = 100; // SVG units per inch
   const paths = page.map(
-    (p) =>
-      `  <path id="sticker-${p.index + 1}" d="${shapePath(p, 0, S, -bx * S, -by * S)}">` +
-      `<title>${escapeXml(names[p.index] || `Sticker ${p.index + 1}`)}</title></path>`,
+    (p, k) =>
+      `  <path id="sticker-${k + 1}" d="${shapePath(p, 0, S, -bx * S, -by * S)}">` + `<title>${escapeXml(names[p.index] || `Sticker ${k + 1}`)}</title></path>`,
   );
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',

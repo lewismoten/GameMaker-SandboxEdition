@@ -10,7 +10,13 @@ import { KEEPSAKE, SCAN } from '../src/ids';
 import { Sim } from '../../kit/sceneSim';
 
 export type Order =
-  | { walk: number; hop?: number; maxTicks?: number; /** false: no hopping for treats on the way */ grab?: boolean }
+  | {
+      walk: number;
+      hop?: number;
+      maxTicks?: number;
+      /** false: no hopping for treats on the way */ grab?: boolean;
+      /** Monsters flying at head height to play dead under on the way, as a player would. */ dodge?: string[];
+    }
   | { hop: number; dir?: 'left' | 'right'; dirFor?: number; after?: number }
   | { trick: keyof typeof SCAN; hold?: number; after?: number }
   | { wait: number }
@@ -86,6 +92,18 @@ function lootNear(sim: Sim, dir: 'left' | 'right', ban: Set<string>): number[] {
 
 const HOLDS = [2, 3, 6, 10];
 
+/** One of `names` on Teddy's row, coming at him and at most `reach` pixels off (0: still over him). */
+function incoming(sim: Sim, names: string[], dir: 'left' | 'right', reach = 36): boolean {
+  const { x, by } = sim.pos;
+  return names.some((n) =>
+    sim.monsters(n).some((m) => {
+      const mx = m.x * 20;
+      const ahead = dir === 'right' ? mx - x : x - mx;
+      return m.y === by && ahead > -20 && ahead <= 20 + reach;
+    }),
+  );
+}
+
 /**
  * Walking along (`key` held), Teddy sees a treat just ahead and up high: tries hopping for
  * it now (a few hop heights, each played a little ahead on the simulator and taken back)
@@ -153,6 +171,18 @@ export async function runRoute(sim: Sim, route: Order[], label = '', rec = new R
           await tick(2);
           continue;
         }
+        if (o.dodge && incoming(sim, o.dodge, dir)) {
+          // something flying in at head height: flat as a rug until it has gone over
+          sim.release(key);
+          sim.press(SCAN.dead);
+          await tick(2);
+          for (let n = 0; n < 60 && incoming(sim, o.dodge, dir, 0); n++) await tick();
+          sim.release(SCAN.dead);
+          await tick(1);
+          say(`played dead under the ${o.dodge.join('/')}`);
+          sim.press(key);
+          continue;
+        }
         await tick();
         stuck = sim.pos.x === lastX ? stuck + 1 : 0;
         lastX = sim.pos.x;
@@ -217,7 +247,12 @@ export async function runRoute(sim: Sim, route: Order[], label = '', rec = new R
  * builds the level's Sim and Recorder afresh around a copy of the character's info; the
  * copy that finished is returned for the next level.
  */
-export async function playLevel(make: (ci: CharInfo) => { sim: Sim; rec: Recorder }, route: Order[], label: string, ci: CharInfo): Promise<RunResult & { sim: Sim; rec: Recorder; ci: CharInfo }> {
+export async function playLevel(
+  make: (ci: CharInfo) => { sim: Sim; rec: Recorder },
+  route: Order[],
+  label: string,
+  ci: CharInfo,
+): Promise<RunResult & { sim: Sim; rec: Recorder; ci: CharInfo }> {
   const ban = new Set<string>();
   for (;;) {
     const mine = structuredClone(ci);

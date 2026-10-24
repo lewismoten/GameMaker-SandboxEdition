@@ -10,6 +10,7 @@ import type { ProgramRef } from '../dos/vfs';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { toCp437 } from '../text/cp437';
+import { expectText, progress } from './transfer';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
 import { Pager, pageLabel } from './pager';
@@ -100,10 +101,6 @@ export function textBytes(lines: string[]): Uint8Array {
 
 export const fileSize = (f: WarezFile): number => (f.text ? textBytes(f.text).length : f.size);
 
-const CPS = 1650; // 14,400 bps with V.42bis
-/** The longest a ZIP's transfer takes on screen (a 1.4 MB one really took 15 minutes). */
-const MAX_PART_MS = 4500;
-
 /** Let in for this visit to the page (the code is asked once). */
 let elite = false;
 let wrongTries = 0;
@@ -127,7 +124,7 @@ async function accessCheck(t: Term, h: RetroHost): Promise<boolean> {
     return true;
   }
   wrongTries++;
-  t.line('|12Access denied.|08 (SysOp\'s note: lamers skip the bulletins. Elite users read them twice.)');
+  t.line("|12Access denied.|08 (SysOp's note: lamers skip the bulletins. Elite users read them twice.)");
   t.line();
   return false;
 }
@@ -136,12 +133,20 @@ export async function warezArea(t: Term, h: RetroHost): Promise<void> {
   if (!(await accessCheck(t, h))) return;
   const s = h.screen;
   const pager = new Pager(t, {
-    header: (p, n) => [boxTop(`W)arez: 0-Day Elite Releases (shhh)${n > 1 ? ` ${pageLabel(p, n)}` : ''}`), boxRow('|11  #  File name        Size  Description'), boxBottom()],
+    header: (p, n) => [
+      boxTop(`W)arez: 0-Day Elite Releases (shhh)${n > 1 ? ` ${pageLabel(p, n)}` : ''}`),
+      boxRow('|11  #  File name        Size  Description'),
+      boxBottom(),
+    ],
     entries: () =>
       WAREZ.map((u, i) => {
         const got = h.downloads.has(u.id) ? '|10*' : ' ';
         const desc = u.diz.filter((l) => !/^-+$/.test(l)); // as Renegade listed a DIZ, without its rules
-        return desc.map((l, j) => (j === 0 ? `|11${String(i + 1).padStart(2)} ${got}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${l}` : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`));
+        return desc.map((l, j) =>
+          j === 0
+            ? `|11${String(i + 1).padStart(2)} ${got}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${l}`
+            : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
+        );
       }),
     footer: () => [`|10*|07 = already in C:\\DOWNLOAD   |12Not FREE:|07 a file point a ZIP. You have |14${filePoints(account())}|07.`],
   });
@@ -160,23 +165,11 @@ export async function warezArea(t: Term, h: RetroHost): Promise<void> {
 
 /** One ZIP's Zmodem transfer; false when aborted. */
 async function transfer(t: Term, h: RetroHost, zip: string, bytes: number, label: string): Promise<boolean> {
-  const s = h.screen;
-  t.line(`|07${label}|15${zip}|07: |14${commas(bytes)}|07 bytes, about |14${Math.max(1, Math.round(bytes / CPS / 60))}|07 minute(s) at 14,400 bps.`);
-  const row = s.cursorY;
-  const start = performance.now();
-  const total = Math.min(MAX_PART_MS, ((bytes / CPS) * 1000) / 4);
-  for (;;) {
-    if (h.keys.poll()?.key === 'Escape') {
-      t.line();
-      t.line('|12Transfer aborted.');
-      return false;
-    }
-    const f = Math.min(1, (performance.now() - start) / total);
-    s.cursorY = row;
-    s.cursorX = 0;
-    t.print(`|15${zip.padEnd(12)} |10${toCp437('█'.repeat(Math.round(f * 30)).padEnd(30, '░'))} |14${commas(Math.round(bytes * f)).padStart(9)} |07bytes  ${CPS} cps`);
-    if (f >= 1) break;
-    await sleep(120);
+  t.line(`|07${label}|15${zip}|07: |14${commas(bytes)}|07 bytes, ${expectText(bytes)}.`);
+  if ((await progress(t, h, zip, bytes)).aborted) {
+    t.line();
+    t.line('|12Transfer aborted.');
+    return false;
   }
   t.line();
   return true;
@@ -189,9 +182,9 @@ async function download(t: Term, h: RetroHost, u: WarezRelease): Promise<void> {
   const amnesty = filePoints(account()) < cost;
   if (amnesty) {
     t.line(`|12LEECH ALERT!|07 ${u.zip} costs |14${cost}|07 file point${cost === 1 ? '' : 's'}; you have |14${filePoints(account())}|07.`);
-    t.line('|13<SysOp>|07 Eh, it\'s a slow night. This one\'s on the house. Upload something, ya leech!');
+    t.line("|13<SysOp>|07 Eh, it's a slow night. This one's on the house. Upload something, ya leech!");
   }
-  t.line(`|07Protocol: |15Zmodem|07${zips.length > 1 ? `, batch of |14${zips.length}|07 files` : ''}.  (Esc aborts)`);
+  t.line(`|07Protocol: |15Zmodem|07${zips.length > 1 ? `, batch of |14${zips.length}|07 files` : ''}.  |08(Esc aborts, Space skips ahead)`);
   for (const [i, zip] of zips.entries()) {
     const label = zips.length > 1 ? `[${i + 1}/${zips.length}] ` : '';
     if (!(await transfer(t, h, zip, Math.round(u.bytes / zips.length), label))) return;
@@ -199,17 +192,20 @@ async function download(t: Term, h: RetroHost, u: WarezRelease): Promise<void> {
   t.line(`|10Transfer complete.${zips.length > 1 ? ` All ${zips.length} parts received.` : ''}`);
   const dir = u.id.toUpperCase();
   for (const [p, zip] of zips.entries()) {
-    t.line(`|07C:\\>PKUNZIP -d ${zip} C:\\DOWNLOAD\\${dir}`);
-    t.line(`|07Searching ZIP: ${zip}`);
+    // PKUNZIP runs on this PC: its words show at once
+    t.local(`|07C:\\>PKUNZIP -d ${zip} C:\\DOWNLOAD\\${dir}\n`);
+    t.local(`|07Searching ZIP: ${zip}\n`);
     const names = [...u.files.filter((f) => (f.part ?? 0) === p).map((f) => f.name), ...(p === 0 ? ['FILE_ID.DIZ'] : [])];
     for (const name of names) {
-      t.line(`|07  Inflating: ${name}`);
+      t.local(`|07  Inflating: ${name}\n`);
       await sleep(h.turbo() ? 60 : 300);
     }
   }
   h.downloads.add(u.id);
   updateAccount((a) => zips.reduce((acc) => recordDownload(acc, Math.round(u.bytes / zips.length), amnesty), a));
   const exe = u.files.find((f) => f.run)?.name.replace(/\.EXE$/i, '');
-  t.line(`|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off.${u.files.some((f) => /\.NFO$/i.test(f.name)) ? ' Read the |15.NFO|07 first!' : ''}`);
+  t.line(
+    `|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off.${u.files.some((f) => /\.NFO$/i.test(f.name)) ? ' Read the |15.NFO|07 first!' : ''}`,
+  );
   t.line();
 }

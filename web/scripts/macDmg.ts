@@ -26,7 +26,20 @@ import { dirname, join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
-import { appName, boxColors, dmgWindow, iconPicture, macAppDmg, macAppFiles, macAppZip, macNotices, NOTICES_FILE, type MacAppOptions } from '../src/export/macApp';
+import { recordedAudioNotice, recordedClips } from '../src/export/recordedAudio';
+import { fictionNote } from '../src/export/fiction';
+import {
+  appName,
+  boxColors,
+  dmgWindow,
+  iconPicture,
+  macAppDmg,
+  macAppFiles,
+  macAppZip,
+  macNotices,
+  NOTICES_FILE,
+  type MacAppOptions,
+} from '../src/export/macApp';
 import { GameFiles } from '../src/project/files';
 import { catalogDownloadable } from '../src/export/downloadable';
 
@@ -57,13 +70,15 @@ async function hdiutilDmg(o: MacAppOptions, file: string): Promise<void> {
       writeFileSync(join(stage, f.path), f.data!, { mode: f.mode });
     }
     symlinkSync('/Applications', join(stage, 'Applications'));
-    writeFileSync(join(stage, NOTICES_FILE), macNotices());
+    writeFileSync(join(stage, NOTICES_FILE), macNotices(o.audio));
     writeFileSync(join(stage, '.DS_Store'), dmgWindow(name));
     const app = join(stage, name);
     if (identity) execFileSync('codesign', ['--force', '--deep', '--options', 'runtime', '--timestamp', '--sign', identity, app], { stdio: 'inherit' });
     execFileSync('codesign', ['--verify', '--deep', '--strict', app], { stdio: 'inherit' });
     rmSync(file, { force: true });
-    execFileSync('hdiutil', ['create', '-quiet', '-volname', name.replace(/\.app$/, ''), '-srcfolder', stage, '-format', 'UDZO', '-ov', file], { stdio: 'inherit' });
+    execFileSync('hdiutil', ['create', '-quiet', '-volname', name.replace(/\.app$/, ''), '-srcfolder', stage, '-format', 'UDZO', '-ov', file], {
+      stdio: 'inherit',
+    });
     if (identity) execFileSync('codesign', ['--sign', identity, '--timestamp', file], { stdio: 'inherit' });
     if (notary) {
       execFileSync('xcrun', ['notarytool', 'submit', file, '--keychain-profile', notary, '--wait'], { stdio: 'inherit' });
@@ -92,7 +107,13 @@ async function main(): Promise<void> {
     return;
   }
   const catalog = cdCatalog(cd);
-  const named = ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  const named = ids.map(
+    (id) =>
+      catalog.find((e) => e.id === id) ??
+      (() => {
+        throw new Error(`No game "${id}" in the catalog.`);
+      })(),
+  );
   for (const e of named) if (!catalogDownloadable(e)) throw new Error(`"${e.id}" is another author's game; it is offered play-only, without downloads.`);
   // the same games the web app's Download button offers
   const picked = process.argv.includes('--all') ? catalog.filter(catalogDownloadable) : named;
@@ -110,7 +131,9 @@ async function main(): Promise<void> {
       player,
       author: e.author ?? e.company,
       year: e.year,
+      fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
+      audio: recordedAudioNotice(recordedClips(new GameFiles(entries))),
       colors: boxColors(e.original?.box),
     });
   }

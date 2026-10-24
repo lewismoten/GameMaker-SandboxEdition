@@ -18,7 +18,9 @@ the city and up a tower in a
 storm, every rat you tickle
 joins the laughing carpet. Doors
 open only for a carpet big
-enough. Avoid Dean Dour.
+enough. Avoid Dean Dour, and at
+the top win over his own rat,
+Mortimer: it takes two goes.
 
 No rats are harmed. They love
 it. Listen: 50 kHz!
@@ -60,7 +62,7 @@ THIS IS SHAREWARE
 
   If it made you cackle,
   register for $5: you get a
-  tape of the song and your own
+  rat sticker and your own
   CERTIFIED RAT TICKLER wallet
   card. Send a check (US funds)
   to:

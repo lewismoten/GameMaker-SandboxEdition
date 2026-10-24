@@ -58,7 +58,13 @@ function recliner(under: Pixels): Pixels {
 
 function gasCloud(frame: number): Pixels {
   const p = blank();
-  for (const [x, y, rr] of [[7, 10, 5], [12, 8, 5], [14, 13, 4], [6, 14, 3.5]]) blob(p, x + frame, y, rr, rr * 0.85, r('brown'), 1, 3);
+  for (const [x, y, rr] of [
+    [7, 10, 5],
+    [12, 8, 5],
+    [14, 13, 4],
+    [6, 14, 3.5],
+  ])
+    blob(p, x + frame, y, rr, rr * 0.85, r('brown'), 1, 3);
   if (frame) micro(p, 0, 0, 'RMBL', c('yellow', 3));
   return p;
 }
@@ -136,7 +142,8 @@ function lamp(under: Pixels, lit: boolean): Pixels {
   return p;
 }
 
-const courier = (step: number) => figure({ shirt: ['yellow', 1], pants: ['brown', 1], hat: { kind: 'cap', color: ['brown', 2] }, arms: 'out', hair: ['ink', 1] }, step);
+const courier = (step: number) =>
+  figure({ shirt: ['yellow', 1], pants: ['brown', 1], hat: { kind: 'cap', color: ['brown', 2] }, arms: 'out', hair: ['ink', 1] }, step);
 
 function closetShelf(): Pixels {
   const p = new Pixels(20, 20, c('ink', 1));
@@ -159,7 +166,7 @@ function lightSwitch(): Pixels {
   return p;
 }
 
-function alexa(frame: number, under: Pixels): Pixels {
+function speaker(frame: number, under: Pixels): Pixels {
   const p = on(under);
   p.rect(6, 6, 8, 12, c('ink', 1)).rect(6, 6, 8, 2, frame ? c('sky', 4) : c('blue', 3));
   for (let y = 9; y < 17; y += 2) p.rect(7, y, 6, 1, c('ink', 0));
@@ -187,8 +194,23 @@ function art(a: Area): void {
   a.solid('tvOn2', tv(a.tiles.pic('rug'), false, 1), { next: 'tvOn', ntime: 3 });
   a.solid('recliner', recliner(a.tiles.pic('rug')));
   a.prop('mom', 'rug', figure({ shirt: ['purple', 3], dress: true, hair: ['brown', 2], hairStyle: 'bun', arms: 'out' }));
-  sign(['THAT WASN\'T', 'THUNDER', '-MOM'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`thunder${i}`, px));
-  a.monster('gas', [[gasCloud(0), 8], [gasCloud(1), 8]], { hazard: true, path: [[3, 0, 1], [0, 2, 1], [-3, 0, 1], [0, -2, 1]] });
+  sign(["THAT WASN'T", 'THUNDER', '-MOM'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`thunder${i}`, px));
+  a.monster(
+    'gas',
+    [
+      [gasCloud(0), 8],
+      [gasCloud(1), 8],
+    ],
+    {
+      hazard: true,
+      path: [
+        [3, 0, 1],
+        [0, 2, 1],
+        [-3, 0, 1],
+        [0, -2, 1],
+      ],
+    },
+  );
 
   // The End?
   a.tile('mat', twisterMat());
@@ -201,8 +223,35 @@ function art(a: Area): void {
   a.solid('record1', recordPlayer(1, a.tiles.pic('partyfloor')), { next: 'record0', ntime: 3 });
   a.prop('sister', 'partyfloor', figure({ shirt: ['red', 2], dress: true, hair: ['ink', 1], hairStyle: 'pigtails', face: 'happy' }));
   sign(['THEME:', 'TWIST', '(OBVIOUSLY)'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`theme${i}`, px));
-  a.monster('twister', [[tornado(0), 3], [tornado(1), 3]], { hazard: true, path: [[4, 0, 1], [0, 2, 1], [-4, 0, 1], [0, -2, 1]] });
-  a.monster('dancer', [[dancer(0), 6], [dancer(1), 6]], { path: [[2, 0, 1], [-2, 0, 1]] });
+  a.monster(
+    'twister',
+    [
+      [tornado(0), 3],
+      [tornado(1), 3],
+    ],
+    {
+      hazard: true,
+      path: [
+        [4, 0, 1],
+        [0, 2, 1],
+        [-4, 0, 1],
+        [0, -2, 1],
+      ],
+    },
+  );
+  a.monster(
+    'dancer',
+    [
+      [dancer(0), 6],
+      [dancer(1), 6],
+    ],
+    {
+      path: [
+        [2, 0, 1],
+        [-2, 0, 1],
+      ],
+    },
+  );
 
   // It Was Probably The Lighting
   a.tile('studyrug', floor('carpet', 6, 'red'));
@@ -214,27 +263,72 @@ function art(a: Area): void {
   a.solid('lawyer', lawyerDesk(a.tiles.pic('studyrug')));
   a.solid('lampLit', lamp(a.tiles.pic('studyrug'), true));
   sign(['BEING OF SOUND', 'BODY AND MIND', '-UNCLE JOE'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`will${i}`, px));
-  a.monster('courier', [[courier(0), 5], [courier(1), 5]], { path: [[0, 3, 1], [3, 0, 1], [0, -3, 1], [-3, 0, 1]] });
+  a.monster(
+    'courier',
+    [
+      [courier(0), 5],
+      [courier(1), 5],
+    ],
+    {
+      path: [
+        [0, 3, 1],
+        [3, 0, 1],
+        [0, -3, 1],
+        [-3, 0, 1],
+      ],
+    },
+  );
 
   // Alone With a Broken Bulb
   a.tile('closet', floor('dark', 4));
   a.solid('closetShelf', closetShelf());
   a.solid('bulb', brokenBulb(a.tiles.pic('closet')));
   a.solid('switch', lightSwitch());
-  a.solid('alexa0', alexa(0, a.tiles.pic('closet')), { next: 'alexa1', ntime: 8 });
-  a.solid('alexa1', alexa(1, a.tiles.pic('closet')), { next: 'alexa0', ntime: 8 });
+  a.solid('speaker0', speaker(0, a.tiles.pic('closet')), { next: 'speaker1', ntime: 8 });
+  a.solid('speaker1', speaker(1, a.tiles.pic('closet')), { next: 'speaker0', ntime: 8 });
   a.prop('george', 'closet', figure({ shirt: ['grey', 3], pants: ['brown', 1], hair: ['grey', 2], arms: 'out', face: 'sad' }));
   sign(['IDEAS:', 'PLEASE', 'UPGRADE'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`idea${i}`, px));
-  a.monster('moth', [[moth(0), 2], [moth(1), 2]], { hazard: true, path: [[2, 0, 2], [0, 2, 2], [-2, 0, 2], [0, -2, 2]] });
+  a.monster(
+    'moth',
+    [
+      [moth(0), 2],
+      [moth(1), 2],
+    ],
+    {
+      hazard: true,
+      path: [
+        [2, 0, 2],
+        [0, 2, 2],
+        [-2, 0, 2],
+        [0, -2, 2],
+      ],
+    },
+  );
 
   // the hallway's guest: Gwinn, looking for a couch to sleep on
-  a.monster('gwinnNap', [[gwinn(0), 4], [gwinn(1), 4]], { path: [[5, 0, 2], [-5, 0, 2]] });
+  a.monster(
+    'gwinnNap',
+    [
+      [gwinn(0), 4],
+      [gwinn(1), 4],
+    ],
+    {
+      path: [
+        [5, 0, 2],
+        [-5, 0, 2],
+      ],
+    },
+  );
 }
 
 export const LIVING: WingSpec = {
   wing: WINGS[4],
   tint: 'orange',
-  stamp: [['orange', 2], ['ink', 1], ['yellow', 3]],
+  stamp: [
+    ['orange', 2],
+    ['ink', 1],
+    ['yellow', 3],
+  ],
   signs: [
     ['THE COUCH IS', 'NOT A BED.', 'YES, GWINN.'],
     ['HOME IS WHERE', 'THE BOOKS', 'ARE'],
@@ -307,7 +401,7 @@ export const LIVING: WingSpec = {
         T: { tile: '.', mon: 'twister' },
         D: { tile: '.', mon: 'dancer' },
       },
-      note: 'Oliver Twist\'s party. Twister, a Rubik\'s Cube, tongue twisters, Chubby Checker. Outside, a twister. Inside, also a twister. It fines you.',
+      note: "Oliver Twist's party. Twister, a Rubik's Cube, tongue twisters, Chubby Checker. Outside, a twister. Inside, also a twister. It fines you.",
       twist: {
         grid: [
           ['twistWindow', 'deadTV', 'record0'],
@@ -344,7 +438,7 @@ export const LIVING: WingSpec = {
         '3': 'will2',
         S: { tile: '.', mon: 'courier' },
       },
-      note: 'The reading of Uncle Joe\'s will. Everyone is immorally dressed except the guy in the yellow shirt. There is no guy in a yellow shirt. Yet.',
+      note: "The reading of Uncle Joe's will. Everyone is immorally dressed except the guy in the yellow shirt. There is no guy in a yellow shirt. Yet.",
       twist: {
         grid: [
           ['lampLit', 'm:courier#0', 'rack'],
@@ -373,19 +467,19 @@ export const LIVING: WingSpec = {
         b: 'bulb',
         w: 'switch',
         g: 'george',
-        A: 'alexa0',
+        A: 'speaker0',
         M: { tile: '.', mon: 'moth' },
         '1': 'idea0',
         '2': 'idea1',
         '3': 'idea2',
       },
-      note: 'A closet. George, an idea, a broken bulb. It is very dark. Somewhere there is a light switch. Somewhere there is Alexa.',
+      note: 'A closet. George, an idea, a broken bulb. It is very dark. Somewhere there is a light switch. Somewhere there is a smart speaker.',
       twist: {
         grid: [
           ['bulb', 'closet', null],
-          ['george', 'switch', 'alexa0'],
+          ['george', 'switch', 'speaker0'],
         ],
-        caption: ['FIG. 14: Looking for a light switch.', 'Most people talk to Alexa.'],
+        caption: ['FIG. 14: Looking for a light switch.', 'Most people ask the speaker.'],
       },
     },
   ],

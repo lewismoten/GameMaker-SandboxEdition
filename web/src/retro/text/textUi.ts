@@ -40,7 +40,13 @@ export async function horizMenu(ui: Ui, y: number, xs: number[], current: number
     } else if (k.key.length === 1) {
       // First letter jumps to an item, as in most DOS menus.
       const row = String.fromCharCode(...ui.screen.chars.subarray(y * 80, y * 80 + 80));
-      const idx = xs.slice(0, n).findIndex((x, i) => row.slice(x, xs[i + 1]).trim().toUpperCase().startsWith(k.key.toUpperCase()));
+      const idx = xs.slice(0, n).findIndex((x, i) =>
+        row
+          .slice(x, xs[i + 1])
+          .trim()
+          .toUpperCase()
+          .startsWith(k.key.toUpperCase()),
+      );
       if (idx >= 0) {
         cur = idx;
         show();

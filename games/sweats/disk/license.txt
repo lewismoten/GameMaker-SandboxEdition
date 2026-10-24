@@ -33,8 +33,63 @@ to ten people; shareware had
 to ask at least $5 and pay RSD
 10% of the fees. Since 2014
 Game-Maker is MIT licensed,
-and so is this game: free to
-share, change or even sell.
+and so is this game, except
+its voice clips (below): free
+to share, change or even sell.
+
+VOICE CLIPS: NOT MIT
+
+These 68 voice clips are cut
+from recordings made on the
+free plan of Riffusion (now
+Google Flow Music):
+ANTS_L.VOC, ANTS_O.VOC,
+ANTS_P.VOC, ANTS_W.VOC,
+BIRD_L.VOC, BIRD_O.VOC,
+BIRD_P.VOC, BIRD_W.VOC,
+BLNKT_L.VOC, BLNKT_O.VOC,
+BLNKT_P.VOC, BLNKT_W.VOC,
+CART_L.VOC, CART_O.VOC,
+CART_P.VOC, CART_W.VOC,
+CHAIR_L.VOC, CHAIR_O.VOC,
+CHAIR_P.VOC, CHAIR_W.VOC,
+FICUS_L.VOC, FICUS_O.VOC,
+FICUS_P.VOC, FICUS_W.VOC,
+GOAT_L.VOC, GOAT_O.VOC,
+GOAT_P.VOC, GOAT_W.VOC,
+ITCH_L.VOC, ITCH_O.VOC,
+ITCH_P.VOC, ITCH_W.VOC,
+KALE_L.VOC, KALE_O.VOC,
+KALE_P.VOC, KALE_W.VOC,
+LIKE_L.VOC, LIKE_O.VOC,
+LIKE_P.VOC, LIKE_W.VOC,
+LILY_L.VOC, LILY_O.VOC,
+LILY_P.VOC, LILY_W.VOC,
+OUT_L.VOC, OUT_O.VOC,
+OUT_P.VOC, OUT_W.VOC,
+PEN_L.VOC, PEN_O.VOC,
+PEN_P.VOC, PEN_W.VOC,
+PIZZA_L.VOC, PIZZA_O.VOC,
+PIZZA_P.VOC, PIZZA_W.VOC,
+PLATE_L.VOC, PLATE_O.VOC,
+PLATE_P.VOC, PLATE_W.VOC,
+SOCKS_L.VOC, SOCKS_O.VOC,
+SOCKS_P.VOC, SOCKS_W.VOC,
+UMBR_L.VOC, UMBR_O.VOC,
+UMBR_P.VOC, UMBR_W.VOC.
+
+That service's terms allow
+free-plan songs only
+"personal, non-commercial
+uses", so these clips are not
+under the MIT License: don't
+sell them or use them
+commercially.
+
+The rest of the game is MIT
+licensed: its code, levels,
+art, text, and FM music
+arranged by Claude.
 
 MIT License
 
@@ -81,13 +136,6 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
-
-
-
-
-
-
-
 
 
 

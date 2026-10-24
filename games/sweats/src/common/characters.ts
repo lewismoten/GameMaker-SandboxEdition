@@ -42,7 +42,15 @@ const birth = (mon: number): Frame => ({ ...emptyFrame(), x: 0, y: 20, pic1: mon
 export function buildPoet(cb: ReturnType<typeof buildCharBlocks>): Character {
   const ch = newCharacter();
   const S = ch.sequences;
-  const f = (o: F): Frame => ({ ...emptyFrame(), x: o.x ?? 0, y: o.y ?? 0, pic1: CHARBL, pic2: cb.n(o.pic), pause: o.pause ?? 1, orient: o.mirror ? MIRROR : 0 });
+  const f = (o: F): Frame => ({
+    ...emptyFrame(),
+    x: o.x ?? 0,
+    y: o.y ?? 0,
+    pic1: CHARBL,
+    pic2: cb.n(o.pic),
+    pause: o.pause ?? 1,
+    orient: o.mirror ? MIRROR : 0,
+  });
 
   set(S[SEQ.idle], [
     f({ pic: 'front', pause: 30 }),
@@ -54,7 +62,10 @@ export function buildPoet(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pic: 'smug', pause: 16 }),
   ]);
   set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'faint0', pause: 8 }), f({ pic: 'faint1', pause: 30 })], { sound: SND.die, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'declaim0', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], { sound: SND.hurt, jstkBut: 0 });
+  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'declaim0', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], {
+    sound: SND.hurt,
+    jstkBut: 0,
+  });
   set(S[3], [f({ pic: 'front' })], { key: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
@@ -75,16 +86,32 @@ export function buildPoet(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.down], down, { key: KEY.down, jstkMov: JOY.down, sound: SND.step });
   set(S[SEQ.downS], down, { key: KEY.s, sound: SND.step });
   // Space: declaim to both sides of the room (plays through: "ground", or the joystick's idle cuts in)
-  set(S[SEQ.declaim], [f({ pic: 'declaim1', pause: 2 }), birth(MON.wordR), birth(MON.wordL), f({ pic: 'declaim1', pause: 6 }), f({ pic: 'declaim0', pause: 4 }), f({ pic: 'front', pause: 2 })], {
-    key: KEY.space,
-    sound: SND.declaim,
+  set(
+    S[SEQ.declaim],
+    [
+      f({ pic: 'declaim1', pause: 2 }),
+      birth(MON.wordR),
+      birth(MON.wordL),
+      f({ pic: 'declaim1', pause: 6 }),
+      f({ pic: 'declaim0', pause: 4 }),
+      f({ pic: 'front', pause: 2 }),
+    ],
+    {
+      key: KEY.space,
+      sound: SND.declaim,
+      ground: 1,
+      norepeat: 1,
+      jstkMov: JOY.any,
+      jstkBut: 1,
+    },
+  );
+  // B: the line, hand on heart
+  set(S[SEQ.line], [f({ pic: 'declaim0', pause: 10 }), f({ pic: 'yorick', pause: 14 }), f({ pic: 'declaim0', pause: 8 }), f({ pic: 'front', pause: 2 })], {
+    key: KEY.b,
+    sound: SND.line,
     ground: 1,
     norepeat: 1,
-    jstkMov: JOY.any,
-    jstkBut: 1,
   });
-  // B: the line, hand on heart
-  set(S[SEQ.line], [f({ pic: 'declaim0', pause: 10 }), f({ pic: 'yorick', pause: 14 }), f({ pic: 'declaim0', pause: 8 }), f({ pic: 'front', pause: 2 })], { key: KEY.b, sound: SND.line, ground: 1, norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // composure (hit points)
@@ -130,7 +157,13 @@ export function commonMonsters(set: Monster[], mb: SpriteBook): void {
   set[MON.teddy] = mon(anim(mb, 'teddy0', 'teddy1', 20), { power: POWER.tough, thru: 1 }, still);
   set[MON.gwinn] = mon(anim(mb, 'gwinn0', 'gwinn1', 24), { power: POWER.tough, thru: 1 }, still);
   // friends: a hello (a touch) is a tip, and off they go
-  set[MON.carl] = mon(anim(mb, 'carl0', 'carl1', 1), { power: POWER.friend, thru: 0, newmon: MON.carlOff }, [corner(0, 0, 2), corner(3, -1, 2, 0), corner(5, 1, 2, 0), corner(2, 2, 2, 4), corner(0, 0, 2, 4)]);
+  set[MON.carl] = mon(anim(mb, 'carl0', 'carl1', 1), { power: POWER.friend, thru: 0, newmon: MON.carlOff }, [
+    corner(0, 0, 2),
+    corner(3, -1, 2, 0),
+    corner(5, 1, 2, 0),
+    corner(2, 2, 2, 4),
+    corner(0, 0, 2, 4),
+  ]);
   set[MON.carlOff] = mon(anim(mb, 'carlAway0', 'carlAway1', 1), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
   set[MON.goat] = mon(anim(mb, 'goat0', 'goat1', 8), { power: POWER.friend, thru: 0, newmon: MON.goatOff }, still);
   set[MON.goatOff] = mon(anim(mb, 'goatAway1', 'goatAway0', 3), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 2), corner(-4, 0, 2, 4)]);

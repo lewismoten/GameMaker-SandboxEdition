@@ -52,8 +52,14 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pic: 'grin', pause: 4 }),
     f({ pic: 'front1' }),
   ]);
-  set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'splat0', y: 6, pause: 4 }), f({ pic: 'splat1', y: 6, pause: 30 })], { sound: SND.splat, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'front1', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front0', pause: 1 })], { sound: SND.hurt, jstkBut: 0 });
+  set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'splat0', y: 6, pause: 4 }), f({ pic: 'splat1', y: 6, pause: 30 })], {
+    sound: SND.splat,
+    jstkBut: 0,
+  });
+  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'front1', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front0', pause: 1 })], {
+    sound: SND.hurt,
+    jstkBut: 0,
+  });
   set(S[3], [f({ pic: 'front0' })], { key: 0 });
   set(S[4], [f({ pic: 'front0' })], { key: 0 });
 
@@ -89,12 +95,16 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
     { key: KEY.space, sound: SND.roll, norepeat: 1, ground: 1, jstkBut: 1 },
   );
   // the buzz: off it goes, the way he last flew
-  set(S[SEQ.buzz], [f({ pic: 'buzz0', pause: 1 }), birth(MON.buzz), f({ pic: 'buzz1', pause: 2 }), f({ pic: 'buzz0', pause: 2 }), f({ pic: 'front0', pause: 1 })], {
-    key: KEY.b,
-    sound: SND.buzz,
-    norepeat: 1,
-    jstkBut: 2,
-  });
+  set(
+    S[SEQ.buzz],
+    [f({ pic: 'buzz0', pause: 1 }), birth(MON.buzz), f({ pic: 'buzz1', pause: 2 }), f({ pic: 'buzz0', pause: 2 }), f({ pic: 'front0', pause: 1 })],
+    {
+      key: KEY.b,
+      sound: SND.buzz,
+      norepeat: 1,
+      jstkBut: 2,
+    },
+  );
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // patience (health)
@@ -151,9 +161,12 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.missClap] = missed(MON.clap);
   set[MON.swatter] = swing('swat0', 'swat1', MON.missSwatter, 12);
   set[MON.missSwatter] = missed(MON.swatter);
+  // the finale: his hand grabbing for the aux cord, open and closing (a roll makes it miss too)
+  set[MON.grab] = swing('grab0', 'grab1', MON.missGrab, 3);
+  set[MON.missGrab] = missed(MON.grab);
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 6), { power: 200, thru: 0 }, [corner(0, 0, 3), corner(0, -2, 3, 0), corner(0, 0, 2, 0), corner(0, 0, 1)]);
   set[MON.loaf] = mon(anim('loaf0', 'loaf1', 12), { power: 50, thru: 0, newmon: MON.loafOff });
-  set[MON.loafOff] = mon(anim('loaf1', 'loaf0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(2, -3, 4, 0)]);
+  set[MON.loafOff] = mon(anim('loafOff1', 'loafOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(2, -3, 4, 0)]);
   // ears: asleep (power 105: a buzz, 110, wakes it), twitching (power 50: Carl flies in and it counts), asleep again for a while
   const ears = (asleep: string, t0: string, t1: string, zzz: string, ear: number, twitch: number, sleepy: number) => {
     set[ear] = mon([[n(asleep), 40]], { power: 105, thru: 0, newmon: twitch });
@@ -164,7 +177,15 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   ears('dogEar', 'dogT0', 'dogT1', 'dogZ', MON.dogEar, MON.dogTwitch, MON.dogZzz);
   set[MON.snore] = mon([[n('snore'), 6]], { power: 50, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -2, 1), corner(2, -4, 1), corner(1, -6, 1)]);
   // a slipper flung across the bedroom in an arc, end over end, again and again
-  set[MON.slipper] = mon(anim('slipper0', 'slipper1', 2), { power: 200, thru: 0 }, [corner(0, 0, 5), corner(4, -3, 5), corner(8, 0, 5), corner(8, 0, 1), corner(4, -3, 5, 4), corner(0, 0, 5, 4), corner(0, 0, 1)]);
+  set[MON.slipper] = mon(anim('slipper0', 'slipper1', 2), { power: 200, thru: 0 }, [
+    corner(0, 0, 5),
+    corner(4, -3, 5),
+    corner(8, 0, 5),
+    corner(8, 0, 1),
+    corner(4, -3, 5, 4),
+    corner(0, 0, 5, 4),
+    corner(0, 0, 1),
+  ]);
   set[MON.fan] = mon(anim('fan0', 'fan1', 1), { power: 200, thru: 0 });
   set[MON.sage] = mon(anim('sage0', 'sage1', 6), { power: 200, thru: 0, end: -1 }, [corner(0, 0, 1), corner(-2, -2, 1), corner(-1, -5, 1), corner(-3, -7, 1)]);
   set[MON.mist] = mon(anim('mist0', 'mist1', 6), { power: 200, thru: 0, end: -1 }, [corner(0, 0, 1), corner(2, -2, 1), corner(1, -5, 1), corner(3, -7, 1)]);
@@ -172,8 +193,19 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.mop] = mon(anim('mop0', 'mop1', 3), { power: 200, thru: 0 }, pace(mopRun, 2));
   set[MON.mopperA] = mon(anim('mopperA0', 'mopperA1', 6), { power: 200, thru: 0 }, pace(mopRun, 2));
   set[MON.mopperB] = mon(anim('mopperB0', 'mopperB1', 6), { power: 200, thru: 0 }, pace(mopRun, 2));
-  set[MON.bird] = mon(anim('bird0', 'bird1', 3), { power: 200, thru: 0 }, [corner(0, 0, 3), corner(patrol, 1, 3, 0), corner(patrol, -1, 3, 0), corner(0, 0, 3, 4)]);
-  set[MON.wasp] = mon(anim('wasp0', 'wasp1', 1), { power: 200, thru: 0, end: -1 }, [corner(0, 0, 3), corner(2, 2, 3), corner(5, 1, 3), corner(8, 3, 3), corner(12, 2, 3)]);
+  set[MON.bird] = mon(anim('bird0', 'bird1', 3), { power: 200, thru: 0 }, [
+    corner(0, 0, 3),
+    corner(patrol, 1, 3, 0),
+    corner(patrol, -1, 3, 0),
+    corner(0, 0, 3, 4),
+  ]);
+  set[MON.wasp] = mon(anim('wasp0', 'wasp1', 1), { power: 200, thru: 0, end: -1 }, [
+    corner(0, 0, 3),
+    corner(2, 2, 3),
+    corner(5, 1, 3),
+    corner(8, 3, 3),
+    corner(12, 2, 3),
+  ]);
   set[MON.wave] = mon(anim('wave0', 'wave1', 5), { power: 200, thru: 0 });
   set[MON.frog] = mon(anim('frog0', 'frog1', 30, 6), { power: 200, thru: 0 });
   set[MON.tongue] = mon(
@@ -183,11 +215,17 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     ],
     { power: 200, thru: 0 },
   );
-  set[MON.dragonfly] = mon(anim('dragon0', 'dragon1', 1), { power: 200, thru: 0 }, [corner(0, 0, 3), corner(patrol, 0, 3, 0), corner(patrol, 0, 1, 0), corner(0, 0, 3, 4), corner(0, 0, 1, 4)]);
+  set[MON.dragonfly] = mon(anim('dragon0', 'dragon1', 1), { power: 200, thru: 0 }, [
+    corner(0, 0, 3),
+    corner(patrol, 0, 3, 0),
+    corner(patrol, 0, 1, 0),
+    corner(0, 0, 3, 4),
+    corner(0, 0, 1, 4),
+  ]);
   set[MON.spider] = mon(anim('spider0', 'spider1', 4), { power: 200, thru: 0 }, [corner(0, 0, 2), corner(0, 3, 2), corner(0, 3, 1), corner(0, 0, 1)]);
   set[MON.goat] = mon(anim('goat0', 'goat1', 10), { power: 200, thru: 1 }, pace(3, 1));
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff });
-  set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
+  set[MON.seedOff] = mon(anim('seedOff1', 'seedOff0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
   set[MON.camelA] = mon(anim('camelA0', 'camelA1', 30), { power: 200, thru: 1 });
   set[MON.camelB] = mon(anim('camelB0', 'camelB1', 30), { power: 200, thru: 1 });
   // Carl's own: the whoosh and the buzz fly off the way he last flew; where the whoosh hits

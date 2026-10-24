@@ -42,6 +42,7 @@ async function sideRoom(st: Stage): Promise<string> {
 }
 
 const only = process.argv.slice(2);
+const failed: string[] = [];
 for (const make of STAGES) {
   const st = make();
   for (const l of st.legs) {
@@ -54,6 +55,13 @@ for (const make of STAGES) {
       `${l.file} ${l.title}: ${r.ok ? 'CLEARED' : r.dead ? 'DIED' : 'TIMED OUT'} in ${r.ticks} ticks (${(r.ticks / 18.2).toFixed(0)}s), lost ${r.hpLost} energy, score ${r.score}, ${((Date.now() - t0) / 1000).toFixed(1)}s`,
     );
     for (const line of r.log) console.log('   ', line);
+    if (!r.ok || r.dead) failed.push(`${l.file} ${r.dead ? 'died' : 'timed out'}`);
   }
-  if (st.side && (!only.length || only.includes(st.side.room.file))) console.log(`${st.side.room.file} ${st.side.room.title}: ${await sideRoom(st)}`);
+  if (st.side && (!only.length || only.includes(st.side.room.file))) {
+    const res = await sideRoom(st);
+    console.log(`${st.side.room.file} ${st.side.room.title}: ${res}`);
+    if (!res.startsWith('in at')) failed.push(`${st.side.room.file}: ${res}`);
+  }
 }
+// any death or failed leg fails the check
+if (failed.length) throw new Error(`blaster check failed: ${failed.join(', ')}`);

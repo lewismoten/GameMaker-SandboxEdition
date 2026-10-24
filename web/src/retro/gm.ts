@@ -96,7 +96,10 @@ async function help(h: RetroHost, name: string): Promise<void> {
 /** GM: runs until Quit. `args`: GM's command line (GM REGISTER). */
 export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main', args: string[] = []): Promise<void> {
   // the designers, in Design-bar order, fetched ahead while the menu waits
-  prefetchWhenIdle(TOOLS.map((t) => PORTED[t.exe]).filter((load) => !!load), 1500);
+  prefetchWhenIdle(
+    TOOLS.map((t) => PORTED[t.exe]).filter((load) => !!load),
+    1500,
+  );
   h.screen.cursorVisible = false;
   registeredTo = undefined;
   if (start === 'main') {

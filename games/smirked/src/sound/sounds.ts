@@ -61,53 +61,147 @@ export function buildVocs(): Record<string, Uint8Array> {
   // you, screaming like a cat being dipped in a bathtub: a high, rising, yowling falsetto
   vocs.scream = sample(
     0.9,
-    voice((t) => 520 + t * 380 + Math.sin(t * 46) * 40, (t) => 820 + Math.sin(t * 9) * 120, 1500, 21, 0.08),
+    voice(
+      (t) => 520 + t * 380 + Math.sin(t * 46) * 40,
+      (t) => 820 + Math.sin(t * 9) * 120,
+      1500,
+      21,
+      0.08,
+    ),
     { envelope: env(0.04, 0.7), gain: 0.85 },
   );
   // a sneeze: ah... ah... CHOO!
   vocs.sneeze = sample(
     1.0,
     mix(
-      [gate(voice((t) => 230 + t * 160, 750, 1200, 22, 0.05), 0, 0.22), 0.6],
-      [gate(voice((t) => 260 + t * 160, 760, 1250, 23, 0.05), 0.3, 0.55), 0.7],
-      [gate(lowNoise(24, (t) => 0.95 - (t - 0.62) * 1.2), 0.62, 1.0), 1.2],
+      [
+        gate(
+          voice((t) => 230 + t * 160, 750, 1200, 22, 0.05),
+          0,
+          0.22,
+        ),
+        0.6,
+      ],
+      [
+        gate(
+          voice((t) => 260 + t * 160, 760, 1250, 23, 0.05),
+          0.3,
+          0.55,
+        ),
+        0.7,
+      ],
+      [
+        gate(
+          lowNoise(24, (t) => 0.95 - (t - 0.62) * 1.2),
+          0.62,
+          1.0,
+        ),
+        1.2,
+      ],
     ),
     { envelope: () => 1, gain: 0.75 },
   );
   // the werewolf guy's howl: a long rising-falling ooOOOooo through the mask
-  vocs.howl = sample(1.5, voice((t) => (t < 0.5 ? 260 + t * 400 : t < 1 ? 460 + Math.sin(t * 30) * 12 : 460 - (t - 1) * 360), (t) => 450 + t * 150, 900, 25, 0.06), { envelope: env(0.1, 0.6), gain: 0.8 });
+  vocs.howl = sample(
+    1.5,
+    voice(
+      (t) => (t < 0.5 ? 260 + t * 400 : t < 1 ? 460 + Math.sin(t * 30) * 12 : 460 - (t - 1) * 360),
+      (t) => 450 + t * 150,
+      900,
+      25,
+      0.06,
+    ),
+    { envelope: env(0.1, 0.6), gain: 0.8 },
+  );
   // the werewolf guy's growl
   vocs.growl = sample(0.8, mix([voice((t) => 90 + Math.sin(t * 70) * 14, 500, 900, 26, 0.2), 0.8], [lowNoise(27, 0.2), 0.3]), { envelope: env(0.1, 0.6) });
   // a creaky door swinging open
-  vocs.creak = sample(1.0, (t) => Math.sin(2 * Math.PI * (180 + Math.sin(t * 7) * 60 + t * 80) * t) * (Math.sin(t * 260) > -0.2 ? 1 : 0.15) * 0.7, { envelope: env(0.05, 0.4) });
+  vocs.creak = sample(1.0, (t) => Math.sin(2 * Math.PI * (180 + Math.sin(t * 7) * 60 + t * 80) * t) * (Math.sin(t * 260) > -0.2 ? 1 : 0.15) * 0.7, {
+    envelope: env(0.05, 0.4),
+  });
   // an animatronic zombie: a servo whine, a clunk, and a groan off a tape
   vocs.groan = sample(
     1.0,
-    mix([gate(osc.square((t) => 900 + t * 1200), 0, 0.18), 0.1], [gate(lowNoise(28, 0.7), 0.2, 0.23), 0.9], [gate(voice((t) => 110 - t * 30, (t) => 600 - t * 200, 1000, 29, 0.05), 0.25, 1.0), 0.8]),
+    mix(
+      [
+        gate(
+          osc.square((t) => 900 + t * 1200),
+          0,
+          0.18,
+        ),
+        0.1,
+      ],
+      [gate(lowNoise(28, 0.7), 0.2, 0.23), 0.9],
+      [
+        gate(
+          voice(
+            (t) => 110 - t * 30,
+            (t) => 600 - t * 200,
+            1000,
+            29,
+            0.05,
+          ),
+          0.25,
+          1.0,
+        ),
+        0.8,
+      ],
+    ),
     { envelope: env(0.02, 0.5), gain: 0.8 },
   );
   // a papier-mache witch going over: a cardboard flap and a hollow thump
-  vocs.thump = sample(0.45, mix([gate(lowNoise(30, 0.5), 0, 0.06), 0.8], [osc.sine((t) => 140 - t * 120), 0.8], [gate(lowNoise(31, 0.3), 0.08, 0.2), 0.5]), { envelope: env(0.005, 2) });
+  vocs.thump = sample(0.45, mix([gate(lowNoise(30, 0.5), 0, 0.06), 0.8], [osc.sine((t) => 140 - t * 120), 0.8], [gate(lowNoise(31, 0.3), 0.08, 0.2), 0.5]), {
+    envelope: env(0.005, 2),
+  });
   // a flashlight battery clicking in
-  vocs.click = sample(0.16, mix([gate(lowNoise(32, 0.9), 0, 0.008), 1], [gate(osc.sine(1800), 0, 0.03), 0.5], [gate(lowNoise(33, 0.8), 0.07, 0.08), 0.7]), { envelope: () => 1, gain: 0.8 });
+  vocs.click = sample(0.16, mix([gate(lowNoise(32, 0.9), 0, 0.008), 1], [gate(osc.sine(1800), 0, 0.03), 0.5], [gate(lowNoise(33, 0.8), 0.07, 0.08), 0.7]), {
+    envelope: () => 1,
+    gain: 0.8,
+  });
   // a dollar bill: a papery rustle and a snap
-  vocs.rustle = sample(0.35, mix([lowNoise(34, (t) => 0.5 + Math.sin(t * 90) * 0.3), 0.6], [gate(lowNoise(35, 0.95), 0.25, 0.27), 1]), { envelope: env(0.02, 1) });
+  vocs.rustle = sample(0.35, mix([lowNoise(34, (t) => 0.5 + Math.sin(t * 90) * 0.3), 0.6], [gate(lowNoise(35, 0.95), 0.25, 0.27), 1]), {
+    envelope: env(0.02, 1),
+  });
   // candy corn: a wrapper's crinkle
-  vocs.crinkle = sample(0.3, (() => {
-    const r = rng(36);
-    const n = lowNoise(37, 0.95);
-    return (t: number) => (r() < 0.25 ? n(t) : n(t) * 0.1);
-  })(), { envelope: env(0.01, 1.2), gain: 0.7 });
+  vocs.crinkle = sample(
+    0.3,
+    (() => {
+      const r = rng(36);
+      const n = lowNoise(37, 0.95);
+      return (t: number) => (r() < 0.25 ? n(t) : n(t) * 0.1);
+    })(),
+    { envelope: env(0.01, 1.2), gain: 0.7 },
+  );
   // points: a little ding-dong
   vocs.chime = sample(0.4, (t) => Math.sin(2 * Math.PI * (t < 0.12 ? 1568 : 1319) * t) * 0.7, { envelope: env(0.005, 2) });
   // a juice box: the straw's slurp, the box crumpling
-  vocs.slurp = sample(0.6, mix([lowNoise(38, (t) => 0.15 + (Math.sin(t * 40) > 0 ? 0.3 : 0)), 0.8], [gate(lowNoise(39, 0.9), 0.5, 0.56), 0.6]), { envelope: env(0.03, 0.5) });
+  vocs.slurp = sample(0.6, mix([lowNoise(38, (t) => 0.15 + (Math.sin(t * 40) > 0 ? 0.3 : 0)), 0.8], [gate(lowNoise(39, 0.9), 0.5, 0.56), 0.6]), {
+    envelope: env(0.03, 0.5),
+  });
   // the souvenir register: ka-CHING
-  vocs.register = sample(0.7, mix([gate(lowNoise(40, 0.8), 0, 0.05), 0.8], [gate(osc.sine(2637), 0.08, 0.7), 0.5], [gate(osc.sine(3520), 0.08, 0.7), 0.3]), { envelope: env(0.01, 1.4) });
+  vocs.register = sample(0.7, mix([gate(lowNoise(40, 0.8), 0, 0.05), 0.8], [gate(osc.sine(2637), 0.08, 0.7), 0.5], [gate(osc.sine(3520), 0.08, 0.7), 0.3]), {
+    envelope: env(0.01, 1.4),
+  });
   // the $12 foam sword: a soft whoosh and a squeaky bonk
-  vocs.whoosh = sample(0.4, mix([lowNoise(41, (t) => 0.1 + t * 1.6), 0.7], [gate(osc.sine((t) => 700 - t * 300), 0.28, 0.36), 0.5]), { envelope: env(0.2, 1) });
+  vocs.whoosh = sample(
+    0.4,
+    mix(
+      [lowNoise(41, (t) => 0.1 + t * 1.6), 0.7],
+      [
+        gate(
+          osc.sine((t) => 700 - t * 300),
+          0.28,
+          0.36,
+        ),
+        0.5,
+      ],
+    ),
+    { envelope: env(0.2, 1) },
+  );
   // a cardboard helmet knocked off: a hollow clonk and a bounce
-  vocs.clonk = sample(0.5, mix([gate(lowNoise(46, 0.6), 0, 0.03), 0.9], [osc.sine((t) => 220 - t * 160), 0.7], [gate(osc.sine(180), 0.28, 0.34), 0.5]), { envelope: env(0.004, 1.6) });
+  vocs.clonk = sample(0.5, mix([gate(lowNoise(46, 0.6), 0, 0.03), 0.9], [osc.sine((t) => 220 - t * 160), 0.7], [gate(osc.sine(180), 0.28, 0.34), 0.5]), {
+    envelope: env(0.004, 1.6),
+  });
   // the 11-year-old laughing as he runs off, helmet in your hand: ha-ha-ha!
   vocs.laugh = sample(
     0.8,
@@ -118,9 +212,39 @@ export function buildVocs(): Record<string, Uint8Array> {
     { envelope: env(0.02, 0.8) },
   );
   // "Ow!"
-  vocs.ow = sample(0.34, voice((t) => 330 - t * 300, (t) => 700 - t * 300, (t) => 1100 - t * 300, 43), { envelope: env(0.05, 1) });
+  vocs.ow = sample(
+    0.34,
+    voice(
+      (t) => 330 - t * 300,
+      (t) => 700 - t * 300,
+      (t) => 1100 - t * 300,
+      43,
+    ),
+    { envelope: env(0.05, 1) },
+  );
   // fainting into a couch like a Victorian woman seeing a ghost: "oh!" and a soft flump
-  vocs.faint = sample(1.0, mix([gate(voice((t) => 480 - t * 400, 600, 1000, 44, 0.04), 0, 0.5), 0.7], [gate(lowNoise(45, (t) => 0.3 - (t - 0.55) * 0.5), 0.55, 1.0), 0.8]), { envelope: env(0.03, 0.8) });
+  vocs.faint = sample(
+    1.0,
+    mix(
+      [
+        gate(
+          voice((t) => 480 - t * 400, 600, 1000, 44, 0.04),
+          0,
+          0.5,
+        ),
+        0.7,
+      ],
+      [
+        gate(
+          lowNoise(45, (t) => 0.3 - (t - 0.55) * 0.5),
+          0.55,
+          1.0,
+        ),
+        0.8,
+      ],
+    ),
+    { envelope: env(0.03, 0.8) },
+  );
   // the song itself
   for (const name of CLIPS) vocs[name] = clipVoc(name);
   return vocs;
@@ -135,13 +259,25 @@ export function buildSoundSet(place: Place): SoundSet {
   };
   const by = (o: Record<Place, string>) => o[place];
   add(SND.help, by({ foyer: 'slurp', parade: 'slurp', webs: 'pats', exit: 'juice' }), SPEAKER.rise(400, 900));
-  add(SND.kill, by({ foyer: 'thump', parade: 'thump', webs: 'werewolf', exit: 'laugh' }), speaker((i) => (i < 6 ? 900 - i * 120 : 0)));
+  add(
+    SND.kill,
+    by({ foyer: 'thump', parade: 'thump', webs: 'werewolf', exit: 'laugh' }),
+    speaker((i) => (i < 6 ? 900 - i * 120 : 0)),
+  );
   add(SND.money, 'rustle', SPEAKER.coin());
   add(SND.pay, by({ foyer: 'register', parade: 'register', webs: 'sword', exit: 'register' }), SPEAKER.rise(80, 1600));
   add(SND.life, 'afraid', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
-  add(SND.score, by({ foyer: 'crinkle', parade: 'crinkle', webs: 'crinkle', exit: 'chime' }), speaker((i) => (i < 6 ? 1568 : i < 14 ? 1319 : 0)));
+  add(
+    SND.score,
+    by({ foyer: 'crinkle', parade: 'crinkle', webs: 'crinkle', exit: 'chime' }),
+    speaker((i) => (i < 6 ? 1568 : i < 14 ? 1319 : 0)),
+  );
   add(SND.lose, 'groan', SPEAKER.fall(300, 90));
-  add(SND.gain, by({ foyer: 'click', parade: 'cardbrd', webs: 'sneezing', exit: 'clonk' }), speaker((i) => (i < 8 ? 600 + i * 90 : 0)));
+  add(
+    SND.gain,
+    by({ foyer: 'click', parade: 'cardbrd', webs: 'sneezing', exit: 'clonk' }),
+    speaker((i) => (i < 8 ? 600 + i * 90 : 0)),
+  );
   add(SND.spend, by({ foyer: 'mild', parade: 'target', webs: 'creak', exit: 'exit' }), SPEAKER.noise(3, 60, 300));
   add(SND.tackle, place === 'exit' ? 'whoosh' : 'getdown', SPEAKER.warble(700, 250, 1.1));
   add(SND.hurt, by({ foyer: 'scream', parade: 'scream', webs: 'sneeze', exit: 'ow' }), SPEAKER.hurt());

@@ -70,7 +70,13 @@ import { BlockTransfer } from './blocedit/transfer';
 class BlockDesigner extends BlockTransfer {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Block Designer', this.work, () => this.saved, () => this.btype >= 1 && this.btype <= 3 ? [{ ext: BLK_EXT[this.btype - 1], bytes: serializeBlocks(this.blk.slice(0, BLK_COUNT[this.btype - 1])) }] : []);
+    return openWork(
+      'Block Designer',
+      this.work,
+      () => this.saved,
+      () =>
+        this.btype >= 1 && this.btype <= 3 ? [{ ext: BLK_EXT[this.btype - 1], bytes: serializeBlocks(this.blk.slice(0, BLK_COUNT[this.btype - 1])) }] : [],
+    );
   }
 
   async main(): Promise<void> {

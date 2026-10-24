@@ -48,7 +48,12 @@ import { MonsterMovement } from './monedit/movement';
 class MonsterMaker extends MonsterMovement {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Monster Designer', this.work, () => this.saved, () => [{ ext: 'mon', bytes: serializeMonsters(this.mon) }]);
+    return openWork(
+      'Monster Designer',
+      this.work,
+      () => this.saved,
+      () => [{ ext: 'mon', bytes: serializeMonsters(this.mon) }],
+    );
   }
 
   async main(): Promise<void> {

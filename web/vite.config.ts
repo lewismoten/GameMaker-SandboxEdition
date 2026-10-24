@@ -5,7 +5,8 @@ import { existsSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs
 import { createHash } from 'node:crypto';
 import { hashText } from './src/export/serviceWorker';
 import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
-import { cdGames } from './scripts/cdGames';
+import { cdGames, cdSecretCatalog } from './scripts/cdGames';
+import { gzipSync } from 'node:zlib';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { seoPages } from './scripts/seoBuild';
 
@@ -54,7 +55,9 @@ const playerGraph = (bundle: Bundle) => pageGraph(bundle, 'play.html');
 /** Every file under the public folder (copied into the site as is), relative to it. */
 function publicTree(dir = publicDir, prefix = ''): string[] {
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => !f.startsWith('.')).flatMap((f) => (statSync(resolve(dir, f)).isDirectory() ? publicTree(resolve(dir, f), `${prefix}${f}/`) : [`${prefix}${f}`]));
+  return readdirSync(dir)
+    .filter((f) => !f.startsWith('.'))
+    .flatMap((f) => (statSync(resolve(dir, f)).isDirectory() ? publicTree(resolve(dir, f), `${prefix}${f}/`) : [`${prefix}${f}`]));
 }
 
 const digest = (data: string | Uint8Array) => createHash('sha1').update(data).digest('base64url').slice(0, 12);
@@ -77,14 +80,46 @@ function groupHashes(bundle: Bundle): Record<string, string> {
   return Object.fromEntries([...groups].map(([g, lines]) => [groupKey(g), digest(lines.join('\n'))]));
 }
 
-/** The app shell, cached at install: the two pages and what they load up front, the icons and manifest. */
+/**
+ * The app shell, cached at install: the home page and what it loads up front, the icons and
+ * manifest. The play page, like everything else, is cached the first time it is used.
+ */
 function appShell(bundle: Bundle): string[] {
   const icons = publicFiles().filter((f) => /^(icon|apple-touch-icon).*\.(png|svg)$|\.webmanifest$/.test(f));
-  return [...new Set(['./', ...pageGraph(bundle, 'index.html', false), ...pageGraph(bundle, 'play.html', false), ...icons])];
+  // './' is index.html: fetched once, under the name the browser asks for
+  return [...new Set(['./', ...pageGraph(bundle, 'index.html', false).filter((f) => f !== 'index.html'), ...icons])];
+}
+
+const TEXT_FILE = /\.(html|js|css|json|svg|txt|xml|webmanifest)$/i;
+
+/**
+ * What "Make available offline" downloads (src/offline/offlineCopy.ts): every file of the site
+ * but the pictures for link previews and the files for crawlers, with each game as its pack
+ * (its own files and their .gz copies are left out) and none of a secret game's (a page that
+ * has revealed one adds its pack itself). Each as [path, bytes on the wire, bytes stored]:
+ * GitHub Pages gzips text.
+ */
+function offlineFiles(bundle: Bundle): [string, number, number][] {
+  const secret = cdSecretCatalog(resolve(__dirname, '../cd')).map((e) => e.path);
+  const sources = new Map<string, () => Uint8Array | string>();
+  for (const f of publicTree()) sources.set(f, () => readFileSync(resolve(publicDir, f)));
+  for (const [f, item] of Object.entries(bundle)) sources.set(f, () => (item.type === 'chunk' ? item.code : item.source));
+  const wanted = (f: string) =>
+    !secret.some((dir) => f.startsWith(dir)) &&
+    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$)/.test(f) &&
+    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.gmpak$|\/walkthrough\.json\.gz$/.test(f));
+  return [...sources]
+    .filter(([f]) => wanted(f))
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([f, read]) => {
+      const data = read();
+      const bytes = typeof data === 'string' ? Buffer.from(data) : data;
+      return [f, TEXT_FILE.test(f) ? gzipSync(bytes, { level: 6 }).length : bytes.length, bytes.length];
+    });
 }
 
 /**
- * Emits sw.js, and player-files.json: the files the exporter copies to build a
+ * Emits sw.js, offline.json (offlineFiles), and player-files.json: the files the exporter copies to build a
  * stand-alone game web app.
  *
  * The service worker installs only the app shell, so a first visit downloads nothing it
@@ -97,15 +132,19 @@ function offline(): Plugin {
     name: 'gamemaker-offline',
     apply: 'build',
     enforce: 'post', // after Vite's HTML plugin has emitted the pages
-    generateBundle(_options, bundle) {
-      const built = Object.keys(bundle);
-      const precache = appShell(bundle);
-      const groups = groupHashes(bundle);
-      const assets = built.filter(isHashed).sort();
-      const version = hashText(JSON.stringify([groups, assets]));
-      this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
-      const player = playerGraph(bundle);
-      this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
+    generateBundle: {
+      order: 'post', // and after scripts/seoBuild.ts has made each game's play page from play.html
+      handler(_options, bundle) {
+        const built = Object.keys(bundle);
+        const precache = appShell(bundle);
+        const groups = groupHashes(bundle);
+        const assets = built.filter(isHashed).sort();
+        const version = hashText(JSON.stringify([groups, assets]));
+        this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
+        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
+        const player = playerGraph(bundle);
+        this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
+      },
     },
   };
 }
@@ -149,13 +188,14 @@ function manualReload(): Plugin {
     configureServer(server) {
       const channels = new Set([server.ws, server.environments?.client?.hot].filter((c) => !!c));
       for (const channel of channels) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- bind() keeps the overloads; the wrapper below needs one plain signature
         const send = channel.send.bind(channel) as (...args: unknown[]) => void;
-        channel.send = ((...args: unknown[]) => {
+        channel.send = (...args: unknown[]) => {
           const payload = args[0] as { type?: string; path?: string } | undefined;
           if (payload && typeof payload === 'object' && payload.type === 'full-reload')
             return send({ type: 'custom', event: 'gm:source-changed', data: { file: payload.path ?? '' } });
           return send(...args);
-        }) as typeof channel.send;
+        };
       }
     },
   };
@@ -174,6 +214,7 @@ function playChunks(): Rollup.GetManualChunk {
     ['desk', ['src/desk/desk.ts']],
     ['web', ['src/modernUi.ts']],
     ['play', ['src/play.ts']],
+    ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];
   let closures: Set<string>[] | undefined;
   const closure = (entries: string[], info: Rollup.ManualChunkMeta['getModuleInfo']): Set<string> => {
@@ -190,6 +231,11 @@ function playChunks(): Rollup.GetManualChunk {
   return (id, { getModuleInfo }) => {
     closures ??= pages.map(([, entries]) => closure(entries, getModuleInfo));
     if (/\.css($|\?)/.test(id)) return undefined; // styles stay with the code that imports them
+    // parts always loaded together, in one file each rather than one per module: the shelf's
+    // painted box covers (not a secret game's, covers/extra.ts, which stays apart) and
+    // Game-Maker's eight designers (loaded together when Game-Maker starts on the desk's PC)
+    if (/\/src\/desk\/boxes\/covers\/(?!extra\.|index\.|paint\.)[\w-]+\.ts$/.test(id)) return 'covers';
+    if (/\/src\/vga\/(?!shared\/)/.test(id)) return 'designers';
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;
@@ -207,6 +253,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         play: resolve(__dirname, 'play.html'),
+        dos: resolve(__dirname, 'dos.html'), // the PC on its own (src/dosPage)
       },
       output: { manualChunks: playChunks(), onlyExplicitManualChunks: true },
     },

@@ -1,5 +1,5 @@
 // Foes of Procrastia in ASCII art: Procrastislimes (they'll attack you later), Snooze Bats,
-// Dust Bunnies, Barrow Wights, Tide Crabs, Bog Eels, Rust Golems, Gloom Goblins, Clockwork
+// Dust Bunnies, Barrow Ghosts, Tide Crabs, Bog Eels, Rust Golems, Gloom Goblins, Clockwork
 // Ticks... Each is drawn once; the hurt frame is the same drawing flashed pale.
 import { art, baseKey, type Key } from '../art/sprite';
 import { C } from '../art/pal';
@@ -93,7 +93,7 @@ const BAT = [
 ];
 
 const SLIME_KEY = (body: RGB[]): Key => baseKey({ g: body[0], l: body[1], L: body[2] });
-const BAT_KEY: Key = baseKey({ b: C('purple', 0), B: C('purple', 1), o: C('pink', 1) });
+const BAT_KEY: Key = baseKey({ b: C('purple', 1), B: C('purple', 2), o: C('pink', 1) });
 
 export function foePics(): Map<string, Canvas> {
   const m = new Map<string, Canvas>();

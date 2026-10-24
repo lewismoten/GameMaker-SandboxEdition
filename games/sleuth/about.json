@@ -8,7 +8,8 @@
   "exe": "FINAL.EXE",
   "sound": "sb",
   "egg": { "counter": 25, "atLeast": 2 },
-  "tinHeart": { "map": "act1.map", "at": [11, 56] },
+  "tinHeart": { "map": "act2.map", "at": [75, 19] },
+  "easterEgg": { "map": "act2.map", "at": [11, 44] },
   "label": {
     "background": "#1a0608",
     "band": "#d4a62a",

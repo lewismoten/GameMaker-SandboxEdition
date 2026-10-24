@@ -35,8 +35,12 @@ export interface WinAppOptions {
   version?: string;
   author?: string;
   year?: number;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
+  fiction?: string;
   /** Shown on the icon (macApp.ts's iconPicture). */
   picture?: IndexedImage;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts), first in its notices. */
+  audio?: string;
   colors?: IconColors;
 }
 
@@ -55,16 +59,22 @@ export function exeName(title: string): string {
 
 /** The game's id as a folder name. */
 export function winId(id: string): string {
-  return id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64) || 'game';
+  return (
+    id
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64) || 'game'
+  );
 }
 
-export function credits(o: Pick<WinAppOptions, 'author' | 'year'>): string {
+export function credits(o: Pick<WinAppOptions, 'author' | 'year' | 'fiction'>): string {
   const by = [o.author, o.year].filter(Boolean).join(', ');
-  return `${by ? `By ${by}.\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
+  return `${by ? `By ${by}.\n\n` : ''}${o.fiction ? `${o.fiction}\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
 }
 
 /** RCDATA "INFO": key=value lines (a value's backslashes and newlines escaped), read by win/Player/main.c. */
-export function infoText(o: Pick<WinAppOptions, 'title' | 'id' | 'author' | 'year'>): string {
+export function infoText(o: Pick<WinAppOptions, 'title' | 'id' | 'author' | 'year' | 'fiction'>): string {
   const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n');
   return `title=${esc(o.title)}\nid=${esc(winId(o.id))}\ncredits=${esc(credits(o))}\nsite=${esc(SITE_URL)}\n`;
 }
@@ -91,7 +101,7 @@ const pad4 = (n: number) => (4 - (n & 3)) & 3;
 /** One block of a version resource: length, value length, type (1 text), key, then the value and the children, each 4-byte aligned. */
 function versionBlock(key: string, value: Uint8Array | string | undefined, children: Uint8Array[] = []): Uint8Array {
   const k = utf16z(key);
-  const v = typeof value === 'string' ? utf16z(value) : value ?? new Uint8Array(0);
+  const v = typeof value === 'string' ? utf16z(value) : (value ?? new Uint8Array(0));
   let size = 6 + k.length;
   size += pad4(size);
   const valueAt = size;
@@ -114,7 +124,10 @@ function versionBlock(key: string, value: Uint8Array | string | undefined, child
 }
 
 function versionNumbers(version: string): [number, number, number, number] {
-  const parts = version.split(/[^0-9]+/).filter(Boolean).map((p) => Math.min(65535, parseInt(p, 10)));
+  const parts = version
+    .split(/[^0-9]+/)
+    .filter(Boolean)
+    .map((p) => Math.min(65535, parseInt(p, 10)));
   return [parts[0] ?? 1, parts[1] ?? 0, parts[2] ?? 0, parts[3] ?? 0];
 }
 
@@ -151,7 +164,10 @@ export function versionInfo(o: Pick<WinAppOptions, 'title' | 'id' | 'version' | 
     strings.filter(([, v]) => v).map(([k, v]) => versionBlock(k, v)),
   );
   const translation = new Uint8Array([0x09, 0x04, 0xb0, 0x04]);
-  return versionBlock('VS_VERSION_INFO', fixed, [versionBlock('StringFileInfo', undefined, [table]), versionBlock('VarFileInfo', undefined, [versionBlock('Translation', translation)])]);
+  return versionBlock('VS_VERSION_INFO', fixed, [
+    versionBlock('StringFileInfo', undefined, [table]),
+    versionBlock('VarFileInfo', undefined, [versionBlock('Translation', translation)]),
+  ]);
 }
 
 // ---- the program ------------------------------------------------------------------------
@@ -159,7 +175,11 @@ export function versionInfo(o: Pick<WinAppOptions, 'title' | 'id' | 'version' | 
 /** The game's program: the player with the game, its info, icon and version information in its resources. */
 export async function winExe(o: WinAppOptions): Promise<Uint8Array> {
   const enc = new TextEncoder();
-  const replaced = (r: PeResource) => r.type === RT.ICON || r.type === RT.GROUP_ICON || r.type === RT.VERSION || (r.type === RT.RCDATA && (r.name === 'GAME' || r.name === 'INFO' || r.name === 'NOTICES'));
+  const replaced = (r: PeResource) =>
+    r.type === RT.ICON ||
+    r.type === RT.GROUP_ICON ||
+    r.type === RT.VERSION ||
+    (r.type === RT.RCDATA && (r.name === 'GAME' || r.name === 'INFO' || r.name === 'NOTICES'));
   const kept = readResources(o.player).filter((r) => !replaced(r));
   const images = await winIconImages(o.picture, o.colors);
   return writeResources(o.player, [
@@ -169,13 +189,19 @@ export async function winExe(o: WinAppOptions): Promise<Uint8Array> {
     { type: RT.VERSION, name: 1, lang: 0, data: versionInfo(o) },
     { type: RT.RCDATA, name: 'GAME', lang: 0, data: enc.encode(o.html) },
     { type: RT.RCDATA, name: 'INFO', lang: 0, data: enc.encode(infoText(o)) },
-    { type: RT.RCDATA, name: 'NOTICES', lang: 0, data: enc.encode(thirdPartyNotices('windows')) },
+    { type: RT.RCDATA, name: 'NOTICES', lang: 0, data: enc.encode(thirdPartyNotices('windows', o.audio)) },
   ]);
 }
 
 /** The program in a .zip, with its third-party notices beside it. */
 export async function winExeZip(o: WinAppOptions, date?: Date): Promise<Uint8Array> {
-  return createZip([{ name: exeName(o.title), data: await winExe(o) }, { name: 'THIRD-PARTY-NOTICES.txt', data: new TextEncoder().encode(thirdPartyNotices('windows')) }], date);
+  return createZip(
+    [
+      { name: exeName(o.title), data: await winExe(o) },
+      { name: 'THIRD-PARTY-NOTICES.txt', data: new TextEncoder().encode(thirdPartyNotices('windows', o.audio)) },
+    ],
+    date,
+  );
 }
 
 /** Which player suits this computer: arm64 on Windows on Arm (when the browser says), else x64 (which Arm PCs run too). */

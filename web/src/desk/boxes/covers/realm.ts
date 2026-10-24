@@ -10,16 +10,22 @@ function tuit(c: Ctx, x: number, y: number, r: number): void {
   glow(c, x, y, r * 3.2, '#ffd890', 0.55);
   rays(c, x, y, r * 4, 18, 'rgba(255,220,150,0.5)', 0.35);
   ell(c, x, y, r, r);
-  fill(c, rad(c, x - r * 0.3, y - r * 0.3, r * 1.2, [
-    [0, '#ffe8a0'],
-    [0.75, '#d89a40'],
-    [1, '#8a5a1a'],
-  ]));
+  fill(
+    c,
+    rad(c, x - r * 0.3, y - r * 0.3, r * 1.2, [
+      [0, '#ffe8a0'],
+      [0.75, '#d89a40'],
+      [1, '#8a5a1a'],
+    ]),
+  );
   ell(c, x, y, r * 0.84, r * 0.84);
-  fill(c, rad(c, x - r * 0.2, y - r * 0.2, r, [
-    [0, '#d8a060'],
-    [1, '#9a6430'],
-  ]));
+  fill(
+    c,
+    rad(c, x - r * 0.2, y - r * 0.2, r, [
+      [0, '#d8a060'],
+      [1, '#9a6430'],
+    ]),
+  );
   c.save();
   c.strokeStyle = 'rgba(90,50,20,0.45)';
   for (let k = 1; k < 6; k++) {
@@ -84,37 +90,64 @@ function pip(c: Ctx, x: number, y: number, s: number): void {
   }
   // tunic
   blob(c, [x - 34 * s, y - 50 * s, x - 30 * s, y - 120 * s, x + 30 * s, y - 120 * s, x + 34 * s, y - 50 * s]);
-  fill(c, lin(c, x - 34 * s, 0, x + 34 * s, 0, [
-    [0, '#2e7a3a'],
-    [0.5, '#58b050'],
-    [1, '#1e5a2a'],
-  ]));
+  fill(
+    c,
+    lin(c, x - 34 * s, 0, x + 34 * s, 0, [
+      [0, '#2e7a3a'],
+      [0.5, '#58b050'],
+      [1, '#1e5a2a'],
+    ]),
+  );
   c.fillStyle = '#6a4020';
   c.fillRect(x - 32 * s, y - 70 * s, 64 * s, 9 * s);
   c.fillStyle = '#f0c040';
   c.fillRect(x - 6 * s, y - 72 * s, 12 * s, 12 * s);
   // the sword arm, raised; the blade catching the Tuit's light
   stroke(c, '#f2c8a0', 12 * s, [x + 24 * s, y - 112 * s, x + 46 * s, y - 150 * s]);
-  stroke(c, lin(c, 0, y - 290 * s, 0, y - 150 * s, [
-    [0, '#ffffff'],
-    [1, '#9aa4c0'],
-  ]), 9 * s, [x + 50 * s, y - 156 * s, x + 62 * s, y - 290 * s]);
+  stroke(
+    c,
+    lin(c, 0, y - 290 * s, 0, y - 150 * s, [
+      [0, '#ffffff'],
+      [1, '#9aa4c0'],
+    ]),
+    9 * s,
+    [x + 50 * s, y - 156 * s, x + 62 * s, y - 290 * s],
+  );
   stroke(c, '#e0b040', 8 * s, [x + 34 * s, y - 154 * s, x + 66 * s, y - 158 * s]);
   glow(c, x + 62 * s, y - 290 * s, 40 * s, '#ffffff', 0.6);
   stroke(c, '#f2c8a0', 12 * s, [x - 26 * s, y - 112 * s, x - 40 * s, y - 70 * s]);
   // head, hair, cap and feather
   ell(c, x, y - 146 * s, 30 * s, 32 * s);
-  fill(c, rad(c, x - 8 * s, y - 154 * s, 40 * s, [
-    [0, '#ffe0c0'],
-    [1, '#d09070'],
-  ]));
-  blob(c, [x - 32 * s, y - 150 * s, x - 30 * s, y - 182 * s, x + 30 * s, y - 182 * s, x + 32 * s, y - 150 * s, x + 20 * s, y - 166 * s, x - 20 * s, y - 166 * s]);
+  fill(
+    c,
+    rad(c, x - 8 * s, y - 154 * s, 40 * s, [
+      [0, '#ffe0c0'],
+      [1, '#d09070'],
+    ]),
+  );
+  blob(c, [
+    x - 32 * s,
+    y - 150 * s,
+    x - 30 * s,
+    y - 182 * s,
+    x + 30 * s,
+    y - 182 * s,
+    x + 32 * s,
+    y - 150 * s,
+    x + 20 * s,
+    y - 166 * s,
+    x - 20 * s,
+    y - 166 * s,
+  ]);
   fill(c, '#6a3a1a');
   blob(c, [x - 36 * s, y - 168 * s, x - 24 * s, y - 200 * s, x + 24 * s, y - 204 * s, x + 42 * s, y - 172 * s]);
-  fill(c, lin(c, 0, y - 204 * s, 0, y - 168 * s, [
-    [0, '#ff6a50'],
-    [1, '#a01818'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, y - 204 * s, 0, y - 168 * s, [
+      [0, '#ff6a50'],
+      [1, '#a01818'],
+    ]),
+  );
   stroke(c, '#ffffff', 7 * s, [x + 30 * s, y - 188 * s, x + 64 * s, y - 214 * s]);
   for (const dx of [-11, 11]) {
     ell(c, x + dx * s, y - 146 * s, 4 * s, 5 * s);
@@ -134,11 +167,14 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
     fill(c, '#e02a2a');
   }
   blob(c, [x - 30 * s, y - 48 * s, x - 28 * s, y - 116 * s, x + 28 * s, y - 116 * s, x + 30 * s, y - 48 * s]);
-  fill(c, lin(c, x - 30 * s, 0, x + 30 * s, 0, [
-    [0, '#1e2448'],
-    [0.5, '#34407a'],
-    [1, '#1a1e3a'],
-  ]));
+  fill(
+    c,
+    lin(c, x - 30 * s, 0, x + 30 * s, 0, [
+      [0, '#1e2448'],
+      [0.5, '#34407a'],
+      [1, '#1a1e3a'],
+    ]),
+  );
   poly(c, [x - 10 * s, y - 116 * s, x + 10 * s, y - 116 * s, x + 4 * s, y - 70 * s, x - 4 * s, y - 70 * s]);
   fill(c, '#8a4ab0');
   poly(c, [x - 4 * s, y - 112 * s, x + 4 * s, y - 112 * s, x + 6 * s, y - 80 * s, x, y - 74 * s, x - 6 * s, y - 80 * s]);
@@ -158,10 +194,13 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   ell(c, x, y - 164 * s, 42 * s, 8 * s);
   fill(c, '#6a6a76');
   blob(c, [x - 24 * s, y - 164 * s, x - 20 * s, y - 196 * s, x + 20 * s, y - 196 * s, x + 24 * s, y - 164 * s]);
-  fill(c, lin(c, 0, y - 196 * s, 0, y - 164 * s, [
-    [0, '#8a8a96'],
-    [1, '#5a5a66'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, y - 196 * s, 0, y - 164 * s, [
+      [0, '#8a8a96'],
+      [1, '#5a5a66'],
+    ]),
+  );
   for (const [px, color] of [
     [-10, '#ffd040'],
     [4, '#40a0ff'],
@@ -172,10 +211,13 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   // the leash, and Sir Reginald Cluckington III at the end of it
   stroke(c, '#c02020', 3 * s, [x - 28 * s, y - 80 * s, x - 60 * s, y - 40 * s, x - 76 * s, y - 24 * s]);
   ell(c, x - 88 * s, y - 20 * s, 18 * s, 13 * s);
-  fill(c, rad(c, x - 92 * s, y - 26 * s, 20 * s, [
-    [0, '#fff090'],
-    [1, '#e0b020'],
-  ]));
+  fill(
+    c,
+    rad(c, x - 92 * s, y - 26 * s, 20 * s, [
+      [0, '#fff090'],
+      [1, '#e0b020'],
+    ]),
+  );
   ell(c, x - 104 * s, y - 36 * s, 8 * s, 8 * s);
   fill(c, '#f0c830');
   poly(c, [x - 114 * s, y - 36 * s, x - 124 * s, y - 33 * s, x - 113 * s, y - 31 * s]);
@@ -204,37 +246,145 @@ function chez(c: Ctx, x: number, y: number, s: number): void {
     ell(c, X(u), Y(16.75), 1 * k, 1 * k);
     fill(c, '#b8bcc4');
   }
-  poly(c, pts([[7.9, 1.3], [17.9, 1.3], [36, 13.2], [36, 14.4], [26.1, 14.4], [26.1, 18.1], [13.7, 18.1], [13.7, 14.4], [5.2, 14.4]]));
-  fill(c, lin(c, 0, Y(1.3), 0, Y(18.1), [
-    [0, '#ff6a50'],
-    [1, '#b02018'],
-  ]));
+  poly(
+    c,
+    pts([
+      [7.9, 1.3],
+      [17.9, 1.3],
+      [36, 13.2],
+      [36, 14.4],
+      [26.1, 14.4],
+      [26.1, 18.1],
+      [13.7, 18.1],
+      [13.7, 14.4],
+      [5.2, 14.4],
+    ]),
+  );
+  fill(
+    c,
+    lin(c, 0, Y(1.3), 0, Y(18.1), [
+      [0, '#ff6a50'],
+      [1, '#b02018'],
+    ]),
+  );
   // the black roof, the door window, the seams
-  poly(c, pts([[7.9, 1.3], [17.9, 1.3], [19.1, 2.05], [7.75, 2.05]]));
+  poly(
+    c,
+    pts([
+      [7.9, 1.3],
+      [17.9, 1.3],
+      [19.1, 2.05],
+      [7.75, 2.05],
+    ]),
+  );
   fill(c, '#141416');
-  poly(c, pts([[12.5, 2.8], [18.5, 2.8], [24.5, 8.3], [13, 8.3]]));
-  fill(c, lin(c, 0, Y(2.8), 0, Y(8.3), [
-    [0, '#a8d8f0'],
-    [1, '#2a4a6a'],
-  ]));
-  stroke(c, '#7a1006', 1.2 * s, pts([[12.1, 2.2], [13.7, 18.1]]));
-  stroke(c, '#7a1006', 1.2 * s, pts([[26.1, 8.3], [26.1, 18.1]]));
+  poly(
+    c,
+    pts([
+      [12.5, 2.8],
+      [18.5, 2.8],
+      [24.5, 8.3],
+      [13, 8.3],
+    ]),
+  );
+  fill(
+    c,
+    lin(c, 0, Y(2.8), 0, Y(8.3), [
+      [0, '#a8d8f0'],
+      [1, '#2a4a6a'],
+    ]),
+  );
+  stroke(
+    c,
+    '#7a1006',
+    1.2 * s,
+    pts([
+      [12.1, 2.2],
+      [13.7, 18.1],
+    ]),
+  );
+  stroke(
+    c,
+    '#7a1006',
+    1.2 * s,
+    pts([
+      [26.1, 8.3],
+      [26.1, 18.1],
+    ]),
+  );
   // the racing stripes: a dark pair edged in white, stepping up over the rear quarter
-  const band = (d: number) => pts([[35.6, 12.5 + d], [13, 12.5 + d], [12.2, 12.4 + d], [10.8, 10.1 + d], [10, 9.9 + d], [6.9, 9.9 + d]]);
+  const band = (d: number) =>
+    pts([
+      [35.6, 12.5 + d],
+      [13, 12.5 + d],
+      [12.2, 12.4 + d],
+      [10.8, 10.1 + d],
+      [10, 9.9 + d],
+      [6.9, 9.9 + d],
+    ]);
   stroke(c, '#fff4e8', 1.7 * k, band(0));
   stroke(c, '#d43020', 1.25 * k, band(0));
   for (const d of [-0.5, 0.5]) stroke(c, '#26262a', 0.5 * k, band(d));
   // the markers, the door handle, square black bumpers, the headlight in its pod
-  poly(c, pts([[31.6, 10.9], [30.4, 10.9], [30.4, 11.7], [31.6, 11.7]]));
+  poly(
+    c,
+    pts([
+      [31.6, 10.9],
+      [30.4, 10.9],
+      [30.4, 11.7],
+      [31.6, 11.7],
+    ]),
+  );
   fill(c, '#ffa020');
-  poly(c, pts([[8.3, 12.4], [7.1, 12.4], [7.1, 13.2], [8.3, 13.2]]));
+  poly(
+    c,
+    pts([
+      [8.3, 12.4],
+      [7.1, 12.4],
+      [7.1, 13.2],
+      [8.3, 13.2],
+    ]),
+  );
   fill(c, '#e01818');
-  stroke(c, '#d8d8e0', 0.6 * k, pts([[14.5, 10.9], [16, 10.9]]));
-  poly(c, pts([[37.2, 13], [35.2, 13], [35.2, 14.8], [37.2, 14.8]]));
+  stroke(
+    c,
+    '#d8d8e0',
+    0.6 * k,
+    pts([
+      [14.5, 10.9],
+      [16, 10.9],
+    ]),
+  );
+  poly(
+    c,
+    pts([
+      [37.2, 13],
+      [35.2, 13],
+      [35.2, 14.8],
+      [37.2, 14.8],
+    ]),
+  );
   fill(c, '#1a1a1e');
-  poly(c, pts([[5.9, 12.8], [3.9, 12.8], [3.9, 14.6], [5.9, 14.6]]));
+  poly(
+    c,
+    pts([
+      [5.9, 12.8],
+      [3.9, 12.8],
+      [3.9, 14.6],
+      [5.9, 14.6],
+    ]),
+  );
   fill(c, '#1a1a1e');
-  poly(c, pts([[30, 9.1], [30.5, 8.6], [32, 8.6], [32.4, 9.2], [32.4, 10.6]]));
+  poly(
+    c,
+    pts([
+      [30, 9.1],
+      [30.5, 8.6],
+      [32, 8.6],
+      [32.4, 9.2],
+      [32.4, 10.6],
+    ]),
+  );
   fill(c, '#e8402c');
   ell(c, X(32.4), Y(9.4), 0.4 * k, 0.6 * k);
   fill(c, '#fff8c0');
@@ -258,10 +408,13 @@ const paint = (c: Ctx, w: number, h: number): void => {
   fill(c, '#5a4a7a');
   castle(c, w * 0.5 - 90 * (w / 640), h * 0.58, w / 640);
   blob(c, [-40, h * 0.66, w * 0.25, h * 0.6, w * 0.5, h * 0.64, w * 0.8, h * 0.59, w + 40, h * 0.64, w + 40, h * 0.8, -40, h * 0.8]);
-  fill(c, lin(c, 0, h * 0.6, 0, h * 0.8, [
-    [0, '#3a4a5a'],
-    [1, '#2a3a3a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, h * 0.6, 0, h * 0.8, [
+      [0, '#3a4a5a'],
+      [1, '#2a3a3a'],
+    ]),
+  );
   // the meadow and a road that winds down out of the hills toward us
   c.fillStyle = lin(c, 0, h * 0.68, 0, h, [
     [0, '#3a6a3a'],
@@ -280,9 +433,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.moveTo(w * 0.5, h * 0.6);
   c.bezierCurveTo(w * 0.7, h * 0.66, w * 0.25, h * 0.72, w * 0.55, h * 0.8);
   c.bezierCurveTo(w * 0.8, h * 0.88, w * 0.6, h * 0.95, w * 0.52, h + 20);
-  for (const [lw, a] of [
-    [w * 0.11, 1],
-  ] as [number, number][]) {
+  for (const [lw, a] of [[w * 0.11, 1]] as [number, number][]) {
     c.lineWidth = lw;
     c.globalAlpha = a;
     c.stroke();

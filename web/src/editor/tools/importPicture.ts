@@ -24,7 +24,11 @@ async function convertDialog(project: Project, animate: boolean): Promise<string
     delays.push(...(animate ? d.delays : d.delays.slice(0, 1)));
   }
   if (!frames.length) return undefined;
-  const base = normalize(files[0].name).replace(/\..*$/, '').replace(/[^a-z0-9_]/g, '').slice(0, 8) || 'picture';
+  const base =
+    normalize(files[0].name)
+      .replace(/\..*$/, '')
+      .replace(/[^a-z0-9_]/g, '')
+      .slice(0, 8) || 'picture';
   const ext = animate ? 'fli' : 'gif';
 
   return modal<string>(animate ? 'Make an animation' : 'Make a picture', (close) => {
@@ -84,7 +88,13 @@ async function convertDialog(project: Project, animate: boolean): Promise<string
         toast('Use a DOS name: up to 8 letters, a dot and the extension.', 'error');
         return;
       }
-      const bytes = animate ? encodeFli(result.map((r) => r.pixels), result[0].palette, { speed }) : encodeGif(result[0]);
+      const bytes = animate
+        ? encodeFli(
+            result.map((r) => r.pixels),
+            result[0].palette,
+            { speed },
+          )
+        : encodeGif(result[0]);
       project.files.set(name, bytes);
       toast(`Made ${name.toUpperCase()} (${bytes.length.toLocaleString()} bytes).`);
       close(name);
@@ -98,10 +108,32 @@ async function convertDialog(project: Project, animate: boolean): Promise<string
       h(
         'div',
         { class: 'stack' },
-        choice<Fit>('Size', [['fit', 'Fit'], ['fill', 'Fill'], ['stretch', 'Stretch']], () => fit, (v) => (fit = v)),
-        choice<'on' | 'off'>('Dither', [['on', 'Smooth'], ['off', 'Flat']], () => (dither ? 'on' : 'off'), (v) => (dither = v === 'on')),
+        choice<Fit>(
+          'Size',
+          [
+            ['fit', 'Fit'],
+            ['fill', 'Fill'],
+            ['stretch', 'Stretch'],
+          ],
+          () => fit,
+          (v) => (fit = v),
+        ),
+        choice<'on' | 'off'>(
+          'Dither',
+          [
+            ['on', 'Smooth'],
+            ['off', 'Flat'],
+          ],
+          () => (dither ? 'on' : 'off'),
+          (v) => (dither = v === 'on'),
+        ),
         pals.length
-          ? choice<string>('Colors', [['', 'Best 256'], ...pals.map((p) => [p, p.toUpperCase()] as [string, string])], () => paletteFrom, (v) => (paletteFrom = v))
+          ? choice<string>(
+              'Colors',
+              [['', 'Best 256'], ...pals.map((p) => [p, p.toUpperCase()] as [string, string])],
+              () => paletteFrom,
+              (v) => (paletteFrom = v),
+            )
           : null,
         animate
           ? h(
@@ -121,7 +153,12 @@ async function convertDialog(project: Project, animate: boolean): Promise<string
             )
           : null,
         h('label', { class: 'field' }, h('span', null, 'File name'), nameInput),
-        h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => (clearTimeout(timer), close(undefined)) }, 'Cancel'), h('button', { type: 'button', class: 'primary', onclick: save }, `Save .${ext.toUpperCase()}`)),
+        h(
+          'div',
+          { class: 'buttons' },
+          h('button', { type: 'button', onclick: () => (clearTimeout(timer), close(undefined)) }, 'Cancel'),
+          h('button', { type: 'button', class: 'primary', onclick: save }, `Save .${ext.toUpperCase()}`),
+        ),
       ),
     );
     queueMicrotask(render);

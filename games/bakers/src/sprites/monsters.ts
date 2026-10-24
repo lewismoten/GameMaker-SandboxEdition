@@ -9,7 +9,24 @@
 //   Teddy and Gwinn 200: harmless, and nothing in the kitchen can move them
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR } from '../art/draw';
-import { ant, bubble, cork, corgi, fireball, flyingCap, gwinn, icicle, kazooWave, knife, mouse, redcoat, rollingPin, spark, squawkWave, steam } from '../art/kit';
+import {
+  ant,
+  bubble,
+  cork,
+  corgi,
+  fireball,
+  flyingCap,
+  gwinn,
+  icicle,
+  kazooWave,
+  knife,
+  mouse,
+  redcoat,
+  rollingPin,
+  spark,
+  squawkWave,
+  steam,
+} from '../art/kit';
 import { BlockSet, Bestiary, type BlockDef, type MonDef } from '../blocks/sets';
 import { MON } from '../ids';
 
@@ -102,7 +119,17 @@ export function roomBestiary(mb: BlockSet, born: Partial<Record<Dir, { kind: Pro
     const [dx, dy, o] = DIR[d];
     const speed = spec.speed ?? (spec.kind === 'ant' ? 1 : 3);
     const orient = spec.kind === 'icicle' || spec.kind === 'steam' || spec.kind === 'bubble' ? 0 : o;
-    b.add(`born_${d}`, { pics: pics(spec.kind, 4), power: spec.kind === 'ant' ? 40 : 80, path: [[dx * spec.reach, dy * spec.reach, speed, orient]], end: -1, thru: spec.kind !== 'spark' }, slot[d]);
+    b.add(
+      `born_${d}`,
+      {
+        pics: pics(spec.kind, 4),
+        power: spec.kind === 'ant' ? 40 : 80,
+        path: [[dx * spec.reach, dy * spec.reach, speed, orient]],
+        end: -1,
+        thru: spec.kind !== 'spark',
+      },
+      slot[d],
+    );
   }
   return b;
 }
@@ -126,7 +153,16 @@ export const KINDS = {
   },
   teddy: (b: Bestiary, flip = false) => {
     const name = flip ? 'teddyL' : 'teddy';
-    if (!b.has(name)) b.add(name, { pics: [[`${name}#0`, 30], [`${name}#1`, 4], [`${name}#0`, 12], [`${name}#1`, 4]], power: 200 });
+    if (!b.has(name))
+      b.add(name, {
+        pics: [
+          [`${name}#0`, 30],
+          [`${name}#1`, 4],
+          [`${name}#0`, 12],
+          [`${name}#1`, 4],
+        ],
+        power: 200,
+      });
     return name;
   },
   gwinn: (b: Bestiary) => {

@@ -75,7 +75,7 @@ const ROWS = [
   mall('@q.............FF...................2.....'), // 15
   mall('.......5..................................'), // 16
   mall('..p........K..............K...............'), // 17
-  mall('.P...............L..........P........*..P.'), // 18
+  mall('.P..........................P........*..P.'), // 18
   mall('.........................p................'), // 19
   mall('..........................................'), // 20
   mall('wwwwvvww^^wwwwwwwwwwwwwwwwwwwwwSwwwwwwwwww'), // 21
@@ -95,5 +95,7 @@ const ROWS = [
 export function level3(set: BlockSet): LevelMap {
   const m = new LevelMap(set, 'void');
   m.stamp(0, 0, ROWS, LEGEND, 'tile');
+  // a tin heart tucked behind the food court's tables at PILLS
+  m.set_(42, 1, 'tinHeart');
   return m;
 }

@@ -22,7 +22,9 @@ for (const [name, step] of ROUTE) {
 }
 const total = watch.done();
 for (const v of watch.visits) console.log(`${v.scene}: ${v.seen} seen, ${v.left.length} left${v.left.length ? `: ${v.left.join('; ')}` : ''}`);
-console.log(`loot: ${total.seen} seen on screen, ${total.left} left behind; gold ${sim.money}; ${ticks} ticks (${(ticks / 18.2 / 60).toFixed(1)} min); deaths ${sim.deaths}`);
+console.log(
+  `loot: ${total.seen} seen on screen, ${total.left} left behind; gold ${sim.money}; ${ticks} ticks (${(ticks / 18.2 / 60).toFixed(1)} min); deaths ${sim.deaths}`,
+);
 // boss fights: from reaching the boss to beating it
 for (const line of bot.log) {
   const m = /\] (.+) beaten \(never more than (\d+) .* t(\d+)/.exec(line);

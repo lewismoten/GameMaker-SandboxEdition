@@ -12,11 +12,13 @@ export function rideBlocks(ctx: Ctx, lr: LivingRoom): void {
   // the spinning rug: red and yellow carnival stripes, its arrows the way it carries you
   const spin = (dir: keyof typeof GRAV, f: number) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (dir === 'up' || dir === 'down' ? Math.floor(x / 5) : Math.floor(y / 5)) % 2 ? c('red', 2) : c('yellow', 2));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) p.set(x, y, (dir === 'up' || dir === 'down' ? Math.floor(x / 5) : Math.floor(y / 5)) % 2 ? c('red', 2) : c('yellow', 2));
     const arrow = (ax: number, ay: number) => {
       const [dx, dy] = dir === 'right' ? [1, 0] : dir === 'left' ? [-1, 0] : dir === 'down' ? [0, 1] : [0, -1];
       for (let k = -3; k <= 3; k++) p.set(ax + dx * k, ay + dy * k, c('white', 2));
-      for (let k = 1; k <= 2; k++) p.set(ax + dx * (3 - k) - dy * k, ay + dy * (3 - k) - dx * k, c('white', 2)).set(ax + dx * (3 - k) + dy * k, ay + dy * (3 - k) + dx * k, c('white', 2));
+      for (let k = 1; k <= 2; k++)
+        p.set(ax + dx * (3 - k) - dy * k, ay + dy * (3 - k) - dx * k, c('white', 2)).set(ax + dx * (3 - k) + dy * k, ay + dy * (3 - k) + dx * k, c('white', 2));
     };
     const o = f * 5;
     if (dir === 'right' || dir === 'left') arrow((10 + (dir === 'right' ? o : -o) + 20) % 20, 10);

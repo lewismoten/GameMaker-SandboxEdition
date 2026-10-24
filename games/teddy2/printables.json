@@ -14,115 +14,152 @@
   "E": "Hop up and to the right"
  },
  "stickers": [
-  {
-   "text": "SNIFF!",
-   "sub": "TEDDY",
-   "shape": "badge",
-   "color": "#d9381e",
-   "ink": "#ffffff",
-   "hero": {
-    "chr": "teddy.chr",
-    "cbl": "teddy.cbl",
-    "pal": "house.pal"
-   }
-  },
-  {
-   "text": "BOOF!",
-   "sub": "GWINN",
-   "shape": "badge",
-   "color": "#1d5fb8",
-   "ink": "#ffd23f",
-   "hero": {
-    "chr": "gwinn.chr",
-    "cbl": "gwinn.cbl",
-    "pal": "farm.pal"
-   }
-  },
-  {
-   "text": "SHE SAT!",
-   "sub": "BEST BEHAVED",
-   "shape": "star",
-   "color": "#ffd23f",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "show.mbl",
-    "pal": "show.pal",
-    "grid": [
-     [
-      54
-     ]
-    ]
-   }
-  },
-  {
-   "text": "DO NOT BOOF",
-   "sub": "PARK SKUNK",
-   "shape": "rect",
-   "color": "#fff6e0",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "night.mbl",
-    "pal": "night.pal",
-    "grid": [
-     [
-      39
-     ]
-    ]
-   }
-  },
-  {
-   "text": "BAWK!",
-   "sub": "THE RUBBER CHICKEN",
-   "shape": "circle",
-   "color": "#ffd23f",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "river.mbl",
-    "pal": "river.pal",
-    "grid": [
-     [
-      45
-     ]
-    ]
-   }
-  },
-  {
-   "text": "RING FOR SERVICE",
-   "sub": "POWER CO.",
-   "shape": "circle",
-   "color": "#1d5fb8",
-   "ink": "#ffffff",
-   "sprite": {
-    "blocks": "main.mbl",
-    "pal": "main.pal",
-    "grid": [
-     [
-      40
-     ]
-    ]
-   }
-  },
-  {
-   "text": "UNIMPRESSED",
-   "sub": "THE RIVAL POODLE",
-   "shape": "rect",
-   "color": "#fbd3e9",
-   "ink": "#2a1408",
-   "sprite": {
-    "blocks": "show.mbl",
-    "pal": "show.pal",
-    "grid": [
-     [
-      38
-     ]
-    ]
-   }
-  }
- ],
+    {
+      "text": "SNIFF!",
+      "sub": "TEDDY",
+      "shape": "cut",
+      "color": "#d9381e",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "house.pal"
+      }
+    },
+    {
+      "text": "BOOF!",
+      "sub": "GWINN",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffd23f",
+      "hero": {
+        "chr": "gwinn.chr",
+        "cbl": "gwinn.cbl",
+        "pal": "farm.pal"
+      }
+    },
+    {
+      "text": "SHE SAT!",
+      "sub": "BEST BEHAVED",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "show.mbl",
+        "pal": "show.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "BAWK!",
+      "sub": "THE RUBBER CHICKEN",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "river.mbl",
+        "pal": "river.pal",
+        "grid": [[45]]
+      }
+    },
+    {
+      "text": "UNIMPRESSED",
+      "sub": "THE RIVAL POODLE",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "show.mbl",
+        "pal": "show.pal",
+        "grid": [[38]]
+      }
+    },
+    {
+      "text": "DO NOT BOOF",
+      "sub": "PARK SKUNK",
+      "shape": "cut",
+      "color": "#2a2a3a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "night.mbl",
+        "pal": "night.pal",
+        "grid": [[39]]
+      }
+    },
+    {
+      "text": "DING!",
+      "sub": "RING FOR SERVICE",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "main.mbl",
+        "pal": "main.pal",
+        "grid": [[40]]
+      }
+    },
+    {
+      "text": "OINK!",
+      "sub": "FARM FRIEND",
+      "shape": "cut",
+      "color": "#ff8fc8",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "farm.mbl",
+        "pal": "farm.pal",
+        "grid": [[42]]
+      }
+    },
+    {
+      "text": "MAAA!",
+      "sub": "THE GOAT",
+      "shape": "cut",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "farm.mbl",
+        "pal": "farm.pal",
+        "grid": [[44]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "house.bbl",
+        "pal": "house.pal",
+        "grid": [[142]],
+        "under": 35
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "farm.bbl",
+        "pal": "farm.pal",
+        "grid": [[68]],
+        "under": 24
+      }
+    },
+    {
+      "text": "HEAR YE!",
+      "sub": "THE TOWN CRIER",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    }
+  ],
  "news": [
   {
    "head": "Teddy's back, and this time Gwinn's playable",
-   "html": "<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Eight levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>"
+   "html": "<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Nine levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>"
   },
   {
    "head": "Letters: \"Why did Teddy stop rolling over?\"",
@@ -250,7 +287,7 @@
       },
       {
        "q": "How do Gwinn's levels end?",
-       "a": "She is following her nose to the Fair. Look for her ride at the end: the hay wagon, then the Fair's ride truck. Hop in."
+       "a": "She is following her nose to the Fair. Look for her ride at the end: the hay wagon, then the Fair's ride truck. Hop in. At the Fair itself, she is headed for the dog show's sign-up table."
       }
      ]
     },
@@ -361,7 +398,24 @@
      ]
     },
     {
-     "head": "7. The Fair Midway",
+     "head": "7. Meanwhile: Gwinn Signs Up",
+     "hints": [
+      {
+       "q": "The creek is too wide to hop.",
+       "a": "Stand by the fan on the bank and hop up into its breeze (E): it carries Gwinn right across. Fall in, and the current brings her back to the bank to try again."
+      },
+      {
+       "q": "How do I get up to the bandstand?",
+       "a": "Not from the ground. Keep going right, past the poultry barn, to the fan lying face up: step on it and it blows Gwinn up onto the roof. The way back to the bandstand is over the roofs."
+      },
+      {
+       "q": "The wind keeps blowing me back!",
+       "a": "Watch the windsocks. Wait behind a vent while they stand out; when they hang limp, run for the next vent. A gust never hurts, it only pushes."
+      }
+     ]
+    },
+    {
+     "head": "8. The Fair Midway",
      "hints": [
       {
        "q": "How do I earn tickets?",
@@ -374,11 +428,11 @@
      ]
     },
     {
-     "head": "8. The Dog Show",
+     "head": "9. The Dog Show",
      "hints": [
       {
        "q": "The popcorn keeps hitting me.",
-       "a": "Play dead (hold 4) as it comes: it flies right over."
+       "a": "Play dead (hold 4) as it comes: it flies right over. There are two stands, and the second pops right past the rival poodle, so bark at her between pops."
       },
       {
        "q": "How do I get into the Best Behaved ring?",

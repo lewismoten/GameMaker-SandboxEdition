@@ -28,7 +28,10 @@ describe('encodeFli runs', () => {
     const canvas = newFliCanvas(anim);
     for (let i = 0; i < fs.length; i++) {
       applyFliFrame(anim, i, canvas);
-      expect(canvas.pixels.every((v, k) => v === fs[i][k]), `frame ${i}`).toBe(true);
+      expect(
+        canvas.pixels.every((v, k) => v === fs[i][k]),
+        `frame ${i}`,
+      ).toBe(true);
     }
   });
 });

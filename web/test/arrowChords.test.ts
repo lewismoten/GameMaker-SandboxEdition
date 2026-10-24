@@ -5,7 +5,15 @@ import { macHint, withMacHint } from '../src/input/macKeys';
 import { cardRows } from '../src/desk/pc/keyCardRows';
 import type { GameKeyMap } from '../src/editor/keymap/keyMap';
 
-const UP = 72, LEFT = 75, RIGHT = 77, DOWN = 80, HOME = 71, PGUP = 73, END = 79, PGDN = 81, PAD5 = 76;
+const UP = 72,
+  LEFT = 75,
+  RIGHT = 77,
+  DOWN = 80,
+  HOME = 71,
+  PGUP = 73,
+  END = 79,
+  PGDN = 81,
+  PAD5 = 76;
 const all = () => true;
 
 describe('arrow chords', () => {

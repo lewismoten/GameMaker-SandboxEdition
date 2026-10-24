@@ -175,7 +175,7 @@ function drawKeyboard(rows: Row[], info: (scan: number) => CapInfo | undefined, 
         g.append(act);
         g.addEventListener('click', () => onPick(scan));
         g.addEventListener('keydown', (e) => {
-          if ((e as KeyboardEvent).key === 'Enter' || (e as KeyboardEvent).key === ' ') {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             onPick(scan);
           }
@@ -312,7 +312,9 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
           el(
             'div',
             'km-row',
-            macHint(k.scan) ? el('div', 'km-keycol', el('kbd', 'km-key', k.name), el('small', 'km-mac', `Mac: ${macHint(k.scan)}`)) : el('kbd', 'km-key', k.name),
+            macHint(k.scan)
+              ? el('div', 'km-keycol', el('kbd', 'km-key', k.name), el('small', 'km-mac', `Mac: ${macHint(k.scan)}`))
+              : el('kbd', 'km-key', k.name),
             el(
               'div',
               'km-uses',
@@ -376,7 +378,13 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
     el('h3', null, 'Keys in every Game-Maker game'),
     el('table', null, ...km.global.map((g) => el('tr', null, el('td', null, el('kbd', 'km-key small', g.name)), el('td', null, g.title)))),
     // a Mac's F-keys work its brightness and volume unless fn is held; the player's F1–F10 button always works
-    el('p', 'km-note', isMac() ? 'On a Mac, hold fn with F1–F10. Or click the F1–F10 button over the game to press any of these keys.' : 'Keys the browser keeps (F5, F6…)? Click the F1–F10 button over the game to press them.'),
+    el(
+      'p',
+      'km-note',
+      isMac()
+        ? 'On a Mac, hold fn with F1–F10. Or click the F1–F10 button over the game to press any of these keys.'
+        : 'Keys the browser keeps (F5, F6…)? Click the F1–F10 button over the game to press them.',
+    ),
   );
 
   const instr = km.instructions.length

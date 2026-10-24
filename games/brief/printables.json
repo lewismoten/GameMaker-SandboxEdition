@@ -120,10 +120,142 @@
     }
   ],
   "stickers": [
-    { "text": "KEEP IT BRIEF!", "sub": "THE TINY POCKETS LIBRARY", "shape": "badge", "color": "#c8241e", "ink": "#fff6e0", "hero": { "chr": "joe.chr", "cbl": "joe.cbl", "pal": "brief.pal" } },
-    { "text": "SHHH!", "sub": "SHUSHER", "shape": "circle", "color": "#d8d8d4", "ink": "#2a1408", "sprite": { "blocks": "library.mbl", "pal": "brief.pal", "grid": [[1]] } },
-    { "text": "EXACTLY 100", "sub": "NOT 99. NOT 101.", "shape": "star", "color": "#ffd23f", "ink": "#2a1408" },
-    { "text": "OVERDUE", "sub": "ONE WORD A DAY", "shape": "rect", "color": "#fff6e0", "ink": "#c8241e" }
+    {
+      "text": "KEEP IT BRIEF!",
+      "sub": "MYSTERY ROBOT JOE",
+      "shape": "cut",
+      "color": "#c8241e",
+      "ink": "#fff6e0",
+      "hero": {
+        "chr": "joe.chr",
+        "cbl": "joe.cbl",
+        "pal": "brief.pal"
+      }
+    },
+    {
+      "text": "SHHH!",
+      "sub": "THE SHUSHER",
+      "shape": "cut",
+      "color": "#5b5bd6",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "library.mbl",
+        "pal": "brief.pal",
+        "grid": [[1]]
+      }
+    },
+    {
+      "text": "DOC LEO",
+      "sub": "AND THE RUBBER CHICKEN",
+      "shape": "cut",
+      "color": "#7a2bbf",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "clown.mbl",
+        "pal": "brief.pal",
+        "grid": [[2]]
+      }
+    },
+    {
+      "text": "TEDDY",
+      "sub": "ONE SMALL STEP",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "lab.mbl",
+        "pal": "brief.pal",
+        "grid": [[14]]
+      }
+    },
+    {
+      "text": "GWINN",
+      "sub": "OVERDUE FOR A WALK",
+      "shape": "cut",
+      "color": "#ff8fc8",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "library.mbl",
+        "pal": "brief.pal",
+        "grid": [[4]]
+      }
+    },
+    {
+      "text": "ARR!",
+      "sub": "THE DOCKS PARROT",
+      "shape": "burst",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "docks.mbl",
+        "pal": "brief.pal",
+        "grid": [[2]]
+      }
+    },
+    {
+      "text": "WHOM?",
+      "sub": "THE GRAMMAR LLAMA",
+      "shape": "cut",
+      "color": "#e8b84a",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "after.mbl",
+        "pal": "brief.pal",
+        "grid": [[4]]
+      }
+    },
+    {
+      "text": "BAD LUCK?",
+      "sub": "NOT HERE",
+      "shape": "cut",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "yard.mbl",
+        "pal": "brief.pal",
+        "grid": [[2]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "other.bbl",
+        "pal": "brief.pal",
+        "grid": [[98]],
+        "under": 0
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "other.bbl",
+        "pal": "brief.pal",
+        "grid": [[102]],
+        "under": 0
+      }
+    },
+    {
+      "text": "EXACTLY 100",
+      "sub": "NOT 99. NOT 101.",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "OVERDUE",
+      "sub": "ONE WORD A DAY",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#c8241e"
+    }
   ],
   "news": [
     {

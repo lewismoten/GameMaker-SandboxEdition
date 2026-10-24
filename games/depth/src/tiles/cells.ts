@@ -150,7 +150,6 @@ export function eggShape(x: number, y: number, z: number, s = 1): Shape {
   );
 }
 
-
 /** A slope: floor tilted downhill toward (dx, dy), with chevrons pointing the way it pulls. */
 function slope(dx: number, dy: number): Kind {
   return {
@@ -220,7 +219,20 @@ export function kinds(): Record<string, Kind> {
     ground: () => 'floor',
     tall: () => true,
     shapes: (cx, cy) => [
-      cube(cx, cy, { color: mix(LENS_COL[c], [1, 1, 1], 0.15), diffuse: 0.55, reflect: 0.2, fresnel: 0.45, spec: 1.3, shine: 110, emit: [LENS_COL[c][0] * 0.3, LENS_COL[c][1] * 0.3, LENS_COL[c][2] * 0.3] }, { round: 0.03, inset: 0.04 }),
+      cube(
+        cx,
+        cy,
+        {
+          color: mix(LENS_COL[c], [1, 1, 1], 0.15),
+          diffuse: 0.55,
+          reflect: 0.2,
+          fresnel: 0.45,
+          spec: 1.3,
+          shine: 110,
+          emit: [LENS_COL[c][0] * 0.3, LENS_COL[c][1] * 0.3, LENS_COL[c][2] * 0.3],
+        },
+        { round: 0.03, inset: 0.04 },
+      ),
       ...frame(cx, cy),
     ],
   });
@@ -233,6 +245,13 @@ export function kinds(): Record<string, Kind> {
     out.push(new Box([cx, cy + f, H - 0.05], [cx + 1, cy + f + 0.04, H], MAT.chrome));
     return out;
   };
+  const panel = (c: V, emit: V): Kind => ({
+    ground: () => 'floor',
+    tall: () => false,
+    shapes: (cx, cy) => [
+      new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { color: c, diffuse: 0.6, reflect: 0.3, fresnel: 0.4, spec: 1.2, shine: 90, emit }),
+    ],
+  });
   const K: Record<string, Kind> = {
     floor: floor(),
     pit: pit(),
@@ -254,7 +273,11 @@ export function kinds(): Record<string, Kind> {
       tall: () => false,
       shapes: (cx, cy, p) => {
         const panel = new Box([cx + 0.04, cy + 0.04, -0.12], [cx + 0.96, cy + 0.96, 0], walkway(NEAR_COL));
-        return [p === 'near' ? panel : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: NEAR_COL, diffuse: 0.8, emit: [0.15, 0.07, 0] }))];
+        return [
+          p === 'near'
+            ? panel
+            : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: NEAR_COL, diffuse: 0.8, emit: [0.15, 0.07, 0] })),
+        ];
       },
     },
     fbridge: {
@@ -262,12 +285,17 @@ export function kinds(): Record<string, Kind> {
       tall: () => false,
       shapes: (cx, cy, p) => {
         const panel = new Box([cx + 0.04, cy + 0.04, -0.12], [cx + 0.96, cy + 0.96, 0], walkway(FAR_COL));
-        return [p === 'far' ? panel : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: FAR_COL, diffuse: 0.8, emit: [0, 0.07, 0.15] }))];
+        return [
+          p === 'far'
+            ? panel
+            : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: FAR_COL, diffuse: 0.8, emit: [0, 0.07, 0.15] })),
+        ];
       },
     },
+    // a photon: a gold spark in a wide halo, so it never reads as a pale floor square
     photon: item(
-      (x, y) => [new Sphere([x, y, 0.3], 0.13, { color: rgb(255, 250, 200), diffuse: 0.3, emit: rgb(255, 230, 150), noShadow: true })],
-      () => [[0.5, 0.58, 0.3, 8, rgb(255, 220, 120)]],
+      (x, y) => [new Sphere([x, y, 0.3], 0.13, { color: rgb(255, 214, 70), diffuse: 0.3, emit: rgb(255, 190, 40), noShadow: true })],
+      () => [[0.5, 0.58, 0.3, 10, rgb(255, 200, 60)]],
     ),
     bulb: item(
       (x, y) => [
@@ -291,6 +319,7 @@ export function kinds(): Record<string, Kind> {
     gateR: gate('R'),
     gateG: gate('G'),
     gateB: gate('B'),
+    sealB: gate('B'),
     crowngate: {
       ground: () => 'floor',
       tall: () => true,
@@ -351,19 +380,24 @@ export function kinds(): Record<string, Kind> {
       tall: () => false,
       shapes: (cx, cy) => {
         const [x, y] = mid(cx, cy);
-        return [new Sphere([x, y - 0.05, 0.5], 0.36, { ...MAT.chrome, diffuse: 0.15 }), new Cylinder(x, y - 0.05, 0.22, 0, 0.16, MAT.marble(rgb(230, 225, 235), rgb(120, 110, 140)))];
+        return [
+          new Sphere([x, y - 0.05, 0.5], 0.36, { ...MAT.chrome, diffuse: 0.15 }),
+          new Cylinder(x, y - 0.05, 0.22, 0, 0.16, MAT.marble(rgb(230, 225, 235), rgb(120, 110, 140))),
+        ];
       },
     },
-    // auto-focus panels: the focus drifts on its own, so these come and go together
-    pulseA: {
-      ground: () => 'floor',
-      tall: () => false,
-      shapes: (cx, cy) => [new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { color: rgb(220, 200, 255), diffuse: 0.6, reflect: 0.3, fresnel: 0.4, spec: 1.2, shine: 90, emit: rgb(50, 30, 80) })],
-    },
+    // auto-focus panels: the focus drifts on its own, so these come and go together; they
+    // flicker hot pink twice just before they blur out
+    pulseA: panel(rgb(220, 200, 255), rgb(50, 30, 80)),
+    pulseA2: panel(rgb(220, 200, 255), rgb(50, 30, 80)),
+    pulseW: panel(rgb(255, 120, 170), rgb(150, 30, 70)),
+    pulseW2: panel(rgb(255, 120, 170), rgb(150, 30, 70)),
     pulseB: {
       ground: () => 'pit',
       tall: () => false,
-      shapes: (cx, cy) => [ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: rgb(200, 170, 255), diffuse: 0.8, emit: rgb(60, 30, 90) }))],
+      shapes: (cx, cy) => [
+        ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: rgb(200, 170, 255), diffuse: 0.8, emit: rgb(60, 30, 90) })),
+      ],
     },
     slopeN: slope(0, -1),
     slopeE: slope(1, 0),
@@ -383,7 +417,11 @@ export function kinds(): Record<string, Kind> {
             ],
             { color: c, diffuse: 0.45, spec: 1.5, shine: 120, reflect: 0.2, fresnel: 0.4, emit: [c[0] * 0.2, c[1] * 0.2, c[2] * 0.2] },
           );
-        return [prism(0, -0.02, 0.55, 0.11, rgb(140, 240, 220)), prism(-0.2, 0.08, 0.32, 0.08, rgb(170, 140, 255)), prism(0.19, 0.1, 0.38, 0.08, rgb(120, 220, 255))];
+        return [
+          prism(0, -0.02, 0.55, 0.11, rgb(140, 240, 220)),
+          prism(-0.2, 0.08, 0.32, 0.08, rgb(170, 140, 255)),
+          prism(0.19, 0.1, 0.38, 0.08, rgb(120, 220, 255)),
+        ];
       },
     },
     teapot: {
@@ -407,7 +445,8 @@ export function kinds(): Record<string, Kind> {
               [x, y + 0.36, 0],
               [x, y - 0.05, 0.6],
             ],
-            (f) => ({ color: f % 2 ? rgb(60, 30, 90) : rgb(40, 20, 60), diffuse: 0.8, spec: 1, shine: 60 }),
+            // lit violet faces (the Vanishing Point's floor is near black)
+            (f) => ({ color: f % 2 ? rgb(190, 120, 255) : rgb(130, 80, 200), diffuse: 0.8, spec: 1, shine: 60, emit: rgb(45, 20, 75) }),
           ),
           new Sphere([x, y + 0.06, 0.24], 0.06, { color: rgb(255, 60, 60), emit: rgb(255, 40, 40), noShadow: true }),
         ];
@@ -427,10 +466,7 @@ export function kinds(): Record<string, Kind> {
     mirrordoor: {
       ground: () => 'floor',
       tall: () => true,
-      shapes: (cx, cy, _p, t) => [
-        cube(cx, cy, { ...t.wall, reflect: 0.62, color: rgb(200, 205, 230) }),
-        eggShape(cx + 0.5, cy + 0.72, 0.36, 0.7),
-      ],
+      shapes: (cx, cy, _p, t) => [cube(cx, cy, { ...t.wall, reflect: 0.62, color: rgb(200, 205, 230) }), eggShape(cx + 0.5, cy + 0.72, 0.36, 0.7)],
     },
     chez: {
       ground: () => 'floor',
@@ -439,13 +475,26 @@ export function kinds(): Record<string, Kind> {
       shapes: (cx, cy) => citicar(cx, cy),
     },
     egg: item((x, y) => [eggShape(x, y, 0.22), new Cylinder(x, y, 0.2, 0, 0.04, MAT.chrome)]),
+    // drawn only in isometric parts of a level (tiles/iso.ts); oblique stand-ins otherwise
+    stair: { ground: () => 'floor', tall: () => true, shapes: (cx, cy, _p, t) => [cube(cx, cy, t.wall)] },
+    steps: floor(),
+    prism: { ground: () => 'floor', tall: () => false },
+    prismLit: { ground: () => 'floor', tall: () => false },
+    // bare floor here: levels/hidden.ts draws the tin heart, the Easter egg and Watt over it
+    tinHeart: floor(),
+    tinHeart2: floor(),
+    easterEgg: floor(),
+    watt: floor(),
   };
   return K;
 }
 
 export const KINDS = kinds();
 
-/** A cell to render: its kind (and part of a multi-cell model), a variant, and its neighbors per plane. */
+/** The variant of a cell drawn isometrically (tiles/iso.ts). */
+export const ISO = 1;
+
+/** A cell to render: its kind (and part of a multi-cell model), a variant (ISO: drawn isometrically), and its neighbors per plane. */
 export interface CellKey {
   kind: string;
   part?: number;

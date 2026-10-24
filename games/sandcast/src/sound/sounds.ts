@@ -45,10 +45,11 @@ export function buildSounds(): Uint8Array {
     SND.kill,
     speaker((i) => (i < 8 ? 300 + r() * 2600 : i < 24 ? 1800 * 0.86 ** (i - 8) + (i % 2) * 90 : 0)),
   );
-  // Scooping sand: a soft gritty shff, then a little rising blip.
+  // Scooping sand: a soft gritty shff and a quick blip, kept short (half the old length)
+  // because it plays on every scoop.
   put(
     SND.addSand,
-    speaker((i) => (i < 12 ? 180 + r() * 420 : i < 16 ? 0 : i < 30 ? 700 + (i - 16) * 55 : 0)),
+    speaker((i) => (i < 6 ? 180 + r() * 420 : i < 8 ? 0 : i < 15 ? 700 + (i - 8) * 90 : 0)),
   );
   // Spending sand: pat-pat (two low thumps), the way you pat a sand wall.
   put(
@@ -85,22 +86,29 @@ export function buildSounds(): Uint8Array {
     SND.subScore,
     speaker((i) => (i < 30 ? 660 * 0.965 ** i : 0)),
   );
-  // A flag, a key, a golden shell: three notes that climb, then ring.
+  // A flag, a ball, a golden shell: three notes that climb, then a short ring (it plays on
+  // most pickups, so the ring stops well before the end of the 36 steps).
   put(
     SND.addOther,
     arp(
       [
-        [['C5'], 5],
-        [['G5'], 5],
-        [['C6', 'E6', 'G6'], 26],
+        [['C5'], 4],
+        [['G5'], 4],
+        [['C6', 'E6', 'G6'], 12],
       ],
       2,
     ),
   );
-  // A gate grinds open: falling warble over a growl.
+  // A gate, a root door or a dune gives way: a short grind, then a bright little fanfare.
   put(
     SND.useOther,
-    speaker((i) => 380 * 0.97 ** i + Math.sin(i * 2.6) * 70 + (i % 3 === 0 ? 40 : 0)),
+    speaker((i) =>
+      i < 8
+        ? 300 * 0.96 ** i + Math.sin(i * 2.6) * 60
+        : i < 10
+          ? 0
+          : hz(['G4', 'C5', 'E5', 'G5', 'C6', 'C6'][Math.min(5, Math.floor((i - 10) / 4))]) * (i >= 30 ? 1 + 0.01 * Math.sin(i * 1.9) : 1),
+    ),
   );
   // Flinging sand: a whoosh of noise that falls away.
   put(

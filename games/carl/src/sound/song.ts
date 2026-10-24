@@ -37,17 +37,61 @@ export const BPM = 133;
 // ---- the patches --------------------------------------------------------------------------
 
 /** The singer: a kazoo (a buzzy reed, vibrato on the carrier). */
-const KAZOO = sbi({ modChar: 0x21, carChar: 0x61, modLevel: 0x12, carLevel: 0x00, modAD: 0x86, carAD: 0x76, modSR: 0x15, carSR: 0x16, modWave: 1, feedback: 0x0d });
+const KAZOO = sbi({
+  modChar: 0x21,
+  carChar: 0x61,
+  modLevel: 0x12,
+  carLevel: 0x00,
+  modAD: 0x86,
+  carAD: 0x76,
+  modSR: 0x15,
+  carSR: 0x16,
+  modWave: 1,
+  feedback: 0x0d,
+});
 /** Its twin without the vibrato, for the doubling. */
 const KAZOO2 = detuned(KAZOO);
 /** A ukulele: nylon, plucked, short. */
-const UKE = sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x1b, carLevel: 0x00, modAD: 0xf8, carAD: 0xf6, modSR: 0x46, carSR: 0x56, modWave: 2, feedback: 0x0a });
+const UKE = sbi({
+  modChar: 0x01,
+  carChar: 0x01,
+  modLevel: 0x1b,
+  carLevel: 0x00,
+  modAD: 0xf8,
+  carAD: 0xf6,
+  modSR: 0x46,
+  carSR: 0x56,
+  modWave: 2,
+  feedback: 0x0a,
+});
 /** Carl: a fly's buzz (full feedback, a sawtooth, sustained). */
 const FLY = sbi({ modChar: 0x21, carChar: 0x61, modLevel: 0x0a, carLevel: 0x04, modAD: 0xf2, carAD: 0xf2, modSR: 0x04, carSR: 0x05, feedback: 0x0f });
 /** The narrator (low, warm, with vibrato). */
-const NARRATOR = sbi({ modChar: 0x61, carChar: 0x61, modLevel: 0x1c, carLevel: 0x00, modAD: 0x63, carAD: 0x74, modSR: 0x15, carSR: 0x16, modWave: 1, feedback: 0x0c });
+const NARRATOR = sbi({
+  modChar: 0x61,
+  carChar: 0x61,
+  modLevel: 0x1c,
+  carLevel: 0x00,
+  modAD: 0x63,
+  carAD: 0x74,
+  modSR: 0x15,
+  carSR: 0x16,
+  modWave: 1,
+  feedback: 0x0c,
+});
 /** The documentary's strings-and-organ swell, from a whisper to full (8 steps). */
-const PAD = sbi({ modChar: 0x21, carChar: 0xa1, modLevel: 0x18, carLevel: 0x08, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, carWave: 1, feedback: 0x05 });
+const PAD = sbi({
+  modChar: 0x21,
+  carChar: 0xa1,
+  modLevel: 0x18,
+  carLevel: 0x08,
+  modAD: 0xf0,
+  carAD: 0xf0,
+  modSR: 0x0f,
+  carSR: 0x0f,
+  carWave: 1,
+  feedback: 0x05,
+});
 const SWELL = sweep(PAD, 8, { mod: 44, car: 44 }, { mod: 16, car: 6 });
 /** A music box for the bedroom at night and the wild. */
 const BOX = CELESTA;
@@ -378,7 +422,10 @@ class Arranger {
   /** A band hit on the downbeat of the next bar. */
   hit(chord: string, shift = 0): this {
     const at = this.bar * 4;
-    this.fx.program(DRUM.kick, at, THUD).boom(at, 1, root(chord, shift), 127).program(DRUM.kick, at + 1, BOOM);
+    this.fx
+      .program(DRUM.kick, at, THUD)
+      .boom(at, 1, root(chord, shift), 127)
+      .program(DRUM.kick, at + 1, BOOM);
     this.fx.drumRoll(DRUM.cymbal, at, 1 / 4, 1 / 4, 120, 120);
     return this;
   }
@@ -426,7 +473,10 @@ function breakdown(a: Arranger, cutBeforeSeen = true): void {
 export function titleSong(): Uint8Array {
   const a = new Arranger();
   intro(a, false);
-  a.section({ name: 'hook', chords: CHORUS.chords.slice(2, 8), tune: CHORUS.tune.slice(2, 8) }, { uke: 'strum', sing: 'double', bass: 'bounce', drums: bounce(6), vel: 104 });
+  a.section(
+    { name: 'hook', chords: CHORUS.chords.slice(2, 8), tune: CHORUS.tune.slice(2, 8) },
+    { uke: 'strum', sing: 'double', bass: 'bounce', drums: bounce(6), vel: 104 },
+  );
   a.hit('Dm');
   a.section({ name: 'tag', chords: ['Dm', 'Dm'], tune: ['r w', 'r w'] }, { uke: 'none', sing: 'none', bass: 'none', drums: ['none'], vel: 90 });
   a.flyBy((a.bar - 2) * 4 + 1, 4, 64, 84);
@@ -456,18 +506,33 @@ export function levelSongs(): Uint8Array[] {
   const three = new Arranger(124);
   three.fx.program(CARL, 0, BOX);
   three.section(BRIDGE, { uke: 'pluck', sing: 'solo', bass: 'long', drums: ['shaker'], vel: 88 });
-  for (let b = 0; b < 8; b++) three.fx.arp(CARL, b * 4 + 2, 2, uke(BRIDGE.chords[b].split(' ').pop()!).map((n) => n + 12), 1 / 2, 52, 'up');
+  for (let b = 0; b < 8; b++)
+    three.fx.arp(
+      CARL,
+      b * 4 + 2,
+      2,
+      uke(BRIDGE.chords[b].split(' ').pop()!).map((n) => n + 12),
+      1 / 2,
+      52,
+      'up',
+    );
   three.fx.program(CARL, three.bar * 4, FLY);
   chorus(three, CHORUS2, { vel: 92 });
   // the window: the bridge's second half and chorus 1, bright
   const four = new Arranger();
-  four.section({ name: 'the window', chords: BRIDGE.chords.slice(4), tune: BRIDGE.tune.slice(4) }, { uke: 'strum', sing: 'solo', bass: 'bounce', drums: bounce(4), vel: 100 });
+  four.section(
+    { name: 'the window', chords: BRIDGE.chords.slice(4), tune: BRIDGE.tune.slice(4) },
+    { uke: 'strum', sing: 'solo', bass: 'bounce', drums: bounce(4), vel: 100 },
+  );
   four.roll(1).hit('Bb');
   chorus(four, CHORUS);
   // the wild: the documentary, Carl buzzing, the documentary again
   const five = new Arranger(120);
   breakdown(five);
-  five.section({ name: 'the wild', chords: ['Dm', 'C', 'Bb', 'A', 'Dm', 'C', 'Bb', 'A'], tune: new Array(8).fill('r w') }, { uke: 'pluck', sing: 'none', bass: 'long', drums: ['shaker'], vel: 92, buzz: true });
+  five.section(
+    { name: 'the wild', chords: ['Dm', 'C', 'Bb', 'A', 'Dm', 'C', 'Bb', 'A'], tune: new Array(8).fill('r w') },
+    { uke: 'pluck', sing: 'none', bass: 'long', drums: ['shaker'], vel: 92, buzz: true },
+  );
   breakdown(five, false);
   // the aux cord: the last chorus, then up a half step, and the outro
   const six = new Arranger();
@@ -494,7 +559,10 @@ export function wonSong(): Uint8Array {
 /** Lost: "I've named it Carl. I hate Carl.", slow and alone, the last "Carl" stuttering, and Carl buzzes off laughing. */
 export function lostSong(): Uint8Array {
   const a = new Arranger(100);
-  a.section({ name: 'i hate carl', chords: ['C', 'C F', 'Bb A', 'Dm'], tune: [CHORUS2.tune[4], CHORUS2.tune[5], CHORUS2.tune[6], 'r w'] }, { uke: 'pluck', sing: 'solo', bass: 'long', drums: ['none'], vel: 84 });
+  a.section(
+    { name: 'i hate carl', chords: ['C', 'C F', 'Bb A', 'Dm'], tune: [CHORUS2.tune[4], CHORUS2.tune[5], CHORUS2.tune[6], 'r w'] },
+    { uke: 'pluck', sing: 'solo', bass: 'long', drums: ['none'], vel: 84 },
+  );
   a.fx.stutter(TWIN, 8, 62, 4, 0.5, 64);
   a.flyBy(12.5, 3, 64, 76);
   return a.cmf();

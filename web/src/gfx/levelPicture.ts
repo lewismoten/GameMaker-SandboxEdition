@@ -1,7 +1,7 @@
 // A picture of a level as the player first sees it, as palette-indexed pixels: the map around
 // the block the hero arrives on, with its placed monsters and the hero. No canvas, so the
 // build draws the home page's game pictures with it too (scripts/gameShots.ts), exactly as
-// the page would (integratorArt.ts levelShot, desk/boxes/boxArt.ts renderShot).
+// the page would (integratorArt.ts levelShot, gameShots.ts renderShot).
 import { NOSCENE, type Game, type Point, type Scene } from '../formats/game';
 import { parseMap, MLEN, MWID } from '../formats/map';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
@@ -152,12 +152,22 @@ export function gamePicture(files: FileSource, game: Game, cols: number, rows: n
  */
 export function mapPixels(files: FileSource, game: Game, mapName: string, x: number, y: number, w = 16, h = 10): LevelPicture | undefined {
   const scene = game.scenes.find((s) => s.gametype === 10 && s.files[1]?.toLowerCase() === mapName.toLowerCase());
-  if (!scene) return undefined;
+  return scene && scenePixels(files, scene, x, y, w, h);
+}
+
+/**
+ * `w` x `h` blocks of a scene's map from (`x`, `y`) in its own palette and blocks, with its
+ * placed monsters (first frame). `cells` stands in for the map's background blocks (the
+ * printed Level Maps draw the ground over what they hide). Undefined when the palette, map
+ * or blocks are missing.
+ */
+export function scenePixels(files: FileSource, scene: Scene, x: number, y: number, w = 16, h = 10, cells?: Uint8Array): LevelPicture | undefined {
   const get = (i: number) => (scene.files[i] ? files.get(scene.files[i]) : undefined);
   const [palB, mapB, bblB, monB, mblB] = [0, 1, 2, 3, 4].map(get);
   if (!palB || !mapB || !bblB) return undefined;
   const palette = parsePalette(palB);
   const map = parseMap(mapB);
+  const back = cells ?? map.blocks;
   const blocks = parseBlocks(bblB, BACKBL);
   const mons = monB ? parseMonsters(monB) : [];
   const mblocks = mblB ? parseBlocks(mblB, MONBL) : [];
@@ -175,7 +185,7 @@ export function mapPixels(files: FileSource, game: Game, mapName: string, x: num
       const mx = (((x + bx) % MLEN) + MLEN) % MLEN;
       const my = (((y + by) % MWID) + MWID) % MWID;
       const cell = my * MLEN + mx;
-      paint((blocks[map.blocks[cell]] ?? blocks[0]).pixels, bx, by, false);
+      paint((blocks[back[cell]] ?? blocks[0]).pixels, bx, by, false);
       const placed = map.monsters[map.mons[cell]];
       const mon = placed && mons[placed.monnum];
       const pic = mon?.pic[0]?.[0];
@@ -212,7 +222,9 @@ export interface HeroSpec {
 }
 
 /** The hero an original game's paper shows (its hero sticker, else its ID card's portrait): the disk label and manual cover draw him. */
-export function heroOf(original: { printables?: { stickers?: { hero?: HeroSpec }[]; items?: { kind: string; portrait?: HeroSpec }[] } } | undefined): HeroSpec | undefined {
+export function heroOf(
+  original: { printables?: { stickers?: { hero?: HeroSpec }[]; items?: { kind: string; portrait?: HeroSpec }[] } } | undefined,
+): HeroSpec | undefined {
   const p = original?.printables;
   return p?.stickers?.find((s) => s.hero)?.hero ?? p?.items?.flatMap((i) => (i.kind === 'idcard' && i.portrait ? [i.portrait] : []))[0];
 }

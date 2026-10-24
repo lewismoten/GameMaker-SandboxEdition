@@ -57,7 +57,7 @@ THIS IS SHAREWARE
 
     Sandbox Software
     Dept. SNOW
-    P.O. Box 1992
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   (This is a fictional address

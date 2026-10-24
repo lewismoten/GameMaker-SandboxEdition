@@ -76,7 +76,6 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     const grid = h('div', { class: 'pick-grid' });
     const filters = h('div', { class: 'pick-filters', role: 'group', 'aria-label': 'Sound groups' });
     const tabs = h('div', { class: 'pick-tabs', role: 'tablist' });
-    let tab: 'mine' | 'library' = 'mine';
     let filter: SoundGroup | 'all' = 'all';
     let io: IntersectionObserver | undefined;
     let shown = 0; // which listing is current, so a slow library load doesn't land on another tab
@@ -280,8 +279,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       close(name);
     };
 
-    const setTab = (t: typeof tab) => {
-      tab = t;
+    const setTab = (t: 'mine' | 'library') => {
       stopPreview();
       [...tabs.children].forEach((b) => b.setAttribute('aria-selected', String(b.textContent === 'This game' ? t === 'mine' : t === 'library')));
       if (t === 'mine') showMine();

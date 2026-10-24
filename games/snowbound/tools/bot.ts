@@ -44,7 +44,7 @@ export class Bot {
   private throwing = false;
   constructor(readonly sim: GameSim) {}
 
-  /** Big Pete closing in: a snowball (power 120) beats him (110) and sends him off crying. */
+  /** Big Pete closing in: a snowball (power 120) beats him (90) and sends him off before he shoves. */
   private async defend(): Promise<void> {
     const { sim } = this;
     if (this.throwing) {
@@ -62,7 +62,9 @@ export class Bot {
       const dx = w.mi[i].curx[0] - p.x;
       const dy = w.mi[i].cury[0] - p.y;
       if (Math.abs(dx) + Math.abs(dy) > 3) return false;
-      return Math.abs(dx) >= Math.abs(dy) ? netx !== 0 && Math.sign(dx) === Math.sign(netx) && Math.abs(dy) <= 1 : nety !== 0 && Math.sign(dy) === Math.sign(nety) && Math.abs(dx) <= 1;
+      return Math.abs(dx) >= Math.abs(dy)
+        ? netx !== 0 && Math.sign(dx) === Math.sign(netx) && Math.abs(dy) <= 1
+        : nety !== 0 && Math.sign(dy) === Math.sign(nety) && Math.abs(dx) <= 1;
     });
     if (!aimed) return;
     sim.press(SCAN.space);

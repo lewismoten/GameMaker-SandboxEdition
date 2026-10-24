@@ -1,0 +1,160 @@
+/* "What you've done" (#/achievements, achievements/page.ts) */
+
+main.ach-page {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  line-height: 1.5;
+}
+
+main.ach-page.with-toc {
+  max-width: 76rem;
+}
+
+main.ach-page h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+main.ach-page .lead {
+  margin: 0 0 18px;
+  font-size: 17px;
+  max-width: 46rem;
+}
+
+main.ach-page .ach-back {
+  margin: 0 0 12px;
+}
+
+.ach-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 6px;
+  margin: 0 0 28px;
+  font-size: 18px;
+}
+
+.ach-summary .ach-bar {
+  flex: 1 0 100%;
+  height: 12px;
+  margin-top: 6px;
+}
+
+.ach-section {
+  margin: 0 0 32px;
+}
+
+.ach-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ach-section h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.ach-count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ach-blurb {
+  margin: 2px 0 8px;
+  color: var(--muted);
+}
+
+.ach-bar {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.ach-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ach-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.ach-card.is-done {
+  border-color: var(--accent);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.ach-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.ach-card:not(.is-done) .ach-icon {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.ach-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.ach-card.is-hidden h3 {
+  letter-spacing: 0.15em;
+}
+
+.ach-desc {
+  margin: 2px 0 0;
+}
+
+.ach-card:not(.is-done) .ach-desc,
+.ach-when {
+  color: var(--muted);
+}
+
+.ach-progress {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ach-when {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.ach-reset p {
+  margin: 4px 0 10px;
+}

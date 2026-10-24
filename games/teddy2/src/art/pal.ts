@@ -54,6 +54,10 @@ const LIGHT: Record<TimeOfDay, { mul: RGB; add: RGB }> = {
   show: { mul: [1.0, 0.9, 0.86], add: [12, 4, 6] },
 };
 
+/** Ramps dimmed less at night, and the night light they get instead. */
+const MOONLIT = new Set(['fur']);
+const MOON: RGB = [0.78, 0.82, 0.94];
+
 /** Sky gradients per time of day (top to bottom of the 8 shades are dark to light). */
 const SKY: Record<TimeOfDay, [RGB, RGB, RGB?]> = {
   morning: [
@@ -107,7 +111,10 @@ export function buildPalette(time: TimeOfDay): Pal {
       glows && (time === 'night' || time === 'sunset' || time === 'show')
         ? c
         : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB);
-    b.ramp(name, n, lit(from), lit(to), mid ? lit(mid) : undefined);
+    // White fur and bones keep some moonlight at night, so a bone reads on the navy park.
+    const moon = time === 'night' && MOONLIT.has(name);
+    const lift = (c: RGB): RGB => (moon ? (c.map((v, i) => Math.min(255, Math.round(v * MOON[i] + 12))) as RGB) : lit(c));
+    b.ramp(name, n, lift(from), lift(to), mid ? lift(mid) : undefined);
   }
   return wrap(b);
 }

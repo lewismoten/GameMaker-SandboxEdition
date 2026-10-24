@@ -5,7 +5,8 @@
 // (shadows, a pit's inner wall), so only the variants a level uses take up its 150 numbers.
 import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
 import type { Picture } from '../render/image';
-import { KINDS, PLANES, renderCell, type CellKey, type Ctx, type Plane } from './cells';
+import { ISO, KINDS, PLANES, renderCell, type CellKey, type Ctx, type Plane } from './cells';
+import { renderIsoCell } from './iso';
 import type { ThemeId } from './themes';
 
 const ALL = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
@@ -51,7 +52,8 @@ export class TileBook {
       const c = key.ctx[p];
       const pit = kind.ground(p) === 'pit';
       // a cube in focus covers its whole cell; a pit only shows the wall north of it
-      const fills = kind.tall(p) || (kind.span !== undefined);
+      // a cube in focus, a multi-cell model or an isometric cell ignores its neighbors
+      const fills = kind.tall(p) || kind.span !== undefined || key.variant === ISO;
       ctx[p] = fills ? { w: false, n: false, nw: false, nPit: false } : pit ? { w: false, n: c.n, nw: false, nPit: c.nPit } : { ...c, nPit: false };
     }
     return { kind: key.kind, part: key.part ?? 0, variant: key.variant ?? 0, ctx };
@@ -152,7 +154,7 @@ export class TileBook {
     const out = { near: [] as (Picture | undefined)[], far: [] as (Picture | undefined)[] };
     this.keys.forEach((k, n) => {
       if (!k) return;
-      for (const p of PLANES) out[p][n] = renderCell(k, p, this.theme, seed + n * 31);
+      for (const p of PLANES) out[p][n] = (k.variant === ISO ? renderIsoCell : renderCell)(k, p, this.theme, seed + n * 31);
     });
     return out;
   }

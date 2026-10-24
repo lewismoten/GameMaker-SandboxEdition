@@ -55,23 +55,36 @@ export function drawTinHeart(p: Pixels, c: TinColors, frame = 0, dx = 0, dy = 0)
     }
   // a seam across the middle and the rivets along the rim
   for (const [x, y] of [
-    [3, 6], [6, 3], [13, 3], [16, 6], [14, 11], [5, 11],
+    [3, 6],
+    [6, 3],
+    [13, 3],
+    [16, 6],
+    [14, 11],
+    [5, 11],
   ] as [number, number][]) {
     p.set(x + dx, y + dy, hi);
     if (at(x + 1, y + 1)) p.set(x + dx + 1, y + dy + 1, c.dark);
   }
   // the highlight on the left lobe
-  p.set(5 + dx, 5 + dy, c.white).set(6 + dx, 5 + dy, hi).set(5 + dx, 6 + dy, hi);
+  p.set(5 + dx, 5 + dy, c.white)
+    .set(6 + dx, 5 + dy, hi)
+    .set(5 + dx, 6 + dy, hi);
   // the little clock face in the middle, its hands at ten past ten
   p.disc(10 + dx, 9.5 + dy, 2.4, c.ink);
   p.disc(10 + dx, 9.5 + dy, 1.6, c.white);
-  p.set(10 + dx, 9 + dy, c.dark).set(10 + dx, 8 + dy, c.dark).set(11 + dx, 9 + dy, c.dark);
+  p.set(10 + dx, 9 + dy, c.dark)
+    .set(10 + dx, 8 + dy, c.dark)
+    .set(11 + dx, 9 + dy, c.dark);
   // the shine: a glint that crosses the tin
   if (frame > 0) {
     const gx = [0, 5, 9, 14][frame] ?? 14;
     const gy = [0, 9, 13, 8][frame] ?? 8;
     for (const [x, y] of [
-      [gx, gy], [gx - 1, gy], [gx + 1, gy], [gx, gy - 1], [gx, gy + 1],
+      [gx, gy],
+      [gx - 1, gy],
+      [gx + 1, gy],
+      [gx, gy - 1],
+      [gx, gy + 1],
     ] as [number, number][])
       if (at(x, y)) p.set(x + dx, y + dy, x === gx && y === gy ? c.white : hi);
   }
@@ -116,6 +129,6 @@ export function looksLikeTinHeart(pixels: ArrayLike<number>): boolean {
   if (ink.share < 0.9 || face.share < 0.6 || ink.color === face.color) return false;
   let tin = 0;
   let other = 0;
-  for (let i = 0; i < 400; i++) if (map[i] >= 2 && map[i] <= 4) (pixels[i] === ink.color ? other++ : tin++);
+  for (let i = 0; i < 400; i++) if (map[i] >= 2 && map[i] <= 4) pixels[i] === ink.color ? other++ : tin++;
   return tin > other * 9;
 }

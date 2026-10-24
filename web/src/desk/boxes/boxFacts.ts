@@ -3,7 +3,8 @@
 // true of it (no claiming digitized sound for a PC speaker game), its rating seal, and
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
 import type { CatalogEntry } from '../../project/files';
-import { diskCount } from '../../retro/dos/disks';
+import { gameDisks } from '../../project/diskFacts';
+import { ADVTYPE, type Game } from '../../formats/game';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {
@@ -21,16 +22,11 @@ export interface BoxExtras {
   poster?: { gif?: string; map?: [string, number, number, number, number]; title?: string; caption?: string };
 }
 
-/** Bytes the DOS release adds to the game's files: the player .EXE, sound driver, CONFIG.BAT, README. */
-export const DOS_EXTRA_BYTES = 160_598 + 2_493 + 3_000;
+export { DOS_EXTRA_BYTES, disksLine } from '../../project/diskFacts';
 
-/** How many 1.44 MB disks the game ships on (its files plus the DOS player). */
+/** How many 1.44 MB disks an original game ships on (its files plus the DOS player): project/diskFacts.ts gameDisks, from a size alone. */
 export function boxDisks(bytes: number | undefined): number {
-  return diskCount((bytes ?? 0) + DOS_EXTRA_BYTES);
-}
-
-export function disksLine(n: number): string {
-  return n === 1 ? 'One 3½" 1.44 MB disk' : `${n} × 3½" 1.44 MB disks`;
+  return gameDisks({ bytes, original: {} });
 }
 
 const NICE_HOURS = [1, 2, 3, 5, 8, 10, 15, 20, 25, 30, 40, 50];
@@ -147,4 +143,23 @@ export function planBack(available: number, featureCount: number, reviewCount: n
   let last = { bodyPx: 13, features: 0, reviews: 0, shots: 0 };
   while (last.bodyPx > 9 && heightOf(last) > available) last = { ...last, bodyPx: last.bodyPx - 1 };
   return { ...last, height: heightOf(last) };
+}
+
+/** A screenshot's caption: the name of the level its map belongs to ("1a The Data Bus" -> "Stage 1: The Data Bus"). */
+export function shotCaption(game: Game | undefined, map: string): string {
+  const desc = game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc.trim() ?? '';
+  return desc.replace(/^(\d+)[a-z]\s+/i, 'Stage $1: ');
+}
+
+/** What a box reads from the game's .gam: its number of levels and its screenshots' captions (CatalogEntry.boxGame, worked out when the site is built). */
+export interface BoxGame {
+  levels: number;
+  captions: string[];
+}
+
+export function boxGame(game: Game | undefined, shots: [string, number, number][] | undefined): BoxGame {
+  return {
+    levels: game?.scenes.filter((s) => s.gametype === ADVTYPE).length ?? 0,
+    captions: (shots ?? []).slice(0, 3).map(([m]) => shotCaption(game, m)),
+  };
 }

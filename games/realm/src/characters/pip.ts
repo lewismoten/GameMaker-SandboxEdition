@@ -31,7 +31,10 @@ const MONBL = 100;
 type F = Partial<Frame> & { pic: number };
 export function frames(list: F[]): Frame[] {
   const out = Array.from({ length: 10 }, () => emptyFrame(true));
-  list.forEach((f, i) => (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? CHARBL, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }));
+  list.forEach(
+    (f, i) =>
+      (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? CHARBL, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }),
+  );
   return out;
 }
 

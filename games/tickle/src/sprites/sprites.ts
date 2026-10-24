@@ -67,7 +67,9 @@ export function leoArt(pal: Pal) {
         shoe(3, 37, true);
         shoe(12, 37);
       } else {
-        p.rect(6 - knee, legTop, 4, 37 - legTop, c('navy', 1)).rect(10 + knee, legTop, 4, 37 - legTop, c('navy', 1)).rect(9, legTop + 1, 2, 37 - legTop - 1, c('navy', 0));
+        p.rect(6 - knee, legTop, 4, 37 - legTop, c('navy', 1))
+          .rect(10 + knee, legTop, 4, 37 - legTop, c('navy', 1))
+          .rect(9, legTop + 1, 2, 37 - legTop - 1, c('navy', 0));
         shoe(5 - knee, 37, true);
         shoe(10 + knee, 37);
       }
@@ -101,7 +103,9 @@ export function leoArt(pal: Pal) {
       p.set(9, top + 8, c('tie', 1)).set(10, top + 8, c('tie', 0));
       p.line(7, top, 9, top + 8, c('coat', 1)).line(12, top, 10, top + 8, c('coat', 1));
       // the pocket: the bat detector peeks out
-      p.rect(12, top + 5, 3, 3, c('coat', 1)).rect(13, top + 3, 2, 2, c('steel', 2)).set(13, top + 3, c('potion', 3));
+      p.rect(12, top + 5, 3, 3, c('coat', 1))
+        .rect(13, top + 3, 2, 2, c('steel', 2))
+        .set(13, top + 3, c('potion', 3));
     } else {
       p.rect(12, top, 2, 6, c('purple', 1)).rect(13, top + 1, 1, 6, c('tie', 1));
       p.rect(7, top + 6, 3, 3, c('coat', 2));
@@ -152,8 +156,14 @@ export function leoArt(pal: Pal) {
     p.rect(mx - (side ? 1 : 2), hy + 6, side ? 3 : 5, 3, c('paint', 1));
     if (face === 'laugh') p.rect(mx - (side ? 0 : 1), hy + 6, side ? 2 : 3, 3, c('nose', 0)).set(mx, hy + 6, c('paint', 1));
     else if (face === 'ouch' || face === 'dazed') p.rect(mx - 1, hy + 8, 3, 1, ink).set(mx, hy + 7, ink);
-    else if (face === 'grin') p.rect(mx - 2, hy + 7, 5, 1, ink).set(mx - 2, hy + 6, ink).set(mx + 2, hy + 6, ink);
-    else p.set(mx - 1, hy + 7, ink).set(mx, hy + 8, ink).set(mx + 1, hy + 7, ink);
+    else if (face === 'grin')
+      p.rect(mx - 2, hy + 7, 5, 1, ink)
+        .set(mx - 2, hy + 6, ink)
+        .set(mx + 2, hy + 6, ink);
+    else
+      p.set(mx - 1, hy + 7, ink)
+        .set(mx, hy + 8, ink)
+        .set(mx + 1, hy + 7, ink);
     // eyes: white patches, and pupils (shut for a blink and a laugh)
     const eyes = side ? [fx + 1] : [fx - 2, fx + 2];
     for (const ex of eyes) {
@@ -170,13 +180,20 @@ export function leoArt(pal: Pal) {
       const by = hy - 1 + (o.back ? 1 : 0);
       const bx0 = side ? 4 : 3 + hx;
       const bx1 = side ? 17 : 16 + hx;
-      p.rect(bx0, by, bx1 - bx0 + 1, 1, c('hat', 1)).set(bx0 + 1, by, T).set(bx1 - 2, by, T);
+      p.rect(bx0, by, bx1 - bx0 + 1, 1, c('hat', 1))
+        .set(bx0 + 1, by, T)
+        .set(bx1 - 2, by, T);
       for (let y = by - 6; y < by; y++) {
         const w = y === by - 6 ? 3 : 4;
         p.rect(fx - w - (side ? 1 : 0), y, w * 2 + 1, 1, c('hat', y === by - 1 ? 0 : y === by - 6 ? 2 : 1));
       }
       p.set(fx, by - 6, c('hat', 0)).set(fx - 1, by - 5, c('hat', 2));
-      for (const [x, k] of [[fx - 3, 'nose'], [fx - 1, 'cheese'], [fx + 2, 'spark']] as const) p.set(x, by - 1, c(k, 2));
+      for (const [x, k] of [
+        [fx - 3, 'nose'],
+        [fx - 1, 'cheese'],
+        [fx + 2, 'spark'],
+      ] as const)
+        p.set(x, by - 1, c(k, 2));
     }
     return outline(p, ink);
   };
@@ -192,7 +209,10 @@ export function buildCharBlocks(pal: Pal) {
   const add = (name: string, o: LeoPose) => {
     const pic = draw(o);
     const names: string[] = [];
-    for (const [k, y] of [['top', 0], ['bot', 20]] as const) {
+    for (const [k, y] of [
+      ['top', 0],
+      ['bot', 20],
+    ] as const) {
       const h = half(pic, y);
       const key = Array.from(h.px).join(',');
       let n = seen.get(key);
@@ -251,10 +271,22 @@ export function ratArt(pal: Pal, fur: Fur) {
     /** Crouched low on all fours, sniffing along (tense: fur up, tail stiff, ears back). */
     wary(f: number, tense = false): Pixels {
       const p = new Pixels(20, 20, T);
-      tail(4, 17, tense ? [[0, 17]] : [[1, 16 + f], [0, 18]])(p);
+      tail(
+        4,
+        17,
+        tense
+          ? [[0, 17]]
+          : [
+              [1, 16 + f],
+              [0, 18],
+            ],
+      )(p);
       blob(p, 9, 16, 6, 2.8, R, 1, 4);
       blob(p, 14.5, 16, 3.2, 2.2, R, 1, 4);
-      // the ear
+      // a wild rat's pale belly, so it reads against the sewer's brick and the tower's stone
+      if (fur === 'wild') p.rect(6, 18, 9, 1, c('paper', 1)).rect(13, 18, 3, 1, c('paper', 1));
+      // the ear (a wild rat's with a light rim)
+      if (fur === 'wild') p.disc(13, 13.6, 1.8, c('paper', 2));
       p.disc(13, 13.6, 1.2, c('pink', 1));
       if (tense) for (const x of [5, 7, 9, 11]) p.set(x, 13, c(coat, 2));
       // eye, nose, whiskers
@@ -267,14 +299,22 @@ export function ratArt(pal: Pal, fur: Fur) {
     /** Pinned on its back, paws up (and kicking). */
     pinned(f: number): Pixels {
       const p = new Pixels(20, 20, T);
-      tail(3, 17, [[1, 18], [0, 16]])(p);
+      tail(3, 17, [
+        [1, 18],
+        [0, 16],
+      ])(p);
       blob(p, 9, 16, 6, 2.8, R, 1, 4);
       // the belly, pale
       blob(p, 9, 14.6, 4, 1.4, pal.r('pink'), 1, 2);
       blob(p, 15, 16.4, 3, 2, R, 1, 4);
       p.set(16, 17, eye).set(15, 15, c('pink', 1));
       // four paws in the air
-      for (const [x, k] of [[5, 0], [8, 1], [11, 0], [13, 1]] as const) {
+      for (const [x, k] of [
+        [5, 0],
+        [8, 1],
+        [11, 0],
+        [13, 1],
+      ] as const) {
         const up = 6 + ((k + f) % 2) * 2;
         p.line(x, 14, x + (k ? 1 : -1), up, c(coat, 3));
         p.set(x + (k ? 1 : -1), up - 1, c('pink', 2));
@@ -285,7 +325,10 @@ export function ratArt(pal: Pal, fur: Fur) {
     giggle(f: number): Pixels {
       const p = new Pixels(20, 20, T);
       const y = f ? -2 : 0;
-      tail(7, 18 + y, [[3, 19 + y], [1, 16 + y]])(p);
+      tail(7, 18 + y, [
+        [3, 19 + y],
+        [1, 16 + y],
+      ])(p);
       blob(p, 9, 14 + y, 4, 4.6, R, 1, 4);
       blob(p, 11, 8 + y, 3.4, 3, R, 1, 4);
       p.disc(9, 5 + y, 1.4, c('pink', 1)).disc(13, 5 + y, 1.4, c('pink', 1));
@@ -294,7 +337,16 @@ export function ratArt(pal: Pal, fur: Fur) {
       p.set(7, 13 + y, c('pink', 2)).set(12, 13 + y, c('pink', 2));
       outline(p, ink);
       // chirps
-      for (const [x, yy] of f ? [[16, 3], [18, 1]] : [[16, 5], [17, 2]]) p.set(x, yy, c('gold', 3)).set(x + 1, yy - 1, c('gold', 2));
+      for (const [x, yy] of f
+        ? [
+            [16, 3],
+            [18, 1],
+          ]
+        : [
+            [16, 5],
+            [17, 2],
+          ])
+        p.set(x, yy, c('gold', 3)).set(x + 1, yy - 1, c('gold', 2));
       return p;
     },
     /** Scampering off with a skip, happy. */
@@ -308,7 +360,10 @@ export function ratArt(pal: Pal, fur: Fur) {
       p.set(15, 12 + y, ink).set(18, 13 + y, c('pink', 2));
       p.line(6, 16 + y, 4 - f * 2, 19 + y, c('pink', 1)).line(12, 16 + y, 14 + f * 2, 19 + y, c('pink', 1));
       outline(p, ink);
-      p.set(10, 6 + y, c('nose', 1)).set(12, 6 + y, c('nose', 1)).rect(10, 7 + y, 3, 1, c('nose', 1)).set(11, 8 + y, c('nose', 1));
+      p.set(10, 6 + y, c('nose', 1))
+        .set(12, 6 + y, c('nose', 1))
+        .rect(10, 7 + y, 3, 1, c('nose', 1))
+        .set(11, 8 + y, c('nose', 1));
       return p;
     },
   };
@@ -329,9 +384,12 @@ export function spriteRules(mb: ReturnType<typeof buildMonsterBlocks>): void {
     return { lo, hi };
   };
   for (const fur of ['lab', 'wild'])
-    for (const name of [`${fur}.rat0`, `${fur}.rat1`, `${fur}.tense0`, `${fur}.tense1`]) if (rows(name).lo < RAT_HIGH) throw new Error(`${name} reaches up to row ${rows(name).lo}: a tickle would touch it`);
-  for (const name of ['tickle0', 'tickle1']) if (rows(name).hi > TICKLE_LOW) throw new Error(`${name} reaches down to row ${rows(name).hi}: it would touch a wary rat`);
-  for (const fur of ['lab', 'wild']) for (const name of [`${fur}.pinned0`, `${fur}.pinned1`]) if (rows(name).lo > TICKLE_LOW - 2) throw new Error(`${name}'s paws are too low for a tickle`);
+    for (const name of [`${fur}.rat0`, `${fur}.rat1`, `${fur}.tense0`, `${fur}.tense1`, 'mort.rat0', 'mort.rat1', 'mort.half0', 'mort.half1'])
+      if (rows(name).lo < RAT_HIGH) throw new Error(`${name} reaches up to row ${rows(name).lo}: a tickle would touch it`);
+  for (const name of ['tickle0', 'tickle1'])
+    if (rows(name).hi > TICKLE_LOW) throw new Error(`${name} reaches down to row ${rows(name).hi}: it would touch a wary rat`);
+  for (const fur of ['lab', 'wild'])
+    for (const name of [`${fur}.pinned0`, `${fur}.pinned1`]) if (rows(name).lo > TICKLE_LOW - 2) throw new Error(`${name}'s paws are too low for a tickle`);
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -395,6 +453,29 @@ export function buildMonsterBlocks(pal: Pal) {
     book.add(`${fur}.off1`, a.off(1));
   }
 
+  // ---- Mortimer, Dean Dour's own rat: a lab rat in a little mortarboard (kept low, like any
+  // wary rat's), a red bow tie; half won over, he grins and his cap goes askew
+  {
+    const a = ratArt(pal, 'lab');
+    const cap = (p: Pixels, tilt: number) => {
+      p.rect(12, 12 + tilt, 5, 1, ink)
+        .rect(13, 13, 3, 1, ink)
+        .set(17, 13 + tilt, c('gold', 3))
+        .set(17, 14 + tilt, c('gold', 2));
+      p.set(11, 17, c('red', 2)).set(11, 18, c('red', 2)).set(12, 17, c('red', 3));
+      return p;
+    };
+    const grin = (p: Pixels) => p.set(16, 17, ink).set(17, 17, c('pink', 2));
+    book.add('mort.rat0', cap(a.wary(0), 0), hurt(-6));
+    book.add('mort.rat1', cap(a.wary(1), 0), hurt(-6));
+    book.add('mort.half0', grin(cap(a.wary(0, true), 1)), hurt(-6));
+    book.add('mort.half1', grin(cap(a.wary(1, true), 1)), hurt(-6));
+    // pinned, paws up, the mortarboard fallen off beside him
+    const fallen = (p: Pixels) => p.rect(0, 18, 4, 1, ink).rect(1, 17, 2, 1, ink).set(4, 18, c('gold', 3));
+    book.add('mort.pinned0', fallen(a.pinned(0)), { solid: 15 });
+    book.add('mort.pinned1', fallen(a.pinned(1)), { solid: 15 });
+  }
+
   // ---- the night janitor's floor buffer
   const buffer = (f: number) => {
     const p = P();
@@ -410,17 +491,20 @@ export function buildMonsterBlocks(pal: Pal) {
   // ---- Dean Dour (A: his head and the mortarboard, B: grey suit and clipboard)
   const deanA = (f: number) => {
     const p = P();
-    p.rect(3, 2, 14, 2, c('ink', 1)).rect(7, 4, 6, 2, c('ink', 1)).line(16, 3, 17, 8 + f, c('gold', 2));
+    p.rect(3, 2, 14, 2, c('ink', 1))
+      .rect(7, 4, 6, 2, c('ink', 1))
+      .line(16, 3, 17, 8 + f, c('gold', 2));
     blob(p, 10, 11, 4.6, 5.4, pal.r('skin'), 1, 3);
     p.rect(6, 9, 3, 2, c('glass', 1)).rect(11, 9, 3, 2, c('glass', 1)).rect(9, 9, 2, 1, c('ink', 0));
     p.set(7, 10, ink).set(12, 10, ink).line(6, 8, 9, 9, ink).line(11, 9, 14, 8, ink);
     p.line(8, 15, 12, 15, ink).set(7, 16, ink).set(13, 16, ink);
-    p.rect(7, 17, 6, 3, c('grey', 1)).rect(9, 17, 2, 3, c('red', 1));
+    p.rect(7, 17, 6, 3, c('grey', 1)).rect(8, 17, 4, 3, c('paper', 2)).rect(9, 18, 2, 2, c('red', 1));
     return done(p);
   };
   const deanB = (f: number) => {
     const p = P();
-    p.rect(4, 0, 12, 12, c('grey', 1)).rect(9, 0, 2, 8, c('red', 1)).rect(4, 0, 2, 12, c('grey', 0));
+    // a white shirt front under the red tie, so he reads against the tower's purple stone
+    p.rect(4, 0, 12, 12, c('grey', 1)).rect(7, 0, 6, 7, c('paper', 2)).rect(9, 0, 2, 8, c('red', 1)).rect(4, 0, 2, 12, c('grey', 0));
     // the clipboard
     p.rect(12, 3, 7, 8, c('wood', 2)).rect(13, 4, 5, 6, c('paper', 2)).rect(14, 5, 3, 1, ink).rect(14, 7, 3, 1, ink);
     p.rect(5, 12, 4, 6, c('grey', 0)).rect(11, 12, 4, 6, c('grey', 0));
@@ -437,7 +521,9 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 8, 14, 9, 3.4, pal.r('gator'), 0, 3);
     p.rect(8, 11 - f, 12, 3, c('gator', 2)).rect(8, 14, 12, 2, c('gator', 1));
     for (let x = 10; x < 19; x += 2) p.set(x, 14 - f, c('paper', 2));
-    p.disc(7, 10, 1.6, c('gator', 2)).set(7, 10, c('cheese', 2)).set(18, 11 - f, ink);
+    p.disc(7, 10, 1.6, c('gator', 2))
+      .set(7, 10, c('cheese', 2))
+      .set(18, 11 - f, ink);
     return done(p);
   };
   const gatorB = (f: number) => {
@@ -458,7 +544,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(9, 6, c('agouti', 1)).set(11, 6, c('agouti', 1)).set(9, 9, c('eye', 1)).set(11, 9, c('eye', 1));
     for (const s of [-1, 1]) {
       const tip = f ? 4 : 15;
-      p.line(10 + s * 2, 9, 10 + s * 8, tip, c('ink', 1)).line(10 + s * 8, tip, 10 + s * 5, 13, c('ink', 1)).line(10 + s * 2, 11, 10 + s * 5, 13, c('ink', 1));
+      p.line(10 + s * 2, 9, 10 + s * 8, tip, c('ink', 1))
+        .line(10 + s * 8, tip, 10 + s * 5, 13, c('ink', 1))
+        .line(10 + s * 2, 11, 10 + s * 5, 13, c('ink', 1));
       for (let k = 3; k < 8; k++) p.line(10 + s * 2, 10, 10 + s * k, tip + (13 - tip) * ((k - 3) / 5), c('agouti', 1));
     }
     return done(p);
@@ -471,7 +559,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(1, 17, 18, 3, c('steel', 3)).rect(1, 17, 18, 1, c('steel', 4));
     blob(p, 10, 12 - f, 7, 5, pal.r('crust'), 0, 3);
     for (const x of [7, 10, 13]) p.line(x, 8 - f, x + 1, 10 - f, c('paper', 2));
-    p.set(8, 12 - f, ink).set(12, 12 - f, ink).rect(9, 14 - f, 3, 1, ink);
+    p.set(8, 12 - f, ink)
+      .set(12, 12 - f, ink)
+      .rect(9, 14 - f, 3, 1, ink);
     return done(p);
   };
   book.add('loaf0', loaf(0), { scorePts: 250 });
@@ -481,7 +571,10 @@ export function buildMonsterBlocks(pal: Pal) {
     const y = f ? 10 : 13;
     p.rect(7, y + 5, 3, 2, c('sneaker', 1)).rect(11, y + 5, 3, 2, c('sneaker', 1));
     blob(p, 10, y, 4, 4.6, pal.r('cheese'), 0, 2, 1.2);
-    p.set(9, y - 1, ink).set(12, y - 1, ink).set(10, y + 2, ink).set(11, y + 2, ink);
+    p.set(9, y - 1, ink)
+      .set(12, y - 1, ink)
+      .set(10, y + 2, ink)
+      .set(11, y + 2, ink);
     p.line(11, y - 5, 12, y - 7, c('green', 2));
     return done(p);
   };
@@ -489,7 +582,13 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('seed1', seed(1), { scorePts: 250 });
   const goat = (f: number) => {
     const p = P();
-    for (const [x, dx] of [[5, 1], [8, -1], [12, 1], [15, -1]]) p.line(x, 14, x + (f ? dx : 0), 18, c('paper', 0));
+    for (const [x, dx] of [
+      [5, 1],
+      [8, -1],
+      [12, 1],
+      [15, -1],
+    ])
+      p.line(x, 14, x + (f ? dx : 0), 18, c('paper', 0));
     blob(p, 10, 11, 7, 4, pal.r('paper'), 0, 2);
     const hy = f ? 9 : 7;
     blob(p, 16, hy, 3, 2.6, pal.r('paper'), 0, 2);
@@ -514,8 +613,8 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('spark1', spark(1), { chHitPt: -5 });
   const pigeon = (f: number) => {
     const p = P();
-    blob(p, 10, 11, 5, 2.8, pal.r('grey'), 0, 3);
-    blob(p, 15, 8, 2.4, 2.2, pal.r('grey'), 1, 3);
+    blob(p, 10, 11, 5, 2.8, pal.r('grey'), 1, 3);
+    blob(p, 15, 8, 2.4, 2.2, pal.r('grey'), 2, 3);
     p.rect(17, 8, 2, 1, c('wood', 2)).set(15, 7, c('nose', 1)).line(4, 11, 1, 12, c('grey', 1));
     p.set(13, 10, c('purple', 2)).set(14, 11, c('tie', 2));
     if (f) for (let k = 0; k < 6; k++) p.line(7 + k, 10, 5 + k, 3 + k / 3, c('grey', k > 3 ? 1 : 2));
@@ -524,5 +623,16 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('pigeon0', pigeon(0), hurt(-5));
   book.add('pigeon1', pigeon(1), hurt(-5));
+  // (last, so every other block keeps its number) the bat and the old friends flying off: the
+  // same pictures, worth nothing, so brushing past them as they go doesn't score every tick
+  for (const [name, art] of [
+    ['bat', bat],
+    ['loaf', loaf],
+    ['seed', seed],
+    ['goat', goat],
+  ] as const) {
+    book.add(`${name}Off0`, art(0));
+    book.add(`${name}Off1`, art(1));
+  }
   return book;
 }

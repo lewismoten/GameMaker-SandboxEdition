@@ -16,11 +16,11 @@
   },
   {
    "scene": 4,
-   "keys": "AU0NzQwSDJIATTzNDE0DSArICs0GTQjNCk0WzQYSDJIATQbNA00MzQZIDMgATQPNAxIGkgBNCc0FTQbNBkgMyABNBM0EEgSSAE0NzQNIDMgATQjNAxIMkgBNEM0DEgySAE0FzQRNBM0GEgySAE0CzQdNBM0GSAzIAE0DzQNIDMgATQXNAxIMkgBNF80DTQ=="
+   "keys": "AU0NzQwSDJIATTzNDE0DSArICs0GTQjNLk0MzQYSDJIATRDNA00GzQZIDMgATQTNKBIMkgBNF80DTSPNBkgMyAYQDJAASwDLBhAMkABLAMsGEAyQAEsAywhLDssGSAzIBEsGywYQBpAASxrLA0sEywZIDMgASwTLFhAMkABLEMsDSAzIBEsHyyQQDJAASxLLA0s="
   },
   {
    "scene": 5,
-   "keys": "AU0PzQZIDMgETQXNBhIKkgBNBc0DSwjLEk0BzQNNBM0GTQ7NBhIMkgBNDs0GSAzIBE0FzQYSBJIATRHNA00DzRE5ArkMOQK5DDkCuQw5ArkMOQK5DDkCuQw5ArkMOQK5DDkCuQxNDc0GSAbICU0="
+   "keys": "AU0PzQZIDMgETQXNBhIKkgBNBc0DEgaSAE0RzQZNA80GSAzIBE0EzQZNCc0QTQTNDkgIyABNB80HTQPNBjkCuQ45ArkOOQK5DjkCuQ45ArkOOQK5DjkCuQ45ArkOOQK5DjkCuSYSDJIATQvNA00RzQZIBsgJTQrNBhIMkgBNAs0="
   }
  ],
  "chapters": [
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 17653,
+  "frames": 18504,
   "chapters": [
    {
     "title": "Opening",
@@ -67,15 +67,15 @@
    },
    {
     "title": "Act IV: Scrubbus Maximus",
-    "frame": 10516
+    "frame": 11112
    },
    {
     "title": "Ending",
-    "frame": 12359
+    "frame": 13212
    },
    {
     "title": "Credits",
-    "frame": 15084
+    "frame": 15936
    }
   ]
  }

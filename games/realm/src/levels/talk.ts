@@ -59,7 +59,7 @@ export const GIFTS: Record<string, Attrs> = {
   library: { effect: C.money, eamt: 100, score: 1000 },
   kazoo: { effect: SEQ.kazoo, eamt: 25, score: 500 },
   heal: { hp: 100 },
-  piece: { score: 2500, hp: 100 },
+  piece: { score: 2500, hp: 40 },
   lore: { score: 1301 },
 };
 const GIFT_NAMES = Object.keys(GIFTS);
@@ -101,9 +101,16 @@ export function talkFiles(t: Talk): AreaFile[] {
   if (t.id.length > 8) throw new Error(`Talk id ${t.id} longer than 8`);
   const files: AreaFile[] = [];
   const pic = t.picture ?? `${t.id}.gif`;
-  if (!t.picture) files.push({ name: `${t.id}.gif`, bytes: talkPage(t.name, portrait(t.who), THEMES[t.theme], t.place).gif({ text: INK, more: [200, 30, 30], zero: [200, 30, 30] }) });
+  if (!t.picture)
+    files.push({
+      name: `${t.id}.gif`,
+      bytes: talkPage(t.name, portrait(t.who), THEMES[t.theme], t.place).gif({ text: INK, more: [200, 30, 30], zero: [200, 30, 30] }),
+    });
   files.push({ name: `${t.id}.txt`, bytes: new TextEncoder().encode(pages(t.text).replace(/\n/g, '\r\n')) });
-  files.push({ name: `${t.id}.lst`, bytes: serializeSlideList([...(t.before ?? []).map((name) => ({ name })), { name: pic, pause: 0 }, { name: `${t.id}.txt` }]) });
+  files.push({
+    name: `${t.id}.lst`,
+    bytes: serializeSlideList([...(t.before ?? []).map((name) => ({ name })), { name: pic, pause: 0 }, { name: `${t.id}.txt` }]),
+  });
   return files;
 }
 

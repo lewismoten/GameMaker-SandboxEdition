@@ -805,3 +805,14 @@
     padding-block: 3px;
   }
 }
+
+/* "Facing the other way, from…" under the frames, and what the stage shows behind the hero */
+.chr-mirror {
+  align-items: center;
+  margin-top: 8px;
+}
+.chr-stage-bg {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}

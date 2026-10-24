@@ -33,8 +33,11 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
   const stored = await loadProject(p.id);
   if (!stored) return toast('That game is not in this browser any more.', 'error');
   const id = newId();
-  const name = copyName(p.name, (await listProjects()).map((x) => x.name));
-  await saveProject(id, name, stored.record.gam, stored.files);
+  const name = copyName(
+    p.name,
+    (await listProjects()).map((x) => x.name),
+  );
+  await saveProject(id, name, stored.record.gam, stored.files, stored.record.companion);
   rememberOrigin(id, originId(p.id));
   setImported(id, isImported(p.id));
   toast(`Made “${name}”.`);
@@ -52,7 +55,7 @@ async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<
   setImported(p.id, false);
   await refresh();
   undoToast(`Deleted “${p.name}”.`, async () => {
-    await saveProject(p.id, stored.record.name, stored.record.gam, stored.files);
+    await saveProject(p.id, stored.record.name, stored.record.gam, stored.files, stored.record.companion);
     rememberOrigin(p.id, origin);
     setImported(p.id, imported);
     await refresh();

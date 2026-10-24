@@ -129,3 +129,26 @@ record its place in `about.json` the same way so it can be counted later:
 ```json
 "easterEgg": { "map": "town.map", "at": [41, 12] },
 ```
+
+## Out of sight
+
+A tin heart or an Easter egg is found, never handed over. The player shouldn't see one until they
+go looking, so its cell must be:
+
+- **off screen at every scene start.** Every link into the scene puts the view with the hero
+  mid-screen (16 x 10 blocks, top-left at the arrival minus 8 across and 5 down). The cell must
+  stay out of it for the first 3 seconds standing still too (a fall, an auto-scroll).
+- **in no picture of the game:** the level shots the site draws around where the hero arrives
+  (home tiles, cast "Seen in", play page, desk box faces, disk label, Mac icon), `box.shots`,
+  `box.poster`, and the title demo from start to end. Keep it out of level cards and FLIs made
+  from the map, too.
+
+```sh
+cd web
+npx vite-node ../games/kit/hiddenView.ts [<id>...]   # what shows each item (exits 1 if any shows)
+npx vite-node ../games/kit/hiddenView.ts --json      # the same as JSON
+npx vitest run src/tinHearts/hiddenView.test.ts      # scene starts, shots, poster, demo
+```
+
+The test skips the slow search of the disk's pictures (cards, FLIs), so run the script as well.
+After moving an item, take its game out of `STILL_SHOWN` in the test.

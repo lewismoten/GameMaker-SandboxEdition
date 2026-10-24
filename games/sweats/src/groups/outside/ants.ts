@@ -25,6 +25,9 @@ import type { Monologue } from '../types';
 import { ANTS_MON } from './ids';
 import { coinOn } from './street';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** Things for a clean kitchen someday. */
 export const SUPPLIES = 4;
 
@@ -33,7 +36,8 @@ function grimeWall(pal: Pal, seed: number): Pixels {
   const c = pal.c;
   const p = new Pixels(20, 20);
   const r = rng(seed);
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, x % 10 === 0 || (x % 10 === 5 && y % 4 === 0) ? c('grime', 1) : c('grime', r() < 0.07 ? 1 : 2));
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) p.set(x, y, x % 10 === 0 || (x % 10 === 5 && y % 4 === 0) ? c('grime', 1) : c('grime', r() < 0.07 ? 1 : 2));
   if (seed % 3 === 0) blob(p, 4 + r() * 12, 4 + r() * 12, 2.5, 1.5, pal.r('grime'), 1, 1);
   return p;
 }
@@ -61,7 +65,13 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     const pic = new Pixels(20, 40, T);
     pic.rect(1, 2, 18, 38, c('wood', 2)).frame(1, 2, 18, 38, c('wood', 0)).rect(4, 6, 12, 12, c('wood', 1)).rect(4, 22, 12, 14, c('wood', 1));
     pic.disc(15, 24, 1.2, c('gold', 2)).rect(7, 9, 6, 6, c('sky', 1));
-    addPicture(book, 'frontDoor', pic, (_col, row) => (row ? base : wall(82)), () => AIR);
+    addPicture(
+      book,
+      'frontDoor',
+      pic,
+      (_col, row) => (row ? base : wall(82)),
+      () => AIR,
+    );
   }
   const listing = wall(83);
   listing.rect(1, 2, 18, 15, c('white', 1)).frame(1, 2, 18, 15, c('red', 1));
@@ -77,7 +87,15 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
   book.add('vent', vent, { ...AIR, birthMon: ANTS_MON.dust, birthTime: 120 });
   // a sandbag wall of stacked crumbs (solid: hop it)
   const bags = base.crop(0, 0, 20, 20);
-  for (const [x, y] of [[1, 15], [8, 15], [15, 15], [4, 10], [11, 10], [7, 5]]) blob(bags, x + 3, y + 2.5, 3.6, 2.6, R('coffee'), 1, 3);
+  for (const [x, y] of [
+    [1, 15],
+    [8, 15],
+    [15, 15],
+    [4, 10],
+    [11, 10],
+    [7, 5],
+  ])
+    blob(bags, x + 3, y + 2.5, 3.6, 2.6, R('coffee'), 1, 3);
   for (let i = 0; i < 12; i++) bags.set(2 + ((i * 7) % 17), 6 + ((i * 5) % 13), c('yellow', 2));
   book.add('sandbags', bags, { solid: SOLID });
   // the union's note of demands
@@ -90,7 +108,12 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     micro(pic, 8, 18, 'CUBES', c('ink', 1));
     micro(pic, 4, 24, '2 NO MOP', c('ink', 1));
     micro(pic, 8, 30, 'AFTER 7', c('ink', 1));
-    for (const [x, y] of [[33, 31], [35, 33], [31, 34]]) pic.set(x, y, c('ink', 0));
+    for (const [x, y] of [
+      [33, 31],
+      [35, 33],
+      [31, 34],
+    ])
+      pic.set(x, y, c('ink', 0));
     addPicture(book, 'demands', pic, wall(84), () => AIR);
   }
   // the counter (its top a ledge), the cabinets under it, the paper towels he weeps into
@@ -102,15 +125,31 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
   blob(cabinet, 6, 15, 3, 1.5, R('grime'), 0, 1);
   book.add('cabinet', cabinet, AIR);
   const towel = wall(86);
-  towel.rect(5, 4, 10, 15, c('white', 2)).rect(5, 4, 10, 1, c('white', 1)).rect(9, 2, 2, 17, c('metal', 1)).rect(5, 11, 10, 1, c('teal', 1)).rect(13, 14, 3, 5, c('white', 1));
+  towel
+    .rect(5, 4, 10, 15, c('white', 2))
+    .rect(5, 4, 10, 1, c('white', 1))
+    .rect(9, 2, 2, 17, c('metal', 1))
+    .rect(5, 11, 10, 1, c('teal', 1))
+    .rect(13, 14, 3, 5, c('white', 1));
   book.add('towels', towel, { ...AIR, hp: 20, score: 10, touch: 'kWall' });
   // the fridge (stand on it)
   {
     const pic = new Pixels(20, 40, T);
-    pic.rect(1, 1, 18, 39, c('white', 1)).rect(1, 1, 18, 1, c('white', 2)).rect(1, 14, 18, 1, c('grey', 1)).rect(15, 5, 2, 6, c('metal', 0)).rect(15, 18, 2, 10, c('metal', 0));
+    pic
+      .rect(1, 1, 18, 39, c('white', 1))
+      .rect(1, 1, 18, 1, c('white', 2))
+      .rect(1, 14, 18, 1, c('grey', 1))
+      .rect(15, 5, 2, 6, c('metal', 0))
+      .rect(15, 18, 2, 10, c('metal', 0));
     pic.rect(4, 20, 4, 4, c('yellow', 2)).rect(9, 22, 3, 3, c('red', 2));
     blob(pic, 6, 35, 4, 2, R('grime'), 1, 2);
-    addPicture(book, 'fridge', pic, (_col, row) => (row ? base : wall(87)), () => ({ solid: SOLID }));
+    addPicture(
+      book,
+      'fridge',
+      pic,
+      (_col, row) => (row ? base : wall(87)),
+      () => ({ solid: SOLID }),
+    );
   }
   // the bug disco: the dance floor (it blinks), the mirror ball
   const floor = (f: number) => {
@@ -129,12 +168,30 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     p.rect(9, 0, 1, 6, c('metal', 0));
     p.disc(9.5, 11, 5.5, c('metal', 1));
     for (let y = 6; y < 17; y += 2) for (let x = 4; x < 16; x += 2) if (p.get(x, y) === c('metal', 1)) p.set(x + ((y / 2 + f) % 2), y, c('metal', 2));
-    for (const [x, y] of f ? [[2, 4], [17, 15], [3, 17]] : [[16, 3], [2, 13], [15, 18]]) p.set(x, y, c('neonC', 2)).set(x + 1, y, c('neonP', 2));
+    for (const [x, y] of f
+      ? [
+          [2, 4],
+          [17, 15],
+          [3, 17],
+        ]
+      : [
+          [16, 3],
+          [2, 13],
+          [15, 18],
+        ])
+      p.set(x, y, c('neonC', 2)).set(x + 1, y, c('neonP', 2));
     return p;
   };
   // the walls at night, splashed with the mirror ball's spots
   const discoWall = wall(89);
-  for (const [x, y, k] of [[3, 4, 0], [14, 2, 1], [9, 11, 1], [17, 15, 0], [5, 16, 1]]) discoWall.rect(x, y, 2, 2, k ? c('neonP', 1) : c('neonC', 1));
+  for (const [x, y, k] of [
+    [3, 4, 0],
+    [14, 2, 1],
+    [9, 11, 1],
+    [17, 15, 0],
+    [5, 16, 1],
+  ])
+    discoWall.rect(x, y, 2, 2, k ? c('neonP', 1) : c('neonC', 1));
   book.add('discoWall', discoWall, AIR);
   book.add('ball0', ball(0), { ...AIR, next: 'ball1', ntime: 6 });
   book.add('ball1', ball(1), { ...AIR, next: 'ball0', ntime: 6 });
@@ -144,7 +201,16 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     p.rect(1, 2, 18, 18, c('wood', 1)).frame(1, 2, 18, 18, c('wood', 0));
     if (open) {
       p.rect(3, 4, 14, 14, c('white', 2)).rect(3, 11, 14, 1, c('white', 0));
-      for (const [x, y] of [[6, 7], [13, 14], [11, 6]]) p.set(x, y - 1, c('gold', 3)).set(x - 1, y, c('gold', 3)).set(x, y, c('gold', 3)).set(x + 1, y, c('gold', 3)).set(x, y + 1, c('gold', 3));
+      for (const [x, y] of [
+        [6, 7],
+        [13, 14],
+        [11, 6],
+      ])
+        p.set(x, y - 1, c('gold', 3))
+          .set(x - 1, y, c('gold', 3))
+          .set(x, y, c('gold', 3))
+          .set(x + 1, y, c('gold', 3))
+          .set(x, y + 1, c('gold', 3));
     } else {
       p.rect(9, 3, 1, 16, c('wood', 0)).rect(3, 4, 5, 14, c('wood', 2)).rect(11, 4, 6, 14, c('wood', 2));
       p.rect(7, 9, 1, 2, c('metal', 2)).rect(11, 9, 1, 2, c('metal', 2));
@@ -161,17 +227,28 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     micro(p, 7, 10, 'B', c('white', 2));
   });
   plotThing(book, 'kWall', 'gloves', (p) => {
-    for (const x of [4, 11]) p.rect(x, 8, 5, 10, c('yellow', 2)).rect(x, 4, 1, 4, c('yellow', 2)).rect(x + 1, 3, 1, 5, c('yellow', 2)).rect(x + 2, 3, 1, 5, c('yellow', 2)).rect(x + 3, 4, 1, 4, c('yellow', 2)).rect(x, 16, 5, 2, c('yellow', 1));
+    for (const x of [4, 11])
+      p.rect(x, 8, 5, 10, c('yellow', 2))
+        .rect(x, 4, 1, 4, c('yellow', 2))
+        .rect(x + 1, 3, 1, 5, c('yellow', 2))
+        .rect(x + 2, 3, 1, 5, c('yellow', 2))
+        .rect(x + 3, 4, 1, 4, c('yellow', 2))
+        .rect(x, 16, 5, 2, c('yellow', 1));
   });
   plotThing(book, 'kWall', 'sponge', (p) => {
     p.rect(4, 10, 12, 8, c('yellow', 2)).rect(4, 8, 12, 3, c('green', 2));
-    for (const [x, y] of [[6, 13], [10, 15], [13, 12]]) p.set(x, y, c('yellow', 0));
+    for (const [x, y] of [
+      [6, 13],
+      [10, 15],
+      [13, 12],
+    ])
+      p.set(x, y, c('yellow', 0));
   });
   plotThing(book, 'kBase', 'candle', (p) => {
     p.rect(6, 7, 8, 12, c('white', 1)).rect(7, 9, 6, 7, c('purple', 1)).rect(9, 10, 2, 5, c('gold', 2)).rect(8, 12, 4, 1, c('gold', 2));
     p.rect(9, 4, 2, 3, c('gold', 3)).set(9, 3, c('gold', 2));
   });
-  loot(book, pal, 'kBase');
+  loot(book, pal, 'kBase', LATE);
   coinOn(book, pal, 'kWall');
   spotlight(book, pal, 'kBase');
 }
@@ -194,14 +271,21 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
   const ant = (f: number, sign: boolean) => {
     const p = P();
     const y = 15;
-    for (const [x, r] of [[4, 2.6], [9, 2], [14, 3.2]]) p.disc(x, y - (x === 14 ? 1 : 0), r, c('red', 0));
+    for (const [x, r] of [
+      [4, 2.6],
+      [9, 2],
+      [14, 3.2],
+    ])
+      p.disc(x, y - (x === 14 ? 1 : 0), r, c('red', 0));
     p.set(13, y - 2, c('red', 2)).set(4, y - 1, c('red', 1));
     for (let k = 0; k < 3; k++) p.line(7 + k * 2, y + 1, 5 + k * 3 + (f ? 1 : -1) * (k % 2 ? 1 : -1), 19, ink);
     p.line(15, y - 4, 17, y - 7, ink).line(16, y - 4, 19, y - 6, ink);
     p.rect(12, y - 5, 5, 2, c('green', 1)).rect(11, y - 3, 7, 1, c('green', 0));
     p.set(15, y - 1, c('white', 2));
     if (sign) {
-      p.line(9, y - 2, 9, 3, c('wood', 1)).rect(2, 1, 15, 7, c('white', 2)).frame(2, 1, 15, 7, c('red', 1));
+      p.line(9, y - 2, 9, 3, c('wood', 1))
+        .rect(2, 1, 15, 7, c('white', 2))
+        .frame(2, 1, 15, 7, c('red', 1));
       micro(p, 3 + (f ? 0 : 0), 2, f ? 'NO' : 'ON', c('red', 1));
       micro(p, 11, 2, f ? 'MOP' : '', c('red', 1));
       if (!f) p.rect(11, 3, 4, 2, c('red', 1));
@@ -218,7 +302,10 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
     blob(p, 10, 13, 5, 6, pal.r('coffee'), 1, 3);
     p.line(10, 8, 10, 19, c('coffee', 0));
     p.line(8, 7, 5 - f * 2, 1, ink).line(12, 7, 15 + f * 2, 1, ink);
-    p.line(5, 12, 1, f ? 7 : 15, ink).line(15, 12, 19, f ? 15 : 7, ink).line(6, 17, 3, 19, ink).line(14, 17, 17, 19, ink);
+    p.line(5, 12, 1, f ? 7 : 15, ink)
+      .line(15, 12, 19, f ? 15 : 7, ink)
+      .line(6, 17, 3, 19, ink)
+      .line(14, 17, 17, 19, ink);
     if (king) {
       p.rect(6, 12, 9, 7, c('white', 2)).rect(10, 12, 1, 7, c('white', 0)).rect(9, 12, 3, 1, c('red', 2));
       if (king === 1) p.rect(6, 3, 9, 2, c('white', 2)).rect(7, 0, 7, 3, c('white', 2)).rect(7, 2, 7, 1, c('ink', 1));
@@ -235,7 +322,10 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
 }
 
 export function antsMonsters(set: Monster[], mb: SpriteBook): void {
-  set[ANTS_MON.dust] = mon(anim(mb, 'dust0', 'dust1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: ANTS_MON.poof }, [corner(0, 0, 2), corner(-6, 0, 2, 4)]);
+  set[ANTS_MON.dust] = mon(anim(mb, 'dust0', 'dust1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: ANTS_MON.poof }, [
+    corner(0, 0, 2),
+    corner(-6, 0, 2, 4),
+  ]);
   set[ANTS_MON.ant] = mon(anim(mb, 'ant0', 'ant1', 3), { power: POWER.foe, thru: 1, newmon: ANTS_MON.poof }, pace(2, 1));
   set[ANTS_MON.picket] = mon(anim(mb, 'picket0', 'picket1', 12), { power: POWER.tough, thru: 1 }, pace(2, 1));
   set[ANTS_MON.roach] = mon(anim(mb, 'roach0', 'roach1', 4), { power: POWER.foe, thru: 1, newmon: ANTS_MON.poof }, pace(2, 2));
@@ -250,7 +340,15 @@ export const ants: Monologue = {
   desc: 'Ants Have Spoken',
   filler: 'soil',
   // night falls, the lights come on: the house dim, the disco glowing
-  light: { sky: [[8, 8, 30], [60, 50, 100], [30, 24, 60]], mul: [0.7, 0.68, 0.82], add: [4, 0, 14] },
+  light: {
+    sky: [
+      [8, 8, 30],
+      [60, 50, 100],
+      [30, 24, 60],
+    ],
+    mul: [0.7, 0.68, 0.82],
+    add: [4, 0, 14],
+  },
   legend: {
     '^': 'kCeil',
     '.': 'kWall',
@@ -277,7 +375,11 @@ export const ants: Monologue = {
     // the scene ends
     const OFF = 13;
     const W = 66 + OFF;
-    m.row(0, 0, W - 1, '^').fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.row(0, 0, W - 1, '^')
+      .fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     // the front door, the listing, the spotlight, the vent of 1978
     placePicture(m, 'frontDoor', 0, 8, 1, 2);
     m.set(3, 6, 'l').set(2, 9, '!').set(4, 9, '$');
@@ -314,5 +416,5 @@ export const ants: Monologue = {
   song: 'home',
   clips: { open: 'ants_o', line: 'ants_l', punch: 'ants_p', word: 'ants_w' },
   view: [9, 4],
-  card: ['They didn\'t march.', 'They patrolled.'],
+  card: ["They didn't march.", 'They patrolled.'],
 };

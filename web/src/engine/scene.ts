@@ -41,6 +41,7 @@ import { parsePalette } from '../formats/palette';
 import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
+import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
 
 export const DEAD = 2;
 
@@ -79,12 +80,13 @@ export interface Session {
 
 /**
  * How fast the emulated PC is. The game clock always runs at 18.2 Hz, but playgame
- * skips (rather than catches up) ticks its main loop was too slow to handle, so on
- * slower PCs animation, character moves and gravity ran slower while monsters kept
- * their distance-per-second. `ticksPerSecond` caps how many game ticks are processed.
+ * skips (rather than catches up) ticks its main loop was too slow to handle, and loses
+ * the scroll steps of interrupts that went by while it was busy. `slowPc` (see slowPc.ts)
+ * charges each pass of the loop what it cost on a slower PC; left out, the PC is fast
+ * enough for every pass (a 486 in turbo).
  */
 export interface SpeedSetting {
-  ticksPerSecond?: number;
+  slowPc?: PcCosts;
 }
 
 export function sceneFile(game: Game, scene: number, slot: number): string | undefined {
@@ -103,7 +105,11 @@ export interface LoadedScene {
  * 6 character blocks, 7 sound set, 8 song. In the C a slot left blank keeps whatever
  * the previous scene loaded into the globals; `prev` stands in for those globals.
  */
-export function loadScene(s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, scnum: number, prev?: World): LoadedScene | string[] {
+export function loadScene(
+  s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } },
+  scnum: number,
+  prev?: World,
+): LoadedScene | string[] {
   const { m, game } = s;
   const file = (slot: number) => sceneFile(game, scnum, slot);
   const missing: string[] = [];
@@ -155,7 +161,11 @@ async function sceneReady(s: Session, scnum: number): Promise<void> {
   const snd = files[7] ? m.files.get(files[7]) : undefined;
   let samples: string[] = [];
   try {
-    samples = snd ? parseSoundSet(snd).digital.filter((d) => d && d[0] !== ' ').map((d) => `${d}.voc`) : [];
+    samples = snd
+      ? parseSoundSet(snd)
+          .digital.filter((d) => d && d[0] !== ' ')
+          .map((d) => `${d}.voc`)
+      : [];
   } catch {
     /* loadScene reports it */
   }
@@ -385,19 +395,17 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   let newlink = MAXSCENELINKS;
   let doScroll = false;
   let oldClock = s.timerCounter;
-  let lastTickAt = 0;
-  // Emulated slow PC (SpeedSetting): game ticks that come too soon after the last
-  // processed one are skipped, not queued, as playgame's loop drops ticks it missed.
-  const cpuReady = () => {
-    const tps = s.speed.ticksPerSecond;
-    if (!tps) return true;
-    const now = m.now();
-    if (now - lastTickAt < 1000 / tps) return false;
-    lastTickAt = now;
-    return true;
-  };
   // One NewTimer interrupt: the PIT reprogrammed to 8x the BIOS rate, about 145.6 Hz.
   const tickMs = 1000 / TICK_RATE;
+  // Emulated slow PC (SpeedSetting.slowPc): work still running when an interrupt comes
+  // costs that interrupt's pass of the loop. A late game tick runs on the next free pass;
+  // one that is a whole tick late is skipped, not queued (OldClock = TimerCounter).
+  const cpu = new SlowCpu(tickMs);
+  const monstersOnScreen = () => {
+    let n = 0;
+    for (let l = 0; l < LASTMM && n < 50; l++) if (w.mm[l].monnum < LASTMON && w.mi[l].scrPos.x !== OFFSCRN) n++; // MaxMonsShown
+    return n;
+  };
   let last = m.now();
   let acc = 0;
   const resync = () => {
@@ -431,15 +439,17 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     // is a port safety net against looping forever; the C loop has none.
     let guard = 0;
     do {
-      if (await moveChars(w, async () => {
-        const slot = await pickDropSlot(m, w);
-        // DropBloc gave the keyboard back to the BIOS while its screen was up, so keys
-        // pressed there (such as Esc to cancel) never reached the game.
-        m.flushKeys();
-        w.keydn.fill(0);
-        resync();
-        return slot;
-      }))
+      if (
+        await moveChars(w, async () => {
+          const slot = await pickDropSlot(m, w);
+          // DropBloc gave the keyboard back to the BIOS while its screen was up, so keys
+          // pressed there (such as Esc to cancel) never reached the game.
+          m.flushKeys();
+          w.keydn.fill(0);
+          resync();
+          return slot;
+        })
+      )
         done = DEAD;
     } while (w.chr.cframe === -1 && done !== DEAD && guard++ < 50);
     changeBlocks(w);
@@ -527,7 +537,13 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     for (let i = 0; i < n && !done && newlink === MAXSCENELINKS; i++) {
       if ((s.sndClock & 7) === 0) s.timerCounter++;
       s.sndClock++;
-      if (doScroll) drawScroll(w);
+      const pc = s.speed.slowPc;
+      if (!pc) cpu.reset();
+      else if (cpu.busy()) continue;
+      if (doScroll) {
+        const strips = drawScroll(w);
+        if (pc) cpu.spend(scrollCost(pc, strips));
+      }
       if (w.keydn[1]) {
         done = 1;
         break;
@@ -547,7 +563,10 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         // F7 is "reserved for future use" in the original.
         else if (f !== 7) await funcKey(f);
       }
-      if (oldClock < s.timerCounter && cpuReady()) await tick();
+      if (oldClock < s.timerCounter) {
+        if (pc) cpu.spend(tickCost(pc, monstersOnScreen()));
+        await tick();
+      }
     }
     renderWorld(m.screen, w);
     s.onFrame?.(w);
@@ -627,7 +646,11 @@ async function saveGame(s: Session, w: World, where: { prevscene: number; doscen
  * over it (also how project/saveData's tests check a save it made). Undefined when the
  * level's files are missing.
  */
-export function restoreSaved(s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, w: World | undefined, data: Saved): LoadedScene | undefined {
+export function restoreSaved(
+  s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } },
+  w: World | undefined,
+  data: Saved,
+): LoadedScene | undefined {
   const loaded = loadScene(s, data.doscene, w);
   if (Array.isArray(loaded)) return undefined;
   const nw = loaded.world;

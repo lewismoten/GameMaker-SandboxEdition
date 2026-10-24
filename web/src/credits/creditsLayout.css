@@ -1,0 +1,341 @@
+/* The Credits page's layout over the width of the window: a wider body for the grids, paragraphs
+   kept to a readable measure, galleries in even grids, groups side by side, and tidy
+   disclosures. Loaded after credits.css and bbsPictures.css. */
+
+main.credits-page {
+  --toc-body: 96rem;
+  max-width: 96rem;
+}
+
+/* beside "On this page" (pageToc.css): the body column grows to --toc-body */
+main.credits-page.with-toc {
+  max-width: calc(var(--toc-body) + 14rem + 48px);
+}
+
+/* paragraphs read at about 75 characters; grids, tables and cards use the full width */
+main.credits-page p,
+main.credits-page .credits-list,
+main.credits-page .bard-key {
+  max-width: 75ch;
+}
+
+main.credits-page .credits-card p,
+main.credits-page figcaption,
+main.credits-page .credits-table p {
+  max-width: none;
+}
+
+main.credits-page section.credits-section {
+  padding: 24px 0 28px;
+}
+
+main.credits-page .section-intro {
+  margin: 0 0 14px;
+}
+
+/* ---- disclosures: a one-line summary, the detail inside ---- */
+
+main.credits-page details.credits-more {
+  margin: 12px 0 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+main.credits-page details.credits-more > summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+main.credits-page details.credits-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+main.credits-page details.credits-more > summary::before {
+  content: '▸';
+  flex: none;
+  color: var(--accent);
+  transition: transform 0.15s;
+}
+
+main.credits-page details.credits-more[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+main.credits-page details.credits-more > summary:hover {
+  background: var(--panel-2);
+}
+
+main.credits-page .credits-more-body,
+main.credits-page details.credits-more > :not(summary) {
+  padding: 0 14px;
+}
+
+main.credits-page .credits-more-body {
+  padding: 4px 14px 14px;
+}
+
+main.credits-page .credits-more-body > :first-child {
+  margin-top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.credits-page details.credits-more > summary::before {
+    transition: none;
+  }
+}
+
+/* ---- galleries: every picture the same 16:10 shape, in an even grid ---- */
+
+main.credits-page .credits-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  gap: 14px;
+  margin: 8px 0 4px;
+}
+
+main.credits-page .credits-gallery-small {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
+  gap: 10px;
+}
+
+main.credits-page .credits-gallery figure,
+main.credits-page .credits-gallery .credits-thumb,
+main.credits-page .credits-gallery .credits-banner {
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
+
+main.credits-page .credits-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  image-rendering: auto;
+}
+
+/* ---- cards ---- */
+
+main.credits-page .credits-cards-3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 12px;
+}
+
+/* ---- game authors: the groups two side by side when there is room ---- */
+
+main.credits-page .credits-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+  gap: 8px 40px;
+}
+
+main.credits-page .credits-group > h3 {
+  margin-top: 16px;
+}
+
+main.credits-page .credits-games {
+  columns: 2 15rem;
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+  font-size: 15px;
+}
+
+main.credits-page .credits-games li + li {
+  margin-top: 0.25em;
+}
+
+/* ---- the narrow-window jump menu: compact chips ---- */
+
+main.credits-page .credits-jump ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+main.credits-page .credits-jump a {
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+main.credits-page .credits-jump b {
+  font-weight: 600;
+}
+
+main.credits-page .credits-jump span {
+  display: none;
+}
+
+/* ---- the BBS pictures: more to a row on a wide window ---- */
+
+main.credits-page .bbs-pics {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 10.5rem), 1fr));
+  gap: 14px;
+}
+
+/* ---- AI tools and the people: Lewis and the cast side by side when there is room ---- */
+
+main.credits-page .credits-people-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+  gap: 8px 40px;
+}
+
+/* ---- find more games: a grid of short cards ---- */
+
+main.credits-page .credits-more-games {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 10px;
+  max-width: none;
+  padding: 0;
+  list-style: none;
+}
+
+main.credits-page .credits-more-games li {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+@media (max-width: 420px) {
+  main.credits-page .credits-gallery-small {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  main.credits-page .credits-gallery .credits-thumb {
+    width: auto;
+  }
+}
+
+/* ---- the BBS pictures: each board a contact sheet that fills in as its pictures download, the boards side by side ---- */
+
+main.credits-page .bbs-boards {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1.4fr);
+  gap: 8px 32px;
+  align-items: start;
+}
+
+main.credits-page .bbs-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+main.credits-page .bbs-sheet li + li {
+  margin: 0;
+}
+
+main.credits-page .bbs-sheet-pic {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 11px;
+}
+
+main.credits-page .bbs-sheet-pic.arrived {
+  border-color: var(--accent);
+}
+
+/* the picture as it arrives, letterboxed on black */
+main.credits-page .bbs-sheet-screen {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: 4px;
+  background: #000;
+  overflow: hidden;
+}
+
+main.credits-page .bbs-sheet-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* how much of this picture has arrived */
+main.credits-page .bbs-sheet-meter {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--accent) calc(var(--got, 0) * 100%), var(--border) 0);
+}
+
+main.credits-page .bbs-sheet-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  main.credits-page .bbs-boards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  main.credits-page .bbs-sheet {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* a figure's own small disclosure (which games show an RSD intro) */
+main.credits-page details.credits-mini summary {
+  min-height: 24px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+/* phones: galleries two to a row; a Bard card lists only what made the game */
+@media (max-width: 600px) {
+  main.credits-page .credits-gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  main.credits-page .bard-table td.no {
+    display: none;
+  }
+
+  main.credits-page .bard-table tr {
+    gap: 0 12px;
+  }
+}
+
+/* the AI tools: five short cards, a row of them on a wide window */
+main.credits-page .credits-cards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+}
+
+main.credits-page .credits-cards-grid > .credits-card:first-child {
+  grid-column: auto;
+}
+
+main.credits-page .credits-card details.credits-mini {
+  margin-top: 6px;
+  font-size: 14px;
+}

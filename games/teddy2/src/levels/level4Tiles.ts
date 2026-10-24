@@ -126,7 +126,7 @@ export function riverTiles(): Tiles {
     for (let y = 0; y < 20; y++) {
       const x0 = side === 'L' ? 19 - y : 0;
       const x1 = side === 'R' ? y + 1 : 20;
-      for (let x = Math.max(0, x0); x < Math.min(20, x1); x++) p.set(x, y, (y % 5 === 4 ? c('wood', 0) : c('wood', 2)));
+      for (let x = Math.max(0, x0); x < Math.min(20, x1); x++) p.set(x, y, y % 5 === 4 ? c('wood', 0) : c('wood', 2));
     }
     return p;
   };
@@ -160,12 +160,15 @@ export function riverTiles(): Tiles {
   );
   const sk = sack();
   t.on('sack', sk, 'millIn');
-  t.air('sackLoft', (() => {
-    const p = copy(t.pic('millIn'));
-    p.blit(sk, 0, 0, 255);
-    p.blit(sk, 6, -6, 255);
-    return p;
-  })());
+  t.air(
+    'sackLoft',
+    (() => {
+      const p = copy(t.pic('millIn'));
+      p.blit(sk, 0, 0, 255);
+      p.blit(sk, 6, -6, 255);
+      return p;
+    })(),
+  );
   const [mTop, mBot] = halves(miller(), t.pic('millIn'), t.pic('millIn'));
   t.air('millerTop', mTop);
   t.air('millerBot', mBot);
@@ -201,6 +204,8 @@ export function riverTiles(): Tiles {
   );
   t.air('signSwim', sign(sky(3), 'NO\nSWIM'));
   t.air('signMill', sign(sky(3), 'MILL'));
+  // the stepping stones' hint: hop up and along at once (E), as the manual's key table says
+  t.air('signHopE', sign(sky(3), 'E TO\nHOP'));
   t.air(
     'picnic',
     (() => {

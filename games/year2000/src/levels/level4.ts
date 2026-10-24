@@ -207,13 +207,7 @@ const LAUNCH_LEGEND: Legend = {
 // Beside the launch pad, a storage closet with no door. One brick of the shared wall is only
 // a hologram (light shows through its mortar); inside, something has to be picked up by
 // hand, and the round hatch past it opens only for whoever carries it.
-const CLOSET = [
-  'XXXXXXXX',
-  'X......X',
-  'g..e...h',
-  'X......X',
-  'XXXXXXXX',
-];
+const CLOSET = ['XXXXXXXX', 'X......X', 'g..e...h', 'X......X', 'XXXXXXXX'];
 const CLOSET_LEGEND: Legend = {
   ...BASE,
   '.': 'concrete',
@@ -231,5 +225,8 @@ export function level4(set: BlockSet): LevelMap {
   m.stamp(52, 16, JUNGLE, JUNGLE_LEGEND, 'jungle');
   m.stamp(0, 20, LAUNCH, LAUNCH_LEGEND, 'concrete');
   m.stamp(19, 23, CLOSET, CLOSET_LEGEND, 'concrete');
+  // Watt, the repair robot from Ohm Sweet Ohm, tinkering with the switchboard's far end, and
+  // a painted Easter egg in the sand in a corner of Florida
+  m.set_(22, 2, 'watt').set_(46, 9, 'easterEgg');
   return m;
 }

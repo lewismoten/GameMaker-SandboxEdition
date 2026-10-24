@@ -55,7 +55,11 @@ main.mac-help kbd {
 }
 
 main.mac-help code {
-  font: 0.92em/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font:
+    0.92em/1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 }
 
 main.mac-help .mac-cmd {

@@ -178,7 +178,13 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
 /** The house's rooms: the ceiling's molding, the wall, the baseboard row he walks along, the floor. */
 function rooms(m: MapBuilder, W: number, floor = '='): void {
-  m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 8, '.').row(9, 1, W - 2, '_').row(10, 0, W - 1, floor).row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
+  m.row(0, 1, W - 2, '^')
+    .fill(1, 1, W - 2, 8, '.')
+    .row(9, 1, W - 2, '_')
+    .row(10, 0, W - 1, floor)
+    .row(11, 0, W - 1, '#')
+    .col(0, 0, 11, '#')
+    .col(W - 1, 0, 11, '#');
 }
 
 /** 1. 3:17 a.m.: the bedroom, the hall, the living room, to the kitchen door. */
@@ -200,11 +206,14 @@ export function bedroom(book: BlockBook): Level {
   // the laundry basket, the toy blocks, Gwinn asleep, a glass of water
   m.row(10, 19, 43, 'r');
   m.set(22, 5, 'g').set(27, 5, 'm').set(32, 5, 'l').set(20, 9, 'i');
+  // Teenage Lewie's photo with the family's, in his red knit hat
+  m.set(35, 5, 'lewiePic');
   m.mon(MON.teddy, 22, 9);
   m.set(28, 9, 'z');
   m.set(31, 9, 'U').set(33, 9, '%');
   m.set(36, 9, 'L');
-  m.row(7, 25, 26, 's').set(25, 6, '$').set(26, 6, '$');
+  // the hall shelf (coins up top) over a creaky board: the floor under it is the tempting way
+  m.row(7, 25, 26, 's').set(25, 6, '$').set(26, 6, '$').set(26, 9, '!');
   m.mon(MON.gwinn, 40, 9);
   m.set(42, 9, 'V');
   m.set(44, 9, 'd').set(44, 8, 't');
@@ -225,12 +234,18 @@ export function fridge(book: BlockBook): Level {
   const W = 56;
   const H = 16;
   const m = new MapBuilder(book, 'cabinet');
-  m.fill(1, 0, W - 2, 14, 'x').row(14, 0, W - 1, '-').row(15, 0, W - 1, 'Y').col(0, 0, 15, 'Y').col(W - 1, 0, 15, 'Y');
+  m.fill(1, 0, W - 2, 14, 'x')
+    .row(14, 0, W - 1, '-')
+    .row(15, 0, W - 1, 'Y')
+    .col(0, 0, 15, 'Y')
+    .col(W - 1, 0, 15, 'Y');
   // the counter, its cabinets, the bread box (Loaf #13), the sink, the upper cabinets
   m.row(12, 4, 13, 'X').row(13, 4, 13, 'Y');
   m.set(6, 11, 'j').set(9, 11, 'J').set(12, 11, '2');
   m.row(9, 4, 12, 'u').set(8, 8, '2');
   m.mon(MON.loaf, 6, 11).mon(MON.carl, 15, 5);
+  // an Easter egg up in the corner over the end of the counter, a hop left off the counter
+  m.set(2, 7, 'easterEgg');
   m.set(17, 13, 'V');
   // the fridge, standing open (its bottom open to walk in): its walls, the cold glowing inside, the freezer, the bulb
   m.row(0, 22, 44, 'E').col(22, 1, 9, 'F').col(44, 7, 13, 'F').set(22, 7, '3');
@@ -241,6 +256,8 @@ export function fridge(book: BlockBook): Level {
   m.row(7, 23, 43, 'G').row(7, 40, 41, 'f');
   m.row(4, 23, 44, 'G').row(4, 29, 30, 'f');
   // the dairy, come to life
+  // a tin heart at the back of the fridge's bottom, past the milk, in the corner by the door hinge
+  m.set(42, 13, 'tinHeart');
   m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 24, 2).mon(MON.milk, 24, 3);
   // willpower: seven sticks of celery
   m.set(25, 12, '1').set(24, 9, '1').set(31, 9, '1').set(39, 6, '1').set(35, 3, '1');
@@ -256,9 +273,11 @@ export function fridge(book: BlockBook): Level {
   return { m, start: at(2, 13), size: [W, H] };
 }
 
-/** 3. Oh no: the dash down the dark hall to the bathroom, the gurgle right behind him. */
+/** 3. Oh no: the dash down the dark hall to the bathroom, the gurgle right behind him. Short and
+ * crowded: every stop to hop costs ground, and the laundry pile and the toy pile under the linen
+ * shelf offer a quicker way up and over for a roll. */
 export function dash(book: BlockBook): Level {
-  const W = 96;
+  const W = 78;
   const H = 12;
   const m = new MapBuilder(book, 'under');
   rooms(m, W, 'r');
@@ -268,21 +287,25 @@ export function dash(book: BlockBook): Level {
   m.set(9, 9, '7').set(13, 9, '7').set(16, 9, 'd').set(16, 8, 't');
   m.set(19, 9, 'L');
   m.mon(MON.teddyUp, 23, 9);
-  m.set(30, 9, 'U').set(34, 9, 'z');
+  m.set(30, 9, 'U').set(33, 9, 'bowl');
   m.set(26, 5, 'g').set(36, 5, 'l');
-  // the linen closet: a roll on its top shelf
-  m.row(7, 39, 42, '8').set(41, 6, '9');
-  m.set(47, 9, '0');
-  m.mon(MON.gwinnUp, 50, 9);
-  m.set(57, 9, '!').set(61, 9, 'L').set(65, 9, '7').set(67, 9, 'V');
+  // the linen closet: a roll on its top shelf, over a spilled pile of toys (hop the two of them
+  // on the floor, or up onto the shelf for the roll and over)
+  m.row(7, 36, 40, '8').set(39, 6, '9');
+  m.set(37, 9, 'L').set(38, 9, 'z');
+  m.set(43, 9, '0');
+  m.mon(MON.gwinnUp, 45, 9);
+  // the laundry pile (the basket, heaped with towels, a spare roll on top): hop up onto it and off
+  m.set(51, 9, 'U').set(51, 8, '8').set(51, 7, '9');
+  m.set(54, 9, '!');
   // a roll on top of the laundry basket
-  m.set(72, 9, 'U').set(72, 8, '9');
-  m.set(78, 9, 'z').set(82, 9, '!').set(76, 5, 'm');
+  m.set(59, 9, 'U').set(59, 8, '9');
+  m.set(62, 9, 'bowl').set(65, 9, '!').set(60, 5, 'm');
   // the bathroom door: three rolls; then across the bathroom to the toilet (the walk lets the
   // slam and "IT'S NOT WORTH IT!" finish before the act ends)
-  m.set(85, 9, 'W').set(85, 8, 'I');
-  m.fill(86, 1, 9, 9, 'bathWall').row(10, 86, 94, '+').set(93, 9, 'toilet');
-  m.link(93, 9, 'next');
+  m.set(67, 9, 'W').set(67, 8, 'I');
+  m.fill(68, 1, 9, 9, 'bathWall').row(10, 68, 76, '+').set(75, 9, 'toilet');
+  m.link(75, 9, 'next');
   // the Swamp Demon, right behind him
   m.mon(MON.gurgle, 1, 8);
   return { m, start: at(4, 9), size: [W, H] };
@@ -293,13 +316,16 @@ export function reckoning(book: BlockBook): Level {
   const W = 49;
   const H = 12;
   const m = new MapBuilder(book, 'hellFloor');
-  m.fill(1, 0, W - 2, 10, '~').row(10, 0, W - 1, '+').row(11, 0, W - 1, '+').col(0, 0, 11, '+').col(W - 1, 0, 11, '+');
+  m.fill(1, 0, W - 2, 10, '~')
+    .row(10, 0, W - 1, '+')
+    .row(11, 0, W - 1, '+')
+    .col(0, 0, 11, '+')
+    .col(W - 1, 0, 11, '+');
   // the pit (flames) in the floor
   m.row(10, 12, 13, '&');
-  // floating tiles, the milk on them, lactase pills on the floor
-  m.row(7, 4, 6, '@').set(5, 6, 'a');
+  // floating tiles, the milk on them (the first carton gives dignity back: there are no pills in hell)
+  m.row(7, 4, 6, '@').set(5, 6, 'almondFirst');
   m.row(5, 8, 10, '@').set(9, 4, 'e');
-  m.set(8, 9, ';');
   m.row(7, 15, 17, '@').set(16, 6, 'a');
   m.row(7, 19, 20, '@').set(20, 6, 'e');
   // the Devil, lounging, sipping; the soda fountain behind him up on its tiles
@@ -308,7 +334,11 @@ export function reckoning(book: BlockBook): Level {
   m.set(20, 3, ',').set(30, 2, ',').set(3, 2, ',');
   // the porcelain throne; past it, the bathroom door home, where the act ends (the walk lets the
   // flush and "...Is there Lactaid in hell?" finish)
+  // the milk crate past the pit (a carton set out on it now and then)
+  m.set(15, 9, 'crate');
   m.set(30, 9, '/');
+  // the second spout up on its tiles past the throne: cold, until it rattles awake mid-fight
+  m.row(7, 32, 34, '@').set(33, 6, 'spoutCold');
   m.set(36, 4, ',').set(42, 2, ',');
   m.set(46, 9, 'bathOpen').set(46, 8, 'I');
   m.link(46, 9, 'won');

@@ -40,7 +40,10 @@ function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number, ramp =
   p.set(x, y, pal.c(ramp, 2));
   for (let k = 1; k <= size; k++) {
     const col = pal.c(ramp, Math.max(0, 2 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }
 
@@ -130,7 +133,13 @@ export function storyFli(cast: Cast): Uint8Array {
   const Hh = (n: string) => sprite(cast.hero, n);
   const M = (n: string) => sprite(cast.mons, n);
   const lines = (k: number) =>
-    k < 18 ? ['Okay, in my defense... the sign', 'said "mild scares for all ages!"'] : k < 34 ? ['So I take Lily,', "my girlfriend's kid,"] : k < 50 ? ['I feel heroic...', 'at least till I fled.'] : ['Fog machine hisses-', 'I scream like a cat!'];
+    k < 18
+      ? ['Okay, in my defense... the sign', 'said "mild scares for all ages!"']
+      : k < 34
+        ? ['So I take Lily,', "my girlfriend's kid,"]
+        : k < 50
+          ? ['I feel heroic...', 'at least till I fled.']
+          : ['Fog machine hisses-', 'I scream like a cat!'];
   const scene = (p: Pixels, k: number) => {
     mildSign(p, pal, 20, 110);
     // you and Lily walk up the path; you stop to look heroic; the fog hisses out of the door
@@ -344,12 +353,13 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
     const scene = (p: Pixels, k: number) => {
       exitSignArt(p, pal, 130, 16, k % 14 !== 13);
       scaleBlit(p, S(k < 16 ? 'up0' : k % 8 < 4 ? 'brave' : 'blink'), 112, 52, 5);
-      if (k >= 16) for (let h = 0; h < 4; h++) {
-        const hx = 60 + h * 64 + Math.round(Math.sin((k + h * 5) / 3) * 6);
-        const hy = 120 - ((k * 3 + h * 23) % 70);
-        p.disc(hx - 3, hy, 4, c('exitred', 1)).disc(hx + 3, hy, 4, c('exitred', 1));
-        for (let y = 0; y < 7; y++) p.rect(hx - 7 + y, hy + 1 + y, 14 - y * 2, 1, c('exitred', 1));
-      }
+      if (k >= 16)
+        for (let h = 0; h < 4; h++) {
+          const hx = 60 + h * 64 + Math.round(Math.sin((k + h * 5) / 3) * 6);
+          const hy = 120 - ((k * 3 + h * 23) % 70);
+          p.disc(hx - 3, hy, 4, c('exitred', 1)).disc(hx + 3, hy, 4, c('exitred', 1));
+          for (let y = 0; y < 7; y++) p.rect(hx - 7 + y, hy + 1 + y, 14 - y * 2, 1, c('exitred', 1));
+        }
       caption(p, pal, k < 24 ? ['I bonded...', 'With the emergency...'] : ['...exit sign!', '']);
     };
     const first = new Pixels(W, H);

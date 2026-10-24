@@ -2,7 +2,8 @@
 import { describe, expect, it } from 'vitest';
 import type { CatalogEntry } from '../src/project/files';
 import { DIZ_LINES, DIZ_WIDTH, gameDiz } from '../src/retro/bbs/fileId';
-import { sofaLibrary, sofaZipName } from '../src/retro/bbs/sofaFiles';
+import { sofaLibrary } from '../src/retro/bbs/sofaFiles';
+import { zipName } from '../src/project/diskFacts';
 
 const entry = (id: string, company: string, original = true): CatalogEntry => ({
   id,
@@ -21,7 +22,7 @@ describe('The Sofa file library', () => {
   it("lists only the board's own uploads, not Sandbox Software's or the CD's shareware", () => {
     expect(sofaLibrary([goat, entry('snowbound', 'Sandbox Software'), entry('orb', 'Josh Turcotte', false)]).map((g) => g.id)).toEqual(['goat']);
   });
-  it('names the ZIP after the program', () => expect(sofaZipName(goat)).toBe('GOAT.ZIP'));
+  it('names the ZIP after the program', () => expect(zipName(goat)).toBe('GOAT.ZIP'));
   it("signs the DIZ from Doc Leo to The Sofa, within the DIZ's limits", () => {
     const diz = gameDiz(goat);
     expect(diz[diz.length - 1]).toBe('Uploaded by DOC LEO to THE SOFA BBS');

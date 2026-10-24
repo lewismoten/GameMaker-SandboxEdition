@@ -69,7 +69,8 @@ export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
       const side = Math.abs(n[1]) > 0.9;
       if (side) {
         // the J1772 port: rear quarter, passenger side
-        if (y > W / 2 && Math.abs(x - U(7.2)) < 0.05 && Math.abs(z - Z(5.6)) < 0.05) return Math.hypot(x - U(7.2), z - Z(5.6)) < 0.03 ? rgb(60, 255, 120) : rgb(20, 20, 24);
+        if (y > W / 2 && Math.abs(x - U(7.2)) < 0.05 && Math.abs(z - Z(5.6)) < 0.05)
+          return Math.hypot(x - U(7.2), z - Z(5.6)) < 0.03 ? rgb(60, 255, 120) : rgb(20, 20, 24);
         // the door's window (no quarter window behind it), its seams and its chrome handle
         if (inPoly(WIN, x, z)) return dark;
         const rearSeam = U(12.1) + ((U(13.7) - U(12.1)) * (Z(2.2) - z)) / (Z(2.2) - Z(18.1));
@@ -128,7 +129,9 @@ export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
   for (const y of [0.17, W - 0.17]) {
     const hx = U(31.4);
     shapes.push(new Sphere(P(hx, y, hood(hx) + 0.02), 0.08 * s, body));
-    shapes.push(new Sphere(P(hx + 0.05, y, hood(hx) + 0.025), 0.055 * s, { color: rgb(255, 250, 220), emit: rgb(200, 190, 150), diffuse: 0.4, spec: 1.5, shine: 100 }));
+    shapes.push(
+      new Sphere(P(hx + 0.05, y, hood(hx) + 0.025), 0.055 * s, { color: rgb(255, 250, 220), emit: rgb(200, 190, 150), diffuse: 0.4, spec: 1.5, shine: 100 }),
+    );
     shapes.push(new Sphere(P(U(35.9), y < W / 2 ? 0.06 : W - 0.06, Z(13.6)), 0.03 * s, { color: rgb(255, 160, 30), emit: rgb(150, 80, 0) }));
   }
   // white steel wheels with chrome caps on black tires, tucked up behind the quarters
@@ -149,7 +152,11 @@ export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
   for (const x of [rearX, frontX])
     for (const y of [-0.02, W + 0.02]) {
       const c = P(x, y, az);
-      shapes.push(new Sdf([sub3(c, (R + 0.02) * s), add3(c, (R + 0.02) * s)], (px, py, pz) => sd.cylinder(px - c[0], pz - c[2], py - c[1], R * s, 0.05 * s, 0.015 * s), [tire]));
+      shapes.push(
+        new Sdf([sub3(c, (R + 0.02) * s), add3(c, (R + 0.02) * s)], (px, py, pz) => sd.cylinder(px - c[0], pz - c[2], py - c[1], R * s, 0.05 * s, 0.015 * s), [
+          tire,
+        ]),
+      );
     }
   return shapes;
 }

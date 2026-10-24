@@ -96,7 +96,10 @@
         {
           "head": "6. The Science Fair",
           "hints": [
-            { "q": "How do I catch Sparky?", "a": "Zap him three times. Each zap makes him madder and faster, then he gets dizzy and drops the cover page." },
+            {
+              "q": "How do I catch Sparky?",
+              "a": "Zap him three times. Each zap changes his game: he roams, then plays keep-away (corner him), then gets the zoomies. Then he gets dizzy and drops the cover page."
+            },
             {
               "q": "The cover page vanished!",
               "a": "You zapped it. A zap burns the cover page up, so stop firing once Sparky drops it. Start the level over and try again."
@@ -123,14 +126,7 @@
               "q": "Beam me the blueprints.",
               "a": "On the Moon Shuttle pad, get into the row of the boarding ramp, on the ramp's right side (don't step on the ramp itself, or you're off to the Moon). Walk right into the glowing brick: you walk straight through it. Press P to pick up the felt egg, then walk on into the rocket hatch at the far end.",
               "sketch": {
-                "rows": [
-                  "",
-                  "  ==     ----|",
-                  "  ==     |   |",
-                  "   = >>>>: X o",
-                  "     ^   |   |",
-                  "     @   ----|"
-                ],
+                "rows": ["", "  ==     ----|", "  ==     |   |", "   = >>>>: X o", "     ^   |   |", "     @   ----|"],
                 "labels": [
                   { "x": 0, "y": 0, "text": "SHUTTLE" },
                   { "x": 9, "y": 0, "text": "THE CLOSET" },
@@ -168,20 +164,28 @@
   ],
   "stickers": [
     {
-      "text": "SPARKY 3000",
-      "sub": "ROBOT DOG",
-      "shape": "circle",
-      "color": "#3fe0d0",
-      "ink": "#1a0838",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[48]] }
-    },
-    {
       "text": "DEX DYNAMO",
       "sub": "AGE 11, HOVER HEIGHTS",
-      "shape": "badge",
-      "color": "#1a0838",
+      "shape": "cut",
+      "color": "#d0208a",
       "ink": "#ffffff",
-      "hero": { "chr": "dex.chr", "cbl": "dex.cbl", "pal": "y2k.pal" }
+      "hero": {
+        "chr": "dex.chr",
+        "cbl": "dex.cbl",
+        "pal": "y2k.pal"
+      }
+    },
+    {
+      "text": "SPARKY 3000",
+      "sub": "ROBOT DOG",
+      "shape": "cut",
+      "color": "#3fe0d0",
+      "ink": "#1a0838",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[48]]
+      }
     },
     {
       "text": "HUG AN ALIEN",
@@ -189,31 +193,109 @@
       "shape": "star",
       "color": "#d0208a",
       "ink": "#ffffff",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[12]] }
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[12]]
+      }
     },
     {
       "text": "NOT INTERESTED!",
       "sub": "TELEMARKETER ROBOT",
-      "shape": "rect",
-      "color": "#fdf6ff",
-      "ink": "#1a0838",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[30]] }
+      "shape": "cut",
+      "color": "#7a4fd0",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[30]]
+      }
     },
     {
       "text": "WRONG NUMBER",
       "sub": "GRANDMA IN FLORIDA",
-      "shape": "circle",
+      "shape": "cut",
       "color": "#ffd34a",
       "ink": "#1a0838",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[38]] }
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[38]]
+      }
     },
     {
       "text": "ROBO-MOWER",
       "sub": "KEEP OFF THE GRASS",
-      "shape": "badge",
+      "shape": "cut",
       "color": "#2f9e44",
       "ink": "#ffffff",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[4]] }
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[4]]
+      }
+    },
+    {
+      "text": "RAWR.EXE",
+      "sub": "ROBO-DINO",
+      "shape": "burst",
+      "color": "#9ad81e",
+      "ink": "#1a0838",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[36]]
+      }
+    },
+    {
+      "text": "HOVER CAR",
+      "sub": "WHEELS ARE SO 1999",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[18]]
+      }
+    },
+    {
+      "text": "TOTALLY RADICAL",
+      "sub": "HOVERBOARD",
+      "shape": "cut",
+      "color": "#ff7a1a",
+      "ink": "#1a0838",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "city.bbl",
+        "pal": "y2k.pal",
+        "grid": [[125]],
+        "under": 0
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "city.bbl",
+        "pal": "y2k.pal",
+        "grid": [[129]],
+        "under": 3
+      }
     }
   ],
   "news": [

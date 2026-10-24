@@ -116,20 +116,20 @@ registerEditor(['cmf'], (host, project, file) => {
     'div',
     { class: 'toolbar mus-roll-tools' },
     tools,
-      h('label', { class: 'mus-inline', title: 'Snap notes to the grid' }, h('span', null, 'Snap'), snap),
-      h('button', { title: 'Zoom out', 'aria-label': 'Zoom out', onclick: () => zoom(1 / 1.5) }, '−'),
-      h('button', { title: 'Zoom in', 'aria-label': 'Zoom in', onclick: () => zoom(1.5) }, '+'),
-      h(
-        'button',
-        {
-          title: 'Fit the whole song',
-          onclick: () => {
-            roll.setZoom(roll.zoom * (roll.span / Math.max(1, doc.song.end.tick * 1.02)));
-            roll.scrollTo(0);
-          },
+    h('label', { class: 'mus-inline', title: 'Snap notes to the grid' }, h('span', null, 'Snap'), snap),
+    h('button', { title: 'Zoom out', 'aria-label': 'Zoom out', onclick: () => zoom(1 / 1.5) }, '−'),
+    h('button', { title: 'Zoom in', 'aria-label': 'Zoom in', onclick: () => zoom(1.5) }, '+'),
+    h(
+      'button',
+      {
+        title: 'Fit the whole song',
+        onclick: () => {
+          roll.setZoom(roll.zoom * (roll.span / Math.max(1, doc.song.end.tick * 1.02)));
+          roll.scrollTo(0);
         },
-        'Fit',
-      ),
+      },
+      'Fit',
+    ),
   );
   const bar = h('div', { class: 'mus-bar' }, h('div', { class: 'toolbar' }, playBtn, toStart, loopBtn, time), rollTools);
   const options = h(

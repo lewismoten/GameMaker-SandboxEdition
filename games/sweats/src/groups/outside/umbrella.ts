@@ -25,10 +25,13 @@ import type { Monologue } from '../types';
 import { UMBR_MON } from './ids';
 import { coinOn, skyAt } from './street';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** What mends the umbrella. */
 export const MENDS = 4;
 /** Ticks between drops from a storm cloud. */
-export const DROP_EVERY = 46;
+export const DROP_EVERY = 70;
 
 export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
   const { c, r: R } = pal;
@@ -45,11 +48,20 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
   };
   book.add('rainHi', rain(120, 2), AIR);
   book.add('rain', rain(122, 3), AIR);
-  book.add('rainMid', rain(130, 2).map((x, y, v) => (y > 4 && (x * 7 + y * 3) % 16 < y - 4 && v === c('sky', 2) ? c('sky', 3) : v)), AIR);
+  book.add(
+    'rainMid',
+    rain(130, 2).map((x, y, v) => (y > 4 && (x * 7 + y * 3) % 16 < y - 4 && v === c('sky', 2) ? c('sky', 3) : v)),
+    AIR,
+  );
   // a storm cloud, scowling: its left half rains on him
   {
     const pic = new Pixels(40, 20, T);
-    for (const [x, y, rx, ry] of [[9, 11, 9, 6], [21, 8, 11, 8], [32, 12, 8, 6]]) blob(pic, x, y, rx, ry, R('grey'), 0, 2);
+    for (const [x, y, rx, ry] of [
+      [9, 11, 9, 6],
+      [21, 8, 11, 8],
+      [32, 12, 8, 6],
+    ])
+      blob(pic, x, y, rx, ry, R('grey'), 0, 2);
     pic.line(13, 7, 17, 9, c('ink', 1)).line(27, 7, 23, 9, c('ink', 1)).set(16, 10, c('ink', 0)).set(24, 10, c('ink', 0));
     pic.line(17, 14, 23, 14, c('ink', 1)).set(16, 15, c('ink', 1)).set(24, 15, c('ink', 1));
     addPicture(book, 'storm', pic, rain(124, 2), (col) => (col ? AIR : { ...AIR, birthMon: UMBR_MON.drop, birthTime: DROP_EVERY }));
@@ -105,8 +117,22 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
         else p.ring(x, 17, 1.5, c('metal', 2));
       }
     if (what === 'paint')
-      for (const [x, col] of [[2, 'red'], [8, 'teal'], [14, 'yellow']] as const) p.rect(x, 9, 5, 10, c(col, 2)).rect(x, 9, 5, 1, c('metal', 2)).rect(x + 1, 13, 3, 3, c('white', 2));
-    if (what === 'tape') for (const [x, y] of [[5, 9], [13, 9], [5, 15], [13, 15]]) p.disc(x, y, 3.4, c('grey', 2)).disc(x, y, 1.6, c('wood', 3)).ring(x, y, 3.4, c('grey', 1));
+      for (const [x, col] of [
+        [2, 'red'],
+        [8, 'teal'],
+        [14, 'yellow'],
+      ] as const)
+        p.rect(x, 9, 5, 10, c(col, 2))
+          .rect(x, 9, 5, 1, c('metal', 2))
+          .rect(x + 1, 13, 3, 3, c('white', 2));
+    if (what === 'tape')
+      for (const [x, y] of [
+        [5, 9],
+        [13, 9],
+        [5, 15],
+        [13, 15],
+      ])
+        p.disc(x, y, 3.4, c('grey', 2)).disc(x, y, 1.6, c('wood', 3)).ring(x, y, 3.4, c('grey', 1));
     return p;
   };
   book.add('shelfTools', shelf('tools'), { solid: LEDGE, grav: GRAV.down });
@@ -132,11 +158,22 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
         const top = 2 + Math.round(Math.abs(x - 9) * 0.45) + (x > 13 ? 1 : 0);
         p.rect(x, top, 1, 9 - Math.round(Math.abs(x - 9) * 0.45), c('red', x % 5 === 0 ? 1 : 2));
       }
-      for (const [x, y] of [[5, 5], [14, 6]]) p.line(x - 2, y - 2, x + 2, y + 2, c('grey', 2)).line(x - 2, y + 2, x + 2, y - 2, c('grey', 2));
+      for (const [x, y] of [
+        [5, 5],
+        [14, 6],
+      ])
+        p.line(x - 2, y - 2, x + 2, y + 2, c('grey', 2)).line(x - 2, y + 2, x + 2, y - 2, c('grey', 2));
       p.line(9, 2, 10, 16, c('metal', 1)).set(9, 1, c('gold', 3)).set(16, 0, c('gold', 3)).set(2, 1, c('gold', 3));
     } else {
       p.line(10, 4, 10, 18, c('metal', 1));
-      for (const [x, y] of [[3, 2], [6, 8], [16, 1], [18, 9], [13, 12]]) p.line(10, 5, x, y, c('metal', 2));
+      for (const [x, y] of [
+        [3, 2],
+        [6, 8],
+        [16, 1],
+        [18, 9],
+        [13, 12],
+      ])
+        p.line(10, 5, x, y, c('metal', 2));
       p.rect(2, 2, 4, 3, c('red', 1)).rect(15, 1, 3, 2, c('red', 1)).line(17, 9, 19, 12, c('red', 0));
     }
     return p;
@@ -161,7 +198,7 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
     p.disc(10, 11, 6.5, c('grey', 2)).ring(10, 11, 6.5, c('grey', 1)).disc(10, 11, 3, c('wood', 3)).ring(10, 11, 3, c('grey', 0));
     p.line(15, 15, 18, 19, c('grey', 2)).line(16, 15, 19, 19, c('grey', 1));
   });
-  loot(book, pal, 'sBase');
+  loot(book, pal, 'sBase', LATE);
   coinOn(book, pal, 'sWall');
 }
 
@@ -223,15 +260,50 @@ export function umbrellaSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('plastic0', plastic(0), hurts(-3));
   book.add('plastic1', plastic(1), hurts(-3));
+  // the wounded beast's canopy, loose on the wind: red fabric torn on bent ribs, thrashing (k 0),
+  // flapping (1), drooping (2), and settled, folded on the street (3)
+  const canopy = (k: number, f: number) => {
+    const p = P();
+    const swing = [5, 3, 1, 0][k] * (f ? 1 : -1);
+    const lift = [0, 1, 3, 9][k];
+    for (let x = 1; x < 19; x++) {
+      const u = (x - 10) / 9;
+      const top = Math.round(3 + lift + u * swing + u * u * (k === 3 ? 0 : 4));
+      const h = k === 3 ? 4 : 6 - Math.abs(Math.round(u * 3));
+      if (k < 2 && (x === 5 || x === 14)) continue; // the tears
+      p.rect(x, top, 1, h, c('red', x % 4 === 0 ? 1 : 2));
+    }
+    for (const x of [3, 8, 12, 17]) p.line(10, 4 + lift, x, 9 + lift + (k < 2 ? (x % 2 ? swing : -swing) : 0), c('metal', 2));
+    if (k < 3) p.line(10, 4 + lift, 10 + (k === 0 ? swing : 0), 18, c('metal', 1));
+    return outline(p, ink);
+  };
+  book.add('canopy0', canopy(0, 0), hurts(-5));
+  book.add('canopy1', canopy(0, 1), hurts(-5));
+  book.add('canopyB0', canopy(1, 0), hurts(-4));
+  book.add('canopyB1', canopy(1, 1), hurts(-4));
+  book.add('canopyC0', canopy(2, 0), hurts(-3));
+  book.add('canopyC1', canopy(2, 1), hurts(-3));
+  book.add('canopyCalm', canopy(3, 0));
 }
 
 export function umbrellaMonsters(set: Monster[], mb: SpriteBook): void {
   set[UMBR_MON.drop] = mon(anim(mb, 'drop0', 'drop1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.splash }, [corner(0, 0, 3), corner(0, 8, 3)]);
   set[UMBR_MON.splash] = mon(anim(mb, 'splash0', 'splash1', 3), { power: POWER.friend, thru: 0, end: 6 });
   set[UMBR_MON.tag] = mon(anim(mb, 'tag0', 'tag1', 6), { power: POWER.foe, thru: 1, newmon: UMBR_MON.poof }, pace(2, 1));
-  set[UMBR_MON.paper] = mon(anim(mb, 'paper0', 'paper1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.poof }, [corner(0, 0, 1), corner(-6, 0, 1, 4)]);
-  set[UMBR_MON.plastic] = mon(anim(mb, 'plastic0', 'plastic1', 5), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.poof }, [corner(0, 0, 1), corner(-6, 0, 1, 4)]);
+  set[UMBR_MON.paper] = mon(anim(mb, 'paper0', 'paper1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.poof }, [
+    corner(0, 0, 1),
+    corner(-6, 0, 1, 4),
+  ]);
+  set[UMBR_MON.plastic] = mon(anim(mb, 'plastic0', 'plastic1', 5), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.poof }, [
+    corner(0, 0, 1),
+    corner(-6, 0, 1, 4),
+  ]);
   set[UMBR_MON.poof] = mon(anim(mb, 'poof0', 'poof1', 3), { power: POWER.friend, thru: 0, end: 8 });
+  // the finale: three words to gentle the thrashing canopy, each calmer and slower than the last
+  set[UMBR_MON.canopy] = mon(anim(mb, 'canopy0', 'canopy1', 2), { power: POWER.foe, thru: 0, newmon: UMBR_MON.canopy2 }, pace(3, 2));
+  set[UMBR_MON.canopy2] = mon(anim(mb, 'canopyB0', 'canopyB1', 4), { power: POWER.foe, thru: 0, newmon: UMBR_MON.canopy3 }, pace(3, 1));
+  set[UMBR_MON.canopy3] = mon(anim(mb, 'canopyC0', 'canopyC1', 7), { power: POWER.foe, thru: 0, newmon: UMBR_MON.canopyCalm }, pace(2, 1));
+  set[UMBR_MON.canopyCalm] = mon([[mb.n('canopyCalm'), 20]], { power: POWER.friend, thru: 0, end: 40 });
 }
 
 export const umbrella: Monologue = {
@@ -240,7 +312,15 @@ export const umbrella: Monologue = {
   desc: 'Shelter Me Gently',
   filler: 'soil',
   // the downpour: a slate sky, everything wet and dim (the store's tubes keep their glare)
-  light: { sky: [[34, 40, 56], [124, 134, 148], [72, 82, 100]], mul: [0.76, 0.8, 0.9], add: [0, 4, 14] },
+  light: {
+    sky: [
+      [34, 40, 56],
+      [124, 134, 148],
+      [72, 82, 100],
+    ],
+    mul: [0.76, 0.8, 0.9],
+    add: [0, 4, 14],
+  },
   legend: {
     R: 'rainHi',
     r: 'rain',
@@ -275,7 +355,13 @@ export const umbrella: Monologue = {
     // the scene ends
     const OFF = 22;
     const W = 70 + OFF;
-    m.fill(0, 0, W, 3, 'R').row(3, 0, W - 1, 'rainMid').fill(0, 4, W, 4, 'r').row(8, 0, W - 1, 'k').row(9, 0, W - 1, 't').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.fill(0, 0, W, 3, 'R')
+      .row(3, 0, W - 1, 'rainMid')
+      .fill(0, 4, W, 4, 'r')
+      .row(8, 0, W - 1, 'k')
+      .row(9, 0, W - 1, 't')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     for (const x of [6, 11, 49, 57, 63]) m.set(x, 10, 'u');
     // the rain: the spotlight, a storm cloud, the street lamp (the patch blown onto it), a gust
     m.set(2, 9, '!').set(4, 9, '$');
@@ -309,6 +395,8 @@ export const umbrella: Monologue = {
     placePicture(m, 'storm', 63, 1, 2, 1);
     m.set(61, 9, '$').set(65, 9, '%');
     m.set(67, 9, 'beast');
+    // its canopy, torn loose, thrashing on the wind before the stand: three words to gentle it
+    m.mon(UMBR_MON.canopy, 62, 9);
     m.link(67 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },

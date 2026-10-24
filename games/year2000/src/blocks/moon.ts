@@ -188,7 +188,7 @@ export function moonSet(): BlockSet {
   s.add('baseWall', baseWall(false), { solid: SOLID });
   s.add('airlock', staffDoor('pass', 'metal'), { solid: SOLID, effect: CTR.moonpass, eamt: -1, touch: 'metal' });
   addBig(s, 'mdome', domeHome(FLOORS.moon, 'purple'));
-  addBig(s, 'bbMoon', billboard(["MCMOON'S", 'OVER 1 BILLION', 'PILLS SERVED'], 'gold', 'red', FLOORS.moon));
+  addBig(s, 'bbMoon', billboard(['CRATER CAFE', 'A 3-COURSE', 'MEAL IN 1 PILL'], 'gold', 'red', FLOORS.moon));
   addBig(s, 'bbWelcome', billboard(['WELCOME TO', 'THE MOON', 'POP. 2,000'], 'purple', 'gold', FLOORS.moon));
   const meteorHole = stars(5);
   s.add('meteorgun', meteorHole, { solid: SOLID, birthMon: MON.meteor, birthTime: 40 });

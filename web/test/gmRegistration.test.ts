@@ -55,7 +55,7 @@ describe('Game-Maker registration (CHK.C)', () => {
 function guidePages(): string[][][] {
   const src = readFileSync(new URL('../src/manual/dosManual.ts', import.meta.url), 'utf8');
   const body = src.slice(src.indexOf('  return [\n    {'), src.indexOf('export async function openDosManual'));
-  const starts = [...body.matchAll(/^ {4}(page\(|\{)/gm)].map((m) => m.index!);
+  const starts = [...body.matchAll(/^ {4}(page\(|\{)/gm)].map((m) => m.index);
   return starts.map((s, i) =>
     [...body.slice(s, starts[i + 1] ?? body.length).matchAll(/<p>([\s\S]*?)<\/p>/g)].map((m) =>
       m[1]

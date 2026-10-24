@@ -67,7 +67,16 @@ export function marcusArt(pal: Pal) {
     const arms = o.arms ?? 'down';
     const mood = o.mood ?? 'calm';
     // bare shins and sandals under the toga's hem
-    const legs = side && step % 2 ? [[7, -2], [12, 2]] : [[7, 0], [12, 0]];
+    const legs =
+      side && step % 2
+        ? [
+            [7, -2],
+            [12, 2],
+          ]
+        : [
+            [7, 0],
+            [12, 0],
+          ];
     for (const [lx, d] of legs) {
       for (let y = 16 + crouch; y < 19; y++) p.rect(lx + Math.round(((y - 16) / 3) * d) - 1, y, 2, 1, c('skin', 2));
       p.rect(lx + d - 2, 19, 4 + (side ? 1 : 0), 1, c('wood', 2)).set(lx + d - 1, 18, c('wood', 1));
@@ -83,7 +92,15 @@ export function marcusArt(pal: Pal) {
     const hx = side ? 11 : 10;
     const hy = 4 + crouch;
     blob(p, hx + 0.5, hy + 0.5, 3.8, 3.8, pal.r('skin'), 1, 4);
-    for (const [cx, cy] of [[-3, -3], [-1, -4], [1, -4], [3, -3], [4, -1], [-4, -1]]) if (!(side && cx > 2)) p.disc(hx + cx, hy + cy, 1.3, c('hair', (cx + cy) % 2 ? 1 : 2));
+    for (const [cx, cy] of [
+      [-3, -3],
+      [-1, -4],
+      [1, -4],
+      [3, -3],
+      [4, -1],
+      [-4, -1],
+    ])
+      if (!(side && cx > 2)) p.disc(hx + cx, hy + cy, 1.3, c('hair', (cx + cy) % 2 ? 1 : 2));
     if (side) p.disc(hx - 3, hy, 1.4, c('hair', 1));
     const ey = hy;
     const eyes = side ? [hx + 2] : [hx - 1, hx + 2];
@@ -94,8 +111,14 @@ export function marcusArt(pal: Pal) {
     }
     const mx = side ? hx + 2 : hx + 0.5;
     if (mood === 'shout' || mood === 'ouch' || mood === 'laugh') p.rect(Math.round(mx) - 1, hy + 2, 3, 2, ink).set(Math.round(mx), hy + 3, c('red', 2));
-    else if (mood === 'worry') p.set(mx - 1, hy + 3, ink).set(mx, hy + 2, ink).set(mx + 1, hy + 3, ink);
-    else p.set(mx - 1, hy + 2, ink).set(mx, hy + 3, ink).set(mx + 1, hy + 2, ink);
+    else if (mood === 'worry')
+      p.set(mx - 1, hy + 3, ink)
+        .set(mx, hy + 2, ink)
+        .set(mx + 1, hy + 3, ink);
+    else
+      p.set(mx - 1, hy + 2, ink)
+        .set(mx, hy + 3, ink)
+        .set(mx + 1, hy + 2, ink);
     // arms (bare forearms out of the toga)
     const skin = c('skin', 2);
     const arm = (x0: number, y0: number, x1: number, y1: number) => p.line(x0, y0, x1, y1, skin).line(x0 + 1, y0, x1 + 1, y1, c('skin', 1));
@@ -108,7 +131,12 @@ export function marcusArt(pal: Pal) {
     if (arms === 'joke') (arm(5, sy, 3, sy + 4), arm(14, sy, 14, hy + 3), p.rect(3, sy + 3, 3, 4, c('wood', 2)).rect(4, sy + 4, 1, 2, c('ochre', 1)));
     if (arms === 'toss') (arm(5, sy, 3, sy + 4), arm(15, sy, 19, sy - 2));
     for (let k = 0; k < (o.sweat ?? 0); k++) {
-      const [x, y] = [[3, 3], [17, 5], [2, 9], [18, 1]][k % 4];
+      const [x, y] = [
+        [3, 3],
+        [17, 5],
+        [2, 9],
+        [18, 1],
+      ][k % 4];
       p.set(x, y, c('water', 4)).set(x, y + 1, c('water', 2));
     }
     if (o.faint) tipOver(p, o.faint);
@@ -168,7 +196,9 @@ export function felixArt(pal: Pal) {
       p.line(6, 4, 6, 0, c('cat', 2)).line(7, 3, 8, 1, c('cat', 2)).line(14, 4, 14, 0, c('cat', 2)).line(13, 3, 12, 1, c('cat', 2));
       for (let k = 0; k < 3; k++) p.set(9 + k, 3, c('cat', 0));
       const eye = mood === 'blink' || mood === 'bliss' ? c('cat', 0) : c('laurel', 3);
-      p.set(8, 6, eye).set(12, 6, eye).set(8, 5, mood === 'calm' ? ink : eye);
+      p.set(8, 6, eye)
+        .set(12, 6, eye)
+        .set(8, 5, mood === 'calm' ? ink : eye);
       p.set(10, 8, c('red', 3));
       if (mood === 'yowl' || mood === 'ouch') p.rect(9, 9, 3, 2, ink);
       else p.set(9, 9, ink).set(11, 9, ink);
@@ -180,7 +210,26 @@ export function felixArt(pal: Pal) {
       blob(p, 9, 13 + crouch + lift, 7, 3.6 - crouch / 2, fur, 1, 3);
       for (let k = 0; k < 4; k++) p.line(5 + k * 3, 10 + crouch + lift, 6 + k * 3, 15 + crouch + lift, c('cat', 0));
       // legs
-      const legs = o.leap ? [[4, -3], [6, -2], [12, 3], [14, 3]] : step % 2 ? [[4, -1], [7, 1], [12, -1], [14, 1]] : [[4, 0], [7, 0], [12, 0], [14, 0]];
+      const legs = o.leap
+        ? [
+            [4, -3],
+            [6, -2],
+            [12, 3],
+            [14, 3],
+          ]
+        : step % 2
+          ? [
+              [4, -1],
+              [7, 1],
+              [12, -1],
+              [14, 1],
+            ]
+          : [
+              [4, 0],
+              [7, 0],
+              [12, 0],
+              [14, 0],
+            ];
       for (const [lx, d] of legs) p.line(lx, 15 + crouch + lift, lx + d, 19, c('cat', 1)).set(lx + d, 19, c('marble', 3));
       // the tail, up and curling
       p.line(2, 12 + crouch + lift, 0, 6 + crouch, c('cat', 2)).set(1, 5 + crouch, c('cat', 2));
@@ -244,7 +293,12 @@ export function buildMonsterBlocks(pal: Pal) {
     if (o.stern) p.line(x - 3, y - 2, x - 1, y - 1, ink).line(x + 1, y - 1, x + 3, y - 2, ink);
     if (o.laugh) p.rect(x - 2, y + 2, 5, 3, ink).rect(x - 1, y + 4, 3, 1, c('red', 2));
     else if (o.shock) p.rect(x - 1, y + 2, 2, 3, ink);
-    else if (o.grin) p.set(x - 2, y + 2, ink).set(x - 1, y + 3, ink).set(x, y + 3, ink).set(x + 1, y + 3, ink).set(x + 2, y + 2, ink);
+    else if (o.grin)
+      p.set(x - 2, y + 2, ink)
+        .set(x - 1, y + 3, ink)
+        .set(x, y + 3, ink)
+        .set(x + 1, y + 3, ink)
+        .set(x + 2, y + 2, ink);
     else p.line(x - 1, y + 3, x + 1, y + 3, ink);
   };
   /** Big "HA!" style lettering in a burst. */
@@ -265,7 +319,12 @@ export function buildMonsterBlocks(pal: Pal) {
   // a cloud of Rufus's wind: green, with stink lines (a joke clears it)
   const gas = (f: number) => {
     const p = P();
-    for (const [gx, gy, r] of [[7, 12, 4], [12, 11, 4.4], [10, 8, 3.6]] as const) blob(p, gx + f, gy - f, r, r * 0.8, R('gas'), 1, 3);
+    for (const [gx, gy, r] of [
+      [7, 12, 4],
+      [12, 11, 4.4],
+      [10, 8, 3.6],
+    ] as const)
+      blob(p, gx + f, gy - f, r, r * 0.8, R('gas'), 1, 3);
     for (let k = 0; k < 3; k++) p.line(5 + k * 5, 4 - f, 6 + k * 5, 1, c('gas', 1)).set(6 + k * 5, 0, c('gas', 0));
     return done(p);
   };
@@ -277,7 +336,14 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     for (let y = 8; y < 20; y++) p.rect(10 - Math.floor((y - 4) / 3), y, Math.floor((y - 4) / 1.5), 1, c('blue', y % 3 ? 2 : 1));
     blob(p, 10, 5, 3.4, 3.6, R('skin'), 2, 4);
-    for (const [hx, hy] of [[7, 2], [9, 1], [11, 1], [13, 2], [10, 0]]) p.disc(hx, hy, 1.4, c('hair', 2));
+    for (const [hx, hy] of [
+      [7, 2],
+      [9, 1],
+      [11, 1],
+      [13, 2],
+      [10, 0],
+    ])
+      p.disc(hx, hy, 1.4, c('hair', 2));
     face(p, 10, 5, { shock: true });
     // the fan
     for (let k = 0; k < 5; k++) p.line(14, 12, 12 + k * 2, 6 + f, c('ochre', 3));
@@ -311,7 +377,16 @@ export function buildMonsterBlocks(pal: Pal) {
   const servus = (f: number) => {
     const p = P();
     for (let y = 8; y < 16; y++) p.rect(6, y, 8, 1, c('ochre', y % 3 ? 1 : 2));
-    for (const [lx, d] of f ? [[7, -1], [12, 1]] : [[8, 0], [11, 0]]) p.line(lx, 16, lx + d, 19, c('skin', 1));
+    for (const [lx, d] of f
+      ? [
+          [7, -1],
+          [12, 1],
+        ]
+      : [
+          [8, 0],
+          [11, 0],
+        ])
+      p.line(lx, 16, lx + d, 19, c('skin', 1));
     blob(p, 11, 5, 3, 3, R('skin'), 1, 3);
     p.rect(8, 2, 6, 2, c('hair', 0)).set(12, 5, ink);
     p.line(13, 9, 17, 6, c('skin', 2)).rect(13, 4, 7, 2, c('bronze', 2));
@@ -348,7 +423,12 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('meow1', burst('MIAU', 'laurel', 1));
   const ant = (f: number) => {
     const p = P();
-    for (const [ax, r] of [[6, 1.8], [10, 1.4], [14, 2]] as const) p.disc(ax, 16, r, c('ink', 1));
+    for (const [ax, r] of [
+      [6, 1.8],
+      [10, 1.4],
+      [14, 2],
+    ] as const)
+      p.disc(ax, 16, r, c('ink', 1));
     for (let k = 0; k < 3; k++) p.line(8 + k * 2, 17, 7 + k * 2 + (f ? 1 : -1), 19, ink);
     p.line(15, 15, 18, 12, ink);
     return done(p);
@@ -362,7 +442,16 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     const tunic = kind ? 'blue' : 'laurel';
     for (let y = 9; y < 16; y++) p.rect(5, y, 10, 1, c(tunic, (y + kind) % 2 ? 1 : 2));
-    for (const [lx, d] of f ? [[7, -2], [12, 2]] : [[7, 1], [12, -1]]) p.line(lx, 16, lx + d, 19, c('skin', 1)).line(lx + 1, 16, lx + d + 1, 19, c('skin', 2));
+    for (const [lx, d] of f
+      ? [
+          [7, -2],
+          [12, 2],
+        ]
+      : [
+          [7, 1],
+          [12, -1],
+        ])
+      p.line(lx, 16, lx + d, 19, c('skin', 1)).line(lx + 1, 16, lx + d + 1, 19, c('skin', 2));
     blob(p, 10, 5, 3.6, 3.4, R('skin'), 1, 3);
     p.rect(6, 1, 9, 3, c('iron', 2)).rect(6, 1, 9, 1, c('iron', 1));
     if (kind === 0) p.line(5, 2, 2, -1, c('marble', 3)).line(15, 2, 18, -1, c('marble', 3)).line(5, 3, 2, 1, c('marble', 2)).line(15, 3, 18, 1, c('marble', 2));
@@ -391,7 +480,10 @@ export function buildMonsterBlocks(pal: Pal) {
   const crow = (f: number) => {
     const p = P();
     blob(p, 10, 11, 4, 2.4, R('ink'), 0, 1);
-    p.line(4, 11 - f * 4, 9, 10, c('ink', 1)).line(16, 11 - f * 4, 11, 10, c('ink', 1)).set(14, 10, c('ochre', 3)).set(13, 10, c('marble', 3));
+    p.line(4, 11 - f * 4, 9, 10, c('ink', 1))
+      .line(16, 11 - f * 4, 11, 10, c('ink', 1))
+      .set(14, 10, c('ochre', 3))
+      .set(13, 10, c('marble', 3));
     return p;
   };
   book.add('crow0', crow(0));
@@ -413,9 +505,13 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('spellS', spell(0), hurt(-6, 0));
   const pigeon = (f: number) => {
     const p = P();
-    blob(p, 9, 14, 5, 3.6, R('grey'), 1, 3);
-    blob(p, 14, 10 + f, 2.6, 2.4, R('grey'), 1, 3);
-    p.set(15, 9 + f, ink).set(17, 11 + f, c('ochre', 2)).rect(12, 12, 3, 1, c('laurel', 2));
+    // a slate-dark rock dove, so it reads against the sunset roofs: pale wing bars, a green sheen
+    blob(p, 9, 14, 5, 3.6, R('grey'), 0, 1);
+    blob(p, 14, 10 + f, 2.6, 2.4, R('grey'), 0, 2);
+    p.line(6, 13, 11, 13, c('grey', 3)).line(6, 15, 10, 15, c('grey', 3));
+    p.set(15, 9 + f, c('marble', 3))
+      .set(17, 11 + f, c('ochre', 2))
+      .rect(12, 12, 3, 1, c('laurel', 2));
     p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('grey', 1));
     return done(p);
   };
@@ -427,8 +523,13 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, x, y, 3.6, 3.8, R('skin'), 2, 4);
     for (let k = -3; k <= 3; k++) p.set(x + k, y + 2 + (Math.abs(k) > 2 ? -1 : 0), c('grey', 1)).set(x + k, y + 3, c('grey', 1));
     p.rect(x - 1, y + 2, 3, 2, c('marble', 3)).set(x, y + 3, c('red', 1));
-    p.disc(x - 2, y - 1, 1, c('marble', 3)).disc(x + 2, y - 1, 1, c('marble', 3)).set(x - 2, y - 1, ink).set(x + 2, y - 1 + f, ink);
-    p.disc(x, y + 1, 1.2, c('red', 3)).set(x - 3, y + 1, c('red', 2)).set(x + 3, y + 1, c('red', 2));
+    p.disc(x - 2, y - 1, 1, c('marble', 3))
+      .disc(x + 2, y - 1, 1, c('marble', 3))
+      .set(x - 2, y - 1, ink)
+      .set(x + 2, y - 1 + f, ink);
+    p.disc(x, y + 1, 1.2, c('red', 3))
+      .set(x - 3, y + 1, c('red', 2))
+      .set(x + 3, y + 1, c('red', 2));
     p.line(x - 3, y - 3, x - 1, y - 2, ink).line(x + 1, y - 2, x + 3, y - 3, ink);
   };
   // Doc Leo the philosopher: a navy cloak over his purple tunic, red sneakers, a scroll, and
@@ -487,19 +588,34 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('fan1', fan(1), { scorePts: 150 });
   const bubble = (f: number) => {
     const p = P();
-    p.ring(10, 10, 4 + f * 0.6, c('tile', 3)).disc(10, 10, 3, c('tile', 2)).set(8, 8, c('marble', 3));
+    p.ring(10, 10, 4 + f * 0.6, c('tile', 3))
+      .disc(10, 10, 3, c('tile', 2))
+      .set(8, 8, c('marble', 3));
     p.set(10, 3 - f, c('steam', 2)).set(12, 2, c('steam', 1));
     return done(p);
   };
   book.add('bubble0', bubble(0), { solid: 0 });
   book.add('bubble1', bubble(1), { solid: 0 });
   book.add('bubbleS', bubble(0), hurt(-5, 0));
+  // a drop of hot water off the vault: a deep blue teardrop with a red-hot glint, outlined dark so it shows on the pale wall
+  const drip = (f: number) => {
+    const p = P();
+    p.disc(10, 13, 3.4, c('water', 1)).line(10, 7, 10, 12, c('water', 1)).line(9, 10, 11, 10, c('water', 1));
+    p.set(9, 12, c('marble', 3)).set(11, 15, c('tile', 3)).set(10, 15, c('tile', 2));
+    p.set(8 + f * 4, 4, c('water', 2)).set(10, 2 + f, c('water', 2));
+    return done(p);
+  };
+  book.add('drip0', drip(0), { solid: 0 });
+  book.add('drip1', drip(1), { solid: 0 });
+  book.add('dripS', drip(0), hurt(-6, 0));
   // a senator floating on his back, belly up, blissful (solid: stand on him)
   const bather = (f: number) => {
     const p = P();
     blob(p, 10, 12 - f, 9, 3.4, R('skin'), 1, 3);
     blob(p, 10, 9 - f, 4, 3, R('skin'), 2, 4);
-    p.disc(2, 12 - f, 2.4, c('skin', 2)).line(1, 10 - f, 3, 10 - f, c('laurel', 2)).set(2, 12 - f, ink);
+    p.disc(2, 12 - f, 2.4, c('skin', 2))
+      .line(1, 10 - f, 3, 10 - f, c('laurel', 2))
+      .set(2, 12 - f, ink);
     p.rect(0, 14, 20, 6, c('water', 3));
     for (let k = 0; k < 20; k += 4) p.set(k + f, 14, c('water', 4));
     return done(p);
@@ -543,7 +659,10 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     for (let y = 9; y < 17; y++) p.rect(5, y, 10, 1, (y + Math.floor(y / 2)) % 2 ? c('red', 2) : c('ochre', 3));
     for (const lx of [6, 11]) p.rect(lx, 17, 2, 2, c('purple', 1)).rect(lx - 1, 19, 4, 1, c('red', 2));
-    p.line(6, 3, 2, 0 + f, c('red', 2)).line(13, 3, 17, 0 + f, c('ochre', 3)).disc(2, 0 + f, 1, c('gold', 3)).disc(17, 0 + f, 1, c('gold', 3));
+    p.line(6, 3, 2, 0 + f, c('red', 2))
+      .line(13, 3, 17, 0 + f, c('ochre', 3))
+      .disc(2, 0 + f, 1, c('gold', 3))
+      .disc(17, 0 + f, 1, c('gold', 3));
     leoFace(p, 9, 5, f);
     p.line(15, 10, 18, 6 - f, c('skin', 2));
     blob(p, 18, 4 - f, 1.8, 2.6, R('cheese'), 2, 3);
@@ -557,7 +676,8 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     if (half === 'A') {
       blob(p, 10, 11 - (stage >= 3 ? f : 0), 7, 7, R('skin'), 1, 3);
-      for (let k = 0; k < 12; k++) p.set(4 + k, 5 - Math.round(Math.sin((k / 11) * Math.PI) * 2) + (stage >= 2 ? (k % 3 === 0 ? 1 : 0) : 0), c('laurel', 2 + (k % 2)));
+      for (let k = 0; k < 12; k++)
+        p.set(4 + k, 5 - Math.round(Math.sin((k / 11) * Math.PI) * 2) + (stage >= 2 ? (k % 3 === 0 ? 1 : 0) : 0), c('laurel', 2 + (k % 2)));
       p.line(5, 6, 4, 9, c('grey', 2)).line(15, 6, 16, 9, c('grey', 2));
       if (stage === 0) face(p, 10, 10, { stern: true });
       else if (stage === 1) (face(p, 10, 10, { stern: true }), p.set(13, 13, c('red', 3)));
@@ -577,16 +697,44 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     return done(p);
   };
-  for (const half of ['A', 'B'] as const)
-    for (let s = 0; s < 4; s++) {
-      book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
-      book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
-      book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
-    }
+  // (his toga and throne look the same until he shakes with laughter: stages 0 and 3 only)
+  for (const [half, s] of [
+    ['A', 0],
+    ['A', 1],
+    ['A', 2],
+    ['A', 3],
+    ['B', 0],
+    ['B', 3],
+  ] as const) {
+    book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
+    book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
+    book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
+  }
+  // his "SILENTIUM!": a purple hush rolling toward Marcus, a finger to its lips, white-rimmed to read on the red stage front
+  const hush = (f: number) => {
+    const p = P();
+    blob(p, 10, 10, 8, 6, R('purple'), 1, 2);
+    p.ring(10, 10, 8, c('marble', 3));
+    micro(p, 4, 7, 'SH!', c('marble', 3));
+    p.rect(15, 4 + f, 2, 6, c('skin', 3));
+    for (let k = 0; k < 3; k++) p.set(19, 6 + k * 4 + f, c('purple', 2));
+    return done(p);
+  };
+  book.add('hush0', hush(0), { solid: 0 });
+  book.add('hush1', hush(1), { solid: 0 });
+  book.add('hushS', hush(0), hurt(-8, 0));
+  // his empty gilt throne, a purple cushion squashed where he sat (walk past it)
+  const throne = P();
+  throne.rect(1, 2, 18, 18, c('gold', 1)).rect(1, 2, 18, 2, c('gold', 3)).rect(3, 4, 14, 16, c('gold', 0));
+  throne.rect(4, 11, 12, 4, c('purple', 2)).rect(4, 11, 12, 1, c('purple', 1)).rect(4, 15, 12, 1, c('gold', 2));
+  book.add('throne', done(throne), { solid: 0 });
   // a decree, rolled, flying ("SILENTIUM!"), and where it lands
   const decree = (f: number) => {
     const p = P();
-    p.rect(4, 7, 12, 7, c('toga', 3)).disc(4, 10.5, 2, c('toga', 2)).disc(16, 10.5, 2, c('toga', 2)).rect(8, 9 + f, 4, 3, c('red', 2));
+    p.rect(4, 7, 12, 7, c('toga', 3))
+      .disc(4, 10.5, 2, c('toga', 2))
+      .disc(16, 10.5, 2, c('toga', 2))
+      .rect(8, 9 + f, 4, 3, c('red', 2));
     return done(p);
   };
   book.add('decree0', decree(0), { solid: 0 });
@@ -609,5 +757,11 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('crown0', crown(0), { effect: CROWN, eamt: 1, scorePts: 1000 });
   book.add('crown1', crown(1), { effect: CROWN, eamt: 1, scorePts: 1000 });
+  // (last, so every other block keeps its number) the friends going off: one picture each, worth
+  // nothing, so brushing past them as they go doesn't score every tick
+  book.add('flaviaOff', flavia(1));
+  book.add('leoOff', leo(1));
+  book.add('fanOff', fan(1));
+  book.add('jesterOff', jester(1));
   return book;
 }

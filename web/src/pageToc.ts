@@ -15,16 +15,20 @@ export function pageToc(main: HTMLElement, o: PageTocOptions = {}): void {
   if (heads.filter((e) => e.tagName === 'H2').length < 2) return;
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const items = heads.map((head) => {
-    const a = h('a', {
-      // the address stays the page's own (#/mac…): the link only scrolls
-      href: location.hash || '#/',
-      onclick: (e: MouseEvent) => {
-        e.preventDefault();
-        head.scrollIntoView({ block: 'start', behavior: reduced() ? 'auto' : 'smooth' });
-        if (!head.hasAttribute('tabindex')) head.setAttribute('tabindex', '-1');
-        head.focus({ preventScroll: true });
+    const a = h(
+      'a',
+      {
+        // the address stays the page's own (#/mac…): the link only scrolls
+        href: location.hash || '#/',
+        onclick: (e: MouseEvent) => {
+          e.preventDefault();
+          head.scrollIntoView({ block: 'start', behavior: reduced() ? 'auto' : 'smooth' });
+          if (!head.hasAttribute('tabindex')) head.setAttribute('tabindex', '-1');
+          head.focus({ preventScroll: true });
+        },
       },
-    }, head.textContent?.trim() ?? '');
+      head.textContent?.trim() ?? '',
+    );
     return { head, a, li: h('li', { class: head.tagName === 'H2' ? '' : 'toc-sub' }, a) };
   });
   const nav = h(

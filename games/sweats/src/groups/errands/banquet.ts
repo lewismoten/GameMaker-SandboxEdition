@@ -42,7 +42,9 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
       const hx = o.lean ? 12 : 10;
       p.rect(4, 13, 13, 7, c(top, 2)).rect(4, 13, 13, 1, c(top, 3)).rect(9, 13, 3, 3, c('white', 2));
       blob(p, hx, 8, 4, 4.4, R('skin'), 1, 4);
-      p.rect(hx - 4, 3, 9, 3, c(hair, 1)).set(hx - 4, 6, c(hair, 1)).set(hx + 4, 6, c(hair, 1));
+      p.rect(hx - 4, 3, 9, 3, c(hair, 1))
+        .set(hx - 4, 6, c(hair, 1))
+        .set(hx + 4, 6, c(hair, 1));
       if (o.long) p.rect(hx - 5, 4, 2, 10, c(hair, 1)).rect(hx + 4, 4, 2, 10, c(hair, 1));
       p.set(hx - 2, 8, ink).set(hx + 2, 8, ink);
       if (o.brow) p.line(hx + 1, 5, hx + 3, 4, c(hair, 0)).line(hx - 3, 6, hx - 1, 6, c(hair, 0));
@@ -72,7 +74,13 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
   podium.rect(2, 18, 16, 22, c('wood', 2)).rect(1, 17, 18, 3, c('wood', 3)).rect(4, 22, 12, 14, c('wood', 1));
   micro(podium, 5, 25, 'GALA', c('gold', 2));
   outline(podium, ink);
-  cut(book, 'podium', podium, (_col, row) => (row === 1 ? wainscot : wall()), (_col, row) => (row === 0 ? { ...AIR, birthMon: BM.blah, birthTime: 100 } : AIR));
+  cut(
+    book,
+    'podium',
+    podium,
+    (_col, row) => (row === 1 ? wainscot : wall()),
+    (_col, row) => (row === 0 ? { ...AIR, birthMon: BM.blah, birthTime: 100 } : AIR),
+  );
   // a chandelier (it holds a man up: a ledge)
   const chandelier = over(wall(), pal, (p) => {
     p.rect(9, 0, 2, 5, c('gold', 0));
@@ -101,11 +109,29 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
   win.rect(0, 0, 40, 46, c('wood', 1));
   for (let y = 3; y < 44; y++) for (let x = 3; x < 37; x++) win.set(x, y, shadeAt(R('sky'), 0, 5, (y - 3) / 40, x, y));
   win.disc(26, 38, 6, c('spot', 1)).rect(3, 40, 34, 4, c('wallpaper', 0));
-  for (const [x, y] of [[8, 8], [30, 6], [15, 14]]) win.set(x, y, c('white', 2));
+  for (const [x, y] of [
+    [8, 8],
+    [30, 6],
+    [15, 14],
+  ])
+    win.set(x, y, c('white', 2));
   win.rect(19, 3, 2, 41, c('wood', 1)).rect(3, 22, 34, 2, c('wood', 1));
   win.rect(0, 46, 40, 4, c('white', 2)).rect(0, 50, 40, 1, c('white', 0));
   outline(win, ink);
-  cut(book, 'window', win, (_col, row) => (row === 2 ? wainscot : wall()), () => AIR, [[0, 0], [1, 0], [0, 1], [1, 1], [1, 2]]);
+  cut(
+    book,
+    'window',
+    win,
+    (_col, row) => (row === 2 ? wainscot : wall()),
+    () => AIR,
+    [
+      [0, 0],
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [1, 2],
+    ],
+  );
   const sill = wainscot.crop(0, 0, 20, 20).blit(win.crop(0, 40, 20, 20), 0, 0, T);
   const bird = (down: boolean) =>
     over(sill, pal, (p) => {
@@ -121,7 +147,12 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
         p.rect(8, 3, 4, 1, c('orange', 2)).set(9, 0, c('orange', 1)).set(11, 0, c('orange', 1)).set(9, 1, c('orange', 1)).set(11, 1, c('orange', 1));
         p.disc(14, 4, 2, c('navy', 2));
         p.set(13, 3, ink).set(15, 3, ink).set(14, 4, ink);
-        for (const [x, y] of [[16, 0], [18, 2], [12, -1]]) p.set(x, y, c('gold', 3));
+        for (const [x, y] of [
+          [16, 0],
+          [18, 2],
+          [12, -1],
+        ])
+          p.set(x, y, c('gold', 3));
         p.line(2, 1, 4, 0, c('navy', 2)).line(17, 5, 19, 4, c('navy', 2)).line(5, 6, 6, 4, c('navy', 1));
       }
     });
@@ -134,26 +165,41 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
     draw(t);
     p.blit(outline(t, ink), 0, 0, T);
   };
-  plotThing(book, 'wallpaper', 'math', thing((p) => {
-    p.rect(2, 5, 16, 12, c('ink', 1)).rect(2, 5, 16, 1, c('wood', 2)).rect(2, 16, 16, 1, c('wood', 2));
-    micro(p, 4, 7, '2+2', c('white', 2));
-    micro(p, 7, 12, '=5', c('yellow', 2));
-  }));
-  plotThing(book, 'wallpaper', 'war', thing((p) => {
-    // a toy soldier, stiff as he is
-    p.rect(8, 15, 2, 4, c('navy', 1)).rect(11, 15, 2, 4, c('navy', 1)).rect(7, 19, 7, 1, c('wood', 2));
-    p.rect(7, 8, 7, 7, c('red', 2)).rect(9, 9, 3, 1, c('gold', 3)).rect(9, 11, 3, 1, c('gold', 3));
-    p.rect(8, 4, 5, 4, c('skin', 3)).rect(8, 0, 5, 4, ink).set(9, 5, ink).set(11, 5, ink);
-    p.line(15, 4, 15, 14, c('metal', 1)).rect(14, 8, 1, 2, c('red', 2));
-  }));
-  plotThing(book, 'wallpaper', 'ex', thing((p) => {
-    // a photo of his ex, torn down the middle
-    p.rect(3, 4, 14, 13, c('white', 2)).rect(5, 6, 10, 8, c('teal', 1));
-    blob(p, 8, 10, 2, 2.4, R('skin'), 1, 3);
-    p.rect(6, 7, 4, 2, c('hair', 1));
-    p.line(11, 4, 10, 8, c('wallpaper', 1)).line(10, 8, 12, 12, c('wallpaper', 1)).line(12, 12, 11, 16, c('wallpaper', 1));
-    p.disc(13, 9, 1.6, c('red', 2)).disc(15, 9, 1.6, c('red', 2)).rect(13, 10, 3, 2, c('red', 2)).set(14, 12, c('red', 2));
-  }));
+  plotThing(
+    book,
+    'wallpaper',
+    'math',
+    thing((p) => {
+      p.rect(2, 5, 16, 12, c('ink', 1)).rect(2, 5, 16, 1, c('wood', 2)).rect(2, 16, 16, 1, c('wood', 2));
+      micro(p, 4, 7, '2+2', c('white', 2));
+      micro(p, 7, 12, '=5', c('yellow', 2));
+    }),
+  );
+  plotThing(
+    book,
+    'wallpaper',
+    'war',
+    thing((p) => {
+      // a toy soldier, stiff as he is
+      p.rect(8, 15, 2, 4, c('navy', 1)).rect(11, 15, 2, 4, c('navy', 1)).rect(7, 19, 7, 1, c('wood', 2));
+      p.rect(7, 8, 7, 7, c('red', 2)).rect(9, 9, 3, 1, c('gold', 3)).rect(9, 11, 3, 1, c('gold', 3));
+      p.rect(8, 4, 5, 4, c('skin', 3)).rect(8, 0, 5, 4, ink).set(9, 5, ink).set(11, 5, ink);
+      p.line(15, 4, 15, 14, c('metal', 1)).rect(14, 8, 1, 2, c('red', 2));
+    }),
+  );
+  plotThing(
+    book,
+    'wallpaper',
+    'ex',
+    thing((p) => {
+      // a photo of his ex, torn down the middle
+      p.rect(3, 4, 14, 13, c('white', 2)).rect(5, 6, 10, 8, c('teal', 1));
+      blob(p, 8, 10, 2, 2.4, R('skin'), 1, 3);
+      p.rect(6, 7, 4, 2, c('hair', 1));
+      p.line(11, 4, 10, 8, c('wallpaper', 1)).line(10, 8, 12, 12, c('wallpaper', 1)).line(12, 12, 11, 16, c('wallpaper', 1));
+      p.disc(13, 9, 1.6, c('red', 2)).disc(15, 9, 1.6, c('red', 2)).rect(13, 10, 3, 2, c('red', 2)).set(14, 12, c('red', 2));
+    }),
+  );
 }
 
 export function banquetSprites(book: SpriteBook, pal: Pal): void {
@@ -167,13 +213,22 @@ export function banquetSprites(book: SpriteBook, pal: Pal): void {
     const p = clear();
     blob(p, 10 + (f ? 1 : -1), 12, 7, 6, pal.r('gas'), 0, 2);
     face(p, pal, 10 + (f ? 1 : -1), 11, { angry: true });
-    for (const [x, y] of [[1, 6], [18, 8], [2, 16], [18, 15]]) p.line(x, y, x + (x < 10 ? 1 : -1), y + 2, c('gas', 2));
+    for (const [x, y] of [
+      [1, 6],
+      [18, 8],
+      [2, 16],
+      [18, 15],
+    ])
+      p.line(x, y, x + (x < 10 ? 1 : -1), y + 2, c('gas', 2));
     return outline(p, ink);
   };
   const balloon = (f: number) => {
     const p = clear();
     blob(p, 10, 8 - f, 7, 7, pal.r('gas'), 0, 2);
-    p.set(10, 15 - f, c('gas', 0)).set(9, 16 - f, c('gas', 0)).set(11, 16 - f, c('gas', 0)).line(10, 17 - f, 9 + f * 2, 19, c('white', 1));
+    p.set(10, 15 - f, c('gas', 0))
+      .set(9, 16 - f, c('gas', 0))
+      .set(11, 16 - f, c('gas', 0))
+      .line(10, 17 - f, 9 + f * 2, 19, c('white', 1));
     face(p, pal, 10, 7 - f, { angry: true, grin: true });
     p.set(4, 3, c('white', 2)).set(5, 2, c('white', 2));
     return outline(p, ink);
@@ -183,11 +238,18 @@ export function banquetSprites(book: SpriteBook, pal: Pal): void {
     blob(p, 10, 14, 8, 5, pal.r('gas'), 0, 2);
     p.rect(10, 4 + f, 3, 9, c('white', 2));
     blob(p, 11, 4 + f, 3, 2.6, pal.r('white'), 1, 2);
-    p.rect(14, 4 + f, 4, 2, c('orange', 2)).set(11, 3 + f, ink).set(10, 2 + f, ink).set(12, 2 + f, ink);
+    p.rect(14, 4 + f, 4, 2, c('orange', 2))
+      .set(11, 3 + f, ink)
+      .set(10, 2 + f, ink)
+      .set(12, 2 + f, ink);
     micro(p, 0, 15, f ? 'HNK' : '', ink);
     return outline(p, ink);
   };
-  for (const [name, draw] of [['rumble', rumble], ['gasBalloon', balloon], ['gasGoose', goose]] as const) {
+  for (const [name, draw] of [
+    ['rumble', rumble],
+    ['gasBalloon', balloon],
+    ['gasGoose', goose],
+  ] as const) {
     book.add(`${name}0`, draw(0), hurts(-6));
     book.add(`${name}1`, draw(1), hurts(-6));
   }
@@ -245,7 +307,11 @@ export const banquet: Monologue = {
     // the scene ends
     const OFF = 4;
     const W = 54 + OFF;
-    m.row(0, 0, W - 1, '^').fill(0, 1, W, 9, '.').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
+    m.row(0, 0, W - 1, '^')
+      .fill(0, 1, W, 9, '.')
+      .row(10, 0, W - 1, '_')
+      .row(11, 0, W - 1, '=')
+      .row(12, 0, W - 1, '#');
     for (const x of [4, 16, 22, 28, 44, 51]) m.set(x, 1, 'p');
     m.set(36, 3, 'banner.0.0').set(37, 3, 'banner.1.0').set(47, 5, 's');
     const table = (x0: number, x1: number) => {

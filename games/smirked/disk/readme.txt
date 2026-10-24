@@ -51,10 +51,9 @@ THIS IS SHAREWARE
 
   If it made you laugh at
   yourself, register for $5:
-  you get a tape of the song
-  and a Bravery Badge of your
-  own. Send a check (US funds)
-  to:
+  you get a Bravery Badge of
+  your own, as a sticker. Send
+  a check (US funds) to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
@@ -64,7 +63,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,
@@ -89,6 +90,11 @@ CREDITS (NOW)
   in the song. Built by Claude
   with GAME-MAKER 3.0 by
   Recreational Software
-  Designs.
+  Designs. The haunted
+  house's organ opens with
+  the Toccata and Fugue in D
+  minor, BWV 565, credited to
+  J. S. Bach (about 1704), in
+  the public domain.
 
 So yeah. The date went well.

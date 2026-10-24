@@ -10,12 +10,27 @@ const read = (id: string, file: string) => JSON.parse(readFileSync(join(gamesDir
 /** Every game with a box and a walkthrough: its claim and its walkthrough's play minutes. */
 const games = readdirSync(gamesDir)
   .filter((id) => existsSync(join(gamesDir, id, 'about.json')) && existsSync(join(gamesDir, id, 'walkthrough.json')))
-  .map((id) => ({ id, box: read(id, 'about.json').box as { hours?: number } | undefined, minutes: playMinutes(read(id, 'walkthrough.json').timeline as Timeline) }))
+  .map((id) => ({
+    id,
+    box: read(id, 'about.json').box as { hours?: number } | undefined,
+    minutes: playMinutes(read(id, 'walkthrough.json').timeline as Timeline),
+  }))
   .filter((g) => g.box);
 
 describe('hours of gameplay', () => {
   it('counts only the level chapters of a walkthrough', () => {
-    const t = { fps: 60, frames: 60 * 60 * 10, chapters: [{ title: 'Opening', frame: 0 }, { title: 'Story', frame: 3600 }, { title: 'Level 1', frame: 7200 }, { title: 'Level 2', frame: 10800 }, { title: 'Ending', frame: 18000 }, { title: 'Credits', frame: 32400 }] };
+    const t = {
+      fps: 60,
+      frames: 60 * 60 * 10,
+      chapters: [
+        { title: 'Opening', frame: 0 },
+        { title: 'Story', frame: 3600 },
+        { title: 'Level 1', frame: 7200 },
+        { title: 'Level 2', frame: 10800 },
+        { title: 'Ending', frame: 18000 },
+        { title: 'Credits', frame: 32400 },
+      ],
+    };
     expect(playMinutes(t)).toBe(3);
     expect(claimedHours(0.1)).toBe(1);
     expect(claimedHours(12)).toBe(5);

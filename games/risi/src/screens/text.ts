@@ -90,8 +90,8 @@ export const INSTRUCTIONS = [
     'cheese.',
     '',
     'DIGNITAS is your health.',
-    'Grapes, a cup or milk bring',
-    'it back. A laurel wreath is',
+    'Grapes, a cup or a towel',
+    'bring it back. A wreath is',
     'a life.',
   ]),
   page([
@@ -101,10 +101,10 @@ export const INSTRUCTIONS = [
     'IV.  Six cheeses crown a cat.',
     'V.   Six golden scales.',
     'VI.  Five laughs open the',
-    '     stage. Make the Emperor',
-    '     laugh, and lay his',
-    '     laurel crown on the',
-    '     altar.',
+    '     stage. Hop his SILENTIUM!',
+    '     and joke the Emperor into',
+    '     laughing; lay his crown',
+    '     on the altar.',
     '',
     'F1 help      F2 counters',
     'F3 music     F4 sound',
@@ -112,14 +112,54 @@ export const INSTRUCTIONS = [
   ]),
 ].join('\n');
 
-/** Each level's card: its song (Latin), the song in English, and a sung line with its English. */
-export const CARDS: { numeral: string; title: string; english: string; lines: [string, string] }[] = [
-  { numeral: 'I', title: 'CANIS MEUS FLATUM DEDIT', english: 'My Dog Has Farted', lines: ['Sub mensa... in tenebris...', 'Beneath the table, in shadow...'] },
-  { numeral: 'II', title: 'LAUDES IGNAVI', english: 'In Praise of the Coward', lines: ['Cucurri-curri-currimus!', 'We ran and ran and ran!'] },
-  { numeral: 'III', title: 'TITUS TORQUET LINGUA', english: 'Titus Twists His Tongue', lines: ['Titus tot titulos tetigit.', 'Titus touched so many titles.'] },
-  { numeral: 'IV', title: 'FELIS FORTISSIMUS', english: 'The Bravest Cat', lines: ['Sed propter caseum!', 'But for the cheese!'] },
-  { numeral: 'V', title: 'CANIT PISCIS AUREUS', english: 'The Golden Fish Sings', lines: ['O piscis aureus, diva balnei!', 'O golden fish, bathtub diva!'] },
-  { numeral: 'VI', title: 'SILENTIUM RIDENTIUM', english: 'The Silence of Laughter', lines: ['Omnes spectant, nemo ridet.', 'All watch. No one laughs.'] },
+/**
+ * Each level's card: its song (Latin), the song in English, what to do there (with the key it
+ * takes, so no level's goal or control lives only on the help pages), and a sung line with its
+ * English.
+ */
+export const CARDS: { numeral: string; title: string; english: string; goal: string; lines: [string, string] }[] = [
+  {
+    numeral: 'I',
+    title: 'CANIS MEUS FLATUM DEDIT',
+    english: 'My Dog Has Farted',
+    goal: 'Hop up to open five shutters.',
+    lines: ['Sub mensa... in tenebris...', 'Beneath the table, in shadow...'],
+  },
+  {
+    numeral: 'II',
+    title: 'LAUDES IGNAVI',
+    english: 'In Praise of the Coward',
+    goal: 'Run right! Retreat is victory.',
+    lines: ['Cucurri-curri-currimus!', 'We ran and ran and ran!'],
+  },
+  {
+    numeral: 'III',
+    title: 'TITUS TORQUET LINGUA',
+    english: 'Titus Twists His Tongue',
+    goal: 'Touch seven tituli. UP climbs.',
+    lines: ['Titus tot titulos tetigit.', 'Titus touched so many titles.'],
+  },
+  {
+    numeral: 'IV',
+    title: 'FELIS FORTISSIMUS',
+    english: 'The Bravest Cat',
+    goal: 'Six cheeses! SPACE meows at mice.',
+    lines: ['Sed propter caseum!', 'But for the cheese!'],
+  },
+  {
+    numeral: 'V',
+    title: 'CANIT PISCIS AUREUS',
+    english: 'The Golden Fish Sings',
+    goal: 'Six golden scales. Steam and drums lift.',
+    lines: ['O piscis aureus, diva balnei!', 'O golden fish, bathtub diva!'],
+  },
+  {
+    numeral: 'VI',
+    title: 'SILENTIUM RIDENTIUM',
+    english: 'The Silence of Laughter',
+    goal: 'SPACE jokes. 5 laughs open the stage.',
+    lines: ['Omnes spectant, nemo ridet.', 'All watch. No one laughs.'],
+  },
 ];
 
 const CREDITS_TEXT = page(
@@ -167,7 +207,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -232,8 +272,8 @@ THIS IS SHAREWARE
 
   If it made you laugh (in
   any language), register for
-  ${price}: you get a tape of the
-  six songs and a Latin phrase
+  ${price}: you get a sticker that
+  says RISI! and a Latin phrase
   book for all occasions. Send
   a check (US funds) to:
 
@@ -245,7 +285,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

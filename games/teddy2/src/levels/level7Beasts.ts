@@ -1,6 +1,6 @@
 // Level 7's monsters. Tickets come from tricks: ring the High Striker's bell (climb its pegs,
 // high five), sit pretty for Bubbles at the ring toss, spin for Twirly at the wheel; a scent
-// under the bleachers hides one more. THE BIG DROP's car rides up its tower slowly and drops
+// under the bleachers hides one more. THE BIG DROP's car rides up its tower steadily and drops
 // fast. The carousel's horses go up and down (stand on one for a lift to the canopy). Bees
 // at the root beer stand.
 import { Pixels } from '../../../kit/pixels';
@@ -20,7 +20,18 @@ const c = (n: string, k: number) => P.c(n, k);
 function horse(col: string): Pixels {
   const K = { o: c('ink', 0), w: c('paint', 3), W: c('paint', 2), g: c('gold', 2), r: c(col, 2), y: c('yellow', 3) };
   return sprite(
-    ['.........g..........', '.........g..........', 'oooooooooooooooo....', 'owwwwwwwwwwwwwwwoo..', 'owwwrrrrrwwwwwwwwwo.', '.owwwwwwwwwwwwwwwwwo', '..owwwwwwwwwwwo.owo.', '..owo.ow.owo.wo.oo..', '..oo..oo..oo..oo....', '.........g..........'],
+    [
+      '.........g..........',
+      '.........g..........',
+      'oooooooooooooooo....',
+      'owwwwwwwwwwwwwwwoo..',
+      'owwwrrrrrwwwwwwwwwo.',
+      '.owwwwwwwwwwwwwwwwwo',
+      '..owwwwwwwwwwwo.owo.',
+      '..owo.ow.owo.wo.oo..',
+      '..oo..oo..oo..oo....',
+      '.........g..........',
+    ],
     K,
     0,
     0,
@@ -30,10 +41,21 @@ function horse(col: string): Pixels {
 /** THE BIG DROP's car: a ring of seats around the tower. */
 function dropCar(): Pixels {
   const K = { o: c('ink', 0), r: c('red', 2), R: c('red', 3), y: c('yellow', 3), m: c('metal', 2) };
-  return sprite(['oooooooooooooooooooo', 'oRRRRRRRRRRRRRRRRRRo', 'orrrrrrrrrrrrrrrrrro', 'oyoyoyoyoyoyoyoyoyoo', 'oooooooooooooooooooo', '.m.m.m.m.m.m.m.m.m..'], K, 0, 0);
+  return sprite(
+    ['oooooooooooooooooooo', 'oRRRRRRRRRRRRRRRRRRo', 'orrrrrrrrrrrrrrrrrro', 'oyoyoyoyoyoyoyoyoyoo', 'oooooooooooooooooooo', '.m.m.m.m.m.m.m.m.m..'],
+    K,
+    0,
+    0,
+  );
 }
 
-const bee = (k: number) => sprite(k ? ['.ww.ww.', '..www..', '.yoyoy.', 'yoyoyo.', '.yoyo..'] : ['.......', 'wwwwww.', '.yoyoy.', 'yoyoyo.', '.yoyo..'], { w: c('paint', 3), y: c('yellow', 3), o: c('ink', 0) }, 7, 8);
+const bee = (k: number) =>
+  sprite(
+    k ? ['.ww.ww.', '..www..', '.yoyoy.', 'yoyoyo.', '.yoyo..'] : ['.......', 'wwwwww.', '.yoyoy.', 'yoyoyo.', '.yoyo..'],
+    { w: c('paint', 3), y: c('yellow', 3), o: c('ink', 0) },
+    7,
+    8,
+  );
 
 export function midwayBeasts() {
   const b = newBestiary();
@@ -42,7 +64,7 @@ export function midwayBeasts() {
   b.pic('askSpin1', askBubble('SPIN?', undefined, 0)).pic('askSpin2', askBubble('SPIN?', undefined, 1));
   b.pic('horseR', horse('blue'), { solid: 15 }).pic('horseB', horse('purple'), { solid: 15 });
   b.pic('dropCar', dropCar(), { solid: 15 });
-  b.pic('bee1', bee(0), { hp: -4 }).pic('bee2', bee(1), { hp: -4 });
+  b.pic('bee1', bee(0), { hp: -10 }).pic('bee2', bee(1), { hp: -10 });
 
   b.add('strikerBell', { pics: [['bell0', 50]], power: POWER.paw - 1, becomes: 'strikerRing', upscore: 100 });
   b.add('strikerRing', {
@@ -86,16 +108,21 @@ export function midwayBeasts() {
         [0, 0, 1],
       ],
     });
+  // The car waits at the bottom until a dog climbs aboard (a touch beats it: a pest's power),
+  // holds still a moment longer while he settles, then goes up with him; after that it runs
+  // up and down by itself.
+  b.add('dropIdle', { pics: [['dropCar', 50]], power: POWER.pest, becomes: 'dropBoard' });
+  b.add('dropBoard', { pics: [['dropCar', 50]], power: POWER.friend, end: 30, becomes: 'dropCar' });
   b.add('dropCar', {
     pics: [['dropCar', 50]],
     power: POWER.friend,
-    // up slowly, a pause at the top, then the big drop; a pause at the bottom
+    // (from the loading height, a block over the sawdust) up steadily, a pause at the top,
+    // the big drop to the sawdust, and back up to the loading height
     path: [
-      [0, -21, 2],
+      [0, -20, 3],
+      [0, -19, 1],
       [0, -20, 1],
-      [0, -21, 1],
-      [0, 0, 7],
-      [0, -1, 1],
+      [0, 1, 7],
       [0, 0, 1],
     ],
   });

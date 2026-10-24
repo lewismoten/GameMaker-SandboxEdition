@@ -1,82 +1,82 @@
 {
- "version": 1,
- "game": "snowbound",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AUsFywFQBdABTTzNAUgFyAFIBcgBSAXIAVAP0AFLCssBSAXIAUgFyAFIBcgBUArQAUsFywFIBcgBSAXIAVAF0AFND80BUAXQAU0jzQFIBcgBSAXIAVAP0AFND80BSAXIAUgFyAFIBcgBUArQAUsFywFIBcgBSAXIAU0PzQFIGcgBSxTLAUgFyAFQBdABSwrLAUgFyAFQBdABSwXLAUgFyAFQBdABTTzNAUgFyAFQCtABTRnNAUgFyAFLCssBSAXIAVAF0AFLBcsBSAXIAVAK0AFLHssBUCPQAU0ZzQFIBcgBTQXNAUgKyAFQBdABSwXLAUgFyAFNBc0BUA/QAUsPywFIBcgBSAXIAUgFyAFQCtABSwXLAUgFyAFIBcgBUAXQAU0PzQFQBdABTSjNAUgFyAFIBcgBUA/QAU0PzQFIBcgBSAXIAUgFyAFQCtABSwXLAUgFyAFIBcgBUArQAU0tzQFQBdABTQ=="
+  "version": 1,
+  "game": "snowbound",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "AVAS0ABLA8sAUAPQA00DzQBQA9ADUBjQAEsDywBQBtADSwPLA1AD0ABNA80AUAPQAE0DzQBQCdADUAnQAE0DzQBQCdAASwPLAFAD0ABLA8sAUAnQ"
-  },
-  {
-   "scene": 4,
-   "keys": "AUgFyAFNCs0BUAXQAU0PzQFIBcgBUAXQAUsFywFIBcgBTSPNAVAF0AFLCssBSAXIAVAF0AFLBcsBSAXIAU1LzQFQBdABTQ/NAUgFyAFQBdABSwXLAUgFyAFQBdABSwrLAUgFyAFNI80BUAXQAU0PzQFIBcgBUAXQAUsFywFIBcgBTUbNAVAF0AFLCssBSAXIAVAF0AFLBcsBSAXIAU03zQFQBdABSwrLAUgFyAFQBdABSwXLAUgFyAFNHs0BUAXQAU0ozQFQCtABTQ=="
-  },
-  {
-   "scene": 5,
-   "keys": "H00PzQFIX8gBTV85AbkxzQFID8gBTTjNAUgFyAFI"
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Gale Street"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: Jamie Street"
-  },
-  {
-   "scene": 4,
-   "title": "Level 3: Bowden Drive"
-  },
-  {
-   "scene": 5,
-   "title": "Level 4: LaVale Mall"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 18314,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AUsFywFQBdABTTzNAUgFyAFIBcgBSAXIAVAP0AFLCssBSAXIAUgFyAFIBcgBUArQAUsFywFIBcgBSAXIAVAF0AFND80BUAXQAU0jzQFIBcgBSAXIAVAP0AFND80BSAXIAUgFyAFIBcgBUArQAUsFywFIBcgBSAXIAU0PzQFIGcgBSxTLAUgFyAFQBdABSwrLAUgFyAFQBdABSwXLAUgFyAFQBdABTTzNAUgFyAFQCtABTRnNAUgFyAFLCssBSAXIAVAF0AFLBcsBSAXIAVAK0AFLHssBUCPQAU0ZzQFIBcgBTQXNAUgKyAFQBdABSwXLAUgFyAFNBc0BUA/QAUsPywFIBcgBSAXIAUgFyAFQCtABSwXLAUgFyAFIBcgBUAXQAU0PzQFQBdABTSjNAUgFyAFIBcgBUA/QAU0PzQFIBcgBSAXIAUgFyAFQCtABSwXLAUgFyAFIBcgBUArQAU0tzQFQBdABTQ=="
+    },
+    {
+      "scene": 3,
+      "keys": "AVAD0ABQA9AAUAPQAFAD0ABQA9AASwPLAFAD0ABQA9ADTQPNAFAD0ABNA80AUAPQAFAD0ANQA9AAUAPQAEsDywBQA9AASwbLA0sDywBQA9AATQbNAFAD0ABNCc0AUAPQA1AD0ABQA9AAUAPQAE0GzQBQA9AAUAPQBksJywBNBs0="
+    },
+    {
+      "scene": 4,
+      "keys": "AUgFyAFNN80BUAXQAUsKywFIBcgBUAXQAUsFywFIBcgBUBTQAU0PzQFQD9ABTQXNAVAd0AFNgAHNAVAK0AFNBc0BUArQAU1BzQFQFNABSwrLAVAF0AFLCssBSAXIAVAF0AFLBcsBSAXIAU0QOQG5Dc0BSBTIAUtBywFICsgBSBjIAUsKywFICsgBTQXNAUgKyAFNCs0BSA/IAU0tzQFID8gBSwXLAVAF0AFLCssBSAXIAVAF0AFLBcsBSAXIE1AF0AFNFM0BUA7QAU0="
+    },
+    {
+      "scene": 5,
+      "keys": "E00PzQFIFMgBSwXLAUsFywFNCs0BSAXIAU0KzQFIFMgBTQXNAU0FzQFNBc0BSAXIAU0KzQFIFMgBTQXNAU0FzQFNBc0BSAXIAU0KzQFQBdABTR7NAU0FzQFQBdABTSPNAUgFyAFNGc0BTQXNAVAP0AFNBc0BUArQAU0PzQFNBc0BTQXNAUgFyAFNC80BSwrLAUgeyAFLBcsBSB7IAUsFywFIBcgBSA=="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0
-   },
-   {
-    "title": "Story",
-    "frame": 1417
-   },
-   {
-    "title": "Level 1: Gale Street",
-    "frame": 3777
-   },
-   {
-    "title": "Level 2: Jamie Street",
-    "frame": 7902
-   },
-   {
-    "title": "Level 3: Bowden Drive",
-    "frame": 9019
-   },
-   {
-    "title": "Level 4: LaVale Mall",
-    "frame": 11978
-   },
-   {
-    "title": "Ending",
-    "frame": 13840
-   },
-   {
-    "title": "Credits",
-    "frame": 16762
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Gale Street"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Jamie Street"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Bowden Drive"
+    },
+    {
+      "scene": 5,
+      "title": "Level 4: LaVale Mall"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 19740,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1417
+      },
+      {
+        "title": "Level 1: Gale Street",
+        "frame": 3777
+      },
+      {
+        "title": "Level 2: Jamie Street",
+        "frame": 7902
+      },
+      {
+        "title": "Level 3: Bowden Drive",
+        "frame": 9013
+      },
+      {
+        "title": "Level 4: LaVale Mall",
+        "frame": 12968
+      },
+      {
+        "title": "Ending",
+        "frame": 15268
+      },
+      {
+        "title": "Credits",
+        "frame": 18188
+      }
+    ]
+  }
 }

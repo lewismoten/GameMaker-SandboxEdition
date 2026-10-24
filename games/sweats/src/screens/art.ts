@@ -40,7 +40,11 @@ export function buildArt(x: ArtExtras): Record<string, Uint8Array> {
   files[BARDLOGO] = bardIntroFli();
   files['cover.fli'] = cover.fli;
   files['title.gif'] = gif(cover.title, cover.pal);
-  files['title.lst'] = lst([{ name: BARDLOGO, pause: 0 }, { name: 'cover.fli', pause: 0 }, { name: 'title.gif', pause: 12 }]);
+  files['title.lst'] = lst([
+    { name: BARDLOGO, pause: 0 },
+    { name: 'cover.fli', pause: 0 },
+    { name: 'title.gif', pause: 12 },
+  ]);
   files['story.fli'] = storyFli(cast);
   files['story.lst'] = lst([{ name: 'story.fli', pause: 1 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]);
   files['howto.fli'] = howtoFli(cast);

@@ -38,11 +38,17 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['grey', 6, [0, 0, 0], [255, 255, 255]],
 ];
 
-const LIGHT: Record<Light, { mul: RGB; add: RGB }> = {
-  field: { mul: [0.56, 0.64, 0.98], add: [6, 10, 34] },
-  town: { mul: [0.82, 0.7, 0.66], add: [20, 8, 10] },
-  camp: { mul: [0.68, 0.7, 0.9], add: [12, 12, 30] },
-  stable: { mul: [1, 0.86, 0.66], add: [18, 10, 0] },
+/**
+ * Each place's light: every ramp times `mul` plus `add`, then `scale` on a few ramps, so the
+ * floor sits a step away from the animals on it: the moonlit meadow a little darker under a
+ * brighter moon, the town's cobbles darker than the crowd, the caravan's sand paler than the
+ * camels and the goat.
+ */
+const LIGHT: Record<Light, { mul: RGB; add: RGB; scale?: Record<string, number> }> = {
+  field: { mul: [0.66, 0.74, 1], add: [10, 14, 38], scale: { grass: 0.78 } },
+  town: { mul: [0.82, 0.7, 0.66], add: [20, 8, 10], scale: { stone: 0.78 } },
+  camp: { mul: [0.68, 0.7, 0.9], add: [12, 12, 30], scale: { sand: 1.14 } },
+  stable: { mul: [1, 0.86, 0.66], add: [18, 10, 0], scale: { dirt: 0.82 } },
   day: { mul: [1, 1, 1], add: [0, 0, 0] },
 };
 
@@ -71,9 +77,19 @@ export function buildPalette(light: Light): Pal {
   b.designerColors();
   const t = LIGHT[light];
   for (const [name, n, from, to, mid, glows] of RAMPS) {
-    const f = (c: RGB): RGB => (glows ? c : (c.map((v, i) => Math.min(255, Math.round(v * t.mul[i] + t.add[i]))) as RGB));
+    const k = t.scale?.[name] ?? 1;
+    const f = (c: RGB): RGB => (glows ? c : (c.map((v, i) => Math.min(255, Math.round((v * t.mul[i] + t.add[i]) * k))) as RGB));
     b.ramp(name, n, f(from), f(to), mid ? f(mid) : undefined);
   }
+  // The Bard of Bizarre is a white chicken with an orange beak. His feathers take the place's
+  // light without its color (the same brightness on every channel), so the stable's gold
+  // doesn't turn him straw yellow; his beak and feet take the light as everything else does.
+  // These come after every shared ramp, so no other color moves.
+  const grey = (c: RGB): RGB =>
+    c.map((v) => Math.min(255, Math.round((v * (t.mul[0] + t.mul[1] + t.mul[2])) / 3 + (t.add[0] + t.add[1] + t.add[2]) / 3))) as RGB;
+  b.ramp('feather', 4, grey([150, 146, 140]), grey([252, 252, 248]));
+  const lit = (c: RGB): RGB => c.map((v, i) => Math.min(255, Math.round(v * t.mul[i] + t.add[i]))) as RGB;
+  b.ramp('beak', 3, lit([176, 72, 10]), lit([250, 156, 40]));
   return wrap(b);
 }
 

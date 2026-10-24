@@ -1,0 +1,636 @@
+/* dos.html (dosPage.ts): the PC's screen filling the window, the controls in a bar above it.
+   The picture inside the screen is retro/computer/monitor.css, as on the desk. */
+
+/* the page is the window: nothing scrolls it (the copy check's 1px live region, regSide.ts, sits
+   after the page in the flow) */
+body:has(.dos-page) {
+  overflow: hidden;
+}
+
+/* on the root: the dialogs and the ⋯ menu sit outside .dos-page */
+:root {
+  --dos-bg: #000;
+  --dos-bar: #14161a;
+  --dos-text: #d8d8d8;
+  --dos-muted: #a8acb4;
+  --dos-btn: #2a2e36;
+  --dos-btn-hi: #3a404b;
+  --dos-edge: #555c68;
+  --dos-on: #2e7d4f;
+  --dos-accent: #ffd400;
+}
+
+.dos-page {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--dos-bg);
+  color: var(--dos-text);
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+}
+
+/* the same height and side padding as today's web header, so the view switch at its right end
+   sits where it does there (viewSwitch.ts) */
+.dos-bar {
+  box-sizing: border-box;
+  min-height: 50px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 0 16px;
+  background: var(--dos-bar);
+  border-bottom: 1px solid #000;
+}
+
+.dos-bar h1 {
+  margin: 0;
+  flex: none;
+  font:
+    700 15px ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.06em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.dos-back {
+  flex: none;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--dos-text);
+  white-space: nowrap;
+}
+
+.dos-controls {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.dos-controls > * {
+  flex: none;
+}
+
+.dos-btn {
+  min-height: 28px;
+  min-width: 28px;
+  padding: 3px 10px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: var(--dos-btn);
+  color: var(--dos-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.dos-btn:hover {
+  background: var(--dos-btn-hi);
+}
+
+.dos-btn[aria-pressed='true'] {
+  background: var(--dos-on);
+  border-color: #6fcf97;
+  color: #fff;
+}
+
+.dos-btn.dos-primary {
+  background: #8a1414;
+  border-color: #d06060;
+  color: #fff;
+}
+
+.dos-page :focus-visible,
+.dos-dialog :focus-visible,
+.dos-menu :focus-visible {
+  outline: 2px solid var(--dos-accent);
+  outline-offset: 2px;
+}
+
+.dos-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+}
+
+.dos-check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+/* the screen: as large as the window allows, 4:3 */
+.dos-stage {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  container-type: size;
+}
+
+.dos-crt {
+  position: relative;
+  width: min(100cqw, 100cqh * 4 / 3);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000;
+  cursor: text;
+}
+
+.dos-crt .dos-off {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--dos-muted);
+  font:
+    15px ui-monospace,
+    monospace;
+}
+
+.dos-crt[data-power='on'] .dos-off {
+  display: none;
+}
+
+/* the disk list */
+.dos-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0 16px 16px;
+  border: 1px solid var(--dos-edge, #555c68);
+  border-radius: 6px;
+  background: #14161a;
+  color: #d8d8d8;
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+}
+
+.dos-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dos-dialog-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+  background: #14161a;
+}
+
+.dos-dialog h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.dos-dialog h3 {
+  margin: 12px 0 6px;
+  font-size: 15px;
+  color: #a8acb4;
+}
+
+.dos-drive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.dos-drive {
+  margin: 0;
+  flex: 1;
+}
+
+.dos-dialog ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dos-disk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #262a31;
+}
+
+.dos-disk-swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.dos-disk-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* GM's copy check on a wide window: the screen makes room for the Owner's Guide on its left and
+   the registration card on its right (retro/gmReg/regSide.ts places them by the screen's box) */
+@media (min-width: 1100px) and (min-height: 600px) {
+  body:has(.rs.rs-on .rs-manual:not([hidden])) .dos-crt {
+    width: min(100cqw - 640px, 100cqh * 4 / 3);
+  }
+}
+
+/* the footer (footer.ts): the toggles and the status line, one row */
+.dos-foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 2px 12px;
+  background: var(--dos-bar);
+  border-top: 1px solid #000;
+}
+
+.dos-fold {
+  flex: none;
+}
+
+.dos-fold > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  color: var(--dos-text);
+  list-style: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dos-fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dos-fold[open] > summary {
+  background: var(--dos-btn-hi);
+}
+
+/* an open toggle: its panel slides up over the bottom of the screen */
+.dos-fold-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  z-index: 20;
+  max-height: 60dvh;
+  overflow: auto;
+  padding: 8px 12px;
+  background: var(--dos-bar);
+  border-top: 1px solid var(--dos-edge);
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.5);
+  animation: dos-slide 0.15s ease-out;
+}
+
+.dos-fold:not([open]) .dos-fold-panel {
+  display: none;
+}
+
+@keyframes dos-slide {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dos-fold-panel {
+    animation: none;
+  }
+}
+
+.dos-status {
+  flex: 1;
+  min-width: 0;
+  margin: 0 0 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--dos-muted);
+}
+
+/* GM running unregistered: its tab sits at the bottom right (regSide.ts), so the line stops short of it */
+body:has(.rs-reopen:not([hidden])) .dos-foot {
+  padding-right: 270px;
+}
+
+.dos-keyrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-bottom: 6px;
+}
+
+.dos-key {
+  font:
+    600 13px ui-monospace,
+    monospace;
+}
+
+.dos-type {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.dos-type input {
+  flex: 1;
+  min-width: 8em;
+  min-height: 28px;
+  padding: 2px 6px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: #0b0c0e;
+  color: var(--dos-text);
+  font:
+    14px ui-monospace,
+    monospace;
+}
+
+.dos-links {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--dos-muted);
+}
+
+.dos-links a {
+  color: #9cc4ff;
+  font-family: ui-monospace, monospace;
+}
+
+/* a button's icon and word (dosPage.ts face); some show the icon alone (the word still names them) */
+.dos-ico + .dos-word {
+  margin-left: 0.35em;
+}
+
+.dos-icon-only .dos-word,
+.dos-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* the disk in drive A: names the Disks button, cut short */
+.dos-controls .dos-disks .dos-word {
+  display: inline-block;
+  max-width: 11em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+/* the ⋯ menu (moreMenu.ts) */
+.dos-more {
+  flex: none;
+}
+
+/* as wide as today's web theme button, which follows the switch there */
+.dos-more > summary {
+  box-sizing: border-box;
+  width: 44px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+}
+
+.dos-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dos-menu {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 6px;
+  background: var(--dos-bar);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.dos-menu > .dos-btn,
+.dos-menu > .dos-check {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.dos-menu > .dos-check {
+  gap: 8px;
+  padding: 0 10px;
+}
+
+/* the ⋯ menu's modem speed (lineSpeed.ts) */
+.dos-speed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 10px;
+}
+
+.dos-speed select {
+  min-height: 28px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: var(--dos-btn);
+  color: var(--dos-text);
+  font: inherit;
+}
+
+/* the footer's "speed it up" hint: as much of it as the row has room for */
+.dos-line-hint-live {
+  display: contents;
+}
+
+.dos-line-hint {
+  display: inline-flex;
+  flex: 0 1 auto;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dos-line-hint .dos-btn {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-color: var(--dos-accent);
+  color: var(--dos-accent);
+}
+
+.dos-line-hint[hidden] {
+  display: none;
+}
+
+/* narrower windows: Full screen as an icon, a shorter title */
+@media (max-width: 1279px) {
+  .dos-full .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .dos-controls .dos-disks .dos-word {
+    max-width: 7em;
+  }
+}
+
+/* tablets: the site link as an arrow */
+@media (max-width: 1100px) {
+  .dos-back .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* small tablets: the bar's buttons as icons, but Game-Maker */
+@media (max-width: 900px) {
+  .dos-controls > .dos-btn:not(.dos-primary) .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* phones: one row of icons that scrolls sideways if it must; the title is read, not shown */
+@media (max-width: 600px) {
+  .dos-bar {
+    min-height: 48px;
+    gap: 6px;
+    padding: 0 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dos-bar h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .dos-controls {
+    gap: 4px;
+  }
+  .dos-controls > .dos-primary .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .dos-btn {
+    padding: 2px 6px;
+  }
+  .dos-foot {
+    padding: 2px 8px;
+  }
+  .dos-fold > summary {
+    padding: 0 6px;
+  }
+  body:has(.rs-reopen:not([hidden])) .dos-foot {
+    padding-right: 8px;
+  }
+}
+
+/* drive A:'s light on the Disks button while the PC reads the floppy */
+.dos-disks {
+  position: relative;
+}
+
+.dos-disks.dos-busy::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5dff7a;
+  box-shadow: 0 0 6px #5dff7a;
+}
+
+/* "Stop the program that's running?" */
+.dos-confirm p {
+  margin: 4px 0 14px;
+}
+
+.dos-confirm h2 {
+  margin: 14px 0 6px;
+  font-size: 18px;
+}
+
+.dos-confirm-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* "Save your changes first?" (retro/saveFirst.ts), which the desk dresses in its own overlay */
+.save-first.desk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #f4ead2;
+}
+
+.save-first.desk-overlay button {
+  min-height: 28px;
+  padding: 4px 12px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.save-first.desk-overlay button.primary {
+  background: linear-gradient(#3e63e0, #2342b8);
+  border-color: #1b318a;
+  color: #fff;
+}

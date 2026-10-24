@@ -1,5 +1,5 @@
 // What's in the Game-Maker: Sandbox Edition box besides the Owner's Guide and the bonus-games
-// CD: the program disks, a quick reference card for Game-Maker's own design tools (from the
+// CD: the program disks, The Ultimate Owner's Guide for power users (../ultimate), a quick reference card for Game-Maker's own design tools (from the
 // original help screens), the inserts in gmInserts.ts (keyboard template, map grid pad,
 // registration card, license, customer support), Sandbox Software's catalog, The Bard of
 // Bizarre's (bardCatalog.ts), the BBS ad, a
@@ -8,14 +8,16 @@ import './gmItems.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
 import type { CatalogEntry } from '../../project/files';
-import { sandboxShots } from '../../desk/boxes/gmShots';
+import { sandboxShots } from '../../gfx/sandboxShots';
 import type { BoxItem } from './viewer';
 import { BBS_PHONE, sandboxBanner, sandboxLogo, sheet, shotCache, type PrintContext, type Sheet } from './kit';
 import { bbsAd, catalog } from './gen';
 import { bardCatalog } from './bardCatalog';
 import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
-import { mixedStickers, stickerScreen, type MixedSticker } from './stickers';
+import { mixedStickers, stickerScreen } from './stickers';
+import { gmStickerSpecs } from './gmStickers';
+import { ultimateItem } from '../ultimate/ultimateGuide';
 
 /** Game-Maker SE as if it were one more catalog entry, for the generic cards. */
 const GM_ENTRY: CatalogEntry = { id: 'gamemaker-se', title: PRODUCT, kind: 'gameware', path: '', gam: null, files: [], price: '$0.00', year: 1995 };
@@ -187,29 +189,12 @@ async function poster(): Promise<Sheet[]> {
   ];
 }
 
-/** Every Sandbox game's first hero or monster sticker, Game-Maker's own, and the BBS. */
-function gmStickerSpecs(family: CatalogEntry[]): MixedSticker[] {
-  const own: MixedSticker[] = family.flatMap((g) => {
-    const s = (g.original?.printables?.stickers ?? []).find((x) => x.hero) ?? (g.original?.printables?.stickers ?? []).find((x) => x.sprite);
-    return s ? [{ ...s, from: contextFor(g, family) }] : [];
-  });
-  return [
-    { text: '', shape: 'badge', special: 'gm' },
-    ...own,
-    { text: 'I MADE THIS', sub: 'WITH GAME-MAKER', shape: 'star', color: '#f2e600', ink: '#0b0b0b' },
-    { text: 'MB1', sub: 'DRAW', shape: 'circle', color: '#1d3f7a', ink: '#fff' },
-    { text: 'NO PROGRAMMING', sub: 'NEEDED', shape: 'rect', color: '#d81e1e', ink: '#fff' },
-    { text: '256 COLORS', sub: 'VGA', shape: 'circle', color: '#1f9a3a', ink: '#fff' },
-    { text: '', shape: 'rect', special: 'bbs' },
-    { text: 'SANDBOX', sub: 'SOFTWARE', shape: 'circle', color: '#f2b632', ink: '#1a1208' },
-  ];
-}
-
 /** The paper in the Game-Maker SE box, in tray order. */
 export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
   const ctx = contextFor(GM_ENTRY, family);
   return [
     { id: 'disks', title: 'Program disks', note: 'Two 3½" disks in their sleeve', icon: '💾', render: diskSleeve },
+    ultimateItem(),
     { id: 'gmkeys', title: 'Quick reference card', note: 'Keys for every design tool', icon: '⌨️', render: keyCard },
     { id: 'template', title: 'Keyboard template', note: 'Sits above the function keys', icon: '🎹', render: keyTemplate },
     { id: 'mapgrid', title: 'Map grid pad', note: 'Graph paper for planning maps', icon: '📐', render: mapGrid },
@@ -225,7 +210,11 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
       title: 'Sticker sheet',
       note: 'Heroes from every Sandbox game',
       icon: '⭐',
-      render: () => mixedStickers(gmStickerSpecs(family), 'game-maker-se'),
+      render: () =>
+        mixedStickers(
+          gmStickerSpecs(family, (g) => contextFor(g, family)),
+          'game-maker-se',
+        ),
       screen: stickerScreen,
     },
   ];

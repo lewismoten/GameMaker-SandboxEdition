@@ -1,6 +1,6 @@
 // Plays every level headlessly with the bot, one after another the way the game does
-// (Teddy's energy, treats and counters carry over), and reports how it went (after checking
-// the multi-block objects, tools/align.ts):
+// (Teddy's energy, treats and counters carry over), and reports how it went, after checking
+// the multi-block objects (tools/align.ts). It fails if the bot misses an exit or loses a life:
 //   cd web && npx vite-node ../games/teddy2/tools/check.ts [level file...]
 // TEDDY2_WALK=<file> also writes the whole run as a .rec recording (for play-testing the
 // real engine: it plays the game from start to finish).
@@ -21,6 +21,7 @@ if (align()) throw new Error('teddy2: a multi-block object is out of line (above
 const only = process.argv.slice(2);
 const heroes = { teddy: { chr: buildCharacter(), cbl: CB.build() }, gwinn: { chr: buildGwinn(), cbl: GB.build() } };
 let ci = newCharInfo();
+const lives = ci.lives;
 const keys: RecordedKey[] = [];
 let offset = 0;
 let last = 0;
@@ -59,6 +60,11 @@ for (const make of LEVELS) {
     `${l.file}: ${r.ok ? 'REACHED THE EXIT' : 'did not finish: ' + r.log.slice(-1)[0]} in ${sim.ticks} ticks (${(sim.ticks / 18.2).toFixed(0)}s), score ${ci.score}, treats ${ci.meter[CTR.treats] - 1}, energy ${ci.hitpts}, lives ${ci.lives}`,
   );
   if (!r.ok) failed++;
+  // the bot must win without losing a life (a nap starts the stop over)
+  if (ci.lives < lives) {
+    console.log(`${l.file}: LOST A LIFE`);
+    failed++;
+  }
 }
 console.log(`${keys.length} key events in all`);
 if (process.env.TEDDY2_WALK) writeFileSync(process.env.TEDDY2_WALK, serializeRecording(keys));

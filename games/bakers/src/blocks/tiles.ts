@@ -129,7 +129,8 @@ function wallFace(style: Style, seed = 1): Pixels {
   switch (style) {
     case 'kitchen':
       // white subway tiles with a chair rail
-      for (let y = 6; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, y % 4 === 1 || (x + (Math.floor(y / 4) % 2) * 5) % 10 === 0 ? c('wall', 2) : c('wall', 4));
+      for (let y = 6; y < 20; y++)
+        for (let x = 0; x < 20; x++) p.set(x, y, y % 4 === 1 || (x + (Math.floor(y / 4) % 2) * 5) % 10 === 0 ? c('wall', 2) : c('wall', 4));
       p.rect(0, 5, 20, 2, c('trim', 3)).rect(0, 19, 20, 1, c('dark', 1));
       break;
     case 'cellar':
@@ -338,7 +339,12 @@ function panel(style: Style, base: Pixels, stage: number, phase: 'a' | 'b'): Pix
 /** A riser (dough proofing, foam, a shutter) at stage 0 low, 1 rising, 2 shut. */
 function riser(style: Style, base: Pixels, stage: number): Pixels {
   const p = on(base);
-  const ramp = style === 'kitchen' ? [c('paper', 1), c('paper', 2), c('paper', 3), c('paper', 4)] : style === 'cellar' ? [c('foam', 0), c('foam', 1), c('foam', 2), c('paper', 4)] : r('trim');
+  const ramp =
+    style === 'kitchen'
+      ? [c('paper', 1), c('paper', 2), c('paper', 3), c('paper', 4)]
+      : style === 'cellar'
+        ? [c('foam', 0), c('foam', 1), c('foam', 2), c('paper', 4)]
+        : r('trim');
   if (style === 'kitchen' || style === 'cellar') {
     // a bowl of dough (or a tub of foam) that grows
     if (stage === 0) blob(p, 10, 14, 6, 3, ramp, 0, 3);
@@ -391,7 +397,8 @@ function hot(style: Style, base: Pixels, stage: number): Pixels {
   } else {
     p.rect(2, 2, 16, 16, c('metal', 2)).frame(2, 2, 16, 16, c('metal', 4));
     p.line(5, 4, 9, 10, glow).line(9, 10, 7, 11, glow).line(7, 11, 13, 16, glow);
-    if (stage === 2) p.line(4, 4, 8, 10, c('hazard', 3)).line(12, 16, 16, 12, c('hazard', 3)).rect(1, 1, 2, 2, c('hazard', 4)).rect(17, 17, 2, 2, c('hazard', 4));
+    if (stage === 2)
+      p.line(4, 4, 8, 10, c('hazard', 3)).line(12, 16, 16, 12, c('hazard', 3)).rect(1, 1, 2, 2, c('hazard', 4)).rect(17, 17, 2, 2, c('hazard', 4));
   }
   return p;
 }
@@ -458,7 +465,9 @@ export function signBlocks(lines: string[], blocks: number, base: Pixels, board 
   const p = new Pixels(W, 20);
   for (let i = 0; i < blocks; i++) p.blit(base, i * 20, 0);
   p.rect(2, 1, W - 3, 19, c('dark', 0));
-  p.rect(1, 0, W - 3, 19, c(board, 3)).rect(1, 0, W - 3, 1, c(board, 4)).frame(1, 0, W - 3, 19, c('wood', 1));
+  p.rect(1, 0, W - 3, 19, c(board, 3))
+    .rect(1, 0, W - 3, 1, c(board, 4))
+    .frame(1, 0, W - 3, 19, c('wood', 1));
   const top = Math.round((19 - lines.length * 6) / 2) + 1;
   lines.forEach((t, i) => {
     if (t.length * 4 - 1 > W - 4) throw new Error(`Sign line too long: ${t}`);
@@ -532,7 +541,7 @@ export function buildTileSet(style: Style): TileSet {
   // the two eggs (carried, they go in the save): the rotten one costs thirteen points to pick
   // up (the smell), the pastry one is worth a life (and plays the music box)
   t.add('eggRotten', on(fl, eggRotten()), { obj: true, touch: 'floor', score: -13 });
-  t.add('eggFaberge', on(fl, eggFaberge()), { obj: true, touch: 'floor', effect: 1, eamt: 1, score: 1776 });
+  t.add('eggJeweled', on(fl, eggFaberge()), { obj: true, touch: 'floor', effect: 1, eamt: 1, score: 1776 });
 
   t.add('floor', fl);
   t.add('floor2', fl2);

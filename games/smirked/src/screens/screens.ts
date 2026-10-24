@@ -39,7 +39,12 @@ export function houseBackdrop(pal: Pal, ground = 150, k = 0): Pixels {
   p.rect(70, ground - 120, 40, 120, c('paper', 0));
   for (let y = 0; y < 34; y++) p.rect(90 - y * 0.7, ground - 154 + y, y * 1.4, 1, c('black', 0));
   // the windows (flickering with k)
-  for (const [x, y, w, h, ramp] of [[78, ground - 104, 22, 26, 'pumpkin'], [124, ground - 74, 24, 24, 'pumpkin'], [180, ground - 74, 24, 24, 'glow'], [80, ground - 60, 18, 20, 'glow']] as const) {
+  for (const [x, y, w, h, ramp] of [
+    [78, ground - 104, 22, 26, 'pumpkin'],
+    [124, ground - 74, 24, 24, 'pumpkin'],
+    [180, ground - 74, 24, 24, 'glow'],
+    [80, ground - 60, 18, 20, 'glow'],
+  ] as const) {
     p.rect(x - 2, y - 2, w + 4, h + 4, c('black', 0)).rect(x, y, w, h, c(ramp, (k + x) % 3 === 0 ? 1 : 2));
     p.rect(x + w / 2, y, 1, h, c('black', 0)).rect(x, y + h / 2, w, 1, c('black', 0));
   }
@@ -52,7 +57,9 @@ export function houseBackdrop(pal: Pal, ground = 150, k = 0): Pixels {
   // tombstones and a jack-o'-lantern
   for (const x of [26, 236, 290]) p.rect(x, ground - 14, 16, 18, c('stone', 2)).disc(x + 8, ground - 14, 8, c('stone', 2));
   blob(p, 120, ground + 6, 9, 7, pal.r('orange'), 0, 2);
-  p.rect(115, ground + 3, 3, 2, c('pumpkin', 2)).rect(122, ground + 3, 3, 2, c('pumpkin', 2)).rect(115, ground + 8, 10, 2, c('pumpkin', 2));
+  p.rect(115, ground + 3, 3, 2, c('pumpkin', 2))
+    .rect(122, ground + 3, 3, 2, c('pumpkin', 2))
+    .rect(115, ground + 8, 10, 2, c('pumpkin', 2));
   return p;
 }
 
@@ -61,16 +68,22 @@ export function hallBackdrop(pal: Pal, floor = 150, seed = 3): Pixels {
   const c = pal.c;
   const p = new Pixels(W, H);
   const r = rng(seed);
-  for (let y = 0; y < floor - 34; y++) for (let x = 0; x < W; x++) p.set(x, y, x % 24 === 12 && y % 20 === 8 ? c('paper', 2) : r() < 0.01 ? c('paper', 0) : c('paper', 1));
+  for (let y = 0; y < floor - 34; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, x % 24 === 12 && y % 20 === 8 ? c('paper', 2) : r() < 0.01 ? c('paper', 0) : c('paper', 1));
   for (let i = 0; i < 6; i++) {
     const x = Math.floor(r() * 300);
     p.rect(x, 10 + Math.floor(r() * 60), 12, 8, c('paper', 0));
   }
   for (let y = floor - 34; y < floor; y++) for (let x = 0; x < W; x++) p.set(x, y, x % 30 === 0 ? c('board', 0) : c('board', 2));
   p.rect(0, floor - 35, W, 2, c('board', 3));
-  for (let y = floor; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (y - floor) % 7 === 0 ? c('board', 0) : (x * 3 + y) % 41 === 0 ? c('board', 3) : c('board', 1));
+  for (let y = floor; y < H; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, (y - floor) % 7 === 0 ? c('board', 0) : (x * 3 + y) % 41 === 0 ? c('board', 3) : c('board', 1));
   // cobwebs in the corners
-  for (const [cx, dir] of [[0, 1], [W - 1, -1]] as const) for (let k = 0; k < 5; k++) p.line(cx, 0, cx + dir * (30 - k * 5), k * 6, c('web', 1));
+  for (const [cx, dir] of [
+    [0, 1],
+    [W - 1, -1],
+  ] as const)
+    for (let k = 0; k < 5; k++) p.line(cx, 0, cx + dir * (30 - k * 5), k * 6, c('web', 1));
   return p;
 }
 

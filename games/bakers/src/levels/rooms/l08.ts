@@ -16,7 +16,13 @@ export const L08: RoomSpec = {
   signs: { Q: 'signGerald' },
   born: { s: { kind: 'cork', reach: 2, speed: 3 }, n: { kind: 'bubble', reach: 2, speed: 2 } },
   legend: {
-    '1': { mon: (b) => KINDS.pin(b, [[10, 0, 3], [-10, 0, 3]]) },
+    '1': {
+      mon: (b) =>
+        KINDS.pin(b, [
+          [10, 0, 3],
+          [-10, 0, 3],
+        ]),
+    },
     '2': { mon: (b) => KINDS.mouse(b) },
   },
   rows: [

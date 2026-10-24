@@ -106,5 +106,17 @@ export const MON = {
   sparkyDizzy: 43,
   /** The 1976½ CitiCar with wings, in the Skyway's slow lane. */
   citicar: 44,
+  /** After one bump, traffic honks and swerves on harmlessly: a copy that can't hurt Dex. */
+  carRSwerve: 45,
+  carLSwerve: 46,
+  fastRSwerve: 47,
+  fastLSwerve: 48,
+  truckRSwerve: 49,
+  truckLSwerve: 50,
+  citicarSwerve: 51,
+  /** After one bump, a skater, buggy or dinosaur backs off for a few seconds, then leaves. */
+  skaterOff: 52,
+  dinoOff: 53,
+  buggyOff: 54,
   none: 64,
 } as const;

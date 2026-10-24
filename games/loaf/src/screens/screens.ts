@@ -82,7 +82,12 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     p.rect(24, 6, 272, 190, c('parch', 4)).frame(24, 6, 272, 190, c('parch', 1));
     for (let y = 8; y < 194; y += 3) p.set(25, y, c('parch', 2)).set(294, y + 1, c('parch', 2));
     // a few crumbs in the corner
-    for (const [cx, cy] of [[284, 186], [288, 180], [280, 182]]) blob(p, cx, cy, 2, 1.6, pal.r('crust'), 2, 5);
+    for (const [cx, cy] of [
+      [284, 186],
+      [288, 180],
+      [280, 182],
+    ])
+      blob(p, cx, cy, 2, 1.6, pal.r('crust'), 2, 5);
     centered(p, 14, heading, c('brown', 1), 2);
     return p;
   };

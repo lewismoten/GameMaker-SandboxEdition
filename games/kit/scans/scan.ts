@@ -42,7 +42,9 @@ const SCANS: Scan[] = [
 ];
 
 function photoSize(file: string): [number, number] {
-  const r = spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', file], { encoding: 'utf8' });
+  const r = spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', file], {
+    encoding: 'utf8',
+  });
   const [w, h] = r.stdout.trim().split(',').map(Number);
   return [w, h];
 }
@@ -80,7 +82,21 @@ for (const s of SCANS) {
   const h = Math.round(ch * k);
   const r = spawnSync(
     'ffmpeg',
-    ['-v', 'error', '-i', file, '-vf', `crop=${cw}:${ch}:${Math.round(x0 * pw)}:${Math.round(y0 * ph)},scale=${w}:${h}:flags=area`, '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
+    [
+      '-v',
+      'error',
+      '-i',
+      file,
+      '-vf',
+      `crop=${cw}:${ch}:${Math.round(x0 * pw)}:${Math.round(y0 * ph)},scale=${w}:${h}:flags=area`,
+      '-frames:v',
+      '1',
+      '-f',
+      'rawvideo',
+      '-pix_fmt',
+      'rgb24',
+      '-',
+    ],
     { maxBuffer: 64 << 20 },
   );
   if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr}`);

@@ -40,7 +40,13 @@ export class Bot {
     const hp = this.sim.ci.hitpts;
     const r = (await this.listen()) ?? (await this.sim.tick()) ?? undefined;
     if (process.env.BOT_HURT && this.sim.ci.hitpts < hp) this.say(`  hurt ${hp - this.sim.ci.hitpts}`);
-    if (process.env.BOT_TRACE) this.say(`  keys ${Object.entries(SCAN).filter(([, k]) => this.sim.isHeld(k)).map(([n]) => n).join(',')}${r ? ' ' + r : ''}`);
+    if (process.env.BOT_TRACE)
+      this.say(
+        `  keys ${Object.entries(SCAN)
+          .filter(([, k]) => this.sim.isHeld(k))
+          .map(([n]) => n)
+          .join(',')}${r ? ' ' + r : ''}`,
+      );
     return r;
   }
 

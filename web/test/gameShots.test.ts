@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { inflateSync } from 'node:zlib';
 import { encodeIndexedPng, gameShots } from '../scripts/gameShots';
+import { builtTitlePath } from '../src/gfx/titlePicture';
 import { builtHeroPath, builtMapShotPath, builtMapViews, builtShotPath, heroOf } from '../src/gfx/levelPicture';
 
 const disk = resolve(__dirname, '../../games/teddy/disk');
@@ -29,8 +30,12 @@ describe("the build's game pictures", () => {
     const shots = gameShots('teddy', gam, files, about.box.shots);
     const views = builtMapViews(about.box.shots);
     expect(views.at(-1)?.slice(3)).toEqual([12, 4]); // the disk label's strip
-    expect([...shots.keys()]).toEqual([builtShotPath('teddy', 8, 5), builtShotPath('teddy', 16, 10), ...views.map((v) => builtMapShotPath('teddy', v))]);
-    for (const png of shots.values()) expect(png.length).toBeLessThan(16_000);
+    const title = builtTitlePath('teddy');
+    expect([...shots.keys()]).toEqual([builtShotPath('teddy', 8, 5), builtShotPath('teddy', 16, 10), title, ...views.map((v) => builtMapShotPath('teddy', v))]);
+    for (const [path, png] of shots) expect(png.length).toBeLessThan(path === title ? 50_000 : 16_000);
+    // the title screen, a whole 320 x 200 screen (IHDR width and height)
+    const ihdr = new DataView(shots.get(title)!.buffer, 16, 8);
+    expect([ihdr.getUint32(0), ihdr.getUint32(4)]).toEqual([320, 200]);
     // the disk label's hero, see-through around him
     const hero = heroOf({ printables: JSON.parse(readFileSync(resolve(disk, '../printables.json'), 'utf8')) });
     expect(hero).toBeDefined();

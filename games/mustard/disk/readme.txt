@@ -50,7 +50,7 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for $5: you get
-  a tape of the song and a
+  a mustard seed sticker and a
   packet of real mustard seeds.
   Send a check (US funds) to:
 
@@ -62,7 +62,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,
@@ -76,7 +78,8 @@ CREDITS (NOW)
   Bizarre); music made with
   Riffusion (now Google Flow
   Music); animated cover made
-  with Producer.ai.
+  with Producer.ai, Riffusion's
+  later name.
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made

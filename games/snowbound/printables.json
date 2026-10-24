@@ -40,21 +40,21 @@
               "kind": "start"
             },
             {
-              "x": 30,
-              "y": 25,
-              "label": "The Kellers leave a $5 tip on the walk",
+              "x": 44,
+              "y": 38,
+              "label": "The footbridge: the dry way over the creek",
               "kind": "shop"
             },
             {
               "x": 44,
               "y": 36,
-              "label": "The park: forts, Big Pete and Biscuit",
+              "label": "The park: forts, Biscuit, and Big Pete by the bridge",
               "kind": "note"
             },
             {
-              "x": 36,
-              "y": 44,
-              "label": "Two more customers across the frozen creek",
+              "x": 57,
+              "y": 42,
+              "label": "Two more customers across the creek, down paths through the pines",
               "kind": "note"
             },
             {
@@ -186,11 +186,11 @@
             },
             {
               "q": "I got to the register without $89.",
-              "a": "Go back out to the mall lot. A squall blows through every half minute and buries it again: more scoops, more dollars."
+              "a": "Go back out to the mall lot. A squall blows through every twenty seconds or so and buries it again: more scoops, more dollars. The streets alone rarely add up to $89."
             },
             {
               "q": "Where are the tips?",
-              "a": "A $5 envelope beside Mrs. Haines' porch on Gale Street, and another on the Kellers' walk on Bowden Drive."
+              "a": "A $5 envelope beside Mrs. Haines' porch on Gale Street."
             },
             {
               "q": "What are the door mats on Gale Street for?",
@@ -224,7 +224,7 @@
           "hints": [
             {
               "q": "Big Pete won't stop shoving me.",
-              "a": "Only a snowball makes him cry and go home. Scoop a plow bank for more snowballs."
+              "a": "He shoves once, strolls off and comes back a few seconds later. A snowball sends him off before he can shove. Scoop a plow bank for more snowballs."
             },
             {
               "q": "What does the bell at the mall do?",
@@ -255,15 +255,7 @@
               "q": "Just draw me a map.",
               "a": "In the park across Gale Street, find your snowman at the bottom of the park and the red mitten just below it. Walk down into the pines there: the trail runs down, right and down again to a hollow. Press Enter on the felt egg to pick it up, then push the frozen toboggan for a ride to Jamie Street.",
               "sketch": {
-                "rows": [
-                  "   o",
-                  "T  v  T",
-                  "T  ....  T",
-                  "T     v  T",
-                  " T      =",
-                  " T   X   T",
-                  "  TTTTTTT"
-                ],
+                "rows": ["   o", "T  v  T", "T  ....  T", "T     v  T", " T      =", " T   X   T", "  TTTTTTT"],
                 "labels": [
                   { "x": 5, "y": 0, "text": "SNOWMAN" },
                   { "x": 8, "y": 1, "text": "MITTEN" },
@@ -376,25 +368,11 @@
   ],
   "stickers": [
     {
-      "text": "$1",
-      "sub": "A SCOOP",
-      "shape": "circle",
-      "color": "#1f4f8f",
-      "ink": "#fff"
-    },
-    {
-      "text": "SNOWBOUND",
-      "sub": "1992",
-      "shape": "badge",
-      "color": "#e9f2fb",
-      "ink": "#1f4f8f"
-    },
-    {
       "text": "SHOVEL KID",
       "sub": "$1 A SCOOP",
-      "shape": "badge",
-      "color": "#e9f2fb",
-      "ink": "#1f4f8f",
+      "shape": "cut",
+      "color": "#1f4f8f",
+      "ink": "#ffffff",
       "hero": {
         "chr": "kid.chr",
         "cbl": "kid.cbl",
@@ -404,21 +382,22 @@
     {
       "text": "PLOWED IN",
       "sub": "THE CITY PLOW",
-      "shape": "rect",
+      "shape": "cut",
       "color": "#f2b632",
       "ink": "#1a1208",
+      "px": 5,
       "sprite": {
         "blocks": "snow.mbl",
         "pal": "noon.pal",
-        "grid": [[16, 17]]
+        "grid": [[16]]
       }
     },
     {
       "text": "INCOMING!",
       "sub": "SNOWBALL FIGHT",
-      "shape": "circle",
+      "shape": "burst",
       "color": "#1f4f8f",
-      "ink": "#fff",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "snow.mbl",
         "pal": "noon.pal",
@@ -428,9 +407,9 @@
     {
       "text": "WOOF",
       "sub": "NEIGHBOR'S DOG",
-      "shape": "star",
+      "shape": "cut",
       "color": "#b3121a",
-      "ink": "#fff",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "snow.mbl",
         "pal": "noon.pal",
@@ -440,14 +419,72 @@
     {
       "text": "JAMIE STREET",
       "sub": "SLED RUN",
-      "shape": "rect",
-      "color": "#cfe3f7",
-      "ink": "#1f4f8f",
+      "shape": "cut",
+      "color": "#55a8e8",
+      "ink": "#10183a",
       "sprite": {
         "blocks": "snow.mbl",
         "pal": "noon.pal",
         "grid": [[26]]
       }
+    },
+    {
+      "text": "CHEEP!",
+      "sub": "WINTER CARDINAL",
+      "shape": "cut",
+      "color": "#d81e1e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[28]]
+      }
+    },
+    {
+      "text": "SNOW PAL",
+      "sub": "BUILT TO LAST (TILL MARCH)",
+      "shape": "cut",
+      "color": "#55a8e8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "snow.bbl",
+        "pal": "noon.pal",
+        "grid": [[33]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "HOT COCOA",
+      "sub": "AFTER THE LAST DRIVEWAY",
+      "shape": "cut",
+      "color": "#8a5a2b",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "snow.bbl",
+        "pal": "noon.pal",
+        "grid": [[38]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "snow.bbl",
+        "pal": "noon.pal",
+        "grid": [[142]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "$1",
+      "sub": "A SCOOP",
+      "shape": "circle",
+      "color": "#2f9e44",
+      "ink": "#ffffff"
     }
   ],
   "news": [

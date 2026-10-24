@@ -32,7 +32,7 @@ export const STORY = [
     'the proud. They fed the masses',
     'with grace and awe...',
     '',
-    "But me? I stayed behind, with",
+    'But me? I stayed behind, with',
     'a crust and a flaw.',
     '',
     '        - The Bard of Bizarre',
@@ -62,12 +62,12 @@ export const INSTRUCTIONS = [
     'twelfth basket, and home in',
     'the hands of a child.',
     '',
-    'LEFT/RIGHT or A D roll (slow',
-    'and steady). UP or W rises:',
-    'hold it to rise higher. Q and',
-    'E (or keypad 7 and 9) rise up',
-    'and sideways; steer as you',
-    'come down. DOWN or S hunkers.',
+    'LEFT/RIGHT or A D roll. UP or',
+    'W rises: hold it to rise',
+    'higher. Q and E (or keypad 7',
+    'and 9) rise up and sideways;',
+    'steer as you come down. DOWN',
+    'or S hunkers.',
     '',
     "SPACE or B: I'm still bread!",
   ]),
@@ -94,9 +94,10 @@ export const INSTRUCTIONS = [
     'of honey is an extra life.',
     'Say hello to a brother loaf.',
     '',
-    'You have no way to fight.',
-    'Hungry hands, big feet and',
-    'fish take a bite: rise over.',
+    'No fighting: hands, feet and',
+    'fish bite, so rise over them.',
+    'A hand makes a fist first;',
+    'feet and paws stop to turn.',
     '',
     'The door of home takes one',
     'holy crumb: a gift for Mama.',
@@ -153,7 +154,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -211,7 +212,7 @@ THIS IS SHAREWARE
 
   If it fed your soul a little,
   register for ${price}: you get a
-  tape of the song and a recipe
+  Loaf #13 sticker and a recipe
   for the Bard's own crusty
   bread. Send a check (US
   funds) to:
@@ -224,7 +225,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

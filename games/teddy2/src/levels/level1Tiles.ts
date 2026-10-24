@@ -129,11 +129,14 @@ export function houseTiles(): Tiles {
     return p;
   })();
   t.air('cinder', cinder);
-  t.air('cinderWin', (() => {
-    const p = copy(cinder);
-    p.rect(3, 2, 14, 7, c('ink', 1)).rect(4, 3, 12, 5, c('sky', 3)).rect(9, 3, 1, 5, c('stone', 2));
-    return p;
-  })());
+  t.air(
+    'cinderWin',
+    (() => {
+      const p = copy(cinder);
+      p.rect(3, 2, 14, 7, c('ink', 1)).rect(4, 3, 12, 5, c('sky', 3)).rect(9, 3, 1, 5, c('stone', 2));
+      return p;
+    })(),
+  );
 
   // Floors: boards between the stories, kitchen checkers, basement concrete, attic planks.
   t.wall('floor', storyFloor(1, t.pic('living')));
@@ -389,7 +392,9 @@ export function houseTiles(): Tiles {
         const p = copy(t.pic('laundry'));
         const dx = ph;
         p.rect(1 + dx, 1, 18, 19, c('paint', 3)).frame(1 + dx, 1, 18, 19, c('stone', 1));
-        p.rect(2 + dx, 2, 16, 3, c('stone', 3)).set(4 + dx, 3, c('red', 3)).set(7 + dx, 3, c('green', 2));
+        p.rect(2 + dx, 2, 16, 3, c('stone', 3))
+          .set(4 + dx, 3, c('red', 3))
+          .set(7 + dx, 3, c('green', 2));
         p.ring(10 + dx, 12, 5, c('stone', 1));
         p.disc(10 + dx, 12, 4, c('water', 2));
         p.set(8 + dx + ph, 10, c('fur', 2)).set(11 + dx, 13 - ph, c('pink', 3));
@@ -600,17 +605,20 @@ export function houseTiles(): Tiles {
       micro(p, x - 5, 10, 'RB', c('ink', 0));
     }
   });
-  t.air('shelfJars', (() => {
-    const p = copy(Z());
-    p.rect(0, 12, 20, 2, c('wood', 2));
-    for (const [x, col] of [
-      [2, 'red'],
-      [8, 'yellow'],
-      [14, 'green'],
-    ] as [number, string][])
-      p.rect(x, 5, 4, 7, c(col, 2)).rect(x, 4, 4, 1, c('gold', 2));
-    return p;
-  })());
+  t.air(
+    'shelfJars',
+    (() => {
+      const p = copy(Z());
+      p.rect(0, 12, 20, 2, c('wood', 2));
+      for (const [x, col] of [
+        [2, 'red'],
+        [8, 'yellow'],
+        [14, 'green'],
+      ] as [number, string][])
+        p.rect(x, 5, 4, 7, c(col, 2)).rect(x, 4, 4, 1, c('gold', 2));
+      return p;
+    })(),
+  );
   t.ledge(
     'basket',
     (() => {
@@ -633,17 +641,28 @@ export function houseTiles(): Tiles {
       return p;
     })(),
   );
-  art(t, 'charger', 1, 2, () => sky(3), (p) => {
-    p.rect(8, 6, 4, 34, c('metal', 1));
-    p.rect(4, 6, 12, 14, c('paint', 3)).frame(4, 6, 12, 14, c('ink', 0));
-    p.rect(6, 9, 8, 3, c('green', 2)).set(7, 15, c('green', 3)).set(10, 15, c('green', 3));
-    // the cable runs off to THE CHEZ's port, low on its back at the passenger side
-    p.line(14, 20, 18, 26, c('ink', 0)).line(18, 26, 20, 28, c('ink', 0));
-  });
+  art(
+    t,
+    'charger',
+    1,
+    2,
+    () => sky(3),
+    (p) => {
+      p.rect(8, 6, 4, 34, c('metal', 1));
+      p.rect(4, 6, 12, 14, c('paint', 3)).frame(4, 6, 12, 14, c('ink', 0));
+      p.rect(6, 9, 8, 3, c('green', 2)).set(7, 15, c('green', 3)).set(10, 15, c('green', 3));
+      // the cable runs off to THE CHEZ's port, low on its back at the passenger side
+      p.line(14, 20, 18, 26, c('ink', 0)).line(18, 26, 20, 28, c('ink', 0));
+    },
+  );
   // two blocks wide: 'SNIFF S' is too long for one
   const [sniffL, sniffR] = wideSign(L(), 'SNIFF S');
   t.air('signSniff', sniffL);
   t.air('signSniffR', sniffR);
+  // and by the dog beds, the bark that clears the dust bunny just ahead (SPACE)
+  const [woofL, woofR] = wideSign(L(), 'WOOF\nSPACE');
+  t.air('signWoof', woofL);
+  t.air('signWoofR', woofR);
   void gradient;
   return t;
 }

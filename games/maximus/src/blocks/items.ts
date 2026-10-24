@@ -242,7 +242,14 @@ export function drawEgg(): Pixels {
     [12, 17, 0],
   ] as const) {
     p.set(x, y, big ? WHITE : S('metal', 5));
-    if (big) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) p.set(x + dx, y + dy, S('metal', 4));
+    if (big)
+      for (const [dx, dy] of [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ])
+        p.set(x + dx, y + dy, S('metal', 4));
   }
   // the ringed planet on its belly: plum felt with a gold ring
   shade(p, new Mask().ellipse(10.5, 13, 2.2, 2.2), [S('plasma', 0), S('plasma', 1), S('plasma', 2)]);

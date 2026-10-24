@@ -1,8 +1,8 @@
 // Level 6: The Corn Maze, afternoon, on the way into the Fair. Gwinn went through it last
 // night after the corn dog smell and dropped a corn dog stick at its heart. Three tiers of
 // paths between walls of corn: hay bale steps lead up a tier, holes drop down one (no way
-// back up). Faint scents along the way: a sniff turns each one into Gwinn's paw prints,
-// pointing the way she went. Out the far side is the Fair's parking lot, and THE CHEZ.
+// back up), and some paths just end in corn (with a treat for the trouble). Faint scents
+// along the way: a sniff turns each one into Gwinn's paw prints, pointing the way she went. Out the far side is the Fair's parking lot, and THE CHEZ.
 //
 // The blocks are in level6Tiles.ts, the monsters in level6Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
@@ -12,7 +12,12 @@ import { mazeBeasts } from './level6Beasts';
 export function maze(): Level {
   const bs = mazeTiles();
   const beasts = mazeBeasts();
-  bs.chez(() => bs.pic('sky3'), 'stick', bs.pic('sky3'), () => bs.pic('sky3'));
+  bs.chez(
+    () => bs.pic('sky3'),
+    'stick',
+    bs.pic('sky3'),
+    () => bs.pic('sky3'),
+  );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
   for (const [cx, cy] of [
@@ -44,6 +49,10 @@ export function maze(): Level {
   path(12, 44, 36, 35);
   path(46, 62, 36, 35);
   path(26, 60, 32, 31);
+  // dead ends, each with a treat or two at the far end, for a dog who didn't sniff: tier A
+  // runs on past the step up, and tier C on past the corn dog stick
+  path(31, 37, G, 39);
+  path(18, 25, 32, 31);
   // steps up, holes down
   m.set(22, 37, 'step');
   m.set(40, 33, 'step');
@@ -57,8 +66,13 @@ export function maze(): Level {
   for (let bx = 0; bx < 4; bx++) for (let by = 0; by < 4; by++) m.set(86 + bx, 32 + by, `wheel${bx}${by}`);
   m.set(76, 39, 'signFair');
   const car = 80;
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
   m.rect(92, 30, 8, 10, 'hedgeWall');
   m.rect(92, 29, 8, 1, 'hedgeTop');
   m.rect(0, 30, 1, 10, 'hedgeWall');
@@ -106,6 +120,10 @@ export function maze(): Level {
     [57, 39],
     [66, 39],
     [70, 39],
+    [35, 39],
+    [37, 39],
+    [18, 31],
+    [20, 31],
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.mark('start', 4, 39);

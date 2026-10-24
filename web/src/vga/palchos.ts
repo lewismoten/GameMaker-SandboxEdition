@@ -12,7 +12,6 @@ import { WorkArea } from '../retro/dos/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY, bytes2pal } from './shared/vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './shared/facelift';
 
-
 const TRANSCOL = 255;
 const COPY = 0;
 const MOVE = 1;
@@ -58,7 +57,12 @@ const pal2bytes = (colors: RGBdata[]) => Uint8Array.from(colors.flatMap((c) => [
 class PaletteDesigner {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Palette Designer', this.work, () => this.saved, () => [{ ext: 'pal', bytes: pal2bytes(this.colors) }]);
+    return openWork(
+      'Palette Designer',
+      this.work,
+      () => this.saved,
+      () => [{ ext: 'pal', bytes: pal2bytes(this.colors) }],
+    );
   }
 
   colors: RGBdata[] = initStartCols();

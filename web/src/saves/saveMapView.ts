@@ -74,7 +74,7 @@ export function saveMapView(o: MapViewOptions): MapView {
     'aria-roledescription': 'level map',
     'aria-label': label,
     'aria-describedby': o.describedBy,
-  }) as HTMLCanvasElement;
+  });
   const hint = h('p', { class: 'sv-map-hint', 'aria-hidden': 'true' });
   const box = h('div', { class: 'sv-map' }, canvas, hint);
   const ctx = canvas.getContext('2d')!;
@@ -82,7 +82,11 @@ export function saveMapView(o: MapViewOptions): MapView {
   let cssH = 0;
   // the camera: until the box has a size, as asked (or the F6 screen, fitted)
   let cam: Camera | undefined = o.camera ? { ...o.camera } : undefined;
-  const fitScreen = (): Camera => ({ cx: screen.x * BLEN + SCREEN_W / 2, cy: screen.y * BLEN + SCREEN_H / 2, zoom: Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, cssW / SCREEN_W || 1.5)) });
+  const fitScreen = (): Camera => ({
+    cx: screen.x * BLEN + SCREEN_W / 2,
+    cy: screen.y * BLEN + SCREEN_H / 2,
+    zoom: Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, cssW / SCREEN_W || 1.5)),
+  });
   const camera = () => (cam ??= fitScreen());
   const tellCamera = () => o.onCamera?.({ ...camera() });
 
@@ -124,7 +128,9 @@ export function saveMapView(o: MapViewOptions): MapView {
     // the level, as often as it shows (it wraps)
     // on whole pixels, so the copies meet without a seam
     const snap = (v: number) => Math.round(v * dpr) / dpr;
-    eachCopy(0, 0, map.width, map.height, (sx, sy) => ctx.drawImage(level, snap(sx), snap(sy), snap(sx + map.width * z) - snap(sx), snap(sy + map.height * z) - snap(sy)));
+    eachCopy(0, 0, map.width, map.height, (sx, sy) =>
+      ctx.drawImage(level, snap(sx), snap(sy), snap(sx + map.width * z) - snap(sx), snap(sy + map.height * z) - snap(sy)),
+    );
     // the screen F6 opens on
     ctx.save();
     ctx.setLineDash([6, 4]);
@@ -228,7 +234,7 @@ export function saveMapView(o: MapViewOptions): MapView {
     const m = BLEN * 2;
     const halfW = cssW / 2 / c.zoom;
     const halfH = cssH / 2 / c.zoom;
-    const near = (v: number, center: number, n: number) => center + (((v - center + n / 2) % n) + n) % n - n / 2;
+    const near = (v: number, center: number, n: number) => center + ((((v - center + n / 2) % n) + n) % n) - n / 2;
     const x = near(hero.x * BLEN + BLEN / 2, c.cx, map.width);
     const y = near(hero.y * BLEN, c.cy, map.height);
     if (x < c.cx - halfW + m) c.cx = x + halfW - m;
@@ -410,7 +416,11 @@ export function saveMapView(o: MapViewOptions): MapView {
     'div',
     { class: 'sv-map-tools', role: 'toolbar', 'aria-label': 'Map view' },
     h('button', { type: 'button', onclick: () => (centerOnHero(), canvas.focus()), title: 'Center on the hero (C)' }, '◎ Center on hero'),
-    h('button', { type: 'button', onclick: () => ((cam = fitScreen()), tellCamera(), redraw()), title: 'Show the screen the game opens on after F6 (0)' }, 'F6 screen'),
+    h(
+      'button',
+      { type: 'button', onclick: () => ((cam = fitScreen()), tellCamera(), redraw()), title: 'Show the screen the game opens on after F6 (0)' },
+      'F6 screen',
+    ),
     h('button', { type: 'button', class: 'sv-map-zoom', 'aria-label': 'Zoom out', title: 'Zoom out (−)', onclick: () => setZoom(camera().zoom / 1.25) }, '−'),
     h('button', { type: 'button', class: 'sv-map-zoom', 'aria-label': 'Zoom in', title: 'Zoom in (+)', onclick: () => setZoom(camera().zoom * 1.25) }, '+'),
   );

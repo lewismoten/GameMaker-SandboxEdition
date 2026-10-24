@@ -6,6 +6,7 @@
 //   projects: ProjectRecord rows keyed by their `id`.
 //   saves: one object per game id mapping file name -> bytes (out-of-line keys).
 import { GameFiles } from './files';
+import type { Companion } from './companion';
 
 const DB_NAME = 'gamemaker-web';
 const DB_VERSION = 1;
@@ -21,6 +22,8 @@ export interface ProjectRecord {
   updated: number;
   /** The whole game directory: file name -> contents. */
   files: Record<string, Uint8Array>;
+  /** Editor-only extras (companion.ts): never one of the game's files, so no export but the backup carries it. */
+  companion?: Companion;
 }
 
 let dbPromise: Promise<IDBDatabase> | undefined;
@@ -64,9 +67,28 @@ export async function loadProject(id: string): Promise<{ record: ProjectRecord; 
   return { record, files: new GameFiles(Object.entries(record.files)) };
 }
 
-export async function saveProject(id: string, name: string, gam: string, files: GameFiles): Promise<void> {
-  const record: ProjectRecord = { id, name, gam, updated: Date.now(), files: Object.fromEntries(files.entries()) };
-  await request(PROJECTS, 'readwrite', (s) => s.put(record));
+/**
+ * Stores a project. `companion` undefined keeps the one stored already (many callers only
+ * know the files), so the record is read and written in one transaction.
+ */
+export async function saveProject(id: string, name: string, gam: string, files: GameFiles, companion?: Companion): Promise<void> {
+  const d = await db();
+  await new Promise<void>((resolve, reject) => {
+    const tx = d.transaction(PROJECTS, 'readwrite');
+    const store = tx.objectStore(PROJECTS);
+    const next: ProjectRecord = { id, name, gam, updated: Date.now(), files: Object.fromEntries(files.entries()) };
+    const get = store.get(id);
+    get.onsuccess = () => store.put(withCompanion(next, get.result as ProjectRecord | undefined, companion));
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+/** The record to store: the given companion, else the stored one, else none. */
+export function withCompanion(next: ProjectRecord, stored: ProjectRecord | undefined, companion?: Companion): ProjectRecord {
+  const c = companion ?? stored?.companion;
+  return c ? { ...next, companion: c } : next;
 }
 
 export async function deleteProject(id: string): Promise<void> {
@@ -89,10 +111,10 @@ export const SAVES_CHANGED = 'gm-saves-changed';
  * Adds or replaces one save file by rewriting the game's whole save record (read, change,
  * put in separate transactions). Failures are logged, not thrown, so play goes on.
  */
-export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array, o: { quiet?: boolean } = {}): Promise<void> {
   // one game's writes take turns: saving writes savnames.dat and gameN.sav back to back,
   // and two overlapping read-change-puts would lose the first file (the slot's name)
-  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes));
+  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes, o.quiet));
   saveWrites.set(gameId, queued);
   void queued.then(() => {
     if (saveWrites.get(gameId) === queued) saveWrites.delete(gameId);
@@ -102,12 +124,13 @@ export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): 
 
 const saveWrites = new Map<string, Promise<void>>();
 
-async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+// quiet: no SAVES_CHANGED (the achievements' record is no game's save; an open Saves & scores need not reload)
+async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array, quiet = false): Promise<void> {
   try {
     const current = await loadSaveData(gameId);
     current[name] = bytes;
     await request(SAVES, 'readwrite', (s) => s.put(current, gameId));
-    if (typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
+    if (!quiet && typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
   } catch (e) {
     console.warn('Could not store save data', e);
   }

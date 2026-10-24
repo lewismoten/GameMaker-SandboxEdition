@@ -47,9 +47,10 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for $5: you get
-  a tape of the song and a
-  hand-drawn goat. Send a check
-  (US funds) to:
+  a goat sticker (third from
+  the left) and a hand-drawn
+  goat. Send a check (US funds)
+  to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
@@ -59,7 +60,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

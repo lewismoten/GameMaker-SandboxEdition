@@ -16,7 +16,11 @@ describe('tin hearts', () => {
 
   it('counts every Sandbox and Bard of Bizarre game, and no secret one', () => {
     const counted = [...Object.keys(hearts.hearts), ...hearts.pending].sort();
-    expect(counted).toEqual(Object.keys(abouts).filter((id) => heartsCount(abouts[id])).sort());
+    expect(counted).toEqual(
+      Object.keys(abouts)
+        .filter((id) => heartsCount(abouts[id]))
+        .sort(),
+    );
     for (const id of counted) expect(abouts[id].secret, id).not.toBe(true);
     expect(counted.length).toBeGreaterThanOrEqual(24);
   });
@@ -25,8 +29,9 @@ describe('tin hearts', () => {
     it(`finds ${id}'s heart on its disk, and the engine reports touching it`, () => {
       expect(heartProblems(id, place)).toEqual([]);
       expect(touchHeadless(id, place)).toBe(true);
-      // the cell beside it is not the heart
-      expect(touchHeadless(id, { map: place.map, at: [(place.at[0] + 50) % 100, place.at[1]] })).toBe(false);
+      // a plain cell elsewhere on the row is not the heart (49 over: 50 over in Shakespeare in
+      // Sweatpants is The Hive's tip jar, a pickup whose own touch the engine rightly reports)
+      expect(touchHeadless(id, { map: place.map, at: [(place.at[0] + 49) % 100, place.at[1]] })).toBe(false);
     });
 
   it('matches a touch by map file and cell', () => {

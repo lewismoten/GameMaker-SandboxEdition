@@ -127,7 +127,7 @@ export const DIR_PAD: Record<Dir, string> = { up: '8', down: '2', left: '4', rig
 function dirOfMotion(dx: number, dy: number): Dir | undefined {
   const h = dx > 0 ? 'right' : dx < 0 ? 'left' : '';
   const v = dy < 0 ? 'up' : dy > 0 ? 'down' : '';
-  return ((v && h ? `${v}-${h}` : v || h) || undefined) as Dir | undefined;
+  return (v && h ? `${v}-${h}` : v || h) || undefined;
 }
 
 export interface MoveRow {

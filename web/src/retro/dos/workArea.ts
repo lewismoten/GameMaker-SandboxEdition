@@ -5,6 +5,7 @@ import { browseFile, type Picked } from './picker';
 import { errorBox } from '../text/textUi';
 import { gameArea } from '../gm';
 import type { Project } from '../../editor/core/project';
+import { unlockAchievement } from '../../achievements';
 
 type Folder = { drive: string; parts: string[] };
 
@@ -72,6 +73,7 @@ export class WorkArea {
     if (!project) return false;
     project.files.set(name.toLowerCase(), bytes);
     await project.saveNow();
+    unlockAchievement('make-save');
     return true;
   }
 

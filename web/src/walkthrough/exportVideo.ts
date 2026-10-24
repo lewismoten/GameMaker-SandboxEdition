@@ -78,7 +78,16 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
     error: (e) => (fail = e instanceof Error ? e : new Error(String(e))),
   });
   // Pixel art with hard edges: enough bits that it stays sharp, without the whole game's worth of memory.
-  venc.configure({ codec: vcodec, width: W, height: H, bitrate: 700_000, bitrateMode: 'variable', framerate: WALKTHROUGH_FPS, avc: { format: 'avc' }, latencyMode: 'quality' });
+  venc.configure({
+    codec: vcodec,
+    width: W,
+    height: H,
+    bitrate: 700_000,
+    bitrateMode: 'variable',
+    framerate: WALKTHROUGH_FPS,
+    avc: { format: 'avc' },
+    latencyMode: 'quality',
+  });
 
   const audio: AvSample[] = [];
   let aconfig: Uint8Array | undefined;
@@ -121,12 +130,25 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
       if (fail) throw fail;
       if (f > from && !(await run.step(false))) break;
       const us = Math.round(((f - from) * 1e6) / WALKTHROUGH_FPS);
-      const frame = new VideoFrame(screenRgba(run.m, rgba), { format: 'RGBA', codedWidth: W, codedHeight: H, timestamp: us, duration: Math.round(1e6 / WALKTHROUGH_FPS) });
+      const frame = new VideoFrame(screenRgba(run.m, rgba), {
+        format: 'RGBA',
+        codedWidth: W,
+        codedHeight: H,
+        timestamp: us,
+        duration: Math.round(1e6 / WALKTHROUGH_FPS),
+      });
       venc.encode(frame, { keyFrame: (f - from) % (WALKTHROUGH_FPS * 2) === 0 });
       frame.close();
       const pcm = sound.render(PER_FRAME);
       if (aenc) {
-        const data = new AudioData({ format: 'f32', sampleRate: RATE, numberOfFrames: PER_FRAME, numberOfChannels: 1, timestamp: us, data: pcm as Float32Array<ArrayBuffer> });
+        const data = new AudioData({
+          format: 'f32',
+          sampleRate: RATE,
+          numberOfFrames: PER_FRAME,
+          numberOfChannels: 1,
+          timestamp: us,
+          data: pcm,
+        });
         aenc.encode(data);
         data.close();
       }

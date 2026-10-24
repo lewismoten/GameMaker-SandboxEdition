@@ -13,7 +13,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { STRAW } from '../ids';
+import { SEQ, STRAW } from '../ids';
 
 export { T, outline };
 
@@ -44,7 +44,16 @@ export function manArt(pal: Pal) {
     const step = o.step ?? 0;
     const arms = o.arms ?? 'down';
     // pajama pants (striped) and slippers
-    const legs = side && step % 2 ? [[7, -2], [12, 2]] : [[7, 0], [12, 0]];
+    const legs =
+      side && step % 2
+        ? [
+            [7, -2],
+            [12, 2],
+          ]
+        : [
+            [7, 0],
+            [12, 0],
+          ];
     for (const [lx, d] of legs) {
       for (let y = 14 + crouch; y < 18; y++) p.rect(lx + Math.round(((y - 14) / 4) * d) - 1, y, 3, 1, c('pjs', (lx + y) % 3 ? 2 : 3));
       p.rect(lx + d - 2, 18, 4 + (side ? 1 : 0), 2, c('red', 1)).set(lx + d - 2, 18, c('red', 2));
@@ -57,24 +66,48 @@ export function manArt(pal: Pal) {
     const hx = side ? 11 : 10;
     const hy = 5 + crouch;
     blob(p, hx + 0.5, hy, 4.4, 4.2, pal.r('skin'), 1, 4);
-    for (let x = hx - 4; x <= hx + 4; x++) for (let y = hy - 5; y <= hy - 2 + (x % 3 === 0 ? 1 : 0); y++) if ((x - hx - 0.5) ** 2 / 22 + (y - hy + 1) ** 2 / 18 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
+    for (let x = hx - 4; x <= hx + 4; x++)
+      for (let y = hy - 5; y <= hy - 2 + (x % 3 === 0 ? 1 : 0); y++)
+        if ((x - hx - 0.5) ** 2 / 22 + (y - hy + 1) ** 2 / 18 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
     if (side) p.rect(hx - 4, hy - 2, 2, 4, c('hair', 1));
     const eyes = side ? [hx + 1, hx + 3] : [hx - 2, hx + 2];
     const ey = hy;
     for (const ex of eyes) {
-      p.set(ex - 1, ey - 1, c('metal', 2)).set(ex + 1, ey - 1, c('metal', 2)).set(ex - 1, ey + 1, c('metal', 2)).set(ex + 1, ey + 1, c('metal', 2));
+      p.set(ex - 1, ey - 1, c('metal', 2))
+        .set(ex + 1, ey - 1, c('metal', 2))
+        .set(ex - 1, ey + 1, c('metal', 2))
+        .set(ex + 1, ey + 1, c('metal', 2));
       const m = o.mood ?? 'calm';
-      if (m === 'blink' || m === 'bliss' || m === 'swoon') p.set(ex - 1, ey, ink).set(ex, ey, ink).set(ex + 1, ey, ink);
-      else if (m === 'ouch') p.set(ex - 1, ey - 1, ink).set(ex, ey, ink).set(ex + 1, ey + 1, ink);
+      if (m === 'blink' || m === 'bliss' || m === 'swoon')
+        p.set(ex - 1, ey, ink)
+          .set(ex, ey, ink)
+          .set(ex + 1, ey, ink);
+      else if (m === 'ouch')
+        p.set(ex - 1, ey - 1, ink)
+          .set(ex, ey, ink)
+          .set(ex + 1, ey + 1, ink);
       else p.set(ex, ey, ink).set(ex, ey - 1, m === 'worry' || m === 'shout' ? ink : c('white', 2));
     }
-    if (!side) p.set(hx - 1, ey - 1, c('metal', 2)).set(hx + 1, ey - 1, c('metal', 2)).set(hx, ey - 1, c('metal', 2));
+    if (!side)
+      p.set(hx - 1, ey - 1, c('metal', 2))
+        .set(hx + 1, ey - 1, c('metal', 2))
+        .set(hx, ey - 1, c('metal', 2));
     const mx = side ? hx + 2 : hx;
     const mood = o.mood ?? 'calm';
     if (mood === 'shout' || mood === 'ouch') p.rect(mx - 1, hy + 2, 3, 2, ink).set(mx, hy + 3, c('red', 2));
-    else if (mood === 'worry') p.set(mx - 1, hy + 3, ink).set(mx, hy + 2, ink).set(mx + 1, hy + 3, ink);
-    else if (mood === 'bliss') p.set(mx - 1, hy + 2, ink).set(mx, hy + 3, ink).set(mx + 1, hy + 2, ink).set(mx + 2, hy + 1, c('cream', 3));
-    else p.set(mx - 1, hy + 2, ink).set(mx, hy + 2, ink).set(mx + 1, hy + 2, ink);
+    else if (mood === 'worry')
+      p.set(mx - 1, hy + 3, ink)
+        .set(mx, hy + 2, ink)
+        .set(mx + 1, hy + 3, ink);
+    else if (mood === 'bliss')
+      p.set(mx - 1, hy + 2, ink)
+        .set(mx, hy + 3, ink)
+        .set(mx + 1, hy + 2, ink)
+        .set(mx + 2, hy + 1, c('cream', 3));
+    else
+      p.set(mx - 1, hy + 2, ink)
+        .set(mx, hy + 2, ink)
+        .set(mx + 1, hy + 2, ink);
     if (!side) p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
     // arms
     const skin = c('skin', 2);
@@ -89,7 +122,12 @@ export function manArt(pal: Pal) {
     if (arms === 'toss') (arm(5, sy, 3, sy + 3), arm(15, sy, 19, sy - 2));
     // sweat
     for (let k = 0; k < (o.sweat ?? 0); k++) {
-      const [x, y] = [[3, 3], [17, 5], [2, 9], [18, 1]][k % 4];
+      const [x, y] = [
+        [3, 3],
+        [17, 5],
+        [2, 9],
+        [18, 1],
+      ][k % 4];
       p.set(x, y, c('sweat', 1)).set(x, y + 1, c('sweat', 0));
     }
     // fainting: tip him over (about his middle), then settle what's left onto the floor
@@ -154,9 +192,21 @@ export function buildMonsterBlocks(pal: Pal) {
   const face = (p: Pixels, x: number, y: number, o: { wink?: boolean; grin?: boolean; angry?: boolean } = {}) => {
     p.set(x - 2, y, ink).set(x + 2, y, o.wink ? c('white', 2) : ink);
     if (o.wink) p.set(x + 1, y, ink).set(x + 3, y, ink);
-    if (o.angry) p.set(x - 3, y - 2, ink).set(x - 2, y - 1, ink).set(x + 3, y - 2, ink).set(x + 2, y - 1, ink);
-    if (o.grin) p.set(x - 2, y + 2, ink).set(x - 1, y + 3, ink).set(x, y + 3, ink).set(x + 1, y + 3, ink).set(x + 2, y + 2, ink);
-    else p.set(x - 1, y + 2, ink).set(x, y + 2, ink).set(x + 1, y + 2, ink);
+    if (o.angry)
+      p.set(x - 3, y - 2, ink)
+        .set(x - 2, y - 1, ink)
+        .set(x + 3, y - 2, ink)
+        .set(x + 2, y - 1, ink);
+    if (o.grin)
+      p.set(x - 2, y + 2, ink)
+        .set(x - 1, y + 3, ink)
+        .set(x, y + 3, ink)
+        .set(x + 1, y + 3, ink)
+        .set(x + 2, y + 2, ink);
+    else
+      p.set(x - 1, y + 2, ink)
+        .set(x, y + 2, ink)
+        .set(x + 1, y + 2, ink);
   };
 
   // ---- Teddy and Gwinn, asleep (curled up, breathing) and awake (pacing, tails going)
@@ -177,20 +227,28 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('gwinn1', dogAsleep(1, 'liver', 'liver', 'pink'), hurt(-3));
   const dogAwake = (f: number, fur: string, chest: string, collar?: string, tall = false) => {
     const p = P();
-    for (const [x, d] of [[5, 1], [8, -1], [12, 1], [15, -1]]) p.line(x, 15, x + (f ? d : 0), 19, c(fur, 0));
+    for (const [x, d] of [
+      [5, 1],
+      [8, -1],
+      [12, 1],
+      [15, -1],
+    ])
+      p.line(x, 15, x + (f ? d : 0), 19, c(fur, 0));
     blob(p, 9, 12, 7, 3.6, pal.r(fur), 0, 3);
     blob(p, 15, 8 + f, 3.4, 3, pal.r(fur), 0, 3);
     p.line(13, 5 + f, 13, tall ? 0 : 2, c(fur, 2)).line(17, 5 + f, 18, tall ? 1 : 3, c(fur, 2));
     blob(p, 15, 11, 2.2, 1.6, pal.r(chest), 1, 2);
-    p.set(16, 7 + f, ink).set(19, 9 + f, ink).set(18, 11 + f, c('pink', 2));
+    p.set(16, 7 + f, ink)
+      .set(19, 9 + f, ink)
+      .set(18, 11 + f, c('pink', 2));
     p.line(2, 10, 0, 6 + f * 3, c(fur, 1));
     if (collar) p.rect(13, 11, 4, 1, c(collar, 2));
     return done(p);
   };
-  book.add('teddyUp0', dogAwake(0, 'fur', 'white', undefined, true), hurt(-4));
-  book.add('teddyUp1', dogAwake(1, 'fur', 'white', undefined, true), hurt(-4));
-  book.add('gwinnUp0', dogAwake(0, 'liver', 'liver', 'pink'), hurt(-4));
-  book.add('gwinnUp1', dogAwake(1, 'liver', 'liver', 'pink'), hurt(-4));
+  book.add('teddyUp0', dogAwake(0, 'fur', 'white', undefined, true), hurt(-2));
+  book.add('teddyUp1', dogAwake(1, 'fur', 'white', undefined, true), hurt(-2));
+  book.add('gwinnUp0', dogAwake(0, 'liver', 'liver', 'pink'), hurt(-2));
+  book.add('gwinnUp1', dogAwake(1, 'liver', 'liver', 'pink'), hurt(-2));
   // her snoring: a Z drifting up
   const zzz = (f: number) => {
     const p = P();
@@ -227,7 +285,12 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     for (let y = 6; y < 18; y++) p.rect(3, y, Math.round(2 + (y - 6) * 1.2), 1, c('cheese', y === 6 ? 3 : 2));
     p.rect(3, 17, 16, 2, c('cheese', 1));
-    for (const [x, y] of [[6, 14], [11, 15], [8, 10]]) p.disc(x, y, 1, c('cheese', 0));
+    for (const [x, y] of [
+      [6, 14],
+      [11, 15],
+      [8, 10],
+    ])
+      p.disc(x, y, 1, c('cheese', 0));
     face(p, 8, 12, { wink: f === 1, grin: true });
     return done(p);
   };
@@ -280,9 +343,15 @@ export function buildMonsterBlocks(pal: Pal) {
   const seed = (f: number) => {
     const p = P();
     const y = f ? 10 : 13;
-    p.rect(7, y + 5, 3, 2, c('red', 2)).rect(11, y + 5, 3, 2, c('red', 2)).set(9, y + 5, c('white', 2)).set(13, y + 5, c('white', 2));
+    p.rect(7, y + 5, 3, 2, c('red', 2))
+      .rect(11, y + 5, 3, 2, c('red', 2))
+      .set(9, y + 5, c('white', 2))
+      .set(13, y + 5, c('white', 2));
     blob(p, 10, y, 4, 4.6, pal.r('cheese'), 0, 3, 1.2);
-    p.set(9, y - 1, ink).set(12, y - 1, ink).set(10, y + 2, ink).set(11, y + 2, ink);
+    p.set(9, y - 1, ink)
+      .set(12, y - 1, ink)
+      .set(10, y + 2, ink)
+      .set(11, y + 2, ink);
     p.line(11, y - 5, 12, y - 7, c('celery', 2));
     return done(p);
   };
@@ -292,9 +361,20 @@ export function buildMonsterBlocks(pal: Pal) {
   // ---- the Swamp Demon: the gurgle, a green cloud with eyes and bubbles
   const gurgle = (f: number) => {
     const p = P();
-    for (const [x, y, rx, ry] of [[7, 12, 5, 4], [13, 11, 5, 4.4], [10, 7, 4.4, 3.4], [10, 15, 7, 3]]) blob(p, x + (f ? 1 : 0), y - f, rx, ry, pal.r('green'), 0, 3);
+    for (const [x, y, rx, ry] of [
+      [7, 12, 5, 4],
+      [13, 11, 5, 4.4],
+      [10, 7, 4.4, 3.4],
+      [10, 15, 7, 3],
+    ])
+      blob(p, x + (f ? 1 : 0), y - f, rx, ry, pal.r('green'), 0, 3);
     face(p, 10 + f, 10 - f, { angry: true, grin: true });
-    for (const [x, y] of [[3, 5 + f * 2], [16, 3 + f], [17, 15 - f]]) p.ring(x, y, 1.2, c('green', 4));
+    for (const [x, y] of [
+      [3, 5 + f * 2],
+      [16, 3 + f],
+      [17, 15 - f],
+    ])
+      p.ring(x, y, 1.2, c('green', 4));
     return done(p);
   };
   book.add('gurgle0', gurgle(0), hurt(-2, 0));
@@ -334,7 +414,10 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(7, 0, 9, 6, c('suit', 0)).line(12, 0, 10, 6, c('suit', 0)).rect(9, 0, 2, 4, c('devil', 2));
     p.rect(4, 9, 12, 2, c('white', 2)).set(10, 9, c('gold', 3));
     const swing = f ? 1 : -1;
-    for (const [x, d] of [[5, -swing], [11, swing]]) {
+    for (const [x, d] of [
+      [5, -swing],
+      [11, swing],
+    ]) {
       for (let y = 11; y < 18; y++) p.rect(x + Math.round(((y - 11) / 7) * d) - (y > 15 ? 1 : 0), y, 4 + (y > 15 ? 2 : 0), 1, c('suit', 2));
       p.rect(x + d - 1, 18, 6, 2, c('white', 2));
     }
@@ -361,19 +444,33 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10 + t, 5, 4.4, 2.4, pal.r('cream'), 1, 3);
     p.disc(10 + t, 2, 1.4, c('red', 3));
     p.line(12 + t, 4, 15 - t * 2, 0, c('white', 2));
-    return done(p);
+    // a white rim outside the ink, so it reads against hell's reds
+    return outline(done(p), c('white', 2));
   };
-  book.add('shake0', shake(0), hurt(-3, 0));
-  book.add('shake1', shake(1), hurt(-3, 0));
+  book.add('shake0', shake(0), hurt(-5, 0));
+  book.add('shake1', shake(1), hurt(-5, 0));
   const splat = P();
   blob(splat, 10, 17, 8, 2.6, pal.r('berry'), 1, 3);
-  for (const [x, y] of [[3, 12], [7, 10], [13, 11], [17, 13]]) splat.disc(x, y, 1, c('pink', 2));
+  for (const [x, y] of [
+    [3, 12],
+    [7, 10],
+    [13, 11],
+    [17, 13],
+  ])
+    splat.disc(x, y, 1, c('pink', 2));
   book.add('splat', done(splat), hurt(-1, 0));
   // the almond milk splash he throws
   const splash = (f: number) => {
     const p = P();
     blob(p, 10, 10, 6 - f, 4 + f, pal.r('white'), 1, 2);
-    for (const [x, y] of [[3, 6 + f], [16, 5 - f], [4, 15 - f], [17, 14 + f], [10, 3 + f]]) p.disc(x, y, 1.2, c('white', 2));
+    for (const [x, y] of [
+      [3, 6 + f],
+      [16, 5 - f],
+      [4, 15 - f],
+      [17, 14 + f],
+      [10, 3 + f],
+    ])
+      p.disc(x, y, 1.2, c('white', 2));
     p.set(8, 9, c('crust', 3)).set(11, 11, c('crust', 3));
     return done(p);
   };
@@ -397,5 +494,18 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('smoke0', puff(0));
   book.add('smoke1', puff(1));
+  // (last, so every other block keeps its number) the friends flying off: the same pictures,
+  // worth nothing, so brushing past them as they go doesn't score every tick
+  book.add('carlOff0', carl(0));
+  book.add('carlOff1', carl(1));
+  book.add('loafOff0', loaf(0));
+  book.add('loafOff1', loaf(1));
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
+  // a carton of almond milk, set out on the crate in hell: two splashes
+  const carton = P();
+  carton.rect(5, 6, 10, 13, c('white', 2)).rect(5, 10, 10, 5, c('crust', 2));
+  for (let y = 2; y < 6; y++) carton.rect(5 + (6 - y), y, 10 - (6 - y) * 2, 1, c('white', 1));
+  book.add('carton', done(carton), { effect: SEQ.throw, eamt: 2 });
   return book;
 }

@@ -101,7 +101,8 @@ export function coverRgb(cast: CoverCast, k: number, n: number): Uint8Array {
   // the mullions and the sill
   for (let y = WINDOW.y; y < WINDOW.y + WINDOW.h; y++) for (let d = -1; d <= 1; d++) put(WINDOW.x + WINDOW.w / 2 + d, y, [60, 50, 70]);
   for (let x = WINDOW.x; x < WINDOW.x + WINDOW.w; x++) for (let d = 0; d < 2; d++) put(x, WINDOW.y + 66 + d, [60, 50, 70]);
-  for (let x = WINDOW.x - 6; x < WINDOW.x + WINDOW.w + 6; x++) for (let d = 0; d < 5; d++) put(x, WINDOW.y + WINDOW.h + d, mixc([90, 80, 100], [40, 34, 50], d / 5));
+  for (let x = WINDOW.x - 6; x < WINDOW.x + WINDOW.w + 6; x++)
+    for (let d = 0; d < 5; d++) put(x, WINDOW.y + WINDOW.h + d, mixc([90, 80, 100], [40, 34, 50], d / 5));
   if (flash) glow(WINDOW.x + 38, WINDOW.y + 50, 40, [120, 120, 150], 0.5);
   // ---- shelves of glowing flasks on the left
   for (let x = 6; x < 120; x++) for (let d = 0; d < 4; d++) put(x, 72 + d, mixc([110, 70, 40], [50, 30, 16], d / 4));
@@ -115,7 +116,8 @@ export function coverRgb(cast: CoverCast, k: number, n: number): Uint8Array {
   flasks.forEach(([fx, col], i) => {
     for (let y = 46; y < 72; y++) {
       const w = y < 56 ? 2.5 : 2.5 + (y - 56) * 0.5;
-      for (let x = -w; x <= w; x++) put(fx + x, y, y > 58 ? mixc(col, [20, 20, 30], 0.2 + 0.2 * Math.sin((x + y + k * 2 + i) / 2)) : [170, 200, 220], y > 58 ? 1 : 0.5);
+      for (let x = -w; x <= w; x++)
+        put(fx + x, y, y > 58 ? mixc(col, [20, 20, 30], 0.2 + 0.2 * Math.sin((x + y + k * 2 + i) / 2)) : [170, 200, 220], y > 58 ? 1 : 0.5);
     }
     glow(fx, 64, 8, col, 0.25);
     for (let b = 0; b < 3; b++) put(fx + ((b * 2 + k) % 5) - 2, 44 - ((k * 3 + b * 5 + i) % 12), mixc(col, [255, 255, 255], 0.4));
@@ -124,7 +126,9 @@ export function coverRgb(cast: CoverCast, k: number, n: number): Uint8Array {
   stamp(put, cast.leo(k % 2 ? 'laugh1' : 'laugh0'), cast.pal, 52, 52 + (k % 2), 3);
   // ---- the Tesla coil on the right, crackling
   for (let y = COIL.y; y < BENCH; y++) for (let x = -5; x <= 5; x++) put(COIL.x + x, y, (y + k) % 6 < 3 ? [200, 130, 60] : [120, 70, 30]);
-  for (let y = -8; y <= 8; y++) for (let x = -14; x <= 14; x++) if ((x / 14) ** 2 + (y / 8) ** 2 <= 1) put(COIL.x + x, COIL.y + y, mixc([120, 130, 150], [240, 245, 255], 0.5 - y / 16 + x / 40));
+  for (let y = -8; y <= 8; y++)
+    for (let x = -14; x <= 14; x++)
+      if ((x / 14) ** 2 + (y / 8) ** 2 <= 1) put(COIL.x + x, COIL.y + y, mixc([120, 130, 150], [240, 245, 255], 0.5 - y / 16 + x / 40));
   glow(COIL.x, COIL.y, 14, [80, 120, 255], 0.5);
   const arcs = rng(k * 13 + 1);
   for (let a = 0; a < 4; a++) {
@@ -150,7 +154,8 @@ export function coverRgb(cast: CoverCast, k: number, n: number): Uint8Array {
   for (let y = METER.y; y < BENCH; y++) for (let x = METER.x - 26; x < METER.x + 26; x++) put(x, y, y === METER.y ? [150, 160, 170] : [70, 76, 90]);
   for (let a = Math.PI; a <= Math.PI * 2; a += 0.02)
     for (let r = 12; r < 18; r++) put(METER.x + Math.cos(a) * r, METER.y + 30 + Math.sin(a) * r, a < Math.PI * 1.5 ? [90, 140, 255] : [255, 90, 90]);
-  for (let y = METER.y + 8; y < METER.y + 32; y++) for (let x = METER.x - 20; x < METER.x + 20; x++) if (Math.hypot(x - METER.x, y - METER.y - 30) < 12) put(x, y, [230, 225, 200]);
+  for (let y = METER.y + 8; y < METER.y + 32; y++)
+    for (let x = METER.x - 20; x < METER.x + 20; x++) if (Math.hypot(x - METER.x, y - METER.y - 30) < 12) put(x, y, [230, 225, 200]);
   const needle = Math.PI * (1.15 + 0.7 * Math.min(1, t * 1.4));
   for (let r = 0; r < 17; r++) put(METER.x + Math.cos(needle) * r, METER.y + 30 + Math.sin(needle) * r, [20, 20, 20]);
   glow(METER.x + 18, METER.y + 6, 3, t > 0.6 ? [255, 60, 60] : [60, 120, 255], 0.8);

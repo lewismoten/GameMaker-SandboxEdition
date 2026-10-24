@@ -53,7 +53,9 @@ function balloon(p: Pixels, pal: Pal, x: number, y: number, lines: string[], tx:
   const h = lines.length * 10 + 8;
   p.line(x + w / 2 - 6, y + h - 1, tx, ty, c('ink', 0)).line(x + w / 2 + 6, y + h - 1, tx, ty, c('ink', 0));
   for (let k = 0; k < 6; k++) p.line(x + w / 2 - 5 + k * 2, y + h - 2, tx, ty - 1, c('paper', 2));
-  p.rect(x, y, w, h, c('paper', 2)).frame(x, y, w, h, c('ink', 0)).rect(x + 1, y + h - 2, w - 2, 1, c('paper', 1));
+  p.rect(x, y, w, h, c('paper', 2))
+    .frame(x, y, w, h, c('ink', 0))
+    .rect(x + 1, y + h - 2, w - 2, 1, c('paper', 1));
   lines.forEach((l, i) => text(p, x + 6, y + 5 + i * 10, l, c('velvet', 0)));
 }
 
@@ -75,10 +77,11 @@ export function stage(pal: Pal, seed = 1, mic = true): Pixels {
   const c = pal.c;
   const R = pal.r;
   const p = new Pixels(W, H, c('ink', 0));
-  for (let y = 0; y < 150; y++) for (let x = 0; x < W; x++) p.set(x, y, shadeAt(R('velvet'), 0, 3, 0.45 + 0.4 * Math.sin(x / 9 + Math.sin(y / 40) * 0.6), x, y));
+  for (let y = 0; y < 150; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, shadeAt(R('velvet'), 0, 3, 0.45 + 0.4 * Math.sin(x / 9 + Math.sin(y / 40) * 0.6), x, y));
   // the valance and its gold fringe
   for (let x = 0; x < W; x++) {
-    const sag = Math.round(Math.sin((x % 80) / 80 * Math.PI) * 6);
+    const sag = Math.round(Math.sin(((x % 80) / 80) * Math.PI) * 6);
     p.rect(x, 0, 1, 16 + sag, c('velvet', 1));
     p.set(x, 16 + sag, c('gold', 2));
     if (x % 3 === 0) p.rect(x, 17 + sag, 1, 3, c('gold', x % 6 ? 1 : 3));
@@ -143,7 +146,10 @@ function castleNight(pal: Pal, seed = 3): Pixels {
     }
   p.rect(150, 92, 52, 14, c('wood', 1)).rect(152, 94, 48, 10, c('amber', 1));
   micro(p, 158, 97, 'THE HIVE', c('ink', 0));
-  for (const wx of [112, 128, 210, 226]) p.rect(wx, 78, 10, 16, c('stone', 0)).rect(wx + 1, 79, 8, 14, c('amber', 2)).rect(wx + 1, 85, 8, 1, c('stone', 0));
+  for (const wx of [112, 128, 210, 226])
+    p.rect(wx, 78, 10, 16, c('stone', 0))
+      .rect(wx + 1, 79, 8, 14, c('amber', 2))
+      .rect(wx + 1, 85, 8, 1, c('stone', 0));
   for (const wx of [112, 226]) p.rect(wx, 120, 10, 16, c('stone', 0)).rect(wx + 1, 121, 8, 14, c('amber', 1));
   // the sidewalk and the avenue
   p.rect(0, 164, W, 12, c('stone', 2)).rect(0, 164, W, 1, c('stone', 3));
@@ -254,7 +260,11 @@ export function howtoFli(cast: Cast): Uint8Array {
     if (k < 18) p.disc(110, 140, 4, c('gold', 2)).set(109, 139, c('gold', 3));
     if (k >= 13 && k < 20) say(p, pal, x + 20, y - 14, 'HOP!');
     if (k >= 32) say(p, pal, 160, 60, 'ALAS! HARK!', 'gold', 3, 2);
-    caption(p, pal, k < 26 ? ['UP hops; Q and E hop sideways.', 'Coins and bills are tips.'] : ['SPACE declaims: a word flies', 'out to each side. B: the line.']);
+    caption(
+      p,
+      pal,
+      k < 26 ? ['UP hops; Q and E hop sideways.', 'Coins and bills are tips.'] : ['SPACE declaims: a word flies', 'out to each side. B: the line.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);
@@ -292,7 +302,10 @@ export function interFli(k: number, cast: Cast): Uint8Array {
   const words: string[][] =
     k === 5
       ? [['That is all seventeen!'], ['Give it up for WILL!']]
-      : [[`Intermission ${k - 1}!`, 'Get a coffee.'], ['Next set:', set.name.toUpperCase()]];
+      : [
+          [`Intermission ${k - 1}!`, 'Get a coffee.'],
+          ['Next set:', set.name.toUpperCase()],
+        ];
   const scene = (p: Pixels, t: number) => {
     scaleBlit(p, sprite(cast.mons, `leo${(t >> 2) % 2}`), 130, 92, 3);
     spotlight(p, pal, 160, 120, 74);
@@ -425,7 +438,11 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
   const N = (n: string) => sprite(cast.mons, n);
   /** The Golden Mug: the open mic's trophy. */
   const trophy = (p: Pixels, x: number, y: number, s = 2) => {
-    p.rect(x, y, 10 * s, 12 * s, c('gold', 2)).rect(x + s, y + s, 3 * s, 10 * s, c('gold', 3)).rect(x + 10 * s, y + 3 * s, 3 * s, 2 * s, c('gold', 1)).rect(x + 12 * s, y + 3 * s, s, 5 * s, c('gold', 1)).rect(x + 10 * s, y + 7 * s, 3 * s, s, c('gold', 1));
+    p.rect(x, y, 10 * s, 12 * s, c('gold', 2))
+      .rect(x + s, y + s, 3 * s, 10 * s, c('gold', 3))
+      .rect(x + 10 * s, y + 3 * s, 3 * s, 2 * s, c('gold', 1))
+      .rect(x + 12 * s, y + 3 * s, s, 5 * s, c('gold', 1))
+      .rect(x + 10 * s, y + 7 * s, 3 * s, s, c('gold', 1));
     p.rect(x - s, y + 12 * s, 12 * s, 2 * s, c('wood', 2));
   };
   {

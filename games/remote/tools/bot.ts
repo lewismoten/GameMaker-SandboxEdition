@@ -9,9 +9,14 @@ import { DIGITS, MONEY, PLAY, SCAN, SPOTS } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { MLEN, bgBlock, type World } from '../../../web/src/engine/world';
 import type { GameSim } from './sim';
+import { buildPalette } from '../src/art/pal';
+import { buildBlocks } from '../src/blocks/blocks';
 
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';
+
+/** The tin heart and the Easter egg are for players to find (games/kit/TIN-HEARTS.md): the bot leaves them lying. */
+const HIDDEN = new Set([...buildBlocks(buildPalette('plain')).index].filter(([name]) => /^(tinHeart|easterEgg)/.test(name)).map(([, n]) => n));
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 
 export class Bot {
@@ -27,6 +32,7 @@ export class Bot {
   /** A pickup lying on the floor at (x, y): walk onto it and it's yours (points, patience, pennies, magnets). */
   isLoot(x: number, y: number, w: World = this.sim.w): boolean {
     const b = w.map[y * MLEN + x];
+    if (HIDDEN.has(b) || HIDDEN.has(w.blkmap[b] ?? 0)) return false;
     const blk = bgBlock(w, w.blkmap[b] ?? 0);
     if (blk.solid || blk.touchBl === b || blk.chHitPt < 0) return false;
     return blk.scorePts > 0 || blk.chHitPt > 0 || (blk.effect > 0 && blk.eamt > 0);
@@ -105,7 +111,9 @@ export class Bot {
 
   say(s: string): void {
     const p = this.sim.pos;
-    this.log.push(`[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} hp ${this.sim.ci.hitpts} spots ${this.count(SPOTS)} digits ${this.count(DIGITS)} pennies ${this.count(MONEY)} play ${this.count(PLAY)}`);
+    this.log.push(
+      `[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} hp ${this.sim.ci.hitpts} spots ${this.count(SPOTS)} digits ${this.count(DIGITS)} pennies ${this.count(MONEY)} play ${this.count(PLAY)}`,
+    );
   }
 
   async wait(k: number): Promise<string | undefined> {

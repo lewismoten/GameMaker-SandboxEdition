@@ -74,7 +74,12 @@ export function touchHeadless(id: string, place: HeartPlace): boolean {
   const { disk, game } = gameDisk(id);
   for (const { scene } of scenesOf(game, place.map)) {
     let heard = false;
-    const s = { game, rand: () => () => 0.5, m: { files: { get: (n: string) => disk.get(n.toLowerCase()) } }, onTouched: (sc: number, x: number, y: number) => void (heard ||= isHeartAt(place, game.scenes[sc].files[1], x, y)) };
+    const s = {
+      game,
+      rand: () => () => 0.5,
+      m: { files: { get: (n: string) => disk.get(n.toLowerCase()) } },
+      onTouched: (sc: number, x: number, y: number) => void (heard ||= isHeartAt(place, game.scenes[sc].files[1], x, y)),
+    };
     const loaded = loadScene(s, scene);
     if (Array.isArray(loaded)) continue;
     const w = loaded.world;
@@ -112,4 +117,3 @@ export function findHearts(id: string): { scene: number; place: HeartPlace; bloc
   });
   return out;
 }
-

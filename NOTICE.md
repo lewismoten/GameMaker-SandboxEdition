@@ -4,7 +4,10 @@
 
 This repository is a **modified fork** of the source code of *Game-Maker*, the game
 construction kit produced from 1991 to 1995 by Recreational Software Designs (RSD) of
-Amherst, New Hampshire, and sold in the US by KD Software. Game-Maker was created by
+Amherst, New Hampshire. It was sold by direct mail in the US by KD Software (RSD also made a
+distribution deal with GameLynk), in the UK as *Captain GameMaker* by Screen Entertainment,
+and worldwide on CD-ROM by Microforum, as [Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
+records. Game-Maker was created by
 G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Today it is
 usually called **RSD Game-Maker**, to tell it apart from later, unrelated products with
 similar names; this repository does the same.
@@ -72,27 +75,122 @@ game folder opens in the browser unchanged.
   and conversations about his interests, experiences and hobbies. Lewis directed each game
   and played it as it came together, and his feedback shaped every one. Teddy, Gwinn,
   Doc Leo and THE CHEZ (Lewis's CitiCar) appear as themselves.
+- **KEEP IT BRIEF!'s stories** are Lewis's 100 Word Stories, written for **Laurence Simon**'s
+  weekly 100 Word Stories challenge on the
+  [100 Word Stories Podcast](https://oneadayuntilthedayidie.com/). Each week's topic, shown on
+  the game's story cards, was set by Laurence or chosen by the week before's winner, voted for
+  by the podcast's writers and listeners; thanks to all of them.
 - **The Bard of Bizarre games** (`games/`: Third Goat from the Left, Mustard Seed Hustle,
   Thread the Needle, Brother Camel, Loaf #13, Certified Rat Tickler, Where's the Remote?!,
   A Fly Named Carl, The Great Dairy Reckoning of 3:17 A.M., Cleanse Me, O Loofah, But Leave
   My Soul, I Screamed, She Smirked, Shakespeare in Sweatpants, and Veni, Vidi, Risi! by
   Lewis's group of that name): games made from Lewis's songs and monologues, presented as
   1995 shareware from The Sofa BBS; their shareware fee and address are part of the story,
-  and they are free under the MIT License. The songs' lyrics and monologues were shaped with
-  ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (now
-  Google Flow Music); the games' FM scores are arranged from those recordings, and their
+  and they are free under the MIT License, except the voice clips cut from their recordings
+  (see "The Bard of Bizarre recordings" below). The songs' lyrics and monologues were shaped with
+  ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (one
+  service under three names: Riffusion renamed itself Producer.ai, and Google bought it and
+  made it Google Flow Music); the games' FM scores are arranged from those recordings, and their
   voice clips are cut from them. The exceptions: Certified Rat Tickler came with no
   recording, so its music was composed for the game by Claude Opus 5.5, as was the music
-  under The Great Dairy Reckoning's spoken recording; Mustard Seed
-  Hustle's animated cover was made with Producer.ai; the covers of Third Goat from the Left
+  under The Great Dairy Reckoning's spoken recording and Shakespeare in Sweatpants' FM score
+  (composed from the tempo, key and chords of its recordings' music beds); Mustard Seed
+  Hustle's animated cover was made with Producer.ai (Riffusion's later name); the covers of Third Goat from the Left
   and Thread the Needle, Brother Camel were made with Riffusion; the other games' title and
   cover art was drawn for them by Claude Opus 5.5. The Bard's logo (the rooster in
   spectacles) was made with DeepAI, and the Doc Leo photos are Lewis's own. Claude Opus 5.5
   wrote and built the games themselves (code, levels, art and arrangements), directed by
   Lewis.
+- **The BBS pictures** (`web/public/bbs`, downloadable from the Sandbox BBS's GIF Gallery and
+  The Sofa's GIF area): the photos are Lewis's own (Teddy, Gwinn, the gazebo, the hobo clown
+  and Doc Leo, colonial dress, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
+  **THECHEZ2.GIF**, one shot of Lewis holding Teddy in front of THE CHEZ, which was taken by
+  **Nicky Foster** of the Front Royal-Warren County Chamber of Commerce as a promotional photo
+  of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop. The Bard logo (BARDLOGO.GIF) was made with
+  DeepAI.
+- **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
+  (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
+  Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from
+  two of Lewis's photos of himself, over many rounds of his corrections, with
+  `games/kit/scans/blacklight.py`.
+- **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
+  this project (there is no recording to credit), but a few pieces quote older tunes whose
+  compositions are in the public domain in the US:
+  - *Teddy's Little Bigger Adventure*: `games/teddy2/disk/main.cmf` (Main Street) quotes
+    **Yankee Doodle**, a traditional American tune (18th century), public domain; arrangement
+    by the game.
+  - *I Screamed, She Smirked*: `games/smirked/disk/title.cmf`, `story.cmf` and `foyer.cmf`
+    open with the mordent of the **Toccata and Fugue in D minor**, BWV 565, credited to
+    J. S. Bach (about 1704), public domain; arrangement by the game.
+  - *The desk's wall phone*: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
+    opening of **Für Elise** by Ludwig van Beethoven (about 1810, published 1867), public
+    domain.
+  - *A hidden bonus on the site*: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
+    Doodle**, the same traditional tune, public domain.
+  - *RSD's sample music on the CD* quotes public-domain works: `GMMOONLT.CMF` is the first
+    movement of Beethoven's Piano Sonata No. 14, the **Moonlight** (1801); `GMRANGE.CMF` is
+    **Home on the Range** (Daniel E. Kelley, music, and Brewster M. Higley, words, 1872).
+  - *The shareware games A-J's Quest (`cd/sharware/ajquest`) and Ralph's game
+    (`cd/sharware/fluffyr`)* use `GMFAIRY.CMF`, the **Dance of the Sugar Plum Fairy** from
+    Tchaikovsky's *The Nutcracker* (1892), public domain.
+- **Third-party music under copyright.** Three shareware games on the CD by A-J Games,
+  *Bounerim* (`cd/sharware/bounerm`), Ralph's game (`cd/sharware/fluffyr`) and *Sign of the
+  Hedgehog* (`cd/sharware/signhdg`), include `SND7.CMF`, an arrangement of John Williams's
+  **The Imperial March** (1980), which is under copyright and not licensed by this project.
+  It is kept as those games were distributed in the 1990s, unaltered, as part of their
+  authors' original files.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
-  their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase and others).
-  Shareware games are shown play-only, with their authors' original notices.
+  their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
+  Bell and others). Shareware games are shown play-only, with their authors' original
+  notices; they have no download, can't be edited, and the desk's make-believe GMCRACK
+  leaves them alone. The CD's tools are kept as it held them, each its author's: LHarc 1.13
+  (`cd/backup/LHARC.EXE`, "(c)Yoshi, 1988-89") and LHA 2.13 with its
+  documentation (`cd/sharware/tools`, Haruyasu Yoshizaki), and Alchemy Mindworks' Graphic
+  Workshop shareware for DOS and Windows (`cd/sharware/tools/GWSDOS.ZIP`, `GWSWIN.ZIP`).
+  None of them are on the website.
+
+## The Bard of Bizarre recordings: personal, non-commercial only
+
+The Bard of Bizarre's song and monologue recordings were made with Riffusion (one service,
+later called Producer.ai and now Google Flow Music) during Lewis's **free plan**. Lewis pays
+for the service now, and the animated covers (Mustard Seed Hustle's and Thread the Needle,
+Brother Camel's) were made on the paid plan, but every recording was made on the free plan. The service's terms for free-plan output allow
+"personal, non-commercial uses only". So the recordings, and every voice clip cut from them,
+are **not covered by the MIT License**: don't sell them or use them commercially. The
+recordings themselves aren't in this repository.
+
+These files are cut from those recordings (each game's `tools/cutClips.py` cuts them):
+
+- `games/<id>/src/sound/clips/*.pcm` in goat, mustard, needle, loaf, remote, carl,
+  reckoning, loofah, smirked, sweats and risi: the raw clips.
+- The voice clips on each game's disk (`games/<id>/disk/*.voc`), and so in every download
+  and on The Sofa BBS:
+  - **Third Goat from the Left** (goat): HEY, HOOK, NIGHTLNG, SEESYOU, YAY.
+  - **Mustard Seed Hustle** (mustard): ALIVE, FEET, HALLELU, HUSTLE, KEEPON, MOUNTAIN.
+  - **Thread the Needle, Brother Camel** (needle): DREAM, GOLD, HUMPDOWN, SQUEEZE, THREAD.
+  - **Loaf #13 (Left in the Basket)** (loaf): BREAD, COUNTME, MAMA, STILL, TWELVE, WASTED.
+  - **Where's the Remote?!** (remote): DOGCAT, FRIDGE, HAND, MOM, RACCOON, REMOTE, SNEAKY.
+  - **A Fly Named Carl** (carl): AUX, HOOK, LAMP, MISS, NAMED, SEEN, SMILE, TIME, WINDOW.
+  - **The Great Dairy Reckoning of 3:17 A.M.** (reckoning): ALMOND, BEGONE, BETRAY, BETTER,
+    CANT, COLON, COWARD, DEMON, ENEMY, INTOL, LACTAID, OHNO, SHINS, SUFFER, and FLUSHLAC and
+    SLAMWRTH (a made sound followed by a clip).
+  - **Cleanse Me, O Loofah, But Leave My Soul** (loofah): BRINE, LINE, LUCIFER, MANGO, NEVER,
+    PINK, ROUGH, SCRUBBUS, WORSE, WRONG, and DRAINNEV and TOWEL (a made sound followed by a
+    clip).
+  - **I Screamed, She Smirked** (smirked): AFRAID, ASHAMED, CARDBRD, DONTRUN, EXIT, FOG,
+    GETDOWN, JUICE, MILD, NOTREAL, OKAY, PATS, SNEEZING, SWORD, TARGET, WEREWOLF.
+  - **Shakespeare in Sweatpants** (sweats): the 68 monologue clips, `<line>_L`, `_O`, `_P` and
+    `_W` for each of ANTS, BIRD, BLNKT, CART, CHAIR, FICUS, GOAT, ITCH, KALE, LIKE, LILY, OUT,
+    PEN, PIZZA, PLATE, SOCKS and UMBR.
+  - **Veni, Vidi, Risi!** (risi): CANIS, CANTEMUS, CHEDDAR, CORONA, CURRIMUS, DII, FELIS,
+    FLATUS, NEMO, PISCIS, QUIS, RIDETIS, SUMMA, TECTA, TER, TITUS, VICTORIA.
+
+Each of those games' LICENSE.TXT names its clips under "VOICE CLIPS: NOT MIT", its readme and
+credits say so, and the Windows, Mac, Linux, DOS and web-app downloads' notices repeat it
+(`web/src/export/recordedAudio.ts`). **Everything else in each game is MIT licensed**: the
+code, levels, art, text, the other sound effects (made in code) and the FM (CMF) music
+arranged or composed by Claude. Certified Rat Tickler has no recording, so none of it is
+affected.
 
 ## About this fork
 
@@ -124,20 +222,46 @@ formats from their published descriptions and from Game-Maker's own source.
   `SBMUSIC.C` and of the behavior of Creative's SBFMDRV driver; no Creative code is used.
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
+- **The music editor and its FM instruments** were made for this project. The editor is an
+  original design, not based on AdLib's Visual Composer, and no AdLib or Creative instrument
+  bank is included. The classic piano and brass, and one kick drum used in two games, matched
+  AdLib's `STANDARD.BNK` settings (PIANO1, BRASS1, BDRUM1). They were replaced with original
+  patches in October 2026. Some of the original RSD songs in `cd/` and `runtime/` use
+  AdLib's BRASS1 settings; they are kept as RSD released them.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
   the IBM PC BIOS font.
 - **Caveat** (the handwriting in the Owner's Guide's registration record,
   `web/src/manual/regRecord.ts`), a font by Impallari Type under the SIL Open Font License
   1.1, is loaded from Google Fonts when that page is shown; it isn't included in this
   repository or in exported games.
-- **ChatGPT**, **Riffusion**, **Google Flow Music**, **Producer.ai** and **DeepAI** are
-  their owners' names for the tools used to make the Bard of Bizarre songs and art (see
-  Credits); none of their code is used.
+- **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
+  one service under its successive names) and **DeepAI** are their owners' names for the
+  tools used to make the Bard of Bizarre songs and art (see Credits); none of their code is
+  used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
+- **TTYs (text telephones)** on the desk (`web/src/retro/bbs/baudot.ts`, `tdd.ts`,
+  `ttyInfo.ts`): the 5-bit Baudot code at 45.45 baud, its 1400/1800 Hz tones and its US
+  figures table follow ITU-T Recommendation V.18 (1994) and ANSI/TIA-825. The code table was
+  cross-checked against Asterisk's `main/tdd.c` (GPL v2, Digium); none of its code is used.
+  The period facts are from Gallaudet University's Technology Access Program (TTY Basics,
+  V.18 notes), the FCC (relay service nationwide from July 26, 1993), and Ultratec.
+  **Ultratec** and **Turbo Code** are Ultratec, Inc.'s names; Turbo Code (U.S. Patent
+  5,432,837) is named only as the historical protocol, and nothing of it is implemented.
+  Mrs. Novak and her number (555-0156) are made up.
+- **Real names in the games.** The games name some real hardware, software and products of
+  their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
+  OPL3, AMI BIOS, PKUNZIP, ZMODEM, Renegade BBS, the Remington Noiseless typewriter, Autodesk
+  Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
+  song lyrics and his 100 Word Stories (in *KEEP IT BRIEF!*) are quoted word for word. These
+  are trademarks of their respective owners; no endorsement is implied. Every other store,
+  arcade, brand, product and publication in the games is made up.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
   License, so this fork leaves it out. The README says where to get it.
+- **The git history** still holds them: the early commits contain Borland C++ (`tools/BORLANDC`)
+  and the Borland and Creative library files listed below, which later commits removed. Those
+  files in the history are their owners' and aren't covered by the MIT License.
 - **Borland's runtime library** files that Game-Maker's source was built with (`CL.LIB`,
   `EMU.LIB`, `MATHL.LIB`, the startup code `STARTUP.ASM`, `SETARGV.ASM`, `SETENVP.ASM`,
   `FULLPATH.C`, `RULES.ASI`, and the `EGAVGA.BGI` graphics driver) and **Creative's Sound
@@ -150,10 +274,21 @@ formats from their published descriptions and from Game-Maker's own source.
   All rights reserved") and is not covered by the MIT License. It is included as it came
   on the original Game-Maker CD, and "Export for DOS" adds it to exported games the way
   Game-Maker's own Transfer utility did. It will be removed if Creative asks.
-- The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
+- **`XFERPLAY.EXE`** and Game-Maker's other DOS programs (`cd/gm`, `runtime/run/GM`) were
+  built by RSD with Borland C++ and Creative's library, so they hold Borland's run-time
+  code ("Borland C++ - Copyright 1991 Borland Intl.") and Creative's FM music functions
+  ("Copyright (c) Creative Technology Pte Ltd, 1990"), as every program built with them did.
+  "Export for DOS" ships `XFERPLAY.EXE` (renamed after the game) and `SNDBLAST.DRV` with
+  a README that gives Game-Maker's MIT License and names these parts.
+- The desk's hardware brands (BOOMTONE, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
   numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
+- **The level check** (`web/src/editor/check`): its heat map's six colors are taken from
+  **viridis**, the color map by Stéfan van der Walt and Nathaniel Smith (CC0, public domain
+  dedication), chosen because it reads with every kind of color vision; its monster contrast is
+  the **relative luminance and contrast ratio** of the W3C's Web Content Accessibility
+  Guidelines (WCAG) 2. Both are used as published; no code of theirs is included.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
@@ -231,8 +366,8 @@ Game-Maker's makefiles don't build.
 - Also kept as found: the Association of Shareware Professionals' ombudsman statement
   (`code/GM/OMBUDSMN.ASP`); a captured SunOS 5.4 `make` manual page
   (`code/Image/PNG/MAKEINFO.TXT`); and the installer's credit line for Haruyasu
-  Yoshizaki's LHarc (`code/GM/FLOPINST.CPP`), the archiver it ran (`LHARC.EXE` isn't
-  included).
+  Yoshizaki's LHarc (`code/GM/FLOPINST.CPP`), the archiver it ran (`LHARC.EXE` itself
+  is on the CD, in `cd/backup`; see above).
 
 **Bundled code by other authors** (all under `code/Image/`)
 
@@ -284,10 +419,13 @@ Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 ## Tools used to build and test
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT), and
-`@types/node` (MIT), the only packages in `web/package.json`, used only to build and test;
-none of their code ships in the app except Vite's small module runtime and preload helper
-(MIT). The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
+[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and its vite-node (MIT), and
+`@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
+[ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
+and `globals` (MIT). These are the only packages in `web/package.json`, all used only to build
+and test; none of their code ships in the app except Vite's small module runtime and preload
+helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
+they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's

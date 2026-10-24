@@ -32,7 +32,10 @@ export const WORLD_ARRIVE: Record<string, Pt> = {
 /** Coming back to Someday Harbor: out of the Vaults onto the pier, out of THE CHEZ by the garage. */
 export const HARBOR_ARRIVE: Record<string, Pt> = { vaults: [16, 46], flats: [31, 13] };
 
-export function buildTowns(spot: Record<string, Pt>, harborDoors: { flats: Pt; vaults: Pt }): { files: AreaFile[]; scenes: SceneSpec[]; worldLinks: LinkSpec[]; start: Pt } {
+export function buildTowns(
+  spot: Record<string, Pt>,
+  harborDoors: { flats: Pt; vaults: Pt },
+): { files: AreaFile[]; scenes: SceneSpec[]; worldLinks: LinkSpec[]; start: Pt } {
   const mb = peopleSheet();
   const files: AreaFile[] = [];
   const scenes: SceneSpec[] = [];

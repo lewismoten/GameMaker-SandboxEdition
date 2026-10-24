@@ -21,7 +21,9 @@ describe('checkParts', () => {
   });
 
   it('counts a part at the map edge as broken (maps wrap)', () => {
-    expect(checkParts(grid(['. tableL']), pair('table', 'tableL', 'tableR', 1, 0), 2, 1)).toEqual(['table (tableL) at 1,0: wanted tableR at 1,0, found off the map']);
+    expect(checkParts(grid(['. tableL']), pair('table', 'tableL', 'tableR', 1, 0), 2, 1)).toEqual([
+      'table (tableL) at 1,0: wanted tableR at 1,0, found off the map',
+    ]);
   });
 
   it('lets a part repeated in a shape stand at any of its places', () => {
@@ -43,7 +45,12 @@ describe('gridParts', () => {
     const re = /^(cat)(\d)(\d)$/;
     const sizes = sizesOf(['cat00', 'cat10', 'cat01', 'cat11'], re);
     expect(sizes.get('cat')).toEqual([2, 2]);
-    const rule = gridParts(re, sizes, (o, c, r) => `${o}${c}${r}`, (g) => (g === 'blink' ? 'cat11' : g));
+    const rule = gridParts(
+      re,
+      sizes,
+      (o, c, r) => `${o}${c}${r}`,
+      (g) => (g === 'blink' ? 'cat11' : g),
+    );
     expect(checkParts(grid(['cat00 cat10', 'cat01 blink']), [rule], 2, 2)).toEqual([]);
     expect(checkParts(grid(['cat00 cat10', 'cat01 sky']), [rule], 2, 2)).toHaveLength(3);
   });

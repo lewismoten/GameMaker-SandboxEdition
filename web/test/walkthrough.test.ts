@@ -23,7 +23,18 @@ describe('walkthrough keys', () => {
   });
 
   it('play each segment from the tick its scene is entered', () => {
-    const walk = { segments: [{ scene: 2, keys: encodeKeys([{ delta: 1, key: 77 }, { delta: 2, key: 205 }]) }, { scene: 4, keys: encodeKeys([{ delta: 3, key: 57 }]) }] } as Walkthrough;
+    const walk = {
+      segments: [
+        {
+          scene: 2,
+          keys: encodeKeys([
+            { delta: 1, key: 77 },
+            { delta: 2, key: 205 },
+          ]),
+        },
+        { scene: 4, keys: encodeKeys([{ delta: 3, key: 57 }]) },
+      ],
+    } as Walkthrough;
     const r = new SegmentRecorder(walk);
     r.begin();
     r.enterScene(2);
@@ -68,7 +79,19 @@ describe('YouTube chapters', () => {
   });
 
   it('make a title and a description with the chapter list', () => {
-    const t = youtubeText({ gameTitle: 'Test Game', year: 1995, company: 'Sandbox Software', url: 'https://example.com/#/game/cd:test', fps: 60, frames: 60 * 120, chapters: [{ title: 'Opening', frame: 0 }, { title: 'Level 1', frame: 600 }, { title: 'Ending', frame: 6000 }] });
+    const t = youtubeText({
+      gameTitle: 'Test Game',
+      year: 1995,
+      company: 'Sandbox Software',
+      url: 'https://example.com/#/game/cd:test',
+      fps: 60,
+      frames: 60 * 120,
+      chapters: [
+        { title: 'Opening', frame: 0 },
+        { title: 'Level 1', frame: 600 },
+        { title: 'Ending', frame: 6000 },
+      ],
+    });
     expect(t.title).toBe('Test Game (1995 DOS, Sandbox Software) — Full Walkthrough, No Commentary');
     expect(t.description).toContain('0:00 Opening\n0:10 Level 1\n1:40 Ending');
     expect(t.description).toContain('Claude Opus 5.5');

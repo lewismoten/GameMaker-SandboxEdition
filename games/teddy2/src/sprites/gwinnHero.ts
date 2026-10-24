@@ -98,11 +98,44 @@ export const GWINN_HERO: Record<string, Pixels> = {
     '....ooo......ooo....',
   ]),
   // Starting to sit... (the back end goes down)
-  gSitHalf: S([...FACE, '.....oGGgnngGGo.....', '......oGGppGGo......', '......orrrrrro......', '.....ogGGwwGGgo.....', '....ogGGGwwGGGgo....', '...ogGGGGwwGGGGgo...', '...oggGGGGGGGGggo...', '...ogggggggggggoo...', '..ooooo......ooooo..']),
+  gSitHalf: S([
+    ...FACE,
+    '.....oGGgnngGGo.....',
+    '......oGGppGGo......',
+    '......orrrrrro......',
+    '.....ogGGwwGGgo.....',
+    '....ogGGGwwGGGgo....',
+    '...ogGGGGwwGGGGgo...',
+    '...oggGGGGGGGGggo...',
+    '...ogggggggggggoo...',
+    '..ooooo......ooooo..',
+  ]),
   // ...and sitting! For one tick.
-  gSat: S([...FACE, '.....oGGgnngGGo.....', '......oGGppGGo......', '......orrrrrro......', '....ooGGGwwGGGoo....', '...oGGGGGwwGGGGGo...', '..oGGGGGGwwGGGGGGo..', '..ooooooooooooooooo.']),
+  gSat: S([
+    ...FACE,
+    '.....oGGgnngGGo.....',
+    '......oGGppGGo......',
+    '......orrrrrro......',
+    '....ooGGGwwGGGoo....',
+    '...oGGGGGwwGGGGGo...',
+    '..oGGGGGGwwGGGGGGo..',
+    '..ooooooooooooooooo.',
+  ]),
   // Gone again: up and wiggling, the sit already forgotten.
-  gWiggle: S([...FACE.map((r) => r.slice(1) + '.'), '....oGGgnngGGo......', '.....oGGppGGo.......', '.....orrrrrro.......', '....ogGGwwGGgo..o...', '...ogGGGwwGGGgoo....', '...ogGGGwwGGGgo.....', '...oggGGGGGGggo.....', '...oggggggggggo.....', '...ogdo....odgo.....', '...ogo......ogo.....', '...ooo......ooo.....']),
+  gWiggle: S([
+    ...FACE.map((r) => r.slice(1) + '.'),
+    '....oGGgnngGGo......',
+    '.....oGGppGGo.......',
+    '.....orrrrrro.......',
+    '....ogGGwwGGgo..o...',
+    '...ogGGGwwGGGgoo....',
+    '...ogGGGwwGGGgo.....',
+    '...oggGGGGGGggo.....',
+    '...oggggggggggo.....',
+    '...ogdo....odgo.....',
+    '...ogo......ogo.....',
+    '...ooo......ooo.....',
+  ]),
   // Digging big, from behind: a lot of rump, a lot of dirt.
   gDig1: S([
     'E..D..............D.',
@@ -139,7 +172,11 @@ export const GWINN_HERO: Record<string, Pixels> = {
     'DDDDooo......oooDDD.',
   ]),
   // Bounced back, eyes shut.
-  gHurt: S([...FACE.slice(0, 4), '.odddGkkGGGGkkGdddo.', ...FACE.slice(5), '.....oGGgnngGGo.....', '......oGGGGGGo......', ...BODY].map((r) => r.replace(/[gGhd]/g, 'w'))),
+  gHurt: S(
+    [...FACE.slice(0, 4), '.odddGkkGGGGkkGdddo.', ...FACE.slice(5), '.....oGGgnngGGo.....', '......oGGGGGGo......', ...BODY].map((r) =>
+      r.replace(/[gGhd]/g, 'w'),
+    ),
+  ),
   // Tuckered out: a big brown loaf, snoring.
   gSleep: S([
     '.....ooooooooo......',

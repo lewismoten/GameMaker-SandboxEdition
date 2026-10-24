@@ -289,7 +289,8 @@ export function surfaceSet(): SetBuilder {
         return p;
       })(),
     ),
-    { chHitPt: 1 },
+    // one long drink: the spring mends 100 hit points and runs dry (plain cave) until you land again
+    { chHitPt: 100, touch: 'cave:0' },
   );
   // landing beacon (the uplink to orbit) and where Max lands
   s.add('uplink', over(hz, beacon(0)), { next: 'uplink2', ntime: 8 });

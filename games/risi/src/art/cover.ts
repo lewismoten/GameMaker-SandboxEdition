@@ -109,7 +109,8 @@ export function coverRgb(t: number): Uint8Array {
       const shade = y < 4 ? 1.05 : y > 30 ? 0.62 : 0.9 - (y % 9 === 8 ? 0.15 : 0);
       put(x, y, marble(x, y, shade));
     }
-  for (let x = 0; x < W; x += 12) for (let y = 34; y < 39; y++) put(x + 3, y, marble(x, y, 0.8)), put(x + 4, y, marble(x, y, 0.85)), put(x + 5, y, marble(x, y, 0.7));
+  for (let x = 0; x < W; x += 12)
+    for (let y = 34; y < 39; y++) (put(x + 3, y, marble(x, y, 0.8)), put(x + 4, y, marble(x, y, 0.85)), put(x + 5, y, marble(x, y, 0.7)));
 
   // ---- the columns: fluted, lit from the left
   for (const [cx, r] of COLUMNS) {
@@ -135,7 +136,10 @@ export function coverRgb(t: number): Uint8Array {
 
   // ---- laurel garlands swung between the columns, and leaves drifting down
   const leaf = (x: number, y: number, ang: number, shade: number) => {
-    for (let s = -3; s <= 3; s++) for (let w = -1; w <= 1; w++) if (Math.abs(w) <= 1 - Math.abs(s) / 4) put(x + Math.cos(ang) * s - Math.sin(ang) * w, y + Math.sin(ang) * s + Math.cos(ang) * w, [40 * shade, 120 * shade, 50 * shade]);
+    for (let s = -3; s <= 3; s++)
+      for (let w = -1; w <= 1; w++)
+        if (Math.abs(w) <= 1 - Math.abs(s) / 4)
+          put(x + Math.cos(ang) * s - Math.sin(ang) * w, y + Math.sin(ang) * s + Math.cos(ang) * w, [40 * shade, 120 * shade, 50 * shade]);
   };
   for (const [x0, x1] of [
     [64, 132],
@@ -175,7 +179,16 @@ export function coverRgb(t: number): Uint8Array {
   let lx = BUST.x - 20;
   for (const ch of 'RISI') {
     const g = letters[ch];
-    g.forEach((row, ry) => [...row].forEach((cc, rx) => cc === '#' && (put(lx + rx * 2, 142 + ry * 2, [90, 80, 80]), put(lx + rx * 2 + 1, 142 + ry * 2, [90, 80, 80]), put(lx + rx * 2, 143 + ry * 2, [120, 110, 110]), put(lx + rx * 2 + 1, 143 + ry * 2, [120, 110, 110]))));
+    g.forEach((row, ry) =>
+      [...row].forEach(
+        (cc, rx) =>
+          cc === '#' &&
+          (put(lx + rx * 2, 142 + ry * 2, [90, 80, 80]),
+          put(lx + rx * 2 + 1, 142 + ry * 2, [90, 80, 80]),
+          put(lx + rx * 2, 143 + ry * 2, [120, 110, 110]),
+          put(lx + rx * 2 + 1, 143 + ry * 2, [120, 110, 110])),
+      ),
+    );
     lx += g[0].length * 2 + 4;
   }
 
@@ -270,7 +283,7 @@ export function coverRgb(t: number): Uint8Array {
     if (laugh > 0.4) line(s * 10, 5, s * 13, 11, dark, laugh * 0.8);
   }
   // the nose: lit on the left, shadowed on the right, two nostrils
-  for (let k = -3; k <= 7; k++) dot(2, k, [150, 140, 140], 0.5), dot(3, k, [130, 120, 124], 0.5);
+  for (let k = -3; k <= 7; k++) (dot(2, k, [150, 140, 140], 0.5), dot(3, k, [130, 120, 124], 0.5));
   dot(-2, 8, deep);
   dot(3, 8, deep);
   // the mouth: a hard line, then wide open (a row of teeth, the dark inside)

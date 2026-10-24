@@ -7,5 +7,7 @@
   "price": "$5",
   "blurb": "It's 3:17 a.m., you're lactose intolerant, and there's a slice of New York cheesecake in the fridge. Tiptoe past your sleeping wife, the creaky board, the dogs and the toy building blocks; climb the fridge's shelves past the dairy come to life with all the willpower seven sticks of celery can give; eat it anyway; dash for the bathroom with the gurgle right behind you; then face the Devil himself, in leisure wear, sipping a milkshake. You have almond milk now. Shareware from The Sofa BBS, from the spoken piece by The Bard of Bizarre (monologue shaped by ChatGPT from Lewis Moten's prompt; recording (voice) made with Riffusion (now Google Flow Music); music and title art made for the game by Claude Opus 5.5).",
   "exe": "RECKON.EXE",
-  "sound": "sb"
+  "sound": "sb",
+  "tinHeart": { "map": "fridge.map", "at": [44, 15] },
+  "easterEgg": { "map": "fridge.map", "at": [4, 9] }
 }

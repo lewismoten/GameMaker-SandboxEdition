@@ -1,6 +1,7 @@
-// Level 8: The Dog Show, at night in the Fair's show barn. Spin through the turnstile into
+// Level 9: The Dog Show, at night in the Fair's show barn. Spin through the turnstile into
 // the ring, climb the A-frame, go through the tunnel, go round the hoop (Teddy retired from
-// hoops), play dead under the popcorn, bark the rival poodle off, ring the judges' bell to
+// hoops), play dead under the popcorn, bark the rival poodle off, play dead under the
+// second stand's popcorn, ring the judges' bell to
 // let down the velvet rope, and there is Gwinn in the Best Behaved ring, wiggling. Sit
 // pretty beside her and she SITS. The blue ribbon opens the stage curtain: the Big Show.
 //
@@ -8,6 +9,9 @@
 import { LevelMap, type Level } from './level';
 import { G, showTiles } from './level8Tiles';
 import { showBeasts } from './level8Beasts';
+import { STEADY, addGuest } from '../sprites/hidden';
+import { joeCameo } from '../../../kit/cameos';
+import { P } from '../art/pal';
 
 export function show(): Level {
   const bs = showTiles();
@@ -28,9 +32,15 @@ export function show(): Level {
   for (const x of [5, 6, 7, 9, 10]) m.set(x, 39, 'rail');
   // The agility course: the A-frame, the tunnel, the hoop.
   const af = 13;
-  m.set(af, 39, 'aframeL').set(af + 1, 38, 'aframeL').set(af + 1, 39, 'aframeT');
-  m.set(af + 2, 37, 'aframeL').set(af + 2, 38, 'aframeT').set(af + 2, 39, 'aframeT');
-  m.set(af + 3, 37, 'aframeR').set(af + 3, 38, 'aframeT').set(af + 3, 39, 'aframeT');
+  m.set(af, 39, 'aframeL')
+    .set(af + 1, 38, 'aframeL')
+    .set(af + 1, 39, 'aframeT');
+  m.set(af + 2, 37, 'aframeL')
+    .set(af + 2, 38, 'aframeT')
+    .set(af + 2, 39, 'aframeT');
+  m.set(af + 3, 37, 'aframeR')
+    .set(af + 3, 38, 'aframeT')
+    .set(af + 3, 39, 'aframeT');
   m.set(af + 4, 38, 'aframeR').set(af + 4, 39, 'aframeT');
   m.set(af + 5, 39, 'aframeR');
   for (let x = 22; x < 27; x++) m.set(x, 38, 'tunnelTop').set(x, 39, 'tunnel');
@@ -40,6 +50,11 @@ export function show(): Level {
   m.set(40, 38, 'popTop').set(40, 39, 'popBot');
   bs.def('popBot').birthMon = beasts.id('popcorn');
   bs.def('popBot').birthTime = 46;
+  // The second stand, just past the rival poodle: play dead under its popcorn and bark her
+  // off between pops (the routine gets busier as the show goes on).
+  m.set(51, 38, 'popTop').set(51, 39, 'popBot2');
+  bs.def('popBot2').birthMon = beasts.id('popcorn2');
+  bs.def('popBot2').birthTime = 54;
   // The judges' table and bell; the velvet rope (a monster) across the Best Behaved ring.
   m.set(55, 39, 'table').set(56, 39, 'table');
   m.set(57, 38, 'judgeTop').set(57, 39, 'judgeBot');
@@ -60,7 +75,7 @@ export function show(): Level {
   m.mon(64, 38, 'askSit');
   m.mon(65, 39, 'gwinnShow');
   m.mon(25, 37, 'scentBone');
-  m.mon(52, 39, 'scentPoodle');
+  m.mon(68, 39, 'scentPoodle');
   for (const [x, y] of [
     [16, 35],
     [29, 36],
@@ -83,7 +98,7 @@ export function show(): Level {
     [36, 39],
     [43, 39],
     [45, 39],
-    [51, 39],
+    [47, 39],
     [53, 39],
     [61, 39],
     [67, 39],
@@ -91,6 +106,9 @@ export function show(): Level {
     [74, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
+  // Mystery Robot Joe from Keep It Brief! in the front row of the stands over the judges'
+  // table, keeping count
+  m.set(57, 32, addGuest(bs, 'joe', joeCameo(P.pal, 'down', 0, { use: STEADY }), m.get(57, 32)));
   m.mark('start', 2, 39);
   m.mark('exit', 85, 38);
   return {

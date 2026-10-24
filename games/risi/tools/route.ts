@@ -64,7 +64,10 @@ export const crown = count(CROWN);
 /** Where the monsters numbered `n` are (level blocks, their left edges). */
 export function where(bot: Bot, n: number): { x: number; y: number }[] {
   const w = bot.sim.w;
-  return w.mi.map((mi, i) => ({ mi, n: w.mm[i]?.monnum })).filter((m) => m.n === n).map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
+  return w.mi
+    .map((mi, i) => ({ mi, n: w.mm[i]?.monnum }))
+    .filter((m) => m.n === n)
+    .map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
 }
 
 /** Pickups (blocks that give points, dignity or a counter when touched) still on the level's map. */
@@ -73,7 +76,8 @@ export function lootLeft(bot: Bot): string[] {
   for (let y = ORIGIN; y < ORIGIN + 16; y++)
     for (let x = ORIGIN; x < ORIGIN + 70; x++) {
       const b = bot.sim.shown(x, y);
-      if (b.touchBl && b.touchBl !== bot.sim.blockAt(x, y) && b.solid === 0 && (b.scorePts > 0 || b.chHitPt > 0 || (b.effect > 0 && b.eamt > 0))) out.push(`${x - ORIGIN},${y - ORIGIN}`);
+      if (b.touchBl && b.touchBl !== bot.sim.blockAt(x, y) && b.solid === 0 && (b.scorePts > 0 || b.chHitPt > 0 || (b.effect > 0 && b.eamt > 0)))
+        out.push(`${x - ORIGIN},${y - ORIGIN}`);
     }
   return out;
 }
@@ -141,7 +145,7 @@ export async function banquet(bot: Bot): Promise<void> {
     if (air(bot) < 5) throw new Error(`only ${air(bot)} shutters`);
   });
   await must(bot, bot.walk(50.6, 'through the door'), 'door');
-  await must(bot, bot.sim.waitForClip(), 'the door\'s song');
+  await must(bot, bot.sim.waitForClip(), "the door's song");
   await leave(bot, bot.walk(53, 'out'), 'the door');
 }
 
@@ -150,42 +154,91 @@ export async function battle(bot: Bot): Promise<void> {
   expect(bot, 3, 'the battle');
   // the horde is right behind: no waiting about
   const W = 24;
-  await carefully(bot, 'the rocks, the eagle, the cup', 0, async () => {
-    await must(bot, bot.walk(6, 'before the first rock'), 'rock');
-    await must(bot, bot.hop('right', 10, 'right', 9), 'over the first rock');
-    await must(bot, bot.walk(10, 'the eagle standard'), 'eagle');
-    await must(bot, bot.walk(11, 'before the second rock'), 'rock');
-    await must(bot, bot.hop('right', 10, 'right', 14), 'over the second rock');
-    await must(bot, bot.walk(17, 'the cup'), 'cup');
-  }, W);
-  await carefully(bot, 'up the ladder, over the palisade', 0, async () => {
-    await must(bot, bot.walk(19, 'the foot of the ladder'), 'ladder');
-    await must(bot, bot.dig('up', 5, 'up the ladder'), 'climb');
-    await must(bot, bot.walk(21, 'along the top of the palisade'), 'top');
-    await up(bot, 'the coin over the palisade', 8);
-    await must(bot, bot.walk(23, 'down off the palisade'), 'down');
-  }, W);
-  await carefully(bot, 'the rock, the bush, the coin, the tower', 0, async () => {
-    await must(bot, bot.walk(24, 'before the rock'), 'rock');
-    await must(bot, bot.hop('right', 10, 'right', 27), 'over the rock');
-    await must(bot, bot.walk(29, 'the coin, before the tower'), 'coin');
-    await must(bot, bot.hop('right', 12, 'right', 33.4), 'over the archers\' tower');
-  }, W);
-  await carefully(bot, 'the wreath, the last rock, the eagle, the ditch', 0, async () => {
-    await must(bot, bot.walk(36, 'the wreath, before the rock'), 'wreath');
-    await must(bot, bot.hop('right', 10, 'right', 39), 'over the rock');
-    await must(bot, bot.walk(44, 'the eagle, down into the ditch'), 'into the ditch');
-    await must(bot, bot.walk(45.6, 'along the bottom of the ditch'), 'ditch');
-    await must(bot, bot.hop('right', 12, 'right', 47.4), 'out of the ditch');
-  }, W);
-  await leave(bot, bot.walk(52, 'the gate'), 'the gate');
+  await carefully(
+    bot,
+    'the rocks, the eagle, the cup',
+    0,
+    async () => {
+      await must(bot, bot.walk(6, 'before the first rock'), 'rock');
+      await must(bot, bot.hop('right', 10, 'right', 9), 'over the first rock');
+      await must(bot, bot.walk(10, 'the eagle standard'), 'eagle');
+      await must(bot, bot.walk(11, 'before the second rock'), 'rock');
+      await must(bot, bot.hop('right', 10, 'right', 14), 'over the second rock');
+      await must(bot, bot.walk(17, 'the cup'), 'cup');
+    },
+    W,
+  );
+  await carefully(
+    bot,
+    'up the ladder, over the palisade',
+    0,
+    async () => {
+      await must(bot, bot.walk(19, 'the foot of the ladder'), 'ladder');
+      await must(bot, bot.dig('up', 5, 'up the ladder'), 'climb');
+      await must(bot, bot.walk(21, 'along the top of the palisade'), 'top');
+      await up(bot, 'the coin over the palisade', 8);
+      await must(bot, bot.walk(23, 'down off the palisade'), 'down');
+    },
+    W,
+  );
+  await carefully(
+    bot,
+    'the rock, the bush, the coin, the tower',
+    0,
+    async () => {
+      await must(bot, bot.walk(24, 'before the rock'), 'rock');
+      await must(bot, bot.hop('right', 10, 'right', 27), 'over the rock');
+      await must(bot, bot.walk(29, 'the coin, before the tower'), 'coin');
+      await must(bot, bot.hop('right', 12, 'right', 33.4), "over the archers' tower");
+    },
+    W,
+  );
+  await carefully(
+    bot,
+    'the wreath, the last rock, the eagle, the ditch',
+    0,
+    async () => {
+      await must(bot, bot.walk(36, 'the wreath, before the rock'), 'wreath');
+      await must(bot, bot.hop('right', 10, 'right', 39), 'over the rock');
+      await must(bot, bot.walk(44, 'the eagle, down into the ditch'), 'into the ditch');
+      await must(bot, bot.walk(45.6, 'along the bottom of the ditch'), 'ditch');
+      await must(bot, bot.hop('right', 12, 'right', 47.4), 'out of the ditch');
+    },
+    W,
+  );
+  await carefully(
+    bot,
+    'the second field: the rock, the coin, the eagle, the second tower',
+    0,
+    async () => {
+      await must(bot, bot.walk(48, 'before the rock'), 'rock');
+      await must(bot, bot.hop('right', 10, 'right', 51), 'over the rock');
+      await must(bot, bot.walk(53.4, 'the coin, the eagle, before the tower'), 'eagle');
+      await must(bot, bot.hop('right', 12, 'right', 57.4), 'over the second tower');
+    },
+    W,
+  );
+  await carefully(
+    bot,
+    'the wide ditch, the second wave behind',
+    0,
+    async () => {
+      await must(bot, bot.walk(60, 'down into the wide ditch'), 'into the ditch');
+      await must(bot, bot.walk(62.6, 'along the bottom of the ditch'), 'ditch');
+      await must(bot, bot.hop('right', 12, 'right', 64.4), 'out of the wide ditch');
+    },
+    W,
+  );
+  await leave(bot, bot.walk(70, 'the gate'), 'the gate');
 }
 
 /** Jokes at the monsters numbered `mons` while any is within `range` blocks ahead on his rows. */
 async function clear(bot: Bot, mons: number[], range = 6, dir: 'right' | 'left' = 'right'): Promise<void> {
   for (let k = 0; k < 6; k++) {
     const me = bot.px;
-    const ahead = mons.flatMap((n) => where(bot, n)).filter((m) => (dir === 'right' ? m.x - me.x / 20 : me.x / 20 - m.x) > -0.5 && Math.abs(m.x - me.x / 20) < range && Math.abs(m.y - me.y / 20) < 1.5);
+    const ahead = mons
+      .flatMap((n) => where(bot, n))
+      .filter((m) => (dir === 'right' ? m.x - me.x / 20 : me.x / 20 - m.x) > -0.5 && Math.abs(m.x - me.x / 20) < range && Math.abs(m.y - me.y / 20) < 1.5);
     if (!ahead.length) return;
     await joke(bot, dir);
   }
@@ -249,7 +302,7 @@ export async function roofs(bot: Bot): Promise<void> {
     await must(bot, bot.hop('right', 12, 'right', 51.4), 'up onto the last house');
     await must(bot, bot.walk(54, 'the titulus, through SAXA'), 'saxa');
     await must(bot, bot.walk(56.6, "into Titus's tavern"), 'tavern');
-    await must(bot, bot.sim.waitForClip(), 'the tavern\'s song');
+    await must(bot, bot.sim.waitForClip(), "the tavern's song");
     await leave(bot, bot.walk(59, 'in'), 'the tavern');
   });
 }
@@ -299,8 +352,6 @@ export async function kitchen(bot: Bot): Promise<void> {
     await must(bot, bot.walk(40.4, 'down off the shelf'), 'down');
   });
   await carefully(bot, 'the third mouse', 0, async () => {
-    await must(bot, bot.walk(37, 'the milk'), 'milk');
-    await must(bot, bot.walk(40.4, 'back'), 'back');
     await mouse(bot, 6, 'the third mouse');
   });
   await must(bot, bot.walk(45.6, 'the crown of cheese'), 'crown');
@@ -328,8 +379,16 @@ export async function baths(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'up the steam to the high bench', 0, async () => {
     await must(bot, bot.walk(17, 'before the steam'), 'steam');
-    await must(bot, bot.until('right', () => bot.px.x >= 18 * 20 - 1, 'into the steam', 40), 'into the steam');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 3 * 20 + 4, 'lifted by the steam', 140), 'lift');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= 18 * 20 - 1, 'into the steam', 40),
+      'into the steam',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 3 * 20 + 4, 'lifted by the steam', 140),
+      'lift',
+    );
     await must(bot, bot.hop('up', 6, 'right', 19.4), 'onto the high bench');
     await must(bot, bot.walk(21, 'the scale and the wreath'), 'scale');
     if (scales(bot) < 3) throw new Error(`only ${scales(bot)} scales`);
@@ -339,10 +398,22 @@ export async function baths(bot: Bot): Promise<void> {
   const drum = async (x: number, bench: number, n: number) => {
     await must(bot, bot.walk(x - 1, 'before the drum'), 'drum');
     bot.sim.press(18);
-    await must(bot, bot.until(undefined, () => bot.px.x >= x * 20 - 6, 'over the drum', 40), 'onto the drum');
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.x >= x * 20 - 6, 'over the drum', 40),
+      'onto the drum',
+    );
     bot.sim.release(18);
-    await must(bot, bot.until('right', () => bot.px.x >= x * 20 - 1, 'onto the drum', 40), 'onto the drum');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 5 * 20, 'bounced up', 140), 'bounce');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= x * 20 - 1, 'onto the drum', 40),
+      'onto the drum',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 5 * 20, 'bounced up', 140),
+      'bounce',
+    );
     await must(bot, bot.hop('up', 4, 'right', bench), 'onto the bench');
     await must(bot, bot.walk(bench + 1, 'the scale'), 'scale');
     if (scales(bot) < n) throw new Error(`only ${scales(bot)} scales`);
@@ -362,11 +433,11 @@ export async function baths(bot: Bot): Promise<void> {
     await up(bot, 'the strigil');
     await drum(40, 41, 6);
   });
-  await carefully(bot, 'the second cold pool, the mouse, the grapes, the coin', 0, async () => {
+  await carefully(bot, 'the second cold pool, the mouse, the coin', 0, async () => {
     await must(bot, bot.walk(47, 'into the pool, the scale'), 'pool');
     await must(bot, bot.walk(49, 'the far side'), 'side');
     await must(bot, bot.hop('right', 10, 'right', 50), 'out, up onto the bench');
-    await must(bot, bot.walk(51, 'the mouse, the grapes'), 'grapes');
+    await must(bot, bot.walk(51, 'the cheering mouse'), 'mouse');
     await must(bot, bot.walk(52, 'under the coin'), 'coin');
     await up(bot, 'the coin');
   });
@@ -375,7 +446,20 @@ export async function baths(bot: Bot): Promise<void> {
   await leave(bot, bot.walk(59, 'on'), 'the basin');
 }
 
-const GRAVIS = [MON.gravisA0, MON.gravisA1, MON.gravisA2, MON.gravisA3, MON.gravisB0, MON.gravisB1, MON.gravisB2, MON.gravisB3];
+const GRAVIS = [
+  MON.gravisA0,
+  MON.gravisA1,
+  MON.gravisA2m,
+  MON.gravisA2,
+  MON.gravisA3m,
+  MON.gravisA3,
+  MON.gravisB0,
+  MON.gravisB1,
+  MON.gravisB2m,
+  MON.gravisB2,
+  MON.gravisB3m,
+  MON.gravisB3,
+];
 
 /** Jokes at the stone face ahead on his row until it laughs, then waits for the laugher to come to him. */
 async function crack(bot: Bot, what: string): Promise<void> {
@@ -387,7 +471,11 @@ async function crack(bot: Bot, what: string): Promise<void> {
       await must(bot, bot.wait(1), 'the joke flies');
     }
   }
-  await must(bot, bot.until(undefined, () => laughs(bot) > before, `${what} laughs`, 200), what);
+  await must(
+    bot,
+    bot.until(undefined, () => laughs(bot) > before, `${what} laughs`, 200),
+    what,
+  );
 }
 
 /** VI. The theater: five laughs in the stands (six faces), the stairs, Doc Leo, Emperor Gravis, the crown, the altar. */
@@ -410,27 +498,37 @@ export async function theater(bot: Bot): Promise<void> {
     await crack(bot, 'the face on the fourth row');
     if (laughs(bot) < 5) throw new Error(`only ${laughs(bot)} laughs`);
   });
-  await carefully(bot, 'the orchestra: the mask, the last face, the grapes', 20, async () => {
+  await carefully(bot, 'the orchestra: the mask, the last face, the coin, Doc Leo', 20, async () => {
     await must(bot, bot.walk(17.2, 'down into the orchestra'), 'orchestra');
     await must(bot, bot.walk(18, 'under the mask'), 'mask');
     await up(bot, 'the mask', 8);
     await crack(bot, 'the face in the orchestra');
-    await must(bot, bot.walk(22, 'under the grapes'), 'grapes');
-    await up(bot, 'the grapes');
+    await must(bot, bot.walk(22, 'under the coin'), 'coin');
+    await up(bot, 'the coin');
+    await must(bot, bot.walk(23, 'Doc Leo the jester'), 'leo');
   });
-  await carefully(bot, 'the stairs, up onto the stage, Doc Leo', 0, async () => {
+  await carefully(bot, 'the stairs, up onto the stage', 0, async () => {
     await must(bot, bot.walk(24, 'the stairs open'), 'stairs');
     await must(bot, bot.hop('right', 12, 'right', 25.6), 'up onto the stage');
-    await must(bot, bot.walk(29, 'Doc Leo the jester'), 'leo');
+    await must(bot, bot.walk(28, 'across the stage'), 'stage');
   });
-  await carefully(bot, 'Emperor Gravis', 60, async () => {
-    await must(bot, bot.walk(33, 'before the Emperor'), 'emperor');
-    for (let k = 0; k < 30 && alive(bot, GRAVIS); k++) await joke(bot, 'right', 8);
+  // Every hush he blows over his head ("SILENTIUM!") swoops down and rolls at Marcus's feet: the
+  // bot hops each one and jokes between them, and waits while he shuffles his throne back.
+  await carefully(bot, 'Emperor Gravis', 40, async () => {
+    await must(bot, bot.walk(29.2, 'before the Emperor'), 'emperor');
+    for (let k = 0; k < 40 && alive(bot, GRAVIS); k++) {
+      const me = bot.px.x / 20;
+      if (where(bot, MON.hush).some((h) => h.y > 7.9 && h.x - me > 0 && h.x - me < 2)) {
+        await up(bot, 'over the hush');
+        await must(bot, bot.land(), 'land');
+      } else if (where(bot, MON.gravisA2m).length || where(bot, MON.gravisA3m).length) await must(bot, bot.wait(4), 'he shuffles back');
+      else await joke(bot, 'right', 4);
+    }
     if (alive(bot, GRAVIS)) throw new Error('the Emperor keeps a straight face');
     bot.say('Emperor Gravis laughed');
   });
-  await carefully(bot, 'the laurel crown, the altar', 30, async () => {
-    await must(bot, bot.walk(35.6, 'under the crown'), 'crown');
+  await carefully(bot, 'the laurel crown, the altar', 0, async () => {
+    await must(bot, bot.walk(36.6, 'under the crown'), 'crown');
     await up(bot, 'the laurel crown', 6);
     if (crown(bot) < 1) throw new Error('no crown');
     await must(bot, bot.walk(40.6, 'the altar'), 'altar');

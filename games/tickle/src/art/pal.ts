@@ -50,14 +50,54 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
 /** Each place's sky or wall glow (dark to light) and how the rest is lit. */
 const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // the night classroom: warm lamplight
-  course: { sky: [[40, 30, 46], [214, 196, 160], [120, 100, 100]], mul: [1, 0.96, 0.88], add: [8, 4, 0] },
+  course: {
+    sky: [
+      [40, 30, 46],
+      [214, 196, 160],
+      [120, 100, 100],
+    ],
+    mul: [1, 0.96, 0.88],
+    add: [8, 4, 0],
+  },
   // the lab at night: cold fluorescent tubes
-  lab: { sky: [[18, 28, 40], [190, 220, 226], [90, 120, 140]], mul: [0.9, 0.98, 1.02], add: [0, 4, 8] },
+  lab: {
+    sky: [
+      [18, 28, 40],
+      [190, 220, 226],
+      [90, 120, 140],
+    ],
+    mul: [0.9, 0.98, 1.02],
+    add: [0, 4, 8],
+  },
   // the sewers: green, dim, drippy
-  sewer: { sky: [[10, 18, 12], [110, 140, 90], [44, 64, 40]], mul: [0.7, 0.8, 0.64], add: [0, 8, 0] },
+  sewer: {
+    sky: [
+      [10, 18, 12],
+      [110, 140, 90],
+      [44, 64, 40],
+    ],
+    mul: [0.7, 0.8, 0.64],
+    add: [0, 8, 0],
+  },
   // the tower in the storm: violet, with lightning
-  storm: { sky: [[16, 10, 36], [170, 140, 220], [70, 50, 120]], mul: [0.76, 0.72, 0.92], add: [8, 4, 20] },
-  plain: { sky: [[40, 30, 46], [214, 196, 160], [120, 100, 100]], mul: [1, 1, 1], add: [0, 0, 0] },
+  storm: {
+    sky: [
+      [16, 10, 36],
+      [170, 140, 220],
+      [70, 50, 120],
+    ],
+    mul: [0.76, 0.72, 0.92],
+    add: [8, 4, 20],
+  },
+  plain: {
+    sky: [
+      [40, 30, 46],
+      [214, 196, 160],
+      [120, 100, 100],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
 };
 
 export interface Pal {

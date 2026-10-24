@@ -25,7 +25,6 @@ import {
   splice,
   spanOf,
   trim,
-  type Effect,
   type Span,
 } from '../../../audio/sampleEdit';
 import { classifySound, SOUND_GROUPS } from '../../../audio/soundProfile';
@@ -148,7 +147,7 @@ registerEditor(['voc'], (host, project, file) => {
     const s = span() ?? { start: cursor < samples.length - rate * 0.05 ? cursor : 0, end: samples.length };
     const part = samples.subarray(s.start, s.end);
     const buf = ctx.createBuffer(1, Math.max(1, part.length), rate);
-    buf.copyToChannel(part.slice() as Float32Array<ArrayBuffer>, 0);
+    buf.copyToChannel(part.slice(), 0);
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.connect(ctx.destination);
@@ -337,7 +336,7 @@ registerEditor(['voc'], (host, project, file) => {
         group(
           'Effects',
           ...EFFECTS.filter(([e]) => e !== 'none').map(([e, label]) =>
-            tool(label, `The ${label.toLowerCase()} effect`, () => onSpan((p) => applyEffect(p, e as Effect, rate))),
+            tool(label, `The ${label.toLowerCase()} effect`, () => onSpan((p) => applyEffect(p, e, rate))),
           ),
         ),
         group('Microphone', recBtn),

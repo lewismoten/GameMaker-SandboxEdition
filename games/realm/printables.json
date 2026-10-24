@@ -14,11 +14,134 @@
     "F4": "Sound effects on / off"
   },
   "stickers": [
-    { "text": "PIP", "sub": "OF NOWISH", "shape": "badge", "color": "#2f5d3a", "ink": "#ffffff", "hero": { "chr": "pip.chr", "cbl": "pip.cbl", "pal": "town.pal" } },
-    { "text": "I GOT AROUND TO IT", "shape": "circle", "color": "#e8b84a", "ink": "#2a1a10" },
-    { "text": "SQUEAK", "sub": "SIR REGINALD", "shape": "star", "color": "#ffd23f", "ink": "#7a1a10", "sprite": { "blocks": "people.mbl", "pal": "world.pal", "grid": [[54]] } },
-    { "text": "THE CHEZ", "sub": "1976 1/2", "shape": "rect", "color": "#d6362a", "ink": "#ffffff" },
-    { "text": "TWO N'S", "sub": "GWINN", "shape": "badge", "color": "#f6a9c8", "ink": "#3a1a20" }
+    {
+      "text": "PIP",
+      "sub": "OF NOWISH",
+      "shape": "cut",
+      "color": "#2f5d3a",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "pip.chr",
+        "cbl": "pip.cbl",
+        "pal": "town.pal"
+      }
+    },
+    {
+      "text": "TEDDY",
+      "sub": "ONE EAR SHORTER",
+      "shape": "cut",
+      "color": "#e8862a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "TWO N'S",
+      "sub": "GWINN",
+      "shape": "cut",
+      "color": "#f6a9c8",
+      "ink": "#3a1a20",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[58]]
+      }
+    },
+    {
+      "text": "BAWK!",
+      "sub": "THE RUBBER CHICKEN",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#7a1a10",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[60]]
+      }
+    },
+    {
+      "text": "SQUEAK",
+      "sub": "SIR REGINALD",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#7a1a10",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[54]]
+      }
+    },
+    {
+      "text": "BLORP",
+      "sub": "MOSTLY HARMLESS",
+      "shape": "cut",
+      "color": "#4cb33a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[62]]
+      }
+    },
+    {
+      "text": "THE CHEZ",
+      "sub": "1976½",
+      "shape": "cut",
+      "color": "#d6362a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "pip.cbl",
+        "pal": "town.pal",
+        "grid": [[19]]
+      }
+    },
+    {
+      "text": "ZOOM!",
+      "sub": "PIP'S SNEAKERS",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "pip.cbl",
+        "pal": "town.pal",
+        "grid": [[17]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "port.bbl",
+        "pal": "port.pal",
+        "grid": [[142]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "port.bbl",
+        "pal": "port.pal",
+        "grid": [[146]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "I GOT AROUND TO IT",
+      "shape": "circle",
+      "color": "#e8b84a",
+      "ink": "#2a1a10"
+    }
   ],
   "news": [
     {
@@ -112,7 +235,10 @@
         {
           "head": "Getting Started",
           "hints": [
-            { "q": "Where do I go first?", "a": "North up the road from Nowish to Laterburg. Walk into the King on his throne at the top of the Garden Court: he gives you the Royal Writ." },
+            {
+              "q": "Where do I go first?",
+              "a": "North up the road from Nowish to Laterburg. Walk into the King on his throne at the top of the Garden Court: he gives you the Royal Writ."
+            },
             { "q": "How do I talk to people?", "a": "Walk into them." },
             { "q": "How do I buy things?", "a": "Walk into the counter once to pay and again to take it. No money, no sale." },
             { "q": "I'm out of gold.", "a": "Foes drop gems: 5 gold each, 20 for a ruby. The dungeons have chests. The kennel and the library pay rewards." }
@@ -121,30 +247,70 @@
         {
           "head": "The Pieces of the Tuit",
           "hints": [
-            { "q": "The door in the Snooze Barrows won't open.", "a": "It's sealed in the King's name. Get the Royal Writ from King Dillydally first, then walk into the door." },
-            { "q": "How do I reach the Soggy Vaults?", "a": "Walk out along Someday Harbor's long pier to the fog bank. It only clears for the Harbor Master's foghorn, which is lying in the west room of the Snooze Barrows." },
-            { "q": "My sword bounces off the Kraken.", "a": "From the Vaults on, bosses are too tough for wood. Buy the steel sword from Brokk in Laterburg's market for 80 gold." },
-            { "q": "How do I get across to Far Putoff?", "a": "In THE CHEZ. The second piece of the Tuit is full of lightning: carry it to Professor Fiddlesticks' garage in Someday Harbor and walk into the garage door." },
+            {
+              "q": "The door in the Snooze Barrows won't open.",
+              "a": "It's sealed in the King's name. Get the Royal Writ from King Dillydally first, then walk into the door."
+            },
+            {
+              "q": "How do I reach the Soggy Vaults?",
+              "a": "Walk out along Someday Harbor's long pier to the fog bank. It only clears for the Harbor Master's foghorn, which is lying in the west room of the Snooze Barrows."
+            },
+            {
+              "q": "My sword bounces off the Kraken.",
+              "a": "From the Vaults on, bosses are too tough for wood. Buy the steel sword from Brokk in Laterburg's market for 80 gold."
+            },
+            {
+              "q": "How do I get across to Far Putoff?",
+              "a": "In THE CHEZ. The second piece of the Tuit is full of lightning: carry it to Professor Fiddlesticks' garage in Someday Harbor and walk into the garage door."
+            },
             { "q": "The bridge on the Flats is under water!", "a": "It's the tide. Wait a few seconds and it drains again." },
             { "q": "The Putoff Mines' door won't let me in.", "a": "It wants a lamp: 40 gold at Hattie's stall in Eventually Falls." },
-            { "q": "Where is Deadline Keep's door?", "a": "On the south side of the Keep. The road from Eventually Falls goes round the east side of the Gloomwood to it." },
-            { "q": "The Keep's sockets won't open.", "a": "Each one wants its piece of the Tuit. If one stays shut, you're missing that piece: the Tuit Table in the Garden Court lights a pedestal for each piece you carry." }
+            {
+              "q": "Lord Deadline jumped out of his armor!",
+              "a": "That's his second act. He backs off, then charges straight at you. Face him and swing as he comes, then step aside. Six blows; he leaves a heart."
+            },
+            {
+              "q": "Where is Deadline Keep's door?",
+              "a": "On the south side of the Keep. The road from Eventually Falls goes round the east side of the Gloomwood to it."
+            },
+            {
+              "q": "The Keep's sockets won't open.",
+              "a": "Each one wants its piece of the Tuit. If one stays shut, you're missing that piece: the Tuit Table in the Garden Court lights a pedestal for each piece you carry."
+            }
           ]
         },
         {
           "head": "Side Quests",
           "hints": [
-            { "q": "Where are the royal hounds?", "a": "Teddy is in a clearing in the Whistling Woods: take the trail east off the north road. Gwinn is digging on the beach south of Someday Harbor. Walk into each, then walk into the kennel gate in the Garden Court." },
-            { "q": "Where is the Tome of Tomorrow?", "a": "In the Putoff Mines' old workings, west of the great gallery. Take it to the rope at the Royal Library's door." },
-            { "q": "Where is Sir Reginald Cluckington III?", "a": "In a glade in the Gloomwood, east of the road to Deadline Keep. Walk into him, then into the flap of Doc Leo's tent in Eventually Falls." },
-            { "q": "What does the kazoo do?", "a": "Press K. A note flies straight ahead and beats nearly anything, bosses included. Lyra sells reeds in Someday Harbor: ten notes for ten gold." }
+            {
+              "q": "Where are the royal hounds?",
+              "a": "Teddy is in a clearing in the Whistling Woods: take the trail east off the north road. Gwinn is digging on the beach south of Someday Harbor. Walk into each, then walk into the kennel gate in the Garden Court."
+            },
+            {
+              "q": "Where is the Tome of Tomorrow?",
+              "a": "In the Putoff Mines' old workings, west of the great gallery. Take it to the rope at the Royal Library's door."
+            },
+            {
+              "q": "Where is Sir Reginald Cluckington III?",
+              "a": "In a glade in the Gloomwood, east of the road to Deadline Keep. Walk into him, then into the flap of Doc Leo's tent in Eventually Falls."
+            },
+            {
+              "q": "What does the kazoo do?",
+              "a": "Press K. A note flies straight ahead and beats nearly anything, bosses included. Lyra sells reeds in Someday Harbor: ten notes for ten gold."
+            }
           ]
         },
         {
           "head": "The Felt Egg",
           "hints": [
-            { "q": "The hermit's garden? What hermit?", "a": "Eventually Falls has a waterfall at the top of town. Its left side is only spray: walk straight up through it." },
-            { "q": "The nest is empty.", "a": "Watch it. Every twenty seconds or so something turns up in it for a moment. Stand on the nest and press ENTER while it's there." },
+            {
+              "q": "The hermit's garden? What hermit?",
+              "a": "Eventually Falls has a waterfall at the top of town. Its left side is only spray: walk straight up through it."
+            },
+            {
+              "q": "The nest is empty.",
+              "a": "Watch it. Every twenty seconds or so something turns up in it for a moment. Stand on the nest and press ENTER while it's there."
+            },
             {
               "q": "Just draw me a map.",
               "a": "Up the main street to the foot of the falls, through the left edge of the falling water, and into the garden. The nest is right of the hermit; the stone beside it opens for whoever carries the egg.",

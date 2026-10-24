@@ -1,6 +1,6 @@
 // The cartoons (FLIs): the morning after the Big Show (before the title poster and the story
 // pages), Gwinn's rides between her MEANWHILE... levels (the hay wagon, the Fair's ride truck),
-// and at the end, fireworks and the Fair parade with THE CHEZ in front.
+// the gust that takes her dog show entry card, and at the end, fireworks and the Fair parade with THE CHEZ in front.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, blob, centered, klubArt, micro, outlined, scaleBlit } from '../art/draw';
@@ -9,6 +9,7 @@ import { citiCar } from '../sprites/klown';
 import { docLeo, FULL } from '../sprites/people';
 import { SP, landscape, logo, titleScreen } from './screens';
 import { castFli } from './cast';
+import { KLUB } from '../sprites/klubfolk';
 import { POSES } from '../sprites/teddy';
 
 const c = (n: string, k: number) => SP.c(n, k);
@@ -167,7 +168,9 @@ export function wagonFli(): Uint8Array {
       const x = 330 - f * 9;
       const bob = f % 2;
       // the pickup in front, the wagon behind it
-      p.rect(x, 128 + bob, 70, 26, c('blue', 1)).rect(x + 6, 108 + bob, 34, 22, c('blue', 1)).rect(x + 10, 112 + bob, 22, 12, c('sky', 1));
+      p.rect(x, 128 + bob, 70, 26, c('blue', 1))
+        .rect(x + 6, 108 + bob, 34, 22, c('blue', 1))
+        .rect(x + 10, 112 + bob, 22, 12, c('sky', 1));
       p.rect(x, 140, 4, 4, c('glow', 3));
       for (const wx of [x + 14, x + 56]) p.disc(wx, 158, 9, c('ink', 1)).ring(wx, 158, 4, c('metal', 2));
       const wx = x + 80;
@@ -196,7 +199,9 @@ export function truckFli(): Uint8Array {
       for (const wx of [x + 14, x + 100, x + 150]) p.disc(wx, 156, 9, c('ink', 1)).ring(wx, 156, 4, c('metal', 2));
       p.rect(x + 120, 110 + bob, 46, 40, c('blue', 2)).rect(x + 140, 114 + bob, 22, 14, c('sky', 6));
       // the Ferris wheel car, and Gwinn in it, ears up
-      p.rect(x + 30, 100 + bob, 60, 6, c('red', 2)).rect(x + 34, 106 + bob, 52, 34, c('yellow', 2)).rect(x + 34, 106 + bob, 52, 12, c('sky', 5));
+      p.rect(x + 30, 100 + bob, 60, 6, c('red', 2))
+        .rect(x + 34, 106 + bob, 52, 34, c('yellow', 2))
+        .rect(x + 34, 106 + bob, 52, 12, c('sky', 5));
       scaleBlit(p, GWINN[f % 4 < 2 ? 'gwinn1' : 'gwinn2'].crop(0, 0, 20, 12), x + 40, 92 + bob, 2);
       caption(p, f < 22 ? 'THE RIDES ARE GOING TO THE FAIR,' : 'AND SO IS GWINN.', 10);
       if (f >= 22) caption(p, 'SHE CAN SMELL THE CORN DOGS.', 22);
@@ -204,6 +209,50 @@ export function truckFli(): Uint8Array {
   return r.fli(5);
 }
 
+/**
+ * After Gwinn signs up: Honker hands her the entry card, number 13, and a gust whisks it out
+ * of her mouth, over the bandstand, round and round, up to the top of THE BIG DROP.
+ */
+export function gustFli(): Uint8Array {
+  const bg = landscape(21, false);
+  bg.rect(0, 160, W, 40, c('grass', 2));
+  // THE BIG DROP: a lattice tower on the right, its deck at the top
+  bg.rect(262, 52, 26, 108, c('metal', 1));
+  for (let y = 52; y < 160; y += 12) bg.line(262, y, 287, y + 12, c('metal', 3)).line(287, y, 262, y + 12, c('metal', 3));
+  bg.rect(254, 46, 42, 6, c('red', 2)).rect(254, 42, 42, 2, c('yellow', 3));
+  micro(bg, 260, 54, 'BIG DROP', c('paint', 3));
+  // the bandstand on the left, Honker at the table
+  bg.rect(10, 50, 110, 8, c('red', 2)).rect(14, 58, 4, 102, c('paint', 3)).rect(112, 58, 4, 102, c('paint', 3));
+  for (let x = 10; x < 120; x += 10) bg.rect(x, 58, 5, 3, c('paint', 3));
+  bg.rect(10, 140, 110, 6, c('wood', 3));
+  scaleBlit(bg, KLUB.honker, 26, 60, 2);
+  const card = (p: Pixels, x: number, y: number, tilt: number) => {
+    const w = tilt ? 10 : 16;
+    p.rect(x - w / 2, y - 6, w, 12, c('paint', 3)).frame(x - w / 2, y - 6, w, 12, c('ink', 0));
+    if (!tilt) micro(p, x - 3, y - 2, '13', c('red', 2));
+  };
+  const r = new Reel(bg);
+  for (let f = 0; f < 52; f++)
+    r.frame((p) => {
+      const t = Math.max(0, f - 14) / 37;
+      // Gwinn on the stage, the card in her mouth, then looking up after it
+      scaleBlit(p, GWINN[f < 14 ? 'gwinn1' : f % 4 < 2 ? 'gwinnRun1' : 'gwinnRun2'].crop(0, 0, 20, 20), 70, 100, 2);
+      if (f < 14) card(p, 98, 116, 0);
+      else card(p, Math.round(98 + t * 178 + Math.sin(t * 12) * 18), Math.round(116 - t * 88 - Math.cos(t * 9) * 10), f % 3 === 0 ? 1 : 0);
+      for (let k = 0; k < 5 && f >= 14; k++) p.rect((f * 9 + k * 70) % W, 40 + k * 22, 10, 1, c('cloud', 2));
+      caption(p, f < 14 ? 'HONKER WRITES HER IN: NUMBER 13!' : 'THEN A GUST TAKES HER ENTRY CARD', 10);
+      if (f >= 14) caption(p, 'UP TO THE TOP OF THE BIG DROP!', 22);
+    });
+  return r.fli(6);
+}
+
 export function buildCartoons(): Record<string, Uint8Array> {
-  return { 'morning.fli': morningFli(), 'finale.fli': finaleFli(), 'cast.fli': castFli(), 'wagon.fli': wagonFli(), 'truck.fli': truckFli() };
+  return {
+    'morning.fli': morningFli(),
+    'finale.fli': finaleFli(),
+    'cast.fli': castFli(),
+    'wagon.fli': wagonFli(),
+    'truck.fli': truckFli(),
+    'gust.fli': gustFli(),
+  };
 }

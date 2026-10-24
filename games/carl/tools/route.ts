@@ -81,7 +81,17 @@ async function rollAhead(bot: Bot, dir: 'left' | 'right', align: 'up' | 'down' =
 /** 1. The couch: eight snacks, past the towel in the bookcase gap, onto the lamp. */
 export async function theCouch(bot: Bot): Promise<void> {
   expect(bot, 2, 'the couch');
-  await carefully(bot, 'the bookshelf', 10, () => go(bot, [[6, 4], [7, 4], [10, 2]], 'candy on the shelf'));
+  await carefully(bot, 'the bookshelf', 10, () =>
+    go(
+      bot,
+      [
+        [6, 4],
+        [7, 4],
+        [10, 2],
+      ],
+      'candy on the shelf',
+    ),
+  );
   await carefully(bot, 'the coffee table', 10, () =>
     go(
       bot,
@@ -130,7 +140,16 @@ export async function theCouch(bot: Bot): Promise<void> {
   await carefully(bot, 'the towel in the bookcase gap', 10, async () => {
     await go(bot, [[46, 1]], 'the gap');
     await rollAhead(bot, 'right');
-    await go(bot, [[50, 1], [51, 10], [52, 2], [56, 2]], 'through, the pizza on the floor, over the lamp');
+    await go(
+      bot,
+      [
+        [50, 1],
+        [51, 10],
+        [52, 2],
+        [56, 2],
+      ],
+      'through, the pizza on the floor, over the lamp',
+    );
   });
   // straight down into the shade and the pole: no new move, so nothing cuts "On my lamp" off
   await carefully(bot, 'the lamp', 10, () => leave(bot, bot.fly(56, 9, 'the shade'), 'the lamp'));
@@ -180,7 +199,14 @@ export async function theWalls(bot: Bot): Promise<void> {
     ),
   );
   await carefully(bot, 'the swatter over the fridge', 12, async () => {
-    await go(bot, [[35, 2], [36, 1]], 'the gap');
+    await go(
+      bot,
+      [
+        [35, 2],
+        [36, 1],
+      ],
+      'the gap',
+    );
     await rollAhead(bot, 'right');
     await go(bot, [[41, 1]], 'over the fridge');
   });
@@ -215,22 +241,59 @@ async function buzzAt(bot: Bot, at: Pt, dir: 'left' | 'right' | 'up' | 'down'): 
 export async function theBed(bot: Bot): Promise<void> {
   expect(bot, 4, 'the bed');
   await carefully(bot, 'his ear', 10, async () => {
-    await go(bot, [[9, 3], [13, 7], [13, 8], [16, 4]], 'the soda on the nightstand, over his head');
+    await go(
+      bot,
+      [
+        [9, 3],
+        [13, 7],
+        [13, 8],
+        [16, 4],
+      ],
+      'the soda on the nightstand, over his head',
+    );
     await buzzAt(bot, [16, 4], 'down');
     await go(bot, [[16, 7]], 'into his ear');
     need(bot, EARS, 1, 'ears');
     await go(bot, [[16, 2]], 'back up');
   });
-  await carefully(bot, 'over the bed', 10, () => go(bot, [[24, 3], [29, 2], [30, 3], [33, 2], [38, 2], [38, 9], [39, 9]], 'to Teddy'));
+  await carefully(bot, 'over the bed', 10, () =>
+    go(
+      bot,
+      [
+        [24, 3],
+        [29, 2],
+        [30, 3],
+        [33, 2],
+        [38, 2],
+        [38, 9],
+        [39, 9],
+      ],
+      'to Teddy',
+    ),
+  );
   for (const n of [2, 3])
     await carefully(bot, `Teddy's ear (${n})`, 10, async () => {
       for (let t = 0; t < 40 && !bot.sim.w.mm.some((m) => m.monnum === MON.dogEar); t++) await must(bot, bot.wait(6), 'his ear asleep');
       await buzzAt(bot, [39, 9], 'left');
-      await go(bot, [[36, 9], [39, 9]], "into Teddy's ear");
+      await go(
+        bot,
+        [
+          [36, 9],
+          [39, 9],
+        ],
+        "into Teddy's ear",
+      );
       need(bot, EARS, n, 'ears');
     });
   await carefully(bot, 'the window', 10, async () => {
-    await go(bot, [[42, 8], [44, 4]], 'the window');
+    await go(
+      bot,
+      [
+        [42, 8],
+        [44, 4],
+      ],
+      'the window',
+    );
     // straight out the window into the night: no new move, so nothing cuts "I've opened the window" off
     await leave(bot, bot.fly(55, 4, 'out'), 'the window');
   });
@@ -239,22 +302,101 @@ export async function theBed(bot: Bot): Promise<void> {
 /** 4. The open window: through the gusts, over the clothesline, along the branch, the pie, the tall grass. */
 export async function theWindow(bot: Bot): Promise<void> {
   expect(bot, 5, 'the window');
-  await carefully(bot, 'through the gusts', 12, () => go(bot, [[10, 8], [17, 8], [18, 5]], 'the gusts'));
+  await carefully(bot, 'through the gusts', 12, () =>
+    go(
+      bot,
+      [
+        [10, 8],
+        [17, 8],
+        [18, 5],
+      ],
+      'the gusts',
+    ),
+  );
   await carefully(bot, 'over the clothesline', 12, () => go(bot, [[31, 5]], 'the clothesline'));
-  await carefully(bot, 'along the branch', 12, () => go(bot, [[41, 5], [41, 8], [43, 9], [45, 9]], 'the pie and the lemonade'));
+  await carefully(bot, 'along the branch', 12, () =>
+    go(
+      bot,
+      [
+        [41, 5],
+        [41, 8],
+        [43, 9],
+        [45, 9],
+      ],
+      'the pie and the lemonade',
+    ),
+  );
+  await carefully(bot, 'the gusts again', 12, () =>
+    go(
+      bot,
+      [
+        [47, 9],
+        [53, 9],
+        [54, 5],
+      ],
+      'the gusts again',
+    ),
+  );
+  await carefully(bot, "over the neighbor's clothesline", 12, () => go(bot, [[65, 5]], 'the second clothesline'));
   await carefully(bot, 'into the wild', 12, async () => {
-    await go(bot, [[47, 9], [55, 9]], 'the gusts again');
-    await leave(bot, bot.fly(57, 9, 'the tall grass'), 'the wild');
+    await go(bot, [[69, 9]], 'the last gust');
+    await leave(bot, bot.fly(71, 9, 'the tall grass'), 'the wild');
   });
 }
 
 /** 5. Carl has seen things: fourteen hourglasses (twenty-eight hours), past the frog, the dragonflies and the spider, to the clock. */
 export async function theWild(bot: Bot): Promise<void> {
   expect(bot, 6, 'the wild');
-  await carefully(bot, 'the grass and the pond', 12, () => go(bot, [[4, 3], [8, 5], [12, 10], [12, 11], [15, 2], [17, 7], [22, 9]], 'hourglasses by the pond'));
-  await carefully(bot, 'under the dragonfly', 12, () => go(bot, [[27, 4], [31, 7], [35, 9]], 'hourglasses by the mushrooms'));
-  await carefully(bot, 'by the spider', 12, () => go(bot, [[38, 4], [43, 7], [42, 10], [42, 11], [47, 2]], 'hourglasses by the web'));
-  await carefully(bot, 'the desert', 12, () => go(bot, [[51, 7], [55, 9], [58, 4]], 'hourglasses by Brother Camel'));
+  await carefully(bot, 'the grass and the pond', 12, () =>
+    go(
+      bot,
+      [
+        [4, 3],
+        [8, 5],
+        [12, 10],
+        [12, 11],
+        [15, 2],
+        [17, 7],
+        [22, 9],
+      ],
+      'hourglasses by the pond',
+    ),
+  );
+  await carefully(bot, 'under the dragonfly', 12, () =>
+    go(
+      bot,
+      [
+        [27, 4],
+        [31, 7],
+        [35, 9],
+      ],
+      'hourglasses by the mushrooms',
+    ),
+  );
+  await carefully(bot, 'by the spider', 12, () =>
+    go(
+      bot,
+      [
+        [38, 4],
+        [43, 7],
+        [42, 10],
+        [42, 11],
+        [47, 2],
+      ],
+      'hourglasses by the web',
+    ),
+  );
+  await carefully(bot, 'the desert', 12, () =>
+    go(
+      bot,
+      [
+        [51, 7],
+        [55, 9],
+        [58, 4],
+      ],
+      'hourglasses by Brother Camel',
+    ),
+  );
   need(bot, HOURS, 24, 'hours');
   await carefully(bot, 'the clock', 12, async () => {
     await go(bot, [[60, 6]], 'the clock');
@@ -266,17 +408,45 @@ export async function theWild(bot: Bot): Promise<void> {
 /** 6. The aux cord: over the sage and the oils, the donut, a roll past the clap in the bookcase gap, the stereo. */
 export async function theAux(bot: Bot): Promise<void> {
   expect(bot, 7, 'the aux cord');
-  await carefully(bot, 'over the sage and the oils', 12, () => go(bot, [[19, 3], [26, 2], [26, 8], [27, 2], [36, 2], [36, 3]], 'the crumbs and the donut'));
+  await carefully(bot, 'over the sage and the oils', 12, () =>
+    go(
+      bot,
+      [
+        [19, 3],
+        [26, 2],
+        [26, 8],
+        [27, 2],
+        [36, 2],
+        [36, 3],
+      ],
+      'the crumbs and the donut',
+    ),
+  );
   await carefully(bot, 'the clap in the bookcase gap', 12, async () => {
     await go(bot, [[38, 1]], 'the gap');
     await rollAhead(bot, 'right');
     await go(bot, [[42, 1]], 'through');
   });
+  await carefully(bot, 'his hand over the stereo', 12, async () => {
+    await go(bot, [[42, 1]], 'by the gap');
+    await rollAhead(bot, 'right');
+    await go(bot, [[46, 1]], 'past his hand');
+  });
+  await carefully(bot, 'his hand over the cord', 12, async () => {
+    await go(bot, [[47, 2]], 'beside the speaker');
+    await must(bot, bot.hold('right', 1), 'face');
+    await must(bot, bot.tap('space', 6), 'roll');
+    await go(bot, [[49, 1]], 'over the stereo');
+  });
   await carefully(bot, 'the aux cord', 12, async () => {
-    await go(bot, [[42, 1], [49, 1]], 'over the stereo');
     // straight down with the cord to the receiver: no new move, so nothing cuts "Carl's got the aux cord now" off
     await leave(bot, bot.fly(49, 9, 'the aux cord'), 'the aux cord');
   });
 }
 
-export const counts = { snacks: (b: Bot) => count(b, SNACKS), smiles: (b: Bot) => count(b, SMILES), ears: (b: Bot) => count(b, EARS), hours: (b: Bot) => count(b, HOURS) };
+export const counts = {
+  snacks: (b: Bot) => count(b, SNACKS),
+  smiles: (b: Bot) => count(b, SMILES),
+  ears: (b: Bot) => count(b, EARS),
+  hours: (b: Bot) => count(b, HOURS),
+};

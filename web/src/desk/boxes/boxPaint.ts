@@ -4,6 +4,7 @@
 import type { CatalogEntry } from '../../project/files';
 import { type BoxExtras } from './boxFacts';
 import { bbsNameWidth, paintBbsName } from '../../retro/bbs/bbsName';
+import { drawSandboxMark } from '../../manual/printables/sandboxMark';
 
 export type Box = NonNullable<NonNullable<CatalogEntry['original']>['box']> & BoxExtras;
 
@@ -51,7 +52,7 @@ function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: num
     if (i > 0) {
       const full = part[0] === 'F';
       const fill = ctx.fillStyle;
-      at += paintBbsName(ctx, at + fontPx(ctx) * 0.35, y, fontPx(ctx), { full }) ;
+      at += paintBbsName(ctx, at + fontPx(ctx) * 0.35, y, fontPx(ctx), { full });
       ctx.fillStyle = fill;
       rest = part.slice(1);
     }
@@ -158,9 +159,14 @@ export function publisherBand(ctx: CanvasRenderingContext2D, entry: CatalogEntry
   ctx.fillRect(0, y, w, hgt);
   ctx.fillStyle = '#f5d000';
   ctx.font = SANS(hgt * 0.5, 900);
-  ctx.textAlign = left ? 'left' : 'center';
-  ctx.fillText((entry.company ?? 'SANDBOX SOFTWARE').toUpperCase().split('').join(' '), left ? 28 : w / 2, y + hgt * 0.68);
+  const name = (entry.company ?? 'SANDBOX SOFTWARE').toUpperCase().split('').join(' ');
+  // Sandbox Software's own boxes carry its mark before the name
+  const mark = !entry.company || entry.company === 'Sandbox Software' ? hgt - 6 : 0;
+  const gap = mark ? hgt * 0.3 : 0;
+  const x = left ? 28 : (w - ctx.measureText(name).width - mark - gap) / 2;
+  if (mark) drawSandboxMark(ctx, x, y + 3, mark);
   ctx.textAlign = 'left';
+  ctx.fillText(name, x + mark + gap, y + hgt * 0.68);
 }
 
 export function framedShot(ctx: CanvasRenderingContext2D, shot: HTMLCanvasElement | undefined, x: number, y: number, w: number, tilt = 0): number {
@@ -208,7 +214,13 @@ export function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: 
   d.push((10 - ((odd * 3 + even) % 10)) % 10);
   const L = ['0001101', '0011001', '0010011', '0111101', '0100011', '0110001', '0101111', '0111011', '0110111', '0001011'];
   const R = L.map((c) => [...c].map((b) => (b === '0' ? '1' : '0')).join(''));
-  const bits = `101${d.slice(0, 6).map((v) => L[v]).join('')}01010${d.slice(6).map((v) => R[v]).join('')}101`;
+  const bits = `101${d
+    .slice(0, 6)
+    .map((v) => L[v])
+    .join('')}01010${d
+    .slice(6)
+    .map((v) => R[v])
+    .join('')}101`;
   // guard bars (and the first and last digit's) run down past the others
   const guard = (i: number) => i < 10 || (i >= 45 && i < 50) || i >= 85;
   const quiet = 9;

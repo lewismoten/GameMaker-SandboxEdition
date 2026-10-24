@@ -65,6 +65,31 @@ export async function hub2(bot: Bot): Promise<void> {
   if ((await bot.goto(45, 21, 'the Hosewater Moat')) !== 'link') throw new Error('No way in');
 }
 
+/** Steps into a current going `dir`, rides it until it lets go, then steps onto (x, y). */
+async function ride(bot: Bot, dir: Dir, x: number, y: number, label: string): Promise<void> {
+  await bot.push(dir, 4, 0);
+  let last = '';
+  let still = 0;
+  for (let t = 0; t < 150 && still < 3; t++) {
+    await bot.wait(1);
+    const p = bot.sim.pos;
+    const now = `${p.x},${p.y},${p.sx},${p.sy}`;
+    still = now === last && !bot.current(p.x, p.y) ? still + 1 : 0;
+    last = now;
+  }
+  if (still < 3) throw new Error(`${label}: the current never let go`);
+  // the current leaves Teddy between two blocks: step on to the nearer one, as a player would
+  const p = bot.sim.pos;
+  const nudge: Dir | undefined = p.sx ? (p.sx >= 10 ? 'right' : 'left') : p.sy ? (p.sy >= 10 ? 'down' : 'up') : undefined;
+  if (nudge) {
+    bot.sim.press(SCAN[nudge]);
+    for (let t = 0; t < 8 && (bot.sim.pos.sx || bot.sim.pos.sy); t++) await bot.wait(1);
+    bot.sim.release(SCAN[nudge]);
+    await bot.wait(2);
+  }
+  await bot.goto(x, y, label);
+}
+
 export async function moat(bot: Bot): Promise<void> {
   expect(bot, S.moat, 'the Hosewater Moat');
   await bot.goto(23, 22, 'sand');
@@ -73,12 +98,16 @@ export async function moat(bot: Bot): Promise<void> {
   await bot.digFrom(19, 21, 'down', 'the ford', (n) => n === 'causeway');
   await bot.digFrom(19, 20, 'down', 'the ford', (n) => n === 'causeway');
   await tower(bot, 11, 17, 'down', 'the southwest tower');
-  await bot.goto(12, 15, 'sand');
-  await tower(bot, 11, 7, 'down', 'the northwest tower');
+  // off the island on the east current, round to the north bank, down the north current
+  await bot.goto(28, 12, 'the east current');
+  await ride(bot, 'right', 33, 12, 'carried off the island');
+  await bot.goto(20, 3, 'above the north current');
+  await ride(bot, 'down', 20, 6, 'carried onto the north half');
   await tower(bot, 28, 7, 'down', 'the northeast tower');
-  await bot.goto(27, 15, 'sand');
-  await tower(bot, 28, 17, 'down', 'the southeast tower');
-  if (bot.sim.meter(CTR.flags2) !== 5) throw new Error(`Flags: ${bot.sim.meter(CTR.flags2) - 1}`);
+  // down the west channel to the gate
+  await bot.goto(11, 9, 'above the west channel');
+  await ride(bot, 'down', 11, 12, 'carried back to the south half');
+  if (bot.sim.meter(CTR.flags2) !== 3) throw new Error(`Flags: ${bot.sim.meter(CTR.flags2) - 1}`);
   await bot.digFrom(19, 15, 'down', 'the gate');
   if ((await bot.goto(19, 9, 'the castle door')) !== 'link') throw new Error('No way out');
 }
@@ -152,7 +181,7 @@ export async function lagoon(bot: Bot): Promise<void> {
 
 /**
  * Gwinn on the loose: from `stand`, Teddy goes after her a block at a time (keeping clear of
- * her, since bumping into her hurts), and when she is in line two to four blocks off he
+ * her, as a player would), and when she is in line two to four blocks off he
  * steps toward her (so the ball flies her way) and tosses it. When she comes too close from
  * the side, he steps out of her way.
  */
@@ -192,7 +221,9 @@ async function ambush(bot: Bot, stand: { x: number; y: number }, label: string):
       const away = dirs
         .map((d) => ({ d, x: p.x + STEP[d].x, y: p.y + STEP[d].y }))
         .filter((c) => !bot.sim.solidAt(c.x, c.y) && !bot.current(c.x, c.y))
-        .sort((a, b) => Math.hypot(b.x * 20 - g.x * 20 - g.sx, b.y * 20 - g.y * 20 - g.sy) - Math.hypot(a.x * 20 - g.x * 20 - g.sx, a.y * 20 - g.y * 20 - g.sy))[0];
+        .sort(
+          (a, b) => Math.hypot(b.x * 20 - g.x * 20 - g.sx, b.y * 20 - g.y * 20 - g.sy) - Math.hypot(a.x * 20 - g.x * 20 - g.sx, a.y * 20 - g.y * 20 - g.sy),
+        )[0];
       if (away) await bot.goto(away.x, away.y);
       continue;
     }
@@ -236,32 +267,81 @@ export async function burrows(bot: Bot): Promise<void> {
   await bot.goto(1, 12, 'an acorn');
   await bot.digFrom(2, 15, 'up', 'a root door');
   await bot.goto(1, 20, 'sand');
-  await bot.digFrom(12, 21, 'up', 'a beetle nest', (n) => n.startsWith('plugged'));
-  await bot.digFrom(12, 17, 'down', 'a beetle nest', (n) => n.startsWith('plugged'));
+  // plug the beetle nests first (they keep sending beetles); if Gwinn is galumphing in the
+  // way, send her off and then plug them
+  const nests = async () => {
+    await bot.digFrom(12, 21, 'up', 'a beetle nest', (n) => n.startsWith('plugged'));
+    await bot.digFrom(12, 17, 'down', 'a beetle nest', (n) => n.startsWith('plugged'));
+  };
+  try {
+    await nests();
+  } catch (e) {
+    if (!String(e).includes('No path')) throw e;
+    bot.say('Gwinn is in the way');
+  }
   await ambush(bot, { x: 8, y: 19 }, 'Gwinn trots off');
+  if (bot.name(12, 21) === 'nest' || bot.name(12, 17) === 'nest') await nests();
   await bot.goto(23, 19, 'an acorn');
   await bot.digFrom(40, 22, 'up', 'a root door');
   if ((await bot.goto(40, 27, 'the ladder up')) !== 'link') throw new Error('No way out');
 }
 
-export async function patio(bot: Bot): Promise<void> {
-  expect(bot, S.patio, "Gwinn's nap");
-  await bot.digFrom(15, 19, 'up', 'a water bowl', (n) => n === 'bowlDry');
-  // the left paw guards the way up the west side: splash it twice and she tucks it in
-  await bot.goto(12, 10, 'below her left paw');
-  await bot.goto(12, 9, 'below her left paw');
-  for (let k = 0; k < 6 && bot.monsters(MON.pawL, MON.pawLAngry).length; k++) {
-    if (bot.sim.meter(SEQ.splash) < 1) throw new Error('Out of water');
+/** Ticks before Gwinn's next snore gust blows down the path beside her (0 while it blows). */
+function calmFor(bot: Bot): number {
+  const w = bot.sim.w;
+  const calm = BG.id('snore');
+  const tell = BG.id('snoreTell');
+  const now = w.blkmap[calm];
+  if (now === calm) return w.nxtchg[calm] - w.clock + w.bg[tell].ntime;
+  if (now === tell) return w.nxtchg[calm] - w.clock;
+  return 0;
+}
+
+/** Splashes the paw ahead (Teddy faces the way he last walked) until it is out of `kinds`. */
+async function splashPaw(bot: Bot, kinds: number[], label: string): Promise<void> {
+  for (let k = 0; k < 8 && bot.monsters(...kinds).length; k++) {
+    if (bot.sim.meter(SEQ.splash) < 1) throw new Error(`${label}: out of water`);
     await bot.key(SCAN.b, 2, 14);
   }
-  if (bot.monsters(MON.pawL, MON.pawLAngry).length) throw new Error('The paw is still there');
-  bot.say('Gwinn tucks in her paw');
+  if (bot.monsters(...kinds).length) throw new Error(`${label}: the paw is still there`);
+  bot.say(label);
+}
+
+export async function patio(bot: Bot): Promise<void> {
+  expect(bot, S.patio, "Gwinn's nap");
+  // fill up at her water bowl (it never runs dry): four splashes for her two paws
+  await bot.goto(15, 18, 'a water bowl');
+  for (let k = 0; k < 4 && bot.sim.meter(SEQ.splash) < 6; k++) await bot.push('up', 2, 2);
+  if (bot.sim.meter(SEQ.splash) < 5) throw new Error(`Only ${bot.sim.meter(SEQ.splash) - 1} splashes`);
+  bot.say('a full bucket');
+  // 1. the left paw guards the path up her west side: splash it twice and she tucks it in
+  await bot.goto(12, 10, 'below her left paw');
+  await bot.goto(12, 9, 'below her left paw');
+  await splashPaw(bot, [MON.pawL, MON.pawLAngry], 'Gwinn tucks in her left paw');
   let waited = 0;
   while (bot.monsters(MON.pawLRetreat).length) {
     await bot.wait(1);
     if (++waited > 300) throw new Error('The paw never went');
   }
-  if ((await bot.goto(15, 1, 'the Crown of the Sandbox')) !== 'end') throw new Error('No crown');
+  // 2. her snores blow down the path: wait at its foot for a gust to pass, then walk up
+  await bot.goto(12, 7, 'the foot of the path');
+  waited = 0;
+  while (calmFor(bot) < 40) {
+    await bot.wait(1);
+    if (++waited > 300) throw new Error('Gwinn never stopped snoring');
+  }
+  if (waited) bot.say(`waited ${waited} ticks for a snore to pass`);
+  await bot.goto(12, 2, 'up the path');
+  // 3. the right paw lies across the crown's nook: splash it (it starts swiping), then again
+  await bot.goto(12, 1, 'the crown nook');
+  await bot.goto(13, 1, 'facing her right paw');
+  await splashPaw(bot, [MON.pawR, MON.pawRAngry], 'Gwinn tucks in her right paw');
+  waited = 0;
+  while (bot.monsters(MON.pawRRetreat).length) {
+    await bot.wait(1);
+    if (++waited > 300) throw new Error('The right paw never went');
+  }
+  if ((await bot.goto(19, 1, 'the Crown of the Sandbox')) !== 'end') throw new Error('No crown');
 }
 
 export async function playAll(bot: Bot): Promise<void> {

@@ -42,7 +42,10 @@ function cloneSim(sim: Sim): Sim {
 const solidAt = (sim: Sim, x: number, y: number) => {
   const w = sim.w;
   const b = w.bg[w.map[y * MLEN + x]];
-  return !!b && b.solid !== 0;
+  if (!b || b.solid === 0) return false;
+  // a word lock opens for Joe once he carries enough words (it takes them, then gives them back)
+  if (b.effect === CTR.words && b.eamt < 0 && b.eamt > -100 && w.ci.meter[CTR.words] + b.eamt > 0) return false;
+  return true;
 };
 
 /** Live monsters whose names start with `prefix`, at their nearest cells. */
@@ -66,7 +69,12 @@ export function wordCells(sim: Sim, area: Area, box: { x0: number; y0: number; x
 }
 
 /** The first step of a shortest walk from Joe to any goal cell (goals may be solid: bumped). */
-export function firstStep(sim: Sim, goals: { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }, avoid: { x: number; y: number }[] = []): Dir | undefined {
+export function firstStep(
+  sim: Sim,
+  goals: { x: number; y: number }[],
+  box: { x0: number; y0: number; x1: number; y1: number },
+  avoid: { x: number; y: number }[] = [],
+): Dir | undefined {
   if (avoid.length) {
     try {
       return firstStep(sim, goals, box, []) === undefined ? undefined : firstStepAvoiding(sim, goals, box, avoid);
@@ -77,7 +85,12 @@ export function firstStep(sim: Sim, goals: { x: number; y: number }[], box: { x0
   return firstStepAvoiding(sim, goals, box, []);
 }
 
-function firstStepAvoiding(sim: Sim, goals: { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }, avoid: { x: number; y: number }[]): Dir | undefined {
+function firstStepAvoiding(
+  sim: Sim,
+  goals: { x: number; y: number }[],
+  box: { x0: number; y0: number; x1: number; y1: number },
+  avoid: { x: number; y: number }[],
+): Dir | undefined {
   const blocked = new Set(avoid.map((a) => a.y * MLEN + a.x));
   const { bx, by } = sim.pos;
   const key = (x: number, y: number) => y * MLEN + x;
@@ -203,7 +216,7 @@ export class Bot {
       for (const o of options) {
         const lost = await this.trial(o);
         tried.push(`${o ?? 'wait'}=${lost}`);
-        if (lost < least) (least = lost), (move = o);
+        if (lost < least) ((least = lost), (move = o));
         if (lost === 0) break;
       }
       this.lastTried = tried.join(' ');
@@ -211,10 +224,11 @@ export class Bot {
     const w0 = this.words;
     // a shusher standing still in the way will not move off: after a while, pay the fine
     this.waited = move ? 0 : this.waited + 1;
-    if (!move && this.waited > 30) (move = d), (this.waited = 0);
+    if (!move && this.waited > 30) ((move = d), (this.waited = 0));
     if (!move) {
       await this.ticks(2);
-      if (process.env.BOT_DEBUG && this.words < w0) console.log(`  wait at ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);
+      if (process.env.BOT_DEBUG && this.words < w0)
+        console.log(`  wait at ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);
       return;
     }
     this.sim.press(SCAN[move]);
@@ -222,22 +236,36 @@ export class Bot {
     this.sim.release(SCAN[move]);
     for (let i = 0; i < 20 && this.sim.w.chr.cseq !== 0 && this.sim.link < 0; i++) await this.ticks(1);
     await this.ticks(1);
-    if (process.env.BOT_DEBUG && this.words !== w0) console.log(`  ${move} -> ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);
+    if (process.env.BOT_DEBUG && this.words !== w0)
+      console.log(`  ${move} -> ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);
   }
 
   /** Walks to (into) one of the goals until a link is taken or `until` holds. */
-  async walk(goals: () => { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }, until: () => boolean, careful = true, limit = 4000): Promise<void> {
+  async walk(
+    goals: () => { x: number; y: number }[],
+    box: { x0: number; y0: number; x1: number; y1: number },
+    until: () => boolean,
+    careful = true,
+    limit = 4000,
+  ): Promise<void> {
     const start = this.sim.ticks;
     while (this.sim.link < 0 && !until()) {
       if (this.sim.ticks - start > limit) {
         const g = goals()[0];
         const b = g ? this.sim.w.bg[this.sim.w.map[g.y * MLEN + g.x]] : undefined;
-        throw new Error(`Stuck in scene ${this.scene} at ${this.sim.pos.bx},${this.sim.pos.by} (${this.words} words)${b ? ` before block ${b.nextBl}/${b.touchBl} effect ${b.effect} ${b.eamt} solid ${b.solid}` : ''}`);
+        throw new Error(
+          `Stuck in scene ${this.scene} at ${this.sim.pos.bx},${this.sim.pos.by} (${this.words} words)${b ? ` before block ${b.nextBl}/${b.touchBl} effect ${b.effect} ${b.eamt} solid ${b.solid}` : ''}`,
+        );
       }
       const g = goals().filter((p) => p.x >= box.x0 && p.y >= box.y0 && p.x <= box.x1 && p.y <= box.y1);
       if (!g.length) return;
       const { names, hazards } = this.areas[this.stem];
-      const d = firstStep(this.sim, g, box, monstersNamed(this.sim, names, (n) => hazards.has(n)));
+      const d = firstStep(
+        this.sim,
+        g,
+        box,
+        monstersNamed(this.sim, names, (n) => hazards.has(n)),
+      );
       if (!d) return; // standing on a goal
       await this.step(d, careful);
     }
@@ -255,7 +283,9 @@ export class Bot {
 
 /** The monsters that fine Joe (a point a tick, Area.monster's hazards) or confiscate words. */
 export function hazardsOf(area: Area): Set<string> {
-  return new Set(area.mons.names.filter((n, i) => n && area.mons.defs[i].pics.some(([pic]) => (area.mb.def(pic).score ?? 0) < 0 || (area.mb.def(pic).eamt ?? 0) < 0)));
+  return new Set(
+    area.mons.names.filter((n, i) => n && area.mons.defs[i].pics.some(([pic]) => (area.mb.def(pic).score ?? 0) < 0 || (area.mb.def(pic).eamt ?? 0) < 0)),
+  );
 }
 
 export function windowBox(ox: number, oy: number) {

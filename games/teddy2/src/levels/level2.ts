@@ -27,7 +27,12 @@ function afterDen(m: LevelMap, egg: [number, number], plug: number): GameMap {
 export function main(): Level {
   const bs = mainTiles();
   const beasts = mainBeasts();
-  bs.chez(() => bs.pic('sky3'), 'leash', bs.pic('sky3'), () => bs.pic('sky3'));
+  bs.chez(
+    () => bs.pic('sky3'),
+    'leash',
+    bs.pic('sky3'),
+    () => bs.pic('sky3'),
+  );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
   for (const [cx, cy] of [
@@ -80,7 +85,9 @@ export function main(): Level {
     for (const x of [x0 + 1, x0 + 3, x0 + 5]) m.set(x, 32, 'brickWin');
     m.set(x0 + 2, 35, `${sign}L`).set(x0 + 3, 35, `${sign}R`);
     m.rect(x0 + 1, 37, 5, 1, awn);
-    m.set(x0 + 1, 38, win).set(x0 + 2, 38, win).set(x0 + 3, 38, win);
+    m.set(x0 + 1, 38, win)
+      .set(x0 + 2, 38, win)
+      .set(x0 + 3, 38, win);
     m.set(x0 + 5, 38, 'doorTop').set(x0 + 5, 39, 'doorBot');
   });
   m.set(12, 38, 'pole').set(12, 39, 'pole');
@@ -108,7 +115,9 @@ export function main(): Level {
   m.set(gz + 1, 34, 'gzRoofL34');
   m.rect(gz + 2, 34, 3, 1, 'gzRoof34');
   m.set(gz + 5, 34, 'gzRoofR34');
-  m.set(gz + 2, 33, 'gzRoofL33').set(gz + 3, 33, 'gzRoof33').set(gz + 4, 33, 'gzRoofR33');
+  m.set(gz + 2, 33, 'gzRoofL33')
+    .set(gz + 3, 33, 'gzRoof33')
+    .set(gz + 4, 33, 'gzRoofR33');
   m.set(gz + 3, 32, 'gzPeak');
   m.set(gz + 3, 31, 'gzLeash');
   // the bucket truck, its bell, the idle bucket in front of it
@@ -123,8 +132,13 @@ export function main(): Level {
   m.set(71, 31, 'sBankL').set(72, 31, 'sBankR');
   m.set(76, 38, 'evSign').set(77, 39, 'charger');
   const car = 78;
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
 
   // The tall hedge at the end of town, and behind it (round the back of the map) Gwinn's spot.
   m.rect(84, 31, 9, 9, 'hedgeWall');
@@ -164,7 +178,7 @@ export function main(): Level {
   for (const [x, y] of [
     [14, 35],
     [gz + 1, 33],
-    [73, 29],
+    [60, 33],
   ])
     m.mon(x, y, 'poodle');
   const treats: [number, number][] = [

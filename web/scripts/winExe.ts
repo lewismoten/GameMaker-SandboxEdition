@@ -19,6 +19,8 @@ import { join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
+import { recordedAudioNotice, recordedClips } from '../src/export/recordedAudio';
+import { fictionNote } from '../src/export/fiction';
 import { boxColors, iconPicture } from '../src/export/macApp';
 import { exeName, winExe, winExeZip, type WinAppOptions, type WinArch } from '../src/export/winApp';
 import { GameFiles } from '../src/project/files';
@@ -37,7 +39,10 @@ const valued = new Set(['--html', '--title', '--id', '--out']);
 const ids = process.argv.slice(2).filter((a, i, all) => !flags.has(a) && !valued.has(a) && !valued.has(all[i - 1]));
 const out = resolve(arg('--out') ?? resolve(web, '../dist/win'));
 const arches: WinArch[] = process.argv.includes('--arm64') ? ['x64', 'arm64'] : ['x64'];
-const players = Object.fromEntries(arches.map((a) => [a, new Uint8Array(readFileSync(resolve(web, `public/win/GameMakerPlayer-${a}.exe`)))])) as Record<WinArch, Uint8Array>;
+const players = Object.fromEntries(arches.map((a) => [a, new Uint8Array(readFileSync(resolve(web, `public/win/GameMakerPlayer-${a}.exe`)))])) as Record<
+  WinArch,
+  Uint8Array
+>;
 
 async function write(o: Omit<WinAppOptions, 'player'>): Promise<void> {
   const date = new Date(Date.UTC(2026, 0, 1, 12));
@@ -59,7 +64,13 @@ async function main(): Promise<void> {
     return;
   }
   const catalog = cdCatalog(cd);
-  const named = ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  const named = ids.map(
+    (id) =>
+      catalog.find((e) => e.id === id) ??
+      (() => {
+        throw new Error(`No game "${id}" in the catalog.`);
+      })(),
+  );
   for (const e of named) if (!catalogDownloadable(e)) throw new Error(`"${e.id}" is another author's game; it is offered play-only, without downloads.`);
   // the same games the web app's Download button offers
   const picked = process.argv.includes('--all') ? catalog.filter(catalogDownloadable) : named;
@@ -76,7 +87,9 @@ async function main(): Promise<void> {
       html: page,
       author: e.author ?? e.company,
       year: e.year,
+      fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
+      audio: recordedAudioNotice(recordedClips(new GameFiles(entries))),
       colors: boxColors(e.original?.box),
     });
   }

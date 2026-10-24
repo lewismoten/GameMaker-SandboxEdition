@@ -14,7 +14,8 @@ function sketches(): [string, HintSketch][] {
     const file = join(GAMES, id, 'printables.json');
     if (!existsSync(file)) continue;
     const p = JSON.parse(readFileSync(file, 'utf8')) as PrintablesFile;
-    for (const it of p.items ?? []) if (it.kind === 'hintbook') for (const s of it.sections) for (const q of s.hints) if (q.sketch) out.push([`${id}: ${q.q}`, q.sketch]);
+    for (const it of p.items ?? [])
+      if (it.kind === 'hintbook') for (const s of it.sections) for (const q of s.hints) if (q.sketch) out.push([`${id}: ${q.q}`, q.sketch]);
   }
   return out;
 }

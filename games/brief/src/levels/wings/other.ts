@@ -53,7 +53,9 @@ function stairs(seed: number): Pixels {
   const p = new Pixels(20, 20, c('paper', 4));
   for (let i = 0; i < 5; i++) {
     const s = seed % 2 ? i : 4 - i;
-    p.rect(i * 4, 16 - s * 4, 4, 4 + s * 4, c('grey', 3)).rect(i * 4, 16 - s * 4, 4, 1, c('ink', 1)).rect(i * 4, 16 - s * 4, 1, 4 + s * 4, c('ink', 1));
+    p.rect(i * 4, 16 - s * 4, 4, 4 + s * 4, c('grey', 3))
+      .rect(i * 4, 16 - s * 4, 4, 1, c('ink', 1))
+      .rect(i * 4, 16 - s * 4, 1, 4 + s * 4, c('ink', 1));
   }
   if (seed > 1) p.line(0, 0, 19, 19, c('ink', 1));
   return p;
@@ -111,7 +113,7 @@ function subShop(): Pixels {
   return p;
 }
 
-function poupon(under: Pixels): Pixels {
+function mustardJar(under: Pixels): Pixels {
   const p = on(under);
   p.rect(6, 6, 8, 12, c('yellow', 1)).rect(6, 6, 8, 1, c('yellow', 3)).rect(5, 3, 10, 3, c('ink', 1));
   p.rect(7, 9, 6, 5, c('paper', 4));
@@ -174,7 +176,17 @@ function husk(under: Pixels): Pixels {
 
 function chip(frame: number): Pixels {
   const p = blank();
-  const pts = frame ? [[4, 6], [16, 8], [9, 16]] : [[5, 14], [15, 4], [14, 15]];
+  const pts = frame
+    ? [
+        [4, 6],
+        [16, 8],
+        [9, 16],
+      ]
+    : [
+        [5, 14],
+        [15, 4],
+        [14, 15],
+      ];
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const [[ax, ay], [bx, by], [cx, cy]] = pts;
@@ -194,8 +206,37 @@ function art(a: Area): void {
   a.solid('nip', nipPlant(a.tiles.pic('cosmos')));
   a.solid('cat', lounging(a.tiles.pic('cosmos')));
   sign(['FANCY CATNIP:', 'OUT OF THIS', 'WORLD'], 3, { board: 'purple', ink: 'paper' }).forEach((px, i) => a.solid(`fancy${i}`, px));
-  a.monster('clock', [[meltingClock(0), 8], [meltingClock(1), 8]], { hazard: true, path: [[3, 0, 1], [0, 3, 1], [-3, 0, 1], [0, -3, 1]] });
-  a.monster('sound', [[colorSound(0), 4], [colorSound(1), 4]], { path: [[0, 2, 1], [4, 0, 1], [0, -2, 1], [-4, 0, 1]] });
+  a.monster(
+    'clock',
+    [
+      [meltingClock(0), 8],
+      [meltingClock(1), 8],
+    ],
+    {
+      hazard: true,
+      path: [
+        [3, 0, 1],
+        [0, 3, 1],
+        [-3, 0, 1],
+        [0, -3, 1],
+      ],
+    },
+  );
+  a.monster(
+    'sound',
+    [
+      [colorSound(0), 4],
+      [colorSound(1), 4],
+    ],
+    {
+      path: [
+        [0, 2, 1],
+        [4, 0, 1],
+        [0, -2, 1],
+        [-4, 0, 1],
+      ],
+    },
+  );
 
   // Relativity Detour
   a.tile('sketch', sketchFloor());
@@ -205,18 +246,58 @@ function art(a: Area): void {
   a.solid('vanish1', vanishingPoint(1, a.tiles.pic('sketch')), { next: 'vanish0', ntime: 5 });
   a.prop('jim', 'sketch', halfJim());
   sign(['VANISHING', 'POINT: DO NOT', 'STAND HERE'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`vp${i}`, px));
-  a.monster('eraser', [[eraser(0), 4], [eraser(1), 4]], { hazard: true, path: [[5, 0, 2], [-5, 0, 2]] });
+  a.monster(
+    'eraser',
+    [
+      [eraser(0), 4],
+      [eraser(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [5, 0, 2],
+        [-5, 0, 2],
+      ],
+    },
+  );
 
   // Crime, Panic, and... Mustard
   a.tile('street', floor('road', 6));
   a.solid('bldg0', building(1));
   a.solid('bldg1', building(2));
   a.solid('subshop', subShop());
-  a.solid('poupon', poupon(a.tiles.pic('street')));
+  a.solid('mustardJar', mustardJar(a.tiles.pic('street')));
   a.solid('lady', sandwichLady(a.tiles.pic('street')));
   sign(['SUBS: NO', 'CONDIMENTS', '(APPARENTLY)'], 3, { board: 'green', ink: 'paper' }).forEach((px, i) => a.solid(`subs${i}`, px));
-  a.monster('underwood', [[underwood(0), 5], [underwood(1), 5]], { path: [[6, 0, 2], [0, 2, 2], [-6, 0, 2], [0, -2, 2]] });
-  a.monster('bird', [[bird(0), 3], [bird(1), 3]], { hazard: true, path: [[0, 4, 2], [0, -4, 2]] });
+  a.monster(
+    'underwood',
+    [
+      [underwood(0), 5],
+      [underwood(1), 5],
+    ],
+    {
+      path: [
+        [6, 0, 2],
+        [0, 2, 2],
+        [-6, 0, 2],
+        [0, -2, 2],
+      ],
+    },
+  );
+  a.monster(
+    'bird',
+    [
+      [bird(0), 3],
+      [bird(1), 3],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 4, 2],
+        [0, -4, 2],
+      ],
+    },
+  );
 
   // Repeat Until Texture Is Uniform
   a.tile('factory', floor('tile', 6, 'grey'));
@@ -226,7 +307,22 @@ function art(a: Area): void {
   a.prop('paul', 'factory', figure({ shirt: ['blue', 2], pants: ['blue', 1], hat: { kind: 'helmet', color: ['yellow', 3] }, face: 'sad', arms: 'up' }));
   a.prop('charles', 'factory', figure({ shirt: ['orange', 2], pants: ['blue', 1], hat: { kind: 'helmet', color: ['yellow', 3] }, face: 'sad' }));
   sign(['CHARLES:', 'HANDS IN', 'PLACE!'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`hands${i}`, px));
-  a.monster('chip', [[chip(0), 2], [chip(1), 2]], { hazard: true, path: [[0, 3, 2], [4, 0, 2], [0, -3, 2], [-4, 0, 2]] });
+  a.monster(
+    'chip',
+    [
+      [chip(0), 2],
+      [chip(1), 2],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 3, 2],
+        [4, 0, 2],
+        [0, -3, 2],
+        [-4, 0, 2],
+      ],
+    },
+  );
 
   // the hallway's guest: Teddy in a fishbowl space helmet
   const astro = (s: number) => {
@@ -234,13 +330,31 @@ function art(a: Area): void {
     p.ring(15, 8, 6, c('sky', 4));
     return p;
   };
-  a.monster('teddySpace', [[astro(0), 4], [astro(1), 4]], { path: [[6, 0, 1], [0, -2, 1], [-6, 0, 1], [0, 2, 1]] });
+  a.monster(
+    'teddySpace',
+    [
+      [astro(0), 4],
+      [astro(1), 4],
+    ],
+    {
+      path: [
+        [6, 0, 1],
+        [0, -2, 1],
+        [-6, 0, 1],
+        [0, 2, 1],
+      ],
+    },
+  );
 }
 
 export const OTHER: WingSpec = {
   wing: WINGS[6],
   tint: 'pink',
-  stamp: [['night', 3], ['grey', 5], ['purple', 3]],
+  stamp: [
+    ['night', 3],
+    ['grey', 5],
+    ['purple', 3],
+  ],
   signs: [
     ['MIND THE', 'VANISHING', 'POINTS'],
     ['IN SPACE NO', 'ONE CAN HEAR', 'YOU SHUSH'],
@@ -280,7 +394,7 @@ export const OTHER: WingSpec = {
           ['m:clock#0', 'nip', 'm:sound#0'],
           ['feast0', 'cat', 'feast1'],
         ],
-        caption: ['FIG. 17: Time shaking hands with', 'colorful sounds. The cat\'s meow.'],
+        caption: ['FIG. 17: Time shaking hands with', "colorful sounds. The cat's meow."],
       },
     },
     {
@@ -290,12 +404,12 @@ export const OTHER: WingSpec = {
         '#SSss123SSssSSs#',
         '#o...........+.#',
         '#.SS...v...ss~.#',
-        '#*......Z......#',
+        '#~......Z......#',
         '#..s.......S...#',
         '#+..o...@...j..#',
-        '#.ss.......p...#',
-        '#~..+......*.o.#',
-        '#o..~...+....o.E',
+        '#%ss.......p...#',
+        '#*#.o......*.o.#',
+        '#+#.~...+....o.E',
         '#X#############L',
       ],
       legend: {
@@ -337,7 +451,7 @@ export const OTHER: WingSpec = {
         B: 'bldg0',
         b: 'bldg1',
         S: 'subshop',
-        g: 'poupon',
+        g: 'mustardJar',
         l: 'lady',
         w: 'bldg1',
         '1': 'subs0',
@@ -345,11 +459,11 @@ export const OTHER: WingSpec = {
         '3': 'subs2',
         U: { tile: '.', mon: 'underwood' },
       },
-      note: 'Gotcha City. A bologna sandwich with no condiments. A cry for help. Look! It\'s a bird! The birds fine you. Underwood takes his time.',
+      note: "Gotcha City. A bologna sandwich with no condiments. A cry for help. Look! It's a bird! The birds fine you. Underwood takes his time.",
       twist: {
         grid: [
           ['subshop', 'm:underwood#0', 'bldg0'],
-          ['lady', 'poupon', 'street'],
+          ['lady', 'mustardJar', 'street'],
         ],
         caption: ['FIG. 4: "But your under wear', 'is over your pants."'],
       },

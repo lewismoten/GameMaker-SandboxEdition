@@ -13,6 +13,8 @@ import { parsePalette } from '../src/formats/palette';
 import { heroPixels, type LevelPicture } from '../src/gfx/levelPicture';
 import { encodeIndexedPng } from './gameShots';
 import { chezPicture } from '../../games/kit/chez';
+import type { Pixels } from '../../games/kit/pixels';
+import { EGG_PAL, eggShine } from './castEgg';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
 /** THE CHEZ's colors (6-bit VGA): tomato red, a black roof, white steel wheels. */
@@ -34,7 +36,11 @@ const CHEZ_PAL: [number, number, number][] = [
 ];
 
 function chezArt(scale: number): LevelPicture {
-  const car = chezPicture({ body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 }, 'right', scale);
+  const car = chezPicture(
+    { body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 },
+    'right',
+    scale,
+  );
   const palette = new Uint8Array(768);
   CHEZ_PAL.forEach((c, i) => palette.set(c, i * 3));
   return { width: car.w, height: car.h, pixels: Uint8Array.from(car.px), palette };
@@ -49,6 +55,8 @@ type Source =
   | { game: string; chr: string; cbl: string; pal: string; seq?: number }
   /** THE CHEZ's shared side view (games/kit/chez.ts) at `chez` times its 40x20, in its own colors. */
   | { game: string; chez: number }
+  /** Drawn here in colors of its own (6-bit VGA). */
+  | { game: string; paint: Pixels; colors: [number, number, number][] }
   /** The tin heart (castTinHeart.ts), `tinHeart` times its size. */
   | { game: string; tinHeart: number }
   /** Blocks of a .bbl/.mbl/.cbl laid out in rows (-1 for none), in a palette. */
@@ -63,7 +71,16 @@ export const CAST_ART: Record<string, Source> = {
   doghouse: { game: 'teddy', fli: 'cast.fli', frame: 185, crop: [36, 14, 164, 182] },
   lewis: { game: 'sandcast', fli: 'sysop.fli', frame: 182, crop: [6, 16, 180, 180] },
   tinHeart: { game: 'teddy', tinHeart: 1 },
-  rootbeer: { game: 'teddy', blocks: 'klub.bbl', pal: 'klub.pal', grid: [[76, 77], [79, 81]] },
+  easterEgg: { game: 'teddy', paint: eggShine()[1], colors: EGG_PAL },
+  rootbeer: {
+    game: 'teddy',
+    blocks: 'klub.bbl',
+    pal: 'klub.pal',
+    grid: [
+      [76, 77],
+      [79, 81],
+    ],
+  },
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal' },
   will: { game: 'sweats', chr: 'poet.chr', cbl: 'poet.cbl', pal: 'hive.pal' },
   watt: { game: 'logic', chr: 'watt.chr', cbl: 'watt.cbl', pal: 'watt.pal' },
@@ -96,11 +113,17 @@ function trim(pic: LevelPicture): LevelPicture {
 
 export function castPicture(s: Source): LevelPicture | undefined {
   if ('chez' in s) return trim(chezArt(s.chez));
+  if ('paint' in s) {
+    const palette = new Uint8Array(768);
+    s.colors.forEach((c, i) => palette.set(c, i * 3));
+    return trim({ width: s.paint.w, height: s.paint.h, pixels: Uint8Array.from(s.paint.px), palette });
+  }
   if ('tinHeart' in s) {
     const k = s.tinHeart;
     const [art] = tinHeartFrames(TRANSPARENT);
     const pixels = new Uint8Array(TIN_HEART_W * k * TIN_HEART_H * k);
-    for (let y = 0; y < TIN_HEART_H * k; y++) for (let x = 0; x < TIN_HEART_W * k; x++) pixels[y * TIN_HEART_W * k + x] = art[Math.floor(y / k) * TIN_HEART_W + Math.floor(x / k)];
+    for (let y = 0; y < TIN_HEART_H * k; y++)
+      for (let x = 0; x < TIN_HEART_W * k; x++) pixels[y * TIN_HEART_W * k + x] = art[Math.floor(y / k) * TIN_HEART_W + Math.floor(x / k)];
     const palette = new Uint8Array(768);
     TIN_HEART_PAL.forEach((c, i) => palette.set(c, i * 3));
     return { width: TIN_HEART_W * k, height: TIN_HEART_H * k, pixels, palette };
@@ -150,7 +173,7 @@ function sprite(s: Source): LevelPicture | undefined {
   for (const [id, s] of Object.entries(CAST_ART)) {
     const pic = castPicture(s);
     if (!pic) throw new Error(`${id}: nothing to draw from ${s.game}`);
-    const png = encodeIndexedPng(pic, 'blocks' in s || 'chr' in s || 'chez' in s || 'tinHeart' in s ? TRANSPARENT : undefined);
+    const png = encodeIndexedPng(pic, 'blocks' in s || 'chr' in s || 'chez' in s || 'tinHeart' in s || 'paint' in s ? TRANSPARENT : undefined);
     writeFileSync(join(dir, `${id}.png`), png);
     console.log(`${id}.png ${pic.width}x${pic.height} ${png.length} bytes`);
   }

@@ -1,17 +1,20 @@
-// How light it is outside right now, by the visitor's own clock: a winter day like the
+// How light it is outside right now, by the room's clock (the visitor's own, unless DOS's TIME
+// set it: retro/dos/deskClock.ts): a winter day like the
 // one in 1992, sunrise about 7:15 and sunset about 4:55, with an hour of dusk either side.
+import { deskNow, onDeskClock } from '../../retro/dos/deskClock';
+
 const SUNRISE = 7.25;
 const SUNSET = 16.9;
 const TWILIGHT = 1;
 
 /** 0 at night, 1 in daylight, in between at dawn and dusk. */
-export function daylight(now = new Date()): number {
+export function daylight(now = deskNow()): number {
   const h = now.getHours() + now.getMinutes() / 60;
   const ramp = (x: number) => Math.max(0, Math.min(1, x));
   return Math.min(ramp((h - (SUNRISE - TWILIGHT / 2)) / TWILIGHT), ramp((SUNSET + TWILIGHT / 2 - h) / TWILIGHT));
 }
 
-/** Calls back now and whenever the light changes noticeably (checked each minute). */
+/** Calls back now and whenever the light changes noticeably (checked each minute, and when TIME sets the clock). */
 export function watchDaylight(onChange: (light: number) => void): () => void {
   let last = -1;
   const check = () => {
@@ -20,5 +23,9 @@ export function watchDaylight(onChange: (light: number) => void): () => void {
   };
   check();
   const id = setInterval(check, 60_000);
-  return () => clearInterval(id);
+  const off = onDeskClock(check);
+  return () => {
+    clearInterval(id);
+    off();
+  };
 }

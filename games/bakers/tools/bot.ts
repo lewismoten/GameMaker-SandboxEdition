@@ -80,10 +80,11 @@ export class Bot {
   /** Map cells of every legend character `ch` in the current room. */
   marks(ch: string): Pt[] {
     const out: Pt[] = [];
-    for (const [k, v] of this.room().chars) if (v === ch) {
-      const [x, y] = k.split(',').map(Number);
-      out.push({ x, y });
-    }
+    for (const [k, v] of this.room().chars)
+      if (v === ch) {
+        const [x, y] = k.split(',').map(Number);
+        out.push({ x, y });
+      }
     return out;
   }
 
@@ -262,13 +263,14 @@ export class Bot {
       .map((p) => ({ p, c: near.get(p.y * MLEN + p.x) ?? Infinity }))
       .filter((o) => o.c <= LOOT_REACH)
       .sort((a, b) => a.c - b.c);
-    if (process.env.BOT_LOOT) for (const p of seen) {
-      const k = `${this.sim.scene}:${p.x},${p.y}`;
-      const c = near.get(p.y * MLEN + p.x) ?? Infinity;
-      const back = c <= 40 ? this.searchFrom(p, goal)?.cost : undefined;
-      const line = `${k} ${this.nameAt(p.x, p.y)} reach ${c} detour ${back === undefined ? '-' : c + back - straight}`;
-      if (this.lootSeen.get(k) !== line) console.log(`loot ${line} (from ${this.sim.pos.x},${this.sim.pos.y})`), this.lootSeen.set(k, line);
-    }
+    if (process.env.BOT_LOOT)
+      for (const p of seen) {
+        const k = `${this.sim.scene}:${p.x},${p.y}`;
+        const c = near.get(p.y * MLEN + p.x) ?? Infinity;
+        const back = c <= 40 ? this.searchFrom(p, goal)?.cost : undefined;
+        const line = `${k} ${this.nameAt(p.x, p.y)} reach ${c} detour ${back === undefined ? '-' : c + back - straight}`;
+        if (this.lootSeen.get(k) !== line) (console.log(`loot ${line} (from ${this.sim.pos.x},${this.sim.pos.y})`), this.lootSeen.set(k, line));
+      }
     for (const { p, c } of cands) {
       const back = this.searchFrom(p, goal)?.cost;
       if (back !== undefined && c + back - straight <= LOOT_DETOUR) return p;
@@ -328,7 +330,10 @@ export class Bot {
     const trace: string[] = [];
     for (let i = 0; i < 60 && !r; i++) {
       const p = this.sim.pos;
-      if (process.env.BOT_DEBUG === '3') trace.push(`${p.x},${p.y}+${p.sx},${p.sy} s${this.sim.w.chr.cseq}f${this.sim.w.chr.cframe} g${this.sim.ci.gravx},${this.sim.ci.gravy} hp${this.sim.ci.hitpts}`);
+      if (process.env.BOT_DEBUG === '3')
+        trace.push(
+          `${p.x},${p.y}+${p.sx},${p.sy} s${this.sim.w.chr.cseq}f${this.sim.w.chr.cframe} g${this.sim.ci.gravx},${this.sim.ci.gravy} hp${this.sim.ci.hitpts}`,
+        );
       if (this.sim.w.chr.cseq === 0 && p.sx === 0 && p.sy === 0 && this.sim.ci.gravx === 0 && this.sim.ci.gravy === 0) break;
       r = await this.tick();
     }
@@ -421,7 +426,7 @@ export class Bot {
         continue;
       }
       const first = path[0];
-      if (path.length < best) (best = path.length), (stalled = 0);
+      if (path.length < best) ((best = path.length), (stalled = 0));
       else stalled++;
       // a mouse or a Redcoat in front: squawk first
       if (this.sim.ticks - this.lastSquawk > 10 && this.squawkable()) {
@@ -464,16 +469,19 @@ export class Bot {
           }
           for (const o of [undefined, ...DIRS.filter((x) => x !== first.d)] as (Dir | undefined)[]) {
             const lost = await this.trial(o, o ? undefined : first.d);
-            if (lost < least) (least = lost), (move = o);
+            if (lost < least) ((least = lost), (move = o));
             if (lost === 0) break;
           }
         }
         waited = move ? 0 : waited + 1;
-        if (!move && waited > 40) (move = first.d), (waited = 0);
+        if (!move && waited > 40) ((move = first.d), (waited = 0));
         // dodging back and forth for too long: take the hit and go
-        if (stalled > 60) (move = first.d), (stalled = 0), (best = Infinity);
+        if (stalled > 60) ((move = first.d), (stalled = 0), (best = Infinity));
       }
-      if (process.env.BOT_DEBUG === "2") console.log(`  ${label} at ${p.x},${p.y}+${p.sx},${p.sy} seq ${this.sim.w.chr.cseq} hp ${this.sim.ci.hitpts} -> ${move ?? "wait"} (path ${path.length})`);
+      if (process.env.BOT_DEBUG === '2')
+        console.log(
+          `  ${label} at ${p.x},${p.y}+${p.sx},${p.sy} seq ${this.sim.w.chr.cseq} hp ${this.sim.ci.hitpts} -> ${move ?? 'wait'} (path ${path.length})`,
+        );
       const r = await this.stepRaw(move, 3);
       if (r === 'dead') this.say(`${label}: died`);
       if (r) return r;

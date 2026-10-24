@@ -4,11 +4,13 @@
 // its maps on the back, and the MS-DOS platform badge on the spines and bottom (drawBox). The drawing helpers are in boxPaint.ts; the 3D box and the viewer that
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
+import { drawSandboxMark } from '../../manual/printables/sandboxMark';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
-import { mapShot, renderShot } from './boxArt';
-import { parseGame, ADVTYPE, type Game } from '../../formats/game';
-import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours } from './boxFacts';
+import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
+import { mapShot, renderShot } from '../../gfx/gameShots';
+import { parseGame, type Game } from '../../formats/game';
+import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
 import { coverArt, SEALS } from './covers';
@@ -54,10 +56,11 @@ async function readGame(entry: CatalogEntry): Promise<Game | undefined> {
   }
 }
 
-/** A screenshot's caption: the name of the level its map belongs to ("1a The Data Bus" -> "Stage 1: The Data Bus"). */
-export function shotCaption(game: Game | undefined, map: string): string {
-  const desc = game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc.trim() ?? '';
-  return desc.replace(/^(\d+)[a-z]\s+/i, 'Stage $1: ');
+export { shotCaption };
+
+/** The box's facts from the .gam: from the catalog when the site's build worked them out, else read from it. */
+async function gameFacts(entry: CatalogEntry, box: Box): Promise<BoxGame> {
+  return entry.boxGame ?? boxGame(await readGame(entry), box.shots);
 }
 
 interface Shot {
@@ -71,10 +74,13 @@ interface Shot {
  * `pictures` only the captions (the shelf shows most boxes spine out).
  */
 async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promise<Shot[]> {
-  const game = await readGame(entry);
+  const { captions } = await gameFacts(entry, box);
   const views = (box.shots ?? []).slice(0, 3);
   const shots: Shot[] = await Promise.all(
-    views.map(async ([m, x, y]) => ({ shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined, caption: shotCaption(game, m) })),
+    views.map(async ([m, x, y], i) => ({
+      shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined,
+      caption: captions[i] ?? '',
+    })),
   );
   const good = shots.filter((s) => s.shot);
   if (pictures && !good.length) {
@@ -88,10 +94,11 @@ async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promi
 /** Everything a box says about its game beyond its art and copy. */
 export async function boxInfo(entry: CatalogEntry) {
   const box = entry.original!.box! as Box;
-  const levels = (await readGame(entry))?.scenes.filter((s) => s.gametype === ADVTYPE).length ?? 0;
+  const { levels } = await gameFacts(entry, box);
   return {
     levels,
-    disks: boxDisks(entry.bytes),
+    disks: gameDisks(entry),
+    installed: installedBytes(entry),
     hours: playHours(levels, box.hours),
     claims: boxClaims(entry, levels),
     reviews: boxReviews(entry.id, box),
@@ -106,9 +113,14 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
  * the game but its .gam is downloaded (the shelf shows most boxes spine out).
  */
 export async function drawBox(entry: CatalogEntry, { shots: withShots = true } = {}): Promise<BoxFaces | undefined> {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
-  const [shots, info, art] = await Promise.all([boxShots(entry, box, withShots), boxInfo(entry), coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44)]);
+  const [shots, info, art] = await Promise.all([
+    boxShots(entry, box, withShots),
+    boxInfo(entry),
+    coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44),
+  ]);
   const sb = entry.original?.sound === 'sb';
   const title = entry.title;
   const company = entry.company ?? 'Sandbox Software';
@@ -159,13 +171,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   const side = (at: 'left' | 'right', inset: number) => (at === 'left' ? inset : fw - inset);
   const hours = hoursLine(info.hours).toUpperCase();
   laurel(f, side(seals.laurel, 72), Math.max(330, tagEnd + 50), 56, info.award.title, info.award.from);
-  starburst(
-    f,
-    side(seals.burst, 76),
-    fh - 214,
-    64,
-    hours.startsWith('OVER') ? [hours.split(' HOURS')[0], 'HOURS OF', 'GAMEPLAY!'] : ['HOURS', 'OF PLAY!'],
-  );
+  starburst(f, side(seals.burst, 76), fh - 214, 64, hours.startsWith('OVER') ? [hours.split(' HOURS')[0], 'HOURS OF', 'GAMEPLAY!'] : ['HOURS', 'OF PLAY!']);
   let bx = 24;
   const by = fh - 136;
   bx += badge(f, 'VGA 256 COLORS', bx, by, '#0b0b0b', '#fff') + 8;
@@ -220,7 +226,10 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     const x = shotX + i * (shotW + gap);
     framedShot(b, s.shot, x, shotTop + (i % 2) * 4, shotW, [-0.025, 0.02, -0.012][i]);
     if (!s.caption) return;
-    b.font = SANS(fit(b, s.caption, (px) => SANS(px, 700), shotW + 8, 13), 700);
+    b.font = SANS(
+      fit(b, s.caption, (px) => SANS(px, 700), shotW + 8, 13),
+      700,
+    );
     b.strokeStyle = 'rgba(0,0,0,0.7)';
     b.lineWidth = 4;
     b.strokeText(s.caption, x + shotW / 2, shotTop + shotH + 26);
@@ -304,15 +313,20 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   b.fillStyle = '#fff';
   b.font = SANS(14, 900);
   b.fillText('SYSTEM REQUIREMENTS', 36, reqY + 20);
-  b.font = SANS(12.5, 400);
-  wrap(
-    b,
-    `IBM PC/AT or compatible, 286 or better · 640K RAM · VGA · hard disk · ${sb ? 'Sound Blaster or compatible (PC speaker also supported)' : 'PC speaker sound'} · keyboard, joystick optional · 1 player · ${disksLine(info.disks)}`,
-    36,
-    reqY + 40,
-    bw - 272,
-    16,
+  // what it needs, then (in bold) what a buyer checked first: the disks and the room on the hard disk
+  const req = `IBM PC/AT or compatible, 286 or better · 640K RAM · VGA · ${sb ? 'Sound Blaster or compatible (PC speaker also supported)' : 'PC speaker sound'} · keyboard, joystick optional · 1 player`;
+  const storage = `${disksLine(info.disks)} · ${sizeText(info.installed)} free on hard disk`;
+  let reqPx = 12.5;
+  for (; reqPx > 10; reqPx -= 0.5) {
+    b.font = SANS(reqPx, 400);
+    if (wrapLines(b, req, bw - 272) * reqPx * 1.28 <= reqH - 44) break;
+  }
+  const storageY = wrap(b, req, 36, reqY + 40, bw - 272, reqPx * 1.28);
+  b.font = SANS(
+    fit(b, storage, (px) => SANS(px, 700), bw - 272, reqPx),
+    700,
   );
+  b.fillText(storage, 36, storageY);
   barcode(b, bw - 208, reqY, 128, 64, entry.id);
   ratingSeal(b, bw - 68, reqY, 48, box.rating);
   b.fillStyle = box.ink;
@@ -333,18 +347,22 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     const [c, s] = canvas(D, H);
     background(s, box, c.width, c.height);
     s.fillStyle = '#0b0b0b';
-    s.fillRect(0, 0, c.width, 70);
+    s.fillRect(0, 0, c.width, 96);
+    drawSandboxMark(s, c.width / 2 - 22, 5, 44);
     s.fillStyle = '#f5d000';
     s.font = SANS(15, 900);
     s.textAlign = 'center';
-    s.fillText('SANDBOX', c.width / 2, 32);
-    s.fillText('SOFTWARE', c.width / 2, 52);
+    s.fillText('SANDBOX', c.width / 2, 68);
+    s.fillText('SOFTWARE', c.width / 2, 86);
     // the platform badge near the foot, where a shopper's eye goes along a shelf
     const badgeH = platformBadgeHeight(s, c.width - 24, info.disks);
     platformBadge(s, 12, c.height - 50 - badgeH, c.width - 24, info.disks);
-    spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 84, c.height - 150 - badgeH);
+    spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 110, c.height - 176 - badgeH);
     s.fillStyle = box.ink;
-    s.font = SANS(fit(s, sub, (p) => SANS(p, 700), c.width - 12, 13), 700); // a long price shrinks to the spine
+    s.font = SANS(
+      fit(s, sub, (p) => SANS(p, 700), c.width - 12, 13),
+      700,
+    ); // a long price shrinks to the spine
     s.textAlign = 'center';
     s.fillText(sub, c.width / 2, c.height - 24);
     wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'left' ? 0.2 : 0.1, creases: 0 });
@@ -363,7 +381,10 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     s.fillStyle = box.accent;
     s.fillText(lines[0], mid, c.height / 2 + px * 0.2);
     s.fillStyle = box.ink;
-    s.font = SANS(fit(s, lines[1] ?? '', (p) => SANS(p, 700), c.width - left - 24, 14), 700);
+    s.font = SANS(
+      fit(s, lines[1] ?? '', (p) => SANS(p, 700), c.width - left - 24, 14),
+      700,
+    );
     if (lines[1]) s.fillText(lines[1], mid, c.height - 16);
     wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'top' ? 0.2 : 0.05, creases: 0 });
     return c.toDataURL();
@@ -374,7 +395,11 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     left: spine(entry.price ? `MSRP ${entry.price}` : 'SHAREWARE', 'left'),
     right: spine(sb ? 'SOUND BLASTER' : 'PC SPEAKER', 'right'),
     top: end([title.toUpperCase(), company.toUpperCase()], 'top'),
-    bottom: end([title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`], 'bottom', true),
+    bottom: end(
+      [title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`],
+      'bottom',
+      true,
+    ),
   };
 }
 

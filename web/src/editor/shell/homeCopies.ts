@@ -17,7 +17,12 @@ export interface CopyRecord {
  * Your copies of a catalog game, newest first: the ones made from it here, or (made before
  * copies remembered their origin) with no origin and the same .gam name.
  */
-export function copiesOf(catalogId: string, gam: string | null | undefined, projects: CopyRecord[], origin: (id: string) => string | undefined = originId): CopyRecord[] {
+export function copiesOf(
+  catalogId: string,
+  gam: string | null | undefined,
+  projects: CopyRecord[],
+  origin: (id: string) => string | undefined = originId,
+): CopyRecord[] {
   const name = gam?.toLowerCase();
   return projects
     .filter((p) => {
@@ -34,20 +39,28 @@ export function copiesOf(catalogId: string, gam: string | null | undefined, proj
 export async function chooseCopy(title: string, catalogId: string, gam: string | null | undefined): Promise<CopyRecord | 'new' | undefined> {
   const copies = copiesOf(catalogId, gam, await listProjects().catch(() => []));
   if (!copies.length) return 'new';
-  return modal<CopyRecord | 'new'>(copies.length === 1 ? `You already have a copy of ${title}` : `You already have ${copies.length} copies of ${title}`, (close) => [
-    h('p', { class: 'copies-intro' }, 'Pick up where you left off, or start a fresh copy from the original.'),
-    h(
-      'ul',
-      { class: 'copies-list' },
-      ...copies.map((c, i) =>
-        h(
-          'li',
-          null,
-          h('span', { class: 'copies-name' }, h('b', null, c.name), h('small', null, editedWhen(c.updated))),
-          h('button', { class: i === 0 ? 'primary' : '', autofocus: i === 0, onclick: () => close(c) }, 'Open'),
+  return modal<CopyRecord | 'new'>(
+    copies.length === 1 ? `You already have a copy of ${title}` : `You already have ${copies.length} copies of ${title}`,
+    (close) => [
+      h('p', { class: 'copies-intro' }, 'Pick up where you left off, or start a fresh copy from the original.'),
+      h(
+        'ul',
+        { class: 'copies-list' },
+        ...copies.map((c, i) =>
+          h(
+            'li',
+            null,
+            h('span', { class: 'copies-name' }, h('b', null, c.name), h('small', null, editedWhen(c.updated))),
+            h('button', { class: i === 0 ? 'primary' : '', autofocus: i === 0, onclick: () => close(c) }, 'Open'),
+          ),
         ),
       ),
-    ),
-    h('div', { class: 'copies-actions' }, h('button', { onclick: () => close('new') }, '+ Make another copy'), h('button', { onclick: () => close(undefined) }, 'Cancel')),
-  ]);
+      h(
+        'div',
+        { class: 'copies-actions' },
+        h('button', { onclick: () => close('new') }, '+ Make another copy'),
+        h('button', { onclick: () => close(undefined) }, 'Cancel'),
+      ),
+    ],
+  );
 }

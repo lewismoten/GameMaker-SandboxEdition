@@ -40,7 +40,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
       0.6,
       (t) =>
         t < 0.05 ? osc.noise(5)(t) : t < 0.2 ? Math.sin(2 * Math.PI * 950 * t) : t < 0.35 ? Math.sin(2 * Math.PI * 1400 * t) : Math.sin(2 * Math.PI * 1800 * t),
-      { envelope: (u) => (u < 0.9 ? 1 : (1 - u) * 10) * 0.6 },
+      { envelope: (u) => (u < 0.9 ? 1 : (1 - u) * 10) * 0.42 },
     ),
   );
   // A Hover-Cola (extra life): fizz and a fanfare.
@@ -79,7 +79,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     SND.pickup,
     'rustle',
     speaker((i) => (i < 10 ? 300 + r() * 500 : i < 14 ? 0 : i < 26 ? 1200 + (i - 14) * 80 : 0)),
-    sample(0.32, (t) => (t < 0.14 ? osc.noise(11)(t) * 0.7 : Math.sin(2 * Math.PI * (1200 + t * 3000) * t) * 0.6), { attack: 0.003 }),
+    sample(0.32, (t) => (t < 0.14 ? osc.noise(11)(t) * 0.7 : Math.sin(2 * Math.PI * (1200 + t * 3000) * t) * 0.6), { attack: 0.003, gain: 2.6 }),
   );
   // A door opened with a key: a robotic "access granted" chirp-chirp.
   put(
@@ -89,7 +89,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     sample(
       0.5,
       osc.square((t) => (t < 0.12 ? 1500 : t < 0.18 ? 0 : t < 0.3 ? 2000 : 600)),
-      { gain: 0.45, envelope: () => 1 },
+      { gain: 0.25, envelope: () => 1 },
     ),
   );
   // The Laser-Tag Zapper: pew!
@@ -107,7 +107,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     sample(
       0.35,
       osc.sine((t) => 220 + Math.sin(t * 60) * 90 * (1 - t * 2)),
-      { attack: 0.003 },
+      { attack: 0.003, gain: 0.7 },
     ),
   );
   // Knocked out: a slide whistle all the way down.
@@ -118,7 +118,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     sample(
       1.1,
       osc.sine((t) => 1800 * 0.08 ** (t / 1.1) + Math.sin(t * 40) * 20),
-      { attack: 0.01, envelope: (u) => 1 - u },
+      { attack: 0.01, gain: 0.6, envelope: (u) => 1 - u },
     ),
   );
   return { set, vocs };

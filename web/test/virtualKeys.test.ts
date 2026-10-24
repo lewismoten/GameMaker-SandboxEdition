@@ -7,7 +7,14 @@ beforeAll(() => {
     (globalThis as Record<string, unknown>).KeyboardEvent = class extends Event {
       constructor(type: string, init: KeyboardEventInit) {
         super(type, init);
-        Object.assign(this, { key: init.key, code: init.code, shiftKey: !!init.shiftKey, ctrlKey: !!init.ctrlKey, altKey: !!init.altKey, repeat: !!init.repeat });
+        Object.assign(this, {
+          key: init.key,
+          code: init.code,
+          shiftKey: !!init.shiftKey,
+          ctrlKey: !!init.ctrlKey,
+          altKey: !!init.altKey,
+          repeat: !!init.repeat,
+        });
       }
     };
 });

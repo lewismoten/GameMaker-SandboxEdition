@@ -10,6 +10,20 @@
   "egg": {
     "block": 129
   },
+  "tinHeart": {
+    "map": "home.map",
+    "at": [
+      53,
+      43
+    ]
+  },
+  "easterEgg": {
+    "map": "home.map",
+    "at": [
+      64,
+      43
+    ]
+  },
   "label": {
     "background": "#0b1030",
     "band": "#f0a020",
@@ -50,12 +64,12 @@
       ],
       [
         "w60.map",
-        20,
-        40
+        28,
+        34
       ],
       [
         "heart.map",
-        64,
+        68,
         38
       ]
     ],

@@ -98,7 +98,7 @@ const LEVELS: Level[] = [
     card: {
       title: '3. BOWDEN DRIVE',
       time: '4:30 PM. Everybody is home.',
-      lines: ['Snow forts in the park, Big', 'Pete by the creek. East to', 'LaVale and the mall.'],
+      lines: ['Two customers up here, two', 'across the creek footbridge.', 'Big Pete? SPACE throws snow!'],
       view: [6, 23],
     },
   },
@@ -113,7 +113,7 @@ const LEVELS: Level[] = [
     card: {
       title: '4. LAVALE MALL',
       time: '8:00 PM. One hour to closing.',
-      lines: ['The lot keeps snowing over.', 'Bleeps is open; Bits & Bytes', 'has the pink box for $89.'],
+      lines: ['Short of $89? Dig the lot:', 'it keeps snowing over. F2', 'counts the can. Then shop!'],
       view: [24, 10],
     },
   },
@@ -250,7 +250,7 @@ disk.put('won.cmf', wonSong());
 disk.put('lost.cmf', lostSong());
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
-disk.put('license.txt', licenseText("Snowbound: The $89 Shovel"));
+disk.put('license.txt', licenseText('Snowbound: The $89 Shovel'));
 disk.write();
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,

@@ -93,7 +93,12 @@ const ANNOUNCE = [
 class SoundDesigner {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Sound Designer', this.work, () => this.saved, () => [{ ext: 'snd', bytes: serializeSoundSet(this.s) }]);
+    return openWork(
+      'Sound Designer',
+      this.work,
+      () => this.saved,
+      () => [{ ext: 'snd', bytes: serializeSoundSet(this.s) }],
+    );
   }
 
   s = initialSounds();

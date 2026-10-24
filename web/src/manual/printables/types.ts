@@ -12,7 +12,8 @@ export type GeneratedKind =
   | 'newsletter' // The Sandbox Scoop
   | 'hintoffer' // the hint book order slip (only when the game has a hint book)
   | 'stickers' // a sheet of stickers to cut out
-  | 'worldmap'; // the fold-out World Map: every scene and the ways between them, from the .GAM
+  | 'worldmap' // the fold-out World Map: every scene and the ways between them, from the .GAM
+  | 'levelmaps'; // Level Maps: every level's real map, cropped, with arrivals and ways out marked
 
 /** A spot on a map, in blocks (0-99), with a label. */
 export interface MapMark {
@@ -186,7 +187,11 @@ export interface StickerSpec {
   text: string;
   /** Small text under the main text. */
   sub?: string;
-  shape?: 'circle' | 'rect' | 'star' | 'badge';
+  /**
+   * circle, rect, star (a seal), badge, heart, burst (a comic-book bang), bubble (a speech
+   * balloon), or cut: cut out round the picture's own outline, its words on a plate under it.
+   */
+  shape?: 'circle' | 'rect' | 'star' | 'badge' | 'heart' | 'burst' | 'bubble' | 'cut';
   color?: string;
   ink?: string;
   /** A picture from a map (a few blocks). */
@@ -195,6 +200,10 @@ export interface StickerSpec {
   sprite?: SpriteArt;
   /** A character from his .CHR file, standing (drawn instead of `sprite`). */
   hero?: Portrait;
+  /** A die-cut's size: each pixel of its picture prints this many 1/150 inch (default: about 1.3" tall). */
+  px?: number;
+  /** Leave it out of the little cut-outs that fill the sheet's gaps. */
+  noMini?: boolean;
 }
 
 /** Blocks from a .mbl, .cbl or .bbl file laid out in a grid: rows of block numbers (-1 = empty). */
@@ -202,6 +211,14 @@ export interface SpriteArt {
   blocks: string;
   pal: string;
   grid: number[][];
+  /**
+   * The plain ground block a background thing is drawn on (or a grid of them, like `grid`): its
+   * pixels round the thing are cut away. "edge" cuts away the colors along the picture's edge instead
+   * (for a thing on speckled ground).
+   */
+  under?: number | number[][] | 'edge';
+  /** Facing the other way. */
+  flip?: boolean;
 }
 
 /** A story for The Sandbox Scoop newsletter. */

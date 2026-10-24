@@ -69,8 +69,7 @@ export function drawEgg(p: Pixels, x: number, y: number, w = 14, h = 18): Pixels
   const pawY = Math.round(y + h * 0.74);
   const pr = 3 * k;
   for (let py = pawY - pr - k; py <= pawY + pr - k; py++)
-    for (let px = pawX - pr; px <= pawX + pr; px++)
-      if ((px - pawX) ** 2 + (py - pawY + k) ** 2 <= pr * pr + 1 && inside(px, py)) p.set(px, py, c('fur', 2));
+    for (let px = pawX - pr; px <= pawX + pr; px++) if ((px - pawX) ** 2 + (py - pawY + k) ** 2 <= pr * pr + 1 && inside(px, py)) p.set(px, py, c('fur', 2));
   p.rect(pawX - k, pawY, 3 * k, 2 * k, c('corgi', 3));
   for (const [tx, ty] of [
     [-2, -2],
@@ -98,6 +97,9 @@ export function eggBlock(base: Pixels): Pixels {
 export function tinyEgg(p: Pixels, x: number, y: number): Pixels {
   p.rect(x + 1, y, 2, 1, c('fur', 2));
   p.rect(x, y + 1, 4, 3, c('fur', 2)).rect(x + 1, y + 4, 2, 1, c('fur', 1));
-  p.set(x + 1, y + 1, c('red', 2)).set(x + 1, y + 2, c('red', 2)).set(x + 3, y + 2, c('red', 1)).set(x + 2, y + 3, c('blue', 2));
+  p.set(x + 1, y + 1, c('red', 2))
+    .set(x + 1, y + 2, c('red', 2))
+    .set(x + 3, y + 2, c('red', 1))
+    .set(x + 2, y + 3, c('blue', 2));
   return p;
 }

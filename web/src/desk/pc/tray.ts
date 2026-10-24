@@ -54,10 +54,17 @@ function squeak(): void {
 
 /** The mouse pad's print: THE -= S A N D B O X =- BBS's logon screen, night sky and dunes. */
 function padArt(): HTMLElement {
-  const letters = [...'SANDBOX']
-    .map((c, i) => `<text x="${14 + i * 18.5}" y="38" fill="${CGA[SANDBOX_COLORS[i]]}">${c}</text>`)
-    .join('');
-  const stars = [[18, 10], [44, 6], [70, 14], [96, 8], [128, 12], [146, 5], [112, 22], [30, 20]]
+  const letters = [...'SANDBOX'].map((c, i) => `<text x="${14 + i * 18.5}" y="38" fill="${CGA[SANDBOX_COLORS[i]]}">${c}</text>`).join('');
+  const stars = [
+    [18, 10],
+    [44, 6],
+    [70, 14],
+    [96, 8],
+    [128, 12],
+    [146, 5],
+    [112, 22],
+    [30, 20],
+  ]
     .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="0.9" fill="#fff" opacity="0.8"/>`)
     .join('');
   const el = h('div', { class: 'pad-art', 'aria-hidden': 'true' });
@@ -172,7 +179,9 @@ function mousePad(): HTMLElement {
     press(0);
   };
 
-  let drag: { id: number; x: number; y: number; sx: number; sy: number; moved: boolean; side: number; buttons: number; hold?: ReturnType<typeof setTimeout> } | undefined;
+  let drag:
+    | { id: number; x: number; y: number; sx: number; sy: number; moved: boolean; side: number; buttons: number; hold?: ReturnType<typeof setTimeout> }
+    | undefined;
   mouse.addEventListener('mousedown', (e) => e.preventDefault()); // leaves the keyboard on the PC
   mouse.addEventListener('contextmenu', (e) => e.preventDefault());
   mouse.addEventListener('pointerdown', (e) => {

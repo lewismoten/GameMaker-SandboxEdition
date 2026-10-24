@@ -10,7 +10,7 @@
 // (1..63), flees (negative) or wanders (64 and up).
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
 import type { Block } from '../../../../web/src/formats/blocks';
-import { CROWN, MON } from '../ids';
+import { COUNT_RUNS, CROWN, MON, lensCounters } from '../ids';
 import type { SpriteSet } from '../sprites/sprites';
 
 const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
@@ -60,7 +60,8 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
       [m('teddy1'), 4],
       [m('teddy0'), 4],
       [m('teddy1'), 4],
-      [m('teddy2'), 10],
+      [m('teddyhi0'), 1],
+      [m('teddy2'), 9],
       [m('teddy3'), 6],
     ],
     { power: 200, thru: 1 },
@@ -70,31 +71,53 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
     [
       [m('gwinn0'), 5],
       [m('gwinn1'), 5],
-      [m('gwinn2'), 12],
+      [m('gwinnhi0'), 1],
+      [m('gwinn2'), 11],
       [m('gwinn3'), 6],
     ],
     { power: 200, thru: 1 },
     square(3, 3, 1),
   );
-  set[MON.leo] = mon(anim('leo', 2, 6), { power: 200, thru: 1 }, patrol(4, 0, 1));
+  set[MON.leo] = mon(
+    [
+      [m('leo0'), 6],
+      [m('leohi0'), 1],
+      [m('leo1'), 5],
+    ],
+    { power: 200, thru: 1 },
+    patrol(4, 0, 1),
+  );
   set[MON.bat] = mon(anim('bat', 2, 2), { power: 85, thru: 0, towards: 2, end: 120, newmon: MON.pop, upscore: 40 });
-  // Count Polygon: each stage is killed by a shot and reborn with fewer faces
-  const stages = [MON.count1, MON.count2, MON.count3, MON.count4, MON.count5];
-  stages.forEach((id, s) => {
-    const next = s < 4 ? stages[s + 1] : MON.crown;
-    // he waits at the vanishing point until you come within reach, then glides at you
-    const speed = s < 2 ? 1 : 2;
-    set[id] = mon(
-      anim(`count${s}_`, 2, 5),
-      { power: 140, thru: 1, activate: 2, newmon: next, upscore: 500 + s * 250 },
-      [corner(0, 0, 1)],
-      [corner(0, 0, speed), corner(0, 0, speed), corner(0, 0, speed)],
-    );
+  // Count Polygon: a ray cracks him (he blinks), another shatters him (he blinks faster), a
+  // third takes faces off. He starts in the
+  // near plane with twenty faces; at four he coughs up the blue lens he swallowed and flees to
+  // the far plane, where he waits with four faces (a stage of its own, placed in the far map).
+  // Once you are in reach he swoops: to a spot beside you, then another, then straight at you,
+  // and round again; the fewer faces, the wider and faster the swoops
+  const C = (x: number, y: number, speed: number) => corner(x, y, speed);
+  const swoops: March[][] = [
+    [C(0, -3, 1), C(0, 0, 2)],
+    [C(3, -2, 2), C(-3, -2, 2), C(0, 0, 2)],
+    [C(-3, 2, 2), C(3, 2, 2), C(0, 0, 3)],
+    [C(3, 0, 3), C(0, 3, 3), C(-3, 0, 3), C(0, 0, 3)],
+    [C(0, 0, 3)],
+  ];
+  const after = [MON.count2, MON.stolen, MON.count4, MON.count5, MON.crown];
+  COUNT_RUNS.forEach((run, s) => {
+    run.forEach((id, k) => {
+      const o = { power: 140, thru: 1, activate: 2, upscore: k + 1 < run.length ? 50 : 250 + s * 125 };
+      const pics = k === 0 ? anim(`count${s}_`, 2, 5) : anim(`count${s}_hit`, 2, k === 1 ? 4 : 2);
+      set[id] = mon(pics, { ...o, newmon: k + 1 < run.length ? run[k + 1] : after[s] }, [corner(0, 0, 1)], swoops[s]);
+    });
   });
   // the crown matches the shot's power, so a stray shot can't destroy it; it stays where it
-  // fell, and touching it counts it (again and again: the gate only needs one)
+  // fell, and touching it counts it (again and again: the gate only needs one). The stolen
+  // blue lens works the same way for the blue gate up to the far half of the arena
   set[MON.crown] = mon(anim('crown', 2, 6), { power: SHOT_POWER, thru: 0, end: -2 });
-  set[MON.shard] = mon(anim('shard', 2, 2), { power: 100, thru: 1, towards: 3, end: 60 });
+  set[MON.stolen] = mon(anim('stolen', 2, 6), { power: SHOT_POWER, thru: 0, end: -2 });
+  // a shard from the Count's prisms: it homes in slowly and shatters on whatever it hits
+  // (under 100, so one costs light once); a ray shatters it too
+  set[MON.shard] = mon(anim('shard', 2, 2), { power: 90, thru: 1, towards: 2, end: 90, newmon: MON.pop });
   return set;
 }
 
@@ -106,13 +129,17 @@ export function monsterTouches(sp: SpriteSet, mbl: Block[]): void {
   each('wire', 4, { chHitPt: -15 });
   each('crystal', 2, { scorePts: 100 });
   each('jaggy', 2, { chHitPt: -20 });
-  each('steam', 3, { chHitPt: -10 });
+  each('steam', 3, { chHitPt: -15 });
   each('double', 4, { chHitPt: -25 });
-  each('teddy', 4, { chHitPt: 1 });
-  each('gwinn', 4, { chHitPt: 1 });
-  each('leo', 2, { chHitPt: 1 });
-  each('bat', 2, { chHitPt: -10 });
-  for (let s = 0; s < 5; s++) each(`count${s}_`, 2, { chHitPt: -6 });
+  // friends give light on one tick of their hello, not on every tick you touch them (which
+  // replayed the light chime every tick you stood by them)
+  each('teddyhi', 1, { chHitPt: 6 });
+  each('gwinnhi', 1, { chHitPt: 6 });
+  each('leohi', 1, { chHitPt: 3 });
+  each('bat', 2, { chHitPt: -15 });
+  for (let s = 0; s < 5; s++) each(`count${s}_`, 2, { chHitPt: -3 });
+  for (let s = 0; s < 5; s++) each(`count${s}_hit`, 2, { chHitPt: -3 });
   each('crown', 2, { effect: CROWN, eamt: 1 });
-  each('shard', 2, { chHitPt: -15 });
+  each('stolen', 2, { effect: lensCounters(6)[2], eamt: 1 });
+  each('shard', 2, { chHitPt: -10 });
 }

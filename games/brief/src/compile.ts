@@ -3,6 +3,7 @@
 import { buildJoe } from './characters/joe';
 import { buildGame } from './game';
 import { compileHub } from './levels/hub';
+import { addHidden } from './levels/hidden';
 import { compileWing } from './levels/wing';
 import { WING_SPECS } from './levels/wings';
 import { buildJoeBlocks } from './sprites/joe';
@@ -12,6 +13,7 @@ export function compileAll() {
   const chr = buildJoe(cb);
   const wings = WING_SPECS.map((spec, i) => compileWing(spec, i));
   const hub = compileHub(WING_SPECS);
+  addHidden(hub, wings);
   const game = buildGame(hub, wings);
   return { cb, chr, wings, hub, game };
 }

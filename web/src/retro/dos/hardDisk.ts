@@ -6,6 +6,7 @@ import { Project } from '../../editor/core/project';
 import { GameFiles, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { deleteProject, listProjects, loadProject } from '../../project/storage';
 import { newGame, serializeGame } from '../../formats/game';
+import { unlockAchievement } from '../../achievements';
 
 export interface HdGame {
   /** Folder name under C:\GM (8.3, upper case). */
@@ -23,7 +24,12 @@ export interface HdGame {
 const installedId = (catalogId: string) => `hd-${catalogId}`;
 
 export function dosDirName(name: string): string {
-  return (name.toUpperCase().replace(/\.[^.]*$/, '').replace(/[^A-Z0-9_]/g, '') || 'GAME').slice(0, 8);
+  return (
+    name
+      .toUpperCase()
+      .replace(/\.[^.]*$/, '')
+      .replace(/[^A-Z0-9_]/g, '') || 'GAME'
+  ).slice(0, 8);
 }
 
 /** The folders in C:\GM, given the installed folder names (from the C:\GM listing). */
@@ -88,5 +94,6 @@ export async function makeGameFolder(dir: string, title = dir): Promise<Project>
   const p = Project.fromFiles(files, title);
   p.gam = gam;
   await p.saveNow();
+  unlockAchievement('make-new');
   return p;
 }

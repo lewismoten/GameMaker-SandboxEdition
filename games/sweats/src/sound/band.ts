@@ -157,15 +157,31 @@ export class Arranger {
           const last = notes[notes.length - 1];
           last.len += len;
           last.fall = tone.fall || last.fall;
-        } else if (tone.n !== null) notes.push({ at: t, len, n: tone.n + shift + (st.up ?? 0), vel: vel + 8 + tone.accent, scoop: tone.scoop, fall: tone.fall, accent: tone.accent > 0 });
+        } else if (tone.n !== null)
+          notes.push({ at: t, len, n: tone.n + shift + (st.up ?? 0), vel: vel + 8 + tone.accent, scoop: tone.scoop, fall: tone.fall, accent: tone.accent > 0 });
         t += len;
       }
     });
     if (!st.noTune) {
       this.play(LEAD, notes, 0);
-      if (st.twin === 'octave') this.play(TWIN, notes.map((n) => ({ ...n, n: n.n + 12, vel: n.vel - 30, scoop: 0, fall: 0 })), 0);
-      if (st.twin === 'below') this.play(TWIN, notes.map((n) => ({ ...n, n: n.n - 12, vel: n.vel - 16 })), 0);
-      if (st.twin === 'unison') this.play(TWIN, notes.map((n) => ({ ...n, vel: n.vel - 14 })), 0);
+      if (st.twin === 'octave')
+        this.play(
+          TWIN,
+          notes.map((n) => ({ ...n, n: n.n + 12, vel: n.vel - 30, scoop: 0, fall: 0 })),
+          0,
+        );
+      if (st.twin === 'below')
+        this.play(
+          TWIN,
+          notes.map((n) => ({ ...n, n: n.n - 12, vel: n.vel - 16 })),
+          0,
+        );
+      if (st.twin === 'unison')
+        this.play(
+          TWIN,
+          notes.map((n) => ({ ...n, vel: n.vel - 14 })),
+          0,
+        );
       if (st.twin === 'harm')
         this.play(
           TWIN,
@@ -195,12 +211,59 @@ export class Arranger {
 
     // comping that follows a rhythm, bar by bar (the chord under each hit)
     const rhythm: Record<string, [number, number, number?, number?][][]> = {
-      charleston: [[[0, 1], [1.5, 0.5]], [[0, 1], [1.5, 1.5, 2]]],
-      red: [[[1, 0.6], [2.5, 1]], [[0.5, 1], [2.5, 1]]],
-      bossa: [[[0, 0.75], [1, 0.75], [2.5, 0.75], [3.5, 0.5]], [[0.5, 0.75], [2, 1.5]]],
-      waltz: [[[1, 0.6], [2, 0.6]]],
-      blues: [[[0, 1], [1.5, 0.5], [2, 1], [3.5, 0.5]]],
-      sowhat: [[], [[1.5, 0.5, 1.5, 0], [2, 1.5, 2, -2]]],
+      charleston: [
+        [
+          [0, 1],
+          [1.5, 0.5],
+        ],
+        [
+          [0, 1],
+          [1.5, 1.5, 2],
+        ],
+      ],
+      red: [
+        [
+          [1, 0.6],
+          [2.5, 1],
+        ],
+        [
+          [0.5, 1],
+          [2.5, 1],
+        ],
+      ],
+      bossa: [
+        [
+          [0, 0.75],
+          [1, 0.75],
+          [2.5, 0.75],
+          [3.5, 0.5],
+        ],
+        [
+          [0.5, 0.75],
+          [2, 1.5],
+        ],
+      ],
+      waltz: [
+        [
+          [1, 0.6],
+          [2, 0.6],
+        ],
+      ],
+      blues: [
+        [
+          [0, 1],
+          [1.5, 0.5],
+          [2, 1],
+          [3.5, 0.5],
+        ],
+      ],
+      sowhat: [
+        [],
+        [
+          [1.5, 0.5, 1.5, 0],
+          [2, 1.5, 2, -2],
+        ],
+      ],
       stop: [[[0, 0.5]]],
     };
     const realBars = Math.round(total / bpb);
@@ -307,7 +370,8 @@ export class Arranger {
   /** One bar of drums (`accents`: where the lead's accents fall, for the shout's kicks). */
   private drumBar(kind: Drums, at: number, _bpb: number, j: number, fill: boolean, crash: boolean, accents: number[], vel: number, c: Chord): void {
     const d = (ch: number, t: number, v: number, n?: number) => this.drum(ch, at + t, Math.round((v * vel) / 100), n);
-    const ride = (v: number, skip = crash) => [0, 1, 1.5, 2, 3, 3.5].forEach((t, i) => (skip && t === 0 ? 0 : d(DRUM.cymbal, t, [v, v + 4, v - 26, v, v + 4, v - 26][i])));
+    const ride = (v: number, skip = crash) =>
+      [0, 1, 1.5, 2, 3, 3.5].forEach((t, i) => (skip && t === 0 ? 0 : d(DRUM.cymbal, t, [v, v + 4, v - 26, v, v + 4, v - 26][i])));
     if (crash) this.crash(at, Math.round((122 * vel) / 100));
     const timp = fold(c.pc, 38);
     switch (kind) {

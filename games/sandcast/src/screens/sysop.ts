@@ -153,12 +153,16 @@ function background(p: Pixels): void {
     const y = 30 + r() * 34;
     p.disc(x, y, 2 + r() * 3, sh(LEAF, 1 + r() * 3, Math.round(x), Math.round(y)));
   }
-  poly(p, [
-    [214, 30],
-    [236, 16],
-    [276, 16],
-    [298, 30],
-  ], (x, y) => sh(BRICK, 3.4 - (y - 16) / 10, x, y));
+  poly(
+    p,
+    [
+      [214, 30],
+      [236, 16],
+      [276, 16],
+      [298, 30],
+    ],
+    (x, y) => sh(BRICK, 3.4 - (y - 16) / 10, x, y),
+  );
   for (let y = 30; y < 70; y++) for (let x = 218; x < 296; x++) p.set(x, y, sh(WHITE, 5.4 - (x - 218) / 60, x, y));
   for (let k = 0; k < 3; k++) p.rect(226 + k * 24, 36, 10, 12, WHITE[1]).rect(227 + k * 24, 37, 8, 10, SKY[1]);
   p.rect(222, 54, 70, 2, WHITE[3]);
@@ -192,16 +196,22 @@ function background(p: Pixels): void {
 function gazebo(p: Pixels): void {
   const cx = 150;
   // Roof: a low green dome with a little cupola.
-  poly(p, [
-    [cx - 56, 20],
-    [cx - 30, 4],
-    [cx + 30, 4],
-    [cx + 56, 20],
-  ], (x, y) => sh(ROOF, 3.6 - (y - 4) / 8 + (x < cx ? 0.4 : -0.4), x, y));
+  poly(
+    p,
+    [
+      [cx - 56, 20],
+      [cx - 30, 4],
+      [cx + 30, 4],
+      [cx + 56, 20],
+    ],
+    (x, y) => sh(ROOF, 3.6 - (y - 4) / 8 + (x < cx ? 0.4 : -0.4), x, y),
+  );
   for (let k = -3; k <= 3; k++) p.line(cx + k * 15, 21, cx + k * 9, 4, ROOF[1]);
   p.rect(cx - 6, 0, 12, 5, ROOF[2]).rect(cx - 2, 0, 4, 2, WHITE[6]);
   // Cornice.
-  p.rect(cx - 58, 20, 116, 5, WHITE[6]).rect(cx - 58, 24, 116, 1, WHITE[2]).rect(cx - 58, 20, 116, 1, WHITE[4]);
+  p.rect(cx - 58, 20, 116, 5, WHITE[6])
+    .rect(cx - 58, 24, 116, 1, WHITE[2])
+    .rect(cx - 58, 20, 116, 1, WHITE[4]);
   // Columns, with sunburst fans between their tops.
   const cols = [-50, -32, -12, 12, 32, 50];
   const back = 70;
@@ -235,34 +245,50 @@ function gazebo(p: Pixels): void {
 /** Lewis: the selfie's big friendly face in the lower left. */
 function lewis(p: Pixels): void {
   // Red polo shoulders and collar.
-  poly(p, [
-    [0, 150],
-    [40, 158],
-    [120, 168],
-    [176, 186],
-    [184, 200],
-    [0, 200],
-  ], (x, y) => sh(POLO, 2.6 - (x - 60) / 120 + (y - 160) / 60, x, y));
-  poly(p, [
-    [44, 156],
-    [70, 168],
-    [92, 190],
-    [60, 196],
-    [28, 170],
-  ], (x, y) => sh(POLO, 3.4 - (y - 160) / 30, x, y));
-  poly(p, [
-    [116, 164],
-    [138, 168],
-    [150, 192],
-    [118, 186],
-  ], (x, y) => sh(POLO, 1.6, x, y));
+  poly(
+    p,
+    [
+      [0, 150],
+      [40, 158],
+      [120, 168],
+      [176, 186],
+      [184, 200],
+      [0, 200],
+    ],
+    (x, y) => sh(POLO, 2.6 - (x - 60) / 120 + (y - 160) / 60, x, y),
+  );
+  poly(
+    p,
+    [
+      [44, 156],
+      [70, 168],
+      [92, 190],
+      [60, 196],
+      [28, 170],
+    ],
+    (x, y) => sh(POLO, 3.4 - (y - 160) / 30, x, y),
+  );
+  poly(
+    p,
+    [
+      [116, 164],
+      [138, 168],
+      [150, 192],
+      [118, 186],
+    ],
+    (x, y) => sh(POLO, 1.6, x, y),
+  );
   // Neck in shadow.
-  poly(p, [
-    [58, 140],
-    [128, 140],
-    [124, 170],
-    [64, 166],
-  ], (x, y) => sh(SKIN, 3.2 + (60 - x) / 80, x, y));
+  poly(
+    p,
+    [
+      [58, 140],
+      [128, 140],
+      [124, 170],
+      [64, 166],
+    ],
+    (x, y) => sh(SKIN, 3.2 + (60 - x) / 80, x, y),
+  );
   // The face: wide and round, lit from the left, the jaw softening into shadow at the right.
   oval(p, 88, 104, 60, 64, (x, y, u, v) => sh(SKIN, 6.1 - u * 1.7 - Math.max(0, v) * 1.2 - (u * u + v * v) * 1.4, x, y));
   // His ear on the left.
@@ -276,8 +302,7 @@ function lewis(p: Pixels): void {
     const side = x < 38 || x > 140;
     return y <= (side ? 94 + Math.sin(x * 0.7) * 3 : 60 + (x - 30) * 0.06 + Math.sin(x / 6) * 2);
   };
-  for (let y = 24; y < 100; y++)
-    for (let x = 22; x < 160; x++) if (inHair(x, y)) p.set(x, y, sh(HAIR, 2.8 - (x - 90) / 60 - (y - 60) / 70, x, y));
+  for (let y = 24; y < 100; y++) for (let x = 22; x < 160; x++) if (inHair(x, y)) p.set(x, y, sh(HAIR, 2.8 - (x - 90) / 60 - (y - 60) / 70, x, y));
   const hr = rng(1995);
   for (let k = 0; k < 260; k++) {
     // Each strand starts near the crown and falls forward and down, curling a little.
@@ -313,19 +338,29 @@ function lewis(p: Pixels): void {
   p.line(86, 80, 99, 81, WHITE[3]).line(86, 79, 99, 80, WHITE[5]);
   p.line(46, 78, 30, 74, WHITE[3]).line(137, 80, 150, 74, WHITE[2]);
   // Nose, the shadow under it, and a sly half-smile pulling up on his right.
-  stroke(p, [
-    [92, 96],
-    [90, 110],
-    [96, 116],
-  ], 1, SKIN[3]);
+  stroke(
+    p,
+    [
+      [92, 96],
+      [90, 110],
+      [96, 116],
+    ],
+    1,
+    SKIN[3],
+  );
   oval(p, 98, 116, 8, 3, (x, y) => sh(SKIN, 3.2, x, y));
   p.line(84, 115, 88, 117, SKIN[2]).line(104, 116, 108, 114, SKIN[2]);
-  stroke(p, [
-    [72, 131],
-    [86, 133],
-    [100, 131],
-    [110, 127],
-  ], 0.6, SKIN[1]);
+  stroke(
+    p,
+    [
+      [72, 131],
+      [86, 133],
+      [100, 131],
+      [110, 127],
+    ],
+    0.6,
+    SKIN[1],
+  );
   p.line(110, 127, 113, 124, SKIN[2]);
   p.line(74, 136, 98, 136, SKIN[4]);
   // Shadow under the chin.
@@ -342,12 +377,16 @@ function teddy(p: Pixels): void {
   }
   // Front legs and chest: white, with fur coming round the shoulders.
   for (const lx of [210, 244]) {
-    poly(p, [
-      [lx, 150],
-      [lx + 16, 150],
-      [lx + 15, 200],
-      [lx + 1, 200],
-    ], (x, y) => sh(FUR, 3.6 - (x - lx) / 12, x, y));
+    poly(
+      p,
+      [
+        [lx, 150],
+        [lx + 16, 150],
+        [lx + 15, 200],
+        [lx + 1, 200],
+      ],
+      (x, y) => sh(FUR, 3.6 - (x - lx) / 12, x, y),
+    );
     p.rect(lx + 3, 176, 10, 24, WHITE[6]).rect(lx + 11, 176, 2, 24, WHITE[4]);
   }
   oval(p, 232, 150, 28, 36, (x, y, u, v) => sh(WHITE, 6 - u * 0.8 - v * 0.6, x, y));
@@ -386,12 +425,16 @@ function teddy(p: Pixels): void {
   oval(p, 230, 82, 38, 34, (x, y, u, v) => sh(FUR, 5 - u * 1.1 - v * 0.7, x, y));
   oval(p, 226, 112, 26, 18, (x, y, u, v) => sh(WHITE, 6 - u * 0.9 - v * 0.6, x, y));
   // The white blaze: a stripe up the middle to his forehead.
-  poly(p, [
-    [222, 50],
-    [230, 50],
-    [236, 100],
-    [216, 100],
-  ], (x, y) => sh(WHITE, 6 - (x - 222) / 18, x, y));
+  poly(
+    p,
+    [
+      [222, 50],
+      [230, 50],
+      [236, 100],
+      [216, 100],
+    ],
+    (x, y) => sh(WHITE, 6 - (x - 222) / 18, x, y),
+  );
   // Eyes: dark brown, a glint each.
   for (const [ex, ey] of [
     [210, 82],
@@ -405,28 +448,42 @@ function teddy(p: Pixels): void {
   oval(p, 224, 106, 10, 7, (_x, _y, u, v) => (u + v < -0.9 ? WHITE[2] : WHITE[0]));
   p.set(221, 103, WHITE[4]).set(222, 102, WHITE[4]);
   p.line(224, 113, 224, 118, WHITE[1]);
-  poly(p, [
-    [208, 118],
-    [240, 116],
-    [232, 128],
-    [214, 128],
-  ], () => FUR[0]);
+  poly(
+    p,
+    [
+      [208, 118],
+      [240, 116],
+      [232, 128],
+      [214, 128],
+    ],
+    () => FUR[0],
+  );
   oval(p, 223, 124, 8, 4, (x, y) => sh(PINK, 1.4, x, y));
   p.rect(212, 118, 3, 2, WHITE[6]).rect(233, 117, 3, 2, WHITE[6]);
   // A blue collar under his chin, tags, and the blue leash running out of the picture.
-  stroke(p, [
-    [206, 128],
-    [218, 134],
-    [232, 135],
-    [252, 128],
-  ], 1.6, (x, y) => sh(LEASH, 1 + (y < 132 ? 1 : 0), x, y));
+  stroke(
+    p,
+    [
+      [206, 128],
+      [218, 134],
+      [232, 135],
+      [252, 128],
+    ],
+    1.6,
+    (x, y) => sh(LEASH, 1 + (y < 132 ? 1 : 0), x, y),
+  );
   oval(p, 228, 142, 4, 5, (x, y, u, v) => sh(WHITE, 4.5 - u - v, x, y));
   oval(p, 224, 146, 3, 4, (x, y, u, v) => sh(PLAZA, 3 - u - v, x, y));
-  stroke(p, [
-    [230, 136],
-    [232, 160],
-    [229, 200],
-  ], 1.2, (x, y) => sh(LEASH, 1.4 + (x % 3 === 0 ? 0.6 : 0), x, y));
+  stroke(
+    p,
+    [
+      [230, 136],
+      [232, 160],
+      [229, 200],
+    ],
+    1.2,
+    (x, y) => sh(LEASH, 1.4 + (x % 3 === 0 ? 0.6 : 0), x, y),
+  );
 }
 
 /** The whole picture, 320x200. */
@@ -500,7 +557,10 @@ export function sysopFli(): Uint8Array {
   const bx = 36;
   const by = 58;
   const win = (got: number, note: string, noteColor = A[7]) => {
-    scr.rect(bx, by, 248, 66, A[1]).frame(bx + 2, by + 2, 244, 62, A[11]).frame(bx + 4, by + 4, 240, 58, A[11]);
+    scr
+      .rect(bx, by, 248, 66, A[1])
+      .frame(bx + 2, by + 2, 244, 62, A[11])
+      .frame(bx + 4, by + 4, 240, 58, A[11]);
     scr.rect(bx + 60, by, 136, 8, A[1]);
     write(scr, bx + 64, by, ' ZMODEM RECEIVE ', A[14]);
     write(scr, bx + 12, by + 10, 'File:  SYSOP.GIF', A[15]);
@@ -526,7 +586,7 @@ export function sysopFli(): Uint8Array {
         write(scr, bx + 12, by + 52, s, A[12]);
         add(scr, 2);
       }
-      win(got, 'MOM! I\'M ONLINE!', A[14]);
+      win(got, "MOM! I'M ONLINE!", A[14]);
       add(scr, 14);
     }
     add(scr, k === steps ? 16 : 2);

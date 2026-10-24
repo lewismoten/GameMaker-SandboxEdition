@@ -9,19 +9,38 @@ vi.mock('../project/storage', () => ({
   writeSaveFile: async (id: string, name: string, bytes: Uint8Array) => void ((saves[id] ??= {})[name] = bytes),
 }));
 
-import { countedOf, FOUND_FILE, heartHook, heartStates, MANIFEST, parseFound, pendingOf, readOverrides, setAllOverrides, setOverride, statusOf } from './tinHearts';
+import {
+  countedOf,
+  FOUND_FILE,
+  heartHook,
+  heartStates,
+  MANIFEST,
+  parseFound,
+  pendingOf,
+  readOverrides,
+  setAllOverrides,
+  setOverride,
+  statusOf,
+} from './tinHearts';
 import { countWord, joeNote } from './trophy';
 import type { Session } from '../engine/scene';
 
 const store = new Map<string, string>();
-const games = [{ id: 'realm', title: 'Quest for the Round Tuit' }, { id: 'sleuth', title: 'Final Curtain' }];
+const games = [
+  { id: 'realm', title: 'Quest for the Round Tuit' },
+  { id: 'sleuth', title: 'Final Curtain' },
+];
 const flush = () => new Promise((r) => setTimeout(r, 0));
 
 describe('tin hearts', () => {
   beforeEach(() => {
     store.clear();
     for (const k of Object.keys(saves)) delete saves[k];
-    vi.stubGlobal('localStorage', { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, String(v)), removeItem: (k: string) => void store.delete(k) });
+    vi.stubGlobal('localStorage', {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, String(v)),
+      removeItem: (k: string) => void store.delete(k),
+    });
   });
   afterEach(() => vi.unstubAllGlobals());
 
@@ -29,22 +48,23 @@ describe('tin hearts', () => {
     const hook = heartHook('game:realm')!;
     const scenes = Array.from({ length: 25 }, (_, i) => ({ files: i === 19 ? ['', 'PORT.MAP'] : ['', 'town.map'] }));
     hook.onSession({ game: { scenes } } as unknown as Session);
-    hook.onTouched(19, 11, 33, 5);
-    hook.onTouched(3, 10, 33, 5);
+    hook.onTouched(19, 10, 25, 5);
+    hook.onTouched(3, 9, 25, 5);
     await flush();
     expect(saves['game:realm']).toBeUndefined();
-    hook.onTouched(19, 10, 33, 142);
+    hook.onTouched(19, 9, 25, 142);
     await flush();
     const note = parseFound(saves['game:realm'][FOUND_FILE]);
-    expect(note).toMatchObject({ scene: 19, at: [10, 33] });
+    expect(note).toMatchObject({ scene: 19, at: [9, 25] });
     // a second visit keeps the first find's date
     const first = saves['game:realm'][FOUND_FILE];
-    await heartHook('game:realm')!.onTouched(19, 10, 33, 142);
+    heartHook('game:realm')!.onTouched(19, 9, 25, 142);
+    await flush();
     expect(saves['game:realm'][FOUND_FILE]).toBe(first);
   });
 
   it('has no hook for a game without a heart, or a project', () => {
-    expect(heartHook('game:carl')).toBeUndefined();
+    expect(heartHook('game:no-heart-yet')).toBeUndefined();
     expect(heartHook('project:abc')).toBeUndefined();
     expect(heartHook(undefined)).toBeUndefined();
   });
@@ -52,7 +72,7 @@ describe('tin hearts', () => {
   it('counts a find in a save or added by hand, unless taken away', async () => {
     expect(statusOf(true, 'broken')).toEqual({ status: 'broken', found: false });
     expect(statusOf(false, 'added')).toEqual({ status: 'added', found: true });
-    saves['game:realm'] = { [FOUND_FILE]: new TextEncoder().encode('{"found":"2026-10-23T00:00:00Z","scene":19,"at":[10,33]}') };
+    saves['game:realm'] = { [FOUND_FILE]: new TextEncoder().encode('{"found":"2026-10-23T00:00:00Z","scene":19,"at":[9,25]}') };
     let s = await heartStates(games);
     expect(s.map((h) => h.found)).toEqual([true, false]);
     setOverride('sleuth', 'added');
@@ -69,11 +89,11 @@ describe('tin hearts', () => {
   it('counts only catalog games that declare a heart; the rest are pending (dev only)', () => {
     const catalog = [
       { id: 'realm', title: 'Quest', original: {} },
-      { id: 'carl', title: 'Carl', original: {}, series: 'bizarre' },
+      { id: 'no-heart-yet', title: 'No Heart Yet', original: {}, series: 'bizarre' },
       { id: 'nebula', title: 'Shareware' },
     ];
     expect(countedOf(catalog).map((g) => g.id)).toEqual(['realm']);
-    expect(pendingOf(catalog).map((g) => g.id)).toEqual(MANIFEST.pending.includes('carl') ? ['carl'] : []);
+    expect(pendingOf(catalog).map((g) => g.id)).toEqual(MANIFEST.pending.includes('no-heart-yet') ? ['no-heart-yet'] : []);
   });
 
   it('has Joe write the count out', () => {

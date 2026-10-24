@@ -9,7 +9,7 @@ You may copy Maximus and give
 it to your friends, upload it
 to your favorite BBS, or put
 it on a shareware CD, as long
-as all 512 files stay together
+as all 515 files stay together
 and nobody charges money for
 it. (A hundred worlds take
 some room: 7.1 MB. Unzip it
@@ -34,7 +34,7 @@ order, US funds) to:
 
   Sandbox Software
   Attn: Maximus Registration
-  P.O. Box 4217
+  P.O. Box 000
   Pittsburgh, PA 15213
 
 Please tell us where you got
@@ -71,7 +71,7 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / D ... pick up / drop
+  P / O ... pick up / drop
   Q / E ... dash left/right
   Z X C V H W  module weapons
   F ....... hover

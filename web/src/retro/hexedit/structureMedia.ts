@@ -6,7 +6,16 @@ import { Builder, GM_FORMATS, part, readVlq, text, type Describer, type Structur
 
 const hex = (n: number, w = 2) => n.toString(16).toUpperCase().padStart(w, '0');
 
-const FLI_CHUNKS: Record<number, string> = { 4: 'COLOR_256', 7: 'SS2 (word delta)', 11: 'COLOR', 12: 'LC (line delta)', 13: 'BLACK', 15: 'BRUN (run length)', 16: 'COPY (raw pixels)', 18: 'PSTAMP' };
+const FLI_CHUNKS: Record<number, string> = {
+  4: 'COLOR_256',
+  7: 'SS2 (word delta)',
+  11: 'COLOR',
+  12: 'LC (line delta)',
+  13: 'BLACK',
+  15: 'BRUN (run length)',
+  16: 'COPY (raw pixels)',
+  18: 'PSTAMP',
+};
 
 /** .FLI/.FLC: a 128-byte header, then frames of chunks (FLI.HPP). */
 function fli(b: Builder): void {
@@ -69,7 +78,13 @@ function colorChunk(b: Builder, end: number, eightBit: boolean): void {
     b.f(`Packet ${p} skip`, 'u8', { note: () => 'colors left alone' });
     const count = b.f(`Packet ${p} count`, 'u8', { note: (v) => (v === 0 ? '256 colors' : 'colors') }) || 256;
     const n = Math.min(count, Math.floor((end - b.off) / 3));
-    b.arr(`Packet ${p} colors`, n, 3, [part(0, 'red', 'u8'), part(1, 'green', 'u8'), part(2, 'blue', 'u8')], (i) => `[${i}]${eightBit ? ' (0-255)' : ' (0-63)'}`);
+    b.arr(
+      `Packet ${p} colors`,
+      n,
+      3,
+      [part(0, 'red', 'u8'), part(1, 'green', 'u8'), part(2, 'blue', 'u8')],
+      (i) => `[${i}]${eightBit ? ' (0-255)' : ' (0-63)'}`,
+    );
   }
 }
 
@@ -102,7 +117,16 @@ function gif(b: Builder): void {
     const t = b.u8();
     if (t === 0x21) {
       const label = b.u8(b.off + 1);
-      const kind = label === 0xf9 ? 'Graphic control' : label === 0xfe ? 'Comment' : label === 0xff ? 'Application' : label === 0x01 ? 'Plain text' : `Extension ${hex(label)}h`;
+      const kind =
+        label === 0xf9
+          ? 'Graphic control'
+          : label === 0xfe
+            ? 'Comment'
+            : label === 0xff
+              ? 'Application'
+              : label === 0x01
+                ? 'Plain text'
+                : `Extension ${hex(label)}h`;
       b.sect(`${kind} extension ${ext++}`);
       b.f('Extension introducer', 'u8', { note: () => "'!'" });
       b.f('Label', 'u8', { note: () => kind });
@@ -173,7 +197,19 @@ function voc(b: Builder): void {
   }
 }
 
-const SBI = ['modulator characteristic', 'carrier characteristic', 'modulator level', 'carrier level', 'modulator attack/decay', 'carrier attack/decay', 'modulator sustain/release', 'carrier sustain/release', 'modulator wave', 'carrier wave', 'feedback/connection'];
+const SBI = [
+  'modulator characteristic',
+  'carrier characteristic',
+  'modulator level',
+  'carrier level',
+  'modulator attack/decay',
+  'carrier attack/decay',
+  'modulator sustain/release',
+  'carrier sustain/release',
+  'modulator wave',
+  'carrier wave',
+  'feedback/connection',
+];
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const noteName = (k: number) => `${NOTES[k % 12]}${Math.floor(k / 12) - 1}`;
 
@@ -190,13 +226,33 @@ function cmf(b: Builder): void {
   b.f('Title offset', 'u16', { note: (v) => (v ? '' : 'none') });
   b.f('Composer offset', 'u16', { note: (v) => (v ? '' : 'none') });
   b.f('Remarks offset', 'u16', { note: (v) => (v ? '' : 'none') });
-  b.arr('Channels used', 16, 1, [part(0, '', 'u8', (i) => `channelUsed.${i}`, (v) => (v ? 'used' : 'unused'))], (i) => `channel ${i}`);
+  b.arr(
+    'Channels used',
+    16,
+    1,
+    [
+      part(
+        0,
+        '',
+        'u8',
+        (i) => `channelUsed.${i}`,
+        (v) => (v ? 'used' : 'unused'),
+      ),
+    ],
+    (i) => `channel ${i}`,
+  );
   const instNum = b.f('Instruments', 'u16', { key: 'instruments.length' });
   b.f('Basic tempo', 'u16', { key: 'basicTempo' });
   if (instBlk > b.off) b.f('Header extra (title, composer, remarks)', 'raw', { len: instBlk - b.off });
   b.off = Math.max(b.off, instBlk);
   b.sect('Instruments (SBI)');
-  b.arr('Instruments', instNum, 16, [...SBI.map((n, k) => part(k, n, 'u8', (i) => `instruments.${i}.${k}`)), part(11, 'reserved', 'raw', undefined, undefined, 5)], (i) => `#${i}`);
+  b.arr(
+    'Instruments',
+    instNum,
+    16,
+    [...SBI.map((n, k) => part(k, n, 'u8', (i) => `instruments.${i}.${k}`)), part(11, 'reserved', 'raw', undefined, undefined, 5)],
+    (i) => `#${i}`,
+  );
   if (musicBlk > b.off) b.f('Gap before the music', 'raw', { len: musicBlk - b.off });
   b.off = Math.max(b.off, musicBlk);
   b.sect('Music events');
@@ -259,7 +315,8 @@ export function describe(name: string, bytes: Uint8Array): Structure | undefined
   if (magic('GIF8')) pick = ['GIF picture (.GIF)', gif];
   else if (magic('CTMF')) pick = ['Creative Music File (.CMF)', cmf];
   else if (magic('Creative Voice File')) pick = ['Creative Voice File (.VOC)', voc];
-  else if (bytes.length >= 6 && (bytes[4] | (bytes[5] << 8)) >= 0xaf11 && (bytes[4] | (bytes[5] << 8)) <= 0xaf12 && (ext === 'fli' || ext === 'flc' || !pick)) pick = ['Autodesk Animator (.FLI)', fli];
+  else if (bytes.length >= 6 && (bytes[4] | (bytes[5] << 8)) >= 0xaf11 && (bytes[4] | (bytes[5] << 8)) <= 0xaf12 && (ext === 'fli' || ext === 'flc' || !pick))
+    pick = ['Autodesk Animator (.FLI)', fli];
   else if (!pick && TEXT_EXTS.has(ext)) pick = [ext === 'sav' ? 'Saved game (JSON text, as this PLAYGAME writes it)' : `Text (.${ext.toUpperCase()})`, text];
   if (!pick) return undefined;
   const b = new Builder(bytes, pick[0]);

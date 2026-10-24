@@ -2,7 +2,8 @@
 // up, drawn over whichever backdrop they sit on (a block has no see-through pixels, so a coin on
 // the office carpet and a coin on the kitchen tiles are two blocks):
 //   - tips (money): a coin (+1) and a dollar bill (+5), with a few points;
-//   - a mug of coffee mends composure (+20);
+//   - a mug of coffee mends composure (+20; +10 in the last two sets, home and outside, so the
+//     night's end has some bite);
 //   - the spotlight where the poet starts each monologue: the only block in a monologue's scene
 //     that gives points alone, so it plays the score sound, which each scene's .SND fills with
 //     the monologue's opening line. It goes dark once he steps out of it.
@@ -28,7 +29,9 @@ const copy = (bg: Pixels) => bg.crop(0, 0, 20, 20);
 /** A gold coin standing on its edge at the bottom of the block. */
 export function drawCoin(p: Pixels, pal: Pal, x = 10, y = 15): Pixels {
   const c = pal.c;
-  p.disc(x, y, 3.6, c('gold', 0)).disc(x - 0.4, y - 0.4, 2.8, c('gold', 2)).disc(x - 1, y - 1, 1, c('gold', 3));
+  p.disc(x, y, 3.6, c('gold', 0))
+    .disc(x - 0.4, y - 0.4, 2.8, c('gold', 2))
+    .disc(x - 1, y - 1, 1, c('gold', 3));
   p.rect(x - 1, y - 1, 1, 3, c('gold', 1));
   return p;
 }
@@ -36,7 +39,9 @@ export function drawCoin(p: Pixels, pal: Pal, x = 10, y = 15): Pixels {
 /** A dollar bill, folded once. */
 export function drawBill(p: Pixels, pal: Pal, x = 3, y = 12): Pixels {
   const c = pal.c;
-  p.rect(x, y, 14, 7, c('green', 1)).rect(x + 1, y + 1, 12, 5, c('green', 2)).frame(x, y, 14, 7, c('green', 0));
+  p.rect(x, y, 14, 7, c('green', 1))
+    .rect(x + 1, y + 1, 12, 5, c('green', 2))
+    .frame(x, y, 14, 7, c('green', 0));
   p.disc(x + 7, y + 3.5, 1.8, c('green', 3)).set(x + 7, y + 3, c('green', 1));
   micro(p, x + 1, y + 1, '1', c('green', 0));
   return p;
@@ -45,9 +50,16 @@ export function drawBill(p: Pixels, pal: Pal, x = 3, y = 12): Pixels {
 /** A white mug of coffee, steaming. */
 export function drawMug(p: Pixels, pal: Pal, x = 6, y = 11): Pixels {
   const c = pal.c;
-  p.rect(x, y, 8, 8, c('white', 1)).rect(x + 1, y, 6, 7, c('white', 2)).rect(x + 1, y, 6, 1, c('coffee', 2));
-  p.rect(x + 8, y + 2, 2, 1, c('white', 1)).rect(x + 9, y + 2, 1, 4, c('white', 1)).rect(x + 8, y + 5, 2, 1, c('white', 1));
-  p.set(x + 2, y - 2, c('white', 0)).set(x + 3, y - 3, c('white', 0)).set(x + 5, y - 2, c('white', 0)).set(x + 4, y - 4, c('white', 0));
+  p.rect(x, y, 8, 8, c('white', 1))
+    .rect(x + 1, y, 6, 7, c('white', 2))
+    .rect(x + 1, y, 6, 1, c('coffee', 2));
+  p.rect(x + 8, y + 2, 2, 1, c('white', 1))
+    .rect(x + 9, y + 2, 1, 4, c('white', 1))
+    .rect(x + 8, y + 5, 2, 1, c('white', 1));
+  p.set(x + 2, y - 2, c('white', 0))
+    .set(x + 3, y - 3, c('white', 0))
+    .set(x + 5, y - 2, c('white', 0))
+    .set(x + 4, y - 4, c('white', 0));
   return p;
 }
 
@@ -67,13 +79,13 @@ export function drawSpot(p: Pixels, pal: Pal, on: boolean): Pixels {
  * Adds the pick-ups over a backdrop: coin@bg, bill@bg, mug@bg (each turns back into `bg` when
  * taken). `bg` must already be in the book.
  */
-export function loot(book: BlockBook, pal: Pal, bg: string, extra: { attrs?: object } = {}): void {
+export function loot(book: BlockBook, pal: Pal, bg: string, extra: { attrs?: object; mugHp?: number } = {}): void {
   const pic = book.pics.get(bg);
   if (!pic) throw new Error(`No backdrop ${bg}`);
   const a = extra.attrs ?? AIR;
   book.add(`coin@${bg}`, drawCoin(copy(pic), pal), { ...a, effect: MONEY, eamt: 1, score: 10, touch: bg });
   book.add(`bill@${bg}`, drawBill(copy(pic), pal), { ...a, effect: MONEY, eamt: 5, score: 50, touch: bg });
-  book.add(`mug@${bg}`, drawMug(copy(pic), pal), { ...a, hp: 20, score: 10, touch: bg });
+  book.add(`mug@${bg}`, drawMug(copy(pic), pal), { ...a, hp: extra.mugHp ?? 20, score: 10, touch: bg });
 }
 
 /** Adds the spotlight over a backdrop: spot@bg (points alone: the opening line), going dark into spotOff@bg. */

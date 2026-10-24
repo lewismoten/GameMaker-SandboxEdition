@@ -77,7 +77,7 @@ describe('the page AudioContext', () => {
     const { audioContext, unlock } = await import('../src/audio/context');
     const ctx = audioContext() as unknown as FakeContext;
     unlock();
-    ctx.state = 'interrupted' as AudioContextState;
+    ctx.state = 'interrupted';
     listeners.get('visibilitychange')!({ type: 'visibilitychange' } as Event);
     expect(ctx.state).toBe('running');
     expect(ctx.resumes).toBe(2);

@@ -44,8 +44,8 @@ export const INSTRUCTIONS = [
     'Glass walkways hold you only',
     'in their own plane. Violet',
     'panels come and go: wait for',
-    'them. The void is a long way',
-    'down.',
+    'them. A pink flicker means one',
+    'is about to blur out.',
   ]),
   page([
     'Find the RED, GREEN and BLUE',
@@ -68,8 +68,9 @@ export const INSTRUCTIONS = [
   page([
     'Arrows on the ground pull you',
     'their way. Teapots steam at',
-    'you. Count Polygon loses a few',
-    'faces with every ray.',
+    'you. Three rays take faces off',
+    'Count Polygon; down to four,',
+    'he flees to the far plane.',
     '',
     'F1 help      F2 status',
     'F3 music     F4 sound',
@@ -224,7 +225,7 @@ THIS IS SHAREWARE
 
     Sandbox Software
     Dept. DEPTH
-    P.O. Box 1992
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   (This is a fictional address

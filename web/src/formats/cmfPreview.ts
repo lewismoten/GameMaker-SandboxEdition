@@ -62,7 +62,7 @@ export function buildPreview(song: CmfSong, opts: { muted?: Set<number>; from?: 
     hadEvents: new Array(16).fill(true),
   };
   let seq = 0;
-  const push = (e: Omit<Ev, 'seq'>) => out.events.push({ ...e, seq: seq++, status: undefined, delta: undefined } as Ev);
+  const push = (e: Omit<Ev, 'seq'>) => out.events.push({ ...e, seq: seq++, status: undefined, delta: undefined });
   let t0 = 0;
   const starts: number[] = [];
   for (const p of parts) {

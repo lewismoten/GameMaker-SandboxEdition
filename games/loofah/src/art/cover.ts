@@ -96,7 +96,8 @@ export function coverRgb(t: number): Uint8Array {
       const dy = y - win.top;
       const dx = Math.abs(x - win.cx);
       // the arch: two circles meeting in a point
-      const inArch = (pad: number) => (dy > win.w ? dx <= win.w + pad && dy < win.h + pad : Math.hypot(dx + win.w * 0.6, dy - win.w) <= win.w * 1.6 + pad && dy >= -pad);
+      const inArch = (pad: number) =>
+        dy > win.w ? dx <= win.w + pad && dy < win.h + pad : Math.hypot(dx + win.w * 0.6, dy - win.w) <= win.w * 1.6 + pad && dy >= -pad;
       if (!inArch(4)) continue;
       if (!inArch(0)) {
         put(x, y, lit([60, 44, 60], x, y));
@@ -141,7 +142,8 @@ export function coverRgb(t: number): Uint8Array {
       put(x, y, [chrome, chrome * 1.02, chrome * 1.08]);
     }
   for (const bx of [RACK.x0 + 4, RACK.x1 - 4])
-    for (let y = RACK.y - 14; y < RACK.y + 3; y++) for (let x = bx - 3; x <= bx + 3; x++) put(x, y, [150 - Math.abs(x - bx) * 20, 152 - Math.abs(x - bx) * 20, 160 - Math.abs(x - bx) * 18]);
+    for (let y = RACK.y - 14; y < RACK.y + 3; y++)
+      for (let x = bx - 3; x <= bx + 3; x++) put(x, y, [150 - Math.abs(x - bx) * 20, 152 - Math.abs(x - bx) * 20, 160 - Math.abs(x - bx) * 18]);
   // the hook
   for (let a = 0; a < Math.PI * 1.4; a += 0.05) put(HOOK.x + Math.sin(a) * 5, HOOK.y + 4 - Math.cos(a) * 5, [210, 214, 224]);
 
@@ -192,7 +194,8 @@ export function coverRgb(t: number): Uint8Array {
       }
     // the lid's heavy line (smug)
     for (let x = -7; x <= 7; x++) put(ex + x, ey - 4 + 6 * (1 - eyes) + 1 + (side * x > 0 ? 1 : 0), [40, 12, 14]);
-    if (eyes > 0.2) for (let k = 0; k < 40; k++) add(Math.round(ex + Math.cos(k) * (6 + (k % 5))), Math.round(ey + Math.sin(k) * (4 + (k % 4))), [255, 180, 60], 0.12 * eyes);
+    if (eyes > 0.2)
+      for (let k = 0; k < 40; k++) add(Math.round(ex + Math.cos(k) * (6 + (k % 5))), Math.round(ey + Math.sin(k) * (4 + (k % 4))), [255, 180, 60], 0.12 * eyes);
   }
   // the smirk: up at one corner
   for (let x = -12; x <= 12; x++) {
@@ -203,9 +206,14 @@ export function coverRgb(t: number): Uint8Array {
   put(sx + 13, sy + 4, [50, 10, 14]);
 
   // ---- candles on the shelves, their flames, their glow
-  for (const [x0, x1, y] of [[18, 72, 180], [252, 296, 180]]) for (let x = x0; x <= x1; x++) for (let yy = y; yy < y + 4; yy++) put(x, yy, lit(yy === y ? [140, 100, 70] : [80, 50, 30], x, yy));
+  for (const [x0, x1, y] of [
+    [18, 72, 180],
+    [252, 296, 180],
+  ])
+    for (let x = x0; x <= x1; x++) for (let yy = y; yy < y + 4; yy++) put(x, yy, lit(yy === y ? [140, 100, 70] : [80, 50, 30], x, yy));
   CANDLES.forEach(([cx, top, h], k) => {
-    for (let y = top; y < top + h; y++) for (let x = cx - 4; x <= cx + 4; x++) put(x, y, lit([220 - Math.abs(x - cx) * 10, 200 - Math.abs(x - cx) * 12, 170 - Math.abs(x - cx) * 12], x, y));
+    for (let y = top; y < top + h; y++)
+      for (let x = cx - 4; x <= cx + 4; x++) put(x, y, lit([220 - Math.abs(x - cx) * 10, 200 - Math.abs(x - cx) * 12, 170 - Math.abs(x - cx) * 12], x, y));
     // wax running down
     for (let y = top; y < top + 6; y++) put(cx - 3, y, [250, 240, 210]);
     const f = flick(k);

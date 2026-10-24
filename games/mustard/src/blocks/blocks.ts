@@ -13,19 +13,49 @@ import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { drawHand, HAND_H, HAND_W } from '../art/hand';
 import type { Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { FAITH, MON, WATER, WATER_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
+type Attrs = NonNullable<Parameters<BlockBook['add']>[2]>;
+
+/** A BlockBook that keeps each block's attributes, so a block can be copied in a deeper sky. */
+class ToneBook extends BlockBook {
+  readonly attrs = new Map<string, Attrs>();
+  override add(name: string, pic: Pixels, a: Attrs = {}): number {
+    this.attrs.set(name, a);
+    return super.add(name, pic, a);
+  }
+}
+
+/**
+ * The blocks the evening sky shows up the great plant, copied with the sky a shade or two
+ * darker (`name~1`, `name~2`): the sky deepens toward the top, so the plant stands out and the
+ * height reads (MapBuilder.tone lays them). Each shift lists only what its rows show.
+ */
+export const DUSK_TONED: Record<number, string[]> = {
+  2: ['sky', 'wisp', 'branch', 'breeze0', 'breeze1', 'cloudA', 'cloudB', 'cloudL', 'cloudR', 'waterSky', 'life', 'sun0', 'sun1'],
+  1: ['sky', 'wisp', 'branch', 'nest', 'breeze0', 'breeze1', 'sun0', 'sun1', 'stalkL', 'stalkR'],
+};
+/** Blocks that blend one tone into the next down the block where two bands meet (`name~2to1`): [shift at the top, at the bottom, the blocks that row shows]. */
+export const SKY_BLENDS: [number, number, string[]][] = [
+  [0, 2, ['sky']],
+  [2, 1, ['sky', 'sun0', 'sun1']],
+  [1, 0, ['sky', 'stalkL', 'stalkR', 'breeze0', 'breeze1']],
+];
 /** Solid on top only: stand on it, hop up through it. */
 export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+export const GRAV = { none: 0, up: 1, right: 2, down: 4 } as const;
+/** Ticks the gust over the top branch stays calm, gathers (the warning) and blows. */
+export const GUST = { calm: 80, warn: 24, gust: 28 } as const;
 const LIFE = 1;
 /** Ticks between raindrops from a rain cloud, and between pebbles from the scree. */
-export const RAIN_EVERY = 40;
+export const RAIN_EVERY = 120;
 export const SCREE_EVERY = 90;
 
 export function buildBlocks(pal: Pal): BlockBook {
-  const book = new BlockBook();
+  const book = new ToneBook();
   const { r: R, c } = pal;
   const P = () => new Pixels(20, 20);
   const air = { grav: GRAV.down };
@@ -146,7 +176,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   const fence = () => {
     const p = sky(45);
     p.rect(0, 6, 20, 2, c('white', 1)).rect(0, 13, 20, 2, c('white', 1));
-    for (const x of [3, 13]) p.rect(x, 2, 4, 18, c('white', 2)).rect(x, 2, 1, 18, c('white', 0)).set(x + 1, 1, c('white', 2)).set(x + 2, 1, c('white', 2));
+    for (const x of [3, 13])
+      p.rect(x, 2, 4, 18, c('white', 2))
+        .rect(x, 2, 1, 18, c('white', 0))
+        .set(x + 1, 1, c('white', 2))
+        .set(x + 2, 1, c('white', 2));
     return p;
   };
   book.add('fence', fence(), air);
@@ -188,13 +222,19 @@ export function buildBlocks(pal: Pal): BlockBook {
   // Rain clouds: they give birth to raindrops.
   const cloud = (part: number, rain: boolean) => {
     const p = sky(55 + part);
-    for (const [x, y, rr] of [[part * -20 + 9, 12, 8], [part * -20 + 19, 9, 9], [part * -20 + 29, 12, 8], [part * -20 + 34, 10, 5]]) blob(p, x, y, rr, rr * 0.75, R(rain ? 'stone' : 'white'), rain ? 2 : 0, rain ? 4 : 2, 1.2);
+    for (const [x, y, rr] of [
+      [part * -20 + 9, 12, 8],
+      [part * -20 + 19, 9, 9],
+      [part * -20 + 29, 12, 8],
+      [part * -20 + 34, 10, 5],
+    ])
+      blob(p, x, y, rr, rr * 0.75, R(rain ? 'stone' : 'white'), rain ? 2 : 0, rain ? 4 : 2, 1.2);
     p.rect(0, 16, 20, 4, c('sky', 3));
     for (let x = 0; x < 20; x++) if (x % 5 === 2) p.set(x, 17, c('water', 3)).set(x, 18, c('water', 2));
     return p;
   };
   book.add('cloudL', cloud(0, true), { grav: GRAV.down, birthMon: MON.drop, birthTime: RAIN_EVERY });
-  book.add('cloudR', cloud(1, true), { grav: GRAV.down, birthMon: MON.drop, birthTime: RAIN_EVERY + 13 });
+  book.add('cloudR', cloud(1, true), { grav: GRAV.down, birthMon: MON.drop, birthTime: RAIN_EVERY + 37 });
   // White clouds to stand on, up in the sky.
   const cloudLedge = (part: number) => {
     const p = sky(57 + part);
@@ -218,18 +258,42 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   // Sunbeams: points.
-  book.add('sun0', sparkle(() => sky(61), 0, 'sun'), { score: 50, touch: 'sky', next: 'sun1', ntime: 6 });
-  book.add('sun1', sparkle(() => sky(61), 1, 'sun'), { score: 50, touch: 'sky', next: 'sun0', ntime: 4 });
-  book.add('sunC0', sparkle(() => cave(62), 0, 'sun'), { score: 50, touch: 'cave', next: 'sunC1', ntime: 6 });
-  book.add('sunC1', sparkle(() => cave(62), 1, 'sun'), { score: 50, touch: 'cave', next: 'sunC0', ntime: 4 });
+  book.add(
+    'sun0',
+    sparkle(() => sky(61), 0, 'sun'),
+    { score: 50, touch: 'sky', next: 'sun1', ntime: 6 },
+  );
+  book.add(
+    'sun1',
+    sparkle(() => sky(61), 1, 'sun'),
+    { score: 50, touch: 'sky', next: 'sun0', ntime: 4 },
+  );
+  book.add(
+    'sunC0',
+    sparkle(() => cave(62), 0, 'sun'),
+    { score: 50, touch: 'cave', next: 'sunC1', ntime: 6 },
+  );
+  book.add(
+    'sunC1',
+    sparkle(() => cave(62), 1, 'sun'),
+    { score: 50, touch: 'cave', next: 'sunC0', ntime: 4 },
+  );
   // Faith: a golden glimmer, a tiny mustard seed of light.
   const glimmer = (bg: () => Pixels, f: number) => {
     const p = sparkle(bg, f, 'faith');
     blob(p, 10, 10, 2.4, 2.8, R('seed'), 2, 4, 1.3);
     return p;
   };
-  book.add('faith0', glimmer(() => sky(63), 0), { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith1', ntime: 7 });
-  book.add('faith1', glimmer(() => sky(63), 1), { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith0', ntime: 5 });
+  book.add(
+    'faith0',
+    glimmer(() => sky(63), 0),
+    { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith1', ntime: 7 },
+  );
+  book.add(
+    'faith1',
+    glimmer(() => sky(63), 1),
+    { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith0', ntime: 5 },
+  );
   // Groundwater: a drop of water in the dirt.
   const waterDrop = (bg: Pixels) => {
     for (let k = 0; k < 5; k++) bg.rect(10 - Math.floor(k / 2), 4 + k, 1 + Math.floor(k / 2) * 2, 1, c('water', 2));
@@ -237,15 +301,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     bg.set(9, 9, c('white', 2)).set(8, 10, c('white', 1));
     return bg;
   };
-  book.add('water', waterDrop(cave(65)), { effect: WATER, eamt: 1, hp: 4, score: 10, touch: 'cave' });
-  book.add('waterRoot', waterDrop(rootPic(66)), { effect: WATER, eamt: 1, hp: 4, score: 10, touch: 'root', grav: GRAV.none });
-  book.add('waterSky', waterDrop(sky(67)), { effect: WATER, eamt: 1, hp: 4, score: 10, touch: 'sky' });
+  book.add('water', waterDrop(cave(65)), { effect: WATER, eamt: 1, hp: 2, score: 10, touch: 'cave' });
+  book.add('waterRoot', waterDrop(rootPic(66)), { effect: WATER, eamt: 1, hp: 2, score: 10, touch: 'root', grav: GRAV.none });
+  book.add('waterSky', waterDrop(sky(67)), { effect: WATER, eamt: 1, hp: 2, score: 10, touch: 'sky' });
   // Dew on a blade of grass: health.
   const dew = sky(69);
   dew.line(6, 19, 12, 6, c('grass', 2)).line(7, 19, 13, 7, c('grass', 3));
   blob(dew, 13, 6, 2.6, 2.6, R('water'), 2, 3, 1.4);
   dew.set(12, 5, c('white', 2));
-  book.add('dew', dew, { hp: 25, score: 10, touch: 'tuft' });
+  book.add('dew', dew, { hp: 15, score: 10, touch: 'tuft' });
   // A golden mustard flower: an extra life.
   const golden = (bg: Pixels) => {
     bg.line(10, 19, 10, 10, c('leaf', 2));
@@ -258,10 +322,15 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('lifeCave', golden(cave(72)), { effect: LIFE, eamt: 1, score: 100, touch: 'cave' });
 
   // ---------- hazards ----------
-  // Thistles prick.
+  // Thistles prick. A prick is the whole block, so the tall middle head reaches its top edge
+  // and the art fills the block: it hurts only where a thistle is seen.
   const thistle = (bg: Pixels) => {
-    for (let k = 0; k < 4; k++) bg.line(10, 19, 4 + k * 4, 10 + (k % 2) * 3, c('leaf', 1));
-    for (const [x, y] of [[5, 9], [10, 6], [15, 9]]) {
+    for (let k = 0; k < 4; k++) bg.line(10, 19, 4 + k * 4, 7 + (k % 2) * 3, c('leaf', 1));
+    for (const [x, y] of [
+      [5, 6],
+      [10, 3],
+      [15, 6],
+    ]) {
       blob(bg, x, y + 2, 2.6, 2, R('leaf'), 0, 2);
       bg.disc(x, y, 2.2, c('purple', 1)).set(x, y - 1, c('purple', 2));
       bg.set(x - 3, y + 1, c('white', 1)).set(x + 3, y + 1, c('white', 1));
@@ -272,7 +341,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('thistle', thistle(sky(73)), { grav: GRAV.down, hp: -8, touch: 'thistleDown' });
   const drooped = sky(74);
   for (let k = 0; k < 4; k++) drooped.line(10, 19, 2 + k * 5, 15 + (k % 2), c('leaf', 1));
-  for (const [x, y] of [[4, 14], [10, 13], [16, 14]]) drooped.disc(x, y, 2, c('purple', 1));
+  for (const [x, y] of [
+    [4, 14],
+    [10, 13],
+    [16, 14],
+  ])
+    drooped.disc(x, y, 2, c('purple', 1));
   book.add('thistleDown', drooped, { grav: GRAV.down });
 
   // ---------- underground ----------
@@ -347,7 +421,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('crumble2', boulder(sky(95), 2), { grav: GRAV.down, next: 'sky', ntime: 4 });
   // Loose scree: pebbles come rolling out of it.
   const scree = mountain(96, true);
-  for (const [x, y] of [[4, 8], [10, 11], [15, 7], [7, 15], [14, 16]]) blob(scree, x, y, 2.4, 2, R('stone'), 2, 5);
+  for (const [x, y] of [
+    [4, 8],
+    [10, 11],
+    [15, 7],
+    [7, 15],
+    [14, 16],
+  ])
+    blob(scree, x, y, 2.4, 2, R('stone'), 2, 5);
   book.add('scree', scree, { solid: SOLID, birthMon: MON.pebble, birthTime: SCREE_EVERY });
   // A pine, and snow on the peak (scenery).
   const pine = sky(97);
@@ -448,5 +529,75 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('sunSpot', sunSpot(), air);
+
+  // Keepsakes, added last so every block before keeps its number: a tin heart in a pocket of
+  // air down in the dust by the buried junk (a glint crosses it now and then) and a painted Easter
+  // egg at the foot of the great plant, far over on the left. Each is air like the cave or sky
+  // around it, a few points, gone when touched (that is its touch block), with no sound of its own.
+  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('white', 2), dark: c('grey', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(cave(4), tin, k), {
+      ...air,
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'cave',
+      score: 100,
+    });
+  const egg = { ink: c('ink', 0), shell: R('blue'), paint: [c('red', 2), c('red', 3)], accent: c('sun', 3), white: c('white', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(sky(1), egg, 'stars', k), {
+      ...air,
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'sky',
+      score: 50,
+    });
+
+  // The deeper evening sky (DUSK_TONED, SKY_BLENDS), added after the keepsakes so every block
+  // before keeps its number. A copy's touch and next blocks are copies in the same tone too.
+  const skyShades = R('sky');
+  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  const copy = (names: string[], suffix: string, shiftAt: (x: number, y: number) => number) => {
+    const named = (n?: string) => (n && names.includes(n) ? `${n}${suffix}` : n);
+    for (const name of names) {
+      const p = book.pics.get(name)!.crop(0, 0, 20, 20);
+      p.px.forEach((v, i) => {
+        const k = skyShades.indexOf(v);
+        if (k >= 0) p.px[i] = skyShades[Math.max(0, k - shiftAt(i % 20, Math.floor(i / 20)))];
+      });
+      const a = book.attrs.get(name)!;
+      book.add(`${name}${suffix}`, p, { ...a, touch: named(a.touch), next: named(a.next) });
+    }
+  };
+  for (const [shift, names] of Object.entries(DUSK_TONED)) copy(names, `~${shift}`, () => Number(shift));
+  for (const [from, to, names] of SKY_BLENDS)
+    copy(names, `~${from}to${to}`, (x, y) => ((y + 0.5) / 20 > (BAYER[(y % 4) * 4 + (x % 4)] + 0.5) / 16 ? to : from));
+
+  // The evening breeze over the top branch, on a rhythm: calm (a few faint strokes), then the
+  // leaves shiver as it gathers (the warning), then a gust that blows a plant off the branch to
+  // the right. It is drawn on the deepest band of the sky (DUSK_TONED shift 2).
+  const gust = (stage: 'calm' | 'warn' | 'gust') => {
+    const p = sky(131, 1);
+    const r = rng(131);
+    const strokes = stage === 'calm' ? 1 : stage === 'warn' ? 4 : 7;
+    for (let k = 0; k < strokes; k++) {
+      const y = 2 + Math.floor(r() * 16);
+      const x = Math.floor(r() * 8);
+      const len = stage === 'gust' ? 10 + Math.floor(r() * 8) : 4 + Math.floor(r() * 4);
+      const ink = stage === 'calm' ? c('sky', 3) : stage === 'warn' ? c('white', 0) : c('white', 2);
+      p.line(x, y, Math.min(19, x + len), y + (stage === 'gust' ? 0 : 1), ink);
+      if (stage === 'gust') p.line(x + 2, y + 1, Math.min(19, x + len - 3), y + 1, c('white', 0));
+    }
+    // a leaf shivering as the gust gathers, then blown along
+    if (stage !== 'calm') {
+      const [lx, ly] = stage === 'gust' ? [14, 8] : [6, 12];
+      blob(p, lx, ly, stage === 'gust' ? 2.4 : 2, stage === 'gust' ? 1.2 : 1.6, R('leaf'), 1, 3);
+      if (stage === 'warn') p.set(lx - 3, ly - 2, c('white', 1)).set(lx + 3, ly - 2, c('white', 1));
+    }
+    return p;
+  };
+  book.add('gustCalm', gust('calm'), { grav: GRAV.down, next: 'gustWarn', ntime: GUST.calm });
+  book.add('gustWarn', gust('warn'), { grav: GRAV.down, next: 'gust', ntime: GUST.warn });
+  book.add('gust', gust('gust'), { grav: GRAV.down | GRAV.right, next: 'gustCalm', ntime: GUST.gust });
   return book;
 }

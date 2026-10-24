@@ -40,17 +40,46 @@ export function eggPic(p: Pal, under: Pixels): Pixels {
   // circuit traces in lime backstitch (every other pixel a stitch), ending in vias
   const stitch = (pts: [number, number][]) => pts.forEach(([x, y], i) => inside(x, y) && t.set(x, y, p.c('slime', i % 2 ? 2 : 4)));
   const via = (x: number, y: number) => inside(x, y) && t.set(x, y, p.c('slime', 5));
-  stitch([[6, 4], [7, 4], [8, 4], [8, 5], [8, 6], [9, 6], [10, 6], [11, 6]]);
+  stitch([
+    [6, 4],
+    [7, 4],
+    [8, 4],
+    [8, 5],
+    [8, 6],
+    [9, 6],
+    [10, 6],
+    [11, 6],
+  ]);
   via(5, 4);
   via(12, 6);
-  stitch([[13, 3], [13, 4], [13, 5]]);
+  stitch([
+    [13, 3],
+    [13, 4],
+    [13, 5],
+  ]);
   via(13, 2);
-  stitch([[4, 9], [5, 9], [6, 9], [6, 10]]);
+  stitch([
+    [4, 9],
+    [5, 9],
+    [6, 9],
+    [6, 10],
+  ]);
   via(3, 9);
-  stitch([[11, 15], [12, 15], [13, 15], [13, 14], [14, 14]]);
+  stitch([
+    [11, 15],
+    [12, 15],
+    [13, 15],
+    [13, 14],
+    [14, 14],
+  ]);
   via(10, 15);
   via(15, 14);
-  stitch([[6, 15], [6, 16], [7, 16], [8, 16]]);
+  stitch([
+    [6, 15],
+    [6, 16],
+    [7, 16],
+    [8, 16],
+  ]);
   via(9, 17);
   // the ribbon of chip pins around the waist
   for (let x = 0; x < 20; x++) {

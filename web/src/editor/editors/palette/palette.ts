@@ -8,6 +8,9 @@ import { fileField } from '../../widgets/filePicker';
 import { h, clear } from '../../core/ui';
 import { parsePalette, paletteCss, serializePalette, defaultPalette } from '../../../formats/palette';
 import { decodeGif, isGif } from '../../../formats/gif';
+import { spread as spreadRange } from './ramps';
+import { paletteTools } from './paletteTools';
+import './palette.css';
 
 registerEditor(['pal'], (host, project, file) => {
   const pal = parsePalette(project.files.get(file)!);
@@ -98,7 +101,15 @@ registerEditor(['pal'], (host, project, file) => {
     preview.style.background = paletteCss(pal, selected);
     colorBox.refresh();
     view.set({ color: selected });
-    const hex = '#' + [0, 1, 2].map((c) => Math.round((pal[selected * 3 + c] * 255) / 63).toString(16).padStart(2, '0')).join('');
+    const hex =
+      '#' +
+      [0, 1, 2]
+        .map((c) =>
+          Math.round((pal[selected * 3 + c] * 255) / 63)
+            .toString(16)
+            .padStart(2, '0'),
+        )
+        .join('');
     clear(
       label,
       h('strong', null, `Color ${selected}${rangeEnd !== undefined ? ` to ${rangeEnd}` : ''}`),
@@ -110,17 +121,30 @@ registerEditor(['pal'], (host, project, file) => {
       s.range.value = String(pal[selected * 3 + c]);
       s.num.value = String(pal[selected * 3 + c]);
     });
+    tools.refresh();
   }
 
   const spread = () => {
     if (rangeEnd === undefined) return;
     remember();
     const [a, b] = [Math.min(selected, rangeEnd), Math.max(selected, rangeEnd)];
-    for (let i = a + 1; i < b; i++)
-      for (let c = 0; c < 3; c++) pal[i * 3 + c] = Math.round(pal[a * 3 + c] + ((pal[b * 3 + c] - pal[a * 3 + c]) * (i - a)) / (b - a));
+    spreadRange(pal, a, b);
     save();
     refresh();
   };
+
+  const tools = paletteTools({
+    project,
+    file,
+    pal,
+    selected: () => selected,
+    rangeEnd: () => rangeEnd,
+    remember: () => remember(),
+    changed: () => {
+      save();
+      refresh();
+    },
+  });
 
   const gifs = project.files.byExtension('gif').filter((g) => isGif(project.files.get(g)!));
   let gifChoice = gifs[0] ?? '';
@@ -141,7 +165,14 @@ registerEditor(['pal'], (host, project, file) => {
         h('div', { class: 'row', style: 'align-items:center' }, preview, label),
         colorBox.el,
         ...sliders.map((s) => s.row),
-        h('div', { class: 'toolbar' }, h('button', { onclick: spread }, 'Spread range'), undoBtn, redoBtn),
+        h(
+          'div',
+          { class: 'toolbar' },
+          h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'),
+          tools.rampBtn,
+          undoBtn,
+          redoBtn,
+        ),
         gifs.length
           ? h(
               'div',
@@ -182,6 +213,7 @@ registerEditor(['pal'], (host, project, file) => {
         ),
       ),
     ),
+    tools.el,
   );
   refresh();
   const onKey = (e: KeyboardEvent) => {
@@ -193,5 +225,8 @@ registerEditor(['pal'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
-  return () => window.removeEventListener('keydown', onKey);
+  return () => {
+    window.removeEventListener('keydown', onKey);
+    tools.dispose();
+  };
 });

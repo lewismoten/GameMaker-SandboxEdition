@@ -6,7 +6,8 @@
 //      the narrow ways (eye gates), to the tailor's tent.
 //   3. The Tailor's Shop: "I asked a tailor what thread feel feels"; spools of thread, threads
 //      to climb, pins, scissors, the sewing machine, needles to crawl through.
-//   4. The Eye of the Needle: up the great golden needle in the night, and through its eye.
+//   4. The Eye of the Needle: up the great golden needle in the night, past a rolling thimble,
+//      and through its eye while it is open (it blinks).
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
@@ -125,6 +126,7 @@ const CITY: Record<string, string> = {
   g: 'gateway',
   d: 'doorway',
   S: 'gateSign',
+  K: 'kneelSign',
   R: 'awningR',
   B: 'awningB',
   I: 'post',
@@ -154,6 +156,7 @@ const CITY: Record<string, string> = {
 };
 
 const DESERT: Record<string, string> = {
+  E: 'egg',
   '.': 'bg',
   '^': 'skyHi',
   '-': 'skyMid',
@@ -201,7 +204,15 @@ export function city(book: BlockBook): Level {
   const H = 13;
   const m = new MapBuilder(book, CITY, 'earth');
   // sky, the street (standing row 9), earth under it, the wall all round
-  m.fill(1, 0, W - 2, 1, '^').row(1, 1, W - 2, '_').fill(1, 2, W - 2, 2, '-').row(4, 1, W - 2, ',').fill(1, 5, W - 2, 5, '.').row(10, 0, W - 1, '=').fill(0, 11, W, 2, '#').col(0, 0, 9, 'W').col(W - 1, 0, 9, 'W');
+  m.fill(1, 0, W - 2, 1, '^')
+    .row(1, 1, W - 2, '_')
+    .fill(1, 2, W - 2, 2, '-')
+    .row(4, 1, W - 2, ',')
+    .fill(1, 5, W - 2, 5, '.')
+    .row(10, 0, W - 1, '=')
+    .fill(0, 11, W, 2, '#')
+    .col(0, 0, 9, 'W')
+    .col(W - 1, 0, 9, 'W');
   m.set(12, 2, '~').set(36, 3, '~').set(61, 2, '~');
   // the great city gate behind him, where he was mindin' his humps
   m.row(1, 1, 3, 'T').fill(1, 2, 3, 3, 'W').text(1, 5, '(|)').fill(1, 6, 3, 4, 'g');
@@ -209,7 +220,12 @@ export function city(book: BlockBook): Level {
   // the city in the morning haze, where the rich man struts with his moneybags
   // the city in the haze behind the market, all along the street
   const SKYLINE = ['  3       3    ', '1 3 2  1  3 2 1', '000004000000400'];
-  for (const x of [8, 23, 41, 56]) m.patch(x, 7, SKYLINE.map((r) => r.slice(0, Math.min(15, 69 - x))));
+  for (const x of [8, 23, 41, 56])
+    m.patch(
+      x,
+      7,
+      SKYLINE.map((r) => r.slice(0, Math.min(15, 69 - x))),
+    );
   m.set(13, 9, '*');
   // the first stall, with pots; a beggar beside it
   m.row(6, 18, 22, 'R').col(18, 7, 9, 'I').col(22, 7, 9, 'I').row(9, 19, 21, 'p').set(20, 5, '*');
@@ -226,11 +242,11 @@ export function city(book: BlockBook): Level {
   // crates stacked by the wall, the golden lamp on top
   m.set(64, 9, 'X').col(65, 8, 9, 'X').col(66, 7, 9, 'X').set(66, 6, 'O').set(67, 9, 'J');
   // the city wall and the little needle gate: one block high (hump down and crawl through)
-  m.col(70, 0, 8, 'W').col(71, 0, 8, 'W').set(70, 6, 'S').row(9, 70, 71, 'd');
+  m.col(70, 0, 8, 'W').col(71, 0, 8, 'W').set(70, 6, 'S').set(70, 7, 'K').row(9, 70, 71, 'd');
   // outside: the road
   m.row(9, 72, 78, 'u').set(76, 9, '>');
   m.richMan(10, 9);
-  m.mon(MON.pigeon, 31, 2).mon(MON.guard, 49, 9).mon(MON.dog, 59, 9).mon(MON.pigeon, 44, 3);
+  m.mon(MON.pigeon, 31, 2).mon(MON.guard, 50, 9).mon(MON.dog, 59, 9).mon(MON.pigeon, 44, 3);
   m.link(76, 9, 'next');
   return { m, start: at(5, 9), size: [W, H] };
 }
@@ -240,7 +256,13 @@ export function desert(book: BlockBook): Level {
   const W = 84;
   const H = 13;
   const m = new MapBuilder(book, DESERT, 'sandFill');
-  m.fill(1, 0, W - 2, 1, '^').row(1, 1, W - 2, '_').fill(1, 2, W - 2, 2, '-').row(4, 1, W - 2, ',').fill(1, 5, W - 2, 6, '.').col(0, 0, 10, 'R').col(W - 1, 0, 10, 'R');
+  m.fill(1, 0, W - 2, 1, '^')
+    .row(1, 1, W - 2, '_')
+    .fill(1, 2, W - 2, 2, '-')
+    .row(4, 1, W - 2, ',')
+    .fill(1, 5, W - 2, 6, '.')
+    .col(0, 0, 10, 'R')
+    .col(W - 1, 0, 10, 'R');
   m.set(70, 2, 'O');
   // the ground: [from x, to x, top row] (he stands on the row above)
   const ground: [number, number, number][] = [
@@ -251,8 +273,10 @@ export function desert(book: BlockBook): Level {
     [14, 40, 10],
     [41, 54, 10],
     [55, 62, 10],
-    [63, 66, 9],
-    [67, 69, 8],
+    [63, 64, 9],
+    [65, 66, 7],
+    [67, 68, 5],
+    [69, 69, 8],
     [70, 82, 10],
   ];
   for (const [x0, x1, top] of ground) m.row(top, x0, x1, '=').fill(x0, top + 1, x1 - x0 + 1, 12 - top, '#');
@@ -264,14 +288,16 @@ export function desert(book: BlockBook): Level {
   m.set(38, 9, 'k');
   // the slot canyon: a passage one block high, two eye gates, two rooms to stand up in
   m.fill(41, 2, 14, 7, 'R').row(2, 41, 54, 'r').row(8, 41, 44, 'M').row(9, 41, 44, 's');
-  m.fill(45, 5, 2, 4, 's').set(45, 9, 's').set(46, 9, 'j').row(8, 47, 49, 'M').set(47, 9, 'G').row(9, 48, 49, 's');
+  m.fill(45, 5, 2, 4, 's').set(45, 9, 's').set(46, 9, 's').row(8, 47, 49, 'M').set(47, 9, 'G').row(9, 48, 49, 's');
   m.fill(50, 5, 2, 4, 's').set(50, 9, 's').set(51, 9, 'e').row(8, 52, 54, 'M').set(52, 9, 'G').row(9, 53, 54, 's');
+  // a painted egg up in the shade of the first room, where he can stand up (a hop to reach it)
+  m.set(46, 6, 'E');
   // the oasis: palms, the pool, the third goat on her ledge, another traveler
   m.col(56, 6, 9, 'P').set(56, 5, 'Y').row(9, 57, 58, 'w').col(61, 6, 9, 'P').set(61, 5, 'Y').set(60, 5, 'D');
   m.row(6, 58, 60, 'l').set(59, 5, '*').set(62, 9, 'n');
-  // dunes and a vulture, the dry brush where tumbleweeds come from
-  m.set(65, 8, 'B').set(68, 7, '*').set(73, 9, 'b').set(71, 6, 'L');
-  m.row(7, 70, 72, 'l');
+  // the great dune: up its steps to the top (the golden lamp), the vulture circling over it;
+  // down to the dry brush where tumbleweeds come from
+  m.set(63, 8, 'B').set(66, 6, '*').set(68, 4, 'L').set(73, 9, 'b');
   // the tailor's tent at the end of the road
   // (a few blocks on past the lamp, so the song's "Thread the needle" plays out on the way in)
   m.text(79, 7, '[|]').text(79, 8, 'tTt').text(79, 9, 'tdt').col(81, 8, 9, 'tentWallR');
@@ -322,6 +348,8 @@ const TAILOR: Record<string, string> = {
   '2': 'robe1',
   K: 'cloak0',
   '3': 'cloak1',
+  h: 'tinHeart',
+  Z: 'watt',
 };
 
 /** 3. The tailor's shop: spools, threads to climb and mend, needles' eyes to crawl through, the sewing machine. */
@@ -329,26 +357,31 @@ export function tailor(book: BlockBook): Level {
   const W = 64;
   const H = 18;
   const m = new MapBuilder(book, TAILOR, 'rafter');
-  m.fill(1, 1, W - 2, 15, '.').row(16, 0, W - 1, '=').row(17, 0, W - 1, '#');
+  m.fill(1, 1, W - 2, 15, '.')
+    .row(16, 0, W - 1, '=')
+    .row(17, 0, W - 1, '#');
   m.text(14, 1, 'R K').text(14, 2, '2 3').text(36, 1, 'K').text(36, 2, '3').text(26, 1, 'R').text(26, 2, '2');
   m.set(4, 6, 'L').set(20, 12, 'w').set(30, 3, 'L').set(40, 6, 'w').set(44, 11, 'L').set(52, 7, 'w');
   // the seamstress by the door, a spool on the floor; the first thread, frayed halfway up
   m.set(5, 15, 'q').set(7, 15, 's').col(8, 1, 15, '|').set(8, 15, 'f').fill(9, 12, 2, 4, 'r').set(3, 15, 'c');
-  // the first shelf: the widow, a moth, a spool; cloth and scraps under it, and the scissors
-  m.row(8, 9, 21, '-').set(13, 7, 'W').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 3, 3, 'b').set(15, 15, 'c');
+  // the first shelf: the widow, a pincushion to hop, a moth, a spool; cloth and scraps under it, and the scissors (the blue bolts
+  // step up from the floor to the shelf, so a camel who drops down there can climb back)
+  m.row(8, 9, 21, '-').set(13, 7, 'W').set(16, 7, 'x').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 2, 3, 'b').col(21, 11, 15, 'b').set(15, 15, 'c');
   // the first great needle: its eye (an eye gate) at the shelf, the shelf on through it
   m.col(22, 1, 5, 'N').set(22, 6, 'A').set(22, 7, 'G').set(22, 8, 'V').col(22, 9, 14, 'N').set(22, 15, 'v').row(8, 23, 25, '-');
   // the sewing machine's table: its needle stabs down (kneel under it); a spool, the beggar
   m.row(10, 26, 35, 'T').col(26, 11, 15, 't').col(35, 11, 15, 't').set(28, 9, 's').set(34, 9, 'B');
+  // under the table: Watt seeing to the treadle, and a tin heart someone dropped
+  m.set(28, 15, 'Z').set(33, 15, 'h');
   // the machine on the table: its head over the needle at the end of the arm, the pillar and wheel
   m.text(31, 4, 'mM').set(33, 4, 'machineArm').set(33, 5, 'machineWheel').col(33, 6, 8, 'machinePillar');
   m.set(31, 9, 'machineBedL').set(32, 9, 'machineBed').set(33, 9, 'machineBase');
   // the floor: a thimble, dates; the second thread, frayed where he steps on
   m.set(37, 15, 'c').set(40, 15, 's').set(43, 15, 'D').col(46, 1, 15, '|').set(46, 15, 'f').fill(47, 12, 1, 4, 'p');
   // a middle shelf, and a third thread, frayed where he steps on from it
-  m.row(9, 47, 50, '-').set(49, 8, 'J').col(51, 1, 12, '|').set(51, 8, 'f').fill(48, 13, 3, 3, 'r');
-  // the high shelf: a golden lamp, a mustard seed
-  m.row(4, 52, 57, '-').set(54, 3, '1');
+  m.row(9, 47, 50, '-').set(49, 8, 'D').col(51, 1, 12, '|').set(51, 8, 'f').fill(48, 13, 3, 3, 'r');
+  // the high shelf: a pincushion, a golden lamp, a mustard seed
+  m.row(4, 52, 57, '-').set(54, 3, '1').set(53, 3, 'x');
   // the last needle: crawl through its eye at the floor to the back door
   m.col(59, 1, 13, 'N').set(59, 14, 'A').set(59, 15, 'e').set(61, 14, 'n').set(61, 15, 'd');
   m.mon(MON.moth, 15, 5).mon(MON.scissors, 12, 15).mon(MON.needle, 31, 5).mon(MON.thimble, 38, 15).mon(MON.moth, 54, 10).mon(MON.seed, 56, 3);
@@ -379,13 +412,17 @@ export const eyeShade = (row: number): number => {
 export function eye(book: BlockBook): Level {
   const W = 26;
   const H = 46;
-  const m = new MapBuilder(book, { '.': 'bg' }, 'edge');
+  const m = new MapBuilder(book, { '.': 'bg', B: 'beggar', v: 'widow', k: 'kids', n: 'blind' }, 'edge');
   for (const [a, b, s] of EYE_SHADES) for (let y = a; y <= b; y++) m.row(y, 1, W - 2, s < 0 ? `band${Math.floor(-s)}` : s === 0 ? 'bg' : `sky${s}`);
-  m.fill(0, 44, W, 2, 'dune').col(0, 0, 43, 'edge').col(W - 1, 0, 43, 'edge');
+  m.fill(0, 44, W, 2, 'dune')
+    .col(0, 0, 43, 'edge')
+    .col(W - 1, 0, 43, 'edge');
   const cloud = (y: number, x0: number, x1: number) => m.row(y, x0, x1, `cloud${eyeShade(y)}`);
   // the sleeping city far below, the moon
   for (let x = 1; x < W - 1; x++) if (x < 11 || x > 14) m.set(x, 43, x % 2 ? 'town0' : 'town1');
   m.set(20, 34, 'moon');
+  // the town's poor, sleeping out at the needle's foot (grace for a camel who comes short of it)
+  m.text(6, 43, 'BvknB');
   // the great golden needle: its point in the sand, its shaft, its head and its eye
   m.set(12, 43, 'pointL').set(13, 43, 'pointR');
   for (let y = 7; y <= 42; y++) m.set(12, y, `shaftL${Math.min(5, eyeShade(y))}`).set(13, y, `shaftR${Math.min(5, eyeShade(y))}`);
@@ -398,8 +435,10 @@ export function eye(book: BlockBook): Level {
   cloud(31, 2, 10);
   for (let y = 13; y <= 30; y++) m.set(3, y, `lift${Math.max(1, Math.min(4, eyeShade(y)))}a`);
   cloud(14, 4, 11);
-  // the right side: clouds up to the eye
-  cloud(14, 14, 20);
+  // the right side: clouds up to the eye, and a second golden thread down to the sand, so a
+  // camel who falls off them on this side of the needle can climb back
+  for (let y = 12; y <= 43; y++) m.set(21, y, `thread${Math.min(4, eyeShade(y))}`);
+  cloud(14, 14, 21);
   cloud(11, 16, 19);
   cloud(8, 19, 22);
   cloud(6, 14, 18);
@@ -407,7 +446,9 @@ export function eye(book: BlockBook): Level {
   // out as he crawls on; and walled all round, so the eye is the only way in)
   m.row(4, 7, 11, 'bankRoof').row(6, 7, 11, 'bankFloor').set(7, 5, 'bankEnd');
   // good things
-  m.set(9, 29, 'jar2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
+  m.set(9, 29, 'dates2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
+  // a thimble rolling to and fro on the cloud past the shaft's gate
+  m.mon(MON.thimble, 15, 13);
   m.mon(MON.star, 7, 25).mon(MON.star, 20, 17).mon(MON.star, 16, 3).mon(MON.dove, 15, 30).mon(MON.dove, 4, 8).mon(MON.star, 9, 38);
   m.link(8, 5, 'won');
   return { m, start: at(3, 43), size: [W, H] };

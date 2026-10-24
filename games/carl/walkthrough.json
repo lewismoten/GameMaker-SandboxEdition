@@ -20,7 +20,7 @@
   },
   {
    "scene": 5,
-   "keys": "AS4PrgBNBM0CTSLNAhIFkgBICMgCTTTNAk0ozQJQDNACLgWuAE0EzQJNCM0CTQjNAk0gzQJN"
+   "keys": "AS4PrgBNBM0CTSLNAhIFkgBICMgCTTTNAk0ozQJQDNACLgWuAE0EzQJNCM0CTQjNAk0YzQISBZIASAzIAk0szQIuFK4CTQ=="
   },
   {
    "scene": 6,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 7,
-   "keys": "QxIKkgBNNM0CEgWSAE0YzQJQGNACEgWSAEgUyAJNJM0CUATQAhIKkgJIBsgATQHNDzkCuQZND80ETRzNAlA="
+   "keys": "QxIKkgBNNM0CEgWSAE0YzQJQGNACEgWSAEgUyAJNJM0CUATQAhIKkgJIBsgATQHNDzkCuQZND80ESAbIAE0BzQA5ArkGTQ/NAi4FrgJNAc0AOQK5BhIFkgBNA80CUATQBVA="
   }
  ],
  "chapters": [
@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19570,
+  "frames": 19939,
   "chapters": [
    {
     "title": "Opening",
@@ -87,19 +87,19 @@
    },
    {
     "title": "Level 5: Carl Has Seen Things",
-    "frame": 10910
+    "frame": 11170
    },
    {
     "title": "Level 6: The Aux Cord",
-    "frame": 13036
+    "frame": 13296
    },
    {
     "title": "Ending",
-    "frame": 14740
+    "frame": 15109
    },
    {
     "title": "Credits",
-    "frame": 17482
+    "frame": 17851
    }
   ]
  }

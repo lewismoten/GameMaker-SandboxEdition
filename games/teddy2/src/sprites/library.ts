@@ -62,16 +62,24 @@ export function dogHouseLibrary(p: Pixels, s: LibraryState = {}): Pixels {
   for (let k = 0; k < 3; k++) {
     const y = 21 + k * 3;
     if (s.open && k === 1) {
-      p.rect(21, y, 9, 2, ink).rect(20, y + 1, 10, 2, c('paint', 3)).rect(20, y + 3, 10, 1, c('paint', 1));
+      p.rect(21, y, 9, 2, ink)
+        .rect(20, y + 1, 10, 2, c('paint', 3))
+        .rect(20, y + 3, 10, 1, c('paint', 1));
       continue;
     }
-    p.rect(22, y, 7, 2, c('paint', 3)).set(25, y, ink).set(24, y + 1, ink).set(26, y + 1, ink);
+    p.rect(22, y, 7, 2, c('paint', 3))
+      .set(25, y, ink)
+      .set(24, y + 1, ink)
+      .set(26, y + 1, ink);
   }
   p.rect(9, 30, 22, 1, c('wood', 1));
   // a shine across the plexi
   for (let k = 0; k < 5; k++) p.set(25 + k, 14 + k, c('fur', 2));
   // black strap hinges, the barrel latch with its bone handle, the paw-print knob
-  for (const y of [14, 28]) p.rect(1, y, 8, 2, ink).set(1, y - 1, ink).set(1, y + 2, ink);
+  for (const y of [14, 28])
+    p.rect(1, y, 8, 2, ink)
+      .set(1, y - 1, ink)
+      .set(1, y + 2, ink);
   p.rect(33, 20, 5, 2, ink).rect(35, 18, 1, 6, ink).set(36, 18, c('paint', 3)).set(36, 23, c('paint', 3));
   p.rect(33, 25, 3, 3, c('paint', 3)).set(34, 26, ink).set(33, 25, ink).set(35, 25, ink);
   // the painted-rock cubby: a red roof over a white grid of little cubbies
@@ -85,7 +93,9 @@ export function dogHouseLibrary(p: Pixels, s: LibraryState = {}): Pixels {
       p.rect(x + 3, y - 1, 1, 4, c('paint', 1)).rect(x, y + 3, 4, 1, c('paint', 1));
       const k = rocks[row * 5 + col];
       if ((row * 5 + col) % 4 === 3) continue;
-      p.rect(x, y + 1, 3, 2, c(k, 2)).set(x + 1, y + 1, c(k, 3)).set(x + 1, y, c('stone', 2));
+      p.rect(x, y + 1, 3, 2, c(k, 2))
+        .set(x + 1, y + 1, c(k, 3))
+        .set(x + 1, y, c('stone', 2));
     }
   p.rect(8, 58, 24, 1, ink);
   return p;

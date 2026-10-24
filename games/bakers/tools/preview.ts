@@ -43,7 +43,8 @@ for (const room of all.rooms) {
   for (const m of room.map.monsters) {
     if (m.monnum >= 64) continue;
     const pic = mbl[mons[m.monnum].pic[0][0]].pixels;
-    for (let yy = 0; yy < 20; yy++) for (let xx = 0; xx < 20; xx++) if (pic[yy * 20 + xx] !== 255) p.set((m.curx - ORIGIN.x) * 20 + xx, (m.cury - ORIGIN.y) * 20 + yy, pic[yy * 20 + xx]);
+    for (let yy = 0; yy < 20; yy++)
+      for (let xx = 0; xx < 20; xx++) if (pic[yy * 20 + xx] !== 255) p.set((m.curx - ORIGIN.x) * 20 + xx, (m.cury - ORIGIN.y) * 20 + yy, pic[yy * 20 + xx]);
   }
   writePng(join(out, `room-${String(room.spec.level).padStart(2, '0')}-${room.spec.file}.png`), p, buildPalette(room.spec.theme).pal, 1);
 }

@@ -59,7 +59,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
   def(
     SND.subOther,
     'step',
-    sample(0.09, mix([osc.noise(11), 0.5], [osc.sine(90), 0.6]), { envelope: env(0.003, 3), gain: 0.45 }),
+    sample(0.09, mix([osc.noise(11), 0.5], [osc.sine(90), 0.6]), { envelope: env(0.003, 3), gain: 0.32 }),
     speaker((i) => (i < 2 ? 110 : 0)),
   );
   def(

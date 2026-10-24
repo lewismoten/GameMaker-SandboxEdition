@@ -24,7 +24,16 @@ function pc() {
     free: 0,
     root: async () => [
       liveFolder('IMAGES', pics),
-      liveFolder('DOWNLOAD', () => (emptyGone ? [] : [Object.assign(liveFolder('EMPTY', () => []), { remove: () => void (emptyGone = true) })])),
+      liveFolder('DOWNLOAD', () =>
+        emptyGone
+          ? []
+          : [
+              Object.assign(
+                liveFolder('EMPTY', () => []),
+                { remove: () => void (emptyGone = true) },
+              ),
+            ],
+      ),
       file('COMMAND.COM', 1),
     ],
   });

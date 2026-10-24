@@ -349,7 +349,7 @@
             },
             {
               "q": "Where is the fourth piece in Act Two?",
-              "a": "In the far south-east corner of the trap room maze. The rats are harmless, but they cost you points."
+              "a": "Beyond the trap room maze: a doorway in its far south-east corner, open only tonight, leads into the old prop vault. The rats are harmless, but they cost you points."
             },
             {
               "q": "The watchman keeps getting in my way.",
@@ -410,14 +410,7 @@
               "q": "I give up. Spell it out.",
               "a": "At 2 AM, carry the magnifying glass from the props room into the green room. Stand just left of the sofa in the bottom right corner and push right into it (it costs one lens charge). The egg shows between the cushions: push again to take it, then step into the empty seat.",
               "sketch": {
-                "rows": [
-                  "------------",
-                  "|o        o|",
-                  "|          |",
-                  "|o        o|",
-                  "|      o @X|",
-                  "-==---------"
-                ],
+                "rows": ["------------", "|o        o|", "|          |", "|o        o|", "|      o @X|", "-==---------"],
                 "labels": [
                   { "x": 2, "y": 2, "text": "GREEN ROOM, 2 AM" },
                   { "x": 8, "y": 3, "text": "SOFA" }
@@ -434,7 +427,7 @@
       "note": "Bound into the manual",
       "style": "print",
       "letterhead": "SANDBOX SOFTWARE - THE FINAL CURTAIN HINT BOOK",
-      "address": "P.O. Box 1995, Pittsburgh, PA 15213 (a fictional address - do not mail)",
+      "address": "P.O. Box 000, Pittsburgh, PA 15213 (a fictional address - do not mail)",
       "date": "1995",
       "to": "Dear Detective,",
       "body": "<p><b>Stuck in the dark under the stage? Can't crack Victor's safe?</b></p><p>The <b>FINAL CURTAIN HINT BOOK</b> answers every question you might have, from the box office to the curtain call, printed under red ink so you only read the answer you need. Comes with its own red decoder film, a floor plan of the Paragon and the full solution, sealed.</p><p>FREE with registration ($15), or $5 on its own. Fill in the order slip in the box.</p>",
@@ -454,24 +447,119 @@
   "stickers": [
     {
       "text": "CASE CLOSED",
-      "sub": "Port Ellery P.D.",
-      "shape": "badge",
+      "sub": "ADA",
+      "shape": "cut",
       "color": "#8a1622",
-      "ink": "#f6ead2"
+      "ink": "#f6ead2",
+      "hero": {
+        "chr": "ada.chr",
+        "cbl": "ada.cbl",
+        "pal": "house.pal"
+      }
+    },
+    {
+      "text": "A CLUE!",
+      "sub": "LOOK CLOSER",
+      "shape": "burst",
+      "color": "#e8b830",
+      "ink": "#1a0608",
+      "sprite": {
+        "blocks": "ada.cbl",
+        "pal": "house.pal",
+        "grid": [[11]]
+      }
+    },
+    {
+      "text": "GHOST LIGHT",
+      "sub": "NEVER LET IT GO OUT",
+      "shape": "cut",
+      "color": "#20304a",
+      "ink": "#f6ead2",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[5]]
+      }
+    },
+    {
+      "text": "BREAK A LEG",
+      "sub": "THE STAGEHAND",
+      "shape": "cut",
+      "color": "#e8b830",
+      "ink": "#1a0608",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[8]]
+      }
+    },
+    {
+      "text": "PORT ELLERY P.D.",
+      "sub": "ON THE BEAT",
+      "shape": "cut",
+      "color": "#1d3f7a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[0]]
+      }
+    },
+    {
+      "text": "BACKSTAGE CAT",
+      "sub": "KNOWS EVERYTHING",
+      "shape": "cut",
+      "color": "#7a2bbf",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[2]]
+      }
+    },
+    {
+      "text": "LOOK OUT BELOW!",
+      "sub": "SANDBAG",
+      "shape": "star",
+      "color": "#c86a1e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[4]]
+      }
+    },
+    {
+      "text": "THE DIVA",
+      "sub": "NOT A SUSPECT. PROBABLY.",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "green.mbl",
+        "pal": "house.pal",
+        "grid": [[0]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.bbl",
+        "pal": "house.pal",
+        "grid": [[147]],
+        "under": 19
+      }
     },
     {
       "text": "THE PARAGON",
       "sub": "Opening night",
-      "shape": "rect",
+      "shape": "badge",
       "color": "#1a0608",
       "ink": "#e8b830"
-    },
-    {
-      "text": "GHOST LIGHT",
-      "sub": "Never let it go out",
-      "shape": "circle",
-      "color": "#20304a",
-      "ink": "#f6ead2"
     }
   ],
   "news": [

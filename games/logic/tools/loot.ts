@@ -76,7 +76,10 @@ export async function withScrew(b: Board, tiles: BlockSet, mb: BlockSet, cb: Blo
     for (let tries = 0; tries < 6; tries++) {
       const go = path(b.spec.rows, from, screw, wires, live);
       if (go === undefined) break;
-      const back = [...go].reverse().map((c) => BACK[c]).join('');
+      const back = [...go]
+        .reverse()
+        .map((c) => BACK[c])
+        .join('');
       const moves = prefix + go + back + solution.slice(k);
       // each move takes about six ticks: skip a trip that cannot beat the best one so far
       if (found && go.length * 2 * 6 >= best.extra + 12) break;

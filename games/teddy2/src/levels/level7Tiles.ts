@@ -2,10 +2,11 @@
 // High Striker tower (pegs to climb; its bell is a monster), the Klown Klub's booths with
 // striped awnings (each run by a friend from the Big Show), the carousel, THE BIG DROP
 // (a lattice tower 24 blocks tall; its ticket gate takes three tickets, the way Game-Maker
-// refuses a touch the counter can't pay for), the food row, and the show barn.
+// refuses a touch the counter can't pay for), a trampoline (hop onto it and the air above
+// carries Teddy up to a perch of treats), the food row, and the show barn.
 import { Pixels } from '../../../kit/pixels';
 import { blob, klubArt, micro, speckle } from '../art/draw';
-import { Tiles } from './level';
+import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, r, sky } from '../blocks/tiles';
 import { sign } from './common';
 import { KLUB } from '../sprites/klubfolk';
@@ -189,11 +190,14 @@ export function midwayTiles(): Tiles {
   micro(dropSign, 8, 7, 'THE BIG DROP', c('yellow', 3));
   const dc = cut(dropSign);
   for (let bx = 0; bx < 3; bx++) t.air(`dropSign${bx}`, dc[0][bx]);
-  t.air('gateOpen', (() => {
-    const p = sky(3);
-    p.rect(0, 0, 3, 20, c('metal', 2)).rect(17, 0, 3, 20, c('metal', 2));
-    return p;
-  })());
+  t.air(
+    'gateOpen',
+    (() => {
+      const p = sky(3);
+      p.rect(0, 0, 3, 20, c('metal', 2)).rect(17, 0, 3, 20, c('metal', 2));
+      return p;
+    })(),
+  );
   t.wall(
     'gate',
     (() => {
@@ -226,6 +230,44 @@ export function midwayTiles(): Tiles {
     })(),
   );
   t.air('signRoot', sign(sky(3), 'ROOT\nBEER'));
+  // at the end of THE BIG DROP's deck: the way down is a long, safe drop to the sawdust
+  t.air('signDown', sign(sky(0), 'OUT', 'down'));
+
+  // The trampoline: legs and a bed down on the sawdust (walk past under it), and above the
+  // bed, air that carries a dog up (gravity up, two pictures of rising sparkles taking turns)
+  // through a perch with treats on it, which catches him coming down. A hop onto the bed is
+  // the way up; step off the perch to come down.
+  t.air(
+    'trampoline',
+    (() => {
+      const p = sky(3);
+      p.rect(1, 12, 2, 8, c('metal', 1)).rect(17, 12, 2, 8, c('metal', 1));
+      p.rect(0, 9, 20, 3, c('blue', 2)).rect(0, 9, 20, 1, c('blue', 3)).rect(0, 12, 20, 1, c('ink', 0));
+      for (let x = 2; x < 20; x += 4) p.set(x, 10, c('yellow', 3));
+      return p;
+    })(),
+  );
+  const bounceBase = (y: number) => (y === 33 ? copy(t.pic('lights0')) : sky(bandRow(y)));
+  for (let y = 30; y < 39; y++)
+    for (const ph of [0, 1])
+      t.air(
+        `boing${y}${'ab'[ph]}`,
+        (() => {
+          const p = bounceBase(y);
+          for (let i = 0; i < 3; i++) p.set(4 + i * 6, (i * 7 + ph * 10 + y * 3) % 20, c('glow', 3));
+          return p;
+        })(),
+        { grav: GRAV.up, next: `boing${y}${'ab'[1 - ph]}`, ntime: 3 },
+      );
+  t.ledge(
+    'perch',
+    (() => {
+      const p = sky(bandRow(29));
+      p.rect(0, 0, 20, 4, c('red', 2)).rect(0, 0, 20, 1, c('red', 3)).rect(0, 4, 20, 1, c('ink', 0));
+      for (let x = 2; x < 20; x += 6) p.rect(x, 1, 3, 2, c('yellow', 3));
+      return p;
+    })(),
+  );
 
   // The show barn (the dog show is inside) and its open door; THE CHEZ waits outside.
   t.air(
@@ -249,10 +291,13 @@ export function midwayTiles(): Tiles {
   micro(show, 8, 8, 'DOG SHOW', c('blue', 1));
   const sc = cut(show);
   for (let bx = 0; bx < 3; bx++) t.air(`showSign${bx}`, sc[0][bx]);
-  t.wall('hedgeWall', (() => {
-    const p = new Pixels(20, 20, c('leaf', 1));
-    for (let i = 0; i < 6; i++) blob(p, (i * 7) % 20, (i * 5) % 20, 4, 4, r('leaf'), 0, 3);
-    return p;
-  })());
+  t.wall(
+    'hedgeWall',
+    (() => {
+      const p = new Pixels(20, 20, c('leaf', 1));
+      for (let i = 0; i < 6; i++) blob(p, (i * 7) % 20, (i * 5) % 20, 4, 4, r('leaf'), 0, 3);
+      return p;
+    })(),
+  );
   return t;
 }

@@ -5,6 +5,7 @@
 // the GIF Gallery's pictures (C:\IMAGES keeps the newest picture's, as each unzip wrote over
 // the last) and the Warez area's releases, which a courier signs instead.
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
+import { installedBytes, sizeText } from '../../project/diskFacts';
 import type { GalleryFile } from './gallery';
 
 export const DIZ_WIDTH = 45;
@@ -88,7 +89,11 @@ export function fitDiz(lines: string[]): string[] {
 
 /** The DIZ as a DOS text file: CR LF line ends. */
 export function dizBytes(lines: string[]): Uint8Array {
-  return new TextEncoder().encode(fitDiz(lines).map((l) => `${l}\r\n`).join(''));
+  return new TextEncoder().encode(
+    fitDiz(lines)
+      .map((l) => `${l}\r\n`)
+      .join(''),
+  );
 }
 
 // ---- shareware games ---------------------------------------------------------------------
@@ -117,11 +122,11 @@ const SUMMARY: Record<string, string> = {
   needle: "The rich man's camel gives his gold to the poor, humps down through the narrow ways and squeezes through the eye of a needle.",
   loaf: 'The loaf nobody picked at the feeding of the 5,000 rolls past hungry hands and flying fish, gathers twelve baskets and goes home.',
   tickle: 'Doc Leo has a rat tickling certificate and no rats yet. Pin first, then tickle, and raise a laughing carpet. MWA-HA-HA!',
-  remote: "The remote is gone. Lift the cushions, the dog and the cat, call Mom, fall into the void between the cushions. Check your hand.",
-  carl: "You are Carl, the fly in the room. Eat his snacks, buzz his ear, barrel-roll past the dish towel, see things. Take the aux cord.",
+  remote: 'The remote is gone. Lift the cushions, the dog and the cat, call Mom, fall into the void between the cushions. Check your hand.',
+  carl: 'You are Carl, the fly in the room. Eat his snacks, buzz his ear, barrel-roll past the dish towel, see things. Take the aux cord.',
   reckoning: '3:17 A.M., lactose intolerant, cheesecake in the fridge. Eat it anyway, outrun the gurgle, splash the Devil.',
-  loofah: "You touched the pink one. Now the towel screams. Light the candles, cleanse the demon sponge with brine.",
-  smirked: "Lily is eight and not scared. You are. Tackle a cardboard witch, sneeze through fake webs, bond with the exit sign.",
+  loofah: 'You touched the pink one. Now the towel screams. Light the candles, cleanse the demon sponge with brine.',
+  smirked: 'Lily is eight and not scared. You are. Tackle a cardboard witch, sneeze through fake webs, bond with the exit sign.',
   sweats: 'Open mic at The Hive: 17 monologues about a pen, a chair, a blanket, a cart. Each one an EPIC. Declaim!',
   risi: "Veni, Vidi, Risi!'s six Latin songs: Rufus farts at the banquet, the brave coward runs, a cat hunts cheese. Make the Emperor laugh.",
 };
@@ -130,9 +135,9 @@ const TAGLINES = [
   'Runs great on a 386. Even better on a 486!',
   'Turn off your TSRs, turn up the Sound Blaster',
   'Better than third-period study hall.',
-  'Tested by the SysOp\'s corgi: two paws up!',
+  "Tested by the SysOp's corgi: two paws up!",
   'No QEMM tweaking required.',
-  'Scanned with McAfee SCAN. Clean as a whistle',
+  'Virus-scanned. Clean as a whistle',
   'Play it before Mom needs the phone line.',
   'Joystick optional. Fun mandatory.',
   'Bring snacks. You will be here a while.',
@@ -162,13 +167,14 @@ export function gameDiz(g: CatalogEntry): string[] {
   const by = ascii(g.company ?? g.author ?? 'Unknown author');
   const second = spread(by, g.year ? `, ${g.year}` : '', priceText(ascii(g.price ?? '')));
   const about = SUMMARY[g.id] ?? (g.blurb ?? g.title).replace(/^\([^)]*\)\s*/, '');
-  const sound = g.original ? 'VGA * SB music' : 'VGA * PC speaker';
+  const sound = g.original && g.original.sound !== 'speaker' ? 'VGA * SB music' : 'VGA * PC speaker';
   return fitDiz([
     headline(g.title),
     second,
     RULE,
     ...clip(ascii(about), 3),
-    `Made with Game-Maker 3.0 * ${sound}`,
+    // what the caller has to clear on the hard disk, as uploaders put it
+    `Game-Maker 3.0 * ${sound} * ${sizeText(installedBytes(g), false)} HD`,
     // the Bard's games are free to change for real (MIT), whatever the price line says
     center(isSofaFile(g) ? 'Free to play, share & change (MIT)' : pick(TAGLINES, g.id)),
     RULE,
@@ -178,19 +184,23 @@ export function gameDiz(g: CatalogEntry): string[] {
 
 // ---- the GIF Gallery -------------------------------------------------------------------
 
-/** The FILE_ID.DIZ of a picture in the GIF Gallery (the SysOp's own snapshots). */
+/** The FILE_ID.DIZ of a picture in the GIF Gallery (the SysOp's own snapshots), or in The Sofa's GIF area (Doc Leo's). */
 export function pictureDiz(f: GalleryFile): string[] {
+  if (f.board === 'sofa')
+    return fitDiz([
+      headline(f.name),
+      f.format === 'GIF'
+        ? `${f.width}x${f.height}, ${f.colors} ${f.gray ? 'grays' : 'colors'}, interlaced GIF`
+        : `${f.width}x${f.height}, JPEG${f.gray ? ', gray' : ''}`,
+      RULE,
+      ...clip(ascii(f.desc), 4),
+      center(f.format === 'GIF' ? 'Interlaced: watch it fill in!' : 'JPEG: worth the wait!'),
+      RULE,
+      `Uploaded by ${SOFA_UPLOADER} to THE SOFA BBS`,
+    ]);
   const kind = f.format === 'GIF' ? `${f.colors} ${f.gray ? 'grays' : 'colors'}, GIF` : `JPEG${f.progressive ? ', progressive' : ''}${f.gray ? ', gray' : ''}`;
   const tag = f.format === 'GIF' ? 'Scanned at the copy shop. VPIC it!' : 'JPEG: worth the wait on a fast 486.';
-  return fitDiz([
-    headline(f.name),
-    `${f.width}x${f.height}, ${kind}`,
-    RULE,
-    ...clip(ascii(f.desc), 3),
-    center(tag),
-    RULE,
-    SIGNOFF.replace('%s', SYSOP_HANDLE),
-  ]);
+  return fitDiz([headline(f.name), `${f.width}x${f.height}, ${kind}`, RULE, ...clip(ascii(f.desc), 3), center(tag), RULE, SIGNOFF.replace('%s', SYSOP_HANDLE)]);
 }
 
 /** The newest of the downloaded pictures: its DIZ is the one left in C:\IMAGES. */

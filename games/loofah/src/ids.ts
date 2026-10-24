@@ -48,7 +48,7 @@ export const MON = {
   spongeB1: 23,
   spongeB2: 24,
   spongeB3: 25,
-  /** A cursed citrus suds ball it spits: out of the soap dish behind it in an arc to the left. */
+  /** A cursed citrus suds ball it spits: out of the soap dish behind it, floating slowly left over the gap and down. Brine pops it. */
   suds: 26,
   /** Where a suds ball lands: a splat, then gone. */
   splat: 27,
@@ -58,6 +58,17 @@ export const MON = {
   pink: 29,
   /** Steam curling up off the water. Harmless. */
   steam: 30,
+  /** A screaming towel that has flapped into him: it snaps him once, then flutters off up the hall. */
+  flapperOff: 31,
+  /** Scrubbus sliding along the tub rim to a new spot between stages (brine bounces off while it slides). */
+  spongeA1m: 32,
+  spongeA2m: 33,
+  spongeA3m: 34,
+  spongeB1m: 35,
+  spongeB2m: 36,
+  spongeB3m: 37,
+  /** A sprig of rosemary that grows on the pot by the vent now and then: so he never runs out of brine. */
+  sprig: 38,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

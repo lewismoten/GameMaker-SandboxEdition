@@ -5,7 +5,20 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { changeSaveLevel, heroSpotProblem, moveSaveHero, newGameSave, pictureBlock, saveLevels, savePicture, saveMap, savedWorld, SaveFormatError, serializeSave, parseSave } from '../src/project/saveData';
+import {
+  changeSaveLevel,
+  heroSpotProblem,
+  moveSaveHero,
+  newGameSave,
+  pictureBlock,
+  saveLevels,
+  savePicture,
+  saveMap,
+  savedWorld,
+  SaveFormatError,
+  serializeSave,
+  parseSave,
+} from '../src/project/saveData';
 import { changeBlocks, restoreSaved, type Saved } from '../src/engine/scene';
 import { moveChars } from '../src/engine/character';
 import { blockBirthMonsters, moveAllMonsters } from '../src/engine/monsters';
@@ -26,7 +39,7 @@ function disk(id: string) {
 
 const seeded = () => {
   let x = 7;
-  return () => ((x = (x * 16807) % 2147483647) / 2147483647);
+  return () => (x = (x * 16807) % 2147483647) / 2147483647;
 };
 
 // a few games (every level of each); all of them take a minute
@@ -68,7 +81,7 @@ describe('changing a saved game’s level', () => {
         expect(w.ci.meter[25]).toBe(42);
         expect(w.ci.inv).toEqual(start.world.ci.inv);
         // the new level's own map, not the old one's
-        const mapFile = files.get(game.scenes[level.scene].files[1]!)!;
+        const mapFile = files.get(game.scenes[level.scene].files[1])!;
         expect(w.map.length).toBe(MLEN * MWID);
         expect(mapFile.length).toBeGreaterThan(0);
         w.sound = { play: () => false };
@@ -111,7 +124,7 @@ describe('changing a saved game’s level', () => {
     expect(moved.world.chr.x[0]).toBe(open![0]);
     expect(moved.world.chr.y[0]).toBe(open![1]);
     expect(moved.world.ci.score).toBe(save.world.ci.score);
-    if (solid) expect(() => moveSaveHero(files, gam, save, ...solid!)).toThrow(SaveFormatError);
+    if (solid) expect(() => moveSaveHero(files, gam, save, ...solid)).toThrow(SaveFormatError);
     expect(heroSpotProblem(w, 100, 0)).toMatch(/off the map/);
   });
 

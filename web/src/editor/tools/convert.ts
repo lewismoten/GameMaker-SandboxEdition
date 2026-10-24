@@ -174,10 +174,14 @@ export async function loadImage(file: Blob): Promise<ImageBitmap> {
 
 /** Every frame of an animated GIF (or a single picture), with its delay in ms, via the browser's decoder. */
 export async function decodeFrames(file: File): Promise<{ frames: ImageBitmap[]; delays: number[] }> {
-  const Decoder = (globalThis as unknown as { ImageDecoder?: new (init: { data: ReadableStream | ArrayBuffer; type: string }) => {
-    tracks: { ready: Promise<void>; selectedTrack?: { frameCount: number } };
-    decode(o: { frameIndex: number }): Promise<{ image: VideoFrame }>;
-  } }).ImageDecoder;
+  const Decoder = (
+    globalThis as unknown as {
+      ImageDecoder?: new (init: { data: ReadableStream | ArrayBuffer; type: string }) => {
+        tracks: { ready: Promise<void>; selectedTrack?: { frameCount: number } };
+        decode(o: { frameIndex: number }): Promise<{ image: VideoFrame }>;
+      };
+    }
+  ).ImageDecoder;
   if (Decoder && /gif|webp|png/i.test(file.type)) {
     try {
       const dec = new Decoder({ data: await file.arrayBuffer(), type: file.type });

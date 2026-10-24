@@ -15,8 +15,10 @@
 import './download.css';
 import { download, h, modal, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
+import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { GameFiles } from '../../project/files';
+import type { Companion } from '../../project/companion';
 
 export interface DownloadGame {
   title: string;
@@ -31,6 +33,10 @@ export interface DownloadGame {
   box?: { background?: string };
   /** A game of yours: its files can be downloaded as they are, too. */
   project?: boolean;
+  /** A game of yours: its editor-only extras, which only the "Game files" backup carries (project/companion.ts). */
+  companion?: () => Companion | undefined;
+  /** Our own games: made now, presented as a 1990s release (export/fiction.ts), for the About text. */
+  fiction?: string;
 }
 
 export type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'dos' | 'files';
@@ -62,14 +68,40 @@ const CHOICES: Choice[] = [
     line: 'An app for macOS 11 or later, Apple silicon or Intel. It is not notarized, so the first time open it from System Settings → Privacy & Security.',
     details: '#/mac',
   },
-  { kind: 'linux', name: 'Linux', format: '.tar.gz', line: 'A folder with play.sh, which plays it in a window with WebKitGTK (or in your browser).', details: '#/linux' },
-  { kind: 'web', name: 'Web page', format: '.html', alt: '.zip', line: 'The game and its player in one file that opens in any browser, offline. The .zip is a web app to put on a web host.' },
-  { kind: 'dos', name: 'DOS', format: '.zip', line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.' },
+  {
+    kind: 'linux',
+    name: 'Linux',
+    format: '.tar.gz',
+    line: 'A folder with play.sh, which plays it in a window with WebKitGTK (or in your browser).',
+    details: '#/linux',
+  },
+  {
+    kind: 'web',
+    name: 'Web page',
+    format: '.html',
+    alt: '.zip',
+    line: 'The game and its player in one file that opens in any browser, offline. The .zip is a web app to put on a web host.',
+  },
+  {
+    kind: 'dos',
+    name: 'DOS',
+    format: '.zip',
+    line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.',
+  },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
 ];
 
+/**
+ * Every download but DOS still plays on a web engine (a browser, or the one built into the
+ * system), so it is not frozen in time the way the DOS files are.
+ */
+export const ENGINE_CAVEAT =
+  'All but DOS still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
+
 /** The visitor's own system, to choose first: a phone or tablet gets the web page. */
-export function visitorSystem(nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator): DownloadKind {
+export function visitorSystem(
+  nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator,
+): DownloadKind {
   const ua = `${nav.userAgentData?.platform ?? ''} ${nav.platform ?? ''} ${nav.userAgent ?? ''}`;
   if (/android|iphone|ipad|ipod|cros/i.test(ua)) return 'web';
   if (/windows|win32|win64/i.test(ua)) return 'windows';
@@ -132,7 +164,9 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
           'p',
           { class: 'dl-line', id: `${id}-line` },
           c.line,
-          c.details ? [' ', h('a', { href: c.details, onclick: () => close(undefined), 'aria-label': `More details about the ${c.name} download` }, 'More details →')] : null,
+          c.details
+            ? [' ', h('a', { href: c.details, onclick: () => close(undefined), 'aria-label': `More details about the ${c.name} download` }, 'More details →')]
+            : null,
         ),
       );
       // the whole row chooses (its link still goes to its page)
@@ -155,7 +189,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         },
       },
       h('fieldset', null, h('legend', null, 'Download it for'), ...rows),
-      h('p', { class: 'meta' }, 'It is built right here in your browser. Saved games and high scores are kept on the computer it is played on.'),
+      h('p', { class: 'meta' }, `Built right here in your browser, it plays offline and saves on that computer. ${ENGINE_CAVEAT}`),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), alt, go),
     );
   });
@@ -164,20 +198,34 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
 
 /** The options the native downloads share. */
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
-  const [{ exportSinglePage }, { slug }, mac] = await Promise.all([import('../../export/exportSinglePage'), import('../../export/exportWebApp'), import('../../export/macApp')]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam });
+  const [{ exportSinglePage }, { slug }, mac, audio] = await Promise.all([
+    import('../../export/exportSinglePage'),
+    import('../../export/exportWebApp'),
+    import('../../export/macApp'),
+    import('../../export/recordedAudio'),
+  ]);
+  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
     html,
     author: game.author,
     year: game.year,
+    fiction: game.fiction,
     picture: mac.iconPicture(files, game.gam),
+    audio: audio.recordedAudioNotice(audio.recordedClips(files)),
     colors: mac.boxColors(game.box),
   };
 }
 
-const NAMES: Record<DownloadKind, string> = { windows: 'Windows program', mac: 'Mac app', linux: 'Linux download', web: 'web page', dos: 'DOS game', files: 'game files' };
+const NAMES: Record<DownloadKind, string> = {
+  windows: 'Windows program',
+  mac: 'Mac app',
+  linux: 'Linux download',
+  web: 'web page',
+  dos: 'DOS game',
+  files: 'game files',
+};
 
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Promise<void> {
   try {
@@ -187,7 +235,8 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       const win = await import('../../export/winApp');
       const [o, player] = await Promise.all([nativeOptions(game, files), win.preferredArch().then((a) => win.fetchWinPlayer(a))]);
       const name = win.exeName(game.title);
-      if (alt) save(name.replace(/\.exe$/, '.zip'), await win.winExeZip({ ...o, player }), 'application/zip', 'Unzip it, then double-click the program to play.');
+      if (alt)
+        save(name.replace(/\.exe$/, '.zip'), await win.winExeZip({ ...o, player }), 'application/zip', 'Unzip it, then double-click the program to play.');
       else save(name, await win.winExe({ ...o, player }), 'application/vnd.microsoft.portable-executable', 'Double-click it to play.');
     } else if (kind === 'mac') {
       const mac = await import('../../export/macApp');
@@ -198,21 +247,29 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
     } else if (kind === 'linux') {
       const linux = await import('../../export/linuxApp');
       const [o, players] = await Promise.all([nativeOptions(game, files), linux.fetchLinuxPlayers()]);
-      save(`${linux.folderName(game.title)}.tar.gz`, await linux.linuxTarGz({ ...o, players }), 'application/gzip', 'Extract it, then run play.sh in the folder.');
+      save(
+        `${linux.folderName(game.title)}.tar.gz`,
+        await linux.linuxTarGz({ ...o, players }),
+        'application/gzip',
+        'Extract it, then run play.sh in the folder.',
+      );
     } else if (kind === 'web' && alt) {
-      const { name, zip } = await (await import('../../export/exportWebApp')).exportWebApp(files, { title: game.title, gam: game.gam });
+      const { name, zip } = await (await import('../../export/exportWebApp')).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
-      const { name, html } = await (await import('../../export/exportSinglePage')).exportSinglePage(files, { title: game.title, gam: game.gam });
+      const { name, html } = await (
+        await import('../../export/exportSinglePage')
+      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'dos') {
       const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(files, { title: game.title, gam: game.gam });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {
-      const { createZip } = await import('../../project/zip');
-      const zip = await createZip(files.entries().map(([name, data]) => ({ name: name.toUpperCase(), data })));
+      const [{ createZip }, { backupEntries }] = await Promise.all([import('../../project/zip'), import('../../project/companion')]);
+      const zip = await createZip(backupEntries(files, game.gam, game.companion?.()));
       save(`${game.gam.replace(/\.gam$/i, '')}.zip`, zip, 'application/zip', 'Import it here again whenever you like.');
     }
+    downloaded(kind);
   } catch (e) {
     toast(plainError(e), 'error');
   }

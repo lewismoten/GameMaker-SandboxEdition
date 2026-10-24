@@ -9,6 +9,7 @@ import { encodeGame, fillPage, GAME_MARK } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
+import { recordedAudioNotice, recordedClips } from './recordedAudio';
 
 export interface ExportOptions {
   title: string;
@@ -18,6 +19,8 @@ export interface ExportOptions {
   themeColor?: string;
   /** Where the Game-Maker: Sandbox Edition app is served from (its standalone.html player is used). */
   appBase?: string;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts). */
+  fiction?: string;
 }
 
 const ICONS = ['icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'icon.svg', 'apple-touch-icon.png'];
@@ -60,7 +63,7 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(gameEntries);
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, gameEntries);
-  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb }), theme)) });
+  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction }), theme)) });
 
   for (const icon of ICONS) {
     try {
@@ -93,7 +96,7 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const precache = ['./', ...entries.filter((e) => !e.name.startsWith('game/')).map((e) => e.name)];
   const version = hashText(entries.map((e) => `${e.name}:${e.data.length}`).join('|') + Date.now());
   entries.push({ name: 'sw.js', data: enc.encode(serviceWorkerSource(version, precache)) });
-  entries.push({ name: 'README.txt', data: enc.encode(readme(opts.title)) });
+  entries.push({ name: 'README.txt', data: enc.encode(readme(opts.title, recordedAudioNotice(recordedClips(files), 78, '  '))) });
 
   return { name: `${id}-webapp.zip`, zip: await createZip(entries) };
 }
@@ -113,7 +116,7 @@ function customizePage(html: string, theme: string): string {
     .replace('</head>', `    ${head}\n  </head>`);
 }
 
-function readme(title: string): string {
+function readme(title: string, audio?: string): string {
   return `${title}
 ${'='.repeat(title.length)}
 
@@ -143,5 +146,5 @@ Controls
 The game folder
   game/ holds the game's original files, which also play in the DOS
   Game-Maker / PLAYGAME. index.html carries its own copy of them.
-`;
+${audio ? `\nThe game's voice clips\n${audio}\n` : ''}`;
 }

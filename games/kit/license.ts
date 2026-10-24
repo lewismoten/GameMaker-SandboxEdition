@@ -38,8 +38,33 @@ const MIT = [
 
 const SANDBOX_STORY = 'Sandbox Software, its address and phone numbers, and the registration fee are part of the story: there is nothing to pay.';
 
-/** The disk's LICENSE.TXT for a game; `story` says which parts are make-believe (Sandbox Software's, by default). */
-export function licenseText(title: string, story = SANDBOX_STORY): string {
+/**
+ * What LICENSE.TXT says of voice clips cut from a Bard of Bizarre recording. The songs were made
+ * on the free plan of Riffusion (now Google Flow Music), whose terms allow free-plan output for
+ * "personal, non-commercial uses only", so those clips can't be MIT licensed (see NOTICE.md).
+ */
+function recordedLines(vocs: readonly string[]): string[] {
+  const names = vocs.map((v) => `${v.toUpperCase()}.VOC`).join(', ');
+  return [
+    'VOICE CLIPS: NOT MIT',
+    '',
+    ...wrap30(`These ${vocs.length} voice clips are cut from recordings made on the free plan of Riffusion (now Google Flow Music): ${names}.`),
+    '',
+    ...wrap30(
+      'That service\'s terms allow free-plan songs only "personal, non-commercial uses", so these clips are not under the MIT License: don\'t sell them or use them commercially.',
+    ),
+    '',
+    ...wrap30('The rest of the game is MIT licensed: its code, levels, art, text, and FM music arranged by Claude.'),
+    '',
+  ];
+}
+
+/**
+ * The disk's LICENSE.TXT for a game; `story` says which parts are make-believe (Sandbox Software's,
+ * by default), and `recordedVocs` names the voice clips cut from a free-plan recording, if any.
+ */
+export function licenseText(title: string, story = SANDBOX_STORY, recordedVocs: readonly string[] = []): string {
+  const clips = recordedVocs.length > 0;
   return pages([
     'THIS GAME IS FREE',
     '',
@@ -53,9 +78,10 @@ export function licenseText(title: string, story = SANDBOX_STORY): string {
     'Designs, MIT License 2014.',
     '',
     ...wrap30(
-      "In 1995 Game-Maker's license let you give a game free to up to ten people; shareware had to ask at least $5 and pay RSD 10% of the fees. Since 2014 Game-Maker is MIT licensed, and so is this game: free to share, change or even sell.",
+      `In 1995 Game-Maker's license let you give a game free to up to ten people; shareware had to ask at least $5 and pay RSD 10% of the fees. Since 2014 Game-Maker is MIT licensed, and so is this game${clips ? ', except its voice clips (below)' : ''}: free to share, change or even sell.`,
     ),
     '',
+    ...(clips ? recordedLines(recordedVocs) : []),
     'MIT License',
     '',
     'Copyright (c) 2026',
@@ -82,11 +108,15 @@ export const CREDIT_PAGE = [
   'Lewis Moten.',
 ];
 
-/** A game's credits text with the FREE TO SHARE page after it, on a page of its own. */
-export function withCreditPage(credits: string): string {
+/** The FREE TO SHARE page's last lines in a game whose voice clips come from a free-plan recording. */
+const RECORDED_CREDIT = ['', 'The voice clips are for', 'personal, non-commercial use', 'only: see LICENSE.TXT.'];
+
+/** A game's credits text with the FREE TO SHARE page after it, on a page of its own (`recorded`: see recordedLines). */
+export function withCreditPage(credits: string, recorded = false): string {
   const lines = credits.replace(/\s+$/, '').split('\n');
   while (lines.length % PAGE) lines.push('');
-  const notice = [...CREDIT_PAGE];
+  const notice = recorded ? [...CREDIT_PAGE, ...RECORDED_CREDIT] : [...CREDIT_PAGE];
+  if (notice.length > PAGE) throw new Error('The FREE TO SHARE page is over one screen');
   while (notice.length < PAGE) notice.push('');
   return [...lines, ...notice].join('\n');
 }

@@ -258,7 +258,14 @@ registerEditor(['gif'], (host, project, file) => {
     h(
       'div',
       { class: 'pic-layout' },
-      h('div', { class: 'pic-main' }, canvas, h('div', { class: 'pic-info-row' }, info, h('div', { class: 'toolbar' }, undo.undoBtn, undo.redoBtn)), preview.el, fileTools),
+      h(
+        'div',
+        { class: 'pic-main' },
+        canvas,
+        h('div', { class: 'pic-info-row' }, info, h('div', { class: 'toolbar' }, undo.undoBtn, undo.redoBtn)),
+        preview.el,
+        fileTools,
+      ),
       h(
         'div',
         { class: 'pic-side' },

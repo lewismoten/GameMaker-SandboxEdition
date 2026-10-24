@@ -49,7 +49,16 @@ export function needlePicture(): Pixels {
   const edge: [number, number][] = [];
   for (let y = 0; y < NEEDLE_H; y++)
     for (let x = 0; x < NEEDLE_W; x++)
-      if (solid(x, y) && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => !solid(x + dx, y + dy))) edge.push([x, y]);
+      if (
+        solid(x, y) &&
+        [
+          [1, 0],
+          [-1, 0],
+          [0, 1],
+          [0, -1],
+        ].some(([dx, dy]) => !solid(x + dx, y + dy))
+      )
+        edge.push([x, y]);
   for (const [x, y] of edge) p.set(x, y, 1);
   // the thread: through the eye, out the right and trailing down to the boards in a lazy curve
   const thread: [number, number][] = [];
@@ -68,7 +77,27 @@ export function needlePicture(): Pixels {
 }
 
 // Brother Camel facing you, 20x40, in city.pal's indexes (the ones his side view uses)
-const CAMEL_KEY: Record<string, number> = { a: 15, b: 18, c: 19, d: 63, e: 21, f: 22, g: 20, h: 94, i: 38, j: 51, k: 52, l: 93, m: 39, n: 37, o: 92, p: 36, q: 68, r: 59, s: 60 };
+const CAMEL_KEY: Record<string, number> = {
+  a: 15,
+  b: 18,
+  c: 19,
+  d: 63,
+  e: 21,
+  f: 22,
+  g: 20,
+  h: 94,
+  i: 38,
+  j: 51,
+  k: 52,
+  l: 93,
+  m: 39,
+  n: 37,
+  o: 92,
+  p: 36,
+  q: 68,
+  r: 59,
+  s: 60,
+};
 const CAMEL = [
   ...Array(7).fill('....................'),
   '......a......a......',

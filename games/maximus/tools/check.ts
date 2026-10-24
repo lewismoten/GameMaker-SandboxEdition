@@ -5,7 +5,8 @@
 // - rover worlds: the rover can drive all the way around the planet;
 // - the training deck can be crossed by "hold right, hop when stuck";
 // - every multi-block object (trees, planets, the core...) is put together right (--align: only this).
-import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from '../src/ids';
+import { ITEM_BASE, MON, MONEY, SCAN, SEAL_COUNTER, SEQ, SHARD_BASE, SHARD_COUNTER } from '../src/ids';
+import { fightEye } from './heartFight';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { reachable } from '../src/levels/mapkit';
 import { buildGame } from '../src/game';
@@ -125,46 +126,70 @@ if (!only.length) {
   const after = [...sim.w.map].filter((c) => gateOf(c) === 0 || gateOf(c) === 1).length;
   if (after >= before) report.push(`galaxy: a pod carrying the Ruby shard did not open a Ruby gate (${before} -> ${after})`);
 }
-// the Heart: can a courier with the Plasma Lance break through the Guardian?
+// the Heart: the seal holds until the Heart Eye is broken, and a courier with the Plasma
+// Lance who fights the eye from the foot of the Guardian gets through it to the exit
 if (!only.length || only.includes('heart')) {
   const heart = b.scenes.find((s) => s.file === 'heart')!;
-  let best = 0;
-  let won = false;
-  for (const seed of [1, 2, 3, 4]) {
+  const start = (seed: number, x: number, charge: number) => {
     const ci = newCharInfo();
     ci.inv.fill(150);
     ci.inv[0] = ITEM_BASE; // the Plasma Lance
-    ci.inv[1] = ITEM_BASE + 3; // the Shield Emitter
     const sim = simFor(b, heart, seed, ci);
-    sim.w.ci.meter[SEQ.plasma] = 60;
-    await sim.run(3);
+    const w = sim.w;
+    w.chr.x[0] = x;
+    w.chr.y[0] = 55;
+    w.chr.x[1] = w.chr.y[1] = 0;
+    w.mx = x - 8;
+    w.my = 50;
+    return { sim, charge };
+  };
+  const push = async (sim: ReturnType<typeof simFor>) => {
+    // through the Guardian at floor height: shoulder the plates, lance them now and then
     sim.press(SCAN.right);
-    let lastX = 0;
-    let stuck = 0;
-    for (let t = 0; t < 3000 && !sim.dead && sim.link < 0; t++) {
+    for (let t = 0; t < 600 && !sim.dead && sim.link < 0 && sim.pos.bx < 79; t++) {
       await sim.tick();
       if (sim.w.ci.hitpts < 40) sim.w.ci.hitpts = 100; // a player would use med kits and pickups
-      stuck = sim.pos.x === lastX ? stuck + 1 : 0;
-      lastX = sim.pos.x;
-      if (stuck > 2) {
-        // blocked: fire the lance at the wall, and hop over anything low
-        sim.release(SCAN.right);
+      if (t % 20 === 10) {
         sim.press(SCAN.z);
-        await sim.run(6);
+        await sim.tick();
         sim.release(SCAN.z);
-        if (t % 5 === 0) {
-          sim.press(SCAN.up);
-          await sim.tick();
-          sim.release(SCAN.up);
-        }
-        sim.press(SCAN.right);
-        stuck = 0;
       }
-      best = Math.max(best, sim.pos.bx);
     }
-    if (sim.link === 0) won = true;
+    sim.release(SCAN.right);
+    return sim.pos.bx;
+  };
+  // without the Core Light's charge the seal stays shut
+  {
+    const { sim } = start(1, 74, 0);
+    await sim.run(3);
+    sim.w.ci.meter[SEAL_COUNTER] = 1;
+    sim.w.ci.hitpts = 2000;
+    for (let i = 0; i < 64; i++) sim.w.mm[i].monnum = 64; // nothing in the way but the plates and the seal
+    if ((await push(sim)) >= 78) report.push('heart: the seal let an uncharged courier through');
   }
-  if (!won) report.push(`heart: the lance bot never reached the exit (best x ${best})`);
+  let won = 0;
+  let worst = 0;
+  for (const seed of [1, 2, 3, 4]) {
+    const { sim } = start(seed, 64, 0);
+    sim.w.ci.meter[SEQ.plasma] = 30;
+    await sim.run(3);
+    sim.w.ci.meter[SEAL_COUNTER] = 1;
+    sim.w.ci.hitpts = 1000;
+    const charged = await fightEye(sim, b.monsters.heart);
+    worst = Math.max(worst, 1000 - sim.w.ci.hitpts);
+    if (!charged) {
+      report.push(`heart: seed ${seed}: the eye bot did not break the Heart Eye`);
+      continue;
+    }
+    await push(sim);
+    for (let t = 0; t < 400 && !sim.dead && sim.link < 0; t++) {
+      sim.press(SCAN.right);
+      await sim.tick();
+    }
+    if (sim.link === 0) won++;
+    else report.push(`heart: seed ${seed}: through the seal but not to the exit (at ${sim.pos.bx},${sim.pos.by})`);
+  }
+  console.log(`heart: ${won} of 4 seeds won; the eye fight cost up to ${worst} HP`);
 }
 // sector charts: fly the pod from the warp to a few planets and see what it costs
 if (!only.length || only.includes('sectors')) {

@@ -37,7 +37,17 @@ export function wire(f: number, color: V = rgb(80, 255, 110)): Shape[] {
   const a = (f * Math.PI) / 8;
   const eyes: Shape[] = [-1, 1].map((k) => new Sphere([c[0] + k * 0.07, c[1] + 0.12, c[2] + 0.05], 0.045, glow(rgb(255, 255, 255), 1)));
   const pupils: Shape[] = [-1, 1].map((k) => new Sphere([c[0] + k * 0.07, c[1] + 0.16, c[2] + 0.05], 0.022, { color: rgb(10, 10, 20) }));
-  return [wireframe(CUBE_V.map((v) => mul(v, s)), CUBE_E, c, a, glow(color, 0.9)), ...eyes, ...pupils];
+  return [
+    wireframe(
+      CUBE_V.map((v) => mul(v, s)),
+      CUBE_E,
+      c,
+      a,
+      glow(color, 0.9),
+    ),
+    ...eyes,
+    ...pupils,
+  ];
 }
 
 const PHI = (1 + Math.sqrt(5)) / 2;
@@ -68,7 +78,7 @@ const turn = (p: V, a: number, tilt = 0.35): V => {
 function gem(points: V[], c: V, size: number, a: number, base: V, facet = 0.25): Shape {
   const n = Math.max(...points.map((p) => Math.hypot(...p)));
   const pts = points.map((p) => add(c, mul(turn(p, a), size / n)));
-  return hull(pts, (face) => ({ color: mix(base, [1, 1, 1], ((face * 37) % 7) / 7 * facet), diffuse: 0.8, spec: 1.2, shine: 70, fresnel: 0.3 }));
+  return hull(pts, (face) => ({ color: mix(base, [1, 1, 1], (((face * 37) % 7) / 7) * facet), diffuse: 0.8, spec: 1.2, shine: 70, fresnel: 0.3 }));
 }
 
 /** A rendered crystal: what a wireframe becomes when your ray hits it. Touch it for points. */
@@ -79,8 +89,8 @@ export function crystal(f: number): Shape[] {
 /** Count Polygon: twenty faces of vampire, losing faces with every hit. */
 export function count(stage: number, f: number): Shape[] {
   const c: V = [0.5, 0.58, 0.42 - stage * 0.03];
-  const purple = rgb(120, 50, 200);
-  const sizes = [0.3, 0.26, 0.24, 0.2, 0.06];
+  const purple = rgb(165, 85, 245);
+  const sizes = [0.3, 0.26, 0.24, 0.22, 0.09];
   const body: Shape[] = [];
   const a = f * 0.4 + 0.2;
   if (stage === 0) body.push(gem(ICO, c, sizes[0], a, purple));
@@ -90,19 +100,33 @@ export function count(stage: number, f: number): Shape[] {
     const t = sizes[3];
     body.push(
       hull(
-        [add(c, [-t, 0.01, -t * 0.6]), add(c, [t, 0.01, -t * 0.6]), add(c, [0, 0.01, t]), add(c, [-t, -0.03, -t * 0.6]), add(c, [t, -0.03, -t * 0.6]), add(c, [0, -0.03, t])],
+        [
+          // tipped back toward the light, so the camera above sees a triangle, not an edge
+          add(c, [-t, t * 0.55, -t * 0.45]),
+          add(c, [t, t * 0.55, -t * 0.45]),
+          add(c, [0, -t * 0.55, t * 0.6]),
+          add(c, [-t, t * 0.55 - 0.04, -t * 0.45 - 0.03]),
+          add(c, [t, t * 0.55 - 0.04, -t * 0.45 - 0.03]),
+          add(c, [0, -t * 0.55 - 0.04, t * 0.6 - 0.03]),
+        ],
         { color: purple, diffuse: 0.8, spec: 1.2, shine: 60 },
       ),
     );
   } else body.push(new Sphere(c, sizes[4], glow(rgb(200, 120, 255), 1.2)));
   // the cape: two dark red sails behind him, flapping
-  const cape: Material = { color: rgb(150, 20, 40), diffuse: 0.9, spec: 0.6, shine: 30 };
+  const cape: Material = { color: rgb(215, 45, 80), diffuse: 0.9, spec: 0.6, shine: 30, emit: rgb(40, 5, 12) };
   const w = (stage === 4 ? 0.12 : 0.3) * (f ? 1.1 : 1);
   if (stage < 4)
     for (const k of [-1, 1])
       body.push(
         hull(
-          [add(c, [k * 0.05, -0.08, 0.15]), add(c, [k * w, -0.12, 0.05 + (f ? 0.05 : 0)]), add(c, [k * w * 0.8, -0.1, -0.3]), add(c, [k * 0.05, -0.1, 0.15]), add(c, [k * w, -0.14, 0.05 + (f ? 0.05 : 0)])],
+          [
+            add(c, [k * 0.05, -0.08, 0.15]),
+            add(c, [k * w, -0.12, 0.05 + (f ? 0.05 : 0)]),
+            add(c, [k * w * 0.8, -0.1, -0.3]),
+            add(c, [k * 0.05, -0.1, 0.15]),
+            add(c, [k * w, -0.14, 0.05 + (f ? 0.05 : 0)]),
+          ],
           cape,
         ),
       );
@@ -132,20 +156,56 @@ export function crown(f: number): Shape[] {
   return [gem(TETRA, [0.5, 0.6, 0.32], 0.17, f * 0.8, rgb(255, 200, 60), 0.3)];
 }
 
+/** The blue lens the Count swallowed: glass in a gold ring, bobbing where he dropped it. */
+export function stolenLens(f: number): Shape[] {
+  const x = 0.5;
+  const y = 0.58;
+  const z = 0.3 + f * 0.05;
+  const blue = rgb(50, 90, 255);
+  // lying flat, tipped a little toward the camera, so it reads as a round blue lens from above
+  return [
+    new Sdf(
+      [
+        [x - 0.25, y - 0.25, z - 0.1],
+        [x + 0.25, y + 0.25, z + 0.1],
+      ],
+      (px, py, pz) => sd.ellipsoid(px - x, py - y, pz - z, 0.2, 0.2, 0.05),
+      [{ color: rgb(130, 175, 255), diffuse: 0.5, spec: 1.4, shine: 120, emit: mul(blue, 0.9) }],
+    ),
+    new Sdf(
+      [
+        [x - 0.28, y - 0.28, z - 0.06],
+        [x + 0.28, y + 0.28, z + 0.06],
+      ],
+      (px, py, pz) => sd.torus(px - x, py - y, pz - z, 0.22, 0.035),
+      [MAT.gold],
+    ),
+  ];
+}
+
 /** A shard the Count throws: a spinning purple triangle. */
 export function shard(f: number): Shape[] {
   const c: V = [0.5, 0.55, 0.3];
   const a = f * 1.2;
   const p = (ang: number): V => [c[0] + Math.cos(ang + a) * 0.15, c[1] + Math.sin(ang + a) * 0.15, c[2]];
-  return [hull([p(0), p(2.09), p(4.19), add(p(0), [0, 0, 0.04]), add(p(2.09), [0, 0, 0.04]), add(p(4.19), [0, 0, 0.04])], { color: rgb(190, 110, 255), diffuse: 0.7, emit: rgb(60, 20, 90), spec: 1, shine: 50 })];
+  return [
+    hull([p(0), p(2.09), p(4.19), add(p(0), [0, 0, 0.04]), add(p(2.09), [0, 0, 0.04]), add(p(4.19), [0, 0, 0.04])], {
+      color: rgb(230, 140, 255),
+      diffuse: 0.7,
+      emit: rgb(120, 40, 160),
+      spec: 1,
+      shine: 50,
+    }),
+  ];
 }
 
 /** A polygon bat: a black tetrahedron on two flapping triangle wings. */
 export function bat(f: number): Shape[] {
   const c: V = [0.5, 0.6, 0.45];
   const up = f ? 0.15 : -0.08;
-  const wing: Material = { color: rgb(70, 40, 110), diffuse: 0.8, spec: 0.8, shine: 40 };
-  const out: Shape[] = [gem(TETRA, c, 0.11, 0.8, rgb(40, 30, 60))];
+  // lit violet wings with a glow of their own, so a bat shows up on the darkest grid
+  const wing: Material = { color: rgb(205, 120, 255), diffuse: 0.8, spec: 0.9, shine: 40, emit: rgb(70, 30, 110) };
+  const out: Shape[] = [gem(TETRA, c, 0.11, 0.8, rgb(150, 110, 210))];
   for (const k of [-1, 1])
     out.push(hull([add(c, [k * 0.04, 0.02, 0]), add(c, [k * 0.04, -0.06, 0.02]), add(c, [k * 0.38, -0.02, up]), add(c, [k * 0.04, 0.02, 0.02])], wing));
   for (const k of [-1, 1]) out.push(new Sphere([c[0] + k * 0.035, c[1] + 0.09, c[2] + 0.02], 0.022, glow(rgb(255, 230, 60), 1.2)));
@@ -169,7 +229,13 @@ export function jaggy(f: number): Shape[] {
   for (const [i, j] of cells) {
     const x = 0.28 + i * step;
     const z = hop + j * step;
-    parts.push(new Sdf(around([x + step / 2, 0.62, z + step / 2], step / 2 + 0.01), (px, py, pz) => sd.box(px - x - step / 2, py - 0.62, pz - z - step / 2, step / 2, step / 2, step / 2, 0.015), [red]));
+    parts.push(
+      new Sdf(
+        around([x + step / 2, 0.62, z + step / 2], step / 2 + 0.01),
+        (px, py, pz) => sd.box(px - x - step / 2, py - 0.62, pz - z - step / 2, step / 2, step / 2, step / 2, 0.015),
+        [red],
+      ),
+    );
   }
   for (const k of [0, 1]) parts.push(new Sphere([0.37 + k * 0.1, 0.7, hop + 0.24], 0.035, { color: rgb(255, 255, 255), diffuse: 0.6, emit: rgb(80, 80, 80) }));
   for (const k of [0, 1]) parts.push(new Sphere([0.37 + k * 0.1, 0.73, hop + 0.24], 0.017, { color: rgb(0, 0, 0) }));
@@ -197,8 +263,12 @@ export function steam(f: number): Shape[] {
 /** Your shot: a ray of light. */
 export function shot(): Shape[] {
   return [
-    new Sdf(around([0.5, 0.5, 0.3], [0.4, 0.1, 0.1]), (x, y, z) => sd.capsule(x, y, z, [0.15, 0.5, 0.3], [0.85, 0.5, 0.3], 0.07, 0.05), [glow(rgb(255, 250, 190), 1.4)]),
-    new Sdf(around([0.5, 0.5, 0.3], [0.45, 0.12, 0.12]), (x, y, z) => sd.capsule(x, y, z, [0.1, 0.5, 0.3], [0.9, 0.5, 0.3], 0.025), [glow(rgb(255, 255, 255), 2)]),
+    new Sdf(around([0.5, 0.5, 0.3], [0.4, 0.1, 0.1]), (x, y, z) => sd.capsule(x, y, z, [0.15, 0.5, 0.3], [0.85, 0.5, 0.3], 0.07, 0.05), [
+      glow(rgb(255, 250, 190), 1.4),
+    ]),
+    new Sdf(around([0.5, 0.5, 0.3], [0.45, 0.12, 0.12]), (x, y, z) => sd.capsule(x, y, z, [0.1, 0.5, 0.3], [0.9, 0.5, 0.3], 0.025), [
+      glow(rgb(255, 255, 255), 2),
+    ]),
   ];
 }
 
@@ -254,7 +324,16 @@ export function teddy(f: number): Shape[] {
     { d: F.cap([0.59, 0.74 - legs, 0.12], [0.59, 0.76 - legs, 0.02], 0.045), mat: { color: white, diffuse: 1 } },
   ];
   if (f >= 2) parts.push({ d: F.ell([0.5, 0.88, 0.22], 0.03, 0.05, 0.015), mat: { color: rgb(240, 110, 130), diffuse: 1, spec: 0.6, shine: 30 } });
-  return [model(parts, [[0.2, 0.2, 0], [0.8, 0.98, 0.72]], 0.03)];
+  return [
+    model(
+      parts,
+      [
+        [0.2, 0.2, 0],
+        [0.8, 0.98, 0.72],
+      ],
+      0.03,
+    ),
+  ];
 }
 
 /** Gwinn: a lean chocolate pit-lab mix with amber eyes, floppy ears and a pink collar, sitting pretty. */
@@ -283,7 +362,16 @@ export function gwinn(f: number): Shape[] {
     { d: F.cap([0.58, 0.74, 0.18], [0.58, 0.77, 0.02], 0.04), mat: coatMat },
   ];
   if (f >= 2) parts.push({ d: F.ell([0.5, 0.88, 0.31], 0.03, 0.045, 0.014), mat: { color: rgb(240, 110, 130), diffuse: 1 } });
-  return [model(parts, [[0.2, 0.25, 0], [0.8, 0.98, 0.62]], 0.025)];
+  return [
+    model(
+      parts,
+      [
+        [0.2, 0.25, 0],
+        [0.8, 0.98, 0.62],
+      ],
+      0.025,
+    ),
+  ];
 }
 
 /** Doc Leo, hobo clown: grey fedora, navy corduroy jacket, purple shirt, green tie, red sneakers, and the rubber chicken on its leash. */
@@ -323,7 +411,16 @@ export function docLeo(f: number): Shape[] {
     { d: F.cyl([0.5, 0.6, 0.745], 0.15, 0.008, 0.004), mat: hat },
     { d: F.cyl([0.5, 0.6, 0.79], 0.085, 0.045, 0.02), mat: hat },
   ];
-  const out: Shape[] = [model(parts, [[0.28, 0.48, 0], [0.72, 0.78, 0.84]], 0.01)];
+  const out: Shape[] = [
+    model(
+      parts,
+      [
+        [0.28, 0.48, 0],
+        [0.72, 0.78, 0.84],
+      ],
+      0.01,
+    ),
+  ];
   // the rubber chicken on a red dog leash
   const ck: V = [0.8, 0.78, 0.07];
   out.push(

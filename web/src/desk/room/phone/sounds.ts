@@ -1,10 +1,11 @@
 // What you hear on the wall phone: the dial tone, touch-tones, ringing and busy signals,
 // the three rising tones before "the number you have reached is not in service", the
 // off-hook howler, answering machine and pager beeps, hold music, a modem screeching on
-// the line, and (out loud, in the room) the phone's bell and a fire engine's siren.
-import { output } from "../../../audio/output";
-import { audioContext, unlock } from "../../../audio/context";
-import { DTMF, Line } from "../../../retro/bbs/modem";
+// the line, a TTY's Baudot, and (out loud, in the room) the phone's bell and a fire engine's siren.
+import { output } from '../../../audio/output';
+import { audioContext, unlock } from '../../../audio/context';
+import { dataNoise, DTMF, Line } from '../../../retro/bbs/modem';
+import { baudotSeconds, encodeBaudot, playBaudot } from '../../../retro/bbs/baudot';
 
 let shared: AudioContext | undefined;
 
@@ -12,14 +13,14 @@ let shared: AudioContext | undefined;
 function audio(): AudioContext | undefined {
   try {
     shared ??= audioContext();
-    if (shared && shared.state !== "running") unlock();
+    if (shared && shared.state !== 'running') unlock();
     return shared;
   } catch {
     return undefined;
   }
 }
 
-/** Für Elise's opening, the hold music on every business line (note, beats). */
+/** Für Elise's opening (Beethoven, about 1810: public domain), the hold music on every business line (note, beats). */
 const FUR_ELISE: [number, number][] = [
   [76, 1],
   [75, 1],
@@ -79,7 +80,7 @@ export class PhoneSounds {
   }
 
   private line(): [Line, number] {
-    const l = new Line(this.ctx);
+    const l = new Line(this.ctx, output(this.ctx));
     this.now.push(l);
     return [l, this.ctx.currentTime + 0.03];
   }
@@ -105,7 +106,7 @@ export class PhoneSounds {
   key(k: string): void {
     const pair = DTMF[k];
     if (!pair) return;
-    const l = new Line(this.ctx);
+    const l = new Line(this.ctx, output(this.ctx));
     l.tones(pair, this.ctx.currentTime + 0.01, 0.15, 0.12);
     setTimeout(() => l.out.disconnect(), 400);
   }
@@ -133,8 +134,7 @@ export class PhoneSounds {
   /** The loud off-hook warning, when you leave the phone off the hook too long. */
   howler(): void {
     const [l, t] = this.line();
-    for (let i = 0; i < 300; i++)
-      l.tones([1400, 2060, 2450, 2600], t + i * 0.2, 0.1, 0.06);
+    for (let i = 0; i < 300; i++) l.tones([1400, 2060, 2450, 2600], t + i * 0.2, 0.1, 0.06);
   }
 
   /** An answering machine's beep: returns its length (s). */
@@ -179,14 +179,18 @@ export class PhoneSounds {
     return 7.6;
   }
 
-  /** Two modems talking, loud in your ear: returns its length (s). */
+  /** A TTY typing `text`: Baudot's two tones at 45.45 baud. Returns its length (s). */
+  tty(text: string): number {
+    const [l, t] = this.line();
+    const codes = encodeBaudot(text);
+    playBaudot(l, codes, t, 0.1);
+    return baudotSeconds(codes) + 0.05;
+  }
+
+  /** Two modems talking, loud in your ear, as they sound at the line's speed: returns its length (s). */
   modemNoise(): number {
     const [l, t] = this.line();
-    l.hiss(t, 2.8, 0.32, 1800);
-    l.fsk(1180, 980, t + 0.2, 1.2, 0.12);
-    l.fsk(1850, 1650, t + 1.1, 1.4, 0.12);
-    l.tones([600, 3000], t + 0.6, 0.3, 0.1);
-    l.tones([1800], t + 1.6, 0.4, 0.1);
+    dataNoise(l, t, 2.8, undefined, 0.32);
     return 2.9;
   }
 
@@ -231,11 +235,11 @@ export class PhoneSounds {
     g.gain.linearRampToValueAtTime(0.05, t + dur * 0.8);
     g.gain.linearRampToValueAtTime(0, t + dur);
     const lp = this.ctx.createBiquadFilter();
-    lp.type = "lowpass";
+    lp.type = 'lowpass';
     lp.frequency.value = 2200;
     lp.connect(g);
     const o = this.ctx.createOscillator();
-    o.type = "sawtooth";
+    o.type = 'sawtooth';
     o.frequency.value = 950;
     const sweep = this.ctx.createOscillator();
     sweep.frequency.value = 0.35;

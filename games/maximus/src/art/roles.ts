@@ -38,8 +38,29 @@ export type Biome =
 
 const r = (a: number, b: number, rnd: () => number) => a + (b - a) * rnd();
 
-/** A theme for a biome, varied by seed: hues drift so no two planets look alike. */
-export function themeFor(biome: Biome, seed: number): Theme {
+/** How much light each sector's skies keep (sector level 1..5): the outer sectors dim toward The Deep Black. */
+const SKY_LIGHT = [1, 1, 1, 1, 0.7, 0.3];
+
+/**
+ * A theme for a biome, varied by seed: hues drift so no two planets look alike. `level` is
+ * the sector's (1..5): the sky, its clouds and the far hills dim in the outer sectors, so The
+ * Deep Black is dark. Ground, caves and creature hides keep their light.
+ */
+export function themeFor(biome: Biome, seed: number, level = 0): Theme {
+  const t = biomeTheme(biome, seed);
+  const k = SKY_LIGHT[level] ?? 1;
+  if (k === 1) return t;
+  const dim = (c: RGB | undefined): RGB | undefined => c && [Math.round(c[0] * k), Math.round(c[1] * k), Math.round(c[2] * k)];
+  const out: Theme = { ...t };
+  for (const role of ['sky', 'cloud', 'far']) {
+    const [a, b, mid] = t[role];
+    // the top of the sky dims more than the horizon, so a faint glow stays low
+    out[role] = [dim(dim(a))!, dim(b)!, dim(mid)];
+  }
+  return out;
+}
+
+function biomeTheme(biome: Biome, seed: number): Theme {
   const rnd = rng(seed * 7919 + 13);
   const j = (h: number, d = 18) => h + r(-d, d, rnd);
   const ramp = (h: number, s = 0.55, dark = 0.08, light = 0.85, shift = 18) => hueRamp(j(h), s, dark, light, shift);

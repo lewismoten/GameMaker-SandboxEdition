@@ -61,12 +61,11 @@ export const STORY = [
 
 export const INSTRUCTIONS = [
   page([
-    'Get from the shepherds\' field',
+    "Get from the shepherds' field",
     'to the stable in Bethlehem',
     'and take your place in the',
     'line at the manger: third',
     'from the left.',
-    '',
     'ARROWS or W A S D walk; Q/E',
     'and keypad 1/3 go diagonally.',
     '',
@@ -76,6 +75,8 @@ export const INSTRUCTIONS = [
     'cabbages and figs your',
     'health. Rope, laundry, a',
     'sandal... a goat eats it all.',
+    'Out of breath? Lean on a well',
+    'or trough; sip when it glints.',
   ]),
   page([
     'SPACE: SCREAM the way you',
@@ -92,7 +93,7 @@ export const INSTRUCTIONS = [
     'B bleats for joy, C chews',
     'quietly. All night long.',
     '',
-    'Thorns, the shepherds\' fire,',
+    "Thorns, the shepherds' fire,",
     'camels and spit hurt.',
   ]),
   page([
@@ -102,8 +103,8 @@ export const INSTRUCTIONS = [
     'and frankincense are not for',
     'goats; wool is your gift. The',
     'empty place in the line takes',
-    'five.',
-    '',
+    'five. The line jostles: when',
+    'a neighbor leans in, wait.',
     'A goat bell is an extra life.',
     'Do not kick the pail.',
     '',
@@ -158,7 +159,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -211,9 +212,10 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for ${price}: you get
-  a tape of the song and a
-  hand-drawn goat. Send a check
-  (US funds) to:
+  a goat sticker (third from
+  the left) and a hand-drawn
+  goat. Send a check (US funds)
+  to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
@@ -223,7 +225,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

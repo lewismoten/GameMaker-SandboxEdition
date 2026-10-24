@@ -57,7 +57,10 @@ function soul(k: Kit, bg: Pixels, who: Soul, mood: 'need' | 'thanks' | 'glad'): 
   const face = (x: number, y: number, smile: boolean) => {
     blob(p, x, y, 2.6, 2.6, R('skin'), 1, 3);
     p.set(x - 1, y - 1, ink).set(x + 1, y - 1, ink);
-    if (smile) p.set(x - 1, y + 1, ink).set(x, y + 2, ink).set(x + 1, y + 1, ink);
+    if (smile)
+      p.set(x - 1, y + 1, ink)
+        .set(x, y + 2, ink)
+        .set(x + 1, y + 1, ink);
     else p.rect(x - 1, y + 1, 3, 1, c('skin', 0));
   };
   const coin = (x: number, y: number) => p.disc(x, y, 1.6, c('gold', 3)).set(x, y - 1, c('gold', 4));
@@ -126,7 +129,17 @@ function soul(k: Kit, bg: Pixels, who: Soul, mood: 'need' | 'thanks' | 'glad'): 
     else p.rect(12, 11, 5, 3, c('white', 2)).line(16, 9, 16, 13, c('steel', 3));
     if (happy) coin(armsUp ? 16 : 14, armsUp ? 3 : 10);
   }
-  if (mood === 'thanks') for (const [x, y] of [[2, 2], [18, 3], [17, 9]]) p.set(x, y, c('grace', 2)).set(x - 1, y, c('grace', 0)).set(x + 1, y, c('grace', 0)).set(x, y - 1, c('grace', 0)).set(x, y + 1, c('grace', 0));
+  if (mood === 'thanks')
+    for (const [x, y] of [
+      [2, 2],
+      [18, 3],
+      [17, 9],
+    ])
+      p.set(x, y, c('grace', 2))
+        .set(x - 1, y, c('grace', 0))
+        .set(x + 1, y, c('grace', 0))
+        .set(x, y - 1, c('grace', 0))
+        .set(x, y + 1, c('grace', 0));
   return p;
 }
 
@@ -147,7 +160,8 @@ export function addGate(k: Kit, stone: (seed: number) => Pixels, open: () => Pix
   // the needle's eye: a tall glowing slot with a steel rim
   for (let y = 2; y < 18; y++) {
     const w = Math.round(Math.sin(((y - 2) / 16) * Math.PI) * 3.4);
-    for (let x = 10 - w; x <= 10 + w; x++) g.set(x, y, Math.abs(x - 10) >= w - 0 && w > 0 ? c('steel', 3) : shadeAt(R('grace'), 0, 2, 1 - Math.abs(y - 10) / 9, x, y));
+    for (let x = 10 - w; x <= 10 + w; x++)
+      g.set(x, y, Math.abs(x - 10) >= w - 0 && w > 0 ? c('steel', 3) : shadeAt(R('grace'), 0, 2, 1 - Math.abs(y - 10) / 9, x, y));
   }
   micro(g, 2, 14, '1', c('grace', 2));
   k.book.add(name, g, { solid: SOLID, effect: GRACE, eamt: -1, score: 100, touch: `${name}Open` });
@@ -164,7 +178,17 @@ export function addGoodThings(k: Kit, bg: () => Pixels, suffix = ''): void {
   // a cluster of dates: points
   const dates = bg();
   dates.line(10, 1, 10, 6, c('leaf', 1));
-  for (const [x, y] of [[8, 8], [12, 8], [10, 11], [7, 12], [13, 12], [10, 15], [8, 15], [12, 15]]) blob(dates, x, y, 2, 2.4, R('wood'), 2, 4, 1.3);
+  for (const [x, y] of [
+    [8, 8],
+    [12, 8],
+    [10, 11],
+    [7, 12],
+    [13, 12],
+    [10, 15],
+    [8, 15],
+    [12, 15],
+  ])
+    blob(dates, x, y, 2, 2.4, R('wood'), 2, 4, 1.3);
   k.book.add(`dates${suffix}`, dates, { score: 50, hp: 5, touch: `bg${suffix}`, grav: GRAV.down });
   // a jar of water: health
   const jar = bg();

@@ -6,7 +6,7 @@ import { BlockSet, bevel, micro, shadeAt } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
-import { bomb, claw, cluster, eye, keyOf, mite, moth, slug, wasp } from '../sprites/sprites';
+import { bomb, claw, cluster, keyOf, mite, opcode, slug, spike } from '../sprites/sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function cpuArt(p: Pal): StageArt {
@@ -106,9 +106,10 @@ export function cpuTiles(bs: BlockSet, a: StageArt): void {
 
 export function cpuVirus(b: Bestiary, p: Pal): void {
   pics(b, 'mite', ...mite(keyOf(p, { main: 'virus', accent: 'gold' })));
-  pics(b, 'wasp', ...wasp(keyOf(p, { main: 'red', accent: 'slime' })));
-  pics(b, 'eye', ...eye(keyOf(p, { main: 'virus', accent: 'slime' })));
-  pics(b, 'moth', ...moth(keyOf(p, { main: 'slime', accent: 'virus' })));
+  // the CPU's own virus: Clock Spikes dive, Opcodes (two builds) fly the conga lines
+  pics(b, 'spike', ...spike(keyOf(p, { main: 'gold', accent: 'glow' })));
+  pics(b, 'op', ...opcode(keyOf(p, { main: 'virus', accent: 'slime' })));
+  pics(b, 'jmp', ...opcode(keyOf(p, { main: 'red', accent: 'gold' })));
   pics(b, 'slug', ...slug(keyOf(p, { main: 'red', accent: 'gold' })));
   const v = keyOf(p, { main: 'virus', accent: 'slime' });
   pics(b, 'bomb', ...bomb(v));

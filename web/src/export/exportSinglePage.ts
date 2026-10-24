@@ -13,6 +13,8 @@ export interface SinglePageOptions {
   gam: string;
   /** Where the Game-Maker: Sandbox Edition app is served from (its standalone.html is the template). */
   appBase?: string;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts). */
+  fiction?: string;
 }
 
 export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions): Promise<{ name: string; html: string }> {
@@ -26,5 +28,5 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   const entries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(entries);
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, entries);
-  return { name: `${id}.html`, html: fillPage(template, game, { blurb }) };
+  return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction }) };
 }

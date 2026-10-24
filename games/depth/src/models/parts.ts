@@ -51,22 +51,61 @@ export const around = (c: V, r: number | V): [V, V] => {
 
 /** Fields placed in the world. */
 export const F = {
-  sphere: (c: V, r: number): Field => (x, y, z) => sd.sphere(x - c[0], y - c[1], z - c[2], r),
-  ell: (c: V, a: number, b: number, h: number): Field => (x, y, z) => sd.ellipsoid(x - c[0], y - c[1], z - c[2], a, b, h),
-  cap: (a: V, b: V, ra: number, rb = ra): Field => (x, y, z) => sd.capsule(x, y, z, a, b, ra, rb),
-  box: (c: V, h: V, r = 0): Field => (x, y, z) => sd.box(x - c[0], y - c[1], z - c[2], h[0], h[1], h[2], r),
-  cyl: (c: V, r: number, h: number, round = 0): Field => (x, y, z) => sd.cylinder(x - c[0], y - c[1], z - c[2], r, h, round),
+  sphere:
+    (c: V, r: number): Field =>
+    (x, y, z) =>
+      sd.sphere(x - c[0], y - c[1], z - c[2], r),
+  ell:
+    (c: V, a: number, b: number, h: number): Field =>
+    (x, y, z) =>
+      sd.ellipsoid(x - c[0], y - c[1], z - c[2], a, b, h),
+  cap:
+    (a: V, b: V, ra: number, rb = ra): Field =>
+    (x, y, z) =>
+      sd.capsule(x, y, z, a, b, ra, rb),
+  box:
+    (c: V, h: V, r = 0): Field =>
+    (x, y, z) =>
+      sd.box(x - c[0], y - c[1], z - c[2], h[0], h[1], h[2], r),
+  cyl:
+    (c: V, r: number, h: number, round = 0): Field =>
+    (x, y, z) =>
+      sd.cylinder(x - c[0], y - c[1], z - c[2], r, h, round),
   /** A cylinder with its axis along x (wheels on a car seen from the side). */
-  wheel: (c: V, r: number, w: number, round = 0.01): Field => (x, y, z) => sd.cylinder(y - c[1], z - c[2], x - c[0], r, w, round),
-  wheelY: (c: V, r: number, w: number, round = 0.01): Field => (x, y, z) => sd.cylinder(x - c[0], z - c[2], y - c[1], r, w, round),
-  torus: (c: V, R: number, r: number): Field => (x, y, z) => sd.torus(x - c[0], y - c[1], z - c[2], R, r),
+  wheel:
+    (c: V, r: number, w: number, round = 0.01): Field =>
+    (x, y, z) =>
+      sd.cylinder(y - c[1], z - c[2], x - c[0], r, w, round),
+  wheelY:
+    (c: V, r: number, w: number, round = 0.01): Field =>
+    (x, y, z) =>
+      sd.cylinder(x - c[0], z - c[2], y - c[1], r, w, round),
+  torus:
+    (c: V, R: number, r: number): Field =>
+    (x, y, z) =>
+      sd.torus(x - c[0], y - c[1], z - c[2], R, r),
   /** A torus standing up, facing y (a handle, a ring seen from the front). */
-  torusY: (c: V, R: number, r: number): Field => (x, y, z) => sd.torus(x - c[0], z - c[2], y - c[1], R, r),
+  torusY:
+    (c: V, R: number, r: number): Field =>
+    (x, y, z) =>
+      sd.torus(x - c[0], z - c[2], y - c[1], R, r),
   /** A torus standing up, facing x. */
-  torusX: (c: V, R: number, r: number): Field => (x, y, z) => sd.torus(y - c[1], z - c[2], x - c[0], R, r),
-  union: (...f: Field[]): Field => (x, y, z) => Math.min(...f.map((g) => g(x, y, z))),
-  cut: (a: Field, b: Field): Field => (x, y, z) => Math.max(a(x, y, z), -b(x, y, z)),
-  and: (a: Field, b: Field): Field => (x, y, z) => Math.max(a(x, y, z), b(x, y, z)),
+  torusX:
+    (c: V, R: number, r: number): Field =>
+    (x, y, z) =>
+      sd.torus(y - c[1], z - c[2], x - c[0], R, r),
+  union:
+    (...f: Field[]): Field =>
+    (x, y, z) =>
+      Math.min(...f.map((g) => g(x, y, z))),
+  cut:
+    (a: Field, b: Field): Field =>
+    (x, y, z) =>
+      Math.max(a(x, y, z), -b(x, y, z)),
+  and:
+    (a: Field, b: Field): Field =>
+    (x, y, z) =>
+      Math.max(a(x, y, z), b(x, y, z)),
   /** Turned about z around a point. */
   yaw: (f: Field, c: V, a: number): Field => {
     const co = Math.cos(a);
@@ -78,5 +117,8 @@ export const F = {
     };
   },
   /** Mirrored left-right around x = c. */
-  mirrorX: (f: Field, c: number): Field => (x, y, z) => f(c + Math.abs(x - c), y, z),
+  mirrorX:
+    (f: Field, c: number): Field =>
+    (x, y, z) =>
+      f(c + Math.abs(x - c), y, z),
 };

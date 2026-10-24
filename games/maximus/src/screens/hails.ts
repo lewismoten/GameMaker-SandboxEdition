@@ -252,7 +252,7 @@ export const HAILS: Hail[] = [
     from: 'INCOMING HAIL',
     title: 'DOC LEO',
     sub: 'PhD COMEDIC SCIENCE',
-    text: "\"A hobo takes a job if one's offered. A tramp won't. Got a parcel, courier? My chicken and I will walk it over.\" He puts his red nose on and tips his hat.",
+    text: '"A hobo takes a job if one\'s offered. A tramp won\'t. Got a parcel, courier? My chicken and I will walk it over." He puts his red nose on and tips his hat.',
     art: drawLeo,
   },
 ];

@@ -211,14 +211,34 @@ export const FX: Record<string, Pixels> = {
     4,
   ),
   // CHOMP: a bite (two rows of teeth snapping shut).
-  chomp1: S(['.wwwwwwwwwwwwwwww...', '..w.w.w.w.w.w.w.....', '....................', '....................', '..w.w.w.w.w.w.w.....', '.wwwwwwwwwwwwwwww...'], 1, 7),
+  chomp1: S(
+    ['.wwwwwwwwwwwwwwww...', '..w.w.w.w.w.w.w.....', '....................', '....................', '..w.w.w.w.w.w.w.....', '.wwwwwwwwwwwwwwww...'],
+    1,
+    7,
+  ),
   chomp2: S(['.wwwwwwwwwwwwwwww...', '..w.w.w.w.w.w.w.....', '..w.w.w.w.w.w.w.....', '.wwwwwwwwwwwwwwww...'], 1, 8),
   // A big dig: clods of dirt flying out of a hole.
-  bigdig1: S(['..D.....E....D......', '....DD.....EE...D...', '.EE...DDDD....EE....', '...DDDDDDDDDDDD.....', '..DDEEDDDDDEEDDD....', '..DDDDDDDDDDDDDD....'], 1, 14),
-  bigdig2: S(['....E.....D.....E...', '.D.....DD....E......', '...EE..DDDD..DD..E..', '...DDDDDDDDDDDD.....', '..DDDDDEEDDDDDDD....', '..DDDDDDDDDDDDDD....'], 1, 14),
+  bigdig1: S(
+    ['..D.....E....D......', '....DD.....EE...D...', '.EE...DDDD....EE....', '...DDDDDDDDDDDD.....', '..DDEEDDDDDEEDDD....', '..DDDDDDDDDDDDDD....'],
+    1,
+    14,
+  ),
+  bigdig2: S(
+    ['....E.....D.....E...', '.D.....DD....E......', '...EE..DDDD..DD..E..', '...DDDDDDDDDDDD.....', '..DDDDDEEDDDDDDD....', '..DDDDDDDDDDDDDD....'],
+    1,
+    14,
+  ),
   // Zoomies: a dust devil left behind a brown blur.
-  zoom1: S(['.......ddd..........', '....dddssdd.........', '..ddssssssddd.......', '.dsssssssssssdd.....', 'dssssssssssssssd....', '.ddddddddddddddd....'], 2, 14),
-  zoom2: S(['........dd..........', '.....ddssddd........', '...ddsssssssdd......', '..dssssssssssssd....', '.dsssssssssssssd....', '..dddddddddddddd....'], 2, 14),
+  zoom1: S(
+    ['.......ddd..........', '....dddssdd.........', '..ddssssssddd.......', '.dsssssssssssdd.....', 'dssssssssssssssd....', '.ddddddddddddddd....'],
+    2,
+    14,
+  ),
+  zoom2: S(
+    ['........dd..........', '.....ddssddd........', '...ddsssssssdd......', '..dssssssssssssd....', '.dsssssssssssssd....', '..dddddddddddddd....'],
+    2,
+    14,
+  ),
   // Gwinn's sit: a puff of "almost".
   almost1: S(['...ss....ss...', '..ssss..ssss..', '...ss....ss...'], 3, 15),
   almost2: S(['..s.......s...', '.ss.ss..ss.ss.', '..s.......s...'], 3, 15),

@@ -7,5 +7,7 @@
   "price": "$5",
   "blurb": "You take your girlfriend's kid, Lily (eight, a unicorn hoodie, a caramel apple as big as her head), to a haunted house. The sign says MILD SCARES FOR ALL AGES. She is not scared. You are. Scream at the fog machines, tackle a papier-mache witch (\"GET DOWN!\") and say sorry, strategically reposition away from the guy in the werewolf mask through a wall of fake spiderwebs, buy the $12 souvenir sword, defend yourself from an 11-year-old in a cardboard knight costume, and bond with the emergency exit sign. Lily gets the Bravery Badge. Shareware from The Sofa BBS, from the song by The Bard of Bizarre (lyrics shaped by ChatGPT from Lewis Moten's prompts; music made with Riffusion, now Google Flow Music; title and cover art drawn for the game by Claude Opus 5.5).",
   "exe": "SMIRKED.EXE",
-  "sound": "sb"
+  "sound": "sb",
+  "tinHeart": { "map": "parade.map", "at": [3, 3] },
+  "easterEgg": { "map": "webs.map", "at": [34, 3] }
 }

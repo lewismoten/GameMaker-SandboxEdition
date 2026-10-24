@@ -8,14 +8,16 @@ the diagonals.
 
 SPACE: "GET DOWN!" You tackle
 what is in front of you.
-Zombies and witches go over.
-Bats, ghosts and the werewolf
-guy do not: just walk away.
-B screams. C asks Lily if it
-is real.
+Zombies and witches go over;
+the werewolf guy sits down a
+moment. Bats and ghosts: walk
+away. B screams. C asks Lily
+if it is real.
 
 THE FOG HALL: fog machines
-hiss on and off. Find
+hiss on and off (a red light
+warns first; each one gets
+you once, then runs dry). Find
 4 batteries for the
 flashlight: the door to the
 dark hallway needs them.
@@ -28,13 +30,12 @@ open the STAFF ONLY door.
 THE WOODS: fake webs make you
 sneeze. Collect dollars: the
 souvenir sword is $12.
-
-
 THE LAST HALL: the foam sword
 knocks the cardboard knight's
-helmet off. The emergency
-exit only opens for it.
-
+helmet off. He grabs it back
+once and comes on quicker:
+knock it off again. The exit
+only opens for the helmet.
 NERVE is your health. Scares
 cost nerve, and every scare
 makes Lily smirk (F2 counts

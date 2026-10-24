@@ -7,6 +7,7 @@ import { textBytes } from '../formats/binary';
 import { parseGame } from '../formats/game';
 import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
 import { parseSoundSet } from '../formats/sound';
+import { recordedAudioNotice, recordedClips } from './recordedAudio';
 
 export interface DosExportOptions {
   title: string;
@@ -18,7 +19,8 @@ export interface DosExportOptions {
 /** DOS 8.3 names that FAT and Game-Maker accept. */
 const DOS_NAME = /^[A-Z0-9_\-~!@#$%^&()]{1,8}(\.[A-Z0-9_\-~!@#$%^&()]{1,3})?$/;
 // Our saved games are JSON, which DOS Game-Maker can't read; SAVNAMES.DAT lists them.
-const WEB_ONLY = /^(game\d\.sav|savnames\.dat)$/i;
+// A .gmx is the editor's companion (project/companion.ts), never one of the game's files.
+const WEB_ONLY = /^(game\d\.sav|savnames\.dat|.*\.gmx)$/i;
 
 export function dosNameProblems(names: string[]): string[] {
   return names.filter((n) => !DOS_NAME.test(n.toUpperCase()));
@@ -92,12 +94,16 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     // Playgame shows its sound/video setup screen when run with "config".
     { name: 'CONFIG.BAT', data: textBytes(`@ECHO OFF\r\n${stem} config\r\n`) },
     ...stored.map((n) => ({ name: (renamed.get(n) ?? n).toUpperCase(), data: files.get(n)! })),
-    { name: 'README.TXT', data: textBytes(readme(opts.title, stem).replace(/\n/g, '\r\n')) },
+    // (beside the game's own README.TXT, if it has one, under another name)
+    {
+      name: names.some((n) => n.toUpperCase() === 'README.TXT') ? 'PLAYER.TXT' : 'README.TXT',
+      data: textBytes(readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  ')).replace(/\n/g, '\r\n')),
+    },
   ];
   return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries), exe };
 }
 
-function readme(title: string, stem: string): string {
+function readme(title: string, stem: string, audio?: string): string {
   return `${title}
 ${'='.repeat(title.length)}
 
@@ -120,5 +126,41 @@ Keys
 
 Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: Sandbox Edition
 (a modified fork of RSD Game-Maker 3.0: https://github.com/lewismoten/GameMaker-SandboxEdition).
-`;
+
+Notices
+  ${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD.
+  Game-Maker's source code was released under the MIT License:
+
+${MIT_NOTICE}
+
+  ${stem}.EXE also holds Borland C++'s run-time library (Copyright 1991 Borland
+  Intl.) and Creative's Sound Blaster FM music functions (Copyright (c) Creative
+  Technology Pte Ltd, 1990), which it was built with. SNDBLAST.DRV is Creative's
+  Sound Blaster voice driver (Copyright (c) Creative Technology Pte Ltd.,
+  1989-1990. All rights reserved), included as Game-Maker's Transfer utility
+  included it with every game. These parts are their owners' and are not
+  covered by the MIT License. Sound Blaster is a trademark of Creative
+  Technology Ltd.
+${audio ? `\n${audio}\n` : ''}`;
 }
+
+/** Game-Maker's MIT License, as Andy Stone released the source (LICENSE). */
+const MIT_NOTICE = `  Copyright (c) 2014 gandrewstone
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.`;

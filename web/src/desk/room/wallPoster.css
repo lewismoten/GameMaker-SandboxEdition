@@ -1,10 +1,15 @@
-/* A game's poster or fold-out map, pinned to the wall between the poster and the monitor (desk/room/wallPoster.ts). */
+/* A game's poster or fold-out map, pinned to the wall in the black-light poster's place
+   (desk/room/wallPoster.ts): as big as fits in that frame, its shape kept, centered in it. */
 .wall-poster {
   position: absolute;
-  left: 300px;
-  top: 34px;
+  left: 216px;
+  top: 30px;
   z-index: 0;
-  width: 156px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 200px;
+  height: 204px;
   margin: 0;
   transform: rotate(var(--tilt, 1deg));
   transform-origin: 50% 0;
@@ -12,18 +17,24 @@
   pointer-events: none;
 }
 
+.wall-poster .wp-sheet {
+  position: relative;
+  display: block;
+}
+
 .wall-poster img {
   display: block;
-  width: 100%;
+  max-width: 200px;
+  max-height: 204px;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.12),
     5px 8px 14px rgba(0, 0, 0, 0.5);
   image-rendering: pixelated;
 }
 
-/* thumbtacks */
-.wall-poster::before,
-.wall-poster::after {
+/* thumbtacks, in the sheet's top corners */
+.wall-poster .wp-sheet::before,
+.wall-poster .wp-sheet::after {
   content: '';
   position: absolute;
   top: -3px;
@@ -34,16 +45,16 @@
   box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
-.wall-poster::before {
+.wall-poster .wp-sheet::before {
   left: 5px;
 }
 
-.wall-poster::after {
+.wall-poster .wp-sheet::after {
   right: 5px;
 }
 
-.wall-poster.fold-out::before,
-.wall-poster.fold-out::after {
+.wall-poster.fold-out .wp-sheet::before,
+.wall-poster.fold-out .wp-sheet::after {
   background: radial-gradient(circle at 35% 35%, #fff59d, #f9a825 60%, #7a4f00);
 }
 

@@ -8,6 +8,8 @@
   "exe": "YEAR2000.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
+  "tinHeart": { "map": "mall.map", "at": [42, 1] },
+  "easterEgg": { "map": "exchange.map", "at": [46, 9] },
   "label": {
     "background": "#fdf6ff",
     "band": "#d0208a",

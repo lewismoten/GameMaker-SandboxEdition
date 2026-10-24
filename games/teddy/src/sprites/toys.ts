@@ -32,7 +32,8 @@ export function wobbleBall(turn: number, tilt = 0, r = 5.5): Pixels {
   }
   // the shine
   p.set(Math.round(cx - r * 0.45), Math.round(cy - r * 0.5), c('fur', 2));
-  if (r > 4) p.set(Math.round(cx - r * 0.45) + 1, Math.round(cy - r * 0.5), c('green', 2)).set(Math.round(cx - r * 0.45), Math.round(cy - r * 0.5) + 1, c('green', 2));
+  if (r > 4)
+    p.set(Math.round(cx - r * 0.45) + 1, Math.round(cy - r * 0.5), c('green', 2)).set(Math.round(cx - r * 0.45), Math.round(cy - r * 0.5) + 1, c('green', 2));
   const out = outline(p, c('ink', 0));
   if (!tilt) return out;
   // leaning: shear each row toward the tilt, more at the top
@@ -51,8 +52,16 @@ export function wobbleBall(turn: number, tilt = 0, r = 5.5): Pixels {
 function giggle(p: Pixels, x: number, y: number, side: number): void {
   const y0 = c('yellow', 3);
   const y1 = c('yellow', 2);
-  if (side <= 0) p.set(x - 2, y, y0).set(x - 3, y + 1, y0).set(x - 3, y + 2, y1).set(x - 2, y + 3, y0);
-  if (side >= 0) p.set(x + 2, y, y0).set(x + 3, y + 1, y0).set(x + 3, y + 2, y1).set(x + 2, y + 3, y0);
+  if (side <= 0)
+    p.set(x - 2, y, y0)
+      .set(x - 3, y + 1, y0)
+      .set(x - 3, y + 2, y1)
+      .set(x - 2, y + 3, y0);
+  if (side >= 0)
+    p.set(x + 2, y, y0)
+      .set(x + 3, y + 1, y0)
+      .set(x + 3, y + 2, y1)
+      .set(x + 2, y + 3, y0);
 }
 
 /** A 20x20 block with the ball sitting on its bottom edge. */

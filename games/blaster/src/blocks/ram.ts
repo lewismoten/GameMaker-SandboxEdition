@@ -106,7 +106,12 @@ export function ramTiles(bs: BlockSet, a: StageArt): void {
   const p = a.pal;
   const tin = { ink: p.c('ink', 0), tin: [p.c('steel', 2), p.c('steel', 4), p.c('steel', 6)], white: p.c('grey', 7), dark: p.c('steel', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    bs.add(`tinHeart${k || ''}`, drawTinHeart(pad(a), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 40, touch: 'pad', scorePts: 500 });
+    bs.add(`tinHeart${k || ''}`, drawTinHeart(pad(a), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 40,
+      touch: 'pad',
+      scorePts: 500,
+    });
   // a cameo from A Fly Named Carl: the bug in the memory, found at last (plain floor, two blocks)
   bs.add('carlBug', carlBug(a, 0), { next: 'carlBugZap', ntime: 30 });
   bs.add('carlBugZap', carlBug(a, 1), { next: 'carlBug', ntime: 4 });
@@ -124,13 +129,27 @@ function carlBug(a: StageArt, zap: number): Pixels {
   // the contact he's sitting on
   t.rect(4, 17, 12, 2, p.c('trim', 3)).rect(4, 18, 12, 1, p.c('trim', 1));
   const fly = carlPic(
-    { ink: p.c('ink', 0), fly: [p.c('steel', 0), p.c('steel', 1), p.c('steel', 2), p.c('steel', 3), p.c('steel', 4)], eye: [p.c('red', 0), p.c('red', 1), p.c('red', 2), p.c('red', 3)], wing: [p.c('grey', 5), p.c('grey', 6), p.c('grey', 7)], white: p.c('grey', 7), red: p.c('red', 2) },
+    {
+      ink: p.c('ink', 0),
+      fly: [p.c('steel', 0), p.c('steel', 1), p.c('steel', 2), p.c('steel', 3), p.c('steel', 4)],
+      eye: [p.c('red', 0), p.c('red', 1), p.c('red', 2), p.c('red', 3)],
+      wing: [p.c('grey', 5), p.c('grey', 6), p.c('grey', 7)],
+      white: p.c('grey', 7),
+      red: p.c('red', 2),
+    },
     { view: 'front', wing: zap, mood: zap ? 'grin' : 'smug' },
   );
   t.blit(fly, 0, -1, CLEAR);
   if (zap)
     for (const [x, y] of [
-      [2, 15], [1, 13], [3, 12], [17, 15], [18, 13], [16, 12], [0, 16], [19, 16],
+      [2, 15],
+      [1, 13],
+      [3, 12],
+      [17, 15],
+      [18, 13],
+      [16, 12],
+      [0, 16],
+      [19, 16],
     ] as [number, number][])
       t.set(x, y, (x + y) % 2 ? p.c('gold', 4) : p.c('cyan', 5));
   return t;

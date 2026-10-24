@@ -6,10 +6,14 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   simulated DOS PC running the ported designers; no DOS or x86 code runs) or **today's web** interface
   (`editor/`), whichever the visitor used last (`localStorage` `gm-ui`).
   [`urlState.ts`](urlState.ts) keeps the place in the hash (`#/`, `#/game/cd:nebula`,
-  `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/mac`, `#/windows`,
+  `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/credits`, `#/mac`, `#/windows`,
   `#/linux`, `#/desk`), so a reload or a shared
   link comes back to it; [`seo/route.ts`](seo/route.ts) keeps the page's title and share
   tags in step with what is on screen.
+- `dos.html` → [`dosPage/dosPage.ts`](dosPage/dosPage.ts): DOS Game-Maker, the desk's PC on
+  its own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`). It loads no
+  desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the site lead to it.
+  [`viewSwitch.ts`](viewSwitch.ts) is the Desk | DOS | Web switch in all three headers.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
   (`?game=<id>`, `?project=<id>`, or the game bundled in an exported web app). Each
   bundled game also has its own copy of the page, `play-<id>.html` (made at build time,
@@ -25,19 +29,21 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`formats/`](formats) | Readers and writers for every Game-Maker file (`.gam .pal .bbl/.mbl/.cbl .chr .mon .map .snd .his .rec .bkd .lst .txt`) and the standard ones it uses (`.gif .fli .cmf .voc`). Borland C++ 16-bit layout: `int` is 2 bytes, structs are byte-packed. `cmfSong.ts`/`cmfEdit.ts`/`cmfPreview.ts` are the music editor's model of a CMF song. |
 | [`engine/`](engine) | The game engine, a TypeScript port of `PLAYGAME.C`: `game.ts` (`DoGame`), `scene.ts` (`playscene`), `character.ts`, `monsters.ts`, `scroll.ts`, `world.ts`, menus, function keys, recordings and the "machine" (screen, keyboard, timers). |
 | [`audio/`](audio) | `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV calls), the AudioWorklet, Web Audio output, PC speaker sound sets and sample editing. |
-| [`gfx/`](gfx), [`input/`](input) | The mode 13h screen and 8×8 font; keyboard scan codes and the gamepad. |
+| [`gfx/`](gfx), [`input/`](input) | The mode 13h screen and 8×8 font, and game screenshots drawn from a game's maps (`gameShots.ts`, `sandboxShots.ts`); keyboard scan codes and the gamepad. |
 | [`player/`](player) | The embeddable player: canvas, start overlay, whole-pixel scaling, touch controls. Used by `play.ts`, the editor's play test, the desk and exports. |
 | [`project/`](project) | A game's files (`GameFiles`, 8.3 names, the CD catalog), streaming a hosted game (`streamGame.ts`), the secret games (`secretGames.ts`, `catalogWatch.ts`), IndexedDB storage, zip, the health check, importing an exported page. |
 | [`export/`](export) | Publishing a game: as an offline web app, a single web page, or a DOS folder with PLAYGAME; plus the service worker. The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`), `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`). |
 | [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp) | The `#/mac`, `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it does, removing it. |
 | [`cast/`](cast) | The Cast page (`#/cast`): the regulars of the new games on a stage, walking with their own sprites, and the games each appears in (`cameos.json` for new cameos). |
+| [`credits/`](credits) | The Credits page (`#/credits`): the npm packages (`deps.json`, written from the lockfile by `scripts/credits.ts`), the third-party pieces, who the original source credits for each part of RSD Game-Maker, the games' authors, the AI tools and the people, and The Bard of Bizarre's table of who made what. Tests check each against the lockfile, `code/` and the games' credits. |
 | [`saves/`](saves) | The home page's "Saves & scores" panel: a game's saved games (with a map of the saved level) and high scores. |
 | [`media/`](media) | Demo playback (`.REC`), previews, demos added for CD games, the attract mode and the demos' sound choice; saving the screen as video (MP4), animated GIF or WAV. |
 | [`walkthrough/`](walkthrough) | A Sandbox game's walkthrough: played on the real engine, deterministically, in a player with chapters, and rendered to an MP4 with its soundtrack. |
 | [`eggs/`](eggs) | The felt eggs hidden in the Sandbox games: which are found (`eggState.ts`, from saved games), the shadow box on the desk, its viewer, and `EGG.EXE`. |
 | [`editor/`](editor) | Today's web interface (see below). |
-| [`desk/`](desk) | The 1994 desk: `desk.ts` lays out the scene (`stage.ts` scales it to the window); `pc/` the case, CRT, keyboard, mouse tray, modem, speakers with the Sound Blaster switch, and capture card; `boxes/` the retail boxes and shelf; `disks/` the disk box; `mug/` the BBS mug; `room/` the window, poster, clipping, clock, door, the wall phone (`room/phone/`) and props. |
-| [`retro/`](retro) | What runs on the desk's PC: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
+| [`desk/`](desk) | The 1994 desk: `desk.ts` lays out the scene (`stage.ts` scales it to the window); `pc/` the case, CRT, keyboard, mouse tray, modem (click its speed to pick the line speed), speakers with the Sound Blaster switch, and capture card; `boxes/` the retail boxes and shelf; `disks/` the disk box; `mug/` the BBS mug; `room/` the window, poster, clipping, clock, door, the wall phone (`room/phone/`) and props. |
+| [`dosPage/`](dosPage) | DOS Game-Maker (`dos.html`): the PC's page with its one-row bar and ⋯ menu (`moreMenu.ts`), disk menu (`diskMenu.ts`), and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line. |
+| [`retro/`](retro) | The PC, shared by the desk and `dos.html`, importing nothing from `desk/` (the page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its picture; `gmReg/regSide.ts` puts the Owner's Guide and registration card beside its monitor for the copy check). What runs on it: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound; `lineSpeed.ts` is the modem's speed, 300 baud to Unlimited, `pacedQueue.ts` sends the boards' text and `transfer.ts` their files at it, and `lineSpeedControls.ts` picks it on the desk's modem and in `dos.html`'s ⋯ menu); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
 | [`vga/`](vga) | Game-Maker's eight designers ported from their C source (PALCHOS, BLOCEDIT, MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR). One file per `.EXE` at the top (each exports `program`); a large designer's parts are in a folder of the same name, and `shared/` has the VGA screen, block routines and Game-Maker's look. |
 | [`manual/`](manual) | The Owner's Guide (desk), the web Guide, and each original game's printed manual and box contents (`printables/`). |
 | [`seo/`](seo) | Page titles, descriptions and JSON-LD for the site and its game pages. |
@@ -51,6 +57,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | `widgets/` | Shared pieces: file picker, block chooser, thumbnails, previews, waveform, roving grid, and the game-accurate graphic previews used by the media editors. |
 | `editors/` | One folder per file kind, each with its `.ts`, `.css` and helpers (a big editor's parts, such as the integrator's board camera and input, sit beside it). `registry.ts` maps a file kind to its editor; `all.ts` imports every editor so it registers itself. |
 | `tools/` | Ways to make files beyond "new": importing pictures, composing songs, recording or synthesizing samples, speaker effects, textures. `makers.ts` is their registry, offered by the file picker. |
+| `check/` | The level check and the walkthrough bot, with no DOM: `sim.ts` plays a scene on the engine's own calls with small snapshots, `explore.ts` tries every move (`inputs.ts`, `drive.ts`) from every resting place for the heat map, `stuck.ts` finds places with no way out, `checks/` the file checks (hazard art, opposites, waits, density, contrast, sounds, keys…), `report.ts` gathers findings (`findings.ts`: each with why players mind and its section of The Ultimate Owner's Guide), `generators/` the one-click fixes and the maze maker, `walk/` the walkthrough bot (`autoWalk.ts`, checked on the engine by `verify.ts`). Both run in Web Workers (`worker.ts`, `walk/walkWorker.ts`). The map editor's Level check panel is `editors/map/check/`; the badges, the Before You Upload checklist and Make a walkthrough are in `widgets/`. |
 | `keymap/` | Working out which keys a game uses (`keyMap.ts`, also behind the desk's key card) and the ⌨ Keys dialog (also shown by the player). |
 
 ## Main flows
@@ -60,10 +67,14 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 editors (`editor/editors/all.ts`) only when a game is opened, so each interface is its own
 download. `offline.ts` registers the service worker (`siteWorker.ts`), which precaches only
 the app shell and caches games as they are used; a new deploy waits for the visitor to say
-"Reload". Game files go through `fetchGameFile` (`project/files.ts`), which shares each
-request. Lists load `games/catalog.json` (`loadCatalogList`), and a game's notice, manual and
+"Reload". A hosted game comes in one request: its pack (`<id>.<hash>.gmpak`, all its files
+gzipped in play order, `project/gamePack.ts`), read as it arrives so play starts once the
+.gam is in (`loadHostedGame`, `streamHostedGame`). Single files go through `fetchGameFile`
+(`project/files.ts`), which shares each request and reads from a pack already at hand. The
+build also puts in the catalog what pages would otherwise fetch files to work out (the
+quick health check, a box's captions). Lists load `games/catalog.json` (`loadCatalogList`), and a game's notice, manual and
 printables come from `games/details/<id>.json` when it is opened (`withDetails`); pictures of
-listed games are prebuilt in `games/shots/` (`gfx/levelPicture.ts`). `main.ts` starts one or
+listed games are prebuilt in `games/shots/` (`gfx/levelPicture.ts`; the tiles' title screens, `gfx/titlePicture.ts`). `main.ts` starts one or
 the other and switches between them;
 the desk's PC can also open today's editors full screen on its monitor
 (`retro/computer.ts` `openEditor`, through the same editor registry).

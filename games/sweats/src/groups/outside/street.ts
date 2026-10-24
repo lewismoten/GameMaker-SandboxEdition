@@ -10,6 +10,9 @@ import { AIR, BlockBook, GRAV, LEDGE, SOLID, drawCoin, loot, spotlight } from '.
 import { T, type SpriteBook } from '../../common/sprites';
 import { MONEY } from '../../ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 export const OUTSIDE_RAMPS: Ramp[] = [
   ['asphalt', 3, [36, 36, 44], [112, 112, 122]],
   ['concrete', 3, [112, 106, 98], [214, 208, 196]],
@@ -50,7 +53,17 @@ export function skylineAt(pal: Pal, seed: number): Pixels {
   p.rect(0, 9, 7, 11, far).rect(7, 14, 6, 6, far).rect(13, 6, 5, 14, far).rect(18, 11, 2, 9, far);
   p.line(15, 2, 15, 6, far).rect(14, 3, 3, 1, far);
   p.rect(8, 10, 4, 2, far).rect(9, 12, 1, 2, far).rect(11, 12, 1, 2, far);
-  for (const [x, y] of [[2, 12], [4, 12], [2, 16], [14, 9], [16, 9], [14, 13], [16, 17], [9, 17]]) p.set(x, y, win);
+  for (const [x, y] of [
+    [2, 12],
+    [4, 12],
+    [2, 16],
+    [14, 9],
+    [16, 9],
+    [14, 13],
+    [16, 17],
+    [9, 17],
+  ])
+    p.set(x, y, win);
   return p;
 }
 
@@ -60,7 +73,18 @@ export function townAt(pal: Pal, seed: number): Pixels {
   const p = new Pixels(20, 20, c('sky', 2));
   const r = rng(seed);
   p.rect(7, 0, 6, 12, c('sky', 1)).rect(18, 0, 2, 12, c('sky', 1));
-  for (const [x, y] of [[2, 2], [4, 2], [2, 6], [14, 1], [16, 1], [14, 5], [16, 5], [9, 3], [11, 3]]) p.rect(x, y, 1, 2, c('sky', 3));
+  for (const [x, y] of [
+    [2, 2],
+    [4, 2],
+    [2, 6],
+    [14, 1],
+    [16, 1],
+    [14, 5],
+    [16, 5],
+    [9, 3],
+    [11, 3],
+  ])
+    p.rect(x, y, 1, 2, c('sky', 3));
   for (let x = -2; x < 22; x += 5) blob(p, x + 2, 15, 3.6, 3.4, pal.r('green'), 0, 3);
   p.rect(0, 17, 20, 3, c('green', 0));
   for (let i = 0; i < 8; i++) p.set(Math.floor(r() * 20), 12 + Math.floor(r() * 6), c('green', 2));
@@ -76,15 +100,23 @@ export function coinOn(book: BlockBook, pal: Pal, bg: string): void {
 
 export function buildStreet(book: BlockBook, pal: Pal): void {
   const c = pal.c;
-  book.add('soil', (() => {
-    const p = new Pixels(20, 20, c('soil', 1));
-    const r = rng(40);
-    for (let i = 0; i < 40; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('soil', r() < 0.5 ? 0 : 2));
-    return p;
-  })(), { solid: SOLID });
+  book.add(
+    'soil',
+    (() => {
+      const p = new Pixels(20, 20, c('soil', 1));
+      const r = rng(40);
+      for (let i = 0; i < 40; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('soil', r() < 0.5 ? 0 : 2));
+      return p;
+    })(),
+    { solid: SOLID },
+  );
   book.add('skyHi', skyAt(pal, 41, 2), AIR);
   book.add('sky', skyAt(pal, 42, 3), AIR);
-  book.add('skyMid', skyAt(pal, 48, 2).map((x, y, v) => (y > 4 && ((x * 7 + y * 3) % 16) < (y - 4) ? c('sky', 3) : v)), AIR);
+  book.add(
+    'skyMid',
+    skyAt(pal, 48, 2).map((x, y, v) => (y > 4 && (x * 7 + y * 3) % 16 < y - 4 ? c('sky', 3) : v)),
+    AIR,
+  );
   book.add('skyline', skylineAt(pal, 43), AIR);
   book.add('town', townAt(pal, 44), AIR);
   // the sidewalk: slabs of concrete with their seams and the curb's lip
@@ -113,7 +145,7 @@ export function buildStreet(book: BlockBook, pal: Pal): void {
   book.add('calmTown', townAt(pal, 44), { grav: GRAV.down, next: 'gustTown', ntime: GUST_OFF });
   book.add('gustTown', streaks(townAt(pal, 44), 1), { grav: blow, next: 'calmTown', ntime: GUST_ON });
   // tips along the sidewalk, a coin up in the air, the spotlight on the pavement
-  loot(book, pal, 'town');
+  loot(book, pal, 'town', LATE);
   coinOn(book, pal, 'sky');
   spotlight(book, pal, 'town');
 }

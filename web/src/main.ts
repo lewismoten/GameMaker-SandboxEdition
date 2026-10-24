@@ -11,6 +11,7 @@ import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
 import { themeButton } from './theme';
+import { viewSwitch } from './viewSwitch';
 import { parseHash } from './urlState';
 
 const modernUi = () => import('./modernUi');
@@ -43,7 +44,16 @@ function rememberUi(next: Ui): void {
 
 // ---- the 90s desk ---------------------------------------------------------------------
 
-async function startDesk(): Promise<void> {
+/** What today's web shows (a catalog game cd:<id>, or your own project:<id>), for the view switch. */
+function webShowing(): string | undefined {
+  const [kind, id] = parseHash(location.hash).path;
+  if (kind === 'game' && id?.startsWith('cd:')) return id;
+  if (kind === 'p' && id) return `project:${id}`;
+  return undefined;
+}
+
+/** The desk; `hash` (#/desk?disk=…) says what to put in its drive. */
+async function startDesk(hash?: string): Promise<void> {
   ui = 'desk';
   rememberUi('desk');
   document.documentElement.dataset.ui = 'desk'; // the page background (index.html)
@@ -52,16 +62,18 @@ async function startDesk(): Promise<void> {
   workspace = undefined;
   document.title = 'Game-Maker 1994';
   // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
-  const deskHash = parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk';
+  const deskHash = hash ?? (parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk');
   history.replaceState(null, '', location.pathname + location.search + deskHash);
   const { renderDesk } = await import('./desk/desk');
   if (ui !== 'desk') return;
+  const toModern = (hash: string) => {
+    disposeDesk?.();
+    disposeDesk = undefined;
+    startModern(hash);
+  };
   disposeDesk = renderDesk(app, {
-    toModern: (projectId, file) => {
-      disposeDesk?.();
-      disposeDesk = undefined;
-      startModern(projectId ? `#/p/${projectId}${file ? `/${encodeURIComponent(file)}` : ''}` : '#/');
-    },
+    toModern: (projectId, file) => toModern(projectId ? `#/p/${projectId}${file ? `/${encodeURIComponent(file)}` : ''}` : '#/'),
+    toModernAt: toModern,
   });
 }
 
@@ -81,29 +93,44 @@ function startModern(hash?: string): void {
       h('a', { href: '#/', title: FORK_NOTE }, h('span', { class: 'brand-title' }, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
-      h('a', { class: 'hide-narrow', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
-      h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
-      themeButton(),
+      h(
+        'nav',
+        { class: 'topbar-nav', 'aria-label': 'Site pages' },
+        h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
+        h(
+          'a',
+          { class: 'hide-narrow nav-link', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' },
+          'Achievements',
+        ),
+        h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
+        h('a', { class: 'nav-link', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
+      ),
       h(
         'button',
-        { class: 'hide-narrow', onclick: () => void startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
-        h('span', { 'aria-hidden': 'true' }, '💾'),
-        ' 1994 desk',
+        { class: 'hide-narrow topbar-offline', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
+        h('span', { 'aria-hidden': 'true' }, '⤓'),
+        ' Offline',
       ),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones: the cast, the desk and the source in a small menu, so the header stays one tidy row
+      // phones and tablets: the cast, achievements, the credits, offline and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the cast, the 1994 desk and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the cast, achievements, the credits, playing offline and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
           h('a', { href: '#/cast' }, '🎭 The cast'),
-          h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
+          h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
+          h('a', { href: '#/credits' }, '📜 Credits'),
+          h('button', { onclick: openOffline }, '⤓ Play offline'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
       ),
+      // Desk | DOS | Web, at the top right in every view, the theme button after it; the game in
+      // front of you comes along (viewSwitch.ts)
+      viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
+      themeButton(),
     ),
     content,
   );
@@ -112,6 +139,9 @@ function startModern(hash?: string): void {
 }
 
 const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
+
+/** "Play offline": the whole site downloaded on request (offline/offlineDialog.ts). */
+const openOffline = () => void import('./offline/offlineDialog').then((m) => m.openOfflineDialog());
 
 // The header's ⋯ menu closes when something else is clicked or a choice is made.
 document.addEventListener('click', (e) => {
@@ -169,6 +199,20 @@ async function route(): Promise<void> {
     renderCast(content);
     return;
   }
+  if (kind === 'credits') {
+    const { renderCredits } = await import('./credits/creditsPage');
+    if (ui !== 'modern') return;
+    document.title = `Credits · ${PRODUCT}`;
+    renderCredits(content);
+    return;
+  }
+  if (kind === 'achievements') {
+    const { renderAchievements } = await import('./achievements/page');
+    if (ui !== 'modern') return;
+    document.title = `What you’ve done · ${PRODUCT}`;
+    renderAchievements(content);
+    return;
+  }
   if (kind === 'mac') {
     const { renderMacHelp } = await import('./macHelp/macPage');
     if (ui !== 'modern') return;
@@ -198,6 +242,8 @@ async function route(): Promise<void> {
     return;
   }
   document.title = PRODUCT;
+  // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
+  clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
   await renderHome(content, nav);
 }
 
@@ -228,14 +274,20 @@ function notHere(): void {
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
-if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
+const modernLink = /^#\/?(\?|$)/.test(startHash)
+  ? !!startHash
+  : ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
+// #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)
+if (startPath[0] === 'dos') location.replace(`./dos.html${startPath[1] ? `?game=${encodeURIComponent(startPath[1])}` : ''}`);
+else if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
 registerServiceWorker();
+// achievements: the gm-achievement event, other tabs, and the counted ones kept current
+void import('./achievements/start').then((m) => m.startAchievements());
 
 watchForUpdates();

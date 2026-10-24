@@ -1,7 +1,7 @@
 // Sandcastle Knight's palette: a backyard sandbox in golds, tans and ochres, with hose
 // water blues, grass edging, toy colors, and the 16 ANSI colors of a BBS screen. The same
-// blocks are re-lit for other scenes by tinting this palette (the tunnels underground,
-// and the patio at sunset where the cat lives).
+// blocks are re-lit for other scenes by tinting this palette (the tunnels underground, the
+// hose-soaked moat, and the patio at sunset where Gwinn naps).
 import { PaletteBuilder } from '../../../kit/palette';
 
 export const pb = new PaletteBuilder();
@@ -68,5 +68,7 @@ export function tint(pal: Uint8Array, mul: [number, number, number], add: [numbe
 export const BURROW = tint(DAY, [0.66, 0.58, 0.6], [1, 1, 3]);
 /** The patio at sunset: warm orange light, long purple shadows. */
 export const DUSK = tint(DAY, [1.0, 0.72, 0.62], [3, 0, 4]);
+/** The Hosewater Moat: the hose has soaked everything, so the sand is darker and cooler. */
+export const MOAT = tint(DAY, [0.84, 0.92, 1.0], [0, 1, 4]);
 /** The BBS: the game's palette as-is (ANSI colors live in it). */
 export const BBS = DAY;

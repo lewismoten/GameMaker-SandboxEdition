@@ -2,7 +2,7 @@
 // lit windows, brick and stone facades and shop fronts, the subway steam vent and fire
 // escape, the inside of Biggles Department Store (Gwinn's shoe-department mess), the
 // construction site's sidewalk shed, Juggles and Presto (blocks that give birth to pins and
-// doves), the plaza and its billboard, and the Odeon's blinking marquee.
+// doves), the plaza and its billboard, and the Bijou's blinking marquee.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, klubArt, micro, scaleBlit, speckle } from '../art/draw';
 import { FULL, docLeo } from '../sprites/people';
@@ -35,7 +35,7 @@ function skyline(top: boolean, seed: number): Pixels {
       x += w + 1;
     }
   }
-  for (let y = top ? 10 : 1; y < 20; y += 3) for (let x = 1; x < 20; x += 3) if (R() < 0.35 && p.get(x, y) === c('siding', 0)) p.set(x, y, c('glow', 2));
+  for (let y = top ? 10 : 1; y < 20; y += 3) for (let x = 1; x < 20; x += 3) if (R() < 0.16 && p.get(x, y) === c('siding', 0)) p.set(x, y, c('glow', 1));
   return p;
 }
 
@@ -87,13 +87,15 @@ export function cityTiles(): Tiles {
       return p;
     })(),
   );
-  const storeSign = (word: string) => {
-    const p = facade('stone', false);
-    p.rect(0, 4, 20, 12, c('red', 1));
-    micro(p, 10 - Math.floor((word.length * 4 - 1) / 2), 8, word, c('glow', 3));
-    return p;
-  };
-  ['BIG-', 'GLES', 'DEPT', 'STORE'].forEach((w, i) => t.wall(`storeSign${i}`, storeSign(w)));
+  // the store's sign: one red board across four blocks, so it reads as one name
+  {
+    const p = new Pixels(80, 20);
+    for (let i = 0; i < 4; i++) p.blit(facade('stone', false), i * 20, 0);
+    p.rect(0, 4, 80, 12, c('red', 1));
+    const words = 'BIGGLES DEPT STORE';
+    micro(p, 40 - Math.floor((words.length * 4 - 1) / 2), 8, words, c('glow', 3));
+    cut(p)[0].forEach((px, i) => t.wall(`storeSign${i}`, px));
+  }
   // shop fronts with display windows
   t.air(
     'shopWin',
@@ -362,7 +364,7 @@ export function cityTiles(): Tiles {
     })(),
   );
 
-  // The Odeon: marquee lights blink.
+  // The Bijou: marquee lights blink.
   for (const ph of [0, 1]) {
     t.air(
       `marquee_${ph}`,

@@ -34,11 +34,20 @@ export function buildLeoBlocks(): BlockSet {
   add('kazoo', kaz);
   // a salute: the fedora swapped for a tricorn, a hand to the brim
   const sal = docLeo('down', 0);
-  sal.rect(2, 1, 16, 6, CLEAR).rect(3, 3, 14, 3, c('ink', 1)).rect(6, 1, 8, 3, c('ink', 1)).set(3, 2, c('ink', 1)).set(16, 2, c('ink', 1)).rect(3, 5, 14, 1, c('brass', 2));
+  sal
+    .rect(2, 1, 16, 6, CLEAR)
+    .rect(3, 3, 14, 3, c('ink', 1))
+    .rect(6, 1, 8, 3, c('ink', 1))
+    .set(3, 2, c('ink', 1))
+    .set(16, 2, c('ink', 1))
+    .rect(3, 5, 14, 1, c('brass', 2));
   sal.rect(14, 4, 3, 7, c('blue', 1)).rect(14, 4, 3, 1, c('skin', 2));
   add('salute', outline(sal, c('ink', 0)));
   // hurt: a flash of red
-  add('hurt', recolor(docLeo('down', 0), (v) => (v === c('ink', 0) ? v : c('red', 4))));
+  add(
+    'hurt',
+    recolor(docLeo('down', 0), (v) => (v === c('ink', 0) ? v : c('red', 4))),
+  );
   // playing dead: flat on his back, chicken on his chest
   const dead = new Pixels(20, 20, CLEAR);
   dead.rect(1, 9, 18, 7, c('ink', 0)).rect(2, 10, 6, 5, c('grey', 2)).rect(8, 10, 5, 5, c('skin', 2)).rect(13, 10, 5, 5, c('blue', 1));

@@ -93,33 +93,11 @@ export function sandDunes(s: TextScreen, y: number, rows: number): void {
   }
 }
 
-const CASTLE = [
-  '  ▄ ▄ ▄    ►    ▄ ▄ ▄',
-  '  █████    █    █████',
-  '   ███   ▄███▄   ███ ',
-  '   ███▄▄▄█████▄▄▄███ ',
-  '   ███████▀▀▀███████ ',
-];
-const CASTLE_COLORS = [
-  '  e e e    c    e e e',
-  '  eeeee    7    eeeee',
-  '   eee   eeeee   eee ',
-  '   eeeeeeeeeeeeeeeee ',
-  '   eeeeeee666eeeeeee ',
-];
+const CASTLE = ['  ▄ ▄ ▄    ►    ▄ ▄ ▄', '  █████    █    █████', '   ███   ▄███▄   ███ ', '   ███▄▄▄█████▄▄▄███ ', '   ███████▀▀▀███████ '];
+const CASTLE_COLORS = ['  e e e    c    e e e', '  eeeee    7    eeeee', '   eee   eeeee   eee ', '   eeeeeeeeeeeeeeeee ', '   eeeeeee666eeeeeee '];
 
-const PAIL = [
-  '  ▄▀▀▀▀▄     ▄ ',
-  ' ▐██████▌   ▐█▌',
-  '  ▐████▌     █ ',
-  '   ▀▀▀▀     ▄█▄',
-];
-const PAIL_COLORS = [
-  '  777777     9 ',
-  ' 4cccccc4   999',
-  '  4cccc4     1 ',
-  '   4444     999',
-];
+const PAIL = ['  ▄▀▀▀▀▄     ▄ ', ' ▐██████▌   ▐█▌', '  ▐████▌     █ ', '   ▀▀▀▀     ▄█▄'];
+const PAIL_COLORS = ['  777777     9 ', ' 4cccccc4   999', '  4cccc4     1 ', '   4444     999'];
 
 /** The board's name the way it was always shown: a different color for each letter, yellow ends (bbsName.ts). */
 export const SANDBOX_ANSI = '|14-= |12S |14A |10N |11D |09B |13O |06X |14=-';

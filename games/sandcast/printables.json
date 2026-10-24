@@ -184,11 +184,11 @@
             },
             {
               "q": "How do I cross the Hosewater Moat?",
-              "a": "Two scoops of sand fill the south ford. The west bridge is free but crumbles after one crossing."
+              "a": "Two scoops of sand fill the south ford (the west bridge is free but crumbles after one crossing). Build the south tower, ride the east current out, then the north bank's current in to the north tower. The west channel carries you back to the gate."
             },
             {
               "q": "Sand bounces off the crabs.",
-              "a": "Only water flips a crab. Or, with the bucket, walk into a dashed outline to pack a wall the crab can't pass."
+              "a": "Water flips a crab without a pinch (walking into one pinches, once). Or, with the bucket, walk into a dashed outline to pack a wall the crab can't pass."
             },
             {
               "q": "The lagoon gate won't open.",
@@ -205,7 +205,7 @@
           "hints": [
             {
               "q": "How do I get the crown back?",
-              "a": "Fill your bucket at the water bowls, take a step toward a paw, and splash it twice. She tucks it in. Then the next paw."
+              "a": "Fill your bucket at a water bowl, take a step toward her left paw, and splash it twice. Walk up the path between snores, then splash the right paw twice before its swipe reaches you."
             },
             {
               "q": "The slobbery balls keep rolling at me.",
@@ -319,25 +319,11 @@
   ],
   "stickers": [
     {
-      "text": "GOOD DOG",
-      "sub": "KNIGHT OF THE SANDBOX",
-      "shape": "badge",
-      "color": "#b3121a",
-      "ink": "#fff"
-    },
-    {
-      "text": "ZOOMIES",
-      "sub": "ZONE",
-      "shape": "star",
-      "color": "#8a5a2b",
-      "ink": "#fff"
-    },
-    {
       "text": "SIR TEDDY",
       "sub": "KNIGHT OF THE SANDBOX",
-      "shape": "badge",
-      "color": "#f2d48a",
-      "ink": "#b3121a",
+      "shape": "cut",
+      "color": "#b3121a",
+      "ink": "#f2d48a",
       "hero": {
         "chr": "sandcast.chr",
         "cbl": "sandcast.cbl",
@@ -347,7 +333,7 @@
     {
       "text": "SNAP!",
       "sub": "LAGOON CRAB",
-      "shape": "circle",
+      "shape": "burst",
       "color": "#55c8e8",
       "ink": "#7a1010",
       "sprite": {
@@ -359,8 +345,8 @@
     {
       "text": "ANTS!",
       "sub": "ANTHILL KEEP",
-      "shape": "rect",
-      "color": "#e8c070",
+      "shape": "cut",
+      "color": "#e8a030",
       "ink": "#3a1a08",
       "sprite": {
         "blocks": "sandcast.mbl",
@@ -373,7 +359,7 @@
       "sub": "BEETLE BOWLING",
       "shape": "star",
       "color": "#1f9a3a",
-      "ink": "#fff",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "sandcast.mbl",
         "pal": "sandcast.pal",
@@ -383,14 +369,90 @@
     {
       "text": "GWINN",
       "sub": "BIG SISTER",
-      "shape": "circle",
+      "shape": "cut",
       "color": "#b3121a",
-      "ink": "#fff",
+      "ink": "#ffffff",
       "sprite": {
         "blocks": "sandcast.mbl",
         "pal": "sandcast.pal",
         "grid": [[38]]
       }
+    },
+    {
+      "text": "ZZZ...",
+      "sub": "GWINN, ON GUARD",
+      "shape": "cut",
+      "color": "#5b5bd6",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[40]]
+      }
+    },
+    {
+      "text": "FETCH!",
+      "sub": "THE QUEST BALL",
+      "shape": "cut",
+      "color": "#9ad81e",
+      "ink": "#2a1a08",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[15]]
+      }
+    },
+    {
+      "text": "ROLY-POLY",
+      "sub": "ROLLS OVER, TOO",
+      "shape": "cut",
+      "color": "#8a5a2b",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[11]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "sandcast.bbl",
+        "pal": "sandcast.pal",
+        "grid": [[2]],
+        "under": 0
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "sandcast.bbl",
+        "pal": "sandcast.pal",
+        "grid": [[3]],
+        "under": 0
+      }
+    },
+    {
+      "text": "GOOD DOG",
+      "sub": "KNIGHT OF THE SANDBOX",
+      "shape": "bubble",
+      "color": "#f2d48a",
+      "ink": "#b3121a"
+    },
+    {
+      "text": "ZOOMIES",
+      "sub": "ZONE",
+      "shape": "burst",
+      "color": "#8a5a2b",
+      "ink": "#ffffff"
     }
   ],
   "news": [

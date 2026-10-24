@@ -18,105 +18,123 @@
   "F4": "Sound effects on / off"
  },
  "stickers": [
-  {
-   "text": "RAY",
-   "sub": "EVERY POLYGON INTACT",
-   "shape": "badge",
-   "color": "#120c34",
-   "ink": "#ffffff",
-   "hero": {
-    "chr": "near.chr",
-    "cbl": "ray.cbl",
-    "pal": "l1.pal"
-   }
-  },
-  {
-   "text": "COUNT POLYGON",
-   "sub": "TWENTY FACES, THEN FEWER",
-   "shape": "star",
-   "color": "#7a4fd0",
-   "ink": "#ffffff",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l1.pal",
-    "grid": [
-     [
-      28
-     ]
-    ]
-   }
-  },
-  {
-   "text": "TEDDY",
-   "sub": "ONE TALL EAR",
-   "shape": "circle",
-   "color": "#ffa63a",
-   "ink": "#120c34",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l1.pal",
-    "grid": [
-     [
-      18
-     ]
-    ]
-   }
-  },
-  {
-   "text": "GWINN",
-   "sub": "SITTING PRETTY",
-   "shape": "circle",
-   "color": "#ff8fc8",
-   "ink": "#120c34",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l2.pal",
-    "grid": [
-     [
-      22
-     ]
-    ]
-   }
-  },
-  {
-   "text": "DOC LEO",
-   "sub": "LIGHTING DIRECTOR",
-   "shape": "badge",
-   "color": "#2a3a7a",
-   "ink": "#ffffff",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l5.pal",
-    "grid": [
-     [
-      24
-     ]
-    ]
-   }
-  },
-  {
-   "text": "NOT RENDERED",
-   "sub": "WIREFRAME",
-   "shape": "rect",
-   "color": "#0c2a14",
-   "ink": "#7cff9a",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l1.pal",
-    "grid": [
-     [
-      1
-     ]
-    ]
-   }
-  },
-  {
-   "text": "NO GLASSES REQUIRED",
-   "shape": "rect",
-   "color": "#28c8ff",
-   "ink": "#120c34"
-  }
- ],
+    {
+      "text": "RAY",
+      "sub": "EVERY POLYGON INTACT",
+      "shape": "badge",
+      "color": "#120c34",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "near.chr",
+        "cbl": "ray.cbl",
+        "pal": "l1.pal"
+      }
+    },
+    {
+      "text": "COUNT POLYGON",
+      "sub": "TWENTY FACES, THEN FEWER",
+      "shape": "star",
+      "color": "#7a4fd0",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[28]]
+      }
+    },
+    {
+      "text": "TEDDY",
+      "sub": "ONE TALL EAR",
+      "shape": "circle",
+      "color": "#ffa63a",
+      "ink": "#120c34",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[18]]
+      }
+    },
+    {
+      "text": "GWINN",
+      "sub": "SITTING PRETTY",
+      "shape": "heart",
+      "color": "#ff8fc8",
+      "ink": "#120c34",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l2.pal",
+        "grid": [[22]]
+      }
+    },
+    {
+      "text": "DOC LEO",
+      "sub": "LIGHTING DIRECTOR",
+      "shape": "badge",
+      "color": "#2a3a7a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l5.pal",
+        "grid": [[24]]
+      }
+    },
+    {
+      "text": "NOT RENDERED",
+      "sub": "WIREFRAME",
+      "shape": "rect",
+      "color": "#0c2a14",
+      "ink": "#7cff9a",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[1]]
+      }
+    },
+    {
+      "text": "EYE SEE YOU",
+      "sub": "THE WATCHER",
+      "shape": "burst",
+      "color": "#d81e1e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[13]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "l2near.bbl",
+        "pal": "l2.pal",
+        "grid": [[140]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "l2near.bbl",
+        "pal": "l2.pal",
+        "grid": [[141]],
+        "under": "edge"
+      }
+    },
+    {
+      "text": "NO GLASSES REQUIRED",
+      "shape": "bubble",
+      "color": "#28c8ff",
+      "ink": "#120c34"
+    }
+  ],
  "news": [
   {
    "head": "We threw away the cardboard glasses",
@@ -171,7 +189,7 @@
      "hints": [
       {
        "q": "The violet panels keep disappearing under me.",
-       "a": "They drift in and out of focus together, about two seconds each way. Wait on solid ground until they sharpen, then roll without stopping."
+       "a": "They drift in and out of focus together, about two seconds each way. Wait on solid ground until they sharpen, then roll without stopping. A pink flicker means a panel is about to blur out: don't step on."
       },
       {
        "q": "The green lens is across three sets of panels.",
@@ -189,6 +207,10 @@
       {
        "q": "My double keeps rolling into me.",
        "a": "It wakes when you come close. Face it and fire first: one ray renders it to nothing."
+      },
+      {
+       "q": "The green lens is boxed in by cyan blocks.",
+       "a": "Cyan blocks are solid in the far plane, the only plane that gets you into that room. Roll onto the ring beside the box: in the near plane the box is a blur. Take the lens, then step back on the ring to get out."
       }
      ]
     },
@@ -198,6 +220,10 @@
       {
        "q": "The arrows carried me away!",
        "a": "Golden chevrons pull you the way they point until you hit something. Ride the two chutes on purpose; stay off the slopes beside the pit."
+      },
+      {
+       "q": "The blue lens is boxed in by amber blocks.",
+       "a": "You cross the glass bridge in the near plane, where amber is solid. The ring in that room pulls focus to the far plane, where the box is a blur. Take the lens and ride the ring back."
       }
      ]
     },
@@ -219,11 +245,15 @@
      "hints": [
       {
        "q": "How do I beat Count Polygon?",
-       "a": "He waits until you come within reach. Stand level with him a few blocks away, facing him, and fire again and again: twenty faces, eight, four, a triangle, a point."
+       "a": "He waits until you come within reach, then swoops: to one side of you, to the other, then straight at you. Line up with him across or down the arena, turn to face him and fire. A ray cracks him, a second shatters him and a third takes faces off. When his eight faces are gone he coughs up the blue lens he swallowed and flees into the far plane: take the lens, roll through the blue gate at the top of the arena and finish him there."
+      },
+      {
+       "q": "Purple shards keep hitting me.",
+       "a": "The four prisms in the arena throw them, a little faster in the far plane. A prism glows pink just before it throws. Shards are slow: roll away, put a cube between you, or shoot them."
       },
       {
        "q": "The last door won't open.",
-       "a": "It wants the last polygon the Count leaves behind. Roll over it, then go through the gold door and the red, green and blue gates."
+       "a": "It wants the last polygon the Count leaves behind in the far plane. Roll over it, then go through the gold door and the red and green gates."
       }
      ]
     },

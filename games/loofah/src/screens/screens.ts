@@ -19,7 +19,9 @@ export interface ScreenExtras {
 /** A candle at (x, y: the top of its wax), `h` tall, its flame flickering by `f`. */
 export function candle(p: Pixels, pal: Pal, x: number, y: number, h: number, f = 0): void {
   const c = pal.c;
-  p.rect(x - 3, y, 7, h, c('wax', 2)).rect(x - 3, y, 7, 1, c('wax', 1)).rect(x - 3, y, 1, Math.min(h, 5), c('white', 2));
+  p.rect(x - 3, y, 7, h, c('wax', 2))
+    .rect(x - 3, y, 7, 1, c('wax', 1))
+    .rect(x - 3, y, 1, Math.min(h, 5), c('white', 2));
   blob(p, x + (f % 2 ? 0.5 : -0.5), y - 5, 2, 4 + (f % 3) * 0.3, pal.r('flame'), 0, 3);
   p.set(x, y - 3, c('flame', 3));
 }
@@ -28,10 +30,16 @@ export function candle(p: Pixels, pal: Pal, x: number, y: number, h: number, f =
 export function bathroomBackdrop(pal: Pal, seed = 3, f = 0): Pixels {
   const c = pal.c;
   const p = new Pixels(W, H);
-  for (let y = 0; y < 160; y++) for (let x = 0; x < W; x++) p.set(x, y, x % 16 === 0 || y % 16 === 0 ? c('ink', 0) : (Math.floor(x / 16) + Math.floor(y / 16)) % 2 ? c('tile', 1) : c('tile', 0));
+  for (let y = 0; y < 160; y++)
+    for (let x = 0; x < W; x++)
+      p.set(x, y, x % 16 === 0 || y % 16 === 0 ? c('ink', 0) : (Math.floor(x / 16) + Math.floor(y / 16)) % 2 ? c('tile', 1) : c('tile', 0));
   p.rect(0, 0, W, 8, c('wall', 0)).rect(0, 8, W, 1, c('gold', 0));
-  for (let y = 160; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (Math.floor((x - 160) / (12 + (y - 160) / 2) + 100) + Math.floor((y - 160) / 6)) % 2 ? c('white', 0) : c('ink', 1));
-  for (const [x0, x1] of [[8, 70], [250, 312]]) {
+  for (let y = 160; y < H; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, (Math.floor((x - 160) / (12 + (y - 160) / 2) + 100) + Math.floor((y - 160) / 6)) % 2 ? c('white', 0) : c('ink', 1));
+  for (const [x0, x1] of [
+    [8, 70],
+    [250, 312],
+  ]) {
     p.rect(x0, 150, x1 - x0, 4, c('wood', 3)).rect(x0, 154, x1 - x0, 2, c('wood', 1));
     for (let k = 0; k < 3; k++) candle(p, pal, x0 + 12 + k * 18, 150 - 16 - (k % 2) * 8, 16 + (k % 2) * 8, f + k);
   }
@@ -43,7 +51,9 @@ export function bathroomBackdrop(pal: Pal, seed = 3, f = 0): Pixels {
 /** The silver rack across (x0..x1, y) with its two brackets. */
 export function silverRack(p: Pixels, pal: Pal, x0: number, x1: number, y: number): void {
   const c = pal.c;
-  p.rect(x0, y, x1 - x0, 4, c('metal', 2)).rect(x0, y, x1 - x0, 1, c('metal', 3)).rect(x0, y + 3, x1 - x0, 1, c('metal', 0));
+  p.rect(x0, y, x1 - x0, 4, c('metal', 2))
+    .rect(x0, y, x1 - x0, 1, c('metal', 3))
+    .rect(x0, y + 3, x1 - x0, 1, c('metal', 0));
   p.rect(x0 + 2, y - 8, 4, 10, c('metal', 1)).rect(x1 - 6, y - 8, 4, 10, c('metal', 1));
 }
 
@@ -74,7 +84,12 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     p.rect(24, 6, 272, 190, c('parch', 4)).frame(24, 6, 272, 190, c('parch', 1));
     for (let y = 8; y < 194; y += 3) p.set(25, y, c('parch', 2)).set(294, y + 1, c('parch', 2));
     // a few soap suds in the corner
-    for (const [cx, cy] of [[284, 186], [288, 179], [279, 182]]) p.ring(cx, cy, 2, c('suds', 0));
+    for (const [cx, cy] of [
+      [284, 186],
+      [288, 179],
+      [279, 182],
+    ])
+      p.ring(cx, cy, 2, c('suds', 0));
     centered(p, 14, heading, c('brown', 1), 2);
     return p;
   };

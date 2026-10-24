@@ -7,7 +7,8 @@ import { BG } from '../blocks/bblocks';
 export type Cell = string | { tile?: string; mon?: number; mark?: string };
 export type Legend = Record<string, Cell>;
 
-const SAND_MIX = ['sand0', 'sand0', 'sand0', 'sand3', 'sand3', 'sand1', 'sand2'];
+// (seven entries still, so every map's random draws stay the same)
+const SAND_MIX = ['sand0', 'sand0', 'sand0', 'sand0', 'sand0', 'sand1', 'sand1'];
 
 export class LevelMap {
   readonly map: GameMap = newMap();
@@ -23,7 +24,11 @@ export class LevelMap {
   /** Block number; "sand" picks a random sand texture so the floor doesn't look tiled. */
   id(name: string): number {
     if (name === 'sand') return BG.id(SAND_MIX[Math.floor(this.r() * SAND_MIX.length)]);
-    if (name === 'patio') return BG.id(this.r() > 0.5 ? 'patio' : 'patio2');
+    // (one flagstone block now; the draw stays so every later random pick is unchanged)
+    if (name === 'patio') {
+      this.r();
+      return BG.id('patio');
+    }
     return BG.id(name);
   }
 
@@ -112,7 +117,7 @@ export const LEGEND: Legend = {
   o: 'pile',
   '*': 'shell',
   $: 'starfish',
-  h: 'popsicle',
+  h: 'icepop',
   L: 'juice',
   w: 'balloon',
   A: 'anthill',

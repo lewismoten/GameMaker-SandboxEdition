@@ -1,84 +1,37 @@
-// The sublimation order form: make your own Sandbox mugs. Choose how many mugs of each
-// picture, in each size, and every wrap is laid out over as many pages as it takes (mixed
-// sizes share a page where they fit). The wraps are printed mirrored (the ink faces the mug
-// in the press), at the real size of a blank's printable area. Print them from the browser
-// at actual size, or download each page as a 300 dpi PNG.
+// The sublimation page composer: make your own Sandbox mugs one page at a time. Add mugs and
+// tumblers, choose each one's front and back picture (or leave a side blank), and every mug
+// gets a strip cropped to its pictures, stacked down a Letter or Legal page with cut lines
+// and alignment marks; a 3D mug shows where the front and back land. Printed at actual size
+// (the page is an SVG in real inches) or saved as a 300 dpi PNG. The setup is remembered.
 import { h } from '../../editor/core/ui';
-import { pngWithDpi } from '../../manual/printables/stickerArt';
-import { MUG_DESIGNS, designCanvas, loadDesign, loadDesigns, type MugDesignId } from './mugArt';
-import { MUG_SIZES, PAPERS, packWraps, type MugSize, type Packed, type PackedSheets, type Paper } from './mugSizes';
-import { wrapCanvas } from './mug3d';
+import { MUG_DESIGNS, designCanvas, loadDesigns, type MugDesignId } from './mugArt';
+import { pageLayout, type PageLayout, type StripInput } from './mugLayout';
+import { MUG_SIZES, PAPERS, type MugSize } from './mugSizes';
+import { MUG_COLORS, drawMug, stripTexture, wrapAngle } from './mug3d';
+import { MAX_MUGS, loadSetup, newMug, saveSetup, type PageMug, type PageSetup } from './mugPageStore';
+import { PRINT_DPI, preparePrint, sheetPng, sheetSvg, type SideDesigns } from './mugSheet';
 
-/** One mug to print: its picture and size. */
-export interface Wrap {
-  design: MugDesignId;
-  size: MugSize;
+const sizeOf = (id: string): MugSize => MUG_SIZES.find((s) => s.id === id) ?? MUG_SIZES[0];
+const aspect = (id: MugDesignId | '') => {
+  if (!id) return undefined;
+  const c = designCanvas(id);
+  return c.width / c.height;
+};
+
+/** The page's layout for a setup. */
+export function planPage(setup: PageSetup): PageLayout {
+  const paper = PAPERS.find((p) => p.id === setup.paper) ?? PAPERS[0];
+  const mugs: StripInput[] = setup.mugs.map((m) => ({
+    size: sizeOf(m.size),
+    front: aspect(m.front),
+    back: aspect(m.back),
+    lift: m.lift,
+    leftHanded: setup.leftHanded,
+  }));
+  return pageLayout(paper, setup.orientation, mugs, setup.mirrored);
 }
 
-export const PRINT_DPI = 300;
-
-/** One page of wraps on a canvas at `ppi` pixels an inch. */
-export function drawSheet(sheets: Pick<PackedSheets<Wrap>, 'pageW' | 'pageH'>, page: Packed<Wrap>[], ppi: number): HTMLCanvasElement {
-  const c = document.createElement('canvas');
-  c.width = Math.round(sheets.pageW * ppi);
-  c.height = Math.round(sheets.pageH * ppi);
-  const g = c.getContext('2d')!;
-  g.fillStyle = '#fff';
-  g.fillRect(0, 0, c.width, c.height);
-  const textures = new Map<string, HTMLCanvasElement>();
-  for (const { item, x, y, rotated } of page) {
-    const { design, size } = item;
-    const key = `${design}/${size.id}`;
-    let tex = textures.get(key);
-    if (!tex) textures.set(key, (tex = wrapCanvas(design, size, ppi, true)));
-    g.save();
-    g.translate(x * ppi, y * ppi);
-    if (rotated) {
-      // a quarter turn: the wrap's top edge runs down the page's left side
-      g.translate(size.wrapH * ppi, 0);
-      g.rotate(Math.PI / 2);
-    }
-    const w = size.wrapW * ppi;
-    const hh = size.wrapH * ppi;
-    g.drawImage(tex, 0, 0, w, hh);
-    // a hairline to cut along, just outside the print
-    g.strokeStyle = '#b8b8b8';
-    g.lineWidth = Math.max(1, ppi / 150);
-    g.setLineDash([ppi * 0.06, ppi * 0.04]);
-    g.strokeRect(-ppi * 0.04, -ppi * 0.04, w + ppi * 0.08, hh + ppi * 0.08);
-    g.setLineDash([]);
-    g.fillStyle = '#8a8a8a';
-    g.font = `${Math.round(ppi * 0.1)}px Arial, sans-serif`;
-    g.textBaseline = 'top';
-    const name = MUG_DESIGNS.find((d) => d.id === design)?.name ?? design;
-    g.fillText(`${size.name} · ${size.wrapW} × ${size.wrapH} in · ${name} · MIRRORED: printed side against the mug, ends under the handle`, 0, hh + ppi * 0.08);
-    // a one inch ruler at the end of the label, to check the printer kept the size
-    g.strokeStyle = '#555';
-    g.lineWidth = Math.max(1, ppi / 150);
-    g.beginPath();
-    g.moveTo(w - ppi, hh + ppi * 0.08);
-    g.lineTo(w - ppi, hh + ppi * 0.2);
-    g.moveTo(w - ppi, hh + ppi * 0.14);
-    g.lineTo(w, hh + ppi * 0.14);
-    g.moveTo(w, hh + ppi * 0.08);
-    g.lineTo(w, hh + ppi * 0.2);
-    g.stroke();
-    g.textAlign = 'right';
-    g.fillText('1 inch', w - ppi - ppi * 0.05, hh + ppi * 0.08);
-    g.textAlign = 'left';
-    g.restore();
-  }
-  return c;
-}
-
-function toBlob(c: HTMLCanvasElement): Promise<Blob> {
-  return new Promise((ok, fail) => c.toBlob((b) => (b ? ok(b) : fail(new Error('no picture'))), 'image/png'));
-}
-
-async function pngBlob(c: HTMLCanvasElement, dpi: number): Promise<Blob> {
-  const bytes = new Uint8Array(await (await toBlob(c)).arrayBuffer());
-  return new Blob([pngWithDpi(bytes, dpi) as Uint8Array<ArrayBuffer>], { type: 'image/png' });
-}
+const designsOf = (setup: PageSetup): SideDesigns[] => setup.mugs.map((m) => ({ front: m.front || undefined, back: m.back || undefined }));
 
 function download(blob: Blob, name: string): void {
   const a = h('a', { href: URL.createObjectURL(blob), download: name });
@@ -88,180 +41,246 @@ function download(blob: Blob, name: string): void {
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
 
-/**
- * Puts the pages in the document for printing: each a picture exactly the page's size, the
- * page size set with @page and no margins. Returns the undo.
- */
-export async function preparePrint(layout: Pick<PackedSheets<Wrap>, 'pageW' | 'pageH'>, pages: HTMLCanvasElement[]): Promise<() => void> {
-  const style = h('style', { id: 'mug-print-style' });
-  style.textContent = `@page { size: ${layout.pageW}in ${layout.pageH}in; margin: 0; }
-@media screen { .mug-print-root { display: none; } }
-@media print {
-  html.mug-printing body > :not(.mug-print-root) { display: none !important; }
-  html.mug-printing, html.mug-printing body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
-  html.mug-printing body > .mug-print-root.mug-print-root { display: block !important; position: static !important; }
-  html.mug-printing .mug-print-root img { display: block; max-width: none; width: ${layout.pageW}in; height: ${layout.pageH}in; break-after: page; }
-  .mug-print-root img:last-child { break-after: auto; }
-}`;
-  const urls = await Promise.all(pages.map(async (p) => URL.createObjectURL(await toBlob(p))));
-  const root = h('div', { class: 'mug-print-root' }, ...urls.map((src, i) => h('img', { src, alt: `Sublimation sheet ${i + 1}` })));
-  document.head.append(style);
-  document.body.append(root);
-  document.documentElement.classList.add('mug-printing');
-  await Promise.all([...root.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
-  return () => {
-    document.documentElement.classList.remove('mug-printing');
-    style.remove();
-    root.remove();
-    urls.forEach((u) => URL.revokeObjectURL(u));
-  };
+/** A choice of picture: blank, a BBS design or a game's. */
+function designSelect(label: string, value: MugDesignId | '', change: (v: MugDesignId | '') => void): HTMLLabelElement {
+  const opt = (id: string, name: string) => h('option', { value: id, selected: id === value }, name);
+  const group = (g: 'bbs' | 'game', name: string) => h('optgroup', { label: name }, ...MUG_DESIGNS.filter((d) => d.group === g).map((d) => opt(d.id, d.name)));
+  return h(
+    'label',
+    null,
+    label,
+    h(
+      'select',
+      { onchange: (e: Event) => change((e.target as HTMLSelectElement).value as MugDesignId | '') },
+      opt('', 'Blank (nothing printed)'),
+      group('bbs', 'The Sandbox BBS'),
+      group('game', 'Sandbox Software games'),
+    ),
+  );
 }
 
-/** The order form: how many mugs of each picture in each size. `start` gets one to begin with. */
+/** The composer. `start` is the mug for a page that has none yet. */
 export function openSublimation(start: { design: MugDesignId; size: string }): Promise<void> {
   return new Promise((resolve) => {
-    let paper: Paper = PAPERS[0];
-    const key = (d: MugDesignId, s: string) => `${d}/${s}`;
-    const counts = new Map<string, number>([[key(start.design, MUG_SIZES.some((s) => s.id === start.size) ? start.size : MUG_SIZES[0].id), 1]]);
-    const preview = h('div', { class: 'subl-pages', 'aria-live': 'polite' });
+    const setup = loadSetup(newMug(MUG_SIZES.some((s) => s.id === start.size) ? start.size : MUG_SIZES[0].id, start.design));
+    let shown = 0; // the mug in the 3D preview
+    const changed = () => (saveSetup(setup), refresh());
+
     const status = h('p', { class: 'subl-status', 'aria-live': 'polite' });
-    const printBtn = h('button', { class: 'subl-primary', type: 'button' }, '🖨 Print every page at actual size');
-    const pngBtn = h('button', { type: 'button' }, '⬇ Every page as a PNG, 300 dpi');
-    const totals = MUG_SIZES.map(() => h('td'));
-    const total = h('td');
+    const sheet = h('div', { class: 'subl-sheet' });
+    const list = h('ol', { class: 'subl-mugs' });
+    const printBtn = h('button', { class: 'subl-primary', type: 'button' }, '🖨 Print this page at actual size');
+    const pngBtn = h('button', { type: 'button' }, '⬇ This page as a PNG, 300 dpi');
+    const addBtn = h('button', { type: 'button', class: 'subl-add' }, '+ Add a mug');
+    const views = (['front', 'back'] as const).map((side) => ({
+      side,
+      canvas: h('canvas', { class: 'subl-3d', width: 240, height: 260, role: 'img' }),
+    }));
+    const viewCaption = h('p', { class: 'mugv-note' });
+    const handNote = h('span');
 
-    /** One entry per mug, in the form's order. */
-    const wraps = (): Wrap[] =>
-      MUG_DESIGNS.flatMap((d) => MUG_SIZES.flatMap((size) => Array.from({ length: counts.get(key(d.id, size.id)) ?? 0 }, () => ({ design: d.id, size }))));
-    const plan = () => packWraps(paper, wraps(), (w) => w.size);
-    const pageName = (i: number, n: number) => `sandbox-mugs-${paper.id}${n > 1 ? `-page-${i + 1}-of-${n}` : ''}.png`;
-    const savePage = async (sheets: PackedSheets<Wrap>, i: number) => {
-      await loadDesigns();
-      download(await pngBlob(drawSheet(sheets, sheets.pages[i], PRINT_DPI), PRINT_DPI), pageName(i, sheets.pages.length));
-    };
-
-    let drawn = 0;
-    const refresh = () => {
-      const all = wraps();
-      const sheets = all.length ? plan() : undefined;
-      MUG_SIZES.forEach((s, i) => {
-        const n = all.filter((w) => w.size === s).length;
-        totals[i].textContent = n ? String(n) : '';
-      });
-      total.textContent = String(all.length);
-      printBtn.disabled = pngBtn.disabled = !sheets;
-      if (!all.length) {
-        status.textContent = 'Choose how many mugs of each picture you want.';
-        preview.replaceChildren();
-        return;
-      }
-      if (!sheets) {
-        const big = MUG_SIZES.filter((s) => all.some((w) => w.size === s) && !packWraps(paper, [s], (x) => x));
-        status.textContent = `A ${big.map((s) => `${s.name} wrap (${s.wrapW} × ${s.wrapH} in)`).join(' or ')} doesn’t fit on ${paper.name} with the printer’s margins. Try Letter.`;
-        preview.replaceChildren();
-        return;
-      }
-      const n = sheets.pages.length;
-      status.textContent = `${all.length} mug${all.length > 1 ? 's' : ''} on ${n} page${n > 1 ? 's' : ''} of ${paper.name}, ${sheets.landscape ? 'landscape' : 'portrait'}.`;
-      // draw the previews once the numbers stop changing
-      const ticket = ++drawn;
-      setTimeout(() => {
-        if (ticket !== drawn) return;
-        preview.replaceChildren(
-          ...sheets.pages.map((p, i) => {
-            const c = drawSheet(sheets, p, 48);
-            c.className = 'subl-page';
-            c.style.aspectRatio = `${sheets.pageW} / ${sheets.pageH}`;
-            const mugs = p.length === 1 ? '1 mug' : `${p.length} mugs`;
-            return h(
-              'figure',
-              null,
-              c,
-              h(
-                'figcaption',
-                null,
-                `Page ${i + 1} of ${n} · ${mugs} `,
-                h('button', { type: 'button', class: 'subl-png', onclick: () => void savePage(sheets, i), 'aria-label': `Page ${i + 1} as a PNG` }, '⬇ PNG'),
-              ),
-            );
-          }),
-        );
-      }, 120);
-    };
-
-    // the order form: a row for each picture, a column for each mug
-    const cell = (d: MugDesignId, size: MugSize) => {
-      const k = key(d, size.id);
-      const input = h('input', {
-        type: 'number',
-        min: '0',
-        max: '24',
-        inputmode: 'numeric',
-        value: counts.get(k) ? String(counts.get(k)) : '',
-        placeholder: '0',
-        'aria-label': `${MUG_DESIGNS.find((x) => x.id === d)?.name}: how many ${size.name}s`,
-        oninput: (e: Event) => {
-          const v = Math.max(0, Math.min(24, Math.floor(Number((e.target as HTMLInputElement).value) || 0)));
-          counts.set(k, v);
-          refresh();
-        },
-        onchange: (e: Event) => ((e.target as HTMLInputElement).value = counts.get(k) ? String(counts.get(k)) : ''),
-      });
-      return h('td', null, input);
-    };
-    const rows = MUG_DESIGNS.map((d) => {
-      const art = designCanvas(d.id);
-      const img = h('img', { src: art.toDataURL(), alt: '', width: art.width, height: art.height });
-      void loadDesign(d.id).then((c) => {
-        if (c === art) return;
-        img.src = c.toDataURL();
-        img.width = c.width;
-        img.height = c.height;
-        refresh(); // its wraps in the previews
-      });
-      return h('tr', { title: d.note }, h('th', { scope: 'row' }, img, h('span', null, d.name)), ...MUG_SIZES.map((s) => cell(d.id, s)));
-    });
-    const shortName = (s: MugSize) => s.name.replace(/ mug$/, '').replace('skinny tumbler', 'tumbler');
-    const form = h(
-      'table',
-      { class: 'subl-order' },
-      h('caption', null, 'How many mugs of each picture, in each size'),
-      h(
-        'thead',
-        null,
-        h(
-          'tr',
-          null,
-          h('th', { scope: 'col' }, 'Picture'),
-          ...MUG_SIZES.map((s) => h('th', { scope: 'col', title: `${s.name}: wrap ${s.wrapW} × ${s.wrapH} in` }, shortName(s))),
-        ),
-      ),
-      h('tbody', null, ...rows),
-      h('tfoot', null, h('tr', null, h('th', { scope: 'row' }, 'Mugs: ', total), ...totals)),
-    );
-
-    const select = <T extends { id: string; name: string }>(label: string, list: T[], value: T, change: (v: T) => void) =>
+    // ---- the page's settings
+    const select = <T extends { id: string; name: string }>(label: string, items: T[], value: string, change: (v: string) => void) =>
       h(
         'label',
         null,
         label,
         h(
           'select',
-          { onchange: (e: Event) => (change(list.find((x) => x.id === (e.target as HTMLSelectElement).value)!), refresh()) },
-          ...list.map((x) => h('option', { value: x.id, selected: x.id === value.id }, x.name)),
+          { onchange: (e: Event) => (change((e.target as HTMLSelectElement).value), changed()) },
+          ...items.map((x) => h('option', { value: x.id, selected: x.id === value }, x.name)),
         ),
       );
+    const mirror = h('input', {
+      type: 'checkbox',
+      checked: setup.mirrored,
+      onchange: (e: Event) => ((setup.mirrored = (e.target as HTMLInputElement).checked), changed()),
+    });
+    const settings = h(
+      'div',
+      { class: 'subl-settings' },
+      h(
+        'div',
+        { class: 'subl-row' },
+        select('Paper', PAPERS, setup.paper, (v) => (setup.paper = v)),
+        select(
+          'Page',
+          [
+            { id: 'portrait', name: 'Portrait' },
+            { id: 'landscape', name: 'Landscape' },
+          ],
+          setup.orientation,
+          (v) => (setup.orientation = v === 'landscape' ? 'landscape' : 'portrait'),
+        ),
+        select(
+          'Handle hand',
+          [
+            { id: 'right', name: 'Right-handed' },
+            { id: 'left', name: 'Left-handed' },
+          ],
+          setup.leftHanded ? 'left' : 'right',
+          (v) => (setup.leftHanded = v === 'left'),
+        ),
+      ),
+      h('label', { class: 'subl-check' }, mirror, ' Mirror the print (most sublimation paper wants it mirrored; check your paper’s instructions)'),
+    );
+
+    // ---- the mugs on the page
+    const mugCard = (m: PageMug, i: number) => {
+      const size = sizeOf(m.size);
+      const sizePick = h(
+        'select',
+        {
+          'aria-label': `Mug ${i + 1}: size`,
+          onchange: (e: Event) => {
+            m.size = (e.target as HTMLSelectElement).value;
+            shown = i;
+            rebuild(`size-${i}`);
+          },
+          dataset: { focus: `size-${i}` },
+        },
+        ...MUG_SIZES.map((s) => h('option', { value: s.id, selected: s.id === m.size }, `${s.name} (wrap ${s.wrapW} × ${s.wrapH} in)`)),
+      );
+      const pick = (side: 'front' | 'back') =>
+        designSelect(side === 'front' ? 'Front' : 'Back', m[side], (v) => {
+          m[side] = v;
+          shown = i;
+          changed();
+        });
+      const lift = size.handle
+        ? null
+        : h(
+            'label',
+            null,
+            'Pictures’ middle, inches up from the bottom of the cup',
+            h('input', {
+              type: 'number',
+              min: '1',
+              max: '8',
+              step: '0.25',
+              value: String(m.lift),
+              inputmode: 'decimal',
+              oninput: (e: Event) => {
+                const v = Number((e.target as HTMLInputElement).value);
+                if (Number.isFinite(v) && v > 0) ((m.lift = Math.min(12, v)), (shown = i), changed());
+              },
+            }),
+          );
+      return h(
+        'li',
+        { class: 'subl-mug', 'aria-label': `Mug ${i + 1}` },
+        h(
+          'div',
+          { class: 'subl-mug-head' },
+          h('b', null, `${i + 1}.`),
+          sizePick,
+          h(
+            'button',
+            {
+              type: 'button',
+              'aria-pressed': String(i === shown),
+              dataset: { show: String(i) },
+              onclick: () => ((shown = i), refresh()),
+              'aria-label': `Show mug ${i + 1} in 3D`,
+            },
+            '3D',
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              'aria-label': `Remove mug ${i + 1}`,
+              disabled: setup.mugs.length < 2,
+              onclick: () => {
+                setup.mugs.splice(i, 1);
+                shown = Math.min(shown, setup.mugs.length - 1);
+                rebuild(`size-${Math.min(i, setup.mugs.length - 1)}`);
+              },
+            },
+            '✕',
+          ),
+        ),
+        h('div', { class: 'subl-sides' }, pick('front'), pick('back')),
+        lift,
+      );
+    };
+    const rebuild = (focus?: string) => {
+      list.replaceChildren(...setup.mugs.map(mugCard));
+      addBtn.disabled = setup.mugs.length >= MAX_MUGS;
+      changed();
+      if (focus) list.querySelector<HTMLElement>(`[data-focus="${focus}"]`)?.focus();
+    };
+    addBtn.addEventListener('click', () => {
+      const last = setup.mugs[setup.mugs.length - 1];
+      setup.mugs.push(last ? { ...last } : newMug(MUG_SIZES[0].id, start.design));
+      shown = setup.mugs.length - 1;
+      rebuild(`size-${shown}`);
+    });
+
+    // ---- the previews
+    const draw3d = (page: PageLayout) => {
+      const placed = page.strips.find((p) => p.index === shown) ?? page.strips[0];
+      const m = placed && setup.mugs[placed.index];
+      for (const v of views) {
+        const g = v.canvas.getContext('2d')!;
+        g.clearRect(0, 0, v.canvas.width, v.canvas.height);
+        if (!placed || !m) continue;
+        const { strip } = placed;
+        const size = strip.size;
+        const texture = stripTexture(strip, { front: m.front || undefined, back: m.back || undefined }, 100);
+        const bodyH = size.height / size.diameter;
+        const radius = Math.min(v.canvas.width * 0.3, (v.canvas.height * 0.8) / (2 * bodyH + 0.4));
+        const H = radius * 2 * bodyH;
+        drawMug(g, {
+          texture,
+          size,
+          colors: MUG_COLORS[0].colors,
+          rot: -wrapAngle(size, strip.centers[v.side]),
+          cx: v.canvas.width / 2,
+          top: (v.canvas.height - H) / 2 + radius * 0.1,
+          radius,
+        });
+        const name = MUG_DESIGNS.find((d) => d.id === m[v.side])?.name ?? 'blank';
+        v.canvas.setAttribute('aria-label', `Mug ${placed.index + 1}, ${v.side}: ${name}`);
+      }
+      viewCaption.textContent = placed
+        ? `Mug ${placed.index + 1}, ${placed.strip.size.name}: the front straight on (handle ${setup.leftHanded ? 'right' : 'left'}), then the back, half way round.`
+        : 'Nothing on the page yet.';
+      for (const b of list.querySelectorAll<HTMLButtonElement>('[data-show]')) b.setAttribute('aria-pressed', String(Number(b.dataset.show) === placed?.index));
+    };
+
+    let ticket = 0;
+    const refresh = () => {
+      const page = planPage(setup);
+      const n = page.strips.length;
+      const parts = [`${n} mug${n === 1 ? '' : 's'} on this page, ${inchesLeft(page.left)} of paper left at the bottom.`];
+      if (page.blank.length)
+        parts.push(`Mug ${page.blank.map((i) => i + 1).join(', ')} ${page.blank.length > 1 ? 'are' : 'is'} blank on both sides: nothing to print.`);
+      if (page.overflow.length)
+        parts.push(
+          `Mug ${page.overflow.map((i) => i + 1).join(', ')} won’t fit: ${setup.paper === 'legal' ? 'remove one' : 'try Legal paper, or remove one'}, or print it on the next page.`,
+        );
+      status.textContent = parts.join(' ');
+      handNote.textContent = setup.leftHanded
+        ? 'left hand (the handle on the right as you look at it)'
+        : 'right hand (the handle on the left as you look at it)';
+      printBtn.disabled = pngBtn.disabled = !n;
+      draw3d(page);
+      const t = ++ticket;
+      setTimeout(() => {
+        if (t !== ticket) return;
+        const svg = sheetSvg(page, designsOf(setup), 60, setup.leftHanded, `Preview of the page: ${n} mug strip${n === 1 ? '' : 's'}`);
+        sheet.replaceChildren(svg);
+      }, 60);
+    };
+    const inchesLeft = (n: number) => `${(Math.round(n * 100) / 100).toFixed(2)} in`;
 
     printBtn.addEventListener('click', async () => {
-      const sheets = plan();
-      if (!sheets) return;
       printBtn.disabled = true;
       try {
         await loadDesigns();
-        const undo = await preparePrint(
-          sheets,
-          sheets.pages.map((p) => drawSheet(sheets, p, PRINT_DPI)),
-        );
+        const page = planPage(setup);
+        const undo = preparePrint(page, sheetSvg(page, designsOf(setup), PRINT_DPI, setup.leftHanded));
         const done = () => (undo(), window.removeEventListener('afterprint', done));
         window.addEventListener('afterprint', done);
         window.print();
@@ -270,11 +289,11 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       }
     });
     pngBtn.addEventListener('click', async () => {
-      const sheets = plan();
-      if (!sheets) return;
       pngBtn.disabled = true;
       try {
-        for (let i = 0; i < sheets.pages.length; i++) await savePage(sheets, i);
+        await loadDesigns();
+        const page = planPage(setup);
+        download(await sheetPng(page, designsOf(setup), setup.leftHanded), `sandbox-mugs-${setup.paper}-${page.strips.length}.png`);
       } finally {
         pngBtn.disabled = false;
       }
@@ -293,11 +312,11 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
 
     const overlay = h(
       'div',
-      { class: 'mugv subl', role: 'dialog', 'aria-label': 'Sublimation order form' },
+      { class: 'mugv subl', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'subl-title' },
       h(
         'header',
         { class: 'mugv-bar' },
-        h('strong', null, 'Make your own mugs: sublimation order form'),
+        h('h2', { id: 'subl-title' }, 'Make your own mugs: one sublimation page'),
         h('span', { class: 'mugv-spacer' }),
         h('button', { type: 'button', onclick: close }, 'Close (Esc)'),
       ),
@@ -308,11 +327,25 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
           'div',
           { class: 'subl-side' },
           h(
-            'div',
-            { class: 'subl-row' },
-            select('Paper', PAPERS, paper, (v) => (paper = v)),
+            'p',
+            { class: 'subl-actual' },
+            h('b', null, 'Print at 100% / Actual size'),
+            ', not “Fit to page”. Check the 1 inch ruler under each mug with a real ruler.',
           ),
-          form,
+          settings,
+          h(
+            'p',
+            { class: 'mugv-note' },
+            h('b', null, 'Front'),
+            ' is the side that faces out when you hold the mug in your ',
+            handNote,
+            '. ',
+            h('b', null, 'Back'),
+            ' is straight opposite, half way round. Each picture is centered a quarter of the way round from the handle and kept to a third of the way round, the part you see straight on, so it isn’t bent out of shape.',
+          ),
+          h('h3', null, 'Mugs on this page'),
+          list,
+          addBtn,
           status,
           h('div', { class: 'subl-actions' }, printBtn, pngBtn),
           h(
@@ -322,18 +355,17 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
             h(
               'ol',
               null,
+              h('li', null, 'Load sublimation ink and paper. Print with scaling at 100% / Actual size and check the 1 inch ruler.'),
+              h('li', null, 'Mirroring is set here: don’t mirror again in the print dialog.'),
               h(
                 'li',
                 null,
-                'Load sublimation ink and paper. Print with scaling at ',
-                h('b', null, '100% / Actual size'),
-                ' (not “Fit to page”). Check the 1 inch mark under each picture with a ruler.',
+                'Cut along the dashed lines above and below each mug. The ticks marked FRONT middle and BACK middle stop at the cut: snip a tiny notch at each so you can still see them.',
               ),
-              h('li', null, 'The pictures are already mirrored: don’t mirror them again in the print dialog.'),
               h(
                 'li',
                 null,
-                'Cut along the dashed line. Wrap it round a sublimation blank, printed side against the mug, the gap under the handle, and tape it with heat tape.',
+                'Printed side against the mug, line the FRONT notch up with the middle of the front (a quarter of the way round from the handle) and the gap under the handle. Tape it with heat tape. A tumbler: the bottom cut sits the height shown above the bottom of the cup.',
               ),
               h(
                 'li',
@@ -344,10 +376,23 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
             ),
           ),
         ),
-        preview,
+        h(
+          'div',
+          { class: 'subl-preview', tabindex: '0', role: 'region', 'aria-label': 'Previews: the mug and the page' },
+          h(
+            'figure',
+            { class: 'subl-views' },
+            ...views.map((v) => h('div', null, v.canvas, h('span', null, v.side === 'front' ? 'Front' : 'Back'))),
+            h('figcaption', null, viewCaption),
+          ),
+          h('figure', { class: 'subl-page-fig' }, sheet, h('figcaption', null, 'The page, as it prints. Gray marks are outside the pressed piece.')),
+        ),
       ),
     );
     document.body.append(overlay);
-    refresh();
+    rebuild();
+    overlay.querySelector('select')?.focus();
+    // a game's picture comes from its files on the CD
+    void loadDesigns().then(() => overlay.isConnected && refresh());
   });
 }

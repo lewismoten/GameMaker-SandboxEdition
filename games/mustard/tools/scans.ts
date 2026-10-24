@@ -24,9 +24,27 @@ const shots = readdirSync(FRAMES)
 const STORY = [1, 2, 0, 3, 4, 5, 6];
 
 STORY.forEach((k, i) => {
-  const r = spawnSync('ffmpeg', ['-v', 'error', '-i', join(FRAMES, shots[k]), '-vf', `scale=${W}:${H}:flags=area,format=rgb24`, '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], {
-    maxBuffer: 64 << 20,
-  });
+  const r = spawnSync(
+    'ffmpeg',
+    [
+      '-v',
+      'error',
+      '-i',
+      join(FRAMES, shots[k]),
+      '-vf',
+      `scale=${W}:${H}:flags=area,format=rgb24`,
+      '-frames:v',
+      '1',
+      '-f',
+      'rawvideo',
+      '-pix_fmt',
+      'rgb24',
+      '-',
+    ],
+    {
+      maxBuffer: 64 << 20,
+    },
+  );
   if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr}`);
   const dir = mkdtempSync(join(tmpdir(), 'scan-'));
   const ppm = join(dir, 'in.ppm');

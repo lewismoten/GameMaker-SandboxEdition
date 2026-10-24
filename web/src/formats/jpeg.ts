@@ -12,8 +12,8 @@
 // One component is grayscale; three are YCbCr (JFIF).
 
 const ZIGZAG = Int32Array.from([
-  0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44,
-  51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63,
+  0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22,
+  15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63,
 ]);
 
 /** A JPEG decoded from as much of it as there is. */
@@ -138,7 +138,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
         }
         break;
       case 0xdb:
-        for (let q = seg; q < end; ) {
+        for (let q = seg; q < end;) {
           const pq = data[q] >> 4;
           const tq = data[q] & 15;
           q++;
@@ -160,7 +160,17 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
         comps = [];
         for (let i = 0; i < n; i++) {
           const o = seg + 6 + i * 3;
-          comps.push({ id: data[o], h: data[o + 1] >> 4, v: data[o + 1] & 15, tq: data[o + 2], blocksPerLine: 0, blocksPerColumn: 0, stride: 0, coeffs: new Int16Array(0), pred: 0 });
+          comps.push({
+            id: data[o],
+            h: data[o + 1] >> 4,
+            v: data[o + 1] & 15,
+            tq: data[o + 2],
+            blocksPerLine: 0,
+            blocksPerColumn: 0,
+            stride: 0,
+            coeffs: new Int16Array(0),
+            pred: 0,
+          });
         }
         maxH = Math.max(...comps.map((c) => c.h));
         maxV = Math.max(...comps.map((c) => c.v));
@@ -175,7 +185,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
         break;
       }
       case 0xc4:
-        for (let q = seg; q < end; ) {
+        for (let q = seg; q < end;) {
           const tc = data[q] >> 4;
           const th = data[q] & 15;
           const counts = data.subarray(q + 1, q + 17);
@@ -225,10 +235,19 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
     const mw = single ? 8 * (maxH / comps[0].h) : 8 * maxH;
     const mh = single ? 8 * (maxV / comps[0].v) : 8 * maxV;
     const perLine = single ? comps[0].blocksPerLine : mcusPerLine;
-    for (let y = 0; y < height; y++)
-      for (let x = 0; x < width; x++) if (Math.floor(y / mh) * perLine + Math.floor(x / mw) < mcusDone) shown[y * width + x] = 1;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (Math.floor(y / mh) * perLine + Math.floor(x / mw) < mcusDone) shown[y * width + x] = 1;
   }
-  return { width, height, channels: comps.length === 1 ? 1 : 3, pixels: render(comps, qt, width, height, maxH, maxV), shown, progressive, scans, complete, aspect };
+  return {
+    width,
+    height,
+    channels: comps.length === 1 ? 1 : 3,
+    pixels: render(comps, qt, width, height, maxH, maxV),
+    shown,
+    progressive,
+    scans,
+    complete,
+    aspect,
+  };
 }
 
 interface ScanInfo {
@@ -286,7 +305,7 @@ function decodeScan(data: Uint8Array, start: number, comps: Component[], s: Scan
     const t = huff(c.dc!);
     c.pred += extend(t);
     c.coeffs[o] = c.pred;
-    for (let k = 1; k < 64; ) {
+    for (let k = 1; k < 64;) {
       const rs = huff(c.ac!);
       const r = rs >> 4;
       const sz = rs & 15;
@@ -314,7 +333,7 @@ function decodeScan(data: Uint8Array, start: number, comps: Component[], s: Scan
       eobrun--;
       return;
     }
-    for (let k = s.ss; k <= s.se; ) {
+    for (let k = s.ss; k <= s.se;) {
       const rs = huff(c.ac!);
       const r = rs >> 4;
       const sz = rs & 15;
@@ -387,9 +406,7 @@ function decodeScan(data: Uint8Array, start: number, comps: Component[], s: Scan
         } else {
           const mr = Math.floor(mcus / s.mcusPerLine);
           const mc = mcus % s.mcusPerLine;
-          for (const c of comps)
-            for (let y = 0; y < c.v; y++)
-              for (let x = 0; x < c.h; x++) decode(c, ((mr * c.v + y) * c.stride + mc * c.h + x) * 64);
+          for (const c of comps) for (let y = 0; y < c.v; y++) for (let x = 0; x < c.h; x++) decode(c, ((mr * c.v + y) * c.stride + mc * c.h + x) * 64);
         }
       }
       if (mcus >= total) break;

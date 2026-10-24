@@ -10,7 +10,13 @@ const RULES: PartRule[] = [
   ...pair('bathroom door', 'bathTop', /^bath(Door|Open)$/, 0, 1),
   ...pair('couch', 'couchBack', 'couch', 0, 1),
   { part: 'headboard', need: [[0, 1, /^(headboard|bedSide)$/]] },
-  { part: 'couch', need: [[-1, 0, /^couch(Arm)?$/], [1, 0, /^couch(Arm)?$/]] },
+  {
+    part: 'couch',
+    need: [
+      [-1, 0, /^couch(Arm)?$/],
+      [1, 0, /^couch(Arm)?$/],
+    ],
+  },
 ];
 
 /** Joins drawn as edges on purpose (looked at). */

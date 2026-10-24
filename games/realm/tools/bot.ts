@@ -6,7 +6,7 @@
 import { GameSim } from './sim';
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
 import { POWER, SEQ } from '../src/ids';
-import { LOOT_MONS, cellOnScreen, isLootBlock, lootScene, monPos } from './lootwatch';
+import { LOOT_MONS, cellOnScreen, isKeepsake, isLootBlock, lootScene, monPos } from './lootwatch';
 
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';
@@ -59,7 +59,8 @@ export class Bot {
       if (mi.fromchar) return;
       if (this.boss && mon.power >= 100) return;
       // a wight inside the rock can't be reached (a slash dies on the wall)
-      if (this.sim.solidAt(mi.curx[0] + (mi.curx[1] > 10 ? 1 : 0), mi.cury[0] + (mi.cury[1] > 10 ? 1 : 0)) && w.mblk[w.mon[m.monnum].pic[0][0]]?.solid === 0) return;
+      if (this.sim.solidAt(mi.curx[0] + (mi.curx[1] > 10 ? 1 : 0), mi.cury[0] + (mi.cury[1] > 10 ? 1 : 0)) && w.mblk[w.mon[m.monnum].pic[0][0]]?.solid === 0)
+        return;
       let dx = mi.curx[0] + mi.curx[1] / 20 - px;
       let dy = mi.cury[0] + mi.cury[1] / 20 - py;
       if (dx > 50) dx -= 100;
@@ -153,7 +154,9 @@ export class Bot {
       if (process.env.BOT_LOG) {
         const t = this.foeList()[0];
         const w = this.sim.w;
-        this.say(`swing ${dir} at ${f.map((v) => v.toFixed(1))} (${this.foes().length} foes)${t ? ` mon ${w.mm[t[2]].monnum} pow ${w.mon[w.mm[t[2]].monnum].power}` : ''} pip ${w.chr.x}/${w.chr.y}`);
+        this.say(
+          `swing ${dir} at ${f.map((v) => v.toFixed(1))} (${this.foes().length} foes)${t ? ` mon ${w.mm[t[2]].monnum} pow ${w.mon[w.mm[t[2]].monnum].power}` : ''} pip ${w.chr.x}/${w.chr.y}`,
+        );
       }
       if (r) return r;
       r = await this.wait(4);
@@ -302,7 +305,12 @@ export class Bot {
         const dx = Math.sign(((steps[i].x - cur.x + 150) % 100) - 50);
         const dy = Math.sign(((steps[i].y - cur.y + 150) % 100) - 50);
         let j = i;
-        while (j + 1 < steps.length && (steps[j + 1].x - steps[j].x + 100) % 100 === (dx + 100) % 100 && (steps[j + 1].y - steps[j].y + 100) % 100 === (dy + 100) % 100) j++;
+        while (
+          j + 1 < steps.length &&
+          (steps[j + 1].x - steps[j].x + 100) % 100 === (dx + 100) % 100 &&
+          (steps[j + 1].y - steps[j].y + 100) % 100 === (dy + 100) % 100
+        )
+          j++;
         const dir: Dir = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'down' : 'up';
         // loot in sight a few steps off the way: fetch it, then plan the way on from there
         if (this.loot && !this.grabbing && !this.boss) {
@@ -353,7 +361,7 @@ export class Bot {
       for (let dx = -1; dx <= 16; dx++) {
         const x = (sim.w.mx + dx + 100) % 100;
         const y = (sim.w.my + dy + 100) % 100;
-        if (!cellOnScreen(sim, x, y) || !isLootBlock(sim, sim.blockAt(x, y))) continue;
+        if (!cellOnScreen(sim, x, y) || !isLootBlock(sim, sim.blockAt(x, y)) || isKeepsake(sim, x, y)) continue;
         const id = `${visit}:b${x},${y}`;
         if (this.tried.has(id)) continue;
         const solid = sim.solidAt(x, y);
@@ -512,7 +520,13 @@ export class Bot {
       const before = this.sim.trail.length;
       await this.goto(x, y, label, through);
       if (this.sim.trail.length === before) throw new Error(`${label}: no scene change`);
-      if (this.inPass() && this.sim.game.scenes[start].links.some((l) => l.from.x === x && l.from.y === y && this.sim.game.scenes[l.toScene] === this.sim.game.scenes[this.sim.scene])) break;
+      if (
+        this.inPass() &&
+        this.sim.game.scenes[start].links.some(
+          (l) => l.from.x === x && l.from.y === y && this.sim.game.scenes[l.toScene] === this.sim.game.scenes[this.sim.scene],
+        )
+      )
+        break;
       if (this.inPass()) {
         await this.wait(3);
         if (this.sim.scene === start) continue;

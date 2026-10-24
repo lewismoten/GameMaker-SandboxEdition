@@ -147,13 +147,16 @@ export function buildMonsters(): Monster[] {
   def(MON.beetleChase, { ...beetle, towards: 1, end: 330 });
   def(MON.beetleFlip, { pics: [['beetleFlip', 40]], power: 60, end: 30 });
 
-  // Crabs: only a splash of water flips them.
+  // Crabs: sand bounces off, a splash of water flips them. Walk into one and it pinches, once,
+  // and tumbles over too (power under Teddy's 100): a strong monster would pinch every tick
+  // while it overlapped him, and each pinch restarts his hurt sequence, so he couldn't walk
+  // out of it.
   const crab = {
     pics: [
       ['crab0', 3],
       ['crab1', 3],
     ] as [string, number][],
-    power: 105,
+    power: 99,
     becomes: MON.crabFlip,
     score: 150,
   };
@@ -200,7 +203,8 @@ export function buildMonsters(): Monster[] {
       ['rope0', 3],
       ['rope1', 3],
     ],
-    power: 120,
+    // (one bonk and it's gone: under Teddy's 100, so it can't pin him and pinch every tick)
+    power: 99,
     towards: 128,
     end: 320,
     becomes: MON.puff,
@@ -217,6 +221,9 @@ export function buildMonsters(): Monster[] {
       becomes: side === 'L' ? MON.pawLAngry : MON.pawRAngry,
       score: 500,
     });
+    // Riled, the left paw scrabbles where it is; the right one, curled across the crown's
+    // nook, swipes three blocks toward Teddy and back, slowly enough to see coming (splash it
+    // again before it reaches you, or step back down the path).
     def(side === 'L' ? MON.pawLAngry : MON.pawRAngry, {
       pics: [
         [`paw${side}Angry0`, 3],
@@ -226,14 +233,23 @@ export function buildMonsters(): Monster[] {
       thru: false,
       becomes: side === 'L' ? MON.pawLRetreat : MON.pawRRetreat,
       score: 1000,
+      ...(side === 'R'
+        ? {
+            march: [
+              [-3, 0, 1, 0],
+              [0, 0, 1, 0],
+            ] as [number, number, number, number][],
+          }
+        : {}),
     });
-    def(side === 'L' ? MON.pawLRetreat : MON.pawRRetreat, {
-      pics: [['pawWet', 4]],
-      power: 250,
-      thru: false,
-      end: -1,
-      march: [[0, -4, 1, 0]],
-    });
+    // Tucked in: the left paw draws back up the path beside her; the right one, with
+    // nowhere to go in the nook, stays put, dripping, for a moment, and is gone.
+    def(
+      side === 'L' ? MON.pawLRetreat : MON.pawRRetreat,
+      side === 'L'
+        ? { pics: [['pawWet', 4]], power: 250, thru: false, end: -1, march: [[0, -4, 1, 0]] }
+        : { pics: [['pawWet', 4]], power: 250, thru: false, end: 24 },
+    );
   };
   paw('L');
   paw('R');

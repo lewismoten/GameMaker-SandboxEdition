@@ -1,4 +1,4 @@
-// The soundtrack: nine short FM songs for the Sound Blaster. "Ohm Sweet Ohm", Watt's
+// The soundtrack: nine FM songs for the Sound Blaster. "Ohm Sweet Ohm", Watt's
 // theme, runs through the title, menu, story and ending; each room of the house gets its
 // own tune (a jaunty kitchen, a lounge-lizard living room, a garage-band shuffle and a
 // spooky attic). Each voice is its own OPL2 channel; chords spread across three channels.
@@ -68,6 +68,9 @@ function tune(bpm: number, voices: Voice[]): Uint8Array {
 }
 
 const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100): Voice => ({ channel, instrument, notes, velocity });
+/** Joins sections of comping voices, voice by voice. */
+const joinComp = (...parts: [string, string, string][]): [string, string, string] =>
+  [0, 1, 2].map((i) => join(...parts.map((p) => p[i]))) as [string, string, string];
 const join = (...parts: string[]) => parts.filter(Boolean).join(', ');
 const times = (n: number, s: string) => Array(n).fill(s).join(', ');
 
@@ -138,17 +141,21 @@ export function storySong(): Uint8Array {
   return tune(80, [v(0, VIBES, THEME, 100), v(1, strings, a, 55), v(2, strings, b, 55), v(3, strings, c, 55), v(4, BASS, bass(THEME_CH, 'whole'), 85)]);
 }
 
-/** The kitchen: a jaunty plucked version of the theme. */
+/** The kitchen: a jaunty plucked version of the theme, with a minor-key middle (about 73 s). */
 export function kitchenSong(): Uint8Array {
   const ch = [...THEME_CH, ...BRIDGE_CH];
-  const [a, b, c] = comp(ch, 're q. re q.', -1);
+  const midCh = ['Am', 'Dm', 'G7', 'C', 'F', 'Dm', 'G7', 'C'];
+  const mid =
+    'A5 q, E5 q, C5 q, E5 q, F5 q., E5 e, D5 h, G5 e, F5 e, E5 e, D5 e, B4 q, G4 q, C5 q, E5 q, G5 h, ' +
+    'A5 q, C6 q, A5 q, F5 q, D5 e, F5 e, A5 q, G5 e, F5 e, D5 q, B5 q, G5 q, F5 q, D5 q, E5 h, C5 q, r q';
+  const [a, b, c] = joinComp(comp(ch, 're q. re q.', -1), comp(midCh, 'q q q q', -1), comp(ch, 're q. re q.', -1));
   return tune(132, [
-    v(0, pluck, join(THEME, BRIDGE), 105),
+    v(0, pluck, join(THEME, BRIDGE, mid, THEME, BRIDGE), 105),
     v(1, piano, a, 60),
     v(2, piano, b, 60),
     v(3, piano, c, 60),
-    v(4, BASS, bass(ch, 'oompah'), 110),
-    v(5, TICK, backbeat(16), 45),
+    v(4, BASS, join(bass(ch, 'oompah'), bass(midCh, 'walk'), bass(ch, 'oompah')), 110),
+    v(5, TICK, backbeat(40), 45),
   ]);
 }
 
@@ -158,15 +165,20 @@ export function livingSong(): Uint8Array {
   const m =
     'F5 q, A5 e, F5 e, C5 q, A4 q, Bb4 q, D5 e, F5 e, A5 h, G5 q, E5 e, C5 e, Bb4 q, G4 q, A4 e, C5 e, F5 e, A5 e, G5 h, ' +
     'F5 q, A5 e, F5 e, D5 q, Bb4 q, G5 q, Bb5 e, G5 e, E5 q, C5 q, D5 e, E5 e, F5 e, G5 e, A5 q, G5 q, F5 h., r q';
+  // the middle: a sweeter turn through B-flat and G minor (the song runs about 66 s)
+  const midCh = ['Bb', 'Bb', 'F', 'F', 'Gm', 'C7', 'F', 'C7'];
+  const mid =
+    'D5 q, F5 q, Bb5 h, A5 e, Bb5 e, A5 e, G5 e, F5 h, C5 q, F5 q, A5 q., G5 e, F5 w, ' +
+    'G5 q, Bb5 q, D6 q, Bb5 q, C6 q., Bb5 e, G5 q, E5 q, F5 e, G5 e, A5 e, C6 e, A5 q, F5 q, G5 h, E5 q, C5 q';
   const both = [...ch, ...ch];
-  const [a, b, c] = comp(both, 'r q. e q', -1);
+  const [a, b, c] = joinComp(comp(both, 'r q. e q', -1), comp(midCh, 'h h', -1), comp(ch, 'r q. e q', -1));
   return tune(116, [
-    v(0, VIBES, join(m, m), 100),
+    v(0, VIBES, join(m, m, mid, m), 100),
     v(1, organ, a, 50),
     v(2, organ, b, 50),
     v(3, organ, c, 50),
-    v(4, BASS, bass(both, 'walk'), 105),
-    v(5, TICK, backbeat(16), 40),
+    v(4, BASS, join(bass(both, 'walk'), bass(midCh, 'half'), bass(ch, 'walk')), 105),
+    v(5, TICK, backbeat(32), 40),
   ]);
 }
 
@@ -176,15 +188,21 @@ export function garageSong(): Uint8Array {
   const m =
     'A4 e, A4 e, C5 e, A4 e, D5 e, A4 e, E5 q, G5 e, E5 e, D5 e, C5 e, A4 h, D5 e, D5 e, F5 e, D5 e, G5 e, D5 e, A5 q, G5 e, F5 e, E5 e, D5 e, E5 h, ' +
     'A4 e, A4 e, C5 e, A4 e, D5 e, A4 e, E5 q, G5 e, E5 e, D5 e, C5 e, A4 h, F5 q, E5 q, D5 q, B4 q, A4 h, r h';
+  // the middle: stop-time riffs in F, C, D minor and E (the song runs about 70 s)
+  const midCh = ['F', 'F', 'C', 'C', 'Dm', 'Dm', 'E7', 'E7'];
+  const mid =
+    'F5 q, r e, F5 e, A5 q, F5 q, C6 e, A5 e, F5 e, C5 e, F5 h, E5 q, r e, E5 e, G5 q, E5 q, C6 e, G5 e, E5 e, C5 e, E5 h, ' +
+    'D5 e, F5 e, A5 e, D6 e, C6 e, A5 e, F5 q, A5 q, F5 q, D5 h, E5 e, G#5 e, B5 e, D6 e, B5 e, G#5 e, E5 q, G#5 q, B5 q, E5 h';
   const both = [...ch, ...ch];
-  const [a, b, c] = comp(both, 're e re e re e re e', -1);
+  const riff = comp(both, 're e re e re e re e', -1);
+  const [a, b, c] = joinComp(riff, comp([...midCh, ...midCh], 'q q q q', -1), riff);
   return tune(138, [
-    v(0, GUITAR, join(m, m), 110),
+    v(0, GUITAR, join(m, m, mid, mid, m, m), 110),
     v(1, SAW, a, 55),
     v(2, SAW, b, 55),
     v(3, SAW, c, 55),
-    v(4, BASS, bass(both, 'shuffle'), 115),
-    v(5, TICK, backbeat(16), 60),
+    v(4, BASS, join(bass(both, 'shuffle'), bass([...midCh, ...midCh], 'walk'), bass(both, 'shuffle')), 115),
+    v(5, TICK, backbeat(48), 60),
   ]);
 }
 
@@ -192,8 +210,17 @@ export function garageSong(): Uint8Array {
 export function atticSong(): Uint8Array {
   const ch = ['Dm', 'A7', 'Dm', 'Bb', 'Dm', 'Gm', 'A7', 'Dm'];
   const m = 'D5 q, F5 q, A5 h, G5 q, F5 q, E5 h, F5 q, E5 q, D5 q, A4 q, Bb4 q, C5 q, D5 h, D5 q, F5 q, A5 h, Bb5 q, A5 q, G5 h, E5 q, G5 q, C#5 q, E5 q, D5 w';
-  const [a, b, c] = comp(ch, 'h h', -1);
-  return tune(96, [v(0, bell, m, 95), v(1, pad, a, 55), v(2, pad, b, 55), v(3, pad, c, 55), v(4, BASS, bass(ch, 'whole'), 90)]);
+  // the middle: a glimmer of F major among the boxes (the song runs about 80 s, not 20)
+  const midCh = ['F', 'C', 'Dm', 'A7', 'Bb', 'F', 'Gm', 'A7'];
+  const mid = 'A5 h, C6 h, G5 q, E5 q, C5 h, F5 q, A5 q, D6 h, C#6 q, A5 q, E5 h, D6 h, Bb5 q, F5 q, A5 q, F5 q, C5 h, Bb5 q, G5 q, D5 q, G5 q, A5 w';
+  const [a, b, c] = joinComp(comp(ch, 'h h', -1), comp(ch, 'w', -1), comp(midCh, 'h h', -1), comp(ch, 'h h', -1));
+  return tune(96, [
+    v(0, bell, join(m, m, mid, m), 95),
+    v(1, pad, a, 55),
+    v(2, pad, b, 55),
+    v(3, pad, c, 55),
+    v(4, BASS, join(bass(ch, 'whole'), bass(ch, 'half'), bass(midCh, 'half'), bass(ch, 'whole')), 90),
+  ]);
 }
 
 /** Game won: a fanfare, then the theme in full. */

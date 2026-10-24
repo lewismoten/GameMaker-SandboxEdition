@@ -52,11 +52,11 @@ THIS IS SHAREWARE
 
   If Carl made you laugh,
   register for $5: you get a
-  tape of the song and a
-  genuine rolled-up magazine
-  (lightly used, never hit
-  anything). Send a check (US
-  funds) to:
+  Carl sticker (he will land on
+  it) and a genuine rolled-up
+  magazine (lightly used, never
+  hit anything). Send a check
+  (US funds) to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
@@ -66,7 +66,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

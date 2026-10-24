@@ -51,18 +51,74 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
 /** Each level's backdrop ramp ("sky": top to bottom) and how the rest is lit. */
 const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // the banquet by lamplight: warm
-  banquet: { sky: [[40, 16, 10], [150, 70, 40], [96, 36, 24]], mul: [1.0, 0.88, 0.76], add: [14, 6, 0] },
+  banquet: {
+    sky: [
+      [40, 16, 10],
+      [150, 70, 40],
+      [96, 36, 24],
+    ],
+    mul: [1.0, 0.88, 0.76],
+    add: [14, 6, 0],
+  },
   // the battlefield at noon: a pale, dusty blue
-  battle: { sky: [[80, 120, 190], [230, 220, 190], [150, 180, 220]], mul: [1, 1, 1], add: [0, 0, 0] },
+  battle: {
+    sky: [
+      [80, 120, 190],
+      [230, 220, 190],
+      [150, 180, 220],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
   // the rooftops at sunset: orange to violet
-  roofs: { sky: [[70, 40, 110], [255, 190, 110], [220, 100, 90]], mul: [1.0, 0.86, 0.8], add: [16, 4, 4] },
+  roofs: {
+    sky: [
+      [70, 40, 110],
+      [255, 190, 110],
+      [220, 100, 90],
+    ],
+    mul: [1.0, 0.86, 0.8],
+    add: [16, 4, 4],
+  },
   // the kitchen at night: one oil lamp, blue shadows
-  kitchen: { sky: [[10, 10, 24], [70, 60, 70], [36, 30, 44]], mul: [0.72, 0.68, 0.8], add: [8, 4, 12] },
+  kitchen: {
+    sky: [
+      [10, 10, 24],
+      [70, 60, 70],
+      [36, 30, 44],
+    ],
+    mul: [0.72, 0.68, 0.8],
+    add: [8, 4, 12],
+  },
   // the baths: aqua and steam
-  baths: { sky: [[20, 70, 90], [200, 236, 236], [90, 160, 170]], mul: [0.9, 0.98, 1.0], add: [4, 10, 14] },
+  baths: {
+    sky: [
+      [20, 70, 90],
+      [200, 236, 236],
+      [90, 160, 170],
+    ],
+    mul: [0.9, 0.98, 1.0],
+    add: [4, 10, 14],
+  },
   // the theater in the afternoon sun under a red awning
-  theater: { sky: [[110, 150, 210], [250, 236, 200], [180, 200, 230]], mul: [1.0, 0.96, 0.9], add: [8, 4, 0] },
-  plain: { sky: [[60, 90, 150], [230, 220, 200], [140, 160, 190]], mul: [1, 1, 1], add: [0, 0, 0] },
+  theater: {
+    sky: [
+      [110, 150, 210],
+      [250, 236, 200],
+      [180, 200, 230],
+    ],
+    mul: [1.0, 0.96, 0.9],
+    add: [8, 4, 0],
+  },
+  plain: {
+    sky: [
+      [60, 90, 150],
+      [230, 220, 200],
+      [140, 160, 190],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
 };
 
 export interface Pal {

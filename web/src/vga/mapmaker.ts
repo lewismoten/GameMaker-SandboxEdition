@@ -55,7 +55,12 @@ import { MapMakerPaint } from './mapmaker/paint';
 class MapMaker extends MapMakerPaint {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Map Maker', this.work, () => this.saved, () => [{ ext: 'map', bytes: serializeMap(this.map) }]);
+    return openWork(
+      'Map Maker',
+      this.work,
+      () => this.saved,
+      () => [{ ext: 'map', bytes: serializeMap(this.map) }],
+    );
   }
 
   async main(): Promise<void> {

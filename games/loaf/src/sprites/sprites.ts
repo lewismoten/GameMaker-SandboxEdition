@@ -5,7 +5,8 @@
 // gulls, the sandaled feet of a hungry man stomping by (to a loaf, people are mostly feet), the
 // third goat, weevils and a mouse in the wicker, a tiny mustard seed in red sneakers, a fox and
 // an owl at dusk, a village dog, a moth, Brother Camel kneeling (two blocks wide) and the child
-// walking home (two blocks tall). Every sprite is drawn from shapes and given a dark outline.
+// waiting at her door (two blocks tall). Every sprite is drawn from shapes and given a dark outline
+// (the critters that hide in the wicker and the dusk a pale one).
 import { Pixels } from '../../../kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
@@ -99,7 +100,16 @@ export function loafArt(pal: Pal) {
     // the face
     if (o.face !== 'none') {
       const fu = o.face === 'side' ? 0.38 : 0;
-      const eyes: [number, number][] = o.face === 'side' ? [[fu - 0.05, -0.12], [fu + 0.35, -0.12]] : [[-0.32, -0.12], [0.32, -0.12]];
+      const eyes: [number, number][] =
+        o.face === 'side'
+          ? [
+              [fu - 0.05, -0.12],
+              [fu + 0.35, -0.12],
+            ]
+          : [
+              [-0.32, -0.12],
+              [0.32, -0.12],
+            ];
       for (const [u, v] of eyes) {
         if (o.mood === 'blink' || o.mood === 'joy' || o.mood === 'sing') {
           dot(u - 0.08, v + 0.05, ink);
@@ -171,7 +181,9 @@ export function loafArt(pal: Pal) {
         [10, 2],
         [15, 4],
       ])
-        p.set(x, y, c('white', 1)).set(x + 1, y - 1, c('white', 0)).set(x, y - 2, c('white', 1));
+        p.set(x, y, c('white', 1))
+          .set(x + 1, y - 1, c('white', 0))
+          .set(x, y - 2, c('white', 1));
     if (o.mood === 'ouch') p.px.forEach((v, i) => v !== T && v !== ink && v !== c('white', 2) && (p.px[i] = c('red', 3)));
     return outline(p, ink);
   };
@@ -189,7 +201,8 @@ export function buildCharBlocks(pal: Pal) {
     book.add(k('front'), a.body({ face: 'front', wrapped }));
     book.add(k('blink'), a.body({ face: 'front', wrapped, mood: 'blink' }));
     // rolling: the loaf turns over (its face goes round); the bundle waddles instead
-    for (let t = 0; t < 4; t++) book.add(k(`roll${t}`), wrapped ? a.body({ face: 'side', wrapped, lean: [0, 2, 0, -2][t] }) : a.body({ face: 'side', turn: t }));
+    for (let t = 0; t < 4; t++)
+      book.add(k(`roll${t}`), wrapped ? a.body({ face: 'side', wrapped, lean: [0, 2, 0, -2][t] }) : a.body({ face: 'side', turn: t }));
     book.add(k('rise'), a.body({ face: 'front', wrapped, mood: 'joy', rise: 1.6 }));
     book.add(k('riseSide'), a.body({ face: 'side', wrapped, mood: 'joy', rise: 1.4 }));
     book.add(k('hunker'), a.body({ face: 'front', wrapped, mood: 'blink', rise: -1.4 }));
@@ -209,6 +222,9 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
+  // A pale outline instead of the dark one (the same pixels, so the same reach), so a critter
+  // reads on the dark wicker and against the dusk.
+  const lit = (p: Pixels) => outline(p, c('crumb', 0));
   // Big hungry things are solid (they push the loaf away) and take a bite.
   const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
 
@@ -228,11 +244,29 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('hand0', hand(0), hurt(-8));
   book.add('hand1', hand(1), hurt(-8));
+  // Winding up: drawn back into a fist, shaking (shake lines on alternate sides).
+  const fist = (f: number) => {
+    const p = P();
+    const dx = f ? 1 : -1;
+    p.rect(6 + dx, 0, 9, 5, c('ochre', 1))
+      .rect(6 + dx, 0, 2, 5, c('ochre', 0))
+      .rect(6 + dx, 4, 9, 1, c('ochre', 2));
+    blob(p, 10.5 + dx, 8.5, 4.6, 3.6, pal.r('skin'), 0, 3);
+    for (let k = 0; k < 4; k++) p.rect(7 + dx + k * 2.3, 11, 2, 2, c('skin', k % 2 ? 2 : 1));
+    p.line(14 + dx, 8, 15 + dx, 10, c('skin', 2));
+    const side = f ? 18 : 1;
+    p.line(side, 5, side, 9, c('white', 2)).line(side + (f ? -1 : 1), 11, side + (f ? -1 : 1), 13, c('white', 2));
+    return done(p);
+  };
+  book.add('fist0', fist(0), hurt(-8));
+  book.add('fist1', fist(1), hurt(-8));
   // A fish flying like a prayer.
   const fish = (f: number) => {
     const p = P();
     blob(p, 10, 10, 7, 3.6, pal.r('fish'), 0, 3, 1.2);
-    p.line(3, 10, 0, 6 + f * 2, c('fish', 1)).line(3, 10, 0, 14 - f * 2, c('fish', 1)).line(1, 7 + f * 2, 1, 13 - f * 2, c('fish', 0));
+    p.line(3, 10, 0, 6 + f * 2, c('fish', 1))
+      .line(3, 10, 0, 14 - f * 2, c('fish', 1))
+      .line(1, 7 + f * 2, 1, 13 - f * 2, c('fish', 0));
     p.set(14, 9, ink).set(15, 8, c('white', 2)).line(16, 11, 17, 11, ink);
     p.line(8, 7, 11, 5 + f, c('fish', 2)).line(7, 13, 9, 15, c('fish', 1));
     return done(p);
@@ -241,7 +275,13 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('fish1', fish(1), hurt(-6));
   const flop = P();
   blob(flop, 10, 16, 7, 2.4, pal.r('fish'), 0, 3);
-  for (const [x, y] of [[4, 11], [8, 9], [13, 10], [16, 12]]) flop.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
+  for (const [x, y] of [
+    [4, 11],
+    [8, 9],
+    [13, 10],
+    [16, 12],
+  ])
+    flop.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
   book.add('flop', done(flop));
   // A brother loaf, passed hand to hand overhead, spinning.
   const art = loafArt(pal);
@@ -278,12 +318,14 @@ export function buildMonsterBlocks(pal: Pal) {
       p.rect(x, 18 - lift, 9, 2, c('wood', 1)).rect(x + 3, 14 - lift, 1, 4, c('wood', 0));
       p.line(x + 3, 12 - lift, x + 6, 15 - lift, c('wood', 0));
     };
-    foot(1, f ? 3 : 0);
-    foot(10, f ? 0 : 3);
+    foot(1, f === 1 ? 3 : 0);
+    foot(10, f === 0 ? 3 : 0);
     return done(p);
   };
   book.add('feet0', feet(0), hurt(-6));
   book.add('feet1', feet(1), hurt(-6));
+  // standing still, both feet planted, before he turns round
+  book.add('feetStand', feet(2), hurt(-6));
   // The third goat from the left, grazing her way across the hillside. Friendly.
   const goat = (f: number) => {
     const p = P();
@@ -303,56 +345,86 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('goat0', goat(0));
   book.add('goat1', goat(1));
   // A weevil: the bread's own pest, snout first.
-  const weevil = (f: number) => {
+  const weevil = (f: number, stop = false) => {
     const p = P();
-    for (let k = 0; k < 3; k++) p.line(6 + k * 3, 15, 5 + k * 3 + (f ? 2 : -1), 18, ink);
+    for (let k = 0; k < 3; k++) p.line(6 + k * 3, 15, 5 + k * 3 + (stop ? 0 : f ? 2 : -1), 18, ink);
     blob(p, 9, 13, 5, 3.4, pal.r('earth'), 0, 2);
     blob(p, 14, 12, 2.4, 2.2, pal.r('earth'), 0, 3);
     p.line(16, 12, 19, 14, c('earth', 0)).set(14, 11, c('white', 2));
-    p.line(15, 10, 17, 7 + f, ink);
-    return done(p);
+    if (stop) p.line(15, 10, 15, 4, ink).line(16, 10, 18, 5, ink);
+    else p.line(15, 10, 17, 7 + f, ink);
+    return lit(p);
   };
   book.add('weevil0', weevil(0), hurt(-4));
   book.add('weevil1', weevil(1), hurt(-4));
+  // stopped, feelers up, before it turns round
+  book.add('weevilStop', weevil(0, true), hurt(-4));
   // A mouse in the wicker, nose twitching.
   const mouse = (f: number) => {
     const p = P();
     p.line(2, 15, 6, 13 + f, c('grey', 2)).line(1, 13 - f, 2, 15, c('grey', 2));
     blob(p, 10, 13, 5.5, 4, pal.r('grey'), 1, 3);
     blob(p, 15, 12, 3, 2.6, pal.r('grey'), 1, 3);
-    p.disc(13, 9, 1.8, c('red', 3)).set(18, 12 + f, c('red', 2)).set(15, 11, ink);
+    p.disc(13, 9, 1.8, c('red', 3))
+      .set(18, 12 + f, c('red', 2))
+      .set(15, 11, ink);
     p.line(17, 13, 19, 12 - f, c('white', 1)).line(17, 13, 19, 14 + f, c('white', 1));
     p.line(8, 17, 7 + f, 18, c('grey', 1)).line(12, 17, 13 - f, 18, c('grey', 1));
-    return done(p);
+    return lit(p);
   };
   book.add('mouse0', mouse(0), hurt(-6));
   book.add('mouse1', mouse(1), hurt(-6));
+  // sitting up on its haunches, whiskers going, before it turns round
+  const sit = P();
+  sit.line(4, 18, 1, 15, c('grey', 2));
+  blob(sit, 9, 13, 4, 5, pal.r('grey'), 1, 3);
+  blob(sit, 11, 7, 3, 2.8, pal.r('grey'), 1, 3);
+  sit.disc(9, 4, 1.6, c('red', 3)).disc(13, 4, 1.6, c('red', 3)).set(12, 6, ink).set(14, 8, c('red', 2));
+  sit.line(14, 8, 17, 6, c('white', 1)).line(14, 9, 17, 10, c('white', 1)).line(11, 11, 13, 12, c('grey', 1));
+  sit.line(7, 18, 12, 18, c('grey', 1));
+  book.add('mouseSit', lit(sit), hurt(-6));
   // A tiny mustard seed in tiny red sneakers, hopping along (from another song). Say hello.
   const seed = (f: number) => {
     const p = P();
     const y = f ? 10 : 13;
-    p.rect(7, y + 5, 3, 2, c('red', 2)).rect(11, y + 5, 3, 2, c('red', 2)).set(9, y + 5, c('white', 2)).set(13, y + 5, c('white', 2));
+    p.rect(7, y + 5, 3, 2, c('red', 2))
+      .rect(11, y + 5, 3, 2, c('red', 2))
+      .set(9, y + 5, c('white', 2))
+      .set(13, y + 5, c('white', 2));
     blob(p, 10, y, 4, 4.6, pal.r('gold'), 0, 3, 1.2);
-    p.set(9, y - 1, ink).set(12, y - 1, ink).set(10, y + 2, ink).set(11, y + 2, ink);
+    p.set(9, y - 1, ink)
+      .set(12, y - 1, ink)
+      .set(10, y + 2, ink)
+      .set(11, y + 2, ink);
     p.line(11, y - 5, 12, y - 7, c('leaf', 2));
     return done(p);
   };
   book.add('seed0', seed(0), { scorePts: 250 });
   book.add('seed1', seed(1), { scorePts: 250 });
   // A fox at dusk, low and quick.
-  const fox = (f: number) => {
+  const fox = (f: number, sniff = false) => {
     const p = P();
-    for (let k = 0; k < 6; k++) blob(p, 3 + k * 0.6, 10 + k * 0.5 - f, 2.4 - k * 0.2, 1.6, pal.r('fur'), 1, 3);
-    p.set(1, 9 - f, c('white', 2));
+    // sniffing: the tail up like a flag, the nose down to the grass
+    if (sniff) for (let k = 0; k < 6; k++) blob(p, 4 - k * 0.3, 10 - k * 0.8, 2.2 - k * 0.15, 1.5, pal.r('fur'), 1, 3);
+    else for (let k = 0; k < 6; k++) blob(p, 3 + k * 0.6, 10 + k * 0.5 - f, 2.4 - k * 0.2, 1.6, pal.r('fur'), 1, 3);
+    if (sniff) p.set(3, 5, c('white', 2)).set(2, 5, c('white', 2));
+    else p.set(1, 9 - f, c('white', 2));
     blob(p, 10, 12, 5, 3.2, pal.r('fur'), 1, 3);
-    blob(p, 15, 10, 2.8, 2.4, pal.r('fur'), 1, 3);
-    p.line(14, 7, 14, 5, c('fur', 0)).line(16, 7, 17, 5, c('fur', 0)).rect(17, 11, 3, 1, c('fur', 2)).set(19, 11, ink).set(16, 9, ink);
+    const hy = sniff ? 14 : 10;
+    blob(p, 15, hy, 2.8, 2.4, pal.r('fur'), 1, 3);
+    p.line(14, hy - 3, 14, hy - 5, c('fur', 0))
+      .line(16, hy - 3, 17, hy - 5, c('fur', 0))
+      .rect(17, hy + 1, 3, 1, c('fur', 2))
+      .set(19, hy + 1, ink)
+      .set(16, hy - 1, ink);
+    if (sniff) p.set(19, hy - 1, c('white', 2)).set(18, hy - 2, c('white', 2));
     blob(p, 11, 14, 3, 1.4, pal.r('white'), 1, 2);
     p.line(7, 15, 6 + f * 2, 19, ink).line(13, 15, 14 - f * 2, 19, ink);
-    return done(p);
+    return lit(p);
   };
   book.add('fox0', fox(0), hurt(-8));
   book.add('fox1', fox(1), hurt(-8));
+  book.add('foxSniff', fox(0, true), hurt(-8));
   // An owl, swooping.
   const owl = (f: number) => {
     const p = P();
@@ -366,23 +438,35 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('owl0', owl(0), hurt(-6));
   book.add('owl1', owl(1), hurt(-6));
   // A village dog, sniffing for supper.
-  const dog = (f: number) => {
+  const dog = (f: number, sniff = false) => {
     const p = P();
-    p.line(3, 9, 1, 6 - f, c('sand', 1));
+    p.line(3, 9, 1, sniff ? 3 : 6 - f, c('sand', 1));
     blob(p, 9, 11, 6, 3.4, pal.r('sand'), 0, 3);
-    blob(p, 15, 9 + f, 3, 2.6, pal.r('sand'), 0, 3);
-    p.rect(17, 10 + f, 3, 2, c('sand', 2)).set(19, 10 + f, ink).set(15, 8 + f, ink).line(13, 7 + f, 12, 10 + f, c('sand', 0));
-    for (const [x, d] of [[5, 1], [8, -1], [11, 1], [13, -1]]) p.line(x, 14, x + (f ? d : 0), 18, c('sand', 0));
+    const hy = sniff ? 13 : 9 + f;
+    blob(p, 15, hy, 3, 2.6, pal.r('sand'), 0, 3);
+    p.rect(17, hy + 1, 3, 2, c('sand', 2))
+      .set(19, hy + 1, ink)
+      .set(15, hy - 1, ink)
+      .line(13, hy - 2, 12, hy + 1, c('sand', 0));
+    if (sniff) p.set(19, hy - 1, c('white', 2)).set(18, hy - 2, c('white', 2));
+    for (const [x, d] of [
+      [5, 1],
+      [8, -1],
+      [11, 1],
+      [13, -1],
+    ])
+      p.line(x, 14, x + (f ? d : 0), 18, c('sand', 0));
     return done(p);
   };
   book.add('dog0', dog(0), hurt(-7));
   book.add('dog1', dog(1), hurt(-7));
+  book.add('dogSniff', dog(0, true), hurt(-7));
   // A moth round the lamps.
   const moth = (f: number) => {
     const p = P();
     blob(p, 10, 10, 1.4, 3, pal.r('earth'), 1, 3);
     for (const s of [-1, 1]) blob(p, 10 + s * (f ? 4 : 3), f ? 8 : 10, f ? 3.6 : 2.6, f ? 3 : 4, pal.r('sand'), 0, 3);
-    return done(p);
+    return lit(p);
   };
   book.add('moth0', moth(0), hurt(-2));
   book.add('moth1', moth(1), hurt(-2));
@@ -400,7 +484,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(0, 13, 8, 5, c('ochre', 2)).line(0, 18, 8, 18, c('ochre', 0));
     for (let k = 0; k < 8; k++) p.rect(4 + k, 12 - k * 1.2 + (f ? 1 : 0), 3, 4, c('ochre', 2));
     blob(p, 13, 3 + f, 4, 2.6, pal.r('ochre'), 0, 3);
-    p.set(14, 2 + f, ink).set(17, 4 + f, ink).line(12, 0 + f, 11, -1, c('ochre', 0));
+    p.set(14, 2 + f, ink)
+      .set(17, 4 + f, ink)
+      .line(12, 0 + f, 11, -1, c('ochre', 0));
     p.line(15, 5 + f, 17, 5 + f, c('ochre', 0));
     if (f) micro(p, 2, 1, 'Z', c('white', 2));
     return done(p);
@@ -409,7 +495,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('camelA1', camelA(1));
   book.add('camelB0', camelB(0));
   book.add('camelB1', camelB(1));
-  // The child, walking home ahead of you (two blocks: A her head and shawl, B her robe and feet).
+  // The child, waiting at her door (two blocks: A her head and shawl, B her robe and feet).
   const girlA = (f: number) => {
     const p = P();
     blob(p, 10, 13, 5, 6, pal.r('purple'), 0, 2);
@@ -429,5 +515,9 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('girlA1', girlA(1));
   book.add('girlB0', girlB(0));
   book.add('girlB1', girlB(1));
+  // (last, so every other block keeps its number) the seed hopping off after a hello: the same
+  // pictures, worth nothing, so brushing past him as he goes doesn't score every tick
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
   return book;
 }

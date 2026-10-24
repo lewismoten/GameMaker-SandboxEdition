@@ -36,10 +36,32 @@ const BANDO2 = detuned(REED);
 /** Pizzicato strings: plucked, short. */
 const PIZZ = sbi({ modChar: 0x02, carChar: 0x01, modLevel: 0x1a, carLevel: 0x00, modAD: 0xf8, carAD: 0xf6, modSR: 0x55, carSR: 0x56, feedback: 0x06 });
 /** The pipe organ in the tower, and its swell (8 steps, opening up). */
-const ORGAN = sbi({ modChar: 0x21, carChar: 0xa2, modLevel: 0x12, carLevel: 0x0a, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, carWave: 1, feedback: 0x03 });
+const ORGAN = sbi({
+  modChar: 0x21,
+  carChar: 0xa2,
+  modLevel: 0x12,
+  carLevel: 0x0a,
+  modAD: 0xf0,
+  carAD: 0xf0,
+  modSR: 0x0f,
+  carSR: 0x0f,
+  carWave: 1,
+  feedback: 0x03,
+});
 const SWELL = sweep(ORGAN, 8, { mod: 46, car: 40 }, { mod: 10, car: 6 });
 /** The choir: "aah", and its twin; the laughing choir is the same voice, opened up and short. */
-const AAH = sbi({ modChar: 0x61, carChar: 0x21, modLevel: 0x1e, carLevel: 0x00, modAD: 0x62, carAD: 0x63, modSR: 0x14, carSR: 0x15, modWave: 1, feedback: 0x06 });
+const AAH = sbi({
+  modChar: 0x61,
+  carChar: 0x21,
+  modLevel: 0x1e,
+  carLevel: 0x00,
+  modAD: 0x62,
+  carAD: 0x63,
+  modSR: 0x14,
+  carSR: 0x15,
+  modWave: 1,
+  feedback: 0x06,
+});
 const AAH2 = detuned(AAH);
 const HA = waved(leveled(AAH, { mod: 0x14 }), 2, 0);
 const HA2 = detuned(HA);
@@ -75,7 +97,10 @@ const fold = (pc: number, lo: number) => lo + ((pc - lo + 120) % 12);
 /** Four voices, low to high, in G3..F#5 (a seventh chord keeps its seventh on top). */
 function voicing(name: string, shift = 0): number[] {
   const { pc, iv } = shape(name);
-  const low = iv.slice(0, 3).map((i) => fold(pc + i + shift, 55)).sort((a, b) => a - b);
+  const low = iv
+    .slice(0, 3)
+    .map((i) => fold(pc + i + shift, 55))
+    .sort((a, b) => a - b);
   const top = iv[3] === 12 ? low[0] + 12 : fold(pc + iv[3] + shift, 63);
   return [...low, top];
 }
@@ -229,7 +254,8 @@ class Arranger {
             if (b === 2 || (span === 2 && b === 1)) fx.note(VOICES[3], t + b + 0.5, 0.25, v[3], vel - 34, 0.8);
           }
         if (p.comp === 'pizz') for (let b = 0; b < span * 2; b++) fx.note(VOICES[b % 4], t + b / 2, 0.4, v[[0, 2, 1, 3][b % 4]], vel - 34 - (b % 2) * 8, 0.6);
-        if (p.comp === 'celesta') fx.harp(VOICES, t, span, [v[0] + 12, v[1] + 12, v[2] + 12, v[3] + 12, v[2] + 12, v[1] + 12], 1 / 2, (j) => vel - 40 + (j % 4 === 0 ? 8 : 0));
+        if (p.comp === 'celesta')
+          fx.harp(VOICES, t, span, [v[0] + 12, v[1] + 12, v[2] + 12, v[3] + 12, v[2] + 12, v[1] + 12], 1 / 2, (j) => vel - 40 + (j % 4 === 0 ? 8 : 0));
         if (p.comp === 'organ' || p.comp === 'choir') v.forEach((n, j) => fx.note(VOICES[j], t, span, n, vel - 30 + j * 2, 0.98));
         if (p.comp === 'swell') {
           v.forEach((n, j) => fx.note(VOICES[j], t, span, n, vel - 20, 0.98));
@@ -265,7 +291,10 @@ class Arranger {
   /** A band hit on the downbeat of the next bar: the kick, deeper for the one hit, and the cymbal. */
   hit(chord: string, shift = 0): this {
     const at = this.bar * 4;
-    this.fx.program(DRUM.kick, at, THUD).boom(at, 1, root(chord, shift), 127).program(DRUM.kick, at + 1, BOOM);
+    this.fx
+      .program(DRUM.kick, at, THUD)
+      .boom(at, 1, root(chord, shift), 127)
+      .program(DRUM.kick, at + 1, BOOM);
     this.fx.drumRoll(DRUM.cymbal, at, 1 / 4, 1 / 4, 120, 120);
     return this;
   }
@@ -372,7 +401,10 @@ export function wonSong(): Uint8Array {
   a.roll(2, [40, 43, 47, 52]).hit('Em');
   chorus(a, { shift: 2, vel: 112 });
   a.laugh(2, 114);
-  a.section({ name: 'all because', chords: ['Em', 'Em'], tune: ['B4 e, A4 e, G4 e, F#4 e, ~E5 h', 'r w'] }, { comp: 'swell', sing: 'twin', bass: 'long', drums: ['none'], vel: 100 });
+  a.section(
+    { name: 'all because', chords: ['Em', 'Em'], tune: ['B4 e, A4 e, G4 e, F#4 e, ~E5 h', 'r w'] },
+    { comp: 'swell', sing: 'twin', bass: 'long', drums: ['none'], vel: 100 },
+  );
   return a.cmf();
 }
 

@@ -18,7 +18,7 @@ export interface LevelDef {
 
 export const LEVELS: LevelDef[] = [
   { file: 'course', desc: 'The Course', light: 'course', build: course, song: 'course', mons: {}, view: [6, 4] },
-  { file: 'lab', desc: 'The Lab', light: 'lab', build: lab, song: 'lab', mons: { buffer: 3, dean: 5 }, view: [17, 6] },
+  { file: 'lab', desc: 'The Lab', light: 'lab', build: lab, song: 'lab', mons: { buffer: 3, dean: 3 }, view: [17, 6] },
   { file: 'sewer', desc: 'The Sewers', light: 'sewer', build: sewer, song: 'sewer', mons: {}, view: [10, 6] },
   { file: 'tower', desc: 'The Empire', light: 'storm', build: tower, song: 'tower', mons: { dean: 2, pigeon: 5 }, view: [18, 6] },
 ];

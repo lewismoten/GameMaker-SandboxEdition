@@ -29,8 +29,13 @@ async function findC(h: RetroHost, parts: string[]): Promise<DosNode | undefined
 /** What INSTALL says about the registration it found in C:\GM\PLAYGAME.REG. */
 export function registrationLines(reg: string | null): string[] {
   const r = checkRegistration(reg);
-  if (r.kind === 'registered') return [`Registered To: ${r.userName}`, `(serial ${num(SERIAL)}; this release is ${num(GM30_SERIAL)}, copy #1337,`, 'so its registration in GM30.NFO would not fit yours anyway)'];
-  if (r.kind === 'check') return [`Unregistered (serial ${num(SERIAL)}): GM asks a word from`, 'the manual every time. GMCRACK\'s KEYGEN knows the number.'];
+  if (r.kind === 'registered')
+    return [
+      `Registered To: ${r.userName}`,
+      `(serial ${num(SERIAL)}; this release is ${num(GM30_SERIAL)}, copy #1337,`,
+      'so its registration in GM30.NFO would not fit yours anyway)',
+    ];
+  if (r.kind === 'check') return [`Unregistered (serial ${num(SERIAL)}): GM asks a word from`, "the manual every time. GMCRACK's KEYGEN knows the number."];
   return ['PLAYGAME.REG is missing or bad, so GM will not start!', 'GMCRACK can register it again (or GM REGISTER).'];
 }
 
@@ -72,10 +77,17 @@ export async function runWarezInstall(h: RetroHost): Promise<void> {
   // the four parts must all be unzipped here
   const missing = GM30_PARTS.map((_, i) => `GM30.00${i + 1}`);
   const here = await findC(h, ['DOWNLOAD', 'GM30']);
-  const names = new Set(((here?.dir && here.list ? await here.list() : []) as DosNode[]).map((n) => n.name.toUpperCase()));
+  const names = new Set((here?.dir && here.list ? await here.list() : []).map((n) => n.name.toUpperCase()));
   const gone = missing.filter((n) => !names.has(n));
   if (gone.length) {
-    await messageBox(h, [`Insert disk ${missing.indexOf(gone[0]) + 1}: ${gone[0]} not found.`, '', 'Unzip all four parts (GM30-1.ZIP to GM30-4.ZIP)', 'into C:\\DOWNLOAD\\GM30 and run INSTALL again.', '', 'Press any key.']);
+    await messageBox(h, [
+      `Insert disk ${missing.indexOf(gone[0]) + 1}: ${gone[0]} not found.`,
+      '',
+      'Unzip all four parts (GM30-1.ZIP to GM30-4.ZIP)',
+      'into C:\\DOWNLOAD\\GM30 and run INSTALL again.',
+      '',
+      'Press any key.',
+    ]);
     return finish(['INSTALL: installation cancelled. Nothing was changed.']);
   }
   statusLine(h, 'Where should Game-Maker go? Enter to accept, Esc to quit.', YELLOW);
@@ -122,7 +134,17 @@ export async function runWarezInstall(h: RetroHost): Promise<void> {
     }
     if (i === 2) {
       put(h, 58, 8 + i, RED, 'CRC ERROR');
-      await messageBox(h, [`CRC error in ${part}!`, '', 'Disk 3 of 4 is damaged. Line noise during the', 'download? (Somebody picked up the phone.)', '', 'INSTALL removed what it copied: nothing was changed.', 'Tip: the real CD never has CRC errors. Just saying.', '', 'Press any key.']);
+      await messageBox(h, [
+        `CRC error in ${part}!`,
+        '',
+        'Disk 3 of 4 is damaged. Line noise during the',
+        'download? (Somebody picked up the phone.)',
+        '',
+        'INSTALL removed what it copied: nothing was changed.',
+        'Tip: the real CD never has CRC errors. Just saying.',
+        '',
+        'Press any key.',
+      ]);
       return finish([`INSTALL: CRC error in ${part}. Installation aborted. Nothing was changed.`]);
     }
     put(h, 58, 8 + i, GREEN, 'OK');

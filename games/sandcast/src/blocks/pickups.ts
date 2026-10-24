@@ -1,12 +1,12 @@
 // Things Teddy picks up: piles of wet sand, shells and starfish, tennis balls, the golden
-// shells that open the sea gate, popsicles, juice (an extra life), water balloons, the
+// shells that open the sea gate, ice pops, juice (an extra life), water balloons, the
 // shovel and the bucket. Each is an object block whose touch adds to a counter
 // (effect/eamt) and turns it back into plain sand. Returns the juice art, which the BBS
 // room draws again over its own floor.
 import { GRASS, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
 import { CTR, SEQ } from '../rules';
 import { Pixels, art, ball, dither, shade } from '../art/draw';
-import { bg, onSand, sprite20 } from './common';
+import { SOLID, bg, onSand, sprite20 } from './common';
 
 export function addPickups(): Pixels {
   let juiceArt!: Pixels;
@@ -77,6 +77,23 @@ export function addPickups(): Pixels {
     bg.add('tennis', onSand(70, p), { effect: SEQ.fetch, eamt: 1, score: 25, touch: 'sand0' });
   }
   {
+    // A can of tennis balls, seen from above, set down wherever Gwinn naps across the way:
+    // walk into it for another ball, as many times as you like, so throwing every ball away
+    // can never leave Teddy stuck behind her.
+    const p = sprite20();
+    p.disc(10, 10, 9, STEEL[6]).disc(10, 10, 8, STEEL[2]);
+    for (const [x, y] of [
+      [7, 7],
+      [13, 8],
+      [9, 13],
+    ]) {
+      ball(p, x, y, 3.2, YELLOW, 3);
+      p.set(x - 1, y - 1, STEEL[7]);
+    }
+    p.rect(3, 9, 1, 3, STEEL[7]);
+    bg.add('ballCan', onSand(80, p), { solid: SOLID, effect: SEQ.fetch, eamt: 1 });
+  }
+  {
     // Golden conch shell.
     const p = sprite20();
     for (let y = 0; y < 20; y++)
@@ -113,7 +130,7 @@ export function addPickups(): Pixels {
       ],
       { k: WOOD[0], B: WOOD[5], b: WOOD[4], w: WOOD[6], d: WOOD[3] },
     );
-    bg.add('popsicle', onSand(75, p), { hp: 40, touch: 'sand0' });
+    bg.add('icepop', onSand(75, p), { hp: 40, touch: 'sand0' });
   }
   {
     // A jar of peanut butter (extra life: no corgi can resist it).

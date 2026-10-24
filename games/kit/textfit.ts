@@ -328,7 +328,8 @@ export function checkTextScreen(s: TextScreen, opts: TextFitOptions = {}, marks?
     // A palette that lacks the color (or a text page whose ink was matched in another palette) shows another one.
     if (t.want) {
       const shown = [0, 1, 2].map((k) => s.palette[t.col * 3 + k]);
-      if (Math.hypot(shown[0] - t.want[0], shown[1] - t.want[1], shown[2] - t.want[2]) > 30) problems.push(`ink shows as rgb(${shown.join(',')}), not rgb(${t.want.join(',')})`);
+      if (Math.hypot(shown[0] - t.want[0], shown[1] - t.want[1], shown[2] - t.want[2]) > 30)
+        problems.push(`ink shows as rgb(${shown.join(',')}), not rgb(${t.want.join(',')})`);
     }
     if (problems.length) issues.push({ screen: s.name, text: t.box ? '[marker]' : t.text, x: t.x, y: t.y, artPixels: art, contrast, problems });
   }

@@ -132,8 +132,7 @@ export function farmTiles(): Tiles {
       })(),
       { grav: GRAV.up | GRAV.right, next: `belt${1 - ph}`, ntime: 3 },
     );
-  for (const ph of [0, 1])
-    t.air(`beltAir${ph}`, copy(t.pic('barnIn')), { grav: GRAV.up | GRAV.right, next: `beltAir${1 - ph}`, ntime: 3 });
+  for (const ph of [0, 1]) t.air(`beltAir${ph}`, copy(t.pic('barnIn')), { grav: GRAV.up | GRAV.right, next: `beltAir${1 - ph}`, ntime: 3 });
 
   // The pig wallow: mud that holds you up like water.
   for (const ph of [0, 1]) {

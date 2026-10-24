@@ -10,12 +10,28 @@ import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import type { Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { lewieCameo } from '../../../kit/cameos';
+import { goatArt } from '../sprites/sprites';
 import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
 const LIFE = 1;
+/** Ticks the empty place in the line stays open, leans shut (still open) and stays shut. */
+export const GAP_OPEN = 44;
+export const GAP_LEAN = 18;
+export const GAP_SHUT = 36;
 /** Ticks between spits from a kneeling camel. */
 export const SPIT_EVERY = 46;
+/** Ticks a kneeling camel puffs its cheeks before each spit. */
+export const SPIT_WINDUP = 10;
+/**
+ * Water never runs out: a well, the oasis or a trough glints for one tick in every
+ * SIP_EVERY + 1, and a goat pushing into it then takes a sip (one breath and one hit point),
+ * so a goat who screamed her breath away can always get it back.
+ */
+export const SIP_EVERY = 28;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -56,13 +72,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   const floor = (seed: number) => speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.3);
-  const straw = (seed: number, base = floor(seed)) => {
+  // Straw on the stable floor: two quiet tones (earth, and strands of one straw color), so
+  // the brown and grey animals on it stand out.
+  const straw = (seed: number, base = speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.06)) => {
     const r = rng(seed + 50);
-    for (let k = 0; k < 16; k++) {
+    for (let k = 0; k < 10; k++) {
       const x = r() * 18 + 1;
       const y = r() * 18 + 1;
       const dx = r() < 0.5 ? 1 : -1;
-      base.line(x, y, x + dx * 3, y + (r() < 0.5 ? 1 : 0), c('hay', 1 + Math.floor(r() * 3)));
+      base.line(x, y, x + dx * 3, y + (r() < 0.5 ? 1 : 0), c('hay', 1));
     }
     return base;
   };
@@ -74,7 +92,12 @@ export function buildBlocks(pal: Pal): BlockBook {
     [13, 12, 'gold'],
     [8, 15, 'cloth'],
   ] as const)
-    flowers.set(x, y, c(k, 3)).set(x - 1, y, c(k, 2)).set(x + 1, y, c(k, 2)).set(x, y - 1, c(k, 2)).set(x, y + 1, c(k, 2));
+    flowers
+      .set(x, y, c(k, 3))
+      .set(x - 1, y, c(k, 2))
+      .set(x + 1, y, c(k, 2))
+      .set(x, y - 1, c(k, 2))
+      .set(x, y + 1, c(k, 2));
   book.add('flowers', flowers);
   book.add('path', path(41));
   book.add('sand', sand(43));
@@ -201,15 +224,30 @@ export function buildBlocks(pal: Pal): BlockBook {
   const crate = (full: string | null) => {
     const p = cobble(105);
     p.rect(2, 3, 16, 15, c('wood', 1)).frame(2, 3, 16, 15, c('wood', 0)).rect(3, 4, 14, 2, c('wood', 3));
-    if (full === 'cabbage') for (const [x, y] of [[6, 10], [13, 10], [9, 13], [10, 8]]) blob(p, x, y, 3.5, 3.2, R('olive'), 1, 3, 1.1);
+    if (full === 'cabbage')
+      for (const [x, y] of [
+        [6, 10],
+        [13, 10],
+        [9, 13],
+        [10, 8],
+      ])
+        blob(p, x, y, 3.5, 3.2, R('olive'), 1, 3, 1.1);
     if (full === 'figs')
-      for (const [x, y] of [[6, 9], [10, 11], [14, 9], [8, 14], [13, 14], [11, 7]]) blob(p, x, y, 2.4, 2.4, R('purple'), 0, 3, 1);
+      for (const [x, y] of [
+        [6, 9],
+        [10, 11],
+        [14, 9],
+        [8, 14],
+        [13, 14],
+        [11, 7],
+      ])
+        blob(p, x, y, 2.4, 2.4, R('purple'), 0, 3, 1);
     if (!full) p.rect(4, 7, 12, 9, c('wood', 0));
     return p;
   };
   book.add('crate', crate(null), { solid: SOLID });
-  book.add('cabbage', crate('cabbage'), { solid: SOLID, hp: 12, score: 10, touch: 'crate' });
-  book.add('figs', crate('figs'), { solid: SOLID, hp: 12, score: 10, touch: 'crate' });
+  book.add('cabbage', crate('cabbage'), { solid: SOLID, hp: 4, score: 10, touch: 'crate' });
+  book.add('figs', crate('figs'), { solid: SOLID, hp: 4, score: 10, touch: 'crate' });
   // A washing line across the alley: the tunics are solid until eaten.
   const laundry = (full: boolean) => {
     const p = cobble(107);
@@ -229,7 +267,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.disc(8, 8, 1.5, c('water', 2));
     return p;
   };
-  book.add('well', well(), { solid: SOLID });
+  book.add('well', well(), { solid: SOLID, next: 'wellSip', ntime: SIP_EVERY });
   // The census: Caesar Augustus wants everyone counted. A goat can fix that.
   const census = (scroll: boolean) => {
     const p = cobble(111);
@@ -239,7 +277,14 @@ export function buildBlocks(pal: Pal): BlockBook {
       p.rect(4, 8, 12, 7, c('cloth', 3)).rect(3, 8, 2, 7, c('wood', 3)).rect(15, 8, 2, 7, c('wood', 3));
       for (let y = 9; y < 14; y += 2) p.rect(6, y, 7, 1, c('ink', 1));
       p.rect(9, 13, 3, 2, c('red', 2));
-    } else for (const [x, y] of [[5, 10], [9, 9], [12, 12], [7, 13]]) p.set(x, y, c('cloth', 2));
+    } else
+      for (const [x, y] of [
+        [5, 10],
+        [9, 9],
+        [12, 12],
+        [7, 13],
+      ])
+        p.set(x, y, c('cloth', 2));
     return p;
   };
   book.add('census', census(true), { solid: SOLID, score: 100, touch: 'censusEaten' });
@@ -278,17 +323,22 @@ export function buildBlocks(pal: Pal): BlockBook {
     return bg;
   };
   // Hay: health and breath. Pushing into a pile eats it.
-  book.add('hay', hayPile(grass(121), 121), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'grassA' });
-  book.add('hayIn', hayPile(straw(123), 123), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'straw' });
+  book.add('hay', hayPile(grass(121), 121), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'grassA' });
+  book.add('hayIn', hayPile(straw(123), 123), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'straw' });
   const thistle = (bg: Pixels) => {
     for (let k = 0; k < 5; k++) bg.line(10, 18, 4 + k * 3, 9 + (k % 2) * 3, c('olive', 1));
-    for (const [x, y] of [[5, 8], [10, 5], [15, 9]]) {
+    for (const [x, y] of [
+      [5, 8],
+      [10, 5],
+      [15, 9],
+    ]) {
       blob(bg, x, y + 2, 2.5, 2, R('olive'), 1, 2);
       bg.disc(x, y, 2.2, c('purple', 2)).set(x, y - 1, c('purple', 3));
     }
     return bg;
   };
-  book.add('thistle', thistle(grass(125)), { solid: SOLID, effect: SCREAMSEQ, eamt: 2, score: 5, touch: 'grassB' });
+  // a thistle is a munch (the +1 is only so it plays the munch, not wool's bleat of joy)
+  book.add('thistle', thistle(grass(125)), { solid: SOLID, hp: 1, effect: SCREAMSEQ, eamt: 2, score: 5, touch: 'grassB' });
   // The sheepfold's gate is tied with rope. Goats eat rope.
   const gate = (tied: boolean) => {
     const p = grass(127);
@@ -329,12 +379,36 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.set(10, 10, c('star', 2)).set(9, 10, c('star', 2)).set(11, 10, c('star', 2)).set(10, 9, c('star', 2)).set(10, 11, c('star', 2));
     return p;
   };
-  book.add('star0', sparkle(() => grass(141), 0), { score: 50, touch: 'grassB', next: 'star1', ntime: 6 });
-  book.add('star1', sparkle(() => grass(141), 1), { score: 50, touch: 'grassB', next: 'star0', ntime: 4 });
-  book.add('starS0', sparkle(() => sand(142), 0), { score: 50, touch: 'sand', next: 'starS1', ntime: 6 });
-  book.add('starS1', sparkle(() => sand(142), 1), { score: 50, touch: 'sand', next: 'starS0', ntime: 4 });
-  book.add('starC0', sparkle(() => cobble(143), 0), { score: 50, touch: 'cobble', next: 'starC1', ntime: 6 });
-  book.add('starC1', sparkle(() => cobble(143), 1), { score: 50, touch: 'cobble', next: 'starC0', ntime: 4 });
+  book.add(
+    'star0',
+    sparkle(() => grass(141), 0),
+    { score: 50, touch: 'grassB', next: 'star1', ntime: 6 },
+  );
+  book.add(
+    'star1',
+    sparkle(() => grass(141), 1),
+    { score: 50, touch: 'grassB', next: 'star0', ntime: 4 },
+  );
+  book.add(
+    'starS0',
+    sparkle(() => sand(142), 0),
+    { score: 50, touch: 'sand', next: 'starS1', ntime: 6 },
+  );
+  book.add(
+    'starS1',
+    sparkle(() => sand(142), 1),
+    { score: 50, touch: 'sand', next: 'starS0', ntime: 4 },
+  );
+  book.add(
+    'starC0',
+    sparkle(() => cobble(143), 0),
+    { score: 50, touch: 'cobble', next: 'starC1', ntime: 6 },
+  );
+  book.add(
+    'starC1',
+    sparkle(() => cobble(143), 1),
+    { score: 50, touch: 'cobble', next: 'starC0', ntime: 4 },
+  );
   const fire = (f: number) => {
     const p = grass(145);
     p.disc(10, 12, 7, c('stone', 1)).disc(10, 12, 5, c('ink', 0));
@@ -390,9 +464,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('water'), 0, 3, 0.4 + Math.sin((x + y * 2) / 3) * 0.2, x, y));
     return p;
   };
-  book.add('water', oasis(), { solid: SOLID });
+  book.add('water', oasis(), { solid: SOLID, next: 'waterSip', ntime: SIP_EVERY });
   // A camel kneeling at rest, spitting at whatever passes; facing left or right.
-  const camelKneel = (left: boolean) => {
+  const camelKneel = (left: boolean, windUp = false) => {
     const p = sand(155);
     blob(p, 10, 16, 9, 3, R('ink'), 0, 1, 0.4);
     blob(p, 11, 12, 8, 5, R('camel'), 0, 3);
@@ -401,13 +475,18 @@ export function buildBlocks(pal: Pal): BlockBook {
     blob(p, 3, 5, 3, 2, R('camel'), 1, 3);
     p.set(1, 5, c('ink', 0)).set(2, 4, c('ink', 0));
     p.rect(8, 11, 8, 2, c('red', 2)).rect(8, 11, 8, 1, c('gold', 2));
+    // winding up to spit: cheeks puffed out and a bead of spit at the lips
+    if (windUp) blob(p, 3, 5, 4, 3, R('camel'), 1, 3).set(1, 5, c('ink', 0)).set(2, 3, c('ink', 0)).disc(0.5, 7, 1.5, c('star', 2));
     return left ? p : p.flipX();
   };
-  book.add('camelL', camelKneel(true), { solid: SOLID, hp: -3, birthMon: MON.spitL, birthTime: SPIT_EVERY });
-  book.add('camelR', camelKneel(false), { solid: SOLID, hp: -3, birthMon: MON.spitR, birthTime: SPIT_EVERY });
+  // Each kneeling camel rests, winds up for SPIT_WINDUP ticks (puffed cheeks), then spits: the
+  // spit is born from camelL/camelR, shown for one tick at the end of each SPIT_EVERY cycle.
+  // The maps place camelLRest/camelRRest (added at the end), whose animation runs the cycle.
+  book.add('camelL', camelKneel(true), { solid: SOLID, hp: -3, birthMon: MON.spitL, birthTime: SPIT_EVERY, next: 'camelLRest', ntime: 1 });
+  book.add('camelR', camelKneel(false), { solid: SOLID, hp: -3, birthMon: MON.spitR, birthTime: SPIT_EVERY, next: 'camelRRest', ntime: 1 });
   book.add('thornSand', thorn(sand(157), false), { solid: SOLID, hp: -4 });
   book.add('woolBushSand', thorn(sand(159), true), { solid: SOLID, effect: WOOL, eamt: 1, score: 20, touch: 'thornSand' });
-  book.add('haySand', hayPile(sand(161), 161), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'sand' });
+  book.add('haySand', hayPile(sand(161), 161), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'sand' });
 
   // ---------- the stable ----------
   const planks = (seed: number) => {
@@ -456,7 +535,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   // A drink from the trough: always there, always a little health.
-  book.add('trough', trough(), { solid: SOLID, hp: 2 });
+  book.add('trough', trough(), { solid: SOLID, hp: 2, effect: SCREAMSEQ, eamt: 1 });
   // The pail: kicking it over costs points (and makes a terrible noise).
   const pail = (up: boolean) => {
     const p = straw(183);
@@ -506,7 +585,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('place', place(false), { solid: SOLID, effect: WOOL, eamt: -WOOL_NEEDED, score: 500, touch: 'placeOpen' });
-  book.add('placeOpen', place(true));
+  // The line jostles: now and then the goats either side shuffle together and close the
+  // gap (solid) for a couple of seconds. First the goat on the right leans in, a warning
+  // you can see from the foot of the aisle; the gap is still open while she leans.
+  const liner = goatArt(pal).back({ fur: 'goat', lo: 0, hi: 4, horns: true, beard: false }, 0);
+  const lean = place(true).blit(liner, 13, 0, 255);
+  const shut = straw(189).blit(liner, -9, 0, 255).blit(liner, 9, 0, 255);
+  book.add('placeOpen', place(true), { next: 'placeLean', ntime: GAP_OPEN });
+  book.add('placeLean', lean, { next: 'placeShut', ntime: GAP_LEAN });
+  book.add('placeShut', shut, { solid: SOLID, next: 'placeOpen', ntime: GAP_SHUT });
   // A dark doorway out of each map (the link blocks).
   const exitWay = (bg: Pixels, arrow: string) => {
     const p = bg;
@@ -520,7 +607,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('stableDoor', exitWay(straw(197), '>'));
   // the caravan tents' lower halves, and the blue and red tents' doorways (added last, so the
   // blocks before keep their numbers)
-  for (const [k, n] of [['purple', 'P'], ['blue', 'B'], ['red', 'R']] as const) {
+  for (const [k, n] of [
+    ['purple', 'P'],
+    ['blue', 'B'],
+    ['red', 'R'],
+  ] as const) {
     book.add(`tent${n}Low`, tents[k][0][1], { solid: SOLID });
     book.add(`tentDoor${n}Low`, tents[k][1][1], { solid: SOLID });
     if (n !== 'P') book.add(`tentDoor${n}`, tents[k][1][0], { solid: SOLID });
@@ -544,5 +635,89 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('rope', rope(), { solid: SOLID, effect: WOOL, eamt: -WOOL_NEEDED, score: 500, touch: 'straw' });
+
+  // Keepsakes, added last so every block before keeps its number. A tin heart in the grass in
+  // the far corner of the shepherds' field (a glint crosses it now and then) and a painted
+  // Easter egg half in the sand by the caravan's west rocks: each a few points, gone when
+  // touched (the ground under it is its touch block), with no sound of its own.
+  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('star', 2), dark: c('grey', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(grass(23), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'grassB',
+      score: 100,
+    });
+  const egg = { ink: c('ink', 0), shell: R('pink'), paint: [c('blue', 1), c('blue', 2)], accent: c('gold', 3), white: c('star', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(sand(43), egg, 'zigzag', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'sand',
+      score: 50,
+    });
+  // Teenage Lewie (Snowbound: red knit hat, red coat, his snow shovel) helping muck out the
+  // stable's back corner. Scenery: he stands where the stall wall was, so he is solid like it.
+  // Drawn in the lit ramps only, so the stable's lamplight falls on him as on everyone else.
+  const lit = [
+    'ink',
+    'grass',
+    'dirt',
+    'sand',
+    'stone',
+    'brick',
+    'wood',
+    'hay',
+    'goat',
+    'horn',
+    'wool',
+    'camel',
+    'donkey',
+    'ox',
+    'blue',
+    'red',
+    'purple',
+    'skin',
+    'olive',
+    'thorn',
+    'water',
+    'cloth',
+    'pink',
+    'grey',
+  ].flatMap((k) => R(k));
+  book.add('lewie', straw(203).blit(lewieCameo(pal.pal, 'down0', { use: lit }), 0, 0, 255), { solid: SOLID });
+
+  // Sips (added last, so every block before keeps its number): the well and the oasis glint,
+  // and a stone trough by the field's path, so breath can always be had again (SIP_EVERY).
+  const glint = (p: Pixels, x: number, y: number) =>
+    p
+      .set(x, y, c('star', 2))
+      .set(x - 1, y, c('water', 3))
+      .set(x + 1, y, c('water', 3))
+      .set(x, y - 1, c('water', 3))
+      .set(x, y + 1, c('water', 3));
+  const sip = { solid: SOLID, hp: 1, effect: SCREAMSEQ, eamt: 1, ntime: 1 };
+  book.add('wellSip', glint(well(), 12, 11), { ...sip, next: 'well', touch: 'well' });
+  book.add('waterSip', glint(glint(oasis(), 6, 7), 14, 13), { ...sip, next: 'water', touch: 'water' });
+  const stoneTrough = (wet: boolean) => {
+    const p = grass(205);
+    blob(p, 10, 16, 9, 2, R('ink'), 0, 1, 0.4);
+    p.rect(1, 6, 18, 10, c('stone', 1)).rect(1, 6, 18, 2, c('stone', 4)).rect(3, 8, 14, 6, c('water', 1)).rect(4, 9, 5, 1, c('water', 3));
+    return wet ? glint(p, 13, 11) : p;
+  };
+  book.add('troughField', stoneTrough(false), { solid: SOLID, next: 'troughFieldSip', ntime: SIP_EVERY });
+  for (const side of ['L', 'R'] as const) {
+    const art = (w: boolean) => camelKneel(side === 'L', w);
+    book.add(`camel${side}Rest`, art(false), { solid: SOLID, hp: -3, next: `camel${side}Wind`, ntime: SPIT_EVERY - SPIT_WINDUP - 1 });
+    book.add(`camel${side}Wind`, art(true), { solid: SOLID, hp: -3, next: `camel${side}`, ntime: SPIT_WINDUP });
+  }
+  // A board on a stake by the first cousin in the field: SPACE, the scream key, taught where
+  // it is first needed.
+  const screamSign = grass(207);
+  blob(screamSign, 10, 18, 4, 1.5, R('ink'), 0, 1, 0.4);
+  screamSign.rect(9, 11, 2, 7, c('wood', 1)).rect(0, 3, 20, 9, c('cloth', 3)).rect(0, 3, 20, 1, c('wood', 2)).rect(0, 11, 20, 1, c('wood', 1));
+  micro(screamSign, 1, 5, 'SPACE', c('red', 1));
+  book.add('signScream', screamSign, { solid: SOLID });
+  book.add('troughFieldSip', stoneTrough(true), { ...sip, next: 'troughField', touch: 'troughField' });
   return book;
 }

@@ -50,7 +50,9 @@ function monsterEntries(): Entry[] {
     for (let f = 0; f < n; f++) out.push([`${name}${f}`, () => make(f)]);
   };
   add('shot', 1, () => renderSprite(C.shot(), { noShadow: true }));
-  add('wire', 4, (f) => renderSprite(C.wire(f)));
+  // henchmen get a dark rim: a green wireframe on the Glass Garden's mint, a bat on the dark grid
+  const RIM = rgb(14, 10, 30);
+  add('wire', 4, (f) => renderSprite(C.wire(f), { outline: RIM }));
   add('crystal', 2, (f) => renderSprite(C.crystal(f)));
   add('jaggy', 2, (f) => renderSprite(C.jaggy(f)));
   add('steam', 3, (f) => renderSprite(C.steam(f), { noShadow: true }));
@@ -58,10 +60,19 @@ function monsterEntries(): Entry[] {
   add('teddy', 4, (f) => renderSprite(C.teddy(f)));
   add('gwinn', 4, (f) => renderSprite(C.gwinn(f)));
   add('leo', 2, (f) => renderSprite(C.docLeo(f)));
-  add('bat', 2, (f) => renderSprite(C.scaled(C.bat(f), 1.3), { noShadow: true }));
-  for (let s = 0; s < 5; s++) add(`count${s}_`, 2, (f) => renderSprite(C.count(s, f)));
+  // each friend's one-tick hello: the only picture that gives light (see characters/monsters.ts)
+  add('teddyhi', 1, () => renderSprite(C.teddy(2)));
+  add('gwinnhi', 1, () => renderSprite(C.gwinn(2)));
+  add('leohi', 1, () => renderSprite(C.docLeo(1)));
+  add('bat', 2, (f) => renderSprite(C.scaled(C.bat(f), 1.3), { noShadow: true, outline: RIM }));
+  // the Count a size up from his model, rimmed, so his smaller stages still show on the dark grid
+  const big = (s: number, f: number) => C.scaled(C.count(s, f), s < 2 ? 1.1 : 1.3);
+  for (let s = 0; s < 5; s++) add(`count${s}_`, 2, (f) => renderSprite(big(s, f), { outline: RIM }));
+  // cracked: he blinks white
+  for (let s = 0; s < 5; s++) add(`count${s}_hit`, 2, (f) => renderSprite(big(s, f), { flash: f ? 0.5 : 0.15, outline: RIM }));
   add('crown', 2, (f) => renderSprite(C.crown(f)));
-  add('shard', 2, (f) => renderSprite(C.shard(f), { noShadow: true }));
+  add('stolen', 2, (f) => renderSprite(C.stolenLens(f)));
+  add('shard', 2, (f) => renderSprite(C.scaled(C.shard(f), 1.7), { noShadow: true, outline: RIM }));
   add('pop', 3, (f) => renderSprite(C.pop(f), { noShadow: true }));
   return out;
 }

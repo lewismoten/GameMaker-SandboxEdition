@@ -48,7 +48,14 @@ export abstract class ComputerFolders extends ComputerDrives {
       const g = cat.find((c) => dosDir(c) === dir && this.downloads.has(c.id));
       if (!g) return undefined;
       const free = isBizarreGame(g) || undefined;
-      return { title: g.title, files: new GameFiles(await this.catalogFiles(g)), where: path, kind: 'shareware', notice: g.notice, ...(free ? { free, catalogId: g.id } : {}) };
+      return {
+        title: g.title,
+        files: new GameFiles(await this.catalogFiles(g)),
+        where: path,
+        kind: 'shareware',
+        notice: g.notice,
+        ...(free ? { free, catalogId: g.id } : {}),
+      };
     }
     if (drive === 'D' && this.cdIn && (top === 'GAMEWARE' || top === 'GM')) {
       const g = cat.find((c) => c.kind === 'gameware' && c.id.toUpperCase() === dir);

@@ -27,6 +27,9 @@ import { NIGHT } from './blanket';
 import { baseboard, houseMonsters, wallpaper } from './house';
 import { DBLTAP_MON } from './ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** The bowl of cereal, a like, the papaya, the pomelo, the mushroom pin. */
 export const CAUSES = 5;
 
@@ -53,11 +56,17 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
   bar.rect(0, 0, 20, 20, c('glow', 1)).rect(0, 0, 20, 2, c('glow', 3)).rect(0, 2, 20, 1, c('glow', 2));
   for (let x = 2; x < 20; x += 5) bar.rect(x, 8, 3, 3, c('glow', 0));
   book.add('feedFloor', bar, { solid: SOLID });
-  loot(book, pal, 'feed');
+  loot(book, pal, 'feed', LATE);
   const post = (kind: 'text' | 'heart') => {
     const p = feedBack(pal);
     p.rect(0, 0, 20, 9, c('white', 2)).rect(0, 0, 20, 1, c('white', 1)).rect(0, 8, 20, 1, c('glow', 0));
-    if (kind === 'text') for (const [y, w] of [[2, 16], [4, 12], [6, 14]]) p.rect(2, y, w, 1, c('grey', 1));
+    if (kind === 'text')
+      for (const [y, w] of [
+        [2, 16],
+        [4, 12],
+        [6, 14],
+      ])
+        p.rect(2, y, w, 1, c('grey', 1));
     else {
       p.disc(4, 4, 2.4, c('glow', 2)).rect(8, 2, 9, 1, c('grey', 1)).rect(8, 5, 6, 1, c('grey', 1));
       heart(p, 16, 5, 2, c('red', 2));
@@ -88,17 +97,33 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
     for (const x of [8, 30]) pic.rect(x, 33, 3, 7, c('wood', 1));
     // a throw blanket over the back
     blob(pic, 26, 12, 6, 5, R('quilt'), 1, 3);
-    addPicture(book, 'couch', pic, (col, row) => (row ? wall(81 + col) : wall(83 + col)), (_col, row) => (row ? { solid: SOLID } : AIR));
+    addPicture(
+      book,
+      'couch',
+      pic,
+      (col, row) => (row ? wall(81 + col) : wall(83 + col)),
+      (_col, row) => (row ? { solid: SOLID } : AIR),
+    );
   }
   {
     // the phone: a slab of glow, the feed scrolling on it, the edges of the screen
     const pic = new Pixels(40, 40, 255);
     pic.rect(2, 0, 36, 40, c('ink', 0)).rect(4, 4, 32, 32, c('glow', 2));
-    for (let y = 7; y < 34; y += 9) pic.rect(7, y, 26, 6, c('white', 2)).rect(9, y + 2, 14, 1, c('grey', 1)).rect(9, y + 4, 10, 1, c('grey', 1));
+    for (let y = 7; y < 34; y += 9)
+      pic
+        .rect(7, y, 26, 6, c('white', 2))
+        .rect(9, y + 2, 14, 1, c('grey', 1))
+        .rect(9, y + 4, 10, 1, c('grey', 1));
     heart(pic, 29, 10, 2, c('red', 2));
     heart(pic, 29, 28, 2, c('red', 2));
     pic.rect(16, 1, 8, 1, c('grey', 1)).disc(20, 38, 1.2, c('grey', 1));
-    addPicture(book, 'phone', pic, (col, row) => (col ? feedBack(pal) : row ? baseboard(pal, 86) : wallpaper(pal, 87)), () => AIR);
+    addPicture(
+      book,
+      'phone',
+      pic,
+      (col, row) => (col ? feedBack(pal) : row ? baseboard(pal, 86) : wallpaper(pal, 87)),
+      () => AIR,
+    );
   }
   // the vague graphic: ENOUGH IS ENOUGH, in bold sans serif
   {
@@ -113,7 +138,9 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
   // POST: it takes his five causes, and posts
   const button = (sent: boolean) => {
     const p = feedBack(pal);
-    p.rect(1, 4, 18, 14, c(sent ? 'green' : 'glow', sent ? 2 : 3)).frame(1, 4, 18, 14, c('white', 2)).rect(2, 17, 17, 1, c('glow', 0));
+    p.rect(1, 4, 18, 14, c(sent ? 'green' : 'glow', sent ? 2 : 3))
+      .frame(1, 4, 18, 14, c('white', 2))
+      .rect(2, 17, 17, 1, c('glow', 0));
     if (sent) {
       // people clapped with the care emoji
       blob(p, 10, 11, 4.5, 4.5, R('yellow'), 1, 2);
@@ -129,7 +156,13 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
     // the bowl of cereal he cried into
     p.rect(3, 12, 14, 2, c('white', 2));
     for (let k = 0; k < 5; k++) p.rect(4 + k, 14 + k, 12 - k * 2, 1, c('white', 1));
-    for (const [x, y, k] of [[5, 11, 'gold'], [8, 10, 'red'], [11, 11, 'gold'], [14, 10, 'teal']] as const) p.disc(x, y, 1.3, c(k, 2));
+    for (const [x, y, k] of [
+      [5, 11, 'gold'],
+      [8, 10, 'red'],
+      [11, 11, 'gold'],
+      [14, 10, 'teal'],
+    ] as const)
+      p.disc(x, y, 1.3, c(k, 2));
     p.set(6, 6, c('ice', 2)).set(6, 8, c('ice', 1)).set(13, 5, c('ice', 2)).line(16, 4, 17, 13, c('metal', 2));
   });
   plotThing(book, 'feed', 'like2', (p) => {
@@ -141,7 +174,14 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
     // a papaya, halved: orange, its seeds
     blob(p, 10, 11, 6, 7.5, R('crust'), 1, 2);
     blob(p, 10, 11, 4.5, 6, R('red'), 2, 3);
-    for (const [x, y] of [[9, 9], [11, 10], [9, 12], [11, 13], [10, 11]]) p.set(x, y, c('ink', 0));
+    for (const [x, y] of [
+      [9, 9],
+      [11, 10],
+      [9, 12],
+      [11, 13],
+      [10, 11],
+    ])
+      p.set(x, y, c('ink', 0));
   });
   plotThing(book, 'feed', 'like4', (p) => {
     // a pomelo: big, pale green-yellow, a leaf
@@ -207,9 +247,17 @@ export function dbltapSprites(book: SpriteBook, pal: Pal): void {
   const turtle = (f: number) => {
     const p = P();
     blob(p, 9, 13, 7, 5, pal.r('green'), 0, 3);
-    for (const [x, y] of [[6, 11], [10, 10], [12, 13], [7, 14]]) p.set(x, y, c('green', 0));
+    for (const [x, y] of [
+      [6, 11],
+      [10, 10],
+      [12, 13],
+      [7, 14],
+    ])
+      p.set(x, y, c('green', 0));
     blob(p, 17, 13 - f, 2.6, 2.2, pal.r('green'), 2, 3);
-    p.set(18, 12 - f, ink).rect(3 + f, 17, 2, 2, c('green', 2)).rect(13 - f, 17, 2, 2, c('green', 2));
+    p.set(18, 12 - f, ink)
+      .rect(3 + f, 17, 2, 2, c('green', 2))
+      .rect(13 - f, 17, 2, 2, c('green', 2));
     return outline(p, ink);
   };
   book.add('turtle0', turtle(0), hurts(0));
@@ -219,7 +267,12 @@ export function dbltapSprites(book: SpriteBook, pal: Pal): void {
 export function dbltapMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // trending tags drift down off the hamster flag to the floor and away left
-  set[DBLTAP_MON.trend] = mon(anim(mb, 'trend0', 'trend1', 6), { power: POWER.foe, thru: 1, end: -1, newmon: DBLTAP_MON.fluff }, [corner(0, 0, 1), corner(-1, 3, 1), corner(-2, 6, 1), corner(-8, 6, 1, 4)]);
+  set[DBLTAP_MON.trend] = mon(anim(mb, 'trend0', 'trend1', 6), { power: POWER.foe, thru: 1, end: -1, newmon: DBLTAP_MON.fluff }, [
+    corner(0, 0, 1),
+    corner(-1, 3, 1),
+    corner(-2, 6, 1),
+    corner(-8, 6, 1, 4),
+  ]);
   set[DBLTAP_MON.petition] = mon(anim(mb, 'petition0', 'petition1', 5), { power: POWER.foe, thru: 1, newmon: DBLTAP_MON.fluff }, pace(3, 1));
   set[DBLTAP_MON.mail] = mon(anim(mb, 'mail0', 'mail1', 3), { power: POWER.foe, thru: 1, newmon: DBLTAP_MON.fluff }, pace(3, 2));
   set[DBLTAP_MON.shroom] = mon(anim(mb, 'shroom0', 'shroom1', 6), { power: POWER.foe, thru: 1, newmon: DBLTAP_MON.fluff }, pace(2, 1));
@@ -260,7 +313,10 @@ export const dbltap: Monologue = {
     const IN = 12;
     // the living room at night: the couch, the cereal, the phone
     m.row(0, 0, IN - 1, '^').set(4, 0, '*');
-    m.fill(0, 1, IN, 8, '.').row(9, 0, IN - 1, '_').row(10, 0, IN - 1, '=').row(11, 0, IN - 1, '#');
+    m.fill(0, 1, IN, 8, '.')
+      .row(9, 0, IN - 1, '_')
+      .row(10, 0, IN - 1, '=')
+      .row(11, 0, IN - 1, '#');
     m.fill(IN, 0, W - IN, 10, 'f').fill(IN, 10, W - IN, 2, 'F');
     m.set(2, 9, '!');
     placePicture(m, 'couch', 4, 8, 2, 2);

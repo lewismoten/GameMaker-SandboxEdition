@@ -46,7 +46,7 @@ export async function offerAddedDemo(entry: CatalogEntry | undefined, files: Gam
   const rec = d.inGame ? files.get(d.file) : await fetchExtraDemo(d);
   if (!rec) return files;
   const include = await modal<boolean>(`Copy ${entry.title}`, (close) => {
-    const box = h('input', { type: 'checkbox', id: 'added-demo-include' }) as HTMLInputElement;
+    const box = h('input', { type: 'checkbox', id: 'added-demo-include' });
     return h(
       'form',
       {

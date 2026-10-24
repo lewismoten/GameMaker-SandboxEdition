@@ -2,7 +2,7 @@
 // clears, the area's header shows "Page 1 of 3", as many entries (FILE_ID.DIZ and all) as fit
 // above the prompt, and N)ext / P)rev (or Enter) turn the page. Nothing scrolls off the top
 // before the caller has seen it, however many files the area grows to.
-import { attr, COLS, ROWS } from '../text/textScreen';
+import { ROWS } from '../text/textScreen';
 import type { Term } from './term';
 
 /** Rows the terminal shows above its status bar. */
@@ -70,7 +70,12 @@ export class Pager {
       now(list.entries).map((e) => e.length),
       room,
     );
-    const brief = list.compact ? paginate(now(list.compact).map(() => 1), room) : full;
+    const brief = list.compact
+      ? paginate(
+          now(list.compact).map(() => 1),
+          room,
+        )
+      : full;
     this.paged = { full, brief };
     this.extended = !list.compact || full.length <= EXTENDED_PAGES;
   }
@@ -86,10 +91,7 @@ export class Pager {
   /** Clears the screen and draws the current page. */
   show(page = this.page): void {
     this.page = Math.max(0, Math.min(this.count - 1, page));
-    const s = this.t.screenRef;
-    s.fill(0, 0, COLS - 1, SCREEN_ROWS - 1, attr(7, 0));
-    s.cursorX = 0;
-    s.cursorY = 0;
+    this.t.clear();
     for (const l of this.list.header(this.page, this.count, this.extended)) this.t.line(l);
     const entries = this.extended || !this.list.compact ? now(this.list.entries) : now(this.list.compact).map((l) => [l]);
     for (const i of this.pages[this.page]) for (const l of entries[i] ?? []) this.t.line(l);
@@ -115,7 +117,12 @@ export class Pager {
     else if (answer === 'E' && this.list.compact) {
       const first = this.pages[this.page][0] ?? 0;
       this.extended = !this.extended;
-      this.show(Math.max(0, this.pages.findIndex((p) => p.includes(first))));
+      this.show(
+        Math.max(
+          0,
+          this.pages.findIndex((p) => p.includes(first)),
+        ),
+      );
     } else return false;
     return true;
   }

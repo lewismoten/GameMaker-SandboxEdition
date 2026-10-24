@@ -153,8 +153,18 @@ export function buildSledder(cb: ReturnType<typeof buildCharBlocks>): Character 
   );
   // Steering, braking and pushing all add momentum: the sled drifts and keeps its speed.
   const mo = { momentum: 1, jstkBut: 0 };
-  set(5, [{ pic: n('sledBrake'), y: -1, pause: 2 }], { key: KEY.up, jstkMov: JOY.up, sound: SND.brake, ...mo });
-  set(6, [{ pic: n('sled'), y: 1, pause: 2 }], { key: KEY.down, jstkMov: JOY.down, sound: SND.push, ...mo });
+  set(5, [{ pic: n('sledBrake'), y: -2, pause: 2 }], { key: KEY.up, jstkMov: JOY.up, sound: SND.brake, ...mo });
+  // A push is one shove per press (norepeat): holding DOWN can't wind the sled's momentum up
+  // far past the 11 px a tick it can actually move, where the brakes would take seconds to
+  // bite. Tap it to go faster.
+  set(
+    6,
+    [
+      { pic: n('sled'), y: 1, pause: 1 },
+      { pic: n('sled'), y: 1, pause: 2 },
+    ],
+    { key: KEY.down, jstkMov: JOY.down, sound: SND.push, norepeat: 1, ...mo },
+  );
   set(
     7,
     [
@@ -183,7 +193,7 @@ export function buildSledder(cb: ReturnType<typeof buildCharBlocks>): Character 
     set(
       i,
       [
-        { pic: n(pic), x: dx, y: -1, pause: 1 },
+        { pic: n(pic), x: dx, y: -2, pause: 1 },
         { pic: n(pic), x: 0, pause: 1 },
       ],
       { key, jstkMov: joy, sound: SND.brake, ...mo },

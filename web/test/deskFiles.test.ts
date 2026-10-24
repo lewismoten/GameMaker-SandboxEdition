@@ -4,7 +4,16 @@ import { pcExtras } from '../src/retro/hacks/pcExtras';
 import type { CatalogEntry } from '../src/project/files';
 import type { ProgramRef } from '../src/retro/dos/vfs';
 
-const goat: CatalogEntry = { id: 'goat', title: 'Third Goat from the Left', kind: 'shareware', path: 'games/goat', exe: 'GOAT.EXE', gam: 'goat.gam', files: ['goat.gam'], notice: 'Shareware!' };
+const goat: CatalogEntry = {
+  id: 'goat',
+  title: 'Third Goat from the Left',
+  kind: 'shareware',
+  path: 'games/goat',
+  exe: 'GOAT.EXE',
+  gam: 'goat.gam',
+  files: ['goat.gam'],
+  notice: 'Shareware!',
+};
 const files = async () => new Map<string, Uint8Array>();
 const run: ProgramRef & { kind: 'game' } = { kind: 'game', title: goat.title, gam: 'goat.gam', files, notice: goat.notice, saveId: 'game:goat' };
 const date = new Date(1995, 0, 1);

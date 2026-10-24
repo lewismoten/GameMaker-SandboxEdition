@@ -11,7 +11,7 @@ import { buildPalette } from '../src/art/pal';
 import { BlockBook } from '../src/common/blocks';
 import { commonMonsters } from '../src/common/characters';
 import { MapBuilder, ORIGIN } from '../src/levels/maps';
-import { buildCharBlocks, commonSprites, makeBook } from '../src/common/sprites';
+import { buildCharBlocks, commonSprites, makeBook, rimFoes } from '../src/common/sprites';
 import { SCENES } from '../src/scenes';
 import type { Group } from '../src/groups/types';
 
@@ -25,6 +25,7 @@ function sets(g: Group, pal: ReturnType<typeof buildPalette>) {
   const mb = makeBook('mbl');
   commonSprites(mb, pal);
   g.sprites(mb, pal);
+  rimFoes(mb, pal);
   return { book, bbl: book.finish(), mb };
 }
 
@@ -47,7 +48,9 @@ for (const def of SCENES) {
   def.monsters(mons, s.mb);
   const cb = buildCharBlocks(pal);
   const [w, h] = size ?? [60, 12];
-  const pic = renderRegion(m.build(), s.bbl, s.mb.blocks, mons, ORIGIN, ORIGIN, w, h, [{ pixels: cb.blocks[cb.n('front')].pixels, x: start[0] + ORIGIN, y: start[1] + ORIGIN }]);
+  const pic = renderRegion(m.build(), s.bbl, s.mb.blocks, mons, ORIGIN, ORIGIN, w, h, [
+    { pixels: cb.blocks[cb.n('front')].pixels, x: start[0] + ORIGIN, y: start[1] + ORIGIN },
+  ]);
   writePng(join(out, `${def.name}.png`), pic, pal.pal, 1);
 }
 console.log(`previews in ${out}`);

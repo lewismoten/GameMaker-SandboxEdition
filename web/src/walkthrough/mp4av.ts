@@ -85,15 +85,32 @@ const MOVIE_TIMESCALE = 1000;
 /** An MPEG-4 descriptor: tag, length in the four byte form, body. */
 function descriptor(tag: number, body: Uint8Array): Uint8Array {
   const n = body.length;
-  return new W().u8(tag, 0x80 | ((n >> 21) & 127), 0x80 | ((n >> 14) & 127), 0x80 | ((n >> 7) & 127), n & 127).bytes(body).result();
+  return new W()
+    .u8(tag, 0x80 | ((n >> 21) & 127), 0x80 | ((n >> 14) & 127), 0x80 | ((n >> 7) & 127), n & 127)
+    .bytes(body)
+    .result();
 }
 
 function esds(a: AvAudio): Uint8Array {
-  const bitrate = Math.round((a.samples.reduce((n, s) => n + s.data.length, 0) * 8 * a.sampleRate) / Math.max(1, a.samples.reduce((n, s) => n + s.duration, 0)));
+  const bitrate = Math.round(
+    (a.samples.reduce((n, s) => n + s.data.length, 0) * 8 * a.sampleRate) /
+      Math.max(
+        1,
+        a.samples.reduce((n, s) => n + s.duration, 0),
+      ),
+  );
   const dsi = descriptor(5, a.config ?? new Uint8Array(0));
   // objectTypeIndication 0x40 (MPEG-4 audio), streamType 5 (audio) << 2 | 1, buffer size, max and average bitrate
   const dcd = descriptor(4, new W().u8(0x40, 0x15, 0, 0, 0).u32(bitrate).u32(bitrate).bytes(dsi).result());
-  const es = descriptor(3, new W().u16(1).u8(0).bytes(dcd).bytes(descriptor(6, Uint8Array.of(2))).result());
+  const es = descriptor(
+    3,
+    new W()
+      .u16(1)
+      .u8(0)
+      .bytes(dcd)
+      .bytes(descriptor(6, Uint8Array.of(2)))
+      .result(),
+  );
   return fullBox('esds', 0, 0, (w) => w.bytes(es));
 }
 
@@ -110,7 +127,16 @@ function audioEntry(a: AvAudio): Uint8Array {
     .result();
   if (a.codec === 'aac') return box('mp4a', head, esds(a));
   // dOps (Opus in ISO BMFF): version, channels, pre-skip, input rate, gain, mapping family 0
-  const dOps = box('dOps', new W().u8(0, a.channels).u16(a.preSkip ?? 312).u32(a.sampleRate).u16(0).u8(0).result());
+  const dOps = box(
+    'dOps',
+    new W()
+      .u8(0, a.channels)
+      .u16(a.preSkip ?? 312)
+      .u32(a.sampleRate)
+      .u16(0)
+      .u8(0)
+      .result(),
+  );
   return box('Opus', head, dOps);
 }
 
@@ -156,11 +182,28 @@ function sampleTable(entry: Uint8Array, samples: AvSample[], offset: number, syn
   return box('stbl', ...boxes);
 }
 
-function trak(id: number, kind: 'video' | 'audio', timescale: number, samples: AvSample[], entry: Uint8Array, offset: number, size?: { width: number; height: number }): Uint8Array {
+function trak(
+  id: number,
+  kind: 'video' | 'audio',
+  timescale: number,
+  samples: AvSample[],
+  entry: Uint8Array,
+  offset: number,
+  size?: { width: number; height: number },
+): Uint8Array {
   const duration = samples.reduce((n, s) => n + s.duration, 0);
   const movieDuration = Math.round((duration * MOVIE_TIMESCALE) / timescale);
   const tkhd = fullBox('tkhd', 0, 3, (w) => {
-    w.u32(0).u32(0).u32(id).u32(0).u32(movieDuration).zeros(8).u16(0).u16(0).u16(kind === 'audio' ? 0x0100 : 0).u16(0);
+    w.u32(0)
+      .u32(0)
+      .u32(id)
+      .u32(0)
+      .u32(movieDuration)
+      .zeros(8)
+      .u16(0)
+      .u16(0)
+      .u16(kind === 'audio' ? 0x0100 : 0)
+      .u16(0);
     MATRIX.forEach((m) => w.u32(m));
     w.u32((size?.width ?? 0) << 16).u32((size?.height ?? 0) << 16);
   });
@@ -174,18 +217,30 @@ function trak(id: number, kind: 'video' | 'audio', timescale: number, samples: A
       .u8(0),
   );
   const header = kind === 'video' ? fullBox('vmhd', 0, 1, (w) => w.u16(0).u16(0).u16(0).u16(0)) : fullBox('smhd', 0, 0, (w) => w.u16(0).u16(0));
-  const dinf = box('dinf', fullBox('dref', 0, 0, (w) => w.u32(1).bytes(fullBox('url ', 0, 1, () => undefined))));
+  const dinf = box(
+    'dinf',
+    fullBox('dref', 0, 0, (w) => w.u32(1).bytes(fullBox('url ', 0, 1, () => undefined))),
+  );
   return box('trak', tkhd, box('mdia', mdhd, hdlr, box('minf', header, dinf, sampleTable(entry, samples, offset, kind === 'video'))));
 }
 
 /** The whole file. */
 export function muxAv(video: AvVideo, audio?: AvAudio): Blob {
   const ftyp = box('ftyp', new W().str('isom').u32(0x200).str('isomiso2avc1mp41').result());
-  const seconds = Math.max(video.samples.reduce((n, s) => n + s.duration, 0) / video.timescale, audio ? audio.samples.reduce((n, s) => n + s.duration, 0) / audio.sampleRate : 0);
+  const seconds = Math.max(
+    video.samples.reduce((n, s) => n + s.duration, 0) / video.timescale,
+    audio ? audio.samples.reduce((n, s) => n + s.duration, 0) / audio.sampleRate : 0,
+  );
   const videoBytes = video.samples.reduce((n, s) => n + s.data.length, 0);
   const moovWith = (vOff: number, aOff: number) => {
     const mvhd = fullBox('mvhd', 0, 0, (w) => {
-      w.u32(0).u32(0).u32(MOVIE_TIMESCALE).u32(Math.round(seconds * MOVIE_TIMESCALE)).u32(0x00010000).u16(0x0100).zeros(10);
+      w.u32(0)
+        .u32(0)
+        .u32(MOVIE_TIMESCALE)
+        .u32(Math.round(seconds * MOVIE_TIMESCALE))
+        .u32(0x00010000)
+        .u16(0x0100)
+        .zeros(10);
       MATRIX.forEach((m) => w.u32(m));
       w.zeros(24).u32(audio ? 3 : 2);
     });
@@ -197,7 +252,10 @@ export function muxAv(video: AvVideo, audio?: AvAudio): Blob {
   const vOff = ftyp.length + moovLen + 8;
   const moov = moovWith(vOff, vOff + videoBytes);
   const dataLen = videoBytes + (audio ? audio.samples.reduce((n, s) => n + s.data.length, 0) : 0);
-  const mdatHead = new W().u32(8 + dataLen).str('mdat').result();
+  const mdatHead = new W()
+    .u32(8 + dataLen)
+    .str('mdat')
+    .result();
   const parts: BlobPart[] = [ftyp as BlobPart, moov as BlobPart, mdatHead as BlobPart];
   for (const s of video.samples) parts.push(s.data as BlobPart);
   if (audio) for (const s of audio.samples) parts.push(s.data as BlobPart);

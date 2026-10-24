@@ -67,7 +67,7 @@ const LEGEND: Record<string, string> = {
   ':': 'vineGourd',
   '%': 'bramble',
   '5': 'rosemary',
-  '$': 'coin',
+  $: 'coin',
   n: 'bin',
   p: 'spice',
   P: 'poster',
@@ -160,7 +160,13 @@ export function bathroom(book: BlockBook): Level {
   const W = 52;
   const H = 14;
   const m = new MapBuilder(book, 'outside');
-  m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 10, '.').row(11, 1, W - 2, '_').row(12, 0, W - 1, '=').row(13, 0, W - 1, '#').col(0, 0, 13, 'outside').col(W - 1, 0, 13, 'outside');
+  m.row(0, 1, W - 2, '^')
+    .fill(1, 1, W - 2, 10, '.')
+    .row(11, 1, W - 2, '_')
+    .row(12, 0, W - 1, '=')
+    .row(13, 0, W - 1, '#')
+    .col(0, 0, 13, 'outside')
+    .col(W - 1, 0, 13, 'outside');
   // the shower stall: glass, the shower head (drips), the steam rising out of the vents up to the silver rack
   m.fill(1, 1, 5, 11, 'g').set(5, 3, 'h').col(1, 4, 11, '~').col(2, 4, 11, '~').set(1, 12, 'v').set(2, 12, 'v');
   m.row(3, 1, 3, 'R').set(3, 2, '1');
@@ -195,7 +201,11 @@ export function aisle(book: BlockBook): Level {
   const W = 66;
   const H = 14;
   const m = new MapBuilder(book, 'outside');
-  m.fill(1, 0, W - 2, 12, 'f').row(12, 0, W - 1, 'L').row(13, 0, W - 1, 'L').col(0, 0, 13, 'outside').col(W - 1, 0, 13, 'outside');
+  m.fill(1, 0, W - 2, 12, 'f')
+    .row(12, 0, W - 1, 'L')
+    .row(13, 0, W - 1, 'L')
+    .col(0, 0, 13, 'outside')
+    .col(W - 1, 0, 13, 'outside');
   for (let x = 3; x < W - 2; x += 6) m.set(x, 0, '-');
   m.row(12, 14, 50, 'M');
   // the automatic doors, the sign
@@ -208,6 +218,8 @@ export function aisle(book: BlockBook): Level {
   // brambles, owls, the second shelving (a wild loofah on it), rosemary
   m.set(18, 11, '%').mon(MON.owl, 19, 3).mon(MON.owl, 27, 2);
   m.row(9, 20, 23, 'E').row(6, 21, 24, 'E').set(22, 8, '$').set(24, 5, '5').mon(MON.feral, 20, 8);
+  // an Easter egg at the far end of the top shelf, away from the rosemary
+  m.set(21, 5, 'easterEgg');
   // the bakery's day-old bin: Loaf #13; a coin on the floor
   m.set(28, 11, 'n').mon(MON.loaf, 28, 10).set(30, 11, '$');
   // the second tree: its vine heavy with gourds, a coin at the top
@@ -219,61 +231,102 @@ export function aisle(book: BlockBook): Level {
   // the last shelving: rosemary up top, a wild loofah in front of it, a spare coin
   m.row(9, 53, 57, 'e').row(6, 53, 57, 'e').fill(53, 7, 5, 2, 'o').set(55, 5, '5').mon(MON.feral, 55, 11).set(59, 11, '$');
   // the checkout: the clerk; six coins
+  // Mystery Robot Joe, taking stock before the last shelves
+  m.set(52, 11, 'joe');
   m.set(61, 11, '@').set(62, 11, '&').set(62, 10, 'f');
   m.link(61, 11, 'next');
   return { m, start: at(3, 11), size: [W, H] };
 }
 
-/** 3. You Crossed a Line: home in the dark, six candles, the bathroom door. */
+/** 3. You Crossed a Line: home in the dark, on two floors: out of bed and along the hall
+ * downstairs, up the stairs at its end, and back along the landing upstairs to the bathroom,
+ * lighting six candles on the way (seven burn in all, so one can be missed). The screaming
+ * towels flap along both halls. */
 export function home(book: BlockBook): Level {
-  const W = 72;
-  const H = 12;
+  const W = 50;
+  const H = 16;
+  const UP = 33; // the upstairs landing runs from x 1 to here; past it the stairwell is open to the ceiling
   const m = new MapBuilder(book, 'joists');
-  m.row(0, 1, W - 2, 'crownMold').fill(1, 1, W - 2, 8, 'paper').row(9, 1, W - 2, 'base').row(10, 0, W - 1, 'boards').row(11, 0, W - 1, 'joists').col(0, 0, 11, 'joists').col(W - 1, 0, 11, 'joists');
+  m.row(0, 1, W - 2, 'crownMold')
+    .fill(1, 1, W - 2, 12, 'paper')
+    .row(13, 1, W - 2, 'base')
+    .row(14, 0, W - 1, 'boards')
+    .row(15, 0, W - 1, 'joists')
+    .col(0, 0, 15, 'joists')
+    .col(W - 1, 0, 15, 'joists');
+  // the landing upstairs (its floor is the hall's ceiling)
+  m.row(6, 1, UP, 'base').row(7, 1, UP, 'boards');
   // the bed: her asleep, his pillow with the washcloth of shame on it; the night stand (a candle)
-  m.set(1, 6, 'headboardTop').col(1, 7, 8, 'headboard').set(2, 8, 'wife').row(8, 3, 7, 'bedTop').set(5, 8, 'pillow').row(9, 2, 7, 'bedSide').set(1, 9, 'bedSide');
-  m.set(8, 9, 'stand').set(8, 8, 'unlit');
-  m.set(10, 4, 'weddingPic').set(10, 9, 'creak');
-  m.col(12, 8, 9, 'dresser').col(13, 8, 9, 'dresser').set(13, 7, 'unlit');
-  m.set(17, 9, 'doorway').set(17, 8, 'doorwayTop');
-  // the hall: Teddy, the Bard's picture, a shelf (a candle), the mirror, the hall table (a candle)
-  m.mon(MON.teddy, 21, 9).set(22, 5, 'leoPic');
-  m.row(7, 25, 26, 'wallShelf').set(26, 6, 'unlit');
-  for (let q = 0; q < 4; q++) m.set(29 + q, 5, `mirror1${q}0`);
-  m.set(31, 9, 'table').set(31, 8, 'unlit');
-  // the linen closet: its shelves, a candle on top, the screaming towels flapping out down the hall
-  m.row(7, 35, 37, 'linen').set(36, 6, 'unlit').mon(MON.flapper, 38, 9);
-  m.mon(MON.gwinn, 43, 9).set(47, 9, 'creak');
-  // the bookcase (a candle on top), another towel, a spare candle on the floor
-  m.row(7, 50, 51, 'wallShelf').row(5, 50, 51, 'wallShelf').set(51, 4, 'unlit').mon(MON.flapper, 54, 9).set(58, 9, 'unlitB');
+  m.set(1, 10, 'headboardTop')
+    .col(1, 11, 12, 'headboard')
+    .set(2, 12, 'wife')
+    .row(12, 3, 7, 'bedTop')
+    .set(5, 12, 'pillow')
+    .row(13, 2, 7, 'bedSide')
+    .set(1, 13, 'bedSide');
+  m.set(8, 13, 'stand').set(8, 12, 'unlit');
+  m.set(10, 9, 'weddingPic');
+  m.col(12, 12, 13, 'dresser').col(13, 12, 13, 'dresser').set(13, 11, 'unlit');
+  m.set(17, 13, 'doorway').set(17, 12, 'doorwayTop');
+  // the hall downstairs: a towel flapping, the Bard's picture, the hall table (a candle), another towel
+  m.mon(MON.flapper, 19, 13).set(22, 9, 'leoPic');
+  m.set(25, 13, 'table').set(25, 12, 'unlit');
+  m.mon(MON.flapper, 28, 13);
+  // the stairwell: the hall mirror ("YOU MADE IT WORSE") up its wall, a spare candle on the floor
+  // at the far end, and the stairs climbing left to the landing
+  for (let q = 0; q < 4; q++) m.set(42 + q, 4, `mirror1${q}0`);
+  m.set(46, 13, 'unlitB');
+  // (open treads, so the hall runs on underneath and you hop up through them)
+  m.row(12, 38, 39, 'wallShelf').row(10, 36, 37, 'wallShelf').row(8, 34, 35, 'wallShelf');
+  // a little shelf on the stairwell wall, a hop up and right off the top of the stairs: a tin heart
+  m.row(4, 37, 38, 'wallShelf').set(38, 3, 'tinHeart');
+  // upstairs, back to the left: a shelf (a candle), the landing table (a candle), a towel, the
+  // linen closet (a candle on top) and its last towel, the bathroom door
+  m.row(4, 28, 29, 'wallShelf').set(28, 3, 'unlit');
+  m.set(20, 6, 'table').set(20, 5, 'unlit');
+  m.mon(MON.flapper, 16, 6);
+  m.row(4, 12, 14, 'linen').set(13, 3, 'unlit');
+  m.mon(MON.flapper, 8, 6);
   // the bathroom door: six candles burning; through it, the steam of the bathroom, where the
   // walk to the shower gives the funeral bell (the door's 1.6 s toll) time to ring out
-  m.set(66, 9, 'bathDoor').set(66, 8, 'bathTop');
-  m.fill(67, 0, 4, 10, 'steamAir').row(10, 67, 70, 'showerFloor');
-  m.link(70, 9, 'next');
-  return { m, start: at(5, 7), size: [W, H] };
+  m.set(6, 6, 'bathDoor').set(6, 5, 'bathTop');
+  m.fill(1, 1, 5, 6, 'steamAir').row(7, 1, 5, 'showerFloor');
+  m.link(1, 6, 'next');
+  return { m, start: at(5, 11), size: [W, H] };
 }
 
-/** 4. Scrubbus Maximus: the demon sponge, its citrus suds, rosemary brine, her silver rack. */
+/** 4. Scrubbus Maximus: the shower at midnight. Rosemary on the caddy's shelves, over the drain,
+ * then up the steam to a perch level with the demon sponge, smug on the tub rim across the gap,
+ * spitting cursed citrus suds that float slowly over the perch. Brine cleanses it, top and
+ * bottom, back into the pink one; along the rim for it, and down to her silver rack. */
 export function shower(book: BlockBook): Level {
-  const W = 34;
+  const W = 36;
   const H = 12;
   const m = new MapBuilder(book, 'outside');
-  m.fill(1, 0, W - 2, 10, 'steamAir').row(10, 0, W - 1, 'showerFloor').row(11, 0, W - 1, 'showerFloor').col(0, 0, 11, 'outside').col(W - 1, 0, 11, 'outside');
-  // the drain, full of cursed water
-  m.row(10, 12, 13, 'drain0');
-  // the caddy's shelves, rosemary on them, a dry washcloth on the floor
-  m.row(7, 4, 6, 'caddy').set(5, 6, 'rosemaryS');
+  m.fill(1, 0, W - 2, 10, 'steamAir')
+    .row(10, 0, W - 1, 'showerFloor')
+    .row(11, 0, W - 1, 'showerFloor')
+    .col(0, 0, 11, 'outside')
+    .col(W - 1, 0, 11, 'outside');
+  // the caddy's shelves, rosemary on them (the first sprig sings)
+  m.row(7, 4, 6, 'caddy').set(5, 6, 'rosemaryFirst');
   m.row(5, 8, 10, 'caddy').set(9, 4, 'rosemaryS');
-  m.set(8, 9, 'clothS');
-  m.row(7, 15, 17, 'caddy').set(16, 6, 'rosemaryS');
-  m.row(7, 19, 20, 'caddy').set(20, 6, 'rosemaryS');
-  // Scrubbus Maximus, smug where it stands; the soap dish behind it up on its tiles
-  m.mon(MON.spongeA0, 24, 8).mon(MON.spongeB0, 24, 9);
-  m.row(7, 26, 28, 'caddy').set(27, 6, 'soapDishB');
-  m.set(20, 3, 'curl0').set(30, 2, 'curl0').set(3, 2, 'curl0');
-  // her silver rack
-  m.set(30, 9, 'herRack');
-  m.link(30, 9, 'won');
+  // the drain, full of cursed water; a shelf past it
+  m.row(10, 11, 12, 'drain0');
+  m.row(7, 14, 16, 'caddy').set(15, 6, 'rosemaryS');
+  // a pot of rosemary on the floor (a fresh sprig on it now and then)
+  m.set(13, 9, 'pot');
+  // the steam out of the vent, up to his perch (a sprig on it), level with the sponge
+  m.set(18, 10, 'vent').col(18, 3, 9, 'steam0');
+  m.row(4, 19, 21, 'caddy').set(20, 3, 'rosemaryS');
+  // the gap, cursed water below it; the tub rim, Scrubbus Maximus smug on it, the soap dish at its end
+  m.row(10, 22, 23, 'drain0');
+  m.row(4, 24, 31, 'caddy');
+  m.mon(MON.spongeA0, 26, 2).mon(MON.spongeB0, 26, 3);
+  m.set(31, 3, 'soapDishB');
+  m.set(13, 3, 'curl0').set(27, 7, 'curl0').set(3, 2, 'curl0');
+  // her silver rack, down off the end of the rim
+  m.set(33, 9, 'herRack');
+  m.link(33, 9, 'won');
   return { m, start: at(2, 9), size: [W, H] };
 }

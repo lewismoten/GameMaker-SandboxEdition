@@ -45,9 +45,10 @@ export async function playThrough(secret: boolean, seed = 1): Promise<Bot> {
     }
     if (process.env.BOT_LOOT) console.log(`loot ${room.spec.name}: ${n} picked up for ${extra} ticks${bot.grabbed.length === got ? ', left' : ''}`);
     const keys = sim.segments.slice(seg - 1).reduce((n, s) => n + s.keys.length, 0);
-    console.log(`ok   ${room.spec.name.padEnd(20)} deaths ${sim.deaths}  hp ${sim.ci.hitpts}  lives ${sim.ci.lives}  ingredients ${sim.ingredients}  score ${sim.ci.score}  (${keys} keys)`);
+    console.log(
+      `ok   ${room.spec.name.padEnd(20)} deaths ${sim.deaths}  hp ${sim.ci.hitpts}  lives ${sim.ci.lives}  ingredients ${sim.ingredients}  score ${sim.ci.score}  (${keys} keys)`,
+    );
   }
   if (sim.ended !== 'won') throw new Error(`The bot did not win (${sim.ended})`);
   return bot;
 }
-

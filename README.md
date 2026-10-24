@@ -6,7 +6,7 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 
 **▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
-![The 1994 desk: a PC running Game-Maker, with disks, games and manuals](web/public/og-image.png)
+![The 1994 desk: a PC showing the Snowbound title screen, a shelf of game boxes, a disk box, a night window with the moon, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
 
@@ -49,6 +49,15 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
   [Mac](mac/README.md), [Windows](win/README.md) and [Linux](linux/README.md) notes).
   Everything is saved in your browser and works offline.
 
+## Screenshots
+
+| | |
+| --- | --- |
+| ![Today's web home page with the Sandbox tab open: twelve new games, and Snowbound's demo playing in the side panel](docs/screenshots/web-home-sandbox.png) | ![The map editor with Snowbound open on its Gale Street neighborhood, the file list on the left and block and monster pickers on the right](docs/screenshots/web-editor-snowbound.png) |
+| The home page's Sandbox games | Editing Snowbound's neighborhood map |
+| ![Snowbound being played: the kid with his shovel on a snowy street, under the level's "1. Gale Street" briefing](docs/screenshots/web-play.png) | ![The Bizarre tab: twelve games from comic songs, with Third Goat from the Left's demo in the side panel](docs/screenshots/web-bizarre.png) |
+| Playing Snowbound | The Bizarre games |
+
 ## Run it yourself
 
 You need [Node.js](https://nodejs.org/) 22 or later.
@@ -60,6 +69,16 @@ npm run dev        # http://localhost:5173
 npm test           # the test suite (vitest)
 npm run typecheck  # tsc --noEmit
 npm run build      # typecheck, then the static site in web/dist
+npm run format     # Prettier (config at the repo root)
+npm run lint       # ESLint
+```
+
+The repository was reformatted with Prettier in a few big commits. They are listed in
+[`.git-blame-ignore-revs`](.git-blame-ignore-revs), which GitHub's blame view already skips.
+To make `git blame` on your own computer skip them too, run this once in your clone:
+
+```sh
+git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 The new games are rebuilt from their code, also from `web/`:
@@ -118,6 +137,9 @@ creatall         (or "create palchos", "create blocedit"… for one program)
 ## Learn more
 
 - [Game-Maker on Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
+- ["RSD GameMaker"](https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html),
+  Andy Stone looking back on it in 2011: building it as a teenager with his family, and
+  leaving every game open in the editors so players could learn from and remix each other's work
 - [The Game-Maker wiki (archived)](https://web.archive.org/web/20260807223841/https://aderack.com/game-maker/index.php?title=Main_Page)
 - [The original 2014 source release](https://github.com/gandrewstone/GameMaker)
 

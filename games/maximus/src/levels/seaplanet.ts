@@ -164,6 +164,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       for (let y = base + 1; y < floor[wx(wxp + i)]; y++) g.set(wxp + i, y, id('wreck:0'));
     }
     g.set(wxp + 2, base, id('p:credit'));
+    g.set(wxp + 2, base - 1, id('wreck:3')); // an open hatch over the credit, so the bell can reach it
     g.set(wxp + 4, base - 2, id('cannon'));
     g.set(wxp + 1, base - 2, id('grate'));
     g.set(wxp + 3, base - 1, id('p:gem'));
@@ -226,11 +227,26 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     else caveAir.push(c);
   }
   // join any sealed pocket (caves can be cut off by the floor)
-  for (let guard = 0; guard < 30; guard++) {
+  // (a shaft straight up until it meets open water; a column with something fixed in it tries its
+  // neighbors, and every pocket gets its turn, so no cave and no pickup in one is left sealed)
+  for (let guard = 0; guard < 200; guard++) {
     const seen = reachable(g, s.blocks, arrive.x, arrive.y, { tall: false, pass: (b) => b === id('door') || b === id('field:on') || b === id('field:off') });
     const lost = carved.find((c) => !seen[c.y * W + c.x] && g.get(c.x, c.y) === id('water:dark'));
     if (!lost) break;
-    for (let y = lost.y; y >= floor[lost.x]; y--) if (!g.isLocked(lost.x, y)) g.set(lost.x, y, id('water:dark'));
+    // dig up until the shaft meets water the bell can already reach
+    const top = (x: number) => {
+      let y = lost.y;
+      while (y > 0 && !seen[y * W + x]) {
+        if (g.isLocked(x, y)) return -1;
+        y--;
+      }
+      return y;
+    };
+    const col = [0, 1, -1, 2, -2, 3, -3].map((d) => wx(lost.x + d)).find((x) => top(x) >= 0);
+    if (col === undefined) break;
+    const keep = new Set(s.family('p'));
+    for (let y = lost.y; y > top(col); y--) if (!keep.has(g.get(col, y))) g.set(col, y, id('water:dark'));
+    if (col !== lost.x) for (let x = Math.min(col, lost.x); x <= Math.max(col, lost.x); x++) if (!g.isLocked(wx(x), lost.y)) g.set(x, lost.y, id('water:dark'));
   }
   void ax;
   return { grid: g, arrive, uplink, vault, ground, caveFloor: [], sky, caveAir, ceilings, surfaceH: floor, treasure };

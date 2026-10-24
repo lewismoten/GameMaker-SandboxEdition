@@ -1,4 +1,5 @@
-// The patio where Gwinn naps: flagstones, garden bricks, her water bowl (refills the bucket),
+// The patio where Gwinn naps: flagstones, garden bricks, her water bowl (refills the bucket,
+// never runs dry), the path beside her that her snores blow down,
 // her toy box (a block that gives birth to a flying rope toy now and then), the Crown of the
 // Sandbox, and Gwinn herself: one 120x80 picture cut into 6 x 4 blocks. She blinks by a
 // next/ntime chain (the eye block becomes 'catBlink' after 70 ticks, and back after 6), and
@@ -6,12 +7,12 @@
 import { GRASS, GREY, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
 import { MON, SEQ } from '../rules';
 import { Pixels, art, ball, bevel, dither, rng, shade, tile } from '../art/draw';
-import { SOLID, bg, onSand, sprite20 } from './common';
+import { DOWN, SOLID, bg, onSand, sprite20 } from './common';
 
 export function addPatio(): void {
   // ---------------------------------------------------------------- the patio, where Gwinn naps
   function flagstone(seed: number): Pixels {
-    const p = tile(GREY[1]);
+    const p = tile(GREY[0]);
     const r = rng(seed);
     const stones = [
       [0, 0, 11, 8],
@@ -21,7 +22,8 @@ export function addPatio(): void {
       [12, 12, 8, 8],
     ];
     for (const [x, y, w, h] of stones) {
-      const s = 3 + Math.floor(r() * 2);
+      // dark slate (1-2 of the grey ramp), so Teddy's tan coat stands out against it at dusk
+      const s = 1 + Math.floor(r() * 2);
       p.rect(x + 1, y + 1, w - 1, h - 1, shade(GREY, s));
       p.rect(x + 1, y + 1, w - 1, 1, shade(GREY, s + 1));
       p.rect(x + 1, y + h - 1, w - 1, 1, shade(GREY, s - 1));
@@ -30,7 +32,6 @@ export function addPatio(): void {
     return p;
   }
   bg.add('patio', flagstone(171));
-  bg.add('patio2', flagstone(172));
   {
     // Old garden bricks, weathered and mossy.
     const p = tile(GREY[1]);
@@ -48,7 +49,8 @@ export function addPatio(): void {
     bg.add('brick', p, { solid: SOLID });
   }
   {
-    // Gwinn's water bowl (her name in red on the side): fills your bucket three splashes' worth.
+    // Gwinn's water bowl (her name in red on the side): each push into it fills your bucket
+    // three splashes' worth, and it never runs dry, so you can't run out of water by her paws.
     const mk = (full: boolean) => {
       const p = sprite20();
       ball(p, 10, 10, 9, STEEL, 4);
@@ -56,10 +58,34 @@ export function addPatio(): void {
       if (full) p.disc(8, 8, 2, WATER[7]).set(7, 7, WATER[9]);
       p.rect(5, 1, 10, 2, RED[4]);
       for (const x of [6, 9, 12]) p.rect(x, 1, 1, 2, STEEL[7]);
-      return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GREY[3] : c));
+      return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GREY[1] : c));
     };
-    bg.add('bowl', mk(true), { solid: SOLID, effect: SEQ.splash, eamt: 3, score: 20, touch: 'bowlDry' });
-    bg.add('bowlDry', mk(false), { solid: SOLID });
+    bg.add('bowl', mk(true), { solid: SOLID, effect: SEQ.splash, eamt: 3 });
+  }
+  {
+    // Gwinn's snores blow down the narrow path beside her: the path's blocks change all at
+    // once on a timer (a next/ntime chain). Quiet for a while, then the tell (dust stirs and
+    // a Z drifts up), then the gust itself, a downward current that pushes Teddy back to the
+    // patio (it never hurts). Walk up between gusts.
+    const calm = flagstone(177);
+    bg.add('snore', calm, { next: 'snoreTell', ntime: 66 });
+    const tell = flagstone(177);
+    const r = rng(178);
+    for (let k = 0; k < 9; k++)
+      tell.set(2 + Math.floor(r() * 16), 2 + Math.floor(r() * 16), SAND[7]).set(3 + Math.floor(r() * 14), 3 + Math.floor(r() * 14), SAND[5]);
+    art(['', '', '   WWWW', '     W', '    W', '   WWWW', '', '          WWW', '            W', '           W', '          WWW'], { W: STEEL[7] }, tell);
+    bg.add('snoreTell', tell, { next: 'snoreGust', ntime: 16 });
+    // the gust: pale streaks and chevrons blowing down, like the hose currents but dusty
+    const gust = flagstone(177);
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) {
+        const ph = (59 - y) % 10; // counted from the bottom, so the chevrons point down
+        const chevron = Math.abs(x - 9.5) / 2 + 1;
+        if (Math.abs(ph - chevron) < 0.8 && x > 3 && x < 16) gust.set(x, y, STEEL[7]);
+        else if (Math.abs(ph - chevron - 1) < 0.8 && x > 3 && x < 16) gust.set(x, y, SAND[6]);
+        else if ((x * 5 + y * 3) % 11 === 0) gust.set(x, y, SAND[5]);
+      }
+    bg.add('snoreGust', gust, { next: 'snore', ntime: 26, grav: DOWN });
   }
   {
     // Gwinn's toy box, overflowing: every so often a rope toy comes flying out.
@@ -187,13 +213,17 @@ export function addPatio(): void {
     const shut = drawCat('shut');
     for (let by = 0; by < CAT_H; by++)
       for (let bx = 0; bx < CAT_W; bx++) {
-        const p = flagstone(180 + bx + by * CAT_W).blit(open.crop(bx * 20, by * 20, 20, 20), 0, 0, 255);
+        const part = open.crop(bx * 20, by * 20, 20, 20);
+        const p = flagstone(180 + bx + by * CAT_W).blit(part, 0, 0, 255);
         const name = `cat${bx}${by}`;
+        // Every block of her is solid, but only the ones mostly covered by dog hurt to bump
+        // into: a corner that is nearly all flagstone shouldn't sting.
+        const fur = part.px.filter((c) => c !== 255).length / 400;
         const eyeBlock = bx === 1 && by === 2;
         const mouth = bx === 1 && by === 3;
         bg.add(name, p, {
           solid: SOLID,
-          hp: -3,
+          hp: fur >= 0.3 ? -3 : 0,
           ...(eyeBlock ? { next: 'catBlink', ntime: 70 } : {}),
           ...(mouth ? { birthMon: MON.slobber, birthTime: 64 } : {}),
         });

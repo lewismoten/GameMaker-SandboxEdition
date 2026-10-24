@@ -9,13 +9,14 @@ import { night } from './levels/level3';
 import { river } from './levels/level4';
 import { farm } from './levels/level5';
 import { maze } from './levels/level6';
+import { lot } from './levels/levelLot';
 import { midway } from './levels/level7';
 import { show } from './levels/level8';
 
-export const LEVELS: (() => Level)[] = [house, main, night, river, farm, maze, midway, show];
+export const LEVELS: (() => Level)[] = [house, main, night, river, farm, maze, lot, midway, show];
 
 /** Songs per level (CMF file names), in level order. */
-export const LEVEL_SONGS = ['house.cmf', 'main.cmf', 'night.cmf', 'river.cmf', 'farm.cmf', 'maze.cmf', 'midway.cmf', 'show.cmf'];
+export const LEVEL_SONGS = ['house.cmf', 'main.cmf', 'night.cmf', 'river.cmf', 'farm.cmf', 'maze.cmf', 'lot.cmf', 'midway.cmf', 'show.cmf'];
 
 export const TITLE = 'TEDDY 2: BIGGER!';
 
@@ -89,9 +90,21 @@ export function buildGame(levels: Level[], startAt?: string): Game {
       return sc;
     };
     const at = game.scenes.length;
-    const room = scene(n.title, 40, level.files.map((f, k) => (k === 9 || k === 10 ? '' : f)));
-    const again = scene(level.desc, 80, level.files.map((f, k) => (k === 1 ? n.map : k === 9 ? n.card : k === 10 ? '' : f)));
-    const drive = scene(`${level.desc.slice(0, 13)} drive`, 120, level.files.map((f, k) => (k === 0 ? DARK : k === 9 ? '' : f)));
+    const room = scene(
+      n.title,
+      40,
+      level.files.map((f, k) => (k === 9 || k === 10 ? '' : f)),
+    );
+    const again = scene(
+      level.desc,
+      80,
+      level.files.map((f, k) => (k === 1 ? n.map : k === 9 ? n.card : k === 10 ? '' : f)),
+    );
+    const drive = scene(
+      `${level.desc.slice(0, 13)} drive`,
+      120,
+      level.files.map((f, k) => (k === 0 ? DARK : k === 9 ? '' : f)),
+    );
     drive.links[0] = { ...level.links[0] };
     level.links[0] = { toScene: at + 2, from: l.exit, to: l.exit };
     level.links[1] = { toScene: at, from: n.door, to: n.room };

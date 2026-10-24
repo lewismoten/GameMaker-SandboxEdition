@@ -21,10 +21,15 @@ import { ImageReaderScreen } from './image/screen';
 class ImageReader extends ImageReaderScreen {
   /** For the desk: whether anything is unsaved, and what saving writes. */
   openWork(): OpenDesigner {
-    return openWork('Image Reader', this.work, () => this.saved, () => [
-      { ext: 'pal', bytes: pal2bytes(this.colors) },
-      { ext: 'bbl', bytes: serializeBlocks(this.blocks) },
-    ]);
+    return openWork(
+      'Image Reader',
+      this.work,
+      () => this.saved,
+      () => [
+        { ext: 'pal', bytes: pal2bytes(this.colors) },
+        { ext: 'bbl', bytes: serializeBlocks(this.blocks) },
+      ],
+    );
   }
 
   async main(): Promise<void> {

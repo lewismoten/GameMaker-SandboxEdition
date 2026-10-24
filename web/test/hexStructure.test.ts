@@ -71,7 +71,7 @@ function matchesParser(name: string, bytes: Uint8Array): number {
   for (const leaf of leaves(st, bytes)) {
     if (!leaf.key) continue;
     const want = at(parsed, leaf.key);
-    if (leaf.value !== want && wrong.length < 5) wrong.push(`${leaf.group} ${leaf.name} (${leaf.key}): ${leaf.value} != ${want}`);
+    if (leaf.value !== want && wrong.length < 5) wrong.push(`${leaf.group} ${leaf.name} (${leaf.key}): ${leaf.value} != ${String(want)}`);
     n++;
   }
   expect(wrong, name).toEqual([]);
@@ -95,7 +95,10 @@ group('HEXEDIT structure maps', () => {
       for (const f of byExt(ext, 4)) {
         const bytes = new Uint8Array(readFileSync(f));
         const st = describe(f, bytes)!;
-        expect(st.fields.reduce((n, x) => n + x.len, 0), f).toBe(bytes.length);
+        expect(
+          st.fields.reduce((n, x) => n + x.len, 0),
+          f,
+        ).toBe(bytes.length);
       }
     }
   });
@@ -144,23 +147,39 @@ group('HEXEDIT structure maps', () => {
     for (const f of byExt('cmf')) {
       const bytes = new Uint8Array(readFileSync(f));
       const st = describe(f, bytes)!;
-      expect(st.fields.some((x) => x.name.endsWith('end of song')), f).toBe(true);
-      expect(st.fields.some((x) => x.name === 'Unreadable event'), f).toBe(false);
+      expect(
+        st.fields.some((x) => x.name.endsWith('end of song')),
+        f,
+      ).toBe(true);
+      expect(
+        st.fields.some((x) => x.name === 'Unreadable event'),
+        f,
+      ).toBe(false);
     }
   });
 
   it('reads high scores, SAVNAMES.DAT and text files', () => {
-    const his = serializeHighScores([{ score: 12345, name: 'TEDDY' }, { score: 99, name: 'GWINN' }]);
+    const his = serializeHighScores([
+      { score: 12345, name: 'TEDDY' },
+      { score: 99, name: 'GWINN' },
+    ]);
     expect(matchesParser('teddy.his', his)).toBe(20);
     const names = new Uint8Array(210);
-    names.set([...'Forest'].map((c) => c.charCodeAt(0)), 21);
+    names.set(
+      [...'Forest'].map((c) => c.charCodeAt(0)),
+      21,
+    );
     const st = describe('SAVNAMES.DAT', names)!;
     const want = parseSlotNames(names);
     for (const l of leaves(st, names)) if (l.key) expect(l.value).toBe(want[Number(l.key)]);
     expect(leafAt(st, names, 22)).toMatchObject({ name: 'GAME1.SAV name', value: 'Forest' });
     const txt = new TextEncoder().encode('LINE ONE\r\nTWO\r\n\x1a');
     const ts = describe('readme.txt', txt)!;
-    expect(ts.fields.map((f) => [f.name, f.len])).toEqual([['Line 1', 10], ['Line 2', 5], ['End of file (Ctrl-Z)', 1]]);
+    expect(ts.fields.map((f) => [f.name, f.len])).toEqual([
+      ['Line 1', 10],
+      ['Line 2', 5],
+      ['End of file (Ctrl-Z)', 1],
+    ]);
     expect(leafAt(ts, txt, 3)?.value).toBe('LINE ONE');
     expect(describe('thing.xyz', txt)).toBeUndefined();
   });
@@ -170,6 +189,9 @@ group('HEXEDIT structure maps', () => {
     const st = describe('x.pal', pal)!;
     expect(st.fields[st.fields.length - 1]).toMatchObject({ off: 768, len: 2, name: 'Extra bytes (past what the format holds)' });
     const short = describe('x.pal', new Uint8Array(100))!;
-    expect(short.fields.map((f) => [f.off, f.len])).toEqual([[0, 99], [99, 1]]);
+    expect(short.fields.map((f) => [f.off, f.len])).toEqual([
+      [0, 99],
+      [99, 1],
+    ]);
   });
 });

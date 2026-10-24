@@ -58,13 +58,13 @@ export const HELP = wrap(`
 
 SAND: scoop sand piles, and dig dunes by walking into them with the shovel. F2 shows your sand as Money. Sand plugs anthills, fills fords and builds towers.
 
-TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Four flags lift a castle gate.
+TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Enough flags lift a castle gate.
 
 GWINN won't budge for sand or water. Toss her a tennis ball (F) and she trots off happy. Walk toward her first: things fly the way you last walked.
 
 SPIN (3) kicks up a whirl of sand that bowls over ants and beetles.
 
-WATER: balloons and Gwinn's bowls fill your bucket. Only water (or a ball) flips a crab. With the bucket, walk into a dashed outline to pack a wall of wet sand.
+WATER: balloons and Gwinn's bowls fill your bucket. Water (or a ball) flips a crab without a pinch. With the bucket, walk into a dashed outline to pack a wall of wet sand.
 
 CURRENTS carry you. CRUMBLY BRIDGES fall in behind you. The tidal flat floods: wait on a sandbar.
 
@@ -90,20 +90,20 @@ export const INTRO = {
 
 Gwinn's zoomies knocked the keep flat, and ants moved in.
 
-Bring sand to each of the four tower rings (walk into the ring), then touch it again to plant your flag. Four flags lift the gate.
+Walk into each of the four tower rings with sand, then again to plant a flag. Four flags lift the gate.
 
-Plug anthills with sand. SPACE flings sand at ants.
+Plug anthills with sand. SPACE flings it at ants.
 
-Gwinn is asleep in the doorway. Find a tennis ball!
+Gwinn naps in the doorway: toss her a ball (F). The can by her has more.
 `),
   moat: wrap(`
 |2. HOSEWATER MOAT
 
-Gwinn stepped on the hose, and now the keep is an island.
+Gwinn stepped on the hose. The keep is an island, cut in two!
 
-Fill the staked ford with sand, or run across the sand bridge. It crumbles behind you!
+Fill the staked ford with sand, or run the sand bridge (it crumbles behind you).
 
-The hose current flows one way only. Ride it.
+Two flags lift this gate, one on each half. Hose currents flow one way only: ride them.
 `),
   lagoon: wrap(`
 |3. LOW TIDE LAGOON
@@ -128,11 +128,13 @@ The far ladder climbs to the patio.
   patio: wrap(`
 |5. GWINN'S NAP
 
-The patio, at sunset. Gwinn is snoring on the Crown of the Sandbox.
+The patio, at sunset. Gwinn is snoring on the Crown.
 
-Her paws twitch to guard it. Splash a paw twice and she tucks it in.
+Splash a paw twice (B) and she tucks it in: left paw, then right.
 
-Fill your bucket at her water bowls. Mind the slobbery balls and her flying rope toys!
+When the dust stirs, a snore blows down the path. Wait.
+
+Her bowls never run dry. Mind the slobbery balls!
 `),
   bbs: wrap(`
 |CONNECT 2400
@@ -204,7 +206,7 @@ If you enjoy it, register for $10 with Sandbox Software. You'll get:
 Send a check or money order for $10 (US funds) to:
 
 |    Sandbox Software
-|    P.O. Box 4215
+|    P.O. Box 000
 |    Pittsburgh, PA 15213
 
 (This address is fictional, made up for this game. Please don't mail anything to it!)

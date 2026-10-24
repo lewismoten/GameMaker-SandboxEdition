@@ -11,19 +11,47 @@ import { blend } from '../art/textures';
 const bitsOf = (m: number) => [1, 2, 4, 8].filter((b) => m & b).length;
 
 export function worldTerrain(book: BlockBook): void {
-  book.add('grass', new Canvas(20, 20).shade((x, y) => grass(x, y), 2));
-  for (const k of [1, 2, 3]) book.add(`grass${k}`, new Canvas(20, 20).shade((x, y) => grass(x, y, k), 2));
+  book.add(
+    'grass',
+    new Canvas(20, 20).shade((x, y) => grass(x, y), 2),
+  );
+  for (const k of [1, 2, 3])
+    book.add(
+      `grass${k}`,
+      new Canvas(20, 20).shade((x, y) => grass(x, y, k), 2),
+    );
   book.add('flowers', flowerBed(4));
   book.add('tufts', tufts());
   book.add('stones', stones());
   // water: solid where it takes half the block or more (a river is two half blocks wide)
   addFamily(book, { layer: 'water', shader: shore, diag: true, rough: 0.9, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
-  for (const k of [1, 2, 3]) book.add(`water:full${k}`, new Canvas(20, 20).shade(blend((x, y) => water(x, y, 20), (x, y) => water(x, y, 20, k)), 2), { solid: ALL });
+  for (const k of [1, 2, 3])
+    book.add(
+      `water:full${k}`,
+      new Canvas(20, 20).shade(
+        blend(
+          (x, y) => water(x, y, 20),
+          (x, y) => water(x, y, 20, k),
+        ),
+        2,
+      ),
+      { solid: ALL },
+    );
   addFamily(book, { layer: 'forest', shader: forest, rough: 1.8, seed: 9, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
-  for (const k of [1, 2, 3]) book.add(`forest:full${k}`, new Canvas(20, 20).shade((x, y) => canopy(x, y, 99, k), 2), { solid: ALL });
+  for (const k of [1, 2, 3])
+    book.add(
+      `forest:full${k}`,
+      new Canvas(20, 20).shade((x, y) => canopy(x, y, 99, k), 2),
+      { solid: ALL },
+    );
   addFamily(book, { layer: 'road', shader: road, diag: true, rough: 0.8, seed: 13 });
   addFamily(book, { layer: 'rock', shader: cliff, rough: 1.4, seed: 17, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
-  for (const k of [1, 2, 3]) book.add(`rock:full${k}`, new Canvas(20, 20).shade((x, y) => rock(x, y, k), 2), { solid: ALL });
+  for (const k of [1, 2, 3])
+    book.add(
+      `rock:full${k}`,
+      new Canvas(20, 20).shade((x, y) => rock(x, y, k), 2),
+      { solid: ALL },
+    );
   book.add('rock:peak', peak(), { solid: ALL });
   book.add('tree', tree(false), { solid: ALL });
   book.add('pine', tree(true), { solid: ALL });
@@ -90,7 +118,18 @@ function tree(pine: boolean): Canvas {
         ],
         (px, py) => [40 + (16 - px) * 3 - (py - y) * 2, 110 + (16 - px) * 3 - (py - y) * 3, 50],
       );
-  else cv.disc(10, 8.5, 7.5, (px, py) => canopy(px * 1.3, py * 1.3, 99, 2).map((v, i) => v + (i === 1 ? 10 : 0) + Math.max(0, 9 - Math.hypot(px - 7, py - 5.5) * 1.6) * 6) as [number, number, number]);
+  else
+    cv.disc(
+      10,
+      8.5,
+      7.5,
+      (px, py) =>
+        canopy(px * 1.3, py * 1.3, 99, 2).map((v, i) => v + (i === 1 ? 10 : 0) + Math.max(0, 9 - Math.hypot(px - 7, py - 5.5) * 1.6) * 6) as [
+          number,
+          number,
+          number,
+        ],
+    );
   return cv;
 }
 

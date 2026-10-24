@@ -407,6 +407,11 @@
   gap: 2px 10px;
   font-size: 12px;
 }
+/* 24px targets when the flags wrap on a phone */
+.mus-flags .check {
+  min-height: 24px;
+  align-items: center;
+}
 
 /* ---- song settings ---- */
 .mus-song-box summary {
@@ -738,4 +743,95 @@
   .mus-tabs {
     flex: 1 1 auto;
   }
+}
+
+/* the preset picker (presetPicker.ts) */
+dialog.modal:has(.mus-presets) {
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 16px;
+  box-sizing: border-box;
+}
+.mus-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100dvh - 110px);
+}
+.mus-presets .hint {
+  margin: 0;
+}
+.mus-preset-search {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 32px;
+}
+.mus-preset-list {
+  flex: 1 1 auto;
+  min-height: 120px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.mus-preset-group {
+  margin: 0 0 6px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.mus-preset-group legend {
+  padding: 6px 0 2px;
+  font-weight: 700;
+  color: var(--mus-gold);
+}
+dialog.modal .mus-preset {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+dialog.modal .mus-preset[hidden],
+.mus-preset-group[hidden] {
+  display: none;
+}
+.mus-preset:hover {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.mus-preset:has(input:checked) {
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+}
+.mus-preset input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.mus-preset-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.mus-preset-text small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.mus-presets .buttons {
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 4px;
+}
+.mus-preset-undo {
+  margin-right: auto;
+}
+.mus-inst-new {
+  width: 100%;
+}
+.mus-preset:has(input:checked) small {
+  color: var(--text);
 }

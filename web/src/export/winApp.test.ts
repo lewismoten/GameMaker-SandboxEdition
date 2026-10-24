@@ -123,7 +123,15 @@ describe('winApp', () => {
   it('writes version information', () => {
     const v = versionInfo({ title: 'My Game', id: 'my-game', version: '2.3', author: 'Teddy', year: 1995 });
     expect(new DataView(v.buffer).getUint16(0, true)).toBe(v.length);
-    expect(versionStrings(v)).toMatchObject({ FileDescription: 'My Game', ProductName: 'My Game', FileVersion: '2.3', CompanyName: 'Teddy', OriginalFilename: 'My Game.exe', InternalName: 'my-game', LegalCopyright: '© 1995 Teddy' });
+    expect(versionStrings(v)).toMatchObject({
+      FileDescription: 'My Game',
+      ProductName: 'My Game',
+      FileVersion: '2.3',
+      CompanyName: 'Teddy',
+      OriginalFilename: 'My Game.exe',
+      InternalName: 'my-game',
+      LegalCopyright: '© 1995 Teddy',
+    });
   });
 
   it('puts the game, its info, icon and version into the program (x64 and arm64)', async () => {
@@ -167,7 +175,8 @@ describe('winIcon', () => {
     images.forEach((img, i) => {
       const at = dv.getUint32(6 + i * 16 + 12, true);
       expect(ico.subarray(at, at + img.data.length)).toEqual(img.data);
-      if (img.size >= 64) expect([...img.data.subarray(1, 4)]).toEqual([0x50, 0x4e, 0x47]); // PNG
+      if (img.size >= 64)
+        expect([...img.data.subarray(1, 4)]).toEqual([0x50, 0x4e, 0x47]); // PNG
       else expect(new DataView(img.data.buffer).getInt32(8, true)).toBe(img.size * 2); // bitmap, with its mask
     });
     expect(groupIcon(images, 5).length).toBe(6 + 14 * images.length);

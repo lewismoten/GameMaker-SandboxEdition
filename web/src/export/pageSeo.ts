@@ -9,7 +9,13 @@ import { escapeHtml, gameDescription, gameJsonLd, jsonLdScript, metaTags, REPO_U
 export interface ExportMeta extends GameSeo {
   /** Shareware: the author's notice (readme / order form). */
   notice?: string;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts). */
+  fiction?: string;
 }
+
+/** The page still needs a web engine: a browser, or the one a Windows, Mac or Linux download wraps it in. */
+export const PAGE_CAVEAT =
+  'It plays offline, but it still runs on a web engine (a browser, or the one built into Windows, macOS or Linux), so a future change to browsers or web standards could break or change it. The DOS download, in DOSBox, is the most future-proof.';
 
 /** Tags for the page <head> (the <title> is already there). */
 export function exportHead(m: ExportMeta): string {
@@ -32,6 +38,8 @@ export function exportAbout(m: ExportMeta): string {
     m.notice
       ? `<details><summary>Shareware: the author’s notice</summary><pre style="white-space:pre-wrap;font:13px monospace">${escapeHtml(m.notice)}</pre></details>`
       : '',
+    m.fiction ? p(`<small>${escapeHtml(m.fiction)}</small>`) : '',
+    p(`<small>${escapeHtml(PAGE_CAVEAT)}</small>`),
     p(
       `<small>Made with <a style="color:#9cf" href="${SITE_URL}">${escapeHtml(PRODUCT)}</a>` +
         ` · <a style="color:#9cf" href="${REPO_URL}">source code</a></small>`,

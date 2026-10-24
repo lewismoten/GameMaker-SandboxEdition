@@ -141,6 +141,14 @@
   transform: rotate(-16deg);
 }
 
+.pc-to .pc-mark {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 0.35em;
+  vertical-align: -0.4em;
+}
+
 .pc-to {
   position: absolute;
   left: 46%;
@@ -691,6 +699,15 @@
   letter-spacing: -0.02em;
 }
 
+/* Sandbox Software's mark before the paper's name */
+.nl-mark {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.25em;
+  vertical-align: -0.12em;
+}
+
 .nl-sub {
   display: flex;
   justify-content: space-between;
@@ -978,6 +995,9 @@
 }
 
 .ho-sample .rf-code {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
   margin-top: 0.6cqw;
   font-size: 2.3cqw;
 }
@@ -1036,94 +1056,6 @@
 .ho-mail .pp-fictional {
   margin-top: auto;
   font-size: 1.6cqw;
-}
-
-/* ---------------------------------------------------------------- stickers */
-.pp-sheet.pp-stk {
-  padding: 3.5cqw 5cqw;
-  background: var(--grain, none), #fbfbf7;
-}
-
-.stk-head b {
-  display: block;
-  font:
-    900 5cqw 'Arial Black',
-    Arial,
-    sans-serif;
-}
-
-.stk-head span {
-  font:
-    italic 2cqw Georgia,
-    serif;
-}
-
-.stk-head em {
-  float: right;
-  font:
-    700 1.8cqw Arial,
-    sans-serif;
-}
-
-/* the Print Then Cut area, 6.75 x 9.25 in, centered on the letter page */
-.stk-art {
-  display: block;
-  width: 79.41%;
-  margin: 1.6cqw auto 0;
-}
-
-.stk-cut {
-  width: min(100%, 980px);
-  box-sizing: border-box;
-  padding: 10px 14px;
-  border: 1px solid #b9ad8c;
-  border-radius: 8px;
-  background: #fffaf0;
-  color: #222;
-  font:
-    14px/1.4 system-ui,
-    sans-serif;
-}
-
-.stk-cut summary {
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.stk-cut-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  margin: 8px 0;
-}
-
-.stk-cut-row button {
-  padding: 4px 10px;
-  border: 1px solid #555;
-  border-radius: 6px;
-  background: #fff;
-  font: inherit;
-  cursor: pointer;
-}
-
-.stk-cut-row small {
-  color: #555;
-}
-
-.stk-cut ol {
-  margin: 8px 0 0;
-  padding-left: 20px;
-}
-
-.stk-foot {
-  position: absolute;
-  bottom: 3cqw;
-  left: 5cqw;
-  font:
-    italic 1.6cqw Georgia,
-    serif;
-  opacity: 0.7;
 }
 
 /* ---------------------------------------------------------------- maps */
@@ -1369,11 +1301,14 @@
 
 .hb-a .rf-code {
   display: flex;
+  box-sizing: border-box;
+  width: 100%;
   font-size: 3cqw;
 }
 
 .hb-a .rf-code.rf-sketch-box {
   display: inline-flex;
+  width: auto;
 }
 
 .hb-folio {
@@ -1460,7 +1395,9 @@
 .pp-sheet.pp-rc {
   position: relative;
   padding: 4cqw 5cqw;
-  background: repeating-linear-gradient(transparent 0 4.4cqw, #a9bfd8 4.4cqw 4.55cqw) 0 8cqw / 100% calc(100% - 8cqw) no-repeat, #fbf6e6 !important;
+  background:
+    repeating-linear-gradient(transparent 0 4.4cqw, #a9bfd8 4.4cqw 4.55cqw) 0 8cqw / 100% calc(100% - 8cqw) no-repeat,
+    #fbf6e6 !important;
   font:
     2.3cqw/4.55cqw 'Bradley Hand',
     'Comic Sans MS',

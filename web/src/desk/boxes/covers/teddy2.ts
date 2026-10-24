@@ -36,10 +36,13 @@ function citicar(c: Ctx, x: number, y: number, s: number): void {
   poly(c, [150, 262, 222, 250, 270, 452, 268, 486, 152, 448]);
   fill(c, red(150, 0, 270, 0));
   poly(c, [174, 266, 212, 258, 218, 346, 178, 352]);
-  fill(c, lin(c, 0, 258, 0, 352, [
-    [0, '#9ad4ff'],
-    [1, '#2a4a6a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 258, 0, 352, [
+      [0, '#9ad4ff'],
+      [1, '#2a4a6a'],
+    ]),
+  );
   stroke(c, '#7a1006', 3, [216, 256, 222, 470]);
   // the racing stripes: a dark pair edged in white, low along the side, stepping up over the
   // rear quarter behind the door
@@ -53,11 +56,14 @@ function citicar(c: Ctx, x: number, y: number, s: number): void {
   stroke(c, 'rgba(255,255,255,0.18)', 2, [226, 241, 326, 239]);
   // the windshield: big, flat, raked back
   poly(c, [224, 252, 330, 246, 380, 300, 226, 324]);
-  fill(c, lin(c, 0, 246, 0, 324, [
-    [0, '#c8ecff'],
-    [0.55, '#6aa8d8'],
-    [1, '#2a4a6a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, 246, 0, 324, [
+      [0, '#c8ecff'],
+      [0.55, '#6aa8d8'],
+      [1, '#2a4a6a'],
+    ]),
+  );
   stroke(c, 'rgba(255,255,255,0.7)', 4, [250, 262, 236, 312]);
   stroke(c, '#151515', 3, [262, 318, 330, 300]);
   // the hood, sloping straight down from the windshield to the bumper, with its little scoop
@@ -76,10 +82,13 @@ function citicar(c: Ctx, x: number, y: number, s: number): void {
     ell(c, hx, hy, r * 0.82, r * 0.82);
     fill(c, '#d8d8e0');
     ell(c, hx, hy, r * 0.62, r * 0.62);
-    fill(c, rad(c, hx - 4, hy - 4, r * 0.62, [
-      [0, '#ffffff'],
-      [1, '#a8b0c0'],
-    ]));
+    fill(
+      c,
+      rad(c, hx - 4, hy - 4, r * 0.62, [
+        [0, '#ffffff'],
+        [1, '#a8b0c0'],
+      ]),
+    );
   }
   for (const [tx, ty] of [
     [288, 432],
@@ -125,22 +134,28 @@ function docLeo(c: Ctx, x: number, y: number, s: number, flip = false): void {
   // grey trousers, red sneakers
   for (const lx of [-20, 20]) {
     poly(c, [lx - 15, -150, lx + 15, -150, lx + 16, -16, lx - 14, -16]);
-    fill(c, lin(c, lx - 15, 0, lx + 15, 0, [
-      [0, '#3a3a40'],
-      [0.5, '#6a6a74'],
-      [1, '#2a2a30'],
-    ]));
+    fill(
+      c,
+      lin(c, lx - 15, 0, lx + 15, 0, [
+        [0, '#3a3a40'],
+        [0.5, '#6a6a74'],
+        [1, '#2a2a30'],
+      ]),
+    );
     blob(c, [lx - 18, -20, lx + 28, -22, lx + 34, 0, lx - 18, 2]);
     fill(c, '#e01e1e');
     stroke(c, '#fff', 3, [lx - 16, -2, lx + 32, -2]);
   }
   // navy corduroy jacket over a purple shirt and a green tie
   blob(c, [-54, -140, -58, -260, -30, -290, 30, -290, 58, -260, 54, -140, 0, -132]);
-  fill(c, lin(c, -58, 0, 58, 0, [
-    [0, '#0e1838'],
-    [0.4, '#2a3a74'],
-    [1, '#0a1230'],
-  ]));
+  fill(
+    c,
+    lin(c, -58, 0, 58, 0, [
+      [0, '#0e1838'],
+      [0.4, '#2a3a74'],
+      [1, '#0a1230'],
+    ]),
+  );
   for (let i = -4; i <= 4; i++) stroke(c, 'rgba(0,0,0,0.25)', 1.5, [i * 11, -284, i * 11.5, -144]);
   poly(c, [-20, -290, 20, -290, 12, -200, -12, -200]);
   fill(c, '#7a3aa8');
@@ -184,28 +199,37 @@ function docLeo(c: Ctx, x: number, y: number, s: number, flip = false): void {
   stroke(c, '#1a1a1a', 4, [-24, -354, -6, -350]);
   stroke(c, '#1a1a1a', 4, [24, -354, 6, -350]);
   ell(c, 0, -322, 9, 9);
-  fill(c, rad(c, -3, -325, 10, [
-    [0, '#ffb0a0'],
-    [1, '#d82020'],
-  ]));
+  fill(
+    c,
+    rad(c, -3, -325, 10, [
+      [0, '#ffb0a0'],
+      [1, '#d82020'],
+    ]),
+  );
   // the chewed-up fedora
   ell(c, 0, -362, 50, 10, -0.08);
   fill(c, '#3a3a3e');
   blob(c, [-30, -364, -28, -398, -4, -392, 6, -404, 28, -396, 32, -364]);
-  fill(c, lin(c, -30, 0, 32, 0, [
-    [0, '#2a2a2e'],
-    [0.5, '#5a5a62'],
-    [1, '#222226'],
-  ]));
+  fill(
+    c,
+    lin(c, -30, 0, 32, 0, [
+      [0, '#2a2a2e'],
+      [0.5, '#5a5a62'],
+      [1, '#222226'],
+    ]),
+  );
   stroke(c, '#7a3aa8', 6, [-30, -370, 31, -370]);
   // the rubber chicken on its leash
   stroke(c, '#d81e1e', 3, [-86, -160, -110, -90, -120, -40]);
   c.translate(-128, -22);
   blob(c, [-24, -6, 0, -26, 26, -12, 30, 10, -20, 12]);
-  fill(c, lin(c, 0, -26, 0, 12, [
-    [0, '#fff26a'],
-    [1, '#d8b010'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -26, 0, 12, [
+      [0, '#fff26a'],
+      [1, '#d8b010'],
+    ]),
+  );
   ell(c, -26, -20, 10, 10);
   fill(c, '#ffe84a');
   poly(c, [-36, -20, -46, -16, -36, -14]);
@@ -228,11 +252,14 @@ function sniffer(c: Ctx, x: number, y: number, s: number): void {
   fill(c, 'rgba(0,0,0,0.35)');
   const leg = (lx: number, back: boolean, len = 0) => {
     blob(c, [lx - 13, top + 10, lx + 13, top + 10, lx + 12, -6 + len, lx - 12, -6 + len]);
-    fill(c, lin(c, 0, top, 0, 0, [
-      [0, back ? lo : mid],
-      [0.78, back ? lo : mid],
-      [0.92, back ? '#d8d0c6' : '#f6efe6'],
-    ]));
+    fill(
+      c,
+      lin(c, 0, top, 0, 0, [
+        [0, back ? lo : mid],
+        [0.78, back ? lo : mid],
+        [0.92, back ? '#d8d0c6' : '#f6efe6'],
+      ]),
+    );
     ell(c, lx + 4, -5, 15, 8);
     fill(c, back ? '#d8d0c6' : '#fff');
   };
@@ -243,19 +270,25 @@ function sniffer(c: Ctx, x: number, y: number, s: number): void {
   c.translate(0, top);
   c.rotate(0.1);
   ell(c, 0, 0, L, 36);
-  fill(c, lin(c, 0, -36, 0, 36, [
-    [0, hi],
-    [0.45, mid],
-    [1, lo],
-  ]));
+  fill(
+    c,
+    lin(c, 0, -36, 0, 36, [
+      [0, hi],
+      [0.45, mid],
+      [1, lo],
+    ]),
+  );
   ell(c, 10, 22, L * 0.7, 13);
   fill(c, '#fbf3e8');
   // the fluffy corgi rump, up in the air
   ell(c, -L + 14, -6, 26, 30);
-  fill(c, rad(c, -L + 6, -20, 36, [
-    [0, hi],
-    [1, mid],
-  ]));
+  fill(
+    c,
+    rad(c, -L + 6, -20, 36, [
+      [0, hi],
+      [1, mid],
+    ]),
+  );
   c.restore();
   leg(-L + 46, false);
   leg(L - 16, false);
@@ -266,11 +299,14 @@ function sniffer(c: Ctx, x: number, y: number, s: number): void {
   const hx = L + 26;
   const hy = top + 12;
   ell(c, hx, hy, 36, 32, 0.4);
-  fill(c, rad(c, hx - 8, hy - 14, 42, [
-    [0, hi],
-    [0.6, mid],
-    [1, lo],
-  ]));
+  fill(
+    c,
+    rad(c, hx - 8, hy - 14, 42, [
+      [0, hi],
+      [0.6, mid],
+      [1, lo],
+    ]),
+  );
   poly(c, [hx - 4, hy - 30, hx + 8, hy - 32, hx + 30, hy + 8, hx + 14, hy + 14]);
   fill(c, '#fffaf0');
   ell(c, hx + 24, hy + 28, 25, 15, 0.95);
@@ -301,7 +337,14 @@ function sniffer(c: Ctx, x: number, y: number, s: number): void {
     [hx + 4, hx + 22, hy - 94],
   ]) {
     poly(c, [bx - 14, hy - 16, tx, ty, bx + 18, hy - 22]);
-    fill(c, lin(c, 0, ty, 0, hy, [[0, lo], [0.3, mid], [1, mid]]));
+    fill(
+      c,
+      lin(c, 0, ty, 0, hy, [
+        [0, lo],
+        [0.3, mid],
+        [1, mid],
+      ]),
+    );
     poly(c, [bx - 6, hy - 20, tx + 1, ty + 18, bx + 10, hy - 23]);
     fill(c, '#f4a0a0');
   }
@@ -332,20 +375,26 @@ function sitter(c: Ctx, x: number, y: number, s: number): void {
   stroke(c, mid, 11, [-80, -18, -60, -4, -20, -2, 10, -6]);
   // the haunch and the back foot
   ell(c, -30, -54, 54, 52);
-  fill(c, rad(c, -46, -84, 70, [
-    [0, hi],
-    [0.55, mid],
-    [1, lo],
-  ]));
+  fill(
+    c,
+    rad(c, -46, -84, 70, [
+      [0, hi],
+      [0.55, mid],
+      [1, lo],
+    ]),
+  );
   ell(c, -2, -8, 32, 10);
   fill(c, lo);
   // the body, upright
   blob(c, [-66, -74, -50, -156, 0, -200, 48, -176, 58, -96, 36, -30, -24, -24]);
-  fill(c, lin(c, -66, 0, 58, 0, [
-    [0, lo],
-    [0.45, mid],
-    [1, hi],
-  ]));
+  fill(
+    c,
+    lin(c, -66, 0, 58, 0, [
+      [0, lo],
+      [0.45, mid],
+      [1, hi],
+    ]),
+  );
   blob(c, [20, -170, 52, -160, 56, -100, 34, -60, 22, -110]);
   fill(c, '#e8d0c0');
   // front legs, straight as a judge could ask
@@ -354,7 +403,26 @@ function sitter(c: Ctx, x: number, y: number, s: number): void {
     [46, false],
   ] as const) {
     blob(c, [lx - 11, -128, lx + 12, -128, lx + 12, -8, lx - 10, -8]);
-    fill(c, lin(c, lx - 11, 0, lx + 12, 0, back ? [[0, lo], [1, mid]] : [[0, mid], [0.6, hi], [1, mid]]));
+    fill(
+      c,
+      lin(
+        c,
+        lx - 11,
+        0,
+        lx + 12,
+        0,
+        back
+          ? [
+              [0, lo],
+              [1, mid],
+            ]
+          : [
+              [0, mid],
+              [0.6, hi],
+              [1, mid],
+            ],
+      ),
+    );
     ell(c, lx + 6, -6, 15, 8);
     fill(c, back ? lo : mid);
   }
@@ -365,14 +433,23 @@ function sitter(c: Ctx, x: number, y: number, s: number): void {
   c.translate(hx, hy);
   c.rotate(-0.12);
   ell(c, 0, 0, 40, 35);
-  fill(c, rad(c, -8, -14, 44, [
-    [0, hi],
-    [0.6, mid],
-    [1, lo],
-  ]));
+  fill(
+    c,
+    rad(c, -8, -14, 44, [
+      [0, hi],
+      [0.6, mid],
+      [1, lo],
+    ]),
+  );
   stroke(c, GWINN.collar!, 10, [-34, 16, -16, 32, 4, 38, 18, 36]);
   ell(c, 30, 10, 28, 18, 0.1);
-  fill(c, lin(c, 0, 0, 0, 26, [[0, hi], [1, mid]]));
+  fill(
+    c,
+    lin(c, 0, 0, 0, 26, [
+      [0, hi],
+      [1, mid],
+    ]),
+  );
   ell(c, 56, 2, 9, 7);
   fill(c, GWINN.nose);
   ell(c, 54, -1, 3, 2);
@@ -416,11 +493,14 @@ function rosette(c: Ctx, x: number, y: number, s: number): void {
     c.translate(tx, 6);
     c.rotate(rot);
     poly(c, [-8, 0, 8, 0, 9, 46, 0, 38, -9, 46]);
-    fill(c, lin(c, -8, 0, 8, 0, [
-      [0, '#123a8a'],
-      [0.5, '#2a6ad8'],
-      [1, '#123a8a'],
-    ]));
+    fill(
+      c,
+      lin(c, -8, 0, 8, 0, [
+        [0, '#123a8a'],
+        [0.5, '#2a6ad8'],
+        [1, '#123a8a'],
+      ]),
+    );
     c.restore();
   }
   for (let i = 0; i < 16; i++) {
@@ -431,10 +511,13 @@ function rosette(c: Ctx, x: number, y: number, s: number): void {
   ell(c, 0, 0, 14, 14);
   fill(c, '#0e3a8a');
   ell(c, 0, 0, 9, 9);
-  fill(c, rad(c, -3, -3, 10, [
-    [0, '#fff4b0'],
-    [1, '#e0a810'],
-  ]));
+  fill(
+    c,
+    rad(c, -3, -3, 10, [
+      [0, '#fff4b0'],
+      [1, '#e0a810'],
+    ]),
+  );
   c.restore();
 }
 
@@ -482,11 +565,14 @@ function ferris(c: Ctx, x: number, y: number, R: number, ground: number): void {
 /** THE BIG DROP: a tall lattice tower, its ring of seats near the top. */
 function dropTower(c: Ctx, x: number, top: number, ground: number): void {
   poly(c, [x - 14, ground, x - 10, top, x + 10, top, x + 14, ground]);
-  fill(c, lin(c, x - 14, 0, x + 14, 0, [
-    [0, '#1a1030'],
-    [0.5, '#4a3a6a'],
-    [1, '#1a1030'],
-  ]));
+  fill(
+    c,
+    lin(c, x - 14, 0, x + 14, 0, [
+      [0, '#1a1030'],
+      [0.5, '#4a3a6a'],
+      [1, '#1a1030'],
+    ]),
+  );
   for (let yy = top + 10; yy < ground; yy += 16) stroke(c, 'rgba(255,255,255,0.18)', 1.5, [x - 12, yy, x + 12, yy + 16]);
   // the chasing lights up its face
   for (let yy = top + 14; yy < ground - 10; yy += 18) {
@@ -520,10 +606,13 @@ function booth(c: Ctx, x: number, bw: number, ground: number, a: string, b: stri
   poly(c, [x, ground, x, ground - bh, x + bw, ground - bh, x + bw, ground]);
   fill(c, '#3a1a2a');
   poly(c, [x + 8, ground, x + 8, ground - bh + 22, x + bw - 8, ground - bh + 22, x + bw - 8, ground]);
-  fill(c, lin(c, 0, ground - bh, 0, ground, [
-    [0, '#fff0b0'],
-    [1, '#ff9a3a'],
-  ]));
+  fill(
+    c,
+    lin(c, 0, ground - bh, 0, ground, [
+      [0, '#fff0b0'],
+      [1, '#ff9a3a'],
+    ]),
+  );
   const n = 6;
   for (let i = 0; i < n; i++) {
     poly(c, [x - 6 + (i * (bw + 12)) / n, ground - bh + 24, x - 6 + ((i + 1) * (bw + 12)) / n, ground - bh + 24, x + bw / 2, ground - bh - 26]);

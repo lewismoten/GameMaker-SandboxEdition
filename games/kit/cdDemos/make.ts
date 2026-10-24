@@ -18,9 +18,9 @@ import { recordDemo, replay } from './demo';
 const OUT = join(import.meta.dirname, '../../../web/public/extras');
 const DEMOS = join(OUT, 'demos');
 const INDEX_FILE = join(OUT, 'demos.json');
-const MADE =
-  'Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.';
-const IN_GAME = 'The game’s own recording, which its title screen never plays (it names no demo, or a file the game does not have); listed here so it can be watched.';
+const MADE = 'Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.';
+const IN_GAME =
+  'The game’s own recording, which its title screen never plays (it names no demo, or a file the game does not have); listed here so it can be watched.';
 
 async function make(ids: string[]): Promise<void> {
   mkdirSync(DEMOS, { recursive: true });

@@ -1,0 +1,149 @@
+/* The Credits page's "Pictures on the BBS" (bbsPicturesSection.ts) and its modem downloads (modemSheet.ts). */
+
+main.credits-page .bbs-pics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 16px;
+}
+
+main.credits-page .bbs-pic {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+main.credits-page .bbs-pic img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+main.credits-page .bbs-pic figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  color: var(--text);
+}
+
+main.credits-page .bbs-pic-facts,
+main.credits-page .bbs-pic-credit {
+  color: var(--muted);
+}
+
+main.credits-page .bbs-pic-credit {
+  font-style: italic;
+}
+
+/* ---- the downloads' status box and controls ---- */
+main.credits-page .bbs-xfer {
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  gap: 12px 16px;
+  align-items: start;
+  margin: 12px 0 16px;
+}
+
+main.credits-page .bbs-xfer-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+main.credits-page .bbs-xfer-note {
+  margin: 0;
+}
+
+main.credits-page .bbs-xfer-note:empty {
+  display: none;
+}
+
+/* the terminal program's status box, as it looked */
+main.credits-page .bbs-xfer-status {
+  padding: 10px 12px;
+  color: #aaa;
+  background: #0000aa;
+  border: 3px double #fff;
+  font:
+    13px/1.45 ui-monospace,
+    'Cascadia Mono',
+    Menlo,
+    Consolas,
+    monospace;
+}
+
+main.credits-page .bbs-xfer-title {
+  margin: 0 0 6px;
+  color: #ff5;
+  text-align: center;
+  font-weight: bold;
+}
+
+main.credits-page .bbs-xfer-status dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 2px 10px;
+  margin: 0 0 8px;
+}
+
+main.credits-page .bbs-xfer-status dt {
+  color: #5ff;
+}
+
+main.credits-page .bbs-xfer-status dd {
+  margin: 0;
+  color: #fff;
+}
+
+main.credits-page .bbs-xfer-status progress {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+main.credits-page .bbs-xfer-bar {
+  color: #5f5;
+  letter-spacing: -1px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+main.credits-page .bbs-xfer-speeds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+main.credits-page .bbs-xfer-speeds label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+}
+
+main.credits-page .bbs-xfer .buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+main.credits-page .bbs-xfer .buttons button {
+  min-height: 32px;
+}
+
+@media (max-width: 700px) {
+  main.credits-page .bbs-xfer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

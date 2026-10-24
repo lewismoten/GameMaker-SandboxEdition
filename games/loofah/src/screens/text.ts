@@ -28,8 +28,8 @@ export const STORY = [
   page([
     'She said, "Don\'t touch the',
     'pink one. It\'s mine!"',
-    'But I, I didn\'t listen.',
-    'I thought, it\'s just a loofah.',
+    "But I, I didn't listen.",
+    "I thought, it's just a loofah.",
     'How wrong I was.',
     '',
     'There it hung, innocent,',
@@ -89,7 +89,7 @@ export const INSTRUCTIONS = [
     'loofah of your own.',
     'CANDLES: touch one to light',
     'it. Six burning open the',
-    'bathroom door.',
+    'bathroom door upstairs.',
     'The rubber duck: a life.',
   ]),
   page([
@@ -100,7 +100,7 @@ export const INSTRUCTIONS = [
     'it cleanses Scrubbus Maximus,',
     'top and bottom, four times',
     'each, into the pink one.',
-    '',
+    'Ride the steam up to it.',
     'Hang the pink one back on',
     'her silver rack.',
     '',
@@ -113,9 +113,9 @@ export const INSTRUCTIONS = [
 /** Each act's card: its name, where, and two lines of the song. */
 export const CARDS: { title: string; where: string; lines: [string, string] }[] = [
   { title: 'I. THE SHOWER', where: 'The bathroom. Candlelight.', lines: ['Loofah of Lucifer,', 'you lather my fate.'] },
-  { title: 'II. THE AISLE', where: 'The all-night store. 3 A.M.', lines: ['From some forest-dark', 'aisle you came.'] },
+  { title: 'II. THE AISLE', where: '3 A.M. SPACE throws brine.', lines: ['From some forest-dark', 'aisle you came.'] },
   { title: 'III. HOME', where: 'She is asleep. The mirror...', lines: ['The mirror steamed', 'a warning sign.'] },
-  { title: 'IV. SCRUBBUS', where: 'The shower. Midnight.', lines: ['Scrubbus maximus,', 'demon sponge divine.'] },
+  { title: 'IV. SCRUBBUS', where: 'Midnight. Ride the steam up.', lines: ['Scrubbus maximus,', 'demon sponge divine.'] },
 ];
 
 const CREDITS_TEXT = page(
@@ -135,7 +135,7 @@ const CREDITS_TEXT = page(
     'Lyrics: shaped by ChatGPT',
     "from Lewis's prompts. Music:",
     'made with Riffusion (now',
-    "Google Flow Music). This",
+    'Google Flow Music). This',
     "game's sung clips are cut",
     'from the recording, and its',
     'FM score is arranged from it.',
@@ -159,7 +159,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -225,7 +225,7 @@ THIS IS SHAREWARE
   If it made you laugh, or made
   you buy your own loofah,
   register for ${price}: you get a
-  tape of the song and a bar of
+  loofah sticker and a bar of
   the Bard's own unscented,
   uncursed soap. Send a check
   (US funds) to:
@@ -238,7 +238,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

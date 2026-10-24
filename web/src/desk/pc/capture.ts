@@ -7,11 +7,10 @@
 import './capture.css';
 import { h, toast } from '../../editor/core/ui';
 import type { Computer } from '../../retro/computer';
-import type { Vga } from '../../vga/shared/vga';
-import type { PictureScreen } from '../../retro/view/picture';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
 import type { LiveRecorder } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';
+import { unlockAchievement } from '../../achievements';
 
 /** What a recording keeps: everything (graphics letterboxed into 720x400) or one mode. */
 export type RecordMode = 'all' | 'graphics' | 'text';
@@ -37,15 +36,17 @@ function sourceOf(pc: Computer): Source {
   if (mode === 'text' || mode === 'off') return { kind: 'text' };
   if (mode === 'vga') {
     // Game-Maker's designers and PLAYGAME's screens (mode 13h), or a picture mode (VPIC, the BBS's GIFs)
-    const vga = pc['vgaScreen'] as Vga | undefined;
+    const vga = pc['vgaScreen'];
     if (vga) return { kind: 'vga', draw: (c) => drawVga(vga, c) };
-    const pic = pc['picture'] as PictureScreen | undefined;
+    const pic = pc['picture'];
     if (pic) return { kind: 'vga', draw: (c) => drawIndexed(pic.mem, pic.dac, pic.width, pic.height, c) };
   }
   if (mode === 'game') {
     // The game's own 320x200 canvas: the one that takes the keys, not the smoothly scaled
     // copy (exactScale) laid under it at the monitor's size.
-    const game = [...pc.monitor.querySelectorAll<HTMLCanvasElement>('.crt-game canvas')].find((c) => c.width === VGA_W && c.height === VGA_H && c.tabIndex >= 0);
+    const game = [...pc.monitor.querySelectorAll<HTMLCanvasElement>('.crt-game canvas')].find(
+      (c) => c.width === VGA_W && c.height === VGA_H && c.tabIndex >= 0,
+    );
     if (game)
       return {
         kind: 'vga',
@@ -191,7 +192,15 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
       wait.firstElementChild!.textContent = `${waitForGame ? '☒' : '☐'} Wait for the next game`;
     });
     menu.replaceChildren(
-      h('strong', null, !fmt ? 'Recording isn’t available in this browser' : fmt.ext === 'mp4' ? 'Record with sound · MP4' : 'Record with sound · WebM (this browser can’t make MP4)'),
+      h(
+        'strong',
+        null,
+        !fmt
+          ? 'Recording isn’t available in this browser'
+          : fmt.ext === 'mp4'
+            ? 'Record with sound · MP4'
+            : 'Record with sound · WebM (this browser can’t make MP4)',
+      ),
       wait,
       h('span', { class: 'cap-sep', role: 'presentation' }, 'The PC’s screen'),
       ...(
@@ -201,7 +210,12 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
           ['text', 'Text only, 720×400', 'Pauses while the PC is in graphics mode'],
         ] as [RecordMode, string, string][]
       ).map(([mode, label, note]) =>
-        h('button', { role: 'menuitem', disabled: !fmt, ...keepFocus, onclick: choose(() => (waitForGame ? arm({ kind: 'screen', mode }) : startScreen(mode, false))) }, label, h('small', null, note)),
+        h(
+          'button',
+          { role: 'menuitem', disabled: !fmt, ...keepFocus, onclick: choose(() => (waitForGame ? arm({ kind: 'screen', mode }) : startScreen(mode, false))) },
+          label,
+          h('small', null, note),
+        ),
       ),
       h('span', { class: 'cap-sep', role: 'presentation' }, 'Around it'),
       h(
@@ -377,6 +391,7 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     r.mix.dispose();
     if (!blob.size) return toast('The recording came out empty: nothing was shown while it ran.', 'error');
     saveBlob(`${r.name}-${stamp()}.${r.recorder.ext}`, blob);
+    unlockAchievement('record-video');
     const fmt = r.recorder.ext === 'mp4' ? 'MP4' : 'WebM, as this browser can’t make MP4';
     toast(`Saved the recording (${fmt}, ${(blob.size / 1e6).toFixed(1)} MB).`);
   }

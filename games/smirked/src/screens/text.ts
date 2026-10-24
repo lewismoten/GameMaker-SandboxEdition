@@ -149,15 +149,17 @@ export const INSTRUCTIONS = [
     '',
     'SPACE: "GET DOWN!" You tackle',
     'what is in front of you.',
-    'Zombies and witches go over.',
-    'Bats, ghosts and the werewolf',
-    'guy do not: just walk away.',
-    'B screams. C asks Lily if it',
-    'is real.',
+    'Zombies and witches go over;',
+    'the werewolf guy sits down a',
+    'moment. Bats and ghosts: walk',
+    'away. B screams. C asks Lily',
+    'if it is real.',
   ]),
   page([
     'THE FOG HALL: fog machines',
-    'hiss on and off. Find',
+    'hiss on and off (a red light',
+    'warns first; each one gets',
+    'you once, then runs dry). Find',
     `${BATTERIES_NEEDED} batteries for the`,
     'flashlight: the door to the',
     'dark hallway needs them.',
@@ -174,14 +176,15 @@ export const INSTRUCTIONS = [
   page([
     'THE LAST HALL: the foam sword',
     "knocks the cardboard knight's",
-    'helmet off. The emergency',
-    'exit only opens for it.',
-    '',
+    'helmet off. He grabs it back',
+    'once and comes on quicker:',
+    'knock it off again. The exit',
+    'only opens for the helmet.',
     'NERVE is your health. Scares',
     'cost nerve, and every scare',
     'makes Lily smirk (F2 counts',
     'her smirks). Juice boxes,',
-    'caramel apple and Lily\'s pat',
+    "caramel apple and Lily's pat",
     'help.',
     '',
     'F1 help      F2 counters',
@@ -216,7 +219,7 @@ const CREDITS_TEXT = page(
     'Screamed, She Smirked" by The',
     'Bard of Bizarre (Lewis Moten',
     'as his hobo clown, Doc Leo):',
-    'a man, his girlfriend\'s kid,',
+    "a man, his girlfriend's kid,",
     'and a haunted house.',
     'Lily and her mom are',
     'characters in the song.',
@@ -240,12 +243,18 @@ const CREDITS_TEXT = page(
     '3.0 files. Made with GAME-',
     'MAKER by Recreational',
     'Software Designs.',
+    '',
+    "The organ's opening quotes",
+    'the Toccata and Fugue in D',
+    'minor, BWV 565, credited to',
+    'J. S. Bach (about 1704):',
+    'public domain.',
   ],
-  2,
+  3,
 );
 
 /** The credits: the whole song (liner notes), the credits, and the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'));
+export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'), true);
 
 export function readme(price: string): string {
   return `
@@ -302,10 +311,9 @@ THIS IS SHAREWARE
 
   If it made you laugh at
   yourself, register for ${price}:
-  you get a tape of the song
-  and a Bravery Badge of your
-  own. Send a check (US funds)
-  to:
+  you get a Bravery Badge of
+  your own, as a sticker. Send
+  a check (US funds) to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
@@ -315,7 +323,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,
@@ -340,7 +350,12 @@ CREDITS (NOW)
   in the song. Built by Claude
   with GAME-MAKER 3.0 by
   Recreational Software
-  Designs.
+  Designs. The haunted
+  house's organ opens with
+  the Toccata and Fugue in D
+  minor, BWV 565, credited to
+  J. S. Bach (about 1704), in
+  the public domain.
 
 So yeah. The date went well.
 `.replace(/^\n/, '');

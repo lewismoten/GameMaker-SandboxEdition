@@ -8,6 +8,7 @@ import { P } from '../art/pal';
 import { LevelMap, type Level } from './level';
 import { GROUND, backyardTiles, bandOf } from './level1Tiles';
 import { backyardBeasts } from './level1Beasts';
+import { addTinHeart } from '../sprites/hidden';
 
 export function backyard(): Level {
   const bs = backyardTiles();
@@ -63,7 +64,9 @@ export function backyard(): Level {
   m.set(16, 39, 'box').set(16, 38, 'boxSoil').set(16, 37, 'tomatoT');
   m.set(18, 39, 'boxSoil');
 
-  // The clothesline: a basket and crate to climb, the line to walk.
+  // The clothesline: a basket and crate to climb, the line to walk; a sign for hopping
+  // up and along at once (Q and E), the first place it helps.
+  m.set(21, 39, 'signSteer');
   m.set(23, 39, 'basket');
   m.set(24, 39, 'box').set(24, 38, 'box');
   m.rect(25, 36, 7, 1, 'line');
@@ -110,6 +113,8 @@ export function backyard(): Level {
     .set(car + 1, 38, 'carRoofR')
     .set(car, 39, 'carDoor')
     .set(car + 1, 39, 'carBack');
+  // a tin heart up on the Klown Car's roof, for a dog who hops up instead of in (100 points)
+  m.set(car + 1, 37, addTinHeart(bs, m.get(car + 1, 37)));
   m.rect(car + 3, 30, 5, 10, 'hedgeWall');
   m.rect(car + 3, 29, 5, 1, () => pick('hedgeTopHi', 'hedgeTopHi2'));
 

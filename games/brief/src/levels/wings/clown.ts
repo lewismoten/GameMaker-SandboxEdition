@@ -21,12 +21,19 @@ function curb(): Pixels {
 function kids(seed: number): Pixels {
   const p = new Pixels(20, 20, c('red', 0));
   p.rect(0, 15, 20, 5, c('wood', 2));
-  const hair: [string, number][] = [['brown', 1], ['yellow', 2], ['ink', 1], ['orange', 2]];
+  const hair: [string, number][] = [
+    ['brown', 1],
+    ['yellow', 2],
+    ['ink', 1],
+    ['orange', 2],
+  ];
   for (let i = 0; i < 3; i++) {
     const x = 1 + i * 6 + (seed % 2);
     const h = hair[(i + seed) % 4];
     p.rect(x, 6, 5, 5, c('skin', 2 + ((i + seed) % 2))).rect(x, 5, 5, 2, c(h[0], h[1]));
-    p.set(x + 1, 8, c('ink', 0)).set(x + 3, 8, c('ink', 0)).rect(x + 1, 9, 3, 1, c('red', 1));
+    p.set(x + 1, 8, c('ink', 0))
+      .set(x + 3, 8, c('ink', 0))
+      .rect(x + 1, 9, 3, 1, c('red', 1));
     p.rect(x - 1, 11, 7, 4, c(['blue', 'green', 'purple'][(i + seed) % 3], 3));
   }
   return p;
@@ -74,7 +81,14 @@ function balloonArt(kind: 'dog' | 'sword' | 'flower' | 'hat'): Pixels {
     tube(10, 13, 10, 16, 'yellow');
   } else if (kind === 'flower') {
     tube(10, 8, 10, 16, 'green');
-    for (const [x, y] of [[7, 4], [13, 4], [7, 9], [13, 9], [10, 2]]) blob(p, x, y, 2.5, 2.5, r('pink'), 1, 3);
+    for (const [x, y] of [
+      [7, 4],
+      [13, 4],
+      [7, 9],
+      [13, 9],
+      [10, 2],
+    ])
+      blob(p, x, y, 2.5, 2.5, r('pink'), 1, 3);
     blob(p, 10, 6, 2, 2, r('yellow'), 1, 3);
   } else {
     tube(4, 12, 16, 12, 'purple');
@@ -126,7 +140,10 @@ function elfOnShelf(): Pixels {
 function cabinet(): Pixels {
   const p = blank();
   bevel(p, 2, 0, 16, 20, r('grey'), 3, 1);
-  for (const y of [2, 8, 14]) p.rect(4, y, 12, 5, c('grey', 4)).rect(8, y + 2, 4, 1, c('grey', 1)).rect(6, y + 1, 8, 1, c('paper', 4));
+  for (const y of [2, 8, 14])
+    p.rect(4, y, 12, 5, c('grey', 4))
+      .rect(8, y + 2, 4, 1, c('grey', 1))
+      .rect(6, y + 1, 8, 1, c('paper', 4));
   return p;
 }
 
@@ -141,7 +158,12 @@ function desk(under: Pixels): Pixels {
 
 function cloud(dy: number): Pixels {
   const p = blank();
-  for (const [x, y, s] of [[6, 10, 4], [11, 8, 5], [15, 11, 3.5]]) blob(p, x, y + dy, s, s * 0.8, r('grey'), 3, 5);
+  for (const [x, y, s] of [
+    [6, 10, 4],
+    [11, 8, 5],
+    [15, 11, 3.5],
+  ])
+    blob(p, x, y + dy, s, s * 0.8, r('grey'), 3, 5);
   micro(p, 3, 13 + dy, 'CLOUD', c('blue', 1));
   return p;
 }
@@ -158,8 +180,36 @@ function art(a: Area): void {
   a.prop('molly', 'saw', molly);
   a.solid('cot', cot(a.tiles.pic('saw')));
   sign(['NO RUNNING', 'WITH SCISSORS', '(OR SLOWLY)'], 3).forEach((px, i) => a.solid(`scis${i}`, px));
-  a.monster('doc', [[mirror(docLeo(0)), 4], [mirror(docLeo(1)), 4]], { path: [[5, 0, 2], [-5, 0, 2]] });
-  a.monster('scissors', [[scissors(true), 3], [scissors(false), 3]], { hazard: true, path: [[3, 0, 2], [0, 2, 2], [-5, 0, 2], [0, -2, 2], [2, 0, 2]] });
+  a.monster(
+    'doc',
+    [
+      [mirror(docLeo(0)), 4],
+      [mirror(docLeo(1)), 4],
+    ],
+    {
+      path: [
+        [5, 0, 2],
+        [-5, 0, 2],
+      ],
+    },
+  );
+  a.monster(
+    'scissors',
+    [
+      [scissors(true), 3],
+      [scissors(false), 3],
+    ],
+    {
+      hazard: true,
+      path: [
+        [3, 0, 2],
+        [0, 2, 2],
+        [-5, 0, 2],
+        [0, -2, 2],
+        [2, 0, 2],
+      ],
+    },
+  );
 
   // A very Cultured Performance
   a.tile('marble', floor('marble', 2));
@@ -168,16 +218,51 @@ function art(a: Area): void {
   a.solid('grill1', grill(1), { next: 'grill0', ntime: 4 });
   a.prop('mozz', 'marble', figure({ shirt: ['paper', 4], pants: ['ink', 1], hat: { kind: 'beret', color: ['ink', 1] }, arms: 'out', hair: ['brown', 1] }));
   a.prop('cheddar', 'marble', cheddar());
-  a.solid('rope', on(floor('marble', 2), (() => {
-    const p = blank();
-    p.rect(2, 4, 2, 14, c('brass', 2)).rect(16, 4, 2, 14, c('brass', 2)).line(3, 6, 17, 6, c('red', 2)).line(3, 7, 10, 9, c('red', 2)).line(10, 9, 17, 7, c('red', 2));
-    return p;
-  })()));
+  a.solid(
+    'rope',
+    on(
+      floor('marble', 2),
+      (() => {
+        const p = blank();
+        p.rect(2, 4, 2, 14, c('brass', 2))
+          .rect(16, 4, 2, 14, c('brass', 2))
+          .line(3, 6, 17, 6, c('red', 2))
+          .line(3, 7, 10, 9, c('red', 2))
+          .line(10, 9, 17, 7, c('red', 2));
+        return p;
+      })(),
+    ),
+  );
   sign(['PLEASE DO NOT', 'POP THE ART'], 3, { board: 'brass' }).forEach((px, i) => a.solid(`gal${i}`, px));
-  a.monster('guide', [[figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun', arms: 'up' }), 6], [figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun' }), 6]], {
-    path: [[0, 3, 1], [0, -3, 1]],
-  });
-  a.monster('static', [[bubble(4, 'pink'), 5], [bubble(4, 'pink', 1), 5]], { hazard: true, path: [[3, 0, 1], [0, 2, 1], [-3, 0, 1], [0, -2, 1]] });
+  a.monster(
+    'guide',
+    [
+      [figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun', arms: 'up' }), 6],
+      [figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun' }), 6],
+    ],
+    {
+      path: [
+        [0, 3, 1],
+        [0, -3, 1],
+      ],
+    },
+  );
+  a.monster(
+    'static',
+    [
+      [bubble(4, 'pink'), 5],
+      [bubble(4, 'pink', 1), 5],
+    ],
+    {
+      hazard: true,
+      path: [
+        [3, 0, 1],
+        [0, 2, 1],
+        [-3, 0, 1],
+        [0, -2, 1],
+      ],
+    },
+  );
 
   // Bubble Rap
   a.tile('lino', floor('lino', 3, 'green'));
@@ -187,29 +272,99 @@ function art(a: Area): void {
   const joker = figure({ face: 'happy', shirt: ['purple', 3], pants: ['green', 3], hat: { kind: 'top', color: ['green', 2] } });
   joker.line(16, 8, 16, 19, c('brass', 3)).disc(16, 7, 1.5, c('brass', 4));
   a.prop('joker', 'lino', joker);
-  sign(['BUBBLE WRAP', 'AISLE 3', 'POP AT RANDOM'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`wrap${i}`, px));
-  a.monster('bubbig', [[bubble(7), 6], [bubble(7, 'sky', 1), 6]], { power: 1, path: [[0, 2, 1], [0, -2, 1]] });
-  a.monster('bubsmall', [[bubble(3), 4], [bubble(3, 'sky', 1), 4]], { power: 1, path: [[2, 0, 1], [-2, 0, 1]] });
+  sign(['BUBBLE PACK', 'AISLE 3', 'POP AT RANDOM'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`wrap${i}`, px));
+  a.monster(
+    'bubbig',
+    [
+      [bubble(7), 6],
+      [bubble(7, 'sky', 1), 6],
+    ],
+    {
+      power: 1,
+      path: [
+        [0, 2, 1],
+        [0, -2, 1],
+      ],
+    },
+  );
+  a.monster(
+    'bubsmall',
+    [
+      [bubble(3), 4],
+      [bubble(3, 'sky', 1), 4],
+    ],
+    {
+      power: 1,
+      path: [
+        [2, 0, 1],
+        [-2, 0, 1],
+      ],
+    },
+  );
 
   // The Interest We Lost
   a.tile('office', floor('carpet', 4, 'blue'));
   a.prop('cabinet', 'office', cabinet());
   a.solid('desk', desk(a.tiles.pic('office')));
   a.prop('mara', 'office', figure({ shirt: ['teal', 3], dress: true, hair: ['brown', 0], hairStyle: 'long', glasses: true, arms: 'up' }));
-  a.monster('cloud', [[cloud(0), 8], [cloud(1), 8]], { path: [[3, 0, 1], [-3, 0, 1]] });
+  a.monster(
+    'cloud',
+    [
+      [cloud(0), 8],
+      [cloud(1), 8],
+    ],
+    {
+      path: [
+        [3, 0, 1],
+        [-3, 0, 1],
+      ],
+    },
+  );
   const peton = (s: number) => figure({ face: 'auguste', shirt: ['paper', 4], tie: ['red', 3], pants: ['ink', 1], hair: ['ink', 1] }, s);
-  a.monster('peton', [[peton(0), 5], [peton(1), 5]], { path: [[0, 2, 1], [4, 0, 1], [0, -2, 1], [-4, 0, 1]] });
+  a.monster(
+    'peton',
+    [
+      [peton(0), 5],
+      [peton(1), 5],
+    ],
+    {
+      path: [
+        [0, 2, 1],
+        [4, 0, 1],
+        [0, -2, 1],
+        [-4, 0, 1],
+      ],
+    },
+  );
   sign(['ACCOUNTS', 'PAYABLE', '(MOSTLY)'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`acct${i}`, px));
   a.solid('brick', wall('brick', 'red', 3));
 
   // the hallway's guest: Doc Leo himself, browsing
-  a.monster('leo', [[docLeo(0), 6], [docLeo(1), 6]], { path: [[6, 0, 1], [0, -2, 1], [-6, 0, 1], [0, 2, 1]] });
+  a.monster(
+    'leo',
+    [
+      [docLeo(0), 6],
+      [docLeo(1), 6],
+    ],
+    {
+      path: [
+        [6, 0, 1],
+        [0, -2, 1],
+        [-6, 0, 1],
+        [0, 2, 1],
+      ],
+    },
+  );
 }
 
 export const CLOWN: WingSpec = {
   wing: WINGS[0],
   tint: 'red',
-  stamp: [['paper', 4], ['red', 3], ['orange', 3]],
+  stamp: [
+    ['paper', 4],
+    ['red', 3],
+    ['orange', 3],
+  ],
   signs: [
     ['HONK IF YOU', 'LOVE BOOKS', '(QUIETLY)'],
     ['LOST: ONE RED', 'NOSE. ASK AT', 'THE DESK'],

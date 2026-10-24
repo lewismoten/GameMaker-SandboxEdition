@@ -59,7 +59,10 @@ export interface Tone {
  */
 export function tones(s: string): Tone[] {
   const out: Tone[] = [];
-  for (const raw of s.split(',').map((t) => t.trim()).filter(Boolean)) {
+  for (const raw of s
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean)) {
     const m = /^(~+)?(\S+)\s+([whqestx])(\.?)(\\+)?([!-]*)$/.exec(raw);
     if (!m) throw new Error(`Bad note "${raw}"`);
     const beats = LEN[m[3]] * (m[4] ? 1.5 : 1);
@@ -263,9 +266,18 @@ export class Fx {
   }
 
   /** A drum hit every `every` beats for `beats`, velocity ramping (a roll); tuned drums (tom, kick) walk through `notes`. */
-  drumRoll(drum: number, at: number, beats: number, every: number, velFrom: number, velTo: number, notes: number[] = [drum === DRUM.tom ? 48 : drum === DRUM.cymbal ? 72 : 55]): this {
+  drumRoll(
+    drum: number,
+    at: number,
+    beats: number,
+    every: number,
+    velFrom: number,
+    velTo: number,
+    notes: number[] = [drum === DRUM.tom ? 48 : drum === DRUM.cymbal ? 72 : 55],
+  ): this {
     const count = Math.round(beats / every);
-    for (let k = 0; k < count; k++) this.note(drum, at + k * every, Math.min(every, 0.5), notes[k % notes.length], ramp(velFrom, velTo, count === 1 ? 1 : k / (count - 1)), 0.6);
+    for (let k = 0; k < count; k++)
+      this.note(drum, at + k * every, Math.min(every, 0.5), notes[k % notes.length], ramp(velFrom, velTo, count === 1 ? 1 : k / (count - 1)), 0.6);
     return this;
   }
 

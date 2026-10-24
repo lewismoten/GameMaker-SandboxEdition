@@ -4,15 +4,15 @@ down in the dust, climb the
 mountain and grow all the way
 up to the palm of God's hand.
 
-LEFT/RIGHT or A D walk (slow
-but sure). UP or W hops: hold
-it to go higher. Q and E (or
-keypad 7 and 9) hop up and
-sideways; steer as you fall.
+LEFT/RIGHT or A D walk: slow
+but sure as a seed, quicker
+once you have grown. UP or W
+hops: hold it longer to hop
+higher. Q and E (or keypad 7
+and 9) hop up and sideways;
+steer as you fall.
 
 SPACE or H: Hallelujah!
-
-
 
 ROOTS: soft dust gives way to
 your roots. Land on it, walk
@@ -36,6 +36,16 @@ Dew and rain are good for
 you; a golden mustard flower
 is an extra life.
 
+High up the great plant the
+evening breeze gusts. When
+the leaves shiver, a gust is
+coming that blows you off
+the branch: wait, and cross
+while it's calm.
+
+Cornered in a tunnel? Push
+roots up into the dust and
+let the mole go by.
 It don't shout, it don't brag:
 you have no way to fight. Big
 loud things hurt to bump
@@ -45,3 +55,9 @@ F1 help      F2 counters
 F3 music     F4 sound
 F5 save      F6 load
 ESC quit
+
+
+
+
+
+

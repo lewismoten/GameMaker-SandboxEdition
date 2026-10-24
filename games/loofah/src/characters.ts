@@ -41,7 +41,15 @@ const birth = (mon: number, row = 0): Frame => ({ ...emptyFrame(), x: 0, y: (row
 export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
   const ch = newCharacter();
   const S = ch.sequences;
-  const f = (o: F): Frame => ({ ...emptyFrame(), x: o.x ?? 0, y: o.y ?? 0, pic1: CHARBL, pic2: cb.n(o.pic), pause: o.pause ?? 1, orient: o.mirror ? MIRROR : 0 });
+  const f = (o: F): Frame => ({
+    ...emptyFrame(),
+    x: o.x ?? 0,
+    y: o.y ?? 0,
+    pic1: CHARBL,
+    pic2: cb.n(o.pic),
+    pause: o.pause ?? 1,
+    orient: o.mirror ? MIRROR : 0,
+  });
 
   set(S[SEQ.idle], [
     f({ pic: 'front', pause: 30 }),
@@ -53,7 +61,10 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pic: 'front', pause: 22 }),
   ]);
   set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'faint0', pause: 8 }), f({ pic: 'faint1', pause: 30 })], { sound: SND.die, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'worry', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], { sound: SND.hurt, jstkBut: 0 });
+  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'worry', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], {
+    sound: SND.hurt,
+    jstkBut: 0,
+  });
   set(S[3], [f({ pic: 'front' })], { key: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
@@ -78,14 +89,18 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.downS], down, { key: KEY.s, sound: SND.step });
   // Space throws rosemary brine to the right (it plays through: "ground", or the joystick's idle
   // would cut in); its first frame steps right a pixel (and back), so the splashes fly to the right
-  set(S[SEQ.throw], [f({ pic: 'throw0', x: 1, pause: 3 }), birth(MON.brine, 0), birth(MON.brine, -1), f({ pic: 'throw1', x: -1, pause: 4 }), f({ pic: 'front', pause: 2 })], {
-    key: KEY.space,
-    sound: SND.speak,
-    ground: 1,
-    norepeat: 1,
-    jstkMov: JOY.any,
-    jstkBut: 1,
-  });
+  set(
+    S[SEQ.throw],
+    [f({ pic: 'throw0', x: 1, pause: 3 }), birth(MON.brine, 0), birth(MON.brine, -1), f({ pic: 'throw1', x: -1, pause: 4 }), f({ pic: 'front', pause: 2 })],
+    {
+      key: KEY.space,
+      sound: SND.speak,
+      ground: 1,
+      norepeat: 1,
+      jstkMov: JOY.any,
+      jstkBut: 1,
+    },
+  );
   // B: he sings a line
   const sing = [f({ pic: 'sing0', pause: 8 }), f({ pic: 'sing1', pause: 10 }), f({ pic: 'sing0', pause: 6 }), f({ pic: 'front', pause: 2 })];
   set(S[SEQ.sing], sing, { key: KEY.b, sound: SND.wail, ground: 1, norepeat: 1 });
@@ -137,33 +152,55 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.mango] = mon(anim('mango0', 'mango1', 3), { power: 150, thru: 1 }, pace(1, 1));
   set[MON.towel] = mon(anim('towel0', 'towel1', 14), { power: 200, thru: 1 }, still);
   set[MON.bubble] = mon(anim('bubble0', 'bubble1', 6), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(0, -6, 1, 4)]);
-  set[MON.carl] = mon(anim('carl0', 'carl1', 1), { power: 50, thru: 0, newmon: MON.carlOff }, [corner(0, 0, 2), corner(3, -1, 2, 0), corner(5, 1, 2, 0), corner(2, 2, 2, 4), corner(0, 0, 2, 4)]);
-  set[MON.carlOff] = mon(anim('carl0', 'carl1', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
+  set[MON.carl] = mon(anim('carl0', 'carl1', 1), { power: 50, thru: 0, newmon: MON.carlOff }, [
+    corner(0, 0, 2),
+    corner(3, -1, 2, 0),
+    corner(5, 1, 2, 0),
+    corner(2, 2, 2, 4),
+    corner(0, 0, 2, 4),
+  ]);
+  set[MON.carlOff] = mon(anim('carlOff0', 'carlOff1', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
   // II. the forest-dark aisle: wild loofahs (brine, 220, beats them into tame ones)
   set[MON.feral] = mon(anim('feral0', 'feral1', 4), { power: 150, thru: 1, newmon: MON.tame }, pace(run, 1));
   set[MON.tame] = mon(anim('tame0', 'tame1', 8), { power: 50, thru: 1 }, still);
   set[MON.owl] = mon(anim('owl0', 'owl1', 30), { power: 200, thru: 0 }, still);
   set[MON.loaf] = mon(anim('loaf0', 'loaf1', 8), { power: 50, thru: 0, newmon: MON.loafOff }, still);
-  set[MON.loafOff] = mon(anim('loaf1', 'loaf0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
+  set[MON.loafOff] = mon(anim('loafOff1', 'loafOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff }, still);
-  set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
+  set[MON.seedOff] = mon(anim('seedOff1', 'seedOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
   // III. home in the dark
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 20), { power: 200, thru: 1 }, still);
   set[MON.gwinn] = mon(anim('gwinn0', 'gwinn1', 24), { power: 200, thru: 1 }, still);
-  set[MON.flapper] = mon(anim('flapper0', 'flapper1', 3), { power: 200, thru: 1 }, pace(run, 1, 0));
+  // a screaming towel snaps him once (weaker than he is, it's done in by the touch) and flutters
+  // off, so it never pins him while it paces through him
+  set[MON.flapper] = mon(anim('flapper0', 'flapper1', 3), { power: 90, thru: 1, newmon: MON.flapperOff }, pace(run, 1, 0));
+  set[MON.flapperOff] = mon(anim('flapperOff0', 'flapperOff1', 2), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(3, -5, 4, 0)]);
   set[MON.zzz] = mon(anim('zzz0', 'zzz1', 6), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -2, 1, 0), corner(0, -4, 1, 0)]);
-  // IV. Scrubbus Maximus (both halves, four stages each), smug where it stands
+  // IV. Scrubbus Maximus (both halves, four stages each), up on the tub rim. After each splash but
+  // the last it slides along the rim to a new spot (power 230 while it slides, so brine bounces
+  // off), then sits smug again. Both halves slide the same blocks, so they line up again whichever
+  // half is splashed first.
+  const SLIDE = [0, 2, -2, 2];
   for (const half of ['A', 'B'] as const)
     for (let s = 0; s < 4; s++) {
-      const slot = MON[`sponge${half}${s}` as keyof typeof MON];
-      const next = s < 3 ? MON[`sponge${half}${s + 1}` as keyof typeof MON] : half === 'A' ? MON.pink : 64;
-      set[slot] = mon(anim(`sponge${half}${s}a`, `sponge${half}${s}b`, 9 - s * 2), { power: 200, thru: 1, newmon: next }, still);
+      const key = (k: string) => MON[`sponge${half}${k}` as keyof typeof MON];
+      const next = s < 3 ? key(`${s + 1}m`) : half === 'A' ? MON.pink : 64;
+      set[key(`${s}`)] = mon(anim(`sponge${half}${s}a`, `sponge${half}${s}b`, 9 - s * 2), { power: 200, thru: 1, newmon: next }, still);
+      if (s > 0)
+        set[key(`${s}m`)] = mon(anim(`sponge${half}${s}a`, `sponge${half}${s}b`, 2), { power: 230, thru: 1, end: -1, newmon: key(`${s}`) }, [
+          corner(0, 0, 2),
+          corner(SLIDE[s], 0, 2, SLIDE[s] < 0 ? 4 : 0),
+        ]);
     }
-  // cursed citrus suds: out of the soap dish in an arc to the left, a splat where they land
-  const arc: March[] = [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -3, 3, 4), corner(-7, -2, 3, 4), corner(-9, 1, 3, 4), corner(-11, 4, 3, 4)];
-  set[MON.suds] = mon(anim('suds0', 'suds1', 2), { power: 200, thru: 0, end: -1, newmon: MON.splat }, arc);
+  // cursed citrus suds: out of the soap dish, floating slowly left over the gap (across his perch
+  // at the top of the steam) and down into the water, a splat where they land. Brine pops them.
+  const drift: March[] = [corner(0, 0, 2), corner(-4, -2, 2, 4), corner(-8, -2, 1, 4), corner(-11, 0, 1, 4), corner(-14, 4, 1, 4), corner(-16, 7, 2, 4)];
+  set[MON.suds] = mon(anim('suds0', 'suds1', 3), { power: 200, thru: 0, end: -1, newmon: MON.splat }, drift);
   set[MON.splat] = mon([[n('splat'), 4]], { power: 200, thru: 0, end: 18 });
   set[MON.brine] = mon(anim('brine0', 'brine1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
+  // a sprig on the rosemary pot by the vent, now and then (weaker than him: picked at a touch),
+  // withered again if he doesn't come for it
+  set[MON.sprig] = mon([[n('sprig'), 30]], { power: 50, thru: 0, end: 150 }, still);
   set[MON.pink] = mon(anim('pink0', 'pink1', 4), { power: 230, thru: 1 }, still);
   set[MON.steam] = mon(anim('steam0', 'steam1', 8), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(-1, -6, 1, 4)]);
   return set;

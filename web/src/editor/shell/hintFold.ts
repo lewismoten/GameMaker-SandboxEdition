@@ -24,7 +24,7 @@ function remember(open: boolean): void {
 /** Makes an editor's hint foldable (only a phone's layout folds it). */
 export function foldHint(hint: HTMLElement | null): void {
   if (!hint || hint.querySelector('.hint-toggle')) return;
-  const btn = h('button', { type: 'button', class: 'hint-toggle' }) as HTMLButtonElement;
+  const btn = h('button', { type: 'button', class: 'hint-toggle' });
   const show = (open: boolean) => {
     hint.classList.toggle('folded', !open);
     btn.textContent = open ? 'Less' : 'More';

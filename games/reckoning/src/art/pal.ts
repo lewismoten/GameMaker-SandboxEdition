@@ -46,19 +46,61 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['aura', 4, [230, 150, 40], [255, 250, 210], undefined, true],
   ['fire', 4, [150, 20, 0], [255, 230, 110], undefined, true],
   ['eye', 2, [255, 200, 40], [255, 255, 180], undefined, true],
+  // the reckoning's floor tiles: a cool slate that keeps its own light, so the play row reads in the red
+  ['slate', 3, [22, 26, 40], [150, 160, 186], undefined, true],
 ];
 
 /** Each act's backdrop ramp ("sky": the dark of a room, top to bottom) and how the rest is lit. */
 const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // moonlight through the blinds
-  night: { sky: [[10, 12, 34], [60, 70, 120], [30, 36, 76]], mul: [0.6, 0.66, 0.92], add: [4, 6, 22] },
+  night: {
+    sky: [
+      [10, 12, 34],
+      [60, 70, 120],
+      [30, 36, 76],
+    ],
+    mul: [0.6, 0.66, 0.92],
+    add: [4, 6, 22],
+  },
   // the kitchen in the fridge's cold glow
-  fridge: { sky: [[16, 24, 44], [120, 150, 190], [56, 72, 110]], mul: [0.84, 0.92, 1.04], add: [8, 12, 26] },
+  fridge: {
+    sky: [
+      [16, 24, 44],
+      [120, 150, 190],
+      [56, 72, 110],
+    ],
+    mul: [0.84, 0.92, 1.04],
+    add: [8, 12, 26],
+  },
   // the hall, lights flickering, a sickly green
-  dash: { sky: [[14, 22, 14], [90, 120, 70], [40, 56, 34]], mul: [0.74, 0.86, 0.62], add: [6, 14, 0] },
+  dash: {
+    sky: [
+      [14, 22, 14],
+      [90, 120, 70],
+      [40, 56, 34],
+    ],
+    mul: [0.74, 0.86, 0.62],
+    add: [6, 14, 0],
+  },
   // the reckoning: blood red
-  hell: { sky: [[40, 0, 0], [200, 50, 24], [110, 8, 6]], mul: [1.05, 0.66, 0.58], add: [34, 4, 4] },
-  plain: { sky: [[30, 36, 76], [140, 150, 200], [70, 80, 130]], mul: [1, 1, 1], add: [0, 0, 0] },
+  hell: {
+    sky: [
+      [40, 0, 0],
+      [200, 50, 24],
+      [110, 8, 6],
+    ],
+    mul: [1.05, 0.66, 0.58],
+    add: [34, 4, 4],
+  },
+  plain: {
+    sky: [
+      [30, 36, 76],
+      [140, 150, 200],
+      [70, 80, 130],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
 };
 
 export interface Pal {

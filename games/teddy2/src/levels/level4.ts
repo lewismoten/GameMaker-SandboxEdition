@@ -13,7 +13,12 @@ import { riverBeasts } from './level4Beasts';
 export function river(): Level {
   const bs = riverTiles();
   const beasts = riverBeasts();
-  bs.chez(() => bs.pic('sky3'), 'chicken', bs.pic(skyAt(37)), () => bs.pic('sky3'));
+  bs.chez(
+    () => bs.pic('sky3'),
+    'chicken',
+    bs.pic(skyAt(37)),
+    () => bs.pic('sky3'),
+  );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
   for (const [cx, cy] of [
@@ -32,15 +37,20 @@ export function river(): Level {
   // The start: the bank, a tree, a picnic table, a sign.
   const tree = (x: number, ground = G) => {
     for (let y = ground - 5; y < ground; y++) m.set(x, y, bandRow(y) === 3 ? 'trunk' : `trunk${bandRow(y)}`);
-    for (let dy = 0; dy < 3; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + dy < 4) m.set(x + dx, ground - 8 + dy, `leaf${bandRow(ground - 8 + dy)}`);
+    for (let dy = 0; dy < 3; dy++)
+      for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + dy < 4) m.set(x + dx, ground - 8 + dy, `leaf${bandRow(ground - 8 + dy)}`);
   };
   tree(2);
   m.set(7, 39, 'picnic');
   m.set(10, 39, 'signSwim');
+  m.set(8, 39, 'signHopE');
   // The rapids, x 12..29: stepping stones; the waterwheel at the end.
   for (let x = 12; x < 30; x++) {
     m.set(x, 39, 'sky3');
-    m.set(x, G, 'rapid0').set(x, G + 1, 'rapidDeep0').set(x, G + 2, 'rapidDeep0').set(x, G + 3, 'bed');
+    m.set(x, G, 'rapid0')
+      .set(x, G + 1, 'rapidDeep0')
+      .set(x, G + 2, 'rapidDeep0')
+      .set(x, G + 3, 'bed');
   }
   for (const x of [14, 17, 20, 23, 26, 29]) m.set(x, G, 'stone');
   for (let bx = 0; bx < 2; bx++) for (let by = 0; by < 3; by++) m.set(27 + bx, 38 + by, `wheel${bx}${by}_0`);
@@ -81,8 +91,13 @@ export function river(): Level {
   m.rect(73, G, 14, 1, 'sand');
   const car = 79;
   m.set(car - 1, 39, 'charger');
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
   m.rect(87, 30, 13, 10, 'hedgeWall');
   m.rect(87, 29, 13, 1, 'hedgeTop');
   m.rect(0, 30, 1, 10, 'hedgeWall');

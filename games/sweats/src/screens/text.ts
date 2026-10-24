@@ -63,10 +63,11 @@ export const INSTRUCTIONS = [
   page([
     'An open-mic night in four',
     'sets. Between sets: buy a',
-    'coffee at the counter (five',
-    'tips) and take it up to the',
-    'stage. The curtain lets you',
-    'through with a cup in hand.',
+    'coffee (five tips) at the',
+    'cart by the stage, or at the',
+    'counter downstairs. The',
+    'curtain lets you through with',
+    'a cup in hand.',
     '',
     'LEFT/RIGHT or A D walk. UP or',
     'W hops: hold it to hop',
@@ -100,7 +101,8 @@ export const INSTRUCTIONS = [
     'line.',
     '',
     'Some things are too tough for',
-    'words: hop over them.',
+    'words: hop over them. Some',
+    'take more than one word.',
     '',
     'F1 help      F2 counters',
     'F3 music     F4 sound',
@@ -155,7 +157,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -220,9 +222,9 @@ THIS IS SHAREWARE
   unchanged.
 
   If it made you laugh, register
-  for ${price}: you get a tape of
-  all seventeen monologues and a
-  gift certificate for one (1)
+  for ${price}: you get a sticker
+  that says SHAKESPEARE IN
+  SWEATPANTS and a gift certificate for one (1)
   small coffee at the counter.
   Send a check (US funds) to:
 
@@ -234,7 +236,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,
