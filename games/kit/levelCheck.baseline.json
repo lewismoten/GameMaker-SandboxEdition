@@ -54,8 +54,6 @@
   "warning density s9 10 enemies on one screen at (0, 8)",
   "warning density s9 6 enemies on one screen at (0, 76)",
   "warning density s9 7 enemies on one screen at (0, 54)",
-  "warning facing s2 The hero walks left and right facing the player",
-  "warning facing s4 The hero walks left and right facing the player",
   "warning opposites s11 Blocks 63 and 65 pull opposite ways and touch in 2 places",
   "warning start-threat s10 Monster 59 starts 3 blocks from where the hero comes in",
   "warning start-threat s13 Monster 58 starts 3 blocks from where the hero comes in",

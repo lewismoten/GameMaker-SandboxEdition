@@ -59,5 +59,39 @@
       "gif": "title.gif",
       "caption": "Your PC has a virus. Shrink down and blast it."
     }
-  }
+  },
+  "sameEverySide": [
+    "ship.chr",
+    "shipfree.chr",
+    "s1.mon#21",
+    "s2.mon#21",
+    "s3.mon#21",
+    "s4.mon#21",
+    "s5.mon#21",
+    "b3.mon#21",
+    "b4.mon#21",
+    "b5.mon#21",
+    "b2.mon#48",
+    "b2.mon#49",
+    "b2.mon#50",
+    "b2.mon#51",
+    "b2.mon#52",
+    "b2.mon#53",
+    "b2.mon#54",
+    "b2.mon#55",
+    "b2.mon#56",
+    "b2.mon#57",
+    "b2.mon#58",
+    "b2.mon#59",
+    "b3.mon#59",
+    "b4.mon#56",
+    "b4.mon#57",
+    "b4.mon#58",
+    "b4.mon#59",
+    "b4.mon#60",
+    "b4.mon#61",
+    "b4.mon#62",
+    "b4.mon#63",
+    "b5.mon#58"
+  ]
 }
