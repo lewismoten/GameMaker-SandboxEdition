@@ -41,17 +41,20 @@ function loadImage(src: string): Promise<HTMLImageElement | undefined> {
 
 const W = 320;
 
-function wrapCentered(ctx: CanvasRenderingContext2D, text: string, y: number, width: number, lh: number): number {
+const CAPTION_FONT = '700 15px Arial, sans-serif';
+
+/** Writes `text` centered in lines `width` wide (or only counts them, `draw` false); returns the y after it. */
+function wrapCentered(ctx: CanvasRenderingContext2D, text: string, y: number, width: number, lh: number, draw = true): number {
   let line = '';
   for (const word of text.split(/\s+/)) {
     const test = line ? `${line} ${word}` : word;
     if (ctx.measureText(test).width > width && line) {
-      ctx.fillText(line, W / 2, y);
+      if (draw) ctx.fillText(line, W / 2, y);
       y += lh;
       line = word;
     } else line = test;
   }
-  if (line) ctx.fillText(line, W / 2, y);
+  if (line && draw) ctx.fillText(line, W / 2, y);
   return y + lh;
 }
 
@@ -77,11 +80,15 @@ async function drawPoster(entry: CatalogEntry, poster: Poster): Promise<HTMLCanv
   const picH = Math.round(ph * scale);
   const picX = (W - picW) / 2;
   const head = 58;
-  const H = Math.max(Math.round(W * 1.25), head + picH + 90);
   const c = document.createElement('canvas');
+  const ctx = c.getContext('2d')!;
+  const caption = poster.caption ?? (fold ? `A map of ${entry.title}` : '');
+  // tall enough for the caption's lines above the company's name
+  ctx.font = CAPTION_FONT;
+  const lines = caption ? wrapCentered(ctx, caption, 0, W - 36, 1, false) : 0;
+  const H = Math.max(Math.round(W * 1.25), head + picH + 28 + lines * 19 + 24);
   c.width = W;
   c.height = H;
-  const ctx = c.getContext('2d')!;
   // paper: glossy black for a poster, off-white for a map
   ctx.fillStyle = fold ? '#efe6cf' : (box?.background ?? '#111');
   ctx.fillRect(0, 0, W, H);
@@ -103,9 +110,8 @@ async function drawPoster(entry: CatalogEntry, poster: Poster): Promise<HTMLCanv
     ctx.lineWidth = 2;
     ctx.strokeRect(picX, picY, picW, picH);
   }
-  ctx.font = `700 15px Arial, sans-serif`;
+  ctx.font = CAPTION_FONT;
   ctx.fillStyle = fold ? '#3a2a18' : (box?.ink ?? '#fff');
-  const caption = poster.caption ?? (fold ? `A map of ${entry.title}` : '');
   if (caption) wrapCentered(ctx, caption, picY + picH + 28, W - 36, 19);
   ctx.font = `900 11px Arial, sans-serif`;
   ctx.fillText((entry.company ?? 'Sandbox Software').toUpperCase().split('').join(' '), W / 2, H - 14);
