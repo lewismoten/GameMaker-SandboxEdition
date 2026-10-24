@@ -1,4 +1,5 @@
-// The map's overlay canvas: grid lines, found blocks, the selection and the ghost of what a click will place.
+// The map's overlay canvas: grid lines, found blocks, the level check's heat map and marks, the
+// selection and the ghost of what a click will place.
 import { BLEN } from '../../../../formats/blocks';
 import { MLEN, MWID } from '../../../../formats/map';
 import type { CellRect } from './cellOps';
@@ -12,6 +13,61 @@ export interface OverlayState {
   ghost?: { x: number; y: number; rows: number[][]; ok: boolean };
   /** A rectangle or line being dragged out. */
   outline?: { cells?: { x: number; y: number }[]; rect?: CellRect };
+  /** The level check's heat map: a step of HEAT_COLORS per cell (0 = never reached). */
+  heat?: Uint8Array;
+  /** The level check's marks: stuck areas, deaths, a finding's cells, and the one in focus. */
+  marks?: { cell: number; kind: 'stuck' | 'death' | 'finding' | 'focus' }[];
+}
+
+/** The heat map's steps, least visited to most: viridis, readable with any color vision. */
+export const HEAT_COLORS = ['#440154', '#414487', '#2a788e', '#22a884', '#7ad151', '#fde725'];
+
+function drawCheck(g: CanvasRenderingContext2D, s: number, st: OverlayState): void {
+  if (st.heat) {
+    g.globalAlpha = 0.55;
+    for (let i = 0; i < st.heat.length; i++) {
+      const v = st.heat[i];
+      if (!v) continue;
+      g.fillStyle = HEAT_COLORS[Math.min(HEAT_COLORS.length, v) - 1];
+      g.fillRect((i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
+    }
+    g.globalAlpha = 1;
+  }
+  for (const m of st.marks ?? []) {
+    const x = (m.cell % MLEN) * s;
+    const y = Math.floor(m.cell / MLEN) * s;
+    g.lineWidth = Math.max(1, s / 10);
+    if (m.kind === 'stuck') {
+      // red-orange hatching: stands out from every heat color
+      g.strokeStyle = '#ff3b1f';
+      g.beginPath();
+      for (let k = -s; k < s; k += Math.max(3, s / 4)) {
+        g.moveTo(x + Math.max(0, k), y + Math.max(0, -k));
+        g.lineTo(x + Math.min(s, s + k), y + Math.min(s, s - k));
+      }
+      g.stroke();
+      g.strokeRect(x + 1, y + 1, s - 2, s - 2);
+    } else if (m.kind === 'death') {
+      for (const [c, w] of [
+        ['#000', 3],
+        ['#fff', 1.5],
+      ] as const) {
+        g.strokeStyle = c;
+        g.lineWidth = w * Math.max(1, s / 20);
+        g.beginPath();
+        g.moveTo(x + s * 0.25, y + s * 0.25);
+        g.lineTo(x + s * 0.75, y + s * 0.75);
+        g.moveTo(x + s * 0.75, y + s * 0.25);
+        g.lineTo(x + s * 0.25, y + s * 0.75);
+        g.stroke();
+      }
+    } else if (m.kind === 'finding') {
+      g.strokeStyle = '#00e0ff';
+      g.beginPath();
+      g.arc(x + s / 2, y + s / 2, s * 0.45, 0, Math.PI * 2);
+      g.stroke();
+    } else dashed(g, x - s, y - s, s * 3, s * 3, '#ffd400');
+  }
 }
 
 /** Draws the overlay; `imgs` are the background blocks' pictures. */
@@ -30,6 +86,7 @@ export function drawOverlay(c: HTMLCanvasElement, zoom: number, st: OverlayState
     for (let i = 10; i < MLEN; i += 10) g.fillRect(i * s, 0, 1, c.height);
     for (let i = 10; i < MWID; i += 10) g.fillRect(0, i * s, c.width, 1);
   }
+  drawCheck(g, s, st);
   if (st.found.length) {
     g.lineWidth = 2;
     g.strokeStyle = '#ff2bd6';
