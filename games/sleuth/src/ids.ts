@@ -63,7 +63,7 @@ export const SCAN = {
   num1: 0x4f,
   num3: 0x51,
   space: 0x39,
-  l: 0x26,
+  z: 0x2c,
   enter: 0x1c,
   esc: 0x01,
 } as const;
@@ -85,7 +85,7 @@ export const KEY = {
   num1: 0x4f00,
   num3: 0x5100,
   space: 0x3920,
-  l: 0x266c,
+  z: 0x2c7a,
 };
 
 /** Sound effects in FINAL.SND (0-8 are PLAYGAME's own events). */

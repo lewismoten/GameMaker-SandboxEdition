@@ -70,7 +70,7 @@ ARROWS or W A S D: walk
 Q and E: walk up and left / up and right
 NUMBER PAD 7 9 1 3: the four diagonals
 SPACE: pick up what you stand on
-L: look through the lens (once you have it)
+Z: look through the lens (once you have it)
 
 F1 help   F2 your evidence
 F3 music  F4 sound
@@ -496,7 +496,7 @@ KEYS
   Q / E: walk up-left / up-right
   Number pad 7 9 1 3: diagonals
   Space: pick up evidence
-  L: look through the lens
+  Z: look through the lens
   F1 help, F2 evidence, F3 music, F4 sound, F5 save, F6 load, Esc quit
 
 FILES ON THIS DISK

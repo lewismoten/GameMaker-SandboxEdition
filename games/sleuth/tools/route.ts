@@ -27,7 +27,7 @@ export async function act1(bot: Bot, demo = false): Promise<void> {
   await g(32, 6, 'props room');
   await g(33, 3, 'the lens');
   await bot.pickup('the lens');
-  await bot.key(SCAN.l, 2, 16);
+  await bot.key(SCAN.z, 2, 16);
   await g(45, 9, 'to the stage-right wing');
   await g(44, 13, 'under the prop table');
   if (bot.sim.blockAt(at(44, 13).x, at(44, 13).y) === bot.sim.blockAt(at(43, 13).x, at(43, 13).y)) throw new Error('The stub did not show');
