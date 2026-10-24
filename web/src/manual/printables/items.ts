@@ -67,12 +67,12 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       kind: 'newsletter',
       id: 'newsletter',
       title: 'The Sandbox Scoop',
-      note: 'Newsletter: our next games',
+      note: 'Newsletter: the next games',
       icon: '🗞️',
       render: () => newsletter(ctx),
       redFilm: !!book,
     },
-    { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every game we make', icon: '🗂️', render: () => catalog(ctx) },
+    { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every Sandbox Software game', icon: '🗂️', render: () => catalog(ctx) },
     { kind: 'bbs', id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     ...(book
       ? [
