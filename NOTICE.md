@@ -373,7 +373,7 @@ formats from their published descriptions and from Game-Maker's own source.
   _TURBO BUTTON_, its prices and its coupons. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
-- **TURBO BUTTON's Game-Maker ad** (its inside front cover, `web/src/manual/magazine/sections/ads.ts`)
+- **TURBO BUTTON's Game-Maker ad** (its send-away ad, `web/src/manual/magazine/sections/ads.ts`)
   takes its look from the full-page Game-Maker ad by RSD and KD Software in _Computer Gaming
   World_ #99 (October 1992), page 55
   ([Internet Archive](https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up)):
