@@ -131,6 +131,8 @@ function monsters(s: Screen, lv: Level): void {
     .filter((m) => m.used)
     .map((m) => m.pic.filter(([b]) => b < MONBL && lv.mbl[b]).map(([b]) => lv.mbl[b]))
     .filter((frames) => frames.length > 1 && frames.some((f) => colors(f) > 2))
+    // one strip per different animation
+    .filter((frames, i, all) => all.findIndex((o) => o[0].pixels.join() === frames[0].pixels.join()) === i)
     .slice(0, 4);
   strips.forEach((frames, row) => {
     const y = 10 + row * 46;

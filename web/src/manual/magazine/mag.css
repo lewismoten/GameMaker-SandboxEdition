@@ -619,6 +619,12 @@
   width: 100%;
 }
 
+/* a piece with a column of its own (The Ultimate Owner's Guide beside its order card) fills it */
+.mag-cell > .mag-piece:not(.float-left, .float-right) {
+  width: 88%;
+  margin: 0.6em auto 0;
+}
+
 .mag-piece.none {
   display: none;
 }
@@ -1096,11 +1102,11 @@
 }
 
 .look-classic .mag-in {
-  padding: 2.6em 2.4em 2.6em;
+  padding: 2.2em 2.4em 2.4em;
 }
 
 .look-classic .mag-body {
-  gap: 0.55em;
+  gap: 0.4em;
 }
 
 .look-classic .mag-head :where(h1, h2, h3),
@@ -1110,7 +1116,7 @@
   transform-origin: 0 0;
   color: var(--ink);
   font:
-    700 4.3em/0.86 'Times New Roman',
+    700 3.7em/0.86 'Times New Roman',
     Times,
     serif;
   font-variant: small-caps;
@@ -1122,7 +1128,7 @@
 }
 
 .look-classic .mag-head.size-l :where(h1, h2, h3) {
-  font-size: 3.5em;
+  font-size: 3.1em;
 }
 
 .look-classic .mag-bevel {
@@ -1161,11 +1167,11 @@
 }
 
 .look-classic .mag-cell > p:first-child:not(.mag-big) {
-  font-size: 1.1em;
+  font-weight: 700;
 }
 
 .look-classic .mag-big-text {
-  font-size: 3.4em;
+  font-size: 2.9em;
 }
 
 .look-classic .mag-card {
@@ -1228,11 +1234,16 @@
 
   .look-classic .mag-head :where(h1, h2, h3),
   .look-classic .mag-head.size-xl :where(h1, h2, h3) {
-    font-size: 2.6em;
+    font-size: 2.3em;
   }
 
   .look-classic .mag-head.size-l :where(h1, h2, h3) {
     font-size: 2.2em;
+  }
+
+  /* the row of small screens stays a row of thumbnails, three across */
+  .look-classic .mag-grid:has(> .mag-cell:nth-child(5)) {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .mag-big-text,
