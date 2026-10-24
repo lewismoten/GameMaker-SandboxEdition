@@ -1,6 +1,7 @@
 // The printed manual: its chapters flowed onto booklet pages (5.5 x 8.5 inches, like the
 // stapled manuals in shareware boxes), padded with note pages to whole folded sheets, with
 // its own front cover (manualCover.ts) and a back cover.
+import './paper.css'; // the page's own styles (the guide beside the DOS page's monitor shows pages without the box viewer)
 import { h } from '../../editor/core/ui';
 import { mapShot } from '../../gfx/gameShots';
 import type { CatalogEntry } from '../../project/files';

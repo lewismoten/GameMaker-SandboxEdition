@@ -5,10 +5,8 @@ import { type BookletPage } from './booklet';
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import { isSandboxGame, loadCatalog, type CatalogEntry } from '../project/files';
-import { openBox } from './printables/viewer';
 import { bookletPageCount } from './printables/imposition';
 import type { BookPage } from './printables/manualPages';
-import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
 import { sandboxShots, type GameShot } from '../gfx/sandboxShots';
 import { gmCover } from './printables/gmCover';
@@ -580,8 +578,9 @@ export async function dosManualPages(): Promise<BookPage[]> {
   return bookPages(pages(await galleryShots()));
 }
 
+/** The guide in the box viewer, with the box's other contents (loaded only now: the copy check needs just the pages). */
 export async function openDosManual(): Promise<void> {
-  const shots = await galleryShots();
+  const [shots, { openBox }, { gmBoxItems }] = await Promise.all([galleryShots(), import('./printables/viewer'), import('./printables/gmItems')]);
   const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
   return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
 }
