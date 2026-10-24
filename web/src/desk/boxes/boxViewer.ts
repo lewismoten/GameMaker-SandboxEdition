@@ -1,6 +1,7 @@
 // The box viewer: a box's six faces folded into a 3D box (boxModel) that comes forward and
 // turns slowly; drag to turn it, scroll or pinch to zoom, shift-drag (or two fingers) to pan,
-// double-click to reset, and step along the shelf to the other boxes.
+// double-click to reset, and step along the shelf to the other boxes. With the desk's black
+// light on, the box in hand shows its glowing lettering too (actions.uv, boxUv.ts).
 import './boxViewer.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
@@ -19,6 +20,8 @@ interface BoxViewerActions {
   insertLabel?: string;
   /** Things that came in the box, shown beside it. */
   extras?: HTMLElement;
+  /** Lays the box's black-light print over its model (boxUv.ts dressUv). */
+  uv?: (model: HTMLElement) => void;
   /** The previous (-1) or next (1) box on the shelf, to look at without closing the viewer. */
   step?: (dir: 1 | -1) => Promise<BoxViewerPage | undefined>;
 }
@@ -37,6 +40,10 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
   return new Promise((resolve) => {
     let model = boxModel(faces);
     let current: BoxViewerPage = { entry, faces, actions };
+    // the desk's black light: on (by day only dimly), and the box's glowing print laid over it
+    const desk = document.querySelector('.desk.bl-uv');
+    const uv = desk ? (desk.classList.contains('bl-night') ? 'uv night' : 'uv') : '';
+    if (uv) actions.uv?.(model);
     const stage = h('div', { class: 'box-stage' }, model);
     let rx = -12;
     let ry = 32;
@@ -77,6 +84,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       next.classList.add(dir > 0 ? 'from-right' : 'from-left');
       model.replaceWith(next);
       model = next;
+      if (uv) page.actions.uv?.(model);
       rx = -12;
       ry = 32;
       zoom = 1;
@@ -175,7 +183,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     const bar = h('div', { class: 'box-viewer-bar' });
     // keyboard: focus moves into the viewer (Tab reaches what came in the box first) and back on close
     const opener = document.activeElement as HTMLElement | null;
-    const overlay = h('div', { class: 'box-viewer', role: 'dialog', tabindex: -1 }, stage, extrasSlot, bar);
+    const overlay = h('div', { class: `box-viewer ${uv}`, role: 'dialog', tabindex: -1 }, stage, extrasSlot, bar);
     /** The title, buttons and extras for the box being shown. */
     const fill = () => {
       const { entry: e, actions: a } = current;
