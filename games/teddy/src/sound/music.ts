@@ -2,6 +2,7 @@
 // most of them (bouncy on the title, sleepy for the story, a full circus march at the
 // Klown Klub). Each voice is its own OPL2 channel; chords spread across three channels.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { THEME_A, THEME_B } from '../../../kit/teddyTheme';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],
@@ -109,10 +110,6 @@ const { piano, bass: BASS, strings, brass, lead, bell, organ, pad, pluck } = INS
 
 /** A soft snare-ish tick on beats 2 and 4. */
 const backbeat = (bars: number) => times(bars, 'r q, C4 q, r q, C4 q');
-
-// Teddy's Theme: 8 bars in C.
-const THEME_A = 'G4 e, C5 e, E5 e, G5 e, E5 q, C5 q, D5 e, E5 e, F5 e, D5 e, G4 h, A4 e, C5 e, F5 e, A5 e, G5 q, E5 q, D5 e, C5 e, D5 e, E5 e, C5 h';
-const THEME_B = 'E5 q, E5 e, F5 e, G5 q, C6 q, B5 e, A5 e, G5 e, F5 e, E5 h, D5 q, D5 e, E5 e, F5 q, A5 q, G5 e, F5 e, E5 e, D5 e, C5 h';
 
 /** Title: the theme as a bouncy march, then the bridge. */
 export function titleSong(): Uint8Array {
