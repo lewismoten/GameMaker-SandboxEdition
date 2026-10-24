@@ -131,6 +131,8 @@ const CREDITS_TEXT = pages(
     '',
     'Design, art, music and',
     'programming: Claude',
+    'Yankee Doodle: traditional',
+    'American tune, public domain.',
     '',
     'Starring Teddy as himself,',
     'a little bigger this time.',
@@ -139,8 +141,6 @@ const CREDITS_TEXT = pages(
     'the friendliest hobo clown',
     'in the Klown Klub. And THE',
     'CHEZ, his red 1976 CitiCar.',
-    '',
-    '',
   ],
   [
     'No dogs were rushed. Gwinn',
