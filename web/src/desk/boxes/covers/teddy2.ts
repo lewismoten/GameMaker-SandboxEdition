@@ -718,7 +718,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   sniffer(c, 254, 548, 1.0);
   // the trail from Teddy's nose to Gwinn
   scent(c, [356, 542, 384, 536, 412, 544, 440, 530, 462, 536, 478, 520, 488, 510]);
-  // confetti (the Klown Klub was here)
+  // confetti (the Clown Club was here)
   for (let i = 0; i < 30; i++) {
     c.fillStyle = ['#d9381e', '#ffd23f', '#1d5fb8', '#1e9a5a', '#ff5aa8'][i % 5];
     c.save();

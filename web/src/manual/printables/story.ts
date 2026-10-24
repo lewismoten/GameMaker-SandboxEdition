@@ -168,13 +168,13 @@ async function journal(it: JournalItem): Promise<Sheet[]> {
 
 // ------------------------------------------------------------------ ID card
 /**
- * The card's printed band. The Klown Klub letters its name with backwards K's, so those are
- * drawn mirrored; screen readers get the name as plain text.
+ * The card's printed band. The Clown Club letters the O of CLOWN as a red rubber nose, so
+ * that O is drawn as one; screen readers get the name as plain text.
  */
 function idBand(org: string, style: string): HTMLElement {
-  const parts = org.split(/(K(?=LOWN|LUB))/i);
+  const parts = org.split(/(?<=CL)(O)(?=WN\s+CLUB)/i);
   if (parts.length === 1) return h('div', { class: 'id-band', style }, org);
-  const lettered = parts.map((s, i) => (i % 2 ? h('span', { class: 'id-k' }, s) : s));
+  const lettered = parts.map((s, i) => (i % 2 ? h('span', { class: 'id-nose' }, s) : s));
   return h('div', { class: 'id-band', style }, h('span', { class: 'id-sr' }, org), h('span', { 'aria-hidden': 'true' }, ...lettered));
 }
 

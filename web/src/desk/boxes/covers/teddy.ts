@@ -1,4 +1,4 @@
-// Teddy's Little Big Adventure's cover: Main Street on the afternoon of the Klown Klub's Big
+// Teddy's Little Big Adventure's cover: Main Street on the afternoon of the Clown Club's Big
 // Show. Teddy grins front and center, Doc Leo the hobo clown (fedora, face paint, green tie,
 // red sneakers, rubber chicken on a leash) waves by his little red CitiCar, and Gwinn makes
 // off with the costume suitcase.

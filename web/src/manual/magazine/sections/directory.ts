@@ -11,7 +11,7 @@ export const ONE_LINE: Record<string, string> = {
   // Sandbox Software
   year2000: 'Dex Dynamo’s robot dog ate his science report, and the Science Fair is on the Moon at 3:00.',
   sandcast: 'Teddy the corgi knight takes back the backyard sandbox after Gwinn’s zoomies flattened every castle.',
-  teddy: 'Gwinn ran off with Doc Leo’s clown costume, and tonight is the Klown Klub’s Big Show!',
+  teddy: 'Gwinn ran off with Doc Leo’s clown costume, and tonight is the Clown Club’s Big Show!',
   snowbound: 'Fort Ashby, December 1992: shovel the neighborhood a scoop at a time and get to LaVale Mall.',
   logic: 'Watt, a pocket-sized repair robot, rolls through twenty-three haywire circuit boards to get home.',
   blaster: 'Shrink down, launch the BLASTER nano-fighter and chase GLITCH through the family 486.',

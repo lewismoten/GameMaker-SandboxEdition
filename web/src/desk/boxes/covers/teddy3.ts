@@ -1,4 +1,4 @@
-// Teddy's Little Biggest Adventure's cover: SURPRISE! The Klown Klub's Big Top at night, the
+// Teddy's Little Biggest Adventure's cover: SURPRISE! The Clown Club's Big Top at night, the
 // lights just come on. Teddy stands in the middle of the ring in the spotlight, in front of
 // the biggest birthday cake, a HAPPY BIRTHDAY banner over it and a hundred balloons up in the
 // canvas. Gwinn (a bow on her head) boops his nose, Doc Leo the hobo clown waves, rubber

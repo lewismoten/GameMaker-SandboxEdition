@@ -1,5 +1,5 @@
 // The small ads that share editorial pages, as a 1995 magazine sold its leftover half pages:
-// a used-games swap meet, The Sofa BBS, mouse pads, the Klown Klub's family fun night, the
+// a used-games swap meet, The Sofa BBS, mouse pads, the Clown Club's family fun night, the
 // Sandbox hint books and blank disks. The companies, prices and numbers are part of the story
 // (phone numbers 555-01xx, mail to P.O. Box 000); every button opens the real thing here, free.
 import { art, big, button, card, grid, halfAd, list, p, piece } from '../blocks';
@@ -75,10 +75,10 @@ export const MOUSE_PADS: HalfAd = halfAd(
   },
 );
 
-/** The Klown Klub's family fun night with Doc Leo. */
+/** The Clown Club's family fun night with Doc Leo. */
 export const FUN_NIGHT: HalfAd = halfAd(
-  'The Klown Klub',
-  'FAMILY FUN NIGHT WITH THE KLOWN KLUB',
+  'The Clown Club',
+  'FAMILY FUN NIGHT WITH THE CLOWN CLUB',
   [
     grid(
       [
@@ -119,7 +119,12 @@ export const BLANK_DISKS: HalfAd = halfAd(
   [
     grid(
       [
-        [art('disk', 'A 3½-inch floppy disk')],
+        [
+          art(
+            'blankdisk',
+            'A stack of three unlabelled 3½-inch floppy disks, the front one showing its metal shutter, write-protect hole and high-density hole',
+          ),
+        ],
         [list(['**3½″ DS/DD 720K**: 25 for $9.95 · 50 for $18.95 · 100 for $34.95', '**3½″ DS/HD 1.44MB**: 25 for $14.95 · 50 for $27.95 · 100 for $49.95'])],
       ],
       0.2,
@@ -127,7 +132,7 @@ export const BLANK_DISKS: HalfAd = halfAd(
     card('BUSHEL ORDER', ['☐ DS/DD 720K ☐ DS/HD 1.44MB · ☐ 25 ☐ 50 ☐ 100'], { fields: ['Name'] }),
   ],
   {
-    sub: 'Floppy Barn: baled fresh every morning, ten colors, labels in the box.',
+    sub: 'Floppy Barn: baled fresh every morning, ten colors. No labels, no frills: bring your own pen.',
     small: 'Floppy Barn · P.O. Box 000 · Orders 555-0168 · plus $3 shipping. Part of the story: nothing to order.',
     tone: 'white',
   },

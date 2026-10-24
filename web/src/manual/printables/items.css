@@ -1614,10 +1614,18 @@
   letter-spacing: 0.06em;
 }
 
-/* the Klown Klub's backwards K */
-.id-k {
+/* the Clown Club's O, a red rubber nose as tall as the capitals */
+.id-nose {
   display: inline-block;
-  transform: scaleX(-1);
+  width: 0.74em;
+  height: 0.74em;
+  margin: 0 0.02em;
+  vertical-align: -0.02em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff 0 12%, #ff5a4e 16%, #e01b24 62%, #9e0f16 100%);
+  color: transparent;
+  overflow: hidden;
+  print-color-adjust: exact;
 }
 
 .id-sr {

@@ -59,7 +59,7 @@ export const SPOTLIGHT: MagSection = {
             star(
               ctx,
               'leo',
-              'A friendly hobo clown in a chewed-up fedora and wire glasses, his own nose and cheeks sunburned pink, walking a rubber chicken on a dog leash. He is the star of the Klown Klub’s Big Show, hosts open mics, tickles rats (he has the certificate) and always orders root beer.',
+              'A friendly hobo clown in a chewed-up fedora and wire glasses, his own nose and cheeks sunburned pink, walking a rubber chicken on a dog leash. He is the star of the Clown Club’s Big Show, hosts open mics, tickles rats (he has the certificate) and always orders root beer.',
               3,
             ),
             star(

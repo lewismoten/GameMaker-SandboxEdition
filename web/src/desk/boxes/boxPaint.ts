@@ -38,10 +38,40 @@ function measure(ctx: CanvasRenderingContext2D, text: string): number {
   return w;
 }
 
-// The Klown Klub letters its name with backwards K's, on the box as everywhere it is printed.
-const KLUB_K = /K(?=LOWN|LUB)/gi;
+// The Clown Club letters the O of CLOWN as a red rubber nose, on the box as everywhere it is printed.
+const CLUB_O = /(?<=CL)O(?=WN\s+CLUB)/gi;
+/** Box words for wrapping: THE CHEZ and the Clown Club each kept on one line. */
+const boxWords = (para: string) => words(para.replace(/\b(clown) (club)\b/gi, '$1\u00a0$2'));
 
-/** Draws `s` left-aligned at `at` (the club's K's mirrored); returns its width. */
+/** A red rubber nose in place of the letter `o`: a ball as tall as the letter, with a shine. */
+function nose(ctx: CanvasRenderingContext2D, o: string, x: number, y: number, outline: boolean): number {
+  const m = ctx.measureText(o);
+  const r = Math.min(m.width, m.actualBoundingBoxAscent + m.actualBoundingBoxDescent) / 2;
+  const cx = x + m.width / 2;
+  const cy = y - (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+  ctx.save();
+  if (outline) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  const ball = ctx.createRadialGradient(cx - r * 0.35, cy - r * 0.35, r * 0.1, cx, cy, r);
+  ball.addColorStop(0, '#ff5a4e');
+  ball.addColorStop(0.7, '#e01b24');
+  ball.addColorStop(1, '#9e0f16');
+  ctx.fillStyle = ball;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.ellipse(cx - r * 0.38, cy - r * 0.4, r * 0.22, r * 0.15, -Math.PI / 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  return m.width;
+}
+
+/** Draws `s` left-aligned at `at` (the club's O a nose); returns its width. */
 function plain(ctx: CanvasRenderingContext2D, s: string, at: number, y: number, outline: boolean): number {
   let x = at;
   const draw = (t: string) => {
@@ -50,14 +80,9 @@ function plain(ctx: CanvasRenderingContext2D, s: string, at: number, y: number, 
     x += ctx.measureText(t).width;
   };
   let last = 0;
-  for (const m of s.matchAll(KLUB_K)) {
+  for (const m of s.matchAll(CLUB_O)) {
     draw(s.slice(last, m.index));
-    const kw = ctx.measureText(m[0]).width;
-    ctx.save();
-    ctx.translate(2 * x + kw, 0);
-    ctx.scale(-1, 1);
-    draw(m[0]);
-    ctx.restore();
+    x += nose(ctx, m[0], x, y, outline);
     last = m.index + 1;
   }
   draw(s.slice(last));
@@ -66,7 +91,7 @@ function plain(ctx: CanvasRenderingContext2D, s: string, at: number, y: number, 
 
 /** Draws a line that may hold the marked name, honoring the text alignment. */
 function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: number, outline = false): void {
-  if (!line.includes(NAME_MARK) && !/K(?=LOWN|LUB)/i.test(line)) {
+  if (!line.includes(NAME_MARK) && !/CLOWN\s+CLUB/i.test(line)) {
     if (outline) ctx.strokeText(line, x, y);
     return ctx.fillText(line, x, y);
   }
@@ -89,8 +114,8 @@ function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: num
 }
 
 /**
- * fillText (and strokeText, with `outline`) for one line of box text that may name the Klown
- * Klub, whose K's are drawn backwards; `maxWidth` squeezes it as fillText would.
+ * fillText (and strokeText, with `outline`) for one line of box text that may name the Clown
+ * Club, whose O is drawn as a red nose; `maxWidth` squeezes it as fillText would.
  */
 export function boxText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth?: number, outline = false): void {
   const w = measure(ctx, text);
@@ -109,7 +134,7 @@ export function boxText(ctx: CanvasRenderingContext2D, text: string, x: number, 
 export function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lineHeight: number, outline = false): number {
   for (const para of marked(text).split(/\n+/)) {
     let line = '';
-    for (const word of words(para)) {
+    for (const word of boxWords(para)) {
       const test = line ? `${line} ${word}` : word;
       if (measure(ctx, test) > width && line) {
         drawLine(ctx, line, x, y, outline);
@@ -285,7 +310,7 @@ export function wrapLines(ctx: CanvasRenderingContext2D, text: string, width: nu
   let n = 0;
   for (const para of marked(text).split(/\n+/)) {
     let line = '';
-    for (const word of words(para)) {
+    for (const word of boxWords(para)) {
       const test = line ? `${line} ${word}` : word;
       if (measure(ctx, test) > width && line) (n++, (line = word));
       else line = test;

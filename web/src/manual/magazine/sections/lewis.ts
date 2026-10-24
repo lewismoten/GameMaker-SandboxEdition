@@ -124,7 +124,7 @@ export const LEWIS: MagSection = {
   ],
 };
 
-/** The rest of the interview, at the back of the book, sharing its page with the Klown Klub. */
+/** The rest of the interview, at the back of the book, sharing its page with the Clown Club. */
 export const LEWIS_JUMP: MagSection = {
   id: JUMP,
   title: 'Interview: Lewis Moten, continued',
