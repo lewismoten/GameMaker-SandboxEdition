@@ -122,7 +122,8 @@ preserve what was there.
 - **Trademarks:** use generic words instead of casual trademarks ("building blocks", not a
   brand). Lyrics quoted word for word and historical tech names (Sound Blaster, MS-DOS,
   VGA…) stay; NOTICE.md lists them.
-- **Spelling:**
+- **Spelling:** these notes are for you, not the player. Don't repeat them in game or site
+  text ("two n's", "no clown nose", "never Dr."); just get them right.
   - **Gwinn** (two n's) is the troublemaker dog.
   - **Teddy** is the corgi; one ear is drawn shorter on purpose.
   - **Doc Leo** is never "Dr. Leo".
