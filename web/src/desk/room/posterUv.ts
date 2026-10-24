@@ -41,6 +41,14 @@ export function uvColor(r: number, g: number, b: number): [number, number, numbe
   return [Math.min(255, R), Math.min(255, G), Math.min(255, B)].map(Math.round) as [number, number, number];
 }
 
+/** A #rrggbb ink as it glows under black light, as a CSS color (a pale lavender for any other color). */
+export function uvInk(hex: string): string {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return '#e6dcff';
+  const n = parseInt(m[1], 16);
+  return `rgb(${uvColor(n >> 16, (n >> 8) & 255, n & 255).join(' ')})`;
+}
+
 /** The whole poster under black light: a new canvas the same size. */
 export function uvPoster(src: HTMLCanvasElement): HTMLCanvasElement {
   const out = document.createElement('canvas');

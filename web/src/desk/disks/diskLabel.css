@@ -105,3 +105,40 @@
     sans-serif;
   white-space: nowrap;
 }
+
+/* under the desk's black light (props/blacklight.ts): the title and the company's name glow in
+   their inks' fluorescent colors (diskLabel.ts uvInk); after dark the picture and the paper sink
+   to a dim violet round them */
+.desk.bl-uv .floppy .label.printed.graphic :is(.p-title, .p-disk) {
+  color: var(--uvacc);
+  text-shadow:
+    0 0 2px var(--uvacc),
+    0 0 5px var(--uvacc);
+}
+
+.desk.bl-uv .floppy .label.printed.graphic .p-sub {
+  color: var(--uvink);
+  text-shadow: 0 0 3px var(--uvink);
+}
+
+.desk.bl-uv .floppy .label.printed.graphic .p-logo {
+  color: #ece4ff;
+  text-shadow: 0 0 3px #b9a2ff;
+}
+
+.desk.bl-uv.bl-night .floppy .label.printed.graphic {
+  background: color-mix(in srgb, var(--lbg) 25%, #3a2a66);
+  color: #8f7fc0;
+}
+
+.desk.bl-uv.bl-night .floppy .label.printed.graphic .p-banner {
+  background: color-mix(in srgb, var(--bbg) 30%, #12061f);
+}
+
+.desk.bl-uv.bl-night .floppy .label.printed.graphic .p-art {
+  filter: brightness(0.4) saturate(0.6);
+}
+
+.desk.bl-uv.bl-night .floppy .label.printed.graphic .p-logo {
+  background: color-mix(in srgb, var(--lband) 30%, #12061f);
+}

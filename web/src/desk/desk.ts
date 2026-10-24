@@ -473,6 +473,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         const { bottom, scale, dim } = row(i);
         const el = floppyElement(d, true);
         el.classList.add('peek');
+        if (i === 0) el.classList.add('front'); // the one whose label shows whole
         el.style.left = `${x0}px`;
         el.style.bottom = `${bottom}px`;
         el.style.transform = `scale(${scale})`;
