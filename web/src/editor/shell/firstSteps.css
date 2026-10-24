@@ -1,0 +1,173 @@
+/* "First steps" (editor/shell/firstStepsPanel.ts): a small panel over the editor's lower right
+   corner, and its 🎓 button beside Play test. On a phone it spans the bottom of the screen. */
+.fs-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: 310px;
+  max-height: min(560px, calc(100dvh - 96px));
+  padding: 12px 14px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.fs-panel[hidden] {
+  display: none;
+}
+
+.fs-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fs-head h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.fs-count {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.fs-close {
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.fs-lead {
+  margin: 4px 0 8px;
+}
+
+.fs-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.fs-step {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  border-top: 1px solid var(--border);
+}
+
+.fs-tick {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--panel-2);
+  font-size: 13px;
+}
+
+.fs-next {
+  align-items: start;
+  margin: 2px -6px;
+  padding: 6px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+}
+
+.fs-next + .fs-step {
+  border-top-color: transparent;
+}
+
+.fs-done .fs-tick {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.fs-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.fs-done .fs-text strong {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.fs-text small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.fs-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fs-actions button {
+  min-height: 26px;
+  padding: 2px 10px;
+  font-size: 12px;
+}
+
+.fs-guide {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.fs-guide:hover {
+  background: var(--panel-2);
+}
+
+.fs-all {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.fs-link {
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.sidebar .fs-toggle {
+  flex: none;
+  padding-inline: 10px;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .fs-panel {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    max-height: 62dvh;
+  }
+}
