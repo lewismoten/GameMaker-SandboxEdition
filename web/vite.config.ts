@@ -8,6 +8,7 @@ import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker'
 import { cdGames, cdSecretCatalog } from './scripts/cdGames';
 import { gzipSync } from 'node:zlib';
 import { singlePagePlayer } from './scripts/singlePageBuild';
+import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 
 const publicDir = resolve(__dirname, 'public');
@@ -249,7 +250,15 @@ function playChunks(): Rollup.GetManualChunk {
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), noDotfiles(), manualReload()],
+  plugins: [
+    cdGames(resolve(__dirname, '../cd')),
+    seoPages(resolve(__dirname, '../cd')),
+    singlePagePlayer(),
+    hostedPlayer(),
+    offline(),
+    noDotfiles(),
+    manualReload(),
+  ],
   build: {
     target: 'es2022',
     rollupOptions: {

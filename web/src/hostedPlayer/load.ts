@@ -8,6 +8,9 @@ import { LinkError, MAX_FILE_BYTES } from '../linkIn/protocol';
 import { normalize } from '../project/files';
 import { gamCandidates, type ListedGame } from './list';
 
+/** Files no game file names but the player shows when present: a shareware author's notice (export/gameAbout.ts) and license. */
+const NOTICES = ['readme.txt', 'order.doc', 'register.txt', 'order.txt', 'license.txt'];
+
 /** The file's bytes, or undefined when the folder has no such file. */
 async function fetchOptional(folder: string, name: string): Promise<Uint8Array | undefined> {
   for (const n of [...new Set([name, name.toLowerCase(), name.toUpperCase()])]) {
@@ -46,7 +49,7 @@ export async function loadListedGame(
     throw new Error(`No game file (.gam) was found in ${game.folder}${why}. Name it in games.json with "gam".`);
   }
   const have = new Set(entries.map(([n]) => normalize(n)));
-  const extra = (game.files ?? []).filter((f) => !have.has(normalize(f)));
+  const extra = [...new Set([...(game.files ?? []), ...NOTICES])].filter((f) => !have.has(normalize(f)));
   for (let i = 0; i < extra.length; i += 4) {
     const got = await Promise.all(extra.slice(i, i + 4).map(async (f) => [f, await fetchOptional(game.folder, f)] as const));
     for (const [f, bytes] of got) if (bytes) entries.push([normalize(f), bytes]);

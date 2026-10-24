@@ -61,13 +61,22 @@ function inlineWorkers(): Plugin {
 const safeScript = (js: string) => js.replace(/<\/(script)/gi, '<\\/$1').replace(/<!--/g, '<\\!--');
 const safeStyle = (css: string) => css.replace(/<\/(style)/gi, '<\\/$1');
 
-export async function buildSinglePageTemplate(): Promise<string> {
-  const out = await bundle(ENTRY, 'iife', [inlineWorkers()]);
+/**
+ * A page's code as one classic script and its styles as one stylesheet, each safe to put
+ * inside its element (also the web player's, scripts/hostedPlayerBuild.ts).
+ */
+export async function bundleOnePage(entry: string): Promise<{ script: string; style: string }> {
+  const out = await bundle(entry, 'iife', [inlineWorkers()]);
   const js = (out['entry.js'] as Rollup.OutputChunk).code;
   const css = Object.values(out)
     .filter((o): o is Rollup.OutputAsset => o.type === 'asset' && o.fileName.endsWith('.css'))
     .map((o) => String(o.source))
     .join('\n');
+  return { script: safeScript(js), style: safeStyle(css) };
+}
+
+export async function buildSinglePageTemplate(): Promise<string> {
+  const { script, style } = await bundleOnePage(ENTRY);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -77,12 +86,12 @@ export async function buildSinglePageTemplate(): Promise<string> {
 ${TEMPLATE_ONLY}
 <title>${TITLE_MARK}</title>
 ${HEAD_MARK}
-<style>${safeStyle(css)}</style>
+<style>${style}</style>
 </head>
 <body class="player-page">
 <div id="player">${ABOUT_MARK}</div>
 ${GAME_MARK}
-<script>${safeScript(js)}</script>
+<script>${script}</script>
 </body>
 </html>
 `;

@@ -242,7 +242,8 @@ function about(): HTMLElement {
       null,
       h('a', { href: SITE_URL, target: '_blank', rel: 'noopener' }, `Made with ${PRODUCT}`),
       ' · ',
-      h('a', { href: `${SITE_URL}web-player.html`, download: 'player.html' }, 'Download this player'),
+      // the page is the whole player, so it downloads itself
+      h('a', { href: location.href.replace(/[?#].*$/, ''), download: 'player.html' }, 'Download this player'),
       ' · ',
       h('a', { href: `${REPO_URL}/blob/master/docs/web-player.md`, target: '_blank', rel: 'noopener' }, 'How to host it'),
       ' · ',
