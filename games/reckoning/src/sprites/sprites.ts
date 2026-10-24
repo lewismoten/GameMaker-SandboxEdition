@@ -19,8 +19,8 @@ import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 export { T, outline };
 
 export interface ManPose {
-  /** front: to you; side: walking right (mirror for left). */
-  face: 'front' | 'side';
+  /** front: to you; side: walking right (mirror for left); back: climbing away from you. */
+  face: 'front' | 'side' | 'back';
   /** Walk cycle (0..3); legs apart on 1 and 3. */
   step?: number;
   mood?: 'calm' | 'blink' | 'worry' | 'ouch' | 'shout' | 'swoon' | 'bliss';
@@ -41,6 +41,7 @@ export function manArt(pal: Pal) {
   const body = (o: ManPose): Pixels => {
     const p = new Pixels(20, 20, T);
     const side = o.face === 'side';
+    const back = o.face === 'back';
     const crouch = o.crouch ? 2 : 0;
     const step = o.step ?? 0;
     const arms = o.arms ?? 'down';
@@ -60,9 +61,9 @@ export function manArt(pal: Pal) {
       p.rect(lx + d - 2, 18, 4 + (side ? 1 : 0), 2, c('red', 1)).set(lx + d - 2, 18, c('red', 2));
     }
     p.rect(6, 13 + crouch, 9, 2, c('pjs', 2)).rect(6, 13 + crouch, 9, 1, c('white', 1));
-    // the round bare belly
+    // the round bare belly (from behind, his bare back)
     blob(p, 10.5, 10.5 + crouch, 4.6, 3.4, pal.r('skin'), 1, 4);
-    p.set(side ? 12 : 10, 12 + crouch, c('skin', 0));
+    if (!back) p.set(side ? 12 : 10, 12 + crouch, c('skin', 0));
     // the head: a shaggy grey bowl cut, wire glasses
     const hx = side ? 11 : 10;
     const hy = 5 + crouch;
@@ -71,9 +72,16 @@ export function manArt(pal: Pal) {
       for (let y = hy - 5; y <= hy - 2 + (x % 3 === 0 ? 1 : 0); y++)
         if ((x - hx - 0.5) ** 2 / 22 + (y - hy + 1) ** 2 / 18 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
     if (side) p.rect(hx - 4, hy - 2, 2, 4, c('hair', 1));
+    if (back) {
+      // the back of his head: the shaggy bowl cut all the way down, ears and his glasses' arms
+      for (let x = hx - 4; x <= hx + 4; x++)
+        for (let y = hy - 2; y <= hy + 3; y++) if ((x - hx - 0.5) ** 2 / 20 + (y - hy) ** 2 / 17 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
+      p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
+      p.set(hx - 4, hy - 1, c('metal', 2)).set(hx + 4, hy - 1, c('metal', 2));
+    }
     const eyes = side ? [hx + 1, hx + 3] : [hx - 2, hx + 2];
     const ey = hy;
-    for (const ex of eyes) {
+    for (const ex of back ? [] : eyes) {
       p.set(ex - 1, ey - 1, c('metal', 2))
         .set(ex + 1, ey - 1, c('metal', 2))
         .set(ex - 1, ey + 1, c('metal', 2))
@@ -89,13 +97,15 @@ export function manArt(pal: Pal) {
           .set(ex + 1, ey + 1, ink);
       else p.set(ex, ey, ink).set(ex, ey - 1, m === 'worry' || m === 'shout' ? ink : c('white', 2));
     }
-    if (!side)
+    if (!side && !back)
       p.set(hx - 1, ey - 1, c('metal', 2))
         .set(hx + 1, ey - 1, c('metal', 2))
         .set(hx, ey - 1, c('metal', 2));
     const mx = side ? hx + 2 : hx;
     const mood = o.mood ?? 'calm';
-    if (mood === 'shout' || mood === 'ouch') p.rect(mx - 1, hy + 2, 3, 2, ink).set(mx, hy + 3, c('red', 2));
+    if (back) {
+      // no face from behind
+    } else if (mood === 'shout' || mood === 'ouch') p.rect(mx - 1, hy + 2, 3, 2, ink).set(mx, hy + 3, c('red', 2));
     else if (mood === 'worry')
       p.set(mx - 1, hy + 3, ink)
         .set(mx, hy + 2, ink)
@@ -109,7 +119,7 @@ export function manArt(pal: Pal) {
       p.set(mx - 1, hy + 2, ink)
         .set(mx, hy + 2, ink)
         .set(mx + 1, hy + 2, ink);
-    if (!side) p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
+    if (!side && !back) p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
     // arms
     const skin = c('skin', 2);
     const arm = (x0: number, y0: number, x1: number, y1: number) => p.line(x0, y0, x1, y1, skin).line(x0 + 1, y0, x1 + 1, y1, c('skin', 1));
@@ -177,6 +187,8 @@ export function buildCharBlocks(pal: Pal) {
   book.add('throw0', a.body({ face: 'side', arms: 'throw', mood: 'shout' }));
   book.add('throw1', a.body({ face: 'side', arms: 'toss', mood: 'shout', sweat: 2 }));
   book.add('bliss', a.body({ face: 'front', mood: 'bliss' }));
+  // hopping straight up, and climbing: his back, arms up
+  book.add('climb', a.body({ face: 'back', arms: 'up' }));
   return book;
 }
 
