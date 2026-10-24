@@ -1,9 +1,11 @@
 // The Ultimate Owner's Guide, chapter 14: the editor's own play-testers. The map editor's 🩺 Level
 // check (heat map, stuck areas, findings, ✨ fixes and Undo), the badges in the block, monster and
 // sound editors, the self-ticking Before You Upload list, the Integrator's 🤖 Make a walkthrough,
-// and the links from the editor into this guide. Checked against web/src/editor/check
+// the report and its checklists, the author's own play in a walkthrough, watching the bot, and the
+// links from the editor into this guide. Checked against web/src/editor/check
 // (explore.ts, stuck.ts, findings.ts, generators/fixes.ts, walk/autoWalk.ts) and its panels
-// (editors/map/check/checkPanel.ts, widgets/checkBadges.ts, uploadChecklist.ts, walkDialog.ts),
+// (editors/map/check/checkPanel.ts, widgets/checkBadges.ts, uploadChecklist.ts, walkDialog.ts,
+// checkReport.ts, playScene.ts, watchScene.ts),
 // and the First steps checklist of a new starter game (editor/shell/firstSteps.ts).
 import { opening, tip, type Chapter } from './chapter';
 
@@ -50,6 +52,18 @@ export const CHECK: Chapter = {
   a suggestion, or <b>✓ Mark as checked: it’s meant to be</b> on anything else, takes it out of
   the list, the counts, the badges and Before You Upload; <b>N accepted · show</b> lists those
   again, each with a button to put it back.</p>
+  <h2>The report, and a checklist to fix from</h2>
+  <p>A long list is easier to work through with room to read. <b>📋 Open as a report…</b>
+  shows every finding of the map’s last check in a large window, grouped into problems,
+  warnings, suggestions and notes, each with its scene and cell, why players mind, its 📒
+  link and its fix and accept buttons. The same buttons pick one kind at a time; <b>Show
+  accepted</b> lists the ones you kept as they are. Pick a finding to close the report and go
+  to it on the map. Two checklists come with it: <b>⬇ Download CSV checklist</b> saves one row a
+  finding (kind, check, scene, map, x, y, what, the measures, why it matters, the guide’s
+  section, and whether it is open, accepted or on purpose) for a spreadsheet, and <b>🖨 Print
+  or save as PDF</b> prints them with a box to tick by each; your browser’s Print can save
+  the page as a PDF. In Before You Upload, <b>📋 Every map’s findings as a report…</b> does the
+  same for the whole game at once.</p>
   <h2>✨ Fixes, and Undo</h2>
   <p>Many findings offer a one-click fix: stretch the hazard art to fill its cell, outline a
   monster in a standout color, add a ladder out of a pit, open a one-block gap, shorten a
@@ -92,6 +106,20 @@ export const CHECK: Chapter = {
   <p>A stop is not proof of a broken game. Riddles, secret doors and tight timing beat the bot
   often: of the 31 games on the original CD, it plays 2 from start to end. It is best at
   telling you a scene you thought was easy isn’t.</p>
+  <h2>Your own play, and watching the bot</h2>
+  <p>Where the bot can’t get through, or plays a scene in a way you would rather not show, play
+  it yourself. In the map’s Level check, <b>● Record my play</b> opens the game at this
+  scene. Play it to an exit; a death starts the scene over, and the last try is the one kept.
+  The editor keeps the keys you pressed, tick by tick, with the project’s editor notes. In
+  <b>🤖 Make a walkthrough…</b>, each scene you played can use <b>Mine</b> or <b>Bot</b>. The
+  bot plays your keys from wherever the walkthrough has got to and plays the rest itself, and
+  the whole walkthrough is checked on the engine as before. If your play no longer reaches an
+  exit (you changed the map since, or the hero arrives carrying something else), the list says
+  so and the bot plays that scene instead.</p>
+  <p><b>▶ Watch the bot</b> plays the bot’s route through this scene in the walkthrough player,
+  with play, pause and a seek bar: the game’s walkthrough, started at this scene, or, when it
+  has no route here yet, one the bot makes for this scene alone. <b>▶ Watch my play</b> plays
+  yours the same way, so you can compare the two.</p>
   <h2>First steps for a first game</h2>
   <p>A game started as <b>▶ Ready to play</b> comes with <b>🎓 First steps</b>, beside Play
   test: ten small jobs that make the starter yours. Play it, change a color, draw a block,
