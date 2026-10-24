@@ -188,6 +188,21 @@ export function titleScreen(): Pixels {
   return p;
 }
 
+/**
+ * A card's big title: double size, or, when that would run off the card, condensed (double
+ * height, single width) so a long one like Level 15's still fits on one line.
+ */
+function cardTitle(p: Pixels, x: number, y: number, s: string, col: number, edge: number): void {
+  if (x + textWidth(s, 2) <= W - 8) return outlined(p, x, y, s, col, edge, 2);
+  const t = new Pixels(textWidth(s) + 2, 10, CLEAR);
+  outlined(t, 1, 1, s, col, edge, 1);
+  for (let ty = 0; ty < t.h; ty++)
+    for (let tx = 0; tx < t.w; tx++) {
+      const v = t.px[ty * t.w + tx];
+      if (v !== CLEAR) p.rect(x - 1 + tx, y - 2 + ty * 2, 1, 2, v);
+    }
+}
+
 /** A level card: a framed view of the level and what is new there. */
 export function card(l: Level, n: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
@@ -206,7 +221,7 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);
   outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);
-  outlined(p, 16, 132, klubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
+  cardTitle(p, 16, 132, klubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1));
   lines.forEach((s, i) => text(p, 16, 154 + i * 10, s, cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
   return p;
 }
