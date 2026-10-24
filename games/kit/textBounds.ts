@@ -17,8 +17,10 @@ export interface TextOverflow {
   /** Where the ink was, and the area it had to stay inside. */
   ink: Box;
   area: Box;
-  /** The drawing call's source, outermost useful frames first. */
+  /** The drawing call's source: the game code that drew it, and the code that called that. */
   at: string;
+  /** Every call from the game code down to the helper (an outline and its fill differ). */
+  via: string;
 }
 
 export interface TextBoundsReport {
@@ -33,21 +35,30 @@ export interface TextBoundsReport {
 const file = typeof process !== 'undefined' ? process.env.TEXT_BOUNDS : undefined;
 const overflows: TextOverflow[] = [];
 const shown = new Map<string, Set<string>>();
-/** A string from one drawing call (its innermost game frame) on pictures of one size. */
-const key = (w: number, h: number, at: string, s: string) => `${w}x${h} ${at.split(' < ')[0]} ${s}`;
+/** A string from one drawing call (down through the helpers) on pictures of one size. */
+const key = (w: number, h: number, via: string, s: string) => `${w}x${h} ${via} ${s}`;
 
-/** The first source frames outside the text helpers: the game code that drew the string. */
-function caller(): string {
-  const frames = (new Error().stack ?? '').split('\n').slice(1);
-  const ours = frames
+const HELPER = /\/art\/(font|draw|canvas)\.ts|screens\/(draw|screen)\.ts/;
+
+/** Where a string was drawn: the first two frames of game code, and the helper calls under them. */
+function caller(): { at: string; via: string } {
+  const frames = (new Error().stack ?? '')
+    .split('\n')
+    .slice(1)
     .map((l) => /\(?((?:\/|file:)[^():]+):(\d+):\d+\)?\s*$/.exec(l))
     .filter((m): m is RegExpExecArray => !!m)
-    .map((m) => ({ path: m[1].replace(/^file:\/\//, ''), line: m[2] }))
-    .filter((f) => !/node_modules|kit\/textBounds\.ts|\/art\/(font|draw|canvas)\.ts|screens\/draw\.ts/.test(f.path));
-  return ours
-    .slice(0, 2)
-    .map((f) => `${f.path.replace(/^.*\/games\//, '')}:${f.line}`)
-    .join(' < ');
+    .map((m) => ({ path: m[1].replace(/^file:\/\//, '').replace(/^.*\/games\//, ''), line: m[2] }))
+    .filter((f) => !/node_modules|kit\/textBounds\.ts/.test(f.path))
+    .map((f) => ({ ...f, helper: HELPER.test(f.path), name: `${f.path}:${f.line}` }));
+  const game = frames.findIndex((f) => !f.helper);
+  const at = frames.filter((f) => !f.helper).slice(0, 2);
+  return {
+    at: at.map((f) => f.name).join(' < '),
+    via: frames
+      .slice(0, game + 1)
+      .map((f) => f.name)
+      .join(' > '),
+  };
 }
 
 if (file)
@@ -85,12 +96,13 @@ export class TextInk {
     const [ax0, ay0, ax1, ay1] = this.area;
     // Half a pixel of slack: scaled fonts land on fractional positions that round inside.
     const out = this.x0 < ax0 - 0.5 || this.y0 < ay0 - 0.5 || this.x1 > ax1 + 0.5 || this.y1 > ay1 + 0.5;
-    const at = caller();
+    const { at, via } = caller();
     if (!out) {
-      const k = key(this.w, this.h, at, this.s);
+      const k = key(this.w, this.h, via, this.s);
       if (!shown.has(k)) shown.set(k, new Set());
       shown.get(k)!.add(`${Math.round(this.x0)},${Math.round(this.y0)}`);
-    } else overflows.push({ s: this.s, w: this.w, h: this.h, ink: [this.x0, this.y0, this.x1, this.y1].map((v) => Math.round(v)) as Box, area: this.area, at });
+    } else
+      overflows.push({ s: this.s, w: this.w, h: this.h, ink: [this.x0, this.y0, this.x1, this.y1].map((v) => Math.round(v)) as Box, area: this.area, at, via });
   }
 }
 
@@ -105,17 +117,18 @@ export function textInk(p: { readonly w: number; readonly h: number }, s: string
 
 /**
  * Splits a report's overflows into cut text (never drawn wholly inside, from that call at that
- * picture size) and moving text (a scroll or drop-in that is wholly shown in another frame, more
- * than two pixels away: an outline's edge one pixel past a fill that just fits is cut, not moving).
+ * picture size, through the same helper lines) and moving text (a scroll or drop-in wholly shown in
+ * another frame, more than two pixels away). A shadow, an outline and a fill come from different
+ * helper lines, so an outline clipped round a fill that just fits is cut, not moving.
  * Cut text drawn more than once (an outline, a frame of a cartoon) is one entry, its ink the
  * union of every drawing.
  */
 function judge(r: TextBoundsReport): { cut: TextOverflow[]; moving: TextOverflow[] } {
-  const far = (o: TextOverflow) => (r.shown[key(o.w, o.h, o.at, o.s)] ?? []).some(([x, y]) => Math.abs(x - o.ink[0]) > 2 || Math.abs(y - o.ink[1]) > 2);
+  const far = (o: TextOverflow) => (r.shown[key(o.w, o.h, o.via, o.s)] ?? []).some(([x, y]) => Math.abs(x - o.ink[0]) > 2 || Math.abs(y - o.ink[1]) > 2);
   const cut = new Map<string, TextOverflow>();
   const moving: TextOverflow[] = [];
   for (const o of r.overflows) {
-    const k = key(o.w, o.h, o.at, o.s);
+    const k = key(o.w, o.h, o.via, o.s);
     if (far(o)) {
       moving.push(o);
       continue;
