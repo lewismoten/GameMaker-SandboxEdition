@@ -329,6 +329,12 @@ formats from their published descriptions and from Game-Maker's own source.
   ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
   envelope, with presets (jump, coin, hurt, explosion…) that give a new take each time. The
   synthesizers were written fresh for this project; no sfxr code is included.
+- **The sound set editor's "Preview as PC speaker"** (`web/src/audio/vocToSpeaker.ts`) finds
+  each step's pitch with the normalized square difference function and its "first peak near the
+  highest" rule from **Philip McLeod and Geoff Wyvill**, "A Smarter Way to Find Pitch"
+  (Proceedings of the International Computer Music Conference, 2005), with parabolic
+  interpolation of the peaks, and falls back on the zero-crossing rate for noise. Written fresh
+  from the paper; no code of theirs is included.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.

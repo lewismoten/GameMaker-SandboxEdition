@@ -97,6 +97,12 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'Sliders plus presets that give a new take each time, as in the editor’s 🎛 sound effect maker and PC speaker effects (web/src/audio/sfxSynth.ts, web/src/editor/tools/speakerFx.ts).',
       },
       {
+        name: 'A Smarter Way to Find Pitch (the method)',
+        license: 'A published method, freshly written (no code used)',
+        by: 'Philip McLeod and Geoff Wyvill, ICMC 2005',
+        what: 'How the sound set editor’s Preview as PC speaker finds the pitch of a .voc, step by step (web/src/audio/vocToSpeaker.ts).',
+      },
+      {
         name: 'Mr. Yuck',
         license: 'Trademark of UPMC Children’s Hospital of Pittsburgh',
         by: 'A simple drawing in tribute, not the original artwork',
