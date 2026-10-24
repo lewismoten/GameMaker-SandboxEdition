@@ -846,6 +846,50 @@ dialog.modal .buttons {
   opacity: 0.85;
 }
 
+/* the opening's fields (editor/tools/opening/openingFields.ts) */
+.opening-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 6px 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.opening-styles legend {
+  padding: 0 4px;
+}
+
+dialog.modal .opening-choice {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 24px;
+}
+
+.opening-choice input {
+  margin: 3px 0 0;
+  min-width: 18px;
+  min-height: 18px;
+}
+
+.opening-choice span {
+  display: flex;
+  flex-direction: column;
+}
+
+.opening-choice small {
+  opacity: 0.85;
+}
+
+.opening-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 /* a file slot (editor/widgets/filePicker.ts fileField) */
 .file-field-body {
   display: flex;

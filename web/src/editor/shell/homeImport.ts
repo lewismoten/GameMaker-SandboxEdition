@@ -4,14 +4,18 @@
 import { h, pickFiles, toast, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { starterProject } from './starter';
+import { beginFirstSteps } from './firstSteps';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, type CatalogEntry } from '../../project/files';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
 import { takeCompanion } from '../../project/companion';
+import { openingFields } from '../tools/opening/openingFields';
+import type { OpeningStyle } from '../tools/opening/openingWire';
 
 export async function newGame(nav: HomeNav): Promise<void> {
-  const choice = await modal<{ name: string; starter: boolean }>('New game', (close) => {
+  const opening = openingFields();
+  const choice = await modal<{ name: string; starter: boolean; opening: { style: OpeningStyle; name: string } }>('New game', (close) => {
     const input = h('input', {
       type: 'text',
       value: 'My Game',
@@ -19,11 +23,15 @@ export async function newGame(nav: HomeNav): Promise<void> {
       autofocus: true,
       onfocus: (e: Event) => (e.target as HTMLInputElement).select(),
     });
-    const go = (starter: boolean) => input.reportValidity() && close({ name: input.value.trim(), starter });
+    const go = (starter: boolean) => {
+      const o = input.reportValidity() && opening.value();
+      if (o) close({ name: input.value.trim(), starter, opening: o });
+    };
     return h(
       'form',
       { class: 'stack', onsubmit: (e: Event) => (e.preventDefault(), go(true)) },
       h('label', null, 'Title (shown on the menu screen)', input),
+      opening.el,
       h(
         'div',
         { class: 'start-choices' },
@@ -44,6 +52,25 @@ export async function newGame(nav: HomeNav): Promise<void> {
   });
   if (!choice?.name) return;
   const p = choice.starter ? await starterProject(choice.name).catch(() => Project.create(choice.name)) : Project.create(choice.name);
+  const { style, name } = choice.opening;
+  if (style !== 'none' || name) {
+    // the cards are drawn with the Scene maker's renderer, loaded only now
+    const { applyOpening } = await import('../tools/opening/openingCards');
+    const game = p.game();
+    // part of making the game, not one of the designer's changes: no "changed a file" achievement
+    const told = p.files.onChange;
+    p.files.onChange = undefined;
+    let noSting = false;
+    try {
+      ({ noSting } = await applyOpening(p, game.scenes[0], game.scenes, style, name));
+      p.saveGame(game);
+    } finally {
+      p.files.onChange = told;
+    }
+    // the First steps compare against the game as it starts, opening and all
+    if (choice.starter) beginFirstSteps(p);
+    if (noSting) toast('The “Made with” card could not be loaded (offline?). Add it later from the start scene’s 🎬 Opening sting….', 'error');
+  }
   await p.saveNow();
   nav.openProject(p.id);
 }
