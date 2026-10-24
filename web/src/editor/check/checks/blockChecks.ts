@@ -229,9 +229,10 @@ export function births(d: SceneData): Finding[] {
   const out: Finding[] = [];
   for (let n = 0; n < BACKBL; n++) {
     const b = d.bbl[n];
-    if (!use[n] || b.birthTime <= 0 || b.birthTime >= 36) continue;
-    const m = d.mbl[d.mon[b.birthMon]?.pic[0]?.[0] ?? 255];
-    if (m && m.chHitPt >= 0) continue;
+    // monster 64 and up is none; a scene without monsters gives birth to nothing
+    if (!use[n] || b.birthTime <= 0 || b.birthTime >= 36 || !d.mon[b.birthMon] || !d.names.mon) continue;
+    const m = d.mbl[d.mon[b.birthMon].pic[0]?.[0] ?? 255];
+    if (!m || m.chHitPt >= 0) continue;
     out.push({
       check: 'births',
       severity: b.birthTime < 18 ? 'warning' : 'info',
