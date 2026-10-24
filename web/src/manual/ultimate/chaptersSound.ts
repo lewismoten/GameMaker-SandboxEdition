@@ -150,6 +150,15 @@ export const MUSIC: Chapter = {
     <tr><td><b>Vocal “Aah”</b><br><small>a slow attack and vibrato on both operators: the games’ singing voice</small></td><td><code>x2 tl29 ar6 dr4 sl1 rr6 hold vib</code><br><code>x1 ar7 dr5 sl1 rr7 hold vib</code><br><code>fb6</code></td></tr>
     <tr><td><b>Deep Sub-Bass</b><br><small>a quiet modulator leaves a nearly pure, deep tone that holds</small></td><td><code>x1 tl44 ar15 dr4 sl6 rr6</code><br><code>x1 ar15 dr1 sl1 rr6 hold</code><br><code>fb0</code></td></tr>
   </table>
+  <h2>🎼 Draw a tune, let the band play</h2>
+  <p>Draw a melody on one track of the piano roll, then press <b>🎼 Accompany…</b>. It hears
+  the tune’s key and a chord for each bar (or half bar), and writes a bass line, chords and drums
+  on the other tracks in the style you pick: march, waltz, ballad, rock or chiptune. <b>🎲 Another
+  take</b> picks other patterns, sounds and, where the tune allows, other chords. It switches the
+  song to rhythm mode (six melody tracks and the drum kit) and replaces the other tracks; Undo
+  brings them back.</p>
+  <p><b>⧉ Copy tune…</b> copies one track’s tune into a new song, faster or slower and moved up
+  or down, with a new band if you like: a slow version for a sad scene, a fast one for a chase.</p>
   <h2>Tricks that push a CMF</h2>
   <p>The Bard of Bizarre songs use these, all made of plain events that PLAYGAME understands:</p>
   <ul>

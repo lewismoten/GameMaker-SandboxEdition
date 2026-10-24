@@ -33,6 +33,10 @@ export const SHOW: Chapter = {
     first level and records you; watch it back and trim the end. And every game that makes the
     top ten is saved as a recording too (<code>DATA1.REC</code> and up): a great run is already
     a demo.</li>
+    <li><b>Let the bot play.</b> <i>Let the bot play…</i> has the walkthrough bot play instead:
+    choose a scene and how many seconds of it, watch the demo in the game, and keep it. Every
+    demo starts in the first level, so a demo of a later scene shows the bot getting there
+    first.</li>
     <li><b>Why demos drift.</b> Only keys are kept, not where the monsters went. A monster that
     wanders at random goes somewhere new each time, and the demo’s hero ends up bumping into
     things that weren’t there when you recorded. Keep wanderers out of the demo’s level, or end
