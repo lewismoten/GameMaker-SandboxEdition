@@ -363,14 +363,14 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('flavia0', flavia(0), { scorePts: 250 });
   book.add('flavia1', flavia(1), { scorePts: 250 });
   // Teddy and Gwinn, sitting like good Roman dogs: red (Gwinn: pink) collars, a golden bulla
-  const dog = (f: number, fur: string, chest: string, collar: string, tallEar: boolean) => {
+  const dog = (f: number, fur: string, chest: string, collar: string, pointyEars: boolean) => {
     const p = P();
     blob(p, 9, 15, 6, 4.4, R(fur), 1, 3);
     blob(p, 11, 15, 2.6, 3.6, R(chest), 1, 3);
     p.rect(5, 18, 3, 2, c(chest, 2)).rect(11, 18, 3, 2, c(chest, 2));
     blob(p, 12, 7, 4.4, 4, R(fur), 1, 3);
-    if (tallEar) {
-      p.line(9, 5, 8, 0, c(fur, 2)).line(10, 4, 10, 1, c(fur, 1)).line(15, 5, 16, 1, c(fur, 2)).line(14, 4, 15, 2, c(fur, 1));
+    if (pointyEars) {
+      p.line(9, 5, 8, 1, c(fur, 2)).line(10, 4, 9, 2, c(fur, 1)).line(15, 5, 16, 1, c(fur, 2)).line(14, 4, 15, 2, c(fur, 1));
       p.line(12, 4, 12, 9, c('marble', 3));
     } else p.rect(7, 5, 3, 5, c(fur, 0)).rect(15, 5, 3, 5, c(fur, 0));
     p.set(10, 7, ink).set(14, 7, ink).disc(12, 10, 1.1, ink);
