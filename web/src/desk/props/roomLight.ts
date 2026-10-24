@@ -55,6 +55,8 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   // the night outside is as dark as it is, whatever the room's light: the window is never dimmed
   { sel: '.snow-window', spread: 0 },
   { sel: '.caption', spread: 0.4 },
+  // the mail under the bedroom door (mailDrop.ts), in the hall light from the gap, so it can be found in the dark
+  { sel: '.room-door .rd-mail', spread: 0.5 },
   // the switch has a little glowing lever, the way to find it in the dark
   { sel: '.light-switch', spread: 0.4 },
 ];

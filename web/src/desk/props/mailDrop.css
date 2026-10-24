@@ -1,0 +1,110 @@
+/* RSD's reply under the bedroom door (mailDrop.ts): the envelope on the carpet in front of the
+   door, and Teddy's paw or Gwinn's nose poking out from the gap as it comes in. The door is
+   drawn only on a wide window (room/roomDoor.css), and these with it. */
+.room-door .rd-mail {
+  position: absolute;
+  z-index: 3;
+  left: 96px;
+  bottom: -46px;
+  width: 92px;
+  height: 46px;
+  box-sizing: border-box;
+  /* lying flat on the floor, seen from above and a little askew */
+  transform: perspective(260px) rotateX(48deg) rotate(-7deg);
+  transform-origin: 50% 0;
+  border: 1px solid #b8ad8e;
+  border-radius: 2px;
+  background:
+    linear-gradient(152deg, transparent 49%, rgba(0, 0, 0, 0.1) 50%, transparent 51%) left / 50% 100% no-repeat,
+    linear-gradient(208deg, transparent 49%, rgba(0, 0, 0, 0.1) 50%, transparent 51%) right / 50% 100% no-repeat,
+    #f6f0dc;
+  box-shadow: 2px 6px 6px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+.room-door .rd-mail:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 3px;
+}
+
+.rd-mail-stamp {
+  position: absolute;
+  right: 6px;
+  top: 5px;
+  width: 12px;
+  height: 14px;
+  border: 1.5px dotted #fff;
+  background: #c0392b;
+}
+
+.rd-mail-to {
+  position: absolute;
+  left: 30px;
+  top: 20px;
+  display: grid;
+  gap: 4px;
+}
+
+.rd-mail-to i {
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: #4a4a5a;
+}
+
+.rd-mail-to i:first-child {
+  width: 28px;
+}
+
+.room-door .rd-mail.sliding {
+  animation: mail-slide 1.2s ease-out;
+}
+
+@keyframes mail-slide {
+  0%,
+  30% {
+    opacity: 0;
+    transform: perspective(260px) translateY(-30px) rotateX(80deg) rotate(0deg);
+  }
+  45% {
+    opacity: 1;
+  }
+}
+
+/* the dog's paw or nose, out from the gap under the door for a moment (clipped at the door's foot) */
+.room-door .rd-dog {
+  position: absolute;
+  z-index: 4;
+  left: 112px;
+  top: 100%;
+  width: 60px;
+  height: 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.room-door .rd-dog svg {
+  display: block;
+  transform: translateY(-100%);
+}
+
+.room-door .rd-dog.nudge svg {
+  animation: dog-nudge 1.3s ease-in-out;
+}
+
+@keyframes dog-nudge {
+  15%,
+  55% {
+    transform: translateY(-10%);
+  }
+  35% {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-door .rd-mail.sliding,
+  .room-door .rd-dog.nudge svg {
+    animation: none;
+  }
+}

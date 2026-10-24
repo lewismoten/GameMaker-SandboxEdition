@@ -1,5 +1,5 @@
 // The room's little things made pressable, each in a module of its own (desk/props/): the
-// wall clock, the waste basket, the doorknob, the window (its glass, the moon, and what goes
+// wall clock, the waste basket, the doorknob (and the mail under the door), the window (its glass, the moon, and what goes
 // by outside: outside/), the curtains, the left speaker, the monitor's DEGAUSS, the black
 // light and the overhead light's switch (roomLight.ts, which also darkens the room at
 // night). Called once the desk is built (`pc` says whether a game is playing: nothing happens
@@ -8,6 +8,7 @@
 import { clockProp } from './clock';
 import { wastebasketProp } from './wastebasket';
 import { doorProp } from './door';
+import { mailDropProp } from './mailDrop';
 import { windowProps } from './window';
 import { outsideWindow } from './outside';
 import { curtainProps } from './curtains';
@@ -30,6 +31,7 @@ export function deskProps(desk: HTMLElement, pc: { gamePlaying(): boolean } = { 
   add(clockProp, '.wall-clock');
   add(wastebasketProp, '.waste-basket');
   add(doorProp, '.room-door');
+  add(mailDropProp, '.room-door'); // RSD's reply, under the door
   add(windowProps, '.snow-window');
   const win = q('.snow-window');
   if (win) offs.push(outsideWindow(win, pc)); // after windowProps: they ride in the window's hit layer

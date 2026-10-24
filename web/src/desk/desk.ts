@@ -384,8 +384,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const reg = regSideLater(
     () => desk.querySelector<HTMLElement>('.monitor'),
     () => computer?.focus(),
-    // the desk's window: the mail truck comes for the card and drives off with it
-    { onMailed: () => window.dispatchEvent(new CustomEvent('gm-window-event', { detail: { kind: 'mailtruck' } })) },
+    // the desk's window: the mail truck comes for the card and drives off with it; the reply
+    // comes on paper too, under the bedroom door (props/mailDrop.ts)
+    {
+      onMailed: () => window.dispatchEvent(new CustomEvent('gm-window-event', { detail: { kind: 'mailtruck' } })),
+      onReply: (reply) => window.dispatchEvent(new CustomEvent('gm-reg-reply', { detail: reply })),
+    },
   );
 
   function setTurbo(on: boolean): void {
