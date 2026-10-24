@@ -37,6 +37,8 @@ export interface ExploreOptions {
   stopAt?: (link: number, toScene: number) => boolean;
   /** Start partway through the scene: a snapshot of this scene from the same entry. */
   start?: Snap;
+  /** Told the world as the hero enters and after every tick played (what the screen shows: w.mx, w.my, w.scroll). */
+  onTick?: (w: World) => void;
 }
 
 /** Where the hero comes into the scene, and with what. */
@@ -295,6 +297,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const score = w.ci.score;
     const before = sim.px;
     const t = await sim.tick();
+    opt.onTick?.(w);
     // the death sequence has started: nothing the player does stops it (touch.ts sets it at 0 hit points)
     const r = t === undefined && w.chr.cseq === DIESEQ ? 'dead' : t;
     ticks++;
@@ -420,6 +423,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     return { to, exits: [] };
   };
 
+  opt.onTick?.(w);
   addPlace();
   const startSnap = places[0].snap!;
   let stopped = false;
