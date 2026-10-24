@@ -74,20 +74,6 @@ const LEGS = [
   '.....ooooo...ooooo..',
 ];
 const SHOES = ['...oRRwRo..oRwRRo...', '..oRRRRRRo.oRRRRRRo.', '..owwwwwwo.owwwwwwo.', '..oooooooo.oooooooo.'];
-// mid-stride: the front leg out, the back one behind
-const STRIDE = [
-  '.....otttttttttto...',
-  '.....otttttottTto...',
-  '....otddtto.ottttto.',
-  '....otddtto..otttto.',
-  '...ottttto...ottttto',
-  '...otttto.....otttto',
-  '..ottTto......ottto.',
-  '..otttto.......ottto',
-  '.otttto........otto.',
-  '.ooooo.........oooo.',
-];
-const STRIDE_SHOES = ['oRRwRo.........oRwRo', 'RRRRRo........oRRRRo', 'wwwwwo........owwwwo', 'ooooo.........ooooo.'];
 const PASS = [
   '.....otttttttttto...',
   '.....otttttttTto....',
@@ -102,25 +88,6 @@ const PASS = [
 ];
 const PASS_SHOES = ['.....oRRwRRRo.......', '....oRRRRRRRRo......', '....owwwwwwwwo......', '....oooooooooo......'];
 
-/** Rows mirrored left to right (the other leg's turn). */
-const mirrorRows = (rows: string[]) => rows.map((r) => [...r].reverse().join(''));
-// the other mid-stride (the patched leg behind now), and passing on the other leg (the patch
-// and the lit heel swap sides); the strides drop him a pixel lower than the passes, so he bobs
-const STRIDE_B = mirrorRows(STRIDE);
-const STRIDE_B_SHOES = mirrorRows(STRIDE_SHOES);
-const PASS_B = [
-  '.....otttttttttto...',
-  '.....oTttttttttto...',
-  '......otttttddto....',
-  '......otttttddto....',
-  '......otttttto......',
-  '......otttttto......',
-  '......otttTtto......',
-  '......otttttto......',
-  '......oTttttto......',
-  '......oooooooo......',
-];
-const PASS_B_SHOES = ['......oRRRwRRo......', '.....oRRRRRRRRo.....', '.....owwwwwwwwo.....', '.....oooooooooo.....'];
 /** A stride's legs, one row shorter (the hip row doubled up): he is lowest at a stride. */
 const low = (legs: string[]) => [legs[0], ...legs.slice(2)];
 
@@ -228,22 +195,142 @@ function sleepy(): Pixels {
   return S(rows);
 }
 
+// Side on, walking to the right (mirrored for the left): the fedora's long front brim, the white
+// patch round his eye behind the glasses, the sunburned nose out front, stubble along the jaw,
+// the tie peeking past the jacket, and the chicken trotting behind on its leash.
+const SIDE_HAT = ['.......oooooo.......', '......okkKkkko......', '......okkkkkkko.....', '......ozzzzzzzo.....', '....oOkkkkkkkkkOooo.'];
+const SIDE_FACE = [
+  '......osSSSSSSSo....',
+  '.....osSSSmmmmmmo...',
+  '.....oSSsSSmWWWm....',
+  '.....osOsSSmWoWm....',
+  '.....osssSSSWWWso...',
+  '.....oSSSSSaSNNNo...',
+  '.....ouSSSSaSNNNNo..',
+  '.....ouuuSSWWWWoo...',
+  '.....ouuuuWooWWo....',
+  '......ouuuuWWWuo....',
+  '.......ouuuuuuo.....',
+];
+const SIDE_BLINK = SIDE_FACE.map((r, i) => (i === 3 ? '.....osOsSSmWWWm....' : r));
+/** The jacket from the side, his near arm swung back (hand at `hand`: 0 back, 1 by his side). */
+function sideTorso(hand: number): string[] {
+  const back = [
+    '.......oxxxvGGo.....',
+    '......oxXxxvGvo.....',
+    '......oxxxxcGvo.....',
+    '.....oxxXxxcvvo.....',
+    '.....oxxoxxcvvo.....',
+    '....oxxo.oxxxxo.....',
+    '....oxxo.oxxxxo.....',
+    '...oxxo..oxxxxo.....',
+    '...oSSo..oxXxxo.....',
+    '....oo...oxxxxo.....',
+  ];
+  const side = [
+    '.......oxxxvGGo.....',
+    '......oxXxxvGvo.....',
+    '......oxxxxcGvo.....',
+    '......oxxoxcvvo.....',
+    '......oxxoxcvvo.....',
+    '......oxxoxxxxo.....',
+    '......oxXoxxxxo.....',
+    '......oxxoxxxxo.....',
+    '......oSSoxXxxo.....',
+    '.......oooxxxxo.....',
+  ];
+  return hand ? side : back;
+}
+// mid-stride (the near, patched leg out front) and passing; the far leg is the darker one
+const SIDE_STRIDE = [
+  '.........ottttto....',
+  '........otTTtttto...',
+  '.......oTTTo.ottto..',
+  '.......oTTo..otddo..',
+  '......oTTo...otddo..',
+  '......oTTo...otttto.',
+  '.....oTTo.....ottto.',
+  '.....oTTo.....ottto.',
+  '....oTTo......ottto.',
+  '....oooo......ooooo.',
+];
+const SIDE_STRIDE_SHOES = ['..oRRo........oRRwo.', '.oRRRo.......oRRRRo.', '.owwwo.......owwwwo.', '.oooo........oooooo.'];
+const SIDE_PASS = [
+  '.........ottttto....',
+  '.........otTtttto...',
+  '.........oTTtddo....',
+  '.........oTTtddo....',
+  '.........oTTttto....',
+  '.........oTtttto....',
+  '.........oTtttto....',
+  '.........oTtttto....',
+  '.........oTtttto....',
+  '.........oooooooo...',
+];
+const SIDE_PASS_SHOES = ['.........oRRRRwRo...', '.........oRRRRRRRo..', '.........owwwwwwwo..', '.........ooooooooo..'];
+/** The other stride: the far leg out front now, the patched one behind. */
+const SIDE_STRIDE_B = [
+  '.........ottttto....',
+  '........otttttTTo...',
+  '.......ottto.oTTo...',
+  '.......otddo..oTTo..',
+  '......otddo...oTTTo.',
+  '......otto.....oTTo.',
+  '.....ottto.....oTTo.',
+  '.....ottto.....oTTo.',
+  '....ottto......oTTo.',
+  '....ooooo......oooo.',
+];
+const SIDE_PASS_B = SIDE_PASS.map((r) => r.replace(/t/g, '#').replace(/T/g, 't').replace(/#/g, 'T').replace(/dd/g, 'TT'));
+
+/** The rubber chicken trotting behind him on its leash, from the hand at his side or swung back. */
+function sideChicken(rows: string[], hand: number, bob = 0): void {
+  const hen = ['.rr..', 'oYYo.', 'oYoee', 'oYr..', 'oYo..', 'qYYo.', 'qqqYo', 'oYYYo', '.oYo.', '.j.j.'];
+  const top = rows.length - hen.length - bob;
+  // the leash runs from his fist (row 24) down and back to the hen's harness
+  const fist = hand ? 8 : 4;
+  for (let y = 25, x = fist; y < top + 3; y++, x = Math.max(3, x - 1)) rows[y] = patch(rows[y], x, 'q');
+  hen.forEach((h, i) => (rows[top + i] = patch(rows[top + i], 0, h)));
+}
+
+function sideFigure(face: string[], hand: number, legs: string[], shoes: string[], bob = 0): Pixels {
+  const rows = [...SIDE_HAT, ...face, ...sideTorso(hand), ...legs, ...shoes];
+  sideChicken(rows, hand, bob);
+  return S(rows);
+}
+
+/** A side-on hop: knees tucked, the chicken swinging under him. */
+function sideHop(): Pixels {
+  const legs = [
+    '.........ottttto....',
+    '........otTTtttto...',
+    '.......oTTo.otddto..',
+    '.......oTTo.otddtto.',
+    '......oRRRw.oRRRRw..',
+    '......owwwwooRRRRRR.',
+    '......ooooo.owwwwwo.',
+    '.............oooooo.',
+  ];
+  return sprite([...SIDE_HAT, ...SIDE_FACE, ...sideTorso(0), ...legs], K, 0, 0, 20, 40);
+}
+
 /** Every pose, 20x40 (the pratfall is 20x20: only his bottom block). */
 export const LEO: Record<string, Pixels> = {
   front: docLeo(),
   frontBlink: docLeo(false, BLINK),
   wave: docLeo(true),
   hurt: docLeo(false, OUCH),
-  // the walk: stride, pass, the other stride, pass on the other leg (the chicken swings)
-  walk1: S(figure(FACE, low(STRIDE), STRIDE_SHOES, { swing: 1 })),
-  walk2: S(figure(FACE, PASS, PASS_SHOES)),
-  walk3: S(figure(FACE, low(STRIDE_B), STRIDE_B_SHOES, { swing: 2 })),
-  walk4: S(figure(FACE, PASS_B, PASS_B_SHOES, { swing: 1 })),
   hop: hop(),
   squawk: squawk(),
   twist1: twist(0),
   twist2: twist(1),
   sleep: sleepy(),
+  // the walk, side on to the right: stride, pass, the other stride, pass on the other leg
+  side1: sideFigure(SIDE_FACE, 0, low(SIDE_STRIDE), SIDE_STRIDE_SHOES, 1),
+  side2: sideFigure(SIDE_FACE, 1, SIDE_PASS, SIDE_PASS_SHOES),
+  side3: sideFigure(SIDE_BLINK, 0, low(SIDE_STRIDE_B), SIDE_STRIDE_SHOES, 2),
+  side4: sideFigure(SIDE_FACE, 1, SIDE_PASS_B, SIDE_PASS_SHOES, 1),
+  sideHop: sideHop(),
 };
 export const LEO_FLAT = pratfall();
 

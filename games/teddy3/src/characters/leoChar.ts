@@ -67,19 +67,19 @@ export function buildLeo(): Character {
   set(S[LSEQ.fetch], [f('twist1', 3), f('front', 3)], { key: KEY.f, sound: SND.fetch, ground: 1, norepeat: 1 });
   set(S[LSEQ.drop], [f('front', 1)], { key: 0 });
 
-  const walk = (dx: number, mirror: boolean) => ['walk1', 'walk2', 'walk3', 'walk4'].map((p) => f(p, 1, { x: dx, mirror }));
+  const walk = (dx: number, mirror: boolean) => ['side1', 'side2', 'side3', 'side4'].map((p) => f(p, 1, { x: dx, mirror }));
   set(S[LSEQ.right], walk(LSTEP, false), { key: KEY.right, jstkMov: 3 });
   set(S[LSEQ.left], walk(-LSTEP, true), { key: KEY.left, jstkMov: 7 });
   set(S[LSEQ.hop], [f('hop', 1, { y: -LHOP })], { key: KEY.up, jstkMov: 1, sound: SND.hop });
   set(S[LSEQ.rightD], walk(LSTEP, false), { key: KEY.d });
   set(S[LSEQ.leftA], walk(-LSTEP, true), { key: KEY.a });
   set(S[LSEQ.hopW], [f('hop', 1, { y: -LHOP })], { key: KEY.w, sound: SND.hop });
-  set(S[LSEQ.hopLeft], [f('hop', 1, { x: -LSTEP, y: -LHOP, mirror: true }), f('hop', 1, { x: -LSTEP, y: -LHOP, mirror: true })], {
+  set(S[LSEQ.hopLeft], [f('sideHop', 1, { x: -LSTEP, y: -LHOP, mirror: true }), f('sideHop', 1, { x: -LSTEP, y: -LHOP, mirror: true })], {
     key: KEY.q,
     jstkMov: 8,
     sound: SND.hop,
   });
-  set(S[LSEQ.hopRight], [f('hop', 1, { x: LSTEP, y: -LHOP }), f('hop', 1, { x: LSTEP, y: -LHOP })], { key: KEY.e, jstkMov: 2, sound: SND.hop });
+  set(S[LSEQ.hopRight], [f('sideHop', 1, { x: LSTEP, y: -LHOP }), f('sideHop', 1, { x: LSTEP, y: -LHOP })], { key: KEY.e, jstkMov: 2, sound: SND.hop });
   // SQUAWK: the chicken up high, and its squawk rolls off ahead along the ground.
   set(S[LSEQ.squawk], [f('squawk', 2), birth(MON.squawk), f('squawk', 4), f('front', 2)], {
     key: KEY.space,

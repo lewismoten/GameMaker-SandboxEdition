@@ -167,7 +167,7 @@ export function birthdayFli(): Uint8Array {
     r.frame((p) => {
       const x = Math.max(150, 300 - f * 14);
       const walking = x > 150;
-      leoAt(p, walking ? `walk${(f % 4) + 1}` : f % 8 < 4 ? 'front' : 'frontBlink', x, 74, 2, walking);
+      leoAt(p, walking ? `side${(f % 4) + 1}` : f % 8 < 4 ? 'front' : 'frontBlink', x, 74, 2, walking);
       teddyAt(p, f < 14 ? 'front' : 'frontBeg', 64, 118);
       if (!walking) {
         // the list in his hand, held out to Teddy
