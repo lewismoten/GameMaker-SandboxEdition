@@ -1,6 +1,6 @@
 // THE CHEZ as the hero of the driving stops: the shared side view (games/kit/chez.ts) at half
 // size, a little taller than true, so the whole tomato-red CitiCar fits one block (Teddy's
-// size, as realm drives it). Teddy's short ear pokes up at the back. Two frames of a bounce for driving, a squat and a spring for the
+// size, as realm drives it). Teddy's ear tip pokes up at the back. Two frames of a bounce for driving, a squat and a spring for the
 // bump, a honk (the horn's sound rings drawn by the honk monster), a flash for a jolt, and
 // the car sagging on its springs when the team is all tuckered out.
 import { Pixels } from '../../../kit/pixels';
@@ -34,7 +34,7 @@ function car(dy = 0, squash = false): Pixels {
   const p = new Pixels(20, 20, CLEAR);
   const h = Math.round(10 * (squash ? 1.1 : TALL));
   chezSide(p, 0, 20 - h + dy, CHEZ_INK, 'right', 0.5, squash ? 1.1 : TALL);
-  // Teddy's ear (the short one) poking up at the back
+  // the tip of Teddy's ear poking up at the back
   const top = 20 - h + dy;
   p.set(5, top + 1, c('corgi', 3)).set(5, top, c('corgi', 2));
   return p;

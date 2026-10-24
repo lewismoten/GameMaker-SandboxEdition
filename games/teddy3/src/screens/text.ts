@@ -24,9 +24,9 @@ export const STORY = pages(
     '',
     'Teddy does not say anything.',
     'He is a professional. But his',
-    'ears go down a little, and',
-    'the short one goes down the',
-    'most.',
+    'ears droop a little, and so',
+    'does his grin. Just a',
+    'little.',
   ],
   [
     'So off they go in THE CHEZ,',

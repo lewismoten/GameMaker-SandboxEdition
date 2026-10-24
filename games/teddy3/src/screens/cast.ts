@@ -35,7 +35,7 @@ function teddyScene(reel: CastReel): void {
     p.blit(outline(t, c('ink', 0)), 0, 0, CLEAR);
     big(p, 'TEDDY', 24, 250);
     say(p, 'RED-GOLD CORGI.', 52, undefined, 250);
-    say(p, 'ONE EAR TALLER.', 64, undefined, 250);
+    say(p, 'ALL EARS.', 64, undefined, 250);
     say(p, 'THE BIRTHDAY BOY.', 76, c('yellow', 3), 250);
     if (f >= 20) {
       say(p, 'HE THINKS IT IS', 150, undefined, 250);
