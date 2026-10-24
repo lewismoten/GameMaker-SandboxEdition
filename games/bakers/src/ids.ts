@@ -38,7 +38,7 @@ export const SEQ = {
   d: 12,
   /** Space: squawk the rubber chicken (it is carried, so F2 shows it). */
   squawk: 13,
-  /** K: a kazoo blast, all four ways (once the kazoo is found). */
+  /** Z: a kazoo blast, all four ways (once the kazoo is found). */
   kazoo: 14,
   /** T: tip the tricorn (once it is found). Does nothing. Ebenezer insisted. */
   salute: 15,
@@ -89,14 +89,14 @@ export const KEY = {
   a: 0x1e61,
   d: 0x2064,
   space: 0x3920,
-  k: 0x256b,
+  z: 0x2c7a,
   t: 0x1474,
   b: 0x3062,
   enter: 0x1c0d,
 } as const;
 
 /** Scan codes for recordings and the simulator. */
-export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, k: 0x25, t: 0x14, enter: 0x1c, esc: 0x01 } as const;
+export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, z: 0x2c, t: 0x14, enter: 0x1c, esc: 0x01 } as const;
 
 /**
  * Monster numbers every room's .MON keeps in the same place: the character file fires the

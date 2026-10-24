@@ -13,7 +13,7 @@ export function printables(): unknown {
       Right: 'Walk one step right',
       Space: 'Squawk the rubber chicken',
       Enter: 'Pick up',
-      K: 'Kazoo (once found)',
+      Z: 'Kazoo (once found)',
       T: 'Tip the tricorn (once found)',
     },
     items: [
@@ -95,7 +95,7 @@ export function printables(): unknown {
               },
               {
                 q: 'The Spice Parlor: something hums behind a wall.',
-                a: 'In the little room on the left with a bottle cap in it, lean on the east wall. Stand on the kazoo and press Enter. K plays it, all four ways at once.',
+                a: 'In the little room on the left with a bottle cap in it, lean on the east wall. Stand on the kazoo and press Enter. Z plays it, all four ways at once.',
               },
               {
                 q: 'The Bakehouse: the dough closed the shortcut.',

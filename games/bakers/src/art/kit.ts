@@ -382,7 +382,7 @@ export function spoon(): Pixels {
   return outline(p, O());
 }
 
-/** The kazoo (carried, it plays K): Doc Leo's instrument of choice. */
+/** The kazoo (carried, it plays Z): Doc Leo's instrument of choice. */
 export function kazoo(): Pixels {
   const p = blank();
   p.rect(2, 14, 16, 2, c('dark', 0));
