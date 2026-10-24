@@ -568,5 +568,22 @@
       "html": "<p>Our first mystery, <b>FINAL CURTAIN</b>, puts you in a trench coat at the Paragon Theatre on Halloween night, 1936. Every clue is in the game, and the solution comes in three parts: who, how and why.</p>",
       "everywhere": true
     }
-  ]
+  ],
+  "worldMap": {
+    "groups": [
+      {
+        "scenes": [4, 5, "6-10", "22-41"],
+        "labels": ["The evidence board", "Lila Fontaine", "Edgar Bliss", "Agatha Crane", "Felix Morrow", "Oliver Pike"]
+      },
+      {
+        "scenes": [11, 12, "13-21", "42-61", 76],
+        "labels": ["The evidence board", "Lila Fontaine", "Edgar Bliss", "Agatha Crane", "Felix Morrow", "Oliver Pike"]
+      },
+      {
+        "scenes": [62, "63-75"],
+        "name": "The Stage at Dawn",
+        "labels": ["The suspects in a row", "The Commissioner"]
+      }
+    ]
+  }
 }
