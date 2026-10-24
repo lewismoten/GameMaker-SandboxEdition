@@ -47,9 +47,16 @@
     filter: drop-shadow(0 0 2px #ff3b8f);
   }
 
-  /* at night under the tube, the white face takes the black light's violet */
-  .desk.bl-uv.rl-dark .wall-clock .wc-face {
-    fill: #2b1f4d;
+  /* at night under the tube, white glows a light purple: the face and the date window; the
+     lume keeps a thin dark edge so it still reads against it */
+  .desk.bl-uv.rl-dark .wall-clock :is(.wc-face, .wc-date-bg) {
+    fill: #b9a6f4;
+  }
+
+  .desk.bl-uv.rl-dark .wall-clock text.wc-lume {
+    stroke: #1d3a14;
+    stroke-width: 0.8px;
+    paint-order: stroke;
   }
 
   /* the afterglow: in the dark, the charged lume glows as strongly as it is charged

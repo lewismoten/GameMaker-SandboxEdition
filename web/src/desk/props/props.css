@@ -651,6 +651,12 @@
     text-shadow: 0 0 5px rgb(200 170 255 / 0.9);
   }
 
+  /* white paper under the tube at night glows a light purple; dark ink stays dark */
+  .desk.bl-uv.rl-dark :is(.news-clipping, .phone-notes, .sticky, .catalog-prop) {
+    filter: grayscale(1) sepia(1) hue-rotate(215deg) saturate(2.2) brightness(0.95);
+    transition: filter 0.8s;
+  }
+
   /* the glowing print, there after dark (and while the tube flickers) */
   .bl-poster .bl-print.night {
     opacity: 0;
