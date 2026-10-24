@@ -12,6 +12,7 @@ import { CLAUDE } from './sections/claude';
 import { STRATEGY } from './sections/strategy';
 import { DIRECTORY } from './sections/directory';
 import { REVIEWS } from './sections/reviews';
+import { MAXIMUS } from './sections/maximus';
 import { SPOTLIGHT } from './sections/spotlight';
 import { BBS_LISTINGS } from './sections/bbsListings';
 import { STORE } from './sections/store';
@@ -35,6 +36,7 @@ export const SECTIONS: MagSection[] = [
   STRATEGY,
   DIRECTORY,
   REVIEWS,
+  MAXIMUS,
   SPOTLIGHT,
   BBS_LISTINGS,
   STORE,
