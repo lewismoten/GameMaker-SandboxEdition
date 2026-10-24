@@ -1,6 +1,7 @@
-// The twelve felt eggs hidden in the Sandbox games, a dozen: one per game, each carrying a few
-// names (easter eggs began as authors' hidden credits) and one piece of a small mystery about a
-// family root beer recipe that keeps asking for one more than anybody has.
+// The thirteen felt eggs hidden in the Sandbox games: one per game, each carrying a few names
+// (easter eggs began as authors' hidden credits) and one piece of a small mystery about a
+// family root beer recipe that keeps asking for one more than anybody has. However many there
+// are, the mystery's last egg is always the one more: it is never one of these.
 //
 // HOW AN EGG IS DETECTED (the convention every game follows)
 //   The egg is something the player's character CARRIES, so it ends up in the game's save:
@@ -30,8 +31,8 @@ export interface EggLook {
   band: string;
   patch: string;
   thread: string;
-  pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds';
-  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword';
+  pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds' | 'confetti';
+  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'cake';
 }
 
 export interface Egg {
@@ -83,7 +84,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Glossy black felt laid with a vanishing checkerboard floor in silver chain stitch, a faceted felt cube in three shades of violet so it reads as solid, and a rainbow of floss where the light comes through.',
     credits: ['Rendered by Claude Opus 5.5, one ray at a time', 'Lit by Doc Leo, who insisted on a spotlight'],
-    lore: 'Left rendering all night at 320x200: a perfect kitchen, a pot on every burner, a carton of twelve eggs. In the chrome kettle, thirteen reflections. Nobody can find the thirteenth.',
+    lore: 'Left rendering all night at 320x200: a perfect kitchen, a pot on every burner, a carton of thirteen eggs. In the chrome kettle, one reflection too many. Nobody can find its egg.',
     look: { felt: '#15121f', band: '#b9c0d8', patch: '#7a4fd0', thread: '#e8e4ff', pattern: 'grid', motif: 'cube' },
     detect: { block: 149 },
   },
@@ -105,7 +106,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Midnight-blue felt scattered with silver star stitches, a ringed felt planet in plum and gold on its belly, and one long orbit of white chain stitch looping all the way around.',
     credits: ['Charted by Claude Opus 5.5', 'and Lewis "Lewie" Moten III'],
-    lore: 'Between worlds it hums a count: twelve, twelve, twelve. Then a thirteenth beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.',
+    lore: 'Between worlds it hums a count: thirteen, thirteen, thirteen. Then one more beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.',
     look: { felt: '#1b2350', band: '#c9d3ff', patch: '#8a4fb0', thread: '#ffffff', pattern: 'stars', motif: 'planet' },
     detect: { block: 129 },
   },
@@ -127,7 +128,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Sandy tan felt with blue scalloped waves at its base, a turreted felt castle with a pink pennant, and a single brown paw print stitched by the moat. Gwinn swears she had nothing to do with it.',
     credits: ['Dug up by Gwinn', 'with help (and a nap) from Teddy'],
-    lore: 'Pressed into the wet sand: "ONCE," then a measuring cup, a ladle and twelve little egg shapes in a row. One more sits apart, half dug, as if somebody got called in for supper.',
+    lore: 'Pressed into the wet sand: "ONCE," then a measuring cup, a ladle and thirteen little egg shapes in a row. One more sits apart, half dug, as if somebody got called in for supper.',
     look: { felt: '#e6c48a', band: '#3d8fd1', patch: '#c9573a', thread: '#fff6e0', pattern: 'scallops', motif: 'castle' },
     detect: { block: 146 },
   },
@@ -176,13 +177,24 @@ export const EGGS: readonly Egg[] = [
     detect: { block: 149 },
   },
   {
+    game: 'teddy3',
+    gameTitle: "Teddy's Little Biggest Adventure",
+    name: 'The Birthday Egg',
+    description:
+      'Lilac felt sprinkled with confetti knots in every color, a pink felt birthday cake appliquéd on each side with three yarn candles, and a collar of gold rickrack with a tiny brass tag that reads "3".',
+    credits: ['Starring Teddy, the biggest he has ever been', 'Party planned by Gwinn and Doc Leo, who never once said so', 'Stitched by Claude Opus 5.5'],
+    lore: 'Tucked in with the lost party hats in the hedge: a place card in Doc Leo\'s hand. "ONE MORE CHAIR AT THE TABLE. Keep it for whoever is still coming." Teddy sat in it anyway.',
+    look: { felt: '#b48ce0', band: '#ffd23f', patch: '#f59ac0', thread: '#ffffff', pattern: 'confetti', motif: 'cake' },
+    detect: { block: 149 },
+  },
+  {
     game: 'year2000',
     gameTitle: 'In The Year 2000!',
     name: 'The Tomorrow Egg',
     description:
       'Shiny teal felt with silver wave stitching, a red felt rocket with a flame of orange yarn, and a band of chrome sequins around the middle like a 1950s idea of the future.',
     credits: ['Sent from the future by Lewis "Lewie" Moten III', 'and Claude Opus 5.5'],
-    lore: 'A postcard from the future: "The grandkids still argue over the family root beer. The recipe calls for thirteen of something. Twelve, it turns out, is merely a dozen."',
+    lore: 'A postcard from the future: "The grandkids still argue over the family root beer. The recipe calls for thirteen of something. Thirteen eggs, it turns out, are not it."',
     look: { felt: '#1f9a9a', band: '#c8d4dc', patch: '#e2412f', thread: '#eaf6f6', pattern: 'waves', motif: 'rocket' },
     detect: { block: 149 },
   },
