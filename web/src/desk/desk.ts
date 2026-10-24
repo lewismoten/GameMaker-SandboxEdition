@@ -600,14 +600,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       (t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string],
     );
     const [{ openBoxViewer }, { drawGmBox, gmBoxContents }] = await Promise.all([lazy.boxViewer(), lazy.gmBox()]);
+    // the Owner's Guide or an insert read from the box: put it down and the box is back in hand
+    const read = () =>
+      void dosManual().then(() => {
+        if (!desk.isConnected) return;
+        desk.querySelector<HTMLElement>('.gm-box')?.focus({ preventScroll: true });
+        void openGmBox();
+      });
     await openBoxViewer({ title: 'Game-Maker SE 3.0' }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
       insertLabel: 'Put the CD in and start Game-Maker',
-      manual: () => void dosManual(),
+      manual: read,
       extras: gmBoxContents(
         () => {
           document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
-          void dosManual();
+          read();
         },
         () => {
           document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
@@ -657,7 +664,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     const made = scene
       ? await gameShelf(scene, games, {
           insert: (id) => void insertOriginal(id),
-          manual: (g, front) => void gameManual(g, front),
+          manual: (g, front) => gameManual(g, front),
         })
       : undefined;
     if (fill !== shelfFill) {

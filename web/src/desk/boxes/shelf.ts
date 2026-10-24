@@ -13,8 +13,8 @@ import { shelfLayout } from './shelfLayout';
 interface ShelfHooks {
   /** Put the game's disk in drive A:. */
   insert: (id: string) => void;
-  /** Open the game's manual (only for games that have one). */
-  manual?: (entry: CatalogEntry, front: string) => void;
+  /** Open the game's manual (only for games that have one); settles when it is closed. */
+  manual?: (entry: CatalogEntry, front: string) => Promise<void> | void;
 }
 
 const FRONT_KEY = 'gm-shelf-front';
@@ -107,14 +107,24 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   const onShelf = () => games.filter((g) => faces.has(g.id));
   const page = (g: CatalogEntry): BoxViewerPage => {
     const f = faces.get(g.id)!;
+    // the manual or a piece of paper read from the box: put it down and the box is back in hand
+    const read =
+      g.original?.manual && hooks.manual
+        ? () =>
+            void Promise.resolve(hooks.manual!(g, f.front)).then(() => {
+              if (!shelf.isConnected) return;
+              slots.get(g.id)?.focus({ preventScroll: true });
+              void open(g);
+            })
+        : undefined;
     return {
       entry: g,
       faces: f,
       actions: {
-        manual: g.original?.manual && hooks.manual ? () => hooks.manual!(g, f.front) : undefined,
+        manual: read,
         insert: () => hooks.insert(g.id),
         // beside the box: the disks, the manual and the paper that came in it
-        extras: boxContents(g, f.front, { insert: () => hooks.insert(g.id), open: () => hooks.manual?.(g, f.front) }),
+        extras: boxContents(g, f.front, { insert: () => hooks.insert(g.id), open: () => read?.() }),
         step: async (dir) => {
           const list = onShelf();
           if (list.length < 2) return undefined;
