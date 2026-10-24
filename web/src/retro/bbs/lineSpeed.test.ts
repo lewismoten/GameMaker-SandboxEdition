@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { connectLine, cps, DEFAULT_SPEED, LINE_SPEEDS, lineSpeed, setLineSpeed, speedLabel, speedWords, statusBps } from './lineSpeed';
+import { timeWarp, warpCount, connectLine, cps, DEFAULT_SPEED, LINE_SPEEDS, lineSpeed, setLineSpeed, speedLabel, speedWords, statusBps } from './lineSpeed';
 
 describe('line speed', () => {
   afterEach(() => setLineSpeed(DEFAULT_SPEED));
@@ -52,5 +52,13 @@ describe('line speed', () => {
   it('ignores a speed that is not on the list', () => {
     setLineSpeed(19200 as never);
     expect(lineSpeed()).toBe(14400);
+  });
+
+  it('travels through time without changing the speed', () => {
+    setLineSpeed(300);
+    const before = warpCount();
+    timeWarp();
+    expect(warpCount()).toBe(before + 1);
+    expect(lineSpeed()).toBe(300);
   });
 });

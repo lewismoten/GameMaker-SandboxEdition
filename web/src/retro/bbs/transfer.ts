@@ -5,7 +5,7 @@ import type { RetroHost } from '../host';
 import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { modemSignal, sleep, type Term } from './term';
-import { cps, slowWait, speedWords } from './lineSpeed';
+import { cps, slowWait, speedWords, warpCount } from './lineSpeed';
 
 /** "about 3 min 20 s at 2,400 baud", or "no wait at all" when unlimited. */
 export function expectText(bytes: number, share = 1): string {
@@ -55,6 +55,7 @@ export async function progress(
   slowWait(size / rate());
   let got = 0;
   let last = performance.now();
+  const warp = warpCount(); // a trip through time (lineSpeed.ts timeWarp) gets to the end
   const draw = () => {
     const f = size ? got / size : 1;
     const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
@@ -68,8 +69,8 @@ export async function progress(
     t.print(''); // a dropped call ends the transfer
     const now = performance.now();
     const end = size * (opts.stopAt ?? 1);
-    // Space (or an unlimited line) gets to the end at once
-    got = k?.key === ' ' || !Number.isFinite(rate()) ? end : Math.min(end, got + ((now - last) / 1000) * rate());
+    // Space, a trip through time (or an unlimited line) gets to the end at once
+    got = k?.key === ' ' || warpCount() !== warp || !Number.isFinite(rate()) ? end : Math.min(end, got + ((now - last) / 1000) * rate());
     last = now;
     draw();
     modemSignal(opts.send ? 'send' : 'receive');

@@ -6,7 +6,7 @@
 // at the speed.
 import { h } from '../../editor/core/ui';
 import type { ModemSignal } from '../../retro/bbs/term';
-import { hintText, speedLabel, speedWords } from '../../retro/bbs/lineSpeed';
+import { hintText, SPEED_TEXT, speedLabel, speedWords, timeWarp, WARP_TEXT } from '../../retro/bbs/lineSpeed';
 import { speedRadios } from '../../retro/bbs/lineSpeedControls';
 
 const LIGHTS = ['HS', 'AA', 'CD', 'OH', 'RD', 'SD', 'TR', 'MR'] as const;
@@ -43,7 +43,16 @@ export function deskModem(onClick: () => void): DeskModem {
   const brand = h('span', null);
   const speed = h('button', { type: 'button', class: 'modem-speed', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, brand);
   const menu = h('div', { class: 'modem-menu', hidden: true }, speedRadios());
-  const hint = h('button', { type: 'button', class: 'modem-hint', hidden: true });
+  // the hint: how slow this really was, and two ways out: skip this wait, or change the speed
+  const hintWords = h('p', null);
+  const warpBtn = h('button', { type: 'button', class: 'modem-hint-warp' }, `⏩ ${WARP_TEXT}`);
+  const speedBtn = h('button', { type: 'button' }, SPEED_TEXT);
+  const hint = h(
+    'div',
+    { class: 'modem-hint', role: 'group', 'aria-label': 'Slow line', hidden: true },
+    hintWords,
+    h('div', { class: 'modem-hint-actions' }, warpBtn, speedBtn),
+  );
   const hintLive = h('div', { class: 'modem-hint-live', role: 'status', 'aria-live': 'polite' }, hint);
   const el = h('div', { class: 'prop modem' }, dial, speed);
   // the menu and the hint live on the page, over the room, so the room's lighting never dims them
@@ -83,7 +92,11 @@ export function deskModem(onClick: () => void): DeskModem {
     }
   };
   speed.addEventListener('click', () => open(menu.hidden));
-  hint.addEventListener('click', () => open(true));
+  speedBtn.addEventListener('click', () => open(true));
+  warpBtn.addEventListener('click', () => {
+    hideHint();
+    timeWarp();
+  });
   menu.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape' && e.key !== 'Enter') return;
     e.preventDefault();
@@ -121,7 +134,7 @@ export function deskModem(onClick: () => void): DeskModem {
       return;
     }
     if (!menu.hidden) return;
-    hint.textContent = hintText('desk');
+    hintWords.textContent = hintText();
     hint.hidden = false;
     place(hint);
     clearTimeout(hintTimer);

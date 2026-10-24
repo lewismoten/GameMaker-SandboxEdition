@@ -475,9 +475,14 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
 }
 
 .dos-line-hint {
+  display: inline-flex;
   flex: 0 1 auto;
+  gap: 6px;
   min-width: 0;
-  max-width: 60%;
+}
+
+.dos-line-hint .dos-btn {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

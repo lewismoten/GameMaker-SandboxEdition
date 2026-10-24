@@ -43,7 +43,7 @@ const TEXT_GAIN = 1.5;
 let current: LineSpeed | undefined;
 
 /** An event on the window (there is none in the unit tests). */
-function announce(name: 'gm-line-speed' | 'gm-line-hint', speed: LineSpeed): void {
+function announce(name: 'gm-line-speed' | 'gm-line-hint' | 'gm-line-warp', speed: LineSpeed): void {
   if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent<LineSpeed>(name, { detail: speed }));
 }
 
@@ -131,6 +131,20 @@ export const HINT_SECONDS = 15;
 
 let hinted = false;
 
+let warps = 0;
+
+/**
+ * "Travel through time": whatever is on its way down the line right now arrives at once (a
+ * transfer jumps to its end, waiting text is all there), without changing the line speed. A
+ * 'gm-line-warp' event tells the terminal; transfers compare warpCount() with where they began.
+ */
+export function timeWarp(): void {
+  warps++;
+  announce('gm-line-warp', lineSpeed());
+}
+
+export const warpCount = (): number => warps;
+
 /** A new call: the hint may show once more. */
 export function newCall(): void {
   hinted = false;
@@ -146,11 +160,9 @@ export function slowWait(seconds: number): void {
   announce('gm-line-hint', lineSpeed());
 }
 
-/**
- * The hint's words. On the desk the modem's speed is clicked; on the DOS page the hint is a
- * button in a narrow footer, so it leads with what clicking it does.
- */
-export const hintText = (where: 'desk' | 'page' = 'desk', speed: LineSpeed = lineSpeed()) =>
-  where === 'desk'
-    ? `This is how long it really took at ${speedWords(speed)}. Click the modem's speed to speed it up!`
-    : `Click here to speed it up! This is how long it really took at ${speedWords(speed)}.`;
+/** The hint's words: how slow this really was (its two buttons say what to do about it). */
+export const hintText = (speed: LineSpeed = lineSpeed()) => `This is how long it really took at ${speedWords(speed)}.`;
+
+/** The hint's two answers: skip this wait only, or pick another speed. */
+export const WARP_TEXT = 'Travel through time: get it now';
+export const SPEED_TEXT = 'Change the modem speed';

@@ -62,7 +62,9 @@ export class Term {
     this.live = on;
     if (typeof window !== 'undefined') {
       removeEventListener('gm-line-speed', this.onSpeed);
+      removeEventListener('gm-line-warp', this.onWarp);
       if (on) addEventListener('gm-line-speed', this.onSpeed);
+      if (on) addEventListener('gm-line-warp', this.onWarp);
     }
     if (on) this.h.keys.gate = () => (this.line$.idle ? undefined : this.line$.drain());
     else {
@@ -285,6 +287,9 @@ export class Term {
   private statusText = '';
 
   /** The speed changed (on the modem, or the DOS page's menu): the status bar says so. */
+  /** A trip through time: the text still on its way is all there at once. */
+  private onWarp = () => this.line$.flush();
+
   private onSpeed = () => {
     if (this.statusText) this.status(this.statusText.replace(/│ \d+ N81 │/, `│ ${statusBps()} N81 │`));
   };
