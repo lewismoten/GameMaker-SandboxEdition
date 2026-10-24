@@ -1,5 +1,5 @@
 // The front cover: the masthead, the big news, the cover lines and a stack of screenshots.
-import { art, grid, head, list, shot } from '../blocks';
+import { art, grid, head, list, p, shot } from '../blocks';
 import { MAG } from '../masthead';
 import { disc } from './freeCd';
 import type { MagSection } from '../types';
@@ -14,6 +14,7 @@ export const COVER: MagSection = {
       tone: 'black',
       blocks: [
         { t: 'masthead', ...MAG },
+        p('A modern tribute to the shareware years', { lead: true }),
         head('GAME-MAKER’S SOURCE CODE SET FREE!', {
           kicker: 'Exclusive',
           size: 'xl',

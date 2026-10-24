@@ -1100,6 +1100,19 @@
   color: var(--yellow);
 }
 
+/* the cover's premise line, tucked under the masthead */
+.kind-cover .mag-masthead + .mag-lead {
+  margin-top: -1.2em;
+  text-align: center;
+  font:
+    700 0.95em/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
 .kind-cover .mag-list {
   padding: 0;
   list-style: none;
