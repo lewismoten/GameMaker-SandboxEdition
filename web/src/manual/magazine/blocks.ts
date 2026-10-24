@@ -1,6 +1,6 @@
 // Builders for the magazine's blocks (types.ts Block), so a section reads like the page it
 // makes: head('…'), p('…'), side('…', [...]), shot('teddy', 'level', '…'), card(…), ad(…).
-import type { Block, Inline, ListingRow, MagPage, Tone, ArtId } from './types';
+import type { Block, Inline, ListingRow, MagPage, Tone, ArtId, ShotView } from './types';
 import type { Go } from './go';
 
 type HeadOpts = { kicker?: string; deck?: Inline; size?: 'xl' | 'l' | 'm' | 's'; level?: 1 | 2 | 3 };
@@ -17,8 +17,8 @@ export const cols = (n: 2 | 3, blocks: Block[]): Block => ({ t: 'cols', n, block
 export const grid = (cells: Block[][], min?: number): Block => ({ t: 'grid', cells, min });
 export const side = (title: string, blocks: Block[], tone: Tone = 'yellow'): Block => ({ t: 'side', title, tone, blocks });
 export const pull = (text: Inline, by?: string): Block => ({ t: 'pull', text, by });
-/** A screenshot drawn from the game itself: its title screen or the first level. */
-export const shot = (game: string, view: 'title' | 'level', alt: string, caption?: Inline, tilt?: number): Block => ({
+/** A screenshot drawn from the game itself: its title screen, the first level, or a design tool on it. */
+export const shot = (game: string, view: ShotView, alt: string, caption?: Inline, tilt?: number): Block => ({
   t: 'shot',
   game,
   view,
@@ -56,6 +56,10 @@ export const piece = (game: string, what: 'hintbook', alt: string, o: { go?: Go;
   alt,
   ...o,
 });
+/** The Ultimate Owner's Guide's front cover drawn small, linking to `go`. */
+export const ultimatePiece = (alt: string, o: { go?: Go; float?: 'left' | 'right' } = {}): Block => ({ t: 'piece', piece: 'ultimate', alt, ...o });
+/** A line set huge (a price, a phone number), with a small note beside it. */
+export const big = (text: string, side?: Inline): Block => ({ t: 'big', text, side });
 export const rule = (): Block => ({ t: 'rule' });
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */

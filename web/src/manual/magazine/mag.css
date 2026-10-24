@@ -1059,6 +1059,149 @@
   transform: rotate(-12deg);
 }
 
+/* a line set huge: an ad's price or phone number, its note in small type beside it */
+.mag-big {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  margin: 0;
+}
+
+.mag-big-text {
+  font:
+    700 3em/0.9 'Times New Roman',
+    Times,
+    serif;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.mag-big-side {
+  max-width: 7em;
+  font:
+    italic 700 0.72em/1.1 Helvetica,
+    Arial,
+    sans-serif;
+  text-transform: uppercase;
+}
+
+/* the classic look: the full-page Game-Maker ads of 1992. A hot pink page, black condensed
+   serif headlines in small capitals, plain black-edged screens with italic captions, a dashed
+   coupon. The serif is condensed by scaling the headline across, wider than its box first so
+   it fills the line. */
+.mag-page.look-classic {
+  --paper: #f37ba5;
+  --ink: #0d0a0b;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.look-classic .mag-in {
+  padding: 2.6em 2.4em 2.6em;
+}
+
+.look-classic .mag-body {
+  gap: 0.55em;
+}
+
+.look-classic .mag-head :where(h1, h2, h3),
+.look-classic .mag-head.size-xl :where(h1, h2, h3) {
+  width: 128.2%;
+  transform: scaleX(0.78);
+  transform-origin: 0 0;
+  color: var(--ink);
+  font:
+    700 4.3em/0.86 'Times New Roman',
+    Times,
+    serif;
+  font-variant: small-caps;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-shadow: none;
+  text-transform: none;
+  white-space: pre-line;
+}
+
+.look-classic .mag-head.size-l :where(h1, h2, h3) {
+  font-size: 3.5em;
+}
+
+.look-classic .mag-bevel {
+  padding: 0;
+  border: 0.12em solid var(--ink);
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.look-classic figcaption {
+  font:
+    italic 0.78em/1.25 Helvetica,
+    Arial,
+    sans-serif;
+  text-align: center;
+}
+
+.look-classic .mag-grid {
+  gap: 0.6em 1em;
+}
+
+.look-classic .mag-list {
+  padding: 0;
+  list-style: none;
+  font-style: italic;
+}
+
+.look-classic .mag-list li {
+  margin-bottom: 0.1em;
+  padding-left: 1em;
+  text-indent: -1em;
+}
+
+.look-classic .mag-list li::before {
+  content: '▸ ';
+}
+
+.look-classic .mag-cell > p:first-child:not(.mag-big) {
+  font-size: 1.1em;
+}
+
+.look-classic .mag-big-text {
+  font-size: 3.4em;
+}
+
+.look-classic .mag-card {
+  padding: 0.8em 1em;
+  border: 0.2em dashed var(--ink);
+  background: transparent;
+  font:
+    0.85em/1.35 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.look-classic .mag-card h3 {
+  font:
+    700 1.05em/1.2 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0;
+}
+
+.look-classic .mag-card p {
+  margin: 0 0 0.3em;
+}
+
+.look-classic .mag-scissors {
+  background: var(--paper);
+}
+
+.look-classic .mag-note {
+  opacity: 1;
+}
+
+.look-classic a:not(.mag-btn, .mag-card > a.mag-go) {
+  color: var(--ink);
+}
+
 /* phones: one column, cells stacked */
 @container (max-width: 560px) {
   .mag-cols.n2,
@@ -1081,6 +1224,20 @@
 
   .mag-adframe h2 {
     font-size: 2em;
+  }
+
+  .look-classic .mag-head :where(h1, h2, h3),
+  .look-classic .mag-head.size-xl :where(h1, h2, h3) {
+    font-size: 2.6em;
+  }
+
+  .look-classic .mag-head.size-l :where(h1, h2, h3) {
+    font-size: 2.2em;
+  }
+
+  .mag-big-text,
+  .look-classic .mag-big-text {
+    font-size: 2.2em;
   }
 
   .mag-pull {

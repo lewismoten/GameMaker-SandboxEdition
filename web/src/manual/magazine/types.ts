@@ -60,7 +60,7 @@ export type Block =
   | { t: 'grid'; cells: Block[][]; min?: number }
   | { t: 'side'; title: string; tone?: Tone; blocks: Block[] }
   | { t: 'pull'; text: Inline; by?: string }
-  | { t: 'shot'; game: string; view: 'title' | 'level'; alt: string; caption?: Inline; tilt?: number }
+  | { t: 'shot'; game: string; view: ShotView; alt: string; caption?: Inline; tilt?: number }
   | { t: 'art'; art: ArtId; alt: string; caption?: Inline }
   /** A cast member's portrait: public/cast/<id>.png (cast/castData.ts), drawn from a game's own files. */
   | { t: 'cast'; id: string; alt: string; w: number; h: number; caption?: Inline }
@@ -71,8 +71,18 @@ export type Block =
   | { t: 'button'; go: Go; label: string }
   | { t: 'note'; text: Inline }
   | { t: 'masthead'; name: string; tagline: string; issue: string; price: string }
-  | { t: 'piece'; game: string; piece: 'hintbook'; alt: string; go?: Go; float?: 'left' | 'right' }
+  /** A box's printed piece: a game's hint book cover, or The Ultimate Owner's Guide's (no game). */
+  | { t: 'piece'; game?: string; piece: 'hintbook' | 'ultimate'; alt: string; go?: Go; float?: 'left' | 'right' }
+  /** A line set huge, not a heading: an ad's price or phone number, with a small note beside it. */
+  | { t: 'big'; text: string; side?: Inline }
   | { t: 'rule' };
+
+/**
+ * What a `shot` shows of a game: its title screen, its first level, or one of Game-Maker's design
+ * tools at work on that level's files (toolShots.ts): the palette, the block editor, the
+ * monsters' animation frames, or the whole map.
+ */
+export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map';
 
 /** Pictures drawn for the magazine (art.ts). */
 export type ArtId = 'chez' | 'sandbox' | 'barcode' | 'disk' | 'modem' | 'speakers' | 'diskbox';
@@ -86,6 +96,8 @@ export interface MagPage {
   /** Running head; else the section's dept. Ads, covers and the contents page have none. */
   head?: string;
   tone?: Tone;
+  /** A page laid out in another style: 'classic', the 1992 Game-Maker ad's (hot pink, condensed serif). */
+  look?: 'classic';
   blocks: Block[];
   /** A section agent's placeholder: printed as "coming soon", counted by the plan's tests. */
   stub?: boolean;

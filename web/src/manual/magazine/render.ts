@@ -9,7 +9,7 @@ import { artElement } from './art';
 import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
 import { MAG } from './masthead';
-import type { Block, Inline, PlacedPage } from './types';
+import type { Block, Inline, PlacedPage, ShotView } from './types';
 
 export interface RenderEnv {
   where: Where;
@@ -47,9 +47,13 @@ function inline(text: Inline, where: Where): Node[] {
 
 /** Screenshots, drawn once per game and view and kept as pictures (so they print). */
 const shots = new Map<string, Promise<string | undefined>>();
-function shotUrl(entry: CatalogEntry, view: 'title' | 'level'): Promise<string | undefined> {
+function shotUrl(entry: CatalogEntry, view: ShotView): Promise<string | undefined> {
   const key = `${entry.id}:${view}`;
   let p = shots.get(key);
+  if (!p && view !== 'title' && view !== 'level') {
+    p = import('./toolShots').then(({ toolShot }) => toolShot(entry, view));
+    shots.set(key, p);
+  }
   if (!p) {
     p = import('../../gfx/gameShots').then(async ({ renderShot, renderTitle }) => {
       const c = document.createElement('canvas');
@@ -66,7 +70,7 @@ function shotUrl(entry: CatalogEntry, view: 'title' | 'level'): Promise<string |
 /** A screenshot on its beveled frame, filled in once drawn (hidden when the game has none). */
 function shotFigure(
   game: string,
-  view: 'title' | 'level',
+  view: ShotView,
   alt: string,
   env: RenderEnv,
   pending: Promise<unknown>[],
@@ -141,8 +145,8 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       frame.classList.add('mag-piece-frame');
       frame.setAttribute('aria-label', b.alt);
       const fig = h('figure', { class: `mag-piece${b.float ? ` float-${b.float}` : ''}` }, frame);
-      const entry = env.entry(b.game);
-      if (!entry) fig.classList.add('none');
+      const entry = b.game ? env.entry(b.game) : undefined;
+      if (!entry && b.piece !== 'ultimate') fig.classList.add('none');
       else
         pending.push(
           import('./piece')
@@ -157,6 +161,13 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         );
       return fig;
     }
+    case 'big':
+      return h(
+        'p',
+        { class: 'mag-big' },
+        h('span', { class: 'mag-big-text' }, keep(b.text)),
+        b.side ? h('span', { class: 'mag-big-side' }, ...inline(b.side, where)) : null,
+      );
     case 'rows':
       return h(
         'ul',
@@ -229,7 +240,7 @@ export function renderPage(pg: PlacedPage, env: RenderEnv): { el: HTMLElement; r
   const el = h(
     'article',
     {
-      class: `mag-page kind-${pg.kind} tone-${pg.tone ?? 'white'}${pg.stub ? ' stub' : ''}`,
+      class: `mag-page kind-${pg.kind} tone-${pg.tone ?? 'white'}${pg.look ? ` look-${pg.look}` : ''}${pg.stub ? ' stub' : ''}`,
       'aria-label': pg.folio === 1 ? 'Front cover' : pg.kind === 'back' ? 'Back cover' : `Page ${pg.folio}`,
       dataset: { page: pg.id },
     },
