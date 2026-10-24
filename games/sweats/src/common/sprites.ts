@@ -298,8 +298,8 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
     const p = P();
     blob(p, 10, 15, 8.6, 4 + f * 0.4, pal.r(fur), 0, 3);
     blob(p, 6, 13, 3.4, 2.8, pal.r(fur), 1, 3);
-    // Teddy's right ear stands taller than his left
-    p.line(4, 10, 3, fur === 'fur' ? 6 : 8, c(fur, 2)).line(7, 10, 8, 7, c(fur, 2));
+    // Teddy's ears stand up, a matched pair; Gwinn's flop
+    p.line(4, 10, 3, fur === 'fur' ? 7 : 8, c(fur, 2)).line(7, 10, 8, 7, c(fur, 2));
     blob(p, 7, 15, 2.2, 1.6, pal.r(chest), 1, 2);
     p.set(4, 13, ink).set(7, 13, ink).set(2, 14, ink);
     if (collar) p.rect(5, 15, 4, 1, c(collar, 2));
