@@ -72,7 +72,8 @@ INK = {
     'face': (255, 150, 60),
     'lit': (255, 200, 120),
     'red': (255, 50, 110),  # hot pink-red: the sunburned nose and cheeks
-    'white': (238, 242, 255),  # the white makeup, a pale UV glow
+    'white': (238, 242, 255),  # the white makeup (under the tube: UV_WHITE)
+    'eye': (225, 240, 255),  # the whites of the eyes (under the tube: UV_EYE)
     'stubble': (100, 80, 230),  # deep blue-violet: the painted stubble
     'brow': (0, 0, 0),
     'shirt': (200, 60, 255),  # violet
@@ -82,6 +83,10 @@ INK = {
 # makeup and the features stand out on it, as on a real flocked poster
 SHADE = {'hat': 0.5, 'hatlit': 0.6, 'band': 0.95, 'shade': 0.45, 'face': 0.68, 'lit': 0.68, 'red': 1.0, 'white': 1.0, 'stubble': 0.5, 'brow': 0, 'shirt': 0.65, 'jacket': 0.3}
 VELVET = np.array([14, 10, 20], float)
+# under a black light white glows pale purple, not white: these, lit and haloed, come out
+# lavender instead of clipping to white
+UV_WHITE = (150, 122, 200)
+UV_EYE = (140, 118, 190)
 
 
 def silhouette(size: int) -> np.ndarray:
@@ -222,7 +227,7 @@ def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray, look: int = 
         fill(soft_fill(mask(lambda d, sc, k=k: d.ellipse(sc(F[k]), fill=255)), 4), INK['white'], 0.95)
     fill(soft_fill(poly('mouth'), 4), INK['white'], 1.0)
     for k in ('eyeL', 'eyeR'):
-        fill(mask(lambda d, sc, k=k: d.ellipse(sc(F[k]), fill=255)), (225, 240, 255), 0.9)
+        fill(mask(lambda d, sc, k=k: d.ellipse(sc(F[k]), fill=255)), INK['eye'], 0.9)
     lines = mask(lambda d, sc: (
         [d.rounded_rectangle(sc(F[k]), 36, outline=255, width=14) for k in ('lensL', 'lensR')],
         d.line([(656, 640), (716, 630)], fill=255, width=12),  # the bridge
@@ -372,7 +377,11 @@ def compose(night: bool, look: int = 0) -> Image.Image:
     ink = np.zeros((H, W, 3))
     level = np.zeros((H, W))
     black = np.zeros((H, W))
+    day_white = INK['white'], INK['eye']
+    if night:
+        INK['white'], INK['eye'] = UV_WHITE, UV_EYE
     ink[:ART_H], level[:ART_H], black[:ART_H] = portrait(look)
+    INK['white'], INK['eye'] = day_white
     ti, tl = title((W, H - ART_H))
     ink[ART_H:], level[ART_H:] = ti, tl
     base = velvet(rng)
