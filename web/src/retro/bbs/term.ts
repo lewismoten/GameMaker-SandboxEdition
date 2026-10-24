@@ -9,7 +9,8 @@ import { toCp437 } from '../text/cp437';
 import { busySounds, dialSounds } from './modem';
 import { key as typed } from '../text/textInput';
 import { PacedQueue, type Unit } from './pacedQueue';
-import { connectLine, cps, newCall, slowWait, statusBps } from './lineSpeed';
+import { connectLine, cps, lineSpeed, newCall, slowWait, statusBps, type LineSpeed } from './lineSpeed';
+import { tally, unlockAchievement } from '../../achievements';
 
 /** What the modem's front lights show; the desk's modem listens for these (desk/pc/modem.ts). */
 export type ModemSignal = 'ready' | 'offhook' | 'carrier' | 'receive' | 'send' | 'hangup' | 'off';
@@ -59,6 +60,7 @@ export class Term {
     online = on ? this : online === this ? undefined : online;
     if (!on) this.lost = undefined;
     if (on && !this.live) newCall();
+    this.callSpeed = on ? lineSpeed() : undefined;
     this.live = on;
     if (typeof window !== 'undefined') {
       removeEventListener('gm-line-speed', this.onSpeed);
@@ -290,7 +292,14 @@ export class Term {
   /** A trip through time: the text still on its way is all there at once. */
   private onWarp = () => this.line$.flush();
 
+  /** The speed the call was on, to tell a faster switch from a slower one. */
+  private callSpeed?: LineSpeed;
+
   private onSpeed = () => {
+    const now = lineSpeed();
+    const rank = (s: LineSpeed) => (s === 'unlimited' ? Infinity : s);
+    if (this.callSpeed !== undefined && now !== this.callSpeed) unlockAchievement(rank(now) > rank(this.callSpeed) ? 'bbs-cant-wait' : 'bbs-got-time');
+    this.callSpeed = now;
     if (this.statusText) this.status(this.statusText.replace(/│ \d+ N81 │/, `│ ${statusBps()} N81 │`));
   };
 
@@ -384,6 +393,8 @@ export async function dial(t: Term, h: Host, number: string, busy = false): Prom
   t.line('|08(carrier detected, negotiating...)');
   await until(call.connect);
   t.line(`|14${connectLine()}`);
+  const speed = lineSpeed();
+  if (speed !== 'unlimited') tally('bbs-every-speed', String(speed));
   modemSignal('carrier');
   return 'connect';
 }

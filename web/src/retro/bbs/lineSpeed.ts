@@ -140,6 +140,7 @@ let warps = 0;
  */
 export function timeWarp(): void {
   warps++;
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'bbs-time-travel' } }));
   announce('gm-line-warp', lineSpeed());
 }
 
@@ -160,8 +161,16 @@ export function slowWait(seconds: number): void {
   announce('gm-line-hint', lineSpeed());
 }
 
+/** A TTY call is up (tdd.ts): its text comes at Baudot's 45.45 baud, whatever the modem's speed. */
+let baudot = false;
+
+export function baudotCall(on: boolean): void {
+  baudot = on;
+}
+
 /** The hint's words: how slow this really was (its two buttons say what to do about it). */
-export const hintText = (speed: LineSpeed = lineSpeed()) => `This is how long it really took at ${speedWords(speed)}.`;
+export const hintText = (speed: LineSpeed = lineSpeed()) =>
+  baudot ? 'This is how long it really took on a TTY: Baudot at 45.45 baud.' : `This is how long it really took at ${speedWords(speed)}.`;
 
 /** The hint's two answers: skip this wait only, or pick another speed. */
 export const WARP_TEXT = 'Travel through time: get it now';

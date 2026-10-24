@@ -5,7 +5,8 @@ import type { RetroHost } from '../host';
 import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { modemSignal, sleep, type Term } from './term';
-import { cps, slowWait, speedWords, warpCount } from './lineSpeed';
+import { cps, lineSpeed, slowWait, speedWords, warpCount } from './lineSpeed';
+import { tally } from '../../achievements';
 
 /** "about 3 min 20 s at 2,400 baud", or "no wait at all" when unlimited. */
 export function expectText(bytes: number, share = 1): string {
@@ -56,6 +57,9 @@ export async function progress(
   let got = 0;
   let last = performance.now();
   const warp = warpCount(); // a trip through time (lineSpeed.ts timeWarp) gets to the end
+  // the long way round: a whole file at one speed, nothing skipped (achievements)
+  const speed = lineSpeed();
+  let whole = speed !== 'unlimited';
   const draw = () => {
     const f = size ? got / size : 1;
     const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
@@ -70,11 +74,15 @@ export async function progress(
     const now = performance.now();
     const end = size * (opts.stopAt ?? 1);
     // Space, a trip through time (or an unlimited line) gets to the end at once
+    if (k?.key === ' ' || warpCount() !== warp || lineSpeed() !== speed) whole = false;
     got = k?.key === ' ' || warpCount() !== warp || !Number.isFinite(rate()) ? end : Math.min(end, got + ((now - last) / 1000) * rate());
     last = now;
     draw();
     modemSignal(opts.send ? 'send' : 'receive');
-    if (got >= end) return { bytes: Math.round(got), aborted: false };
+    if (got >= end) {
+      if (whole && end >= size) tally('bbs-download-every-speed', String(speed));
+      return { bytes: Math.round(got), aborted: false };
+    }
     await sleep(120);
   }
 }

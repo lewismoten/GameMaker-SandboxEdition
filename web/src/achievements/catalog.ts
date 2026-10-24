@@ -51,6 +51,8 @@ export const EDIT_KINDS = ['gam', 'pal', 'bbl', 'mon', 'chr', 'map', 'snd', 'txt
 export const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as const;
 /** The help pages for downloaded games. */
 export const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
+/** The modem speeds that count toward connecting and downloading at every speed (retro/bbs/lineSpeed.ts; Unlimited isn't one). */
+export const MODEM_SPEEDS = ['300', '1200', '2400', '4800', '9600', '14400', '28800', '33600', '56000'] as const;
 /** The desk props another part of the room reports with a gm-achievement event. */
 export const DESK_PROPS = [
   'desk-clock',
@@ -171,6 +173,29 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'desk-gm', title: 'C:\\GM>', desc: 'Ran Game-Maker from DOS.', icon: '⌨️', category: 'desk' },
   { id: 'desk-bbs', title: 'Handshake', desc: 'Dialed The Sofa BBS on the modem.', icon: '📞', category: 'desk' },
   { id: 'desk-bbs-file', title: 'Downloading…', desc: 'Downloaded a file from the BBS.', icon: '📥', category: 'desk' },
+  {
+    id: 'bbs-every-speed',
+    title: 'Every speed on the dial',
+    desc: 'Connected to a BBS at every modem speed, from 300 baud to 56 kbps.',
+    icon: '📶',
+    category: 'desk',
+    of: MODEM_SPEEDS.length,
+    items: MODEM_SPEEDS,
+    unit: 'speeds',
+  },
+  {
+    id: 'bbs-download-every-speed',
+    title: 'The long way round',
+    desc: 'Downloaded a whole file from a BBS at every modem speed, start to finish, without skipping.',
+    icon: '🐢',
+    category: 'desk',
+    of: MODEM_SPEEDS.length,
+    items: MODEM_SPEEDS,
+    unit: 'speeds',
+  },
+  { id: 'bbs-time-travel', title: 'Time traveler', desc: 'Traveled through time to finish a slow download.', icon: '⏩', category: 'desk' },
+  { id: 'bbs-cant-wait', title: 'I can’t wait', desc: 'Switched to a faster modem in the middle of a call.', icon: '🚀', category: 'desk' },
+  { id: 'bbs-got-time', title: 'I’ve got time', desc: 'Switched to a slower modem in the middle of a call.', icon: '🐌', category: 'desk' },
   { id: 'desk-hexedit', title: 'Byte by byte', desc: 'Looked inside a file with HEXEDIT.', icon: '🔢', category: 'desk' },
   { id: 'desk-savehack', title: 'Save scummer', desc: 'Ran SAVEHACK, the saved game editor.', icon: '🛠️', category: 'desk' },
   { id: 'desk-backup', title: 'Safe and sound', desc: 'Ran BACKUP.', icon: '🗄️', category: 'desk' },
