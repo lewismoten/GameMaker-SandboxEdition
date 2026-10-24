@@ -65,7 +65,7 @@ type Source =
 const CAST_ART: Record<string, Source> = {
   teddy: { game: 'teddy', fli: 'cast.fli', frame: 40, crop: [22, 12, 156, 156] },
   gwinn: { game: 'teddy', fli: 'cast.fli', frame: 62, crop: [168, 26, 146, 146] },
-  leo: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [44, 23, 224, 147] },
+  leo: { game: 'teddy', fli: 'cast.fli', frame: 108, crop: [44, 23, 224, 147] },
   chicken: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [206, 56, 60, 112] },
   chez: { game: 'teddy', chez: 3 },
   doghouse: { game: 'teddy', fli: 'cast.fli', frame: 185, crop: [36, 14, 164, 182] },

@@ -6,6 +6,7 @@
 import { CHEZ_AXLE, CHEZ_BODY, CHEZ_POD, CHEZ_WHEELS, CHEZ_WINDOW } from '../../props/chezArt';
 import { dog, GWINN, TEDDY } from './dog';
 import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stars, stroke } from './paint';
+import { leoFace } from './leoFace';
 
 const PARTY = ['#d9381e', '#ffd23f', '#1d5fb8', '#1e9a5a', '#ff5aa8', '#9a5ad8'];
 
@@ -164,59 +165,7 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   stroke(c, '#1a2a5a', 22, [-50, -268, -70, -210, -84, -170]);
   ell(c, -86, -164, 12, 12);
   fill(c, '#fff');
-  // the face and the painted grey stubble along the jaw
-  ell(c, 0, -326, 36, 42);
-  fill(c, '#f4c8a4');
-  blob(c, [-35, -334, -32, -298, 0, -282, 32, -298, 35, -334, 18, -316, 0, -312, -18, -316]);
-  fill(c, 'rgba(90,96,108,0.5)');
-  const r = seeded('doc-leo-stubble');
-  c.fillStyle = 'rgba(50,54,62,0.55)';
-  for (let i = 0; i < 70; i++) {
-    const a = Math.PI * (0.05 + r() * 0.9);
-    const d = 0.8 + r() * 0.2;
-    c.fillRect(Math.cos(a) * 32 * d - 1, -322 + Math.sin(a) * 38 * d - 1, 2, 2);
-  }
-  // white round the mouth, and the big smile
-  blob(c, [-18, -310, 0, -316, 18, -310, 20, -296, 0, -288, -20, -296]);
-  fill(c, '#fbfbf8');
-  c.beginPath();
-  c.arc(0, -308, 11, 0.35, Math.PI - 0.35);
-  c.lineWidth = 3;
-  c.strokeStyle = '#8a1010';
-  c.stroke();
-  // white round both eyes, painted brows over them, the wire glasses
-  for (const ex of [-15, 15]) {
-    blob(c, [ex - 13, -340, ex - 6, -354, ex + 6, -354, ex + 13, -340, ex + 6, -327, ex - 6, -327]);
-    fill(c, '#fbfbf8');
-    ell(c, ex, -339, 3.5, 4);
-    fill(c, '#1a1a1a');
-    ell(c, ex + 1.2, -340.5, 1.2, 1.2);
-    fill(c, '#fff');
-    c.beginPath();
-    c.arc(ex, -339, 10, 0, Math.PI * 2);
-    c.lineWidth = 1.6;
-    c.strokeStyle = '#8a8a94';
-    c.stroke();
-    c.beginPath();
-    c.arc(ex, -357, 9, Math.PI * 1.15, Math.PI * 1.85);
-    c.lineWidth = 3;
-    c.strokeStyle = '#1a1a1a';
-    c.stroke();
-  }
-  stroke(c, '#8a8a94', 1.6, [-5, -340, 5, -340]);
-  stroke(c, '#8a8a94', 1.6, [-25, -340, -35, -336]);
-  stroke(c, '#8a8a94', 1.6, [25, -340, 35, -336]);
-  // his own nose, a little sunburned
-  blob(c, [-2, -336, 4, -334, 8, -320, 4, -316, -6, -316, -8, -321]);
-  fill(
-    c,
-    rad(c, 0, -322, 10, [
-      [0, '#f6a8a0'],
-      [1, '#e88a86'],
-    ]),
-  );
-  ell(c, 1, -326, 2, 2.5);
-  fill(c, 'rgba(255,255,255,0.55)');
+  leoFace(c);
   // the felt fedora with its dark band
   ell(c, 0, -362, 50, 10, -0.08);
   fill(c, '#4a4038');

@@ -112,14 +112,14 @@ const LISTED: CastMember[] = [
     id: 'leo',
     name: 'Doc Leo',
     role: 'Hobo clown, PhD in Comedic Science',
-    hi: 'Nose on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
+    hi: 'Smile on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
     art: {
       game: 'teddy',
       width: 224,
       height: 147,
-      alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash',
+      alt: 'Doc Leo, a hobo clown with a fedora, wire glasses, white face paint round his eyes and mouth, a sunburned pink nose and cheeks, painted gray stubble, a purple shirt and green tie, holding a yellow rubber chicken on a leash',
     },
-    bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, a red nose, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. Nose on: showtime. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
+    bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, wire glasses, white greasepaint round his eyes and mouth, his own nose and cheeks sunburned pink, painted gray stubble, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
       { game: 'teddy2', as: 'beside THE CHEZ at every stop' },

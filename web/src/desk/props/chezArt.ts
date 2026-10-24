@@ -59,7 +59,8 @@ const path = (c: CanvasRenderingContext2D, pts: Pt[]) => {
   c.closePath();
 };
 
-/** Doc Leo at the wheel, seen through the door window: his chewed fedora, a red nose, a grin. */
+/** Doc Leo at the wheel, seen through the door window: his chewed fedora, white face paint round
+ * his eye and his grin, his own nose sunburned pink. */
 function docLeo(c: CanvasRenderingContext2D): void {
   c.save();
   path(c, CHEZ_WINDOW);
@@ -74,10 +75,15 @@ function docLeo(c: CanvasRenderingContext2D): void {
   c.beginPath();
   c.ellipse(20.2, 5.2, 1.7, 1.9, 0, 0, Math.PI * 2);
   c.fill();
-  // stubble and the grin
+  // stubble, white round the grin and round the eye, then the grin
   c.fillStyle = 'rgba(60,50,40,0.35)';
   c.beginPath();
   c.ellipse(20.6, 6.3, 1.3, 0.75, 0, 0, Math.PI);
+  c.fill();
+  c.fillStyle = '#fbfbf8';
+  c.beginPath();
+  c.ellipse(21.2, 6.15, 0.85, 0.5, 0, 0, Math.PI * 2);
+  c.ellipse(21.15, 4.75, 0.6, 0.55, 0, 0, Math.PI * 2);
   c.fill();
   c.strokeStyle = '#5a1a10';
   c.lineWidth = 0.22;
@@ -86,10 +92,10 @@ function docLeo(c: CanvasRenderingContext2D): void {
   c.stroke();
   c.fillStyle = '#1a1a1a';
   c.fillRect(21.0, 4.6, 0.35, 0.35);
-  // the red nose
-  c.fillStyle = '#e0242c';
+  // his own nose, sunburned
+  c.fillStyle = '#ec948c';
   c.beginPath();
-  c.arc(22.0, 5.3, 0.62, 0, Math.PI * 2);
+  c.arc(21.85, 5.35, 0.45, 0, Math.PI * 2);
   c.fill();
   // the fedora: brim and a dented crown
   c.fillStyle = '#5a4632';

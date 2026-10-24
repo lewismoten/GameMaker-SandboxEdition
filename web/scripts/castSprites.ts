@@ -12,7 +12,7 @@ import { parsePalette } from '../src/formats/palette';
 import { chezPicture } from '../../games/kit/chez';
 import type { CastSprite } from '../src/cast/castSprite';
 import type { Pixels } from '../../games/kit/pixels';
-import { docLeo, FULL } from '../../games/teddy/src/sprites/people';
+import { docLeo, DRESSED } from '../../games/teddy/src/sprites/people';
 import { propSprite } from '../../games/teddy/src/sprites/klown';
 import { docLeoWalk } from './castLeoSide';
 import { NEEDLE_PAL, camelFront, needlePicture } from './castNeedle';
@@ -64,7 +64,7 @@ const CAST_SPRITES: Record<string, Source> = {
     game: 'teddy',
     pal: 'klub.pal',
     walk: [0, 1, 2, 3].map((n) => docLeoWalk(n)),
-    front: [docLeo(FULL), docLeo(FULL, true)],
+    front: [docLeo(DRESSED), docLeo(DRESSED, true)],
     // hatless (Gwinn has it) until Teddy brings it back
     acts: { bareWalk: [0, 1, 2, 3].map((n) => docLeoWalk(n, false)), bareSide: [docLeoWalk(1, false)], side: [docLeoWalk(1)] },
     ms: 170,
