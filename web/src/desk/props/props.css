@@ -717,6 +717,7 @@
 /* ---- the room after dark and the overhead light's switch (roomLight.ts): one dark layer
    over the room, with soft holes cut where there is light. Only on the wide stage. */
 .desk-scene > .room-dark,
+.desk-scene > .room-glow,
 .desk-scene > .light-switch {
   display: none;
 }
@@ -737,8 +738,22 @@
     -webkit-mask-composite: source-in;
   }
 
+  /* each lit LED's halo in its own color, over the dark (roomLight.ts) */
+  .desk-scene > .room-glow {
+    display: block;
+    position: absolute;
+    inset: 0 -1400px -200px;
+    z-index: 21;
+    opacity: 0;
+    transition: opacity 1.2s;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+  }
+
   /* a full-screen game or designer has the room to itself */
-  .desk:not([data-zoom='false']) .desk-scene > .room-dark {
+  .desk:not([data-zoom='false']) .desk-scene > .room-dark,
+  .desk:not([data-zoom='false']) .desk-scene > .room-glow {
     display: none;
   }
 
