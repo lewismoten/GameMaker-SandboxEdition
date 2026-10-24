@@ -152,12 +152,22 @@ export function gamePicture(files: FileSource, game: Game, cols: number, rows: n
  */
 export function mapPixels(files: FileSource, game: Game, mapName: string, x: number, y: number, w = 16, h = 10): LevelPicture | undefined {
   const scene = game.scenes.find((s) => s.gametype === 10 && s.files[1]?.toLowerCase() === mapName.toLowerCase());
-  if (!scene) return undefined;
+  return scene && scenePixels(files, scene, x, y, w, h);
+}
+
+/**
+ * `w` x `h` blocks of a scene's map from (`x`, `y`) in its own palette and blocks, with its
+ * placed monsters (first frame). `cells` stands in for the map's background blocks (the
+ * printed Level Maps draw the ground over what they hide). Undefined when the palette, map
+ * or blocks are missing.
+ */
+export function scenePixels(files: FileSource, scene: Scene, x: number, y: number, w = 16, h = 10, cells?: Uint8Array): LevelPicture | undefined {
   const get = (i: number) => (scene.files[i] ? files.get(scene.files[i]) : undefined);
   const [palB, mapB, bblB, monB, mblB] = [0, 1, 2, 3, 4].map(get);
   if (!palB || !mapB || !bblB) return undefined;
   const palette = parsePalette(palB);
   const map = parseMap(mapB);
+  const back = cells ?? map.blocks;
   const blocks = parseBlocks(bblB, BACKBL);
   const mons = monB ? parseMonsters(monB) : [];
   const mblocks = mblB ? parseBlocks(mblB, MONBL) : [];
@@ -175,7 +185,7 @@ export function mapPixels(files: FileSource, game: Game, mapName: string, x: num
       const mx = (((x + bx) % MLEN) + MLEN) % MLEN;
       const my = (((y + by) % MWID) + MWID) % MWID;
       const cell = my * MLEN + mx;
-      paint((blocks[map.blocks[cell]] ?? blocks[0]).pixels, bx, by, false);
+      paint((blocks[back[cell]] ?? blocks[0]).pixels, bx, by, false);
       const placed = map.monsters[map.mons[cell]];
       const mon = placed && mons[placed.monnum];
       const pic = mon?.pic[0]?.[0];
