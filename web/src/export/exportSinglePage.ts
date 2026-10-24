@@ -4,6 +4,7 @@ import type { GameFiles } from '../project/files';
 import { slug } from './exportWebApp';
 import { encodeGame, fillPage } from './singlePage';
 import { gameAbout } from './gameAbout';
+import { recordedAudioNotice, recordedClips } from './recordedAudio';
 
 // Files a game writes while being played; exported pages start fresh.
 const SAVE_DATA = /^(game\d\.sav|savnames\.dat|data\d+\.rec)$/;
@@ -28,5 +29,5 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   const entries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(entries);
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, entries);
-  return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction }) };
+  return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction, audio: recordedAudioNotice(recordedClips(files)) }) };
 }

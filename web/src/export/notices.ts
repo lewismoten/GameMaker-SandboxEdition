@@ -26,7 +26,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`;
 
-const PROJECT = `Game-Maker: Sandbox Edition (the player program and the game's player page)
+/** This project's MIT License: the player programs' and every exported page's (pageSeo.ts, exportWebApp.ts LICENSE.txt). */
+export const PROJECT = `Game-Maker: Sandbox Edition (the player program and the game's player page)
 https://github.com/lewismoten/GameMaker-SandboxEdition
 MIT License
 

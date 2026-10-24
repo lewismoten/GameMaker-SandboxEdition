@@ -2,8 +2,11 @@
 // engines and link previews: its description, Open Graph / Twitter tags, schema.org
 // VideoGame data saying it was made with Game-Maker: Sandbox Edition (with links to the
 // site and its source code), and readable text for crawlers and browsers without
-// JavaScript. Shareware keeps its author's notice; the only addition is the credit.
+// JavaScript. Shareware keeps its author's notice; the only addition is the credit. The page's
+// player is MIT licensed, so its notice rides in the <head> as a comment, and a Bard game's
+// voice clips, which aren't MIT, are named in the readable text (recordedAudio.ts).
 import { PRODUCT } from '../edition';
+import { PROJECT } from './notices';
 import { escapeHtml, gameDescription, gameJsonLd, jsonLdScript, metaTags, REPO_URL, SITE_URL, type GameSeo } from '../seo/site';
 
 export interface ExportMeta extends GameSeo {
@@ -11,6 +14,8 @@ export interface ExportMeta extends GameSeo {
   notice?: string;
   /** Our own games: made now, presented as a 1990s release (fiction.ts). */
   fiction?: string;
+  /** A Bard of Bizarre game's non-commercial voice clips (recordedAudio.ts recordedAudioNotice). */
+  audio?: string;
 }
 
 /** The page still needs a web engine: a browser, or the one a Windows, Mac or Linux download wraps it in. */
@@ -21,6 +26,7 @@ export const PAGE_CAVEAT =
 export function exportHead(m: ExportMeta): string {
   const description = gameDescription(m);
   return [
+    `<!--\n${PROJECT}\n-->`,
     metaTags({ title: m.title, description, siteName: m.title }),
     `<meta name="generator" content="${escapeHtml(PRODUCT)}" />`,
     jsonLdScript([gameJsonLd(m)]),
@@ -39,10 +45,12 @@ export function exportAbout(m: ExportMeta): string {
       ? `<details><summary>Shareware: the author’s notice</summary><pre style="white-space:pre-wrap;font:13px monospace">${escapeHtml(m.notice)}</pre></details>`
       : '',
     m.fiction ? p(`<small>${escapeHtml(m.fiction)}</small>`) : '',
+    m.audio ? p(`<small>${escapeHtml(m.audio.replace(/\s+/g, ' '))}</small>`) : '',
     p(`<small>${escapeHtml(PAGE_CAVEAT)}</small>`),
     p(
       `<small>Made with <a style="color:#9cf" href="${SITE_URL}">${escapeHtml(PRODUCT)}</a>` +
-        ` · <a style="color:#9cf" href="${REPO_URL}">source code</a></small>`,
+        ` · <a style="color:#9cf" href="${REPO_URL}">source code</a>` +
+        ` · the player is <a style="color:#9cf" href="${REPO_URL}/blob/master/LICENSE">MIT licensed</a></small>`,
     ),
     `</div>`,
   ].join('');
