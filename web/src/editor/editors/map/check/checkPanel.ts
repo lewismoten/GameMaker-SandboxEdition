@@ -5,7 +5,10 @@
 // design-preference check (CheckInfo.taste) is shown as a suggestion. A finding meant to
 // be can be marked as checked (check/accepted.ts): it leaves the list and the counts, and the
 // "accepted" toggle shows it again. The last check of this map is kept in the project's
-// companion file (editor-only), so it is there next time.
+// companion file (editor-only), so it is there next time. While the check runs, the heat map and
+// deaths fill in as the bot plays (check/live.ts), under a bar that says when it will be done.
+// Resting the pointer on a mark tells what it means (markInfo.ts); the legend lists each mark,
+// and its buttons step through them from the keyboard.
 import './checkPanel.css';
 import { h, clear, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
@@ -21,6 +24,9 @@ import { unlockAchievement } from '../../../../achievements';
 import { mazeFor } from '../../../check/generators/mazeFor';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
 import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
+import type { LiveProgress } from '../../../check/live';
+import { MLEN, MWID } from '../../../../formats/map';
+import { MARKS, describeCell, heatWords } from './markInfo';
 
 export interface CheckHost {
   project: Project;
@@ -49,6 +55,8 @@ interface Saved {
   soon: string;
   stuck: number[];
   deaths: number[];
+  /** Tries that ended in each of `deaths` (older checks didn't keep them). */
+  deathTimes?: number[];
   findings: Finding[];
   places: number;
   complete: boolean;
@@ -111,9 +119,37 @@ function writeGray(on: boolean): void {
     /* remembered for this visit only */
   }
 }
+/** The deaths kept of a run: the cells, and how many tries ended at each. */
+function deathsOf(run: RunSummary | undefined): Pick<Saved, 'deaths' | 'deathTimes'> {
+  const times = new Map<number, number>();
+  const c = run?.deathCounts ?? [];
+  for (let i = 0; i < c.length; i += 2) times.set(c[i], c[i + 1]);
+  const deaths = [...new Set([...(run?.deaths ?? []), ...times.keys()])].slice(0, 300);
+  return { deaths, deathTimes: deaths.map((d) => times.get(d) ?? 1) };
+}
 const unpack = (s: string) => Uint8Array.from(s, (c) => c.charCodeAt(0) - 48);
 
-export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean; toggle(on?: boolean): void } {
+/** Seconds, for "About 12 s left": whole seconds, or minutes and seconds past a minute. */
+export function secondsText(ms: number): string {
+  const s = Math.max(1, Math.ceil(ms / 1000));
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')} s`;
+}
+
+/** The running check's progress in words: time left (honest when it can only be the budget), places tried, and the scene. */
+export function liveText(p: Pick<LiveProgress, 'leftMs' | 'sure' | 'tried' | 'queued' | 'index' | 'total'>, sceneName?: string): string {
+  const left = `${p.sure ? 'About' : 'Up to'} ${secondsText(p.leftMs)} left`;
+  const scene = p.total > 1 ? ` · scene ${p.index + 1} of up to ${p.total}${sceneName ? ` (${sceneName})` : ''}` : '';
+  return `${left} · ${p.tried} place${p.tried === 1 ? '' : 's'} tried, ${p.queued} waiting${scene}`;
+}
+
+export function checkPanel(host: CheckHost): {
+  el: HTMLElement;
+  shown(): boolean;
+  toggle(on?: boolean): void;
+  /** What the Level check draws at a cell, as tooltip lines (none while the panel is closed): the
+   * nearest mark within `near` cells (zoomed out, a mark is a dot), and the heat at the cell. */
+  describe(cell: number, near?: number): string[];
+} {
   const { project, file } = host;
   let saved = project.extras<Saved | undefined>(file, SECTION, undefined);
   let budget = saved?.budget ?? 15;
@@ -128,21 +164,47 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
 
   const status = h('p', { class: 'meta lc-status', role: 'status', 'aria-live': 'polite' });
   const bar = h('progress', { class: 'lc-progress', max: 1, value: 0, 'aria-label': 'Level check progress', hidden: true });
+  // while a check runs this line changes every second; the status above is told only every few
+  const progressLine = h('p', { class: 'meta lc-status lc-live', hidden: true });
+  // a mark picked from the legend or the list, read out
+  const said = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
   const runBtn = h('button', { type: 'button', class: 'primary', onclick: () => (running ? stop() : void run()) }, '▶ Run check');
   const undoBtn = h('button', { type: 'button', hidden: true, onclick: () => undoFix() }, '↶ Undo fix');
   const list = h('ol', { class: 'lc-list', 'aria-label': 'Findings' });
   const acceptedBox = h('div', { class: 'lc-accepted' });
   const counts = h('div', { class: 'lc-counts', role: 'group', 'aria-label': 'Show findings' });
-  const legend = h(
+  const heatLegend = h(
     'div',
     { class: 'lc-legend' },
     h('span', { class: 'lc-legend-label' }),
     h('span', { class: 'lc-ramp', 'aria-hidden': 'true' }, ...HEAT_COLORS.map((c) => h('i', { style: `background:${c}` }))),
     h('span', { class: 'lc-legend-ends' }),
   );
+  /** A legend entry for each kind of mark: a button that shows the next one on the map. */
+  const markKinds = ['death', 'stuck', 'finding'] as const;
+  const markBtns = Object.fromEntries(
+    markKinds.map((k) => [
+      k,
+      h(
+        'button',
+        { type: 'button', class: 'lc-mark-btn', title: `Show the next ${MARKS[k].label.toLowerCase()} on the map`, onclick: () => nextMark(k) },
+        h('i', { class: `lc-sw lc-sw-${k}`, 'aria-hidden': 'true' }),
+        h('span', null),
+      ),
+    ]),
+  ) as Record<(typeof markKinds)[number], HTMLButtonElement>;
+  const focusKey = h('span', { class: 'lc-mark-key' }, h('i', { class: 'lc-sw lc-sw-focus', 'aria-hidden': 'true' }), ' Picked from the list');
+  const markLegend = h(
+    'div',
+    { class: 'lc-legend lc-marks', role: 'group', 'aria-label': 'Marks on the map' },
+    ...markKinds.map((k) => markBtns[k]),
+    focusKey,
+    h('span', { class: 'lc-legend-hint' }, 'Rest the pointer on a mark to see what it is.'),
+  );
+  const legend = h('div', { class: 'lc-legends' }, heatLegend, markLegend);
   const legendText = () => {
-    legend.querySelector('.lc-legend-label')!.textContent = soon ? 'Reached:' : 'Time spent:';
-    legend.querySelector('.lc-legend-ends')!.textContent = soon ? 'late → early' : 'a moment → a lot';
+    heatLegend.querySelector('.lc-legend-label')!.textContent = soon ? 'Reached:' : 'Time spent:';
+    heatLegend.querySelector('.lc-legend-ends')!.textContent = soon ? 'late → early' : 'a moment → a lot';
   };
   const grayToggle = toggle(
     'Gray level',
@@ -208,6 +270,8 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     ),
     bar,
     status,
+    progressLine,
+    said,
     h(
       'details',
       { class: 'lc-gen' },
@@ -243,22 +307,87 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   }
 
   let focus: number | undefined;
+  /** What the bot has found so far in the check that is running. */
+  let live: { heat: Uint32Array; first: Int32Array; deaths: Map<number, number> } | undefined;
+  /** What paint() last drew, for the tooltips: deaths (tries by cell), stuck cells, findings' titles by cell. */
+  const drawn = {
+    deaths: new Map<number, number>(),
+    stuck: new Set<number>(),
+    findings: new Map<number, string[]>(),
+    heat: undefined as Uint8Array | undefined,
+  };
+  const cursor: Record<(typeof markKinds)[number], number> = { death: -1, stuck: -1, finding: -1 };
   function paint(): void {
     const ov = host.overlay;
-    ov.heat = saved && showHeat ? unpack(soon ? saved.soon : saved.heat) : undefined;
+    ov.heat = !showHeat ? undefined : live ? heatSteps(live, soon) : saved ? unpack(soon ? saved.soon : saved.heat) : undefined;
     ov.gray = !!ov.heat && gray;
-    const marks: NonNullable<OverlayState['marks']> = [];
-    if (saved && showMarks) {
-      for (const c of saved.stuck) marks.push({ cell: c, kind: 'stuck' });
-      for (const c of saved.deaths) marks.push({ cell: c, kind: 'death' });
+    drawn.deaths = new Map();
+    drawn.stuck = new Set();
+    drawn.findings = new Map();
+    drawn.heat = ov.heat;
+    if (showMarks && live) drawn.deaths = live.deaths;
+    else if (showMarks && saved) {
+      saved.deaths.forEach((c, i) => drawn.deaths.set(c, saved?.deathTimes?.[i] ?? -1));
+      drawn.stuck = new Set(saved.stuck);
       for (const f of split().open)
-        for (const c of (f.where.cells ?? (f.where.cell !== undefined ? [f.where.cell] : [])).slice(0, 40)) marks.push({ cell: c, kind: 'finding' });
+        for (const c of (f.where.cells ?? (f.where.cell !== undefined ? [f.where.cell] : [])).slice(0, 40)) {
+          const at = drawn.findings.get(c) ?? [];
+          if (!at.includes(f.title)) at.push(f.title);
+          drawn.findings.set(c, at);
+        }
     }
+    const marks: NonNullable<OverlayState['marks']> = [];
+    for (const c of drawn.stuck) marks.push({ cell: c, kind: 'stuck' });
+    for (const c of drawn.deaths.keys()) marks.push({ cell: c, kind: 'death' });
+    for (const c of drawn.findings.keys()) marks.push({ cell: c, kind: 'finding' });
     if (focus !== undefined) marks.push({ cell: focus, kind: 'focus' });
     ov.marks = marks;
-    legend.hidden = !ov.heat;
+    heatLegend.hidden = !ov.heat;
+    const n = { death: drawn.deaths.size, stuck: drawn.stuck.size, finding: drawn.findings.size };
+    for (const k of markKinds) {
+      markBtns[k].hidden = !n[k];
+      markBtns[k].querySelector('span')!.textContent = `${MARKS[k].label} ${k === 'stuck' ? 'cells' : 'spots'}: ${n[k]}`;
+    }
+    focusKey.hidden = focus === undefined;
+    markLegend.hidden = !n.death && !n.stuck && !n.finding && focus === undefined;
+    legend.hidden = heatLegend.hidden && markLegend.hidden;
     legendText();
     host.redraw();
+  }
+
+  const marked = (c: number) => drawn.stuck.has(c) || drawn.deaths.has(c) || drawn.findings.has(c) || focus === c;
+  function describe(cell: number, near = 0): string[] {
+    if (el.hidden) return [];
+    let at = cell;
+    if (near > 0 && !marked(cell)) {
+      const cx = cell % MLEN;
+      const cy = Math.floor(cell / MLEN);
+      let best = Infinity;
+      for (let y = Math.max(0, cy - near); y <= Math.min(MWID - 1, cy + near); y++)
+        for (let x = Math.max(0, cx - near); x <= Math.min(MLEN - 1, cx + near); x++) {
+          const d = (x - cx) ** 2 + (y - cy) ** 2;
+          if (d < best && d <= near * near && marked(y * MLEN + x)) ((best = d), (at = y * MLEN + x));
+        }
+    }
+    const lines = describeCell({
+      stuck: drawn.stuck.has(at),
+      deaths: drawn.deaths.get(at) ?? 0,
+      findings: drawn.findings.get(at) ?? [],
+      focus: focus === at,
+      soon,
+    });
+    const heat = heatWords(drawn.heat?.[cell], soon);
+    return heat ? [...lines, heat] : lines;
+  }
+
+  /** Shows the next mark of a kind on the map, and reads out what it is. */
+  function nextMark(k: (typeof markKinds)[number]): void {
+    const cells = [...(k === 'death' ? drawn.deaths.keys() : k === 'stuck' ? drawn.stuck : drawn.findings.keys())].sort((a, b) => a - b);
+    if (!cells.length) return;
+    cursor[k] = (cursor[k] + 1) % cells.length;
+    const c = cells[cursor[k]];
+    host.goTo(c);
+    said.textContent = `${at(c)}: ${describe(c).join('. ')}.`;
   }
 
   /** The saved findings, those still open and those accepted as meant to be. */
@@ -347,7 +476,13 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
           class: 'lc-go',
           disabled: cell === undefined,
           title: cell === undefined ? undefined : `Show ${at(cell)} on the map`,
-          onclick: () => cell !== undefined && ((focus = cell), paint(), host.goTo(cell)),
+          onclick: () => {
+            if (cell === undefined) return;
+            focus = cell;
+            paint();
+            host.goTo(cell);
+            said.textContent = `${at(cell)}: ${describe(cell).join('. ')}.`;
+          },
         },
         h('span', { class: 'lc-sev' }, h('span', { 'aria-hidden': 'true' }, ICON[kind]), ` ${LABEL[kind]}: `),
         h('span', { class: 'lc-what' }, f.title),
@@ -426,15 +561,43 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     runBtn.textContent = '■ Stop';
     bar.hidden = false;
     bar.removeAttribute('value');
+    bar.removeAttribute('aria-valuetext');
     status.textContent = 'Starting the bot…';
-    const t0 = performance.now();
+    progressLine.hidden = true;
+    let told = performance.now();
+    let shown = 0;
     running = startCheck(
       project.files,
       { scene: host.scene, play: host.scene !== undefined, budgetMs: budget * 1000, sameEverySide: sameEverySide(project) },
-      (what) => {
-        const s = (performance.now() - t0) / 1000;
-        bar.value = Math.min(1, s / budget);
-        status.textContent = `${what} (${s.toFixed(0)} of ${budget} s)`;
+      undefined,
+      (p) => {
+        if (p.scene === host.scene) {
+          if (!live) {
+            live = { heat: new Uint32Array(MLEN * MWID), first: new Int32Array(MLEN * MWID).fill(-1), deaths: new Map() };
+            focus = undefined;
+            toggles.hidden = false;
+          }
+          for (let i = 0; i < p.cells.length; i += 3) {
+            live.heat[p.cells[i]] = p.cells[i + 1];
+            live.first[p.cells[i]] = p.cells[i + 2];
+          }
+          live.deaths = new Map();
+          for (let i = 0; i < p.deaths.length; i += 2) live.deaths.set(p.deaths[i], p.deaths[i + 1]);
+          if (!el.hidden) paint();
+        }
+        // the bar never runs backwards, even when an estimate grows
+        shown = Math.max(shown, p.fraction);
+        bar.value = shown;
+        const text = liveText(p);
+        bar.setAttribute('aria-valuetext', text);
+        progressLine.hidden = false;
+        progressLine.textContent = text;
+        status.classList.add('sr-only');
+        // the live region is told at most every five seconds
+        if (performance.now() - told >= 5000 || status.textContent === 'Starting the bot…') {
+          told = performance.now();
+          status.textContent = `Checking: ${text}`;
+        }
       },
     );
     try {
@@ -446,8 +609,12 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
       else status.textContent = 'Stopped.';
     } finally {
       running = undefined;
+      live = undefined;
       runBtn.textContent = '▶ Run check';
       bar.hidden = true;
+      progressLine.hidden = true;
+      status.classList.remove('sr-only');
+      paint();
     }
     if (saved) render();
   }
@@ -465,7 +632,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
       heat: run ? pack(heatSteps(run, false)) : '0'.repeat(10000),
       soon: run ? pack(heatSteps(run, true)) : '0'.repeat(10000),
       stuck: run?.stuck.slice(0, 2000) ?? [],
-      deaths: [...new Set(run?.deaths ?? [])].slice(0, 300),
+      ...deathsOf(run),
       findings: r.findings.filter((f) => f.where.scene === undefined || f.where.scene === host.scene).map(cells),
       places: run?.places ?? 0,
       complete: run?.complete ?? true,
@@ -478,6 +645,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   render();
   return {
     el,
+    describe,
     shown: () => !el.hidden,
     toggle(on = el.hidden) {
       el.hidden = !on;

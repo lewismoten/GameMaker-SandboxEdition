@@ -21,6 +21,8 @@
   min-height: 28px;
 }
 .lc-progress {
+  /* the panel scrolls: without this the bar shrinks to nothing */
+  flex: none;
   width: 100%;
   height: 10px;
 }
@@ -139,4 +141,48 @@
 }
 .lc-is-accepted {
   border-left-style: dashed;
+}
+/* the marks' legend: each kind drawn as on the map, a button that shows the next one */
+.lc-legends {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lc-mark-btn,
+.lc-mark-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  font-weight: normal;
+}
+.lc-legend-hint {
+  flex-basis: 100%;
+  color: var(--muted);
+}
+.lc-sw {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  background: #000;
+  border-radius: 2px;
+}
+.lc-sw-stuck {
+  border: 1px solid #ff3b1f;
+  background: repeating-linear-gradient(45deg, #000 0 2px, #ff3b1f 2px 3.5px);
+}
+.lc-sw-death {
+  background:
+    linear-gradient(45deg, transparent 42%, #fff 42% 58%, transparent 58%), linear-gradient(-45deg, transparent 42%, #fff 42% 58%, transparent 58%), #000;
+}
+.lc-sw-finding {
+  border: 2px solid #00e0ff;
+  border-radius: 50%;
+}
+.lc-sw-focus {
+  border: 2px dashed #ffd400;
+}
+.lc-live {
+  font-variant-numeric: tabular-nums;
 }
