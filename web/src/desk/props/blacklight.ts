@@ -7,10 +7,11 @@
 // off whatever the hour (remembered for the visit; by day it only glows dimly), and the felt
 // eggs on the shelf show patterns only black light brings out (eggGlow.ts). Pressed, the
 // poster's tube flickers (desk-blacklight). Once in a long while Doc Leo glances to one side
-// and smiles, for a moment, then goes back to his sad hobo look (glance prints, same script).
+// and smiles, for a moment, then goes back to his sad hobo look (glance prints, same script);
+// seen on screen, or pressed while he looks, that is desk-glance.
 import { h } from '../../editor/core/ui';
 import { watchDaylight } from '../room/daylight';
-import { flash, pressable, say, stillMotion, turns } from './propKit';
+import { achieve, flash, pressable, say, stillMotion, turns } from './propKit';
 import { roomSound } from './propSound';
 import { eggGlow } from './eggGlow';
 
@@ -80,6 +81,7 @@ export function blackLight(desk: HTMLElement): () => void {
     poster,
     'Black-light poster of Doc Leo: flicker the black light',
     () => {
+      if (glancing) achieve('desk-glance'); // pressed while he glanced aside
       roomSound.flicker();
       flash(desk, stillMotion() ? 'bl-blink' : 'bl-flicker', 1000);
       say(poster, uv ? night1() : day1());
@@ -112,6 +114,12 @@ export function blackLight(desk: HTMLElement): () => void {
   const glow = eggGlow(desk);
   // now and then he glances aside and smiles (not with reduced motion, nor in a hidden tab)
   let glanceTimer = 0;
+  let glancing = false;
+  /** The poster is on screen (the room shown, the poster not scrolled away). */
+  const inView = () => {
+    const r = poster.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth;
+  };
   const prints = [...poster.querySelectorAll<HTMLImageElement>('.bl-print')];
   const look = (side: '' | '-left' | '-right') => prints.forEach((img) => (img.src = printSrc(img.classList.contains('night') ? 'night' : 'day', side)));
   const nextGlance = () => {
@@ -120,7 +128,10 @@ export function blackLight(desk: HTMLElement): () => void {
       () => {
         if (!stillMotion() && document.visibilityState === 'visible') {
           look(Math.random() < 0.5 ? '-left' : '-right');
+          glancing = true;
+          if (inView()) achieve('desk-glance');
           glanceTimer = window.setTimeout(() => {
+            glancing = false;
             look('');
             nextGlance();
           }, GLANCE_MS);

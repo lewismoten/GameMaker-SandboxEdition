@@ -8,7 +8,7 @@
 // skips what is on its way down the line; it never brings SCROLLMASTER's turn sooner, and
 // neither does setting the desk's clock with DOS's TIME: the time offline is measured with
 // Date.now.
-import { unlockAchievement } from '../../achievements';
+import { progress, unlockAchievement } from '../../achievements';
 import { boxBottom, boxRow, boxRule, boxTop, type Term } from './term';
 import { callIn, loadState, MIN_WAIT_MS, play, rematch, saveState, stillOnline, turn, winLine, type DoorState } from './ticTacToe';
 
@@ -165,6 +165,8 @@ async function ticTacToe(t: Term, name: string): Promise<DoorExit> {
       const o = s.game.over;
       unlockAchievement('bbs-door');
       if (o === 'X') unlockAchievement('bbs-door-win');
+      const played = s.record.wins + s.record.losses + s.record.draws;
+      progress('bbs-door-three', Math.min(played, 3), 3);
       t.line(
         o === 'X'
           ? `|10Three in a row! You beat ${RIVAL}.`

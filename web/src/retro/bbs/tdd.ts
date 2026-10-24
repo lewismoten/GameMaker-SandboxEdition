@@ -12,6 +12,7 @@ import { endsTurn, GREETING, newTalk, reply } from './ttyTalk';
 import { TTY_INFO } from './ttyInfo';
 import { modemSignal, phoneLine, sleep, statusLine, type Term } from './term';
 import { baudotCall, lineSpeed, newCall, slowWait } from './lineSpeed';
+import { unlockAchievement } from '../../achievements';
 
 type Host = Pick<RetroHost, 'screen' | 'keys' | 'audio'>;
 
@@ -177,6 +178,7 @@ export async function ttyCall(t: Term, h: Host, number: string): Promise<void> {
     t.line('|08Hers: yellow. Yours: white. End a turn with |15GA|08, bye with |15SK|08. |15Esc|08: hang up.');
     t.line();
     await her(GREETING);
+    unlockAchievement('tty-call');
     t.line();
     const talk = newTalk();
     let turn = '';
@@ -201,6 +203,8 @@ export async function ttyCall(t: Term, h: Host, number: string): Promise<void> {
       await her(r.text);
       t.line();
       if (r.end) {
+        // she signed off with SK SK
+        unlockAchievement('tty-sk');
         await sleep(1500);
         t.line('|08(She hung up. TERMINAL hangs up the line.)');
         t.print('|07Press a key… ');

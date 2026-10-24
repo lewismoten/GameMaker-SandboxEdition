@@ -7,6 +7,7 @@ import type { PhoneSounds } from './sounds';
 import { deskMs } from '../../../retro/dos/deskClock';
 import { VOICES, type Voice } from '../../../audio/voices';
 import { GREETING, TTY_LOCAL } from '../../../retro/bbs/ttyTalk';
+import { achieve } from '../../props/propKit';
 
 /** What a call can do on the line; the dial pad provides it (phone.ts). */
 export interface CallLine {
@@ -75,6 +76,7 @@ const tty: Call = async (line) => {
   await ring(line, 2);
   line.status('Silence…');
   await line.wait(1.5);
+  achieve('tty-wallphone');
   for (const text of [GREETING, 'HELLO Q GA']) {
     line.status('A warble of two tones: a TTY typing');
     line.caption('TTY tones', text);

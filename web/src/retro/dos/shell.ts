@@ -6,6 +6,7 @@ import { readLine, type TextKeys } from '../text/textInput';
 import { commas, deskDate, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
 import { toCp437 } from '../text/cp437';
 import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
+import { unlockAchievement } from '../../achievements';
 
 export interface ShellHost {
   screen: TextScreen;
@@ -345,6 +346,7 @@ export class Shell {
     }
     const reset = () => {
       resetDeskClock();
+      unlockAchievement('desk-time-reset');
       this.out(`Current ${what} is ${show()}`);
       this.out('(the real local time)');
     };

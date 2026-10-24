@@ -117,7 +117,7 @@ export function roomLight(desk: HTMLElement): () => void {
         },
       );
     },
-    { title: '' },
+    { id: 'desk-light', title: '' },
   );
   plate.setAttribute('role', 'switch'); // (pressable makes it a button first)
   const stop = watchDaylight((l) => {
