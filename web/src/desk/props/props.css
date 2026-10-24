@@ -736,12 +736,13 @@
     display: none;
   }
 
-  /* a cream switch plate on the wall just right of the phone (deskStage.css: 1350, 168) */
+  /* a cream switch plate on the wall just right of the phone (deskStage.css: 1350, 168), at
+     about the height of its keypad, above the notes taped under it (phoneNotes.css: top 340) */
   .desk-scene > .light-switch {
     display: block;
     position: absolute;
     left: 1411px;
-    top: 196px;
+    top: 280px;
     z-index: 0;
     width: 26px;
     height: 42px;

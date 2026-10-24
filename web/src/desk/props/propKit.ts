@@ -86,8 +86,9 @@ export function say(anchor: Element, text: string, extra?: Node, opts: { beside?
   const w = b.offsetWidth;
   const ht = b.offsetHeight;
   const gutter = 16;
-  if (opts.beside) {
-    // to the right of it, level with it, its tail pointing back (clear of what is below it)
+  if (opts.beside && r.right + 14 + w <= innerWidth - gutter) {
+    // to the right of it, level with it, its tail pointing back (clear of what is below it);
+    // with no room on the right (the light switch, near the browser window's right edge), above or below it as usual
     b.style.left = `${Math.min(innerWidth - gutter - w, r.right + 14)}px`;
     b.style.top = `${Math.max(gutter, Math.min(innerHeight - ht - gutter, r.top + r.height / 2 - ht / 2))}px`;
     b.classList.add('beside');
