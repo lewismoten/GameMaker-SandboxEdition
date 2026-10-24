@@ -67,17 +67,17 @@
   },
   "sameEverySide": [
     "clown.mon#2",
-    "clown.mon#5",
     "clown.mon#6",
     "clown.mon#7",
     "clown.mon#8",
-    "lab.mon#6",
-    "lab.mon#8",
+    "clown.mon#9",
+    "lab.mon#7",
     "lab.mon#9",
-    "docks.mon#4",
+    "lab.mon#10",
     "docks.mon#5",
-    "docks.mon#7",
+    "docks.mon#6",
     "docks.mon#8",
+    "docks.mon#9",
     "yard.mon#3",
     "yard.mon#4",
     "yard.mon#5",
@@ -92,9 +92,9 @@
     "other.mon#1",
     "other.mon#2",
     "other.mon#3",
-    "other.mon#7",
-    "future.mon#4",
+    "other.mon#8",
     "future.mon#5",
-    "future.mon#6"
+    "future.mon#6",
+    "future.mon#7"
   ]
 }

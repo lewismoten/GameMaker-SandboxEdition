@@ -87,9 +87,13 @@ export class Area {
    * Somebody walking a loop that goes up and down the map as well as across: a chain of
    * monsters, one per move, each drawn the way it goes (its back going up, its front coming
    * down, its side across: drawn facing right, mirrored going left). Each walks its move, dies
-   * at its end and becomes the next; the last becomes the first, at the start again. Only for
-   * folk Joe can't beat (he has nothing to beat them with), since a beaten one would become
-   * the next as well. The first link is `name`, which the map places.
+   * at its end and becomes the next. Only for folk Joe can't beat (he has nothing to beat
+   * them with), since a beaten one would become the next as well.
+   *
+   * PLAYGAME's MonEndPath goes on with the old monster's march after the change (the new one
+   * walks the move before it, then dies on its own empty path), so link k shows move k's
+   * pictures but holds move k+1's march. `name`, which the map places, holds a move of no
+   * length and becomes the last link, whose march is the first move.
    */
   walker(
     name: string,
@@ -101,12 +105,18 @@ export class Area {
     const front = this.frames(name, views.front, def);
     const back = this.frames(`${name}^`, views.back, def);
     const side = views.side && this.frames(`${name}>`, views.side, def);
-    const link = (k: number) => (k ? `${name}~${k}` : name);
-    path.forEach(([dx, dy, speed], k) => {
-      const pics = dy < 0 ? back : dy > 0 ? front : side;
-      if (!pics) throw new Error(`${name}: walks across with no side view`);
-      const orient = dy === 0 && dx < 0 ? MIRRORED : 0;
-      this.mons.add(link(k), { pics, power: 150, ...rest, end: -1, path: [[dx, dy, speed, orient]], becomes: link((k + 1) % path.length) });
+    const n = path.length;
+    const pics = (move: [number, number, number, number?]) => {
+      const dy = move[1];
+      const p = dy < 0 ? back : dy > 0 ? front : side;
+      if (!p) throw new Error(`${name}: walks across with no side view`);
+      return p;
+    };
+    const march = ([dx, dy, speed]: [number, number, number, number?]): [number, number, number, number] => [dx, dy, speed, dy === 0 && dx < 0 ? MIRRORED : 0];
+    const link = (k: number) => `${name}~${k}`;
+    this.mons.add(name, { pics: pics(path[n - 1]), power: 150, ...rest, end: -1, path: [[0, 0, 1]], becomes: link(n - 1) });
+    path.forEach((move, k) => {
+      this.mons.add(link(k), { pics: pics(move), power: 150, ...rest, end: -1, path: [march(path[(k + 1) % n])], becomes: link((k + 1) % n) });
     });
     void hazard;
     return name;
