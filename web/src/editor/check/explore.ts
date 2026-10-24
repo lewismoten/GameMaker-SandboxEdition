@@ -33,6 +33,8 @@ export interface ExploreOptions {
   goal?: number[];
   /** Stop as soon as a link this accepts is taken (a bot after the next scene). */
   stopAt?: (link: number, toScene: number) => boolean;
+  /** Start partway through the scene: a snapshot of this scene from the same entry. */
+  start?: Snap;
 }
 
 /** Where the hero comes into the scene, and with what. */
@@ -68,6 +70,8 @@ export interface Place {
   exits: number[];
   /** The move that brought the hero here fell more than two blocks. */
   dropIn?: number;
+  /** What the hero has gathered by here: things carried, counters and score (a bot that collects). */
+  worth: number;
 }
 
 export interface ExitReach {
@@ -143,6 +147,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const sim = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev);
   // monsters a screen and a half away hold still (sim.ts freezeBeyond)
   sim.freezeBeyond = opt.exact ? { x: 0, y: 0 } : { x: 24, y: 15 };
+  if (opt.start) sim.restore(opt.start);
   const w = sim.w;
   const bg = w.bg;
   const gravity = bg.some((b) => b.grav !== 0);
@@ -254,6 +259,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       done: false,
       tick: w.clock - startClock,
       hp: w.ci.hitpts,
+      worth: worthOf(w.ci),
       snap: sim.snapshot(),
       out: [],
       exits: [],
@@ -506,4 +512,11 @@ class PlaceHeap {
     }
     return top;
   }
+}
+
+/** Things carried count most, then counters (money and the ten special ones), then score. */
+export function worthOf(ci: CharInfo): number {
+  let counters = 0;
+  for (let i = 20; i < 30; i++) counters += Math.max(0, ci.meter[i] ?? 0);
+  return ci.inv.filter((b) => b < BACKBL).length * 1e6 + (counters + Math.max(0, ci.meter[3] ?? 0)) * 1e3 + ci.score;
 }
