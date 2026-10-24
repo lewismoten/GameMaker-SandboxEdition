@@ -13,7 +13,7 @@ import { AudioMix } from '../../media/audioTap';
 import { unlockAchievement } from '../../achievements';
 
 /** What a recording keeps: everything (graphics letterboxed into 720x400) or one mode. */
-export type RecordMode = 'all' | 'graphics' | 'text';
+type RecordMode = 'all' | 'graphics' | 'text';
 
 type Source = { kind: 'text' } | { kind: 'vga'; draw: (c: HTMLCanvasElement) => void } | { kind: 'none' };
 

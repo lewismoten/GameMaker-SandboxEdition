@@ -23,7 +23,7 @@ import { mailtruck } from './mailtruck';
 
 const EVENTS: OutsideEvent[] = [plow, sleds, dogs, chez, goat, chicken, star, aurora];
 const ALL = [...EVENTS, mailtruck];
-export const WINDOW_EVENT = 'gm-window-event';
+const WINDOW_EVENT = 'gm-window-event';
 
 export function outsideWindow(win: HTMLElement, pc: { gamePlaying(): boolean }): () => void {
   const layer = win.querySelector<HTMLElement>('.sw-hits');

@@ -4,8 +4,8 @@
 // hold its boxes with one of them face out.
 
 /** Pixels between the boxes (shelf.css: the gap), and a face-out box's margins. */
-export const GAP_PX = 2;
-export const FACE_MARGIN_PX = 6;
+const GAP_PX = 2;
+const FACE_MARGIN_PX = 6;
 /** Inches: a spine's width, and a face-out box's. */
 const SPINE_IN = 2;
 const FACE_IN = 7.5;
@@ -19,7 +19,7 @@ export function shelfHolds(width: number, u: number): number {
   return rest < 0 ? 0 : 1 + Math.floor((rest + GAP_PX) / (SPINE_IN * u + GAP_PX));
 }
 
-export interface ShelfLayout {
+interface ShelfLayout {
   /** Pixels to the inch. */
   u: number;
   /** How many boxes stand on each shelf, top shelf first; the boxes go on in order. */

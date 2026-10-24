@@ -123,7 +123,7 @@ export const FRAMES: Record<JoeFrame, string[]> = {
   ],
 };
 
-export interface JoeLook {
+interface JoeLook {
   frame: JoeFrame;
   /** Side frames face left; mirrored, he faces right. */
   mirror?: boolean;

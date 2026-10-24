@@ -45,7 +45,7 @@ const RISE = 2.6;
 const BAND_END = 6.9;
 
 /** How far up the stripes have stepped at x (0 along the front, RISE over the rear quarter). */
-export function stripeStep(x: number): number {
+function stripeStep(x: number): number {
   const [a, b] = KINK;
   if (x >= b) return 0;
   if (x <= a) return RISE;

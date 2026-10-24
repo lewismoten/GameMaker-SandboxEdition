@@ -99,7 +99,7 @@ export function boxAward(id: string, extras: BoxExtras): { title: string; from: 
   return { title: 'Shareware Pick of the Month', from: MAGAZINES[Math.floor(r() * MAGAZINES.length)] };
 }
 
-export interface BackPlan {
+interface BackPlan {
   bodyPx: number;
   features: number;
   reviews: number;

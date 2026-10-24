@@ -19,7 +19,7 @@ const aspect = (id: MugDesignId | '') => {
 };
 
 /** The page's layout for a setup. */
-export function planPage(setup: PageSetup): PageLayout {
+function planPage(setup: PageSetup): PageLayout {
   const paper = PAPERS.find((p) => p.id === setup.paper) ?? PAPERS[0];
   const mugs: StripInput[] = setup.mugs.map((m) => ({
     size: sizeOf(m.size),

@@ -12,7 +12,7 @@ export function boxModel(faces: BoxFaces): HTMLElement {
   return h('div', { class: 'box3d' }, face('front'), face('back'), face('left'), face('right'), face('top'), face('bottom'));
 }
 
-export interface BoxViewerActions {
+interface BoxViewerActions {
   manual?: () => void;
   insert?: () => void;
   /** What the insert button says (the disk by default). */

@@ -15,7 +15,7 @@ import { LINES, revealSounds, SCENE_SECONDS, sceneAt, seenReveal, setSeenReveal 
 type Art = typeof import('../eggs/bonusArt');
 
 /** The riveted tin stand and its brass plate, `w` wide, its foot on `baseY`, centered on `cx`. */
-export function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number, w: number, allAlong = false): { top: number } {
+function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number, w: number, allAlong = false): { top: number } {
   const hgt = w * 0.42;
   const top = baseY - hgt;
   const x0 = cx - w / 2;
@@ -115,7 +115,7 @@ export const joeNote = (n: number): string =>
   `${countWord(n)} tin hearts, counted twice on my tally counter, and every one of them ticking. The Tin Man walked all the way to Oz for a heart and found he had been kind the whole way there. You went looking in every corner of every game, which is much the same thing. Here is the one I borrowed. Keep it where it can catch the light.`;
 
 /** What the trophy view says happened, once the scene has played. */
-export const ALL_ALONG =
+const ALL_ALONG =
   'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG.';
 
 /**

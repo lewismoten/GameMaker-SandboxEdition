@@ -34,7 +34,7 @@ function soundLine(g: CatalogEntry): string {
   return 'VGA · PC speaker sound';
 }
 
-export interface CatalogActions {
+interface CatalogActions {
   callBbs(): void;
   downloaded(id: string): boolean;
 }

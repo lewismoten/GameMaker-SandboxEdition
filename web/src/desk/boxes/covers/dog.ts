@@ -3,7 +3,7 @@
 // a lean liver-brown pit-lab mix with floppy ears, amber eyes and a pink collar.
 import { type Ctx, blob, ell, fill, lin, poly, rad, stroke } from './paint';
 
-export interface DogLook {
+interface DogLook {
   coat: [string, string, string]; // highlight, body, shadow
   ears: 'up' | 'flop';
   legs: number; // leg length

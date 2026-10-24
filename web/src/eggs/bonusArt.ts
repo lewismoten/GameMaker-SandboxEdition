@@ -742,7 +742,7 @@ function hsl(h: number, s: number, l: number): [number, number, number] {
 let pastry: Shell | undefined;
 
 /** The pastry egg's covering: rose glaze, white piping, gold leaf and a baked foot. */
-export function pastryShell(): Shell {
+function pastryShell(): Shell {
   if (pastry) return pastry;
   const layers = { color: canvas(TEX_W, TEX_H), height: canvas(TEX_W, TEX_H), metal: canvas(TEX_W, TEX_H) };
   const C = layers.color.getContext('2d')!;
@@ -961,7 +961,7 @@ function sugarThreads() {
  * The spun-sugar holder round an egg in `box`: `part` 'back' is drawn before the egg, 'front'
  * after it. It turns with the egg.
  */
-export function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: number, part: 'back' | 'front'): void {
+function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: number, part: 'back' | 'front'): void {
   const n = sugarThreads();
   const cx = box.x + box.w / 2;
   const cupY = box.y + box.h * 0.82;
@@ -1025,7 +1025,7 @@ export function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: numbe
  * The clockwork baker standing on a gold disc at (x, y) (the egg's crown), `s` tall,
  * turned `a` radians (0 faces you).
  */
-export function drawBaker(g: CanvasRenderingContext2D, x: number, y: number, s: number, a: number): void {
+function drawBaker(g: CanvasRenderingContext2D, x: number, y: number, s: number, a: number): void {
   const sa = Math.sin(a);
   const ca = Math.cos(a);
   // a point on the figure: `side` along its shoulders, `fwd` the way it faces

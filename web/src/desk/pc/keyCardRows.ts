@@ -6,7 +6,7 @@
 import type { GameKeyMap } from '../../editor/keymap/keyMap';
 import { isMac, macShort } from '../../input/macKeys';
 
-export interface CardRow {
+interface CardRow {
   keys: string[];
   does: string;
 }
@@ -14,7 +14,7 @@ export interface CardRow {
 type Binding = GameKeyMap['keys'][number];
 
 /** What a key does, in a few words: the first ways it is used, plus "…" when levels differ. */
-export function keyDoes(k: Binding, max = 2): string {
+function keyDoes(k: Binding, max = 2): string {
   const titles = [...new Set(k.uses.map((u) => u.action.title))];
   return titles.length > max ? `${titles.slice(0, max).join(' / ')} …` : titles.join(' / ');
 }

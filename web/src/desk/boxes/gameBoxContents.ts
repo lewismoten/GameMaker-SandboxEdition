@@ -20,7 +20,7 @@ let disks: Promise<Disk[]> | undefined;
 // a secret game revealed or hidden again: its disks come or go
 if (typeof window !== 'undefined') window.addEventListener(CATALOG_CHANGED, () => (disks = undefined));
 
-export interface BoxContentsHooks {
+interface BoxContentsHooks {
   /** Put disk 1 in drive A: (and play). */
   insert: () => void;
   /** The manual and everything else in the box (manual/gameManual.ts). */

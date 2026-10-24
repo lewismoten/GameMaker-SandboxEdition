@@ -8,7 +8,7 @@ import { audioContext } from '../audio/context';
 import { output } from '../audio/output';
 import type { JoeFrame } from './joeArt';
 
-export const SEEN_KEY = 'gm-heart-reveal';
+const SEEN_KEY = 'gm-heart-reveal';
 /** How long the scene runs, in seconds. */
 export const SCENE_SECONDS = 7;
 
@@ -19,7 +19,7 @@ export const LINES: readonly { at: number; text: string }[] = [
 ];
 
 /** Everything the scene's picture needs at time `t` (past the end: its last picture). */
-export interface ScenePose {
+interface ScenePose {
   /** Joe's feet, 0 off the left edge .. 1 at his place beside the stand. */
   walk: number;
   frame: JoeFrame;

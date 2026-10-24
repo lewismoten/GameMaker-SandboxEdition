@@ -92,7 +92,7 @@ async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promi
 }
 
 /** Everything a box says about its game beyond its art and copy. */
-export async function boxInfo(entry: CatalogEntry) {
+async function boxInfo(entry: CatalogEntry) {
   const box = entry.original!.box! as Box;
   const { levels } = await gameFacts(entry, box);
   return {

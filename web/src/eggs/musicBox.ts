@@ -24,7 +24,7 @@ const LOOP = TUNE.length + 8;
 
 const MUTE_KEY = 'gm-musicbox';
 
-export function musicBoxMuted(): boolean {
+function musicBoxMuted(): boolean {
   try {
     return localStorage.getItem(MUTE_KEY) === 'off';
   } catch {
@@ -41,7 +41,7 @@ function rememberMuted(off: boolean): void {
   }
 }
 
-export interface MusicBox {
+interface MusicBox {
   /** Starts (or carries on) playing, unless muted. */
   play: () => void;
   stop: () => void;

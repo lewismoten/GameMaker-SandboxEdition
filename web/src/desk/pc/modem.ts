@@ -15,7 +15,7 @@ type Light = (typeof LIGHTS)[number];
 /** How long the hint stays up. */
 const HINT_MS = 14_000;
 
-export interface DeskModem {
+interface DeskModem {
   el: HTMLElement;
   /** MR: the modem has power (follows the PC). */
   power(on: boolean): void;

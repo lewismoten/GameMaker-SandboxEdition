@@ -23,7 +23,7 @@ const KEYS: [string, string][] = [
 ];
 
 /** 5550148 → 555-0148; 18005550142 → 1-800-555-0142 (as far as it's been dialed). */
-export function formatNumber(d: string): string {
+function formatNumber(d: string): string {
   const local = (s: string) => (s.length > 3 ? `${s.slice(0, 3)}-${s.slice(3)}` : s);
   if (d.startsWith('911')) return d;
   if (d.startsWith('1')) return ['1', d.slice(1, 4), local(d.slice(4))].filter(Boolean).join('-');

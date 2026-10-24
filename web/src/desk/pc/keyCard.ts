@@ -9,7 +9,7 @@ import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../../editor/keymap/ke
 import { cardRows } from './keyCardRows';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
 
-export interface PlayingGame {
+interface PlayingGame {
   files: GameFiles;
   gam: string;
   title: string;
@@ -29,7 +29,7 @@ const keyLines = (keys: string[], room: number) => Math.max(1, Math.ceil(keys.re
  * An index card with the keys written out, for games without a printed one. `compact` is the
  * small card taped to the monitor: fewer, larger lines, so it reads at a glance.
  */
-export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
+function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
   const rows = cardRows(km.keys, compact);
   const joy = km.joystick.length > 0;
   const always = GLOBAL_KEYS.filter((g) => g.scan <= 64);

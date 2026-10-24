@@ -11,7 +11,7 @@ import type { EggDetect } from './eggs';
 import { EGGS_CHANGED, readOverrides, savesHold, statusOf, type EggStatus, type Override } from './eggState';
 import { loadSaveData } from '../project/storage';
 
-export interface BonusEgg {
+interface BonusEgg {
   game: string;
   id: 'rotten' | 'faberge';
   gameTitle: string;

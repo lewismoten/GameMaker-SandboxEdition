@@ -53,7 +53,7 @@ const lazy = {
   gmBox: () => import('./boxes/gmBox'),
   shelf: () => import('./boxes/shelf'),
 };
-export interface DeskNav {
+interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
   toModern(projectId?: string, file?: string): void;
   /** Leave for today's web interface at an address (#/game/cd:<id>), from the view switch. */

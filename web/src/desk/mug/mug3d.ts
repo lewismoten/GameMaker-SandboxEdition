@@ -67,7 +67,7 @@ export const MUG_COLORS: { id: string; name: string; colors: MugColors }[] = [
   { id: 'yellow', name: 'Yellow inside', colors: { body: '#f7f5ee', accent: '#f2c200' } },
 ];
 
-export interface MugView {
+interface MugView {
   texture: HTMLCanvasElement;
   size: MugSize;
   colors: MugColors;

@@ -16,7 +16,7 @@ export interface BlasterPc {
 }
 
 /** How long the note stays up (ms) unless the pointer or focus is on it. */
-export const NOTE_MS = 6000;
+const NOTE_MS = 6000;
 
 export function blasterSwitch(pc?: BlasterPc): HTMLElement {
   const el = h(

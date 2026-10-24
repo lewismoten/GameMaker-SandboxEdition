@@ -10,7 +10,7 @@ import { drawBox, type BoxFaces } from './gameBox';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 import { shelfLayout } from './shelfLayout';
 
-export interface ShelfHooks {
+interface ShelfHooks {
   /** Put the game's disk in drive A:. */
   insert: (id: string) => void;
   /** Open the game's manual (only for games that have one). */

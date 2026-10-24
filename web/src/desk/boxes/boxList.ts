@@ -29,7 +29,7 @@ export function showInBox(open: () => void, id: string): void {
   setTimeout(() => watch.disconnect(), 30_000);
 }
 
-export interface BoxListOptions {
+interface BoxListOptions {
   /** The landmark's name, e.g. "What’s in the Game-Maker box". */
   label: string;
   /** The pieces to list (the ones laid out beside the box already left out). */
