@@ -1,5 +1,6 @@
-// "Generate accompaniment…": pick the track whose tune stays and a style, and the generator
-// (arrange/accompany.ts) writes bass, chords and drums on the other tracks. Hear it, ask for
+// "Generate accompaniment…": pick the track whose tune stays, any others to keep as they are,
+// and a style, and the generator (arrange/accompany.ts) writes bass, chords and drums on the
+// tracks left. Hear it, ask for
 // another take (a new seed), and use it: the song changes in one step that Ctrl+Z undoes.
 import { h, clear, modal } from '../../core/ui';
 import { audio } from '../../widgets/mediaShared';
@@ -49,6 +50,47 @@ export function styleSelect(value: StyleId): HTMLSelectElement {
   return h('select', null, ...STYLES.map((s) => h('option', { value: s.id, selected: s.id === value, title: s.about }, s.name)));
 }
 
+/**
+ * Checkboxes for the tracks with notes, to keep as they are (the tune's own is left out).
+ * `ticked` says which are ticked; `refresh` redraws them for another tune.
+ */
+function keepPicker(doc: MusicDoc, onChange: () => void) {
+  const ticked = new Set<number>();
+  const list = h('div', { class: 'mus-acc-keep-list' });
+  const box = h(
+    'fieldset',
+    { class: 'mus-acc-keep' },
+    h('legend', null, 'Keep these tracks as they are'),
+    h(
+      'p',
+      { class: 'hint', id: 'mus-acc-keep-hint' },
+      'The band goes only on the tracks left: 6 melody tracks (1–6) and 5 drums (12–16), the tune and each kept track taking one.',
+    ),
+    list,
+  );
+  const refresh = (tune: number) => {
+    ticked.delete(tune);
+    const drum = (c: number) => doc.rhythm && c >= 11;
+    clear(
+      list,
+      ...doc
+        .tracks()
+        .filter((c) => c !== tune && channelNotes(doc.song, c).length)
+        .map((c) => {
+          const cb = h('input', { type: 'checkbox', checked: ticked.has(c), 'aria-describedby': 'mus-acc-keep-hint' });
+          cb.addEventListener('change', () => {
+            if (cb.checked) ticked.add(c);
+            else ticked.delete(c);
+            onChange();
+          });
+          return h('label', { class: 'check' }, cb, h('span', null, `${c + 1}: ${doc.trackName(c)}${drum(c) ? ' (drum)' : ''}`));
+        }),
+    );
+    box.hidden = !list.childElementCount;
+  };
+  return { box, ticked, refresh };
+}
+
 /** Plays a song from the start in the editor's OPL2 (the doc's own playback stopped). */
 export async function hearSong(doc: MusicDoc, song: CmfSong): Promise<boolean> {
   doc.stop();
@@ -75,7 +117,8 @@ export function describeTake(doc: MusicDoc, r: Accompaniment): HTMLElement {
       ` · ${r.style.name}, ${bar} beats a bar · ${doc.seconds(r.song.end.tick)} (${Math.round(r.song.end.tick / beat / bar)} bars)`,
     ),
     h('p', { class: 'mus-acc-chords', 'aria-label': 'Chords by bar' }, chords.join('  ')),
-    h('ul', { class: 'mus-acc-parts' }, ...r.parts.map((p) => h('li', null, `${p.ch >= 11 ? 'Tracks 12–16' : `Track ${p.ch + 1}`}: ${p.what}`))),
+    h('ul', { class: 'mus-acc-parts' }, ...r.parts.map((p) => h('li', null, `${p.tracks}: ${p.what}`))),
+    r.short.length ? h('ul', { class: 'mus-acc-short', 'aria-label': 'Not enough free tracks' }, ...r.short.map((t) => h('li', null, t))) : null,
     h('p', { class: 'hint' }, `Home note ${pitchName(r.key.tonic)}. Chords are the key's own, heard from the tune's longest and strongest notes.`),
   );
 }
@@ -95,6 +138,7 @@ export async function accompanyDialog(doc: MusicDoc): Promise<void> {
   const style = styleSelect(lastStyle);
   const about = h('p', { class: 'hint' });
   const result = h('div', { class: 'mus-acc-result', 'aria-live': 'polite' });
+  const keep = keepPicker(doc, () => make());
   const hear = h('button', { type: 'button' }, '▶ Hear it');
   const again = h('button', { type: 'button', title: 'Another take: different bass, chords, rhythm and sounds' }, '🎲 Another take');
   const use = h('button', { type: 'submit', class: 'primary' }, 'Use it');
@@ -108,7 +152,7 @@ export async function accompanyDialog(doc: MusicDoc): Promise<void> {
     const s = STYLES.find((x) => x.id === style.value)!;
     about.textContent = s.about;
     try {
-      take = accompany(doc.song, { melody: Number(track.value), style: s.id, seed });
+      take = accompany(doc.song, { melody: Number(track.value), style: s.id, seed, keep: [...keep.ticked] });
       clear(result, describeTake(doc, take));
       use.disabled = false;
     } catch (e) {
@@ -117,7 +161,11 @@ export async function accompanyDialog(doc: MusicDoc): Promise<void> {
       use.disabled = true;
     }
   };
-  track.addEventListener('change', make);
+  track.addEventListener('change', () => {
+    keep.refresh(Number(track.value));
+    make();
+  });
+  keep.refresh(Number(track.value));
   style.addEventListener('change', () => {
     lastStyle = style.value as StyleId;
     make();
@@ -147,7 +195,7 @@ export async function accompanyDialog(doc: MusicDoc): Promise<void> {
       h(
         'p',
         { class: 'hint' },
-        'Keeps one track’s tune and writes bass, chords and drums on the others, in the drum kit’s 6 melody tracks and 5 drums. The other tracks are replaced; Ctrl+Z brings them back.',
+        'Keeps one track’s tune, and any tracks you tick below, and writes bass, chords and drums on the others, in the drum kit’s 6 melody tracks and 5 drums. Tracks not kept are replaced; Ctrl+Z brings them back.',
       ),
       h(
         'div',
@@ -156,6 +204,7 @@ export async function accompanyDialog(doc: MusicDoc): Promise<void> {
         h('label', { class: 'field' }, h('span', null, 'Style'), style),
       ),
       about,
+      keep.box,
       result,
       h('div', { class: 'buttons' }, hear, again, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), use),
     ),
