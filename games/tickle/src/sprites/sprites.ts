@@ -1,6 +1,6 @@
-// TICKLE.CBL and TICKLE.MBL: Doc Leo (Lewis Moten's hobo clown: a chewed-up dark fedora, a red
-// nose, white mouth and eye patches, a stubble "ash beard", a purple shirt and a green tie, red
-// sneakers; for the occasion, a lab coat over it all), two blocks tall; and everything that moves:
+// TICKLE.CBL and TICKLE.MBL: Doc Leo (Lewis Moten's hobo clown: a chewed-up dark fedora, white
+// mouth and eye patches, his own nose sunburned pink, painted stubble, a purple shirt and a green
+// tie, red sneakers; for the occasion, a lab coat over it all), two blocks tall; and everything that moves:
 // his hands pinning and his fingers tickling, the rats (white lab rats and the city's agouti wild
 // rats: wary, tense, pinned on their backs, giggling, scampering off to the laughing carpet), the
 // night janitor's floor buffer, Dean Dour of the Board of Serious Science, a sewer alligator,
@@ -185,8 +185,8 @@ export function leoArt(pal: Pal) {
         else p.set(ex, hy + 3, ink);
         p.rect(ex - 1, hy + 1, 2, 1, ink);
       }
-      // the red nose
-      p.disc(side ? fx + 4 : fx + 0.5, hy + 5, 1.3, c('nose', 1)).set(side ? fx + 4 : fx, hy + 4, c('nose', 2));
+      // his own nose, sunburned pink
+      p.disc(side ? fx + 4 : fx + 0.5, hy + 5, 1.3, c('pink', 1)).set(side ? fx + 4 : fx, hy + 4, c('pink', 2));
     }
     // ---- the fedora: chewed brim, dented crown, a few pins on the band
     if (!o.hatless) {

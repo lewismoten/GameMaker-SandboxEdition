@@ -1,7 +1,7 @@
 // The colors: one set of named ramps shared by every block and sprite, and a palette per place.
 // The block art never changes between levels; the .PAL does: the warm lamplight of the night
 // classroom where the course is taken, the cold fluorescent lab, the green dark of the sewers
-// and the storm round the tower. Doc Leo's red nose and sneakers, the rats' pink ears, the
+// and the storm round the tower. Doc Leo's red sneakers and sunburned nose, the rats' pink ears, the
 // Tesla coils' sparks, the glowing flasks and the gold of the certificate keep their own light.
 import { PaletteBuilder } from '../../../kit/palette';
 
