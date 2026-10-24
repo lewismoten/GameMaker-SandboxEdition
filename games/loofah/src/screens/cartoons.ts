@@ -130,7 +130,7 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
     if (sub) {
       outlined(p, 160 - textWidth('BUT LEAVE MY SOUL') / 2, drop + 46, 'BUT LEAVE MY SOUL', 2, 3);
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
@@ -165,9 +165,9 @@ export function storyFli(cast: Cast): Uint8Array {
     steam(p, pal, k);
     if (k >= 4) {
       // her voice, from the doorway
-      p.rect(212, 76, 104, 30, c('white', 2)).frame(212, 76, 104, 30, c('ink', 0)).line(214, 106, 206, 116, c('ink', 0));
-      outlined(p, 216, 80, "DON'T TOUCH", c('pink', 3), c('ink', 0));
-      outlined(p, 216, 92, 'THE PINK ONE!', c('pink', 3), c('ink', 0));
+      p.rect(200, 76, 116, 30, c('white', 2)).frame(200, 76, 116, 30, c('ink', 0)).line(214, 106, 206, 116, c('ink', 0));
+      outlined(p, 206, 80, "DON'T TOUCH", c('pink', 3), c('ink', 0));
+      outlined(p, 206, 92, 'THE PINK ONE!', c('pink', 3), c('ink', 0));
     }
     caption(p, pal, k < 14 ? ['She said, "Don\'t touch the', 'pink one. It\'s mine!"'] : ['There it hung, innocent,', 'smug on the silver rack.']);
   };

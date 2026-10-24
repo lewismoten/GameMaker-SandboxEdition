@@ -67,8 +67,10 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
   // ---------------- menu: the bathroom, a board for the menu, the man and the smug sponge on its rack beside it
   {
     const p = bathroomBackdrop(pal, 5);
-    outlined(p, 160 - textWidth('CLEANSE ME, O LOOFAH', 2) / 2, 12, 'CLEANSE ME, O LOOFAH', c('coral', 4), ink, 2, c('demon', 0));
-    outlined(p, 160 - textWidth('BUT LEAVE MY SOUL') / 2, 32, 'BUT LEAVE MY SOUL', c('fog', 2), ink);
+    // the title on two lines: on one, at double size, it filled the screen edge to edge
+    outlined(p, 160 - textWidth('CLEANSE ME,', 2) / 2, 6, 'CLEANSE ME,', c('coral', 4), ink, 2, c('demon', 0));
+    outlined(p, 160 - textWidth('O LOOFAH', 2) / 2, 26, 'O LOOFAH', c('coral', 4), ink, 2, c('demon', 0));
+    outlined(p, 160 - textWidth('BUT LEAVE MY SOUL') / 2, 48, 'BUT LEAVE MY SOUL', c('fog', 2), ink);
     p.rect(56, 92, 208, 90, c('wood', 0)).rect(58, 94, 204, 86, c('parch', 1));
     p.rect(62, 98, 196, 78, c('parch', 4)).frame(62, 98, 196, 78, c('parch', 2));
     scaleBlit(p, x.man.get('sing0')!, 8, 112, 2);
