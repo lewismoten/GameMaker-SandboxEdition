@@ -82,6 +82,9 @@
 .lc-warning {
   border-left-color: #c77700;
 }
+.lc-suggestion {
+  border-left-color: var(--accent);
+}
 .lc-go {
   display: block;
   width: 100%;

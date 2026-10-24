@@ -5,7 +5,7 @@
 import { h, clear, debounce } from '../core/ui';
 import type { Project } from '../core/project';
 import { normalize } from '../../project/files';
-import { CHECKS, type Finding } from '../check/findings';
+import { CHECKS, kindOf, type Finding, type Kind } from '../check/findings';
 import { scenesOf } from '../check/sceneData';
 import { blockChecks, counterSources, counters } from '../check/checks/blockChecks';
 import { monsterChecks } from '../check/checks/monsterChecks';
@@ -13,6 +13,8 @@ import { soundChecks } from '../check/checks/gameChecks';
 import { guideLink } from './guideLink';
 import { acceptedFindings, openFindings } from '../check/accepted';
 import './checkBadges.css';
+
+const BADGE_ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
 
 /** The file checks' findings for the scenes that use `file`. */
 export function fileFindings(project: Project, file: string): Finding[] {
@@ -46,8 +48,8 @@ export function checkBadges(project: Project, file: string, about: (f: Finding) 
       ...list.map((f) =>
         h(
           'p',
-          { class: `check-badge check-${f.severity}` },
-          h('strong', null, f.severity === 'info' ? 'ℹ ' : '⚠ ', f.title, '. '),
+          { class: `check-badge check-${kindOf(f)}` },
+          h('strong', null, h('span', { 'aria-hidden': 'true' }, BADGE_ICON[kindOf(f)]), kindOf(f) === 'suggestion' ? ' Suggestion: ' : ' ', f.title, '. '),
           CHECKS[f.check].why,
           ' ',
           guideLink(CHECKS[f.check].guide),

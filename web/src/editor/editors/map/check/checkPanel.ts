@@ -1,7 +1,8 @@
 // The map editor's Level check panel: runs the level check (editor/check) on this map's scene
 // in a Web Worker, shows where the bot went as a heat map over the map, marks stuck areas,
 // deaths and each finding's cells, and lists the findings: a click goes to the place, a link
-// opens the guide's chapter, and a fix button offers the matching generator. A finding meant to
+// opens the guide's chapter, and a fix button offers the matching generator. A warning from a
+// design-preference check (CheckInfo.taste) is shown as a suggestion. A finding meant to
 // be can be marked as checked (check/accepted.ts): it leaves the list and the counts, and the
 // "accepted" toggle shows it again. The last check of this map is kept in the project's
 // companion file (editor-only), so it is there next time.
@@ -11,7 +12,7 @@ import type { Project } from '../../../core/project';
 import type { OverlayState } from '../tools/overlay';
 import { HEAT_COLORS } from '../tools/overlay';
 import { startCheck, type RunningCheck } from '../../../check/client';
-import { CHECKS, at, type Finding, type Severity } from '../../../check/findings';
+import { CHECKS, at, kindOf, type Finding, type Kind } from '../../../check/findings';
 import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
@@ -55,8 +56,8 @@ interface Saved {
 }
 
 const SECTION = 'levelCheck';
-const SEVERITY: Record<Severity, string> = { error: 'Problem', warning: 'Warning', info: 'Note' };
-const ICON: Record<Severity, string> = { error: '⛔', warning: '⚠', info: 'ℹ' };
+const LABEL: Record<Kind, string> = { error: 'Problem', warning: 'Warning', suggestion: 'Suggestion', info: 'Note' };
+const ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
 
 /** Heat as steps: how often (log of ticks spent) or how soon (first tick reached). */
 export function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean): Uint8Array {
@@ -121,7 +122,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   let gray = readGray();
   let soon = false;
   let showMarks = true;
-  let filter: Severity | 'all' = 'all';
+  let filter: Kind | 'all' = 'all';
   let showAccepted = false;
   const undo: { files: [string, Uint8Array | undefined][]; what: string }[] = [];
 
@@ -277,18 +278,18 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     const when = new Date(saved.when);
     status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.`;
     const { open, accepted } = split();
-    const by = (s: Severity) => open.filter((f) => f.severity === s).length;
+    const by = (s: Kind) => open.filter((f) => kindOf(f) === s).length;
     clear(
       counts,
-      ...(['all', 'error', 'warning', 'info'] as const).map((s) =>
+      ...(['all', 'error', 'warning', 'suggestion', 'info'] as const).map((s) =>
         h(
           'button',
           { type: 'button', class: 'lc-count', 'aria-pressed': String(filter === s), onclick: () => ((filter = s), render()) },
-          s === 'all' ? `All ${open.length}` : `${ICON[s]} ${by(s)} ${SEVERITY[s].toLowerCase()}${by(s) === 1 ? '' : 's'}`,
+          s === 'all' ? `All ${open.length}` : `${ICON[s]} ${by(s)} ${LABEL[s].toLowerCase()}${by(s) === 1 ? '' : 's'}`,
         ),
       ),
     );
-    const shown = open.filter((f) => filter === 'all' || f.severity === filter);
+    const shown = open.filter((f) => filter === 'all' || kindOf(f) === filter);
     clear(list, ...(shown.length ? shown.map((f) => item(f)) : [h('li', { class: 'meta' }, open.length ? 'None of these.' : 'Nothing to report.')]));
     if (!accepted.length) showAccepted = false;
     clear(
@@ -322,7 +323,11 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
   function accept(f: Finding, on: boolean): void {
     setAccepted(project, findingKey(f), on);
     render();
-    toast(on ? 'Marked as checked: the finding is kept under “accepted”.' : 'The finding is back in the list.');
+    toast(
+      on
+        ? `${'taste' in CHECKS[f.check] ? 'Kept as you chose it' : 'Marked as checked'}: the finding is kept under “accepted”.`
+        : 'The finding is back in the list.',
+    );
   }
 
   function item(f: Finding, accepted = false): HTMLElement {
@@ -330,9 +335,11 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
     const cell = f.where.cell ?? f.where.cells?.[0];
     const fix = fixFor(f, project);
     const same = sameKeyOf(f);
+    const kind = kindOf(f);
+    const taste = 'taste' in info;
     return h(
       'li',
-      { class: `lc-item lc-${f.severity}${accepted ? ' lc-is-accepted' : ''}` },
+      { class: `lc-item lc-${kind}${accepted ? ' lc-is-accepted' : ''}` },
       h(
         'button',
         {
@@ -342,7 +349,7 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
           title: cell === undefined ? undefined : `Show ${at(cell)} on the map`,
           onclick: () => cell !== undefined && ((focus = cell), paint(), host.goTo(cell)),
         },
-        h('span', { class: 'lc-sev' }, h('span', { 'aria-hidden': 'true' }, ICON[f.severity]), ` ${SEVERITY[f.severity]}: `),
+        h('span', { class: 'lc-sev' }, h('span', { 'aria-hidden': 'true' }, ICON[kind]), ` ${LABEL[kind]}: `),
         h('span', { class: 'lc-what' }, f.title),
       ),
       f.detail ? h('p', { class: 'lc-detail' }, f.detail) : null,
@@ -393,10 +400,12 @@ export function checkPanel(host: CheckHost): { el: HTMLElement; shown(): boolean
           class: 'lc-fix lc-accept',
           title: accepted
             ? 'Puts this finding back in the list and the counts.'
-            : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
+            : taste
+              ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
+              : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
           onclick: () => accept(f, !accepted),
         },
-        accepted ? '↺ Not meant to be: list it again' : '✓ Mark as checked: it’s meant to be',
+        accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
       ),
     );
   }

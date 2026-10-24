@@ -187,7 +187,7 @@ export const CHECKS = {
   },
   'hero-speed': {
     name: 'Hero speed',
-    why: 'A slow hero can make levels drag, and an uneven walk can feel slippery, unless the weight is the point.',
+    why: 'A slow walk can make levels drag, an uneven one feel slippery and a jump cut off in mid-air feel broken, unless the weight is the point.',
     guide: C('A hero who feels right'),
     taste: true,
   },
