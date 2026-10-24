@@ -70,10 +70,6 @@
   "warning start-threat s5 Monster 25 starts 1 blocks from where the hero comes in"
  ],
  "depth": [
-  "warning facing s2 The hero faces the same way walking left and right",
-  "warning facing s2 The hero shows the same picture walking up or down as another way",
-  "warning facing s4 The hero faces the same way walking left and right",
-  "warning facing s4 The hero shows the same picture walking up or down as another way",
   "warning hazard-art s17 Block 0 hurts through its whole cell, but its art fills 19% of it",
   "warning hazard-art s17 Block 18 hurts through its whole cell, but its art fills 12% of it",
   "warning hazard-art s17 Block 28 hurts through its whole cell, but its art fills 19% of it",

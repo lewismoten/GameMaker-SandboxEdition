@@ -471,3 +471,14 @@ export { Cylinder, MAT };
 export function scaled(shapes: Shape[], s: number, pivot: V = [0.5, 0.62, 0]): Shape[] {
   return shapes.map((sh) => new Moved(sh, [1, 0, 0, 0, 1, 0, 0, 0, 1], [pivot[0] * (1 - s), pivot[1] * (1 - s), pivot[2] * (1 - s)], s));
 }
+
+/** Shapes turned about the upright axis through a point on the floor, so a model built facing the
+ * camera faces right, three-quarters on (the face still shows): for a sprite that walks, mirrored
+ * for left. */
+export function sideOn(shapes: Shape[], turn = Math.PI / 4, pivot: V = [0.5, 0.6, 0]): Shape[] {
+  // world = R * local + at, R turning the +y side (toward the camera) toward +x
+  const c = Math.cos(turn);
+  const s = Math.sin(turn);
+  const rot = [c, s, 0, -s, c, 0, 0, 0, 1];
+  return shapes.map((sh) => new Moved(sh, rot, [pivot[0] - (c * pivot[0] + s * pivot[1]), pivot[1] - (-s * pivot[0] + c * pivot[1]), 0]));
+}

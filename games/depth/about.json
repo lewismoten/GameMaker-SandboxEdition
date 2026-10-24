@@ -75,5 +75,14 @@
       "gif": "title.gif",
       "caption": "Sharp is solid. A blur isn't there."
     }
-  }
+  },
+  "sameEverySide": [
+    "near.chr",
+    "far.chr",
+    "depth.mon#2",
+    "depth.mon#3",
+    "depth.mon#5",
+    "depth.mon#6",
+    "depth.mon#20"
+  ]
 }
