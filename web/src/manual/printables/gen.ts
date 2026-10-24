@@ -446,7 +446,84 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
   const tip = tips.length ? tips[hashString(ctx.entry.id) % tips.length] : undefined;
+  const stories = [
+    ...next,
+    ...own,
+    ...others,
+    tip
+      ? h(
+          'article',
+          { class: 'nl-story small' },
+          h('h3', null, 'Tip of the month'),
+          h('p', null, h('b', null, 'Q. '), tip.q),
+          h('p', null, redCode(tip.a)),
+          h('p', { class: 'nl-when' }, 'Use the red film from your hint book.'),
+        )
+      : null,
+    h(
+      'article',
+      { class: 'nl-story small' },
+      h('h3', null, 'Letters'),
+      h(
+        'p',
+        null,
+        h('i', null, '“I beat every Sandbox game on my dad’s 286 with the sound turned down so nobody would know I was still up. When is the next one?”'),
+      ),
+      h('p', null, '— A loyal player, by modem. ', h('b', null, 'The Scoop replies:'), ' Read the front page! And go to bed.'),
+    ),
+    h(
+      'article',
+      { class: 'nl-story small' },
+      h('h3', null, 'Sysop’s corner'),
+      h('p', null, 'Call ', sandboxBanner(), ` at ${BBS_PHONE} for hints, high scores and the newest uploads. 14,400 baud, 24 hours.`),
+    ),
+    h(
+      'article',
+      { class: 'nl-story small' },
+      h('h3', null, 'Make your own'),
+      h(
+        'p',
+        null,
+        'Every Sandbox game is made with GAME-MAKER by Recreational Software Designs. If you can draw a block, you can make a game. Send us yours on the BBS!',
+      ),
+    ),
+  ].filter((x): x is HTMLElement => !!x);
+  const foot = () => h('footer', { class: 'nl-foot' }, 'The Sandbox Scoop is printed for the people in our games. ', fictionalNote());
+  const cols = h(
+    'div',
+    { class: 'nl-cols' },
+    h('h2', { class: 'nl-lead' }, nextHead),
+    h(
+      'p',
+      { class: 'nl-intro' },
+      'The sandbox is busy this year. Here is what is new on our workbench, and as a registered player you get to hear about it first.',
+    ),
+    ...stories,
+  );
+  const front = sheet(
+    8.5,
+    11,
+    'nl',
+    h(
+      'header',
+      { class: 'nl-mast' },
+      h('div', { class: 'nl-title' }, sandboxMarkEl('nl-mark'), 'The Sandbox Scoop'),
+      h(
+        'div',
+        { class: 'nl-sub' },
+        h('span', null, `Vol. 1, No. ${issue}`),
+        h('span', null, 'News for registered players of Sandbox Software games'),
+        h('span', null, ISSUE_DATE),
+      ),
+    ),
+    cols,
+    foot(),
+  );
+  // the stories that don't fit above the front page's foot continue on page 2
+  const more = overflowStories(front, cols, stories);
+  if (!more.length) return [front];
   return [
+    front,
     sheet(
       8.5,
       11,
@@ -454,68 +531,33 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
       h(
         'header',
         { class: 'nl-mast' },
-        h('div', { class: 'nl-title' }, sandboxMarkEl('nl-mark'), 'The Sandbox Scoop'),
-        h(
-          'div',
-          { class: 'nl-sub' },
-          h('span', null, `Vol. 1, No. ${issue}`),
-          h('span', null, 'News for registered players of Sandbox Software games'),
-          h('span', null, ISSUE_DATE),
-        ),
+        h('div', { class: 'nl-sub' }, h('span', null, 'The Sandbox Scoop'), h('span', null, `Vol. 1, No. ${issue} · page 2`), h('span', null, ISSUE_DATE)),
       ),
-      h(
-        'div',
-        { class: 'nl-cols' },
-        h('h2', { class: 'nl-lead' }, nextHead),
-        h(
-          'p',
-          { class: 'nl-intro' },
-          'The sandbox is busy this year. Here is what is new on our workbench, and as a registered player you get to hear about it first.',
-        ),
-        ...next,
-        ...own,
-        ...others,
-        tip
-          ? h(
-              'article',
-              { class: 'nl-story small' },
-              h('h3', null, 'Tip of the month'),
-              h('p', null, h('b', null, 'Q. '), tip.q),
-              h('p', null, redCode(tip.a)),
-              h('p', { class: 'nl-when' }, 'Use the red film from your hint book.'),
-            )
-          : null,
-        h(
-          'article',
-          { class: 'nl-story small' },
-          h('h3', null, 'Letters'),
-          h(
-            'p',
-            null,
-            h('i', null, '“I beat every Sandbox game on my dad’s 286 with the sound turned down so nobody would know I was still up. When is the next one?”'),
-          ),
-          h('p', null, '— A loyal player, by modem. ', h('b', null, 'The Scoop replies:'), ' Read the front page! And go to bed.'),
-        ),
-        h(
-          'article',
-          { class: 'nl-story small' },
-          h('h3', null, 'Sysop’s corner'),
-          h('p', null, 'Call ', sandboxBanner(), ` at ${BBS_PHONE} for hints, high scores and the newest uploads. 14,400 baud, 24 hours.`),
-        ),
-        h(
-          'article',
-          { class: 'nl-story small' },
-          h('h3', null, 'Make your own'),
-          h(
-            'p',
-            null,
-            'Every Sandbox game is made with GAME-MAKER by Recreational Software Designs. If you can draw a block, you can make a game. Send us yours on the BBS!',
-          ),
-        ),
-      ),
-      h('footer', { class: 'nl-foot' }, 'The Sandbox Scoop is printed for the people in our games. ', fictionalNote()),
+      h('div', { class: 'nl-cols' }, ...more),
+      foot(),
     ),
   ];
+}
+
+/** Takes stories off the end of `cols` until the rest end above the sheet's foot; returns them in order. */
+function overflowStories(front: Sheet, cols: HTMLElement, stories: HTMLElement[]): HTMLElement[] {
+  const host = h('div', { class: 'gmb-measure' });
+  document.body.append(host);
+  const moved: HTMLElement[] = [];
+  try {
+    front.el.style.width = '850px';
+    host.replaceChildren(front.el);
+    const foot = front.el.querySelector('.nl-foot')!;
+    const over = () => cols.getBoundingClientRect().bottom > foot.getBoundingClientRect().top - 6;
+    for (let i = stories.length - 1; i > 0 && over(); i--) {
+      stories[i].remove();
+      moved.unshift(stories[i]);
+    }
+  } finally {
+    host.remove();
+    front.el.style.width = '';
+  }
+  return moved;
 }
 
 // ------------------------------------------------------------------ hint book postcard
