@@ -1,7 +1,7 @@
-// Sound Blaster samples (.VOC) made today: record your voice with the microphone, or
-// synthesize an effect. Either way it is trimmed, levelled, optionally given a period
-// effect (robot, chipmunk, deep, radio) and saved as 8-bit 11 kHz mono, as the card
-// played it.
+// Sound Blaster samples (.VOC) made today: record your voice with the microphone (trimmed,
+// levelled and optionally given a period effect: robot, chipmunk, deep, radio) and save it as
+// 8-bit 11 kHz mono, as the card played it. Synthesized effects come from the sound effect
+// maker (sfxMaker.ts), offered here too.
 import { h, modal, toast } from '../core/ui';
 import { registerMaker } from './makers';
 import { encodeVoc } from '../../formats/voc';
@@ -50,37 +50,6 @@ export async function startRecording(rate = RATE): Promise<{ stop: () => Promise
   };
 }
 
-/** A few synthesized effects, each a little different every time. */
-const SYNTHS: { name: string; seconds: number; make: (t: number, rnd: () => number) => number }[] = [
-  { name: 'Zap', seconds: 0.35, make: (t, r) => Math.sign(Math.sin(2 * Math.PI * (2400 * Math.exp(-t * 9) + 120) * t)) * (1 - t / 0.35) * (0.7 + 0.3 * r()) },
-  { name: 'Boom', seconds: 0.9, make: (t, r) => (r() * 2 - 1) * Math.exp(-t * 4) * (0.6 + 0.4 * Math.sin(t * 40)) },
-  { name: 'Coin', seconds: 0.35, make: (t) => Math.sin(2 * Math.PI * (t < 0.07 ? 988 : 1319) * t) * Math.exp(-t * 6) },
-  { name: 'Splash', seconds: 0.7, make: (t, r) => (r() * 2 - 1) * Math.exp(-t * 5) * Math.abs(Math.sin(t * 60)) },
-  {
-    name: 'Door',
-    seconds: 0.6,
-    make: (t) => Math.sin(2 * Math.PI * (90 + 40 * Math.sin(t * 18)) * t) * Math.exp(-t * 3) + Math.sin(2 * Math.PI * 300 * t) * Math.exp(-t * 30),
-  },
-  { name: 'Power up', seconds: 0.8, make: (t) => Math.sign(Math.sin(2 * Math.PI * (200 * 2 ** (t * 4)) * t)) * 0.6 * (1 - t / 0.8) },
-  { name: 'Footstep', seconds: 0.15, make: (t, r) => (r() * 2 - 1) * Math.exp(-t * 40) },
-  { name: 'Whoosh', seconds: 0.6, make: (t, r) => (r() * 2 - 1) * Math.sin((Math.PI * t) / 0.6) * 0.8 },
-];
-
-function seeded(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a * 1664525 + 1013904223) >>> 0;
-    return a / 4294967296;
-  };
-}
-
-function synthesize(i: number, seed: number): Float32Array {
-  const s = SYNTHS[i];
-  const r = seeded(seed);
-  const pitch = 0.8 + r() * 0.5;
-  return Float32Array.from({ length: Math.round(s.seconds * RATE) }, (_, n) => Math.max(-1, Math.min(1, s.make((n / RATE) * pitch, r))));
-}
-
 function play(ctx: AudioContext, s: Float32Array): void {
   const b = ctx.createBuffer(1, Math.max(1, s.length), RATE);
   b.copyToChannel(s as Float32Array<ArrayBuffer>, 0);
@@ -111,21 +80,16 @@ function drawWave(c: HTMLCanvasElement, s: Float32Array): void {
   ctx.stroke();
 }
 
-/** The sample maker: record or synthesize, then pick an effect and save. */
-function makeVoc(project: Project, start: 'record' | 'synth'): Promise<string | undefined> {
+/** The recorder: record, then pick an effect and save. */
+function makeVoc(project: Project): Promise<string | undefined> {
   const ctx = new AudioContext();
-  return modal<string>(start === 'record' ? 'Record a sound' : 'Make a sound', (close) => {
+  return modal<string>('Record a sound', (close) => {
     let raw: Float32Array = new Float32Array(0);
     let effect: Effect = 'none';
-    let seed = 1;
     const result = () => applyEffect(raw, effect);
     const wave = h('canvas', { class: 'voc-wave', width: 640, height: 120 });
-    const info = h(
-      'p',
-      { class: 'hint' },
-      start === 'record' ? 'Press Record and speak; press Stop when you are done.' : 'Pick a sound; click it again for a new variation.',
-    );
-    const nameInput = h('input', { type: 'text', value: project.freeName(start === 'record' ? 'voice' : 'effect', 'voc'), required: true });
+    const info = h('p', { class: 'hint' }, 'Press Record and speak; press Stop when you are done.');
+    const nameInput = h('input', { type: 'text', value: project.freeName('voice', 'voc'), required: true });
     const refresh = () => {
       const s = result();
       drawWave(wave, s);
@@ -160,11 +124,9 @@ function makeVoc(project: Project, start: 'record' | 'synth'): Promise<string | 
       }
     });
 
-    const synthButtons = SYNTHS.map((s, i) => h('button', { type: 'button', onclick: () => setRaw(tidy(synthesize(i, seed++))) }, s.name));
-
     const save = () => {
       if (!raw.length) {
-        toast(start === 'record' ? 'Record something first.' : 'Pick a sound first.', 'error');
+        toast('Record something first.', 'error');
         return;
       }
       let name = normalize(nameInput.value.trim());
@@ -181,7 +143,7 @@ function makeVoc(project: Project, start: 'record' | 'synth'): Promise<string | 
     return h(
       'div',
       { class: 'stack voc-maker' },
-      start === 'record' ? h('div', { class: 'toolbar' }, recBtn) : h('div', { class: 'sfx-grid' }, ...synthButtons),
+      h('div', { class: 'toolbar' }, recBtn),
       wave,
       info,
       h(
@@ -211,5 +173,5 @@ function makeVoc(project: Project, start: 'record' | 'synth'): Promise<string | 
   });
 }
 
-registerMaker('voc', { label: '🎤 Record with the microphone…', run: (p) => makeVoc(p, 'record') });
-registerMaker('voc', { label: '🎹 Make a sound effect…', run: (p) => makeVoc(p, 'synth') });
+registerMaker('voc', { label: '🎤 Record with the microphone…', run: (p) => makeVoc(p) });
+registerMaker('voc', { label: '🎛 Sound effect maker…', run: async (p) => (await (await import('./sfxMaker')).sfxMaker(p))?.name });

@@ -115,6 +115,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'check-fix', title: 'Quick fix', desc: 'Applied a ✨ fix from the Level check.', icon: '✨', category: 'making' },
   { id: 'check-upload', title: 'Ready to upload', desc: 'Ticked every box on the Before You Upload checklist.', icon: '✅', category: 'making' },
   { id: 'make-walk', title: 'Let the bot play', desc: 'Made a walkthrough of your game with the 🤖 walkthrough bot.', icon: '🤖', category: 'making' },
+  { id: 'sfx-maker', title: 'Bleeps and bloops', desc: 'Saved a sound with the 🎛 sound effect maker.', icon: '🎛️', category: 'making' },
+  { id: 'first-steps', title: 'First steps', desc: 'Ticked every step of the 🎓 First steps list in a new game.', icon: '🎓', category: 'making' },
 
   // playing
   { id: 'play-first', title: 'Player one', desc: 'Played a game.', icon: '🎮', category: 'playing' },

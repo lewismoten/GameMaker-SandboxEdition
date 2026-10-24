@@ -192,6 +192,29 @@ registerEditor(['snd'], (host, project, file) => {
     draw();
 
     const digital = snd.digital[current];
+    // 🎛 the sound effect maker: a new .voc for this slot (or this slot's own, made by it, changed)
+    const ownVoc = vocOf(current);
+    const remake = ownVoc && project.extras(ownVoc, 'sfx', undefined) ? ownVoc : undefined;
+    const makerBtn = h(
+      'button',
+      {
+        title: remake
+          ? `Change ${remake.toUpperCase()} with the sliders it was made with`
+          : 'Make a .voc for this effect with sliders and presets, and use it here',
+        onclick: async () => {
+          const { sfxMaker } = await import('../../tools/sfxMaker'); // loaded when first used
+          const { SLOT_PRESET } = await import('../../../audio/sfxPresets');
+          const made = await sfxMaker(project, { file: remake, preset: SLOT_PRESET[current], speaker: true, stem: SLOT_PRESET[current] ?? 'effect' });
+          if (!made) return;
+          remember();
+          snd.digital[current] = made.name.replace(/\.voc$/, '').slice(0, 8);
+          if (made.speaker) f.set(made.speaker);
+          save();
+          render();
+        },
+      },
+      remake ? '🎛 Change it in the sound effect maker…' : '🎛 Make one with the sound effect maker…',
+    );
     const shape = (fn: (i: number) => number) => {
       remember();
       for (let i = 0; i < NUMFREQ; i++) f[i] = Math.max(0, Math.min(MAXF, Math.round(fn(i))));
@@ -235,6 +258,7 @@ registerEditor(['snd'], (host, project, file) => {
           { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
         h('div', { class: 'snd-part' }, vocBtn, vocState),
+        h('div', { class: 'snd-part' }, makerBtn),
       ),
       h(
         'div',
