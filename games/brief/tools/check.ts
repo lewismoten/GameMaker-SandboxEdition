@@ -5,7 +5,7 @@
 //   cd web && npx vite-node ../games/brief/tools/check.ts [wing id]
 import { compileAll } from '../src/compile';
 import { sceneIds } from '../src/game';
-import { EGG_BLOCK, wingCounter } from '../src/ids';
+import { EGG_BLOCK, SCAN, wingCounter } from '../src/ids';
 import { BACKBL } from '../../../web/src/formats/blocks';
 import { Bot, hazardsOf, windowBox } from './bot';
 import { playThrough } from './play';
@@ -55,12 +55,12 @@ async function eggPocketed(): Promise<void> {
     false,
     3000,
   );
-  if (bot.ci.inv.includes(EGG_BLOCK)) throw new Error('The egg was pocketed without P');
-  bot.sim.press(0x19);
+  if (bot.ci.inv.includes(EGG_BLOCK)) throw new Error('The egg was pocketed without Space');
+  bot.sim.press(SCAN.space);
   await bot.ticks(2);
-  bot.sim.release(0x19);
+  bot.sim.release(SCAN.space);
   await bot.ticks(12);
-  if (bot.ci.inv[0] !== EGG_BLOCK || bot.ci.inv.slice(1).some((b) => b !== BACKBL)) throw new Error(`P did not pocket the egg: ${bot.ci.inv}`);
+  if (bot.ci.inv[0] !== EGG_BLOCK || bot.ci.inv.slice(1).some((b) => b !== BACKBL)) throw new Error(`Space did not pocket the egg: ${bot.ci.inv}`);
   await bot.walk(
     () => [hub.lostOut],
     windowBox(32, 0),
@@ -69,7 +69,7 @@ async function eggPocketed(): Promise<void> {
     3000,
   );
   if (bot.follow() !== id.stacks || bot.ci.inv[0] !== EGG_BLOCK) throw new Error('The egg did not come out of the Lost and Found');
-  console.log(`ok   the felt egg: loose shelf, P, block ${EGG_BLOCK} in the pocket, back in the Stacks`);
+  console.log(`ok   the felt egg: loose shelf, Space, block ${EGG_BLOCK} in the pocket, back in the Stacks`);
 }
 
 if (align()) throw new Error('brief: a multi-block object is out of line (above)');

@@ -35,8 +35,8 @@ export function buildJoe(cb: BlockSet): Character {
   set(S[SEQ.idle], [f('down0', 50), f('blink', 3), f('down0', 60), f('blink', 3), f('down0', 30), f('shh', 24), f('down0', 4), f('blink', 3)]);
   set(S[SEQ.die], [f('blink', 4), f('shh', 10), f('blink', 10)], { jstkBut: 0 });
   set(S[SEQ.hurt], [f('blink', 1)], { jstkBut: 0 });
-  // P pockets what Joe stands on, if Game-Maker calls it a Pick-up (one thing in the library is)
-  set(S[3], [f('blink', 2), f('shh', 3), f('down0', 1)], { key: KEY.p, sound: SND.word, ground: 1, norepeat: 1 });
+  // Space pockets what Joe stands on, if Game-Maker calls it a Pick-up (one thing in the library is)
+  set(S[3], [f('blink', 2), f('shh', 3), f('down0', 1)], { key: KEY.space, sound: SND.word, ground: 1, norepeat: 1 });
   set(S[4], [f('down0', 1)], { key: 0 });
 
   const walk = (dx: number, dy: number, a: string, b: string, mirror = false) => [a, b, a, b, a].map((p) => f(p, 1, { x: dx * STEP, y: dy * STEP, mirror }));

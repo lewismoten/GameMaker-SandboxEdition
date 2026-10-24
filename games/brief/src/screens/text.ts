@@ -35,7 +35,8 @@ export const HELP = page([
  F2 status: Money is the
     words you carry. Words
     are money.
- P  pocket a small thing
+ Space: pocket a small
+    thing
  F5 save  F6 load
  Esc  quit to the menu
 

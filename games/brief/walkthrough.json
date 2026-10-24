@@ -296,7 +296,7 @@
   },
   {
    "scene": 41,
-   "keys": "AVAB0AZQAdAGUAHQBksBywZIAcgGSwHLBksBywZLAcsGSAHIBkgByAZLAcsGSwHLBksBywZQAdAGUAHQBlAB0AZNAc0GSAHIBkgByAZIAcgGSAHIBkgByAZLAcsGSAHIBkgByAZQAdAGUAHQBk0BzQZNAc0GTQHNBk0BzQZNAc0GUAHQBlAB0AZQAdAGUAHQBk0BzQZNAc0GTQHNBk0BzQZNAc0GUAHQBk0BzQZNAc0GSAHIBkgByAZLAcsGSAHIBkgByAZIAcgGTQHNBkgByAZIAcgGUAHQBlAB0AZQAdAGTQHNBlAB0AZQAdAGUAHQBlAB0AZNAc0GUAHQ"
+   "keys": "AVAB0AZQAdAGUAHQBksBywZIAcgGSwHLBksBywZLAcsGSAHIBkgByAZLAcsGSwHLBksBywZQAdAGUAHQBlAB0AZNAc0GSAHIBkgByAZIAcgGSAHIBkgByAZLAcsGSAHIBkgByAZQAdAGUAHQBk0BzQZNAc0GTQHNBk0BzQZNAc0GUAHQBkgByAZNAc0GTQHNBlAB0AZQAdAGUAHQBlAB0AZNAc0GTQHNBk0BzQZQAdAGTQHNBk0BzQZIAcgGSAHIBksBywZIAcgGSAHIBkgByAZNAc0GSAHIBkgByAZQAdAGUAHQBlAB0AZNAc0GUAHQBlAB0AZQAdAGUAHQBk0BzQZQAdA="
   },
   {
    "scene": 40,
@@ -379,7 +379,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 154951,
+  "frames": 154997,
   "chapters": [
    {
     "title": "Opening",
@@ -423,15 +423,15 @@
    },
    {
     "title": "The Reserve Stacks",
-    "frame": 145070
+    "frame": 145116
    },
    {
     "title": "Ending",
-    "frame": 147697
+    "frame": 147743
    },
    {
     "title": "Credits",
-    "frame": 152434
+    "frame": 152480
    }
   ]
  }
