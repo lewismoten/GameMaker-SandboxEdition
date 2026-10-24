@@ -3,6 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS, chapterStarts, planBook } from './plan';
+import { CHECKS } from '../../editor/check/findings';
 
 const FIGURES = ['moods', 'compare', 'goat', 'loaf', 'chain', 'walkoff'];
 const words = (t: string) =>
@@ -38,12 +39,21 @@ describe('The Ultimate Owner’s Guide', () => {
     }
   });
 
+  it('has the chapter and section every level check finding links to', () => {
+    for (const [id, { guide }] of Object.entries(CHECKS)) {
+      const c = CHAPTERS.find((x) => x.id === guide.chapter);
+      expect(c, id).toBeDefined();
+      const heads = [c!.title, ...[...c!.html.matchAll(/<h2>([^<]+)<\/h2>/g)].map((m) => m[1])];
+      expect(heads, id).toContain(guide.section);
+    }
+  });
+
   it('uses generic words for toys', () => {
     for (const c of CHAPTERS) expect(c.html).not.toMatch(/\blego\b/i);
   });
 
-  it('ends with designing with a goal, level design, the numbers, then the upload checklist on a page of its own', () => {
-    expect(CHAPTERS.slice(-4).map((c) => c.id)).toEqual(['craft', 'levels', 'numbers', 'upload']);
+  it('ends with designing with a goal, level design, the tricks, the level check, the numbers, then the upload checklist on a page of its own', () => {
+    expect(CHAPTERS.slice(-6).map((c) => c.id)).toEqual(['craft', 'levels', 'tricks', 'check', 'numbers', 'upload']);
     expect(CHAPTERS.filter((c) => c.newPage).map((c) => c.id)).toEqual(['upload']);
   });
 
