@@ -242,8 +242,11 @@ const bookAds = (ctx: MagContext): MagPage[] => {
             sub:
               n === 1
                 ? 'Every answer hidden under red noise, so you only see the one you need. From Sandbox Software, the people who made the games.'
-                : 'Lay the red film on the page: only your answer comes through.',
-            small: `Mail to: ${MAIL}. A fictional address: nothing to mail. Every hint book is already in its game’s box, free.`,
+                : undefined,
+            small:
+              n === 1
+                ? `Mail to: ${MAIL}. A fictional address: nothing to mail. Every hint book is already in its game’s box, free.`
+                : 'Every hint book is already in its game’s box, free. Press a cover to open it.',
             tone: n === 1 ? 'yellow' : 'white',
           },
         ),
