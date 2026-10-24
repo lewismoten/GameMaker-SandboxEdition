@@ -6,6 +6,7 @@ import { COVER } from './sections/cover';
 import { SANDBOX_EDITION_AD, SEND_AWAY_AD, ULTIMATE_AD, CATALOGS_AD } from './sections/ads';
 import { CONTENTS, contentsPage } from './sections/contents';
 import { LETTER } from './sections/letter';
+import { MAIL_BAG } from './sections/mailBag';
 import { NEWS } from './sections/news';
 import { FREE_CD } from './sections/freeCd';
 import { LEWIS } from './sections/lewis';
@@ -30,6 +31,7 @@ export const SECTIONS: MagSection[] = [
   SANDBOX_EDITION_AD,
   CONTENTS,
   LETTER,
+  MAIL_BAG,
   NEWS,
   FREE_CD,
   SEND_AWAY_AD,
