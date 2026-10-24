@@ -637,3 +637,17 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
   border-color: #1b318a;
   color: #fff;
 }
+
+/* the narrowest phones: Full screen leaves the bar for the ⋯ menu, so the bar fits */
+.dos-menu > .dos-full-item {
+  display: none;
+}
+
+@media (max-width: 389px) {
+  .dos-controls > .dos-full {
+    display: none;
+  }
+  .dos-menu > .dos-full-item {
+    display: inline-flex;
+  }
+}

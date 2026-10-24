@@ -89,7 +89,15 @@ async function fullScreen(): Promise<void> {
   }
   pc?.focus();
 }
-document.addEventListener('fullscreenchange', () => fullBtn.setAttribute('aria-pressed', String(!!document.fullscreenElement)));
+// on the narrowest phones Full screen moves from the bar into the ⋯ menu (dosPage.css)
+const fullItem = h(
+  'button',
+  { type: 'button', class: 'dos-btn dos-full-item', title: 'Fill the screen', onclick: () => void fullScreen() },
+  ...face('⤢', 'Full screen'),
+);
+document.addEventListener('fullscreenchange', () => {
+  for (const b of [fullBtn, fullItem]) b.setAttribute('aria-pressed', String(!!document.fullscreenElement));
+});
 
 // ---- power ------------------------------------------------------------------------------
 
@@ -243,6 +251,7 @@ soundBtn.classList.add('dos-icon-only');
 fullBtn.classList.add('dos-full');
 const lineSpeed = speedItem();
 const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS, the modem speed and the Owner’s Guide', [
+  fullItem,
   resetBtn,
   h('label', { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' }, blaster, 'Sound Blaster card'),
   cdBtn,
