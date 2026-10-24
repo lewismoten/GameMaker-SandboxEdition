@@ -79,8 +79,11 @@ game folder opens in the browser unchanged.
   opening of Teddy's Theme (`games/kit/teddyTheme.ts`), an original tune for the Teddy games;
   and the "Made with Game-Maker: Sandbox Edition" opening sting the editor offers new games
   (`games/kit/madewith.ts`, shipped as `web/public/opening/madewith.fli` and `.gif`, ray
-  traced like the Sandbox Software sting), and the "PRESENTS" card the editor draws for a
-  game's maker (`web/src/editor/tools/opening`). Like everything else added here they are under
+  traced like the Sandbox Software sting), the "PRESENTS" card the editor draws for a
+  game's maker (`web/src/editor/tools/opening`), and *TURBO BUTTON*, the site's 1990s-style
+  game magazine (`web/src/manual/magazine`): its words, layout and drawings, with screenshots
+  drawn from the games themselves and its interview with Lewis drawn from his own account in
+  `docs/history.md`. Like everything else added here they are under
   the MIT License, so the games they open can carry them anywhere.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
@@ -337,7 +340,7 @@ formats from their published descriptions and from Game-Maker's own source.
   their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
   OPL3, AMI BIOS, PKZIP and PKUNZIP, Xmodem, Ymodem and ZMODEM, Renegade BBS, QEMM, the 286 to Pentium, Windows 3.1 and NT, OS/2, the ATI, Trident, Tseng and
   Paradise Super VGA cards (from RSD's own system requirements), the Remington Noiseless
-  typewriter, Autodesk Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
+  typewriter, Autodesk Animator and the CitiCar, an electric car Sebring-Vanguard built in the 1970s (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
   song lyrics and his 100 Word Stories (in *KEEP IT BRIEF!*) are quoted word for word. These
   are trademarks of their respective owners; no endorsement is implied. Every other store,
   arcade, brand, product and publication in the games is made up.
@@ -366,7 +369,8 @@ formats from their published descriptions and from Game-Maker's own source.
   "Export for DOS" ships `XFERPLAY.EXE` (renamed after the game) and `SNDBLAST.DRV` with
   a README that gives Game-Maker's MIT License and names these parts.
 - The desk's hardware brands (BOOMTONE, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
-  numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
+  numbers are made up, as are the magazines and awards on the game boxes and the magazine
+  *TURBO BUTTON*, its prices and its coupons. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
 - **The level check** (`web/src/editor/check`): its heat map's six colors are taken from
