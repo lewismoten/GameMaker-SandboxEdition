@@ -429,21 +429,26 @@ export class SceneSim {
 
   /** The map cells the character overlaps now (GetTouchbl's cells), into `out`; returns how many. */
   touching(out: Int32Array): number {
-    const { chr, ci } = this.w;
-    const x0 = chr.x[0];
-    const y0 = chr.y[0];
-    const x1 = (x0 + 1) % MLEN;
-    const y1 = (y0 + 1) % 100;
-    let n = 0;
-    if (ci.topthere) {
-      const top = y0 - 1 < 0 ? y0 + 99 : y0 - 1;
-      out[n++] = top * MLEN + x0;
-      if (chr.x[1] > 0) out[n++] = top * MLEN + x1;
-    }
-    out[n++] = y0 * MLEN + x0;
-    if (chr.x[1] > 0) out[n++] = y0 * MLEN + x1;
-    if (chr.y[1] > 0) out[n++] = y1 * MLEN + x0;
-    if (chr.x[1] > 0 && chr.y[1] > 0) out[n++] = y1 * MLEN + x1;
-    return n;
+    return touchedCells(this.w, out);
   }
+}
+
+/** The map cells the hero is touching (up to six: a block across and its height), into `out`; returns how many. */
+export function touchedCells(w: Pick<World, 'chr' | 'ci'>, out: Int32Array): number {
+  const { chr, ci } = w;
+  const x0 = chr.x[0];
+  const y0 = chr.y[0];
+  const x1 = (x0 + 1) % MLEN;
+  const y1 = (y0 + 1) % 100;
+  let n = 0;
+  if (ci.topthere) {
+    const top = y0 - 1 < 0 ? y0 + 99 : y0 - 1;
+    out[n++] = top * MLEN + x0;
+    if (chr.x[1] > 0) out[n++] = top * MLEN + x1;
+  }
+  out[n++] = y0 * MLEN + x0;
+  if (chr.x[1] > 0) out[n++] = y0 * MLEN + x1;
+  if (chr.y[1] > 0) out[n++] = y1 * MLEN + x0;
+  if (chr.x[1] > 0 && chr.y[1] > 0) out[n++] = y1 * MLEN + x1;
+  return n;
 }

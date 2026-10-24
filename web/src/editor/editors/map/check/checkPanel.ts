@@ -8,7 +8,8 @@
 // companion file (editor-only), so it is there next time. While the check runs, the heat map and
 // deaths fill in as the bot plays (check/live.ts), under a bar that says when it will be done.
 // Resting the pointer on a mark tells what it means (markInfo.ts); the legend lists each mark,
-// and its buttons step through them from the keyboard.
+// and its buttons step through them from the keyboard. The author can also play the scene and
+// keep a heat map of their own (myHeatControls.ts), shown instead of, with, or against the bot's.
 import './checkPanel.css';
 import { h, clear, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
@@ -26,7 +27,9 @@ import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide
 import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
 import type { LiveProgress } from '../../../check/live';
 import { MLEN, MWID } from '../../../../formats/map';
-import { MARKS, describeCell, heatWords } from './markInfo';
+import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
+import { COMPARE_COLORS, combineSteps, compareSteps } from './myHeat';
+import { myHeatControls } from './myHeatControls';
 
 export interface CheckHost {
   project: Project;
@@ -160,6 +163,8 @@ export function checkPanel(host: CheckHost): {
   let showMarks = true;
   let filter: Kind | 'all' = 'all';
   let showAccepted = false;
+  /** What the bot has found so far in the check that is running. */
+  let live: { heat: Uint32Array; first: Int32Array; deaths: Map<number, number> } | undefined;
   const undo: { files: [string, Uint8Array | undefined][]; what: string }[] = [];
 
   const status = h('p', { class: 'meta lc-status', role: 'status', 'aria-live': 'polite' });
@@ -201,9 +206,17 @@ export function checkPanel(host: CheckHost): {
     focusKey,
     h('span', { class: 'lc-legend-hint' }, 'Rest the pointer on a mark to see what it is.'),
   );
-  const legend = h('div', { class: 'lc-legends' }, heatLegend, markLegend);
-  const legendText = () => {
-    heatLegend.querySelector('.lc-legend-label')!.textContent = soon ? 'Reached:' : 'Time spent:';
+  const cmpLegend = h(
+    'div',
+    { class: 'lc-legend' },
+    ...['Only the bot', 'Only you', 'Both'].map((t, i) =>
+      h('span', { class: 'lc-mark-key' }, h('i', { class: 'lc-sw', style: `background:${COMPARE_COLORS[i]}`, 'aria-hidden': 'true' }), t),
+    ),
+  );
+  const legend = h('div', { class: 'lc-legends' }, heatLegend, cmpLegend, markLegend);
+  const legendText = (view: HeatView) => {
+    const who = view === 'mine' ? ' (you)' : view === 'both' ? ' (either)' : '';
+    heatLegend.querySelector('.lc-legend-label')!.textContent = soon ? `Reached${who}:` : `Time spent${who}:`;
     heatLegend.querySelector('.lc-legend-ends')!.textContent = soon ? 'late → early' : 'a moment → a lot';
   };
   const grayToggle = toggle(
@@ -237,6 +250,18 @@ export function checkPanel(host: CheckHost): {
       (v) => ((showMarks = v), paint()),
     ),
   );
+  /** The bot's heat steps as shown, and the author's. */
+  const botSteps = () => (live ? heatSteps(live, soon) : saved ? unpack(soon ? saved.soon : saved.heat) : undefined);
+  const mineUi = myHeatControls({
+    project,
+    file,
+    scene: host.scene,
+    botSteps,
+    mySteps: (m) => heatSteps(m, soon),
+    changed: () => paint(),
+    goTo: (c) => host.goTo(c),
+    say: (t) => (said.textContent = t),
+  });
   const el = h(
     'section',
     { class: 'stack lc-panel', 'aria-labelledby': 'lc-title', hidden: true },
@@ -272,6 +297,7 @@ export function checkPanel(host: CheckHost): {
     status,
     progressLine,
     said,
+    mineUi.el,
     h(
       'details',
       { class: 'lc-gen' },
@@ -307,26 +333,41 @@ export function checkPanel(host: CheckHost): {
   }
 
   let focus: number | undefined;
-  /** What the bot has found so far in the check that is running. */
-  let live: { heat: Uint32Array; first: Int32Array; deaths: Map<number, number> } | undefined;
   /** What paint() last drew, for the tooltips: deaths (tries by cell), stuck cells, findings' titles by cell. */
   const drawn = {
     deaths: new Map<number, number>(),
     stuck: new Set<number>(),
     findings: new Map<number, string[]>(),
     heat: undefined as Uint8Array | undefined,
+    myDeaths: new Map<number, number>(),
+    view: 'bot' as HeatView,
   };
   const cursor: Record<(typeof markKinds)[number], number> = { death: -1, stuck: -1, finding: -1 };
   function paint(): void {
     const ov = host.overlay;
-    ov.heat = !showHeat ? undefined : live ? heatSteps(live, soon) : saved ? unpack(soon ? saved.soon : saved.heat) : undefined;
+    // while the bot plays, its heat map shows; after, whichever the author chose
+    const mine = mineUi.mine();
+    const view: HeatView = live || !mine ? 'bot' : mineUi.view();
+    const bot = botSteps();
+    const my = mine && heatSteps(mine, soon);
+    ov.heatColors = undefined;
+    if (view === 'bot') ov.heat = bot;
+    else if (view === 'mine' || !my) ov.heat = my;
+    else if (view === 'both') ov.heat = bot ? combineSteps(bot, my) : my;
+    else {
+      ov.heat = compareSteps(bot ?? new Uint8Array(my.length), my);
+      ov.heatColors = COMPARE_COLORS;
+    }
+    if (!showHeat) ov.heat = undefined;
     ov.gray = !!ov.heat && gray;
     drawn.deaths = new Map();
+    drawn.myDeaths = view !== 'bot' && showMarks && mine ? mine.deaths : new Map();
     drawn.stuck = new Set();
     drawn.findings = new Map();
     drawn.heat = ov.heat;
+    drawn.view = view;
     if (showMarks && live) drawn.deaths = live.deaths;
-    else if (showMarks && saved) {
+    else if (showMarks && saved && view !== 'mine') {
       saved.deaths.forEach((c, i) => drawn.deaths.set(c, saved?.deathTimes?.[i] ?? -1));
       drawn.stuck = new Set(saved.stuck);
       for (const f of split().open)
@@ -338,24 +379,26 @@ export function checkPanel(host: CheckHost): {
     }
     const marks: NonNullable<OverlayState['marks']> = [];
     for (const c of drawn.stuck) marks.push({ cell: c, kind: 'stuck' });
-    for (const c of drawn.deaths.keys()) marks.push({ cell: c, kind: 'death' });
+    for (const c of new Set([...drawn.deaths.keys(), ...drawn.myDeaths.keys()])) marks.push({ cell: c, kind: 'death' });
     for (const c of drawn.findings.keys()) marks.push({ cell: c, kind: 'finding' });
     if (focus !== undefined) marks.push({ cell: focus, kind: 'focus' });
     ov.marks = marks;
-    heatLegend.hidden = !ov.heat;
-    const n = { death: drawn.deaths.size, stuck: drawn.stuck.size, finding: drawn.findings.size };
+    heatLegend.hidden = !ov.heat || view === 'compare';
+    cmpLegend.hidden = !ov.heat || view !== 'compare';
+    const n = { death: new Set([...drawn.deaths.keys(), ...drawn.myDeaths.keys()]).size, stuck: drawn.stuck.size, finding: drawn.findings.size };
     for (const k of markKinds) {
       markBtns[k].hidden = !n[k];
       markBtns[k].querySelector('span')!.textContent = `${MARKS[k].label} ${k === 'stuck' ? 'cells' : 'spots'}: ${n[k]}`;
     }
     focusKey.hidden = focus === undefined;
     markLegend.hidden = !n.death && !n.stuck && !n.finding && focus === undefined;
-    legend.hidden = heatLegend.hidden && markLegend.hidden;
-    legendText();
+    legend.hidden = heatLegend.hidden && cmpLegend.hidden && markLegend.hidden;
+    legendText(view);
+    mineUi.refresh();
     host.redraw();
   }
 
-  const marked = (c: number) => drawn.stuck.has(c) || drawn.deaths.has(c) || drawn.findings.has(c) || focus === c;
+  const marked = (c: number) => drawn.stuck.has(c) || drawn.deaths.has(c) || drawn.myDeaths.has(c) || drawn.findings.has(c) || focus === c;
   function describe(cell: number, near = 0): string[] {
     if (el.hidden) return [];
     let at = cell;
@@ -372,17 +415,20 @@ export function checkPanel(host: CheckHost): {
     const lines = describeCell({
       stuck: drawn.stuck.has(at),
       deaths: drawn.deaths.get(at) ?? 0,
+      myDeaths: drawn.myDeaths.get(at) ?? 0,
       findings: drawn.findings.get(at) ?? [],
       focus: focus === at,
       soon,
     });
-    const heat = heatWords(drawn.heat?.[cell], soon);
+    const heat = heatWords(drawn.heat?.[cell], soon, drawn.view);
     return heat ? [...lines, heat] : lines;
   }
 
   /** Shows the next mark of a kind on the map, and reads out what it is. */
   function nextMark(k: (typeof markKinds)[number]): void {
-    const cells = [...(k === 'death' ? drawn.deaths.keys() : k === 'stuck' ? drawn.stuck : drawn.findings.keys())].sort((a, b) => a - b);
+    const cells = [...(k === 'death' ? new Set([...drawn.deaths.keys(), ...drawn.myDeaths.keys()]) : k === 'stuck' ? drawn.stuck : drawn.findings.keys())].sort(
+      (a, b) => a - b,
+    );
     if (!cells.length) return;
     cursor[k] = (cursor[k] + 1) % cells.length;
     const c = cells[cursor[k]];

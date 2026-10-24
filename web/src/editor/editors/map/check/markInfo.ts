@@ -14,18 +14,28 @@ export const MARKS = {
 const OFTEN = ['a moment', 'a little', 'some time', 'a while', 'a long while', 'a lot'];
 const SOON = ['last of all', 'late', 'midway', 'fairly early', 'early', 'right away'];
 
+/** Whose heat map is shown: the bot's, the author's own, the two combined, or the two compared. */
+export type HeatView = 'bot' | 'mine' | 'both' | 'compare';
+
+/** The Compare view's steps (myHeat.ts compareSteps), in words. */
+const COMPARED = ['Neither you nor the bot got here', 'Only the bot got here', 'Only you got here', 'You and the bot both got here'];
+
 /** The heat at a cell, in words ("Time spent: a lot"); undefined where the heat map isn't shown. */
-export function heatWords(step: number | undefined, soon: boolean): string | undefined {
+export function heatWords(step: number | undefined, soon: boolean, view: HeatView = 'bot'): string | undefined {
   if (step === undefined) return undefined;
-  if (!step) return 'The bot never got here';
+  if (view === 'compare') return COMPARED[step] ?? COMPARED[0];
+  if (!step) return view === 'bot' ? 'The bot never got here' : view === 'mine' ? 'You never got here' : 'Neither you nor the bot got here';
   const i = Math.min(HEAT_COLORS.length, step) - 1;
-  return soon ? `Reached: ${SOON[i]}` : `Time spent: ${OFTEN[i]}`;
+  const who = view === 'mine' ? ' (you)' : view === 'both' ? ' (you or the bot, whichever more)' : '';
+  return soon ? `Reached${who}: ${SOON[i]}` : `Time spent${who}: ${OFTEN[i]}`;
 }
 
 export interface CellMarks {
   stuck: boolean;
   /** Tries that ended in a death here: 0 for none, -1 for some (an older check didn't count them). */
   deaths: number;
+  /** Times the author's hero died here in recorded play. */
+  myDeaths?: number;
   findings: string[];
   focus: boolean;
   /** The heat step there, when the heat map is shown. */
@@ -40,6 +50,7 @@ export function describeCell(m: CellMarks): string[] {
   const out: string[] = [];
   if (m.focus) out.push(`${MARKS.focus.symbol} ${MARKS.focus.what}`);
   if (m.deaths) out.push(`${MARKS.death.symbol} ${MARKS.death.what}${m.deaths > 0 ? ` (${times(m.deaths)})` : ''}`);
+  if (m.myDeaths) out.push(`${MARKS.death.symbol} You died here (${times(m.myDeaths)})`);
   if (m.stuck) out.push(`${MARKS.stuck.symbol} ${MARKS.stuck.what}`);
   for (const t of m.findings.slice(0, 3)) out.push(`${MARKS.finding.symbol} ${MARKS.finding.what}: ${t}`);
   if (m.findings.length > 3) out.push(`${MARKS.finding.symbol} and ${m.findings.length - 3} more findings`);

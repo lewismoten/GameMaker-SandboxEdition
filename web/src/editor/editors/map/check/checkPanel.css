@@ -186,3 +186,13 @@
 .lc-live {
   font-variant-numeric: tabular-nums;
 }
+/* my heat map (myHeatControls.ts) */
+.lc-mine-wrap,
+.lc-mine {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lc-mine p {
+  margin: 0;
+}

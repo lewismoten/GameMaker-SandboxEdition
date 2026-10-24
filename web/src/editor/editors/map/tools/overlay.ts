@@ -15,6 +15,8 @@ export interface OverlayState {
   outline?: { cells?: { x: number; y: number }[]; rect?: CellRect };
   /** The level check's heat map: a step of HEAT_COLORS per cell (0 = never reached). */
   heat?: Uint8Array;
+  /** Colors for the heat steps instead of HEAT_COLORS (the Level check's Compare view). */
+  heatColors?: string[];
   /** The level check's "Gray level": the map editor draws the map itself in grayscale under the heat map. */
   gray?: boolean;
   /** The level check's marks: stuck areas, deaths, a finding's cells, and the one in focus. */
@@ -30,7 +32,8 @@ function drawCheck(g: CanvasRenderingContext2D, s: number, st: OverlayState): vo
     for (let i = 0; i < st.heat.length; i++) {
       const v = st.heat[i];
       if (!v) continue;
-      g.fillStyle = HEAT_COLORS[Math.min(HEAT_COLORS.length, v) - 1];
+      const colors = st.heatColors ?? HEAT_COLORS;
+      g.fillStyle = colors[Math.min(colors.length, v) - 1];
       g.fillRect((i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
     }
     g.globalAlpha = 1;
