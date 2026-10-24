@@ -48,6 +48,11 @@ npx vite-node ../games/<id>/build.ts              # rebuild games/<id>/disk (and
 npx vite-node ../games/<id>/tools/check.ts        # play-test it headlessly (see the table)
 npx vite-node ../games/<id>/tools/walkthrough.ts  # replay the whole game, rewrite walkthrough.json
 npx vite-node ../games/kit/textfitCheck.ts <id>   # PLAYGAME's text lands on plain paper, not art
+npx vite-node ../games/kit/clipCheck.ts <id>      # no voice clip is cut off at a level's start or end
+npx vite-node ../games/kit/hiddenView.ts <id>     # the tin heart and eggs are out of sight
+npx vite-node ../games/kit/tinHearts.ts check     # every tin heart is found when touched
+npx vite-node scripts/levelSecrets.ts             # after moving a hidden thing: what the Level Maps hide
+npm run check:games                               # all of these for every game, one at a time, as a table
 npx tsc --noEmit                                  # typechecks web/ and games/
 npx vitest run                                    # the web tests, some of which read games/
 ```
@@ -133,7 +138,11 @@ indexed-color canvas with seeded randomness and dithering (`pixels.ts`), VGA col
 files (`disk.ts`), each disk's `LICENSE.TXT` (`license.ts`), photos dithered into a picture's
 palette (`photo.ts`, from the small scans in `scans/`), where PLAYGAME writes on the load and
 save pictures (`saveSlots.ts`), the text-fit audit (`textfit.ts`), the two headless
-simulators, the walkthrough writer (`walkthrough.ts`), and a PNG writer for previews.
+simulators, the walkthrough writer (`walkthrough.ts`), and a PNG writer for previews. The
+games also share some art and music: THE CHEZ (`chez.ts`), the tin heart and the Easter egg
+(`tinHeart.ts`, `easterEgg.ts`), the cast's cameos (`cameos.ts`, `carlCameo.ts`), and Teddy's
+Theme (`teddyTheme.ts`), the melody every Teddy game plays. `checkGames.ts` runs every game's
+checks in one go (`npm run check:games`).
 
 Every game opens with the same Sandbox Software logo: `kit/sandlogo.ts` ray traces gold chrome
 "SANDBOX SOFTWARE" lettering spinning in over a mirrored sandstone floor, with a highlight sweep and a
