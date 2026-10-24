@@ -5,8 +5,6 @@ import { h, pickFiles, toast, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { starterProject } from './starter';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, type CatalogEntry } from '../../project/files';
-import { crc32, isZip, readZip } from '../../project/zip';
-import { gameFromPageFiles } from '../../project/importPage';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
@@ -59,6 +57,7 @@ interface Imported {
 
 async function filesFromList(list: File[]): Promise<Imported> {
   // A page made by "Export as one web page" carries the whole game inside it.
+  const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
   const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
   if (page) return { files: page.files, name: page.title, gam: page.gam };
   return { files: await filesOnly(list) };
@@ -66,7 +65,7 @@ async function filesFromList(list: File[]): Promise<Imported> {
 
 async function filesOnly(list: File[]): Promise<GameFiles> {
   if (list.length === 1 && /\.zip$/i.test(list[0].name)) {
-    const bytes = new Uint8Array(await list[0].arrayBuffer());
+    const [bytes, { isZip, readZip }] = await Promise.all([list[0].arrayBuffer().then((b) => new Uint8Array(b)), import('../../project/zip')]);
     if (isZip(bytes)) {
       const files = new GameFiles();
       for (const e of await readZip(bytes)) if (!IGNORED_FILE.test(e.name) && !e.name.endsWith('/')) files.set(e.name, e.data);
@@ -80,6 +79,7 @@ async function filesOnly(list: File[]): Promise<GameFiles> {
 export async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
   const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && !g.original && g.gamCrc !== undefined);
   if (!shareware.length) return undefined;
+  const { crc32 } = await import('../../project/zip');
   const crcs = new Set(files.byExtension('gam').map((n) => crc32(files.get(n)!)));
   return shareware.find((g) => crcs.has(g.gamCrc!));
 }
