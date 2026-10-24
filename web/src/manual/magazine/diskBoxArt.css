@@ -1,0 +1,197 @@
+/* The DISK-O-DECK in its ad (diskBoxArt.ts): the desk's disk box (desk.css .disk-box) drawn to
+   the width of its column, its key beside it. --u is one of the desk's pixels; the box is 186
+   wide and its key takes 54 more. */
+.mag-art.art-diskbox {
+  container-type: inline-size;
+}
+
+.mag-dbx {
+  --u: calc(100cqw / 240);
+  position: relative;
+  display: block;
+  height: calc(var(--u) * 196);
+}
+
+.mag-dbx-box {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 34);
+  width: calc(var(--u) * 186);
+  height: calc(var(--u) * 156);
+  filter: drop-shadow(0 calc(var(--u) * 12) calc(var(--u) * 10) rgba(0, 0, 0, 0.5));
+}
+
+.mag-dbx-box > span {
+  position: absolute;
+}
+
+/* the smoked see-through lid, hinged at the back and standing open */
+.mag-dbx-lid {
+  left: calc(var(--u) * 8);
+  right: calc(var(--u) * 8);
+  top: calc(var(--u) * -30);
+  height: calc(var(--u) * 66);
+  clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 30%, transparent 75%, rgba(255, 255, 255, 0.1)),
+    linear-gradient(rgba(120, 124, 134, 0.42), rgba(70, 72, 80, 0.62));
+  box-shadow:
+    inset 0 calc(var(--u) * 2) 0 rgba(255, 255, 255, 0.35),
+    inset 0 calc(var(--u) * -3) 0 rgba(0, 0, 0, 0.25);
+}
+
+.mag-dbx-back {
+  left: calc(var(--u) * 10);
+  right: calc(var(--u) * 10);
+  top: calc(var(--u) * 32);
+  bottom: calc(var(--u) * 20);
+  background: linear-gradient(#a59d89, #6f6858);
+}
+
+.mag-dbx-div {
+  left: calc(var(--u) * 90);
+  width: calc(var(--u) * 6);
+  top: calc(var(--u) * 36);
+  bottom: calc(var(--u) * 12);
+  background: linear-gradient(90deg, #cfc7b2, #efe9d8 50%, #b5ad97);
+}
+
+/* a 3½" disk standing shutter down: its body, and the label's printed band at the top */
+.mag-dbx-disk,
+.mag-dbx-tab {
+  left: calc(var(--u) * var(--x));
+  bottom: calc(var(--u) * var(--b));
+  transform: scale(var(--s));
+  transform-origin: 50% 100%;
+  filter: brightness(var(--dim)) drop-shadow(0 calc(var(--u) * -2) calc(var(--u) * 3) rgba(0, 0, 0, 0.5));
+}
+
+.mag-dbx-disk {
+  width: calc(var(--u) * 70);
+  height: calc(var(--u) * 73);
+  border-radius: calc(var(--u) * 3);
+  background:
+    linear-gradient(
+        180deg,
+        transparent calc(var(--u) * 3),
+        var(--band) calc(var(--u) * 3) calc(var(--u) * 8),
+        #fbf8ee calc(var(--u) * 8) calc(var(--u) * 40),
+        transparent calc(var(--u) * 40)
+      )
+      calc(var(--u) * 8) 0 / calc(var(--u) * 54) 100% no-repeat,
+    linear-gradient(160deg, color-mix(in srgb, var(--c) 85%, #fff), var(--c) 45%, color-mix(in srgb, var(--c) 80%, #000));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%, 0 94%);
+}
+
+/* a beige index card with its tab up, between two rows */
+.mag-dbx-tab {
+  width: calc(var(--u) * 70);
+  height: calc(var(--u) * 84);
+  background: linear-gradient(#f1ebd8, #d6ceb6);
+  clip-path: polygon(0 0, 38% 0, 42% calc(var(--u) * 9), 100% calc(var(--u) * 9), 100% 100%, 0 100%);
+}
+
+.mag-dbx-side {
+  top: calc(var(--u) * 32);
+  bottom: 0;
+  width: calc(var(--u) * 12);
+  background: linear-gradient(#e2dccb, #b3ab95);
+}
+
+.mag-dbx-side.l {
+  left: 0;
+  clip-path: polygon(100% 0, 0 calc(var(--u) * 60), 0 100%, 100% 100%);
+}
+
+.mag-dbx-side.r {
+  right: 0;
+  clip-path: polygon(0 0, 100% calc(var(--u) * 60), 100% 100%, 0 100%);
+}
+
+.mag-dbx-front {
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 106);
+  bottom: 0;
+  border-radius: calc(var(--u) * 2) calc(var(--u) * 2) calc(var(--u) * 6) calc(var(--u) * 6);
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 40%), linear-gradient(#e6e0cf, #cfc7b1 55%, #b2aa93);
+  box-shadow:
+    inset 0 calc(var(--u) * 2) 0 rgba(255, 255, 255, 0.7),
+    inset 0 calc(var(--u) * -3) 0 rgba(0, 0, 0, 0.2);
+}
+
+/* the round lock, with its key slot */
+.mag-dbx-lock {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 14);
+  width: calc(var(--u) * 16);
+  height: calc(var(--u) * 16);
+  margin-left: calc(var(--u) * -8);
+  border-radius: 50%;
+  background:
+    linear-gradient(#3a3c40, #3a3c40) 50% 50% / calc(var(--u) * 2) calc(var(--u) * 8) no-repeat,
+    radial-gradient(circle at 35% 30%, #fff, #c9ccd0 35%, #7c8086 80%);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2) rgba(0, 0, 0, 0.45);
+}
+
+/* label-maker tape: glossy plastic, raised white letters, stuck on a bit crooked */
+.mag-dbx-dymo {
+  position: absolute;
+  top: calc(var(--u) * 16);
+  padding: calc(var(--u) * 2) calc(var(--u) * 5) calc(var(--u) * 1);
+  border-radius: calc(var(--u) * 1);
+  background: linear-gradient(rgba(255, 255, 255, 0.28), transparent 45%, rgba(0, 0, 0, 0.25)), var(--tape, #17181c);
+  color: #f4f4f0;
+  font:
+    700 calc(var(--u) * 8) / 1 'Courier New',
+    monospace;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.mag-dbx-dymo.l {
+  left: calc(var(--u) * 22);
+  transform: rotate(-2deg);
+}
+
+.mag-dbx-dymo.r {
+  right: calc(var(--u) * 18);
+  --tape: #b3191e;
+  transform: rotate(1.5deg);
+}
+
+/* its key, lying beside the box: a round bow with a hole, and a toothed blade */
+.mag-dbx-key {
+  position: absolute;
+  right: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 4);
+  width: calc(var(--u) * 46);
+  height: calc(var(--u) * 16);
+  transform: rotate(-28deg);
+  transform-origin: 0 50%;
+}
+
+.mag-dbx-key::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 16);
+  height: calc(var(--u) * 16);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, transparent 0 28%, #7c8086 30%, #e3e5e8 55%, #9a9ea4 80%);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2) rgba(0, 0, 0, 0.45);
+}
+
+.mag-dbx-key::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--u) * 15);
+  top: calc(var(--u) * 5);
+  width: calc(var(--u) * 30);
+  height: calc(var(--u) * 8);
+  background: linear-gradient(#e3e5e8, #8d9196);
+  clip-path: polygon(0 0, 100% 0, 100% 55%, 88% 55%, 84% 100%, 76% 55%, 68% 100%, 60% 55%, 52% 100%, 44% 55%, 0 55%);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2) rgba(0, 0, 0, 0.45);
+}

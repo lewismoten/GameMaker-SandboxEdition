@@ -68,17 +68,32 @@ const diskBoxAd = (ctx: MagContext) =>
         [
           grid(
             [
-              [art('diskbox', 'A smoked disk box, floppies standing in it in five colors, a label on its front')],
+              [
+                art(
+                  'diskbox',
+                  'A beige disk box with its smoked lid standing open: two rows of colored 3½" disks, GAMES and MY DISKS on label tape across the front, a round lock between them, and its key lying beside it',
+                ),
+              ],
               [
                 p('Your games, standing tall. Flip through your 3½" floppies, **labels up**, and the one you want goes in drive A: in a snap.'),
                 list([
-                  'Holds every Sandbox Software disk, labels and all',
-                  'Room for the games you make yourself',
-                  'Comes in any color, as long as it is smoke',
+                  'A **smoked see-through lid**: see every label without opening it',
+                  'Two compartments: **GAMES** and **MY DISKS**, label tape included',
+                  'Index cards to divide your rows, and room for the games you make yourself',
                 ]),
               ],
             ],
             0.3,
+          ),
+          side(
+            'LOCK IT AND LEAVE IT',
+            [
+              p(
+                'A **round lock in the front wall** and **two keys** on a ring. Turn the key and the lid stays shut: your disks are secured while you’re away from the office, and nobody “borrows” your saved games over lunch.',
+              ),
+              p('Keep one key on your key chain and the spare in your desk drawer. *Not* in the disk box.'),
+            ],
+            'yellow',
           ),
           side(
             'FILL IT UP',
@@ -92,16 +107,16 @@ const diskBoxAd = (ctx: MagContext) =>
             ],
             'cyan',
           ),
-          card('ORDER THE DISK-O-DECK', ['Disk box for 3½" diskettes ..... **$12.95**'], {
+          card('ORDER THE DISK-O-DECK', ['Disk box for 3½" diskettes, with lock and two keys ..... **$12.95**'], {
             fields: ['Name', 'City, State, ZIP'],
             go: 'go:desk/diskbox',
             button: 'Open the disk box on the desk',
           }),
         ],
         {
-          burst: 'NO MORE LOST DISKS!',
-          sub: 'From Shoebox Media Co.: *because the shoebox was full.*',
-          small: `${FREE} The disk box is on the desk, free: open it to pick a game.`,
+          burst: 'LOCKS TIGHT!',
+          sub: 'From Shoebox Media Co.: *because the shoebox didn’t lock.*',
+          small: `${FREE} The disk box is on the desk, free and unlocked: open it to pick a game.`,
           tone: 'pink',
         },
       ),
@@ -119,7 +134,12 @@ const speakersAd = () =>
         [
           grid(
             [
-              [art('speakers', 'A pair of beige computer speakers, each with a big and a small cone')],
+              [
+                art(
+                  'speakers',
+                  'A pair of beige Illogitech computer speakers with dark cloth grilles: the left one has the brand on it, the right one a volume knob, a green power light, a headphone jack and a Sound Blaster switch set to on',
+                ),
+              ],
               [
                 p('Hear your games the way the designers did. A matched pair for either side of your VGA monitor.'),
                 list([
@@ -149,7 +169,7 @@ const speakersAd = () =>
         ],
         {
           burst: 'TURN IT UP!',
-          sub: '*Big sound for little rooms.*',
+          sub: 'From Illogitech: *big sound for little rooms.*',
           small: `${FREE} The speakers are on the desk, free, with the Sound Blaster switch under the right one’s knob.`,
           tone: 'white',
         },

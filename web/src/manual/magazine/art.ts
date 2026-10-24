@@ -1,13 +1,16 @@
 // The magazine's drawn pictures (types.ts ArtId): THE CHEZ (desk/props/chezArt.ts), the Sandbox
-// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, and simple line drawings
-// of the desk's modem, speakers and disk box for the hardware ads; and a snapshot of the 1994
-// desk itself (deskShot.ts).
+// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, a line drawing of the
+// desk's modem, and the desk's speakers and disk box drawn as the desk draws them
+// (speakerArt.ts, diskBoxArt.ts) for the hardware ads; and a snapshot of the 1994 desk itself
+// (deskShot.ts).
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
 import { hashString } from '../printables/kit';
 import type { ArtId } from './types';
 import { deskShotImg } from './deskShot';
+import { diskBoxArt } from './diskBoxArt';
+import { speakerArt } from './speakerArt';
 
 const SVG = 'http://www.w3.org/2000/svg';
 /** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
@@ -44,14 +47,6 @@ const MODEM =
   '<rect x="6" y="30" width="108" height="34" rx="5" fill="#d8d2c2" stroke="#222" stroke-width="2"/><rect x="14" y="40" width="60" height="12" fill="#222"/><g fill="#e33">' +
   [0, 1, 2, 3, 4, 5].map((i) => `<circle cx="${82 + i * 5}" cy="46" r="1.6"/>`).join('') +
   '</g><text x="16" y="49" font-size="8" fill="#3f3" font-family="monospace">14400</text>';
-const SPEAKERS =
-  '<g stroke="#222" stroke-width="2"><rect x="8" y="10" width="40" height="70" rx="4" fill="#d8d2c2"/><rect x="72" y="10" width="40" height="70" rx="4" fill="#d8d2c2"/></g><g fill="#333"><circle cx="28" cy="34" r="12"/><circle cx="92" cy="34" r="12"/><circle cx="28" cy="64" r="6"/><circle cx="92" cy="64" r="6"/></g>';
-const DISKBOX =
-  '<path d="M10 40 L110 40 L104 86 L16 86 Z" fill="#2b2b33" stroke="#111" stroke-width="2"/><g>' +
-  ['#1d4f9c', '#d9381e', '#2f8f3a', '#e0b020', '#6a3ea1']
-    .map((c, i) => `<rect x="${20 + i * 17}" y="${18 + (i % 2) * 4}" width="15" height="26" fill="${c}"/>`)
-    .join('') +
-  '</g><rect x="40" y="58" width="40" height="9" fill="#fff" stroke="#111"/>';
 
 /** A picture for the page; THE CHEZ is drawn on a canvas and handed over as an image (it prints). */
 export function artElement(id: ArtId, alt: string): Element {
@@ -69,9 +64,9 @@ export function artElement(id: ArtId, alt: string): Element {
     case 'modem':
       return svg('0 0 120 90', MODEM, alt);
     case 'speakers':
-      return svg('0 0 120 90', SPEAKERS, alt);
+      return speakerArt(alt);
     case 'diskbox':
-      return svg('0 0 120 90', DISKBOX, alt);
+      return diskBoxArt(alt);
     case 'desk':
       return deskShotImg(alt);
     case 'chez': {
