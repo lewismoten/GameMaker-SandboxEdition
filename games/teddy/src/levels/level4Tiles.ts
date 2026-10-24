@@ -5,7 +5,7 @@
 // doves), the plaza and its billboard, and the Bijou's blinking marquee.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, klubArt, micro, scaleBlit, speckle } from '../art/draw';
-import { FULL, docLeo } from '../sprites/people';
+import { DRESSED, docLeo } from '../sprites/people';
 import { GRAV, Tiles } from './level';
 import { juggler, kid } from '../sprites/folks';
 import { presto, split } from '../sprites/magic';
@@ -326,7 +326,7 @@ export function cityTiles(): Tiles {
   // The billboard: Doc Leo's face and the Big Show.
   const bb = new Pixels(60, 60, c('blue', 2));
   bb.frame(0, 0, 60, 60, c('paint', 3)).frame(1, 1, 58, 58, c('gold', 1));
-  scaleBlit(bb, docLeo(FULL).crop(0, 0, 20, 16), 10, 6, 2);
+  scaleBlit(bb, docLeo(DRESSED).crop(0, 0, 20, 16), 10, 6, 2);
   micro(bb, 6, 40, klubArt('KLOWN KLUB'), c('yellow', 3));
   micro(bb, 8, 48, 'BIG SHOW!', c('paint', 3));
   cut(bb).forEach((row, y) => row.forEach((px, x) => t.air(`bb${x}${y}`, px)));

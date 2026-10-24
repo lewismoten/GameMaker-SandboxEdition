@@ -9,7 +9,7 @@ import { FX } from '../sprites/fx';
 import { GWINN } from '../sprites/gwinn';
 import { citiCar } from '../sprites/klown';
 import { dove, marcher } from '../sprites/magic';
-import { docLeo, FULL } from '../sprites/people';
+import { docLeo, DRESSED } from '../sprites/people';
 import { SP, landscape } from './screens';
 import { castFli } from './cast';
 import { POSES } from '../sprites/teddy';
@@ -80,7 +80,7 @@ function balloon(p: Pixels, x: number, y: number, t: number): void {
 /** Clip 1: Doc Leo practices in the backyard: a balloon dog, a magic trick, a parade strut. */
 export function leoFli(): Uint8Array {
   const r = new Reel(backyard());
-  const leo = (p: Pixels, wave = false, x = 150, y = 92) => scaleBlit(p, docLeo(FULL, wave), x, y, 2);
+  const leo = (p: Pixels, wave = false, x = 150, y = 92) => scaleBlit(p, docLeo(DRESSED, wave), x, y, 2);
   const teddy = (p: Pixels, pose: string) => scaleBlit(p, POSES[pose], 100, 134, 2);
   // the balloon dog
   for (let f = 0; f < 22; f++)
@@ -169,7 +169,7 @@ export function paradeFli(): Uint8Array {
   const r = new Reel(bg);
   const car = new Pixels(40, 40, CLEAR);
   citiCar(car, 0, 0);
-  const head = docLeo(FULL).crop(0, 0, 20, 16);
+  const head = docLeo(DRESSED).crop(0, 0, 20, 16);
   const confetti = (p: Pixels, f: number) => {
     for (let i = 0; i < 30; i++) {
       const x = (i * 53 + f * (3 + (i % 4))) % W;

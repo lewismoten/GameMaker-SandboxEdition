@@ -10,7 +10,7 @@ import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/pho
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
-import { docLeo, type Costume } from '../sprites/people';
+import { FULL, docLeo, type Costume } from '../sprites/people';
 import { citiCar, propSprite } from '../sprites/klown';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
@@ -190,7 +190,7 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   p.blit(view, 10, 10);
   outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);
   outlined(p, 16, 132, klubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
-  lines.forEach((s, i) => text(p, 16, 154 + i * 10, s, cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
+  lines.forEach((s, i) => text(p, 16, 154 + i * 10, klubArt(s), cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
   return p;
 }
 
@@ -280,7 +280,7 @@ export function wonScreen(): [Pixels, Uint8Array] {
   p.rect(0, 150, W, 50, c('wood', 2));
   for (let x = 0; x < W; x += 24) p.rect(x, 150, 1, 50, c('wood', 0));
   blob(p, 160, 152, 60, 8, SP.r('glow'), 1, 3);
-  leoBig(p, 176, 70, 2, undefined, true);
+  leoBig(p, 176, 70, 2, FULL, true);
   teddyBig(p, 'frontReach', 104, 92, 3);
   gwinnBig(p, 'gwinnRoll', 220, 126, 2);
   const R = rng(4);

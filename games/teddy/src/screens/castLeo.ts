@@ -1,4 +1,5 @@
-// Doc Leo for cast.fli (see castArt.ts), and his rubber chicken in his fist.
+// Doc Leo for cast.fli (see castArt.ts), his face paint, and his rubber chicken in his fist.
+import type { Pixels } from '../../../kit/pixels';
 import type { Art } from './castArt';
 
 /** Doc Leo from the chest up (from 'lewies-first-dressout-as-a-hobo-clown'): chewed felt fedora, wire glasses, painted brows, ash beard and white mouth, purple shirt, green tie, blue suspenders, navy corduroy jacket. */
@@ -246,6 +247,27 @@ export const LEO_BLINK: Art = {
   rows: ['............................................aaaaaaa', 'aaaaaaa............................................'],
 };
 
+type Ellipse = [cx: number, cy: number, rx: number, ry: number];
+/** The white greasepaint round his eyes, and his own nose (sunburned pink), over LEO. */
+const PATCHES: Ellipse[] = [
+  [104, 85, 21, 14],
+  [148, 84, 21, 14],
+];
+const OWN_NOSE: Ellipse = [127, 99, 9, 8];
+const inside = ([cx, cy, rx, ry]: Ellipse, x: number, y: number) => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1;
+
+/** Paints LEO's face (drawn `dy` down in `l`): white round both eyes, his nose sunburned pink. */
+export function paintFace(l: Pixels, dy: number, c: (name: string, k: number) => number): void {
+  const skin = [0, 1, 2, 3].map((k) => c('skin', k));
+  l.map((x, y, k) => {
+    const s = skin.indexOf(k);
+    if (s < 0) return k;
+    if (PATCHES.some((e) => inside(e, x, y - dy))) return c('fur', Math.min(2, s));
+    if (inside(OWN_NOSE, x, y - dy)) return c('pink', s);
+    return k;
+  });
+}
+
 /** NOSE ON: the red nose, and a smile under it. */
 export const LEO_NOSE: Art = {
   x: 111,
@@ -284,6 +306,9 @@ export const LEO_NOSE: Art = {
     'aa................................',
   ],
 };
+
+/** The smile under LEO_NOSE, without the nose. */
+export const LEO_SMILE: Art = { ...LEO_NOSE, rows: LEO_NOSE.rows.map((row, i) => (i < 12 ? '.'.repeat(row.length) : row)) };
 
 /** The rubber chicken in its red harness, in his fist (drawn at 0,0; placed when drawn). */
 export const CHICKEN: Art = {

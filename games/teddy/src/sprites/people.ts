@@ -1,8 +1,9 @@
 // Doc Leo, the friendly hobo clown, two blocks tall (Teddy is one): a chewed-up felt
-// fedora, wire glasses, an ash-gray painted beard round a white mouth, a purple shirt with
-// a green tie and blue suspenders, a navy corduroy jacket, red sneakers, and a rubber
-// chicken on a dog leash. Gwinn scattered the costume across town; `wearing` says which
-// pieces he has on.
+// fedora, wire glasses, white makeup round both eyes and round the mouth, his own nose and
+// cheeks sunburned pink, painted gray stubble, a purple shirt with a green tie and blue
+// suspenders, a navy corduroy jacket, red sneakers, and a rubber chicken on a dog leash. The
+// show's red nose is a costume piece he puts on at showtime. Gwinn scattered the costume
+// across town; `wearing` says which pieces he has on.
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, over, sprite } from '../art/draw';
 import { CK } from './klown';
@@ -10,8 +11,8 @@ import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   ...CK,
-  // ash beard paint, the felt hat, the corduroy, the shirt, cheeks
-  u: P.c('stone', 1),
+  // the painted stubble, the felt hat, the corduroy, the shirt, the sunburn
+  u: P.c('stone', 2),
   U: P.c('stone', 3),
   m: P.c('metal', 2),
   k: P.c('stone', 1),
@@ -22,6 +23,7 @@ const K: Record<string, number> = {
   V: P.c('purple', 3),
   d: P.c('gwinn', 1),
   a: P.c('pink', 2),
+  N: P.c('tongue', 1),
   t: P.c('asphalt', 1),
   T: P.c('asphalt', 2),
 };
@@ -34,30 +36,35 @@ export interface Costume {
   nose?: boolean;
 }
 
+/** Everything on, the show's red nose too: showtime. */
 export const FULL: Costume = { hat: true, tie: true, shoes: true, chicken: true, nose: true };
+/** Dressed for the day: the whole costume but the red nose, which goes on at showtime. */
+export const DRESSED: Costume = { hat: true, tie: true, shoes: true, chicken: true };
 
 /** Overwrites part of an ASCII row. */
 const patch = (row: string, x: number, s: string) => row.slice(0, x) + s + row.slice(x + s.length);
 
 /** Doc Leo as a 20x40 picture (clear background). `wave` raises his hand. */
-export function docLeo(wearing: Costume = FULL, wave = false): Pixels {
-  const R = wearing.nose ? 'R' : 's';
+export function docLeo(wearing: Costume = DRESSED, wave = false): Pixels {
+  const N = wearing.nose ? 'R' : 'N';
   const rows = [
     // the fedora, chewed at the brim (or his own shaggy gray hair)
     ...(wearing.hat
       ? ['......oooooo........', '.....okkOkkko.......', '.....okkkkkko.......', '.....oooooooo.......', '..ooOkkkkkkkkOoo....']
       : ['....................', '....................', '.....ooooooo........', '....okuukkuuko......', '....okkuukkkuo......']),
-    // the face: thick brows, glasses, rosy cheeks, the nose, a sad white mouth in an ash beard
+    // the face: thick brows, wire glasses, white makeup round both eyes and round the mouth, his
+    // own nose and cheeks sunburned pink (the show's red nose over it once it is on), painted
+    // gray stubble all round the jaw
     '....osSSSSSSSSso....',
     '....oooosSSsoooo....',
-    '....omwowmmmwowmo...',
-    '....oammmssmmmao....',
-    `....oaas${R}${R}ssaaso....`.slice(0, 20),
-    `....ous${R}${R}${R}${R}ssuo....`,
-    '....ouuuwwwwuuuo....',
+    '....mwwwmSSmwwwm....',
+    '....mwowmmmmwowm....',
+    `....owwws${N}${N}swwwo....`,
+    `....oaus${N}${N}${N}${N}suao....`,
+    '....ouuwwwwwwuuo....',
     '....ouuwoooowuuo....',
-    '....ouuowwwwouuo....',
-    '.....ouuuwwuuuo.....',
+    '....ouuuwwwwuuuo....',
+    '.....ouuuuuuuuo.....',
     '......ouuuuuuo......',
     // collar and tie, suspenders, the corduroy jacket
     wearing.tie ? '..oxxxowvGGvwoxxxo..' : '..oxxxowvvvvwoxxxo..',

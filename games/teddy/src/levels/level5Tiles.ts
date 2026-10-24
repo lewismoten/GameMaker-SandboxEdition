@@ -8,7 +8,7 @@ import { blob, micro, over, speckle } from '../art/draw';
 import { CTR } from '../ids';
 import { GRAV, Tiles } from './level';
 import { KLUB } from '../sprites/klubfolk';
-import { FULL, docLeo } from '../sprites/people';
+import { DRESSED, FULL, docLeo } from '../sprites/people';
 import { c, canvas, copy, cut, dirt, r, sky } from '../blocks/tiles';
 import { rootBeer } from '../sprites/toys';
 
@@ -326,7 +326,7 @@ export function klubTiles(): Tiles {
     t.air(`${name}Bot`, bot, name === 'bubbles' ? { birthMon: 0, birthTime: 0 } : name === 'launcher' ? { birthMon: 0, birthTime: 0 } : {});
   }
   // Doc Leo on stage in the middle of the right spotlight, without his nose; happy once he has it (the way out).
-  const leo = docLeo({ hat: true, tie: true, shoes: true, chicken: true, nose: false });
+  const leo = docLeo(DRESSED);
   const leoHappy = docLeo(FULL, true);
   const half = (fig: Pixels, y: number) => {
     const p = copy(t.pic(y ? 'cone15' : 'cone14'));
