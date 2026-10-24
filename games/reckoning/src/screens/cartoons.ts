@@ -138,7 +138,7 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
     if (sub) {
       outlined(p, 160 - textWidth('OF 3:17 A.M.') / 2, drop + 46, 'OF 3:17 A.M.', 4, 3);
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
@@ -455,7 +455,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       ])
         p.set(x, y, c('crust', 2));
       scaleBlit(p, M(k % 12 < 6 ? 'bliss' : 'worry'), 90, 112, 2);
-      if (k >= 10) say(p, pal, 236, 76, '(of the cheesecake)', 'white', 2);
+      if (k >= 10) say(p, pal, 124, 48, '(of the cheesecake)', 'white', 2); // on the dark wall, not the white fridge
       caption(p, pal, ['Was it worth it?', 'Ask him at 3:17 tomorrow.']);
     };
     const first = new Pixels(W, H);
