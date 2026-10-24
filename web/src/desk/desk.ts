@@ -25,7 +25,7 @@ import './boxes/gmBox.css';
 import { SANDBOX_SHOTS, sandboxShots } from '../gfx/sandboxShots';
 import { fitStage } from './stage';
 import { keyCardSpot } from './pc/keyCard';
-import { regSide } from '../retro/gmReg/regSide';
+import { regSideLater } from '../retro/gmReg/regSideLater';
 import { newsClipping } from './room/newsClipping';
 import { phoneNotes } from './room/phoneNotes';
 import { wallClock } from './room/wallClock';
@@ -363,7 +363,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   };
   window.addEventListener('keydown', onKey);
   // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the monitor
-  const reg = regSide(
+  const reg = regSideLater(
     () => desk.querySelector<HTMLElement>('.monitor'),
     () => computer?.focus(),
     // the desk's window: the mail truck comes for the card and drives off with it
@@ -748,7 +748,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   // the tin heart hunt's trophy, once every heart is found (nothing at all until then)
   let unTrophy: (() => void) | undefined;
-  void import('../tinHearts/trophy').then(({ heartTrophy }) => {
+  void import('../tinHearts/trophySpot').then(({ heartTrophy }) => {
     if (!desk.isConnected) return;
     unTrophy = heartTrophy((el) => {
       const clip = desk.querySelector('.news-clipping');

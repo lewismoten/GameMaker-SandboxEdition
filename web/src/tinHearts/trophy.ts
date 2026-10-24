@@ -5,10 +5,10 @@
 // a short scene (reveal.ts) in which Joe finds he had a golden heart all along, like the Tin Man;
 // after that its last picture, the heart turning on its stand, and a short note from Joe.
 // With reduced motion only the last picture, and the heart holds still (drag or ← → turn it).
+// The desk's spot for it is trophySpot.ts, which loads this only once the set is whole.
 import './trophy.css';
 import '../eggs/eggs.css';
 import { h, clear } from '../editor/core/ui';
-import { heartStates, watchHearts } from './tinHearts';
 import { drawJoe } from './joeArt';
 import { LINES, revealSounds, SCENE_SECONDS, sceneAt, seenReveal, setSeenReveal } from './reveal';
 
@@ -95,70 +95,11 @@ export function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number
 }
 
 /** The whole trophy, w x h: the stand and the heart on it. */
-function drawTrophy(art: Art, g: CanvasRenderingContext2D, w: number, hh: number, turn: number, time: number): void {
+export function drawTrophy(art: Art, g: CanvasRenderingContext2D, w: number, hh: number, turn: number, time: number): void {
   const sw = w * 0.86;
   const { top } = drawStand(g, w / 2, hh * 0.98, sw);
   const size = Math.min(w * 0.9, (top - hh * 0.02) * 1.05);
   art.drawHeart(g, w / 2, top - size * 0.42, size, turn, time);
-}
-
-/** Shows the trophy once every counted heart is found; returns the function that takes it away. */
-export function heartTrophy(place: (el: HTMLElement) => void): () => void {
-  const btn = h('button', { type: 'button', class: 'heart-trophy', hidden: true });
-  place(btn);
-  let total = 0;
-  let shown = false;
-  let opening = false;
-
-  const refresh = async () => {
-    const states = await heartStates().catch(() => []);
-    total = states.length;
-    const done = total > 0 && states.every((s) => s.found);
-    // a heart lost again (EGG.EXE's Clear all): the scene plays again when the set is whole
-    if (total && !done) setSeenReveal(false);
-    if (done === shown) return;
-    shown = done;
-    btn.hidden = !done;
-    if (!done) return clear(btn);
-    const art = await import('../eggs/bonusArt');
-    const W = 44;
-    const H = 60;
-    const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1)) * 1.5;
-    const c = h('canvas', { class: 'heart-trophy-art', width: W * k, height: H * k, 'aria-hidden': 'true' });
-    const g = c.getContext('2d')!;
-    g.scale(k, k);
-    drawTrophy(art, g, W, H, 0.45, 0.3);
-    btn.setAttribute('aria-label', 'A diamond heart on a riveted tin stand, presented by Mystery Robot Joe: take a closer look');
-    btn.title = 'Presented by Mystery Robot Joe';
-    clear(btn, c);
-  };
-
-  btn.addEventListener('click', async () => {
-    if (opening || !shown) return;
-    opening = true;
-    try {
-      await openTrophy(total);
-    } finally {
-      opening = false;
-      btn.focus();
-    }
-  });
-
-  const onChange = () => void refresh();
-  const onVisible = () => document.visibilityState === 'visible' && onChange();
-  const unwatch = watchHearts(onChange);
-  window.addEventListener('focus', onChange);
-  document.addEventListener('visibilitychange', onVisible);
-  // a heart found on the desk's PC (or in another tab) can complete the set
-  const poll = setInterval(() => document.visibilityState === 'visible' && onChange(), 8000);
-  void refresh();
-  return () => {
-    clearInterval(poll);
-    unwatch();
-    window.removeEventListener('focus', onChange);
-    document.removeEventListener('visibilitychange', onVisible);
-    btn.remove();
-  };
 }
 
 const WORDS = 'Zero One Two Three Four Five Six Seven Eight Nine Ten Eleven Twelve Thirteen Fourteen Fifteen Sixteen Seventeen Eighteen Nineteen Twenty'.split(
