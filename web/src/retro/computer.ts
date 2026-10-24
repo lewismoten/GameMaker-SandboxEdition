@@ -9,6 +9,7 @@ import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
 import { errorBox, askText } from './text/textUi';
 import type { PlayerHandle } from '../player/player';
+import { deskJoystick } from '../input/deskJoystick';
 import { GameFiles } from '../project/files';
 import { loadProject, loadSaveData, writeSaveFile } from '../project/storage';
 import { Project } from '../editor/core/project';
@@ -325,6 +326,8 @@ export class Computer extends ComputerFolders {
               noKeysButton: true,
               exactPixels: true, // the monitor's size is never a whole multiple of 320x200
               speed: this.opts.speed,
+              // the game port: the desk's game pad (when the desk has one) and any real gamepad
+              joystick: deskJoystick,
               // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
               noSoundCard: !soundBlaster(),
               onQuit: () => false, // back to DOS
