@@ -97,6 +97,7 @@ function startModern(hash?: string): void {
       h(
         'nav',
         { class: 'topbar-nav', 'aria-label': 'Site pages' },
+        h('a', { class: 'nav-link nav-games', href: '#/', title: 'All the games: play one, edit a copy, or make your own' }, 'Games'),
         h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
         h(
           'a',
@@ -104,7 +105,7 @@ function startModern(hash?: string): void {
           'Achievements',
         ),
         h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
-        h('a', { class: 'nav-link', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
+        h('a', { class: 'nav-link hide-tiny', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
       ),
       h(
         'button',
@@ -117,10 +118,11 @@ function startModern(hash?: string): void {
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the cast, achievements, the credits, playing offline and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the guide on small screens, the cast, achievements, the credits, playing offline and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
+          h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
           h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('a', { href: '#/credits' }, '📜 Credits'),
