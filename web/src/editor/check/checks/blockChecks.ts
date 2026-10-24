@@ -245,6 +245,32 @@ export function births(d: SceneData): Finding[] {
   return out;
 }
 
+/** Hazard blocks whose main color is the main color of ground the hero stands on safely. */
+export function telegraph(d: SceneData): Finding[] {
+  const use = blockUse(d.map);
+  const safe = new Map<number, number>();
+  for (let n = 0; n < BACKBL; n++) {
+    const b = d.bbl[n];
+    if (use[n] && b.solid && b.chHitPt >= 0) for (const c of topColors(b.pixels, 1)) safe.set(c, n);
+  }
+  const out: Finding[] = [];
+  for (let n = 0; n < BACKBL; n++) {
+    const b = d.bbl[n];
+    if (!use[n] || b.chHitPt >= 0) continue;
+    const c = topColors(b.pixels, 1)[0];
+    const like = c === undefined ? undefined : safe.get(c);
+    if (like === undefined) continue;
+    out.push({
+      check: 'telegraph',
+      severity: 'info',
+      title: `Hazard block ${n} is mostly the same color as safe block ${like}`,
+      detail: 'Give hurting blocks a color of their own, the same in every level.',
+      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
+    });
+  }
+  return out;
+}
+
 /** Counters that something in the game adds to: blocks of every scene, and the monsters' blocks. */
 export function counterSources(scenes: SceneData[]): Set<number> {
   const out = new Set<number>();
@@ -252,4 +278,4 @@ export function counterSources(scenes: SceneData[]): Set<number> {
   return out;
 }
 
-export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes];
+export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes, telegraph];

@@ -3,7 +3,7 @@
 // worker can post back (plain data: heat maps as typed arrays, no engine objects).
 import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
-import { characterChecks, controls, endingChecks, soundChecks, variety } from './checks/gameChecks';
+import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, variety } from './checks/gameChecks';
 import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { curve, playFindings } from './checks/playChecks';
@@ -77,9 +77,9 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   for (const d of scenes) {
     findings.push(...counters(d, gives));
     for (const c of [...blockChecks, ...monsterChecks]) findings.push(...c(d));
-    findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...soundChecks(d, files));
+    findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...jumps(d), ...soundChecks(d, files));
   }
-  if (opt.scene === undefined) findings.push(...controls(files), ...endingChecks(game), ...variety(all));
+  if (opt.scene === undefined) findings.push(...controls(files), ...endingChecks(game), ...variety(all), ...mechanics(all));
   const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
   if (opt.play !== false) {
     const progress = (scene: number, done: number, total: number, places: number) =>
@@ -103,7 +103,14 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       report.runs.push(summarize(r, d?.names.map));
     }
   }
-  report.findings = sortFindings(findings);
+  // a character, sound or block set shared by several scenes gives the same finding once
+  const seen = new Set<string>();
+  report.findings = sortFindings(
+    findings.filter((f) => {
+      const k = `${f.check}|${f.title}|${f.where.map ?? f.where.file ?? f.where.sound?.file ?? ''}`;
+      return !seen.has(k) && !!seen.add(k);
+    }),
+  );
   report.ms = now() - t0;
   return report;
 }

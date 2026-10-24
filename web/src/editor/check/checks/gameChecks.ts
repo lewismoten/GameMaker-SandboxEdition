@@ -185,3 +185,61 @@ export function variety(scenes: SceneData[]): Finding[] {
     },
   ];
 }
+
+/**
+ * Special blocks (a pull other than the scene's ordinary one, a door that opens when touched)
+ * used in a single spot in the whole game: a mechanic shown once and never built on.
+ */
+export function mechanics(scenes: SceneData[]): Finding[] {
+  const spots = new Map<string, { scene: number; map?: string; cells: number[]; what: string }[]>();
+  for (const d of scenes) {
+    const use = blockUse(d.map);
+    let common = 0;
+    for (let n = 0; n < 150; n++) if (d.bbl[n].solid !== 15 && use[n] > use[common]) common = n;
+    const ordinary = d.bbl[common].grav;
+    d.bbl.forEach((b, n) => {
+      if (!use[n] || n >= 150) return;
+      const kind = b.grav && b.grav !== ordinary ? `pull ${b.grav}` : b.solid && b.touchBl !== n && !d.bbl[b.touchBl]?.solid ? 'door' : '';
+      if (!kind) return;
+      const cells: number[] = [];
+      d.map.blocks.forEach((v, i) => v === n && cells.push(i));
+      const k = `${d.names.bbl}:${n}`;
+      spots.set(k, [
+        ...(spots.get(k) ?? []),
+        { scene: d.scene, map: d.names.map, cells, what: kind === 'door' ? 'opens when touched' : 'pulls the hero a special way' },
+      ]);
+    });
+  }
+  const out: Finding[] = [];
+  for (const [k, list] of spots) {
+    if (list.length > 1 || list[0].cells.length > 2) continue;
+    const n = Number(k.split(':').pop());
+    out.push({
+      check: 'mechanics',
+      severity: 'info',
+      title: `Block ${n} ${list[0].what}, and is used in just ${list[0].cells.length === 1 ? 'one place' : 'two places'} in the whole game`,
+      detail: 'Teach it, test it, then twist it: use it again where it asks something new.',
+      where: { scene: list[0].scene, map: list[0].map, cell: list[0].cells[0], cells: list[0].cells },
+    });
+  }
+  return out;
+}
+
+/** Jumps that a stray key can cut off in mid-air (their sequence can be interrupted). */
+export function jumps(d: SceneData): Finding[] {
+  const out: Finding[] = [];
+  for (const { scan, action } of characterActions(
+    d.chr,
+    d.bbl.some((b) => b.grav),
+  )) {
+    if (!scan || action.kind !== 'jump' || d.chr.sequences[action.seq].ground) continue;
+    out.push({
+      check: 'hero-speed',
+      severity: 'info',
+      title: `${scanName(scan)} (${action.title.toLowerCase()}) can be cut off by another key in mid-air`,
+      detail: 'Mark the jump’s sequence as one that can’t be interrupted, so it always finishes.',
+      where: { scene: d.scene, file: d.names.chr },
+    });
+  }
+  return out;
+}

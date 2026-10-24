@@ -79,6 +79,16 @@ export const CHECKS = {
     why: 'Running out of breath, keys or faith before the gate that needs them is a trap.',
     guide: { chapter: 'logic', section: 'Counters, Gates and Puzzles' },
   },
+  telegraph: {
+    name: 'Hazards that look safe',
+    why: 'A hazard drawn in the colors of safe ground can’t be told apart the first time.',
+    guide: L('Hazards that hit where they are drawn'),
+  },
+  mechanics: {
+    name: 'Mechanics used once',
+    why: 'An idea used once, in its plainest form, is a feature the game forgot to finish.',
+    guide: L('Teach, test, twist'),
+  },
   maze: { name: 'Mazes', why: 'A maze where every passage looks the same is guessing, not choosing.', guide: L('Mazes with a compass') },
   waits: { name: 'Long waits', why: 'Standing still for a lift or a timed block isn’t a challenge; it is waiting.', guide: L('Waiting is not a challenge') },
   density: { name: 'Crowded screens', why: 'More than two or three enemies on a screen is noise, not a fight.', guide: C('Fair enemies') },

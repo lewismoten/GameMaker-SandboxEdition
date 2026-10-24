@@ -139,7 +139,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const now = opt.now ?? (() => performance.now());
   const t0 = now();
   const budget = opt.budgetMs ?? 10_000;
-  const maxNodes = opt.maxNodes ?? 20_000;
+  const maxNodes = opt.maxNodes ?? 100_000;
   const sim = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev);
   // monsters a screen and a half away hold still (sim.ts freezeBeyond)
   sim.freezeBeyond = opt.exact ? { x: 0, y: 0 } : { x: 24, y: 15 };
