@@ -21,7 +21,7 @@ import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, plotThing } from '../../commo
 import { anim, corner, mon, pace } from '../../common/characters';
 import type { MapBuilder } from '../../levels/maps';
 import { addPicture, placePicture } from '../../common/picture';
-import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
+import { SIDES, T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { CGOAT_MON } from './ids';
@@ -233,8 +233,9 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
     micro(p, 7, 6 + f, '?', c('white', 2), 2);
     return p;
   };
-  book.add('fuzz0', fuzz(0), hurts(-5));
-  book.add('fuzz1', fuzz(1), hurts(-5));
+  // (solid only at its sides: landing on it slides him down beside it, not into the floor)
+  book.add('fuzz0', fuzz(0), hurts(-5, SIDES));
+  book.add('fuzz1', fuzz(1), hurts(-5, SIDES));
   // the empty creamer: a little plastic bottle, its cap on tight, nothing inside; hopping, sulking
   const creamer = (f: number) => {
     const p = P();

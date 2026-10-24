@@ -21,7 +21,7 @@ import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } 
 import { anim, bob, corner, mon, pace } from '../../common/characters';
 import type { MapBuilder } from '../../levels/maps';
 import { addPicture, placePicture } from '../../common/picture';
-import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
+import { SIDES, T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { CARD_MON } from './ids';
@@ -227,8 +227,9 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
       .set(12, 5, c('red', 3));
     return outline(p, ink);
   };
-  book.add('zombie0', zombie(0), hurts(-5));
-  book.add('zombie1', zombie(1), hurts(-5));
+  // (solid only at its sides: landing on its head slides him down beside the coffin)
+  book.add('zombie0', zombie(0), hurts(-5, SIDES));
+  book.add('zombie1', zombie(1), hurts(-5, SIDES));
   // the papier-mache witch, on her broomstick, and without it
   const witch = (f: number, broom: boolean) => {
     const p = P();

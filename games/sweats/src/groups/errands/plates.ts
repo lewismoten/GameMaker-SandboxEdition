@@ -18,7 +18,7 @@ import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';
 import type { MapBuilder } from '../../levels/maps';
-import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
+import { SIDES, T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { DINNER, clear, cut, over } from './art';
@@ -175,8 +175,9 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
       .set(16, f, c('metal', 2));
     return p;
   };
-  book.add('phantom0', phantom(0), hurts(-6));
-  book.add('phantom1', phantom(1), hurts(-6));
+  // (solid only at their sides: landing on one slides him down beside it, not into the floor)
+  book.add('phantom0', phantom(0), hurts(-6, SIDES));
+  book.add('phantom1', phantom(1), hurts(-6, SIDES));
   addBubble(book, pal, 'whisper', 'TBL7', hurts(-5), { tail: 'right' });
   addBubble(book, pal, 'chuckle', 'HEH', hurts(-4), { fill: 'cream', tail: 'right' });
   // the grease stain, sliding about with a smirk
