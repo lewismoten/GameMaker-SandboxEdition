@@ -1,11 +1,19 @@
-// An external 14,400 bps modem on the desk. Click it to dial out (TERMINAL). Its front
-// lights follow the call: MR when the PC is on, TR while the terminal runs, OH when it
-// picks up the line, CD and HS once connected, RD and SD flickering with the data.
+// An external modem on the desk. Click it to dial out (TERMINAL); click the speed on its
+// front to pick the line speed (300 baud to Unlimited, retro/bbs/lineSpeed.ts), which the BBS
+// text and downloads then take. Its front lights follow the call: MR when the PC is on, TR
+// while the terminal runs, OH when it picks up the line, CD and HS once connected, RD and SD
+// flickering with the data. A long wait on a slow line earns a hint, once a call, pointing
+// at the speed.
 import { h } from '../../editor/core/ui';
 import type { ModemSignal } from '../../retro/bbs/term';
+import { hintText, speedLabel, speedWords } from '../../retro/bbs/lineSpeed';
+import { speedRadios } from './lineSpeedControls';
 
 const LIGHTS = ['HS', 'AA', 'CD', 'OH', 'RD', 'SD', 'TR', 'MR'] as const;
 type Light = (typeof LIGHTS)[number];
+
+/** How long the hint stays up. */
+const HINT_MS = 14_000;
 
 export interface DeskModem {
   el: HTMLElement;
@@ -24,12 +32,102 @@ export function deskModem(onClick: () => void): DeskModem {
       return h('span', { class: 'mlight' }, led, h('small', null, name));
     }),
   );
-  const el = h(
+  const dial = h(
     'button',
-    { class: 'prop modem', onclick: onClick, 'aria-label': 'Modem: dial a BBS', title: 'Click to dial a BBS' },
-    h('div', { class: 'modem-body' }, h('span', { class: 'modem-brand' }, 'DATA/FAX 14,400'), panel),
+    { type: 'button', class: 'modem-dial', onclick: onClick, 'aria-label': 'Modem: dial a BBS', title: 'Click to dial a BBS' },
+    h('div', { class: 'modem-body' }, panel),
     h('span', { class: 'caption' }, 'Modem — dial a BBS'),
   );
+
+  // the speed on the front: its own button, opening a little menu of speeds
+  const brand = h('span', null);
+  const speed = h('button', { type: 'button', class: 'modem-speed', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, brand);
+  const menu = h('div', { class: 'modem-menu', hidden: true }, speedRadios());
+  const hint = h('button', { type: 'button', class: 'modem-hint', hidden: true });
+  const hintLive = h('div', { class: 'modem-hint-live', role: 'status', 'aria-live': 'polite' }, hint);
+  const el = h('div', { class: 'prop modem' }, dial, speed);
+  // the menu and the hint live on the page, over the room, so the room's lighting never dims them
+  document.body.append(menu, hintLive);
+  /** Under the modem (above it if there is no room), inside the window. */
+  const place = (pop: HTMLElement) => {
+    const r = el.getBoundingClientRect();
+    const gutter = 16;
+    const w = pop.offsetWidth;
+    const ht = pop.offsetHeight;
+    pop.style.left = `${Math.max(gutter, Math.min(innerWidth - gutter - w, r.left))}px`;
+    const below = r.bottom + 8;
+    pop.style.top = `${below + ht <= innerHeight - gutter ? below : Math.max(gutter, r.top - 8 - ht)}px`;
+  };
+
+  const showSpeed = () => {
+    brand.textContent = `DATA/FAX ${speedLabel()}`;
+    const name = `Modem speed: ${speedWords()}. Change it`;
+    speed.setAttribute('aria-label', name);
+    speed.title = name;
+  };
+  showSpeed();
+
+  let hintTimer = 0;
+  const hideHint = () => {
+    clearTimeout(hintTimer);
+    hint.hidden = true;
+  };
+  const open = (on: boolean, focus = on) => {
+    menu.hidden = !on;
+    speed.setAttribute('aria-expanded', String(on));
+    el.classList.toggle('menu-open', on);
+    if (on) {
+      hideHint();
+      place(menu);
+      if (focus) menu.querySelector<HTMLInputElement>('input:checked')?.focus();
+    }
+  };
+  speed.addEventListener('click', () => open(menu.hidden));
+  hint.addEventListener('click', () => open(true));
+  menu.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' && e.key !== 'Enter') return;
+    e.preventDefault();
+    e.stopPropagation();
+    open(false);
+    speed.focus();
+  });
+  // a choice made with the mouse closes it; the arrow keys move through the speeds and keep it open
+  menu.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('label') && (e as MouseEvent).detail > 0) {
+      open(false);
+      speed.focus();
+    }
+  });
+  const inside = (n: Node | null) => !!n && (el.contains(n) || menu.contains(n) || hint.contains(n));
+  document.addEventListener('click', (e) => {
+    if (!menu.hidden && !inside(e.target as Node)) open(false, false);
+  });
+  menu.addEventListener('focusout', (e) => {
+    if (!menu.hidden && e.relatedTarget && !inside(e.relatedTarget as Node)) open(false, false);
+  });
+  // the desk moved under them: they go
+  const away = () => {
+    if (!menu.hidden) open(false, false);
+    hideHint();
+  };
+  addEventListener('resize', away);
+  addEventListener('scroll', away, true);
+  addEventListener('gm-line-speed', showSpeed);
+  addEventListener('gm-line-hint', () => {
+    if (!el.isConnected) {
+      // this desk is gone: its pop-ups go too
+      menu.remove();
+      hintLive.remove();
+      return;
+    }
+    if (!menu.hidden) return;
+    hint.textContent = hintText('desk');
+    hint.hidden = false;
+    place(hint);
+    clearTimeout(hintTimer);
+    hintTimer = window.setTimeout(hideHint, HINT_MS);
+  });
+
   const set = (name: Light, on: boolean) => leds.get(name)?.classList.toggle('on', on);
   const flash = (name: Light) => {
     set(name, true);
@@ -55,9 +153,11 @@ export function deskModem(onClick: () => void): DeskModem {
         if (leds.get('CD')?.classList.contains('on')) flash('SD');
         break;
       case 'hangup':
+        hideHint();
         for (const l of ['OH', 'CD', 'HS', 'RD', 'SD'] as const) set(l, false);
         break;
       case 'off':
+        hideHint();
         for (const l of ['TR', 'OH', 'CD', 'HS', 'RD', 'SD'] as const) set(l, false);
         break;
     }

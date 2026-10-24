@@ -1637,14 +1637,131 @@
 }
 
 .case > .modem:hover,
-.case > .modem:focus-visible {
+.case > .modem:focus-within {
   transform: translateY(-3px);
+}
+
+/* the whole modem dials; the speed on its front is a button of its own, over it */
+.modem-dial {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.modem-dial:focus-visible,
+.modem-speed:focus-visible,
+.modem-hint:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 2px;
+}
+
+.modem-speed {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #c9ccd2;
+  font:
+    700 7px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.modem-speed:hover,
+.modem.menu-open .modem-speed {
+  border-color: #6a6d75;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* the speeds, and the hint about them: on the page over the room (bright when its light is
+   off), placed under the modem by modem.ts, over the case's front, never the screen */
+.modem-menu,
+.modem-hint {
+  position: fixed;
+  z-index: 1000;
+  color-scheme: light;
+  box-sizing: border-box;
+  border: 2px solid #2a2418;
+  border-radius: 10px;
+  background: #fffbe9;
+  color: #2a2418;
+  box-shadow: 3px 5px 0 rgba(0, 0, 0, 0.35);
+  font:
+    600 13px/1.3 'Trebuchet MS',
+    system-ui,
+    sans-serif;
+  text-align: left;
+}
+
+.modem-menu {
+  padding: 4px 10px 6px;
+}
+
+.modem-menu[hidden],
+.modem-hint[hidden] {
+  display: none;
+}
+
+.speed-radios {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.speed-radios legend {
+  padding: 2px 0;
+  font-weight: 700;
+}
+
+.speed-choice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.speed-choice input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #8a1414;
+}
+
+.modem-hint {
+  width: 230px;
+  max-width: calc(100vw - 32px);
+  min-height: 24px;
+  padding: 8px 12px;
+  cursor: pointer;
+  animation: prop-pop 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modem-hint {
+    animation: none;
+  }
 }
 
 .modem-body {
   position: relative;
-  height: 44px;
-  padding: 6px 8px 0;
+  box-sizing: border-box;
+  height: 50px;
+  padding: 26px 8px 0;
   border-radius: 6px 6px 3px 3px;
   background: linear-gradient(#3b3d42, #1f2024 70%);
   box-shadow:
@@ -1653,19 +1770,9 @@
   text-align: left;
 }
 
-.modem-brand {
-  display: block;
-  color: #c9ccd2;
-  font:
-    700 7px/1 system-ui,
-    sans-serif;
-  letter-spacing: 0.12em;
-}
-
 .modem-lights {
   display: flex;
   justify-content: space-between;
-  margin-top: 7px;
 }
 
 .mlight {
