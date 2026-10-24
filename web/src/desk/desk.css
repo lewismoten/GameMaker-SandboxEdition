@@ -113,6 +113,11 @@
   cursor: pointer;
 }
 
+/* an overlay that takes the focus itself (the disk box: arrows pick) draws no ring round the window */
+.desk-overlay[tabindex='-1']:focus {
+  outline: none;
+}
+
 .desk-bar button.primary,
 .desk-overlay button.primary {
   background: linear-gradient(#3e63e0, #2342b8);

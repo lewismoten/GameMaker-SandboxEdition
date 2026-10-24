@@ -2,6 +2,7 @@
 // who to call and when, how to call Mrs. Novak's TTY, and a sticky note about the door.
 // Click to read them larger. The numbers are 555-01xx, the range kept for made-up numbers.
 import './phoneNotes.css';
+import { focusInto } from '../overlayFocus';
 import { h } from '../../editor/core/ui';
 
 const NUMBERS: [string, string][] = [
@@ -38,9 +39,11 @@ export function notes(): HTMLElement {
 }
 
 function readLarger(): void {
+  let back = () => {};
   const close = () => {
     window.removeEventListener('keydown', onKey, true);
     overlay.remove();
+    back();
   };
   const onKey = (e: KeyboardEvent) => {
     e.stopImmediatePropagation(); // not for the PC underneath
@@ -62,6 +65,7 @@ function readLarger(): void {
   overlay.addEventListener('click', (e) => e.target === overlay && close());
   window.addEventListener('keydown', onKey, true);
   document.body.append(overlay);
+  back = focusInto(overlay.querySelector('button.close'));
 }
 
 export function phoneNotes(): HTMLElement {

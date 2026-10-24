@@ -2,6 +2,7 @@
 // released (NOTICE.md). Click it to read it larger. Nothing in it is made up: the facts and
 // the one quote are the ones NOTICE.md gives, with their source.
 import './newsClipping.css';
+import { focusInto } from '../overlayFocus';
 import { h } from '../../editor/core/ui';
 
 const QUOTE = 'if there is interest in preserving the old games you guys made then porting Game-Maker to modern OSes is the first step';
@@ -25,9 +26,11 @@ function article(): HTMLElement {
 }
 
 function readLarger(): void {
+  let back = () => {};
   const close = () => {
     window.removeEventListener('keydown', onKey, true);
     overlay.remove();
+    back();
   };
   const onKey = (e: KeyboardEvent) => {
     e.stopImmediatePropagation(); // not for the PC underneath
@@ -54,6 +57,7 @@ function readLarger(): void {
   overlay.addEventListener('click', (e) => e.target === overlay && close());
   window.addEventListener('keydown', onKey, true);
   document.body.append(overlay);
+  back = focusInto(overlay.querySelector('button.close'));
 }
 
 export function newsClipping(): HTMLElement {

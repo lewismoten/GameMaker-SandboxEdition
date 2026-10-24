@@ -299,9 +299,11 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       }
     });
 
+    const opener = document.activeElement as HTMLElement | null;
     const close = () => {
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      opener?.focus({ preventScroll: true });
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {

@@ -120,10 +120,13 @@ export function openMugViewer(): Promise<void> {
     };
     paintPicks();
 
+    // the keyboard goes into the viewer, and back to the mug on the desk when it closes
+    const opener = document.activeElement as HTMLElement | null;
     const close = () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      opener?.focus({ preventScroll: true });
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {
@@ -174,5 +177,8 @@ export function openMugViewer(): Promise<void> {
       ),
     );
     document.body.append(overlay);
+    (overlay.querySelector<HTMLElement>('.mugv-designs [aria-pressed="true"]') ?? overlay.querySelector<HTMLElement>('.mugv-designs button'))?.focus({
+      preventScroll: true,
+    });
   });
 }
