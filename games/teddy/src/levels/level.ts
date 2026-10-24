@@ -80,7 +80,7 @@ export class Tiles extends BlockSet {
   }
 
   /**
-   * The Klown Car and Pockets, over background blocks given per cell. The car door only
+   * The Clown Car and Pockets, over background blocks given per cell. The car door only
    * opens for one costume piece (the props counter); the open door is the way out.
    */
   klownCar(base: (bx: number, by: number) => Pixels, want: string, bubbleBase: Pixels, pocketsBase: (by: number) => Pixels): void {

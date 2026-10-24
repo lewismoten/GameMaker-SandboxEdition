@@ -21,11 +21,11 @@ export const STORY = pages(
     'His person is Doc Leo, a',
     'friendly hobo clown and a',
     'proud member of the',
-    'Klown Klub. Doc Leo twists',
+    'Clown Club. Doc Leo twists',
     'balloon animals, does magic',
     'tricks, and marches in every',
     'parade in town. Tonight is',
-    "the Klown Klub's Big Show,",
+    "the Clown Club's Big Show,",
     'and Doc Leo is the star.',
     '',
     '',
@@ -37,7 +37,7 @@ export const STORY = pages(
     'still learning. (SIT? Nope.)',
     '',
     'Doc Leo drove ahead to the',
-    'Klown Klub in his little red',
+    'Clown Club in his little red',
     '1976 CitiCar. Then Gwinn found',
     'his costume suitcase on the',
     'back step, and ran all over',
@@ -64,7 +64,7 @@ export const STORY = pages(
     'Backyard. Maple Street. The',
     'park. Downtown, where the',
     'parade is lining up. And at',
-    'last, the Klown Klub itself.',
+    'last, the Clown Club itself.',
   ],
   ['Good luck, Teddy.', "Who's a good boy?"],
 );
@@ -136,7 +136,7 @@ const CREDITS_TEXT = pages(
     'Starring Teddy as himself.',
     'With Gwinn as herself (sorry).',
     'And Doc Leo, the friendliest',
-    'hobo clown in the Klown Klub,',
+    'hobo clown in the Clown Club,',
     'and his red 1976 CitiCar.',
     '',
     'Made with GAME-MAKER 3.0 by',
@@ -176,7 +176,7 @@ export const WON = pages([
   'Then he orders a root beer.',
   '(He always orders root beer.)',
   'The crowd roars, the',
-  'Klown Klub parades out into',
+  'Clown Club parades out into',
   'the night with Teddy up on',
   'the CitiCar roof, and Gwinn',
   'chases the confetti.',
@@ -242,7 +242,7 @@ Teddy is a Pembroke Welsh Corgi
 who knows a ton of tricks. His
 person, Doc Leo, is a friendly
 hobo clown, and tonight he is
-the star of the Klown Klub's
+the star of the Clown Club's
 Big Show. But Teddy's big
 sister Gwinn just ran off with
 Doc Leo's costume suitcase and
@@ -331,7 +331,7 @@ SAYING THANKS
   Gwinn (yes, even Gwinn), and
   for Doc Leo and every
   friendly clown in every
-  Klown Klub.
+  Clown Club.
 
 Woof!
 `.replace(/^\n/, '');

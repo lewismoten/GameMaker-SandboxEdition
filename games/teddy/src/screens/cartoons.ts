@@ -1,10 +1,10 @@
 // The cartoons (FLIs) that tell the story as a slide show, before the title poster and the
 // story pages: Doc Leo at home practicing his clown act (balloon animals, a magic trick, a
-// parade strut), then off to the Klown Klub in his red CitiCar; then intro.fli (Gwinn and
-// the suitcase). And at the end, the Klown Klub parade with Teddy riding on top.
+// parade strut), then off to the Clown Club in his red CitiCar; then intro.fli (Gwinn and
+// the suitcase). And at the end, the Clown Club parade with Teddy riding on top.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from '../art/draw';
+import { CLEAR, blob, centered, clubArt, outlined, scaleBlit } from '../art/draw';
 import { FX } from '../sprites/fx';
 import { GWINN } from '../sprites/gwinn';
 import { citiCar } from '../sprites/klown';
@@ -43,7 +43,7 @@ class Reel {
   }
 }
 
-const caption = (p: Pixels, words: string, y = 10) => centered(p, y, klubArt(words), c('paint', 3), 1, c('ink', 0));
+const caption = (p: Pixels, words: string, y = 10) => centered(p, y, clubArt(words), c('paint', 3), 1, c('ink', 0));
 
 /** The balloon dog in the cartoon, green like the balloon it was twisted from. */
 const greenPoodle = (() => {
@@ -118,13 +118,13 @@ export function leoFli(): Uint8Array {
   r.frame((p) => {
     leo(p, true);
     teddy(p, 'frontBeg');
-    caption(p, "TONIGHT IS THE KLOWN KLUB'S");
+    caption(p, "TONIGHT IS THE CLOWN CLUB'S");
     caption(p, 'BIG SHOW, AND HE IS THE STAR!', 22);
   }, 14);
   return r.fli(9);
 }
 
-/** Clip 2: Doc Leo goes ahead to the Klub in his CitiCar; his costume suitcase waits on the step. */
+/** Clip 2: Doc Leo goes ahead to the Club in his CitiCar; his costume suitcase waits on the step. */
 export function carFli(): Uint8Array {
   const bg = backyard();
   // the drive along the bottom, and the suitcase by the back step
@@ -158,7 +158,7 @@ export function carFli(): Uint8Array {
   return r.fli(9);
 }
 
-/** The finale: the Klown Klub parade down Main Street at night, Teddy riding on the CitiCar. */
+/** The finale: the Clown Club parade down Main Street at night, Teddy riding on the CitiCar. */
 export function paradeFli(): Uint8Array {
   const bg = new Pixels(W, H, c('ink', 0));
   for (let y = 0; y < 120; y++) for (let x = 0; x < W; x++) if ((x * 13 + y * 7) % 97 === 0) bg.set(x, y, c('glow', 3));
@@ -186,7 +186,7 @@ export function paradeFli(): Uint8Array {
       scaleBlit(p, head, x0 + 124, 104 - (f % 2), 2);
       scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
       scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
-      caption(p, f < 30 ? 'AND AFTER THE BIG SHOW...' : 'THE KLOWN KLUB PARADE!', 8);
+      caption(p, f < 30 ? 'AND AFTER THE BIG SHOW...' : 'THE CLOWN CLUB PARADE!', 8);
       if (f >= 30) caption(p, 'TEDDY RIDES UP FRONT.', 20);
     });
   return r.fli(5);

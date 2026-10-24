@@ -1,4 +1,4 @@
-// teddy.gam: the title scene, the ending, and the levels in order, each one's Klown Car
+// teddy.gam: the title scene, the ending, and the levels in order, each one's Clown Car
 // door linked to the start of the next.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
 import type { Level } from './levels/level';

@@ -107,7 +107,7 @@ export function park(): Level {
   m.set(76, 39, 'discKid');
   m.set(74, 38, 'lampTop').set(74, 39, 'lamp');
 
-  // The park gate, Pockets and the Klown Car.
+  // The park gate, Pockets and the Clown Car.
   const car = 84;
   m.set(car - 2, 37, 'pocketsWant')
     .set(car - 2, 38, 'pocketsHead')

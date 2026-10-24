@@ -1,5 +1,5 @@
 // Level 4's monsters: the revolving doors (Level 5 uses them too), Juggles' pins, pigeons
-// on the awnings, Presto's doves, the Klown Klub parade marching down Main Street, a kid
+// on the awnings, Presto's doves, the Clown Club parade marching down Main Street, a kid
 // who asks for a sit, and Gwinn (in the store, and chasing pigeons).
 import { sprite } from '../art/draw';
 import { CRITTERS } from '../sprites/critters';
@@ -111,7 +111,7 @@ export function cityBeasts() {
   // downtown asks more of Teddy than the park: a pin or a peck costs more than a squirrel's nip
   b.pic('pin1', pin(0), { hp: -12 }).pic('pin2', pin(1), { hp: -12 });
   b.pic('dove1', dove(0)).pic('dove2', dove(1));
-  // Main Street is closed to traffic: the Klown Klub parade is marching to the Big Show.
+  // Main Street is closed to traffic: the Clown Club parade is marching to the Big Show.
   for (const kind of ['drum', 'banner', 'balloons'] as const)
     for (const step of [0, 1]) {
       const [top, bottom] = split(marcher(kind, step));

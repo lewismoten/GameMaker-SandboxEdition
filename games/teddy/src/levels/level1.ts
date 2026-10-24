@@ -103,7 +103,7 @@ export function backyard(): Level {
   m.rect(fence - 2, GROUND + 1, 8, 1, (x) => (x % 2 ? 'tunnel' : 'tunnel2'));
   m.set(fence + 5, GROUND, 'hole');
 
-  // The alley and the Klown Car.
+  // The alley and the Clown Car.
   m.set(fence + 7, 39, 'signCar');
   const car = fence + 11;
   m.set(car - 2, 37, 'pocketsWant')
@@ -113,7 +113,7 @@ export function backyard(): Level {
     .set(car + 1, 38, 'carRoofR')
     .set(car, 39, 'carDoor')
     .set(car + 1, 39, 'carBack');
-  // a tin heart up on the Klown Car's roof, for a dog who hops up instead of in (100 points)
+  // a tin heart up on the Clown Car's roof, for a dog who hops up instead of in (100 points)
   m.set(car + 1, 37, addTinHeart(bs, m.get(car + 1, 37)));
   m.rect(car + 3, 30, 5, 10, 'hedgeWall');
   m.rect(car + 3, 29, 5, 1, () => pick('hedgeTopHi', 'hedgeTopHi2'));

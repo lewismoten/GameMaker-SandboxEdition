@@ -77,7 +77,7 @@ export const CTR = {
   treats: 3,
   /** Doc Leo's props fetched on this level (the exit gate takes one). */
   props: 20,
-  /** Klown Klub tickets (earned with tricks; the Klub's turnstiles take them). */
+  /** Clown Club tickets (earned with tricks; the Club's turnstiles take them). */
   tickets: 21,
 } as const;
 

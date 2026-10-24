@@ -26,8 +26,8 @@ export interface TextOverflow {
   missing?: string;
 }
 
-/** What the PC font draws (printable ASCII), and the mirrored K the Teddy games letter by hand. */
-const pcFont = (ch: string) => /[\x20-\x7e\ua4d8]/.test(ch);
+/** What the PC font draws (printable ASCII), and the red-nose O the Teddy games letter the Clown Club with. */
+const pcFont = (ch: string) => /[\x20-\x7e\u25cf\u2022]/.test(ch);
 
 export interface TextBoundsReport {
   overflows: TextOverflow[];

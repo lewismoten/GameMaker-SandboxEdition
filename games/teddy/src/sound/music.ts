@@ -1,6 +1,6 @@
 // The soundtrack: ten short FM songs for the Sound Blaster. "Teddy's Theme" runs through
 // most of them (bouncy on the title, sleepy for the story, a full circus march at the
-// Klown Klub). Each voice is its own OPL2 channel; chords spread across three channels.
+// Clown Club). Each voice is its own OPL2 channel; chords spread across three channels.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 import { THEME_A, THEME_B } from '../../../kit/teddyTheme';
 
@@ -211,7 +211,7 @@ export function citySong(): Uint8Array {
   ]);
 }
 
-/** Level 5, the Klown Klub: the theme as a breakneck circus march. */
+/** Level 5, the Clown Club: the theme as a breakneck circus march. */
 export function klubSong(): Uint8Array {
   const chords = ['C', 'C', 'G7', 'G7', 'G7', 'G7', 'C', 'C', 'C', 'C7', 'F', 'Fm', 'C', 'G7', 'C', 'C'];
   const run = 'G4 e, G#4 e, A4 e, A#4 e, B4 e, C5 e, C#5 e, D5 e';

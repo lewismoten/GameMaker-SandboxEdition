@@ -29,7 +29,7 @@
           "y": 26,
           "w": 24,
           "h": 14,
-          "caption": "Showtime at the Klown Klub: Gwinn in the spotlight, Doc Leo waiting for his nose."
+          "caption": "Showtime at the Clown Club: Gwinn in the spotlight, Doc Leo waiting for his nose."
         },
         {
           "map": "backyard.map",
@@ -174,7 +174,7 @@
           ]
         },
         {
-          "head": "5. The Klown Klub",
+          "head": "5. The Clown Club",
           "hints": [
             {
               "q": "The turnstile won't let me in.",
@@ -233,11 +233,11 @@
     },
     {
       "kind": "idcard",
-      "title": "Klown Klub card",
+      "title": "Clown Club card",
       "note": "Honorary member",
-      "org": "THE KLOWN KLUB",
+      "org": "THE CLOWN CLUB",
       "name": "TEDDY",
-      "role": "Honorary Klown, Very Good Boy",
+      "role": "Honorary Clown, Very Good Boy",
       "fields": [
         ["Breed", "Pembroke Welsh Corgi"],
         ["Sponsor", "Doc Leo"],
@@ -251,7 +251,7 @@
         "cbl": "teddy.cbl",
         "pal": "backyard.pal"
       },
-      "back": "The bearer saved the Big Show and is welcome at every Klown Klub show, free of charge, forever. Honk twice at the turnstile. No pies in the face (unless asked)."
+      "back": "The bearer saved the Big Show and is welcome at every Clown Club show, free of charge, forever. Honk twice at the turnstile. No pies in the face (unless asked)."
     }
   ],
   "stickers": [
@@ -393,7 +393,7 @@
   "news": [
     {
       "head": "A corgi joins the Sandbox family",
-      "html": "<p>Teddy the corgi is back, and this time he's left the sandbox for the big town! <b>Teddy's Little Big Adventure</b> sends him from Doc Leo's backyard to the Klown Klub's Big Show with nine tricks on nine keys. Our testers' favorite trick? Play dead. Our testers' favorite dog? Don't ask Gwinn.</p>"
+      "html": "<p>Teddy the corgi is back, and this time he's left the sandbox for the big town! <b>Teddy's Little Big Adventure</b> sends him from Doc Leo's backyard to the Clown Club's Big Show with nine tricks on nine keys. Our testers' favorite trick? Play dead. Our testers' favorite dog? Don't ask Gwinn.</p>"
     },
     {
       "head": "Ask the Sandbox: why so many dogs?",
