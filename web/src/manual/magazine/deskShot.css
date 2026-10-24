@@ -8,7 +8,8 @@
 }
 
 .mag-art.art-desk img.mag-desk-shot {
-  aspect-ratio: 1600 / 950;
+  /* a touch wider than the shot, so its feature page has room at any scale */
+  aspect-ratio: 1600 / 900;
   object-fit: cover;
   background: #2d3447;
 }
