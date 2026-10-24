@@ -21,7 +21,8 @@ export interface Move {
 }
 
 export interface KeyRoles {
-  move: { scan: number; dx: number; dy: number }[];
+  /** `once`: its sequence plays once a press (no repeat while held): a push, a shove of a sled. */
+  move: { scan: number; dx: number; dy: number; once?: boolean }[];
   /** `hold`: holding the key keeps it going (it repeats and can't stall), so a long hold climbs or flies. */
   jump: { scan: number; dx: number; hold?: boolean }[];
   /** Keys whose sequence stays in place: fire, tricks, pick up. */
@@ -57,7 +58,7 @@ export function keyRoles(chr: Character, gravity: boolean): KeyRoles {
     const moves = s.frames.some((f) => f.pic2 !== CHARBL + 1 && f.pic2 !== MONBL && (f.x || f.y));
     const hold = !s.norepeat && !s.ground;
     if (action.kind === 'action' && moves && !dx && !dy) roles.jump.push({ scan, dx: 0, hold });
-    else if (action.kind === 'move') roles.move.push({ scan, dx: Math.sign(dx), dy: Math.sign(dy) });
+    else if (action.kind === 'move') roles.move.push({ scan, dx: Math.sign(dx), dy: Math.sign(dy), ...(s.norepeat ? { once: true } : {}) });
     else if (action.kind === 'jump') roles.jump.push({ scan, dx: Math.sign(dx), hold });
     // a trick that neither moves the hero, fires anything nor picks up can't take them anywhere new
     else if (action.kind === 'fire' || action.kind === 'pickup' || (action.kind === 'action' && (dx || dy))) roles.act.push(scan);
@@ -73,6 +74,12 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
     out.push({ name: `walk ${m.scan}`, steps: [{ keys: [m.scan], until: 'cell', max: 30 }] });
     // a short step lines a jump up; on a top-down map the walk does it all
     if (gravity) out.push({ name: `step ${m.scan}`, steps: [{ keys: [m.scan], until: 'ticks', max: 2 }] });
+    // a key that moves once a press is tapped again and again until the hero is in a new cell
+    if (m.once)
+      out.push({
+        name: `tap ${m.scan}`,
+        steps: Array.from({ length: 8 }, (_, i) => ({ keys: i % 2 ? [] : [m.scan], until: 'ticks' as const, max: i % 2 ? 3 : 4 })),
+      });
   }
   // a jump tapped or held a while, alone, steered from the start (running) or after it
   for (const j of roles.jump)

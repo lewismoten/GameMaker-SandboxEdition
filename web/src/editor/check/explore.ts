@@ -176,6 +176,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const timed = timedBlocks(bg);
   // blocks that refuse a touch while a counter is short (locks), and the counters they read
   const gateCounters = [...new Set(bg.filter((b) => (b.effect >= 20 || b.effect === 3) && b.eamt < 0).map((b) => b.effect))];
+  // a counter matters up to what its dearest gate takes (one over it: money and the special
+  // counters are kept one over what they show), so 9 words and 24 aren't the same place
+  const gateNeed = new Map(gateCounters.map((e) => [e, Math.max(9, ...bg.filter((b) => b.effect === e && b.eamt < 0).map((b) => -b.eamt + 1))]));
   const limitedSeqs = w.chr.sequences.flatMap((s, i) => (i >= 5 && s.key && w.chr.meter[i] < 32767 ? [i] : []));
   const solidMonster = (n: number) => {
     const m = w.mon[n];
@@ -232,7 +235,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const signature = () => {
     const ci = w.ci;
     let s = ci.inv.filter((b) => b < BACKBL).join('.');
-    for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], 9) : 0}`;
+    for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], gateNeed.get(e)!) : 0}`;
     for (const q of limitedSeqs) s += `|q${Math.min(ci.meter[q], 3)}`;
     const d = changedCells(baseMap, w.map);
     for (let i = 0; i < d.length; i += 2) {
