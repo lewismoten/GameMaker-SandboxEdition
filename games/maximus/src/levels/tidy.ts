@@ -2,7 +2,7 @@
 // pocket the generator sealed off) is cleared to the ground it lay on, and a healing spring
 // that landed in such a pocket moves to a cave floor that can be reached. Found with
 // tools/reach.ts.
-import type { Block } from '../../../web/src/formats/blocks';
+import type { Block } from '../../../../web/src/formats/blocks';
 import type { SetBuilder } from '../blocks/blockset';
 import { Grid, W, H, reachable } from './mapkit';
 
