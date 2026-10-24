@@ -271,6 +271,9 @@ export function about(b: Built): object {
       'space2.mon#32',
       'space2.mon#54',
     ],
+    // Level check findings kept on purpose (games/kit/levelCheck.ts): the foe that holds the
+    // hero while it hurts stays as it is
+    acceptedFindings: ['hurt-lock s9 Monster 10 holds the hero while it hurts'],
   };
 }
 

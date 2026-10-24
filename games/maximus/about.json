@@ -122,5 +122,8 @@
     "space2.mon#11",
     "space2.mon#32",
     "space2.mon#54"
+  ],
+  "acceptedFindings": [
+    "hurt-lock s9 Monster 10 holds the hero while it hurts"
   ]
 }
