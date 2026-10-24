@@ -5,6 +5,7 @@
   "year": 1996,
   "price": "$0 - a baker's dozen of nothing",
   "secret": true,
+  "sameEverySide": ["brewery.mon#17", "cistern.mon#14", "clock.mon#15", "larder.mon#15"],
   "eggs": [
     { "id": "rotten", "block": 4 },
     { "id": "faberge", "block": 5 }

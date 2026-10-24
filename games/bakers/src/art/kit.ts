@@ -219,6 +219,20 @@ export function redcoat(step: number, retreat = false): Pixels {
   return outline(p, ink);
 }
 
+/** The toy Redcoat side on, marching to the right: bearskin, profile, musket at the shoulder. */
+export function redcoatSide(step: number): Pixels {
+  const p = blank();
+  const ink = O();
+  p.rect(7, 0, 6, 6, ink).rect(8, 1, 4, 5, c('ink', 1));
+  p.rect(8, 6, 4, 3, c('skin', 2)).set(12, 7, c('skin', 2)).set(10, 7, ink);
+  p.rect(7, 9, 6, 6, ink).rect(8, 9, 4, 5, c('redcoat', 2)).line(8, 9, 11, 14, c('paper', 4));
+  p.rect(6, 2, 1, 13, c('brown', 0)).set(6, 1, c('grey', 4)).set(7, 11, c('skin', 2));
+  if (step) p.rect(8, 15, 2, 3, c('paper', 3)).rect(10, 15, 2, 3, c('paper', 3));
+  else p.rect(7, 15, 2, 3, c('paper', 3)).rect(11, 15, 2, 3, c('paper', 3));
+  p.rect(4, 18, 11, 2, c('brown', 1));
+  return outline(p, ink);
+}
+
 /** A sugar ant, black and shiny. */
 export function ant(step: number): Pixels {
   const p = blank();

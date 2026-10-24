@@ -22,6 +22,7 @@ import {
   knife,
   mouse,
   redcoat,
+  redcoatSide,
   rollingPin,
   spark,
   squawkWave,
@@ -50,6 +51,7 @@ const FRAMES: Record<string, [Pixels, BlockDef][]> = {
   knife: [0, 1].map((i) => [knife(i), { hp: KILL }]),
   redcoat: [0, 1].map((i) => [redcoat(i), { hp: KILL }]),
   redcoatRun: [0, 1].map((i) => [redcoat(i, true), {}]),
+  redcoatSide: [0, 1].map((i) => [redcoatSide(i), { hp: KILL }]),
   ant: [0, 1].map((i) => [ant(i), { score: -10 }]),
   fireball: [0, 1].map((i) => [fireball(i), { hp: KILL }]),
   steam: [0, 1].map((i) => [steam(i), { hp: KILL }]),
@@ -148,7 +150,11 @@ export const KINDS = {
     const full = `redcoat${tag}@${path.map((p) => p.join(',')).join(';')}`;
     const run = `${full}~run`;
     if (!b.has(run)) b.add(run, { pics: pics('redcoatRun', 4), power: 72, towards: -2, end: 91, becomes: full, thru: true });
-    if (!b.has(full)) b.add(full, { pics: pics('redcoat', 6), power: 50, becomes: run, thru: true, upscore: 50, path: loop(full, path) });
+    // a beat across the room marches side on, turning at each end; one up and down faces the room
+    const across = path.every(([, dy]) => !dy);
+    const moves = path.map(([dx, dy, speed]): [number, number, number, number?] => [dx, dy, speed, across && dx < 0 ? 4 : 0]);
+    if (!b.has(full))
+      b.add(full, { pics: pics(across ? 'redcoatSide' : 'redcoat', 6), power: 50, becomes: run, thru: true, upscore: 50, path: loop(full, moves) });
     return full;
   },
   teddy: (b: Bestiary, flip = false) => {
