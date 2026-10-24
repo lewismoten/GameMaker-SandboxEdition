@@ -96,8 +96,9 @@ export const FREE_CD: MagSection = {
               ),
             ],
             [
-              head('\\GAMES: Sandbox', { size: 's', level: 2 }),
-              p(`Sandbox Software’s games and The Bard of Bizarre’s, each with its build code: ${titles(of(ctx, 'sandbox', 'bizarre'))}.`),
+              head('\\GAMES: two folders', { size: 's', level: 2 }),
+              p(`**\\GAMES\\SANDBOX**: Sandbox Software’s games, each with its build code: ${titles(of(ctx, 'sandbox'))}.`),
+              p(`**\\GAMES\\BIZARRE**: The Bard of Bizarre’s song-games, with theirs: ${titles(of(ctx, 'bizarre'))}.`),
             ],
           ]),
           note(
