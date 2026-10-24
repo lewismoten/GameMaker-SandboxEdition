@@ -6,7 +6,7 @@
 import { GameFiles, IGNORED_FILE } from '../project/files';
 import { isZip, readZip } from '../project/zip';
 import { decodePack } from '../project/gamePack';
-import { gameFromPageHtml } from '../project/importPage';
+import { fromBase64, readSinglePage, unpack, type SinglePageGame } from '../export/singlePage';
 import { parseGame } from '../formats/game';
 import { takeCompanion, type Companion } from '../project/companion';
 import { LinkError, MAX_FILES, MAX_TOTAL_BYTES, checkLimits, cleanName } from './protocol';
@@ -53,6 +53,35 @@ async function gunzip(bytes: Uint8Array): Promise<Uint8Array> {
   return out;
 }
 
+/** The game inside a page made by "Export as one web page", unpacked within the limits. */
+async function pageGame(bytes: Uint8Array): Promise<{ files: [string, Uint8Array][]; title?: string; gam?: string }> {
+  let game: SinglePageGame | undefined;
+  try {
+    game = readSinglePage(new TextDecoder().decode(bytes));
+  } catch (e) {
+    throw new LinkError((e as Error).message || 'The web page’s game is damaged.', 'invalid');
+  }
+  if (!game) throw new LinkError('That web page holds no game. Only pages made by “Export as one web page” carry one.', 'no-game');
+  const list = Array.isArray(game.files) ? game.files : [];
+  if (!list.every((f) => Array.isArray(f) && typeof f[0] === 'string' && Number.isInteger(f[1]) && f[1] >= 0) || typeof game.data !== 'string') {
+    throw new LinkError('The web page’s game is damaged.', 'invalid');
+  }
+  if (list.length > MAX_FILES || list.reduce((n, f) => n + f[1], 0) > MAX_TOTAL_BYTES)
+    throw new LinkError('The game is bigger than the limit allows.', 'too-big');
+  try {
+    const raw = fromBase64(game.data);
+    const blob = game.enc === 'gzip' ? await gunzip(raw) : raw;
+    return {
+      files: unpack(list, blob),
+      title: typeof game.title === 'string' ? game.title : undefined,
+      gam: typeof game.gam === 'string' ? game.gam : undefined,
+    };
+  } catch (e) {
+    if (e instanceof LinkError) throw e;
+    throw new LinkError('The web page’s game is damaged.', 'invalid');
+  }
+}
+
 /** One file that holds a whole game (a zip, a pack, an exported page), opened up; undefined when it is just a file. */
 async function container(name: string, bytes: Uint8Array): Promise<{ files: [string, Uint8Array][]; title?: string; gam?: string } | undefined> {
   if (isZip(bytes)) {
@@ -75,13 +104,7 @@ async function container(name: string, bytes: Uint8Array): Promise<{ files: [str
       throw new LinkError('The game pack is damaged or cut short.', 'invalid');
     }
   }
-  if (looksHtml(name, bytes) && bytes.length <= MAX_TOTAL_BYTES * 2) {
-    const page = await gameFromPageHtml(new TextDecoder().decode(bytes)).catch((e: Error) => {
-      throw new LinkError(e.message || 'The web page’s game is damaged.', 'invalid');
-    });
-    if (!page) throw new LinkError('That web page holds no game. Only pages made by “Export as one web page” carry one.', 'no-game');
-    return { files: page.files.entries(), title: page.title, gam: page.gam };
-  }
+  if (looksHtml(name, bytes)) return pageGame(bytes);
   return undefined;
 }
 

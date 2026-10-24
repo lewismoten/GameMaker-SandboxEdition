@@ -101,7 +101,15 @@ describe('readFilesMessage', () => {
   it('holds to the limits', () => {
     const many = Object.fromEntries(Array.from({ length: MAX_FILES + 1 }, (_, i) => [`f${i}.txt`, new Uint8Array(1)]));
     expect(reason(() => readFilesMessage({ type: FILES, files: many }))).toBe('too-big');
-    expect(reason(() => checkLimits([['big.fli', new Uint8Array(MAX_FILE_BYTES + 1)]]))).toBe('too-big');
+    expect(
+      reason(() =>
+        checkLimits([
+          ['big.fli', new Uint8Array(MAX_FILE_BYTES + 1)],
+          ['a.gam', new Uint8Array(1)],
+        ]),
+      ),
+    ).toBe('too-big');
+    expect(reason(() => checkLimits([['game.zip', new Uint8Array(MAX_FILE_BYTES + 1)]]))).toBe('none'); // a lone file may be a whole game
     const four = Array.from({ length: 4 }, (_, i) => [`f${i}`, new Uint8Array(MAX_FILE_BYTES)] as const);
     expect(reason(() => checkLimits(four))).toBe('too-big');
     expect(reason(() => checkLimits(four.slice(0, 2)))).toBe('none');

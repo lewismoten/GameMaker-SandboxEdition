@@ -118,13 +118,18 @@ export class LinkError extends Error {
   }
 }
 
-/** Throws a LinkError when there are too many files or bytes. */
+/**
+ * Throws a LinkError when there are too many files or bytes. A lone file may be a whole game
+ * (a .zip, a pack, an exported page), so only the total holds for it; its contents are
+ * checked again once unpacked.
+ */
 export function checkLimits(files: readonly (readonly [string, Uint8Array])[]): void {
   if (!files.length) throw new LinkError('No files came with the game.', 'invalid');
   if (files.length > MAX_FILES) throw new LinkError(`That is ${files.length} files; a game may have at most ${MAX_FILES}.`, 'too-big');
   let total = 0;
   for (const [name, bytes] of files) {
-    if (bytes.length > MAX_FILE_BYTES) throw new LinkError(`${name} is ${mb(bytes.length)}; one file may be at most ${mb(MAX_FILE_BYTES)}.`, 'too-big');
+    if (files.length > 1 && bytes.length > MAX_FILE_BYTES)
+      throw new LinkError(`${name} is ${mb(bytes.length)}; one file may be at most ${mb(MAX_FILE_BYTES)}.`, 'too-big');
     total += bytes.length;
   }
   if (total > MAX_TOTAL_BYTES) throw new LinkError(`The game is ${mb(total)}; it may be at most ${mb(MAX_TOTAL_BYTES)}.`, 'too-big');

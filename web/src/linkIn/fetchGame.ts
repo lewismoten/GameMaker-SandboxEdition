@@ -15,10 +15,7 @@ export async function fetchCapped(url: string, cap: number, optional = false): P
     res = await fetch(url, { credentials: 'omit', redirect: 'follow', mode: 'cors' });
   } catch {
     // A network error and a CORS refusal look the same to a page, on purpose.
-    throw new LinkError(
-      `The game at ${url} could not be fetched. Its server may not allow other sites to read it (it needs an Access-Control-Allow-Origin header), or it may be offline. Its site can send the game with window.open and postMessage instead.`,
-      'cors',
-    );
+    throw new LinkError(`The game at ${url} could not be fetched. Its server may not let other sites read its files, or it may be offline.`, 'cors');
   }
   if (!res.ok) {
     if (optional && res.status === 404) return undefined;

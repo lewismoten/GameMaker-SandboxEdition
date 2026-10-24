@@ -5,6 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createZip } from '../project/zip';
 import { encodePack } from '../project/gamePack';
+import { encodeGame, scriptJson } from '../export/singlePage';
 import { LinkError } from './protocol';
 import { unpackGame } from './unpack';
 
@@ -41,6 +42,15 @@ describe('unpackGame', () => {
       expect(g.files.names()).toEqual(files.map(([n]) => n).sort());
       expect(g.title).toBe('Teddy');
     }
+  });
+  it('reads a page made by “Export as one web page”', async () => {
+    const game = await encodeGame({ id: 'teddy', title: 'Teddy’s Little Big Adventure', gam: 'teddy.gam' }, files);
+    const html = `<!doctype html><title>x</title><script type="application/json" id="gm-game">${scriptJson(game)}</script>`;
+    const g = await unpackGame([['teddy.html', new TextEncoder().encode(html)]]);
+    expect(g.title).toBe('Teddy’s Little Big Adventure');
+    expect(g.files.size).toBe(files.length);
+    const lying = html.replace(/"files":\[\[/, '"files":[["huge.fli",99999999],[');
+    expect(await reasonOf(unpackGame([['teddy.html', new TextEncoder().encode(lying)]]))).toBe('too-big');
   });
   it('turns bad data into plain errors', async () => {
     const zip = await createZip([{ name: 'a.gam', data: new Uint8Array(10) }]);
