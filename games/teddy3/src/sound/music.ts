@@ -2,7 +2,29 @@
 // with the series' themes (themes.ts). Teddy's stops play Teddy's Theme, the MEANWHILE...
 // stops play Gwinn's or Doc Leo's, the road trips play the Road Song, and the ending plays
 // "Happy Birthday to You" before all four themes together.
-import { BASS, CALLIOPE, SNAP, TOY, TROMBONE, TUBA, WHISTLE, backbeat, bass, bell, brass, comp, join, pad, piano, strings, times, tune, v } from './tunes';
+import {
+  BANJO,
+  BASS,
+  CALLIOPE,
+  SNAP,
+  TOY,
+  TROMBONE,
+  TUBA,
+  WHISTLE,
+  backbeat,
+  bass,
+  bell,
+  brass,
+  comp,
+  join,
+  organ,
+  pad,
+  piano,
+  strings,
+  times,
+  tune,
+  v,
+} from './tunes';
 import {
   BIRTHDAY,
   BIRTHDAY_CHORDS,
@@ -83,6 +105,20 @@ export function garageSong(): Uint8Array {
   });
 }
 
+/** Level 2, Maple Street: the Road Song, humming along on an organ with a skipping banjo. */
+export function mapleSong(): Uint8Array {
+  return arrange({
+    bpm: 132,
+    mel: join(ROAD_A, ROAD_B, ROAD_A, ROAD_B.replace(/G4 h$/, 'G4 q, D4 q')),
+    chords: twice(ROAD_CHORDS),
+    lead: organ,
+    comp: BANJO,
+    rhythm: 're e re e re e re e',
+    style: 'walk',
+    beat: backbeat(16),
+  });
+}
+
 /** Game won: SURPRISE! "Happy Birthday to You" (3/4) on brass, then all four themes in a row. */
 export function wonSong(): Uint8Array {
   const root = (ch: string) => ch.replace(/m|7/g, '');
@@ -110,4 +146,5 @@ export function lostSong(): Uint8Array {
 /** Each level's song, by its file name. */
 export const LEVEL_SONGS: Record<string, () => Uint8Array> = {
   garage: garageSong,
+  maple: mapleSong,
 };

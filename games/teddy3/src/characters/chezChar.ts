@@ -33,8 +33,8 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 
 /** THE CHEZ's top speed, in pixels per tick (Teddy trots at 5). */
 export const DRIVE = 7;
-/** The bump on its springs (Teddy hops with 11): about a block high. */
-export const BUMP = 8;
+/** The bump on its springs, per tick while Up is held (Teddy hops with 11): a block or so. */
+export const BUMP = 9;
 
 export function buildChez(): Character {
   const ch = newCharacter();
@@ -49,8 +49,8 @@ export function buildChez(): Character {
   set(S[CSEQ.left], drive(-DRIVE, true), { key: KEY.left, jstkMov: 7 });
   set(S[CSEQ.rightD], drive(DRIVE, false), { key: KEY.d });
   set(S[CSEQ.leftA], drive(-DRIVE, true), { key: KEY.a });
-  set(S[CSEQ.bump], [f('carLow', 1), f('carHop', 1, { y: -BUMP })], { key: KEY.up, jstkMov: 1, sound: SND.hop });
-  set(S[CSEQ.bumpW], [f('carLow', 1), f('carHop', 1, { y: -BUMP })], { key: KEY.w, sound: SND.hop });
+  set(S[CSEQ.bump], [f('carHop', 1, { y: -BUMP }), f('carHop', 1, { y: -BUMP })], { key: KEY.up, jstkMov: 1, sound: SND.hop });
+  set(S[CSEQ.bumpW], [f('carHop', 1, { y: -BUMP }), f('carHop', 1, { y: -BUMP })], { key: KEY.w, sound: SND.hop });
   set(S[CSEQ.bumpLeft], [f('carHop', 1, { x: -DRIVE, y: -BUMP, mirror: true }), f('carHop', 1, { x: -DRIVE, y: -BUMP, mirror: true })], {
     key: KEY.q,
     jstkMov: 8,

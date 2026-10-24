@@ -229,6 +229,7 @@ export const EGG = pages(['(Still hiding.)']);
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
   garage: ['Doc Leo needs the keys to', 'THE CHEZ. Errands day!', 'NEW: HIGH FIVE BUTTONS (1)'],
+  maple: ['YOU drive THE CHEZ! Off to', 'Puddlewick Park. Mind charge.', 'NEW: SPACE HONK  UP BUMP'],
 };
 
 /** Lines on the disk's text files: 31 columns at most. */

@@ -1,7 +1,12 @@
 // The bot's way through each level (also the source of the title demo).
 import type { Order } from './bot';
+import type { Sim } from '../../kit/sceneSim';
 import { CTR } from '../src/ids';
 import { GARAGE } from '../src/levels/garage';
+import { MAPLE } from '../src/levels/maple';
+
+/** The car's charge (counters read one more than they hold). */
+const charge = (s: Sim) => s.w.ci.meter[CTR.charge] - 1;
 
 export const ROUTES: Record<string, Order[]> = {
   garage: [
@@ -34,5 +39,23 @@ export const ROUTES: Record<string, Order[]> = {
     { trick: 'five', after: 2 },
     { walk: GARAGE.door + 2 },
     { walk: GARAGE.car + 1 },
+  ],
+  maple: [
+    { until: 'charged', maxTicks: 60, check: (s) => charge(s) >= 1 },
+    { walk: MAPLE.geese - 3, grab: false },
+    { until: 'the geese come near', maxTicks: 80, check: (s) => s.monsters('goose').some((m) => m.x <= MAPLE.geese) },
+    { trick: 'space', after: 16 },
+    { walk: MAPLE.hump - 1 },
+    { trick: 'e', hold: 4, after: 12 },
+    { walk: MAPLE.pothole + 3 },
+    { walk: MAPLE.hill1 + 2 },
+    { walk: MAPLE.charger2 },
+    { until: 'charged on the hill', maxTicks: 60, check: (s) => charge(s) >= 1 },
+    { walk: MAPLE.geese2 - 3 },
+    { until: 'the geese come near', maxTicks: 80, check: (s) => s.monsters('goose').some((m) => m.x <= MAPLE.geese2) },
+    { trick: 'space', after: 16 },
+    { walk: MAPLE.charger3 },
+    { until: 'two charges', maxTicks: 80, check: (s) => charge(s) >= 2 },
+    { walk: MAPLE.exit },
   ],
 };

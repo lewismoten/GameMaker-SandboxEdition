@@ -10,7 +10,8 @@ const strip = (n: string) => n.replace(/^(treat|bone)~/, '').replace(/_\d+$/, ''
 const GRID = /^([A-Za-z]+?)(\d)(\d)$/;
 
 /** Joins with a hard edge on purpose (looked at). */
-const SEAM_OK: string[] = [];
+/** The park gate's sign board ends at a block edge. */
+const SEAM_OK: string[] = ['gate10|gate20'];
 
 export function align(): number {
   const names = new Map<string, string[]>();
