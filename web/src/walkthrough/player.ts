@@ -13,7 +13,6 @@ import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
 import { WalkAudio, WalkRun } from './runtime';
-import { canExport, exportWalkthrough } from './exportVideo';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
@@ -404,6 +403,7 @@ async function watch(
   });
   exportBtn.addEventListener('click', async () => {
     if (making) return making.abort();
+    const { canExport, exportWalkthrough } = await import('./exportVideo'); // the MP4 maker loads when first asked for
     if (!(await canExport())) return toast('This browser cannot make MP4 videos (it has no H.264 encoder). Try Chrome, Edge or Safari.', 'error');
     const pick = exportSel.value;
     const from = pick === 'all' ? 0 : tl.chapters[Number(pick)].frame;
