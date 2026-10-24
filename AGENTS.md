@@ -41,9 +41,12 @@ npx vite-node ../games/kit/textfitCheck.ts <id>    # text fits its DOS screens
 npx vite-node ../games/kit/hiddenView.ts <id>      # tin hearts and eggs are out of sight
 npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when touched
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
+npm run check:games                                # all of the game checks above, every game, a table
+npm run check:games -- --game <id> --quick         # one game, without the rebuild compare
 ```
 
-After changing a game, rebuild it and run its checks. Commit the source and the rebuilt
+After changing a game, rebuild it and run its checks (`npm run check:games -- --game <id>` runs
+them all and also confirms the committed `disk/` matches a fresh build). Commit the source and the rebuilt
 `disk/` together. A refactor must not change any `disk/`, `walkthrough.json` or demo bytes.
 
 ## The original repository's files

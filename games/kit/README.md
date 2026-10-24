@@ -54,6 +54,18 @@ Making the files:
 
 Checking the games:
 
+- `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
+  any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
+  byte, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts` and `levelCheck.ts`; then `tinHearts.ts check`
+  and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`. The
+  secret game is left out unless named.
+- `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
+  chapter marks it was recorded with, and cut off no clip.
+- `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
+  `levelCheck.baseline.json` fails. After looking at new findings and judging them fine (or after tuning the checks), run
+  `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline.
+- `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
+  `playtime.ts` would write), without writing anything.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),

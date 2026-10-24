@@ -100,6 +100,11 @@ npx vite-node scripts/winExe.ts teddy             # a Windows .exe, in ../dist/w
 npx vite-node scripts/linuxTar.ts teddy           # a Linux .tar.gz, in ../dist/linux
 ```
 
+To check every game at once (each one rebuilt and compared with its committed disk, played
+by its bot, its walkthrough replayed, its text, hidden items and levels checked), run
+`npm run check:games` from `web/`. It prints a table and fails on any regression; add
+`--game teddy` for one game or `--quick` to skip the rebuild compare.
+
 Pushes to `master` are published to GitHub Pages by
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml). The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
