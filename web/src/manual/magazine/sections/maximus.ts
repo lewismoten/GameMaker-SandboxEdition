@@ -219,7 +219,9 @@ export const MAXIMUS: MagSection = {
                 [
                   p('**From:** Sandbox Software, 1995. Built by Claude.'),
                   p('**Price:** $15 shareware'),
-                  p('**Worlds:** 88, in 5 sectors, plus the Maelstrom, the Citadel and the Heart'),
+                  p(
+                    '**Worlds:** 88, in 5 sectors, plus the Maelstrom, the Citadel and the Heart. That falls a few short of the hundred in the title, but it feels like a hundred.',
+                  ),
                   p('**Heroes:** Max on foot, the pod, the diving bell and the rover'),
                   p('**Goal:** ten star-shards, to relight the Core'),
                 ],
