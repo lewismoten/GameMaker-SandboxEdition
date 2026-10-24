@@ -102,6 +102,10 @@ sound.
 (`shell/workspace.ts`) lists the project's files by kind and renders `editors[kind]` for
 the one chosen; edits go through `core/project.ts`, which autosaves to IndexedDB. Files
 are always written in the original binary formats.
+A finished game opened with Look inside (`shell/released.ts`, at `#/p/look:<id>`, see
+`shell/lookId.ts`) is an in-memory project that `core/readOnly.ts` makes read-only: every
+change through `core/project.ts` is refused before it happens and nothing is saved, and the
+refusal offers Edit a copy's flow (shareware stays look-only, with its notice).
 The block set editor (`editors/blocks/`) and the character editor share block groups
 (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
 group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
