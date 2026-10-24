@@ -124,7 +124,7 @@ export function chicken(p: Pixels, x: number, y: number, squeezed: boolean): voi
 
 // ------------------------------------------------------------------ the household
 
-/** Teddy the corgi: red-gold, white blaze and chest, ears up (the right one taller). */
+/** Teddy the corgi: red-gold, white blaze and chest, ears up, a matched pair. */
 export function corgi(step = 0, flip = false): Pixels {
   const p = blank();
   const ink = O();
@@ -134,7 +134,7 @@ export function corgi(step = 0, flip = false): Pixels {
   p.rect(4, 18, 13, 2, c('dark', 0));
   p.rect(3, 10, 13, 6, ink).rect(4, 11, 11, 4, fur).rect(4, 11, 11, 1, lite).rect(9, 13, 5, 2, white);
   p.rect(13, 6, 6, 7, ink).rect(14, 7, 4, 5, fur).rect(16, 9, 3, 3, white).set(18, 10, ink).set(15, 8, ink);
-  p.rect(13, 2, 2, 5, ink).rect(16, 1, 2, 6, ink).set(13, 3, c('pink', 2)).set(16, 3, c('pink', 2));
+  p.rect(13, 2, 2, 5, ink).rect(16, 2, 2, 5, ink).set(13, 3, c('pink', 2)).set(16, 3, c('pink', 2));
   const a = step ? 1 : 0;
   p.rect(5 + a, 16, 2, 3, fur)
     .rect(12 - a, 16, 2, 3, fur)
