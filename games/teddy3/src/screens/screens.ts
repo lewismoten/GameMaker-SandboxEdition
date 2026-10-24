@@ -269,7 +269,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
     lst(`${l.file}.lst`, [[`${l.file}.gif`, 30]]);
   });
   if (levels.some((l) => l.egg)) {
-    const egg = page('THE LAY-AN-EGG EGG', 29);
+    const egg = page('THE BIRTHDAY EGG', 29);
     drawEgg(egg, 4, 150, 18, 23);
     drawEgg(egg, 298, 150, 18, 23);
     put('egg.gif', gif(egg));
