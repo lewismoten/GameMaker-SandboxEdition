@@ -11,7 +11,7 @@ import { START_SONGS } from './sceneSlots';
 /** Board pixels per integrator unit, and the card size on the board. */
 export const S = 8;
 export const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
-export const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
+const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
 export const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
 export const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
@@ -46,7 +46,7 @@ export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
 }
 
 /** What the board shows besides the game: the selection, the song playing and the scene pictures. */
-export interface BoardView {
+interface BoardView {
   project: Project;
   game: Game;
   selected: number;
@@ -99,7 +99,7 @@ export function cardButtons(project: Project, game: Game, i: number, r: Rect): C
   return out;
 }
 
-export function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undefined, box: Rect, label?: string): void {
+function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undefined, box: Rect, label?: string): void {
   ctx.fillStyle = '#000';
   ctx.fillRect(box.x, box.y, box.w, box.h);
   if (img) {

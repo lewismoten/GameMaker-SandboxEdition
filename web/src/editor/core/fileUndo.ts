@@ -7,7 +7,7 @@ import type { GameFiles } from '../../project/files';
 
 type Snapshot = Map<string, Uint8Array | undefined>;
 
-export interface FileHistory {
+interface FileHistory {
   /** Call just before changing these files. */
   before(...names: string[]): void;
   /** Like before(), but part of the last step whenever there is one (trying one layout after another). */
@@ -18,7 +18,7 @@ export interface FileHistory {
   readonly canRedo: boolean;
 }
 
-export interface FileUndo extends FileHistory {
+interface FileUndo extends FileHistory {
   readonly undoBtn: HTMLButtonElement;
   readonly redoBtn: HTMLButtonElement;
   /** Ctrl+Z / Ctrl+Y (Ctrl+Shift+Z) anywhere but a text box; returns the cleanup. */

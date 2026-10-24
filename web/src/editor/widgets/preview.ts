@@ -12,7 +12,7 @@ import { decodeFliFrames } from '../../formats/fliFrames';
 import { TICK_RATE } from '../../audio/cmfPlayer';
 
 /** Kinds that have something to play. */
-export const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli']);
+const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli']);
 
 let active: { stop: () => void } | undefined;
 

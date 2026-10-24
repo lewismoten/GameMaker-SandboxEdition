@@ -57,20 +57,20 @@ export interface KeyUse {
   level: Level;
 }
 
-export interface KeyBinding {
+interface KeyBinding {
   scan: number;
   name: string;
   uses: KeyUse[];
 }
 
-export interface GlobalKey {
+interface GlobalKey {
   scan: number;
   name: string;
   short: string;
   title: string;
 }
 
-export interface JoystickUse {
+interface JoystickUse {
   label: string;
   action: SeqAction;
   levels: string[];

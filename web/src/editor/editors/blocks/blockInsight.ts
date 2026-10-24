@@ -9,7 +9,7 @@ import type { Project } from '../../core/project';
 import { blockUses } from '../../core/uses';
 import { blockAnim, describeAnim, TICK_HZ } from './blockAnim';
 
-export interface Insight {
+interface Insight {
   el: HTMLElement;
   /** Redraws the tiles after a paint; `all` also restarts the animation and lists the uses (another block, or its settings changed). */
   refresh(all?: boolean): void;

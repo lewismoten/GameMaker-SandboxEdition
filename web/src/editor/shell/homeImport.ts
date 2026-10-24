@@ -76,7 +76,7 @@ async function filesOnly(list: File[]): Promise<GameFiles> {
 }
 
 /** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
-export async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
+async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
   const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && !g.original && g.gamCrc !== undefined);
   if (!shareware.length) return undefined;
   const { crc32 } = await import('../../project/zip');

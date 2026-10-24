@@ -9,7 +9,7 @@ import type { Corner, PathKind, PathWalker } from './monsterPath';
 import { CELL, SCALE } from './monsterPathView';
 
 /** The part of the map shown, in blocks from the start (or the character). */
-export interface ViewRect {
+interface ViewRect {
   x0: number;
   y0: number;
   w: number;
@@ -17,7 +17,7 @@ export interface ViewRect {
 }
 
 /** Everything a frame of the map shows. */
-export interface PathScene {
+interface PathScene {
   view: ViewRect;
   /** The map's blocks for this view (mapLayerCanvas). */
   mapLayer: HTMLCanvasElement;

@@ -7,7 +7,7 @@ import type { Palette } from '../../../formats/palette';
 import { shade } from '../palette/ramps';
 import { EDGE_SLOTS, freeRun, makeEdgeSet, type EdgeOptions } from './edgeSet';
 
-export interface EdgeSetChoice {
+interface EdgeSetChoice {
   /** Where the first of the 12 blocks goes. */
   at: number;
   pictures: Uint8Array[];

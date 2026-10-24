@@ -10,7 +10,7 @@
 // plays its own timing and the number after it is not used.
 import type { SlideEntry } from '../../../formats/graphicScripts';
 
-export type ClipKind = 'gif' | 'bkd' | 'fli' | 'txt' | 'lst' | 'other';
+type ClipKind = 'gif' | 'bkd' | 'fli' | 'txt' | 'lst' | 'other';
 export type Then = 'key' | 'none' | 'seconds';
 
 /** Most lines FileListClass holds. */

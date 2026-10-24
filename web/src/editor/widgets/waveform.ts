@@ -1,7 +1,7 @@
 // Drawing digital sounds: an oscilloscope-style waveform (the min/max of the samples under
 // each pixel column), with an optional selection, cursor and play head.
 
-export interface WaveStyle {
+interface WaveStyle {
   background?: string;
   wave?: string;
   grid?: string;

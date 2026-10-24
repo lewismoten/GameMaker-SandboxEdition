@@ -88,7 +88,7 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
   return { el, destroy: () => cancelAnimationFrame(raf) };
 }
 
-export interface EditTimeline extends Timeline {
+interface EditTimeline extends Timeline {
   set(events: RecEvent[]): void;
 }
 

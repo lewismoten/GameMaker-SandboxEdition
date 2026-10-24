@@ -77,7 +77,7 @@ export function keyPicker(ctx: FrameContext, seq: Sequence): HTMLElement {
 }
 
 /** One block of a frame: click to choose, hover for rotate / flip buttons. */
-export function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
+function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
   const get = () => (top ? f.pic1 : f.pic2);
   const orient = () => (top ? topOrient(f) : bottomOrient(f));
   const canvas = h('canvas', { width: BLEN, height: BLEN, class: 'pixel' });

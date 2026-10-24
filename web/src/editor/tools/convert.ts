@@ -87,7 +87,7 @@ export function medianCut(images: ImageData[], colors = 256): [number, number, n
 }
 
 /** A 6-bit VGA palette from 8-bit colors (missing entries black). */
-export function vgaPalette(colors: [number, number, number][]): Palette {
+function vgaPalette(colors: [number, number, number][]): Palette {
   const pal = new Uint8Array(768);
   colors.slice(0, 256).forEach(([r, g, b], i) => pal.set([r >> 2, g >> 2, b >> 2], i * 3));
   return pal;

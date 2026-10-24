@@ -8,7 +8,7 @@ import { clampPos } from './layoutCells';
 import type { BoardCamera } from './boardCamera';
 
 /** What the board's input needs from the integrator. */
-export interface BoardInput {
+interface BoardInput {
   board: HTMLCanvasElement;
   cam: BoardCamera;
   game: Game;

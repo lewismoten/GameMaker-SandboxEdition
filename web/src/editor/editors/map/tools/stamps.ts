@@ -62,7 +62,7 @@ export function mirrors(blocks: Block[]): Mirrors {
 }
 
 /** Whether every block of a stamp has its image for this transform. */
-export function canTransform(s: Pick<Stamp, 'cells'>, t: Transform, m: Mirrors): boolean {
+function canTransform(s: Pick<Stamp, 'cells'>, t: Transform, m: Mirrors): boolean {
   return s.cells.every((c) => c < 0 || (m[t][c] ?? -1) >= 0);
 }
 

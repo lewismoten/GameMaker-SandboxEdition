@@ -59,7 +59,7 @@ export function newBuilding(id: string, name: string): Building {
 }
 
 /** The block for a part, through its fallbacks; -1 when none is set. */
-export function partBlock(b: Building, part: BuildingPart): number {
+function partBlock(b: Building, part: BuildingPart): number {
   for (const p of FALLBACK[part]) if ((b.parts[p] ?? -1) >= 0) return b.parts[p];
   return -1;
 }

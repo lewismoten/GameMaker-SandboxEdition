@@ -214,7 +214,7 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
  * Draws a game's picture into a canvas when it comes near the view (a picture needs a
  * few of the game's files, so the ones far down a long list wait until scrolled to).
  */
-export const shotObserver = new IntersectionObserver(
+const shotObserver = new IntersectionObserver(
   (entries) => {
     for (const e of entries) {
       if (!e.isIntersecting) continue;
@@ -231,7 +231,7 @@ export const shotObserver = new IntersectionObserver(
  * blocks) when it has none. Until then it is marked `shot-loading` (a placeholder shimmer),
  * and `shot-none` when there is no picture to draw.
  */
-export function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
+function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
   const c = h('canvas', {
     class: `${className} shot-loading`,
     width: 320,
@@ -260,17 +260,17 @@ export function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCan
 }
 
 /** ⌨ Keys: a keyboard map of what each key does in the game, worked out from its files. */
-export function openKeys(game: HomeGame): void {
+function openKeys(game: HomeGame): void {
   void import('../keymap/keyMapView').then(({ showKeyMap }) => showKeyMap(game.files(), game.gam ?? undefined, game.title));
 }
 
 /** The manual, for games that have one printed. */
-export function hasManual(game: HomeGame): boolean {
+function hasManual(game: HomeGame): boolean {
   return !!game.entry?.original?.manual;
 }
 
 /** Maps without a box: the Bard of Bizarre's song-games have no manual, but they have a World Map and Level Maps. */
-export function hasMapsOnly(game: HomeGame): boolean {
+function hasMapsOnly(game: HomeGame): boolean {
   return !!game.entry && !hasManual(game) && isBizarreGame(game.entry);
 }
 
@@ -326,7 +326,7 @@ export function demoInPicture(
   return { stop, ready };
 }
 
-export interface TileOptions {
+interface TileOptions {
   /** Shows the game in the panel at the top. */
   onSelect(game: HomeGame): void;
   /** A game of yours: its ⋯ button (rename, duplicate, download, delete…). */

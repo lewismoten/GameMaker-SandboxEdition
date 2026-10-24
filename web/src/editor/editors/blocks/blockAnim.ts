@@ -5,13 +5,13 @@
 // on the very next tick (nxtchg is set to 0), as in the DOS game.
 import type { Block } from '../../../formats/blocks';
 
-export interface AnimStep {
+interface AnimStep {
   block: number;
   /** Ticks shown; Infinity when the chain stops here. */
   ticks: number;
 }
 
-export interface BlockAnim {
+interface BlockAnim {
   steps: AnimStep[];
   /** The step the chain goes back to after the last one, or -1 when it stops. */
   loopTo: number;

@@ -14,7 +14,7 @@ import { colorUses, openInEditor, sceneName } from '../../core/uses';
 import { shadeRamp } from './ramps';
 import { VARIANTS, relight, range } from './variants';
 
-export interface PaletteContext {
+interface PaletteContext {
   project: Project;
   file: string;
   pal: Palette;

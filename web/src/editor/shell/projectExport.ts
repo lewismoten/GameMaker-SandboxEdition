@@ -17,7 +17,7 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
 }
 
 /** Opens the chooser for a game of yours. */
-export async function downloadProject(id: string): Promise<void> {
+async function downloadProject(id: string): Promise<void> {
   const game = await projectGame(id);
   if (game) await chooseDownload(game);
 }

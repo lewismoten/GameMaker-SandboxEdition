@@ -168,7 +168,7 @@ export function shortenGap(events: RecEvent[], gap: Gap, len: number): RecEvent[
  * key — thousands a second. A recording made in DOS therefore stores a key pressed
  * during such a screen after a gap of many thousands; no game-tick gap is this long.
  */
-export const SCREEN_POLLS = 4096;
+const SCREEN_POLLS = 4096;
 
 /** The gaps that are a screen's GetKey polls rather than time in play (DOS recordings). */
 export function screenGaps(events: RecEvent[]): Gap[] {

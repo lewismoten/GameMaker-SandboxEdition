@@ -18,9 +18,8 @@ export interface ScreenPicture {
   palette: Palette;
 }
 
-/** Display_File: 16 lines a page, 31 characters a line, from column 5 and row 5 (in 8x8 cells). */
+/** Display_File: 16 lines a page (of 31 characters), from column 5 and row 5 (in 8x8 cells). */
 export const TEXT_PAGE_LINES = 16;
-export const TEXT_LINE_CHARS = 31;
 
 const gifCache = new WeakMap<Uint8Array, IndexedImage | null>();
 function gifOf(bytes: Uint8Array | undefined): IndexedImage | undefined {
@@ -37,7 +36,7 @@ function gifOf(bytes: Uint8Array | undefined): IndexedImage | undefined {
   return g ?? undefined;
 }
 
-export interface BackdropInfo {
+interface BackdropInfo {
   x: number;
   y: number;
   /** The name written in the .bkd. */

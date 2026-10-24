@@ -74,7 +74,7 @@ async function copyLink(game: HomeGame): Promise<void> {
   }
 }
 
-export interface Showcase {
+interface Showcase {
   el: HTMLElement;
   /** Shows a game; `featured` when nobody chose it, `resume` for the game of yours edited last. */
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;

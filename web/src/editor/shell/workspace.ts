@@ -89,7 +89,7 @@ function setFolded(kind: FileKind, folded: boolean): void {
 }
 
 /** Search: every word must appear in the name ("lev map" finds level1.map). */
-export function matchesFile(name: string, query: string): boolean {
+function matchesFile(name: string, query: string): boolean {
   const n = name.toLowerCase();
   return query
     .toLowerCase()

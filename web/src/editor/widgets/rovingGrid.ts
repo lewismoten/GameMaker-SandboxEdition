@@ -4,7 +4,7 @@
 // It keeps itself in sync: a button with the class "selected" is the chosen option.
 
 /** How many items fit on one row, read from the layout. */
-export function columnsOf(items: HTMLElement[]): number {
+function columnsOf(items: HTMLElement[]): number {
   if (items.length < 2) return 1;
   const top = items[0].offsetTop;
   const n = items.findIndex((el) => el.offsetTop !== top);

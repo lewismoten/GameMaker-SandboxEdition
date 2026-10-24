@@ -7,7 +7,7 @@ import type { SlideEntry } from '../../../formats/graphicScripts';
 import { clipWidth, moveEntry, secondsForWidth, type ClipFacts, type ClipTiming } from './slideTimeline';
 
 /** What the timeline's pointer and keys need from the slide show editor. */
-export interface TimelineInput {
+interface TimelineInput {
   /** The editor's element: marked while something is being dragged. */
   host: HTMLElement;
   /** The scrolling timeline, its lane of clips and the drop marker. */

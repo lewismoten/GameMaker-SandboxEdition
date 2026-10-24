@@ -11,7 +11,7 @@ import { sceneName } from '../../core/uses';
 import { arrival } from '../integrator/board';
 import { BLEN } from '../../../formats/blocks';
 
-export interface StageBackdrop {
+interface StageBackdrop {
   el: HTMLElement;
   /** Draws the chosen level onto the stage; false when the grid is chosen (or the level can't be drawn). */
   draw(ctx: CanvasRenderingContext2D): boolean;

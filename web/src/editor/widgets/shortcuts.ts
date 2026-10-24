@@ -17,7 +17,7 @@ const UNDO: Row[] = [
 const GRID: Row = [['←', '→', '↑', '↓', 'Home', 'End'], 'Move through a list of blocks or monsters (choosing as you go)'];
 
 /** Each editor's own keys, by the kind of file it edits. */
-export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
+const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
   gam: [
     { title: 'Scenes', rows: UNDO },
     {

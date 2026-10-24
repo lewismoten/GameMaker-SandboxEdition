@@ -6,7 +6,7 @@ import { findPreset } from '../../../audio/oplPresets';
 /** 0 = modulator (first operator), 1 = carrier (second operator). */
 export type Half = 0 | 1;
 
-export interface OpField {
+interface OpField {
   key: string;
   label: string;
   title: string;

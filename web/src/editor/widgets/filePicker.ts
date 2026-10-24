@@ -13,7 +13,7 @@ import { parseBackdrop } from '../../formats/graphicScripts';
 import { decodeVoc, isVoc } from '../../formats/voc';
 import { classifySound, SOUND_GROUPS, type SoundGroup } from '../../audio/soundProfile';
 
-export interface PickOptions {
+interface PickOptions {
   title?: string;
   current?: string;
   /** Offer "None" (an empty slot). */

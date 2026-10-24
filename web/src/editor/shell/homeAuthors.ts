@@ -6,7 +6,7 @@ import type { HomeGame } from './homeCards';
 const RSD = 'Recreational Software Designs';
 
 /** Who made a game, as the tab groups it. The CD's parts library (no game, no maker named) is RSD's. */
-export function makerOf(g: HomeGame): string {
+function makerOf(g: HomeGame): string {
   const e = g.entry;
   return e?.company || e?.author || (e && !e.gam ? RSD : 'Other makers');
 }

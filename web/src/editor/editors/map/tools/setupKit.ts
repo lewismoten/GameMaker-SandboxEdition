@@ -2,7 +2,7 @@
 import { h } from '../../../core/ui';
 import { blockCanvas } from '../../../core/draw';
 import { chooseBlock } from '../../../widgets/blockChooser';
-import { BLEN, type Block } from '../../../../formats/blocks';
+import type { Block } from '../../../../formats/blocks';
 import type { Palette } from '../../../../formats/palette';
 import { E, N, NE, NW, S, SE, SW, W } from './autotile';
 
@@ -15,7 +15,7 @@ export interface SetupCtx {
 const EMPTY = { value: -1, label: 'Empty', icon: '∅' };
 
 /** A little 3×3 drawing of which neighbors a slot stands for (filled squares are the terrain). */
-export function maskDiagram(mask: number): HTMLCanvasElement {
+function maskDiagram(mask: number): HTMLCanvasElement {
   const c = h('canvas', { width: 15, height: 15, class: 'mt-diagram', 'aria-hidden': 'true' });
   const g = c.getContext('2d')!;
   const cells = [NW, N, NE, W, 0, E, SW, S, SE];
@@ -67,5 +67,3 @@ export function drawPreview(c: HTMLCanvasElement, ctx: SetupCtx, rows: number[][
     }),
   );
 }
-
-export const PREVIEW_BLOCK = BLEN;

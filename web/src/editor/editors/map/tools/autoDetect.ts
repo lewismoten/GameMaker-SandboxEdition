@@ -46,7 +46,7 @@ function overlap(a: Map<number, number>, b: Map<number, number>): number {
 }
 
 /** A block's in/out guess per neighbor (bits as autotile's N…NW) and how sure it is (sum of margins). */
-export function blockFeatures(b: Block, fill: Block, outside: Block): { mask: number; sure: number } {
+function blockFeatures(b: Block, fill: Block, outside: Block): { mask: number; sure: number } {
   const hf = histogram(fill.pixels);
   const ho = histogram(outside.pixels);
   let mask = 0;

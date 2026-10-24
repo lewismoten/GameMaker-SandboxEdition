@@ -14,7 +14,7 @@ const tidy = (s: Float32Array, rate = RATE) => tidyAt(s, rate);
 const applyEffect = (s: Float32Array, e: Effect) => effectAt(s, e, RATE);
 
 /** Resamples any AudioBuffer to mono at the given rate. */
-export async function toMono(buf: AudioBuffer, rate = RATE): Promise<Float32Array> {
+async function toMono(buf: AudioBuffer, rate = RATE): Promise<Float32Array> {
   const ctx = new OfflineAudioContext(1, Math.max(1, Math.ceil(buf.duration * rate)), rate);
   const src = ctx.createBufferSource();
   src.buffer = buf;
@@ -112,7 +112,7 @@ function drawWave(c: HTMLCanvasElement, s: Float32Array): void {
 }
 
 /** The sample maker: record or synthesize, then pick an effect and save. */
-export function makeVoc(project: Project, start: 'record' | 'synth'): Promise<string | undefined> {
+function makeVoc(project: Project, start: 'record' | 'synth'): Promise<string | undefined> {
   const ctx = new AudioContext();
   return modal<string>(start === 'record' ? 'Record a sound' : 'Make a sound', (close) => {
     let raw: Float32Array = new Float32Array(0);

@@ -3,7 +3,7 @@
 // below starts higher up.
 import { h } from '../core/ui';
 
-export interface FileAction {
+interface FileAction {
   label: string;
   run(): void;
   title?: string;

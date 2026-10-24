@@ -9,13 +9,13 @@ import { newSoundSet, serializeSoundSet } from '../../formats/sound';
 import { serializeBackdrop, serializeSlideList } from '../../formats/graphicScripts';
 import { textBytes } from '../../formats/binary';
 
-export interface FileTemplate {
+interface FileTemplate {
   kind: FileKind;
   label: string;
   make: (p: Project) => Uint8Array;
 }
 
-export const TEMPLATES: FileTemplate[] = [
+const TEMPLATES: FileTemplate[] = [
   { kind: 'pal', label: 'Palette', make: (p) => serializePalette(p.paletteFor('').palette.slice() || defaultPalette()) },
   ...(['bbl', 'mbl', 'cbl'] as BlockKind[]).map((k) => ({ kind: k, label: KIND_LABELS[k], make: () => serializeBlocks(newBlockSet(k)) })),
   { kind: 'mon', label: 'Monsters', make: () => serializeMonsters(newMonsterSet()) },
