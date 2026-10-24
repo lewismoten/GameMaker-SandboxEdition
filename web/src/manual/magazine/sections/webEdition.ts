@@ -67,7 +67,7 @@ export const WEB_EDITION: MagSection = {
         }),
         art(
           'desk',
-          'The 1994 desk in a browser: a beige PC with Snowbound’s title screen on the monitor, shelves of game boxes and the TURBO BUTTON magazine, a disk box, speakers, a modem, the Game-Maker box, a keyboard and mouse pad, and a snowy window',
+          'The 1994 desk in a browser: a beige PC with Snowbound’s title screen on the monitor, shelves of game boxes, and the TURBO BUTTON magazine and shareware catalog on the desk, a disk box, speakers, a modem, the Game-Maker box, a keyboard and mouse pad, and a snowy window',
           'The 1994 desk, in a browser tab: switch on the PC, pick a disk from the box, dial a BBS on the modem, or open a box on the shelf.',
         ),
         cols(2, [

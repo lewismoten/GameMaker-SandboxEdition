@@ -39,7 +39,7 @@ const deskAd = (): MagPage =>
         [
           callouts(
             'desk',
-            'The 1994 desk: a beige PC with Snowbound’s title screen on the monitor, posters on the wall, a shelf of game boxes, a disk box, a modem, a snowy window, a wall phone and the Game-Maker box, each with a numbered spot',
+            'The 1994 desk: a beige PC with Snowbound’s title screen on the monitor, posters on the wall, a shelf of game boxes, the shareware catalog and this magazine stacked on the desk, a disk box, a modem, a snowy window, a wall phone and the Game-Maker box, each with a numbered spot',
             [
               {
                 x: 22.5,
@@ -51,7 +51,7 @@ const deskAd = (): MagPage =>
                 x: 9,
                 y: 43,
                 title: 'The shelf of boxes',
-                text: 'Every Sandbox game boxed, with its manual, maps, hint book and stickers. This magazine is up there too.',
+                text: 'Every Sandbox game boxed, with its manual, maps, hint book and stickers.',
               },
               {
                 x: 80,
@@ -64,6 +64,12 @@ const deskAd = (): MagPage =>
                 y: 22,
                 title: 'The phone',
                 text: 'Lift the handset and dial. Mom’s numbers are taped beside it, and time and temperature always answers.',
+              },
+              {
+                x: 9,
+                y: 73,
+                title: 'The catalog & the magazine',
+                text: 'This magazine lies on the desk with the shareware catalog. Pick either one to read.',
               },
               {
                 x: 35,
