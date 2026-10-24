@@ -324,7 +324,7 @@ export function interFli(k: number, cast: Cast): Uint8Array {
 
 // ---- the title cards ----------------------------------------------------------------------------
 
-/** Splits a title into lines of at most `n` columns. */
+/** Splits a title into lines of at most `n` columns; two lines are balanced (no word left alone). */
 function wrap(s: string, n: number): string[] {
   const out: string[] = [];
   let line = '';
@@ -333,8 +333,14 @@ function wrap(s: string, n: number): string[] {
     else line = line ? `${line} ${w}` : w;
   }
   if (line) out.push(line);
-  return out;
+  if (out.length !== 2) return out;
+  const spaces = [...s.matchAll(/ /g)].map((m) => m.index).filter((i) => i <= n && s.length - i - 1 <= n);
+  const mid = spaces.sort((a, b) => Math.abs(a - s.length / 2) - Math.abs(b - s.length / 2))[0];
+  return mid === undefined ? out : [s.slice(0, mid), s.slice(mid + 1)];
 }
+
+/** The PC font has no curly quotes: they become straight ones. */
+const plain = (s: string) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 /** The strip of the monologue on a card: y 56 to 176. */
 const STRIP = 56;
@@ -344,7 +350,7 @@ export function cardFli(card: CardView, cast: Cast): Uint8Array {
   const c = pal.c;
   const mono = card.def.monologue!;
   const r = new Reel(pal.pal);
-  const titleLines = wrap(mono.title.toUpperCase(), 38);
+  const titleLines = wrap(plain(mono.title).toUpperCase(), 38);
   const head = (p: Pixels, k: number) => {
     p.rect(0, 0, W, STRIP, c('ink', 0)).rect(0, STRIP - 1, W, 1, c('gold', 1));
     centered(p, 4, `MONOLOGUE ${card.index} OF 17  -  ${card.def.group.name.toUpperCase()}`, c('gold', 2));

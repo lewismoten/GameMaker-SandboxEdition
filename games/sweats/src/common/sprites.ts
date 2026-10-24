@@ -271,8 +271,9 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   const balloon = (word: string, f: number, left: boolean) => {
     const p = P();
     const y = 5 + f;
-    p.rect(1, y, 18, 9, c('paper', 1)).rect(2, y + 1, 16, 7, c('paper', 2));
-    p.rect(1, y, 1, 9, c('paper', 0)).rect(18, y, 1, 9, c('paper', 0));
+    // the whole block wide: a four-letter word takes 15 pixels and needs a gap either side
+    p.rect(0, y, 20, 9, c('paper', 1)).rect(1, y + 1, 18, 7, c('paper', 2));
+    p.rect(0, y, 1, 9, c('paper', 0)).rect(19, y, 1, 9, c('paper', 0));
     const tx = left ? 15 : 4;
     p.set(tx, y + 9, c('paper', 1)).set(tx + (left ? 1 : -1), y + 10, c('paper', 1));
     micro(p, 10 - Math.floor((word.length * 4 - 1) / 2), y + 2, word, c('velvet', 1));
