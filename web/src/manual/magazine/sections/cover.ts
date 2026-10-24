@@ -1,4 +1,4 @@
-// The front cover: the masthead, the big news, the cover lines and a stack of screenshots.
+// The front cover: the masthead, the premise line, the big news, the cover lines and a stack of screenshots.
 import { art, grid, head, list, p, shot } from '../blocks';
 import { MAG } from '../masthead';
 import { disc } from './freeCd';

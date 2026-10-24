@@ -153,7 +153,7 @@ const REVIEWS_GAMEWARE: Capsule[] = [
     by: 'Eric-Jon Waugh (A-J Games), 1994',
     stars: 4,
     score: 85,
-    text: 'The fastest land lobster around sneaks into Norumbega to stop Fang Duck. The credits thank the author’s mom for “the concept of a lobster in shoes”.',
+    text: 'The fastest land lobster around takes on Fang Duck. The credits thank the author’s mom for “the concept of a lobster in shoes”.',
     from: 'CLAWDIA',
   },
   {
