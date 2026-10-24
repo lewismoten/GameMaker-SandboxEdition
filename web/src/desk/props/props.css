@@ -652,9 +652,10 @@
     text-shadow: 0 0 5px rgb(200 170 255 / 0.9);
   }
 
-  /* white paper under the tube at night glows a light purple; dark ink stays dark */
-  .desk.bl-uv.rl-dark :is(.news-clipping, .phone-notes, .sticky, .catalog-prop) {
-    filter: grayscale(1) sepia(1) hue-rotate(215deg) saturate(2.2) brightness(0.95);
+  /* the newspaper clipping under the tube at night: its paper takes a faint, dim purple
+     cast and dark ink stays dark. The notes, sticky note and catalog are out of its reach */
+  .desk.bl-uv.rl-dark .news-clipping {
+    filter: grayscale(1) sepia(0.6) hue-rotate(215deg) saturate(1.4) brightness(0.8);
     transition: filter 0.8s;
   }
 

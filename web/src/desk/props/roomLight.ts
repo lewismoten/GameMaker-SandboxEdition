@@ -36,7 +36,7 @@ const NIGHT_DARK = 0.62;
  * that things stand in front of (the lamp, the poster, the window) only clears its own box, so
  * the monitor or the case in front of it stays in the dark.
  */
-const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boolean }[] = [
+const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boolean; dim?: number }[] = [
   { sel: '.crt', spread: 0.3, when: (d) => d.dataset.power === 'on' },
   { sel: '.lamp-glow.on', spread: 0 },
   { sel: '.bl-poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
@@ -44,8 +44,8 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   { sel: '.wall-poster .wp-sheet', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   { sel: '.desk-scene > .poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   { sel: '.gm-box .retail', spread: 0, when: (d) => d.classList.contains('bl-uv') },
-  // white paper glows a light purple under the tube
-  { sel: ':is(.news-clipping, .phone-notes, .sticky, .catalog-prop)', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  // the newspaper clipping by the posters catches a little of the tube (dim: only partly out of the dark)
+  { sel: '.news-clipping', spread: 0, when: (d) => d.classList.contains('bl-uv'), dim: 0.55 },
   // and so do the game boxes' lettering and stickers (boxes/boxUv.ts): their own print keeps the rest dim
   { sel: '.game-shelf .shelf-box', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   // and the title on the printed label of the disk in front in the disk box (disks/diskLabel.css)
@@ -109,7 +109,8 @@ export function roomLight(desk: HTMLElement): () => void {
         // as wide as the spread asks, or (no spread) only just round the light's own box
         const rx = l.spread ? ((r.width / k) * (1 + l.spread)) / 2 + 6 : (r.width / k / 2) * 1.12;
         const ry = l.spread ? ((r.height / k) * (1 + l.spread)) / 2 + 6 : (r.height / k / 2) * 1.12;
-        layers.push(`radial-gradient(${rx.toFixed(0)}px ${ry.toFixed(0)}px at ${cx.toFixed(0)}px ${cy.toFixed(0)}px, transparent 55%, #000 100%)`);
+        const clear = l.dim ? `rgb(0 0 0 / ${l.dim})` : 'transparent';
+        layers.push(`radial-gradient(${rx.toFixed(0)}px ${ry.toFixed(0)}px at ${cx.toFixed(0)}px ${cy.toFixed(0)}px, ${clear} 55%, #000 100%)`);
       }
     }
     const halos: string[] = [];
