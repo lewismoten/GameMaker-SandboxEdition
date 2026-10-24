@@ -2,6 +2,7 @@
 // games first, the other gameware samples, your projects, and blank disks.
 import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { listProjects, loadProject } from '../../project/storage';
+import { isBizarreGame } from '../../project/bizarre';
 
 export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */
@@ -45,6 +46,8 @@ const RSD_PINK = '#d9786a';
 /** Publishers of the disks, so each gets a distinct color (filled in by loadDisks). */
 const PUBLISHERS: string[] = [];
 const STRIPES = ['#c62828', '#1565c0', '#2e7d32', '#f9a825', '#6a1b9a', '#00838f', '#ef6c00'];
+/** Your own disk of a Bard of Bizarre game: magenta with a gold stripe, easy to spot among the beige ones. */
+const BARD_DISK = { color: '#a0287a', stripe: '#f2c14e' };
 const NOTES = ['Do not erase!', 'BACKUP', 'keep!!', 'Mine - hands off', 'v2 - good one', 'DO NOT FORMAT', 'from Doc Leo', 'BEAT IT!'];
 
 /** A small stable number from a string, to pick colors and notes. */
@@ -115,14 +118,17 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   }
+  // a Bard of Bizarre game of your own (downloaded or copied) keeps its .gam's name
+  const bardGams = new Set(catalog.filter(isBizarreGame).flatMap((g) => (g.gam ? [g.gam.toLowerCase()] : [])));
   for (const p of (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'))) {
+    const bard = bardGams.has(p.gam.toLowerCase());
     disks.push({
       id: `project:${p.id}`,
       kind: 'project',
       title: p.name,
       label: p.name,
-      color: '#d8d2c0',
-      stripe: STRIPES[hash(p.id) % STRIPES.length],
+      color: bard ? BARD_DISK.color : '#d8d2c0',
+      stripe: bard ? BARD_DISK.stripe : STRIPES[hash(p.id) % STRIPES.length],
       // a scribbled note now and then, as on any kid's own disks
       note: hash(p.id) % 10 < 4 ? NOTES[(hash(p.id) >>> 4) % NOTES.length] : undefined,
       density: 'HD',
