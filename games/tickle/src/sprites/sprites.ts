@@ -16,7 +16,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline };
 
@@ -403,8 +403,10 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Hazards are solid (they push Doc Leo away) and cost rapport.
-  const hurt = (hp: number) => ({ chHitPt: hp, solid: 15 });
+  // Hazards are solid (they push Doc Leo away) and cost rapport. Not SOLTOP: on a monster that
+  // is the side that pushes the hero under it (PLAYGAME's ChkMonChr), into the floor. SOLBOT
+  // still lets him stand on one's back.
+  const hurt = (hp: number) => ({ chHitPt: hp, solid: SOLBOT | SOLLEF | SOLRIG });
 
   // ---- Doc Leo's hands
   // PIN: a hand coming down flat, palm to the floor, out from his side (facing right; mirrored for the left)
