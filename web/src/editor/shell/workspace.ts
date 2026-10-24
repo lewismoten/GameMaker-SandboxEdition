@@ -6,6 +6,7 @@ import { pickFile } from '../widgets/filePicker';
 import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
+import { icon } from './homeIcons';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
@@ -385,7 +386,8 @@ export class Workspace {
               'aria-keyshortcuts': 'Control+P Meta+P',
               onclick: () => void this.quickOpen(),
             },
-            h('span', { 'aria-hidden': 'true' }, '⌕'),
+            // drawn, like the keyboard beside it (the ⌕ character came out tiny in most fonts)
+            icon('search'),
           ),
           h(
             'button',
