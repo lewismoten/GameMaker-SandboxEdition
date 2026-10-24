@@ -125,7 +125,7 @@ export class Line {
   }
 
   /** Scrambled data: the hiss of training and of the data that follows. */
-  hiss(start: number, dur: number, level = 0.22, center = 1800): void {
+  hiss(start: number, dur: number, level = 0.22, center = 1800, q = 0.6): void {
     const ctx = this.ctx;
     const buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
     const d = buf.getChannelData(0);
@@ -135,7 +135,7 @@ export class Line {
     const bp = ctx.createBiquadFilter();
     bp.type = 'bandpass';
     bp.frequency.value = center;
-    bp.Q.value = 0.6;
+    bp.Q.value = q;
     src.connect(bp).connect(this.envelope(start, dur, level));
     src.start(start);
   }
@@ -192,6 +192,33 @@ export function busySounds(ctx: AudioContext | undefined, number: string): numbe
     for (let t = start; t < end; t += 1) line.tones([480, 620], t0 + t, 0.5, 0.1);
   }
   return end;
+}
+
+/**
+ * A call already connected, heard on an extension: what the two modems sound like passing
+ * data at that speed. 300 baud is Bell 103's two pairs of warbling tones, one each way;
+ * 1200 and 2400 a buzzy hiss peaked at their 1200 and 2400 Hz carriers; 4800 and up the
+ * full-band hiss of V.32, wider again for V.34 and V.90. From 4800 up the modems hear the
+ * line go ragged and try to retrain: the bing-bong comes back in the middle of it.
+ */
+export function dataNoise(line: Line, start: number, dur: number, speed: LineSpeed = lineSpeed(), level = 0.3): void {
+  if (speed === 300) {
+    line.fsk(1270, 1070, start, dur, level * 0.4);
+    line.fsk(2225, 2025, start, dur, level * 0.4);
+    return;
+  }
+  if (speed === 1200 || speed === 2400) {
+    line.hiss(start, dur, level * 1.6, 1200, 3);
+    line.hiss(start, dur, level * 1.6, 2400, 3);
+    if (speed === 2400) line.hiss(start, dur, level * 0.3, 1800, 0.8);
+    return;
+  }
+  const v34 = speed !== 4800 && speed !== 9600 && speed !== 14400;
+  line.hiss(start, dur, level, v34 ? 1900 : 1800, v34 ? 0.45 : 0.6);
+  // the retrain, part way in
+  const r = start + Math.min(1.2, dur * 0.4);
+  line.tones([600, 3000], r, 0.25, level * 0.3);
+  line.tones([1800], r + 0.25, 0.3, level * 0.33);
 }
 
 export function dialSounds(ctx: AudioContext | undefined, number: string, speed: LineSpeed = lineSpeed()): CallTimeline {

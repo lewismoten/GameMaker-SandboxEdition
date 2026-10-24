@@ -3,7 +3,7 @@
 // wall phone's speech voices, audio/voices.ts). The modems lose each other and the
 // call drops. Returns what was said, for the screen.
 import { pcOutput } from '../computer/pcAudio';
-import { Line } from './modem';
+import { dataNoise, Line } from './modem';
 
 export interface Overheard {
   who: string;
@@ -30,9 +30,9 @@ function click(ctx: AudioContext): number {
   g.gain.value = 0.6;
   src.connect(g).connect(pcOutput(ctx));
   src.start(t);
-  // the line: the modem's data hiss broken up, crackling and a hum under it
+  // the line: the modems' data at the line's speed, broken up, crackling and a hum under it
   const line = new Line(ctx);
-  line.hiss(t + 0.1, 1.6, 0.18, 1800);
+  dataNoise(line, t + 0.1, 1.6, undefined, 0.2);
   line.hiss(t + 0.35, 0.25, 0.3, 900);
   line.hiss(t + 0.9, 0.4, 0.28, 2600);
   line.tones([120, 180], t + 0.1, 3.5, 0.05);

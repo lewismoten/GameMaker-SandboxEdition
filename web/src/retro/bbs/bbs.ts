@@ -263,9 +263,9 @@ async function lastCallers(t: Term, name: string): Promise<void> {
   t.line(boxRow(' |11Caller  Handle               Location              Baud   Time  Did'));
   t.line(boxRule());
   const callers: [string, string, string, string, string][] = [
-    ['1,989', 'PIXEL WIZARD', 'Monroeville, PA', '9600', 'D'],
+    ['1,989', 'PIXEL WIZARD', 'Oakland, PA', '9600', 'D'],
     ['1,990', 'MONSTER MASH', 'Bethel Park, PA', '14400', 'U'],
-    ['1,991', 'SCROLLMASTER', 'Penn Hills, PA', '2400', '-'],
+    ['1,991', 'SCROLLMASTER', 'Highland Park, PA', '2400', '-'],
     ['1,992', 'THE BLOCKSMITH', 'Mt. Lebanon, PA', '14400', 'D'],
     ['1,993', 'SAND CASTLE', 'Squirrel Hill, PA', '9600', 'DU'],
   ];

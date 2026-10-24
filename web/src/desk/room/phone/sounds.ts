@@ -4,7 +4,7 @@
 // the line, and (out loud, in the room) the phone's bell and a fire engine's siren.
 import { output } from '../../../audio/output';
 import { audioContext, unlock } from '../../../audio/context';
-import { DTMF, Line } from '../../../retro/bbs/modem';
+import { dataNoise, DTMF, Line } from '../../../retro/bbs/modem';
 
 let shared: AudioContext | undefined;
 
@@ -178,14 +178,10 @@ export class PhoneSounds {
     return 7.6;
   }
 
-  /** Two modems talking, loud in your ear: returns its length (s). */
+  /** Two modems talking, loud in your ear, as they sound at the line's speed: returns its length (s). */
   modemNoise(): number {
     const [l, t] = this.line();
-    l.hiss(t, 2.8, 0.32, 1800);
-    l.fsk(1180, 980, t + 0.2, 1.2, 0.12);
-    l.fsk(1850, 1650, t + 1.1, 1.4, 0.12);
-    l.tones([600, 3000], t + 0.6, 0.3, 0.1);
-    l.tones([1800], t + 1.6, 0.4, 0.1);
+    dataNoise(l, t, 2.8, undefined, 0.32);
     return 2.9;
   }
 
