@@ -386,6 +386,12 @@
   cursor: pointer;
 }
 
+.showcase .health-note .ico {
+  width: 13px;
+  height: 13px;
+  vertical-align: -2px;
+}
+
 .showcase .health-note:hover {
   color: #fff;
 }

@@ -7,6 +7,7 @@ import { checkGame, QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue
 import { fetchGameFile, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { loadProject } from '../../project/storage';
 import { splitInherited } from './homeOrigin';
+import { icon } from './homeIcons';
 
 export interface HealthTarget {
   title: string;
@@ -144,7 +145,8 @@ export function healthNote(target: HealthTarget): HTMLElement {
   void Promise.all([target.quick(), target.notes?.() ?? []]).then(([issues, notes]) => {
     const n = issues.length + notes.length;
     if (!n) return;
-    note.textContent = `ⓘ Notes on its files (${n})`;
+    // the ⓘ as a drawing, so the button's name is just its words (and what they open)
+    note.replaceChildren(icon('info'), ` Notes on its files (${n})`);
     note.setAttribute(
       'aria-label',
       `Notes on its files (${n}) for ${target.title}: ${issues.length ? countLabel(issues) : `${n} note${n === 1 ? '' : 's'}`}. Show them.`,
