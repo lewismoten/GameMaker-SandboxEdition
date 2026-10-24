@@ -11,6 +11,9 @@
 //                        an unknown id, or a secret game not yet found in this browser, gets plain GM
 //   dos.html?run=dos     stays at the C:\> prompt
 //   dos.html?run=bbs     calls the BBS
+//   dos.html?game=<id>&run=play, dos.html?project=<id>&run=play|design
+//                        plays (or designs) a catalog game, or a game kept in this browser (a
+//                        game sent by another site lands here, with &linked=1: see linkIn/)
 import './dosPage.css';
 import { h, clear } from '../editor/core/ui';
 import { Computer } from '../retro/computer';
@@ -318,12 +321,17 @@ setSound(getVolume() > 0);
 // straight into Game-Maker (the sound starts with the first key or click: browsers wait for one)
 const params = new URLSearchParams(location.search);
 const game = params.get('game');
+const project = params.get('project');
 const run = params.get('run');
+// a game sent by another site: once a session, say plainly this is not a real DOS PC
+if (params.has('linked')) void import('../linkIn/notice').then((m) => m.notTrueDosNotice());
 void powerOn().then(async () => {
   if (!pc?.powered) return; // switched off while it booted
   if (run === 'dos') return;
   if (run === 'bbs') return command('C:\nTERMINAL');
-  if (game && (await disks.openGame(game))) return;
+  const action = run === 'play' ? 'play' : 'design';
+  if (project && (await disks.openDisk(`project:${project}`, action))) return;
+  if (game && (await disks.openDisk(`cd:${game}`, action))) return;
   return startGameMaker();
 });
 void disks.refresh();

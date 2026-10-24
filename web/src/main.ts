@@ -13,6 +13,7 @@ import './edition.css';
 import { themeButton } from './theme';
 import { viewSwitch } from './viewSwitch';
 import { parseHash } from './urlState';
+import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 
 const modernUi = () => import('./modernUi');
 
@@ -281,10 +282,46 @@ const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash)
   ? !!startHash
   : ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
-// #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)
-if (startPath[0] === 'dos') location.replace(`./dos.html${startPath[1] ? `?game=${encodeURIComponent(startPath[1])}` : ''}`);
-else if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
-else void startDesk();
+/** The interface this address (or the last visit) chooses. */
+function startChosen(): void {
+  // #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)
+  if (startPath[0] === 'dos') location.replace(`./dos.html${startPath[1] ? `?game=${encodeURIComponent(startPath[1])}` : ''}`);
+  else if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
+  else void startDesk();
+}
+
+/**
+ * A game sent by another site (?open=<url> or ?receive, linkIn/ and docs/embed.md): asked
+ * about, kept in this browser, then opened on the desk, in DOS Game-Maker or in today's web.
+ */
+async function openLinked(req: LinkRequest): Promise<void> {
+  // the request leaves the address first, so a reload doesn't ask again
+  const here = new URL(location.href);
+  for (const k of ['open', 'receive', 'in', 'mode', 'from']) here.searchParams.delete(k);
+  const linkHash = /^#\/?(open|receive)(\?|\/|$)/.test(location.hash);
+  history.replaceState(null, '', `${here.pathname}${here.search}${linkHash ? '' : location.hash}`);
+  const { runLinkIn, destinationUrl, destinationHash } = await import('./linkIn/start');
+  const dest = await runLinkIn(req, savedUi() === 'modern' ? 'web' : 'desk');
+  if (!dest) {
+    if (!linkHash) startChosen();
+    else if (savedUi() === 'modern') startModern('#/');
+    else void startDesk('#/desk');
+    return;
+  }
+  const url = destinationUrl(dest);
+  if (url) {
+    location.replace(url);
+    return;
+  }
+  if (dest.target === 'desk') {
+    await startDesk(destinationHash(dest));
+    void import('./linkIn/notice').then((m) => m.notTrueDosNotice());
+  } else startModern(destinationHash(dest));
+}
+
+const linkRequest = parseLinkRequest(location.search, startHash, location.href);
+if (linkRequest) void openLinked(linkRequest);
+else startChosen();
 
 registerServiceWorker();
 // achievements: the gm-achievement event, other tabs, and the counted ones kept current
