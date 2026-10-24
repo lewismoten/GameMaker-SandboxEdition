@@ -1,7 +1,9 @@
 // The magazine in hand: pages shown two at a time like an open magazine (one at a time on a
 // narrow screen, where the page lets its text run long instead of shrinking it), turned with
 // the arrows, the keys or a swipe of the contents menu; a Zoom to read one page at full width;
-// and printing a page, a spread or the whole issue on letter paper. Its links open the site's
+// and printing a page, a spread or the whole issue on letter paper. Every page is laid out at
+// one size, a letter sheet at 96 CSS pixels to the inch, and scaled whole to fit the window,
+// so its lines break the same at any window size and in print. Its links open the site's
 // games, boxes and pages (goRun.ts). On the web it fills the page at #/magazine; on the desk
 // it opens over the desk (openMagazine).
 import './mag.css';
@@ -49,6 +51,9 @@ export interface MagazineOptions {
   /** Opened over the page: a Close button and Esc call this. */
   onClose?: () => void;
 }
+
+/** The size every page is laid out at: 8.5 x 11 inches at 96 CSS pixels to the inch (as printed). */
+const PAGE_W = 816;
 
 /** Below this width the magazine shows one page at a time with its text at reading size. */
 const NARROW = 640;
@@ -116,17 +121,20 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     const isTwo = two();
     const shown = spreadAt(at, total, isTwo);
     at = shown[0];
-    const flow = zoom || narrow();
+    // a phone's page lets its text run long at reading size; elsewhere a page is scaled whole,
+    // to fit the window or (Zoom) its width
+    const flow = narrow();
     root.classList.toggle('flow', flow);
-    root.classList.toggle('narrow', narrow());
+    root.classList.toggle('narrow', flow);
+    root.classList.toggle('zoomed', zoom && !flow);
     const availW = stage.clientWidth - 24;
     const availH = stage.clientHeight - 24;
-    const pw = flow ? Math.min(availW, 980) : Math.max(160, Math.min(availW / (isTwo ? 2 : 1), (availH * 8.5) / 11));
+    const pw = flow ? availW : zoom ? Math.min(availW, PAGE_W * 1.5) : Math.max(160, Math.min(availW / (isTwo ? 2 : 1), (availH * 8.5) / 11));
     const spread = h('div', {
       class: `mag-spread${shown.length === 1 && isTwo ? (shown[0] === 0 ? ' alone-right' : ' alone-left') : ''}`,
-      style: `--pw:${pw}px`,
+      style: `--pw:${pw}px;--s:${(pw / PAGE_W).toFixed(4)}`,
     });
-    for (const i of shown) spread.append(h('div', { class: 'mag-sheet' }, renderPage(issue.pages[i], env).el));
+    for (const i of shown) spread.append(h('div', { class: 'mag-sheet' }, h('div', { class: 'mag-paper' }, renderPage(issue.pages[i], env).el)));
     stage.replaceChildren(spread);
     stage.scrollTop = 0;
     const [first, last] = [issue.pages[shown[0]], issue.pages[shown.at(-1)!]];

@@ -1,8 +1,9 @@
 /* TURBO BUTTON: a mid-90s game magazine. The viewer's chrome follows the site's theme; the
-   pages stay printed paper in light and dark. A page's sizes are in em of its type, which is
-   a fraction of the page's width (.mag-sheet is the container), so a page looks the same at
-   any size and in print. On a narrow screen the page keeps its type at reading size and runs
-   long instead (.flow). */
+   pages stay printed paper in light and dark. Every page is laid out at one size, a letter
+   sheet at 96 CSS pixels to the inch (.mag-paper, 816 x 1056, the container its em and cqw
+   sizes come from, as .mag-print-sheet is in print), and scaled whole to fit the window
+   (--s), so its lines break the same at any window size. On a narrow screen the page keeps
+   its type at reading size and runs long instead (.flow). */
 
 /* ---- the viewer ---------------------------------------------------------------------- */
 .mag-viewer {
@@ -200,10 +201,24 @@
 }
 
 .mag-sheet {
-  container-type: inline-size;
+  position: relative;
+  flex: none;
   width: var(--pw);
-  aspect-ratio: 8.5 / 11;
+  height: calc(var(--pw) * 11 / 8.5);
+  overflow: hidden;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* the page at its printed size, scaled to the sheet */
+.mag-paper {
+  container-type: inline-size;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 816px;
+  height: 1056px;
+  transform: scale(var(--s, 1));
+  transform-origin: 0 0;
 }
 
 .mag-spread .mag-sheet + .mag-sheet {
@@ -213,7 +228,20 @@
 }
 
 .flow .mag-sheet {
-  aspect-ratio: auto;
+  height: auto;
+  overflow: visible;
+}
+
+.flow .mag-paper {
+  position: static;
+  width: 100%;
+  height: auto;
+  transform: none;
+}
+
+/* Zoom: one page across the window, read down by scrolling */
+.zoomed .mag-spread {
+  margin: 0 auto;
 }
 
 .flow .mag-spread {
@@ -255,9 +283,12 @@
     Times,
     serif;
   color-scheme: light;
+  /* a tap target's least height: 24 real pixels at the page's scale (and never below 24) */
+  --tap: max(24px, calc(24px / max(var(--s, 1), 0.5)));
 }
 
 .flow .mag-page {
+  --s: 1;
   height: auto;
   font-size: max(1.8cqw, 15px);
 }
@@ -430,7 +461,7 @@
 }
 
 .mag-page p {
-  margin: 0 0 0.55em;
+  margin: 0 0 0.45em;
 }
 
 .mag-drop::first-letter {
@@ -489,7 +520,7 @@
 .mag-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--min, 28cqw), 1fr));
-  gap: 1em;
+  gap: 0.8em 1em;
   align-items: start;
 }
 
@@ -609,7 +640,7 @@
 
 .mag-piece-frame {
   display: block;
-  min-height: 24px;
+  min-height: var(--tap);
   border: 0.15em solid #18150f;
   box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
   transform: rotate(-2deg);
@@ -679,7 +710,7 @@
   display: block;
   width: min(100%, calc(var(--w) * 1px));
   height: auto;
-  max-height: 9em;
+  max-height: 7.5em;
   object-fit: contain;
   image-rendering: pixelated;
 }
@@ -857,7 +888,7 @@
   align-items: center;
   justify-content: center;
   align-self: flex-start;
-  min-height: 24px;
+  min-height: var(--tap);
   margin: 0.3em 0.4em 0 0;
   padding: 0.35em 0.9em;
   border: 0.15em solid #141210;
@@ -876,7 +907,7 @@
 .mag-page a.mag-solo {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: var(--tap);
 }
 
 .mag-note,
@@ -926,6 +957,11 @@
   font-size: 3em;
   color: var(--red);
   text-shadow: 0.05em 0.05em 0 #141210;
+}
+
+/* the back cover's board name is set on one line, like a strip of its terminal screen */
+.kind-back .mag-adframe h2 {
+  font-size: 2.5em;
 }
 
 .mag-adframe.tone-black h2 {
@@ -1230,6 +1266,11 @@
 
   .mag-adframe h2 {
     font-size: 2em;
+  }
+
+  /* a board's name in a phone's headline may wrap */
+  .mag-page .sbx-name {
+    white-space: normal;
   }
 
   .look-classic .mag-head :where(h1, h2, h3),
