@@ -256,6 +256,25 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('janitor0', janitor(0), hello);
   book.add('janitor1', janitor(1), hello);
+  // the janitor going on his way: side on, walking right (his path mirrors him for left), the mop
+  // over his shoulder
+  const janitorWalk = (f: number) => {
+    const p = P();
+    const s = f ? 0 : 2;
+    p.rect(7, 7, 6, 8, c('grey', 1)).rect(7, 7, 6, 1, c('grey', 2)).rect(7, 7, 1, 8, c('grey', 0));
+    for (const [dx, k] of [
+      [-s, 0],
+      [s, 1],
+    ])
+      p.rect(9 + dx, 15, 3, 4, c('grey', k)).rect(9 + dx, 19, 4, 1, ink);
+    blob(p, 10, 4, 3, 3, pal.r('skin'), 1, 3);
+    p.rect(7, 0, 6, 2, c('navy', 2)).rect(11, 2, 4, 1, c('navy', 1)).rect(7, 2, 2, 2, c('hair', 1));
+    p.set(12, 4, ink).set(13, 5, c('skin', 3)).rect(11, 6, 2, 1, c('hair', 1));
+    p.line(4, 2, 15, 13, c('wood', 3)).rect(11, 9, 2, 2, c('skin', 3)).disc(8, 13, 1.2, c('gold', 2));
+    return outline(p, ink);
+  };
+  book.add('janitorWalk0', janitorWalk(0));
+  book.add('janitorWalk1', janitorWalk(1));
 }
 
 export function chairMonsters(set: Monster[], mb: SpriteBook): void {
@@ -267,7 +286,10 @@ export function chairMonsters(set: Monster[], mb: SpriteBook): void {
   ]);
   set[CHAIR_MON.intern] = mon(anim(mb, 'intern0', 'intern1', 3), { power: POWER.tough, thru: 1 }, pace(4, 2));
   set[CHAIR_MON.janitor] = mon(anim(mb, 'janitor0', 'janitor1', 20), { power: POWER.friend, thru: 0, newmon: CHAIR_MON.janitorOff }, still);
-  set[CHAIR_MON.janitorOff] = mon(anim(mb, 'janitor1', 'janitor0', 4), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 2), corner(-3, 0, 2, 4)]);
+  set[CHAIR_MON.janitorOff] = mon(anim(mb, 'janitorWalk0', 'janitorWalk1', 4), { power: POWER.tough, thru: 0, end: 30 }, [
+    corner(0, 0, 2),
+    corner(-3, 0, 2, 4),
+  ]);
   set[CHAIR_MON.puff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }
 

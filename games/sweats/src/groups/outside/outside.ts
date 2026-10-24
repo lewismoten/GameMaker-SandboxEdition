@@ -188,10 +188,10 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
   book.add('receipt0', receipt(0));
   book.add('receipt1', receipt(1));
   // a confused pedestrian (a "?"), and the same afraid (arms up, a "!")
-  book.add('ped0', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 0, mark: '?' }), hurts(-4));
-  book.add('ped1', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 1, mark: '?' }), hurts(-4));
-  book.add('pedRun0', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 0, mark: '!', arms: 'up', shout: true }));
-  book.add('pedRun1', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 1, mark: '!', arms: 'up', shout: true }));
+  book.add('ped0', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 0, mark: '?', side: true }), hurts(-4));
+  book.add('ped1', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 1, mark: '?', side: true }), hurts(-4));
+  book.add('pedRun0', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 0, mark: '!', arms: 'up', shout: true, side: true }));
+  book.add('pedRun1', person(pal, { hair: 'hair', shirt: 'teal', pants: 'navy', step: 1, mark: '!', arms: 'up', shout: true, side: true }));
   // the elderly woman, clutching her purse tighter
   const granny = (f: number) => {
     const p = person(pal, { hair: 'white', shirt: 'purple', pants: 'purple', step: 0, skirt: true, bun: true, glasses: true, raw: true });
@@ -217,11 +217,11 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
   book.add('cart0', cart(0), hurts(-5));
   book.add('cart1', cart(1), hurts(-5));
   // the jogger in his headband (the receipt stuck to his calf a moment)
-  book.add('jog0', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 0, band: true, shorts: true }), hello);
-  book.add('jog1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, scrap: true }), hello);
+  book.add('jog0', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 0, band: true, shorts: true, side: true }), hello);
+  book.add('jog1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, scrap: true, side: true }), hello);
   // jogging on (no more hellos)
-  book.add('jogOn0', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 0, band: true, shorts: true, arms: 'up' }));
-  book.add('jogOn1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, arms: 'up' }));
+  book.add('jogOn0', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 0, band: true, shorts: true, arms: 'up', side: true }));
+  book.add('jogOn1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, arms: 'up', side: true }));
 }
 
 export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
@@ -233,11 +233,19 @@ export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
     corner(0, 0, 1, 4),
   ]);
   set[OUT_MON.ped] = mon(anim(mb, 'ped0', 'ped1', 5), { power: POWER.foe, thru: 1, newmon: OUT_MON.pedRun }, pace(3, 1));
-  set[OUT_MON.pedRun] = mon(anim(mb, 'pedRun0', 'pedRun1', 2), { power: POWER.tough, thru: 0, end: 26 }, [corner(0, 0, 4), corner(8, -1, 4, 0)]);
+  set[OUT_MON.pedRun] = mon(anim(mb, 'pedRun0', 'pedRun1', 2), { power: POWER.tough, thru: 0, end: 26 }, [
+    corner(0, 0, 4),
+    corner(8, -1, 4, 0),
+    corner(0, 0, 4, 4),
+  ]);
   set[OUT_MON.granny] = mon(anim(mb, 'granny0', 'granny1', 14), { power: POWER.tough, thru: 1 }, still);
   set[OUT_MON.cart] = mon(anim(mb, 'cart0', 'cart1', 2), { power: POWER.tough, thru: 1 }, pace(3, 2));
   set[OUT_MON.jogger] = mon(anim(mb, 'jog0', 'jog1', 3), { power: POWER.friend, thru: 1, newmon: OUT_MON.jogOff }, pace(5, 3));
-  set[OUT_MON.jogOff] = mon(anim(mb, 'jogOn0', 'jogOn1', 2), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 4), corner(9, 0, 4, 0)]);
+  set[OUT_MON.jogOff] = mon(anim(mb, 'jogOn0', 'jogOn1', 2), { power: POWER.tough, thru: 0, end: 30 }, [
+    corner(0, 0, 4),
+    corner(9, 0, 4, 0),
+    corner(0, 0, 4, 4),
+  ]);
 }
 
 export const outside: Monologue = {

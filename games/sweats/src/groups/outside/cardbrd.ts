@@ -181,20 +181,21 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
-  // Lily: the unicorn hoodie (horn, mane), glitter, the caramel apple the size of her head
+  // Lily: the unicorn hoodie (horn, mane), glitter, the caramel apple the size of her head.
+  // Side on, walking right (her path mirrors her for left), the apple held out ahead.
   const lily = (f: number) => {
-    const p = person(pal, { hair: 'yellow', shirt: 'white', pants: 'pink', step: f, short: true, raw: true });
-    p.rect(7, 2, 7, 3, c('white', 2)).set(7, 5, c('white', 2)).set(13, 5, c('white', 2));
-    p.line(10, 2, 12, -1, c('gold', 3)).set(11, 1, c('gold', 2));
+    const p = person(pal, { hair: 'yellow', shirt: 'white', pants: 'pink', step: f, short: true, raw: true, side: true });
+    p.rect(7, 2, 6, 3, c('white', 2)).rect(7, 5, 2, 2, c('white', 2));
+    p.line(11, 2, 13, -1, c('gold', 3)).set(12, 1, c('gold', 2));
     for (const [x, y, col] of [
       [6, 3, 'pink'],
       [6, 4, 'purple'],
       [6, 5, 'teal'],
     ] as const)
       p.set(x, y, c(col, 2));
-    p.set(8, 7, c('pink', 2)).set(12, 7, c('gold', 3));
+    p.set(9, 7, c('pink', 2)).set(8, 9, c('gold', 3));
     p.rect(9, 11, 3, 2, c('gold', 3)).set(10, 10, c('gold', 3));
-    p.line(16, 14, 16, 9 + f, c('wood', 2));
+    p.line(13, 11, 16, 11, c('skin', 2)).line(16, 14, 16, 9 + f, c('wood', 2));
     p.disc(16, 7 + f, 3.2, c('red', 1))
       .rect(13, 7 + f, 7, 3, c('coffee', 3))
       .set(15, 6 + f, c('white', 2));
@@ -256,16 +257,19 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   book.add('witch1', witch(1, true), hurts(-5));
   book.add('witchB0', witch(0, false), hurts(-5));
   book.add('witchB1', witch(1, false), hurts(-5));
-  // the guy in the werewolf mask (growling), and with it off (waving)
+  // the guy in the werewolf mask (growling), and with it off (waving it). Side on, walking right
+  // (their paths mirror them for left): the snout and the mask in his hand lead.
   const wolf = (f: number, mask: boolean) => {
-    const p = person(pal, { hair: 'hair', shirt: 'red', pants: 'navy', step: f, raw: true, arms: mask ? 'up' : undefined });
+    const p = person(pal, { hair: 'hair', shirt: 'red', pants: 'navy', step: f, raw: true, arms: mask ? 'up' : undefined, side: true });
     if (mask) {
-      blob(p, 10, 5, 4.2, 4.2, pal.r('fur'), 0, 2);
-      p.line(7, 2, 6, -1, c('fur', 1)).line(13, 2, 14, -1, c('fur', 1));
-      p.rect(10, 6, 5, 3, c('fur', 1)).set(14, 6, ink).set(11, 8, c('white', 2)).set(13, 8, c('white', 2)).set(9, 4, c('yellow', 2)).set(12, 4, c('yellow', 2));
+      blob(p, 9.5, 5, 4, 4.2, pal.r('fur'), 0, 2);
+      p.line(8, 2, 7, -1, c('fur', 1)).line(10, 2, 10, -1, c('fur', 0));
+      p.rect(12, 5, 5, 3, c('fur', 1)).set(16, 5, ink).set(13, 8, c('white', 2)).set(15, 8, c('white', 2)).set(11, 4, c('yellow', 2));
     } else {
-      p.rect(16, 6 - f, 4, 4, c('fur', 1)).set(17, 6 - f, c('yellow', 2));
-      p.set(9, 7, c('ink', 0)).set(10, 8, c('ink', 0)).set(11, 8, c('ink', 0)).set(12, 7, c('ink', 0));
+      p.rect(15, 6 - f, 4, 4, c('fur', 1))
+        .set(18, 6 - f, c('yellow', 2))
+        .line(12, 10, 15, 8 - f, c('red', 1));
+      p.set(11, 7, c('ink', 0)).set(12, 7, c('ink', 0));
     }
     return outline(p, ink);
   };
@@ -288,21 +292,22 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('bat0', bat(0));
   book.add('bat1', bat(1));
-  // the eleven-year-old in the clown wig, his horn, harmless (and running off giggling)
+  // the eleven-year-old in the clown wig, his horn, harmless (and running off giggling). Side on,
+  // walking right (his paths mirror him for left): the wig puffs round the back of his head, the
+  // red nose and the horn out ahead.
   const clown = (f: number, run: boolean) => {
-    const p = person(pal, { hair: 'red', shirt: 'teal', pants: 'yellow', step: f, short: true, raw: true, arms: run ? 'up' : undefined });
+    const p = person(pal, { hair: 'red', shirt: 'teal', pants: 'yellow', step: f, short: true, raw: true, arms: run ? 'up' : undefined, side: true });
     for (const [x, y, col] of [
       [6, 3, 'red'],
-      [14, 3, 'yellow'],
       [8, 2, 'teal'],
-      [12, 2, 'red'],
-      [10, 1, 'yellow'],
-      [5, 5, 'teal'],
-      [15, 5, 'red'],
+      [11, 2, 'yellow'],
+      [13, 3, 'red'],
+      [5, 5, 'yellow'],
+      [6, 7, 'teal'],
     ] as const)
       p.disc(x, y + 1, 1.6, c(col, 2));
-    p.disc(10.5, 7.5, 1, c('red', 3));
-    if (!run) p.rect(15, 10, 3, 2, c('gold', 2)).disc(17, 13, 1.6, c('red', 2));
+    p.disc(13.5, 8.5, 1, c('red', 3));
+    if (!run) p.rect(13, 11, 3, 2, c('gold', 2)).disc(17, 12, 1.6, c('red', 2));
     else micro(p, 15, 0, '!', c('white', 2));
     return outline(p, ink);
   };
@@ -314,7 +319,11 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
 
 export function cardMonsters(set: Monster[], mb: SpriteBook): void {
   set[CARD_MON.lily] = mon(anim(mb, 'lily0', 'lily1', 8), { power: POWER.friend, thru: 1, newmon: CARD_MON.lilyOn }, pace(1, 1));
-  set[CARD_MON.lilyOn] = mon(anim(mb, 'lilyOn0', 'lilyOn1', 4), { power: POWER.tough, thru: 0, end: 50 }, [corner(0, 0, 2), corner(8, 0, 2, 0)]);
+  set[CARD_MON.lilyOn] = mon(anim(mb, 'lilyOn0', 'lilyOn1', 4), { power: POWER.tough, thru: 0, end: 50 }, [
+    corner(0, 0, 2),
+    corner(8, 0, 2, 0),
+    corner(0, 0, 2, 4),
+  ]);
   set[CARD_MON.fog] = mon(anim(mb, 'fog0', 'fog1', 6), { power: POWER.foe, thru: 0, end: -1, newmon: CARD_MON.poof }, [corner(0, 0, 1), corner(-6, 0, 1, 4)]);
   set[CARD_MON.zombie] = mon(anim(mb, 'zombie0', 'zombie1', 5), { power: POWER.foe, thru: 1, newmon: CARD_MON.poof }, bob(1, 2));
   set[CARD_MON.witch] = mon(anim(mb, 'witch0', 'witch1', 4), { power: POWER.foe, thru: 1, newmon: CARD_MON.witch2 }, pace(3, 2));
@@ -322,7 +331,11 @@ export function cardMonsters(set: Monster[], mb: SpriteBook): void {
   set[CARD_MON.wolf] = mon(anim(mb, 'wolf0', 'wolf1', 5), { power: POWER.foe, thru: 1, newmon: CARD_MON.wolfGuy }, pace(3, 1));
   set[CARD_MON.wolfGuy] = mon(anim(mb, 'wolfGuy0', 'wolfGuy1', 6), { power: POWER.tough, thru: 0, end: 40 }, [corner(0, 0, 1), corner(-3, 0, 1, 4)]);
   set[CARD_MON.clown] = mon(anim(mb, 'clown0', 'clown1', 5), { power: POWER.foe, thru: 1, newmon: CARD_MON.clownOff }, pace(2, 1));
-  set[CARD_MON.clownOff] = mon(anim(mb, 'clownRun0', 'clownRun1', 2), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 4), corner(8, -1, 4, 0)]);
+  set[CARD_MON.clownOff] = mon(anim(mb, 'clownRun0', 'clownRun1', 2), { power: POWER.tough, thru: 0, end: 30 }, [
+    corner(0, 0, 4),
+    corner(8, -1, 4, 0),
+    corner(0, 0, 4, 4),
+  ]);
   set[CARD_MON.bat] = mon(anim(mb, 'bat0', 'bat1', 4), { power: POWER.tough, thru: 0 }, [corner(0, 0, 1), corner(0, 1, 1), corner(0, 0, 1)]);
   set[CARD_MON.poof] = mon(anim(mb, 'poof0', 'poof1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }

@@ -341,22 +341,36 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   book.add('goat0', goat(0), hello);
   book.add('goat1', goat(1), hello);
   // Doc Leo, hobo clown: grey fedora, ash beard, red nose, navy corduroy, purple shirt, teal tie,
-  // red sneakers, and the rubber chicken on its leash
+  // red sneakers, and the rubber chicken on its leash. Side on, walking right (mirrored for
+  // left), the chicken trotting behind; f 0 is a stride, f 1 the legs passing.
   const leo = (f: number) => {
     const p = P();
-    for (const [x, d] of [
-      [7, f ? 1 : 0],
-      [11, f ? -1 : 0],
-    ])
-      p.rect(x + d, 14, 2, 4, c('navy', 1)).rect(x + d - 1, 18, 3, 2, c('red', 2));
-    p.rect(5, 8, 9, 6, c('navy', 2)).rect(8, 8, 3, 5, c('purple', 2)).rect(9, 8, 1, 5, c('teal', 2));
-    blob(p, 9.5, 4.5, 3.2, 3, pal.r('skin'), 2, 4);
-    p.rect(6, 5, 7, 2, c('grey', 0)).rect(8, 6, 3, 1, c('white', 2));
-    p.set(10, 4, c('red', 3)).set(8, 3, ink).set(11, 3, ink);
-    p.rect(5, 1, 9, 2, c('grey', 2)).rect(7, 0, 5, 1, c('grey', 2)).rect(4, 2, 11, 1, c('grey', 1));
-    p.line(14, 10, 16, 16, c('red', 1));
-    blob(p, 17, 17, 2.4, 1.6, pal.r('yellow'), 0, 2);
-    p.set(19, 15 + f, c('red', 3)).set(18, 15, c('yellow', 2));
+    // the rubber chicken behind him, facing the way he goes, on its leash from his hand
+    blob(p, 3.5, 17, 2.6, 1.7, pal.r('yellow'), 0, 2);
+    p.rect(5, 14 + f, 2, 2, c('yellow', 2))
+      .set(7, 15 + f, c('red', 3))
+      .set(5, 13 + f, c('red', 2))
+      .set(6, 14 + f, ink);
+    p.line(4, 19, 3 + f, 19, c('red', 2)).line(8, 12, 6, 14 + f, c('red', 1));
+    // legs: the far one a shade darker; red sneakers pointing ahead
+    const stride = f ? 0 : 2;
+    const leg = (dx: number, k: number) => {
+      for (let y = 14; y < 18; y++) p.rect(10 + Math.round(((y - 13) / 5) * dx), y, 2, 1, c('navy', k));
+      p.rect(10 + dx, 18, 4, 2, c('red', k + 1));
+    };
+    leg(-stride, 0);
+    leg(stride, 1);
+    // the corduroy jacket, the purple shirt and teal tie showing at the front
+    p.rect(8, 8, 6, 6, c('navy', 2)).rect(8, 8, 1, 6, c('navy', 1));
+    p.rect(13, 8, 1, 5, c('purple', 2)).rect(13, 9, 1, 3, c('teal', 2));
+    // the near arm, back to the leash
+    p.line(10, 9, 8, 12, c('navy', 1)).set(8, 12, c('skin', 3));
+    // the head in profile: ash beard, white mouth, the red nose out front, one eye
+    blob(p, 11, 4.5, 3, 3, pal.r('skin'), 2, 4);
+    p.rect(10, 6, 4, 2, c('grey', 0)).set(12, 5, c('grey', 0)).set(13, 6, c('white', 2));
+    p.set(14, 4, c('red', 3)).set(15, 4, c('red', 2)).set(14, 5, c('red', 2)).set(12, 3, ink).set(9, 4, c('skin', 1));
+    // the fedora, side on: crown and brim
+    p.rect(8, 0, 6, 2, c('grey', 2)).rect(7, 2, 9, 1, c('grey', 1)).rect(8, 1, 6, 1, c('grey', 0));
     return done(p);
   };
   book.add('leo0', leo(0), hello);

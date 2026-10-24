@@ -9,5 +9,6 @@
   "exe": "SWEATS.EXE",
   "sound": "sb",
   "tinHeart": { "map": "hive.map", "at": [81, 15] },
-  "easterEgg": { "map": "pizza.map", "at": [32, 11] }
+  "easterEgg": { "map": "pizza.map", "at": [32, 11] },
+  "sameEverySide": ["ficus.mon#12"]
 }

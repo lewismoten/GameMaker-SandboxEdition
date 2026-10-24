@@ -190,20 +190,23 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('grease0', grease(0), hurts(-6));
   book.add('grease1', grease(1), hurts(-6));
-  // the busboy: white shirt, black apron, a grey tub, eyes sliding to the side (judging)
+  // the busboy: white shirt, black apron, a grey tub held out ahead, eyes sliding back at him
+  // (judging). Side on, walking right (his path mirrors him for left).
   const busboy = (f: number) => {
     const p = clear();
-    p.rect(7, 15, 2, 5, ink).rect(11, 15, 2, 5, ink);
-    p.rect(5, 8, 10, 8, c('white', 2)).rect(6, 11, 8, 6, c('ink', 1));
-    p.rect(1, 9, 8, 4, c('grey', 1)).rect(1, 9, 8, 1, c('grey', 2));
+    const s = f ? 1 : 0;
+    p.rect(9 - s, 15, 2, 5, c('ink', 1))
+      .rect(10 + s, 15, 2, 5, ink)
+      .rect(11 + s, 19, 2, 1, ink);
+    p.rect(7, 8, 6, 8, c('white', 2)).rect(9, 11, 5, 6, c('ink', 1));
+    p.rect(12, 9, 7, 4, c('grey', 1)).rect(12, 9, 7, 1, c('grey', 2)).set(11, 10, c('skin', 3));
     const hx = 10;
-    p.rect(hx - 3, 2, 7, 7, c('skin', 3)).rect(hx - 3, 1, 7, 2, c('hair', 0));
-    const look = f ? 1 : -1;
-    p.set(hx - 1 + look, 5, ink)
-      .set(hx + 2 + look, 5, ink)
-      .rect(hx - 2, 4, 2, 1, c('hair', 0))
-      .rect(hx + 1, 3, 2, 1, c('hair', 0));
-    p.rect(hx - 1, 7, 3, 1, c('skin', 1));
+    p.rect(hx - 3, 2, 6, 7, c('skin', 3))
+      .rect(hx - 3, 1, 6, 2, c('hair', 0))
+      .rect(hx - 3, 3, 2, 2, c('hair', 0));
+    p.set(hx + 3, 5, c('skin', 3)).set(hx + 3, 6, c('skin', 2));
+    p.set(hx + 1 - s, 5, ink).rect(hx, 4, 2, 1, c('hair', 0));
+    p.set(hx + 1, 7, c('skin', 1)).set(hx + 2, 7, c('skin', 1));
     return outline(p, ink);
   };
   book.add('busboy0', busboy(0), hurts(0));
