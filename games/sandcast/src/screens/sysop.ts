@@ -501,7 +501,7 @@ const LISTING: [string, string, string][] = [
   ['SYSOP.GIF', '47K', 'The SysOp and Teddy at'],
   ['', '', 'the town gazebo. VGA!'],
   ['CORGI.GIF', '12K', 'Ears. Just ears.'],
-  ['GWINN.GIF', '31K', 'Gwinn. Blurry. (Moved.)'],
+  ['GWINN.GIF', '31K', 'Gwinn, blurry. (Moved)'],
   ['13STARS.GIF', '9K', 'Flag Resolution, 1777'],
   ['CHICKEN.TXT', '2K', 'Walking a rubber'],
   ['', '', 'chicken on a leash.'],
