@@ -229,6 +229,22 @@ interface NewsStory {
   everywhere?: boolean;
 }
 
+/**
+ * How the player's World Map groups scenes into places. Each group's first scene is the place;
+ * the rest are folded into it (no picture of their own) and listed on its land. A scene is a
+ * number, a range ("9-18"), or a name only one scene has. Scenes shown under an all-black
+ * palette fold into their place without being named here (worldMapGroups.ts).
+ */
+export interface WorldMapHints {
+  groups?: {
+    scenes: (number | string)[];
+    /** The place's name on the map (default: its scene's). */
+    name?: string;
+    /** What its land lists (default: the folded scenes' numbers and names). */
+    labels?: string[];
+  }[];
+}
+
 /** games/<id>/printables.json */
 export interface PrintablesFile {
   /** Generated extras this game does without. */
@@ -243,4 +259,6 @@ export interface PrintablesFile {
   news?: NewsStory[];
   /** A one-line pitch for the publisher catalog (defaults to the blurb). */
   pitch?: string;
+  /** The World Map's places (see WorldMapHints). */
+  worldMap?: WorldMapHints;
 }
