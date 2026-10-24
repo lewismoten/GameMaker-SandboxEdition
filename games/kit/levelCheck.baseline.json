@@ -104,10 +104,7 @@
   "warning unreachable s8 1 of block 149 is sealed in, first at (64, 40)",
   "warning unreachable s8 3 of block 8 are sealed in, first at (43, 39)"
  ],
- "goat": [
-  "warning hurt-lock s4 Monster 10 pushes the hero inside a wall beside it, first at (42, 9)",
-  "warning hurt-lock s4 Monster 8 pushes the hero inside a wall beside it, first at (42, 9)"
- ],
+ "goat": [],
  "loaf": [
   "warning hurt-lock s2 Monster 7 holds the hero while it hurts: once it touches him, no key gets him away (first at (15, 11))",
   "warning hurt-lock s3 Monster 10 pushes the hero inside a wall beside it, first at (19, 22)",
