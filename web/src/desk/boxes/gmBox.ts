@@ -76,6 +76,41 @@ function badge(ctx: CanvasRenderingContext2D, x: number, y: number, w: number): 
   ctx.textAlign = 'left';
 }
 
+/** Sets the largest font from `max` down to `min` px that fits `text` in `width`; false when even `min` doesn't. */
+function fitFont(ctx: CanvasRenderingContext2D, text: string, font: (px: number) => string, max: number, min: number, width: number): boolean {
+  for (let px = max; px >= min; px--) {
+    ctx.font = font(px);
+    if (ctx.measureText(text).width <= width) return true;
+  }
+  return false;
+}
+
+/** Whether a point on the front is clear for a caption: below the bands, off the RSD badge and the version flash. */
+function clearOnFront(px: number, py: number): boolean {
+  if (px < 4 || px > W - 4 || py < 190 || py > H - 4) return false;
+  if (px > W - 190 && px < W - 14 && py > H - 124 && py < H - 20) return false;
+  return ((px - 110) / 92) ** 2 + ((py - (H - 80)) / 72) ** 2 > 1;
+}
+
+/** The longest run of a tile's caption strip (x0..x1, y0..y1 in the tilted grid) that the front shows clear. */
+function clearSpan(m: DOMMatrix, x0: number, x1: number, y0: number, y1: number): [number, number] {
+  let best: [number, number] = [x0, x0];
+  let start: number | undefined;
+  for (let x = x0; x <= x1; x += 2) {
+    const ok = [y0, y1].every((y) => {
+      const p = m.transformPoint({ x, y });
+      return clearOnFront(p.x, p.y);
+    });
+    if (ok) start ??= x;
+    if (start !== undefined && (!ok || x + 2 > x1)) {
+      const end = ok ? x : x - 2;
+      if (end - start > best[1] - best[0]) best = [start, end];
+      start = undefined;
+    }
+  }
+  return best;
+}
+
 /** tiles: the screenshots from the desk box, each with its caption. */
 export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces {
   // the front shows games made with Game-Maker: Sandbox Software's, once they have loaded
@@ -104,13 +139,18 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     f.fillRect(x, y, tw, th + (game ? 44 : 30));
     f.imageSmoothingEnabled = false;
     f.drawImage(shot, x, y, tw, th);
+    // the captions go in the part of the strip the box shows, shrunk to fit, or not at all
+    const [from, to] = clearSpan(f.getTransform(), x, x + tw, y + th + 3, y + th + (game ? 42 : 28));
+    if (to - from < 140) return;
     f.fillStyle = '#fff';
-    f.font = SANS(game ? 17 : 19);
-    f.fillText(caption, x + 8, y + th + 21);
+    fitFont(f, caption, (px) => SANS(px), game ? 17 : 19, 13, to - from - 16);
+    f.fillText(caption, from + 8, y + th + 21);
     if (game) {
       f.fillStyle = YELLOW;
-      f.font = SANS(12, 900, true);
-      f.fillText(`MADE WITH GAME-MAKER: ${game}`, x + 8, y + th + 37);
+      const made = `MADE WITH GAME-MAKER: ${game}`;
+      const line = fitFont(f, made, (px) => SANS(px, 900, true), 12, 9, to - from - 16) ? made : game;
+      fitFont(f, line, (px) => SANS(px, 900, true), 12, 8, to - from - 16);
+      f.fillText(line, from + 8, y + th + 37);
     }
   });
   f.restore();
