@@ -24,6 +24,13 @@ const ENTRIES: [label: string, go: Go][] = [
   ['The free CD: the original Game-Maker source', DISC_GO],
 ];
 
+/** An advertiser's number on the card, e.g. '#007', for the line under its ad; only one that is on the card. */
+export function readerServiceNo(go: Go): string {
+  const i = ENTRIES.findIndex(([, g]) => g === go);
+  if (i < 0) throw new Error(`TURBO BUTTON: ${go} is not on the reader service card`);
+  return `#${String(i + 1).padStart(3, '0')}`;
+}
+
 export const READER_SERVICE: MagSection = {
   id: 'reader-service',
   title: 'Reader Service',
