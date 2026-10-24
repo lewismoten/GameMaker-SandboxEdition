@@ -89,7 +89,8 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   set(S[SEQ.left], walk(-step, true), { key: KEY.left, jstkMov: JOY.left });
   set(S[SEQ.rightD], walk(step, false), { key: KEY.d });
   set(S[SEQ.leftA], walk(-step, true), { key: KEY.a });
-  const hop = [f({ pic: 'hopFront', y: -HOP, top: 'topJoy' })];
+  // straight up (a hop, or climbing roots): its back, going away
+  const hop = [f({ pic: 'climb', y: -HOP, top: 'topBack' })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
   set(S[SEQ.hopW], hop, { key: KEY.w, sound: SND.hop });
   const side = (dx: number, mirror: boolean) => [
