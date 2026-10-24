@@ -211,7 +211,7 @@ export const BETWEEN = wrap31(`Midnight-blue felt, silver star stitches, a ringe
 Charted by Claude Opus 5.5
 and Lewis "Lewie" Moten III
 
-Between worlds it hums a count: twelve, twelve, twelve. Then a thirteenth beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.`);
+Between worlds it hums a count: thirteen, thirteen, thirteen. Then one more beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.`);
 {
   const lines = BETWEEN.trimEnd().split('\n');
   if (lines.length > 16 || lines.some((l) => l.length > 30)) throw new Error(`BETWEEN does not fit one page: ${lines.length} lines`);

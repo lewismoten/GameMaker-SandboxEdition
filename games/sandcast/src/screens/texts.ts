@@ -155,7 +155,7 @@ export const DUG = wrap(`
 
 Sandy tan felt, blue waves, a turreted castle with a pink pennant, one brown paw print.
 
-Pressed into the wet sand: "ONCE," then a measuring cup, a ladle and twelve little egg shapes in a row. One more sits apart, half dug, as if somebody got called in for supper.
+Pressed into the wet sand: "ONCE," then a measuring cup, a ladle and thirteen little egg shapes in a row. One more sits apart, half dug, as if somebody got called in for supper.
 
 |Dug up by Gwinn, with help
 |(and a nap) from Teddy.

@@ -105,8 +105,8 @@ A postcard from the future:
 "The grandkids still argue
 over the family root beer.
 The recipe calls for thirteen
-of something. Twelve, it
-turns out, is merely a dozen."`,
+of something. Thirteen eggs,
+it turns out, are not it."`,
 );
 if (POSTCARD.split('\n').length > 16) throw new Error('postcard: more than one page');
 
