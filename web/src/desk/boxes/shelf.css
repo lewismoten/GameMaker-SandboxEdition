@@ -118,6 +118,12 @@
   filter: drop-shadow(0 0 3px #ffe082);
 }
 
+/* and the room's yellow ring, which shows at night too */
+.game-shelf .shelf-box:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 2px;
+}
+
 @media (max-width: 960px) {
   .game-shelf {
     display: none;
