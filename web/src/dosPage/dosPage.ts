@@ -233,6 +233,16 @@ const guideBtn = h(
   },
   ...face('📖', 'Owner’s Guide'),
 );
+const ultimateBtn = h(
+  'button',
+  {
+    type: 'button',
+    class: 'dos-btn',
+    title: 'Read The Ultimate Owner’s Guide: advanced tips and tricks',
+    onclick: () => void import('../manual/ultimate/openInManual').then((m) => m.openUltimateInManual()),
+  },
+  ...face('📒', 'Ultimate Guide'),
+);
 
 /** The addresses this page answers, for the page's own "Links to this page". */
 const LINKS: [href: string, what: string][] = [
@@ -250,7 +260,7 @@ turboBtn.classList.add('dos-icon-only');
 soundBtn.classList.add('dos-icon-only');
 fullBtn.classList.add('dos-full');
 const lineSpeed = speedItem();
-const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS, the modem speed and the Owner’s Guide', [
+const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS, the modem speed, the Owner’s Guide and The Ultimate Owner’s Guide', [
   fullItem,
   resetBtn,
   h('label', { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' }, blaster, 'Sound Blaster card'),
@@ -258,6 +268,7 @@ const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, t
   bbsBtn,
   lineSpeed.item,
   guideBtn,
+  ultimateBtn,
 ]);
 // a long wait on a slow line: the footer offers a faster one
 const lineHint = speedHint(() => {
