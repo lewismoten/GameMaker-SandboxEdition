@@ -20,7 +20,7 @@ export const INSTRUCTIONS = [
     'way you last walked.',
     'ENTER picks up what you stand',
     'on (rare, and worth it).',
-    'K toots the kazoo (once Doc',
+    'Z toots the kazoo (once Doc',
     'Leo has taught you).',
     'T drinks a tonic.',
     '',

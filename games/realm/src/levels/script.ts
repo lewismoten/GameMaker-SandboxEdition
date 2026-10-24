@@ -276,7 +276,7 @@ When you face him, fight like it's due today.`,
     'Someday Harbor',
     `Kazoo reeds! Ten gold a bundle, ten notes a bundle.
 
-No kazoo yet? Doc Leo teaches the Kazoo of Haste, if you do him a favor. Until then you can hum through the reeds and press K. People will stare.
+No kazoo yet? Doc Leo teaches the Kazoo of Haste, if you do him a favor. Until then you can hum through the reeds and press Z. People will stare.
 
 Tonics from Mother Tansy's cousin at the next stall, fifteen gold.
 
@@ -345,7 +345,7 @@ He was last seen out in the Gloomwood, south of here, near that black castle. He
     "Doc Leo's Tent",
     `REGGIE! You found him! Sir Reginald Cluckington III, home at last! Squeak!
 
-As promised: the Kazoo of Haste. Press K to toot. Every toot is a note that flies straight and true, and a sharp note beats anything short of the King.
+As promised: the Kazoo of Haste. Press Z to toot. Every toot is a note that flies straight and true, and a sharp note beats anything short of the King.
 
 Twenty-five notes to start. Lyra sells reeds at the harbor, ten notes a bundle.
 

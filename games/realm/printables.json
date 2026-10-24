@@ -6,7 +6,7 @@
     "Left": "Walk left",
     "Right": "Walk right",
     "Space": "Swing your sword (THE CHEZ: honk)",
-    "K": "Toot the Kazoo of Haste",
+    "Z": "Toot the Kazoo of Haste",
     "T": "Drink a tonic",
     "Enter": "Pick up what you stand on",
     "F2": "Your satchel: gold, hit points, lives",
@@ -296,7 +296,7 @@
             },
             {
               "q": "What does the kazoo do?",
-              "a": "Press K. A note flies straight ahead and beats nearly anything, bosses included. Lyra sells reeds in Someday Harbor: ten notes for ten gold."
+              "a": "Press Z. A note flies straight ahead and beats nearly anything, bosses included. Lyra sells reeds in Someday Harbor: ten notes for ten gold."
             }
           ]
         },
