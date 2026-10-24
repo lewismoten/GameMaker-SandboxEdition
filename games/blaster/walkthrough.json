@@ -131,7 +131,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 35347,
+  "frames": 35829,
   "chapters": [
    {
     "title": "Opening",
@@ -143,71 +143,71 @@
    },
    {
     "title": "Stage 1: The Motherboard — The Data Bus",
-    "frame": 2898
+    "frame": 3379
    },
    {
     "title": "Stage 1: The Motherboard — The Chipset",
-    "frame": 5344
+    "frame": 5825
    },
    {
     "title": "Stage 1: The Motherboard — The BIOS Bug",
-    "frame": 7252
+    "frame": 7733
    },
    {
     "title": "Stage 2: Memory Lane — The Address Bus",
-    "frame": 8723
+    "frame": 9205
    },
    {
     "title": "Stage 2: Memory Lane — The Cache",
-    "frame": 10938
+    "frame": 11420
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Leech",
-    "frame": 13068
+    "frame": 13550
    },
    {
     "title": "Stage 3: The Sound Card — The Mixer",
-    "frame": 14563
+    "frame": 15045
    },
    {
     "title": "Stage 3: The Sound Card — The Woofer",
-    "frame": 16205
+    "frame": 16687
    },
    {
     "title": "Stage 3: The Sound Card — The Feedback Howler",
-    "frame": 17922
+    "frame": 18404
    },
    {
     "title": "Stage 4: The Hard Disk — The Platter",
-    "frame": 19881
+    "frame": 20363
    },
    {
     "title": "Stage 4: The Hard Disk — Bad Sectors",
-    "frame": 22774
+    "frame": 23256
    },
    {
     "title": "Stage 4: The Hard Disk — The Head Crash",
-    "frame": 25021
+    "frame": 25503
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 26232
+    "frame": 26714
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 28196
+    "frame": 28678
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 29949
+    "frame": 30431
    },
    {
     "title": "Ending",
-    "frame": 32140
+    "frame": 32622
    },
    {
     "title": "Credits",
-    "frame": 33792
+    "frame": 34274
    }
   ]
  }
