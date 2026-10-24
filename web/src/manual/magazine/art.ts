@@ -1,6 +1,6 @@
 // The magazine's drawn pictures (types.ts ArtId): THE CHEZ (desk/props/chezArt.ts), the Sandbox
-// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, a line drawing of the
-// desk's modem, and the desk's speakers and disk box drawn as the desk draws them
+// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, and the desk's
+// modem (modemArt.ts), speakers and disk box drawn as the desk draws them
 // (speakerArt.ts, diskBoxArt.ts) for the hardware ads; and a snapshot of the 1994 desk itself
 // (deskShot.ts) and screenshots of today's web (webShots.ts).
 import { h } from '../../editor/core/ui';
@@ -10,6 +10,7 @@ import { hashString } from '../printables/kit';
 import type { ArtId, WebShot } from './types';
 import { deskShotImg } from './deskShot';
 import { diskBoxArt } from './diskBoxArt';
+import { modemArt } from './modemArt';
 import { speakerArt } from './speakerArt';
 import { webShotImg } from './webShots';
 
@@ -44,11 +45,6 @@ function barcode(alt: string): Element {
 
 const DISK =
   '<rect x="4" y="4" width="92" height="92" rx="4" fill="#1d4f9c"/><rect x="26" y="4" width="48" height="30" fill="#c9ccd2"/><rect x="56" y="9" width="12" height="20" fill="#1d4f9c"/><rect x="16" y="50" width="68" height="42" fill="#fff6e0"/><rect x="16" y="56" width="68" height="4" fill="#d9381e"/>';
-const MODEM =
-  '<rect x="6" y="30" width="108" height="34" rx="5" fill="#d8d2c2" stroke="#222" stroke-width="2"/><rect x="14" y="40" width="60" height="12" fill="#222"/><g fill="#e33">' +
-  [0, 1, 2, 3, 4, 5].map((i) => `<circle cx="${82 + i * 5}" cy="46" r="1.6"/>`).join('') +
-  '</g><text x="16" y="49" font-size="8" fill="#3f3" font-family="monospace">14400</text>';
-
 const isWebShot = (id: ArtId): id is `web-${WebShot}` => id.startsWith('web-');
 
 /** A picture for the page; THE CHEZ is drawn on a canvas and handed over as an image (it prints). */
@@ -66,7 +62,7 @@ export function artElement(id: ArtId, alt: string): Element {
     case 'disk':
       return svg('0 0 100 100', DISK, alt);
     case 'modem':
-      return svg('0 0 120 90', MODEM, alt);
+      return modemArt(alt);
     case 'speakers':
       return speakerArt(alt);
     case 'diskbox':

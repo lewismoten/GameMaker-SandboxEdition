@@ -18,7 +18,12 @@ const modemAd = () =>
         [
           grid(
             [
-              [art('modem', 'An external modem, beige, its front lights in a row and its speed on the front')],
+              [
+                art(
+                  'modem',
+                  'An external modem, a low charcoal box: DATA/FAX 14.4 kbps across the top of its front and its eight lights in a row under it, six of them lit red',
+                ),
+              ],
               [
                 p('Dial every board in the 412 tonight. One modem, **every speed a BBS ever answered at**, and one more.'),
                 list([
