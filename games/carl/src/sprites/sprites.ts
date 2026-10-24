@@ -273,9 +273,9 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     blob(p, 9, 13, 7, 4, R('fur'), 1, 3);
     blob(p, 14, 7 - f, 3.6, 3.4, R('fur'), 1, 3);
-    // the ears: the right one stands taller
-    p.line(12, 4 - f, 11, 0, c('fur', 2))
-      .line(13, 4 - f, 12, 0, c('fur', 2))
+    // the ears, a matched pair
+    p.line(12, 4 - f, 11, 1 - f, c('fur', 2))
+      .line(13, 4 - f, 12, 1 - f, c('fur', 2))
       .line(16, 4 - f, 18, 1 - f, c('fur', 2))
       .line(15, 4 - f, 17, 1 - f, c('fur', 2));
     p.rect(14, 8 - f, 3, 3, c('white', 3))
