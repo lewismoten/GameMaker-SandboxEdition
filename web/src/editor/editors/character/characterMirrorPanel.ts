@@ -10,7 +10,19 @@ import { normalize } from '../../../project/files';
 import { MAXSEQ, frameCount, parseCharacter, type Character } from '../../../formats/character';
 import { scanName } from '../../../input/scancodes';
 import { setFrames } from './characterLogic';
-import { blocksShown, mirrorFrames, mirrorKey, mirrorSettings, planMirrorBlocks, sameFrames, type BlockLink, type SeqLink } from './characterMirror';
+import {
+  MIRROR,
+  bakeOrient,
+  blocksShown,
+  mirrorFrames,
+  mirrorKey,
+  mirrorSettings,
+  planMirrorBlocks,
+  sameFrames,
+  staleMirrors,
+  type BlockLink,
+  type SeqLink,
+} from './characterMirror';
 
 export interface MirrorContext {
   project: Project;
@@ -81,6 +93,24 @@ function twinBar(ctx: MirrorContext, link: SeqLink): HTMLElement {
   const links = link.blocks ? blockLinks(ctx.project, ctx.cblName()) : undefined;
   const inStep = sameFrames(mirrorFrames(seqs[cur], links), seqs[other].frames.slice(0, frameCount(seqs[other])));
   const name = `${other}. ${ctx.seqName(other)}`;
+  // pictures painted since: this side's blocks no longer match their linked mirrors
+  const stale = links ? staleMirrors(seqs[cur], ctx.freshBlocks(), links) : [];
+  const redraw = stale.length
+    ? h(
+        'button',
+        {
+          class: 'primary',
+          title: `Redraw ${stale.map(([, m]) => m).join(', ')} as ${stale.map(([n]) => n).join(', ')} mirrored, so ${name} matches this one`,
+          onclick: () => {
+            const set = ctx.freshBlocks();
+            for (const [n, m] of stale) set[m].pixels.set(bakeOrient(set[n].pixels, MIRROR));
+            ctx.edit(() => ctx.saveBlocks(set));
+            ctx.go(cur);
+          },
+        },
+        `Apply to the mirror blocks too (${stale.length})`,
+      )
+    : null;
   return h(
     'div',
     { class: 'toolbar chr-mirror chr-twin' },
@@ -104,6 +134,7 @@ function twinBar(ctx: MirrorContext, link: SeqLink): HTMLElement {
       },
       'Update the mirrored sequence',
     ),
+    redraw,
     h(
       'button',
       {

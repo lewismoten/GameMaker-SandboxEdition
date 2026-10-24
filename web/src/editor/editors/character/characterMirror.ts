@@ -154,3 +154,19 @@ export function mirrorSettings(src: Sequence, dst: Sequence): void {
   dst.jstkBut = src.jstkBut;
   dst.jstkMov = mirrorJoy(src.jstkMov);
 }
+
+/** True when block `b` is block `a`'s picture mirrored left to right. */
+export function mirrorInStep(blocks: Block[], a: number, b: number): boolean {
+  const want = bakeOrient(blocks[a].pixels, MIRROR);
+  return want.every((v, i) => v === blocks[b].pixels[i]);
+}
+
+/** The linked mirror blocks of what `src` shows whose pictures no longer match: [shown, its mirror]. */
+export function staleMirrors(src: Sequence, blocks: Block[], links: BlockLink[]): BlockLink[] {
+  const out: BlockLink[] = [];
+  for (const n of blocksShown([src])) {
+    const m = mirrorOf(links, n);
+    if (m !== undefined && m < blocks.length && !mirrorInStep(blocks, n, m)) out.push([n, m]);
+  }
+  return out;
+}

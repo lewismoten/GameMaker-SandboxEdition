@@ -12,10 +12,12 @@ import {
   mirrorFrames,
   mirrorJoy,
   mirrorKey,
+  mirrorInStep,
   mirrorOf,
   planMirrorBlocks,
   sameFrames,
   solveOrient,
+  staleMirrors,
 } from './characterMirror';
 
 /** A block whose every pixel is different, so any turn shows. */
@@ -115,5 +117,18 @@ describe('controls facing the other way', () => {
     expect(mirrorKey(77 << 8)).toBe(75 << 8);
     expect(mirrorKey((30 << 8) | 97)).toBe((32 << 8) | 100);
     expect(mirrorKey(57 << 8)).toBeUndefined();
+  });
+});
+
+describe('mirror blocks in step', () => {
+  it('finds linked blocks whose pictures drifted apart', () => {
+    const blocks = newBlockSet('cbl');
+    blocks[0].pixels.set(ramp());
+    blocks[5].pixels.set(bakeOrient(blocks[0].pixels, MIRROR));
+    const src = seqOf([frame({ pic1: 0, pic2: CHARBL })]);
+    expect(staleMirrors(src, blocks, [[0, 5]])).toEqual([]);
+    blocks[0].pixels[0] = 9;
+    expect(staleMirrors(src, blocks, [[0, 5]])).toEqual([[0, 5]]);
+    expect(mirrorInStep(blocks, 5, 0)).toBe(false);
   });
 });
