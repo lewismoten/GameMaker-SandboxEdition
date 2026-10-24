@@ -13,7 +13,7 @@ import { CLEAR, centered, gradient, klubArt, micro, outline, outlined, scaleBlit
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { drawArt } from './castArt';
 import { CITICAR } from './castCar';
-import { CHICKEN, CHICKEN_BAWK, LEO, LEO_BLINK, LEO_NOSE } from './castLeo';
+import { CHICKEN, CHICKEN_BAWK, LEO, LEO_BLINK, LEO_SMILE, paintFace } from './castLeo';
 import { GRASS_GWINN, GRASS_TEDDY, GRASS_TEDDY_PANT, GWINN_BLINK, GWINN_RUN1, GWINN_RUN2, JEANS } from './castGwinn';
 import { TEDDY, TEDDY_BLINK, TEDDY_PANT } from './castTeddy';
 import { dogHouseLibrary } from '../sprites/library';
@@ -227,7 +227,7 @@ function gwinnScene(reel: Reel): void {
   }
 }
 
-/** Scene 3: Doc Leo on Main Street, flags out. Nose on: showtime. */
+/** Scene 3: Doc Leo on Main Street, flags out. Smile on: showtime. */
 function leoScene(reel: Reel): void {
   const bg = new Pixels(W, H);
   gradient(bg, 0, 0, W, 90, r('sky'), 2, 7);
@@ -255,7 +255,8 @@ function leoScene(reel: Reel): void {
     const l = new Pixels(W, H, CLEAR);
     const bob = on && f % 2 ? 1 : 0;
     drawArt(l, LEO, c, 0, bob);
-    if (on) drawArt(l, LEO_NOSE, c, 0, bob);
+    paintFace(l, bob, c);
+    if (on) drawArt(l, LEO_SMILE, c, 0, bob);
     if (f === 8 || f === 40) drawArt(l, LEO_BLINK, c, 0, bob);
     // his right arm up, in its corduroy sleeve, the chicken in his fist and its leash hanging
     poly(
@@ -291,7 +292,7 @@ function leoScene(reel: Reel): void {
     big(p, 'DOC LEO', 6, 262);
     if (!on) say(p, 'A HOBO CLOWN, AND HIS', 170);
     if (!on) say(p, 'RUBBER CHICKEN ON A LEASH.', 182);
-    if (on) say(p, 'NOSE ON: SHOWTIME!', 170, c('yellow', 3));
+    if (on) say(p, 'SMILE ON: SHOWTIME!', 170, c('yellow', 3));
     if (f >= 32) say(p, '(HE ALWAYS ORDERS ROOT BEER.)', 182);
     if (f === 22 || f === 23) for (let k = 0; k < 8; k++) p.set(128 + Math.round(Math.cos(k) * 14), 100 + Math.round(Math.sin(k) * 12), c('yellow', 3));
     reel.add(p);

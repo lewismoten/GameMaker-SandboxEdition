@@ -9,7 +9,7 @@
 // come and go (air that blows right, then goes calm, then stirs: three pictures in a ring,
 // the windsocks on the vents with them).
 import { Pixels } from '../../../kit/pixels';
-import { blob, micro } from '../art/draw';
+import { blob, klubArt, micro } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, planks, r, sky, tuft } from '../blocks/tiles';
 import { sign, water, wideSign } from './common';
@@ -94,7 +94,7 @@ export function lotTiles(): Tiles {
   for (let x = 8; x < 76; x += 12)
     for (const y of [14, 24]) trailer.disc(x + (y === 24 ? 6 : 0), y, 2, c(['blue', 'yellow', 'green', 'pink'][((x / 12) % 4) | 0], 2));
   trailer.rect(56, 12, 12, 22, c('wood', 2)).rect(58, 14, 8, 8, c('sky', 6));
-  micro(trailer, 10, 28, 'KLOWN KLUB', c('red', 1));
+  micro(trailer, 10, 28, klubArt('KLOWN KLUB'), c('red', 1));
   trailer.disc(20, 35, 4, c('ink', 0)).ring(20, 35, 1, c('metal', 3));
   trailer.disc(46, 35, 4, c('ink', 0)).ring(46, 35, 1, c('metal', 3));
   const tc = cut(trailer);
