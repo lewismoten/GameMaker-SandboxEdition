@@ -22,8 +22,8 @@ export interface ExploreOptions {
   /** Stop after this long (ms of work); the result says it was cut short. */
   budgetMs?: number;
   maxNodes?: number;
-  /** Told now and then how far it has got; return true to stop. */
-  progress?: (nodes: number, queued: number) => boolean | void;
+  /** Told now and then how far it has got, with the heat and deaths so far (live, not copies); return true to stop. */
+  progress?: (nodes: number, queued: number, live: ExploreLive) => boolean | void;
   now?: () => number;
   /** Move every monster every tick, however far away (slower). */
   exact?: boolean;
@@ -39,6 +39,16 @@ export interface ExploreOptions {
   start?: Snap;
   /** Told the world as the hero enters and after every tick played (what the screen shows: w.mx, w.my, w.scroll). */
   onTick?: (w: World) => void;
+}
+
+/** What an exploration has found so far: its own arrays, read while it runs (the level check's live heat map). */
+export interface ExploreLive {
+  heat: Uint32Array;
+  first: Int32Array;
+  /** Deaths by cell: how many tries ended there. */
+  deaths: Map<number, number>;
+  /** Work done so far (ms). */
+  ms: number;
 }
 
 /** Where the hero comes into the scene, and with what. */
@@ -116,6 +126,8 @@ export interface Exploration {
   monsters: Set<number>;
   exits: ExitReach[];
   incidents: Incident[];
+  /** How many tries ended in a death, by cell. */
+  deaths: Map<number, number>;
   /** True when every place was tried before the budget ran out. */
   complete: boolean;
   ticks: number;
@@ -196,6 +208,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const monsters = new Set<number>();
   const exits = new Map<number, ExitReach>();
   const incidents: Incident[] = [];
+  const deathsAt = new Map<number, number>();
   const seenIncident = new Set<string>();
   const note = (i: Incident) => {
     const k = `${i.kind}:${i.cell}:${i.source ?? ''}`;
@@ -380,6 +393,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       landedAt = -1;
     }
     if (r === 'dead') {
+      deathsAt.set(cellOf(), (deathsAt.get(cellOf()) ?? 0) + 1);
       note({ kind: 'death', cell: cellOf(), detail: 'The hero died here', source: culprit(w, sim, 'hurt') });
       return 'dead';
     }
@@ -455,7 +469,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     if (tried && deaths === tried && !reachedStop) p.doomed = true;
     if (now() - lastReport > 200) {
       lastReport = now();
-      if (opt.progress?.(places.length, queue.length - head + fresh.length + heap.size)) {
+      if (opt.progress?.(places.length, queue.length - head + fresh.length + heap.size, { heat, first, deaths: deathsAt, ms: now() - t0 })) {
         stopped = true;
         break;
       }
@@ -470,6 +484,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     monsters,
     exits: [...exits.values()],
     incidents,
+    deaths: deathsAt,
     complete: !stopped && !reachedStop,
     ticks,
     ms: now() - t0,

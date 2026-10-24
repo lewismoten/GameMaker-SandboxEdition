@@ -5,7 +5,7 @@
 import { parseBlocks, BACKBL } from '../../formats/blocks';
 import { ADVTYPE, NOSCENE, parseGame, type Game } from '../../formats/game';
 import { parseMap } from '../../formats/map';
-import { explore, type Entry, type Exploration } from './explore';
+import { explore, type Entry, type Exploration, type ExploreLive } from './explore';
 import { startCharInfo, type FileSource } from './sim';
 import { stuckAreas, type StuckArea } from './stuck';
 
@@ -23,8 +23,8 @@ export interface SceneRun {
 export interface PlaytestOptions {
   /** Work per scene before moving on (ms). */
   budgetMs?: number;
-  /** Told the scene being explored and how far along it is; return true to stop everything. */
-  progress?: (scene: number, done: number, total: number, places: number) => boolean | void;
+  /** Told the scene being explored, how far along it is and what it has found so far; return true to stop everything. */
+  progress?: (scene: number, done: number, total: number, places: number, queued: number, live: ExploreLive) => boolean | void;
 }
 
 export interface Playtest {
@@ -114,8 +114,8 @@ async function checkScene(
   let cancelled = false;
   const ex = await explore(game, scene, files, entry, {
     budgetMs: opt.budgetMs,
-    progress: (places) => {
-      if (opt.progress?.(scene, done, total, places)) cancelled = true;
+    progress: (places, queued, live) => {
+      if (opt.progress?.(scene, done, total, places, queued, live)) cancelled = true;
       return cancelled;
     },
   });

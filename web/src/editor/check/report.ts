@@ -11,8 +11,10 @@ import { keyReach } from './checks/keyReach';
 import { landings } from './checks/landings';
 import { curve, playFindings } from './checks/playChecks';
 import { sortFindings, type Finding } from './findings';
+import type { ExploreLive } from './explore';
 import { gameOf, playtestGame, playtestScene, type SceneRun } from './playtest';
 import { scenesOf } from './sceneData';
+import { LiveFeed, type LiveProgress } from './live';
 
 /** What the map panel shows of one scene's playtest. */
 export interface RunSummary {
@@ -24,6 +26,8 @@ export interface RunSummary {
   /** Cells of the stuck areas. */
   stuck: number[];
   deaths: number[];
+  /** How many tries ended in a death, by cell: [cell, tries] × n. */
+  deathCounts: number[];
   exits: { link: number; toScene: number; tick: number; hp: number }[];
   complete: boolean;
   places: number;
@@ -49,6 +53,8 @@ export interface CheckOptions {
   play?: boolean;
   budgetMs?: number;
   progress?: (what: string, done: number, total: number) => boolean | void;
+  /** Told about once a second, while a scene is played, what the bot has found so far (live.ts). */
+  live?: (p: LiveProgress) => void;
   now?: () => number;
   /** Heroes and monsters marked as looking the same from every side (facing.ts sameKey). */
   sameEverySide?: string[];
@@ -63,6 +69,7 @@ export function summarize(r: SceneRun, map?: string): RunSummary {
     first: r.ex.first,
     stuck: r.stuck.flatMap((a) => a.cells),
     deaths: r.ex.incidents.filter((i) => i.kind === 'death').map((i) => i.cell),
+    deathCounts: [...r.ex.deaths].flat(),
     exits: r.ex.exits.map((e) => ({ link: e.link, toScene: e.toScene, tick: e.tick, hp: e.hp })),
     complete: r.ex.complete,
     places: r.ex.places.length,
@@ -89,8 +96,15 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   if (opt.scene === undefined) findings.push(...controls(files), ...keyReach(files), ...endingChecks(game), ...variety(all), ...mechanics(all));
   const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
   if (opt.play !== false) {
-    const progress = (scene: number, done: number, total: number, places: number) =>
-      opt.progress?.(`${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${places} places tried`, done, total);
+    const feed = new LiveFeed(now);
+    const budgetMs = opt.budgetMs ?? 10_000;
+    const progress = (scene: number, done: number, total: number, places: number, queued: number, live: ExploreLive) => {
+      if (opt.live) {
+        const p = feed.update({ scene, index: done, total, nodes: places, queued, budgetMs }, live);
+        if (p) opt.live(p);
+      }
+      return opt.progress?.(`${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${places} places tried`, done, total);
+    };
     const runs: SceneRun[] = [];
     if (opt.scene !== undefined) {
       const r = await playtestScene(game, files, opt.scene, { budgetMs: opt.budgetMs, progress });
