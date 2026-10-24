@@ -44,6 +44,13 @@ export const PALETTES: Chapter = {
   after dark.</p>
   <figure data-fig="goat"></figure>
   <figure data-fig="loaf"></figure>
+  <h2>Colors everyone can tell apart</h2>
+  <p>Some players don’t see red and green as two colors, and some play on a gray screen. The
+  palette editor’s <b>Color vision</b> tab shows a level in grayscale and as players with
+  protanopia, deuteranopia or tritanopia see it. It lists the colors that touch on the map, or
+  a monster and the scenery it stands in, that look alike there, and ramp steps too close to
+  see. Click one to see where; ✨ makes the safe change, usually one color a little lighter or
+  darker, and Undo puts it back.</p>
   <h2>Colors the program goes looking for</h2>
   <p>Game-Maker and PLAYGAME draw some things in whatever color of your palette is
   <i>nearest</i> to a color they have in mind. If your palette has nothing close, they settle
