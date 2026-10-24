@@ -8,13 +8,11 @@ import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { gameDiz, isSofaFile } from './fileId';
 import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from './pager';
-import { Term, sleep } from './term';
+import { Term } from './term';
 import { expectText, progress } from './transfer';
+import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { dosDir } from '../../project/dosDir';
 import { PLAYER_EXE_BYTES, downloadLine, sizeText, installedBytes, zipBytes, zipName } from '../../project/diskFacts';
-
-/** Bytes per second PKUNZIP inflates and writes to the hard disk. */
-const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
 
 /** The board's own files: the games in the catalog that were uploaded to The Sofa. */
 export function sofaLibrary(catalog: CatalogEntry[]): CatalogEntry[] {
@@ -87,35 +85,12 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   }
   t.line();
   t.line('|10Transfer complete.');
-  await unzip(t, h, g);
+  await pkunzip(t, h, zipName(g), dosDir(g), [
+    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as const] : []),
+    ...g.files.map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)] as const),
+    ['FILE_ID.DIZ', DIZ_BYTES] as const,
+  ]);
   h.downloads.add(g.id);
   t.line(`|07Type |15CD \\DOWNLOAD\\${dosDir(g)}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
   t.line();
-}
-
-/** PKUNZIP into C:\DOWNLOAD: each file takes as long as its size needs on this PC. */
-async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
-  const s = h.screen;
-  const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
-  // PKUNZIP runs on this PC: its words show at once
-  t.local(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}\n`);
-  t.local(`|07Searching ZIP: ${zipName(g)}\n`);
-  const files: [string, number][] = [
-    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as [string, number]] : []),
-    ...g.files.map((f, i): [string, number] => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)]),
-    ['FILE_ID.DIZ', 450],
-  ];
-  for (const [name, size] of files) {
-    t.local(`|07  Inflating: ${name.padEnd(13)}`);
-    const x = s.cursorX;
-    const ms = (size / rate) * 1000;
-    const start = performance.now();
-    for (let f = 0; f < 1;) {
-      f = ms ? Math.min(1, (performance.now() - start) / ms) : 1;
-      s.write(x, s.cursorY, attr(7, 0), `${Math.round(f * 100)}%`.padStart(4));
-      if (f < 1) await sleep(Math.min(100, ms / 4));
-    }
-    s.write(x, s.cursorY, attr(7, 0), '    ');
-    t.local('\n');
-  }
 }

@@ -39,6 +39,7 @@ import { PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from '..
 import { sizeAbout } from './sofaFiles';
 import { statusBps } from './lineSpeed';
 import { cpsText, expectText, progress } from './transfer';
+import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
 import { TTY_PHONE } from './ttyTalk';
 import { doorGames, sandboxCall } from './ticTacToeDoor';
@@ -601,41 +602,15 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   t.line();
   t.line('|10Transfer complete.');
   updateAccount((a) => recordDownload(a, size, isFree(g)));
-  await unzip(t, h, g);
+  await pkunzip(t, h, zipName(g), dosDir(g), [
+    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as const] : []),
+    ...g.files.map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)] as const),
+    ['FILE_ID.DIZ', DIZ_BYTES] as const,
+  ]);
   h.downloads.add(g.id);
   if (pcExtras().cracked(g.id) !== undefined) pcExtras().setCracked(g.id, false); // a fresh copy, as its author made it
   t.line(`|07Type |15CD \\DOWNLOAD\\${dosDir(g)}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
   t.line();
-}
-
-/** Bytes per second PKUNZIP inflates and writes to the hard disk. */
-const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
-
-/** PKUNZIP into C:\DOWNLOAD: each file takes as long as its size needs on this PC. */
-async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
-  const s = h.screen;
-  const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
-  // PKUNZIP runs on this PC: its words show at once
-  t.local(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}\n`);
-  t.local(`|07Searching ZIP: ${zipName(g)}\n`);
-  const files: [string, number][] = [
-    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as [string, number]] : []),
-    ...g.files.map((f, i): [string, number] => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)]),
-    ['FILE_ID.DIZ', 450],
-  ];
-  for (const [name, size] of files) {
-    t.local(`|07  Inflating: ${name.padEnd(13)}`);
-    const x = s.cursorX;
-    const ms = (size / rate) * 1000;
-    const start = performance.now();
-    for (let f = 0; f < 1;) {
-      f = ms ? Math.min(1, (performance.now() - start) / ms) : 1;
-      s.write(x, s.cursorY, attr(7, 0), `${Math.round(f * 100)}%`.padStart(4));
-      if (f < 1) await sleep(Math.min(100, ms / 4));
-    }
-    s.write(x, s.cursorY, attr(7, 0), '    ');
-    t.local('\n');
-  }
 }
 
 // ---- uploads ----------------------------------------------------------------------------

@@ -14,6 +14,7 @@ import { expectText, progress } from './transfer';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
 import { Pager, pageLabel } from './pager';
+import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
@@ -192,14 +193,8 @@ async function download(t: Term, h: RetroHost, u: WarezRelease): Promise<void> {
   t.line(`|10Transfer complete.${zips.length > 1 ? ` All ${zips.length} parts received.` : ''}`);
   const dir = u.id.toUpperCase();
   for (const [p, zip] of zips.entries()) {
-    // PKUNZIP runs on this PC: its words show at once
-    t.local(`|07C:\\>PKUNZIP -d ${zip} C:\\DOWNLOAD\\${dir}\n`);
-    t.local(`|07Searching ZIP: ${zip}\n`);
-    const names = [...u.files.filter((f) => (f.part ?? 0) === p).map((f) => f.name), ...(p === 0 ? ['FILE_ID.DIZ'] : [])];
-    for (const name of names) {
-      t.local(`|07  Inflating: ${name}\n`);
-      await sleep(h.turbo() ? 60 : 300);
-    }
+    const files = u.files.filter((f) => (f.part ?? 0) === p).map((f) => [f.name, fileSize(f)] as const);
+    await pkunzip(t, h, zip, dir, p === 0 ? [...files, ['FILE_ID.DIZ', DIZ_BYTES] as const] : files);
   }
   h.downloads.add(u.id);
   updateAccount((a) => zips.reduce((acc) => recordDownload(acc, Math.round(u.bytes / zips.length), amnesty), a));
