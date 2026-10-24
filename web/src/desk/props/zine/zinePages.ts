@@ -31,7 +31,7 @@ export const ZINE: ZinePage[] = [
       'C:\\DOS, C:\\GM and C:\\COMM are on the PATH, so BACKUP, HEXEDIT, ACHIEVE, OFFLINE, TERMINAL and VPIC run from anywhere. Stuff you download lands in C:\\DOWNLOAD\\<NAME>: CD there first.',
       'DIR /W for wide, DIR /P to pause, wildcards like DIR *.GAM. A: and D: switch drives (an empty drive says Abort, Retry, Fail?).',
       'TIME and DATE set the clock for the WHOLE ROOM, not just the PC. TIME 11:30p and the window goes dark, the moon comes out and the black light comes on. TIME 3:17a and check the wristwatch. TIME 12:01a for a party. DATE 12-25-94 for, you know.',
-      'TIME /LOCAL (or DATE /LOCAL) puts it back on the real time. A red SET on the watch means you changed it.',
+      'TIME RESET (or DATE RESET) puts it back on the real time. Hover the wristwatch to see if you changed it.',
     ],
     scrawl: ['TIME /? and DATE /? explain it'],
   },

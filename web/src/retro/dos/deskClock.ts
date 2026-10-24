@@ -2,8 +2,8 @@
 // between visits), so Lewis can make it night to see the black light, the moon and THE
 // CHEZ, or 3:17 a.m. on the wall clock. Everything time-based in the room reads deskNow():
 // the wristwatch, the window's day and night and its moon, the drive-by, the black light,
-// the prompt's TIME and DATE and the dates of files the PC makes. TIME /LOCAL (or DATE
-// /LOCAL) goes back to the real local time. A change is announced ('gm-desk-clock') so the
+// the prompt's TIME and DATE and the dates of files the PC makes. TIME RESET (or /LOCAL,
+// or DATE RESET) goes back to the real local time. A change is announced ('gm-desk-clock') so the
 // room follows at once.
 const KEY = 'gm-desk-clock';
 export const DESK_CLOCK_EVENT = 'gm-desk-clock';

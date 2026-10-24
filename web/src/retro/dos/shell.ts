@@ -324,8 +324,8 @@ export class Shell {
 
   /**
    * TIME and DATE, as in DOS 6.22: show the room's clock and ask for a new one (Enter keeps
-   * it), or take it on the command line (TIME 11:30p, DATE 12-25-94). /LOCAL, this PC's own
-   * switch, goes back to the real local time.
+   * it), or take it on the command line (TIME 11:30p, DATE 12-25-94). RESET (or /LOCAL), this
+   * PC's own words, goes back to the real local time, on the command line or at the prompt.
    */
   private async setClock(what: 'time' | 'date', arg: string): Promise<void> {
     const time = what === 'time';
@@ -333,22 +333,23 @@ export class Shell {
     if (/^\/\?$/.test(arg)) {
       this.out(time ? 'Displays or sets the system time.' : 'Displays or sets the system date.');
       this.out();
-      this.out(time ? 'TIME [time] [/LOCAL]' : 'DATE [date] [/LOCAL]');
+      this.out(time ? 'TIME [time | RESET]' : 'DATE [date | RESET]');
       this.out();
       this.out(time ? '  time    hours:minutes[:seconds[.hundredths]][a|p]' : '  date    month-day-year');
-      this.out('  /LOCAL  Go back to the real local time');
+      this.out('  RESET   Go back to the real local time (/LOCAL works too)');
       this.out();
       this.out(
         `Type ${time ? 'TIME' : 'DATE'} with no parameters to display the current ${what} and a prompt for a new one. Press ENTER to keep the same ${what}.`,
       );
       return;
     }
-    if (/^\/local$/i.test(arg)) {
+    const reset = () => {
       resetDeskClock();
       this.out(`Current ${what} is ${show()}`);
       this.out('(the real local time)');
-      return;
-    }
+    };
+    const isReset = (text: string) => /^(reset|\/local)$/i.test(text.trim());
+    if (isReset(arg)) return reset();
     const set = (text: string): boolean => {
       const to = time ? parseDosTime(text, deskNow()) : parseDosDate(text, deskNow());
       if (!to) {
@@ -367,6 +368,7 @@ export class Shell {
       this.screen.print(time ? 'Enter new time: ' : 'Enter new date (mm-dd-yy): ');
       const line = await readLine(this.screen, this.host.keys, [], 20);
       this.screen.print('\n');
+      if (line !== null && isReset(line)) return reset();
       if (line === null || !line.trim() || set(line)) return;
     }
   }
@@ -378,7 +380,7 @@ export class Shell {
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
       'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
-      'TIME [11:30p]  DATE [12-25-94]  Set the clock    TIME /LOCAL  Real time again',
+      'TIME [11:30p]  DATE [12-25-94]  Set the clock    TIME RESET  Real time again',
       '',
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',

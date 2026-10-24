@@ -94,7 +94,7 @@ export function wallClock(): HTMLElement {
       svg.querySelector(':scope > title')?.remove();
       if (set) {
         const tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-        tip.textContent = 'Set with TIME at the DOS prompt, not the real time (TIME /LOCAL puts it back)';
+        tip.textContent = 'Set with TIME at the DOS prompt, not the real time (TIME RESET puts it back)';
         svg.prepend(tip);
       }
     }
