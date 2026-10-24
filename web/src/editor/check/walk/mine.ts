@@ -5,7 +5,7 @@
 // the map has changed since, is left out and the bot plays the scene.
 import type { Project } from '../../core/project';
 import type { Game } from '../../../formats/game';
-import { decodeKeys } from '../../../walkthrough/format';
+import { decodeKeys, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Entry } from '../explore';
 import { SceneSim, TICKS_PER_SECOND, type FileSource } from '../sim';
 import type { Replay } from './autoWalk';
@@ -84,4 +84,20 @@ export async function replayMine(game: Game, files: FileSource, scene: number, e
     }
   }
   return undefined;
+}
+
+/** A walkthrough of one scene alone (the game started there, as the play test starts it): its keys, from the scene's entry. */
+export function oneScene(game: string, scene: number, title: string, keys: string, won: boolean, bot: boolean): Walkthrough {
+  return {
+    version: 1,
+    game,
+    rand: { seed: 1, per: 'scene' },
+    hold: 2,
+    story: false,
+    bot: bot || undefined,
+    partial: !won || undefined,
+    segments: [{ scene, keys }],
+    chapters: [{ scene, title }],
+    timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] },
+  };
 }

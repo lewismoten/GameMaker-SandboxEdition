@@ -8,6 +8,7 @@ import { parseGame, serializeGame } from '../../../formats/game';
 import { startingAt } from '../../editors/integrator/startAt';
 import { autoWalk, type AutoWalk } from './autoWalk';
 import { verifyWalk, type Verified } from './verify';
+import type { Walkthrough } from '../../../walkthrough/format';
 
 export interface WalkRequest {
   files: [string, Uint8Array][];
@@ -18,6 +19,8 @@ export interface WalkRequest {
   mine?: Record<number, string>;
   /** Walk just this scene, the game started there. */
   only?: number;
+  /** Don't walk: play this walkthrough on the engine, to check and time it. */
+  walk?: Walkthrough;
 }
 
 export type WalkMessage = { kind: 'progress'; what: string } | { kind: 'done'; result: AutoWalk; verified?: Verified } | { kind: 'error'; message: string };
@@ -33,16 +36,19 @@ self.onmessage = async (e: MessageEvent<WalkRequest>) => {
       files.set(e.data.gam, serializeGame(game));
     }
     let last = 0;
-    const result = await autoWalk(game, files, e.data.id, {
-      budgetMs: e.data.budgetMs,
-      mine: e.data.mine,
-      maxScenes: e.data.only !== undefined ? 1 : undefined,
-      progress: (scene, style, places) => {
-        if (performance.now() - last < 250) return;
-        last = performance.now();
-        post({ kind: 'progress', what: `${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
-      },
-    });
+    const given = e.data.walk;
+    const result: AutoWalk = given
+      ? { walk: given, scenes: [], won: false }
+      : await autoWalk(game, files, e.data.id, {
+          budgetMs: e.data.budgetMs,
+          mine: e.data.mine,
+          maxScenes: e.data.only !== undefined ? 1 : undefined,
+          progress: (scene, style, places) => {
+            if (performance.now() - last < 250) return;
+            last = performance.now();
+            post({ kind: 'progress', what: `${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
+          },
+        });
     let verified: Verified | undefined;
     if (result.walk) {
       post({ kind: 'progress', what: 'Playing it on the engine to check and time it…' });

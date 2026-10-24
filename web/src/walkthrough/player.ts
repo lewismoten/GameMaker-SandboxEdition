@@ -88,13 +88,19 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
   }
 }
 
-/** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show. */
-export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void, given?: Walkthrough): Promise<void> {
+/** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show; `chapter` (an index into its timeline's chapters) starts it there. */
+export async function watchWalkthrough(
+  entry: CatalogEntry,
+  loadFiles: () => Promise<GameFiles>,
+  onReady?: () => void,
+  given?: Walkthrough,
+  chapter?: number,
+): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter);
   } finally {
     release?.();
   }
@@ -106,6 +112,7 @@ async function watch(
   onReady: (() => void) | undefined,
   onLose: (f: () => void) => void,
   given?: Walkthrough,
+  chapter?: number,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -477,7 +484,10 @@ async function watch(
   showPlay();
   showTime();
   fresh();
-  void run!.start().then(() => run!.step(true));
+  void run!
+    .start()
+    .then(() => run!.step(true))
+    .then(() => (chapter !== undefined && tl.chapters[chapter] ? seek(chapter) : undefined));
 
   onReady?.();
   await modal<void>(`${entry.title}: walkthrough`, () =>
