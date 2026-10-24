@@ -2,10 +2,10 @@
 
 ## A derivative work of RSD Game-Maker
 
-This repository is a **modified fork** of the source code of *Game-Maker*, the game
+This repository is a **modified fork** of the source code of _Game-Maker_, the game
 construction kit produced from 1991 to 1995 by Recreational Software Designs (RSD) of
 Amherst, New Hampshire. It was sold by direct mail in the US by KD Software (RSD also made a
-distribution deal with GameLynk), in the UK as *Captain GameMaker* by Screen Entertainment,
+distribution deal with GameLynk), in the UK as _Captain GameMaker_ by Screen Entertainment,
 and worldwide on CD-ROM by Microforum, as [Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
 records. Game-Maker was created by
 G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Today it is
@@ -24,7 +24,7 @@ license requires.
 ## The name: Game-Maker: Sandbox Edition
 
 To keep this fork from being mistaken for RSD's own release, it goes by **Game-Maker:
-Sandbox Edition** (short: *Game-Maker SE*), after the Sandbox BBS Lewis ran in Pittsburgh in
+Sandbox Edition** (short: _Game-Maker SE_), after the Sandbox BBS Lewis ran in Pittsburgh in
 the 1990s. It is based on RSD Game-Maker 3.0 and keeps its file formats, but it is not the same
 program, and the pieces it draws are its own:
 
@@ -35,8 +35,8 @@ program, and the pieces it draws are its own:
 - the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original,
   rebuilt in TypeScript from its source on a simulated PC; no DOS or x86 code runs.
 
-Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker-SandboxEdition)
-and to the original as *RSD Game-Maker 3.0* (Game-Maker 3.0 by Recreational Software Designs)
+Refer to this project as _Game-Maker: Sandbox Edition_ (https://github.com/lewismoten/GameMaker-SandboxEdition)
+and to the original as _RSD Game-Maker 3.0_ (Game-Maker 3.0 by Recreational Software Designs)
 (https://github.com/gandrewstone/GameMaker).
 
 ## Why a web version
@@ -64,8 +64,8 @@ game folder opens in the browser unchanged.
   and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
-  *1994 desk* (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
-  *modern web* editor and player. AI assistance did most of the porting and code
+  _1994 desk_ (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
+  _modern web_ editor and player. AI assistance did most of the porting and code
   generation: reading the original C source, writing the TypeScript, building the Sandbox
   Software games in code, and testing them, directed and reviewed by Lewis.
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
@@ -129,30 +129,30 @@ game folder opens in the browser unchanged.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
-  - *Teddy's Little Bigger Adventure*: `games/teddy2/disk/main.cmf` (Main Street) quotes
+  - _Teddy's Little Bigger Adventure_: `games/teddy2/disk/main.cmf` (Main Street) quotes
     **Yankee Doodle**, a traditional American tune (18th century), public domain; arrangement
     by the game.
-  - *I Screamed, She Smirked*: `games/smirked/disk/title.cmf`, `story.cmf` and `foyer.cmf`
+  - _I Screamed, She Smirked_: `games/smirked/disk/title.cmf`, `story.cmf` and `foyer.cmf`
     open with the mordent of the **Toccata and Fugue in D minor**, BWV 565, credited to
     J. S. Bach (about 1704), public domain; arrangement by the game.
-  - *The desk's wall phone*: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
+  - _The desk's wall phone_: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
     opening of **Für Elise** by Ludwig van Beethoven (about 1810, published 1867), public
     domain.
-  - *Teddy's Little Biggest Adventure*: its ending song (`games/teddy3/src/sound/music.ts`)
+  - _Teddy's Little Biggest Adventure_: its ending song (`games/teddy3/src/sound/music.ts`)
     plays **Happy Birthday to You**, the tune of "Good Morning to All" by Mildred J. Hill
     (1893), public domain in the US; arrangement by the game, which credits it on its
     credits screen.
-  - *A hidden bonus on the site*: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
+  - _A hidden bonus on the site_: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
     Doodle**, the same traditional tune, public domain.
-  - *RSD's sample music on the CD* quotes public-domain works: `GMMOONLT.CMF` is the first
+  - _RSD's sample music on the CD_ quotes public-domain works: `GMMOONLT.CMF` is the first
     movement of Beethoven's Piano Sonata No. 14, the **Moonlight** (1801); `GMRANGE.CMF` is
     **Home on the Range** (Daniel E. Kelley, music, and Brewster M. Higley, words, 1872).
-  - *The shareware games A-J's Quest (`cd/sharware/ajquest`) and Ralph's game
-    (`cd/sharware/fluffyr`)* use `GMFAIRY.CMF`, the **Dance of the Sugar Plum Fairy** from
-    Tchaikovsky's *The Nutcracker* (1892), public domain.
+  - _The shareware games A-J's Quest (`cd/sharware/ajquest`) and Ralph's game
+    (`cd/sharware/fluffyr`)_ use `GMFAIRY.CMF`, the **Dance of the Sugar Plum Fairy** from
+    Tchaikovsky's _The Nutcracker_ (1892), public domain.
 - **Third-party music under copyright.** Three shareware games on the CD by A-J Games,
-  *Bounerim* (`cd/sharware/bounerm`), Ralph's game (`cd/sharware/fluffyr`) and *Sign of the
-  Hedgehog* (`cd/sharware/signhdg`), include `SND7.CMF`, an arrangement of John Williams's
+  _Bounerim_ (`cd/sharware/bounerm`), Ralph's game (`cd/sharware/fluffyr`) and _Sign of the
+  Hedgehog_ (`cd/sharware/signhdg`), include `SND7.CMF`, an arrangement of John Williams's
   **The Imperial March** (1980), which is under copyright and not licensed by this project.
   It is kept as those games were distributed in the 1990s, unaltered, as part of their
   authors' original files.
@@ -279,7 +279,7 @@ formats from their published descriptions and from Game-Maker's own source.
   OPL3, AMI BIOS, PKZIP and PKUNZIP, Xmodem, Ymodem and ZMODEM, Renegade BBS, QEMM, the 286 to Pentium, Windows 3.1 and NT, OS/2, the ATI, Trident, Tseng and
   Paradise Super VGA cards (from RSD's own system requirements), the Remington Noiseless
   typewriter, Autodesk Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
-  song lyrics and his 100 Word Stories (in *KEEP IT BRIEF!*) are quoted word for word. These
+  song lyrics and his 100 Word Stories (in _KEEP IT BRIEF!_) are quoted word for word. These
   are trademarks of their respective owners; no endorsement is implied. Every other store,
   arcade, brand, product and publication in the games is made up.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
@@ -315,6 +315,11 @@ formats from their published descriptions and from Game-Maker's own source.
   dedication), chosen because it reads with every kind of color vision; its monster contrast is
   the **relative luminance and contrast ratio** of the W3C's Web Content Accessibility
   Guidelines (WCAG) 2. Both are used as published; no code of theirs is included.
+- **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
+  `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
+  ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
+  envelope, with presets (jump, coin, hurt, explosion…) that give a new take each time. The
+  synthesizers were written fresh for this project; no sfxr code is included.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
@@ -378,10 +383,10 @@ Game-Maker's makefiles don't build.
   contributed by David Schwaderer and can be found in his excellent book 'C Programmers
   Guide to NetBIOS' published by Howard W. Sams & Co. Inc." The same file credits Roger
   Schlafly for PKZIP's encryption and Robert Mahoney for the `.ZIP` name, and cites
-  Storer, *Data Compression, Methods and Theory* (Computer Science Press, 1988) and Held,
-  *Data Compression, Techniques and Applications* (John Wiley & Sons, 1987). Game-Maker's
+  Storer, _Data Compression, Methods and Theory_ (Computer Science Press, 1988) and Held,
+  _Data Compression, Techniques and Applications_ (John Wiley & Sons, 1987). Game-Maker's
   own C and assembly code computes no CRC.
-- **FLI format**: `code/Image/FLI/FLIDOC.TXT`, the *Turbo C FLI Library* document for
+- **FLI format**: `code/Image/FLI/FLIDOC.TXT`, the _Turbo C FLI Library_ document for
   Autodesk Animator files, "Copyright 1989-1990 Dancing Flame, San Francisco. Program Code
   and Library by Jim Kent. Documentation by Jim Kent and Heidi Brumbaugh." Andy Stone's
   `FLI.CPP` quotes it in a comment.
@@ -418,7 +423,7 @@ Game-Maker's makefiles don't build.
   It isn't part of Game-Maker's build.
 - **BMP2BGI** 1.0 (`BMP2BGI1.ZIP`, 1991) by Richard G. Rasulis, Jr. ("(c) R.G.Rasulis
   Consulting Services"). Its `BMP.H` is "(c) Ziff-Davis Publishing", from Charles
-  Petzold's article in *PC Magazine* (vol. 10, no. 10, pp. 365–370). No license is
+  Petzold's article in _PC Magazine_ (vol. 10, no. 10, pp. 365–370). No license is
   given.
 
 **Unattributed, so flagged rather than credited**

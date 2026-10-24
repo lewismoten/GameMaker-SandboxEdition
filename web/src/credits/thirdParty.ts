@@ -79,6 +79,12 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'How the level check measures a monster against the scenery behind it.',
       },
       {
+        name: 'sfxr (the idea)',
+        license: 'An idea, freshly written (no code used)',
+        by: 'Tomas Pettersson (DrPetter), 2007',
+        what: 'Sliders plus presets that give a new take each time, as in the editor’s 🎛 sound effect maker and PC speaker effects (web/src/audio/sfxSynth.ts, web/src/editor/tools/speakerFx.ts).',
+      },
+      {
         name: 'Mr. Yuck',
         license: 'Trademark of UPMC Children’s Hospital of Pittsburgh',
         by: 'A simple drawing in tribute, not the original artwork',
