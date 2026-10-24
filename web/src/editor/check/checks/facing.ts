@@ -156,12 +156,22 @@ function heroFacing(d: SceneData): Finding[] {
         where,
       });
   }
-  // Climbing a ladder is the up key with no gravity: it should show his back. Pixels can't tell
-  // a back from a front drawn anew (both share the hat, hair and outline), so only a climb that
-  // reuses the front or a side picture is found.
+  return out;
+}
+
+/**
+ * Climbing a ladder is the up key with no gravity: it should show his back. Pixels can't tell
+ * a back from a front drawn anew (both share the hat, hair and outline), so only a climb that
+ * reuses the front or a side picture is found.
+ */
+function heroClimb(d: SceneData): Finding[] {
+  const out: Finding[] = [];
+  const where = { scene: d.scene, file: d.names.chr };
+  const w = walkHeads(d);
+  const sides = [...w.left, ...w.right];
   const front = frontHead(d);
   const ups = upHeads(d);
-  if (!topDown && ups.length && climbable(d)) {
+  if (ups.length) {
     const like = (heads: Uint8Array[]) => ups.some((h) => heads.some((g) => alike(h, g) >= SAME));
     const sideOn = like(sides);
     const facing = !sideOn && !!front && like([front]);
@@ -255,7 +265,10 @@ export function facing(d: SceneData, all: SceneData[], same: Set<string> = new S
   const before = all.filter((s) => s.scene < d.scene);
   const out: Finding[] = [];
   const heroSame = same.has(sameKey(d.names.chr ?? ''));
-  if (!heroSame && !before.some((s) => s.names.chr === d.names.chr && s.names.cbl === d.names.cbl)) out.push(...heroFacing(d));
+  const sameHero = (s: SceneData) => s.names.chr === d.names.chr && s.names.cbl === d.names.cbl;
+  if (!heroSame && !before.some(sameHero)) out.push(...heroFacing(d));
+  // the climb is checked in the first scene with a ladder that the hero plays
+  if (!heroSame && climbable(d) && !before.some((s) => sameHero(s) && climbable(s))) out.push(...heroClimb(d));
   if (!before.some((s) => s.names.mon === d.names.mon && s.names.mbl === d.names.mbl)) out.push(...monsterFacing(d, same));
   return out;
 }
