@@ -122,8 +122,8 @@ export const BEAMS: Record<string, Beam> = {
 
 export function stageBeasts() {
   const b = newBestiary();
-  b.pic('lampLit', spotLamp(true), { hp: -4 }).pic('lampDark', spotLamp(false));
-  b.pic('endLit', spotEnd(true), { hp: -4 }).pic('endDark', spotEnd(false));
+  b.pic('lampLit', spotLamp(true), { hp: -6 }).pic('lampDark', spotLamp(false));
+  b.pic('endLit', spotEnd(true), { hp: -6 }).pic('endDark', spotEnd(false));
   for (const [name, beam] of Object.entries(BEAMS)) {
     if (sweepTicks(beam.path) > beam.every) throw new Error(`stage: light ${name} sweeps longer than its turn`);
     b.add(`lamp${name}`, { pics: [['lampLit', 50]], power: LIGHT, path: beam.path, end: -1, becomes: 'lampOff' });

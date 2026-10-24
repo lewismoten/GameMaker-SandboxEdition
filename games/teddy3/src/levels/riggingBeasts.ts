@@ -23,7 +23,7 @@ export const SWINGS: [string, number, number][] = [
 export function riggingBeasts() {
   const b = newBestiary();
   for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -5 });
-  b.pic('bag1', sandbag(0), { hp: -6 }).pic('bag2', sandbag(1), { hp: -6 });
+  b.pic('bag1', sandbag(0), { hp: -8 }).pic('bag2', sandbag(1), { hp: -8 });
   b.pic('pin1', pin(0)).pic('pin2', pin(1));
   b.pic('plank', liftPlank(), { solid: 15 }).pic('folded', liftFolded());
 
