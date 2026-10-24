@@ -48,6 +48,14 @@ export const adframe = (head: string, blocks: Block[], o: { burst?: string; sub?
 });
 export const button = (go: Go, label: string): Block => ({ t: 'button', go, label });
 export const note = (text: Inline): Block => ({ t: 'note', text });
+/** A piece of the paper in a game's box drawn small (a hint book's cover), linking to `go`. */
+export const piece = (game: string, what: 'hintbook', alt: string, o: { go?: Go; float?: 'left' | 'right' } = {}): Block => ({
+  t: 'piece',
+  game,
+  piece: what,
+  alt,
+  ...o,
+});
 export const rule = (): Block => ({ t: 'rule' });
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */

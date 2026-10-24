@@ -583,6 +583,46 @@
   background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 4px), #0c0c14;
 }
 
+.mag-piece {
+  margin: 0;
+  width: 28%;
+  min-width: 56px;
+  flex: none;
+}
+
+/* a piece beside what follows it in its cell, rather than above */
+.mag-cell:has(> .mag-piece.float-left),
+.mag-cell:has(> .mag-piece.float-right) {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.mag-cell:has(> .mag-piece.float-right) {
+  flex-direction: row-reverse;
+}
+
+.mag-cell:has(> .mag-piece.float-left) > :not(.mag-piece),
+.mag-cell:has(> .mag-piece.float-right) > :not(.mag-piece) {
+  flex: 1;
+  min-width: 0;
+}
+
+.mag-piece-frame {
+  display: block;
+  min-height: 24px;
+  border: 0.15em solid #18150f;
+  box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
+  transform: rotate(-2deg);
+}
+
+.mag-piece-frame .pp-paper {
+  width: 100%;
+}
+
+.mag-piece.none {
+  display: none;
+}
+
 .mag-shot.none {
   display: none;
 }
@@ -687,6 +727,8 @@
 .mag-rows li.has-shot {
   grid-template-columns: 6.5em 1fr auto;
   gap: 0 0.7em;
+  /* room enough that a row's links and the next row's title are 24px targets apart in a spread */
+  padding: 0.6em 0;
 }
 
 .mag-rows li.has-shot > .mag-row-shot {

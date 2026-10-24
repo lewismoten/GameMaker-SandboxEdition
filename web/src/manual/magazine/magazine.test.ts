@@ -60,6 +60,11 @@ function walk(b: Block, text: string[], links: string[]): void {
       text.push(b.alt);
       t(b.caption);
       break;
+    case 'piece':
+      text.push(b.game, b.alt);
+      links.push(`go:game/${b.game}`);
+      if (b.go) links.push(b.go);
+      break;
     case 'rows':
       for (const r of b.rows) {
         text.push(r.title, r.by ?? '', r.kind ?? '', r.price ?? '');

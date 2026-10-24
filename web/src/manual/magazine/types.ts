@@ -71,6 +71,7 @@ export type Block =
   | { t: 'button'; go: Go; label: string }
   | { t: 'note'; text: Inline }
   | { t: 'masthead'; name: string; tagline: string; issue: string; price: string }
+  | { t: 'piece'; game: string; piece: 'hintbook'; alt: string; go?: Go; float?: 'left' | 'right' }
   | { t: 'rule' };
 
 /** Pictures drawn for the magazine (art.ts). */

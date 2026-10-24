@@ -136,6 +136,27 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         ),
         b.caption ? h('figcaption', null, ...inline(b.caption, where)) : null,
       );
+    case 'piece': {
+      const frame = b.go ? goLink(b.go, where) : h('span', { role: 'img' });
+      frame.classList.add('mag-piece-frame');
+      frame.setAttribute('aria-label', b.alt);
+      const fig = h('figure', { class: `mag-piece${b.float ? ` float-${b.float}` : ''}` }, frame);
+      const entry = env.entry(b.game);
+      if (!entry) fig.classList.add('none');
+      else
+        pending.push(
+          import('./piece')
+            .then((m) => m.pieceSheet(entry, b.piece))
+            .then((el) => {
+              if (!el) return fig.classList.add('none');
+              el.inert = true; // a picture of the piece: nothing in it to reach
+              el.setAttribute('aria-hidden', 'true');
+              frame.append(el);
+            })
+            .catch(() => fig.classList.add('none')),
+        );
+      return fig;
+    }
     case 'rows':
       return h(
         'ul',

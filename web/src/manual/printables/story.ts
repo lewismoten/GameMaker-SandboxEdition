@@ -76,9 +76,9 @@ async function mapItem(ctx: PrintContext, it: MapItem): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ hint book
-async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
-  void ctx;
-  const cover = sheet(
+/** A hint book's cover (also drawn small in the magazine's hint book ads). */
+export function hintBookCover(ctx: PrintContext, it: HintBookItem): Sheet {
+  return sheet(
     5.5,
     8.5,
     'hb hb-cover',
@@ -102,6 +102,10 @@ async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
         ),
     h('p', { class: 'hb-foot' }, 'SANDBOX SOFTWARE · RED FILM INCLUDED'),
   );
+}
+
+async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
+  const cover = hintBookCover(ctx, it);
   // flow the questions onto pages, measured in a real hint book page off screen
   const blocks: HTMLElement[] = it.sections.flatMap((s) => [
     h('h3', null, s.head),
