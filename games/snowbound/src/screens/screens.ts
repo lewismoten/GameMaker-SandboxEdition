@@ -116,7 +116,7 @@ export function buildScreens(
     'BITS & BYTES SOFTWARE',
     'LAVALE MALL',
   ]);
-  outlined(n2, 82, 162, 'ONLY $89', c('coat', 3), c('newsink', 0), 2);
+  outlined(n2, 72, 162, 'ONLY $89', c('coat', 3), c('newsink', 0), 2);
   n2.rect(212, 42, 98, 74, c('paper', 4)).frame(212, 42, 98, 74, c('newsink', 0));
   body(n2, 216, 46, 92, [
     'FOR SALE: SLED,',
