@@ -15,7 +15,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 import { CHEESE, CROWN, LAUGHS } from '../ids';
 
 export { T, outline };
@@ -703,6 +703,7 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     return done(p);
   };
+  const seated = SOLBOT | SOLLEF | SOLRIG;
   // (his toga and throne look the same until he shakes with laughter: stages 0 and 3 only)
   for (const [half, s] of [
     ['A', 0],
@@ -712,9 +713,11 @@ export function buildMonsterBlocks(pal: Pal) {
     ['B', 0],
     ['B', 3],
   ] as const) {
-    book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
-    book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
-    book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
+    // solid but not SOLTOP, the side that pushes a hero under a monster (PLAYGAME's ChkMonChr):
+    // Marcus landing on him is never pushed down into the stage, where his stamp would hurt
+    book.add(`gravis${half}${s}a`, gravis(half, s, 0), { solid: seated });
+    book.add(`gravis${half}${s}b`, gravis(half, s, 1), { solid: seated });
+    book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10, seated));
   }
   // his "SILENTIUM!": a purple hush rolling toward Marcus, a finger to its lips, white-rimmed to read on the red stage front
   const hush = (f: number) => {
