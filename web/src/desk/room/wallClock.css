@@ -50,4 +50,37 @@
   .desk.bl-uv.rl-dark .wall-clock .wc-face {
     fill: #2b1f4d;
   }
+
+  /* the afterglow: in the dark, the charged lume glows as strongly as it is charged
+     (--lume, wallClock.ts), and the face is dark around it */
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing text.wc-lume,
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing :is(.wc-hour, .wc-min) rect.wc-lume {
+    fill: color-mix(in srgb, #9dff7a calc(var(--lume, 0) * 100%), #2a2f2a);
+    filter: drop-shadow(0 0 3px rgb(80 255 60 / calc(var(--lume, 0) * 0.7)));
+    transition:
+      fill 1s linear,
+      filter 1s linear;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing line.wc-lume {
+    stroke: color-mix(in srgb, #9dff7a calc(var(--lume, 0) * 100%), #2a2f2a);
+    transition: stroke 1s linear;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing :is(.wc-face, .wc-date-bg) {
+    fill: #1f2226;
+  }
+
+  /* what isn't lume (the red second hand, the printing, the glare) is lost in the dark */
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing :is(.wc-sec rect, .wc-pin) {
+    fill: #3a2324;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing svg text:not(.wc-lume) {
+    fill: #34383d;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing .wc-glare {
+    opacity: 0.05;
+  }
 }

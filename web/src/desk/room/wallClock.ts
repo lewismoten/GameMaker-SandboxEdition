@@ -4,11 +4,14 @@
 // TIME or DATE set it (retro/dos/deskClock.ts), and then its tooltip and name say so.
 // It hangs on the wall left of the desk, so it only shows when the window is wide enough to
 // have wall there (stage.ts sets .wide-wall). Its numbers, ticks and hands are lume paint:
-// under the black light (blacklight.ts) they glow green (wallClock.css), and at night the dark
-// clears over the face (roomLight.ts) so the glow shows.
+// under the black light (blacklight.ts) they glow green (wallClock.css); light on the face
+// (daylight, the overhead light, the black light) charges it (lumeCharge.ts), and in the
+// dark it keeps glowing and fades over a few minutes. While it glows, the dark clears over
+// the face (roomLight.ts) so the glow shows.
 import './wallClock.css';
 import { h } from '../../editor/core/ui';
 import { deskClockSet, deskNow } from '../../retro/dos/deskClock';
+import { LUME_VISIBLE, nextCharge } from './lumeCharge';
 
 const CX = 90;
 const CY = 262;
@@ -65,20 +68,33 @@ export function wallClock(): HTMLElement {
     <text x="${CX}" y="${CY - 20}" text-anchor="middle" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial, sans-serif" fill="#139c93">QUARTZ</text>
     <text x="${CX}" y="${CY + 30}" text-anchor="middle" font-size="5.5" letter-spacing="1" font-family="Arial, sans-serif" fill="#777">WATER RESISTANT</text>
     <!-- the date window, clear of the 3 -->
-    <rect x="${CX + 15}" y="${CY - 7}" width="18" height="14" fill="#fff" stroke="#888" stroke-width="1"/>
+    <rect class="wc-date-bg" x="${CX + 15}" y="${CY - 7}" width="18" height="14" fill="#fff" stroke="#888" stroke-width="1"/>
     <text class="wc-date" x="${CX + 24}" y="${CY + 4}" text-anchor="middle" font-size="10" font-weight="700" font-family="Arial, sans-serif" fill="#222"></text>
     ${hand('wc-hour', 36, 8, 7, '#222')}
     ${hand('wc-min', 56, 10, 4.5, '#222')}
     ${hand('wc-sec', 62, 16, 1.6, '#d3141c')}
-    <circle cx="${CX}" cy="${CY}" r="4.5" fill="#d3141c"/>
+    <circle class="wc-pin" cx="${CX}" cy="${CY}" r="4.5" fill="#d3141c"/>
     <!-- glare on the crystal -->
-    <ellipse cx="${CX - 24}" cy="${CY - 34}" rx="34" ry="16" fill="#fff" opacity="0.25" transform="rotate(-30 ${CX - 24} ${CY - 34})"/>
+    <ellipse class="wc-glare" cx="${CX - 24}" cy="${CY - 34}" rx="34" ry="16" fill="#fff" opacity="0.25" transform="rotate(-30 ${CX - 24} ${CY - 34})"/>
   </svg>`;
 
   const turn = (cls: string, deg: number) => el.querySelector(`.${cls}`)?.setAttribute('transform', `rotate(${deg} ${CX} ${CY})`);
   const date = el.querySelector('.wc-date')!;
   let shown = '';
+  let charge = -1; // the lume's charge, 0..1 (first tick: full if lit, else empty)
+  /** Light falls on the face: day, the overhead light, or the black light. */
+  const lit = (desk: HTMLElement) => !desk.classList.contains('rl-dark') || desk.classList.contains('rl-lit') || desk.classList.contains('bl-uv');
+  const lume = () => {
+    const desk = el.closest<HTMLElement>('.desk');
+    if (!desk) return;
+    const on = lit(desk);
+    charge = charge < 0 ? (on ? 1 : 0) : nextCharge(charge, on, 1);
+    el.style.setProperty('--lume', charge.toFixed(3));
+    // its afterglow shows in a dark room without the black light (which makes it glow anyway)
+    el.classList.toggle('wc-glowing', desk.classList.contains('rl-dark') && !desk.classList.contains('bl-uv') && charge > LUME_VISIBLE);
+  };
   const tick = () => {
+    lume();
     const now = deskNow();
     const set = deskClockSet();
     const s = now.getSeconds();

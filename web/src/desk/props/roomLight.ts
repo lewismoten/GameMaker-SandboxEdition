@@ -39,10 +39,9 @@ const NIGHT_DARK = 0.62;
 const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boolean }[] = [
   { sel: '.crt', spread: 0.3, when: (d) => d.dataset.power === 'on' },
   { sel: '.lamp-glow.on', spread: 0 },
-  { sel: '.mhz', spread: 0.1, when: (d) => d.dataset.power === 'on' },
   { sel: '.bl-poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
-  // the wall clock's lume numbers and hands glowing under the black light
-  { sel: '.wall-clock .wc-face', spread: 0, when: (d) => d.classList.contains('bl-uv') },
+  // the wall clock's lume numbers and hands, glowing under the black light or still charged
+  { sel: '.wall-clock .wc-face', spread: 0, when: (d) => d.classList.contains('bl-uv') || !!d.querySelector('.wall-clock.wc-glowing') },
   // the night outside is as dark as it is, whatever the room's light: the window is never dimmed
   { sel: '.snow-window', spread: 0 },
   { sel: '.caption', spread: 0.4 },
@@ -51,13 +50,14 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
 ];
 
 /** The LEDs: each clears only its own dot and glows its own color (`color`, else its fill). */
-const LEDS: { sel: string; when?: (desk: HTMLElement) => boolean; color?: string }[] = [
+const LEDS: { sel: string; when?: (desk: HTMLElement) => boolean; color?: string; reach?: number }[] = [
   { sel: '.led.on' },
   { sel: '.monitor-led', when: (d) => d.dataset.power === 'on' },
   { sel: '.drive-led.on' },
   { sel: '.mled.on' },
   { sel: '.spk-led.on' },
-  { sel: '.seg-display.lit', color: 'rgb(255, 59, 43)' },
+  // the turbo readout's red digits light the case round them red
+  { sel: '.seg-display.lit', color: 'rgb(255, 59, 43)', reach: 22 },
 ];
 
 /** "rgb(r, g, b)" as "rgb(r g b / a)"; undefined for a color that isn't one. */
@@ -114,8 +114,8 @@ export function roomLight(desk: HTMLElement): () => void {
         const color = l.color ?? getComputedStyle(el).backgroundColor;
         const inner = withAlpha(color, 0.55);
         if (!inner) continue;
-        const rx = w + 10;
-        const ry = ht + 10;
+        const rx = w + (l.reach ?? 10);
+        const ry = ht + (l.reach ?? 10);
         halos.push(`radial-gradient(${rx.toFixed(0)}px ${ry.toFixed(0)}px at ${cx.toFixed(0)}px ${cy.toFixed(0)}px, ${inner}, transparent 100%)`);
       }
     }
