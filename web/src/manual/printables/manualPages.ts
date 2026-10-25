@@ -7,7 +7,8 @@ import { mapShot } from '../../gfx/gameShots';
 import type { CatalogEntry } from '../../project/files';
 import { bookletPageCount } from './imposition';
 import { paginate } from './paginate';
-import { FICTIONAL_NOTE, sandboxLogo, hashString } from './kit';
+import { FICTIONAL_NOTE, sandboxLogo } from './kit';
+import { fnv1a } from '../../seededRandom';
 import { manualCover } from './manualCover';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 
@@ -96,7 +97,7 @@ function scoresPage(title: string): HTMLElement[] {
 }
 
 function backCover(entry: CatalogEntry): HTMLElement[] {
-  const n = hashString(entry.id);
+  const n = fnv1a(entry.id);
   const bars = Array.from({ length: 46 }, (_, i) => h('i', { style: `width:${1 + ((n >> (i % 24)) & 1) + (i % 3 === 0 ? 1 : 0)}px` }));
   return [
     h(

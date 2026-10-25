@@ -3,26 +3,16 @@
 // drawn the way an 8-year-old would: scribbled fills that miss the lines, wobbly outlines gone
 // over twice, and hand-printed letters (one or two of them backwards). A seeded random keeps
 // every wobble the same from one viewing to the next; an SVG filter gives the strokes a waxy grain.
+import { mulberry32 } from '../../seededRandom';
 import './joeyDrawing.css';
 import { svgArt } from './svgArt';
 
 type Pt = [number, number];
 
-/** Mulberry32: the same wobbles every time. */
-function rng(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
 class Crayon {
-  private rand = rng(1994);
+  private rand = mulberry32(1994); // the same wobbles every time
   out = '';
   defs = '';
   private clips = 0;

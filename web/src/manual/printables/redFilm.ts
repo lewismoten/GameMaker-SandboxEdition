@@ -12,6 +12,7 @@
 //   2. the letters in pale cyan, about as light as the decoys;
 //   3. dense crossing red lines over everything, cutting every letter into pieces.
 // Every decoy and line has R = 255, so through the film only the letters are left.
+import { fnv1a, mulberry32 } from '../../seededRandom';
 import { h } from '../../editor/core/ui';
 import type { HintSketch } from './types';
 
@@ -37,25 +38,6 @@ export function luma(color: string): number {
 /** How light a color looks through pure red film, 0-255: only its red gets through. */
 export function throughRedFilm(color: string): number {
   return rgb(color)[0];
-}
-
-/** A small seeded random number generator (mulberry32), so a word always gets the same noise. */
-export function seeded(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** A seed from a string. */
-export function hashText(text: string): number {
-  let x = 2166136261;
-  for (let i = 0; i < text.length; i++) x = Math.imul(x ^ text.charCodeAt(i), 16777619);
-  return x >>> 0;
 }
 
 /** The canvas's font size in pixels: big enough to print sharply at a few times its size on screen. */
@@ -125,7 +107,7 @@ function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, h
 }
 
 /** One word (with the space after it) hidden in noise, as a canvas `PX` pixels to the em. */
-function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenWord(word: string, seed = fnv1a(word), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;
@@ -136,7 +118,7 @@ function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCa
   canvas.width = w;
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
-  const rnd = seeded(seed);
+  const rnd = mulberry32(seed);
   camouflage(
     c,
     rnd,
@@ -157,7 +139,7 @@ function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCa
  * (one picture for the screen, one in a stronger cyan for printing). */
 export function redCode(text: string): HTMLElement {
   const words = text.split(/\s+/).filter(Boolean);
-  const base = hashText(text);
+  const base = fnv1a(text);
   const picture = (word: string, seed: number, ink: string, cls: string) => {
     const cv = hiddenWord(word, seed, ink);
     const img = h('img', { class: `rf-word ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });
@@ -326,7 +308,7 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
 }
 
 /** A sketch hidden in noise, as a canvas `CELL` pixels to the cell. */
-function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenSketch(sketch: HintSketch, seed = fnv1a(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;
@@ -340,7 +322,7 @@ function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/'))
   canvas.width = w;
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
-  const rnd = seeded(seed);
+  const rnd = mulberry32(seed);
   camouflage(
     c,
     rnd,
@@ -365,7 +347,7 @@ function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/'))
 
 /** A drawing hidden among red lines, like an answer (a picture for the screen and one for printing). */
 export function redSketch(sketch: HintSketch): HTMLElement {
-  const seed = hashText(sketch.rows.join('/'));
+  const seed = fnv1a(sketch.rows.join('/'));
   const picture = (ink: string, cls: string) => {
     const cv = hiddenSketch(sketch, seed, ink);
     const img = h('img', { class: `rf-word rf-sketch ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });

@@ -11,23 +11,12 @@
 // author keeps stay as they are (moved to a free melody voice if rhythm mode would silence
 // them), and the band takes only the channels left; a part with no room is left out and said
 // so in the take's notes. No DOM.
+import { mulberry32 } from '../../../../seededRandom';
 import { addNote, channelNotes, removeChannel, setStartMode, setStartProgram, startMode, startProgram } from '../../../../formats/cmfEdit';
 import { readSong, writeSong, noteEnd, type CmfSong } from '../../../../formats/cmfSong';
 import { findPreset, presetById } from '../../../../audio/oplPresets';
 import { chordTones, inferChords, inferKey, type ChordSpan, type Key, type MelNote } from './harmony';
 import { styleById, type Comp, type Drum, type Groove, type Style, type StyleId } from './styles';
-
-/** Mulberry32 (Tommy Ettinger, public domain): a small seeded random number generator. */
-function seededRandom(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 interface AccompanyOptions {
   /** The channel whose notes are the tune. */
@@ -111,7 +100,7 @@ const clampTo = (n: number, [lo, hi]: readonly [number, number]) => {
 /** Writes the accompaniment around the tune; the song given is not changed. */
 export function accompany(src: CmfSong, o: AccompanyOptions): Accompaniment {
   const style = styleById(o.style);
-  const rand = seededRandom(o.seed * 7919 + 17);
+  const rand = mulberry32(o.seed * 7919 + 17);
   const pick = <T>(list: T[]): T => (o.seed === 0 ? list[0] : list[Math.floor(rand() * list.length)]);
   const song = cloneSong(src);
   const beat = Math.max(1, song.ticksPerBeat || 48);

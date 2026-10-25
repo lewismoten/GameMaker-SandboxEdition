@@ -5,7 +5,8 @@
 // (rose glaze, piped icing, gold leaf, a nest of spun sugar, a clockwork baker on top).
 // The shells are painted flat and wrapped round the egg shape pixel by pixel, like the felt
 // eggs (eggArt.ts), but lit with a sheen and a bump map so icing stands up and cracks sink.
-import { EGG_ASPECT, radiusAt, rng } from './eggArt';
+import { EGG_ASPECT, radiusAt } from './eggArt';
+import { xorshift32 } from '../seededRandom';
 import { TEX_H, TEX_W } from './eggTexture';
 
 export { EGG_ASPECT };
@@ -189,7 +190,7 @@ function rottenBaseLayers() {
   const n1 = noise(31);
   const n2 = noise(77);
   const n3 = noise(5);
-  const rand = rng(1776);
+  const rand = xorshift32(1776);
   const color = new ImageData(TEX_W, TEX_H);
   const height = new Float32Array(TEX_W * TEX_H);
   const mix = (a: number[], b: number[], t: number) => a.map((x, i) => x + (b[i] - x) * Math.max(0, Math.min(1, t)));
@@ -230,7 +231,7 @@ let cracks: Crack[] | undefined;
 
 function crackPaths(): Crack[] {
   if (cracks) return cracks;
-  const rand = rng(1313);
+  const rand = xorshift32(1313);
   cracks = [];
   for (let k = 0; k < 13; k++) {
     // the first cracks start on the side that faces you
@@ -283,7 +284,7 @@ export function rottenShell(taps: number): Shell {
   const dg = dent.getContext('2d')!;
   dg.fillStyle = '#000';
   dg.fillRect(0, 0, TEX_W, TEX_H);
-  const rand = rng(99);
+  const rand = xorshift32(99);
   const all = crackPaths();
   const path = (g: CanvasRenderingContext2D, pts: [number, number][], upto: number, dx: number) => {
     const n = Math.max(2, Math.round(pts.length * upto));
@@ -328,7 +329,7 @@ export function rottenShell(taps: number): Shell {
   // near the end, flakes of shell fall away: dark inside, and something glinting in there
   if (stage >= 8) {
     const flakes = (stage - 7) * 3;
-    const r2 = rng(4242);
+    const r2 = xorshift32(4242);
     for (let f = 0; f < flakes; f++) {
       const c = all[f % all.length];
       const [px, py] = c.pts[Math.floor(r2() * c.pts.length)];
@@ -368,7 +369,7 @@ export function rottenShell(taps: number): Shell {
 export function stinkPuff(seed: number): HTMLCanvasElement {
   const c = canvas(128, 128);
   const g = c.getContext('2d')!;
-  const rand = rng(seed * 7919 + 3);
+  const rand = xorshift32(seed * 7919 + 3);
   const tints = ['164, 196, 92', '128, 170, 72', '196, 206, 120', '98, 140, 60', '176, 186, 96'];
   for (let i = 0; i < 46; i++) {
     const a = rand() * Math.PI * 2;
@@ -392,7 +393,7 @@ export function stinkPuff(seed: number): HTMLCanvasElement {
 
 /** A few shards of rotten shell lying where they fell, around a spot on the floor. */
 export function drawRestingShards(g: CanvasRenderingContext2D, cx: number, cy: number, size: number): void {
-  const rand = rng(1301);
+  const rand = xorshift32(1301);
   for (let i = 0; i < 9; i++) {
     const side = i % 2 ? 1 : -1;
     const x = cx + side * size * (0.28 + rand() * 0.5);
@@ -740,7 +741,7 @@ function pastryShell(): Shell {
   Hh.fillStyle = M.fillStyle = '#000';
   Hh.fillRect(0, 0, TEX_W, TEX_H);
   M.fillRect(0, 0, TEX_W, TEX_H);
-  const rand = rng(1313);
+  const rand = xorshift32(1313);
   const V = (f: number) => TEX_H * f;
   // the glaze: rose, a touch deeper toward the foot, engine-turned like enamel
   const bg = C.createLinearGradient(0, 0, 0, TEX_H);
@@ -926,7 +927,7 @@ let nest: { cup: Thread[]; foot: { a: number; bend: number; color: string; w: nu
 
 function sugarThreads() {
   if (nest) return nest;
-  const rand = rng(2024);
+  const rand = xorshift32(2024);
   const amber = () => `hsla(${28 + rand() * 14}, ${82 + rand() * 16}%, ${32 + rand() * 26}%, ${0.25 + rand() * 0.4})`;
   const thread = (rx0: number, rx1: number): Thread => ({
     rx: rx0 + rand() * (rx1 - rx0),

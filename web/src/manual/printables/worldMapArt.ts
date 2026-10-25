@@ -3,7 +3,7 @@
 // aged paper with its border. Each takes where to draw and returns the elements.
 import type { Terrain } from './worldMapTerrain';
 import { INK, PAPER, mix } from './worldMapTerrain';
-import { rng } from './kit';
+import { xorshift32 } from '../../seededRandom';
 
 const NS = 'http://www.w3.org/2000/svg';
 export const SERIF = "Georgia, 'Times New Roman', Times, serif";
@@ -173,7 +173,7 @@ export function scaleBar(x: number, y: number, unit: number): SVGElement {
 
 /** The aged sheet: paper darker toward its edges, a few faint stains and specks, and the border. */
 export function agedPaper(W: number, H: number, seed: number, accent: string): SVGElement[] {
-  const rand = rng(seed);
+  const rand = xorshift32(seed);
   const out: SVGElement[] = [
     el(
       'defs',

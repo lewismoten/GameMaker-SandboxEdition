@@ -15,7 +15,8 @@ import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
 import { autoArrange } from '../../editor/editors/integrator/integratorLayout';
 import { arrival, graphOf } from '../../editor/editors/integrator/layoutCells';
 import { graphicShot, levelShot } from '../../editor/editors/integrator/integratorArt';
-import { hashString, sheet, type PrintContext, type Sheet } from './kit';
+import { sheet, type PrintContext, type Sheet } from './kit';
+import { fnv1a } from '../../seededRandom';
 import { CARD, CELL, bounds, cardRects, folds, tiles, type Rect } from './worldMapLayout';
 import { groupScenes, isBlackPalette, placeLabels, placesGame } from './worldMapGroups';
 import type { WorldMapHints } from './types';
@@ -155,7 +156,7 @@ function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: W
   for (const r of rects.values()) r.x += dx;
   const accent = entry.original?.box?.accent ?? '#c8962a';
   const navy = entry.original?.box?.background ?? '#22304a';
-  const seed = hashString(entry.id);
+  const seed = fnv1a(entry.id);
 
   // each place: where it is, its kind, its picture and the look of its country
   const places = new Map<number, Place>();

@@ -8,20 +8,8 @@ import { parseCharacter } from '../../formats/character';
 import { scanName } from '../../input/scancodes';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { storageLine } from '../../project/diskFacts';
-import {
-  shotCache,
-  sheet,
-  fictionalNote,
-  sandboxLogo,
-  sandboxBanner,
-  splitTitle,
-  html,
-  hashString,
-  BBS_PHONE,
-  mapPicture,
-  type PrintContext,
-  type Sheet,
-} from './kit';
+import { shotCache, sheet, fictionalNote, sandboxLogo, sandboxBanner, splitTitle, html, BBS_PHONE, mapPicture, type PrintContext, type Sheet } from './kit';
+import { fnv1a } from '../../seededRandom';
 import { CHARBL } from '../../formats/blocks';
 import { DIR_ARROW, DIR_PAD, PLAYGAME_KEYS, manualKeyText, splitKeys, type BoundKey, type Dir } from './keys';
 import { redCode } from './redFilm';
@@ -118,7 +106,7 @@ export async function postcard(ctx: PrintContext): Promise<Sheet[]> {
     h(
       'div',
       { class: 'pc-bars', 'aria-hidden': 'true' },
-      ...Array.from({ length: 52 }, (_, i) => h('i', { class: (hashString(g.id + i) & 3) === 0 ? 'tall' : '' })),
+      ...Array.from({ length: 52 }, (_, i) => h('i', { class: (fnv1a(g.id + i) & 3) === 0 ? 'tall' : '' })),
     ),
     fictionalNote(),
   );
@@ -378,7 +366,7 @@ export async function bbsAd(): Promise<Sheet[]> {
 // ------------------------------------------------------------------ warranty / license
 export async function warranty(ctx: PrintContext): Promise<Sheet[]> {
   const g = ctx.entry;
-  const serial = `SBX-${String(hashString(g.id) % 100000).padStart(5, '0')}-95`;
+  const serial = `SBX-${String(fnv1a(g.id) % 100000).padStart(5, '0')}-95`;
   return [
     sheet(
       7,
@@ -451,7 +439,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
   );
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
-  const tip = tips.length ? tips[hashString(ctx.entry.id) % tips.length] : undefined;
+  const tip = tips.length ? tips[fnv1a(ctx.entry.id) % tips.length] : undefined;
   const stories = [
     ...next,
     ...own,
@@ -570,7 +558,7 @@ export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<S
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const hints = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
   // the sample question: the game's own pick, or the next one that leaves the card room for the rest
-  const first = hashString(g.id + 'card') % Math.max(1, hints.length);
+  const first = fnv1a(g.id + 'card') % Math.max(1, hints.length);
   const samples = hints.map((_, k) => hints[(first + k) % hints.length]);
   const sampleEl = (q: (typeof hints)[number] | undefined) => (q ? h('p', { class: 'ho-sample' }, h('b', null, 'Q. '), q.q, h('br'), redCode(q.a)) : null);
   let sample = sampleEl(samples[0]);

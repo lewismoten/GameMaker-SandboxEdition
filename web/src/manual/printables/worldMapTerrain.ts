@@ -3,7 +3,7 @@
 // coastlines, hand-drawn trails that bend between places, and where the little trees and
 // hills go. Pure arithmetic on numbers and strings, deterministic, so every print is the same.
 import type { Point } from '../../formats/game';
-import { rng } from './kit';
+import { xorshift32 } from '../../seededRandom';
 
 export type Terrain = 'forest' | 'grass' | 'water' | 'sand' | 'rock' | 'snow' | 'ember' | 'night' | 'town';
 
@@ -83,7 +83,7 @@ const f = (n: number) => +n.toFixed(2);
  * points, each pushed in or out by up to `wobble` of the radius, joined by smooth curves.
  */
 export function blobPath(cx: number, cy: number, rx: number, ry: number, seed: number, n = 16, wobble = 0.16): string {
-  const rand = rng(seed);
+  const rand = xorshift32(seed);
   const pts: Point[] = [];
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2;
@@ -125,7 +125,7 @@ interface Trail {
  * bends to one side by a share of its length (the side and amount from `seed`), from edge to edge.
  */
 export function trailBetween(a: Point, b: Point, r: number, seed: number): Trail {
-  const rand = rng(seed);
+  const rand = xorshift32(seed);
   const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
   const bend = (rand() < 0.5 ? -1 : 1) * (0.1 + rand() * 0.12) * len;
   const nx = -(b.y - a.y) / len;
@@ -149,7 +149,7 @@ export function trailBetween(a: Point, b: Point, r: number, seed: number): Trail
  * nearer `c` than any of `others` (so each country keeps its own).
  */
 export function scatter(c: Point, rx: number, ry: number, n: number, seed: number, avoid: { p: Point; r: number }[], others: Point[], gap = 2.6): Point[] {
-  const rand = rng(seed);
+  const rand = xorshift32(seed);
   const out: Point[] = [];
   for (let tries = 0; tries < n * 30 && out.length < n; tries++) {
     const a = rand() * Math.PI * 2;

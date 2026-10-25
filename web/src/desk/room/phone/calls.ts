@@ -3,6 +3,7 @@
 // the game boxes, time & temperature, the weather line, the movie line, 911, and anyone
 // else (not in service, no answer, busy, or somebody's answering machine). Pittsburgh,
 // December 1994: local calls are seven digits; 1 + area code + number works too.
+import { fnv1a } from '../../../seededRandom';
 import type { PhoneSounds } from './sounds';
 import { deskMs } from '../../../retro/dos/deskClock';
 import { VOICES, type Voice } from '../../../audio/voices';
@@ -298,23 +299,16 @@ async function movieLine(line: CallLine): Promise<void> {
   line.ended('The movie line hung up');
 }
 
-/** A small stable number from the digits, so a number always does the same thing. */
-function hash(s: string): number {
-  let n = 2166136261;
-  for (let i = 0; i < s.length; i++) n = Math.imul(n ^ s.charCodeAt(i), 16777619);
-  return n >>> 0;
-}
-
 /** Who (or what) answers a number. */
 export function callFor(digits: string): Call {
   const n = localNumber(digits);
   const known = DIRECTORY[n];
   if (known) return known;
-  const h = hash(n) % 10;
+  const h = fnv1a(n) % 10; // a number always does the same thing
   if (h < 5) return notInService;
   if (h < 7) return noAnswer;
   if (h < 8) return busy;
-  return answeringMachine(FAMILIES[(hash(n) >>> 8) % FAMILIES.length]);
+  return answeringMachine(FAMILIES[(fnv1a(n) >>> 8) % FAMILIES.length]);
 }
 
 /** The memory buttons, labeled by hand like Mom's notes (phoneNotes.ts). */

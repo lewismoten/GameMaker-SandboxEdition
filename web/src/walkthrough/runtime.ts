@@ -7,6 +7,7 @@
 // The front end follows PLAYGAME's runGame (engine/game.ts): the title and its song, the
 // menu, where the walkthrough reads the storyline and then picks Play, every level through
 // play() as a demo plays them, the ending and score table, and back on the menu the credits.
+import { mulberry32 } from '../seededRandom';
 import { Machine } from '../engine/machine';
 import { Recorder } from '../engine/recorder';
 import { gameNameOf, loadGameFile, play } from '../engine/game';
@@ -22,17 +23,8 @@ import type { RecordedKey } from '../formats/recording';
 import type { GameFiles } from '../project/files';
 import { DEFAULT_HOLD, decodeKeys, WALKTHROUGH_FPS, type Walkthrough } from './format';
 
-/** Mulberry32, the generator games/kit/pixels.ts seeds the simulators with. */
-export function seeded(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+/** The walkthroughs' generator (Mulberry32), by the name the games' tools use for it. */
+export { mulberry32 as seeded } from '../seededRandom';
 
 export type AudioEvent =
   | { t: number; kind: 'song'; bytes?: Uint8Array }
@@ -248,7 +240,7 @@ const FRONT_CHAPTERS = { opening: 'Opening', story: 'Story', ending: 'Ending', c
 async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough, hooks: WalkHooks = {}): Promise<void> {
   const game = loadGameFile(m, gamFile);
   const rec = new SegmentRecorder(walk);
-  const shared = seeded(walk.rand.seed);
+  const shared = mulberry32(walk.rand.seed);
   const marks = new Map(walk.chapters.map((c) => [c.scene, c.title]));
   const chapter = (title: string) => hooks.onChapter?.(title);
   const s: Session = {
@@ -264,7 +256,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
     musicOn: m.audio.musicEnabled,
     speakerOnly: m.audio instanceof WalkAudio && !m.audio.card,
     speed: {},
-    rand: () => (walk.rand.per === 'scene' ? seeded(walk.rand.seed) : shared),
+    rand: () => (walk.rand.per === 'scene' ? mulberry32(walk.rand.seed) : shared),
     onScene: (scene) => {
       rec.enterScene(scene);
       if (scene === 1) {

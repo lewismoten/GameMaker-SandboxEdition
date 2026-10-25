@@ -11,7 +11,7 @@
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
-import { hashString } from '../printables/kit';
+import { fnv1a } from '../../seededRandom';
 import type { ArtId, WebShot } from './types';
 import { deskShotImg } from './deskShot';
 import { dosShotImg } from './dosShot';
@@ -34,7 +34,7 @@ function barcode(alt: string): Element {
   let x = 4;
   let bars = '';
   for (let i = 0; i < 44; i++) {
-    const w = 1 + (hashString(`turbo${i}`) % 3);
+    const w = 1 + (fnv1a(`turbo${i}`) % 3);
     if (i % 2 === 0) bars += `<rect x="${x}" y="2" width="${w}" height="${i < 2 || i > 41 || i === 22 ? 34 : 30}" fill="#000"/>`;
     x += w;
   }

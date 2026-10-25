@@ -11,7 +11,7 @@ import { h } from '../core/ui';
 import type { Project } from '../core/project';
 import { GameFiles } from '../../project/files';
 import { serializeGame } from '../../formats/game';
-import { seeded } from '../../walkthrough/runtime';
+import { mulberry32 } from '../../seededRandom';
 import { TakeRecorder, type Take } from '../check/walk/takes';
 import { keepPlay } from '../check/walk/mine';
 import { startingAt } from '../editors/integrator/startAt';
@@ -106,7 +106,7 @@ export function playScene(project: Project, scene: number, map: string): Promise
           const rec = new TakeRecorder();
           s.rec = rec;
           // each scene's monsters get the numbers the walkthrough gives them (rand per scene, seed 1)
-          s.rand = () => seeded(1);
+          s.rand = () => mulberry32(1);
           session.begin(rec);
           s.onScene = (n) => {
             const t = session.enter(n);

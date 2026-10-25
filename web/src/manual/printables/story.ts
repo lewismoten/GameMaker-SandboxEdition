@@ -1,7 +1,8 @@
 // The kinds of paper a game describes in its printables.json: maps and posters, hint books,
 // letters, newspapers, journals, ID cards, charts and fold-out star charts.
 import { h } from '../../editor/core/ui';
-import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
+import { sheet, html, mapPicture, portrait, type PrintContext, type Sheet } from './kit';
+import { fnv1a, xorshift32 } from '../../seededRandom';
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
@@ -182,7 +183,7 @@ async function idCard(ctx: PrintContext, it: IdCardItem): Promise<Sheet[]> {
   const photo = it.photo ? await ctx.shot(it.photo) : undefined;
   const face = it.portrait ? await portrait(ctx.entry, it.portrait) : undefined;
   const style = `--card:${it.color ?? '#2b4f8c'};--card-ink:${it.ink ?? '#fff'}`;
-  const r = rng(hashString(it.name));
+  const r = xorshift32(fnv1a(it.name));
   const front = sheet(
     3.375,
     2.125,
@@ -265,7 +266,7 @@ async function starChart(ctx: PrintContext, it: StarChartItem): Promise<Sheet[]>
     svg.append(el);
     return el;
   };
-  const r = rng(hashString(it.heading));
+  const r = xorshift32(fnv1a(it.heading));
   // background stars
   for (let i = 0; i < 260; i++) add('circle', { cx: r() * W, cy: r() * H, r: r() * 1.4 + 0.2, fill: '#fff', opacity: 0.3 + r() * 0.6 });
   // spiral arms

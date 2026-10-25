@@ -468,6 +468,11 @@ formats from their published descriptions and from Game-Maker's own source.
   1982), and picks its chords with a Viterbi pass; its takes are seeded with **Mulberry32**, the
   public-domain generator by Tommy Ettinger. Its band's patterns follow the project's own
   `games/kit/song.ts`. The profile numbers are published data; no one else's code is included.
+- **Seeded random numbers and string hashes** (`web/src/seededRandom.ts`, shared by the
+  walkthroughs, printables, magazine art, felt eggs and editors) use three public-domain
+  algorithms: **Mulberry32** by Tommy Ettinger, **xorshift32** from George Marsaglia's
+  "Xorshift RNGs" (Journal of Statistical Software 8, 2003) and the **FNV-1a** hash by Glenn
+  Fowler, Landon Curt Noll and Kiem-Phong Vo. Each is a few lines written from its description.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.

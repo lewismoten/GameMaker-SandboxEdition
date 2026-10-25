@@ -2,18 +2,8 @@
 // fibers, bands, a pattern, an appliqué and running stitches), then wrapped round an egg
 // shape and lit, pixel by pixel, at any turn. Used small on the wall and large in the viewer.
 import type { EggLook } from './eggs';
+import { xorshift32 } from '../seededRandom';
 import { TEX_H, TEX_W } from './eggTexture';
-
-/** A small seeded random, so an egg's fibers (and a bonus egg's paint) come out the same each time. */
-export function rng(seed: number): () => number {
-  let s = seed >>> 0 || 1;
-  return () => {
-    s ^= s << 13;
-    s ^= s >>> 17;
-    s ^= s << 5;
-    return (s >>> 0) / 4294967296;
-  };
-}
 
 const seedOf = (text: string) => [...text].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261);
 
@@ -23,7 +13,7 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
   c.width = TEX_W;
   c.height = TEX_H;
   const g = c.getContext('2d')!;
-  const rand = rng(seedOf(seed));
+  const rand = xorshift32(seedOf(seed)); // the same fibers each time
   g.fillStyle = look.felt;
   g.fillRect(0, 0, TEX_W, TEX_H);
   const stitch = (draw: () => void, color = look.thread, width = 2.2) => {
