@@ -790,7 +790,7 @@
 
 /* the contents page: a line a section, set close */
 .kind-contents .mag-rows li {
-  padding: 0.1em 0;
+  padding: 0.05em 0;
 }
 
 /* and its advertiser index in three columns, set a little closer than body text */
@@ -1464,7 +1464,8 @@
 /* the advertiser index lists the small ads too, so its lines sit closer */
 .kind-contents .mag-side .mag-cell > p {
   margin: 0;
-  line-height: 1.18;
+  font-size: 0.96em;
+  line-height: 1.16;
 }
 
 .mag-beside {
