@@ -24,24 +24,38 @@ export interface ChecklistItem {
 }
 
 export const APPENDIX_B: ChecklistItem[] = [
-  { text: 'The first minute is fun; the hero’s speed feels right to someone new', checks: ['hero-speed', 'response'] },
+  { text: 'The first minute is fun; the hero’s speed feels right to someone new, and a tap moves him once', checks: ['hero-speed', 'response', 'tap-twice'] },
   { text: 'The hero faces the way he walks; pacing monsters turn round', checks: ['facing'] },
   { text: 'Every jump has a block to spare; every landing is in sight before the jump', checks: ['blind-drop', 'hazard-landing'], play: true },
   { text: 'Each level asks a little more; the last is the best, not the meanest', checks: ['curve'], play: true },
   { text: 'Long levels are split into scenes, so a death costs little', checks: ['checkpoints'], play: true, full: true },
-  { text: 'Every danger shows before it can kill; hazard blocks fill their cells', checks: ['hazard-art', 'start-threat'] },
-  { text: 'Nowhere to get stuck: every pit has a way out, every lock its key', checks: ['stuck', 'counters', 'link-unreached'], play: true, full: true },
+  { text: 'Every danger shows before it can kill; hazard blocks fill their cells; the start is safe', checks: ['hazard-art', 'start-threat'] },
+  {
+    text: 'Nowhere to get stuck: every pit has a way out, every lock its key, and nothing needed is left behind a one-way spot',
+    checks: ['stuck', 'counters', 'link-unreached', 'softlock', 'one-way'],
+    play: true,
+    full: true,
+  },
   { text: 'Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest', checks: ['density', 'births'], full: true },
   {
     text: 'Enemies stand out in every palette; a touch costs little and pushes clear',
     checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers'],
     full: true,
   },
-  { text: 'Every item can be reached; mazes have landmarks; no wait over 3 seconds', checks: ['unreachable', 'waits', 'maze'], play: true },
+  {
+    text: 'Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds',
+    checks: ['unreachable', 'waits', 'maze', 'lookalike'],
+    play: true,
+  },
+  { text: 'Someone with slower hands can finish: one key at a time, no split-second timing', checks: ['steady'], play: true },
   { text: 'The final boss has stages; the ending is a real scene, not an ad', checks: ['ending'] },
   { text: 'Something new every level or two; the gimmick has its own level', checks: ['variety'] },
-  { text: 'Any key beyond the arrows and fire is taught in the game itself, and sits under the left hand', checks: ['controls', 'reach'], full: true },
-  { text: 'Animations loop smoothly; menu, F2 and text screens are readable', checks: [] },
+  {
+    text: 'Any key beyond the arrows and fire is taught in the game itself, near the start, and sits under the left hand',
+    checks: ['controls', 'reach', 'teach-first'],
+    full: true,
+  },
+  { text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable', checks: ['fli'] },
   { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },
   { text: 'The demo plays the same way twice', checks: [] },
@@ -71,7 +85,20 @@ function savedFindings(project: Project, all = false): { findings: Finding[]; ma
     else
       findings.push(
         ...(s.findings ?? []).filter((f) =>
-          ['stuck', 'unreachable', 'link-unreached', 'blind-drop', 'hazard-landing', 'hurt-lock', 'every-tick', 'checkpoints', 'curve'].includes(f.check),
+          [
+            'stuck',
+            'unreachable',
+            'link-unreached',
+            'blind-drop',
+            'hazard-landing',
+            'hurt-lock',
+            'every-tick',
+            'checkpoints',
+            'curve',
+            'one-way',
+            'softlock',
+            'steady',
+          ].includes(f.check),
         ),
       );
   }

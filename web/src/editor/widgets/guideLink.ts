@@ -15,6 +15,8 @@ export const GUIDE_TITLES: Record<GuideRef['chapter'], string> = {
   show: 'Title Screens and Demos',
   tricks: 'Tricks From the Sandbox Games',
   check: 'The Level Check and the Walkthrough Bot',
+  players: 'Designing for Every Player',
+  limits: 'Where Game-Maker Runs Out',
 };
 
 export function guideLink(g: GuideRef, label?: string): HTMLAnchorElement {

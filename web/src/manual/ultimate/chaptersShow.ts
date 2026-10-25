@@ -142,7 +142,9 @@ export const NUMBERS: Chapter = {
     <tr><td>Sounds in a set</td><td>30 (0–8 played by events)</td></tr>
     <tr><td>PC speaker tune</td><td>36 steps of 1/146 second</td></tr>
     <tr><td>A <code>.VOC</code> on a real PC</td><td>under 65,535 bytes; keep to 40,000</td></tr>
+    <tr><td>One chunk of an <code>.FLI</code> on a real PC</td><td>under 16,000 bytes; 127 changes a line</td></tr>
     <tr><td>A game tick</td><td>1/18.2 second</td></tr>
+    <tr><td>A quick tap of a key</td><td>about 0.3 second: a sequence shorter plays twice</td></tr>
     <tr><td>Music timing</td><td>146 ticks a second</td></tr>
     <tr><td>FM voices</td><td>9, or 6 and a drum kit in rhythm mode</td></tr>
     <tr><td>Demo recording</td><td>1,000 key presses</td></tr>

@@ -7,7 +7,7 @@ export type Severity = 'error' | 'warning' | 'info';
 
 /** A chapter of The Ultimate Owner's Guide (manual/ultimate/plan.ts ids) and a heading in it. */
 export interface GuideRef {
-  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'show' | 'tricks' | 'check';
+  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'show' | 'tricks' | 'check' | 'players' | 'limits';
   section: string;
 }
 
@@ -58,6 +58,7 @@ export interface CheckInfo {
 
 const L = (section: string): GuideRef => ({ chapter: 'levels', section });
 const C = (section: string): GuideRef => ({ chapter: 'craft', section });
+const P = (section: string): GuideRef => ({ chapter: 'players', section });
 
 export const CHECKS = {
   stuck: { name: 'Stuck spots', why: 'A player who can’t go on or go back has to start over, and few will.', guide: L('Never trap the player') },
@@ -133,9 +134,49 @@ export const CHECKS = {
   },
   'start-threat': {
     name: 'A threat at the start',
-    why: 'A level that hurts before the player has moved often feels unfair; a moment to look around helps.',
+    why: 'A level that hurts before the player has moved often feels unfair; a moment to look around helps. A boss that meets the hero at the door can be the point.',
     taste: true,
-    guide: L('Everything on the map has a job'),
+    guide: P('A safe start'),
+  },
+  lookalike: {
+    name: 'Scenery that looks like a prize',
+    why: 'Players try to grab anything drawn like a prize; one that gives nothing reads as a bug. A decoy can be a fair joke, once.',
+    taste: true,
+    guide: P('Scenery that looks collectable'),
+  },
+  'tap-twice': {
+    name: 'A tap that moves twice',
+    why: 'PLAYGAME plays a sequence again while its key is down, so one finished faster than a quick tap moves the hero twice for one press.',
+    taste: true,
+    guide: P('A tap is not a hold'),
+  },
+  'teach-first': {
+    name: 'Keys taught at the start',
+    why: 'A key needed to grab, use or fight that nothing near the start names is a key many players never find; few read the instructions first.',
+    taste: true,
+    guide: P('Teach the controls in the first room'),
+  },
+  'one-way': {
+    name: 'One-way spots',
+    why: 'A move the hero can’t undo (a drop, a door that shuts) surprises a player who wanted to look back. A chute everyone can see is one-way is fine.',
+    taste: true,
+    guide: P('Ways back, and no softlocks'),
+  },
+  softlock: {
+    name: 'Things left behind',
+    why: 'Going on without something a later part needs, with no way back for it, leaves the player unable to finish; they find out only at the end.',
+    guide: P('Ways back, and no softlocks'),
+  },
+  steady: {
+    name: 'Steady hands',
+    why: 'The bot presses keys to the tick. A part that needs two keys at once or a split-second change can stop a player with slower hands.',
+    taste: true,
+    guide: P('Designing for slower hands'),
+  },
+  fli: {
+    name: 'Animations DOS can’t play',
+    why: 'RSD’s player garbles an animation chunk too big for its memory and a line of 128 changes, and crashes on an all-black chunk.',
+    guide: { chapter: 'limits', section: 'Animations and DOS memory' },
   },
   chasers: {
     name: 'Chasers that never let go',

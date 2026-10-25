@@ -92,6 +92,10 @@ game folder opens in the browser unchanged.
   drawn from the games themselves and its interview with Lewis drawn from his own account in
   `docs/history.md`. Like everything else added here they are under
   the MIT License, so the games they open can carry them anywhere.
+- **Lewis's DOSBox screenshot** of A Fly Named Carl's garbled title (his own capture, taken while
+  testing the games in real DOS) illustrates "Where Game-Maker Runs Out" in The Ultimate Owner's
+  Guide (`web/public/ultimate/carl-dos.webp`, cropped to the game screen and scaled to 320 × 200).
+  It is source material from Lewis, shared under the same terms as the rest of this fork.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and

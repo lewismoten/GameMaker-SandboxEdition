@@ -7,6 +7,7 @@ import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks,
 import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
+import { fliCheck } from './checks/fliCheck';
 import { keyReach } from './checks/keyReach';
 import { landings } from './checks/landings';
 import { curve, playFindings } from './checks/playChecks';
@@ -93,7 +94,8 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
     findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...facing(d, all, same), ...jumps(d), ...soundChecks(d, files));
     findings.push(...(await landings(d, game, files)));
   }
-  if (opt.scene === undefined) findings.push(...controls(files), ...keyReach(files), ...endingChecks(game), ...variety(all), ...mechanics(all));
+  if (opt.scene === undefined)
+    findings.push(...controls(files), ...keyReach(files), ...endingChecks(game), ...variety(all), ...mechanics(all), ...fliCheck(files));
   const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
   if (opt.play !== false) {
     const feed = new LiveFeed(now);
