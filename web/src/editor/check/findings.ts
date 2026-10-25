@@ -59,6 +59,8 @@ export interface CheckInfo {
 const L = (section: string): GuideRef => ({ chapter: 'levels', section });
 const C = (section: string): GuideRef => ({ chapter: 'craft', section });
 const P = (section: string): GuideRef => ({ chapter: 'players', section });
+/** The solid-monster push checks' section. */
+const G: GuideRef = { chapter: 'limits', section: 'The wall glitch' };
 
 export const CHECKS = {
   stuck: { name: 'Stuck spots', why: 'A player who can’t go on or go back has to start over, and few will.', guide: L('Never trap the player') },
@@ -90,6 +92,28 @@ export const CHECKS = {
     name: 'Hurts that hold',
     why: 'Something that holds the hero while it hurts drains a life with no way to dodge.',
     guide: L('Danger players can see'),
+  },
+  'push-edge': {
+    name: 'Solid monsters on the map’s edge',
+    why: 'A solid monster on the top or bottom row can push the hero over the edge of the map: he comes out on the far side, often stuck in a wall, and the view races round after him.',
+    guide: G,
+  },
+  'push-gap': {
+    name: 'Solid monsters that shove into walls',
+    why: 'A solid monster puts the hero next to it without looking for walls, so one whose path ends against a block shoves a hero in the gap inside it, where he sticks.',
+    guide: G,
+  },
+  'push-squeeze': {
+    name: 'Solid monsters that close in',
+    why: 'Caught between two solid monsters, the hero is popped out of the gap the other way, into the ceiling or the floor if one is there. Two that never meet with the hero between can be fine.',
+    taste: true,
+    guide: G,
+  },
+  'solid-hurt': {
+    name: 'Solid monsters that hurt',
+    why: 'A solid hazard pushes the hero as it hurts him: it can sink him into the floor or pin him to a wall. One he can pass through is usually fairer; a solid one can be right for a boss you stand on.',
+    taste: true,
+    guide: G,
   },
   'every-tick': {
     name: 'Scores or heals every tick',

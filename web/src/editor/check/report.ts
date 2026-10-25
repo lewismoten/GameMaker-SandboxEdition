@@ -21,6 +21,7 @@ import { fakeExits, music, noWayOut } from './checks/levelExits';
 import { flashing } from './checks/flashing';
 import { stakes } from './checks/stakes';
 import { landings } from './checks/landings';
+import { solidPushChecks } from './checks/solidPush';
 import { curve, playFindings } from './checks/playChecks';
 import { sortFindings, type Finding } from './findings';
 import type { ExploreLive } from './explore';
@@ -108,7 +109,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   const same = new Set(opt.sameEverySide);
   for (const d of scenes) {
     findings.push(...counters(d, gives));
-    for (const c of [...blockChecks, ...monsterChecks]) findings.push(...c(d));
+    for (const c of [...blockChecks, ...monsterChecks, ...solidPushChecks]) findings.push(...c(d));
     findings.push(
       ...startThreat(d, game),
       ...sealed(d, game, all),
@@ -200,11 +201,14 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
     }
   }
   // a character, sound or block set shared by several scenes gives the same finding once (look-alike
-  // footing once per block set)
+  // footing once per block set, a solid hazard once per monster file)
   const seen = new Set<string>();
+  // the touch probe's finding on a monster says more than the file checks' question about it
+  const probed = new Set(findings.flatMap((f) => (f.check === 'hurt-lock' && f.where.monster ? [`${f.where.scene}:${f.where.monster.n}`] : [])));
   report.findings = sortFindings(
     findings.filter((f) => {
-      const k = `${f.check}|${f.title}|${(f.check === 'footing' && f.where.block?.file) || (f.check === 'shot-prize' && f.where.monster?.file) || f.where.map || f.where.file || f.where.sound?.file || ''}`;
+      if ((f.check === 'push-gap' || f.check === 'solid-hurt') && f.where.monster && probed.has(`${f.where.scene}:${f.where.monster.n}`)) return false;
+      const k = `${f.check}|${f.title}|${(f.check === 'footing' && f.where.block?.file) || ((f.check === 'shot-prize' || f.check === 'solid-hurt') && f.where.monster?.file) || f.where.map || f.where.file || f.where.sound?.file || ''}`;
       return !seen.has(k) && !!seen.add(k);
     }),
   );

@@ -474,7 +474,9 @@ modules are in [`../test`](../test).
     `flashing.ts` blocks that flash faster than three times a second; `stakes.ts` many lives and
     an unarmed start among enemies; `playerChecks.ts` a tap that moves twice, scenery that looks like
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
-    `formats/fliLimits.ts`, which the health check also uses) and the play checks
+    `formats/fliLimits.ts`, which the health check also uses; `solidPush.ts` the wall glitch's causes:
+    solid monsters on the map's edge rows, paths that stop right against a block, solid pacers that
+    close in, and monsters that are solid and hurt) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
     whole-game run carrying the least it can, and Steady hands, a second run with one key at a
     time from `inputs.ts` `steadyMoves`).
