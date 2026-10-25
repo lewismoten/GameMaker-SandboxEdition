@@ -36,6 +36,7 @@ export async function driveMove(sim: SceneSim, m: Move, h: DriveHooks): Promise<
       const r = await go();
       if (r !== undefined) return { end: r, ticks };
       if (w.ci.gravy !== 0) airborne = true;
+      if (t + 1 < (s.min ?? 0)) continue;
       if (s.until === 'cell' && cellOf() !== cell) break;
       // landed again, or never left the ground
       if (s.until === 'land' && w.ci.gravy === 0 && (airborne ? t > 1 : t >= 4)) break;
@@ -53,12 +54,13 @@ export async function driveMove(sim: SceneSim, m: Move, h: DriveHooks): Promise<
     if (r !== undefined) return { end: r, ticks };
     const p = sim.px;
     const resting = w.ci.gravx === 0 && w.ci.gravy === 0 && p.x === last.x && p.y === last.y && (w.chr.cseq === 0 || w.curkey === 0);
+    // steady hands wait a while after letting go before the next key
     if (resting) {
-      if (++still >= 2) break;
+      if (++still >= 2 && t + 1 >= (m.settle ?? 0)) break;
     } else still = 0;
     // bobbing in one cell (an updraft, water) is as still as the hero gets there
     if (cellOf() === cell) {
-      if (++sameCell >= 18) break;
+      if (++sameCell >= 18 && t + 1 >= (m.settle ?? 0)) break;
     } else {
       sameCell = 0;
       cell = cellOf();

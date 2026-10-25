@@ -65,7 +65,15 @@ describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => 
     const old = await exploreFrom('teddy2', 'd3701bd9', 8, 58, 39, 20_000);
     expect(old.ex.complete).toBe(true);
     expect(old.ex.exits).toHaveLength(0);
-    const run = { scene: 8, name: 'Midway', from: { scene: -1, link: -1 }, ex: old.ex, stuck: [], hpIn: 100 };
+    const run = {
+      scene: 8,
+      name: 'Midway',
+      from: { scene: -1, link: -1 },
+      ex: old.ex,
+      stuck: [],
+      hpIn: 100,
+      entry: { start: { x: 58, y: 39 }, ci: startCharInfo(), clock: 1 },
+    };
     expect(
       playFindings(
         run,

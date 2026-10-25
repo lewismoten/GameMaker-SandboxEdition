@@ -8,7 +8,7 @@ import type { LiveProgress } from './live';
 
 export interface CheckRequest {
   files: [string, Uint8Array][];
-  options: Pick<CheckOptions, 'scene' | 'play' | 'budgetMs' | 'sameEverySide'>;
+  options: Pick<CheckOptions, 'scene' | 'play' | 'budgetMs' | 'sameEverySide' | 'steadyMs'>;
 }
 
 export type CheckMessage =

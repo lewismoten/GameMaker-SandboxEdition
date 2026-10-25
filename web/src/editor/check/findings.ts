@@ -260,6 +260,9 @@ export const CHECKS = {
 
 export type CheckId = keyof typeof CHECKS;
 
+/** The pace the Level check's Steady hands plays at unless told another: ms between key changes. */
+export const STEADY_MS = 300;
+
 /** How the panel and badges name a finding: a taste check's warning is a suggestion. */
 export type Kind = Severity | 'suggestion';
 

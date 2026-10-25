@@ -1,6 +1,7 @@
 // The level check, start to finish: the static checks on every level scene, then (unless
-// asked not to) the playtest of the game or of one scene, all gathered into one report the
-// worker can post back (plain data: heat maps as typed arrays, no engine objects).
+// asked not to) the playtest of the game or of one scene (a whole game a second time leaving
+// behind all it can, and each scene again with steady hands when asked), all gathered into one
+// report the worker can post back (plain data: heat maps as typed arrays, no engine objects).
 import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
 import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, variety } from './checks/gameChecks';
@@ -14,7 +15,8 @@ import { landings } from './checks/landings';
 import { curve, playFindings } from './checks/playChecks';
 import { sortFindings, type Finding } from './findings';
 import type { ExploreLive } from './explore';
-import { gameOf, playtestGame, playtestScene, type SceneRun } from './playtest';
+import { gameOf, playtestGame, playtestScene, replayScene, type SceneRun } from './playtest';
+import { oneWay, softlocks, steadyFindings } from './checks/wayBack';
 import { scenesOf } from './sceneData';
 import { LiveFeed, type LiveProgress } from './live';
 
@@ -60,6 +62,12 @@ export interface CheckOptions {
   now?: () => number;
   /** Heroes and monsters marked as looking the same from every side (facing.ts sameKey). */
   sameEverySide?: string[];
+  /** Also play each scene with steady hands: one key at a time, at least this many ms between changes. */
+  steadyMs?: number;
+  /** A whole game is played again carrying the least it can into each scene (off: only once). */
+  leaveBehind?: boolean;
+  /** Head for the scene's links first (playtest.ts towardExits): a way through sooner, less of the rest. */
+  towardExits?: boolean;
 }
 
 export function summarize(r: SceneRun, map?: string): RunSummary {
@@ -126,22 +134,47 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       return opt.progress?.(`${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${places} places tried`, done, total);
     };
     const runs: SceneRun[] = [];
+    const name = (n: number) => game.scenes[n]?.desc.trim() || `scene ${n}`;
     if (opt.scene !== undefined) {
-      const r = await playtestScene(game, files, opt.scene, { budgetMs: opt.budgetMs, progress });
+      const r = await playtestScene(game, files, opt.scene, { budgetMs: opt.budgetMs, progress, towardExits: opt.towardExits });
       if (r) runs.push(r);
       else report.cancelled = true;
     } else {
-      const p = await playtestGame(game, files, { budgetMs: opt.budgetMs, progress });
+      const p = await playtestGame(game, files, { budgetMs: opt.budgetMs, progress, towardExits: opt.towardExits });
       runs.push(...p.runs);
       report.won = p.won;
       report.unreached = p.unreached;
       report.cancelled = p.cancelled;
       findings.push(...curve(runs));
+      // and again, leaving behind everything it can: is the end still in reach?
+      if (p.won && !p.cancelled && opt.leaveBehind !== false) {
+        const poor = await playtestGame(game, files, { budgetMs: opt.budgetMs, progress, leaveBehind: true, towardExits: opt.towardExits });
+        report.cancelled ||= poor.cancelled;
+        findings.push(...softlocks(p, poor, all, name));
+      }
     }
     for (const r of runs) {
       const d = all.find((s) => s.scene === r.scene);
-      findings.push(...playFindings(r, d));
+      findings.push(...playFindings(r, d), ...oneWay(r, d));
       report.runs.push(summarize(r, d?.names.map));
+    }
+    if (opt.steadyMs && !report.cancelled) {
+      const ticks = Math.max(1, Math.round((opt.steadyMs / 1000) * 18.2));
+      for (const r of runs) {
+        const steady = await replayScene(game, files, r, { budgetMs: opt.budgetMs, progress, steadyTicks: ticks, towardExits: opt.towardExits });
+        if (!steady) {
+          report.cancelled = true;
+          break;
+        }
+        findings.push(
+          ...steadyFindings(
+            r,
+            steady,
+            all.find((s) => s.scene === r.scene),
+            ticks,
+          ),
+        );
+      }
     }
   }
   // a character, sound or block set shared by several scenes gives the same finding once

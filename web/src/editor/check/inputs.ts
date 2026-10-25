@@ -11,6 +11,8 @@ export interface Step {
   /** 'cell': the character's cell changed; 'land': it is on the ground again; 'ticks': after max ticks. */
   until: 'cell' | 'land' | 'ticks';
   max: number;
+  /** Hold at least this many ticks, whatever `until` says (steady hands). */
+  min?: number;
 }
 
 export interface Move {
@@ -18,6 +20,8 @@ export interface Move {
   steps: Step[];
   /** Only tried where something nearby changes with time (a lift, a timed block). */
   waits?: boolean;
+  /** After the last key is let go, wait at least this many ticks before the next move (steady hands). */
+  settle?: number;
 }
 
 export interface KeyRoles {
@@ -107,5 +111,32 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
     }
   for (const a of roles.act) out.push({ name: `use ${a}`, steps: [{ keys: [a], until: 'ticks', max: 1 }] });
   out.push({ name: 'wait', steps: [{ keys: [], until: 'ticks', max: 18 }], waits: true });
+  return out;
+}
+
+/**
+ * The moves as a player with steady, unhurried hands plays them (the Level check's Steady hands):
+ * one key at a time, and at least `minTicks` between any two key changes, so a key is held that
+ * long, a change of keys lets go first and waits that long, and the next move waits too. Moves
+ * that need two keys at once are left out.
+ */
+export function steadyMoves(moves: Move[], minTicks: number): Move[] {
+  const out: Move[] = [];
+  const seen = new Set<string>();
+  for (const m of moves) {
+    if (m.steps.some((s) => s.keys.length > 1)) continue;
+    const steps: Step[] = [];
+    for (const s of m.steps) {
+      const last = steps[steps.length - 1];
+      // a different key straight after another: let go first, and wait
+      if (last?.keys.length && s.keys.length && last.keys[0] !== s.keys[0]) steps.push({ keys: [], until: 'ticks', max: minTicks });
+      steps.push(s.until === 'ticks' ? { ...s, max: Math.max(s.max, minTicks) } : { ...s, max: Math.max(s.max, minTicks), min: minTicks });
+    }
+    const steady: Move = { ...m, name: `${m.name} steady`, steps, settle: minTicks };
+    const k = JSON.stringify(steps);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(steady);
+  }
   return out;
 }

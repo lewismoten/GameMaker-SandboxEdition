@@ -9,7 +9,7 @@ import { BACKBL, BLEN, type Block } from '../../formats/blocks';
 import { DIESEQ, HURTSEQ } from '../../formats/character';
 import { MLEN, MWID } from '../../formats/map';
 import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
-import { keyRoles, movesFor, type Move } from './inputs';
+import { keyRoles, movesFor, steadyMoves, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
 import { driveMove } from './drive';
 import { frees, getsAway } from './escape';
@@ -29,6 +29,8 @@ export interface ExploreOptions {
   exact?: boolean;
   /** Only these of the character's moves (a bot's style: walk and hop, walk only…). */
   moveFilter?: (m: Move) => boolean;
+  /** Play with steady hands: one key at a time, at least this many ticks between key changes (inputs.ts steadyMoves). */
+  steadyTicks?: number;
   /** Wait at every place, not only near lifts and timed blocks. */
   waitEverywhere?: boolean;
   /** Cells to head for: places nearer them are tried first. */
@@ -125,6 +127,8 @@ export interface Exploration {
   /** Placed monster slots the hero came within reach of. */
   monsters: Set<number>;
   exits: ExitReach[];
+  /** Each link reached carrying the least (worthOf), for a run that leaves behind all it can. */
+  poorExits: ExitReach[];
   incidents: Incident[];
   /** How many tries ended in a death, by cell. */
   deaths: Map<number, number>;
@@ -171,7 +175,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const w = sim.w;
   const bg = w.bg;
   const gravity = bg.some((b) => b.grav !== 0);
-  const moves = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => !opt.moveFilter || opt.moveFilter(m));
+  const all = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => !opt.moveFilter || opt.moveFilter(m));
+  const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks) : all;
   const goal = opt.goal?.map((c) => ({ x: c % MLEN, y: Math.floor(c / MLEN) }));
   /** Blocks from the nearest goal cell (wrapping as the map does). */
   const distance = (cell: number) => {
@@ -207,6 +212,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const first = new Int32Array(CELLS).fill(-1);
   const monsters = new Set<number>();
   const exits = new Map<number, ExitReach>();
+  const poorExits = new Map<number, ExitReach>();
   const incidents: Incident[] = [];
   const deathsAt = new Map<number, number>();
   const seenIncident = new Set<string>();
@@ -401,18 +407,23 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       const link = r.link;
       const l = game.scenes[scene].links[link];
       const had = exits.get(link);
-      if (!had || w.ci.hitpts > had.hp)
-        exits.set(link, {
-          link,
-          toScene: l.toScene,
-          tick: had ? Math.min(had.tick, tick) : tick,
-          hp: w.ci.hitpts,
-          ci: { ...w.ci, inv: w.ci.inv.slice(), meter: w.ci.meter.slice(), seqon: w.ci.seqon.slice() },
-          clock: w.clock,
-          to: l.to,
-          world: w,
-          via: had?.via ?? { ...via!, ticks: moveTicks },
-        });
+      const reach = (prev?: ExitReach): ExitReach => ({
+        link,
+        toScene: l.toScene,
+        tick: prev ? Math.min(prev.tick, tick) : tick,
+        hp: w.ci.hitpts,
+        ci: { ...w.ci, inv: w.ci.inv.slice(), meter: w.ci.meter.slice(), seqon: w.ci.seqon.slice() },
+        clock: w.clock,
+        to: l.to,
+        world: w,
+        via: { ...via!, ticks: moveTicks },
+      });
+      if (!had || w.ci.hitpts > had.hp) exits.set(link, { ...reach(had), via: had?.via ?? { ...via!, ticks: moveTicks } });
+      // carrying the least: fewer things and counters (worth in thousands), then more hit points
+      const poor = poorExits.get(link);
+      const carry = Math.floor(worthOf(w.ci) / 1000);
+      if (!poor || carry < Math.floor(worthOf(poor.ci) / 1000) || (carry === Math.floor(worthOf(poor.ci) / 1000) && w.ci.hitpts > poor.hp))
+        poorExits.set(link, reach(poor));
       if (opt.stopAt?.(link, l.toScene)) reachedStop = true;
       return link;
     }
@@ -483,6 +494,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     first,
     monsters,
     exits: [...exits.values()],
+    poorExits: [...poorExits.values()],
     incidents,
     deaths: deathsAt,
     complete: !stopped && !reachedStop,
