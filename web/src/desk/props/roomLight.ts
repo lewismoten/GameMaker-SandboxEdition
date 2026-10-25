@@ -43,7 +43,6 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   // every poster on the wall glows under the black light
   { sel: '.wall-poster .wp-sheet', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   { sel: '.desk-scene > .poster', spread: 0, when: (d) => d.classList.contains('bl-uv') },
-  { sel: '.gm-box .retail', spread: 0, when: (d) => d.classList.contains('bl-uv') },
   // the newspaper clipping by the posters catches a little of the tube (dim: only partly out of the dark)
   { sel: '.news-clipping', spread: 0, when: (d) => d.classList.contains('bl-uv'), dim: 0.55 },
   // and so do the game boxes' lettering and stickers (boxes/boxUv.ts): their own print keeps the rest dim
@@ -57,8 +56,6 @@ const LIGHTS: { sel: string; spread: number; when?: (desk: HTMLElement) => boole
   { sel: '.caption', spread: 0.4 },
   // the mail under the bedroom door (mailDrop.ts), in the hall light from the gap, so it can be found in the dark
   { sel: '.room-door .rd-mail', spread: 0.5 },
-  // the switch has a little glowing lever, the way to find it in the dark
-  { sel: '.light-switch', spread: 0.4 },
 ];
 
 /** The LEDs: each clears only its own dot and glows its own color (`color`, else its fill). */
@@ -70,6 +67,8 @@ const LEDS: { sel: string; when?: (desk: HTMLElement) => boolean; color?: string
   { sel: '.spk-led.on' },
   // the turbo readout's red digits light the case round them red
   { sel: '.seg-display.lit', color: 'rgb(255, 59, 43)', reach: 22 },
+  // the light switch's lever glows a dim orange, to find it by in the dark; the plate stays dark
+  { sel: '.light-switch .ls-toggle', when: (d) => d.classList.contains('rl-dark'), color: 'rgb(255, 150, 60)', reach: 6 },
 ];
 
 /** "rgb(r, g, b)" as "rgb(r g b / a)"; undefined for a color that isn't one. */
