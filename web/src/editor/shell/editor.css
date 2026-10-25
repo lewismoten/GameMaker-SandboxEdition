@@ -910,6 +910,11 @@ dialog.modal .opening-choice {
   line-height: 1;
 }
 
+/* a file picker's play button (widgets/preview.ts) sits in its row here, not in a card's corner */
+.pick-play.opening-play {
+  position: static;
+}
+
 .opening-play.playing {
   background: #b3261e;
   color: #fff;
