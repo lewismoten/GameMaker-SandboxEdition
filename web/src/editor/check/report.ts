@@ -14,6 +14,12 @@ import { keyReach } from './checks/keyReach';
 import { helpKeys } from './checks/helpKeys';
 import { textContrast } from './checks/textContrast';
 import { blankIdle, startValues } from './checks/heroStart';
+import { shotPrize } from './checks/shotPrize';
+import { changingKeys, keyHabits } from './checks/keyHabits';
+import { screenText } from './checks/screenText';
+import { fakeExits, music, noWayOut } from './checks/levelExits';
+import { flashing } from './checks/flashing';
+import { stakes } from './checks/stakes';
 import { landings } from './checks/landings';
 import { curve, playFindings } from './checks/playChecks';
 import { sortFindings, type Finding } from './findings';
@@ -113,6 +119,12 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...tapTwice(d),
       ...lookalike(d, all),
       ...blankIdle(d),
+      ...shotPrize(d),
+      ...keyHabits(d),
+      ...fakeExits(d),
+      ...noWayOut(d, game),
+      ...music(d, game, files),
+      ...flashing(d),
     );
     findings.push(...(await landings(d, game, files)));
   }
@@ -122,6 +134,9 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...helpKeys(game, files),
       ...textContrast(game, files),
       ...startValues(game, all),
+      ...stakes(game, all),
+      ...changingKeys(files),
+      ...screenText(game, files),
       ...keyReach(files),
       ...endingChecks(game, all),
       ...variety(all),
@@ -189,7 +204,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   const seen = new Set<string>();
   report.findings = sortFindings(
     findings.filter((f) => {
-      const k = `${f.check}|${f.title}|${(f.check === 'footing' && f.where.block?.file) || f.where.map || f.where.file || f.where.sound?.file || ''}`;
+      const k = `${f.check}|${f.title}|${(f.check === 'footing' && f.where.block?.file) || (f.check === 'shot-prize' && f.where.monster?.file) || f.where.map || f.where.file || f.where.sound?.file || ''}`;
       return !seen.has(k) && !!seen.add(k);
     }),
   );

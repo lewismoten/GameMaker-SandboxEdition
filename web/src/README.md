@@ -361,7 +361,8 @@ modules are in [`../test`](../test).
     built with `blocks.ts`, inline markup read by `inline.ts`) so the whole issue builds and is
     tested in Node. Among them: the cover, contents, news, reviews, the Critic's Corner, the
     strategy guide, the interviews (`lewis.ts`, `claude.ts`), the Maximus feature, the web edition
-    feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag, the character spotlight,
+    feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag (with its Design Desk of
+    readers' level troubles), `gripes.ts` (what players hate, and how to fix it), the character spotlight,
     the game directory, the BBS listings, the store, the reader service card and the ads.
   - Links: `go.ts` its `go:` links into the site and `goRun.ts` the ones that open a box, the store,
     the mouse pad chooser or a desk prop.
@@ -460,7 +461,12 @@ modules are in [`../test`](../test).
     `inView.ts` prizes in view but out of reach; `helpKeys.ts` keys the help names that nothing
     uses; `textContrast.ts` text pages and the menu hard to read against their pictures (the pages
     and the pictures under them from `../textScreens.ts`); `heroStart.ts` starting values PLAYGAME
-    ignores and a blank Idle; `playerChecks.ts` a tap that moves twice, scenery that looks like
+    ignores and a blank Idle; `shotPrize.ts` shots that destroy prize monsters; `keyHabits.ts` a
+    fire key that roots the hero, ammunition for each key and keys whose job changes between
+    levels; `screenText.ts` long help or story and placeholder pages; `levelExits.ts` doors that
+    lead nowhere, a level with no link out and levels with no music (or a song DOS won't play);
+    `flashing.ts` blocks that flash faster than three times a second; `stakes.ts` many lives and
+    an unarmed start among enemies; `playerChecks.ts` a tap that moves twice, scenery that looks like
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
     `formats/fliLimits.ts`, which the health check also uses) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a

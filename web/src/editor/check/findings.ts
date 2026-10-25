@@ -275,6 +275,39 @@ export const CHECKS = {
     why: 'With no Idle frames PLAYGAME shows character block 0 whenever the hero stands still, so he flickers into the wrong picture or vanishes.',
     guide: { chapter: 'actors', section: 'The hero’s own tricks' },
   },
+  'shot-prize': {
+    name: 'Shots that destroy prizes',
+    why: 'A stronger monster kills a weaker one it touches, so a shot fired at an enemy can blow away the prize beside it, sometimes the one the level needs.',
+    guide: L('Everything on the map has a job'),
+  },
+  'fake-exit': {
+    name: 'Doors that lead nowhere',
+    why: 'A block drawn like the level’s exits that isn’t one sends players round in circles, and they stop trusting the real doors. A fair secret is fine, once.',
+    taste: true,
+    guide: L('Hazards that hit where they are drawn'),
+  },
+  music: {
+    name: 'Levels without music',
+    why: 'A level with no song, or one DOS won’t play, is silent. Quiet can set a mood; more often players hear it as something broken.',
+    guide: C('Polish that players notice'),
+  },
+  flashing: {
+    name: 'Flashing',
+    why: 'Light and dark swapping more than three times a second over much of the screen can bring on seizures in some players.',
+    guide: C('Polish that players notice'),
+  },
+  stakes: {
+    name: 'Lives to spare',
+    why: 'With many lives a death costs nothing, and the danger stops mattering. A few lives keep each mistake worth avoiding.',
+    taste: true,
+    guide: C('A difficulty curve, not a cliff'),
+  },
+  'help-length': {
+    name: 'Long instructions or story',
+    why: 'Most players read a page or three, then skip. Help that runs on hides the goal and the keys among everything else.',
+    taste: true,
+    guide: { chapter: 'show', section: 'Text screens and slide shows' },
+  },
   ending: { name: 'Ending and screens', why: 'A game with no won screen, credits or instructions feels unfinished.', guide: L('An ending, not an ad') },
   variety: {
     name: 'Variety',
