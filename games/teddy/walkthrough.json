@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0UEgaSBhIGkhjNAU0CSAjIBkgIyATNAU0BSAbIBs0KTRXNAU0HzQE5ArkQTQgSBpIFSALICc0BUALQFEsByw05ArkUSx/LAU0mSAjIEUgIyBhICMgEzQFNAUgHyATNCk0HzQFICMgKSAjICksEywEhAqEKTSbNAVAC0BlNFBIKkgLNAU0BSAjIBc0KTRDN"
+   "keys": "AU0UEgaSBhIGkhjNAU0CSAjIBkgIyATNAU0BSAbIBs0KTRXNAU0HzQE5ArkQTQgSBpIFSALICc0BUALQFEsByw05ArkUSx/LAU0mSAjIEUgIyBhICMgEzQFNAUgHyATNCk0HzQFICMgKSAjICksEywEhAqEKTRFICMgXzQFQAtAZTRQSCpICzQFNAUgIyAXNCk0QzQ=="
   },
   {
    "scene": 3,
@@ -51,7 +51,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 25383,
+  "frames": 25420,
   "chapters": [
    {
     "title": "Opening",
@@ -59,35 +59,35 @@
    },
    {
     "title": "Story",
-    "frame": 2426
+    "frame": 2428
    },
    {
     "title": "Level 1: Doc Leo's Backyard",
-    "frame": 6012
+    "frame": 6016
    },
    {
     "title": "Level 2: Maple Street",
-    "frame": 8835
+    "frame": 8872
    },
    {
     "title": "Level 3: Puddlewick Park",
-    "frame": 11986
+    "frame": 12023
    },
    {
     "title": "Level 4: Downtown",
-    "frame": 14711
+    "frame": 14748
    },
    {
     "title": "Level 5: The Clown Club",
-    "frame": 17492
+    "frame": 17529
    },
    {
     "title": "Ending",
-    "frame": 20394
+    "frame": 20431
    },
    {
     "title": "Credits",
-    "frame": 22499
+    "frame": 22536
    }
   ]
  }
