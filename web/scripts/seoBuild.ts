@@ -38,6 +38,7 @@ import {
   SITE_URL,
 } from '../src/seo/site';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
+import { magazineJsonLd, siteLinksHtml, websiteJsonLd } from '../src/seo/siteSections';
 import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
 export const HEAD_MARK = '<!--SEO:HEAD-->';
@@ -105,14 +106,17 @@ const STYLE = `<style>
     </style>`;
 
 /**
- * The home page's structured data: the app, its source, and the games as a list of their own
- * pages (each page carries the game's full JSON-LD, gameHead), which keeps index.html small.
+ * The home page's structured data: the site, the app, its source, the magazine, and the games
+ * as a list of their own pages (each page carries the game's full JSON-LD, gameHead), which
+ * keeps index.html small.
  */
 function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
   const games = playable(catalog);
   return [
+    websiteJsonLd(),
     appJsonLd(),
     repoJsonLd(),
+    ...magazineJsonLd(),
     {
       '@type': 'ItemList',
       '@id': `${SITE_URL}#games`,
@@ -142,6 +146,7 @@ function indexBody(catalog: CdCatalogEntry[]): string {
         <li>Everything stays in your browser and works offline. Files stay compatible with the original DOS Game-Maker 3.0.</li>
       </ul>
       ${gameList(catalog, pageHref)}
+      ${siteLinksHtml()}
       <h2>Source code</h2>
       <p>${escapeHtml(PRODUCT)} is free and open source: <a href="${REPO_URL}">${REPO_URL.replace('https://', '')}</a>. <span class="seo-note">${escapeHtml(FORK_NOTE)}.</span></p>
     </main>`;
@@ -231,13 +236,13 @@ function gameHead(g: CdCatalogEntry): string {
       description: gameDescription(g),
       primaryImageOfPage: imageUrl(g),
       about: { '@id': `${playUrl(g.id)}#game` },
-      isPartOf: { '@type': 'WebSite', name: PRODUCT, url: SITE_URL },
+      isPartOf: { '@type': 'WebSite', '@id': `${SITE_URL}#website`, name: PRODUCT, url: SITE_URL },
+      // the site, then the game (play.html on its own sends a visitor to the home page)
       breadcrumb: {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: PRODUCT, item: SITE_URL },
-          { '@type': 'ListItem', position: 2, name: 'Play', item: `${SITE_URL}play.html` },
-          { '@type': 'ListItem', position: 3, name: g.title, item: playUrl(g.id) },
+          { '@type': 'ListItem', position: 2, name: g.title, item: playUrl(g.id) },
         ],
       },
     },

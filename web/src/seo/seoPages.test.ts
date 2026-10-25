@@ -90,6 +90,12 @@ describe('seoBuild', () => {
     expect(home.match(/<h1\b/g)).toHaveLength(1);
   });
 
+  it('describes the site, the app and the magazine in the home page’s structured data, and links the pages at #/…', () => {
+    const types = jsonLd(home).map((n) => [n['@type']].flat().join('/'));
+    expect(types).toEqual(expect.arrayContaining(['WebSite', 'WebApplication/SoftwareApplication', 'Periodical', 'PublicationIssue', 'ItemList']));
+    for (const href of ['./#/help', './#/magazine', './#/cast', './#/credits', './dos.html']) expect(home).toContain(`<a href="${href}">`);
+  });
+
   it('gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1', () => {
     const titles = new Set<string>();
     for (const g of playable) {

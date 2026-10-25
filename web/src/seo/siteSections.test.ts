@@ -2,8 +2,7 @@
 // its links each have a name of their own.
 import { describe, expect, it } from 'vitest';
 import { magazineJsonLd, siteLinksHtml, websiteJsonLd } from './siteSections';
-import { PAGE_ROUTES } from './pageRoutes';
-import { SITE_URL } from './site';
+import { ROUTES, SITE_URL } from './site';
 
 describe('siteSections', () => {
   it('describes the site as a WebSite about the app', () => {
@@ -31,7 +30,7 @@ describe('siteSections', () => {
     expect(new Set(links.map(([href]) => href)).size).toBe(links.length);
     for (const [, name] of links) expect(name).not.toMatch(/^(click )?here$|^more$|^link$/i);
     expect(html).toContain('href="./#/magazine"');
-    expect(html).toContain(PAGE_ROUTES.cast.description.slice(0, 40));
+    expect(html).toContain(ROUTES.cast.description.slice(0, 40));
     expect(html.match(/<h2>/g)).toHaveLength(1);
   });
 });

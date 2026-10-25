@@ -43,6 +43,11 @@ export const ROUTES = {
     title: `Credits · ${PRODUCT}`,
     description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, the software and third-party pieces, the AI tools and the people, and who made what in The Bard of Bizarre’s games.`,
   },
+  magazine: {
+    title: `TURBO BUTTON magazine · ${PRODUCT}`,
+    description:
+      'TURBO BUTTON, the shareware gamer’s monthly: a 1990s-style magazine about Game-Maker and its games, with reviews, interviews, strategy, a BBS list, a game directory and ads, to read page by page or print.',
+  },
   achievements: {
     title: `What you’ve done · ${PRODUCT}`,
     description:

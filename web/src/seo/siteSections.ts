@@ -3,13 +3,9 @@
 // readable list of the pages that live at #/… addresses (the Guide, TURBO BUTTON, the cast,
 // the credits…), which search engines see as one page: the list gives each a sentence and a
 // descriptive link in index.html's static text.
-//
-// Not yet wired in: seoBuild.ts is imported by vite.config.ts, so it waits for the dev server
-// to be stopped (.for-lewis/after-dev-server.md has the change).
 import { PRODUCT, SHORT } from '../edition';
 import { MAG } from '../manual/magazine/masthead';
-import { PAGE_ROUTES } from './pageRoutes';
-import { escapeHtml, OG_IMAGE, REPO_URL, SITE_URL } from './site';
+import { escapeHtml, OG_IMAGE, REPO_URL, ROUTES, SITE_URL } from './site';
 
 const MAGAZINE_URL = `${SITE_URL}#/magazine`;
 
@@ -21,7 +17,7 @@ export function websiteJsonLd(): Record<string, unknown> {
     url: SITE_URL,
     name: PRODUCT,
     alternateName: [SHORT],
-    description: PAGE_ROUTES.home.description,
+    description: ROUTES.home.description,
     inLanguage: 'en',
     image: OG_IMAGE,
     creator: { '@type': 'Person', name: 'Lewis Moten', url: 'https://github.com/lewismoten' },
@@ -41,7 +37,7 @@ export function magazineJsonLd(): Record<string, unknown>[] {
     name: MAG.name,
     alternateName: MAG.tagline,
     url: MAGAZINE_URL,
-    description: PAGE_ROUTES.magazine.description,
+    description: ROUTES.magazine.description,
     inLanguage: 'en',
     isAccessibleForFree: true,
     isPartOf: { '@id': `${SITE_URL}#website` },
@@ -60,7 +56,7 @@ export function magazineJsonLd(): Record<string, unknown>[] {
 }
 
 /** The pages at #/… (and dos.html) that the static text links to, in reading order. */
-const PAGES: [href: string, name: string, route: keyof typeof PAGE_ROUTES][] = [
+const PAGES: [href: string, name: string, route: keyof typeof ROUTES][] = [
   ['./#/help', 'The Guide: how to use the web editor', 'guide'],
   ['./#/magazine', `${MAG.name}, the shareware gamer’s magazine`, 'magazine'],
   ['./#/cast', 'The cast of the new games', 'cast'],
@@ -78,7 +74,7 @@ export function siteLinksHtml(): string {
   return `<section>
         <h2>More to read and explore</h2>
         <ul>
-${PAGES.map(([href, name, route]) => `          <li><a href="${escapeHtml(href)}">${escapeHtml(name)}</a> — ${escapeHtml(PAGE_ROUTES[route].description)}</li>`).join('\n')}
+${PAGES.map(([href, name, route]) => `          <li><a href="${escapeHtml(href)}">${escapeHtml(name)}</a> — ${escapeHtml(ROUTES[route].description)}</li>`).join('\n')}
         </ul>
       </section>`;
 }
