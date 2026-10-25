@@ -377,6 +377,7 @@ modules are in [`../test`](../test).
       `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
     - `joeyDrawing.ts`, a reader's crayon drawing of Teddy driving THE CHEZ to the moon, for the
       Mail Bag;
+    - `bossChain.ts`, the Design Workshop's diagram of a boss with hit points as a chain of states;
     - `deskShot.ts`, its snapshot of the 1994 desk, `../public/magazine/desk-1994.webp`, with how to
       take it again; `webShots.ts`, its screenshots of today's web, `../public/magazine/web-*.webp`,
       likewise; and `dosShot.ts`, Lewis's DOSBox screenshot of Carl's garbled cover,

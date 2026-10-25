@@ -164,6 +164,7 @@ export type WebShot = (typeof WEB_SHOTS)[number];
  * The notch ones are the HOLE-Y MOLEY ad's (notcherArt.ts): the press, and a disk's back before and after.
  * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
  * blankdisk is a stack of bulk disks with no labels, for the Floppy Barn ad (blankDisk.ts).
+ * bosschain is the Design Workshop's diagram of a boss with hit points (bossChain.ts).
  * dos-carl is Lewis's DOSBox screenshot of A Fly Named Carl's garbled cover (dosShot.ts).
  */
 export type ArtId =
@@ -185,6 +186,7 @@ export type ArtId =
   | 'notch-after'
   | 'joey'
   | 'dos-carl'
+  | 'bosschain'
   | `web-${WebShot}`;
 
 export interface MagPage {

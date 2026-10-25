@@ -1,8 +1,9 @@
-// Tricks of the Shareware Masters: a one-page feature on techniques other Game-Maker authors used,
-// each credited to its game by title, and a "did you know" box of limits they pushed. From Lewis's
+// Tricks of the Shareware Masters: a two-page feature on techniques other Game-Maker authors used,
+// each credited to its game by title, with a diagram of the boss chain (bossChain.ts), and a "did
+// you know" box of limits they pushed. From Lewis's
 // survey of the Game-Maker Archive's featured games at the Internet Archive (read with the
 // site's own file parsers). It describes the tricks only: no art, music or text from those games.
-import { cols, head, list, note, p, side } from '../blocks';
+import { art, cols, head, list, note, p, pull, side } from '../blocks';
 import type { MagSection } from '../types';
 
 export const MASTERS: MagSection = {
@@ -27,6 +28,11 @@ export const MASTERS: MagSection = {
             '**Bosses with hit points.** Game-Maker’s monsters die in one hit, so how does *Blinky 2*’s boss take six? It’s a chain. The boss you can hit turns, when hit, into an identical copy that can’t be hurt and flashes for 50 ticks, which then turns back into the next hittable copy, and so on down the line. The big points sit on the last link. *Blinky 3* makes each flash last longer than the one before (57, 107, 157, 207 ticks), so the fight gets harder as it goes.',
             { drop: true },
           ),
+          art(
+            'bosschain',
+            'A boss with six hit points as a chain: each hittable boss, when hit, becomes a flashing copy that can’t be hurt, which turns into the next hittable boss 50 ticks later; the last one carries the big points.',
+            'The chain: hit the boss and it swaps for a flashing copy; 50 ticks later the next link is back. Six links, six hits.',
+          ),
           p(
             '**A timer made of blocks.** In *Parsec Man 3D*, empty space on the map screen is an animated block. After 488 ticks it turns into a block that looks exactly the same but hurts. Dawdle, and space itself gets you.',
           ),
@@ -39,10 +45,18 @@ export const MASTERS: MagSection = {
           p(
             '**Moon physics and a sword.** *Ninja Tuck* has a moon level where the hero walks at a third of his usual speed and jumps drift. The trick: a second copy of his character file, slowed down, loaded for that one scene. His sword is a monster that lives for three ticks right in front of him: one quick swipe, and gone.',
           ),
-
           p(
             '**Games that play themselves forward.** The resting animation doesn’t have to stand still. In *Hurdles* it runs 20 to 30 pixels a tick, so the athlete never stops and the keys jump, duck and brake. *Seal Boarders* drifts it down and sideways, and you’re sledding downhill on 33 courses.',
           ),
+        ]),
+      ],
+    },
+    {
+      kind: 'article',
+      tone: 'white',
+      blocks: [
+        head('More tricks of the masters', { kicker: 'Design workshop', size: 's', level: 3 }),
+        cols(2, [
           p(
             '**One key, a whole arsenal.** *A-J’s Quest* puts four weapons on the Space bar: each is its own move, switched off until you pick that weapon up. One more Space move with no pictures just plays a voice saying you’ve got nothing to throw.',
           ),
@@ -54,6 +68,7 @@ export const MASTERS: MagSection = {
             '**A fade for next to nothing.** RSD’s text box animation changes only the colors, never the pixels: 40 frames in 27 KB. A full-screen animation can run a megabyte.',
           ),
         ]),
+        pull('“Every trick here is plain Game-Maker, used cleverly.”'),
         side(
           'Did you know?',
           [

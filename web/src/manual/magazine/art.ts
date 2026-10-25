@@ -7,7 +7,7 @@
 // (notcherArt.ts); and a snapshot of the 1994 desk itself
 // (deskShot.ts), screenshots of today's web (webShots.ts) and Lewis's DOSBox screenshot
 // (dosShot.ts); and Joey's crayon drawing for the
-// Mail Bag (joeyDrawing.ts).
+// Mail Bag (joeyDrawing.ts); and the Design Workshop's chain of boss states (bossChain.ts).
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
@@ -25,6 +25,7 @@ import { soundCardArt } from './soundCardArt';
 import { speakerArt } from './speakerArt';
 import { webShotImg } from './webShots';
 import { svgArt } from './svgArt';
+import { bossChainArt } from './bossChain';
 
 /** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
 const DRIVER_SEAT: [number, number] = [-3, 0.5];
@@ -91,6 +92,8 @@ export function artElement(id: ArtId, alt: string): Element {
       return notcherArt('after', alt);
     case 'joey':
       return joeyDrawing(alt);
+    case 'bosschain':
+      return bossChainArt(alt);
     case 'chez': {
       const k = 8;
       const c = h('canvas', { width: 44 * k, height: 24 * k });
