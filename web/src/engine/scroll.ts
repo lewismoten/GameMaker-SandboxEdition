@@ -224,5 +224,3 @@ export function drawScroll(w: World): number {
   if (shift.x || shift.y) shiftEverything(w, shift);
   return (Math.abs(shift.x) + Math.abs(shift.y)) / 4;
 }
-
-export { SOLBOT, SOLTOP, SOLRIG };

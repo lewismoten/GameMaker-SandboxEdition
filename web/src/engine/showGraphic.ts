@@ -79,7 +79,7 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
 }
 
 /** DrawGif / drawbkd: draws into the screen and returns the GIF palette in `cols`. */
-export function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop = false): boolean {
+function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop = false): boolean {
   let x = 0;
   let y = 0;
   let name = file;

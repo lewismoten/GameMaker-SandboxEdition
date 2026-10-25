@@ -149,16 +149,6 @@ export function startProgram(song: CmfSong, ch: number): number {
   return p;
 }
 
-/** The instrument a channel uses at a time. */
-export function programAt(song: CmfSong, ch: number, tick: number): number {
-  let p = ch;
-  for (const e of programChanges(song, ch)) {
-    if (e.tick > tick) break;
-    p = e.a;
-  }
-  return p;
-}
-
 /** Picks the instrument a channel starts with. */
 export function setStartProgram(song: CmfSong, ch: number, program: number): void {
   const first = channelNotes(song, ch)[0]?.on;

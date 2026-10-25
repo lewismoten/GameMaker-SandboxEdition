@@ -7,7 +7,7 @@
 import type { Block } from '../formats/blocks';
 import { DIESEQ, HURTSEQ } from '../formats/character';
 import { pushKey } from './keys';
-import { BACKBL, BLEN, INF_REPEAT, LASTSND, MAXSEQ, MLEN, MWID, i16, mapBlock, shownBlock, u16, type Coord, type TouchBlocks, type World } from './world';
+import { BACKBL, BLEN, INF_REPEAT, LASTSND, MAXSEQ, MLEN, MWID, i16, mapBlock, u16, type Coord, type TouchBlocks, type World } from './world';
 
 // Sound slots DoBlockTouchChar and moveallmons play.
 const HELPSOUND = 0;
@@ -163,5 +163,3 @@ export function checkTouch(w: World): void {
     if (!blk.obj) reallyCheckTouch(w, t.blks[l][0], t.blks[l][1], t.blknum[l]);
   }
 }
-
-export { shownBlock };

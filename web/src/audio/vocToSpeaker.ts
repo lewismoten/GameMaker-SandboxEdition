@@ -22,7 +22,7 @@ const K = 0.88;
 
 export type SpeakerFit = 'start' | 'whole';
 
-export interface PitchGuess {
+interface PitchGuess {
   /** Hz, 0 when none was found. */
   freq: number;
   /** The NSDF peak, 0..1: near 1 for a clean tone, low for noise. */

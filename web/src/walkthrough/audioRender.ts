@@ -150,7 +150,7 @@ export class AudioRenderer {
 }
 
 /** Linear interpolation to another sample rate. */
-export function resample(src: Float32Array, from: number, to: number): Float32Array {
+function resample(src: Float32Array, from: number, to: number): Float32Array {
   if (!from || from === to) return src.slice();
   const n = Math.floor((src.length * to) / from);
   const out = new Float32Array(n);

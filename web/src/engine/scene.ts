@@ -43,7 +43,7 @@ import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
 
-export const DEAD = 2;
+const DEAD = 2;
 
 /** Everything that lives across scenes (playgame's globals outside a level). */
 export interface Session {
@@ -707,5 +707,3 @@ async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: nu
   if (s.musicOn) void m.audio.playSong(loaded.song);
   return { w: nw, prevscene: data.prevscene, doscene: data.doscene, linkin: data.linkin, song: loaded.song };
 }
-
-export { LASTMON };
