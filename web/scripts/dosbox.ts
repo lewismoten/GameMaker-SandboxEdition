@@ -9,8 +9,11 @@
 //                       with the CD's XFERPLAY.EXE named after it, SNDBLAST.DRV, CONFIG.BAT)
 // The folder (dosbox/ at the repository's root, or the path given) is in .gitignore and is
 // emptied first (only when this script made it: it leaves a .gm-dosbox file there). Secret games are left out unless --secret is given.
-//   npx vite-node scripts/dosbox.ts [target folder] [--secret]
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+// It also writes DOSBOX.command, which opens the DOSBox app with the folder as C:, in C:\GM:
+// double-click it in Finder, or `npm run dosbox:open` (or --launch, to start it right after).
+//   npx vite-node scripts/dosbox.ts [target folder] [--secret] [--launch]
+import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { exportDos } from '../src/export/exportDos';
@@ -58,6 +61,17 @@ function copyUpper(from: string, to: string): void {
   }
 }
 
+// each game's sound and video setup (CONFIG.DAT, written by its setup screen) survives a rebuild
+const kept = new Map<string, Buffer>();
+const keep = (dir: string, rel = ''): void => {
+  if (!existsSync(dir)) return;
+  for (const name of readdirSync(dir)) {
+    const path = join(dir, name);
+    if (statSync(path).isDirectory()) keep(path, join(rel, name));
+    else if (name.toUpperCase() === 'CONFIG.DAT') kept.set(join(rel, name), readFileSync(path));
+  }
+};
+keep(target);
 rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
 writeFileSync(join(target, MARK), 'Made by web/scripts/dosbox.ts; emptied and rebuilt each time it runs.\n');
@@ -107,10 +121,27 @@ for (const id of readdirSync(join(ROOT, 'games'))) {
   writeFiles(join(target, 'GAMES', kind, dir), await readZip(zip));
   made[kind].push(dir);
 }
+let restored = 0;
+for (const [rel, data] of kept) {
+  const path = join(target, rel);
+  if (existsSync(join(path, '..'))) (writeFileSync(path, data), restored++);
+}
+if (restored) console.log(`kept ${restored} CONFIG.DAT setup${restored === 1 ? '' : 's'} from the last run`);
 for (const [kind, dirs] of Object.entries(made)) console.log(`GAMES\\${kind}\\  and GM\\  ${dirs.length} games: ${dirs.join(' ')}`);
 
+// DOSBox starts already in C:\GM, with this folder as drive C: given as -c commands, so the app
+// keeps its own settings (a -conf file would replace them)
+const startUp = ['-c', `mount c "${target}"`, '-c', 'c:', '-c', 'cd \\GM'];
+const command = join(target, 'DOSBOX.command');
+const quoted = startUp.map((a) => `'${a.replace(/'/g, `'\\''`)}'`).join(' ');
+writeFileSync(command, `#!/bin/sh\n# Opens the DOSBox app with this folder as drive C:, in C:\\GM (double-click in Finder)\nopen -a DOSBox --args ${quoted}\n`);
+chmodSync(command, 0o755);
+
 console.log(`
-In DOSBox:
+Start DOSBox with C: mounted and in \\GM:
+  npm run dosbox:open        (from web/), or double-click ${command}
+
+Or by hand in DOSBox:
   mount c "${target}"
   c:
   cd \\GM
@@ -119,3 +150,4 @@ or play one straight from DOS, e.g.
   cd \\GAMES\\SANDBOX\\${made.SANDBOX[0] ?? 'TEDDY'}
   dir *.exe                  (the game's .EXE; CONFIG.BAT sets up sound and video)
 `);
+if (args.includes('--launch')) execFileSync('open', ['-a', 'DOSBox', '--args', ...startUp]);
