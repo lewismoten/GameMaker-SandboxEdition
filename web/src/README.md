@@ -326,7 +326,9 @@ modules are in [`../test`](../test).
     through it, `editor/check/unroll.ts`), both looked round with `panZoom.ts`. `levelPoster.ts`
     draws one level the same way as a PNG, for the map editor's "As players see it" picture.
   - Stickers: the sheet (`stickers.ts`, `gmStickers.ts` for the Game-Maker box), laid out on Print
-    Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`).
+    Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`) by the sticker rules in
+    `manual/printables/README.md` (least size, bleed, spacing, die-cut border), with files for
+    Design Space and other cutting machines.
   - The Game-Maker box's paper: its Owner's Guide cover (`gmCover.ts`), what else is in it
     (`gmItems.ts`, `gmInserts.ts`), The Bard of Bizarre's catalog (`bardCatalog.ts`) and RSD's
     registration reply (`regConfirm.ts`). `sandboxMark.ts` is Sandbox Software's emblem and
