@@ -254,7 +254,8 @@ export function fridge(book: BlockBook): Level {
   m.fill(23, 13, 5, 1, 'h');
   m.row(10, 23, 43, 'G').row(10, 33, 34, 'f');
   m.row(7, 23, 43, 'G').row(7, 40, 41, 'f');
-  m.row(4, 23, 44, 'G').row(4, 29, 30, 'f');
+  // a hatch in the top shelf behind the butter's slide: the way down to the celery past it
+  m.row(4, 23, 44, 'G').row(4, 29, 30, 'f').set(39, 4, 'f');
   // the dairy, come to life
   // a tin heart at the back of the fridge's bottom, past the milk, in the corner by the door hinge
   m.set(42, 13, 'tinHeart');
