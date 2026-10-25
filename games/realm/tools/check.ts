@@ -5,12 +5,15 @@ import { GameSim } from './sim';
 import { Bot } from './bot';
 import { ROUTE } from './route';
 import { align } from './align';
+import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 
 if (align()) throw new Error('realm: a multi-block object is out of line (above)');
 
 const sim = new GameSim(undefined, 1);
 const bot = new Bot(sim);
 bot.loot = true;
+// along the roads and streets, as a person walks (walkPaths.json, written by the build)
+bot.keepTo = keepToPaths(sim, readWalkPaths('realm'));
 for (const [name, step] of ROUTE) {
   try {
     await step(bot);

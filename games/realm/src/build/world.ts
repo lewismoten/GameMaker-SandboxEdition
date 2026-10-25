@@ -17,6 +17,7 @@ import { worldMons, scatter, place } from './foes';
 import { TALK } from '../levels/script';
 import { giftCell, talkFiles, talkScene } from '../levels/talk';
 import { peopleSheet } from './people';
+import { noteWays } from './walkPaths';
 
 export interface AreaFile {
   name: string;
@@ -60,6 +61,7 @@ export function buildWorld(cast: Cast) {
   for (const s of plan.stamps)
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
   const blocks = book.finish();
+  noteWays('world.bbl', book);
 
   const mb = peopleSheet();
   const book2 = worldMons(mb);

@@ -101,6 +101,11 @@ Checking the games:
 - `walkthrough.ts` — writes a game's `walkthrough.json` from its bot's keys, after replaying them on the web
   app's real engine to check the run reaches the ending and to time its chapters. `writeSimWalkthrough()`
   does it for a GameSim run (a segment and a chapter a scene), the body of most games' `tools/walkthrough.ts`.
+- `walkPaths.ts` — a game's walking paths and roads: `games/<id>/walkPaths.json` (block numbers by block set, as
+  the editor's companion section `walkPaths`), written by the game's build (`writeWalkPaths`) and read by its bot
+  (`keepToPaths`: a step off them costs `OFF_PATH_COST` more in its shortest-path search), so the recorded
+  walkthrough walks the roads instead of cutting across. Realm's build writes its roads and streets; its
+  `tools/check.ts` and `tools/walkthrough.ts` set `bot.keepTo`.
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.

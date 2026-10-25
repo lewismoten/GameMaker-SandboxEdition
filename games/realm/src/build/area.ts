@@ -12,6 +12,7 @@ import { giftCell, talkFiles, talkScene, type Talk } from '../levels/talk';
 import { TALK } from '../levels/script';
 import type { SceneSpec, LinkSpec } from '../game';
 import type { AreaFile } from './world';
+import { noteWays } from './walkPaths';
 
 export interface AreaScene {
   id: string;
@@ -47,6 +48,7 @@ export function buildArea(o: {
   const { plan, book, mons } = o;
   const map = plan.build(book, { layers: o.layers, base: o.base, fullVariants: o.fullVariants });
   const blocks = book.finish();
+  noteWays(`${o.name}.bbl`, book);
   let slot = 0;
   for (const n of plan.npcs) map.monsters[slot++] = { monnum: n.mon, status: 0, xtra: 0, curx: n.at[0], cury: n.at[1], extra: 0 };
   reindexMonsters(map);

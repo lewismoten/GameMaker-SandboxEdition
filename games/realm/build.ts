@@ -20,6 +20,8 @@ import { screenFiles } from './src/build/screens';
 import { demoRecording } from './src/demo';
 import { autoArrange } from '../../web/src/editor/editors/integrator/integratorLayout';
 import { untangle } from './src/layout';
+import { WALK_PATHS } from './src/build/walkPaths';
+import { writeWalkPaths } from '../kit/walkPaths';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -66,4 +68,6 @@ for (const [i, p] of autoArrange(game)) game.scenes[i].pos = p;
 disk.put('tuit.gam', serializeGame(game));
 disk.put('demo.rec', demoRecording());
 disk.write();
+// the roads and streets the walkthrough's bot keeps to (not on the disk)
+writeWalkPaths('realm', WALK_PATHS);
 console.log(`${game.scenes.length} scenes`);
