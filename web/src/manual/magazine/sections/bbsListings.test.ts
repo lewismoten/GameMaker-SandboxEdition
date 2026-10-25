@@ -13,7 +13,7 @@ describe('the BBS listings', async () => {
 
   it('print the numbers TERMINAL dials', () => {
     expect(src('bbs.ts')).toContain(`const PHONE = '${SANDBOX_PHONE}'`);
-    expect(src('sofa.ts')).toContain(`export const SOFA_PHONE = '${SOFA_PHONE}'`);
+    expect(src('sofaPhone.ts')).toContain(`export const SOFA_PHONE = '${SOFA_PHONE}'`);
   });
 
   it('dial every board, and only those', () => {
