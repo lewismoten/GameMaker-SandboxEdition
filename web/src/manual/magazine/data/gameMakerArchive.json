@@ -1,0 +1,1334 @@
+{
+  "source": "The Game-Maker Archive at the Internet Archive (archive.org), titles from its public search API (advancedsearch.php)",
+  "query": "identifier:game-maker_* AND subject:(\"Game-Maker games\" OR \"RSD Game-Maker Games\" OR \"Game-Maker Archive featured games\")",
+  "fetched": "2026-10-24",
+  "found": 270,
+  "games": [
+    {
+      "title": "4 to Save Toon Land",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "A-J 3",
+      "by": "A-J Games",
+      "year": 1995
+    },
+    {
+      "title": "A-J's Quest",
+      "by": "Aderack",
+      "year": 1992,
+      "cd": "ajquest"
+    },
+    {
+      "title": "Adam '97",
+      "by": "Alan Caudel",
+      "year": 1997
+    },
+    {
+      "title": "Adam 98",
+      "by": "Alan Caudel",
+      "year": 1998
+    },
+    {
+      "title": "Adam '99",
+      "by": "Alan Caudel",
+      "year": 1999
+    },
+    {
+      "title": "Adam 2000",
+      "by": "Alan Caudel",
+      "year": 2000
+    },
+    {
+      "title": "Adam's B-Day 3: The Saga Continues",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Adam's Birthday Game",
+      "by": "Alan Caudel",
+      "year": 1992
+    },
+    {
+      "title": "The Adam's Birthday Saga Continues",
+      "by": "Alan Caudel",
+      "year": 1993
+    },
+    {
+      "title": "Adventure",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Adventures in Melgratta",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1992
+    },
+    {
+      "title": "The Adventures of Fred Earwigian",
+      "by": "A-J Games",
+      "year": 1994
+    },
+    {
+      "title": "Air-Strike 42",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1992
+    },
+    {
+      "title": "Alan!",
+      "by": "Adam Tyner",
+      "year": 1994
+    },
+    {
+      "title": "Alan '95",
+      "by": "Adam Tyner",
+      "year": 1995
+    },
+    {
+      "title": "Alan '96",
+      "by": "Adam Tyner",
+      "year": 1996
+    },
+    {
+      "title": "Alan B-Day",
+      "by": "Adam Tyner",
+      "year": 1994
+    },
+    {
+      "title": "Alan Fun Game!",
+      "by": "Alan Caudel",
+      "year": 1998
+    },
+    {
+      "title": "All Quiet",
+      "by": "Matt Bell",
+      "year": 1994
+    },
+    {
+      "title": "Amaze-ing",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1993
+    },
+    {
+      "title": "Andy in Asunderland",
+      "by": "Roger Levy",
+      "year": 1996
+    },
+    {
+      "title": "Animation",
+      "by": "Recreational Software Designs",
+      "year": 1991
+    },
+    {
+      "title": "Anime",
+      "by": "John Brandon, Robert Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Anyworld 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Arcade Ricky",
+      "by": "Dwight Sanchez",
+      "year": 1994
+    },
+    {
+      "title": "B",
+      "by": "Alan Caudel",
+      "year": 1998
+    },
+    {
+      "title": "Badman",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Badman II: He's Back Again!",
+      "by": "PPP Team",
+      "year": 1996
+    },
+    {
+      "title": "Badman III: Badboys Are Back!",
+      "by": "PPP Team",
+      "year": 1996
+    },
+    {
+      "title": "Ballie D. Plumber Episode 1: Ballie in D. Pipes",
+      "by": "Terry Chatman",
+      "year": 1994
+    },
+    {
+      "title": "Barracuda: Secret Mission 1",
+      "by": "Mark A. Janelle",
+      "year": 1992,
+      "cd": "bcuda"
+    },
+    {
+      "title": "Baxter vs. the Brain Snatching Aliens",
+      "by": "John Donald Carlucci",
+      "year": 1994
+    },
+    {
+      "title": "Bear Fun Show",
+      "by": "Adam Tyner",
+      "year": 1994
+    },
+    {
+      "title": "Benny",
+      "by": "Matt Wears",
+      "year": 1992
+    },
+    {
+      "title": "Beware the Gremlin",
+      "by": "EJR Tairne",
+      "year": 1995
+    },
+    {
+      "title": "Big Bob's Drive-In",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1992
+    },
+    {
+      "title": "Big Fat Tank!",
+      "by": "Alan Caudel",
+      "year": 1994
+    },
+    {
+      "title": "Biokid",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Blinky 2: The Return of Blinky",
+      "by": "Jeremy LaMar",
+      "year": 1994
+    },
+    {
+      "title": "Blinky 3",
+      "by": "Jeremy LaMar",
+      "year": 1995
+    },
+    {
+      "title": "Blip!",
+      "by": "Adam Tyner",
+      "year": 1995
+    },
+    {
+      "title": "Blipp in: Power Panic!",
+      "by": "Dattorz",
+      "year": 2014
+    },
+    {
+      "title": "Blob",
+      "by": "cly5m",
+      "year": 1994
+    },
+    {
+      "title": "Blork Carnage: The Adventure of Jack Booster",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "BM",
+      "by": "James Faux",
+      "year": 1995
+    },
+    {
+      "title": "Bone!",
+      "by": "Adam Tyner",
+      "year": 1996
+    },
+    {
+      "title": "The Bounerim",
+      "by": "Eric-Jon Waugh",
+      "year": 1993,
+      "cd": "bounerm"
+    },
+    {
+      "title": "Breakout: The Rescue",
+      "by": "Kevin Vance",
+      "year": 1994
+    },
+    {
+      "title": "Builder",
+      "by": "A-J Games",
+      "year": 2011
+    },
+    {
+      "title": "Calimero II",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Capn Zapn 1: Kozmik Journeys",
+      "by": "Gary Acord",
+      "year": 1992
+    },
+    {
+      "title": "Caves",
+      "by": "Stefan Meisse",
+      "year": 1994
+    },
+    {
+      "title": "CGA Hell",
+      "by": "Adam Tyner",
+      "year": 1995
+    },
+    {
+      "title": "Cireneg's Rings",
+      "by": "Eric-Jon Waugh, Seth Brown",
+      "year": 1993,
+      "cd": "rings5"
+    },
+    {
+      "title": "Clyde & Zeke",
+      "by": "Eric-Jon Waugh",
+      "year": 1994
+    },
+    {
+      "title": "Commander Xeen",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "The Complete Bone Adventures",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Cosmo War",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Crullo: Adventures of a Donut",
+      "by": "Eric-Jon Waugh",
+      "year": 1994,
+      "cd": "donut"
+    },
+    {
+      "title": "Crystal Mania 4: Space Pirates from the Planet of the Pygmie People",
+      "by": "James W. Morris",
+      "year": 1993
+    },
+    {
+      "title": "Crystal Quest: Thal's Quest for the Crystals",
+      "by": "Robin Ward, Martin Salomon",
+      "year": 1992
+    },
+    {
+      "title": "DD4: Canadian Boxing Day",
+      "by": "Alan Caudel",
+      "year": 1998
+    },
+    {
+      "title": "Dead Awakening",
+      "by": "Sean McNulty",
+      "year": 2002
+    },
+    {
+      "title": "The Descent",
+      "by": "David Barras",
+      "year": 1994
+    },
+    {
+      "title": "Desert Defender",
+      "by": "Sheldon Chase",
+      "year": 1993
+    },
+    {
+      "title": "Dexter the Alligator",
+      "by": "Matt Wears",
+      "year": 1997
+    },
+    {
+      "title": "(Did I Ever Tell You About the Time I Was) Taken by a Vampire One Night",
+      "by": "Aderack",
+      "year": 1996
+    },
+    {
+      "title": "Die Blarney!",
+      "by": "Felix Leung",
+      "year": 1995
+    },
+    {
+      "title": "Dino Hunt",
+      "by": "Rob Sherwood",
+      "year": 1993
+    },
+    {
+      "title": "Dogs",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Doom",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Dragon Ball Z: The Death of Vegeta",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Droid",
+      "by": "Robert Brandon",
+      "year": 1999
+    },
+    {
+      "title": "Dummy Duck! II",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Dummy Duck 3",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Dummy Duck 5",
+      "by": "Alan Caudel",
+      "year": 1999
+    },
+    {
+      "title": "Dungeon Erghuck",
+      "by": "Janet L. Groth Productions",
+      "year": 1993
+    },
+    {
+      "title": "Dusk Rose",
+      "by": "Don'Pan Software",
+      "year": 1993
+    },
+    {
+      "title": "Earth vs. the Flying Saucers",
+      "by": "Sheldon Chase",
+      "year": 1993
+    },
+    {
+      "title": "Eclypse",
+      "by": "James Faux",
+      "year": 1994
+    },
+    {
+      "title": "Ego Force",
+      "by": "James Faux",
+      "year": 1995
+    },
+    {
+      "title": "Explorer Jacko",
+      "by": "Eric-Jon Waugh",
+      "year": 1993
+    },
+    {
+      "title": "F1 Eater Mania",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Fireaxe",
+      "by": "Alan Caudel",
+      "year": 1994
+    },
+    {
+      "title": "Firefall",
+      "by": "Firefall Softwarez",
+      "year": 1992
+    },
+    {
+      "title": "Fireworks",
+      "by": "Roger Levy",
+      "year": 1997
+    },
+    {
+      "title": "Fluffy Ralph",
+      "by": "Aderack",
+      "year": 1993,
+      "cd": "fluffyr"
+    },
+    {
+      "title": "Flying Guts",
+      "by": "Marty Valenti",
+      "year": 1995
+    },
+    {
+      "title": "Fox Party",
+      "by": "John Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Fox World",
+      "by": "John Brandon, Robert Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Foxy Dimensions",
+      "by": "John Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Friction",
+      "by": "Aderack",
+      "year": 1995
+    },
+    {
+      "title": "Frisbounce",
+      "by": "Adam Tyner",
+      "year": 1995
+    },
+    {
+      "title": "Froggy Story",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Game-Maker Tutor",
+      "by": "Recreational Software Designs",
+      "year": 1993,
+      "cd": "tutor"
+    },
+    {
+      "title": "Gapper",
+      "by": "James Faux",
+      "year": 1994
+    },
+    {
+      "title": "Glubada Pond",
+      "by": "Eric-Jon Waugh, Gregory Stone",
+      "year": 1994,
+      "cd": "glub"
+    },
+    {
+      "title": "Godzilla",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Gridline",
+      "by": "Eric-Jon Waugh",
+      "year": 1993,
+      "cd": "gridlin"
+    },
+    {
+      "title": "Hamsterman",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Havok",
+      "by": "James Faux",
+      "year": 1995
+    },
+    {
+      "title": "The Head 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Hi-Tech Demo",
+      "by": "Kevin Vance, Eric-Jon Waugh",
+      "year": 1993
+    },
+    {
+      "title": "Houses",
+      "by": "Recreational Software Designs, Sheldon Chase",
+      "year": 1991,
+      "cd": "houses"
+    },
+    {
+      "title": "Hurdles",
+      "by": "Roland Ludlam",
+      "year": 1994
+    },
+    {
+      "title": "Icemare with Sgt. Super",
+      "by": "Gary Acord",
+      "year": 1992
+    },
+    {
+      "title": "Intec",
+      "by": "cly5m",
+      "year": 1995
+    },
+    {
+      "title": "Invasion of the Blobs!",
+      "by": "Mike Perrucci",
+      "year": 1996
+    },
+    {
+      "title": "Invasion of the Blobs II: The Evolution Revolution",
+      "by": "Mike Perrucci",
+      "year": 1998
+    },
+    {
+      "title": "Jario",
+      "by": "Don'Pan Software",
+      "year": 1994
+    },
+    {
+      "title": "Jaxon Zoose 1: Zapped by the Light",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Jet!",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Jet Driver",
+      "by": "Matthew Groves",
+      "year": 1994
+    },
+    {
+      "title": "John's Archaeological Adventures: The Tomb",
+      "by": "Roland Ludlam",
+      "year": 1995
+    },
+    {
+      "title": "Jon '95",
+      "by": "Adam Tyner",
+      "year": 1995
+    },
+    {
+      "title": "Kirk Voodia",
+      "by": "Kevin Vance",
+      "year": 1993
+    },
+    {
+      "title": "KonoTest",
+      "by": "Roger Levy",
+      "year": 1997
+    },
+    {
+      "title": "Kozmo Kat",
+      "by": "Alan Caudel",
+      "year": 1992
+    },
+    {
+      "title": "The Legend of Budd",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "The Legend of Zelda: Harry's Awakening",
+      "by": "Todd Cope",
+      "year": 1995
+    },
+    {
+      "title": "Lil' Choklit Donit Man in: Choklit Terror!!",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Linear Volume",
+      "by": "Eric-Jon Waugh, Gregory Stone",
+      "year": 1993,
+      "cd": "volume"
+    },
+    {
+      "title": "Link vs. Gannon",
+      "by": "Don'Pan Software",
+      "year": 1993
+    },
+    {
+      "title": "Luigi's Heroic Debut!",
+      "by": "Mike Perrucci",
+      "year": 1996
+    },
+    {
+      "title": "Major Marvel 1",
+      "by": "Gary Acord",
+      "year": 1992
+    },
+    {
+      "title": "Maria Sister",
+      "by": "Mary Martin",
+      "year": 1995
+    },
+    {
+      "title": "Marley's Quest",
+      "by": "Matthew Saul",
+      "year": 1996
+    },
+    {
+      "title": "Mech",
+      "by": "Roland Ludlam",
+      "year": 1994
+    },
+    {
+      "title": "The Mist",
+      "by": "James Faux",
+      "year": 1996
+    },
+    {
+      "title": "Mister Spiff I",
+      "by": "Adam Tyner",
+      "year": 1994
+    },
+    {
+      "title": "Mister Spiff III: Freeze! Mother! Freeze!",
+      "by": "Adam Tyner",
+      "year": 1994
+    },
+    {
+      "title": "Mister Spiff IV",
+      "by": "Adam Tyner",
+      "year": 1994
+    },
+    {
+      "title": "Moonchild",
+      "by": "James Faux",
+      "year": 1995
+    },
+    {
+      "title": "Mortal Harvey",
+      "by": "James Faux",
+      "year": 1995
+    },
+    {
+      "title": "Mr. Berkel Derkel",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Mr. Chalk",
+      "by": "James Faux",
+      "year": 1994
+    },
+    {
+      "title": "Mystery Mansion",
+      "by": "Matt Groves",
+      "year": 1994
+    },
+    {
+      "title": "Nathan Rocks",
+      "by": "Alan Caudel",
+      "year": 1991
+    },
+    {
+      "title": "NBA Jams",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Nebula",
+      "by": "Gregory Stone, Joan Stone",
+      "year": 1991,
+      "cd": "nebula"
+    },
+    {
+      "title": "Nejillian Flux",
+      "by": "Eric-Jon Waugh",
+      "year": 1993,
+      "cd": "njlnflx"
+    },
+    {
+      "title": "Ninja",
+      "by": "Yurik Nestoly",
+      "year": 1996
+    },
+    {
+      "title": "Ninja Tuck",
+      "by": "Eric-Jon Waugh",
+      "year": 1995
+    },
+    {
+      "title": "Ninja Tuck II: Booka",
+      "by": "Aderack",
+      "year": 1995
+    },
+    {
+      "title": "Nuke",
+      "by": "Yurik Nestoly",
+      "year": 1998
+    },
+    {
+      "title": "Octolris",
+      "by": "Aderack",
+      "year": 1994,
+      "cd": "octolrs"
+    },
+    {
+      "title": "Off the Page",
+      "by": "Alan Caudel",
+      "year": 1992
+    },
+    {
+      "title": "Operation Killbot",
+      "by": "Don'Pan Software",
+      "year": 1993
+    },
+    {
+      "title": "Operation: Tiger",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1992
+    },
+    {
+      "title": "Orb: The Derelict Planet",
+      "by": "Josh Turcotte",
+      "year": 1994,
+      "cd": "orb"
+    },
+    {
+      "title": "Overworld",
+      "by": "Don'Pan Software",
+      "year": 2010
+    },
+    {
+      "title": "Pac",
+      "by": "Aderack",
+      "year": 1993,
+      "cd": "pac"
+    },
+    {
+      "title": "Pakdream 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Pakmon",
+      "by": "Gary Acord",
+      "year": 2010
+    },
+    {
+      "title": "Palladia: The Game",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Panzer III",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Panzer 1945",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Panzer 2019",
+      "by": "PPP Team",
+      "year": 1995
+    },
+    {
+      "title": "Paper Airplane",
+      "by": "Matt Bell",
+      "year": 1993,
+      "cd": "paperair"
+    },
+    {
+      "title": "Parsec Man 3D",
+      "by": "Mark Hadley",
+      "year": 1994,
+      "cd": "parsec3d"
+    },
+    {
+      "title": "Party of Four",
+      "by": "Mike Perrucci",
+      "year": 1997
+    },
+    {
+      "title": "The Patchwork Heart",
+      "by": "Eric-Jon Waugh, Andrew Stone",
+      "year": 1994,
+      "cd": "heart"
+    },
+    {
+      "title": "PC-Man's World",
+      "by": "Erwin Bergervoet",
+      "year": 1998
+    },
+    {
+      "title": "Peach the Lobster",
+      "by": "Eric-Jon Waugh, Strahd, James Faux",
+      "year": 1994,
+      "cd": "peach"
+    },
+    {
+      "title": "Pedestrian Panic",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1993
+    },
+    {
+      "title": "Pengo Adventure",
+      "by": "Pierre Martin, Sylvain Martin",
+      "year": 1995
+    },
+    {
+      "title": "Penguin Pete",
+      "by": "Joan Stone",
+      "year": 1991,
+      "cd": "penguin"
+    },
+    {
+      "title": "Penguin War",
+      "by": "Robert Brandon",
+      "year": 1997
+    },
+    {
+      "title": "PersiaTron",
+      "by": "EJR Tairne",
+      "year": 2014
+    },
+    {
+      "title": "Pipemare",
+      "by": "G. Oliver Stone, Joan Stone",
+      "year": 1992,
+      "cd": "pipemare"
+    },
+    {
+      "title": "Pipes",
+      "by": "cly5m",
+      "year": 1993
+    },
+    {
+      "title": "Pipes",
+      "by": "Roy Person, Sr",
+      "year": 1993
+    },
+    {
+      "title": "Popa: Invasion if the Green Things from Ickubackal",
+      "by": "Matthew Saul",
+      "year": 1996
+    },
+    {
+      "title": "Power Budd!",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Power Fights A.C.: Power Moves II",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Power Flux",
+      "by": "Adam Tyner",
+      "year": 1996
+    },
+    {
+      "title": "Preggers",
+      "by": "Rob Sherwood",
+      "year": 1993
+    },
+    {
+      "title": "Progress or Congress",
+      "by": "Mark Hadley",
+      "year": 1994,
+      "cd": "congress"
+    },
+    {
+      "title": "Puzzle",
+      "by": "James Faux",
+      "year": 1995
+    },
+    {
+      "title": "QiQ, Part 1: Please Peace",
+      "by": "Erwin Bergervoet",
+      "year": 1998
+    },
+    {
+      "title": "Raiden II",
+      "by": "Alan Caudel",
+      "year": 1994
+    },
+    {
+      "title": "Rascal",
+      "by": "Jon Bolden",
+      "year": 1996
+    },
+    {
+      "title": "Rascal in Numberland",
+      "by": "Rob Sherwood, Dan Whalen, Randy Scott, Pat Curry",
+      "year": 1994
+    },
+    {
+      "title": "Rascal's Alphamaze",
+      "by": "Rob Sherwood, Dan Whalen, Randy Scott, Pat Curry",
+      "year": 1994
+    },
+    {
+      "title": "Raven",
+      "by": "Robert Brandon",
+      "year": 2000
+    },
+    {
+      "title": "Renxo Booper in Booperland",
+      "by": "Fernando Sarmiento",
+      "year": 1996
+    },
+    {
+      "title": "Reptalia",
+      "by": "Antares Bros",
+      "year": 1994
+    },
+    {
+      "title": "The Return of A-J",
+      "by": "A-J Games",
+      "year": 1993,
+      "cd": "ajqst2"
+    },
+    {
+      "title": "Return of the Jedi",
+      "by": "Alan Caudel",
+      "year": 1994
+    },
+    {
+      "title": "Ricci's Cow Hunt",
+      "by": "Aderack",
+      "year": 1995
+    },
+    {
+      "title": "Roady Rabbit 2",
+      "by": "Chris Laviolette",
+      "year": 1998
+    },
+    {
+      "title": "Robo-Wars",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Robo Wars",
+      "by": "Sherwood Forest Software",
+      "year": 1994
+    },
+    {
+      "title": "Rocket",
+      "by": "Matt Bell",
+      "year": 1993
+    },
+    {
+      "title": "Rocket Fighter",
+      "by": "Rob Sherwood",
+      "year": 1993
+    },
+    {
+      "title": "Rōdïp: Rover of the Deep",
+      "by": "A-J Games",
+      "year": 1994
+    },
+    {
+      "title": "RPG Test",
+      "by": "Roger Levy",
+      "year": 1997
+    },
+    {
+      "title": "Safari Sam: Jungle Explorer",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1992
+    },
+    {
+      "title": "Sample",
+      "by": "Joan Stone, G. Oliver Stone, G. Andrew Stone",
+      "year": 1991,
+      "cd": "sample"
+    },
+    {
+      "title": "Santa is Back!",
+      "by": "Ron Marie Services",
+      "year": 1993
+    },
+    {
+      "title": "Scurvy the Squirrel",
+      "by": "Alan Caudel",
+      "year": 1993
+    },
+    {
+      "title": "Seal Boarders",
+      "by": "John Brandon, Robert Brandon",
+      "year": 1998
+    },
+    {
+      "title": "Seal Boarders 2",
+      "by": "John Brandon, Robert Brandon",
+      "year": 1998
+    },
+    {
+      "title": "Shanna",
+      "by": "Angelo Felix",
+      "year": 1993
+    },
+    {
+      "title": "Shooter",
+      "by": "cly5m",
+      "year": 1995
+    },
+    {
+      "title": "Shootout at Dodge",
+      "by": "Rob Sherwood, Dan Whalen",
+      "year": 1992
+    },
+    {
+      "title": "Shoplifter II: The Second Caper",
+      "by": "Sherwood Forest Software",
+      "year": 1994
+    },
+    {
+      "title": "Sign of the Hedgehog",
+      "by": "Aderack",
+      "year": 1993,
+      "cd": "signhdg"
+    },
+    {
+      "title": "Sign of the Hedgehog 2",
+      "by": "A-J Games",
+      "year": 1993
+    },
+    {
+      "title": "Skate Board",
+      "by": "John Brandon",
+      "year": 1999
+    },
+    {
+      "title": "Skatenig",
+      "by": "John Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Ski",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Slinker",
+      "by": "David Wallin",
+      "year": 1993
+    },
+    {
+      "title": "Slot Car",
+      "by": "John Brandon",
+      "year": 2000
+    },
+    {
+      "title": "Space Cadet",
+      "by": "Matthew Groves",
+      "year": 1994
+    },
+    {
+      "title": "Spacecraft 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Star Avenger",
+      "by": "Adam Tyner, Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Star Avenger II",
+      "by": "Adam Tyner, Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Star Avenger III",
+      "by": "Adam Tyner, Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Star Avenger 4",
+      "by": "Adam Tyner, Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Star Wars",
+      "by": "Yurik Nestoly",
+      "year": 1995
+    },
+    {
+      "title": "Star Wars: Return of the Jedi",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Stickman Die!!",
+      "by": "Alan Caudel",
+      "year": 1995
+    },
+    {
+      "title": "Stickman!!! Die",
+      "by": "Yurik Nestoly",
+      "year": 1995
+    },
+    {
+      "title": "Street Wolf 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Super Hamster: Curse of the Kooky Cult",
+      "by": "James W. Morris",
+      "year": 1993
+    },
+    {
+      "title": "Superheroes 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Sushi-X Breaks Loose",
+      "by": "Don'Pan Software",
+      "year": 1993
+    },
+    {
+      "title": "Teatime Game",
+      "by": "James Hofmann",
+      "year": 2014
+    },
+    {
+      "title": "Terra",
+      "by": "Robert Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Terrain",
+      "by": "Recreational Software Designs",
+      "year": 1991,
+      "cd": "terrain"
+    },
+    {
+      "title": "Terror Tower",
+      "by": "Rylie James Thomas",
+      "year": 2014
+    },
+    {
+      "title": "Thunder-Snot Johnny",
+      "by": "James Faux",
+      "year": 1994
+    },
+    {
+      "title": "Time After Time",
+      "by": "Antares Bros",
+      "year": 1994
+    },
+    {
+      "title": "Tony & Me",
+      "by": "Don'Pan Software",
+      "year": 1993
+    },
+    {
+      "title": "Trees",
+      "by": "Alan Caudel",
+      "year": 1996
+    },
+    {
+      "title": "Twinnbee Land",
+      "by": "PPP Team",
+      "year": 1997
+    },
+    {
+      "title": "Twister, argh!",
+      "by": "Yurik Nestoly",
+      "year": 1996
+    },
+    {
+      "title": "Ultimare 1",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Ulysses",
+      "by": "Robert Brandon",
+      "year": 1999
+    },
+    {
+      "title": "Viki: Escape from Videoland",
+      "by": "Ronnie Toon",
+      "year": 1993
+    },
+    {
+      "title": "Virtual Mario",
+      "by": "Dylan Durdle",
+      "year": 1997
+    },
+    {
+      "title": "Void Raiders",
+      "by": "Robert Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Watch Me Die!",
+      "by": "Aderack",
+      "year": 1996
+    },
+    {
+      "title": "What the...?!?",
+      "by": "Adam Tyner",
+      "year": 1995
+    },
+    {
+      "title": "Woman Warrior and the Attack from Below",
+      "by": "Sheldon Chase",
+      "year": 1994,
+      "cd": "warrior"
+    },
+    {
+      "title": "Woman Warrior and the Outer Limits",
+      "by": "Sheldon Chase",
+      "year": 1994,
+      "cd": "outerlim"
+    },
+    {
+      "title": "Wordlock",
+      "by": "Mike Perrucci",
+      "year": 2013
+    },
+    {
+      "title": "Xenoblaster: Attack of the Xorg",
+      "by": "Felix Leung",
+      "year": 1995
+    },
+    {
+      "title": "Yuphex",
+      "by": "Matt Bell",
+      "year": 1994
+    },
+    {
+      "title": "Yurik 2",
+      "by": "Yurik Nestoly",
+      "year": 1997
+    },
+    {
+      "title": "Zapak 1: The Zap-Pack!",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Zapman 1: The Fantastic Zapman",
+      "by": "Gary Acord",
+      "year": 1993
+    },
+    {
+      "title": "Zapper 4-B: Holy Neverwhere!",
+      "by": "Gary Acord",
+      "year": 1992
+    },
+    {
+      "title": "Zapper 4: Escape from Neverwhere",
+      "by": "Gary Acord",
+      "year": 1992
+    },
+    {
+      "title": "Zark",
+      "by": "Eric-Jon Waugh, Gregory Stone",
+      "year": 1994,
+      "cd": "zark"
+    },
+    {
+      "title": "Zarlor 2",
+      "by": "John Brandon",
+      "year": 2001
+    },
+    {
+      "title": "Zoom the Super Bear",
+      "by": "Aderack",
+      "year": 1993,
+      "cd": "zoom"
+    }
+  ]
+}
