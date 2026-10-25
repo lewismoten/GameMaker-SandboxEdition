@@ -328,7 +328,8 @@ modules are in [`../test`](../test).
   - The Game-Maker box's paper: its Owner's Guide cover (`gmCover.ts`), what else is in it
     (`gmItems.ts`, `gmInserts.ts`), The Bard of Bizarre's catalog (`bardCatalog.ts`) and RSD's
     registration reply (`regConfirm.ts`). `sandboxMark.ts` is Sandbox Software's emblem and
-    `scoopIssue.ts` each box's newsletter number.
+    `scoopIssue.ts` each box's newsletter number, in the order of the months the games shipped
+    (`scoopIssues.ts`), so the issues read as the studio's story.
 - [`manual/zine/`](manual/zine): NO CARRIER #3, the hacker zine under the desk's toy whistle:
   its pages (`zinePages.ts`), each on a quarter-letter leaf with its type fitted (`zineLeaf.ts`),
   and its piece in the box viewer (`zineItem.ts`: one leaf at a time on screen, four to a letter

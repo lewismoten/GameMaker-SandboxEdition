@@ -2,6 +2,7 @@
 // disk: registration postcard, key card, catalog, BBS ad, warranty card, newsletter, hint
 // book offer (the sticker sheet is in stickers.ts).
 import { scoopIssue } from './scoopIssue';
+import { scoopDateline } from './scoopIssues';
 import { sandboxMarkEl } from './sandboxMark';
 import { h } from '../../editor/core/ui';
 import { parseCharacter } from '../../formats/character';
@@ -18,7 +19,7 @@ import { measured } from './fitSheet';
 
 const ISSUE_DATE = 'Fall 1995';
 
-/** Games announced in the newsletter until they ship (then their catalog entries take over). */
+/** Games the catalog announces as coming soon until they ship (then their catalog entries take over). */
 const COMING: { id: string; title: string; blurb: string; when: string }[] = [
   {
     id: 'year2000',
@@ -404,46 +405,44 @@ export async function warranty(ctx: PrintContext): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ newsletter
+/** A story's section, from its headline's "Since last issue:", "In the workshop:", ... */
+const KICKER = /^(Since last issue|In the workshop|Around the Sandbox|Letters): (.+)$/;
+
+function story(n: { head: string; html: string }): HTMLElement {
+  const k = KICKER.exec(n.head);
+  return h(
+    'article',
+    { class: `nl-story ${k ? `nl-${k[1].split(' ').pop()!.toLowerCase()}` : ''}` },
+    k ? h('p', { class: 'nl-kicker' }, k[1]) : null,
+    h('h3', null, k ? k[2] : n.head),
+    html('div', '', n.html),
+  );
+}
+
+/** The game's issue: its month's news (the first story leads, under its box shot), a tip from its hint book and the BBS. */
 export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
   const family = ctx.family.length ? ctx.family : [ctx.entry];
-  const next = await Promise.all(
-    COMING.map(async (c) => {
-      const real = family.find((g) => g.id === c.id);
-      const shot = real?.original?.box?.shots?.[0];
-      const pic = real && shot ? await mapPicture({ ...ctx, shot: shotCache(real) }, { map: shot[0], x: shot[1], y: shot[2], w: 16, h: 10 }) : null;
-      return h(
-        'article',
-        { class: 'nl-next' },
-        h('h3', null, real ? `Out now: ${real.title}` : `Next: ${c.title}`),
-        pic,
-        h('p', null, real?.blurb ?? c.blurb),
-        h('p', { class: 'nl-when' }, real ? `${storageLine(real)}. Register for ${price(real)}.` : `${c.when}. Registered players hear first.`),
-      );
-    }),
-  );
-  const waiting = COMING.filter((c) => !family.some((g) => g.id === c.id)).length;
-  const nextHead = waiting === 2 ? 'TWO NEW GAMES ON THE WAY' : waiting === 1 ? 'ONE NEW GAME OUT, ONE ON THE WAY' : 'TWO NEW GAMES OUT NOW';
-  const own = (ctx.printables.news ?? []).map((n) => h('article', { class: 'nl-story' }, h('h3', null, n.head), html('div', '', n.html)));
-  const others = family
-    .filter((g) => g.id !== ctx.entry.id && !COMING.some((c) => c.id === g.id))
-    .flatMap((g) =>
-      (g.original?.printables?.news ?? [])
-        .filter((n) => n.everywhere)
-        .slice(0, 1)
-        .map((n) => h('article', { class: 'nl-story small' }, h('h3', null, n.head), html('div', '', n.html))),
-    );
+  const [lead, ...rest] = ctx.printables.news ?? [];
+  const shot = ctx.entry.original?.box?.shots?.[0];
+  const pic = shot ? await mapPicture({ ...ctx, shot: shotCache(ctx.entry) }, { map: shot[0], x: shot[1], y: shot[2], w: 16, h: 10 }) : null;
   // numbered among the games everyone sees, so finding a secret game never renumbers the rest
   const issue = scoopIssue(
     ctx.entry.id,
     family.filter((g) => (g.original as { secret?: boolean } | undefined)?.secret !== true),
   );
+  const date = scoopDateline(ctx.entry.id, ctx.entry.year);
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
   const tip = tips.length ? tips[fnv1a(ctx.entry.id) % tips.length] : undefined;
   const stories = [
-    ...next,
-    ...own,
-    ...others,
+    h(
+      'article',
+      { class: 'nl-story nl-front' },
+      pic,
+      lead ? html('div', '', lead.html) : h('p', null, `${ctx.entry.title} is out now.`),
+      h('p', { class: 'nl-when' }, `${storageLine(ctx.entry)}. Register for ${price(ctx.entry)}.`),
+    ),
+    ...rest.map(story),
     tip
       ? h(
           'article',
@@ -457,43 +456,12 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
     h(
       'article',
       { class: 'nl-story small' },
-      h('h3', null, 'Letters'),
-      h(
-        'p',
-        null,
-        h('i', null, '“I beat every Sandbox game on my dad’s 286 with the sound turned down so nobody would know I was still up. When is the next one?”'),
-      ),
-      h('p', null, '— A loyal player, by modem. ', h('b', null, 'The Scoop replies:'), ' Read the front page! And go to bed.'),
-    ),
-    h(
-      'article',
-      { class: 'nl-story small' },
       h('h3', null, 'Sysop’s corner'),
       h('p', null, 'Call ', sandboxBanner(), ` at ${BBS_PHONE} for hints, high scores and the newest uploads. 14,400 baud, 24 hours.`),
     ),
-    h(
-      'article',
-      { class: 'nl-story small' },
-      h('h3', null, 'Make your own'),
-      h(
-        'p',
-        null,
-        'Every Sandbox game is made with GAME-MAKER by Recreational Software Designs. If you can draw a block, you can make a game. Send us yours on the BBS!',
-      ),
-    ),
   ].filter((x): x is HTMLElement => !!x);
   const foot = () => h('footer', { class: 'nl-foot' }, 'The Sandbox Scoop is printed for the people in our games. ', fictionalNote());
-  const cols = h(
-    'div',
-    { class: 'nl-cols' },
-    h('h2', { class: 'nl-lead' }, nextHead),
-    h(
-      'p',
-      { class: 'nl-intro' },
-      'The sandbox is busy this year. Here is what is new on our workbench, and as a registered player you get to hear about it first.',
-    ),
-    ...stories,
-  );
+  const cols = h('div', { class: 'nl-cols' }, h('h2', { class: 'nl-lead' }, lead?.head ?? `Out now: ${ctx.entry.title}`), ...stories);
   const front = sheet(
     8.5,
     11,
@@ -507,7 +475,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
         { class: 'nl-sub' },
         h('span', null, `Vol. 1, No. ${issue}`),
         h('span', null, 'News for registered players of Sandbox Software games'),
-        h('span', null, ISSUE_DATE),
+        h('span', null, date),
       ),
     ),
     cols,
@@ -525,7 +493,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
       h(
         'header',
         { class: 'nl-mast' },
-        h('div', { class: 'nl-sub' }, h('span', null, 'The Sandbox Scoop'), h('span', null, `Vol. 1, No. ${issue} · page 2`), h('span', null, ISSUE_DATE)),
+        h('div', { class: 'nl-sub' }, h('span', null, 'The Sandbox Scoop'), h('span', null, `Vol. 1, No. ${issue} · page 2`), h('span', null, date)),
       ),
       h('div', { class: 'nl-cols' }, ...more),
       foot(),

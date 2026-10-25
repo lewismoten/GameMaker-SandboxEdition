@@ -766,6 +766,28 @@
   hyphens: auto;
 }
 
+/* a story's section: Since last issue, In the workshop, Around the Sandbox, Letters */
+.nl-cols .nl-kicker {
+  margin: 0 0 0.3cqw;
+  font:
+    700 1.4cqw Arial,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #d81e1e;
+}
+
+.nl-workshop,
+.nl-letters {
+  padding: 1cqw 1.2cqw 0.4cqw;
+  border: 0.25cqw solid #18150f;
+}
+
+.nl-letters {
+  border-style: dashed;
+}
+
+.nl-front .pp-photo,
 .nl-next .pp-photo {
   margin: 0 0 1cqw;
   border: 0.3cqw solid #18150f;
