@@ -73,6 +73,8 @@ export const ZINE: ZinePage[] = [
       'Out of 1.44 MB disks? Look at a 720K double density disk: ONE square hole, the write-protect one with the little slide. A high density disk has a second hole in the other corner. That hole is how the drive tells them apart.',
       "Punch a hole in that same corner of a 720K disk (a paper hole puncher does it, if you line it up straight) and the drive thinks it's high density. FORMAT A: and you get 1.44 MB on a cheap disk.",
       "It works most of the time. A DD disk's coating isn't made for it, so weeks later it can start losing files. Don't put anything on one you can't lose.",
+      "WARNING: a paper puncher (or melting it through with a soldering iron, DON'T) can crack the shell or leave plastic bits inside that scratch the disk, and a ragged hole looks like the obvious hack it is. In a pinch for space it's worth it.",
+      'Punching a whole box, or doing them for your friends? Spend the cash on a real disk notcher: a little press with a guide that lines the disk up, gives you leverage and cuts a clean square hole like the factory made it.',
       'Slide the write-protect tab open (you can see through the hole) and nothing can write to that disk. Do it to your game disks.',
     ],
     scrawl: ['save it twice!!'],
