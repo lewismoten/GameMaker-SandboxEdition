@@ -78,6 +78,10 @@ export function criticsCorner(ctx: MagContext): MagPage {
                 p(
                   'Sandbox Software bought the ad on page {page:ad-sandbox-edition}, and Snowbound’s title screen is in it. No, it didn’t help. Nobody at Sandbox saw this review before you did.',
                 ),
+                // the sled was fixed after the review was written (one push of Down starts it now)
+                p(
+                  '**Update:** after we went to press, Sandbox mailed out a fix: the top of Jamie Street now glides, so one push sends the sled. The rest of the review stands.',
+                ),
               ],
               'cyan',
             ),
