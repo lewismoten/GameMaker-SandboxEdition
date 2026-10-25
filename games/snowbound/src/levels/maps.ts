@@ -251,13 +251,15 @@ export function galeStreet(book: BlockBook) {
 export function jamieHill(book: BlockBook) {
   const m = new MapBuilder(book);
   const x0 = 30;
-  // Below the first steep band, four open rows to feel the drift before the first rock.
+  // The sled starts on glide snow (it keeps whatever speed it has), so one push of Down
+  // carries it to the first steep band. Below that, four open rows to feel the drift
+  // before the first rock.
   const rows = [
     'TTTTTTTTTTTTTTTTTTTTTTTT',
     'T,,,,,,,,,,,,,,,,,,,,,,T',
-    'T,,,,,n,,,,,,,,,,,,n,,,T',
-    'T,,,,,,,,,,,,,,,,,,,,,,T',
-    'T,,T,,,,,,,,,,,,,,,,T,,T',
+    'T~~~~~n~~~~~~~~~~~~n~~~T',
+    'T~~~~~~~~~~~~~~~~~~~~~~T',
+    'T~~T~~~~~~~~~~~~~~~~T~~T',
     'T!!!!!!!!!!!!!!!!!!!!!!T',
     'T~~~~~~~~~~Q~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~~~~~~~~~T',
