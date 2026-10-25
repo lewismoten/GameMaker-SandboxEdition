@@ -5,7 +5,9 @@
 // the ceiling). The engine facts are checked against web/src/engine (character.ts moveChars: a
 // sequence starts again while its key is down; keys.ts: letting go ends one that can be
 // interrupted) and the FLI facts against code/Image/FLI/FLI.CPP and code/DRV/FILECLSS.CPP as
-// formats/fliPlaygame.test.ts ports them; the Maximus findings are TURBO BUTTON's
+// formats/fliPlaygame.test.ts ports them, the CMF clock against code/GM/SBMUSIC.C load_file
+// (HDRCLK 146 in SOUND.H), and the archive counts are the survey's (.for-lewis/archive/NOTES.md);
+// the Maximus findings are TURBO BUTTON's
 // (manual/magazine/sections/maximus.ts). The DOSBox screenshot is Lewis's (NOTICE.md).
 import { opening, tip, type Chapter } from './chapter';
 
@@ -92,6 +94,10 @@ export const LIMITS: Chapter = {
   <p>The first frame matters most. Each later frame paints only what changed, so garbage under a
   moving part heals as the animation plays, while garbage under a part that never moves stays
   until the end.</p>
+  <p>You are in good company. Of 190 animations in the community games kept in the Internet
+  Archive’s Game-Maker Archive collection, 123 have a chunk over 16,000 bytes, and so do RSD’s own
+  text-box animations. On a PC with memory to spare they played; started from another program,
+  or on a machine short of memory, they come back streaked.</p>
   <h2>The other FLI faults</h2>
   <ul>
     <li><b>A line of 128 changes or more.</b> The player reads a line’s count of changes as a
@@ -128,6 +134,17 @@ export const LIMITS: Chapter = {
     ends on a bright frame jumps.</li>
     <li><b>Keep intros short.</b> <kbd>Esc</kbd> is read only between animations, so a long one
     can’t be skipped until it ends. A few short clips in a slide list answer sooner.</li>
+  </ul>
+  <h2>Limits that aren’t, and one that is</h2>
+  <ul>
+    <li><b>More than 20 scenes.</b> The Integrator starts with 20, but that is no ceiling: community
+    games ship with 60 to 81, and Maximus has 101.</li>
+    <li><b>200 monsters on a map.</b> A full map plays; community games place 193 to 200 on one.
+    Only 50 are drawn at once (below).</li>
+    <li><b>Songs at the wrong speed are silent.</b> PLAYGAME plays a <code>.CMF</code> only if its
+    header’s clock says 146 ticks a second; any other value and the scene is quiet in DOS. Some
+    community games lost their winning song that way. Save music from this edition’s editor and it
+    is always 146.</li>
   </ul>
   <h2>What a full game found</h2>
   <p>Maximus, the Sandbox game that fills every slot, found limits the box doesn’t mention.

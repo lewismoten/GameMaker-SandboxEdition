@@ -12,6 +12,7 @@ import { LEVELS } from './chaptersLevels';
 import { TRICKS } from './chaptersTricks';
 import { CHECK } from './chaptersCheck';
 import { LIMITS, PLAYERS } from './chaptersPlayers';
+import { SHAREWARE } from './chaptersShareware';
 
 export const CHAPTERS: Chapter[] = [
   PALETTES,
@@ -30,6 +31,7 @@ export const CHAPTERS: Chapter[] = [
   CHECK,
   PLAYERS,
   LIMITS,
+  SHAREWARE,
   NUMBERS,
   UPLOAD,
 ];

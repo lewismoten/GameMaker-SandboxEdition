@@ -52,8 +52,8 @@ describe('The Ultimate Owner’s Guide', () => {
     for (const c of CHAPTERS) expect(c.html).not.toMatch(/\blego\b/i);
   });
 
-  it('ends with designing with a goal, level design, the tricks, the level check, every player, the limits, the numbers, then the upload checklist on a page of its own', () => {
-    expect(CHAPTERS.slice(-8).map((c) => c.id)).toEqual(['craft', 'levels', 'tricks', 'check', 'players', 'limits', 'numbers', 'upload']);
+  it('ends with designing with a goal, level design, the tricks, the level check, every player, the limits, the shareware tricks, the numbers, then the upload checklist on a page of its own', () => {
+    expect(CHAPTERS.slice(-9).map((c) => c.id)).toEqual(['craft', 'levels', 'tricks', 'check', 'players', 'limits', 'shareware', 'numbers', 'upload']);
     expect(CHAPTERS.filter((c) => c.newPage).map((c) => c.id)).toEqual(['upload']);
   });
 

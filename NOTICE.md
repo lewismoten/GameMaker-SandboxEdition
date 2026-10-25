@@ -98,6 +98,27 @@ game folder opens in the browser unchanged.
   and _TURBO BUTTON_'s feature "Bugs Only DOS Could Find" (`web/public/magazine/dos-carl.webp`,
   cropped to the game screen at the size DOSBox drew it). It is source material from Lewis,
   shared under the same terms as the rest of this fork.
+- **Tricks From the Shareware Authors** (chapter 17 of The Ultimate Owner's Guide,
+  `web/src/manual/ultimate/chaptersShareware.ts`) and the archive counts in its "Where Game-Maker
+  Runs Out" describe techniques found by surveying community Game-Maker games in the
+  [Internet Archive's Game-Maker Archive collection](https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22):
+  _Blinky 2_, _Blinky 3_, _Ninja Tuck_ and _A-J's Quest_ (A-J Games), _Crystal Mania 4_,
+  _Parsec Man 3D_ (Mark Hadley), _Thal's Quest for the Crystals_, _Dead Awakening_,
+  _Orb: the Derelict Planet_, _Shanna_ (Angelo Felix), _Andy in Asunderland_, _Builder_
+  (A-J Games), _Hurdles_ (Roland Ludlam), _Seal Boarders_, and RSD's _Penguin Pete_. The games
+  belong to their authors; the guide names them and describes their ideas in its own words, and
+  copies none of their art, music, sounds or text.
+- **The Shareware Shelf** in _TURBO BUTTON_ (`web/src/manual/magazine/sections/shelf.ts`) lists
+  the titles, years and makers of the Game-Maker games in the
+  [Internet Archive's Game-Maker Archive collection](https://archive.org/search?query=subject%3A%22Game-Maker+games%22),
+  fetched from archive.org's public search API by `web/scripts/gameMakerArchive.ts` into
+  `web/src/manual/magazine/data/gameMakerArchive.json` (the query and date are in the file).
+  Titles only: no files from the collection are copied, and the page doesn't link to them. Its
+  companion feature, "Tricks of the Shareware Masters" (`sections/masters.ts`), describes in its
+  own words techniques found in the collection's featured games (_Blinky 2_, _Blinky 3_,
+  _Parsec Man 3D_, _Ninja Tuck_, _Hurdles_, _Seal Boarders_, _A-J's Quest_, _Shanna_, RSD's
+  _Penguin Pete_, and the limits reached by _A-J 3_, _Taken by a Vampire One Night_, _Badman III_
+  and _Crystal Quest_), showing none of their art, music, sounds or text.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
