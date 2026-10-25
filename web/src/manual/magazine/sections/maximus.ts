@@ -52,7 +52,7 @@ export const COUNTS = {
   textWidth: 30,
   files: 515,
   /** Megabytes on the disk, to one decimal. */
-  megabytes: 7.1,
+  megabytes: 6.8,
 };
 
 const n = (x: number) => x.toLocaleString('en-US');
