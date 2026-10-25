@@ -8,7 +8,7 @@ import type { SceneSim } from './sim';
 /** What a tick ended in: a death, a link taken (its index), or nothing. */
 export type Outcome = 'dead' | number | undefined;
 
-export interface DriveHooks {
+interface DriveHooks {
   /** One game tick, with whatever the caller watches for. */
   tick(): Promise<Outcome>;
   /** The hero is being carried (a lift) and has gone on a while: a place on the way. */

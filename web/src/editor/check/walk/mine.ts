@@ -8,7 +8,7 @@ import type { Project } from '../../core/project';
 import { WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Take } from './takes';
 
-export interface MyPlay extends Take {
+interface MyPlay extends Take {
   when: string;
   use: 'mine' | 'bot';
 }

@@ -22,7 +22,7 @@ const open = (b: Block) => b.solid !== 15;
  * How much of a hazard block's cell its art covers: the share of its pixels that aren't the
  * colors of the open blocks the map uses most (the sky behind it), and the empty rows on top.
  */
-export function hazardCoverage(b: Block, sky: Set<number>): { share: number; emptyTop: number } {
+function hazardCoverage(b: Block, sky: Set<number>): { share: number; emptyTop: number } {
   let art = 0;
   let emptyTop = 0;
   let seen = false;
@@ -244,7 +244,7 @@ export function waits(d: SceneData): Finding[] {
   return out;
 }
 
-export function births(d: SceneData): Finding[] {
+function births(d: SceneData): Finding[] {
   const use = blockUse(d.map);
   const out: Finding[] = [];
   for (let n = 0; n < BACKBL; n++) {
@@ -265,7 +265,7 @@ export function births(d: SceneData): Finding[] {
 }
 
 /** Hazard blocks whose main color is the main color of ground the hero stands on safely. */
-export function telegraph(d: SceneData): Finding[] {
+function telegraph(d: SceneData): Finding[] {
   const use = blockUse(d.map);
   const safe = new Map<number, number>();
   for (let n = 0; n < BACKBL; n++) {

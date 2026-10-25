@@ -15,12 +15,12 @@ import type { SceneData } from '../sceneData';
 import { pictures } from './monsterChecks';
 
 /** A head this mirror-alike or more is a face-on (front or back) view, not a side view. */
-export const FACE_ON = 0.75;
+const FACE_ON = 0.75;
 /** Two pictures this alike or more are the same picture. */
 const SAME = 0.9;
 
 /** The block's pixels as drawn in an orientation (0 as stored, 4 mirrored left to right…). */
-export function oriented(b: Block | undefined, orient: number): Uint8Array {
+function oriented(b: Block | undefined, orient: number): Uint8Array {
   const out = new Uint8Array(BLEN * BLEN).fill(TRANSPARENT);
   if (!b) return out;
   for (let y = 0; y < BLEN; y++) for (let x = 0; x < BLEN; x++) out[y * BLEN + x] = b.pixels[orientIndex(orient, x, y)];
@@ -28,7 +28,7 @@ export function oriented(b: Block | undefined, orient: number): Uint8Array {
 }
 
 /** How alike two pictures are where either is drawn (1 = the same). */
-export function alike(a: Uint8Array, b: Uint8Array): number {
+function alike(a: Uint8Array, b: Uint8Array): number {
   let n = 0;
   let d = 0;
   for (let i = 0; i < a.length; i++) {
@@ -40,7 +40,7 @@ export function alike(a: Uint8Array, b: Uint8Array): number {
 }
 
 /** How alike a picture is to its own mirror image (1 = the same both ways). */
-export function mirrorAlike(a: Uint8Array): number {
+function mirrorAlike(a: Uint8Array): number {
   const m = new Uint8Array(a.length);
   for (let y = 0; y < BLEN; y++) for (let x = 0; x < BLEN; x++) m[y * BLEN + x] = a[y * BLEN + BLEN - 1 - x];
   return alike(a, m);
@@ -56,7 +56,7 @@ function head(f: Frame, cbl: Block[]): Uint8Array | undefined {
 type Way = 'left' | 'right' | 'up' | 'down';
 
 /** The heads the hero shows walking each way: sequences with a key that move mostly that way. */
-export function walkHeads(d: Pick<SceneData, 'chr' | 'cbl'>): Record<Way, Uint8Array[]> {
+function walkHeads(d: Pick<SceneData, 'chr' | 'cbl'>): Record<Way, Uint8Array[]> {
   const out: Record<Way, Uint8Array[]> = { left: [], right: [], up: [], down: [] };
   for (let i = 5; i < MAXSEQ; i++) {
     const s = d.chr.sequences[i];

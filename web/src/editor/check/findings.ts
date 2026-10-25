@@ -3,7 +3,7 @@
 // here with its guide section, so the panel, the badges and the upload checklist agree. A check
 // marked `taste` measures a design preference, not a fault, so its words ask rather than rule.
 
-export type Severity = 'error' | 'warning' | 'info';
+type Severity = 'error' | 'warning' | 'info';
 
 /** A chapter of The Ultimate Owner's Guide (manual/ultimate/plan.ts ids) and a heading in it. */
 export interface GuideRef {
@@ -11,7 +11,7 @@ export interface GuideRef {
   section: string;
 }
 
-export interface Where {
+interface Where {
   /** The scene (its number in the .gam file). */
   scene?: number;
   /** The map file and a cell on it (y * 100 + x). */
@@ -30,7 +30,7 @@ export interface Where {
 }
 
 /** A one-click suggestion the panel can offer for a finding (generators/*.ts). */
-export type FixId = 'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark' | 'no-soltop';
+type FixId = 'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark' | 'no-soltop';
 
 export interface Finding {
   check: CheckId;
@@ -269,7 +269,7 @@ export type Kind = Severity | 'suggestion';
 export const kindOf = (f: Pick<Finding, 'check' | 'severity'>): Kind =>
   f.severity === 'warning' && (CHECKS[f.check] as CheckInfo).taste ? 'suggestion' : f.severity;
 
-export const SEVERITY_ORDER: Record<Severity, number> = { error: 0, warning: 1, info: 2 };
+const SEVERITY_ORDER: Record<Severity, number> = { error: 0, warning: 1, info: 2 };
 
 /** Findings sorted worst first, then by check. */
 export function sortFindings(list: Finding[]): Finding[] {

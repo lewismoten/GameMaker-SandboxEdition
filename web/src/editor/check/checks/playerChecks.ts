@@ -19,7 +19,7 @@ import { isPickup } from './playChecks';
 import { TICK_S } from './blockChecks';
 
 /** How long a quick tap of a key lasts, in seconds: a sequence shorter than this plays twice. */
-export const QUICK_TAP_S = 0.3;
+const QUICK_TAP_S = 0.3;
 
 /**
  * Hero moves a quick tap plays twice: "Always finish" (ground) sequences that repeat while held
@@ -70,7 +70,7 @@ function inert(b: Block, n: number): boolean {
  * from the block most often beside it on the map, leaving out its own most common color (its
  * background). `beside` is that block, if any.
  */
-export function prizeMask(bbl: Block[], n: number, beside?: number): Uint8Array {
+function prizeMask(bbl: Block[], n: number, beside?: number): Uint8Array {
   const px = bbl[n].pixels;
   const count = new Uint32Array(256);
   for (const p of px) count[p]++;
@@ -97,7 +97,7 @@ function besideOf(blocks: Uint8Array, n: number, skip: (k: number) => boolean): 
 }
 
 /** How much of a prize's own drawing (its mask) another block has, pixel for pixel (1 = all). */
-export function prizeLikeness(prize: Uint8Array, mask: Uint8Array, other: Uint8Array): number {
+function prizeLikeness(prize: Uint8Array, mask: Uint8Array, other: Uint8Array): number {
   let n = 0;
   let same = 0;
   for (let i = 0; i < mask.length; i++) {

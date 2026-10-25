@@ -12,7 +12,7 @@ import type { Finding, Kind } from '../../../check/findings';
 import { myPlays } from '../../../check/walk/mine';
 import { routeState } from '../../../check/walk/botRoutes';
 
-export interface ExtrasHost {
+interface ExtrasHost {
   project: Project;
   file: string;
   scene: number | undefined;

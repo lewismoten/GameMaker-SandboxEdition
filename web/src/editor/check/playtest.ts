@@ -28,7 +28,7 @@ export interface SceneRun {
   entry: Entry;
 }
 
-export interface PlaytestOptions {
+interface PlaytestOptions {
   /** Work per scene before moving on (ms). */
   budgetMs?: number;
   /** Told the scene being explored, how far along it is and what it has found so far; return true to stop everything. */

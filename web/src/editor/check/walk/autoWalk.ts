@@ -17,7 +17,7 @@ import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource, type Snap } from '../sim';
 import { replayMine } from './replayMine';
 
-export interface Strategy {
+interface Strategy {
   id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
   name: string;
   /** Only for scenes with gravity (true) or without (false). */
@@ -67,7 +67,7 @@ export interface AutoWalk {
   stopped?: string;
 }
 
-export interface AutoWalkOptions {
+interface AutoWalkOptions {
   /** Time for each scene, all styles together (ms). */
   budgetMs?: number;
   seed?: number;
@@ -80,7 +80,7 @@ export interface AutoWalkOptions {
 }
 
 /** The places from the start to `id`, by the moves that reached each. */
-export function pathTo(ex: Exploration, via: Via): Via[] {
+function pathTo(ex: Exploration, via: Via): Via[] {
   const out: Via[] = [via];
   for (let p = via.parent; ex.places[p]?.via; p = ex.places[p].via!.parent) out.unshift(ex.places[p].via!);
   return out;
@@ -98,7 +98,7 @@ export interface Replay {
 }
 
 /** Plays a found path again from the scene's start (every monster moving, as the engine does), recording its keys. */
-export async function replayPath(
+async function replayPath(
   game: Game,
   files: FileSource,
   scene: number,

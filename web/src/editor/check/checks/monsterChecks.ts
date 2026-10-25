@@ -26,7 +26,7 @@ export function pictures(m: Monster): number[] {
 export const hostile = (m: Monster | undefined, mbl: Block[]) => !!m && pictures(m).some((p) => mbl[p]?.chHitPt < 0);
 
 /** Pixels a tick the monster moves at its fastest. */
-export function monsterSpeed(m: Monster): number {
+function monsterSpeed(m: Monster): number {
   if (m.towards >= 64) return m.towards >> 6;
   if (m.towards !== 0) return Math.abs(m.towards);
   let best = 0;
@@ -73,7 +73,7 @@ export function heroSpeed(chr: Character): number {
 
 const placed = (d: SceneData) => d.map.monsters.filter((p) => p.monnum < LASTMON && !!d.mon[p.monnum]);
 
-export function density(d: SceneData): Finding[] {
+function density(d: SceneData): Finding[] {
   const foes = placed(d).filter((p) => hostile(d.mon[p.monnum], d.mbl));
   const out: Finding[] = [];
   const taken: { x: number; y: number }[] = [];
@@ -105,7 +105,7 @@ export function density(d: SceneData): Finding[] {
   return out;
 }
 
-export function speed(d: SceneData): Finding[] {
+function speed(d: SceneData): Finding[] {
   const hero = heroSpeed(d.chr);
   if (!hero) return [];
   const used = new Set(placed(d).map((p) => p.monnum));
@@ -136,7 +136,7 @@ export function speed(d: SceneData): Finding[] {
 }
 
 /** Seconds after the hero comes in that a foe walking up to the entry still counts as a threat at the start. */
-export const SAFE_START_S = 3;
+const SAFE_START_S = 3;
 
 /**
  * The first tick a monster on its march comes within a block across and two up or down of
@@ -245,7 +245,7 @@ export function startThreat(d: SceneData, game: Game): Finding[] {
 }
 
 /** The lowest contrast between a monster's colors and the scenery round where it is placed. */
-export function monsterContrast(d: SceneData, n: number): { ratio: number; cell: number } | undefined {
+function monsterContrast(d: SceneData, n: number): { ratio: number; cell: number } | undefined {
   const pics = pictures(d.mon[n]);
   if (!pics.length) return undefined;
   const mine = topColors(d.mbl[pics[0]].pixels, 3);
@@ -262,7 +262,7 @@ export function monsterContrast(d: SceneData, n: number): { ratio: number; cell:
   return worst;
 }
 
-export function contrast(d: SceneData): Finding[] {
+function contrast(d: SceneData): Finding[] {
   const out: Finding[] = [];
   for (const n of new Set(placed(d).map((p) => p.monnum))) {
     if (!hostile(d.mon[n], d.mbl)) continue;
@@ -287,7 +287,7 @@ export function contrast(d: SceneData): Finding[] {
 }
 
 /** Ticks of one round of the monster's animation, and how many of them show a picture that `fits`. */
-export function animTicks(m: Monster, mbl: Block[], fits: (b: Block) => boolean): { all: number; fit: number } {
+function animTicks(m: Monster, mbl: Block[], fits: (b: Block) => boolean): { all: number; fit: number } {
   let all = 0;
   let fit = 0;
   for (const [p, t] of m.pic) {
@@ -304,7 +304,7 @@ export function animTicks(m: Monster, mbl: Block[], fits: (b: Block) => boolean)
  * two blocks or more, or over a path mostly without floor under it (a moving platform). One that
  * paces on the ground (a foe that walks or charges) is no lift to wait for.
  */
-export function carries(d: SceneData, m: Monster): boolean {
+function carries(d: SceneData, m: Monster): boolean {
   const corners = [{ x: 0, y: 0 }, ...m.march[0].slice(0, MAXMARCH).filter((c, i, all) => c.pic && all.slice(0, i).every((q) => q.pic))];
   const ys = corners.map((c) => c.y);
   if (Math.max(...ys) - Math.min(...ys) >= 2) return true;
@@ -325,7 +325,7 @@ export function carries(d: SceneData, m: Monster): boolean {
   return false;
 }
 
-export function monsterTouches(d: SceneData): Finding[] {
+function monsterTouches(d: SceneData): Finding[] {
   const out: Finding[] = [];
   for (const n of new Set(placed(d).map((p) => p.monnum))) {
     const m = d.mon[n];

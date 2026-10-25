@@ -9,7 +9,7 @@ import { at } from '../../../check/findings';
 import { MY_HEAT, coverage, coverageText, unpackMine, type MyHeat, type MyHeatSaved } from './myHeat';
 import type { HeatView } from './markInfo';
 
-export interface MyHeatHost {
+interface MyHeatHost {
   project: Project;
   file: string;
   /** The bot's heat steps as shown (undefined before a check). */

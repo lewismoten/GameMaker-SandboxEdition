@@ -8,7 +8,7 @@ import type { SceneData } from '../sceneData';
 
 const open = (b: Block | undefined) => !!b && b.solid !== 15;
 
-export interface Maze {
+interface Maze {
   cells: number[];
   deadEnds: number[];
   junctions: number[];

@@ -32,7 +32,7 @@ export interface MyHeat {
   ticks: number;
 }
 
-export const emptyHeat = (): MyHeat => ({ heat: new Uint32Array(CELLS), first: new Int32Array(CELLS).fill(-1), deaths: new Map(), ticks: 0 });
+const emptyHeat = (): MyHeat => ({ heat: new Uint32Array(CELLS), first: new Int32Array(CELLS).fill(-1), deaths: new Map(), ticks: 0 });
 
 /** Records a play session from the world it is shown each frame; only ticks that passed count. */
 export class HeatRecorder {
@@ -109,11 +109,10 @@ export function mergeMine(kept: MyHeatSaved | undefined, rec: MyHeat, when = new
   };
 }
 
-/** The Compare view's steps: 0 neither, 1 only the bot, 2 only the author, 3 both. */
-export const COMPARE = { bot: 1, mine: 2, both: 3 } as const;
-/** Their colors: orange and blue tell apart with any color vision, and both is a light gray. */
+/** The Compare view's colors: orange and blue tell apart with any color vision, and both is a light gray. */
 export const COMPARE_COLORS = ['#ff7a00', '#2f8cff', '#e8e8e8'];
 
+/** The Compare view's steps: 0 neither, 1 only the bot, 2 only the author, 3 both. */
 export function compareSteps(bot: Uint8Array, mine: Uint8Array): Uint8Array {
   const out = new Uint8Array(bot.length);
   for (let i = 0; i < bot.length; i++) out[i] = (bot[i] ? 1 : 0) + (mine[i] ? 2 : 0);
@@ -127,7 +126,7 @@ export function combineSteps(bot: Uint8Array, mine: Uint8Array): Uint8Array {
   return out;
 }
 
-export interface Coverage {
+interface Coverage {
   /** Cells the bot reached. */
   bot: number;
   /** Of those, how many the author came within a block of. */

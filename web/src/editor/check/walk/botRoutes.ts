@@ -7,7 +7,7 @@ import type { Project } from '../../core/project';
 import type { Game } from '../../../formats/game';
 import type { Walkthrough } from '../../../walkthrough/format';
 
-export interface BotRoute {
+interface BotRoute {
   when: string;
   walk: Walkthrough;
   /** sceneHash when it was made (routes kept before it was have none). */
@@ -34,7 +34,7 @@ export function walkthroughThrough(project: Project, scene: number): Walkthrough
  * Where Watch the bot's route comes from: the game's walkthrough, one made for this scene
  * alone (stale when the scene's files changed since it was made), or none yet.
  */
-export type RouteState = { from: 'walkthrough' } | { from: 'none' } | { from: 'scene'; when: string; stale: boolean };
+type RouteState = { from: 'walkthrough' } | { from: 'none' } | { from: 'scene'; when: string; stale: boolean };
 
 export function routeState(project: Project, scene: number): RouteState {
   if (walkthroughThrough(project, scene)) return { from: 'walkthrough' };

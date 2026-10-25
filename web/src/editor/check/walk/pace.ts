@@ -5,13 +5,13 @@
 import { decodeKeys, type Walkthrough } from '../../../walkthrough/format';
 
 /** One moment in a run: the segment's scene, the tick in the segment, and what happens there. */
-export interface PaceMoment {
+interface PaceMoment {
   scene: number;
   tick: number;
   what: string;
 }
 
-export interface Pace {
+interface Pace {
   /** Key events in the run. */
   events: number;
   /** The shortest gap in ticks between two key changes that aren't at the same tick. */

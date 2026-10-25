@@ -17,7 +17,7 @@ import { contrastColor, fillHazard, outline } from './blockArt';
 import { airBlock, ladderBlock, ladderCells, landmarkBlocks, placeLandmarks } from './mapFixes';
 import { findMazes } from '../checks/mazeCheck';
 
-export interface Fix {
+interface Fix {
   label: string;
   /** What it will do, for its button's tooltip. */
   detail: string;

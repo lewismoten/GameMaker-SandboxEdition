@@ -8,7 +8,7 @@ import { BACKBL, type Block } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
 import type { Exploration } from './explore';
 
-export type StuckReason = 'pit' | 'drop' | 'lock' | 'unknown';
+type StuckReason = 'pit' | 'drop' | 'lock' | 'unknown';
 
 export interface StuckArea {
   /** Map cells of the places in the area. */
@@ -38,7 +38,7 @@ export function canLeave(ex: Exploration): Uint8Array {
 }
 
 /** Lock blocks: a touch they refuse while a counter is short, standing in the way (solid). */
-export function lockBlocks(bg: Block[]): Set<number> {
+function lockBlocks(bg: Block[]): Set<number> {
   const out = new Set<number>();
   for (let n = 0; n < BACKBL; n++) {
     const b = bg[n];

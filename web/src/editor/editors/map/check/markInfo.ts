@@ -30,7 +30,7 @@ export function heatWords(step: number | undefined, soon: boolean, view: HeatVie
   return soon ? `Reached${who}: ${SOON[i]}` : `Time spent${who}: ${OFTEN[i]}`;
 }
 
-export interface CellMarks {
+interface CellMarks {
   stuck: boolean;
   /** Tries that ended in a death here: 0 for none, -1 for some (an older check didn't count them). */
   deaths: number;

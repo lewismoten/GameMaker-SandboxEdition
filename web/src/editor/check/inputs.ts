@@ -6,7 +6,7 @@ import { CHARBL, MONBL } from '../../formats/blocks';
 import type { Character } from '../../formats/character';
 
 /** One part of a move: hold these keys until `until` says stop (or `max` ticks pass). */
-export interface Step {
+interface Step {
   keys: number[];
   /** 'cell': the character's cell changed; 'land': it is on the ground again; 'ticks': after max ticks. */
   until: 'cell' | 'land' | 'ticks';
@@ -24,7 +24,7 @@ export interface Move {
   settle?: number;
 }
 
-export interface KeyRoles {
+interface KeyRoles {
   /** `once`: its sequence plays once a press (no repeat while held): a push, a shove of a sled. */
   move: { scan: number; dx: number; dy: number; once?: boolean }[];
   /** `hold`: holding the key keeps it going (it repeats and can't stall), so a long hold climbs or flies. */

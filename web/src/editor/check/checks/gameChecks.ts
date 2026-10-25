@@ -54,7 +54,7 @@ export function controls(files: GameFiles): Finding[] {
 }
 
 /** Ticks after the key before the sequence first moves the hero or fires. */
-export function answerTicks(chr: Character, seq: number): number {
+function answerTicks(chr: Character, seq: number): number {
   let t = 0;
   for (const f of chr.sequences[seq].frames) {
     if (f.pic2 === CHARBL + 1) return 0;
@@ -112,7 +112,7 @@ export function characterChecks(d: SceneData): Finding[] {
 }
 
 /** A .voc file's length in seconds and loudness (RMS, in dB below full scale). */
-export function vocStats(bytes: Uint8Array): { seconds: number; db: number } | undefined {
+function vocStats(bytes: Uint8Array): { seconds: number; db: number } | undefined {
   if (!isVoc(bytes)) return undefined;
   try {
     const v = decodeVoc(bytes);

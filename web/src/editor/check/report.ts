@@ -70,7 +70,7 @@ export interface CheckOptions {
   towardExits?: boolean;
 }
 
-export function summarize(r: SceneRun, map?: string): RunSummary {
+function summarize(r: SceneRun, map?: string): RunSummary {
   return {
     scene: r.scene,
     name: r.name,

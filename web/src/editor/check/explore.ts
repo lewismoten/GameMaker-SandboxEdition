@@ -69,7 +69,7 @@ export interface Via {
 }
 
 /** A resting place (a node of the graph). */
-export interface Place {
+interface Place {
   cell: number;
   /** Undefined for the place the hero enters at. */
   via?: Via;
@@ -145,7 +145,7 @@ export interface Exploration {
 }
 
 /** Block numbers whose animation changes how they hold, push or hurt the hero (timed doors, lifts). */
-export function timedBlocks(bg: Block[]): Set<number> {
+function timedBlocks(bg: Block[]): Set<number> {
   const out = new Set<number>();
   for (let n = 0; n < BACKBL; n++) {
     const b = bg[n];
@@ -613,7 +613,7 @@ class PlaceHeap {
 }
 
 /** Things carried count most, then counters (money and the ten special ones), then score. */
-export function worthOf(ci: CharInfo): number {
+function worthOf(ci: CharInfo): number {
   let counters = 0;
   for (let i = 20; i < 30; i++) counters += Math.max(0, ci.meter[i] ?? 0);
   return ci.inv.filter((b) => b < BACKBL).length * 1e6 + (counters + Math.max(0, ci.meter[3] ?? 0)) * 1e3 + ci.score;

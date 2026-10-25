@@ -25,7 +25,7 @@ export interface FileSource {
 export const TICKS_PER_SECOND = 18.2;
 
 /** What a tick ended in: a link taken (its index), a death, or nothing. */
-export type TickResult = { link: number } | 'dead' | undefined;
+type TickResult = { link: number } | 'dead' | undefined;
 
 /** Everything that changes while a scene plays, packed small. */
 export interface Snap {

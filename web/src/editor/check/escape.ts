@@ -8,7 +8,7 @@ import type { Move } from './inputs';
 import type { SceneSim } from './sim';
 
 /** Ticks running without a hurt that count as away. */
-export const CALM_TICKS = 9;
+const CALM_TICKS = 9;
 
 export async function getsAway(sim: SceneSim, moves: Move[]): Promise<boolean> {
   const w = sim.w;

@@ -7,7 +7,7 @@ import { CHECKS, kindOf, sortFindings, type CheckInfo, type Finding, type Kind }
 import { findingKey } from '../check/accepted';
 import { GUIDE_TITLES } from './guideLink';
 
-export type RowStatus = 'open' | 'accepted' | 'that’s on purpose';
+type RowStatus = 'open' | 'accepted' | 'that’s on purpose';
 
 export interface FindingRow {
   kind: Kind;

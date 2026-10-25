@@ -41,7 +41,7 @@ function startCells(ex: Exploration): Set<number> {
 }
 
 /** Places from which the hero can get back to the start, or take a link back to the scene he came from. */
-export function canReturn(ex: Exploration, cameFrom: number): Uint8Array {
+function canReturn(ex: Exploration, cameFrom: number): Uint8Array {
   const n = ex.places.length;
   const ok = new Uint8Array(n);
   const back: number[][] = Array.from({ length: n }, () => []);

@@ -17,7 +17,7 @@ import './checkBadges.css';
 const BADGE_ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
 
 /** The file checks' findings for the scenes that use `file`. */
-export function fileFindings(project: Project, file: string): Finding[] {
+function fileFindings(project: Project, file: string): Finding[] {
   const name = normalize(file);
   let all;
   try {
