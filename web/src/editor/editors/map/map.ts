@@ -17,7 +17,7 @@ import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Hand
 import { drawOverlay, type OverlayState } from './tools/overlay';
 import { MapTools, type ToolMode } from './tools/toolController';
 import { findBlock, floodCells, replaceAll } from './tools/cellOps';
-import { checkPanel } from './check/checkPanel';
+import type { checkPanel } from './check/checkPanel';
 import { simulate } from '../palette/colorVision';
 import { monsterName } from '../monsters/monsterNames';
 import './mapExport.css';
@@ -625,7 +625,7 @@ registerEditor(['map'], (host, project, file) => {
       // zoomed out, a mark is a dot or two: the nearest one within about 6 pixels
       const s = BLEN * zoom;
       const lines = [
-        ...check.describe(c, s < 8 ? Math.ceil(6 / s) : 0),
+        ...(check?.describe(c, s < 8 ? Math.ceil(6 / s) : 0) ?? []),
         ...linkMarks()
           .filter((m) => m.x === p.x && m.y === p.y)
           .map((m) => (m.kind === 'to' ? `▢ The hero comes in here (${m.label})` : `▢ A link: touching it takes the hero ${m.label}`)),
@@ -736,8 +736,19 @@ registerEditor(['map'], (host, project, file) => {
   }
   syncToggles();
 
-  // the level check: a panel beside the map, its heat map and marks on the overlay
-  const check = checkPanel({
+  // the level check: a panel beside the map, its heat map and marks on the overlay (loaded when
+  // first opened; until then a hidden slot holds its place in the side column)
+  let check: ReturnType<typeof checkPanel> | undefined;
+  let loadingCheck: Promise<ReturnType<typeof checkPanel>> | undefined;
+  const checkSlot = h('div', { hidden: true });
+  const openCheck = () =>
+    (loadingCheck ??= import('./check/checkPanel').then((m) => {
+      check = m.checkPanel(checkHost);
+      checkSlot.replaceWith(check.el);
+      fitter.observe(check.el);
+      return check;
+    }));
+  const checkHost: Parameters<typeof checkPanel>[0] = {
     project,
     file,
     scene: set.scenes[0],
@@ -764,7 +775,7 @@ registerEditor(['map'], (host, project, file) => {
       for (const [c, b] of cells) map.blocks[c] = b;
       changedCells(cells.map(([c]) => c));
     },
-  });
+  };
   const checkBtn = h(
     'button',
     {
@@ -773,11 +784,12 @@ registerEditor(['map'], (host, project, file) => {
       'aria-label': 'Level check',
       'aria-pressed': 'false',
       title: 'Level check: let a bot play this scene and show where it went and what players would mind',
-      onclick: () => {
-        check.toggle();
-        checkBtn.setAttribute('aria-pressed', String(check.shown()));
-        if (check.shown()) check.el.scrollIntoView({ block: 'nearest' });
-      },
+      onclick: () =>
+        void openCheck().then((check) => {
+          check.toggle();
+          checkBtn.setAttribute('aria-pressed', String(check.shown()));
+          if (check.shown()) check.el.scrollIntoView({ block: 'nearest' });
+        }),
     },
     '🩺',
     h('span', { class: 'mt-label' }, 'Check'),
@@ -916,7 +928,7 @@ registerEditor(['map'], (host, project, file) => {
       h(
         'div',
         { class: 'stack mt-side-col', style: 'flex:0 1 260px' },
-        check.el,
+        checkSlot,
         tools.panel,
         h('strong', null, 'Blocks'),
         picker,
@@ -946,7 +958,7 @@ registerEditor(['map'], (host, project, file) => {
     host.style.setProperty('--side-col-room', `${Math.round(bottom - top(sideCol))}px`);
   };
   const fitter = new ResizeObserver(() => requestAnimationFrame(fit));
-  for (const el of [host, sideCol, tools.panel, check.el]) fitter.observe(el);
+  for (const el of [host, sideCol, tools.panel]) fitter.observe(el);
   addEventListener('resize', fit);
   const onKey = (e: KeyboardEvent) => {
     const t = e.target as HTMLElement | null;
