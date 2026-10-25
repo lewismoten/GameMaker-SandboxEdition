@@ -1,7 +1,8 @@
 // The 320x200 pictures: the title (Joe on the Long Road at dusk, the town clock far off), the
 // menu, the page backdrop every text screen sits on (a sheet of library paper, with whoever is
 // speaking at its top: the talks, the chapter card, the bell, the ending), and the high score /
-// load / save backdrops; then every slide list that strings them together with the words in text.ts.
+// load / save backdrops; then every slide list that strings them together with the words in text.ts
+// and the story cartoons in reels/.
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
@@ -17,6 +18,7 @@ import { clown, leo, reggie } from '../sprites/people';
 import { dancerPic, drumstickPic, fusePic, lensPic, balloonPic, shovelPic, stonePic, umbrellaPic, valentinePic, windKeyPic } from '../blocks/keepsakes';
 import { lewieCameo, wattCameo, willCameo } from '../../../kit/cameos';
 import { loaf, seed } from '../sprites/guests';
+import { cartoons } from './reels/cartoons';
 import {
   BELL,
   CARD1,
@@ -32,6 +34,7 @@ import {
   CARD11,
   CARD12,
   TALK_WATT,
+  TALK_WATT2,
   EPILOGUE,
   TALK_SEED,
   TALK_SEED2,
@@ -211,12 +214,19 @@ export function buildScreens(): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = {};
   const add = (name: string, bytes: Uint8Array | string) => (out[name] = typeof bytes === 'string' ? dosText(bytes) : bytes);
   const slides = (name: string, list: { name: string; pause?: number }[]) => add(name, serializeSlideList(list));
-  /** A page of words over its backdrop: a slide list of the two. */
-  const pages = (base: string, heading: string, words: string, who?: Pixels[]) => {
+  /** A page of words over its backdrop: a slide list of the two, with a cartoon before or after them. */
+  const pages = (base: string, heading: string, words: string, who?: Pixels[], reel?: { before?: string; after?: string }) => {
     add(`${base}.gif`, gif(pageScreen(heading, who)));
     add(`${base}.txt`, words);
-    slides(`${base}.lst`, [{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]);
+    slides(`${base}.lst`, [
+      ...(reel?.before ? [{ name: reel.before, pause: 0 }] : []),
+      { name: `${base}.gif`, pause: 0 },
+      { name: `${base}.txt` },
+      ...(reel?.after ? [{ name: reel.after, pause: 0 }] : []),
+    ]);
   };
+  // the story cartoons (reels/), at the story's turns
+  for (const [name, bytes] of Object.entries(cartoons())) add(name, bytes);
   add(SANDLOGO, sandLogoFli());
   add('title.gif', gif(titleScreen()));
   slides('title.lst', [
@@ -231,7 +241,7 @@ export function buildScreens(): Record<string, Uint8Array> {
   add('loadgame.gif', gif(slotsScreen()));
   add('savegame.gif', gif(slotsScreen()));
   pages('talkbook', 'THE STORYBOOK', TALK_BOOK, [joe('down', 0)]);
-  pages('talkbnch', 'THE WORKBENCH', TALK_BENCH, [joe('down', 0, 'shh')]);
+  pages('talkbnch', 'THE WORKBENCH', TALK_BENCH, [joe('down', 0, 'shh')], { after: 'door.fli' });
   pages('talkleo', 'DOC LEO', TALK_LEO, [leo(), reggie(0)]);
   pages('talkleo7', 'DOC LEO', TALK_LEO7, [leo(true, true), reggie(1), joe('down', 0, 'glad'), windKeyPic(clearPic())]);
   pages('card1', 'CHAPTER ONE', CARD1, [joe('down', 0), clown('blue', 'red', 1)]);
@@ -247,7 +257,7 @@ export function buildScreens(): Record<string, Uint8Array> {
   pages('talklot', 'DOC LEO', TALK_LOT, [leo(), reggie(1)]);
   pages('talklot2', 'THE CHEZ, CHARGING', TALK_LOT2, [leo(true, true), joe('down', 0, 'glad'), fusePic(clearPic())]);
   pages('card6', 'CHAPTER SIX', CARD6, [joe('down', 0), carlPicture(0)]);
-  pages('talkcarl', 'CARL', TALK_CARL, [carlPicture(1), joe('down', 0, 'glad'), lensPic(clearPic())]);
+  pages('talkcarl', 'CARL', TALK_CARL, [carlPicture(1), joe('down', 0, 'glad'), lensPic(clearPic())], { before: 'beam.fli' });
   pages('over', 'OVER THE HILL', OVER, [joe('down', 0)]);
   const lewie = lewieCameo(PAL.pal, 'down0');
   pages('card7', 'CHAPTER SEVEN', CARD7, [joe('down', 0), lewie]);
@@ -265,12 +275,21 @@ export function buildScreens(): Record<string, Uint8Array> {
   pages('talkfai2', 'REGGIE IS SAFE', TALK_FAIR2, [leo(true, true), reggie(1), joe('down', 0, 'glad'), balloonPic(clearPic())]);
   pages('card11', 'CHAPTER ELEVEN', CARD11, [joe('down', 0), seed('smile', 'sprout')]);
   pages('talkseed', 'THE MUSTARD SEED', TALK_SEED, [seed('smile', 'sprout')]);
-  pages('talksed2', 'THE STAR', TALK_SEED2, [seed('joy', 'sprout'), joe('down', 0, 'glad')]);
+  pages('talksed2', 'THE STAR', TALK_SEED2, [seed('joy', 'sprout'), joe('down', 0, 'glad')], { before: 'star.fli' });
   const watt = wattCameo(PAL.pal, 'down', 0);
   pages('card12', 'THE SMART HOME', CARD12, [joe('down', 0), watt]);
+  // Watt's talk stops at the hatch for gold.fli, then goes on over the same page
   pages('talkwatt', 'WATT', TALK_WATT, [watt, joe('down', 0, 'glad'), leo(true, true), teddy(true), gwinnSit()]);
-  pages('epilogue', 'OPENING TIME', EPILOGUE, [joe('down', 0, 'glad')]);
-  pages('bell', "SEVEN O'CLOCK", BELL, [clown('blue', 'red', 1), clown('green', 'yellow', 1), leo(true, true)]);
+  add('talkwat2.txt', TALK_WATT2);
+  slides('talkwatt.lst', [
+    { name: 'talkwatt.gif', pause: 0 },
+    { name: 'talkwatt.txt' },
+    { name: 'gold.fli', pause: 0 },
+    { name: 'talkwatt.gif', pause: 0 },
+    { name: 'talkwat2.txt' },
+  ]);
+  pages('epilogue', 'OPENING TIME', EPILOGUE, [joe('down', 0, 'glad')], { before: 'home.fli' });
+  pages('bell', "SEVEN O'CLOCK", BELL, [clown('blue', 'red', 1), clown('green', 'yellow', 1), leo(true, true)], { before: 'bell.fli' });
   pages('won', 'THE LONG ROAD', WON, [joe('down', 0, 'glad')]);
   pages('lost', 'A LITTLE REST', LOST, [joe('down', 0, 'blink')]);
   return out;

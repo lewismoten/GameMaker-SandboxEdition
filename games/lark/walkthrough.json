@@ -407,7 +407,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 115276,
+  "frames": 117646,
   "chapters": [
    {
     "title": "Opening",
@@ -423,75 +423,75 @@
    },
    {
     "title": "The Long Road",
-    "frame": 7381
+    "frame": 7736
    },
    {
     "title": "Chapter 1: The Clock Tower",
-    "frame": 7945
+    "frame": 8300
    },
    {
     "title": "Chapter 2: Valentines in the Park",
-    "frame": 18013
+    "frame": 18825
    },
    {
     "title": "Chapter 3: The Parade",
-    "frame": 26638
+    "frame": 27450
    },
    {
     "title": "The Shore Road",
-    "frame": 32183
+    "frame": 32996
    },
    {
     "title": "Chapter 4: The Music Box",
-    "frame": 32747
+    "frame": 33560
    },
    {
     "title": "Chapter 5: The Charging Run",
-    "frame": 41239
+    "frame": 42052
    },
    {
     "title": "Chapter 6: The Lighthouse",
-    "frame": 50408
+    "frame": 51221
    },
    {
     "title": "The Winter Road",
-    "frame": 59502
+    "frame": 60722
    },
    {
     "title": "Chapter 7: Snow Day",
-    "frame": 60066
+    "frame": 61286
    },
    {
     "title": "Chapter 8: Open Mic at the Hive",
-    "frame": 68905
+    "frame": 70123
    },
    {
     "title": "Chapter 9: The Painted Rocks",
-    "frame": 77137
+    "frame": 78355
    },
    {
     "title": "Chapter 10: The Fair",
-    "frame": 87605
+    "frame": 88823
    },
    {
     "title": "Chapter 11: The Tall Plant",
-    "frame": 94870
+    "frame": 96088
    },
    {
     "title": "The Smart Home",
-    "frame": 101908
+    "frame": 103522
    },
    {
     "title": "Opening Time",
-    "frame": 109361
+    "frame": 111381
    },
    {
     "title": "Ending",
-    "frame": 110973
+    "frame": 113343
    },
    {
     "title": "Credits",
-    "frame": 112764
+    "frame": 115134
    }
   ]
  }

@@ -66,7 +66,7 @@ export const CREDITS = withCreditPage(
 
 A Sandbox Software game, 1996
 
-Story, levels, art, music, sounds and every block: Claude Opus 5.5
+Story, levels, art, cartoons, music, sounds and every block: Claude Opus 5.5
 
 For whoever found every tin heart.`,
     `STARRING
@@ -577,7 +577,7 @@ Bumping a grumpy one winds Joe down a little.`,
 Tall boards: the winding key's spring hop (SPACE), or the heart balloon (ENTER).`,
 ]);
 
-/** Watt, and the gold. */
+/** Watt, and the gold: up to the hatch opening (gold.fli shows it). */
 export const TALK_WATT = page([
   `Watt rolls out of his workshop on his little treads and looks up at Joe. "Beep?"
 
@@ -585,6 +585,10 @@ Joe asks him what he came all this way to ask: could he put in a real heart?`,
   `Watt thinks about it. Then he reaches up and opens the little hatch on Joe's chest, and looks in for a long time.
 
 The light coming out of the hatch is gold.`,
+]);
+
+/** Watt, and the gold: after gold.fli. */
+export const TALK_WATT2 = page([
   `"Beep," says Watt. "I fix things, Joe. There's nothing in here to fix."
 
 Joe looks down. The brass tally counter is glowing gold. It has been counting all along: every kindness he gave, and every one he was given.`,
