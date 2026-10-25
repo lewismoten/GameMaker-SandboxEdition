@@ -10,8 +10,14 @@ import type { Unrolled } from '../../editor/check/unroll';
 /** A box of map cells: x, y, width, height. */
 export type SeenRect = [number, number, number, number];
 
+/** The rows the hero stood on in each column he stood in: x, first row, last row. */
+export type StoodColumns = [number, number, number][];
+
+/** A map the hero walks off the edge of, as the player goes through it, and where he stood on it (when scanned since that was kept). */
+export type UnrolledMap = Unrolled & { stood?: StoodColumns };
+
 /** Per game: the hash of the disk it was scanned from, and the seen box of each "map|bbl". */
-export type LevelViews = Record<string, { hash: string; maps: Record<string, SeenRect>; unrolled?: Record<string, Unrolled> }>;
+export type LevelViews = Record<string, { hash: string; maps: Record<string, SeenRect>; unrolled?: Record<string, UnrolledMap> }>;
 
 const LISTED = VIEWS as unknown as LevelViews;
 
@@ -19,4 +25,4 @@ const LISTED = VIEWS as unknown as LevelViews;
 export const listedViews = (id: string): Record<string, SeenRect> | undefined => LISTED[id]?.maps;
 
 /** A game's unrolled maps by "map|bbl": only those the hero walks off an edge of. */
-export const listedUnrolled = (id: string): Record<string, Unrolled> => LISTED[id]?.unrolled ?? {};
+export const listedUnrolled = (id: string): Record<string, UnrolledMap> => LISTED[id]?.unrolled ?? {};

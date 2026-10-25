@@ -9,7 +9,8 @@
 //   off the walkthrough's way; where that runs out of places first, four more runs head for the
 //   corners of the map in use, to find how far the hero gets each way.
 // Every tick also goes to Unroll (editor/check/unroll.ts), so a map the hero walks off the edge
-// of (maps wrap) gets its box as the player goes through it, beside its seen box.
+// of (maps wrap) gets its box as the player goes through it, beside its seen box, with the rows
+// the hero stood on in each column (a way seen all round that he can't get round doesn't loop).
 // A walled scene seen from above (most of its open ground doesn't pull, and it doesn't open onto the
 // map's edge) also takes every cell joined to a way in by blocks that aren't solid on every side
 // or that change (doors), with half a screen round each: a room behind a locked door or off the
@@ -24,13 +25,13 @@ import { MLEN, MWID, parseMap } from '../src/formats/map';
 import { usedArea } from '../src/manual/printables/levelMapLayout';
 import { SCRNBLEN, SCRNBWID, type World } from '../src/engine/world';
 import { explore, type Entry } from '../src/editor/check/explore';
-import { Unroll, type Unrolled } from '../src/editor/check/unroll';
+import { Unroll } from '../src/editor/check/unroll';
 import { startCharInfo } from '../src/editor/check/sim';
 import { GameFiles } from '../src/project/files';
 import { headlessCanvas, WalkRun } from '../src/walkthrough/runtime';
 import type { Walkthrough } from '../src/walkthrough/format';
 import SECRETS from '../src/manual/printables/levelSecrets.json';
-import type { LevelViews, SeenRect } from '../src/manual/printables/levelViews';
+import type { LevelViews, SeenRect, UnrolledMap } from '../src/manual/printables/levelViews';
 import { levelViewsHash, readDisk } from './levelViewsScan';
 
 /** Places the explorer tries from each way in: the same every run (no time budget), so the answer is too. */
@@ -45,6 +46,8 @@ const groupKey = (game: Game, n: number) => `${game.scenes[n].files[1].toLowerCa
 class Seen {
   readonly boxes = new Map<string, number[]>();
   private readonly unrolls = new Map<string, Unroll>();
+  /** Per map, the first and last row the hero stood on in each column (wrapped), for whether a way really goes round. */
+  private readonly stood = new Map<string, Map<number, [number, number]>>();
   /** The next look at each map starts afresh (a new scene, or a run from another way in). */
   cut(): void {
     for (const u of this.unrolls.values()) u.cut();
@@ -62,6 +65,13 @@ class Seen {
     u.lookAt(w);
     const hx = w.chr.x[0];
     const hy = w.chr.y[0];
+    let cols = this.stood.get(key);
+    if (!cols) this.stood.set(key, (cols = new Map()));
+    const cx = ((hx % MLEN) + MLEN) % MLEN;
+    const cy = ((hy % MWID) + MWID) % MWID;
+    const c = cols.get(cx);
+    if (!c) cols.set(cx, [cy, cy]);
+    else ((c[0] = Math.min(c[0], cy)), (c[1] = Math.max(c[1], cy)));
     const x0 = hx + ((((w.mx - hx) % MLEN) + MLEN + MLEN / 2) % MLEN) - MLEN / 2;
     const y0 = hy + ((((w.my - hy) % MWID) + MWID + MWID / 2) % MWID) - MWID / 2;
     // a view the hero isn't in is the sim's view drifting off (it happens while bobbing in water): not something the player sees
@@ -75,11 +85,12 @@ class Seen {
     );
   }
   /** The maps the hero walked off the edge of, as the player goes through them. */
-  unrolled(): Record<string, Unrolled> {
-    const out: Record<string, Unrolled> = {};
+  unrolled(): Record<string, UnrolledMap> {
+    const out: Record<string, UnrolledMap> = {};
     for (const [k, u] of [...this.unrolls].sort(([a], [b]) => a.localeCompare(b))) {
       const r = u.result();
-      if (r) out[k] = r;
+      const cols = [...(this.stood.get(k) ?? [])].sort(([a], [b]) => a - b).map(([x, [y0, y1]]) => [x, y0, y1] as [number, number, number]);
+      if (r) out[k] = { ...r, stood: cols };
     }
     return out;
   }
