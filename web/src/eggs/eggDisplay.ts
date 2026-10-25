@@ -4,12 +4,10 @@
 // one, there is nothing at all; the box only ever shows the eggs that are in it (never how
 // many could be). Clicking it opens the viewer (eggViewer.ts). Once every felt egg is in, a
 // little cake stand beside it holds the eggs kept apart from them, if any are found (bonus.ts,
-// loaded only then; bonusViewer.ts).
+// loaded only then; bonusViewer.ts). The egg art (eggArt.ts, eggPile.ts) loads with the first egg.
 import './eggs.css';
 import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
-import { drawEgg, eggTexture } from './eggArt';
-import { drawOdor, drawPile } from './eggPile';
 import { TEDDY_EGG, hasTeddyEgg } from './teddyEgg';
 
 const CELL_W = 30;
@@ -66,8 +64,13 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     const key = found.map((e) => e.egg.game).join(',');
     if (key === shown) return;
     shown = key;
-    box.hidden = !found.length;
     const n = found.length;
+    if (!n) {
+      box.hidden = true;
+      return void clear(row);
+    }
+    const [{ drawEgg, eggTexture }, { drawOdor, drawPile }] = await Promise.all([import('./eggArt'), import('./eggPile')]);
+    box.hidden = false;
     // Teddy's own is a bonus, never one of the felt eggs or their count
     const special = hasTeddyEgg(found.map((e) => e.egg.game));
     const eggs = n === 1 ? 'a felt egg' : `${n} felt eggs`;
