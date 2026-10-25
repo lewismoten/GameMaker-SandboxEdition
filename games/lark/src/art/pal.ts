@@ -28,6 +28,9 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
   ['window', 3, [140, 96, 20], [255, 236, 150]],
 ];
 
+/** Ramps the gold leaves alone. */
+const WARM = new Set(['red', 'pink', 'skin', 'brick', 'wood', 'brass', 'ink']);
+
 /** Ramps that give light, and keep their color whatever the light. */
 const GLOWS = new Set(['yellow', 'gold', 'window']);
 
@@ -60,8 +63,8 @@ const LIGHTS: Record<Light, RGB> = {
   black: [0, 0, 0],
   /** A snow day: bright, a little blue. */
   snow: [0.96, 0.98, 1.04],
-  /** Watt's workshop when the tally counter goes gold: everything warm. */
-  gold: [1.12, 0.92, 0.52],
+  /** The Smart Home when the tally counter goes gold: everything in gold (buildPalette turns each color to its brightness). */
+  gold: [1, 1, 1],
 };
 
 export interface Pal {
@@ -73,7 +76,16 @@ export interface Pal {
 export function buildPalette(light: Light = 'day'): Pal {
   const pb = new PaletteBuilder();
   const tint = LIGHTS[light];
-  const lit = (name: string, v: RGB): RGB => (GLOWS.has(name) && light !== 'black' ? v : (v.map((x, i) => Math.min(255, Math.round(x * tint[i]))) as RGB));
+  const lit = (name: string, v: RGB): RGB => {
+    if (GLOWS.has(name) && light !== 'black') return v;
+    // the gold: the cool colors (the board, the tin, the stone and the sky) turned to their own
+    // brightness in gold; the warm ones (red, skin, wood, brick) stay as they are
+    if (light === 'gold' && !WARM.has(name)) {
+      const l = 0.3 * v[0] + 0.55 * v[1] + 0.15 * v[2];
+      return [Math.min(255, Math.round(l * 1.25 + 20)), Math.min(255, Math.round(l + 8)), Math.round(l * 0.4)];
+    }
+    return v.map((x, i) => Math.min(255, Math.round(x * tint[i]))) as RGB;
+  };
   for (const [name, n, from, to, mid] of RAMPS) {
     pb.ramp(name, n, lit(name, from), lit(name, to), mid && lit(name, mid));
   }

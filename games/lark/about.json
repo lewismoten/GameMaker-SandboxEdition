@@ -46,12 +46,16 @@
       "Old friends from every Sandbox world, each in a spot of trouble",
       "A clock tower that stopped at 6:59, with a parade waiting on it",
       "Floors that tick and tock, gears to turn, and a bell to ring",
+      "A snowed-in street, a turret of rising warm air, painted rocks that roll away from you",
+      "A carousel to ride, a plant to climb all the way to the stars",
       "Keepsakes that teach Joe new moves",
       "Synthesized music in three-quarter time, like a music box",
       "Made for whoever found every tin heart"
     ],
     "shots": [
       ["library.map", 12, 8],
+      ["snow.map", 22, 10],
+      ["fair.map", 13, 10],
       ["road1.map", 12, 10],
       ["square.map", 14, 10],
       ["tower.map", 10, 20]

@@ -161,12 +161,14 @@ function fence(): Pixels {
   return p;
 }
 
-/** A booth's counter, a prize-free one (a lemonade stand). */
+/** A lemonade stand's counter: a striped front, a pitcher and two paper cups on top. */
 function booth(seed: number): Pixels {
   const p = sky(6, seed);
-  bevel(p, 0, 8, 20, 12, r('wood'), 3);
-  p.disc(6, 6, 2.5, c('yellow', 3)).rect(5, 2, 2, 3, c('paper', 4));
-  p.disc(14, 6, 2.5, c('yellow', 3)).rect(13, 2, 2, 3, c('paper', 4));
+  bevel(p, 0, 9, 20, 11, r('wood'), 3);
+  for (let x = 1; x < 20; x += 4) p.rect(x, 12, 2, 8, c('paper', 3));
+  p.rect(3, 2, 6, 7, c('blue', 4)).frame(3, 2, 6, 7, c('stone', 3)).rect(4, 5, 4, 3, c('yellow', 2));
+  p.rect(9, 3, 1, 3, c('stone', 3));
+  for (const x of [12, 16]) p.rect(x, 5, 3, 4, c('paper', 4)).rect(x, 5, 3, 1, c('red', 2));
   return p;
 }
 
