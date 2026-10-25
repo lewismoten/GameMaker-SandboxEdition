@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18846,
+  "frames": 18862,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1366
+    "frame": 1382
    },
    {
     "title": "Level 1: The City Gate",
-    "frame": 3064
+    "frame": 3080
    },
    {
     "title": "Level 2: The Desert Road",
-    "frame": 6178
+    "frame": 6194
    },
    {
     "title": "Level 3: The Tailor's Shop",
-    "frame": 9328
+    "frame": 9344
    },
    {
     "title": "Level 4: The Eye of the Needle",
-    "frame": 11912
+    "frame": 11928
    },
    {
     "title": "Ending",
-    "frame": 13988
+    "frame": 14004
    },
    {
     "title": "Credits",
-    "frame": 16758
+    "frame": 16774
    }
   ]
  }
