@@ -276,3 +276,23 @@ dialog.modal label.recolor-check {
 .blk-group-anim[hidden] {
   display: none;
 }
+
+/* a background block marked as a walking path (walkPathPanel.ts): a footpath stripe along its top */
+.blk-picker .block-picker button.walk-path::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 3px;
+  height: 4px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, #e8b04a 0 4px, #6b4a12 4px 6px);
+  pointer-events: none;
+}
+.walk-paths .row {
+  flex-wrap: wrap;
+}
+.walk-paths .walk-path-check {
+  min-height: 24px;
+  align-items: center;
+}

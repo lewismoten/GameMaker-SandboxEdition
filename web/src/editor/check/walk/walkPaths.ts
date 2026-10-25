@@ -74,7 +74,7 @@ const PATHLIKE = /\b(road|path|street|trail|track|sidewalk|pavement|lane|walk|wa
 export function guessWalkPaths(terrains: readonly Pick<Terrain, 'kind' | 'name' | 'tiles' | 'outside'>[]): number[] {
   const out = new Set<number>();
   for (const t of terrains) {
-    if (t.kind !== 'path' && !PATHLIKE.test(t.name)) continue;
+    if (!t || !Array.isArray(t.tiles) || (t.kind !== 'path' && !PATHLIKE.test(String(t.name)))) continue;
     for (const b of t.tiles) if (b >= 0 && b !== t.outside) out.add(b);
   }
   return clean([...out]);

@@ -34,6 +34,8 @@ import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
 import { groupsPanel } from './groupsPanel';
+import { walkPathPanel } from './walkPathPanel';
+import { readWalkPaths } from '../../check/walk/walkPaths';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -119,6 +121,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       insight.refresh(true);
     },
   });
+  // background blocks: which are walking paths the walkthrough bot keeps to (companion file)
+  const walkPaths = sprites ? undefined : walkPathPanel({ project, file, picked: () => picked, changed: () => markPicker() });
   const badges = checkBadges(project, file, (f) => f.where.block?.n === current && normalize(f.where.block.file) === normalize(file));
 
   // ---- block picker -------------------------------------------------------
@@ -141,10 +145,15 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     select(i);
   }
   function markPicker(): void {
+    const paths = sprites ? undefined : new Set(readWalkPaths(project, file));
     [...picker.children].forEach((b, j) => {
       b.classList.toggle('selected', picked.includes(j) || j === current);
       b.classList.toggle('current', j === current);
+      if (!paths) return;
+      b.classList.toggle('walk-path', paths.has(j));
+      b.setAttribute('aria-label', paths.has(j) ? `Block ${j}, walking path` : `Block ${j}`);
     });
+    walkPaths?.refresh();
   }
   function renderPicker(): void {
     pickerCanvases.length = 0;
@@ -672,6 +681,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           { min: 0, max: 16383 },
         ),
       ),
+      walkPaths?.el,
     );
   }
 
