@@ -8,7 +8,11 @@
 // formats/fliPlaygame.test.ts ports them, the CMF clock against code/GM/SBMUSIC.C load_file
 // (HDRCLK 146 in SOUND.H), and the archive counts are the survey's (.for-lewis/archive/NOTES.md);
 // the Maximus findings are TURBO BUTTON's
-// (manual/magazine/sections/maximus.ts). The DOSBox screenshot is Lewis's (NOTICE.md).
+// (manual/magazine/sections/maximus.ts). The wall glitch is code/GM/PLAYGAME.C ChkMonChr (the
+// axis the two are farther apart on, and which solid bit pushes which way) and movechars (the
+// hero put beside MMsolid with no wall check, that axis's move cancelled, chkmapbounds wrapping
+// him), as engine/monsters.ts chkMonChr and engine/character.ts port them. The DOSBox screenshot
+// is Lewis's (NOTICE.md).
 import { opening, tip, type Chapter } from './chapter';
 
 export const PLAYERS: Chapter = {
@@ -169,6 +173,42 @@ export const LIMITS: Chapter = {
     community games lost their winning song that way. Save music from this edition’s editor and it
     is always 146.</li>
   </ul>
+  <h2>The wall glitch</h2>
+  <p>Anyone who has played a pile of Game-Maker games has met it: the hero is suddenly stuck
+  inside a wall, or hangs in the air and won’t fall, or turns up at the far edge of the map
+  while the view races round after him. Players blame the engine, and they are half right. It
+  is the way PLAYGAME handles a <i>solid monster</i>. When one touches the hero, PLAYGAME moves
+  him into the cell beside it, on the side he is pushed out of, and stops his movement that way.
+  It never looks at what is in that cell. If it holds a wall, he is now inside the wall, where
+  nearly every step and every pull of gravity is blocked, so he stays. A push past the map’s
+  top or bottom row carries him over the edge and, since the map wraps, out at the far side.</p>
+  <p>A monster block’s solid boxes name the side of the hero they stop. <b>Bottom</b> holds up
+  his feet, so he stands on it. <b>Top</b> pushes him down under it. <b>Left</b> stops a hero who
+  meets it with his left side, <b>Right</b> one who meets it with his right. Which one acts
+  depends on the way the two are farther apart, across or up and down.</p>
+  <p>None of this needs a new engine. It needs room:</p>
+  <ul>
+    <li><b>A block of air before every wall.</b> Leave at least one empty block between a solid
+    monster’s path and any wall or solid block it walks toward, or end its path a block short. A
+    pacer that walks right up to a wall shoves a hero waiting in that last gap inside it, and a
+    lift that comes down flush with the floor presses him into it.</li>
+    <li><b>Hazards you can pass through.</b> A monster that hurts needs no solid sides, so leave
+    them all off and it simply hurts. A solid one pushes as it bites: it sinks a hero who lands on
+    it into the floor, or pins him to a wall. A monster meant to be stood on gets Bottom alone.</li>
+    <li><b>Off the edge rows.</b> Keep solid monsters off the map’s top and bottom rows.</li>
+    <li><b>Lifts that rise to meet him.</b> Let a platform come up from below the hero, so he
+    lands on its back, rather than sweep into him from the side. Give it a slow moment at each
+    end, a last block at speed 1, so he can step on and off, and leave two empty blocks over its
+    highest stop: he is two blocks tall, and rides with his feet on it.</li>
+    <li><b>One at a time.</b> Don’t let two solid monsters close in on the same spot. Squeezed
+    from both sides, the hero is popped out the other way, into the ceiling or the floor.</li>
+    <li><b>Stand in every gap.</b> Test by waiting in each gap a solid monster passes, beside it,
+    under it and on it, and letting it come to you.</li>
+  </ul>
+  <p>The Level check reads the files for these: solid monsters on the edge rows, paths that
+  stop right against a block, solid monsters that close in, and monsters that are solid and hurt.
+  Its touch probe then plays the risky ones, and says where a hero sinks, is pushed into a wall
+  or is held. Tell your players to save with <kbd>F5</kbd> now and then all the same.</p>
   <h2>What a full game found</h2>
   <p>Maximus, the Sandbox game that fills every slot, found limits the box doesn’t mention.
   Each was checked against PLAYGAME:</p>
@@ -188,7 +228,7 @@ export const LIMITS: Chapter = {
     <li><b>Maps forget, counters remember.</b> A scene loads its map fresh each visit; what must
     stay done belongs in a counter.</li>
     <li><b>Pushy platforms.</b> A solid moving monster can shove the hero into a wall: keep
-    platforms a block clear of walls.</li>
+    platforms a block clear of walls (the wall glitch, above).</li>
     <li><b>A one-tick scene still flashes.</b> PLAYGAME fades every scene in and out; give a
     pass-through scene an all-black palette.</li>
     <li><b>Twenty sequences go fast.</b> Three play themselves, so a hero has 17 keys at most.
