@@ -41,6 +41,9 @@
   flex: none;
 }
 .sl-edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   margin-left: auto;
   white-space: nowrap;
 }

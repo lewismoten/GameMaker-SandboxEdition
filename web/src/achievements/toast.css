@@ -68,7 +68,9 @@
 
 .ach-toast-link {
   align-self: flex-start;
-  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--accent, #1f3fbf);
   font-weight: 600;
 }

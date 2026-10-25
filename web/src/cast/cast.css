@@ -85,6 +85,15 @@ main.cast .lead {
   gap: 16px;
 }
 
+/* the family's links: 24px tall targets, as wide as their words */
+.cast-fam > a,
+.cast-fam-links a {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 24px;
+}
+
 .fam-sandbox {
   --fam: var(--fam-sandbox);
 }
