@@ -157,6 +157,7 @@ const COMMON: Group = {
   rows: [
     [['?'], 'Show this list'],
     [[`${MOD}+P`], 'Open a file by name (recent files first)'],
+    [[`${MOD}+S`], 'Save now (changes also save by themselves, in this browser)'],
     [['Tab', 'Shift+Tab'], 'Move between controls'],
     [['Esc'], 'Close a dialog or the Files list'],
   ],
@@ -216,6 +217,12 @@ export function showShortcuts(kind?: FileKind): Promise<void> {
         : null,
       ...own.map(table),
       table(COMMON),
+      // where to read more: what each editor is for (a new tab, so the editor stays as it is)
+      h(
+        'p',
+        { class: 'hint' },
+        h('a', { href: './#/help/editors', target: '_blank', rel: 'noopener' }, 'What each editor does, in the Guide (opens a new tab)\u00a0→'),
+      ),
     ),
   ).then(() => undefined);
 }
