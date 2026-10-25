@@ -118,7 +118,7 @@ The rules (low risk, as for the heart):
   and the text-fit check.
 - Keep it warm. Clowns are always friendly. Use "building blocks", not brand names. No photos:
   redraw as pixel art.
-- Never put anything from the secret game in another game.
+- Never put anything from a secret game in another game.
 
 ## The Easter egg
 
