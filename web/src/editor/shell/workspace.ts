@@ -605,7 +605,7 @@ export class Workspace {
       h(
         'p',
         { class: 'hint' },
-        level ? `Starts at ${levelName}, the level that uses ${back}. ` : '',
+        level ? `The title and menu still come first (press a key, then choose Play); then it starts at ${levelName}, the level that uses ${back}. ` : '',
         'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
       ),
     );
