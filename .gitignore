@@ -17,3 +17,5 @@ __pycache__/
 /dosbox/
 # a copy of Carl with its pre-fix COVER.FLI, for a screenshot of the DOS glitch
 /dosbox-broken/
+# setups, saved games and high scores npm run dosbox backs up before each rebuild
+/dosbox-saves/

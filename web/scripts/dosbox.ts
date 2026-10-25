@@ -14,7 +14,7 @@
 //   npx vite-node scripts/dosbox.ts [target folder] [--secret] [--launch]
 import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { join, resolve } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { exportDos } from '../src/export/exportDos';
 import { readZip } from '../src/project/zip';
@@ -61,19 +61,38 @@ function copyUpper(from: string, to: string): void {
   }
 }
 
-// each game's sound and video setup (CONFIG.DAT, written by its setup screen) survives a rebuild
+// what playing in DOS wrote survives a rebuild: each game's sound and video setup (CONFIG.DAT),
+// saved games (GAME0-9.SAV, SAVNAMES.DAT) and high scores (.HIS). They are copied first to
+// dosbox-saves/<date and time>/ beside the folder (git-ignored), then put back into the new one.
+const PLAYED = /^(config\.dat|game\d\.sav|savnames\.dat|.*\.his)$/i;
 const kept = new Map<string, Buffer>();
 const keep = (dir: string, rel = ''): void => {
   if (!existsSync(dir)) return;
   for (const name of readdirSync(dir)) {
     const path = join(dir, name);
     if (statSync(path).isDirectory()) keep(path, join(rel, name));
-    else if (name.toUpperCase() === 'CONFIG.DAT') kept.set(join(rel, name), readFileSync(path));
+    else if (PLAYED.test(name)) kept.set(join(rel, name), readFileSync(path));
   }
 };
 keep(target);
+let backup: string | undefined;
+if (kept.size) {
+  const stamp = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19);
+  backup = join(target, '..', `${basename(target)}-saves`, stamp);
+  for (const [rel, data] of kept) {
+    mkdirSync(join(backup, rel, '..'), { recursive: true });
+    writeFileSync(join(backup, rel), data);
+  }
+}
 rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
+
+/** Removes empty folders under (and including) `dir`, after the backup is pruned. */
+function pruneEmpty(dir: string): void {
+  if (!existsSync(dir)) return;
+  for (const name of readdirSync(dir)) if (statSync(join(dir, name)).isDirectory()) pruneEmpty(join(dir, name));
+  if (!readdirSync(dir).length) rmSync(dir, { recursive: true });
+}
 writeFileSync(join(target, MARK), 'Made by web/scripts/dosbox.ts; emptied and rebuilt each time it runs.\n');
 const gm = join(target, 'GM');
 copyUpper(join(ROOT, 'runtime/run/GM'), gm);
@@ -110,11 +129,9 @@ for (const id of readdirSync(join(ROOT, 'games'))) {
   const gam = files.mainGame();
   if (!gam) continue;
   const kind = about.series === 'bizarre' || about.company === 'The Bard of Bizarre' ? 'BIZARRE' : 'SANDBOX';
-  // its first 8 letters: DOSBox makes its own NAME~1 short names, so none of ours use the tilde
-  const dir = id
-    .toUpperCase()
-    .replace(/[^A-Z0-9_-]/g, '')
-    .slice(0, 8);
+  // named after its .gam, as its .EXE is (TUIT\TUIT.EXE for realm), the way GM's Transfer named
+  // a game's folder; already a DOS name (the export checks), so no NAME~1 short names
+  const dir = gam.replace(/\.gam$/i, '').toUpperCase();
   // for GM's menus: the disk's files, in a folder beside GM's samples
   writeFiles(
     join(gm, dir),
@@ -128,9 +145,16 @@ for (const id of readdirSync(join(ROOT, 'games'))) {
 let restored = 0;
 for (const [rel, data] of kept) {
   const path = join(target, rel);
+  // the same as the fresh build (a sample game's own high scores, say): nothing to keep
+  if (existsSync(path) && readFileSync(path).equals(data)) {
+    if (backup) rmSync(join(backup, rel));
+    continue;
+  }
   if (existsSync(join(path, '..'))) (writeFileSync(path, data), restored++);
 }
-if (restored) console.log(`kept ${restored} CONFIG.DAT setup${restored === 1 ? '' : 's'} from the last run`);
+if (backup) pruneEmpty(backup);
+if (backup && existsSync(backup)) console.log(`backed up what DOS wrote (setups, saved games, high scores) to ${backup}`);
+if (restored) console.log(`put back ${restored} played file${restored === 1 ? '' : 's'} (a game left out this time keeps its copy in the backup only)`);
 for (const [kind, dirs] of Object.entries(made)) console.log(`GAMES\\${kind}\\  and GM\\  ${dirs.length} games: ${dirs.join(' ')}`);
 
 // DOSBox starts already in C:\GM, with this folder as drive C: given as -c commands, so the app
