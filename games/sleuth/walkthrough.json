@@ -36,7 +36,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 107071,
+  "frames": 107971,
   "chapters": [
    {
     "title": "Opening",
@@ -56,23 +56,23 @@
    },
    {
     "title": "Act Two: The Theatre at Night",
-    "frame": 42106
+    "frame": 43007
    },
    {
     "title": "The Green Room, 2 AM",
-    "frame": 54366
+    "frame": 55267
    },
    {
     "title": "Dawn: The Accusation",
-    "frame": 92876
+    "frame": 93776
    },
    {
     "title": "Ending",
-    "frame": 97305
+    "frame": 98205
    },
    {
     "title": "Credits",
-    "frame": 103359
+    "frame": 104259
    }
   ]
  }
