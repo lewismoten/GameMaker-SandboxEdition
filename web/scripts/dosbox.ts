@@ -134,7 +134,20 @@ for (const [kind, dirs] of Object.entries(made)) console.log(`GAMES\\${kind}\\  
 const startUp = ['-c', `mount c "${target}"`, '-c', 'c:', '-c', 'cd \\GM'];
 const command = join(target, 'DOSBOX.command');
 const quoted = startUp.map((a) => `'${a.replace(/'/g, `'\\''`)}'`).join(' ');
-writeFileSync(command, `#!/bin/sh\n# Opens the DOSBox app with this folder as drive C:, in C:\\GM (double-click in Finder)\nopen -a DOSBox --args ${quoted}\n`);
+// the app's own program, run directly: `open -a DOSBox --args …` loses the arguments
+writeFileSync(
+  command,
+  [
+    '#!/bin/sh',
+    '# Starts DOSBox with this folder as drive C:, in C:\\GM (double-click in Finder)',
+    'for app in /Applications/DOSBox.app "$HOME/Applications/DOSBox.app"; do',
+    `  if [ -x "$app/Contents/MacOS/DOSBox" ]; then "$app/Contents/MacOS/DOSBox" ${quoted} >/dev/null 2>&1 & exit 0; fi`,
+    'done',
+    'echo "DOSBox.app is not in /Applications or ~/Applications." >&2',
+    'exit 1',
+    '',
+  ].join('\n'),
+);
 chmodSync(command, 0o755);
 
 console.log(`
@@ -150,4 +163,4 @@ or play one straight from DOS, e.g.
   cd \\GAMES\\SANDBOX\\${made.SANDBOX[0] ?? 'TEDDY'}
   dir *.exe                  (the game's .EXE; CONFIG.BAT sets up sound and video)
 `);
-if (args.includes('--launch')) execFileSync('open', ['-a', 'DOSBox', '--args', ...startUp]);
+if (args.includes('--launch')) execFileSync(command);
