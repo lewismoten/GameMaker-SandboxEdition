@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19939,
+  "frames": 19955,
   "chapters": [
    {
     "title": "Opening",
@@ -67,39 +67,39 @@
    },
    {
     "title": "Story",
-    "frame": 1259
+    "frame": 1275
    },
    {
     "title": "Level 1: The Couch",
-    "frame": 3008
+    "frame": 3024
    },
    {
     "title": "Level 2: The Walls",
-    "frame": 5147
+    "frame": 5163
    },
    {
     "title": "Level 3: Joins Me in Bed",
-    "frame": 7348
+    "frame": 7364
    },
    {
     "title": "Level 4: The Open Window",
-    "frame": 9621
+    "frame": 9637
    },
    {
     "title": "Level 5: Carl Has Seen Things",
-    "frame": 11170
+    "frame": 11186
    },
    {
     "title": "Level 6: The Aux Cord",
-    "frame": 13296
+    "frame": 13312
    },
    {
     "title": "Ending",
-    "frame": 15109
+    "frame": 15125
    },
    {
     "title": "Credits",
-    "frame": 17851
+    "frame": 17867
    }
   ]
  }
