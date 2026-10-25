@@ -3,6 +3,7 @@
 // parade strut), then off to the Clown Club in his red CitiCar; then intro.fli (Gwinn and
 // the suitcase). And at the end, the Clown Club parade with Teddy riding up front.
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, blob, centered, clubArt, outlined, scaleBlit } from '../art/draw';
 import { FX } from '../sprites/fx';
@@ -39,8 +40,9 @@ class Reel {
     draw(p);
     for (let i = 0; i < hold; i++) this.frames.push(Uint8Array.from(p.px));
   }
-  fli(speed: number): Uint8Array {
-    return encodeFli(this.frames, SP.pal, { speed });
+  /** The .FLI; `fadeOut` ends it on a fade to black (a clip before the next picture). */
+  fli(speed: number, fadeOut = false): Uint8Array {
+    return (fadeOut ? encodeFliFadeOut : encodeFli)(this.frames, SP.pal, { speed });
   }
 }
 
@@ -122,7 +124,7 @@ export function leoFli(): Uint8Array {
     caption(p, "TONIGHT IS THE CLOWN CLUB'S");
     caption(p, 'BIG SHOW, AND HE IS THE STAR!', 22);
   }, 14);
-  return r.fli(9);
+  return r.fli(9, true);
 }
 
 /** Clip 2: Doc Leo goes ahead to the Club in his CitiCar; his costume suitcase waits on the step. */
@@ -156,7 +158,7 @@ export function carFli(): Uint8Array {
       f < 12 ? 2 : f === 33 ? 8 : 1,
     );
   }
-  return r.fli(9);
+  return r.fli(9, true);
 }
 
 /** The finale: the Clown Club parade down Main Street at night, Teddy riding up front in the CitiCar. */

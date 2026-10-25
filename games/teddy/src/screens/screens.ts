@@ -3,6 +3,7 @@
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
@@ -318,7 +319,7 @@ export function lostScreen(): Pixels {
 /**
  * The intro cartoon (FLI): the backyard at dawn; Gwinn bounds across with Doc Leo's
  * suitcase, costume pieces flying out; Teddy pops out of his doghouse and gives chase;
- * then the logo drops in.
+ * then the yard fades to black (the logo is the title picture's).
  */
 export function introFli(): Uint8Array {
   const frames: Uint8Array[] = [];
@@ -369,16 +370,12 @@ export function introFli(): Uint8Array {
     caption(p, 'TEDDY TO THE RESCUE!');
     add(p);
   }
-  // 4. The logo drops in, bouncing
-  const title = titleScreen();
-  for (let f = 0; f < 14; f++) {
-    const p = landscape(7);
-    const drop = Math.round(-90 * Math.cos((f / 13) * Math.PI * 2.5) * (1 - f / 13));
-    logo(p, 6 + Math.min(0, drop) + (drop > 0 ? Math.round(drop / 6) : 0));
-    add(p);
-  }
-  add(title, 3);
-  return encodeFli(frames, SP.pal, { speed: 6 });
+  // 4. the yard, empty but for the doghouse: off they go (the title, logo and all, follows the fade)
+  const p = new Pixels(W, H);
+  p.px.set(bg.px);
+  caption(p, 'TEDDY TO THE RESCUE!');
+  add(p, 6);
+  return encodeFliFadeOut(frames, SP.pal, { speed: 6 });
 }
 
 /**
