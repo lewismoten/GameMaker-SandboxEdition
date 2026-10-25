@@ -45,12 +45,12 @@ describe('The Shareware Shelf', () => {
     }
   });
 
-  it('checks the games on the Game-Maker CD, and only those', () => {
+  it('checks the games on the Game-Maker CD, and only those', async () => {
     const cdIds = new Set(catalog.filter((g) => !g.original).map((g) => g.id));
     const marked = ARCHIVE.games.filter((g) => g.cd);
     for (const g of marked) expect(cdIds.has(g.cd!), g.title).toBe(true);
     expect(new Set(marked.map((g) => g.cd)).size).toBe(marked.length);
-    expect(shelfItems(ctx).filter((i) => i.mark).length).toBe(marked.length);
+    expect((await shelfItems(ctx)).filter((i) => i.mark).length).toBe(marked.length);
   });
 
   it('prints every title once over its pages', async () => {

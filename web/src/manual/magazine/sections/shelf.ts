@@ -2,7 +2,7 @@
 // lists (data/gameMakerArchive.json, written by scripts/gameMakerArchive.ts), titles only, set
 // small in columns over several pages like a shareware catalog's back pages. A check marks the
 // ones on the Game-Maker CD, which play on this site (when the magazine's games list them).
-import ARCHIVE from '../data/gameMakerArchive.json';
+// The list is its own download, fetched while the issue is put together.
 import { head, note, p, shelf } from '../blocks';
 import type { MagContext, MagPage, MagSection, ShelfItem } from '../types';
 
@@ -12,14 +12,16 @@ const PER_PAGE = 130;
 
 const MARK = 'on the Game-Maker CD: plays here';
 
+const archive = () => import('../data/gameMakerArchive.json').then((m) => m.default);
+
 /** The shelf's titles, alphabetical as the data file has them; marked when the CD game is listed. */
-export function shelfItems(ctx: MagContext): ShelfItem[] {
-  return ARCHIVE.games.map((g) => ({ title: g.title, by: g.by, year: g.year, mark: !!(g.cd && ctx.game(g.cd)) }));
+export async function shelfItems(ctx: MagContext): Promise<ShelfItem[]> {
+  return (await archive()).games.map((g) => ({ title: g.title, by: g.by, year: g.year, mark: !!(g.cd && ctx.game(g.cd)) }));
 }
 
-function pages(ctx: MagContext): MagPage[] {
-  const items = shelfItems(ctx);
-  const makers = new Set(ARCHIVE.games.flatMap((g) => (g.by ? g.by.split(', ') : []))).size;
+async function pages(ctx: MagContext): Promise<MagPage[]> {
+  const items = await shelfItems(ctx);
+  const makers = new Set((await archive()).games.flatMap((g) => (g.by ? g.by.split(', ') : []))).size;
   const marked = items.filter((i) => i.mark).length;
   const out: MagPage[] = [
     {
