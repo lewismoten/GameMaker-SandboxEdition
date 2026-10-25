@@ -18,7 +18,7 @@ const soundCardAd = () =>
         [
           callouts(
             'boaster',
-            'The Sound Boaster card: a green circuit board with black chips, gold edge fingers, a metal bracket of jacks, a volume wheel and a joystick port, and its name printed across it in big white letters',
+            'The Sound Boaster card: a red circuit board with black chips, gold edge fingers, a metal bracket of jacks, a volume wheel and a joystick port, and its name printed across it in big white letters',
             [
               { x: 45, y: 13, title: 'FM music chip', text: 'Nine voices at once, in every song of every game.' },
               { x: 68, y: 13, title: 'Digital sound', text: 'Real recorded sound: voices, roars, breaking glass.' },

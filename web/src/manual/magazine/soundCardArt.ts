@@ -1,4 +1,4 @@
-// Pictures for the Sound Boaster ad (sections/soundCardAd.ts): the card itself, a green 8-bit
+// Pictures for the Sound Boaster ad (sections/soundCardAd.ts): the card itself, a red 8-bit
 // ISA board with its FM music chip, its digital sound chip, a crystal, jumpers, gold fingers
 // and a metal bracket of jacks, a volume wheel and the joystick/MIDI port; and a player's face
 // before it (the PC speaker) and after. Sound Boaster and Overcreative Labs are made up.
@@ -28,9 +28,9 @@ function card(): string {
   for (let i = 0; i < 31; i++) fingers += `<rect x="${74 + i * 6.2}" y="134" width="4.4" height="13" rx="0.6"/>`;
   return (
     // the board and its edge connector
-    `<path d="M22 8 H312 V130 H262 V146 H70 V130 H22 Z" fill="#1d6b3a"/>` +
+    `<path d="M22 8 H312 V130 H262 V146 H70 V130 H22 Z" fill="#741814"/>` +
     `<g fill="#d9b44a">${fingers}</g>` +
-    `<g fill="none" stroke="#2f8f52" stroke-width="1.4">${traces}<path d="M40 40 H120 V28"/><path d="M220 60 H290 V100"/><path d="M60 100 H140 V80"/></g>` +
+    `<g fill="none" stroke="#ac4434" stroke-width="1.4">${traces}<path d="M40 40 H120 V28"/><path d="M220 60 H290 V100"/><path d="M60 100 H140 V80"/></g>` +
     // the bracket: jacks, the volume wheel and the joystick/MIDI port
     `<rect x="4" y="2" width="20" height="132" rx="2" fill="#b9bcc2"/><rect x="21" y="2" width="3" height="132" fill="#8d9096"/>` +
     `<g fill="#1b1b1d">${[16, 32, 48].map((y) => `<circle cx="14" cy="${y}" r="4.6"/>`).join('')}</g>` +
@@ -49,10 +49,10 @@ function card(): string {
     cap(166, 74, '#1b1b1d') +
     cap(180, 74) +
     `<g fill="#1b1b1d">${[0, 1, 2, 3].map((i) => `<rect x="${270 + i * 8}" y="${80}" width="5" height="10"/>`).join('')}</g><rect x="278" y="80" width="5" height="5" fill="#d33"/>` +
-    `<text x="282" y="99" font-size="4.5" fill="#e8f5e8" font-family="Arial" text-anchor="middle">IRQ 7 · 220h</text>` +
+    `<text x="282" y="99" font-size="4.5" fill="#f4e8e0" font-family="Arial" text-anchor="middle">IRQ 7 · 220h</text>` +
     // the name, as big as the board allows
     `<text x="36" y="118" font-size="17" font-weight="900" fill="#f4f1e6" font-family="'Arial Black', Arial, sans-serif" letter-spacing="0.5">SOUND BOASTER</text>` +
-    `<text x="38" y="126" font-size="5.2" fill="#cfe8d6" font-family="Arial, sans-serif">OVERCREATIVE LABS · SOUND BLASTER COMPATIBLE · REV. A</text>` +
+    `<text x="38" y="126" font-size="5.2" fill="#f0d4c8" font-family="Arial, sans-serif">OVERCREATIVE LABS · SOUND BLASTER COMPATIBLE · REV. A</text>` +
     `<g transform="rotate(-8 60 60)"><rect x="36" y="52" width="46" height="20" fill="#ffd400"/><text x="59" y="60" font-size="5" font-weight="700" text-anchor="middle" font-family="Arial">Q.C. PASSED</text><text x="59" y="67" font-size="4" text-anchor="middle" font-family="Arial">and it knows it</text></g>`
   );
 }
