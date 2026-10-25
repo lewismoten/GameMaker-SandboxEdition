@@ -82,5 +82,5 @@ export const SHAREWARE: Chapter = {
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
   animation stays tiny and plays on any PC (RSD’s own text-box animations in <i>Penguin Pete</i>).
   Fade-in and fade-out animations round a text screen in a slide list make a cheap page turn.</p>
-  ${tip('Where these came from:', 'The games named here were looked at in the Internet Archive’s Game-Maker Archive collection, opened only with this edition’s file readers. Their ideas are described in our own words; their art, music and words belong to their authors.')}`,
+  ${tip('Where these came from:', 'The games named here were looked at in the Internet Archive’s Game-Maker Archive collection, opened only with this edition’s file readers. Their ideas are described in the guide’s own words; their art, music and words belong to their authors.')}`,
 };

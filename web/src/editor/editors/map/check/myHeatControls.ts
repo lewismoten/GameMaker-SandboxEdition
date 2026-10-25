@@ -43,7 +43,7 @@ export function myHeatControls(host: MyHeatHost): {
       ['bot', 'The bot’s heat map'],
       ['mine', 'My heat map'],
       ['both', 'Both combined'],
-      ['compare', 'Compare: where only one of us went'],
+      ['compare', 'Compare: where only you or the bot went'],
     ],
     () => view,
     (v) => ((view = v), host.changed()),
