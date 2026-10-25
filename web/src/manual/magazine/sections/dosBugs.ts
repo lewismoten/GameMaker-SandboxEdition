@@ -27,7 +27,7 @@ export const DESIGN: DesignFind[] = [
     fix: 'a tap walks one block', // 298647c9
   },
   { game: 'Snowbound', what: 'the sled sat on flat snow at the top of the hill, one shove per press of Down', fix: 'one push starts the run' }, // 9160dd70
-  { game: 'Sandcastle Knight', what: 'nothing at the start said G picks things up; only the manual did' },
+  { game: 'Sandcastle Knight', what: 'nothing at the start said G picks things up; only the manual did', fix: 'signs by the start teach G and Space' }, // afccdc97
   {
     game: 'Teddy’s Little Big Adventure',
     what: 'in the drive between levels, Teddy’s head floated behind THE CHEZ',
