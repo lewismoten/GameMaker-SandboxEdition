@@ -40,6 +40,8 @@ interface BoxOptions {
   binding?: 'staples' | 'comb';
   /** The tray's heading (a box's contents by default; a folder of maps has no manual). */
   trayHeading?: string;
+  /** The piece to open at, by id ('manual' or a BoxItem's): the Library's card for it. The first otherwise. */
+  start?: string;
 }
 
 const COMB_HOW = 'two pages a side: fold the stack, or cut it and bind it';
@@ -347,7 +349,10 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       }
     document.body.append(overlay, printRoot);
     if (!pages.length) bookletBtn.hidden = true;
-    select(pages.length ? 'manual' : (items[0]?.id ?? 'manual'));
-    tray.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
+    const first = pages.length ? 'manual' : (items[0]?.id ?? 'manual');
+    select(entries.some((e) => e.id === options.start) ? options.start! : first);
+    const picked = tray.querySelector<HTMLElement>('li.on button') ?? tray.querySelector<HTMLElement>('button');
+    picked?.focus({ preventScroll: true });
+    picked?.scrollIntoView({ block: 'nearest' });
   });
 }

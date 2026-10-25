@@ -578,11 +578,11 @@ export async function dosManualPages(): Promise<BookPage[]> {
   return bookPages(pages(await galleryShots()));
 }
 
-/** The guide in the box viewer, with the box's other contents (loaded only now: the copy check needs just the pages). */
-export async function openDosManual(): Promise<void> {
+/** The guide in the box viewer, with the box's other contents (loaded only now: the copy check needs just the pages), open at `start` (a piece's id) or the guide. */
+export async function openDosManual(start?: string): Promise<void> {
   const [shots, { openBox }, { gmBoxItems }] = await Promise.all([galleryShots(), import('./printables/viewer'), import('./printables/gmItems')]);
   const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
-  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
+  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb', start });
 }
 
 /** The guide as a stapled booklet for the box viewer: note pages fill it out to whole folded sheets. */
