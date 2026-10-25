@@ -31,7 +31,7 @@ export const SHAREWARE: Chapter = {
   with one frame that hurts is a fire that pulses (<i>Thal’s Quest for the Crystals</i>).</p>
   <h2>Look-alike blocks as secret doors</h2>
   <p>Two blocks with the same picture can do different things. A copy of the wall that isn’t solid
-  is a secret door; a copy of the sky that is solid is an invisible bridge (<i>Dead Awakening</i>);
+  is a secret door; a copy of the sky that is solid is an invisible bridge;
   a copy with a gravity is a hidden slide or current. Copies that look like empty space but stand
   in the way, and change when bumped, make the invisible maze of <i>Parsec Man 3D</i>. Hint at
   them fairly: a crack, a different echo, a coin that leads the way.</p>
