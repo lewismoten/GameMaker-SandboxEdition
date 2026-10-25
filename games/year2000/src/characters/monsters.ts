@@ -139,8 +139,11 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.sparky, { pics: anim('sparky', 2), power: 140, towards: RANDOM(3), becomes: MON.sparky2, score: 500 });
   def(MON.sparky2, { pics: anim('sparkyMad', 2), power: 140, towards: -3, becomes: MON.sparky3, score: 750 });
   def(MON.sparky3, { pics: anim('sparkyMad', 1), power: 140, towards: RANDOM(6), becomes: MON.sparkyDizzy, score: 1000 });
-  // Dizzy for a moment (no zap can touch him), then he lets go of the cover page.
-  def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.cover });
+  // Dizzy for a moment (no zap can touch him), then good dog: he trots over to Dex, still too
+  // tough for a zap, and drops the cover page at his feet, so a stray zap has nothing lying
+  // about the gym to hit (it would beat the page: a page Dex can take must be weaker than him).
+  def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.sparkyFetch });
+  def(MON.sparkyFetch, { pics: anim('sparky', 3), power: 250, towards: 5, end: 50, becomes: MON.cover });
   // The cover page: tough enough that lava can't hurt it (only a careless zap can).
   def(MON.cover, { pics: [['cover', 50]], power: 99 });
   // A page on the copier's tray: as tough as the cover, and gone before the next one prints.

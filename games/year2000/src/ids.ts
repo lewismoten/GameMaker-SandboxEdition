@@ -123,5 +123,7 @@ export const MON = {
   buggyOff: 54,
   /** A page from the Science Fair's copier: touch it for one more page. */
   page: 55,
+  /** Calm again after his dizzy spell: Sparky trots to Dex and drops the cover page at his feet. */
+  sparkyFetch: 56,
   none: 64,
 } as const;

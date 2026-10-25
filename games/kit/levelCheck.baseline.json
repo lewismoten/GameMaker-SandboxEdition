@@ -487,7 +487,6 @@
  "year2000": [
   "warning start-threat s5 Monster 21 starts 2 blocks from where the hero comes in",
   "warning start-threat s5 Monster 22 starts 3 blocks from where the hero comes in",
-  "warning start-threat s5 Monster 24 starts 2 blocks from where the hero comes in",
-  "warning start-threat s5 Monster 25 walks to where the hero comes in: within 2.2 s"
+  "warning start-threat s5 Monster 24 starts 2 blocks from where the hero comes in"
  ]
 }

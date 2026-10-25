@@ -161,7 +161,7 @@ const JUNGLE = [
   'R..ttt...Y...........R',
   'R.......RRRR...tt....R',
   'R.q...........ttt..B.R',
-  'R....D.....Y.......h.R',
+  'RD.........Y.......h.R', // this dino keeps to the far side, away from the booth's arrival spot
   'R..Y.....tt......*...R',
   'R.......ttt.@..Y.....R',
   'RRRRRRRRRRRRRRRRRRRRRR',

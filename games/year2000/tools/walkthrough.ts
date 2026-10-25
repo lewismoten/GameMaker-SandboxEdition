@@ -104,7 +104,13 @@ for (const [i, l] of LEVELS.entries()) {
       for (let t = 0; t < 4000 && ci.meter[CTR.cover] <= 1; t++) {
         const w = sim.w;
         const mm = w.mm.findIndex(
-          (m) => m.monnum === MON.sparky || m.monnum === MON.sparky2 || m.monnum === MON.sparky3 || m.monnum === MON.sparkyDizzy || m.monnum === MON.cover,
+          (m) =>
+            m.monnum === MON.sparky ||
+            m.monnum === MON.sparky2 ||
+            m.monnum === MON.sparky3 ||
+            m.monnum === MON.sparkyDizzy ||
+            m.monnum === MON.sparkyFetch ||
+            m.monnum === MON.cover,
         );
         if (mm < 0) break;
         const [sx, sy] = [w.mi[mm].curx[0], w.mi[mm].cury[0]];
