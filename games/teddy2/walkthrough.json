@@ -8,23 +8,23 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0QEgaSBEgCyAbNATkCuRBNCBIKkgISBpIVzQFNBkgIyBzNAU0BSAnIBc0KTQbNATkCuRBNBUgIyAZICMgTEgqSFM0VHwKfHk0TzQFNAUgEyAPNCk0BSATIA80KTQFIBMgDzQpNAUgEyAPNCk0BSATIA80KTQFIBMgDzQpNAUgFyAPNCk05zQ=="
+   "keys": "AU0QEgaSBEgCyAbNATkCuRBNCBIKkgISBpIVzQFNBkgIyBzNAU0BSAnIBc0KTQbNATkCuRBNBUgIyBcSCpIUzRUfAp8eTRPNAU0BSATIA80KTQFIBMgDzQpNAUgEyAPNCk0BSATIA80KTQFIBMgDzQpNAUgEyAPNCk0BSAXIA80KTTnN"
   },
   {
    "scene": 3,
-   "keys": "AU0TEgaSBkgGyAnNATkCuRBNKBIGkgbNATkCuRBNEkgIyBVICMgNSAjID80BTQHNAwICgjxNA80BTRZICMgjzQECAoIcSwFIBcgDyzlLB0gIyATLAUsBSAbIA8sKSwFIBsgEywohAqEKTVTN"
+   "keys": "AU0TEgaSBkgGyAnNATkCuRBNKBIGkgbNATkCuRBNE0gIyBRICMgNSAjID80BTQHNAwICgjxNA80BTRZICMgnzQFLAcsDAgKCFEsDywlLAUgFyAXLM0sGSAjIBMsBSwFIBsgDywpLAUgGyATLCiECoQpNVM0="
   },
   {
    "scene": 4,
-   "keys": "AU0HSALIEM0BTQHNAwICghRNCs0BOQK5FE0CSAjIDkgIyAhICMhOEgqSEs0BBAKEHk0uzQFQAtAZTQMSBpICzQFNAUgIyATNCk0CSAjICs0sEgqSAE0GSAjIF80BTQHNAwICghRNBs0="
+   "keys": "AU0HSALIEM0BTQHNAwICghRNCs0BOQK5FE0CSAjIDkgIyAhICMhOEgqSEs0BBAKEHk0uzQFQAtAZTQMSBpICzQFNAUgIyATNCk0CSAjICs0sEgqSAE0ISAjIBEgIyBXNAU0BzQMCAoIUTQbN"
   },
   {
    "scene": 5,
-   "keys": "AU0JEgqSCc0BEguSChILkgoSC5IKEguSChILkgoSC5IKTRfNAQMCgyhNCM0BTQFIBcgDzUNNR80BTRvNB00kzQFNAUgGyATNCk0VzQ=="
+   "keys": "AU0JEgqSCc0BEguSChILkgoSC5IKEguSChILkgoSC5IKTRfNAQMCgyhNCM0BTQFIBcgDzUNNSM0BTRvNCU0ESAjIIs0BTQFIBsgEzQpNFM0="
   },
   {
    "scene": 6,
-   "keys": "AU0WSAjICs0BOQK5FE0ZSAjIBhIKkgTNAU0FzQ5LA8sBBAKEHk0azQFNDkgGyAhIBsgHSAjIBEgIyAfNAU0BzQM5ArkeTQzNAQICghRNDs0BOQK5FE0eEgaSBkgCyA7NAU0BSAbIA80="
+   "keys": "AU0WSAjICs0BOQK5FE0ZSAjIBhIKkgTNAU0FzQ5LA8sXBAKEHk0azQFNDkgGyAhIBsgHSAjIBEgIyAfNAU0BzQM5ArkeTQzNAQICghRNDs0BOQK5FE0eEgaSBkgCyA7NAU0BSAbIA80="
   },
   {
    "scene": 7,
@@ -36,11 +36,11 @@
   },
   {
    "scene": 9,
-   "keys": "AU0ozQFIBsgISAbICEgGyAhIBsgISAbICAICghhNK80BAwKDKE0UEgqSD80BTQHNAx8Cnx5NB80BTRjNAU0BzQMEAoQUTQfNAU0kzQFNAUgGyAXNmgFNDM0BIQKhCk0LzQFNJkgIyBHN"
+   "keys": "AU0ozQFIBsgISAbICEgGyAhIBsgISAbICAICghhNK80BAwKDKE0UEgqSEs0BTQHNAx8Cnx5NB80BTRjNAU0BzQMEAoQUTQfNAU0kzQFNAUgIyAXNkwFNDM0BIQKhCk0LzQFNJkgIyBHN"
   },
   {
    "scene": 10,
-   "keys": "AU0UzQEEAoQGTQJICMgOSAjIBEgCyARICMgCEgqSGM0BTSnNAAUChQFNAM0ABQmFAU0RzQAFAoUBTQDNAAUChQFNAM0ABQeFAU0fzQAFAoUBTQDNAAUFhQFNA80BOQK5FE0JzQAFAoUBTQDNAAUHhQFNJ80BAgKCHk0gzQEDAoMyTSzNAU0BSAbIBM0KTSDN"
+   "keys": "AU0UzQEEAoQGTQJICMgVSAjIBEgCyARICMgCEgqSGM0BTSXNAAUChQFNAM0ABQaFAU0UzQAFAoUBTQDNAAUHhQFNH80ABQKFAU0AzQAFBYUBTQTNATkCuRRNCM0ABQKFAU0AzQAFB4UBTSjNAQICgh5NIM0BAwKDMk0szQFNAUgGyATNCk0gzQ=="
   }
  ],
  "chapters": [
@@ -83,7 +83,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 34588,
+  "frames": 34736,
   "chapters": [
    {
     "title": "Opening",
@@ -91,51 +91,51 @@
    },
    {
     "title": "Story",
-    "frame": 1657
+    "frame": 1659
    },
    {
     "title": "Level 1: Doc Leo's House",
-    "frame": 3999
+    "frame": 4003
    },
    {
     "title": "Level 2: Main Street",
-    "frame": 6535
+    "frame": 6506
    },
    {
     "title": "Level 3: Gwinn's Night Out",
-    "frame": 9484
+    "frame": 9478
    },
    {
     "title": "Level 4: The River",
-    "frame": 12100
+    "frame": 12134
    },
    {
     "title": "Level 5: Gwinn on the Farm",
-    "frame": 14518
+    "frame": 14592
    },
    {
     "title": "Level 6: The Corn Maze",
-    "frame": 16823
+    "frame": 16969
    },
    {
     "title": "Level 7: Gwinn Signs Up",
-    "frame": 19778
+    "frame": 19924
    },
    {
     "title": "Level 8: The Fair Midway",
-    "frame": 23159
+    "frame": 23305
    },
    {
     "title": "Level 9: The Dog Show",
-    "frame": 26183
+    "frame": 26322
    },
    {
     "title": "Ending",
-    "frame": 28617
+    "frame": 28760
    },
    {
     "title": "Credits",
-    "frame": 31219
+    "frame": 31362
    }
   ]
  }
