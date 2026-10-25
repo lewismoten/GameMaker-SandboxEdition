@@ -38,6 +38,12 @@ Making the files:
   Ray traced like `sandlogo.ts`; run it once (`cd web && npx vite-node ../games/kit/madewith.ts`, `PREVIEW=<folder>` for
   frame PNGs) to write `web/public/opening/madewith.fli` and its still `madewith.gif`, which the app ships. The web app
   never imports it.
+- `madewithMore.ts` — three more of those openings, drawn flat as Reel cartoons (`reel.ts`) from `madewithArt.ts` (the
+  palette, the navy sky, the wall of blue blocks, GAME-MAKER built of little gold blocks from the 8x8 font, outlined 8x8
+  lettering): `mwblocks.fli` (the letters stacked up block by block), `mwwipe.fli` (the wall of blue blocks turns over in
+  a diagonal wave to show the card) and `mwtype.fli` (a DOS prompt runs GM and the card types in). Each ends with a fade
+  to black. Run it once (`cd web && npx vite-node ../games/kit/madewithMore.ts`, `PREVIEW=<folder>` for frame PNGs) to
+  write them to `web/public/opening/`.
 - `bard.ts` — The Bard of Bizarre's logo sting for his games' `title.lst` (`BARD.FLI`): stage curtains part on the logo,
   Doc Leo's photo pops in, a lute strums notes, the tagline types out, fade to black.
 - `reel.ts` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores
