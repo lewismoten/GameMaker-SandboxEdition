@@ -2,6 +2,7 @@
 // their cut lines (SVG). One layout makes the sheet on screen and on paper, the picture with
 // bleed for a cutting machine (PNG) and its cut lines, so the three always match. Sizes are in inches.
 
+import { crc32 } from '../../project/zip';
 import { edgeDistance, inside, outline, type Pt, type StickerGeom } from './stickerGeom';
 
 /** Cricut's largest Print Then Cut area; Silhouette and Brother machines take it too. */
@@ -195,22 +196,6 @@ function escapeXml(s: string): string {
 }
 
 // ------------------------------------------------------------------ PNG resolution
-
-const CRC_TABLE = (() => {
-  const t = new Uint32Array(256);
-  for (let n = 0; n < 256; n++) {
-    let c = n;
-    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    t[n] = c >>> 0;
-  }
-  return t;
-})();
-
-function crc32(b: Uint8Array): number {
-  let c = 0xffffffff;
-  for (const x of b) c = CRC_TABLE[(c ^ x) & 0xff] ^ (c >>> 8);
-  return (c ^ 0xffffffff) >>> 0;
-}
 
 /** Tells programs that open the PNG how big to print it: a pHYs chunk right after IHDR. */
 export function pngWithDpi(png: Uint8Array, dpi: number): Uint8Array {
