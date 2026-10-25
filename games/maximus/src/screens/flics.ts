@@ -1,6 +1,7 @@
 // Autodesk Animator .FLI films: the opening, the warp jump out of the galaxy chart, the
 // launch back to orbit, and the Core lighting up at the end.
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { rng } from '../../../kit/pixels';
 import { Canvas } from '../art/canvas';
 import { drawPod } from '../sprites/vehicles';
@@ -9,8 +10,8 @@ import { SCREEN, planetArt } from './screens';
 import { WHITE, shared } from '../art/palette';
 
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
-const film = (frames: Canvas[], speed: number) =>
-  encodeFli(
+const film = (frames: Canvas[], speed: number, fadeOut = false) =>
+  (fadeOut ? encodeFliFadeOut : encodeFli)(
     frames.map((f) => f.px),
     SCREEN.pal,
     { speed },
@@ -81,7 +82,8 @@ export function launchFli(): Uint8Array {
 /** The opening: the pod crosses the stars past a planet; the Core flickers out. */
 export function introFli(): Uint8Array {
   const frames: Canvas[] = [];
-  const N = 30;
+  // the name holds a moment after the pod has gone, then the picture fades to black for the title
+  const N = 36;
   for (let f = 0; f < N; f++) {
     const c = new Canvas();
     c.stars(13 + Math.floor(f / 3), 180, C('star'));
@@ -94,7 +96,7 @@ export function introFli(): Uint8Array {
     if (f > 22) c.center(170, 'MAXIMUS', C('yellow').slice(3).reverse(), { scale: 3, outline: 0 });
     frames.push(c);
   }
-  return film(frames, 5);
+  return film(frames, 5, true);
 }
 
 /** The ending: ten shards fly home and the Core ignites. */

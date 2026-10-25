@@ -227,7 +227,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 97063,
+  "frames": 97118,
   "chapters": [
    {
     "title": "Opening",
@@ -235,99 +235,99 @@
    },
    {
     "title": "Story",
-    "frame": 1156
+    "frame": 1212
    },
    {
     "title": "Maxima Station",
-    "frame": 4898
+    "frame": 4953
    },
    {
     "title": "The Galaxy",
-    "frame": 6266
+    "frame": 6321
    },
    {
     "title": "The Cradle",
-    "frame": 7083
+    "frame": 7138
    },
    {
     "title": "Ambermoor: The Ruby Shard",
-    "frame": 7920
+    "frame": 7975
    },
    {
     "title": "Little Hollow: The Plasma Lance",
-    "frame": 12948
+    "frame": 13003
    },
    {
     "title": "Brightwater: The Amber Shard",
-    "frame": 20793
+    "frame": 20848
    },
    {
     "title": "Emberreach",
-    "frame": 29359
+    "frame": 29414
    },
    {
     "title": "Cinderfall: The Citrine Shard",
-    "frame": 29570
+    "frame": 29625
    },
    {
     "title": "Hot Springs: The Emerald Shard",
-    "frame": 35882
+    "frame": 35937
    },
    {
     "title": "The Shallows",
-    "frame": 46060
+    "frame": 46115
    },
    {
     "title": "Pearlbed: The Jade Shard",
-    "frame": 46667
+    "frame": 46722
    },
    {
     "title": "Mushroom Moon: The Aqua Shard",
-    "frame": 53774
+    "frame": 53829
    },
    {
     "title": "Glasswind",
-    "frame": 58400
+    "frame": 58455
    },
    {
     "title": "Prism: The Sapphire Shard",
-    "frame": 59204
+    "frame": 59259
    },
    {
     "title": "Glass Abyss: The Amethyst Shard",
-    "frame": 63942
+    "frame": 63997
    },
    {
     "title": "The Deep Black",
-    "frame": 73190
+    "frame": 73245
    },
    {
     "title": "Ghost Station: The Pearl Shard",
-    "frame": 73830
+    "frame": 73885
    },
    {
     "title": "Hollow Sun: The Rose Shard",
-    "frame": 78148
+    "frame": 78203
    },
    {
     "title": "The Maelstrom",
-    "frame": 85650
+    "frame": 85705
    },
    {
     "title": "The Citadel",
-    "frame": 87966
+    "frame": 88021
    },
    {
     "title": "Heart of Maximus",
-    "frame": 90213
+    "frame": 90268
    },
    {
     "title": "Ending",
-    "frame": 92545
+    "frame": 92600
    },
    {
     "title": "Credits",
-    "frame": 95031
+    "frame": 95086
    }
   ]
  }
