@@ -211,6 +211,9 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       info,
     );
     overlay.addEventListener('click', (e) => e.target === overlay && close());
+    // the black light on in a dark room reaches the box in your hands: its white labels glow too
+    const desk = document.querySelector('.desk');
+    overlay.classList.toggle('uv-night', !!desk?.classList.contains('bl-uv') && desk.classList.contains('rl-dark'));
     document.body.append(overlay);
     back = focusInto(overlay);
     select(index);
