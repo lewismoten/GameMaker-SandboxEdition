@@ -4,7 +4,8 @@
 // modem (modemArt.ts), speakers and disk box drawn as the desk draws them
 // (speakerArt.ts, diskBoxArt.ts) and the game pad as the desk's (desk/pc/gamePadArt.ts) for the hardware ads; the Sound Boaster card and its before
 // and after faces (soundCardArt.ts); and a snapshot of the 1994 desk itself
-// (deskShot.ts) and screenshots of today's web (webShots.ts); and Joey's crayon drawing for the
+// (deskShot.ts), screenshots of today's web (webShots.ts) and Lewis's DOSBox screenshot
+// (dosShot.ts); and Joey's crayon drawing for the
 // Mail Bag (joeyDrawing.ts).
 import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
@@ -12,6 +13,7 @@ import { sandboxMarkEl } from '../printables/sandboxMark';
 import { hashString } from '../printables/kit';
 import type { ArtId, WebShot } from './types';
 import { deskShotImg } from './deskShot';
+import { dosShotImg } from './dosShot';
 import { blankDiskArt } from './blankDisk';
 import { diskBoxArt } from './diskBoxArt';
 import { gamePadArt } from '../../desk/pc/gamePadArt';
@@ -78,6 +80,8 @@ export function artElement(id: ArtId, alt: string): Element {
       return diskBoxArt(alt);
     case 'desk':
       return deskShotImg(alt);
+    case 'dos-carl':
+      return dosShotImg(alt);
     case 'gamepad':
       return gamePadArt({ shaft: true, alt });
     case 'boaster':

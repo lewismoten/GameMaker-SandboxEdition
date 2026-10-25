@@ -150,6 +150,7 @@ export type WebShot = (typeof WEB_SHOTS)[number];
  * The boaster ones are the Sound Boaster ad's (soundCardArt.ts): its card, and a face before and after.
  * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
  * blankdisk is a stack of bulk disks with no labels, for the Floppy Barn ad (blankDisk.ts).
+ * dos-carl is Lewis's DOSBox screenshot of A Fly Named Carl's garbled cover (dosShot.ts).
  */
 export type ArtId =
   | 'chez'
@@ -166,6 +167,7 @@ export type ArtId =
   | 'boaster-before'
   | 'boaster-after'
   | 'joey'
+  | 'dos-carl'
   | `web-${WebShot}`;
 
 export interface MagPage {
