@@ -36,7 +36,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 106998,
+  "frames": 107071,
   "chapters": [
    {
     "title": "Opening",
@@ -44,35 +44,35 @@
    },
    {
     "title": "Story",
-    "frame": 1434
+    "frame": 1507
    },
    {
     "title": "Act One: The Paragon Theatre",
-    "frame": 5634
+    "frame": 5707
    },
    {
     "title": "The Green Room, Midnight",
-    "frame": 9719
+    "frame": 9792
    },
    {
     "title": "Act Two: The Theatre at Night",
-    "frame": 42033
+    "frame": 42106
    },
    {
     "title": "The Green Room, 2 AM",
-    "frame": 54293
+    "frame": 54366
    },
    {
     "title": "Dawn: The Accusation",
-    "frame": 92803
+    "frame": 92876
    },
    {
     "title": "Ending",
-    "frame": 97232
+    "frame": 97305
    },
    {
     "title": "Credits",
-    "frame": 103286
+    "frame": 103359
    }
   ]
  }

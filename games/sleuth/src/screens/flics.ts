@@ -3,6 +3,8 @@
 // Slide shows (.LST) string them together with text pages, which is how a flashback is
 // told in Game-Maker.
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { dimmed } from '../../../kit/reel';
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
@@ -29,11 +31,13 @@ const copy = (p: Pixels) => {
   return q;
 };
 
-/** The title cartoon: rain on the Paragon, the bulbs chasing, a lightning strike. */
+/** The title cartoon: rain on the Paragon, the bulbs chasing, a lightning strike; the lights
+ * flicker and go out, and the dark street fades to black (the title shows the Paragon lit). */
 export function introFli(): Uint8Array {
   const frames: Pixels[] = [];
   const pals: Uint8Array[] = [];
-  for (let i = 0; i < 56; i++) {
+  const dark = dimmed(P.pal, 0.3);
+  for (let i = 0; i < 64; i++) {
     const p = facade(i, 1);
     rain(p, 100 + i, 200);
     if (i < 30) {
@@ -42,9 +46,14 @@ export function introFli(): Uint8Array {
       centered(p, 175, 'OCTOBER 31, 1936', c('gold', 4), 1);
     }
     frames.push(p);
-    pals.push(i === 38 || i === 40 ? flash(0.7) : i === 39 ? flash(0.35) : P.pal);
+    const out = i === 48 || i === 50 || i >= 52;
+    pals.push(i === 38 || i === 40 ? flash(0.7) : i === 39 ? flash(0.35) : out ? dark : P.pal);
   }
-  return fli(frames, 6, pals);
+  return encodeFliFadeOut(
+    frames.map((f) => Uint8Array.from(f.px)),
+    P.pal,
+    { speed: 6, palettes: pals },
+  );
 }
 
 /** The death scene: Rowena raises the dagger, Count Corvin falls, the curtain comes down. */
