@@ -8,7 +8,7 @@
 // cuts fall where the palette holds and the least of the picture changes, so the joins don't
 // show. The fade to black stays at the end of the last clip.
 import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '../../web/src/formats/fli';
-import type { SlideEntry } from '../../web/src/formats/graphicScripts';
+import { parseSlideList, serializeSlideList, type SlideEntry } from '../../web/src/formats/graphicScripts';
 
 /** How long an FLI plays, in seconds (FLI::View waits `speed` 1/70 s after each frame). */
 export function fliSeconds(fli: Uint8Array): number {
@@ -94,4 +94,32 @@ export function fliClips(name: string, fli: Uint8Array, seconds = 4): Record<str
 export function clipEntries(clips: Record<string, Uint8Array>, pause?: number): SlideEntry[] {
   const names = Object.keys(clips);
   return names.map((n, i) => (i < names.length - 1 ? { name: n, pause: 0 } : { name: n, pause }));
+}
+
+/**
+ * On a whole disk (lower-case file name to bytes, as Disk keeps them): every long FLI the
+ * lists named in `lists` play is cut into clips, and every slide list on the disk that plays it
+ * plays the clips instead, the entry's pause after the last. For a build whose lists are
+ * written in several places.
+ */
+export function clipLists(files: Map<string, Uint8Array>, lists: string[], seconds = 4): void {
+  const cut = new Map<string, Record<string, Uint8Array>>();
+  for (const l of lists) {
+    for (const e of parseSlideList(files.get(l) ?? new Uint8Array())) {
+      const name = e.name.toLowerCase();
+      const fli = files.get(name);
+      if (!name.endsWith('.fli') || !fli || cut.has(name)) continue;
+      const clips = fliClips(name, fli, seconds);
+      if (Object.keys(clips).length > 1) cut.set(name, clips);
+    }
+  }
+  if (!cut.size) return;
+  for (const clips of cut.values()) for (const [n, b] of Object.entries(clips)) files.set(n, b);
+  for (const [name, bytes] of files) {
+    if (!name.endsWith('.lst')) continue;
+    const entries = parseSlideList(bytes);
+    const clipsOf = (e: SlideEntry) => cut.get(e.name.toLowerCase());
+    if (!entries.some(clipsOf)) continue;
+    files.set(name, serializeSlideList(entries.flatMap((e) => (clipsOf(e) ? clipEntries(clipsOf(e)!, e.pause) : [e]))));
+  }
 }

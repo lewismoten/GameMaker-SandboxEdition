@@ -52,7 +52,8 @@ Making the files:
 - `fadeOut.ts` — the fade to black an intro ends on before its title picture (PLAYGAME cuts an FLI's last frame
   straight to black): `encodeFliFadeOut` adds about half a second of palette-only frames to a plain frame list (a Reel
   has `fadeOut`).
-- `fliClips.ts` — a long intro cut into clips of about 4 seconds for its slide list (`fliClips`, `clipEntries`).
+- `fliClips.ts` — a long intro cut into clips of about 4 seconds for its slide list (`fliClips`, `clipEntries`; `clipLists`
+  does it on a whole disk, for every list that plays the cartoon).
   PLAYGAME plays a whole FLI before it reads Esc, so a list of short clips lets the player skip within a few seconds.
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
   (`web/src/formats/fliClips.test.ts`).

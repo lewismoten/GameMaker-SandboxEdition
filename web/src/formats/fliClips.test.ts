@@ -1,9 +1,10 @@
 // games/kit/fliClips.ts: a long FLI cut into clips plays the same frames, in the same
 // colors, as the whole one did when the clips play one after another as a slide list does.
 import { describe, expect, it } from 'vitest';
-import { clipEntries, fliClips, fliSeconds } from '../../../games/kit/fliClips';
+import { clipEntries, clipLists, fliClips, fliSeconds } from '../../../games/kit/fliClips';
 import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from './fli';
 import { fliFaults } from './fliLimits';
+import { parseSlideList, serializeSlideList } from './graphicScripts';
 
 /** What the screen shows after every frame, playing each FLI over the last (as playFli does). */
 function play(flis: Uint8Array[]): { px: Uint8Array; pal: Uint8Array }[] {
@@ -77,5 +78,27 @@ describe('fliClips', () => {
       { name: 'birthda2.fli', pause: 0 },
       { name: 'birthda3.fli', pause: 2 },
     ]);
+  });
+
+  it('cuts the long FLIs a disk’s lists play, in every list that plays them', () => {
+    const short = encodeFli([new Uint8Array(64000)], new Uint8Array(768), { speed: 6 });
+    const files = new Map<string, Uint8Array>([
+      ['intro.fli', cartoon()],
+      ['logo.fli', short],
+      [
+        'title.lst',
+        serializeSlideList([
+          { name: 'logo.fli', pause: 0 },
+          { name: 'INTRO.FLI', pause: 0 },
+          { name: 'title.gif', pause: 10 },
+        ]),
+      ],
+      ['won.lst', serializeSlideList([{ name: 'intro.fli', pause: 4 }, { name: 'won.txt' }])],
+    ]);
+    clipLists(files, ['title.lst']);
+    const names = (l: string) => parseSlideList(files.get(l)!).map((e) => `${e.name} ${e.pause}`);
+    expect(names('title.lst')).toEqual(['logo.fli 0', 'intro.fli 0', 'intro2.fli 0', 'intro3.fli 0', 'title.gif 10']);
+    expect(names('won.lst')).toEqual(['intro.fli 0', 'intro2.fli 0', 'intro3.fli 4', 'won.txt undefined']);
+    expect(files.get('logo.fli')).toBe(short);
   });
 });
