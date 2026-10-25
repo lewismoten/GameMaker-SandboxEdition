@@ -133,7 +133,7 @@ export const DOS_BUGS: MagSection = {
           ),
           head('Boxes for music notes', { size: 's', level: 3 }),
           p(
-            '**Saw:** Game-Maker’s About screen, on the desk, had empty boxes where DOS shows ♫ in its corners and ◘ beside its title. **Fix:** the desk’s font now has all 256 characters of the PC’s code page 437. And its **Version 2.00** is no typo: RSD’s own ABOUT.HLP on the 3.0 CD says so, and so does the desk.',
+            '**Saw:** Game-Maker’s About screen, on the desk, had empty boxes where DOS shows ♫ in its corners and ◘ beside its title. **Fix:** the desk’s font now has all 256 characters of the PC’s code page 437. Its **Version 2.00** is no typo: RSD’s own ABOUT.HLP on the 3.0 CD says so too.',
           ),
           head('Carl’s beep', { size: 's', level: 3 }),
           p(
