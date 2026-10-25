@@ -4,6 +4,7 @@
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { Pixels, dither, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
@@ -425,7 +426,7 @@ export function gif(p: Pixels, pal = DAY): Uint8Array {
   return encodeGif({ width: W, height: H, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
-/** The dial-up intro: type the dial string, connect, then draw the logon screen row by row. */
+/** The dial-up intro: type the dial string, connect, start logging on, and fade to black. */
 export function introFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const add = (p: Pixels, n = 1) => {
@@ -455,15 +456,15 @@ export function introFli(): Uint8Array {
   y += 8;
   text(term, 0, y, 'CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS', ANSI[15]);
   add(term, 3);
-  const title = titleScreen();
-  // The logon screen arrives a band at a time.
-  const shown = screen();
-  for (let row = 0; row < H; row += 12) {
-    for (let yy = row; yy < Math.min(H, row + 12); yy++) for (let x = 0; x < W; x++) shown.set(x, yy, title.get(x, yy));
-    add(shown);
+  // Logging on; the logon screen itself is the title picture that fades in after this.
+  y += 16;
+  const logon = 'Logging on to THE SANDBOX BBS...';
+  for (let i = 4; i <= logon.length; i += 4) {
+    text(term, 0, y, logon.slice(0, i), ANSI[11]);
+    add(term);
   }
-  add(title, 2);
-  return encodeFli(frames, DAY, { speed: 7 });
+  add(term, 8);
+  return encodeFliFadeOut(frames, DAY, { speed: 7 });
 }
 
 /** The backyard sandbox seen from the side: grass and sky, the board edge, sand in front. */

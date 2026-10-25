@@ -67,7 +67,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 24423,
+  "frames": 24435,
   "chapters": [
    {
     "title": "Opening",
@@ -75,35 +75,35 @@
    },
    {
     "title": "Story",
-    "frame": 1261
+    "frame": 1273
    },
    {
     "title": "Level 1: Anthill Keep",
-    "frame": 4002
+    "frame": 4014
    },
    {
     "title": "Level 2: Hosewater Moat",
-    "frame": 7412
+    "frame": 7424
    },
    {
     "title": "Level 3: Low Tide Lagoon",
-    "frame": 11347
+    "frame": 11359
    },
    {
     "title": "Level 4: Beetle Burrows",
-    "frame": 15473
+    "frame": 15485
    },
    {
     "title": "Level 5: Gwinn's Nap",
-    "frame": 18665
+    "frame": 18677
    },
    {
     "title": "Ending",
-    "frame": 20351
+    "frame": 20363
    },
    {
     "title": "Credits",
-    "frame": 22871
+    "frame": 22883
    }
   ]
  }
