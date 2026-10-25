@@ -114,10 +114,10 @@ function startModern(hash?: string): void {
           'a',
           {
             class: 'hide-narrow nav-link',
-            href: '#/magazine',
-            title: 'TURBO BUTTON, the shareware gamer’s monthly: news, interviews, reviews, hints and every game',
+            href: '#/library',
+            title: 'Everything to read and print: manuals, maps, newsletters, sticker sheets, TURBO BUTTON magazine and more',
           },
-          'Magazine',
+          'Library',
         ),
       ),
       h(
@@ -134,7 +134,7 @@ function startModern(hash?: string): void {
         h(
           'summary',
           {
-            'aria-label': 'More: the guide on small screens, the magazine, the cast, achievements, the credits, playing offline and the source code',
+            'aria-label': 'More: the guide on small screens, the library, the cast, achievements, the credits, playing offline and the source code',
             title: 'More',
           },
           '⋯',
@@ -143,7 +143,7 @@ function startModern(hash?: string): void {
           'div',
           { class: 'topbar-menu' },
           h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
-          h('a', { href: '#/magazine' }, '📰 TURBO BUTTON magazine'),
+          h('a', { href: '#/library' }, '📚 Library'),
           h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('a', { href: '#/credits' }, '📜 Credits'),
@@ -223,6 +223,13 @@ async function route(): Promise<void> {
     if (ui !== 'modern') return;
     document.title = `TURBO BUTTON magazine · ${PRODUCT}`;
     disposeMagazine = renderMagazinePage(content, parseHash(location.hash).params.page);
+    return;
+  }
+  if (kind === 'library') {
+    const { renderLibrary } = await import('./library/libraryPage');
+    if (ui !== 'modern') return;
+    document.title = `Library · ${PRODUCT}`;
+    renderLibrary(content);
     return;
   }
   if (kind === 'cast') {
@@ -320,10 +327,10 @@ window.addEventListener('hashchange', () => {
 });
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the library #/library, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 /** The pages of today's web an address can name. */
-const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine'];
+const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');
