@@ -84,9 +84,11 @@ game folder opens in the browser unchanged.
   fixes, the block-art helpers) and its walkthrough bot (see "The level check" below); opening
   games that other sites link to or send (`web/src/linkIn`, `docs/embed.md`); the new
   opening of Teddy's Theme (`games/kit/teddyTheme.ts`), an original tune for the Teddy games;
-  and the "Made with Game-Maker: Sandbox Edition" opening sting the editor offers new games
+  and the "Made with Game-Maker: Sandbox Edition" opening stings the editor offers new games
   (`games/kit/madewith.ts`, shipped as `web/public/opening/madewith.fli` and `.gif`, ray
-  traced like the Sandbox Software sting), the "PRESENTS" card the editor draws for a
+  traced like the Sandbox Software sting, and the three flat ones `games/kit/madewithMore.ts`
+  draws: block by block, wipe and typewriter, `web/public/opening/mw*.fli`; the editor's
+  "Classic RSD" choice copies RSD's own `RSDTBOX.FLI` from the CD instead), the "PRESENTS" card the editor draws for a
   game's maker (`web/src/editor/tools/opening`), and _TURBO BUTTON_, the site's 1990s-style
   game magazine (`web/src/manual/magazine`): its words, layout and drawings, with screenshots
   of the games, the desk and the site themselves and its interview with Lewis drawn from his own account in

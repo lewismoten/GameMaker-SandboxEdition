@@ -37,13 +37,16 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <p><b>+ Make a new game</b> asks for a title and how to start: <b>Ready to play</b> gives you a
     first level with scenery, monsters, a hero and sounds borrowed from the CD library, to change
     as you like; <b>Empty</b> gives you just a title and an ending.</p>
-    <p>It also asks how the game opens. <b>Animation</b> (the usual) plays a four-second “Made with
-    Game-Maker: Sandbox Edition” card before your title screen; <b>Still picture</b> shows the same
-    card as one picture for four seconds; <b>None</b> leaves it out. Type <b>your name or studio</b>
-    and a “YOUR NAME PRESENTS” card follows it, drawn to fit the screen. They are your game’s own
-    files (<code>MADEWITH.FLI</code>, <code>PRESENTS.FLI</code> and the title slide show
-    <code>TITLE.LST</code>), so they play in DOS and in every copy you download. To change or remove
-    them later, or to add them to a game made before, open the start scene in the
+    <p>It also asks how the game opens, before your title screen. Four “Made with Game-Maker:
+    Sandbox Edition” animations of about four and a half seconds each: <b>Falling letters</b> (the
+    usual), <b>Block by block</b>, <b>Wipe</b> and <b>Typewriter</b>. <b>Classic RSD</b> plays the
+    CD’s own RSD logo animation, the one its sample games show before their story screens;
+    <b>Still picture</b> shows the falling letters’ card as one picture for four seconds; <b>None</b>
+    leaves it out. Press ▶ beside one to watch it first. Type <b>your name or studio</b> and a
+    “YOUR NAME PRESENTS” card follows it, drawn to fit the screen. They are your game’s own files
+    (<code>MADEWITH.FLI</code> or <code>RSDTBOX.FLI</code>, <code>PRESENTS.FLI</code> and the title
+    slide show <code>TITLE.LST</code>), so they play in DOS and in every copy you download. To swap
+    or remove them later, or to add them to a game made before, open the start scene in the
     <code>.GAM</code> and choose <b>🎬 Opening sting…</b>.</p>
     <p><b>Open game folder…</b>, <b>Open files or
     .zip…</b>, or dropping files on the page imports an original game: the folder with its
