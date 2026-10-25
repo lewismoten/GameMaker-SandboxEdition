@@ -174,9 +174,14 @@ export async function theWasteland(bot: Bot): Promise<void> {
     await must(bot, bot.walk(31, 'the east weave'), 'weave');
   });
   await carefully(bot, 'the side room', 12, async () => {
+    const before = crumbs(bot);
     await go('up', 8, 'up the weave');
     await must(bot, bot.walk(28, 'into the side room'), 'side room');
+    // the moth at the door pushes a loaf that meets it back out onto the weave (then up and
+    // on through the lid, a try to take back): in the side room, or wait for the moth
+    if (bot.at.y !== 8) throw new Error(`not in the side room (row ${bot.px.y / 20})`);
     await must(bot, bot.hop('up', 8), 'its holy crumb');
+    if (crumbs(bot) === before) throw new Error('missed the side room’s holy crumb');
     await must(bot, bot.walk(31, 'back to the weave'), 'weave');
   });
   if (crumbs(bot) - start < 7) throw new Error(`only ${crumbs(bot) - start} holy crumbs here`);
