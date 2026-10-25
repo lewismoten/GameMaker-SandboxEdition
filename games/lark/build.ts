@@ -50,6 +50,10 @@ const songs: Record<string, () => Uint8Array> = {
   tower: M.towerSong,
   parade: M.paradeSong,
   park: M.parkSong,
+  musicbox: M.musicBoxSong,
+  dance: M.danceSong,
+  lot: M.lotSong,
+  sea: M.seaSong,
   won: M.wonSong,
   lost: M.lostSong,
 };

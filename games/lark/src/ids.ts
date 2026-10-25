@@ -31,6 +31,27 @@ export const SCENE = {
   card3: 19,
   street: 20,
   talkBard: 21,
+  // the Long Road's second leg
+  road2: 22,
+  // chapter 4, the music box
+  card4: 23,
+  shop: 24,
+  talkGoat: 25,
+  inbox: 26,
+  shop7: 27,
+  talkGoat2: 28,
+  // chapter 5, the charging run
+  card5: 29,
+  lot: 30,
+  talkLot: 31,
+  lot7: 32,
+  talkLot2: 33,
+  // chapter 6, the lighthouse
+  card6: 34,
+  cove: 35,
+  lighthouse: 36,
+  coveLit: 37,
+  talkCarl: 38,
 } as const;
 
 /**
@@ -67,8 +88,14 @@ export const VALENTINES = 12;
 /** The Bard's drumsticks, dropped along the parade route. */
 export const DRUMSTICKS = 2;
 
-/** Thank-you hearts the end of the first leg of the road asks for. */
+/** Notes to put back on the music box's cylinder before its crank turns. */
+export const NOTES = 7;
+/** Breakers to throw before the lot's charger has power. */
+export const BREAKERS = 3;
+
+/** Thank-you hearts the end of the first leg of the road asks for, and of the second. */
 export const LEG1_THANKS = 3;
+export const LEG2_THANKS = 6;
 
 /** Sound set slots. PLAYGAME plays 0..8 by itself (5 on points, 7 a counter up, 8 down...). */
 export const SND = {

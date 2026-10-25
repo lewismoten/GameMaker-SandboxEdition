@@ -1,13 +1,13 @@
 // Plays the built disk all the way through (tools/route.ts), for check.ts and walkthrough.ts.
 // BOT_LOG=1 prints the bot's log (it prints the end of it on a failure anyway).
 import { compile } from '../src/game';
-import { playThrough } from './route';
+import { playThrough, type Ids } from './route';
 import { GameSim } from './sim';
 
-/** The escapement's bridge blocks, as the route waits for them. */
-export function bridgeIds(): { tick: number; tock: number } {
-  const { tower } = compile().sets;
-  return { tick: tower.id('tick'), tock: tower.id('tock') };
+/** The timed blocks the route waits for: the escapement's bridges and the comb's teeth. */
+export function bridgeIds(): Ids {
+  const { tower, box } = compile().sets;
+  return { tick: tower.id('tick'), tock: tower.id('tock'), toothA: box.id('toothA'), toothB: box.id('toothB') };
 }
 
 export async function play(seed = 1) {

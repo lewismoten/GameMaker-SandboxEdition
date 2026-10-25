@@ -205,3 +205,16 @@ export function addRope(s: BlockSet, ground: Pixels, n: number): void {
   s.add(`ropeDown${n}`, rope(true, ground));
   s.add(`rope${n}`, rope(false, ground), { solid: SOLID, effect: flag(n), eamt: -1, touch: `ropeDown${n}` });
 }
+
+/** The sea at night: dark water with a glint or two; frame 1 moves the glints. */
+export function water(frame = 0): Pixels {
+  const p = new Pixels(20, 20, c('blue', 0));
+  const R = rng(41 + frame);
+  for (let i = 0; i < 6; i++) {
+    const x = Math.floor(R() * 17);
+    const y = Math.floor(R() * 20);
+    p.rect(x, y, 3, 1, c('blue', 2));
+  }
+  p.set((7 + frame * 6) % 20, 6, c('paper', 3)).set((15 + frame * 5) % 20, 14, c('paper', 2));
+  return p;
+}

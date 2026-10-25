@@ -8,6 +8,8 @@ import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 import { BlockSet, Bestiary } from '../blocks/sets';
 import { heart } from '../blocks/keepsakes';
+import { SOLBOT } from '../../../../web/src/formats/blocks';
+import { carlPic } from '../../../kit/carlCameo';
 import { CTR, VALENTINES } from '../ids';
 import { gwinnRun, gwinnSit } from './friends';
 
@@ -95,6 +97,36 @@ function balloonCart(frame: number): Pixels {
   return p;
 }
 
+/** A moving platform: a steel pin-head (the music box) or a brass lift cage floor (the lighthouse), on the top of its block. */
+function lift(kind: 'pin' | 'cage'): Pixels {
+  const p = new Pixels(20, 20, CLEAR);
+  const ramp = kind === 'pin' ? 'stone' : 'brass';
+  p.rect(0, 0, 20, 6, c(ramp, 4)).rect(0, 0, 20, 1, c(ramp, 5)).rect(0, 5, 20, 1, c(ramp, 1));
+  p.rect(8, 6, 4, 14, c(ramp, 2));
+  if (kind === 'cage') for (const x of [1, 18]) p.rect(x, 6, 1, 6, c('brass', 2));
+  return p;
+}
+
+/** Carl the fly, buzzing round the dark cove with his big red eyes: the way to follow. */
+function carl(wing: number): Pixels {
+  return carlPicture(wing);
+}
+
+/** Carl as the cove's lamp shows him (front view, wings up or down). */
+export function carlPicture(wing = 0): Pixels {
+  return carlPic(
+    {
+      ink: c('ink', 0),
+      fly: [c('window', 0), c('window', 0), c('window', 1), c('window', 1), c('window', 2)],
+      eye: [c('red', 2), c('red', 3), c('red', 4), c('yellow', 3)],
+      wing: [c('paper', 2), c('paper', 3), c('paper', 4)],
+      white: c('paper', 4),
+      red: c('red', 3),
+    },
+    { view: 'front', wing, mood: 'smug' },
+  );
+}
+
 export function critterBlocks(): BlockSet {
   const s = new BlockSet(100, true);
   s.add('pigeon0', pigeon(0));
@@ -115,6 +147,11 @@ export function critterBlocks(): BlockSet {
     s.add(`drumCartOk${f}`, drumCart(f));
     s.add(`balloonCartOk${f}`, balloonCart(f));
   }
+  // platforms: solid underneath Joe (their bottom side, as PLAYGAME sees a monster), never on top
+  s.add('liftPin', lift('pin'), { solid: SOLBOT });
+  s.add('liftCage', lift('cage'), { solid: SOLBOT });
+  s.add('carl0', carl(0));
+  s.add('carl1', carl(1));
   return s;
 }
 
@@ -241,5 +278,53 @@ export function towerCritters(mb: BlockSet): Bestiary {
   ];
   b.add('bob', { pics: [['bob', 50]], power: 100, end: -2, path: swing });
   b.add('rod', { pics: [['rod', 50]], power: 100, end: -2, path: swing });
+  return b;
+}
+
+/** A lift that rises `rows` blocks from where it is placed and comes back down, for ever. */
+function liftDef(pic: string, rows: number) {
+  return {
+    pics: [[pic, 50]] as [string, number][],
+    power: 100,
+    end: -2,
+    path: [
+      [0, 0, 2],
+      [0, -rows, 2],
+      [0, 0, 2],
+    ] as [number, number, number][],
+  };
+}
+
+/** How far the music box's pin lift rises (blocks). */
+export const BOX_LIFT = 6;
+/** How far the lighthouse's lift rises (blocks). */
+export const LIGHTHOUSE_LIFT = 7;
+
+/** Inside the music box: the pin lift. */
+export function boxCritters(mb: BlockSet): Bestiary {
+  const b = new Bestiary(mb);
+  b.add('lift', liftDef('liftPin', BOX_LIFT));
+  return b;
+}
+
+/** The lighthouse: its lift. */
+export function lighthouseCritters(mb: BlockSet): Bestiary {
+  const b = new Bestiary(mb);
+  b.add('lift', liftDef('liftCage', LIGHTHOUSE_LIFT));
+  return b;
+}
+
+/** The cove: Carl, buzzing a loop round the rocks (harmless; follow his eyes). */
+export function coveCritters(mb: BlockSet, loop: [number, number][]): Bestiary {
+  const b = new Bestiary(mb);
+  b.add('carl', {
+    pics: [
+      ['carl0', 2],
+      ['carl1', 2],
+    ],
+    power: 100,
+    end: -2,
+    path: [...loop.map(([x, y]) => [x, y, 2] as [number, number, number]), [0, 0, 2]],
+  });
   return b;
 }

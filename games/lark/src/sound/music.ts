@@ -2,8 +2,9 @@
 // music-box tune in three-quarter time over a tick-tock, and every place plays it its own way:
 // the library hushed on a music box, the road on a reedy lead over an oom-pah-pah, the square
 // with the clock ticking under brass, the tower slow and low with the tick-tock up front, the
-// parade with the whole band, the park on a celesta for Teddy's party. (Each stop on the road
-// adds its friend's instrument.)
+// parade with the whole band, the park on a celesta for Teddy's party, the toy shop on the bare
+// music box (and dancing once it plays), the car lot on a humming organ, the cove slow and low on
+// strings. (Each stop on the road adds its friend's instrument.)
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const BAR = 3;
@@ -68,5 +69,9 @@ export const squareSong = () => song(126, arrangement(['A', 'B', 'A'], { lead: I
 export const towerSong = () => song(96, arrangement(['A', 'B'], { lead: INSTRUMENTS.bell, tick: true, pad: true, transpose: -5 }));
 export const paradeSong = () => song(144, arrangement(['A', 'A', 'B', 'A'], { lead: INSTRUMENTS.brass, comp: INSTRUMENTS.organ, tick: true, pad: true }));
 export const parkSong = () => song(108, arrangement(['A', 'B', 'A'], { lead: CELESTA, comp: INSTRUMENTS.pluck, pad: true }));
+export const musicBoxSong = () => song(96, arrangement(['A', 'B'], { lead: MUSICBOX, tick: true, transpose: 2 }));
+export const danceSong = () => song(132, arrangement(['A', 'B', 'A'], { lead: MUSICBOX, comp: INSTRUMENTS.strings, tick: true, pad: true, transpose: 2 }));
+export const lotSong = () => song(116, arrangement(['A', 'A', 'B'], { lead: INSTRUMENTS.organ, comp: INSTRUMENTS.bass, tick: true, transpose: -3 }));
+export const seaSong = () => song(78, arrangement(['A', 'B'], { lead: INSTRUMENTS.strings, pad: true, transpose: -7, leadVel: 90 }));
 export const wonSong = () => song(104, arrangement(['A', 'B', 'A'], { lead: INSTRUMENTS.strings, comp: INSTRUMENTS.piano, tick: true, pad: true }));
 export const lostSong = () => song(70, arrangement(['A'], { lead: MUSICBOX, pad: true, leadVel: 80 }));

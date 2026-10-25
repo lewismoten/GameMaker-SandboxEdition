@@ -18,6 +18,12 @@ export const KEEPSAKE = {
   valentine: KEEPSAKE_BASE + 1,
   /** The Bard's thank-you from the parade: his spare drumstick, a red ribbon round it. */
   drumstick: KEEPSAKE_BASE + 2,
+  /** The goat's thank-you from the toy shop: the music box's little dancer, who came loose. */
+  dancer: KEEPSAKE_BASE + 3,
+  /** Doc Leo's thank-you from the car lot: THE CHEZ's spare fuse, in a little glass tube. */
+  fuse: KEEPSAKE_BASE + 4,
+  /** Carl's thank-you from the lighthouse: a spare lens from the lamp, a little round prism. */
+  lens: KEEPSAKE_BASE + 5,
 } as const;
 
 /** The winding key, lying on whatever is under it: a brass bow, a shank and a square bit. */
@@ -59,6 +65,39 @@ export function drumstickPic(ground: Pixels): Pixels {
   return p;
 }
 
+/** The music box's little dancer, on one toe, a pink skirt. */
+export function dancerPic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  for (let x = 6; x < 15; x++) p.set(x, 18, c('ink', 1));
+  p.disc(10, 4, 2, c('skin', 3));
+  p.rect(9, 6, 3, 5, c('pink', 2)).rect(5, 10, 11, 2, c('pink', 3));
+  p.line(9, 7, 6, 3, c('skin', 2)).line(11, 7, 14, 3, c('skin', 2));
+  p.rect(10, 12, 1, 6, c('skin', 2));
+  return p;
+}
+
+/** A fuse in a little glass tube with brass ends. */
+export function fusePic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  for (let x = 4; x < 17; x++) p.set(x, 13, c('ink', 1));
+  p.rect(6, 8, 9, 4, c('blue', 4)).frame(6, 8, 9, 4, c('stone', 3));
+  p.line(7, 10, 13, 10, c('stone', 4));
+  p.rect(3, 8, 3, 4, c('brass', 3)).rect(15, 8, 3, 4, c('brass', 3));
+  return p;
+}
+
+/** A lens from the lighthouse lamp: a ring of glass prisms catching the light. */
+export function lensPic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  p.disc(10, 10, 7, c('brass', 2)).disc(10, 10, 6, c('blue', 4));
+  p.ring(10, 10, 4, c('paper', 4)).ring(10, 10, 2, c('paper', 3));
+  p.disc(8, 8, 1.5, c('window', 2));
+  return p;
+}
+
 /** A filled heart of radius about `r` centered at (cx, cy). */
 export function heart(p: Pixels, cx: number, cy: number, r: number, col: number): void {
   for (let y = -r; y <= r; y++)
@@ -79,5 +118,8 @@ export function addKeepsakes(set: BlockSet, ground: Pixels, groundName: string, 
   put('windKey', windKeyPic);
   put('valentine', valentinePic);
   put('drumstick', drumstickPic);
+  put('dancer', dancerPic);
+  put('fuse', fusePic);
+  put('lens', lensPic);
   for (const [name, n] of Object.entries(KEEPSAKE)) if (set.id(name) !== n) throw new Error(`The ${name} is not at its number`);
 }

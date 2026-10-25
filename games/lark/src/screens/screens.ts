@@ -10,26 +10,35 @@ import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { saveSlots } from '../../../kit/saveSlots';
 import { gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { PAL, c, r } from '../art/pal';
-import { bard, gwinnSit, teddy } from '../sprites/friends';
+import { bard, goat, gwinnSit, teddy } from '../sprites/friends';
+import { carlPicture } from '../sprites/critters';
 import { joe } from '../sprites/joe';
 import { clown, leo, reggie } from '../sprites/people';
-import { drumstickPic, valentinePic, windKeyPic } from '../blocks/keepsakes';
+import { dancerPic, drumstickPic, fusePic, lensPic, valentinePic, windKeyPic } from '../blocks/keepsakes';
 import {
   BELL,
   CARD1,
   CARD2,
   CARD3,
+  CARD4,
+  CARD5,
+  CARD6,
   CREDITS,
-  TALK_BARD,
-  TALK_TEDDY,
-  TALK_TEDDY2,
   HELP,
   LOST,
   STORY,
+  TALK_BARD,
   TALK_BENCH,
   TALK_BOOK,
+  TALK_CARL,
+  TALK_GOAT,
+  TALK_GOAT2,
   TALK_LEO,
   TALK_LEO7,
+  TALK_LOT,
+  TALK_LOT2,
+  TALK_TEDDY,
+  TALK_TEDDY2,
   TITLE,
   WON,
 } from './text';
@@ -210,6 +219,14 @@ export function buildScreens(): Record<string, Uint8Array> {
   pages('talkted2', "TEDDY'S PARTY", TALK_TEDDY2, [teddy(true), gwinnSit(), joe('down', 0, 'glad'), valentinePic(clearPic())]);
   pages('card3', 'CHAPTER THREE', CARD3, [joe('down', 0), bard(0), clown('green', 'yellow', 1)]);
   pages('talkbard', 'THE BARD OF BIZARRE', TALK_BARD, [bard(1), joe('down', 0, 'glad'), drumstickPic(clearPic())]);
+  pages('card4', 'CHAPTER FOUR', CARD4, [joe('down', 0), goat(0)]);
+  pages('talkgoat', 'THE THIRD GOAT', TALK_GOAT, [goat(1)]);
+  pages('talkgot2', 'THE GOAT DANCES', TALK_GOAT2, [goat(1), joe('down', 0, 'glad'), dancerPic(clearPic())]);
+  pages('card5', 'CHAPTER FIVE', CARD5, [joe('down', 0), leo(), reggie(0)]);
+  pages('talklot', 'DOC LEO', TALK_LOT, [leo(), reggie(1)]);
+  pages('talklot2', 'THE CHEZ, CHARGING', TALK_LOT2, [leo(true, true), joe('down', 0, 'glad'), fusePic(clearPic())]);
+  pages('card6', 'CHAPTER SIX', CARD6, [joe('down', 0), carlPicture(0)]);
+  pages('talkcarl', 'CARL', TALK_CARL, [carlPicture(1), joe('down', 0, 'glad'), lensPic(clearPic())]);
   pages('bell', "SEVEN O'CLOCK", BELL, [clown('blue', 'red', 1), clown('green', 'yellow', 1), leo(true, true)]);
   pages('won', 'THE LONG ROAD', WON, [joe('down', 0, 'glad')]);
   pages('lost', 'A LITTLE REST', LOST, [joe('down', 0, 'blink')]);

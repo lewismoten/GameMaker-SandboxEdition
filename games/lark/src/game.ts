@@ -6,12 +6,17 @@
 // Joe comes back to (from a talk) has an intro of its own: each chapter's card is a pass scene on
 // the way in from the road instead.
 import type { Game } from '../../../web/src/formats/game';
+import { boxSet } from './blocks/box';
+import { nightSet } from './blocks/night';
 import { parkSet } from './blocks/park';
 import { townSet } from './blocks/town';
 import { towerSet } from './blocks/tower';
 import type { BlockSet } from './blocks/sets';
 import { buildHero, buildSide, heroBlocks } from './characters';
 import { clockChapter } from './chapters/clock';
+import { lighthouseChapter } from './chapters/lighthouse';
+import { lotChapter } from './chapters/lot';
+import { musicBoxChapter } from './chapters/musicbox';
 import { parkChapter } from './chapters/park';
 import { prologue } from './chapters/prologue';
 import { streetChapter } from './chapters/street';
@@ -36,7 +41,7 @@ export interface Compiled {
 }
 
 export function compile(): Compiled {
-  const sets = { town: townSet(), tower: towerSet(), park: parkSet() };
+  const sets = { town: townSet(), tower: towerSet(), park: parkSet(), night: nightSet(), box: boxSet() };
   const mb = critterBlocks();
   const cb = heroBlocks();
   const pass = passMap(sets.town);
@@ -48,9 +53,16 @@ export function compile(): Compiled {
   clockChapter(s, road);
   parkChapter(s, road);
   streetChapter(s, road);
-  // east through the field gate: over the hill (for now, the end)
+  // east through the field gate to the road's second leg, along the shore at night
+  const road2 = roadMap(sets.town, 2);
+  s.add({ scene: SCENE.road2, desc: 'The Shore Road', file: 'road2', light: 'night', set: 'town', hero: 'hero', song: 'road', stamped: road2 });
+  s.door(SCENE.road1, mark(road, 'E'), SCENE.road2, mark(road2, '@'));
+  musicBoxChapter(s, road2);
+  lotChapter(s, road2);
+  lighthouseChapter(s, road2);
+  // east through its gate: over the hill (for now, the end)
   s.passPlace(SCENE.over, 'Over the Hill', 'road', '');
-  s.door(SCENE.road1, mark(road, 'E'), SCENE.over, s.passCell());
+  s.door(SCENE.road2, mark(road2, 'E'), SCENE.over, s.passCell());
   s.door(SCENE.over, s.passCell(), SCENE.end, { x: 0, y: 0 });
 
   const game = s.game({ scene: SCENE.library, at: mark(library, '@') });

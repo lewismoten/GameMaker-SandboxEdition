@@ -1,7 +1,7 @@
 // Every page of words: the storyline, the instructions, the credits, the ending, the lost page,
 // each conversation and chapter card, and README.TXT. 30 columns, 16 lines a page (page() checks).
 import { CREDIT_NOTICE, withCreditPage } from '../../../kit/license';
-import { DRUMSTICKS, GEARS, VALENTINES } from '../ids';
+import { BREAKERS, DRUMSTICKS, GEARS, LEG2_THANKS, NOTES, VALENTINES } from '../ids';
 import { page } from './pages';
 
 export const TITLE = 'HEART OF TIN';
@@ -68,7 +68,11 @@ Doc Leo, PhD (Comedic Science)
 Sir Reginald Cluckington III
 Teddy, a corgi who knows left from right
 Gwinn, as the valentine thief
-The Bard of Bizarre, and his rooster
+The Bard of Bizarre, and his rooster`,
+    `ALSO STARRING
+The third goat from the left
+THE CHEZ, a 1976 CitiCar
+Carl, a fly
 The Clown Club, as the parade
 
 With the pigeons of the town square, who were not asked.`,
@@ -214,6 +218,107 @@ Joe counts: three.
 
 THE BARD'S DRUMSTICK
 Pick it up (SPACE), for luck.`,
+]);
+
+/** Chapter 4's card. */
+export const CARD4 = page([
+  `CHAPTER FOUR
+THE MUSIC BOX
+
+A toy shop by the shore, long after closing. A music box as big as a doghouse. A goat who should not be there.`,
+]);
+
+/** The goat in the toy shop. */
+export const TALK_GOAT = page([
+  `The third goat from the left is standing by the big music box, looking guilty, with a little brass crank sticking out of her mouth.
+
+Then she swallows. Gulp.`,
+  `She came in for the rope round a jump rope. She stayed for the crank. Now the music box can't play, and the toy shop's music box is her favorite thing in the world.
+
+She screams about it. Briefly.`,
+  `Joe looks in at the keyhole. It is just big enough for a small tin robot.
+
+Inside, ${NOTES} notes have come off the cylinder. Put them back, and the box can turn itself from the inside.`,
+]);
+
+/** The goat dancing: the thank-you. */
+export const TALK_GOAT2 = page([
+  `The music box plays! Its little dancer turns, the toys rattle on their shelves, and the third goat from the left dances on her hind legs, very badly, with all her heart.`,
+  `Joe asks her what he came to ask: where could a robot find a real heart?
+
+She looks at the music box. It is playing the song it always plays. It will play it for ever.`,
+  `"That is a memory," says Joe, kindly. "Not a heart. A heart would learn a new song."
+
+The goat thinks this over. Then she gives him the little dancer, who came loose, and a gold thank-you heart.
+
+Joe counts: four.`,
+  `THE LITTLE DANCER
+Pick her up (SPACE). She turns, a little, when Joe walks.`,
+]);
+
+/** Chapter 5's card. */
+export const CARD5 = page([
+  `CHAPTER FIVE
+THE CHARGING RUN
+
+A car lot after dark. THE CHEZ, out of charge, nose to the charger. The charger, dark.`,
+]);
+
+/** Doc Leo at the lot's entrance. */
+export const TALK_LOT = page([
+  `"Joe! Twice in one night!" says Doc Leo. "THE CHEZ ran out of charge, so I pushed her the last block to the charger. And it's off."
+
+Sir Reginald looks tired. He did not push.`,
+  `"There are ${BREAKERS} breakers, one in every part of the lot. The gates between them open and shut on timers: amber means they're about to shut."
+
+"I'd go myself, but somebody has to keep THE CHEZ company."`,
+]);
+
+/** THE CHEZ charging: the thank-you. */
+export const TALK_LOT2 = page([
+  `The charger hums. A little light by THE CHEZ's back wheel glows. Doc Leo pats her roof like a horse.
+
+"Listen to that motor warm up," he says.`,
+  `Joe asks his question: where could a robot find a real heart?
+
+"Right there," says Doc Leo, pointing at the motor. "That's the heart of a car. Every car's got one."`,
+  `Joe listens. Hmm-mmm, goes the motor, waiting for the road.
+
+"It's THE CHEZ's heart," says Joe. "It's working very hard. But it's hers."
+
+Doc Leo nods. He gives Joe THE CHEZ's spare fuse, and a gold thank-you heart. Joe counts: five.`,
+  `THE SPARE FUSE
+Pick it up (SPACE). Every robot should carry one.`,
+]);
+
+/** Chapter 6's card. */
+export const CARD6 = page([
+  `CHAPTER SIX
+THE LIGHTHOUSE
+
+The cove at the end of the shore road, and the lighthouse on its point, dark. Somewhere out there, a buzzing.`,
+  `With the lamp out, almost nothing in the cove shows. Every few seconds the old lamp sputters, and the rocks flash.
+
+Carl the fly knows the way. Follow his bright eyes.`,
+]);
+
+/** Carl in the lit cove: the thank-you. */
+export const TALK_CARL = page([
+  `The lamp turns, and its beam sweeps the cove, the rocks, the sea, and the boats coming home.
+
+Carl buzzes round and round it, happy as a fly can be. He was lost in the dark for, he says, a very long time. Possibly a week.`,
+  `Joe asks his question: where could a robot find a real heart?
+
+"Look up!" says Carl. "That beam! Round and round all night, for everybody out there. That's a heart."`,
+  `Joe watches the beam go round, for the boats, for the cove, for everybody else.
+
+"It is kind," says Joe. "It is not mine."
+
+Carl gives him a spare lens from the lamp, and a gold thank-you heart.`,
+  `Joe counts: six. The gate at the end of the shore road wants ${LEG2_THANKS}.
+
+THE LAMP LENS
+Pick it up (SPACE). It holds a little of the light.`,
 ]);
 
 /** Chapter 1's card, on the way into the square. */

@@ -155,6 +155,16 @@ function bell(part: number): Pixels {
   return big.crop((part % 2) * 20, part < 2 ? 0 : 20, 20, 20);
 }
 
+/** The lighthouse's great lamp, out: rings of glass prisms round a cold bulb. */
+function lamp(): Pixels {
+  const p = back(10);
+  p.rect(3, 16, 14, 4, c('brass', 1));
+  p.disc(10, 9, 8, c('brass', 2)).disc(10, 9, 7, c('blue', 3));
+  for (const rr of [5, 3]) p.ring(10, 9, rr, c('paper', 3));
+  p.disc(10, 9, 1.5, c('stone', 3));
+  return p;
+}
+
 export function towerSet(): BlockSet {
   const s = new BlockSet(150, false);
   s.add('brick', brick(1), { solid: SOLID });
@@ -181,6 +191,7 @@ export function towerSet(): BlockSet {
   s.add('hammer', hammer(false), { solid: SOLID, effect: CTR.task, eamt: -GEARS, touch: 'hammerDown' });
   s.add('bellRope', bellRope(), { grav: DOWN });
   for (let k = 0; k < 4; k++) s.add(`bell${k}`, bell(k), { grav: DOWN });
+  s.add('lamp', lamp(), { grav: DOWN });
   addKeepsakes(s, back(1), 'air');
   return s;
 }

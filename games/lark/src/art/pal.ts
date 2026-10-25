@@ -40,13 +40,16 @@ const SYSTEM: [string, RGB][] = [
   ['sysBlack', [0, 0, 0]],
 ];
 
-export type Light = 'day' | 'evening' | 'lamp' | 'clock' | 'black';
+export type Light = 'day' | 'evening' | 'night' | 'dark' | 'lamp' | 'clock' | 'black';
 
 const LIGHTS: Record<Light, RGB> = {
   day: [1, 1, 1],
   evening: [0.86, 0.8, 0.92],
   lamp: [1, 0.9, 0.76],
   clock: [0.82, 0.78, 0.74],
+  night: [0.58, 0.62, 0.86],
+  /** The cove with the lighthouse out: next to nothing shows but what glows. */
+  dark: [0.14, 0.15, 0.24],
   black: [0, 0, 0],
 };
 

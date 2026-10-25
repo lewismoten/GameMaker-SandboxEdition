@@ -1,6 +1,7 @@
 // More friends, as 20x20 pictures in the game's ramps: Teddy (a red-gold corgi with a white
 // blaze, his two big ears up and matching), Gwinn (chocolate brown, amber eyes, a pink collar),
-// and the Bard of Bizarre (a feathered hat, a lute, and his rooster in spectacles on his shoulder).
+// the Bard of Bizarre (a feathered hat, a lute, and his rooster in spectacles on his shoulder) and
+// the third goat from the left (grey and white, curled horns, a beard, ears out).
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
@@ -111,5 +112,28 @@ export function bard(strum = 0): Pixels {
   p.rect(5, 19, 4, 1, c('red', 2)).rect(11, 19, 4, 1, c('red', 2));
   // the rooster on his left shoulder
   rooster(p, 13, 4);
+  return p;
+}
+
+/** The third goat from the left, from the front: `happy` 1 is her mouth open, mid-dance (or mid-scream). */
+export function goat(happy: number): Pixels {
+  const p = new Pixels(20, 20, CLEAR);
+  const O = c('ink', 0);
+  // curled horns
+  p.ring(5, 3, 2, c('stone', 4)).ring(14, 3, 2, c('stone', 4));
+  // ears out to the sides
+  p.rect(1, 5, 4, 2, c('stone', 3)).rect(15, 5, 4, 2, c('stone', 3));
+  // head, a white blaze, a grey muzzle
+  p.disc(10, 7, 4.5, c('stone', 4));
+  p.rect(9, 3, 2, 8, c('paper', 4));
+  p.disc(10, 10, 2.5, c('stone', 3));
+  p.set(7, 6, O).set(12, 6, O).set(7, 5, c('brass', 3)).set(12, 5, c('brass', 3));
+  if (happy) p.rect(9, 11, 2, 2, O);
+  else p.rect(9, 11, 2, 1, O);
+  // beard
+  p.rect(9, 13, 2, 2, c('paper', 3));
+  // body and legs (one lifted when she dances)
+  p.disc(10, 16, 4, c('stone', 4)).disc(11, 15, 2, c('paper', 4));
+  p.rect(7, 18, 1, 2, c('stone', 2)).rect(12, 18 - happy, 1, 2, c('stone', 2));
   return p;
 }

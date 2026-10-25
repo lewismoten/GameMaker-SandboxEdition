@@ -1,6 +1,8 @@
-// The Long Road, first leg: from The Dog House east along the road, with a lane north to each
-// stop (the town clock, the park, Main Street's parade) and, at the far end, a field gate that
-// opens for the three friends' thank-yous (and gives them back as Joe goes through).
+// The Long Road, one leg at a time: east along the road, with a lane north to each of the leg's
+// three stops and, at the far end, a field gate that opens for the thank-yous of every friend
+// helped so far (and gives them back as Joe goes through). The first leg starts at The Dog House
+// (the clock, the park, Main Street's parade); the second runs along the shore at night (the toy
+// shop, the car lot, the lighthouse).
 import { rng } from '../../../kit/pixels';
 import type { BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
@@ -11,8 +13,8 @@ export const ROAD_H = 18;
 export const LANES = [10, 19, 27];
 export const ROAD_ROW = 12;
 
-export function roadRows(): string[] {
-  const R = rng(17);
+export function roadRows(leg = 1): string[] {
+  const R = rng(leg === 1 ? 17 : 31);
   const g: string[][] = Array.from({ length: ROAD_H }, (_, y) =>
     Array.from({ length: ROAD_W }, (_, x) => {
       if (x === 0 || y === 0 || x === ROAD_W - 1 || y === ROAD_H - 1) return (x + y) % 2 ? 'T' : 't';
@@ -42,16 +44,18 @@ export function roadRows(): string[] {
   // the lanes north
   LANES.forEach((lx, i) => {
     for (let y = 1; y < ROAD_ROW; y++) put(lx, y, y % 2 ? 'p' : 'q');
-    put(lx + 1, ROAD_ROW - 2, ['C', 'K', 'B'][i]);
+    put(lx + 1, ROAD_ROW - 2, (leg === 1 ? ['C', 'K', 'B'] : ['X', 'Y', 'Z'])[i]);
     // the lane's end (the way in) and its foot (where Joe comes back)
     put(lx, 1, ['L', 'M', 'N'][i]);
     put(lx, ROAD_ROW - 1, ['r', 's', 'u'][i]);
   });
-  // The Dog House by the road's west end, and Joe on the step
-  put(1, 10, '0');
-  put(2, 10, '1');
-  put(1, 11, '2');
-  put(2, 11, '3');
+  // The Dog House by the first leg's west end, and Joe on the step
+  if (leg === 1) {
+    put(1, 10, '0');
+    put(2, 10, '1');
+    put(1, 11, '2');
+    put(2, 11, '3');
+  } else for (let x = 1; x < ROAD_W - 1; x++) if (!LANES.includes(x)) put(x, ROAD_H - 2, 'w');
   put(3, ROAD_ROW, '@');
   // the field gate at the east end, and the road on beyond it
   put(ROAD_W - 3, ROAD_ROW + 1, 'T');
@@ -62,9 +66,9 @@ export function roadRows(): string[] {
   return g.map((row) => row.join(''));
 }
 
-export function roadMap(set: BlockSet): Stamped {
+export function roadMap(set: BlockSet, leg = 1): Stamped {
   return stamp(
-    roadRows(),
+    roadRows(leg),
     {
       T: 'tree',
       t: 'tree2',
@@ -77,6 +81,10 @@ export function roadMap(set: BlockSet): Stamped {
       C: 'signClock',
       K: 'signPark',
       B: 'signBand',
+      X: 'signShop',
+      Y: 'signLot',
+      Z: 'signLight',
+      w: 'water',
       O: 'signOn',
       L: 'path',
       M: 'path',
@@ -89,7 +97,7 @@ export function roadMap(set: BlockSet): Stamped {
       '2': 'dogHouse2',
       '3': 'dogHouse3',
       '@': 'path',
-      G: 'gate',
+      G: leg === 1 ? 'gate' : 'gate2',
       E: 'path',
     },
     set,

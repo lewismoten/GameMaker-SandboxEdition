@@ -84,26 +84,29 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
     return undefined;
   }
 
-  /** A tap that has to dodge something (the parade): tried on a snapshot, and taken only if Joe isn't bumped for a while after. */
-  private async carefulTap(d: Dir): Promise<Result> {
-    for (let tries = 0; tries < 60; tries++) {
-      const snap = this.snapshot();
-      const hp = this.sim.ci.hitpts;
-      let r = await this.tap(d);
-      if (!r) r = await this.wait(10);
-      if (r !== 'dead' && this.sim.ci.hitpts >= hp && this.sim.deaths === 0) return r;
+  /**
+   * A run of taps that has to dodge something (the parade): from one safe cell across the
+   * dangerous ones to the next safe one, tried on a snapshot after a wait of 0, 2, 4... ticks,
+   * and taken only if Joe isn't bumped on the way or for a moment after.
+   */
+  private async carefulRun(steps: Dir[]): Promise<Result> {
+    const snap = this.snapshot();
+    const hp = this.sim.ci.hitpts;
+    for (let k = 0; k < 80; k++) {
+      let r = await this.wait(k * 2);
+      for (const d of steps) if (!r) r = await this.tap(d);
+      if (!r) r = await this.wait(6);
+      if (r !== 'dead' && this.sim.ci.hitpts >= hp && this.sim.deaths === snap.sim.deaths) return r;
       this.restore(snap);
-      const rw = await this.wait(3);
-      if (rw) return rw;
     }
-    return `${d}: never a gap`;
+    return `${steps.join(',')}: never a gap`;
   }
 
   /**
    * Walks to map cell (x, y) a tap at a time. Returns what play did if it left the scene on the
    * way (a link: a talk, a door), or an error if Joe could not get there.
    */
-  async goto(x: number, y: number, label: string, through?: (x: number, y: number) => boolean, careful = false): Promise<Result> {
+  async goto(x: number, y: number, label: string, through?: (x: number, y: number) => boolean, danger?: (x: number, y: number) => boolean): Promise<Result> {
     const scene = this.sim.scene;
     for (let guard = 0; guard < 400; guard++) {
       const c = this.cell;
@@ -114,7 +117,21 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
       const way = this.route(x, y, through);
       if (!way?.length) return `no way to ${label} (${x},${y}) from ${c.x},${c.y} in scene ${scene}`;
       const before = this.cell;
-      const r = careful ? await this.carefulTap(way[0]) : await this.tap(way[0]);
+      // stepping into danger: every step up to the next safe cell goes as one careful run
+      let n = 1;
+      if (danger) {
+        let cx = before.x;
+        let cy = before.y;
+        n = 0;
+        for (const d of way) {
+          const [, dx, dy] = STEPS.find((st) => st[0] === d)!;
+          cx += dx;
+          cy += dy;
+          n++;
+          if (!danger(cx, cy)) break;
+        }
+      }
+      const r = danger && this.dangerAhead(before, way.slice(0, n), danger) ? await this.carefulRun(way.slice(0, n)) : await this.tap(way[0]);
       if (r) {
         this.say(`${label}: ${r}`);
         return r;
@@ -123,6 +140,18 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
       if (before.x === after.x && before.y === after.y && way.length === 1) return `${label}: Joe could not step into ${x},${y}`;
     }
     return `${label}: too many steps`;
+  }
+
+  /** Whether a run of steps from `from` passes through a dangerous cell. */
+  private dangerAhead(from: { x: number; y: number }, steps: Dir[], danger: (x: number, y: number) => boolean): boolean {
+    let { x, y } = from;
+    for (const d of steps) {
+      const [, dx, dy] = STEPS.find((st) => st[0] === d)!;
+      x += dx;
+      y += dy;
+      if (danger(x, y)) return true;
+    }
+    return false;
   }
 
   /** Where the scene's monsters of type `monnum` (in its .MON) are, by map cell. */

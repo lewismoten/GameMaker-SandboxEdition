@@ -104,7 +104,7 @@
   },
   {
    "scene": 20,
-   "keys": "AUgByBFIAcgRSAHIEUgByBFIAcgRSAHIEUsByxFLAcsRSwHLEUsByxFLAcsRSwHLEUsByxFIAcgXSAHIEUgByBFNAc0RTQHNEU0BzRFNAc0RTQHNEU0BzRFNAc0RTQHNEU0BzRFNAc0RTQHNEU0BzRFNAc0RSAHIB0gByAdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIDUsBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sByxdIAcgHSAHIB0gByA1NAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB0gByAdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
   },
   {
    "scene": 21,
@@ -116,6 +116,106 @@
   },
   {
    "scene": 3,
+   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdN"
+  },
+  {
+   "scene": 22,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdNAc0HSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HTQHNB00BzQdNAc0HTQ=="
+  },
+  {
+   "scene": 23,
+   "keys": ""
+  },
+  {
+   "scene": 24,
+   "keys": "AUgByAdLAcsHSAHIB0gByAdIAcgHSwHLB0sBywdL"
+  },
+  {
+   "scene": 25,
+   "keys": ""
+  },
+  {
+   "scene": 24,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HTQ=="
+  },
+  {
+   "scene": 26,
+   "keys": "C00ozQ5NDs0UTQxICsgHzQZNC0gKyAfNBk0KSArID0gKyC/NbU0HzTdLA0gKyHjLBhIIkgBNBs0DEAiQAEsNywNICcgFSwfLBk0wzQYSDJIATQjNA00="
+  },
+  {
+   "scene": 27,
+   "keys": "AU0BzQdNAc0HTQHNB00BzQdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 28,
+   "keys": ""
+  },
+  {
+   "scene": 27,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHUA=="
+  },
+  {
+   "scene": 22,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
+  },
+  {
+   "scene": 29,
+   "keys": ""
+  },
+  {
+   "scene": 30,
+   "keys": "AU0BzQdN"
+  },
+  {
+   "scene": 31,
+   "keys": ""
+  },
+  {
+   "scene": 30,
+   "keys": "AU0BzQdIAcgHTQHNB00BzQdNAc0HTQHNB0gByAdLAcsHSwHLB0gByBhIAcgYSAHIGEgByBhLAcsYSwHLGEsByxhLAcsYSwHLGE0BzRhNAc0YTQHNGE0BzRhNAc0YTQHNGE0BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSwHLB0sBywdIAcgHSAHIB0gByBhIAcgYTQHNGEgByBhIAcgYSAHIGEsByxhIAcg="
+  },
+  {
+   "scene": 32,
+   "keys": "AVAB0AdNAc0HUAHQB00BzQdNAc0HSAHIB0gByAdNAc0HSAHIBzkBuQpL"
+  },
+  {
+   "scene": 33,
+   "keys": ""
+  },
+  {
+   "scene": 32,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHUAHQB1AB0BhQAdAYUAHQGFAB0BhQAdAYTQHNGE0BzRhNAc0YUAHQGFAB0BhQAdAYUAHQGEsByxhLAcsYSwHLGEsByxhLAcsYSwHLGEsByxhLAcsYSwHLGFAB0A=="
+  },
+  {
+   "scene": 22,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQ=="
+  },
+  {
+   "scene": 34,
+   "keys": ""
+  },
+  {
+   "scene": 35,
+   "keys": "AU0BzQdNAc0HSAHIB0gByAdNAc0HTQHNB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HUAHQB00BzQdNAc0HSAHIB0gByAdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HUAHQB1AB0AdNAc0HTQHNB0gByAdIAcgHTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSwHLB0s="
+  },
+  {
+   "scene": 36,
+   "keys": "C002zU5NA81FSwVICsgbywYQCJAASwXLA00HzQYSCJIATQDNBUsCywYQCJAASwXLA00HzQYSCJIATQDNBUsCywYQ"
+  },
+  {
+   "scene": 37,
+   "keys": "AUgByAdNAc0HTQHNB0gByAdNAc0HSAHIBzkBuQpL"
+  },
+  {
+   "scene": 38,
+   "keys": ""
+  },
+  {
+   "scene": 37,
+   "keys": "AU0BzQdQAdAHUAHQB0sBywdQAdAHUAHQB1AB0AdLAcsHSwHLB1AB0AdQAdAHSwHLB0sBywdIAcgHSAHIB0sBywdLAcsHUAHQB1AB0AdQAdAHUAHQB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB1AB0AdQAdAHUAHQB0sBywdLAcsHSAHIB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSwHLB0sBywdQAdAHUAHQB0sBywdQ"
+  },
+  {
+   "scene": 22,
    "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdN"
   },
   {
@@ -143,11 +243,27 @@
   {
    "scene": 19,
    "title": "Chapter 3: The Parade"
+  },
+  {
+   "scene": 22,
+   "title": "The Shore Road"
+  },
+  {
+   "scene": 23,
+   "title": "Chapter 4: The Music Box"
+  },
+  {
+   "scene": 29,
+   "title": "Chapter 5: The Charging Run"
+  },
+  {
+   "scene": 34,
+   "title": "Chapter 6: The Lighthouse"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 37015,
+  "frames": 64247,
   "chapters": [
    {
     "title": "Opening",
@@ -178,12 +294,28 @@
     "frame": 26638
    },
    {
+    "title": "The Shore Road",
+    "frame": 32183
+   },
+   {
+    "title": "Chapter 4: The Music Box",
+    "frame": 32747
+   },
+   {
+    "title": "Chapter 5: The Charging Run",
+    "frame": 41829
+   },
+   {
+    "title": "Chapter 6: The Lighthouse",
+    "frame": 51562
+   },
+   {
     "title": "Ending",
-    "frame": 33184
+    "frame": 59938
    },
    {
     "title": "Credits",
-    "frame": 34979
+    "frame": 61733
    }
   ]
  }
