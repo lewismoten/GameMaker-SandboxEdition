@@ -191,4 +191,13 @@ or play one straight from DOS, e.g.
   cd \\GAMES\\SANDBOX\\${made.SANDBOX[0] ?? 'TEDDY'}
   dir *.exe                  (the game's .EXE; CONFIG.BAT sets up sound and video)
 `);
+// DOSBox keeps its own listing of a mounted folder: an open one still shows the old games
+let dosboxOpen = false;
+try {
+  execFileSync('pgrep', ['-x', 'DOSBox'], { stdio: 'ignore' });
+  dosboxOpen = true;
+} catch {
+  /* not running (pgrep exits 1) */
+}
+if (dosboxOpen) console.log('DOSBox is open: type RESCAN at its prompt (or press Ctrl+F4) to see the rebuilt folder.\n');
 if (args.includes('--launch')) execFileSync(command);
