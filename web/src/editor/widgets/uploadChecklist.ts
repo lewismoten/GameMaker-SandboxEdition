@@ -43,6 +43,10 @@ export const APPENDIX_B: ChecklistItem[] = [
     checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers'],
     full: true,
   },
+  {
+    text: 'Solid monsters can’t trap the hero: their paths stop a block short of walls, stay off the map’s top and bottom rows and never close in',
+    checks: ['push-edge', 'push-gap', 'push-squeeze', 'solid-hurt'],
+  },
   { text: 'A few lives, not dozens: a death costs a little, not everything', checks: ['stakes'] },
   {
     text: 'Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds',

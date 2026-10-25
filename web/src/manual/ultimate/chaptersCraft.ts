@@ -249,6 +249,7 @@ export const UPLOAD: Chapter = {
     <tr><td>☐</td><td>Nowhere to get stuck: every pit has a way out, every lock its key, and nothing needed is left behind a one-way spot</td></tr>
     <tr><td>☐</td><td>Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest</td></tr>
     <tr><td>☐</td><td>Enemies stand out in every palette; a touch costs little and pushes clear</td></tr>
+    <tr><td>☐</td><td>Solid monsters can’t trap the hero: their paths stop a block short of walls, stay off the map’s top and bottom rows and never close in</td></tr>
     <tr><td>☐</td><td>A few lives, not dozens: a death costs a little, not everything</td></tr>
     <tr><td>☐</td><td>Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds</td></tr>
     <tr><td>☐</td><td>Nothing shown can’t be used: no doors that lead nowhere, no prizes in view but out of reach, no prizes your own shots destroy</td></tr>
