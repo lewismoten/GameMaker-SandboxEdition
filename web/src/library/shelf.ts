@@ -10,7 +10,9 @@ import type { PrintableItem } from '../manual/printables/types';
 export const SHELF_TYPES = [
   ['manual', 'Manuals'],
   ['hintbook', 'Hint books'],
-  ['map', 'Maps'],
+  ['worldmap', 'World Maps'],
+  ['levelmap', 'Level Maps'],
+  ['map', 'Other maps and plans'],
   ['poster', 'Posters'],
   ['newsletter', 'Newsletters and newspapers'],
   ['stickers', 'Sticker sheets'],
@@ -69,8 +71,8 @@ const GM_TYPES: Record<string, ShelfType> = {
 /** What every game's box gets (manual/printables/items.ts), by id. */
 const BOX_TYPES: Record<string, ShelfType> = {
   manual: 'manual',
-  worldmap: 'map',
-  levelmaps: 'map',
+  worldmap: 'worldmap',
+  levelmaps: 'levelmap',
   keycard: 'keys',
   postcard: 'registration',
   warranty: 'license',
@@ -129,6 +131,12 @@ export type ShelfOrder = 'game' | 'type';
 
 export const isShelfOrder = (s: unknown): s is ShelfOrder => s === 'game' || s === 'type';
 
+/** One kind's pieces in the order listed, except that the Game-Maker box's Owner's Guides lead the manuals. */
+function ofType(items: readonly ShelfItem[], type: ShelfType): ShelfItem[] {
+  const all = items.filter((i) => i.type === type);
+  return type === 'manual' ? [...all.filter((i) => i.owner === GM_OWNER), ...all.filter((i) => i.owner !== GM_OWNER)] : all;
+}
+
 /** A heading on the shelf and what is under it (Other has two parts: the Game-Maker box and the rest). */
 export interface ShelfGroup {
   key: string;
@@ -138,12 +146,13 @@ export interface ShelfGroup {
 
 /**
  * The shelf sorted: by game (each game in the order listed, then Other: the Game-Maker box and
- * the site's own reading), or by type (SHELF_TYPES' order, each kind in the order listed).
+ * the site's own reading), or by type (SHELF_TYPES' order, each kind in the order listed, the
+ * Game-Maker Owner's Guides first among the manuals).
  * Empty groups are left out.
  */
 export function groupShelf(items: readonly ShelfItem[], order: ShelfOrder): ShelfGroup[] {
   if (order === 'type')
-    return SHELF_TYPES.map(([type, heading]) => ({ key: `type-${type}`, heading, parts: [{ items: items.filter((i) => i.type === type) }] })).filter(
+    return SHELF_TYPES.map(([type, heading]) => ({ key: `type-${type}`, heading, parts: [{ items: ofType(items, type) }] })).filter(
       (g) => g.parts[0].items.length,
     );
   const games: ShelfGroup[] = [];
@@ -168,4 +177,11 @@ export function groupShelf(items: readonly ShelfItem[], order: ShelfOrder): Shel
     ].filter((p) => p.items.length),
   };
   return other.parts.length ? [...games, other] : games;
+}
+
+/** Whose pieces these are (a game, the Game-Maker box or the site), each once, in the order listed: a kind's game picker. */
+export function ownersOf(items: readonly ShelfItem[]): { owner: string; title: string }[] {
+  const seen = new Map<string, string>();
+  for (const i of items) if (!seen.has(i.owner)) seen.set(i.owner, i.ownerTitle);
+  return [...seen].map(([owner, title]) => ({ owner, title }));
 }

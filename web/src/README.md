@@ -149,8 +149,7 @@ modules are in [`../test`](../test).
   the desk (`offlineExe.ts`).
 - [`seo/`](seo): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
-  magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in). `pageRoutes.ts`
-  holds pages added while `site.ts` can't be edited (the dev server imports it): the Library, for now.
+  magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
 
 ### Today's web interface
 
@@ -296,7 +295,8 @@ modules are in [`../test`](../test).
 
 - [`library/`](library): the Library (`#/library`, the top bar's Library link): a card for
   everything to read or print, sorted by game or by type (`?by=type`) and narrowed to one game or
-  kind (`&only=map`), both remembered per browser (`prefs.ts`).
+  kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
+  browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`).
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
   keyboard reference, registration, business and ID, and license and warranty cards; the games, never a secret one, and the two
   sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once

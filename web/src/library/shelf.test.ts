@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import type { CatalogEntry } from '../project/files';
-import { GM_OWNER, groupShelf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
+import { GM_OWNER, groupShelf, ownersOf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
 
 const GAMES = new URL('../../../games/', import.meta.url);
@@ -51,8 +51,8 @@ const item = (owner: string, id: string, type: ShelfItem['type'], ownerTitle = o
 describe('the Library’s kinds of paper', () => {
   it('sorts every piece of a game’s box', () => {
     expect(typeOfPiece('teddy', 'manual')).toBe('manual');
-    expect(typeOfPiece('teddy', 'worldmap')).toBe('map');
-    expect(typeOfPiece('teddy', 'levelmaps')).toBe('map');
+    expect(typeOfPiece('teddy', 'worldmap')).toBe('worldmap');
+    expect(typeOfPiece('teddy', 'levelmaps')).toBe('levelmap');
     expect(typeOfPiece('teddy', 'newsletter')).toBe('newsletter');
     expect(typeOfPiece('teddy', 'stickers')).toBe('stickers');
     expect(typeOfPiece('teddy', 'keycard')).toBe('keys');
@@ -115,7 +115,7 @@ describe('sorting the Library', () => {
   const items = [
     item('a', 'manual', 'manual', 'Alpha'),
     item(SITE_OWNER, 'magazine', 'magazine'),
-    item('a', 'worldmap', 'map', 'Alpha'),
+    item('a', 'worldmap', 'worldmap', 'Alpha'),
     item(GM_OWNER, 'manual', 'manual', 'The Game-Maker box'),
     item('b', 'manual', 'manual', 'Beta'),
   ];
@@ -132,9 +132,34 @@ describe('sorting the Library', () => {
 
   it('by type: in the kinds’ order, with no empty kinds', () => {
     const groups = groupShelf(items, 'type');
-    expect(groups.map((g) => g.heading)).toEqual(['Manuals', 'Maps', 'Magazines and zines']);
-    expect(groups[0].parts[0].items.map((i) => i.key)).toEqual(['a:manual', `${GM_OWNER}:manual`, 'b:manual']);
+    expect(groups.map((g) => g.heading)).toEqual(['Manuals', 'World Maps', 'Magazines and zines']);
     expect(new Set(SHELF_TYPES.map(([t]) => t)).size).toBe(SHELF_TYPES.length);
+  });
+
+  it('puts the Owner’s Guide, then the Ultimate Owner’s Guide, before the games’ manuals', () => {
+    const manuals = [
+      item('a', 'manual', 'manual', 'Alpha'),
+      item('b', 'manual', 'manual', 'Beta'),
+      item(GM_OWNER, 'manual', 'manual', 'The Game-Maker box'),
+      item(GM_OWNER, 'ultimate', 'manual', 'The Game-Maker box'),
+      item('c', 'manual', 'manual', 'Gamma'),
+    ];
+    expect(groupShelf(manuals, 'type')[0].parts[0].items.map((i) => i.key)).toEqual([
+      `${GM_OWNER}:manual`,
+      `${GM_OWNER}:ultimate`,
+      'a:manual',
+      'b:manual',
+      'c:manual',
+    ]);
+  });
+
+  it('names a kind’s games once each, in the order listed, for its game picker', () => {
+    expect(ownersOf(items)).toEqual([
+      { owner: 'a', title: 'Alpha' },
+      { owner: SITE_OWNER, title: SITE_OWNER },
+      { owner: GM_OWNER, title: 'The Game-Maker box' },
+      { owner: 'b', title: 'Beta' },
+    ]);
   });
 
   it('keeps every piece, once, either way', () => {

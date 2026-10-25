@@ -254,3 +254,7 @@ main.library {
   min-height: 32px;
   font-size: 14px;
 }
+
+.lib-pick[hidden] {
+  display: none;
+}

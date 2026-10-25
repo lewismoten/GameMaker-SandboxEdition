@@ -1,5 +1,5 @@
-// What the Library remembers per browser (libraryPage.ts): the sort, and the one game or kind of
-// paper picked for each sort. Kept in localStorage; with none (a private window) the address
+// What the Library remembers per browser (libraryPage.ts): the sort, the one game or kind of
+// paper picked for each sort, and the game picked within a kind. Kept in localStorage; with none (a private window) the address
 // still holds them.
 import { isShelfOrder, type ShelfOrder } from './shelf';
 
@@ -34,3 +34,10 @@ export const rememberOrder = (order: ShelfOrder): void => write(ORDER_KEY, order
 export const savedOnly = (order: ShelfOrder): string | undefined => read(onlyKey(order));
 
 export const rememberOnly = (order: ShelfOrder, only: string | undefined): void => write(onlyKey(order), only);
+
+const GAME_KEY = 'gm-library-game';
+
+/** The game picked within a kind of paper (By type), or undefined for all games. */
+export const savedGame = (): string | undefined => read(GAME_KEY);
+
+export const rememberGame = (game: string | undefined): void => write(GAME_KEY, game);

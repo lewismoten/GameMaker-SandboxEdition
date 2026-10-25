@@ -441,7 +441,7 @@ async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], pai
 }
 
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
-export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live(): Promise<HTMLElement> } | undefined {
+export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live(): Promise<HTMLElement>; preview(): Promise<Sheet | undefined> } | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
   let loaded: Promise<Loaded | undefined> | undefined;
@@ -463,6 +463,16 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
       if (!x?.seen.length) return h('p', { class: 'gmb-loading' }, 'This game has no levels to map.');
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
       return levelViewer(x);
+    },
+    /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
+    async preview() {
+      const x = await load();
+      const l = x?.seen[0];
+      if (!x || !l) return undefined;
+      const url = await x.paint(l);
+      // a long strip shows its start; a tall one its top
+      const aspect = Math.min(2, Math.max(0.75, l.area.w / l.area.h));
+      return sheet(4 * aspect, 4, 'lm-preview', h('img', { src: url, alt: '' }));
     },
   };
 }

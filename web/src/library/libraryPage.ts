@@ -1,5 +1,6 @@
 // The Library (#/library): everything on the site to read or print, a card each, sorted by game
-// or by the kind of paper (#/library?by=type), narrowed to one game or kind (&only=map), both
+// or by the kind of paper (#/library?by=type), narrowed to one game or kind (&only=levelmap) and,
+// within a kind, to one game (&game=teddy), all
 // remembered per browser (prefs.ts). A card opens its piece
 // in the viewer that already shows it: its game's box (manual/gameManual.ts), the Game-Maker
 // box (manual/dosManual.ts), TURBO BUTTON, the Guide, or the desk's zine (manual/zine).
@@ -7,9 +8,9 @@ import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
 import type { CatalogEntry } from '../project/files';
-import { groupShelf, isShelfOrder, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
+import { groupShelf, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
 import { loadShelf, type Shelf } from './listing';
-import { rememberOnly, rememberOrder, savedOnly, savedOrder } from './prefs';
+import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
 import { lazyThumb } from './thumbs';
 
 const ORDERS: [ShelfOrder, string][] = [
@@ -105,6 +106,8 @@ export function renderLibrary(el: HTMLElement): void {
   let order: ShelfOrder = isShelfOrder(asked) ? asked : (savedOrder() ?? 'game');
   // the address's pick when it named the sort, else the one last picked for this sort
   let only = isShelfOrder(asked) ? state.get('only') : savedOnly(order);
+  // within a kind, one game's pieces (By type only)
+  let game = isShelfOrder(asked) ? state.get('game') : savedGame();
   let shelf: Shelf | undefined;
   const list = h('div', { class: 'lib-shelf', id: 'lib-shelf' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
   const count = h('p', { class: 'lib-count', role: 'status' });
@@ -120,7 +123,19 @@ export function renderLibrary(el: HTMLElement): void {
       show();
     },
   });
-  const keepAddress = () => state.set({ by: order === 'game' && !only ? undefined : order, only });
+  const gamePicker = h('select', {
+    id: 'lib-game',
+    class: 'lib-only',
+    'aria-controls': 'lib-shelf',
+    onchange: () => {
+      game = gamePicker.value || undefined;
+      rememberGame(game);
+      keepAddress();
+      show();
+    },
+  });
+  const gamePick = h('span', { class: 'lib-pick', hidden: true }, h('label', { for: 'lib-game', class: 'lib-only-label' }, 'Game'), gamePicker);
+  const keepAddress = () => state.set({ by: order === 'game' && !only ? undefined : order, only, game: order === 'type' && only ? game : undefined });
   const buttons = ORDERS.map(([o, label]) =>
     h(
       'button',
@@ -152,7 +167,14 @@ export function renderLibrary(el: HTMLElement): void {
       ...groups.map((g) => h('option', { value: pickOf(g) }, g.heading)),
     );
     picker.value = only ?? '';
-    const shown = only ? groups.filter((g) => pickOf(g) === only) : groups;
+    let shown = only ? groups.filter((g) => pickOf(g) === only) : groups;
+    // one kind (By type) from several games: a second picker for the game
+    const owners = order === 'type' && only && shown[0] ? ownersOf(shown[0].parts[0].items) : [];
+    gamePick.hidden = owners.length < 2;
+    const pickedGame = !gamePick.hidden && owners.some((o) => o.owner === game) ? game : undefined;
+    gamePicker.replaceChildren(h('option', { value: '' }, 'All games'), ...owners.map((o) => h('option', { value: o.owner }, o.title)));
+    gamePicker.value = pickedGame ?? '';
+    if (pickedGame) shown = shown.map((g) => ({ ...g, parts: g.parts.map((p) => ({ ...p, items: p.items.filter((i) => i.owner === pickedGame) })) }));
     list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order)));
     const n = shown.reduce((sum, g) => sum + g.parts.reduce((k, p) => k + p.items.length, 0), 0);
     count.textContent = only
@@ -177,6 +199,7 @@ export function renderLibrary(el: HTMLElement): void {
         { class: 'lib-bar' },
         h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons),
         h('span', { class: 'lib-pick' }, pickLabel, picker),
+        gamePick,
         count,
       ),
       list,

@@ -48,23 +48,27 @@ async function zineFound(): Promise<boolean> {
 }
 
 export async function loadShelf(): Promise<Shelf> {
-  const [entries, zine, { boxItems }, { gmBoxItems }, { shotCache }] = await Promise.all([
+  const [entries, zine, { boxItems }, { gmBoxItems }, { shotCache }, { levelMaps }] = await Promise.all([
     loadEntries(),
     zineFound(),
     import('../manual/printables/items'),
     import('../manual/printables/gmItems'),
     import('../manual/printables/kit'),
+    import('../manual/printables/levelMaps'),
   ]);
   const { boxed, maps } = shelfGames(entries);
   const family = entries.filter((e) => isSandboxGame(e) && !isOldSecret(e.id));
   const items: ShelfItem[] = [];
   const thumbs = new Map<string, () => Promise<Sheet | undefined>>();
   const games = new Map<string, CatalogEntry>();
-  const add = (owner: string, ownerTitle: string, piece: BoxItem, open: ShelfItem['open'], own?: PrintContext['printables']['items']) => {
+  const add = (owner: string, ownerTitle: string, piece: BoxItem, open: ShelfItem['open'], ctx?: PrintContext) => {
+    const own = ctx?.printables.items;
     const key = `${owner}:${piece.id}`;
     const ownItem = /^own\d+$/.test(piece.id) ? own?.[Number(piece.id.slice(3))] : undefined;
     items.push({ key, title: piece.title, note: piece.note, icon: piece.icon, type: typeOfPiece(owner, piece.id, ownItem), owner, ownerTitle, open });
-    thumbs.set(key, async () => (await piece.render())[0]);
+    // the Level Maps: the first level's picture, as the printed maps crop it (its pages are mostly key and captions)
+    const levels = piece.id === 'levelmaps' && ctx ? levelMaps(ctx) : undefined;
+    thumbs.set(key, levels ? () => levels.preview() : async () => (await piece.render())[0]);
   };
 
   for (const entry of boxed) {
@@ -82,13 +86,13 @@ export async function loadShelf(): Promise<Shelf> {
       ownerTitle: entry.title,
       open: { via: 'box', game: entry.id, start: 'manual' },
     });
-    for (const piece of boxItems(ctx)) add(entry.id, entry.title, piece, { via: 'box', game: entry.id, start: piece.id }, ctx.printables.items);
+    for (const piece of boxItems(ctx)) add(entry.id, entry.title, piece, { via: 'box', game: entry.id, start: piece.id }, ctx);
   }
   for (const entry of maps) {
     const ctx: PrintContext = { entry, family: [], printables: entry.original?.printables ?? {}, manual: { title: '', pages: [] }, shot: shotCache(entry) };
     games.set(entry.id, entry);
     for (const piece of boxItems(ctx).filter((i) => MAP_PIECES.has(i.id)))
-      add(entry.id, entry.title, piece, { via: 'box', game: entry.id, start: piece.id, maps: true });
+      add(entry.id, entry.title, piece, { via: 'box', game: entry.id, start: piece.id, maps: true }, ctx);
   }
 
   const gmTitle = 'The Game-Maker box';
