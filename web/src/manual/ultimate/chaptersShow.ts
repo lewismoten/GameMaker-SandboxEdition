@@ -1,6 +1,8 @@
 // The Ultimate Owner's Guide, chapters 9 and 10 and the appendix: title screens and demos,
 // play-testing, and the numbers to remember. Checked against PLAYGAME (code/GM/PLAYGAME.C)
-// and web/src/engine (game.ts, recorder.ts, showGraphic.ts).
+// and web/src/engine (game.ts, recorder.ts, showGraphic.ts; menus.ts drawDefaultScreen: no menu
+// picture gives DrawDefaultScrn's random color rings). The instructions advice draws on watching
+// players in two videos (NOTICE.md), in our own words.
 import { opening, tip, type Chapter } from './chapter';
 
 export const SHOW: Chapter = {
@@ -14,6 +16,11 @@ export const SHOW: Chapter = {
   of the screen: roughly from x 70 to 260 and y 100 to 170 of the 320 by 200 picture. It uses
   the blue nearest to a strong blue in the picture’s own palette. Keep that area plain and
   light, and keep a real blue in the picture’s palette.</p>
+  <p>Leave the menu picture out and PLAYGAME draws its own: rings of color on black, in a
+  palette it makes up at random, different every time the game starts. It is a sure sign of an
+  unfinished game. A level scene with no palette is no better: it keeps whatever palette the
+  scene before it used, so its colors depend on the way the player came in. Fill in the
+  pictures and palettes of every scene, scene 0 included.</p>
   <h2>Text screens and slide shows</h2>
   <ul>
     <li>A <code>.TXT</code> page shows 16 lines of up to 31 characters, written over whatever
@@ -30,6 +37,23 @@ export const SHOW: Chapter = {
     start scene’s <b>🎬 Opening sting…</b> adds them to any game, changes them, or takes them out.
     Keep a sting short: the player sees it every time.</li>
   </ul>
+  <h2>Instructions players read</h2>
+  <p>Most players open the instructions once, skim them, and press <kbd>Esc</kbd> as soon as
+  they think they can start. Write for that reader. Three pages (48 lines) hold everything a
+  game needs; if you need more, it is usually the story leaking in.</p>
+  <table>
+    <tr><th>Part</th><th>What it says</th></tr>
+    <tr><td>The goal</td><td>One line: what winning looks like. <i>Find the five fuses and get the lights back on.</i></td></tr>
+    <tr><td>The keys</td><td>Every key the hero has, and only those, one per line: <i>Space: dig</i>. Read the list against the character’s sequences before you upload; a key the page names that nothing uses sends players hunting for a bug.</td></tr>
+    <tr><td>The dangers</td><td>What hurts, and what to do about it: <i>Sparks hurt. Rubber boots let you cross them.</i></td></tr>
+    <tr><td>The items</td><td>A short legend of what each pickup does. A thing the player can’t work out is a thing he walks past.</td></tr>
+    <tr><td>The odd rules</td><td>Anything that works unlike other games. A strange rule the instructions explain is a feature; the same rule unexplained feels like the author being mean.</td></tr>
+    <tr><td>The F-keys</td><td><kbd>F2</kbd> shows hit points, lives and score, and <kbd>F5</kbd> saves (<kbd>F6</kbd> loads). Say so, since nothing is on screen during play.</td></tr>
+  </table>
+  <p>Put the story on its own page, the menu’s Read Storyline, and keep it short too: a page or
+  two that sets up the goal. A long story nobody needs to play is better as a scene’s intro
+  picture, a little at a time. And because few players read any of it first, teach the keys in
+  the game as well (Chapter 15).</p>
   <h2>Don’t keep players waiting</h2>
   <p>PLAYGAME plays an <code>.FLI</code> from its first frame to its last before it looks at the
   keyboard. Press <kbd>Esc</kbd> in the middle of a long intro and nothing happens: the key waits
@@ -83,6 +107,9 @@ export const SHOW: Chapter = {
     wanders at random goes somewhere new each time, and the demo’s hero ends up bumping into
     things that weren’t there when you recorded. Keep wanderers out of the demo’s level, or end
     the demo early.</li>
+    <li><b>A demo that teaches.</b> The demo is the one lesson every idle player sees. Let it
+    show the first few moves of level 1, slowly and plainly: the first jump, the first pickup,
+    the first door.</li>
     <li><b>Across levels.</b> On a 1995 PC the time spent on a “press a key” picture between
     levels was counted by how fast that PC could ask for keys, so a demo that crossed into the
     next level could slip on a faster or slower machine. Demos recorded in this edition count
@@ -108,6 +135,7 @@ export const TESTING: Chapter = {
     <tr><td>☐</td><td>Play once with sound (<kbd>F4</kbd>) and music (<kbd>F3</kbd>) off</td><td>nothing should need ears</td></tr>
     <tr><td>☐</td><td>Look at the menu and <kbd>F2</kbd> in every palette</td><td>a missing blue hides the words</td></tr>
     <tr><td>☐</td><td>Save with <kbd>F5</kbd> and restore with <kbd>F6</kbd> in every scene</td><td>players will</td></tr>
+    <tr><td>☐</td><td>Read the instructions with the character’s keys beside you</td><td>a key the help names that does nothing reads as a bug</td></tr>
     <tr><td>☐</td><td>Watch the demo twice</td><td>it should end the same way both times</td></tr>
     <tr><td>☐</td><td>Hand it to someone who has never seen it, and say nothing</td><td>where they get stuck is your next fix</td></tr>
   </table>
@@ -131,6 +159,10 @@ export const TESTING: Chapter = {
   comes on. The Sandbox games print their answers under a red pattern that only shows through
   red film, so no one reads the next answer by accident.</p>
   <p>Write it while you test: every place a tester got stuck is a question for the book.</p>
+  <p>Put the gentlest hint in the game itself, too, where nobody needs the book: a sign beside
+  the puzzle, or a line on the level’s intro picture. That picture shows again every time the
+  hero dies and the scene starts over, so a player stuck on a level reads its hint on each
+  try.</p>
   <p class="ug-wink">Looking for the really sneaky stuff? Some things aren’t in any official manual.</p>`,
 };
 
@@ -150,6 +182,8 @@ export const NUMBERS: Chapter = {
     <tr><td>Monsters in a set / in a scene at once</td><td>64 / 200</td></tr>
     <tr><td>Pictures in a monster’s animation</td><td>20</td></tr>
     <tr><td>Corners in a monster path</td><td>10</td></tr>
+    <tr><td>Birth blocks give birth within</td><td>the screen and half a screen round it</td></tr>
+    <tr><td>The view starts to scroll</td><td>about 5 blocks from the middle across, 3 up or down</td></tr>
     <tr><td>Attack range</td><td>8 blocks across, 5 up or down</td></tr>
     <tr><td>Character sequences / frames each</td><td>20 / 10</td></tr>
     <tr><td>Inventory</td><td>10 objects</td></tr>
