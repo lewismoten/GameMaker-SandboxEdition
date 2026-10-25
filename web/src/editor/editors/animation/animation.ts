@@ -10,6 +10,7 @@ import { viewState } from '../../../urlState';
 import { h, clear, download, pickFiles, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
 import { pickFile } from '../../widgets/filePicker';
+import { fitToPane } from '../../core/fitPane';
 import { decodeFrames, remap, rgbaOf } from '../../tools/convert';
 import { decodeGif, isGif } from '../../../formats/gif';
 import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '../../../formats/fliFrames';
@@ -347,13 +348,14 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
     e.preventDefault();
   };
 
+  const monitor = h('div', { class: 'fli-monitor' }, stage);
   clear(
     host,
     h(
       'div',
       { class: 'fli-edit', onkeydown: keys, tabIndex: -1 },
       info,
-      h('div', { class: 'fli-monitor' }, stage),
+      monitor,
       h(
         'div',
         { class: 'toolbar fli-transport' },
@@ -413,6 +415,8 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
       ),
     ),
   );
+  // the monitor is as big as leaves room below it for the transport, speed and film strip
+  fitToPane(monitor);
   render();
   if (urlFrame === undefined) play();
   return () => pause();
