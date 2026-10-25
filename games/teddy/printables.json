@@ -365,7 +365,7 @@
       "sprite": {
         "blocks": "backyard.bbl",
         "pal": "backyard.pal",
-        "grid": [[98]],
+        "grid": [[99]],
         "under": 34
       }
     },

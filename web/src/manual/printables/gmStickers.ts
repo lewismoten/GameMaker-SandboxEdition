@@ -25,7 +25,7 @@ const REGULARS: (MixedSticker & { game: string })[] = [
     shape: 'cut',
     color: '#6b7280',
     ink: '#ffffff',
-    sprite: { blocks: 'backyard.bbl', pal: 'backyard.pal', grid: [[98]], under: 34 },
+    sprite: { blocks: 'backyard.bbl', pal: 'backyard.pal', grid: [[99]], under: 34 },
   },
   {
     game: 'teddy',
