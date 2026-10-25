@@ -383,6 +383,17 @@ export function houseTiles(): Tiles {
     },
     () => 'ledge',
   );
+  // Doc Leo's step stool by the fridge (the way back up it from the table's side).
+  t.ledge(
+    'stool',
+    (() => {
+      const p = copy(K());
+      p.rect(2, 2, 16, 3, c('red', 2)).rect(2, 2, 16, 1, c('red', 3)).rect(2, 5, 16, 1, c('red', 0));
+      p.rect(3, 6, 2, 14, c('wood', 1)).rect(15, 6, 2, 14, c('wood', 1));
+      p.rect(5, 12, 10, 2, c('wood', 2)).rect(5, 14, 10, 1, c('wood', 0));
+      return p;
+    })(),
+  );
 
   // The laundry room: the washer shakes (two pictures taking turns), the dryer, the chute.
   for (const ph of [0, 1]) {
