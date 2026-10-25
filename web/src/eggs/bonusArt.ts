@@ -5,7 +5,8 @@
 // (rose glaze, piped icing, gold leaf, a nest of spun sugar, a clockwork baker on top).
 // The shells are painted flat and wrapped round the egg shape pixel by pixel, like the felt
 // eggs (eggArt.ts), but lit with a sheen and a bump map so icing stands up and cracks sink.
-import { EGG_ASPECT, radiusAt, rng, TEX_H, TEX_W } from './eggArt';
+import { EGG_ASPECT, radiusAt, rng } from './eggArt';
+import { TEX_H, TEX_W } from './eggTexture';
 
 export { EGG_ASPECT };
 

@@ -3,7 +3,7 @@
 // per egg, by its place among the eggs found, so the shelf (desk/props/eggGlow.ts) and the
 // close-up viewer (eggViewer.ts) agree: as a front-on SVG for the shelf, and painted round
 // the egg's flat covering (eggArt.ts) for the viewer, where it turns with the egg.
-import { TEX_H, TEX_W } from './eggArt';
+import { TEX_H, TEX_W } from './eggTexture';
 
 const INKS = ['#ff2fd6', '#39ff6a', '#ff8a1a', '#3ac8ff'];
 

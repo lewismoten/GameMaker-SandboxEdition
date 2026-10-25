@@ -2,9 +2,7 @@
 // fibers, bands, a pattern, an appliqué and running stitches), then wrapped round an egg
 // shape and lit, pixel by pixel, at any turn. Used small on the wall and large in the viewer.
 import type { EggLook } from './eggs';
-
-export const TEX_W = 512;
-export const TEX_H = 256;
+import { TEX_H, TEX_W } from './eggTexture';
 
 /** A small seeded random, so an egg's fibers (and a bonus egg's paint) come out the same each time. */
 export function rng(seed: number): () => number {
