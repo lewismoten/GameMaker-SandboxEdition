@@ -3,6 +3,7 @@
 //   0 title   1 the end   2 the library   3 the Long Road (first leg)
 //   4 chapter 1's card    5 the square at 6:59   6 the tower   7 the belfry   8 the square at seven
 //   9..12 the talks (the storybook, the workbench, Doc Leo, Doc Leo at seven)   13 the bell
+//   14 over the hill: the road on past the field gate (for now, on to the end)
 //
 // A talk, a chapter card and the bell are pass scenes (levels/pass.ts): their intro picture is the
 // point, and they link straight on. PLAYGAME shows a scene's intro on every way in, so no place
@@ -120,6 +121,7 @@ export function compile(): Compiled {
     passPlace(SCENE.talkLeo, 'Doc Leo', 'square', 'talkleo.lst'),
     passPlace(SCENE.talkLeo7, 'Doc Leo at Seven', 'parade', 'talkleo7.lst'),
     passPlace(SCENE.bell, 'Seven Bells', 'parade', 'bell.lst'),
+    passPlace(SCENE.over, 'Over the Hill', 'road', ''),
   ];
 
   const game = newGame(TITLE);
@@ -187,7 +189,8 @@ export function compile(): Compiled {
   // the road: north up the first lane to chapter 1 (by its card); east through the gate, the road goes on
   link(SCENE.road1, mark(road, 'L'), SCENE.card1, giftCell(pass, 'none'));
   pass1(SCENE.card1, SCENE.square, mark(square, '@'));
-  link(SCENE.road1, mark(road, 'E'), SCENE.end, { x: 0, y: 0 });
+  link(SCENE.road1, mark(road, 'E'), SCENE.over, giftCell(pass, 'none'));
+  link(SCENE.over, giftCell(pass, 'none'), SCENE.end, { x: 0, y: 0 });
   // the square at 6:59: Doc Leo, the tower door, and back down the lane
   talk(SCENE.square, mark(square, 'L'), SCENE.talkLeo, 'none', below(mark(square, 'L')));
   link(SCENE.square, mark(square, 'd'), SCENE.tower, mark(inside, '@'));

@@ -118,12 +118,14 @@ export const square7: Step = async (bot) => {
   await bot.take(exit.x, exit.y, SCENE.road1, 'down the lane');
 };
 
-/** The road east, through the field gate. */
+/** The road east, through the field gate and over the hill. */
 export const onward: Step = async (bot) => {
   const gate = at(33, 12);
   const end = at(34, 12);
   const r = await bot.goto(end.x, end.y, 'the road on', (x, y) => x === gate.x && y === gate.y);
-  if (r !== 'end' || bot.sim.ended !== 'won') throw new Error(`the road on: ${r ?? 'no end'}`);
+  if (r !== 'link' || bot.sim.scene !== SCENE.over) throw new Error(`the road on: ${r ?? 'no link'}`);
+  for (let i = 0; i < 4 && !bot.sim.ended; i++) await bot.tick();
+  if (bot.sim.ended !== 'won') throw new Error('over the hill: the game did not end');
 };
 
 export async function playThrough(sim: GameSim, ids: { tick: number; tock: number }): Promise<Bot> {

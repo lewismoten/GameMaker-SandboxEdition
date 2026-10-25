@@ -20,6 +20,8 @@ export const SCENE = {
   talkLeo7: 12,
   /** The bell's seven strokes, between the belfry and the square at seven. */
   bell: 13,
+  /** Over the hill: where the road goes on (for now, the end). */
+  over: 14,
 } as const;
 
 /**
