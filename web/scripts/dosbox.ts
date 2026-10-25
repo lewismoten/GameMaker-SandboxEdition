@@ -28,7 +28,7 @@ if (existsSync(target) && readdirSync(target).length && !existsSync(join(target,
 }
 
 /** The site's DOS export fetches its player from the app; here it comes from the CD. */
-const PLAYER: Record<string, string> = { 'dos/xferplay.exe': 'cd/gm/xferplay.exe', 'dos/sndblast.drv': 'cd/gm/sndblast.drv' };
+const PLAYER: Record<string, string> = Object.fromEntries(['xferplay.exe', 'sndblast.drv', 'config.hlp', 'gmhelp.txt'].map((n) => [`dos/${n}`, `cd/gm/${n}`]));
 globalThis.fetch = (async (url: string | URL) => {
   const path = Object.entries(PLAYER).find(([k]) => String(url).endsWith(k))?.[1];
   if (!path) return new Response(null, { status: 404 });

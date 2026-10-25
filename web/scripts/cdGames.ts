@@ -12,6 +12,7 @@
 //   games/<kind>/<id>/<id>.<hash>.gmpak  each game's files in one gzipped file, what the site
 //                                fetches to play or open a game (src/project/gamePack.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
+//   dos/config.hlp, dos/gmhelp.txt       its setup screen's and in-game help, which a Transfer put beside it
 //   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
 //                                desk: a listing plus its text files (.HLP screens, .TXT)
 import type { Plugin } from 'vite';
@@ -306,7 +307,7 @@ function scan(cdRoot: string): Scan {
   }
   scanOriginals(join(cdRoot, '../games'), catalog, secret, files);
   // The DOS player used by "Export for DOS".
-  for (const name of ['xferplay.exe', 'sndblast.drv']) {
+  for (const name of ['xferplay.exe', 'sndblast.drv', 'config.hlp', 'gmhelp.txt']) {
     const p = join(cdRoot, 'gm', name);
     if (existsSync(p)) files.set(`dos/${name}`, p);
   }

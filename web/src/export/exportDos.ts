@@ -87,12 +87,24 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
   } catch {
     throw new Error('The DOS player is not part of this build (it is copied from cd/gm by "npm run games").');
   }
+  // the setup screen's Help and the in-game help (F1) read these, as on the CD's transferred
+  // games; a build made before they were copied simply goes without
+  const help: ZipEntry[] = [];
+  for (const [name, path] of [
+    ['CONFIG.HLP', 'dos/config.hlp'],
+    ['GMHELP.TXT', 'dos/gmhelp.txt'],
+  ]) {
+    if (names.some((n) => n.toUpperCase() === name)) continue;
+    const data = await fetchBytes(new URL(path, base).href).catch(() => undefined);
+    if (data) help.push({ name, data });
+  }
 
   const entries: ZipEntry[] = [
     { name: exe, data: player },
     { name: 'SNDBLAST.DRV', data: driver },
     // Playgame shows its sound/video setup screen when run with "config".
     { name: 'CONFIG.BAT', data: textBytes(`@ECHO OFF\r\n${stem} config\r\n`) },
+    ...help,
     ...stored.map((n) => ({ name: (renamed.get(n) ?? n).toUpperCase(), data: files.get(n)! })),
     // (beside the game's own README.TXT, if it has one, under another name)
     {
@@ -128,7 +140,8 @@ Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: S
 (a modified fork of RSD Game-Maker 3.0: https://github.com/lewismoten/GameMaker-SandboxEdition).
 
 Notices
-  ${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD.
+  ${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD, and
+  CONFIG.HLP and GMHELP.TXT its help text, from the same CD.
   Game-Maker's source code was released under the MIT License:
 
 ${MIT_NOTICE}
