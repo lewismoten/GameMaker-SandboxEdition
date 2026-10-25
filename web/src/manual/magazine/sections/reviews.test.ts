@@ -1,7 +1,8 @@
 // The readers' reviews: every page has screenshots of listed games with captions saying what to
 // look at, the second opinion really disagrees with the printed score, the readers' pick is a
 // small shareware disk beside a boxed Sandbox game, and the controls the reviews and captions
-// lean on are the ones the games' own help screens give.
+// lean on are the ones the games' own help screens give. The Critic's Corner's split verdict
+// on Snowbound gives its box price, and the facts it leans on are the game's own.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -68,5 +69,23 @@ describe('the readers’ reviews', async () => {
     expect(help('gridlin', 'kevini.txt')).toMatch(/G, H: kick/);
     expect(help('gridlin', 'kevini.txt')).toMatch(/Y, B: punch/);
     expect(help('parsec3d', 'parsec_i.txt')).toContain('Blocks that appear behind your character can be passed through');
+  });
+
+  it('splits the Critic’s Corner verdict on Snowbound, with facts from the game itself', () => {
+    const critic = pages.find((pg) => pg.id === 'critics-corner');
+    expect(critic).toBeDefined();
+    const all = text(critic!.blocks);
+    for (const s of ['STORY: A+', 'GAMEPLAY: C–', 'Don’t waste your money on it', ctx.game('snowbound')!.price!]) expect(all).toContain(s);
+    const game = join(__dirname, '../../../../../games/snowbound');
+    const walk = JSON.parse(readFileSync(join(game, 'walkthrough.json'), 'utf8')) as {
+      timeline: { fps: number; chapters: { title: string; frame: number }[] };
+    };
+    const levels = walk.timeline.chapters.filter((c) => c.title.startsWith('Level'));
+    expect(levels.length).toBe(4);
+    const ending = walk.timeline.chapters.find((c) => c.title === 'Ending')!;
+    const minutes = (ending.frame - levels[0].frame) / walk.timeline.fps / 60;
+    expect(minutes).toBeGreaterThan(3);
+    expect(minutes).toBeLessThan(3.5);
+    expect(readFileSync(join(game, 'src/characters/kid.ts'), 'utf8')).toMatch(/key: KEY\.down,[^\n]*norepeat: 1/);
   });
 });

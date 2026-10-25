@@ -5,8 +5,10 @@
 // say what to look at (each checked against the shot), the readers' pick, a second opinion
 // that disagrees with a score, and capsules from the gameware drawer. Every fact comes from
 // the games' own text screens and maps, and each author is credited as their own files name them.
+// Last, the Critic's Corner: a staff critic pans a Sandbox Software game (critic.ts).
 import { cols, grid, head, note, p, pull, shot, side } from '../blocks';
 import type { Block, MagSection } from '../types';
+import { criticsCorner } from './critic';
 
 const HOG = 'signhdg';
 
@@ -216,7 +218,7 @@ export const REVIEWS: MagSection = {
   title: 'Reviews',
   blurb: 'Shareware Game of the Month: Sign of the Hedgehog. Plus readers rate ten more',
   dept: 'REVIEWS',
-  pages: () => [
+  pages: (ctx) => [
     {
       kind: 'dept',
       tone: 'yellow',
@@ -362,5 +364,6 @@ export const REVIEWS: MagSection = {
         grid(REVIEWS_GAMEWARE.map(capsule), 0.2),
       ],
     },
+    criticsCorner(ctx),
   ],
 };
