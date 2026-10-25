@@ -54,17 +54,12 @@ export function addBbs(juiceArt: Pixels): void {
   // one '=' block on both sides of SANDBOX (it was '-=' and '=-': the slot went to the ball can)
   bg.add('ltrEq', letterBlock('==', ANSI[12], ANSI[4]), { solid: SOLID });
   {
-    // A 3.5" floppy disk: shareware! Points.
+    // A 3.5" floppy disk, standing shutter down with its label up top: shareware! Points.
     const p = art(
       [
         '',
         '',
         '   kkkkkkkkkkkkkk',
-        '   kBBBSSSSSSBBBk',
-        '   kBBBSkkSSSBBBk',
-        '   kBBBSkkSSSBBBk',
-        '   kBBBSSSSSSBBBk',
-        '   kBBBBBBBBBBBBk',
         '   kBWWWWWWWWWWBk',
         '   kBWrrrrrrrrWBk',
         '   kBWWWWWWWWWWBk',
@@ -72,6 +67,11 @@ export function addBbs(juiceArt: Pixels): void {
         '   kBWWWWWWWWWWBk',
         '   kBWkkkkkWWWWBk',
         '   kBWWWWWWWWWWBk',
+        '   kBBBBBBBBBBBBk',
+        '   kBBBSSSSSSBBBk',
+        '   kBBBSSSkkSBBBk',
+        '   kBBBSSSkkSBBBk',
+        '   kBBBSSSSSSBBBk',
         '   kkkkkkkkkkkkkk',
       ],
       { k: 0, B: ANSI[1], S: STEEL[5], W: STEEL[7], r: ANSI[12] },
