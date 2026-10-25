@@ -345,6 +345,17 @@ describe('PLAYGAME port', () => {
     expect(playLikeDos(file, 0xfff0).failure).toMatch(/frame 0: line 0 has a packet count/);
   });
 
+  it("sets a split frame 0's palette after its bands, so the last picture never shows in new colors", () => {
+    for (const { name, bytes } of diskFlis()) {
+      const anim = parseFli(bytes);
+      const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      const start = anim.frames[0];
+      const types: number[] = [];
+      for (let i = 0, p = start + 16; i < dv.getUint16(start + 6, true); i++, p += dv.getUint32(p, true)) types.push(dv.getUint16(p + 4, true));
+      if (types.filter((t) => t !== 11).length > 1 && types.includes(11)) expect(types.at(-1), name).toBe(11);
+    }
+  });
+
   it('finds no chunk in the games bigger than FLI_CHUNK_MAX', () => {
     for (const { name, bytes } of diskFlis()) expect(Math.max(...chunkSizes(bytes)), name).toBeLessThanOrEqual(FLI_CHUNK_MAX);
   }, 30_000);

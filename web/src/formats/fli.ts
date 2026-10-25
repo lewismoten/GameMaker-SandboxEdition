@@ -470,7 +470,14 @@ export function encodeFli(
       );
       const onPrev = prev ? lineBands(prev, px, w, h, FLI_CHUNK_MAX) : undefined;
       const bytes = (cs: number[][]) => cs.reduce((n, c) => n + c.length, 0);
-      chunks.push(...(onPrev && bytes(onPrev) <= bytes(whole) ? onPrev : whole));
+      const bands = onPrev && bytes(onPrev) <= bytes(whole) ? onPrev : whole;
+      // PLAYGAME shows each chunk as it reads it, so a new palette set before several bands
+      // shows what is still on screen in the new colors while they draw. On frame 0 (often
+      // over the last picture of a faded-out FLI) or after a black palette, draw the bands
+      // first, unseen, and set the palette after them.
+      const hidden = i === 0 || (pals && pals[i - 1].every((v, c) => c >= 768 || (v & 63) === 0));
+      if (chunks.length && hidden) chunks.splice(0, 0, ...bands);
+      else chunks.push(...bands);
     }
     const body = chunks.flat();
     // Frame header: size u32, magic 0xF1FA, chunk count u16, 8 reserved bytes.
