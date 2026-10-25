@@ -587,7 +587,7 @@ Joe asks him what he came all this way to ask: could he put in a real heart?`,
 The light coming out of the hatch is gold.`,
 ]);
 
-/** Watt, and the gold: after gold.fli. */
+/** Watt, and the gold: after gold.fli, up to THE CHEZ pulling up (honk.fli shows it). */
 export const TALK_WATT2 = page([
   `"Beep," says Watt. "I fix things, Joe. There's nothing in here to fix."
 
@@ -595,6 +595,10 @@ Joe looks down. The brass tally counter is glowing gold. It has been counting al
   `The whole house turns gold. And there is a honk outside.
 
 THE CHEZ pulls up, Doc Leo at the wheel and Teddy in the front passenger seat, Gwinn running alongside, and everybody else piling in behind.`,
+]);
+
+/** Watt, and the gold: after honk.fli. */
+export const TALK_WATT3 = page([
   `Everybody Joe helped came to see.
 
 Joe looks at them all, and at the gold counter, and says it out loud:

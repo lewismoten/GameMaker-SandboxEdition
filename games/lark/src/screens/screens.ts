@@ -35,6 +35,7 @@ import {
   CARD12,
   TALK_WATT,
   TALK_WATT2,
+  TALK_WATT3,
   EPILOGUE,
   TALK_SEED,
   TALK_SEED2,
@@ -278,15 +279,19 @@ export function buildScreens(): Record<string, Uint8Array> {
   pages('talksed2', 'THE STAR', TALK_SEED2, [seed('joy', 'sprout'), joe('down', 0, 'glad')], { before: 'star.fli' });
   const watt = wattCameo(PAL.pal, 'down', 0);
   pages('card12', 'THE SMART HOME', CARD12, [joe('down', 0), watt]);
-  // Watt's talk stops at the hatch for gold.fli, then goes on over the same page
+  // Watt's talk stops at the hatch for gold.fli and at THE CHEZ pulling up for honk.fli, going on over the same page
   pages('talkwatt', 'WATT', TALK_WATT, [watt, joe('down', 0, 'glad'), leo(true, true), teddy(true), gwinnSit()]);
   add('talkwat2.txt', TALK_WATT2);
+  add('talkwat3.txt', TALK_WATT3);
   slides('talkwatt.lst', [
     { name: 'talkwatt.gif', pause: 0 },
     { name: 'talkwatt.txt' },
     { name: 'gold.fli', pause: 0 },
     { name: 'talkwatt.gif', pause: 0 },
     { name: 'talkwat2.txt' },
+    { name: 'honk.fli', pause: 0 },
+    { name: 'talkwatt.gif', pause: 0 },
+    { name: 'talkwat3.txt' },
   ]);
   pages('epilogue', 'OPENING TIME', EPILOGUE, [joe('down', 0, 'glad')], { before: 'home.fli' });
   pages('bell', "SEVEN O'CLOCK", BELL, [clown('blue', 'red', 1), clown('green', 'yellow', 1), leo(true, true)], { before: 'bell.fli' });

@@ -4,6 +4,7 @@ import { beamFli } from './beam';
 import { bellFli } from './bell';
 import { doorFli, homeFli } from './dogHouse';
 import { goldFli } from './gold';
+import { honkFli } from './honk';
 import { starFli } from './star';
 
 export function cartoons(): Record<string, Uint8Array> {
@@ -13,6 +14,7 @@ export function cartoons(): Record<string, Uint8Array> {
     'beam.fli': beamFli(),
     'star.fli': starFli(),
     'gold.fli': goldFli(),
+    'honk.fli': honkFli(),
     'home.fli': homeFli(),
   };
 }
