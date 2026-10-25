@@ -269,11 +269,12 @@ async function route(): Promise<void> {
   }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
-    const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
-    document.title = `${title ? `${title[0].toUpperCase()}${title.slice(1)} · ` : ''}Guide · ${PRODUCT}`;
     const { renderWebManual } = await import('./manual/webManual');
     if (ui !== 'modern') return;
     renderWebManual(content, id);
+    // named after the section shown (its heading), after it is drawn so seo/route.ts can read it
+    const title = id ? content.querySelector('.guide article h1')?.textContent?.trim() : '';
+    document.title = `${title ? `${title} · ` : ''}Guide · ${PRODUCT}`;
     return;
   }
   document.title = PRODUCT;
