@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 25256,
+  "frames": 25257,
   "chapters": [
    {
     "title": "Opening",
@@ -55,27 +55,27 @@
    },
    {
     "title": "Level 1: Mild Scares for All Ages",
-    "frame": 2982
+    "frame": 2983
    },
    {
     "title": "Level 2: GET DOWN!",
-    "frame": 6027
+    "frame": 6028
    },
    {
     "title": "Level 3: Strategic Repositioning",
-    "frame": 11121
+    "frame": 11122
    },
    {
     "title": "Level 4: The Emergency Exit Sign",
-    "frame": 14321
+    "frame": 14322
    },
    {
     "title": "Ending",
-    "frame": 17538
+    "frame": 17539
    },
    {
     "title": "Credits",
-    "frame": 20288
+    "frame": 20289
    }
   ]
  }
