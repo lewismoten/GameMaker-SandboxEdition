@@ -273,13 +273,11 @@ export const musicBox =
       swing: [17, 4],
     });
     const exit = at(10, 13);
-    await bot.take(exit.x, exit.y, SCENE.road2, 'out of the toy shop');
+    await bot.take(exit.x, exit.y, SCENE.card5, 'on along the shore');
   };
 
 /** Chapter 5: Doc Leo, the three breakers through the lot's gates, the charger, his thank-you. */
 export const lot: Step = async (bot) => {
-  const lane = at(19, 1);
-  await bot.take(lane.x, lane.y, SCENE.card5, 'the lane to the car lot');
   await bot.pass(SCENE.lot, 'chapter five');
   const d = at(4, 14);
   await bot.take(d.x, d.y, SCENE.talkLot, 'Doc Leo');
@@ -315,14 +313,12 @@ export const lot: Step = async (bot) => {
     swing: [21, 3],
   });
   const exit = at(11, 15);
-  const r = await bot.goto(exit.x, exit.y, 'out of the car lot', (cx, cy) => gates.has(`${cx},${cy}`));
-  if (r !== 'link' || bot.sim.scene !== SCENE.road2) throw new Error(`out of the car lot: ${r ?? 'no link'}`);
+  const r = await bot.goto(exit.x, exit.y, 'on to the cove', (cx, cy) => gates.has(`${cx},${cy}`));
+  if (r !== 'link' || bot.sim.scene !== SCENE.card6) throw new Error(`on to the cove: ${r ?? 'no link'}`);
 };
 
 /** Chapter 6: across the dark cove, up the lighthouse by its lift and landings, the lamp, and Carl's thank-you. */
 export const lighthouse: Step = async (bot) => {
-  const lane = at(27, 1);
-  await bot.take(lane.x, lane.y, SCENE.card6, 'the lane to the cove');
   await bot.pass(SCENE.cove, 'chapter six');
   const door = at(21, 3);
   await bot.take(door.x, door.y, SCENE.lighthouse, 'the lighthouse door');
@@ -354,15 +350,7 @@ export const lighthouse: Step = async (bot) => {
     swing: [24, 3],
   });
   const exit = at(2, 15);
-  await bot.take(exit.x, exit.y, SCENE.road2, 'out of the cove');
-};
-
-/** The shore road east, through its gate and over the hill. */
-export const onward: Step = async (bot) => {
-  const gate = at(33, 12);
-  const end = at(34, 12);
-  const r = await bot.goto(end.x, end.y, 'the road on', (x, y) => x === gate.x && y === gate.y);
-  if (r !== 'link' || bot.sim.scene !== SCENE.over) throw new Error(`the road on: ${r ?? 'no link'}`);
+  await bot.take(exit.x, exit.y, SCENE.over, 'on over the hill');
   for (let i = 0; i < 4 && !bot.sim.ended; i++) await bot.tick();
   if (bot.sim.ended !== 'won') throw new Error('over the hill: the game did not end');
 };
@@ -370,7 +358,7 @@ export const onward: Step = async (bot) => {
 export async function playThrough(sim: GameSim, ids: Ids): Promise<Bot> {
   const bot = new Bot(sim);
   try {
-    for (const step of [library, toClock, square, tower(ids), belfry, square7, park, street, toShore, musicBox(ids), lot, lighthouse, onward]) await step(bot);
+    for (const step of [library, toClock, square, tower(ids), belfry, square7, park, street, toShore, musicBox(ids), lot, lighthouse]) await step(bot);
   } catch (e) {
     console.error((process.env.BOT_LOG ? bot.log : bot.log.slice(-30)).join('\n'));
     throw e;

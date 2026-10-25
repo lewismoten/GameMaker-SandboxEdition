@@ -58,11 +58,10 @@ export function compile(): Compiled {
   s.add({ scene: SCENE.road2, desc: 'The Shore Road', file: 'road2', light: 'night', set: 'town', hero: 'hero', song: 'road', stamped: road2 });
   s.door(SCENE.road1, mark(road, 'E'), SCENE.road2, mark(road2, '@'));
   musicBoxChapter(s, road2);
-  lotChapter(s, road2);
-  lighthouseChapter(s, road2);
-  // east through its gate: over the hill (for now, the end)
+  lotChapter(s);
+  lighthouseChapter(s);
+  // from the lit cove, on over the hill (for now, the end)
   s.passPlace(SCENE.over, 'Over the Hill', 'road', '');
-  s.door(SCENE.road2, mark(road2, 'E'), SCENE.over, s.passCell());
   s.door(SCENE.over, s.passCell(), SCENE.end, { x: 0, y: 0 });
 
   const game = s.game({ scene: SCENE.library, at: mark(library, '@') });

@@ -3,11 +3,11 @@
 import { SCENE } from '../ids';
 import { CARL_LOOP, coveMap } from '../levels/cove';
 import { lighthouseMap } from '../levels/lighthouse';
-import { mark, type Stamped } from '../levels/stamp';
+import { mark } from '../levels/stamp';
 import { below, type Scenes } from '../scenes';
 import { coveCritters, lighthouseCritters } from '../sprites/critters';
 
-export function lighthouseChapter(s: Scenes, road: Stamped): void {
+export function lighthouseChapter(s: Scenes): void {
   const coveMons = coveCritters(s.mb, CARL_LOOP);
   const cove = coveMap(s.sets.night, coveMons, false);
   const coveLit = coveMap(s.sets.night, undefined, true);
@@ -28,12 +28,11 @@ export function lighthouseChapter(s: Scenes, road: Stamped): void {
   });
   s.add({ scene: SCENE.coveLit, desc: 'The Lit Cove', file: 'covelit', light: 'evening', set: 'night', hero: 'hero', song: 'dance', stamped: coveLit });
   s.passPlace(SCENE.talkCarl, 'Carl', 'dance', 'talkcarl.lst');
-  s.door(SCENE.road2, mark(road, 'N'), SCENE.card6, s.passCell());
   s.passOn(SCENE.card6, SCENE.cove, mark(cove, '@'));
   s.door(SCENE.cove, mark(cove, 'D'), SCENE.lighthouse, mark(inside, '@'));
-  s.door(SCENE.cove, mark(cove, 'S'), SCENE.road2, mark(road, 'u'));
   s.door(SCENE.lighthouse, mark(inside, 'D'), SCENE.cove, below(mark(cove, 'D')));
   s.door(SCENE.lighthouse, mark(inside, 'l'), SCENE.coveLit, below(mark(coveLit, 'D')));
   s.talk(SCENE.coveLit, mark(coveLit, 'L'), SCENE.talkCarl, 'thanks', below(mark(coveLit, 'L')));
-  s.door(SCENE.coveLit, mark(coveLit, 'S'), SCENE.road2, mark(road, 'u'));
+  // on over the hill
+  s.door(SCENE.coveLit, mark(coveLit, 'S'), SCENE.over, s.passCell());
 }

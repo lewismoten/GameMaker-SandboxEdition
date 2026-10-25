@@ -23,8 +23,8 @@ export function musicBoxChapter(s: Scenes, road: Stamped): void {
   const g = mark(shop, 'G');
   s.talk(SCENE.shop, g, SCENE.talkGoat, 'none', { x: g.x + 1, y: g.y });
   s.door(SCENE.shop, mark(shop, 'K'), SCENE.inbox, mark(inbox, '@'));
-  s.door(SCENE.shop, mark(shop, 'S'), SCENE.road2, mark(road, 'r'));
   s.door(SCENE.inbox, mark(inbox, 'X'), SCENE.shop7, below(mark(shop, 'K')));
   s.talk(SCENE.shop7, mark(shop7, 'L'), SCENE.talkGoat2, 'thanks', below(mark(shop7, 'L')));
-  s.door(SCENE.shop7, mark(shop7, 'S'), SCENE.road2, mark(road, 'r'));
+  // on along the shore to the car lot
+  s.door(SCENE.shop7, mark(shop7, 'S'), SCENE.card5, s.passCell());
 }

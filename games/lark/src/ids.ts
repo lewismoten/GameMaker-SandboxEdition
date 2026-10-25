@@ -93,7 +93,7 @@ export const NOTES = 7;
 /** Breakers to throw before the lot's charger has power. */
 export const BREAKERS = 3;
 
-/** Thank-you hearts the end of the first leg of the road asks for, and of the second. */
+/** Thank-you hearts the end of the first leg of the road asks for, and Joe's count by the end of the second. */
 export const LEG1_THANKS = 3;
 export const LEG2_THANKS = 6;
 

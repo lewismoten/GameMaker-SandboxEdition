@@ -155,10 +155,6 @@
    "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHUA=="
   },
   {
-   "scene": 22,
-   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
-  },
-  {
    "scene": 29,
    "keys": ""
   },
@@ -187,10 +183,6 @@
    "keys": "AU0BzQdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHUAHQB1AB0BhQAdAYUAHQGFAB0BhQAdAYTQHNGE0BzRhNAc0YUAHQGFAB0BhQAdAYUAHQGEsByxhLAcsYSwHLGEsByxhLAcsYSwHLGEsByxhLAcsYSwHLGFAB0A=="
   },
   {
-   "scene": 22,
-   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQ=="
-  },
-  {
    "scene": 34,
    "keys": ""
   },
@@ -213,10 +205,6 @@
   {
    "scene": 37,
    "keys": "AU0BzQdQAdAHUAHQB0sBywdQAdAHUAHQB1AB0AdLAcsHSwHLB1AB0AdQAdAHSwHLB0sBywdIAcgHSAHIB0sBywdLAcsHUAHQB1AB0AdQAdAHUAHQB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB1AB0AdQAdAHUAHQB0sBywdLAcsHSAHIB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSwHLB0sBywdQAdAHUAHQB0sBywdQ"
-  },
-  {
-   "scene": 22,
-   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdN"
   },
   {
    "scene": 14,
@@ -263,7 +251,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 64247,
+  "frames": 62796,
   "chapters": [
    {
     "title": "Opening",
@@ -303,19 +291,19 @@
    },
    {
     "title": "Chapter 5: The Charging Run",
-    "frame": 41829
+    "frame": 41239
    },
    {
     "title": "Chapter 6: The Lighthouse",
-    "frame": 51562
+    "frame": 50408
    },
    {
     "title": "Ending",
-    "frame": 59938
+    "frame": 58484
    },
    {
     "title": "Credits",
-    "frame": 61733
+    "frame": 60279
    }
   ]
  }

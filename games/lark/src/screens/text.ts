@@ -315,7 +315,7 @@ Carl buzzes round and round it, happy as a fly can be. He was lost in the dark f
 "It is kind," says Joe. "It is not mine."
 
 Carl gives him a spare lens from the lamp, and a gold thank-you heart.`,
-  `Joe counts: six. The gate at the end of the shore road wants ${LEG2_THANKS}.
+  `Joe counts: ${LEG2_THANKS === 6 ? 'six' : LEG2_THANKS}. Over the hill, the road goes on.
 
 THE LAMP LENS
 Pick it up (SPACE). It holds a little of the light.`,

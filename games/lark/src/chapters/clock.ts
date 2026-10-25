@@ -56,10 +56,9 @@ export function clockChapter(s: Scenes, road: Stamped): void {
   // up the lane (by the chapter's card) into the square
   s.door(SCENE.road1, mark(road, 'L'), SCENE.card1, s.passCell());
   s.passOn(SCENE.card1, SCENE.square, mark(square, '@'));
-  // the square at 6:59: Doc Leo, the tower door, and back down the lane
+  // the square at 6:59: Doc Leo and the tower door (once in a chapter, Joe sees it through)
   s.talk(SCENE.square, mark(square, 'L'), SCENE.talkLeo, 'none', below(mark(square, 'L')));
   s.door(SCENE.square, mark(square, 'd'), SCENE.tower, mark(inside, '@'));
-  s.door(SCENE.square, mark(square, 'S'), SCENE.road1, mark(road, 'r'));
   // the tower: the door back out, the hatch up; the belfry's bell rope rings seven
   s.door(SCENE.tower, mark(inside, 'D'), SCENE.square, below(mark(square, 'd')));
   s.door(SCENE.tower, mark(inside, 'X'), SCENE.belfry, mark(belfry, '@'));

@@ -4,7 +4,7 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { bevel } from '../art/draw';
 import { c, r } from '../art/pal';
-import { CTR, LEG1_THANKS, LEG2_THANKS } from '../ids';
+import { CTR, LEG1_THANKS } from '../ids';
 import { clown, leo, reggie } from '../sprites/people';
 import { addKeepsakes } from './keepsakes';
 import { BlockSet, SOLID } from './sets';
@@ -259,8 +259,6 @@ export function townSet(): BlockSet {
   // the leg gate: it takes the thank-yous it asks for, and its open half gives them back
   s.add('gateOpen', gate(true, path(1)), { effect: CTR.thanks, eamt: LEG1_THANKS, touch: 'path' });
   s.add('gate', gate(false, path(1)), { solid: SOLID, effect: CTR.thanks, eamt: -LEG1_THANKS, touch: 'gateOpen' });
-  s.add('gateOpen2', gate(true, path(1)), { effect: CTR.thanks, eamt: LEG2_THANKS, touch: 'path' });
-  s.add('gate2', gate(false, path(1)), { solid: SOLID, effect: CTR.thanks, eamt: -LEG2_THANKS, touch: 'gateOpen2' });
   for (const k of [0, 1, 2, 3] as const) s.add(`dogHouse${k}`, dogHouse(k, g), { solid: SOLID });
   // the town square
   s.add('cobble', cb);
