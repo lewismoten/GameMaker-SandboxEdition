@@ -3,6 +3,8 @@
 // cards were. Its joke is the card that brags, and its pitch the before and after of every
 // 1995 sound card ad: the PC speaker's beep beside the card's boom. The price is part of the
 // story; the button goes to the real switch under the desk's right speaker (desk/pc/blasterSwitch.ts).
+// Its deep blue page and burst of sound waves are soundCardAd.css.
+import '../soundCardAd.css';
 import { adPage, adframe, art, callouts, card, grid, list, side } from '../blocks';
 import type { MagSection } from '../types';
 
