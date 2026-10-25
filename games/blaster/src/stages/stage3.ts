@@ -1,11 +1,13 @@
 // Stage 3: THE SOUND CARD. Leg A "The Mixer" brings note-heads in conga lines and wasps;
-// leg B "The Woofer" has the speakers that thump the ship forward. Then the Feedback Howler.
+// leg B "The Woofer" has the speakers that thump the ship forward; leg C "The Big Name" crosses
+// the card's face, where it prints SOUND BOASTER (stages/boaster.ts). Then the Feedback Howler.
 import { HOP, HOVER_DROP, S_CURVE, SWEEP, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { soundArt, soundEgg, soundTiles, soundVirus } from '../blocks/sound3';
 import { kit, type Stage } from './stage';
 import { bossHowler } from '../bosses/boss3';
+import { bigName } from './boaster';
 
 function virus3(b: Parameters<typeof soundVirus>[0], p: Parameters<typeof soundVirus>[1]): void {
   soundVirus(b, p);
@@ -184,6 +186,7 @@ export function stage3(): Stage {
         kit: ks,
         card: ['When a speaker thumps, its', 'middle kicks you forward.', 'Ride the beat!'],
       },
+      bigName(pal),
       bossHowler(art),
     ],
   };

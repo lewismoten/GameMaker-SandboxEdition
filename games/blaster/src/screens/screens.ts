@@ -32,7 +32,7 @@ export function card(s: Stage, legIndex: number, l = s.legs[legIndex], tagged?: 
   const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
-  const tag = tagged ?? (l.kind === 'boss' ? 'WARNING!' : `STAGE ${s.n}-${'AB'[legIndex]}`);
+  const tag = tagged ?? (l.kind === 'boss' ? 'WARNING!' : `STAGE ${s.n}-${'ABC'[legIndex]}`);
   outlined(p, 12, 110, tag, l.kind === 'boss' && !tagged ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
   outlined(p, 12, 122, s.title.toUpperCase(), pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);

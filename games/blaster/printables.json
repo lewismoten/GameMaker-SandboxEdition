@@ -96,6 +96,14 @@
               "a": "When a speaker thumps out, the middle of the cone kicks the BLASTER forward. Use it to rush past a crowd."
             },
             {
+              "q": "Something keeps rolling across the board from the left.",
+              "a": "Sound waves from the line-out jacks on the card's bracket. Each one rolls along a faint trace with arrows on it, so you can see its lane coming. Cross between two waves, or shoot one to break it up."
+            },
+            {
+              "q": "Why is that chip laughing at me?",
+              "a": "It's the FM music chip, and its maker printed YO MAMA! HA HA HA right on it. The HAs fly out of its bottom corners. Shoot the collar off each corner (three hits) to shut it up."
+            },
+            {
               "q": "The Feedback Howler's grille blocks everything.",
               "a": "The bars slide two blocks each way. Fire when a gap lines up with the face, and slip through a gap the same way when the face is gone."
             }
@@ -211,7 +219,7 @@
           "caption": "The Memory Leech"
         },
         {
-          "map": "s3c.map",
+          "map": "s3d.map",
           "x": 2,
           "y": 45,
           "w": 16,
@@ -395,7 +403,7 @@
     },
     {
       "head": "Scan every download",
-      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, ten scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
+      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, eleven scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
     },
     {
       "head": "Since last issue: Watt made it home",
@@ -408,6 +416,10 @@
     {
       "head": "In the workshop: A hundred worlds",
       "html": "<p>Our biggest game yet is on the workbench, and it's big on purpose: we want to find out how much Game-Maker can hold. A courier, a galaxy chart, five sectors and eighty-eight worlds to land on, every one of them wrapping all the way around. It's called <b>Maximus: The Hundred Worlds</b>. It needs a 386. Sorry, 286.</p>"
+    },
+    {
+      "head": "Readable from across the room",
+      "html": "<p>Overcreative Labs says you can read the name on a Sound Boaster from across the room. Virus Blaster put that to the test. On the sound card, in the run called <i>The Big Name</i>, the BLASTER flies up the face of the card, over SOUND BOASTER in letters two blocks tall. The FM chip carries its maker's name too: YO MAMA! HA HA HA. It laughs. <i>Modest</i> is still not on the board.</p>"
     },
     {
       "head": "Letters: \"My clock radio plays polka\"",

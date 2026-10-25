@@ -76,6 +76,9 @@ function themed(p: Pal, theme: Theme): void {
       p.ramp('trim', 7, [50, 40, 30], [255, 240, 200], [200, 170, 110]);
       p.ramp('glow', 5, [60, 40, 0], [255, 255, 190], [255, 200, 0]);
       p.ramp('label', 5, [30, 50, 30], [200, 255, 200]);
+      // the Sound Boaster's own green board and its white silkscreen (3-C, The Big Name)
+      p.ramp('pcb', 8, [0, 22, 10], [150, 225, 165], [29, 107, 58]);
+      p.ramp('silk', 4, [120, 132, 118], [250, 248, 236]);
       break;
     case 'cpu':
       p.ramp('base', 8, [10, 6, 30], [150, 210, 255], [50, 60, 140]);

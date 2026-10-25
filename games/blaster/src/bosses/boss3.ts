@@ -98,7 +98,7 @@ export function bossHowler(art: StageArt): Leg {
   g.set(5, 8, 'jackG').set(6, 8, 'jackP').set(9, 8, 'jackB').set(10, 8, 'jackG');
   g.pickup(1, 8, 'repair').pickup(14, 8, 'nova').pickup(1, 7, 'nova');
   return {
-    file: 's3c',
+    file: 's3d',
     kitFile: 'b3',
     title: 'The Feedback Howler',
     kind: 'boss',

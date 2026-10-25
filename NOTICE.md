@@ -405,7 +405,9 @@ formats from their published descriptions and from Game-Maker's own source.
   switch and in its _TURBO BUTTON_ ad, are made-up parody names. They are not a real company or
   product, and no connection with or endorsement by any company is implied. The desk PC's card
   is "Sound Blaster compatible", as the clone cards of the time said; Sound Blaster is Creative
-  Technology's trademark (below).
+  Technology's trademark (below). The makers' names printed on its chips in _Virus Blaster_
+  (**YO MAMA!** on the FM music chip, **ANALOG DEVIOUS** on the DSP, **TEXAS INSTRUMENTALS** on
+  the amplifier) are made-up parody names too, not real companies.
 - **Gravitas** and its **GRAVITAS PC GamePad**, the game pad on the desk's keyboard tray and in
   its _TURBO BUTTON_ ad, are a made-up parody name. It is not a real company or product, and no
   connection with or endorsement by any company is implied. The ad's prices ($24.95 for the pad,
