@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 24705,
+  "frames": 24721,
   "chapters": [
    {
     "title": "Opening",
@@ -67,39 +67,39 @@
    },
    {
     "title": "Story",
-    "frame": 1337
+    "frame": 1352
    },
    {
     "title": "I: Canis Meus Flatum Dedit",
-    "frame": 3210
+    "frame": 3226
    },
    {
     "title": "II: Laudes Ignavi",
-    "frame": 5787
+    "frame": 5803
    },
    {
     "title": "III: Titus Torquet Lingua",
-    "frame": 7912
+    "frame": 7928
    },
    {
     "title": "IV: Felis Fortissimus",
-    "frame": 10980
+    "frame": 10996
    },
    {
     "title": "V: Canit Piscis Aureus",
-    "frame": 12935
+    "frame": 12951
    },
    {
     "title": "VI: Silentium Ridentium",
-    "frame": 16030
+    "frame": 16046
    },
    {
     "title": "Ending",
-    "frame": 19499
+    "frame": 19515
    },
    {
     "title": "Credits",
-    "frame": 22137
+    "frame": 22153
    }
   ]
  }
