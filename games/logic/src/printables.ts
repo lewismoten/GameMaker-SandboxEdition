@@ -110,7 +110,7 @@ export function printables(): unknown {
           'The trickiest chip in the Bitmore house, wire by wire. Two pink control lines throw four relays; only one combination gets current safely to the gate.',
         panels: [
           {
-            map: 'computer.map',
+            map: 'attic.map',
             x: OX,
             y: OY,
             w: 16,
