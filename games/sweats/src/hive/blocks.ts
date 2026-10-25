@@ -537,4 +537,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   const kid = lewieCameo(pal.pal, 'down0');
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (kid.get(x, y) !== 255) lewie.set(x, y, kid.get(x, y));
   book.add('lewie', lewie, AIR);
+  // the stage's far wing: the same drapes, solid, so nothing lies past the curtain (added last,
+  // so no block before it moves)
+  book.add('drapeWing', book.pics.get('drape')!.crop(0, 0, 20, 20), { solid: SOLID });
 }

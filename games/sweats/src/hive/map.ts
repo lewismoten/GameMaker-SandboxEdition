@@ -54,6 +54,7 @@ export function buildHive(m: MapBuilder): void {
   for (let x = 21; x <= 33; x++) for (let y = 1; y <= 5; y++) m.set(x, y, x >= 26 && x <= 29 ? 'drapeLit' : 'drape');
   m.row(6, 21, 32, 'stage').set(33, 6, 'footlights');
   m.set(CURTAIN[0], CURTAIN[1], 'curtain').set(CURTAIN[0], CURTAIN[1] - 1, 'drapeLit');
+  m.col(CURTAIN[0] - 1, 1, CURTAIN[1], 'drapeWing');
   m.set(27, 5, 'mic').set(24, 3, 'openMic').set(31, 5, 'easel');
   m.set(26, 0, 'spotCan').set(30, 0, 'spotCan');
   m.set(25, 5, 'coin@drape').set(30, 3, 'coin@drape');
