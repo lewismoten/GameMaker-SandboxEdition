@@ -78,7 +78,7 @@ export function spamCanBurst(spammer: string, round: number): BurstLine[] {
   const back = `|14From ${who}: `;
   out.push({ text: `${back}|07${COMEBACKS[round % COMEBACKS.length]}, ${spammer}`, wait: 1400 });
   out.push(...MIDDLE_FINGER.map((l, i) => fast(`${back}|15${l}`, i ? 60 : 500)));
-  const sysop = '|11*** Message from goat, the SysOp: |15';
+  const sysop = '|11*** SysOp goat: |15';
   const step = round % 3;
   if (step === 0) out.push({ text: `${sysop}Knock it off or you're both kicked!`, wait: 1600 });
   else if (step === 1) out.push({ text: `${sysop}LAST warning, you two. This is a family couch.`, wait: 1600 });
