@@ -13,7 +13,7 @@ import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Reel } from '../../../kit/reel';
 import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
-import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
+import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
@@ -227,6 +227,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   const c = pal.c;
   const ink = c('ink', 0);
   const info = CARDS[i];
+  /** Where this act falls in the game (the last one says so), small under the place line. */
+  const count = `${i === CARDS.length - 1 ? 'FINAL ACT:' : 'ACT'} ${i + 1} OF ${CARDS.length}`;
   const bg = new Pixels(W, H, ink);
   bg.blit(card.map, 0, STRIP);
   const frame = (p: Pixels, k: number) => {
@@ -235,6 +237,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     const drop = [-24, -14, -2, 10, 6, 8][Math.min(5, k)];
     outlined(p, 160 - textWidth(info.title, 2) / 2, drop, info.title, c('cream', 3), c('ink', 1), 2);
     if (k >= 5) centered(p, 32, info.where, c('white', 2));
+    if (k >= 5) micro(p, 160 - Math.ceil(microWidth(count) / 2), 45, count, c('white', 2));
     if (k >= 9) centered(p, 178, `"${info.lines[0]}`, c('white', 2));
     if (k >= 15) centered(p, 189, ` ${info.lines[1]}"`, c('white', 2));
   };
