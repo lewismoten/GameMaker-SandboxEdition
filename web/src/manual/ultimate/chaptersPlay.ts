@@ -130,6 +130,25 @@ export const LOGIC: Chapter = {
   hit points (or points) in the same touch, and becomes an empty shelf.</p>
   <p>Lives, hit points and the sequence counters are never checked this way; only money and
   the special counters can say no.</p>
+  <h2>Try it: a three-token gate</h2>
+  <p>Any game with a floor to walk on will do. Draw two spare background blocks, a token and
+  a door, then:</p>
+  <ol>
+    <li><b>The counter.</b> In the Character Maker’s <i>At the start</i> tab, under
+    <b>Special counters</b>, set #1 to <b>Counts</b>, starting at <b>0</b>.</li>
+    <li><b>The token.</b> In the block editor, leave all its <b>Solid sides</b> clear. Under
+    <i>When touched</i>, set <b>Changes counter</b> to <i>Special counter 1</i>, <b>by</b> 1,
+    and <b>Becomes block</b> to your floor block’s number.</li>
+    <li><b>The gate.</b> Tick all four <b>Solid sides</b>. Set <b>Changes counter</b> to
+    <i>Special counter 1</i>, <b>by</b> −3, and <b>Becomes block</b> to the floor block.</li>
+    <li><b>The map.</b> Lay three tokens along a corridor and the gate across its end, walled
+    so the gate is the only way on. Then play it.</li>
+  </ol>
+  <p>The tokens vanish as the hero walks over them. After two, the gate ignores him: no
+  sound, no change. After the third it opens at a bump, and the counter is back to 0.</p>
+  <p>Now set special counter 1 to start at <b>1</b> and play again. Two tokens open the gate.
+  It never counted tokens; it only asks whether the counter can pay 3 without going below
+  zero.</p>
   <h2>Switches and wiring</h2>
   <ul>
     <li><b>A switch</b> is a block that becomes its “on” picture when bumped. Make switches go
