@@ -297,7 +297,8 @@ modules are in [`../test`](../test).
 - [`library/`](library): the Library (`#/library`, the top bar's Library link): a card for
   everything to read or print, sorted by game or by type (`?by=type`) and narrowed to one game or
   kind (`&only=map`), both remembered per browser (`prefs.ts`).
-  `shelf.ts` is the list as data (the kinds of paper, the games, never a secret one, and the two
+  `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
+  keyboard reference, registration, business and ID, and license and warranty cards; the games, never a secret one, and the two
   sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once
   found), `listing.ts` builds it from the catalog and the boxes' pieces, `thumbs.ts` draws each
   card's first sheet when it scrolls into view, and `libraryPage.ts` is the page; a card opens its

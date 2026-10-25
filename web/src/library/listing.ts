@@ -12,14 +12,11 @@ import { siteShelf } from './siteShelf';
 
 export interface Shelf {
   items: ShelfItem[];
-  /** Draws a piece's first sheet, by ShelfItem.key; pieces drawn from whole levels have none (an icon instead). */
+  /** Draws a piece's first sheet, by ShelfItem.key (the manuals and the site's pages have none: a cover or an icon instead). */
   thumbs: Map<string, () => Promise<Sheet | undefined>>;
   /** The listed games, by id, for opening their boxes. */
   games: Map<string, CatalogEntry>;
 }
-
-/** Pieces drawn from every level of a game, or from every game: too heavy for a thumbnail. */
-const HEAVY = new Set(['worldmap', 'levelmaps', 'stickers', 'poster']);
 
 /** The pieces a game without a box has (gameManual.ts openGameMaps). */
 const MAP_PIECES = new Set(['worldmap', 'levelmaps']);
@@ -67,7 +64,7 @@ export async function loadShelf(): Promise<Shelf> {
     const key = `${owner}:${piece.id}`;
     const ownItem = /^own\d+$/.test(piece.id) ? own?.[Number(piece.id.slice(3))] : undefined;
     items.push({ key, title: piece.title, note: piece.note, icon: piece.icon, type: typeOfPiece(owner, piece.id, ownItem), owner, ownerTitle, open });
-    if (!HEAVY.has(piece.id)) thumbs.set(key, async () => (await piece.render())[0]);
+    thumbs.set(key, async () => (await piece.render())[0]);
   };
 
   for (const entry of boxed) {

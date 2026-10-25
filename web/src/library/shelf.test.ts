@@ -55,7 +55,9 @@ describe('the Library’s kinds of paper', () => {
     expect(typeOfPiece('teddy', 'levelmaps')).toBe('map');
     expect(typeOfPiece('teddy', 'newsletter')).toBe('newsletter');
     expect(typeOfPiece('teddy', 'stickers')).toBe('stickers');
-    for (const id of ['keycard', 'postcard', 'warranty', 'hintoffer']) expect(typeOfPiece('teddy', id)).toBe('card');
+    expect(typeOfPiece('teddy', 'keycard')).toBe('keys');
+    for (const id of ['postcard', 'hintoffer']) expect(typeOfPiece('teddy', id)).toBe('registration');
+    expect(typeOfPiece('teddy', 'warranty')).toBe('license');
     for (const id of ['catalog', 'bbs']) expect(typeOfPiece('teddy', id)).toBe('catalog');
   });
 
@@ -66,8 +68,8 @@ describe('the Library’s kinds of paper', () => {
     expect(typeOfPiece('x', 'own0', { kind: 'chart', title: 'Courier’s sector map' })).toBe('map');
     expect(typeOfPiece('x', 'own0', { kind: 'chart', title: 'Case file' })).toBe('letter');
     expect(typeOfPiece('x', 'own0', { kind: 'newspaper', title: 'The Courier' })).toBe('newsletter');
-    expect(typeOfPiece('x', 'own0', { kind: 'idcard', title: 'A card' })).toBe('card');
-    expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'Hint book postcard' })).toBe('card');
+    expect(typeOfPiece('x', 'own0', { kind: 'idcard', title: 'A card' })).toBe('idcard');
+    expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'Hint book postcard' })).toBe('registration');
     expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'A note' })).toBe('letter');
   });
 
@@ -76,6 +78,11 @@ describe('the Library’s kinds of paper', () => {
     expect(typeOfPiece(GM_OWNER, 'bard')).toBe('catalog');
     expect(typeOfPiece(GM_OWNER, 'poster')).toBe('poster');
     expect(typeOfPiece(GM_OWNER, 'mapgrid')).toBe('insert');
+    expect(typeOfPiece(GM_OWNER, 'disks')).toBe('insert');
+    for (const id of ['gmkeys', 'template']) expect(typeOfPiece(GM_OWNER, id)).toBe('keys');
+    expect(typeOfPiece(GM_OWNER, 'regcard')).toBe('registration');
+    expect(typeOfPiece(GM_OWNER, 'support')).toBe('idcard');
+    expect(typeOfPiece(GM_OWNER, 'license')).toBe('license');
     expect(typeOfPiece(GM_OWNER, 'regconfirm')).toBe('letter');
   });
 });

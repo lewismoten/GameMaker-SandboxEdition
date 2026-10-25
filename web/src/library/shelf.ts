@@ -14,7 +14,10 @@ export const SHELF_TYPES = [
   ['poster', 'Posters'],
   ['newsletter', 'Newsletters and newspapers'],
   ['stickers', 'Sticker sheets'],
-  ['card', 'Cards and postcards'],
+  ['keys', 'Keyboard reference cards'],
+  ['registration', 'Registration cards'],
+  ['idcard', 'Business and ID cards'],
+  ['license', 'License and warranty cards'],
   ['letter', 'Letters and papers'],
   ['catalog', 'Catalogs and ads'],
   ['insert', 'Box inserts'],
@@ -49,13 +52,13 @@ const GM_TYPES: Record<string, ShelfType> = {
   manual: 'manual',
   ultimate: 'manual',
   disks: 'insert',
-  gmkeys: 'card',
-  template: 'insert',
+  gmkeys: 'keys',
+  template: 'keys',
   mapgrid: 'insert',
-  regcard: 'card',
+  regcard: 'registration',
   regconfirm: 'letter',
-  license: 'insert',
-  support: 'card',
+  license: 'license',
+  support: 'idcard',
   catalog: 'catalog',
   bard: 'catalog',
   poster: 'poster',
@@ -68,13 +71,13 @@ const BOX_TYPES: Record<string, ShelfType> = {
   manual: 'manual',
   worldmap: 'map',
   levelmaps: 'map',
-  keycard: 'card',
-  postcard: 'card',
-  warranty: 'card',
+  keycard: 'keys',
+  postcard: 'registration',
+  warranty: 'license',
   newsletter: 'newsletter',
   catalog: 'catalog',
   bbs: 'catalog',
-  hintoffer: 'card',
+  hintoffer: 'registration',
   stickers: 'stickers',
 };
 
@@ -92,9 +95,9 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'newspaper':
       return 'newsletter';
     case 'idcard':
-      return 'card';
+      return 'idcard';
     case 'letter':
-      return /postcard/i.test(title) ? 'card' : 'letter';
+      return /postcard/i.test(title) ? 'registration' : 'letter';
     case 'journal':
     case 'recipe':
       return 'letter';
