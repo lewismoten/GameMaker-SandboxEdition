@@ -9,13 +9,23 @@
 //
 //   cd web && npx vite-node ../games/kit/levelCheck.ts <id>            new findings exit 1
 //   cd web && npx vite-node ../games/kit/levelCheck.ts <id> --update   write <id>'s baseline
+//   cd web && npx vite-node ../games/kit/levelCheck.ts <id> --play [--steady <ms>] [--budget <s>]
+// --play plays the whole game too (twice: once as it comes, once leaving behind all it can) and,
+// with --steady (300 ms unless given; 0 for none), each scene again with steady hands, and lists
+// the play findings (one-way spots, things left behind, steady hands, stuck spots…) and how tight
+// the walkthrough's key changes are (web/src/editor/check/walk/pace.ts). It only reports: it
+// always exits 0, since play findings depend on the time the bot has.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GameFiles } from '../../web/src/project/files';
 import { runChecks } from '../../web/src/editor/check/report';
+import { gameOf, levelScenes } from '../../web/src/editor/check/playtest';
 import { findingKey, splitAccepted } from '../../web/src/editor/check/accepted';
 import { readDisk } from './gameSim';
+import { measurePace } from '../../web/src/editor/check/walk/pace';
+import { STEADY_MS } from '../../web/src/editor/check/findings';
+import type { Walkthrough } from '../../web/src/walkthrough/format';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const baselinePath = join(here, 'levelCheck.baseline.json');
@@ -41,8 +51,58 @@ function readBaseline(): Record<string, string[]> {
   return existsSync(baselinePath) ? (JSON.parse(readFileSync(baselinePath, 'utf8')) as Record<string, string[]>) : {};
 }
 
+/** Checks found only by playing. */
+const PLAY_CHECKS = new Set(['stuck', 'softlock', 'one-way', 'steady']);
+
+/** Plays the game (and with steady hands) and prints its play findings and its walkthrough's pace. */
+async function playReport(id: string, steadyMs: number, budgetS: number): Promise<void> {
+  const path = join(here, '..', id, 'about.json');
+  const about = existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')) as About) : {};
+  const t0 = Date.now();
+  const files = new GameFiles(readDisk(join(here, '..', id, 'disk')));
+  const opts = { budgetMs: budgetS * 1000, sameEverySide: about.sameEverySide ?? [], towardExits: true };
+  // the whole game, as it comes and leaving behind all it can; then each level scene alone (as
+  // the map editor's Level check plays it), again with steady hands
+  const whole = await runChecks(files, opts);
+  const all = [...whole.findings];
+  const scenes = levelScenes(gameOf(files));
+  for (const scene of scenes) {
+    const r = await runChecks(files, { ...opts, scene, steadyMs: steadyMs || undefined });
+    all.push(...r.findings.filter((f) => f.where.scene === scene));
+  }
+  const seen = new Set<string>();
+  const { open } = splitAccepted(
+    all.filter((f) => !seen.has(`${f.check}|${f.where.scene}|${f.title}`) && !!seen.add(`${f.check}|${f.where.scene}|${f.title}`)),
+    about.acceptedFindings ?? [],
+  );
+  const play = open.filter((f) => PLAY_CHECKS.has(f.check) && (f.severity !== 'info' || f.check === 'steady'));
+  for (const f of play)
+    console.log(`${id}: ${f.severity} ${f.check} s${f.where.scene ?? '-'} ${f.title}${f.check === 'steady' || f.check === 'softlock' ? ` (${f.detail})` : ''}`);
+  const cut = all.filter((f) => f.check === 'coverage').length;
+  const noWay = all.filter((f) => f.check === 'link-unreached' && !f.where.cell).map((f) => `s${f.where.scene}`);
+  if (noWay.length) console.log(`${id}: no way through found (so not checked for steady hands or one-way spots): ${[...new Set(noWay)].join(' ')}`);
+  console.log(
+    `${id}: the whole game ${whole.won ? 'won' : 'not won'} (${whole.runs.length} scenes reached); ${scenes.length} scenes alone, ${cut} cut short by the ${budgetS} s budget; ${play.length} play findings, ${Math.round((Date.now() - t0) / 1000)} s`,
+  );
+  const walkPath = join(here, '..', id, 'walkthrough.json');
+  if (!existsSync(walkPath)) return;
+  const p = measurePace(JSON.parse(readFileSync(walkPath, 'utf8')) as Walkthrough, (STEADY_MS / 1000) * 18.2);
+  const ms = (t: number) => `${Math.round((t / 18.2) * 1000)} ms`;
+  console.log(
+    `${id}: walkthrough pace: ${p.events} key changes, ${p.sameTick} at the same tick as the one before, ${p.quick} under ${STEADY_MS} ms apart, ` +
+      `${p.together} times two keys held together${p.longestTogether ? ` (longest ${ms(p.longestTogether.ticks)}, s${p.longestTogether.scene} tick ${p.longestTogether.tick})` : ''}, ` +
+      `shortest press ${p.minHold ? `${ms(p.minHold.ticks)} (s${p.minHold.scene} tick ${p.minHold.tick})` : '-'}`,
+  );
+  for (const m of p.tightest) console.log(`${id}:   tight: s${m.scene} tick ${m.tick}: ${m.what} (${ms(m.ticks)})`);
+}
+
 const [id, flag] = process.argv.slice(2);
-if (id) {
+const opt = (name: string, def: number) => {
+  const i = process.argv.indexOf(name);
+  return i >= 0 && process.argv[i + 1] !== undefined ? Number(process.argv[i + 1]) : def;
+};
+if (id && flag === '--play') await playReport(id, opt('--steady', STEADY_MS), opt('--budget', 10));
+else if (id) {
   const { lines: now, stale } = await staticFindings(id);
   for (const k of stale) console.log(`${id}: about.json accepts "${k}", which is no longer found`);
   const base = readBaseline();

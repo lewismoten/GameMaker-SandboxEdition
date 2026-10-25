@@ -14,12 +14,12 @@
 // (the author's heat map and a play for the walkthrough, in one session), and watching the
 // bot's route or the author's play.
 import './checkPanel.css';
-import { h, clear, selectField, toast } from '../../../core/ui';
+import { h, clear, checkField, numberField, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { OverlayState } from '../tools/overlay';
 import { HEAT_COLORS } from '../tools/overlay';
 import { startCheck, type RunningCheck } from '../../../check/client';
-import { CHECKS, at, kindOf, type Finding, type Kind } from '../../../check/findings';
+import { CHECKS, STEADY_MS, at, kindOf, type Finding, type Kind } from '../../../check/findings';
 import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
@@ -68,6 +68,8 @@ interface Saved {
   places: number;
   complete: boolean;
   ms: number;
+  /** The check played again with steady hands, at this many ms between key changes (0 or none: it didn't). */
+  steadyMs?: number;
 }
 
 const SECTION = 'levelCheck';
@@ -160,6 +162,8 @@ export function checkPanel(host: CheckHost): {
   const { project, file } = host;
   let saved = project.extras<Saved | undefined>(file, SECTION, undefined);
   let budget = saved?.budget ?? 15;
+  let steady = !!saved?.steadyMs;
+  let steadyMs = saved?.steadyMs || STEADY_MS;
   let running: RunningCheck | undefined;
   let showHeat = true;
   let gray = readGray();
@@ -290,6 +294,18 @@ export function checkPanel(host: CheckHost): {
       ),
       runBtn,
       undoBtn,
+      checkField(
+        'Steady hands',
+        () => steady,
+        (v) => (steady = v),
+        'Play the scene a second time with one key at a time and a pause between changes, and say where that can’t get through',
+      ),
+      numberField(
+        'ms between keys',
+        () => steadyMs,
+        (v) => (steadyMs = Math.max(50, Math.min(2000, v || STEADY_MS))),
+        { min: 50, max: 2000, step: 50, title: 'The steady-hands pace: the least time between two key changes' },
+      ),
       h(
         'button',
         { type: 'button', onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the checks can tell' },
@@ -626,7 +642,13 @@ export function checkPanel(host: CheckHost): {
     let shown = 0;
     running = startCheck(
       project.files,
-      { scene: host.scene, play: host.scene !== undefined, budgetMs: budget * 1000, sameEverySide: sameEverySide(project) },
+      {
+        scene: host.scene,
+        play: host.scene !== undefined,
+        budgetMs: budget * 1000,
+        sameEverySide: sameEverySide(project),
+        steadyMs: steady ? steadyMs : undefined,
+      },
       undefined,
       (p) => {
         if (p.scene === host.scene) {
@@ -695,6 +717,7 @@ export function checkPanel(host: CheckHost): {
       places: run?.places ?? 0,
       complete: run?.complete ?? true,
       ms: r.ms,
+      steadyMs: steady ? steadyMs : 0,
     };
     focus = undefined;
     project.setExtras(file, SECTION, saved);
