@@ -1,12 +1,12 @@
 // birthday.fli, the opening cartoon (after the Sandbox Software logo, and before the story
 // pages): dawn at Doc Leo's house. Teddy wakes up and nobody says happy birthday; Gwinn's bed
 // is empty again; Doc Leo hands him a list of ERRANDS. Then the camera winks at the audience
-// (a paw print on today's date, a party hat peeking out of the cupboard) and the logo drops in.
+// (a paw print on today's date, a party hat peeking out of the cupboard), and a fade to black.
 import { Pixels } from '../../../kit/pixels';
 import { blob, gradient, micro, outlined, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';
 import { H, Reel, W, c, caption, leoAt, teddyAt } from './reel';
-import { SP, landscape, logo, titleScreen } from './screens';
+import { SP } from './screens';
 
 /** A paw print: the pad and four toes. */
 export function paw(p: Pixels, x: number, y: number, s: number, col: number): void {
@@ -186,7 +186,7 @@ export function birthdayFli(): Uint8Array {
       caption(p, 'JUST ERRANDS. NOTHING SPECIAL.');
     });
   // the camera stays behind for a wink to the audience
-  for (let f = 0; f < 22; f++)
+  for (let f = 0; f < 30; f++)
     r.frame((p) => {
       p.px.set(calendarCloseUp(Math.min(12, f * 2)).px);
       if (f % 4 < 2)
@@ -199,14 +199,6 @@ export function birthdayFli(): Uint8Array {
       if (f >= 6) caption(p, 'BUT LOOK WHAT DAY IT IS...', 190 - 12);
       if (f >= 12) caption(p, '(SHH. DO NOT TELL TEDDY.)', 190, c('yellow', 3));
     });
-  // the logo drops in, bouncing, over the morning
-  for (let f = 0; f < 14; f++) {
-    const drop = Math.round(-90 * Math.cos((f / 13) * Math.PI * 2.5) * (1 - f / 13));
-    r.frame((p) => {
-      p.px.set(landscape(7).px);
-      logo(p, 6 + Math.min(0, drop) + (drop > 0 ? Math.round(drop / 6) : 0));
-    });
-  }
-  r.frame((p) => p.px.set(titleScreen().px), 4);
-  return r.fli(8);
+  // then a fade to black: the title, logo and all, fades in after
+  return r.fli(8, true);
 }

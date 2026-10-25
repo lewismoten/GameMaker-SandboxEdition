@@ -67,7 +67,7 @@ export function landscape(seed = 1, bigTop = true): Pixels {
 }
 
 /** The logo: TEDDY'S / LITTLE BIGGEST / ADVENTURE in chunky outlined letters. */
-export function logo(p: Pixels, y: number, cx = W / 2): void {
+function logo(p: Pixels, y: number, cx = W / 2): void {
   // each line drawn on its own, then squeezed from side to side if it is wider than the screen
   const line = (s: string, yy: number, scale: number, fill: number, edge: number) => {
     const w = textWidth(s, scale) + 5;

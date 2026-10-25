@@ -1,6 +1,7 @@
 // What the finale's cartoons (FLIs) are built with: a reel of frames over a background, its
 // captions in the Club's lettering, and the big pictures of the cast drawn from their sprites.
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { Pixels } from '../../../kit/pixels';
 import { centered, clubArt, scaleBlit } from '../art/draw';
 import { POSES } from '../sprites/teddy';
@@ -26,8 +27,9 @@ export class Reel {
   scene(bg: Pixels): void {
     this.bg = bg;
   }
-  fli(speed: number): Uint8Array {
-    return encodeFli(this.frames, SP.pal, { speed });
+  /** The .FLI; `fadeOut` ends it on a fade to black (a clip before the next picture). */
+  fli(speed: number, fadeOut = false): Uint8Array {
+    return (fadeOut ? encodeFliFadeOut : encodeFli)(this.frames, SP.pal, { speed });
   }
 }
 
