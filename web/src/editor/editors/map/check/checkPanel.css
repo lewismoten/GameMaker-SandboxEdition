@@ -1,5 +1,7 @@
 /* The map editor's Level check panel: run controls, heat map legend and the findings list. */
 .lc-panel {
+  /* holds its screen-reader status line, which would otherwise hang below the page and scroll it */
+  position: relative;
   gap: 8px;
   padding: 10px;
   border: 1px solid var(--border);
