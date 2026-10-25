@@ -87,7 +87,8 @@ async function choose(): Promise<
         title: entry.title,
         gam: entry.gam!,
         files: streamed.files,
-        back: './',
+        // back to the game's own page in the catalog, with its Look inside, manual and saves
+        back: `./#/game/cd:${encodeURIComponent(entry.id)}`,
         poster: posterOf(entry).catch(() => undefined),
         notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
       };

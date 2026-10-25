@@ -161,7 +161,13 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   const done = new Promise<void>((resolve) => {
     const begin = async () => {
       start.remove();
-      back?.remove();
+      // the way back stays while playing, small, beside Keys (Esc's menu and Quit also lead there)
+      if (back && !opts.preview && !opts.noKeysButton) {
+        back.textContent = '← Games';
+        back.title = opts.back!.label.replace(/^←\s*/, '');
+        back.classList.add('gm-back-small');
+        container.querySelector('.gm-corner')?.prepend(back);
+      } else back?.remove();
       container.querySelector('.gm-notice-link')?.remove();
       window.removeEventListener('keydown', onKey);
       if (!opts.preview) {
