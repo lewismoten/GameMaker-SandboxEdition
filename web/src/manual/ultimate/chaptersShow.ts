@@ -54,6 +54,9 @@ export const SHOW: Chapter = {
   two that sets up the goal. A long story nobody needs to play is better as a scene’s intro
   picture, a little at a time. And because few players read any of it first, teach the keys in
   the game as well (Chapter 15).</p>
+  <p>The Level check reads the pages for you: <b>Help that names the wrong keys</b> compares the
+  keys they name with the character’s, <b>Long instructions or story</b> counts the pages, and
+  <b>Text that’s hard to read</b> measures the purple letters against your picture.</p>
   <h2>Don’t keep players waiting</h2>
   <p>PLAYGAME plays an <code>.FLI</code> from its first frame to its last before it looks at the
   keyboard. Press <kbd>Esc</kbd> in the middle of a long intro and nothing happens: the key waits

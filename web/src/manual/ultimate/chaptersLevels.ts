@@ -88,6 +88,9 @@ export const LEVELS: Chapter = {
     something gives it away: a crack, a coin trail, a different shade. A floor that drops away
     with no tell is just a trap.</li>
   </ul>
+  <p>The Level check asks about the blocks that fool the eye (<b>Floors and walls that look
+  alike</b>) and the ones drawn like the level’s exits that aren’t (<b>Doors that lead
+  nowhere</b>); a fair secret you meant can be marked as on purpose.</p>
   <h2>Opposites apart</h2>
   <p>Two blocks that do opposite things (a lift up and a lift down, ice beside glue, a push
   left beside a push right) should never touch, and should never share a color. Put a block of
