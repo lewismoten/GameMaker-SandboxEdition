@@ -7,8 +7,8 @@
 import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
-import type { CatalogEntry } from '../project/files';
-import { groupShelf, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
+import { loadHostedGame, type CatalogEntry } from '../project/files';
+import { groupShelf, hms, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
 import { loadShelf, type Shelf } from './listing';
 import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
 import { forgetThumbs, lazyThumb } from './thumbs';
@@ -22,9 +22,9 @@ const ORDERS: [ShelfOrder, string][] = [
 const pickOf = (g: ShelfGroup) => g.key.replace(/^(game|type)-/, '');
 
 /** Waits for a box viewer to be on screen (or `done` to settle), for a card's "Opening…". */
-function whenShown(done: Promise<unknown>): Promise<void> {
+function whenShown(done: Promise<unknown>, shown = '.gmb'): Promise<void> {
   return new Promise((resolve) => {
-    const watch = new MutationObserver(() => document.querySelector('.gmb') && finish());
+    const watch = new MutationObserver(() => document.querySelector(shown) && finish());
     const finish = () => (watch.disconnect(), resolve());
     watch.observe(document.body, { childList: true });
     done.then(finish, finish);
@@ -47,6 +47,14 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
     } else if (o.via === 'gm') {
       const { openDosManual } = await import('../manual/dosManual');
       await whenShown(openDosManual(o.start));
+    } else if (o.via === 'walk') {
+      const entry = games.get(o.game);
+      if (!entry) return;
+      const { watchWalkthrough } = await import('../walkthrough/player');
+      await whenShown(
+        watchWalkthrough(entry, () => loadHostedGame(entry)),
+        '.wt-screen',
+      );
     } else {
       const { openZine } = await import('../manual/zine/zineItem');
       await whenShown(openZine());
@@ -82,7 +90,9 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   // by type, a game's or the Game-Maker box's card says whose it is; by game, the heading does, so it says what it is
   const sub = order === 'type' && item.owner !== SITE_OWNER && !item.boxes && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
   // an issue's number over its picture, readable at a glance (the card's text says it too)
-  const badge = item.issue ? h('span', { class: 'lib-badge', 'aria-hidden': 'true' }, `No. ${item.issue.no}`) : null;
+  const length = item.seconds !== undefined ? hms(item.seconds) : undefined;
+  const badgeText = item.issue ? `No. ${item.issue.no}` : length;
+  const badge = badgeText ? h('span', { class: `lib-badge${length ? ' lib-length' : ''}`, 'aria-hidden': 'true' }, badgeText) : null;
   const body = [
     frame,
     badge,
@@ -94,6 +104,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       // the same in several boxes: listed once, opened from the first
       item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
       item.issue ? h('small', { class: 'lib-boxes' }, item.issue.line) : null,
+      length ? h('small', { class: 'lib-boxes' }, `Length ${length}`) : null,
     ),
   ];
   const el =
@@ -207,7 +218,7 @@ export function renderLibrary(el: HTMLElement): void {
       h(
         'p',
         { class: 'lead' },
-        'Every manual, map, newsletter, sticker sheet and card that comes in the boxes, with TURBO BUTTON magazine and the Guide. Open one to read it on screen or print it.',
+        'Every manual, map, newsletter, sticker sheet and card that comes in the boxes, with TURBO BUTTON magazine, the Guide and each game’s walkthrough. Open one to read it on screen, print it or watch it.',
       ),
       h(
         'div',

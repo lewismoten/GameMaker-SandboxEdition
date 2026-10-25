@@ -1,7 +1,8 @@
 // What the Library shows, read from the catalog: each boxed game's manual and the paper in its
 // box (manual/printables/items.ts), the Bard of Bizarre's games' maps, the Game-Maker box's
 // Owner's Guide and paper (gmItems.ts), and the site's own reading (siteShelf.ts). Each piece
-// keeps the way to draw its first sheet, for the card's thumbnail (thumbs.ts).
+// keeps the way to draw its first sheet, for the card's thumbnail (thumbs.ts). Each game's
+// walkthrough is listed too (walkShelf.ts).
 import type { CatalogEntry } from '../project/files';
 import { isSandboxGame } from '../project/files';
 import { isOldSecret } from '../project/secretGames';
@@ -10,6 +11,7 @@ import type { PrintContext, Sheet } from '../manual/printables/kit';
 import { GM_OWNER, SITE_OWNER, shelfGames, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
 import { mergeShared } from './shared';
+import { walkShelf } from './walkShelf';
 import { scoopIssue } from '../manual/printables/scoopIssue';
 import { scoopDateline } from '../manual/printables/scoopIssues';
 import { gmCoverSheet, hintCoverSheet, magazineCoverSheet, manualCoverSheet } from './covers';
@@ -61,6 +63,8 @@ export async function loadShelf(): Promise<Shelf> {
     import('../manual/printables/levelMaps'),
   ]);
   const { boxed, maps } = shelfGames(entries);
+  // the walkthroughs' lengths load while the boxes are listed
+  const walks = walkShelf([...boxed, ...maps]);
   const family = entries.filter((e) => isSandboxGame(e) && !isOldSecret(e.id));
   const items: ShelfItem[] = [];
   const thumbs = new Map<string, () => Promise<Sheet | undefined>>();
@@ -119,6 +123,9 @@ export async function loadShelf(): Promise<Shelf> {
   thumbs.set(`${GM_OWNER}:manual`, () => gmCoverSheet(entries.find((e) => e.id === 'teddy')));
   for (const piece of gmBoxItems(family)) add(GM_OWNER, gmTitle, piece, { via: 'gm', start: piece.id });
 
+  const walked = await walks;
+  items.push(...walked.items);
+  for (const [key, make] of walked.thumbs) thumbs.set(key, make);
   items.push(...siteShelf(zine));
   thumbs.set(`${SITE_OWNER}:magazine`, () => magazineCoverSheet(entries));
   if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());

@@ -26,13 +26,18 @@ export const SHELF_TYPES = [
   ['insert', 'Box inserts'],
   ['magazine', 'Magazines and zines'],
   ['guide', 'Guides'],
+  ['walkthrough', 'Walkthroughs'],
 ] as const;
 
 export type ShelfType = (typeof SHELF_TYPES)[number][0];
 
-/** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, or the zine. */
+/** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, the zine, or a game's walkthrough player. */
 export type Opening =
-  { via: 'box'; game: string; start: string; maps?: boolean } | { via: 'gm'; start: string } | { via: 'href'; href: string } | { via: 'zine' };
+  | { via: 'box'; game: string; start: string; maps?: boolean }
+  | { via: 'gm'; start: string }
+  | { via: 'href'; href: string }
+  | { via: 'zine' }
+  | { via: 'walk'; game: string };
 
 export interface ShelfItem {
   /** Unique on the shelf: its owner and its id in the box. */
@@ -49,6 +54,8 @@ export interface ShelfItem {
   boxes?: number;
   /** A numbered issue (a box's Sandbox Scoop): its number, for reading in order, and its line ("Vol. 1, No. 3 · March 1995"). */
   issue?: { no: number; line: string };
+  /** A walkthrough: how long it plays, in seconds. */
+  seconds?: number;
 }
 
 export const GM_OWNER = 'gamemaker';
@@ -139,12 +146,14 @@ export const isShelfOrder = (s: unknown): s is ShelfOrder => s === 'game' || s =
 
 /**
  * One kind's pieces in the order listed, except that the Game-Maker box's Owner's Guides lead the
- * manuals and numbered issues (each box's Sandbox Scoop) lead their kind in issue order.
+ * manuals, numbered issues (each box's Sandbox Scoop) lead their kind in issue order, and
+ * walkthroughs go shortest first.
  */
 function ofType(items: readonly ShelfItem[], type: ShelfType): ShelfItem[] {
   const all = items.filter((i) => i.type === type);
   if (type === 'manual') return [...all.filter((i) => i.owner === GM_OWNER), ...all.filter((i) => i.owner !== GM_OWNER)];
   // numbered issues first, in the order they came out, then the rest as listed
+  if (type === 'walkthrough') return all.sort((a, b) => (a.seconds ?? 0) - (b.seconds ?? 0)); // shortest first
   const issues = all.filter((i) => i.issue).sort((a, b) => a.issue!.no - b.issue!.no);
   return issues.length ? [...issues, ...all.filter((i) => !i.issue)] : all;
 }
@@ -198,4 +207,10 @@ export function ownersOf(items: readonly ShelfItem[]): { owner: string; title: s
   const seen = new Map<string, string>();
   for (const i of items) if (!seen.has(i.owner)) seen.set(i.owner, i.ownerTitle);
   return [...seen].map(([owner, title]) => ({ owner, title }));
+}
+
+/** A length as HH:MM:SS (00:32:41), so walkthroughs compare at a glance. */
+export function hms(seconds: number): string {
+  const s = Math.round(seconds);
+  return [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map((n) => String(n).padStart(2, '0')).join(':');
 }

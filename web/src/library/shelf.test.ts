@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import type { CatalogEntry } from '../project/files';
-import { GM_OWNER, groupShelf, ownersOf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
+import { GM_OWNER, groupShelf, hms, ownersOf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
 
 const GAMES = new URL('../../../games/', import.meta.url);
@@ -168,6 +168,14 @@ describe('sorting the Library', () => {
     const scoop = (owner: string, no: number): ShelfItem => ({ ...item(owner, 'newsletter', 'newsletter'), issue: { no, line: `No. ${no}` } });
     const papers = [scoop('a', 3), item('a', 'own1', 'newsletter'), scoop('b', 1), scoop('c', 2)];
     expect(groupShelf(papers, 'type')[0].parts[0].items.map((i) => i.key)).toEqual(['b:newsletter', 'c:newsletter', 'a:newsletter', 'a:own1']);
+  });
+
+  it('puts walkthroughs shortest first, and writes their lengths as HH:MM:SS', () => {
+    const walk = (owner: string, seconds: number): ShelfItem => ({ ...item(owner, 'walkthrough', 'walkthrough'), seconds });
+    expect(groupShelf([walk('a', 900), walk('b', 300), walk('c', 2861)], 'type')[0].parts[0].items.map((i) => i.owner)).toEqual(['b', 'a', 'c']);
+    expect(hms(1961)).toBe('00:32:41');
+    expect(hms(307.4)).toBe('00:05:07');
+    expect(hms(3 * 3600 + 5)).toBe('03:00:05');
   });
 
   it('keeps every piece, once, either way', () => {

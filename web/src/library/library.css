@@ -289,3 +289,13 @@ main.library {
     sans-serif;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
+
+/* a walkthrough's length, where a video's length sits */
+.lib-badge.lib-length {
+  top: auto;
+  right: 8px;
+  bottom: calc(100% - var(--lib-thumb-h) + 8px);
+  left: auto;
+  background: rgba(0, 0, 0, 0.82);
+  font-variant-numeric: tabular-nums;
+}
