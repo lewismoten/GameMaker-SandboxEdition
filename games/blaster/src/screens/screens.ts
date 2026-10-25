@@ -9,6 +9,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { CLEAR, centered, outlined, text } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
@@ -164,30 +165,24 @@ export function introFli(): Uint8Array {
     frames.push(frame(p));
   }
   // 4. close-up of the drive: the BLASTER shrinks into the slot
-  for (let f = 0; f < 18; f++) {
+  const drive = (f: number) => {
     const p = new Pixels(W, H, c('beige', 3));
     p.rect(0, 70, W, 60, c('beige', 4));
     p.rect(30, 92, 260, 18, c('ink', 0));
     p.rect(34, 96, 252, 10, c('deep', 1));
     speedLines(p, 160, 100, f, 'cyan', 50);
-    const s = Math.max(1, 6 - Math.floor(f / 3));
-    const x = 160 - 10 * s;
-    const y = 170 - f * 4 - 10 * s;
-    scaleBlit(p, f % 2 ? SHIP_FLAME : SHIP, x, y, s);
     caption(p, f < 9 ? 'SHRINK DOWN...' : 'FLY IN... AND BLAST IT!');
+    return p;
+  };
+  for (let f = 0; f < 18; f++) {
+    const p = drive(f);
+    const s = Math.max(1, 6 - Math.floor(f / 3));
+    scaleBlit(p, f % 2 ? SHIP_FLAME : SHIP, 160 - 10 * s, 170 - f * 4 - 10 * s, s);
     frames.push(frame(p));
   }
-  // 5. the logo slams down over the title
-  const title = titleScreen();
-  for (let f = 0; f < 10; f++) {
-    const p = circuit(5);
-    const drop = Math.round(-120 * Math.max(0, 1 - f / 5) + (f > 5 ? Math.sin(f * 2) * (10 - f) : 0));
-    logo(p, 14 + drop);
-    if (f === 5) p.map((x, y, k) => ((x + y) % 2 ? c('grey', 7) : k));
-    frames.push(frame(p));
-  }
-  for (let i = 0; i < 3; i++) frames.push(frame(title));
-  return encodeFli(frames, SP.pal, { speed: 9 });
+  // 5. in it goes, and the scene fades out; the title (the logo over the circuits) follows
+  for (let f = 18; f < 24; f++) frames.push(frame(drive(f)));
+  return encodeFliFadeOut(frames, SP.pal, { speed: 9 });
 }
 
 /** Between stages: down the data bus to the next part of the machine. */

@@ -42,6 +42,9 @@ Making the files:
   Doc Leo's photo pops in, a lute strums notes, the tagline types out, fade to black.
 - `reel.ts` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores
   only what changed (run-coded line deltas), so a cartoon costs little more than its first picture.
+- `fadeOut.ts` — the fade to black an intro ends on before its title picture (PLAYGAME cuts an FLI's last frame
+  straight to black): `encodeFliFadeOut` adds about half a second of palette-only frames to a plain frame list (a Reel
+  has `fadeOut`).
 - `photo.ts` — real photos for the endings: the small scans in `scans/` (made once from the owner's photos by
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
