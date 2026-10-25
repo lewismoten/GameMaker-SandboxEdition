@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "PU01SArIC0gKyAPNCU0ISArIF80HTQhICsgISArIBc0GEBKQAEsKywNNGEgKyA3NCk0DSArICEgKyAhICsgUzQZNF80OTRTNBk0NSArIIUgKyAhICsgISArIB80GTQhICsgSzQwSDJIATQnNA00DSArICEgKyAhICsgFzQZNBM0QTQnNBi4frgBN"
+   "keys": "PU01SArIC0gKyAPNCU0ISArIF80HTQhICsgISArIBc0GEBKQAEsKywNNGEgKyA3NCk0DSArICEgKyAhICsgUzQZNF80OTRTNBk0NSArIIUgKyAhICsgIzQZNCEgKyBLNDBIMkgBNDc0DTQNICsgISArICEgKyAXNBk0EzRBNCc0GLh+uAE0="
   },
   {
    "scene": 3,
-   "keys": "AU0cSArIF80HEgySAE0GzQsSDJIATRbNA0sAywZNA0gKyEJICsgFzQZNLs0GSAzICU1CSArIBc0GTRLNBi49rgAuKK4ALjKuAE0PzQZNF0gKyAXNBhASkABLAssGTRpICsgKzQZNA0gKyArNBk0IzRBN"
+   "keys": "AU0cSArIF80HEgySAE0GzQsSDJIATRnNA0sAywZNA0gKyD9ICsgFzQZNLs0GSAzICU1CSArIBc0GTRLNBi49rgAuKK4ALjKuAE0PzQZNF0gKyAXNBhASkABLAssGTRpICsgKzQZNA0gKyArNBk0IzRBN"
   },
   {
    "scene": 4,
-   "keys": "AU0PzUBNCs0GTQXNBkgRyABNGc0STQjNBhIMkgBNCM0DTRLNBi4frgBNF80GLiiuAE0SzRdNCkgKyBNICsgGSArID80GTQ/NBkgPyABNFM0GTQPNBkgLyABNA80MEgySAE0CzQNNCM0GTQjNIS4="
+   "keys": "AU0PzUBNCs0GTQXNBkgRyABNGc0STQjNBhIMkgBNCM0DTRLNBi4frgBNF80GLiiuAE0SzRdNCkgKyBNICsgKSArIDM0GTQ/NBkgPyABNFM0GTQPNBkgLyABNA80MEgySAE0CzQNNCM0GTQjNIS4="
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18862,
+  "frames": 18823,
   "chapters": [
    {
     "title": "Opening",
@@ -59,23 +59,23 @@
    },
    {
     "title": "Level 2: The Desert Road",
-    "frame": 6194
+    "frame": 6152
    },
    {
     "title": "Level 3: The Tailor's Shop",
-    "frame": 9344
+    "frame": 9302
    },
    {
     "title": "Level 4: The Eye of the Needle",
-    "frame": 11928
+    "frame": 11889
    },
    {
     "title": "Ending",
-    "frame": 14004
+    "frame": 13965
    },
    {
     "title": "Credits",
-    "frame": 16774
+    "frame": 16735
    }
   ]
  }
