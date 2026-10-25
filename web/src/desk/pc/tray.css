@@ -346,3 +346,28 @@
     sans-serif;
   text-align: center;
 }
+
+/* the mouse pad's print: clicking the pad (not the mouse) opens its chooser; this button is
+   the keyboard's way in, the whole pad its pointer target */
+.mouse-pad {
+  cursor: pointer;
+}
+
+.mouse-pad .ball-mouse {
+  cursor: grab;
+}
+
+.pad-change {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.pad-change:focus-visible {
+  outline: 3px solid #ffd54a;
+  outline-offset: 2px;
+}

@@ -121,7 +121,17 @@ function mousePad(): HTMLElement {
     h('span', { class: 'mouse-logo' }, 'SQUEAK'),
   );
   let art = padArt(loadPad());
-  const pad = h('div', { class: 'mouse-pad' }, art, cordSvg, mouse);
+  // the pad itself (not the mouse) changes its print, as the magazine's mouse pad ad does
+  const changePad = h('button', { type: 'button', class: 'pad-change', 'aria-label': "Change the mouse pad's print", title: "Change the mouse pad's print" });
+  // (first, so the print and the mouse lie over it: it takes keyboard focus, the pad's clicks reach it below)
+  const pad = h('div', { class: 'mouse-pad' }, changePad, art, cordSvg, mouse);
+  const choosePrint = () =>
+    void import('./padChooser').then(({ openPadChooser }) => openPadChooser({ opener: changePad, deskHref: location.hash || '#/desk' }));
+  changePad.addEventListener('click', choosePrint);
+  pad.addEventListener('click', (e) => {
+    if (e.target instanceof Node && (mouse.contains(e.target) || changePad.contains(e.target))) return;
+    choosePrint();
+  });
   /** Lays the print down (and names it on the mouse, for a screen reader). */
   const printPad = (print: PadPrint) => {
     if (art.dataset.print !== print) {
