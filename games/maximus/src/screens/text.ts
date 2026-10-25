@@ -36,7 +36,7 @@ SECTOR CHARTS
 Fly into the middle of a planet to land. Planets with a gold signal beside them hold a shard. The planet card shows a long-range scan: green is you, gold is the vault. Trading posts sell supplies: nudge a pad to buy, one of each per visit. A jump ring behind gates takes you on to the next sector.
 
 ON FOOT
-Left/Right walk (the number pad's 4/6/8/2 work as arrows too). Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. P picks things up and O drops one. To go back to orbit, walk into the uplink beacon.
+Left/Right walk (the number pad's 4/6/8/2 work as arrows too). Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. G picks things up and B drops one. To go back to orbit, walk into the uplink beacon.
 
 UNDER THE SEA
 The diving bell swims with the arrows and holds still when you let go. Surface at the buoy to leave.

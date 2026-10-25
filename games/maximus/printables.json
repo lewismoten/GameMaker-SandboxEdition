@@ -649,43 +649,43 @@
           "hints": [
             {
               "q": "Where do I find the Plasma Lance?",
-              "a": "In a vault on Little Hollow, in The Cradle. Press P to pick it up; its key is Z."
+              "a": "In a vault on Little Hollow, in The Cradle. Press G to pick it up; its key is Z."
             },
             {
               "q": "Where do I find the Nova Core?",
-              "a": "In a vault on Pyre, in Emberreach. Press P to pick it up; its key is X."
+              "a": "In a vault on Pyre, in Emberreach. Press G to pick it up; its key is X."
             },
             {
               "q": "Where do I find the Dash Boots?",
-              "a": "In a vault on Copperfield, in The Cradle. Press P to pick it up; its key is Q / E."
+              "a": "In a vault on Copperfield, in The Cradle. Press G to pick it up; its key is Q / E."
             },
             {
               "q": "Where do I find the Shield Emitter?",
-              "a": "In a vault on Mistral Isle, in The Shallows. Press P to pick it up; its key is C."
+              "a": "In a vault on Mistral Isle, in The Shallows. Press G to pick it up; its key is C."
             },
             {
               "q": "Where do I find the Hover Pack?",
-              "a": "In a vault on Scorchmark, in Emberreach. Press P to pick it up; its key is F."
+              "a": "In a vault on Scorchmark, in Emberreach. Press G to pick it up; its key is F."
             },
             {
               "q": "Where do I find the Mine Layer?",
-              "a": "In a vault on Rimefall, in Glasswind. Press P to pick it up; its key is V."
+              "a": "In a vault on Rimefall, in Glasswind. Press G to pick it up; its key is V."
             },
             {
               "q": "Where do I find the Med Kit?",
-              "a": "In a vault on Outpost Nine, in The Cradle. Press P to pick it up; its key is H."
+              "a": "In a vault on Outpost Nine, in The Cradle. Press G to pick it up; its key is R."
             },
             {
               "q": "Where do I find the Flak Cannon?",
-              "a": "In a vault on Venom Marsh, in Glasswind. Press P to pick it up; its key is W."
+              "a": "In a vault on Venom Marsh, in Glasswind. Press G to pick it up; its key is W."
             },
             {
               "q": "Where do I find the Hydro Jets?",
-              "a": "In a vault on Tidewater, in The Shallows. Press P to pick it up; its key is Q / E (sub)."
+              "a": "In a vault on Tidewater, in The Shallows. Press G to pick it up; its key is Q / E (sub)."
             },
             {
               "q": "Where do I find the Spring Shocks?",
-              "a": "In a vault on Redrock, in Emberreach. Press P to pick it up; its key is Up (rover)."
+              "a": "In a vault on Redrock, in Emberreach. Press G to pick it up; its key is Up (rover)."
             }
           ]
         },
