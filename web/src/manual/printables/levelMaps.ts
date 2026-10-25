@@ -18,6 +18,7 @@ import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedUnrolled, listedViews } from './levelViews';
+import { listedRoomHints } from './levelRoomHints';
 import { unrolledShows } from '../../editor/check/unroll';
 import { BLEN } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
@@ -71,6 +72,8 @@ interface MarkLabel {
   up: boolean;
   /** 0 next to the mark; further out when it would cover another label. */
   lane: number;
+  /** Its top in its first lane, from the picture's top (paper units). */
+  top: number;
 }
 
 const LANE = 1.8;
@@ -80,19 +83,26 @@ function markLabels(game: Game, l: Level, ox: number, s: number): MarkLabel[] {
   const left = ox;
   const right = ox + l.area.w * s;
   const labels = l.marks.map((m) => {
-    const text = `${m.kind === 'start' ? '▶' : m.kind === 'end' ? '⚑' : '→'}${m.kind === 'end' ? '' : markLabel(game, m.scenes)}`;
+    const text = `${m.kind === 'start' ? '▶' : m.kind === 'end' ? '⚑' : '→'}${m.kind === 'end' ? '' : (m.text ?? markLabel(game, m.scenes))}`;
     const w = Math.min(14, text.length * 0.6 + 0.8);
     const mid = ox + (m.x + (m.w - 1) / 2 - l.area.x + 0.5) * s;
     const x = w >= right - left ? (left + right) / 2 : Math.min(Math.max(mid, left + w / 2), right - w / 2);
-    return { text, x, w, up: m.kind === 'start', lane: 0 };
+    // where the label's top sits in its first lane (as marksSvg draws it), from the picture's top
+    const cy = (m.y + (m.h - 1) / 2 - l.area.y + 0.5) * s;
+    const box = Math.max(m.h * s, 0.9);
+    const top = m.kind === 'start' ? cy - box / 2 - 1.9 : cy + box / 2 + 0.25;
+    return { text, x, w, up: m.kind === 'start', lane: 0, top };
   });
-  // in order across, each label takes the first lane out where it covers no other
-  const lanes: { up: boolean; lane: number; from: number; to: number }[] = [];
+  // in order across, each label takes the first lane out where it covers no other: one going
+  // the same way in that lane, or one going the other way where they meet (an arrival under a way out)
+  const placed: { up: boolean; lane: number; from: number; to: number; y: number }[] = [];
+  const yOf = (lb: { up: boolean; lane: number; top: number }) => lb.top + (lb.up ? -1 : 1) * lb.lane * LANE;
   for (const lb of [...labels].sort((a, b) => a.x - b.x)) {
     const from = lb.x - lb.w / 2 - 0.2;
     const to = lb.x + lb.w / 2 + 0.2;
-    while (lanes.some((o) => o.up === lb.up && o.lane === lb.lane && o.from < to && from < o.to)) lb.lane++;
-    lanes.push({ up: lb.up, lane: lb.lane, from, to });
+    const hits = () => placed.some((o) => o.from < to && from < o.to && (o.up === lb.up ? o.lane === lb.lane : Math.abs(o.y - yOf(lb)) < 1.7));
+    while (hits() && lb.lane < 12) lb.lane++;
+    placed.push({ up: lb.up, lane: lb.lane, from, to, y: yOf(lb) });
   }
   return labels;
 }
@@ -100,9 +110,12 @@ function markLabels(game: Game, l: Level, ox: number, s: number): MarkLabel[] {
 /** The room a level's labels need over and under its picture, past the first lane. */
 export function labelRoom(game: Game, l: Level): { above: number; below: number } {
   const labels = markLabels(game, l, 0, FULL);
-  const most = (up: boolean) => Math.max(0, ...labels.filter((x) => x.up === up).map((x) => x.lane));
-  // (a label over the top row already reaches into the caption's last unit: lanes start past it)
-  return { above: most(true) ? most(true) * LANE + 1 : 0, below: most(false) * LANE };
+  const y = (x: MarkLabel) => x.top + (x.up ? -1 : 1) * x.lane * LANE;
+  // (a label over the top row already reaches into the caption's last unit, and one under the
+  // bottom row into the gap under the picture: only what goes past those needs room)
+  const over = Math.max(0, ...labels.filter((x) => x.up).map((x) => -y(x) - 1.9));
+  const under = Math.max(0, ...labels.filter((x) => !x.up).map((x) => y(x) - l.area.h * FULL - 0.25));
+  return { above: over > 0.01 ? over + 1 : 0, below: under };
 }
 
 /** The marks of a level drawn over its picture, `s` paper units a block, from (`ox`, `oy`); sizes stay the same on paper. */
@@ -173,6 +186,79 @@ export function levelSvg(game: Game, l: Level, url: string, ox: number, oy: numb
   );
 }
 
+/** A room's cast panel (levelRooms.ts): its width, a person's row, and the title over them. */
+const CAST = { w: 29, row: 3.7, head: 3.9, pic: 2.8, show: 0.8 };
+
+/** The height of a level's cast panel, 0 when it has none. */
+const castHeight = (l: Level) => (l.cast ? CAST.head + l.cast.people.length * CAST.row : 0);
+/** The room a level's picture and its cast panel take across. */
+const levelWidth = (l: Level) => l.area.w * FULL + (l.cast ? GAP + CAST.w : 0);
+
+/** A small piece of a level's map (a portrait, a row of cards) to paint like a level. */
+type CropOf = (l: Level, r: { x: number; y: number; w: number; h: number }) => Level;
+
+function cropper(): CropOf {
+  const made = new Map<string, Level>();
+  return (l, r) => {
+    const key = `${l.group.map}|${l.scene}|${r.x},${r.y},${r.w},${r.h}`;
+    let c = made.get(key);
+    if (!c) made.set(key, (c = { ...l, area: r, whole: r, marks: [], cast: undefined, note: undefined, unrolled: undefined, mapMarks: undefined }));
+    return c;
+  };
+}
+
+/** Who you meet in a room, beside its picture from (`x`, `y`): each one's picture, name, and the rooms they take you to drawn small, with their scenes. */
+async function castSvg(game: Game, l: Level, x: number, y: number, paint: Painter, crop: CropOf): Promise<SVGElement> {
+  const cast = l.cast!;
+  const g = el('g', { class: 'lm-cast', 'font-family': 'Arial, Helvetica, sans-serif', fill: '#2b241c' });
+  const showX = (k: number) => x + CAST.pic + 9.8 + k * 6.4;
+  g.append(
+    el('rect', { x, y, width: CAST.w, height: castHeight(l), rx: 0.6, fill: '#f4eedf', stroke: '#2b241c', 'stroke-width': 0.15 }),
+    el('text', { x: x + 0.8, y: y + 1.8, 'font-family': SERIF, 'font-size': 1.5, 'font-weight': 700 }, cast.title),
+  );
+  cast.people[0]?.visits.forEach(
+    (v, k) =>
+      v.show &&
+      g.append(el('text', { x: showX(k) + (v.show.w * CAST.show) / 2, y: y + 3.3, 'font-size': 1, 'font-weight': 700, 'text-anchor': 'middle' }, v.label)),
+  );
+  for (const [i, p] of cast.people.entries()) {
+    const ry = y + CAST.head + i * CAST.row;
+    const [name, role] = p.name.split(', ');
+    const pic = await paint(crop(l, p.picture));
+    const ps = CAST.pic / Math.max(p.picture.w, p.picture.h);
+    g.append(
+      el('image', { href: pic, x: x + 0.8, y: ry, width: p.picture.w * ps, height: p.picture.h * ps, style: 'image-rendering:pixelated' }),
+      el('text', { x: x + CAST.pic + 1.4, y: ry + 1.2, 'font-size': 1.2, 'font-weight': 700 }, name),
+      el('text', { x: x + CAST.pic + 1.4, y: ry + 2.4, 'font-size': 1, 'font-style': 'italic' }, role ?? ''),
+    );
+    for (const [k, v] of p.visits.entries()) {
+      const tag = `▶${markLabel(game, v.scenes)}`;
+      if (!v.show) {
+        g.append(el('text', { x: showX(k), y: ry + 2.4, 'font-size': 0.9 }, `${v.label} ${tag}`));
+        continue;
+      }
+      const url = await paint(crop(l, v.show));
+      g.append(
+        el('image', { href: url, x: showX(k), y: ry, width: v.show.w * CAST.show, height: v.show.h * CAST.show, style: 'image-rendering:pixelated' }),
+        el('rect', { x: showX(k), y: ry, width: v.show.w * CAST.show, height: v.show.h * CAST.show, fill: 'none', stroke: '#222', 'stroke-width': 0.12 }),
+        el(
+          'text',
+          {
+            x: showX(k) + (v.show.w * CAST.show) / 2,
+            y: ry + v.show.h * CAST.show + 0.95,
+            'font-size': 0.85,
+            'font-weight': 700,
+            fill: COLORS.start,
+            'text-anchor': 'middle',
+          },
+          tag,
+        ),
+      );
+    }
+  }
+  return g;
+}
+
 /** Edges that are the same place (the map goes round forever that way): dashed, with arrows going on through them. */
 function joinedEdges(l: Level, ox: number, oy: number, s: number): SVGElement[] {
   const [lx, ly] = l.unrolled?.loops ?? [false, false];
@@ -224,9 +310,15 @@ function joinNote(l: Level): string {
   return lx && ly ? ' · all four edges join up' : lx ? ' · the left and right edges join up' : ly ? ' · the top and bottom edges join up' : '';
 }
 
+/** About how wide a caption's letter is, on average (paper units). */
+const CAPTION_EM = 0.92;
+const captionText = (game: Game, l: Level) => `Scene ${sceneList(game, l)} · ${l.name}${joinNote(l)}${l.note ? ` · ${l.note}` : ''}`;
+/** The room a level's caption takes across at its own size (a narrow map's box widens for it). */
+const captionWidth = (game: Game, l: Level) => Math.min(AREA.w, captionText(game, l).length * CAPTION_EM);
+
 /** A level's caption: its scene numbers and name. */
 export function captionSvg(game: Game, l: Level, x: number, y: number, width: number): SVGElement {
-  const t = `Scene ${sceneList(game, l)} · ${l.name}${joinNote(l)}`;
+  const t = captionText(game, l);
   return el(
     'text',
     {
@@ -236,7 +328,7 @@ export function captionSvg(game: Game, l: Level, x: number, y: number, width: nu
       'font-size': 1.7,
       'font-weight': 700,
       fill: '#2b241c',
-      ...(t.length * 0.85 > width ? { textLength: width, lengthAdjust: 'spacingAndGlyphs' } : {}),
+      ...(t.length * CAPTION_EM > width ? { textLength: width, lengthAdjust: 'spacingAndGlyphs' } : {}),
     },
     t,
   );
@@ -275,13 +367,13 @@ function pageSheet(entry: CatalogEntry, tag: string, body: SVGElement[], w = PAG
 }
 
 /** Does a level fit a page at full size? */
-const fits = (l: Level) => l.area.w * FULL <= AREA.w && l.area.h * FULL + CAPTION <= AREA.h;
+const fits = (l: Level) => levelWidth(l) <= AREA.w && Math.max(l.area.h * FULL, castHeight(l)) + CAPTION <= AREA.h;
 
 /** A level's box on a shared page: its caption, the room its labels need, and its map at full size. */
 function levelBox(game: Game, l: Level): { w: number; h: number } {
   if (!fits(l)) return { w: Infinity, h: Infinity };
   const room = labelRoom(game, l);
-  return { w: l.area.w * FULL, h: l.area.h * FULL + CAPTION + room.above + room.below };
+  return { w: Math.max(levelWidth(l), captionWidth(game, l)), h: CAPTION + Math.max(l.area.h * FULL + room.above + room.below, castHeight(l)) };
 }
 
 /** The scale a big level prints at on a page of its own. */
@@ -359,7 +451,7 @@ function blankUnseen(pic: { width: number; pixels: Uint8Array }, l: Level, files
 }
 
 /** The pages to print. */
-async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], paint: Painter, full: boolean): Promise<Sheet[]> {
+async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], paint: Painter, crop: CropOf, full: boolean): Promise<Sheet[]> {
   const urls = new Map<Level, string>();
   for (const l of levels) urls.set(l, await paint(l));
   const boxes = levels.map((l) => levelBox(game, l));
@@ -370,15 +462,19 @@ async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], pai
   for (let k = 0; k < pageCount; k++) {
     const body: SVGElement[] = [];
     pages.set(k, body);
-    levels.forEach((l, i) => {
+    for (const [i, l] of levels.entries()) {
       const p = placed[i];
-      if (p.page !== k) return;
+      if (p.page !== k) continue;
       const url = urls.get(l)!;
       if (fits(l)) {
         const x = MARGIN + p.x;
         const y = HEAD + p.y;
-        body.push(captionSvg(game, l, x, y, Math.max(l.area.w * FULL, 30)), levelSvg(game, l, url, x, y + CAPTION + labelRoom(game, l).above, FULL));
-        return;
+        body.push(
+          captionSvg(game, l, x, y, Math.max(levelWidth(l), captionWidth(game, l))),
+          levelSvg(game, l, url, x, y + CAPTION + labelRoom(game, l).above, FULL),
+        );
+        if (l.cast) body.push(await castSvg(game, l, x + l.area.w * FULL + GAP, y + CAPTION, paint, crop));
+        continue;
       }
       // a big level: fitted to the page (its atlas grid over it when it also prints full size)
       const s = fitScale(l);
@@ -411,7 +507,7 @@ async function printSheets(entry: CatalogEntry, game: Game, levels: Level[], pai
               t.name,
             ),
           );
-    });
+    }
     out.push(pageSheet(entry, `page ${k + 1}`, body));
     // a big level's full-size pages follow its overview
     if (!full) continue;
@@ -448,15 +544,15 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
   const load = () =>
     (loaded ??= loadLevels(ctx.entry).then((x) => {
       if (!x) return undefined;
-      const seen = levelsOf(x.game, x.files, secret, listedViews(ctx.entry.id), listedUnrolled(ctx.entry.id));
+      const seen = levelsOf(x.game, x.files, secret, listedViews(ctx.entry.id), listedUnrolled(ctx.entry.id), listedRoomHints(ctx.entry.id));
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined }));
-      return { game: x.game, seen, every, paint: painter(x.game, x.files), full: pageCounts(x.game, seen).full <= MOST_PAGES, all: false };
+      return { game: x.game, seen, every, paint: painter(x.game, x.files), crop: cropper(), full: pageCounts(x.game, seen).full <= MOST_PAGES, all: false };
     }));
   return {
     async render() {
       const x = await load();
-      return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.full) : [];
+      return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.crop, x.full) : [];
     },
     async live() {
       const x = await load();
@@ -483,6 +579,7 @@ interface Loaded {
   seen: Level[];
   every: Level[];
   paint: Painter;
+  crop: CropOf;
   /** Print big maps full size too. */
   full: boolean;
   /** Print and show every block of each map, not only the part the player sees. */
@@ -491,7 +588,7 @@ interface Loaded {
 
 /** On screen: a list of the maps, and the one picked in a view to zoom and drag. */
 function levelViewer(opts: Loaded): HTMLElement {
-  const { game, paint } = opts;
+  const { game, paint, crop } = opts;
   const levels = () => (opts.all ? opts.every : opts.seen);
   const holder = h('div', { class: 'lm-view' });
   const list = h('ul', { class: 'lm-list', 'aria-label': 'Maps' });
@@ -544,8 +641,10 @@ function levelViewer(opts: Loaded): HTMLElement {
     if (shown !== i || levels()[i] !== l) return;
     const pad = 3;
     const room = labelRoom(game, l);
-    const w = l.area.w + pad * 2;
-    const ht = l.area.h + pad * 2 + 1 + room.above + room.below;
+    const w = levelWidth(l) + pad * 2;
+    const ht = Math.max(l.area.h + room.above + room.below, castHeight(l)) + pad * 2 + 1;
+    const cast = l.cast && (await castSvg(game, l, pad + l.area.w + GAP, pad + 1, paint, crop));
+    if (shown !== i || levels()[i] !== l) return;
     const svg = el(
       'svg',
       {
@@ -557,11 +656,17 @@ function levelViewer(opts: Loaded): HTMLElement {
       },
       el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
       levelSvg(game, l, url, pad, pad + 1 + room.above, 1),
+      ...(cast ? [cast] : []),
     );
     const map = h('div', { class: 'lm-map' }, svg);
     const pz = panZoom(map, w / 10, `Map of ${l.name}: drag to look around`, 400);
     stage.replaceChildren(
-      h('div', { class: 'wm-bar' }, ...pz.buttons, h('span', null, `Scene ${sceneList(game, l)} · ${l.name} · ${l.area.w} × ${l.area.h} blocks`)),
+      h(
+        'div',
+        { class: 'wm-bar' },
+        ...pz.buttons,
+        h('span', null, `Scene ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`),
+      ),
       pz.view,
       h(
         'p',
