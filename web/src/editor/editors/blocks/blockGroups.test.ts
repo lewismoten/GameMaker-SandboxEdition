@@ -1,3 +1,4 @@
+// Tests for blockGroups.ts: groups kept in the companion file, layouts, joining and splitting.
 import { describe, expect, it } from 'vitest';
 import { BLEN } from '../../../formats/blocks';
 import { cellOf, groupOf, groupsWith, joinGroup, layoutFor, neighborGroup, readGroups, sameGroup, splitGroup, writeGroups } from './blockGroups';

@@ -1,3 +1,4 @@
+// Tests for groupGuess.ts: block groups guessed from the maps, monsters and character frames.
 import { describe, expect, it } from 'vitest';
 import { MLEN, newMap } from '../../../formats/map';
 import { newMonsterSet } from '../../../formats/monster';

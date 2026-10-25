@@ -1,3 +1,4 @@
+// Tests for load.ts: a listed game's files fetched from its folder, found whatever their case.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

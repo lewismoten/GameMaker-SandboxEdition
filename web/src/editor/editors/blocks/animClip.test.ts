@@ -1,3 +1,4 @@
+// Tests for animClip.ts: clips built from block chains, monsters and character sequences.
 import { describe, expect, it } from 'vitest';
 import { newMonsterSet } from '../../../formats/monster';
 import { bblClip, bblGroupClip, characterClips, clipTicks, monsterClips, monsterGroupClip, nextChange, stepAt, type Track } from './animClip';

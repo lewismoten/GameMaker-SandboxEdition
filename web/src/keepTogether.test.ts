@@ -1,3 +1,4 @@
+// Tests for keepTogether.ts: words() splits text at spaces but never inside THE CHEZ.
 import { describe, expect, it } from 'vitest';
 import { words } from './keepTogether';
 

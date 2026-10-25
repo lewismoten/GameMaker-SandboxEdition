@@ -1,3 +1,4 @@
+// Tests for surfaceOps.ts: mirroring, lines, boxes and fills across a group's joined picture.
 import { describe, expect, it } from 'vitest';
 import { box, floodFill, line, mirrorAll } from './surfaceOps';
 

@@ -1,4 +1,4 @@
-// The HOLE-Y MOLEY disk notcher's pictures for its ad (sections/notcherAd.ts; notcherArt.css
+// The HOLE-Y MOLEY disk notcher's pictures for its ad (sections/notcherAd.ts; notcherAd.css
 // sizes them): the press, a black textured base tilted back with a 3½" disk in its recess and
 // a finger notch, and a white lever arm on its hinge block over the disk's corner; and a disk
 // seen from the back before and after, one square hole and then two. Our own drawing.

@@ -1,3 +1,4 @@
+// Tests for list.ts: reading games.json and finding the game ?game= names.
 import { describe, expect, it } from 'vitest';
 import { findGame, gamCandidates, listUrl, parseGameList } from './list';
 

@@ -12,7 +12,7 @@
 //     "version": 1,
 //     "files": {                    // extras of one game file, by its normalized name
 //       "forest.bbl": {
-//         "terrains": [ … ],       // map/tools/terrain.ts
+//         "terrains": [ … ],       // map/tools/autotile.ts
 //         "stamps": [ … ],         // map/tools/stamps.ts
 //         "buildings": [ … ]       // map/tools/building.ts
 //       },

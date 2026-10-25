@@ -1,3 +1,4 @@
+// Tests for bundle.ts: saves exported to a zip and imported back, one folder per game.
 import { describe, expect, it } from 'vitest';
 import { createZip, readZip } from '../project/zip';
 import { exportSaveZip, importSaveZip } from './bundle';
