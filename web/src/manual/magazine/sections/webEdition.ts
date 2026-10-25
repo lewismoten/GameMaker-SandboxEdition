@@ -178,7 +178,7 @@ export const WEB_EDITION: MagSection = {
             [
               side(
                 'Try them yourself',
-                [p('Open a sample game, choose Edit a copy, and every tool above is a click away.'), button('go:guide/editors', 'The editors')],
+                [p('Choose Look inside on a sample game, then Edit a copy, and every tool above is a click away.'), button('go:guide/editors', 'The editors')],
                 'cyan',
               ),
             ],

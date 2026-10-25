@@ -89,6 +89,9 @@ for (const [kind, from] of [
   console.log(`GAMES\\${kind}\\  ${games.length} games`);
 }
 
+/** Games left out of the DOSBox folder, as Lewis asked. */
+const LEFT_OUT = new Set(['logic']);
+
 interface About {
   title?: string;
   series?: string;
@@ -102,6 +105,7 @@ for (const id of readdirSync(join(ROOT, 'games'))) {
   if (!existsSync(disk) || !existsSync(aboutPath)) continue;
   const about = JSON.parse(readFileSync(aboutPath, 'utf8')) as About;
   if (about.secret && !withSecret) continue;
+  if (LEFT_OUT.has(id)) continue;
   const files = readDir(disk);
   const gam = files.mainGame();
   if (!gam) continue;
