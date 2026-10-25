@@ -49,5 +49,5 @@ export const LEVELS: LevelDef[] = [
     mons: { snip: 4 },
     view: [20, 4],
   },
-  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: { roll: [3, 1] }, view: [2, 1] },
+  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: { roll: [4, 2] }, view: [2, 1] },
 ];
