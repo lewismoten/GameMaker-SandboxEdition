@@ -3,7 +3,7 @@
 import { Pixels } from '../../kit/pixels';
 import { writePng } from '../../kit/png';
 import { P } from '../src/art/pal';
-import { POSES, PAW_UP } from '../src/sprites/teddy';
+import { POSES } from '../src/sprites/teddy';
 
 const out = process.argv[2] ?? '.';
 export function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
@@ -12,7 +12,7 @@ export function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
   pics.forEach((q, i) => p.blit(q, (i % cols) * 22 + 1, Math.floor(i / cols) * 22 + 1));
   return p;
 }
-writePng(`${out}/teddy.png`, sheet([...Object.values(POSES), PAW_UP]), P.pal, 6);
+writePng(`${out}/teddy.png`, sheet(Object.values(POSES)), P.pal, 6);
 import { FX } from '../src/sprites/fx';
 writePng(`${out}/fx.png`, sheet(Object.values(FX)), P.pal, 6);
 import { GWINN } from '../src/sprites/gwinn';
