@@ -8,7 +8,8 @@ import { playFindings } from './checks/playChecks';
 import { sealed } from './checks/sealed';
 import { explore } from './explore';
 import { diskAt } from './gitDisk';
-import { gameOf, linksInto } from './playtest';
+import { gameOf } from './playtest';
+import { linksInto } from './sceneLinks';
 import { scenesOf } from './sceneData';
 import { SceneSim, startCharInfo } from './sim';
 

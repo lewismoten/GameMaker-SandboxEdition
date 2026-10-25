@@ -20,7 +20,7 @@ import { LASTMM, LASTMON, bgBlock } from '../../../engine/world';
 import { at, type Finding } from '../findings';
 import { getsAway } from '../escape';
 import { keyRoles, movesFor } from '../inputs';
-import { linksInto } from '../playtest';
+import { linksInto } from '../sceneLinks';
 import { SceneSim, type FileSource, type Snap } from '../sim';
 import type { SceneData } from '../sceneData';
 

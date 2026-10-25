@@ -6,7 +6,7 @@ import { BACKBL, type Block } from '../../../formats/blocks';
 import type { Game } from '../../../formats/game';
 import { MLEN, MWID } from '../../../formats/map';
 import { at, type Finding } from '../findings';
-import { linksInto } from '../playtest';
+import { linksInto } from '../sceneLinks';
 import type { SceneData } from '../sceneData';
 import { blockCycle } from './blockChecks';
 import { isPickup } from './playChecks';

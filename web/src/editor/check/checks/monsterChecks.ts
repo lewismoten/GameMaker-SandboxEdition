@@ -8,7 +8,7 @@ import type { Character } from '../../../formats/character';
 import { LASTMON, MAXMARCH, type Monster } from '../../../formats/monster';
 import { MLEN, MWID } from '../../../formats/map';
 import { at, type Finding } from '../findings';
-import { linksInto } from '../playtest';
+import { linksInto } from '../sceneLinks';
 import { contrastRatio, luminance, topColors, type SceneData } from '../sceneData';
 import type { Game } from '../../../formats/game';
 import { TICK_S, WAIT_TICKS } from './blockChecks';

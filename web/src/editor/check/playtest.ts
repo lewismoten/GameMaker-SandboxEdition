@@ -5,11 +5,15 @@
 // (one key at a time, unhurried), or go on into each scene carrying the least the hero could
 // have left the last one with (what a player who skips things brings).
 import { parseBlocks, BACKBL } from '../../formats/blocks';
-import { ADVTYPE, NOSCENE, parseGame, type Game } from '../../formats/game';
+import { NOSCENE, parseGame, type Game } from '../../formats/game';
 import { parseMap } from '../../formats/map';
 import { explore, type Entry, type Exploration, type ExploreLive } from './explore';
 import { startCharInfo, type FileSource } from './sim';
 import { stuckAreas, type StuckArea } from './stuck';
+import { levelScenes, linksInto } from './sceneLinks';
+
+/** For games/kit/levelCheck.ts, which takes the level scenes from here. */
+export { levelScenes };
 
 export interface SceneRun {
   scene: number;
@@ -52,16 +56,6 @@ export function gameOf(files: FileSource & { mainGame?(): string | undefined }, 
   const bytes = name ? files.get(name) : undefined;
   if (!bytes) throw new Error('This game has no .gam file.');
   return parseGame(bytes);
-}
-
-/** Level scenes: the ones with a map that play can enter. */
-export function levelScenes(game: Game): number[] {
-  return game.scenes.flatMap((s, i) => (i > 1 && s.gametype === ADVTYPE && s.files[1] ? [i] : []));
-}
-
-/** Every link into `scene`: from which scene, which link, and where the hero starts. */
-export function linksInto(game: Game, scene: number): { scene: number; link: number; to: { x: number; y: number } }[] {
-  return game.scenes.flatMap((s, i) => s.links.flatMap((l, k) => (l.toScene === scene ? [{ scene: i, link: k, to: l.to }] : [])));
 }
 
 /** Plays the whole game: every scene the hero can get to, in the order play reaches them. */

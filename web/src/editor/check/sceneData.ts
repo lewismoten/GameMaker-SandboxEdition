@@ -8,7 +8,7 @@ import { MLEN, newMap, parseMap, type GameMap } from '../../formats/map';
 import { parseMonsters, type Monster } from '../../formats/monster';
 import { defaultPalette, parsePalette } from '../../formats/palette';
 import { parseSoundSet, type SoundSet } from '../../formats/sound';
-import { levelScenes, linksInto } from './playtest';
+import { levelScenes, linksInto } from './sceneLinks';
 import type { FileSource } from './sim';
 
 export interface SceneData {
