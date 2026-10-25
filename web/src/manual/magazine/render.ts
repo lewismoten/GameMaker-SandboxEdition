@@ -119,7 +119,8 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
     });
   switch (b.t) {
     case 'head': {
-      const tag: 'h1' | 'h2' | 'h3' = b.level === 1 ? 'h1' : b.level === 3 ? 'h3' : 'h2';
+      // the viewer's own (screen-reader) h1 names the magazine, so a story's headline is an h2
+      const tag: 'h2' | 'h3' = b.level === 3 ? 'h3' : 'h2';
       return h(
         'div',
         { class: `mag-head size-${b.size ?? 'm'}` },
@@ -246,7 +247,7 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         'header',
         { class: 'mag-masthead' },
         h('p', { class: 'mag-mast-issue' }, h('span', null, b.issue), h('span', null, b.price)),
-        h('h1', null, b.name),
+        h('p', { class: 'mag-mast-name' }, b.name),
         h('p', { class: 'mag-mast-tag' }, b.tagline),
       );
     case 'disc':

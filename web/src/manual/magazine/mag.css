@@ -1079,7 +1079,11 @@
   padding: 1.6em 2em 2em;
 }
 
-.mag-masthead h1 {
+/* a paragraph, not a heading: the viewer's h1 names the magazine (render.ts) */
+.mag-masthead .mag-mast-name {
+  margin: 0;
+  font-family: Impact, 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-weight: 900;
   font-size: 7.4em;
   line-height: 0.85;
   color: var(--red);
@@ -1520,7 +1524,7 @@
     float: none;
   }
 
-  .mag-masthead h1 {
+  .mag-masthead .mag-mast-name {
     font-size: 4.2em;
   }
 
