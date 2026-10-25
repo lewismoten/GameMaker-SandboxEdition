@@ -96,14 +96,14 @@ export function dos(g: Pixels, lines: string[], color = c('crt', 5)): void {
   lines.forEach((l, i) => micro(g, 4, 4 + i * 8, l, color));
 }
 
-/** A 3.5" floppy, w x h scaled. */
+/** A 3.5" floppy, w x h scaled, standing shutter down with its label up top. */
 export function floppy(p: Pixels, x: number, y: number, s = 1, label = 'VACCINE'): void {
   bevel(p, x, y, 36 * s, 38 * s, SP.r('blue'), 1, Math.max(1, s));
-  p.rect(x + 8 * s, y, 18 * s, 12 * s, c('steel', 4));
-  p.rect(x + 18 * s, y + 2 * s, 5 * s, 8 * s, c('steel', 1));
-  bevel(p, x + 4 * s, y + 18 * s, 28 * s, 18 * s, SP.r('label'), 3, 1);
-  if (s >= 2) text(p, x + 6 * s, y + 24 * s, label.slice(0, 7), c('red', 2), Math.max(1, Math.floor(s / 2)));
-  else micro(p, x + 6, y + 24, label.slice(0, 6), c('red', 2));
+  p.rect(x + 10 * s, y + 26 * s, 18 * s, 12 * s, c('steel', 4));
+  p.rect(x + 13 * s, y + 28 * s, 5 * s, 8 * s, c('steel', 1));
+  bevel(p, x + 4 * s, y + 2 * s, 28 * s, 18 * s, SP.r('label'), 3, 1);
+  if (s >= 2) text(p, x + 6 * s, y + 8 * s, label.slice(0, 7), c('red', 2), Math.max(1, Math.floor(s / 2)));
+  else micro(p, x + 6, y + 8, label.slice(0, 6), c('red', 2));
 }
 
 /** The title logo: VIRUS in slime green, BLASTER in fire, chunky and glitched. */
