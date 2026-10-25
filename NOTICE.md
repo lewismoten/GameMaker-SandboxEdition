@@ -113,6 +113,17 @@ game folder opens in the browser unchanged.
   (A-J Games), _Hurdles_ (Roland Ludlam), _Seal Boarders_, and RSD's _Penguin Pete_. The games
   belong to their authors; the guide names them and describes their ideas in its own words, and
   copies none of their art, music, sounds or text.
+- **Research: watching people play Game-Maker games.** Observations from two videos informed
+  The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and
+  _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`) and "What Players Hate (and How to
+  Fix It)" (`sections/gripes.ts`): **levelengine**'s livestream
+  "[RSD Game Maker Binge](https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76)" (YouTube, 2020, 34 parts, with
+  its viewers' chat), and **Pixelmusement**'s
+  "[ADG Episode 250 - Game-Maker](https://www.youtube.com/watch?v=8oy5pXPXxbk)" (Ancient DOS
+  Games, YouTube, 2018). What made players stuck, quit or grin is retold in this project's own
+  words, and every engine claim was checked against `code/GM/PLAYGAME.C` and its port (where a
+  video and PLAYGAME disagree, PLAYGAME wins). No material is copied: the videos and the chat
+  aren't quoted, no viewer is named, and none of the games' art, music or text is used.
 - **The Shareware Shelf** in _TURBO BUTTON_ (`web/src/manual/magazine/sections/shelf.ts`) lists
   the titles, years and makers of the Game-Maker games in the
   [Internet Archive's Game-Maker Archive collection](https://archive.org/search?query=subject%3A%22Game-Maker+games%22),
