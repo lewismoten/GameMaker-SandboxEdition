@@ -1,7 +1,8 @@
 // Starting a game from the home page: a new game (from the starter, see starter.ts), or one
 // imported from a folder, zip, single-page export or dropped files. Files from the CD's
-// shareware games are recognized by the .gam file's CRC-32.
-import { h, pickFiles, toast, modal } from '../core/ui';
+// shareware games are recognized by the .gam file's CRC-32. Loaded when first used (home.ts
+// picks the files, or reads the drop, first).
+import { h, toast, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { starterProject } from './starter';
 import { beginFirstSteps } from './firstSteps';
@@ -144,12 +145,13 @@ async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promis
   nav.openProject(p.id);
 }
 
-export async function importPicked(nav: HomeNav, opts: { directory?: boolean }): Promise<void> {
-  const list = await pickFiles({ multiple: true, directory: opts.directory });
+/** Opens the files picked on the home page. */
+export async function importPicked(nav: HomeNav, list: File[]): Promise<void> {
   if (list.length) await importFiles(nav, await filesFromList(list));
 }
 
-export async function importDropped(nav: HomeNav, dt: DataTransfer): Promise<void> {
+/** Opens what was dropped: the drop's entries (folders walked), or its files when it has none. */
+export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], files: File[]): Promise<void> {
   const collected: File[] = [];
   const walk = async (entry: FileSystemEntry): Promise<void> => {
     if (entry.isFile) collected.push(await new Promise<File>((res, rej) => (entry as FileSystemFileEntry).file(res, rej)));
@@ -162,8 +164,7 @@ export async function importDropped(nav: HomeNav, dt: DataTransfer): Promise<voi
       }
     }
   };
-  const entries = [...dt.items].map((i) => i.webkitGetAsEntry?.()).filter((e): e is FileSystemEntry => !!e);
   if (entries.length) for (const e of entries) await walk(e);
-  else collected.push(...dt.files);
+  else collected.push(...files);
   await importFiles(nav, await filesFromList(collected));
 }
