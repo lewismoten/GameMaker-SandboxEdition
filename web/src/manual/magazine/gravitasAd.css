@@ -105,17 +105,28 @@
   display: none;
 }
 
-/* the second's is screwed into the d-pad, standing straight up off the pad: turned back to face
-   the eye (undoing the pad's tilt) and shortened as the tilt would show it */
+/* the second's is screwed into the d-pad: it rises from the socket's center at right angles to
+   the pad, in the pad's own 3D space, so the pad's tilt and perspective foreshorten it. Turned
+   first to undo the pad's spin, so the rod's face (and its shading) is toward the eye. */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) :is(.gp-dpad, .gp-socket) {
+  transform-style: preserve-3d;
+}
+
 .mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-stick {
   display: block;
   position: absolute;
-  left: 23%;
+  left: 12%;
   bottom: 50%;
-  width: 4.4%;
-  height: 44%;
+  width: 76%;
+  height: 680%;
   transform-origin: 50% 100%;
-  transform: rotateZ(calc(-1 * var(--rz))) rotateX(-46deg);
+  transform: rotateZ(calc(-1 * var(--rz))) rotateX(-90deg);
+}
+
+/* the magazine sizes art by its width, so the rod is shorter than its box: its foot goes down
+   to the socket */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-stick-art {
+  top: auto;
 }
 
 /* and its shadow falls across the pad away from the light */

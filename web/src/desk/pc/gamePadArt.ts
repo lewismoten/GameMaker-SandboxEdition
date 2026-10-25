@@ -28,10 +28,15 @@ export function gamePadArt(opts: { shaft?: boolean; alt?: string } = {}): HTMLEl
     'span',
     { class: `gp-art${opts.shaft ? ' with-shaft' : ''}`, ...(opts.alt ? { role: 'img', 'aria-label': opts.alt } : { 'aria-hidden': 'true' }) },
     h('span', { class: 'gp-shell-box' }),
-    h('span', { class: 'gp-dpad', dataset: { pos: '0' } }, h('span', { class: 'gp-dpad-box' }), h('span', { class: 'gp-socket' })),
+    h(
+      'span',
+      { class: 'gp-dpad', dataset: { pos: '0' } },
+      h('span', { class: 'gp-dpad-box' }),
+      // the standing shaft lives in the socket, so its foot is always the socket's center
+      h('span', { class: 'gp-socket' }, opts.shaft ? h('span', { class: 'gp-stick' }) : null),
+    ),
     ...PAD_BUTTONS.map((b) => h('span', { class: `gp-btn ${b.color} at-${b.at}`, dataset: { b: String(b.n) } })),
     opts.shaft ? h('span', { class: 'gp-shaft' }) : null,
-    opts.shaft ? h('span', { class: 'gp-stick' }) : null,
   );
   const id = `gp-plastic-${++made}`;
   const fill = (sel: string, svg: string) => {
