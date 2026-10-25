@@ -17,7 +17,7 @@ type FieldType = 'u8' | 'i8' | 'u16' | 'i16' | 'u24' | 'u32' | 'i32' | 'vlq' | '
 const SIZE: Partial<Record<FieldType, number>> = { u8: 1, i8: 1, u16: 2, i16: 2, u24: 3, u32: 4, i32: 4 };
 
 /** One part of an array's record. */
-export interface Part {
+interface Part {
   at: number;
   len: number;
   name: string;
@@ -26,7 +26,7 @@ export interface Part {
   note?: (v: number | string, i: number) => string;
 }
 
-export interface Field {
+interface Field {
   off: number;
   len: number;
   name: string;
@@ -37,7 +37,7 @@ export interface Field {
   array?: { size: number; parts: Part[]; label: (i: number) => string; /** one color for the whole array (pixels) */ solid?: boolean };
 }
 
-export interface Section {
+interface Section {
   name: string;
   off: number;
 }
@@ -82,7 +82,7 @@ export function readVlq(bytes: Uint8Array, off: number): { value: number; len: n
 }
 
 /** The value of `len` bytes at `off` read as `type` (undefined for raw bytes). */
-export function decode(bytes: Uint8Array, off: number, type: FieldType, len: number): number | string | undefined {
+function decode(bytes: Uint8Array, off: number, type: FieldType, len: number): number | string | undefined {
   const u8 = (o: number) => bytes[off + o] ?? 0;
   switch (type) {
     case 'u8':

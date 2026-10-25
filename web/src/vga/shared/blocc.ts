@@ -30,7 +30,7 @@ export function getblk(v: Vga, x: number, y: number, p: Uint8Array): void {
 }
 
 /** drawblocpiece: part of a block, wrapping inside it, for the scroll animation. */
-export function drawblocpiece(v: Vga, blk: Block[], x: number, y: number, bx: number, by: number, len: number, wid: number, bloc: number): void {
+function drawblocpiece(v: Vga, blk: Block[], x: number, y: number, bx: number, by: number, len: number, wid: number, bloc: number): void {
   const p = pixelsOf(blk, bloc);
   for (let ly = 0; ly < wid; ly++) for (let lx = 0; lx < len; lx++) v.point(lx + x, ly + y, p[((ly + by) % BLEN) * BLEN + ((lx + bx) % BLEN)]);
 }
@@ -43,10 +43,6 @@ export function drawlist(v: Vga, blk: Block[], x: number, y: number, listlen: nu
   for (let i = 0; i < listlen; i++) drawblk(v, x + i * BLEN, y, pixelsOf(blk, dra((current + i) % totalen)));
 }
 
-export function vdrawlist(v: Vga, blk: Block[], x: number, y: number, listlen: number, totalen: number, current: number, dra: ListPick = blocnum): void {
-  for (let i = 0; i < listlen; i++) drawblk(v, x, y + i * BLEN, pixelsOf(blk, dra((current + i) % totalen)));
-}
-
 const sign = (n: number) => (n > 0 ? 1 : n < 0 ? -1 : 0);
 /** Turbo C's %, which keeps the sign of the dividend. */
 const cmod = (a: number, b: number) => a % b;
@@ -54,7 +50,6 @@ const cmod = (a: number, b: number) => a % b;
 /** wrap: lists go round from the last block to the first. */
 const WRAP = true;
 let rate = 0;
-let vrate = 0;
 
 /** A click moves one block; holding waits 1/5 second, then scrolls until the mouse moves or lets go. */
 async function holdStart(v: Vga): Promise<number> {
@@ -112,56 +107,6 @@ export async function scrollList(
     // Speed checker - slow down if the scroll is too fast.
     if (++rotCnt > 10) {
       if (v.clock - oldClock < 7) rate++;
-      rotCnt = 0;
-      oldClock = v.clock;
-    }
-    ({ x: movx, y: movy, but: button } = v.moustats());
-  } while (button > 0 && movx === oldx && movy === oldy);
-  return current;
-}
-
-/** vscroll_list: scroll_list for a list standing on end. */
-export async function vscrollList(
-  v: Vga,
-  blk: Block[],
-  dir: number,
-  x: number,
-  y: number,
-  listlen: number,
-  totalen: number,
-  current: number,
-  dra: ListPick = blocnum,
-): Promise<number> {
-  const y1 = y + listlen * BLEN;
-  const i = await holdStart(v);
-  if (dir > BLEN || dir < -BLEN) dir = sign(dir) * BLEN;
-  while (cmod(BLEN, sign(dir) * dir) !== 0) dir += sign(dir);
-  let { x: movx, y: movy, but: button } = v.moustats();
-  let oldx = movx;
-  const oldy = movy;
-  if (i < 4) oldx = 0;
-  let oldClock = v.clock;
-  let rotCnt = 0;
-  do {
-    let l1 = cmod(BLEN - dir, BLEN);
-    if (dir > 0) {
-      current = (current - 1 + totalen) % totalen;
-      if (current === 0 && !WRAP) oldx = 0;
-    }
-    while (l1 <= BLEN && l1 >= 0) {
-      drawblocpiece(v, blk, x, y, 0, l1, BLEN, BLEN - l1, dra(current));
-      for (let k = 1; k < listlen; k++) drawblk(v, x, y + k * BLEN - l1, pixelsOf(blk, dra((current + k) % totalen)));
-      drawblocpiece(v, blk, x, y1 - l1, 0, 0, BLEN, l1, dra((current + listlen) % totalen));
-      l1 -= dir;
-      if (vrate) await v.delay(vrate);
-      else await v.tick();
-    }
-    if (dir < 0) {
-      current = (current + 1) % totalen;
-      if (current === totalen - listlen && !WRAP) oldx = 0;
-    }
-    if (++rotCnt > 5) {
-      if (v.clock - oldClock < 3) vrate++;
       rotCnt = 0;
       oldClock = v.clock;
     }

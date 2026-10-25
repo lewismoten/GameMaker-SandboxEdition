@@ -146,7 +146,7 @@ const TAGLINES = [
 ];
 
 /** Who uploaded it: the SysOp his own Sandbox Software games, callers the rest. */
-export function uploader(g: CatalogEntry): string {
+function uploader(g: CatalogEntry): string {
   if (isSofaFile(g)) return SOFA_UPLOADER;
   return g.original ? SYSOP_HANDLE : pick(['MONSTER MASH', 'SAND CASTLE'], g.id);
 }

@@ -27,7 +27,7 @@ function timeText(sec: number): string {
 /** The rate for a progress line: "1650 cps" (or "no wait" when unlimited); `share`: how much of the line the protocol gets. */
 export const cpsText = (share = 1) => (Number.isFinite(cps('file')) ? `${Math.round(cps('file') * share)} cps` : 'no wait');
 
-export interface Progress {
+interface Progress {
   /** Where it stops short, as a fraction of the file (an upload the phone cuts off). */
   stopAt?: number;
   /** Ctrl-X aborts too (uploads). */

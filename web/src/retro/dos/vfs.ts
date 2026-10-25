@@ -43,7 +43,7 @@ export type ProgramRef =
   | { kind: 'offline' }
   | { kind: 'batch'; lines: string[] };
 
-export interface Drive {
+interface Drive {
   letter: string;
   label: string;
   /** Free space for DIR. */

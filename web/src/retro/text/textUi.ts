@@ -93,66 +93,6 @@ export async function errorBox(ui: Ui, l1: string, l2: string): Promise<string> 
   return k.key.length === 1 ? k.key.toUpperCase() : k.key;
 }
 
-/**
- * getfname: the question box with the file name being typed, and the file list
- * box below it. Returns the chosen name, or null for Esc.
- */
-export async function getFileName(ui: Ui, x: number, y: number, question: string, names: string[], start = ''): Promise<string | null> {
-  const s = ui.screen;
-  const lenq = question.length + 2;
-  const maxa = Math.min(30, 76 - lenq - x);
-  const savedQ = s.window(x, y, lenq + maxa + 1, 1, MENUATTR, SHADATTR);
-  const sorted = [...names].sort();
-  const widf = Math.max(1, Math.min(21 - y, sorted.length));
-  const xf = x + lenq;
-  const savedF = sorted.length ? s.window(xf - 1, y + 2, 15, widf, MENUATTR, SHADATTR) : undefined;
-  let answer = start;
-  let num = 0;
-  let top = 0;
-  const draw = () => {
-    s.write(x + 1, y, attr(14, 1), question);
-    s.write(x + lenq, y, attr(15, 1), answer.padEnd(maxa).slice(0, maxa));
-    s.cursorX = Math.min(79, x + lenq + answer.length);
-    s.cursorY = y;
-    if (!sorted.length) return;
-    for (let l = 0; l < widf; l++) {
-      const name = sorted[top + l] ?? '';
-      s.write(xf - 1, y + 2 + l, attr(11, 1), ` ${name.padEnd(13)} `);
-    }
-    s.paint(xf - 1, y + 2 + (num - top), xf + 13, y + 2 + (num - top), CURATTR);
-  };
-  s.cursorVisible = true;
-  try {
-    for (;;) {
-      draw();
-      const k = await ui.keys.next();
-      if (k.key === 'Escape') return null;
-      if (k.key === 'Enter') {
-        const pick = answer.trim().toUpperCase() || sorted[num];
-        if (!pick) return null;
-        if (sorted.includes(pick)) return pick;
-        const r = await errorBox(ui, 'Sorry, the file does not exist!', '(R)eenter name (E)xit');
-        if (r === 'E') return null;
-        continue;
-      }
-      if (k.key === 'ArrowDown' && num < sorted.length - 1) {
-        num++;
-        if (num > top + widf - 1) top++;
-        answer = sorted[num];
-      } else if (k.key === 'ArrowUp' && num > 0) {
-        num--;
-        if (num < top) top--;
-        answer = sorted[num];
-      } else if (k.key === 'Backspace') answer = answer.slice(0, -1);
-      else if (k.key.length === 1 && answer.length < maxa) answer += k.key.toUpperCase();
-    }
-  } finally {
-    s.cursorVisible = false;
-    if (savedF) s.restore(savedF);
-    s.restore(savedQ);
-  }
-}
-
 /** DisplayHelpFile: .HLP files are raw 80x25 text screens (character, attribute pairs). */
 export async function showHelpScreen(ui: Ui, bytes: Uint8Array): Promise<void> {
   const before = ui.screen.snapshot();

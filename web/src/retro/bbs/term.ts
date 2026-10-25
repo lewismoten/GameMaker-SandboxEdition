@@ -332,7 +332,7 @@ export class Term {
 }
 
 /** Visible width of text with |XX color codes. */
-export const width = (text: string) => text.replace(/\|\d\d/g, '').length;
+const width = (text: string) => text.replace(/\|\d\d/g, '').length;
 
 /** ╔═══╡ Title ╞═══╗ across the screen, in a frame color (pipe code digits). */
 export function boxTop(title: string, frame = '06', text = '14'): string {
