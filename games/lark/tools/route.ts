@@ -666,8 +666,10 @@ export const smartHome: Step = async (bot) => {
   if (bot.sim.ended !== 'won') throw new Error('opening time: the game did not end');
 };
 
-export async function playThrough(sim: GameSim, ids: Ids): Promise<Bot> {
+/** Plays it all; `keepTo` (kit/walkPaths.ts keepToPaths) keeps the bot to the roads and walks. */
+export async function playThrough(sim: GameSim, ids: Ids, keepTo?: Bot['keepTo']): Promise<Bot> {
   const bot = new Bot(sim);
+  bot.keepTo = keepTo;
   try {
     for (const step of [
       library,

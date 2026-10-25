@@ -19,6 +19,8 @@ import { buildScreens } from './src/screens/screens';
 import { TITLE, readme } from './src/screens/text';
 import * as M from './src/sound/music';
 import { buildSounds } from './src/sound/sounds';
+import { walkPaths } from './src/walkPaths';
+import { writeWalkPaths } from '../kit/walkPaths';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -78,4 +80,6 @@ for (const [name, bytes] of disk.files)
   if (name.endsWith('.lst'))
     for (const e of parseSlideList(bytes)) if (!disk.files.has(e.name)) throw new Error(`${name} names ${e.name}, which is not on the disk`);
 disk.write();
+// the roads and walks the walkthrough's bot keeps to (not on the disk)
+writeWalkPaths('lark', walkPaths(all.sets));
 console.log(`${all.game.scenes.length} scenes`);

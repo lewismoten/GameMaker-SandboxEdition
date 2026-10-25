@@ -1,7 +1,7 @@
 // The play-testing bot. From above (the library, the road, the square) Joe walks a block a tap,
-// so the bot finds a way across the grid (breadth first, around anything solid) and taps it out
-// a block at a time; a gate is a cell it may walk into, and a talk or a door is a link it walks
-// onto. From the side (the clock tower) it is kit/hopBot.ts: walk to a column, hop, steer, land,
+// so the bot finds a way across the grid (the cheapest, around anything solid, along the roads
+// and walks when keepTo is set) and taps it out a block at a time; a gate is a cell it may walk
+// into, and a talk or a door is a link it walks onto. From the side (the clock tower) it is kit/hopBot.ts: walk to a column, hop, steer, land,
 // and wait for a bridge.
 import { HopBot, type Result } from '../../kit/hopBot';
 import { NOSCENE } from '../../../web/src/formats/game';
@@ -48,20 +48,33 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
     return this.settle();
   }
 
-  /** The way from Joe's cell to (x, y), around solid cells (the goal itself may be solid: a gate). */
+  /** The extra cost of a step onto a cell off the roads and walks (kit/walkPaths.ts keepToPaths); unset, every way costs the same. */
+  keepTo?: (x: number, y: number) => number;
+
+  /**
+   * The cheapest way from Joe's cell to (x, y), around solid cells (the goal itself may be solid:
+   * a gate), along the roads and walks when keepTo is set. Ties go to the cell found first, so
+   * with every step costing the same it is the breadth-first way.
+   */
   route(x: number, y: number, through: (x: number, y: number) => boolean = () => false): Dir[] | undefined {
     const start = this.cell;
     const key = (a: number, b: number) => b * MLEN + a;
     // every link cell but the goal is somewhere not to step: it would leave the scene
     const links = new Set(this.sim.game.scenes[this.sim.scene].links.filter((l) => l.toScene !== NOSCENE).map((l) => key(l.from.x, l.from.y)));
     const prev = new Map<number, [number, Dir]>();
-    const seen = new Set([key(start.x, start.y)]);
-    const queue = [start];
-    while (queue.length) {
-      const c = queue.shift()!;
+    const dist = new Map([[key(start.x, start.y), 0]]);
+    const done = new Set<number>();
+    const open = [start];
+    while (open.length) {
+      let bi = 0;
+      for (let i = 1; i < open.length; i++) if (dist.get(key(open[i].x, open[i].y))! < dist.get(key(open[bi].x, open[bi].y))!) bi = i;
+      const c = open.splice(bi, 1)[0];
+      const ck = key(c.x, c.y);
+      if (done.has(ck)) continue;
+      done.add(ck);
       if (c.x === x && c.y === y) {
         const out: Dir[] = [];
-        let k = key(c.x, c.y);
+        let k = ck;
         while (prev.has(k)) {
           const [from, d] = prev.get(k)!;
           out.unshift(d);
@@ -73,12 +86,14 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
         const nx = c.x + dx;
         const ny = c.y + dy;
         const k = key(nx, ny);
-        if (seen.has(k)) continue;
+        if (done.has(k)) continue;
         const goal = nx === x && ny === y;
         if (!goal && ((this.sim.solidAt(nx, ny) && !through(nx, ny)) || links.has(k))) continue;
-        seen.add(k);
-        prev.set(k, [key(c.x, c.y), d]);
-        queue.push({ x: nx, y: ny });
+        const nd = dist.get(ck)! + 1 + (this.keepTo?.(nx, ny) ?? 0);
+        if (nd >= (dist.get(k) ?? Infinity)) continue;
+        dist.set(k, nd);
+        prev.set(k, [ck, d]);
+        open.push({ x: nx, y: ny });
       }
     }
     return undefined;

@@ -3,6 +3,7 @@
 import { compile } from '../src/game';
 import { playThrough, type Ids } from './route';
 import { GameSim } from './sim';
+import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 
 /** The timed blocks the route waits for: the escapement's bridges and the comb's teeth. */
 export function bridgeIds(): Ids {
@@ -18,7 +19,8 @@ export function bridgeIds(): Ids {
 
 export async function play(seed = 1) {
   const sim = new GameSim(undefined, seed);
-  const bot = await playThrough(sim, bridgeIds());
+  // along the roads and walks, as a person walks (walkPaths.json, written by the build)
+  const bot = await playThrough(sim, bridgeIds(), keepToPaths(sim, readWalkPaths('lark')));
   if (process.env.BOT_LOG) console.log(bot.log.join('\n'));
   return { sim, bot };
 }
