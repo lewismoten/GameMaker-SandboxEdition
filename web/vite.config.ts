@@ -233,10 +233,9 @@ function playChunks(): Rollup.GetManualChunk {
   return (id, { getModuleInfo }) => {
     closures ??= pages.map(([, entries]) => closure(entries, getModuleInfo));
     if (/\.css($|\?)/.test(id)) return undefined; // styles stay with the code that imports them
-    // parts always loaded together, in one file each rather than one per module: the shelf's
-    // painted box covers (not a secret game's, covers/extra.ts, which stays apart) and
-    // Game-Maker's eight designers (loaded together when Game-Maker starts on the desk's PC)
-    if (/\/src\/desk\/boxes\/covers\/(?!extra\.|index\.|paint\.)[\w-]+\.ts$/.test(id)) return 'covers';
+    // parts always loaded together, in one file rather than one per module: Game-Maker's eight
+    // designers (loaded together when Game-Maker starts on the desk's PC). The box covers stay
+    // one file each, loaded only for a box that shows its front (desk/boxes/shelf.ts).
     if (/\/src\/vga\/(?!shared\/)/.test(id)) return 'designers';
     // the tin hearts' list and saves: the player reads them, but so do pages that never play
     // (achievements counting hearts at start-up, the desk's trophy), which shouldn't fetch the engine for them

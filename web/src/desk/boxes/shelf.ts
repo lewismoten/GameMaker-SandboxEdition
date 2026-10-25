@@ -92,16 +92,27 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   let front = remembered() ?? games[0].id;
   if (!games.some((g) => g.id === front)) front = games[0].id;
 
-  // Boxes spine out are drawn without their screenshots (no game files to download);
-  // a box gets them when it is turned face out or taken down.
+  // Boxes spine out are drawn without their cover painting or screenshots (no cover code or
+  // game files to load); a box gets them when it is turned face out or taken down, its cover
+  // first (quick), then the screenshots.
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
+  const whole = new Set<string>();
   const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
     let p = complete.get(g.id);
     if (!p) {
+      void drawBox(g, { shots: false }).then(
+        (f) => {
+          if (!f || whole.has(g.id)) return;
+          faces.set(g.id, f);
+          slots.get(g.id)?.replaceChildren(boxModel(f));
+        },
+        () => undefined,
+      );
       p = drawBox(g)
         .catch(() => undefined)
         .then((f) => {
           if (!f) return faces.get(g.id);
+          whole.add(g.id);
           faces.set(g.id, f);
           uvGame(f, g);
           slots.get(g.id)?.replaceChildren(boxModel(f));
@@ -165,7 +176,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
 
   // draw the boxes one by one, so the first ones appear while the rest are drawn
   for (const [i, g] of games.entries()) {
-    const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false }).catch(() => undefined));
+    const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false, cover: false }).catch(() => undefined));
     if (!f) continue;
     faces.set(g.id, f);
     uvGame(f, g);

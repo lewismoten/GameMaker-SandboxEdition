@@ -113,10 +113,11 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
 
 /**
  * Draws all six sides. With `shots` false the screenshots are left blank, so nothing of
- * the game but its .gam is downloaded (the shelf shows most boxes spine out).
+ * the game but its .gam is downloaded (the shelf shows most boxes spine out); with `cover`
+ * false the cover painting is left off too, so its code isn't loaded for a box seen edge on.
  */
-export async function drawBox(entry: CatalogEntry, { shots = true } = {}): Promise<BoxFaces | undefined> {
-  const sides = await paintBox(entry, shots, false);
+export async function drawBox(entry: CatalogEntry, { shots = true, cover = true } = {}): Promise<BoxFaces | undefined> {
+  const sides = await paintBox(entry, shots, false, cover);
   if (!sides) return undefined;
   const url = Object.fromEntries(Object.entries(sides).map(([k, c]) => [k, c.toDataURL()]));
   return url as unknown as BoxFaces;
@@ -134,14 +135,14 @@ export function drawBoxLetters(entry: CatalogEntry): Promise<BoxSides | undefine
 type BoxSides = Record<keyof BoxFaces, HTMLCanvasElement>;
 
 /** The six sides on canvases; with `letters`, only what is lettered (drawBoxLetters). */
-async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolean): Promise<BoxSides | undefined> {
+async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolean, cover = true): Promise<BoxSides | undefined> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
   const [shots, info, art] = await Promise.all([
     boxShots(entry, box, withShots),
     boxInfo(entry),
-    letters ? undefined : coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44),
+    letters || !cover ? undefined : coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44),
   ]);
   // what is painted under the lettering: none of it in `letters`
   const ground = (ctx: CanvasRenderingContext2D, w: number, h: number) => !letters && background(ctx, box, w, h);
