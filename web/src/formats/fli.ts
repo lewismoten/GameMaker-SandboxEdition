@@ -247,55 +247,131 @@ function brun(px: Uint8Array, w: number, h: number): number[] {
 }
 
 /**
- * LC (delta) chunk: only the lines and spans that changed since the previous frame.
- * Returns undefined when nothing changed, or when a full BRUN frame would be smaller.
+ * The most bytes a chunk (with its 6-byte header) may take. PLAYGAME reads an .FLI through
+ * FileRead (code/DRV/FILECLSS.CPP): one buffer of up to 0xFFF0 bytes, 2 bytes smaller each
+ * time `new` fails, and FrameHeader::View (code/Image/FLI/FLI.CPP) hands each chunk to its
+ * decoder only when the whole chunk fits in that buffer (FileRead::Peek). With a game loaded
+ * through XFERPLAY there is less memory, and a 63K chunk drew garbage where a 32.7K one
+ * played. 16,000 bytes is under half of that 32.7K, so it fits with a quarter of the 64K
+ * buffer PLAYGAME asks for; splitting a full 64,000-pixel frame into bands this size costs a
+ * few dozen bytes of headers.
  */
-function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number, runs = false): number[] | undefined {
+export const FLI_CHUNK_MAX = 16000;
+
+/**
+ * The most packets on one LC line. DoLineCompress reads the count as a (signed) char, so 128
+ * or more is a negative count, a loop of 65,000 packets in PLAYGAME.
+ */
+const LC_LINE_PACKETS = 127;
+
+/**
+ * One LC line: its packet count, then its packets (see lcChunk), or undefined when it needs
+ * more packets than PLAYGAME reads. With `runs`, a line that needs too many packets is tried
+ * again without them.
+ */
+function lcLine(prev: Uint8Array, px: Uint8Array, y: number, w: number, runs: boolean): number[] | undefined {
+  const row = y * w;
+  const packets: number[] = [];
+  let count = 0;
+  let x = 0;
+  let lastEnd = 0;
+  while (x < w) {
+    if (prev[row + x] === px[row + x]) {
+      x++;
+      continue;
+    }
+    // a span of changed pixels (a short run of unchanged ones inside it is kept)
+    let end = x;
+    while (end < w && end - x < 127 && (prev[row + end] !== px[row + end] || (end + 1 < w && prev[row + end + 1] !== px[row + end + 1]))) end++;
+    let skip = x - lastEnd;
+    while (skip > 255) {
+      // a skip longer than 255: an empty literal packet carries part of it
+      packets.push(255, 0);
+      count++;
+      skip -= 255;
+    }
+    const n = end - x;
+    const allSame = px.subarray(row + x, row + end).every((v) => v === px[row + x]);
+    if (runs && !allSame) count += packRuns(px, row + x, row + end, skip, packets);
+    else {
+      if (allSame && n > 2) packets.push(skip, (256 - n) & 255, px[row + x]);
+      else packets.push(skip, n, ...px.subarray(row + x, row + end));
+      count++;
+    }
+    lastEnd = end;
+    x = end;
+  }
+  if (count > LC_LINE_PACKETS) return runs ? lcLine(prev, px, y, w, false) : undefined;
+  return [count, ...packets];
+}
+
+/** The first and last lines that differ, or undefined when the pictures are the same. */
+function changedLines(prev: Uint8Array, px: Uint8Array, w: number, h: number): [number, number] | undefined {
   let first = 0;
   while (first < h && rowSame(prev, px, first, w)) first++;
-  if (first === h) return [0, 0, 0, 0]; // an empty change: same picture
+  if (first === h) return undefined;
   let last = h - 1;
   while (last > first && rowSame(prev, px, last, w)) last--;
-  // LC header: first changed line, then how many lines follow (unchanged lines inside the
-  // range get a packet count of 0).
-  const out = [first & 255, first >> 8, (last - first + 1) & 255, (last - first + 1) >> 8];
+  return [first, last];
+}
+
+/** An LC header: the first line it changes, then how many lines follow. */
+const lcHeader = (first: number, lines: number): number[] => [first & 255, first >> 8, lines & 255, lines >> 8];
+
+/**
+ * LC (delta) chunk: only the lines and spans that changed since the previous frame.
+ * Returns undefined when a line needs more packets than PLAYGAME reads (use BRUN instead).
+ */
+function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number, runs = false): number[] | undefined {
+  const range = changedLines(prev, px, w, h);
+  if (!range) return [0, 0, 0, 0]; // an empty change: same picture
+  const [first, last] = range;
+  // Unchanged lines inside the range get a packet count of 0.
+  const out = lcHeader(first, last - first + 1);
   for (let y = first; y <= last; y++) {
-    const row = y * w;
-    const packets: number[] = [];
-    let count = 0;
-    let x = 0;
-    let lastEnd = 0;
-    while (x < w) {
-      if (prev[row + x] === px[row + x]) {
-        x++;
-        continue;
-      }
-      // a span of changed pixels (a short run of unchanged ones inside it is kept)
-      let end = x;
-      while (end < w && end - x < 127 && (prev[row + end] !== px[row + end] || (end + 1 < w && prev[row + end + 1] !== px[row + end + 1]))) end++;
-      let skip = x - lastEnd;
-      while (skip > 255) {
-        // a skip longer than 255: an empty literal packet carries part of it
-        packets.push(255, 0);
-        count++;
-        skip -= 255;
-      }
-      const n = end - x;
-      const allSame = px.subarray(row + x, row + end).every((v) => v === px[row + x]);
-      if (runs && !allSame) count += packRuns(px, row + x, row + end, skip, packets);
-      else {
-        if (allSame && n > 2) packets.push(skip, (256 - n) & 255, px[row + x]);
-        else packets.push(skip, n, ...px.subarray(row + x, row + end));
-        count++;
-      }
-      lastEnd = end;
-      x = end;
-    }
-    // The per-line packet count is one byte; more packets means use BRUN instead.
-    if (count > 255) return undefined;
-    out.push(count, ...packets);
+    const line = lcLine(prev, px, y, w, runs);
+    if (!line) return undefined;
+    out.push(...line);
   }
   return out;
+}
+
+/**
+ * A frame too big for one chunk, as LC chunks of bands of lines, each at most `max` bytes with
+ * its header (and pad byte). Each band names its own first line, so PLAYGAME applies them in
+ * turn like one LC chunk. Each line takes whichever of plain or run packets is shorter.
+ */
+function lineBands(prev: Uint8Array, px: Uint8Array, w: number, h: number, max: number): number[][] {
+  const range = changedLines(prev, px, w, h);
+  if (!range) return [fliChunk(12, [0, 0, 0, 0])];
+  const room = max - 6 - 1 - 4; // chunk header, a pad byte, LC header
+  const chunks: number[][] = [];
+  let band: number[][] = [];
+  let size = 0;
+  let start = 0;
+  const close = () => {
+    // trailing unchanged lines (a 0 packet count each) are left off
+    while (band.length && band[band.length - 1].length === 1 && band[band.length - 1][0] === 0) band.pop();
+    if (band.length) chunks.push(fliChunk(12, [...lcHeader(start, band.length), ...band.flat()]));
+    band = [];
+    size = 0;
+  };
+  for (let y = range[0]; y <= range[1]; y++) {
+    const same = rowSame(prev, px, y, w);
+    const plain = same ? [0] : lcLine(prev, px, y, w, false);
+    const runs = same ? undefined : lcLine(prev, px, y, w, true);
+    const line = runs && (!plain || runs.length < plain.length) ? runs : plain;
+    if (!line) throw new Error(`FLI line ${y} needs more than ${LC_LINE_PACKETS} packets`);
+    if (size + line.length > room) close();
+    if (!band.length) {
+      if (same) continue; // a band starts on a changed line
+      start = y;
+    }
+    band.push(line);
+    size += line.length;
+  }
+  close();
+  return chunks;
 }
 
 /** Splits px[from, to) into run packets (3 or more of a color) and literal ones; returns how many. */
@@ -345,9 +421,10 @@ function fliChunk(type: number, data: number[]): number[] {
 }
 
 /**
- * Writes an Autodesk Animator .FLI (Game-Maker shows 320x200): every frame run-length
- * coded, the 6-bit palette in the first frame, and a closing "ring" frame that leads back
- * to the start. `speed` is the delay after each frame in 1/70 s.
+ * Writes an Autodesk Animator .FLI (Game-Maker shows 320x200): each frame run-length coded
+ * or as the lines that changed, the 6-bit palette in the first frame, and a closing "ring"
+ * frame that leads back to the start. No chunk is bigger than FLI_CHUNK_MAX: a bigger frame
+ * is split into bands of lines. `speed` is the delay after each frame in 1/70 s.
  */
 export function encodeFli(
   frames: Uint8Array[],
@@ -377,12 +454,38 @@ export function encodeFli(
     const delta = prev ? lineDelta(prev, px, w, h, opts.runs) : undefined;
     // BRUN is only built to compare against when the delta is 64000 bytes (a raw frame) or more.
     const full = delta && delta.length < 64000 ? undefined : brun(px, w, h);
-    if (delta && (!full || delta.length < full.length)) chunks.push(fliChunk(12, delta));
-    else chunks.push(fliChunk(15, full ?? brun(px, w, h)));
+    const chunk = delta && (!full || delta.length < full.length) ? fliChunk(12, delta) : fliChunk(15, full ?? brun(px, w, h));
+    if (chunk.length <= FLI_CHUNK_MAX) chunks.push(chunk);
+    else {
+      // Too big for PLAYGAME's buffer: bands of LC lines on the frame before, or on a black
+      // screen (an AllBlack chunk first) when that is smaller.
+      const onBlack = [fliChunk(13, []), ...lineBands(new Uint8Array(w * h), px, w, h, FLI_CHUNK_MAX)];
+      const onPrev = prev ? lineBands(prev, px, w, h, FLI_CHUNK_MAX) : undefined;
+      const bytes = (cs: number[][]) => cs.reduce((n, c) => n + c.length, 0);
+      chunks.push(...(onPrev && bytes(onPrev) <= bytes(onBlack) ? onPrev : onBlack));
+    }
     const body = chunks.flat();
     // Frame header: size u32, magic 0xF1FA, chunk count u16, 8 reserved bytes.
     const size = body.length + 16;
-    return [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, 0xfa, 0xf1, chunks.length, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...body];
+    return [
+      size & 255,
+      (size >> 8) & 255,
+      (size >> 16) & 255,
+      size >>> 24,
+      0xfa,
+      0xf1,
+      chunks.length & 255,
+      chunks.length >> 8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      ...body,
+    ];
   });
   const total = 128 + records.reduce((n, r) => n + r.length, 0);
   const out = new Uint8Array(total);
