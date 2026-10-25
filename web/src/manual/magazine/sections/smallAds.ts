@@ -2,6 +2,7 @@
 // a used-games swap meet, The Sofa BBS, mouse pads, the Clown Club's family fun night, the
 // Sandbox hint books and blank disks. The companies, prices and numbers are part of the story
 // (phone numbers 555-01xx, mail to P.O. Box 000); every button opens the real thing here, free.
+import '../sofaAd.css';
 import { art, big, button, card, grid, halfAd, list, p, piece } from '../blocks';
 import type { HalfAd } from '../types';
 import { SOFA_PHONE } from './bbsListings';
@@ -34,7 +35,7 @@ export const SWAP_MEET: HalfAd = halfAd(
   },
 );
 
-/** The Sofa, the Bard of Bizarre's board. */
+/** The Sofa, the Bard of Bizarre's board, its frame a cozy living room with a sofa (sofaAd.css). */
 export const SOFA_BBS: HalfAd = halfAd(
   'The Sofa BBS',
   'PULL UP A CUSHION ON THE SOFA',
