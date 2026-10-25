@@ -23,8 +23,8 @@ const api = (q: string) =>
 
 /** Not games made with Game-Maker: its own tools and demo. */
 const TOOLS = new Set(['game-maker_graphics-tools', 'game-maker_demo']);
-/** Left off a family magazine's page; refetching keeps it off. */
-const OMIT = new Set(['game-maker_shorty']);
+/** Left off a family magazine's page (crude or adult titles); refetching keeps them off. */
+const OMIT = new Set(['game-maker_shorty', 'game-maker_preggers']);
 /** Versions the title rules can't tell are one game: identifier → the identifier it is a version of. */
 const SAME = new Map([
   ['game-maker_dbz2_remix', 'game-maker_dragon-ball-z-2'],
