@@ -5,9 +5,9 @@
 // down to the desk with Region Capture where the browser has it). A recording can wait
 // for the next game to start and stop by itself when the PC is back at the DOS prompt.
 import './capture.css';
-import { h, toast } from '../../editor/core/ui';
+import { download, h, toast } from '../../editor/core/ui';
 import type { Computer } from '../../retro/computer';
-import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
+import { drawText, drawVga, pngOf, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
 import type { LiveRecorder } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';
 import { unlockAchievement } from '../../achievements';
@@ -158,7 +158,7 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     const kind = drawNow(pc, scratch);
     if (kind === 'none') return toast('Today’s editors aren’t on the VGA screen: nothing to capture here.');
     const bytes = await pngOf(scratch);
-    saveBlob(`pc-screen-${stamp()}.png`, new Blob([bytes as BlobPart], { type: 'image/png' }));
+    download(`pc-screen-${stamp()}.png`, bytes, 'image/png');
     el.classList.add('flash');
     setTimeout(() => el.classList.remove('flash'), 300);
   }
@@ -390,7 +390,7 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     const blob = await r.recorder.stop();
     r.mix.dispose();
     if (!blob.size) return toast('The recording came out empty: nothing was shown while it ran.', 'error');
-    saveBlob(`${r.name}-${stamp()}.${r.recorder.ext}`, blob);
+    download(`${r.name}-${stamp()}.${r.recorder.ext}`, blob);
     unlockAchievement('record-video');
     const fmt = r.recorder.ext === 'mp4' ? 'MP4' : 'WebM, as this browser can’t make MP4';
     toast(`Saved the recording (${fmt}, ${(blob.size / 1e6).toFixed(1)} MB).`);

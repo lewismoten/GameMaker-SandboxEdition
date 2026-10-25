@@ -6,8 +6,7 @@
 // and chapter markers) right under the screen. While it is open the page's other demos stop
 // (media/mediaFocus.ts).
 import './walkthrough.css';
-import { h, modal, toast } from '../editor/core/ui';
-import { saveBlob } from '../media/screenCapture';
+import { download, h, modal, toast } from '../editor/core/ui';
 import { fetchSiteFile, type CatalogEntry, type GameFiles } from '../project/files';
 import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '../audio/cmfPlayer';
@@ -441,7 +440,7 @@ async function watch(
             : 'Making the video: getting to the start…';
         },
       });
-      saveBlob(name, res.blob);
+      download(name, res.blob);
       unlockAchievement('download-mp4');
       status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {

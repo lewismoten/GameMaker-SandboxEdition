@@ -3,7 +3,7 @@
 // gets a strip cropped to its pictures, stacked down a Letter or Legal page with cut lines
 // and alignment marks; a 3D mug shows where the front and back land. Printed at actual size
 // (the page is an SVG in real inches) or saved as a 300 dpi PNG. The setup is remembered.
-import { h } from '../../editor/core/ui';
+import { download, h } from '../../editor/core/ui';
 import { MUG_DESIGNS, designCanvas, loadDesigns, type MugDesignId } from './mugArt';
 import { pageLayout, type PageLayout, type StripInput } from './mugLayout';
 import { MUG_SIZES, PAPERS, type MugSize } from './mugSizes';
@@ -32,14 +32,6 @@ function planPage(setup: PageSetup): PageLayout {
 }
 
 const designsOf = (setup: PageSetup): SideDesigns[] => setup.mugs.map((m) => ({ front: m.front || undefined, back: m.back || undefined }));
-
-function download(blob: Blob, name: string): void {
-  const a = h('a', { href: URL.createObjectURL(blob), download: name });
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-}
 
 /** A choice of picture: blank, a BBS design or a game's. */
 function designSelect(label: string, value: MugDesignId | '', change: (v: MugDesignId | '') => void): HTMLLabelElement {
@@ -293,7 +285,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       try {
         await loadDesigns();
         const page = planPage(setup);
-        download(await sheetPng(page, designsOf(setup), setup.leftHanded), `sandbox-mugs-${setup.paper}-${page.strips.length}.png`);
+        download(`sandbox-mugs-${setup.paper}-${page.strips.length}.png`, await sheetPng(page, designsOf(setup), setup.leftHanded));
       } finally {
         pngBtn.disabled = false;
       }

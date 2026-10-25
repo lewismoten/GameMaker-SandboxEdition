@@ -6,11 +6,10 @@
 // a finding closes the report and shows it on the map; the whole game's report (Before You
 // Upload) lists every map's findings with an accept button and a link to each map.
 import './checkReport.css';
-import { h, clear, modal, toast } from '../core/ui';
+import { download, h, clear, modal, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import { at, CHECKS, kindOf, type Finding, type Kind } from '../check/findings';
 import { acceptedFindings, findingKey, setAccepted } from '../check/accepted';
-import { saveBlob } from '../../media/screenCapture';
 import { guideLink } from './guideLink';
 import { cellOf, csvName, findingRows, groupRows, guideSection, KIND_LABEL, KIND_PLURAL, KINDS, toCsv, type FindingRow } from './checkRows';
 
@@ -128,10 +127,10 @@ export async function openReport(src: ReportSource): Promise<void> {
     );
   }
 
-  const download = () => {
+  const downloadCsv = () => {
     const all = rows();
     if (!all.length) return toast('There are no findings to put in the file.');
-    saveBlob(csvName(project.name, src.map), new Blob([toCsv(all, src.map)], { type: 'text/csv;charset=utf-8' }));
+    download(csvName(project.name, src.map), toCsv(all, src.map), 'text/csv;charset=utf-8');
   };
 
   // the panel's items: going to a finding closes the report; a fix or an accept lists them again
@@ -158,7 +157,7 @@ export async function openReport(src: ReportSource): Promise<void> {
       h(
         'div',
         { class: 'toolbar' },
-        h('button', { type: 'button', onclick: download, title: 'One row a finding, to sort and tick off in a spreadsheet' }, '⬇ Download CSV checklist'),
+        h('button', { type: 'button', onclick: downloadCsv, title: 'One row a finding, to sort and tick off in a spreadsheet' }, '⬇ Download CSV checklist'),
         h(
           'button',
           { type: 'button', onclick: () => printChecklist(project.name, src.map, rows()), title: 'A page with a box to tick by each finding' },

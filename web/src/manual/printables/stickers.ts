@@ -6,7 +6,7 @@
 // bleed and an SVG of cut lines). Each kind is drawn in stickerPaint.ts, laid out in stickerArt.ts.
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './stickers.css';
-import { h } from '../../editor/core/ui';
+import { download, h } from '../../editor/core/ui';
 import { portrait, sheet, spriteArt, splitTitle, type PrintContext, type Sheet } from './kit';
 import { BLEED, CUT_H, CUT_W, cutSvg, layoutStickers, pngWithDpi, sheetBounds, type Placed } from './stickerArt';
 import { outline } from './stickerGeom';
@@ -254,14 +254,6 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
   });
 }
 
-function download(blob: Blob, name: string): void {
-  const a = h('a', { href: URL.createObjectURL(blob), download: name });
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-}
-
 const inches = ([w, hh]: [number, number]) => `${w.toFixed(2)} × ${hh.toFixed(2)} in`;
 
 /** On screen: the sheets, plus a panel with the Print Then Cut files and how to use them. */
@@ -272,7 +264,7 @@ export function stickerScreen(sheets: Sheet[]): HTMLElement {
     pngBtn.addEventListener('click', async () => {
       pngBtn.disabled = true;
       try {
-        download(await f.png(), `${f.name}-print.png`);
+        download(`${f.name}-print.png`, await f.png());
       } finally {
         pngBtn.disabled = false;
       }
@@ -282,7 +274,7 @@ export function stickerScreen(sheets: Sheet[]): HTMLElement {
       { class: 'stk-cut-row' },
       files.length > 1 ? h('b', null, `Sheet ${f.page}`) : null,
       pngBtn,
-      h('button', { type: 'button', onclick: () => download(new Blob([f.svg()], { type: 'image/svg+xml' }), `${f.name}-cut.svg`) }, '⬇ Cut lines (SVG)'),
+      h('button', { type: 'button', onclick: () => download(`${f.name}-cut.svg`, f.svg(), 'image/svg+xml') }, '⬇ Cut lines (SVG)'),
       h('small', null, `picture ${inches(f.printSize)} · cut lines ${inches(f.cutSize)}`),
     );
   });
