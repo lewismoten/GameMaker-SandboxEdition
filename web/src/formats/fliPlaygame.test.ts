@@ -4,6 +4,8 @@
 // file through one buffer of up to 0xFFF0 bytes, shrunk by 2 while `new` fails, and Peek
 // hands out a chunk only when the whole chunk fits in it; with less memory free (a game
 // loaded through XFERPLAY) a big chunk comes back short and the decoders draw garbage.
+// The screen is VGAScrn (code/DRV/VGAOBJ.ASM), whose table has only Rep1Col, RepCols and the
+// palette routines that FLI.CPP uses; its BoxFill is 0, so an AllBlack chunk is a fault here.
 // These tests play every game's .FLI files through that port with a small buffer, check
 // that each frame matches what fli.ts draws, and check encodeFli's chunk size limit.
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
@@ -201,8 +203,10 @@ function playLikeDos(file: Uint8Array, memory: number): DosPlay {
             throw new Error(`frame ${f}: ${(e as Error).message}`);
           }
           skip((size - 6) >>> 0);
-        } else if (type === 13) screen.fill(0);
-        else if (type === 16) {
+        } else if (type === 13) {
+          // AllBlack calls Vid->BoxFill, and VGAScrn (code/DRV/VGAOBJ.ASM) leaves BoxFill 0
+          throw new Error(`frame ${f}: an AllBlack chunk (VGAScrn's BoxFill is a null pointer)`);
+        } else if (type === 16) {
           const at = peek(64000);
           if (at === undefined) throw new Error(`frame ${f}: a COPY chunk does not fit a ${blen}-byte buffer`);
           screen.set(buf.subarray(at, at + 64000));

@@ -457,12 +457,20 @@ export function encodeFli(
     const chunk = delta && (!full || delta.length < full.length) ? fliChunk(12, delta) : fliChunk(15, full ?? brun(px, w, h));
     if (chunk.length <= FLI_CHUNK_MAX) chunks.push(chunk);
     else {
-      // Too big for PLAYGAME's buffer: bands of LC lines on the frame before, or on a black
-      // screen (an AllBlack chunk first) when that is smaller.
-      const onBlack = [fliChunk(13, []), ...lineBands(new Uint8Array(w * h), px, w, h, FLI_CHUNK_MAX)];
+      // Too big for PLAYGAME's buffer: bands of LC lines on the frame before, or bands that
+      // draw every pixel when that is smaller (or on frame 0). Never an AllBlack chunk (13):
+      // PLAYGAME's screen, VGAScrn in code/DRV/VGAOBJ.ASM, has no BoxFill (a null pointer),
+      // so FLI.CPP's AllBlack calls address 0.
+      const whole = lineBands(
+        px.map((v) => v ^ 1),
+        px,
+        w,
+        h,
+        FLI_CHUNK_MAX,
+      );
       const onPrev = prev ? lineBands(prev, px, w, h, FLI_CHUNK_MAX) : undefined;
       const bytes = (cs: number[][]) => cs.reduce((n, c) => n + c.length, 0);
-      chunks.push(...(onPrev && bytes(onPrev) <= bytes(onBlack) ? onPrev : onBlack));
+      chunks.push(...(onPrev && bytes(onPrev) <= bytes(whole) ? onPrev : whole));
     }
     const body = chunks.flat();
     // Frame header: size u32, magic 0xF1FA, chunk count u16, 8 reserved bytes.
