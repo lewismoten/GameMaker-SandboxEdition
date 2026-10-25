@@ -86,7 +86,7 @@ describe('the copy protection questions', () => {
   });
 
   it('accepts the word in any case', () => {
-    const q = QUESTIONS.find((x) => x.page === 18 && x.paragraph === 1 && x.word === 6)!;
+    const q = QUESTIONS.find((x) => x.page === 19 && x.paragraph === 1 && x.word === 6)!;
     expect(rightAnswer(q, 'red')).toBe(true);
     expect(rightAnswer(q, ' Red ')).toBe(true);
     expect(rightAnswer(q, 'RED,')).toBe(true);
