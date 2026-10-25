@@ -682,6 +682,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     // your own games live in the browser that made them: a link to one opens only there
     if (hashKey().startsWith('my:'))
       toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: its Download button saves it.');
+    // …and a link to a game the catalog doesn't list says so, rather than quietly showing another
+    else if (hashKey() && !catalogError) toast('That game isn’t in the catalog (the link may be old). Here are all the games.');
     showStart();
   }
   // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too
