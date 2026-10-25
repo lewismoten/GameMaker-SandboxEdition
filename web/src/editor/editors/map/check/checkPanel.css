@@ -10,6 +10,9 @@
   max-height: calc(var(--ws-vh, 100dvh) - 200px);
   overflow: auto;
   min-width: 0;
+  /* in the map's side column (a flex column that scrolls by itself) it keeps its height:
+     shrunk, it hid ▶ Run check below its description on the first open */
+  flex: none;
 }
 .lc-title {
   margin: 0;
