@@ -55,7 +55,7 @@ export const MASTERS: MagSection = {
       kind: 'article',
       tone: 'white',
       blocks: [
-        head('More tricks of the masters', { kicker: 'Design workshop', size: 's', level: 3 }),
+        head('More tricks of the masters', { kicker: 'Design workshop', size: 's', level: 2 }),
         cols(2, [
           p(
             '**One key, a whole arsenal.** *A-J’s Quest* puts four weapons on the Space bar: each is its own move, switched off until you pick that weapon up. One more Space move with no pictures just plays a voice saying you’ve got nothing to throw.',

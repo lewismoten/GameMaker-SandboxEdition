@@ -62,7 +62,7 @@ async function pages(ctx: MagContext): Promise<MagPage[]> {
 export const SHAREWARE_SHELF: MagSection = {
   id: 'shelf',
   title: 'The Shareware Shelf',
-  blurb: 'Every Game-Maker game we know of, A to Z, and the tricks their makers used',
+  blurb: 'Every Game-Maker game we know of, the tricks their makers used, and what players hate',
   dept: 'THE SHAREWARE SHELF',
   pages,
 };
