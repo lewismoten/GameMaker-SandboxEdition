@@ -4,14 +4,17 @@ import { catalogStale } from '../src/project/catalogWatch';
 
 describe('catalogStale', () => {
   it('waits until a list has been given out', () => {
-    expect(catalogStale(undefined, true)).toBe(false);
-    expect(catalogStale(undefined, false)).toBe(false);
+    expect(catalogStale(undefined, 1)).toBe(false);
+    expect(catalogStale(undefined, 0)).toBe(false);
   });
 
-  it('changes the listings only when the eggs say otherwise', () => {
-    expect(catalogStale(false, true)).toBe(true);
-    expect(catalogStale(true, false)).toBe(true);
-    expect(catalogStale(true, true)).toBe(false);
-    expect(catalogStale(false, false)).toBe(false);
+  it('changes the listings only when the eggs or the hearts say otherwise', () => {
+    expect(catalogStale(0, 1)).toBe(true);
+    expect(catalogStale(1, 0)).toBe(true);
+    expect(catalogStale(1, 1)).toBe(false);
+    expect(catalogStale(0, 0)).toBe(false);
+    // the hearts found as well as the eggs: the hearts' game shows now too
+    expect(catalogStale(1, 3)).toBe(true);
+    expect(catalogStale(2, 2)).toBe(false);
   });
 });
