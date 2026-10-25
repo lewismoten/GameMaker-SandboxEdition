@@ -20,6 +20,7 @@ import { gif } from '../snowbound/src/screens/scenery';
 import { renderRegion } from '../snowbound/src/art/render';
 import { buildPalette } from './src/art/pal';
 import { buildBlocks } from './src/blocks/blocks';
+import { writeWalkPaths } from '../kit/walkPaths';
 import { buildHero, buildMonsters } from './src/characters';
 import { LEVELS } from './src/levels/levels';
 import { ORIGIN } from './src/levels/maps';
@@ -201,4 +202,6 @@ disk.put(
   ),
 );
 disk.write();
+// the foyer's carpet runner, which the walkthrough's bot keeps to (not on the disk)
+writeWalkPaths('smirked', { 'smirked.bbl': [book.n('runner')] });
 console.log(`${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks`);

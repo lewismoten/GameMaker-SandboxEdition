@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AUgFyAFNFM0BSA/IAU0PzQFQBdABTRTNAUgPyAFNBc0BSArIAUsFywFICsgBUCPQAUsPywFQBdABS0bLAUgKyAFNBc0BSxnLAVAF0AFLCssBUArQAU0FzQFICsgBSwXLAUgZyAFNFM0BSAXIAU0KzQFIBcgBSxnLAUgKyAFQFNABTUbNAUgYyAFNGc0BTQrNAVAe0AFNCs0BUA/QAUsFywFILcgBTQ/NAU0DzQJNAs0BTQ=="
+   "keys": "AUgFyAFNFM0BSA/IAU0PzQFQBdABTRTNAUgPyAFNBc0BSArIAUsFywFICsgBSw/LAVAF0AFLKMsBUCPQAUseywFICsgBTQXNAUsZywFQBdABSwrLAVAK0AFNBc0BSArIAUsFywFIGcgBTRTNAUgFyAFNCs0BSAXIAUsZywFICsgBTTfNAVAU0AFND80BSBjIAU0ZzQFNCs0BUB7QAU0KzQFQD9ABSwXLAUgtyAFND80BTQPNAk0CzQFN"
   },
   {
    "scene": 3,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 25257,
+  "frames": 25264,
   "chapters": [
    {
     "title": "Opening",
@@ -59,23 +59,23 @@
    },
    {
     "title": "Level 2: GET DOWN!",
-    "frame": 6028
+    "frame": 6035
    },
    {
     "title": "Level 3: Strategic Repositioning",
-    "frame": 11122
+    "frame": 11129
    },
    {
     "title": "Level 4: The Emergency Exit Sign",
-    "frame": 14322
+    "frame": 14329
    },
    {
     "title": "Ending",
-    "frame": 17539
+    "frame": 17546
    },
    {
     "title": "Credits",
-    "frame": 20289
+    "frame": 20296
    }
   ]
  }
