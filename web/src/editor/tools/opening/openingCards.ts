@@ -1,6 +1,5 @@
-// The cards of a new game's opening: the "Made with Game-Maker: Sandbox Edition" sting
-// (made once by games/kit/madewith.ts and shipped in public/opening/, as an animation or a
-// still picture) and the "<name> PRESENTS" card, drawn here with the Scene maker's renderer
+// The cards of a new game's opening: the intro chosen (openingIntros.ts, fetched from the
+// site) and the "<name> PRESENTS" card, drawn here with the Scene maker's renderer
 // in the sting's colors: the name in gold over a navy sky with the icon's faint block grid,
 // fitted inside 320x200 the Scene maker's way (wrapped, then smaller).
 import { encodeGif } from '../../../formats/gif';
@@ -10,7 +9,8 @@ import { fitText, textSize } from '../../editors/animation/scene/sceneText';
 import { renderFrame, renderScene, sceneFli } from '../../editors/animation/scene/sceneRender';
 import type { SceneAssets } from '../../editors/animation/scene/sceneAssets';
 import type { Scene as GameScene } from '../../../formats/game';
-import { PRESENTS_STEM, STILL_SECONDS, STING_STEM, addOpening, removeOpening, type OpeningCard, type OpeningProject, type OpeningStyle } from './openingWire';
+import { PRESENTS_STEM, STILL_SECONDS, addOpening, removeOpening, type OpeningCard, type OpeningProject } from './openingWire';
+import { fetchIntro, introOf, type OpeningStyle } from './openingIntros';
 
 // The card's palette: black, a navy ramp for the sky, gold, white and a dark outline.
 const RAMP = 48;
@@ -94,35 +94,19 @@ export function presentsCard(name: string, still: boolean): OpeningCard {
   return { name: `${PRESENTS_STEM}.gif`, bytes: encodeGif({ width: SCENE_W, height: SCENE_H, pixels: px, palette: cardPalette() }), pause: STILL_SECONDS };
 }
 
-/** The sting's file for a style, as the site ships it. */
-export const stingFile = (style: OpeningStyle): string | undefined =>
-  style === 'animation' ? `${STING_STEM}.fli` : style === 'still' ? `${STING_STEM}.gif` : undefined;
-
-/** The cards for a style and name, given the sting's bytes (fetched by the caller). */
-export function openingCards(style: OpeningStyle, name: string, sting: Uint8Array | undefined): OpeningCard[] {
+/** The cards for a style and name, given the intro's bytes (fetched by the caller). */
+export function openingCards(style: OpeningStyle, name: string, intro: Uint8Array | undefined): OpeningCard[] {
   const out: OpeningCard[] = [];
-  const file = stingFile(style);
-  if (file && sting) out.push({ name: file, bytes: sting, pause: style === 'still' ? STILL_SECONDS : 0 });
+  const { file, pause } = introOf(style);
+  if (file && intro) out.push({ name: file, bytes: intro, pause });
   if (name.trim()) out.push(presentsCard(name, style === 'still'));
   return out;
 }
 
-/** Fetches the shipped sting (undefined when it cannot be had, e.g. offline before it was cached). */
-export async function fetchSting(style: OpeningStyle): Promise<Uint8Array | undefined> {
-  const file = stingFile(style);
-  if (!file) return undefined;
-  try {
-    const res = await fetch(new URL(`opening/${file}`, document.baseURI));
-    return res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-/** Replaces the game's opening with this one (none when the style is 'none' and no name is given). Says whether the sting could not be had. */
+/** Replaces the game's opening with this one (none when the style is 'none' and no name is given). Says whether the intro could not be had. */
 export async function applyOpening(p: OpeningProject, start: GameScene, scenes: GameScene[], style: OpeningStyle, name: string): Promise<{ noSting: boolean }> {
-  const sting = await fetchSting(style);
+  const intro = await fetchIntro(style);
   removeOpening(p, start, scenes);
-  addOpening(p, start, openingCards(style, name, sting), style, name.trim());
-  return { noSting: !!stingFile(style) && !sting };
+  addOpening(p, start, openingCards(style, name, intro), style, name.trim());
+  return { noSting: !!introOf(style).site && !intro };
 }

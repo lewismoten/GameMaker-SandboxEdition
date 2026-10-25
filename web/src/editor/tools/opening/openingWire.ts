@@ -1,14 +1,13 @@
-// An opening for a game made here: the "Made with Game-Maker: Sandbox Edition" sting and a
-// "<name> PRESENTS" card, put first in the start scene's title slide show (a .LST) as files
-// the game owns, so DOS and every export play them as they play the game's own pictures.
+// An opening for a game made here: an intro (openingIntros.ts) and a "<name> PRESENTS" card,
+// put first in the start scene's title slide show (a .LST) as files the game owns, so DOS and
+// every export play them as they play the game's own pictures.
 // A title slot holding one picture is wrapped in a new list; a list gets them at its top.
 // Which files are the opening is kept in the companion (editor-only), so it can be taken
 // out again exactly: the files go, and a list made for it gives the slot back its picture.
 import type { Scene } from '../../../formats/game';
 import { parseSlideList, serializeSlideList, type SlideEntry } from '../../../formats/graphicScripts';
 import type { GameFiles } from '../../../project/files';
-
-export type OpeningStyle = 'animation' | 'still' | 'none';
+import type { OpeningStyle } from './openingIntros';
 
 /** One card of the opening: its file, and the seconds a picture stays (an animation plays through). */
 export interface OpeningCard {

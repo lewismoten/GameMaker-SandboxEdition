@@ -557,12 +557,16 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   what its parts share, `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
   picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
 - **Opening.** A new game's opening (`tools/opening/`): "+ Make a new game" and the start scene's
-  🎬 Opening sting… (`openingDialog.ts`) offer the "Made with Game-Maker: Sandbox Edition" card as
-  an animation, a still picture or none, and a "<name> PRESENTS" card (`openingFields.ts`). The
-  card is made once by `games/kit/madewith.ts` into `public/opening/`; `openingCards.ts` fetches
-  it and draws the presents card with the Scene maker's renderer, and `openingWire.ts` puts them
-  first in the title `.LST` as the game's own files (what was added is kept in the companion, so
-  it comes out again exactly). The Sandbox, CD and imported games never get one.
+  🎬 Opening sting… (`openingDialog.ts`) offer the intros in `openingIntros.ts` (four "Made with
+  Game-Maker: Sandbox Edition" animations, the first one's still picture, the CD's classic RSD logo
+  animation RSDTBOX.FLI, or none) and a "<name> PRESENTS" card (`openingFields.ts`); a ▶ beside each
+  plays it on the fields' screen first (`openingPreview.ts`, with the file picker's FLI preview). The
+  four are made once by `games/kit/madewith.ts` and `madewithMore.ts` into `public/opening/`, the
+  classic one is the CD's file as it is, and each is fetched only when previewed or chosen;
+  `openingCards.ts` draws the presents card with the Scene maker's renderer, and `openingWire.ts`
+  puts them first in the title `.LST` as the game's own files (what was added is kept in the
+  companion, so it comes out again exactly, or is swapped for another). The Sandbox, CD and
+  imported games never get one.
 - **Color vision.** The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows
   a level as seen in grayscale and with color-vision differences (`colorVision.ts`) and lists
   colors that look alike there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a

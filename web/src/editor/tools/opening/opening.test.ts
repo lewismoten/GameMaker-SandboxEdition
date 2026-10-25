@@ -1,5 +1,6 @@
-// A new game's opening: the shipped sting files, the cards each choice puts first in the
-// title list (and taking them out again exactly), the "presents" card fitting its 320x200
+// A new game's opening: the shipped intros (each a few seconds, ending on black, and readable by
+// DOS PLAYGAME), the classic one taken from the CD as it is, the cards each choice puts first in
+// the title list (and taking them out again exactly), the "presents" card fitting its 320x200
 // screen for any name the field takes, and the name check.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -12,10 +13,16 @@ import { GameFiles } from '../../../project/files';
 import { SCENE_H, SCENE_W } from '../../editors/animation/scene/sceneModel';
 import { restBox, textWarnings } from '../../editors/animation/scene/sceneText';
 import { applyOpening, openingCards, presentsCard, presentsText } from './openingCards';
-import { NAME_MAX, addOpening, nameProblem, openingOf, removeOpening, type OpeningProject, type OpeningStyle } from './openingWire';
+import { fliFaults } from '../../../formats/fliLimits';
+import { NAME_MAX, addOpening, nameProblem, openingOf, removeOpening, type OpeningProject } from './openingWire';
+import { CLASSIC_SITE, INTROS, introOf, type OpeningStyle } from './openingIntros';
 
-const PUBLIC = join(__dirname, '../../../../public/opening');
-const STING = { animation: readFileSync(join(PUBLIC, 'madewith.fli')), still: readFileSync(join(PUBLIC, 'madewith.gif')) };
+const PUBLIC = join(__dirname, '../../../../public');
+const CD = join(__dirname, '../../../../../cd');
+/** An intro's file where the site serves it from: public/, or the CD's games (scripts/cdGames.ts serves cd/gameware/ as games/gameware/). */
+const siteFile = (site: string) => new Uint8Array(readFileSync(site.startsWith('games/') ? join(CD, site.slice('games/'.length)) : join(PUBLIC, site)));
+const BYTES = new Map(INTROS.filter((i) => i.site).map((i) => [i.style, siteFile(i.site!)]));
+const STING = { animation: BYTES.get('animation')!, still: BYTES.get('still')! };
 
 /** A game's files with a companion kept in memory, as a Project keeps them. */
 function project(): OpeningProject & { start: Scene } {
@@ -40,7 +47,7 @@ function project(): OpeningProject & { start: Scene } {
 
 const listOf = (p: OpeningProject, name: string) => parseSlideList(p.files.get(name)!);
 const add = (p: ReturnType<typeof project>, style: OpeningStyle, name: string) =>
-  addOpening(p, p.start, openingCards(style, name, style === 'none' ? undefined : STING[style]), style, name);
+  addOpening(p, p.start, openingCards(style, name, BYTES.get(style)), style, name);
 
 describe('the shipped sting', () => {
   it('is a 320x200 FLI of a few seconds that fades in from and out to black', () => {
@@ -55,9 +62,42 @@ describe('the shipped sting', () => {
     expect(light(fli.frames[fli.frames.length - 1].palette)).toBe(0);
   });
 
+  const flis = INTROS.filter((i) => i.file?.endsWith('.fli') && i.style !== 'classic');
+  it('comes in four animations', () => expect(flis.length).toBe(4));
+  for (const intro of flis)
+    it(`${intro.label}: 320x200, 4 to 5 seconds, ends on black, and DOS PLAYGAME reads it`, () => {
+      const bytes = BYTES.get(intro.style)!;
+      expect(fliFaults(bytes)).toEqual([]); // chunks of at most 16,000 bytes, no all-black chunk, known types
+      const fli = decodeFliFrames(bytes);
+      expect([fli.width, fli.height]).toEqual([320, 200]);
+      const seconds = (fli.frames.length * fli.speed) / 70;
+      expect(seconds).toBeGreaterThanOrEqual(4);
+      expect(seconds).toBeLessThanOrEqual(5);
+      expect(fli.frames[fli.frames.length - 1].palette.every((v) => v === 0)).toBe(true);
+      expect(intro.file).toBe('madewith.fli');
+    });
+
   it('has a 320x200 still picture', () => {
     const g = decodeGif(STING.still);
     expect([g.width, g.height]).toEqual([320, 200]);
+  });
+});
+
+describe('the classic RSD intro', () => {
+  it('is the CD’s RSDTBOX.FLI, written into the game byte for byte', () => {
+    const cd = readFileSync(join(CD, 'gameware/donut/rsdtbox.fli'));
+    expect(CLASSIC_SITE).toBe('games/gameware/donut/rsdtbox.fli');
+    const p = project();
+    add(p, 'classic', '');
+    expect(listOf(p, 'title.lst')).toEqual([{ name: 'rsdtbox.fli', pause: 0 }]);
+    expect(p.files.get('rsdtbox.fli')).toEqual(new Uint8Array(cd));
+    expect(openingOf(p, p.start)?.style).toBe('classic');
+  });
+
+  it('shows the same pictures as TEXTBOX3.FLI (they differ only in a color no pixel of theirs uses)', () => {
+    const shown = (file: string) =>
+      decodeFliFrames(readFileSync(join(CD, file))).frames.map((f) => [...f.pixels].map((c) => f.palette.subarray(c * 3, c * 3 + 3).join()).join(' '));
+    expect(shown('gameware/heart/textbox3.fli')).toEqual(shown('gameware/donut/rsdtbox.fli'));
   });
 });
 
@@ -68,6 +108,10 @@ describe('the opening in a new game', () => {
     ['still', '', ['madewith.gif 4']],
     ['still', 'Doc Leo', ['madewith.gif 4', 'presents.gif 4']],
     ['none', 'Doc Leo', ['presents.fli 0']],
+    ['blocks', '', ['madewith.fli 0']],
+    ['wipe', 'Doc Leo', ['madewith.fli 0', 'presents.fli 0']],
+    ['type', '', ['madewith.fli 0']],
+    ['classic', 'Doc Leo', ['rsdtbox.fli 0', 'presents.fli 0']],
   ];
   for (const [style, name, want] of cases)
     it(`${style}${name ? ' with a name' : ''}: ${want.join(', ')} in a new TITLE.LST`, () => {
@@ -77,6 +121,8 @@ describe('the opening in a new game', () => {
       expect(listOf(p, 'title.lst').map((e) => `${e.name} ${e.pause}`)).toEqual(want);
       for (const w of want) expect(p.files.has(w.split(' ')[0])).toBe(true);
       expect(openingOf(p, p.start)?.files).toEqual(want.map((w) => w.split(' ')[0]));
+      const intro = introOf(style).file;
+      if (intro) expect(p.files.get(intro)).toEqual(BYTES.get(style));
     });
 
   it('none without a name adds nothing', () => {
@@ -132,11 +178,19 @@ describe('the opening in a new game', () => {
   it('is replaced, not doubled, when chosen again (fetching the sting from the site)', async () => {
     const p = project();
     vi.stubGlobal('document', { baseURI: 'http://localhost/' });
-    vi.stubGlobal('fetch', async (url: URL) => new Response(url.pathname.endsWith('.gif') ? STING.still : STING.animation));
+    vi.stubGlobal('fetch', async (url: URL) => new Response(siteFile(url.pathname.slice(1))));
     await applyOpening(p, p.start, [p.start], 'animation', 'Doc Leo');
     await applyOpening(p, p.start, [p.start], 'still', '');
     expect(listOf(p, 'title.lst').map((e) => e.name)).toEqual(['madewith.gif']);
     expect(p.files.has('presents.fli') || p.files.has('madewith.fli')).toBe(false);
+    // changing one's mind: swapped for the classic one, then for another intro
+    await applyOpening(p, p.start, [p.start], 'classic', '');
+    expect(listOf(p, 'title.lst').map((e) => e.name)).toEqual(['rsdtbox.fli']);
+    await applyOpening(p, p.start, [p.start], 'wipe', '');
+    expect(listOf(p, 'title.lst').map((e) => e.name)).toEqual(['madewith.fli']);
+    expect(p.files.get('madewith.fli')).toEqual(BYTES.get('wipe'));
+    expect(p.files.has('rsdtbox.fli') || p.files.has('madewith.gif')).toBe(false);
+    expect(openingOf(p, p.start)?.style).toBe('wipe');
   });
   afterEach(() => vi.unstubAllGlobals());
 });

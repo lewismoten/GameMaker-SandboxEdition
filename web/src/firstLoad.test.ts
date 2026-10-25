@@ -31,6 +31,8 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
       ['the felt eggs’ art', /^eggs\/eggArt\.ts$/],
     ],
   ],
+  // a new game's opening: its fields and preview up front, the cards' renderer when the game is made
+  ['editor/shell/homeImport.ts', [['the opening cards’ renderer', /^editor\/tools\/opening\/openingCards\.ts$/]]],
   ['manual/magazine/viewer.ts', [['the Shareware Shelf’s list', /^manual\/magazine\/data\//]]],
   ['editor/shell/workspace.ts', [['the engine', /^engine\//]]],
   [

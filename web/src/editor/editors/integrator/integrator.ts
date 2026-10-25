@@ -676,7 +676,8 @@ registerEditor(['gam'], (host, project, file) => {
                     renderSide();
                     renderPanel();
                   },
-                  title: 'Add, change or remove the “Made with Game-Maker: Sandbox Edition” card (and a “presents” card) that plays before the title',
+                  title:
+                    'Add, swap or remove the opening that plays before the title: a “Made with Game-Maker: Sandbox Edition” intro or the classic RSD one, and a “presents” card',
                 },
                 '🎬 Opening sting…',
               ),

@@ -12,7 +12,7 @@ import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
 import { takeCompanion } from '../../project/companion';
 import { openingFields } from '../tools/opening/openingFields';
-import type { OpeningStyle } from '../tools/opening/openingWire';
+import type { OpeningStyle } from '../tools/opening/openingIntros';
 
 export async function newGame(nav: HomeNav): Promise<void> {
   const opening = openingFields();
@@ -70,7 +70,7 @@ export async function newGame(nav: HomeNav): Promise<void> {
     }
     // the First steps compare against the game as it starts, opening and all
     if (choice.starter) beginFirstSteps(p);
-    if (noSting) toast('The “Made with” card could not be loaded (offline?). Add it later from the start scene’s 🎬 Opening sting….', 'error');
+    if (noSting) toast('The opening could not be loaded (offline?). Add it later from the start scene’s 🎬 Opening sting….', 'error');
   }
   await p.saveNow();
   nav.openProject(p.id);
