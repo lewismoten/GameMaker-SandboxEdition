@@ -146,7 +146,6 @@
   "warning contrast s24 Monster 27 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning contrast s6 Monster 22 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning contrast s6 Monster 27 is hard to see against the scenery (contrast 1.0 : 1)",
-  "warning lookalike s4 Block 81 looks like prize block 5 (a life) but does nothing, first at (78, 89)",
   "warning start-threat s2 Monster 27 starts 2 blocks from where the hero comes in",
   "warning start-threat s3 Monster 27 starts 2 blocks from where the hero comes in",
   "warning start-threat s3 Monster 27 starts 3 blocks from where the hero comes in",

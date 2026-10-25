@@ -78,6 +78,9 @@ describe('scenery that looks collectable', () => {
     const f = lookalike(sceneOf(t));
     expect(f.map((x) => x.where.block?.n)).toEqual([5]);
     expect(f[0].title).toBe('Block 5 looks like prize block 2 (points) but does nothing, first at (5, 1)');
+    // the same block as a way out (on a link of a scene with this map) does something
+    const d = sceneOf(t);
+    expect(lookalike(d, [d, { ...d, scene: 9, links: [1 * 100 + 5] }])).toEqual([]);
   });
 });
 

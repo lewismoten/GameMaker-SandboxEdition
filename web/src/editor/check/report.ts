@@ -108,7 +108,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...jumps(d),
       ...soundChecks(d, files),
       ...tapTwice(d),
-      ...lookalike(d),
+      ...lookalike(d, all),
     );
     findings.push(...(await landings(d, game, files)));
   }

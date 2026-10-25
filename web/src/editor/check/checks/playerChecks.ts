@@ -137,8 +137,12 @@ const prizeWord = (b: Block) =>
             ? 'points'
             : 'a counter';
 
-/** Background blocks that do nothing but are drawn the same as, or nearly as, one of the scene's prizes. */
-export function lookalike(d: SceneData): Finding[] {
+/**
+ * Background blocks that do nothing but are drawn the same as, or nearly as, one of the scene's
+ * prizes. A copy on a link of any scene played on the same map leads somewhere (a way out
+ * drawn like the usual exit), so it is left alone; `all` is every scene.
+ */
+export function lookalike(d: SceneData, all: SceneData[] = [d]): Finding[] {
   const use = blockUse(d.map);
   const placed = [...Array(BACKBL).keys()].filter((n) => use[n]);
   const prizes = placed.filter((n) => isPickup(d, n));
@@ -161,8 +165,10 @@ export function lookalike(d: SceneData): Finding[] {
       (n) => !ownLooks(d.bbl, n).has(m) && size(masks.get(n)!) >= MIN_PIXELS && prizeLikeness(d.bbl[n].pixels, masks.get(n)!, d.bbl[m].pixels) >= LOOKS_SAME,
     );
     if (match === undefined) continue;
+    const links = new Set(all.filter((o) => o.names.map === d.names.map).flatMap((o) => o.links));
     const cells: number[] = [];
-    d.map.blocks.forEach((v, i) => v === m && cells.length < 200 && cells.push(i));
+    d.map.blocks.forEach((v, i) => v === m && !links.has(i) && cells.length < 200 && cells.push(i));
+    if (!cells.length) continue;
     out.push({
       check: 'lookalike',
       severity: 'warning',
