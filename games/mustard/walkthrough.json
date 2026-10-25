@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19720,
+  "frames": 19736,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1326
+    "frame": 1342
    },
    {
     "title": "Level 1: The Mound",
-    "frame": 2983
+    "frame": 2999
    },
    {
     "title": "Level 2: Deep Down in the Dust",
-    "frame": 5943
+    "frame": 5959
    },
    {
     "title": "Level 3: The Mountain",
-    "frame": 9811
+    "frame": 9827
    },
    {
     "title": "Level 4: The Palm of God's Hand",
-    "frame": 12141
+    "frame": 12157
    },
    {
     "title": "Ending",
-    "frame": 14873
+    "frame": 14889
    },
    {
     "title": "Credits",
-    "frame": 17632
+    "frame": 17648
    }
   ]
  }
