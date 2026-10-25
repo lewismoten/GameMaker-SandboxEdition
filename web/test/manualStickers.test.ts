@@ -25,7 +25,8 @@ const SHAPES: [StickerShape, number, number][] = [
 ];
 
 const stickers: StickerGeom[] = [...SHAPES.map(([shape, w, h]) => ({ shape, w, h })), cutGeom(figure()), cutGeom(figure(1.3))];
-const fillers: StickerGeom[] = [cutGeom(figure(0.45)), { shape: 'star', w: 0.6, h: 0.6 }];
+// fillers as small as a sticker may be: 1 in across
+const fillers: StickerGeom[] = [cutGeom(figure(0.9)), { shape: 'star', w: 1, h: 1 }];
 
 function minDistance(a: [number, number][], b: [number, number][]): number {
   let d = Infinity;
