@@ -18,6 +18,7 @@ import { DOS_BUGS } from './sections/dosBugs';
 import { STRATEGY } from './sections/strategy';
 import { DIRECTORY } from './sections/directory';
 import { REVIEWS } from './sections/reviews';
+import { READERS_PICKS } from './sections/readersPicks';
 import { MAXIMUS } from './sections/maximus';
 import { SPOTLIGHT } from './sections/spotlight';
 import { BBS_LISTINGS } from './sections/bbsListings';
@@ -53,6 +54,7 @@ export const SECTIONS: MagSection[] = [
   STRATEGY,
   DIRECTORY,
   REVIEWS,
+  READERS_PICKS,
   MAXIMUS,
   SPOTLIGHT,
   BBS_LISTINGS,

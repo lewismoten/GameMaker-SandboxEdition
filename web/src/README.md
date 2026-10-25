@@ -377,7 +377,8 @@ modules are in [`../test`](../test).
     tested in Node. Among them: the cover, contents, news, reviews, the Critic's Corner, the
     strategy guide, the interviews (`lewis.ts`, `claude.ts`), the Maximus feature, the web edition
     feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag (with its Design Desk of
-    readers' level troubles), `gripes.ts` (what players hate, and how to fix it), the character spotlight,
+    readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `readersPicks.ts` (polish
+    over size: a finished four-level game beats a huge one and a tiny one), the character spotlight,
     the game directory, the BBS listings, the store, the reader service card and the ads.
   - Links: `go.ts` its `go:` links into the site and `goRun.ts` the ones that open a box, the store,
     the mouse pad chooser or a desk prop.

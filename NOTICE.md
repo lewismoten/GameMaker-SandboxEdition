@@ -115,8 +115,9 @@ game folder opens in the browser unchanged.
   copies none of their art, music, sounds or text.
 - **Research: watching people play Game-Maker games.** Observations from two videos informed
   The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and
-  _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`) and "What Players Hate (and How to
-  Fix It)" (`sections/gripes.ts`): **levelengine**'s livestream
+  _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`), "What Players Hate (and How to
+  Fix It)" (`sections/gripes.ts`) and "Readers' Picks: Polish Over Size" (`sections/readersPicks.ts`,
+  whose three games are made up): **levelengine**'s livestream
   "[RSD Game Maker Binge](https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76)" (YouTube, 2020, 34 parts, with
   its viewers' chat), and **Pixelmusement**'s
   "[ADG Episode 250 - Game-Maker](https://www.youtube.com/watch?v=8oy5pXPXxbk)" (Ancient DOS
