@@ -209,9 +209,9 @@ const DIRECTORY: Record<string, Call> = {
   '5550111': async (line) => timeAndTemperature(line),
   '5550112': async (line) => weather(line),
   '5550113': async (line) => movieLine(line),
-  // THE -= S A N D B O X =- BBS (1-412-555-SAND), The Sofa, and Sandcastle Knight's BBS
+  // THE -= S A N D B O X =- BBS (1-412-555-SAND), The Sofa (1-412-555-SOFA), and Sandcastle Knight's BBS
   '5557263': modem,
-  '5550177': modem,
+  '5557632': modem,
   '5550142': modem,
   // Mrs. Novak next door, on her TTY (Mom's notes)
   [TTY_LOCAL]: tty,

@@ -134,7 +134,7 @@ export const ZINE: ZinePage[] = [
       ['Weather', '555-0112', "snow. It's always snow"],
       ['Movie line', '555-0113', "what's playing this week"],
       ['Sandbox BBS', '1-412-555-SAND', 'SCREEEECH (a modem: use TERMINAL)'],
-      ['The Sofa BBS', '555-0177', 'SCREEEECH (TERMINAL again)'],
+      ['The Sofa BBS', '1-412-555-SOFA', 'SCREEEECH (TERMINAL again)'],
       ['Sandcastle BBS', '555-0142', 'more modem screeching'],
       ['Rating Council', '1-800-555-0142', 'from the back of the game boxes. On hold. Forever.'],
       ['Emergency', '911', 'REAL EMERGENCIES ONLY. On this phone... look out the window.'],

@@ -242,7 +242,7 @@ export const CATALOGS_AD: MagSection = {
               ],
               [
                 shot('loaf', 'title', 'Loaf #13 (Left in the Basket), its title screen'),
-                p('**THE BARD OF BIZARRE** Bizarre gospels, mundane epics and songs you can play. Song-games from The Sofa BBS, 1-412-555-0177.'),
+                p('**THE BARD OF BIZARRE** Bizarre gospels, mundane epics and songs you can play. Song-games from The Sofa BBS, 1-412-555-SOFA.'),
               ],
             ]),
             card('SEND ME THE CATALOGS!', ['☐ The Sandbox Software catalog', '☐ The Bard of Bizarre catalog', 'Mail to: ' + MAIL], {

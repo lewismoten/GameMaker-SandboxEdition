@@ -9,7 +9,7 @@ import type { MagSection } from '../types';
 
 /** The boards' numbers, as TERMINAL dials them (bbs.ts PHONE, sofa.ts SOFA_PHONE; a test keeps them in step). */
 export const SANDBOX_PHONE = '1-412-555-SAND';
-export const SOFA_PHONE = '1-412-555-0177';
+export const SOFA_PHONE = '1-412-555-SOFA';
 
 /** Minutes a 100 KB ZIP takes to come down the line, rounded the way a BBS list would. */
 function hundredK(speed: (typeof LINE_SPEEDS)[number]): string {

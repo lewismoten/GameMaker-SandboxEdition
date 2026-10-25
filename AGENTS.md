@@ -115,7 +115,7 @@ preserve what was there.
 - **Privacy:**
   - No real addresses or license plates. The car's plate THE CHEZ is fine.
   - Fictional addresses must be obviously fake, e.g. "P.O. Box 000".
-  - Phone numbers are 555-01xx. Two stay on purpose: 1-412-555-SAND and Jenny's 867-5309, the song's number everyone tries.
+  - Phone numbers are 555-01xx. Three stay on purpose: the two BBSes, 1-412-555-SAND and 1-412-555-SOFA, and Jenny's 867-5309, the song's number everyone tries.
   - No membership or lineage organizations.
   - No health, grief or money material. The exceptions are the lactose-intolerance game and the
     tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON).
