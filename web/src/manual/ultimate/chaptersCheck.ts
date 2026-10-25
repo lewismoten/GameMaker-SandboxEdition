@@ -27,8 +27,9 @@ export const CHECK: Chapter = {
   <h2>The heat map</h2>
   <p>The map is colored where the bot went, from dark for a moment to bright for a long while,
   with a legend beside it. Switch it to <i>how soon it got there</i> to see the order a player
-  is likely to find things. The useful part is what stays <i>uncolored</i>: a room you built
-  that the bot never entered is a room no player will see either. Turn the heat map and the
+  is likely to find things. The useful part is what stays <i>uncolored</i>: an uncolored room is
+  somewhere the bot did not reach. Check whether it missed a route, needed more time, or found a
+  real access problem. Turn the heat map and the
   marks on and off with the boxes above the list. Tick <b>Gray level</b> to draw the map in
   shades of gray, from the lightness of each color in the scene’s palette, so the heat map’s
   colors stand out from the blocks under them. It only changes how the editor shows the map, and

@@ -61,6 +61,22 @@
     italic 2cqw/1 'Times New Roman',
     Times,
     serif;
+  gap: 3cqw;
+}
+
+/* the book's title keeps its room; a chapter name too long for what is left ends in an ellipsis
+   rather than running into the title */
+.mpage .runhead > span {
+  white-space: nowrap;
+}
+.mpage .runhead > span:first-child {
+  flex: none;
+}
+.mpage .runhead > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
 }
 
 .mpage .folio {
