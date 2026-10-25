@@ -165,6 +165,46 @@ function lamp(): Pixels {
   return p;
 }
 
+/** A lantern hung on a hook, lit. */
+function lantern(): Pixels {
+  const p = back(11);
+  p.rect(9, 0, 2, 5, c('ink', 1));
+  p.rect(6, 5, 8, 11, c('ink', 0));
+  p.rect(7, 6, 6, 9, c('window', 1)).rect(8, 8, 4, 5, c('window', 2)).rect(9, 10, 2, 2, c('yellow', 3));
+  p.rect(5, 15, 10, 2, c('brass', 1));
+  return p;
+}
+
+/** The bell ropes coming down through the floors, looped over a peg. */
+function ropes(): Pixels {
+  const p = back(12);
+  for (let y = 0; y < 20; y++) p.set(5, y, c('wood', 4)).set(6, y, c('wood', 3));
+  p.rect(12, 6, 4, 2, c('wood', 2));
+  for (let a = 0; a < Math.PI * 2; a += 0.2) p.set(14 + Math.round(Math.cos(a) * 3), 12 + Math.round(Math.sin(a) * 4), c('wood', 4));
+  return p;
+}
+
+/** A small gear turning in the wall (two frames, a tooth apart). */
+function wallGear(a0 = 0): Pixels {
+  const p = back(13);
+  for (let k = 0; k < 6; k++) {
+    const a = a0 + (k * Math.PI) / 3;
+    p.disc(10 + Math.cos(a) * 6, 10 + Math.sin(a) * 6, 1.6, c('stone', 3));
+  }
+  p.disc(10, 10, 5, c('stone', 3)).disc(10, 10, 2, c('stone', 1));
+  return p;
+}
+
+/** A clockmaker's notice pinned to the wall: OILED 1952, and a little drawing of an oil can. */
+function notice(): Pixels {
+  const p = back(14);
+  p.rect(3, 3, 14, 13, c('paper', 3)).frame(3, 3, 14, 13, c('paper', 1));
+  for (const y of [6, 8, 10]) p.rect(5, y, 10 - (y % 4), 1, c('ink', 1));
+  p.rect(10, 11, 4, 3, c('stone', 2)).rect(13, 10, 2, 1, c('stone', 2));
+  p.set(10, 2, c('red', 2));
+  return p;
+}
+
 export function towerSet(): BlockSet {
   const s = new BlockSet(150, false);
   s.add('brick', brick(1), { solid: SOLID });
@@ -192,6 +232,12 @@ export function towerSet(): BlockSet {
   s.add('bellRope', bellRope(), { grav: DOWN });
   for (let k = 0; k < 4; k++) s.add(`bell${k}`, bell(k), { grav: DOWN });
   s.add('lamp', lamp(), { grav: DOWN });
+  // things about the tower's walls, to look at on the way up
+  s.add('lantern', lantern(), { grav: DOWN });
+  s.add('ropes', ropes(), { grav: DOWN });
+  s.add('wallGear', wallGear(), { grav: DOWN, next: 'wallGear2', ntime: 9 });
+  s.add('wallGear2', wallGear(Math.PI / 6), { grav: DOWN, next: 'wallGear', ntime: 9 });
+  s.add('notice', notice(), { grav: DOWN });
   addKeepsakes(s, back(1), 'air');
   return s;
 }
