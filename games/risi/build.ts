@@ -11,6 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
+import { clipEntries, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { gif } from '../snowbound/src/screens/scenery';
@@ -118,21 +119,20 @@ disk.put('risi.gam', serializeGame(game));
 for (const [name, bytes] of Object.entries(buildScreens({ man: heroes.marcus.pics, mons: mb.pics }))) disk.put(name, bytes);
 const cast: Cast = { man: heroes.marcus.pics, cat: heroes.felix.pics, mons: mb.pics };
 const cover = coverFli();
-disk.put(BARDLOGO, bardIntroFli({ tagline: 'presents Veni, Vidi, Risi!' }));
-disk.put('cover.fli', cover.fli);
+// the long cartoons in clips of about 4 seconds, so Esc can skip them between clips
+const putClips = (name: string, fli: Uint8Array) => {
+  const clips = fliClips(name, fli);
+  for (const [n, b] of Object.entries(clips)) disk.put(n, b);
+  return clips;
+};
+const bardLogo = putClips(BARDLOGO, bardIntroFli({ tagline: 'presents Veni, Vidi, Risi!' }));
+const coverClips = putClips('cover.fli', cover.fli);
 disk.put('title.gif', gif(cover.title, cover.pal));
-disk.put(
-  'title.lst',
-  serializeSlideList([
-    { name: BARDLOGO, pause: 0 },
-    { name: 'cover.fli', pause: 0 },
-    { name: 'title.gif', pause: 12 },
-  ]),
-);
-disk.put('story.fli', storyFli(cast));
-disk.put('story.lst', serializeSlideList([{ name: 'story.fli', pause: 1 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
-disk.put('howto.fli', howtoFli(cast));
-disk.put('howto.lst', serializeSlideList([{ name: 'howto.fli', pause: 2 }, { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
+disk.put('title.lst', serializeSlideList([...clipEntries(bardLogo, 0), ...clipEntries(coverClips, 0), { name: 'title.gif', pause: 12 }]));
+const story = putClips('story.fli', storyFli(cast));
+disk.put('story.lst', serializeSlideList([...clipEntries(story, 1), { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
+const howto = putClips('howto.fli', howtoFli(cast));
+disk.put('howto.lst', serializeSlideList([...clipEntries(howto, 2), { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 cards.forEach((card, i) => disk.put(`card${i + 1}.fli`, cardFli(i, card, cast)));
 for (const [name, bytes] of Object.entries(wonFlis(cast))) disk.put(name, bytes);
