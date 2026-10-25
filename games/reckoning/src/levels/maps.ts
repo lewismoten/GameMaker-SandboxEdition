@@ -342,5 +342,7 @@ export function reckoning(book: BlockBook): Level {
   m.set(36, 4, ',').set(42, 2, ',');
   m.set(46, 9, 'bathOpen').set(46, 8, 'I');
   m.link(46, 9, 'won');
+  // the wall comes right up to the door, so there is nothing to hop past it to
+  m.col(W - 2, 0, 9, '+');
   return { m, start: at(2, 9), size: [W, H] };
 }
