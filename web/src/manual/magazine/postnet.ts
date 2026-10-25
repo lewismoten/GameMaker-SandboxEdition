@@ -1,5 +1,5 @@
-// The post office's address bar code (POSTNET), printed under the address on every reply card
-// and order card in the magazine (replyMail.ts, render.ts cards): tall and short bars between two
+// The post office's address bar code (POSTNET), printed under the address on the business reply
+// cards in the magazine (replyMail.ts), the postcards mailed in free; order cards have none: tall and short bars between two
 // tall frame bars, five a digit (two of them tall), then a check digit. It spells the ZIP+4 of
 // the made-up box the cards go to; nothing here is ever mailed.
 import './postnet.css';

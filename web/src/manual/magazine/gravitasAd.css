@@ -248,7 +248,7 @@
   font-style: italic;
 }
 
-.mag-page[data-page='hardware-4'] .mag-card > :is(.mag-field, .mag-postnet, a.mag-go) {
+.mag-page[data-page='hardware-4'] .mag-card > :is(.mag-field, a.mag-go) {
   grid-column: 2;
 }
 
