@@ -48,7 +48,7 @@
   },
   {
    "scene": 9,
-   "keys": "AVAP0AFNBc0BUAXQAU0KzQFND80BUAXQAUsPywFQCjkBuQc5AbkL0AFLCssBUArQAU0UzQFID8gBSwrLB1AK0AFNAzkBuQc5AbkczQFQCtABTQXNAUgBOQG5CMgBTRTNAUgFyAFNGc0BUArQAU0FzQFICsgBTRTNAUgKyAFNCs0BUArQAUsQywFL"
+   "keys": "AVAP0AFNBc0BUAXQAU0KzQFND80BUAXQAUsPywFQCjkBuQc5AbkL0AFLCssBUArQAU0UzQFID8gBSwrLAVAK0AFNAzkBuQc5AbkczQFQCtABTQXNAUgFyAFNATkBuRnNAUgFyAFNGc0BUArQAU0FzQFICsgBTRTNAUgKyAFNCs0BUArQAUsKywFLBDkBuQ=="
   },
   {
    "scene": 10,
@@ -60,7 +60,7 @@
   },
   {
    "scene": 10,
-   "keys": "AUsPywFQFNABTRY5AbkHOQG5BzkBuQbNATkASAG5BzkBuQc5AbkHOQG5BzkAyAG5BzkBuQFIDsgBTQ/NAUgKyAFNMs0BTSPNAVAF0AFLD8sBUA=="
+   "keys": "AUsPywFQFNABTRY5AbkHOQG5BzkBuQbNATkASAG5BzkBuQc5AbkHOQG5BzkAyAG5BzkBuQFIDsgBTRXNAVAK0AFNI80BSBTIAU0yzQFQBdABSw/LAVA="
   },
   {
    "scene": 11,
@@ -80,7 +80,7 @@
   },
   {
    "scene": 13,
-   "keys": "AUgFyAFLFMsBTRTNAVAF0AFNFDkBuQc5AbkGzQFQCtABTQrNAUgKyAFLCssBSw=="
+   "keys": "AVAF0AFNBc0BUAXQAU0ezQFICsgBSwrLAUs="
   },
   {
    "scene": 12,
@@ -116,7 +116,7 @@
   },
   {
    "scene": 18,
-   "keys": "AVAF0AFND80BSAE5AbkXyAFNBc0fTRTNAVAU0AFNBc0BTQXNAUgUyAFNFM0BTRA5AbkHOQG5Bc0COQG5BzkBuQJLBTkBuQrLAEgByABLAssASAHIAEsBywBNATkAzQBLAbkEywBQBdAASAE5AMgAUAG5BdAASwHLAFAB0ABLAssASAE5AMgAUAG5ANAASwnLAEgDOQG5BzkBuQbIAEsBOQDLAbkBTQPNAEgEyABLATkAywBIAbkOOQDIAE0BuQPNAEgHyAFLBcsFSA/IAU0FzQFIBcgBTQXNAU0ZzQFI"
+   "keys": "AVAF0AFND80BSAE5AbkXyAFNBc0fTRTNAVAU0AFNBc0BTQXNAUgUyAFNFM0BTRA5AbkHOQG5Bc0COQG5BzkBuQJLBTkBuQrLAEgByABLAssASAHIAEsBywBNATkAzQBLAbkEywBQBdAASAE5AMgAUAG5BdAASwHLAFAB0ABLAssASAE5AMgAUAG5ANAASwnLAEgDOQG5BzkBuQbIAEsBOQDLAbkBTQPNAEgEyABLATkAywBIAbkOOQDIAE0BuQPNAEgHyAFLBcsFSArIAUsKywFIFMgBUAE5AbkHOQG5FNABTQc5AbkHzQFIBcgBTQXNAUgFyAFNHs0BSA=="
   },
   {
    "scene": 19,
@@ -151,7 +151,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 34021,
+  "frames": 34153,
   "chapters": [
    {
     "title": "Opening",
@@ -175,23 +175,23 @@
    },
    {
     "title": "Scene 4: Fractal Peaks",
-    "frame": 17667
+    "frame": 17740
    },
    {
     "title": "Scene 5: Teapot Temple",
-    "frame": 22209
+    "frame": 22081
    },
    {
     "title": "Scene 6: The Vanishing Point",
-    "frame": 25781
+    "frame": 25653
    },
    {
     "title": "Ending",
-    "frame": 30364
+    "frame": 30496
    },
    {
     "title": "Credits",
-    "frame": 31929
+    "frame": 32061
    }
   ]
  }
