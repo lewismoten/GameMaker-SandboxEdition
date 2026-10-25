@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19972,
+  "frames": 19987,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1239
+    "frame": 1254
    },
    {
     "title": "Level 1: The Hungry Crowd",
-    "frame": 2947
+    "frame": 2962
    },
    {
     "title": "Level 2: The Wicker Wasteland",
-    "frame": 5719
+    "frame": 5734
    },
    {
     "title": "Level 3: Twelve Baskets Full",
-    "frame": 9257
+    "frame": 9272
    },
    {
     "title": "Level 4: The Way Home",
-    "frame": 13100
+    "frame": 13115
    },
    {
     "title": "Ending",
-    "frame": 15173
+    "frame": 15188
    },
    {
     "title": "Credits",
-    "frame": 17884
+    "frame": 17899
    }
   ]
  }

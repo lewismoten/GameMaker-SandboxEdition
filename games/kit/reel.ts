@@ -63,6 +63,34 @@ export class Reel {
     return this;
   }
 
+  /**
+   * A cartoon's closing iris: black closes in on (cx, cy) over `n` frames from the last picture
+   * down to a circle `end` pixels across (round on a 4:3 screen: VGA's pixels are taller than
+   * wide), and holds there `hold` frames. Follow it with fadeOut. Gives an intro whose pictures
+   * are the title's art a last view that isn't the title.
+   */
+  irisOut(cx: number, cy: number, n: number, end = 64, hold = 6): this {
+    const last = this.last;
+    if (!last) return this;
+    // the darkest color in the palette stands for black
+    let black = 0;
+    const sum = (i: number) => last.pal[i * 3] + last.pal[i * 3 + 1] + last.pal[i * 3 + 2];
+    for (let i = 1; i < last.pal.length / 3; i++) if (sum(i) < sum(black)) black = i;
+    const far = Math.hypot(Math.max(cx, this.w - cx), Math.max(cy, this.h - cy) * 1.2);
+    const p = new Pixels(this.w, this.h);
+    for (let k = 1; k <= n; k++) {
+      const t = k / n;
+      const r = far + (end / 2 - far) * (1 - (1 - t) * (1 - t));
+      for (let y = 0; y < this.h; y++)
+        for (let x = 0; x < this.w; x++) {
+          const i = y * this.w + x;
+          p.px[i] = Math.hypot(x - cx, (y - cy) * 1.2) <= r ? last.px[i] : black;
+        }
+      this.add(p, k === n ? hold : 1, 1, last.pal);
+    }
+    return this;
+  }
+
   /** The .FLI: `speed` is the wait after each frame in 1/70 s (5 = 14 frames a second). */
   fli(speed: number): Uint8Array {
     return encodeFli(this.frames, this.pal, { width: this.w, height: this.h, speed, palettes: this.palettes, runs: true });

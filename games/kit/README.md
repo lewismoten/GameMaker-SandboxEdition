@@ -41,7 +41,8 @@ Making the files:
 - `bard.ts` — The Bard of Bizarre's logo sting for his games' `title.lst` (`BARD.FLI`): stage curtains part on the logo,
   Doc Leo's photo pops in, a lute strums notes, the tagline types out, fade to black.
 - `reel.ts` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores
-  only what changed (run-coded line deltas), so a cartoon costs little more than its first picture.
+  only what changed (run-coded line deltas), so a cartoon costs little more than its first picture. `irisOut` closes a round
+  iris on a spot (a cartoon made of the title's own art ends on a view that isn't the title), then `fadeOut`.
 - `fadeOut.ts` — the fade to black an intro ends on before its title picture (PLAYGAME cuts an FLI's last frame
   straight to black): `encodeFliFadeOut` adds about half a second of palette-only frames to a plain frame list (a Reel
   has `fadeOut`).
