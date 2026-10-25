@@ -9,7 +9,7 @@ import type { Block, ShelfItem } from './types';
 type ShelfBlock = Extract<Block, { t: 'shelf' }>;
 
 /** The letter a title files under: A to Z, or # for a number. */
-export const shelfLetter = (title: string) => {
+const shelfLetter = (title: string) => {
   const c = title
     .replace(/^(?:the|a)\s+/i, '')
     .replace(/^[^\p{L}\p{N}]+/u, '')

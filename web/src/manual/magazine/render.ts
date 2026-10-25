@@ -26,7 +26,7 @@ export interface RenderEnv {
 /** THE CHEZ is never split across lines (keepTogether.ts), nor is a phone number. */
 const keep = (s: string) => s.replace(/THE CHEZ/g, 'THE\u00a0CHEZ').replace(/\b1-\d{3}-555-[\dA-Z]{4}\b/g, (n) => n.replace(/-/g, '\u2011'));
 
-export function goLink(go: string, where: Where, ...children: (Node | string)[]): HTMLAnchorElement {
+function goLink(go: string, where: Where, ...children: (Node | string)[]): HTMLAnchorElement {
   const outside = parseGo(go)?.kind === 'url';
   return h(
     'a',

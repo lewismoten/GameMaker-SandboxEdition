@@ -107,7 +107,7 @@ const byTitle = (x: MagGame, y: MagGame) => x.title.replace(/^the /i, '').locale
 const RSD = 'Recreational Software Designs';
 
 /** The directory's groups, each in its listing order. */
-export function groups(ctx: MagContext) {
+function groups(ctx: MagContext) {
   const of = (kind: MagGame['kind']) => ctx.games.filter((g) => g.kind === kind);
   const sandbox = of('sandbox').sort(byYear);
   const bizarre = of('bizarre').sort(byTitle);

@@ -4,8 +4,6 @@
 
 import { edgeDistance, inside, outline, type Pt, type StickerGeom } from './stickerGeom';
 
-export type { StickerGeom, StickerShape } from './stickerGeom';
-
 /** Cricut's largest Print Then Cut area; Silhouette and Brother machines take it too. */
 export const CUT_W = 6.75;
 export const CUT_H = 9.25;

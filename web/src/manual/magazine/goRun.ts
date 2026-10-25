@@ -16,7 +16,7 @@ export interface DeskHooks {
   look(prop: string): void;
 }
 
-export interface GoEnv {
+interface GoEnv {
   where: Where;
   desk?: DeskHooks;
   entry(id: string): CatalogEntry | undefined;

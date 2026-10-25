@@ -69,7 +69,6 @@ export const piece = (game: string, what: 'hintbook', alt: string, o: { go?: Go;
 export const ultimatePiece = (alt: string, o: { go?: Go; float?: 'left' | 'right' } = {}): Block => ({ t: 'piece', piece: 'ultimate', alt, ...o });
 /** A line set huge (a price, a phone number), with a small note beside it. */
 export const big = (text: string, side?: Inline): Block => ({ t: 'big', text, side });
-export const rule = (): Block => ({ t: 'rule' });
 /** A picture with numbered spots on it and their key below. */
 export const callouts = (id: ArtId, alt: string, spots: Callout[]): Block => ({ t: 'callouts', art: id, alt, spots });
 /** Covers fanned out small, named together by `alt`. */
@@ -98,18 +97,3 @@ export const beside = (blocks: Block[], ad: HalfAd): Block => ({ t: 'beside', bl
 
 /** A full-page ad: no running head, listed in the advertiser index under `advertiser`. */
 export const adPage = (id: string, advertiser: string, blocks: Block[], tone: Tone = 'white'): MagPage => ({ id, kind: 'ad', title: advertiser, tone, blocks });
-
-/** A section agent's placeholder page: what will be here, so the issue has its shape already. */
-export function stubPage(title: string, what: string[], id?: string): MagPage {
-  return {
-    id,
-    kind: 'dept',
-    stub: true,
-    tone: 'news',
-    blocks: [
-      head(title, { kicker: 'Coming in this section', size: 'l' }),
-      list(what),
-      note('This page is being written. Its links will open the games and pages it names.'),
-    ],
-  };
-}

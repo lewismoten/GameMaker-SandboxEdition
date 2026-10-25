@@ -2,7 +2,7 @@
 // [label](go:target) links. Anything else is plain text.
 import type { Go } from './go';
 
-export type Run = { text: string; b?: boolean; i?: boolean; go?: Go };
+type Run = { text: string; b?: boolean; i?: boolean; go?: Go };
 
 const TOKEN = /\*\*(.+?)\*\*|\*(.+?)\*|\[([^\]]+)\]\((go:[^)\s]+)\)/g;
 

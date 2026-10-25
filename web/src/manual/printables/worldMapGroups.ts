@@ -9,7 +9,7 @@ import { ENDTYPE, NOSCENE, STARTTYPE, type Game, type Link, SCENEDESCLEN } from 
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import type { WorldMapHints } from './types';
 
-export interface Grouping {
+interface Grouping {
   /** Folded scene -> the place it's shown on. */
   hostOf: Map<number, number>;
   /** Place -> the scenes folded into it, in scene order. */

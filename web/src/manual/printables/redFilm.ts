@@ -198,7 +198,7 @@ const PEN = CELL * 0.2;
 const LABEL_FONT = `700 ${CELL * 0.7}px Arial, Helvetica, sans-serif`;
 
 /** What each character of a sketch's rows draws in its cell. */
-export const SKETCH_GLYPHS: Record<string, string> = {
+const SKETCH_GLYPHS: Record<string, string> = {
   ' ': 'nothing',
   '.': 'a dot: a path or floor',
   '#': 'a filled block: wall, rock or hedge',
@@ -326,7 +326,7 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
 }
 
 /** A sketch hidden in noise, as a canvas `CELL` pixels to the cell. */
-export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;

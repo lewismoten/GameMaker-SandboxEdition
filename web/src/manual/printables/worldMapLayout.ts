@@ -65,7 +65,7 @@ export function edgePoint(r: Rect, to: Point, pad = 0.6): Point {
   return { x: cx + dx * Math.min(1, t), y: cy + dy * Math.min(1, t) };
 }
 
-export interface Tile extends Rect {
+interface Tile extends Rect {
   /** "A1": letters across, numbers down, like a road atlas. */
   name: string;
   col: number;

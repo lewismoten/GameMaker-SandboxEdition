@@ -5,7 +5,7 @@
 /** A link target, e.g. 'go:play/teddy', 'go:hints/snowbound', 'go:desk/modem'. */
 export type Go = `go:${string}`;
 
-export type GoKind =
+type GoKind =
   | 'play'
   | 'game'
   | 'manual'
@@ -24,7 +24,7 @@ export type GoKind =
   | 'mag'
   | 'url';
 
-export interface GoTarget {
+interface GoTarget {
   kind: GoKind;
   /** What follows the kind: a game id, a section, a prop… ('' when none). */
   arg: string;
@@ -35,11 +35,11 @@ export type Where = 'desk' | 'web';
 
 /** What each kind takes. */
 const NEEDS_GAME = new Set<GoKind>(['play', 'game', 'manual', 'hints', 'newsletter']);
-export const CATALOGS = ['sandbox', 'bard', 'shareware'] as const;
-export const DESK_PROPS = ['', 'modem', 'diskbox', 'speakers', 'gamepad', 'mousepad', 'mug', 'gmbox', 'catalog'] as const;
+const CATALOGS = ['sandbox', 'bard', 'shareware'] as const;
+const DESK_PROPS = ['', 'modem', 'diskbox', 'speakers', 'gamepad', 'mousepad', 'mug', 'gmbox', 'catalog'] as const;
 /** The boards TERMINAL dials by name (retro/bbs/bbs.ts); '' opens its dialing directory. */
 export const BBS_BOARDS = ['', 'sandbox', 'sofa'] as const;
-export const ROUTES = ['cast', 'credits', 'achievements', 'mac', 'windows', 'linux'] as const;
+const ROUTES = ['cast', 'credits', 'achievements', 'mac', 'windows', 'linux'] as const;
 /** The web Guide's sections (manual/webManual.ts SECTIONS; a test keeps them in step). */
 export const GUIDE_SECTIONS = [
   'start',

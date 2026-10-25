@@ -216,7 +216,7 @@ export function markLabel(game: Game, scenes: number[]): string {
 }
 
 /** Where a box goes when packed: its page and its top-left there. */
-export interface Placed {
+interface Placed {
   page: number;
   x: number;
   y: number;

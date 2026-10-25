@@ -13,7 +13,7 @@ import { mapShot, renderShot, renderTitle } from '../../gfx/gameShots';
 import { paintIndexed } from '../../editor/core/draw';
 import type { HintCover } from './types';
 
-export interface CoverArt {
+interface CoverArt {
   /** The hero, cropped to his pixels, as a PNG data URL, and his size in pixels. */
   hero?: { src: string; w: number; h: number };
   /** The scene behind him, as a PNG data URL. */

@@ -40,7 +40,7 @@ export function polyPath(pts: Pt[], S: number): Path2D {
 // ------------------------------------------------------------------ words
 
 /** Lines of text at the largest size (px) that fits maxW x maxH, splitting on spaces into up to 3 lines. */
-export function fit(
+function fit(
   g: CanvasRenderingContext2D,
   text: string,
   maxW: number,

@@ -114,7 +114,7 @@ const same = (a: Palette, b: Palette, i: number) => a[i * 3] === b[i * 3] && a[i
 const css = (p: Palette, i: number) => `rgb(${vga8(p[i * 3])},${vga8(p[i * 3 + 1])},${vga8(p[i * 3 + 2])})`;
 
 /** Entries that differ, as runs: "9–71, 76–79". */
-export function runs(list: number[]): string {
+function runs(list: number[]): string {
   const out: string[] = [];
   for (let k = 0; k < list.length;) {
     let e = k;

@@ -19,7 +19,7 @@ const MAX = 'maximus';
 export const SCENE_RECORD = 283;
 export const SCENE_CAP = Math.floor(0xffff / SCENE_RECORD);
 /** PLAYGAME draws this many monsters at most (PLAYGAME.C MaxMonsShown). */
-export const SHOWN_CAP = 50;
+const SHOWN_CAP = 50;
 /** A text screen's lines: fgets(…, 32) reads 31 characters at a time, so a line with its break fits in 30. */
 export const TEXT_READ = 31;
 
