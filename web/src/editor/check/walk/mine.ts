@@ -1,14 +1,11 @@
 // The author's own plays of scenes (takes.ts), kept in the project's companion file (editor-only,
 // section "myPlays" of the .gam) a scene each, with whether Make a walkthrough plays it ("mine")
 // or lets the bot play that scene ("bot"). autoWalk replays a kept take on the same engine from
-// wherever the walkthrough has got to (replayMine); a take that no longer reaches an exit, as
-// the map has changed since, is left out and the bot plays the scene.
+// wherever the walkthrough has got to; a take that no longer reaches an exit, as
+// the map has changed since, is left out and the bot plays the scene (replayMine.ts, apart so
+// the editor's dialogs that list the plays don't load the simulator).
 import type { Project } from '../../core/project';
-import type { Game } from '../../../formats/game';
-import { decodeKeys, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
-import type { Entry } from '../explore';
-import { SceneSim, TICKS_PER_SECOND, type FileSource } from '../sim';
-import type { Replay } from './autoWalk';
+import { WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Take } from './takes';
 
 export interface MyPlay extends Take {
@@ -46,45 +43,6 @@ export const playsToUse = (project: Project): Record<number, string> =>
       .filter((p) => p.use === 'mine')
       .map((p) => [p.scene, p.keys]),
   );
-
-/** How long a take may go on after its last key before it is given up on (the hero walking on to a link). */
-const AFTER_TICKS = Math.round(20 * TICKS_PER_SECOND);
-
-/**
- * Plays a take's keys from the scene's entry (every monster moving, the monsters' numbers
- * seeded as the walkthrough seeds them) until the hero takes a link: the same Replay the bot's
- * paths give, or undefined if the hero dies or no link is taken in time.
- */
-export async function replayMine(game: Game, files: FileSource, scene: number, entry: Entry, keys: string, seed = 1): Promise<Replay | undefined> {
-  const sim = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev, seed);
-  const events: { tick: number; key: number }[] = [];
-  let t = 0;
-  for (const k of decodeKeys(keys)) events.push({ tick: (t += k.delta), key: k.key });
-  const last = events.length ? events[events.length - 1].tick : 0;
-  let next = 0;
-  for (let tick = 1; tick <= last + AFTER_TICKS; tick++) {
-    // a key is pressed before the tick it was applied on (as replayPath records them)
-    for (; next < events.length && events[next].tick <= tick; next++) {
-      const k = events[next].key;
-      if (k < 0x80) sim.press(k);
-      else sim.release(k & 0x7f);
-    }
-    const r = await sim.tick();
-    if (r === 'dead') return undefined;
-    if (r) {
-      const ci = sim.w.ci;
-      return {
-        link: r.link,
-        events: events.slice(0, next),
-        ticks: tick,
-        ci: { ...ci, inv: ci.inv.slice(), meter: ci.meter.slice(), seqon: ci.seqon.slice() },
-        clock: sim.w.clock,
-        world: sim.w,
-      };
-    }
-  }
-  return undefined;
-}
 
 /** A walkthrough of one scene alone (the game started there, as the play test starts it): its keys, from the scene's entry. */
 export function oneScene(game: string, scene: number, title: string, keys: string, won: boolean, bot: boolean): Walkthrough {

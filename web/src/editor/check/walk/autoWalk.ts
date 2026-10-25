@@ -15,7 +15,7 @@ import { driveMove, type Outcome } from '../drive';
 import { explore, type Entry, type Exploration, type ExploreOptions, type Via } from '../explore';
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource, type Snap } from '../sim';
-import { replayMine } from './mine';
+import { replayMine } from './replayMine';
 
 export interface Strategy {
   id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
