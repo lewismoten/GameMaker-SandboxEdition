@@ -43,6 +43,23 @@ export const PLAYERS: Chapter = {
   is as close as one standing beside it. Leave the cells beside the entry free of anything that
   hurts, too. The Level check asks about all three. A boss room where the boss is waiting is a
   fine exception: mark the finding as on purpose.</p>
+  <h2>The first ten minutes</h2>
+  <p>A new player makes up his mind about a game in its first level, often in ten or twenty
+  minutes, and seldom gets to the level you are proudest of if the first one is the hardest.
+  Make level 1 a lesson that feels like play:</p>
+  <ul>
+    <li><b>One thing at a time.</b> Walk, then jump, then the first pickup, then the first foe,
+    each with room to get it wrong.</li>
+    <li><b>Nothing that can kill in the first screen.</b> The first death should come after the
+    player knows the keys.</li>
+    <li><b>A course to practise on.</b> A short training level, or a first level the instructions
+    call practice, takes the fear out of trying every key. Maximus starts on a training deck that
+    teaches walking, hopping, picking up, shooting, paying a door and riding a lift before the
+    first planet.</li>
+    <li><b>Done in minutes.</b> A first level the bot finishes in under a minute or two takes a
+    newcomer several times as long. Keep it short, and save the long levels for players who
+    already like the game.</li>
+  </ul>
   <h2>Teach the controls in the first room</h2>
   <p>Few players read the instructions before they play. Any key beyond the arrows that the
   hero needs to grab, use or fight belongs where it is first needed: a sign by the first thing to
@@ -60,6 +77,9 @@ export const PLAYERS: Chapter = {
     <li><b>Close the way out until it is safe.</b> A door that opens only once the keys are
     carried, or a friend who says <i>you’ll need the keys</i>, costs one block.</li>
     <li><b>Or keep the way back open.</b> A ladder, a stool, a second link.</li>
+    <li><b>Side doors never spend the key to the way on.</b> If a key opens an optional room
+    and the main door too, a curious player who opens the side room first is stuck. Give each
+    lock its own kind of key, or put enough keys out for every lock.</li>
     <li><b>Count what the end asks for.</b> If the last gate wants 20 pages, the game must hold
     at least 20 that a player can still reach when they get there, or the earlier exits must
     stay shut until the pages are found.</li>
