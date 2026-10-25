@@ -10,7 +10,6 @@ import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
 
-export const SOFA_PHONE = '1-412-555-SOFA';
 /** All eight lines are often in use: about one call in three gets a busy signal. */
 export const sofaBusy = () => Math.random() < 0.35;
 const LINES = 8;

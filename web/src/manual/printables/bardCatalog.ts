@@ -11,7 +11,7 @@ import { fetchGameFile, loadCatalog, type CatalogEntry } from '../../project/fil
 import { byCollection, COLLECTIONS, isBizarreGame } from '../../project/bizarre';
 
 export { byCollection, COLLECTIONS };
-import { SOFA_PHONE } from '../../retro/bbs/sofa';
+import { SOFA_PHONE } from '../../retro/bbs/sofaPhone';
 import { downloadLine, hardDiskLine, sizeText, zipBytes, zipName } from '../../project/diskFacts';
 import { sheet, type Sheet } from './kit';
 
