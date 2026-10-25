@@ -34,7 +34,7 @@ export const COUNTS = {
   fileSlots: 12,
   /** Monsters placed on the busiest map (the Maelstrom), and on all maps together. */
   mapMonsters: 200,
-  placed: 6693,
+  placed: 6682,
   monFiles: 9,
   /** Creatures in each .MON whose animation fills every step. */
   fullAnimations: 44,
