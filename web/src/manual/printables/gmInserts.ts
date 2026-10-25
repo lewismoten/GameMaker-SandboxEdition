@@ -37,7 +37,7 @@ export const GM_DISKS: { n: number; name: string; holds: string }[] = [
   { n: 2, name: 'PLAYGAME · UTILITIES', holds: 'PLAYGAME, the utilities, the Sound Blaster driver and the SAMPLE game' },
 ];
 
-/** A 3½" disk with its printed Game-Maker label; sized by its box (sizes in cqw). */
+/** A 3½" disk with its printed Game-Maker label, shutter down; sized by its box (sizes in cqw). */
 export function gmFloppy(n: number): HTMLElement {
   const d = GM_DISKS[n - 1];
   return h(
@@ -53,7 +53,7 @@ export function gmFloppy(n: number): HTMLElement {
       h('span', { class: 'gmf-name' }, d.name),
       h('small', null, '3½" 1.44 MB · © 1991–1994 RSD · MIT License'),
     ),
-    h('i', { class: 'gmf-hub' }),
+    h('i', { class: 'gmf-hd' }),
     h('i', { class: 'gmf-tab' }),
   );
 }

@@ -1,6 +1,8 @@
 /* the inserts in the Game-Maker SE box (gmInserts.ts); sizes in cqw of the sheet's width */
 
-/* ---- a 3½" program disk (also laid beside the box in the box viewer) */
+/* ---- a 3½" program disk (also laid beside the box in the box viewer), standing shutter down:
+   the label up top, the write-protect and high-density holes in the top corners, the clipped
+   corner at the bottom left */
 .gmf {
   position: relative;
   container-type: inline-size;
@@ -14,17 +16,17 @@
 .gmf-shutter {
   position: absolute;
   left: 22%;
-  top: 0;
+  bottom: 0;
   width: 56%;
   height: 33%;
-  border-radius: 0 0 2cqw 2cqw;
+  border-radius: 2cqw 2cqw 0 0;
   background: linear-gradient(90deg, #9ea4ab, #e3e6ea 40%, #b4b9bf);
 }
 
 .gmf-shutter i {
   position: absolute;
-  left: 58%;
-  top: 14%;
+  left: 24%;
+  top: 20%;
   width: 18%;
   height: 66%;
   border-radius: 1cqw;
@@ -33,17 +35,17 @@
 
 .gmf-label {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 37%;
-  bottom: 4%;
+  left: 9%;
+  right: 9%;
+  top: 4%;
+  bottom: 37%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.6cqw;
   padding: 0 3cqw 2cqw;
   overflow: hidden;
-  border-radius: 1.5cqw 1.5cqw 0 0;
+  border-radius: 1.5cqw;
   background: #f6efe0;
   color: #18150f;
   font:
@@ -89,26 +91,29 @@
 
 .gmf-label small {
   margin-top: auto;
-  font-size: 3.6cqw;
+  font-size: 3.4cqw;
+  white-space: nowrap;
   font-weight: 400;
 }
 
-.gmf-hub,
+.gmf-hd,
 .gmf-tab {
   position: absolute;
-  bottom: 2%;
+  top: 2.5%;
   width: 6%;
   height: 6%;
   background: #0b0b0c;
 }
 
-.gmf-hub {
-  display: none;
+.gmf-hd {
+  right: 2%;
 }
 
+/* the write-protect hole, its slider pushed half across */
 .gmf-tab {
-  right: 2%;
-  border: 0.5cqw solid #3a3a3e;
+  left: 2%;
+  background: linear-gradient(#8d939b 50%, #0b0b0c 50%);
+  box-shadow: inset 0 0 0 0.5cqw #3a3a3e;
 }
 
 /* ---- the disk sleeve */

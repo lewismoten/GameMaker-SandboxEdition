@@ -229,13 +229,13 @@ function drawings(): string {
       <path d="M 40 -40 A 46 46 0 0 0 -30 -42" stroke-dasharray="4 4" marker-end="url(#gmc-arrow)"/>
       <text class="gmc-label" x="58" y="-46">8 WAYS</text>
     </g>
-    <!-- a 3.5 inch diskette, behind the title -->
+    <!-- a 3.5 inch diskette, behind the title: shutter down, label up -->
     <g transform="translate(372 96) rotate(9)" class="gmc-faint">
       <rect x="0" y="0" width="140" height="146" rx="5"/>
-      <rect x="34" y="0" width="74" height="44"/>
-      <rect x="80" y="8" width="18" height="30"/>
-      <rect x="20" y="70" width="100" height="70"/>
-      <line x1="30" y1="86" x2="110" y2="86"/><line x1="30" y1="102" x2="110" y2="102"/>
+      <rect x="32" y="102" width="74" height="44"/>
+      <rect x="42" y="108" width="18" height="30"/>
+      <rect x="20" y="6" width="100" height="70"/>
+      <line x1="30" y1="44" x2="110" y2="44"/><line x1="30" y1="60" x2="110" y2="60"/>
     </g>
     <!-- a protractor arc and center mark -->
     <g class="gmc-faint">
