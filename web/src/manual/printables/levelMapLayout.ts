@@ -232,28 +232,43 @@ function paddingBlocks(cells: ArrayLike<number>): Set<number> {
 
 /**
  * A crop with its empty sides cut back: lines of nothing but the map's padding go, down to one
- * (every Level Map has one empty block round what is drawn), never past a mark. Lines are read
- * round the map's edges (an unrolled box can run past them); a way that `loops` keeps its lap.
+ * (every Level Map has one empty block round what is drawn), never past a mark. Given the map's
+ * `blocks`, a line of one block the hero can never get into (solid on every side and never
+ * changing: the bedrock under a planet's caves) is empty too, so a thick slab of it the camera
+ * shows past the floor is cut back to one line. Lines are read round the map's edges (an unrolled
+ * box can run past them); a way that `loops` keeps its lap.
  */
 export function trimPadding(
   area: Rect,
   cells: ArrayLike<number>,
   marks: { x: number; y: number; w: number; h: number }[],
   loops: [boolean, boolean] = [false, false],
+  blocks?: Block[],
 ): Rect {
   const pad = paddingBlocks(cells);
   const at = (x: number, y: number) => cells[(((y % MWID) + MWID) % MWID) * MLEN + (((x % MLEN) + MLEN) % MLEN)];
+  const closed = (b: number) => !!blocks && !openCell([b], blocks, 0);
   let x0 = area.x;
   let y0 = area.y;
   let x1 = area.x + area.w - 1;
   let y1 = area.y + area.h - 1;
+  /** A line of padding, or of one closed block, with no mark on it. */
+  const empty = (line: number[], marked: boolean) => !marked && (line.every((b) => pad.has(b)) || (closed(line[0]) && line.every((b) => b === line[0])));
   const emptyCol = (x: number) => {
-    for (let y = y0; y <= y1; y++) if (!pad.has(at(x, y))) return false;
-    return !marks.some((m) => x >= m.x && x < m.x + m.w);
+    const line: number[] = [];
+    for (let y = y0; y <= y1; y++) line.push(at(x, y));
+    return empty(
+      line,
+      marks.some((m) => x >= m.x && x < m.x + m.w),
+    );
   };
   const emptyRow = (y: number) => {
-    for (let x = x0; x <= x1; x++) if (!pad.has(at(x, y))) return false;
-    return !marks.some((m) => y >= m.y && y < m.y + m.h);
+    const line: number[] = [];
+    for (let x = x0; x <= x1; x++) line.push(at(x, y));
+    return empty(
+      line,
+      marks.some((m) => y >= m.y && y < m.y + m.h),
+    );
   };
   if (!loops[0]) {
     while (x1 - x0 > 1 && emptyCol(x0) && emptyCol(x0 + 1)) x0++;
@@ -519,7 +534,7 @@ function unrolledLevel(level: Level, played: Unrolled, reach: Reach, blocks: Blo
   const u = recut(walledRound(goesRound(played, reach), level.cells, blocks, stood), level.cells);
   const marks = level.marks.map((m) => ({ ...m, ...unrolledAt(u, m.x, m.y) }));
   const [x, y, w, h] = u.box;
-  const area = u.runs ? { x, y, w, h } : trimPadding({ x, y, w, h }, level.cells, marks, u.loops);
+  const area = u.runs ? { x, y, w, h } : trimPadding({ x, y, w, h }, level.cells, marks, u.loops, blocks);
   return { ...level, area, marks, unrolled: u, mapMarks: level.marks };
 }
 
@@ -579,7 +594,7 @@ const drawnWith = (game: Game, scenes: number[]) => scenes.find((n) => !passesTh
  * onto it), cropped to what the player sees of it. `cuts` are all the map's rooms, for naming a
  * way into another room of the same scene.
  */
-function roomLevel(game: Game, level: Level, cut: RoomCut, cuts: RoomCut[], rooms: Rooms, seen?: SeenRect): Level {
+function roomLevel(game: Game, level: Level, cut: RoomCut, cuts: RoomCut[], rooms: Rooms, blocks: Block[], seen?: SeenRect): Level {
   const within = (r: Rect, m: LevelMark) => m.x >= r.x && m.y >= r.y && m.x + m.w <= r.x + r.w && m.y + m.h <= r.y + r.h;
   const marks: LevelMark[] = level.marks.filter((m) => within(cut.rect, m)).map((m) => ({ ...m, scenes: [...m.scenes] }));
   for (const copy of cut.copies)
@@ -613,7 +628,7 @@ function roomLevel(game: Game, level: Level, cut: RoomCut, cuts: RoomCut[], room
   // an unrolled level's room keeps to the box the player went through; another, to what he sees of it
   const cropped = level.unrolled ? intersect(level.area, r) : seen && intersect({ x: seen[0], y: seen[1], w: seen[2], h: seen[3] }, r);
   const crop = cropped && !level.unrolled ? seenArea(r, [cropped.x, cropped.y, cropped.w, cropped.h], marks, 1, level.cells) : (cropped ?? r);
-  const area = trimPadding(crop, level.cells, marks);
+  const area = trimPadding(crop, level.cells, marks, [false, false], blocks);
   const scenes = cut.scenes.length ? cut.scenes : level.group.scenes;
   return {
     ...level,
@@ -627,6 +642,16 @@ function roomLevel(game: Game, level: Level, cut: RoomCut, cuts: RoomCut[], room
     cast: cut.cast,
     note: cut.note,
   };
+}
+
+/** A room of a map of rooms, waiting to be laid out as a level of its own (roomLevel). */
+interface RoomPart {
+  cut: RoomCut;
+  level: Level;
+  cuts: RoomCut[];
+  seen?: SeenRect;
+  rooms: Rooms;
+  blocks: Block[];
 }
 
 /** The part two boxes share, or undefined. */
@@ -655,7 +680,7 @@ export function levelsOf(
   rooms: Record<string, RoomsHint> = {},
 ): Level[] {
   const numbered: { cut: RoomCut; hint: RoomsHint }[] = [];
-  const levels = mapGroups(game).flatMap((group): (Level | { cut: RoomCut; level: Level; cuts: RoomCut[]; seen?: SeenRect; rooms: Rooms })[] => {
+  const levels = mapGroups(game).flatMap((group): (Level | RoomPart)[] => {
     const mapB = files.get(group.map);
     const bblB = files.get(group.bbl);
     if (!mapB || !bblB || passesThrough(game, group.scenes)) return [];
@@ -673,7 +698,7 @@ export function levelsOf(
     // an enclosed level shows every part the hero can get to, though the bots never went there
     const reach = seen && walledReach(map.blocks, blocks, starts);
     if (reach) area = joinRects(area, reach, whole);
-    area = trimPadding(area, cells, marks);
+    area = trimPadding(area, cells, marks, [false, false], blocks);
     const level: Level = { group, cells, area, whole, marks, name, scene: group.scenes[0] };
     let top = level;
     if (unrolled[key]) {
@@ -687,7 +712,7 @@ export function levelsOf(
     if (!cuts?.length) return [top];
     const hint = rooms[key];
     if (hint?.numbered) for (const cut of cuts) numbered.push({ cut, hint });
-    return cuts.map((cut) => ({ cut, level: top, cuts, seen, rooms: parts! }));
+    return cuts.map((cut) => ({ cut, level: top, cuts, seen, rooms: parts!, blocks }));
   });
   // rooms numbered across the game are named before they are laid out
   for (const label of new Set(numbered.map((n) => n.hint.numbered!.label)))
@@ -696,5 +721,5 @@ export function levelsOf(
       game,
       numbered.find((n) => n.hint.numbered!.label === label)!.hint.numbered,
     );
-  return levels.map((l) => ('cut' in l ? roomLevel(game, l.level, l.cut, l.cuts, l.rooms, l.seen) : l));
+  return levels.map((l) => ('cut' in l ? roomLevel(game, l.level, l.cut, l.cuts, l.rooms, l.blocks, l.seen) : l));
 }

@@ -156,6 +156,25 @@ describe('trimming a crop', () => {
     // a way that goes round keeps its lap
     expect(trimPadding(area, cells, [], [true, false])).toEqual({ x: 0, y: 9, w: 50, h: 12 });
   });
+
+  it('cuts a slab of one block the hero never gets into (bedrock under the floor) back to one line, given the blocks', () => {
+    const BEDROCK = 3;
+    const solid = [...blocks, { ...emptyBlock(BEDROCK), solid: 15 }];
+    const cells = new Uint8Array(MLEN * MWID).fill(OPEN);
+    for (let x = 0; x < MLEN; x++) cells[30 * MLEN + x] = x % 2 ? WALL : BEDROCK; // the floor, under open ground
+    for (let y = 31; y < 37; y++) for (let x = 0; x < MLEN; x++) cells[y * MLEN + x] = BEDROCK;
+    for (let y = 20; y < 23; y++) for (let x = 40; x < 46; x++) cells[y * MLEN + x] = WALL; // a ledge
+    const area = { x: 0, y: 19, w: MLEN, h: 18 };
+    expect(trimPadding(area, cells, [], [true, false], solid)).toEqual({ x: 0, y: 19, w: MLEN, h: 13 });
+    // without the blocks it can't tell, and a mark in the slab keeps it
+    expect(trimPadding(area, cells, [], [true, false])).toEqual(area);
+    expect(trimPadding(area, cells, [{ x: 4, y: 35, w: 1, h: 1 }], [true, false], solid)).toEqual({ x: 0, y: 19, w: MLEN, h: 18 });
+    // a slab of two blocks, or one the hero can get into, stays
+    const mixed = Uint8Array.from(cells);
+    for (let x = 0; x < MLEN; x += 2) mixed[33 * MLEN + x] = WALL;
+    expect(trimPadding(area, mixed, [], [true, false], solid).h).toBe(16); // back to row 34, under the line of two
+    expect(trimPadding(area, cells, [], [true, false], [...blocks, emptyBlock(BEDROCK)])).toEqual(area);
+  });
 });
 
 describe('on the real disks', () => {
@@ -200,6 +219,16 @@ describe('on the real disks', () => {
     expect(main.map((l) => l.name)).toEqual(['Main Street', "Gwinn's Den"]);
     expect(main[0].unrolled!.loops).toEqual([false, false]);
     expect(load('teddy').levels.some((l) => l.name === 'The Dog House')).toBe(true);
+  });
+
+  it('prints no planet of Maximus with a slab of bedrock under its floor, only one line of it', () => {
+    const { levels } = load('maximus');
+    for (const l of levels) {
+      const row = (y: number) => new Set(Array.from({ length: l.area.w }, (_, k) => l.cells[(((y % MWID) + MWID) % MWID) * MLEN + ((l.area.x + k) % MLEN)]));
+      const last = l.area.y + l.area.h - 1;
+      const [a, b] = [row(last), row(last - 1)];
+      expect(a.size === 1 && b.size === 1 && [...a][0] === [...b][0], l.group.map).toBe(false);
+    }
   });
 
   it('keeps marks of every level inside its crop', () => {
