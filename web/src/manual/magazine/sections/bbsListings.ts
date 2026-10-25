@@ -79,7 +79,7 @@ export const BBS_LISTINGS: MagSection = {
               side(
                 'The Sofa',
                 [
-                  p(`**Phone** ${SOFA_PHONE} · **Software** The Major BBS · **Lines** 8, often all busy: keep trying!`),
+                  p(`**Phone** ${SOFA_PHONE} · **SysOp** goat · **Software** The Major BBS · **Lines** 8, often all busy: keep trying!`),
                   p('**Hours** Teleconference is open all night. Log on with “new” for a User-ID of your own.'),
                   list([
                     '**Teleconference** (T): chat live with the regulars. COUCH POTATO, REMOTE CONTROL and CUSHION KING are usually on. No flooding the channel!',
