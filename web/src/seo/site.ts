@@ -48,6 +48,11 @@ export const ROUTES = {
     description:
       'TURBO BUTTON, the shareware gamer’s monthly: a 1990s-style magazine about Game-Maker and its games, with reviews, interviews, strategy, a BBS list, a game directory and ads, to read page by page or print.',
   },
+  library: {
+    title: `Library · ${PRODUCT}`,
+    description:
+      'Everything to read and print in one place: each game’s manual, hint book, maps, newsletter, sticker sheet and cards, the Game-Maker box’s paper, TURBO BUTTON magazine and the Guide, by game or by type.',
+  },
   achievements: {
     title: `What you’ve done · ${PRODUCT}`,
     description:

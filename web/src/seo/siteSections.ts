@@ -59,6 +59,7 @@ export function magazineJsonLd(): Record<string, unknown>[] {
 const PAGES: [href: string, name: string, route: keyof typeof ROUTES][] = [
   ['./#/help', 'The Guide: how to use the web editor', 'guide'],
   ['./#/magazine', `${MAG.name}, the shareware gamer’s magazine`, 'magazine'],
+  ['./#/library', 'The Library: everything to read and print', 'library'],
   ['./#/cast', 'The cast of the new games', 'cast'],
   ['./#/credits', 'Credits: who and what made it', 'credits'],
   ['./#/achievements', 'Your achievements', 'achievements'],

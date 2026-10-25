@@ -2,8 +2,7 @@
 // tags in step with what is on screen (the 1994 desk, today's home page, the Guide, a game
 // in the editor). It watches the page rather than being called by the app: main.ts sets
 // document.title and switches #app between the desk and the modern UI.
-import { clip } from './site';
-import { PAGE_ROUTES as ROUTES, type PageRoute as RouteName } from './pageRoutes';
+import { clip, ROUTES, type RouteName } from './site';
 
 const GENERIC_TITLES = new Set(['Game-Maker 1994', 'Game-Maker: Sandbox Edition', '']);
 
