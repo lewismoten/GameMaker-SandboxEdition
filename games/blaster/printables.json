@@ -392,6 +392,26 @@
     {
       "head": "Game-Maker learns to scroll",
       "html": "<p>Sandbox Software's <b>Virus Blaster</b> is a real vertically scrolling shoot-'em-up, built entirely in Game-Maker. The trick? The BLASTER drifts forward two pixels on every frame of every move, so the screen has no choice but to follow it up the map.</p>"
+    },
+    {
+      "head": "Scan every download",
+      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, ten scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
+    },
+    {
+      "head": "Since last issue: Watt made it home",
+      "html": "<p>Ohm Sweet Ohm players have been rewiring the Bitmores' Smart Home all spring. The most-asked question on the BBS: why can't Watt roll on a slant? Circuit boards are wired in straight lines, and so is Watt. The most-pressed key, by a mile, is R for reboot. It costs a spare battery, and the board starts over exactly as it was.</p>"
+    },
+    {
+      "head": "Around the Sandbox: The SysOp's assistant",
+      "html": "<p>The SysOp checks every upload for viruses before it goes in the file area, and he has help: a corgi named Teddy, who sleeps under the desk with his chin on the modem cable. This month Teddy walked across the keyboard twice and posted one message to the board. It read \"jjjjjjjjj\". It is our most popular message.</p>"
+    },
+    {
+      "head": "In the workshop: A hundred worlds",
+      "html": "<p>Our biggest game yet is on the workbench, and it's big on purpose: we want to find out how much Game-Maker can hold. A courier, a galaxy chart, five sectors and eighty-eight worlds to land on, every one of them wrapping all the way around. It's called <b>Maximus: The Hundred Worlds</b>. It needs a 386. Sorry, 286.</p>"
+    },
+    {
+      "head": "Letters: \"My clock radio plays polka\"",
+      "html": "<p><i>\"My clock radio plays polka at three in the morning, just like the Bitmores'. Is my house haunted?\"</i> - A reader in Ohio</p><p><b>The Scoop replies:</b> Check for lightning. Then send for Watt.</p>"
     }
   ]
 }

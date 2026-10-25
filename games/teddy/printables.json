@@ -397,8 +397,23 @@
     },
     {
       "head": "Ask the Sandbox: why so many dogs?",
-      "html": "<p>Readers keep asking why our games star so many dogs. Simple: the office has two of them, and they won't stop walking across the keyboard. If you find a typo in one of our manuals, now you know who to blame. Send your own pet's best trick to the BBS and we may print it in the next Scoop!</p>",
-      "everywhere": true
+      "html": "<p>Readers keep asking why our games star so many dogs. Simple: the office has two of them, and they won't stop walking across the keyboard. If you find a typo in one of our manuals, now you know who to blame. Send your own pet's best trick to the BBS and we may print it in the next Scoop!</p>"
+    },
+    {
+      "head": "Since last issue: The crown is back",
+      "html": "<p>Sandcastle Knight was our first game made for the PC speaker alone, and you played it everywhere. You found the secret dial-up in about a week, and the GIF in its file area, the SysOp and his corgi, is the most downloaded picture on the board. The most-asked question: how do I get past Gwinn? Toss her a tennis ball. She can't resist.</p>"
+    },
+    {
+      "head": "Around the Sandbox: The little red car has a name",
+      "html": "<p>Doc Leo's little red CitiCar is in this game (his friend Pockets drives it between stops, with Teddy in the front seat), and you keep asking what it's called. Read the license plate: THE\u00a0CHEZ. It's a 1976½ CitiCar, 100% electric, and it charges at about a mile an hour, so it's plugged in out front more often than not. Sharp-eyed players saw one before: Grandpa's CitiCar in In The Year 2000!</p>"
+    },
+    {
+      "head": "In the workshop: A mystery for Halloween",
+      "html": "<p>Our first mystery is nearly done, and it's coming in October for a good reason. <b>Final Curtain</b> puts you in a trench coat at the Paragon Theatre on Halloween night, 1936. Every clue is in the game, and the solution comes in three parts: who, how and why. Our testers have argued about it over lunch for a week.</p>"
+    },
+    {
+      "head": "Letters: \"Is Gwinn a bad dog?\"",
+      "html": "<p><i>\"Gwinn flattened every castle and fell asleep on the crown. Is she a bad dog?\"</i> - Two readers, one of them a little sister</p><p><b>The Scoop replies:</b> No. Gwinn is a good girl who knocks things over. In this game she might even learn a trick. Keep an eye on her.</p>"
     }
   ]
 }

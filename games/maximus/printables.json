@@ -956,8 +956,28 @@
   ],
   "news": [
     {
+      "head": "Maximus: 100 scenes, and not one more",
+      "html": "<p><b>Maximus: The Hundred Worlds</b> is out. The Maximus Core has gone dark, and Max, a courier at Maxima Station, must carry ten star-shards home across 88 worlds by pod, on foot, by rover and in a diving bell. Game-Maker holds up to 231 scenes; we stopped at 100: a galaxy chart, five sector charts, 88 worlds, the Maelstrom, the Citadel and the Heart, plus a title, a training deck and an ending. Every limit we found is in LIMITS.TXT on the disk.</p>"
+    },
+    {
       "head": "Courier’s corner",
       "html": "<p>Registered couriers: your fold-out galaxy chart, the sector map of all 88 worlds and the hint book are in this box. Fold the chart along the creases and keep it by the keyboard.</p>"
+    },
+    {
+      "head": "Since last issue: GLITCH is gone",
+      "html": "<p>Virus Blaster pilots have been posting high scores on the BBS since April. Your favorite boss is the Feedback Howler; your least favorite is the Head Crash and its rings of platter shards. And the question everybody asks: can the BLASTER stop? No. The data stream never stops flowing. Pull Down to brake.</p>"
+    },
+    {
+      "head": "Around the Sandbox: A clown on the line",
+      "html": "<p>While we were building the hails in Maximus, a friend of the office asked to be in one. So on Boxcar Flats you'll meet Doc Leo, PhD (Comedic Science), a hobo clown with a rubber chicken on a leash. Doc Leo is a proud member of the Clown Club, twists balloon animals for the kids at every parade, and parks a little red electric car out front. He says he'll be in more games. We believe him.</p>"
+    },
+    {
+      "head": "In the workshop: Teddy gets a game",
+      "html": "<p>Remember Teddy, the SysOp's corgi? He's getting his own game for the Fourth of July. <b>Sandcastle Knight</b> puts him in a tin helmet with a red plume as the knight of the backyard sandbox, with four castles to win back. Who knocked them down? Somebody with a lot of zoomies. You'll meet her next issue.</p>"
+    },
+    {
+      "head": "Letters: \"Only in an emergency\"",
+      "html": "<p><i>\"I told my mom I was shrinking down into the family 486 to fight a virus. She said to be home for dinner.\"</i> - A pilot, by modem</p><p><b>The Scoop replies:</b> Good advice. VACCINE.EXE is only for emergencies, and so is skipping dinner.</p>"
     }
   ]
 }

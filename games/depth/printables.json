@@ -138,12 +138,27 @@
  "news": [
   {
    "head": "We threw away the cardboard glasses",
-   "html": "<p>Our art department spent a week with red and blue cellophane and a stack of headache tablets before Doc Leo said what everybody was thinking: real depth isn't two colors, it's focus. <b>Depth Perception</b> has a near plane and a far plane in every scene, and only the one in focus is solid. The glasses are still in the box. You won't need them.</p>",
-   "everywhere": true
+   "html": "<p>Our art department spent a week squinting through red and blue cellophane before Doc Leo said what everybody was thinking: real depth isn't two colors, it's focus. <b>Depth Perception</b> has a near plane and a far plane in every scene, and only the one in focus is solid. The glasses are still in the box. You won't need them.</p>"
   },
   {
    "head": "How long does a render take?",
    "html": "<p>Every block, sprite and cartoon in <b>Depth Perception</b> was ray traced on our office 486. The intro alone took a long weekend. The box art took eleven hours and a vampire. We are told the next machine will be faster.</p>"
+  },
+  {
+   "head": "Since last issue: Snowbound, rough edges and all",
+   "html": "<p>Snowbound got our roughest reviews and our warmest letters. Yes, it's the simplest game we've made; it's also the truest. Readers from all over Mineral County wrote to say we got the sled run on Jamie Street just right. The most-asked question: does the arcade eat all your dollars? Only if you let it. Count the can (F2) before you head for the register.</p>"
+  },
+  {
+   "head": "Around the Sandbox: Our lighting director",
+   "html": "<p>Doc Leo has a new title. He spent so many nights at the office watching renders crawl down the screen that we made him our lighting director, which mostly means he leaves the spotlight on. He paces the Teapot Temple with his rubber chicken, Teddy strolls the Checkerboard, Gwinn sits pretty in the Glass Garden and THE\u00a0CHEZ is parked in the temple, charging. Gwinn's sit is ray traced. We're counting it.</p>"
+  },
+  {
+   "head": "In the workshop: We are getting around to it",
+   "html": "<p>Since our first disk you've asked for a role-playing game, and since our first disk we've said we'd get around to it. We're getting around to it: <b>Quest for the Round Tuit</b>, a whole kingdom where everything gets done, eventually. Towns, dungeons, a quest log, and a horseless carriage you may recognize.</p>"
+  },
+  {
+   "head": "Letters: \"Did you make it to the mall?\"",
+   "html": "<p><i>\"In Snowbound, did the real founder make it to the register in time?\"</i> - A reader in West Virginia</p><p><b>The Scoop replies:</b> Look at the name on this newsletter. Then look at the box your game came in.</p>"
   }
  ],
  "items": [

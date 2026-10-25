@@ -489,9 +489,28 @@
   ],
   "news": [
     {
+      "head": "Snowbound: how Sandbox Software began",
+      "html": "<p>Fort Ashby, West Virginia, Friday, December 11, 1992. A foot and a half of snow, no school, and a pink box in the window of Bits &amp; Bytes Software at LaVale Mall: GAME-MAKER, $89 until January. <b>Snowbound: The $89 Shovel</b> is the true(ish) story of how this company was paid for. Dig out the neighbors' driveways at a dollar a scoop, deliver the papers, sled down Jamie Street and get to the register before closing time. Mind Biscuit. He is very friendly.</p>"
+    },
+    {
       "head": "SNOWBOUND II: Spring Thaw",
-      "html": "<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>",
-      "everywhere": true
+      "html": "<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>"
+    },
+    {
+      "head": "Since last issue: The Word Counter is still thinking",
+      "html": "<p>KEEP IT BRIEF! readers have put a lot of stories back together this month. The Word Counter found exactly one hundred words in each one but Steam-Powered Summer, where it found ninety-nine until somebody pointed out what a hyphen does. It is still thinking about it. Judging by the BBS, so are some of you.</p>"
+    },
+    {
+      "head": "Around the Sandbox: Three years of Sandbox Software",
+      "html": "<p>Nine games, nine issues of this newsletter, one BBS, two dogs, one clown and one little red car. The snow shovel that started it all is still in the corner of the office. This month Gwinn saw her first snow from the office window and tried to shovel it with her nose. Happy holidays from all of us.</p>"
+    },
+    {
+      "head": "In the workshop: Real depth",
+      "html": "<p>The office 486 has been running all night for weeks, ray tracing chrome spheres, glass cubes and one red teapot. That's our next game: <b>Depth Perception</b>, where every scene has a near plane and a far plane, and only the one in focus is solid. No cardboard glasses required.</p>"
+    },
+    {
+      "head": "Letters: \"A corgi in my library book\"",
+      "html": "<p><i>\"I found a corgi in one of the library books. Is that allowed?\"</i> - A reader, by mail</p><p><b>The Scoop replies:</b> Teddy is allowed. Gwinn is not allowed in the library, and is in the library.</p>"
     }
   ]
 }
