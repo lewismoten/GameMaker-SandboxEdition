@@ -23,10 +23,11 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
 /**
  * The secret games' covers, by idHash, so the desk's code and chunk names name none of them
  * (see project/secretGames): e.g. `0x1234abcd: () => import('./extra')` for a cover in
- * covers/extra.ts. None yet.
+ * covers/extra.ts.
  */
 const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {
   0x3cb23e5f: () => import('./extra'),
+  0x5cdf8e7d: () => import('./extra2'),
 };
 
 /** Where the award laurel and the "hours of play" burst sit, clear of each cover's subject. */
