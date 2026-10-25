@@ -441,9 +441,11 @@ formats from their published descriptions and from Game-Maker's own source.
   page links to the original.
 - **The level check** (`web/src/editor/check`): its heat map's six colors are taken from
   **viridis**, the color map by Stéfan van der Walt and Nathaniel Smith (CC0, public domain
-  dedication), chosen because it reads with every kind of color vision; its monster contrast is
-  the **relative luminance and contrast ratio** of the W3C's Web Content Accessibility
-  Guidelines (WCAG) 2. Both are used as published; no code of theirs is included.
+  dedication), chosen because it reads with every kind of color vision; its monster and
+  text-screen contrast is the **relative luminance and contrast ratio** of the W3C's Web Content
+  Accessibility Guidelines (WCAG) 2, and its flashing check follows WCAG 2's **three flashes a
+  second** threshold (success criterion 2.3.1). All are used as published; no code of theirs is
+  included.
 - **The palette editor's Color vision check** (`web/src/editor/editors/palette/colorVision.ts`)
   simulates protanopia, deuteranopia and tritanopia with the severity-1.0 matrices published
   by **Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes**, "A
