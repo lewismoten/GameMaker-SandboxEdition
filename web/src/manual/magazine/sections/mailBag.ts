@@ -3,8 +3,14 @@
 // and OOPS!, a correction to the preview issue. Every fact in a reply is the games' or the
 // boards' own: the octopus needs slime (Octolris's help screen), the hearts sit in their maps
 // whatever the time, the Sandbox BBS has one line (bbsListings.ts), and the correction's keys
-// are PLAYGAME's (mailBag.test.ts reads the engine). Readers are made up: a handle and a town.
-import { a, art, card, cols, grid, head, note, p, side } from '../blocks';
+// are PLAYGAME's (mailBag.test.ts reads the engine). Its second page, the Design Desk, answers
+// readers whose own games trip their testers up (an EXIT sign that isn't one, a sword with no
+// left swing, clouds you fall through, a wrapping road with no landmark), with fixes that are PLAYGAME's rules: a link has no
+// picture of its own, a fired monster flies the way the hero last moved and turns to face it,
+// and look-alike blocks can differ in their solid sides. The three troubles are classic ones
+// players of Game-Maker games ran into in levelengine's RSD Game Maker Binge (NOTICE.md), retold.
+// Readers are made up: a handle and a town.
+import { a, art, card, cols, grid, head, list, note, p, side } from '../blocks';
 import type { Block, MagSection } from '../types';
 
 /** The correction: the key the preview issue named for the score, and the one that shows it. */
@@ -62,6 +68,38 @@ const LETTERS: Letter[] = [
   },
 ];
 
+/** The Design Desk: readers whose own games stump their testers, and the fix for each. */
+const DESK_LETTERS: Letter[] = [
+  {
+    title: 'Exit, stage nowhere',
+    text: 'My cousin played my castle game for an hour, then quit at the big sign that says EXIT. He walked into it about forty times. It isn’t the way out, I only painted it there because castles have signs. Now he tells everybody my game is broken.',
+    from: 'SIR LANCELOT, Cumberland, Md.',
+    reply:
+      'Your cousin has a point. A sign that says EXIT is a promise, and in Game-Maker a link has no picture of its own: it’s just a spot on the map, so players only know a way out by what you draw there. Paint over the sign, or move the real link under it. Then draw every real way out the same way, and that sign will mean something.',
+  },
+  {
+    title: 'No left turn',
+    text: 'My knight has a sword key for every direction. Q swings right, W swings up, E swings down, and I ran out of good keys, so left is on the semicolon. Every tester says the knight can’t fight anything on his left.',
+    from: 'SQUIRE, Frostburg, Md.',
+    reply:
+      'One key will do it. A swipe the knight fires flies the way he last moved and turns to face that way, so draw it facing right, put it on the Space bar, and it swings left when he walks left. That frees Q, W and E for something fun.',
+  },
+  {
+    title: 'Cloudy with a chance of falling',
+    text: 'I keep falling through the clouds in my big brother’s sky level. Some hold you up and some don’t, and they look exactly the same. He says that’s the challenge. I say it’s mean.',
+    from: 'SKYDIVER, Keyser, W.Va.',
+    reply:
+      'We’re with you. Two blocks with the same picture can have different solid sides, which is how secret doors work, but a secret is fair only when something gives it away. Tell your brother to give the clouds you can stand on a firm, bright top edge, and the ones you can’t a thin, gray, rainy look.',
+  },
+  {
+    title: 'Round and round',
+    text: 'My desert level is one long road, and the map wraps, so it goes on forever. My dad drove it for twenty minutes before he asked me where the oasis was. It was behind him the whole time.',
+    from: 'DUNE BUGGY, Butler, Pa.',
+    reply:
+      'A road that loops looks the same on every lap, so nobody can tell they’re going round. Plant something one of a kind near the seam, a cactus wearing a hat will do, and a sign that points to the oasis. Then let your dad off at the next rest stop.',
+  },
+];
+
 const letter = (l: Letter): Block[] => [
   head(l.title, { size: 's', level: 3, kicker: l.kicker }),
   ...(l.drawing ? [art('joey', l.drawing.alt)] : []),
@@ -107,6 +145,27 @@ export const MAIL_BAG: MagSection = {
           ],
         ]),
         note('Readers, handles and hometowns are part of the story the 1994 desk tells.'),
+      ],
+    },
+    {
+      kind: 'dept',
+      tone: 'white',
+      blocks: [
+        head('The Design Desk', {
+          kicker: 'Letters',
+          size: 'm',
+          level: 2,
+          deck: 'You’re making games, and your friends are getting stuck in them. Here are four from this month’s stack, and what we would change.',
+        }),
+        cols(2, DESK_LETTERS.flatMap(letter)),
+        side(
+          'The fix in one line',
+          [
+            list(['Draw a way out at every link, and nowhere else.', 'One fire key fires every way.', 'Floors look like floors; scenery looks like scenery.']),
+            p('More of what players gripe about, and how to fix it, is in this issue’s [Design Workshop](go:mag/gripes).'),
+          ],
+          'cyan',
+        ),
       ],
     },
   ],
