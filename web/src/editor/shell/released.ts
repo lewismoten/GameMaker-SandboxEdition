@@ -100,7 +100,9 @@ async function copyAndSwitch(r: Released, again = false): Promise<boolean> {
   const id = await copyCatalogGame(e, e.title, e.gam, async () => new GameFiles(r.original.entries().map(([n, b]) => [n, b.slice()])));
   if (!id) return false;
   const file = r.workspace?.currentFile ?? e.gam ?? '';
+  const old = document.querySelector('main.editor');
   location.hash = formatHash(['p', id, file], currentRoute().params);
+  focusCopy(old);
   toast(again ? 'Your copy is open; make the change again.' : `Your copy of ${e.title} is open.`);
   return true;
 }
@@ -124,4 +126,19 @@ export function readOnlyBar(project: Project): HTMLElement | null {
           '✎ Edit a copy',
         ),
   );
+}
+
+/** The bar's button is gone with the released game's editor: once the copy's is on the page, focus goes there. */
+function focusCopy(old: Element | null): void {
+  const until = performance.now() + 5000;
+  const look = () => {
+    const main = document.querySelector<HTMLElement>('main.editor');
+    const ready = main && main !== old;
+    if (!ready && performance.now() < until) return void requestAnimationFrame(look);
+    const at = document.activeElement;
+    if (!main || (at && at !== document.body && at.isConnected)) return;
+    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+    main.focus({ preventScroll: true });
+  };
+  requestAnimationFrame(look);
 }
