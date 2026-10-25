@@ -205,7 +205,7 @@ describe('TURBO BUTTON', async () => {
   });
 
   it('knows the Guide’s sections', () => {
-    const src = readFileSync(join(__dirname, '../webManual.ts'), 'utf8');
+    const src = readFileSync(join(__dirname, '../guideSections.ts'), 'utf8');
     const ids = [...src.matchAll(/^ {2}\[\s*'([a-z-]+)',/gm)].map((m) => m[1]);
     expect([...ids].sort()).toEqual([...GUIDE_SECTIONS].sort());
   });

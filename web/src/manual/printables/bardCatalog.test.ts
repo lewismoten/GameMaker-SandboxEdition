@@ -14,7 +14,7 @@ describe('The Bard of Bizarre flyer', () => {
 
   it('credits the songs and pictures in the site credits’ words', async () => {
     const { readFileSync } = await import('node:fs');
-    const credits = readFileSync(new URL('../webManual.ts', import.meta.url), 'utf8')
+    const credits = readFileSync(new URL('../guideSections.ts', import.meta.url), 'utf8')
       .replace(/<[^>]+>/g, '')
       .replace(/\s+/g, ' ');
     expect(credits).toContain(BARD_CREDIT);

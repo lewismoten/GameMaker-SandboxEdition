@@ -609,7 +609,8 @@ saved with `editor/core/ui.ts` `download`.
     (`web-player.html`, `player/index.html` and `player/games.json`);
   - `seoBuild.ts` puts tags, JSON-LD and readable text into the pages and writes (and serves in dev)
     `robots.txt`, `sitemap.xml`, `llms.txt`, each game's `play-<id>.html` and its preview picture
-    `og/<id>.png` (drawn by `ogImage.ts`), and The Sandbox Scoop's RSS feed `scoop.xml`
+    `og/<id>.png` (drawn by `ogImage.ts`), each Guide section's page `help-<id>.html` (its text from
+    `manual/guideSections.ts`, which `webManual.ts` shows), and The Sandbox Scoop's RSS feed `scoop.xml`
     (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
 - Data files the site reads, written by hand-run scripts (their tests fail until they are rerun):
   - `credits.ts` writes the Credits page's `deps.json`;

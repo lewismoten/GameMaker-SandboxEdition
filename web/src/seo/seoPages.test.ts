@@ -5,7 +5,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { IndexHtmlTransformContext } from 'vite';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
-import { gamePageHtml, seoPages } from '../../scripts/seoBuild';
+import { gamePageHtml, guidePageHtml, seoPages } from '../../scripts/seoBuild';
+import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { gamePage, SITE_URL } from './site';
 
 const cdRoot = join(__dirname, '../../../cd');
@@ -56,15 +57,34 @@ describe('seoBuild', () => {
     for (const g of secret) expect(secretHits(`<a href="./${gamePage(g.id)}">${g.title}</a>`)).toHaveLength(2);
   });
 
-  it('writes a sitemap of the home page, dos.html and each listed game’s page', () => {
+  it('writes a sitemap of the home page, dos.html, each listed game’s page and each Guide section’s page', () => {
     const xml = files['sitemap.xml'];
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(locs[0]).toBe(SITE_URL);
     expect(locs).toContain(`${SITE_URL}dos.html`);
-    expect(locs.slice(2).sort()).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
+    const guide = locs.filter((l) => /\/help-[\w-]+\.html$/.test(l));
+    expect(guide.sort()).toEqual(GUIDE_SECTIONS.map(([id]) => `${SITE_URL}help-${id}.html`).sort());
+    expect(
+      locs
+        .slice(2)
+        .filter((l) => !guide.includes(l))
+        .sort(),
+    ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
     expect(new Set(locs).size).toBe(locs.length);
     for (const loc of locs) expect(loc.startsWith(SITE_URL)).toBe(true);
     expect(xml).toMatch(/^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
+  });
+
+  it('makes each Guide section a page of its own that opens it in the app', () => {
+    const index = page('index.html');
+    for (const section of GUIDE_SECTIONS) {
+      const html = guidePageHtml(index, section);
+      expect(html).toContain(`<link rel="canonical" href="${SITE_URL}help-${section[0]}.html" />`);
+      expect(html).toContain(`#/help/${section[0]}`);
+      expect(html).toMatch(/<title>[^<]+ · Guide · /);
+      expect(html.match(/<h1>/g)).toHaveLength(1);
+      expect(html).toMatch(/<meta name="description" content="[^"]{20,}"/);
+    }
   });
 
   it('points robots.txt at the sitemap', () => {
