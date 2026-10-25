@@ -4,7 +4,7 @@
 // story's twist, the thirty-third book, the endings, and the high score / load / save
 // backdrops. Everything shares the game palette, so PLAYGAME's inks come out exact.
 import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
 import { Pixels, rng } from '../../../kit/pixels';
@@ -383,7 +383,12 @@ export function introFli(joe: BlockSet): Uint8Array {
     frames.push(p);
     palettes.push(PAL.pal);
   }
-  return encodeFli(
+  // a second on his line (the hold the list used to give), then a fade to black before the title
+  for (let t = 0; t < 10; t++) {
+    frames.push(frames[frames.length - 1]);
+    palettes.push(PAL.pal);
+  }
+  return encodeFliFadeOut(
     frames.map((f) => Uint8Array.from(f.px)),
     PAL.pal,
     { speed: 7, palettes },
@@ -399,13 +404,13 @@ export function buildScreens(joe: BlockSet, wings: CompiledWing[]): Record<strin
   out['title.gif'] = gif(titleScreen(joe));
   out['title.lst'] = serializeSlideList([
     { name: SANDLOGO, pause: 0 },
-    { name: 'intro.fli', pause: 1 },
+    { name: 'intro.fli', pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]);
   out['menu.gif'] = gif(menuScreen(joe));
   out['story.gif'] = gif(pageScreen(joe, 'THE STORY', 51));
   out['story.txt'] = dosText(STORY);
-  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 1 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
+  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 0 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
   out['help.gif'] = gif(pageScreen(joe, 'HOW TO PLAY', 52, 'up0'));
   out['help.txt'] = dosText(HELP);
   out['help.lst'] = serializeSlideList([{ name: 'help.gif', pause: 0 }, { name: 'help.txt' }]);

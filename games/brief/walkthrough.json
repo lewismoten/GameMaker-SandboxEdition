@@ -379,7 +379,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 170572,
+  "frames": 170630,
   "chapters": [
    {
     "title": "Opening",
@@ -387,51 +387,51 @@
    },
    {
     "title": "Story",
-    "frame": 1514
+    "frame": 1543
    },
    {
     "title": "Wing 1: Clown Alley",
-    "frame": 4576
+    "frame": 4634
    },
    {
     "title": "Wing 2: The Laboratory",
-    "frame": 24003
+    "frame": 24061
    },
    {
     "title": "Wing 3: The Docks",
-    "frame": 41223
+    "frame": 41281
    },
    {
     "title": "Wing 4: The Backyard",
-    "frame": 59914
+    "frame": 59972
    },
    {
     "title": "Wing 5: The Living Room",
-    "frame": 80675
+    "frame": 80733
    },
    {
     "title": "Wing 6: After Hours",
-    "frame": 99993
+    "frame": 100051
    },
    {
     "title": "Wing 7: Other Dimensions",
-    "frame": 119123
+    "frame": 119181
    },
    {
     "title": "Wing 8: The Future Shelf",
-    "frame": 138982
+    "frame": 139040
    },
    {
     "title": "The Reserve Stacks",
-    "frame": 160572
+    "frame": 160630
    },
    {
     "title": "Ending",
-    "frame": 163318
+    "frame": 163376
    },
    {
     "title": "Credits",
-    "frame": 168055
+    "frame": 168113
    }
   ]
  }
