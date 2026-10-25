@@ -34,8 +34,16 @@ export const DESIGN: DesignFind[] = [
     fix: 'he rides up front, head out of the door window', // db7344e8
   },
   { game: 'Teddy’s Little Bigger Adventure', what: 'once over the kitchen fridge, there was no way back', fix: 'a step stool beside it' }, // 54bd7170
-  { game: 'Teddy’s Little Biggest Adventure', what: 'outside without the keys, with no way back in' },
-  { game: 'In The Year 2000!', what: 'at the Science Fair, short of pages, with none left to find after a life was lost' },
+  {
+    game: 'Teddy’s Little Biggest Adventure',
+    what: 'outside without the keys, with no way back in',
+    fix: 'a NEED KEYS board blocks the door until he has them',
+  }, // bf70e6f1
+  {
+    game: 'In The Year 2000!',
+    what: 'at the Science Fair, short of pages, with none left to find',
+    fix: 'a copier by the start prints spare pages, and a sign says how to get the cover',
+  }, // 054fb525
 ];
 
 /** A design find's line in the list. */
