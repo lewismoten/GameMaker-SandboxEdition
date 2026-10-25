@@ -6,7 +6,8 @@
 // Behind the function keys lies Game-Maker's printed key template, as software of the
 // day shipped: what Esc and the F-keys do while a game plays. Its words are buttons too,
 // the keyboard-reachable way to press those keys. On a phone, where the board is too small to
-// tap, a strip of finger-sized keys under the PC (keyStrip) presses the ones a game asks for.
+// tap, a strip of finger-sized keys under the PC (keyStrip) presses the ones a game asks for,
+// and behind its F2–F10 key the rest of the template's; there the template's words are print only.
 // Over the keypad, the Num Lock, Caps Lock and Scroll Lock lights: each lock key turns its own
 // on and off (as the real keyboard reports it, when it does), Num Lock comes on when the PC
 // starts, as a 1994 BIOS left it, and all three are dark while the PC is off.
@@ -111,6 +112,12 @@ const STRIP: [string, string, string][] = [
   ['↓', 'ArrowDown', 'Press the down arrow'],
   ['→', 'ArrowRight', 'Press the right arrow'],
 ];
+
+/** The template's keys the phone's strip doesn't show (F2 to F10): its row behind the F2–F10 key. */
+export const stripFnKeys = () => GLOBAL_KEYS.filter((g) => !STRIP.some(([, code]) => code === (g.name === 'Esc' ? 'Escape' : g.name)));
+
+/** Every KeyboardEvent.code the phone's strip can press, its F2–F10 row included. */
+export const stripCodes = () => [...STRIP.map(([, code]) => code), ...stripFnKeys().map((g) => g.name)];
 
 /** The keyboard, and the phone's strip of large keys that press the same keys on the PC. */
 export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTMLElement } {
@@ -269,11 +276,10 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
   const holding = new Map<number, string>();
   // the template's other keys (F2 to F10) in a row of their own behind a toggle: on a phone the
   // template's words are too small and close together to press
-  const fnKeys = GLOBAL_KEYS.filter((g) => !STRIP.some(([, code]) => code === (g.name === 'Esc' ? 'Escape' : g.name)));
   const fnRow = h(
     'div',
     { class: 'ks-fn', id: 'ks-fn', role: 'group', 'aria-label': 'Function keys', hidden: true },
-    ...fnKeys.map((g) =>
+    ...stripFnKeys().map((g) =>
       h(
         'button',
         { type: 'button', class: 'ks-key ks-f', dataset: { code: g.name }, title: `${g.name}: ${g.title}` },
