@@ -13,7 +13,8 @@ import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
 import { GWINN_HERO } from '../sprites/gwinnHero';
 import { docLeo, type Costume } from '../sprites/people';
-import { citiCar } from '../sprites/klown';
+import { CHEZ, citiCar } from '../sprites/klown';
+import { chezRide } from '../../../teddy/src/screens/ride';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
 import {
@@ -333,29 +334,32 @@ export function lostScreen(): Pixels {
 
 /**
  * Between stops (an FLI): THE CHEZ, Doc Leo's little red CitiCar, hums on along Gwinn's
- * trail (it is electric: no exhaust, just a whirr), Teddy's head out of the back window.
+ * trail (it is electric: no exhaust, just a whirr), Doc Leo at the wheel behind the door window
+ * and Teddy beside him in the front passenger seat, his head out of the window, ears flapping.
  */
 export function driveFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const bg = landscape(11);
   bg.rect(0, 168, W, 32, c('asphalt', 1));
   for (let x = 0; x < W; x += 40) bg.rect(x + 8, 182, 20, 3, c('yellow', 3));
-  const carPic = new Pixels(40, 40, CLEAR);
-  citiCar(carPic, 0, 0);
   const leoHead = docLeo(undefined).crop(0, 0, 20, 16);
   for (let f = 0; f < 44; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
-    const x = -130 + f * 11;
-    const bob = f % 2;
-    scaleBlit(p, carPic, x, 66 + bob, 3);
-    // Doc Leo at the wheel behind the door window; Teddy's head out of the back window (in the flat
-    // tail, so it pokes out behind the car), ears flapping
-    scaleBlit(p, leoHead, x + 34, 98 + bob, 2);
-    scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 17, 93 + bob, 2);
+    const x = -200 + f * 12;
+    const y = 72 + (f % 2);
+    chezRide(
+      p,
+      x,
+      y,
+      5,
+      CHEZ,
+      (q) => scaleBlit(q, leoHead, x + 60, y + 12, 2),
+      (q) => scaleBlit(q, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 2, 20, 12), x + 94, y + 18, 2),
+    );
     // the electric whirr
-    for (let k = 0; k < 3; k++) p.rect(x - 14 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
-    if (f > 16 && f < 30) outlined(p, x + 124, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);
+    for (let k = 0; k < 3; k++) p.rect(x - 8 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
+    if (f > 16 && f < 30) outlined(p, x + 206, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);
     centered(p, 12, f < 22 ? "ON GWINN'S TRAIL!" : 'THE CHEZ: 100% ELECTRIC', c('paint', 3), 1, c('ink', 0));
     if (f >= 22) centered(p, 24, '(ABOUT A MILE AN HOUR OF CHARGE)', c('paint', 3), 1, c('ink', 0));
     frames.push(Uint8Array.from(p.px));

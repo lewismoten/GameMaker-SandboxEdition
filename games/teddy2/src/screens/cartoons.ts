@@ -3,9 +3,10 @@
 // the gust that takes her dog show entry card, and at the end, fireworks and the Fair parade with THE CHEZ in front.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
+import { blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';
-import { citiCar } from '../sprites/klown';
+import { CHEZ } from '../sprites/klown';
+import { chezRide } from '../../../teddy/src/screens/ride';
 import { docLeo, FULL } from '../sprites/people';
 import { SP, landscape, logo, titleScreen } from './screens';
 import { castFli } from './cast';
@@ -107,7 +108,7 @@ export function morningFli(): Uint8Array {
   return r.fli(8);
 }
 
-/** The finale: fireworks over the Fair, THE CHEZ leading the parade, Teddy on the roof, Gwinn and her ribbon. */
+/** The finale: fireworks over the Fair, THE CHEZ leading the parade, Teddy up front, Gwinn and her ribbon. */
 export function finaleFli(): Uint8Array {
   const bg = new Pixels(W, H, c('ink', 0));
   for (let y = 0; y < 130; y++) for (let x = 0; x < W; x++) if ((x * 13 + y * 7) % 97 === 0) bg.set(x, y, c('glow', 3));
@@ -121,8 +122,6 @@ export function finaleFli(): Uint8Array {
   bg.rect(0, 160, W, 40, c('asphalt', 1));
   for (let x = 0; x < W; x += 16) for (let k = 0; k < 6; k++) bg.rect(x + k, 40 + k, 15 - k * 2, 1, c(['red', 'yellow', 'blue', 'green'][(x / 16) % 4], 2));
   const r = new Reel(bg);
-  const car = new Pixels(40, 40, CLEAR);
-  citiCar(car, 0, 0);
   const head = docLeo(FULL).crop(0, 0, 20, 16);
   const burst = (p: Pixels, cx: number, cy: number, t: number, col: string) => {
     if (t < 0 || t > 10) return;
@@ -137,12 +136,21 @@ export function finaleFli(): Uint8Array {
       burst(p, 160, 34, (f + 8) % 22, 'yellow');
       burst(p, 110, 70, (f + 15) % 22, 'blue');
       const x0 = -150 + f * 6;
-      scaleBlit(p, car, x0 + 90, 72, 3);
-      scaleBlit(p, head, x0 + 124, 104 - (f % 2), 2);
-      scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
-      scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
+      // Doc Leo at the wheel, Teddy beside him up front, his head out of the door window
+      const cx = x0 + 10;
+      const cy = 62 - (f % 2);
+      chezRide(
+        p,
+        cx,
+        cy,
+        5,
+        CHEZ,
+        (q) => scaleBlit(q, head, cx + 60, cy + 12, 2),
+        (q) => scaleBlit(q, POSES[f % 6 < 3 ? 'front' : 'frontBark'].crop(0, 2, 20, 12), cx + 94, cy + 18, 2),
+      );
+      scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 - 50, 150, 2);
       // her blue ribbon
-      p.disc(x0 + 46, 166, 4, c('blue', 2)).disc(x0 + 46, 166, 2, c('gold', 2));
+      p.disc(x0 - 24, 166, 4, c('blue', 2)).disc(x0 - 24, 166, 2, c('gold', 2));
       caption(p, f < 32 ? 'AND THE FAIR PARADE...' : 'THE CHEZ LEADS THE WAY!', 8);
       if (f >= 32) caption(p, 'TEDDY RIDES UP FRONT. GWINN RUNS.', 20);
     });
