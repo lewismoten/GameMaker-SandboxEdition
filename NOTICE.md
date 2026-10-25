@@ -89,8 +89,11 @@ game folder opens in the browser unchanged.
   traced like the Sandbox Software sting), the "PRESENTS" card the editor draws for a
   game's maker (`web/src/editor/tools/opening`), and _TURBO BUTTON_, the site's 1990s-style
   game magazine (`web/src/manual/magazine`): its words, layout and drawings, with screenshots
-  drawn from the games themselves and its interview with Lewis drawn from his own account in
-  `docs/history.md`. Like everything else added here they are under
+  of the games, the desk and the site themselves and its interview with Lewis drawn from his own account in
+  `docs/history.md`; The Ultimate Owner's Guide (`web/src/manual/ultimate`); and the desk's
+  props, drawn in code: the GRAVITAS game pad, the ILLOGITECH speakers and their SOUND BOASTER
+  switch, the mugs (each badge made from a game's own files or the BBS's ANSI art) and the mouse
+  pad prints. Like everything else added here they are under
   the MIT License, so the games they open can carry them anywhere.
 - **Lewis's DOSBox screenshot** of A Fly Named Carl's garbled title (his own capture, taken while
   testing the games in real DOS) illustrates "Where Game-Maker Runs Out" in The Ultimate Owner's
