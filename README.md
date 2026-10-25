@@ -134,6 +134,7 @@ yourself before committing a game.
 | --- | --- |
 | [`web/`](web) | The browser app. [web/README.md](web/README.md) explains it; [web/src/README.md](web/src/README.md) maps the source. |
 | [`games/`](games) | The Sandbox Software and Bard of Bizarre games, built in code, and the shared kit that builds and play-tests them. See [games/README.md](games/README.md) and [games/kit/README.md](games/kit/README.md). |
+| [`docs/`](docs) | For site owners: [opening a game from your own site](docs/embed.md) and [the web player](docs/web-player.md); and [Lewis and Game-Maker](docs/history.md), how the project came about. |
 | [`mac/`](mac), [`win/`](win), [`linux/`](linux) | The small native players that a downloaded game runs in, and how they are built. See [mac/README.md](mac/README.md), [win/README.md](win/README.md) and [linux/README.md](linux/README.md). |
 | `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
 | [`code/`](code) | The original DOS C/C++ source. See [code/README.md](code/README.md). |
