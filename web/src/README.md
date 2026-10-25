@@ -327,7 +327,10 @@ modules are in [`../test`](../test).
     (`levelSecrets.ts`, from `levelSecrets.json` written by `scripts/levelSecrets.ts`) and crop to
     what the player sees (`levelViews.ts`, from `levelViews.json` written by
     `scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
-    through it, `editor/check/unroll.ts`), both looked round with `panZoom.ts`. `levelPoster.ts`
+    through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round),
+    both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
+    (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
+    and a map nobody walks around in is left out. `levelPoster.ts`
     draws one level the same way as a PNG, for the map editor's "As players see it" picture.
   - Stickers: the sheet (`stickers.ts`, `gmStickers.ts` for the Game-Maker box), laid out on Print
     Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`) by the sticker rules in
