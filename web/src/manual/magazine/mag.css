@@ -790,7 +790,7 @@
 
 /* the contents page: a line a section, set close */
 .kind-contents .mag-rows li {
-  padding: 0.12em 0;
+  padding: 0.1em 0;
 }
 
 /* and its advertiser index in three columns, set a little closer than body text */

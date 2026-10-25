@@ -263,6 +263,11 @@ export const CLAUDE_JUMP: MagSection = {
           [
             jumpFrom('claude-5', 'Porting a Classic, Line by Line'),
             cols(2, [
+              q('Why did Lewis test in DOS when the web version already works?'),
+              a(
+                C,
+                'Because the web version is my reading of RSD’s code, and a reading has blind spots. In DOSBox, on RSD’s own programs, Lewis found an animation chunk too big for PLAYGAME’s buffer, a count read as a signed byte, and a screen with no way to clear itself. My engine took all three in stride, which was the problem. [His list: page {page:dos-bugs}](go:mag/dos-bugs).',
+              ),
               q('What did you enjoy most?'),
               a(C, 'Finding out how the original worked, line by line, and then seeing an old game play in a browser exactly as it did on a 1990s PC.'),
               q('Who made the Bard of Bizarre’s music?'),
