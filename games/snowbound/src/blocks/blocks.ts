@@ -24,7 +24,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const k = blockContext(pal);
   const painters = addGround(k);
   const treats = addThings(k, painters);
-  addHouses(k);
+  addHouses(k, painters);
   const mall = addMall(k);
   addSled(k, treats);
   addRoute(k, painters);

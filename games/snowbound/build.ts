@@ -28,6 +28,7 @@ import { buildKid, buildSledder } from './src/characters/kid';
 import { CREDITS, INSTRUCTIONS, WOODS, readme } from './src/screens/text';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
+import { writeWalkPaths } from '../kit/walkPaths';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -255,6 +256,9 @@ disk.put('license.txt', licenseText('Snowbound: The $89 Shovel'));
 // the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
 clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
+// the sidewalks, front walks and driveways (and the side streets, plowed down to the same
+// asphalt) the walkthrough's bot keeps to; not the main road, which it keeps off anyway (not on the disk)
+writeWalkPaths('snowbound', { 'snow.bbl': ['walk', 'deepWalk', 'stoop', 'stoopPaper', 'asphalt', 'deep', 'tip', 'rootBeer'].map((n) => book.n(n)) });
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,
 );

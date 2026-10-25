@@ -515,6 +515,10 @@ export function lavaleMall(book: BlockBook) {
   m.set(X + 52, 27, 'c');
   // lost on the far right? a sign by the trees points back up to the mall
   m.set(X + 59, 29, 'signMallBack');
+  // a cart return out on the right of the lot, its sign hung crooked (CART RETURN 7)
+  m.set(X + 56, 34, 'cartSign0')
+    .set(X + 57, 34, 'cartSign1')
+    .set(X + 58, 34, 'cartCorral');
   // meltwater frozen along the back of the lot: an icy lane that slides you east toward the
   // stores (quick, but nothing to shovel on it and the lot's buried cars to steer past)
   m.fill(X + 6, 37, 44, 1, '>');

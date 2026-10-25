@@ -4,6 +4,7 @@
 //   cd web && npx vite-node ../games/snowbound/tools/check.ts [seed...]
 import { align } from './align';
 import { Bot, SCAN } from './bot';
+import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 import { bowdenDrive, galeStreet, jamieStreet, lavaleMall } from './route';
 import { GameSim } from './sim';
 import { TICKS_PER_SECOND } from '../../kit/gameSim';
@@ -32,6 +33,8 @@ const seeds = process.argv.slice(2).map(Number);
 for (const seed of seeds.length ? seeds : [1]) {
   const sim = new GameSim(undefined, seed);
   const bot = new Bot(sim);
+  // along the sidewalks and driveways, as a person walks (walkPaths.json, written by the build)
+  bot.keepTo = keepToPaths(sim, readWalkPaths('snowbound'));
   let t = 0;
   for (const level of [galeStreet, jamieStreet, bowdenDrive, lavaleMall]) {
     if (level === jamieStreet) await oneShove(sim, seed);

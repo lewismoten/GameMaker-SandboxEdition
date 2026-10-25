@@ -7,12 +7,15 @@
 import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { Bot } from './bot';
+import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 import { bowdenDrive, galeStreet, jamieStreet, lavaleMall } from './route';
 import { GameSim } from './sim';
 
 const SEED = 1;
 const sim = new GameSim(undefined, SEED);
 const bot = new Bot(sim);
+// along the sidewalks and driveways, as a person walks (walkPaths.json, written by the build)
+bot.keepTo = keepToPaths(sim, readWalkPaths('snowbound'));
 for (const level of [galeStreet, jamieStreet, bowdenDrive, lavaleMall]) {
   await level(bot);
   console.log(`${level.name}: ${bot.log[bot.log.length - 1]}`);
