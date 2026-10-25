@@ -72,7 +72,7 @@ export const LEVELS: Level[] = [
     size: [44, 33],
     card: {
       title: 'MEGA MALL 2000',
-      lines: ['11:00 AM. Arcade, TV-RAMA, PILLS.', 'The STAFF ONLY keycard is in the', 'laser display case at TV-RAMA.', 'Wait for the lasers to blink off!'],
+      lines: ['11:00 AM. Arcade, TV-RAMA, FOOD.', 'The STAFF ONLY keycard is in the', 'laser display case at TV-RAMA.', 'Wait for the lasers to blink off!'],
       view: [0, 10],
     },
     intro: ['tele.fli'],

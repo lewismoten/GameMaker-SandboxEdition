@@ -339,7 +339,7 @@ export function citySet(): BlockSet {
   addBig(
     s,
     'nPill',
-    neonSign('PILLS', 3, () => mallWall(false), 'gold'),
+    neonSign('FOOD', 3, () => mallWall(false), 'gold'),
   );
 
   // The Teleport-A-Phone Exchange (and wherever its wrong numbers go).
@@ -375,7 +375,7 @@ export function citySet(): BlockSet {
 
 /**
  * Keepsakes and a visitor, added before the felt egg's fixed block: a tin heart tucked behind
- * the food court's tables at PILLS (a glint crosses it now and then) and a painted Easter egg in
+ * the food court's tables under its FOOD sign (a glint crosses it now and then) and a painted Easter egg in
  * the sand in a corner of Florida, each a few points and gone when touched (the floor under it
  * is its touch block), with no sound of its own; and Watt, the repair robot from Ohm Sweet Ohm,
  * tinkering with the Exchange's switchboard (scenery, solid like the wall he stands by).

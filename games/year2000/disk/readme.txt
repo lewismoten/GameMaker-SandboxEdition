@@ -31,7 +31,7 @@ levels of the future:
    SUPERHIGHWAY: fourteen
    lanes of hover traffic
 3. MEGA MALL 2000: the arcade,
-   TV-RAMA, and PILLS
+   TV-RAMA, and the food court
 4. THE TELEPORT-A-PHONE
    EXCHANGE: wrong number!
    (several of them)
