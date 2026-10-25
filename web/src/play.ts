@@ -103,7 +103,23 @@ async function main(): Promise<void> {
   root.style.font = '16px system-ui';
   const game = await choose();
   if (!game) {
-    location.replace('./');
+    const params = new URLSearchParams(location.search);
+    const asked = params.get('project')
+      ? 'That game isn’t kept in this browser (it may have been deleted, or made in another browser).'
+      : params.get('game')
+        ? 'That game isn’t in the catalog (the link may be old).'
+        : '';
+    if (!asked) {
+      location.replace('./');
+      return;
+    }
+    // a stale or foreign link says what happened, instead of landing on the home page unexplained
+    const say = Object.assign(document.createElement('h1'), { textContent: `${asked} ` });
+    say.style.font = '18px system-ui';
+    say.append(Object.assign(document.createElement('a'), { href: './', textContent: 'See all the games →', style: 'color:#ffd400' }));
+    root.replaceChildren(say);
+    root.style.padding = '24px';
+    root.style.boxSizing = 'border-box';
     return;
   }
   if (!pageGame) document.title = game.title;
