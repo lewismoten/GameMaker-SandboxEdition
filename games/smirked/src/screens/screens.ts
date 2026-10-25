@@ -2,7 +2,7 @@
 // and the credits (with Doc Leo); and the scenery the cartoons share: the haunted house's front
 // at night, the fog hall inside (peeling wallpaper over the wainscot, old floorboards), the
 // glowing EXIT sign and the front desk. The title is the cover drawn for the game
-// (art/cover.ts, cover.fli and its last frame, title.gif); the story, the level cards and the
+// (art/cover.ts, cover.fli, then title.gif with the name); the story, the level cards and the
 // endings are cartoons (cartoons.ts).
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { Pixels, rng } from '../../../kit/pixels';
