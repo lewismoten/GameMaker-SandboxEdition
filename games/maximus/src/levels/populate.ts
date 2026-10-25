@@ -18,6 +18,8 @@ export interface Spots {
   liquid: { x: number; y: number }[];
   vault?: { x: number; y: number };
   avoid: { x: number; y: number };
+  /** Other places the hero comes in (a sector's planets, its jump ring): kept as clear as `avoid`. */
+  alsoAvoid?: { x: number; y: number }[];
 }
 
 export function tierOf(c: Creature): number {
@@ -56,13 +58,17 @@ export function populate(
       for (let k = -1; k <= run + 1; k++) if (wall(x + d + k, y) || wall(x + d + k, y - 1)) return false;
       return true;
     });
-  const far = (x: number, y: number) => {
-    let dx = Math.abs(x - spots.avoid.x);
-    dx = Math.min(dx, W - dx);
-    let dy = Math.abs(y - spots.avoid.y);
-    dy = Math.min(dy, H - dy);
-    return dx > 9 || dy > 6;
-  };
+  // clear of every place the hero comes in: out of a chaser's reach (PLAYGAME's 8 blocks
+  // across, 5 up or down), and a walker's beat further still on the rows beside it
+  const entries = [spots.avoid, ...(spots.alsoAvoid ?? [])];
+  const far = (x: number, y: number, beat: number) =>
+    entries.every((e) => {
+      let dx = Math.abs(x - e.x);
+      dx = Math.min(dx, W - dx);
+      let dy = Math.abs(y - e.y);
+      dy = Math.min(dy, H - dy);
+      return dx > 9 + (dy <= 2 ? beat : 0) || dy > 6;
+    });
   const byPlace = new Map<Placement, number[]>();
   ms.creatures.forEach((c, i) => {
     if (tierOf(c) > opts.level + 1) return;
@@ -98,7 +104,7 @@ export function populate(
   const put = (mon: number, x: number, y: number) => {
     x = wx(x);
     y = wy(y);
-    if (placed >= max || !open(x, y) || !far(x, y) || g.monsterAt(x, y)) return false;
+    if (placed >= max || !open(x, y) || !far(x, y, reach(ms.creatures[mon])) || g.monsterAt(x, y)) return false;
     // keep a little room between monsters so they spread over the whole world
     if (g.monsters.some((m) => Math.min(Math.abs(m.x - x), W - Math.abs(m.x - x)) < spacing && Math.min(Math.abs(m.y - y), H - Math.abs(m.y - y)) < spacing))
       return false;

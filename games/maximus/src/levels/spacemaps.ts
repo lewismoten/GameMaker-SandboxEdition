@@ -290,7 +290,10 @@ export function sectorMap(s: SetBuilder, seed: number, count: number, designs: n
     const k = r();
     g.set(p.x, p.y, s.id(k < 0.5 ? 'p:credit' : k < 0.7 ? 'p:gem' : k < 0.8 ? 'p:heart' : k < 0.87 ? 'p:plasma' : k < 0.93 ? 'p:nova' : 'p:shield'));
   }
-  for (const p of open.slice(26, 40)) g.set(p.x, p.y, s.id('mine'));
+  // no mine right beside a place the pod comes in (back from a planet, through the rings)
+  const entries = [arrive, jumpArrive, ...planets.map((p) => p.back)];
+  const beside = (p: P) => entries.some((e) => Math.abs(wx(p.x - e.x + W / 2) - W / 2) <= 1 && Math.abs(wy(p.y - e.y + H / 2) - H / 2) <= 1);
+  for (const p of open.slice(26, 40)) if (!beside(p)) g.set(p.x, p.y, s.id('mine'));
   for (const p of open.slice(40, 48)) g.set(p.x, p.y, s.id(`debris:${p.x % 3}`));
   for (const p of open.slice(48, 52)) g.set(p.x, p.y, s.id('satellite'));
   for (const p of open.slice(52, 55)) g.set(p.x, p.y, s.id('wreck'));
