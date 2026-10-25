@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0QEgaSBEgCyAbNATkCuRBNCBIKkgISBpIVzQFNBkgIyBzNAU0BSAnIBc0KTQbNATkCuRBNABIGkhUSCpIUzRUfAp8eTRPNAU0BSATIA80KTQFIBMgDzQpNAUgEyAPNCk0BSATIA80KTQFIBMgDzQpNAUgEyAPNCk0BSAXIA80KTTnN"
+   "keys": "AU0QEgaSBEgCyAbNATkCuRBNCBIKkgISBpIVzQFNBkgIyBzNAU0BSAnIBc0KTQbNATkCuRBNBUgIyAZICMgTEgqSFM0VHwKfHk0TzQFNAUgEyAPNCk0BSATIA80KTQFIBMgDzQpNAUgEyAPNCk0BSATIA80KTQFIBMgDzQpNAUgFyAPNCk05zQ=="
   },
   {
    "scene": 3,
@@ -83,7 +83,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 34612,
+  "frames": 34675,
   "chapters": [
    {
     "title": "Opening",
@@ -99,43 +99,43 @@
    },
    {
     "title": "Level 2: Main Street",
-    "frame": 6582
+    "frame": 6645
    },
    {
     "title": "Level 3: Gwinn's Night Out",
-    "frame": 9508
+    "frame": 9571
    },
    {
     "title": "Level 4: The River",
-    "frame": 12124
+    "frame": 12187
    },
    {
     "title": "Level 5: Gwinn on the Farm",
-    "frame": 14542
+    "frame": 14605
    },
    {
     "title": "Level 6: The Corn Maze",
-    "frame": 16847
+    "frame": 16910
    },
    {
     "title": "Level 7: Gwinn Signs Up",
-    "frame": 19802
+    "frame": 19865
    },
    {
     "title": "Level 8: The Fair Midway",
-    "frame": 23183
+    "frame": 23246
    },
    {
     "title": "Level 9: The Dog Show",
-    "frame": 26207
+    "frame": 26270
    },
    {
     "title": "Ending",
-    "frame": 28641
+    "frame": 28704
    },
    {
     "title": "Credits",
-    "frame": 31243
+    "frame": 31306
    }
   ]
  }
