@@ -115,6 +115,29 @@
     outline: 3px solid #ffd400;
     outline-offset: 2px;
   }
+
+  /* F2 to F10, opened by the strip's last key: a row of their own, the template's word under each */
+  .key-strip .ks-fn {
+    display: flex;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .key-strip .ks-fn[hidden] {
+    display: none;
+  }
+
+  .key-strip .ks-f {
+    line-height: 1.1;
+  }
+
+  .key-strip .ks-f small {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+  }
 }
 
 /* the lock lights over the keypad: a green LED and its name, as on a 101-key board */

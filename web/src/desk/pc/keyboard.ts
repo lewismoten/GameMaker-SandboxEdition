@@ -267,11 +267,50 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
   const off = () => desk()?.dataset.power === 'off';
   /** Pointers holding a key down, so a finger can hold Shift while another taps a letter. */
   const holding = new Map<number, string>();
+  // the template's other keys (F2 to F10) in a row of their own behind a toggle: on a phone the
+  // template's words are too small and close together to press
+  const fnKeys = GLOBAL_KEYS.filter((g) => !STRIP.some(([, code]) => code === (g.name === 'Esc' ? 'Escape' : g.name)));
+  const fnRow = h(
+    'div',
+    { class: 'ks-fn', id: 'ks-fn', role: 'group', 'aria-label': 'Function keys', hidden: true },
+    ...fnKeys.map((g) =>
+      h(
+        'button',
+        { type: 'button', class: 'ks-key ks-f', dataset: { code: g.name }, title: `${g.name}: ${g.title}` },
+        g.name,
+        ' ',
+        h('small', null, TEMPLATE[g.name] ?? g.short),
+      ),
+    ),
+  );
+  const fnToggle = h(
+    'button',
+    {
+      type: 'button',
+      class: 'ks-key ks-more',
+      'aria-expanded': 'false',
+      'aria-controls': 'ks-fn',
+      title: 'More keys: F2 to F10',
+      onclick: (e: Event) => {
+        e.stopPropagation(); // keeps the focus here (the strip's other keys give it back to the PC)
+        fnRow.hidden = !fnRow.hidden;
+        fnToggle.setAttribute('aria-expanded', String(!fnRow.hidden));
+      },
+    },
+    'F2–F10',
+  );
   const strip = h(
     'div',
     { class: 'key-strip', role: 'group', 'aria-label': 'Keys to press on the PC', onclick: onClick },
     ...STRIP.map(([label, code, name]) => h('button', { type: 'button', class: 'ks-key', dataset: { code }, title: name, 'aria-label': name }, label)),
+    fnToggle,
+    fnRow,
   );
+  // where the strip shows, the template's words are print only (a tap on one presses the key under it)
+  const phone = matchMedia('(max-width: 600px)');
+  const printOnly = () => (template.inert = phone.matches);
+  printOnly();
+  phone.addEventListener('change', printOnly);
   const down = (e: PointerEvent) => {
     const el = (e.target as Element).closest<HTMLElement>('[data-code]');
     if (!el || e.button > 0) return;
@@ -337,6 +376,7 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
     if (board.isConnected) return;
     window.removeEventListener('keydown', onDown);
     window.removeEventListener('keyup', onUp);
+    phone.removeEventListener('change', printOnly);
     vk.releaseAll();
     watch.disconnect();
     power.disconnect();
