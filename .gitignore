@@ -15,3 +15,5 @@ __pycache__/
 
 # DOSBox drive C: laid out by web/scripts/dosbox.ts
 /dosbox/
+# a copy of Carl with its pre-fix COVER.FLI, for a screenshot of the DOS glitch
+/dosbox-broken/
