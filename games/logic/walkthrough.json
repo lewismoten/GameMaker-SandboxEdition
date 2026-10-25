@@ -119,7 +119,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 50444,
+  "frames": 50467,
   "chapters": [
    {
     "title": "Opening",
@@ -127,31 +127,31 @@
    },
    {
     "title": "Story",
-    "frame": 1448
+    "frame": 1459
    },
    {
     "title": "Room 1: The Kitchen",
-    "frame": 4060
+    "frame": 4083
    },
    {
     "title": "Room 2: The Living Room",
-    "frame": 14890
+    "frame": 14913
    },
    {
     "title": "Room 3: The Garage",
-    "frame": 24564
+    "frame": 24587
    },
    {
     "title": "Room 4: The Attic",
-    "frame": 36662
+    "frame": 36685
    },
    {
     "title": "Ending",
-    "frame": 46787
+    "frame": 46810
    },
    {
     "title": "Credits",
-    "frame": 48889
+    "frame": 48912
    }
   ]
  }
