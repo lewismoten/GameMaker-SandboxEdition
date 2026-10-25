@@ -28,7 +28,7 @@ export function titleScreen(a: Art): Pixels {
   scaleBlit(p, a.dex, 30, 138, 3);
   scaleBlit(p, a.sparky, 238, 152, 2, true);
   p.rect(0, 186, W, 14, C('night', 0));
-  centeredText(p, 189, 'SANDBOX SOFTWARE  (C) 1992', C('teal', 5));
+  centeredText(p, 189, 'SANDBOX SOFTWARE  (C) 1993', C('teal', 5));
   return p;
 }
 

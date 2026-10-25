@@ -1,6 +1,6 @@
 IN THE YEAR 2000!
 A Future Adventure
-Sandbox Software, (C) 1992
+Sandbox Software, (C) 1993
 Version 1.0
 ==============================
 

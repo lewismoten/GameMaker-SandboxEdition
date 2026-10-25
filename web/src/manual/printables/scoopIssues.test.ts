@@ -39,7 +39,8 @@ describe('the Sandbox Scoop’s issues', () => {
     expect(inOrder.map((g) => scoopIssue(g.id, sandbox))).toEqual(sandbox.map((_, i) => i + 1));
     const months = inOrder.map((g) => SCOOP_MONTHS[g.id]);
     expect(months).toEqual([...new Set(months)].sort());
-    expect(scoopDateline('year2000')).toBe('December 1992');
+    expect(scoopDateline('snowbound')).toBe('January 1993');
+    expect(scoopIssue('snowbound', sandbox)).toBe(1);
   });
 
   it('teases the next game In the workshop, and the last issue names none', () => {

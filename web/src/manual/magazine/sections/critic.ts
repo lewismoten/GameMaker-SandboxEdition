@@ -25,7 +25,7 @@ export function criticsCorner(ctx: MagContext): MagPage {
         level: 2,
         deck: 'A true story told with heart, around a game that’s over before your cocoa cools.',
       }),
-      note(`Sandbox Software, 1995 · ${price} on the box · reviewed by *${CRITIC}*, staff critic`),
+      note(`Sandbox Software, 1993 · ${price} on the box · reviewed by *${CRITIC}*, staff critic`),
       grid(
         [
           [

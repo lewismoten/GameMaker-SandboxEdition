@@ -28,11 +28,11 @@ export function printables(): unknown {
       },
       {
         head: 'Since last issue: Two years of Sparky mail',
-        html: '<p>It has been a while since issue 1, and the mailbag filled up. Your favorite gadget in In The Year 2000! was the Teleport-A-Phone. Your least favorite moment was running out of quarters at the Phone Exchange (every room has more, and they come back each time you dial). Three of you sent drawings of Sparky 3000, and one of you built him out of a shoebox and two flashlights.</p>',
+        html: '<p>It has been a while since issue 2, and the mailbag filled up. Your favorite gadget in In The Year 2000! was the Teleport-A-Phone. Your least favorite moment was running out of quarters at the Phone Exchange (every room has more, and they come back each time you dial). Three of you sent drawings of Sparky 3000, and one of you built him out of a shoebox and two flashlights.</p>',
       },
       {
         head: 'Around the Sandbox: New address, new computer',
-        html: '<p>Where did we go? The founder finished high school, a 486 with a CD-ROM drive turned up as a graduation present, and Sandbox Software moved to Pittsburgh. The best part of the new desk is a modem: our own BBS is online at 1-412-555-SAND, and every Sandbox game, hint and high-score list goes there first.</p>',
+        html: '<p>Where did we go? The founder finished high school, a 486 with a CD-ROM drive turned up as a graduation present, and Sandbox Software moved to Pittsburgh, where the founder is studying at the Art Institute of Pittsburgh. You can see it on the boxes. The best part of the new desk is a modem: our own BBS is online at 1-412-555-SAND, and every Sandbox game, hint and high-score list goes there first.</p>',
       },
       {
         head: 'In the workshop: Can Game-Maker scroll a shooter?',

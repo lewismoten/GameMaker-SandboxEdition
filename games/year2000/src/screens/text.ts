@@ -62,7 +62,7 @@ F5 Save   F6 Load   ESC Quit`,
 const CREDITS_TEXT = check(
   'credits',
   `IN THE YEAR 2000!
-Version 1.0 - 1992
+Version 1.0 - 1993
 
 Game design, pictures, music
 and robot dog: Claude
@@ -141,7 +141,7 @@ function wrapDoc(text: string, width = 30): string {
 export function readme(price: string): string {
   return wrapDoc(`IN THE YEAR 2000!
 A Future Adventure
-Sandbox Software, (C) 1992
+Sandbox Software, (C) 1993
 Version 1.0
 ==============================
 

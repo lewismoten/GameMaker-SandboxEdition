@@ -35,7 +35,7 @@ export function buildScreens(
   title.rect(92, 168, 14, 16, c('grey', 3)).rect(92, 168, 14, 2, c('grey', 4)).rect(94, 172, 10, 6, c('money', 2));
   micro(title, 95, 173, '$', c('money', 0));
   title.rect(0, 188, W, 12, c('ink', 0));
-  centered(title, 190, 'Sandbox Software  (c) 1995', c('snow', 6));
+  centered(title, 190, 'Sandbox Software  (c) 1993', c('snow', 6));
   save('title.gif', title);
 
   // ---------------- menu: a painted shop sign holds the menu

@@ -6,7 +6,8 @@
 
 /** Each game's release month, within its about.json year, in release order. */
 export const SCOOP_MONTHS: Readonly<Record<string, string>> = {
-  year2000: '1992-12',
+  snowbound: '1993-01',
+  year2000: '1993-03',
   logic: '1995-02',
   blaster: '1995-04',
   maximus: '1995-06',
@@ -14,7 +15,6 @@ export const SCOOP_MONTHS: Readonly<Record<string, string>> = {
   teddy: '1995-09',
   sleuth: '1995-10',
   brief: '1995-11',
-  snowbound: '1995-12',
   depth: '1996-02',
   realm: '1996-05',
   teddy2: '1996-09',

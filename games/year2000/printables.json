@@ -300,28 +300,32 @@
   ],
   "news": [
     {
-      "head": "Our first game: In The Year 2000!",
-      "html": "<p>Hello, and welcome to the very first Sandbox Scoop. Sandbox Software is a few weeks old, and its first game is in your hands. In <b>In The Year 2000!</b> you are Dex Dynamo, age 11, and your robot dog Sparky 3000 just ate your science report. Find 20 pages across six levels of the future, from the dome homes of Hover Heights to the Moon, and get them to the Science Fair by 3:00. Bring a quarter: every phone booth is a Teleport-A-Phone.</p>"
+      "head": "Our second game: In The Year 2000!",
+      "html": "<p>Sandbox Software is three months old, and its second game is in your hands. In <b>In The Year 2000!</b> you are Dex Dynamo, age 11, and your robot dog Sparky 3000 just ate your science report. Find 20 pages across six levels of the future, from the dome homes of Hover Heights to the Moon, and get them to the Science Fair by 3:00. Bring a quarter: every phone booth is a Teleport-A-Phone.</p>"
     },
     {
       "head": "What will the year 2000 be like?",
-      "html": "<p>We asked BBS callers what they expect in eight short years. The top answers: flying cars (41 votes), robot dogs (29), dinner in a pill (17), and a telephone small enough to fit in your pocket (2 votes, and one of those was a joke). Our programmer is betting on the pocket telephone. Our mail room is still betting on the mail.</p>"
+      "html": "<p>We asked our classmates what they expect in seven short years. The top answers: flying cars (41 votes), robot dogs (29), dinner in a pill (17), and a telephone small enough to fit in your pocket (2 votes, and one of those was a joke). Our programmer is betting on the pocket telephone. Our mail room is still betting on the mail.</p>"
     },
     {
       "head": "Sparky says thanks",
       "html": "<p>Register <b>In The Year 2000!</b> for $12 and you get the next Sandbox Software game on a 3 1/2\" disk, a printed manual and a sticker for your computer. Sparky promises not to eat any of it.</p>"
     },
     {
-      "head": "Around the Sandbox: A company started with a snow shovel",
-      "html": "<p>This company was paid for one driveway at a time. When the big storm closed school on December 11, the founder shoveled the neighborhood at a dollar a scoop until there was enough for a copy of GAME-MAKER. Christmas vacation did the rest. The office is a desk, the family 286 and a stack of graph paper. The shovel is in the corner, in case we ever need another program.</p>"
+      "head": "Since last issue: Snowbound, rough edges and all",
+      "html": "<p>Snowbound got our roughest reviews and our warmest letters. Yes, it’s the simplest game we’ll ever make; it’s also the truest. Readers from all over Mineral County wrote to say we got the sled run on Jamie Street just right. The most-asked question: does the arcade eat all your dollars? Only if you let it. Count the can (F2) before you head for the register.</p>"
+    },
+    {
+      "head": "Around the Sandbox: Homework comes first",
+      "html": "<p>The founder is a junior at Frankfort High, so Sandbox Software keeps strict hours: after homework, before bed, and all day Saturday. The office is still a desk, the family 286 and a stack of graph paper. The snow shovel has moved to the porch. It may be needed again.</p>"
     },
     {
       "head": "In the workshop: A puzzle made of pure Game-Maker",
-      "html": "<p>The founder's notebook is already full. First on the list is a puzzle game where electricity is made of ordinary Game-Maker blocks and monsters: switches, fuses, and a little robot who must never touch a live wire. Its working title is <b>Ohm Sweet Ohm</b>, and we apologize for it now. It won't be quick. School starts again in January.</p>"
+      "html": "<p>The founder's notebook is already full. First on the list is a puzzle game where electricity is made of ordinary Game-Maker blocks and monsters: switches, fuses, and a little robot who must never touch a live wire. Its working title is <b>Ohm Sweet Ohm</b>, and we apologize for it now. It won’t be quick: there’s homework first, and a diploma after that.</p>"
     },
     {
-      "head": "Letters: The mailbag is empty",
-      "html": "<p>This is issue 1, so nobody has written to us yet. Be the first! Tell us what you think of Sparky, and which wrong number at the Teleport-A-Phone Exchange you dialed the most. The first letter we get goes right here.</p>"
+      "head": "Letters: \"Did you make it to the mall?\"",
+      "html": "<p><i>\"In Snowbound, did the real founder make it to the register in time?\"</i> - A reader in West Virginia</p><p><b>The Scoop replies:</b> Look at the name on this newsletter. Then look at the box your game came in.</p>"
     }
   ]
 }

@@ -490,27 +490,23 @@
   "news": [
     {
       "head": "Snowbound: how Sandbox Software began",
-      "html": "<p>Fort Ashby, West Virginia, Friday, December 11, 1992. A foot and a half of snow, no school, and a pink box in the window of Bits &amp; Bytes Software at LaVale Mall: GAME-MAKER, $89 until January. <b>Snowbound: The $89 Shovel</b> is the true(ish) story of how this company was paid for. Dig out the neighbors' driveways at a dollar a scoop, deliver the papers, sled down Jamie Street and get to the register before closing time. Mind Biscuit. He is very friendly.</p>"
+      "html": "<p>Hello, and welcome to the very first Sandbox Scoop. Fort Ashby, West Virginia, Friday, December 11, 1992: a foot and a half of snow, no school, and a pink box in the window of Bits &amp; Bytes Software at LaVale Mall: GAME-MAKER, $89 until January. <b>Snowbound: The $89 Shovel</b> is the true(ish) story of how this company was paid for, and our first game. Dig out the neighbors’ driveways at a dollar a scoop, deliver the papers, sled down Jamie Street and get to the register before closing time. Mind Biscuit. He is very friendly.</p>"
     },
     {
       "head": "SNOWBOUND II: Spring Thaw",
-      "html": "<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>"
+      "html": "<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season. Registered SNOWBOUND players get it free when it’s done.</p>"
     },
     {
-      "head": "Since last issue: The Word Counter is still thinking",
-      "html": "<p>KEEP IT BRIEF! readers have put a lot of stories back together this month. The Word Counter found exactly one hundred words in each one but Steam-Powered Summer, where it found ninety-nine until somebody pointed out what a hyphen does. It is still thinking about it. Judging by the BBS, so are some of you.</p>"
+      "head": "Around the Sandbox: A company started with a snow shovel",
+      "html": "<p>This company was paid for one driveway at a time. When the big storm closed school on December 11, the founder shoveled the neighborhood at a dollar a scoop until there was enough for a copy of GAME-MAKER. Christmas vacation did the rest. The office is a desk, the family 286 and a stack of graph paper. The shovel is in the corner, in case we ever need another program.</p>"
     },
     {
-      "head": "Around the Sandbox: Three years of Sandbox Software",
-      "html": "<p>Nine games, nine issues of this newsletter, one BBS, two dogs, one clown and one little red car. The snow shovel that started it all is still in the corner of the office. This month Gwinn saw her first snow from the office window and tried to shovel it with her nose. Happy holidays from all of us.</p>"
+      "head": "In the workshop: The future, as we see it",
+      "html": "<p>Everybody knows what the year 2000 will be like: flying cars, robots everywhere and dinner in a pill. Our next game goes there to find out. In <b>In The Year 2000!</b> a kid and his robot dog have until 3:00 to get a science report to the Fair. The robot dog is the problem.</p>"
     },
     {
-      "head": "In the workshop: Real depth",
-      "html": "<p>The office 486 has been running all night for weeks, ray tracing chrome spheres, glass cubes and one red teapot. That's our next game: <b>Depth Perception</b>, where every scene has a near plane and a far plane, and only the one in focus is solid. No cardboard glasses required.</p>"
-    },
-    {
-      "head": "Letters: \"A corgi in my library book\"",
-      "html": "<p><i>\"I found a corgi in one of the library books. Is that allowed?\"</i> - A reader, by mail</p><p><b>The Scoop replies:</b> Teddy is allowed. Gwinn is not allowed in the library, and is in the library.</p>"
+      "head": "Letters: The mailbag is empty",
+      "html": "<p>This is issue 1, so nobody has written to us yet. Be the first! Tell us how many dollars you scooped, which hill you sledded best, and whether Biscuit got you. The first letter we get goes right here.</p>"
     }
   ]
 }
