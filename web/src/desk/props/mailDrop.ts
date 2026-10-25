@@ -67,6 +67,8 @@ export function mailDropProp(door: HTMLElement): () => void {
 
   function open(): void {
     const m = openMail();
+    // the envelope goes; focus waits on the Game-Maker box, where the letter is kept, for the viewer to give back
+    if (envelope?.contains(document.activeElement)) document.querySelector<HTMLElement>('.gm-box')?.focus({ preventScroll: true });
     offEnvelope();
     offEnvelope = () => {};
     envelope?.remove();
