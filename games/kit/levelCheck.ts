@@ -44,7 +44,8 @@ async function staticFindings(id: string): Promise<{ lines: string[]; stale: str
   const { open } = splitAccepted(r.findings, accepted);
   const keys = new Set(r.findings.map(findingKey));
   const lines = open.filter((f) => f.severity !== 'info').map((f) => `${f.severity} ${f.check} s${f.where.scene ?? '-'} ${f.title}`);
-  return { lines: [...new Set(lines)].sort(), stale: accepted.filter((k) => !keys.has(k)) };
+  // a play finding (one-way, softlock…) is only found by --play, so it is never stale here
+  return { lines: [...new Set(lines)].sort(), stale: accepted.filter((k) => !keys.has(k) && !PLAY_CHECKS.has(k.split(' ')[0])) };
 }
 
 function readBaseline(): Record<string, string[]> {
