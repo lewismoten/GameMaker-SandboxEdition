@@ -3,7 +3,9 @@
 // laundry room, high-fives the button by the door into the garage (it swings open), hops up
 // on the workbench and high-fives the button over it to open the key cabinet, fetches the
 // keys (and runs the shelves up to the loft for treats), then pushes the garage door's button and runs: the door goes up, and comes back
-// down by itself three seconds later. (Push it again if it beats him.)
+// down by itself three seconds later. (Push it again if it beats him.) Doc Leo's NEED KEYS board
+// stands in front of the door and only folds away for a dog carrying the keys, so nobody ends
+// up shut outside without them.
 //
 // The blocks are in garageTiles.ts, the monsters in garageBeasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
@@ -13,7 +15,7 @@ import { bandAt } from './common';
 import { sky } from '../blocks/tiles';
 
 /** Where things are, for the bot's route. */
-export const GARAGE = { btnDoor: 12, bench: 24, btnCab: 27, cab: 28, btnGarage: 44, door: 51, car: 57 };
+export const GARAGE = { btnDoor: 12, bench: 24, btnCab: 27, cab: 28, btnGarage: 44, gate: 50, door: 51, car: 57 };
 
 export function garage(): Level {
   const bs = garageTiles();
@@ -86,6 +88,7 @@ export function garage(): Level {
   for (let y = CEIL + 1; y < 39; y++) m.set(GARAGE.door, y, 'gdoor');
   m.set(GARAGE.door - 1, 34, 'lightOn');
   m.set(GARAGE.door, 39, 'gdoorGap');
+  m.set(GARAGE.gate, 39, 'gate');
   m.mon(GARAGE.door, 39, 'garage');
 
   // Outside: the driveway, the charger, THE CHEZ and Doc Leo, waiting for the keys.

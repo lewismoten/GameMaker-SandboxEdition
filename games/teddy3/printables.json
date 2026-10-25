@@ -283,6 +283,10 @@
             {
               "q": "The garage door came down on me.",
               "a": "It only stays up three seconds. Push its button again and run: hop the box on the way."
+            },
+            {
+              "q": "A sign is in front of the garage door.",
+              "a": "NEED KEYS, it says. Fetch them from the cabinet first; with the keys, Teddy walks right into the sign and it folds flat."
             }
           ]
         },

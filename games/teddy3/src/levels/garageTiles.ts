@@ -9,6 +9,7 @@ import { Tiles } from './level';
 import { boxFace, c, cloud, copy, dirt, grassTop, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';
 import { bandAt, road, sign, wallpaper, wideSign } from './common';
 import { art } from './parts';
+import { CTR } from '../ids';
 
 /** The ground floor's floor row (Teddy walks on row 39). */
 export const G = 40;
@@ -271,6 +272,17 @@ export function garageTiles(): Tiles {
   t.air('signHurryL', hurryL);
   t.air('signHurryR', hurryR);
   t.air('signKeys', sign(wall, 'KEYS', 'up'));
+  // Doc Leo's sandwich board in front of the garage door: solid until Teddy carries the keys
+  // (a touch that needs the clues counter above its start, as THE CHEZ's door does). Walked
+  // into with the keys it folds flat; the touch takes the keys off the counter and the folded
+  // board, walked over on the only way out, gives them straight back for the car door.
+  const gate = sign(wall, 'NEED\nKEYS');
+  gate.line(4, 15, 1, 19, c('wood', 1)).line(15, 15, 18, 19, c('wood', 1));
+  const folded = copy(wall);
+  folded.rect(0, 17, 20, 3, c('wood', 3)).rect(0, 17, 20, 1, c('wood', 4)).rect(0, 19, 20, 1, c('wood', 0));
+  t.air('gateDown', folded);
+  t.air('gateFolding', folded, { effect: CTR.clues, eamt: 1, touch: 'gateDown' });
+  t.wall('gate', gate, { effect: CTR.clues, eamt: -1, touch: 'gateFolding' });
   t.air('signSniff', sign(laundry, 'S', 'down'));
   return t;
 }
