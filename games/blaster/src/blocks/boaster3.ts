@@ -1,8 +1,9 @@
 // Stage 3-C: THE BIG NAME, flown over the face of the family 486's sound card, the Sound
-// Boaster (Overcreative Labs, a made-up brand, as in TURBO BUTTON's ad for it). Green board,
-// gold edge fingers at the slot, a steel bracket down the left with its jacks, volume wheel
-// and joystick port, black chips that carry their makers' (parody) names, and SOUND BOASTER
-// silkscreened across the middle (boasterName.ts). Its virus is at the bottom.
+// Boaster (Overcreative Labs, a made-up brand, as in TURBO BUTTON's ad for it). The red board
+// of the rest of Stage 3, gold edge fingers at the slot, a steel bracket down the left with
+// its jacks, volume wheel and joystick port, black chips that carry their makers' (parody)
+// names, and SOUND BOASTER silkscreened in white across the middle (boasterName.ts). Its
+// virus is at the bottom.
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, CLEAR, bevel, blob, micro, outline, shadeAt, text } from '../art/draw';
 import { pics } from '../characters/enemies';
@@ -18,11 +19,11 @@ export function boasterArt(p: Pal): StageArt {
     const r = rng(seed);
     t.map((x, y) => {
       const w = ((x + y) % 4 === 0 ? 0.12 : 0) + ((x - y + 40) % 4 === 0 ? 0.08 : 0);
-      return shadeAt(p.r('pcb'), 2, 4, 0.3 + w + r() * 0.15, x, y);
+      return shadeAt(p.r('base'), 1, 3, 0.3 + w + r() * 0.15, x, y);
     });
     return t;
   };
-  const trace = p.c('pcb', 5);
+  const trace = p.c('base', 5);
   const floor = (v: number): Pixels => {
     const t = weave(v + 3);
     if (v === 1) {
@@ -57,7 +58,7 @@ export function boasterArt(p: Pal): StageArt {
     // the card's top edge: bare board, a ground trace, the routed edge
     const t = weave(40 + v);
     t.rect(4, 0, 2, 20, trace);
-    t.rect(17, 0, 3, 20, p.c('pcb', 1)).rect(17, 0, 1, 20, p.c('pcb', 6));
+    t.rect(17, 0, 3, 20, p.c('base', 1)).rect(17, 0, 1, 20, p.c('base', 6));
     if (v === 1) t.rect(3, 8, 4, 4, p.c('gold', 3)).set(4, 9, p.c('ink', 0));
     return t;
   };
@@ -107,8 +108,8 @@ function bigChip(a: StageArt, w: number, h: number, lines: string[], small?: str
   blob(big, 8, H / 2, 2.5, 2.5, p.r('deep'), 0, 0);
   const lh = 12;
   const y0 = Math.round(H / 2 - (lines.length * lh - 4) / 2) - (small ? 2 : 0);
-  lines.forEach((s, i) => text(big, Math.round(W / 2 - s.length * 4), y0 + i * lh, s, p.c('silk', 3)));
-  if (small) micro(big, Math.round(W / 2 - small.length * 2), H - 11, small, p.c('silk', 1));
+  lines.forEach((s, i) => text(big, Math.round(W / 2 - s.length * 4), y0 + i * lh, s, p.c('grey', 7)));
+  if (small) micro(big, Math.round(W / 2 - small.length * 2), H - 11, small, p.c('grey', 5));
   return big;
 }
 
@@ -119,7 +120,7 @@ function smallChip(a: StageArt, w: number, lines: string[]): Pixels {
   const W = w * 20;
   for (let x = 5; x < W - 4; x += 5) big.rect(x, 0, 2, 3, p.c('steel', 5)).rect(x, 17, 2, 3, p.c('steel', 4));
   bevel(big, 2, 3, W - 4, 14, p.r('deep'), 1, 1);
-  lines.forEach((s, i) => micro(big, Math.round(W / 2 - s.length * 2), 4 + i * 6, s, p.c('silk', i ? 2 : 3)));
+  lines.forEach((s, i) => micro(big, Math.round(W / 2 - s.length * 2), 4 + i * 6, s, p.c('grey', i ? 6 : 7)));
   return big;
 }
 
@@ -129,14 +130,14 @@ function fingers(a: StageArt, part: 'top' | 'mid' | 'end'): Pixels {
   const t = a.floor(0);
   for (let x = 1; x < 20; x += 5) {
     if (part === 'top') {
-      t.rect(x + 1, 0, 1, 10, p.c('pcb', 5));
+      t.rect(x + 1, 0, 1, 10, p.c('base', 5));
       t.rect(x, 10, 3, 10, p.c('gold', 3)).rect(x, 10, 1, 10, p.c('gold', 4));
       t.rect(x, 10, 3, 1, p.c('gold', 4));
     } else {
       t.rect(x, 0, 3, part === 'end' ? 16 : 20, p.c('gold', 3)).rect(x, 0, 1, part === 'end' ? 16 : 20, p.c('gold', 4));
     }
   }
-  if (part === 'end') t.rect(0, 16, 20, 4, p.c('pcb', 0)).rect(0, 16, 20, 1, p.c('pcb', 6));
+  if (part === 'end') t.rect(0, 16, 20, 4, p.c('base', 0)).rect(0, 16, 20, 1, p.c('base', 6));
   return t;
 }
 
@@ -162,9 +163,9 @@ function wheel(a: StageArt): Pixels {
     big.rect(14 + Math.cos(an) * 16 - 1, 20 + Math.sin(an) * 16 - 1, 2, 2, p.c('steel', 4));
   }
   blob(big, 14, 20, 6, 6, p.r('steel'), 2, 5);
-  micro(big, 22, 2, 'VOL', p.c('silk', 3));
-  micro(big, 31, 9, '+', p.c('silk', 3));
-  micro(big, 31, 29, '-', p.c('silk', 3));
+  micro(big, 22, 2, 'VOL', p.c('grey', 7));
+  micro(big, 31, 9, '+', p.c('grey', 7));
+  micro(big, 31, 29, '-', p.c('grey', 7));
   return big;
 }
 
@@ -215,8 +216,8 @@ function capacitor(a: StageArt, ramp: string): Pixels {
 function waveTrace(a: StageArt): Pixels {
   const p = a.pal;
   const t = a.floor(0);
-  t.rect(0, 6, 20, 1, p.c('pcb', 5)).rect(0, 13, 20, 1, p.c('pcb', 5));
-  for (const x of [3, 13]) t.line(x, 8, x + 3, 10, p.c('silk', 1)).line(x + 3, 10, x, 12, p.c('silk', 1));
+  t.rect(0, 6, 20, 1, p.c('base', 5)).rect(0, 13, 20, 1, p.c('base', 5));
+  for (const x of [3, 13]) t.line(x, 8, x + 3, 10, p.c('grey', 5)).line(x + 3, 10, x, 12, p.c('grey', 5));
   return t;
 }
 
