@@ -57,11 +57,15 @@ describe('The Ultimate Owner’s Guide', () => {
     expect(CHAPTERS.filter((c) => c.newPage).map((c) => c.id)).toEqual(['upload']);
   });
 
-  // the original manual's OCR, and the player reviews the design chapters learned from: no wording of theirs
-  const sources = ['manual-ocr/manual.txt', 'other-games.md', 'bad-games/friction.md', 'bad-games/sherwood forest software.md'].map(
-    (f) => new URL(`../../../../.for-lewis/${f}`, import.meta.url),
-  );
-  it.skipIf(!sources.every(existsSync))('shares no run of six words with the original manual or the reviews', () => {
+  // the original manual's OCR, the player reviews and the video transcript the design chapters learned from: no wording of theirs
+  const sources = [
+    'manual-ocr/manual.txt',
+    'other-games.md',
+    'bad-games/friction.md',
+    'bad-games/sherwood forest software.md',
+    'binge/adg-250-game-maker.md',
+  ].map((f) => new URL(`../../../../.for-lewis/${f}`, import.meta.url));
+  it.skipIf(!sources.every(existsSync))('shares no run of six words with the original manual, the reviews or the video', () => {
     const theirs = words(sources.map((f) => readFileSync(f, 'utf8')).join(' '));
     const runs = new Set<string>();
     for (let i = 0; i + 6 <= theirs.length; i++) runs.add(theirs.slice(i, i + 6).join(' '));

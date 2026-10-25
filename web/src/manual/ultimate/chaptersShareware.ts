@@ -7,6 +7,12 @@
 // lifetime `end` runs out), SimKeyPress (the first sequence on a key that is on and has uses
 // wins), loadscene (a blank file slot keeps the last scene's file), and movechars (the standing
 // sequence moves the hero by its frames like any other, and repeats while no key is down).
+// The recipes at the end turn ideas seen in Game-Maker games and a techniques demo shown in
+// levelengine's RSD Game Maker Binge (NOTICE.md) into builds from the rules above and these:
+// only the character touches background blocks (CheckTouch; monsters never do), a touch reads the
+// block an animation is showing (GetTouchbl's blkmap), a monster's first form after a hero's shot
+// can touch him (fromchar), monsters feel no gravity (moveallmons), and StartSceneInits takes the
+// starting values from the first character only.
 import { opening, tip, type Chapter } from './chapter';
 
 export const SHAREWARE: Chapter = {
@@ -46,12 +52,16 @@ export const SHAREWARE: Chapter = {
   it at once, and the player can skip it. That is an intermission with music, sound and moving
   actors, built from parts you already know (<i>Andy in Asunderland</i>, <i>Builder</i>, and
   <i>Blinky 2</i>’s intro and ending, which share one map).</p>
+  <p>The same one-screen room with several doors is a level select, a hub of minigames or a
+  music room: each door a link to its own scene, and each scene its own song.</p>
   <h2>Choosing a hero by link</h2>
   <p>Leave a scene’s character slot empty and PLAYGAME keeps the character it already has. So a
   select screen whose links each lead into a copy of the first level with a different character
   file sets the hero for the whole game, as long as every later level leaves the slot empty
   (<i>Blinky 3</i>). Make the heroes really differ (jump, speed, voice) or the choice is only a
-  costume.</p>
+  costume. And only the first character’s starting values count (Chapter 4): a ship that “takes
+  less damage” can’t be made from its own hit points, so let the heroes differ in what they do,
+  not in what they can take.</p>
   <h2>Physics by changing the character</h2>
   <p>The same hero with a slower walk and jumps made of momentum is a moon level; with gentle
   steps in every direction, a swim. Give those scenes their own character file (<i>Ninja Tuck</i>’s
@@ -82,5 +92,70 @@ export const SHAREWARE: Chapter = {
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
   animation stays tiny and plays on any PC (RSD’s own text-box animations in <i>Penguin Pete</i>).
   Fade-in and fade-out animations round a text screen in a slide list make a cheap page turn.</p>
-  ${tip('Where these came from:', 'The games named here were looked at in the Internet Archive’s Game-Maker Archive collection, opened only with this edition’s file readers. Their ideas are described in the guide’s own words; their art, music and words belong to their authors.')}`,
+  <h2>Recipes for bigger ideas</h2>
+  <p>Players watching Game-Maker games have cheered for digging, sneaking, swinging and rolling
+  dice, sometimes in games, sometimes in a demo made to show them off. Here is how each can be
+  built from the rules in this guide. Where Game-Maker can’t do the real thing, the recipe says
+  so and fakes it.</p>
+  <h2>Ground you can dig</h2>
+  <p>Background blocks change only when the hero himself touches them, so dirt that a tool digs is
+  made of monsters. Fill the ground with solid monsters that stay put (power 103, say), and give
+  the dig key a sequence that fires a short-lived monster at the hero’s feet with more power
+  (105). The dig wins, the dirt <b>becomes</b> a puff with a few points on it, and a hole is
+  left. For stone, use a tougher monster (110) and a second dig sequence on the same key that
+  needs the pick in the inventory, in a lower-numbered slot than the plain one so it is chosen
+  first (One key, many weapons, above). This is how Teddy digs in Teddy’s Little Big Adventure. Two things to
+  plan for: every clod is one of the map’s 200 monsters, so dig fields stay small, and monsters
+  feel no gravity, so nothing above a hole ever falls in.</p>
+  <h2>Searchlights and sneaking</h2>
+  <p>A guard’s light is a monster on a path: a pale beam, power 100 or more so it stays,
+  sweeping its corridor on a steady loop. Draw it as a light dither: its see-through pixels let
+  the floor show through, and only its colored ones can catch the hero. Its picture takes all
+  the hero’s hit points, so being caught starts the scene over at the door. The shadows are
+  simply the places its path never reaches: draw them dark, so the player can read where to
+  wait. A guard that notices the hero is an attack path, but its range is a box round the guard
+  (Appendix A) that ignores walls and the way he faces, so put such guards where that box is the
+  room he watches.</p>
+  <h2>A grappling swing</h2>
+  <p>Nothing can hang the hero from a point, but a fling looks the part. Give the grapple key a
+  sequence, needing the hook in the inventory, that fires a hook monster ahead for show, then
+  feeds momentum forward and up through a few frames. The hero sails out over the gap, and the
+  block’s gravity brings him down on the far side. Test it at every height the player might use
+  it from, and keep a ledge to catch him.</p>
+  <h2>A trail of light</h2>
+  <p>A torch that lights the blocks around the hero can’t be done: only the hero touches
+  background blocks, and only 50 monsters are drawn at once, too few to cover a dark screen.
+  Two things work instead. Draw the cave floor dark, with each block becoming its lit copy when
+  touched, and the hero leaves a trail of light wherever he has been (it fades when he leaves
+  the scene, since the map comes back fresh). Or let him find the lamp: put it on a link to a
+  scene that uses the same map with a bright palette (Chapter 1), landing beside the spot, so
+  the whole cave lights up at once.</p>
+  <h2>Dice and chance</h2>
+  <p>A touch takes the block an animation is showing at that moment, so a ring of blocks whose
+  frames last one tick each is a die: nobody can time a bump to an eighteenth of a second. Give
+  each face its own touch (points, a prize, a small hurt) and make each face <b>become</b> a still
+  block showing the roll, so it can’t be thrown twice. Let the faces add 1 to 6 to a special
+  counter, and gates further on that take 4 or 6 make a board game: how far the player gets
+  depends on the roll.</p>
+  <h2>A friend who follows</h2>
+  <p>A monster that moves toward the hero a little slower than his walk, with harmless pictures
+  and power 100 or more, trots along behind him. Give it more power than the enemies and it
+  beats any it bumps into, a guard dog that clears the way. It beats moving prizes just as
+  surely, since they stay under 100 for the hero to collect them, so leave the friend at home in
+  levels that have them.</p>
+  <h2>A key to start over</h2>
+  <p>When a puzzle can be ruined, a start-over key saves the player from quitting. Its sequence
+  fires a slow monster with a lifetime of one tick, too short to go anywhere, that
+  <b>becomes</b> a second monster: a full block of pixels, power under 100, whose picture takes 30,000 hit points and gives one life. A shot
+  can’t touch the hero who fired it, but its next form can. The hero dies, the life it gave pays
+  for the death, and the scene starts over from the door. Put it on a key nobody presses by
+  accident, and say so in the instructions.</p>
+  <h2>Quick-time scenes</h2>
+  <p>A one-screen scene with no scrolling and a character of its own makes a moment where the
+  right key matters. Each key’s sequence walks the hero onto a link: the right one to the next
+  scene, the wrong ones to a scene where things go comically wrong. A standing sequence that
+  waits a few seconds and then walks onto the wrong link is the timer. A flashing block can show
+  which key to press, and the scene’s intro picture can say what is happening. The next scene
+  names the hero’s usual character file again.</p>
+  ${tip('Where these came from:', 'The games named here were looked at in the Internet Archive’s Game-Maker Archive collection, opened only with this edition’s file readers. Their ideas are described in the guide’s own words; their art, music and words belong to their authors. The recipes were suggested by games and a techniques demo seen in levelengine’s livestream “RSD Game Maker Binge” (2020), and are built here from PLAYGAME’s own rules.')}`,
 };
