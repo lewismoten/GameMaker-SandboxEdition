@@ -90,7 +90,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
         clear(
           card,
           h('h2', { id: 'eggv-title' }, TEDDY_EGG.name),
-          h('p', { class: 'eggv-where' }, `${TEDDY_EGG.caption}. Not one of the felt eggs.`),
+          h('p', { class: 'eggv-where' }, `${TEDDY_EGG.caption}.`),
           h('p', null, TEDDY_EGG.description),
           h('h3', null, 'Stitched inside'),
           h('ul', null, ...TEDDY_EGG.credits.map((c) => h('li', null, c))),
