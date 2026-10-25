@@ -5,7 +5,8 @@
 // the door, door.ts), with a sniff and a slide across the floor. It lies by the door, a button
 // to open, until it is opened (remembered per browser); then its letter and owner card show in
 // the box viewer and go into the Game-Maker box's tray. Without motion it is just there. If it
-// comes while the door isn't drawn (a narrow window), it goes straight into the box.
+// comes while the door isn't drawn (a narrow window), or one left lying there can't be seen in
+// this window, it goes straight into the box.
 import './mailDrop.css';
 import { h } from '../../editor/core/ui';
 import { currentMail, deliverMail, openMail, type ReplyMail } from '../../retro/gmReg/replyMail';
@@ -75,14 +76,19 @@ export function mailDropProp(door: HTMLElement): () => void {
     void showConfirmation(m);
   }
 
+  /** No door in this window (it shows only with wall to spare): the reply goes straight into the box. */
+  function intoBox(): void {
+    openMail();
+    offEnvelope();
+    offEnvelope = () => {};
+    envelope?.remove();
+    envelope = undefined;
+    say(document.querySelector('.monitor') ?? document.body, 'RSD’s reply came in the mail. Its registration confirmation is in the Game-Maker box.');
+  }
+
   function arrive(m: ReplyMail): void {
     if (!door.isConnected) return;
-    if (!shown()) {
-      // no door on a narrow window: straight into the box
-      openMail();
-      say(document.querySelector('.monitor') ?? document.body, 'RSD’s reply came in the mail. Its registration confirmation is in the Game-Maker box.');
-      return;
-    }
+    if (!shown()) return intoBox();
     const d = nextDog();
     const el = place(m, true);
     roomSound.slide();
@@ -120,7 +126,11 @@ export function mailDropProp(door: HTMLElement): () => void {
 
   // one that came on an earlier visit and wasn't opened is still lying there
   const waiting = currentMail();
-  if (waiting && !waiting.opened) place(waiting, false);
+  if (waiting && !waiting.opened) {
+    place(waiting, false);
+    // left from a wider window: where the door isn't drawn no one could reach it, so it goes in the box
+    timers.push(window.setTimeout(() => door.isConnected && envelope && !shown() && intoBox(), 1500));
+  }
 
   return () => {
     removeEventListener(REPLY_EVENT, onReply);
