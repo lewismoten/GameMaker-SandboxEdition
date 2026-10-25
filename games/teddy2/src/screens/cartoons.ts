@@ -2,13 +2,14 @@
 // pages), Gwinn's rides between her MEANWHILE... levels (the hay wagon, the Fair's ride truck),
 // the gust that takes her dog show entry card, and at the end, fireworks and the Fair parade with THE CHEZ in front.
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { Pixels } from '../../../kit/pixels';
 import { blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';
 import { CHEZ } from '../sprites/klown';
 import { chezRide } from '../../../teddy/src/screens/ride';
 import { docLeo, FULL } from '../sprites/people';
-import { SP, landscape, logo, titleScreen } from './screens';
+import { SP, landscape } from './screens';
 import { castFli } from './cast';
 import { KLUB } from '../sprites/klubfolk';
 import { POSES } from '../sprites/teddy';
@@ -27,8 +28,9 @@ class Reel {
     draw(p);
     for (let i = 0; i < hold; i++) this.frames.push(Uint8Array.from(p.px));
   }
-  fli(speed: number): Uint8Array {
-    return encodeFli(this.frames, SP.pal, { speed });
+  /** The .FLI; `fadeOut` ends it on a fade to black (a clip before the next picture). */
+  fli(speed: number, fadeOut = false): Uint8Array {
+    return (fadeOut ? encodeFliFadeOut : encodeFli)(this.frames, SP.pal, { speed });
   }
 }
 
@@ -60,7 +62,7 @@ function livingRoom(): Pixels {
 /**
  * The opening cartoon: the morning after the Big Show. Teddy wakes; Gwinn's bed is empty;
  * a trail of confetti leads out the doggy door; Teddy sniffs it. Doc Leo comes in with a
- * letter: the Clown Club is booked at the Fair tonight. Then the logo drops in.
+ * letter: the Clown Club is booked at the Fair tonight. Then a fade to black (the logo is the title's).
  */
 export function morningFli(): Uint8Array {
   const r = new Reel(livingRoom());
@@ -87,7 +89,7 @@ export function morningFli(): Uint8Array {
       caption(p, 'A TRAIL OF CONFETTI LEADS');
       caption(p, 'OUT THE DOGGY DOOR.', 22);
     });
-  for (let f = 0; f < 24; f++)
+  for (let f = 0; f < 30; f++)
     r.frame((p) => {
       scaleBlit(p, docLeo(FULL, f % 8 < 4), 120, 78, 2);
       teddy(p, f < 12 ? 'frontTilt' : 'frontBeg', 214);
@@ -96,16 +98,8 @@ export function morningFli(): Uint8Array {
       caption(p, f < 12 ? 'DOC LEO HAS NEWS: THE CLOWN CLUB' : "BUT TEDDY WON'T GO WITHOUT", f < 12 ? 10 : 10);
       caption(p, f < 12 ? 'PLAYS THE FAIR TONIGHT!' : 'HIS BIG SISTER.', 22);
     });
-  // the logo drops in, bouncing, over the dawn
-  for (let f = 0; f < 14; f++) {
-    const drop = Math.round(-90 * Math.cos((f / 13) * Math.PI * 2.5) * (1 - f / 13));
-    r.frame((p) => {
-      p.px.set(landscape(7).px);
-      logo(p, 6 + Math.min(0, drop) + (drop > 0 ? Math.round(drop / 6) : 0));
-    });
-  }
-  r.frame((p) => p.px.set(titleScreen().px), 4);
-  return r.fli(8);
+  // then a fade to black: the title, logo and all, fades in after
+  return r.fli(8, true);
 }
 
 /** The finale: fireworks over the Fair, THE CHEZ leading the parade, Teddy up front, Gwinn and her ribbon. */

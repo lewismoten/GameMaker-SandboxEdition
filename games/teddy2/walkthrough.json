@@ -83,7 +83,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 34698,
+  "frames": 34588,
   "chapters": [
    {
     "title": "Opening",
@@ -91,51 +91,51 @@
    },
    {
     "title": "Story",
-    "frame": 1712
+    "frame": 1657
    },
    {
     "title": "Level 1: Doc Leo's House",
-    "frame": 4109
+    "frame": 3999
    },
    {
     "title": "Level 2: Main Street",
-    "frame": 6645
+    "frame": 6535
    },
    {
     "title": "Level 3: Gwinn's Night Out",
-    "frame": 9594
+    "frame": 9484
    },
    {
     "title": "Level 4: The River",
-    "frame": 12210
+    "frame": 12100
    },
    {
     "title": "Level 5: Gwinn on the Farm",
-    "frame": 14628
+    "frame": 14518
    },
    {
     "title": "Level 6: The Corn Maze",
-    "frame": 16933
+    "frame": 16823
    },
    {
     "title": "Level 7: Gwinn Signs Up",
-    "frame": 19888
+    "frame": 19778
    },
    {
     "title": "Level 8: The Fair Midway",
-    "frame": 23269
+    "frame": 23159
    },
    {
     "title": "Level 9: The Dog Show",
-    "frame": 26293
+    "frame": 26183
    },
    {
     "title": "Ending",
-    "frame": 28727
+    "frame": 28617
    },
    {
     "title": "Credits",
-    "frame": 31329
+    "frame": 31219
    }
   ]
  }
