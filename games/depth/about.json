@@ -33,32 +33,12 @@
       "A boss with twenty faces, then fewer, fought across both planes in an isometric arena",
       "Eleven Sound Blaster songs, digitized sound and two FLI cartoons"
     ],
-    "captions": [
-      "",
-      "3. Far: The Hall of Mirrors",
-      ""
-    ],
+    "captions": ["", "3. Far: The Hall of Mirrors", ""],
     "shots": [
-      [
-        "l1near.map",
-        28,
-        44
-      ],
-      [
-        "l3far.map",
-        41,
-        37
-      ],
-      [
-        "l5near.map",
-        34,
-        38
-      ],
-      [
-        "l6near.map",
-        45,
-        39
-      ]
+      ["l1near.map", 28, 44],
+      ["l3far.map", 41, 37],
+      ["l5near.map", 34, 38],
+      ["l6near.map", 45, 39]
     ],
     "rating": "Ages 8 and up",
     "hours": 3,
@@ -81,16 +61,14 @@
       "caption": "Sharp is solid. A blur isn't there."
     }
   },
-  "sameEverySide": [
-    "near.chr",
-    "far.chr",
-    "depth.mon#2",
-    "depth.mon#3",
-    "depth.mon#5",
-    "depth.mon#6",
-    "depth.mon#20"
-  ],
+  "sameEverySide": ["near.chr", "far.chr", "depth.mon#2", "depth.mon#3", "depth.mon#5", "depth.mon#6", "depth.mon#20"],
   "acceptedFindings": [
-    "hurt-lock s18 Monster 13 holds the hero while it hurts"
+    "hurt-lock s18 Monster 13 holds the hero while it hurts",
+    "start-threat s3 Block 17 hurts right beside where the hero comes in",
+    "start-threat s4 Block 17 hurts right beside where the hero comes in",
+    "one-way s12 One-way at (39, 40)",
+    "one-way s15 One-way at (64, 48)",
+    "one-way s15 One-way at (67, 49)",
+    "one-way s15 One-way at (61, 56)"
   ]
 }
