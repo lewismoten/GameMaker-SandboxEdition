@@ -361,17 +361,17 @@ export function floppy(name: string, title: string, sub: string | undefined, bod
       const H = h * S;
       g.fillStyle = body;
       g.fillRect(-bleed * S, -bleed * S, W + 2 * bleed * S, H + 2 * bleed * S);
-      // the metal shutter and its window
+      // the disk stands shutter down, label up: the metal shutter and its window at the bottom
       g.fillStyle = '#b9bdc6';
-      g.fillRect(W * 0.28, 0 - bleed * S, W * 0.46, H * 0.3 + bleed * S);
+      g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.3 + bleed * S);
       g.fillStyle = '#7d828c';
-      g.fillRect(W * 0.28, H * 0.27, W * 0.46, H * 0.03);
+      g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.03);
       g.fillStyle = '#2a2d33';
-      g.fillRect(W * 0.55, H * 0.05, W * 0.1, H * 0.18);
-      // the label
-      const lx = W * 0.1;
-      const ly = H * 0.37;
-      const lw = W * 0.8;
+      g.fillRect(W * 0.35, H * 0.77, W * 0.1, H * 0.18);
+      // the label on the upper part, its words upright
+      const lx = W * 0.14;
+      const ly = H * 0.05;
+      const lw = W * 0.72;
       const lh = H * 0.58;
       g.fillStyle = '#fbf6e6';
       g.fill(roundRectPath(lx, ly, lw, lh, 0.05 * S));
@@ -380,10 +380,14 @@ export function floppy(name: string, title: string, sub: string | undefined, bod
       wordsIn(g, { text: title, sub, color: '#fbf6e6', ink }, lx + lw * 0.06, ly + lh * 0.17, lw * 0.88, lh * 0.56, ink);
       drawSandboxMark(g, lx + lw - lh * 0.27, ly + lh * 0.72, lh * 0.24);
       g.fillStyle = '#333';
-      drawLines(g, fit(g, 'SANDBOX SOFTWARE', lw * 0.62, lh * 0.1, '700', SANS), lx + lw * 0.38, ly + lh * 0.84, '700', SANS);
-      // the write-protect hole
+      drawLines(g, fit(g, 'SANDBOX SOFTWARE', lw * 0.62, lh * 0.1, '700', SANS), lx + lw * 0.36, ly + lh * 0.84, '700', SANS);
+      // the top corners, away from the shutter: the write-protect hole (its slider pushed
+      // half across) at the left and the high-density hole at the right
       g.fillStyle = '#111';
-      g.fillRect(W * 0.06, H * 0.88, W * 0.06, H * 0.06);
+      g.fillRect(W * 0.04, H * 0.05, W * 0.06, H * 0.07);
+      g.fillRect(W * 0.9, H * 0.05, W * 0.06, H * 0.07);
+      g.fillStyle = '#9aa0a8';
+      g.fillRect(W * 0.04, H * 0.05, W * 0.06, H * 0.035);
     },
   };
 }

@@ -120,13 +120,14 @@ function basePolygon(shape: StickerShape, w: number, h: number): Pt[] {
       return out;
     }
     case 'floppy': {
-      // a 3½" disk: square, round corners, one corner clipped
+      // a 3½" disk seen from its label side, shutter down: square, round corners, and the
+      // corner cut at the bottom left (it is at the top right with the shutter up)
       const r = 0.06;
       const c = Math.min(w, h) * 0.1;
       const out: Pt[] = [];
-      out.push([w - c, 0], [w, c]);
+      arc(out, w - r, r, r, -Math.PI / 2, 0, 4);
       arc(out, w - r, h - r, r, 0, Math.PI / 2, 4);
-      arc(out, r, h - r, r, Math.PI / 2, Math.PI, 4);
+      out.push([c, h], [0, h - c]);
       arc(out, r, r, r, Math.PI, Math.PI * 1.5, 4);
       return out;
     }
