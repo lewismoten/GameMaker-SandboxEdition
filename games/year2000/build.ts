@@ -12,6 +12,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildCharacter } from './src/characters/character';
 import { demoRecording } from './src/demo';
@@ -209,6 +210,8 @@ disk.put('year2000.gam', serializeGame(game));
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
 disk.put('license.txt', licenseText('In The Year 2000!'));
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
 console.log(
   `${Object.entries(sets)

@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "AVAE0ABNCM0ATRDNAEgIyABNKM0ASwTLAFAI0ABNCM0AUATQG1AU0ABQBNAATQzNAFAI0A9QENAAUATQI1AE0AJLBMsDSwTLA0sEywBNBM0FTQTNAEgIyABLPMsCSyDLAEgayABNDM0ASATIAEsQywxIGMgATWDNAFAE0BdQGdATUAjQHFAU0AxQBNADSwTLA0sEywJLBMsDSwTLA0sEywJLBMsDSwTLA0sEywJLBMsDSwTLA0sEywJLBMsDSwTLAksEywBQDdAIUBDQAEsMywBQBNAASwzLAEgIyABLEMsATQTNAEgMyAhIDMgATVDNAk0EzQBQHdAATQ=="
+   "keys": "AVAE0ABNCM0ATRDNAEgIyABNKM0ASwTLAFAI0ABNCM0AUATQG1AU0ABQBNAATQzNAFAI0A9QENAAUATQI1AE0AJLBMsDSwTLA0sEywBNBM0FTQTNAEgIyABLPMsCSyDLAEgayABNDM0ASATIAEsQywxIGMgATWDNAFAE0AFQFNACUA3QC1AY0ABLOcsAUAzQD1AR0ABLDMsAUATQAEsMywBICMgASwTLAUsMywBNBM0ASBjIAE1UzQBQDNACUBHQAE0="
   },
   {
    "scene": 4,
@@ -79,7 +79,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 34199,
+  "frames": 33856,
   "chapters": [
    {
     "title": "Opening",
@@ -99,27 +99,27 @@
    },
    {
     "title": "Level 3: Mega Mall 2000",
-    "frame": 13012
+    "frame": 12670
    },
    {
     "title": "Level 4: Teleport Exchange",
-    "frame": 19005
+    "frame": 18663
    },
    {
     "title": "Level 5: The Moon",
-    "frame": 22911
+    "frame": 22569
    },
    {
     "title": "Level 6: Science Fair",
-    "frame": 27090
+    "frame": 26748
    },
    {
     "title": "Ending",
-    "frame": 30638
+    "frame": 30296
    },
    {
     "title": "Credits",
-    "frame": 32644
+    "frame": 32301
    }
   ]
  }
