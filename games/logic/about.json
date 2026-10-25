@@ -79,5 +79,6 @@
     "kitchen.mon#53",
     "living.mon#46",
     "living.mon#52"
-  ]
+  ],
+  "acceptedFindings": ["stakes s6 The hero starts with 20 lives"]
 }

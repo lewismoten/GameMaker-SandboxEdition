@@ -96,5 +96,6 @@
     "future.mon#5",
     "future.mon#6",
     "future.mon#7"
-  ]
+  ],
+  "acceptedFindings": ["ending s4 A page of the level card is empty"]
 }

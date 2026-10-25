@@ -61,7 +61,9 @@
   "warning start-threat s4 Monster 10 starts 3 blocks from where the hero comes in",
   "warning start-threat s7 Monster 51 starts 3 blocks from where the hero comes in"
  ],
- "brief": [],
+ "brief": [
+  "warning help-length s0 The instructions run to 6 pages"
+ ],
  "carl": [
   "warning hazard-art s6 Block 41 hurts through its whole cell, but its art fills 17% of it",
   "warning start-threat s5 Monster 25 starts 1 blocks from where the hero comes in"
@@ -80,21 +82,12 @@
   "warning start-threat s4 Monster 20 starts 1 blocks from where the hero comes in",
   "warning start-threat s6 Monster 20 starts 3 blocks from where the hero comes in",
   "warning start-threat s7 Monster 2 starts 3 blocks from where the hero comes in",
-  "warning start-threat s7 Monster 20 starts 2 blocks from where the hero comes in",
-  "warning unreachable s10 1 of block 37 is sealed in, first at (35, 57)",
-  "warning unreachable s11 1 of block 17 is sealed in, first at (62, 40)",
-  "warning unreachable s11 1 of block 29 is sealed in, first at (41, 54)",
-  "warning unreachable s14 1 of block 24 is sealed in, first at (56, 42)",
-  "warning unreachable s16 1 of block 34 is sealed in, first at (66, 48)",
-  "warning unreachable s19 1 of block 42 is sealed in, first at (41, 53)",
-  "warning unreachable s19 1 of block 43 is sealed in, first at (47, 53)",
-  "warning unreachable s19 2 of block 22 are sealed in, first at (47, 45)",
-  "warning unreachable s5 1 of block 15 is sealed in, first at (48, 42)",
-  "warning unreachable s8 1 of block 11 is sealed in, first at (57, 40)",
-  "warning unreachable s8 1 of block 149 is sealed in, first at (64, 40)",
-  "warning unreachable s8 3 of block 8 are sealed in, first at (43, 39)"
+  "warning start-threat s7 Monster 20 starts 2 blocks from where the hero comes in"
  ],
- "goat": [],
+ "goat": [
+  "warning shot-prize s2 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)",
+  "warning shot-prize s5 The hero’s shots destroy prize monster 2 (power 60, shots up to 120)"
+ ],
  "loaf": [],
  "logic": [
   "warning births s2 Block 69 gives birth to monster 46 every 0.3 s",
@@ -350,6 +343,7 @@
   "warning hazard-art s64 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hazard-art s78 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hazard-art s89 Block 43 hurts through its whole cell, but its art fills 21% of it",
+  "warning help-length s0 The instructions run to 6 pages",
   "warning opposites s10 Blocks 33 and 35 pull opposite ways and touch in 1 place",
   "warning opposites s10 Blocks 33 and 37 pull opposite ways and touch in 6 places",
   "warning opposites s10 Blocks 35 and 107 pull opposite ways and touch in 6 places",
@@ -400,7 +394,9 @@
   "warning opposites s98 Blocks 91 and 93 pull opposite ways and touch in 1 place"
  ],
  "mustard": [],
- "needle": [],
+ "needle": [
+  "warning start-threat s2 The hero starts with nothing to fire, and 2 enemies are on the first screen"
+ ],
  "realm": [
   "warning density s36 6 enemies on one screen at (42, 24)",
   "warning start-threat s2 Monster 11 starts 2 blocks from where the hero comes in",
@@ -415,7 +411,9 @@
   "warning start-threat s5 Monster 8 starts 2 blocks from where the hero comes in"
  ],
  "sandcast": [],
- "sleuth": [],
+ "sleuth": [
+  "warning help-length s0 The instructions run to 6 pages"
+ ],
  "smirked": [
   "warning start-threat s3 Monster 2 starts 2 blocks from where the hero comes in"
  ],
@@ -429,12 +427,11 @@
  "sweats": [
   "warning sounds s2 Sound 5 (cheer.voc) plays on every score pickup: 1.4 s long, -17 dB"
  ],
- "teddy": [
-  "warning unreachable s8 1 of block 149 is sealed in, first at (50, 66)"
- ],
+ "teddy": [],
  "teddy2": [
   "warning contrast s13 Monster 23 is hard to see against the scenery (contrast 1.0 : 1)",
-  "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places"
+  "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places",
+  "warning shot-prize s5 The hero’s shots destroy prize monster 30 (power 1, shots up to 130)"
  ],
  "teddy3": [
   "warning contrast s20 Monster 35 is hard to see against the scenery (contrast 1.0 : 1)",
