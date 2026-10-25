@@ -1,3 +1,6 @@
+PIECE 1 OF 3
+Dungeon 1 of 4 done
+
 Sir Snoozalot rolls over,
 mumbles "five more minutes,"
 and is gone in a puff of dust.
@@ -11,13 +14,10 @@ It's warm, and it hums
 faintly, like something that
 very much wants to get on with
 things.
-
-
-
 (It glows on the Tuit Table in
 the Garden Court now. Two to
-go.)
-
+go, then Deadline Keep. Time
+to save: F5.)
 
 
 

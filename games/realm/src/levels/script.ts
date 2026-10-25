@@ -26,7 +26,9 @@ In Procrastia that means "eventually, maybe, if it's not raining." But you, Pip,
 
 So off you go: north up the road to Laterburg and the castle.
 
-SPACE swings your wooden sword. T drinks a tonic (you've one in your satchel). F2 shows your gold and your satchel. F5 saves.
+SPACE swings your wooden sword. T drinks a tonic (you've one in your satchel). F2 shows your gold and your satchel.
+
+F5 saves your game and F6 loads it. Save often, Pip: before every dungeon, and after.
 
 And Pip? Mind the slimes. They put things off, too. Including biting you.`,
   ),
@@ -98,7 +100,7 @@ The King holds court in the Garden Court at the top of the street. Under the sky
 
 The Royal Round Tuit, boy! Every King of Procrastia has got around to things by it. Then Lord Deadline stole it and broke it in three, and now nobody gets around to ANYTHING.
 
-The first piece is under the Snooze Barrows, north of here. Take this ROYAL WRIT: the Barrows' door is sealed in my name.
+Three pieces in three dungeons, then Deadline Keep itself: four dungeons in all. The first piece is under the Snooze Barrows, north of here. Take this ROYAL WRIT: the Barrows' door is sealed in my name.
 
 (You may already have one. Have another. They're free.)
 
@@ -399,13 +401,16 @@ Squeak. He'll find his way back to Doc Leo's tent, he says. (Squeak.) Rubber chi
     'The First Piece',
     'nowish',
     'The Snooze Barrows',
-    `Sir Snoozalot rolls over, mumbles "five more minutes," and is gone in a puff of dust.
+    `PIECE 1 OF 3
+Dungeon 1 of 4 done
+
+Sir Snoozalot rolls over, mumbles "five more minutes," and is gone in a puff of dust.
 
 Behind him, on a little stone plinth: a wedge of old oak edged in brass. The first piece of the Royal Round Tuit!
 
 It's warm, and it hums faintly, like something that very much wants to get on with things.
 
-(It glows on the Tuit Table in the Garden Court now. Two to go.)`,
+(It glows on the Tuit Table in the Garden Court now. Two to go, then Deadline Keep. Time to save: F5.)`,
     'piece',
   ),
   piece2: t(
@@ -414,11 +419,16 @@ It's warm, and it hums faintly, like something that very much wants to get on wi
     'The Second Piece',
     'harbor',
     'The Soggy Vaults',
-    `The Kraken of Kinda-Later sinks back into the deep, promising to come back for you eventually.
+    `PIECE 2 OF 3
+Dungeon 2 of 4 done
+
+The Kraken of Kinda-Later sinks back into the deep, promising to come back for you eventually.
 
 The second piece of the Round Tuit sits in a scallop shell, crackling with blue sparks. Lightning! It must have soaked it up from the storm-eels.
 
-Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink this right up. (Don't worry. It's a tuit. It recharges.)`,
+Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink this right up. (Don't worry. It's a tuit. It recharges.)
+
+One piece to go, then Deadline Keep.`,
     'piece',
   ),
   piece3: t(
@@ -427,7 +437,10 @@ Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink
     'The Third Piece',
     'falls',
     'The Putoff Mines',
-    `Tick-Tock the Unpunctual winds down, chimes thirteen, and stops for good. Fashionably late to its own defeat.
+    `PIECE 3 OF 3
+Dungeon 3 of 4 done
+
+Tick-Tock the Unpunctual winds down, chimes thirteen, and stops for good. Fashionably late to its own defeat.
 
 The third piece of the Round Tuit was the key that wound it up.
 
