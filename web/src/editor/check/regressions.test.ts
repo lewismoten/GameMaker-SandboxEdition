@@ -113,15 +113,11 @@ describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => 
   }, 60_000);
 
   it('finds wave 8b’s sinks before their fixes, and not after', async () => {
-    const cases: [string, string, number, number[]][] = [
-      ['reckoning', '98bb901b', 5, [17]],
-      ['tickle', '0562f9dc', 3, [15, 16]],
-      ['risi', '0534d938', 4, [17]],
-      ['sweats', '7875f630', 21, [15]],
-      ['sweats', '7875f630', 10, [12]],
-      ['sweats', '7875f630', 4, [12]],
-    ];
-    // (risi's rooftop pigeon kept a push into the chimney until 41424d6e: wave 15's test)
+    // (the others wave 8b fixed, reckoning 98bb901b, risi 0534d938 and sweats 7875f630, were
+    // sinks only while the port's DrawScroll skipped drawchars' bookkeeping: the hero's screen
+    // row went stale during a scroll and ChkMonChr lifted him from the wrong side. PLAYGAME
+    // never sank him there, so the probe finds nothing on those disks now.)
+    const cases: [string, string, number, number[]][] = [['tickle', '0562f9dc', 3, [15, 16]]];
     for (const [id, rev, scene, mons] of cases) {
       const before = await sinks(id, `${rev}^`, scene);
       const after = await sinks(id, rev, scene, SINK);
@@ -133,13 +129,11 @@ describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => 
   }, 60_000);
 
   it('finds wave 15’s sinks and pushes before their fixes, and none after', async () => {
+    // (as in wave 8b, the rest of wave 15's finds, in needle, tickle, mustard, risi and sweats,
+    // came from the port's stale screen row during a scroll and are gone under the DOS-true one)
     const cases: [string, string, string[]][] = [
-      ['needle', '86c66e09', ['2:0', '2:2', '2:4', '2:20', '3:8', '3:9', '4:13', '4:14', '4:16', '5:16']],
-      ['tickle', '6bdb9f97', ['2:4', '2:5', '3:4', '3:5', '3:14', '4:9', '4:10', '4:17', '4:18', '5:4', '5:5', '5:9', '5:10', '5:29']],
-      ['mustard', '05e919bb', ['2:19']],
-      ['risi', 'aa15aceb', ['7:31']],
+      ['needle', '86c66e09', ['4:14']],
       ['risi', '41424d6e', ['4:17']],
-      ['sweats', 'c971b26a', ['4:12', '9:16', '16:13', '19:13']],
     ];
     for (const [id, rev, found] of cases) {
       const before = await allSinks(id, `${rev}^`);

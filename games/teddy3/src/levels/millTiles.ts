@@ -8,6 +8,7 @@
 import { Pixels } from '../../../kit/pixels';
 import { blob } from '../art/draw';
 import { GRAV, Tiles } from './level';
+import type { BlockDef } from '../blocks/blockset';
 import { CTR } from '../ids';
 import { errandOn } from '../sprites/errands';
 import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, leaves, planks, r, sky, trunk, tuft } from '../blocks/tiles';
@@ -29,9 +30,10 @@ function beamOver(p: Pixels): Pixels {
 
 /**
  * The hub and spokes of a wheel (3x3, inside its ring of paddles), over per-cell bases. With
- * `floor`, a beam runs across its top row (a ledge): the floor Teddy steps off onto.
+ * `floor`, a beam runs across its top row (a ledge): the floor Teddy steps off onto. `def`
+ * gives a cell's block settings (the big wheel's lower cells are the millrace's water).
  */
-export function hub(t: Tiles, name: string, base: (bx: number, by: number) => Pixels, floor: boolean): void {
+export function hub(t: Tiles, name: string, base: (bx: number, by: number) => Pixels, floor: boolean, def?: (by: number) => BlockDef): void {
   const p = canvas(3, 3, base);
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2;
@@ -44,7 +46,7 @@ export function hub(t: Tiles, name: string, base: (bx: number, by: number) => Pi
   for (let by = 0; by < 3; by++)
     for (let bx = 0; bx < 3; bx++) {
       if (floor && by === 0) t.ledge(`${name}${bx}${by}`, beamOver(cells[by][bx]));
-      else t.air(`${name}${bx}${by}`, cells[by][bx]);
+      else t.air(`${name}${bx}${by}`, cells[by][bx], def?.(by));
     }
 }
 
@@ -111,8 +113,16 @@ export function millTiles(): Tiles {
   );
 
   // The wheels' hubs: one picture for the three inside the mill, one for the big one outside.
+  // The big one dips into the millrace: its top row is sky, the next the race's surface and
+  // the bottom its deep water, which carry Teddy on as the race does (mill.ts lays it out).
   hub(t, 'hub', () => stone, true);
-  hub(t, 'bigHub', (_bx, by) => sky(bandAt(37 + by, G)), false);
+  hub(
+    t,
+    'bigHub',
+    (_bx, by) => (by === 0 ? sky(bandAt(G - 1, G)) : by === 1 ? water(true, 0, sky(3)) : water(false, 0)),
+    false,
+    (by) => (by === 0 ? {} : { grav: GRAV.right | (by === 1 ? GRAV.down : GRAV.up) }),
+  );
 
   // The millrace: water that floats Teddy and carries him downstream (gravity right, as the
   // sequel's rapids); the flume: a chute of water down the mill's side (gravity down and along).

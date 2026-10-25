@@ -38,7 +38,7 @@ export const route: Order[] = [
   { trick: 'f', after: 8 },
   { until: 'has the banner', check: (s) => s.w.ci.meter[CTR.clues] > 1 },
   { walk: MILL_AT.flume, grab: false },
-  { until: 'carried to the big wheel', maxTicks: 200, check: (s) => s.pos.bx === big.x },
-  level(floors[0]),
+  // carried to the big wheel, whose next paddle up scoops Teddy out and lifts him to the quay
+  { until: 'lifted level with the quay', maxTicks: 300, check: (s) => s.pos.bx >= big.x - 1 && s.pos.y <= (MILL_AT.quayTop - 1) * 20 },
   { walk: MILL_AT.car + 1 },
 ];

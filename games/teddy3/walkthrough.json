@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0szQESBJIjTQPNEE0CSAjIFM0bTQPNHRIGkgBNBs0qEgaSAE0GzQFNM80LEgSSOU0DzRpNAkgIyATNATkCuRBNCM0BIQKhCE0XzSFNIM0="
+   "keys": "AU0szQESBJIjTQPND00CSAjIE80dTQPNHRIGkgBNBs0qEgaSAE0GzQFNM80LEgSSOU0DzRpNBM0BOQK5EE0IzQEhAqEITRfNK00gzQ=="
   },
   {
    "scene": 5,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 7,
-   "keys": "AU0KzQE5ArkQTQrNFjkCuRBNGc0BAgKCPE0ESAjIGs0BAgKCO00ESAjIJM1AAgKCO00ESAjIRs0BIQKhCE1KzQ=="
+   "keys": "AU0KzQE5ArkQTQrNFjkCuRBNGc0BAgKCPE0ESAjIGc0BAgKCO00ESAjII81CAgKCO00ESAjIRs0BIQKhCE1KzQ=="
   },
   {
    "scene": 8,
@@ -36,7 +36,7 @@
   },
   {
    "scene": 9,
-   "keys": "AU0EEgaSCs0TSwTLJk0EzQE5ArkMTQBIAsgczTZNA80nTQTNATkCuQxNAEgCyBjNJE0DzSdNBM0BOQK5DE0ASALIGM0RTQPNJ00EzQE5ArkMTQBIAsgczQEhAqEITRPNQk0JzQ=="
+   "keys": "AU0EEgaSCs0TTQTNJk0EzQE5ArkMTQBIAsgczTZNA80nTQTNATkCuQxNAEgCyBjNJE0DzSdNBc0BOQK5DE0ASALIGc0PTQLNKE0EzQE5ArkMTQBIAsgczQEhAqEITRPNV00DSAjICc0="
   },
   {
    "scene": 10,
@@ -139,7 +139,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 54671,
+  "frames": 54776,
   "chapters": [
    {
     "title": "Opening",
@@ -183,43 +183,43 @@
    },
    {
     "title": "Level 9: Gwinn's Buried Treasure",
-    "frame": 25797
+    "frame": 25902
    },
    {
     "title": "Level 10: Pie Practice",
-    "frame": 28162
+    "frame": 28267
    },
    {
     "title": "Level 11: The Funhouse",
-    "frame": 31167
+    "frame": 31272
    },
    {
     "title": "Level 12: Lookout Hill",
-    "frame": 34057
+    "frame": 34162
    },
    {
     "title": "Level 13: Firefly Meadow",
-    "frame": 36558
+    "frame": 36663
    },
    {
     "title": "Level 14: Gwinn Hides Backstage",
-    "frame": 39000
+    "frame": 39105
    },
    {
     "title": "Level 15: Doc Leo Hangs the Lights",
-    "frame": 41692
+    "frame": 41797
    },
    {
     "title": "Level 16: The Teddy Course",
-    "frame": 45070
+    "frame": 45175
    },
    {
     "title": "Ending",
-    "frame": 48603
+    "frame": 48708
    },
    {
     "title": "Credits",
-    "frame": 51542
+    "frame": 51647
    }
   ]
  }

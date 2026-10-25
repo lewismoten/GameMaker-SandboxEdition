@@ -6,7 +6,8 @@
 // when a paddle comes level and step off before it goes over the top (a miss drops him a
 // floor, to try again); pigeons on the ledges. Twist: out of the loft the flume pours Teddy
 // into the millrace, whose current carries him to the big wheel by the quay, turning the
-// other way; its paddles scoop him out of the water and up to THE CHEZ.
+// other way; it dips deep into the race, so its paddles come up from under him, scoop him out
+// of the water and lift him level with the quay and THE CHEZ.
 //
 // The blocks are in millTiles.ts, the monsters in millBeasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
@@ -29,8 +30,14 @@ export const MILL_AT = {
     { x: 26, bottom: 34 },
     { x: 34, bottom: 31 },
   ],
-  /** The big wheel by the quay, rising on its right side. */
-  big: { x: 65, bottom: G },
+  /**
+   * The big wheel by the quay, rising on its right side. Its ring's bottom is in the race's
+   * deep water, below where Teddy floats, so a paddle rising there meets him from underneath
+   * and lifts him (a solid monster that met him level would push him aside instead).
+   */
+  big: { x: 65, bottom: G + 2 },
+  /** The quay's top row, level with the big wheel's top. */
+  quayTop: G + 2 - WHEEL.size,
   /** The floor Teddy steps off onto at the top of each wheel in the mill (their rows). */
   floors: [37, 34, 31, 28],
   banner: 42,
@@ -39,7 +46,7 @@ export const MILL_AT = {
   quay: 66,
   car: 68,
   /** The perch over the race with the bone (hop to it off a paddle of the big wheel). */
-  perch: { x: 63, y: 34 },
+  perch: { x: 63, y: 36 },
 };
 
 export function mill(): Level {
@@ -47,11 +54,13 @@ export function mill(): Level {
   const beasts = millBeasts();
   const at = MILL_AT;
   const skyAt = (y: number) => `sky${bandAt(y, G)}`;
+  // THE CHEZ and Doc Leo stand on the quay (the car's roof two rows up), over the sky's bands
+  const carTop = at.quayTop - 2;
   bs.chez(
-    (_bx, by) => sky(bandAt(35 + by, G)),
+    (_bx, by) => sky(bandAt(carTop + by, G)),
     'banner',
-    sky(bandAt(34, G)),
-    (by) => sky(bandAt(35 + by, G)),
+    sky(bandAt(carTop - 1, G)),
+    (by) => sky(bandAt(carTop + by, G)),
   );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
@@ -108,7 +117,6 @@ export function mill(): Level {
     m.mon(far, w.bottom, `${name}Bottom`);
   };
   for (const w of wheels) wheel(w, 'wheel', 'hub', 'left');
-  wheel(at.big, 'bigWheel', 'bigHub', 'right');
 
   // Inside: the miller and his sacks, the signs, the banner up in the loft.
   m.set(24, 38, 'millerTop').set(24, 39, 'millerBot').set(24, 37, 'millerSays');
@@ -132,8 +140,10 @@ export function mill(): Level {
     for (let y = G + 1; y < G + 3; y++) m.set(x, y, 'raceDeep0');
     m.set(x, G + 3, 'bed');
   }
+  // the big wheel, after the race, as its hub's lower cells stand in for the race's water
+  wheel(at.big, 'bigWheel', 'bigHub', 'right');
   m.set(at.perch.x, at.perch.y, 'perch');
-  const quayTop = floors[0];
+  const { quayTop } = at;
   m.rect(at.quay, quayTop, 8, 1, 'quayTop');
   m.rect(at.quay, quayTop + 1, 8, G + 4 - quayTop - 1, 'quay');
   m.rect(at.quay + 8, 20, 100 - at.quay - 8, 24, 'hedgeWall');
@@ -141,7 +151,7 @@ export function mill(): Level {
 
   // THE CHEZ and Doc Leo, on the quay.
   const car = at.car;
-  const top = quayTop - 2;
+  const top = carTop;
   m.set(car, top, 'carRoofL')
     .set(car + 1, top, 'carRoofR')
     .set(car, top + 1, 'carDoor')
@@ -171,8 +181,8 @@ export function mill(): Level {
     [44, 25],
     [51, 30],
     [55, 34],
-    [67, 36],
-    [70, 34],
+    [67, 37],
+    [70, 35],
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.treat(at.perch.x, at.perch.y - 1, 'bone');

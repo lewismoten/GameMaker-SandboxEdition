@@ -10,8 +10,18 @@ const strip = (n: string) => n.replace(/^(treat|bone)~/, '').replace(/_\d+$/, ''
 const GRID = /^([A-Za-z]+?)(\d)(\d)$/;
 
 /** Hard edges on purpose: the park gate's sign board ends at a block edge; the far trees meet
- * the lawn behind the lamppost; sky bands change behind the mill's big hub and the well's roof. */
-const SEAM_EDGES = ['gate10|gate20', 'lamp01/lamp02', 'bigHub01/bigHub02', 'wellTop00/wellTop01', 'wellTop10/wellTop11', 'wellTop20/wellTop21'];
+ * the lawn behind the lamppost; the race's surface meets its deep water behind the mill's big hub;
+ * sky bands change behind the well's roof. */
+const SEAM_EDGES = [
+  'gate10|gate20',
+  'lamp01/lamp02',
+  'bigHub01/bigHub02',
+  'bigHub11/bigHub12',
+  'bigHub21/bigHub22',
+  'wellTop00/wellTop01',
+  'wellTop10/wellTop11',
+  'wellTop20/wellTop21',
+];
 /** Objects whose stripes, awnings or sky bands change right at block edges (looked at): the Big
  * Top's red and white stripes, the midway's booths and arch (as in the sequel), the willow, the
  * party cake's tiers, and the striped wallpaper behind the Clown Club's poster and rack. */
