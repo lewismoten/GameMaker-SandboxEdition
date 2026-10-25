@@ -28,8 +28,7 @@ disk.put('hero.chr', serializeCharacter(all.hero));
 disk.put('side.chr', serializeCharacter(all.side));
 disk.put('hero.cbl', serializeBlocks(all.cb.build()));
 disk.put('side.cbl', serializeBlocks(all.cb.build()));
-disk.put('town.bbl', serializeBlocks(all.sets.town.build()));
-disk.put('tower.bbl', serializeBlocks(all.sets.tower.build()));
+for (const [name, set] of Object.entries(all.sets)) disk.put(`${name}.bbl`, serializeBlocks(set.build()));
 disk.put('lark.mbl', serializeBlocks(all.mb.build()));
 for (const p of all.places) {
   disk.put(`${p.file}.pal`, serializePalette(buildPalette(p.light).pal));
@@ -50,6 +49,7 @@ const songs: Record<string, () => Uint8Array> = {
   square: M.squareSong,
   tower: M.towerSong,
   parade: M.paradeSong,
+  park: M.parkSong,
   won: M.wonSong,
   lost: M.lostSong,
 };

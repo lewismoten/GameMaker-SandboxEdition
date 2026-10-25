@@ -1,13 +1,13 @@
 // The Long Road, first leg: from The Dog House east along the road, with a lane north to each
-// stop (the town clock, the park, the bandstand) and, at the far end, a field gate that opens for
-// a friend's thank-you. The lanes to the park and the bandstand are fenced off for now.
+// stop (the town clock, the park, Main Street's parade) and, at the far end, a field gate that
+// opens for the three friends' thank-yous (and gives them back as Joe goes through).
 import { rng } from '../../../kit/pixels';
 import type { BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
 export const ROAD_W = 36;
 export const ROAD_H = 18;
-/** Lanes north: chapter 1's (open), 2's and 3's (closed for now). */
+/** Lanes north: chapter 1's, 2's and 3's. */
 export const LANES = [10, 19, 27];
 export const ROAD_ROW = 12;
 
@@ -41,12 +41,12 @@ export function roadRows(): string[] {
   for (let x = 4; x < 33; x++) if (!LANES.includes(x) && x % 7 !== 3) put(x, ROAD_ROW + 2, 'F');
   // the lanes north
   LANES.forEach((lx, i) => {
-    for (let y = i === 0 ? 1 : 4; y < ROAD_ROW; y++) put(lx, y, y % 2 ? 'p' : 'q');
+    for (let y = 1; y < ROAD_ROW; y++) put(lx, y, y % 2 ? 'p' : 'q');
     put(lx + 1, ROAD_ROW - 2, ['C', 'K', 'B'][i]);
-    if (i > 0) put(lx, 4, 'x');
+    // the lane's end (the way in) and its foot (where Joe comes back)
+    put(lx, 1, ['L', 'M', 'N'][i]);
+    put(lx, ROAD_ROW - 1, ['r', 's', 'u'][i]);
   });
-  put(LANES[0], 1, 'L');
-  put(LANES[0], ROAD_ROW - 1, 'r');
   // The Dog House by the road's west end, and Joe on the step
   put(1, 10, '0');
   put(2, 10, '1');
@@ -78,9 +78,12 @@ export function roadMap(set: BlockSet): Stamped {
       K: 'signPark',
       B: 'signBand',
       O: 'signOn',
-      x: 'barrier',
       L: 'path',
+      M: 'path',
+      N: 'path',
       r: 'path',
+      s: 'path',
+      u: 'path',
       '0': 'dogHouse0',
       '1': 'dogHouse1',
       '2': 'dogHouse2',
@@ -92,6 +95,6 @@ export function roadMap(set: BlockSet): Stamped {
     set,
     'tree',
     undefined,
-    'Lr@GE',
+    'LMNrsu@GE',
   );
 }

@@ -13,7 +13,7 @@ import { compile } from '../src/game';
 const out = process.argv[2];
 if (!out) throw new Error('name a folder for the previews');
 const disk = new URL('../disk/', import.meta.url);
-for (const name of ['title', 'menu', 'talkleo7', 'card1', 'story']) {
+for (const name of ['title', 'menu', 'talkleo7', 'talkted2', 'card3', 'story']) {
   const img = decodeGif(new Uint8Array(readFileSync(new URL(`${name}.gif`, disk))));
   const p = new Pixels(img.width, img.height);
   p.px.set(img.pixels);

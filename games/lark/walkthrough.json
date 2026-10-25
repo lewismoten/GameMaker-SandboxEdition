@@ -23,10 +23,6 @@
    "keys": ""
   },
   {
-   "scene": 2,
-   "keys": "AVAB0AdQAdAHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB1A="
-  },
-  {
    "scene": 3,
    "keys": "AUgByAdIAcgHSAHIB0gByAdNAc0HSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HTQHNB00BzQdNAc0HTQ=="
   },
@@ -72,7 +68,55 @@
   },
   {
    "scene": 3,
-   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
+  },
+  {
+   "scene": 15,
+   "keys": ""
+  },
+  {
+   "scene": 16,
+   "keys": "AUgByAdIAcgHSwHLB0s="
+  },
+  {
+   "scene": 17,
+   "keys": ""
+  },
+  {
+   "scene": 16,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0sBywdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0gByAdIAcgHSAHIB0sBywdLAcsHSwHLB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdLAcsHSwHLB0gByAdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HUAHQB0gByAdIAcgHTQHNB00BzQdNAc0HUAHQB1AB0AdQAdAHUAHQB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HTQHNB00BzQdNAc0HUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHSwHLB0sBywdLAcsHSwHLB0sBywdQAdAHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0sBywdLAcsHSwHLB0gByAdIAcgHTQHNB0gByAc5AbkKSw=="
+  },
+  {
+   "scene": 18,
+   "keys": ""
+  },
+  {
+   "scene": 16,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUA=="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQ=="
+  },
+  {
+   "scene": 19,
+   "keys": ""
+  },
+  {
+   "scene": 20,
+   "keys": "AUgByBFIAcgRSAHIEUgByBFIAcgRSAHIEUsByxFLAcsRSwHLEUsByxFLAcsRSwHLEUsByxFIAcgXSAHIEUgByBFNAc0RTQHNEU0BzRFNAc0RTQHNEU0BzRFNAc0RTQHNEU0BzRFNAc0RTQHNEU0BzRFNAc0RSAHIB0gByAdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 21,
+   "keys": ""
+  },
+  {
+   "scene": 20,
+   "keys": "AU0BzQdQAdAHUAHQB00BzQdNAc0HSAHIB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB00BzQdNAc0HTQHNB00BzQdI"
+  },
+  {
+   "scene": 3,
+   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdN"
   },
   {
    "scene": 14,
@@ -91,11 +135,19 @@
   {
    "scene": 4,
    "title": "Chapter 1: The Clock Tower"
+  },
+  {
+   "scene": 15,
+   "title": "Chapter 2: Valentines in the Park"
+  },
+  {
+   "scene": 19,
+   "title": "Chapter 3: The Parade"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 22463,
+  "frames": 37015,
   "chapters": [
    {
     "title": "Opening",
@@ -111,19 +163,27 @@
    },
    {
     "title": "The Long Road",
-    "frame": 7734
+    "frame": 7381
    },
    {
     "title": "Chapter 1: The Clock Tower",
-    "frame": 8298
+    "frame": 7945
+   },
+   {
+    "title": "Chapter 2: Valentines in the Park",
+    "frame": 18013
+   },
+   {
+    "title": "Chapter 3: The Parade",
+    "frame": 26638
    },
    {
     "title": "Ending",
-    "frame": 18640
+    "frame": 33184
    },
    {
     "title": "Credits",
-    "frame": 20431
+    "frame": 34979
    }
   ]
  }

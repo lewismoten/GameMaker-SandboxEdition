@@ -57,7 +57,7 @@ const SQUARE_LEGEND = {
   L: 'leo',
   '@': 'cobble',
   S: 'cobble',
-  J: 'rope',
+  J: 'rope1',
   V: 'swing',
   k: 'windKey',
 };

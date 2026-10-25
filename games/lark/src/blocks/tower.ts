@@ -174,11 +174,11 @@ export function towerSet(): BlockSet {
   // the stuck gears: touch one and it turns (a gear counted, and it keeps turning)
   s.add('gearTurn0', gear(0, 3), { grav: DOWN, next: 'gearTurn1', ntime: 4 });
   s.add('gearTurn1', gear(1, 3), { grav: DOWN, next: 'gearTurn0', ntime: 4 });
-  s.add('gear', gear('stuck', 3), { grav: DOWN, effect: CTR.gears, eamt: 1, score: 50, touch: 'gearTurn0' });
+  s.add('gear', gear('stuck', 3), { grav: DOWN, effect: CTR.task, eamt: 1, score: 50, touch: 'gearTurn0' });
   s.add('door', door(), { grav: DOWN });
   s.add('hatch', hatch(), { grav: DOWN });
   s.add('hammerDown', hammer(true), { grav: DOWN });
-  s.add('hammer', hammer(false), { solid: SOLID, effect: CTR.gears, eamt: -GEARS, touch: 'hammerDown' });
+  s.add('hammer', hammer(false), { solid: SOLID, effect: CTR.task, eamt: -GEARS, touch: 'hammerDown' });
   s.add('bellRope', bellRope(), { grav: DOWN });
   for (let k = 0; k < 4; k++) s.add(`bell${k}`, bell(k), { grav: DOWN });
   addKeepsakes(s, back(1), 'air');

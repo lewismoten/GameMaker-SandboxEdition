@@ -2,18 +2,18 @@
 // all-black palette so PLAYGAME's fade in and out of it shows nothing. Each such scene starts Joe
 // on one of its cells, and that cell is also the scene's link straight on, so the scene ends on
 // the tick it starts. The cell he stands on is touched on that tick, so a pass can give
-// something: 'a' gives nothing, 'b' says Joe has been to his workbench, 'c' is a thank-you heart.
+// something: 'a' gives nothing, 'c' is a thank-you heart.
 import type { BlockSet } from '../blocks/sets';
 import { mark, stamp, type Stamped } from './stamp';
 
-export const PASS_ROWS = ['vvvvv', 'vabcv', 'vvvvv'];
+export const PASS_ROWS = ['vvvv', 'vacv', 'vvvv'];
 
-export type Gift = 'none' | 'ready' | 'thanks';
+export type Gift = 'none' | 'thanks';
 
-const GIFT_MARK: Record<Gift, string> = { none: 'a', ready: 'b', thanks: 'c' };
+const GIFT_MARK: Record<Gift, string> = { none: 'a', thanks: 'c' };
 
 export function passMap(set: BlockSet): Stamped {
-  return stamp(PASS_ROWS, { v: 'void', a: 'pass', b: 'giftReady', c: 'giftThanks' }, set, 'void', undefined, 'abc');
+  return stamp(PASS_ROWS, { v: 'void', a: 'pass', c: 'giftThanks' }, set, 'void', undefined, 'ac');
 }
 
 /** The pass map's cell that gives `gift`. */

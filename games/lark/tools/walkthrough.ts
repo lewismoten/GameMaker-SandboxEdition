@@ -17,6 +17,8 @@ const TITLES = new Map<number, string>([
   [SCENE.library, 'Prologue: Closing Time'],
   [SCENE.road1, 'The Long Road'],
   [SCENE.card1, 'Chapter 1: The Clock Tower'],
+  [SCENE.card2, 'Chapter 2: Valentines in the Park'],
+  [SCENE.card3, 'Chapter 3: The Parade'],
 ]);
 const segments: WalkSegment[] = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
 const seen = new Set<number>();

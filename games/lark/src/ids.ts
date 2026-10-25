@@ -13,7 +13,7 @@ export const SCENE = {
   belfry: 7,
   /** The square at seven o'clock: the same square, the clock going, the parade lined up. */
   square7: 8,
-  /** Talks: one-tick pass scenes whose intro is the conversation (talk.ts). */
+  /** Talks: one-tick pass scenes whose intro is the conversation (levels/pass.ts). */
   talkBook: 9,
   talkBench: 10,
   talkLeo: 11,
@@ -22,40 +22,53 @@ export const SCENE = {
   bell: 13,
   /** Over the hill: where the road goes on (for now, the end). */
   over: 14,
+  // chapter 2, valentines in the park
+  card2: 15,
+  park: 16,
+  talkTeddy: 17,
+  talkTeddy2: 18,
+  // chapter 3, the parade
+  card3: 19,
+  street: 20,
+  talkBard: 21,
 } as const;
 
 /**
  * Counters (repetition meters). Each reads one more than it holds, and a block that would
  * leave counter 3 or 20..29 at zero or below refuses the touch (PLAYGAME.C DoBlockTouchChar).
+ * There are only ten of those, so they are spent with care: one for thank-yous, one shared by
+ * every chapter's task (each chapter's gate spends exactly what it asks for), and eight
+ * once-only flags for the chapters Joe can come back to from the road.
  */
 export const CTR = {
   /** Thank-you hearts: one from each friend helped. The Long Road's gates count them. */
   thanks: 20,
-  /** 1 once Joe has looked at his workbench: the library's little red door opens. */
-  ready: 21,
-  /** Stuck gears turned in the clock tower: the striking hammer needs all three. */
-  gears: 22,
-  /** Chapter flags: start at 2 (one to spend), so a friend's alcove opens once only. */
-  flag1: 23,
-  flag2: 24,
-  flag3: 25,
+  /** The chapter's task: gears turned, valentines found, drumsticks found... */
+  task: 21,
 } as const;
+
+/** Chapter n's once-only flag (n from 1): starts at 2 (one to spend), so a friend's corner opens once. */
+export const flag = (n: number): number => {
+  if (n < 1 || n > 8) throw new Error(`no flag for chapter ${n}`);
+  return 21 + n;
+};
 
 /** What each counter starts at, stored (one more than it holds). */
 export const COUNTER_START: Record<number, number> = {
   [CTR.thanks]: 1,
-  [CTR.ready]: 1,
-  [CTR.gears]: 1,
-  [CTR.flag1]: 2,
-  [CTR.flag2]: 2,
-  [CTR.flag3]: 2,
+  [CTR.task]: 1,
+  ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [flag(i + 1), 2])),
 };
 
 /** Gears the hammer needs turned before it can strike. */
 export const GEARS = 3;
+/** Valentines Teddy's party box needs: six blown about the lawn, six in Gwinn's box. */
+export const VALENTINES = 12;
+/** The Bard's drumsticks, dropped along the parade route. */
+export const DRUMSTICKS = 2;
 
-/** Thank-you hearts the end of the first leg of the road asks for (for now, the only leg). */
-export const LEG1_THANKS = 1;
+/** Thank-you hearts the end of the first leg of the road asks for. */
+export const LEG1_THANKS = 3;
 
 /** Sound set slots. PLAYGAME plays 0..8 by itself (5 on points, 7 a counter up, 8 down...). */
 export const SND = {

@@ -3,11 +3,15 @@
 // the belfry (three gears, the hammer, the bell), the square at seven (the rope, the winding key,
 // Doc Leo's thank-you, out by the swing gate), and east along the road through the field gate.
 import { SCENE } from '../src/ids';
+import { parkMonsters } from '../src/sprites/critters';
 import { at } from '../src/levels/stamp';
 import { Bot } from './bot';
 import type { GameSim } from './sim';
 
 type Step = (bot: Bot) => Promise<void>;
+
+/** The park's monster numbers (its .MON). */
+const MON = parkMonsters;
 
 /** The tower's escapement row (drawing coordinates, levels/clock.ts TOWER_ROWS). */
 const ESCAPEMENT_ROW = 9;
@@ -16,7 +20,7 @@ const ok = (r: string | undefined, label: string) => {
   if (r) throw new Error(`${label}: ${r}`);
 };
 
-/** The library at closing time. */
+/** The library at closing time: the storybook, then the workbench, which leads out to the road. */
 export const library: Step = async (bot) => {
   await bot.wait(30);
   const book = at(4, 7);
@@ -24,9 +28,7 @@ export const library: Step = async (bot) => {
   await bot.pass(SCENE.library, 'back from the storybook');
   const stool = at(17, 5);
   await bot.take(stool.x, stool.y, SCENE.talkBench, 'the workbench');
-  await bot.pass(SCENE.library, 'back from the workbench');
-  const door = at(11, 10);
-  await bot.take(door.x, door.y, SCENE.road1, 'the little red door');
+  await bot.pass(SCENE.road1, 'out of the little red door');
 };
 
 /** The road, up the first lane to the clock. */
@@ -118,6 +120,67 @@ export const square7: Step = async (bot) => {
   await bot.take(exit.x, exit.y, SCENE.road1, 'down the lane');
 };
 
+/** Chapter 2: Teddy at the gate, the lawn's valentines, Gwinn, the arch, Teddy's thank-you, out. */
+export const park: Step = async (bot) => {
+  const lane = at(19, 1);
+  await bot.take(lane.x, lane.y, SCENE.card2, 'the lane to the park');
+  await bot.pass(SCENE.park, 'chapter two');
+  const teddy = at(13, 16);
+  await bot.take(teddy.x, teddy.y, SCENE.talkTeddy, 'Teddy at the gate');
+  await bot.pass(SCENE.park, 'back from Teddy');
+  await bot.chase(MON.valentine, 'valentine');
+  await bot.chase(MON.gwinn, 'Gwinn');
+  const gate = (x: number, y: number) => (cx: number, cy: number) => cx === x && cy === y;
+  for (const [x, y, label] of [
+    [14, 4, 'the arch'],
+    [14, 3, "Teddy's rope"],
+    [15, 1, "Teddy's valentine"],
+  ] as const) {
+    const c = at(x, y);
+    ok(await bot.goto(c.x, c.y, label, gate(c.x, c.y)), label);
+  }
+  ok(await bot.tap('space'), "picking up Teddy's valentine");
+  const teddy2 = at(14, 1);
+  await bot.take(teddy2.x, teddy2.y, SCENE.talkTeddy2, "Teddy's party");
+  await bot.pass(SCENE.park, "Teddy's thank-you");
+  const swing = at(15, 3);
+  ok(await bot.goto(swing.x, swing.y, 'the swing gate'), 'park');
+  const exit = at(15, 19);
+  await bot.take(exit.x, exit.y, SCENE.road1, 'out of the park');
+};
+
+/** Chapter 3: across the parade for the drumsticks, the drum, the Bard's thank-you, and north to the road. */
+export const street: Step = async (bot) => {
+  const lane = at(27, 1);
+  await bot.take(lane.x, lane.y, SCENE.card3, 'the lane to Main Street');
+  await bot.pass(SCENE.street, 'chapter three');
+  const careful = true;
+  for (const [x, y, label] of [
+    [4, 9, 'the first drumstick'],
+    [17, 6, 'the second drumstick'],
+  ] as const) {
+    const c = at(x, y);
+    ok(await bot.goto(c.x, c.y, label, undefined, careful), label);
+  }
+  const gate = (x: number, y: number) => (cx: number, cy: number) => cx === x && cy === y;
+  for (const [x, y, label] of [
+    [5, 4, 'the bass drum'],
+    [5, 3, "the Bard's rope"],
+    [6, 1, "the Bard's drumstick"],
+  ] as const) {
+    const c = at(x, y);
+    ok(await bot.goto(c.x, c.y, label, gate(c.x, c.y)), label);
+  }
+  ok(await bot.tap('space'), "picking up the Bard's drumstick");
+  const bardAt = at(5, 1);
+  await bot.take(bardAt.x, bardAt.y, SCENE.talkBard, 'the Bard');
+  await bot.pass(SCENE.street, "the Bard's thank-you");
+  const swing = at(6, 3);
+  ok(await bot.goto(swing.x, swing.y, 'the swing gate'), 'street');
+  const exit = at(16, 0);
+  await bot.take(exit.x, exit.y, SCENE.road1, 'back to the road');
+};
+
 /** The road east, through the field gate and over the hill. */
 export const onward: Step = async (bot) => {
   const gate = at(33, 12);
@@ -131,7 +194,7 @@ export const onward: Step = async (bot) => {
 export async function playThrough(sim: GameSim, ids: { tick: number; tock: number }): Promise<Bot> {
   const bot = new Bot(sim);
   try {
-    for (const step of [library, toClock, square, tower(ids), belfry, square7, onward]) await step(bot);
+    for (const step of [library, toClock, square, tower(ids), belfry, square7, park, street, onward]) await step(bot);
   } catch (e) {
     console.error((process.env.BOT_LOG ? bot.log : bot.log.slice(-30)).join('\n'));
     throw e;

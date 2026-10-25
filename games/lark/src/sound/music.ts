@@ -2,7 +2,8 @@
 // music-box tune in three-quarter time over a tick-tock, and every place plays it its own way:
 // the library hushed on a music box, the road on a reedy lead over an oom-pah-pah, the square
 // with the clock ticking under brass, the tower slow and low with the tick-tock up front, the
-// parade with the whole band. (Each stop on the road will add its friend's instrument.)
+// parade with the whole band, the park on a celesta for Teddy's party. (Each stop on the road
+// adds its friend's instrument.)
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const BAR = 3;
@@ -37,6 +38,7 @@ const held = (form: Part[]) =>
     .join(', ');
 
 const MUSICBOX = sbi({ modChar: 0x07, carChar: 0x01, modLevel: 0x1c, carLevel: 0x00, modAD: 0xf6, carAD: 0xf4, modSR: 0x41, carSR: 0x24, feedback: 0x06 });
+const CELESTA = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x18, carLevel: 0x00, modAD: 0xf7, carAD: 0xf5, modSR: 0x33, carSR: 0x25, feedback: 0x04 });
 const WOODBLOCK = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x10, carLevel: 0x04, modAD: 0xfa, carAD: 0xf8, modSR: 0x8f, carSR: 0x8f, feedback: 0x0e });
 
 const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
@@ -65,5 +67,6 @@ export const roadSong = () => song(120, arrangement(['A', 'A', 'B', 'A'], { lead
 export const squareSong = () => song(126, arrangement(['A', 'B', 'A'], { lead: INSTRUMENTS.brass, comp: INSTRUMENTS.piano, tick: true }));
 export const towerSong = () => song(96, arrangement(['A', 'B'], { lead: INSTRUMENTS.bell, tick: true, pad: true, transpose: -5 }));
 export const paradeSong = () => song(144, arrangement(['A', 'A', 'B', 'A'], { lead: INSTRUMENTS.brass, comp: INSTRUMENTS.organ, tick: true, pad: true }));
+export const parkSong = () => song(108, arrangement(['A', 'B', 'A'], { lead: CELESTA, comp: INSTRUMENTS.pluck, pad: true }));
 export const wonSong = () => song(104, arrangement(['A', 'B', 'A'], { lead: INSTRUMENTS.strings, comp: INSTRUMENTS.piano, tick: true, pad: true }));
 export const lostSong = () => song(70, arrangement(['A'], { lead: MUSICBOX, pad: true, leadVel: 80 }));

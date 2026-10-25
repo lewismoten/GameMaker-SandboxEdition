@@ -10,10 +10,29 @@ import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { saveSlots } from '../../../kit/saveSlots';
 import { gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { PAL, c, r } from '../art/pal';
+import { bard, gwinnSit, teddy } from '../sprites/friends';
 import { joe } from '../sprites/joe';
 import { clown, leo, reggie } from '../sprites/people';
-import { windKeyPic } from '../blocks/keepsakes';
-import { BELL, CARD1, CREDITS, HELP, LOST, STORY, TALK_BENCH, TALK_BOOK, TALK_LEO, TALK_LEO7, TITLE, WON } from './text';
+import { drumstickPic, valentinePic, windKeyPic } from '../blocks/keepsakes';
+import {
+  BELL,
+  CARD1,
+  CARD2,
+  CARD3,
+  CREDITS,
+  TALK_BARD,
+  TALK_TEDDY,
+  TALK_TEDDY2,
+  HELP,
+  LOST,
+  STORY,
+  TALK_BENCH,
+  TALK_BOOK,
+  TALK_LEO,
+  TALK_LEO7,
+  TITLE,
+  WON,
+} from './text';
 
 export const W = 320;
 export const H = 200;
@@ -96,6 +115,9 @@ function libraryWall(p: Pixels): void {
   }
   p.rect(0, 28, W, 3, c('wood', 3));
 }
+
+/** A see-through 20x20 ground, for a keepsake shown at a page's top. */
+const clearPic = () => new Pixels(20, 20, 255);
 
 // ------------------------------------------------------------------ screens
 
@@ -181,8 +203,13 @@ export function buildScreens(): Record<string, Uint8Array> {
   pages('talkbook', 'THE STORYBOOK', TALK_BOOK, [joe('down', 0)]);
   pages('talkbnch', 'THE WORKBENCH', TALK_BENCH, [joe('down', 0, 'shh')]);
   pages('talkleo', 'DOC LEO', TALK_LEO, [leo(), reggie(0)]);
-  pages('talkleo7', 'DOC LEO', TALK_LEO7, [leo(true, true), reggie(1), joe('down', 0, 'glad'), windKeyPic(new Pixels(20, 20, c('paper', 4)))]);
+  pages('talkleo7', 'DOC LEO', TALK_LEO7, [leo(true, true), reggie(1), joe('down', 0, 'glad'), windKeyPic(clearPic())]);
   pages('card1', 'CHAPTER ONE', CARD1, [joe('down', 0), clown('blue', 'red', 1)]);
+  pages('card2', 'CHAPTER TWO', CARD2, [joe('down', 0), teddy(), gwinnSit()]);
+  pages('talkted', 'TEDDY', TALK_TEDDY, [teddy()]);
+  pages('talkted2', "TEDDY'S PARTY", TALK_TEDDY2, [teddy(true), gwinnSit(), joe('down', 0, 'glad'), valentinePic(clearPic())]);
+  pages('card3', 'CHAPTER THREE', CARD3, [joe('down', 0), bard(0), clown('green', 'yellow', 1)]);
+  pages('talkbard', 'THE BARD OF BIZARRE', TALK_BARD, [bard(1), joe('down', 0, 'glad'), drumstickPic(clearPic())]);
   pages('bell', "SEVEN O'CLOCK", BELL, [clown('blue', 'red', 1), clown('green', 'yellow', 1), leo(true, true)]);
   pages('won', 'THE LONG ROAD', WON, [joe('down', 0, 'glad')]);
   pages('lost', 'A LITTLE REST', LOST, [joe('down', 0, 'blink')]);

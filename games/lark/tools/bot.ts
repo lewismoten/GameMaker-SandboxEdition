@@ -84,11 +84,26 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
     return undefined;
   }
 
+  /** A tap that has to dodge something (the parade): tried on a snapshot, and taken only if Joe isn't bumped for a while after. */
+  private async carefulTap(d: Dir): Promise<Result> {
+    for (let tries = 0; tries < 60; tries++) {
+      const snap = this.snapshot();
+      const hp = this.sim.ci.hitpts;
+      let r = await this.tap(d);
+      if (!r) r = await this.wait(10);
+      if (r !== 'dead' && this.sim.ci.hitpts >= hp && this.sim.deaths === 0) return r;
+      this.restore(snap);
+      const rw = await this.wait(3);
+      if (rw) return rw;
+    }
+    return `${d}: never a gap`;
+  }
+
   /**
    * Walks to map cell (x, y) a tap at a time. Returns what play did if it left the scene on the
    * way (a link: a talk, a door), or an error if Joe could not get there.
    */
-  async goto(x: number, y: number, label: string, through?: (x: number, y: number) => boolean): Promise<Result> {
+  async goto(x: number, y: number, label: string, through?: (x: number, y: number) => boolean, careful = false): Promise<Result> {
     const scene = this.sim.scene;
     for (let guard = 0; guard < 400; guard++) {
       const c = this.cell;
@@ -99,7 +114,7 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
       const way = this.route(x, y, through);
       if (!way?.length) return `no way to ${label} (${x},${y}) from ${c.x},${c.y} in scene ${scene}`;
       const before = this.cell;
-      const r = await this.tap(way[0]);
+      const r = careful ? await this.carefulTap(way[0]) : await this.tap(way[0]);
       if (r) {
         this.say(`${label}: ${r}`);
         return r;
@@ -108,6 +123,45 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
       if (before.x === after.x && before.y === after.y && way.length === 1) return `${label}: Joe could not step into ${x},${y}`;
     }
     return `${label}: too many steps`;
+  }
+
+  /** Where the scene's monsters of type `monnum` (in its .MON) are, by map cell. */
+  monsters(monnum: number): { x: number; y: number }[] {
+    const w = this.sim.w;
+    const out: { x: number; y: number }[] = [];
+    w.mm.forEach((m, i) => {
+      if (m.monnum !== monnum) return;
+      const mi = w.mi[i];
+      out.push({ x: mi.curx[0] + (mi.curx[1] >= 10 ? 1 : 0), y: mi.cury[0] + (mi.cury[1] >= 10 ? 1 : 0) });
+    });
+    return out;
+  }
+
+  /** Walks after every monster of type `monnum` until a touch has caught them all (they leave that type). */
+  async chase(monnum: number, label: string): Promise<void> {
+    for (let guard = 0; guard < 1500; guard++) {
+      const here = this.cell;
+      const all = this.monsters(monnum);
+      if (!all.length) {
+        this.say(`caught every ${label}`);
+        return;
+      }
+      // one standing on a link cell (a talk, the way out) is left until it moves off
+      const links = this.sim.game.scenes[this.sim.scene].links.filter((l) => l.toScene !== NOSCENE);
+      const left = all.filter((m) => !links.some((l) => l.from.x === m.x && l.from.y === m.y));
+      if (!left.length) {
+        await this.wait(4);
+        continue;
+      }
+      left.sort((a, b) => Math.abs(a.x - here.x) + Math.abs(a.y - here.y) - (Math.abs(b.x - here.x) + Math.abs(b.y - here.y)));
+      const t = left[0];
+      if (process.env.BOT_DEBUG && guard % 40 === 0) this.say(`chasing ${label}: ${left.map((m) => `${m.x},${m.y}`).join(' ')}`);
+      const way = this.route(t.x, t.y);
+      if (!way) throw new Error(`${label}: no way to one at ${t.x},${t.y}`);
+      const r = way.length ? await this.tap(way[0]) : await this.wait(2);
+      if (r) throw new Error(`${label}: ${r}`);
+    }
+    throw new Error(`${label}: still not caught`);
   }
 
   /** Walks onto a link cell and expects to leave the scene for `to` (and not to lose a life). */

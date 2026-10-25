@@ -1,7 +1,7 @@
 // Every page of words: the storyline, the instructions, the credits, the ending, the lost page,
 // each conversation and chapter card, and README.TXT. 30 columns, 16 lines a page (page() checks).
 import { CREDIT_NOTICE, withCreditPage } from '../../../kit/license';
-import { GEARS } from '../ids';
+import { DRUMSTICKS, GEARS, VALENTINES } from '../ids';
 import { page } from './pages';
 
 export const TITLE = 'HEART OF TIN';
@@ -66,6 +66,9 @@ For whoever found every tin heart.`,
 Mystery Robot Joe, night librarian
 Doc Leo, PhD (Comedic Science)
 Sir Reginald Cluckington III
+Teddy, a corgi who knows left from right
+Gwinn, as the valentine thief
+The Bard of Bizarre, and his rooster
 The Clown Club, as the parade
 
 With the pigeons of the town square, who were not asked.`,
@@ -97,9 +100,9 @@ None of them feels like anything.`,
 He writes a note and leaves it on the desk:`,
   `"Gone to find a real heart. Back by opening time. I will count the steps. -J."
 
-Then he puts on his bow tie straight.
+He puts on his bow tie straight, and goes out the little red door.
 
-The little red door is open now.`,
+Step one.`,
 ]);
 
 /** Doc Leo in the square, at 6:59. */
@@ -133,6 +136,84 @@ He hands Joe a gold thank-you heart, too.
 Joe counts it. One.`,
   `THE WINDING KEY
 Pick it up (SPACE). While Joe carries it, SPACE is a SPRING HOP wherever gravity pulls: one big hop, once a press.`,
+]);
+
+/** Chapter 2's card. */
+export const CARD2 = page([
+  `CHAPTER TWO
+VALENTINES IN THE PARK
+
+A windy afternoon, a party for every dog in the neighborhood, and not one valentine where it ought to be.`,
+]);
+
+/** Teddy at the park gate. */
+export const TALK_TEDDY = page([
+  `Teddy is at the gate, ears straight up, both of them, the way they go when something is very wrong.
+
+He tells Joe all about it in corgi, which Joe reads fluently.`,
+  `There were ${VALENTINES} valentines for the party. The wind took six of them and blew them all over the lawn.
+
+Gwinn took the other six. In the box. In her mouth. At a run.`,
+  `"She is in her yard," Teddy says, "being very fast about it."
+
+Joe counts the lawn: six valentines, all tumbling.
+
+Gwinn runs away from whoever comes near. Walls stop her, though.`,
+]);
+
+/** Teddy at his party: the thank-you. */
+export const TALK_TEDDY2 = page([
+  `The arch is hung with all ${VALENTINES} valentines. Every dog at the party gets one, and Gwinn gets two, because she is sorry, mostly.
+
+Teddy wags so hard he sits down.`,
+  `Joe asks Teddy what he came to ask: where could a robot find a real heart?
+
+Teddy brings him a valentine. His own. It says BE MINE, in his best paw-writing.`,
+  `"A valentine is a heart," says Teddy. "Everybody says so."
+
+Joe turns it over. It is lovely. It is paper.
+
+"It does not tick at all," says Joe. He keeps it anyway, very carefully.`,
+  `Teddy gives him a gold thank-you heart, too.
+
+Joe counts: two.
+
+TEDDY'S VALENTINE
+Pick it up (SPACE). It doesn't do anything. It doesn't have to.`,
+]);
+
+/** Chapter 3's card. */
+export const CARD3 = page([
+  `CHAPTER THREE
+THE PARADE
+
+Main Street, the parade rolling, the band waiting, and the Bard of Bizarre with nothing to bang his drum with.`,
+  `Unicycles, drum carts and balloon carts roll east, each lane at its own pace. They don't stop. Bumping one winds Joe down a little.
+
+The Bard's ${DRUMSTICKS} drumsticks went flying when the parade began.`,
+]);
+
+/** The Bard at the bandstand: the thank-you. */
+export const TALK_BARD = page([
+  `"Hark! My sticks!" cries the Bard of Bizarre. The rooster on his shoulder straightens its spectacles.
+
+BOOM goes the bass drum, and the band strikes up at last.`,
+  `Joe asks his question: where could a robot find a real heart?
+
+"Listen!" says the Bard, and he strikes the big drum. BOOM. BOOM.
+
+"There's a heart for you! The heart of the parade!"`,
+  `Joe listens carefully. BOOM. Then nothing, until the Bard strikes it again.
+
+"It only beats when somebody hits it," says Joe. "A heart ought to beat by itself. Shouldn't it?"
+
+The Bard has no song about that. Yet.`,
+  `He gives Joe his spare drumstick, with a red ribbon on it, and a gold thank-you heart.
+
+Joe counts: three.
+
+THE BARD'S DRUMSTICK
+Pick it up (SPACE), for luck.`,
 ]);
 
 /** Chapter 1's card, on the way into the square. */
