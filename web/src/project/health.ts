@@ -19,7 +19,7 @@ import { decodeVoc } from '../formats/voc';
 import { parseRecording } from '../formats/recording';
 import { cdName, normalize } from './files';
 
-export type Severity = 'error' | 'warning';
+type Severity = 'error' | 'warning';
 
 export interface Issue {
   severity: Severity;

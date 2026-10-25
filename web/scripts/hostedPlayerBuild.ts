@@ -18,7 +18,7 @@ import type { CdCatalogEntry } from './cdGames';
 const root = resolve(__dirname, '..');
 const ENTRY = resolve(root, 'src/hostedPlayer/main.ts');
 
-export async function buildHostedPlayer(): Promise<string> {
+async function buildHostedPlayer(): Promise<string> {
   const { script, style } = await bundleOnePage(ENTRY);
   return `<!doctype html>
 <html lang="en">
@@ -39,7 +39,7 @@ export async function buildHostedPlayer(): Promise<string> {
 }
 
 /** games.json for player/: the catalog's games, in its order, folders relative to player/. */
-export function siteGameList(catalog: CdCatalogEntry[]): string {
+function siteGameList(catalog: CdCatalogEntry[]): string {
   const games = catalog
     .filter((e) => e.gam)
     .map((e) => {

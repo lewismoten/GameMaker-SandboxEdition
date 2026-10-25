@@ -5,6 +5,7 @@
 import type { CatalogEntry } from '../../project/files';
 import { gameDisks } from '../../project/diskFacts';
 import { ADVTYPE, type Game } from '../../formats/game';
+import { fnv1a, mulberry32 } from '../../seededRandom';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {
@@ -22,7 +23,7 @@ export interface BoxExtras {
   poster?: { gif?: string; map?: [string, number, number, number, number]; title?: string; caption?: string };
 }
 
-export { DOS_EXTRA_BYTES, disksLine } from '../../project/diskFacts';
+export { disksLine } from '../../project/diskFacts';
 
 /** How many 1.44 MB disks an original game ships on (its files plus the DOS player): project/diskFacts.ts gameDisks, from a size alone. */
 export function boxDisks(bytes: number | undefined): number {
@@ -72,14 +73,7 @@ export function ratingMark(rating: string | undefined): { mark: string; label: s
 
 /** A small, stable random number generator, so a box is scuffed the same way every time. */
 export function seeded(seed: string): () => number {
-  let a = 2166136261;
-  for (let i = 0; i < seed.length; i++) a = Math.imul(a ^ seed.charCodeAt(i), 16777619);
-  return () => {
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+  return mulberry32(fnv1a(seed));
 }
 
 /** Made-up magazines and quotes, for a box whose about.json has none. */

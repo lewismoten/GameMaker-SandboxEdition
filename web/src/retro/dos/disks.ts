@@ -3,10 +3,11 @@
 import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { listProjects, loadProject } from '../../project/storage';
 import { isBizarreGame } from '../../project/bizarre';
+import { fnv1a } from '../../seededRandom';
 
 export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */
-export const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
+const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
 const DD_BYTES = 737_280;
 
@@ -51,11 +52,7 @@ const BARD_DISK = { color: '#a0287a', stripe: '#f2c14e' };
 const NOTES = ['Do not erase!', 'BACKUP', 'keep!!', 'Mine - hands off', 'v2 - good one', 'DO NOT FORMAT', 'from Doc Leo', 'BEAT IT!'];
 
 /** A small stable number from a string, to pick colors and notes. */
-function hash(s: string): number {
-  let n = 2166136261;
-  for (let i = 0; i < s.length; i++) n = Math.imul(n ^ s.charCodeAt(i), 16777619);
-  return n >>> 0;
-}
+const hash = fnv1a;
 
 /** Disks from one author or company share a color; RSD's own are the Game-Maker box's pink. */
 function looks(g: CatalogEntry): Pick<Disk, 'color' | 'stripe' | 'note' | 'density'> {
@@ -162,9 +159,4 @@ export async function loadDisks(): Promise<Disk[]> {
     blank: 4,
   };
   return disks.sort((a, b) => rank[a.kind] - rank[b.kind]);
-}
-
-/** Fills in each disk's size once its files are loaded. */
-export function measure(files: GameFiles): number {
-  return files.entries().reduce((n, [, b]) => n + b.length, 0);
 }

@@ -43,7 +43,7 @@ import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
 import { magazineJsonLd, siteLinksHtml, websiteJsonLd } from '../src/seo/siteSections';
 import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
-export const HEAD_MARK = '<!--SEO:HEAD-->';
+const HEAD_MARK = '<!--SEO:HEAD-->';
 const BODY_MARK = '<!--SEO:BODY-->';
 // Around what the marks became in play.html, so a game's page can swap in its own.
 const HEAD_START = '<!--seo:head-->';

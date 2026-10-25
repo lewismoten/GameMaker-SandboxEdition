@@ -44,7 +44,7 @@ export interface CmfEvent {
   data: number[];
 }
 
-export interface CmfSong {
+interface CmfSong {
   /** 16-byte SBI FM instruments; instrument n starts on MIDI channel n. */
   instruments: Uint8Array[];
   events: CmfEvent[];

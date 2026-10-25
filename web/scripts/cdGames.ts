@@ -228,7 +228,7 @@ function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: 
 }
 
 /** A game's pack (src/project/gamePack.ts): its files in the order play needs them, gzipped. */
-export function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, files: ReadonlyMap<string, string>, level = 9): Buffer {
+function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, files: ReadonlyMap<string, string>, level = 9): Buffer {
   const get = (n: string) => (files.has(`${e.path}${n}`) ? new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!)) : undefined);
   const entries: [string, Uint8Array][] = [];
   for (const n of packOrder(e.gam, e.files, get)) {

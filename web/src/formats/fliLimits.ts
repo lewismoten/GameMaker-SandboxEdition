@@ -7,9 +7,9 @@
 // animation through the editor fixes it. Used by the health check and the Level check.
 import { FLI_CHUNK_MAX, isFli, parseFli } from './fli';
 
-export type FliFaultKind = 'big' | 'packets' | 'black' | 'type';
+type FliFaultKind = 'big' | 'packets' | 'black' | 'type';
 
-export interface FliFault {
+interface FliFault {
   kind: FliFaultKind;
   /** The frame it is in (0 the first; the last is the ring frame back to the start). */
   frame: number;

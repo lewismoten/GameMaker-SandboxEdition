@@ -16,7 +16,7 @@ export const CARD_W = 1200;
 export const CARD_H = 630;
 
 /** A picture as 8-bit RGB. */
-export interface Rgb {
+interface Rgb {
   width: number;
   height: number;
   data: Uint8Array;
@@ -90,7 +90,7 @@ const NOT_THE_GAME = /^(gmtitle|sandlogo|rsdtbox|ajgames|black\.|c?fade(in|out)|
  * slides), else any GIF it has. Still pictures come before animations, whose first frame is
  * often a fade.
  */
-export function titlePicture(entry: CdCatalogEntry, read: Read): Rgb | undefined {
+function titlePicture(entry: CdCatalogEntry, read: Read): Rgb | undefined {
   const slots: string[] = ['title.gif'];
   const gam = entry.gam && read(entry.gam);
   if (gam) {
