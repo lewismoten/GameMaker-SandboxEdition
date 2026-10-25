@@ -313,7 +313,7 @@ export function renderPage(pg: PlacedPage, env: RenderEnv): { el: HTMLElement; r
   const el = h(
     'article',
     {
-      class: `mag-page kind-${pg.kind} tone-${pg.tone ?? 'white'}${pg.look ? ` look-${pg.look}` : ''}${pg.stub ? ' stub' : ''}`,
+      class: `mag-page kind-${pg.kind} tone-${pg.tone ?? 'white'}${pg.look ? ` look-${pg.look}` : ''}`,
       'aria-label': pg.folio === 1 ? 'Front cover' : pg.kind === 'back' ? 'Back cover' : `Page ${pg.folio}`,
       dataset: { page: pg.id },
     },
@@ -323,7 +323,6 @@ export function renderPage(pg: PlacedPage, env: RenderEnv): { el: HTMLElement; r
       pg.head ? h('div', { class: 'mag-runhead', 'aria-hidden': 'true' }, h('span', null, MAG.name), h('span', null, pg.head)) : null,
       pg.kind === 'ad' ? h('div', { class: 'mag-adlabel', 'aria-hidden': 'true' }, 'ADVERTISEMENT') : null,
       h('div', { class: 'mag-body' }, ...body),
-      pg.stub ? h('div', { class: 'mag-stamp', 'aria-hidden': 'true' }, 'IN THE NEXT DRAFT') : null,
       plainPage
         ? null
         : h('div', { class: 'mag-folio', 'aria-hidden': 'true' }, h('span', null, String(pg.folio)), h('span', null, `${MAG.name} · ${MAG.issue}`)),

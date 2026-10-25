@@ -199,8 +199,6 @@ export interface MagPage {
   /** A page laid out in another style: 'classic', the 1992 Game-Maker ad's (hot pink, condensed serif). */
   look?: 'classic';
   blocks: Block[];
-  /** A section agent's placeholder: printed as "coming soon", counted by the plan's tests. */
-  stub?: boolean;
 }
 
 export interface MagContext {
