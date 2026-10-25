@@ -65,4 +65,27 @@ describe('game health check', () => {
     expect(issues.find((i) => i.file === 'spare.gif')?.severity).toBe('warning');
     expect(checkGame(files, 'test.gam').some((i) => i.kind === 'unreadable')).toBe(false);
   });
+
+  it('deep check warns about an animation RSD’s player can’t play (an all-black chunk)', () => {
+    const fli = new Uint8Array(128 + 22);
+    const dv = new DataView(fli.buffer);
+    dv.setUint32(0, fli.length, true);
+    dv.setUint16(4, 0xaf11, true);
+    dv.setUint16(6, 1, true);
+    dv.setUint16(12, 8, true);
+    dv.setUint32(128, 22, true);
+    dv.setUint16(132, 0xf1fa, true);
+    dv.setUint16(134, 1, true);
+    dv.setUint32(144, 6, true);
+    dv.setUint16(148, 13, true);
+    const files = new GameFiles([
+      ['test.gam', serializeGame(game())],
+      ['title.lst', textBytes('intro.fli\r\n')],
+      ['intro.fli', fli],
+    ]);
+    const dos = checkGame(files, 'test.gam', { deep: true }).filter((i) => i.kind === 'dos');
+    expect(dos).toHaveLength(1);
+    expect(dos[0].message).toMatch(/intro\.fli won’t play right in real DOS: an all-black chunk in its first frame/);
+    expect(checkGame(files, 'test.gam').some((i) => i.kind === 'dos')).toBe(false);
+  });
 });

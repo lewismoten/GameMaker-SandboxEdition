@@ -13,6 +13,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { applyFliFrame, encodeFli, FLI_CHUNK_MAX, newFliCanvas, parseFli } from './fli';
 import { decodeFliFrames, encodeFliFrames } from './fliFrames';
+import { fliFaults } from './fliLimits';
 
 interface DosPlay {
   /** Why the player went wrong, or undefined when every frame played. */
@@ -302,6 +303,7 @@ describe('PLAYGAME port', () => {
     expect(playLikeDos(file, 0xfff0).failure).toBeUndefined();
     expect(playLikeDos(file, 0xfff0).frames[0].pixels).toEqual(px);
     expect(playLikeDos(file, 32000).failure).toMatch(/does not fit a 32000-byte buffer/);
+    expect(fliFaults(file)).toEqual([{ kind: 'big', frame: 0, value: size }]);
   });
 
   it('plays every game .FLI with a small buffer, frame for frame as fli.ts draws it', () => {
@@ -310,6 +312,7 @@ describe('PLAYGAME port', () => {
     for (const { name, bytes } of files) {
       const dos = playLikeDos(bytes, BUFFER);
       expect(dos.failure, name).toBeUndefined();
+      expect(fliFaults(bytes), name).toEqual([]);
       const web = webFrames(bytes);
       expect(dos.frames.length, name).toBe(web.length);
       for (let i = 0; i < web.length; i++) {
@@ -343,6 +346,25 @@ describe('PLAYGAME port', () => {
     dv.setUint16(12, 8, true);
     file.set(frame, 128);
     expect(playLikeDos(file, 0xfff0).failure).toMatch(/frame 0: line 0 has a packet count/);
+    expect(fliFaults(file)).toEqual([{ kind: 'packets', frame: 0, value: 128 }]);
+  });
+
+  it('finds an AllBlack chunk, and a chunk type PLAYGAME does not know', () => {
+    for (const [type, kind] of [
+      [13, 'black'],
+      [7, 'type'],
+    ] as const) {
+      const frame = [...le32(22), 0xfa, 0xf1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...le32(6), type, 0];
+      const file = new Uint8Array(128 + frame.length);
+      const dv = new DataView(file.buffer);
+      dv.setUint32(0, file.length, true);
+      dv.setUint16(4, 0xaf11, true);
+      dv.setUint16(6, 1, true);
+      dv.setUint16(12, 8, true);
+      file.set(frame, 128);
+      expect(playLikeDos(file, 0xfff0).failure).toBeDefined();
+      expect(fliFaults(file)).toEqual([{ kind, frame: 0, value: type }]);
+    }
   });
 
   it("sets a split frame 0's palette after its bands, so the last picture never shows in new colors", () => {

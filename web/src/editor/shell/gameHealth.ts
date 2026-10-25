@@ -163,6 +163,7 @@ const KIND_TITLES: Record<Issue['kind'], string> = {
   unreadable: 'Files that can’t be read',
   empty: 'Empty files',
   name: 'File names DOS can’t use',
+  dos: 'Animations DOS can’t play',
 };
 
 async function showHealthReport(target: HealthTarget): Promise<void> {
