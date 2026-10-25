@@ -4,6 +4,7 @@
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels } from '../../../kit/pixels';
 import { BARDLOGO, bardIntroFli } from '../../../kit/bard';
+import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { centered } from '../../../snowbound/src/art/font';
 import { gif, H, W } from '../../../snowbound/src/screens/scenery';
 import type { Pal } from '../art/pal';
@@ -37,18 +38,20 @@ export function buildArt(x: ArtExtras): Record<string, Uint8Array> {
   Object.assign(files, buildPictures(cast));
   // the title: the Bard's logo, then the cover cartoon, then the cover with the name held
   const cover = coverFli(cast);
-  files[BARDLOGO] = bardIntroFli();
-  files['cover.fli'] = cover.fli;
+  // the long cartoons in clips of about 4 seconds, so Esc can skip them between clips
+  const clips = (name: string, fli: Uint8Array) => {
+    const c = fliClips(name, fli);
+    Object.assign(files, c);
+    return c;
+  };
+  const bardLogo = clips(BARDLOGO, bardIntroFli());
+  const coverClips = clips('cover.fli', cover.fli);
   files['title.gif'] = gif(cover.title, cover.pal);
-  files['title.lst'] = lst([
-    { name: BARDLOGO, pause: 0 },
-    { name: 'cover.fli', pause: 0 },
-    { name: 'title.gif', pause: 12 },
-  ]);
-  files['story.fli'] = storyFli(cast);
-  files['story.lst'] = lst([{ name: 'story.fli', pause: 1 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]);
-  files['howto.fli'] = howtoFli(cast);
-  files['howto.lst'] = lst([{ name: 'howto.fli', pause: 2 }, { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]);
+  files['title.lst'] = lst([...clipEntries(bardLogo, 0), ...clipEntries(coverClips, 0), { name: 'title.gif', pause: 12 }]);
+  const story = clips('story.fli', storyFli(cast));
+  files['story.lst'] = lst([...clipEntries(story, 1), { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]);
+  const howto = clips('howto.fli', howtoFli(cast));
+  files['howto.lst'] = lst([...clipEntries(howto, 2), { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]);
   files['credits.lst'] = lst([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]);
   files['story.txt'] = new TextEncoder().encode(STORY);
   files['howto.txt'] = new TextEncoder().encode(INSTRUCTIONS);

@@ -32,7 +32,7 @@
   },
   {
    "scene": 8,
-   "keys": "AU0BzVZNE80GTQ/NBkgMyAo5A7kMTQXNBjkDuQxNBc0GSAzIBE0PzQZND80GTQrNBhIMkgBNBs0DTQzNBk0LzRVLEssGOQO5DE0PzQY5A7kMTQrNBjkDuQxNCs0GOQO5DE0NzQYSDJIATQ3NA00PzQY5A7kMTQrNBk0ZzQw5A7kMOQO5DDkDuQxNKM0GTRTNBkgMyARNFM0GTQrNBk0LzQ5NDM0GTQ=="
+   "keys": "AU0BzVZNE80GTQ/NBkgMyAo5A7kMTQXNBjkDuQxNBc0GSAzIBE0PzQZND80GTQrNBhIMkgBNBs0DTQzNBk0LzRVLEssGOQO5DE0PzQY5A7kMTQrNBjkDuQxNCs0GOQO5DE0NzQYSDJIATQ/NA00PzQY5A7kMTQrNBk0ZzQw5A7kMOQO5DDkDuQxNKM0GTRTNBkgMyARNFM0GTQrNBk0KzQ5NDM0GTQ=="
   },
   {
    "scene": 9,
@@ -64,7 +64,7 @@
   },
   {
    "scene": 16,
-   "keys": "AU0BzbkBTRPNBhIMkgBNAM0MOQO5MTkDuQxNGc0GTRzNBk0NzQYSDJIATQPNBk0RzQY5A7kMTQrNBjkDuQxNI82LATkDuQxNHM0GEgySAE0AzQhLAMsGTRLNBjkDuQxNCs0qOQO5DE0PzQY5A7kMTRTNBk0="
+   "keys": "AU0BzcsBTRPNBhIMkgBNAM0DOQO5KDkDuQxNHs0GTRvNBk0NzQYSDJIATQPNBk0RzQY5A7kMTQrNBjkDuQxNI82HATkDuQxNHM0GEgySAE0AzQhLAMsGTRLNBjkDuQxNCs0qOQO5DE0PzQY5A7kMTRTNBk0="
   },
   {
    "scene": 17,
@@ -84,7 +84,7 @@
   },
   {
    "scene": 21,
-   "keys": "AU0BzUNNNEgKyAXNDTkDuQxND80GOQO5DE0ozQY5A7kMOQO5DE0ozQZLCssGSAzIBE0FzQZNEs0HOQO5DE0PzQY5A7kMTR1ICsglzQZNGc0GSAzIBE0FzQZNCM0ROQO5DE0jzQZN"
+   "keys": "AU0BzUNNNEgKyAXNDDkDuQxND80GOQO5DE0ozQY5A7kMOQO5DE0ozQZLCssGSAzIBE0FzQZNEs0HOQO5DE0PzQY5A7kMTR1ICsglzQZNGc0GSAzIBE0FzQZNCM0ROQO5DE0jzQZN"
   },
   {
    "scene": 22,
@@ -187,7 +187,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 73726,
+  "frames": 73727,
   "chapters": [
    {
     "title": "Opening",
@@ -199,99 +199,99 @@
    },
    {
     "title": "The Hive, Oakland",
-    "frame": 3060
+    "frame": 3061
    },
    {
     "title": "1. A Totally Normal Meeting",
-    "frame": 7474
+    "frame": 7475
    },
    {
     "title": "2. The Coffee Goat in the Breakroom",
-    "frame": 10807
+    "frame": 10808
    },
    {
     "title": "3. The Office Chair That Tried to Kill Me",
-    "frame": 13785
+    "frame": 13786
    },
    {
     "title": "4. Gerald the Ficus is Dead",
-    "frame": 17144
+    "frame": 17145
    },
    {
     "title": "Intermission 1",
-    "frame": 19471
+    "frame": 19472
    },
    {
     "title": "5. The Day the Self-Checkout Tried to Destroy Me",
-    "frame": 20609
+    "frame": 20610
    },
    {
     "title": "6. How I Earned a Nod from the Smoking Cashier",
-    "frame": 24290
+    "frame": 24294
    },
    {
     "title": "7. I Don’t Work Here, But Emotionally I Do",
-    "frame": 27776
+    "frame": 27780
    },
    {
     "title": "8. I Held in a Fart and Killed a Bird",
-    "frame": 31355
+    "frame": 31359
    },
    {
     "title": "Intermission 2",
-    "frame": 34609
+    "frame": 34613
    },
    {
     "title": "9. She Took the Blanket (and Left My Soul on the Floor)",
-    "frame": 35748
+    "frame": 35752
    },
    {
     "title": "10. Wore All the Weird Socks",
-    "frame": 39283
+    "frame": 39287
    },
    {
     "title": "11. How the Cat Won the Pizza War",
-    "frame": 42679
+    "frame": 42683
    },
    {
     "title": "12. Janet, This Is Not About You (It’s About the Itch)",
-    "frame": 45976
+    "frame": 45980
    },
    {
     "title": "13. Double Tap for Justice",
-    "frame": 49873
+    "frame": 49877
    },
    {
     "title": "Intermission 3",
-    "frame": 53055
+    "frame": 53059
    },
    {
     "title": "14. This Is Why I Don’t Go Outside",
-    "frame": 54194
+    "frame": 54198
    },
    {
     "title": "15. The Ants Have Spoken",
-    "frame": 57093
+    "frame": 57097
    },
    {
     "title": "16. The Day I Fought Cardboard",
-    "frame": 60417
+    "frame": 60421
    },
    {
     "title": "17. Shelter Me Gently, You Wounded Beast",
-    "frame": 63499
+    "frame": 63500
    },
    {
     "title": "The Curtain Call",
-    "frame": 67341
+    "frame": 67342
    },
    {
     "title": "Ending",
-    "frame": 68479
+    "frame": 68480
    },
    {
     "title": "Credits",
-    "frame": 71158
+    "frame": 71159
    }
   ]
  }
