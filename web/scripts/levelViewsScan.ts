@@ -9,7 +9,7 @@ import { parseGame, type Game } from '../src/formats/game';
 import type { LevelViews } from '../src/manual/printables/levelViews';
 
 /** Bump when the scan itself changes what it finds, so every game reads as out of date. */
-const VERSION = 1;
+const VERSION = 2;
 /** The disk files that say how a scene plays (a palette doesn't). */
 const PLAY_FILES = /\.(gam|map|bbl|mbl|mon|chr|cbl)$/;
 /** Block sets, and how many blocks each holds: only their numbers count, not their pictures. */

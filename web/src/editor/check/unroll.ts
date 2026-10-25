@@ -119,17 +119,32 @@ export class Unroll {
   /** The map as the player sees it, or undefined when the hero never went off an edge (the map reads as it is). */
   result(): Unrolled | undefined {
     if (!this.off && !this.loop[0] && !this.loop[1]) return undefined;
-    const [lx, ly] = this.loop;
     const seen = new Set<number>();
-    // keyed in a lap-folded or wide-open frame: x and y each fit 16 bits round an offset
+    // keyed in a wide-open frame: x and y each fit 16 bits round an offset
     const BIAS = 1 << 14;
     const key = (x: number, y: number) => (x + BIAS) * 65536 + (y + BIAS);
     for (const v of this.views) {
       const [sx, sy, w, h] = v.split(',').map(Number);
-      for (let y = sy; y < sy + h; y++) for (let x = sx; x < sx + w; x++) seen.add(key(lx ? mod(x, MLEN) : x, ly ? mod(y, MWID) : y));
+      for (let y = sy; y < sy + h; y++) for (let x = sx; x < sx + w; x++) seen.add(key(x, y));
     }
-    const cells = [...seen].map((k) => [Math.floor(k / 65536) - BIAS, (k % 65536) - BIAS]);
-    if (!cells.length) return undefined;
+    const raw = [...seen].map((k) => [Math.floor(k / 65536) - BIAS, (k % 65536) - BIAS]);
+    if (!raw.length) return undefined;
+    // a way also goes round forever when one row (or column) was seen all the way round, though
+    // the hero never walked the whole lap: a street whose two ends meet
+    const allRound = (along: 0 | 1, n: number) => {
+      const lines = new Map<number, Set<number>>();
+      for (const c of raw) {
+        const at = c[1 - along];
+        let line = lines.get(at);
+        if (!line) lines.set(at, (line = new Set()));
+        line.add(mod(c[along], n));
+      }
+      return [...lines.values()].some((l) => l.size === n);
+    };
+    const lx = this.loop[0] || allRound(0, MLEN);
+    const ly = this.loop[1] || allRound(1, MWID);
+    const folded = new Set(raw.map(([x, y]) => key(lx ? mod(x, MLEN) : x, ly ? mod(y, MWID) : y)));
+    const cells = [...folded].map((k) => [Math.floor(k / 65536) - BIAS, (k % 65536) - BIAS]);
     // a folded way is cut where the fewest blocks are seen, so the most of it stays in one piece
     const cutAt = (axis: 0 | 1, n: number) => {
       const count = new Array<number>(n).fill(0);

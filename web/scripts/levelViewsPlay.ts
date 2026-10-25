@@ -8,6 +8,8 @@
 //   reaches it and from any link play never took, a fixed number of places each, for the corners
 //   off the walkthrough's way; where that runs out of places first, four more runs head for the
 //   corners of the map in use, to find how far the hero gets each way.
+// Every tick also goes to Unroll (editor/check/unroll.ts), so a map the hero walks off the edge
+// of (maps wrap) gets its box as the player goes through it, beside its seen box.
 // A walled scene seen from above (most of its open ground doesn't pull, and it doesn't open onto the
 // map's edge) also takes every cell joined to a way in by blocks that aren't solid on every side
 // or that change (doors), with half a screen round each: a room behind a locked door or off the
@@ -22,6 +24,7 @@ import { MLEN, MWID, parseMap } from '../src/formats/map';
 import { usedArea } from '../src/manual/printables/levelMapLayout';
 import { SCRNBLEN, SCRNBWID, type World } from '../src/engine/world';
 import { explore, type Entry } from '../src/editor/check/explore';
+import { Unroll, type Unrolled } from '../src/editor/check/unroll';
 import { startCharInfo } from '../src/editor/check/sim';
 import { GameFiles } from '../src/project/files';
 import { headlessCanvas, WalkRun } from '../src/walkthrough/runtime';
@@ -41,6 +44,11 @@ const groupKey = (game: Game, n: number) => `${game.scenes[n].files[1].toLowerCa
 /** Seen boxes by map group, [x0, y0, x1, y1] inclusive. */
 class Seen {
   readonly boxes = new Map<string, number[]>();
+  private readonly unrolls = new Map<string, Unroll>();
+  /** The next look at each map starts afresh (a new scene, or a run from another way in). */
+  cut(): void {
+    for (const u of this.unrolls.values()) u.cut();
+  }
   add(key: string, x0: number, y0: number, x1: number, y1: number): void {
     const r = [Math.max(0, x0), Math.max(0, y0), Math.min(MLEN - 1, x1), Math.min(MWID - 1, y1)];
     const b = this.boxes.get(key);
@@ -49,6 +57,9 @@ class Seen {
   }
   /** The screen `w` shows, unwrapped next to the hero: a printed map doesn't wrap round as the screen does. */
   look(key: string, w: World): void {
+    let u = this.unrolls.get(key);
+    if (!u) this.unrolls.set(key, (u = new Unroll()));
+    u.lookAt(w);
     const hx = w.chr.x[0];
     const hy = w.chr.y[0];
     const x0 = hx + ((((w.mx - hx) % MLEN) + MLEN + MLEN / 2) % MLEN) - MLEN / 2;
@@ -62,6 +73,15 @@ class Seen {
       x0 + SCRNBLEN - 1 + (w.scroll.nx || w.scroll.littleShiftx ? 1 : 0),
       y0 + SCRNBWID - 1 + (w.scroll.ny || w.scroll.littleShifty ? 1 : 0),
     );
+  }
+  /** The maps the hero walked off the edge of, as the player goes through them. */
+  unrolled(): Record<string, Unrolled> {
+    const out: Record<string, Unrolled> = {};
+    for (const [k, u] of [...this.unrolls].sort(([a], [b]) => a.localeCompare(b))) {
+      const r = u.result();
+      if (r) out[k] = r;
+    }
+    return out;
   }
   rects(): Record<string, SeenRect> {
     return Object.fromEntries([...this.boxes].sort(([a], [b]) => a.localeCompare(b)).map(([k, [x0, y0, x1, y1]]) => [k, [x0, y0, x1 - x0 + 1, y1 - y0 + 1]]));
@@ -81,6 +101,7 @@ async function walkthroughViews(game: Game, files: Map<string, Uint8Array>, walk
   let won = false;
   s.onScene = (n) => {
     scene = n;
+    seen.cut();
     if (n === 1) won = true;
     onScene(n);
   };
@@ -105,6 +126,7 @@ async function explorerViews(game: Game, files: Map<string, Uint8Array>, seen: S
     const group = groupKey(game, scene);
     const t0 = Date.now();
     const onTick = (w: World) => seen.look(group, w);
+    seen.cut();
     const ex = await explore(game, scene, source, entry, { maxNodes: MAX_NODES, now: () => 0, onTick });
     if (!ex.complete) {
       const u = usedArea(parseMap(source.get(game.scenes[scene].files[1])!).blocks);
@@ -114,7 +136,10 @@ async function explorerViews(game: Game, files: Map<string, Uint8Array>, seen: S
         [u.x, u.y + u.h - 1],
         [u.x + u.w - 1, u.y + u.h - 1],
       ];
-      for (const [x, y] of corners) await explore(game, scene, source, entry, { maxNodes: CORNER_NODES, now: () => 0, goal: [y * MLEN + x], onTick });
+      for (const [x, y] of corners) {
+        seen.cut();
+        await explore(game, scene, source, entry, { maxNodes: CORNER_NODES, now: () => 0, goal: [y * MLEN + x], onTick });
+      }
     }
     log?.(`  scene ${scene} from ${entry.start.x},${entry.start.y}: ${ex.places.length} places${ex.complete ? '' : ' and the corners'}, ${Date.now() - t0} ms`);
     return ex.exits;
@@ -204,7 +229,8 @@ export async function scanLevelViews(gamesDir: string, ids?: string[], log?: (s:
         for (const key of seen.boxes.keys())
           if (key.startsWith(`${p.map.toLowerCase()}|`))
             seen.add(key, p.at[0] - SCRNBLEN / 2, p.at[1] - SCRNBWID / 2, p.at[0] + SCRNBLEN / 2 - 1, p.at[1] + SCRNBWID / 2 - 1);
-    out[id] = { hash: levelViewsHash(gamesDir, id)!, maps: seen.rects() };
+    const unrolled = seen.unrolled();
+    out[id] = { hash: levelViewsHash(gamesDir, id)!, maps: seen.rects(), ...(Object.keys(unrolled).length ? { unrolled } : {}) };
   }
   return out;
 }

@@ -66,6 +66,17 @@ describe('Unroll', () => {
     expect(unrolledShows(r, 150, 40)).toBe(true);
   });
 
+  it('folds a street whose two ends meet, though the hero never walked the whole lap', () => {
+    const u = new Unroll();
+    walk(u, 10, 50, 1, 0, 80); // right along the street to x 90
+    u.cut();
+    walk(u, 10, 50, -1, 0, 25); // and left from the start, off the edge to the map's x 85
+    const r = u.result()!;
+    expect(r.loops).toEqual([true, false]);
+    expect(r.box[2]).toBe(MLEN);
+    expect(r.runs).toBeUndefined();
+  });
+
   it('counts a bot walking round and round as going round forever', () => {
     const u = new Unroll();
     walk(u, 50, 10, 0, 1, MWID * 3 + 1);
