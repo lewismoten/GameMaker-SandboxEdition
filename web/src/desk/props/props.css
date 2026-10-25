@@ -741,8 +741,7 @@
 
 .egg-uv svg {
   position: absolute;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.6));
+  overflow: visible;
 }
 
 /* ---- the room after dark and the overhead light's switch (roomLight.ts): one dark layer
