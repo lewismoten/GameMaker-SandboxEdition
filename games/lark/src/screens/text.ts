@@ -354,9 +354,9 @@ No school. Two feet of snow. One teenager with a shovel and a whole street to di
 export const TALK_LEWIE = page([
   `"Hey, Joe!" Teenage Lewie leans on his shovel, red hat, red coat, red nose. "Snow day! I'm digging out the whole street."
 
-"Who is paying you?" asks Joe.
+"The whole street?" asks Joe.
 
-"Nobody. They're my neighbors."`,
+"Sure. They're my neighbors."`,
   `"I did our walk. There are ${WALKS} more, and both sidewalks are drifted shut. My spare shovel's in the box by the south sidewalk. Grab it?"
 
 Joe counts the drifts. He counts them again. "Yes."`,
@@ -487,7 +487,7 @@ Dusk at the fair. The carousel is turning, the Clown Club is juggling, and somew
 export const TALK_FAIR = page([
   `"Joe! Three times in one night!" Doc Leo is holding an empty leash.
 
-"I bought Sir Reginald a bunch of balloons. That was a mistake. He is rubber. He weighs nothing."`,
+"I tied a bunch of balloons to Sir Reginald's collar. That was a mistake. He is rubber. He weighs nothing."`,
   `Up above the carousel, Reggie is floating to and fro under his balloons, looking down at everybody, the way a chicken does.
 
 "He's over the canopy," says Doc Leo. "If only somebody could get up there."`,
