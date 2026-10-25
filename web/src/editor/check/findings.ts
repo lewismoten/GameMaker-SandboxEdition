@@ -89,7 +89,7 @@ export const CHECKS = {
   'hurt-lock': {
     name: 'Hurts that hold',
     why: 'Something that holds the hero while it hurts drains a life with no way to dodge.',
-    guide: { chapter: 'tricks', section: 'Hurts that happen once' },
+    guide: L('Danger players can see'),
   },
   'every-tick': {
     name: 'Scores or heals every tick',
@@ -105,13 +105,13 @@ export const CHECKS = {
     name: 'Hazards that look safe',
     why: 'A hazard drawn in the colors of safe ground is hard to spot the first time. A trick floor can be fun if the game plays fair with it.',
     taste: true,
-    guide: L('Hazards that hit where they are drawn'),
+    guide: L('Danger players can see'),
   },
   footing: {
     name: 'Floors and walls that look alike',
     why: 'Players stand on what looks like floor and walk round what looks like wall. A block you fall through that looks solid feels like a trick; a fair secret door is fine when the game hints at it.',
     taste: true,
-    guide: L('Hazards that hit where they are drawn'),
+    guide: L('Footing you can trust'),
   },
   mechanics: {
     name: 'Mechanics used once',
@@ -222,7 +222,7 @@ export const CHECKS = {
   'help-keys': {
     name: 'Help that names the wrong keys',
     why: 'Players press the keys the help names. A key nothing uses reads as a broken game, and the real key may never be found.',
-    guide: { chapter: 'show', section: 'Text screens and slide shows' },
+    guide: { chapter: 'show', section: 'Instructions players read' },
   },
   'text-contrast': {
     name: 'Text that’s hard to read',
@@ -268,7 +268,7 @@ export const CHECKS = {
   'start-values': {
     name: 'Starting values PLAYGAME ignores',
     why: 'PLAYGAME takes hit points, lives, counters and the inventory from the first scene’s character only. A hero chosen later who “starts with more” doesn’t, and players notice the promise broken.',
-    guide: { chapter: 'logic', section: 'Counters, Gates and Puzzles' },
+    guide: { chapter: 'logic', section: 'The counters' },
   },
   'blank-idle': {
     name: 'A hero with no standing picture',
@@ -284,7 +284,7 @@ export const CHECKS = {
     name: 'Doors that lead nowhere',
     why: 'A block drawn like the level’s exits that isn’t one sends players round in circles, and they stop trusting the real doors. A fair secret is fine, once.',
     taste: true,
-    guide: L('Hazards that hit where they are drawn'),
+    guide: L('Footing you can trust'),
   },
   music: {
     name: 'Levels without music',
@@ -306,7 +306,7 @@ export const CHECKS = {
     name: 'Long instructions or story',
     why: 'Most players read a page or three, then skip. Help that runs on hides the goal and the keys among everything else.',
     taste: true,
-    guide: { chapter: 'show', section: 'Text screens and slide shows' },
+    guide: { chapter: 'show', section: 'Instructions players read' },
   },
   ending: { name: 'Ending and screens', why: 'A game with no won screen, credits or instructions feels unfinished.', guide: L('An ending, not an ad') },
   variety: {
