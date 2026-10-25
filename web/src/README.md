@@ -148,9 +148,8 @@ modules are in [`../test`](../test).
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`).
 - [`seo/`](seo): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
-  (shared with the build), `route.ts` (keeps the tags in step at run time), `pageRoutes.ts` (pages
-  added while `site.ts` can't be edited) and `siteSections.ts` (the home page's WebSite and magazine
-  data and its links to the `#/…` pages, to be wired into `seoBuild.ts`).
+  (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
+  magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
 
 ### Today's web interface
 
@@ -578,9 +577,12 @@ saved with `editor/core/ui.ts` `download`.
     (`web-player.html`, `player/index.html` and `player/games.json`);
   - `seoBuild.ts` puts tags, JSON-LD and readable text into the pages and writes (and serves in dev)
     `robots.txt`, `sitemap.xml`, `llms.txt`, each game's `play-<id>.html` and its preview picture
-    `og/<id>.png` (drawn by `ogImage.ts`).
+    `og/<id>.png` (drawn by `ogImage.ts`), and The Sandbox Scoop's RSS feed `scoop.xml`
+    (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
 - Data files the site reads, written by hand-run scripts (their tests fail until they are rerun):
   - `credits.ts` writes the Credits page's `deps.json`;
+  - `scoopDates.ts` the day each Sandbox Scoop story was first committed, `scoopDates.json` (the
+    site's build checks out only the latest commit, so it can't ask git);
   - `levelSecrets.ts` (with `levelSecretsScan.ts`) the Level Maps' `levelSecrets.json`;
   - `levelViews.ts` (with `levelViewsScan.ts` and `levelViewsPlay.ts`; slow, so give it the game ids
     that changed) their `levelViews.json`;

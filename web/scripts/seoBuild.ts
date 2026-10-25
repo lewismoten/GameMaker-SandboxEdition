@@ -1,8 +1,9 @@
 // Search engines and link previews mostly don't run the app, so the pages carry what they
 // need as static HTML: meta/Open Graph/Twitter tags, schema.org JSON-LD for the app and
 // every bundled game, and readable text with links (shown until the app starts, and to
-// browsers without JavaScript). The build also writes robots.txt, sitemap.xml and
-// llms.txt (https://llmstxt.org), which the dev server serves too.
+// browsers without JavaScript). The build also writes robots.txt, sitemap.xml,
+// llms.txt (https://llmstxt.org) and The Sandbox Scoop's RSS feed scoop.xml (scoopFeed.ts),
+// which the dev server serves too.
 //
 // index.html, play.html and dos.html mark where it goes with <!--SEO:HEAD--> and <!--SEO:BODY-->.
 //
@@ -16,6 +17,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
+import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
 import {
   appJsonLd,
   clip,
@@ -129,7 +131,7 @@ function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
 
 function indexHead(catalog: CdCatalogEntry[]): string {
   const meta = metaTags({ ...ROUTES.home, url: SITE_URL, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
-  return `${meta}\n    <link rel="sitemap" type="application/xml" href="./sitemap.xml" />\n    ${jsonLdScript(siteNodes(catalog))}\n    ${STYLE}`;
+  return `${meta}\n    <link rel="sitemap" type="application/xml" href="./sitemap.xml" />\n    <link rel="alternate" type="application/rss+xml" title="${SCOOP_TITLE}" href="./scoop.xml" />\n    ${jsonLdScript(siteNodes(catalog))}\n    ${STYLE}`;
 }
 
 function indexBody(catalog: CdCatalogEntry[]): string {
@@ -392,6 +394,7 @@ function generated(cdRoot: string): Record<string, { type: string; body: () => s
     'robots.txt': { type: 'text/plain; charset=utf-8', body: robotsTxt },
     'sitemap.xml': { type: 'application/xml; charset=utf-8', body: () => sitemapXml(cdCatalog(cdRoot), new Date().toISOString().slice(0, 10)) },
     'llms.txt': { type: 'text/plain; charset=utf-8', body: () => llmsTxt(cdCatalog(cdRoot)) },
+    'scoop.xml': { type: 'application/rss+xml; charset=utf-8', body: () => scoopRss(cdCatalog(cdRoot), readScoopDates()) },
   };
 }
 
