@@ -6,9 +6,9 @@ import type { Project } from '../core/project';
 import { ADVTYPE, ENDTYPE, type Game } from '../../formats/game';
 import { kindOf } from '../core/project';
 
-export const FIRST_STEPS = 'firstSteps';
+const FIRST_STEPS = 'firstSteps';
 
-export interface FirstStepsState {
+interface FirstStepsState {
   /** Each starter file's fingerprint, by name. */
   base: Record<string, number>;
   /** Play tested at least once. */
@@ -20,7 +20,7 @@ export interface FirstStepsState {
 }
 
 /** Facts about the game a step can be judged by. */
-export interface StepFacts {
+interface StepFacts {
   /** File extensions with at least one file that differs from the starter's (or is new). */
   changed: Set<string>;
   game: Game;
@@ -31,7 +31,7 @@ export interface StepFacts {
 }
 
 /** A chapter of the Ultimate Owner's Guide (its id) and the section to read there. */
-export interface StepGuide {
+interface StepGuide {
   chapter: string;
   section: string;
 }
@@ -178,7 +178,7 @@ export function notePlayed(project: Project): void {
 }
 
 /** What the steps are judged by, now. */
-export function stepFacts(project: Project, state: FirstStepsState): StepFacts {
+function stepFacts(project: Project, state: FirstStepsState): StepFacts {
   const changed = new Set<string>();
   for (const [name, bytes] of project.files.entries()) {
     if (name === project.gam) continue;

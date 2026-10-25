@@ -11,7 +11,7 @@ import { TICK_HZ } from './blockAnim';
 import { clipTicks, isStill, nextChange, stepAt, tickOf, type Clip } from './animClip';
 import './animPlayer.css';
 
-export interface AnimPlayer {
+interface AnimPlayer {
   el: HTMLElement;
   /** Shows these clips (the first chosen), paused on the frame that shows `focus` if paused. */
   show(clips: Clip[], focus?: number): void;

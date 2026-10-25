@@ -21,7 +21,7 @@ import {
 } from './recTimelineModel';
 import { TICK, RULER, CAP_H, FOLD, type Layout, layout, type Frame, type CapBox, draw, fitCanvas, stripHeight } from './recTimelineDraw';
 
-export interface Timeline {
+interface Timeline {
   el: HTMLElement;
   destroy(): void;
 }

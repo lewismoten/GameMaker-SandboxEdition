@@ -14,18 +14,18 @@ import type { GameFiles } from '../../../project/files';
 import type { Session } from '../../../engine/scene';
 
 /** Game ticks a second (the 18.2 Hz clock a .REC counts). */
-export const GAME_HZ = 18.2;
+const GAME_HZ = 18.2;
 const ESC = 0x01;
 const EXT = 0xe0;
 
 /** A key the game was given, at the recorder's tick. */
-export interface TimedKey {
+interface TimedKey {
   t: number;
   key: number;
 }
 
 /** Where things stand at a tick: the scene, the map scroll, the hero on screen, score and hit points. */
-export type Fingerprint = string;
+type Fingerprint = string;
 
 function fingerprint(s: Session, scene: number): Fingerprint {
   const w = s.lastWorld;
@@ -33,7 +33,7 @@ function fingerprint(s: Session, scene: number): Fingerprint {
   return `${scene}:${w.mx},${w.my}:${w.ci.scrx},${w.ci.scry}:${w.ci.score}:${w.ci.hitpts}`;
 }
 
-export interface DemoRun {
+interface DemoRun {
   keys: TimedKey[];
   /** The tick play entered each scene (in order). */
   scenes: { scene: number; t: number }[];
@@ -100,7 +100,7 @@ export async function runDemo(
   return out;
 }
 
-export interface DemoKeys {
+interface DemoKeys {
   keys: RecordedKey[];
   /** The tick of the demo's last key. */
   end: number;

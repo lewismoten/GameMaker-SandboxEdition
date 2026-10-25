@@ -168,5 +168,3 @@ async function convertDialog(project: Project, animate: boolean): Promise<string
 
 registerMaker('gif', { label: '🖼 Convert a picture…', run: (p) => convertDialog(p, false) });
 registerMaker('fli', { label: '🎞 From an animated GIF or pictures…', run: (p) => convertDialog(p, true) });
-
-export { convertDialog };

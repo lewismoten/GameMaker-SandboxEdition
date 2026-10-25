@@ -18,7 +18,7 @@ export interface OpeningCard {
 }
 
 /** The opening as the companion keeps it, under the game's .gam. */
-export interface OpeningRecord {
+interface OpeningRecord {
   /** The title list the cards were put in. */
   list: string;
   files: string[];
@@ -29,7 +29,7 @@ export interface OpeningRecord {
   name: string;
 }
 
-export const OPENING_SECTION = 'opening';
+const OPENING_SECTION = 'opening';
 
 /** The cards' file names (8.3) and how long a still picture of them stays. */
 export const STING_STEM = 'madewith';

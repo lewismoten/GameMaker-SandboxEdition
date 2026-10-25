@@ -21,7 +21,7 @@ export interface VisionScene {
 }
 
 /** Clearly different side by side (CIE76 ΔE)... */
-export const DISTINCT = 20;
+const DISTINCT = 20;
 /** ...but alike in a view: hard to tell apart. */
 export const ALIKE = 5;
 /** A fix moves colors at least this far apart in every view. */
@@ -159,7 +159,7 @@ export function warnings(pal: Palette, an: Analysis): Warning[] {
 }
 
 /** The palette's shade ramps (3 or more steps) with a color the level uses. */
-export function rampsUsed(pal: Palette, uses: Float64Array): number[][] {
+function rampsUsed(pal: Palette, uses: Float64Array): number[][] {
   const seenAt = new Set<number>();
   const out: number[][] = [];
   for (let i = 0; i < 256; i++) {
@@ -188,7 +188,7 @@ function rampWarnings(pal: Palette, uses: Float64Array, look: Record<View, Float
 }
 
 /** A palette change offered for a warning. */
-export interface Fix {
+interface Fix {
   label: string;
   /** The new palette (the old one is not changed). */
   pal: Palette;

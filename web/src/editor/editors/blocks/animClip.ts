@@ -9,7 +9,7 @@ import { LASTSL, type Monster } from '../../../formats/monster';
 import { blockAnim } from './blockAnim';
 import type { BlockGroup } from './blockGroups';
 
-export interface ClipStep {
+interface ClipStep {
   /** -1 shows nothing. */
   block: number;
   /** Ticks shown; Infinity when the track stops here. */

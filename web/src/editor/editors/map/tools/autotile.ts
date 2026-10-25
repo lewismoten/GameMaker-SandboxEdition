@@ -34,7 +34,7 @@ export interface Terrain {
 }
 
 /** One slot of a terrain kind: its name and the neighbors it stands for (for the template's little diagram). */
-export interface Slot {
+interface Slot {
   label: string;
   mask: number;
 }

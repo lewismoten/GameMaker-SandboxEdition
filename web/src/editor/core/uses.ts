@@ -15,7 +15,7 @@ export function openInEditor(project: Project, file: string): void {
   location.hash = formatHash(['p', project.id, file]);
 }
 
-export interface Use {
+interface Use {
   /** The file it is found in (open it to see). */
   file: string;
   /** What it is, in a few words: "level 3 · map: 42 cells". */

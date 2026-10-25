@@ -4,7 +4,7 @@
 // the arranger the Bard of Bizarre games share. No DOM.
 
 /** A bass note: when in the bar (beats), how long, and which: root, fifth, octave, third, or a step into the next chord's root. */
-export type BassStep = [at: number, len: number, note: 'R' | '5' | '8' | '3' | 'A'];
+type BassStep = [at: number, len: number, note: 'R' | '5' | '8' | '3' | 'A'];
 
 /** Comping: chords struck at these [beat, length]s, or an arpeggio stepping through the chord tones. */
 export type Comp = { hits: [at: number, len: number][] } | { arp: number };

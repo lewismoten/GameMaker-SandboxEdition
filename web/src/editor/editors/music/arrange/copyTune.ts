@@ -5,7 +5,7 @@ import { removeChannel, scaleTime, setStartProgram, startProgram } from '../../.
 import type { CmfSong } from '../../../../formats/cmfSong';
 import { cloneSong } from './accompany';
 
-export interface CopyTuneOptions {
+interface CopyTuneOptions {
   /** The channel whose notes are the tune. */
   melody: number;
   /** How fast against the original: 2 is twice as fast, 0.5 half as fast. */

@@ -9,10 +9,10 @@ import { START_SONGS } from './sceneSlots';
 
 /** Board pixels per integrator unit, and the card size on the board. */
 export const S = 8;
-export const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
+const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
 const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
-export const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
-export const FONT = 'ui-monospace, Menlo, Consolas, monospace';
+const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
+const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
 export interface Rect {
   x: number;
@@ -28,13 +28,13 @@ export interface CardButton extends Rect {
 
 export const inRect = (r: Rect, x: number, y: number) => x >= r.x && y >= r.y && x <= r.x + r.w && y <= r.y + r.h;
 
-export function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
+function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
   ctx.beginPath();
   ctx.roundRect(r.x, r.y, r.w, r.h, rad);
 }
 
 /** Where a line from the centre of `r` towards (tx, ty) leaves the rectangle. */
-export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
+function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;
   const dx = tx - cx;

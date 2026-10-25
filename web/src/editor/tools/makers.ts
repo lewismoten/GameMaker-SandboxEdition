@@ -3,7 +3,7 @@
 // file picker offers them as buttons.
 import type { FileKind, Project } from '../core/project';
 
-export interface Maker {
+interface Maker {
   label: string;
   /** Resolves with the new file's name, or undefined if cancelled. */
   run: (p: Project) => Promise<string | undefined>;

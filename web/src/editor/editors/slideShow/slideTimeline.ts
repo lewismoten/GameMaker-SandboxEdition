@@ -15,8 +15,6 @@ export type Then = 'key' | 'none' | 'seconds';
 
 /** Most lines FileListClass holds. */
 export const MAX_SLIDES = 100;
-/** Longest name FileEntry keeps. */
-export const MAX_NAME = 15;
 /** FadeTo: 65 steps of a 70 Hz retrace. */
 export const FADE_SECONDS = 65 / 70;
 

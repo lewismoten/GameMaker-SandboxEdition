@@ -6,7 +6,7 @@
 // instead, a group carrying on onto the next row, in the order that reads best.
 
 /** Where a collection goes: its heading's grid row and columns, and each tile's row and column (1-based grid lines). */
-export interface Placed {
+interface Placed {
   /** The collection's index in the list given. */
   index: number;
   head: { row: number; col: number; span: number };

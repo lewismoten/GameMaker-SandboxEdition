@@ -63,7 +63,7 @@ export function mapLayerCanvas(b: ViewRect, map: GameMap | undefined, mapImgs: H
   return c;
 }
 
-export function arrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, color: string, dashed = false): void {
+function arrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, color: string, dashed = false): void {
   ctx.save();
   ctx.lineCap = 'round';
   ctx.setLineDash(dashed ? [8, 8] : []);
@@ -96,7 +96,7 @@ export function arrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2:
   ctx.restore();
 }
 
-export function badge(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, bgc: string, fg = '#000'): void {
+function badge(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, bgc: string, fg = '#000'): void {
   ctx.font = 'bold 13px ui-monospace, Menlo, Consolas, monospace';
   const w = Math.max(16, ctx.measureText(text).width + 6);
   ctx.fillStyle = '#000';

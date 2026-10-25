@@ -11,7 +11,7 @@ const STYLES: [OpeningStyle, string, string][] = [
   ['none', 'None', ''],
 ];
 
-export interface OpeningFields {
+interface OpeningFields {
   el: HTMLElement;
   /** The choice, or undefined (with the problem shown) when the name can't be drawn. */
   value(): { style: OpeningStyle; name: string } | undefined;

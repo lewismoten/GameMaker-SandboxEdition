@@ -18,7 +18,7 @@ import { chordTones, inferChords, inferKey, type ChordSpan, type Key, type MelNo
 import { styleById, type Comp, type Drum, type Groove, type Style, type StyleId } from './styles';
 
 /** Mulberry32 (Tommy Ettinger, public domain): a small seeded random number generator. */
-export function seededRandom(seed: number): () => number {
+function seededRandom(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -29,7 +29,7 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-export interface AccompanyOptions {
+interface AccompanyOptions {
   /** The channel whose notes are the tune. */
   melody: number;
   style: StyleId;
@@ -62,7 +62,7 @@ const DRUM_NOTE: Record<Drum, number> = { k: 36, s: 55, t: 48, c: 72, h: 55 };
 export const RANGES = { bass: [28, 55], comp: [40, 84] } as const;
 
 /** The tune of a channel as notes in beats. */
-export function melodyNotes(song: CmfSong, ch: number): MelNote[] {
+function melodyNotes(song: CmfSong, ch: number): MelNote[] {
   const beat = Math.max(1, song.ticksPerBeat || 48);
   return channelNotes(song, ch).map((n) => ({ start: n.on.tick / beat, len: (noteEnd(song, n) - n.on.tick) / beat, key: n.on.a }));
 }

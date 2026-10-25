@@ -7,7 +7,7 @@ import type { Palette } from '../../../formats/palette';
 import type { BlockGroup } from './blockGroups';
 import './groupView.css';
 
-export interface GroupView {
+interface GroupView {
   el: HTMLElement;
   /** Shows the group around `current` (or hides itself with no group). */
   show(g: BlockGroup | undefined, current: number): void;

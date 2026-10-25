@@ -425,7 +425,7 @@ async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promis
 }
 
 /** The small menu of less-used actions. */
-export function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLElement {
+function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLElement {
   const menu = h(
     'details',
     { class: 'card-more' },

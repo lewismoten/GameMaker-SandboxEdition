@@ -21,7 +21,7 @@ const pick = <T>(xs: T[]): T => xs[Math.floor(Math.random() * xs.length)];
 const note = (semi: number) => 440 * 2 ** (semi / 12);
 const sweep = (from: number, to: number, t: number) => from * (to / from) ** t;
 
-export interface Recipe {
+interface Recipe {
   name: string;
   icon: string;
   make: () => Speaker;

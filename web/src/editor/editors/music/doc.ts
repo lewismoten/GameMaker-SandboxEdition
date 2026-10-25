@@ -11,7 +11,7 @@ import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
-export type Change = 'song' | 'view' | 'track' | 'play';
+type Change = 'song' | 'view' | 'track' | 'play';
 
 /** One color per MIDI channel, from the EGA palette. */
 export const TRACK_COLORS = [

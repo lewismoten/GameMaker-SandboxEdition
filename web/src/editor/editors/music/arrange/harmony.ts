@@ -23,7 +23,7 @@ export interface Key {
   name: string;
 }
 
-export interface Chord {
+interface Chord {
   /** Pitch class of the root. */
   root: number;
   quality: 'maj' | 'min' | 'dim';
@@ -101,7 +101,7 @@ const make = (tonic: number, step: number, quality: Chord['quality'], degree: st
 };
 
 /** The triads a key's songs use most, with how often. */
-export function keyChords(key: Key): Candidate[] {
+function keyChords(key: Key): Candidate[] {
   const t = key.tonic;
   const list: [number, Chord['quality'], string, number][] = key.minor
     ? [
@@ -169,7 +169,7 @@ const MOVES: Record<string, number> = {
   'III>VI': 0.1,
 };
 
-export interface InferOptions {
+interface InferOptions {
   beatsPerBar: number;
   /** How many beats the song lasts (bars cover it all). */
   beats: number;

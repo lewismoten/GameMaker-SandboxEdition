@@ -77,7 +77,7 @@ interface JoystickUse {
   chrs: string[];
 }
 
-export interface Instructions {
+interface Instructions {
   name: string;
   kind: 'text' | 'picture';
   /** .txt contents (text) or the GIF bytes (picture). */
