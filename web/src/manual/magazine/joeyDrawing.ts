@@ -4,8 +4,8 @@
 // over twice, and hand-printed letters (one or two of them backwards). A seeded random keeps
 // every wobble the same from one viewing to the next; an SVG filter gives the strokes a waxy grain.
 import './joeyDrawing.css';
+import { svgArt } from './svgArt';
 
-const SVG = 'http://www.w3.org/2000/svg';
 type Pt = [number, number];
 
 /** Mulberry32: the same wobbles every time. */
@@ -345,18 +345,16 @@ export function joeyDrawing(alt: string): Element {
   // a strip of tape across the top
   const tape = `<polygon points="110,-3 112,0 110,3 112,6 110,9 112,12 110,15 162,15 160,12 162,9 160,6 162,3 160,0 162,-3" fill="rgba(236,229,184,0.75)" stroke="rgba(160,150,110,0.35)" stroke-width="0.6" transform="rotate(3 136 8)"/>`;
 
-  const el = document.createElementNS(SVG, 'svg');
-  el.setAttribute('viewBox', '0 -4 272 240');
-  el.setAttribute('role', 'img');
-  el.setAttribute('aria-label', alt);
-  el.classList.add('joey-drawing');
-  el.innerHTML =
+  return svgArt(
+    '0 -4 272 240',
     `<defs>${c.defs}<filter id="${id}w" x="-5%" y="-5%" width="110%" height="110%">` +
-    '<feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4" result="w"/>' +
-    '<feDisplacementMap in="SourceGraphic" in2="w" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="d"/>' +
-    '<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="9" result="g"/>' +
-    '<feColorMatrix in="g" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.2 2.3" result="m"/>' +
-    '<feComposite in="d" in2="m" operator="in"/></filter></defs>' +
-    `${paper}<g filter="url(#${id}w)">${c.out}</g>${tape}`;
-  return el;
+      '<feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4" result="w"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="w" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="d"/>' +
+      '<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="9" result="g"/>' +
+      '<feColorMatrix in="g" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.2 2.3" result="m"/>' +
+      '<feComposite in="d" in2="m" operator="in"/></filter></defs>' +
+      `${paper}<g filter="url(#${id}w)">${c.out}</g>${tape}`,
+    alt,
+    'joey-drawing',
+  );
 }

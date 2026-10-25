@@ -3,8 +3,7 @@
 // little stack in bulk colors; the front one, seen from its label side with the metal shutter
 // up, has the corner cut at top right, the write-protect hole with its slider at bottom right
 // and the high-density hole at bottom left.
-
-const SVG = 'http://www.w3.org/2000/svg';
+import { svgArt } from './svgArt';
 
 /** One disk, 90 x 94 like the real thing in millimetres, its top-left corner at the origin. */
 function disk(body: string, edge: string, front: boolean): string {
@@ -28,12 +27,11 @@ function disk(body: string, edge: string, front: boolean): string {
 
 /** The stack of three unlabelled disks, as an image named by `alt`. */
 export function blankDiskArt(alt: string): Element {
-  const el = document.createElementNS(SVG, 'svg');
-  el.setAttribute('viewBox', '0 0 128 116');
-  el.setAttribute('role', 'img');
-  el.setAttribute('aria-label', alt);
-  el.innerHTML = `<g transform="translate(34 6) rotate(9 45 47)">${disk('#3f7fbf', '#24507e', false)}</g>
+  return svgArt(
+    '0 0 128 116',
+    `<g transform="translate(34 6) rotate(9 45 47)">${disk('#3f7fbf', '#24507e', false)}</g>
     <g transform="translate(22 12) rotate(-6 45 47)">${disk('#8a8f98', '#5e636b', false)}</g>
-    <g transform="translate(6 18)">${disk('#26272c', '#0e0e11', true)}</g>`;
-  return el;
+    <g transform="translate(6 18)">${disk('#26272c', '#0e0e11', true)}</g>`,
+    alt,
+  );
 }

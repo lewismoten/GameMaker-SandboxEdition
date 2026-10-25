@@ -2,18 +2,7 @@
 // sizes them): the press, a black textured base tilted back with a 3½" disk in its recess and
 // a finger notch, and a white lever arm on its hinge block over the disk's corner; and a disk
 // seen from the back before and after, one square hole and then two. Our own drawing.
-
-const SVG = 'http://www.w3.org/2000/svg';
-
-function svg(cls: string, viewBox: string, markup: string, alt: string): SVGSVGElement {
-  const el = document.createElementNS(SVG, 'svg');
-  el.setAttribute('class', cls);
-  el.setAttribute('viewBox', viewBox);
-  el.setAttribute('role', 'img');
-  el.setAttribute('aria-label', alt);
-  el.innerHTML = markup;
-  return el;
-}
+import { svgArt } from './svgArt';
 
 /** The base's flat plan (200 x 240) tilted back onto the page: x runs right and up a little, y down and right. */
 const tp = (x: number, y: number): [number, number] => [24 + x + 0.55 * y, 92 - 0.18 * x + 0.5 * y];
@@ -84,6 +73,6 @@ function diskBack(after: boolean): string {
 }
 
 export function notcherArt(which: 'press' | 'before' | 'after', alt: string): SVGSVGElement {
-  if (which === 'press') return svg('mag-notcher', '14 30 350 214', press(), alt);
-  return svg('mag-notch-disk', '0 0 100 100', diskBack(which === 'after'), alt);
+  if (which === 'press') return svgArt('14 30 350 214', press(), alt, 'mag-notcher');
+  return svgArt('0 0 100 100', diskBack(which === 'after'), alt, 'mag-notch-disk');
 }

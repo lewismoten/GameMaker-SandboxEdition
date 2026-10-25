@@ -24,19 +24,10 @@ import { notcherArt } from './notcherArt';
 import { soundCardArt } from './soundCardArt';
 import { speakerArt } from './speakerArt';
 import { webShotImg } from './webShots';
+import { svgArt } from './svgArt';
 
-const SVG = 'http://www.w3.org/2000/svg';
 /** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
 const DRIVER_SEAT: [number, number] = [-3, 0.5];
-
-function svg(viewBox: string, markup: string, alt: string): Element {
-  const el = document.createElementNS(SVG, 'svg');
-  el.setAttribute('viewBox', viewBox);
-  el.setAttribute('role', 'img');
-  el.setAttribute('aria-label', alt);
-  el.innerHTML = markup;
-  return el;
-}
 
 /** UPC-style bars from the issue's name, with the price box's digits under them. */
 function barcode(alt: string): Element {
@@ -47,7 +38,7 @@ function barcode(alt: string): Element {
     if (i % 2 === 0) bars += `<rect x="${x}" y="2" width="${w}" height="${i < 2 || i > 41 || i === 22 ? 34 : 30}" fill="#000"/>`;
     x += w;
   }
-  return svg(
+  return svgArt(
     `0 0 ${x + 4} 44`,
     `<rect width="100%" height="100%" fill="#fff"/>${bars}<text x="50%" y="42" font-size="6" font-family="monospace" text-anchor="middle">0 74470 19951 1</text>`,
     alt,
@@ -71,7 +62,7 @@ export function artElement(id: ArtId, alt: string): Element {
       return el;
     }
     case 'disk':
-      return svg('0 0 100 100', DISK, alt);
+      return svgArt('0 0 100 100', DISK, alt);
     case 'blankdisk':
       return blankDiskArt(alt);
     case 'modem':

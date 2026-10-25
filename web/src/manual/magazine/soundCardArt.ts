@@ -3,18 +3,7 @@
 // and a metal bracket of jacks, a volume wheel and the joystick/MIDI port; and a player's face
 // before it (the PC speaker) and after. Sound Boaster and Overcreative Labs are made up.
 import './soundCardArt.css';
-
-const SVG = 'http://www.w3.org/2000/svg';
-
-function svg(cls: string, viewBox: string, markup: string, alt: string): Element {
-  const el = document.createElementNS(SVG, 'svg');
-  el.setAttribute('class', cls);
-  el.setAttribute('viewBox', viewBox);
-  el.setAttribute('role', 'img');
-  el.setAttribute('aria-label', alt);
-  el.innerHTML = markup;
-  return el;
-}
+import { svgArt } from './svgArt';
 
 const chip = (x: number, y: number, w: number, hgt: number, label: string, sub: string) => {
   const legs = Math.floor((w - 6) / 5);
@@ -94,6 +83,6 @@ function face(boom: boolean): string {
 
 /** The card, or a face: 'card', 'before' or 'after'. */
 export function soundCardArt(what: 'card' | 'before' | 'after', alt: string): Element {
-  if (what === 'card') return svg('mag-boaster', '0 0 316 150', card(), alt);
-  return svg('mag-boaster-face', '0 0 120 120', face(what === 'after'), alt);
+  if (what === 'card') return svgArt('0 0 316 150', card(), alt, 'mag-boaster');
+  return svgArt('0 0 120 120', face(what === 'after'), alt, 'mag-boaster-face');
 }
