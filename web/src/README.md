@@ -7,7 +7,7 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   interface (`editor/`), whichever the visitor used last (`localStorage` `gm-ui`).
   [`urlState.ts`](urlState.ts) keeps the place in the hash (`#/`, `#/game/cd:nebula`,
   `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/credits`, `#/achievements`,
-  `#/mac`, `#/windows`, `#/linux`, `#/magazine?page=<n>`, `#/desk`), so a reload or a shared link
+  `#/mac`, `#/windows`, `#/linux`, `#/magazine?page=<n>`, `#/library?by=type`, `#/desk`), so a reload or a shared link
   comes back to it; [`seo/route.ts`](seo/route.ts) keeps the page's title and share tags in step
   with what is on screen. `?open=<url>` and `?receive` open a game sent by another site
   ([`linkIn/`](linkIn), [`docs/embed.md`](../../docs/embed.md)).
@@ -149,7 +149,8 @@ modules are in [`../test`](../test).
   the desk (`offlineExe.ts`).
 - [`seo/`](seo): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
-  magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
+  magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in). `pageRoutes.ts`
+  holds pages added while `site.ts` can't be edited (the dev server imports it): the Library, for now.
 
 ### Today's web interface
 
@@ -292,6 +293,14 @@ modules are in [`../test`](../test).
   Mystery Robot Joe's scene, `reveal.ts` with `joeArt.ts`, only once every heart is found).
 
 ### The Guides, the paper in the boxes and the magazine
+
+- [`library/`](library): the Library (`#/library`, the top bar's Library link): a card for
+  everything to read or print, sorted by game or by type (`?by=type`, remembered per browser).
+  `shelf.ts` is the list as data (the kinds of paper, the games, never a secret one, and the two
+  sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once
+  found), `listing.ts` builds it from the catalog and the boxes' pieces, `thumbs.ts` draws each
+  card's first sheet when it scrolls into view, and `libraryPage.ts` is the page; a card opens its
+  piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
 
 - [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its pages `booklet.ts`, its
   screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and

@@ -8,11 +8,18 @@ import { chains, reachable } from './importWalk';
 const CHECK_RUN = /^editor\/check\/(explore|sim|playtest|report|live)\.ts$/;
 
 const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
-  ['main.ts', [['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//]]],
+  [
+    'main.ts',
+    [
+      ['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//],
+      ['the Library or the paper in the boxes', /^(library|manual\/printables)\//],
+    ],
+  ],
   [
     'modernUi.ts',
     [
       ['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//],
+      ['the Library', /^library\//],
       ['new game and importing', /^editor\/shell\/homeImport\.ts$/],
       ['the engine', /^engine\//],
     ],
