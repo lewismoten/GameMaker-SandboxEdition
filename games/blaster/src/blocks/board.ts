@@ -381,6 +381,52 @@ function jumper(a: StageArt, vertical: boolean, ramp: string): Pixels {
   return t;
 }
 
+/** A wire 3 pixels thick along row y from x0 to x1 (both included). */
+function lead(t: Pixels, a: StageArt, x0: number, x1: number, y: number, ramp: string): Pixels {
+  const p = a.pal;
+  t.rect(x0, y, x1 - x0 + 1, 3, p.c(ramp, 2)).rect(x0, y, x1 - x0 + 1, 1, p.c(ramp, 4));
+  return t.rect(x0, y + 2, x1 - x0 + 1, 1, p.c(ramp, 0));
+}
+
+/** A wire's stripped end, pushed into the breadboard hole at (x, y) from the left. */
+function tip(t: Pixels, a: StageArt, x: number, y: number): Pixels {
+  const p = a.pal;
+  return t.rect(x - 3, y, 4, 2, p.c('steel', 5)).set(x + 1, y + 1, p.c('grey', 2));
+}
+
+/**
+ * How the breadboard reaches the computer: wires soldered to the motherboard's bus lines on
+ * both sides, run over the board into the breadboard. Left, the red +5V wire ends in the power
+ * rail and a gold data wire runs on to the 6502's pins; right, the blue ground wire ends in the
+ * other rail. Each is drawn for the left side; the right side's blocks are mirrored.
+ */
+function hookup(a: StageArt): Record<string, Pixels> {
+  const p = a.pal;
+  const solder = (t: Pixels, y: number) => blob(t, 16, y + 1, 2.5, 2.5, p.r('steel'), 3, 6);
+  const ends = (ramps: [string, number][]) => {
+    const bus = busTrace(a, 'ns');
+    for (const [r, y] of ramps) solder(lead(bus, a, 16, 19, y, r), y);
+    const floor = new Pixels(20, 20);
+    floor.px.set(a.floor(0).px);
+    for (const [r, y] of ramps) lead(floor, a, 0, 19, y, r);
+    return { bus, floor };
+  };
+  const left = ends([
+    ['red', 4],
+    ['gold', 12],
+  ]);
+  const right = ends([['blue', 8]]);
+  return {
+    hkBusL: left.bus,
+    hkFloorL: left.floor,
+    hkRailL: tip(lead(lead(breadboard(a, 'R'), a, 0, 1, 4, 'red'), a, 0, 19, 12, 'gold'), a, 5, 5),
+    hkPinL: tip(lead(breadboard(a, 'H'), a, 0, 13, 12, 'gold'), a, 17, 13),
+    hkBusR: right.bus.flipX(),
+    hkFloorR: right.floor.flipX(),
+    hkRailR: tip(lead(breadboard(a, 'R').flipX(), a, 0, 4, 8, 'blue'), a, 6, 9).flipX(),
+  };
+}
+
 /** The breadboard computer's blocks. The 555's LED blinks in step with the A firewalls. */
 function breadboardTiles(bs: BlockSet, a: StageArt, clock: { on: number; off: number }): void {
   bs.add('bbH', breadboard(a, 'H'));
@@ -393,13 +439,14 @@ function breadboardTiles(bs: BlockSet, a: StageArt, clock: { on: number; off: nu
   bs.add('runStep', runStep(a));
   bs.add('jwH', jumper(a, false, 'red'));
   bs.add('jwV', jumper(a, true, 'gold'));
+  for (const [name, pic] of Object.entries(hookup(a))) bs.add(name, pic);
 }
 
 /** Stage 1 landmark blocks. */
 export function boardTiles(bs: BlockSet, a: StageArt, clock: { on: number; off: number }): void {
-  for (const s of ['ns', 'ew', 'ne', 'nw', 'se', 'sw', 'nse', 'nsw']) bs.add(`tr_${s}`, trace(a, s));
-  for (const s of 'nsew') bs.add(`tr_${s}V`, trace(a, s, true));
-  for (const s of ['ns', 'ew', 'se', 'sw', 'ne', 'nw']) bs.add(`bus_${s}`, busTrace(a, s));
+  for (const s of ['ns', 'ew', 'ne', 'nw', 'se', 'sw']) bs.add(`tr_${s}`, trace(a, s));
+  for (const s of 'ns') bs.add(`tr_${s}V`, trace(a, s, true));
+  for (const s of ['ns', 'ew', 'se', 'nw']) bs.add(`bus_${s}`, busTrace(a, s));
   const labels = ['74LS', '138', 'BIOS', '1994', '1802', '8042'];
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) bs.add(`chip${r}${c}`, chip(a, r, c));
   labels.forEach((l, i) => bs.add(`chipL${i}`, chip(a, 1, 1, l)));
