@@ -135,7 +135,8 @@ export function park(): Level {
   m.set(HOLLOW.gap, 39, 'hollowGap');
   const [rx, ry] = HOLLOW.room;
   m.rect(rx - 4, ry - 4, 22, 13, 'edgeHedge');
-  m.rect(rx, ry, 14, 5, 'hollow');
+  // 13 wide: the way out (rx + 12) is the last column, so nothing lies past it
+  m.rect(rx, ry, 13, 5, 'hollow');
   m.rect(rx, ry + 5, 14, 1, 'hollowFloor');
   m.set(rx + 5, ry + 4, 'favors1').set(rx + 9, ry + 4, 'favors2');
   const egg: [number, number] = [rx + 7, ry + 4];
