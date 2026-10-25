@@ -73,10 +73,13 @@
   color: #999;
 }
 
+/* the holes are in the top corners, away from the shutter: seen from the label side, the
+   write-protect hole at the left and the high-density hole at the right */
+
 /* write-protect tab: open hole = protected */
 .floppy .wp {
   position: absolute;
-  right: 2.5%;
+  left: 2.5%;
   top: 2%;
   width: 7%;
   height: 7%;
@@ -96,7 +99,7 @@
 
 .floppy .density-hole {
   position: absolute;
-  left: 2.5%;
+  right: 2.5%;
   top: 2%;
   width: 7%;
   height: 7%;
@@ -121,7 +124,7 @@
 
 .floppy .hd {
   position: absolute;
-  left: 2.5%;
+  right: 2.5%;
   top: 11%;
   font:
     700 8px/1 system-ui,
