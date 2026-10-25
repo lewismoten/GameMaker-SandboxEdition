@@ -157,6 +157,98 @@ export function seenArea(used: Rect, seen: SeenRect, marks: { x: number; y: numb
   return x1 < x0 || y1 < y0 ? used : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
 }
 
+/**
+ * Everything joined to the level's arrivals through blocks that aren't solid on every side (or
+ * that change: doors), with half a screen round it, when that never reaches the map's edge: an
+ * enclosed level (a station, a house) whose far rooms the bots didn't get to. Undefined when it
+ * reaches the edge (open ground, a sea, space), where the flood would take in far too much.
+ */
+export function walledReach(cells: ArrayLike<number>, blocks: Block[], starts: Point[]): Rect | undefined {
+  const open = (i: number) => {
+    const b = blocks[cells[i]];
+    return !b || b.solid !== 15 || b.touchBl !== cells[i] || (b.nextBl !== cells[i] && b.ntime > 0);
+  };
+  const reached = new Uint8Array(MLEN * MWID);
+  const todo: number[] = [];
+  for (const p of starts)
+    if (p.x >= 0 && p.y >= 0 && p.x < MLEN && p.y < MWID && !reached[p.y * MLEN + p.x]) ((reached[p.y * MLEN + p.x] = 1), todo.push(p.y * MLEN + p.x));
+  if (!todo.length) return undefined;
+  let x0 = MLEN;
+  let y0 = MWID;
+  let x1 = -1;
+  let y1 = -1;
+  while (todo.length) {
+    const i = todo.pop()!;
+    const x = i % MLEN;
+    const y = Math.floor(i / MLEN);
+    if (x === 0 || y === 0 || x === MLEN - 1 || y === MWID - 1) return undefined;
+    x0 = Math.min(x0, x);
+    y0 = Math.min(y0, y);
+    x1 = Math.max(x1, x);
+    y1 = Math.max(y1, y);
+    for (const j of [i - 1, i + 1, i - MLEN, i + MLEN]) if (!reached[j] && open(j)) ((reached[j] = 1), todo.push(j));
+  }
+  return { x: x0 - 8, y: y0 - 5, w: x1 - x0 + 17, h: y1 - y0 + 11 };
+}
+
+/** The box round two boxes, kept inside `within`. */
+function joinRects(a: Rect, b: Rect, within: Rect): Rect {
+  const x0 = Math.max(within.x, Math.min(a.x, b.x));
+  const y0 = Math.max(within.y, Math.min(a.y, b.y));
+  const x1 = Math.min(within.x + within.w, Math.max(a.x + a.w, b.x + b.w));
+  const y1 = Math.min(within.y + within.h, Math.max(a.y + a.h, b.y + b.h));
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+
+/**
+ * Where the hero can get to on a map that wraps: every block joined to the arrivals through blocks
+ * that aren't solid on every side (or that change), going round the map's edges, as how many
+ * columns and rows it touches and the rows from first to last.
+ */
+export function wrapReach(cells: ArrayLike<number>, blocks: Block[], starts: Point[]): { cols: number; y0: number; y1: number; rows: number } {
+  const open = (i: number) => {
+    const b = blocks[cells[i]];
+    return !b || b.solid !== 15 || b.touchBl !== cells[i] || (b.nextBl !== cells[i] && b.ntime > 0);
+  };
+  const reached = new Uint8Array(MLEN * MWID);
+  const todo: number[] = [];
+  for (const p of starts)
+    if (p.x >= 0 && p.y >= 0 && p.x < MLEN && p.y < MWID && !reached[p.y * MLEN + p.x]) ((reached[p.y * MLEN + p.x] = 1), todo.push(p.y * MLEN + p.x));
+  const cols = new Set<number>();
+  const rows = new Set<number>();
+  while (todo.length) {
+    const i = todo.pop()!;
+    const x = i % MLEN;
+    const y = Math.floor(i / MLEN);
+    cols.add(x);
+    rows.add(y);
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const j = ((y + dy + MWID) % MWID) * MLEN + ((x + dx + MLEN) % MLEN);
+      if (!reached[j] && open(j)) ((reached[j] = 1), todo.push(j));
+    }
+  }
+  return { cols: cols.size, rows: rows.size, y0: rows.size ? Math.min(...rows) : 0, y1: rows.size ? Math.max(...rows) : 0 };
+}
+
+/**
+ * A map the hero can walk all the way round (a planet) goes round forever though the bots never
+ * walked the whole lap, and it shows every row they could get to: the caves under a planet's
+ * surface, not only the strip the walkthrough crossed.
+ */
+function goesRound(u: Unrolled, reach?: { cols: number; y0: number; y1: number; rows: number }): Unrolled {
+  if (!reach || u.loops[0] || reach.cols < MLEN || (u.runs && u.box[3] > MWID)) return u;
+  const loopY = u.loops[1] || reach.rows >= MWID;
+  const [, by, , bh] = u.box;
+  const y0 = loopY ? by : Math.min(by, reach.y0 - 1);
+  const y1 = loopY ? by + bh - 1 : Math.max(by + bh - 1, reach.y1 + 1);
+  return { box: [u.box[0], y0, MLEN, loopY ? MWID : y1 - y0 + 1], loops: [true, loopY] };
+}
+
 /** How far a crop's edge goes on to take in the rest of a room or wall it cuts through. */
 const SNAP = 8;
 
@@ -301,49 +393,58 @@ export interface Level {
 }
 
 /** A level laid out as the player goes through it: its box, and each mark on the lap where it is met. */
-function unrolledLevel(level: Level, played: Unrolled): Level {
-  const u = recut(played, level.cells);
+function unrolledLevel(level: Level, played: Unrolled, reach?: { cols: number; y0: number; y1: number; rows: number }): Level {
+  const u = recut(goesRound(played, reach), level.cells);
   const marks = level.marks.map((m) => ({ ...m, ...unrolledAt(u, m.x, m.y) }));
   const [x, y, w, h] = u.box;
   return { ...level, area: { x, y, w, h }, marks, unrolled: u, mapMarks: level.marks };
 }
 
 /**
- * A way that goes round forever is printed one lap long, cut where the map is emptiest (of all but
- * its commonest blocks), and,
- * among the emptiest, opposite the middle of what is drawn: so a ring of asteroids or a word
- * spelled in blocks stays whole near the middle of the page. A level that winds on past a lap
- * keeps the scan's layout (its drawn runs are laid out for it).
+ * A way that goes round forever is printed one lap long, cut through the widest band of lines
+ * with (almost) nothing drawn in it, so everything drawn stays whole near the middle: an asteroid
+ * ring round its sun, a town, a word spelled in blocks. "Drawn" leaves out the commonest blocks
+ * (empty space, star fields, nebula, plain ground: together 95% of the map). A map drawn all the
+ * way round is cut at its emptiest line. One more line goes on past the far edge, the first one
+ * again, so a room open at the edge shows the wall it wraps round to. A level that winds on past
+ * a lap keeps the scan's layout (its drawn runs are laid out for it).
  */
 function recut(u: Unrolled, cells: ArrayLike<number>): Unrolled {
   if (u.runs || (!u.loops[0] && !u.loops[1])) return u;
-  // what not to cut: the rarer blocks (asteroids, ships, letters); common ones (space, stars,
-  // nebula: over 3% of the map each) are background, cut anywhere
   const freq = new Map<number, number>();
   for (let i = 0; i < MLEN * MWID; i++) freq.set(cells[i], (freq.get(cells[i]) ?? 0) + 1);
-  const background = new Set([...freq].filter(([, n]) => n > MLEN * MWID * 0.03).map(([b]) => b));
-  background.add(fillerBlock(cells));
+  const background = new Set<number>();
+  let covered = 0;
+  for (const [b, n] of [...freq].sort((x, y) => y[1] - x[1])) {
+    if (covered >= MLEN * MWID * 0.95) break;
+    background.add(b);
+    covered += n;
+  }
   const box: UnrolledBoxRect = [...u.box];
   const cut = (axis: 0 | 1) => {
     const n = axis ? MWID : MLEN;
     const count = new Array<number>(n).fill(0);
-    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) if (!background.has(cells[y * MLEN + x])) count[axis ? y : x]++;
-    // where the drawing's middle is, going round (a circular mean)
-    let sx = 0;
-    let sy = 0;
-    count.forEach((c, i) => ((sx += c * Math.cos((2 * Math.PI * i) / n)), (sy += c * Math.sin((2 * Math.PI * i) / n))));
-    const middle = ((Math.atan2(sy, sx) / (2 * Math.PI)) * n + n) % n;
-    const opposite = (middle + n / 2) % n;
-    const smooth = count.map((_, i) => count[(i + n - 1) % n] + count[i] + count[(i + 1) % n]);
-    const least = Math.min(...smooth);
-    const away = (i: number) => Math.min(Math.abs(i - opposite), n - Math.abs(i - opposite));
-    // the emptiest lines, and of those the one opposite the middle
-    let best = 0;
-    for (let i = 0; i < n; i++) if (smooth[i] === least && (smooth[best] !== least || away(i) < away(best))) best = i;
-    return best;
+    for (let i = 0; i < MLEN * MWID; i++) if (!background.has(cells[i])) count[axis ? Math.floor(i / MLEN) : i % MLEN]++;
+    // a line with next to nothing drawn on it (a stray block or two) is empty
+    const quiet = Math.max(1, Math.floor(Math.max(...count) / 10));
+    let start = -1;
+    let len = 0;
+    for (let i = 0; i < n; i++) {
+      if (count[i] > quiet || count[(i + n - 1) % n] <= quiet) continue; // runs start after a busy line
+      let k = 0;
+      while (k < n && count[(i + k) % n] <= quiet) k++;
+      if (k > len) ((len = k), (start = i));
+    }
+    if (len === n || start < 0) {
+      // nothing drawn at all, or drawn all the way round: the emptiest line
+      let best = 0;
+      for (let i = 1; i < n; i++) if (count[i] < count[best]) best = i;
+      return best;
+    }
+    return (start + Math.floor(len / 2)) % n;
   };
-  if (u.loops[0]) box[0] = cut(0);
-  if (u.loops[1]) box[1] = cut(1);
+  if (u.loops[0]) ((box[0] = cut(0)), (box[2] = MLEN + 1));
+  if (u.loops[1]) ((box[1] = cut(1)), (box[3] = MWID + 1));
   return { ...u, box };
 }
 
@@ -364,14 +465,26 @@ export function levelsOf(
     const bblB = files.get(group.bbl);
     if (!mapB || !bblB) return [];
     const map = parseMap(mapB);
-    const { cells, hidden } = hideSecrets(map.blocks, parseBlocks(bblB, BACKBL), new Set(secret[group.bbl] ?? []));
+    const blocks = parseBlocks(bblB, BACKBL);
+    const { cells, hidden } = hideSecrets(map.blocks, blocks, new Set(secret[group.bbl] ?? []));
     const marks = levelMarks(game, group.scenes, hidden);
     const first = game.scenes[group.scenes[0]];
     const name = group.scenes.length > 1 ? `${first.desc || 'Untitled'} and ${group.scenes.length - 1} more` : first.desc || 'Untitled';
     const whole = usedArea(cells, marks);
     const key = `${group.map}|${group.bbl}`;
     const seen = views[key];
-    const level: Level = { group, cells, area: seen ? seenArea(whole, seen, marks, 1, cells) : whole, whole, marks, name, scene: group.scenes[0] };
-    return [unrolled[key] ? unrolledLevel(level, unrolled[key]) : level];
+    let area = seen ? seenArea(whole, seen, marks, 1, cells) : whole;
+    // an enclosed level shows every part the hero can get to, though the bots never went there
+    const reach =
+      seen &&
+      walledReach(
+        map.blocks,
+        blocks,
+        marks.filter((m) => m.kind === 'start'),
+      );
+    if (reach) area = joinRects(area, reach, whole);
+    const level: Level = { group, cells, area, whole, marks, name, scene: group.scenes[0] };
+    const starts = marks.filter((m) => m.kind === 'start');
+    return [unrolled[key] ? unrolledLevel(level, unrolled[key], wrapReach(map.blocks, blocks, starts)) : level];
   });
 }
