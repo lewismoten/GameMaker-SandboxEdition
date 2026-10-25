@@ -115,6 +115,12 @@ function walkPlans(H: number, long = false, fireKeys: number[] = [SCAN.space]): 
           }
           plans.push({ held, name: `${name(h1)}${long ? name(h2) : ''}${jn}${fire === SCAN.space ? 'F' : fire ? 'Z' : ''}` });
         }
+  // jets first, then a way to walk: up out of a pit before steering over its rim (steering at
+  // once lands back in it, where a foot over the rim is put back over the pit)
+  if (!long)
+    for (const h of [SCAN.right, SCAN.left])
+      for (const [jn, jet] of Object.entries(JETS))
+        if (jn) plans.push({ held: Array.from({ length: H }, (_, t) => [...(t >= 4 ? [h] : []), ...(jet(t) ? [SCAN.up] : [])]), name: `u${name(h)}${jn}` });
   return plans;
 }
 
