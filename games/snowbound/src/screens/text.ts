@@ -25,7 +25,7 @@ export const INSTRUCTIONS = [
     'plow banks along the road to',
     'pack more snowballs.',
     '',
-    'F2 counts your coffee can.',
+    'ENTER picks up what you find.',
   ]),
   page([
     'HOT COCOA warms you back up.',

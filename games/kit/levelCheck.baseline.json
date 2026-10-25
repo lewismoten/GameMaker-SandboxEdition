@@ -436,8 +436,7 @@
   "warning contrast s6 Monster 3 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning contrast s6 Monster 8 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning opposites s2 Blocks 24 and 26 pull opposite ways and touch in 6 places",
-  "warning start-threat s4 Monster 8 starts 2 blocks from where the hero comes in",
-  "warning teach-first s2 Enter (pick up) isn’t named at the start of the game"
+  "warning start-threat s4 Monster 8 starts 2 blocks from where the hero comes in"
  ],
  "sweats": [
   "warning sounds s2 Sound 5 (cheer.voc) plays on every score pickup: 1.4 s long, -17 dB"

@@ -13,7 +13,7 @@ way you last walked. Scoop the
 plow banks along the road to
 pack more snowballs.
 
-F2 counts your coffee can.
+ENTER picks up what you find.
 HOT COCOA warms you back up.
 Plows, cars, shopping carts,
 snowballs, Biscuit the dog and
