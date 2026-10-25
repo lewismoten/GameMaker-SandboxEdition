@@ -22,6 +22,8 @@ export const GUIDE_CHAPTERS: [id: string, title: string][] = [
   ['levels', 'Levels Players Forgive'],
   ['tricks', 'Tricks From the Sandbox Games'],
   ['check', 'The Level Check and the Walkthrough Bot'],
+  ['players', 'Designing for Every Player'],
+  ['limits', 'Where Game-Maker Runs Out'],
   ['numbers', 'The Numbers to Remember'],
   ['upload', 'Before You Upload'],
 ];
@@ -267,8 +269,8 @@ const prosAd = (): MagPage =>
             [
               [ultimatePiece('The Ultimate Owner’s Guide’s front cover: black and gold, with gold blocks and “For Advanced Designers”', { go: 'go:ultimate' })],
               [chapterLinks(0, 6)],
-              [chapterLinks(6, 11)],
-              [chapterLinks(11, 16)],
+              [chapterLinks(6, 12)],
+              [chapterLinks(12, 18)],
             ],
             0.18,
           ),
