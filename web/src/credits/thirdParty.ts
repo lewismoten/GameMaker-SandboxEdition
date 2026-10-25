@@ -117,6 +117,45 @@ export const PIECE_GROUPS: PieceGroup[] = [
     ],
   },
   {
+    id: 'credits-magazine',
+    title: 'In TURBO BUTTON and the guides',
+    note: 'The magazine and The Ultimate Owner’s Guide are written and drawn for this project. These are what they draw on from others, and the names they make up.',
+    pieces: [
+      {
+        name: 'The Shareware Shelf',
+        license: 'Titles, years and makers only; no files copied',
+        by: 'The Internet Archive’s Game-Maker Archive collection, from archive.org’s public search API',
+        what: 'The community games listed on TURBO BUTTON’s Shareware Shelf (web/src/manual/magazine/data/gameMakerArchive.json, fetched by web/scripts/gameMakerArchive.ts). The page links to none of them, and a few titles are left off a family page. The games belong to their authors.',
+        url: 'https://archive.org/search?query=subject%3A%22Game-Maker+games%22',
+      },
+      {
+        name: 'Tricks from the shareware authors',
+        license: 'Ideas described in this project’s own words; no art, music, sounds or text copied',
+        by: 'Community games in the Game-Maker Archive: Blinky 2 and 3, Ninja Tuck, A-J’s Quest and Builder (A-J Games), Parsec Man 3D (Mark Hadley), Shanna (Angelo Felix), Hurdles (Roland Ludlam), Seal Boarders, RSD’s Penguin Pete and others',
+        what: 'Chapter 17 of The Ultimate Owner’s Guide, the archive counts in its “Where Game-Maker Runs Out”, and TURBO BUTTON’s “Tricks of the Shareware Masters”.',
+        url: 'https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22',
+      },
+      {
+        name: 'Lewis’s DOSBox screenshot',
+        license: 'Lewis’s own capture, on this fork’s terms',
+        by: 'Lewis Moten, testing the games in real DOS',
+        what: 'A Fly Named Carl’s garbled title, in the guide’s “Where Game-Maker Runs Out” (web/public/ultimate/carl-dos.webp) and TURBO BUTTON’s “Bugs Only DOS Could Find” (web/public/magazine/dos-carl.webp).',
+      },
+      {
+        name: 'The first Easter eggs',
+        license: 'Historical facts; names only',
+        by: 'Warren Robinett’s Adventure (Atari 2600, 1980), Atari’s Steve Wright, who gave them the name, and Moonlander (1973)',
+        what: 'TURBO BUTTON’s page on the history of Easter eggs. The names are their owners’.',
+      },
+      {
+        name: 'Made-up brands',
+        license: 'Parody names, made up for the story',
+        by: 'ILLOGITECH, SOUND BOASTER and Overcreative Labs, GRAVITAS, HOLE-Y MOLEY and Punchline Products, PIXELMAX, SQUEAK, AwkWard BIOS, Kiln & Kilobyte, Tin Can Telecom, Shoebox Media Co. and Square Deal Pad Co.',
+        what: 'The desk’s hardware and TURBO BUTTON’s ads. None is a real company or product, no connection with or endorsement by any company is implied, and the prices are part of the story. The desk’s sound card is “Sound Blaster compatible”, as the clone cards said; Sound Blaster is Creative Technology’s trademark.',
+      },
+    ],
+  },
+  {
     id: 'credits-melodies',
     title: 'Melodies from older music',
     note: 'The site’s own music is arranged and synthesized for this project, so there is no recording to credit. These pieces quote older tunes whose compositions are in the public domain in the US; the last is a third-party game’s, still under copyright.',

@@ -357,7 +357,8 @@ formats from their published descriptions and from Game-Maker's own source.
   tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for
   the tools Lewis reviews and brainstorms with (see Credits); none of their code is used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
-  separate GPL program and is not included.
+  separate GPL program and is not included. `npm run dosbox` (`web/scripts/dosbox.ts`) only lays
+  out a folder of this repository's files for a DOSBox the developer installs, and opens it.
 - **Modem sounds** on the desk (`web/src/retro/bbs/modem.ts`, `lineSpeed.ts`): the dial tone,
   touch-tones (the standard DTMF pairs), rings and each line speed's handshake are
   synthesized in code from the published standards: **Bell 103** (300 baud) and **Bell 212A**
@@ -377,7 +378,7 @@ formats from their published descriptions and from Game-Maker's own source.
   their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
   OPL3, AMI BIOS, PKZIP and PKUNZIP, Xmodem, Ymodem and ZMODEM, Renegade BBS, QEMM, the 286 to Pentium, Windows 3.1 and NT, OS/2, the ATI, Trident, Tseng and
   Paradise Super VGA cards (from RSD's own system requirements), the Remington Noiseless
-  typewriter, Autodesk Animator and the CitiCar, an electric car Sebring-Vanguard built in the 1970s (Lewis's own car, THE CHEZ). The TURBO BUTTON magazine's history of Easter eggs names the Atari 2600 and its games Adventure (Warren Robinett, 1980) and Moonlander (1973). Brand names also appear where Lewis's
+  typewriter, Autodesk Animator and the CitiCar, an electric car Sebring-Vanguard built in the 1970s (Lewis's own car, THE CHEZ). The TURBO BUTTON magazine's history of Easter eggs names the Atari 2600 and its games Adventure (Warren Robinett, 1980) and Moonlander (1973), and Atari's Steve Wright, who named Easter eggs. Brand names also appear where Lewis's
   song lyrics and his 100 Word Stories (in _KEEP IT BRIEF!_) are quoted word for word. These
   are trademarks of their respective owners; no endorsement is implied. Every other store,
   arcade, brand, product and publication in the games is made up.
@@ -421,7 +422,7 @@ formats from their published descriptions and from Game-Maker's own source.
   ("Copyright (c) Creative Technology Pte Ltd, 1990"), as every program built with them did.
   "Export for DOS" ships `XFERPLAY.EXE` (renamed after the game) and `SNDBLAST.DRV` with
   a README that gives Game-Maker's MIT License and names these parts.
-- The desk's hardware brands (ILLOGITECH, SOUND BOASTER, GRAVITAS, PIXELMAX, SQUEAK, AwkWard BIOS), the magazine's HOLE-Y MOLEY, and its phone
+- The desk's hardware brands (ILLOGITECH, SOUND BOASTER and Overcreative Labs, GRAVITAS, PIXELMAX, SQUEAK, AwkWard BIOS, Square Deal Pad Co.'s mouse pads), the magazine's other advertisers (HOLE-Y MOLEY and Punchline Products, Kiln & Kilobyte's mugs, Tin Can Telecom's modem, Shoebox Media Co.'s disk box), and its phone
   numbers are made up, as are the magazines and awards on the game boxes and the magazine
   _TURBO BUTTON_, its prices and its coupons. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
