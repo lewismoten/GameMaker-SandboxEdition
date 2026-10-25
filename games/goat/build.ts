@@ -13,6 +13,7 @@ import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { Pixels } from '../kit/pixels';
 import { licenseText } from '../kit/license';
 import { renderRegion } from '../snowbound/src/art/render';
@@ -202,5 +203,7 @@ disk.put(
     RECORDED_VOCS,
   ),
 );
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
 console.log(`${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks`);
