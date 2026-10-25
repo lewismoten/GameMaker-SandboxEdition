@@ -6,8 +6,14 @@ import { GameSim } from './sim';
 
 /** The timed blocks the route waits for: the escapement's bridges and the comb's teeth. */
 export function bridgeIds(): Ids {
-  const { tower, box } = compile().sets;
-  return { tick: tower.id('tick'), tock: tower.id('tock'), toothA: box.id('toothA'), toothB: box.id('toothB') };
+  const { tower, box, snow } = compile().sets;
+  return {
+    tick: tower.id('tick'),
+    tock: tower.id('tock'),
+    toothA: box.id('toothA'),
+    toothB: box.id('toothB'),
+    drifts: [snow.id('driftWalk'), snow.id('driftSide')],
+  };
 }
 
 export async function play(seed = 1) {

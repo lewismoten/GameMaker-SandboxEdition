@@ -1,7 +1,7 @@
 // Every page of words: the storyline, the instructions, the credits, the ending, the lost page,
 // each conversation and chapter card, and README.TXT. 30 columns, 16 lines a page (page() checks).
 import { CREDIT_NOTICE, withCreditPage } from '../../../kit/license';
-import { BREAKERS, DRUMSTICKS, GEARS, LEG2_THANKS, NOTES, VALENTINES } from '../ids';
+import { BREAKERS, DRUMSTICKS, FLOOR_PAGES, GEARS, LEG2_THANKS, LOFT_PAGES, NOTES, ROCKS, VALENTINES, WALKS } from '../ids';
 import { page } from './pages';
 
 export const TITLE = 'HEART OF TIN';
@@ -51,6 +51,13 @@ Falling only takes you down a floor. Nothing in the tower can hurt you.`,
 Gates on the Long Road open for the thank-yous of friends you have helped.
 
 F2 shows Joe's wind and his spare bulbs. F5 saves, F6 loads, ESC stops.`,
+  `KEEPSAKES
+Some keepsakes teach Joe a move, wherever gravity pulls:
+
+SPACE: spring hop (the winding key)
+ENTER: rise (the heart balloon)
+X: HELLO (the drumstick)
+DOWN: pick up, from the side`,
 ]);
 
 export const CREDITS = withCreditPage(
@@ -68,12 +75,17 @@ Doc Leo, PhD (Comedic Science)
 Sir Reginald Cluckington III
 Teddy, a corgi who knows left from right
 Gwinn, as the valentine thief
-The Bard of Bizarre, and his rooster`,
+The Bard of Bizarre, and his rooster
+Teenage Lewie`,
     `ALSO STARRING
 The third goat from the left
 THE CHEZ, a 1976 CitiCar
 Carl, a fly
-The Clown Club, as the parade
+Will, a poet
+Loaf #13, a loaf
+The mustard seed
+Watt, who fixes things
+The Clown Club
 
 With the pigeons of the town square, who were not asked.`,
     `Thank you for looking behind things.
@@ -321,6 +333,286 @@ THE LAMP LENS
 Pick it up (SPACE). It holds a little of the light.`,
 ]);
 
+/** Over the hill: the third leg begins, in snow. */
+export const OVER = page([
+  `Over the hill the road goes white. It snowed all night, and it is still coming down, a flake at a time.
+
+Joe counts the flakes for a while. Then he stops. There are too many, and every one is different.`,
+  `THE WINTER ROAD
+Two friends live along it, one stop after the other. The first lane leads to Lewie's street.`,
+]);
+
+/** Chapter 7's card. */
+export const CARD7 = page([
+  `CHAPTER SEVEN
+SNOW DAY
+
+No school. Two feet of snow. One teenager with a shovel and a whole street to dig out.`,
+]);
+
+/** Teenage Lewie, shoveling: what he needs. */
+export const TALK_LEWIE = page([
+  `"Hey, Joe!" Teenage Lewie leans on his shovel, red hat, red coat, red nose. "Snow day! I'm digging out the whole street."
+
+"Who is paying you?" asks Joe.
+
+"Nobody. They're my neighbors."`,
+  `"I did our walk. There are ${WALKS} more, and both sidewalks are drifted shut. My spare shovel's in the box by the south sidewalk. Grab it?"
+
+Joe counts the drifts. He counts them again. "Yes."`,
+  `LEWIE'S SPARE SHOVEL
+Walk into the box, then pick the shovel up (SPACE).
+
+While Joe carries it, walk into a drift to shovel it away. Without a shovel, a drift won't budge.`,
+  `Clear each neighbor's front walk right up to the doormat, and step on the mat.
+
+Lewie's porch steps come clear when all ${WALKS} mats are swept.
+
+The plow comes along the street now and then. It does not stop. Bumping it winds Joe down a little.`,
+]);
+
+/** Lewie at his hearth: the thank-you. */
+export const TALK_LEWIE2 = page([
+  `Every walk on the street is clear, and every doormat swept. Lewie whoops so loud that snow slides off his roof.
+
+"Come in and get warm, Joe!"`,
+  `Inside, the fire is going. There are mittens drying on the hearth and a cat asleep in front of it.
+
+Joe asks his question: where could a robot find a real heart?`,
+  `"Right here," says Lewie, and nods at the fire. "Every house has one. The hearth. It's where everybody comes to get warm."
+
+Joe holds his tin hands out to it. They warm up nicely.`,
+  `"It is a good heart," says Joe. "It belongs to the house."
+
+"Keep the shovel," says Lewie. "You never know when it'll snow." He gives Joe a gold thank-you heart, too.
+
+Joe counts: seven.`,
+]);
+
+/** Chapter 8's card. */
+export const CARD8 = page([
+  `CHAPTER EIGHT
+OPEN MIC AT THE HIVE
+
+A coffee house behind a little castle front. Open mic night. Somebody left the ceiling fans on high.`,
+]);
+
+/** Will, before his turn. */
+export const TALK_WILL = page([
+  `"Joe! Thank heaven, a friend!" Will clutches his bald head with both hands. His ruff is crooked. His slippers are on the wrong feet.
+
+"I am next! And my sonnet is everywhere!"`,
+  `The fans caught his pages when he stood up. ${FLOOR_PAGES} are still going round and round under them. The rest went whirling up the turret stair.
+
+"The stair door sticks," says Will. "Bring me the first pages and it will open. It knows."`,
+  `UP THE TURRET
+Gravity pulls down in there, but warm air from the ovens rises: walk into it and it carries you up.
+
+The fan's draft blows straight across. Hop up into it and let it carry you.`,
+  `Walk into a page to take it. There are ${LOFT_PAGES} up the turret. The back stair at the top comes down by the stage.`,
+]);
+
+/** Will on stage: the thank-you. */
+export const TALK_WILL2 = page([
+  `Will reads his sonnet. All fourteen lines. Nobody in the Hive drinks a sip until it is over, and then everybody stands up.
+
+Will bows so low his ruff touches the floor.`,
+  `Joe asks his question: where could a robot find a real heart?
+
+Will taps his sleeve. "Here! I wear my heart upon my sleeve, Joe. Everyone can see it. It is very embarrassing."`,
+  `Joe looks at Will's sleeve. There is a little red heart stitched on it, crooked.
+
+"You put your whole heart into that sonnet," says Joe. "I heard it. It is yours, though. You wrote it."`,
+  `Will gives Joe his umbrella ("A poet is always caught out in the weather") and a gold thank-you heart.
+
+Joe counts: eight.
+
+WILL'S UMBRELLA
+Pick it up (SPACE). It keeps the weather off.`,
+]);
+
+/** Chapter 9's card. */
+export const CARD9 = page([
+  `CHAPTER NINE
+THE PAINTED ROCKS
+
+Out of the snow at last. A little rock garden on a hill, the morning after the rain, and a small voice from a stone cubby.`,
+]);
+
+/** Loaf #13, calling from the cubby. */
+export const TALK_LOAF = page([
+  `"Hello? Is somebody there?" The voice comes out of a stone cubby with its door shut tight.
+
+It is Loaf #13, the loaf nobody picked, who rolls wherever he likes. He rolled in here out of the rain.`,
+  `"Somebody painted a rock for everyone who ever needed cheering up," says Loaf. "Each one lives in its own painted circle."
+
+"The rain set them all rolling. And this door only unlatches when every rock is home."`,
+  `THE PAINTED ROCKS
+A painted rock rolls away from Joe, along its channel of sand, until a wall stops it.
+
+Come at it from the far side and it rolls into its circle. Then give it a pat (walk into it).`,
+  `${ROCKS} rocks, ${ROCKS} circles. One channel turns a corner: to send its rock round, stand where it would roll away from you the right way.`,
+]);
+
+/** Loaf, free: the thank-you. */
+export const TALK_LOAF2 = page([
+  `The cubby door swings open, and out rolls Loaf #13, warm and a little steamy, the way a loaf is when it is happy.
+
+"Every rock home!" he says. "And me with them."`,
+  `Joe asks his question: where could a robot find a real heart?
+
+Loaf rolls back into the cubby and comes out with a stone: smooth, gray, heart-shaped, with a little sun painted on it.`,
+  `"This one was painted for me," says Loaf. "A heart that lasts for ever. Stones don't break."
+
+Joe holds it. It is cool and smooth and very, very still.
+
+"It does not do anything," says Joe. "But it was made for you. That is something."`,
+  `Loaf gives him the stone anyway ("I have the sun") and a gold thank-you heart.
+
+Joe counts: nine.
+
+THE HEART STONE
+Pick it up (SPACE). It fits in a tin pocket.`,
+]);
+
+/** Chapter 10's card. */
+export const CARD10 = page([
+  `CHAPTER TEN
+THE FAIR
+
+Dusk at the fair. The carousel is turning, the Clown Club is juggling, and somewhere up above, a rubber chicken is floating away.`,
+]);
+
+/** Doc Leo at the fair's gate. */
+export const TALK_FAIR = page([
+  `"Joe! Three times in one night!" Doc Leo is holding an empty leash.
+
+"I bought Sir Reginald a bunch of balloons. That was a mistake. He is rubber. He weighs nothing."`,
+  `Up above the carousel, Reggie is floating to and fro under his balloons, looking down at everybody, the way a chicken does.
+
+"He's over the canopy," says Doc Leo. "If only somebody could get up there."`,
+  `THE CAROUSEL
+The horses go up and down on their poles: the brass ones rise while the white ones fall.
+
+Stand on a horse's saddle and ride it up. Step across to the next one when it is low.`,
+  `From the last horse, the canopy. Catch Reggie as he floats by.
+
+Then bring the good news to Doc Leo, at the gate. From the side, DOWN picks things up.`,
+]);
+
+/** Doc Leo and Reggie, reunited: the thank-you. */
+export const TALK_FAIR2 = page([
+  `Reggie is back on his leash, and the balloons are tied to a fence post, all but one: a red heart-shaped balloon.
+
+The Clown Club cheers. One of them honks a horn twice, which means "hooray" in Clown.`,
+  `Joe asks his question, for the third time tonight: where could a robot find a real heart?
+
+Doc Leo hands him the heart balloon. "There's a heart, Joe. Light as air. It lifts you right up."`,
+  `Joe holds the string. The balloon tugs upward, hopeful.
+
+"It is a very nice heart," says Joe. "But if I let go, it would float away. A heart ought to stay."
+
+"Then don't let go," says Doc Leo, and gives him a gold thank-you heart. Joe counts: ten.`,
+  `THE HEART BALLOON
+Pick it up (DOWN, from the side). While Joe carries it, wherever gravity pulls, hold ENTER to rise.
+
+It holds only so much air. Run it out and ENTER only gets a "hm?". Little puffs of breeze fill it up again.`,
+]);
+
+/** Chapter 11's card. */
+export const CARD11 = page([
+  `CHAPTER ELEVEN
+THE TALL PLANT
+
+Past the fair, in a garden, a plant that started as the smallest seed in all the land and grew right up into the stars.`,
+]);
+
+/** The mustard seed at the foot of the plant. */
+export const TALK_SEED = page([
+  `"Joe!" calls the mustard seed from the top of the plant, a long way up. He is very small and has very great feet.
+
+"I grew this! All of it! And now a star is caught in my top leaves."`,
+  `"It fell asleep on the way across the sky and got tangled. I can't reach it. Could you?"
+
+Joe looks up. And up. And up.
+
+He counts the leaves. He runs out of counting before he runs out of plant.`,
+  `UP THE PLANT
+Gravity pulls down here. Some leaves hold steady. Some fold up and open again on their own: yellow at the tip means about to fold.`,
+  `Halfway up there is nothing to stand on. Hold ENTER, and the heart balloon carries Joe up. A dandelion puff fills its air again.
+
+Walk into the star to set it free.`,
+]);
+
+/** The seed and the star: the thank-you. */
+export const TALK_SEED2 = page([
+  `The star shakes out its points and sails up into the sky, back to its place, and the whole plant glows.
+
+The top leaf uncurls, and there is the mustard seed, beaming.`,
+  `Joe asks his question: where could a robot find a real heart?
+
+"Up there," says the seed, and points his little arm at the star. "It shines for everybody. That's a heart, I'd say."`,
+  `Joe looks at the star a long while. It is very beautiful, and very far away.
+
+"It is the sky's," says Joe. "I would not take it down. Not even for a heart."`,
+  `"Then go and see Watt," says the seed. "The robot who fixes things. His workshop is in the house at the end of the road."
+
+He gives Joe a gold thank-you heart. Joe counts: eleven.`,
+]);
+
+/** The finale's card. */
+export const CARD12 = page([
+  `THE SMART HOME
+
+The road ends at the Bitmores' house, the smart one. A storm scrambled it, and it is still in a grump: toasters hopping, the vacuum sulking, the thermostat scowling.`,
+  `At the back of the house, by his charging socket, is the workshop of Watt, the little repair robot who can fix anything.
+
+Joe has carried every keepsake all this way.`,
+  `HELLO
+X, with the Bard's drumstick: a friendly BOOM thrown the way Joe last moved. It cheers a grumpy gadget right up.
+
+Bumping a grumpy one winds Joe down a little.`,
+  `The thermostat is the Big Grumble. Each HELLO that reaches it calms it a little, but it lets off steam first, longer every time. Wait, then HELLO again.
+
+Tall boards: the winding key's spring hop (SPACE), or the heart balloon (ENTER).`,
+]);
+
+/** Watt, and the gold. */
+export const TALK_WATT = page([
+  `Watt rolls out of his workshop on his little treads and looks up at Joe. "Beep?"
+
+Joe asks him what he came all this way to ask: could he put in a real heart?`,
+  `Watt thinks about it. Then he reaches up and opens the little hatch on Joe's chest, and looks in for a long time.
+
+The light coming out of the hatch is gold.`,
+  `"Beep," says Watt. "I fix things, Joe. There's nothing in here to fix."
+
+Joe looks down. The brass tally counter is glowing gold. It has been counting all along: every kindness he gave, and every one he was given.`,
+  `The whole house turns gold. And there is a honk outside.
+
+THE CHEZ pulls up, Doc Leo at the wheel and Teddy in the front passenger seat, Gwinn running alongside, and everybody else piling in behind.`,
+  `Everybody Joe helped came to see.
+
+Joe looks at them all, and at the gold counter, and says it out loud:
+
+"...Huh. It was in there the whole time."`,
+]);
+
+/** Opening time at the library. */
+export const EPILOGUE = page([
+  `Opening time at the Tiny Pockets Library. The note is gone from the desk, and Joe is back behind it, reading glasses on, bow tie straight.
+
+He reads the tally out loud, to nobody in particular.`,
+  `"Steps: 12,816. Valentines returned: ${VALENTINES}. Walks shoveled: ${WALKS}. Pages caught: ${FLOOR_PAGES + LOFT_PAGES}. Rocks rolled home: ${ROCKS}.
+
+Hearts: 1. Gold."`,
+  `"I stopped counting after that," says Joe.
+
+"Some things you don't count. You just have them."
+
+Click.`,
+]);
+
 /** Chapter 1's card, on the way into the square. */
 export const CARD1 = page([
   `CHAPTER ONE
@@ -339,10 +631,12 @@ Down in the square, everybody cheers.`,
 ]);
 
 export const WON = page([
-  `The field gate swings open, and the Long Road goes on over the hill, to friends Joe has not seen in a long time.
+  `THE END
 
-He counts the steps. He has a promise to keep at every one.`,
-  `To be continued...
+Every world he passed through, somebody was kind to Joe, and he left a little tin heart to say thank you.
+
+Then he went back, and was kind right back.`,
+  `Thank you for finding every one, and for walking the Long Road with him.
 
 ${CREDIT_NOTICE.join(' ')}`,
 ]);

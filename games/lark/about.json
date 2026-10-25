@@ -9,7 +9,25 @@
   "blurb": "Every world Mystery Robot Joe passed through looking for a real heart, somebody was kind to him, and he left a little tin heart behind to say thank you. You found every one. Now walk the Long Road with him, back to every friend he promised to see again, all the way to Watt, the robot who can fix anything.",
   "exe": "LARK.EXE",
   "sound": "sb",
-  "sameEverySide": ["tower.mon#0", "tower.mon#1", "park.mon#0", "cove.mon#0"],
+  "sameEverySide": [
+    "tower.mon#0",
+    "tower.mon#1",
+    "park.mon#0",
+    "cove.mon#0",
+    "hive.mon#0",
+    "hive.mon#1",
+    "hive.mon#2",
+    "fair.mon#2",
+    "home.mon#0",
+    "home.mon#1",
+    "home.mon#2",
+    "home.mon#3"
+  ],
+  "acceptedFindings": [
+    "every-tick s60 Block 62 gives 8 on counter 16 on every tick the hero touches it",
+    "every-tick s63 Block 9 gives 8 on counter 16 on every tick the hero touches it",
+    "facing s56 The hero climbs facing the player"
+  ],
   "label": {
     "background": "#1c1838",
     "band": "#e8b23a",
@@ -17,7 +35,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "hours": 6,
+    "hours": 12,
     "background": "#1c1838",
     "accent": "#e8b23a",
     "ink": "#fff4dc",

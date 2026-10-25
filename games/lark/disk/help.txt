@@ -54,3 +54,21 @@ you have helped.
 F2 shows Joe's wind and his
 spare bulbs. F5 saves, F6
 loads, ESC stops.
+
+
+
+
+
+
+
+
+KEEPSAKES
+Some keepsakes teach Joe a
+move, wherever gravity pulls:
+
+SPACE: spring hop (the winding
+key)
+ENTER: rise (the heart
+balloon)
+X: HELLO (the drumstick)
+DOWN: pick up, from the side

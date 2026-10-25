@@ -7,6 +7,7 @@ import { Pixels } from '../../../kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 import type { BlockSet } from './sets';
+import { SHOVEL } from '../ids';
 
 /** The first keepsake's block number; the ten Joe can carry follow it. */
 export const KEEPSAKE_BASE = 140;
@@ -24,6 +25,14 @@ export const KEEPSAKE = {
   fuse: KEEPSAKE_BASE + 4,
   /** Carl's thank-you from the lighthouse: a spare lens from the lamp, a little round prism. */
   lens: KEEPSAKE_BASE + 5,
+  /** Lewie's spare snow shovel, lent on a snow day and never asked back. SCOOP. */
+  shovel: KEEPSAKE_BASE + 6,
+  /** Will's umbrella, for a poet caught out in the weather of the world. */
+  umbrella: KEEPSAKE_BASE + 7,
+  /** Loaf #13's heart-shaped stone, painted with a little sun. */
+  heartStone: KEEPSAKE_BASE + 8,
+  /** The heart balloon Reggie floated off on. BALLOON. */
+  balloon: KEEPSAKE_BASE + 9,
 } as const;
 
 /** The winding key, lying on whatever is under it: a brass bow, a shank and a square bit. */
@@ -98,6 +107,64 @@ export function lensPic(ground: Pixels): Pixels {
   return p;
 }
 
+/** Lewie's spare snow shovel: a red blade, a wooden handle with a D grip. */
+export function shovelPic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  const O = c('ink', 0);
+  for (let x = 4; x < 18; x++) p.set(x, 17, c('ink', 1));
+  p.line(5, 4, 12, 11, c('wood', 4)).line(6, 4, 13, 11, c('wood', 3));
+  p.ring(4, 3, 2, c('ink', 1));
+  p.rect(11, 10, 7, 6, c('red', 2)).frame(11, 10, 7, 6, O).rect(12, 11, 5, 1, c('red', 4));
+  return p;
+}
+
+/** Will's umbrella, furled, a curved handle, a strap round it. */
+export function umbrellaPic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  const O = c('ink', 0);
+  for (let x = 4; x < 17; x++) p.set(x, 17, c('ink', 1));
+  for (let k = 0; k < 9; k++) p.rect(7 + Math.floor(k / 3), 3 + k, 4 - Math.floor(k / 3), 1, c('purple', 2));
+  p.line(10, 3, 10, 11, c('purple', 3));
+  p.rect(9, 7, 3, 1, c('brass', 3));
+  p.rect(10, 12, 1, 4, c('stone', 3));
+  p.set(9, 16, O).set(8, 15, O).set(8, 14, c('wood', 2));
+  p.set(10, 2, c('stone', 4));
+  return p;
+}
+
+/** Loaf #13's stone: smooth, heart-shaped, a little painted sun on it. */
+export function stonePic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  for (let x = 4; x < 17; x++) p.set(x, 17, c('ink', 1));
+  heart(p, 10, 10, 7, c('stone', 1));
+  heart(p, 10, 10, 6, c('stone', 3));
+  p.disc(10, 9, 2, c('yellow', 3));
+  for (const [dx, dy] of [
+    [0, -4],
+    [0, 4],
+    [-4, 0],
+    [4, 0],
+  ])
+    p.set(10 + dx, 9 + dy, c('yellow', 2));
+  p.set(7, 6, c('stone', 5));
+  return p;
+}
+
+/** A red heart balloon on a long curly string. */
+export function balloonPic(ground: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(ground.px);
+  heart(p, 10, 6, 6, c('red', 1));
+  heart(p, 10, 6, 5, c('red', 3));
+  p.set(7, 3, c('paper', 4)).set(8, 3, c('paper', 4)).set(7, 4, c('paper', 4));
+  p.set(10, 12, c('red', 1));
+  for (let y = 13; y < 19; y++) p.set(10 + (y % 2 ? 1 : 0), y, c('ink', 1));
+  return p;
+}
+
 /** A filled heart of radius about `r` centered at (cx, cy). */
 export function heart(p: Pixels, cx: number, cy: number, r: number, col: number): void {
   for (let y = -r; y <= r; y++)
@@ -113,7 +180,9 @@ export function addKeepsakes(set: BlockSet, ground: Pixels, groundName: string, 
   while (set.names.length < KEEPSAKE_BASE) set.add(`unused${set.names.length}`, new Pixels(20, 20, set.transparent ? CLEAR : 0));
   const put = (name: keyof typeof KEEPSAKE, pic: (g: Pixels) => Pixels) => {
     const under = on[name] ?? groundName;
-    set.add(name, pic(on[name] ? set.pic(under) : ground), { obj: true, score: 25, touch: under });
+    // the shovel, picked up, loads its counter: so many drifts shoveled
+    const load = name === 'shovel' ? { effect: SHOVEL.counter, eamt: SHOVEL.load } : {};
+    set.add(name, pic(on[name] ? set.pic(under) : ground), { obj: true, score: 25, touch: under, ...load });
   };
   put('windKey', windKeyPic);
   put('valentine', valentinePic);
@@ -121,5 +190,9 @@ export function addKeepsakes(set: BlockSet, ground: Pixels, groundName: string, 
   put('dancer', dancerPic);
   put('fuse', fusePic);
   put('lens', lensPic);
+  put('shovel', shovelPic);
+  put('umbrella', umbrellaPic);
+  put('heartStone', stonePic);
+  put('balloon', balloonPic);
   for (const [name, n] of Object.entries(KEEPSAKE)) if (set.id(name) !== n) throw new Error(`The ${name} is not at its number`);
 }

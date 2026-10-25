@@ -12,12 +12,12 @@
 // Wind (hit points) is how wound up he is, and lives are spare bulbs. Nothing in chapter one
 // winds him down. Counters start as ids.ts says; the money counter is left unlimited, which keeps
 // F2's status page from showing a Money line at all.
-import { CHARBL } from '../../../web/src/formats/blocks';
+import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
 import { BlockSet } from './blocks/sets';
 import { KEEPSAKE } from './blocks/keepsakes';
-import { COUNTER_START, KEY, SND } from './ids';
-import { joe } from './sprites/joe';
+import { COUNTER_START, KEY, SND, TOOL_MON } from './ids';
+import { joe, joeWith } from './sprites/joe';
 
 const MIRROR = 0x40;
 const JOY = { up: 1, upRight: 2, right: 3, down: 5, left: 7, upLeft: 8 };
@@ -65,7 +65,21 @@ export const SIDE = {
   hopLeft7: 13,
   hopRight9: 14,
   spring: 15,
+  /** ENTER with the heart balloon: BALLOON, rising while held, on the balloon's air. */
+  balloon: 16,
+  /** ENTER with nothing to use (or the balloon out of air): "hm?". */
+  nope: 17,
+  /** X with the Bard's drumstick: HELLO, a drum-boom thrown the way Joe last moved. */
+  hello: 18,
 } as const;
+
+/** The heart balloon's air is its sequence's counter (a dandelion puff's effect fills it). */
+export const AIR_SEQ = 16;
+/** The balloon's air (its sequence counter): what Joe starts with, and what each puff adds. */
+export const AIR = 8;
+export const PUFF = 8;
+/** The balloon's lift: added to his upward momentum every other tick (gravity takes 1 a tick). */
+export const LIFT = 3;
 
 export function heroBlocks(): BlockSet {
   const cb = new BlockSet(50, true);
@@ -80,6 +94,9 @@ export function heroBlocks(): BlockSet {
   cb.add('glad', joe('down', 0, 'glad'));
   cb.add('hop', joe('side', 0, 'hop'));
   cb.add('hopFront', joe('down', 0, 'hop'));
+  cb.add('hm', joe('down', 0, 'blink'));
+  cb.add('balloon', joeWith('balloon'));
+  cb.add('hello', joeWith('drumstick'));
   return cb;
 }
 
@@ -99,7 +116,9 @@ function seqs(cb: BlockSet) {
     for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
     Object.assign(s, { sound: SND.none, jstkBut: 4, jstkMov: 0, ...o });
   };
-  return { f, set };
+  /** A frame that fires monster `mon` (a shot) from Joe's own cell. */
+  const shot = (mon: number): Frame => ({ ...emptyFrame(), y: 20, pic1: mon, pic2: MONBL, pause: 0 });
+  return { f, set, shot };
 }
 
 function meters(ch: Character): Character {
@@ -107,6 +126,7 @@ function meters(ch: Character): Character {
   ch.meter[0] = 10; // wind
   ch.meter[1] = 3; // spare bulbs
   for (const [n, v] of Object.entries(COUNTER_START)) ch.meter[Number(n)] = v;
+  ch.meter[SIDE.balloon] = AIR;
   ch.cseq = 0;
   ch.cframe = 0;
   return ch;
@@ -141,11 +161,12 @@ export function buildHero(cb: BlockSet): Character {
 export function buildSide(cb: BlockSet): Character {
   const ch = newCharacter();
   const S = ch.sequences;
-  const { f, set } = seqs(cb);
+  const { f, set, shot } = seqs(cb);
   set(S[SEQ.idle], [f('down0', 40), f('blink', 3), f('down0', 50), f('blink', 3), f('glad', 20)]);
   set(S[SEQ.die], [f('blink', 4), f('shh', 10), f('blink', 10)], { jstkBut: 0 });
   set(S[SEQ.hurt], [f('blink', 1)], { jstkBut: 0 });
-  set(S[SEQ.pickup], [f('down0', 1)], { key: 0 });
+  // DOWN picks up what Joe stands by (Space is for hopping, from the side)
+  set(S[SEQ.pickup], [f('hopFront', 3), f('glad', 6), f('down0', 1)], { key: KEY.down, sound: SND.chirp, ground: 1, norepeat: 1 });
   set(S[SEQ.drop], [f('down0', 1)], { key: 0 });
   const walk = (dx: number, mirror: boolean) => ['side1', 'side0', 'side1', 'side0'].map((pic) => f(pic, 1, { x: dx, mirror }));
   set(S[SIDE.right], walk(STEP, true), { key: KEY.right, jstkMov: JOY.right });
@@ -168,5 +189,9 @@ export function buildSide(cb: BlockSet): Character {
     norepeat: 1,
     bloc: KEEPSAKE.windKey,
   });
+  // the heart balloon: each frame adds lift to his momentum, and uses a breath of its air
+  set(S[SIDE.balloon], [f('balloon', 2, { y: -LIFT })], { key: KEY.enter, momentum: 1, bloc: KEEPSAKE.balloon });
+  set(S[SIDE.nope], [f('hm', 6)], { key: KEY.enter, sound: SND.nope, ground: 1, norepeat: 1 });
+  set(S[SIDE.hello], [shot(TOOL_MON.hello), f('hello', 6)], { key: KEY.x, sound: SND.boom, ground: 1, norepeat: 1, bloc: KEEPSAKE.drumstick });
   return meters(ch);
 }

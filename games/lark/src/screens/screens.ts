@@ -14,7 +14,9 @@ import { bard, goat, gwinnSit, teddy } from '../sprites/friends';
 import { carlPicture } from '../sprites/critters';
 import { joe } from '../sprites/joe';
 import { clown, leo, reggie } from '../sprites/people';
-import { dancerPic, drumstickPic, fusePic, lensPic, valentinePic, windKeyPic } from '../blocks/keepsakes';
+import { dancerPic, drumstickPic, fusePic, lensPic, balloonPic, shovelPic, stonePic, umbrellaPic, valentinePic, windKeyPic } from '../blocks/keepsakes';
+import { lewieCameo, wattCameo, willCameo } from '../../../kit/cameos';
+import { loaf, seed } from '../sprites/guests';
 import {
   BELL,
   CARD1,
@@ -23,6 +25,25 @@ import {
   CARD4,
   CARD5,
   CARD6,
+  CARD7,
+  CARD8,
+  CARD9,
+  CARD10,
+  CARD11,
+  CARD12,
+  TALK_WATT,
+  EPILOGUE,
+  TALK_SEED,
+  TALK_SEED2,
+  TALK_FAIR,
+  TALK_FAIR2,
+  TALK_LOAF,
+  TALK_LOAF2,
+  TALK_WILL,
+  TALK_WILL2,
+  OVER,
+  TALK_LEWIE,
+  TALK_LEWIE2,
   CREDITS,
   HELP,
   LOST,
@@ -227,6 +248,28 @@ export function buildScreens(): Record<string, Uint8Array> {
   pages('talklot2', 'THE CHEZ, CHARGING', TALK_LOT2, [leo(true, true), joe('down', 0, 'glad'), fusePic(clearPic())]);
   pages('card6', 'CHAPTER SIX', CARD6, [joe('down', 0), carlPicture(0)]);
   pages('talkcarl', 'CARL', TALK_CARL, [carlPicture(1), joe('down', 0, 'glad'), lensPic(clearPic())]);
+  pages('over', 'OVER THE HILL', OVER, [joe('down', 0)]);
+  const lewie = lewieCameo(PAL.pal, 'down0');
+  pages('card7', 'CHAPTER SEVEN', CARD7, [joe('down', 0), lewie]);
+  pages('talklew', 'TEENAGE LEWIE', TALK_LEWIE, [lewie, shovelPic(clearPic())]);
+  pages('talklew2', 'THE HEARTH', TALK_LEWIE2, [lewie, joe('down', 0, 'glad')]);
+  const will = (mood: 'worry' | 'swoon', arms: 'clutch' | 'heart') => willCameo(PAL.pal, { face: 'front', mood, arms });
+  pages('card8', 'CHAPTER EIGHT', CARD8, [joe('down', 0), will('worry', 'clutch')]);
+  pages('talkwill', 'WILL', TALK_WILL, [will('worry', 'clutch'), joe('side', 0, 'hop')]);
+  pages('talkwil2', "WILL'S TURN", TALK_WILL2, [will('swoon', 'heart'), joe('down', 0, 'glad'), umbrellaPic(clearPic())]);
+  pages('card9', 'CHAPTER NINE', CARD9, [joe('down', 0), loaf('sad')]);
+  pages('talkloaf', 'LOAF #13', TALK_LOAF, [loaf('sad')]);
+  pages('talklof2', 'LOAF #13, FREE', TALK_LOAF2, [loaf('joy'), joe('down', 0, 'glad'), stonePic(clearPic())]);
+  pages('card10', 'CHAPTER TEN', CARD10, [joe('down', 0), leo(), clown('blue', 'red', 1)]);
+  pages('talkfair', 'DOC LEO', TALK_FAIR, [leo(true, false)]);
+  pages('talkfai2', 'REGGIE IS SAFE', TALK_FAIR2, [leo(true, true), reggie(1), joe('down', 0, 'glad'), balloonPic(clearPic())]);
+  pages('card11', 'CHAPTER ELEVEN', CARD11, [joe('down', 0), seed('smile', 'sprout')]);
+  pages('talkseed', 'THE MUSTARD SEED', TALK_SEED, [seed('smile', 'sprout')]);
+  pages('talksed2', 'THE STAR', TALK_SEED2, [seed('joy', 'sprout'), joe('down', 0, 'glad')]);
+  const watt = wattCameo(PAL.pal, 'down', 0);
+  pages('card12', 'THE SMART HOME', CARD12, [joe('down', 0), watt]);
+  pages('talkwatt', 'WATT', TALK_WATT, [watt, joe('down', 0, 'glad'), leo(true, true), teddy(true), gwinnSit()]);
+  pages('epilogue', 'OPENING TIME', EPILOGUE, [joe('down', 0, 'glad')]);
   pages('bell', "SEVEN O'CLOCK", BELL, [clown('blue', 'red', 1), clown('green', 'yellow', 1), leo(true, true)]);
   pages('won', 'THE LONG ROAD', WON, [joe('down', 0, 'glad')]);
   pages('lost', 'A LITTLE REST', LOST, [joe('down', 0, 'blink')]);

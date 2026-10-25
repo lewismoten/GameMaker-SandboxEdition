@@ -9,6 +9,7 @@ import type { Bestiary, BlockSet } from './blocks/sets';
 import { giftCell, type Gift } from './levels/pass';
 import type { Stamped } from './levels/stamp';
 import { TITLE } from './screens/text';
+import { withTools } from './sprites/critters';
 
 export type Cell = { x: number; y: number };
 
@@ -42,6 +43,7 @@ export class Scenes {
   add(p: Place): Place {
     if (this.places.some((q) => q.scene === p.scene)) throw new Error(`scene ${p.scene} twice`);
     if (!this.sets[p.set]) throw new Error(`${p.desc}: no block set ${p.set}`);
+    if (p.mons) withTools(p.mons);
     this.places.push(p);
     return p;
   }

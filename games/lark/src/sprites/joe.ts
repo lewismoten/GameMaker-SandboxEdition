@@ -89,3 +89,21 @@ export function joe(dir: Dir, step: number, look: Look = 'open'): Pixels {
   });
   return p;
 }
+
+/** Joe from the front with one of his keepsakes in use: the heart balloon held up, the Bard's drumstick raised. */
+export function joeWith(tool: 'balloon' | 'drumstick'): Pixels {
+  const p = joe('down', 0, 'glad');
+  if (tool === 'balloon') {
+    // his right arm up, the string to a heart balloon above
+    p.rect(16, 4, 2, 7, c('tin', 2)).rect(16, 3, 2, 1, c('brass', 2));
+    p.line(17, 2, 18, 0, c('ink', 1));
+    p.disc(16, 0, 1.5, c('red', 3)).disc(19, 0, 1.5, c('red', 3));
+  } else {
+    // the drumstick up in his right hand, its ribbon flying
+    p.rect(16, 6, 2, 5, c('tin', 2));
+    p.line(17, 6, 19, 0, c('wood', 4));
+    p.disc(19, 0, 1.2, c('paper', 4));
+    p.set(15, 4, c('red', 3)).set(14, 5, c('red', 2));
+  }
+  return p;
+}

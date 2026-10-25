@@ -57,3 +57,9 @@ export function mark(s: Stamped, ch: string): { x: number; y: number } {
   if (!m || m.length !== 1) throw new Error(`mark "${ch}" appears ${m?.length ?? 0} times`);
   return m[0];
 }
+
+/** Puts block `name` at drawing cell (x, y) of a stamped map (for parts wider than a character). */
+export function paint(s: Stamped, set: BlockSet, x: number, y: number, name: string): void {
+  const { x: mx, y: my } = at(x, y);
+  s.map.blocks[my * MLEN + mx] = set.id(name);
+}

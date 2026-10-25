@@ -34,6 +34,15 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     speaker((i) => (i < 3 ? 120 : 0)),
   );
   put(SND.chirp, SPEAKER.arpeggio([988, 1319]), 'chirp');
+  // the drum's boom, thrown: a soft whump
+  put(
+    SND.boom,
+    speaker((i) => (i < 4 ? 160 - i * 25 : 0)),
+  );
+  // "hm?": a little question, down then up
+  put(SND.nope, SPEAKER.arpeggio([660, 523, 784]));
+  // a puff of air into the balloon
+  put(SND.puff, SPEAKER.rise(300, 900));
 
   const click = osc.noise(3);
   const vocs: Record<string, Uint8Array> = {

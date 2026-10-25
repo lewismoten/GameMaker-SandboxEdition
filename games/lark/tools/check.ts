@@ -3,7 +3,7 @@
 // keepsake, with every friend's thank-you counted.
 //   cd web && npx vite-node ../games/lark/tools/check.ts
 import { KEEPSAKE } from '../src/blocks/keepsakes';
-import { CTR, LEG2_THANKS, SCENE } from '../src/ids';
+import { ALL_THANKS, CTR, SCENE } from '../src/ids';
 import { play } from './play';
 
 try {
@@ -13,7 +13,7 @@ try {
   for (const [name, block] of Object.entries(KEEPSAKE)) if (!sim.ci.inv.includes(block)) throw new Error(`Joe is not carrying the ${name}`);
   for (const s of Object.values(SCENE)) if (s > SCENE.end && !sim.trail.includes(s)) throw new Error(`the bot never went through scene ${s}`);
   // the roads' gates took the thank-yous and gave them back
-  if (sim.meter(CTR.thanks) - 1 !== LEG2_THANKS) throw new Error(`thank-yous: ${sim.meter(CTR.thanks) - 1}, not ${LEG2_THANKS}`);
+  if (sim.meter(CTR.thanks) - 1 !== ALL_THANKS) throw new Error(`thank-yous: ${sim.meter(CTR.thanks) - 1}, not ${ALL_THANKS}`);
   console.log(`WON  ${sim.trail.length} scenes, score ${sim.ci.score}, ${sim.deaths} lives lost`);
 } catch (e) {
   console.error(`FAIL ${(e as Error).message}`, process.env.BOT_STACK ? (e as Error).stack : '');

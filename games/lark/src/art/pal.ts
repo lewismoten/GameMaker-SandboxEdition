@@ -32,6 +32,13 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
 const GLOWS = new Set(['yellow', 'gold', 'window']);
 
 /** The colors PLAYGAME asks for by RGB (text pages in purple, the menu in blue, scores in red and yellow). */
+/** Ramps added after the system colors (so every earlier index stays put): snow and ice, the sky. */
+const MORE: [string, number, RGB, RGB, RGB?][] = [
+  ['snow', 5, [120, 136, 172], [250, 252, 255]],
+  ['sky', 5, [20, 40, 96], [150, 196, 246]],
+  ['leaf', 5, [14, 52, 20], [150, 222, 92]],
+];
+
 const SYSTEM: [string, RGB][] = [
   ['sysPurple', [176, 0, 176]],
   ['sysBlue', [40, 40, 252]],
@@ -40,7 +47,7 @@ const SYSTEM: [string, RGB][] = [
   ['sysBlack', [0, 0, 0]],
 ];
 
-export type Light = 'day' | 'evening' | 'night' | 'dark' | 'lamp' | 'clock' | 'black';
+export type Light = 'day' | 'evening' | 'night' | 'dark' | 'lamp' | 'clock' | 'black' | 'snow' | 'gold';
 
 const LIGHTS: Record<Light, RGB> = {
   day: [1, 1, 1],
@@ -51,6 +58,10 @@ const LIGHTS: Record<Light, RGB> = {
   /** The cove with the lighthouse out: next to nothing shows but what glows. */
   dark: [0.14, 0.15, 0.24],
   black: [0, 0, 0],
+  /** A snow day: bright, a little blue. */
+  snow: [0.96, 0.98, 1.04],
+  /** Watt's workshop when the tally counter goes gold: everything warm. */
+  gold: [1.12, 0.92, 0.52],
 };
 
 export interface Pal {
@@ -62,11 +73,12 @@ export interface Pal {
 export function buildPalette(light: Light = 'day'): Pal {
   const pb = new PaletteBuilder();
   const tint = LIGHTS[light];
+  const lit = (name: string, v: RGB): RGB => (GLOWS.has(name) && light !== 'black' ? v : (v.map((x, i) => Math.min(255, Math.round(x * tint[i]))) as RGB));
   for (const [name, n, from, to, mid] of RAMPS) {
-    const lit = (v: RGB): RGB => (GLOWS.has(name) && light !== 'black' ? v : (v.map((x, i) => Math.round(x * tint[i])) as RGB));
-    pb.ramp(name, n, lit(from), lit(to), mid && lit(mid));
+    pb.ramp(name, n, lit(name, from), lit(name, to), mid && lit(name, mid));
   }
   for (const [name, rgb] of SYSTEM) pb.ramp(name, 1, rgb, rgb);
+  for (const [name, n, from, to, mid] of MORE) pb.ramp(name, n, lit(name, from), lit(name, to), mid && lit(name, mid));
   return {
     pal: pb.pal,
     c: (name, k) => {

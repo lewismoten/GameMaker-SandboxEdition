@@ -40,7 +40,7 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
   }
 
   /** One tap of an arrow: one block from above. */
-  async tap(d: Dir | 'space'): Promise<Result> {
+  async tap(d: Dir | 'space' | 'enter' | 'x'): Promise<Result> {
     this.sim.press(SCAN[d]);
     const r = await this.tick();
     this.sim.release(SCAN[d]);

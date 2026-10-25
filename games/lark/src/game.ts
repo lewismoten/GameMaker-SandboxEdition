@@ -22,7 +22,20 @@ import { prologue } from './chapters/prologue';
 import { streetChapter } from './chapters/street';
 import { SCENE } from './ids';
 import { passMap } from './levels/pass';
-import { roadMap } from './levels/road';
+import { roadMap, winterRoadMap } from './levels/road';
+import { snowSet } from './blocks/snow';
+import { snowChapter } from './chapters/snow';
+import { hiveChapter } from './chapters/hive';
+import { hiveSet } from './blocks/hive';
+import { turretSet } from './blocks/turret';
+import { gardenSet } from './blocks/garden';
+import { gardenChapter } from './chapters/garden';
+import { fairSet } from './blocks/fair';
+import { fairChapter } from './chapters/fair';
+import { plantSet } from './blocks/plant';
+import { plantChapter } from './chapters/plant';
+import { homeSet } from './blocks/home';
+import { homeChapter } from './chapters/home';
 import { mark, type Stamped } from './levels/stamp';
 import { Scenes, type Place } from './scenes';
 import { critterBlocks } from './sprites/critters';
@@ -41,7 +54,20 @@ export interface Compiled {
 }
 
 export function compile(): Compiled {
-  const sets = { town: townSet(), tower: towerSet(), park: parkSet(), night: nightSet(), box: boxSet() };
+  const sets = {
+    town: townSet(),
+    tower: towerSet(),
+    park: parkSet(),
+    night: nightSet(),
+    box: boxSet(),
+    snow: snowSet(),
+    hive: hiveSet(),
+    turret: turretSet(),
+    garden: gardenSet(),
+    fair: fairSet(),
+    plant: plantSet(),
+    home: homeSet(),
+  };
   const mb = critterBlocks();
   const cb = heroBlocks();
   const pass = passMap(sets.town);
@@ -60,9 +86,18 @@ export function compile(): Compiled {
   musicBoxChapter(s, road2);
   lotChapter(s);
   lighthouseChapter(s);
-  // from the lit cove, on over the hill (for now, the end)
-  s.passPlace(SCENE.over, 'Over the Hill', 'road', '');
-  s.door(SCENE.over, s.passCell(), SCENE.end, { x: 0, y: 0 });
+  // from the lit cove, on over the hill to the road's third leg, in the snow
+  s.passPlace(SCENE.over, 'Over the Hill', 'snow', 'over.lst');
+  const road3 = winterRoadMap(sets.snow);
+  s.add({ scene: SCENE.road3, desc: 'The Winter Road', file: 'road3', light: 'snow', set: 'snow', hero: 'hero', song: 'road', stamped: road3 });
+  s.passOn(SCENE.over, SCENE.road3, mark(road3, '@'));
+  snowChapter(s, road3);
+  hiveChapter(s);
+  // out of the snow, and on along the last leg, one stop into the next
+  gardenChapter(s, SCENE.card10);
+  fairChapter(s, SCENE.card11);
+  plantChapter(s, SCENE.card12);
+  homeChapter(s);
 
   const game = s.game({ scene: SCENE.library, at: mark(library, '@') });
   return { game, places: s.places, sets, mb, hero: buildHero(cb), side: buildSide(cb), cb, pass };
