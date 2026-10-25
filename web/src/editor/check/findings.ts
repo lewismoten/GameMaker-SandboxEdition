@@ -63,6 +63,11 @@ const P = (section: string): GuideRef => ({ chapter: 'players', section });
 export const CHECKS = {
   stuck: { name: 'Stuck spots', why: 'A player who can’t go on or go back has to start over, and few will.', guide: L('Never trap the player') },
   unreachable: { name: 'Out of reach', why: 'A prize nobody can get to reads as a mistake, not a secret.', guide: L('Everything on the map has a job') },
+  'prize-in-view': {
+    name: 'Prizes in view but out of reach',
+    why: 'A prize the screen shows that no way leads to reads as a cruel joke: players spend lives trying for it.',
+    guide: L('Everything on the map has a job'),
+  },
   'link-unreached': { name: 'Exits never reached', why: 'A link the hero can’t touch is a door to nowhere.', guide: L('Never trap the player') },
   'blind-drop': {
     name: 'Blind drops',
@@ -99,6 +104,12 @@ export const CHECKS = {
   telegraph: {
     name: 'Hazards that look safe',
     why: 'A hazard drawn in the colors of safe ground is hard to spot the first time. A trick floor can be fun if the game plays fair with it.',
+    taste: true,
+    guide: L('Hazards that hit where they are drawn'),
+  },
+  footing: {
+    name: 'Floors and walls that look alike',
+    why: 'Players stand on what looks like floor and walk round what looks like wall. A block you fall through that looks solid feels like a trick; a fair secret door is fine when the game hints at it.',
     taste: true,
     guide: L('Hazards that hit where they are drawn'),
   },
@@ -208,6 +219,16 @@ export const CHECKS = {
     guide: L('Controls the level teaches'),
     taste: true,
   },
+  'help-keys': {
+    name: 'Help that names the wrong keys',
+    why: 'Players press the keys the help names. A key nothing uses reads as a broken game, and the real key may never be found.',
+    guide: { chapter: 'show', section: 'Text screens and slide shows' },
+  },
+  'text-contrast': {
+    name: 'Text that’s hard to read',
+    why: 'PLAYGAME draws text in the picture’s nearest deep purple. Over a dark or busy patch, players can’t read the goal or the keys, and skip the screen.',
+    guide: { chapter: 'show', section: 'Text screens and slide shows' },
+  },
   reach: {
     name: 'Keys out of reach',
     why: 'A key the hand has to leave its place for is often pressed late. Fine for a rare key; is this one needed in the thick of play?',
@@ -243,6 +264,16 @@ export const CHECKS = {
     why: 'A death starts the scene over, so a long scene costs a lot each time. Long can be right for a finale; is this one meant?',
     taste: true,
     guide: C('A difficulty curve, not a cliff'),
+  },
+  'start-values': {
+    name: 'Starting values PLAYGAME ignores',
+    why: 'PLAYGAME takes hit points, lives, counters and the inventory from the first scene’s character only. A hero chosen later who “starts with more” doesn’t, and players notice the promise broken.',
+    guide: { chapter: 'logic', section: 'Counters, Gates and Puzzles' },
+  },
+  'blank-idle': {
+    name: 'A hero with no standing picture',
+    why: 'With no Idle frames PLAYGAME shows character block 0 whenever the hero stands still, so he flickers into the wrong picture or vanishes.',
+    guide: { chapter: 'actors', section: 'The hero’s own tricks' },
   },
   ending: { name: 'Ending and screens', why: 'A game with no won screen, credits or instructions feels unfinished.', guide: L('An ending, not an ad') },
   variety: {

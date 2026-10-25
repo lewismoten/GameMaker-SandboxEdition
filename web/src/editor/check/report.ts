@@ -11,6 +11,9 @@ import { facing } from './checks/facing';
 import { fliCheck } from './checks/fliCheck';
 import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';
+import { helpKeys } from './checks/helpKeys';
+import { textContrast } from './checks/textContrast';
+import { blankIdle, startValues } from './checks/heroStart';
 import { landings } from './checks/landings';
 import { curve, playFindings } from './checks/playChecks';
 import { sortFindings, type Finding } from './findings';
@@ -109,14 +112,18 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...soundChecks(d, files),
       ...tapTwice(d),
       ...lookalike(d, all),
+      ...blankIdle(d),
     );
     findings.push(...(await landings(d, game, files)));
   }
   if (opt.scene === undefined)
     findings.push(
       ...controls(files),
+      ...helpKeys(game, files),
+      ...textContrast(game, files),
+      ...startValues(game, all),
       ...keyReach(files),
-      ...endingChecks(game),
+      ...endingChecks(game, all),
       ...variety(all),
       ...mechanics(all),
       ...fliCheck(files),
@@ -177,11 +184,12 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       }
     }
   }
-  // a character, sound or block set shared by several scenes gives the same finding once
+  // a character, sound or block set shared by several scenes gives the same finding once (look-alike
+  // footing once per block set)
   const seen = new Set<string>();
   report.findings = sortFindings(
     findings.filter((f) => {
-      const k = `${f.check}|${f.title}|${f.where.map ?? f.where.file ?? f.where.sound?.file ?? ''}`;
+      const k = `${f.check}|${f.title}|${(f.check === 'footing' && f.where.block?.file) || f.where.map || f.where.file || f.where.sound?.file || ''}`;
       return !seen.has(k) && !!seen.add(k);
     }),
   );

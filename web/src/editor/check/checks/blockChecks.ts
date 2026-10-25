@@ -297,4 +297,48 @@ export function counterSources(scenes: SceneData[]): Set<number> {
   return out;
 }
 
-export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes, telegraph];
+/** The share of two blocks' pixels that are the same color in the same place (0 to 1). */
+export function likeness(a: Block, b: Block): number {
+  let same = 0;
+  for (let i = 0; i < BLEN * BLEN; i++) if (a.pixels[i] === b.pixels[i]) same++;
+  return same / (BLEN * BLEN);
+}
+
+/** Blocks this alike (the share of their pixels the same) look the same at a glance. */
+export const LOOK_ALIKE = 0.9;
+/** Blocks used this often on a map are part of its look, not a one-off. */
+const COMMON = 4;
+
+/**
+ * Footing that looks like something else: an open block (the hero passes through it, no pull of
+ * its own) drawn nearly like a solid one on the same map. Players stand on what looks like floor
+ * and walk round what looks like wall; a trick floor or a secret door is fair when the game hints.
+ */
+function footing(d: SceneData): Finding[] {
+  const use = blockUse(d.map);
+  const kinds = (want: (b: Block) => boolean) =>
+    [...Array(BACKBL).keys()].filter((n) => use[n] >= COMMON && want(d.bbl[n]) && !hurts(d.bbl[n]) && d.bbl[n].pixels.some((p) => p !== 255));
+  const solid = kinds((b) => b.solid === 15);
+  const passable = kinds((b) => b.solid === 0 && !b.obj && !b.scorePts && b.chHitPt <= 0 && b.grav === d.bbl[0].grav);
+  const out: Finding[] = [];
+  for (const n of passable) {
+    let best = -1;
+    let score = 0;
+    for (const m of solid) {
+      const l = likeness(d.bbl[n], d.bbl[m]);
+      if (l > score) [best, score] = [m, l];
+    }
+    if (best < 0 || score < LOOK_ALIKE) continue;
+    out.push({
+      check: 'footing',
+      severity: 'info',
+      title: `Open block ${n} looks like solid block ${best} (${Math.round(score * 100)}% of its pixels the same)`,
+      detail:
+        'The hero passes through one and stands on the other, but they look alike. Unless it is a fair secret the game hints at, draw what you can walk through differently from what you can stand on: darker, without an edge, or behind a different color.',
+      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
+    });
+  }
+  return out;
+}
+
+export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes, telegraph, footing];

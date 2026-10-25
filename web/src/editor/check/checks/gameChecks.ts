@@ -156,7 +156,7 @@ export function soundChecks(d: SceneData, files: GameFiles): Finding[] {
   return out;
 }
 
-export function endingChecks(game: Game): Finding[] {
+export function endingChecks(game: Game, scenes: SceneData[] = []): Finding[] {
   const out: Finding[] = [];
   const title = game.scenes[0];
   const end = game.scenes[1];
@@ -167,6 +167,26 @@ export function endingChecks(game: Game): Finding[] {
   if (title && !title.files[6]) missing('game instructions', 'warning', 'Players need to know the keys and the goal.');
   if (title && !title.files[4]) missing('storyline', 'info', 'A line of story says why the hero is there.');
   if (title && !title.files[7]) missing('credits', 'info', 'Say who made it.');
+  // PLAYGAME draws random color ramps for a menu with no picture (engine/menus.ts randCols)
+  if (title && !title.files[2])
+    out.push({
+      check: 'ending',
+      severity: 'warning',
+      title: 'No menu picture: PLAYGAME draws random color ramps behind the menu',
+      detail: 'The colors change every time and can hide the menu’s words. Give the menu a picture with a plain area behind the choices.',
+      where: { scene: 0 },
+    });
+  // a level with no palette, and none before it, shows in black
+  const unlit = scenes.find((d) => !d.names.pal);
+  if (unlit)
+    out.push({
+      check: 'ending',
+      severity: 'warning',
+      title: `${unlit.name} has no palette, and no level before it sets one`,
+      detail:
+        'A blank palette slot keeps the colors of the level before; with none, the level shows in the wrong colors or none. Give the first level a palette.',
+      where: { scene: unlit.scene },
+    });
   return out;
 }
 

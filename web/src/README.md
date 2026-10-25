@@ -454,9 +454,13 @@ modules are in [`../test`](../test).
     `sceneData.ts` parses each level scene once, and `sceneLinks.ts` gives the level scenes and the
     links into a scene (apart from `playtest.ts`, so the editors' badges don't load the explorer and
     engine).
-  - `checks/`: the file checks (hazard art, opposites, waits, density, contrast, sounds, keys…:
+  - `checks/`: the file checks (hazard art, opposites, waits, look-alike footing, density, contrast, sounds, keys…:
     `blockChecks.ts`, `monsterChecks.ts`, `gameChecks.ts`, `keyReach.ts`, `facing.ts`,
-    `mazeCheck.ts`, `sealed.ts`; `playerChecks.ts` a tap that moves twice, scenery that looks like
+    `mazeCheck.ts`, `sealed.ts` (a prize the other plane of two reaches counts as reachable);
+    `inView.ts` prizes in view but out of reach; `helpKeys.ts` keys the help names that nothing
+    uses; `textContrast.ts` text pages and the menu hard to read against their pictures (the pages
+    and the pictures under them from `../textScreens.ts`); `heroStart.ts` starting values PLAYGAME
+    ignores and a blank Idle; `playerChecks.ts` a tap that moves twice, scenery that looks like
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
     `formats/fliLimits.ts`, which the health check also uses) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
