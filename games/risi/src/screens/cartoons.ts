@@ -249,6 +249,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     p.rect(0, STRIP - 1, W, 1, c('gold', 1)).rect(0, 174, W, 1, c('gold', 1));
     const drop = [-24, -14, -2, 6, 3, 4][Math.min(5, k)];
     micro(p, 4, 3, info.numeral, c('gold', 2), 2);
+    // and how many there are, small under it
+    micro(p, 4, 16, `OF ${CARDS[CARDS.length - 1].numeral}`, c('gold', 1));
     outlined(p, 160 - textWidth(info.title, big ? 2 : 1) / 2, drop + (big ? 0 : 6), info.title, c('marble', 3), c('pompeii', 0), big ? 2 : 1);
     if (k >= 5) centered(p, 34, info.english, c('ochre', 3));
     // what to do here, and the key for it
