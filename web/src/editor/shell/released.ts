@@ -118,6 +118,10 @@ export function readOnlyBar(project: Project): HTMLElement | null {
     h('span', { class: 'released-text' }, playOnly ? `${title} is its author’s shareware: play it and look inside.` : `${title} as released.`),
     playOnly
       ? h('button', { onclick: () => void showNotice(r.entry) }, 'Notice')
-      : h('button', { class: 'primary', 'aria-label': `Make a copy of ${title} to change`, onclick: () => void copyAndSwitch(r) }, 'Make a copy'),
+      : h(
+          'button',
+          { class: 'primary', 'aria-label': `Edit a copy of ${title}: makes your own copy and opens it`, onclick: () => void copyAndSwitch(r) },
+          '✎ Edit a copy',
+        ),
   );
 }

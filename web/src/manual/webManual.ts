@@ -14,8 +14,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     made here also plays in DOS, and an old game folder opens here unchanged.</p>
     <p>Everything is kept in this browser. Nothing is uploaded. Use <b>Download .zip</b> to
     keep a copy of a game elsewhere.</p>
-    <div class="tip">New to Game-Maker? Play a sample game, then choose <b>Edit a copy</b> and
-    change something small, such as a block or a monster’s speed, and play it again.</div>
+    <div class="tip">New to Game-Maker? Play a sample game, then choose <b>Look inside</b>, then
+    <b>Edit a copy</b> on the bar above the editor, and change something small, such as a block or a monster’s speed, and play it again.</div>
     <h3>The two printed guides</h3>
     <p>The Game-Maker box holds two guides written for the DOS version. Their menus and keys
     are DOS Game-Maker’s, but what they teach holds here too, since this edition makes the
@@ -52,7 +52,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <b>My games</b>.</p>
     <h3>Gameware</h3>
     <p>The free “gameware” from the Game-Maker CD. <b>▶ Play</b> plays it;
-    <b>Edit a copy</b> adds a copy to your games. <b>Demo video</b> shows a game’s demo with its
+    <b>Look inside</b> opens its files as released; <b>Edit a copy</b> there adds a copy to your games. <b>Demo video</b> shows a game’s demo with its
     music and sound, and can save it as a video.</p>
     <h3>Sandbox</h3>
     <p>New games made for this edition in the original formats, so they also play in DOS. Each
@@ -66,7 +66,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <p>Games made from the songs of The Bard of Bizarre. They are listed with the shareware
     until there are four or more, then get a tab of their own. Unlike the shareware they are
     this project’s own and free to change (MIT, except their voice clips, which are for personal, non-commercial use
-    only): <b>Edit a copy</b> works as it does for the
+    only): <b>Look inside</b> and <b>Edit a copy</b> work as they do for the
     Sandbox games, and <b>Notice</b> tells the song behind each one.</p>`,
   ],
   [

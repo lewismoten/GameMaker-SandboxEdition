@@ -480,14 +480,8 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
   return (
     [
       play(href),
-      playOnly
-        ? notice
-        : h(
-            'button',
-            { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` },
-            svgIcon('edit'),
-            'Edit a copy',
-          ),
+      // Look inside opens it as released; editing it there offers the copy (released.ts)
+      playOnly ? notice : null,
       lookInside(game, e.id, nav),
       keys,
       isBizarreGame(e) ? notice : null,
@@ -538,7 +532,7 @@ export async function showNotice(listed: CatalogEntry): Promise<unknown> {
       'p',
       { class: 'meta' },
       bard
-        ? 'The Bard of Bizarre’s games are this project’s own: free to play, share and change (MIT license), except their voice clips, cut from recordings made on Riffusion’s free plan: those are for personal, non-commercial use only. Edit a copy to see how it was made.'
+        ? 'The Bard of Bizarre’s games are this project’s own: free to play, share and change (MIT license), except their voice clips, cut from recordings made on Riffusion’s free plan: those are for personal, non-commercial use only. Look inside to see how it was made.'
         : 'These notices are from 1993–1994; the addresses and prices may no longer be current.',
     ),
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),

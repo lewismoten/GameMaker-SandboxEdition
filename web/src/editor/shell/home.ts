@@ -550,7 +550,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       'ul',
       null,
       h('li', null, h('b', null, icon('play'), 'Play'), touch ? ' right here, with on-screen controls or a gamepad' : ' right here, with keyboard or gamepad'),
-      h('li', null, h('b', null, icon('edit'), 'Edit a copy'), ' to see how a game was made'),
+      h('li', null, h('b', null, icon('edit'), 'Look inside'), ' to see how a game was made, then Edit a copy to change it'),
       h('li', null, h('b', null, icon('plus'), 'New game'), ' to start your own'),
     ),
     h(
