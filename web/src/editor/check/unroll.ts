@@ -100,6 +100,22 @@ export class Unroll {
     );
   }
 
+  /** Every screen seen, as a box on the map itself (the edges are as far as it goes): for a map the hero never walks off. */
+  seenBox(): UnrolledBox | undefined {
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const v of this.views) {
+      const [sx, sy, w, h] = v.split(',').map(Number);
+      x0 = Math.min(x0, Math.max(0, sx));
+      y0 = Math.min(y0, Math.max(0, sy));
+      x1 = Math.max(x1, Math.min(MLEN, sx + w));
+      y1 = Math.max(y1, Math.min(MWID, sy + h));
+    }
+    return x1 > x0 && y1 > y0 ? [x0, y0, x1 - x0, y1 - y0] : undefined;
+  }
+
   /** The map as the player sees it, or undefined when the hero never went off an edge (the map reads as it is). */
   result(): Unrolled | undefined {
     if (!this.off && !this.loop[0] && !this.loop[1]) return undefined;

@@ -15,9 +15,12 @@ import { scenePixels } from '../../gfx/levelPicture';
 import { sheet, type PrintContext, type Sheet } from './kit';
 import { tiles } from './worldMapLayout';
 import { el, SERIF } from './worldMapArt';
-import { levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
+import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
-import { listedViews } from './levelViews';
+import { listedUnrolled, listedViews } from './levelViews';
+import { unrolledShows } from '../../editor/check/unroll';
+import { BLEN } from '../../formats/blocks';
+import { MLEN } from '../../formats/map';
 import { panZoom } from './panZoom';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
@@ -35,7 +38,7 @@ const FULL = 1;
 /** "Print everything" stays sensible: big maps go full size too unless that runs past this many pages. */
 const MOST_PAGES = 60;
 
-const COLORS = { start: '#17762f', exit: '#1d4e9e', end: '#b3261e' };
+export const COLORS = { start: '#17762f', exit: '#1d4e9e', end: '#b3261e', join: '#7a3db8' };
 
 /** The game and every level's files (palette, map, blocks, monsters). */
 async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
@@ -95,7 +98,7 @@ function markLabels(game: Game, l: Level, ox: number, s: number): MarkLabel[] {
 }
 
 /** The room a level's labels need over and under its picture, past the first lane. */
-function labelRoom(game: Game, l: Level): { above: number; below: number } {
+export function labelRoom(game: Game, l: Level): { above: number; below: number } {
   const labels = markLabels(game, l, 0, FULL);
   const most = (up: boolean) => Math.max(0, ...labels.filter((x) => x.up === up).map((x) => x.lane));
   // (a label over the top row already reaches into the caption's last unit: lanes start past it)
@@ -159,19 +162,71 @@ function marksSvg(game: Game, l: Level, ox: number, oy: number, s: number): SVGE
 }
 
 /** A level's picture and marks, `s` paper units a block, from (`ox`, `oy`). */
-function levelSvg(game: Game, l: Level, url: string, ox: number, oy: number, s: number): SVGElement {
+export function levelSvg(game: Game, l: Level, url: string, ox: number, oy: number, s: number): SVGElement {
   return el(
     'g',
     { class: 'lm-level' },
     el('rect', { x: ox - 0.15, y: oy - 0.15, width: l.area.w * s + 0.3, height: l.area.h * s + 0.3, fill: 'none', stroke: '#222', 'stroke-width': 0.3 }),
     el('image', { href: url, x: ox, y: oy, width: l.area.w * s, height: l.area.h * s, preserveAspectRatio: 'none', style: 'image-rendering:pixelated' }),
+    ...joinedEdges(l, ox, oy, s),
     marksSvg(game, l, ox, oy, s),
   );
 }
 
+/** Edges that are the same place (the map goes round forever that way): dashed, with arrows going on through them. */
+function joinedEdges(l: Level, ox: number, oy: number, s: number): SVGElement[] {
+  const [lx, ly] = l.unrolled?.loops ?? [false, false];
+  const w = l.area.w * s;
+  const ht = l.area.h * s;
+  const out: SVGElement[] = [];
+  const edge = (x1: number, y1: number, x2: number, y2: number) =>
+    out.push(
+      el('line', { x1, y1, x2, y2, stroke: '#fff', 'stroke-width': 0.5 }),
+      el('line', { x1, y1, x2, y2, stroke: COLORS.join, 'stroke-width': 0.3, 'stroke-dasharray': '1 0.6' }),
+    );
+  const arrow = (x: number, y: number, text: string) =>
+    out.push(
+      el(
+        'text',
+        {
+          x,
+          y,
+          'font-family': 'Arial, Helvetica, sans-serif',
+          'font-size': 1.6,
+          'font-weight': 700,
+          fill: COLORS.join,
+          stroke: '#fff',
+          'stroke-width': 0.25,
+          'paint-order': 'stroke',
+          'text-anchor': 'middle',
+        },
+        text,
+      ),
+    );
+  if (lx) {
+    edge(ox, oy, ox, oy + ht);
+    edge(ox + w, oy, ox + w, oy + ht);
+    arrow(ox + 0.9, oy + ht / 2 + 0.55, '⇠');
+    arrow(ox + w - 0.9, oy + ht / 2 + 0.55, '⇢');
+  }
+  if (ly) {
+    edge(ox, oy, ox + w, oy);
+    edge(ox, oy + ht, ox + w, oy + ht);
+    arrow(ox + w / 2, oy + 1.5, '⇡');
+    arrow(ox + w / 2, oy + ht - 0.4, '⇣');
+  }
+  return out;
+}
+
+/** What a caption adds for a map whose edges join, so the dashed edges read. */
+function joinNote(l: Level): string {
+  const [lx, ly] = l.unrolled?.loops ?? [false, false];
+  return lx && ly ? ' · all four edges join up' : lx ? ' · the left and right edges join up' : ly ? ' · the top and bottom edges join up' : '';
+}
+
 /** A level's caption: its scene numbers and name. */
-function captionSvg(game: Game, l: Level, x: number, y: number, width: number): SVGElement {
-  const t = `Scene ${sceneList(game, l)} · ${l.name}`;
+export function captionSvg(game: Game, l: Level, x: number, y: number, width: number): SVGElement {
+  const t = `Scene ${sceneList(game, l)} · ${l.name}${joinNote(l)}`;
   return el(
     'text',
     {
@@ -254,15 +309,22 @@ function pageCounts(game: Game, levels: Level[]): { overviews: number; full: num
 /** Draws a level (once) and gives a URL of its picture, ready to show. */
 type Painter = (l: Level) => Promise<string>;
 
+/** A level's picture, a block to 20 pixels: its blocks and monsters, secrets drawn as ground. */
+export function levelCanvas(game: Game, files: GameFiles, l: Level): HTMLCanvasElement {
+  const pic = scenePixels(files, game.scenes[l.scene], l.area.x, l.area.y, l.area.w, l.area.h, l.cells);
+  if (pic && l.unrolled?.runs) blankUnseen(pic, l, files, game);
+  const canvas = document.createElement('canvas');
+  if (pic) paintIndexed(canvas, pic.pixels, pic.width, pic.height, pic.palette);
+  return canvas;
+}
+
 function painter(game: Game, files: GameFiles): Painter {
   const done = new Map<Level, Promise<string>>();
   return (l) => {
     let p = done.get(l);
     if (!p) {
       p = new Promise<string>((resolve) => {
-        const pic = scenePixels(files, game.scenes[l.scene], l.area.x, l.area.y, l.area.w, l.area.h, l.cells);
-        const canvas = document.createElement('canvas');
-        if (pic) paintIndexed(canvas, pic.pixels, pic.width, pic.height, pic.palette);
+        const canvas = levelCanvas(game, files, l);
         canvas.toBlob((b) => {
           const url = b ? URL.createObjectURL(b) : canvas.toDataURL();
           const img = new Image();
@@ -277,6 +339,23 @@ function painter(game: Game, files: GameFiles): Painter {
     }
     return p;
   };
+}
+
+/**
+ * A level that winds on past a lap shows only what the player sees there: the rest of its box
+ * is the map's padding block (the same blocks come round again where the player does see them).
+ */
+function blankUnseen(pic: { width: number; pixels: Uint8Array }, l: Level, files: GameFiles, game: Game): void {
+  const u = l.unrolled!;
+  const filler = fillerBlock(l.cells);
+  const at = l.cells.indexOf(filler);
+  const pad = at >= 0 ? scenePixels(files, game.scenes[l.scene], at % MLEN, Math.floor(at / MLEN), 1, 1, l.cells) : undefined;
+  for (let by = 0; by < l.area.h; by++)
+    for (let bx = 0; bx < l.area.w; bx++) {
+      if (unrolledShows(u, l.area.x + bx, l.area.y + by)) continue;
+      for (let yy = 0; yy < BLEN; yy++)
+        for (let xx = 0; xx < BLEN; xx++) pic.pixels[(by * BLEN + yy) * pic.width + bx * BLEN + xx] = pad ? pad.pixels[yy * BLEN + xx] : 0;
+    }
 }
 
 /** The pages to print. */
@@ -369,8 +448,9 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
   const load = () =>
     (loaded ??= loadLevels(ctx.entry).then((x) => {
       if (!x) return undefined;
-      const seen = levelsOf(x.game, x.files, secret, listedViews(ctx.entry.id));
-      const every = seen.map((l) => ({ ...l, area: l.whole }));
+      const seen = levelsOf(x.game, x.files, secret, listedViews(ctx.entry.id), listedUnrolled(ctx.entry.id));
+      // every block of the map as it is on the map, not as the player goes through it
+      const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined }));
       return { game: x.game, seen, every, paint: painter(x.game, x.files), full: pageCounts(x.game, seen).full <= MOST_PAGES, all: false };
     }));
   return {

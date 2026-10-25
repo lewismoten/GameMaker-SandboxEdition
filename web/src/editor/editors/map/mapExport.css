@@ -117,3 +117,19 @@
   align-items: flex-end;
   justify-content: space-between;
 }
+/* "As players see it": the poster, as tall as it comes, scrolled when it is long */
+.map-export-opts > [hidden],
+.map-export-frame[hidden] {
+  display: none;
+}
+.map-export-preview.poster {
+  aspect-ratio: auto;
+  max-height: min(400px, 50vh);
+  overflow: auto;
+  background: transparent;
+  touch-action: auto;
+}
+.map-export-preview.poster .map-export-shot {
+  height: auto;
+  image-rendering: auto;
+}

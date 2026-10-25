@@ -309,7 +309,9 @@ modules are in [`../test`](../test).
     the Level Maps (`levelMaps.ts`, `levelMapLayout.ts`), which never show a tin heart or egg
     (`levelSecrets.ts`, from `levelSecrets.json` written by `scripts/levelSecrets.ts`) and crop to
     what the player sees (`levelViews.ts`, from `levelViews.json` written by
-    `scripts/levelViews.ts`), both looked round with `panZoom.ts`.
+    `scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
+    through it, `editor/check/unroll.ts`), both looked round with `panZoom.ts`. `levelPoster.ts`
+    draws one level the same way as a PNG, for the map editor's "As players see it" picture.
   - Stickers: the sheet (`stickers.ts`, `gmStickers.ts` for the Game-Maker box), laid out on Print
     Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`).
   - The Game-Maker box's paper: its Owner's Guide cover (`gmCover.ts`), what else is in it
@@ -453,8 +455,12 @@ modules are in [`../test`](../test).
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
     to tell when the map changed since.
-  - Both run in Web Workers (`worker.ts` started by `client.ts`, `walk/walkWorker.ts` by
-    `walk/walkClient.ts`); `live.ts` turns a running check into the worker's once-a-second posts
+  - A map as the player goes through it: `unroll.ts` follows the hero over the map's wrapping
+    edges in unwrapped blocks (folding a way that goes round forever to one lap), and
+    `unrollMap.ts` explores one map from every way in for the map editor's "As players see it"
+    picture (`editors/map/mapPoster.ts`, drawn by `manual/printables/levelPoster.ts`).
+  - They run in Web Workers (`worker.ts` started by `client.ts`, `walk/walkWorker.ts` by
+    `walk/walkClient.ts`, `unrollWorker.ts` by `unrollClient.ts`); `live.ts` turns a running check into the worker's once-a-second posts
     (changed heat cells, deaths, time left). `testGame.ts` and `gitDisk.ts` are for the tests.
   - The map editor's Level check panel is `editors/map/check/` (`checkPanel.ts`, its report and
     play buttons `checkExtras.ts`; `markInfo.ts` puts its marks into words for the map's tooltip

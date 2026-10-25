@@ -7,6 +7,7 @@ import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../
 import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
 import type { SeenRect } from './levelViews';
+import { unrolledAt, type Unrolled } from '../../editor/check/unroll';
 
 /** The scenes that play on one map with one block set: one Level Map. */
 interface MapGroup {
@@ -263,17 +264,33 @@ export interface Level {
   name: string;
   /** The scene whose palette and monsters draw it. */
   scene: number;
+  /**
+   * The map as the player goes through it, when the hero walks off its edge: `area` is then in
+   * unwrapped blocks (x mod 100 is the map's), and `marks` sit on the laps where they are met.
+   */
+  unrolled?: Unrolled;
+  /** With `unrolled`, the marks where they are on the map itself (for "Every block of the map"). */
+  mapMarks?: LevelMark[];
+}
+
+/** A level laid out as the player goes through it: its box, and each mark on the lap where it is met. */
+function unrolledLevel(level: Level, u: Unrolled): Level {
+  const marks = level.marks.map((m) => ({ ...m, ...unrolledAt(u, m.x, m.y) }));
+  const [x, y, w, h] = u.box;
+  return { ...level, area: { x, y, w, h }, marks, unrolled: u, mapMarks: level.marks };
 }
 
 /**
  * The levels to map: one per map file and block set, secrets hidden, cropped and marked. `views`
- * (levelViews.json's boxes by "map|bbl") crops each to what the player sees.
+ * (levelViews.json's boxes by "map|bbl") crops each to what the player sees; `unrolled` lays out
+ * a map the hero walks off the edge of as the player goes through it.
  */
 export function levelsOf(
   game: Game,
   files: { get(n: string): Uint8Array | undefined },
   secret: Record<string, number[]>,
   views: Record<string, SeenRect> = {},
+  unrolled: Record<string, Unrolled> = {},
 ): Level[] {
   return mapGroups(game).flatMap((group): Level[] => {
     const mapB = files.get(group.map);
@@ -285,7 +302,9 @@ export function levelsOf(
     const first = game.scenes[group.scenes[0]];
     const name = group.scenes.length > 1 ? `${first.desc || 'Untitled'} and ${group.scenes.length - 1} more` : first.desc || 'Untitled';
     const whole = usedArea(cells, marks);
-    const seen = views[`${group.map}|${group.bbl}`];
-    return [{ group, cells, area: seen ? seenArea(whole, seen, marks) : whole, whole, marks, name, scene: group.scenes[0] }];
+    const key = `${group.map}|${group.bbl}`;
+    const seen = views[key];
+    const level: Level = { group, cells, area: seen ? seenArea(whole, seen, marks) : whole, whole, marks, name, scene: group.scenes[0] };
+    return [unrolled[key] ? unrolledLevel(level, unrolled[key]) : level];
   });
 }
