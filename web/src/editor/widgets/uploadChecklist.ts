@@ -60,7 +60,7 @@ export const APPENDIX_B: ChecklistItem[] = [
     full: true,
   },
   { text: 'Someone with slower hands can finish: one key at a time, no split-second timing', checks: ['steady'], play: true },
-  { text: 'The final boss has stages; the ending is a real scene, not an ad', checks: ['ending'] },
+  { text: 'The final boss has stages; the ending is a real scene that says you won, not an ad', checks: ['ending'] },
   { text: 'Something new every level or two; the gimmick has its own level', checks: ['variety'] },
   {
     text: 'Any key beyond the arrows and fire is taught in the game itself, near the start, and sits under the left hand',
@@ -70,7 +70,10 @@ export const APPENDIX_B: ChecklistItem[] = [
   { text: 'The help names every key the hero has, and only those', checks: ['help-keys', 'controls'], full: true },
   { text: 'The goal fits in one line, and the instructions say it; help and story fit in three pages', checks: ['help-length'] },
   { text: 'Every odd rule is explained in the game or the help', checks: [] },
-  { text: 'Players can tell how far they are: level cards say which level of how many', checks: [] },
+  {
+    text: 'Players can tell how far they are: level cards say which level of how many; a long game comes in chapters, and the first card and each chapter’s end say F5 saves',
+    checks: [],
+  },
   { text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable', checks: ['fli', 'text-contrast'] },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },

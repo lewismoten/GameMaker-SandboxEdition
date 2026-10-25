@@ -4,7 +4,8 @@
 // (touch.ts getTouchBlocks: a block touches through its whole cell; monsters.ts PicChkTouch:
 // a monster only by its drawn pixels; character.ts moveCharGrav: gravity gains a pixel a tick
 // every tick, up to 44; monsters.ts chkMonChr: only a monster on screen touches the hero; KillMon:
-// "becomes" is born on the same spot); the advice is our own, and the lessons on fair danger,
+// "becomes" is born on the same spot; PLAYGAME.C plays the won song and picture only on reaching
+// scene 1); the advice is our own, and the lessons on fair danger,
 // look-alike blocks and finding the way draw on watching players in two videos (NOTICE.md).
 import { opening, tip, type Chapter } from './chapter';
 
@@ -160,7 +161,10 @@ export const LEVELS: Chapter = {
   a different thing, and a fine one: then let a clue lead to it.</p>
   <h2>An ending, not an ad</h2>
   <p>The last screen the player sees is the one they will tell friends about. Make it a real
-  scene with its own music and a thank-you, so nobody has to ask whether they won. If you want to
+  scene with its own music and a thank-you, so nobody has to ask whether they won. Only a link
+  to scene 1 wins: it plays the game won song and picture, then the high scores. A last level
+  that links back to an earlier scene, or a “You win!” sign with play still going on round it,
+  leaves the player unsure. Put the words on the won picture itself, in big letters. If you want to
   sell a sequel, say so after the ending, never instead of it. Make the lost screen worth seeing
   too: it is the one players see most, and a friendly joke there sends them back for another
   try.</p>

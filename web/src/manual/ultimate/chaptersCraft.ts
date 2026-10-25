@@ -2,7 +2,8 @@
 // stay, put in terms of Game-Maker's own settings) and the checklist before a game goes out.
 // The engine facts are checked against web/src/engine (character.ts, monsters.ts, touch.ts,
 // scroll.ts, scene.ts) and code/GM/PLAYGAME.C (ChangeScroll's stop lines, CharBirthMon's shot
-// row and direction, DoBlockTouchChar taking hit points even while Hurt plays); the advice is
+// row and direction, DoBlockTouchChar taking hit points even while Hurt plays; DoFunKy's F5 and
+// F6; playscene's death and a scene's exit picture shown only on leaving by a link); the advice is
 // our own. What players said about Game-Maker games comes from watching levelengine's RSD Game
 // Maker Binge and Pixelmusement's ADG Episode 250 (NOTICE.md); nothing of theirs is quoted.
 import { opening, tip, type Chapter } from './chapter';
@@ -139,9 +140,37 @@ export const CRAFT: Chapter = {
     after picking up a key can pick it up again, and points that come back on every try can be
     farmed. Put what must be earned once in the scene before the hard part, so a death in the
     hard part doesn’t bring it back.</li>
-    <li><b>Say how long it is.</b> Players who can see the end keep going. Put “level 3 of 10”
-    on each level’s intro picture, and say in the instructions how many levels there are. A
-    short game that is finished beats a long one nobody sees the end of.</li>
+  </ul>
+  <h2>A length that fits</h2>
+  <p>Players rarely mind a short game. They mind one that stops without ending, and one that
+  never seems to end. Choose the length on purpose, and tell the player what it is.</p>
+  <ul>
+    <li><b>Short is fine if it ends.</b> A game of five or ten minutes that finishes with a real
+    won screen leaves players pleased. The same five minutes that stop on a blank screen feel
+    like a demo, and the player asks whether there was more.</li>
+    <li><b>Mid-length wants a curve.</b> Four or five levels, each a little harder than the last,
+    can hold a player for most of an hour. That is often the best size of all: long enough to
+    learn the game, short enough to finish it in one sitting.</li>
+    <li><b>Long wants chapters.</b> Ten or twenty levels is a lot to promise a stranger. Group
+    them into chapters of three to five, and end each chapter with a done screen of its own: the
+    exit picture of its last level, which plays only when the hero leaves by a link, never after
+    a death. <i>Chapter 2 complete! Press F5 to save.</i> A player can stop there pleased, and
+    come back.</li>
+    <li><b>Say where they are.</b> Players who can see the end keep going; players who can’t
+    start asking how many levels are left, and then stop. Put “Level 3 of 10” on each level’s
+    intro picture. The intro shows again after every death, so the count stays in front of them.
+    The Integrator’s <b>🪧 Level card…</b> on a level writes it for you, counting the levels in
+    the order play meets them. Say the size in the instructions too: <i>ten levels in three
+    chapters.</i></li>
+    <li><b>Remind them to save, early and in the game.</b> <kbd>F5</kbd> saves and
+    <kbd>F6</kbd> loads, in any scene, with ten slots. A line in the help reaches only the
+    players who read it, and most don’t. Put the reminder on the first level’s card and on every
+    chapter’s done screen. With no save, a game over sends the next try back to level 1.</li>
+    <li><b>Let a death count.</b> Length and stakes go together. With a few lives (above), each
+    level is worth playing well; with saves at the chapter ends, a game over late in a long game
+    costs one chapter, not the evening. Dozens of lives make a long game merely long.</li>
+    <li><b>The end says you won.</b> However long the game, the last thing the player sees
+    should leave no doubt (Chapter 12, “An ending, not an ad”).</li>
   </ul>
   <h2>Fair enemies</h2>
   <ul>
@@ -254,13 +283,13 @@ export const UPLOAD: Chapter = {
     <tr><td>☐</td><td>Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds</td></tr>
     <tr><td>☐</td><td>Nothing shown can’t be used: no doors that lead nowhere, no prizes in view but out of reach, no prizes your own shots destroy</td></tr>
     <tr><td>☐</td><td>Someone with slower hands can finish: one key at a time, no split-second timing</td></tr>
-    <tr><td>☐</td><td>The final boss has stages; the ending is a real scene, not an ad</td></tr>
+    <tr><td>☐</td><td>The final boss has stages; the ending is a real scene that says you won, not an ad</td></tr>
     <tr><td>☐</td><td>Something new every level or two; the gimmick has its own level</td></tr>
     <tr><td>☐</td><td>Any key beyond the arrows and fire is taught in the game itself, near the start, and sits under the left hand</td></tr>
     <tr><td>☐</td><td>The help names every key the hero has, and only those</td></tr>
     <tr><td>☐</td><td>The goal fits in one line, and the instructions say it; help and story fit in three pages</td></tr>
     <tr><td>☐</td><td>Every odd rule is explained in the game or the help</td></tr>
-    <tr><td>☐</td><td>Players can tell how far they are: level cards say which level of how many</td></tr>
+    <tr><td>☐</td><td>Players can tell how far they are: level cards say which level of how many; a long game comes in chapters, and the first card and each chapter’s end say <kbd>F5</kbd> saves</td></tr>
     <tr><td>☐</td><td>Animations loop smoothly and play in real DOS; menu, <kbd>F2</kbd> and text screens are readable</td></tr>
     <tr><td>☐</td><td>Nothing flashes faster than three times a second</td></tr>
     <tr><td>☐</td><td>The title screen shows the game you’ll play</td></tr>
