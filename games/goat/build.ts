@@ -19,6 +19,7 @@ import { licenseText } from '../kit/license';
 import { renderRegion } from '../snowbound/src/art/render';
 import { buildPalette, type Light } from './src/art/pal';
 import { buildBlocks } from './src/blocks/blocks';
+import { writeWalkPaths } from '../kit/walkPaths';
 import { buildGoat, buildMonsters, type MonsterOptions } from './src/characters';
 import { demoRecording } from './src/demo';
 import { caravan, field, stable, town, ORIGIN, type Level } from './src/levels/maps';
@@ -206,4 +207,7 @@ disk.put(
 // the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
 clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
+// the paths and streets the walkthrough's bot keeps to (not on the disk): the field's path
+// and Bethlehem's cobbles, with the way out at each end
+writeWalkPaths('goat', { 'goat.bbl': ['path', 'cobble', 'sandal', 'exitE', 'exitS'].map((n) => book.n(n)) });
 console.log(`${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks`);
