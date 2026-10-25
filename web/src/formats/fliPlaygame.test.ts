@@ -145,6 +145,8 @@ function playLikeDos(file: Uint8Array, memory: number): DosPlay {
           }
           x += len;
         }
+        // the line's packets must fill it: a count byte capped at 255 would end it early
+        if (x !== 320) throw new Error(`BRUN line ${y} covers ${x} pixels`);
       }
     } else if (type === 12) {
       // DoLineCompress: SkipNum, ChangeNum (uint); NumPackets = (int)(char), so 128..255 is a
@@ -155,6 +157,7 @@ function playLikeDos(file: Uint8Array, memory: number): DosPlay {
       for (let y = skipNum; y < ((skipNum + changeNum) & 0xffff); y++) {
         const packets = s8(rd(d++)) & 0xffff;
         if (packets >= 128) throw new Error(`line ${y} has a packet count of ${packets} (a signed char)`);
+        if (y >= 200) throw new Error(`LC line ${y} is below the screen`);
         let x = 0;
         for (let k = 0; k < packets; k++) {
           let len = s8(rd(d + 1));
@@ -169,6 +172,7 @@ function playLikeDos(file: Uint8Array, memory: number): DosPlay {
             d++;
           }
           x += len;
+          if (x > 320) throw new Error(`LC line ${y} runs to x ${x}`);
         }
       }
     }
@@ -181,6 +185,7 @@ function playLikeDos(file: Uint8Array, memory: number): DosPlay {
     for (let f = 0; f < numFrames && !failure; f++) {
       const fh = get(16);
       if (u16(fh, 4) !== 0xf1fa) throw new Error(`frame ${f}: invalid frame`);
+      // FrameHeader::View never reads the frame's Size (a long): only its chunks count
       const chunks = u16(fh, 6);
       for (let c = 0; c < chunks && !failure; c++) {
         const ch = get(6);
@@ -310,10 +315,11 @@ describe('PLAYGAME port', () => {
     }
   }, 120_000);
 
-  it("plays the two cards Lewis saw break in DOSBox: Carl's cover and the goat's Stable card", () => {
+  it("plays the FLIs Lewis saw break in DOSBox: Carl's cover, the goat's Stable card, Blaster's intro", () => {
     // carl/cover.fli had a 63,446-byte BRUN chunk; goat/card4.fli a 24,082-byte LC chunk and,
-    // on frame 1, a line of 128 packets (a negative count to PLAYGAME at any buffer size).
-    for (const name of ['carl/cover.fli', 'goat/card4.fli']) {
+    // on frame 1, a line of 128 packets (a negative count to PLAYGAME at any buffer size);
+    // blaster/intro.fli a 64,806-byte chunk.
+    for (const name of ['carl/cover.fli', 'goat/card4.fli', 'blaster/intro.fli']) {
       const bytes = new Uint8Array(readFileSync(join(GAMES, name.replace('/', '/disk/'))));
       expect(playLikeDos(bytes, BUFFER).failure, name).toBeUndefined();
     }
