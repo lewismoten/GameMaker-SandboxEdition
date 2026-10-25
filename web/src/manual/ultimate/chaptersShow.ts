@@ -30,6 +30,22 @@ export const SHOW: Chapter = {
     start scene’s <b>🎬 Opening sting…</b> adds them to any game, changes them, or takes them out.
     Keep a sting short: the player sees it every time.</li>
   </ul>
+  <h2>Don’t keep players waiting</h2>
+  <p>PLAYGAME plays an <code>.FLI</code> from its first frame to its last before it looks at the
+  keyboard. Press <kbd>Esc</kbd> in the middle of a long intro and nothing happens: the key waits
+  its turn, and only when the animation ends does it skip the rest of the slide show. Whoever is
+  seeing your intro for the twentieth time is stuck watching it again.</p>
+  <ul>
+    <li><b>Cut long animations into clips.</b> Keep each <code>.FLI</code> to about four seconds
+    and list the clips one after another in the slide show, each with a pause of 0. Each clip
+    draws over the last frame of the one before, so they play as one animation, and
+    <kbd>Esc</kbd> gets its chance at every join.</li>
+    <li><b>Hide the joins.</b> Start each clip on the frame after the one the last clip ended on,
+    never the same frame again, and cut where the colors hold still, not halfway through a fade.
+    Only the last clip fades to black.</li>
+    <li><b>The menu’s pages too.</b> The story, the instructions and the credits are shown when
+    the player asks for them, and they should let go just as quickly.</li>
+  </ul>
   <h2>Animations of your own</h2>
   <p>Open any <code>.FLI</code> and choose <b>Scene maker</b> (or make a new animation with
   <i>Make a scene…</i>). A scene is a background, a map view or a color, with tracks on a
