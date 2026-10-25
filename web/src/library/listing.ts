@@ -7,7 +7,7 @@ import { isSandboxGame } from '../project/files';
 import { isOldSecret } from '../project/secretGames';
 import type { BoxItem } from '../manual/printables/viewer';
 import type { PrintContext, Sheet } from '../manual/printables/kit';
-import { GM_OWNER, shelfGames, typeOfPiece, type ShelfItem } from './shelf';
+import { GM_OWNER, SITE_OWNER, shelfGames, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
 
 export interface Shelf {
@@ -108,5 +108,6 @@ export async function loadShelf(): Promise<Shelf> {
   for (const piece of gmBoxItems(family)) add(GM_OWNER, gmTitle, piece, { via: 'gm', start: piece.id });
 
   items.push(...siteShelf(zine));
+  if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());
   return { items, thumbs, games };
 }

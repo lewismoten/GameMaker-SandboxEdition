@@ -224,7 +224,7 @@ modules are in [`../test`](../test).
     be seen), RSD's registration reply under the bedroom door (`mailDrop.ts`; its paper is
     `manual/printables/regConfirm.ts`, remembered in `retro/gmReg/replyMail.ts`), curtains, speaker,
     DEGAUSS, the black-light poster (`blacklight.ts`) and the felt eggs' glow under it
-    (`eggGlow.ts`), the zine under the toy whistle (`props/zine/`), and the room after dark with its
+    (`eggGlow.ts`), the toy whistle with the zine under it (`props/zine/`, the zine itself in `manual/zine/`), and the room after dark with its
     overhead light (`roomLight.ts`). `chezArt.ts` draws THE CHEZ from `games/kit/chez.ts`'s side
     view.
 - [`dosPage/`](dosPage): DOS Game-Maker (`dos.html`, `dosPage.ts`): the PC's page with its one-row
@@ -328,6 +328,10 @@ modules are in [`../test`](../test).
     (`gmItems.ts`, `gmInserts.ts`), The Bard of Bizarre's catalog (`bardCatalog.ts`) and RSD's
     registration reply (`regConfirm.ts`). `sandboxMark.ts` is Sandbox Software's emblem and
     `scoopIssue.ts` each box's newsletter number.
+- [`manual/zine/`](manual/zine): NO CARRIER #3, the hacker zine under the desk's toy whistle:
+  its pages (`zinePages.ts`), each on a quarter-letter leaf with its type fitted (`zineLeaf.ts`),
+  and its piece in the box viewer (`zineItem.ts`: one leaf at a time on screen, four to a letter
+  sheet in print), opened by the whistle and the Library.
 - [`manual/ultimate/`](manual/ultimate): The Ultimate Owner's Guide in the Game-Maker box.
   - `ultimateItem.ts` is its piece in the box and cover (small, so the box loads without the
     chapters), `ultimateGuide.ts` its pages, `plan.ts` its running order and page sums, `chapter.ts`

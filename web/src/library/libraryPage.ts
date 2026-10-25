@@ -2,7 +2,7 @@
 // or by the kind of paper (#/library?by=type), narrowed to one game or kind (&only=map), both
 // remembered per browser (prefs.ts). A card opens its piece
 // in the viewer that already shows it: its game's box (manual/gameManual.ts), the Game-Maker
-// box (manual/dosManual.ts), TURBO BUTTON, the Guide, or the desk's zine.
+// box (manual/dosManual.ts), TURBO BUTTON, the Guide, or the desk's zine (manual/zine).
 import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
@@ -23,7 +23,7 @@ const pickOf = (g: ShelfGroup) => g.key.replace(/^(game|type)-/, '');
 /** Waits for a box viewer to be on screen (or `done` to settle), for a card's "Opening…". */
 function whenShown(done: Promise<unknown>): Promise<void> {
   return new Promise((resolve) => {
-    const watch = new MutationObserver(() => document.querySelector('.gmb, .zine-overlay') && finish());
+    const watch = new MutationObserver(() => document.querySelector('.gmb') && finish());
     const finish = () => (watch.disconnect(), resolve());
     watch.observe(document.body, { childList: true });
     done.then(finish, finish);
@@ -47,8 +47,8 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
       const { openDosManual } = await import('../manual/dosManual');
       await whenShown(openDosManual(o.start));
     } else {
-      const { openZine } = await import('../desk/props/zine/zine');
-      void openZine(from);
+      const { openZine } = await import('../manual/zine/zineItem');
+      await whenShown(openZine());
     }
   } finally {
     from.removeAttribute('aria-busy');

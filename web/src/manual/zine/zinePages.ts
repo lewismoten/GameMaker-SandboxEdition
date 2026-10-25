@@ -1,4 +1,4 @@
-// The pages of NO CARRIER #3 (zine.ts), a photocopied hacker zine about the
+// The pages of NO CARRIER #3 (zineLeaf.ts, zineItem.ts), a photocopied hacker zine about the
 // desk PC's power tools, every line checked against how the tools really work (retro/).
 // Only this desk's PC, only this desk's phone: nothing here is about real systems.
 

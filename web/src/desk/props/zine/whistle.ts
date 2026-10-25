@@ -1,7 +1,7 @@
 // A little plastic toy whistle, the prize out of a cereal box, lying on the desk behind the
 // shareware catalog. Pick it up: under it is NO CARRIER, a photocopied
-// hacker zine about the desk PC's power tools (zine.ts). The first time is an achievement.
-import './zine.css'; // (the whistle's place on the desk, and the zine's look)
+// hacker zine about the desk PC's power tools (manual/zine), to read or print. The first time is an achievement.
+import './whistle.css';
 import { h } from '../../../editor/core/ui';
 import { pressable } from '../propKit';
 
@@ -20,10 +20,15 @@ export function toyWhistle(desk: HTMLElement): () => void {
   const el = h('button', { class: 'toy-whistle', type: 'button' });
   el.innerHTML = ART;
   home.append(el);
-  const off = pressable(el, "A toy whistle from a cereal box (and what's under it)", () => void import('./zine').then((m) => m.openZine(el)), {
-    id: 'desk-zine',
-    title: 'A toy whistle',
-  });
+  const off = pressable(
+    el,
+    "A toy whistle from a cereal box (and what's under it)",
+    () => void import('../../../manual/zine/zineItem').then((m) => m.openZine()),
+    {
+      id: 'desk-zine',
+      title: 'A toy whistle',
+    },
+  );
   return () => {
     off();
     el.remove();
