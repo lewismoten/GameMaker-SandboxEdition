@@ -209,8 +209,10 @@ export function ownersOf(items: readonly ShelfItem[]): { owner: string; title: s
   return [...seen].map(([owner, title]) => ({ owner, title }));
 }
 
-/** A length as HH:MM:SS (00:32:41), so walkthroughs compare at a glance. */
+/** A length the way a video shows it (32:41, 5:07), with hours only from an hour up (1:00:05). */
 export function hms(seconds: number): string {
   const s = Math.round(seconds);
-  return [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map((n) => String(n).padStart(2, '0')).join(':');
+  const [h, m, sec] = [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60];
+  const two = (n: number) => String(n).padStart(2, '0');
+  return h ? `${h}:${two(m)}:${two(sec)}` : `${m}:${two(sec)}`;
 }

@@ -170,12 +170,13 @@ describe('sorting the Library', () => {
     expect(groupShelf(papers, 'type')[0].parts[0].items.map((i) => i.key)).toEqual(['b:newsletter', 'c:newsletter', 'a:newsletter', 'a:own1']);
   });
 
-  it('puts walkthroughs shortest first, and writes their lengths as HH:MM:SS', () => {
+  it('puts walkthroughs shortest first, and writes their lengths with hours only from an hour up', () => {
     const walk = (owner: string, seconds: number): ShelfItem => ({ ...item(owner, 'walkthrough', 'walkthrough'), seconds });
     expect(groupShelf([walk('a', 900), walk('b', 300), walk('c', 2861)], 'type')[0].parts[0].items.map((i) => i.owner)).toEqual(['b', 'a', 'c']);
-    expect(hms(1961)).toBe('00:32:41');
-    expect(hms(307.4)).toBe('00:05:07');
-    expect(hms(3 * 3600 + 5)).toBe('03:00:05');
+    expect(hms(1961)).toBe('32:41');
+    expect(hms(307.4)).toBe('5:07');
+    expect(hms(59)).toBe('0:59');
+    expect(hms(3 * 3600 + 5)).toBe('3:00:05');
   });
 
   it('keeps every piece, once, either way', () => {

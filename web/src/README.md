@@ -298,7 +298,7 @@ modules are in [`../test`](../test).
   kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
   browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
   Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
-  (`walkShelf.ts`) with its length as HH:MM:SS over its title screen, shortest first by type,
+  (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
   played in the walkthrough player.
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
   keyboard reference, registration, business and ID, and license and warranty cards and hint
