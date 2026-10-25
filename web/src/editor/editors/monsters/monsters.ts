@@ -7,7 +7,7 @@ import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { blockCanvas, paintBlock } from '../../core/draw';
-import { paletteChooser } from '../blocks/blocks';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import { blockButton } from '../../widgets/blockChooser';
 import { fileField } from '../../widgets/filePicker';
 import { MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';

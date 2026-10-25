@@ -6,7 +6,7 @@ import { viewState } from '../../../urlState';
 import { h, clear, selectField, toast, debounce, modal, download } from '../../core/ui';
 import { blockButton } from '../../widgets/blockChooser';
 import { blockCanvas, blockImages } from '../../core/draw';
-import { paletteChooser } from '../blocks/blocks';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import type { FileKind, Project } from '../../core/project';
 import { fileField, pickFile } from '../../widgets/filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';

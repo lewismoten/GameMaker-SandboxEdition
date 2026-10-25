@@ -4,11 +4,10 @@ import { colorChoice } from '../../widgets/colorChoice';
 import './blocks.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { fileField } from '../../widgets/filePicker';
 import { TEXTURES, paintTexture } from '../../tools/textures';
 import { h, clear, numberField, checkField, selectField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock, lut } from '../../core/draw';
-import type { Project } from '../../core/project';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import {
   BLEN,
   BLOCK_COUNTS,
@@ -23,7 +22,7 @@ import {
   type Block,
   type BlockKind,
 } from '../../../formats/blocks';
-import { paletteCss, parsePalette, type Palette } from '../../../formats/palette';
+import { paletteCss } from '../../../formats/palette';
 import { LASTMON } from '../../../formats/monster';
 import { flipH, flipV, rotateCW, rotateCCW, shiftWrap, mirrorPoints, type Mirror } from './pixelOps';
 import { shade } from '../palette/ramps';
@@ -56,30 +55,6 @@ type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect';
 /** The painter's own settings, kept in the companion file (never in the block set). */
 interface PainterExtras {
   mirror?: Mirror;
-}
-
-export function paletteChooser(project: Project, file: string, onChange: (p: Palette) => void): { el: HTMLElement; palette: Palette } {
-  const found = project.paletteFor(file);
-  let choice = '';
-  const state = { palette: found.palette };
-  const el = fileField(
-    project,
-    'Show with palette',
-    ['pal'],
-    () => choice,
-    (v) => {
-      choice = v;
-      state.palette = v ? parsePalette(project.files.get(v)!) : project.paletteFor(file).palette;
-      onChange(state.palette);
-    },
-    { noneLabel: ['Scene palette', `the palette of the scene that uses it (${found.source})`] },
-  );
-  return {
-    el,
-    get palette() {
-      return state.palette;
-    },
-  };
 }
 
 registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {

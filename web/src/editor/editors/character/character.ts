@@ -14,7 +14,7 @@ import { blockButton } from '../../widgets/blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { History } from '../../core/history';
 import { drawBlockTo } from '../../core/draw';
-import { paletteChooser } from '../blocks/blocks';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import { audio } from '../../widgets/mediaShared';
 import { BACKBL, BLEN, CHARBL, newBlockSet, parseBlocks, serializeBlocks, type Block } from '../../../formats/blocks';
 import {
