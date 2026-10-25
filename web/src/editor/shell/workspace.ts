@@ -11,7 +11,7 @@ import { loadEditor, type EditorFn } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
-import { mountPlayer, type PlayerHandle } from '../../player/player';
+import type { PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
@@ -604,7 +604,10 @@ export class Workspace {
     );
     const copy = new GameFiles(this.project.files.entries());
     if (level) copy.set(this.project.gam, serializeGame(startingAt(level.game, level.scene)));
-    this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
+    // the player loads with the first play test; not if another file was opened meanwhile
+    void import('../../player/player').then(({ mountPlayer }) => {
+      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
+    });
   }
 
   /** The "Add a file" dialog: a grid of every kind of file, with a picture of each. */
