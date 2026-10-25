@@ -18,6 +18,15 @@ import { docLeoWalk } from './castLeoSide';
 import { NEEDLE_PAL, camelFront, needlePicture } from './castNeedle';
 import { EGG_PAL, eggShine, eggTurning } from './castEgg';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
+import { buildMonsterBlocks as goatMonsterBlocks } from '../../games/goat/src/sprites/sprites';
+import { buildPalette as goatPalette } from '../../games/goat/src/art/pal';
+import { buildMonsterBlocks as loafMonsterBlocks } from '../../games/loaf/src/sprites/sprites';
+import { buildPalette as loafPalette } from '../../games/loaf/src/art/pal';
+
+// monster blocks by the name each game's build gives them, so a rebuild that adds or moves
+// blocks can't put the wrong pictures on stage (as the child and the rooster once were)
+const goatBlock = goatMonsterBlocks(goatPalette('day')).n;
+const loafBlock = loafMonsterBlocks(loafPalette('plain')).n;
 
 /**
  * A hero from its .CHR: `seq` the sequence it walks on with (else the one that walks furthest
@@ -104,8 +113,8 @@ const CAST_SPRITES: Record<string, Source> = {
     file: 'loaf.mbl',
     pal: 'home.pal',
     frames: [
-      [[33], [35]],
-      [[34], [36]],
+      [[loafBlock('girlA0')], [loafBlock('girlB0')]],
+      [[loafBlock('girlA1')], [loafBlock('girlB1')]],
     ],
     ms: 180,
   },
@@ -134,7 +143,7 @@ const CAST_SPRITES: Record<string, Source> = {
     game: 'goat',
     file: 'goat.mbl',
     pal: 'stable.pal',
-    frames: [[[40]], [[41]]],
+    frames: [[[goatBlock('rooster0')]], [[goatBlock('rooster1')]]],
     ms: 220,
     recolor: { ffdf9e: 'ffffff', e3c282: 'dde0e6', c6a269: 'aab0bb', ffef79: 'ffc24a', dfbe51: 'f0902c' },
   },
