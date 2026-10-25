@@ -35,7 +35,7 @@ export function buildArt(x: ArtExtras): Record<string, Uint8Array> {
   const files: Record<string, Uint8Array> = {};
   const cast: Cast = { poet: x.poet, mons: x.mons };
   Object.assign(files, buildPictures(cast));
-  // the title: the Bard's logo, then the cover cartoon and its last frame held
+  // the title: the Bard's logo, then the cover cartoon, then the cover with the name held
   const cover = coverFli(cast);
   files[BARDLOGO] = bardIntroFli();
   files['cover.fli'] = cover.fli;

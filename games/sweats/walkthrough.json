@@ -187,7 +187,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 73628,
+  "frames": 73726,
   "chapters": [
    {
     "title": "Opening",
@@ -195,103 +195,103 @@
    },
    {
     "title": "Story",
-    "frame": 1239
+    "frame": 1337
    },
    {
     "title": "The Hive, Oakland",
-    "frame": 2962
+    "frame": 3060
    },
    {
     "title": "1. A Totally Normal Meeting",
-    "frame": 7376
+    "frame": 7474
    },
    {
     "title": "2. The Coffee Goat in the Breakroom",
-    "frame": 10709
+    "frame": 10807
    },
    {
     "title": "3. The Office Chair That Tried to Kill Me",
-    "frame": 13687
+    "frame": 13785
    },
    {
     "title": "4. Gerald the Ficus is Dead",
-    "frame": 17046
+    "frame": 17144
    },
    {
     "title": "Intermission 1",
-    "frame": 19373
+    "frame": 19471
    },
    {
     "title": "5. The Day the Self-Checkout Tried to Destroy Me",
-    "frame": 20511
+    "frame": 20609
    },
    {
     "title": "6. How I Earned a Nod from the Smoking Cashier",
-    "frame": 24192
+    "frame": 24290
    },
    {
     "title": "7. I Don’t Work Here, But Emotionally I Do",
-    "frame": 27678
+    "frame": 27776
    },
    {
     "title": "8. I Held in a Fart and Killed a Bird",
-    "frame": 31257
+    "frame": 31355
    },
    {
     "title": "Intermission 2",
-    "frame": 34511
+    "frame": 34609
    },
    {
     "title": "9. She Took the Blanket (and Left My Soul on the Floor)",
-    "frame": 35650
+    "frame": 35748
    },
    {
     "title": "10. Wore All the Weird Socks",
-    "frame": 39185
+    "frame": 39283
    },
    {
     "title": "11. How the Cat Won the Pizza War",
-    "frame": 42581
+    "frame": 42679
    },
    {
     "title": "12. Janet, This Is Not About You (It’s About the Itch)",
-    "frame": 45878
+    "frame": 45976
    },
    {
     "title": "13. Double Tap for Justice",
-    "frame": 49775
+    "frame": 49873
    },
    {
     "title": "Intermission 3",
-    "frame": 52957
+    "frame": 53055
    },
    {
     "title": "14. This Is Why I Don’t Go Outside",
-    "frame": 54096
+    "frame": 54194
    },
    {
     "title": "15. The Ants Have Spoken",
-    "frame": 56995
+    "frame": 57093
    },
    {
     "title": "16. The Day I Fought Cardboard",
-    "frame": 60319
+    "frame": 60417
    },
    {
     "title": "17. Shelter Me Gently, You Wounded Beast",
-    "frame": 63401
+    "frame": 63499
    },
    {
     "title": "The Curtain Call",
-    "frame": 67243
+    "frame": 67341
    },
    {
     "title": "Ending",
-    "frame": 68381
+    "frame": 68479
    },
    {
     "title": "Credits",
-    "frame": 71060
+    "frame": 71158
    }
   ]
  }
