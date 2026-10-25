@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 22694,
+  "frames": 22709,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1259
+    "frame": 1275
    },
    {
     "title": "Level 1: The Living Room",
-    "frame": 2967
+    "frame": 2983
    },
    {
     "title": "Level 2: The Kitchen",
-    "frame": 5297
+    "frame": 5313
    },
    {
     "title": "Level 3: The Void Between the Cushions",
-    "frame": 8111
+    "frame": 8127
    },
    {
     "title": "Level 4: The Living Room Ride",
-    "frame": 13324
+    "frame": 13340
    },
    {
     "title": "Ending",
-    "frame": 15496
+    "frame": 15512
    },
    {
     "title": "Credits",
-    "frame": 18206
+    "frame": 18221
    }
   ]
  }

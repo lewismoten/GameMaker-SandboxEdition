@@ -1,8 +1,8 @@
 // The 320x200 pictures: the menu, the paper behind text pages, the high scores, load and save,
 // and the credits (with Doc Leo); and the scenery the cartoons share: the living room at night
 // (wallpaper, wood paneling, carpet), the couch from the front, the console TV, the VCR and the
-// remote itself. The title is the cover drawn for the game (art/cover.ts, cover.fli and its
-// last frame, title.gif); the story, the level cards and the endings are cartoons
+// remote itself. The title is the cover drawn for the game (art/cover.ts, cover.fli, then
+// title.gif with the name); the story, the level cards and the endings are cartoons
 // (cartoons.ts).
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { Pixels, rng } from '../../../kit/pixels';
