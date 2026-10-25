@@ -500,8 +500,5 @@ export const POSES: Record<string, Pixels> = {
   ]),
 };
 
-/** The raised paw shown in the block above Teddy's head during a high five. */
-export const PAW_UP = S(['.....oo.....', '....owwo....', '...owwwwo...', '...owwwwo...', '....owwo....', '....otto....', '....otto....', '....otto....'], 7);
-
 /** Little stars circling a dizzy head (drawn above when tuckered out). */
 export const ZZZ = S(['.......kkk..', '.........k..', '........k...', '.......kkk..', '....kk......', '.....k......', '....kk......'], 6, 10);

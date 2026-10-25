@@ -207,6 +207,7 @@ export const ROUTES: Record<string, Order[]> = {
     { trick: 'five', after: 20 },
     { until: 'the bucket is running', check: (s) => s.monsters('bucket').length > 0 },
     { until: 'the bucket is down', maxTicks: 300, check: (s) => s.monsters('bucket').some((b) => b.y === 38) },
+    { wait: 8 },
     { hop: 5, dir: 'left', dirFor: 3 },
     { until: 'on the bucket', maxTicks: 60, check: (s) => s.pos.bx === 60 && s.pos.by <= 37 },
     { until: 'up top', maxTicks: 200, check: (s) => s.pos.by <= 33 },
