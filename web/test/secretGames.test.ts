@@ -41,14 +41,14 @@ describe('secret games', () => {
     expect(secretsListed()).toBe(0);
   });
 
-  it('adds games/extra.json once every felt egg is found', async () => {
+  it('adds the felt eggs’ file once every felt egg is found, and fetches no other', async () => {
     found.all = true;
     expect((await withSecretGames(list)).map((g) => g.id)).toEqual(['teddy', 'logic', 'bakers']);
-    expect(fetches).toEqual(['./games/extra.json']);
+    expect(fetches).toEqual(['./games/extra-1.json']);
     expect(secretsListed()).toBe(1);
   });
 
-  it('copes with a dev server from before games/extra.json', async () => {
+  it('copes with a dev server from before games/extra-<gate>.json', async () => {
     extra = undefined;
     const old = [...list, { id: 'bakers' }];
     expect(isOldSecret('bakers')).toBe(true);

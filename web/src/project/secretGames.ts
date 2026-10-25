@@ -6,7 +6,8 @@
 //
 // Nothing the site serves up front names them: the build (web/scripts/cdGames.ts) leaves
 // them out of games/index.json, games/catalog.json, the pages, sitemap and pictures, and
-// writes them to games/extra.json alone, which is fetched only once something is revealed.
+// writes them to games/extra-<gate>.json alone (1 the felt eggs', 2 the tin hearts'), each fetched
+// only once its gate is open, so finding one never downloads another's entry.
 // No id is written here either: SECRETS knows each by its idHash.
 
 /** What reveals a secret game. */
@@ -59,7 +60,7 @@ const SECRETS: Record<number, Gate> = { 0x3cb23e5f: 'eggs', 0x5cdf8e7d: 'hearts'
 
 /**
  * Whether a game is one of the secret ones, however a list came to name it (a dev server from
- * before games/extra.json lists them in games/index.json): the magazine and the credits never
+ * before games/extra-<gate>.json lists them in games/index.json): the magazine and the credits never
  * name one, even once it is revealed.
  */
 export const isOldSecret = (id: string): boolean => idHash(id) in SECRETS;
@@ -70,10 +71,10 @@ const shown = (id: string, open: number): boolean => {
   return !gate || (open & GATE_BIT[gate]) !== 0;
 };
 
-/** The secret games' entries (games/extra.json), or undefined when there is no such file. */
-async function fetchSecrets<T>(base: string): Promise<T[] | undefined> {
+/** One gate's secret games (games/extra-<gate bit>.json), or undefined when there is no such file. */
+async function fetchGate<T>(base: string, bit: number): Promise<T[] | undefined> {
   try {
-    const res = await fetch(`${base}extra.json`);
+    const res = await fetch(`${base}extra-${bit}.json`);
     if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
     const list = (await res.json()) as unknown;
     return Array.isArray(list) ? (list as T[]) : undefined;
@@ -82,13 +83,19 @@ async function fetchSecrets<T>(base: string): Promise<T[] | undefined> {
   }
 }
 
+/** The secret games' entries behind every open gate, or undefined when the server has none of their files. */
+async function fetchSecrets<T>(base: string, open: number): Promise<T[] | undefined> {
+  const lists = await Promise.all(Object.values(GATE_BIT).map((bit) => (open & bit ? fetchGate<T>(base, bit) : Promise.resolve([] as T[]))));
+  return lists.some((l) => l === undefined) && lists.every((l) => !l?.length) ? undefined : lists.flatMap((l) => l ?? []);
+}
+
 let listed: number | undefined;
 
 /** Which gates the last list given out showed the secret games of (undefined: none given out yet). */
 export const secretsListed = (): number | undefined => listed;
 
 /**
- * The list as it should show: with the secret games (fetched from `base`extra.json) whose
+ * The list as it should show: with the secret games (fetched from `base`extra-<gate>.json) whose
  * gate is open added, and without any that an older dev server listed in it while still hidden.
  */
 export async function withSecretGames<T extends { id: string }>(list: T[], base = './games/'): Promise<T[]> {
@@ -96,7 +103,7 @@ export async function withSecretGames<T extends { id: string }>(list: T[], base 
   const open = (listed = await secretsRevealed());
   const own = list.some((g) => !shown(g.id, open)) ? list.filter((g) => shown(g.id, open)) : list;
   if (!open) return own;
-  const extra = await fetchSecrets<T>(base);
+  const extra = await fetchSecrets<T>(base, open);
   if (!extra) return own; // an older dev server: they are in the list already
   const have = new Set(own.map((g) => g.id));
   return [...own, ...extra.filter((g) => g && typeof g.id === 'string' && !have.has(g.id) && shown(g.id, open))];
