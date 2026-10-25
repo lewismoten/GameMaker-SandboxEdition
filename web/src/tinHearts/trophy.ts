@@ -119,7 +119,7 @@ export const joeNote = (n: number): string =>
 
 /** What the trophy view says happened, once the scene has played. */
 const ALL_ALONG =
-  'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG.';
+  'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG. He left something else on the shelf, too.';
 
 /**
  * A closer look: the diamond heart on its stand, Mystery Robot Joe beside it, and his note.
