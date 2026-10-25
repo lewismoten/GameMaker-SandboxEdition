@@ -132,19 +132,13 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
   put('hiscore.gif', gif(scoresScreen()));
   put('load.gif', gif(drawerScreen('LOAD A CASE')));
   put('save.gif', gif(drawerScreen('FILE THE CASE')));
-  // the Sandbox Software logo first, then the game's own intro
+  // the Sandbox Software logo (title.lst and story.lst are with the cartoons, flics.ts)
   put(SANDLOGO, sandLogoFli());
-  lst('title.lst', [
-    [SANDLOGO, 0],
-    ['intro.fli', 0],
-    ['title.gif', 10],
-  ]);
 
   // pages of long text on the case file
   put('casefile.gif', gif(caseFile('')));
   put('story.gif', gif(caseFile("THE RAVEN'S BRIDE")));
   put('story.txt', wide(STORY));
-  lst('story.lst', [['story.fli', 0], ['story.gif', 0], ['story.txt']]);
   put('help.gif', gif(caseFile('HOW TO PLAY')));
   put('help.txt', wide(HELP));
   lst('help.lst', [['help.gif', 0], ['help.txt']]);

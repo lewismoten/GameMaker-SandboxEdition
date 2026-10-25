@@ -3,7 +3,10 @@
 // Slide shows (.LST) string them together with text pages, which is how a flashback is
 // told in Game-Maker.
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { clipEntries, fliClips } from '../../../kit/fliClips';
+import { SANDLOGO } from '../../../kit/sandlogo';
 import { dimmed } from '../../../kit/reel';
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from '../art/draw';
@@ -261,10 +264,16 @@ export function lostFli(): Uint8Array {
   return fli(frames, 6);
 }
 
+/** The cartoons, and the title and story lists that play the long ones in clips of about 4 seconds (Esc skips between clips). */
 export function buildFlics(): Record<string, Uint8Array> {
+  const intro = fliClips('intro.fli', introFli());
+  const story = fliClips('story.fli', storyFli());
   return {
-    'intro.fli': introFli(),
-    'story.fli': storyFli(),
+    ...intro,
+    ...story,
+    // the Sandbox Software logo first, then the game's own intro
+    'title.lst': serializeSlideList([{ name: SANDLOGO, pause: 0 }, ...clipEntries(intro, 0), { name: 'title.gif', pause: 10 }]),
+    'story.lst': serializeSlideList([...clipEntries(story, 0), { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]),
     'umbman.fli': umbrellaManFli(),
     'curtain.fli': curtainFli(),
     'swap.fli': swapFli(),
