@@ -401,28 +401,29 @@ export function sceneEditor(host: HTMLElement, project: Project, file: string): 
     select({ kind: 'item', id: copy.id });
   };
 
+  const main = h(
+    'div',
+    { class: 'scn-main' },
+    h('div', { class: 'fli-monitor scn-monitor' }, stage),
+    h(
+      'div',
+      { class: 'toolbar fli-transport' },
+      h('button', { type: 'button', 'aria-label': 'First frame', title: 'First frame', onclick: () => seek(0) }, '⏮'),
+      h('button', { type: 'button', 'aria-label': 'Previous frame', title: 'Previous frame (,)', onclick: () => seek(cur - 1) }, '◀'),
+      playBtn,
+      h('button', { type: 'button', 'aria-label': 'Next frame', title: 'Next frame (.)', onclick: () => seek(cur + 1) }, '▶'),
+      h('button', { type: 'button', 'aria-label': 'Last frame', title: 'Last frame', onclick: () => seek(scene.frames - 1) }, '⏭'),
+      counter,
+      scrub,
+    ),
+    warnings,
+  );
   clear(
     host,
     h(
       'div',
       { class: 'scn', onkeydown: keys },
-      h(
-        'div',
-        { class: 'scn-main' },
-        h('div', { class: 'fli-monitor scn-monitor' }, stage),
-        h(
-          'div',
-          { class: 'toolbar fli-transport' },
-          h('button', { type: 'button', 'aria-label': 'First frame', title: 'First frame', onclick: () => seek(0) }, '⏮'),
-          h('button', { type: 'button', 'aria-label': 'Previous frame', title: 'Previous frame (,)', onclick: () => seek(cur - 1) }, '◀'),
-          playBtn,
-          h('button', { type: 'button', 'aria-label': 'Next frame', title: 'Next frame (.)', onclick: () => seek(cur + 1) }, '▶'),
-          h('button', { type: 'button', 'aria-label': 'Last frame', title: 'Last frame', onclick: () => seek(scene.frames - 1) }, '⏭'),
-          counter,
-          scrub,
-        ),
-        warnings,
-      ),
+      main,
       side,
       h(
         'div',
@@ -483,7 +484,8 @@ export function sceneEditor(host: HTMLElement, project: Project, file: string): 
       ),
     ),
   );
-  fitToPane(timelineBox);
+  // the picture leaves room below it for the transport, the add buttons and some of the timeline
+  fitToPane(main, timelineBox);
   refresh(true);
   if (!stored)
     toast(

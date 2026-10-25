@@ -184,7 +184,7 @@
 /* the timeline: a heading column, then the bars across the scene's frames */
 .scn-timeline-box {
   overflow-y: auto;
-  max-height: max(160px, var(--room, 260px));
+  max-height: max(110px, var(--room, 260px));
 }
 
 .scn-timeline {
@@ -326,8 +326,10 @@
   .scn {
     grid-template-columns: auto minmax(300px, 1fr);
   }
+  /* --room (fitPane.ts): from the picture's top to the pane's bottom, less the transport, the add
+     buttons, the timeline's least height and the help line under them */
   .scn-main {
-    width: min(640px, max(320px, calc((var(--ws-vh, 100dvh) - 470px) * 4 / 3 + 28px)));
+    width: min(640px, max(320px, calc((var(--room, calc(var(--ws-vh, 100dvh) - 220px)) - 290px) * 4 / 3 + 28px)));
   }
   .scn-monitor {
     max-width: none;
