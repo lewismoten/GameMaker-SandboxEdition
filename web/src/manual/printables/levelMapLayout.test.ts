@@ -66,6 +66,18 @@ describe('Level Maps layout', () => {
     expect(seenArea({ x: 5, y: 5, w: 20, h: 20 }, [0, 0, 100, 100], [])).toEqual({ x: 5, y: 5, w: 20, h: 20 });
   });
 
+  it('takes in the rest of a room the crop would cut through, with the same margin as its other sides', () => {
+    // a room from x 22 to 77, seen only as far as x 73: the crop goes on to its wall and one block past
+    const cells = new Uint8Array(MLEN * MWID);
+    for (let y = 38; y <= 62; y++) for (let x = 22; x <= 77; x++) cells[y * MLEN + x] = 1;
+    const used = { x: 21, y: 37, w: 58, h: 27 };
+    expect(seenArea(used, [21, 32, 53, 35], [], 1, cells)).toEqual({ x: 21, y: 37, w: 58, h: 27 });
+    // a room that runs on far past the crop (more than 8 blocks) is cut as before
+    const wide = new Uint8Array(MLEN * MWID);
+    for (let y = 10; y <= 20; y++) for (let x = 0; x <= 99; x++) wide[y * MLEN + x] = 1;
+    expect(seenArea({ x: 0, y: 9, w: 100, h: 13 }, [10, 10, 30, 11], [], 1, wide)).toEqual({ x: 9, y: 9, w: 32, h: 13 });
+  });
+
   it('marks arrivals and ways out, joining a row of door blocks, and the end its own kind', () => {
     const marks = levelMarks(game, [2, 3]);
     expect(marks).toEqual([

@@ -113,9 +113,11 @@ export function hideSecrets(cells: ArrayLike<number>, blocks: Block[], secret: R
 
 /**
  * The used area cut down to what the player sees (`seen`, from levelViews.json) with `pad` cells
- * round it, but never so far that a mark (an arrival or a way out) is cut off.
+ * round it, but never so far that a mark (an arrival or a way out) is cut off. Given the map's
+ * `cells`, an edge that would cut through a room or a wall goes on to where it ends, so the
+ * picture never shows half a room.
  */
-export function seenArea(used: Rect, seen: SeenRect, marks: { x: number; y: number; w: number; h: number }[], pad = 1): Rect {
+export function seenArea(used: Rect, seen: SeenRect, marks: { x: number; y: number; w: number; h: number }[], pad = 1, cells?: ArrayLike<number>): Rect {
   let x0 = seen[0];
   let y0 = seen[1];
   let x1 = seen[0] + seen[2] - 1;
@@ -126,12 +128,37 @@ export function seenArea(used: Rect, seen: SeenRect, marks: { x: number; y: numb
     x1 = Math.max(x1, m.x + m.w - 1);
     y1 = Math.max(y1, m.y + m.h - 1);
   }
+  // an edge that cuts through a room or a wall goes on to where it ends (within SNAP blocks),
+  // so the picture shows the whole of it with the same margin as its other sides
+  if (cells) {
+    const filler = fillerBlock(cells);
+    const inMap = (x: number, y: number) => x >= 0 && y >= 0 && x < MLEN && y < MWID;
+    const emptyCol = (x: number) => {
+      for (let y = y0; y <= y1; y++) if (inMap(x, y) && cells[y * MLEN + x] !== filler) return false;
+      return true;
+    };
+    const emptyRow = (y: number) => {
+      for (let x = x0; x <= x1; x++) if (inMap(x, y) && cells[y * MLEN + x] !== filler) return false;
+      return true;
+    };
+    const reach = (from: number, step: number, empty: (v: number) => boolean) => {
+      for (let k = 0, v = from + step; k < SNAP; k++, v += step) if (empty(v)) return v - step;
+      return from;
+    };
+    if (!emptyCol(x1 + 1)) x1 = reach(x1, 1, emptyCol);
+    if (!emptyCol(x0 - 1)) x0 = reach(x0, -1, emptyCol);
+    if (!emptyRow(y1 + 1)) y1 = reach(y1, 1, emptyRow);
+    if (!emptyRow(y0 - 1)) y0 = reach(y0, -1, emptyRow);
+  }
   x0 = Math.max(used.x, x0 - pad);
   y0 = Math.max(used.y, y0 - pad);
   x1 = Math.min(used.x + used.w - 1, x1 + pad);
   y1 = Math.min(used.y + used.h - 1, y1 + pad);
   return x1 < x0 || y1 < y0 ? used : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
 }
+
+/** How far a crop's edge goes on to take in the rest of a room or wall it cuts through. */
+const SNAP = 8;
 
 type MarkKind = 'start' | 'exit' | 'end';
 
@@ -304,7 +331,7 @@ export function levelsOf(
     const whole = usedArea(cells, marks);
     const key = `${group.map}|${group.bbl}`;
     const seen = views[key];
-    const level: Level = { group, cells, area: seen ? seenArea(whole, seen, marks) : whole, whole, marks, name, scene: group.scenes[0] };
+    const level: Level = { group, cells, area: seen ? seenArea(whole, seen, marks, 1, cells) : whole, whole, marks, name, scene: group.scenes[0] };
     return [unrolled[key] ? unrolledLevel(level, unrolled[key]) : level];
   });
 }
