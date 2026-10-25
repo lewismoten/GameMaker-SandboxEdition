@@ -13,6 +13,7 @@
   "sameEverySide": ["couch.mon#29", "walls.mon#29", "bed.mon#29", "aux.mon#29"],
   "acceptedFindings": [
     "hurt-lock s2 Monster 9 holds the hero while it hurts",
-    "hurt-lock s7 Monster 22 holds the hero while it hurts"
+    "hurt-lock s7 Monster 22 holds the hero while it hurts",
+    "steady s2 With steady hands the bot can’t get past (49, 3)"
   ]
 }
