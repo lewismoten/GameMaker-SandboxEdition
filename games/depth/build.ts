@@ -12,6 +12,7 @@ import { serializeMonsters } from '../../web/src/formats/monster';
 import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { buildSprites } from './src/sprites/sprites';
 import { buildMonsters, monsterTouches } from './src/characters/monsters';
 import { buildRay } from './src/characters/ray';
@@ -77,5 +78,7 @@ disk.put('readme.txt', readme('$15'));
 disk.put('license.txt', licenseText('Depth Perception'));
 
 disk.put('depth.gam', serializeGame(buildGame(sets, files, screens.extra)));
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
 log('done');
