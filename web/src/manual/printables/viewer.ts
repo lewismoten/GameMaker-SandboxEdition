@@ -44,8 +44,10 @@ interface BoxOptions {
   start?: string;
 }
 
-const COMB_HOW = 'two pages a side: fold the stack, or cut it and bind it';
-const STAPLE_HOW = 'two pages a side: fold the stack, staple the fold';
+const COMB_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, or cut it and bind it';
+const STAPLE_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, staple the fold';
+/** A book's pages in reading order, for the screen: the booklet's imposed order is for folding. */
+const READ_HOW = 'every page in reading order: choose Save as PDF in the print dialog';
 
 /** Gap between the pages of a comb-bound spread, as a fraction of a page's width. */
 const COMB_GAP = 0.07;
@@ -196,8 +198,9 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       const item = items.find((i) => i.id === id);
       filmBtn.hidden = !item?.redFilm;
       if (!item?.redFilm) (film.hide(), lens.hide());
-      bookletBtn.firstChild!.textContent = item?.pages ? 'This booklet, two pages a side' : 'Manual as a booklet';
+      bookletBtn.firstChild!.textContent = item?.pages ? 'Print booklet: this one' : 'Print booklet: the manual';
       bookletBtn.lastChild!.textContent = !item?.pages && comb ? COMB_HOW : STAPLE_HOW;
+      pieceLabel();
       if (id === 'manual') {
         openBook('manual', pages, comb);
         showManual();
@@ -287,11 +290,18 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     printRoot.replaceChildren(...manualSingle());
     window.addEventListener('afterprint', afterPrint);
 
-    const bookletBtn = h('button', { onclick: () => void print('booklet') }, 'Manual as a booklet', h('small', null, comb ? COMB_HOW : STAPLE_HOW));
+    const bookletBtn = h('button', { onclick: () => void print('booklet') }, 'Print booklet: the manual', h('small', null, comb ? COMB_HOW : STAPLE_HOW));
+    // a book shown: its pages one after another, to read on screen (a PDF), not folded
+    const pieceBtn = h('button', { onclick: () => void print('item') }, 'This piece', h('small', null, ''));
+    const pieceLabel = () => {
+      const book = isBook();
+      pieceBtn.firstChild!.textContent = book ? 'Read on screen' : 'This piece';
+      pieceBtn.lastChild!.textContent = book ? READ_HOW : '';
+    };
     const menu = h(
       'div',
       { class: 'gmb-print-menu', hidden: true },
-      h('button', { onclick: () => void print('item') }, 'This piece'),
+      pieceBtn,
       bookletBtn,
       h('button', { onclick: () => void print('all') }, pages.length ? 'Everything in the box' : 'Everything here'),
     );
