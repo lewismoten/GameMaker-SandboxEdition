@@ -170,11 +170,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     h(
       'p',
       { class: 'lib-drop-hint' },
-      h(
-        'button',
-        { type: 'button', class: 'lib-drop-folder', 'aria-label': 'Open a game folder to import', onclick: () => void importPicked(nav, { directory: true }) },
-        'or open a folder…',
-      ),
+      h('button', { type: 'button', class: 'lib-drop-folder', onclick: () => void importPicked(nav, { directory: true }) }, 'or open a game folder…'),
     ),
   );
 
