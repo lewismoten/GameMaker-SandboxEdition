@@ -139,7 +139,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 54776,
+  "frames": 54785,
   "chapters": [
    {
     "title": "Opening",
@@ -147,79 +147,79 @@
    },
    {
     "title": "Story",
-    "frame": 2179
+    "frame": 2181
    },
    {
     "title": "Level 1: Doc Leo's Garage",
-    "frame": 5041
+    "frame": 5046
    },
    {
     "title": "Level 2: Maple Street",
-    "frame": 7377
+    "frame": 7382
    },
    {
     "title": "Level 3: Puddlewick Park",
-    "frame": 9531
+    "frame": 9536
    },
    {
     "title": "Level 4: Gwinn's Invitations",
-    "frame": 12277
+    "frame": 12282
    },
    {
     "title": "Level 5: Downtown",
-    "frame": 14749
+    "frame": 14754
    },
    {
     "title": "Level 6: Doc Leo's Balloons",
-    "frame": 17946
+    "frame": 17951
    },
    {
     "title": "Level 7: The River Road",
-    "frame": 20595
+    "frame": 20600
    },
    {
     "title": "Level 8: The Old Mill",
-    "frame": 22983
+    "frame": 22988
    },
    {
     "title": "Level 9: Gwinn's Buried Treasure",
-    "frame": 25902
+    "frame": 25907
    },
    {
     "title": "Level 10: Pie Practice",
-    "frame": 28267
+    "frame": 28272
    },
    {
     "title": "Level 11: The Funhouse",
-    "frame": 31272
+    "frame": 31277
    },
    {
     "title": "Level 12: Lookout Hill",
-    "frame": 34162
+    "frame": 34167
    },
    {
     "title": "Level 13: Firefly Meadow",
-    "frame": 36663
+    "frame": 36668
    },
    {
     "title": "Level 14: Gwinn Hides Backstage",
-    "frame": 39105
+    "frame": 39110
    },
    {
     "title": "Level 15: Doc Leo Hangs the Lights",
-    "frame": 41797
+    "frame": 41802
    },
    {
     "title": "Level 16: The Teddy Course",
-    "frame": 45175
+    "frame": 45180
    },
    {
     "title": "Ending",
-    "frame": 48708
+    "frame": 48713
    },
    {
     "title": "Credits",
-    "frame": 51647
+    "frame": 51652
    }
   ]
  }
