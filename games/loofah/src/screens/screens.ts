@@ -1,6 +1,6 @@
 // The 320x200 pictures: the menu, the paper behind text pages, the high scores, load and save,
 // and the credits (with Doc Leo). The title is the art drawn for the game (art/cover.ts,
-// cover.fli and its last frame, title.gif); the story, the act cards and the endings are
+// cover.fli, then title.gif with the name); the story, the act cards and the endings are
 // cartoons (cartoons.ts).
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { Pixels, rng } from '../../../kit/pixels';

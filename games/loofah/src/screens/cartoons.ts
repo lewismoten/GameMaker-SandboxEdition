@@ -11,6 +11,7 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Reel } from '../../../kit/reel';
+import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -106,7 +107,7 @@ function mirror(p: Pixels, pal: Pal, x: number, y: number, w: number, h: number,
 /** How many pictures of the cover the title animates through. */
 const COVER_FRAMES = 12;
 
-/** The title cartoon (cover.fli) and its last picture with the name on it (title.gif's pixels and palette). */
+/** The title cartoon (cover.fli: the cover comes to life, an iris closes, a fade to black) and the cover with the name on it (title.gif's pixels and palette). */
 export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } {
   const frames = Array.from({ length: COVER_FRAMES }, (_, k) => coverRgb(k / (COVER_FRAMES - 1)));
   // inks for the lettering first (black, coral, the candle's gold, a deep shadow, white), then the cover's colors
@@ -137,12 +138,8 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
   r.fadeIn(pics[0], 6);
   pics.forEach((p, i) => r.add(p, i === 0 ? 4 : 2));
   const last = pics[pics.length - 1];
-  for (const [k, drop] of [-70, -44, -20, 2, 10, 5, 7].entries()) {
-    const p = new Pixels(W, H);
-    p.px.set(last.px);
-    name(p, drop, k >= 5);
-    r.add(p, k === 6 ? 10 : 1);
-  }
+  // the name is the title picture's: the cartoon closes on an iris and fades to black instead
+  r.irisOut(160, 138, 8).fadeOut(fadeOutLength(SPEED));
   const title = new Pixels(W, H);
   title.px.set(last.px);
   name(title, 7, true);

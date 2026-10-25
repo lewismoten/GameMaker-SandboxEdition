@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18504,
+  "frames": 18520,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1259
+    "frame": 1275
    },
    {
     "title": "Act I: Cursed in the Shower",
-    "frame": 3183
+    "frame": 3199
    },
    {
     "title": "Act II: The Forest-Dark Aisle",
-    "frame": 5184
+    "frame": 5200
    },
    {
     "title": "Act III: You Crossed a Line",
-    "frame": 8199
+    "frame": 8215
    },
    {
     "title": "Act IV: Scrubbus Maximus",
-    "frame": 11112
+    "frame": 11128
    },
    {
     "title": "Ending",
-    "frame": 13212
+    "frame": 13228
    },
    {
     "title": "Credits",
-    "frame": 15936
+    "frame": 15952
    }
   ]
  }
