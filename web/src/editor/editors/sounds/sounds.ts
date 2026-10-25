@@ -95,6 +95,14 @@ registerEditor(['snd'], (host, project, file) => {
     audio.stopVoc();
     audio.playSpeaker(snd.freqs[i]);
   };
+  /** The list's PC speaker button: the slot's own steps, or (none drawn) a draft made from its .voc. */
+  const previewSpeaker = async (i: number) => {
+    const steps = hasSpeaker(i) ? snd.freqs[i] : fromVoc(i);
+    if (!steps) return;
+    await audio.resume();
+    audio.stopVoc();
+    audio.playSpeaker(steps);
+  };
   const playVoc = async (i: number) => {
     const voc = vocOf(i);
     if (!voc) return;
@@ -108,6 +116,13 @@ registerEditor(['snd'], (host, project, file) => {
   function renderList(): void {
     clear(
       list,
+      h(
+        'div',
+        { class: 'snd-item snd-heads', 'aria-hidden': 'true' },
+        h('span', { class: 'snd-name' }, 'Effect'),
+        h('span', { class: 'snd-col', title: 'PC speaker' }, 'PC'),
+        h('span', { class: 'snd-col', title: 'Sound Blaster' }, 'SB'),
+      ),
       ...snd.freqs.map((_, i) =>
         h(
           'div',
@@ -122,13 +137,30 @@ registerEditor(['snd'], (host, project, file) => {
             },
             `${i}. ${SOUND_NAMES[i] ?? 'Effect'}${snd.digital[i] ? ' 🔊' : ''}`,
           ),
+          // two columns: what a PC speaker plays, and what a Sound Blaster plays
           h(
             'button',
             {
-              title: hasAudio(i) ? 'Play as the game would' : 'No sound yet: no PC speaker steps and no .voc file',
-              'aria-label': `Play effect ${i} as the game would`,
-              disabled: !hasAudio(i),
-              onclick: () => void play(i),
+              class: 'snd-col',
+              title: hasSpeaker(i)
+                ? 'PC speaker'
+                : vocOf(i)
+                  ? 'No PC speaker steps (the game is silent here on a PC speaker): plays a draft made from its .voc'
+                  : 'No PC speaker steps and no .voc file',
+              'aria-label': `Play effect ${i} on the PC speaker${hasSpeaker(i) ? '' : vocOf(i) ? ' (a draft from its .voc)' : ''}`,
+              disabled: !hasSpeaker(i) && !vocOf(i),
+              onclick: () => void previewSpeaker(i),
+            },
+            hasSpeaker(i) ? '▶' : '▷',
+          ),
+          h(
+            'button',
+            {
+              class: 'snd-col',
+              title: vocOf(i) ? `Sound Blaster: ${vocOf(i)!.toUpperCase()}` : 'No .voc file: a Sound Blaster plays the PC speaker sound',
+              'aria-label': `Play effect ${i} on the Sound Blaster`,
+              disabled: !vocOf(i),
+              onclick: () => void playVoc(i),
             },
             '▶',
           ),
