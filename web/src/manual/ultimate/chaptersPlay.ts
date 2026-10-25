@@ -1,5 +1,7 @@
 // The Ultimate Owner's Guide, chapters 3 to 5: monsters and characters, counters and logic,
-// scenes and links. Checked against PLAYGAME (code/GM/PLAYGAME.C) and web/src/engine.
+// scenes and links. Checked against PLAYGAME (code/GM/PLAYGAME.C) and web/src/engine
+// (CharBirthMon turns a fired shot to its way, movechars gives an empty Idle block 0,
+// StartSceneInits takes the starting values from the first scene's character only).
 import { opening, tip, type Chapter } from './chapter';
 
 export const ACTORS: Chapter = {
@@ -54,10 +56,14 @@ export const ACTORS: Chapter = {
   interrupted (a jump that finishes), to run once per key press, or to build up momentum.</p>
   <ul>
     <li><b>Firing.</b> A frame can give birth to a monster at the hero: a shot, a thrown pie,
-    a puff of dust. Shots fly off in the direction he last moved.</li>
+    a puff of dust. A shot that moves toward or away from the hero ignores him once fired and
+    flies straight the way he last moved, jumps included, turned to match: mirrored when it flies
+    left, turned on end when it flies up or down. So draw every shot facing right.</li>
     <li><b>Ammunition.</b> Sequences 5 to 19 each have a counter; every run uses one, and at
     zero the key does nothing. Blocks that add to that counter are refills.</li>
     <li><b>Tools.</b> A sequence can need a block in the inventory: no hammer, no hammering.</li>
+    <li><b>Idle needs a picture.</b> Leave the Idle sequence empty and the standing hero shows
+    the character set’s first block, whatever it is. Give Idle at least one frame.</li>
     <li><b>A voice of his own.</b> Each sequence plays one sound from the scene’s set when it
     starts, so a “talk” key can say a line.</li>
   </ul>
@@ -114,6 +120,28 @@ export const LOGIC: Chapter = {
   <p>Their starting values are set in the Character Maker. Score, counters, lives and the
   inventory travel with the hero from scene to scene. A counter set to <i>unlimited</i> never
   changes and never stands in anyone’s way.</p>
+  <p>Only the first character sets them. The starting hit points, lives, money and special
+  counters come from the character of the first scene the game plays, and a scene with another
+  character file later changes his sequences and pictures, never those numbers. A sequence
+  counter is the one exception: a later character’s counter counts for a sequence the first
+  character never had. So heroes chosen at a select screen can differ in speed, jump, weapons
+  and voice, but not in how much they can take.</p>
+  <h2>Showing a count</h2>
+  <p>Nothing is on the screen while the game plays. <kbd>F2</kbd> shows hit points, lives, score
+  and money, and nothing shows the special or sequence counters at all. Players who can’t see
+  what they have stop trying to collect it, so show the count in the world:</p>
+  <ul>
+    <li><b>Draw the price on the gate.</b> A door that wants three keys has three keyholes
+    drawn on it.</li>
+    <li><b>A gate that counts down.</b> Instead of one gate that takes 3, make a chain: a gate
+    with three lamps that takes 1 and becomes the same gate with two lamps, and so on. Each bump
+    with a token lights one more, and the player sees how many are still to find.</li>
+    <li><b>Ammunition in the picture.</b> A refill drawn with its number on it (a box marked 5)
+    tells the player how many he just got. If keeping count matters, make the gun unlimited and
+    put the challenge somewhere else.</li>
+    <li><b>Progress on the card.</b> The intro picture of each level can say which level it is
+    of how many, and what is still to do.</li>
+  </ul>
   <h2>Gates that need a counter</h2>
   <p>A background block that takes from <b>money</b> or a <b>special counter</b> is refused
   unless the counter holds at least that much. A refused touch does nothing at all: no points,
