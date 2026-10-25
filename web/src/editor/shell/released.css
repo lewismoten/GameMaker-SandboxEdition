@@ -31,3 +31,15 @@
   padding: 3px 12px;
   font-size: 13px;
 }
+
+/* the editors size themselves by --ws-vh (editor.css), so the bar's height comes off it */
+@media (min-width: 1200px) {
+  .workspace:has(.released-bar) {
+    --ws-vh: calc(100dvh - 52px);
+  }
+}
+@media (min-width: 901px) and (max-width: 1199px) {
+  .workspace:has(.released-bar) {
+    --ws-vh: calc(100dvh - 104px);
+  }
+}
