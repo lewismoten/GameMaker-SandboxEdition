@@ -36,9 +36,10 @@ function sheet(d: Draft): HTMLElement {
     .join('');
   el.innerHTML = d.floppy
     ? `<svg viewBox="0 0 90 90" width="72" height="72" aria-hidden="true">
-        <rect x="2" y="2" width="86" height="86" rx="3" fill="#2a2d33"/>
-        <rect x="22" y="2" width="44" height="26" fill="#b9bec6"/><rect x="50" y="6" width="10" height="18" fill="#2a2d33"/>
-        <rect x="10" y="40" width="70" height="44" fill="#fbf8ee"/>
+        <path d="M5 2H85a3 3 0 0 1 3 3V85a3 3 0 0 1-3 3H10L2 80V5a3 3 0 0 1 3-3Z" fill="#2a2d33"/>
+        <rect x="24" y="62" width="44" height="26" fill="#b9bec6"/><rect x="30" y="66" width="10" height="18" fill="#2a2d33"/>
+        <rect x="10" y="6" width="70" height="46" fill="#fbf8ee"/>
+        <rect x="4" y="5" width="4" height="5" fill="#0d0e10"/><rect x="82" y="5" width="4" height="5" fill="#0d0e10"/>
         ${lines}</svg>`
     : `<svg viewBox="0 0 150 60" width="150" height="60" aria-hidden="true">
         <path d="M4 6 L146 3 L144 56 L6 58 Z" fill="#fbf8ee" stroke="#b9b39f"/>

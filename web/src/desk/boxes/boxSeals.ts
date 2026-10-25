@@ -156,10 +156,11 @@ export function diskIcons(ctx: CanvasRenderingContext2D, x: number, y: number, h
     ctx.lineWidth = 1;
     ctx.fillRect(dx, y, s, s);
     ctx.strokeRect(dx, y, s, s);
+    // shutter down, label up
     ctx.fillStyle = '#c8c8c8';
-    ctx.fillRect(dx + s * 0.25, y, s * 0.5, s * 0.32);
+    ctx.fillRect(dx + s * 0.25, y + s * 0.68, s * 0.5, s * 0.32);
     ctx.fillStyle = '#f2f2f2';
-    ctx.fillRect(dx + s * 0.15, y + s * 0.5, s * 0.7, s * 0.5);
+    ctx.fillRect(dx + s * 0.15, y + s * 0.06, s * 0.7, s * 0.46);
   }
   const iconW = s + (shown - 1) * s * 0.35;
   ctx.fillStyle = ink;
@@ -209,7 +210,7 @@ export function platformBadge(ctx: CanvasRenderingContext2D, x: number, y: numbe
     const sy = y + h - strip - 3;
     ctx.fillStyle = '#fff';
     ctx.fillRect(x + 3, sy, w - 6, strip);
-    // a little 3½" disk, then the count
+    // a little 3½" disk (shutter down, label up), then the count
     const d = strip * 0.7;
     ctx.font = CONDENSED(pcPx);
     const label = `${disks} × 3½" DISK${disks === 1 ? '' : 'S'}`;
@@ -219,9 +220,9 @@ export function platformBadge(ctx: CanvasRenderingContext2D, x: number, y: numbe
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(dx, dy, d, d);
     ctx.fillStyle = '#c8c8c8';
-    ctx.fillRect(dx + d * 0.25, dy, d * 0.5, d * 0.32);
+    ctx.fillRect(dx + d * 0.25, dy + d * 0.68, d * 0.5, d * 0.32);
     ctx.fillStyle = '#f2f2f2';
-    ctx.fillRect(dx + d * 0.15, dy + d * 0.5, d * 0.7, d * 0.5);
+    ctx.fillRect(dx + d * 0.15, dy + d * 0.06, d * 0.7, d * 0.46);
     ctx.fillStyle = '#0b0b0b';
     ctx.textAlign = 'left';
     ctx.fillText(label, dx + d + 6, sy + strip * 0.72);
