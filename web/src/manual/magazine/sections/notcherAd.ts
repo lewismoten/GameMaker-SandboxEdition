@@ -40,7 +40,7 @@ const notcherAd = () =>
                 side(
                   'BEFORE: 720K',
                   [
-                    art('notch-before', 'The back of a blue 3½ inch disk with one square hole, in its lower right corner'),
+                    art('notch-before', 'The back of a blue 3½ inch disk with one square hole, in its upper right corner, and its shutter at the bottom'),
                     list(['One hole: write-protect', 'FORMAT A: **720K**']),
                   ],
                   'white',
@@ -50,7 +50,7 @@ const notcherAd = () =>
                 side(
                   'AFTER: 1.44 MB',
                   [
-                    art('notch-after', 'The same disk with a second square hole punched in its lower left corner, circled in red'),
+                    art('notch-after', 'The same disk with a second square hole punched in its upper left corner, circled in red'),
                     list(['Two holes: **high density**', 'FORMAT A: **1.44 MB**']),
                   ],
                   'yellow',
