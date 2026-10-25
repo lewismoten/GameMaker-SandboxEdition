@@ -52,6 +52,13 @@ dialog.modal.sv-dialog[open] {
   text-transform: uppercase;
   color: var(--muted);
 }
+/* no saved games yet: how to make one (savesPanel.ts) */
+.sv-nav-empty {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .sv-nav-head:first-child {
   margin-top: 0;
 }
@@ -445,6 +452,10 @@ dialog.modal .sv-inf {
   }
   .sv-nav-head {
     display: none;
+  }
+  .sv-nav-empty {
+    flex: 0 0 150px;
+    align-self: center;
   }
   .sv-nav-item {
     width: auto;

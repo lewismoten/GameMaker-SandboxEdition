@@ -187,6 +187,10 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     clear(
       nav,
       h('h3', { class: 'sv-nav-head' }, 'Saved games'),
+      // none yet: how a game gets one
+      saves.slots.every((s) => !s.save && !s.error && !work.get(s.slot)?.save)
+        ? h('p', { class: 'sv-nav-empty' }, 'None yet: press F5 while playing to save, and F6 to load.')
+        : null,
       ...saves.slots.map((s) => {
         const save = work.get(s.slot)?.save ?? s.save;
         const sub = s.error ? 'Damaged' : save ? `${fmt(save.world.ci.score)} pts · ${labels?.sceneName(save.doscene) ?? `level ${save.doscene}`}` : 'Empty';
