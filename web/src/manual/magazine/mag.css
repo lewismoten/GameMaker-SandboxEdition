@@ -795,7 +795,7 @@
 
 /* and its advertiser index in three columns, set a little closer than body text */
 .kind-contents .mag-side .mag-cell {
-  gap: 0.3em;
+  gap: 0.15em;
 }
 
 /* a listing with a small screenshot at its left */
@@ -1464,7 +1464,7 @@
 /* the advertiser index lists the small ads too, so its lines sit closer */
 .kind-contents .mag-side .mag-cell > p {
   margin: 0;
-  line-height: 1.25;
+  line-height: 1.18;
 }
 
 .mag-beside {

@@ -1,6 +1,7 @@
 // The contents page: every section with its page, and the advertiser index. issue.ts fills it
 // in once every page has its number (the section's own pages() is only a placeholder).
 import { grid, head, note, p, side } from '../blocks';
+import { plain } from '../inline';
 import type { MagPage, MagSection, TocEntry } from '../types';
 
 export const CONTENTS: MagSection = {
@@ -10,10 +11,24 @@ export const CONTENTS: MagSection = {
   pages: () => [{ kind: 'contents', blocks: [] }],
 };
 
-/** A list in three columns, the first ones the longer. */
-const thirds = <T>(list: T[]): T[][] => {
-  const n = Math.ceil(list.length / 3);
-  return [list.slice(0, n), list.slice(n, 2 * n), list.slice(2 * n)];
+/** About how many characters fit on a line of an advertiser index column. */
+const LINE = 33;
+
+/**
+ * A list in three columns, in order, cut where the tallest column is shortest: an entry too long
+ * for one line takes two (or more), so the columns come out even in lines, not in entries.
+ */
+const thirds = (list: string[]): string[][] => {
+  const lines = list.map((s) => Math.max(1, Math.ceil(plain(s).length / LINE)));
+  const sum = (a: number, b: number) => lines.slice(a, b).reduce((n, x) => n + x, 0);
+  let best: [number, number] = [0, 0];
+  let tallest = Infinity;
+  for (let i = 1; i < list.length; i++)
+    for (let j = i; j < list.length; j++) {
+      const t = Math.max(sum(0, i), sum(i, j), sum(j, list.length));
+      if (t < tallest) [tallest, best] = [t, [i, j]];
+    }
+  return [list.slice(0, best[0]), list.slice(best[0], best[1]), list.slice(best[1])];
 };
 
 /** Each advertiser once, with every page it has an ad on (a real index's "· 32, 55"). */
@@ -39,8 +54,8 @@ export function contentsPage(toc: TocEntry[], ads: TocEntry[]): MagPage {
         [
           grid(
             thirds(
-              advertisers(ads).map(([title, at]) => p(`${keepTail(title)}\u00a0·\u00a0${at.map((a) => `[${a.folio}](go:mag/${a.page})`).join(',\u00a0')}`)),
-            ),
+              advertisers(ads).map(([title, at]) => `${keepTail(title)}\u00a0·\u00a0${at.map((a) => `[${a.folio}](go:mag/${a.page})`).join(',\u00a0')}`),
+            ).map((col) => col.map((line) => p(line))),
             0.2,
           ),
           note('Every advertiser’s page links to the real thing on this site, and all of it is free to play and read here.'),

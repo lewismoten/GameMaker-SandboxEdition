@@ -21,6 +21,7 @@ import { REVIEWS } from './sections/reviews';
 import { MAXIMUS } from './sections/maximus';
 import { SPOTLIGHT } from './sections/spotlight';
 import { BBS_LISTINGS } from './sections/bbsListings';
+import { SHAREWARE_SHELF } from './sections/shelf';
 import { STORE } from './sections/store';
 import { MUG_AD } from './sections/mugAd';
 import { HARDWARE } from './sections/hardware';
@@ -52,6 +53,7 @@ export const SECTIONS: MagSection[] = [
   MAXIMUS,
   SPOTLIGHT,
   BBS_LISTINGS,
+  SHAREWARE_SHELF,
   // the back of the book: where the jumped stories pick up
   LEWIS_JUMP,
   CLAUDE_JUMP,
