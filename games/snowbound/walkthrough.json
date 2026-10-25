@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19771,
+  "frames": 19772,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1448
+    "frame": 1449
    },
    {
     "title": "Level 1: Gale Street",
-    "frame": 3808
+    "frame": 3809
    },
    {
     "title": "Level 2: Jamie Street",
-    "frame": 7933
+    "frame": 7934
    },
    {
     "title": "Level 3: Bowden Drive",
-    "frame": 9044
+    "frame": 9045
    },
    {
     "title": "Level 4: LaVale Mall",
-    "frame": 12999
+    "frame": 13000
    },
    {
     "title": "Ending",
-    "frame": 15299
+    "frame": 15300
    },
    {
     "title": "Credits",
-    "frame": 18219
+    "frame": 18220
    }
   ]
  }

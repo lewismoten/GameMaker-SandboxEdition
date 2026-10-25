@@ -11,6 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildBlocks } from './src/blocks/blocks';
 import { MON } from './src/ids';
@@ -251,6 +252,8 @@ disk.put('lost.cmf', lostSong());
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
 disk.put('license.txt', licenseText('Snowbound: The $89 Shovel'));
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,
