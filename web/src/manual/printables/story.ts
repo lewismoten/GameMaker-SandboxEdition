@@ -24,8 +24,10 @@ import type {
 // ------------------------------------------------------------------ maps
 async function mapPanel(ctx: PrintContext, p: MapPanel, start: number): Promise<HTMLElement> {
   const src = await ctx.shot(p);
-  const marks = (p.marks ?? []).map((m, i) => {
-    const n = m.kind === 'secret' ? '★' : m.kind === 'start' ? '▶' : String(start + i);
+  // numbered as the key numbers them: the start and a secret have symbols, not numbers
+  let next = start;
+  const marks = (p.marks ?? []).map((m) => {
+    const n = m.kind === 'secret' ? '★' : m.kind === 'start' ? '▶' : String(next++);
     return h(
       'span',
       { class: `mp-mark mk-${m.kind ?? 'note'}`, style: `left:${((m.x - p.x + 0.5) / p.w) * 100}%;top:${((m.y - p.y + 0.5) / p.h) * 100}%`, title: m.label },
