@@ -22,7 +22,7 @@ export const MAX_TOTAL_BYTES = 48 * 1024 * 1024;
 /** The most bytes in one file. */
 export const MAX_FILE_BYTES = 16 * 1024 * 1024;
 /** A game's name is cut to this many characters. */
-export const MAX_NAME = 60;
+const MAX_NAME = 60;
 /** How long the page waits for the opener's files after saying it is ready. */
 export const WAIT_MS = 60_000;
 

@@ -9,7 +9,7 @@ import type { GameList } from './list';
 import { allSaves, deleteSaves, loadSaves, mergeSaves, saveSummaries, savesPersist } from './saves';
 
 /** The example list the how-to shows (docs/web-player.md has the same). */
-export const EXAMPLE_LIST = `{
+const EXAMPLE_LIST = `{
   "title": "My old games",
   "games": [
     { "title": "Nebula Patrol", "folder": "nebula/", "gam": "NEBULA.GAM" },
@@ -18,7 +18,7 @@ export const EXAMPLE_LIST = `{
 }`;
 
 /** This page's address with ?game= (keeping ?list=). */
-export function gameHref(id: string, listParam: string | null): string {
+function gameHref(id: string, listParam: string | null): string {
   const q = new URLSearchParams();
   if (listParam) q.set('list', listParam);
   q.set('game', id);

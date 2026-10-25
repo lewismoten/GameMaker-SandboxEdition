@@ -17,7 +17,7 @@ export const DEFAULT_LIFT = 5.5;
 export type Side = 'front' | 'back';
 export type Orientation = 'portrait' | 'landscape';
 
-export interface Rect {
+interface Rect {
   x: number;
   y: number;
   w: number;

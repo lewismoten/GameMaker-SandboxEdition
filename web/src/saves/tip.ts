@@ -8,7 +8,7 @@ type Child = Parameters<typeof h>[2];
 
 let next = 0;
 
-export interface Tip {
+interface Tip {
   /** The ⓘ button and its bubble, to put beside a label. */
   el: HTMLElement;
   /** The bubble's id, for aria-describedby. */

@@ -6,7 +6,7 @@ import { deskNow } from '../../retro/dos/deskClock';
 const MONTH = 29.530588853; // days
 const NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
 
-export interface Moon {
+interface Moon {
   /** 0 new, 0.25 first quarter, 0.5 full, 0.75 last quarter. */
   age: number;
   /** The share of the disc that is lit, 0 to 1. */

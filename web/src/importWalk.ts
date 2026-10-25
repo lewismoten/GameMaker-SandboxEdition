@@ -4,7 +4,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
 
-export const SRC = resolve(__dirname);
+const SRC = resolve(__dirname);
 
 /** import … from '…', export … from '…' and import '…', but not import type / export type. */
 const STATIC = /(?:^|[;\s])(?:import|export)\s+(?!type\s)(?:[^'";]*?\sfrom\s*)?['"]([^'"]+)['"]/g;

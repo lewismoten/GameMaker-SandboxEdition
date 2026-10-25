@@ -22,7 +22,7 @@ export const NEEDLE_PAL: [number, number, number][] = [
 const NEEDLE_W = 26;
 const NEEDLE_H = 52;
 /** The eye's middle, from the needle picture's top left. */
-export const NEEDLE_EYE = { x: 8, y: 14 };
+const NEEDLE_EYE = { x: 8, y: 14 };
 
 /** The needle, CLEAR around it and through its eye. */
 export function needlePicture(): Pixels {

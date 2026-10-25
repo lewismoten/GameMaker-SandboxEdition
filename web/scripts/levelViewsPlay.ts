@@ -39,7 +39,7 @@ const isLevel = (game: Game, n: number) => n > 1 && game.scenes[n]?.gametype ===
 const groupKey = (game: Game, n: number) => `${game.scenes[n].files[1].toLowerCase()}|${game.scenes[n].files[2].toLowerCase()}`;
 
 /** Seen boxes by map group, [x0, y0, x1, y1] inclusive. */
-export class Seen {
+class Seen {
   readonly boxes = new Map<string, number[]>();
   add(key: string, x0: number, y0: number, x1: number, y1: number): void {
     const r = [Math.max(0, x0), Math.max(0, y0), Math.min(MLEN - 1, x1), Math.min(MWID - 1, y1)];
@@ -131,7 +131,7 @@ async function explorerViews(game: Game, files: Map<string, Uint8Array>, seen: S
 }
 
 /** Top-down scenes: every cell joined to a way in through blocks that let the hero by or change, half a screen round each. */
-export function floodViews(game: Game, files: Map<string, Uint8Array>, seen: Seen): void {
+function floodViews(game: Game, files: Map<string, Uint8Array>, seen: Seen): void {
   const get = (n: string) => files.get(n.toLowerCase());
   game.scenes.forEach((s, n) => {
     if (!isLevel(game, n)) return;

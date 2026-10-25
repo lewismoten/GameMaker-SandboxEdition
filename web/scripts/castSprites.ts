@@ -324,7 +324,7 @@ function raw(s: Source): Raw {
 }
 
 /** Trimmed to the rows any frame draws on, recolored to only the colors used (0 is see-through). */
-export function castSprite(s: Source): CastSprite {
+function castSprite(s: Source): CastSprite {
   const r = raw(s);
   const used = [...new Set(r.frames.flatMap((f) => [...f]))].filter((c) => c !== TRANSPARENT).sort((a, b) => a - b);
   const index = new Map(used.map((c, i) => [c, i + 1]));

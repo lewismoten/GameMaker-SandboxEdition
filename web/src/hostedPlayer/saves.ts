@@ -16,7 +16,7 @@ interface SaveRecord {
 }
 
 /** A game's saves, without the bytes, for the list. */
-export interface SaveSummary {
+interface SaveSummary {
   id: string;
   names: string[];
   bytes: number;

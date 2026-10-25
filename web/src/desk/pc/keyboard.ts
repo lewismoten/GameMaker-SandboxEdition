@@ -114,7 +114,7 @@ const STRIP: [string, string, string][] = [
 ];
 
 /** The template's keys the phone's strip doesn't show (F2 to F10): its row behind the F2–F10 key. */
-export const stripFnKeys = () => GLOBAL_KEYS.filter((g) => !STRIP.some(([, code]) => code === (g.name === 'Esc' ? 'Escape' : g.name)));
+const stripFnKeys = () => GLOBAL_KEYS.filter((g) => !STRIP.some(([, code]) => code === (g.name === 'Esc' ? 'Escape' : g.name)));
 
 /** Every KeyboardEvent.code the phone's strip can press, its F2–F10 row included. */
 export const stripCodes = () => [...STRIP.map(([, code]) => code), ...stripFnKeys().map((g) => g.name)];

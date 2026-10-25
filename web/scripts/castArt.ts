@@ -111,7 +111,7 @@ function trim(pic: LevelPicture): LevelPicture {
   return { ...pic, height: bottom - top, pixels: pic.pixels.slice(top * pic.width, bottom * pic.width) };
 }
 
-export function castPicture(s: Source): LevelPicture | undefined {
+function castPicture(s: Source): LevelPicture | undefined {
   if ('chez' in s) return trim(chezArt(s.chez));
   if ('paint' in s) {
     const palette = new Uint8Array(768);

@@ -15,7 +15,7 @@ const PLAY_FILES = /\.(gam|map|bbl|mbl|mon|chr|cbl)$/;
 /** Block sets, and how many blocks each holds: only their numbers count, not their pictures. */
 const BLOCK_SETS: Record<string, number> = { bbl: BACKBL, mbl: MONBL, cbl: CHARBL };
 
-export interface Disk {
+interface Disk {
   game: Game;
   files: Map<string, Uint8Array>;
 }

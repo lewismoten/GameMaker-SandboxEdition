@@ -4,7 +4,7 @@
 // first paint (the same rule as here) so the page never flashes the wrong colors.
 import { h } from './editor/core/ui';
 
-export type Theme = 'dark' | 'light' | 'auto';
+type Theme = 'dark' | 'light' | 'auto';
 const KEY = 'gm-theme';
 const ORDER: Theme[] = ['dark', 'light', 'auto'];
 const LABEL: Record<Theme, [string, string]> = {

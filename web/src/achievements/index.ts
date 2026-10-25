@@ -8,7 +8,6 @@ import { noteFinished, notePlayed, noteWatched } from './goals';
 import { tally, unlockAchievement } from './store';
 
 export { unlockAchievement, progress, tally } from './store';
-export { notePlayed, noteWatched } from './goals';
 
 /** A walkthrough played to its end. */
 export function watchedWalkthrough(gameId: string): void {

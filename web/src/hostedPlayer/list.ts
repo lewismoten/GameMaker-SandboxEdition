@@ -37,7 +37,7 @@ export interface GameList {
 }
 
 /** The most games one list may hold. */
-export const MAX_GAMES = 500;
+const MAX_GAMES = 500;
 const MAX_TEXT = 300;
 const MAX_LISTED_FILES = 1024;
 
@@ -63,7 +63,7 @@ export function gameId(v: string): string {
 }
 
 /** The folder's address (http or https only), ending in "/"; undefined when it is not one. */
-export function folderUrl(folder: string, base: string): string | undefined {
+function folderUrl(folder: string, base: string): string | undefined {
   try {
     const u = new URL(folder.endsWith('/') ? folder : `${folder}/`, base);
     if (!/^https?:$/.test(u.protocol)) return undefined;

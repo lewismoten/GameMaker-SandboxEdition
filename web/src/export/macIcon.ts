@@ -123,7 +123,7 @@ export function drawIcon(picture: IndexedImage | undefined, colors: IconColors =
 }
 
 /** Halves an RGBA image (each pixel the average of four, weighted by alpha). */
-export function halve(rgba: Uint8Array, size: number): Uint8Array {
+function halve(rgba: Uint8Array, size: number): Uint8Array {
   const h = size / 2;
   const out = new Uint8Array(h * h * 4);
   for (let y = 0; y < h; y++)

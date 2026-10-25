@@ -6,7 +6,7 @@ import { join } from 'node:path';
 /** The hidden things the about.json files place, by cast member id. */
 export const HIDDEN = ['easterEgg', 'tinHeart'] as const;
 
-export type Hidden = Record<(typeof HIDDEN)[number], [game: string, map: string][]>;
+type Hidden = Record<(typeof HIDDEN)[number], [game: string, map: string][]>;
 
 export function hiddenPlacements(gamesDir: string): Hidden {
   const out = Object.fromEntries(HIDDEN.map((k) => [k, []])) as unknown as Hidden;

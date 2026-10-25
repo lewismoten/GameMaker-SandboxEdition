@@ -189,7 +189,7 @@ const RULES = `	<key>rules</key>
  * relative to Contents/, e.g. "Resources/game.html"): each file's SHA-1 ("files", for old
  * systems) and SHA-256 ("files2"), as codesign writes it.
  */
-export async function codeResources(files: [path: string, data: Uint8Array][]): Promise<Uint8Array> {
+async function codeResources(files: [path: string, data: Uint8Array][]): Promise<Uint8Array> {
   const sorted = [...files].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
   const hashed = await Promise.all(sorted.map(async ([p, d]) => [p, await hash('SHA-1', d), await hash('SHA-256', d)] as const));
   const files1 = hashed.map(([p, h1]) => `\t\t<key>${xml(p)}</key>\n\t\t<data>\n\t\t${b64(h1)}\n\t\t</data>\n`).join('');
