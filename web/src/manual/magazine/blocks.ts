@@ -1,6 +1,6 @@
 // Builders for the magazine's blocks (types.ts Block), so a section reads like the page it
 // makes: head('…'), p('…'), side('…', [...]), shot('teddy', 'level', '…'), card(…), ad(…).
-import type { Block, Callout, HalfAd, Inline, ListingRow, MagPage, MiniCover, Tone, ArtId, ShotView } from './types';
+import type { Block, Callout, HalfAd, Inline, ListingRow, MagPage, MiniCover, ShelfItem, Tone, ArtId, ShotView } from './types';
 import type { Go } from './go';
 
 type HeadOpts = { kicker?: string; deck?: Inline; size?: 'xl' | 'l' | 'm' | 's'; level?: 1 | 2 | 3 };
@@ -78,6 +78,8 @@ export const covers = (alt: string, list: MiniCover[]): Block => ({ t: 'covers',
 export const reply = (to: string[]): Block => ({ t: 'reply', to });
 /** A row of mugs, each with a desk mug picture (`design`, a mugArt.ts id) and its name. */
 export const mugs = (list: { design: string; name: string }[]): Block => ({ t: 'mugs', mugs: list });
+/** A long list of titles set small in columns, by letter; `markText` says what a check beside one means. */
+export const shelf = (items: ShelfItem[], markText: string): Block => ({ t: 'shelf', items, markText });
 
 /** "Continued on page N ▸": the story picks up on the page `page` (its id; issue.ts numbers it). */
 export const jumpOn = (page: string): Block => ({ t: 'jump', dir: 'on', page });

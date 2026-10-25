@@ -93,6 +93,11 @@ export type Block =
    */
   | { t: 'mugs'; mugs: { design: string; name: string }[] }
   /**
+   * A shelf of titles (shelf.ts): a long alphabetical list set small in columns, under a letter
+   * for each run of titles, with who made each and when; `mark` titles get a check and `markText`.
+   */
+  | { t: 'shelf'; items: ShelfItem[]; markText: string }
+  /**
    * Where a jumped article stops or picks up, as magazines split a long story: `on` ends its page
    * with "Continued on page N ▸", `from` starts the rest at the back of the book with the story's
    * headline again and "▸ Continued from page N". `page` is the other end's page id; issue.ts
@@ -117,6 +122,14 @@ export interface HalfAd {
   small?: Inline;
   tone?: Tone;
   burst?: string;
+}
+
+/** One title on a `shelf`. */
+export interface ShelfItem {
+  title: string;
+  by?: string;
+  year?: number;
+  mark?: boolean;
 }
 
 /** One numbered spot on a `callouts` picture: where (percent of its width and height) and what it is. */

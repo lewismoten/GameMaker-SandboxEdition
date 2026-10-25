@@ -13,6 +13,7 @@ import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
 import { MAG } from './masthead';
 import { mugShelf } from './mugShelf';
+import { shelfList } from './shelf';
 import { postnetCode } from './postnet';
 import { replyMail } from './replyMail';
 import type { Block, HalfAd, Inline, PlacedPage, ShotView } from './types';
@@ -265,6 +266,8 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       return replyMail(b);
     case 'mugs':
       return mugShelf(b, pending);
+    case 'shelf':
+      return shelfList(b);
     case 'jump': {
       const n = b.folio === undefined ? '' : ` ${b.folio}`;
       if (b.dir === 'on') {

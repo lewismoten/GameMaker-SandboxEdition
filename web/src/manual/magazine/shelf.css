@@ -1,0 +1,54 @@
+/* The Shareware Shelf's titles (shelf.ts): set small and close in four columns with rules
+   between them (two on a narrow page), a big letter over each run of titles. */
+.mag-shelf {
+  columns: 4;
+  column-gap: 1em;
+  column-rule: 0.06em solid rgba(0, 0, 0, 0.35);
+  font:
+    0.84em/1.2 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.mag-shelf h3 {
+  break-after: avoid;
+  margin: 0 0 0.15em;
+  border-bottom: 0.12em solid currentColor;
+  font:
+    900 1.6em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  color: var(--red);
+}
+
+.mag-shelf-group {
+  margin-bottom: 0.5em;
+}
+
+.mag-shelf ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mag-shelf li {
+  break-inside: avoid;
+  margin-bottom: 0.2em;
+  padding-left: 0.8em;
+  text-indent: -0.8em;
+}
+
+.mag-shelf-by {
+  font-style: italic;
+}
+
+.mag-shelf-mark {
+  font-weight: 700;
+  color: var(--red);
+}
+
+@container (max-width: 560px) {
+  .mag-shelf {
+    columns: 2;
+  }
+}

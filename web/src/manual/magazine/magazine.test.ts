@@ -122,6 +122,9 @@ function walk(b: Block, text: string[], links: string[]): void {
     case 'mugs':
       text.push(...b.mugs.flatMap((m) => [m.design, m.name]));
       break;
+    case 'shelf':
+      text.push(b.markText, ...b.items.flatMap((i) => [i.title, i.by ?? '']));
+      break;
     case 'jump':
       text.push(b.title ?? '');
       links.push(`go:mag/${b.page}`);
