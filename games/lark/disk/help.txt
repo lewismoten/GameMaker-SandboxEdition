@@ -1,0 +1,56 @@
+WALKING
+Arrows, W A S D or the number
+pad: one step at a time. Hold
+to keep going.
+
+Walk into a friend to talk.
+
+SPACE: pick up what you are
+standing on.
+
+
+
+
+
+
+
+IN THE CLOCK TOWER
+Gravity pulls down in there.
+
+Arrows walk. UP hops; hold it
+to hop higher. Q and E (or 7
+and 9) hop up and to the side.
+
+Wooden floors are solid on top
+only: hop up through them.
+
+
+
+
+
+
+
+TICK AND TOCK
+The brass bridges and the
+copper bridges take turns.
+Each one blinks red before it
+lets go.
+
+Wait for yours.
+
+Falling only takes you down a
+floor. Nothing in the tower
+can hurt you.
+
+
+
+
+
+THE ROAD
+Gates on the Long Road open
+for the thank-yous of friends
+you have helped.
+
+F2 shows Joe's wind and his
+spare bulbs. F5 saves, F6
+loads, ESC stops.

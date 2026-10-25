@@ -1,0 +1,126 @@
+{
+ "version": 1,
+ "game": "lark",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "H0gByAdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSw=="
+  },
+  {
+   "scene": 9,
+   "keys": ""
+  },
+  {
+   "scene": 2,
+   "keys": "AU0BzQdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
+  },
+  {
+   "scene": 10,
+   "keys": ""
+  },
+  {
+   "scene": 2,
+   "keys": "AVAB0AdQAdAHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB1A="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdNAc0HSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HTQHNB00BzQdNAc0HTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": ""
+  },
+  {
+   "scene": 5,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSwHLB0sBywdLAcsHSwHLB0s="
+  },
+  {
+   "scene": 11,
+   "keys": ""
+  },
+  {
+   "scene": 5,
+   "keys": "AU0BzQdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HSA=="
+  },
+  {
+   "scene": 6,
+   "keys": "C00HzQYSCJIATQzNA00HzQYSCJIATQXNA00HzQYSCJIATQXNA00bzQZNDc0GEgiSAE0AzQUSCJIATQDNBUgIyAUQBpAASwvLA0saywZLGUgKyA7LGEshywZLDcsGEgiSAE0AzQVNBs0GEgqSAE0KzQNNDc0GEgiSAE0MzQNN"
+  },
+  {
+   "scene": 7,
+   "keys": "C00izQYQCJAASwbLA0sHywZNIM0GTQ=="
+  },
+  {
+   "scene": 13,
+   "keys": ""
+  },
+  {
+   "scene": 8,
+   "keys": "AUgByAdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 12,
+   "keys": ""
+  },
+  {
+   "scene": 8,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHTQHNB00BzQdNAc0HTQHNB1A="
+  },
+  {
+   "scene": 3,
+   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Prologue: Closing Time"
+  },
+  {
+   "scene": 3,
+   "title": "The Long Road"
+  },
+  {
+   "scene": 4,
+   "title": "Chapter 1: The Clock Tower"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 22347,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028
+   },
+   {
+    "title": "Prologue: Closing Time",
+    "frame": 3700
+   },
+   {
+    "title": "The Long Road",
+    "frame": 7734
+   },
+   {
+    "title": "Chapter 1: The Clock Tower",
+    "frame": 8298
+   },
+   {
+    "title": "Ending",
+    "frame": 18524
+   },
+   {
+    "title": "Credits",
+    "frame": 20315
+   }
+  ]
+ }
+}

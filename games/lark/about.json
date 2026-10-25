@@ -1,0 +1,49 @@
+{
+  "title": "HEART OF TIN",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1996,
+  "price": "$0 - it was never for sale",
+  "secret": true,
+  "unlock": "hearts",
+  "blurb": "Every world Mystery Robot Joe passed through looking for a real heart, somebody was kind to him, and he left a little tin heart behind to say thank you. You found every one. Now walk the Long Road with him, back to every friend he promised to see again, all the way to Watt, the robot who can fix anything.",
+  "exe": "LARK.EXE",
+  "sound": "sb",
+  "sameEverySide": ["tower.mon#0", "tower.mon#1"],
+  "label": {
+    "background": "#1c1838",
+    "band": "#e8b23a",
+    "ink": "#fff4dc",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "hours": 2,
+    "background": "#1c1838",
+    "accent": "#e8b23a",
+    "ink": "#fff4dc",
+    "tagline": "Every world he passed through, he left a little tin heart. You found them all. Now find him.",
+    "back": "Mystery Robot Joe is the night librarian of the Tiny Pockets Library, a tin box of a robot with a bulb on his antenna, reading glasses he does not need, a red bow tie and a brass tally counter where a heart would go. It clicks when he counts. It doesn't do anything else.\n\nOn his nights off he went looking for a real heart, through every world there is. He never found one. But in every world somebody was kind to him, and every time he left behind the only heart he had to give: a little riveted tin heart, ticking, as a thank-you and a promise to come back.\n\nYou followed the trail all the way to the library door. Now go with him down the Long Road, keep his promises, and help whoever needs it, all the way to Watt, the little repair robot who can fix anything. Joe has a question for him.\n\nJoe will count the steps.",
+    "features": [
+      "The Long Road: a journey from the Tiny Pockets Library to the Bitmores' Smart Home",
+      "Old friends from every Sandbox world, each in a spot of trouble",
+      "A clock tower that stopped at 6:59, with a parade waiting on it",
+      "Floors that tick and tock, gears to turn, and a bell to ring",
+      "Keepsakes that teach Joe new moves",
+      "Synthesized music in three-quarter time, like a music box",
+      "Made for whoever found every tin heart"
+    ],
+    "shots": [
+      ["library.map", 12, 8],
+      ["road1.map", 12, 10],
+      ["square.map", 14, 10],
+      ["tower.map", 10, 20]
+    ],
+    "rating": "Ages 8 and up",
+    "reviews": [
+      {
+        "quote": "Tick. Tock. Thank you.",
+        "source": "A tin heart, somewhere"
+      }
+    ]
+  }
+}
