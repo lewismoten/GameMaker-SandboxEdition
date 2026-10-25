@@ -298,11 +298,13 @@ modules are in [`../test`](../test).
   kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
   browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`).
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
-  keyboard reference, registration, business and ID, and license and warranty cards; the games, never a secret one, and the two
+  keyboard reference, registration, business and ID, and license and warranty cards and hint
+  book postcards; the games, never a secret one, and the two
   sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once
   found), `listing.ts` builds it from the catalog and the boxes' pieces, `thumbs.ts` draws each
-  card's first sheet when it scrolls into view, and `libraryPage.ts` is the page; a card opens its
-  piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
+  card's first sheet when it scrolls into view, `shared.ts` lists once the pieces the same in
+  every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is
+  the page; a card opens its piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
 
 - [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its pages `booklet.ts`, its
   screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and

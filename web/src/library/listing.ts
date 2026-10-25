@@ -9,6 +9,7 @@ import type { BoxItem } from '../manual/printables/viewer';
 import type { PrintContext, Sheet } from '../manual/printables/kit';
 import { GM_OWNER, SITE_OWNER, shelfGames, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
+import { mergeShared } from './shared';
 
 export interface Shelf {
   items: ShelfItem[];
@@ -110,5 +111,5 @@ export async function loadShelf(): Promise<Shelf> {
 
   items.push(...siteShelf(zine));
   if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());
-  return { items, thumbs, games };
+  return { items: mergeShared(items), thumbs, games };
 }

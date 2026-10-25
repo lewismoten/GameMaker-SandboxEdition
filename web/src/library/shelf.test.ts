@@ -56,7 +56,8 @@ describe('the Library’s kinds of paper', () => {
     expect(typeOfPiece('teddy', 'newsletter')).toBe('newsletter');
     expect(typeOfPiece('teddy', 'stickers')).toBe('stickers');
     expect(typeOfPiece('teddy', 'keycard')).toBe('keys');
-    for (const id of ['postcard', 'hintoffer']) expect(typeOfPiece('teddy', id)).toBe('registration');
+    expect(typeOfPiece('teddy', 'postcard')).toBe('registration');
+    expect(typeOfPiece('teddy', 'hintoffer')).toBe('hintcard');
     expect(typeOfPiece('teddy', 'warranty')).toBe('license');
     for (const id of ['catalog', 'bbs']) expect(typeOfPiece('teddy', id)).toBe('catalog');
   });
@@ -69,7 +70,8 @@ describe('the Library’s kinds of paper', () => {
     expect(typeOfPiece('x', 'own0', { kind: 'chart', title: 'Case file' })).toBe('letter');
     expect(typeOfPiece('x', 'own0', { kind: 'newspaper', title: 'The Courier' })).toBe('newsletter');
     expect(typeOfPiece('x', 'own0', { kind: 'idcard', title: 'A card' })).toBe('idcard');
-    expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'Hint book postcard' })).toBe('registration');
+    expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'Hint book postcard' })).toBe('hintcard');
+    expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'A postcard home' })).toBe('registration');
     expect(typeOfPiece('x', 'own0', { kind: 'letter', title: 'A note' })).toBe('letter');
   });
 

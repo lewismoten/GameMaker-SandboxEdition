@@ -258,3 +258,9 @@ main.library {
 .lib-pick[hidden] {
   display: none;
 }
+
+/* a piece the same in several boxes: how many */
+.lib-name .lib-boxes {
+  color: var(--text);
+  font-weight: 600;
+}

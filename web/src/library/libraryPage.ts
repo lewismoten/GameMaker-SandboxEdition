@@ -80,8 +80,18 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   const make = shelf.thumbs.get(item.key);
   if (make) lazyThumb(frame, item.key, make);
   // by type, a game's or the Game-Maker box's card says whose it is; by game, the heading does, so it says what it is
-  const sub = order === 'type' && item.owner !== SITE_OWNER && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
-  const body = [frame, h('span', { class: 'lib-name' }, h('strong', null, item.title), sub ? h('small', null, sub) : null)];
+  const sub = order === 'type' && item.owner !== SITE_OWNER && !item.boxes && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
+  const body = [
+    frame,
+    h(
+      'span',
+      { class: 'lib-name' },
+      h('strong', null, item.title),
+      sub ? h('small', null, sub) : null,
+      // the same in several boxes: listed once, opened from the first
+      item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
+    ),
+  ];
   const el =
     item.open.via === 'href'
       ? h('a', { class: 'lib-card', href: item.open.href }, ...body)

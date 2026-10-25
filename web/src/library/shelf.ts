@@ -18,6 +18,7 @@ export const SHELF_TYPES = [
   ['stickers', 'Sticker sheets'],
   ['keys', 'Keyboard reference cards'],
   ['registration', 'Registration cards'],
+  ['hintcard', 'Hint book postcards'],
   ['idcard', 'Business and ID cards'],
   ['license', 'License and warranty cards'],
   ['letter', 'Letters and papers'],
@@ -40,14 +41,17 @@ export interface ShelfItem {
   note?: string;
   icon: string;
   type: ShelfType;
-  /** A game's id, GM_OWNER for the Game-Maker box, or SITE_OWNER for the site's own reading. */
+  /** A game's id, GM_OWNER for the Game-Maker box, SITE_OWNER for the site's own reading, or SHARED_OWNER for a piece in several boxes. */
   owner: string;
   ownerTitle: string;
   open: Opening;
+  /** A piece the same in several boxes (shared.ts): how many boxes it is in. */
+  boxes?: number;
 }
 
 export const GM_OWNER = 'gamemaker';
 export const SITE_OWNER = 'site';
+export const SHARED_OWNER = 'shared';
 
 /** The Game-Maker box's pieces (manual/printables/gmItems.ts) by id. */
 const GM_TYPES: Record<string, ShelfType> = {
@@ -79,7 +83,7 @@ const BOX_TYPES: Record<string, ShelfType> = {
   newsletter: 'newsletter',
   catalog: 'catalog',
   bbs: 'catalog',
-  hintoffer: 'registration',
+  hintoffer: 'hintcard',
   stickers: 'stickers',
 };
 
@@ -99,7 +103,7 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'idcard':
       return 'idcard';
     case 'letter':
-      return /postcard/i.test(title) ? 'registration' : 'letter';
+      return /hint book postcard/i.test(title) ? 'hintcard' : /postcard/i.test(title) ? 'registration' : 'letter';
     case 'journal':
     case 'recipe':
       return 'letter';
@@ -145,8 +149,8 @@ export interface ShelfGroup {
 }
 
 /**
- * The shelf sorted: by game (each game in the order listed, then Other: the Game-Maker box and
- * the site's own reading), or by type (SHELF_TYPES' order, each kind in the order listed, the
+ * The shelf sorted: by game (each game in the order listed, then Other: the pieces in every box,
+ * the site's own reading and the Game-Maker box), or by type (SHELF_TYPES' order, each kind in the order listed, the
  * Game-Maker Owner's Guides first among the manuals).
  * Empty groups are left out.
  */
@@ -158,7 +162,7 @@ export function groupShelf(items: readonly ShelfItem[], order: ShelfOrder): Shel
   const games: ShelfGroup[] = [];
   const byOwner = new Map<string, ShelfItem[]>();
   for (const it of items) {
-    if (it.owner === GM_OWNER || it.owner === SITE_OWNER) continue;
+    if (it.owner === GM_OWNER || it.owner === SITE_OWNER || it.owner === SHARED_OWNER) continue;
     let list = byOwner.get(it.owner);
     if (!list) {
       byOwner.set(it.owner, (list = []));
@@ -168,10 +172,12 @@ export function groupShelf(items: readonly ShelfItem[], order: ShelfOrder): Shel
   }
   const site = items.filter((i) => i.owner === SITE_OWNER);
   const gm = items.filter((i) => i.owner === GM_OWNER);
+  const shared = items.filter((i) => i.owner === SHARED_OWNER);
   const other: ShelfGroup = {
     key: 'other',
     heading: 'Other',
     parts: [
+      { heading: 'In every box', items: shared },
       { heading: 'Magazines, guides and more', items: site },
       { heading: gm[0]?.ownerTitle ?? '', items: gm },
     ].filter((p) => p.items.length),
