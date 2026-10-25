@@ -1,7 +1,10 @@
 // The Ultimate Owner's Guide, chapter 11 and appendix B: designing with a goal (what makes players
 // stay, put in terms of Game-Maker's own settings) and the checklist before a game goes out.
 // The engine facts are checked against web/src/engine (character.ts, monsters.ts, touch.ts,
-// scroll.ts, scene.ts); the advice is our own.
+// scroll.ts, scene.ts) and code/GM/PLAYGAME.C (ChangeScroll's stop lines, CharBirthMon's shot
+// row and direction, DoBlockTouchChar taking hit points even while Hurt plays); the advice is
+// our own. What players said about Game-Maker games comes from watching levelengine's RSD Game
+// Maker Binge and Pixelmusement's ADG Episode 250 (NOTICE.md); nothing of theirs is quoted.
 import { opening, tip, type Chapter } from './chapter';
 
 export const CRAFT: Chapter = {
@@ -14,6 +17,7 @@ export const CRAFT: Chapter = {
   why is it fun to do it again? A clever trick or a forty-block boss earns its place
   only if it serves that sentence. Play your first level before you draw the tenth. If it
   isn’t fun with plain blocks, prettier blocks won’t save it.</p>
+  ${tip('Watching people play:', 'Several pieces of advice in this chapter and the next few come from watching other people play Game-Maker games: levelengine’s long livestream “RSD Game Maker Binge” (2020) and Pixelmusement’s “ADG Episode 250 - Game-Maker” (2018). What made players quit, and what made them grin, is retold here in this guide’s own words, with every engine fact checked against PLAYGAME.')}
   <h2>A hero who feels right</h2>
   <p>The hero’s speed is set by his walk frames: how many pixels each frame moves him, and how
   many ticks it waits (a tick is 1/18 of a second). Four pixels every tick is about 73 pixels a
@@ -26,7 +30,14 @@ export const CRAFT: Chapter = {
     <li><b>Jumps that finish.</b> Mark the jump as a sequence that can’t be interrupted, so a
     stray key can’t cut it off in mid-air.</li>
     <li><b>One step per press</b> for puzzle games on a grid, so a held key doesn’t overshoot.</li>
-    <li><b>Momentum</b> for ice, space or a vehicle, where a little slide is the point.</li>
+    <li><b>Momentum</b> for ice, space or a vehicle, where a little slide is the point. A ship
+    that coasts on after the key is let go feels like ice; if it should stop when the player
+    stops, give it plain frames, not momentum.</li>
+    <li><b>Firing stops walking.</b> Only one sequence runs at a time. While a fire sequence
+    repeats, the hero stands still, and pressing an arrow stops the shooting. Keep the fire
+    sequence to one short frame that can be interrupted, so walking and firing take turns
+    quickly; or, for a shooter, put the shot on the walk frames themselves, so the hero fires
+    whenever he moves.</li>
   </ul>
   <h2>Face the way you walk</h2>
   <p>A hero drawn only from the front, sliding left and right with his legs going, is one of the
@@ -73,6 +84,15 @@ export const CRAFT: Chapter = {
     <li><b>Not:</b> P, H, J, K, L, O, the number keys 6 to 0, or anything right of them. The CD’s
     old habit of P to pick up and D to drop sends the right hand across the board; pick up with
     Space or Down, and drop on a left-hand key, instead.</li>
+    <li><b>One fire key.</b> A shot already flies the way the hero last moved (Chapter 3), so
+    one key fires every way. A sword with a key for each direction asks players to find four
+    keys, and the one they never find is the one they needed. Don’t split the ammunition across
+    several fire keys either: the counters are invisible, and one empty gun out of four reads as
+    a broken key.</li>
+    <li><b>Jump keys that come in threes.</b> Only one key is read at a time, so Up and Right
+    together can’t make a sideways jump; that is why the old games put one on 7 and 9. Name the
+    three together in the help (<i>Up jumps; 7 and 9 jump left and right</i>), and keep the
+    same three in every level.</li>
     <li><b>Few of them.</b> Arrows, Space and two or three more are as many as most players keep
     in their heads. The Level check (chapter 14) asks about a key the right hand has to leave the
     arrows for; a key pressed once in a while, like a map or a menu, can sit anywhere.</li>
@@ -83,6 +103,22 @@ export const CRAFT: Chapter = {
   block to spare, and ledges wider than his feet. The view only starts to scroll once he is
   about a third of the screen from the middle, so long runs need open space ahead; a hazard
   that appears at the screen’s edge as he arrives is a wall he couldn’t see.</p>
+  <h2>What the camera can see</h2>
+  <p>PLAYGAME’s view doesn’t follow the hero; it waits, then hurries. These are its numbers,
+  for a screen 16 blocks wide and 10 high:</p>
+  <table>
+    <tr><th>Moment</th><th>What the player sees ahead</th></tr>
+    <tr><td>Walking toward an edge from a standstill</td><td>The view doesn’t move until the hero is about 5 blocks past the middle, about 2 blocks from the edge</td></tr>
+    <tr><td>Once it scrolls</td><td>It runs faster than any hero and keeps going until he is 3 or 4 blocks <i>behind</i> the middle: about 10 blocks ahead at a walk</td></tr>
+    <tr><td>Turning back</td><td>He is already behind the middle, so the way back shows 4 or 5 blocks, down to 2 before the view turns round</td></tr>
+    <tr><td>Falling</td><td>The view starts down when he is 3 blocks below the middle: a block and a half under his feet</td></tr>
+    <tr><td>Jumping up</td><td>The view starts up only when his head is half a block from the top</td></tr>
+    <tr><td>Scrolling turned off that way</td><td>He can walk to the very edge, and nothing past it is ever shown</td></tr>
+  </table>
+  <p>So the blind moments are the first steps of a run, a turn, the bottom of a fall and the top
+  of a jump. Keep the first few blocks after each of them clear of anything that hurts, and
+  make a fast hero, or a scene that moves him by itself, start well away from the edge he heads
+  for. A danger met in the first two blocks of view is a danger nobody could see coming.</p>
   <h2>A difficulty curve, not a cliff</h2>
   <ul>
     <li><b>Ramp up evenly.</b> Most games do well to ask for one thing more each level, and
@@ -97,6 +133,15 @@ export const CRAFT: Chapter = {
     because he slipped, never because he couldn’t have known.</li>
     <li><b>Lives and hit points are a budget.</b> Start with enough of both that a new player
     sees the second level. Spread healing blocks where the hard parts end.</li>
+    <li><b>Lives that matter.</b> Three to five lives keep a death worth avoiding; ninety-nine
+    make it free. Mind what a death keeps: the inventory, the score and the counters stay with
+    the hero, while the scene’s map comes back fresh, keys and coins and all. A player who dies
+    after picking up a key can pick it up again, and points that come back on every try can be
+    farmed. Put what must be earned once in the scene before the hard part, so a death in the
+    hard part doesn’t bring it back.</li>
+    <li><b>Say how long it is.</b> Players who can see the end keep going. Put “level 3 of 10”
+    on each level’s intro picture, and say in the instructions how many levels there are. A
+    short game that is finished beats a long one nobody sees the end of.</li>
   </ul>
   <h2>Fair enemies</h2>
   <ul>
@@ -104,16 +149,32 @@ export const CRAFT: Chapter = {
     player can read each one. Eight at once tends to blur into noise, but a swarm can be the
     point of a level, a wave to survive or a shooter’s big moment. Count them on the map with
     the 16 by 10 view in mind, and decide which you mean.</li>
-    <li><b>Births that stop.</b> A birth block keeps giving birth for as long as the hero is
-    near. Unless a flood is the idea, give it a long time between births, or let its block
+    <li><b>Births that stop.</b> A birth block keeps giving birth while it is on the screen or
+    within half a screen of it. Unless a flood is the idea, give it a long time between births, or let its block
     animate to a quiet one after a while. Don’t make a killed enemy turn into another hostile one by accident: “becomes” is
     for stages, not for multiplying.</li>
+    <li><b>A spawner the hero can shut.</b> A birth block is a background block, so its touch
+    can make it <i>become</i> another: a closed hatch that gives birth to nothing. Bumping the
+    hatch shuts it for the rest of the visit, a flood with an off switch. Add to a special counter
+    in the same touch, and a gate that wants that count opens once every hatch is shut. Monsters
+    and shots never touch background blocks, so the hero has to do it himself.</li>
+    <li><b>Patterns players can learn.</b> A monster that paces the same path every time gives
+    the player a fair chance even when it is fast. Save the wanderers for crowds.</li>
+    <li><b>Shots that connect.</b> A shot is born level with the hero’s upper block, unless the
+    frame that fires it has a downward move of 20 (one block), which drops it to his lower block.
+    A shot at head height flies over a beetle a block tall. Fire at the height of the enemies the
+    level has, and try every gun against every foe.</li>
     <li><b>Easy to see.</b> Draw enemies from ramps the background doesn’t use, with a dark
     outline, so none of them hides against the scenery by accident. A camouflaged foe can be a
     fair trick when the game hints at it first.</li>
     <li><b>One hit, one hurt.</b> A strong monster hurts on every tick it overlaps the hero, so
-    a slow escape costs many hit points. Keep the hurt small and give the Hurt sequence frames
-    that move the hero back a few pixels, out of reach.</li>
+    a slow escape costs many hit points. It goes on costing them while the Hurt sequence plays:
+    PLAYGAME takes hit points on every touch, and only the Hurt animation waits to finish before it
+    can start again. So the Hurt sequence doesn’t slow the damage; it decides whether the player
+    can get away. Keep it short, let it be interrupted, and give it frames that move the hero
+    back a few pixels, out of reach. A monster gives the effects of the picture it is showing, so
+    one that hurts on a single frame of its animation stings once a cycle, not every tick; and
+    one below power 100 is gone after its first touch, like a bee.</li>
     <li><b>Chasers that let go.</b> A monster that chases forever turns a level into a race.
     If a race isn’t what you want, give chasers a lifetime, or a chase speed a little slower
     than the hero’s walk.</li>
@@ -139,6 +200,28 @@ export const CRAFT: Chapter = {
     <li><b>Sounds you can hear a hundred times.</b> The sounds a player makes constantly
     usually wear best short and soft, with the loud and long ones kept for rare events. Music should fit the place,
     and because each level’s song starts over on every death, its opening should wear well.</li>
+    <li><b>Music in every level.</b> A silent level feels unfinished. Players notice music of
+    your own, and they recognize a tune lifted from somewhere else, so write your own or credit
+    whose it is.</li>
+    <li><b>Nothing that flashes fast.</b> A block ring with one-tick frames, or an animation
+    that swaps bright and dark, can flash 18 times a second. Keep big bright flashes under three
+    a second, for the comfort and safety of every player.</li>
+    <li><b>Kind jokes.</b> Funny is good; funny at the expense of a real person, or of a group
+    of people, isn’t.</li>
+  </ul>
+  <h2>Charm players remember</h2>
+  <p>Players forgive rough art in a game that makes them laugh. What they talk about later is
+  rarely the engine work; it is the personality.</p>
+  <ul>
+    <li><b>Humor.</b> A silly zone name, an absurd story told straight, a key that does nothing
+    useful but does it with style, a credits page that pokes fun at itself.</li>
+    <li><b>A lost screen worth seeing.</b> The game over picture is seen far more often than the
+    won one. A friendly joke there turns a loss into a grin and another try.</li>
+    <li><b>Your own music and art.</b> Original tunes and pictures get noticed, even in a small
+    game.</li>
+    <li><b>A title that is the box.</b> The title screen is the cover of your game. Show the game
+    itself: its hero, its world, its name in big letters. A plain “title screen” or a picture
+    from some other game costs you the player’s patience before the first level.</li>
   </ul>
   <h2>Finish the idea</h2>
   <p>A game that stops early, or whose last level is a sketch, leaves players remembering the
