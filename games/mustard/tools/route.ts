@@ -234,7 +234,9 @@ export async function theDust(bot: Bot): Promise<void> {
     await go('down', 10);
     await go('right', 39, 'into the last cave');
     await must(bot, bot.walk(41, 'its drop of water'), 'water 5');
-    await must(bot, bot.walk(43, 'the far wall'), 'wall');
+    // the worm pacing the cave is solid at its sides and pushes the seed back: dig up over it
+    await go('up', 8, 'up out of the worm’s way');
+    await go('right', 43, 'over the worm to the far wall');
   });
   if (water(bot) < 5) throw new Error(`only ${water(bot)} drops of water`);
   await carefully(bot, 'up to the crack', 10, async () => {
