@@ -134,7 +134,8 @@ preserve what was there.
   - **THE CHEZ** is a tomato-red 1976½ CitiCar with a black roof and only the door window
     from the side. It has two charcoal stripes with red between them and a white pinstripe,
     stepping up in an S behind the door; white wheels; square bumpers; and the charge port
-    at the rear passenger side. Draw it with `games/kit/chez.ts`. Keep "THE CHEZ" together on one line
+    at the rear passenger side. Draw it with `games/kit/chez.ts`. Teddy rides in the front passenger seat, looking out
+    the door window (never out the back: it has no back window). Keep "THE CHEZ" together on one line
     (a non-breaking space on the site; never wrapped between the words in a game).
 - **Bard of Bizarre credits:** music and vocals made with Riffusion (now Google Flow
   Music); lyrics shaped by ChatGPT from the maintainer's prompts. Exceptions are noted in
