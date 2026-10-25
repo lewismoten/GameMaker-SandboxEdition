@@ -1,5 +1,5 @@
 // The level check's monster checks: crowded screens, enemies much faster than the hero, a
-// threat in reach of the start, chasers with no lifetime, monsters the color of the scenery
+// threat at the start (in reach, on its way to the entry, or a block that hurts beside it), chasers with no lifetime, monsters the color of the scenery
 // (on the scene's own palette), monsters that score or heal every tick, and lifts that make the
 // hero wait (solid, harmless monsters that carry him up, down or over a gap; not ground pacers). (Monsters that hold the hero while they hurt are found by playing: landings.ts.)
 import { BLEN, MONBL, SOLTOP, type Block } from '../../../formats/blocks';
@@ -135,19 +135,111 @@ export function speed(d: SceneData): Finding[] {
   return out;
 }
 
+/** Seconds after the hero comes in that a foe walking up to the entry still counts as a threat at the start. */
+export const SAFE_START_S = 3;
+
+/**
+ * The first tick a monster on its march comes within a block across and two up or down of
+ * `to`, within `ticks` ticks (undefined if it doesn't). Corners are offsets from where the round
+ * began (engine/monsters.ts monEndPath), so a path that doesn't close drifts round by round.
+ */
+export function marchReaches(m: Monster, from: { x: number; y: number }, to: { x: number; y: number }, ticks: number): number | undefined {
+  const corners = m.march[0].slice(0, MAXMARCH);
+  const legs = corners.findIndex((c) => !c.pic);
+  const n = legs < 0 ? MAXMARCH : legs;
+  if (!n) return undefined;
+  const near = (x: number, y: number) => Math.abs(x - to.x * BLEN) <= BLEN && Math.abs(y - to.y * BLEN) <= BLEN * 2;
+  let x = from.x * BLEN;
+  let y = from.y * BLEN;
+  let ox = x;
+  let oy = y;
+  let t = 0;
+  if (near(x, y)) return 0;
+  for (let leg = 0; t < ticks; leg = (leg + 1) % n) {
+    if (leg === 0) ((ox = x), (oy = y));
+    const c = corners[leg];
+    const tx = ox + c.x * BLEN;
+    const ty = oy + c.y * BLEN;
+    const v = Math.abs(c.pic);
+    const steps = Math.max(1, Math.ceil(Math.max(Math.abs(tx - x), Math.abs(ty - y)) / v));
+    const sx = (tx - x) / steps;
+    const sy = (ty - y) / steps;
+    for (let i = 0; i < steps && t < ticks; i++) {
+      x += sx;
+      y += sy;
+      t++;
+      if (near(x, y)) return t;
+    }
+    if (n === 1 && tx === ox && ty === oy) break;
+  }
+  return undefined;
+}
+
+/**
+ * Threats where the hero comes in: a hostile monster within 3 blocks across and 2 up or down,
+ * one whose path or chase reaches the entry within SAFE_START_S, and blocks beside it that hurt.
+ */
 export function startThreat(d: SceneData, game: Game): Finding[] {
   const foes = placed(d).filter((p) => hostile(d.mon[p.monnum], d.mbl));
   const out: Finding[] = [];
+  const ticks = Math.round(SAFE_START_S / TICK_S);
+  const seen = new Set<string>();
   for (const l of linksInto(game, d.scene)) {
+    const k = `${l.to.x},${l.to.y}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    const entry = at(l.to.y * MLEN + l.to.x);
     const near = foes.find((p) => Math.abs(p.curx - l.to.x) <= 3 && Math.abs(p.cury - l.to.y) <= 2);
-    if (!near) continue;
-    out.push({
-      check: 'start-threat',
-      severity: 'warning',
-      title: `Monster ${near.monnum} starts ${Math.max(Math.abs(near.curx - l.to.x), Math.abs(near.cury - l.to.y))} blocks from where the hero comes in`,
-      detail: `The hero enters at ${at(l.to.y * MLEN + l.to.x)}. Unless it is meant to meet them at the door, a moment before the first threat helps.`,
-      where: { scene: d.scene, map: d.names.map, cell: near.cury * MLEN + near.curx, monster: { file: d.names.mon ?? '', n: near.monnum } },
-    });
+    if (near) {
+      out.push({
+        check: 'start-threat',
+        severity: 'warning',
+        title: `Monster ${near.monnum} starts ${Math.max(Math.abs(near.curx - l.to.x), Math.abs(near.cury - l.to.y))} blocks from where the hero comes in`,
+        detail: `The hero enters at ${entry}. Unless it is meant to meet them at the door, a moment before the first threat helps.`,
+        where: { scene: d.scene, map: d.names.map, cell: near.cury * MLEN + near.curx, monster: { file: d.names.mon ?? '', n: near.monnum } },
+      });
+      continue;
+    }
+    // a walker whose path passes the door, or a chaser in range, within the first seconds
+    let soonest: { p: (typeof foes)[number]; t: number } | undefined;
+    for (const p of foes) {
+      const m = d.mon[p.monnum];
+      const from = { x: p.curx, y: p.cury };
+      let t: number | undefined;
+      if (m.towards > 0 && m.towards < 64) {
+        const dist = Math.max(Math.abs(p.curx - l.to.x) - 1, Math.abs(p.cury - l.to.y) - 2, 0) * BLEN;
+        // PLAYGAME chases within its attack range: 8 blocks across, 5 up or down
+        if (Math.abs(p.curx - l.to.x) <= 8 && Math.abs(p.cury - l.to.y) <= 5) t = Math.ceil(dist / m.towards);
+      } else if (m.towards === 0) t = marchReaches(m, from, l.to, ticks);
+      if (t !== undefined && t <= ticks && (!soonest || t < soonest.t)) soonest = { p, t };
+    }
+    if (soonest) {
+      const { p, t } = soonest;
+      out.push({
+        check: 'start-threat',
+        severity: 'warning',
+        title: `Monster ${p.monnum} ${d.mon[p.monnum].towards ? 'chases' : 'walks'} to where the hero comes in: within ${(t * TICK_S).toFixed(1)} s`,
+        detail: `The hero enters at ${entry}, and monster ${p.monnum} starts at ${at(p.cury * MLEN + p.curx)}. A player who stops to look around meets it at once; unless that is the idea, start it further off or turn its path away.`,
+        where: { scene: d.scene, map: d.names.map, cell: p.cury * MLEN + p.curx, monster: { file: d.names.mon ?? '', n: p.monnum } },
+      });
+    }
+    // blocks that hurt right beside the entry: round the hero's two blocks (his feet are at the
+    // entry, his head above) and the floor under him
+    const hurts: number[] = [];
+    for (let y = l.to.y - 1; y <= l.to.y + 1; y++)
+      for (let x = l.to.x - 1; x <= l.to.x + 1; x++) {
+        if (x < 0 || y < 0 || x >= MLEN || y >= MWID) continue;
+        const c = y * MLEN + x;
+        if (d.bbl[d.map.blocks[c]]?.chHitPt < 0) hurts.push(c);
+      }
+    if (hurts.length)
+      out.push({
+        check: 'start-threat',
+        severity: 'warning',
+        title: `Block ${d.map.blocks[hurts[0]]} hurts right beside where the hero comes in`,
+        detail: `The hero enters at ${entry}; ${hurts.length === 1 ? 'a block that hurts is' : `${hurts.length} blocks that hurt are`} next to it, at ${hurts.slice(0, 4).map(at).join(', ')}. One tap the wrong way costs a life before the player has looked round; a block of safe ground between helps.`,
+        where: { scene: d.scene, map: d.names.map, cell: hurts[0], cells: hurts, block: { file: d.names.bbl ?? '', n: d.map.blocks[hurts[0]] } },
+      });
   }
   return out;
 }

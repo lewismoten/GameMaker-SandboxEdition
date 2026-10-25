@@ -8,6 +8,7 @@ import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
 import { fliCheck } from './checks/fliCheck';
+import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';
 import { landings } from './checks/landings';
 import { curve, playFindings } from './checks/playChecks';
@@ -91,11 +92,28 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   for (const d of scenes) {
     findings.push(...counters(d, gives));
     for (const c of [...blockChecks, ...monsterChecks]) findings.push(...c(d));
-    findings.push(...startThreat(d, game), ...sealed(d, game, all), ...characterChecks(d), ...facing(d, all, same), ...jumps(d), ...soundChecks(d, files));
+    findings.push(
+      ...startThreat(d, game),
+      ...sealed(d, game, all),
+      ...characterChecks(d),
+      ...facing(d, all, same),
+      ...jumps(d),
+      ...soundChecks(d, files),
+      ...tapTwice(d),
+      ...lookalike(d),
+    );
     findings.push(...(await landings(d, game, files)));
   }
   if (opt.scene === undefined)
-    findings.push(...controls(files), ...keyReach(files), ...endingChecks(game), ...variety(all), ...mechanics(all), ...fliCheck(files));
+    findings.push(
+      ...controls(files),
+      ...keyReach(files),
+      ...endingChecks(game),
+      ...variety(all),
+      ...mechanics(all),
+      ...fliCheck(files),
+      ...teachFirst(game, files, all),
+    );
   const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
   if (opt.play !== false) {
     const feed = new LiveFeed(now);

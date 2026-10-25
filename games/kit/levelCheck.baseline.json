@@ -79,11 +79,14 @@
   "warning hazard-art s19 Block 40 hurts through its whole cell, but its art fills 12% of it",
   "warning start-threat s10 Monster 8 starts 2 blocks from where the hero comes in",
   "warning start-threat s12 Monster 5 starts 2 blocks from where the hero comes in",
+  "warning start-threat s13 Monster 6 walks to where the hero comes in: within 0.5 s",
   "warning start-threat s16 Monster 2 starts 2 blocks from where the hero comes in",
   "warning start-threat s18 Monster 2 starts 3 blocks from where the hero comes in",
   "warning start-threat s19 Monster 2 starts 2 blocks from where the hero comes in",
   "warning start-threat s19 Monster 2 starts 3 blocks from where the hero comes in",
+  "warning start-threat s3 Block 17 hurts right beside where the hero comes in",
   "warning start-threat s3 Monster 20 starts 1 blocks from where the hero comes in",
+  "warning start-threat s4 Block 17 hurts right beside where the hero comes in",
   "warning start-threat s4 Monster 20 starts 1 blocks from where the hero comes in",
   "warning start-threat s6 Monster 20 starts 3 blocks from where the hero comes in",
   "warning start-threat s7 Monster 2 starts 3 blocks from where the hero comes in",
@@ -143,6 +146,7 @@
   "warning contrast s24 Monster 27 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning contrast s6 Monster 22 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning contrast s6 Monster 27 is hard to see against the scenery (contrast 1.0 : 1)",
+  "warning lookalike s4 Block 81 looks like prize block 5 (a life) but does nothing, first at (78, 89)",
   "warning start-threat s2 Monster 27 starts 2 blocks from where the hero comes in",
   "warning start-threat s3 Monster 27 starts 2 blocks from where the hero comes in",
   "warning start-threat s3 Monster 27 starts 3 blocks from where the hero comes in",
@@ -356,6 +360,7 @@
   "warning hazard-art s64 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hazard-art s78 Block 43 hurts through its whole cell, but its art fills 21% of it",
   "warning hazard-art s89 Block 43 hurts through its whole cell, but its art fills 21% of it",
+  "warning lookalike s2 Block 74 looks like prize block 76 (money) but does nothing, first at (64, 48)",
   "warning opposites s10 Blocks 33 and 35 pull opposite ways and touch in 1 place",
   "warning opposites s10 Blocks 33 and 37 pull opposite ways and touch in 6 places",
   "warning opposites s10 Blocks 35 and 107 pull opposite ways and touch in 6 places",
@@ -404,16 +409,27 @@
   "warning opposites s91 Blocks 35 and 107 pull opposite ways and touch in 2 places",
   "warning opposites s91 Blocks 37 and 107 pull opposite ways and touch in 2 places",
   "warning opposites s98 Blocks 91 and 93 pull opposite ways and touch in 1 place",
+  "warning start-threat s4 Monster 1 chases to where the hero comes in: within 1.6 s",
   "warning start-threat s4 Monster 1 starts 1 blocks from where the hero comes in",
   "warning start-threat s4 Monster 18 starts 3 blocks from where the hero comes in",
+  "warning start-threat s4 Monster 19 chases to where the hero comes in: within 1.1 s",
   "warning start-threat s4 Monster 19 starts 2 blocks from where the hero comes in",
   "warning start-threat s4 Monster 36 starts 2 blocks from where the hero comes in",
+  "warning start-threat s5 Block 120 hurts right beside where the hero comes in",
+  "warning start-threat s6 Block 120 hurts right beside where the hero comes in",
+  "warning start-threat s6 Monster 1 chases to where the hero comes in: within 0.4 s",
+  "warning start-threat s6 Monster 1 chases to where the hero comes in: within 0.8 s",
+  "warning start-threat s6 Monster 1 chases to where the hero comes in: within 1.1 s",
   "warning start-threat s6 Monster 22 starts 2 blocks from where the hero comes in",
   "warning start-threat s6 Monster 9 starts 1 blocks from where the hero comes in",
   "warning start-threat s7 Monster 37 starts 1 blocks from where the hero comes in",
   "warning start-threat s7 Monster 37 starts 2 blocks from where the hero comes in",
   "warning start-threat s7 Monster 39 starts 2 blocks from where the hero comes in",
-  "warning start-threat s8 Monster 14 starts 2 blocks from where the hero comes in"
+  "warning start-threat s74 Monster 34 walks to where the hero comes in: within 2.0 s",
+  "warning start-threat s8 Block 120 hurts right beside where the hero comes in",
+  "warning start-threat s8 Monster 14 chases to where the hero comes in: within 2.7 s",
+  "warning start-threat s8 Monster 14 starts 2 blocks from where the hero comes in",
+  "warning start-threat s8 Monster 37 walks to where the hero comes in: within 2.2 s"
  ],
  "mustard": [],
  "needle": [],
@@ -430,8 +446,13 @@
  "risi": [
   "warning start-threat s5 Monster 8 starts 2 blocks from where the hero comes in"
  ],
- "sandcast": [],
- "sleuth": [],
+ "sandcast": [
+  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 Down / Pad 2 D A S can take two steps, not one: each step (a block) takes 0.22 s"
+ ],
+ "sleuth": [
+  "warning start-threat s66 Block 92 hurts right beside where the hero comes in",
+  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 Up / Pad 8 Down / Pad 2 D A W S can take two steps, not one: each step (a block) takes 0.22 s"
+ ],
  "smirked": [
   "warning start-threat s3 Monster 2 starts 2 blocks from where the hero comes in"
  ],
@@ -440,17 +461,20 @@
   "warning contrast s6 Monster 3 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning contrast s6 Monster 8 is hard to see against the scenery (contrast 1.0 : 1)",
   "warning opposites s2 Blocks 24 and 26 pull opposite ways and touch in 6 places",
-  "warning start-threat s4 Monster 8 starts 2 blocks from where the hero comes in"
+  "warning start-threat s4 Monster 8 starts 2 blocks from where the hero comes in",
+  "warning teach-first s2 Enter (pick up) isn’t named at the start of the game"
  ],
  "sweats": [
   "warning sounds s2 Sound 5 (cheer.voc) plays on every score pickup: 1.4 s long, -17 dB"
  ],
  "teddy": [
+  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 D A can take two steps, not one: each step (a block) takes 0.22 s",
   "warning unreachable s8 1 of block 149 is sealed in, first at (50, 66)"
  ],
  "teddy2": [
   "warning contrast s13 Monster 23 is hard to see against the scenery (contrast 1.0 : 1)",
-  "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places"
+  "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places",
+  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 D A can take two steps, not one: each step (a block) takes 0.22 s"
  ],
  "teddy3": [
   "warning contrast s20 Monster 35 is hard to see against the scenery (contrast 1.0 : 1)",
@@ -459,7 +483,8 @@
   "warning every-tick s3 Block 110 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s3 Block 16 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s8 Block 15 gives 1 on counter 22 on every tick the hero touches it",
-  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 19 places"
+  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 19 places",
+  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 D A can take two steps, not one: each step (a block) takes 0.22 s"
  ],
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
@@ -468,6 +493,9 @@
  "year2000": [
   "warning start-threat s5 Monster 21 starts 2 blocks from where the hero comes in",
   "warning start-threat s5 Monster 22 starts 3 blocks from where the hero comes in",
-  "warning start-threat s5 Monster 24 starts 2 blocks from where the hero comes in"
+  "warning start-threat s5 Monster 24 starts 2 blocks from where the hero comes in",
+  "warning start-threat s5 Monster 25 walks to where the hero comes in: within 2.2 s",
+  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 Down / Pad 2 D A S End / Pad 1 PgDn / Pad 3 can take two steps, not one: each step (a block) takes 0.22 s",
+  "warning tap-twice s6 A quick tap of Right / Pad 6 Left / Pad 4 Down / Pad 2 D A S End / Pad 1 PgDn / Pad 3 can take two steps, not one: each step (a block) takes 0.22 s"
  ]
 }
