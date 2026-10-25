@@ -12,7 +12,6 @@
 // algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
-import { uploadChecklist } from '../../widgets/uploadChecklist';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
@@ -646,7 +645,10 @@ registerEditor(['gam'], (host, project, file) => {
               { class: 'toolbar' },
               h(
                 'button',
-                { onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the level check can tell' },
+                {
+                  onclick: () => void import('../../widgets/uploadChecklist').then((m) => m.uploadChecklist(project)),
+                  title: 'The guide’s Appendix B, ticked where the level check can tell',
+                },
                 '☑ Before you upload…',
               ),
               h(

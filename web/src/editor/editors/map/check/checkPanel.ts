@@ -23,7 +23,6 @@ import { CHECKS, STEADY_MS, at, kindOf, type Finding, type Kind } from '../../..
 import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
-import { uploadChecklist } from '../../../widgets/uploadChecklist';
 import { unlockAchievement } from '../../../../achievements';
 import { mazeFor } from '../../../check/generators/mazeFor';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
@@ -308,7 +307,11 @@ export function checkPanel(host: CheckHost): {
       ),
       h(
         'button',
-        { type: 'button', onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the checks can tell' },
+        {
+          type: 'button',
+          onclick: () => void import('../../../widgets/uploadChecklist').then((m) => m.uploadChecklist(project)),
+          title: 'The guide’s Appendix B, ticked where the checks can tell',
+        },
         '☑ Before you upload…',
       ),
     ),
