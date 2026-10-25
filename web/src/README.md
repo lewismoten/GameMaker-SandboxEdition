@@ -445,8 +445,10 @@ modules are in [`../test`](../test).
   `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
-  (`vocMaker.ts`, `sfxMaker.ts`), speaker effects (`speakerFx.ts`), textures (`textures.ts`) and a
-  new game's opening (`opening/`). `makers.ts` is their registry, offered by the file picker;
+  (`vocMaker.ts`, `sfxMaker.ts`), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
+  new game's opening (`opening/`) and the integrator's instruction and level cards (`cards/`: the
+  words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in
+  the scene's slot by `cardWire.ts`, and the dialogs in `cardDialog.ts`). `makers.ts` is their registry, offered by the file picker;
   `all.ts` imports them all.
 - `check/`: the level check and the walkthrough bot, with no DOM.
   - Playing: `sim.ts` plays a scene on the engine's own calls with small snapshots, `explore.ts`

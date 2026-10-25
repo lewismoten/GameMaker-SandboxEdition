@@ -681,6 +681,20 @@ registerEditor(['gam'], (host, project, file) => {
                 },
                 '🎬 Opening sting…',
               ),
+              h(
+                'button',
+                {
+                  onclick: async () => {
+                    const { instructionCardDialog } = await import('../../tools/cards/cardDialog');
+                    if (!(await instructionCardDialog(project, s))) return;
+                    save();
+                    renderSide();
+                    renderPanel();
+                  },
+                  title: 'Make the instructions from the game’s own keys, with the goal, the dangers and the items, on a backdrop that always reads well',
+                },
+                '📝 Instruction card…',
+              ),
             )
           : null,
         kind === 'adventure' || kind === 'unused'
@@ -692,6 +706,22 @@ registerEditor(['gam'], (host, project, file) => {
                     'button',
                     { class: 'primary', onclick: () => playFrom(selected), title: 'Play this level straight away, without the title and menu' },
                     '▶ Play from here',
+                  )
+                : null,
+              kind === 'adventure'
+                ? h(
+                    'button',
+                    {
+                      onclick: async () => {
+                        const { levelCardDialog } = await import('../../tools/cards/cardDialog');
+                        if (!(await levelCardDialog(project, game, selected))) return;
+                        save();
+                        renderSide();
+                        renderPanel();
+                      },
+                      title: 'Make the card shown as the level starts: its name, “level 3 of 10”, the goal and a hint (it shows again after every death)',
+                    },
+                    '🪧 Level card…',
                   )
                 : null,
               h(
