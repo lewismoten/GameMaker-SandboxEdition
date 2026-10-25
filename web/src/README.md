@@ -296,13 +296,15 @@ modules are in [`../test`](../test).
 - [`library/`](library): the Library (`#/library`, the top bar's Library link): a card for
   everything to read or print, sorted by game or by type (`?by=type`) and narrowed to one game or
   kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
-  browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`).
+  browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
+  Scoop shows its issue number and date and sorts by it.
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
   keyboard reference, registration, business and ID, and license and warranty cards and hint
   book postcards; the games, never a secret one, and the two
   sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once
   found), `listing.ts` builds it from the catalog and the boxes' pieces, `thumbs.ts` draws each
-  card's first sheet when it scrolls into view, `shared.ts` lists once the pieces the same in
+  card's first sheet while it is near the window, one at a time and giving the browser back between
+  them (`covers.ts` draws just the cover of manuals, hint books and TURBO BUTTON), `shared.ts` lists once the pieces the same in
   every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is
   the page; a card opens its piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
 

@@ -47,6 +47,8 @@ export interface ShelfItem {
   open: Opening;
   /** A piece the same in several boxes (shared.ts): how many boxes it is in. */
   boxes?: number;
+  /** A numbered issue (a box's Sandbox Scoop): its number, for reading in order, and its line ("Vol. 1, No. 3 · March 1995"). */
+  issue?: { no: number; line: string };
 }
 
 export const GM_OWNER = 'gamemaker';
@@ -135,10 +137,16 @@ export type ShelfOrder = 'game' | 'type';
 
 export const isShelfOrder = (s: unknown): s is ShelfOrder => s === 'game' || s === 'type';
 
-/** One kind's pieces in the order listed, except that the Game-Maker box's Owner's Guides lead the manuals. */
+/**
+ * One kind's pieces in the order listed, except that the Game-Maker box's Owner's Guides lead the
+ * manuals and numbered issues (each box's Sandbox Scoop) lead their kind in issue order.
+ */
 function ofType(items: readonly ShelfItem[], type: ShelfType): ShelfItem[] {
   const all = items.filter((i) => i.type === type);
-  return type === 'manual' ? [...all.filter((i) => i.owner === GM_OWNER), ...all.filter((i) => i.owner !== GM_OWNER)] : all;
+  if (type === 'manual') return [...all.filter((i) => i.owner === GM_OWNER), ...all.filter((i) => i.owner !== GM_OWNER)];
+  // numbered issues first, in the order they came out, then the rest as listed
+  const issues = all.filter((i) => i.issue).sort((a, b) => a.issue!.no - b.issue!.no);
+  return issues.length ? [...issues, ...all.filter((i) => !i.issue)] : all;
 }
 
 /** A heading on the shelf and what is under it (Other has two parts: the Game-Maker box and the rest). */

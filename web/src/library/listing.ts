@@ -10,6 +10,9 @@ import type { PrintContext, Sheet } from '../manual/printables/kit';
 import { GM_OWNER, SITE_OWNER, shelfGames, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
 import { mergeShared } from './shared';
+import { scoopIssue } from '../manual/printables/scoopIssue';
+import { scoopDateline } from '../manual/printables/scoopIssues';
+import { gmCoverSheet, hintCoverSheet, magazineCoverSheet, manualCoverSheet } from './covers';
 
 export interface Shelf {
   items: ShelfItem[];
@@ -66,10 +69,15 @@ export async function loadShelf(): Promise<Shelf> {
     const own = ctx?.printables.items;
     const key = `${owner}:${piece.id}`;
     const ownItem = /^own\d+$/.test(piece.id) ? own?.[Number(piece.id.slice(3))] : undefined;
-    items.push({ key, title: piece.title, note: piece.note, icon: piece.icon, type: typeOfPiece(owner, piece.id, ownItem), owner, ownerTitle, open });
+    // a box's newsletter, numbered as it prints its own number and date (gen.ts newsletter)
+    const no = piece.id === 'newsletter' && ctx ? scoopIssue(ctx.entry.id, family) : undefined;
+    const issue = no && ctx ? { no, line: `Vol. 1, No. ${no} · ${scoopDateline(ctx.entry.id, ctx.entry.year)}` } : undefined;
+    items.push({ key, title: piece.title, note: piece.note, icon: piece.icon, type: typeOfPiece(owner, piece.id, ownItem), owner, ownerTitle, open, issue });
     // the Level Maps: the first level's picture, as the printed maps crop it (its pages are mostly key and captions)
     const levels = piece.id === 'levelmaps' && ctx ? levelMaps(ctx) : undefined;
-    thumbs.set(key, levels ? () => levels.preview() : async () => (await piece.render())[0]);
+    // a hint book: just its cover, not every page of questions laid out first
+    const book = ownItem?.kind === 'hintbook' && ctx ? ownItem : undefined;
+    thumbs.set(key, levels ? () => levels.preview() : book ? () => hintCoverSheet(ctx!, book) : async () => (await piece.render())[0]);
   };
 
   for (const entry of boxed) {
@@ -87,6 +95,7 @@ export async function loadShelf(): Promise<Shelf> {
       ownerTitle: entry.title,
       open: { via: 'box', game: entry.id, start: 'manual' },
     });
+    thumbs.set(`${entry.id}:manual`, () => manualCoverSheet(entry));
     for (const piece of boxItems(ctx)) add(entry.id, entry.title, piece, { via: 'box', game: entry.id, start: piece.id }, ctx);
   }
   for (const entry of maps) {
@@ -107,9 +116,11 @@ export async function loadShelf(): Promise<Shelf> {
     ownerTitle: gmTitle,
     open: { via: 'gm', start: 'manual' },
   });
+  thumbs.set(`${GM_OWNER}:manual`, () => gmCoverSheet(entries.find((e) => e.id === 'teddy')));
   for (const piece of gmBoxItems(family)) add(GM_OWNER, gmTitle, piece, { via: 'gm', start: piece.id });
 
   items.push(...siteShelf(zine));
+  thumbs.set(`${SITE_OWNER}:magazine`, () => magazineCoverSheet(entries));
   if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());
   return { items: mergeShared(items), thumbs, games };
 }

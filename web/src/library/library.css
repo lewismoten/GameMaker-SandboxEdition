@@ -106,6 +106,7 @@ main.library {
 
 /* a card: the picture over its name; the whole card is the button or link */
 .lib-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -263,4 +264,28 @@ main.library {
 .lib-name .lib-boxes {
   color: var(--text);
   font-weight: 600;
+}
+
+/* TURBO BUTTON's cover, at the magazine's own page size before it is shrunk (covers.ts) */
+.lib-mag-paper {
+  container-type: inline-size;
+  position: relative;
+  width: 816px;
+  height: 1056px;
+}
+
+/* an issue's number over its picture */
+.lib-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #b3261e;
+  color: #fff;
+  font:
+    700 13px/1.4 system-ui,
+    sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }

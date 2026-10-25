@@ -164,6 +164,12 @@ describe('sorting the Library', () => {
     ]);
   });
 
+  it('puts the numbered issues first, in issue order, then the rest as listed', () => {
+    const scoop = (owner: string, no: number): ShelfItem => ({ ...item(owner, 'newsletter', 'newsletter'), issue: { no, line: `No. ${no}` } });
+    const papers = [scoop('a', 3), item('a', 'own1', 'newsletter'), scoop('b', 1), scoop('c', 2)];
+    expect(groupShelf(papers, 'type')[0].parts[0].items.map((i) => i.key)).toEqual(['b:newsletter', 'c:newsletter', 'a:newsletter', 'a:own1']);
+  });
+
   it('keeps every piece, once, either way', () => {
     for (const order of ['game', 'type'] as const) {
       const keys = groupShelf(items, order).flatMap((g) => g.parts.flatMap((p) => p.items.map((i) => i.key)));

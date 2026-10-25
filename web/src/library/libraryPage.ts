@@ -11,7 +11,7 @@ import type { CatalogEntry } from '../project/files';
 import { groupShelf, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
 import { loadShelf, type Shelf } from './listing';
 import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
-import { lazyThumb } from './thumbs';
+import { forgetThumbs, lazyThumb } from './thumbs';
 
 const ORDERS: [ShelfOrder, string][] = [
   ['game', 'By game'],
@@ -81,8 +81,11 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   if (make) lazyThumb(frame, item.key, make);
   // by type, a game's or the Game-Maker box's card says whose it is; by game, the heading does, so it says what it is
   const sub = order === 'type' && item.owner !== SITE_OWNER && !item.boxes && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
+  // an issue's number over its picture, readable at a glance (the card's text says it too)
+  const badge = item.issue ? h('span', { class: 'lib-badge', 'aria-hidden': 'true' }, `No. ${item.issue.no}`) : null;
   const body = [
     frame,
+    badge,
     h(
       'span',
       { class: 'lib-name' },
@@ -90,6 +93,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       sub ? h('small', null, sub) : null,
       // the same in several boxes: listed once, opened from the first
       item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
+      item.issue ? h('small', { class: 'lib-boxes' }, item.issue.line) : null,
     ),
   ];
   const el =
@@ -185,6 +189,7 @@ export function renderLibrary(el: HTMLElement): void {
     gamePicker.replaceChildren(h('option', { value: '' }, 'All games'), ...owners.map((o) => h('option', { value: o.owner }, o.title)));
     gamePicker.value = pickedGame ?? '';
     if (pickedGame) shown = shown.map((g) => ({ ...g, parts: g.parts.map((p) => ({ ...p, items: p.items.filter((i) => i.owner === pickedGame) })) }));
+    forgetThumbs(list.querySelectorAll('.lib-thumb')); // the old cards' pictures are no longer wanted
     list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order)));
     const n = shown.reduce((sum, g) => sum + g.parts.reduce((k, p) => k + p.items.length, 0), 0);
     count.textContent = only
