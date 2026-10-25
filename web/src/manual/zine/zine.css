@@ -202,3 +202,48 @@
   opacity: 0.45;
   cursor: default;
 }
+
+/* the editor's red marker: words crossed out, and a signed answer */
+.pp-zine .zine-struck {
+  text-decoration: line-through 0.18em #c62828;
+}
+
+.pp-zine .zine-ed {
+  margin: 0.2em 0 0.6em 1.2em;
+  color: #c62828;
+  font:
+    700 1.15em/1.2 'Marker Felt',
+    'Comic Sans MS',
+    cursive;
+  transform: rotate(-3deg);
+}
+
+/* the last panel: an ad box drawn on two sides and given up on, and a streak from the copier */
+.pp-zine .zine-unfinished {
+  position: relative;
+  margin-top: 0.6em;
+  padding: 0.8em 0.6em;
+  border-top: 0.12em dashed #333;
+  border-left: 0.12em dashed #333;
+}
+
+.pp-zine .zine-ad {
+  margin: 0;
+  font:
+    700 1.05em/1.2 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.04em;
+  transform: rotate(-1deg);
+}
+
+.pp-zine .zine-smear {
+  position: absolute;
+  right: -10%;
+  bottom: -0.2em;
+  left: 35%;
+  height: 0.9em;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.55) 25%, rgba(0, 0, 0, 0.35) 70%, transparent);
+  filter: blur(0.08em);
+  transform: rotate(-2deg);
+}

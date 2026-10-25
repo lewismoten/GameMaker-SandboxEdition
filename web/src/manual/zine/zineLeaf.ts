@@ -29,12 +29,31 @@ function ransom(text: string): HTMLElement {
   );
 }
 
+/** A typed paragraph, with any of the page's struck words crossed out in red. */
+function typed(line: string, struck: string[] = []): HTMLElement {
+  const parts: (string | HTMLElement)[] = [line];
+  for (const words of struck)
+    for (let k = 0; k < parts.length; k++) {
+      const part = parts[k];
+      const at = typeof part === 'string' ? part.indexOf(words) : -1;
+      if (at < 0 || typeof part !== 'string') continue;
+      parts.splice(k, 1, part.slice(0, at), h('s', { class: 'zine-struck' }, words), part.slice(at + words.length));
+    }
+  return h('p', null, ...parts.filter((x) => x !== ''));
+}
+
+/** The issue's last panel: an ad box nobody bought, half drawn, and the copier's streak across it. */
+function unfinished(text: string): HTMLElement {
+  return h('div', { class: 'zine-unfinished' }, h('p', { class: 'zine-ad' }, text), h('span', { class: 'zine-smear', 'aria-hidden': 'true' }));
+}
+
 function pageBody(p: ZinePage, i: number): HTMLElement {
   return h(
     'article',
     { class: `zine-page${i === 0 ? ' cover' : ''}` },
     ransom(p.title),
-    ...p.lines.map((l) => h('p', null, l)),
+    ...p.lines.map((l) => typed(l, p.struck)),
+    p.ed ? h('p', { class: 'zine-ed' }, p.ed) : null,
     p.list
       ? h(
           'ul',
@@ -45,6 +64,7 @@ function pageBody(p: ZinePage, i: number): HTMLElement {
         )
       : null,
     ...(p.scrawl ?? []).map((s) => h('p', { class: 'zine-scrawl' }, h('span', { class: 'zine-arrow', 'aria-hidden': 'true' }, '➜ '), s)),
+    p.unfinished ? unfinished(p.unfinished) : null,
   );
 }
 

@@ -1,6 +1,7 @@
 // EGG.EXE: an unlisted program on the desk PC (not in HELP, not in any folder) for testing the
 // felt eggs. Lists all thirteen (and, once all of them are in, the two kept apart in bonus.ts),
-// where each stands, and adds or breaks them; a line under the list says when Teddy's special
+// where each stands, and adds or breaks them (Enter, A and B: keys its bar never shows, told only in
+// SAVEHACK.DOC in the BBS's Warez area, retro/hacks/saveHackText.ts); a line under the list says when Teddy's special
 // egg is in the shadow box (all three Teddy eggs found, teddyEgg.ts; never a row of its own). On the rotten egg's row, ← → (or - +) crack it a
 // tap at a time, O crumbles it open and 0 makes it whole (bonus.ts eggTaps). T opens the tin
 // heart ledger (tinHearts/tinHeartExe.ts), a page of its own. It only changes what is kept in localStorage (eggState.ts, bonus.ts), never a game's save.
@@ -124,10 +125,7 @@ export async function runEggExe(ui: Ui): Promise<void> {
       toCp437(`${e.name}: ${STATE_TEXT[e.status]}${e.inSave ? '' : e.hidden ? ', not in any save' : ', not hidden in the game yet'}${cracks}`).slice(0, w - 4),
     );
     // the keys, with the cracking ones on the rotten egg's row
-    const bar =
-      e.taps !== undefined
-        ? ' ↑↓ Choose  ←→ Crack  O Open  0 Whole  Enter Add/Break  R Reset  T Hearts  Esc'
-        : ' ↑↓ Choose  Enter Add/Break  A Add  B Break  R Reset  T Tin hearts  Esc Quit';
+    const bar = e.taps !== undefined ? ' ↑↓ Choose  ←→ Crack  O Open  0 Whole  R Reset  T Tin hearts  Esc Quit' : ' ↑↓ Choose  R Reset  T Tin hearts  Esc Quit';
     s.write(0, 24, BARATTR, toCp437(bar).padEnd(80).slice(0, 80));
     const k = await ui.keys.next();
     const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;

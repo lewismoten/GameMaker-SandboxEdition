@@ -3,12 +3,18 @@
 // Only this desk's PC, only this desk's phone: nothing here is about real systems.
 
 /** A page: its ransom-note heading, then typed paragraphs, notes scrawled in the margin
- * (shown with a hand-drawn arrow) and, on the phone page, a scribbled list. */
+ * (shown with a hand-drawn arrow) and, on the phone pages, a scribbled list. */
 export interface ZinePage {
   title: string;
   lines: string[];
+  /** Words in `lines` the editor crossed out in red marker. */
+  struck?: string[];
+  /** The editor's answer to them, scrawled in red and signed. */
+  ed?: string;
   scrawl?: string[];
   list?: [string, string, string][];
+  /** The issue's last panel, never finished: an ad box nobody bought, half drawn, smeared by the copier. */
+  unfinished?: string;
 }
 
 export const ZINE_TITLE = 'NO CARRIER';
@@ -77,6 +83,8 @@ export const ZINE: ZinePage[] = [
       'Punching a whole box, or doing them for your friends? Spend the cash on a real disk notcher: a little press with a guide that lines the disk up, gives you leverage and cuts a clean square hole like the factory made it.',
       'Slide the write-protect tab open (you can see through the hole) and nothing can write to that disk. Do it to your game disks.',
     ],
+    struck: ['It works most of the time.', "In a pinch for space it's worth it."],
+    ed: 'ATE MY HOMEWORK. TWICE. BUY PROPER DISKS. —Ed.',
     scrawl: ['save it twice!!'],
   },
   {
@@ -96,7 +104,7 @@ export const ZINE: ZinePage[] = [
     lines: [
       "Some games here hide a little felt egg, and some a tin heart. Go find them. We're not telling where.",
       "Type EGG at any prompt. It is in no folder and HELP never mentions it. It's the Egg Inspector: one line per egg and whether your saves have it.",
-      'Enter adds or breaks an egg by hand, R resets to what your saves really show, T opens the tin heart ledger. Nothing here touches a saved game.',
+      "T opens the tin heart ledger. It knows more keys than its bar lets on. Whoever wrote SAVEHACK blabbed them in his readme. We're not repeating them.",
       'Find the whole set and... well. Find the whole set.',
     ],
     scrawl: ['look on the shelf too'],
@@ -132,6 +140,13 @@ export const ZINE: ZinePage[] = [
       ['Jenny (sitter)', '867-5309', "busy. Always busy. She's on the other line"],
       ['Time & temp', '555-0111', "the time, by the room's clock"],
       ['Weather', '555-0112', "snow. It's always snow"],
+    ],
+    scrawl: ['continued over ->'],
+  },
+  {
+    title: 'MORE NUMBERS',
+    lines: [],
+    list: [
       ['Movie line', '555-0113', "what's playing this week"],
       ['Sandbox BBS', '1-412-555-SAND', 'SCREEEECH (a modem: use TERMINAL)'],
       ['The Sofa BBS', '1-412-555-SOFA', 'SCREEEECH (TERMINAL again)'],
@@ -141,5 +156,6 @@ export const ZINE: ZinePage[] = [
       ['anybody else', '???', "not in service, no answer, busy, or somebody's machine"],
     ],
     scrawl: ["NEVER call 911 for real unless it's REAL"],
+    unfinished: 'YOUR AD HERE — PAY IN FLOPPIES',
   },
 ];
