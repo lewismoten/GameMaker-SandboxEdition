@@ -7,7 +7,7 @@ import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../
 import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
 import type { SeenRect } from './levelViews';
-import { unrolledAt, type Unrolled } from '../../editor/check/unroll';
+import { unrolledAt, type Unrolled, type UnrolledBox as UnrolledBoxRect } from '../../editor/check/unroll';
 
 /** The scenes that play on one map with one block set: one Level Map. */
 interface MapGroup {
@@ -301,10 +301,50 @@ export interface Level {
 }
 
 /** A level laid out as the player goes through it: its box, and each mark on the lap where it is met. */
-function unrolledLevel(level: Level, u: Unrolled): Level {
+function unrolledLevel(level: Level, played: Unrolled): Level {
+  const u = recut(played, level.cells);
   const marks = level.marks.map((m) => ({ ...m, ...unrolledAt(u, m.x, m.y) }));
   const [x, y, w, h] = u.box;
   return { ...level, area: { x, y, w, h }, marks, unrolled: u, mapMarks: level.marks };
+}
+
+/**
+ * A way that goes round forever is printed one lap long, cut where the map is emptiest (of all but
+ * its commonest blocks), and,
+ * among the emptiest, opposite the middle of what is drawn: so a ring of asteroids or a word
+ * spelled in blocks stays whole near the middle of the page. A level that winds on past a lap
+ * keeps the scan's layout (its drawn runs are laid out for it).
+ */
+function recut(u: Unrolled, cells: ArrayLike<number>): Unrolled {
+  if (u.runs || (!u.loops[0] && !u.loops[1])) return u;
+  // what not to cut: the rarer blocks (asteroids, ships, letters); common ones (space, stars,
+  // nebula: over 3% of the map each) are background, cut anywhere
+  const freq = new Map<number, number>();
+  for (let i = 0; i < MLEN * MWID; i++) freq.set(cells[i], (freq.get(cells[i]) ?? 0) + 1);
+  const background = new Set([...freq].filter(([, n]) => n > MLEN * MWID * 0.03).map(([b]) => b));
+  background.add(fillerBlock(cells));
+  const box: UnrolledBoxRect = [...u.box];
+  const cut = (axis: 0 | 1) => {
+    const n = axis ? MWID : MLEN;
+    const count = new Array<number>(n).fill(0);
+    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) if (!background.has(cells[y * MLEN + x])) count[axis ? y : x]++;
+    // where the drawing's middle is, going round (a circular mean)
+    let sx = 0;
+    let sy = 0;
+    count.forEach((c, i) => ((sx += c * Math.cos((2 * Math.PI * i) / n)), (sy += c * Math.sin((2 * Math.PI * i) / n))));
+    const middle = ((Math.atan2(sy, sx) / (2 * Math.PI)) * n + n) % n;
+    const opposite = (middle + n / 2) % n;
+    const smooth = count.map((_, i) => count[(i + n - 1) % n] + count[i] + count[(i + 1) % n]);
+    const least = Math.min(...smooth);
+    const away = (i: number) => Math.min(Math.abs(i - opposite), n - Math.abs(i - opposite));
+    // the emptiest lines, and of those the one opposite the middle
+    let best = 0;
+    for (let i = 0; i < n; i++) if (smooth[i] === least && (smooth[best] !== least || away(i) < away(best))) best = i;
+    return best;
+  };
+  if (u.loops[0]) box[0] = cut(0);
+  if (u.loops[1]) box[1] = cut(1);
+  return { ...u, box };
 }
 
 /**
