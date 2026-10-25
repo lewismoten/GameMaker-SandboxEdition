@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18639,
+  "frames": 18654,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1239
+    "frame": 1254
    },
    {
     "title": "Act I: 3:17 A.M.",
-    "frame": 3132
+    "frame": 3147
    },
    {
     "title": "Act II: The Enemy-Lover",
-    "frame": 5591
+    "frame": 5606
    },
    {
     "title": "Act III: Oh No No No",
-    "frame": 7887
+    "frame": 7902
    },
    {
     "title": "Act IV: The Reckoning",
-    "frame": 10415
+    "frame": 10430
    },
    {
     "title": "Ending",
-    "frame": 13213
+    "frame": 13228
    },
    {
     "title": "Credits",
-    "frame": 16071
+    "frame": 16086
    }
   ]
  }
