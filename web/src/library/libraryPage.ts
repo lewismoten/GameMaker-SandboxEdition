@@ -104,7 +104,8 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       // the same in several boxes: listed once, opened from the first
       item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
       item.issue ? h('small', { class: 'lib-boxes' }, item.issue.line) : null,
-      length ? h('small', { class: 'lib-boxes' }, `Length ${length}`) : null,
+      // the badge over the picture shows the length; this says it to a screen reader
+      length ? h('span', { class: 'sr-only' }, `Length ${length}`) : null,
     ),
   ];
   const el =
