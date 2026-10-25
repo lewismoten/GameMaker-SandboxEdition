@@ -1,10 +1,12 @@
-// The GRAVITAS GamePad drawn (gamePadArt.css): a gray pad shaped like a peanut in its shell (a
-// faint net of shell texture, two round lobes pinched at the waist), its purple d-pad on the
-// left with the brass socket the joystick shaft screws into, and four colored buttons in a
-// diamond on the right. A picture only, sized by its box: the desk's pad (gamePad.ts) and its
+// The GRAVITAS GamePad drawn (gamePadArt.css, its SVG parts in gamePadSvg.ts): a gray pad
+// shaped like a peanut in its shell (a faint net of shell texture, two round lobes pinched at
+// the waist), molded with a side wall and a rounded edge, its purple d-pad standing up on the
+// left with the brass socket the joystick shaft screws into recessed in it, and four colored
+// buttons in a diamond on the right. A picture only, sized by its box: the desk's pad (gamePad.ts) and its
 // large controls press it, and TURBO BUTTON's ad (manual/magazine/sections/hardware.ts) shows it.
 import './gamePadArt.css';
 import { h } from '../../editor/core/ui';
+import { dpadSvg, shaftLyingSvg, shaftUpSvg, shellSvg } from './gamePadSvg';
 
 /** The four buttons, 1 to 4: their color and where each sits in the diamond. */
 export const PAD_BUTTONS = [
@@ -14,59 +16,32 @@ export const PAD_BUTTONS = [
   { n: 4, color: 'blue', at: 'top' },
 ] as const;
 
-/** The shell's outline in its 200 x 100 box: two round lobes pinched in at the waist, a peanut in its shell. */
-const SHELL = 'M50 3C76 3 83 29 100 29S124 3 150 3a47 47 0 0 1 0 94C124 97 117 71 100 71S76 97 50 97a47 47 0 0 1 0-94Z';
-
-/** The rows of grip dots round each lobe's outer edge. */
-function gripDots(): string {
-  let dots = '';
-  for (const [cx, from] of [
-    [50, 112],
-    [150, -68],
-  ] as const)
-    for (const r of [40, 34])
-      for (let a = 0; a <= 136; a += r === 40 ? 8.5 : 10.5) {
-        const t = ((from + a) * Math.PI) / 180;
-        dots += `<circle cx="${(cx + r * Math.cos(t)).toFixed(1)}" cy="${(50 + r * Math.sin(t)).toFixed(1)}" r="1.15"/>`;
-      }
-  return dots;
-}
-
 let made = 0;
-
-/** The shell, with its own gradient id (a hidden copy's gradient would leave the others unpainted). */
-const shellSvg = (id: string) => `<svg class="gp-shell" viewBox="0 0 200 100" aria-hidden="true">
-  <defs>
-    <linearGradient id="${id}" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#eeeeec"/><stop offset="0.55" stop-color="#d4d4d1"/><stop offset="1" stop-color="#a9a9a6"/></linearGradient>
-    <pattern id="${id}-net" width="7" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-14)"><path d="M0 3Q1.75 0.6 3.5 3T7 3M1.75 6Q3.5 3.6 5.25 6" fill="none" stroke="#5a5040" stroke-opacity="0.09" stroke-width="0.6"/></pattern>
-  </defs>
-  <path d="${SHELL}" fill="#7d7d7a" transform="translate(0 2.5)"/>
-  <path d="${SHELL}" fill="url(#${id})" stroke="#8e8e8a" stroke-width="0.8"/>
-  <path d="${SHELL}" fill="url(#${id}-net)"/>
-  <path d="M97.5 48 103 70.6" stroke="#9a9a96" stroke-width="0.9"/>
-  <circle cx="50" cy="50" r="30" fill="#c4c4c0" stroke="#a3a39f" stroke-width="0.8"/>
-  <circle cx="150" cy="50" r="30" fill="#cdcdc9" stroke="#adada9" stroke-width="0.6"/>
-  <g fill="#8f8f8b">${gripDots()}</g>
-  <g text-anchor="middle" fill="#3b2a6e">
-    <text x="100" y="33" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-style="italic" font-size="7.2" letter-spacing="0.2">GRAVITAS</text>
-    <text x="100" y="40.5" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="5" fill="#55555a">PC GamePad</text>
-  </g>
-</svg>`;
 
 /**
  * The pad, its buttons (`.gp-btn[data-b]`) and its d-pad (`.gp-dpad`). `shaft` lays the
- * unscrewed joystick shaft beside it; show() presses what is held.
+ * unscrewed joystick shaft beside it (`.gp-shaft`) and has it standing in the socket too
+ * (`.gp-stick`, hidden unless a page shows it); show() presses what is held.
  */
 export function gamePadArt(opts: { shaft?: boolean; alt?: string } = {}): HTMLElement {
   const art = h(
     'span',
     { class: `gp-art${opts.shaft ? ' with-shaft' : ''}`, ...(opts.alt ? { role: 'img', 'aria-label': opts.alt } : { 'aria-hidden': 'true' }) },
     h('span', { class: 'gp-shell-box' }),
-    h('span', { class: 'gp-dpad', dataset: { pos: '0' } }, h('span', { class: 'gp-cross' }), h('span', { class: 'gp-socket' })),
+    h('span', { class: 'gp-dpad', dataset: { pos: '0' } }, h('span', { class: 'gp-dpad-box' }), h('span', { class: 'gp-socket' })),
     ...PAD_BUTTONS.map((b) => h('span', { class: `gp-btn ${b.color} at-${b.at}`, dataset: { b: String(b.n) } })),
-    opts.shaft ? h('span', { class: 'gp-shaft' }, h('span', { class: 'gp-thread' })) : null,
+    opts.shaft ? h('span', { class: 'gp-shaft' }) : null,
+    opts.shaft ? h('span', { class: 'gp-stick' }) : null,
   );
-  art.querySelector('.gp-shell-box')!.innerHTML = shellSvg(`gp-plastic-${++made}`);
+  const id = `gp-plastic-${++made}`;
+  const fill = (sel: string, svg: string) => {
+    const box = art.querySelector(sel);
+    if (box) box.innerHTML = svg;
+  };
+  fill('.gp-shell-box', shellSvg(id));
+  fill('.gp-dpad-box', dpadSvg(id));
+  fill('.gp-shaft', shaftLyingSvg(id));
+  fill('.gp-stick', shaftUpSvg(id));
   return art;
 }
 
