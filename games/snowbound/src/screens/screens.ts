@@ -1,6 +1,6 @@
 // The 320x200 pictures: title, menu, the newspaper storyline, level cards, the notepad
 // behind text pages, and the endings. All drawn in code with the same ramps as the blocks.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { matchColor } from '../../../../web/src/formats/palette';
 import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
@@ -482,8 +482,9 @@ export function buildScreens(
       if (t2) outlined(p, 160 - textWidth(caption2) / 2, 20, caption2.slice(0, t2), c('gold', 3), c('ink', 0));
       frames.push(Uint8Array.from(p.px));
     }
+    // a hold on the corner, then a fade to black before the title
     for (let k = 0; k < 12; k++) frames.push(frames[frames.length - 1]);
-    files['intro.fli'] = encodeFli(frames, pal.pal, { speed: 6 });
+    files['intro.fli'] = encodeFliFadeOut(frames, pal.pal, { speed: 6 });
   }
 
   // ---------------- level cards (in each level's own palette)
