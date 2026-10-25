@@ -2,7 +2,8 @@
 .pic-canvas {
   display: block;
   width: 100%;
-  max-width: min(960px, max(320px, calc((var(--ws-vh, 100dvh) - 250px) * var(--ar, 1.6))));
+  /* leaves room below it for its info, preview and file buttons */
+  max-width: min(960px, max(320px, calc((var(--ws-vh, 100dvh) - 420px) * var(--ar, 1.6))));
   border-radius: 6px;
   cursor: crosshair;
   image-rendering: pixelated;
@@ -28,7 +29,7 @@
   }
   /* on short windows the copying column scrolls by itself rather than the editor */
   .pic-layout .pic-side {
-    max-height: calc(var(--ws-vh, 100dvh) - 180px);
+    max-height: var(--room, calc(var(--ws-vh, 100dvh) - 180px));
     overflow-y: auto;
     overscroll-behavior: contain;
   }

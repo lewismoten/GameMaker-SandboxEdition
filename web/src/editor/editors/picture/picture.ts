@@ -9,6 +9,7 @@ import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../../formats
 import { matchColor, parsePalette, type Palette } from '../../../formats/palette';
 import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../../formats/blocks';
 import { gamePreview } from '../../widgets/mediaShared';
+import { fitToPane } from '../../core/fitPane';
 import { fileUndo } from '../../core/fileUndo';
 
 // ---- pictures -----------------------------------------------------------------
@@ -335,6 +336,9 @@ registerEditor(['gif'], (host, project, file) => {
       ),
     ),
   );
+  // on wide windows the copying column scrolls by itself within what is left of the window
+  const side = host.querySelector<HTMLElement>('.pic-side');
+  if (side) fitToPane(side);
   draw();
   reloadSet();
   return () => {
