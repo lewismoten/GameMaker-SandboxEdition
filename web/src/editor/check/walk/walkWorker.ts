@@ -17,6 +17,8 @@ export interface WalkRequest {
   budgetMs: number;
   /** The author's plays to use, by scene (autoWalk's `mine`). */
   mine?: Record<number, string>;
+  /** Walking paths to keep to, by block set (autoWalk's `paths`, walkPaths.ts). */
+  paths?: Record<string, number[]>;
   /** Walk just this scene, the game started there. */
   only?: number;
   /** Don't walk: play this walkthrough on the engine, to check and time it. */
@@ -42,6 +44,7 @@ self.onmessage = async (e: MessageEvent<WalkRequest>) => {
       : await autoWalk(game, files, e.data.id, {
           budgetMs: e.data.budgetMs,
           mine: e.data.mine,
+          paths: e.data.paths,
           maxScenes: e.data.only !== undefined ? 1 : undefined,
           progress: (scene, style, places) => {
             if (performance.now() - last < 250) return;

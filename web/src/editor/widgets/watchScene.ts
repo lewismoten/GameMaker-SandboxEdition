@@ -13,6 +13,7 @@ import { serializeGame } from '../../formats/game';
 import type { Walkthrough } from '../../walkthrough/format';
 import { myPlays, oneScene } from '../check/walk/mine';
 import { startWalk } from '../check/walk/walkClient';
+import { allWalkPaths } from '../check/walk/walkPaths';
 import { botRoutes, keepBotRoute, walkthroughThrough } from '../check/walk/botRoutes';
 import { startingAt } from '../editors/integrator/startAt';
 
@@ -41,7 +42,11 @@ async function inWorker(
   walk?: Walkthrough,
   signal?: AbortSignal,
 ): Promise<Walkthrough | undefined> {
-  const running = startWalk(project.files, { gam: project.gam, id: project.id, budgetMs: 60_000, only: scene, walk }, say);
+  const running = startWalk(
+    project.files,
+    { gam: project.gam, id: project.id, budgetMs: 60_000, only: scene, walk, paths: allWalkPaths(project, project.game()) },
+    say,
+  );
   signal?.addEventListener('abort', () => running.cancel());
   const { result } = await running.done;
   return result.walk?.timeline.frames ? result.walk : undefined;

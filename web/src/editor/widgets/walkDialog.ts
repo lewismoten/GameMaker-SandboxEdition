@@ -4,7 +4,8 @@
 // in the game's files) and opens in the walkthrough player, which can save it as an MP4. A scene
 // the author has played (Level check's Play and record, check/walk/mine.ts) can use that play
 // ("Mine") or the bot's ("Bot"); a play that no longer reaches an exit is said so, and the bot
-// plays that scene.
+// plays that scene. In a scene with walking paths (marked in the block editor, check/walk/walkPaths.ts)
+// it says how much of the route keeps to them.
 import { h, clear, modal, selectField, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import type { CatalogEntry } from '../../project/files';
@@ -12,6 +13,7 @@ import type { Walkthrough } from '../../walkthrough/format';
 import { MINE, STRATEGIES, type SceneOutcome } from '../check/walk/autoWalk';
 import { dropPlay, myPlays, playsToUse, usePlay } from '../check/walk/mine';
 import { startWalk, type RunningWalk } from '../check/walk/walkClient';
+import { allWalkPaths } from '../check/walk/walkPaths';
 import { unlockAchievement } from '../../achievements';
 import './walkDialog.css';
 
@@ -112,6 +114,7 @@ export async function walkDialog(project: Project): Promise<void> {
           { class: s.strategy ? 'wd-ok' : 'wd-stop' },
           h('strong', null, s.name),
           ` — ${s.strategy ? `${styleName(s.strategy)}, ${((s.ticks ?? 0) / 18.2).toFixed(0)} s of play` : `stopped here (tried: ${s.tried.map(styleName).join(', ') || 'nothing'})`}`,
+          s.strategy && s.paths ? `, ${Math.round(s.paths.share * 100)}% on the walking paths${s.paths.kept ? ' (it kept to them)' : ''}` : '',
           s.mine === 'broke'
             ? h(
                 'small',
@@ -129,7 +132,7 @@ export async function walkDialog(project: Project): Promise<void> {
     status.textContent = 'Starting the bot…';
     running = startWalk(
       project.files,
-      { gam: project.gam, id: project.id, budgetMs: budget * 1000, mine: playsToUse(project) },
+      { gam: project.gam, id: project.id, budgetMs: budget * 1000, mine: playsToUse(project), paths: allWalkPaths(project, project.game()) },
       (what) => (status.textContent = what),
     );
     try {

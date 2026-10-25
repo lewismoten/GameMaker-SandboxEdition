@@ -454,7 +454,11 @@ modules are in [`../test`](../test).
     `autoWalk.ts` walks, checked on the engine by `verify.ts`; `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
-    to tell when the map changed since.
+    to tell when the map changed since. `walkPaths.ts` keeps a block set's walking paths and roads
+    (companion section `walkPaths` of the .bbl, which a look-only game keeps in memory) and guesses
+    them from its terrains; with them the explorer's `paths` option searches along the roads, and
+    `pathRoute.ts` decides whether that route, more on the paths for modestly more time, replaces
+    the quickest one.
   - A map as the player goes through it: `unroll.ts` follows the hero over the map's wrapping
     edges in unwrapped blocks (folding a way that goes round forever to one lap), and
     `unrollMap.ts` explores one map from every way in for the map editor's "As players see it"

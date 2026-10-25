@@ -15,6 +15,7 @@ import { driveMove } from './drive';
 import { frees, getsAway } from './escape';
 import { canLeave, stuckAreas } from './stuck';
 import type { Game, Link } from '../../formats/game';
+import { footCell } from './walk/walkPaths';
 
 const CELLS = MLEN * MWID;
 
@@ -35,6 +36,14 @@ export interface ExploreOptions {
   waitEverywhere?: boolean;
   /** Cells to head for: places nearer them are tried first. */
   goal?: number[];
+  /**
+   * With `goal`: walking paths and roads (background block numbers, walk/walkPaths.ts) to keep
+   * to. The search then weighs the way so far as well as the distance left (A*, not greedy): a
+   * move costs 1, and `offCost` more (1 by default) when it ends off the paths, so a way along
+   * a road up to that much longer is found before one cutting across. Unset (or empty), the
+   * search is exactly as without it.
+   */
+  paths?: { blocks: ReadonlySet<number>; offCost?: number };
   /** Stop as soon as a link this accepts is taken (a bot after the next scene). */
   stopAt?: (link: number, toScene: number) => boolean;
   /** Start partway through the scene: a snapshot of this scene from the same entry. */
@@ -92,6 +101,8 @@ interface Place {
   doomed?: boolean;
   /** In what looked like a stuck area, but a key or two held a while gets the hero out (frees()). */
   freed?: boolean;
+  /** With `paths`: what the way here cost (a move 1, and more off the paths). */
+  cost?: number;
 }
 
 export interface ExitReach {
@@ -191,6 +202,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     return best;
   };
   const heap = new PlaceHeap();
+  const paths = goal && opt.paths?.blocks.size ? opt.paths : undefined;
+  const offCost = paths?.offCost ?? 1;
   let reachedStop = false;
   const timed = timedBlocks(bg);
   // blocks that refuse a touch while a counter is short (locks), and the counters they read
@@ -282,6 +295,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const had = index.get(key);
     if (had !== undefined) return had;
     const id = places.length;
+    const cost = paths && (via ? (places[via.parent]?.cost ?? 0) + 1 + (paths.blocks.has(w.map[footCell(w)]) ? 0 : offCost) : 0);
     places.push({
       cell: cellOf(),
       via: via && { ...via, ticks: moveTicks },
@@ -294,10 +308,13 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       out: [],
       exits: [],
       dropIn,
+      ...(paths ? { cost } : {}),
     });
     index.set(key, id);
     if (timedHere && !index.has(`${spot}#first`)) index.set(`${spot}#first`, id);
-    if (goal) heap.push(id, distance(cellOf()) * 1000 + (w.clock - startClock) / 100);
+    // (keeping to paths: the way so far and the distance left, and of two as good, the nearer)
+    if (goal && paths) heap.push(id, (cost! + distance(cellOf())) * 1000 + distance(cellOf()) * 10 + (w.clock - startClock) / 100);
+    else if (goal) heap.push(id, distance(cellOf()) * 1000 + (w.clock - startClock) / 100);
     else (newCells ? fresh : queue).push(id);
     return id;
   };
