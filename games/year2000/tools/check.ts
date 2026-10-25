@@ -49,6 +49,64 @@ let deaths = 0;
 /** Pages carried into the Science Fair (the judges take 20 of them there). */
 let pagesAtFair = 0;
 
+/** Catch Sparky: chase him until the cover page drops, then pick it up. False if Dex died. */
+async function catchSparky(bot: Bot, names: string[]): Promise<boolean> {
+  const { sim } = bot;
+  const ci = sim.w.ci;
+  for (let t = 0; t < 4000 && ci.meter[CTR.cover] <= 1; t++) {
+    const w = sim.w;
+    const mm = w.mm.findIndex(
+      (m) => m.monnum === MON.sparky || m.monnum === MON.sparky2 || m.monnum === MON.sparky3 || m.monnum === MON.sparkyDizzy || m.monnum === MON.cover,
+    );
+    if (mm < 0) break;
+    const [sx, sy] = [w.mi[mm].curx[0], w.mi[mm].cury[0]];
+    // He may be half inside a table: any block next to him will do.
+    await bot.goTo(
+      [
+        [sx, sy],
+        [sx + 1, sy],
+        [sx - 1, sy],
+        [sx, sy + 1],
+        [sx, sy - 1],
+      ],
+      `Sparky at ${sx},${sy}`,
+    );
+    if (sim.dead) return false;
+    if (ci.meter[SEQ.zap] <= 0) await bot.collect(names, (n) => /^battery_/.test(n), 'batteries');
+  }
+  return true;
+}
+
+/**
+ * A player who skipped every page and the Zapper on the way reaches the fair with nothing: the
+ * fair's own pages and batteries, Sparky and the copier must still get them to the podium.
+ */
+async function shortOfPages(): Promise<void> {
+  const l = LEVELS.find((v) => v.file === 'school')!;
+  const set = SETS[l.set]();
+  const lm = l.build(set);
+  const scene: SimScene = { map: lm.done(), bbl: set.build(), mbl, mon: mons, chr: chars[l.chr], cbl, links: [{ from: lm.at('exit'), to: { x: 0, y: 0 } }] };
+  const short = newCharInfo();
+  const sim = new Sim(scene, lm.at('start'), short, 17);
+  const bot = new Bot(sim, { zapAt: (n) => ROBOTS.has(n) });
+  const pages = () => short.meter[CTR.pages] - 1;
+  const zaps0 = short.meter[SEQ.zap];
+  await bot.collect(set.names, (n) => ITEMS.test(n), 'items');
+  const found = pages();
+  if (!(await catchSparky(bot, set.names))) throw new Error('year2000: short of pages, Dex died catching Sparky');
+  const tray = bot.find(set.names, (n) => n === 'copiertray');
+  if (!(await bot.goTo(tray, 'the copier'))) throw new Error('year2000: short of pages, no way to the copier');
+  const t0 = sim.ticks;
+  while (pages() < PAGES_NEEDED && sim.ticks - t0 < 3000) if (!(await bot.tick())) break;
+  const waited = sim.ticks - t0;
+  const ok = (await bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'exit')) && sim.link >= 0 && !sim.dead;
+  for (const s of bot.log) console.log('   ', s);
+  if (!ok) throw new Error(`year2000: short of pages, the bot did not finish (${pages()} pages, cover ${short.meter[CTR.cover] - 1})`);
+  console.log(
+    `short of pages: arrived with 0 pages and ${zaps0} zaps, found ${found} at the fair, waited ${(waited / 18.2).toFixed(0)}s at the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`,
+  );
+}
+
 for (const [i, l] of LEVELS.entries()) {
   const set = SETS[l.set]();
   const bbl = set.build();
@@ -91,30 +149,7 @@ for (const [i, l] of LEVELS.entries()) {
       return bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'the rocket');
     }
     await bot.collect(names, (n) => ITEMS.test(n), 'items');
-    if (l.file === 'school') {
-      // Catch Sparky: chase him until the cover page drops, then pick it up.
-      for (let t = 0; t < 4000 && ci.meter[CTR.cover] <= 1; t++) {
-        const w = sim.w;
-        const mm = w.mm.findIndex(
-          (m) => m.monnum === MON.sparky || m.monnum === MON.sparky2 || m.monnum === MON.sparky3 || m.monnum === MON.sparkyDizzy || m.monnum === MON.cover,
-        );
-        if (mm < 0) break;
-        const [sx, sy] = [w.mi[mm].curx[0], w.mi[mm].cury[0]];
-        // He may be half inside a table: any block next to him will do.
-        await bot.goTo(
-          [
-            [sx, sy],
-            [sx + 1, sy],
-            [sx - 1, sy],
-            [sx, sy + 1],
-            [sx, sy - 1],
-          ],
-          `Sparky at ${sx},${sy}`,
-        );
-        if (sim.dead) return false;
-        if (ci.meter[SEQ.zap] <= 0) await bot.collect(names, (n) => /^battery_/.test(n), 'batteries');
-      }
-    }
+    if (l.file === 'school' && !(await catchSparky(bot, names))) return false;
     if (l.file === 'school')
       bot.log.push(
         `cover ${ci.meter[CTR.cover]}, monsters: ${sim.w.mm
@@ -150,3 +185,4 @@ console.log(`${(totalTicks / 18.2 / 60).toFixed(1)} minutes; ${pagesAtFair} page
 // The bot must win clean: every level exited, every page found, and no life lost.
 if (!god && deaths) throw new Error(`year2000: the bot lost ${deaths} ${deaths === 1 ? 'life' : 'lives'}`);
 if (pagesAtFair < PAGES_NEEDED) throw new Error(`year2000: only ${pagesAtFair} of ${PAGES_NEEDED} pages reached the fair`);
+await shortOfPages();

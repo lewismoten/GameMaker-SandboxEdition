@@ -185,6 +185,7 @@ HINTS
 * Read the teletype in the exchange hall. It knows a thing or two.
 * Grandpa's CitiCar likes a honk.
 * The judges want 20 pages. There are lots more than that.
+* Came to the fair short? The school copier prints more.
 
 THIS IS SHAREWARE
 -----------------

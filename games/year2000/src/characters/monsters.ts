@@ -1,7 +1,7 @@
 // Y2K.MON: who mows, chases, honks and hugs. One list for every level.
 import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
 import type { BlockSet } from '../blocks/book';
-import { MON } from '../ids';
+import { COPY_TICKS, MON } from '../ids';
 
 /** Orientations: 0 as drawn (facing right), 4 mirrored (left). */
 const O = { right: 0, left: 4 };
@@ -143,5 +143,7 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.cover });
   // The cover page: tough enough that lava can't hurt it (only a careless zap can).
   def(MON.cover, { pics: [['cover', 50]], power: 99 });
+  // A page on the copier's tray: as tough as the cover, and gone before the next one prints.
+  def(MON.page, { pics: [['pageMon', 50]], power: 99, end: COPY_TICKS - 1 });
   return set;
 }

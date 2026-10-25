@@ -58,6 +58,9 @@ export const SND = {
 /** How many pages the science fair judges need to see. */
 export const PAGES_NEEDED = 20;
 
+/** Game ticks between the Science Fair copier's pages (about 3 seconds); each lasts one tick less. */
+export const COPY_TICKS = 55;
+
 /** Monster numbers in the .MON files (one shared list; every level loads the same set). */
 export const MON = {
   zap: 0,
@@ -118,5 +121,7 @@ export const MON = {
   skaterOff: 52,
   dinoOff: 53,
   buggyOff: 54,
+  /** A page from the Science Fair's copier: touch it for one more page. */
+  page: 55,
   none: 64,
 } as const;

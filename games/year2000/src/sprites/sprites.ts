@@ -5,7 +5,7 @@ import { BlockSet, type BlockDef } from '../blocks/book';
 import { T, blob, oval, outline, recolor, rotate, sprite } from '../art/draw';
 import { micro } from '../art/font';
 import { CTR } from '../ids';
-import { coverPic } from '../blocks/items';
+import { coverPic, pagePic } from '../blocks/items';
 import { C, PAL } from '../art/pal';
 import { flyingCiticar } from '../art/citicar';
 
@@ -570,5 +570,7 @@ export function buildMonsterBlocks(): BlockSet {
   two('dinoSafe', dinoPic);
   two('buggySafe', buggyPic);
   two('mowerFront', mowerFrontPic, { hp: -2 });
+  // a page fresh from the Science Fair's copier
+  s.add('pageMon', pagePic(), { effect: CTR.pages, eamt: 1 });
   return s;
 }
