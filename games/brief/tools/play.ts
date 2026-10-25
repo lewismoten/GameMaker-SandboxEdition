@@ -5,6 +5,8 @@ import { CTR, WORDS_PER_BOOK, wingCounter } from '../src/ids';
 import { compileAll } from '../src/compile';
 import { sceneIds } from '../src/game';
 import { Bot, hazardsOf, windowBox, wordCells } from './bot';
+import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
+import { MLEN } from '../../../web/src/formats/map';
 
 export async function playThrough(only?: string, verbose = true) {
   const { game, hub, wings, chr, cb } = compileAll();
@@ -14,6 +16,17 @@ export async function playThrough(only?: string, verbose = true) {
   };
   for (const w of wings) areas[w.area.file] = { area: w.area, names: w.area.mons.names, hazards: hazardsOf(w.area) };
   const bot = new Bot(game, areas, chr, cb.build());
+  // along the walks, as a person walks (walkPaths.json, written by the build)
+  bot.keepTo = keepToPaths(
+    {
+      game,
+      get scene() {
+        return bot.scene;
+      },
+      blockAt: (x, y) => bot.sim.w.map[y * MLEN + x],
+    },
+    readWalkPaths('brief'),
+  );
   const say = (s: string) => verbose && console.log(s);
   bot.enter(id.room, hub.room.entry);
   let score = 0;

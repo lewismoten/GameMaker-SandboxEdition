@@ -1,7 +1,8 @@
 // The play-testing librarian: walks Joe through the library in the headless simulator,
 // scene after scene, his counters carried along as PLAYGAME carries them. In a book it
-// picks up every word slip (nearest first, by a breadth-first walk around the furniture),
-// waiting out shushers and other word-confiscating things, then opens THE END.
+// picks up every word slip (nearest first, by the cheapest walk around the furniture, along
+// the walks when keepTo is set), waiting out shushers and other word-confiscating things,
+// then opens THE END.
 import { MLEN } from '../../../web/src/formats/map';
 import { LASTMON } from '../../../web/src/formats/monster';
 import { newCharInfo, type CharInfo } from '../../../web/src/engine/world';
@@ -74,22 +75,28 @@ export function firstStep(
   goals: { x: number; y: number }[],
   box: { x0: number; y0: number; x1: number; y1: number },
   avoid: { x: number; y: number }[] = [],
+  cost?: (x: number, y: number) => number,
 ): Dir | undefined {
   if (avoid.length) {
     try {
-      return firstStep(sim, goals, box, []) === undefined ? undefined : firstStepAvoiding(sim, goals, box, avoid);
+      return firstStep(sim, goals, box, [], cost) === undefined ? undefined : firstStepAvoiding(sim, goals, box, avoid, cost);
     } catch {
       /* no way around them: walk through */
     }
   }
-  return firstStepAvoiding(sim, goals, box, []);
+  return firstStepAvoiding(sim, goals, box, [], cost);
 }
 
+/**
+ * The cheapest walk's first step; `cost` is a step's extra cost (off the walks). Ties go to the
+ * cell found first, so with every step costing the same it is the breadth-first walk.
+ */
 function firstStepAvoiding(
   sim: Sim,
   goals: { x: number; y: number }[],
   box: { x0: number; y0: number; x1: number; y1: number },
   avoid: { x: number; y: number }[],
+  cost?: (x: number, y: number) => number,
 ): Dir | undefined {
   const blocked = new Set(avoid.map((a) => a.y * MLEN + a.x));
   const { bx, by } = sim.pos;
@@ -97,29 +104,33 @@ function firstStepAvoiding(
   const goal = new Set(goals.map((g) => key(g.x, g.y)));
   if (goal.has(key(bx, by))) return undefined;
   const prev = new Map<number, [number, Dir]>();
-  const seen = new Set([key(bx, by)]);
-  let q: [number, number][] = [[bx, by]];
-  while (q.length) {
-    const next: [number, number][] = [];
-    for (const [x, y] of q)
-      for (const [d, dx, dy] of STEPS) {
-        const nx = x + dx;
-        const ny = y + dy;
-        const k = key(nx, ny);
-        if (nx < box.x0 || ny < box.y0 || nx > box.x1 || ny > box.y1 || seen.has(k)) continue;
-        if (!goal.has(k) && (solidAt(sim, nx, ny) || blocked.has(k))) continue;
-        seen.add(k);
-        prev.set(k, [key(x, y), d]);
-        if (goal.has(k)) {
-          let cur = k;
-          let dir: Dir = d;
-          while (prev.has(cur) && prev.get(cur)![0] !== key(bx, by)) cur = prev.get(cur)![0];
-          dir = prev.get(cur)![1];
-          return dir;
-        }
-        next.push([nx, ny]);
-      }
-    q = next;
+  const dist = new Map([[key(bx, by), 0]]);
+  const done = new Set<number>();
+  const open: [number, number][] = [[bx, by]];
+  while (open.length) {
+    let bi = 0;
+    for (let i = 1; i < open.length; i++) if (dist.get(key(...open[i]))! < dist.get(key(...open[bi]))!) bi = i;
+    const [x, y] = open.splice(bi, 1)[0];
+    const k0 = key(x, y);
+    if (done.has(k0)) continue;
+    done.add(k0);
+    if (goal.has(k0)) {
+      let cur = k0;
+      while (prev.get(cur)![0] !== key(bx, by)) cur = prev.get(cur)![0];
+      return prev.get(cur)![1];
+    }
+    for (const [d, dx, dy] of STEPS) {
+      const nx = x + dx;
+      const ny = y + dy;
+      const k = key(nx, ny);
+      if (nx < box.x0 || ny < box.y0 || nx > box.x1 || ny > box.y1 || done.has(k)) continue;
+      if (!goal.has(k) && (solidAt(sim, nx, ny) || blocked.has(k))) continue;
+      const nd = dist.get(k0)! + 1 + (cost?.(nx, ny) ?? 0);
+      if (nd >= (dist.get(k) ?? Infinity)) continue;
+      dist.set(k, nd);
+      prev.set(k, [k0, d]);
+      open.push([nx, ny]);
+    }
   }
   throw new Error(`No way from ${bx},${by} to ${goals.map((g) => `${g.x},${g.y}`).join(' ')}`);
 }
@@ -133,6 +144,8 @@ export class Bot {
   sim!: Sim;
   readonly ci: CharInfo = newCharInfo();
   log: string[] = [];
+  /** The extra cost of a step onto a cell off the walks (kit/walkPaths.ts keepToPaths); unset, every way costs the same. */
+  keepTo?: (x: number, y: number) => number;
 
   constructor(
     readonly game: Game,
@@ -265,6 +278,7 @@ export class Bot {
         g,
         box,
         monstersNamed(this.sim, names, (n) => hazards.has(n)),
+        this.keepTo,
       );
       if (!d) return; // standing on a goal
       await this.step(d, careful);

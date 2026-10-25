@@ -21,6 +21,8 @@ import { readme } from './src/screens/text';
 import { buildSounds } from './src/sound/sounds';
 import * as M from './src/sound/music';
 import { demoRecording } from './src/demo';
+import { walkPaths } from './src/walkPaths';
+import { writeWalkPaths } from '../kit/walkPaths';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -67,4 +69,6 @@ for (const [name, bytes] of disk.files)
 // the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
 clipLists(disk.files, ['title.lst', 'story.lst', 'help.lst', 'credits.lst']);
 disk.write();
+// the walks the walkthrough's bot keeps to (not on the disk)
+writeWalkPaths('brief', walkPaths(wings));
 console.log(`${game.scenes.length} scenes`);
