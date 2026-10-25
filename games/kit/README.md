@@ -62,8 +62,9 @@ Checking the games:
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
   any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
   byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts` and `levelCheck.ts`; then `tinHearts.ts check`
-  and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`. The
-  secret game is left out unless named.
+  and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
+  (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). The secret game is left
+  out unless named.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
 - `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
@@ -74,6 +75,12 @@ Checking the games:
   (`["hurt-lock s2 Monster 9 holds the hero while it hurts"]`) lists findings kept on purpose, by the editor's stable key
   (check, scene and title without where it was first seen, `web/src/editor/check/accepted.ts`); they never fail, as
   the map panel's "Mark as checked: it's meant to be" ("That's on purpose" on a suggestion) leaves them out.
+  `levelCheck.ts <id> --play [--steady <ms>] [--budget <s>]` also plays the game with the Level check's bot (the
+  whole game, once as it comes and once leaving behind all it can; then each level scene alone, heading for its links,
+  and again with steady hands at 300 ms between keys unless told) and lists one-way spots, things left behind, steady
+  hands and stuck spots, which scenes it found no way through, and how tight the walkthrough's key changes are
+  (`web/src/editor/check/walk/pace.ts`). It only reports: play findings depend on the time the bot has, so they are
+  not in the baseline.
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.

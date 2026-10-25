@@ -10,10 +10,13 @@
 //   text    kit/textfitCheck.ts      hidden  kit/hiddenView.ts      level  kit/levelCheck.ts
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
 // then once: kit/tinHearts.ts check and kit/syncCheck.ts (levelSecrets.json and box hours).
+// With --play, each game is also played by the Level check's bot (kit/levelCheck.ts --play: one-way
+// spots, things left behind, steady hands, its walkthrough's pace), which only reports.
 //
-//   npx vite-node ../games/kit/checkGames.ts [--game <id>]... [--quick] [--no-level] [--verbose]
+//   npx vite-node ../games/kit/checkGames.ts [--game <id>]... [--quick] [--no-level] [--play] [--verbose]
 //     --quick     skip the rebuild compare (the slowest step)
 //     --no-level  skip the Level check
+//     --play      also list each game's play findings (slow: minutes a game; never fails)
 //     --verbose   print every step's output, not only a failing step's last lines
 // Games are those with an about.json; a game marked secret is left out unless named with --game.
 import { spawnSync } from 'node:child_process';
@@ -125,6 +128,19 @@ for (const id of games) {
   row.sec = Math.round((Date.now() - t) / 1000);
   rows.set(id, row);
 }
+
+if (flag('--play'))
+  for (const id of games) {
+    console.log(`== ${id}: play findings`);
+    const cmd = hasNice ? 'nice' : viteNode;
+    const r = spawnSync(cmd, [...(hasNice ? ['-n', '10', viteNode] : []), '../games/kit/levelCheck.ts', id, '--play'], {
+      cwd: webDir,
+      encoding: 'utf8',
+      maxBuffer: 256 << 20,
+      timeout: 120 * 60_000,
+    });
+    for (const l of `${r.stdout ?? ''}${r.stderr ?? ''}`.split('\n')) if (l && !/ExperimentalWarning|--trace-warnings/.test(l)) console.log(`  ${l}`);
+  }
 
 console.log('== every game');
 const hearted = games.filter((id) => has(id, 'about.json') && 'tinHeart' in JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')));
