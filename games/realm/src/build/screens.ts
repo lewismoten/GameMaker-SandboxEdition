@@ -18,7 +18,7 @@ export function screenFiles(price: string): AreaFile[] {
   put('title.gif', S.titleScreen().gif());
   lst('title.lst', [
     { name: SANDLOGO, pause: 0 },
-    { name: 'intro.fli', pause: 1 },
+    { name: 'intro.fli', pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]);
   // the pages shown from the menu (and the ending) write MORE... in the menu palette's nearest

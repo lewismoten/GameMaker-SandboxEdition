@@ -159,7 +159,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 46097,
+  "frames": 46126,
   "chapters": [
    {
     "title": "Opening",
@@ -167,51 +167,51 @@
    },
    {
     "title": "Story",
-    "frame": 1448
+    "frame": 1477
    },
    {
     "title": "Nowish",
-    "frame": 3808
+    "frame": 3837
    },
    {
     "title": "Laterburg",
-    "frame": 6582
+    "frame": 6611
    },
    {
     "title": "The Snooze Barrows",
-    "frame": 10578
+    "frame": 10607
    },
    {
     "title": "Someday Harbor",
-    "frame": 20618
+    "frame": 20647
    },
    {
     "title": "The Soggy Vaults",
-    "frame": 21614
+    "frame": 21643
    },
    {
     "title": "THE CHEZ and the Dawdle Flats",
-    "frame": 26646
+    "frame": 26675
    },
    {
     "title": "Eventually Falls",
-    "frame": 28601
+    "frame": 28630
    },
    {
     "title": "The Putoff Mines",
-    "frame": 30784
+    "frame": 30813
    },
    {
     "title": "Deadline Keep",
-    "frame": 36394
+    "frame": 36423
    },
    {
     "title": "Ending",
-    "frame": 40230
+    "frame": 40259
    },
    {
     "title": "Credits",
-    "frame": 44061
+    "frame": 44090
    }
   ]
  }
