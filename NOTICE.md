@@ -393,6 +393,10 @@ formats from their published descriptions and from Game-Maker's own source.
   its _TURBO BUTTON_ ad, are a made-up parody name. It is not a real company or product, and no
   connection with or endorsement by any company is implied. The ad's prices ($24.95 for the pad,
   $33.95 for the joystick) are part of the story, after what Lewis remembers paying in 1994.
+- **HOLE-Y MOLEY**, the Disk Doubler, and its maker **Punchline Products**, the disk notcher in its
+  _TURBO BUTTON_ ad, are made-up parody names. They are not a real company or product, and no
+  connection with or endorsement by any company is implied; the ad's drawing of the press is this
+  project's own. Its price ($14.95) is part of the story, after what Lewis remembers paying.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
   License, so this fork leaves it out. The README says where to get it.
@@ -417,7 +421,7 @@ formats from their published descriptions and from Game-Maker's own source.
   ("Copyright (c) Creative Technology Pte Ltd, 1990"), as every program built with them did.
   "Export for DOS" ships `XFERPLAY.EXE` (renamed after the game) and `SNDBLAST.DRV` with
   a README that gives Game-Maker's MIT License and names these parts.
-- The desk's hardware brands (ILLOGITECH, SOUND BOASTER, GRAVITAS, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
+- The desk's hardware brands (ILLOGITECH, SOUND BOASTER, GRAVITAS, PIXELMAX, SQUEAK, AwkWard BIOS), the magazine's HOLE-Y MOLEY, and its phone
   numbers are made up, as are the magazines and awards on the game boxes and the magazine
   _TURBO BUTTON_, its prices and its coupons. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they

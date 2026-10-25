@@ -1,0 +1,87 @@
+/* The HOLE-Y MOLEY ad's page (sections/notcherAd.ts) in the look of a 1990s computer gadget's
+   box: a charcoal page edged with a thin red rule, the name in big red block letters, the pitch
+   boxed in a blue outline, the press drawn large (notcherArt.ts), and the before and after
+   boxes and the white order coupon kept on their own colors. The page keeps these colors in
+   light and dark, as every printed page does. */
+.mag-page[data-page='notcher-ad'] .mag-adframe {
+  border: 0.2em solid #e8343a;
+  outline: 0.5em solid #26262b;
+  background: radial-gradient(ellipse 60% 30% at 50% 30%, rgba(255, 255, 255, 0.1), transparent 70%), linear-gradient(#2e2e34, #1f1f24);
+  color: #fff;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-adframe h2 {
+  color: #ff4a4f;
+  font-size: 3.4em;
+  letter-spacing: 0.02em;
+  text-shadow: 0.05em 0.05em 0 #000;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-ad-sub {
+  align-self: start;
+  padding: 0.2em 0.5em;
+  border: 0.12em solid #3fb4ff;
+  color: #fff;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-ad-sub strong {
+  color: #6cc8ff;
+}
+
+.mag-page[data-page='notcher-ad'] .art-notcher {
+  width: 52%;
+  margin: -0.6em auto -0.4em;
+}
+
+.mag-page[data-page='notcher-ad'] .art-notcher svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-side.tone-black {
+  border-color: #3fb4ff;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-side.tone-black strong {
+  color: #6cc8ff;
+}
+
+/* each disk sits at the left of its box, the list beside it */
+.mag-page[data-page='notcher-ad'] .mag-side > :is(.art-notch-before, .art-notch-after) {
+  float: left;
+  width: 5em;
+  margin: 0.2em 0.8em 0.3em 0;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-side:has(> .art-notch-before, > .art-notch-after) > .mag-list {
+  overflow: hidden;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-adframe {
+  gap: 0.6em;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-side.tone-black li {
+  margin-bottom: 0.1em;
+}
+
+.mag-page[data-page='notcher-ad'] .mag-adframe > .mag-small {
+  color: #e6e6ea;
+  opacity: 1;
+}
+
+/* the coupon: white, cut out along its dashes */
+.mag-page[data-page='notcher-ad'] .mag-card {
+  border-color: #141210;
+  outline: 0.25em solid #fff;
+}
+
+/* a narrow screen: the name set smaller on one line, the press drawn wider */
+.flow .mag-page[data-page='notcher-ad'] .mag-adframe h2 {
+  font-size: 2.2em;
+}
+
+.flow .mag-page[data-page='notcher-ad'] .art-notcher {
+  width: 92%;
+}

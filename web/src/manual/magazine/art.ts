@@ -3,7 +3,8 @@
 // disks (blankDisk.ts), and the desk's
 // modem (modemArt.ts), speakers and disk box drawn as the desk draws them
 // (speakerArt.ts, diskBoxArt.ts) and the game pad as the desk's (desk/pc/gamePadArt.ts) for the hardware ads; the Sound Boaster card and its before
-// and after faces (soundCardArt.ts); and a snapshot of the 1994 desk itself
+// and after faces (soundCardArt.ts); the HOLE-Y MOLEY disk notcher and a disk before and after it
+// (notcherArt.ts); and a snapshot of the 1994 desk itself
 // (deskShot.ts), screenshots of today's web (webShots.ts) and Lewis's DOSBox screenshot
 // (dosShot.ts); and Joey's crayon drawing for the
 // Mail Bag (joeyDrawing.ts).
@@ -19,6 +20,7 @@ import { diskBoxArt } from './diskBoxArt';
 import { gamePadArt } from '../../desk/pc/gamePadArt';
 import { joeyDrawing } from './joeyDrawing';
 import { modemArt } from './modemArt';
+import { notcherArt } from './notcherArt';
 import { soundCardArt } from './soundCardArt';
 import { speakerArt } from './speakerArt';
 import { webShotImg } from './webShots';
@@ -90,6 +92,12 @@ export function artElement(id: ArtId, alt: string): Element {
       return soundCardArt('before', alt);
     case 'boaster-after':
       return soundCardArt('after', alt);
+    case 'notcher':
+      return notcherArt('press', alt);
+    case 'notch-before':
+      return notcherArt('before', alt);
+    case 'notch-after':
+      return notcherArt('after', alt);
     case 'joey':
       return joeyDrawing(alt);
     case 'chez': {

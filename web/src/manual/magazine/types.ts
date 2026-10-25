@@ -161,6 +161,7 @@ export type WebShot = (typeof WEB_SHOTS)[number];
 /**
  * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
  * The boaster ones are the Sound Boaster ad's (soundCardArt.ts): its card, and a face before and after.
+ * The notch ones are the HOLE-Y MOLEY ad's (notcherArt.ts): the press, and a disk's back before and after.
  * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
  * blankdisk is a stack of bulk disks with no labels, for the Floppy Barn ad (blankDisk.ts).
  * dos-carl is Lewis's DOSBox screenshot of A Fly Named Carl's garbled cover (dosShot.ts).
@@ -179,6 +180,9 @@ export type ArtId =
   | 'boaster'
   | 'boaster-before'
   | 'boaster-after'
+  | 'notcher'
+  | 'notch-before'
+  | 'notch-after'
   | 'joey'
   | 'dos-carl'
   | `web-${WebShot}`;
