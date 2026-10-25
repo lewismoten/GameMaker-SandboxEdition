@@ -4,7 +4,7 @@
 // audio/engine.ts mixes them (everything through a 0.8 master gain).
 import { Opl2 } from '../audio/opl';
 import { CmfPlayer, TICK_RATE } from '../audio/cmfPlayer';
-import { CMF_GAMEMAKER_CLOCK, isCmf, parseCmf } from '../formats/cmf';
+import { loadSong } from '../audio/cmfLoad';
 import { decodeVoc, isVoc } from '../formats/voc';
 import type { AudioEvent } from './runtime';
 
@@ -58,10 +58,8 @@ export class AudioRenderer {
   private apply(e: AudioEvent, now: number): void {
     switch (e.kind) {
       case 'song': {
-        const b = e.bytes;
-        if (!b || !isCmf(b)) return;
-        const cmf = parseCmf(b);
-        if (cmf.clockTicks !== CMF_GAMEMAKER_CLOCK) return;
+        const cmf = loadSong(e.bytes);
+        if (!cmf) return;
         this.player.load(
           cmf.music.slice(),
           cmf.instruments.map((x) => x.slice()),

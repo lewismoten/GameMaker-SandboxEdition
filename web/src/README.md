@@ -76,7 +76,8 @@ modules are in [`../test`](../test).
   (`machine.ts`: screen, keyboard, timers). `slowPc.ts` is the slow PC behind the desk's TURBO
   button.
 - [`audio/`](audio): `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV
-  calls), the AudioWorklet (`music.worklet.ts`), Web Audio output (`engine.ts`, the page's one
+  calls; `cmfLoad.ts` reads a song's header as its `load_file` did, CMF 1.0 included, and refuses
+  what it refused), the AudioWorklet (`music.worklet.ts`), Web Audio output (`engine.ts`, the page's one
   `context.ts`, one volume for everything in `output.ts`), PC speaker sound sets (`vocToSpeaker.ts`
   drafts one from a `.voc`'s pitch) and sample editing (`sampleEdit.ts`).
   - Music: `compose.ts` writes `.CMF` songs from notes as text (shared with `games/kit`); the

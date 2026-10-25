@@ -6,7 +6,7 @@
 // passes through one master gain into the shared volume node from output.ts.
 import workletUrl from './music.worklet.ts?worker&url';
 import type { MusicMessage } from './music.worklet';
-import { CMF_GAMEMAKER_CLOCK, isCmf, parseCmf } from '../formats/cmf';
+import { loadSong } from './cmfLoad';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { TICK_RATE } from './cmfPlayer';
 import { output } from './output';
@@ -92,10 +92,10 @@ export class AudioEngine {
   /** PlaySong: returns false (silently, as the original did) for invalid songs. */
   async playSong(bytes: Uint8Array | undefined): Promise<boolean> {
     this.stopSong();
-    if (!bytes || !isCmf(bytes) || !this.musicEnabled) return false;
-    const cmf = parseCmf(bytes);
-    // Playgame refused songs not converted to its 146 Hz clock.
-    if (cmf.clockTicks !== CMF_GAMEMAKER_CLOCK) return false;
+    if (!this.musicEnabled) return false;
+    // Playgame refused songs not converted to its 146 Hz clock (and a few others, see cmfLoad).
+    const cmf = loadSong(bytes);
+    if (!cmf) return false;
     const song = ++this.songs;
     const load = () => song === this.songs && this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
     // the music worklet loads with the first sound; a game waits a moment for it, never
