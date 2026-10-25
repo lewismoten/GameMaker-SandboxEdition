@@ -321,8 +321,12 @@ modules are in [`../test`](../test).
   - Manuals: `manualPages.ts` and `manualCover.ts`; the hint book's cover (`hintCover.ts`,
     `hintCoverArt.ts`) and answers hidden under red film (`redFilm.ts`); the key card (`keys.ts`);
     the story (`story.ts`).
-  - The fold-out World Map (`worldMap.ts`, with `worldMapLayout.ts`, `worldMapTerrain.ts`,
-    `worldMapArt.ts` and `worldMapGroups.ts`, which folds conversation scenes into their place) and
+  - The fold-out World Map (`worldMap.ts`, with `worldMapGroups.ts`, which folds conversation
+    scenes into their place; `worldMapPlan.ts`, `worldMapBands.ts` and `worldMapRoute.ts`, which
+    place them and route the paths between, measured by `worldMapMeasure.ts`; `worldMapThemes.ts`,
+    the theme each game's map is drawn in, with `worldMapRegions.ts`, `worldMapGround.ts`,
+    `worldMapGroundKit.ts`, `worldMapIndoors.ts`, `worldMapWays.ts`, `worldMapDecor.ts`,
+    `worldMapTerrain.ts` and `worldMapArt.ts` drawing it; `worldMapLayout.ts` for the pages) and
     the Level Maps (`levelMaps.ts`, `levelMapLayout.ts`), which never show a tin heart or egg
     (`levelSecrets.ts`, from `levelSecrets.json` written by `scripts/levelSecrets.ts`) and crop to
     what the player sees (`levelViews.ts`, from `levelViews.json` written by
