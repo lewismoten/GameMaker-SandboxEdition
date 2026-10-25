@@ -245,17 +245,28 @@ export const UPLOAD: Chapter = {
     <tr><td>☐</td><td>Each level asks a little more; the last is the best, not the meanest</td></tr>
     <tr><td>☐</td><td>Long levels are split into scenes, so a death costs little</td></tr>
     <tr><td>☐</td><td>Every danger shows before it can kill; hazard blocks fill their cells; the start is safe</td></tr>
+    <tr><td>☐</td><td>What the hero can stand on looks solid, and what he falls through doesn’t</td></tr>
     <tr><td>☐</td><td>Nowhere to get stuck: every pit has a way out, every lock its key, and nothing needed is left behind a one-way spot</td></tr>
     <tr><td>☐</td><td>Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest</td></tr>
     <tr><td>☐</td><td>Enemies stand out in every palette; a touch costs little and pushes clear</td></tr>
+    <tr><td>☐</td><td>A few lives, not dozens: a death costs a little, not everything</td></tr>
     <tr><td>☐</td><td>Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds</td></tr>
+    <tr><td>☐</td><td>Nothing shown can’t be used: no doors that lead nowhere, no prizes in view but out of reach, no prizes your own shots destroy</td></tr>
     <tr><td>☐</td><td>Someone with slower hands can finish: one key at a time, no split-second timing</td></tr>
     <tr><td>☐</td><td>The final boss has stages; the ending is a real scene, not an ad</td></tr>
     <tr><td>☐</td><td>Something new every level or two; the gimmick has its own level</td></tr>
     <tr><td>☐</td><td>Any key beyond the arrows and fire is taught in the game itself, near the start, and sits under the left hand</td></tr>
+    <tr><td>☐</td><td>The help names every key the hero has, and only those</td></tr>
+    <tr><td>☐</td><td>The goal fits in one line, and the instructions say it; help and story fit in three pages</td></tr>
+    <tr><td>☐</td><td>Every odd rule is explained in the game or the help</td></tr>
+    <tr><td>☐</td><td>Players can tell how far they are: level cards say which level of how many</td></tr>
     <tr><td>☐</td><td>Animations loop smoothly and play in real DOS; menu, <kbd>F2</kbd> and text screens are readable</td></tr>
+    <tr><td>☐</td><td>Nothing flashes faster than three times a second</td></tr>
+    <tr><td>☐</td><td>The title screen shows the game you’ll play</td></tr>
     <tr><td>☐</td><td>Frequent sounds are short; no voice line is cut off; music fits</td></tr>
     <tr><td>☐</td><td>Storyline, instructions, credits, won and lost screens are filled in</td></tr>
+    <tr><td>☐</td><td>The first scene’s hero sets the starting hit points, lives and counters for every hero; every hero has a standing picture</td></tr>
+    <tr><td>☐</td><td>Nothing in the game mocks a real person or a group</td></tr>
     <tr><td>☐</td><td>The demo plays the same way twice</td></tr>
     <tr><td>☐</td><td>Three friends played it through, and you fixed where they got stuck</td></tr>
   </table>`,
