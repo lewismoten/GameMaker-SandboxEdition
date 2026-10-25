@@ -41,10 +41,3 @@ export function close(r: Reel): Uint8Array {
   r.fadeOut(fadeOutLength(SPEED));
   return r.fli(SPEED);
 }
-
-/** A copy of a picture, to draw a frame's actors on. */
-export function copy(bg: Pixels): Pixels {
-  const p = new Pixels(bg.w, bg.h);
-  p.px.set(bg.px);
-  return p;
-}
