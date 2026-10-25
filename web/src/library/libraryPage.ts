@@ -1,5 +1,6 @@
 // The Library (#/library): everything on the site to read or print, a card each, sorted by game
-// or by the kind of paper (#/library?by=type, remembered per browser). A card opens its piece
+// or by the kind of paper (#/library?by=type), narrowed to one game or kind (&only=map), both
+// remembered per browser (prefs.ts). A card opens its piece
 // in the viewer that already shows it: its game's box (manual/gameManual.ts), the Game-Maker
 // box (manual/dosManual.ts), TURBO BUTTON, the Guide, or the desk's zine.
 import './library.css';
@@ -8,30 +9,16 @@ import { viewState } from '../urlState';
 import type { CatalogEntry } from '../project/files';
 import { groupShelf, isShelfOrder, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
 import { loadShelf, type Shelf } from './listing';
+import { rememberOnly, rememberOrder, savedOnly, savedOrder } from './prefs';
 import { lazyThumb } from './thumbs';
 
-const ORDER_KEY = 'gm-library-by';
 const ORDERS: [ShelfOrder, string][] = [
   ['game', 'By game'],
   ['type', 'By type'],
 ];
 
-function savedOrder(): ShelfOrder | undefined {
-  try {
-    const v = localStorage.getItem(ORDER_KEY);
-    return isShelfOrder(v) ? v : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function rememberOrder(order: ShelfOrder): void {
-  try {
-    localStorage.setItem(ORDER_KEY, order);
-  } catch {
-    /* private mode: the address still has it */
-  }
-}
+/** A group's name in the address and the picker: a game's id, "other", or a kind of paper. */
+const pickOf = (g: ShelfGroup) => g.key.replace(/^(game|type)-/, '');
 
 /** Waits for a box viewer to be on screen (or `done` to settle), for a card's "Opening…". */
 function whenShown(done: Promise<unknown>): Promise<void> {
@@ -116,9 +103,24 @@ export function renderLibrary(el: HTMLElement): void {
   const state = viewState(['library']);
   const asked = state.get('by');
   let order: ShelfOrder = isShelfOrder(asked) ? asked : (savedOrder() ?? 'game');
+  // the address's pick when it named the sort, else the one last picked for this sort
+  let only = isShelfOrder(asked) ? state.get('only') : savedOnly(order);
   let shelf: Shelf | undefined;
   const list = h('div', { class: 'lib-shelf', id: 'lib-shelf' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
   const count = h('p', { class: 'lib-count', role: 'status' });
+  const pickLabel = h('label', { for: 'lib-only', class: 'lib-only-label' });
+  const picker = h('select', {
+    id: 'lib-only',
+    class: 'lib-only',
+    'aria-controls': 'lib-shelf',
+    onchange: () => {
+      only = picker.value || undefined;
+      rememberOnly(order, only);
+      keepAddress();
+      show();
+    },
+  });
+  const keepAddress = () => state.set({ by: order === 'game' && !only ? undefined : order, only });
   const buttons = ORDERS.map(([o, label]) =>
     h(
       'button',
@@ -127,9 +129,11 @@ export function renderLibrary(el: HTMLElement): void {
         class: 'lib-order',
         'aria-controls': 'lib-shelf',
         onclick: () => {
+          if (o === order) return;
           order = o;
+          only = savedOnly(o);
           rememberOrder(o);
-          state.set({ by: o === 'game' ? undefined : o });
+          keepAddress();
           show();
         },
       },
@@ -138,10 +142,22 @@ export function renderLibrary(el: HTMLElement): void {
   );
   const show = () => {
     buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(ORDERS[i][0] === order)));
+    pickLabel.textContent = order === 'game' ? 'Game' : 'Kind';
     if (!shelf) return;
     const groups = groupShelf(shelf.items, order);
-    list.replaceChildren(...groups.map((g) => groupSection(g, shelf!, order)));
-    count.textContent = `${shelf.items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'groups' : 'kinds'}`;
+    // a pick this shelf doesn't have (a game gone, an old link) shows everything
+    if (only && !groups.some((g) => pickOf(g) === only)) only = undefined;
+    picker.replaceChildren(
+      h('option', { value: '' }, order === 'game' ? 'All games' : 'All kinds'),
+      ...groups.map((g) => h('option', { value: pickOf(g) }, g.heading)),
+    );
+    picker.value = only ?? '';
+    const shown = only ? groups.filter((g) => pickOf(g) === only) : groups;
+    list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order)));
+    const n = shown.reduce((sum, g) => sum + g.parts.reduce((k, p) => k + p.items.length, 0), 0);
+    count.textContent = only
+      ? `${n} of ${shelf.items.length} things to read and print`
+      : `${shelf.items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'groups' : 'kinds'}`;
   };
   show();
   clear(
@@ -156,7 +172,13 @@ export function renderLibrary(el: HTMLElement): void {
         { class: 'lead' },
         'Every manual, map, newsletter, sticker sheet and card that comes in the boxes, with TURBO BUTTON magazine and the Guide. Open one to read it on screen or print it.',
       ),
-      h('div', { class: 'lib-bar' }, h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons), count),
+      h(
+        'div',
+        { class: 'lib-bar' },
+        h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons),
+        h('span', { class: 'lib-pick' }, pickLabel, picker),
+        count,
+      ),
       list,
     ),
   );

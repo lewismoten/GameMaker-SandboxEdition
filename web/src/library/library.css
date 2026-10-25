@@ -232,3 +232,25 @@ main.library {
     margin-left: 0;
   }
 }
+
+/* one game or kind of paper, or all of them */
+.lib-pick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lib-only-label {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lib-only {
+  min-width: 0;
+  max-width: min(22rem, 100%);
+  min-height: 32px;
+  font-size: 14px;
+}
