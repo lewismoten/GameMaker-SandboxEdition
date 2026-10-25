@@ -11,6 +11,7 @@ import { LEVELS, SETS } from '../src/levels/levels';
 import { DIALS } from '../src/levels/level4';
 import { buildMonsters } from '../src/characters/monsters';
 import { Sim, type SimScene } from './sim';
+import { readWalkPaths } from '../../kit/walkPaths';
 import { Bot } from './bot';
 import { buildCharBlocks, buildMonsterBlocks } from '../src/sprites/sprites';
 import { encodeKeys, keysAt, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
@@ -66,7 +67,10 @@ for (const [i, l] of LEVELS.entries()) {
   links.push({ from: lm.at('exit'), to: { x: 0, y: 0 } });
   const scene: SimScene = { map, bbl, mbl, mon: mons, chr: chars[l.chr], cbl, links };
   const startAt = lm.marks.has('start') ? lm.at('start') : lm.at('hall');
-  const opts = { zapAt: (n: number) => ROBOTS.has(n), avoid };
+  // along the sidewalks, as a person walks (walkPaths.json, written by the build)
+  const walks = readWalkPaths('year2000')[`${l.set}.bbl`];
+  const paths = walks && new Set(walks);
+  const opts = { zapAt: (n: number) => ROBOTS.has(n), avoid, paths };
   let sim!: Sim;
   let bot!: Bot;
   // Each time play enters the scene: a fresh world (seeded like the engine's) and a segment.

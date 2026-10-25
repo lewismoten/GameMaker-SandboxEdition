@@ -9,6 +9,7 @@ import { LEVELS, SETS } from '../src/levels/levels';
 import { DIALS } from '../src/levels/level4';
 import { buildMonsters } from '../src/characters/monsters';
 import { Sim, type SimScene } from './sim';
+import { readWalkPaths } from '../../kit/walkPaths';
 import { Bot } from './bot';
 import { buildCharBlocks, buildMonsterBlocks } from '../src/sprites/sprites';
 import { align } from './align';
@@ -130,7 +131,10 @@ for (const [i, l] of LEVELS.entries()) {
   let sim = new Sim(scene, startAt, ci, 7 + i);
   let arrival = startAt;
   const fresh = (at: { x: number; y: number }) => (sim = new Sim(scene, at, ci, 11 + i));
-  const opts = { god, zapAt: (n: number) => ROBOTS.has(n), avoid };
+  // along the sidewalks, as a person walks (walkPaths.json, written by the build)
+  const walks = readWalkPaths('year2000')[`${l.set}.bbl`];
+  const paths = walks && new Set(walks);
+  const opts = { god, zapAt: (n: number) => ROBOTS.has(n), avoid, paths };
   let bot = new Bot(sim, opts);
   const pages0 = ci.meter[CTR.pages];
   if (l.file === 'school') pagesAtFair = pages0 - 1;

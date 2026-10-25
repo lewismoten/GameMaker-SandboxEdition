@@ -17,6 +17,8 @@ import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildCharacter } from './src/characters/character';
 import { demoRecording } from './src/demo';
 import { LEVELS, SETS } from './src/levels/levels';
+import { walkPaths } from './src/walkPaths';
+import { writeWalkPaths } from '../kit/walkPaths';
 import { DIALS } from './src/levels/level4';
 import type { LevelMap } from './src/levels/mapkit';
 import { buildMonsters } from './src/characters/monsters';
@@ -213,6 +215,8 @@ disk.put('license.txt', licenseText('In The Year 2000!'));
 // the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
 clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
+// the sidewalks and walks the walkthrough's bot keeps to (not on the disk)
+writeWalkPaths('year2000', walkPaths(sets));
 console.log(
   `${Object.entries(sets)
     .map(([k, s]) => `${k} ${s.names.length}`)

@@ -1,10 +1,11 @@
 // A path-finding bot for play-testing the levels in the simulator: it walks to targets
-// along breadth-first paths, opens doors when it has the counters for them, zaps robots
-// in its way, and reports what it could not reach.
+// along the cheapest paths (keeping to the sidewalks when given them), opens doors when it has
+// the counters for them, zaps robots in its way, and reports what it could not reach.
 import { MLEN } from '../../../web/src/formats/map';
 import { INF_REPEAT } from '../../../web/src/formats/character';
 import type { Sim } from './sim';
 import { MON, SEQ } from '../src/ids';
+import { OFF_PATH_COST } from '../../kit/walkPaths';
 
 /** Traffic and other unzappable movers that hurt on a bump: the bot looks both ways for these. */
 const TRAFFIC = new Set<number>([
@@ -41,6 +42,8 @@ export interface BotOptions {
   maxTicks?: number;
   /** Block numbers never to walk through on the way somewhere else (booth doors). */
   avoid?: Set<number>;
+  /** Block numbers of the sidewalks (walkPaths.json): a step off them costs OFF_PATH_COST more. */
+  paths?: ReadonlySet<number>;
 }
 
 export class Bot {
@@ -75,14 +78,25 @@ export class Bot {
     return false;
   }
 
-  /** Breadth-first path from Dex's cell to any goal cell; returns cells (excluding the start). */
+  /**
+   * The cheapest path from Dex's cell to any goal cell, along the sidewalks when `paths` is set;
+   * returns cells (excluding the start). Ties go to the cell found first, so with every step
+   * costing the same it is the breadth-first path.
+   */
   path(goals: Set<number>): [number, number][] | null {
     const { bx, by } = this.cell();
     const start = by * MLEN + bx;
     const prev = new Map<number, number>([[start, -1]]);
+    const dist = new Map([[start, 0]]);
+    const done = new Set<number>();
+    const paths = this.o.paths;
     const q = [start];
     while (q.length) {
-      const c = q.shift()!;
+      let bi = 0;
+      for (let i = 1; i < q.length; i++) if (dist.get(q[i])! < dist.get(q[bi])!) bi = i;
+      const c = q.splice(bi, 1)[0];
+      if (done.has(c)) continue;
+      done.add(c);
       if (goals.has(c) && c !== start) {
         const out: [number, number][] = [];
         for (let k = c; k !== start; k = prev.get(k)!) out.unshift([k % MLEN, Math.floor(k / MLEN)]);
@@ -94,8 +108,11 @@ export class Bot {
         const nx = cx + dx;
         const ny = cy + dy;
         const n = ny * MLEN + nx;
-        if (nx < 0 || ny < 0 || nx >= MLEN || ny >= 100 || prev.has(n)) continue;
+        if (nx < 0 || ny < 0 || nx >= MLEN || ny >= 100 || done.has(n)) continue;
         if (!this.passable(nx, ny, goals.has(n), dx, dy)) continue;
+        const nd = dist.get(c)! + 1 + (paths && !paths.has(this.w.map[n]) ? OFF_PATH_COST : 0);
+        if (nd >= (dist.get(n) ?? Infinity)) continue;
+        dist.set(n, nd);
         prev.set(n, c);
         q.push(n);
       }
