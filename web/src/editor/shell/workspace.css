@@ -106,6 +106,18 @@
   white-space: nowrap;
 }
 
+/* "Saved in this browser" under Download (saveNote.ts) */
+.sidebar .save-note {
+  margin: 6px 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sidebar .save-note.failed {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 /* Phones: the file list folds into one "Files" button, kept at the top of the screen. */
 .sidebar .files-toggle {
   display: none;

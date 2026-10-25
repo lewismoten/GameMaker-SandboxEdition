@@ -34,6 +34,9 @@ export const KIND_LABELS: Record<FileKind, string> = {
   other: 'Other files',
 };
 
+/** Where an autosave is: begun, kept in IndexedDB, or refused (storage full, private mode…). */
+export type SaveState = 'saving' | 'saved' | 'failed';
+
 export function kindOf(name: string): FileKind {
   const ext = (/\.([^.]+)$/.exec(name)?.[1] ?? '').toLowerCase();
   return (ext in KIND_LABELS ? ext : 'other') as FileKind;
@@ -93,14 +96,40 @@ export class Project {
     return () => this.listeners.delete(fn);
   }
 
+  private saveListeners = new Set<(state: SaveState, error?: Error) => void>();
+
+  /** Hears each autosave start, finish or failure (the editor's "Saved" note: shell/saveNote.ts). */
+  onSaveState(fn: (state: SaveState, error?: Error) => void): () => void {
+    this.saveListeners.add(fn);
+    return () => this.saveListeners.delete(fn);
+  }
+
+  private tellSave(state: SaveState, error?: Error): void {
+    for (const l of this.saveListeners) l(state, error);
+  }
+
   private persist = debounce(() => {
     if (this.readOnly) return;
-    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).catch((e) => console.error('Autosave failed', e));
+    this.tellSave('saving');
+    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).then(
+      () => this.tellSave('saved'),
+      (e: unknown) => {
+        console.error('Autosave failed', e);
+        this.tellSave('failed', e as Error);
+      },
+    );
   }, 400);
 
   saveNow(): Promise<void> {
     if (this.readOnly) return this.saving;
-    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion);
+    this.tellSave('saving');
+    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).then(
+      () => this.tellSave('saved'),
+      (e: unknown) => {
+        this.tellSave('failed', e as Error);
+        throw e;
+      },
+    );
     return this.saving;
   }
 

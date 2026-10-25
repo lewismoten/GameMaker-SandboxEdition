@@ -106,8 +106,9 @@ sound.
 **Editors.** Each `editor/editors/<kind>/<kind>.ts` calls
 `registerEditor([...kinds], fn)` (`editors/registry.ts`). The workspace
 (`shell/workspace.ts`) lists the project's files by kind and renders `editors[kind]` for
-the one chosen; edits go through `core/project.ts`, which autosaves to IndexedDB. Files
-are always written in the original binary formats.
+the one chosen; edits go through `core/project.ts`, which autosaves to IndexedDB
+(`shell/saveNote.ts` says so under Download, says why if a save fails, and makes Ctrl+S save
+at once). Files are always written in the original binary formats.
 A finished game opened with Look inside (`shell/released.ts`, at `#/p/look:<id>`, see
 `shell/lookId.ts`) is an in-memory project that `core/readOnly.ts` makes read-only: every
 change through `core/project.ts` is refused before it happens and nothing is saved, and the

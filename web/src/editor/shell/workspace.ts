@@ -23,6 +23,7 @@ import { usedByLine, deleteMessage } from './usedBy';
 import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
+import { saveNote } from './saveNote';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -120,6 +121,7 @@ export class Workspace {
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
     this.bar = readOnlyBar(project);
+    this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
@@ -177,6 +179,9 @@ export class Workspace {
 
   private disposed = false;
 
+  /** "Saved in this browser" under Download (not when only looking inside). */
+  private saved?: ReturnType<typeof saveNote>;
+
   private unbind?: () => void;
 
   /** The quick switcher (Ctrl+P): opens the file chosen. */
@@ -193,6 +198,7 @@ export class Workspace {
 
   dispose(): void {
     this.disposed = true;
+    this.saved?.dispose();
     this.firstSteps?.dispose();
     this.cleanup?.();
     this.player?.stop();
@@ -251,6 +257,7 @@ export class Workspace {
           { class: 'toolbar side-actions' },
           downloadButton(this.project.name, () => this.chooseDownload()),
         ),
+        this.saved?.el,
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
       ),
