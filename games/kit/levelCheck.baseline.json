@@ -440,7 +440,10 @@
   "warning every-tick s3 Block 110 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s3 Block 16 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s8 Block 15 gives 1 on counter 22 on every tick the hero touches it",
-  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 19 places"
+  "warning opposites s9 Blocks 39 and 42 pull opposite ways and touch in 1 place",
+  "warning opposites s9 Blocks 40 and 43 pull opposite ways and touch in 1 place",
+  "warning opposites s9 Blocks 41 and 44 pull opposite ways and touch in 1 place",
+  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 16 places"
  ],
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
