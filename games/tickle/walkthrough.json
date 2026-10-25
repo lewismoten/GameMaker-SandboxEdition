@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 21849,
+  "frames": 21865,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1259
+    "frame": 1275
    },
    {
     "title": "Level 1: The Course",
-    "frame": 3591
+    "frame": 3607
    },
    {
     "title": "Level 2: The Lab",
-    "frame": 5789
+    "frame": 5805
    },
    {
     "title": "Level 3: The Sewers",
-    "frame": 9252
+    "frame": 9268
    },
    {
     "title": "Level 4: The Empire",
-    "frame": 12123
+    "frame": 12139
    },
    {
     "title": "Ending",
-    "frame": 16437
+    "frame": 16453
    },
    {
     "title": "Credits",
-    "frame": 19761
+    "frame": 19777
    }
   ]
  }
