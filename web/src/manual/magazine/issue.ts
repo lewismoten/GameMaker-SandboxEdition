@@ -14,6 +14,7 @@ import { FREE_CD } from './sections/freeCd';
 import { LEWIS, LEWIS_JUMP } from './sections/lewis';
 import { CLAUDE, CLAUDE_JUMP } from './sections/claude';
 import { WEB_EDITION, WEB_EDITION_JUMP } from './sections/webEdition';
+import { DOS_BUGS } from './sections/dosBugs';
 import { STRATEGY } from './sections/strategy';
 import { DIRECTORY } from './sections/directory';
 import { REVIEWS } from './sections/reviews';
@@ -43,6 +44,7 @@ export const SECTIONS: MagSection[] = [
   ULTIMATE_AD,
   CLAUDE,
   WEB_EDITION,
+  DOS_BUGS,
   CATALOGS_AD,
   STRATEGY,
   DIRECTORY,
