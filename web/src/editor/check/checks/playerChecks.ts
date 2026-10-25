@@ -5,7 +5,7 @@
 // instructions; words drawn on sign blocks can't be read).
 import { BACKBL, BLEN, MONBL, type Block } from '../../../formats/blocks';
 import { MLEN } from '../../../formats/map';
-import { frameCount, type Sequence } from '../../../formats/character';
+import { frameCount } from '../../../formats/character';
 import type { Game } from '../../../formats/game';
 import { parseSlideList } from '../../../formats/graphicScripts';
 import { scanName } from '../../../input/scancodes';
@@ -21,16 +21,14 @@ import { TICK_S } from './blockChecks';
 /** How long a quick tap of a key lasts, in seconds: a sequence shorter than this plays twice. */
 export const QUICK_TAP_S = 0.3;
 
-/** Ticks one round of a sequence lasts: each frame its pause, a pause of 0 counting as 1. */
-export function sequenceTicks(s: Sequence): number {
-  return s.frames.slice(0, frameCount(s)).reduce((t, f) => t + Math.max(1, f.pause), 0);
-}
-
 /**
- * Hero moves a quick tap plays twice: sequences that repeat while held and take a whole step
- * (a block or more, as a grid walker does) in less than QUICK_TAP_S. A smooth walk of a few
- * pixels a round is meant to repeat, and a jump held a little longer only goes higher, so
- * those are left alone.
+ * Hero moves a quick tap plays twice: "Always finish" (ground) sequences that repeat while held
+ * and take a whole step (a block or more, as a grid walker does). PLAYGAME holds back key
+ * events during a ground sequence except while its first frame shows (PLAYGAME.C's
+ * KeysPending), so a key let go after that frame is read only once the step has begun again:
+ * a first frame shorter than a quick tap walks twice. A sequence that can be interrupted stops
+ * the moment its key is let go (a tap walks as far as it is held), and a jump held a little
+ * longer only goes higher, so those are left alone.
  */
 export function tapTwice(d: SceneData): Finding[] {
   const groups = new Map<string, { keys: string[]; what: string; ticks: number }>();
@@ -38,15 +36,16 @@ export function tapTwice(d: SceneData): Finding[] {
   for (const { scan, action } of characterActions(d.chr, gravity)) {
     if (!scan || action.seq < 5) continue;
     const s = d.chr.sequences[action.seq];
-    if (s.norepeat || s.momentum) continue;
+    if (s.norepeat || s.momentum || !s.ground) continue;
     const frames = s.frames.slice(0, frameCount(s));
     const dx = frames.reduce((t, f) => t + (f.pic2 === MONBL ? 0 : f.x), 0);
     const dy = frames.reduce((t, f) => t + (f.pic2 === MONBL ? 0 : f.y), 0);
     const step = Math.max(Math.abs(dx), Math.abs(dy));
     const what = action.kind === 'move' && step >= BLEN && step % BLEN === 0 ? `${step / BLEN === 1 ? 'a block' : `${step / BLEN} blocks`}` : '';
     if (!what) continue;
-    const ticks = sequenceTicks(s);
-    if (ticks * TICK_S >= QUICK_TAP_S) continue;
+    // a release is read while frame 0 shows: its pause, and up to a tick before it starts
+    const ticks = Math.max(1, frames[0].pause);
+    if ((ticks + 1) * TICK_S >= QUICK_TAP_S) continue;
     const k = `${what}|${ticks}`;
     const g = groups.get(k) ?? { keys: [], what, ticks };
     g.keys.push(scanName(scan));
@@ -55,8 +54,8 @@ export function tapTwice(d: SceneData): Finding[] {
   return [...groups.values()].map((g) => ({
     check: 'tap-twice',
     severity: 'warning',
-    title: `A quick tap of ${g.keys.join(' ')} can take two steps, not one: each step (${g.what}) takes ${(g.ticks * TICK_S).toFixed(2)} s`,
-    detail: `PLAYGAME plays a sequence again while its key is down, and a quick tap lasts about ${QUICK_TAP_S} s. Unless that is meant, make the last frame longer (a standing frame of ${Math.ceil(QUICK_TAP_S / TICK_S) - g.ticks + 1} ticks or more) so one tap does it once and a held key still repeats; tick “Always finish the sequence” too if it must never stop halfway.`,
+    title: `A quick tap of ${g.keys.join(' ')} can take two steps, not one: each step (${g.what}) reads a key let go only in its first ${(g.ticks * TICK_S).toFixed(2)} s`,
+    detail: `PLAYGAME plays a sequence again while its key is down, and an “Always finish the sequence” step reads a key let go only while its first frame shows; a quick tap lasts about ${QUICK_TAP_S} s. Unless that is meant, hold the first frame longer (${Math.ceil(QUICK_TAP_S / TICK_S) - 1} ticks or more) and make the rest of the step quick strides, so one tap walks once and a held key still walks on.`,
     where: { scene: d.scene, file: d.names.chr },
   }));
 }

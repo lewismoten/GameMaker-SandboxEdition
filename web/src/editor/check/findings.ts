@@ -146,7 +146,7 @@ export const CHECKS = {
   },
   'tap-twice': {
     name: 'A tap that moves twice',
-    why: 'PLAYGAME plays a sequence again while its key is down, so one finished faster than a quick tap moves the hero twice for one press.',
+    why: 'PLAYGAME plays a sequence again while its key is down, and an “Always finish” step reads a key let go only during its first frame, so a short first frame moves the hero twice for one press.',
     taste: true,
     guide: P('A tap is not a hold'),
   },

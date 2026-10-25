@@ -19,13 +19,16 @@ export const PLAYERS: Chapter = {
   <h2>A tap is not a hold</h2>
   <p>PLAYGAME plays a sequence again, from its first frame, if its key is still down when the
   last frame ends. Each frame shows for its pause in ticks (a pause of 0 counts as 1), and a
-  tick is 1/18.2 of a second, about 55 thousandths. A walk of five frames at pause 1 lasts five
-  ticks, a little over a quarter of a second, and a quick tap often lasts longer than that: the
-  hero takes two steps for one press. On a grid, where each press should move one block, that
-  feels like a slippery floor. Make the last frame of the step longer (a standing frame of 4 or
-  5 ticks) so the sequence outlasts a tap; a held key still walks, with a short pause between
-  steps. If a step must always be whole, also tick <b>Always finish the sequence</b>, or a key let
-  go halfway stops it there. A move that should happen once a press, like a shove, wants
+  tick is 1/18.2 of a second, about 55 thousandths. Most walks can be interrupted, so letting
+  go stops the hero at once: a tap walks as far as it is held, which suits a smooth walk. A grid
+  walker, though, ticks <b>Always finish the sequence</b> so each step lands squarely on a block,
+  and such a sequence holds back every key event until its first frame comes round again. A
+  step of five frames at pause 1 shows its first frame for one tick, and a quick tap lasts
+  longer than that: the key let go waits for the next step, and the hero takes two for one
+  press. Hold the first frame instead (5 ticks or more), and make the rest of the step one or
+  two quick strides: a tap under about a quarter of a second then walks one block, and a held
+  key still walks on. A longer last frame doesn’t help, since the key let go still waits for the
+  next first frame. A move that should happen once a press, like a shove, wants
   <b>Once per key press</b> instead. The Level check works the time out for you.</p>
   <h2>Scenery that looks collectable</h2>
   <p>Players reach for anything drawn like a prize. A coin painted into the wallpaper, or a

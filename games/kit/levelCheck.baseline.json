@@ -446,12 +446,9 @@
  "risi": [
   "warning start-threat s5 Monster 8 starts 2 blocks from where the hero comes in"
  ],
- "sandcast": [
-  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 Down / Pad 2 D A S can take two steps, not one: each step (a block) takes 0.22 s"
- ],
+ "sandcast": [],
  "sleuth": [
-  "warning start-threat s66 Block 92 hurts right beside where the hero comes in",
-  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 Up / Pad 8 Down / Pad 2 D A W S can take two steps, not one: each step (a block) takes 0.22 s"
+  "warning start-threat s66 Block 92 hurts right beside where the hero comes in"
  ],
  "smirked": [
   "warning start-threat s3 Monster 2 starts 2 blocks from where the hero comes in"
@@ -468,13 +465,11 @@
   "warning sounds s2 Sound 5 (cheer.voc) plays on every score pickup: 1.4 s long, -17 dB"
  ],
  "teddy": [
-  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 D A can take two steps, not one: each step (a block) takes 0.22 s",
   "warning unreachable s8 1 of block 149 is sealed in, first at (50, 66)"
  ],
  "teddy2": [
   "warning contrast s13 Monster 23 is hard to see against the scenery (contrast 1.0 : 1)",
-  "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places",
-  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 D A can take two steps, not one: each step (a block) takes 0.22 s"
+  "warning opposites s5 Blocks 21 and 22 pull opposite ways and touch in 10 places"
  ],
  "teddy3": [
   "warning contrast s20 Monster 35 is hard to see against the scenery (contrast 1.0 : 1)",
@@ -483,8 +478,7 @@
   "warning every-tick s3 Block 110 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s3 Block 16 gives 1 on counter 22 on every tick the hero touches it",
   "warning every-tick s8 Block 15 gives 1 on counter 22 on every tick the hero touches it",
-  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 19 places",
-  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 D A can take two steps, not one: each step (a block) takes 0.22 s"
+  "warning opposites s9 Blocks 45 and 46 pull opposite ways and touch in 19 places"
  ],
  "tickle": [
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
@@ -494,8 +488,6 @@
   "warning start-threat s5 Monster 21 starts 2 blocks from where the hero comes in",
   "warning start-threat s5 Monster 22 starts 3 blocks from where the hero comes in",
   "warning start-threat s5 Monster 24 starts 2 blocks from where the hero comes in",
-  "warning start-threat s5 Monster 25 walks to where the hero comes in: within 2.2 s",
-  "warning tap-twice s2 A quick tap of Right / Pad 6 Left / Pad 4 Down / Pad 2 D A S End / Pad 1 PgDn / Pad 3 can take two steps, not one: each step (a block) takes 0.22 s",
-  "warning tap-twice s6 A quick tap of Right / Pad 6 Left / Pad 4 Down / Pad 2 D A S End / Pad 1 PgDn / Pad 3 can take two steps, not one: each step (a block) takes 0.22 s"
+  "warning start-threat s5 Monster 25 walks to where the hero comes in: within 2.2 s"
  ]
 }

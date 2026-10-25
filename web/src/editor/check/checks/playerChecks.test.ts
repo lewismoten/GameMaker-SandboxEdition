@@ -25,10 +25,11 @@ const ROWS = [
 const sceneOf = (t: TestGame) => scenesOf(t.game, t)[0];
 
 /** Changes the test hero's walk right: `frames` of `dx` pixels, each `pause` ticks. */
-function walkRight(t: TestGame, frames: number, dx: number, pause: number[], norepeat = 0): void {
+function walkRight(t: TestGame, frames: number, dx: number, pause: number[], norepeat = 0, ground = 1): void {
   const chr = parseCharacter(t.files.get('test.chr')!);
   const s = chr.sequences[5];
   s.norepeat = norepeat;
+  s.ground = ground;
   for (let i = 0; i < s.frames.length; i++)
     s.frames[i] = i < frames ? { x: dx, y: 0, orient: 0, pic1: 0, pic2: 1, pause: pause[i] ?? 1, extra: new Uint8Array(5) } : { ...s.frames[i], pic2: 51 };
   expect(s.key >> 8).toBe(RIGHT);
@@ -36,20 +37,25 @@ function walkRight(t: TestGame, frames: number, dx: number, pause: number[], nor
 }
 
 describe('a tap that moves twice', () => {
-  it('finds a one-block step quicker than a tap, and leaves a smooth walk alone', () => {
+  it('finds a whole one-block step whose first frame is shorter than a tap, and leaves a smooth walk alone', () => {
     const t = testGame(ROWS);
     expect(tapTwice(sceneOf(t))).toEqual([]); // 16 px a round: a smooth walk
     walkRight(t, 4, 5, [1, 1, 1, 1]);
     const f = tapTwice(sceneOf(t));
     expect(f).toHaveLength(1);
-    expect(f[0].title).toBe('A quick tap of Right / Pad 6 can take two steps, not one: each step (a block) takes 0.22 s');
+    expect(f[0].title).toBe('A quick tap of Right / Pad 6 can take two steps, not one: each step (a block) reads a key let go only in its first 0.05 s');
+    // a longer last frame doesn't help: the key let go waits for the next first frame
+    walkRight(t, 4, 5, [1, 1, 1, 4]);
+    expect(tapTwice(sceneOf(t))).toHaveLength(1);
   });
 
-  it('is happy with a longer last frame, or a step once a press', () => {
+  it('is happy with a long first frame, a step once a press, or a step a key let go stops', () => {
     const t = testGame(ROWS);
-    walkRight(t, 4, 5, [1, 1, 1, 4]);
+    walkRight(t, 4, 5, [5, 1, 1, 1]);
     expect(tapTwice(sceneOf(t))).toEqual([]);
     walkRight(t, 4, 5, [1, 1, 1, 1], 1);
+    expect(tapTwice(sceneOf(t))).toEqual([]);
+    walkRight(t, 4, 5, [1, 1, 1, 1], 0, 0);
     expect(tapTwice(sceneOf(t))).toEqual([]);
   });
 });
