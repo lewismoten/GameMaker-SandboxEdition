@@ -79,7 +79,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 34153,
+  "frames": 34199,
   "chapters": [
    {
     "title": "Opening",
@@ -87,39 +87,39 @@
    },
    {
     "title": "Story",
-    "frame": 1341
+    "frame": 1387
    },
    {
     "title": "Level 1: Dome Sweet Dome",
-    "frame": 3701
+    "frame": 3747
    },
    {
     "title": "Level 2: Superhighway",
-    "frame": 8798
+    "frame": 8844
    },
    {
     "title": "Level 3: Mega Mall 2000",
-    "frame": 12966
+    "frame": 13012
    },
    {
     "title": "Level 4: Teleport Exchange",
-    "frame": 18959
+    "frame": 19005
    },
    {
     "title": "Level 5: The Moon",
-    "frame": 22865
+    "frame": 22911
    },
    {
     "title": "Level 6: Science Fair",
-    "frame": 27044
+    "frame": 27090
    },
    {
     "title": "Ending",
-    "frame": 30592
+    "frame": 30638
    },
    {
     "title": "Credits",
-    "frame": 32598
+    "frame": 32644
    }
   ]
  }

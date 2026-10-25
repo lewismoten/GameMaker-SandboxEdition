@@ -2,6 +2,7 @@
 // sunset-and-grid scenery of a 1990s idea of the future, the console TV, and Art (the
 // game's own sprites, handed in so the screens show the real characters and items).
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { Pixels, rng } from '../../../kit/pixels';
 import { T, oval, shadeAt } from '../art/draw';
@@ -16,8 +17,9 @@ export function gif(p: Pixels, palette: Uint8Array = PAL.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: p.px, palette });
 }
 
-export function fli(frames: Pixels[], speed: number, palettes?: Uint8Array[]): Uint8Array {
-  return encodeFli(
+/** An .FLI of the frames; `fadeOut` adds a fade to black at the end (an intro before a picture). */
+export function fli(frames: Pixels[], speed: number, palettes?: Uint8Array[], fadeOut = false): Uint8Array {
+  return (fadeOut ? encodeFliFadeOut : encodeFli)(
     frames.map((f) => Uint8Array.from(f.px)),
     PAL.pal,
     { speed, palettes },
