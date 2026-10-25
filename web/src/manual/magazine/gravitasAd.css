@@ -99,26 +99,37 @@
   transform: perspective(70em) rotateX(46deg) rotateZ(var(--rz));
 }
 
-/* the first pad's shaft is out: its brass socket shows */
-.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(1) .gp-shaft {
+/* the shafts lying beside the pads stay in the box: the first pad's is out, so its brass
+   socket shows */
+.mag-page[data-page='hardware-4'] .art-gamepad .gp-shaft {
   display: none;
 }
 
-/* the second's is screwed into the d-pad, standing straight up off the pad */
-.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-shaft {
-  left: 22.6%;
-  top: 2%;
-  width: 4.8%;
-  height: 48%;
-  border-radius: 999px 999px 2px 2px / 30% 30% 2px 2px;
-  background: linear-gradient(90deg, #b8b8b2, #ffffff 35%, #ecece8 60%, #9d9d97);
-  box-shadow: none;
+/* the second's is screwed into the d-pad, standing straight up off the pad: turned back to face
+   the eye (undoing the pad's tilt) and shortened as the tilt would show it */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-stick {
+  display: block;
+  position: absolute;
+  left: 23%;
+  bottom: 50%;
+  width: 4.4%;
+  height: 44%;
   transform-origin: 50% 100%;
-  transform: rotateX(-90deg);
+  transform: rotateZ(calc(-1 * var(--rz))) rotateX(-46deg);
 }
 
-.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-thread {
-  display: none;
+/* and its shadow falls across the pad away from the light */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-socket::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  width: 420%;
+  height: 70%;
+  border-radius: 50%;
+  background: linear-gradient(90deg, rgba(8, 0, 24, 0.85), rgba(8, 0, 24, 0.4) 55%, transparent);
+  transform-origin: 0 50%;
+  transform: rotate(calc(28deg - var(--rz)));
 }
 
 /* the buttons lit from inside, each with a soft halo of its own color */
@@ -306,7 +317,7 @@
 }
 
 .flow .mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) {
-  margin: -14% 0 1em;
+  margin: -2% 0 1em;
 }
 
 .flow .mag-page[data-page='hardware-4'] .mag-side {
