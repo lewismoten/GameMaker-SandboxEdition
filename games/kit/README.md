@@ -115,8 +115,11 @@ Checking the games:
 - `walkPaths.ts` — a game's walking paths and roads: `games/<id>/walkPaths.json` (block numbers by block set, as
   the editor's companion section `walkPaths`), written by the game's build (`writeWalkPaths`) and read by its bot
   (`keepToPaths`: a step off them costs `OFF_PATH_COST` more in its shortest-path search), so the recorded
-  walkthrough walks the roads instead of cutting across. Realm's build writes its roads and streets; its
-  `tools/check.ts` and `tools/walkthrough.ts` set `bot.keepTo`.
+  walkthrough walks the roads instead of cutting across. The top-down games with ways to keep to have one: realm
+  (roads and streets), brief (book 15's street), goat (the field's path, Bethlehem's cobbles), year2000 (sidewalks
+  and skyway decks), snowbound (sidewalks, front walks, driveways), smirked (the foyer's runner);
+  each bot's path search adds the cost (`keepTo`, or year2000's `paths` option). Side-view games and rooms floored
+  wall to wall have none.
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
