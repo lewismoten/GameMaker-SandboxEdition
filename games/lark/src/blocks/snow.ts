@@ -148,15 +148,22 @@ function hearthWindow(ground: Pixels): Pixels {
   return p;
 }
 
-/** A front yard under deep snow: heaped and smooth, the tops of a buried picket fence poking out. */
+/** A front yard under deep snow, heaped higher than a robot: ridges of drift with blue shadows, the tops of a buried picket fence poking out. */
 function bank(seed: number): Pixels {
   const p = snow(seed + 40);
-  p.map((x, y, v) => (Math.sin((x + y * 0.6 + seed) / 3) > 0.6 ? c('snow', 3) : v));
-  for (const x of [2, 9, 16])
-    p.rect(x, 14, 2, 4, c('paper', 3))
-      .set(x, 13, c('paper', 4))
-      .set(x + 1, 13, c('paper', 4));
-  p.rect(0, 17, 20, 1, c('snow', 1));
+  for (let k = 0; k < 3; k++) {
+    const y0 = 3 + k * 6;
+    for (let x = 0; x < 20; x++) {
+      const y = y0 + Math.round(Math.sin((x + seed * 3 + k * 7) / 3) * 1.5);
+      p.set(x, y, c('snow', 0))
+        .set(x, y + 1, c('snow', 1))
+        .set(x, y - 1, c('tin', 6));
+    }
+  }
+  for (const x of [3, 10, 17])
+    p.rect(x, 15, 2, 4, c('paper', 3))
+      .set(x, 14, c('paper', 4))
+      .set(x + 1, 14, c('paper', 4));
   return p;
 }
 
@@ -226,7 +233,6 @@ export function snowSet(): BlockSet {
   s.add('snowFence', snowFence(), { solid: SOLID });
   s.add('signSnow', sign('SNOW', sn), { solid: SOLID });
   s.add('signHive', sign('HIVE', sn), { solid: SOLID });
-  s.add('signOn', sign('ON >', sn), { solid: SOLID });
   s.add('snowBarrier', barrier(tr), { solid: SOLID });
   // Lewie's street
   s.add('walk', trodden(11, 'ns'));

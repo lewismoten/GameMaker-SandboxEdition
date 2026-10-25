@@ -86,7 +86,7 @@ export function winterRoadMap(set: BlockSet): Stamped {
       F: 'snowFence',
       W: 'signSnow',
       H: 'signHive',
-      O: 'signOn',
+      O: 'snow',
       L: 'trodden',
       M: 'trodden',
       r: 'trodden',
