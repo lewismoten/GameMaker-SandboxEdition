@@ -56,11 +56,11 @@
   },
   {
    "scene": 14,
-   "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQTJAEsGywBJBskCUQLRAEsGyxJIDsgAUFDQAEgEyABNAs0ASQTJAE0GzQBIBMgARxDHFEgKyA=="
+   "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQbJAFEE0QBJBMkARxLHPEgIyCJQBtACSQbJAE0GzQBJCskASATIAEcExw=="
   },
   {
    "scene": 15,
-   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABJAskASALIAEcIxwpRHtEKSwrLAEgKyA=="
+   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
   },
   {
    "scene": 16,
@@ -131,7 +131,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 35806,
+  "frames": 35589,
   "chapters": [
    {
     "title": "Opening",
@@ -139,75 +139,75 @@
    },
    {
     "title": "Story",
-    "frame": 1644
+    "frame": 1645
    },
    {
     "title": "Stage 1: The Motherboard — The Data Bus",
-    "frame": 3356
+    "frame": 3357
    },
    {
     "title": "Stage 1: The Motherboard — The Chipset",
-    "frame": 5802
+    "frame": 5803
    },
    {
     "title": "Stage 1: The Motherboard — The BIOS Bug",
-    "frame": 7710
+    "frame": 7711
    },
    {
     "title": "Stage 2: Memory Lane — The Address Bus",
-    "frame": 9182
+    "frame": 9183
    },
    {
     "title": "Stage 2: Memory Lane — The Cache",
-    "frame": 11397
+    "frame": 11398
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Leech",
-    "frame": 13527
+    "frame": 13528
    },
    {
     "title": "Stage 3: The Sound Card — The Mixer",
-    "frame": 15022
+    "frame": 15023
    },
    {
     "title": "Stage 3: The Sound Card — The Woofer",
-    "frame": 16664
+    "frame": 16665
    },
    {
     "title": "Stage 3: The Sound Card — The Feedback Howler",
-    "frame": 18381
+    "frame": 18382
    },
    {
     "title": "Stage 4: The Hard Disk — The Platter",
-    "frame": 20340
+    "frame": 20341
    },
    {
     "title": "Stage 4: The Hard Disk — Bad Sectors",
-    "frame": 23233
+    "frame": 23234
    },
    {
     "title": "Stage 4: The Hard Disk — The Head Crash",
-    "frame": 25480
+    "frame": 25481
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 26691
+    "frame": 26692
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 28655
+    "frame": 28583
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 30408
+    "frame": 30191
    },
    {
     "title": "Ending",
-    "frame": 32599
+    "frame": 32382
    },
    {
     "title": "Credits",
-    "frame": 34251
+    "frame": 34034
    }
   ]
  }

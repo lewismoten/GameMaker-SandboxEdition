@@ -10,6 +10,7 @@ import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { CLEAR, centered, outlined, text } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
@@ -275,14 +276,12 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
     }
   }
   put(SANDLOGO, sandLogoFli());
-  put('intro.fli', introFli());
+  // the intro in clips of about 4 seconds, so Esc can skip it between them
+  const intro = fliClips('intro.fli', introFli());
+  for (const [name, bytes] of Object.entries(intro)) put(name, bytes);
   put('title.gif', gif(titleScreen()));
   // the Sandbox Software logo first, then the game's own intro
-  lst('title.lst', [
-    [SANDLOGO, 0],
-    ['intro.fli', 0],
-    ['title.gif', 12],
-  ]);
+  put('title.lst', serializeSlideList([{ name: SANDLOGO, pause: 0 }, ...clipEntries(intro, 0), { name: 'title.gif', pause: 12 }]));
   put('menu.gif', gif(menuScreen()));
   const textPage = (base: string, heading: string, body: string, seed: number) => {
     put(`${base}bg.gif`, gif(page(heading, seed)));
