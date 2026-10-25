@@ -123,7 +123,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 49412,
+  "frames": 49475,
   "chapters": [
    {
     "title": "Opening",
@@ -131,71 +131,71 @@
    },
    {
     "title": "Story",
-    "frame": 1592
+    "frame": 1623
    },
    {
     "title": "Room 1: The Pantry",
-    "frame": 4828
+    "frame": 4891
    },
    {
     "title": "Room 2: The Larder",
-    "frame": 6031
+    "frame": 6094
    },
    {
     "title": "Room 3: The Spice Parlor",
-    "frame": 8877
+    "frame": 8940
    },
    {
     "title": "Room 4: The Bakehouse",
-    "frame": 11472
+    "frame": 11535
    },
    {
     "title": "Room 5: The Cold Cellar",
-    "frame": 13678
+    "frame": 13741
    },
    {
     "title": "Room 6: The Tea Room",
-    "frame": 17607
+    "frame": 17670
    },
    {
     "title": "Room 7: The Sugar Room",
-    "frame": 20276
+    "frame": 20339
    },
    {
     "title": "Interlude: Under the Stove",
-    "frame": 22332
+    "frame": 22395
    },
    {
     "title": "Room 8: The Brewery",
-    "frame": 24520
+    "frame": 24583
    },
    {
     "title": "Room 9: The Clock Room",
-    "frame": 27805
+    "frame": 27868
    },
    {
     "title": "Room 10: The Bottling Line",
-    "frame": 30553
+    "frame": 30616
    },
    {
     "title": "Room 11: The Lightning Loft",
-    "frame": 32569
+    "frame": 32632
    },
    {
     "title": "Room 12: The Cistern",
-    "frame": 35773
+    "frame": 35836
    },
    {
     "title": "Room 13: The Vault",
-    "frame": 38420
+    "frame": 38483
    },
    {
     "title": "Ending",
-    "frame": 41565
+    "frame": 41628
    },
    {
     "title": "Credits",
-    "frame": 47376
+    "frame": 47439
    }
   ]
  }

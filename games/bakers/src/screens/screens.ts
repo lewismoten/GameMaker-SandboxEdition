@@ -3,7 +3,7 @@
 // each room (in that room's own light, with a strip of its blocks), a page of the recipe card
 // for each ingredient, the endings and the high score / load / save backdrops.
 import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
 import { loadScan, pastePhoto, polaroid, resample, sepia } from '../../../kit/photo';
@@ -260,7 +260,9 @@ export function introFli(): Uint8Array {
     say(p, ['Built in 1777 to keep out the Redcoats.', t > 16 ? 'It still works. Much too well.' : '']);
     frames.push(p);
   }
-  return encodeFli(
+  // a second on the last line (the hold the title list used to give), then a fade to black
+  for (let t = 0; t < 12; t++) frames.push(frames[frames.length - 1]);
+  return encodeFliFadeOut(
     frames.map((f) => Uint8Array.from(f.px)),
     PAL.pal,
     { speed: 6 },
@@ -389,13 +391,13 @@ export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Reco
   out['title.gif'] = gif(titleScreen());
   out['title.lst'] = serializeSlideList([
     { name: SANDLOGO, pause: 0 },
-    { name: 'intro.fli', pause: 1 },
+    { name: 'intro.fli', pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]);
   out['menu.gif'] = gif(menuScreen());
   out['story.gif'] = gif(pageScreen('THE STORY', 1));
   out['story.txt'] = dosText(STORY);
-  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 1 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
+  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 0 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
   out['help.gif'] = gif(pageScreen('HOW TO PLAY', 2, leo('down', 0, true)));
   out['help.txt'] = dosText(HELP);
   out['help.lst'] = serializeSlideList([{ name: 'help.gif', pause: 0 }, { name: 'help.txt' }]);
