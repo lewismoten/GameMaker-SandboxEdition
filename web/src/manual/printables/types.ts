@@ -33,6 +33,8 @@ export interface MapPanel {
   h: number;
   caption?: string;
   marks?: MapMark[];
+  /** The map is a course through the wrap: drawn as the run the player rides, in columns (levelCoursePoster.ts), not as the window. */
+  course?: boolean;
 }
 
 interface ItemBase {

@@ -22,7 +22,21 @@ import type {
 } from './types';
 
 // ------------------------------------------------------------------ maps
+/** A course's poster picture: as wide as tall, a little more. */
+const COURSE_BOX = { w: 76, h: 82 };
+
 async function mapPanel(ctx: PrintContext, p: MapPanel, start: number): Promise<HTMLElement> {
+  if (p.course) {
+    const { coursePosterSvg } = await import('./levelCoursePoster');
+    const svg = await coursePosterSvg(ctx.entry, p.map, COURSE_BOX);
+    if (svg)
+      return h(
+        'figure',
+        { class: 'map-panel map-course', style: `--ar:${(COURSE_BOX.w / COURSE_BOX.h).toFixed(4)}` },
+        h('div', { class: 'map-pic' }, svg),
+        p.caption ? h('figcaption', null, p.caption) : null,
+      );
+  }
   const src = await ctx.shot(p);
   // numbered as the key numbers them: the start and a secret have symbols, not numbers
   let next = start;
