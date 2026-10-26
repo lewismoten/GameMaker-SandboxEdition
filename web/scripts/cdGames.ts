@@ -64,6 +64,8 @@ export interface CdCatalogEntry {
   details?: boolean;
   /** Original games: the site path of the game's walkthrough (../games/<id>/walkthrough.json, src/walkthrough). */
   walkthrough?: string;
+  /** Original games: its DOS player look, ../games/<id>/player.json ({ base, patches }: src/dosPlayer/catalogPatches.ts). */
+  player?: unknown;
   /** The build drew its pictures (games/shots/<id>-<cols>x<rows>.png, scripts/gameShots.ts). */
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png). */
@@ -348,6 +350,8 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string; unlock?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
+    // its DOS player look (games/kit/player.ts): the catalog carries it, never the game's files
+    const player = existsSync(join(base, 'player.json')) ? (JSON.parse(readFileSync(join(base, 'player.json'), 'utf8')) as unknown) : undefined;
     const id = dir.toLowerCase();
     const path = `games/originals/${id}/`;
     const names: string[] = [];
@@ -386,6 +390,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       original: { label: about.label, box: about.box, sound: about.sound, manual, printables },
       ...(about.series ? { series: about.series } : {}),
       ...(walkthrough ? { walkthrough } : {}),
+      ...(player ? { player } : {}),
       pack: packName(id, names, disk),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);

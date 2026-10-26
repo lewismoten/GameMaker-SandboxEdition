@@ -8,8 +8,8 @@ import { emptyCompanion, setSection, type Companion } from '../project/companion
 import { PLAYER_SECTION, playerRecord, recordPatches } from './playerRecord';
 import type { PlayerPatches } from './patchRules';
 
-/** A catalog entry as the site serves it: with an original game's player.json, when it has one. */
-type WithPlayer = Pick<CatalogEntry, 'id'> & { player?: unknown };
+/** A catalog entry: with an original game's player.json, when it has one. */
+type WithPlayer = Pick<CatalogEntry, 'id' | 'player'>;
 
 /** The entry's valid DOS player patches (none for a game without a player.json). */
 export function catalogPatches(entry: WithPlayer | undefined): PlayerPatches {
