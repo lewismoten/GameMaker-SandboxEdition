@@ -24,7 +24,7 @@ export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
 }
 
 /** The card before a leg: a framed look at it, its name and a few words. */
-export function card(s: Stage, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
+export function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
   const pc = (n: string, k: number) => s.pal.c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
@@ -32,9 +32,10 @@ export function card(s: Stage, legIndex: number, l = s.legs[legIndex], tagged?: 
   const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
-  const tag = tagged ?? (l.kind === 'boss' ? 'WARNING!' : `STAGE ${s.n}-${'ABC'[legIndex]}`);
+  const tag = tagged ?? (l.kind === 'boss' ? (s.n === of ? 'WARNING! LAST BOSS!' : 'WARNING!') : `STAGE ${s.n}-${'ABCD'[legIndex]}`);
   outlined(p, 12, 110, tag, l.kind === 'boss' && !tagged ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
-  outlined(p, 12, 122, s.title.toUpperCase(), pc('steel', 5), pc('ink', 0), 1);
+  // the world's name, and where it falls in the game
+  outlined(p, 12, 122, `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
   l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('grey', 6)));
   if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
@@ -261,13 +262,13 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
   const lst = (name: string, entries: [string, number?][]) => put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
   for (const s of stages) {
     s.legs.forEach((l, i) => {
-      put(`${l.file}.gif`, gif(card(s, i), s.pal.pal));
+      put(`${l.file}.gif`, gif(card(s, stages.length, i), s.pal.pal));
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
     });
     const side = s.side;
     if (side) {
       const room = side.room.file;
-      put(`${room}.gif`, gif(card(s, -1, side.room, 'UNMAPPED SECTOR'), s.pal.pal));
+      put(`${room}.gif`, gif(card(s, stages.length, -1, side.room, 'UNMAPPED SECTOR'), s.pal.pal));
       lst(`${room}.lst`, [[`${room}.gif`, 0]]);
       // the way out: the egg's page, then the next leg's own card
       put(`${side.outro}bg.gif`, gif(page('THE DEBUG EGG', 31)));
