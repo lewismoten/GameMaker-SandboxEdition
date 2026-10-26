@@ -60,9 +60,9 @@ export const PALETTES: Chapter = {
   <table>
     <tr><th>Who looks</th><th>For</th><th>What it draws</th></tr>
     <tr><td>The game’s menu</td><td>a strong blue</td><td>the menu items and the game’s name, over your menu picture</td></tr>
-    <tr><td>The <kbd>F1</kbd>, <kbd>F2</kbd> and <kbd>F10</kbd> screens</td><td>blue and yellow</td><td>their frames and words: help, score, money, hit points, lives</td></tr>
+    <tr><td>The <kbd>F2</kbd> and <kbd>F10</kbd> screens</td><td>blue and yellow</td><td>their frames and words: score, money, hit points, lives</td></tr>
     <tr><td>Text screens (<code>.TXT</code>)</td><td>a deep purple</td><td>every line of the text</td></tr>
-    <tr><td>A menu choice you left empty</td><td>a bright red</td><td>“No game-specific…” notes</td></tr>
+    <tr><td>A menu choice you left empty, or <kbd>F1</kbd> with no instructions</td><td>a bright red</td><td>“No game-specific…” notes</td></tr>
     <tr><td>The design tools</td><td>greys, reds, black, a green</td><td>their own frames, buttons and lists</td></tr>
   </table>
   <h2>Index 255 is see-through</h2>

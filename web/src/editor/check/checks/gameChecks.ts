@@ -16,8 +16,10 @@ const ARROWS = new Set([72, 75, 77, 80, 71, 73, 79, 81]);
 
 /** Every word the game shows as text: its .txt screens. */
 export function gameText(files: GameFiles): string {
+  // GMHELP.TXT is Game-Maker's general help, which a stand-alone game's F1 never shows
   return files
     .byExtension('txt')
+    .filter((n) => n !== 'gmhelp.txt')
     .map((n) => new TextDecoder('latin1').decode(files.get(n)))
     .join('\n');
 }
