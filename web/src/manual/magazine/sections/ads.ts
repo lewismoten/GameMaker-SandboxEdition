@@ -1,7 +1,9 @@
 // The issue's own full-page ads: Game-Maker: Sandbox Edition (inside the front cover), "send
 // away for Game-Maker" (in the look of the 1992 Game-Maker ads), The Ultimate Owner's Guide order page, and Sandbox Software with The
 // Bard of Bizarre and a card to send away for their catalogs. Prices are in the story; every
-// coupon's button opens the real thing here, free.
+// coupon's button opens the real thing here, free. The inside front cover's blueprint is
+// sandboxEditionAd.css.
+import '../sandboxEditionAd.css';
 import { adPage, adframe, big, button, card, grid, head, list, note, p, shot, side, ultimatePiece } from '../blocks';
 import type { MagSection } from '../types';
 
@@ -14,7 +16,7 @@ const RS_SANDBOX_EDITION = 1;
 const ORIGINAL_AD = 'go:url/https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up';
 
 /**
- * The inside front cover: Game-Maker: Sandbox Edition on a blueprint-blue frame, two games made
+ * The inside front cover: Game-Maker: Sandbox Edition on the Owner's Guide's blueprint, two games made
  * with it, what this edition adds, and the ways in. Its order form is the send-away ad's.
  */
 export const SANDBOX_EDITION_AD: MagSection = {

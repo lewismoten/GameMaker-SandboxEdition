@@ -428,7 +428,8 @@ modules are in [`../test`](../test).
     feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag (with its Design Desk of
     readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `readersPicks.ts` (polish
     over size: a finished four-level game beats a huge one and a tiny one), the character spotlight,
-    the game directory, the BBS listings, the store, the reader service card and the ads.
+    the game directory, the BBS listings, the store, the reader service card and the ads
+    (`ads.ts`; its inside front cover on the Owner's Guide's blueprint, `sandboxEditionAd.css`).
   - Links: `go.ts` its `go:` links into the site and `goRun.ts` the ones that open a box, the store,
     the mouse pad chooser or a desk prop.
   - `render.ts` draws the pages with:
