@@ -99,7 +99,7 @@ modules are in [`../test`](../test).
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk
   and exports.
 - [`media/`](media): demo playback (`.REC`, `demo.ts`), previews (`demoPreview.ts`, which demo
-  `demoKind.ts`), demos added for CD games (`extraDemos.ts`, `addedDemo.ts`), the attract mode
+  `demoKind.ts`, the recording one plays `demoSource.ts`), demos added for CD games (`extraDemos.ts`, `addedDemo.ts`), the attract mode
   (`attractDemo.ts`), the demos' sound choice (`demoAudio.ts`) and which player may play
   (`mediaFocus.ts`); saving the screen as video (MP4: `video.ts`, `frames.ts`, `mp4Mux.ts`),
   animated GIF (`gifEncode.ts`) or WAV (`wav.ts`). See Media below.
