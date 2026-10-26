@@ -426,7 +426,7 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
     for (const f of fields) {
       if (f.group !== group) {
         group = f.group;
-        rows.push({ text: `\xc4\xc4 ${GROUP_LABELS[f.group]} `.padEnd(46, '\xc4'), a: HEAD, selectable: false });
+        rows.push({ text: `── ${GROUP_LABELS[f.group]} `.padEnd(46, '─'), a: HEAD, selectable: false });
         rowField.push(undefined);
       }
       const unused = isUnused(f, labels);

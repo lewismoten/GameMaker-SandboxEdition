@@ -184,7 +184,7 @@ async function backupUi(h: RetroHost): Promise<void> {
       break;
     }
     const rows: ListRow[] = games.map((g) => ({
-      text: `${picked.has(g.save) ? '[\xfb]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 26)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(8)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
+      text: `${picked.has(g.save) ? '[√]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 26)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(8)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
       a: g.files ? BRIGHT : DIM,
     }));
     statusLine(
