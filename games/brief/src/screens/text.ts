@@ -33,7 +33,7 @@ export const HELP = page([
  number pad: one step
  (hold to keep walking)
  F1 help
- F2 status: Money is the
+ F2 status: it counts the
     words you carry. Words
     are money.
  Space: pocket a small

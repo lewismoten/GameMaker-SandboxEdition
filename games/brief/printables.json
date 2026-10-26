@@ -65,7 +65,7 @@
         {
           "head": "Every Book",
           "hints": [
-            { "q": "THE END won't open. I picked up every word I could see.", "a": "Press F2: Money is the words you carry. Every book has exactly 100, and nothing can take them, so if it says less there is a slip you missed. Look behind the furniture and along the edges." },
+            { "q": "THE END won't open. I picked up every word I could see.", "a": "Press F2: it counts the words you carry. Every book has exactly 100, and nothing can take them, so if it says less there is a slip you missed. Look behind the furniture and along the edges." },
             { "q": "THE END opened, but nothing happened.", "a": "Walk onto the open page, then onto the gold bookmark right behind it. The bookmark puts the story back." },
             { "q": "Why did my score go down?", "a": "A fine. Shushers, scissors, static and the like cost a point a moment while they touch you. A perfect night is 3,200." }
           ]
