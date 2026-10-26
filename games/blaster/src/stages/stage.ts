@@ -8,6 +8,7 @@ import { addCommon } from '../characters/sharedMonsters';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
 import { Bestiary } from '../characters/mons';
 import type { Pal, Theme } from '../art/pal';
+import type { DiagTrack } from './diagTrack';
 import { addStageTiles, pad, type StageArt, type TileOpts } from '../blocks/tiles';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
 
@@ -34,6 +35,8 @@ export interface Leg {
   start?: { x: number; y: number };
   /** The top-left map cell of the card's 16x5 look at the leg, when not the strip's. */
   cardView?: { x: number; y: number };
+  /** A diagonal leg's track, and where Right hops a lane early: [lap, first column, columns]. */
+  diag?: { track: DiagTrack; shortcuts: [number, number, number][] };
 }
 
 /**

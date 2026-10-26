@@ -5,8 +5,6 @@ import { buildDiagShip, buildShip, shipBlocks } from '../src/characters/ship';
 import { Sim } from './sim';
 import type { CharInfo } from '../../../web/src/engine/world';
 import { buildLeg, startOf, type Leg } from '../src/stages/stage';
-import { SPLICES, SPLICE_LENGTH } from '../src/stages/cable';
-import { COILS, KINK, PITCH, coilOfLap } from '../src/stages/cableTrack';
 
 export function simOf(l: Leg, seed = 1, ci?: CharInfo): Sim {
   const cb = shipBlocks(buildPalette('board'));
@@ -42,23 +40,28 @@ export function arenaGoal(s: Sim): { x: number; y: number } {
 export const maxTicksOf = (l: Leg): number => (l.kind === 'boss' ? 2400 : l.kind === 'diag' ? 4000 : 1600);
 
 /**
- * The walkthrough's pilot on the ribbon cable: keep to the middle of the cable at cruising
- * speed (the goal is where the drift alone would take it, so it only speeds up or brakes to
- * dodge), and at the last tape splice cross to the next coil down on purpose, sliding along
- * the cable's lower edge until the tape opens; the earlier splice it rides past, so the
- * walkthrough shows a lap and a kink as well as a shortcut. Returns a goal for fly().
+ * The walkthrough's pilot on a diagonal leg: keep to the middle of the lane at cruising speed
+ * (the goal is where the drift alone would take it, so it only speeds up or brakes to dodge),
+ * and at the last shortcut cross to the next lane down on purpose, sliding along the lane's
+ * lower edge until the way opens; the earlier ones it rides past, so the walkthrough shows a
+ * lap and a kink as well as a shortcut. Returns a goal for fly().
  */
-export function cableGoal(s: Sim): { x: number; y: number } {
-  const lap = 100 * 20;
-  const cx = (s.pos.x + 10) % lap;
-  const cy = (s.pos.y + 10) % lap;
-  const flat = Math.floor(cx / 20) >= KINK;
-  const T = (((flat ? cy / 20 + KINK : (cx + cy) / 20) % (COILS * PITCH)) + COILS * PITCH) % (COILS * PITCH);
-  const coil = Math.floor(T / PITCH);
-  let across = 13.5 - (T - coil * PITCH);
-  const bx = Math.floor(cx / 20);
-  for (const [l, x0] of SPLICES.slice(-1)) if (coil === coilOfLap(l) && bx >= x0 - 8 && bx < x0 + SPLICE_LENGTH - 6) across += PITCH;
-  // ahead along the cable, and across it by `across` (t grows right and down)
-  const ahead = DIAG_DRIFT * 10;
-  return flat ? { x: s.pos.x + ahead, y: s.pos.y + across * 20 } : { x: s.pos.x + ahead + across * 10, y: s.pos.y - ahead + across * 10 };
+export function diagGoal(l: Leg): (s: Sim) => { x: number; y: number } {
+  const { track, shortcuts } = l.diag!;
+  const { pitch, lanes, kink, board } = track;
+  const mid = board + (pitch - board) / 2;
+  return (s) => {
+    const lap = 100 * 20;
+    const cx = (s.pos.x + 10) % lap;
+    const cy = (s.pos.y + 10) % lap;
+    const flat = Math.floor(cx / 20) >= kink;
+    const T = (((flat ? cy / 20 + kink : (cx + cy) / 20) % (lanes * pitch)) + lanes * pitch) % (lanes * pitch);
+    const lane = Math.floor(T / pitch);
+    let across = mid - (T - lane * pitch);
+    const bx = Math.floor(cx / 20);
+    for (const [k, x0, n] of shortcuts.slice(-1)) if (lane === track.laneOfLap(k) && bx >= x0 - 8 && bx < x0 + n - 6) across += pitch;
+    // ahead along the lane, and across it by `across` (t grows right and down)
+    const ahead = DIAG_DRIFT * 10;
+    return flat ? { x: s.pos.x + ahead, y: s.pos.y + across * 20 } : { x: s.pos.x + ahead + across * 10, y: s.pos.y - ahead + across * 10 };
+  };
 }

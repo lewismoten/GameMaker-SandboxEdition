@@ -10,7 +10,7 @@ import type { RecordedKey } from '../../../web/src/formats/recording';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { STAGES } from '../src/stages/stages';
 import { fly } from './bot';
-import { arenaGoal, cableGoal, maxTicksOf, simOf } from './testkit';
+import { arenaGoal, diagGoal, maxTicksOf, simOf } from './testkit';
 
 const ci = newCharInfo();
 const segments: WalkSegment[] = [];
@@ -29,8 +29,8 @@ for (const make of STAGES) {
       keys.push({ delta: at - last, key: k });
       last = at;
     };
-    // on the ribbon cable, a steadier pilot that keeps to the middle and takes the splices
-    const cable = l.kind === 'diag' ? { goal: cableGoal, stick: 80, every: 3 } : {};
+    // on a diagonal leg, a steadier pilot that keeps to the middle and takes the splices
+    const cable = l.kind === 'diag' ? { goal: diagGoal(l), stick: 80, every: 3 } : {};
     const r = await fly(sim, { maxTicks: maxTicksOf(l), goal: l.kind === 'boss' ? arenaGoal : undefined, ...cable });
     if (!r.ok) throw new Error(`${l.file}: the bot did not get through (${r.dead ? 'died' : 'timed out'}; ${r.log.slice(-1)[0] ?? ''})`);
     if (st.side?.from === l.file && sim.link >= l.grid.links.length) throw new Error(`${l.file}: the bot took the side room's way in`);

@@ -1,10 +1,9 @@
 // The ribbon cable's blocks (its own palette, s5r.pal): a flat gray cable of many thin
 // wires stuck side by side, a red stripe along pin 1, coiled over green motherboard. Where it
 // turns it is folded over (a crease, the folded lip, and the red edge on the other side). All of
-// it is drawn from the track value t, so the slanted coils join up across block edges: a
-// block on the slant shows t from its corner value c to c + 2, one on the kink c to c + 1 down
-// the block. On the slant the cable's edges are drawn half a block below where the solid
-// board starts, so the turned ship (whose nose is pointed) just touches them.
+// it is drawn from the track value t (diagBlocks.ts). On the slant the cable's edges are drawn
+// half a block below where the solid board starts, so the turned ship (whose nose is pointed)
+// just touches them.
 //
 // Also here: splits in the insulation with colored wires showing (one kind sparks), nicks
 // (one kind lets Crosstalk crawl out), tape splices across the board between two coils, the
@@ -16,11 +15,13 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import type { StageArt } from './tiles';
-import { BOARD, COILS, KINK, PITCH, hasCable, tOf } from '../stages/cableTrack';
+import { CABLE_TRACK } from '../stages/cableTrack';
+import { DiagBlocks, tAt, type DiagCell } from './diagBlocks';
 
 export type Mark = 'tear' | 'spark' | 'nick' | 'crawl' | 'splice' | 'chevron' | `digit${number}`;
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
+const { board: BOARD, pitch: PITCH, lanes: COILS, kink: KINK } = CABLE_TRACK;
 const LAP = PITCH * COILS;
 const mod = (n: number, m: number) => ((n % m) + m) % m;
 /** How wide one wire of the cable is, in t. */
@@ -95,12 +96,10 @@ function colorAt(p: Pal, T: number, px: number, py: number, look: Look): number 
   return shadeAt(p.r('ins'), 1, 5, lit * 0.85 + sheen, px, py);
 }
 
-function cell(p: Pal, c: number, flat: boolean, look: Look): Pixels {
-  const t = new Pixels(20, 20);
+function cell(p: Pal, c: DiagCell, look: Look): Pixels {
   // (on the kink the ship slides flat along the cable's top edge, so there the edges sit
   // exactly on the block lines: half a block up from the slant's, a small step at each bend)
-  t.map((x, y) => colorAt(p, c + (flat ? (y + 0.5) / 20 + 0.5 : (x + y + 1) / 20), x, y, look));
-  return t;
+  return new Pixels(20, 20).map((x, y) => colorAt(p, tAt(c, x, y), x, y, look));
 }
 
 /** A printed arrow along the cable (up and to the right, or right on the kink). */
@@ -142,46 +141,29 @@ function nick(p: Pal, t: Pixels, crawl: boolean): void {
   if (crawl) blob(t, 10, 10, 2, 2, p.r('virus'), 1, 4);
 }
 
-/** The cable's blocks, made as the map asks for them; blocks that look the same are one. */
-export class CableBlocks {
-  private seen = new Map<string, string>();
-  constructor(
-    readonly bs: BlockSet,
-    readonly p: Pal,
-  ) {}
-
-  /** The block for map cell (x, y), with an optional mark. Returns its name. */
-  name(x: number, y: number, mark?: Mark): string {
-    const p = this.p;
-    const flat = x >= KINK;
-    const c = tOf(x, y);
+/** The cable's blocks, made as the map asks for them. */
+export function cableBlocks(bs: BlockSet, p: Pal): DiagBlocks<Mark> {
+  const paint = (c: DiagCell, mark?: Mark) => {
     // the folds: into the kink at its first column, and back out at the map's left edge
-    const look: Look = { bare: (coil) => !hasCable(coil, x), mark, flat, lip: x === KINK || x === 0 };
-    const pic = cell(p, c, flat, look);
-    if (mark === 'chevron') chevron(pic, flat, p.c('ins', 1));
+    const look: Look = { bare: c.bare, mark, flat: c.flat, lip: c.x === KINK || c.x === 0 };
+    const pic = cell(p, c, look);
+    if (mark === 'chevron') chevron(pic, c.flat, p.c('ins', 1));
     if (mark?.startsWith('digit')) digit(pic, Number(mark.slice(5)), p.c('ins', 1), p.c('ins', 6));
     if (mark === 'nick' || mark === 'crawl') nick(p, pic, mark === 'crawl');
-    const o = c % PITCH;
-    const solid = mark !== 'splice' && (o < BOARD || look.bare(Math.floor(c / PITCH)));
-    const props = {
-      ...(solid ? { solid: SOLID } : {}),
-      ...(mark === 'spark' ? { birth: 'zap', birthTime: 9 } : {}),
-      ...(mark === 'crawl' ? { birth: 'crawl', birthTime: 40 } : {}),
-    };
-    const key = `${JSON.stringify(props)}:${pic.px.join(',')}`;
-    let name = this.seen.get(key);
-    if (!name) {
-      name = `cab${this.seen.size}`;
-      this.bs.add(name, pic, props);
-      this.seen.set(key, name);
-    }
-    return name;
-  }
+    return pic;
+  };
+  const props = (c: DiagCell, mark?: Mark) => ({
+    ...(mark !== 'splice' && c.ground ? { solid: SOLID } : {}),
+    ...(mark === 'spark' ? { birth: 'zap', birthTime: 9 } : {}),
+    ...(mark === 'crawl' ? { birth: 'crawl', birthTime: 40 } : {}),
+  });
+  return new DiagBlocks(bs, CABLE_TRACK, paint, props, 'cab');
 }
 
 /** The look the pickups are drawn over: the middle of the cable on the slant. */
 export function cableArt(p: Pal): StageArt {
-  const mid = () => cell(p, BOARD + 6, false, { bare: () => false, flat: false, lip: false });
+  const at: DiagCell = { x: 0, y: 0, t: BOARD + 6, flat: false, bare: () => false, ground: false };
+  const mid = () => cell(p, at, { bare: () => false, flat: false, lip: false });
   return { pal: p, floor: mid, edge: mid, floors: 1, edges: 1 };
 }
 
