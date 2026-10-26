@@ -40,7 +40,7 @@ export function downloaded(kind: string): void {
  * group toward it. `won` counts toward it when the game is finished.
  */
 export const GAME_SPOTS: { game: string; scene: RegExp; id: string; won?: string }[] = [
-  { game: 'blaster', scene: /^3c the big name$/i, id: 'blaster-big-name' },
+  { game: 'blaster', scene: /^3[a-f] the big name$/i, id: 'blaster-big-name' },
   // a chapter-done page for each of the first three; the fourth ends the game
   { game: 'brief', scene: /^chapter (\d) done$/i, id: 'brief-chapters', won: '4' },
 ];
