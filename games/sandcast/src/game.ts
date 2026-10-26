@@ -7,6 +7,8 @@ export interface Level {
   desc: string;
   map: LevelMap;
   pal: string;
+  /** Its own block set, when it has one (the sandbox's, with the save sign); else the shared one. */
+  bbl?: string;
   intro?: string;
   pos: Point;
 }
@@ -59,7 +61,7 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
     const sc = emptyScene(ADVTYPE);
     sc.desc = lv.desc.slice(0, 19);
     sc.pos = lv.pos;
-    sc.files = [lv.pal, lv.name, SHARED.bbl, SHARED.mon, SHARED.mbl, SHARED.chr, SHARED.cbl, SHARED.snd, '', intro ?? '', ''];
+    sc.files = [lv.pal, lv.name, lv.bbl ?? SHARED.bbl, SHARED.mon, SHARED.mbl, SHARED.chr, SHARED.cbl, SHARED.snd, '', intro ?? '', ''];
     while (sc.files.length < 20) sc.files.push('');
     return sc;
   };

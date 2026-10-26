@@ -7,12 +7,13 @@
 import { Pixels } from '../../../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from '../blocks/blockset';
 import { CLEAR, blob, microC, microWidth, pool, speckle } from '../art/draw';
-import { c, ramp as r } from '../art/pal';
+import { P, c, ramp as r } from '../art/pal';
 import { T, boards, clone, footlight, stageBoards, wallFace, wallTop } from '../blocks/painters';
 import { addItems, symbol } from '../blocks/items';
 import { portrait } from '../art/people';
 import { CTR } from '../ids';
 import { addEggBlocks } from '../blocks/egg';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import { CARDS, HOW, SUSPECTS, WHY } from './parlor';
 
 // ---------------------------------------------------------------- art
@@ -371,5 +372,9 @@ export function buildParlorBlocks(): BlockSet {
   add('zcell', clone(dark), { effect: CTR.strike, eamt: 1, score: -500 });
   add('solved', clone(dark), { score: 5000 });
   addEggBlocks(add, bs.pic('sofa'));
+  // the save sign (kit/saveSign.ts) on the rug by the 2 AM green room's way out to dawn, added
+  // last so no block before it moves
+  const sign = saveSignBlocks(P.pal, { board: [RUG, RUG], posts: [RUG, RUG] });
+  [...sign.board, ...sign.posts!].forEach((p, k) => add(`saveSign${k}`, p));
   return bs;
 }

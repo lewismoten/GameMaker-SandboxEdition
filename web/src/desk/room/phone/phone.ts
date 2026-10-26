@@ -16,6 +16,8 @@ export interface WallPhoneLine {
 }
 
 export function phoneLineFor(el: HTMLElement): WallPhoneLine {
+  /** What is named, pressed and focused: the button over the drawing (deskProps.ts). */
+  const btn = el.querySelector<HTMLElement>('.prop-cover') ?? el;
   let state: State = 'hung-up';
   let pad: DialPad | undefined;
   let sounds: PhoneSounds | undefined;
@@ -170,7 +172,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
     ringingUntil = Date.now() + 36000;
     sounds?.bell(6);
     el.classList.add('ringing');
-    el.setAttribute('aria-label', 'Wall telephone: it’s ringing! Pick it up');
+    btn.setAttribute('aria-label', 'Wall telephone: it’s ringing! Pick it up');
     setTimeout(() => {
       if (incoming === who && Date.now() >= ringingUntil) stopRinging();
     }, 36500);
@@ -180,7 +182,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
     incoming = undefined;
     sounds?.quiet();
     el.classList.remove('ringing');
-    el.setAttribute('aria-label', 'Wall telephone: lift the handset');
+    btn.setAttribute('aria-label', 'Wall telephone: lift the handset');
   };
 
   const press = (k: string) => {
@@ -200,7 +202,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
     call = new AbortController();
     phoneLine.offHook = true;
     el.classList.add('off-hook');
-    el.setAttribute('aria-pressed', 'true');
+    btn.setAttribute('aria-pressed', 'true');
     pad = openDialPad(press, hangUp);
     const caller = incoming;
     if (caller) {
@@ -231,11 +233,11 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
     const wasOnPad = !!pad && (pad.el.contains(document.activeElement) || document.activeElement === document.body);
     pad?.close();
     pad = undefined;
-    if (wasOnPad) el.focus({ preventScroll: true });
+    if (wasOnPad) btn.focus({ preventScroll: true });
     state = 'hung-up';
     phoneLine.offHook = false;
     el.classList.remove('off-hook');
-    el.setAttribute('aria-pressed', 'false');
+    btn.setAttribute('aria-pressed', 'false');
   }
 
   return {

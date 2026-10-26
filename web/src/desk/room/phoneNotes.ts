@@ -3,6 +3,7 @@
 // Click to read them larger. The numbers are 555-01xx, the range kept for made-up numbers.
 import './phoneNotes.css';
 import { focusInto } from '../overlayFocus';
+import { cover } from '../props/propKit';
 import { h } from '../../editor/core/ui';
 
 const NUMBERS: [string, string][] = [
@@ -64,14 +65,11 @@ function readLarger(): void {
 }
 
 export function phoneNotes(): HTMLElement {
-  return h(
-    'button',
-    {
-      class: 'phone-notes',
-      onclick: readLarger,
-      title: 'Notes under the phone: who to call (click to read)',
-      'aria-label': 'Notes under the phone: phone numbers for Mom, Dad, Grandma, the sitter and Mrs. Novak’s TTY, and don’t answer the door',
-    },
-    h('div', { class: 'pn-small', 'aria-hidden': 'true' }, notes()),
+  const el = h('div', { class: 'phone-notes', onclick: readLarger }, h('div', { class: 'pn-small', 'aria-hidden': 'true' }, notes()));
+  cover(
+    el,
+    'Notes under the phone: phone numbers for Mom, Dad, Grandma, the sitter and Mrs. Novak’s TTY, and don’t answer the door',
+    'Notes under the phone: who to call (click to read)',
   );
+  return el;
 }

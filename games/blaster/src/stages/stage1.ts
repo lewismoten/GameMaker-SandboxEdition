@@ -268,7 +268,7 @@ export function stage1(): Stage {
         kind: 'scroll',
         grid: a,
         kit: ka,
-        card: ['Follow the data bus north.', 'Every move fires the guns.', 'UP: faster  DOWN: brake', 'SPACE: Nova Bomb'],
+        card: ['Follow the data bus north.', 'Every move fires the guns.', 'UP: faster  DOWN: brake', 'SPACE: Nova Bomb  F5 saves'],
       },
       {
         file: 's1b',

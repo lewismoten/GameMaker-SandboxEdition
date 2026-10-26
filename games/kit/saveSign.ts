@@ -155,23 +155,28 @@ export function saveSignBlocks(
 }
 
 /**
- * Whether two blocks side by side (20x20 each, in `pal`) show the sign's board: nearly every
- * pixel of the board is close to the sign's color there.
+ * Whether a block (20x20, in `pal`) shows one half of the sign's board (0 the left, 1 the
+ * right): nearly every pixel of that half is close to the sign's color there.
  */
-export function looksLikeSaveSign(left: Uint8Array, right: Uint8Array, pal: Uint8Array): boolean {
+export function looksLikeSaveSignHalf(pixels: Uint8Array, pal: Uint8Array, half: 0 | 1): boolean {
   let n = 0;
   let near = 0;
   for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 40; x++) {
-      const k = BOARD[y][x];
+    for (let x = 0; x < 20; x++) {
+      const k = BOARD[y][half * 20 + x];
       if (!k) continue;
       n++;
-      const c = (x < 20 ? left : right)[y * 20 + (x % 20)];
+      const c = pixels[y * 20 + x];
       const rgb = RGB[k];
       const d = Math.hypot(rgb[0] - pal[c * 3] * 4.05, rgb[1] - pal[c * 3 + 1] * 4.05, rgb[2] - pal[c * 3 + 2] * 4.05);
       if (d < 90) near++;
     }
   return near >= n * 0.9;
+}
+
+/** Whether two blocks side by side (in `pal`) show the sign's board. */
+export function looksLikeSaveSign(left: Uint8Array, right: Uint8Array, pal: Uint8Array): boolean {
+  return looksLikeSaveSignHalf(left, pal, 0) && looksLikeSaveSignHalf(right, pal, 1);
 }
 
 /**
@@ -200,7 +205,7 @@ export function putSaveSign(bbl: Block[], map: GameMap, pal: Uint8Array, x: numb
     return p;
   };
   const sign = saveSignBlocks(pal, { board: [pic(0, 0), pic(1, 0)], posts: posts ? [pic(0, 1), pic(1, 1)] : undefined }, o);
-  const out = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
+  const out: Block[] = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
   const cells: [Pixels, number, number][] = [
     [sign.board[0], 0, 0],
     [sign.board[1], 1, 0],

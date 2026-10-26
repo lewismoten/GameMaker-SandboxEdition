@@ -1,9 +1,45 @@
-/* pageToc.ts: "On this page" beside a reading page, from 1200px wide */
+/* pageToc.ts: "On this page" beside a reading page, from 1200px wide; narrower, its links in a
+   row before the first section (.page-jump) */
 .page-toc {
   display: none;
 }
 
+.page-jump ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.page-jump li[hidden] {
+  display: none;
+}
+
+.page-jump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.page-jump a:hover {
+  background: var(--panel-2);
+}
+
 @media (min-width: 1200px) {
+  .page-jump {
+    display: none;
+  }
+
   main.with-toc {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 14rem;

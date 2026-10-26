@@ -20,8 +20,9 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 ## What's in it
 
 - **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
-  original menus and designers, a BBS to dial, and the games' boxes, disks and manuals on
-  the shelf; or *today's web* editor with point-and-click editors for every part of a game.
+  DOS menus and designers rebuilt from its source, a BBS to dial, and the games' boxes,
+  disks and manuals on the shelf; or *today's web* editor with point-and-click editors for
+  every part of a game.
 - **Help making good games:** the map editor's Level check plays each scene on the real
   engine, draws a heat map of where the hero got, marks places a player can get stuck and
   offers one-click fixes; the block, monster and sound editors show its findings as badges,
@@ -38,19 +39,21 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
   with their authors' notices). CD games that shipped without a title demo get one recorded
   for this edition, kept apart from their original files.
 - **Thirteen new Sandbox Software games** built for this fork, entirely in code
-  ([games/](games)): Maximus: The Hundred Worlds, Sandcastle Knight, Snowbound: The $89
-  Shovel, In The Year 2000!, Teddy's Little Big Adventure, Teddy's Little Bigger Adventure,
-  Teddy's Little Biggest Adventure, Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT
-  BRIEF! The Tiny Pockets Library, Depth Perception and Quest for the Round Tuit. Each comes
+  ([games/](games)): *Maximus: The Hundred Worlds*, *Sandcastle Knight*, *Snowbound: The $89
+  Shovel*, *In The Year 2000!*, *Teddy's Little Big Adventure*, *Teddy's Little Bigger
+  Adventure*, *Teddy's Little Biggest Adventure*, *Ohm Sweet Ohm*, *Virus Blaster*, *Final
+  Curtain*, *KEEP IT BRIEF! The Tiny Pockets Library*, *Depth Perception* and *Quest for the
+  Round Tuit*. Each comes
   with a manual, box art, printable extras (among them a fold-out World Map and Level Maps)
   and a hidden tin heart, and most hide a felt egg to find.
 - **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
   monologues, dressed as 1995 shareware from The Sofa BBS: eleven by The Bard of Bizarre
-  (Third Goat from the Left, Mustard Seed Hustle, Thread the Needle, Brother Camel, Loaf
-  #13, Certified Rat Tickler, Where's the Remote?!, A Fly Named Carl, The Great Dairy
-  Reckoning of 3:17 A.M., Cleanse Me, O Loofah, But Leave My Soul, I Screamed, She Smirked,
-  and Shakespeare in Sweatpants) and Veni, Vidi, Risi! by Lewis's group of that name. Their
-  FM music is arranged from the songs' recordings, and they are free to share.
+  (*Third Goat from the Left*, *Mustard Seed Hustle*, *Thread the Needle, Brother Camel*,
+  *Loaf #13*, *Certified Rat Tickler*, *Where's the Remote?!*, *A Fly Named Carl*, *The Great
+  Dairy Reckoning of 3:17 A.M.*, *Cleanse Me, O Loofah, But Leave My Soul*, *I Screamed, She
+  Smirked* and *Shakespeare in Sweatpants*) and *Veni, Vidi, Risi!* by Lewis's group of that
+  name. They have a Bizarre tab of their own on the home page. Their FM music is arranged
+  from the songs' recordings, and they are free to share.
 - **The cast** ([#/cast](https://lewismoten.github.io/GameMaker-SandboxEdition/#/cast)):
   the characters who turn up in more than one of the new games, walking on with their own
   game sprites.
@@ -61,7 +64,13 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
   mainly for looking inside game files, saved games and registration while debugging.
 - **The BBSes:** a modem with a line speed to pick (300 baud to unlimited), a tic-tac-toe
   door game played a move a call, and a TTY call to the neighbor in Baudot.
-- **Achievements** for what you make, play and find, on the web and in the desk's ACHIEVE.EXE.
+- **Achievements** for what you make, play and find, on the web and in the desk's ACHIEVE.EXE,
+  and two score trophies on the desk (best scores and total score) that climb from plastic
+  through bronze, silver and gold.
+- **The Library** ([#/library](https://lewismoten.github.io/GameMaker-SandboxEdition/#/library)):
+  everything to read or print in one place, by game or by kind: each game's manual and box
+  paper, its World Map and Level Maps, the Game-Maker box's Owner's Guide, the walkthroughs and
+  the videos.
 - **Sharing:** export a game as a one-page web game, an installable web app, or a folder
   that runs in DOSBox, or download any game, your own too, as a Mac app, a Windows program
   or a Linux folder that plays offline in its own window (built in the browser; see the
@@ -85,8 +94,8 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 | The home page's Sandbox games | Editing Snowbound's neighborhood map |
 | ![Snowbound being played: the kid with his shovel on a snowy street, under the level's "1. Gale Street" briefing](docs/screenshots/web-play.png) | ![The Bizarre tab: twelve games from comic songs, with Third Goat from the Left's demo in the side panel](docs/screenshots/web-bizarre.png) |
 | Playing Snowbound | The Bizarre games |
-| ![The original DOS Game-Maker 3.0 running in the browser: its red and blue menu bar, with the Map Maker's menu open (By Gregory Stone, Copyright 1994) over Snowbound's disk](docs/screenshots/dos-gm-mapmaker.png) | ![Game-Maker's copy check in the browser: it asks for a word from the Owner's Guide, which is open beside it with the paragraph marked, and the registration card on the right](docs/screenshots/dos-gm-copycheck.png) |
-| The original DOS Game-Maker, running in the browser | Its copy check, with the Owner's Guide beside it |
+| ![Game-Maker 3.0's DOS menus, rebuilt from its source and running in the browser: the red and blue menu bar, with the Map Maker's menu open (By Gregory Stone, Copyright 1994) over Snowbound's disk](docs/screenshots/dos-gm-mapmaker.png) | ![Game-Maker's copy check in the browser: it asks for a word from the Owner's Guide, which is open beside it with the paragraph marked, and the registration card on the right](docs/screenshots/dos-gm-copycheck.png) |
+| Game-Maker's DOS menus, rebuilt from its source | Its copy check, with the Owner's Guide beside it |
 
 ## Run it yourself
 
@@ -129,9 +138,11 @@ by its bot, its walkthrough replayed, its text, hidden items and levels checked)
 Pushes to `master` are published to GitHub Pages by
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml). The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
-[`.github/workflows/games.yml`](.github/workflows/games.yml) runs `npm run check:games -- --quick`
-on every push and pull request; run the full check (with the rebuild compare, about 20 minutes)
-yourself before committing a game.
+Every check job stops after 5 minutes; only the deployments and release builds may run longer.
+Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
+compare, about 20 minutes) yourself before committing a game.
+[`.github/workflows/games.yml`](.github/workflows/games.yml) checks one or two named games by hand
+(Actions → Check the games → Run workflow).
 
 ## Where things are
 
@@ -188,7 +199,7 @@ RSD Game-Maker was created by G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr.
 Stone. This fork is by Lewis Moten; the web port was written with Claude Opus 5.5, with AI
 assistance doing most of the porting and code generation. The Bard of Bizarre songs'
 lyrics were shaped with ChatGPT from Lewis's prompts and their music made with Riffusion
-(now Google Flow Music). The CD's games belong to their authors. See [NOTICE.md](NOTICE.md) for full credits, the story behind this fork and
-third-party trademarks.
+(now Google Flow Music). The CD's games belong to their authors. See [NOTICE.md](NOTICE.md)
+for full credits, the story behind this fork and third-party trademarks.
 
 Released under the [MIT License](LICENSE).

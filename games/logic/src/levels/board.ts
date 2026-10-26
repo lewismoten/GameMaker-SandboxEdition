@@ -254,6 +254,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     fusebox,
     easterEgg,
     hatches: crawling ? [...hatches] : [],
+    saveSign: specs.some((s) => s.rows.some((r) => r.includes('('))),
   });
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
@@ -311,6 +312,8 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
         } else if (ch === '$') put(x, y, bb ? 'bbScrew' : 'screw');
         else if (ch === 'h') put(x, y, 'tinHeart');
         else if (ch === 'y') put(x, y, 'easterEgg');
+        else if (ch === '(') put(x, y, 'saveL');
+        else if (ch === ')') put(x, y, 'saveR');
         else if (ch in DIODES) put(x, y, DIODES[ch]);
         else if (ch === '@') put(x, y, tb ? traceName(tb) : bb ? 'bbPad' : 'pad');
         else if (ch === '.' || ch in PARTS) put(x, y, tb ? traceName(tb) : floor(x, y));

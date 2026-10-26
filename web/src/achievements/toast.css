@@ -149,6 +149,12 @@
   transform: translate(14px, 2px) rotate(3deg);
 }
 
+/* tucked behind the newest, the older note's close button is no target (only a sliver of it
+   shows) until the stack fans out */
+.ach-desk:not(:hover, :focus-within) .ach-toast:nth-last-child(2) .ach-toast-close {
+  visibility: hidden;
+}
+
 .ach-desk:hover .ach-toast:nth-last-child(2),
 .ach-desk:focus-within .ach-toast:nth-last-child(2) {
   transform: translate(10px, calc(-100% - 6px)) rotate(2deg);

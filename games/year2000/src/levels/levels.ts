@@ -37,12 +37,7 @@ export const LEVELS: Level[] = [
     size: [48, 32],
     card: {
       title: 'DOME SWEET DOME',
-      lines: [
-        'Hover Heights, 8:00 AM. Find the',
-        'garage remote, the Zapper (SPACE',
-        'fires it) and your report pages!',
-        'Phone booth on the corner: 25 cents.',
-      ],
+      lines: ['Hover Heights, 8:00 AM. Find the', 'garage remote, the Zapper (SPACE', 'fires it) and your report pages!', 'Corner phone: 25 cents. F5 saves!'],
       view: [0, 9],
     },
     intro: [],

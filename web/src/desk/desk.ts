@@ -34,6 +34,7 @@ import { roomDoor } from './room/roomDoor';
 import { paperStack } from './room/paperStack';
 import { captureStub } from './pc/captureStub';
 import { deskProps } from './props';
+import { cover } from './props/propKit';
 import { EDITION, FORK_NOTE } from '../edition';
 import { loadCatalog, loadGameList, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/core/project';
@@ -43,6 +44,9 @@ import { viewState } from '../urlState';
 import { prefetchWhenIdle } from '../prefetch';
 import { viewSwitch } from '../viewSwitch';
 import { leaveProgram as leaveTheProgram } from '../retro/leaveProgram';
+
+/** `el` with a button laid over it (propKit.ts cover), for the box art's words. */
+const withCover = (el: HTMLElement, name: string): HTMLElement => (cover(el, name), el);
 
 // What is opened, looked into or picked up on the desk loads when it first is (and is fetched
 // ahead once the desk is idle, see the end of renderDesk): the manuals, the catalog, the boxes' insides.
@@ -203,38 +207,39 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         'div',
         { class: 'desk-left' },
         paperStack({ catalog: () => void catalog(), magazine: () => void magazine() }),
-        h(
-          'button',
-          {
-            class: 'prop disk-box',
-            onclick: () => void flip(),
-            'aria-label': 'Disk box: pick a game to put in drive A',
-          },
-          box,
-          h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game'),
+        withCover(
+          h(
+            'div',
+            { class: 'prop disk-box', onclick: () => void flip() },
+            box,
+            h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game'),
+          ),
+          'Disk box: pick a game to put in drive A',
         ),
         mug(),
       ),
       h(
         'div',
         { class: 'desk-right' },
-        h(
-          'button',
-          {
-            class: 'prop gm-box',
-            onclick: () => void openGmBox(),
-            'aria-label': 'Game-Maker SE 3.0 box: look inside',
-          },
+        withCover(
           h(
             'div',
-            { class: 'retail' },
-            h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
-            h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
-            h('div', { class: 'edition-ribbon' }, 'SANDBOX EDITION'),
-            boxTiles,
-            h('div', { class: 'rsd-badge' }, 'ORIGINALLY CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
+            {
+              class: 'prop gm-box',
+              onclick: () => void openGmBox(),
+            },
+            h(
+              'div',
+              { class: 'retail' },
+              h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
+              h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
+              h('div', { class: 'edition-ribbon' }, 'SANDBOX EDITION'),
+              boxTiles,
+              h('div', { class: 'rsd-badge' }, 'ORIGINALLY CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
+            ),
+            h('span', { class: 'caption' }, 'Game-Maker SE 3.0 — open the box'),
           ),
-          h('span', { class: 'caption' }, 'Game-Maker SE 3.0 — open the box'),
+          'Game-Maker SE 3.0 — open the box and look inside',
         ),
       ),
       h(
@@ -599,7 +604,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     const read = () =>
       void dosManual().then(() => {
         if (!desk.isConnected) return;
-        desk.querySelector<HTMLElement>('.gm-box')?.focus({ preventScroll: true });
+        desk.querySelector<HTMLElement>('.gm-box .prop-cover')?.focus({ preventScroll: true });
         void openGmBox();
       });
     await openBoxViewer({ title: 'Game-Maker SE 3.0' }, drawGmBox(tiles), {

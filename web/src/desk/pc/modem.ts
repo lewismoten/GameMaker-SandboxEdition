@@ -8,6 +8,7 @@ import { h } from '../../editor/core/ui';
 import type { ModemSignal } from '../../retro/bbs/term';
 import { hintText, SPEED_TEXT, speedLabel, speedWords, timeWarp, WARP_TEXT } from '../../retro/bbs/lineSpeed';
 import { speedRadios } from '../../retro/bbs/lineSpeedControls';
+import { cover } from '../props/propKit';
 
 const LIGHTS = ['HS', 'AA', 'CD', 'OH', 'RD', 'SD', 'TR', 'MR'] as const;
 type Light = (typeof LIGHTS)[number];
@@ -32,12 +33,14 @@ export function deskModem(onClick: () => void): DeskModem {
       return h('span', { class: 'mlight' }, led, h('small', null, name));
     }),
   );
+  // a button over it, so the lights' letters aren't read as its name
   const dial = h(
-    'button',
-    { type: 'button', class: 'modem-dial', onclick: onClick, 'aria-label': 'Modem: dial a BBS', title: 'Click to dial a BBS' },
+    'div',
+    { class: 'modem-dial', onclick: onClick },
     h('div', { class: 'modem-body' }, panel),
     h('span', { class: 'caption' }, 'Modem — dial a BBS'),
   );
+  cover(dial, 'Modem: dial a BBS', 'Click to dial a BBS');
 
   // the speed on the front: its own button, opening a little menu of speeds
   const brand = h('span', null);

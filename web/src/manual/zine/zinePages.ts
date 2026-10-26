@@ -103,6 +103,7 @@ export const ZINE: ZinePage[] = [
     title: 'EGGS & HEARTS',
     lines: [
       "Some games here hide a little felt egg, and some a tin heart. Go find them. We're not telling where.",
+      'PRO TIP: see a cream sign with a floppy and SAVE F5 on it, its edge stitched in pink dashes? Save, then go back. The level you just left had an egg in it.',
       "Type EGG at any prompt. It is in no folder and HELP never mentions it. It's the Egg Inspector: one line per egg and whether your saves have it.",
       "T opens the tin heart ledger. It knows more keys than its bar lets on. Whoever wrote SAVEHACK blabbed them in his readme. We're not repeating them.",
       'Find the whole set and... well. Find the whole set.',

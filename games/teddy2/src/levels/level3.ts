@@ -9,6 +9,7 @@
 import { LevelMap, type Level } from './level';
 import { G, nightBand, nightRow, nightTiles } from './level3Tiles';
 import { nightBeasts } from './level3Beasts';
+import { addSaveSign } from '../sprites/hidden';
 
 export function night(): Level {
   const bs = nightTiles();
@@ -129,6 +130,8 @@ export function night(): Level {
   // one bone in the park (bones get scarcer the farther from home)
   m.treat(34, 39, 'bone');
   m.treat(64, 39);
+  // the save sign in the yard, past Teddy's doghouse
+  addSaveSign(bs, m, 9, 38);
   m.mark('start', 4, 39);
   m.mark('exit', wagon + 1, 39);
   return {

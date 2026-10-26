@@ -246,7 +246,7 @@ export const EGG = pages(
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
-  house: ["Gwinn's bed is empty! Sniff", 'out her collar. Doc Leo waits.', 'NEW: SNIFF (S)'],
+  house: ["Gwinn's bed is empty! Sniff", 'out her collar. Doc Leo waits.', 'NEW: SNIFF (S)', 'F5 SAVES  F6 LOADS'],
   night: ['MEANWHILE... last night. YOU', 'are Gwinn. Follow your nose!', 'NEW: SPACE BOOF 1 CHEW 3 ZOOM'],
   farm: ['MEANWHILE... dawn. Gwinn finds', 'a farm. So many chickens!', 'RIDE THE HAY ELEVATOR'],
   show: ['The dog show! Gwinn is in', 'the Best Behaved ring. Uh-oh.', 'EVERY TRICK YOU KNOW'],

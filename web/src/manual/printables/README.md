@@ -5,8 +5,8 @@ its manual with `openGameManual(entry, cover?)` (`../gameManual.ts`). The viewer
 
 - **The manual**: `manual.json` pages flowed onto 5.5 x 8.5 inch booklet pages (long chapters
   continue on extra pages automatically), padded with Notes and Hall of Fame pages to whole
-  folded sheets, with its own front cover (`manualCover.ts`: title in the box's colors, the manual's name, a screenshot and the hero), a back cover and two staples in the center
-  spread. Any `P.O. Box` address gets a printed note that it is fictional.
+  folded sheets, with its own front cover (`manualCover.ts`: the title in the box's colors, the
+  manual's name, a screenshot and the hero), a back cover and two staples in the center spread. Any `P.O. Box` address gets a printed note that it is fictional.
 - **What's in the box**: a tray of paper extras. Each one can be read on screen and printed.
 
 Printing (🖨 Print…): this piece, the manual as a booklet (two pages a side on letter paper

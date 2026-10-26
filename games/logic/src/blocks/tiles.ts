@@ -5,11 +5,12 @@
 // outlet that leads to the next board.
 import { Pixels, rng } from '../../../kit/pixels';
 import { bevel, blob, micro, shadeAt } from '../art/draw';
-import { c, r } from '../art/pal';
+import { PAL, c, r } from '../art/pal';
 import { BlockSet, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP, type BlockDef } from './sets';
 import { carlPic } from '../../../kit/carlCameo';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { saveSignBlocks } from '../../../kit/saveSign';
 
 export interface Style {
   id: string;
@@ -359,7 +360,7 @@ export interface Battery {
 export function buildTiles(
   st: Style,
   batteries: Battery[] = [],
-  opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean; easterEgg?: boolean; hatches?: number[] } = {},
+  opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean; easterEgg?: boolean; hatches?: number[]; saveSign?: boolean } = {},
 ): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => bs.add(name, px, def);
@@ -469,6 +470,12 @@ export function buildTiles(
   // a hatch in the housing (a panel like the seam's) into the crawlspace behind a board, and
   // back out of it (added last, so no block before it moves)
   for (const m of opts.hatches ?? []) add(`hatch${m}`, seamPic(st, m));
+  // the save sign (kit/saveSign.ts), laid on the board's floor, only in the room that shows it
+  if (opts.saveSign) {
+    const [l, rt] = saveSignBlocks(PAL.pal, { board: [floorPic(st, 0), floorPic(st, 1)] }).board;
+    add('saveL', l);
+    add('saveR', rt);
+  }
   bs.addAt(EGG, 'egg', eggPic(st), { obj: true, touch: 'floor0' });
   return bs;
 }
