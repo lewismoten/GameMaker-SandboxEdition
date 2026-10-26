@@ -33,6 +33,14 @@ export const TRACK_COLORS = [
   '#ffffff',
 ];
 
+/** A track's name: its drum, or its instrument's preset, or its number. */
+export function trackNameOf(song: CmfSong, ch: number): string {
+  if (startMode(song) && RHYTHM_CHANNELS.includes(ch)) return DRUM_NAMES[ch];
+  const p = startProgram(song, ch);
+  const preset = song.instruments[p] ? presetName(song.instruments[p]) : undefined;
+  return preset ? preset[0].toUpperCase() + preset.slice(1) : `Track ${ch + 1}`;
+}
+
 export const SNAPS: [number, string][] = [
   [4, 'Bar'],
   [1, 'Beat'],
@@ -118,10 +126,7 @@ export class MusicDoc {
   }
 
   trackName(ch: number): string {
-    if (this.rhythm && RHYTHM_CHANNELS.includes(ch)) return DRUM_NAMES[ch];
-    const p = startProgram(this.song, ch);
-    const preset = this.song.instruments[p] ? presetName(this.song.instruments[p]) : undefined;
-    return preset ? preset[0].toUpperCase() + preset.slice(1) : `Track ${ch + 1}`;
+    return trackNameOf(this.song, ch);
   }
 
   sounds(ch: number): boolean {
