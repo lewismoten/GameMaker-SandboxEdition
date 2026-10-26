@@ -107,8 +107,8 @@ export const HELP = pages(
     'F1 help  F2 your stuff',
     'F3 music F4 sounds',
     'F5 save  F6 load  ESC quit',
-    'F2 shows treats as "Money"',
-    'and energy as "Hitpoints".',
+    'F2 shows your treats',
+    'and your energy.',
   ],
 );
 

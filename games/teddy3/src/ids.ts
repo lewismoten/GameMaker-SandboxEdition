@@ -111,7 +111,7 @@ export const SCAN = Object.fromEntries(Object.entries(KEY).map(([k, v]) => [k, v
 /** Counters ("repetition meters"): 3 is money; 20-29 are free. Counters read one more than they hold. */
 export const CTR = {
   lives: 1,
-  /** Treats (shown as Money on the F2 screen). */
+  /** Treats (shown as Treats on the F2 screen, by player.json). */
   treats: 3,
   /** Things Gwinn dropped, found on this level (THE CHEZ's door takes one). */
   clues: 20,
