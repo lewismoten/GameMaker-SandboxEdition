@@ -251,6 +251,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     micro(p, 4, 3, info.numeral, c('gold', 2), 2);
     // and how many there are, small under it
     micro(p, 4, 16, `OF ${CARDS[CARDS.length - 1].numeral}`, c('gold', 1));
+    // the first card says how to save
+    if (i === 0) micro(p, 4, 24, 'F5 SAVES, F6 LOADS', c('gold', 1));
     outlined(p, 160 - textWidth(info.title, big ? 2 : 1) / 2, drop + (big ? 0 : 6), info.title, c('marble', 3), c('pompeii', 0), big ? 2 : 1);
     if (k >= 5) centered(p, 34, info.english, c('ochre', 3));
     // what to do here, and the key for it
