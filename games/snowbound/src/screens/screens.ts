@@ -498,7 +498,9 @@ export function buildScreens(
     const of = extras.cards.length;
     const count = i === of - 1 ? `FINAL LEVEL: ${i + 1} OF ${of}` : `LEVEL ${i + 1} OF ${of}`;
     micro(p, 308 - microWidth(count), 122, count, card.pal.c('gold', 3));
-    card.lines.forEach((l, i) => text(p, 12, 162 + i * 10, l, card.pal.c('snow', 5)));
+    // (a fourth line closes up the spacing, so its commas clear the bottom edge)
+    const step = card.lines.length > 3 ? 9 : 10;
+    card.lines.forEach((l, i) => text(p, 12, 162 + i * step, l, card.pal.c('snow', 5)));
     files[`${card.name}.gif`] = gif(p, card.pal.pal);
   });
   return files;
