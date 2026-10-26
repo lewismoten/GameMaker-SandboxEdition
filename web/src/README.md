@@ -312,8 +312,11 @@ modules are in [`../test`](../test).
   Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
   (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
   played in the walkthrough player. Videos about the site (`videos.ts`, plain data: one entry a
-  video) show their length over a picture kept in `public/videos/`, and open in `videoDialog.ts`:
-  nothing comes from YouTube until Play, which embeds youtube-nocookie.com; closing removes the player.
+  video, with its description and chapters) show their length over a picture kept in `public/videos/`,
+  and open in `videoDialog.ts`: nothing comes from YouTube until Play (or a chapter, or a time in the
+  transcript, which start it there), which embeds youtube-nocookie.com; closing removes the player.
+  Its Transcript disclosure fetches `public/videos/<id>.transcript.json` when opened, written from
+  YouTube's automatic captions by `../scripts/videoTranscript.ts` (see Build-time code).
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
   keyboard reference, registration, business and ID, and license and warranty cards and hint
   book postcards; the games, never a secret one, and the two
@@ -671,7 +674,12 @@ saved with `editor/core/ui.ts` `download`.
   - `levelViews.ts` (with `levelViewsScan.ts` and `levelViewsPlay.ts`; slow, so give it the game ids
     that changed) their `levelViews.json`;
   - `castHidden.ts` (with `castHiddenScan.ts`) the cast page's `hidden.json`;
-  - `gameMakerArchive.ts` the Shareware Shelf's `gameMakerArchive.json`.
+  - `gameMakerArchive.ts` the Shareware Shelf's `gameMakerArchive.json`;
+  - `videoTranscript.ts` a Library video's `public/videos/<id>.transcript.json`, from its YouTube
+    automatic captions (`yt-dlp --skip-download --write-auto-subs --sub-langs en-orig <url>`, then
+    `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about
+    a minute a paragraph, the names the captions mishear spelled right, and any sentence naming a
+    secret game left out.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
   `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast`, from the
   other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).

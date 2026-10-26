@@ -1,10 +1,22 @@
-/* A Library video's player (videoDialog.ts): its picture and a Play button, then YouTube's player. */
+/* A Library video's player (videoDialog.ts): its picture and a Play button, then YouTube's player;
+   below it its description, chapters and transcript, scrolling on their own. */
 
 dialog.lib-video {
   width: min(880px, calc(100vw - 32px));
   max-width: none;
+  max-height: calc(100dvh - 32px);
   box-sizing: border-box;
   padding: 16px;
+  overflow: hidden;
+}
+
+dialog.lib-video[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog.lib-video > * {
+  flex: none;
 }
 
 dialog.lib-video .modal-head h2 {
@@ -16,7 +28,7 @@ dialog.lib-video .modal-head h2 {
   display: grid;
   place-items: center;
   aspect-ratio: 16 / 9;
-  max-height: calc(100vh - 220px);
+  max-height: 45dvh;
   overflow: hidden;
   border-radius: 6px;
   background: #000;
@@ -66,4 +78,104 @@ dialog.lib-video .modal-head h2 {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
+}
+
+.lib-video-more {
+  min-height: 96px;
+  margin-top: 10px;
+  padding-right: 4px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  border-top: 1px solid var(--border);
+}
+
+dialog.lib-video > .lib-video-more {
+  flex: 1 1 auto;
+}
+
+.lib-video-more:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.lib-video-about p {
+  margin: 10px 0;
+  line-height: 1.45;
+}
+
+.lib-video-section {
+  margin: 12px 0;
+}
+
+.lib-video-section h3,
+.lib-video-section summary {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lib-video-section summary {
+  display: list-item;
+  min-height: 24px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.lib-video-chapters {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lib-video-time {
+  display: inline-flex;
+  gap: 10px;
+  align-items: baseline;
+  min-height: 24px;
+  min-width: 24px;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--text);
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lib-video-chapters .lib-video-time {
+  width: 100%;
+}
+
+.lib-video-time:hover {
+  background: var(--border);
+}
+
+.lib-video-time:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.lib-video-at {
+  min-width: 3.6em;
+  color: var(--accent, var(--text));
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.lib-video-source {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lib-video-transcript p {
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+.lib-video-transcript .lib-video-time {
+  padding: 0 4px;
+  margin-left: -4px;
 }
