@@ -113,6 +113,11 @@ game folder opens in the browser unchanged.
   (A-J Games), _Hurdles_ (Roland Ludlam), _Seal Boarders_, and RSD's _Penguin Pete_. The games
   belong to their authors; the guide names them and describes their ideas in its own words, and
   copies none of their art, music, sounds or text.
+  Its section "Customizing the player's own words" describes the hex edit found by comparing
+  _Builder_'s player byte for byte with the CD's `XFERPLAY.EXE` (its menu words overwritten with
+  spaces), and the earlier players' `GMTITLE.GIF` title card, from the same survey; its table of
+  the player's words (`playerWords.ts`) is read from the CD's own `cd/gm/xferplay.exe`. No
+  author's player or registration details are copied or named.
 - **Research: watching people play Game-Maker games.** Observations from two videos informed
   The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and
   _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`), "What Players Hate (and How to

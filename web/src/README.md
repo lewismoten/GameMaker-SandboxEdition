@@ -376,7 +376,8 @@ modules are in [`../test`](../test).
     (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`), 14 the Level
     check and walkthrough bot (`chaptersCheck.ts`), 15 and 16 designing for every player and where
     Game-Maker runs out (`chaptersPlayers.ts`), and 17 tricks from the shareware authors
-    (`chaptersShareware.ts`).
+    (`chaptersShareware.ts`), whose table of the words the DOS player shows, and where they sit in
+    the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).
   - Figures are drawn from real files (`ultimateFigures.ts`, `paletteFigures.ts`).
     `openUltimate.ts` and `openInManual.ts` open it from outside the desk.
 - [`manual/magazine/`](manual/magazine): TURBO BUTTON, a mid-90s game magazine (`#/magazine`, and

@@ -204,5 +204,6 @@ export const NUMBERS: Chapter = {
     <tr><td>Menu idle before the demo</td><td>30 seconds</td></tr>
     <tr><td>Text page</td><td>16 lines of 30 characters (a 31st adds a blank line)</td></tr>
     <tr><td>Saved games</td><td>10 slots</td></tr>
+    <tr><td>A player’s word changed in a hex editor (Chapter 17)</td><td>the same number of bytes, and the 0 after it kept</td></tr>
   </table>`,
 };

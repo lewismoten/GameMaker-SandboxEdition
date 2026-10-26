@@ -13,7 +13,15 @@
 // block an animation is showing (GetTouchbl's blkmap), a monster's first form after a hero's shot
 // can touch him (fromchar), monsters feel no gravity (moveallmons), and StartSceneInits takes the
 // starting values from the first character only.
+// "Customizing the player's own words" is the hex edit found in Builder's player (the notes'
+// "The players"), with the CD XFERPLAY.EXE's strings in playerWords.ts (PLAYGAME.C, HISCOREL.C;
+// F-keys from DoFunKy), the web player's own words in engine/game.ts and menus.ts, the desk's
+// transfer-disk .EXE a name with no bytes (computer/drives.ts, so hexedit/hexFiles.ts finds no
+// file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER).
 import { opening, tip, type Chapter } from './chapter';
+import { PLAYER_WORDS } from './playerWords';
+
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export const SHAREWARE: Chapter = {
   id: 'shareware',
@@ -92,6 +100,40 @@ export const SHAREWARE: Chapter = {
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
   animation stays tiny and plays on any PC (RSD’s own text-box animations in <i>Penguin Pete</i>).
   Fade-in and fade-out animations round a text screen in a slide list make a cheap page turn.</p>
+  <h2>Customizing the player’s own words</h2>
+  <p>A transferred game’s <code>.EXE</code> is Game-Maker’s own <code>XFERPLAY.EXE</code>, renamed
+  after the game by Transfer (or by this edition’s DOS download). PLAYGAME’s built-in words live
+  inside it as plain text: the menu’s six choices, the save and load lines, the high-score screen.
+  A hex editor can change them. <i>Builder</i> did: its author overwrote every menu word with
+  spaces, so its own menu picture shows clean with nothing written over it. The choices still
+  work; only the words are gone.</p>
+  <ul>
+    <li><b>Back up first.</b> Edit a copy, never the only one.</li>
+    <li><b>Same length only.</b> Type over the letters, and pad a shorter word with spaces. Never
+    insert or delete a byte: everything after it would move.</li>
+    <li><b>Keep the 0 after each word,</b> and leave alone anything with a <code>%</code> in it
+    (<code>%d</code>, <code>%s</code>, <code>%ld</code>): those are filled in as the game runs, and a
+    changed one can crash it.</li>
+    <li><b>Letters and spaces only.</b> Plain letters, digits, punctuation and spaces are safe; no
+    accents or line drawing.</li>
+    <li><b>Leave the credits alone.</b> The F10 box’s version line and RSD’s lines stay as they
+    are, out of respect, and because Game-Maker’s license notice should travel with the player.</li>
+    <li><b>Test in DOSBox</b> after every change: the menu, F1, F5, F6, a drop and a high score.</li>
+  </ul>
+  <p>This changes only the DOS player. The web player, the desk PC and the downloads for Mac,
+  Windows and Linux draw these words from this edition’s own code, not from the
+  <code>.EXE</code>, and every DOS download starts from a fresh copy of the CD’s player, so make
+  the edit again after each one. The desk’s <code>HEXEDIT</code> can’t do it: the
+  <code>.EXE</code> on a transfer disk is only a name there (the desk plays the game in this
+  edition’s player), and it answers <i>File not found</i>. Use a hex editor on your own PC.</p>
+  <p>Here is where the words are in the CD’s <code>XFERPLAY.EXE</code> (160,598 bytes):</p>
+  <table class="ug-words">
+    <tr><th>Offset</th><th>Bytes</th><th>Text</th><th>Shown</th></tr>
+    ${PLAYER_WORDS.map((w) => `<tr><td><code>${w.offset.toString(16).toUpperCase()}</code></td><td>${w.length}</td><td><code>${esc(w.text)}</code></td><td>${w.where}</td></tr>`).join('\n    ')}
+  </table>
+  <p>Offsets are in hex, counted from the first byte of the file. The F9 joystick screens’ lines
+  follow <code>MORE...</code>, most of them padded with spaces to 29 or 30 characters.</p>
+  ${tip('Before 3.00:', 'Earlier players would not start a game without <code>GMTITLE.GIF</code>, a “Recreational Software Designs’ Game-Maker Presents:” card shown first, and authors redrew it as their own studio’s card. The 3.00 player never looks for it: your opening is the title slide list, and in this edition the start scene’s Opening sting.')}
   <h2>Recipes for bigger ideas</h2>
   <p>Players watching Game-Maker games have cheered for digging, sneaking, swinging and rolling
   dice, sometimes in games, sometimes in a demo made to show them off. Here is how each can be
