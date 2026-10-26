@@ -45,6 +45,14 @@ Walk through when they're off!
 GLASS TUBES and MOONWALK BELTS
 carry you along - fast.
 
+GRANDPA'S CITICAR flies
+itself. LEFT and RIGHT (or A
+and D) steer it from lane to
+lane. Dodge cars and trucks,
+catch pages and pills. At
+0 MI the exit ramp opens on
+the right: keep RIGHT!
+
 ROBOTS can be zapped. CARS,
 buggies, dinos and skaters
 hurt once, then swerve or
@@ -149,14 +157,15 @@ It's the year 2000! Cars fly. Robots mow the lawn. Dinner comes in a pill. The a
 
 Dex Dynamo, age 11, wrote the greatest science fair report in the solar system: "THE POCKET TELEPHONE." Then Sparky 3000, his robot dog, ate it. The Science Fair is today, at 3:00. On the Moon.
 
-Help Dex find his pages in six levels of the future:
+Help Dex find his pages in seven levels of the future:
 
 1. DOME SWEET DOME: the suburbs of Hover Heights
-2. THE INFORMATION SUPERHIGHWAY: fourteen lanes of hover traffic
-3. MEGA MALL 2000: the arcade, TV-RAMA, and the food court
-4. THE TELEPORT-A-PHONE EXCHANGE: wrong number! (several of them)
-5. THE MOON: moon buggies and meteor showers
-6. THE SCIENCE FAIR: catch Sparky before the judges go
+2. THE CLOUD LANE: Grandpa's flying CitiCar, nine miles to the Skyway
+3. THE INFORMATION SUPERHIGHWAY: fourteen lanes of hover traffic
+4. MEGA MALL 2000: the arcade, TV-RAMA, and the food court
+5. THE TELEPORT-A-PHONE EXCHANGE: wrong number! (several of them)
+6. THE MOON: moon buggies and meteor showers
+7. THE SCIENCE FAIR: catch Sparky before the judges go
 
 REQUIREMENTS
 ------------
@@ -167,7 +176,7 @@ To play, copy all the files to one directory and type YEAR2000.
 
 CONTROLS
 --------
-* Arrow keys: walk (joystick works too)
+* Arrow keys: walk (joystick works too); in Grandpa's CitiCar, Left and Right steer
 * W A S D: walk, same as the arrows
 * Q / E: walk up-left / up-right
 * Keypad 7 9 1 3: walk diagonally
@@ -184,6 +193,7 @@ HINTS
 * In the Teleport-A-Phone Exchange, booth number 4 is out of order. Try another number - you'll get there eventually.
 * Read the teletype in the exchange hall. It knows a thing or two.
 * Grandpa's CitiCar likes a honk.
+* In the Cloud Lane, traffic starts as a dot on the horizon. Pick a clear lane early, and keep right when the sign nears 0 MI.
 * The judges want 20 pages. There are lots more than that.
 * Came to the fair short? The school copier prints more.
 

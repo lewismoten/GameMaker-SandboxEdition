@@ -1,23 +1,27 @@
-// The six levels in order, with the files each scene loads and what its card says.
+// The seven levels in order, with the files each scene loads and what its card says.
 import { citySet, moonSet, suburbSet } from '../blocks/blocks';
+import { skySet } from '../blocks/sky';
 import type { BlockSet } from '../blocks/book';
 import type { LevelMap } from './mapkit';
 import { level1 } from './level1';
+import { cloudLane } from './clouds';
 import { level2 } from './level2';
 import { level3 } from './level3';
 import { level4 } from './level4';
 import { level5 } from './level5';
 import { level6 } from './level6';
-import { exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } from '../sound/music';
+import { cloudSong, exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } from '../sound/music';
 
-export const SETS = { suburb: suburbSet, city: citySet, moon: moonSet };
+export const SETS = { suburb: suburbSet, city: citySet, moon: moonSet, sky: skySet };
 
 interface Level {
   file: string;
   desc: string;
   set: keyof typeof SETS;
   build: (s: BlockSet) => LevelMap;
-  chr: 'dex.chr' | 'moon.chr';
+  chr: 'dex.chr' | 'moon.chr' | 'car.chr';
+  /** Its own monster list (SKY.MON and SKY.MBL) instead of the game's Y2K.MON and Y2K.MBL. */
+  mon?: 'sky';
   song: () => Uint8Array;
   /** Size of the map's playfield, for pictures. */
   size: [number, number];
@@ -43,6 +47,27 @@ export const LEVELS: Level[] = [
     intro: [],
   },
   {
+    file: 'clouds',
+    desc: 'The Cloud Lane',
+    set: 'sky',
+    build: cloudLane,
+    chr: 'car.chr',
+    mon: 'sky',
+    song: cloudSong,
+    size: [16, 10],
+    card: {
+      title: 'THE CLOUD LANE',
+      lines: [
+        "8:45 AM. The booth rang Grandpa's",
+        'car phone! LEFT and RIGHT steer his',
+        'flying CitiCar. Dodge the traffic;',
+        'at 0 MI keep RIGHT for the ramp!',
+      ],
+      view: [0, 1],
+    },
+    intro: ['tele.fli'],
+  },
+  {
     file: 'skyway',
     desc: 'Superhighway',
     set: 'suburb',
@@ -55,7 +80,8 @@ export const LEVELS: Level[] = [
       lines: ['SUPERHIGHWAY. 9:30 AM. Rush hour.', 'Fourteen lanes of hover traffic', 'hauling faxes. Look both ways!', 'A bump hurts, then cars swerve.'],
       view: [0, 1],
     },
-    intro: ['tele.fli'],
+    // Grandpa drops Dex off at the Skyway: no teleport this time
+    intro: [],
   },
   {
     file: 'mall',

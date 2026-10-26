@@ -127,3 +127,22 @@ export const MON = {
   sparkyFetch: 56,
   none: 64,
 } as const;
+
+/**
+ * SKY.MON: the Cloud Lane's own monster list (its scene loads SKY.MON and SKY.MBL). Traffic and
+ * prizes come one monster per lane (left, middle, right), since each lane slides its own way.
+ */
+export const SKYMON = {
+  car: [0, 1, 2],
+  truck: [3, 4, 5],
+  page: [6, 7, 8],
+  pill: [9, 10, 11],
+  /** The dashes on the lines between the lanes, left and right. */
+  dashL: 12,
+  dashR: 13,
+  /** A car or truck that clipped the CitiCar swerves off into the clouds: a puff. */
+  puff: 14,
+  /** A prize, picked up. */
+  sparkle: 15,
+  none: 64,
+} as const;

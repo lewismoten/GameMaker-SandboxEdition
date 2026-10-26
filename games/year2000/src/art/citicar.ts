@@ -80,3 +80,49 @@ export function flyingCiticar(k: number): Pixels {
   outline(p, C('gray', 0));
   return p;
 }
+
+/**
+ * The flying CitiCar from behind, for the Cloud Lane (one block). The rear is all body: a
+ * CitiCar has no back window, only the flat red tail under the black roof. The racing stripes
+ * run along the sides, so from behind they show only as the sides' edges: two charcoal stripes
+ * with red between and a white pinstripe either side. Tail lights, the square black bumper,
+ * white wheels under it, the charge port on the passenger side (on the right, from behind), the
+ * stubby wings, and a teal hum underneath. `bank` tips the wings: -1 steering left, 1 right.
+ */
+export function citicarRear(k: number, bank = 0): Pixels {
+  const p = new Pixels(20, 20, T);
+  const ink0 = ink(false);
+  // the wings: chrome stubs at the sides, tipped when steering
+  for (let i = 0; i < 4; i++) {
+    const dyL = Math.round(bank * (3 - i) * 0.5);
+    p.set(i, 10 - dyL, C('chrome', i === 0 ? 7 : 5)).set(i, 11 - dyL, C('chrome', 3));
+    p.set(19 - i, 10 + dyL, C('chrome', i === 0 ? 7 : 5)).set(19 - i, 11 + dyL, C('chrome', 3));
+  }
+  // white steel wheels on black tires, under the bumper
+  for (const x0 of [4, 13]) {
+    p.rect(x0, 15, 3, 3, ink0.tire);
+    p.set(x0 === 4 ? x0 : x0 + 2, 16, ink0.rim!);
+  }
+  // the flat red tail: lit on the left, shaded on the right
+  for (let y = 4; y < 14; y++) for (let x = 4; x < 16; x++) p.set(x, y, x < 6 ? ink0.body[2] : x > 13 ? ink0.body[0] : ink0.body[1]);
+  p.rect(4, 8, 12, 1, ink0.trim);
+  // the black roof on top
+  p.rect(5, 2, 10, 2, ink0.roof).set(4, 3, ink0.roof).set(15, 3, ink0.roof);
+  // the sides' edges, with the stripes: pinstripe, charcoal, red, charcoal, pinstripe
+  for (const x of [3, 16]) {
+    p.rect(x, 4, 1, 10, ink0.body[x === 3 ? 1 : 0]);
+    p.set(x, 6, ink0.pin!).set(x, 7, ink0.stripe!).set(x, 9, ink0.stripe!).set(x, 10, ink0.pin!);
+  }
+  // the charge port, low on the rear passenger corner
+  p.set(16, 12, C('gray', 2));
+  // tail lights
+  p.rect(5, 10, 2, 2, ink0.tail).rect(13, 10, 2, 2, ink0.tail);
+  p.set(5, 10, C('pink', 5)).set(13, 10, C('pink', 5));
+  // the square black bumper
+  p.rect(3, 13, 14, 2, ink0.bumper).rect(3, 13, 14, 1, C('gray', 2));
+  outline(p, C('red', 0));
+  // the hum underneath (outside the outline: it's light, not car)
+  for (let x = 6; x < 14; x++) if ((x + k) % 2 === 0 && p.get(x, 18) === T) p.set(x, 18 + ((x >> 1) % 2), C('teal', 5));
+  p.set(9 + k, 19, C('gray', 7));
+  return p;
+}

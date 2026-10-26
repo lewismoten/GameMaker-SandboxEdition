@@ -7,7 +7,7 @@ import { micro } from '../art/font';
 import { CTR } from '../ids';
 import { coverPic, pagePic } from '../blocks/items';
 import { C, PAL } from '../art/pal';
-import { flyingCiticar } from '../art/citicar';
+import { citicarRear, flyingCiticar } from '../art/citicar';
 
 const R = PAL.r;
 const K = () => C('gray', 0);
@@ -138,6 +138,24 @@ export function buildCharBlocks(): BlockSet {
   poses.push(['die3', dizzy]);
   for (const [n, p] of poses) s.add(n, p);
   for (const [n, p] of poses) s.add(`m_${n}`, spacesuit(p));
+  // Grandpa's flying CitiCar from behind, for the Cloud Lane (CAR.CHR): humming, banking,
+  // flashing when bumped, and a spin into a cloud when the trip is over.
+  const car = citicarRear(0);
+  s.add('car0', car);
+  s.add('car1', citicarRear(1));
+  s.add('carL', citicarRear(0, -1));
+  s.add('carR', citicarRear(1, 1));
+  s.add(
+    'carHurt',
+    recolor(car, (c) => (c === T ? T : c === C('red', 0) ? C('gray', 7) : c === C('gray', 0) ? C('red', 2) : c)),
+  );
+  s.add('carDie0', rotate(car));
+  s.add('carDie1', rotate(rotate(car)));
+  const poof = new Pixels(20, 20, T);
+  oval(poof, 6, 12, 5, 4, C('sky', 6));
+  oval(poof, 14, 12, 5, 4, C('sky', 6));
+  oval(poof, 10, 9, 7, 5, C('gray', 7));
+  s.add('carDie2', poof);
   return s;
 }
 

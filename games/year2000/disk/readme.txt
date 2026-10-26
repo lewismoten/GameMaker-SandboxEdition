@@ -22,22 +22,25 @@ POCKET TELEPHONE." Then Sparky
 The Science Fair is today, at
 3:00. On the Moon.
 
-Help Dex find his pages in six
-levels of the future:
+Help Dex find his pages in
+seven levels of the future:
 
 1. DOME SWEET DOME: the
    suburbs of Hover Heights
-2. THE INFORMATION
+2. THE CLOUD LANE: Grandpa's
+   flying CitiCar, nine miles
+   to the Skyway
+3. THE INFORMATION
    SUPERHIGHWAY: fourteen
    lanes of hover traffic
-3. MEGA MALL 2000: the arcade,
+4. MEGA MALL 2000: the arcade,
    TV-RAMA, and the food court
-4. THE TELEPORT-A-PHONE
+5. THE TELEPORT-A-PHONE
    EXCHANGE: wrong number!
    (several of them)
-5. THE MOON: moon buggies and
+6. THE MOON: moon buggies and
    meteor showers
-6. THE SCIENCE FAIR: catch
+7. THE SCIENCE FAIR: catch
    Sparky before the judges go
 
 REQUIREMENTS
@@ -56,7 +59,9 @@ YEAR2000.
 CONTROLS
 --------
 * Arrow keys: walk (joystick
-  works too)
+  works too); in Grandpa's
+  CitiCar, Left and Right
+  steer
 * W A S D: walk, same as the
   arrows
 * Q / E: walk up-left /
@@ -89,6 +94,11 @@ HINTS
   thing or two.
 * Grandpa's CitiCar likes a
   honk.
+* In the Cloud Lane, traffic
+  starts as a dot on the
+  horizon. Pick a clear lane
+  early, and keep right when
+  the sign nears 0 MI.
 * The judges want 20 pages.
   There are lots more than
   that.

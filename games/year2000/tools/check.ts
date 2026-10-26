@@ -3,11 +3,14 @@
 // from level to level like the real game does. The multi-block objects are checked first (tools/align.ts).
 //   cd web && npx vite-node ../games/year2000/tools/check.ts      (GOD=1 keeps the bot alive)
 import { newCharInfo } from '../../../web/src/engine/world';
-import { buildCharacter } from '../src/characters/character';
+import { buildCarCharacter, buildCharacter } from '../src/characters/character';
 import { CTR, MON, PAGES_NEEDED, SEQ } from '../src/ids';
 import { LEVELS, SETS } from '../src/levels/levels';
 import { DIALS } from '../src/levels/level4';
 import { buildMonsters } from '../src/characters/monsters';
+import { buildSkyMonsters } from '../src/characters/skyMonsters';
+import { buildSkyMonsterBlocks } from '../src/sprites/skySprites';
+import { FlyBot } from './flyBot';
 import { Sim, type SimScene } from './sim';
 import { readWalkPaths } from '../../kit/walkPaths';
 import { Bot } from './bot';
@@ -22,7 +25,10 @@ const mbl = mb.build();
 const mons = buildMonsters(mb);
 const cb = buildCharBlocks();
 const cbl = cb.build();
-const chars = { 'dex.chr': buildCharacter(cb, false), 'moon.chr': buildCharacter(cb, true) };
+const chars = { 'dex.chr': buildCharacter(cb, false), 'moon.chr': buildCharacter(cb, true), 'car.chr': buildCarCharacter(cb) };
+// the Cloud Lane's own traffic
+const skyMb = buildSkyMonsterBlocks();
+const sky = { mbl: skyMb.build(), mon: buildSkyMonsters(skyMb) };
 const ci = newCharInfo();
 const ROBOTS = new Set<number>([
   MON.mowerH,
@@ -152,7 +158,7 @@ for (const [i, l] of LEVELS.entries()) {
   const links: SimScene['links'] = [];
   if (l.file === 'exchange') for (const [from, to] of DIALS) links.push({ from: lm.at(from), to: lm.at(to) });
   links.push({ from: lm.at('exit'), to: { x: 0, y: 0 } });
-  const scene: SimScene = { map, bbl, mbl, mon: mons, chr: chars[l.chr], cbl, links };
+  const scene: SimScene = { map, bbl, ...(l.mon === 'sky' ? sky : { mbl, mon: mons }), chr: chars[l.chr], cbl, links };
   const startAt = lm.marks.has('start') ? lm.at('start') : lm.at('hall');
   let sim = new Sim(scene, startAt, ci, 7 + i);
   let arrival = startAt;
@@ -168,6 +174,13 @@ for (const [i, l] of LEVELS.entries()) {
   let outcome = '';
 
   const run = async (): Promise<boolean> => {
+    if (l.file === 'clouds') {
+      // Steer clear of the traffic until the ramp opens, then ride it up onto the link.
+      const fly = new FlyBot(sim);
+      const ok = await fly.fly();
+      bot.log.push(...fly.log);
+      return ok;
+    }
     if (l.file === 'exchange') {
       // Dial around the exchange: 1 -> Florida -> the sea -> the TV -> the jungle -> the launch pad.
       const DOOR: Record<string, string> = { hall: 'hall1', florida: 'floridaOut', sea: 'seaOut', tv: 'tvOut', jungle: 'jungleOut' };
