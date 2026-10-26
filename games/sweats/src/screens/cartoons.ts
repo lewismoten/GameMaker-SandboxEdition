@@ -360,6 +360,8 @@ export function cardFli(card: CardView, cast: Cast): Uint8Array {
     centered(p, 4, `MONOLOGUE ${card.index} OF 17  -  ${card.def.group.name.toUpperCase()}`, c('gold', 2));
     const drop = Math.min(0, -30 + k * 6);
     titleLines.forEach((l, i) => outlined(p, 160 - textWidth(l) / 2, 20 + i * 12 + drop, l, c('paper', 2), c('velvet', 0)));
+    // the first card also says how to save
+    if (card.index === 1 && titleLines.length <= 2) centered(p, 45, 'F5 SAVES, F6 LOADS', c('gold', 2));
   };
   // part 1: the stage, the spotlight finding Will at the microphone; he flings out an arm
   const st = stage(pal, card.index);
