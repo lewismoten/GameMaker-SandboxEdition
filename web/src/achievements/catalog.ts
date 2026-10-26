@@ -152,6 +152,20 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     from: 'teddy',
     unit: 'games',
   },
+  {
+    id: 'trophy-first',
+    title: 'Participation trophy',
+    desc: 'Finished a game with points, and a little trophy turned up on the 1994 desk.',
+    icon: '🎖️',
+    category: 'playing',
+  },
+  {
+    id: 'trophy-top',
+    title: 'Over the top',
+    desc: 'Grew a score trophy on the 1994 desk into the gaudy tower at the top.',
+    icon: '👑',
+    category: 'playing',
+  },
   { id: 'saves-panel', title: 'Keeping score', desc: 'Looked through a game’s saves and high scores.', icon: '🏆', category: 'playing' },
   { id: 'heart-first', title: 'Tin heart', desc: 'Found a tin heart hidden in a game.', icon: '🩶', category: 'playing' },
   {

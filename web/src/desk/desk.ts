@@ -801,6 +801,17 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
+  // the score trophies, once a game ends with points (nothing at all until then)
+  let unScores: (() => void) | undefined;
+  void import('../scoreTrophies/trophySpot').then(({ scoreTrophies }) => {
+    if (!desk.isConnected) return;
+    unScores = scoreTrophies((el) => {
+      // after the shelf's eggs and tin heart trophy when you Tab along the wall
+      const after = desk.querySelector('.heart-trophy') ?? desk.querySelector('.news-clipping');
+      if (after) after.after(el);
+      else desk.querySelector('.desk-scene')?.append(el);
+    });
+  });
   void sandboxShots().then((shots) => {
     for (const t of boxTiles.querySelectorAll<HTMLElement>('.tile')) {
       const shot = shots.find((s) => s.id === t.dataset.game);
@@ -821,6 +832,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unCatalog();
     unEggs?.();
     unTrophy?.();
+    unScores?.();
     removeWarp();
     capture?.dispose();
     // the PC goes with the desk: whatever it runs stops, and its sound with it (a game, the
