@@ -113,7 +113,9 @@ export class GameFiles {
 export function normalize(name: string): string {
   const base = (name.replace(/\\/g, '/').split('/').pop() ?? name).trim().toLowerCase();
   const dot = base.indexOf('.');
-  return dot < 0 ? base.slice(0, 8) : `${base.slice(0, Math.min(dot, 8))}.${base.slice(dot + 1, dot + 4)}`;
+  // DOS reads "NAME." (an empty extension, as a player with its extensions blanked asks for) as "NAME"
+  const ext = dot < 0 ? '' : base.slice(dot + 1, dot + 4).trim();
+  return ext ? `${base.slice(0, Math.min(dot, 8))}.${ext}` : base.slice(0, dot < 0 ? 8 : Math.min(dot, 8));
 }
 
 /**

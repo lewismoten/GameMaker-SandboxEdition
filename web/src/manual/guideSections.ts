@@ -128,7 +128,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     work in every game:</p>
     <table>
       <tr><td><kbd>Esc</kbd></td><td>Leave a level or a screen</td></tr>
-      <tr><td><kbd>F1</kbd></td><td>Help</td></tr>
+      <tr><td><kbd>F1</kbd></td><td>The game’s instructions</td></tr>
       <tr><td><kbd>F2</kbd></td><td>Status and inventory</td></tr>
       <tr><td><kbd>F3</kbd> / <kbd>F4</kbd></td><td>Music / sound on or off</td></tr>
       <tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>Save / restore the game</td></tr>
