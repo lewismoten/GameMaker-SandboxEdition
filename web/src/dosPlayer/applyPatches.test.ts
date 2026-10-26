@@ -7,7 +7,7 @@ import { applyPlayerPatches, readPlayerPatches, STOCK_PLAYER_MD5 } from './apply
 import { md5Hex } from './md5';
 import { PATCHES } from './patchTable';
 import { patchProblem, readPatch, cleanPatches } from './patchRules';
-import { renamedExtensions } from './renamedExtensions';
+import { renamedExtensions } from './fileExtensions';
 import { PLAYER_PRESETS } from './presets';
 import { playerRecord, recordPatches } from './playerRecord';
 

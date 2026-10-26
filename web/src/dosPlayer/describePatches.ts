@@ -1,7 +1,8 @@
 // A project's DOS player patches in words, one line each, in plain ASCII: for the DOS export's
-// README ("the .EXE was customized: only these changed") and the import's note.
+// README ("the .EXE was customized: only these changed", then the files it renamed).
 import { PATCHES, type ColorName, type PatchEntry, type PatchScreen } from './patchTable';
 import { cleanPatches, type PatchValue, type PlayerPatches } from './patchRules';
+import { EXT_KINDS, extensionMap } from './fileExtensions';
 
 export const SCREEN_NAMES: Record<PatchScreen, string> = {
   menu: 'Main menu',
@@ -37,11 +38,21 @@ function show(entry: PatchEntry, v: PatchValue): string {
   return String(v);
 }
 
-/** "Main menu, Play: "Play" -> hidden", in table order. */
+/** "Main menu, Play: "Play" -> hidden", in table order, then the extensions the player opens files by ("Files, Pictures: .gif -> .z0n"). */
 export function playerChanges(patches: PlayerPatches): string[] {
   const clean = cleanPatches(patches);
-  return PATCHES.filter((e) => e.id in clean).map((e) => {
-    const from = show(e, e.kind === 'fkey' ? 'on' : e.stock);
-    return `${SCREEN_NAMES[e.screen]}, ${e.label}: ${from} -> ${show(e, clean[e.id])}`;
-  });
+  const exts = extensionMap(clean);
+  return [
+    ...PATCHES.filter((e) => e.id in clean).map((e) => {
+      const from = show(e, e.kind === 'fkey' ? 'on' : e.stock);
+      return `${SCREEN_NAMES[e.screen]}, ${e.label}: ${from} -> ${show(e, clean[e.id])}`;
+    }),
+    ...EXT_KINDS.filter((k) => k.offsets.length && exts.has(k.ext)).map((k) => `Files, ${k.label}: .${k.ext} -> .${exts.get(k.ext)!}`),
+  ];
+}
+
+/** Every renamed extension, ".gif -> .z0n", in table order. */
+export function renamedFiles(patches: PlayerPatches): string[] {
+  const exts = extensionMap(cleanPatches(patches));
+  return EXT_KINDS.filter((k) => exts.has(k.ext)).map((k) => `.${k.ext} -> .${exts.get(k.ext)!}`);
 }

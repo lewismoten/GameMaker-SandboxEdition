@@ -3,6 +3,7 @@
 // the 0 after each is never touched); in-game text is 0x20-0x7E only (GPutChar's ROM font stops
 // at 127); a printf format keeps its % codes, in order; numbers stay in their immediate's range.
 import { COLOR_TARGETS, FKEY_OFF, PATCHES, type ColorName, type FramePatch, type ImmField, type PatchEntry } from './patchTable';
+import { extKind, extValueProblem } from './fileExtensions';
 
 export type PatchValue = string | number | number[];
 
@@ -140,12 +141,17 @@ export function writeStock(exe: Uint8Array, entry: PatchEntry): void {
   else writePatch(exe, entry, entry.stock);
 }
 
-/** Only the patches that are known, valid and not the stock value; the rest are left out. */
+/**
+ * Only the patches that are known, valid and not the stock value; the rest are left out. Renamed
+ * file extensions (fileExtensions.ts) are kept in lower case.
+ */
 export function cleanPatches(patches: Record<string, unknown> | undefined): PlayerPatches {
   const out: PlayerPatches = {};
   for (const [id, v] of Object.entries(patches ?? {})) {
     const e = BY_ID.get(id);
     if (e && !patchProblem(e, v) && !isStock(e, v as PatchValue)) out[id] = v as PatchValue;
+    const k = extKind(id);
+    if (k && !extValueProblem(k.ext, v) && (v as string).toLowerCase() !== k.ext) out[id] = (v as string).toLowerCase();
   }
   return out;
 }

@@ -3,13 +3,14 @@
 // panel, Play and the DOS export keep them. A player that asks for other file extensions (Acord
 // Games' .z0g, .z0n…, renamed so Game-Maker could not open the games) has its files renamed back:
 // the extensions the .EXE names, then the rest by the slot each fills in the .gam, rewriting the
-// names inside the .gam, slide lists and backdrops in place (same length). Renaming extensions
-// is never offered by the customizer.
+// names inside the .gam, slide lists and backdrops in place (same length, extensionNames.ts).
+// The extensions become the project's DOS player patches too, so its DOS export renames them again.
 import { normalize, type GameFiles } from './files';
 import { parseGame, ADV_EXTS } from '../formats/game';
 import { md5Hex } from '../dosPlayer/md5';
 import { readPlayerPatches, STOCK_PLAYER_MD5 } from '../dosPlayer/applyPatches';
-import { renamedExtensions } from '../dosPlayer/renamedExtensions';
+import { EXT_KINDS, extId, extensionClashes, extValueProblem, renamedExtensions, withoutExtensions } from '../dosPlayer/fileExtensions';
+import { rewriteNames } from './extensionNames';
 import type { PlayerPatches } from '../dosPlayer/patchRules';
 
 export interface ImportedPlayer {
@@ -32,23 +33,6 @@ function slotExt(scene: number, slot: number): string | undefined {
 }
 
 const KNOWN = new Set(['gam', 'pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd', 'cmf', 'gif', 'bkd', 'fli', 'txt', 'lst', 'voc', 'rec', 'his', 'sav']);
-
-/** Rewrites every file name with a renamed extension inside `bytes` (a .gam, slide list or backdrop), in place, keeping its case. */
-function rewriteNames(bytes: Uint8Array, map: Map<string, string>): Uint8Array {
-  const out = bytes.slice();
-  const text = Array.from(out, (b) => String.fromCharCode(b))
-    .join('')
-    .toLowerCase();
-  const exts = [...map.keys()].filter((e) => e.length === map.get(e)!.length);
-  if (!exts.length) return out;
-  for (const m of text.matchAll(new RegExp(`[a-z0-9_~!@#$%^&()-]\\.(${exts.join('|')})(?![a-z0-9])`, 'g'))) {
-    const at = m.index + 2;
-    const to = map.get(m[1])!;
-    const upper = out[at] >= 0x41 && out[at] <= 0x5a;
-    for (let i = 0; i < to.length; i++) out[at + i] = (upper ? to[i].toUpperCase() : to[i]).charCodeAt(0);
-  }
-  return out;
-}
 
 /**
  * Whether `bytes` can be a file of extension `ext`, for the kinds that say so in their first
@@ -117,17 +101,28 @@ export function adoptPlayer(files: GameFiles, players: { name: string; bytes: Ui
   const exeExt = renamedExtensions(exe.bytes);
   const name = exe.name.replace(/^.*[\\/]/, '').toUpperCase();
   const said: string[] = [];
-  const n = Object.keys(read.patches).length;
+  const n = Object.keys(withoutExtensions(read.patches)).length;
   if (n)
     said.push(`${name} is a hand-edited Game-Maker player: ${n} change${n === 1 ? '' : 's'} to its words, colors or timings are in the DOS player panel now.`);
+  let patches = read.patches;
   if (Object.keys(exeExt).length) {
     const map = renameBack(files, exeExt);
     const shown = Object.values(exeExt).filter(Boolean).slice(0, 2);
+    // the kinds the .gam names (the .EXE's own are read with its other patches)
+    const kept: PlayerPatches = { ...patches };
+    for (const [now, stock] of map) {
+      const k = EXT_KINDS.find((e) => e.ext === stock && !e.offsets.length);
+      if (k && !extValueProblem(k.ext, now)) kept[extId(k.ext)] = now;
+    }
+    patches = extensionClashes(kept).size ? withoutExtensions(kept) : kept;
+    const carried = Object.keys(patches).length > Object.keys(withoutExtensions(patches)).length;
     said.push(
-      `${name} was changed to look for its files under other extensions (${shown.join(', ')}…). Their ${map.size} kinds of file are renamed back to Game-Maker’s own, so they open here. (The DOS player panel doesn’t offer renaming extensions.)`,
+      `${name} was changed to look for its files under other extensions (${shown.join(', ')}…). Their ${map.size} kinds of file are renamed back to Game-Maker’s own, so they open here.${
+        carried ? ' The DOS player panel’s Files tab keeps their extensions, so the DOS download renames them again.' : ''
+      }`,
     );
   }
   if (!read.explained) said.push(`Its other changes (such as an About page of its own) aren’t carried over.`);
   if (!said.length) return undefined;
-  return { exe: name, patches: read.patches, message: said.join(' ') };
+  return { exe: name, patches, message: said.join(' ') };
 }

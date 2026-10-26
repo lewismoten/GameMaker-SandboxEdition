@@ -4,6 +4,7 @@
 import { md5Hex } from './md5';
 import { PATCHES } from './patchTable';
 import { isStock, patchEntry, patchProblem, readPatch, writePatch, writeStock, type PlayerPatches } from './patchRules';
+import { extKind, extValueProblem, extensionClashes, readExtensions, writeExtensions, writeStockExtensions } from './fileExtensions';
 
 /** Game-Maker 3.00's XFERPLAY.EXE as it came on the CD (cd/gm/xferplay.exe). */
 export const STOCK_PLAYER_MD5 = 'fcaf47d50ececa0b59cd22b3fae3cda3';
@@ -18,12 +19,19 @@ export function applyPlayerPatches(exe: Uint8Array, patches: PlayerPatches): Uin
     throw new Error('This is not the Game-Maker 3.00 CD’s XFERPLAY.EXE, so it can’t be customized safely.');
   const out = exe.slice();
   for (const [id, value] of Object.entries(patches)) {
+    const kind = extKind(id);
+    if (kind) {
+      const problem = extValueProblem(kind.ext, value) ?? extensionClashes(patches).get(kind.ext);
+      if (problem) throw new Error(`${kind.label} (.${kind.ext}): ${problem}`);
+      continue;
+    }
     const entry = patchEntry(id);
     if (!entry) throw new Error(`Unknown player patch ${id}`);
     const problem = patchProblem(entry, value);
     if (problem) throw new Error(`${entry.label} (${id}): ${problem}`);
     writePatch(out, entry, value);
   }
+  writeExtensions(out, patches);
   return out;
 }
 
@@ -37,8 +45,9 @@ interface ReadPlayer {
 }
 
 /**
- * What a player of XFERPLAY 3.00's size differs from the CD's in, as patches (`explained` false
- * when other bytes changed too, such as renamed file extensions). Undefined for any other size.
+ * What a player of XFERPLAY 3.00's size differs from the CD's in, as patches, its renamed file
+ * extensions included (`explained` false when other bytes changed too, such as an About page of
+ * its own). Undefined for any other size.
  */
 export function readPlayerPatches(exe: Uint8Array): ReadPlayer | undefined {
   if (exe.length !== STOCK_PLAYER_SIZE) return undefined;
@@ -53,6 +62,9 @@ export function readPlayerPatches(exe: Uint8Array): ReadPlayer | undefined {
     } else if (!isStock(entry, v)) patches[entry.id] = v;
     writeStock(reverted, entry);
   }
+  const ext = readExtensions(exe);
+  Object.assign(patches, ext.patches);
+  writeStockExtensions(reverted, ext.read);
   const explained = md5Hex(reverted) === STOCK_PLAYER_MD5;
   return { patches, explained: explained && !unreadable.length, unreadable };
 }
