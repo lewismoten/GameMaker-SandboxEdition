@@ -111,12 +111,22 @@ export abstract class ComputerDrives {
 
   insertDisk(disk: Disk, files: GameFiles): void {
     this.inserted = { disk, files };
+    this.diskWatchers.forEach((f) => f());
   }
 
   eject(): Disk | undefined {
     const d = this.inserted?.disk;
     this.inserted = undefined;
+    if (d) this.diskWatchers.forEach((f) => f());
     return d;
+  }
+
+  private diskWatchers = new Set<() => void>();
+
+  /** Calls `fn` whenever a disk goes into drive A: or comes out; returns the call that stops it. */
+  watchDisk(fn: () => void): () => void {
+    this.diskWatchers.add(fn);
+    return () => this.diskWatchers.delete(fn);
   }
 
   insertCd(): void {

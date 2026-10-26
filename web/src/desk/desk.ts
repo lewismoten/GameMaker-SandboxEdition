@@ -542,7 +542,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   function eject(): void {
-    if (computer?.busy) {
+    // a utility like PLAYHACK carries on with the drive empty (retro/diskSwap.ts)
+    if (computer?.busy && !computer.diskSwappable) {
       toast('The drive light is on — quit the running program first.');
       return;
     }
@@ -564,6 +565,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const leaveProgram = () => leaveTheProgram(computer, { readOnlyA: !!inDrive?.writeProtected, say: toast });
 
   async function insertFromBox(d: Disk): Promise<void> {
+    // a utility like PLAYHACK keeps running and finds the new disk in A: (retro/diskSwap.ts)
+    if (computer?.diskSwappable) return insert(d);
     if (!(await leaveProgram())) return;
     await insert(d);
     if (d.gam) await onDisk(d, 'play');

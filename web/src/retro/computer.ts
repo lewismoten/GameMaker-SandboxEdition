@@ -5,6 +5,7 @@
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
 import { attr } from './text/textScreen';
 import { type ProgramRef } from './dos/vfs';
+import { swapsDisks } from './diskSwap';
 import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
 import { errorBox, askText } from './text/textUi';
@@ -241,6 +242,11 @@ export class Computer extends ComputerFolders {
   /** Closes the web-style designer on the monitor, if one is open. */
   private closeEditor?: () => void;
   designer?: OpenDesigner;
+
+  /** A disk can go in or out of drive A: without quitting what is running (retro/diskSwap.ts). */
+  get diskSwappable(): boolean {
+    return this.busy && !this.player && swapsDisks(this.program);
+  }
 
   /** Game-Maker (or one of its designers) is running. */
   get inGameMaker(): boolean {

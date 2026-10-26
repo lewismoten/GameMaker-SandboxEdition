@@ -49,6 +49,8 @@ export interface InsertedDisk {
 export interface RetroHost extends Ui {
   /** The disk in drive A:, if any. */
   disk(): InsertedDisk | undefined;
+  /** Calls `fn` whenever a disk goes into drive A: or comes out (a utility swapping disks); returns the call that stops it. */
+  watchDisk(fn: () => void): () => void;
   /**
    * The project behind the disk in drive A:, ready for editing. Formats blank disks
    * and offers to copy write-protected originals. Undefined if the user declined.
