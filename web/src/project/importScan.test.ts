@@ -92,6 +92,29 @@ describe('scanImport', () => {
     expect(r.games.map((g) => [g.name, g.gamCrcs.length, g.fileCount])).toEqual([['Alpha', 2, 4]]);
   });
 
+  it('finds each game of a folder whose games share their files, each with its own player, renamed extensions and all', async () => {
+    // an Acord Games player asks for .z0g in place of .gam (dosPlayer/renamedExtensions.ts)
+    const player = new Uint8Array(160_598);
+    player.set(enc.encode('.z0g'), 0x256b6);
+    const given = [
+      await zip('zapper.zip', [
+        ['NEVER.EXE', player],
+        ['NEVER.Z0G', gam('Neverwhere 1')],
+        ['NEVER1B.EXE', player],
+        ['NEVER1B.Z0G', gam('Neverwhere 1B')],
+        ['SHARED.Z0Q', enc.encode('map')],
+      ]),
+    ];
+    const r = await scanImport(given);
+    expect(r.games.map((g) => [g.name, g.gam, g.fileCount])).toEqual([
+      ['Neverwhere 1', 'never.gam', 4],
+      ['Neverwhere 1B', 'never1b.gam', 4],
+    ]);
+    const second = await new GameReader(given).read(r.games[1]);
+    expect([second.name, second.gam, second.players.map((p) => p.name)]).toEqual(['Neverwhere 1B', 'never1b.gam', ['NEVER1B.EXE']]);
+    expect(second.files.names()).toEqual(['never.z0g', 'never1b.z0g', 'shared.z0q']);
+  });
+
   it('finds nothing in zips with no .gam, damaged zips, or a Mac’s copies', async () => {
     const r = await scanImport([
       await zip('a.zip', [['readme.txt', enc.encode('x')]]),

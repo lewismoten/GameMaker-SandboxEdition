@@ -8,6 +8,7 @@
 import { GameFiles, IGNORED_FILE, normalize } from './files';
 import { crc32, isZip, listZip } from './zip';
 import { parseGame } from '../formats/game';
+import { renamedExtensions } from '../dosPlayer/renamedExtensions';
 
 /** A file to look at: picked, dropped or in a zip. Its path is from the top of what was given. */
 export interface ScanFile {
@@ -31,6 +32,8 @@ export interface FoundGame {
   inner: string[];
   /** Its files' paths, inside that zip or among the loose files. */
   paths: string[];
+  /** When a folder holds several games, each with its own player: the .gam this one plays (named as it is once renamed back), and its title. */
+  gam?: string;
 }
 
 export interface ScanReport {
@@ -66,10 +69,13 @@ interface Group {
   files: ScanFile[];
 }
 
-/** The games among these files (by their folders) and the files in none. Zips are left out. */
-export function groupGames(files: ScanFile[]): { games: Group[]; loose: ScanFile[] } {
+/**
+ * The games among these files (by their folders) and the files in none. Zips are left out.
+ * `played`: game files a player .EXE names with an extension of its own (playedBy).
+ */
+export function groupGames(files: ScanFile[], played: ReadonlySet<ScanFile> = new Set()): { games: Group[]; loose: ScanFile[] } {
   const kept = files.filter((f) => !isJunk(clean(f.path)) && !isZipName(f.path));
-  const dirs = [...new Set(kept.filter((f) => isGam(f.path)).map((f) => dirOf(clean(f.path))))].sort((a, b) => b.length - a.length);
+  const dirs = [...new Set(kept.filter((f) => isGam(f.path) || played.has(f)).map((f) => dirOf(clean(f.path))))].sort((a, b) => b.length - a.length);
   const games = new Map(dirs.map((d) => [d, [] as ScanFile[]]));
   const loose: ScanFile[] = [];
   for (const f of kept) {
@@ -83,6 +89,25 @@ export function groupGames(files: ScanFile[]): { games: Group[]; loose: ScanFile
     games: [...games].map(([dir, files]) => ({ dir, files })).sort((a, b) => a.dir.localeCompare(b.dir, undefined, { numeric: true, sensitivity: 'base' })),
     loose,
   };
+}
+
+/**
+ * Each player .EXE here and the game file beside it that it plays: the one named after it, with
+ * the .gam extension it asks for (Acord Games' players ask for .z0g; Virtual Mario's for none).
+ */
+export async function playedBy(files: ScanFile[]): Promise<Map<ScanFile, ScanFile>> {
+  const out = new Map<ScanFile, ScanFile>();
+  const kept = files.filter((f) => !isJunk(clean(f.path)));
+  for (const exe of kept.filter((f) => PLAYER_EXE(f.path, f.size))) {
+    const bytes = await exe.read().catch(() => undefined);
+    if (!bytes) continue;
+    const ext = renamedExtensions(bytes)['.gam'] ?? '.gam';
+    const path = clean(exe.path);
+    const want = normalize(`${baseOf(path).replace(/\.[^.]*$/, '')}${ext}`);
+    const gam = kept.find((f) => f !== exe && dirOf(clean(f.path)) === dirOf(path) && normalize(f.path) === want);
+    if (gam) out.set(exe, gam);
+  }
+  return out;
 }
 
 /** The title on a game's menu screen, from its main .gam (as Project.fromFiles names it). */
@@ -115,28 +140,49 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
 
   /** These files' games (and their zips', `depth` zips down); how many games that was. */
   const look = async (files: ScanFile[], zips: ScanFile[], inner: string[], depth: number): Promise<number> => {
-    const { games, loose } = groupGames(files);
+    const players = await playedBy(files);
+    const played = new Set(players.values());
+    const { games, loose } = groupGames(files, played);
     if (!zips.length) report.loose.push(...loose);
-    for (const g of games) {
-      const gams = g.files.filter((f) => isGam(f.path)).sort((a, b) => normalize(a.path).localeCompare(normalize(b.path)));
+    let found = 0;
+    const add = async (g: Group, gams: ScanFile[], files: ScanFile[], gam?: string) => {
       const crcs: number[] = [];
       let title = '';
       for (const [i, f] of gams.entries()) {
         const bytes = await f.read().catch(() => undefined);
         if (bytes) crcs.push(crc32(bytes));
-        if (i === 0) title = titleOf(bytes, normalize(f.path));
+        if (i === 0) title = titleOf(bytes, gam ?? normalize(f.path));
       }
       report.games.push({
         name: title,
         from: fromLabel(zips.length ? [zips[0].path, ...inner].map(clean) : [], g.dir),
         gamCrcs: crcs,
-        fileCount: g.files.length,
+        fileCount: files.length,
         zips: zips.slice(0, 1),
         inner,
-        paths: g.files.map((f) => f.path),
+        paths: files.map((f) => f.path),
+        gam,
       });
+      found++;
+    };
+    for (const g of games) {
+      // a folder of games sharing their files, each with its own player (Acord Games'): one game each
+      const own = [...players].filter(([exe, gam]) => g.files.includes(exe) && g.files.includes(gam));
+      if (new Set(own.map(([, gam]) => gam)).size >= 2) {
+        for (const [exe, gam] of own) {
+          const others = new Set(own.map(([e]) => e).filter((e) => e !== exe));
+          await add(
+            g,
+            [gam],
+            g.files.filter((f) => !others.has(f)),
+            normalize(`${baseOf(clean(gam.path)).replace(/\.[^.]*$/, '')}.gam`),
+          );
+        }
+        continue;
+      }
+      const gams = g.files.filter((f) => isGam(f.path) || played.has(f)).sort((a, b) => normalize(a.path).localeCompare(normalize(b.path)));
+      await add(g, gams, g.files);
     }
-    let found = games.length;
     for (const z of files.filter((f) => isZipName(f.path) && !isJunk(clean(f.path)))) {
       signal?.throwIfAborted();
       const top = depth === 0;
@@ -187,6 +233,9 @@ export interface ReadGame {
   files: GameFiles;
   /** Its player .EXEs (left out of the files): a hand-edited one becomes DOS player patches. */
   players: { name: string; bytes: Uint8Array }[];
+  /** Its title and the .gam it plays, when its folder holds others (FoundGame.gam); else the project names them. */
+  name?: string;
+  gam?: string;
 }
 
 /** Fills a game's files from these, as an import of the game's own files always has. */
@@ -220,7 +269,8 @@ export class GameReader {
 
   async read(game: FoundGame): Promise<ReadGame> {
     const from = game.zips.length ? await this.zipEntries(game) : this.loose;
-    return gameFromFiles(game.paths.map((p) => from.get(p)).filter((f): f is ScanFile => !!f));
+    const read = await gameFromFiles(game.paths.map((p) => from.get(p)).filter((f): f is ScanFile => !!f));
+    return game.gam ? { ...read, name: game.name, gam: game.gam } : read;
   }
 
   private async zipEntries(game: FoundGame): Promise<Map<string, ScanFile>> {
