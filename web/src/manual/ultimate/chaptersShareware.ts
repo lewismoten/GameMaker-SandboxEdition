@@ -18,7 +18,8 @@
 // F-keys from DoFunKy), the web player's own words in engine/game.ts and menus.ts, the desk's
 // transfer-disk .EXE a name with no bytes (computer/drives.ts, so hexedit/hexFiles.ts finds no
 // file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER). The DOS player panel
-// it points to is editor/editors/integrator/dosPlayer/ (rules in dosPlayer/), PLAYHACK retro/hacks/.
+// it points to is editor/editors/integrator/dosPlayer/ (rules in dosPlayer/; its Files tab's
+// extensions in dosPlayer/fileExtensions.ts), PLAYHACK retro/hacks/.
 import { opening, tip, type Chapter } from './chapter';
 import { PLAYER_EXE, PLAYER_WORDS } from './playerWords';
 import { ARCHIVE_TRICKS } from './archiveTricks';
@@ -144,6 +145,17 @@ export const SHAREWARE: Chapter = {
   player panel’s changes travel with the game instead. The desk’s <code>HEXEDIT</code> can’t do
   it either: the <code>.EXE</code> on a transfer disk is only a name there (the desk plays the
   game in this edition’s player), and it answers <i>File not found</i>.</p>
+  <p><b>Other extensions.</b> Acord Games went further: their player looked for
+  <code>.Z0G</code>, <code>.Z0N</code> and the like in place of <code>.GAM</code>, <code>.GIF</code>
+  and the rest, and their games’ files were renamed to match, so another copy of Game-Maker 3.0
+  couldn’t open them. The panel’s <b>Files</b> tab does the same for the DOS download only. The
+  kinds the player finds by their extension (the game file, pictures, backdrops, animations, text
+  pages, slide lists, recordings, voices, high scores and saves) are patched in its
+  <code>.EXE</code>; the kinds the <code>.gam</code> names (palettes, maps, blocks, monsters,
+  characters, sound sets and songs) are only renamed, with their names in the <code>.gam</code>,
+  slide lists and backdrops rewritten. Each new extension keeps three letters or digits, and no two
+  kinds share one. Your project, Play and the other downloads keep Game-Maker’s own names. It isn’t
+  real protection: this edition’s import reads the player and renames the files back.</p>
   <p>Here is where the words are in the CD’s <code>XFERPLAY.EXE</code>: ${PLAYER_EXE.bytes.toLocaleString('en-US')} bytes, SHA-256
   <code class="ug-hash">${PLAYER_EXE.sha256}</code>. Check both before you edit: the offsets belong to
   that file only. Lines marked with a <code>%</code> are formats (see above).</p>

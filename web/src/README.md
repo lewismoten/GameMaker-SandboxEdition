@@ -120,7 +120,8 @@ modules are in [`../test`](../test).
   (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips
   inside zips too) by their .gam files, and reading the picked ones again (`importScan.ts`), a
   folder's own hand-edited player read into DOS player patches, its renamed
-  extensions mapped back (`importPlayer.ts`), and the editor-only companion file (`companion.ts`,
+  extensions mapped back (`importPlayer.ts`; the names inside its files are rewritten by
+  `extensionNames.ts`, which the DOS export uses the other way), and the editor-only companion file (`companion.ts`,
   never exported).
   - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
     revealed or hidden).
@@ -137,8 +138,9 @@ modules are in [`../test`](../test).
   what it offers of XFERPLAY.EXE (words, colors, frames, positions, times, F-keys: the safe and
   caution entries of the patch map, with offsets and rules); `patchRules.ts` checks and writes
   each value; `applyPatches.ts` patches only the CD's player (MD5 `fcaf47d5…`) and reads a
-  hand-edited one back into patches; `renamedExtensions.ts` sees a player that asks for other
-  file extensions (Acord Games'); `md5.ts` (RFC 1321); `presets.ts` (Builder's blanked menu,
+  hand-edited one back into patches; `fileExtensions.ts` is the Files tab's renamed extensions
+  (every copy of each the player asks for, the kinds the .gam names, the rules, Acord Games'
+  set) and reads a player that asks for other ones; `md5.ts` (RFC 1321); `presets.ts` (Builder's blanked menu,
   Rōdïp's status words, Reset all); `playerRecord.ts` keeps the choices in the .gam's
   `dosPlayer` companion section (`projectPatches.ts` reads and writes a stored project's, for the
   desk, and `patchesChanged.ts` tells an editor that has the game open, so its autosave keeps
@@ -520,7 +522,7 @@ modules are in [`../test`](../test).
   `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
   changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
-  `playerFields.ts` makes each field), `playerPreview.ts`, which draws XFERPLAY's screens with the
+  `playerFields.ts` makes each field) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
   engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
   (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
@@ -693,7 +695,8 @@ calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.jso
 files, a manifest and a service worker), `exportSinglePage.ts` (`standalone.html` with the game
 embedded, built by `../scripts/singlePageBuild.ts`), `exportWebPlayer.ts` (the web player,
 `web-player.html`, with the game's folder and a `games.json`), `exportDos.ts` (the files plus the
-CD's `XFERPLAY.EXE`, renamed after the game), and the Mac, Windows and Linux downloads
+CD's `XFERPLAY.EXE`, renamed after the game, and the files renamed to any extensions the DOS
+player panel's Files tab gives them), and the Mac, Windows and Linux downloads
 (`macApp.ts`, `winApp.ts`, `linuxApp.ts`), which put the single page into the players in
 `../public/mac`, `win` and `linux`, with `THIRD-PARTY-NOTICES.txt` (`notices.ts`).
 `export/downloadable.ts` says which catalog games may be downloaded, for the button and for
