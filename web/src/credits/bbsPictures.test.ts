@@ -13,7 +13,7 @@ describe('credits: pictures on the BBS', () => {
     for (const f of PICTURES) {
       const c = PICTURE_CREDITS[f.name];
       expect(c.alt.length, f.name).toBeGreaterThan(20);
-      expect(c.credit, f.name).toMatch(/^(Photo: (Lewis Moten|Nicky Foster)|Logo made with DeepAI)/);
+      expect(c.credit, f.name).toMatch(/^(Photo: (Lewis Moten|Nicky Foster|Todd Jones)|Logo made with DeepAI)/);
       expect(existsSync(join(pub, thumbOf(f.name))), f.name).toBe(true);
     }
   });
@@ -24,5 +24,10 @@ describe('credits: pictures on the BBS', () => {
       .map(([n]) => n);
     expect(fosters.sort()).toEqual(['CHEZTED.GIF', 'THECHEZ2.GIF']);
     expect(PICTURES.find((f) => f.name === 'CHEZTED.GIF')!.desc).toContain('Nicky Foster');
+  });
+
+  it('names Todd Jones for the shot of Lewis beside George Washington', () => {
+    expect(PICTURE_CREDITS['COLONIAL.GIF'].credit).toContain('Todd Jones');
+    expect(PICTURES.find((f) => f.name === 'COLONIAL.GIF')!.desc).toContain('Todd Jones');
   });
 });

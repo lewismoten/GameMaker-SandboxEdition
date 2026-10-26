@@ -47,7 +47,7 @@ export function bbsPicturesSection(): HTMLElement {
     h(
       'p',
       null,
-      'The photos are Lewis’s own, except CHEZTED.GIF and THECHEZ2.GIF, one shot of Lewis holding Teddy in front of THE\u00a0CHEZ, which Nicky Foster of the Front Royal-Warren County Chamber of Commerce took as a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop. The Bard of Bizarre’s logo was made with DeepAI. Interlaced GIFs arrive in coarse bands that fill in pass by pass; a progressive JPEG sharpens scan by scan; the others draw top to bottom.',
+      'The photos are Lewis’s own, except CHEZTED.GIF and THECHEZ2.GIF, one shot of Lewis holding Teddy in front of THE\u00a0CHEZ, which Nicky Foster of the Front Royal-Warren County Chamber of Commerce took as a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop, and COLONIAL.GIF, Lewis in colonial dress beside George Washington, which Todd Jones, Director of Technology for the County of Warren, took at a Warren County VA250 event, a flag retirement ceremony. The Bard of Bizarre’s logo was made with DeepAI. Interlaced GIFs arrive in coarse bands that fill in pass by pass; a progressive JPEG sharpens scan by scan; the others draw top to bottom.',
     ),
     sheet.controls,
     h(

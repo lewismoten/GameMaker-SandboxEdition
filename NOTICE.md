@@ -171,11 +171,13 @@ game folder opens in the browser unchanged.
   Lewis.
 - **The BBS pictures** (`web/public/bbs`, downloadable from the Sandbox BBS's GIF Gallery and
   The Sofa's GIF area): the photos are Lewis's own (Teddy, Gwinn, the gazebo, the hobo clown
-  and Doc Leo, colonial dress, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
+  and Doc Leo, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
   **THECHEZ2.GIF**, one shot of Lewis holding Teddy in front of THE CHEZ, which was taken by
   **Nicky Foster** of the Front Royal-Warren County Chamber of Commerce as a promotional photo
-  of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop. The Bard logo (BARDLOGO.GIF) was made with
-  DeepAI.
+  of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop, and
+  **COLONIAL.GIF**, Lewis in colonial dress beside George Washington, which was taken by
+  **Todd Jones**, Director of Technology, County of Warren, at a Warren County VA250 event, a
+  flag retirement ceremony. The Bard logo (BARDLOGO.GIF) was made with DeepAI.
 - **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
   (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
   Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from

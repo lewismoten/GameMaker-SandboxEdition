@@ -104,7 +104,7 @@ export function peopleSection(): HTMLElement {
             h(
               'li',
               null,
-              'The photos on the BBSes are his, except one shot of him holding Teddy in front of THE\u00a0CHEZ, taken by Nicky Foster (see Pictures on the BBS, below).',
+              'The photos on the BBSes are his, except one shot of him holding Teddy in front of THE\u00a0CHEZ, taken by Nicky Foster, and one of him beside George Washington, taken by Todd Jones (see Pictures on the BBS, below).',
             ),
             h('li', null, 'The Sandbox BBS is named after the board he ran in Pittsburgh in the 1990s.'),
           ),

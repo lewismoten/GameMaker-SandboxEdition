@@ -1,10 +1,12 @@
 // Who made each picture the BBSes offer for download (retro/bbs/gallery.ts: the Sandbox BBS's GIF
 // Gallery and The Sofa's GIF area), with alt text, for the Credits page's "Pictures on the BBS".
-// The photos are Lewis's own, except one shot taken by Nicky Foster (NOTICE.md).
+// The photos are Lewis's own, except one shot taken by Nicky Foster and one by Todd Jones (NOTICE.md).
 
 /** Nicky Foster's shot of Lewis holding Teddy in front of THE CHEZ, in two sizes. */
 const NICKY =
   'Photo: Nicky Foster, Front Royal-Warren County Chamber of Commerce: a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop';
+/** Todd Jones's shot of Lewis in colonial dress beside George Washington. */
+const TODD = 'Photo: Todd Jones, Director of Technology, County of Warren, at a Warren County VA250 event, a flag retirement ceremony';
 const LEWIS = 'Photo: Lewis Moten';
 
 interface PictureCredit {
@@ -33,7 +35,7 @@ export const PICTURE_CREDITS: Record<string, PictureCredit> = {
     alt: 'A gray selfie of the hobo clown in a fedora, a rubber chicken poking up at the right, clown pictures on the wall behind',
     credit: LEWIS,
   },
-  'COLONIAL.GIF': { alt: 'Lewis in colonial dress and a tricorn hat beside a man dressed as George Washington, outdoors', credit: LEWIS },
+  'COLONIAL.GIF': { alt: 'Lewis in colonial dress and a tricorn hat beside a man dressed as George Washington, outdoors', credit: TODD },
   'DOGHOUSE.JPG': { alt: library, credit: LEWIS },
   'LIBRARY.GIF': { alt: `${library}, in 16 colors`, credit: LEWIS },
   'CHEZ.JPG': { alt: chezPlug, credit: LEWIS },
