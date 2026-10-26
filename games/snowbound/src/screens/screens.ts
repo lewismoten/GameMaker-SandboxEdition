@@ -488,14 +488,18 @@ export function buildScreens(
   }
 
   // ---------------- level cards (in each level's own palette)
-  for (const card of extras.cards) {
+  extras.cards.forEach((card, i) => {
     const p = new Pixels(W, H, card.pal.c('ink', 0));
     p.blit(card.map, 0, 0);
     p.rect(0, 118, W, 2, card.pal.c('gold', 3));
     outlined(p, 12, 128, card.title, card.pal.c('snow', 6), card.pal.c('ink', 1), 2);
     text(p, 12, 148, card.time, card.pal.c('gold', 3));
+    // where the level falls, small at the right under the gold rule
+    const of = extras.cards.length;
+    const count = i === of - 1 ? `FINAL LEVEL: ${i + 1} OF ${of}` : `LEVEL ${i + 1} OF ${of}`;
+    micro(p, 308 - microWidth(count), 122, count, card.pal.c('gold', 3));
     card.lines.forEach((l, i) => text(p, 12, 162 + i * 10, l, card.pal.c('snow', 5)));
     files[`${card.name}.gif`] = gif(p, card.pal.pal);
-  }
+  });
   return files;
 }
