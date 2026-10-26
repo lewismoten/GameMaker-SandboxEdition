@@ -28,6 +28,10 @@ const LEGEND: Record<string, string> = {
   Q: 'slopeBill',
   q: 'slopeCocoa',
   X: 'finish',
+  s: 'walk',
+  '=': 'roadA',
+  '-': 'roadB',
+  L: 'lamp',
   '>': 'driftR',
   '<': 'driftL',
 };
@@ -243,7 +247,8 @@ const BIRCHES = [
   '~~~~~~~~~~~~~~~~~~~~~~',
 ];
 // The bottom: lower Jamie Street, its lamps along the tree lines, firs strung with lights, and
-// the checkered finish at the corner of Bowden Drive (rows 200-238).
+// a last steep drop, and the checkered finish where the run comes out on Bowden Drive, its
+// lamps lit below (rows 200-296).
 const LIGHTS = [
   '~~~~~~~~~~~~~~~~~~~~~~', // 200
   '~~e~~r~~e~~r~~e~~r~~e~',
@@ -280,18 +285,77 @@ const LIGHTS = [
   '~~~~~~~~~~~~~~~~~~~~~~',
   '~~~~~~~~~~~~~~~~~~~~~~',
   '~~~~~~~~~~~~~~~~~~~~~~',
-  'TXXXXXXXXXXXXXXXXXXXXT', // 235: the finish
-  ',,,,,,,,,,,,,,,,,,,,,,',
-  ',,,,,,,,,,,,,,,,,,,,,,',
-  ',,,,,,,,,,,,,,,,,,,,,,',
+  '~~~~~~~~~~~~~~~~~~~~~~', // 235
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~Z~~~~~~Q~~~~~~Z~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~Z~~~~Z~~~~~~~',
+  '~~~Q~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~Q~~~',
+  '~~~~~~Z~~~~~~~~Z~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~o~~o~~o~~o~~o~~o~~o~~',
+  '~~o~~o~~o~~Q~~o~~o~~o~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~R~~~~~~~~~R~~~~~',
+  '~~~~~~~~~~~q~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~R~~~~~~~~~~~~~~~R~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~Z~~~~~~~~~~',
+  '~~~~~~~~~~ZZZ~~~~~~~~~',
+  '~~~~~Q~~~ZZZZZ~~~Q~~~~',
+  '~~~~~~~~~~ZZZ~~~~~~~~~',
+  '~~~~~~~~~~~Z~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~r~~~~e~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~r~~~~e~~~~',
+  '~~~~~~~~~~~~~~Q~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '>~~~~~~~~~~~~~~~~~~~~<',
+  '>>~~~~~~~~~~~~~~~~~~<<',
+  '>>>~~~~~~~Q~~~~~~~~<<<',
+  '>>>>~~~~~~~~~~~~~~<<<<',
+  'ZZ>>~~~~~~~~~~~~~~<<ZZ',
+  'ZZZ>!!!!!!!!!!!!!!<ZZZ', // the last steep drop, between the lit firs
+  'ZZZZ!!!!!!!!!!!!!!ZZZZ',
+  'ZZZZ!!!!!!!!!!!!!!ZZZZ',
+  'ZZZ!!!!!!!!!!!!!!!!ZZZ',
+  'ZZ~~~~~~~~~~~~~~~~~~ZZ',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~Q~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~o~~o~~o~~o~~o~~o~~o~~',
+  '~~o~~o~~o~~o~~o~~o~~o~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~r~~~~e~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  '~~~~~~~~~~~~~~~~~~~~~~',
+  'TXXXXXXXXXXXXXXXXXXXXT', // 292: the finish
+  // Bowden Drive below it: the sidewalk under its street lamps, the road, the far sidewalk
+  'sssLssssssLssssssLssss',
+  '======================',
+  '----------------------',
+  'ssssssssssssssssssssss',
 ];
 /** Every row of the run, from the top (row 0, the tree line above the start). */
 export const COURSE = ['T'.repeat(WIDTH - 2), ...TOP, ...FIRS, ...BIRCHES, ...LIGHTS, 'T'.repeat(WIDTH - 2)];
 export const FINISH = COURSE.findIndex((r) => r.includes('X'));
 /** Rows from which the run is lower Jamie Street, with lamps along both tree lines. */
 const LAMPS_FROM = 200;
-/** Rows between distance boards: the first (9) at row 24, the last (1) at row 216. */
-const BOARD_EVERY = 24;
+/** Rows between distance boards, spread down the whole run: 9 at the top, 1 a stretch before the finish. */
+const BOARD_EVERY = Math.floor(FINISH / (BOARDS + 1));
 
 /** The block at row u, across i (0 and WIDTH - 1 the tree lines). */
 function name(u: number, i: number): string {
