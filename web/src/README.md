@@ -311,7 +311,9 @@ modules are in [`../test`](../test).
   browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
   Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
   (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
-  played in the walkthrough player.
+  played in the walkthrough player. Videos about the site (`videos.ts`, plain data: one entry a
+  video) show their length over a picture kept in `public/videos/`, and open in `videoDialog.ts`:
+  nothing comes from YouTube until Play, which embeds youtube-nocookie.com; closing removes the player.
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
   keyboard reference, registration, business and ID, and license and warranty cards and hint
   book postcards; the games, never a secret one, and the two

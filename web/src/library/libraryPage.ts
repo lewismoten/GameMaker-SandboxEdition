@@ -3,7 +3,8 @@
 // within a kind, to one game (&game=teddy), all
 // remembered per browser (prefs.ts). A card opens its piece
 // in the viewer that already shows it: its game's box (manual/gameManual.ts), the Game-Maker
-// box (manual/dosManual.ts), TURBO BUTTON, the Guide, or the desk's zine (manual/zine).
+// box (manual/dosManual.ts), TURBO BUTTON, the Guide, the desk's zine (manual/zine), a game's
+// walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play).
 import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
@@ -57,6 +58,9 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
         watchWalkthrough(entry, () => loadHostedGame(entry)),
         '.wt-screen',
       );
+    } else if (o.via === 'video') {
+      const { openVideo } = await import('./videoDialog');
+      await whenShown(openVideo(o.id, item.title, item.picture), '.lib-video');
     } else {
       const { openZine } = await import('../manual/zine/zineItem');
       await whenShown(openZine());
@@ -85,7 +89,10 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   const frame = h(
     'span',
     { class: `lib-thumb lib-t-${item.type}`, 'aria-hidden': 'true' },
-    bookCover(item, entry) ?? h('span', { class: 'lib-icon' }, item.icon),
+    bookCover(item, entry) ??
+      (item.picture
+        ? h('img', { class: 'lib-picture', src: item.picture, alt: '', loading: 'lazy', decoding: 'async' })
+        : h('span', { class: 'lib-icon' }, item.icon)),
   );
   const make = shelf.thumbs.get(item.key);
   if (make) lazyThumb(frame, item.key, make);
@@ -106,6 +113,8 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       // the same in several boxes: listed once, opened from the first
       item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
       item.issue ? h('small', { class: 'lib-boxes' }, item.issue.line) : null,
+      // a video plays from YouTube: not in the offline copy
+      item.open.via === 'video' ? h('small', { class: 'lib-boxes' }, 'Needs the internet') : null,
       // the badge over the picture shows the length; this says it to a screen reader
       length ? h('span', { class: 'sr-only' }, `Length ${length}`) : null,
     ),
@@ -222,7 +231,7 @@ export function renderLibrary(el: HTMLElement): void {
       h(
         'p',
         { class: 'lead' },
-        'Every manual, map, newsletter, sticker sheet and card that comes in the boxes, with TURBO BUTTON magazine, the Guide and each game’s walkthrough. Open one to read it on screen, print it or watch it.',
+        'Every manual, map, newsletter, sticker sheet and card that comes in the boxes, with TURBO BUTTON magazine, the Guide, each game’s walkthrough and videos touring the site. Open one to read it on screen, print it or watch it.',
       ),
       h(
         'div',
