@@ -87,6 +87,8 @@ export const LEWIS: MagSection = {
           ),
           q('What happened when the box came?'),
           a(L, 'I went from moving snow to making software. I built tile-based adventure games and learned how game logic works.'),
+          q('What did your games open on?'),
+          a(L, 'My copy wouldn’t start a game without its title card, RSD’s “Game-Maker Presents:” picture, so everyone drew their own card in its place.'),
           q('What part of the program stayed with you?'),
           a(L, 'The sound editor, most of all. You drew a sound’s wave with the mouse, and a few bytes became an 8-bit sound effect.'),
         ]),
