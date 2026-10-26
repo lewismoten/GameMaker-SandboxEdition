@@ -20,7 +20,7 @@
 // file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER). The DOS player panel
 // it points to is editor/editors/integrator/dosPlayer/ (rules in dosPlayer/), PLAYHACK retro/hacks/.
 import { opening, tip, type Chapter } from './chapter';
-import { PLAYER_WORDS } from './playerWords';
+import { PLAYER_EXE, PLAYER_WORDS } from './playerWords';
 import { ARCHIVE_TRICKS } from './archiveTricks';
 
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -124,11 +124,17 @@ export const SHAREWARE: Chapter = {
     <li><b>Back up first.</b> Edit a copy, never the only one.</li>
     <li><b>Same length only.</b> Type over the letters, and pad a shorter word with spaces. Never
     insert or delete a byte: everything after it would move.</li>
-    <li><b>Keep the 0 after each word,</b> and leave alone anything with a <code>%</code> in it
-    (<code>%d</code>, <code>%s</code>, <code>%ld</code>): those are filled in as the game runs, and a
-    changed one can crash it.</li>
-    <li><b>Letters and spaces only.</b> Plain letters, digits, punctuation and spaces are safe; no
-    accents or line drawing.</li>
+    <li><b>Preserve the terminating zero byte</b> (00 in the hex editor) after each word: it marks
+    where the word ends.</li>
+    <li><b>Keep every <code>%</code> placeholder exactly.</b> The F2 status lines are formats such as
+    <code>Hitpoints: %d</code>: the player fills in the number where the <code>%d</code> is. Change
+    only the words before the placeholder, and keep the placeholder (<code>%d</code>,
+    <code>%ld</code>, <code>%02ld</code>) byte for byte, in the same place, with the line the same
+    length. That is how <i>Rōdïp</i> made <code>Hitpoints: %d</code> into
+    <code>Energy:    %d</code>. A changed placeholder reads the wrong value and can crash the
+    player.</li>
+    <li><b>Plain ASCII text only.</b> Letters, digits, punctuation and spaces are safe; no accents or
+    line drawing, which the player can’t draw.</li>
     <li><b>Leave the credits alone.</b> The F10 box’s version line and RSD’s lines stay as they
     are, out of respect, and because Game-Maker’s license notice should travel with the player.</li>
     <li><b>Test in DOSBox</b> after every change: the menu, F1, F5, F6, a drop and a high score.</li>
@@ -138,9 +144,11 @@ export const SHAREWARE: Chapter = {
   player panel’s changes travel with the game instead. The desk’s <code>HEXEDIT</code> can’t do
   it either: the <code>.EXE</code> on a transfer disk is only a name there (the desk plays the
   game in this edition’s player), and it answers <i>File not found</i>.</p>
-  <p>Here is where the words are in the CD’s <code>XFERPLAY.EXE</code> (160,598 bytes):</p>
+  <p>Here is where the words are in the CD’s <code>XFERPLAY.EXE</code>: ${PLAYER_EXE.bytes.toLocaleString('en-US')} bytes, SHA-256
+  <code class="ug-hash">${PLAYER_EXE.sha256}</code>. Check both before you edit: the offsets belong to
+  that file only. Lines marked with a <code>%</code> are formats (see above).</p>
   <table class="ug-words">
-    <tr><th>Offset</th><th>Bytes</th><th>Text</th><th>Shown</th></tr>
+    <tr><th>Offset</th><th>Bytes (without the 00)</th><th>Text</th><th>Shown</th></tr>
     ${PLAYER_WORDS.map((w) => `<tr><td><code>${w.offset.toString(16).toUpperCase()}</code></td><td>${w.length}</td><td><code>${esc(w.text)}</code></td><td>${w.where}</td></tr>`).join('\n    ')}
   </table>
   <p>Offsets are in hex, counted from the first byte of the file. The F9 joystick screens’ lines

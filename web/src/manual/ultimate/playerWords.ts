@@ -10,7 +10,12 @@ interface PlayerWord {
   length: number;
   text: string;
   where: string;
+  /** A printf format: only the words before its % code may change; the code stays exactly. */
+  format?: boolean;
 }
+
+/** The CD's XFERPLAY.EXE these offsets belong to: its size and SHA-256. */
+export const PLAYER_EXE = { bytes: 160_598, sha256: '404be3612012488e5e8ed5ce1dc2e183cf4b53bd4a6cc9b4d8a1d14e980bca5c' };
 
 export const PLAYER_WORDS: PlayerWord[] = [
   { offset: 0x25700, length: 30, text: 'No game-specific instructions.', where: 'Read Instructions, when the game has none' },
@@ -29,6 +34,11 @@ export const PLAYER_WORDS: PlayerWord[] = [
   { offset: 0x2586e, length: 24, text: 'I cannot save your game!', where: 'F5, when the file can’t be written' },
   { offset: 0x25887, length: 11, text: 'Game Saved!', where: 'F5' },
   { offset: 0x25b1c, length: 31, text: 'No game-specific help included.', where: 'F1, when the game has no help' },
+  { offset: 0x25b3c, length: 14, text: 'Score:     %ld', where: 'F2 status', format: true },
+  { offset: 0x25b4b, length: 13, text: 'Money:     %d', where: 'F2 status', format: true },
+  { offset: 0x25b59, length: 13, text: 'Hitpoints: %d', where: 'F2 status', format: true },
+  { offset: 0x25b67, length: 13, text: 'Lives:     %d', where: 'F2 status', format: true },
+  { offset: 0x25b75, length: 37, text: 'Elapsed Time: %02ld:%02ld:%02ld.%02ld', where: 'F2 status', format: true },
   { offset: 0x25bd8, length: 7, text: 'MORE...', where: 'A text page longer than the screen' },
   { offset: 0x25d7f, length: 21, text: 'Choose object to drop', where: 'Dropping something carried' },
   { offset: 0x25d95, length: 25, text: 'Use arrow keys to select,', where: 'Dropping' },
