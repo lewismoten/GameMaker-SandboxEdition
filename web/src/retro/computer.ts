@@ -307,7 +307,7 @@ export class Computer extends ComputerFolders {
     return true;
   }
 
-  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string): Promise<void> {
+  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
     this.setMode('game');
@@ -326,6 +326,7 @@ export class Computer extends ComputerFolders {
               noKeysButton: true,
               exactPixels: true, // the monitor's size is never a whole multiple of 320x200
               speed: this.opts.speed,
+              gmHelp,
               // the game port: the desk's game pad (when the desk has one) and any real gamepad
               joystick: deskJoystick,
               // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)

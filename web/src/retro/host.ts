@@ -64,8 +64,11 @@ export interface RetroHost extends Ui {
   leavePictureMode(): void;
   /** Shows a graphic editor on the monitor; resolves when the user leaves it. */
   openEditor(project: Project, file: string, program: string): Promise<void>;
-  /** Plays a game on the monitor; resolves when the player quits. */
-  playGame(files: GameFiles, gam: string, title: string, notice?: string): Promise<void>;
+  /**
+   * Plays a game on the monitor; resolves when the player quits. It plays as the stand-alone
+   * XFERPLAY.EXE unless `gmHelp` is given: then as PLAYGAME.EXE, whose F1 shows it first.
+   */
+  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array): Promise<void>;
   /** Leaves the 90s desk for today's web editor. */
   openModern(projectId: string, file?: string): void;
   /** A file from the installed C:\GM (help screens). */
