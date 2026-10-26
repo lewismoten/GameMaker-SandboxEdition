@@ -348,7 +348,7 @@ export class Computer extends ComputerFolders {
               onQuit: () => false, // back to DOS
               onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
               saveId,
-              ...playAchievements(saveId),
+              ...playAchievements(saveId, this.opts.view ?? 'desk'),
               onExit: () => {
                 this.player = undefined;
                 if (this.restarting) {

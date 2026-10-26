@@ -1,6 +1,6 @@
 // Where an achievement is earned, for its details on #/achievements: a page or a game, only where
 // the code that unlocks it says so (cast/castPage.ts, library/libraryPage.ts, the help pages,
-// manual/magazine/viewer.ts, GAME_SPOTS in index.ts, the desk and its room). The rest happen in
+// manual/magazine/viewer.ts, GAME_SPOTS in index.ts, the desk and its room, the DOS page). The rest happen in
 // too many places to point at one. A hidden one that is not yet unlocked never says where.
 import type { Achievement } from './catalog';
 
@@ -13,6 +13,7 @@ const DESK: Place = { label: 'The 1994 desk', href: '#/desk' };
 const CAST: Place = { label: 'The cast', href: '#/cast' };
 const LIBRARY: Place = { label: 'The Library', href: '#/library' };
 const MAGAZINE: Place = { label: 'TURBO BUTTON magazine', href: '#/magazine' };
+const DOS: Place = { label: 'DOS Game-Maker', href: './dos.html' };
 
 const BY_ID: Record<string, Place[]> = {
   'cast-visit': [CAST],
@@ -30,6 +31,8 @@ const BY_ID: Record<string, Place[]> = {
   'blaster-big-name': [{ label: 'Virus Blaster', href: '#/game/cd:blaster' }],
   'brief-chapters': [{ label: 'KEEP IT BRIEF!', href: '#/game/cd:brief' }],
   'make-save': [DESK],
+  'finish-desk': [DESK],
+  'finish-dos': [DOS],
   'trophy-first': [DESK],
   'trophy-top': [DESK],
 };

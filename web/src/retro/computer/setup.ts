@@ -29,6 +29,8 @@ export interface ComputerOptions {
   onGame?: (game?: { files: GameFiles; gam: string; title: string }) => void;
   /** A program starts (Game-Maker, a game, the terminal…, and the drive it started on) or ends (undefined). */
   onProgram?: (program?: { kind: string; drive: string }) => void;
+  /** Which page the PC is on, for the achievements for finishing a game in each (the desk's by default). */
+  view?: 'desk' | 'dos';
   /** Boots in a quarter of the time (the same BIOS and DOS lines), for a page that goes straight on to a program. */
   quickBoot?: boolean;
   /** Leaves for today's web editor with a project open (by default, the site's #/p/<project>/<file>). */

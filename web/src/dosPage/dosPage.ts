@@ -105,6 +105,7 @@ function makePc(): Computer {
   return new Computer(crt, {
     speed,
     quickBoot: true,
+    view: 'dos',
     onDisksChanged: (insert) => void disks.refresh(insert),
     // drive A:'s light, on the Disks button
     onDriveAccess: (drive) => drive === 'A' && disks.light(),

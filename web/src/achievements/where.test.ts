@@ -24,7 +24,7 @@ describe('placesOf', () => {
   it('links only to pages of the site and to games on the shelf', () => {
     for (const a of ACHIEVEMENTS)
       for (const p of placesOf(a, true)) {
-        expect(p.href, a.id).toMatch(/^#\/(desk|cast|library|magazine|mac|windows|linux|game\/cd:[a-z0-9]+)$/);
+        expect(p.href, a.id).toMatch(/^(#\/(desk|cast|library|magazine|mac|windows|linux|game\/cd:[a-z0-9]+)|\.\/dos\.html)$/);
         const game = /^#\/game\/cd:(.+)$/.exec(p.href)?.[1];
         if (game) expect((JSON.parse(readFileSync(join(games, game, 'about.json'), 'utf8')) as { secret?: boolean }).secret, a.id).not.toBe(true);
       }
