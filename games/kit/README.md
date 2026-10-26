@@ -127,7 +127,9 @@ Checking the games:
   each bot's path search adds the cost (`keepTo`, or year2000's `paths` option). Side-view games and rooms floored
   wall to wall have none.
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
-  have the text on plain paper with enough contrast. Run it with
+  have the text on plain paper with enough contrast. `textfitCheck.ts` also fails any character 128-255 in the
+  words the player draws in play (text pages, the menu's name, a shipped .his), which DOS draws as scribbles
+  (the Level check's `dos-chars`). Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
 - `textBounds.ts` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
   `text`) report each string's ink, and a build run with `TEXT_BOUNDS=<file>` writes every string that runs past its
