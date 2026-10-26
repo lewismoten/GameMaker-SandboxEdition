@@ -37,6 +37,12 @@ function reach(c: Creature): number {
 /** A solid-sided creature on a sideways path (a ferry slab). */
 const slides = (c: Creature) => reach(c) > 0 && ((c.block?.solid ?? 0) & (SOLLEF | SOLRIG)) !== 0;
 
+/** How far a creature's normal path rises (max -dy): a lift slab's climb. */
+function rise(c: Creature): number {
+  if (c.move.kind !== 'path') return 0;
+  return Math.max(0, ...c.move.corners.map((k) => -k[1]));
+}
+
 export function populate(
   g: Grid,
   bbl: Block[],
@@ -56,6 +62,15 @@ export function populate(
   const clearShift = (x: number, y: number, run: number) =>
     [0, -1, 1, -2, 2, -3, 3].find((d) => {
       for (let k = -1; k <= run + 1; k++) if (wall(x + d + k, y) || wall(x + d + k, y - 1)) return false;
+      return true;
+    });
+  const anySolid = (x: number, y: number) => bbl[g.get(x, y)].solid !== 0;
+  /** The nearest shift (up to 3 blocks) at which a slab bobbing `up` blocks over (x, y) has an
+   * open column: two blocks of head room for a rider over its top, its whole climb, and an empty
+   * block under its lowest point (so it never rests on a floor a courier could be under). */
+  const clearColumn = (x: number, y: number, up: number) =>
+    [0, -1, 1, -2, 2, -3, 3].find((d) => {
+      for (let k = y - up - 2; k <= y + 1; k++) if (anySolid(x + d, k)) return false;
       return true;
     });
   // clear of every place the hero comes in: out of a chaser's reach (PLAYGAME's 8 blocks
@@ -170,9 +185,11 @@ export function populate(
       } else if (place === 'platform') {
         const s = spots.liquid[Math.floor(r() * spots.liquid.length)] ?? spots.caveAir[Math.floor(r() * spots.caveAir.length)];
         if (s) {
-          // a slab that glides sideways turns a block clear of walls: PLAYGAME's side push puts
-          // a courier beside it with no wall check, so at a wall it would shove him inside
-          const x = s.x - 2 + (slides(c) ? (clearShift(s.x - 2, s.y - 2, reach(c)) ?? NaN) : 0);
+          // a slab that glides sideways turns a block clear of walls, and one that bobs climbs a
+          // clear column: PLAYGAME's push puts a courier beside, over or under it with no wall
+          // check, so at a wall, ceiling or floor it would shove him inside
+          const shift = slides(c) ? clearShift(s.x - 2, s.y - 2, reach(c)) : rise(c) ? clearColumn(s.x - 2, s.y - 2, rise(c)) : 0;
+          const x = s.x - 2 + (shift ?? NaN);
           if (!Number.isNaN(x)) ok = put(mon, x, s.y - 2);
         }
       }
