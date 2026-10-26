@@ -282,3 +282,13 @@ dialog.modal label.dp-check {
 dialog.modal .dp-preview [hidden] {
   display: none;
 }
+
+/* Files tab (fileFields.ts): a short extension box with its note beside it */
+.dp-row > .dp-text.dp-ext-input {
+  flex: 0 0 auto;
+  width: 6ch;
+}
+
+.dp-ext .dp-note {
+  flex: 1 1 20ch;
+}

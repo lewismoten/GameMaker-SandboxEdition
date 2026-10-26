@@ -26,6 +26,7 @@ describe('the DOS player dialog by screen', () => {
   it('has a tab for each screen once', () => {
     const screens = SCREEN_TABS.map((t) => t.screen);
     expect(new Set(screens).size).toBe(screens.length);
-    expect(new Set(PATCHES.map((e) => e.screen))).toEqual(new Set(screens));
+    expect(new Set(PATCHES.map((e) => e.screen))).toEqual(new Set(screens.filter((s) => s !== 'files')));
+    expect(screenSections('files')).toEqual([]);
   });
 });

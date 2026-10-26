@@ -17,12 +17,14 @@ import { playerLook } from '../../../../engine/playerLook';
 import { drawPreview, type PreviewScreen } from './playerPreview';
 import { fieldMaker } from './playerFields';
 import { screenFields } from './screenFields';
-import { SCREEN_TABS } from './screenTabs';
+import { SCREEN_TABS, type PanelTab } from './screenTabs';
+import { fileFields } from './fileFields';
+import { withoutExtensions } from '../../../../dosPlayer/fileExtensions';
 import { itemFor, screenItems, type DragItem } from './dragItems';
 import { dragStage } from './dragStage';
 
 const PREVIEWS: PreviewScreen[] = ['menu', 'hiscores', 'newHiscore', 'status', 'load', 'save', 'drop', 'help', 'text', 'missing', 'about'];
-const isPreview = (s: PatchScreen): s is PreviewScreen => (PREVIEWS as string[]).includes(s);
+const isPreview = (s: PanelTab): s is PreviewScreen => (PREVIEWS as string[]).includes(s);
 
 let uid = 0;
 
@@ -36,7 +38,7 @@ function playerPanel(project: Project): HTMLElement {
   const game = project.game();
   const gameName = project.gam.replace(/\.[^.]*$/, '').toLowerCase();
   const locked = !!project.readOnly;
-  let tab: PatchScreen = 'menu';
+  let tab: PanelTab = 'menu';
   let shown: PreviewScreen = 'menu';
   /** The patch whose field has the focus: the menu preview shows a "No game-specific" line only for those. */
   let focused = '';
@@ -82,8 +84,11 @@ function playerPanel(project: Project): HTMLElement {
     items = screenItems(shown, look, drawn);
     stage.refresh();
     heading.textContent = `${SCREEN_NAMES[shown]}, as the DOS player draws it`;
-    const n = Object.keys(patches).length;
-    count.textContent = n ? `${n} change${n === 1 ? '' : 's'}: the DOS export, Play and the web-page export show them.` : 'The player as it came on the CD.';
+    const n = Object.keys(withoutExtensions(patches)).length;
+    const files = Object.keys(patches).length - n;
+    count.textContent =
+      (n ? `${n} change${n === 1 ? '' : 's'}: the DOS export, Play and the web-page export show them.` : 'The player as it came on the CD.') +
+      (files ? ` ${files} renamed extension${files === 1 ? '' : 's'}, for the DOS download only.` : '');
   }
   const show = (s: PreviewScreen) => {
     shown = s;
@@ -124,7 +129,7 @@ function playerPanel(project: Project): HTMLElement {
   const tabs = h('div', { class: 'dp-tabs', role: 'tablist', 'aria-label': 'Screens' });
   // look-only, every field is disabled: the panel itself takes the keyboard so it can be scrolled
   const body = h('div', { class: 'dp-body', role: 'tabpanel', id: `${id}-body`, tabindex: locked ? '0' : '-1' });
-  const choose = (s: PatchScreen, focus = false) => {
+  const choose = (s: PanelTab, focus = false) => {
     tab = s;
     render();
     if (isPreview(s)) show(s);
@@ -163,7 +168,7 @@ function playerPanel(project: Project): HTMLElement {
     renderTabs();
     refreshers = [];
     body.setAttribute('aria-labelledby', `${id}-tab-${tab}`);
-    clear(body, ...screenFields(tab, make));
+    clear(body, ...(tab === 'files' ? fileFields({ id, patches, save: (again) => (save(), again && render()) }) : screenFields(tab, make)));
     body.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>('input, select, button').forEach((el) => (el.disabled = locked));
     // the F-keys and the shared colors have no screen of their own: they pick one to preview
     pickRow.hidden = isPreview(tab);
@@ -212,7 +217,7 @@ function playerPanel(project: Project): HTMLElement {
     h(
       'p',
       { class: 'dp-intro' },
-      'Change the stand-alone player’s own words, colors, frames and timings, screen by screen, as 1990s authors did with a hex editor, but only in ways it can take. The DOS export writes them into its XFERPLAY.EXE.',
+      'Change the stand-alone player’s own words, colors, frames and timings, screen by screen, and the extensions of its files, as 1990s authors did with a hex editor, but only in ways it can take. The DOS export writes them into its XFERPLAY.EXE.',
       locked ? h('strong', null, ' This game is look-only.') : null,
     ),
     presets,
