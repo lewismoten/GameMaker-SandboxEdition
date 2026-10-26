@@ -19,6 +19,7 @@ import { MON } from './src/ids';
 import { bowdenDrive, galeStreet, lavaleMall, type MapBuilder } from './src/levels/maps';
 import { jamieHill } from './src/levels/jamie';
 import { hillBook } from './src/blocks/hill';
+import { lotBook } from './src/blocks/lot';
 import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './src/sound/music';
 import { buildPalette, type TimeOfDay } from './src/art/pal';
 import { renderRegion } from './src/art/render';
@@ -41,6 +42,8 @@ const book = buildBlocks(noon);
 const bbl = book.finish();
 // Jamie Street's own copy of the set, with the long run's banks, birches, lit firs and boards
 const hill = hillBook(book, noon);
+// LaVale Mall's, with parked cars of every color
+const lot = lotBook(book, noon);
 const mb = buildMonsterBlocks(noon);
 const cb = buildCharBlocks(noon);
 disk.put('snow.bbl', serializeBlocks(bbl));
@@ -113,7 +116,7 @@ const LEVELS: Level[] = [
     file: 'lavale',
     desc: 'LaVale Mall',
     time: 'night',
-    build: lavaleMall,
+    build: () => lavaleMall(lot),
     chr: 'kid.chr',
     song: ['lavale.cmf', mallSong],
     mons: { plowRun: 56, plow2Run: 52, plowSpeed: 4 },
@@ -139,7 +142,7 @@ built.forEach(({ l, m, start }, i) => {
   const map = m.build();
   // Jamie Street, the level after the pines, shows the save sign by the sled's start, in its
   // own copy of the set (JAMIE.BBL: SNOW.BBL is full), in blocks it never shows
-  const set = l.file === 'jamie' ? putSaveSign(hill.finish(), map, noon.pal, start[0] + 3, start[1] - 1) : bbl;
+  const set = l.file === 'jamie' ? putSaveSign(hill.finish(), map, noon.pal, start[0] + 3, start[1] - 1) : l.file === 'lavale' ? lot.finish() : bbl;
   const bblFile = set === bbl ? 'snow.bbl' : `${l.file}.bbl`;
   if (set !== bbl) disk.put(bblFile, serializeBlocks(set));
   totalMoney += m.money;
@@ -271,7 +274,7 @@ disk.write();
 // the sidewalks, front walks and driveways (and the side streets, plowed down to the same
 // asphalt) the walkthrough's bot keeps to; not the main road, which it keeps off anyway (not on the disk)
 const paths = ['walk', 'deepWalk', 'stoop', 'stoopPaper', 'asphalt', 'deep', 'tip', 'rootBeer'].map((n) => book.n(n));
-writeWalkPaths('snowbound', { 'snow.bbl': paths });
+writeWalkPaths('snowbound', { 'snow.bbl': paths, 'lavale.bbl': paths });
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,
 );

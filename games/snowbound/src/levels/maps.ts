@@ -5,6 +5,8 @@
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
+import { rng } from '../../../kit/pixels';
+import { CARS } from '../blocks/lot';
 
 /** ASCII legend → block name ('.' picks a yard variant). */
 const LEGEND: Record<string, string> = {
@@ -377,10 +379,16 @@ export function lavaleMall(book: BlockBook) {
   m.fill(X, 17, 60, 1, '=').fill(X, 18, 60, 1, '-');
   m.patch(X, 19, ['BBBB_BBLBB_BBBBBLBBB_BBBBBLBBBB__BBBLBBBB_BBBBBLBB_BBBB_BBBB']);
   // the lot: three rows of buried cars with lamp islands; some cars still need digging out.
-  // Each row is its own color (blue, green, tan) so you can tell where you are.
+  // The cars come in every color (lot.ts), picked with a fixed seed, never the same as the
+  // car beside one or the one parked across the aisle.
+  const pick = rng(1992);
+  const parked: string[][] = [];
   for (const [row, y] of [21, 26, 31].entries()) {
-    const car = ['blueCar', 'greenCar', 'tanCar'][row];
+    parked.push([]);
     for (let k = 0; k < 11; k++) {
+      const ok = CARS.filter((n) => n !== parked[row][k - 1] && n !== parked[row - 1]?.[k]);
+      const car = ok[Math.floor(pick() * ok.length)];
+      parked[row].push(car);
       const cx = X + 2 + k * 5 + (k >= 5 ? 3 : 0);
       m.set(cx, y, `${car}L`).set(cx + 1, y, `${car}R`);
       if ((k + row) % 2 === 0) m.set(cx, y + 1, 'P').set(cx + 1, y + 1, 'P');

@@ -141,13 +141,13 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
   micro(tip, 8, 10, '$5', c('coat', 2));
   book.add('tip', tip, { effect: MONEY, eamt: 5, score: 50, touch: 'walk' });
 
-  // Parked cars buried in the mall lot (two blocks: rear, front), each row its own color so the
-  // lot has landmarks: blue up front, green in the middle, tan at the back by THE CHEZ (whose
-  // tomato red no other car wears). The body is two shades of a ramp, dark then light.
-  const parked = (front: boolean, ramp: string, dark: number) => {
+  // Parked cars buried in the mall lot (two blocks: rear, front), in the colors of 1992 (more
+  // of them in LaVale Mall's own copy of the set, lot.ts); none wears THE CHEZ's tomato red.
+  // The body is two shades of a ramp, dark then light, or a two-tone's light stripe from another.
+  const parked = (front: boolean, ramp: string, dark: number, stripe?: [string, number]) => {
     const p = lot(51);
     const k = c('ink', 0);
-    const [body, top] = [c(ramp, dark), c(ramp, dark + 1)];
+    const [body, top] = [c(ramp, dark), stripe ? c(...stripe) : c(ramp, dark + 1)];
     if (!front) {
       p.rect(2, 8, 18, 9, k).rect(3, 9, 17, 7, body).rect(3, 9, 17, 2, top);
       p.rect(10, 4, 10, 5, k).rect(11, 5, 9, 4, c('ice', 1));
@@ -164,9 +164,9 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
     }
     return p;
   };
-  const car = (name: string, ramp: string, dark: number) => {
-    book.add(`${name}L`, parked(false, ramp, dark), { solid: SOLID });
-    book.add(`${name}R`, parked(true, ramp, dark), { solid: SOLID });
+  const car = (name: string, ramp: string, dark: number, stripe?: [string, number]) => {
+    book.add(`${name}L`, parked(false, ramp, dark, stripe), { solid: SOLID });
+    book.add(`${name}R`, parked(true, ramp, dark, stripe), { solid: SOLID });
   };
 
   // A wooden signpost in a yard; or, lit, a lamp-lit board on the lot that keeps its color at night.
