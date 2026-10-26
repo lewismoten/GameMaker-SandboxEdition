@@ -12,6 +12,7 @@ export const GUIDE_TITLES: Record<GuideRef['chapter'], string> = {
   actors: 'Monsters, Heroes and Actors',
   blocks: 'Blocks That Behave',
   logic: 'Counters, Gates and Puzzles',
+  scenes: 'Scenes, Links and the Camera',
   show: 'Title Screens and Demos',
   tricks: 'Tricks From the Sandbox Games',
   check: 'The Level Check and the Walkthrough Bot',

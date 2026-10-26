@@ -48,6 +48,8 @@ export interface Playtest {
   /** The hero reached a link to the won scene. */
   won: boolean;
   cancelled: boolean;
+  /** Scenes the bot couldn't load or play (a file missing, a scene with no map), and why. */
+  failed: { scene: number; error: string }[];
 }
 
 /** The game's file, parsed. */
@@ -62,8 +64,13 @@ export function gameOf(files: FileSource & { mainGame?(): string | undefined }, 
 export async function playtestGame(game: Game, files: FileSource, opt: PlaytestOptions = {}): Promise<Playtest> {
   const runs: SceneRun[] = [];
   const first = game.scenes[0]?.links[0];
-  const out: Playtest = { runs, unreached: [], won: false, cancelled: false };
+  const out: Playtest = { runs, unreached: [], won: false, cancelled: false, failed: [] };
   if (!first || first.toScene === NOSCENE) return out;
+  // a game whose start goes straight to the won (or title) scene has no level to play
+  if (first.toScene <= 1 || first.toScene >= game.scenes.length) {
+    out.won = first.toScene === 1;
+    return out;
+  }
   const queue: { scene: number; from: { scene: number; link: number }; entry: Entry }[] = [
     { scene: first.toScene, from: { scene: 0, link: 0 }, entry: { start: first.to, ci: startCharInfo(), clock: 1 } },
   ];
@@ -71,7 +78,14 @@ export async function playtestGame(game: Game, files: FileSource, opt: PlaytestO
   const levels = levelScenes(game);
   while (queue.length) {
     const job = queue.shift()!;
-    const r = await checkScene(game, files, job.scene, job.from, job.entry, opt, runs.length, Math.max(levels.length, runs.length + 1));
+    // a scene the bot can't load (a missing file, no map) is reported, and the rest still played
+    let r: SceneRun | undefined;
+    try {
+      r = await checkScene(game, files, job.scene, job.from, job.entry, opt, runs.length, Math.max(levels.length, runs.length + 1));
+    } catch (e) {
+      out.failed.push({ scene: job.scene, error: e instanceof Error ? e.message : String(e) });
+      continue;
+    }
     if (!r) {
       out.cancelled = true;
       break;

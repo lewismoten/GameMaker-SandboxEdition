@@ -215,6 +215,25 @@ export const SCENES: Chapter = {
   scene can have 20 links. A link to scene 1 wins the game.</p>
   <p>When the hero dies and has lives left, the scene starts over and he enters again by the
   same link he came in by, intro picture and all.</p>
+  <h2>Links that misfire</h2>
+  <p>PLAYGAME checks a scene’s links in order, link 1 first, and takes the first one on a cell
+  the hero touches. The games in the Internet Archive’s Game-Maker Archive collection trip on
+  that rule in the same few ways, and the Level check looks for each:</p>
+  <ul>
+    <li><b>Two links on one cell.</b> Only the lower-numbered one ever fires. A level select
+    with two doors drawn on one spot loses a level.</li>
+    <li><b>A landing spot on a link.</b> The hero arrives standing on it and leaves on the first
+    tick. Its intro picture still shows, so a pass-through card is a fair trick; a level that
+    does it is skipped.</li>
+    <li><b>A link left at (0, 0).</b> An unplaced link sits in the map’s top-left corner. If that
+    corner is open floor, it is a warp hole for anyone who wanders, or wraps, into it.</li>
+    <li><b>Links and landings in walls.</b> A link inside a block solid on every side can never
+    be touched. A hero who lands inside one can walk out through walls he shouldn’t, so land him
+    beside the door, not on the rock under it.</li>
+    <li><b>Off the map.</b> Cells run from 0 to 99. A link at 100 never fires.</li>
+    <li><b>No way to win.</b> Follow the links from the title’s first link: one chain of them
+    must reach scene 1.</li>
+  </ul>
   <h2>What the camera sees first</h2>
   <p>The screen shows 16 by 10 blocks of a 100 by 100 map. A scene opens with the landing spot
   8 blocks from the left edge and 5 from the top; everything else is out of sight until the

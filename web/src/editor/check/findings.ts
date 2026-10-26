@@ -7,7 +7,7 @@ type Severity = 'error' | 'warning' | 'info';
 
 /** A chapter of The Ultimate Owner's Guide (manual/ultimate/plan.ts ids) and a heading in it. */
 export interface GuideRef {
-  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'show' | 'tricks' | 'check' | 'players' | 'limits';
+  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'scenes' | 'show' | 'tricks' | 'check' | 'players' | 'limits';
   section: string;
 }
 
@@ -27,11 +27,24 @@ interface Where {
   sound?: { file: string; n: number };
   /** A whole file (a character, a text screen). */
   file?: string;
+  /** One of the scene's links (its index, 0 for the Integrator's link 1). */
+  link?: number;
 }
 
 /** A one-click suggestion the panel can offer for a finding (generators/*.ts). */
 type FixId =
-  'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark' | 'no-soltop' | 'dos-ascii';
+  | 'ladder'
+  | 'fill-hazard'
+  | 'outline-monster'
+  | 'key-sign'
+  | 'open-gap'
+  | 'shorten-cycle'
+  | 'spread-healing'
+  | 'landmark'
+  | 'no-soltop'
+  | 'dos-ascii'
+  | 'drop-link'
+  | 'speaker-sound';
 
 export interface Finding {
   check: CheckId;
@@ -60,6 +73,8 @@ export interface CheckInfo {
 const L = (section: string): GuideRef => ({ chapter: 'levels', section });
 const C = (section: string): GuideRef => ({ chapter: 'craft', section });
 const P = (section: string): GuideRef => ({ chapter: 'players', section });
+/** The link checks' section. */
+const LINKS: GuideRef = { chapter: 'scenes', section: 'Links that misfire' };
 /** The solid-monster push checks' section. */
 const G: GuideRef = { chapter: 'limits', section: 'The wall glitch' };
 
@@ -115,6 +130,56 @@ export const CHECKS = {
     why: 'A solid hazard pushes the hero as it hurts him: it can sink him into the floor or pin him to a wall. One he can pass through is usually fairer; a solid one can be right for a boss you stand on.',
     taste: true,
     guide: G,
+  },
+  'link-shadow': {
+    name: 'Two links on one cell',
+    why: 'PLAYGAME takes the first link on a cell the hero touches, so a second link there never fires, and wherever it leads may never be seen.',
+    guide: LINKS,
+  },
+  'start-on-link': {
+    name: 'Scenes that start on a link',
+    why: 'A hero who comes in standing on a link leaves on the first tick: the scene never plays, and a card meant to be read flashes by.',
+    guide: LINKS,
+  },
+  'link-corner': {
+    name: 'Links left at the corner',
+    why: 'A link nobody placed sits at (0, 0). Where that corner is open, a player who wanders into it is whisked off to another level.',
+    guide: LINKS,
+  },
+  'link-solid': {
+    name: 'Links and landings in walls',
+    why: 'A link inside a block solid on every side can never be touched, and a hero who lands inside one is stuck in the wall.',
+    guide: LINKS,
+  },
+  'off-map': {
+    name: 'Links off the map',
+    why: 'The hero is always on one of the map’s 100 × 100 cells, so a link off it never fires, and a landing spot off it reads past the map.',
+    guide: LINKS,
+  },
+  'won-route': {
+    name: 'No way to the won screen',
+    why: 'If no chain of links leads from the start to the game won scene, nobody can finish the game, however well they play.',
+    guide: LINKS,
+  },
+  'missing-file': {
+    name: 'Files a level needs',
+    why: 'PLAYGAME stops at a scene whose files it can’t find, so nobody gets past it.',
+    guide: { chapter: 'testing', section: 'A play-test checklist' },
+  },
+  'voc-missing': {
+    name: 'Sounds with no .VOC file',
+    why: 'With a Sound Blaster, a sound that names a .VOC the game doesn’t have plays nothing, and cuts off the sound before it.',
+    guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
+  },
+  'out-of-range': {
+    name: 'Blocks and monsters that aren’t there',
+    why: 'A number past the end of a block set or the counters makes DOS read stray memory; a monster from an empty slot never appears.',
+    guide: { chapter: 'blocks', section: 'The 150-block budget' },
+  },
+  'speed-cap': {
+    name: 'Moves over the speed limit',
+    why: 'PLAYGAME moves the hero at most 11 pixels a tick, so a bigger step goes less far than it says and a jump drawn to clear a gap falls short.',
+    guide: C('A hero who feels right'),
   },
   'every-tick': {
     name: 'Scores or heals every tick',

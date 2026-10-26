@@ -2,7 +2,8 @@
 // set up to change the project's files. Each writes ordinary Game-Maker data, and the panel
 // keeps the files as they were so the fix can be undone.
 import { BACKBL, MONBL, SOLTOP, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { serializeGame } from '../../../formats/game';
+import { NOSCENE, serializeGame } from '../../../formats/game';
+import { parseSoundSet, serializeSoundSet } from '../../../formats/sound';
 import { parseMap, serializeMap } from '../../../formats/map';
 import { parseMonsters, serializeMonsters } from '../../../formats/monster';
 import { scanName } from '../../../input/scancodes';
@@ -17,6 +18,7 @@ import { contrastColor, fillHazard, outline } from './blockArt';
 import { airBlock, ladderBlock, ladderCells, landmarkBlocks, placeLandmarks } from './mapFixes';
 import { findMazes } from '../checks/mazeCheck';
 import { asciiBytes, asciiText } from '../checks/dosChars';
+import { goodName } from '../checks/missingParts';
 import { parseHighScores, serializeHighScores } from '../../../formats/highscore';
 
 interface Fix {
@@ -227,6 +229,42 @@ function make(f: Finding, project: Project): Fix | undefined {
             files.set(name, serializeGame(game));
           } else if (his) files.set(name, serializeHighScores(parseHighScores(files.get(name)!).map((e) => ({ ...e, name: asciiText(e.name).slice(0, 29) }))));
           else files.set(name, asciiBytes(files.get(name)!));
+          return [name];
+        },
+      };
+    }
+    case 'drop-link': {
+      const scene = f.where.scene;
+      const k = f.where.link;
+      if (scene === undefined || k === undefined || !project.game().scenes[scene]?.links[k]) return undefined;
+      return {
+        label: `Delete link ${k + 1}`,
+        detail: `Clears link ${k + 1} of this scene in the Integrator. It never fires, so the game plays just as before.`,
+        files: [project.gam],
+        apply: () => {
+          const game = project.game();
+          game.scenes[scene].links[k] = { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } };
+          files.set(project.gam, serializeGame(game));
+          return [project.gam];
+        },
+      };
+    }
+    case 'speaker-sound': {
+      const name = f.where.sound?.file;
+      if (!name || !files.has(name)) return undefined;
+      const has = (v: string) => goodName(v) && files.has(`${v}.voc`);
+      return {
+        label: 'Play the speaker sound instead',
+        detail: `Clears the .VOC names in ${name} whose files the game doesn’t have, so those sounds play their PC speaker tune on every PC.`,
+        files: [name],
+        apply: () => {
+          const snd = parseSoundSet(files.get(name)!);
+          snd.digital.forEach((raw, i) => {
+            if (!raw || raw[0] === ' ' || !raw.trim() || has(raw.trim())) return;
+            snd.digital[i] = '';
+            snd.digitalRaw[i] = new Uint8Array(9);
+          });
+          files.set(name, serializeSoundSet(snd));
           return [name];
         },
       };
