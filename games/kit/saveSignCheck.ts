@@ -9,7 +9,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gameDisk, gamesDir } from './tinHeartDisk';
-import { looksLikeSaveSign } from './saveSign';
+import { looksLikeSaveSignHalf } from './saveSign';
 import { BACKBL, parseBlocks } from '../../web/src/formats/blocks';
 import { MLEN, MWID, parseMap } from '../../web/src/formats/map';
 
@@ -20,30 +20,40 @@ interface About {
   saveSign?: { map: string; at: [number, number]; after: string; planes?: string[] };
 }
 
-/** Every save sign on a game's disk, as "map@x,y" (the board's left block). */
+/**
+ * Every save sign on a game's disk, as "map@x,y" (the board's left block). A sign is drawn in
+ * a game's own colors, but a scene may show it in another palette (night's tint), so a pair of
+ * blocks is a sign when it looks like one in any palette on the disk.
+ */
 export function findSaveSigns(id: string): string[] {
   const { disk, game } = gameDisk(id);
+  const pals = [...disk.keys()].filter((n) => n.endsWith('.pal')).map((n) => disk.get(n)!);
   const found = new Set<string>();
-  let pal: Uint8Array | undefined;
   let bbl: string | undefined;
+  const seen = new Set<string>();
+  const halvesOf = new Map<string, boolean[][][]>();
   for (const s of game.scenes) {
-    const p = s.files[0]?.toLowerCase();
-    if (p && disk.get(p)) pal = disk.get(p);
     const b = s.files[2]?.toLowerCase();
     if (b && disk.get(b)) bbl = b;
     const map = s.files[1]?.toLowerCase();
     const mapBytes = map && disk.get(map);
-    if (!mapBytes || !pal || !bbl) continue;
-    const blocks = parseBlocks(disk.get(bbl)!, BACKBL);
+    if (!mapBytes || !bbl || seen.has(`${map}|${bbl}`)) continue;
+    seen.add(`${map}|${bbl}`);
     const cells = parseMap(mapBytes).blocks;
-    const memo = new Map<number, boolean>();
+    // which blocks look like each half, in some palette (one palette for both halves)
+    if (!halvesOf.has(bbl)) {
+      const blocks = parseBlocks(disk.get(bbl)!, BACKBL);
+      halvesOf.set(
+        bbl,
+        pals.map((pal) => [0, 1].map((h) => blocks.map((b) => !!b && looksLikeSaveSignHalf(b.pixels, pal, h as 0 | 1)))),
+      );
+    }
+    const halves = halvesOf.get(bbl)!;
     for (let y = 0; y < MWID; y++)
       for (let x = 0; x + 1 < MLEN; x++) {
         const l = cells[y * MLEN + x];
         const r = cells[y * MLEN + x + 1];
-        const key = l * 256 + r;
-        if (!memo.has(key)) memo.set(key, !!blocks[l] && !!blocks[r] && looksLikeSaveSign(blocks[l].pixels, blocks[r].pixels, pal));
-        if (memo.get(key)) found.add(`${map}@${x},${y}`);
+        if (halves.some(([left, right]) => left[l] && right[r])) found.add(`${map}@${x},${y}`);
       }
   }
   return [...found].sort();
