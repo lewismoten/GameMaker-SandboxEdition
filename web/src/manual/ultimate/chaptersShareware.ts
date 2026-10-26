@@ -20,6 +20,7 @@
 // file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER).
 import { opening, tip, type Chapter } from './chapter';
 import { PLAYER_WORDS } from './playerWords';
+import { ARCHIVE_TRICKS } from './archiveTricks';
 
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -100,6 +101,7 @@ export const SHAREWARE: Chapter = {
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
   animation stays tiny and plays on any PC (RSD’s own text-box animations in <i>Penguin Pete</i>).
   Fade-in and fade-out animations round a text screen in a slide list make a cheap page turn.</p>
+  ${ARCHIVE_TRICKS}
   <h2>Customizing the player’s own words</h2>
   <p>A transferred game’s <code>.EXE</code> is Game-Maker’s own <code>XFERPLAY.EXE</code>, renamed
   after the game by Transfer (or by this edition’s DOS download). PLAYGAME’s built-in words live

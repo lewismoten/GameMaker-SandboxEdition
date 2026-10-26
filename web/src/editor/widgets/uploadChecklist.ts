@@ -24,7 +24,10 @@ export interface ChecklistItem {
 }
 
 export const APPENDIX_B: ChecklistItem[] = [
-  { text: 'The first minute is fun; the hero’s speed feels right to someone new, and a tap moves him once', checks: ['hero-speed', 'response', 'tap-twice'] },
+  {
+    text: 'The first minute is fun; the hero’s speed feels right to someone new, and a tap moves him once',
+    checks: ['hero-speed', 'response', 'tap-twice', 'speed-cap'],
+  },
   { text: 'The hero faces the way he walks; pacing monsters turn round', checks: ['facing'] },
   { text: 'Every jump has a block to spare; every landing is in sight before the jump', checks: ['blind-drop', 'hazard-landing'], play: true },
   { text: 'Each level asks a little more; the last is the best, not the meanest', checks: ['curve'], play: true },
@@ -33,7 +36,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   { text: 'What the hero can stand on looks solid, and what he falls through doesn’t', checks: ['footing'], full: true },
   {
     text: 'Nowhere to get stuck: every pit has a way out, every lock its key, and nothing needed is left behind a one-way spot',
-    checks: ['stuck', 'counters', 'link-unreached', 'softlock', 'one-way'],
+    checks: ['stuck', 'counters', 'link-unreached', 'softlock', 'one-way', 'won-route'],
     play: true,
     full: true,
   },
@@ -54,8 +57,8 @@ export const APPENDIX_B: ChecklistItem[] = [
     play: true,
   },
   {
-    text: 'Nothing shown can’t be used: no doors that lead nowhere, no prizes in view but out of reach, no prizes your own shots destroy',
-    checks: ['fake-exit', 'prize-in-view', 'shot-prize'],
+    text: 'Nothing shown can’t be used: no doors or links that lead nowhere, no prizes out of reach, none your own shots destroy',
+    checks: ['fake-exit', 'prize-in-view', 'shot-prize', 'link-shadow', 'start-on-link', 'link-corner', 'link-solid', 'off-map'],
     play: true,
     full: true,
   },
@@ -74,10 +77,13 @@ export const APPENDIX_B: ChecklistItem[] = [
     text: 'Players can tell how far they are: level cards say which level of how many; a long game comes in chapters, and the first card and each chapter’s end say F5 saves',
     checks: [],
   },
-  { text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable', checks: ['fli', 'text-contrast', 'dos-chars'] },
+  {
+    text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable',
+    checks: ['fli', 'text-contrast', 'dos-chars', 'missing-file', 'out-of-range'],
+  },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },
-  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music'] },
+  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },
   {
     text: 'The first scene’s hero sets the starting hit points, lives and counters for every hero; every hero has a standing picture',

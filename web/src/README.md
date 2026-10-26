@@ -393,7 +393,8 @@ modules are in [`../test`](../test).
     (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`), 14 the Level
     check and walkthrough bot (`chaptersCheck.ts`), 15 and 16 designing for every player and where
     Game-Maker runs out (`chaptersPlayers.ts`), and 17 tricks from the shareware authors
-    (`chaptersShareware.ts`), whose table of the words the DOS player shows, and where they sit in
+    (`chaptersShareware.ts`, with the second survey's "More from the archive" in
+    `archiveTricks.ts`), whose table of the words the DOS player shows, and where they sit in
     the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).
   - Figures are drawn from real files (`ultimateFigures.ts`, `paletteFigures.ts`).
     `openUltimate.ts` and `openInManual.ts` open it from outside the desk.
@@ -526,7 +527,11 @@ modules are in [`../test`](../test).
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
     `formats/fliLimits.ts`, which the health check also uses; `solidPush.ts` the wall glitch's causes:
     solid monsters on the map's edge rows, paths that stop right against a block, solid pacers that
-    close in, and monsters that are solid and hurt) and the play checks
+    close in, and monsters that are solid and hurt; `linkChecks.ts` links that misfire, as
+    PLAYGAME's chklnk reads them: two on one cell, a scene that starts on its own link, a link left
+    at (0, 0), links and landings in walls, links off the map, and no chain of links to the won
+    scene; `missingParts.ts` .VOC files and level files that aren't there, block numbers and
+    counters past their sets and monsters from empty slots) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
     whole-game run carrying the least it can, and Slower hands, a second run with one key at a
     time from `inputs.ts` `steadyMoves`).
