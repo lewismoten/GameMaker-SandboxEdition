@@ -408,7 +408,8 @@ modules are in [`../test`](../test).
     `scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
     through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
     course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
-    to run up the page in panels, `levelCourse.ts` and `levelCourseSvg.ts`),
+    to run up the page in stitched panels, `levelCourse.ts` and `levelCourseSvg.ts`, and a map
+    printable's panel can draw it as a poster, `levelCoursePoster.ts`),
     both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
     (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
     and a map nobody walks around in is left out. `levelPoster.ts`
