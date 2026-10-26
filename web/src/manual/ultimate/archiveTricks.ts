@@ -70,6 +70,17 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   scene does, so the pair reads 99 down to 00 for as long as the round lasts. At the same tick,
   the floor can turn into look-alikes that slide the hero to the exit, and a timed round ends
   itself. It costs twenty of the scene’s 150 blocks, so it suits a boss room or a minigame.</p>
+  <p>The archive’s one-on-one fighting game shows how far it goes. After an arrow picks the
+  fighter, the arena puts the clock at the top center of the screen, counting down from 99 like an
+  arcade fighter’s. The opponent’s lifetime is set 45 ticks short of the clock, so he goes down
+  just before time runs out, and at 99 seconds the floor and sky turn into look-alikes that slide
+  the winner to the exit. The round has a time limit the player can see, and it ends by itself.</p>
+  <h2>Punches with reach</h2>
+  <p>The same game makes a blow land a beat after the key and a block in front of the fighter.
+  Each attack key gives birth to an invisible monster at power 255. It becomes a second invisible
+  one that steps a block ahead, and that becomes a visible spark lasting 3 to 5 ticks where the
+  hit lands. A punch or kick then feels like it has wind-up and reach, not a touch at arm’s
+  length, and each of the four attacks can have its own delay and spark.</p>
   <h2>Cutscenes that end themselves</h2>
   <p>Park the hero beside the scene’s link, on a block that, after a few seconds, turns into a
   look-alike that pulls him onto the link. Any hero file works, nobody has to press a key, and a
