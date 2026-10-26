@@ -70,7 +70,8 @@ Making the files:
 - `easterEgg.ts` — the decorated Easter egg, a painted egg block in any game's palette, hidden like the tin heart.
 - `saveSign.ts` — the save sign: a cream board with a blue floppy disk, SAVE and F5 in a dashed pink stitch, on two
   posts, put into any game's palette by nearest color. Each felt-egg game has exactly one, in the level after the egg's
-  (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look.
+  (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look. `putSaveSign` gives a
+  game whose block set is full a copy of the set for that one map, with the sign in blocks the map never shows.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.

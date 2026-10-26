@@ -9,8 +9,11 @@
 // as the cameos are (cameos.ts), so it looks the same in every game. The board is two blocks
 // wide (40x20) and the posts the two blocks under it; a game whose view has no ground under a
 // sign (a flying shooter) may use the board alone. about.json "saveSign" records where it is:
-// { "map": "s2b.map", "at": [x, y] } (the board's left block); saveSignCheck.ts checks it.
+// { "map": "s2b.map", "at": [x, y], "after": <the egg's map> } (the board's left block);
+// saveSignCheck.ts checks it. A game whose block set is full uses putSaveSign.
 import { Pixels } from './pixels';
+import { emptyBlock, type Block } from '../../web/src/formats/blocks';
+import { MLEN, type GameMap } from '../../web/src/formats/map';
 
 /** The sign's colors, 8-bit RGB. */
 const RGB = {
@@ -169,4 +172,43 @@ export function looksLikeSaveSign(left: Uint8Array, right: Uint8Array, pal: Uint
       if (d < 90) near++;
     }
   return near >= n * 0.9;
+}
+
+/**
+ * For a game whose block set is full: a copy of `bbl` for one map's scenes, with the sign in
+ * blocks that map never shows (none on it, none a block there turns into, and never a pickup,
+ * as the inventory draws what is carried from the scene's set), and the sign put on `map`:
+ * the board at (x, y), the posts below it unless `posts` is false. Save the copy as the
+ * scene's own .bbl.
+ */
+export function putSaveSign(bbl: Block[], map: GameMap, pal: Uint8Array, x: number, y: number, o: SaveSignOptions & { posts?: boolean } = {}): Block[] {
+  const posts = o.posts ?? true;
+  const shown = new Set(map.blocks);
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const n of [...shown]) for (const m of [bbl[n].nextBl, bbl[n].touchBl]) if (m < bbl.length && !shown.has(m)) (shown.add(m), (grew = true));
+  }
+  const carried = new Set(bbl.flatMap((b, n) => (b.obj ? [n, b.nextBl, b.touchBl] : [])));
+  const free = bbl.map((_, n) => n).filter((n) => n > 0 && !shown.has(n) && !carried.has(n));
+  const need = posts ? 4 : 2;
+  if (free.length < need) throw new Error('No room in the block set for the save sign');
+  const nums = free.slice(-need);
+  const at = (dx: number, dy: number) => (y + dy) * MLEN + x + dx;
+  const pic = (dx: number, dy: number) => {
+    const p = new Pixels(20, 20);
+    p.px.set(bbl[map.blocks[at(dx, dy)]].pixels);
+    return p;
+  };
+  const sign = saveSignBlocks(pal, { board: [pic(0, 0), pic(1, 0)], posts: posts ? [pic(0, 1), pic(1, 1)] : undefined }, o);
+  const out = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
+  const cells: [Pixels, number, number][] = [
+    [sign.board[0], 0, 0],
+    [sign.board[1], 1, 0],
+  ];
+  if (sign.posts) cells.push([sign.posts[0], 0, 1], [sign.posts[1], 1, 1]);
+  cells.forEach(([p, dx, dy], k) => {
+    out[nums[k]] = { ...emptyBlock(nums[k]), pixels: Uint8Array.from(p.px) };
+    map.blocks[at(dx, dy)] = nums[k];
+  });
+  return out;
 }

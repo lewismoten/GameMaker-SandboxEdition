@@ -13,8 +13,8 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { Disk } from '../kit/disk';
 import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
+import { putSaveSign } from '../kit/saveSign';
 import { buildBlocks } from './src/blocks/blocks';
-import { withSaveSign } from './src/blocks/saveSign';
 import { MON } from './src/ids';
 import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './src/levels/maps';
 import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './src/sound/music';
@@ -133,8 +133,9 @@ let totalMoney = 0;
 built.forEach(({ l, m, start }, i) => {
   const pal = buildPalette(l.time);
   const map = m.build();
-  // Jamie Street, the level after the pines, shows the save sign by the sled's start (its own block set)
-  const set = l.file === 'jamie' ? withSaveSign(bbl, map, noon.pal, start[0] + 3, start[1] - 1) : bbl;
+  // Jamie Street, the level after the pines, shows the save sign by the sled's start; SNOW.BBL
+  // is full, so it gets its own copy (JAMIE.BBL) with blocks it never shows given to the sign
+  const set = l.file === 'jamie' ? putSaveSign(bbl, map, noon.pal, start[0] + 3, start[1] - 1) : bbl;
   const bblFile = l.file === 'jamie' ? 'jamie.bbl' : 'snow.bbl';
   if (l.file === 'jamie') disk.put(bblFile, serializeBlocks(set));
   totalMoney += m.money;
