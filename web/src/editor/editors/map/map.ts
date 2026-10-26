@@ -22,6 +22,7 @@ import { simulate } from '../palette/colorVision';
 import { findPlayersView, posterPng, posterScene } from './mapPoster';
 import type { Level } from '../../../manual/printables/levelMapLayout';
 import { monsterName } from '../monsters/monsterNames';
+import { linkMarkers } from './links/linkMarkers';
 import './mapExport.css';
 import './tools/mapTools.css';
 
@@ -125,8 +126,9 @@ registerEditor(['map'], (host, project, file) => {
     return gray;
   };
   const save = debounce(() => project.files.set(file, serializeMap(map)), 300);
-  // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change
-  const history = new History<Uint8Array>();
+  // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change,
+  // and with it the .gam's bytes before a link marker's change (links/linkMarkers.ts)
+  const history = new History<{ map: Uint8Array; gam?: Uint8Array }>();
   const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
   const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
   const syncHistory = () => {
@@ -134,14 +136,21 @@ registerEditor(['map'], (host, project, file) => {
     redoBtn.disabled = !history.canRedo;
   };
   const remember = () => {
-    history.record(serializeMap(map));
+    history.record({ map: serializeMap(map) });
+    syncHistory();
+  };
+  const rememberLinks = () => {
+    history.record({ map: serializeMap(map), gam: project.files.get(project.gam) });
     syncHistory();
   };
   function step(back: boolean): void {
-    const now = serializeMap(map);
+    const now: { map: Uint8Array; gam?: Uint8Array } = { map: serializeMap(map), gam: project.files.get(project.gam) };
     const to = back ? history.undo(now) : history.redo(now);
     if (!to) return;
-    Object.assign(map, parseMap(to));
+    // the step kept for redo holds the .gam only when this one changed it
+    if (!to.gam) delete now.gam;
+    Object.assign(map, parseMap(to.map));
+    if (to.gam) project.files.set(project.gam, to.gam);
     syncHistory();
     draw();
     save();
@@ -290,6 +299,7 @@ registerEditor(['map'], (host, project, file) => {
       ctx.strokeRect(mk.x * s + 1, mk.y * s + 1, s - 2, s - 2);
     }
     redrawOverlay();
+    markers.render();
   }
 
   /** The map (or the part of it in `area`) at one pixel per block pixel, as the scene draws it. */
@@ -717,6 +727,53 @@ registerEditor(['map'], (host, project, file) => {
   scroller.addEventListener('scroll', hideTip, { passive: true });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
+  // the links' markers over the map: ways in and exits, to drag, nudge and open (links/)
+  let showLinks = (() => {
+    try {
+      return localStorage.getItem('gm-map-links') !== '0';
+    } catch {
+      return true;
+    }
+  })();
+  const markers = linkMarkers({ project, scenes: set.scenes, canvas, block: () => BLEN * zoom, remember: rememberLinks, redraw: () => draw() });
+  markers.setShown(showLinks);
+  const linksBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'mt-tool',
+      'aria-label': 'Links',
+      title: 'Show the ways in (cyan) and exits (gold) to drag or open',
+      onclick: () => {
+        showLinks = !showLinks;
+        writePref('gm-map-links', showLinks);
+        markers.setShown(showLinks);
+        syncToggles();
+      },
+    },
+    '⛓',
+    h('span', { class: 'mt-label' }, 'Links'),
+  );
+  const exitBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'mt-tool',
+      'aria-label': 'Add an exit',
+      title: set.scenes.length ? 'Add an exit in the middle of the view: touching it takes the hero to another scene' : 'No scene plays this map yet',
+      disabled: !set.scenes.length || !!project.readOnly,
+      onclick: () => {
+        if (!showLinks) linksBtn.click();
+        const s = BLEN * zoom;
+        markers.addExit({
+          x: Math.floor((scroller.scrollLeft + scroller.clientWidth / 2) / s),
+          y: Math.floor((scroller.scrollTop + scroller.clientHeight / 2) / s),
+        });
+      },
+    },
+    '＋',
+    h('span', { class: 'mt-label' }, 'Exit'),
+  );
   const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
   const gridBtn = h(
     'button',
@@ -740,6 +797,7 @@ registerEditor(['map'], (host, project, file) => {
     for (const [b, on] of [
       [gridBtn, overlay.grid],
       [findBtn, finding],
+      [linksBtn, showLinks],
     ] as const)
       Object.entries(pressed(on)).forEach(([k, v]) => b.setAttribute(k, v));
   }
@@ -895,6 +953,8 @@ registerEditor(['map'], (host, project, file) => {
       ),
       h('span', { style: 'flex:1' }),
       gridBtn,
+      linksBtn,
+      exitBtn,
       findBtn,
       replaceBtn,
       checkBtn,
@@ -925,7 +985,7 @@ registerEditor(['map'], (host, project, file) => {
     h(
       'p',
       { class: 'hint' },
-      'Drag to paint blocks. Terrain paints edges and corners for you, Building drags out a house of any size, and Select copies blocks to paste or keep as a stamp. In Monsters, click to place the chosen monster and right-click to remove one. Yellow squares are links to other scenes; blue squares are where the character starts.',
+      'Drag to paint blocks. Terrain paints edges and corners for you, Building drags out a house of any size, and Select copies blocks to paste or keep as a stamp. In Monsters, click to place the chosen monster and right-click to remove one. Gold markers are exits to other scenes and cyan ones are ways in, where the character arrives: drag one to move it, or click it to see where it leads.',
     ),
     // Nothing to paint with yet: say so, and offer the quickest ways to get blocks.
     !bblName || !project.files.has(bblName)
@@ -1088,6 +1148,7 @@ registerEditor(['map'], (host, project, file) => {
   return () => {
     hideTip();
     tip.remove();
+    markers.dispose();
     window.removeEventListener('keydown', onKey);
     fitter.disconnect();
     removeEventListener('resize', fit);
