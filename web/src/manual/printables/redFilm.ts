@@ -82,7 +82,7 @@ function strokes(
  * The three layers around whatever `ink` draws (see the top of this file): decoy strokes as
  * thick as `stroke()` under and over it, then `lines` red lines per square em across everything.
  */
-function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void, lines = 20): void {
+function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void, lines = 34): void {
   const area = ((w + PX) * (hh + PX)) / (PX * PX);
   c.fillStyle = FIELD_INK;
   c.fillRect(0, 0, w, hh);
@@ -101,7 +101,8 @@ function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, h
     hh,
     Math.round(area * lines),
     LINE_INKS,
-    () => PX * (0.03 + rnd() * 0.03),
+    // thin, so through the film (where they vanish) they nick the letters rather than cut them away
+    () => PX * (0.01 + rnd() * 0.01),
     () => PX * (0.4 + rnd() * 1.2),
   );
 }
