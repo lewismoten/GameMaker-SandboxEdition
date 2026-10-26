@@ -9,12 +9,16 @@ import { X0 } from '../src/stages/mapkit';
 
 function audit(l: Leg): string[] {
   const b = buildLeg(l);
-  const solid = (x: number, y: number) => x < X0 || x > X0 + 15 || y < 0 || y >= MWID || (b.bbl[b.map.blocks[y * MLEN + x]].solid ?? 0) !== 0;
+  // the ribbon cable wraps on every side; a strip is 16 columns between its edges
+  const wraps = l.kind === 'diag';
+  const solid = (x: number, y: number) =>
+    !wraps && (x < X0 || x > X0 + 15 || y < 0 || y >= MWID) ? true : (b.bbl[b.map.blocks[((y + MWID) % MWID) * MLEN + ((x + MLEN) % MLEN)]].solid ?? 0) !== 0;
   const seen = new Set<number>();
   const s = startOf(l);
   const todo = [[s.x, s.y]];
   while (todo.length) {
-    const [x, y] = todo.pop()!;
+    const [x0, y0] = todo.pop()!;
+    const [x, y] = wraps ? [(x0 + MLEN) % MLEN, (y0 + MWID) % MWID] : [x0, y0];
     const k = y * MLEN + x;
     if (seen.has(k) || solid(x, y)) continue;
     seen.add(k);
@@ -23,7 +27,7 @@ function audit(l: Leg): string[] {
   const out: string[] = [];
   const names = l.kit.bs.names;
   for (let y = 0; y < MWID; y++)
-    for (let x = X0; x <= X0 + 15; x++) {
+    for (let x = wraps ? 0 : X0; x <= (wraps ? MLEN - 1 : X0 + 15); x++) {
       const n = names[b.map.blocks[y * MLEN + x]];
       if ((PICKUPS as readonly string[]).includes(n) && !seen.has(y * MLEN + x)) out.push(`${n} at ${x},${y} unreachable`);
     }

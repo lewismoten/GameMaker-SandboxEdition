@@ -5,6 +5,7 @@ import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { cpuArt, cpuTiles, cpuVirus } from '../blocks/cpu5';
 import { kit, type Stage } from './stage';
+import { cableLeg } from './cable';
 import { bossGlitch } from '../bosses/boss5';
 
 function virus5(b: Parameters<typeof cpuVirus>[0], p: Parameters<typeof cpuVirus>[1]): void {
@@ -171,6 +172,7 @@ export function stage5(): Stage {
     song: 'cpu.cmf',
     bossSong: 'glitch.cmf',
     legs: [
+      cableLeg(),
       {
         file: 's5a',
         kitFile: 's5',

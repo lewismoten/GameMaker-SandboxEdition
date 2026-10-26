@@ -29,7 +29,7 @@ DANGERS
   Flying into a live one
   burns a hole... and you.
  Data streams shove sideways.
-
+ Cable splices: hop a wire.
 BOSSES
 Each stage ends at a boss
 plugging the only way out.

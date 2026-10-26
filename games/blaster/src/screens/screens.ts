@@ -28,8 +28,8 @@ function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagg
   const pc = (n: string, k: number) => s.pal.c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
-  const y0 = l.kind === 'boss' ? l.grid.y(0) : l.grid.y(l.grid.cardAt ?? 40) - 4;
-  const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, X0, y0, 16, 5);
+  const y0 = l.cardView?.y ?? (l.kind === 'boss' ? l.grid.y(0) : l.grid.y(l.grid.cardAt ?? 40) - 4);
+  const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, l.cardView?.x ?? X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
   const tag = tagged ?? (l.kind === 'boss' ? (s.n === of ? 'WARNING! LAST BOSS!' : 'WARNING!') : `STAGE ${s.n}-${'ABCD'[legIndex]}`);

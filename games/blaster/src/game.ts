@@ -33,7 +33,8 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     scene.pos = { x: 24 + (i % 8) * 36, y: 90 + Math.floor(i / 8) * 50 };
     // Scrolling legs may only scroll up (the ship's drift carries the screen along, see
     // characters/ship.ts); boss arenas never scroll: one fixed screen.
-    scene.scroll = { ...scene.scroll, up: l.kind === 'scroll' ? 0xff : 0, down: 0, left: 0, right: 0 };
+    // The ribbon cable scrolls up and right, wrapping round the map (see stages/cable.ts).
+    scene.scroll = { ...scene.scroll, up: l.kind === 'boss' ? 0 : 0xff, down: 0, left: 0, right: l.kind === 'diag' ? 0xff : 0 };
     const last = s.legs[s.legs.length - 1] === l;
     scene.files = [
       `s${s.n}.pal`,
@@ -41,7 +42,7 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
       `${l.kitFile}.bbl`,
       `${l.kitFile}.mon`,
       `${l.kitFile}.mbl`,
-      l.kind === 'boss' ? 'shipfree.chr' : 'ship.chr',
+      l.kind === 'boss' ? 'shipfree.chr' : l.kind === 'diag' ? 'shipdiag.chr' : 'ship.chr',
       'ship.cbl',
       'blaster.snd',
       l.kind === 'boss' ? s.bossSong : s.song,

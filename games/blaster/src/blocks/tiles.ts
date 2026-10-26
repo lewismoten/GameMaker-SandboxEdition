@@ -265,6 +265,21 @@ export function addStageTiles(bs: BlockSet, a: StageArt, o: TileOpts): void {
   bs.add('wall', plate(a, 1, 1, 'deep', 1), { solid: SOLTOP | SOLRIG | SOLBOT | SOLLEF });
 }
 
+/** Only the pads, pickups, gate and launch pad, for a leg with its own floor (the ribbon cable). */
+export function addPickupTiles(bs: BlockSet, a: StageArt): void {
+  bs.add('pad', pad(a));
+  const pk = (kind: PickupKind, props: object) => {
+    bs.add(`${kind}`, pickup(a, kind, 0), { next: `${kind}1`, ntime: 5, touch: 'pad', ...props });
+    bs.add(`${kind}1`, pickup(a, kind, 1), { next: kind, ntime: 5, touch: 'pad', ...props });
+  };
+  pk('nova', { effect: SEQ.nova, eamt: 2 });
+  pk('repair', { chHitPt: 10 });
+  pk('life', { effect: 1, eamt: 1 });
+  pk('bit', { scorePts: 50 });
+  for (let k = 0; k < 4; k++) bs.add(`gate${k}`, gate(a, k), { next: `gate${(k + 1) % 4}`, ntime: 2 });
+  bs.add('launch', launch(a));
+}
+
 export const PICKUPS = ['nova', 'repair', 'life', 'bit'] as const;
 
 /** A big picture sliced into blocks named `${prefix}${row}${col}`. */

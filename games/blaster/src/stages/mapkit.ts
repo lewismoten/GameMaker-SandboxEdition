@@ -34,14 +34,38 @@ export class Grid {
     readonly origin: number,
     readonly dir: 1 | -1,
     seed: number,
+    /** The whole map's blocks by map cell, instead of a strip's floor and edges. */
+    fill?: (x: number, y: number) => string,
   ) {
     this.rnd = rng(seed);
     for (let y = 0; y < MWID; y++)
       for (let x = 0; x < MLEN; x++) {
         const c = x - X0;
-        const name = c === 0 ? `edgeL${(y >> 1) % art.edges}` : c === 15 ? `edgeR${(y >> 1) % art.edges}` : this.floorName();
+        const name = fill ? fill(x, y) : c === 0 ? `edgeL${(y >> 1) % art.edges}` : c === 15 ? `edgeR${(y >> 1) % art.edges}` : this.floorName();
         this.map.blocks[y * MLEN + x] = bs.id(name);
       }
+  }
+
+  /** The block at map cell (x, y), by name. */
+  at(x: number, y: number): string {
+    return this.bs.names[this.map.blocks[y * MLEN + x]];
+  }
+
+  /** Sets map cell (x, y). */
+  put(x: number, y: number, name: string): this {
+    this.map.blocks[y * MLEN + x] = this.bs.id(name);
+    return this;
+  }
+
+  /** A monster at map cell (x, y). */
+  monAt(x: number, y: number, name: string): this {
+    return this.mon(x - X0, this.dir * (y - this.origin), name);
+  }
+
+  /** A way out at map cell (x, y). */
+  linkAt(x: number, y: number): this {
+    this.links.push({ x, y });
+    return this;
   }
 
   floorName(): string {

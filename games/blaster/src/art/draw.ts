@@ -270,3 +270,25 @@ export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pi
   ink?.end();
   return p;
 }
+
+/**
+ * A sprite turned 45 degrees clockwise (nose up becomes nose up-right), shrunk by `scale`
+ * so its corners stay in the block. Nearest pixel, so the palette stays exact.
+ */
+export function turn45(src: Pixels, scale = 0.86): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  const cx = (src.w - 1) / 2;
+  const cy = (src.h - 1) / 2;
+  const c = Math.SQRT1_2 / scale;
+  for (let y = 0; y < out.h; y++)
+    for (let x = 0; x < out.w; x++) {
+      const dx = x - cx;
+      const dy = y - cy;
+      // back by -45 degrees
+      const sx = Math.round(cx + (dx + dy) * c);
+      const sy = Math.round(cy + (dy - dx) * c);
+      if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
+      out.set(x, y, src.get(sx, sy));
+    }
+  return out;
+}

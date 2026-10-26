@@ -22,11 +22,16 @@ export interface Leg {
   /** File name base of its .pal/.bbl/.mon/.mbl (shared by the scrolling legs of a stage). */
   kitFile: string;
   title: string;
-  kind: 'scroll' | 'boss';
+  /** A strip scrolling up, a fixed boss arena, or the ribbon cable's slanted, wrapping track. */
+  kind: 'scroll' | 'boss' | 'diag';
   grid: Grid;
   kit: Kit;
   /** Card lines shown before the leg. */
   card: string[];
+  /** Where the ship starts, when not on a strip's launch pad or in an arena. */
+  start?: { x: number; y: number };
+  /** The top-left map cell of the card's 16x5 look at the leg, when not the strip's. */
+  cardView?: { x: number; y: number };
 }
 
 /**
@@ -94,4 +99,4 @@ export function buildLeg(l: Leg): BuiltLeg {
   };
 }
 
-export const startOf = (l: Leg) => (l.kind === 'boss' ? ARENA_START : STRIP_START);
+export const startOf = (l: Leg) => l.start ?? (l.kind === 'boss' ? ARENA_START : STRIP_START);

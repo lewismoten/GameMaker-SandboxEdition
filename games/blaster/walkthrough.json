@@ -60,14 +60,18 @@
   },
   {
    "scene": 15,
-   "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQbJAFEE0QBJBMkARxLHPEgIyCJQBtACSQbJAE0GzQBJCskASATIAEcExw=="
+   "keys": "NUggyAZNZM0ASHTIAk1mzQBQCtAATT7NAEsSyw5IIMgATaYBzYoBTSzNAEuwA8sASPIDyARQQtAATQbNDEsGywBNCM0AUAbQAE0czQ=="
   },
   {
    "scene": 16,
-   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
+   "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQbJAFEE0QBJBMkARxLHPEgIyCJQBtACSQbJAE0GzQBJCskASATIAEcExw=="
   },
   {
    "scene": 17,
+   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
+  },
+  {
+   "scene": 18,
    "keys": "H08CzwpLBMsMTQLNBE0CzRJQCtAATwLPAEcExwBQCtAASATIBEgEyABJAskATQjNBlAE0ABPBs8ARwbHCFAC0ABIAsgAUAbQAFEG0QBJBMkASATIAkgCyAhNAs0CTQLNCEgCyABLCssGUATQAFEE0QBQAtAASQTJAFAK0ABPAs8ARwjHCEsCywpIAsgASQLJAE0IzQZQCNAATwbPAEgEyABHAscaTQTNDkgCyAhLAssASALIHk0CzQBIAsgUSwTLFk0CzT5NAs0CSArIAEcDxw=="
   }
  ],
@@ -126,20 +130,24 @@
   },
   {
    "scene": 15,
-   "title": "Stage 5: The CPU — The Pipeline"
+   "title": "Stage 5: The CPU — The Ribbon Cable"
   },
   {
    "scene": 16,
-   "title": "Stage 5: The CPU — The Core"
+   "title": "Stage 5: The CPU — The Pipeline"
   },
   {
    "scene": 17,
+   "title": "Stage 5: The CPU — The Core"
+  },
+  {
+   "scene": 18,
    "title": "Stage 5: The CPU — GLITCH"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 37620,
+  "frames": 44489,
   "chapters": [
    {
     "title": "Opening",
@@ -202,24 +210,28 @@
     "frame": 27511
    },
    {
-    "title": "Stage 5: The CPU — The Pipeline",
+    "title": "Stage 5: The CPU — The Ribbon Cable",
     "frame": 28722
    },
    {
+    "title": "Stage 5: The CPU — The Pipeline",
+    "frame": 35589
+   },
+   {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 30613
+    "frame": 37481
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 32221
+    "frame": 39090
    },
    {
     "title": "Ending",
-    "frame": 34413
+    "frame": 41282
    },
    {
     "title": "Credits",
-    "frame": 36065
+    "frame": 42934
    }
   ]
  }

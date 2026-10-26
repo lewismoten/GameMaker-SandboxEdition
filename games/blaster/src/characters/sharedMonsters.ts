@@ -2,7 +2,7 @@
 // change: the ship's shots and Nova bolts, sparks and explosions, the wreck that a dead
 // turret leaves behind, and the virus's bullets.
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, blob } from '../art/draw';
+import { CLEAR, blob, turn45 } from '../art/draw';
 import { POWER } from '../ids';
 import type { Bestiary } from './mons';
 import type { Pal } from '../art/pal';
@@ -108,9 +108,14 @@ function burstPic(p: Pal, k: number): Pixels {
 /** Bullet damage, enemy contact damage. */
 export const HURT = { bullet: -10, enemy: -10, core: -8, hazard: -6 } as const;
 
-export function addCommon(b: Bestiary, p: Pal): void {
+/** The shots fly up the screen, or (`diag`, the ribbon cable) up and to the right. */
+export function addCommon(b: Bestiary, p: Pal, aim: 'up' | 'diag' = 'up'): void {
   const mb = b.mb;
-  mb.add('shot', shotPic(p));
+  const diag = aim === 'diag';
+  // a path turned 45 degrees clockwise with the course
+  const turn = ([x, y, s]: [number, number, number]): [number, number, number] =>
+    diag ? [Math.round((x - y) * Math.SQRT1_2), Math.round((x + y) * Math.SQRT1_2), s] : [x, y, s];
+  mb.add('shot', diag ? turn45(shotPic(p), 1) : shotPic(p));
   mb.add('nova', orb(p, 3, 'gold', 1));
   mb.add('novaBig', orb(p, 4, 'gold', 2));
   mb.add('spark', sparkPic(p));
@@ -129,12 +134,12 @@ export function addCommon(b: Bestiary, p: Pal): void {
 
   const shot = { power: POWER.shot, thru: true, end: -1, becomes: 'spark' } as const;
   const ids = [
-    b.add('shot', { ...shot, pics: [['shot', 50]], path: [[0, -10, 12]] }),
-    b.add('novaL2', { ...shot, pics: [['nova', 50]], path: [[-7, -8, 9]] }),
-    b.add('novaL1', { ...shot, pics: [['nova', 50]], path: [[-3, -10, 10]] }),
-    b.add('novaC', { ...shot, pics: [['novaBig', 50]], path: [[0, -11, 11]] }),
-    b.add('novaR1', { ...shot, pics: [['nova', 50]], path: [[3, -10, 10]] }),
-    b.add('novaR2', { ...shot, pics: [['nova', 50]], path: [[7, -8, 9]] }),
+    b.add('shot', { ...shot, pics: [['shot', 50]], path: [diag ? [10, -10, 12] : [0, -10, 12]] }),
+    b.add('novaL2', { ...shot, pics: [['nova', 50]], path: [turn([-7, -8, 9])] }),
+    b.add('novaL1', { ...shot, pics: [['nova', 50]], path: [turn([-3, -10, 10])] }),
+    b.add('novaC', { ...shot, pics: [['novaBig', 50]], path: [turn([0, -11, 11])] }),
+    b.add('novaR1', { ...shot, pics: [['nova', 50]], path: [turn([3, -10, 10])] }),
+    b.add('novaR2', { ...shot, pics: [['nova', 50]], path: [turn([7, -8, 9])] }),
   ];
   if (ids.join() !== Object.values(SHOT_MON).join()) throw new Error('Shot monsters out of place');
   b.add('spark', { power: POWER.spark, end: 3, pics: [['spark', 50]] });

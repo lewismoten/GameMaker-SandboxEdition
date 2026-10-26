@@ -10,7 +10,7 @@
 import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
 import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, CLEAR, blob } from '../art/draw';
+import { BlockSet, CLEAR, blob, turn45 } from '../art/draw';
 import { DRIFT, KEY, SEQ, SND, START } from '../ids';
 import type { Pal } from '../art/pal';
 
@@ -90,6 +90,10 @@ export function shipBlocks(p: Pal): BlockSet {
   cb.add('ship1', shipPic(p, 1));
   cb.add('flash', shipPic(p, 0, true));
   for (let k = 0; k < 5; k++) cb.add(`die${k}`, deathPic(p, k));
+  // nose up and to the right, for the ribbon cable's slanted course (shipdiag.chr)
+  cb.add('shipD0', turn45(shipPic(p, 0), 0.97));
+  cb.add('shipD1', turn45(shipPic(p, 1), 0.97));
+  cb.add('flashD', turn45(shipPic(p, 0, true), 0.97));
   return cb;
 }
 
@@ -184,3 +188,71 @@ export function buildShip(cb: BlockSet, drift: number): Character {
 }
 
 export { DRIFT };
+
+/**
+ * shipdiag.chr, for the ribbon cable: the course runs corner to corner, so the drift is
+ * `drift` right and `drift` up every frame, and the keys turn with the view. Up speeds
+ * ahead along the track, Down nearly stops, Left climbs toward the wire above (mostly up)
+ * and Right toward the wire below (mostly right). Every move still fires, now up and to
+ * the right. Nothing ever moves left or down, so the screen only scrolls up and right.
+ */
+export function buildDiagShip(cb: BlockSet, drift: number): Character {
+  const c = buildShip(cb, drift);
+  const S = c.sequences;
+  const s0 = cb.id('shipD0');
+  const s1 = cb.id('shipD1');
+  const fl = cb.id('flashD');
+  const d = drift;
+  const fly = (x: number, y: number) => [frame(s0, x, y), frame(s1, x, y), birth(SHOT_MON.shot), frame(s0, x, y)];
+  const keep = (seq: number, frames: Frame[]) =>
+    setSeq(S[seq], frames, { key: S[seq].key, jstkMov: S[seq].jstkMov, jstkBut: S[seq].jstkBut, sound: S[seq].sound, norepeat: S[seq].norepeat });
+  const BOOST = 4;
+  // Left and Right step across the wires: 7 of their 9 pixels go sideways
+  const ahead: [number, number] = [d, -d];
+  const boost: [number, number] = [d + BOOST, -d - BOOST];
+  const brake: [number, number] = [1, -1];
+  const left: [number, number] = [2, -9];
+  const right: [number, number] = [9, -2];
+  keep(SEQ.idle, fly(...ahead));
+  keep(SEQ.die, [0, 1, 2, 3, 4].map((k) => frame(cb.id(`die${k}`), 1, -1, 2)).concat([frame(cb.id('die4'), 1, -1, 6)]));
+  keep(SEQ.hurt, [
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+    frame(fl, ...ahead),
+    birth(SHOT_MON.shot),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  keep(SEQ.pickup, [frame(s0, ...ahead)]);
+  keep(SEQ.drop, [frame(s0, ...ahead)]);
+  const moves: [number, [number, number]][] = [
+    [SEQ.up, boost],
+    [SEQ.down, brake],
+    [SEQ.left, left],
+    [SEQ.right, right],
+    [SEQ.upLeft, left],
+    [SEQ.upRight, boost],
+    [SEQ.downLeft, brake],
+    [SEQ.downRight, brake],
+    [SEQ.w, boost],
+    [SEQ.s, brake],
+    [SEQ.a, left],
+    [SEQ.d, right],
+    [SEQ.q, left],
+    [SEQ.e, boost],
+  ];
+  for (const [seq, [x, y]] of moves) keep(seq, fly(x, y));
+  keep(SEQ.nova, [
+    frame(fl, ...ahead),
+    birth(SHOT_MON.novaL2),
+    birth(SHOT_MON.novaL1),
+    birth(SHOT_MON.novaC),
+    birth(SHOT_MON.novaR1),
+    birth(SHOT_MON.novaR2),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  return c;
+}
