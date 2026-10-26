@@ -1,7 +1,8 @@
 // GMCRACK.EXE, from GMCRACK.ZIP in the BBS's Warez area: a 1995 scene-style "registration
 // doctor" for Game-Maker SE on the desk PC. It registers Game-Maker (writes C:\GM\PLAYGAME.REG
 // with a name and key), unregisters it (spoils the key, so CHK.EXE asks the manual again), has
-// a KEYGEN that works the key out as CHK.C checks it, and "cracks" shareware in C:\DOWNLOAD:
+// a KEYGEN that works the key out as CHK.C checks it, RESERIAL, which stamps a new serial number
+// into PLAYGAME.EXE (gmcrackSerial.ts), and "cracks" shareware in C:\DOWNLOAD:
 // a Game-Maker game's GAME.EXE is XFERPLAY.EXE named after the .GAM it plays (UTILITY.C's
 // transfer; PLAYGAME.C under TRANSFER loads argv[0]'s name + .GAM), so the crack renames it
 // GAME.BAK and puts a "patched" XFERPLAY in under the same GAME.EXE name, with the group's
@@ -17,23 +18,19 @@ import { attr, COLS, ROWS } from '../text/textScreen';
 import { toCp437 } from '../text/cp437';
 import { TOP, clearArea, frame, hint, sleep } from './cracktro';
 import { pcExtras } from './pcExtras';
-import { NAME_MAX, SERIAL, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';
+import { FACTORY_SERIAL, NAME_MAX, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';
+import { BAD_SERIAL, parseSerial, patchLine, randomSerial, regAfter, reserialCli } from './gmcrackSerial';
 import { QUESTIONS } from '../gmReg/copyCheck';
 import { GMCRACK_NFO, GREETINGS, GROUP, VERSION, bakName } from './gmcrackText';
 
 /** The keygen's name field: CHK.C's fgets keeps 28 letters of a 29-letter name, so 28 is the most that works. */
 const KEYGEN_MAX = NAME_MAX - 1;
 
-/** A key for a name, as CHK.EXE checks it against a copy's serial number (this PC's unless given). */
-const keygen = (name: string, serial = SERIAL): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), serial));
+/** This PC's serial number: the one in its PLAYGAME.EXE now. */
+const own = (): number => pcExtras().serial;
 
-/** A serial some other copy of Game-Maker could have: a counter times 1029, plus 4 (validSerial). */
-export function randomSerial(random = Math.random): number {
-  for (;;) {
-    const serial = (1 + Math.floor(random() * 9999)) * 1029 + 4;
-    if (serial !== SERIAL) return serial;
-  }
-}
+/** A key for a name, as CHK.EXE checks it against a copy's serial number (this PC's unless given). */
+const keygen = (name: string, serial = own()): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), serial));
 
 /**
  * The shareware games in C:\DOWNLOAD whose .EXE is still there: this project's own (the only
@@ -113,7 +110,7 @@ async function step(h: RetroHost, y: number, text: string, result = '|10OK', ms 
 }
 
 function status(): string {
-  const r = checkRegistration(pcExtras().reg);
+  const r = checkRegistration(pcExtras().reg, own());
   if (r.kind === 'registered') return `|10REGISTERED |07to |15${r.userName}`;
   if (r.kind === 'check') return '|12UNREGISTERED |07(the manual check at every start)';
   if (r.kind === 'missing') return '|12NO PLAYGAME.REG |07(GM will not start)';
@@ -122,7 +119,7 @@ function status(): string {
 
 async function menu(h: RetroHost): Promise<string> {
   clearArea(h);
-  put(h, 4, TOP, `|07Game-Maker SE 3.00 in |15C:\\GM|07, serial number |14${SERIAL}`);
+  put(h, 4, TOP, `|07Game-Maker SE 3.00 in |15C:\\GM|07, serial number |14${own()}${own() === FACTORY_SERIAL ? '' : ' |08(reserialed)'}`);
   put(h, 4, TOP + 1, `|07Status: ${status()}`);
   const items: [string, string][] = [
     ['1', 'Register Game-Maker'],
@@ -132,13 +129,14 @@ async function menu(h: RetroHost): Promise<string> {
     ['5', 'Uncrack a game'],
     ['6', 'Read GMCRACK.NFO'],
     ['7', 'Answer table (doc check)'],
+    ['8', 'RESERIAL PLAYGAME.EXE'],
   ];
   items.forEach(([k, label], i) => put(h, i < 4 ? 6 : 42, TOP + 3 + (i % 4), `|06[|14${k}|06] |15${label}`));
-  put(h, 42, TOP + 6, '|06[|14Q|06] |07Quit to DOS');
-  hint(h, 'Choose 1-7, or Q to quit');
+  put(h, 42, TOP + 7, '|06[|14Q|06] |07Quit to DOS');
+  hint(h, 'Choose 1-8, or Q to quit');
   for (;;) {
     const k = (await h.keys.next()).key.toUpperCase();
-    if ('1234567Q'.includes(k) && k.length === 1) return k;
+    if ('12345678Q'.includes(k) && k.length === 1) return k;
     if (k === 'ESCAPE') return 'Q';
   }
 }
@@ -156,8 +154,8 @@ async function register(h: RetroHost, name?: string, key?: string): Promise<void
   if (!k) return;
   entered(h, 10, TOP + 3, 12, k);
   await step(h, TOP + 5, 'Writing C:\\GM\\PLAYGAME.REG');
-  pcExtras().setReg(regFile(n, SERIAL, k));
-  const ok = checkRegistration(pcExtras().reg).kind === 'registered';
+  pcExtras().setReg(regFile(n, own(), k));
+  const ok = checkRegistration(pcExtras().reg, own()).kind === 'registered';
   put(h, 4, TOP + 7, ok ? `|10Done! |07Run |15GM|07: "Registered To: ${n}".` : '|12That key does not fit the name. |07GM will ask for the manual.');
   if (!ok) put(h, 4, TOP + 8, '|07Try |14[3] KEYGEN|07 for a key that works.');
   await anyKey(h);
@@ -166,12 +164,12 @@ async function register(h: RetroHost, name?: string, key?: string): Promise<void
 async function unregister(h: RetroHost): Promise<void> {
   clearArea(h);
   put(h, 4, TOP, '|14UNREGISTER |07Game-Maker');
-  const r = checkRegistration(pcExtras().reg);
+  const r = checkRegistration(pcExtras().reg, own());
   // keep the name on the first line of PLAYGAME.REG: CHK.EXE forgets it anyway with a bad key
   const name = (pcExtras().reg ?? '').split(/\r?\n/)[0] ?? '';
   await step(h, TOP + 2, 'Reading C:\\GM\\PLAYGAME.REG', r.kind === 'missing' ? '|12MISSING' : '|10OK');
   await step(h, TOP + 3, 'Spoiling the registration number');
-  pcExtras().setReg(regFile(name, SERIAL, '0'));
+  pcExtras().setReg(regFile(name, own(), '0'));
   put(h, 4, TOP + 5, '|07Game-Maker is |12UNREGISTERED|07. Next time GM starts it shows the serial');
   put(h, 4, TOP + 6, "|07number and asks for a word from the |15Owner's Guide|07: see |14[7] Answer table|07.");
   put(h, 4, TOP + 8, "|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won't start at all;");
@@ -179,22 +177,28 @@ async function unregister(h: RetroHost): Promise<void> {
   await anyKey(h);
 }
 
-async function keygenScreen(h: RetroHost): Promise<void> {
+/**
+ * KEYGEN: a key for a name and a serial (this PC's, or with R some other copy's). Given
+ * `fixed` (RESERIAL's "make a key now") it skips choosing the serial and registers straight away.
+ */
+async function keygenScreen(h: RetroHost, fixed?: number): Promise<void> {
   clearArea(h);
   put(h, 4, TOP, `|14KEYGEN |07by PiXEL WiZARD/${GROUP}: a key for any name and serial`);
   // a copy's serial is a counter times 1029, plus 4: R makes up another copy's
-  let serial = SERIAL;
+  let serial = fixed ?? own();
   const showSerial = () =>
-    put(h, 4, TOP + 2, `|07Serial: |14${String(serial).padEnd(10)}|08${serial === SERIAL ? "(this PC's copy)    " : '(some other copy)   '}`);
+    put(h, 4, TOP + 2, `|07Serial: |14${String(serial).padEnd(10)}|08${serial === own() ? "(this PC's copy)    " : '(some other copy)   '}`);
   showSerial();
-  hint(h, "R: another copy's serial (counter x 1029 + 4).  Enter: go on.  Esc: back");
-  for (;;) {
-    const k = (await h.keys.next()).key.toUpperCase();
-    if (k === 'ESCAPE') return;
-    if (k === 'ENTER') break;
-    if (k === 'R') serial = randomSerial();
-    else if (k === 'T') serial = SERIAL;
-    showSerial();
+  if (fixed === undefined) {
+    hint(h, "R: another copy's serial (counter x 1029 + 4).  Enter: go on.  Esc: back");
+    for (;;) {
+      const k = (await h.keys.next()).key.toUpperCase();
+      if (k === 'ESCAPE') return;
+      if (k === 'ENTER') break;
+      if (k === 'R') serial = randomSerial(own());
+      else if (k === 'T') serial = own();
+      showSerial();
+    }
   }
   put(h, 4, TOP + 3, '|07Name:   ');
   hint(h, 'Type the name exactly as it will be registered, then Enter.  Esc goes back.');
@@ -208,17 +212,75 @@ async function keygenScreen(h: RetroHost): Promise<void> {
   }
   const key = keygen(name, serial);
   put(h, 4, TOP + 4, `|07Key:    |14${key.padEnd(10)}`);
-  if (serial !== SERIAL) {
-    // CHK.EXE reads the serial out of this copy's PLAYGAME.EXE, so only its own serial registers it
-    put(h, 4, TOP + 6, "|07That key fits the other copy's serial, not this PC's: its serial");
-    put(h, 4, TOP + 7, '|07is built into PLAYGAME.EXE. |08(T at the serial goes back to this one.)');
-    await anyKey(h);
-    return;
+  if (fixed !== undefined) {
+    await sleep(500);
+    return register(h, name, key);
+  }
+  if (serial !== own()) {
+    // CHK.EXE reads the serial out of this copy's PLAYGAME.EXE: stamp this one in and the key fits
+    put(h, 4, TOP + 6, `|07That key fits serial |14${serial}|07, not the |14${own()}|07 in this PC's`);
+    put(h, 4, TOP + 7, `|07PLAYGAME.EXE. Stamp |14${serial}|07 into it and register? |15[y/N]`);
+    hint(h, 'Y stamps the serial in (RESERIAL) and registers with the key.  N goes back.');
+    if ((await h.keys.next()).key.toUpperCase() !== 'Y') return;
+    await stamp(h, serial);
+    await sleep(900);
+    return register(h, name, key);
   }
   put(h, 4, TOP + 6, '|07Register Game-Maker with it now? |15[Y/n]');
   hint(h, 'Y registers now (or write it on the registration card for GM REGISTER)');
   const k = (await h.keys.next()).key.toUpperCase();
   if (k !== 'N' && k !== 'ESCAPE') await register(h, name, key);
+}
+
+/** Writes serial `to` into PLAYGAME.EXE at PLAYBYTE+30, with the show, and says what it does to PLAYGAME.REG. */
+async function stamp(h: RetroHost, to: number): Promise<void> {
+  const from = own();
+  clearArea(h);
+  put(h, 4, TOP, `|14RESERIAL |07PLAYGAME.EXE: |15${from} |07-> |14${to}`);
+  await step(h, TOP + 2, 'Opening C:\\GM\\PLAYGAME.EXE');
+  await step(h, TOP + 3, `Patching the serial at offset ${patchLine(from, to).split(' ')[0]}`, '|10OK', 900);
+  put(h, 6, TOP + 4, `|08${patchLine(from, to)}`);
+  pcExtras().setSerial(to);
+  put(h, 4, TOP + 6, `|10Done! |07Serial number |14${to}${to === FACTORY_SERIAL ? ' |08(the factory serial)' : ''}`);
+  regAfter(pcExtras().reg, to).forEach((l, i) => put(h, 4, TOP + 7 + i, `|${checkRegistration(pcExtras().reg, to).kind === 'bad' ? '12' : '07'}${l}`));
+}
+
+/** RESERIAL: a new serial number for this PC's copy (random, typed in, or the factory one). */
+async function reserialScreen(h: RetroHost): Promise<void> {
+  clearArea(h);
+  put(h, 4, TOP, `|14RESERIAL |07by vesuvian/${GROUP}: a new serial number in PLAYGAME.EXE`);
+  put(h, 4, TOP + 2, `|07Serial now: |14${own()} |08${own() === FACTORY_SERIAL ? '(the factory serial)' : '(reserialed)'}`);
+  put(h, 4, TOP + 4, `|06[|14R|06] |15a random serial   |06[|14T|06] |15type one in   |06[|14F|06] |15factory (${FACTORY_SERIAL})`);
+  hint(h, 'R, T or F.  Esc goes back.');
+  let to: number | undefined;
+  for (;;) {
+    const k = (await h.keys.next()).key.toUpperCase();
+    if (k === 'ESCAPE') return;
+    if (k === 'R') to = randomSerial(own());
+    else if (k === 'F') to = FACTORY_SERIAL;
+    else if (k === 'T') {
+      put(h, 4, TOP + 6, '|07New serial: ');
+      hint(h, 'A serial is a counter x 1029, plus 4.  Enter stamps it in.  Esc goes back.');
+      for (;;) {
+        const typed = await field(h, 16, TOP + 6, 10, true);
+        if (typed === null) return;
+        to = parseSerial(typed);
+        if (to !== undefined) break;
+        put(h, 4, TOP + 7, `|12${BAD_SERIAL}`);
+      }
+    } else continue;
+    break;
+  }
+  if (to === own()) {
+    put(h, 4, TOP + 8, `|07PLAYGAME.EXE has serial |14${to}|07 already.`);
+    return anyKey(h);
+  }
+  await stamp(h, to);
+  if (checkRegistration(pcExtras().reg, to).kind === 'registered') return anyKey(h);
+  put(h, 4, TOP + 10, '|07Make a key for the new serial and register now? |15[Y/n]');
+  hint(h, 'Y: KEYGEN for the new serial, then register.  N goes back.');
+  const k = (await h.keys.next()).key.toUpperCase();
+  if (k !== 'N' && k !== 'ESCAPE') await keygenScreen(h, to);
 }
 
 async function pickGame(h: RetroHost, games: CatalogEntry[], title: string): Promise<CatalogEntry | undefined> {
@@ -336,13 +398,16 @@ function usage(h: RetroHost): void {
   const p = (t: string) => h.screen.print(`${toCp437(t)}\n`);
   p(`GMCRACK v${VERSION}  (c) 1995 ${GROUP}`);
   p('');
-  p('  GMCRACK            the menu: register, unregister, KEYGEN, crack, uncrack');
+  p('  GMCRACK            the menu: register, unregister, KEYGEN, crack, RESERIAL');
   p('  GMCRACK /K name    prints the registration key for a name');
   p('  GMCRACK /R name    the same for a made-up serial of some other copy');
+  p('  GMCRACK /S         RESERIAL: stamps a random serial into PLAYGAME.EXE');
+  p('  GMCRACK /S number  stamps that serial in (a counter x 1029, plus 4)');
+  p('  GMCRACK /S F       puts the factory serial back');
   p('  GMCRACK /?         this help');
 }
 
-/** GMCRACK.EXE [/K name] [/?] */
+/** GMCRACK.EXE [/K name] [/R name] [/S [serial | F]] [/?] */
 export async function runGmCrack(h: RetroHost, args: string[]): Promise<void> {
   await pcExtras().ready;
   const sw = args[0]?.toUpperCase();
@@ -350,8 +415,12 @@ export async function runGmCrack(h: RetroHost, args: string[]): Promise<void> {
   if (sw === '/K' || sw === '-K' || sw === '/R' || sw === '-R') {
     const name = args.slice(1).join(' ');
     if (!name) return usage(h);
-    const serial = sw.endsWith('R') ? randomSerial() : SERIAL;
+    const serial = sw.endsWith('R') ? randomSerial(own()) : own();
     h.screen.print(`${toCp437(`Name: ${name.slice(0, KEYGEN_MAX)}\nKey:  ${keygen(name, serial)}   (serial ${serial})`)}\n`);
+    return;
+  }
+  if (sw === '/S' || sw === '-S') {
+    for (const l of reserialCli(args[1], pcExtras())) h.screen.print(`${toCp437(l)}\n`);
     return;
   }
   const stop = frame(h);
@@ -366,6 +435,7 @@ export async function runGmCrack(h: RetroHost, args: string[]): Promise<void> {
       else if (k === '5') await uncrack(h);
       else if (k === '6') await readNfo(h);
       else if (k === '7') await answerTable(h);
+      else if (k === '8') await reserialScreen(h);
     }
   } finally {
     stop();

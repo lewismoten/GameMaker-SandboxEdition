@@ -7,7 +7,9 @@ import { ACCESS_CODE, WAREZ, accessOk, fileSize, pointsFor, zipsOf } from '../sr
 import { GM30_NFO, GM30_REG_NAME, GM30_REG_NUMBER, GM30_SERIAL } from '../src/retro/hacks/gm30Text';
 import { GMCRACK_NFO } from '../src/retro/hacks/gmcrackText';
 import { isGmDir, registrationLines } from '../src/retro/hacks/gm30Install';
-import { checkRegistration, DEFAULT_REG, regFile, registrationNumber, SERIAL, validSerial } from '../src/retro/gmReg/registration';
+import { checkRegistration, defaultReg, regFile, registrationNumber, FACTORY_SERIAL as SERIAL, validSerial } from '../src/retro/gmReg/registration';
+
+const DEFAULT_REG = defaultReg(SERIAL);
 
 describe('the Warez area', () => {
   it('holds GMCRACK, SAVEHACK and Game-Maker 3.00', () => {
@@ -56,14 +58,14 @@ describe("GM30's INSTALL", () => {
   });
 
   it('reports the registration CHK.EXE would see', () => {
-    expect(registrationLines(regFile('Gwinn', SERIAL, String(registrationNumber('Gwinn', SERIAL))))[0]).toBe('Registered To: Gwinn');
-    expect(registrationLines(DEFAULT_REG)[0]).toContain('Unregistered');
-    expect(registrationLines(null)[0]).toContain('missing');
+    expect(registrationLines(regFile('Gwinn', SERIAL, String(registrationNumber('Gwinn', SERIAL))), SERIAL)[0]).toBe('Registered To: Gwinn');
+    expect(registrationLines(DEFAULT_REG, SERIAL)[0]).toContain('Unregistered');
+    expect(registrationLines(null, SERIAL)[0]).toContain('missing');
   });
 
   it("ships a registration that only fits its own copy's serial", () => {
     expect(validSerial(GM30_SERIAL)).toBe(true);
     expect(checkRegistration(regFile(GM30_REG_NAME, GM30_SERIAL, String(GM30_REG_NUMBER)), GM30_SERIAL).kind).toBe('registered');
-    expect(checkRegistration(regFile(GM30_REG_NAME, GM30_SERIAL, String(GM30_REG_NUMBER))).kind).toBe('bad');
+    expect(checkRegistration(regFile(GM30_REG_NAME, GM30_SERIAL, String(GM30_REG_NUMBER)), SERIAL).kind).toBe('bad');
   });
 });

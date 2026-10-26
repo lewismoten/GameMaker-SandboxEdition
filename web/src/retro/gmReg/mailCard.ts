@@ -4,7 +4,7 @@
 // your name and mail it; a few days later RSD's reply comes back with the registration number
 // TELLREG#.C worked out for that name and this copy's serial number. The reply is kept on the
 // desk (this browser) so it is still there the next time GM asks.
-import { CARD_NAME_MAX, SERIAL, registrationNumber } from './registration';
+import { CARD_NAME_MAX, registrationNumber } from './registration';
 
 /** RSD's reply address on the card: the town is real (see NOTICE), the street is made up. */
 export const RSD_ADDRESS = ['Recreational Software Designs', 'Registration Dept. GM-30', '1 Joystick Way', 'Amherst, NH'] as const;
@@ -44,20 +44,20 @@ export function mailCheck(name: string): string | undefined {
   return undefined;
 }
 
-/** RSD's registration department answers a mailed card. */
-export function replyTo(card: MailedCard): Reply {
+/** RSD's registration department answers a mailed card printed with `serial`. */
+export function replyTo(card: MailedCard, serial: number): Reply {
   const name = card.name.trim();
-  return { name, number: String(registrationNumber(name, SERIAL)), serial: SERIAL };
+  return { name, number: String(registrationNumber(name, serial)), serial };
 }
 
 const KEY = 'gm-reg-reply';
 
-/** The reply on the desk from an earlier visit, or undefined. */
-export function savedReply(): Reply | undefined {
+/** The reply on the desk from an earlier visit, or undefined (or when it was for another serial). */
+export function savedReply(serial: number): Reply | undefined {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) ?? 'null') as Partial<Reply> | null;
-    if (!v || typeof v.name !== 'string' || !v.name.trim() || v.serial !== SERIAL) return undefined;
-    return replyTo({ name: v.name }); // worked out again, so it always fits
+    if (!v || typeof v.name !== 'string' || !v.name.trim() || v.serial !== serial) return undefined;
+    return replyTo({ name: v.name }, serial); // worked out again, so it always fits
   } catch {
     return undefined;
   }

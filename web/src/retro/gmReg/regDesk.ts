@@ -13,6 +13,8 @@ export type RegAsk =
 
 export interface RegDesk {
   ask: RegAsk;
+  /** The serial number CHK.EXE read out of PLAYGAME.EXE: printed on the card, and what RSD's reply must fit. */
+  serial: number;
   /** Writes PLAYGAME.REG as regi() did and lets GM go on; a message in plain words when it can't. */
   apply(name: string, number: string): string | undefined;
   /** Types on GM's keyboard (for a phone with no keyboard: the copy check's answer). */

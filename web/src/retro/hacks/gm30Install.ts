@@ -5,7 +5,7 @@
 // to have a CRC error. Either way it changes nothing on the desk PC.
 import type { RetroHost } from '../host';
 import { attr, ROWS } from '../text/textScreen';
-import { checkRegistration, SERIAL } from '../gmReg/registration';
+import { checkRegistration } from '../gmReg/registration';
 import { pcExtras } from './pcExtras';
 import { BG, BRIGHT, DIM, GREEN, HEAD, RED, TEXT, YELLOW, editLine, frame, keyBar, messageBox, num, put, statusLine } from './dosUi';
 import { GM30_PARTS, GM30_SERIAL } from './gm30Text';
@@ -27,15 +27,15 @@ async function findC(h: RetroHost, parts: string[]): Promise<DosNode | undefined
 }
 
 /** What INSTALL says about the registration it found in C:\GM\PLAYGAME.REG. */
-export function registrationLines(reg: string | null): string[] {
-  const r = checkRegistration(reg);
+export function registrationLines(reg: string | null, serial: number): string[] {
+  const r = checkRegistration(reg, serial);
   if (r.kind === 'registered')
     return [
       `Registered To: ${r.userName}`,
-      `(serial ${num(SERIAL)}; this release is ${num(GM30_SERIAL)}, copy #1337,`,
+      `(serial ${num(serial)}; this release is ${num(GM30_SERIAL)}, copy #1337,`,
       'so its registration in GM30.NFO would not fit yours anyway)',
     ];
-  if (r.kind === 'check') return [`Unregistered (serial ${num(SERIAL)}): GM asks a word from`, "the manual every time. GMCRACK's KEYGEN knows the number."];
+  if (r.kind === 'check') return [`Unregistered (serial ${num(serial)}): GM asks a word from`, "the manual every time. GMCRACK's KEYGEN knows the number."];
   return ['PLAYGAME.REG is missing or bad, so GM will not start!', 'GMCRACK can register it again (or GM REGISTER).'];
 }
 
@@ -108,7 +108,7 @@ export async function runWarezInstall(h: RetroHost): Promise<void> {
         'Game-Maker is already installed in C:\\GM!',
         '',
         `Found: Game-Maker: Sandbox Edition 3.00, ${games} game folder${games === 1 ? '' : 's'}.`,
-        ...registrationLines(store.reg),
+        ...registrationLines(store.reg, store.serial),
         '',
         'This release is plain 3.00, older than yours. Installing',
         'over it would undo the Sandbox Edition and your games,',

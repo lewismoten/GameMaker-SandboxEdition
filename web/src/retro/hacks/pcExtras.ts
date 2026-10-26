@@ -1,9 +1,9 @@
 // What GMCRACK and Game-Maker's registration changed on the retro PC, kept in the browser
 // beside C:'s download lists (retro/dos/cDriveStore.ts): C:\GM\PLAYGAME.REG (or that it was
-// deleted), the copy-protection question PLAYGAME.EXE remembers for the next start, and the
-// shareware games GMCRACK "cracked" in C:\DOWNLOAD (with when, for DIR's date).
+// deleted), the copy-protection question PLAYGAME.EXE remembers for the next start, the serial
+// number in PLAYGAME.EXE (GMCRACK's RESERIAL stamps a new one there), and the shareware games GMCRACK "cracked" in C:\DOWNLOAD (with when, for DIR's date).
 import { idbRecord } from '../dos/cDriveStore';
-import { DEFAULT_REG, checkRegistration } from '../gmReg/registration';
+import { FACTORY_SERIAL, checkRegistration, defaultReg, validSerial } from '../gmReg/registration';
 import { unlockAchievement } from '../../achievements';
 
 export interface PcExtrasState {
@@ -11,6 +11,8 @@ export interface PcExtrasState {
   reg?: string | null;
   /** The copy-protection question for the next start (the byte CHK.C kept in PLAYGAME.EXE). */
   question?: number;
+  /** The serial number in PLAYGAME.EXE at PLAYBYTE+30; undefined: as it came (FACTORY_SERIAL). */
+  serial?: number;
   /** Cracked shareware ids, with Date.now() of the crack. */
   cracked?: [string, number][];
 }
@@ -45,12 +47,25 @@ export class PcExtras {
 
   /** C:\GM\PLAYGAME.REG, or null when there is none. */
   get reg(): string | null {
-    return this.s.reg === undefined ? DEFAULT_REG : this.s.reg;
+    return this.s.reg === undefined ? defaultReg(FACTORY_SERIAL) : this.s.reg;
   }
 
   setReg(text: string | null): void {
-    if (text && checkRegistration(text).kind === 'registered') unlockAchievement('desk-register');
+    if (text && checkRegistration(text, this.serial).kind === 'registered') unlockAchievement('desk-register');
     this.s.reg = text;
+    this.persist();
+  }
+
+  /** This copy's serial number, as CHK.EXE reads it out of PLAYGAME.EXE. */
+  get serial(): number {
+    const n = this.s.serial;
+    return n !== undefined && Number.isInteger(n) && n < 2 ** 32 && validSerial(n) ? n : FACTORY_SERIAL;
+  }
+
+  /** GMCRACK's RESERIAL: a new serial in PLAYGAME.EXE (FACTORY_SERIAL puts the original back). */
+  setSerial(serial: number): void {
+    if (!validSerial(serial)) return;
+    this.s.serial = serial === FACTORY_SERIAL ? undefined : serial;
     this.persist();
   }
 

@@ -10,8 +10,22 @@
 // PLAYGAME.REG at all, or one for another copy's serial number, GM won't start.
 import { toCp437 } from '../text/cp437';
 
-/** ADDREG#.CPP: serial = counter * 1029 + 4 ("ser-4 must be a multiple of 1029"). This PC's copy is number 1995. */
-export const SERIAL = 1995 * 1029 + 4;
+/**
+ * ADDREG#.CPP: serial = counter * 1029 + 4 ("ser-4 must be a multiple of 1029"). This PC's copy
+ * came as number 1995; GMCRACK's RESERIAL can stamp another into its PLAYGAME.EXE, so the desk
+ * keeps the current one (pcExtras().serial) and everything here is handed it.
+ */
+export const FACTORY_SERIAL = 1995 * 1029 + 4;
+
+/** BYTENUMS.H: where CHK.C keeps its byte in PLAYGAME.EXE; the serial is 30 bytes on (PLAYBYTE+30). */
+export const PLAYBYTE = 0x1800;
+export const SERIAL_OFFSET = PLAYBYTE + 30;
+
+/** GetMoreData(): the four bytes at PLAYBYTE+30 as the file holds them, read in the order 1, 3, 4, 2 of the long. */
+export function serialBytes(serial: number): number[] {
+  const b = [0, 8, 16, 24].map((s) => (serial >>> s) & 255);
+  return [b[0], b[2], b[3], b[1]];
+}
 
 /** CHK.C regi(): the name field is 30 wide, then name[29]=0 keeps 29 characters. */
 export const NAME_MAX = 29;
@@ -62,7 +76,7 @@ type RegCheck =
   | { kind: 'check'; userName: string }; // the manual check, then "Registered To: <serial>"
 
 /** CHK.C firststart() with GetRegistData() and GetMoreData(): what GM does at startup. */
-export function checkRegistration(file: string | null | undefined, serial = SERIAL): RegCheck {
+export function checkRegistration(file: string | null | undefined, serial: number): RegCheck {
   if (file == null) return { kind: 'missing' };
   const text = file.replace(/\r\n/g, '\n'); // "rt": text mode
   // fgets(name,30,fp): up to 29 characters, or through the newline; then the last one is cut
@@ -86,7 +100,7 @@ export function checkRegistration(file: string | null | undefined, serial = SERI
  * shape, with a number that doesn't fit). So GM asks a word from the manual at every start
  * until the card is filled in: GM REGISTER, or the registration card beside the monitor.
  */
-export const DEFAULT_REG = regFile('', SERIAL, '0');
+export const defaultReg = (serial: number): string => regFile('', serial, '0');
 
 /** The longest name whose number works: CHK.C's fgets keeps 28 letters of a 29-letter name. */
 export const CARD_NAME_MAX = NAME_MAX - 1;
@@ -96,14 +110,14 @@ export const CARD_NAME_MAX = NAME_MAX - 1;
  * before writing PLAYGAME.REG as regi() did. The number is the reply to the mailed card
  * (registrationNumber), so one that doesn't fit the name is turned away rather than written.
  */
-export function cardCheck(name: string, number: string): string | undefined {
+export function cardCheck(name: string, number: string, serial: number): string | undefined {
   const n = name.trim();
   const k = number.trim();
   if (!n) return 'Write your name on the card first.';
   if (n.length > CARD_NAME_MAX) return `The name can be at most ${CARD_NAME_MAX} letters long.`;
   if (!k) return 'Write the registration number from the reply card. No number yet? Mail the card.';
   if (!/^\d+$/.test(k)) return 'The registration number is digits only.';
-  if (Number(k) !== registrationNumber(n, SERIAL))
+  if (Number(k) !== registrationNumber(n, serial))
     return 'That number doesn’t fit this name. Write the name exactly as on the reply card, or mail the card again.';
   return undefined;
 }

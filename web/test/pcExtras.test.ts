@@ -2,7 +2,9 @@
 // deleted), and merging what was stored.
 import { describe, expect, it } from 'vitest';
 import { PcExtras, type PcExtrasState } from '../src/retro/hacks/pcExtras';
-import { DEFAULT_REG, checkRegistration } from '../src/retro/gmReg/registration';
+import { FACTORY_SERIAL as SERIAL, defaultReg, checkRegistration } from '../src/retro/gmReg/registration';
+
+const DEFAULT_REG = defaultReg(SERIAL);
 
 const memory = (start?: PcExtrasState) => {
   let v = start;
@@ -15,7 +17,7 @@ describe('PcExtras', () => {
     const x = new PcExtras(store);
     await x.ready;
     expect(x.reg).toBe(DEFAULT_REG);
-    expect(checkRegistration(x.reg).kind).toBe('check');
+    expect(checkRegistration(x.reg, SERIAL).kind).toBe('check');
     x.setReg(null);
     await x.saved();
     const again = new PcExtras(store);
@@ -33,5 +35,23 @@ describe('PcExtras', () => {
     expect(store.get()?.question).toBe(3);
     x.setCracked('teddy', false);
     expect(x.cracked('teddy')).toBeUndefined();
+  });
+
+  it('keeps the serial in PLAYGAME.EXE, factory unless RESERIAL changed it', async () => {
+    const store = memory();
+    const x = new PcExtras(store);
+    await x.ready;
+    expect(x.serial).toBe(SERIAL);
+    x.setSerial(SERIAL + 1); // not a serial: ignored
+    expect(x.serial).toBe(SERIAL);
+    x.setSerial(7 * 1029 + 4);
+    await x.saved();
+    const again = new PcExtras(store);
+    await again.ready;
+    expect(again.serial).toBe(7 * 1029 + 4);
+    again.setSerial(SERIAL);
+    await again.saved();
+    expect(store.get()?.serial).toBeUndefined();
+    expect(new PcExtras(memory({ serial: 12 })).serial).toBe(SERIAL); // a bad stored one reads as factory
   });
 });

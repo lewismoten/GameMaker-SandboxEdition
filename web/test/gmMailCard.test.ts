@@ -1,6 +1,6 @@
 // The mail-in registration card: what it asks, the number it brings back, and no real address.
 import { describe, expect, it } from 'vitest';
-import { CARD_NAME_MAX, SERIAL, cardCheck, checkRegistration, regFile } from '../src/retro/gmReg/registration';
+import { CARD_NAME_MAX, FACTORY_SERIAL as SERIAL, cardCheck, checkRegistration, regFile } from '../src/retro/gmReg/registration';
 import { OWNER_ADDRESS, RSD_ADDRESS, mailCheck, replyTo } from '../src/retro/gmReg/mailCard';
 
 describe('the mail-in registration card', () => {
@@ -12,11 +12,11 @@ describe('the mail-in registration card', () => {
 
   it('comes back with a registration number GM accepts', () => {
     for (const name of ['Teddy', '  Gwinn ', 'Doc Leo', 'Z'.repeat(CARD_NAME_MAX)]) {
-      const reply = replyTo({ name, bought: 'Post office', computer: '386' });
+      const reply = replyTo({ name, bought: 'Post office', computer: '386' }, SERIAL);
       expect(reply.name).toBe(name.trim());
       expect(reply.serial).toBe(SERIAL);
-      expect(cardCheck(reply.name, reply.number)).toBeUndefined();
-      expect(checkRegistration(regFile(reply.name, SERIAL, reply.number))).toEqual({ kind: 'registered', userName: reply.name });
+      expect(cardCheck(reply.name, reply.number, SERIAL)).toBeUndefined();
+      expect(checkRegistration(regFile(reply.name, SERIAL, reply.number), SERIAL)).toEqual({ kind: 'registered', userName: reply.name });
     }
   });
 
