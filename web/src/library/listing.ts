@@ -2,9 +2,10 @@
 // box (manual/printables/items.ts), the Bard of Bizarre's games' maps, the Game-Maker box's
 // Owner's Guide and paper (gmItems.ts), and the site's own reading (siteShelf.ts). Each piece
 // keeps the way to draw its first sheet, for the card's thumbnail (thumbs.ts). Each game's
-// walkthrough is listed too (walkShelf.ts), and the videos about the site (videos.ts).
+// walkthrough is listed too (walkShelf.ts), and the videos about the site (videos.ts). A secret
+// game is on it only once revealed in this browser: the catalog (loadCatalog) lists it then.
 import type { CatalogEntry } from '../project/files';
-import { isSandboxGame } from '../project/files';
+import { isSandboxGame, loadCatalog } from '../project/files';
 import { isOldSecret } from '../project/secretGames';
 import type { BoxItem } from '../manual/printables/viewer';
 import type { PrintContext, Sheet } from '../manual/printables/kit';
@@ -28,22 +29,6 @@ export interface Shelf {
 /** The pieces a game without a box has (gameManual.ts openGameMaps). */
 const MAP_PIECES = new Set(['worldmap', 'levelmaps']);
 
-/**
- * The catalog as the site serves it (games/index.json, as the magazine reads it): it never
- * lists a secret game, and shelfGames drops any an older dev server still lists.
- */
-let catalog: Promise<CatalogEntry[]> | undefined;
-function loadEntries(): Promise<CatalogEntry[]> {
-  catalog ??= fetch('./games/index.json')
-    .then((r) => (r.ok ? (r.json() as Promise<CatalogEntry[]>) : []))
-    .catch(() => [] as CatalogEntry[])
-    .then((list) => {
-      if (!list.length) catalog = undefined; // nothing came: ask again next time
-      return list;
-    });
-  return catalog;
-}
-
 /** Whether the desk's toy whistle has been picked up (its zine found). */
 async function zineFound(): Promise<boolean> {
   try {
@@ -56,17 +41,20 @@ async function zineFound(): Promise<boolean> {
 
 export async function loadShelf(): Promise<Shelf> {
   const [entries, zine, { boxItems }, { gmBoxItems }, { shotCache }, { levelMaps }] = await Promise.all([
-    loadEntries(),
+    loadCatalog().catch(() => [] as CatalogEntry[]),
     zineFound(),
     import('../manual/printables/items'),
     import('../manual/printables/gmItems'),
     import('../manual/printables/kit'),
     import('../manual/printables/levelMaps'),
   ]);
-  const { boxed, maps } = shelfGames(entries);
+  // the catalog lists a secret game only once it is revealed in this browser (secretGames.ts)
+  const unlocked = new Set(entries.filter((e) => isOldSecret(e.id)).map((e) => e.id));
+  const { boxed, maps } = shelfGames(entries, unlocked);
   // the walkthroughs' lengths load while the boxes are listed
   const walks = walkShelf([...boxed, ...maps]);
-  const family = entries.filter((e) => isSandboxGame(e) && !isOldSecret(e.id));
+  // the boxes' family, as the boxes themselves count it (gameManual.ts, dosManual.ts), so the Scoop's numbers match
+  const family = entries.filter(isSandboxGame);
   const items: ShelfItem[] = [];
   const thumbs = new Map<string, () => Promise<Sheet | undefined>>();
   const games = new Map<string, CatalogEntry>();

@@ -339,9 +339,10 @@ modules are in [`../test`](../test).
   YouTube's automatic captions by `../scripts/videoTranscript.ts` (see Build-time code).
   `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
   keyboard reference, registration, business and ID, and license and warranty cards and hint
-  book postcards; the games, never a secret one, and the two
+  book postcards; the games, a secret one only once revealed in this browser, and the two
   sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once
-  found), `listing.ts` builds it from the catalog and the boxes' pieces, `thumbs.ts` draws each
+  found), `listing.ts` builds it from the catalog (`loadCatalog`) and the boxes' pieces, and the
+  page lists it afresh when a secret game is revealed or hidden (`catalogWatch.ts`), `thumbs.ts` draws each
   card's first sheet while it is near the window, one at a time and giving the browser back between
   them (`covers.ts` draws just the cover of manuals, hint books and TURBO BUTTON), `shared.ts` lists once the pieces the same in
   every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is

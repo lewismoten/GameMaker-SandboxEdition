@@ -1,5 +1,5 @@
 // The Library's list: what kind of paper each piece is, the two sorts, which games it lists
-// (never a secret one), and the site's own reading.
+// (a secret one only once revealed), and the site's own reading.
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import type { CatalogEntry } from '../project/files';
@@ -105,12 +105,32 @@ describe('the Library’s games', () => {
     expect(listed).toEqual(['teddy']);
   });
 
-  it('reads the catalog the site serves, never the secret games’ list', () => {
+  it('lists a secret game once it is unlocked: boxed with its manual, else its maps', () => {
+    const secret = secretIds();
+    const manualless = (id: string): CatalogEntry => ({ ...boxed(id), original: {} });
+    // each id both ways, as a stub: unlocked, every one is on the shelf in one of the two lists
+    for (const id of secret) {
+      const unlocked = new Set([id]);
+      expect(shelfGames([boxed(id), boxed('teddy')], unlocked).boxed.map((g) => g.id)).toEqual(expect.arrayContaining([id, 'teddy']));
+      expect(shelfGames([manualless(id)], unlocked).maps.map((g) => g.id)).toEqual([id]);
+      // an unlocked one doesn't let in another still hidden
+      const others = secret.filter((o) => o !== id);
+      const listed = shelfGames([...others.map((o) => boxed(o)), ...others.map((o) => manualless(o))], unlocked);
+      expect([...listed.boxed, ...listed.maps]).toEqual([]);
+    }
+  });
+
+  it('a game without a manual that isn’t secret gets no maps unless it is the Bard’s', () => {
+    expect(shelfGames([{ ...boxed('x'), original: {} }], new Set(['x'])).maps).toEqual([]);
+  });
+
+  it('reads the catalog only through loadCatalog, which lists a secret game once revealed', () => {
     const dir = new URL('./', import.meta.url);
     for (const f of readdirSync(dir).filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))) {
       const src = readFileSync(new URL(f, dir), 'utf8');
-      expect(src, f).not.toMatch(/extra\.json|loadCatalog|loadGameList|withSecretGames/);
+      expect(src, f).not.toMatch(/extra[-.]|index\.json|catalog\.json|loadGameList|withSecretGames|secretsRevealed/);
     }
+    expect(readFileSync(new URL('listing.ts', dir), 'utf8')).toMatch(/loadCatalog\(/);
   });
 });
 

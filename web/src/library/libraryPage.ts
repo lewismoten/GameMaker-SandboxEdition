@@ -16,6 +16,10 @@ import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedO
 import { forgetThumbs, lazyThumb } from './thumbs';
 import { tally, unlockAchievement } from '../achievements';
 import { openFromLibrary, readerOpen } from './readerAddress';
+import { onCatalogChanged } from '../project/catalogWatch';
+
+/** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
+let unwatchShelf: (() => void) | undefined;
 
 const ORDERS: [ShelfOrder, string][] = [
   ['game', 'By game'],
@@ -264,4 +268,16 @@ export function renderLibrary(el: HTMLElement): void {
       if (list.isConnected) show();
     })
     .catch(() => list.replaceChildren(h('p', { class: 'lib-loading' }, 'The shelves could not be loaded. Try reloading the page.')));
+  // a secret game revealed or hidden again (the felt eggs, the tin hearts, EGG.EXE): its pieces join or leave without a reload
+  unwatchShelf?.();
+  const unwatch = (unwatchShelf = onCatalogChanged(() => {
+    if (!list.isConnected) return unwatch();
+    void loadShelf()
+      .then((s) => {
+        if (!list.isConnected) return;
+        shelf = s;
+        show();
+      })
+      .catch(() => undefined); // the shelf as it was
+  }));
 }

@@ -26,7 +26,7 @@ async function titleSheet(entry: CatalogEntry): Promise<Sheet | undefined> {
   return sheet(4, 2.5, 'walk-thumb', canvas);
 }
 
-/** The listed games' walkthroughs (the games are never secret ones: shelfGames chose them), and their pictures by key. */
+/** The listed games' walkthroughs (shelfGames chose them: a secret one only once revealed), and their pictures by key. */
 export async function walkShelf(games: readonly CatalogEntry[]): Promise<{ items: ShelfItem[]; thumbs: [string, () => Promise<Sheet | undefined>][] }> {
   const withWalk = games.filter((g) => g.walkthrough && g.gam);
   const lengths = await Promise.all(withWalk.map(lengthOf));
