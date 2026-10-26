@@ -1,6 +1,7 @@
 // On-screen controls for touch screens: a direction pad (slide a thumb around it, diagonals
 // too), a button for every other key the current character's sequences use, and
-// Esc/F1/F2/Enter. Buttons send scan codes, as if the keys were pressed.
+// Esc/F1/F2/Enter. Buttons send scan codes, as if the keys were pressed. What the pad sends
+// for each direction, and which keys that leaves off the strip, is moveKeys.ts's.
 //
 // The screen keeps all the room it can; the controls float over the player, see-through
 // until pressed (player.css): upright (9:16) the screen sits at the top with the pad and
@@ -8,35 +9,37 @@
 // 🎮 hides them (remembered).
 import type { Keyboard } from '../input/keyboard';
 import { scanName } from '../input/scancodes';
+import type { Sequence } from '../formats/character';
+import { padPlan, type PadPlan, type Sector } from './moveKeys';
 
-// Scan codes the pad covers: the arrows plus the keypad's diagonals (Home, PgUp, End, PgDn),
-// so a character's diagonal keys don't also get action buttons.
-const ARROWS = new Set([72, 75, 77, 80, 71, 73, 79, 81]);
 const UP = 72;
 const LEFT = 75;
 const RIGHT = 77;
 const DOWN = 80;
 
-/** Arrow keys for a thumb at (dx, dy) from the pad's center; a dead zone in the middle. */
-export function padKeys(dx: number, dy: number, radius: number): number[] {
-  const dist = Math.hypot(dx, dy);
-  if (dist < radius * 0.25) return [];
-  // Eight 45° sectors: straight directions get one key, diagonals two. Screen y grows
-  // downward, so positive angles are below center; ±4 are both "left" (atan2 wraps at ±180°).
-  const sector = Math.round(Math.atan2(dy, dx) / (Math.PI / 4));
-  const byS: Record<number, number[]> = {
-    0: [RIGHT],
-    1: [DOWN, RIGHT],
-    2: [DOWN],
-    3: [DOWN, LEFT],
-    4: [LEFT],
-    [-4]: [LEFT],
-    [-3]: [UP, LEFT],
-    [-2]: [UP],
-    [-1]: [UP, RIGHT],
-  };
-  return byS[sector] ?? [];
+/** The arrows lit for each of the pad's directions (a diagonal lights its two). */
+const LIT: Record<Sector, number[]> = {
+  0: [RIGHT],
+  1: [DOWN, RIGHT],
+  2: [DOWN],
+  3: [DOWN, LEFT],
+  4: [LEFT],
+  [-3]: [UP, LEFT],
+  [-2]: [UP],
+  [-1]: [UP, RIGHT],
+};
+
+/** The pad's direction for a thumb at (dx, dy) from its center, or undefined in the dead zone in the middle. */
+export function padSector(dx: number, dy: number, radius: number): Sector | undefined {
+  if (Math.hypot(dx, dy) < radius * 0.25) return undefined;
+  // Eight 45° sectors. Screen y grows downward, so positive angles are below center; ±4 are
+  // both "left" (atan2 wraps at ±180°).
+  const s = Math.round(Math.atan2(dy, dx) / (Math.PI / 4));
+  return (s === -4 ? 4 : s) as Sector;
 }
+
+/** The pad of a character with nothing but the arrows (before the first frame, or no character). */
+const ARROWS_ONLY = padPlan([]);
 
 /** 'portrait' when the player is taller than (about) square. */
 // Up to 15% wider than tall still counts as portrait.
@@ -66,6 +69,10 @@ export class TouchControls {
   private actions: HTMLElement;
   private shown = '';
   private padDown = new Set<number>();
+  private plan: PadPlan = ARROWS_ONLY;
+  private planFor?: readonly Sequence[];
+  private sector?: Sector;
+  private arrows: Record<number, HTMLElement> = {};
   private resize?: ResizeObserver;
 
   constructor(private keyboard: Keyboard) {
@@ -77,7 +84,7 @@ export class TouchControls {
     pad.className = 'gm-pad';
     pad.setAttribute('role', 'group');
     pad.setAttribute('aria-label', 'Direction pad');
-    const arrows: Record<number, HTMLElement> = {};
+    const arrows = this.arrows;
     for (const [scan, label, area] of [
       [UP, '▲', 'up'],
       [LEFT, '◀', 'left'],
@@ -94,7 +101,7 @@ export class TouchControls {
     // The thumb's offset from the pad's center, with the pad's half width as the radius.
     const steer = (e: PointerEvent) => {
       const r = pad.getBoundingClientRect();
-      this.setPad(padKeys(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2), r.width / 2), arrows);
+      this.steerTo(padSector(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2), r.width / 2));
     };
     pad.addEventListener('pointerdown', (e) => {
       e.preventDefault();
@@ -105,7 +112,7 @@ export class TouchControls {
     pad.addEventListener('pointermove', (e) => {
       if (pad.hasPointerCapture?.(e.pointerId) || e.buttons) steer(e);
     });
-    const release = () => this.setPad([], arrows);
+    const release = () => this.steerTo(undefined);
     pad.addEventListener('pointerup', release);
     pad.addEventListener('pointercancel', release);
     pad.addEventListener('lostpointercapture', release);
@@ -170,24 +177,31 @@ export class TouchControls {
   private releaseAll(): void {
     for (const s of this.padDown) this.keyboard.inject(s, false);
     this.padDown.clear();
+    this.sector = undefined;
     this.el.querySelectorAll('.gm-arrow.down').forEach((e) => e.classList.remove('down'));
     // (a held button lets go of its key the way a lost finger does)
     this.el.querySelectorAll('button.down').forEach((b) => b.dispatchEvent(new Event('pointercancel')));
   }
 
-  /** Releases the arrows no longer wanted, then presses the new ones; a key held in both stays down untouched. */
-  private setPad(keys: number[], arrows: Record<number, HTMLElement>): void {
+  /** Holds the pad toward `sector` (or lets go): its arrows light, and its keys go down. */
+  private steerTo(sector: Sector | undefined): void {
+    this.sector = sector;
+    const lit = new Set(sector === undefined ? [] : LIT[sector]);
+    for (const [scan, el] of Object.entries(this.arrows)) el.classList.toggle('down', lit.has(Number(scan)));
+    this.setPad(sector === undefined ? [] : this.plan.press[sector]);
+  }
+
+  /** Releases the keys no longer wanted, then presses the new ones in order; a key held in both stays down untouched. */
+  private setPad(keys: number[]): void {
     const want = new Set(keys);
     for (const s of [...this.padDown])
       if (!want.has(s)) {
         this.padDown.delete(s);
-        arrows[s]?.classList.remove('down');
         this.keyboard.inject(s, false);
       }
-    for (const s of want)
+    for (const s of keys)
       if (!this.padDown.has(s)) {
         this.padDown.add(s);
-        arrows[s]?.classList.add('down');
         this.keyboard.inject(s, true);
       }
   }
@@ -216,10 +230,18 @@ export class TouchControls {
     return b;
   }
 
-  /** Shows a button for each non-arrow key used by the character (scan codes). */
-  setKeys(scans: number[]): void {
+  /** Matches the pad to the character's sequences, and shows a button for each key it uses that the pad doesn't cover. */
+  setSequences(sequences: readonly Sequence[]): void {
+    if (sequences !== this.planFor) {
+      this.planFor = sequences;
+      this.plan = padPlan(sequences);
+      // a thumb held through a change of character now sends the new character's keys
+      if (this.sector !== undefined) this.setPad(this.plan.press[this.sector]);
+    }
+    const covered = this.plan.covered;
     // Leaves out the pad's keys, Esc, Enter and F1-F10 (only F1 and F2 have buttons, in the fixed row); at most six.
-    const list = [...new Set(scans.filter((s) => s && !ARROWS.has(s) && s !== 1 && s !== 28 && !(s >= 59 && s <= 68)))].slice(0, 6);
+    const scans = sequences.map((s) => s.key >> 8);
+    const list = [...new Set(scans.filter((s) => s && !covered.has(s) && s !== 1 && s !== 28 && !(s >= 59 && s <= 68)))].slice(0, 6);
     const sig = list.join(',');
     if (sig === this.shown) return;
     this.shown = sig;
