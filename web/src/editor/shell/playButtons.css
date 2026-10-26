@@ -1,0 +1,107 @@
+/* Play Game and the Play Level split button at the top of the workspace (playButtons.ts). */
+/* A row of its own at the top of the file list (the side bar is narrow); on phones and tablets,
+   beside the Files button. */
+.pb-row {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pb-row .side-play,
+.pb-split .pb-main {
+  padding-inline: 6px;
+}
+
+.sidebar .side-top:has(.pb-row) {
+  flex-wrap: wrap;
+}
+
+.pb-row .side-play {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+.pb-split {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.pb-split .pb-main {
+  flex: 1 1 auto;
+  min-height: 24px;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  white-space: nowrap;
+}
+
+.pb-split .pb-arrow {
+  flex: none;
+  min-width: 24px;
+  min-height: 24px;
+  margin-inline-start: -1px;
+  padding-inline: 4px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.pb-menu {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+}
+
+.pb-menu[hidden] {
+  display: none;
+}
+
+.pb-menu [role='menuitemradio'] {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  min-height: 28px;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  white-space: normal;
+}
+
+.pb-menu [role='menuitemradio']:hover,
+.pb-menu [role='menuitemradio']:focus-visible {
+  background: var(--accent-soft);
+}
+
+.pb-menu .pb-check {
+  flex: none;
+  width: 1em;
+}
+
+.pb-menu .pb-sep {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--border);
+}
+
+/* Phones: "▶ Game" and "▶ Level" (the buttons keep their whole names for screen readers). */
+@media (max-width: 1199px) {
+  .pb-row {
+    flex: none;
+  }
+  .sidebar .side-top:has(.pb-row) {
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 599px) {
+  .pb-row .pb-long {
+    display: none;
+  }
+}

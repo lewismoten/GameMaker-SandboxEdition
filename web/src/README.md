@@ -483,7 +483,10 @@ modules are in [`../test`](../test).
     `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used) and
     `projectExport.ts`; the health badge (`gameHealth.ts`).
-  - The workspace (`workspace.ts`: file list + editor), with the open file's actions
+  - The workspace (`workspace.ts`: file list + editor), with Play Game and the Play Level split
+    button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
+    into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
+    the last pick per game in `playPickStore.ts`), the open file's actions
     (`fileActions.ts`), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
@@ -507,7 +510,8 @@ modules are in [`../test`](../test).
   kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
   the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
   `monsters/`, `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`),
-  `integrator/` (its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
+  `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
+  changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
   `playerFields.ts` makes each field), `playerPreview.ts`, which draws XFERPLAY's screens with the
   engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`

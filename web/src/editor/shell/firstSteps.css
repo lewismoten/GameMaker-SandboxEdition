@@ -1,5 +1,5 @@
 /* "First steps" (editor/shell/firstStepsPanel.ts): a small panel over the editor's lower right
-   corner, and its 🎓 button beside Play test. On a phone it spans the bottom of the screen. */
+   corner, and its 🎓 button beside Play Game. On a phone it spans the bottom of the screen. */
 .fs-panel {
   position: fixed;
   right: 16px;

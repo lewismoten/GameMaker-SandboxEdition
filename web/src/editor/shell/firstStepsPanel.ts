@@ -1,7 +1,7 @@
 // The "First steps" panel: a small window over the editor's corner that lists the beginner's
 // steps (firstSteps.ts) and ticks each one the moment the game changes. Each step opens the
 // file to do it in and links to the guide. It never blocks the editor: close it and the 🎓
-// button beside Play test brings it back. Loaded only for games that have the checklist.
+// button beside Play Game brings it back. Loaded only for games that have the checklist.
 import './firstSteps.css';
 import { h, clear } from '../core/ui';
 import type { Project } from '../core/project';
@@ -18,7 +18,7 @@ export interface FirstStepsNav {
 }
 
 export interface FirstStepsPanel {
-  /** The 🎓 button for beside Play test (re-made with the sidebar). */
+  /** The 🎓 button for beside Play Game (re-made with the sidebar). */
   button: () => HTMLButtonElement;
   toggle: (open?: boolean) => void;
   dispose: () => void;
@@ -47,7 +47,7 @@ export function firstStepsPanel(project: Project, nav: FirstStepsNav): FirstStep
           type: 'button',
           class: 'fs-close',
           'aria-label': 'Close First steps',
-          title: 'Close (🎓 beside Play test opens it again)',
+          title: 'Close (🎓 beside Play Game opens it again)',
           onclick: () => toggle(false),
         },
         '×',

@@ -54,7 +54,7 @@ export const STEPS: Step[] = [
     id: 'play',
     icon: '▶',
     title: 'Play the starter level',
-    how: 'Press ▶ Play test to see what you are starting from. Esc or Stop comes back.',
+    how: 'Press ▶ Play Game to see what you are starting from. Esc or Stop comes back.',
     open: 'play',
     done: (f) => f.played,
   },

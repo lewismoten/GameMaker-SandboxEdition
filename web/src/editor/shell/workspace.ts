@@ -14,7 +14,11 @@ import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import type { PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
-import { levelForMap, startingAt } from '../editors/integrator/startAt';
+import { levelForMap } from '../editors/integrator/startAt';
+import { sceneName, sourceName } from '../editors/integrator/linkSpots';
+import { playButtons } from './playButtons';
+import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
+import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
@@ -159,12 +163,14 @@ export class Workspace {
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
+      // links changed (the map's markers, the integrator): Play Level's menu follows
+      else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
     });
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
     const playing = currentRoute().params.play;
     this.open(file && project.files.has(file) ? file : project.gam);
-    if (playing !== undefined) this.play(playing === 'title');
+    if (playing !== undefined) this.play(playing === 'title' ? 'title' : parsePick(playing));
     // Phones: the dropped-down file list closes on Escape or a tap outside it.
     const close = () => {
       if (!this.sidebar.classList.contains('open')) return;
@@ -213,7 +219,7 @@ export class Workspace {
     if (this.disposed) return;
     this.firstSteps = firstStepsPanel(this.project, {
       open: (f) => this.open(f),
-      play: () => this.play(true),
+      play: () => this.play('title'),
       upload: () => void import('../widgets/uploadChecklist').then((m) => m.uploadChecklist(this.project)),
     });
     this.renderSidebar();
@@ -280,7 +286,7 @@ export class Workspace {
           `Files (${names.length})`,
           this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
         ),
-        this.playButton(),
+        (this.playEl = this.playButton()),
         this.firstSteps?.button(),
       ),
       h(
@@ -609,23 +615,34 @@ export class Workspace {
     }
   }
 
-  private playButton(): HTMLButtonElement {
-    const level = this.levelHere();
-    const name = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
-    return level
-      ? h(
-          'button',
-          { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` },
-          '▶ Play this level',
-        )
-      : h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test');
+  private playEl?: HTMLElement;
+
+  /** Play Game and the Play Level split button (playButtons.ts). */
+  private playButton(): HTMLElement {
+    return playButtons({
+      game: () => {
+        try {
+          return parseGame(this.project.files.get(this.project.gam)!);
+        } catch {
+          return undefined;
+        }
+      },
+      here: () => this.levelHere()?.scene,
+      last: () => lastPick(this.project.id),
+      playGame: () => this.play('title'),
+      playLevel: (pick) => (keepPick(this.project.id, pick), this.play(pick)),
+    });
   }
 
-  /** Play tests the game: from the level being edited when a level's map is open, else from the title screen. Stop goes back to that file. */
-  private play(fromTitle = false, back = this.current): void {
-    const level = fromTitle ? undefined : this.levelHere(back);
+  /**
+   * Play tests the game: from the title screen, from a Play Level pick, or (no pick: the First
+   * steps' Play, an old address) from the level being edited when a level's map is open. The
+   * title and menu always come first, as in DOS. Stop goes back to that file.
+   */
+  private play(how?: 'title' | PlayPick, back = this.current): void {
+    const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
     notePlayed(this.project);
-    setHashParams({ play: fromTitle ? 'title' : true });
+    setHashParams({ play: level ? pickParam(level) : 'title' });
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();
@@ -633,18 +650,19 @@ export class Workspace {
     this.current = undefined;
     this.renderSidebar();
     const host = h('div', { class: 'player-host' });
-    const levelName = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
+    const game = parseGame(this.project.files.get(this.project.gam)!);
+    const where = level ? `${sceneName(game, level.to)} at ${level.at.x},${level.at.y}` : '';
     clear(
       this.main,
       this.bar,
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
-        h('h1', { class: 'file-title' }, level ? `Playing ${levelName}` : `Playing ${this.project.name}`),
+        h('h1', { class: 'file-title' }, level ? `Playing ${where}` : `Playing ${this.project.name}`),
         h(
           'div',
           { class: 'toolbar' },
-          level && h('button', { onclick: () => this.play(true, back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
+          level && h('button', { onclick: () => this.play('title', back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
           h(
             'button',
             { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' },
@@ -656,17 +674,32 @@ export class Workspace {
       h(
         'p',
         { class: 'hint' },
-        level ? `The title and menu still come first (press a key, then choose Play); then it starts at ${levelName}, the level that uses ${back}. ` : '',
+        level
+          ? `The title and menu still come first (press a key, then choose Play); then it starts in ${where}, where ${sourceName(game, level)} leads. `
+          : '',
         'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
       ),
     );
     const copy = new GameFiles(this.project.files.entries());
-    if (level) copy.set(this.project.gam, serializeGame(startingAt(level.game, level.scene)));
+    if (level) {
+      const start = gameFor(game, level);
+      if (start !== game) copy.set(this.project.gam, serializeGame(start));
+    }
     // the player loads with the first play test; not if another file was opened meanwhile
     void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
       const player = companionPatches(this.project.companion, this.project.gam);
       if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player });
     });
+  }
+
+  /** Play Level's pick when none is given: the last one, else a way into the open map's level, else the first. */
+  private defaultPick(file = this.current): PlayPick | undefined {
+    try {
+      const game = parseGame(this.project.files.get(this.project.gam)!);
+      return currentPick(playChoices(game), lastPick(this.project.id), this.levelHere(file)?.scene);
+    } catch {
+      return undefined;
+    }
   }
 
   /** The "Add a file" dialog: a grid of every kind of file, with a picture of each. */
