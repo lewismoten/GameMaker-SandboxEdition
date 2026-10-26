@@ -239,8 +239,8 @@ export function cardScreen(b: Board, n: number, total: number, tiles: BlockSet, 
   bevel(p, bx - 3, by - 3, 166, 106, r('metal'), 3, 2);
   for (let y = 0; y < 100; y++) for (let x = 0; x < 160; x++) p.set(bx + x, by + y, view.get(x * 2, y * 2));
   b.spec.card.forEach((line, i) => centered(p, 170 + i * 11, line, c('paper', 3), 1, c('ink', 0)));
-  // the first boards also teach the keys beyond the arrows
-  if (n <= 3) centered(p, 191, 'R REBOOTS THE BOARD   F1 HELP', c('copper', 3), 1, c('ink', 0));
+  // the first boards also teach the keys beyond the arrows, and that F5 saves
+  if (n <= 3) centered(p, 191, 'R REBOOTS  F5 SAVES  F1 HELP', c('copper', 3), 1, c('ink', 0));
   return p;
 }
 
