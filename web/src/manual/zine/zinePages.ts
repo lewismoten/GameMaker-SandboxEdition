@@ -26,7 +26,7 @@ export const ZINE: ZinePage[] = [
       'issue #3 ... spring 1995 ... FREE if you found the whistle',
       'Edited by DiAL ToNE, ex-SysOp of THE STATIC LINE BBS (300/1200/2400 baud, R.I.P., the line got disconnected).',
       'WARNING: for your OWN computer only!! Every trick in here works on the PC on this desk and nowhere else. Do not try this at school. Do not try this at the library. The library is where we photocopied it.',
-      'Inside: secret DOS stuff, hex editing, save hacks, backups, the crack scene (lol), eggs, merit badges, a BBS code, and THE PHONE LIST.',
+      'Inside: secret DOS stuff, hex editing, save hacks, backups, the crack scene (lol), your name in old games, eggs, merit badges, a BBS code, and THE PHONE LIST.',
     ],
     scrawl: ['flip the page!!'],
   },
@@ -98,6 +98,18 @@ export const ZINE: ZinePage[] = [
       'Real talk: GM REGISTER and the card from the box do it the honest way.',
     ],
     scrawl: ['register your software, kids'],
+  },
+  {
+    title: 'YOUR NAME IS IN IT',
+    lines: [
+      "Old-timer fact: before 3.00, Game-Maker's player stamped YOUR name and YOUR serial into every game you Transferred. Every disk you handed out. Every upload. Surprise!!",
+      "Where: hex offset 1800 of the game's .EXE (6,144, right after the EXE header). Byte DC, then 28 bytes of name, scrambled.",
+      'The scramble: each letter gets a base number added, plus a step for every place along. After the name ends the bytes just count up by the step. Then a 0, then the serial in 4 bytes, shuffled (bytes 1, 3, 4, 2). A good serial minus 4 divides by 1029.',
+      '3.00 quit doing it. Its player has no slot at all. Your name goes in the credits now, like a normal person.',
+      'ALSO: the old players would NOT start without GMTITLE.GIF, RSD\'s "Game-Maker Presents:" card. No card, no game. So everybody drew their own studio card in its place.',
+      "HEXEDIT here won't open an .EXE (sorry), so this one's history class. Still a neat way to tell who REALLY made an old game.",
+    ],
+    scrawl: ['same stamp = same copy of GM'],
   },
   {
     title: 'EGGS & HEARTS',
