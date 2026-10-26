@@ -43,7 +43,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   Desk | DOS | Web switch.
 - [`theme.ts`](theme.ts): light or dark for today's web. [`edition.ts`](edition.ts): the fork's
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
-  Windows and Linux pages, the cast).
+  Windows and Linux pages, the cast, credits and achievements), or a row of its section links
+  before the first section on a narrower window.
 - [`offline.ts`](offline.ts) registers [`siteWorker.ts`](siteWorker.ts), the site's service worker.
   [`prefetch.ts`](prefetch.ts) fetches what a visitor is likely to open next once the page settles.
 - [`keepTogether.ts`](keepTogether.ts): THE CHEZ kept on one line (above).
@@ -217,7 +218,8 @@ modules are in [`../test`](../test).
     (`room/phone/`: `phone.ts`, who answers in `calls.ts`, `dialPad.ts`, `sounds.ts`) and its notes
     (`phoneNotes.ts`), the shareware catalog (`catalog.ts`) and the magazine lying on the desk
     (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
-  - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, their sounds in
+  - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
+    lays an empty, named button over a drawing with words on it; their sounds in
     `propSound.ts`): the clock, waste basket, door, window (`window.ts`, tonight's real moon in
     `moonPhase.ts`) and what goes by outside (`props/outside/`: `outside.ts` and one module each,
     such as THE CHEZ, the dogs, the plow and the mail jeep; `visible.ts` says whether the window can
