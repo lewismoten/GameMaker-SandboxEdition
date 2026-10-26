@@ -3,8 +3,8 @@
   "keys": {
     "Up": "Speed ahead (W too)",
     "Down": "Brake (S too)",
-    "Left": "Strafe left (A too)",
-    "Right": "Strafe right (D too)",
+    "Left": "Strafe left (A too); a lane over on the bus",
+    "Right": "Strafe right (D too); a lane over on the bus",
     "W": "Speed ahead",
     "S": "Brake",
     "A": "Strafe left",
@@ -83,6 +83,10 @@
           "head": "2. Memory Lane",
           "hints": [
             {
+              "q": "Now I see the BLASTER from behind and it won't shoot!",
+              "a": "That's the Memory Bus, a ride between stages. The guns are cold on the bus. Left and Right hop a lane; stay out of the lanes the interrupts and Parity Bats come down. When the sign reads BUS: 0, steer into the middle lane and it carries you into the DRAM chip."
+            },
+            {
               "q": "Where does the ring buffer end?",
               "a": "At HEAD. You start reading at TAIL, and each row bends flat at the kink and wraps round onto the next one. The big numbers count the rows left: 3, 2, 1. The dotted cyan pointer on the way round jumps you a row early if you hold Right on it."
             },
@@ -111,6 +115,10 @@
         {
           "head": "3. The Sound Card",
           "hints": [
+            {
+              "q": "Which lane is safe on the ISA Bus?",
+              "a": "Watch under the chip on the horizon: everything starts there as a dot and slides down its own lane. Two hazards at once always leave one lane open. The green 1s and 0s are stray bits; they hurt less than an interrupt, but they still hurt."
+            },
             {
               "q": "The music is all over the screen!",
               "a": "That is The Score, the song the FM chip is playing. Ride each staff corner to corner; it bends flat and wraps onto the next one, and the measure numbers count the staves left: 4, 3, 2, 1. The final double bar is the way out, and a tie on staff 2 hops you a staff early if you hold Right."
@@ -141,6 +149,10 @@
           "head": "4. The Hard Disk",
           "hints": [
             {
+              "q": "On the IDE Bus the Skulls come two at a time.",
+              "a": "Pick the open lane while they are still small dots, and hop early: a hop takes a moment to finish. The bar beside the sign shows how much of the ride is left."
+            },
+            {
               "q": "Where am I going on the slanted tracks?",
               "a": "Following Mom's recipe file. It lies in four fragments over the platter: ride each one corner to corner, round the kink onto the next, 3, 2, 1, to EOF. The gold chain on fragment 2 is a cluster link: hold Right on it to jump a fragment early."
             },
@@ -165,6 +177,10 @@
         {
           "head": "5. The CPU",
           "hints": [
+            {
+              "q": "The Local Bus is too fast for me!",
+              "a": "Hop one lane at a time and start as soon as you see the dots. Grab the repair capsule if your energy is low. At 0 the middle lane lights up and pulls you into the 486: be in it."
+            },
             {
               "q": "The ribbon cable goes on forever!",
               "a": "It is coiled, and it loops on purpose. Each lap of the screen ends at the kink, where the cable bends flat, and round the bend you are on the next coil down. The numbers printed on the cable count the coils left: 4, 3, 2, 1. The plug at the end of coil 1 is the way out. Just keep riding."
