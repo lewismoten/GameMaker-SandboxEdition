@@ -25,6 +25,7 @@ export const CAST_GAMES = {
   snowbound: ['Snowbound: The $89 Shovel', 'sandbox'],
   teddy: ['Teddy’s Little Big Adventure', 'sandbox'],
   teddy2: ['Teddy’s Little Bigger Adventure', 'sandbox'],
+  teddy3: ['Teddy’s Little Biggest Adventure', 'sandbox'],
   year2000: ['In The Year 2000!', 'sandbox'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
@@ -40,7 +41,7 @@ export const CAST_GAMES = {
   tickle: ['Certified Rat Tickler', 'bizarre'],
 } as const satisfies Record<string, readonly [string, Family]>;
 
-export type CastGame = keyof typeof CAST_GAMES;
+type CastGame = keyof typeof CAST_GAMES;
 
 export interface Appearance {
   game: CastGame;
@@ -67,11 +68,12 @@ const LISTED: CastMember[] = [
     name: 'Teddy',
     role: 'Pembroke Welsh Corgi, red-gold, knows left from right',
     hi: 'Hi! I know left from right. Snacks go on the left. Or the right. Both. Snacks.',
-    art: { game: 'teddy', width: 156, height: 156, alt: 'Teddy the corgi grinning, red-gold with a white blaze, his right ear a little taller than his left' },
-    bio: 'A red-gold corgi with a white blaze, a big grin and, in the games, one ear a little shorter than the other (in real life they match; the lopsided ear just reads better in twenty pixels). He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
+    art: { game: 'teddy', width: 156, height: 156, alt: 'Teddy the corgi grinning, red-gold with a white blaze, his big ears up' },
+    bio: 'A red-gold corgi with a white blaze, big upright ears, a fluffy white rump and a grin that takes up most of his face. He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
     appears: [
       { game: 'teddy', as: 'the hero, fetching Doc Leo’s costume' },
       { game: 'teddy2', as: 'the hero, on Gwinn’s trail to the fair' },
+      { game: 'teddy3', as: 'the birthday boy, running errands' },
       { game: 'sandcast', as: 'the corgi knight, rebuilding the castles' },
       { game: 'realm', as: 'a royal hound' },
       { game: 'brief', as: 'napping on a sweater in Lost and Found' },
@@ -88,13 +90,14 @@ const LISTED: CastMember[] = [
   {
     id: 'gwinn',
     name: 'Gwinn',
-    role: 'Teddy’s big sister and sister-in-mischief (two n’s)',
+    role: 'Teddy’s big sister and sister-in-mischief',
     hi: 'It wasn’t me. (It was me.) Zoomies!',
     art: { game: 'teddy', width: 146, height: 146, alt: 'Gwinn, a chocolate-brown dog with amber eyes, a big grin and a pink collar' },
     bio: 'Chocolate-brown, amber-eyed, pink collar, adopted, and usually the one causing the trouble: she is the reason most of these games have a plot. She scattered the costume, flattened the sandcastles with her zoomies and ate a recipe card. She knows one trick (zoomies) and a SIT she has not quite learned. She is not allowed in the library, and she is in the library.',
     appears: [
       { game: 'teddy', as: 'the one who ran off with the suitcase' },
       { game: 'teddy2', as: 'the hero of the MEANWHILE… levels' },
+      { game: 'teddy3', as: 'keeping a secret (almost) and digging up her best bone' },
       { game: 'sandcast', as: 'on the loose, asleep across doorways' },
       { game: 'realm', as: 'a royal hound' },
       { game: 'brief', as: 'in the library, where she is not allowed' },
@@ -109,17 +112,18 @@ const LISTED: CastMember[] = [
     id: 'leo',
     name: 'Doc Leo',
     role: 'Hobo clown, PhD in Comedic Science',
-    hi: 'Nose on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
+    hi: 'Smile on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
     art: {
       game: 'teddy',
       width: 224,
       height: 147,
-      alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash',
+      alt: 'Doc Leo, a hobo clown with a fedora, wire glasses, white face paint round his eyes and mouth, a sunburned pink nose and cheeks, painted gray stubble, a purple shirt and green tie, holding a yellow rubber chicken on a leash',
     },
-    bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, a red nose, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. Nose on: showtime. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
+    bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, wire glasses, white greasepaint round his eyes and mouth, his own nose and cheeks sunburned pink, painted gray stubble, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
       { game: 'teddy', as: 'the star of the Big Show, missing his costume' },
-      { game: 'teddy2', as: 'beside THE CHEZ at every stop' },
+      { game: 'teddy2', as: 'beside THE\u00a0CHEZ at every stop' },
+      { game: 'teddy3', as: 'a hero at last: balloon dogs, pratfalls and the party lights' },
       { game: 'realm', as: 'the jester in Eventually Falls' },
       { game: 'brief', as: 'in the library, day and night' },
       { game: 'depth', as: 'ray-traced, chicken and all' },
@@ -135,19 +139,20 @@ const LISTED: CastMember[] = [
   },
   {
     id: 'chez',
-    name: 'THE CHEZ',
+    name: 'THE\u00a0CHEZ',
     role: 'A tomato-red 1976½ CitiCar. Always charging.',
     hi: 'Ah-OOO-gah! Don’t mind me, I’m charging. I am always charging.',
     art: {
       game: 'teddy',
       width: 120,
       height: 56,
-      alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels',
+      alt: 'THE\u00a0CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels',
     },
     bio: 'Lewis’s own electric car: a tomato-red 1976½ CitiCar, about half the length of anything parked next to it, with a black roof and racing stripes (they make the car go faster). It pulls a parade float at its usual few miles an hour, clears the road with an ah-OOO-gah, and turns up at a curb in nearly every Sandbox game. It is charging. It is always charging.',
     appears: [
       { game: 'teddy', as: 'waiting at the end of every level' },
       { game: 'teddy2', as: 'leading the fair parade' },
+      { game: 'teddy3', as: 'yours to drive, minding the charge' },
       { game: 'realm', as: 'yours to drive across the Dawdle Flats' },
       { game: 'brief', as: 'at the curb, on its charger' },
       { game: 'depth', as: 'ray-traced in the Teapot Temple' },
@@ -169,6 +174,7 @@ const LISTED: CastMember[] = [
     appears: [
       { game: 'teddy', as: 'a costume piece to fetch' },
       { game: 'teddy2', as: 'lost, circling the river eddy' },
+      { game: 'teddy3', as: 'squawking at pigeons' },
       { game: 'realm', as: 'the lost-chicken quest' },
       { game: 'brief', as: 'a spare in Lost and Found' },
       { game: 'depth', as: 'on Doc Leo’s leash' },
@@ -220,7 +226,7 @@ const LISTED: CastMember[] = [
     role: 'Small, riveted, ticking. Hidden somewhere.',
     hi: 'Tick… tock… Yes, I have a heart. I am a heart. Find me!',
     art: { game: 'teddy', width: 14, height: 12, alt: 'The tin heart: a small grey riveted tin heart with a shine on its corner' },
-    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one. One is hidden in every Sandbox and Bard of Bizarre game, so it is something to look for: listen for the tick-tock.',
+    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one, and to Lewis, whose own heart has kept time with a pacemaker since February 2014, the year Game-Maker’s source code was set free. One is hidden in every Sandbox and Bard of Bizarre game, so it is something to look for: listen for the tick-tock.',
     appears: [],
   },
   {
@@ -264,7 +270,7 @@ const LISTED: CastMember[] = [
       height: 180,
       alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo',
     },
-    bio: 'Teddy and Gwinn’s person, THE CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
+    bio: 'Teddy and Gwinn’s person, THE\u00a0CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
     appears: [
       { game: 'sandcast', as: 'SysOp of the secret BBS, in a selfie with Teddy' },
       { game: 'teddy', as: 'a snapshot at the gazebo with Teddy' },

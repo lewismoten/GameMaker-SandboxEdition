@@ -3,7 +3,7 @@
 // blue slippers), walking four ways, shouting "WHERE'S THE REMOTE?!" with your hands on your
 // cheeks, clicking an empty thumb at the TV, checking your hand, hurt, and flopped; and
 // everything else that moves: the shout, dust bunnies, the cat, Teddy the corgi (red-gold, a
-// white blaze, the right ear taller than the left), toast and its crumbs, a cockroach, lost
+// white blaze, ears up), toast and its crumbs, a cockroach, lost
 // socks, floating pennies, the tiny raccoon, the mustard seed in its red sneakers, lint, the
 // third goat, and the furniture of the living room ride. Every sprite is drawn from shapes and
 // given a dark outline.
@@ -284,7 +284,7 @@ export function buildMonsterBlocks(pal: Pal) {
   sting('cat0', cat(0), -4);
   book.add('cat1', cat(1));
 
-  // Teddy, the corgi: red-gold with a white blaze and chest, the right ear taller than the left, grinning.
+  // Teddy, the corgi: red-gold with a white blaze and chest, ears up, grinning.
   const teddy = (f: number) => {
     const p = P();
     blob(p, 9, 12, 6.2, 3.6, pal.r('fur'), 1, 3);
@@ -298,8 +298,8 @@ export function buildMonsterBlocks(pal: Pal) {
       p.rect(x + (f ? d : 0), 15, 2, 3, c('white', 2));
     blob(p, 15.5, 9.5, 3.4, 3.2, pal.r('fur'), 1, 3);
     p.line(16, 7, 16, 12, c('white', 2)).rect(15, 11, 3, 2, c('white', 2));
-    // ears: the right one taller
-    p.line(13, 7, 13, 4, c('fur', 2)).line(14, 7, 14, 5, c('fur', 3)).line(18, 7, 18, 2, c('fur', 2)).line(17, 7, 17, 3, c('fur', 3));
+    // ears: a matched pair
+    p.line(13, 7, 13, 4, c('fur', 2)).line(14, 7, 14, 5, c('fur', 3)).line(18, 7, 18, 4, c('fur', 2)).line(17, 7, 17, 5, c('fur', 3));
     p.set(15, 9, ink).set(17, 9, ink).set(16, 12, ink).set(16, 13, c('pink', 2));
     p.set(2, 11, c('fur', 2)).set(3, 12, c('white', 2));
     return done(p);

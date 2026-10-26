@@ -63,9 +63,9 @@ export function buildLeo(cb: BlockSet): Character {
     norepeat: 1,
     jstkBut: 1,
   });
-  // K: the kazoo, all four ways at once
+  // Z: the kazoo, all four ways at once
   set(S[SEQ.kazoo], [f('kazoo', 2), birth(MON.kazooN), birth(MON.kazooE), birth(MON.kazooS), birth(MON.kazooW), f('kazoo', 6), f('down0', 2)], {
-    key: KEY.k,
+    key: KEY.z,
     sound: SND.kazoo,
     bloc: FIXED_BLOCK.kazoo,
     ground: 1,

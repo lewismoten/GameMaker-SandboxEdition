@@ -1,19 +1,22 @@
 // Starting a game from the home page: a new game (from the starter, see starter.ts), or one
 // imported from a folder, zip, single-page export or dropped files. Files from the CD's
-// shareware games are recognized by the .gam file's CRC-32.
-import { h, pickFiles, toast, modal } from '../core/ui';
+// shareware games are recognized by the .gam file's CRC-32. Loaded when first used (home.ts
+// picks the files, or reads the drop, first).
+import { h, toast, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { starterProject } from './starter';
+import { beginFirstSteps } from './firstSteps';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, type CatalogEntry } from '../../project/files';
-import { crc32, isZip, readZip } from '../../project/zip';
-import { gameFromPageFiles } from '../../project/importPage';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
 import { takeCompanion } from '../../project/companion';
+import { openingFields } from '../tools/opening/openingFields';
+import type { OpeningStyle } from '../tools/opening/openingIntros';
 
 export async function newGame(nav: HomeNav): Promise<void> {
-  const choice = await modal<{ name: string; starter: boolean }>('New game', (close) => {
+  const opening = openingFields();
+  const choice = await modal<{ name: string; starter: boolean; opening: { style: OpeningStyle; name: string } }>('New game', (close) => {
     const input = h('input', {
       type: 'text',
       value: 'My Game',
@@ -21,11 +24,15 @@ export async function newGame(nav: HomeNav): Promise<void> {
       autofocus: true,
       onfocus: (e: Event) => (e.target as HTMLInputElement).select(),
     });
-    const go = (starter: boolean) => input.reportValidity() && close({ name: input.value.trim(), starter });
+    const go = (starter: boolean) => {
+      const o = input.reportValidity() && opening.value();
+      if (o) close({ name: input.value.trim(), starter, opening: o });
+    };
     return h(
       'form',
       { class: 'stack', onsubmit: (e: Event) => (e.preventDefault(), go(true)) },
       h('label', null, 'Title (shown on the menu screen)', input),
+      opening.el,
       h(
         'div',
         { class: 'start-choices' },
@@ -46,6 +53,25 @@ export async function newGame(nav: HomeNav): Promise<void> {
   });
   if (!choice?.name) return;
   const p = choice.starter ? await starterProject(choice.name).catch(() => Project.create(choice.name)) : Project.create(choice.name);
+  const { style, name } = choice.opening;
+  if (style !== 'none' || name) {
+    // the cards are drawn with the Scene maker's renderer, loaded only now
+    const { applyOpening } = await import('../tools/opening/openingCards');
+    const game = p.game();
+    // part of making the game, not one of the designer's changes: no "changed a file" achievement
+    const told = p.files.onChange;
+    p.files.onChange = undefined;
+    let noSting = false;
+    try {
+      ({ noSting } = await applyOpening(p, game.scenes[0], game.scenes, style, name));
+      p.saveGame(game);
+    } finally {
+      p.files.onChange = told;
+    }
+    // the First steps compare against the game as it starts, opening and all
+    if (choice.starter) beginFirstSteps(p);
+    if (noSting) toast('The opening could not be loaded (offline?). Add it later from the start scene’s 🎬 Opening sting….', 'error');
+  }
   await p.saveNow();
   nav.openProject(p.id);
 }
@@ -59,6 +85,7 @@ interface Imported {
 
 async function filesFromList(list: File[]): Promise<Imported> {
   // A page made by "Export as one web page" carries the whole game inside it.
+  const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
   const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
   if (page) return { files: page.files, name: page.title, gam: page.gam };
   return { files: await filesOnly(list) };
@@ -66,7 +93,7 @@ async function filesFromList(list: File[]): Promise<Imported> {
 
 async function filesOnly(list: File[]): Promise<GameFiles> {
   if (list.length === 1 && /\.zip$/i.test(list[0].name)) {
-    const bytes = new Uint8Array(await list[0].arrayBuffer());
+    const [bytes, { isZip, readZip }] = await Promise.all([list[0].arrayBuffer().then((b) => new Uint8Array(b)), import('../../project/zip')]);
     if (isZip(bytes)) {
       const files = new GameFiles();
       for (const e of await readZip(bytes)) if (!IGNORED_FILE.test(e.name) && !e.name.endsWith('/')) files.set(e.name, e.data);
@@ -77,9 +104,10 @@ async function filesOnly(list: File[]): Promise<GameFiles> {
 }
 
 /** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
-export async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
+async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
   const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && !g.original && g.gamCrc !== undefined);
   if (!shareware.length) return undefined;
+  const { crc32 } = await import('../../project/zip');
   const crcs = new Set(files.byExtension('gam').map((n) => crc32(files.get(n)!)));
   return shareware.find((g) => crcs.has(g.gamCrc!));
 }
@@ -117,12 +145,13 @@ async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promis
   nav.openProject(p.id);
 }
 
-export async function importPicked(nav: HomeNav, opts: { directory?: boolean }): Promise<void> {
-  const list = await pickFiles({ multiple: true, directory: opts.directory });
+/** Opens the files picked on the home page. */
+export async function importPicked(nav: HomeNav, list: File[]): Promise<void> {
   if (list.length) await importFiles(nav, await filesFromList(list));
 }
 
-export async function importDropped(nav: HomeNav, dt: DataTransfer): Promise<void> {
+/** Opens what was dropped: the drop's entries (folders walked), or its files when it has none. */
+export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], files: File[]): Promise<void> {
   const collected: File[] = [];
   const walk = async (entry: FileSystemEntry): Promise<void> => {
     if (entry.isFile) collected.push(await new Promise<File>((res, rej) => (entry as FileSystemFileEntry).file(res, rej)));
@@ -135,8 +164,7 @@ export async function importDropped(nav: HomeNav, dt: DataTransfer): Promise<voi
       }
     }
   };
-  const entries = [...dt.items].map((i) => i.webkitGetAsEntry?.()).filter((e): e is FileSystemEntry => !!e);
   if (entries.length) for (const e of entries) await walk(e);
-  else collected.push(...dt.files);
+  else collected.push(...files);
   await importFiles(nav, await filesFromList(collected));
 }

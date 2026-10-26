@@ -1,5 +1,5 @@
 ARROWS or W A S D  walk
-P      pick up
+G      pick up
 SPACE  fling sand (shovel)
 B      throw water (bucket)
 F      toss a tennis ball

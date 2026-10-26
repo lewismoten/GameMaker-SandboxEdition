@@ -154,11 +154,13 @@ export function mainTiles(): Tiles {
       return p;
     })(),
   );
-  // shop signs: two blocks wide, words in little letters
+  // shop signs: two blocks wide, words in little letters (on two lines when one would run past the frame)
   const signboard = (name: string, words: string, col: string) => {
     const p = canvas(2, 1, () => brick);
     p.rect(1, 3, 38, 14, c(col, 1)).frame(1, 3, 38, 14, c('gold', 2));
-    micro(p, 20 - Math.floor((words.length * 4 - 1) / 2), 8, words, c('paint', 3));
+    const cut2 = words.length * 4 - 1 > 34 ? words.lastIndexOf(' ', Math.ceil(words.length / 2)) : -1;
+    const lines = cut2 > 0 ? [words.slice(0, cut2), words.slice(cut2 + 1)] : [words];
+    lines.forEach((l, i) => micro(p, 20 - Math.floor((l.length * 4 - 1) / 2), lines.length > 1 ? 5 + i * 6 : 8, l, c('paint', 3)));
     const [a, b] = cut(p)[0];
     t.air(`${name}L`, a);
     t.air(`${name}R`, b);

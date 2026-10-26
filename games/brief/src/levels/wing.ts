@@ -154,8 +154,9 @@ function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): 
     p.rect(1, 4, 18, 13, c('ink', 0));
     p.rect(2, 5, 8, 11, c('paper', 4)).rect(10, 5, 8, 11, c('paper', 3));
     p.rect(9, 5, 2, 11, c('paper', 1));
-    micro(p, 3, 7, 'THE', c('ink', 0));
-    micro(p, 11, 7, 'END', c('ink', 0));
+    // THE over END across the spread (one word is wider than a page)
+    micro(p, 4, 5, 'THE', c('ink', 0));
+    micro(p, 5, 11, 'END', c('ink', 0));
     if (state === 'done')
       for (const [x, y] of [
         [4, 2],

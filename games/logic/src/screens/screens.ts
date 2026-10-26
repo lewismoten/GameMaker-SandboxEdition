@@ -5,6 +5,7 @@
 // spot where it writes text is kept light and plain.
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { matchColor } from '../../../../web/src/formats/palette';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
@@ -245,8 +246,8 @@ export function cardScreen(b: Board, n: number, total: number, tiles: BlockSet, 
 
 // ---------------------------------------------------------------- cartoons
 
-function fli(frames: Pixels[], speed: number): Uint8Array {
-  return encodeFli(
+function fli(frames: Pixels[], speed: number, fadeOut = false): Uint8Array {
+  return (fadeOut ? encodeFliFadeOut : encodeFli)(
     frames.map((f) => Uint8Array.from(f.px)),
     PAL.pal,
     { speed },
@@ -297,7 +298,7 @@ export function introFli(art: Art): Uint8Array {
     const sx = d < 0.4 ? 130 : d < 0.8 ? 130 + ((d - 0.4) / 0.4) * 66 : 196;
     const sy = d < 0.4 ? 60 + (d / 0.4) * 60 : d < 0.8 ? 120 : 120 + ((d - 0.8) / 0.2) * 30;
     blob(p, sx, sy, 5, 5, r('spark'), 1, 4);
-    centered(p, 12, 'It runs down the wires to the fuse box...', c('paper', 3), 1, c('ink', 0));
+    centered(p, 12, 'The spark runs down to the fuse box...', c('paper', 3), 1, c('ink', 0));
     frames.push(p);
   }
   // BOING: Watt flies out of the fuse box in an arc
@@ -310,11 +311,11 @@ export function introFli(art: Art): Uint8Array {
     const y = 150 - Math.sin(u * Math.PI) * 120;
     scaleBlit(p, art.watt.pic(t % 4 < 2 ? 'zapped' : 'down0'), Math.round(x - 20), Math.round(y - 30), 2);
     if (t < 6) centered(p, 140, 'BOING!', c('yellow', 3), 2, c('red', 1), 220);
-    centered(p, 12, '...and bounces Watt out of his fuse box!', c('paper', 3), 1, c('ink', 0));
+    centered(p, 12, '...and pops Watt out of his fuse box!', c('paper', 3), 1, c('ink', 0));
     frames.push(p);
   }
-  // into the kitchen: the toaster
-  for (let t = 0; t < 16; t++) {
+  // into the kitchen: the toaster, steaming for a second before the fade to black
+  for (let t = 0; t < 24; t++) {
     const p = new Pixels(W, H, c('plastic', 4));
     for (let y = 120; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, ((x >> 4) + (y >> 4)) % 2 ? c('plastic', 2) : c('plastic', 1));
     // toaster
@@ -329,7 +330,7 @@ export function introFli(art: Art): Uint8Array {
     }
     frames.push(p);
   }
-  return fli(frames, 6);
+  return fli(frames, 6, true);
 }
 
 /** Between rooms: Watt zips along the house wiring to the next room. */
@@ -400,13 +401,13 @@ export function buildScreens(art: Art, boards: { b: Board; tiles: BlockSet }[]):
   // the Sandbox Software logo first, then the game's own intro
   out['title.lst'] = serializeSlideList([
     { name: SANDLOGO, pause: 0 },
-    { name: 'intro.fli', pause: 1 },
+    { name: 'intro.fli', pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]);
   out['menu.gif'] = gif(menuScreen(art));
   out['story.gif'] = gif(pageScreen(art, 'THE STORY', 51));
   out['story.txt'] = dosText(STORY);
-  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 1 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
+  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 0 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
   out['help.gif'] = gif(pageScreen(art, 'HOW TO PLAY', 52, 'up0'));
   out['help.txt'] = dosText(HELP);
   out['help.lst'] = serializeSlideList([{ name: 'help.gif', pause: 0 }, { name: 'help.txt' }]);

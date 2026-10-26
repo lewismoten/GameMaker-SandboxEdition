@@ -59,6 +59,8 @@ body:has(.dos-page) {
 
 .dos-back {
   flex: none;
+  min-width: 24px;
+  justify-content: center;
   min-height: 28px;
   display: inline-flex;
   align-items: center;
@@ -385,8 +387,7 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
   margin-left: 0.35em;
 }
 
-.dos-icon-only .dos-word,
-.dos-sr {
+.dos-icon-only .dos-word {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -534,8 +535,8 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
 @media (max-width: 600px) {
   .dos-bar {
     min-height: 48px;
-    gap: 6px;
-    padding: 0 8px;
+    gap: 4px;
+    padding: 0 6px;
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -546,7 +547,9 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
     overflow: hidden;
     clip-path: inset(50%);
   }
+  /* never squeezed under the Desk | DOS | Web switch: the bar scrolls instead */
   .dos-controls {
+    flex: none;
     gap: 4px;
   }
   .dos-controls > .dos-primary .dos-word {
@@ -557,7 +560,7 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
     clip-path: inset(50%);
   }
   .dos-btn {
-    padding: 2px 6px;
+    padding: 2px 4px;
   }
   .dos-foot {
     padding: 2px 8px;
@@ -633,4 +636,18 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
   background: linear-gradient(#3e63e0, #2342b8);
   border-color: #1b318a;
   color: #fff;
+}
+
+/* the narrowest phones: Full screen leaves the bar for the ⋯ menu, so the bar fits */
+.dos-menu > .dos-full-item {
+  display: none;
+}
+
+@media (max-width: 389px) {
+  .dos-controls > .dos-full {
+    display: none;
+  }
+  .dos-menu > .dos-full-item {
+    display: inline-flex;
+  }
 }

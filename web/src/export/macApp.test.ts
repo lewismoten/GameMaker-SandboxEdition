@@ -1,3 +1,5 @@
+// The Mac download: the .dmg's ISO 9660 volume, UDIF image and .DS_Store, the icon, and the re-
+// sealed app.
 import { describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';

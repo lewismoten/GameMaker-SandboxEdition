@@ -1,3 +1,5 @@
+// The note that a new game was made today though it pretends to be from the 1990s, in every
+// download's About text, README and page.
 import { describe, expect, it } from 'vitest';
 import { fictionNote } from './fiction';
 import { credits } from './winApp';

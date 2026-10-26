@@ -29,7 +29,7 @@ export function slotOfFile(name: string): number | undefined {
 }
 
 /** cinfo as saved (engine/world.ts CharInfo). */
-export interface SavedCharInfo {
+interface SavedCharInfo {
   score: number;
   hitpts: number;
   lives: number;
@@ -155,7 +155,7 @@ export interface SaveField {
 
 /** Unlimited counter (INF_REPEAT) — the engine never changes it. */
 export const UNLIMITED = 'unlimited' as const;
-export type FieldValue = number | typeof UNLIMITED | null;
+type FieldValue = number | typeof UNLIMITED | null;
 
 const LONG_MIN = -2147483648;
 const LONG_MAX = 2147483647;
@@ -166,10 +166,10 @@ const METER_TOP = INF_REPEAT - 1;
 /** Lowest a meter gets from touches. */
 const METER_BOTTOM = -(INF_REPEAT - 128);
 /** A meter of a sequence the previous character did not have (StartSceneInits). */
-export const SEQ_UNDEFINED = -20000;
+const SEQ_UNDEFINED = -20000;
 /** The special counters: meter[20..29]. */
-export const COUNTER_FIRST = MAXSEQ;
-export const COUNTERS = METERS - MAXSEQ;
+const COUNTER_FIRST = MAXSEQ;
+const COUNTERS = METERS - MAXSEQ;
 
 /** "Left Arrow", "'Space'"… for a sequence's key (high byte scan code, low byte ASCII). */
 export function keyLabel(key: number): string {

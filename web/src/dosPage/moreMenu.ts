@@ -1,5 +1,5 @@
 // The DOS page's ⋯ menu (dos.html): the controls used less often (reset, the Sound Blaster card,
-// the CD, the BBS, the Owner's Guide), so the bar keeps to one row. The panel is placed under the
+// the CD, the BBS, the Owner's Guide and The Ultimate Owner's Guide), so the bar keeps to one row. The panel is placed under the
 // button by the window (it must not be clipped by a bar that scrolls sideways on a phone), and
 // closes on Escape, on a choice, or on a click elsewhere.
 import { h } from '../editor/core/ui';

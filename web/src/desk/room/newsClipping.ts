@@ -2,16 +2,18 @@
 // released (NOTICE.md). Click it to read it larger. Nothing in it is made up: the facts and
 // the one quote are the ones NOTICE.md gives, with their source.
 import './newsClipping.css';
+import { focusInto } from '../overlayFocus';
 import { h } from '../../editor/core/ui';
 
 const QUOTE = 'if there is interest in preserving the old games you guys made then porting Game-Maker to modern OSes is the first step';
 
-function article(): HTMLElement {
+/** The clipping; `heading` is its headline's tag (a heading only where it is read, in the larger view). */
+function article(heading: 'h2' | 'div'): HTMLElement {
   return h(
     'div',
     { class: 'clip-paper' },
     h('div', { class: 'clip-kicker' }, 'COMPUTERS · July 12, 2014'),
-    h('h3', { class: 'clip-head' }, 'Game-Maker’s source code set free'),
+    h(heading, { class: 'clip-head' }, 'Game-Maker’s source code set free'),
     h('div', { class: 'clip-deck' }, 'The 1990s game construction kit is now open source under the MIT License'),
     h(
       'p',
@@ -25,9 +27,11 @@ function article(): HTMLElement {
 }
 
 function readLarger(): void {
+  let back = () => {};
   const close = () => {
     window.removeEventListener('keydown', onKey, true);
     overlay.remove();
+    back();
   };
   const onKey = (e: KeyboardEvent) => {
     e.stopImmediatePropagation(); // not for the PC underneath
@@ -40,7 +44,7 @@ function readLarger(): void {
     'div',
     { class: 'desk-overlay clip-overlay', role: 'dialog', 'aria-label': 'Newspaper clipping: Game-Maker’s source code set free' },
     h('button', { class: 'close', onclick: close }, 'Close (Esc)'),
-    h('div', { class: 'clip-large' }, article()),
+    h('div', { class: 'clip-large' }, article('h2')),
     h(
       'p',
       { class: 'clip-source' },
@@ -54,6 +58,7 @@ function readLarger(): void {
   overlay.addEventListener('click', (e) => e.target === overlay && close());
   window.addEventListener('keydown', onKey, true);
   document.body.append(overlay);
+  back = focusInto(overlay.querySelector('button.close'));
 }
 
 export function newsClipping(): HTMLElement {
@@ -65,6 +70,6 @@ export function newsClipping(): HTMLElement {
       title: 'A newspaper clipping: Game-Maker’s source code set free (click to read)',
       'aria-label': 'Newspaper clipping about Game-Maker’s source code release',
     },
-    h('div', { class: 'clip-small', 'aria-hidden': 'true' }, article()),
+    h('div', { class: 'clip-small', 'aria-hidden': 'true' }, article('div')),
   );
 }

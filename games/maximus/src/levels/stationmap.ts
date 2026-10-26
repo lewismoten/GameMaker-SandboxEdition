@@ -94,7 +94,7 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
         g.set(rm.x + rm.w - 2, rm.y + 1, id('alert:0'));
         break;
       case 'quarters':
-        for (const x of cells) if (free(x) && r() < 0.5) g.set(x, fy, id(pickOne(['bunk', 'locker', 'table', 'chair', 'locker'])));
+        for (const x of cells) if (free(x) && r() < 0.5) g.set(x, fy, id(pickOne(['bunk', 'locker', 'table', 'table', 'locker'])));
         g.set(rm.x + 2, rm.y + 1, id('panel:emblem'));
         break;
       case 'medbay':

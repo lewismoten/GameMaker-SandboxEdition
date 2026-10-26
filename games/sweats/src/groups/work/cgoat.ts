@@ -21,7 +21,7 @@ import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, plotThing } from '../../commo
 import { anim, corner, mon, pace } from '../../common/characters';
 import type { MapBuilder } from '../../levels/maps';
 import { addPicture, placePicture } from '../../common/picture';
-import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
+import { SIDES, T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { CGOAT_MON } from './ids';
@@ -233,8 +233,9 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
     micro(p, 7, 6 + f, '?', c('white', 2), 2);
     return p;
   };
-  book.add('fuzz0', fuzz(0), hurts(-5));
-  book.add('fuzz1', fuzz(1), hurts(-5));
+  // (solid only at its sides: landing on it slides him down beside it, not into the floor)
+  book.add('fuzz0', fuzz(0), hurts(-5, SIDES));
+  book.add('fuzz1', fuzz(1), hurts(-5, SIDES));
   // the empty creamer: a little plastic bottle, its cap on tight, nothing inside; hopping, sulking
   const creamer = (f: number) => {
     const p = P();
@@ -287,7 +288,7 @@ export function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
     corner(3, 0, 1),
   ]);
   set[CGOAT_MON.fizz] = mon(anim(mb, 'fizz0', 'fizz1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 2), corner(0, -4, 2)]);
-  set[CGOAT_MON.mirage] = mon(anim(mb, 'mirage0', 'mirage1', 6), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(2, 1));
+  set[CGOAT_MON.mirage] = mon(anim(mb, 'mirage0', 'mirage1', 6), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(1, 1));
   set[CGOAT_MON.puff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }
 
@@ -348,7 +349,9 @@ export const cgoat: Monologue = {
     placePicture(m, 'maker', 10, 7, 1, 2);
     m.set(11, 8, 'P');
     m.set(7, 5, '&').set(14, 5, 'S').set(11, 4, 'notice');
-    m.mon(CGOAT_MON.static, 8, 8);
+    // (it paces three blocks right: from 7 it turns before the microwave, so a push off its side
+    // never puts him inside the microwave)
+    m.mon(CGOAT_MON.static, 7, 8);
     // the fridge, flung open (its top a ledge); the empty creamer keeps hopping out of it
     placePicture(m, 'fridge', 17, 7, 2, 3);
     m.set(18, 6, '&').set(21, 3, 'y');
@@ -366,8 +369,9 @@ export const cgoat: Monologue = {
     m.set(36, 9, 'm');
     placePicture(m, 'fizzCup', 39, 8, 2, 2);
     m.set(40, 4, 'thermostat').set(44, 3, 'y');
-    // every time he blinks: a goat, a goat, and the third goat from the left (the real one)
-    m.mon(CGOAT_MON.mirage, 44, 9).mon(CGOAT_MON.mirage, 49, 9).mon(MON.goat, 55, 9);
+    // every time he blinks: a goat, a goat, and the third goat from the left (the real one); the
+    // first turns a block short of the table, so it never pushes him into it
+    m.mon(CGOAT_MON.mirage, 42, 9).mon(CGOAT_MON.mirage, 49, 9).mon(MON.goat, 55, 9);
     placePicture(m, 'bTable', 45, 9, 2, 1);
     placePicture(m, 'credenza', 50, 9, 2, 1);
     m.set(48, 9, '$').set(52, 9, 'b').set(50, 3, 'y').set(55, 4, 'goatPortrait');

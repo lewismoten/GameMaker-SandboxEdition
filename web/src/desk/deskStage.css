@@ -185,10 +185,17 @@
     border-radius: 4px;
   }
 
-  .catalog-prop {
+  /* the catalog and the magazine lying at the desk's left front (room/paperStack.css): the
+     eye straight out from x 720 (676px across from the stack's corner), so their sides head
+     for the desk's vanishing point (720, -784) */
+  .desk-scene .paper-stack {
+    --ps-vp-x: 676px;
     position: absolute;
     left: 44px;
-    top: 506px;
+    top: 576px;
+  }
+
+  .paper-stack .ps-toggle {
     z-index: 1;
   }
 
@@ -312,6 +319,19 @@
 
   .desk-left {
     box-shadow: inset 0 10px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  /* the catalog and magazine's name goes under the papers (in the button's flow it hid behind them) */
+  .paper-stack {
+    padding-bottom: 24px;
+  }
+
+  .paper-stack .ps-toggle > .caption {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: max-content;
+    transform: translateX(-50%);
   }
 
   .desk-right {

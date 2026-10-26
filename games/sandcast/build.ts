@@ -107,11 +107,11 @@ const L = {
 };
 const subjects: Record<keyof typeof L, string> = {
   hub: 'Morning in the sandbox',
-  keep: 'Level 1: Anthill Keep',
-  moat: 'Level 2: Hosewater Moat',
-  lagoon: 'Level 3: Low Tide Lagoon',
-  burrows: 'Level 4: Beetle Burrows',
-  patio: "Level 5: Gwinn's nap",
+  keep: 'Level 1 of 5: Anthill Keep',
+  moat: 'Level 2 of 5: Hosewater Moat',
+  lagoon: 'Level 3 of 5: Low Tide Lagoon',
+  burrows: 'Level 4 of 5: Beetle Burrows',
+  patio: "Last level, 5 of 5: Gwinn's nap",
   bbs: 'Secret dial-up!',
   dig: '',
 };

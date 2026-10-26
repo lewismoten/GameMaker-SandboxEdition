@@ -1,3 +1,4 @@
+// The Sofa's teleconference spam: one 80-column row a line, drawable characters, color codes kept.
 import { describe, expect, it } from 'vitest';
 import { toCp437 } from '../src/retro/text/cp437';
 import { MIDDLE_FINGER, SPAM_CAN, spamCanBurst, visibleWidth } from '../src/retro/bbs/sofaSpam';

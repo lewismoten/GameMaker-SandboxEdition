@@ -89,7 +89,7 @@ export const cloneFrame = (f: Frame): Frame => ({ ...f, extra: f.extra.slice() }
 export const endFrame = (): Frame => ({ x: 0, y: 0, orient: 0, pic1: CHARBL, pic2: ENDFR, pause: 1, extra: new Uint8Array(5) });
 
 /** One player as initalldata() sets it up. */
-export function initPlayer(): Character {
+function initPlayer(): Character {
   const sequences: Sequence[] = Array.from({ length: MAXSEQ }, () => ({
     frames: Array.from({ length: MAXFRAME }, endFrame),
     key: 0,

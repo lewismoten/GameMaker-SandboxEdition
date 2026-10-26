@@ -15,7 +15,7 @@ export function openInEditor(project: Project, file: string): void {
   location.hash = formatHash(['p', project.id, file]);
 }
 
-export interface Use {
+interface Use {
   /** The file it is found in (open it to see). */
   file: string;
   /** What it is, in a few words: "level 3 · map: 42 cells". */
@@ -30,7 +30,7 @@ export function sceneName(project: Project, i: number): string {
 }
 
 /** The slot's name ("Map", "Title song"…) for a scene of its kind. */
-export function slotName(project: Project, scene: number, slot: number): string {
+function slotName(project: Project, scene: number, slot: number): string {
   const s = project.game().scenes[scene];
   const names: readonly string[] = s?.gametype === ADVTYPE ? ADV_FILES : scene === 0 ? START_FILES : END_FILES;
   return names[slot] ?? `File ${slot + 1}`;
@@ -57,7 +57,7 @@ export function scriptUses(project: Project, file: string): Use[] {
 }
 
 /** The level scenes that use `file` in `slot`, with the file each has in `other`. */
-function partners(project: Project, file: string, slot: number, other: number): { scene: number; file: string }[] {
+export function partners(project: Project, file: string, slot: number, other: number): { scene: number; file: string }[] {
   const n = normalize(file);
   const out: { scene: number; file: string }[] = [];
   project.game().scenes.forEach((s, i) => {
@@ -128,7 +128,7 @@ export function blockUses(project: Project, file: string, index: number): Use[] 
 }
 
 /** The block sets shown with a palette: those of the scenes that use it, else every set it is the fallback for. */
-export function blockSetsFor(project: Project, pal: string): string[] {
+function blockSetsFor(project: Project, pal: string): string[] {
   const n = normalize(pal);
   const sets = new Set<string>();
   for (const s of project.game().scenes)

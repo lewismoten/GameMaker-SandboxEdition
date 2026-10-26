@@ -5,7 +5,7 @@ import { newCharacter, serializeCharacter } from '../../formats/character';
 import { ADVTYPE, emptyScene, newGame, serializeGame, type Game } from '../../formats/game';
 import { MLEN, newMap, serializeMap } from '../../formats/map';
 
-export const AIR = 0;
+const AIR = 0;
 export const WALL = 1;
 export const COIN = 2;
 export const SPIKES = 3;

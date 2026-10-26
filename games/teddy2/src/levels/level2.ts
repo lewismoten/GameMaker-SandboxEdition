@@ -151,7 +151,8 @@ export function main(): Level {
   // Her den, deep under the town: Teddy drops in through the hole, takes the egg, climbs out.
   const [rx, ry] = [30, 64];
   m.rect(rx - 2, ry - 2, 18, 10, 'denWall');
-  m.rect(rx, ry, 14, 5, 'den');
+  // 13 wide: the way out (rx + 12) is the last column, so nothing lies past it
+  m.rect(rx, ry, 13, 5, 'den');
   m.rect(rx, ry + 5, 14, 1, 'denFloor');
   m.set(rx + 3, ry, 'roots').set(rx + 8, ry, 'roots');
   m.set(rx + 6, ry + 4, 'loot1').set(rx + 8, ry + 4, 'loot2');

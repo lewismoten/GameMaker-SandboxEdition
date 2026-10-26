@@ -12,11 +12,11 @@
   },
   {
    "scene": 3,
-   "keys": "ARIMkgBNAc0FTSXNBksUywZIDMgETRfNDksCywMSBpIATRDNA00ZzQYSBpIATQTNBE0HzQZLBcsGSAzIBE0jzSRNBc0GSAzIBBIDkgBNIM0DSwDLBkgMyARLFMsGTSPNBk0YzRxN"
+   "keys": "ARIMkgBNAc0FTSXNBksUywZIDMgETRfNDksCywMSBpIATRDNA00ZzQYSBpIATQTNBE0HzQZLBcsGSAzIBE0jzQZNBc0GSAzIBEgMyARND80GTRLNKksFywZIDMgEEgaSAE0HzQNNB80GTRjNHE0="
   },
   {
    "scene": 4,
-   "keys": "AU0TzQYSDJIATQLNCE0HzQYSDJIATQLNCE0PzQYSDJIATQTNC00CzQYSDJIATSDNA00BzQYSDJIATQXNBE0BzQYSDJIATQLNB00HzQZIDMgETQ/NBhIGkgBNDs0DSwDLHk0DzQYSDJIATRbNA00BzQYSDJIATQDNCRIMkgBNBs0DTQrNBhIMkgBNAM0JSwNICsgFywYSBpIATQLNCU0BzQYSDJIATQLNB00BzQYSDJIATQLNB0sAywZN"
+   "keys": "AU0TzQYSDJIATQLNCE0HzQYSDJIATQLNCE0PzQYSDJIATQTNC00CzQYSDJIATR7NA00BzQYSDJIATQPNB00BzQYSDJIATQLNB00HzQZIDMgETQ/NBhIGkgBNDs0DSwDLGE0DzQYSDJIATRbNA00BzQYSDJIATQDNChIMkgBNBs0DTQrNBhIMkgBNAM0JSwNICsgFywYSBpIATQLNCU0BzQYSDJIATQLNB00BzQYSDJIATQLNB0sAywZN"
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18639,
+  "frames": 18622,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1239
+    "frame": 1254
    },
    {
     "title": "Act I: 3:17 A.M.",
-    "frame": 3132
+    "frame": 3148
    },
    {
     "title": "Act II: The Enemy-Lover",
-    "frame": 5591
+    "frame": 5607
    },
    {
     "title": "Act III: Oh No No No",
-    "frame": 7887
+    "frame": 7890
    },
    {
     "title": "Act IV: The Reckoning",
-    "frame": 10415
+    "frame": 10398
    },
    {
     "title": "Ending",
-    "frame": 13213
+    "frame": 13196
    },
    {
     "title": "Credits",
-    "frame": 16071
+    "frame": 16054
    }
   ]
  }

@@ -14,12 +14,13 @@ import { expectText, progress } from './transfer';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
 import { Pager, pageLabel } from './pager';
+import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
 import { account, filePoints, recordDownload, updateAccount } from './ratio';
 
-export interface WarezFile {
+interface WarezFile {
   name: string;
   size: number;
   /** A text file's lines (CP437 is applied when read). */
@@ -29,7 +30,7 @@ export interface WarezFile {
   part?: number;
 }
 
-export interface WarezRelease {
+interface WarezRelease {
   /** The download's id, and its folder: C:\DOWNLOAD\<ID>. */
   id: string;
   /** The name in the listing (a multi-ZIP release's set name). */
@@ -91,7 +92,7 @@ export const ACCESS_CODE = 'DUNE';
 export const accessOk = (typed: string): boolean => typed.replace(/\s+/g, '').toUpperCase() === ACCESS_CODE;
 
 /** Wrong codes before the SysOp breaks in and says it. */
-export const SYSOP_HELPS_AFTER = 2;
+const SYSOP_HELPS_AFTER = 2;
 
 /** A text file's bytes: CP437, CR LF line ends. */
 export function textBytes(lines: string[]): Uint8Array {
@@ -109,7 +110,7 @@ let wrongTries = 0;
 async function accessCheck(t: Term, h: RetroHost): Promise<boolean> {
   if (elite) return true;
   t.line();
-  t.line(`|12${toCp437('▄▄▄▄▄▄▄▄')} |15ELiTE USERS ONLY |12${toCp437('▄▄▄▄▄▄▄▄')}`);
+  t.line('|12▄▄▄▄▄▄▄▄ |15ELiTE USERS ONLY |12▄▄▄▄▄▄▄▄');
   t.line("|07This area isn't on the menu. If you found it, you're halfway there.");
   if (wrongTries >= SYSOP_HELPS_AFTER) {
     t.line(`|13<SysOp breaks into chat>|07 Oh, fine. It's |15${ACCESS_CODE}|07. Don't tell my mom.`);
@@ -192,14 +193,8 @@ async function download(t: Term, h: RetroHost, u: WarezRelease): Promise<void> {
   t.line(`|10Transfer complete.${zips.length > 1 ? ` All ${zips.length} parts received.` : ''}`);
   const dir = u.id.toUpperCase();
   for (const [p, zip] of zips.entries()) {
-    // PKUNZIP runs on this PC: its words show at once
-    t.local(`|07C:\\>PKUNZIP -d ${zip} C:\\DOWNLOAD\\${dir}\n`);
-    t.local(`|07Searching ZIP: ${zip}\n`);
-    const names = [...u.files.filter((f) => (f.part ?? 0) === p).map((f) => f.name), ...(p === 0 ? ['FILE_ID.DIZ'] : [])];
-    for (const name of names) {
-      t.local(`|07  Inflating: ${name}\n`);
-      await sleep(h.turbo() ? 60 : 300);
-    }
+    const files = u.files.filter((f) => (f.part ?? 0) === p).map((f) => [f.name, fileSize(f)] as const);
+    await pkunzip(t, h, zip, dir, p === 0 ? [...files, ['FILE_ID.DIZ', DIZ_BYTES] as const] : files);
   }
   h.downloads.add(u.id);
   updateAccount((a) => zips.reduce((acc) => recordDownload(acc, Math.round(u.bytes / zips.length), amnesty), a));

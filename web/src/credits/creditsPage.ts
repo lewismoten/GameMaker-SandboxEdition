@@ -13,7 +13,7 @@ import { piecesSection } from './piecesSection';
 import { originalSection } from './originalSection';
 import { authorsSection } from './authorsSection';
 import { moreGamesSection } from './moreGames';
-import { peopleSection } from './peopleSection';
+import { aiToolsSection, peopleSection } from './peopleSection';
 import { bardSection } from './bardTable';
 import { bbsPicturesSection } from './bbsPicturesSection';
 import './creditsLayout.css';
@@ -22,10 +22,11 @@ import './creditsLayout.css';
 const SECTIONS: [id: string, title: string, what: string][] = [
   ['credits-original', 'The original Game-Maker', 'RSD and the Stone family, part by part'],
   ['credits-authors', 'Game authors', 'The CD’s games, Sandbox Software and the Bard'],
+  ['credits-people', 'The people', 'Lewis, and the cast who appear as themselves'],
   ['credits-more-games', 'Find more Game-Maker games', 'Other sites that keep the games players made'],
-  ['credits-people', 'AI tools and the people', 'What each tool made, Lewis and the cast'],
   ['credits-bard-table', 'The Bard of Bizarre', 'Who made what, game by game'],
   ['credits-bbs-pictures', 'Pictures on the BBS', 'Who took each one; download one by modem'],
+  ['credits-ai', 'AI tools and models', 'What each tool made'],
   ['credits-pieces', 'Third-party pieces', 'Fonts, headers and runtimes in the site and players'],
   ['credits-software', 'Software', 'The build and test tools and what they use'],
 ];
@@ -85,10 +86,11 @@ export function renderCredits(el: HTMLElement): void {
       jumpList(),
       originalSection(),
       authorsSection(),
-      moreGamesSection(),
       peopleSection(),
+      moreGamesSection(),
       bardSection(),
       bbsPicturesSection(),
+      aiToolsSection(),
       piecesSection(),
       softwareSection(),
     ),

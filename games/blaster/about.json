@@ -10,6 +10,7 @@
   "egg": { "block": 149 },
   "tinHeart": { "map": "s2a.map", "at": [16, 70] },
   "easterEgg": { "map": "s3b.map", "at": [16, 34] },
+  "saveSign": { "map": "s2b.map", "at": [5, 91], "after": "s2x.map" },
   "label": {
     "background": "#0b1a10",
     "band": "#36e07a",
@@ -21,26 +22,26 @@
     "accent": "#ff7a1a",
     "ink": "#ffffff",
     "tagline": "Your PC has a virus. Shrink down and blast it.",
-    "back": "Late one night you downloaded COOLGAME.ZIP from a BBS you had never called before. It was not a cool game. It was GLITCH, a virus that eats a PC from the inside out. Mom's recipe file. Your homework. YOUR HIGH SCORES.\n\nTime for VACCINE.EXE. Shrink to the size of a byte, climb into the BLASTER nano-fighter and blast your way up through the family 486 - motherboard, memory, sound card, hard disk and into the CPU itself. Five stages. Ten scrolling runs. Five towering bosses. And GLITCH waiting at the core.",
+    "back": "Late one night you downloaded COOLGAME.ZIP from a BBS you had never called before. It was not a cool game. It was GLITCH, a virus that eats a PC from the inside out. Mom's recipe file. Your homework. YOUR HIGH SCORES.\n\nTime for VACCINE.EXE. Shrink to the size of a byte, climb into the BLASTER nano-fighter and blast your way up through the family 486 - motherboard, memory, sound card, hard disk and into the CPU itself. Five stages. Eleven scrolling runs. Five towering bosses. And GLITCH waiting at the core.",
     "features": [
       "A real vertically scrolling shoot-'em-up made with Game-Maker - no programming",
       "Auto-fire twin blasters, plus Nova Bombs that fan out five plasma bolts",
       "Five stages inside a 486: the motherboard, memory, the sound card, the hard disk and the CPU",
       "Five towering bosses blocking the only way out",
-      "Turrets that sweep and fire, virus hatches, firewalls, data streams and thumping speakers",
-      "Fly past a homemade 6502 on a breadboard, a blinking 555 timer and a stack that overflows",
+      "Turrets that sweep and fire, virus hatches, firewalls, data streams, thumping speakers and rolling sound waves",
+      "Fly past a homemade 6502 on a breadboard, a stack that overflows and a sound card that brags in letters two blocks tall",
       "Twelve Sound Blaster songs and digitized explosions",
       "An animated intro cartoon and a self-playing demo"
     ],
     "shots": [
       ["s1a.map", 2, 50],
-      ["s3b.map", 2, 54],
+      ["s3c.map", 2, 44],
       ["s1c.map", 2, 45],
       ["s4a.map", 2, 44],
       ["s5c.map", 2, 45]
     ],
     "rating": "Ages 8 and up",
-    "hours": 3,
+    "hours": 4,
     "reviews": [
       {
         "quote": "We did not think Game-Maker could scroll like this. Then GLITCH ate our high scores and we stopped thinking at all.",
@@ -59,5 +60,40 @@
       "gif": "title.gif",
       "caption": "Your PC has a virus. Shrink down and blast it."
     }
-  }
+  },
+  "sameEverySide": [
+    "ship.chr",
+    "shipfree.chr",
+    "s1.mon#21",
+    "s2.mon#21",
+    "s3.mon#21",
+    "sb.mon#21",
+    "s4.mon#21",
+    "s5.mon#21",
+    "b3.mon#21",
+    "b4.mon#21",
+    "b5.mon#21",
+    "b2.mon#48",
+    "b2.mon#49",
+    "b2.mon#50",
+    "b2.mon#51",
+    "b2.mon#52",
+    "b2.mon#53",
+    "b2.mon#54",
+    "b2.mon#55",
+    "b2.mon#56",
+    "b2.mon#57",
+    "b2.mon#58",
+    "b2.mon#59",
+    "b3.mon#59",
+    "b4.mon#56",
+    "b4.mon#57",
+    "b4.mon#58",
+    "b4.mon#59",
+    "b4.mon#60",
+    "b4.mon#61",
+    "b4.mon#62",
+    "b4.mon#63",
+    "b5.mon#58"
+  ]
 }

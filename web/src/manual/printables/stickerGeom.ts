@@ -1,7 +1,9 @@
 // The outlines of stickers, in inches: the cut line and the same line grown or shrunk (the bleed
 // past it, the keyline inside it, the gap kept around it on the sheet). Plain shapes are
 // polygons offset edge by edge; a die-cut follows its art at a set distance, traced from a
-// distance field round the art's solid pixels, so the blade can follow a character's silhouette.
+// distance field round the art's solid pixels, its inner corners rounded and narrow gaps filled
+// so the blade follows one smooth shape. The sheet rules (sizes, bleed, spacing) are in the
+// printables README.
 
 export type StickerShape = 'circle' | 'rect' | 'star' | 'badge' | 'heart' | 'burst' | 'bubble' | 'floppy' | 'tv' | 'cut';
 export type Pt = [number, number];
@@ -22,8 +24,12 @@ export interface StickerGeom {
   solid?: Solid;
 }
 
-/** How far a die-cut's cut line runs outside its art. */
-export const CUT_OFFSET = 0.09;
+/** How far a die-cut's cut line runs outside its art: its border, 1/8 inch as Cricut's offset tool is usually set. */
+export const CUT_OFFSET = 0.125;
+/** The least radius of a die-cut's inner corners; gaps narrower than about twice this plus the border are filled. */
+const CUT_ROUND = 0.1;
+/** Every sticker is at least this many inches across at its narrowest, so it is easy to cut and peel. */
+export const MIN_SIZE = 1;
 
 /** A die-cut's size around its solid art. */
 export function cutGeom(solid: Solid): StickerGeom {
@@ -120,13 +126,14 @@ function basePolygon(shape: StickerShape, w: number, h: number): Pt[] {
       return out;
     }
     case 'floppy': {
-      // a 3½" disk: square, round corners, one corner clipped
+      // a 3½" disk seen from its label side, shutter down: square, round corners, and the
+      // corner cut at the bottom left (it is at the top right with the shutter up)
       const r = 0.06;
       const c = Math.min(w, h) * 0.1;
       const out: Pt[] = [];
-      out.push([w - c, 0], [w, c]);
+      arc(out, w - r, r, r, -Math.PI / 2, 0, 4);
       arc(out, w - r, h - r, r, 0, Math.PI / 2, 4);
-      arc(out, r, h - r, r, Math.PI / 2, Math.PI, 4);
+      out.push([c, h], [0, h - c]);
       arc(out, r, r, r, Math.PI, Math.PI * 1.5, 4);
       return out;
     }
@@ -156,7 +163,7 @@ function signedArea(pts: Pt[]): number {
 }
 
 /** A polygon moved `d` outward along its edges (mitered corners, capped at 4d), or inward for d < 0. */
-export function offsetPolygon(pts: Pt[], d: number): Pt[] {
+function offsetPolygon(pts: Pt[], d: number): Pt[] {
   if (!d) return pts;
   // outward is to the left of each edge of a clockwise polygon on the page (y down); flip for the other way round
   const s = signedArea(pts) > 0 ? 1 : -1;
@@ -203,14 +210,18 @@ interface Field {
   cols: number;
   rows: number;
   res: number;
-  /** distance from each sample to the nearest solid cell, in inches; sample (i, j) sits at (i, j) * res - pad */
+  /** a distance in inches at each sample; sample (i, j) sits at (i, j) * res - pad */
   d: Float32Array;
   pad: number;
 }
 
 const FIELD_RES = 0.01;
-const FIELD_PAD = CUT_OFFSET + 0.2;
+/** Room round the art for the border, the widest corner rounding and the bleed. */
+const FIELD_PAD = CUT_OFFSET + 0.6;
+/** Corner roundings tried in turn, until the cut is one piece round all of the art. */
+const ROUNDS = [CUT_ROUND, 0.2, 0.3, 0.45];
 const fields = new WeakMap<Solid, Field>();
+const cutFields = new WeakMap<Solid, Field>();
 
 /** 1-D squared distance transform (Felzenszwalb and Huttenlocher). */
 function edt1(f: Float64Array, n: number, d: Float64Array, v: Int32Array, z: Float64Array): void {
@@ -236,21 +247,10 @@ function edt1(f: Float64Array, n: number, d: Float64Array, v: Int32Array, z: Flo
   }
 }
 
-function fieldOf(solid: Solid): Field {
-  const hit = fields.get(solid);
-  if (hit) return hit;
-  const res = FIELD_RES;
-  const pad = FIELD_PAD;
-  const cols = Math.ceil((solid.cols * solid.cell + 2 * pad) / res) + 1;
-  const rows = Math.ceil((solid.rows * solid.cell + 2 * pad) / res) + 1;
-  const BIG = 1e12;
-  const g = new Float64Array(cols * rows).fill(BIG);
-  for (let j = 0; j < rows; j++)
-    for (let i = 0; i < cols; i++) {
-      const cx = Math.floor((i * res - pad) / solid.cell);
-      const cy = Math.floor((j * res - pad) / solid.cell);
-      if (cx >= 0 && cy >= 0 && cx < solid.cols && cy < solid.rows && solid.bits[cy * solid.cols + cx]) g[j * cols + i] = 0;
-    }
+/** Distance in samples from every sample of a cols x rows grid to the nearest one marked in `on`. */
+function edt(on: Uint8Array, cols: number, rows: number): Float32Array {
+  const g = new Float64Array(cols * rows);
+  for (let k = 0; k < g.length; k++) g[k] = on[k] ? 0 : 1e12;
   const n = Math.max(cols, rows);
   const f = new Float64Array(n);
   const d = new Float64Array(n);
@@ -267,14 +267,87 @@ function fieldOf(solid: Solid): Field {
     for (let i = 0; i < cols; i++) g[j * cols + i] = d[i];
   }
   const out = new Float32Array(cols * rows);
-  for (let k = 0; k < out.length; k++) out[k] = Math.sqrt(g[k]) * res;
-  const field = { cols, rows, res, d: out, pad };
+  for (let k = 0; k < out.length; k++) out[k] = Math.sqrt(g[k]);
+  return out;
+}
+
+/** Distance from each sample to the art's nearest solid cell, in inches. */
+function fieldOf(solid: Solid): Field {
+  const hit = fields.get(solid);
+  if (hit) return hit;
+  const res = FIELD_RES;
+  const pad = FIELD_PAD;
+  const cols = Math.ceil((solid.cols * solid.cell + 2 * pad) / res) + 1;
+  const rows = Math.ceil((solid.rows * solid.cell + 2 * pad) / res) + 1;
+  const on = new Uint8Array(cols * rows);
+  for (let j = 0; j < rows; j++)
+    for (let i = 0; i < cols; i++) {
+      const cx = Math.floor((i * res - pad) / solid.cell);
+      const cy = Math.floor((j * res - pad) / solid.cell);
+      if (cx >= 0 && cy >= 0 && cx < solid.cols && cy < solid.rows && solid.bits[cy * solid.cols + cx]) on[j * cols + i] = 1;
+    }
+  const d = edt(on, cols, rows);
+  for (let k = 0; k < d.length; k++) d[k] *= res;
+  const field = { cols, rows, res, d, pad };
   fields.set(solid, field);
   return field;
 }
 
-/** The outermost line where the field equals `level` (marching squares), in field-sample units. */
-function contour(fd: Field, level: number): Pt[] {
+/** How many separate pieces the marked samples make (4-connected). */
+function pieces(on: Uint8Array, cols: number): number {
+  const seen = new Uint8Array(on.length);
+  const stack: number[] = [];
+  let n = 0;
+  for (let k = 0; k < on.length; k++) {
+    if (!on[k] || seen[k]) continue;
+    n++;
+    seen[k] = 1;
+    stack.push(k);
+    while (stack.length) {
+      const c = stack.pop()!;
+      const i = c % cols;
+      for (const m of [i > 0 ? c - 1 : -1, i < cols - 1 ? c + 1 : -1, c - cols, c + cols])
+        if (m >= 0 && m < on.length && on[m] && !seen[m]) ((seen[m] = 1), stack.push(m));
+    }
+  }
+  return n;
+}
+
+/**
+ * The die-cut's shape as a signed distance in inches (negative inside): the art grown by the
+ * border, then closed (grown by a rounding and shrunk back), which rounds every inner corner and
+ * fills narrow gaps between arms, legs and words. If the art's parts are still apart, a wider
+ * rounding bridges them, so the sticker is always one piece.
+ */
+function cutFieldOf(solid: Solid): Field {
+  const hit = cutFields.get(solid);
+  if (hit) return hit;
+  const art = fieldOf(solid);
+  const { cols, rows, res } = art;
+  const n = cols * rows;
+  let shape = new Uint8Array(n);
+  for (const r of ROUNDS) {
+    const grown = new Uint8Array(n);
+    for (let k = 0; k < n; k++) grown[k] = art.d[k] < CUT_OFFSET + r ? 0 : 1; // marks the outside
+    const toOutside = edt(grown, cols, rows);
+    shape = new Uint8Array(n);
+    for (let k = 0; k < n; k++) shape[k] = toOutside[k] * res >= r ? 1 : 0;
+    if (pieces(shape, cols) <= 1) break;
+  }
+  const outside = new Uint8Array(n);
+  for (let k = 0; k < n; k++) outside[k] = shape[k] ? 0 : 1;
+  const toShape = edt(shape, cols, rows);
+  const toOut = edt(outside, cols, rows);
+  const d = new Float32Array(n);
+  // a sample's distance to the boundary, less half a sample so inside and outside meet on it
+  for (let k = 0; k < n; k++) d[k] = (shape[k] ? -(toOut[k] - 0.5) : toShape[k] - 0.5) * res;
+  const field = { cols, rows, res, d, pad: art.pad };
+  cutFields.set(solid, field);
+  return field;
+}
+
+/** Every closed line where the field equals `level` (marching squares), in field-sample units. */
+function rings(fd: Field, level: number): Pt[][] {
   const { cols, rows, d } = fd;
   const at = (i: number, j: number) => d[j * cols + i];
   // edges keyed by cell edge id; each segment joins two edge points
@@ -341,10 +414,9 @@ function contour(fd: Field, level: number): Pt[] {
           break;
       }
     }
-  // walk the rings, keep the biggest
+  // walk the rings
   const seen = new Set<number>();
-  let best: Pt[] = [];
-  let bestArea = 0;
+  const out: Pt[][] = [];
   for (const start of next.keys()) {
     if (seen.has(start)) continue;
     const ring: Pt[] = [];
@@ -358,6 +430,16 @@ function contour(fd: Field, level: number): Pt[] {
       prev = cur;
       cur = nb;
     }
+    if (ring.length > 2) out.push(ring);
+  }
+  return out;
+}
+
+/** The biggest ring where the field equals `level`. */
+function contour(fd: Field, level: number): Pt[] {
+  let best: Pt[] = [];
+  let bestArea = 0;
+  for (const ring of rings(fd, level)) {
     const a = Math.abs(signedArea(ring));
     if (a > bestArea) ((bestArea = a), (best = ring));
   }
@@ -392,7 +474,21 @@ function simplify(pts: Pt[], eps: number): Pt[] {
   return pts.filter((_, i) => keep[i]);
 }
 
+/** One round of corner cutting (Chaikin) on a closed ring: each corner becomes a short bevel, so a few rounds make a smooth curve. */
+function chaikin(pts: Pt[]): Pt[] {
+  const out: Pt[] = [];
+  for (let i = 0; i < pts.length; i++) {
+    const [ax, ay] = pts[i];
+    const [bx, by] = pts[(i + 1) % pts.length];
+    out.push([0.75 * ax + 0.25 * bx, 0.75 * ay + 0.25 * by], [0.25 * ax + 0.75 * bx, 0.25 * ay + 0.75 * by]);
+  }
+  return out;
+}
+
 const cutCache = new WeakMap<Solid, Map<number, Pt[]>>();
+
+/** Field samples to inches, in the die-cut's own coordinates. */
+const toInches = (fd: Field, pts: Pt[]): Pt[] => pts.map(([i, j]): Pt => [i * fd.res - fd.pad + CUT_OFFSET, j * fd.res - fd.pad + CUT_OFFSET]);
 
 function dieCut(solid: Solid, grow: number): Pt[] {
   let m = cutCache.get(solid);
@@ -400,14 +496,19 @@ function dieCut(solid: Solid, grow: number): Pt[] {
   const key = Math.round(grow * 1e4);
   const hit = m.get(key);
   if (hit) return hit;
-  const fd = fieldOf(solid);
-  const level = Math.min(CUT_OFFSET + grow, FIELD_PAD - 2 * FIELD_RES);
-  const ring = simplify(contour(fd, Math.max(level, FIELD_RES * 0.6)), 0.0025 / FIELD_RES).map(([i, j]): Pt => [
-    i * fd.res - fd.pad + CUT_OFFSET,
-    j * fd.res - fd.pad + CUT_OFFSET,
-  ]);
+  const fd = cutFieldOf(solid);
+  const level = Math.min(grow, FIELD_PAD - CUT_OFFSET - 2 * FIELD_RES);
+  // the closed shape is traced from whole samples, so its line steps; straighten the steps, then round the corners
+  const ring = toInches(fd, chaikin(chaikin(simplify(contour(fd, level), 0.75))));
   m.set(key, ring);
   return ring;
+}
+
+/** The lines `d` inches round a die-cut's art (every part of it, holes too: fill them even-odd). */
+export function artHalo(g: StickerGeom, d: number): Pt[][] {
+  if (!g.solid) return [];
+  const fd = fieldOf(g.solid);
+  return rings(fd, Math.max(d, FIELD_RES * 0.6)).map((r) => toInches(fd, simplify(r, 0.0025 / FIELD_RES)));
 }
 
 /** The sticker's cut line grown by `grow` inches (negative shrinks), in its own coordinates. */

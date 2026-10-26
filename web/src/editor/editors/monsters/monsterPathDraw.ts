@@ -9,7 +9,7 @@ import type { Corner, PathKind, PathWalker } from './monsterPath';
 import { CELL, SCALE } from './monsterPathView';
 
 /** The part of the map shown, in blocks from the start (or the character). */
-export interface ViewRect {
+interface ViewRect {
   x0: number;
   y0: number;
   w: number;
@@ -17,7 +17,7 @@ export interface ViewRect {
 }
 
 /** Everything a frame of the map shows. */
-export interface PathScene {
+interface PathScene {
   view: ViewRect;
   /** The map's blocks for this view (mapLayerCanvas). */
   mapLayer: HTMLCanvasElement;
@@ -63,7 +63,7 @@ export function mapLayerCanvas(b: ViewRect, map: GameMap | undefined, mapImgs: H
   return c;
 }
 
-export function arrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, color: string, dashed = false): void {
+function arrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, color: string, dashed = false): void {
   ctx.save();
   ctx.lineCap = 'round';
   ctx.setLineDash(dashed ? [8, 8] : []);
@@ -96,7 +96,7 @@ export function arrow(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2:
   ctx.restore();
 }
 
-export function badge(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, bgc: string, fg = '#000'): void {
+function badge(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, bgc: string, fg = '#000'): void {
   ctx.font = 'bold 13px ui-monospace, Menlo, Consolas, monospace';
   const w = Math.max(16, ctx.measureText(text).width + 6);
   ctx.fillStyle = '#000';

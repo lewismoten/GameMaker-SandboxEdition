@@ -14,7 +14,7 @@ const expect = (bot: Bot, scene: number, what: string) => {
 export async function hub1(bot: Bot): Promise<void> {
   expect(bot, S.hub, 'the sandbox');
   await bot.goto(3, 33, 'the shovel');
-  await bot.key(SCAN.p, 2, 6);
+  await bot.key(SCAN.g, 2, 6);
   if (bot.sim.meter(CTR.shovel) < 100) throw new Error('No shovel');
   await bot.goto(6, 33, 'a tennis ball');
   await bot.digFrom(8, 26, 'down', 'the dune ring');
@@ -158,7 +158,7 @@ async function crabGap(bot: Bot): Promise<void> {
 export async function lagoon(bot: Bot): Promise<void> {
   expect(bot, S.lagoon, 'Low Tide Lagoon');
   await bot.goto(19, 1, 'the bucket');
-  await bot.key(SCAN.p, 2, 6);
+  await bot.key(SCAN.g, 2, 6);
   if (bot.sim.meter(CTR.bucket) < 100) throw new Error('No bucket');
   await bot.goto(23, 1, 'a water balloon');
   await bot.goto(18, 3, 'a tennis ball');

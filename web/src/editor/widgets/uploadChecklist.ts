@@ -1,13 +1,17 @@
 // "Before You Upload": The Ultimate Owner's Guide's Appendix B as a checklist that ticks
 // itself where the level check can tell (the file checks, run now, and the last Level check of
 // each map, kept in the companion file), and leaves the rest for the designer to tick. Those
-// ticks are kept in the companion file too (editor-only, never in the game's files).
+// ticks are kept in the companion file too (editor-only, never in the game's files). Findings
+// the designer accepted as meant to be (check/accepted.ts) don't count against a line.
 import './uploadChecklist.css';
 import { h, modal } from '../core/ui';
 import type { Project } from '../core/project';
 import { CHECKS, type CheckId, type Finding } from '../check/findings';
+import { sameEverySide } from '../check/sameEverySide';
+import { acceptedFindings, openFindings } from '../check/accepted';
 import { runChecks } from '../check/report';
 import { guideLink } from './guideLink';
+import { unlockAchievement } from '../../achievements';
 
 /** One line of Appendix B, and the checks that can speak for it. */
 export interface ChecklistItem {
@@ -20,25 +24,67 @@ export interface ChecklistItem {
 }
 
 export const APPENDIX_B: ChecklistItem[] = [
-  { text: 'The first minute is fun; the hero’s speed feels right to someone new', checks: ['hero-speed', 'response'] },
+  { text: 'The first minute is fun; the hero’s speed feels right to someone new, and a tap moves him once', checks: ['hero-speed', 'response', 'tap-twice'] },
+  { text: 'The hero faces the way he walks; pacing monsters turn round', checks: ['facing'] },
   { text: 'Every jump has a block to spare; every landing is in sight before the jump', checks: ['blind-drop', 'hazard-landing'], play: true },
   { text: 'Each level asks a little more; the last is the best, not the meanest', checks: ['curve'], play: true },
   { text: 'Long levels are split into scenes, so a death costs little', checks: ['checkpoints'], play: true, full: true },
-  { text: 'Every danger shows before it can kill; hazard blocks fill their cells', checks: ['hazard-art', 'start-threat'] },
-  { text: 'Nowhere to get stuck: every pit has a way out, every lock its key', checks: ['stuck', 'counters', 'link-unreached'], play: true, full: true },
-  { text: 'Two or three enemies on a screen, each with a job; birth blocks rest', checks: ['density', 'births'], full: true },
+  { text: 'Every danger shows before it can kill; hazard blocks fill their cells; the start is safe', checks: ['hazard-art', 'start-threat'] },
+  { text: 'What the hero can stand on looks solid, and what he falls through doesn’t', checks: ['footing'], full: true },
+  {
+    text: 'Nowhere to get stuck: every pit has a way out, every lock its key, and nothing needed is left behind a one-way spot',
+    checks: ['stuck', 'counters', 'link-unreached', 'softlock', 'one-way'],
+    play: true,
+    full: true,
+  },
+  { text: 'Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest', checks: ['density', 'births'], full: true },
   {
     text: 'Enemies stand out in every palette; a touch costs little and pushes clear',
     checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers'],
     full: true,
   },
-  { text: 'Every item can be reached; mazes have landmarks; no wait over 3 seconds', checks: ['unreachable', 'waits', 'maze'], play: true },
-  { text: 'The final boss has stages; the ending is a real scene, not an ad', checks: ['ending'] },
+  {
+    text: 'Solid monsters can’t trap the hero: their paths stop a block short of walls, stay off the map’s top and bottom rows and never close in',
+    checks: ['push-edge', 'push-gap', 'push-squeeze', 'solid-hurt'],
+  },
+  { text: 'A few lives, not dozens: a death costs a little, not everything', checks: ['stakes'] },
+  {
+    text: 'Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds',
+    checks: ['unreachable', 'waits', 'maze', 'lookalike'],
+    play: true,
+  },
+  {
+    text: 'Nothing shown can’t be used: no doors that lead nowhere, no prizes in view but out of reach, no prizes your own shots destroy',
+    checks: ['fake-exit', 'prize-in-view', 'shot-prize'],
+    play: true,
+    full: true,
+  },
+  { text: 'Someone with slower hands can finish: one key at a time, no split-second timing', checks: ['steady'], play: true },
+  { text: 'The final boss has stages; the ending is a real scene that says you won, not an ad', checks: ['ending'] },
   { text: 'Something new every level or two; the gimmick has its own level', checks: ['variety'] },
-  { text: 'Any key beyond the arrows and fire is taught in the game itself', checks: ['controls'], full: true },
-  { text: 'Animations loop smoothly; menu, F2 and text screens are readable', checks: [] },
-  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds'] },
+  {
+    text: 'Any key beyond the arrows and fire is taught in the game itself, near the start, and sits under the left hand',
+    checks: ['controls', 'reach', 'teach-first'],
+    full: true,
+  },
+  { text: 'The help names every key the hero has, and only those', checks: ['help-keys', 'controls'], full: true },
+  { text: 'The goal fits in one line, and the instructions say it; help and story fit in three pages', checks: ['help-length'] },
+  { text: 'Every odd rule is explained in the game or the help', checks: [] },
+  {
+    text: 'Players can tell how far they are: level cards say which level of how many; a long game comes in chapters, and the first card and each chapter’s end say F5 saves',
+    checks: [],
+  },
+  { text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable', checks: ['fli', 'text-contrast'] },
+  { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
+  { text: 'The title screen shows the game you’ll play', checks: [] },
+  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },
+  {
+    text: 'The first scene’s hero sets the starting hit points, lives and counters for every hero; every hero has a standing picture',
+    checks: ['start-values', 'blank-idle'],
+    full: true,
+  },
+  { text: 'Nothing in the game mocks a real person or a group', checks: [] },
   { text: 'The demo plays the same way twice', checks: [] },
   { text: 'Three friends played it through, and you fixed where they got stuck', checks: [] },
 ];
@@ -53,8 +99,8 @@ export function itemState(item: ChecklistItem, findings: Finding[], played: bool
   return { kind: item.play && !played ? 'unchecked' : 'clear', count: 0 };
 }
 
-/** The findings of the last Level check of every map, from the companion file. */
-function savedFindings(project: Project): { findings: Finding[]; maps: number; checked: number } {
+/** The findings of the last Level check of every map, from the companion file (`all`: every one, not just the play checks'). */
+function savedFindings(project: Project, all = false): { findings: Finding[]; maps: number; checked: number } {
   const maps = project.files.byExtension('map');
   let checked = 0;
   const findings: Finding[] = [];
@@ -62,11 +108,27 @@ function savedFindings(project: Project): { findings: Finding[]; maps: number; c
     const s = project.extras<{ findings?: Finding[] } | undefined>(m, 'levelCheck', undefined);
     if (!s) continue;
     checked++;
-    findings.push(
-      ...(s.findings ?? []).filter((f) =>
-        ['stuck', 'unreachable', 'link-unreached', 'blind-drop', 'hazard-landing', 'hurt-lock', 'every-tick', 'checkpoints', 'curve'].includes(f.check),
-      ),
-    );
+    if (all) findings.push(...(s.findings ?? []).map((f) => ({ ...f, where: { ...f.where, map: f.where.map ?? m } })));
+    else
+      findings.push(
+        ...(s.findings ?? []).filter((f) =>
+          [
+            'stuck',
+            'unreachable',
+            'prize-in-view',
+            'link-unreached',
+            'blind-drop',
+            'hazard-landing',
+            'hurt-lock',
+            'every-tick',
+            'checkpoints',
+            'curve',
+            'one-way',
+            'softlock',
+            'steady',
+          ].includes(f.check),
+        ),
+      );
   }
   return { findings, maps: maps.length, checked };
 }
@@ -75,13 +137,18 @@ export async function uploadChecklist(project: Project): Promise<void> {
   const ticks = new Set(project.extras<number[]>(project.gam, SECTION, []));
   let fileFindings: Finding[] = [];
   try {
-    fileFindings = (await runChecks(project.files, { play: false })).findings;
+    fileFindings = (await runChecks(project.files, { play: false, sameEverySide: sameEverySide(project) })).findings;
   } catch {
     /* a game without levels: every item is the designer's */
   }
   const saved = savedFindings(project);
-  const findings = [...fileFindings, ...saved.findings];
+  const findings = openFindings([...fileFindings, ...saved.findings], acceptedFindings(project));
   const played = saved.maps > 0 && saved.checked === saved.maps;
+  const boxes: HTMLInputElement[] = [];
+  /** Every line ticked, by the checks or by hand. */
+  const allTicked = () => {
+    if (boxes.every((b) => b.checked)) unlockAchievement('check-upload');
+  };
   await modal<void>('Before You Upload', () =>
     h(
       'div',
@@ -97,13 +164,28 @@ export async function uploadChecklist(project: Project): Promise<void> {
         guideLink({ chapter: 'upload', section: 'Before You Upload' }, '📒 Appendix B in the guide'),
       ),
       h(
+        'div',
+        { class: 'toolbar' },
+        h(
+          'button',
+          {
+            type: 'button',
+            title: 'Every finding of the game’s files and of each map’s last Level check, by kind, with a CSV file and a printable checklist',
+            onclick: () => void gameReport(project, fileFindings),
+          },
+          '📋 Every map’s findings as a report…',
+        ),
+      ),
+      h(
         'ol',
         { class: 'upl-list' },
         ...APPENDIX_B.map((item, i) => {
           const st = itemState(item, findings, played);
           const auto = st.kind === 'clear' && item.full;
           const box = h('input', { type: 'checkbox', checked: auto || ticks.has(i), disabled: auto, id: `upl-${i}` });
+          boxes.push(box);
           box.addEventListener('change', () => {
+            allTicked();
             if (box.checked) ticks.add(i);
             else ticks.delete(i);
             project.setExtras(
@@ -127,4 +209,19 @@ export async function uploadChecklist(project: Project): Promise<void> {
       ),
     ),
   );
+}
+
+/** The whole game's findings (its files', and every map's last Level check) as a report, each finding once. */
+async function gameReport(project: Project, fileFindings: Finding[]): Promise<void> {
+  const { openReport } = await import('./checkReport');
+  await openReport({
+    project,
+    findings: () => {
+      const seen = new Set<string>();
+      return [...fileFindings, ...savedFindings(project, true).findings].filter((f) => {
+        const k = `${f.check}|${f.title}|${f.where.map ?? f.where.file ?? ''}`;
+        return !seen.has(k) && !!seen.add(k);
+      });
+    },
+  });
 }

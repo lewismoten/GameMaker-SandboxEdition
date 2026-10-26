@@ -9,10 +9,10 @@ import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
 import { errorBox, askText } from './text/textUi';
 import type { PlayerHandle } from '../player/player';
+import { deskJoystick } from '../input/deskJoystick';
 import { GameFiles } from '../project/files';
 import { loadProject, loadSaveData, writeSaveFile } from '../project/storage';
 import { Project } from '../editor/core/project';
-import { editors, fileInfo } from '../editor/editors/registry';
 import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
 import { PictureScreen } from './view/picture';
@@ -157,7 +157,7 @@ export class Computer extends ComputerFolders {
           this.screen.clear();
           break;
         case 'terminal':
-          await (await import('./bbs/bbs')).runTerminal(this);
+          await (await import('./bbs/bbs')).runTerminal(this, _args);
           break;
         case 'vpic':
           await (await import('./view/vpic')).runVpic(this, _args);
@@ -326,6 +326,8 @@ export class Computer extends ComputerFolders {
               noKeysButton: true,
               exactPixels: true, // the monitor's size is never a whole multiple of 320x200
               speed: this.opts.speed,
+              // the game port: the desk's game pad (when the desk has one) and any real gamepad
+              joystick: deskJoystick,
               // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
               noSoundCard: !soundBlaster(),
               onQuit: () => false, // back to DOS
@@ -401,11 +403,12 @@ export class Computer extends ComputerFolders {
         ),
       );
       // The editors are their own download, fetched the first time the PC opens one.
-      void import('../editor/editors/all').then(() => {
-        if (!body.isConnected) return;
-        const editor = editors[kindOf(fileName)] ?? fileInfo;
-        cleanup = editor(body, project, fileName);
-      });
+      void import('../editor/editors/registry')
+        .then(({ loadEditor }) => loadEditor(kindOf(fileName)))
+        .then((editor) => {
+          if (!body.isConnected) return;
+          cleanup = editor(body, project, fileName);
+        });
     });
   }
 

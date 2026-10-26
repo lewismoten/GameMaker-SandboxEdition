@@ -44,7 +44,7 @@
     },
     {
       "text": "TEDDY",
-      "sub": "ONE TALL EAR",
+      "sub": "STROLLS THE CHECKERBOARD",
       "shape": "circle",
       "color": "#ffa63a",
       "ink": "#120c34",
@@ -138,12 +138,27 @@
  "news": [
   {
    "head": "We threw away the cardboard glasses",
-   "html": "<p>Our art department spent a week with red and blue cellophane and a stack of headache tablets before Doc Leo said what everybody was thinking: real depth isn't two colors, it's focus. <b>Depth Perception</b> has a near plane and a far plane in every scene, and only the one in focus is solid. The glasses are still in the box. You won't need them.</p>",
-   "everywhere": true
+   "html": "<p>Our art department spent a week squinting through red and blue cellophane before Doc Leo said what everybody was thinking: real depth isn't two colors, it's focus. <b>Depth Perception</b> has a near plane and a far plane in every scene, and only the one in focus is solid. The glasses are still in the box. You won't need them.</p>"
   },
   {
    "head": "How long does a render take?",
    "html": "<p>Every block, sprite and cartoon in <b>Depth Perception</b> was ray traced on our office 486. The intro alone took a long weekend. The box art took eleven hours and a vampire. We are told the next machine will be faster.</p>"
+  },
+  {
+   "head": "Since last issue: The Word Counter is still thinking",
+   "html": "<p>KEEP IT BRIEF! readers have put a lot of stories back together this month. The Word Counter found exactly one hundred words in each one but Steam-Powered Summer, where it found ninety-nine until somebody pointed out what a hyphen does. It is still thinking about it. Judging by the BBS, so are some of you.</p>"
+  },
+  {
+   "head": "Around the Sandbox: Our lighting director",
+   "html": "<p>Doc Leo has a new title. He spent so many nights at the office watching renders crawl down the screen that we made him our lighting director, which mostly means he leaves the spotlight on. He paces the Teapot Temple with his rubber chicken, Teddy strolls the Checkerboard, Gwinn sits pretty in the Glass Garden and THE CHEZ is parked in the temple, charging. Gwinn's sit is ray traced. We're counting it.</p>"
+  },
+  {
+   "head": "In the workshop: We are getting around to it",
+   "html": "<p>Since our first disk you've asked for a role-playing game, and since our first disk we've said we'd get around to it. We're getting around to it: <b>Quest for the Round Tuit</b>, a whole kingdom where everything gets done, eventually. Towns, dungeons, a quest log, and a horseless carriage you may recognize.</p>"
+  },
+  {
+   "head": "Letters: \"A corgi in my library book\"",
+   "html": "<p><i>\"I found a corgi in one of the library books. Is that allowed?\"</i> - A reader, by mail</p><p><b>The Scoop replies:</b> Teddy is allowed. Gwinn is not allowed in the library, and is in the library.</p>"
   }
  ],
  "items": [
@@ -232,7 +247,7 @@
      "hints": [
       {
        "q": "I'm low on light.",
-       "a": "THE CHEZ is plugged in at the parking lot. Stand below its rear wheel and push up against the charge port: it charges you, and keeps charging."
+       "a": "THE\u00a0CHEZ is plugged in at the parking lot. Stand below its rear wheel and push up against the charge port: it charges you, and keeps charging."
       },
       {
        "q": "The steam keeps getting me.",

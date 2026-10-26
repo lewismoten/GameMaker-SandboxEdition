@@ -13,7 +13,8 @@
   position: static;
 }
 
-.gm-player .gm-osk-toggle {
+.gm-player .gm-osk-toggle,
+.gm-player .gm-corner .gm-back-small {
   padding: 4px 10px;
   border: 1px solid #ffd400;
   border-radius: 6px;
@@ -29,7 +30,9 @@
 
 .gm-player .gm-osk-toggle:hover,
 .gm-player .gm-osk-toggle:focus-visible,
-.gm-player .gm-osk-toggle[aria-expanded='true'] {
+.gm-player .gm-osk-toggle[aria-expanded='true'],
+.gm-player .gm-corner .gm-back-small:hover,
+.gm-player .gm-corner .gm-back-small:focus-visible {
   opacity: 1;
 }
 
@@ -204,4 +207,15 @@
 
 .gm-player.has-touch.touch-portrait .gm-osk {
   top: calc(var(--screen-bottom) + 48px);
+}
+
+/* the player's way back while a game runs (player.ts): a link, sized like the toggle beside it */
+.gm-player .gm-corner .gm-back-small {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  box-sizing: border-box;
+  line-height: 1;
+  text-decoration: none;
 }

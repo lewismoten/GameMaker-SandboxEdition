@@ -1,3 +1,4 @@
+// The on-screen keys: names, presses, a one-shot Shift and a held Ctrl.
 import { beforeAll, describe, expect, it } from 'vitest';
 import { keyFor, modifierOf, VirtualKeys } from '../src/input/virtualKeys';
 

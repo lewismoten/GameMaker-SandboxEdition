@@ -323,16 +323,18 @@ export function theWindow(book: BlockBook): Level {
   m.mon(MON.towel, 23, 7).mon(MON.towel, 27, 4);
   // a tree with a robin
   m.col(37, 6, 11, 'trunk').fill(34, 2, 7, 3, 'leaves').row(5, 34, 40, 'branch');
-  m.mon(MON.bird, 32, 1);
+  // (low enough that rising at the end of its swoop it never lifts Carl into the top of the sky)
+  m.mon(MON.bird, 32, 3);
   // the picnic table: pie and lemonade
   m.row(10, 42, 45, 'picnic').set(42, 11, 'picnicLeg').set(45, 11, 'picnicLeg').set(43, 9, 'pie');
   m.set(50, 11, 'birdbath');
   m.mon(MON.wasp, 47, 3).mon(MON.bird, 44, 6);
-  // gusts again, and the neighbor's clothesline: two more towels snapping, a robin over it
+  // gusts again, and the neighbor's clothesline: two more towels snapping, a robin over it (low
+  // enough to keep off the top of the sky, and short of the top towel, so Carl is never caught between)
   m.fill(52, 2, 2, 9, 'calm');
   m.set(55, 6, 'postTop').col(55, 7, 11, 'post').set(64, 6, 'postTop').col(64, 7, 11, 'post');
   m.row(6, 56, 63, 'line').set(57, 6, 'towelB').set(62, 6, 'towelR');
-  m.mon(MON.towel, 59, 7).mon(MON.towel, 61, 4).mon(MON.bird, 56, 2);
+  m.mon(MON.towel, 59, 7).mon(MON.towel, 61, 4).mon(MON.bird, 53, 3);
   // a last gust, and the tall grass: the wild
   m.fill(66, 2, 2, 9, 'calm');
   m.fill(70, 6, 3, 6, 'tall').set(71, 9, 'wild');

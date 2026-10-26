@@ -7,7 +7,7 @@
 import type { CatalogEntry } from '../project/files';
 
 /** The year the Sandbox Edition's own games were made. */
-export const MADE_YEAR = 2026;
+const MADE_YEAR = 2026;
 
 /** "Made in 2026 for Game-Maker: Sandbox Edition; presented as a fictional 1995 release." */
 export function fictionNote(e: Pick<CatalogEntry, 'original' | 'year'>): string | undefined {

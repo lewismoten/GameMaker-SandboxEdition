@@ -22,7 +22,13 @@ import { paintEgg } from '../art/egg';
 const COLS = 30;
 const LINES = 16;
 
-/** Word-wraps paragraphs (blank-line separated) to 30 columns, 16 lines a page, keeping short paragraphs whole. */
+/** Glues THE CHEZ into one word (a no-break space) so a wrap never splits it. */
+const keepChez = (s: string) => s.replace(/\b(THE|The) (CHEZ|Chez)\b/g, '$1\u00a0$2');
+
+/**
+ * Word-wraps paragraphs (blank-line separated) to 30 columns, 16 lines a page, keeping short
+ * paragraphs whole. THE CHEZ is never split across lines.
+ */
 export function pages(text: string): string {
   const out: string[] = [];
   const paras = text.trim().split(/\n\s*\n/);
@@ -30,7 +36,10 @@ export function pages(text: string): string {
     const lines: string[] = [];
     for (const raw of para.split('\n')) {
       let line = '';
-      for (const word of raw.trim().split(/\s+/).filter(Boolean)) {
+      for (const word of keepChez(raw)
+        .trim()
+        .split(/[^\S\u00a0]+/)
+        .filter(Boolean)) {
         if (word.length > COLS) throw new Error(`Word over ${COLS} columns: ${word}`);
         if (line && line.length + 1 + word.length > COLS) {
           lines.push(line);
@@ -46,7 +55,7 @@ export function pages(text: string): string {
   }
   while (out.length % LINES) out.push('');
   for (const l of out) if (l.length > COLS) throw new Error(`Line over ${COLS}: ${l}`);
-  return out.join('\n');
+  return out.join('\n').replace(/\u00a0/g, ' ');
 }
 
 /** What the start block of a talk gives: the conversation's reward. */

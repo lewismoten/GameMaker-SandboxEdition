@@ -1,0 +1,38 @@
+/* The live animation preview (animPlayer.ts): the picture, then play/pause, next frame and what shows. */
+.anim-player {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 100%;
+}
+.anim-player-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+}
+.anim-player-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.anim-player-controls button {
+  min-height: 24px;
+  min-width: 32px;
+}
+.anim-player-choice {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.anim-player-choice[hidden] {
+  display: none;
+}
+.anim-player-controls[hidden] {
+  display: none;
+}
+.anim-player[hidden] {
+  display: none;
+}

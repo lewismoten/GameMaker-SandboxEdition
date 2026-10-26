@@ -1,7 +1,8 @@
 // LUNCHMEAT's big moment in The Sofa's teleconference: every so often the one-word flood
 // turns into a whole can of SPAM in ASCII art, a regular answers with a finger of his own,
 // and the SysOp breaks in. Each art line goes out as its own teleconference message, as
-// it did on a real board, so every line carries the "From NAME: " prefix.
+// it did on a real board, so every line carries the "From NAME: " prefix. The ASCII-art can
+// was drawn by Google Gemini 3 (see NOTICE.md and the credits page).
 
 /** One line of a burst, and how long after the previous one it arrives (ms). */
 export interface BurstLine {
@@ -77,7 +78,7 @@ export function spamCanBurst(spammer: string, round: number): BurstLine[] {
   const back = `|14From ${who}: `;
   out.push({ text: `${back}|07${COMEBACKS[round % COMEBACKS.length]}, ${spammer}`, wait: 1400 });
   out.push(...MIDDLE_FINGER.map((l, i) => fast(`${back}|15${l}`, i ? 60 : 500)));
-  const sysop = '|11*** Message from the SysOp: |15';
+  const sysop = '|11*** SysOp goat: |15';
   const step = round % 3;
   if (step === 0) out.push({ text: `${sysop}Knock it off or you're both kicked!`, wait: 1600 });
   else if (step === 1) out.push({ text: `${sysop}LAST warning, you two. This is a family couch.`, wait: 1600 });

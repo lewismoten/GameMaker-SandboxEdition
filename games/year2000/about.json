@@ -2,7 +2,7 @@
   "title": "In The Year 2000!",
   "author": "Claude",
   "company": "Sandbox Software",
-  "year": 1992,
+  "year": 1993,
   "price": "$12",
   "blurb": "It's the year 2000! Cars fly, robots mow, dinner comes in a pill, and every phone booth is a 25-cent teleporter. Dex Dynamo's robot dog ate his science report, and the Science Fair is on the Moon at 3:00.",
   "exe": "YEAR2000.EXE",
@@ -10,6 +10,7 @@
   "egg": { "block": 149 },
   "tinHeart": { "map": "mall.map", "at": [42, 1] },
   "easterEgg": { "map": "exchange.map", "at": [46, 9] },
+  "saveSign": { "map": "moon.map", "at": [2, 24], "after": "exchange.map" },
   "label": {
     "background": "#fdf6ff",
     "band": "#d0208a",

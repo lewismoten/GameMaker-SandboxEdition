@@ -1,3 +1,4 @@
+// The Windows download: the prebuilt players, their resources, version info and icon, and the zip.
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

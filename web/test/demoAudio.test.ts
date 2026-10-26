@@ -1,3 +1,4 @@
+// The demos' sound choice: Sound Blaster, PC speaker or none, and switching between them.
 import { describe, expect, it, vi } from 'vitest';
 import { AudioEngine } from '../src/audio/engine';
 import { DemoAudioEngine, demoAudio, onDemoAudio, setDemoAudio } from '../src/media/demoAudio';

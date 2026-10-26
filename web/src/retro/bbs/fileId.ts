@@ -7,19 +7,20 @@
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import { installedBytes, sizeText } from '../../project/diskFacts';
 import type { GalleryFile } from './gallery';
+import { words } from '../../keepTogether';
 
 export const DIZ_WIDTH = 45;
 export const DIZ_LINES = 10;
 export const DIZ_NAME = 'FILE_ID.DIZ';
 
 /** The SysOp's handle (Lewis): short for Vesuvian Doppelganger, a Magic: The Gathering card. */
-export const SYSOP_HANDLE = 'vesuvian';
+const SYSOP_HANDLE = 'vesuvian';
 
 const RULE = '-'.repeat(DIZ_WIDTH);
 const SIGNOFF = 'Uploaded by %s to THE SANDBOX BBS';
 
 /** The Sofa's own upload: a game from ../games under another publisher (The Bard of Bizarre's). */
-export const SOFA_UPLOADER = 'DOC LEO';
+const SOFA_UPLOADER = 'DOC LEO';
 export const isSofaFile = (g: CatalogEntry) => !!g.original && !isSandboxGame(g);
 
 /** The last line of a Warez release's DIZ: who couriered it to which board (the scene's way). */
@@ -43,7 +44,7 @@ export function ascii(text: string): string {
 export function wrapWords(text: string, width: number): string[] {
   const out: string[] = [];
   let line = '';
-  for (const word of text.split(/\s+/).filter(Boolean)) {
+  for (const word of words(text).filter(Boolean)) {
     const w = word.slice(0, width);
     if (line && line.length + 1 + w.length > width) {
       out.push(line);
@@ -83,7 +84,7 @@ function headline(title: string, tag = '[1/1]'): string {
 const center = (text: string) => `${' '.repeat(Math.max(0, Math.floor((DIZ_WIDTH - text.length) / 2)))}${text}`.slice(0, DIZ_WIDTH);
 
 /** Always within the limits, however long the parts were. */
-export function fitDiz(lines: string[]): string[] {
+function fitDiz(lines: string[]): string[] {
   return lines.slice(0, DIZ_LINES).map((l) => ascii(l).slice(0, DIZ_WIDTH).trimEnd());
 }
 
@@ -114,7 +115,7 @@ const SUMMARY: Record<string, string> = {
   orb: 'A static-filled call from Chara 4 leads to a derelict planet. Is anyone still there?',
   pac: 'PAC spits power orbs through the dangerous Andims. Good luck, PAC!',
   paperair: 'A tiny radio-controlled plane with a TV camera, and a job only it can do.',
-  parsec3d: 'Find the power crystal of XON (say "zon") past a dangerous alien race.',
+  parsec3d: 'Find the power crystal of XON (say "zon") past a dangerous alien race. Get out your red/blue 3D glasses!',
   signhdg: 'Hedrick H. Hogg must bring one hundred crumpets to tea with the Queen.',
   zoom: "A spell gone wrong makes A-J Bear's cousin Zoom super. As told by A-J himself.",
   goat: 'The holy night, from the goat nobody painted. Eat anything, scream your fainting cousins stiff, find your place.',
@@ -145,7 +146,7 @@ const TAGLINES = [
 ];
 
 /** Who uploaded it: the SysOp his own Sandbox Software games, callers the rest. */
-export function uploader(g: CatalogEntry): string {
+function uploader(g: CatalogEntry): string {
   if (isSofaFile(g)) return SOFA_UPLOADER;
   return g.original ? SYSOP_HANDLE : pick(['MONSTER MASH', 'SAND CASTLE'], g.id);
 }

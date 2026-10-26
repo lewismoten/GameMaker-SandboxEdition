@@ -8,14 +8,14 @@ import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
 import { screenKeys } from './screenKeys';
-import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
 import { parseGame } from '../formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
+import { scoreHook } from '../scoreTrophies/hook';
 
-export interface PlayerOptions extends RunOptions {
+interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
   title?: string;
   /** Called when the game ends (Quit in the menu, or an error). */
@@ -140,7 +140,10 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   keys.addEventListener('click', (e) => {
     e.stopPropagation();
     keys.blur();
-    showKeyMap(files.stream ? withCharacters(files, gamFile) : files, gamFile, opts.title ?? 'Game', () => canvas.focus());
+    // the dialog's code comes with the first press (most players never open it)
+    void import('../editor/keymap/keyMapView').then(({ showKeyMap }) =>
+      showKeyMap(files.stream ? withCharacters(files, gamFile) : files, gamFile, opts.title ?? 'Game', () => canvas.focus()),
+    );
   });
   // ...and beside it, keys to click or tap (F-keys a Mac or the browser keeps, Esc, arrows)
   let unkeys: (() => void) | undefined;
@@ -154,12 +157,20 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
 
   // a catalog game's tin heart: a touch at its place is kept as a find (never in a preview)
   const hearts = opts.preview ? undefined : heartHook(opts.saveId);
+  // a catalog game's final score, for the desk's score trophies (never a preview or a demo)
+  const scores = opts.preview ? undefined : scoreHook(opts.saveId);
   let stopped = false;
   let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
     const begin = async () => {
       start.remove();
-      back?.remove();
+      // the way back stays while playing, small, beside Keys (Esc's menu and Quit also lead there)
+      if (back && !opts.preview && !opts.noKeysButton) {
+        back.textContent = '← Games';
+        back.title = opts.back!.label.replace(/^←\s*/, '');
+        back.classList.add('gm-back-small');
+        container.querySelector('.gm-corner')?.prepend(back);
+      } else back?.remove();
       container.querySelector('.gm-notice-link')?.remove();
       window.removeEventListener('keydown', onKey);
       if (!opts.preview) {
@@ -178,6 +189,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
             onSession: (s) => (hearts.onSession(s), opts.onSession?.(s)),
             onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)),
           }),
+          ...(scores && { onPlayEnd: (...a) => (scores(...a), opts.onPlayEnd?.(...a)) }),
         });
       } catch (e) {
         if (!(e instanceof GameAborted)) {

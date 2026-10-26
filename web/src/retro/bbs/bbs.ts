@@ -9,7 +9,8 @@ import { commas } from '../dos/vfs';
 import type { CatalogEntry } from '../../project/files';
 import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
 import { NoCarrier, Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';
-import { runSofa, SOFA_PHONE, sofaBusy } from './sofa';
+import { runSofa, sofaBusy } from './sofa';
+import { SOFA_PHONE } from './sofaPhone';
 import { gifGallery } from './gifArea';
 import { gameDiz, isSofaFile } from './fileId';
 import { WAREZ, warezArea, zipsOf } from './warezArea';
@@ -39,9 +40,12 @@ import { PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from '..
 import { sizeAbout } from './sofaFiles';
 import { statusBps } from './lineSpeed';
 import { cpsText, expectText, progress } from './transfer';
+import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
 import { TTY_PHONE } from './ttyTalk';
 import { doorGames, sandboxCall } from './ticTacToeDoor';
+import { words } from '../../keepTogether';
+import { rsdLine } from './rsdLine';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
@@ -51,6 +55,7 @@ const PHONE = '1-412-555-SAND';
 const DIRECTORY = [
   {
     // the board's name in its colors, without the BBS (every entry here is one)
+    id: 'SANDBOX',
     name: `|07THE ${SANDBOX_ANSI}`,
     number: PHONE,
     software: 'Renegade',
@@ -58,6 +63,7 @@ const DIRECTORY = [
     busy: () => false,
   },
   {
+    id: 'SOFA',
     name: '|15The Sofa',
     number: SOFA_PHONE,
     software: 'Major BBS, 8 lines',
@@ -66,6 +72,7 @@ const DIRECTORY = [
   },
   {
     // a TTY, not a BBS: Baudot needs TDD mode (tdd.ts)
+    id: 'NOVAK',
     name: '|15Mrs. Novak next door',
     number: TTY_PHONE,
     software: 'TTY (Baudot)',
@@ -76,17 +83,21 @@ const DIRECTORY = [
 /** Text without its |NN color codes. */
 const visible = (s: string) => s.replace(/\|\d\d/g, '');
 
-export async function runTerminal(h: RetroHost): Promise<void> {
+/** TERMINAL, or TERMINAL SANDBOX / TERMINAL SOFA (or an entry's number) to dial that board at once. */
+export async function runTerminal(h: RetroHost, args: string[] = []): Promise<void> {
   const t = new Term(h);
+  const want = (args[0] ?? '').toUpperCase();
+  const at = DIRECTORY.findIndex((d, i) => d.id === want || String(i + 1) === want);
   try {
-    await terminal(t, h);
+    await terminal(t, h, at >= 0 ? String(at + 1) : undefined);
   } finally {
     t.close(); // stopped mid-call: nothing more arrives
   }
 }
 
-async function terminal(t: Term, h: RetroHost): Promise<void> {
+async function terminal(t: Term, h: RetroHost, dialFirst?: string): Promise<void> {
   const s = h.screen;
+  let preset = dialFirst;
   for (;;) {
     s.resetPalette();
     s.clear(attr(7, 0));
@@ -107,7 +118,8 @@ async function terminal(t: Term, h: RetroHost): Promise<void> {
     t.line();
     t.line(`|11Modem mode: |15${tddMode() ? 'TDD |07(TTY calls: Baudot, 45.45 baud)' : 'DATA |07(BBS calls)'}`);
     t.print('|11Dial which entry? |07(|151|07-|15' + DIRECTORY.length + '|07, |15M|07 mode, |15I|07 TTY info, |15Esc|07 to quit) |15');
-    const k = await t.key();
+    const k = preset ?? (await t.key());
+    preset = undefined;
     t.line(k.length === 1 ? k : '');
     const entry = DIRECTORY[Number(k) - 1];
     if (k === 'Escape' || k === 'Q') {
@@ -127,6 +139,7 @@ async function terminal(t: Term, h: RetroHost): Promise<void> {
     s.clear(attr(7, 0));
     const result = await dial(t, h, entry.number, entry.busy());
     if (result !== 'connect') {
+      if (result === 'busy' && entry.run === runSofa) unlockAchievement('sofa-busy');
       t.line(result === 'busy' ? '|07All lines are busy. Try again in a little while.' : '|07Someone is on the phone. Hang it up and try again.');
       t.status(statusLine('Offline'));
       t.print('|07Press a key… ');
@@ -225,7 +238,10 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     } else if (k === 'S') await systemInfo(t, catalog.length);
     else if (k === 'Y') yourStats(t, name, minutesLeft());
     else if (k === 'C') await pageSysop(t, h);
-    else if (k === '?' || k === 'Enter') show = true;
+    else if (k === 'R') {
+      await rsdLine(t, h);
+      show = true;
+    } else if (k === '?' || k === 'Enter') show = true;
     else if (k === 'G' || k === 'Escape') {
       t.print('|14Leave the sandbox? |15[Y/n] ');
       const yes = (await t.key()) !== 'N';
@@ -271,7 +287,7 @@ function leechWarning(t: Term): void {
 function wrap(text: string, width: number): string[] {
   const out: string[] = [];
   let line = '';
-  for (const word of text.split(/\s+/)) {
+  for (const word of words(text)) {
     if ((line + ' ' + word).trim().length > width) {
       out.push(line);
       line = word;
@@ -325,7 +341,8 @@ function mainMenu(t: Term): void {
     ['N', 'New Files Scan', 'S', 'System Information'],
     ['Y', 'Your Statistics', 'C', 'Page the SysOp'],
     ['P', 'Picture Gallery (GIF files)', '?', 'Redisplay this menu'],
-    ['D', 'Door Games', 'G', 'Goodbye (log off)'],
+    ['D', 'Door Games', 'R', 'Register Game-Maker (RSD)'],
+    ['', '', 'G', 'Goodbye (log off)'],
   ];
   t.line(boxRow(''));
   for (const [a, la, b, lb] of rows) t.line(boxRow(`    ${a ? item(a, la) : ' '.repeat(34)}${item(b, lb)}`));
@@ -452,7 +469,15 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
         '|07Source: |11https://github.com/lewismoten/GameMaker-SandboxEdition',
       ],
     ],
-    ['Made with Game-Maker', ['|07Every game in the sand pile was built with Game-Maker by', '|07Recreational Software Designs. No programming needed!']],
+    [
+      'Made with Game-Maker',
+      [
+        '|07Every game in the sand pile was built with Game-Maker by',
+        '|07Recreational Software Designs. No programming needed!',
+        "|07Own a copy? Press |15R|07 at the main menu to reach RSD's registration",
+        '|07line: your name and serial number get your registration number.',
+      ],
+    ],
     [
       'Other boards in the 412',
       [
@@ -579,41 +604,15 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   t.line();
   t.line('|10Transfer complete.');
   updateAccount((a) => recordDownload(a, size, isFree(g)));
-  await unzip(t, h, g);
+  await pkunzip(t, h, zipName(g), dosDir(g), [
+    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as const] : []),
+    ...g.files.map((f, i) => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)] as const),
+    ['FILE_ID.DIZ', DIZ_BYTES] as const,
+  ]);
   h.downloads.add(g.id);
   if (pcExtras().cracked(g.id) !== undefined) pcExtras().setCracked(g.id, false); // a fresh copy, as its author made it
   t.line(`|07Type |15CD \\DOWNLOAD\\${dosDir(g)}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
   t.line();
-}
-
-/** Bytes per second PKUNZIP inflates and writes to the hard disk. */
-const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
-
-/** PKUNZIP into C:\DOWNLOAD: each file takes as long as its size needs on this PC. */
-async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
-  const s = h.screen;
-  const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
-  // PKUNZIP runs on this PC: its words show at once
-  t.local(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}\n`);
-  t.local(`|07Searching ZIP: ${zipName(g)}\n`);
-  const files: [string, number][] = [
-    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as [string, number]] : []),
-    ...g.files.map((f, i): [string, number] => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)]),
-    ['FILE_ID.DIZ', 450],
-  ];
-  for (const [name, size] of files) {
-    t.local(`|07  Inflating: ${name.padEnd(13)}`);
-    const x = s.cursorX;
-    const ms = (size / rate) * 1000;
-    const start = performance.now();
-    for (let f = 0; f < 1;) {
-      f = ms ? Math.min(1, (performance.now() - start) / ms) : 1;
-      s.write(x, s.cursorY, attr(7, 0), `${Math.round(f * 100)}%`.padStart(4));
-      if (f < 1) await sleep(Math.min(100, ms / 4));
-    }
-    s.write(x, s.cursorY, attr(7, 0), '    ');
-    t.local('\n');
-  }
 }
 
 // ---- uploads ----------------------------------------------------------------------------

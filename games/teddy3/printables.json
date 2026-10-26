@@ -1,0 +1,496 @@
+{
+  "pitch": "It's Teddy's birthday and nobody says so: run Doc Leo's errands across every place from the first two adventures, and MEANWHILE... play as Gwinn and Doc Leo planning his surprise, and drive THE\u00a0CHEZ.",
+  "keys": {
+    "Up": "Hop (THE\u00a0CHEZ: bump)",
+    "Space": "WOOF! (Gwinn: BOOF! Doc Leo: SQUAWK! THE\u00a0CHEZ: HONK!)",
+    "Down": "Dig (Gwinn digs BIG)",
+    "F": "Fetch",
+    "S": "Sniff",
+    "1": "High five, push a button (Gwinn: chew; Doc Leo: balloon dog)",
+    "2": "Sit pretty",
+    "3": "Spin (Gwinn: zoomies)",
+    "4": "Play dead, hold (Gwinn: flop; Doc Leo: pratfall)",
+    "Q": "Hop up and to the left",
+    "E": "Hop up and to the right"
+  },
+  "stickers": [
+    {
+      "text": "BIRTHDAY BOY",
+      "sub": "TEDDY",
+      "shape": "cut",
+      "color": "#d9381e",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "garage.pal"
+      }
+    },
+    {
+      "text": "SHH!",
+      "sub": "GWINN",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffd23f",
+      "hero": {
+        "chr": "gwinn.chr",
+        "cbl": "gwinn.cbl",
+        "pal": "invite.pal"
+      }
+    },
+    {
+      "text": "SQUAWK!",
+      "sub": "DOC LEO",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "hero": {
+        "chr": "leo.chr",
+        "cbl": "leo.cbl",
+        "pal": "balloon.pal"
+      }
+    },
+    {
+      "text": "HONK!",
+      "sub": "THE\u00a0CHEZ",
+      "shape": "cut",
+      "color": "#d9381e",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "chez.chr",
+        "cbl": "chez.cbl",
+        "pal": "maple.pal"
+      }
+    },
+    {
+      "text": "UP, UP!",
+      "sub": "BALLOON DOG",
+      "shape": "cut",
+      "color": "#3a8fd8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "balloon.mbl",
+        "pal": "balloon.pal",
+        "grid": [[40]]
+      }
+    },
+    {
+      "text": "MOO.",
+      "sub": "NOT IN A HURRY",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "hill.mbl",
+        "pal": "hill.pal",
+        "grid": [[58]]
+      }
+    },
+    {
+      "text": "BOING!",
+      "sub": "JACK-IN-THE-BOX",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "funhouse.mbl",
+        "pal": "funhouse.pal",
+        "grid": [[46]]
+      }
+    },
+    {
+      "text": "HONK!",
+      "sub": "GOOSE (HONKED)",
+      "shape": "cut",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "maple.mbl",
+        "pal": "maple.pal",
+        "grid": [[44]]
+      }
+    },
+    {
+      "text": "PLUG IN!",
+      "sub": "CHARGER",
+      "shape": "cut",
+      "color": "#2a2a3a",
+      "ink": "#ffd23f",
+      "sprite": {
+        "blocks": "maple.bbl",
+        "pal": "maple.pal",
+        "grid": [[16]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "meadow.bbl",
+        "pal": "meadow.pal",
+        "grid": [[68]],
+        "under": 27
+      }
+    },
+    {
+      "text": "DOTS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "dig.bbl",
+        "pal": "dig.pal",
+        "grid": [[61]],
+        "under": 19
+      }
+    },
+    {
+      "text": "SURPRISE!",
+      "sub": "(DON'T TELL TEDDY)",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    }
+  ],
+  "news": [
+    {
+      "head": "Teddy's back for the big one",
+      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Sixteen stops, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE\u00a0CHEZ, which you get to drive. Mind the charge.</p>"
+    },
+    {
+      "head": "Since last issue: Best Behaved?",
+      "html": "<p>Teddy's Little Bigger Adventure went all the way to the dog show, and so did you. The BBS has been very good about not posting how the Best Behaved ring turns out; keep it that way. The most-asked question: is SNIFF really better than rolling over? Teddy says yes. He is a professional.</p>"
+    },
+    {
+      "head": "Around the Sandbox: From a snow shovel to here",
+      "html": "<p>Four and a half years ago this company was the family 286, a snow shovel and a box of GAME-MAKER. Since then: a future, a smart home, a virus, a galaxy, a sandbox, a big town, a theater, a library, a snowstorm, a render, a kingdom, a fair, and now a birthday. Teddy still sleeps on the modem cable. Gwinn still sits about halfway. Doc Leo still leaves the spotlight on, and THE\u00a0CHEZ is still charging. Thank you for reading.</p>"
+    },
+    {
+      "head": "In the workshop: Your turn",
+      "html": "<p>For the first time since issue 1, the workbench is clear. What comes next is up to you: every Sandbox game was made with GAME-MAKER, and if you can draw a block, you can make a game. Upload yours to our BBS, 1-412-555-SAND. We'll print the best of them here.</p>"
+    },
+    {
+      "head": "Letters: \"Is it really Teddy's birthday?\"",
+      "html": "<p>We can't say. We really can't. Gwinn would never forgive us. Play to the end.</p>"
+    }
+  ],
+  "items": [
+    {
+      "kind": "map",
+      "title": "All four heroes poster",
+      "note": "Full color, as promised",
+      "promised": true,
+      "landscape": true,
+      "heading": "TEDDY'S LITTLE BIGGEST ADVENTURE",
+      "intro": "The littlest dog. The biggest day. And the whole team: hang it where Teddy can't see it until his birthday.",
+      "panels": [
+        {
+          "map": "course.map",
+          "x": 14,
+          "y": 29,
+          "w": 24,
+          "h": 12,
+          "caption": "The Teddy Course, in the dark Big Top"
+        },
+        {
+          "map": "park.map",
+          "x": 10,
+          "y": 30,
+          "w": 16,
+          "h": 11,
+          "caption": "Puddlewick Park: the see-saws"
+        },
+        {
+          "map": "balloon.map",
+          "x": 6,
+          "y": 24,
+          "w": 16,
+          "h": 16,
+          "caption": "Meanwhile, Doc Leo's balloon dogs"
+        },
+        {
+          "map": "maple.map",
+          "x": 40,
+          "y": 31,
+          "w": 16,
+          "h": 10,
+          "caption": "THE\u00a0CHEZ on Maple Street"
+        },
+        {
+          "map": "invite.map",
+          "x": 0,
+          "y": 30,
+          "w": 16,
+          "h": 11,
+          "caption": "Meanwhile, Gwinn's invitations"
+        }
+      ],
+      "columns": 2
+    },
+    {
+      "kind": "idcard",
+      "title": "Clown Club party pass",
+      "note": "Admits one very good dog",
+      "org": "THE CLOWN CLUB",
+      "name": "TEDDY",
+      "role": "GUEST OF HONOR",
+      "fields": [
+        ["Breed", "Pembroke Welsh Corgi"],
+        ["Color", "Red-gold, white blaze"],
+        ["Ears", "Two, always up"],
+        ["Tricks", "All of them"],
+        ["Age", "One more than last year"],
+        ["Party", "Big Top, Lookout Hill"]
+      ],
+      "color": "#7a3fb8",
+      "ink": "#ffffff",
+      "photo": {
+        "map": "garage.map",
+        "x": 2,
+        "y": 38,
+        "w": 2,
+        "h": 2
+      },
+      "portrait": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "garage.pal"
+      },
+      "back": "Please keep this pass hidden from the guest of honor until the lights come up. If you find a corgi reading it, he has not seen anything."
+    },
+    {
+      "kind": "hintbook",
+      "title": "Teddy's Birthday Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Stuck? Find your question, then slide the red film over the answer. One answer at a time: it's somebody's birthday.",
+      "sections": [
+        {
+          "head": "Every Stop",
+          "hints": [
+            {
+              "q": "Who am I playing?",
+              "a": "The card before each stop says. Teddy runs the errands; MEANWHILE... stops are Gwinn or Doc Leo; on the road you drive THE\u00a0CHEZ."
+            },
+            {
+              "q": "I fetched the errand. Now what?",
+              "a": "Bring it to Doc Leo at THE\u00a0CHEZ at the end of the stop. The car door opens for it."
+            },
+            {
+              "q": "A button does nothing.",
+              "a": "High five it (1) from just beside it, facing it. Then watch the spark: it runs down the wire to what it opens."
+            }
+          ]
+        },
+        {
+          "head": "1. Doc Leo's Garage",
+          "hints": [
+            {
+              "q": "Where are the keys?",
+              "a": "In the blue cabinet on the workbench. Hop onto the bench and high-five the button on the wall above it."
+            },
+            {
+              "q": "The garage door came down on me.",
+              "a": "It only stays up three seconds. Push its button again and run: hop the box on the way."
+            },
+            {
+              "q": "A sign is in front of the garage door.",
+              "a": "NEED KEYS, it says. Fetch them from the cabinet first; with the keys, Teddy walks right into the sign and it folds flat."
+            }
+          ]
+        },
+        {
+          "head": "2. Maple Street",
+          "hints": [
+            {
+              "q": "The car won't climb the hill.",
+              "a": "It needs a charge. Back up to a charger post and wait while its light pulses: one charge a pulse."
+            },
+            {
+              "q": "I'm stuck in a pothole.",
+              "a": "Bump (Up) out of it."
+            },
+            {
+              "q": "The big hill needs two charges.",
+              "a": "Its charger is down on the low road, a step below the street. Drive down, wait for two pulses, then bump (Up) back up."
+            }
+          ]
+        },
+        {
+          "head": "3. Puddlewick Park",
+          "hints": [
+            {
+              "q": "How do I get on a see-saw?",
+              "a": "Stand on the little red step beside its end, and walk on when the end comes down level with the step. Then ride it up."
+            },
+            {
+              "q": "The streamers are up in the oak!",
+              "a": "Juggles' super see-saw shoots its end way up there. Step on from its step when it's down."
+            }
+          ]
+        },
+        {
+          "head": "4. Meanwhile: Gwinn's Invitations",
+          "hints": [
+            {
+              "q": "How do I deliver an invitation?",
+              "a": "BOOF (Space) the doorbell. When the friend comes to the door with an RSVP, walk into the doorway."
+            },
+            {
+              "q": "The van door won't open.",
+              "a": "It takes three RSVPs. The third is Professor Pratfall's, up the fire escape behind the alley fence: dig big (Down) under the fence."
+            }
+          ]
+        },
+        {
+          "head": "5. Downtown",
+          "hints": [
+            {
+              "q": "I can't jump the gap after the fast belt.",
+              "a": "Let the fast belt carry you and press E right at its end."
+            }
+          ]
+        },
+        {
+          "head": "6. Meanwhile: Doc Leo's Balloons",
+          "hints": [
+            {
+              "q": "How does Doc Leo get up there?",
+              "a": "Twist a balloon dog (1): it floats him up six blocks. Step off onto the shelf before it pops."
+            },
+            {
+              "q": "My balloon popped!",
+              "a": "Juggles' practice pins pop them. Wait for a pin to fly by, then twist."
+            }
+          ]
+        },
+        {
+          "head": "7. The River Road",
+          "hints": [
+            {
+              "q": "The bridge is up.",
+              "a": "Honk (Space)."
+            },
+            {
+              "q": "The last bridge goes back up before I get over the hill.",
+              "a": "Charge up first: wait at the charger for two pulses, then honk and go."
+            }
+          ]
+        },
+        {
+          "head": "8. The Old Mill",
+          "hints": [
+            {
+              "q": "How do I get up the mill?",
+              "a": "A paddle coming up the near side of a wheel is a lift. Step on when one is level and step off at the top."
+            }
+          ]
+        },
+        {
+          "head": "9. Meanwhile: Gwinn's Buried Treasure",
+          "hints": [
+            {
+              "q": "I can't dig through this.",
+              "a": "Gray rock can't be dug: go round. Clay takes two big digs. Roots: chew (1)."
+            },
+            {
+              "q": "How do I get back up?",
+              "a": "The old well's bucket. Wait on the stone step and step on when it's down."
+            }
+          ]
+        },
+        {
+          "head": "10. Meanwhile: Pie Practice",
+          "hints": [
+            {
+              "q": "The pies keep getting me.",
+              "a": "Watch the wind-up. High: hold 4 to pratfall. Low: hop it."
+            }
+          ]
+        },
+        {
+          "head": "11. The Funhouse",
+          "hints": [
+            {
+              "q": "The boards keep vanishing.",
+              "a": "A board flashes twice before it goes. Cross right after it comes back, and wait on the pillars between runs."
+            }
+          ]
+        },
+        {
+          "head": "12. Lookout Hill",
+          "hints": [
+            {
+              "q": "The cow won't move.",
+              "a": "A honk won't move a cow. Wait: she ambles off into the field by herself."
+            }
+          ]
+        },
+        {
+          "head": "13. Firefly Meadow",
+          "hints": [
+            {
+              "q": "It's too dark to go on.",
+              "a": "Sniff (S) the sleepy firefly in the grass. Its light melts the dark."
+            }
+          ]
+        },
+        {
+          "head": "14. Meanwhile: Gwinn Hides Backstage",
+          "hints": [
+            {
+              "q": "The spotlights keep finding her.",
+              "a": "Flop (hold 4) as a beam comes: it goes over her."
+            }
+          ]
+        },
+        {
+          "head": "15. Meanwhile: Doc Leo Hangs the Lights",
+          "hints": [
+            {
+              "q": "How do I get up the middle of the tent?",
+              "a": "The rigging lift: step on a plank when it's level with your catwalk."
+            }
+          ]
+        },
+        {
+          "head": "16. The Teddy Course",
+          "hints": [
+            {
+              "q": "Honker won't let me by.",
+              "a": "He's asking you to SIT? Sit pretty (2)."
+            },
+            {
+              "q": "Where's the last button?",
+              "a": "Up on the high platform, hidden in a faint wisp. Sniff (S), then high five it and run for the flap."
+            },
+            {
+              "q": "The spotlight keeps finding Teddy.",
+              "a": "Play dead (hold 4) as it comes: it goes over him. Then go on past the wing while it is still out."
+            },
+            {
+              "q": "How do I get up to the high platform?",
+              "a": "Stand on Doc Leo's balloon pump and wait: a balloon dog blows up under Teddy and floats him up. Step off at the top."
+            }
+          ]
+        },
+        {
+          "head": "Secrets",
+          "hints": [
+            {
+              "q": "Is there a tin heart?",
+              "a": "Up the old oak in Firefly Meadow, past the raccoon."
+            },
+            {
+              "q": "And an egg?",
+              "a": "Gwinn found a painted one, deep under the backyard, behind the roots."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

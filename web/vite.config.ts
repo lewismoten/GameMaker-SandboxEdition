@@ -8,6 +8,7 @@ import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker'
 import { cdGames, cdSecretCatalog } from './scripts/cdGames';
 import { gzipSync } from 'node:zlib';
 import { singlePagePlayer } from './scripts/singlePageBuild';
+import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 
 const publicDir = resolve(__dirname, 'public');
@@ -106,7 +107,8 @@ function offlineFiles(bundle: Bundle): [string, number, number][] {
   for (const [f, item] of Object.entries(bundle)) sources.set(f, () => (item.type === 'chunk' ? item.code : item.source));
   const wanted = (f: string) =>
     !secret.some((dir) => f.startsWith(dir)) &&
-    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$)/.test(f) &&
+    // the web player plays loose game folders from a web server, never from the offline copy
+    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/)/.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.gmpak$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
@@ -231,11 +233,13 @@ function playChunks(): Rollup.GetManualChunk {
   return (id, { getModuleInfo }) => {
     closures ??= pages.map(([, entries]) => closure(entries, getModuleInfo));
     if (/\.css($|\?)/.test(id)) return undefined; // styles stay with the code that imports them
-    // parts always loaded together, in one file each rather than one per module: the shelf's
-    // painted box covers (not a secret game's, covers/extra.ts, which stays apart) and
-    // Game-Maker's eight designers (loaded together when Game-Maker starts on the desk's PC)
-    if (/\/src\/desk\/boxes\/covers\/(?!extra\.|index\.|paint\.)[\w-]+\.ts$/.test(id)) return 'covers';
+    // parts always loaded together, in one file rather than one per module: Game-Maker's eight
+    // designers (loaded together when Game-Maker starts on the desk's PC). The box covers stay
+    // one file each, loaded only for a box that shows its front (desk/boxes/shelf.ts).
     if (/\/src\/vga\/(?!shared\/)/.test(id)) return 'designers';
+    // the tin hearts' list and saves: the player reads them, but so do pages that never play
+    // (achievements counting hearts at start-up, the desk's trophy), which shouldn't fetch the engine for them
+    if (/\/src\/tinHearts\/(tinHearts\.ts|manifest\.ts|hearts\.json)/.test(id)) return 'tinHearts';
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;
@@ -246,7 +250,15 @@ function playChunks(): Rollup.GetManualChunk {
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), noDotfiles(), manualReload()],
+  plugins: [
+    cdGames(resolve(__dirname, '../cd')),
+    seoPages(resolve(__dirname, '../cd')),
+    singlePagePlayer(),
+    hostedPlayer(),
+    offline(),
+    noDotfiles(),
+    manualReload(),
+  ],
   build: {
     target: 'es2022',
     rollupOptions: {

@@ -1,8 +1,9 @@
 // A play-testing bot for GameSim: finds its way across a street with a shortest-path search
 // (deep snow and plow banks count as ground it can dig through, ice and the road cost
-// extra), walks it one straight run at a time and shovels whatever is in the way, and picks
-// up the cocoa and tips in sight a few steps off the way (never in the park). On the
-// sled run it steers by trying each move a few ticks ahead on a snapshot of the game.
+// extra, and off the sidewalks and driveways a little more when keepTo is set), walks it one
+// straight run at a time and shovels whatever is in the way, and picks up the cocoa and tips
+// in sight a few steps off the way (never in the park). On the sled run it steers by trying
+// each move a few ticks ahead on a snapshot of the game.
 import { GameSim } from './sim';
 import { buildBlocks } from '../src/blocks/blocks';
 import { buildPalette } from '../src/art/pal';
@@ -38,6 +39,8 @@ export class Bot {
   log: string[] = [];
   /** Extra cost per cell (the road, a fort's line of fire). */
   avoid = new Map<string, number>();
+  /** The extra cost of a step onto a cell off the sidewalks and driveways (kit/walkPaths.ts keepToPaths); unset, every way costs the same. */
+  keepTo?: (x: number, y: number) => number;
   /** Snowballs thrown at Big Pete. */
   throws = 0;
   private lastThrow = -100;
@@ -124,12 +127,12 @@ export class Bot {
     const shown = this.sim.shown(x, y);
     const b = this.sim.blockAt(x, y);
     const k = `${x},${y}`;
-    const extra = this.avoid.get(k) ?? 0;
+    const extra = (this.avoid.get(k) ?? 0) + (this.keepTo?.(x, y) ?? 0);
     if (shown.solid) {
       const d = DIG.get(this.sim.w.blkmap[b]) ?? DIG.get(b);
       return d === undefined ? undefined : 1 + d + extra;
     }
-    if (ICE.has(b)) return 60 + extra;
+    if (ICE.has(b)) return 60 + (this.avoid.get(k) ?? 0);
     return 1 + extra;
   }
 

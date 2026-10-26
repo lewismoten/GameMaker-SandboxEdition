@@ -98,7 +98,7 @@ export function buildKid(cb: ReturnType<typeof buildCharBlocks>, myBallMon: numb
   walk(18, KEY.pad1, JOY.downLeft, -3, 3, SIDE, MIRROR);
   walk(19, KEY.pad3, JOY.downRight, 3, 3, SIDE);
   // Pick up (sequence 3): stoop for whatever lies at your feet. Nothing in the snow is
-  // an object but one thing in the pines, so the key goes unmentioned.
+  // an object but one thing in the pines; the instructions name the key all the same.
   set(
     PICKUPSEQ,
     [

@@ -3,7 +3,7 @@
 // (a table repeats its header), long paragraphs between words, and a heading never ends a page.
 
 /** A blank page to measure in: `flow` is where content goes, `limit` its height in px. */
-export interface MeasurePage {
+interface MeasurePage {
   flow: HTMLElement;
   limit: number;
 }

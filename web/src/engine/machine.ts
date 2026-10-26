@@ -19,7 +19,7 @@ export class GameAborted extends Error {
   }
 }
 
-export interface PointerState {
+interface PointerState {
   /** Screen coordinates (0..319, 0..199) of the last pointer position. */
   x: number;
   y: number;
@@ -27,7 +27,7 @@ export interface PointerState {
 }
 
 /** How a Machine is driven (the defaults are a live player's). */
-export interface MachineOptions {
+interface MachineOptions {
   /**
    * 'manual': no animation frame loop; whoever made the Machine calls presentFrame() for
    * each frame, and now() is theirs too (a walkthrough steps the game on a clock of its own).

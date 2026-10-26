@@ -273,14 +273,8 @@
     sans-serif;
 }
 
-.rs-lead,
-.rs-serial {
+.rs-lead {
   margin: 0 0 8px;
-}
-
-.rs-serial b {
-  font-family: 'Courier New', monospace;
-  letter-spacing: 0.05em;
 }
 
 .rs-form {
@@ -728,6 +722,8 @@
 
 .rs-live {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 1px;
   height: 1px;
   overflow: hidden;

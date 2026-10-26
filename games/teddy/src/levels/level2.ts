@@ -121,7 +121,7 @@ export function street(): Level {
   m.set(71, 38, 'kidGirl2');
   m.mon(71, 37, 'hand');
 
-  // The bus stop, Pockets and the Klown Car.
+  // The bus stop, Pockets and the Clown Car.
   m.set(77, 39, 'busSign').set(78, 39, 'bench').set(79, 39, 'bench');
   const car = 83;
   m.set(car - 2, 37, 'pocketsWant')

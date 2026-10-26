@@ -2,7 +2,7 @@
 // Teddy up to the fire escape where Doc Leo's horn landed, Biggles Department Store
 // (spin the revolving doors to get through; Gwinn is inside, in the shoe department), a
 // sidewalk shed where Juggles the busker's pins come flying (play dead!), the plaza, a
-// fruit stand Gwinn already knocked over, and the Bijou, where the Klown Car waits.
+// fruit stand Gwinn already knocked over, and the Bijou, where the Clown Car waits.
 //
 // The blocks are in level4Tiles.ts, the monsters in level4Beasts.ts; this file lays out the map.
 import { rng } from '../../../kit/pixels';

@@ -1,6 +1,6 @@
 // The 320x200 pictures: the menu, the paper behind text pages, the high scores, load and save,
 // and the credits (with Doc Leo). The title is the song's animated cover (cartoons.ts,
-// cover.fli) and its last frame (title.gif); the story, the level cards and the endings are
+// cover.fli), then the name on it (title.gif); the story, the level cards and the endings are
 // cartoons too.
 import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';

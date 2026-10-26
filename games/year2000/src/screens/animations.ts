@@ -5,13 +5,11 @@ import { T, blob, oval, shadeAt } from '../art/draw';
 import { textWidth } from '../art/font';
 import { C } from '../art/pal';
 import { H, R, W, centeredText, chrome, chromeCentered, fli, grid, scaleBlit, skyline, speedLines, sunsetSky, type Art } from './paint';
-import { titleScreen } from './screens';
 
 // ------------------------------------------------------------------ FLI animations
-/** The intro: a flip calendar counts 1992 up to 2000, a flash, and the future arrives. */
+/** The intro: a flip calendar counts 1992 up to 2000, a flash, and the future arrives (then fades out). */
 export function introFli(a: Art): Uint8Array {
   const frames: Pixels[] = [];
-  const title = titleScreen(a);
   const cal = (year: string, flip: number) => {
     const p = new Pixels(W, H, C('night', 0));
     const r = rng(3);
@@ -35,22 +33,29 @@ export function introFli(a: Art): Uint8Array {
     if (y >= 1998) frames.push(cal(String(y), 0));
   }
   for (let i = 0; i < 6; i++) frames.push(cal('2000', 0));
-  // Flash to white, then the title fades up out of it.
+  // Flash to white, then the future fades up out of it: the city at dusk, seen lower than the
+  // title shows it and without its lettering, a flying car swooping past close by; then a fade
+  // to black, and the title fades in after.
+  const city = new Pixels(W, H);
+  sunsetSky(city, 112, 5);
+  skyline(city, 112, 7);
+  grid(city, 112);
   const flash = new Pixels(W, H, C('grey', 7));
   frames.push(flash, flash);
-  for (let k = 1; k <= 5; k++) frames.push(new Pixels(W, H).map((x, y) => (dither(x, y, k / 5) ? title.get(x, y) : C('grey', 7))));
-  // A flying car swoops across the title.
-  for (let k = 0; k < 14; k++) {
+  for (let k = 1; k <= 5; k++) frames.push(new Pixels(W, H).map((x, y) => (dither(x, y, k / 5) ? city.get(x, y) : C('grey', 7))));
+  for (let k = 0; k < 16; k++) {
     const p = new Pixels(W, H);
-    p.px.set(title.px);
-    const x = -50 + k * 28;
-    const y = 120 - Math.round(Math.sin((k / 13) * Math.PI) * 40);
-    scaleBlit(p, a.carT, x, y, 2);
-    speedLines(p, x, y, 36, C('grey', 7));
+    p.px.set(city.px);
+    const x = -70 + k * 26;
+    const y = 130 - Math.round(Math.sin((k / 15) * Math.PI) * 60);
+    if (x < W) {
+      scaleBlit(p, a.carT, x, y, 3);
+      speedLines(p, x, y + 4, 48, C('grey', 7));
+    }
     frames.push(p);
   }
-  frames.push(title, title, title);
-  return fli(frames, 6);
+  frames.push(city, city, city, city);
+  return fli(frames, 6, undefined, true);
 }
 
 /** The Teleport-A-Phone: BZZZT. */

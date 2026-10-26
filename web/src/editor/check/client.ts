@@ -1,15 +1,22 @@
-// Starts a level check in its Web Worker (worker.ts) and hands back its progress and report;
+// Starts a level check in its Web Worker (worker.ts) and hands back its progress, the live
+// heat map as the bot plays (live.ts) and the report;
 // cancel() ends the worker on the spot.
 import type { GameFiles } from '../../project/files';
 import type { Report } from './report';
 import type { CheckMessage, CheckRequest } from './worker';
+import type { LiveProgress } from './live';
 
 export interface RunningCheck {
   done: Promise<Report>;
   cancel(): void;
 }
 
-export function startCheck(files: GameFiles, options: CheckRequest['options'], progress?: (what: string, done: number, total: number) => void): RunningCheck {
+export function startCheck(
+  files: GameFiles,
+  options: CheckRequest['options'],
+  progress?: (what: string, done: number, total: number) => void,
+  live?: (p: LiveProgress) => void,
+): RunningCheck {
   const worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module', name: 'level-check' });
   let stop: (e: Error) => void = () => undefined;
   const done = new Promise<Report>((resolve, reject) => {
@@ -17,6 +24,7 @@ export function startCheck(files: GameFiles, options: CheckRequest['options'], p
     worker.onmessage = (e: MessageEvent<CheckMessage>) => {
       const m = e.data;
       if (m.kind === 'progress') progress?.(m.what, m.done, m.total);
+      else if (m.kind === 'live') live?.(m.live);
       else {
         worker.terminate();
         if (m.kind === 'done') resolve(m.report);

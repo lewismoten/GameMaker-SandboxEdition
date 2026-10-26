@@ -9,12 +9,34 @@ import { MUSIC, SOUND_SETS, VOICE } from './chaptersSound';
 import { NUMBERS, SHOW, TESTING } from './chaptersShow';
 import { CRAFT, UPLOAD } from './chaptersCraft';
 import { LEVELS } from './chaptersLevels';
+import { TRICKS } from './chaptersTricks';
+import { CHECK } from './chaptersCheck';
+import { LIMITS, PLAYERS } from './chaptersPlayers';
+import { SHAREWARE } from './chaptersShareware';
 
-export const ULTIMATE_TITLE = 'The Ultimate Owner’s Guide';
+export const CHAPTERS: Chapter[] = [
+  PALETTES,
+  BLOCKS,
+  ACTORS,
+  LOGIC,
+  SCENES,
+  SOUND_SETS,
+  VOICE,
+  MUSIC,
+  SHOW,
+  TESTING,
+  CRAFT,
+  LEVELS,
+  TRICKS,
+  CHECK,
+  PLAYERS,
+  LIMITS,
+  SHAREWARE,
+  NUMBERS,
+  UPLOAD,
+];
 
-export const CHAPTERS: Chapter[] = [PALETTES, BLOCKS, ACTORS, LOGIC, SCENES, SOUND_SETS, VOICE, MUSIC, SHOW, TESTING, CRAFT, LEVELS, NUMBERS, UPLOAD];
-
-export interface BookPlan {
+interface BookPlan {
   /** Note pages added before the back cover. */
   notes: number;
   /** Every page, covers included: a multiple of four. */

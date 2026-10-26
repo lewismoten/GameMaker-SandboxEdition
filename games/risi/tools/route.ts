@@ -344,8 +344,8 @@ export async function kitchen(bot: Bot): Promise<void> {
     if (cheese(bot) < 5) throw new Error(`only ${cheese(bot)} cheese`);
   });
   await carefully(bot, 'the shelf of jars: the ants, a cupboard', 0, async () => {
-    await must(bot, bot.walk(35.6, 'by the shelf of jars'), 'jars');
-    await must(bot, bot.hop('up', 12, 'right', 36), 'up on the shelf');
+    await must(bot, bot.walk(35, 'by the shelf of jars'), 'jars');
+    await must(bot, bot.hop('up', 12, 'right', 35.6), 'up on the shelf');
     await clear(bot, [MON.ant], 4);
     await must(bot, bot.walk(39, 'the cupboard on the shelf'), 'cupboard');
     if (cheese(bot) < 6) throw new Error(`only ${cheese(bot)} cheese`);

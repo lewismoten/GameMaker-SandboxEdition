@@ -86,7 +86,7 @@ export const HEADS: Record<string, string[]> = {
     '...KKKKKKKKKKKKK....',
     '....KhsSSSSSShK.....',
     '....KswwSSSwwsK.....',
-    '....KseSSooSeSK.....',
+    '....KseSSqqSeSK.....',
     '....KhhwwwwwhhK.....',
     '.....KhhhhhhhK......',
   ],
@@ -378,8 +378,9 @@ export const PEOPLE: Record<string, PersonSpec> = {
     legs: 'short',
     key: lookKey({ hair: R('hairBlond', 0, 1), coat: R('red', 1, 2, 3), pants: R('blue', 1, 2), hat: R('blue', 1, 2, 3) }),
   },
-  // Doc Leo: chewed-up grey felt fedora with pins, ash-beard stubble, a rose-red nose and a
-  // white mouth patch, navy corduroy over a purple shirt and green tie, and red sneakers
+  // Doc Leo: chewed-up grey felt fedora with pins, painted stubble, white paint round his eyes
+  // and his mouth, his own nose sunburned pink, navy corduroy over a purple shirt and green tie,
+  // and red sneakers
   docleo: {
     head: 'fedora',
     body: 'clown',
@@ -393,7 +394,7 @@ export const PEOPLE: Record<string, PersonSpec> = {
         hat: R('steel', 0, 1, 2),
         trim: R('green', 1, 2, 3),
       },
-      { w: C('white', 1), o: C('red', 2), p: C('purple', 2), P: C('purple', 1), t: C('green', 2), T: C('green', 3), y: C('gold', 2) },
+      { w: C('white', 1), o: C('red', 2), q: C('pink', 2), p: C('purple', 2), P: C('purple', 1), t: C('green', 2), T: C('green', 3), y: C('gold', 2) },
     ),
   },
   // Will the playwright, visiting from Shakespeare in Sweatpants: dressed for the stage from the
@@ -512,14 +513,14 @@ const LAB: Key = baseKey({
   y: C('gold', 2),
 });
 
-/** Teddy sitting, facing you: huge upright ears (his right one a little taller), white blaze, grin. */
+/** Teddy sitting, facing you: huge upright ears, a matched pair, white blaze, grin. */
 const TEDDY_SIT = [
   '....................',
-  '...KK...............',
-  '..KOK.........KK....',
-  '..KOpK.......KOK....',
-  '..KOppK.....KpOK....',
-  '..KOOpOKKKKKOpOK....',
+  '....................',
+  '...KK.........KK....',
+  '...KOK.......KOK....',
+  '...KOpK.....KpOK....',
+  '...KOpOKKKKKOpOK....',
   '...KOOOOOwwOOOOK....',
   '...KOOkOOwwOOkOK....',
   '...KOOOOwwwwOOOK....',

@@ -13,7 +13,7 @@ export const DOS_EXTRA_BYTES = PLAYER_EXE_BYTES + 2_493 + 3_000;
 type Sized = Pick<CatalogEntry, 'bytes' | 'original' | 'exe'>;
 
 /** What the release adds to the game's own files: our games' whole DOS kit, another author's game its .EXE. */
-export function extraBytes(g: Pick<CatalogEntry, 'original' | 'exe'>): number {
+function extraBytes(g: Pick<CatalogEntry, 'original' | 'exe'>): number {
   return g.original ? DOS_EXTRA_BYTES : g.exe ? PLAYER_EXE_BYTES : 0;
 }
 
@@ -85,7 +85,7 @@ export function zipBytes(g: Pick<CatalogEntry, 'bytes' | 'original' | 'exe' | 'f
 }
 
 /** Characters a second Zmodem moves: 2400 bps (no compression), 14,400 with V.42bis (ZIPs don't shrink further, but the start and stop bits go). */
-export const MODEM_CPS = { 2400: 230, 14400: 1650 } as const;
+const MODEM_CPS = { 2400: 230, 14400: 1650 } as const;
 
 export function transferMinutes(bytes: number, bps: keyof typeof MODEM_CPS): number {
   return Math.max(1, Math.ceil(bytes / MODEM_CPS[bps] / 60));

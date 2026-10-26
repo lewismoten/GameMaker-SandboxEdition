@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 190px));
+  max-height: max(240px, var(--room, calc(var(--ws-vh, 100dvh) - 190px)));
   overflow-y: auto;
   padding: 2px;
 }
@@ -21,6 +21,25 @@
 }
 .snd-item button {
   padding: 3px 8px;
+}
+.snd-item .snd-col {
+  flex: none;
+  min-width: 34px;
+  min-height: 24px;
+  text-align: center;
+}
+.snd-heads {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 2px 0;
+  background: var(--bg, Canvas);
+  font-size: 0.75em;
+  font-weight: 700;
+  opacity: 0.8;
+}
+.snd-heads .snd-name {
+  padding-left: 8px;
 }
 .snd-item .snd-name {
   flex: 1;
@@ -52,6 +71,14 @@
 .snd-top .file-field {
   flex: 1 1 260px;
 }
+/* wider than a phone: the effect ends at the window's bottom edge (fitPane.ts) */
+@media (min-width: 641px) {
+  .snd-detail {
+    max-height: max(320px, var(--room, none));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 @media (max-width: 640px) {
   .snd-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -66,7 +93,7 @@
   display: block;
   width: auto;
   max-width: min(100%, 504px);
-  max-height: clamp(130px, calc(var(--ws-vh, 100dvh) - 650px), 220px);
+  max-height: clamp(130px, calc(var(--room, calc(var(--ws-vh, 100dvh) - 170px)) - 480px), 220px);
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #000;
@@ -97,7 +124,7 @@
     padding: 3px 8px;
   }
   .snd-pitch {
-    max-height: clamp(100px, calc(var(--ws-vh, 100dvh) - 650px), 220px);
+    max-height: clamp(100px, calc(var(--room, calc(var(--ws-vh, 100dvh) - 170px)) - 480px), 220px);
   }
 }
 /* each part's own play button, with what the game does with it (or that it is empty) */
@@ -119,4 +146,43 @@
   padding: 3px 8px;
   border: 1px dashed var(--border);
   border-radius: 6px;
+}
+/* the Fit choice for making the PC speaker version from a .voc: two options, a line each */
+.snd-fit {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 6px 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.snd-fit legend {
+  padding: 0 4px;
+  font-weight: 600;
+}
+.editor .snd-fit .snd-fit-note {
+  flex: 1 1 100%;
+  margin: 0;
+}
+.snd-fit-option {
+  display: flex;
+  flex: 1 1 220px;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 24px;
+  cursor: pointer;
+}
+.snd-fit-option input {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+}
+.snd-fit-option span {
+  display: flex;
+  flex-direction: column;
+}
+.snd-fit-option small {
+  color: var(--muted, inherit);
 }

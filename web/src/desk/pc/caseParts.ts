@@ -63,7 +63,7 @@ export function sevenSegment(digits = 2): HTMLElement & { show(text: string): vo
   return el;
 }
 
-export interface FloppyDrive {
+interface FloppyDrive {
   el: HTMLElement;
   /** Shows a disk in (its title and label color) or none. */
   setDisk(title: string | undefined, color?: string): void;
@@ -104,7 +104,7 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
   };
 }
 
-export interface CdDrive {
+interface CdDrive {
   el: HTMLElement;
   setDisc(title: string | undefined): void;
   busy(ms?: number): void;

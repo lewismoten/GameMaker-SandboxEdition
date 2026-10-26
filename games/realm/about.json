@@ -21,7 +21,7 @@
     "accent": "#e8b84a",
     "ink": "#ffffff",
     "tagline": "Somebody has to get around to it.",
-    "back": "In the Kingdom of Procrastia, everything gets done. Eventually. King Dillydally IX keeps the realm running with the Royal Round Tuit: whenever he gets one, he gets around to it. Then Lord Deadline stole it, broke it in three, and hid the pieces where nobody would ever get around to looking.\n\nNobody except Pip, the stable hand of Nowish, who does things the day he's asked. Take the King's writ into the Snooze Barrows. Sound the foghorn over the Soggy Vaults. Charge THE CHEZ, a horseless carriage from the far-off future of 1976 and a half, and drive it across forty leagues of tidal mud. Find two runaway royal hounds, a library book three hundred years overdue, and a rubber chicken on the run. Then knock on Deadline Keep's door. Before he does.",
+    "back": "In the Kingdom of Procrastia, everything gets done. Eventually. King Dillydally IX keeps the realm running with the Royal Round Tuit: whenever he gets one, he gets around to it. Then Lord Deadline stole it, broke it in three, and hid the pieces where nobody would ever get around to looking.\n\nNobody except Pip, the stable hand of Nowish, who does things the day he's asked. Take the King's writ into the Snooze Barrows. Sound the foghorn over the Soggy Vaults. Charge THE\u00a0CHEZ, a horseless carriage from the far-off future of 1976 and a half, and drive it across forty leagues of tidal mud. Find two runaway royal hounds, a library book three hundred years overdue, and a rubber chicken on the run. Then knock on Deadline Keep's door. Before he does.",
     "features": [
       "A whole kingdom to explore: four towns, four dungeons, a world map and a road trip",
       "Shores, rivers and roads that curve and run diagonally - painted in true color, dithered into 256",
@@ -44,5 +44,6 @@
     ],
     "award": { "title": "Shareware Gem", "from": "Diskette Digest" },
     "poster": { "gif": "title.gif", "caption": "Somebody has to get around to it." }
-  }
+  },
+  "sameEverySide": ["flats.mon#10"]
 }

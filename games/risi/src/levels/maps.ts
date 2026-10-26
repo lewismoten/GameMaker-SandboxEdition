@@ -186,6 +186,9 @@ export function battle(book: BlockBook): Level {
   m.link(69, 9, 'next');
   // the Gaulish horde, right behind him; the second wave rallies at the edge of the field, then
   // charges after him to the wide ditch
+  // (the second wave catches up with the first on the open field: one caught between them is
+  // popped up into the open air over the field, never into a block; the Level check's push-squeeze
+  // for them is in its baseline)
   m.mon(MON.gaul, 0, 9).mon(MON.gaul2, -2, 9);
   m.mon(MON.gaulW, -1, 9).mon(MON.gaulW2, -2, 9);
   return { m, start: at(4, 9), size: [W, H] };
@@ -220,16 +223,17 @@ export function roofs(book: BlockBook): Level {
   house(m, 51, 58, 7, street);
   // A: a titulus, a chimney
   m.set(4, 7, 'titulus0').set(6, 7, 'chimney');
-  // B: a titulus, the washing line, a pigeon, a heap of SAXA
-  m.set(12, 6, 'titulus1').set(14, 5, 'washing').mon(MON.pigeon, 13, 6).set(16, 6, 'saxa');
+  // B: a titulus, the washing line, a pigeon (its walk a block short of the SAXA, so it never pushes him into the heap), a heap of SAXA
+  m.set(12, 6, 'titulus1').set(14, 5, 'washing').mon(MON.pigeon, 12, 6).set(16, 6, 'saxa');
   // C: Doc Leo the philosopher, a titulus, herbs, a cup
   m.mon(MON.leo, 19, 8).set(21, 8, 'titulus2').set(23, 8, 'herbs').set(22, 5, 'rcup');
   // D: a titulus, the wise man on his chimney (spells), a coin
   m.set(27, 7, 'titulus3').set(31, 7, 'magusChimney').mon(MON.sagax, 31, 6).set(33, 7, 'rcoin');
   // E: SAXA, a titulus, the wreath up high
   m.set(35, 5, 'saxa').set(37, 5, 'titulus0').set(39, 2, 'rwreath');
-  // F: a titulus, a chimney, a pigeon, grapes, a titulus
-  m.set(44, 7, 'titulus1').set(46, 7, 'chimney').mon(MON.pigeon, 47, 7).set(48, 5, 'rgrapes').set(50, 7, 'titulus2');
+  // F: a titulus, a chimney, a pigeon, grapes, a titulus (the pigeon paces a block clear of
+  // the chimney and the step, so its side push never puts Marcus inside either)
+  m.set(44, 7, 'titulus1').set(45, 7, 'chimney').mon(MON.pigeon, 47, 7).set(48, 5, 'rgrapes').set(50, 7, 'titulus2');
   // G: SAXA on the step up, a titulus, the tavern
   m.set(52, 6, 'titulus3').set(54, 6, 'saxa');
   m.set(56, 5, 'tavernSign').set(56, 6, 'tavern');
@@ -261,8 +265,9 @@ export function kitchen(book: BlockBook): Level {
   m.row(5, 22, 27, 'kshelf').set(24, 4, 'armarium').set(26, 4, 'will');
   // the second mouse by its hole; a cupboard down low
   m.set(30, 9, 'hole').mon(MON.mouse, 29, 9).set(34, 9, 'armariumLow');
-  // a shelf of jars, ants on it, a cupboard at its end
-  m.row(7, 36, 39, 'kshelfJars').mon(MON.ant, 36, 6).set(39, 6, 'armarium');
+  // a shelf of jars, ants on it, a cupboard at its end (a block past the ants' walk: coming back
+  // they'd push Felix into it)
+  m.row(7, 35, 39, 'kshelfJars').mon(MON.ant, 35, 6).set(39, 6, 'armarium');
   // the third mouse
   m.set(42, 9, 'hole').mon(MON.mouse, 41, 9);
   // the crown of cheese

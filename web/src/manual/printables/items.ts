@@ -1,5 +1,6 @@
 // Everything in the box besides the manual, in tray order: the game's own extras from
 // printables.json first, then the generated ones every Sandbox Software game gets.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './items.css';
 import type { PrintContext } from './kit';
 import type { BoxItem } from './viewer';
@@ -37,6 +38,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
   }));
   const book = own.find((i) => i.kind === 'hintbook');
   const levels = levelMaps(ctx);
+  let everyScene = false;
   const gen: (BoxItem & { kind: GeneratedKind })[] = [
     {
       kind: 'worldmap',
@@ -44,8 +46,9 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       title: 'World Map',
       note: 'Fold-out: every scene and the ways between them',
       icon: '🗺️',
-      render: () => worldMap(ctx),
-      screen: worldMapScreen,
+      // the player's places; on screen it can show every scene, and then prints that
+      render: () => worldMap(ctx, everyScene),
+      screen: (sheets) => worldMapScreen(sheets, (every) => ((everyScene = every), worldMap(ctx, every))),
     },
     ...(levels
       ? [
@@ -67,12 +70,12 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       kind: 'newsletter',
       id: 'newsletter',
       title: 'The Sandbox Scoop',
-      note: 'Newsletter: our next games',
+      note: 'Newsletter: the next games',
       icon: '🗞️',
       render: () => newsletter(ctx),
       redFilm: !!book,
     },
-    { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every game we make', icon: '🗂️', render: () => catalog(ctx) },
+    { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every Sandbox Software game', icon: '🗂️', render: () => catalog(ctx) },
     { kind: 'bbs', id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     ...(book
       ? [

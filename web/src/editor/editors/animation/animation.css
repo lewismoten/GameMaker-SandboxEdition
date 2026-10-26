@@ -35,18 +35,27 @@
     display: grid;
     grid-template-columns: auto minmax(200px, 1fr);
     column-gap: 16px;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
     align-items: start;
     max-width: 1200px;
   }
   .fli-edit > * {
     grid-column: 1 / -1;
   }
+  /* --room (fitPane.ts): from the monitor's top to the pane's bottom; the transport, speed and
+     film strip below it take about 220px, and its frame 28px */
   .fli-edit > .fli-monitor {
     grid-column: 1;
-    grid-row: 2 / span 2;
-    width: min(680px, max(320px, calc((var(--ws-vh, 100dvh) - 470px) * 4 / 3 + 28px)));
+    grid-row: 2 / span 3;
+    width: min(680px, max(280px, calc((var(--room, calc(var(--ws-vh, 100dvh) - 220px)) - 252px) * 4 / 3 + 28px)));
     max-width: none;
+  }
+  /* the frame's own buttons (duplicate, move, delete, add) sit beside it */
+  .fli-edit > .fli-actions:not(.fli-export) {
+    grid-column: 2;
+    grid-row: 3;
+    flex-wrap: wrap;
+    align-items: flex-start;
   }
   /* the downloads share rows; Undo and Redo start a row of their own */
   .fli-edit > .fli-export {
@@ -61,8 +70,8 @@
   }
   .fli-edit > .fli-help {
     grid-column: 2;
-    grid-row: 3;
-    max-width: 360px;
+    grid-row: 4;
+    max-width: 62ch;
     margin: 0;
   }
 }

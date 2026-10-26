@@ -4,7 +4,7 @@
 // seeded by the game and face, so a box looks the same each time it is drawn.
 import { seeded } from './boxFacts';
 
-export interface WearOptions {
+interface WearOptions {
   /** 0..1: how much the sun has faded this face (spines facing out fade most). */
   fade?: number;
   /** How many creases to put in. */

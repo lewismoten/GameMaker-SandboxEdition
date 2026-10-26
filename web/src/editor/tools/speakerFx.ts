@@ -3,7 +3,7 @@
 // every 1/145.6 s (about a quarter second in all); 0 is silence.
 import { NUMFREQ } from '../../formats/sound';
 
-export type Speaker = Uint16Array;
+type Speaker = Uint16Array;
 
 const MIN = 40;
 const MAX = 8192;
@@ -21,7 +21,7 @@ const pick = <T>(xs: T[]): T => xs[Math.floor(Math.random() * xs.length)];
 const note = (semi: number) => 440 * 2 ** (semi / 12);
 const sweep = (from: number, to: number, t: number) => from * (to / from) ** t;
 
-export interface Recipe {
+interface Recipe {
   name: string;
   icon: string;
   make: () => Speaker;

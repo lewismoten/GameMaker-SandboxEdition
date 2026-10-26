@@ -3,8 +3,8 @@
 // the manual (its own cover, manual/printables/manualCover.ts) and, on the right, the printed
 // extras listed as the Game-Maker box lists its inserts (boxList.ts), each opening the manual's
 // box at that piece.
-import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
+import './gameBoxContents.css';
 import { h } from '../../editor/core/ui';
 import { warmPack, type CatalogEntry } from '../../project/files';
 import { CATALOG_CHANGED } from '../../project/catalogWatch';
@@ -20,7 +20,7 @@ let disks: Promise<Disk[]> | undefined;
 // a secret game revealed or hidden again: its disks come or go
 if (typeof window !== 'undefined') window.addEventListener(CATALOG_CHANGED, () => (disks = undefined));
 
-export interface BoxContentsHooks {
+interface BoxContentsHooks {
   /** Put disk 1 in drive A: (and play). */
   insert: () => void;
   /** The manual and everything else in the box (manual/gameManual.ts). */

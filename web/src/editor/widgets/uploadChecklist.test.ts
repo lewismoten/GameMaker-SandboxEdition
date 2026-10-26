@@ -9,11 +9,24 @@ describe('the Before You Upload checklist', () => {
     expect(APPENDIX_B.map((i) => i.text)).toEqual(rows);
   });
 
+  it('ticks the help and screens lines from their checks', () => {
+    const help = APPENDIX_B.find((i) => i.checks.includes('help-keys'))!;
+    expect(itemState(help, [{ check: 'help-keys', severity: 'warning', title: '', where: {} }], true).kind).toBe('problems');
+    const readable = APPENDIX_B.find((i) => i.checks.includes('text-contrast'))!;
+    expect(itemState(readable, [], false).kind).toBe('clear');
+  });
+
   it('ticks a line only when its checks found nothing, and leaves play lines for the playtest', () => {
-    const stuck = APPENDIX_B[5];
+    const stuck = APPENDIX_B.find((i) => i.text.startsWith('Nowhere to get stuck'))!;
     expect(itemState(stuck, [{ check: 'stuck', severity: 'error', title: '', where: {} }], true)).toEqual({ kind: 'problems', count: 1 });
     expect(itemState(stuck, [], true).kind).toBe('clear');
     expect(itemState(stuck, [], false).kind).toBe('unchecked');
-    expect(itemState(APPENDIX_B[16], [], true).kind).toBe('manual');
+    expect(
+      itemState(
+        APPENDIX_B.find((i) => i.text.startsWith('The demo plays'))!,
+        [],
+        true,
+      ).kind,
+    ).toBe('manual');
   });
 });

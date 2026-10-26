@@ -74,8 +74,8 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.left], walk(-STEP, true), { key: KEY.left, jstkMov: JOY.left });
   set(S[SEQ.rightD], walk(STEP, false), { key: KEY.d });
   set(S[SEQ.leftA], walk(-STEP, true), { key: KEY.a });
-  // hopping
-  const hop = [f({ pic: 'hop', y: -HOP })];
+  // hopping straight up (or climbing a vine): his back, going away
+  const hop = [f({ pic: 'climb', y: -HOP })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
   set(S[SEQ.hopW], hop, { key: KEY.w, sound: SND.hop });
   const side = (dx: number, mirror: boolean) => [f({ pic: 'hopSide', x: dx, y: -HOP, mirror }), f({ pic: 'hopSide', x: dx, y: -HOP, mirror })];

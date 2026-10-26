@@ -1,36 +1,15 @@
-// The Ultimate Owner's Guide: the Game-Maker SE box's advanced manual, a stapled booklet of
-// power-user tips (chapters in chapters*.ts, order and page sums in plan.ts) with a black and
-// gold cover. It is one more piece in the box (gmItems.ts), opened beside the Owner's Guide in
-// the box viewer, and the web guide's Ultimate Guide page opens it the same way.
+// The Ultimate Owner's Guide's pages: the Game-Maker SE box's advanced manual, a stapled booklet
+// of power-user tips (chapters in chapters*.ts, order and page sums in plan.ts) behind the black
+// and gold cover. Its piece in the box, the cover and the title are in ultimateItem.ts, so the
+// box can show the cover without loading the chapters; this file loads when it is first opened.
 import './ultimateGuide.css';
 import { h } from '../../editor/core/ui';
 import type { BookPage } from '../printables/manualPages';
 import { measurer } from '../printables/manualPages';
 import { paginate } from '../printables/paginate';
-import { sheet } from '../printables/kit';
-import type { BoxItem } from '../printables/viewer';
-import { CHAPTERS, ULTIMATE_TITLE, chapterStarts, planBook } from './plan';
+import { CHAPTERS, chapterStarts, planBook } from './plan';
+import { ULTIMATE_TITLE, ultimateCover } from './ultimateItem';
 import { fillFigures } from './ultimateFigures';
-
-/** The front cover: black and gold, for the designer who has read the first guide twice. */
-export function ultimateCover(): HTMLElement {
-  return h(
-    'div',
-    { class: 'ug-cover' },
-    h('div', { class: 'ug-band' }, h('span', null, 'GAME-MAKER 3.0'), h('span', null, 'SANDBOX EDITION')),
-    h('div', { class: 'ug-blocks', 'aria-hidden': 'true' }, ...Array.from({ length: 16 }, (_, i) => h('i', { class: `ug-b${(i * 7) % 5}` }))),
-    h(
-      'h1',
-      { class: 'ug-name' },
-      h('span', { class: 'ug-the' }, 'The '),
-      h('span', { class: 'ug-ultimate' }, 'Ultimate'),
-      h('span', { class: 'ug-owners' }, ' Owner’s Guide'),
-    ),
-    h('p', { class: 'ug-for' }, 'For Advanced Designers'),
-    h('ul', { class: 'ug-topics' }, ...['Palette magic', 'Blocks that think', 'Voice and FM music', 'Demos and play-testing'].map((t) => h('li', null, t))),
-    h('p', { class: 'ug-foot' }, 'Tips and tricks from the makers of the Sandbox games', h('br'), 'Not an RSD publication'),
-  );
-}
 
 function backCover(): HTMLElement {
   return h(
@@ -107,28 +86,4 @@ export async function ultimatePages(): Promise<BookPage[]> {
   } finally {
     host.remove();
   }
-}
-
-let wanted: string | undefined;
-
-/** The next time the guide is opened, it turns to this chapter (an id in plan.ts CHAPTERS). */
-export function openAtChapter(id: string | undefined): void {
-  wanted = id;
-}
-
-/** The guide as a piece in the Game-Maker box. */
-export function ultimateItem(): BoxItem {
-  return {
-    openAt: () => {
-      const id = wanted;
-      wanted = undefined;
-      return id;
-    },
-    id: 'ultimate',
-    title: ULTIMATE_TITLE,
-    note: 'Advanced tips and tricks, stapled',
-    icon: '📒',
-    pages: ultimatePages,
-    render: async () => [sheet(5.5, 8.5, 'ug-thumb', ultimateCover())],
-  };
 }

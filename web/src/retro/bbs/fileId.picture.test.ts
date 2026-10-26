@@ -1,3 +1,4 @@
+// The BBSes' pictures: who uploaded them where, their 8.3 names and sizes, and their FILE_ID.DIZ.
 import { describe, expect, it } from 'vitest';
 import { DIZ_LINES, DIZ_WIDTH, pictureDiz } from './fileId';
 import { GALLERY, SOFA_GIFS } from './gallery';

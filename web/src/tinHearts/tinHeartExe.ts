@@ -1,12 +1,12 @@
 // EGG.EXE's tin heart page (T from the felt egg ledger): every game that counts toward the tin
-// hearts, whether its heart is found, and keys to add or take away finds by hand, or set or
-// clear them all. Like the egg ledger, it only changes EGG.EXE's overrides in localStorage
+// hearts, whether its heart is found, and keys to add or take away finds by hand, set or
+// clear them all, or put them all back to what the saves say (X Reset all, or R). Like the egg ledger, it only changes EGG.EXE's overrides in localStorage
 // (tinHearts.ts), never a game's save. In development it also lists, dimmed, the games that
 // count but hide no heart yet. Game-Maker's text UI style.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '../retro/text/cp437';
-import { countedOf, heartStates, pendingOf, setAllOverrides, setOverride, type HeartState } from './tinHearts';
+import { countedOf, heartStates, pendingOf, resetAllOverrides, setAllOverrides, setOverride, type HeartState } from './tinHearts';
 
 const STATE_TEXT: Record<HeartState['status'], string> = {
   saved: 'Found in play',
@@ -72,7 +72,7 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
       toCp437(`Found ${found} of ${list.length}.${found === list.length && list.length ? ' The trophy is on the desk.' : ''}`),
     );
     s.write(x + 2, y + shown + 3, attr(7, 1), toCp437('Changes here never touch a saved game.'));
-    s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose  Enter Find/Lose  S Set all  C Clear all  R Reset  Esc Back').padEnd(80).slice(0, 80));
+    s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose  Enter Find/Lose  S Set all  C Clear all  X Reset all  Esc Back').padEnd(80).slice(0, 80));
     const k = await ui.keys.next();
     const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;
     const e = list[cur];
@@ -85,7 +85,7 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
     else if ((key === 'Enter' || key === ' ') && e) setOverride(e.id, e.found ? (e.inSave ? 'broken' : undefined) : e.inSave ? undefined : 'added');
     else if (key === 'S') setAllOverrides(list, true);
     else if (key === 'C') setAllOverrides(list, false);
-    else if (key === 'R') for (const h of list) setOverride(h.id, undefined);
+    else if (key === 'R' || key === 'X') resetAllOverrides();
     else if (key === 'Escape' || key === 'Q' || key === 'T') break;
   }
 }

@@ -2,12 +2,13 @@
 // from (no exit, no link back), grouped into areas with the likeliest reason: a pit, a drop
 // that only goes one way, or a lock whose key the hero can no longer get. A place is only
 // called stuck when every place it leads to was tried, so a run cut short by its time budget
-// doesn't report false alarms.
+// doesn't report false alarms, a place the hero only dies from is a death, not a softlock, and
+// one the explorer found a way out of with held keys (explore.ts confirmStuck) is no trap.
 import { BACKBL, type Block } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
 import type { Exploration } from './explore';
 
-export type StuckReason = 'pit' | 'drop' | 'lock' | 'unknown';
+type StuckReason = 'pit' | 'drop' | 'lock' | 'unknown';
 
 export interface StuckArea {
   /** Map cells of the places in the area. */
@@ -37,7 +38,7 @@ export function canLeave(ex: Exploration): Uint8Array {
 }
 
 /** Lock blocks: a touch they refuse while a counter is short, standing in the way (solid). */
-export function lockBlocks(bg: Block[]): Set<number> {
+function lockBlocks(bg: Block[]): Set<number> {
   const out = new Set<number>();
   for (let n = 0; n < BACKBL; n++) {
     const b = bg[n];
@@ -66,7 +67,9 @@ export function stuckAreas(ex: Exploration, map: Uint8Array, bg: Block[]): Stuck
     }
   });
   while (q.length) for (const pr of back[q.pop()!]) if (!unknown[pr] && !ok[pr]) ((unknown[pr] = 1), q.push(pr));
-  const stuck = ex.places.map((_, i) => !ok[i] && !unknown[i]);
+  // a place where every move dies (a death sequence under way, a hold that kills) costs a life,
+  // and the scene starts over: that is a death, not a softlock
+  const stuck = ex.places.map((p, i) => !ok[i] && !unknown[i] && !p.doomed && !p.freed);
   const locks = lockBlocks(bg);
   // areas: stuck places joined by their moves
   const area = new Int32Array(n).fill(-1);

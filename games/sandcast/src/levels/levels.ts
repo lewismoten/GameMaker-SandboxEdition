@@ -1,6 +1,7 @@
 // The seven playfields of Sandcastle Knight.
 import { LEGEND, LevelMap, type Legend } from './levelmap';
 import { MON } from '../rules';
+import { SIGNS } from '../sprites/signs';
 
 const L = (extra: Legend): Legend => ({ ...LEGEND, ...extra });
 
@@ -150,6 +151,15 @@ export function hub(): LevelMap {
       q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
+  // The signs by the start (sprites/signs.ts): G over the shovel, Space beside the toy chest.
+  let sign = MON.sign;
+  const signAt = [
+    [1, 32],
+    [2, 35],
+  ];
+  SIGNS.forEach(({ blocks }, k) => {
+    for (let i = 0; i < blocks; i++) m.mon(signAt[k][0] + i, signAt[k][1], sign++);
+  });
   // Way up in the northeast corner, one lone dune with paw prints leading to it. Gwinn
   // was digging here; dig it out and see where it goes.
   m.set(46, 4, 'paws').set(47, 3, 'paws').set(48, 2, 'paws').mark('arriveDig', 48, 2);

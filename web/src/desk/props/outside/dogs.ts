@@ -1,6 +1,6 @@
 // Dogs loose on the street, running right to left: Gwinn out in front (chocolate brown, a
 // pink collar) with somebody's red mitten in her mouth, Teddy (red-gold, a white chest, short
-// corgi legs, one ear a little shorter) hot on her heels, snow flying.
+// corgi legs, two tall ears) hot on her heels, snow flying.
 import { roomSound } from '../propSound';
 import { across, STREET, type OutsideEvent } from './outside';
 
@@ -54,13 +54,13 @@ function dog(c: CanvasRenderingContext2D, d: Dog, x: number, g: number, t: numbe
   c.fill();
   c.beginPath();
   if (d.corgi) {
-    // Teddy's tall pointed ears, the near one a little shorter
+    // Teddy's tall pointed ears, a matching pair
     c.moveTo(x + 1, top - 5);
     c.lineTo(x + 2, top - 11);
     c.lineTo(x + 4, top - 5);
     c.moveTo(x + 3.5, top - 5);
-    c.lineTo(x + 5.5, top - 9.5);
-    c.lineTo(x + 6.5, top - 4);
+    c.lineTo(x + 4.5, top - 11);
+    c.lineTo(x + 6.5, top - 5);
   } else {
     // Gwinn's soft ears flying back
     c.ellipse(x + 4.5, top - 3, 3, 1.6, 0.6 + gait * 0.3, 0, Math.PI * 2);
@@ -97,6 +97,6 @@ export const dogs: OutsideEvent = {
   },
   press() {
     roomSound.woof(2);
-    return 'Gwinn tears past with somebody’s red mitten, Teddy right behind her, ears up (one a little shorter). Loose again! It wasn’t her. (It was her.)';
+    return 'Gwinn tears past with somebody’s red mitten, Teddy right behind her, both ears up. Loose again! It wasn’t her. (It was her.)';
   },
 };

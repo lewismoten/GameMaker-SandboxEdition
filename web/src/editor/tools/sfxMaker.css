@@ -1,0 +1,146 @@
+/* The sound effect maker (editor/tools/sfxMaker.ts): presets on top, the wave and its picture
+   on the left, the sliders on the right; one column on a phone. */
+dialog.modal:has(.sfxm) {
+  width: min(920px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 16px 20px;
+}
+
+.sfxm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sfxm-presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 6px;
+}
+
+.sfxm-presets button {
+  min-height: 30px;
+  padding: 4px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sfxm-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.sfxm-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sfxm-left > button {
+  align-self: flex-start;
+  min-height: 30px;
+}
+
+.sfxm-waves {
+  flex-wrap: wrap;
+}
+
+.sfxm-waves button {
+  min-height: 26px;
+}
+
+.sfxm-wave {
+  width: 100%;
+  height: 110px;
+  border-radius: 6px;
+}
+
+.sfxm-info {
+  margin: 0;
+}
+
+.sfxm-sliders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 14px;
+}
+
+.sfxm-slider {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 6px;
+  font-size: 13px;
+}
+
+dialog.modal .sfxm-slider label {
+  display: block;
+  grid-row: 1 / 3;
+}
+
+.sfxm-slider input[type='range'] {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-height: 24px;
+  margin: 0;
+}
+
+.sfxm-slider input[type='range']:disabled {
+  opacity: 0.45;
+}
+
+.sfxm-slider output {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.sfxm-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+dialog.modal .sfxm-name {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.sfxm-name input {
+  width: 9em;
+}
+
+.sfxm-foot .hint {
+  flex: 1 1 14em;
+}
+
+dialog.modal .sfxm-check {
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+}
+
+.sfxm-check input {
+  width: 18px;
+  height: 18px;
+}
+
+.sfxm-foot .buttons {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+@media (max-width: 700px) {
+  .sfxm-body,
+  .sfxm-sliders {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

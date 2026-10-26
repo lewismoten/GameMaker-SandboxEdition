@@ -73,10 +73,13 @@
   color: #999;
 }
 
+/* the holes are in the top corners, away from the shutter: seen from the label side, the
+   write-protect hole at the left and the high-density hole at the right */
+
 /* write-protect tab: open hole = protected */
 .floppy .wp {
   position: absolute;
-  right: 2.5%;
+  left: 2.5%;
   top: 2%;
   width: 7%;
   height: 7%;
@@ -96,7 +99,7 @@
 
 .floppy .density-hole {
   position: absolute;
-  left: 2.5%;
+  right: 2.5%;
   top: 2%;
   width: 7%;
   height: 7%;
@@ -121,7 +124,7 @@
 
 .floppy .hd {
   position: absolute;
-  left: 2.5%;
+  right: 2.5%;
   top: 11%;
   font:
     700 8px/1 system-ui,
@@ -311,4 +314,10 @@
 .disk-box .floppy.peek {
   width: 70px;
   filter: brightness(var(--dim, 1)) drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* the flip-through under the black light at night: white labels (your own hand-written ones and
+   RSD's printed ones) glow a light purple, dark ink staying dark, as the desk's white paper does */
+.desk-overlay.uv-night .floppy :is(.label:not(.printed), .label.rsd) {
+  filter: grayscale(1) sepia(1) hue-rotate(215deg) saturate(2.2) brightness(0.95);
 }

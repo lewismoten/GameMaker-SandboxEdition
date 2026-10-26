@@ -1,5 +1,5 @@
 // Background block art shared by the levels: skies, ground, wood, brick, fences, and the
-// Klown Car that waits at the end of every level.
+// Clown Car that waits at the end of every level.
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, gradient, over, shadeAt, speckle, sprite } from '../art/draw';
 import { P } from '../art/pal';

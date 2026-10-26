@@ -1,7 +1,8 @@
 // Notes taped to the wall under the phone, for a kid who lets themselves in after school:
-// who to call and when, how to call Mrs. Novak's TTY, and a sticky note about the door.
+// who to call and when, and a sticky note about the door.
 // Click to read them larger. The numbers are 555-01xx, the range kept for made-up numbers.
 import './phoneNotes.css';
+import { focusInto } from '../overlayFocus';
 import { h } from '../../editor/core/ui';
 
 const NUMBERS: [string, string][] = [
@@ -24,11 +25,6 @@ export function notes(): HTMLElement {
       h('div', { class: 'pn-head' }, 'IMPORTANT NUMBERS'),
       h('ul', null, ...NUMBERS.map(([who, num]) => h('li', null, h('span', null, who), h('b', null, num)))),
       h('p', { class: 'pn-pager' }, 'Page Dad: dial, wait for the beeps, punch in the house phone number, then press #'),
-      h(
-        'p',
-        { class: 'pn-pager pn-tty' },
-        'Mrs. Novak next door is Deaf and uses a TTY: it types over the phone. Call her from the computer (TERMINAL, press M for TDD mode). Type, end your turn with GA; SK means bye. Grandma calls her through the relay.',
-      ),
       h('p', { class: 'pn-warn' }, 'Do NOT call us at work unless it’s an EMERGENCY!!'),
       h('p', { class: 'pn-911' }, 'Real emergency → 911'),
       h('p', { class: 'pn-sign' }, '♥ Mom'),
@@ -38,9 +34,11 @@ export function notes(): HTMLElement {
 }
 
 function readLarger(): void {
+  let back = () => {};
   const close = () => {
     window.removeEventListener('keydown', onKey, true);
     overlay.remove();
+    back();
   };
   const onKey = (e: KeyboardEvent) => {
     e.stopImmediatePropagation(); // not for the PC underneath
@@ -62,6 +60,7 @@ function readLarger(): void {
   overlay.addEventListener('click', (e) => e.target === overlay && close());
   window.addEventListener('keydown', onKey, true);
   document.body.append(overlay);
+  back = focusInto(overlay.querySelector('button.close'));
 }
 
 export function phoneNotes(): HTMLElement {

@@ -9,7 +9,7 @@
 //   BACKUP /D game n       delete the nth backup
 //   BACKUP /?              help
 
-export type BackupCommand =
+type BackupCommand =
   | { kind: 'ui' }
   | { kind: 'help' }
   | { kind: 'all' }

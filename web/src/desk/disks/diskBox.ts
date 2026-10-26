@@ -1,6 +1,7 @@
 // The disk box: flip through 3.5" floppies and put one in drive A:.
 import './diskBox.css';
 import { h, clear } from '../../editor/core/ui';
+import { focusInto } from '../overlayFocus';
 import { diskCount, type Disk } from '../../retro/dos/disks';
 import { creditLine } from '../../project/files';
 import { gameDisks } from '../../project/diskFacts';
@@ -92,7 +93,7 @@ export function diskFacts(d: Disk): string {
     d.kind === 'rsd'
       ? 'One of the games RSD made with Game-Maker'
       : d.kind === 'original'
-        ? 'Shareware from Sandbox Software, our own games: play them or open them in Game-Maker'
+        ? 'Shareware from Sandbox Software, this edition’s own games: play them or open them in Game-Maker'
         : d.kind === 'gameware'
           ? 'Free gameware from the Game-Maker CD'
           : d.kind === 'project'
@@ -152,9 +153,11 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       return el;
     });
 
+    let back = () => {};
     const close = () => {
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      back();
       resolve();
     };
     const pick = (i: number) => {
@@ -196,7 +199,8 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
 
     const overlay = h(
       'div',
-      { class: 'desk-overlay', role: 'dialog', 'aria-label': 'Disk box' },
+      // focused itself on opening (the arrow keys and Enter pick a disk; a focused button would take Enter)
+      { class: 'desk-overlay', role: 'dialog', 'aria-label': 'Disk box', tabindex: -1 },
       h('button', { class: 'close', onclick: close }, 'Close (Esc)'),
       h(
         'div',
@@ -207,7 +211,11 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       info,
     );
     overlay.addEventListener('click', (e) => e.target === overlay && close());
+    // the black light on in a dark room reaches the box in your hands: its white labels glow too
+    const desk = document.querySelector('.desk');
+    overlay.classList.toggle('uv-night', !!desk?.classList.contains('bl-uv') && desk.classList.contains('rl-dark'));
     document.body.append(overlay);
+    back = focusInto(overlay);
     select(index);
   });
 }

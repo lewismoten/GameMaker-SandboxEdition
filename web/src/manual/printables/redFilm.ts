@@ -12,6 +12,7 @@
 //   2. the letters in pale cyan, about as light as the decoys;
 //   3. dense crossing red lines over everything, cutting every letter into pieces.
 // Every decoy and line has R = 255, so through the film only the letters are left.
+import { fnv1a, mulberry32 } from '../../seededRandom';
 import { h } from '../../editor/core/ui';
 import type { HintSketch } from './types';
 
@@ -37,25 +38,6 @@ export function luma(color: string): number {
 /** How light a color looks through pure red film, 0-255: only its red gets through. */
 export function throughRedFilm(color: string): number {
   return rgb(color)[0];
-}
-
-/** A small seeded random number generator (mulberry32), so a word always gets the same noise. */
-export function seeded(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** A seed from a string. */
-export function hashText(text: string): number {
-  let x = 2166136261;
-  for (let i = 0; i < text.length; i++) x = Math.imul(x ^ text.charCodeAt(i), 16777619);
-  return x >>> 0;
 }
 
 /** The canvas's font size in pixels: big enough to print sharply at a few times its size on screen. */
@@ -100,7 +82,7 @@ function strokes(
  * The three layers around whatever `ink` draws (see the top of this file): decoy strokes as
  * thick as `stroke()` under and over it, then `lines` red lines per square em across everything.
  */
-function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void, lines = 20): void {
+function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void, lines = 34): void {
   const area = ((w + PX) * (hh + PX)) / (PX * PX);
   c.fillStyle = FIELD_INK;
   c.fillRect(0, 0, w, hh);
@@ -119,13 +101,14 @@ function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, h
     hh,
     Math.round(area * lines),
     LINE_INKS,
-    () => PX * (0.03 + rnd() * 0.03),
+    // thin, so through the film (where they vanish) they nick the letters rather than cut them away
+    () => PX * (0.01 + rnd() * 0.01),
     () => PX * (0.4 + rnd() * 1.2),
   );
 }
 
 /** One word (with the space after it) hidden in noise, as a canvas `PX` pixels to the em. */
-export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenWord(word: string, seed = fnv1a(word), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;
@@ -136,7 +119,7 @@ export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK):
   canvas.width = w;
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
-  const rnd = seeded(seed);
+  const rnd = mulberry32(seed);
   camouflage(
     c,
     rnd,
@@ -157,7 +140,7 @@ export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK):
  * (one picture for the screen, one in a stronger cyan for printing). */
 export function redCode(text: string): HTMLElement {
   const words = text.split(/\s+/).filter(Boolean);
-  const base = hashText(text);
+  const base = fnv1a(text);
   const picture = (word: string, seed: number, ink: string, cls: string) => {
     const cv = hiddenWord(word, seed, ink);
     const img = h('img', { class: `rf-word ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });
@@ -198,7 +181,7 @@ const PEN = CELL * 0.2;
 const LABEL_FONT = `700 ${CELL * 0.7}px Arial, Helvetica, sans-serif`;
 
 /** What each character of a sketch's rows draws in its cell. */
-export const SKETCH_GLYPHS: Record<string, string> = {
+const SKETCH_GLYPHS: Record<string, string> = {
   ' ': 'nothing',
   '.': 'a dot: a path or floor',
   '#': 'a filled block: wall, rock or hedge',
@@ -326,7 +309,7 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
 }
 
 /** A sketch hidden in noise, as a canvas `CELL` pixels to the cell. */
-export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenSketch(sketch: HintSketch, seed = fnv1a(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;
@@ -340,7 +323,7 @@ export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.joi
   canvas.width = w;
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
-  const rnd = seeded(seed);
+  const rnd = mulberry32(seed);
   camouflage(
     c,
     rnd,
@@ -365,7 +348,7 @@ export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.joi
 
 /** A drawing hidden among red lines, like an answer (a picture for the screen and one for printing). */
 export function redSketch(sketch: HintSketch): HTMLElement {
-  const seed = hashText(sketch.rows.join('/'));
+  const seed = fnv1a(sketch.rows.join('/'));
   const picture = (ink: string, cls: string) => {
     const cv = hiddenSketch(sketch, seed, ink);
     const img = h('img', { class: `rf-word rf-sketch ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });
@@ -387,7 +370,7 @@ export function redSketch(sketch: HintSketch): HTMLElement {
  * the red as white and anything a little darker as dark. (Where it isn't supported the film
  * just multiplies by red.)
  */
-export const RED_VIEW_ID = 'rf-red-view';
+const RED_VIEW_ID = 'rf-red-view';
 
 function ensureRedView(): void {
   if (document.getElementById(RED_VIEW_ID)) return;
@@ -409,7 +392,7 @@ function ensureRedView(): void {
 }
 
 /** How much the red film view stretches the red channel (1 = plain red film). */
-export const RED_VIEW_GAIN = 4;
+const RED_VIEW_GAIN = 4;
 
 /** Red through the on-screen film for a color, 0-255 (see ensureRedView). */
 export function throughRedView(color: string): number {

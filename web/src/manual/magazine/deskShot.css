@@ -1,0 +1,19 @@
+/* The 1994 desk's snapshot (deskShot.ts): a glossy print in a white border, a little askew. */
+.mag-art.art-desk {
+  --tilt: -1deg;
+  padding: 0.45em 0.45em 0.3em;
+  background: #fff;
+  border: 1px solid #b9b2a2;
+  box-shadow: 0.3em 0.35em 0 rgba(0, 0, 0, 0.35);
+}
+
+.mag-art.art-desk img.mag-desk-shot {
+  /* a touch wider than the shot, so its feature page has room at any scale */
+  aspect-ratio: 1600 / 900;
+  object-fit: cover;
+  background: #2d3447;
+}
+
+.mag-art.art-desk figcaption {
+  color: #18150f;
+}

@@ -1,6 +1,6 @@
 // The Ultimate Owner's Guide, chapters 6 to 8: sound sets, digitized voice and FM music.
 // Checked against PLAYGAME and SBMUSIC (code/GM), web/src/engine/touch.ts, web/src/audio
-// (cmfPlayer.ts, oplPresets.ts) and the games' kit (games/kit/songFx.ts, song/cutclips.py).
+// (cmfPlayer.ts, oplPresets.ts, sfxSynth.ts) and the games' kit (games/kit/songFx.ts, song/cutclips.py).
 import { opening, tip, type Chapter } from './chapter';
 
 export const SOUND_SETS: Chapter = {
@@ -43,7 +43,25 @@ export const SOUND_SETS: Chapter = {
   <p>Use that on purpose. Give the sounds a player makes all the time (steps, hops, a buzz, a
   tick) only a speaker tune, and save the Sound Blaster for the lines that matter. A Fly Named
   Carl keeps its flying and buzzing on the speaker so they never cut off a lyric, and the tin
-  heart that hides in our games ticks only on the speaker for the same reason.</p>
+  heart that hides in the Sandbox games ticks only on the speaker for the same reason.</p>
+  <h2>🎛 The sound effect maker</h2>
+  <p>In the sound set editor, <b>🎛 Make one with the sound effect maker…</b> builds a
+  <code>.VOC</code> for the slot you are on. Start from a preset (jump, coin, hurt, explosion,
+  power-up, laser and more; each press gives a new take), roll 🎲 Random, or 🧬 Mutate the one
+  you have. Then shape it with sliders: pitch, slide, a jump in pitch, vibrato, the attack, hold
+  and decay, repeats and tone. It saves an 8-bit, 11&nbsp;kHz <code>.VOC</code>, names it in the
+  slot, and can draw the same effect as the slot’s PC speaker steps, so players without a card
+  hear it too. The sliders’ settings stay with the project’s editor notes, so the sound set and
+  .VOC editors can reopen them later.</p>
+  <h2>A .VOC as a PC speaker tune</h2>
+  <p>The game plays a slot’s <code>.VOC</code> on a Sound Blaster and its 36 speaker steps on a
+  PC speaker, so the two should sound alike. In the sound set editor, a slot with a
+  <code>.VOC</code> has <b>▶ Preview as PC speaker</b>: it finds the strongest pitch in each
+  step of the recording, leaves the quiet parts silent (the speaker can only be on or off), and
+  plays the result, drawn as outlines over the steps. Noisy sounds, like a crash, hop around
+  their pitch. Choose <b>Fit</b>: the whole sound sped up to a quarter of a second, or just its
+  first quarter second as timed. If you like it, <b>✓ Use it for the PC speaker</b> puts it in
+  the slot; Undo takes it back.</p>
   ${tip('Pro tip:', 'A player can turn sound effects off with <kbd>F4</kbd> and music with <kbd>F3</kbd>. Make sure nothing in your game can only be understood by ear.')}`,
 };
 
@@ -55,7 +73,7 @@ export const VOICE: Chapter = {
   <h2>The clip’s size is the limit</h2>
   <p>A <code>.VOC</code> is 8-bit sound, one channel, at a rate you choose. PLAYGAME reads the
   whole file with a byte count that stops at 65,535, so on a real PC a bigger file plays wrong.
-  Our games keep every clip under 40,000 bytes to be safe:</p>
+  The Sandbox and Bard games keep every clip under 40,000 bytes to be safe:</p>
   <table>
     <tr><th>Rate</th><th>Sounds like</th><th>Longest clip in 40,000 bytes</th></tr>
     <tr><td>11,025 Hz</td><td>clear speech and singing</td><td>about 3.6 seconds</td></tr>
@@ -74,7 +92,7 @@ export const VOICE: Chapter = {
   microphone, and saves 8-bit sound at the clip’s own rate, the way the Sound Blaster plays it.</p>
   <h2>Story beats</h2>
   <p>Put voice where the story turns: an extra life, a gate that opens, a goal reached, a
-  boss’s first appearance. Our Bard of Bizarre games cut their clips from the song itself, so
+  boss’s first appearance. The Bard of Bizarre games cut their clips from the song itself, so
   the hook line plays when you earn a life and the big moments get their lyrics.</p>
   <h2>Timing</h2>
   <ul>
@@ -84,7 +102,7 @@ export const VOICE: Chapter = {
     <li>A clip on a sequence the player can start again before it ends cuts itself off; keep
     the sounds of repeatable moves short.</li>
   </ul>
-  <p>We check our games with a tool that plays the whole walkthrough, writes down every
+  <p>The Sandbox and Bard games are checked with a tool that plays the whole walkthrough, writes down every
   clip, and complains about any that is cut off before its end. Your own version of that is
   simple: play your game through with the sound up and listen to the end of every line.</p>`,
 };
@@ -118,7 +136,7 @@ export const MUSIC: Chapter = {
   bars can stand being heard often.</p>
   <h2>Patches</h2>
   <p>An instrument is 11 bytes: two operators and how they connect. The <i>modulator</i> bends
-  the <i>carrier</i>, the one you hear, and the more it bends the brighter the sound. Our
+  the <i>carrier</i>, the one you hear, and the more it bends the brighter the sound. The
   music editor’s instrument list writes them in a short shorthand: <code>x</code> the frequency
   multiple, <code>tl</code> the level (0 loudest, 63 silent), <code>ar dr sl rr</code> the attack,
   decay, sustain level and release, <code>hold</code> to hold while the key is down, <code>w</code>
@@ -132,6 +150,15 @@ export const MUSIC: Chapter = {
     <tr><td><b>Vocal “Aah”</b><br><small>a slow attack and vibrato on both operators: the games’ singing voice</small></td><td><code>x2 tl29 ar6 dr4 sl1 rr6 hold vib</code><br><code>x1 ar7 dr5 sl1 rr7 hold vib</code><br><code>fb6</code></td></tr>
     <tr><td><b>Deep Sub-Bass</b><br><small>a quiet modulator leaves a nearly pure, deep tone that holds</small></td><td><code>x1 tl44 ar15 dr4 sl6 rr6</code><br><code>x1 ar15 dr1 sl1 rr6 hold</code><br><code>fb0</code></td></tr>
   </table>
+  <h2>🎼 Draw a tune, let the band play</h2>
+  <p>Draw a melody on one track of the piano roll, then press <b>🎼 Accompany…</b>. It hears
+  the tune’s key and a chord for each bar (or half bar), and writes a bass line, chords and drums
+  on the other tracks in the style you pick: march, waltz, ballad, rock or chiptune. <b>🎲 Another
+  take</b> picks other patterns, sounds and, where the tune allows, other chords. It switches the
+  song to rhythm mode (six melody tracks and the drum kit) and replaces the other tracks; Undo
+  brings them back.</p>
+  <p><b>⧉ Copy tune…</b> copies one track’s tune into a new song, faster or slower and moved up
+  or down, with a new band if you like: a slow version for a sad scene, a fast one for a chase.</p>
   <h2>Tricks that push a CMF</h2>
   <p>The Bard of Bizarre songs use these, all made of plain events that PLAYGAME understands:</p>
   <ul>

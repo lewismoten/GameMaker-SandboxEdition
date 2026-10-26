@@ -1,8 +1,8 @@
-// Doc Leo's other clown work: magic tricks and parades. Presto, the Klown Klub's magician
+// Doc Leo's other clown work: magic tricks and parades. Presto, the Clown Club's magician
 // (two blocks tall, doves flutter out of his top hat), the doves themselves, and the
-// Klown Klub parade marching down Main Street (each marcher two monsters, top and bottom).
+// Clown Club parade marching down Main Street (each marcher two monsters, top and bottom).
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, klubArt, micro, sprite } from '../art/draw';
+import { CLEAR, micro, sprite } from '../art/draw';
 import { CK } from './klown';
 import { P } from '../art/pal';
 
@@ -67,7 +67,7 @@ const LEGS = [
   ['.....obbo.obbo......', '....obbo...obbo.....', '...obbo.....obbo....', '..oooooo...oooooo...', '.oRRRRRo...oRRRRRo..', '.oooooooo..oooooooo.'],
 ];
 
-/** The parade: a bass drummer, a banner carrier, a klown with a bunch of balloons. Two steps each. */
+/** The parade: a bass drummer, a banner carrier, a clown with a bunch of balloons. Two steps each. */
 export function marcher(kind: 'drum' | 'banner' | 'balloons', step: number): Pixels {
   const legs = LEGS[step % 2];
   if (kind === 'drum')
@@ -117,7 +117,7 @@ export function marcher(kind: 'drum' | 'banner' | 'balloons', step: number): Pix
       '.....ovvvvvvo.......',
       ...legs,
     ]);
-    micro(p, 3, 40 - 30 + 1, klubArt('KLUB'), P.c('red', 2));
+    micro(p, 3, 40 - 30 + 1, 'SHOW', P.c('red', 2));
     return p;
   }
   return tall([

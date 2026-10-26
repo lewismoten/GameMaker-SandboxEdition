@@ -10,7 +10,7 @@ export const LANE = 16;
 export const HEAD = RULER + LANE;
 /** Height of the velocity lane at the bottom. */
 export const VEL = 64;
-export const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 export const BLACK = [1, 3, 6, 8, 10];
 
 export const noteName = (k: number) => `${NAMES[k % 12]}${Math.floor(k / 12) - 1}`;

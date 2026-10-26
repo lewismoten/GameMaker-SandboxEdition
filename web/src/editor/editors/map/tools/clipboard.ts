@@ -1,7 +1,7 @@
 // The map clipboard: blocks copied or cut from one map, to paste into any map (kept for this browser tab).
 import type { Stamp } from './stamps';
 
-export type Clip = Pick<Stamp, 'w' | 'h' | 'cells'> & { bbl: string };
+type Clip = Pick<Stamp, 'w' | 'h' | 'cells'> & { bbl: string };
 
 const KEY = 'gm-map-clip';
 let clip: Clip | undefined;

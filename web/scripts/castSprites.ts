@@ -12,12 +12,21 @@ import { parsePalette } from '../src/formats/palette';
 import { chezPicture } from '../../games/kit/chez';
 import type { CastSprite } from '../src/cast/castSprite';
 import type { Pixels } from '../../games/kit/pixels';
-import { docLeo, FULL } from '../../games/teddy/src/sprites/people';
+import { docLeo, DRESSED } from '../../games/teddy/src/sprites/people';
 import { propSprite } from '../../games/teddy/src/sprites/klown';
 import { docLeoWalk } from './castLeoSide';
 import { NEEDLE_PAL, camelFront, needlePicture } from './castNeedle';
 import { EGG_PAL, eggShine, eggTurning } from './castEgg';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
+import { buildMonsterBlocks as goatMonsterBlocks } from '../../games/goat/src/sprites/sprites';
+import { buildPalette as goatPalette } from '../../games/goat/src/art/pal';
+import { buildMonsterBlocks as loafMonsterBlocks } from '../../games/loaf/src/sprites/sprites';
+import { buildPalette as loafPalette } from '../../games/loaf/src/art/pal';
+
+// monster blocks by the name each game's build gives them, so a rebuild that adds or moves
+// blocks can't put the wrong pictures on stage (as the child and the rooster once were)
+const goatBlock = goatMonsterBlocks(goatPalette('day')).n;
+const loafBlock = loafMonsterBlocks(loafPalette('plain')).n;
 
 /**
  * A hero from its .CHR: `seq` the sequence it walks on with (else the one that walks furthest
@@ -56,7 +65,7 @@ type BlockSource = {
 };
 type Source = ChrSource | BlockSource | DrawnSource | PaintSource | { chez: true } | { tinHeart: true };
 
-export const CAST_SPRITES: Record<string, Source> = {
+const CAST_SPRITES: Record<string, Source> = {
   teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal', seq: 5 },
   gwinn: { game: 'teddy2', chr: 'gwinn.chr', cbl: 'gwinn.cbl', pal: 'farm.pal', seq: 5 },
   // Doc Leo as Teddy's games draw him, in the whole costume: a waddle on, a wave hello
@@ -64,7 +73,7 @@ export const CAST_SPRITES: Record<string, Source> = {
     game: 'teddy',
     pal: 'klub.pal',
     walk: [0, 1, 2, 3].map((n) => docLeoWalk(n)),
-    front: [docLeo(FULL), docLeo(FULL, true)],
+    front: [docLeo(DRESSED), docLeo(DRESSED, true)],
     // hatless (Gwinn has it) until Teddy brings it back
     acts: { bareWalk: [0, 1, 2, 3].map((n) => docLeoWalk(n, false)), bareSide: [docLeoWalk(1, false)], side: [docLeoWalk(1)] },
     ms: 170,
@@ -104,8 +113,8 @@ export const CAST_SPRITES: Record<string, Source> = {
     file: 'loaf.mbl',
     pal: 'home.pal',
     frames: [
-      [[33], [35]],
-      [[34], [36]],
+      [[loafBlock('girlA0')], [loafBlock('girlB0')]],
+      [[loafBlock('girlA1')], [loafBlock('girlB1')]],
     ],
     ms: 180,
   },
@@ -134,7 +143,7 @@ export const CAST_SPRITES: Record<string, Source> = {
     game: 'goat',
     file: 'goat.mbl',
     pal: 'stable.pal',
-    frames: [[[40]], [[41]]],
+    frames: [[[goatBlock('rooster0')]], [[goatBlock('rooster1')]]],
     ms: 220,
     recolor: { ffdf9e: 'ffffff', e3c282: 'dde0e6', c6a269: 'aab0bb', ffef79: 'ffc24a', dfbe51: 'f0902c' },
   },
@@ -324,7 +333,7 @@ function raw(s: Source): Raw {
 }
 
 /** Trimmed to the rows any frame draws on, recolored to only the colors used (0 is see-through). */
-export function castSprite(s: Source): CastSprite {
+function castSprite(s: Source): CastSprite {
   const r = raw(s);
   const used = [...new Set(r.frames.flatMap((f) => [...f]))].filter((c) => c !== TRANSPARENT).sort((a, b) => a - b);
   const index = new Map(used.map((c, i) => [c, i + 1]));

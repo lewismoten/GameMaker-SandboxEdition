@@ -94,21 +94,41 @@ written in TypeScript to look and act the way they did, from the original source
   where the games can be read about and "downloaded" (time-compressed) into
   `C:\DOWNLOAD` and run from DOS, and The Sofa (a multi-line Major BBS with a live
   teleconference). The modem rings and handshakes, and PKUNZIP runs as fast as the PC.
+  Click the modem's speed to pick the line speed, 300 baud to Unlimited
+  (`retro/bbs/lineSpeed.ts`); text and downloads arrive at it. The Sandbox BBS has a door
+  game, TIC-TAC-TOE BY MODEM, played a move a call against another caller. In TDD mode
+  TERMINAL calls Mrs. Novak next door on her TTY, a typed conversation in Baudot
+  (`retro/bbs/tdd.ts`, `ttyTalk.ts`).
+- **The DOS tools** `HELP` lists include HEXEDIT (`retro/hexedit`, a hex editor that names
+  each field of Game-Maker's files), BACKUP (saved games), ACHIEVE (the achievements),
+  OFFLINE (a copy of the site for offline play) and VPIC (`retro/view`, for the pictures
+  downloaded from the BBSes).
 - **The case** has a seven-segment MHz display, a 3.5" floppy drive (the drive offers
   Play, Design or today's web for the disk in it) and a CD-ROM drive whose tray slides
   out; the PC boots through HIMEM, EMM386, the CD-ROM driver and MSCDEX. A 101-key
   keyboard presses its keys as you type, and an external modem on top of the case
   dials the BBS when clicked, its lights following the call.
-- **The window** shows snow falling on the neighbors' houses.
+- **The window** shows snow falling on the neighbors' houses, by the room's clock; things
+  go by outside now and then (`desk/props/outside`). After dark the room dims, so the
+  screen (its glow lights the bezel, `desk/pc/screenGlow.ts`), the lamp, the LEDs and the
+  black-light poster stand out, and the switch beside the wall phone turns on the overhead light
+  (`desk/props/roomLight.ts`). Under black light, some felt eggs show hidden patterns
+  (`eggs/eggUv.ts`).
 - **The wall phone** (`desk/room/phone`) gets a dial tone, dials the numbers on Mom's
   notes, the BBSes (a modem screeches), the weather and movie lines and more; voices use
   the browser's speech synthesis, with captions.
 - **Felt eggs** (`src/eggs`): each Sandbox game hides an egg the hero can carry, so it
   ends up in a saved game; a shadow box on the shelf shows the ones found. Finding them all
-  unlocks secret games, which the site never lists or names until then.
+  unlocks secret games, which the site never lists or names until then. Each Sandbox and
+  Bard of Bizarre game also hides a tin heart (`src/tinHearts`); finding every one brings
+  a trophy to the shelf.
 - **The shelf** holds the boxes of the original games in `../games`: click one to bring
   it forward and turn it (drag, scroll to zoom, shift-drag to pan), read its manual or
-  put its disk in drive A:.
+  put its disk in drive A:. Each box holds its printables (`src/manual/printables`): a
+  manual, the fold-out World Map of every scene and the Level Maps of every level (which
+  never show a tin heart or an egg). The Game-Maker box also holds The Ultimate Owner's
+  Guide (`src/manual/ultimate`), an advanced booklet whose last chapters cover tricks from
+  the Sandbox games and the editor's Level check.
 - **The poster** on the wall, Moten Snow-to-Software Operations, is an homage to
   shoveling snow in the winter of 1992 to buy Game-Maker.
 - **The Owner's Guide** is a manual for the desk, typeset like a 1994 printed manual,
@@ -133,6 +153,7 @@ a word, the Owner's Guide and the registration card open beside the screen as on
 | `dos.html?game=<id>` | Puts that game's disk in drive A: and opens it in Game-Maker, to play or change (the ids `play.html?game=<id>` uses). An unknown id, or a secret game not yet found in this browser, gets plain Game-Maker. |
 | `dos.html?run=dos` | Stays at the `C:\>` prompt. |
 | `dos.html?run=bbs` | Calls the BBS. |
+| `dos.html?project=<id>&run=play\|design` | Plays or opens a game kept in this browser (where a game sent by another site opens). |
 | `#/dos`, `#/dos/<id>` | On the site's own page: lead to `dos.html` and `dos.html?game=<id>`. |
 
 The PC's code takes nothing from the desk: what the page around it supplies is
@@ -160,14 +181,17 @@ shareware, with box art, a printed label and a manual from `about.json`/`manual.
 cd web
 npm install
 npm run dev        # http://localhost:5173
-npm test           # every *.test.ts in test/ and src/ (vitest), about 25 s
+npm test           # every *.test.ts in test/ and src/ (vitest), a minute or two
 npm run typecheck  # tsc --noEmit (strict)
 npm run format     # Prettier on web/'s code, games/*.ts and code/README.md (config at the repo root)
 npm run format:check  # the same, only checking (CI runs it)
 npm run lint       # ESLint 9 with typescript-eslint's type-aware rules (web/eslint.config.js)
 npm run lint:fix   # lint, fixing what it can
+npm run check:games  # every game's checks (bot, clips, text fit, hidden things, Level check), as a table
 npm run build      # typecheck, then the static site in web/dist
 npm run preview    # serve the build (the service worker and the web app download need it)
+npm run dosbox     # ../dosbox/ (git-ignored): a C: drive with Game-Maker and the new games, for DOSBox
+npm run dosbox:open  # start DOSBox on it (macOS)
 npx vitest run test/formats.test.ts   # one test file
 ```
 
@@ -215,30 +239,36 @@ detail. In short:
 | `src/macHelp`, `src/winHelp`, `src/linuxHelp` | The `#/mac`, `#/windows` and `#/linux` pages: opening a downloaded game the first time, and removing it. |
 | `src/cast` | The Cast page (`#/cast`): the characters who turn up in more than one new game. |
 | `src/saves` | The home page's "Saves & scores" panel: a game's saved games and high scores. |
+| `src/credits` | The Credits page (`#/credits`): packages, third-party pieces, the original makers, the games' authors, AI tools and people. |
+| `src/achievements`, `src/tinHearts`, `src/offline` | Achievements (the page and ACHIEVE.EXE); the tin heart hunt and its trophy; the offline copy of the whole site. |
+| `src/linkIn` | Opening a game another site links to or sends by postMessage ([`../docs/embed.md`](../docs/embed.md)). |
+| `src/hostedPlayer` | The web player (`web-player.html`, [`../docs/web-player.md`](../docs/web-player.md)): one file that plays the games listed in a `games.json` beside it, keeping their saves in the browser. |
 | `src/media` | Demo playback and previews, the demo sound choice, and saving video, animated GIFs and WAV. |
 | `src/walkthrough` | Playing a Sandbox game's walkthrough on the engine, and rendering it to MP4. |
 | `src/eggs` | The felt eggs: which are found (from saved games), their shadow box and viewer, and `EGG.EXE`. |
-| `src/editor` | Today's web interface: `shell/` (home page, workspace), `core/` (DOM helpers, the open project, undo), `widgets/` (pickers, thumbnails, previews), `editors/<kind>/` (one folder per file type, registered in `editors/registry.ts`), `tools/` (making pictures, songs and sounds), `keymap/` (the ⌨ Keys map). |
-| `src/desk` | The 1994 desk: `desk.ts`, and `pc/`, `boxes/`, `disks/`, `mug/`, `room/` for the things on it. |
+| `src/editor` | Today's web interface: `shell/` (home page, workspace), `core/` (DOM helpers, the open project, undo), `widgets/` (pickers, thumbnails, previews, the level check's badges and checklist), `check/` (the level check and walkthrough bot, no DOM), `editors/<kind>/` (one folder per file type, registered in `editors/registry.ts`), `tools/` (making pictures, songs and sounds), `keymap/` (the ⌨ Keys map). |
+| `src/desk` | The 1994 desk: `desk.ts`, and `pc/`, `boxes/`, `disks/`, `mug/`, `room/` for the things on it, `props/` for the room's pressable little things and its light. |
 | `src/dosPage` | DOS Game-Maker (`dos.html`): the PC on its own page, its disk menu and on-screen keys. |
-| `src/retro` | The PC, shared by the desk and `dos.html` (it imports nothing from `src/desk`): `computer.ts` (with `computer/`), `dos/` (COMMAND.COM, files, disks), `text/` (text mode and Game-Maker's text UI), `bbs/` (terminal and BBSes), `gm.ts` (GM.EXE's menus). |
+| `src/retro` | The PC, shared by the desk and `dos.html` (it imports nothing from `src/desk`): `computer.ts` (with `computer/`), `dos/` (COMMAND.COM, files, disks), `text/` (text mode and Game-Maker's text UI), `bbs/` (terminal, BBSes, line speed, TTY, the door game), `hexedit/`, `view/`, `hacks/` (the BBS's utilities), `gm.ts` (GM.EXE's menus). |
 | `src/vga` | The eight designers ported from their C source, one file per `.EXE` (a big one's parts in a folder of the same name), and `shared/` (VGA screen, block routines, Game-Maker's look). |
-| `src/manual` | The Owner's Guide, the web Guide, and the original games' manuals and box contents. |
+| `src/manual` | The Owner's Guide, the web Guide, the original games' manuals and box contents (with the World Map and Level Maps), The Ultimate Owner's Guide (`ultimate/`), and TURBO BUTTON, a mid-90s game magazine (`magazine/`). |
 | `src/seo` | Page titles, descriptions and JSON-LD. |
-| `src/*.ts` | Entries (`main.ts`, `play.ts`), the Desk | DOS | Web switch (`viewSwitch.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`. |
-| `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use). |
-| `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (a few `*.test.ts` sit beside their source in `src/`). |
+| `src/*.ts` | Entries (`main.ts`, `play.ts`), the Desk \| DOS \| Web switch (`viewSwitch.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`, `pageToc.ts`, `keepTogether.ts` (THE CHEZ on one line), `seededRandom.ts`, and `firstLoad.test.ts` with `importWalk.ts` (what each page must not load up front). |
+| `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use), `credits.ts` (the Credits page's package list), `levelSecrets.ts` and `levelViews.ts` (what the Level Maps hide and show), `castHidden.ts` (where the cast's Easter eggs and tin hearts are), `gameMakerArchive.ts` (the magazine's Shareware Shelf), `bbsGifs.ts` (the BBS's pictures) and `dosbox.ts` (`npm run dosbox`). |
+| `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (many newer `*.test.ts` sit beside their source in `src/`). |
 
 ## How the site works
 
 - **Addresses** (`src/urlState.ts`): both interfaces keep their place in the hash, so a
   reload or a shared link comes back to it: `#/` (home, `?tab=…`), `#/game/cd:nebula` (a game
   on the home page), `#/p/<project>/<file>?scene=3` (a file open in the workspace, with what is
-  selected in it), `#/help/<section>` (the web Guide), `#/cast`, `#/mac`, `#/windows`,
-  `#/linux` and `#/desk` (`?disk=cd:<id>` puts a disk in drive A:). Small changes replace the
+  selected in it), `#/help/<section>` (the web Guide), `#/cast`, `#/credits`,
+  `#/achievements`, `#/mac`, `#/windows`, `#/linux` and `#/desk` (`?disk=cd:<id>` puts a
+  disk in drive A:). Small changes replace the
   history entry; opening a page or file pushes one. `play.html?game=<id>` (and each game's
   own `play-<id>.html`) plays one game full window; `dos.html?game=<id>` opens it in DOS
-  Game-Maker (see above).
+  Game-Maker (see above). `?open=<url>` and `?receive` open a game another site links to or
+  sends (`src/linkIn`, [`../docs/embed.md`](../docs/embed.md)).
 - **Loading** (`src/main.ts`): the desk and today's web are separate downloads, and the
   editors load only when a game is opened. Lists come from `games/catalog.json`; a game's
   manual and notice from `games/details/<id>.json` when it is opened. Tiles and boxes show
@@ -257,12 +287,22 @@ detail. In short:
   one recorded for this edition (`media/extraDemos.ts`, kept apart from their files), and
   any other game gets an "attract mode" made up from its hero's keys.
 - **Walkthroughs** (`src/walkthrough`): each Sandbox game's `walkthrough.json` plays the
-  whole game on the real engine, deterministically, with chapters to jump to; "Download
+  whole game on the real engine, deterministically, with chapters and a seek bar to jump
+  with, and made-up scores in the empty Top Ten at the end; "Download
   MP4" renders it faster than real time at 320×200, 60 fps, with H.264 video and AAC (or
   Opus) sound rendered offline.
 - **Editors** (`src/editor/editors/<kind>`): one per file type, each with Undo and Redo
   (Ctrl+Z / Ctrl+Y; `editor/core/history.ts`, or `editor/core/fileUndo.ts` for editors that
-  rewrite whole files). Work is saved to IndexedDB as you go.
+  rewrite whole files). Work is saved to IndexedDB as you go. Each editor loads the first
+  time a file of its kind opens (`editors/registry.ts`), and keeps its columns inside the
+  window (`editor/core/fitPane.ts`).
+- **Level check** (`src/editor/check`): the map editor's 🩺 Level check plays each scene on
+  the engine in a Web Worker, draws a heat map of where the hero got, marks where a player
+  can get stuck and lists findings with one-click fixes. The same checks give the block,
+  monster and sound editors their badges and tick the Before You Upload list; the
+  Integrator's 🤖 Make a walkthrough uses its bot (`check/walk`).
+- **Achievements** (`src/achievements`): what a visitor has done, kept with the saves, shown
+  on `#/achievements` and by the desk's ACHIEVE.EXE.
 - **Tests** (`test/`, and a few beside their source): one Vitest file per subject, each starting with a line saying what
   it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
 

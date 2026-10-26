@@ -3,6 +3,7 @@
 // the box's colors, what kind of manual it is, one framed screenshot (a different one from the
 // box front) with the hero standing on its frame, and the small print. Sized in cqw, so the
 // same element fits the booklet page and the little manual beside the box in the box viewer.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './manualCover.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
@@ -10,7 +11,7 @@ import { mapShot } from '../../gfx/gameShots';
 import { portrait, sandboxLogo, splitTitle } from './kit';
 
 /** What the manual is called on its cover: "Courier Manual" from "Maximus - Courier Manual". */
-export function manualKind(entry: CatalogEntry): string {
+function manualKind(entry: CatalogEntry): string {
   const t = entry.original?.manual?.title ?? '';
   const i = t.lastIndexOf(' - ');
   return i >= 0 ? t.slice(i + 3).trim() : 'Player’s Manual';
@@ -39,11 +40,34 @@ function coverArt(entry: CatalogEntry): Promise<{ shot?: string; hero?: string }
   return hit;
 }
 
-/** The title's size in cqw: as big as fits, its longest word on one line (Arial Black is about 0.74 em a letter). */
-export function titleSize(title: string): number {
+let ruler: CanvasRenderingContext2D | null | undefined;
+
+/** How many lines `title` wraps to at `cqw` across the 86 cqw between the cover's margins, measured in its font. */
+function titleLines(title: string, cqw: number): number {
+  ruler ??= document.createElement('canvas').getContext('2d');
+  if (!ruler) return 1;
+  ruler.font = "italic 900 100px 'Arial Black', Impact, sans-serif";
+  const width = (s: string) => ((ruler!.measureText(s).width - 2 * s.length) * cqw) / 100; // letter-spacing -0.02em
+  let lines = 1;
+  let line = '';
+  for (const w of title.split(/\s+/).filter(Boolean)) {
+    const next = line ? `${line} ${w}` : w;
+    if (line && width(next) > 86) (lines++, (line = w));
+    else line = next;
+  }
+  return lines;
+}
+
+/**
+ * The title's size in cqw: as big as fits, its longest word on one line, and no taller than
+ * 36 cqw in all, so the screenshot and the small print below it stay on the cover.
+ */
+function titleSize(title: string): number {
   const longest = Math.max(...title.split(/\s+/).map((w) => w.length), 1);
   const lines = title.length > 14 ? 0.8 : 1;
-  return Math.round(Math.min(15 * lines, 84 / (longest * 0.74)) * 10) / 10;
+  let size = Math.round(Math.min(15 * lines, 84 / (longest * 0.74)) * 10) / 10;
+  while (size > 6 && titleLines(title, size) * size * 0.95 > 36) size = Math.round((size - 0.5) * 10) / 10;
+  return size;
 }
 
 /** The cover; its pictures fill in when ready (`ready` resolves then). */

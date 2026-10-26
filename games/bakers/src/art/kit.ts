@@ -124,7 +124,7 @@ export function chicken(p: Pixels, x: number, y: number, squeezed: boolean): voi
 
 // ------------------------------------------------------------------ the household
 
-/** Teddy the corgi: red-gold, white blaze and chest, ears up (the right one taller). */
+/** Teddy the corgi: red-gold, white blaze and chest, ears up, a matched pair. */
 export function corgi(step = 0, flip = false): Pixels {
   const p = blank();
   const ink = O();
@@ -134,7 +134,7 @@ export function corgi(step = 0, flip = false): Pixels {
   p.rect(4, 18, 13, 2, c('dark', 0));
   p.rect(3, 10, 13, 6, ink).rect(4, 11, 11, 4, fur).rect(4, 11, 11, 1, lite).rect(9, 13, 5, 2, white);
   p.rect(13, 6, 6, 7, ink).rect(14, 7, 4, 5, fur).rect(16, 9, 3, 3, white).set(18, 10, ink).set(15, 8, ink);
-  p.rect(13, 2, 2, 5, ink).rect(16, 1, 2, 6, ink).set(13, 3, c('pink', 2)).set(16, 3, c('pink', 2));
+  p.rect(13, 2, 2, 5, ink).rect(16, 2, 2, 5, ink).set(13, 3, c('pink', 2)).set(16, 3, c('pink', 2));
   const a = step ? 1 : 0;
   p.rect(5 + a, 16, 2, 3, fur)
     .rect(12 - a, 16, 2, 3, fur)
@@ -216,6 +216,20 @@ export function redcoat(step: number, retreat = false): Pixels {
   p.rect(4, 18, 11, 2, c('brown', 1));
   if (!retreat) p.rect(14, 2, 1, 13, c('brown', 0)).set(14, 1, c('grey', 4));
   else p.rect(1, 5, 1, 10, c('paper', 4)).rect(2, 5, 4, 3, c('paper', 4)); // a white flag
+  return outline(p, ink);
+}
+
+/** The toy Redcoat side on, marching to the right: bearskin, profile, musket at the shoulder. */
+export function redcoatSide(step: number): Pixels {
+  const p = blank();
+  const ink = O();
+  p.rect(7, 0, 6, 6, ink).rect(8, 1, 4, 5, c('ink', 1));
+  p.rect(8, 6, 4, 3, c('skin', 2)).set(12, 7, c('skin', 2)).set(10, 7, ink);
+  p.rect(7, 9, 6, 6, ink).rect(8, 9, 4, 5, c('redcoat', 2)).line(8, 9, 11, 14, c('paper', 4));
+  p.rect(6, 2, 1, 13, c('brown', 0)).set(6, 1, c('grey', 4)).set(7, 11, c('skin', 2));
+  if (step) p.rect(8, 15, 2, 3, c('paper', 3)).rect(10, 15, 2, 3, c('paper', 3));
+  else p.rect(7, 15, 2, 3, c('paper', 3)).rect(11, 15, 2, 3, c('paper', 3));
+  p.rect(4, 18, 11, 2, c('brown', 1));
   return outline(p, ink);
 }
 
@@ -368,7 +382,7 @@ export function spoon(): Pixels {
   return outline(p, O());
 }
 
-/** The kazoo (carried, it plays K): Doc Leo's instrument of choice. */
+/** The kazoo (carried, it plays Z): Doc Leo's instrument of choice. */
 export function kazoo(): Pixels {
   const p = blank();
   p.rect(2, 14, 16, 2, c('dark', 0));
@@ -492,7 +506,7 @@ export function ingredient(n: number, frame = 0): Pixels {
       q.rect(4, 6, 12, 9, c('paper', 4)).rect(3, 6, 2, 9, c('paper', 2)).rect(15, 6, 2, 9, c('paper', 2));
       for (let y = 8; y < 14; y += 2) q.rect(6, y, 8, 1, c('sky', 3));
       q.disc(10, 13, 3, c('red', 2)).disc(10, 13, 2, c('red', 3));
-      micro(q, 7, 11, 'XIII', c('red', 4));
+      micro(q, 3, 11, 'XIII', c('red', 4));
       break;
   }
   return over(p, outline(q, ink));

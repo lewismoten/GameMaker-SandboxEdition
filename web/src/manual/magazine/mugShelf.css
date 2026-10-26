@@ -1,0 +1,54 @@
+/* The mug ad's row of mugs (mugShelf.ts): glazed white mugs with a handle at the right, each
+   picture printed round the front, standing on a shelf edge. */
+.mag-mugs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.6em, 1fr));
+  gap: 1em 0.5em;
+  padding: 0.8em 0.6em 0.6em 0.2em;
+  border-bottom: 0.5em solid #8a5a2b;
+  box-shadow: 0 0.35em 0 #5e3b1a;
+}
+
+.mag-mug {
+  position: relative;
+  display: block;
+  margin-right: 0.75em;
+  isolation: isolate;
+}
+
+/* the cylinder: shaded at both edges, a lip at the top and a foot at the bottom */
+.mag-mug-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1.05;
+  padding: 0.5em 0.3em 0.3em;
+  border-radius: 0.35em 0.35em 0.7em 0.7em / 0.35em 0.35em 0.9em 0.9em;
+  background: linear-gradient(90deg, #c9c6bf, #f7f6f2 22%, #fff 45%, #f1efe9 70%, #bdb9b1);
+  box-shadow:
+    inset 0 0.35em 0 -0.15em #e4e1da,
+    inset 0 -0.3em 0.2em -0.1em rgba(0, 0, 0, 0.12),
+    0.25em 0.3em 0.4em rgba(0, 0, 0, 0.3);
+}
+
+.mag-mug-body img {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 2em;
+}
+
+/* the handle: a ring at the right, half hidden behind the body */
+.mag-mug-handle {
+  position: absolute;
+  top: 22%;
+  right: -1.05em;
+  z-index: -1;
+  width: 1.6em;
+  height: 48%;
+  border: 0.42em solid #e9e7e1;
+  border-left: 0;
+  border-radius: 0 50% 50% 0;
+  box-shadow: 0.15em 0.15em 0.2em rgba(0, 0, 0, 0.25);
+}

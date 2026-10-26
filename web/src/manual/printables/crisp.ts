@@ -11,7 +11,7 @@
 //     instead of vanishing.
 // Clicking (or Enter on) a shot shows it enlarged at a whole scale.
 
-export interface CrispPlan {
+interface CrispPlan {
   /** Device pixels the drawn picture covers. */
   devW: number;
   devH: number;
@@ -155,10 +155,10 @@ export function zoomOpen(): boolean {
   return !!document.querySelector('.gmb-zoom');
 }
 
-/** Makes every figure's picture under `root` crisp, and enlargeable. */
+/** Makes every figure's picture under `root` crisp, and enlargeable (but not a swatch marked data-no-zoom). */
 export function crispShots(root: ParentNode): void {
   for (const img of root.querySelectorAll<HTMLImageElement>('figure img')) {
-    if (!img.dataset.crispSrc) {
+    if (!img.dataset.crispSrc && !('noZoom' in img.dataset)) {
       img.tabIndex = 0;
       img.setAttribute('role', 'button');
       img.setAttribute('aria-label', `Enlarge: ${img.alt}`);

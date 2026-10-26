@@ -2,6 +2,7 @@
 // a small picture of itself, opening the box's contents viewer (manual/printables/viewer.ts) at
 // that piece. The Game-Maker box (gmBox.ts) and every Sandbox game's box (gameBoxContents.ts)
 // share it. On a phone the list folds away behind its "Everything in the box" button.
+import '../../manual/printables/paper.css'; // the pieces' pictures are printed sheets
 import './boxList.css';
 import { h } from '../../editor/core/ui';
 import type { BoxItem } from '../../manual/printables/viewer';
@@ -29,7 +30,7 @@ export function showInBox(open: () => void, id: string): void {
   setTimeout(() => watch.disconnect(), 30_000);
 }
 
-export interface BoxListOptions {
+interface BoxListOptions {
   /** The landmark's name, e.g. "What’s in the Game-Maker box". */
   label: string;
   /** The pieces to list (the ones laid out beside the box already left out). */

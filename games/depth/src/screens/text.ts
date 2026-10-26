@@ -100,7 +100,7 @@ const CREDITS_TEXT = page(
     'Starring Ray as himself.',
     '',
     'Teddy, the corgi with the',
-    'one tall ear, as Teddy.',
+    'big grin, as Teddy.',
     'Gwinn, sitting pretty, as',
     'Gwinn. THE CHEZ, a 1976 1/2',
     'CitiCar, plugged in at the',
@@ -149,10 +149,10 @@ export const EGG_TEXT = [
     'Left rendering all night at',
     '320x200: a perfect kitchen,',
     'a pot on every burner, a',
-    'carton of twelve eggs. In the',
-    'chrome kettle, thirteen',
-    'reflections. Nobody can find',
-    'the thirteenth.',
+    'carton of thirteen eggs. In',
+    'the chrome kettle, one',
+    'reflection too many. Nobody',
+    'can find its egg.',
   ]),
 ].join('\n');
 

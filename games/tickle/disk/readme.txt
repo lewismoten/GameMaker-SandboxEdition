@@ -38,7 +38,7 @@ KEYS
   Q E            hop sideways
   Z or Down      PIN
   X or Space     TICKLE
-  L              laugh
+  C              laugh
 
 FILES IN THIS ZIP
   TICKLE.GAM   the game

@@ -41,7 +41,7 @@ KEYS
   up-right
   Number pad 7 9 1 3: diagonals
   Space: pick up evidence
-  L: look through the lens
+  Z: look through the lens
   F1 help, F2 evidence, F3
   music, F4 sound, F5 save, F6
   load, Esc quit

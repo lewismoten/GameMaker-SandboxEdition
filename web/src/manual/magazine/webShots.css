@@ -1,0 +1,15 @@
+/* Screenshots of today's web (webShots.ts): a browser window's picture, drawn smooth, on the
+   magazine's monitor-gray bevel. */
+.mag-art[class*='art-web-'] {
+  --tilt: 0deg;
+}
+
+.mag-art img.mag-web-shot {
+  aspect-ratio: 1280 / 800;
+  padding: 0.25em;
+  box-sizing: border-box;
+  background: #c3c3c3;
+  border: 0.18em solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
+}

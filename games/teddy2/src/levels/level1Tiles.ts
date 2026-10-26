@@ -247,7 +247,7 @@ export function houseTiles(): Tiles {
       blob(p, 10, 15, 10, 5, r('purple'), 0, 3);
       blob(p, 10, 15, 6, 2, r('purple'), 0, 1);
       p.rect(7, 13, 1, 1, c('pink', 3)).rect(12, 14, 1, 1, c('yellow', 3)).rect(4, 12, 1, 1, c('blue', 3));
-      micro(p, 2, 2, 'GWINN', c('purple', 1));
+      micro(p, 1, 2, 'GWINN', c('purple', 1));
       return p;
     })(),
   );
@@ -257,7 +257,7 @@ export function houseTiles(): Tiles {
       const p = copy(L());
       blob(p, 10, 16, 8, 4, r('blue'), 0, 3);
       blob(p, 10, 16, 5, 2, r('blue'), 1, 2);
-      micro(p, 2, 4, 'TEDDY', c('blue', 1));
+      micro(p, 1, 4, 'TEDDY', c('blue', 1));
       return p;
     })(),
   );
@@ -285,7 +285,7 @@ export function houseTiles(): Tiles {
       return p;
     })(),
   );
-  // A framed photo of the Klown Klub over the couch.
+  // A framed photo of the Clown Club over the couch.
   t.air(
     'klubPhoto',
     (() => {
@@ -382,6 +382,17 @@ export function houseTiles(): Tiles {
       p.rect(3, 5, 3, 15, c('wood', 1)).rect(54, 5, 3, 15, c('wood', 1));
     },
     () => 'ledge',
+  );
+  // Doc Leo's step stool by the fridge (the way back up it from the table's side).
+  t.ledge(
+    'stool',
+    (() => {
+      const p = copy(K());
+      p.rect(2, 2, 16, 3, c('red', 2)).rect(2, 2, 16, 1, c('red', 3)).rect(2, 5, 16, 1, c('red', 0));
+      p.rect(3, 6, 2, 14, c('wood', 1)).rect(15, 6, 2, 14, c('wood', 1));
+      p.rect(5, 12, 10, 2, c('wood', 2)).rect(5, 14, 10, 1, c('wood', 0));
+      return p;
+    })(),
   );
 
   // The laundry room: the washer shakes (two pictures taking turns), the dryer, the chute.
@@ -560,7 +571,7 @@ export function houseTiles(): Tiles {
     (() => {
       const p = new Pixels(20, 20, c('wood', 3));
       p.frame(0, 0, 20, 20, c('wood', 1)).rect(0, 8, 20, 3, c('yellow', 1));
-      micro(p, 3, 13, 'KLUB', c('wood', 0));
+      micro(p, 3, 13, 'WIGS', c('wood', 0));
       return p;
     })(),
   );

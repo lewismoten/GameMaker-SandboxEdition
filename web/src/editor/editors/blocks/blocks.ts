@@ -4,11 +4,10 @@ import { colorChoice } from '../../widgets/colorChoice';
 import './blocks.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { fileField } from '../../widgets/filePicker';
 import { TEXTURES, paintTexture } from '../../tools/textures';
 import { h, clear, numberField, checkField, selectField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock, lut } from '../../core/draw';
-import type { Project } from '../../core/project';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import {
   BLEN,
   BLOCK_COUNTS,
@@ -23,7 +22,7 @@ import {
   type Block,
   type BlockKind,
 } from '../../../formats/blocks';
-import { paletteCss, parsePalette, type Palette } from '../../../formats/palette';
+import { paletteCss } from '../../../formats/palette';
 import { LASTMON } from '../../../formats/monster';
 import { flipH, flipV, rotateCW, rotateCCW, shiftWrap, mirrorPoints, type Mirror } from './pixelOps';
 import { shade } from '../palette/ramps';
@@ -33,6 +32,10 @@ import { applyRecolor, recolorDialog } from './recolorDialog';
 import { edgeSetDialog } from './edgeSetDialog';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { fitToPane } from '../../core/fitPane';
+import { groupsPanel } from './groupsPanel';
+import { walkPathPanel } from './walkPathPanel';
+import { readWalkPaths } from '../../check/walk/walkPaths';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -56,30 +59,6 @@ interface PainterExtras {
   mirror?: Mirror;
 }
 
-export function paletteChooser(project: Project, file: string, onChange: (p: Palette) => void): { el: HTMLElement; palette: Palette } {
-  const found = project.paletteFor(file);
-  let choice = '';
-  const state = { palette: found.palette };
-  const el = fileField(
-    project,
-    'Show with palette',
-    ['pal'],
-    () => choice,
-    (v) => {
-      choice = v;
-      state.palette = v ? parsePalette(project.files.get(v)!) : project.paletteFor(file).palette;
-      onChange(state.palette);
-    },
-    { noneLabel: ['Scene palette', `the palette of the scene that uses it (${found.source})`] },
-  );
-  return {
-    el,
-    get palette() {
-      return state.palette;
-    },
-  };
-}
-
 registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const kind = file.split('.').pop() as BlockKind;
   const raw = project.files.get(file)!;
@@ -90,6 +69,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const urlBlock = view.num('block');
   let current = urlBlock !== undefined && urlBlock >= 0 && urlBlock < blocks.length ? urlBlock : 0;
   let color = sprites ? 0 : 1;
+  /** The blocks picked in the list for a group (Shift- or Ctrl-click), in order; `anchor` starts a Shift run. */
+  let picked: number[] = [current];
+  let anchor = current;
   let tool: Tool = 'draw';
   // each block keeps its own undo and redo (its pixels), so switching blocks never undoes another's paint
   const undo: Uint8Array[][] = blocks.map(() => []);
@@ -108,11 +90,71 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const pal = () => chooser.palette;
   const insight = blockInsight({ project, file, blocks, current: () => current, pal, sprites, open: (f) => openInEditor(project, f) });
   // level check notes on this block: hazard art smaller than its cell, a hard-to-see monster picture…
+  const groups = groupsPanel({
+    project,
+    file,
+    kind,
+    blocks,
+    sprites,
+    pal,
+    current: () => current,
+    select: (i) => {
+      picked = [i];
+      anchor = i;
+      select(i);
+    },
+    picked: () => picked,
+    color: () => color,
+    setColor: (c) => {
+      color = c;
+      renderSwatches();
+    },
+    apply: (parts) => {
+      for (const [i, px] of parts) {
+        undo[i].push(blocks[i].pixels.slice());
+        if (undo[i].length > 50) undo[i].shift();
+        redo[i].length = 0;
+        blocks[i].pixels.set(px);
+        if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
+      }
+      changed();
+      insight.refresh(true);
+    },
+  });
+  // background blocks: which are walking paths the walkthrough bot keeps to (companion file)
+  const walkPaths = sprites ? undefined : walkPathPanel({ project, file, picked: () => picked, changed: () => markPicker() });
   const badges = checkBadges(project, file, (f) => f.where.block?.n === current && normalize(f.where.block.file) === normalize(file));
 
   // ---- block picker -------------------------------------------------------
-  const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks');
+  // Shift-click picks a run of blocks, Ctrl/Cmd-click one more (for a group); a click picks one
+  const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks', { multiselect: true });
   const pickerCanvases: HTMLCanvasElement[] = [];
+  function pick(i: number, e: MouseEvent): void {
+    if (e.shiftKey) {
+      const [a, b] = anchor <= i ? [anchor, i] : [i, anchor];
+      picked = Array.from({ length: b - a + 1 }, (_, k) => a + k);
+      if (anchor > i) picked.reverse();
+    } else if (e.ctrlKey || e.metaKey) {
+      picked = picked.includes(i) ? picked.filter((p) => p !== i) : [...picked, i];
+      if (!picked.length) picked = [i];
+      anchor = i;
+    } else {
+      picked = [i];
+      anchor = i;
+    }
+    select(i);
+  }
+  function markPicker(): void {
+    const paths = sprites ? undefined : new Set(readWalkPaths(project, file));
+    [...picker.children].forEach((b, j) => {
+      b.classList.toggle('selected', picked.includes(j) || j === current);
+      b.classList.toggle('current', j === current);
+      if (!paths) return;
+      b.classList.toggle('walk-path', paths.has(j));
+      b.setAttribute('aria-label', paths.has(j) ? `Block ${j}, walking path` : `Block ${j}`);
+    });
+    walkPaths?.refresh();
+  }
   function renderPicker(): void {
     pickerCanvases.length = 0;
     clear(
@@ -120,24 +162,23 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ...blocks.map((b, i) => {
         const c = blockCanvas(b.pixels, pal(), { transparent: sprites, className: sprites ? 'checker' : '' });
         pickerCanvases.push(c);
-        return h(
-          'button',
-          { class: i === current ? 'selected' : '', title: `Block ${i}`, 'aria-label': `Block ${i}`, onclick: () => select(i) },
-          c,
-          h('small', null, i),
-        );
+        return h('button', { title: `Block ${i}`, 'aria-label': `Block ${i}`, onclick: (e: MouseEvent) => pick(i, e) }, c, h('small', null, i));
       }),
     );
+    markPicker();
   }
   function select(i: number): void {
     current = i;
+    if (!picked.includes(i)) picked = [i];
     view.set({ block: i });
-    [...picker.children].forEach((b, j) => b.classList.toggle('selected', j === i));
+    markPicker();
     renderBlock();
     renderProps();
     refreshUndo();
     insight.refresh(true);
+    groups.refresh(true);
     badges.refresh();
+    mirrorBar?.refresh();
   }
 
   // ---- pixel canvas -------------------------------------------------------
@@ -176,6 +217,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
     if (!preview && pickerCanvases[current]) paintBlock(pickerCanvases[current], blocks[current].pixels, pal(), { transparent: sprites });
     if (!preview) insight?.refresh();
+    if (!preview) groups?.refresh();
+    if (!preview) mirrorBar?.refresh();
   }
 
   /** Sets a pixel and its mirror images. */
@@ -638,25 +681,53 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           { min: 0, max: 16383 },
         ),
       ),
+      walkPaths?.el,
     );
   }
 
+  // character blocks: "Apply to the mirror too" for a block with a linked mirror (character/blockMirrorBar.ts)
+  const mirrorSlot = h('div', { style: 'display:contents' });
+  let mirrorBar: { el: HTMLElement; refresh(): void } | undefined;
+  if (kind === 'cbl')
+    void import('../character/blockMirrorBar').then((m) => {
+      mirrorBar = m.blockMirrorBar({
+        project,
+        file,
+        blocks,
+        current: () => current,
+        setPixels: (i, px) => {
+          undo[i].push(blocks[i].pixels.slice());
+          redo[i].length = 0;
+          blocks[i].pixels.set(px);
+          if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
+          changed();
+        },
+      });
+      mirrorSlot.append(mirrorBar.el);
+    });
+
+  // the three columns each end at the window's bottom edge and scroll by themselves (blocks.css)
+  const columns = [
+    h('div', { class: 'blk-picker' }, picker),
+    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, mirrorSlot, groups.el, sprites ? null : textures, badges.el, insight.el),
+    h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
+  ];
   clear(
     host,
     h(
       'div',
       { class: 'blk-head' },
-      h('p', { class: 'hint' }, sprites ? 'Color 255 is transparent. ' : '', 'Pick a block, paint it, then set how it behaves.'),
+      h(
+        'p',
+        { class: 'hint' },
+        sprites ? 'Color 255 is transparent. ' : '',
+        'Pick a block, paint it, then set how it behaves. Shift- or Ctrl-click blocks to group them.',
+      ),
       chooser.el,
     ),
-    h(
-      'div',
-      { class: 'blk' },
-      h('div', { class: 'blk-picker' }, picker),
-      h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures, badges.el, insight.el),
-      h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
-    ),
+    h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
+  fitToPane(...columns);
   renderPicker();
   renderSwatches();
   renderBlock();
@@ -675,5 +746,6 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   return () => {
     window.removeEventListener('keydown', onKey);
     insight.dispose();
+    groups.dispose();
   };
 });

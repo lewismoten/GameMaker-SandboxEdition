@@ -5,7 +5,7 @@
 // the hours of one that plays 5. games/kit/playtime.ts writes the figures.
 
 /** Chapters that are watched, not played: the title cartoon, the story, the ending and the credits. */
-export const NOT_PLAY = /^(Opening|Story|Ending|Credits)$/;
+const NOT_PLAY = /^(Opening|Story|Ending|Credits)$/;
 
 /**
  * Claimed minutes of play per minute of the walkthrough. A first-time player wanders, dies,

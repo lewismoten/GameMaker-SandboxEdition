@@ -10,7 +10,10 @@
 //   dos.html?game=<id>   that game's disk in drive A:, open in Game-Maker (ids as play.html?game=<id>);
 //                        an unknown id, or a secret game not yet found in this browser, gets plain GM
 //   dos.html?run=dos     stays at the C:\> prompt
-//   dos.html?run=bbs     calls the BBS
+//   dos.html?run=bbs     calls the BBS (&dial=sandbox or &dial=sofa dials that board)
+//   dos.html?game=<id>&run=play, dos.html?project=<id>&run=play|design
+//                        plays (or designs) a catalog game, or a game kept in this browser (a
+//                        game sent by another site lands here, with &linked=1: see linkIn/)
 import './dosPage.css';
 import { h, clear } from '../editor/core/ui';
 import { Computer } from '../retro/computer';
@@ -86,7 +89,15 @@ async function fullScreen(): Promise<void> {
   }
   pc?.focus();
 }
-document.addEventListener('fullscreenchange', () => fullBtn.setAttribute('aria-pressed', String(!!document.fullscreenElement)));
+// on the narrowest phones Full screen moves from the bar into the ⋯ menu (dosPage.css)
+const fullItem = h(
+  'button',
+  { type: 'button', class: 'dos-btn dos-full-item', title: 'Fill the screen', onclick: () => void fullScreen() },
+  ...face('⤢', 'Full screen'),
+);
+document.addEventListener('fullscreenchange', () => {
+  for (const b of [fullBtn, fullItem]) b.setAttribute('aria-pressed', String(!!document.fullscreenElement));
+});
 
 // ---- power ------------------------------------------------------------------------------
 
@@ -222,6 +233,16 @@ const guideBtn = h(
   },
   ...face('📖', 'Owner’s Guide'),
 );
+const ultimateBtn = h(
+  'button',
+  {
+    type: 'button',
+    class: 'dos-btn',
+    title: 'Read The Ultimate Owner’s Guide: advanced tips and tricks',
+    onclick: () => void import('../manual/ultimate/openInManual').then((m) => m.openUltimateInManual()),
+  },
+  ...face('📒', 'Ultimate Guide'),
+);
 
 /** The addresses this page answers, for the page's own "Links to this page". */
 const LINKS: [href: string, what: string][] = [
@@ -239,13 +260,15 @@ turboBtn.classList.add('dos-icon-only');
 soundBtn.classList.add('dos-icon-only');
 fullBtn.classList.add('dos-full');
 const lineSpeed = speedItem();
-const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS, the modem speed and the Owner’s Guide', [
+const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS, the modem speed, the Owner’s Guide and The Ultimate Owner’s Guide', [
+  fullItem,
   resetBtn,
   h('label', { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' }, blaster, 'Sound Blaster card'),
   cdBtn,
   bbsBtn,
   lineSpeed.item,
   guideBtn,
+  ultimateBtn,
 ]);
 // a long wait on a slow line: the footer offers a faster one
 const lineHint = speedHint(() => {
@@ -318,12 +341,19 @@ setSound(getVolume() > 0);
 // straight into Game-Maker (the sound starts with the first key or click: browsers wait for one)
 const params = new URLSearchParams(location.search);
 const game = params.get('game');
+const project = params.get('project');
 const run = params.get('run');
+// a game sent by another site: once a session, say plainly this is not a real DOS PC
+if (params.has('linked')) void import('../linkIn/notice').then((m) => m.notTrueDosNotice());
 void powerOn().then(async () => {
   if (!pc?.powered) return; // switched off while it booted
   if (run === 'dos') return;
-  if (run === 'bbs') return command('C:\nTERMINAL');
-  if (game && (await disks.openGame(game))) return;
+  // dial=sandbox or dial=sofa: TERMINAL dials that board (the magazine's BBS listings)
+  const dial = /^[a-z]+$/.test(params.get('dial') ?? '') ? ` ${params.get('dial')!.toUpperCase()}` : '';
+  if (run === 'bbs') return command(`C:\nTERMINAL${dial}`);
+  const action = run === 'play' ? 'play' : 'design';
+  if (project && (await disks.openDisk(`project:${project}`, action))) return;
+  if (game && (await disks.openDisk(`cd:${game}`, action))) return;
   return startGameMaker();
 });
 void disks.refresh();

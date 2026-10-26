@@ -1,0 +1,36 @@
+# Checks every game on pushes and pull requests: npm run check:games (web/), which plays each
+# game's bot and walkthrough and checks its text, hidden items, levels, tin hearts and box hours.
+# CI runs it with --quick (no rebuild compare); the full run is for local use, see AGENTS.md.
+name: Check the games
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: games-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run check:games -- --quick

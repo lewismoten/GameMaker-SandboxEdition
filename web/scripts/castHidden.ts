@@ -11,7 +11,7 @@ import { hiddenPlacements } from './castHiddenScan';
 
 const out = hiddenPlacements(join(__dirname, '../../games'));
 /** One game a line, so a new placement is a one-line diff. */
-export const hiddenJson = (h: typeof out) =>
+const hiddenJson = (h: typeof out) =>
   `{\n${Object.entries(h)
     .map(([k, list]) => `  ${JSON.stringify(k)}: [\n${list.map((g) => `    ${JSON.stringify(g)}`).join(',\n')}\n  ]`)
     .join(',\n')}\n}\n`;

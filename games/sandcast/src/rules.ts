@@ -124,6 +124,8 @@ export const MON = {
   gwinNap: 30,
   /** Gwinn with a ball in her mouth, too pleased to bother anyone (for a while). */
   gwinHappy: 31,
+  /** The first of the signs' monsters by the start, one per block (sprites/signs.ts). */
+  sign: 32,
   none: 64,
 } as const;
 

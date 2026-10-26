@@ -1,0 +1,133 @@
+/* The Illogitech speakers in their ad (speakerArt.ts): the desk's speakers (desk/pc/speakers.css)
+   drawn to the width of their column. --u is one of the desk's pixels; the pair is 190 wide. */
+.mag-art.art-speakers {
+  container-type: inline-size;
+}
+
+.mag-spk-pair {
+  --u: calc(100cqw / 190);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: calc(var(--u) * 12);
+}
+
+.mag-spk {
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--u) * 78);
+  height: calc(var(--u) * 158);
+  padding: calc(var(--u) * 8) calc(var(--u) * 7) 0;
+  box-sizing: border-box;
+  border-radius: calc(var(--u) * 5) calc(var(--u) * 5) calc(var(--u) * 3) calc(var(--u) * 3);
+  background: linear-gradient(100deg, #ece6d3, #d8d0b8 45%, #b3aa90);
+  box-shadow:
+    inset 0 calc(var(--u) * 2) 0 #fff8,
+    inset 0 calc(var(--u) * -4) 0 #8f8770,
+    inset calc(var(--u) * -3) 0 0 rgba(0, 0, 0, 0.08),
+    0 calc(var(--u) * 10) calc(var(--u) * 14) rgba(0, 0, 0, 0.45);
+}
+
+.mag-spk-grille {
+  height: calc(var(--u) * 92);
+  border-radius: calc(var(--u) * 3);
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.07) 0 22%, transparent 24%) 0 0 / calc(var(--u) * 4) calc(var(--u) * 4),
+    radial-gradient(circle at 50% 45%, #2b2a28, #171615 70%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 2) #a9a088;
+}
+
+.mag-spk-brand {
+  margin-top: calc(var(--u) * 14);
+  color: #8f8770;
+  font:
+    italic 800 calc(var(--u) * 9) / 1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.mag-spk-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: calc(var(--u) * 7);
+  padding: 0 calc(var(--u) * 2);
+}
+
+.mag-spk-knob {
+  position: relative;
+  width: calc(var(--u) * 24);
+  height: calc(var(--u) * 24);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #5a5650, #2a2826 70%);
+  box-shadow:
+    0 0 0 calc(var(--u) * 2) #9e967c,
+    0 calc(var(--u) * 2) calc(var(--u) * 3) rgba(0, 0, 0, 0.5);
+  transform: rotate(60deg);
+}
+
+.mag-spk-knob::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 2);
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 8);
+  margin-left: calc(var(--u) * -1);
+  border-radius: calc(var(--u) * 1);
+  background: #f4f1e6;
+}
+
+/* the power light, on */
+.mag-spk-led {
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  border-radius: 50%;
+  background: #43ff6a;
+  box-shadow: 0 0 calc(var(--u) * 6) #43ff6a;
+}
+
+.mag-spk-jack {
+  width: calc(var(--u) * 8);
+  height: calc(var(--u) * 8);
+  border-radius: 50%;
+  background: radial-gradient(circle, #000 0 40%, #6d6a64 45% 60%, #b8b09a 65%);
+}
+
+/* the Sound Blaster switch under the knob, ON (to the right) */
+.mag-spk-sb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--u) * 4);
+  margin-top: calc(var(--u) * 4);
+  padding: calc(var(--u) * 2) calc(var(--u) * 3);
+  color: #514b3a;
+  font:
+    800 calc(var(--u) * 6.5) / 1.05 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.mag-spk-track {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 24);
+  height: calc(var(--u) * 11);
+  border-radius: calc(var(--u) * 2);
+  background: linear-gradient(90deg, #2f6b34 50%, #2a2826 50%);
+  box-shadow: inset 0 calc(var(--u) * 1) calc(var(--u) * 2) rgba(0, 0, 0, 0.7);
+}
+
+.mag-spk-track > span {
+  position: absolute;
+  top: calc(var(--u) * 1);
+  left: calc(var(--u) * 12);
+  width: calc(var(--u) * 11);
+  height: calc(var(--u) * 9);
+  border-radius: calc(var(--u) * 1);
+  background: linear-gradient(90deg, #f3eedf, #c9c1a6);
+}

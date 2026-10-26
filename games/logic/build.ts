@@ -11,6 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { PAL } from './src/art/pal';
 import { buildMonsterBlocks, buildWattBlocks } from './src/sprites/sprites';
 import { buildWatt } from './src/characters/watt';
@@ -78,6 +79,8 @@ disk.put('readme.txt', readme('$12'));
 const start = process.env.OHM_START ? BOARDS.findIndex((s) => s.file === process.env.OHM_START) : 0;
 disk.put('ohmsweet.gam', serializeGame(buildGame(rooms, Math.max(0, start))));
 disk.put('license.txt', licenseText('Ohm Sweet Ohm'));
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'help.lst', 'credits.lst']);
 disk.write();
 for (const r of rooms)
   console.log(

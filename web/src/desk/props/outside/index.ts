@@ -5,8 +5,10 @@
 // (it would only distract), never without motion, and only while the window can be seen
 // (visible.ts: not under a manual or a dialog, not with the tab put away).
 // Other code can send one now: dispatchEvent(new CustomEvent('gm-window-event', { detail:
-// { kind } })), as the registration card does for the mail truck ("mailtruck", which only
-// comes that way).
+// { kind } })), as the registration card does for the mail truck and its reply for the mail
+// jeep ("mailtruck" and "mailjeep", which only come that way). One asked for while another is
+// going by waits its turn; when an asked one is over (or couldn't be seen at all) a
+// 'gm-window-event-end' event with the same detail says so.
 import { daylight } from '../../room/daylight';
 import { stillMotion } from '../propKit';
 import { play, type OutsideEvent } from './outside';
@@ -20,19 +22,35 @@ import { chicken } from './chicken';
 import { star } from './star';
 import { aurora } from './aurora';
 import { mailtruck } from './mailtruck';
+import { mailjeep } from './mailjeep';
 
 const EVENTS: OutsideEvent[] = [plow, sleds, dogs, chez, goat, chicken, star, aurora];
-const ALL = [...EVENTS, mailtruck];
-export const WINDOW_EVENT = 'gm-window-event';
+const ALL = [...EVENTS, mailtruck, mailjeep];
+const WINDOW_EVENT = 'gm-window-event';
+const WINDOW_EVENT_END = 'gm-window-event-end';
 
 export function outsideWindow(win: HTMLElement, pc: { gamePlaying(): boolean }): () => void {
   const layer = win.querySelector<HTMLElement>('.sw-hits');
   if (!layer) return () => {};
   let busy = false;
-  const run = (ev: OutsideEvent) => {
-    if (busy || pc.gamePlaying() || !win.isConnected) return;
+  const waiting: OutsideEvent[] = []; // asked for while something else went by
+  const ended = (ev: OutsideEvent) => dispatchEvent(new CustomEvent(WINDOW_EVENT_END, { detail: { kind: ev.kind } }));
+  const run = (ev: OutsideEvent, asked = false) => {
+    if (busy && asked) {
+      waiting.push(ev);
+      return;
+    }
+    if (busy || pc.gamePlaying() || !win.isConnected) {
+      if (asked) ended(ev);
+      return;
+    }
     busy = true;
-    void play(win, layer, ev).then(() => (busy = false));
+    void play(win, layer, ev).then(() => {
+      busy = false;
+      if (asked) ended(ev);
+      const next = waiting.shift();
+      if (next) run(next, true);
+    });
   };
   let timer = 0;
   let last = '';
@@ -58,7 +76,7 @@ export function outsideWindow(win: HTMLElement, pc: { gamePlaying(): boolean }):
   const asked = (e: Event) => {
     const kind = (e as CustomEvent<{ kind?: string }>).detail?.kind;
     const ev = ALL.find((x) => x.kind === kind);
-    if (ev) run(ev);
+    if (ev) run(ev, true);
   };
   addEventListener(WINDOW_EVENT, asked);
   return () => {

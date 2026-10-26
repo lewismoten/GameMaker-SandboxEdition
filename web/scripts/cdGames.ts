@@ -3,8 +3,10 @@
 // the production build (e.g. in GitHub Actions) emits them into dist/.
 //
 //   games/index.json             catalog of every playable game (but the secret ones)
-//   games/extra.json             the secret games (about.json "secret": true), full entries;
-//                                fetched only once every felt egg is found (src/project/secretGames.ts)
+//   games/extra-<gate>.json      the secret games (about.json "secret": true), full entries, one
+//                                file for each thing that reveals them (1 every felt egg, 2 every
+//                                tin heart: about.json "unlock": "hearts"), fetched only once it is
+//                                found (src/project/secretGames.ts), so finding one names no other
 //   games/gameware/<id>/<file>   the free sample games that came with Game-Maker (editable)
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
 //   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
@@ -12,6 +14,7 @@
 //   games/<kind>/<id>/<id>.<hash>.gmpak  each game's files in one gzipped file, what the site
 //                                fetches to play or open a game (src/project/gamePack.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
+//   dos/config.hlp, dos/gmhelp.txt       its setup screen's and in-game help, which a Transfer put beside it
 //   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
 //                                desk: a listing plus its text files (.HLP screens, .TXT)
 import type { Plugin } from 'vite';
@@ -110,7 +113,7 @@ const NOTICE_WORDS = /shareware|freeware|regist/i;
  * Fields no source states are left out rather than guessed. Old .gam files often name
  * their title scene "Title Screen" or a version number, so titles live here too.
  */
-export interface GameInfo {
+interface GameInfo {
   title: string;
   author?: string;
   company?: string;
@@ -227,7 +230,7 @@ function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: 
 }
 
 /** A game's pack (src/project/gamePack.ts): its files in the order play needs them, gzipped. */
-export function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, files: ReadonlyMap<string, string>, level = 9): Buffer {
+function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, files: ReadonlyMap<string, string>, level = 9): Buffer {
   const get = (n: string) => (files.has(`${e.path}${n}`) ? new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!)) : undefined);
   const entries: [string, Uint8Array][] = [];
   for (const n of packOrder(e.gam, e.files, get)) {
@@ -240,8 +243,10 @@ export function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, file
 interface Scan {
   gm: GmInstallEntry[];
   catalog: CdCatalogEntry[];
-  /** Original games whose about.json says "secret": true: in no listing, page, sitemap or picture the build makes; only in games/extra.json. */
+  /** Original games whose about.json says "secret": true: in no listing, page, sitemap or picture the build makes; only in games/extra-<gate>.json. */
   secret: CdCatalogEntry[];
+  /** Each secret game's gate (its extra-<gate>.json): 2 when every tin heart reveals it, else 1 (every felt egg). */
+  gates: Map<string, number>;
   /** Site path -> file on disk. */
   files: Map<string, string>;
 }
@@ -304,9 +309,10 @@ function scan(cdRoot: string): Scan {
       catalog.push(entry);
     }
   }
-  scanOriginals(join(cdRoot, '../games'), catalog, secret, files);
+  const gates = new Map<string, number>();
+  scanOriginals(join(cdRoot, '../games'), catalog, secret, files, gates);
   // The DOS player used by "Export for DOS".
-  for (const name of ['xferplay.exe', 'sndblast.drv']) {
+  for (const name of ['xferplay.exe', 'sndblast.drv', 'config.hlp', 'gmhelp.txt']) {
     const p = join(cdRoot, 'gm', name);
     if (existsSync(p)) files.set(`dos/${name}`, p);
   }
@@ -320,21 +326,26 @@ function scan(cdRoot: string): Scan {
       if (st.isFile() && GM_TEXT.test(name)) files.set(`gm/${name.toLowerCase()}`, join(install, name));
     }
   }
-  return { gm, catalog, secret, files };
+  return { gm, catalog, secret, files, gates };
 }
+
+/** The gates whose files the build writes: every felt egg, every tin heart. */
+const GATES = [1, 2];
+/** The secret games behind one gate. */
+const behind = (s: Scan, gate: number) => s.secret.filter((e) => (s.gates.get(e.id) ?? 1) === gate);
 
 /**
  * ../games/<id>/: original games made for this project. disk/ holds the game as it would
  * be on its floppy; about.json its credits, label and box; manual.json its manual.
  */
-function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalogEntry[], files: Map<string, string>): void {
+function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalogEntry[], files: Map<string, string>, gates: Map<string, number>): void {
   if (!existsSync(root)) return;
   for (const dir of readdirSync(root).sort()) {
     const base = join(root, dir);
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
     const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo &
-      OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string };
+      OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string; unlock?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     const id = dir.toLowerCase();
@@ -354,6 +365,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const walk = join(base, 'walkthrough.json');
     const walkthrough = existsSync(walk) ? `${path}walkthrough.json` : undefined;
     if (walkthrough) files.set(walkthrough, walk);
+    if (about.secret === true) gates.set(id, about.unlock === 'hearts' ? 2 : 1);
     (about.secret === true ? secret : catalog).push({
       id,
       title: about.title,
@@ -413,7 +425,7 @@ function slimOriginal(o: OriginalExtras): OriginalExtras {
 }
 
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
-export function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
+function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
   const original = e.original && (e.original.manual || e.original.printables) ? { manual: e.original.manual, printables: e.original.printables } : undefined;
   return e.notice || original ? { notice: e.notice, original } : undefined;
 }
@@ -423,7 +435,7 @@ export function cdCatalog(cdRoot: string): CdCatalogEntry[] {
   return scan(cdRoot).catalog;
 }
 
-/** The secret games (games/extra.json): listed only once every felt egg is found. */
+/** The secret games (games/extra-<gate>.json): listed only once what reveals each is found. */
 export function cdSecretCatalog(cdRoot: string): CdCatalogEntry[] {
   return scan(cdRoot).secret;
 }
@@ -447,11 +459,14 @@ export function cdGames(cdRoot: string): Plugin {
       server.watcher.on('unlink', forget);
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
-        if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json' || url === 'games/extra.json') {
+        const extra = /^games\/extra-(\d)\.json$/.exec(url);
+        if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json' || (extra && GATES.includes(Number(extra[1])))) {
           res.setHeader('Content-Type', 'application/json');
-          const { gm, catalog, secret } = get();
+          const { gm, catalog } = get();
           res.end(
-            JSON.stringify(url.startsWith('gm/') ? gm : url.endsWith('catalog.json') ? slimCatalog(catalog) : url.endsWith('extra.json') ? secret : catalog),
+            JSON.stringify(
+              url.startsWith('gm/') ? gm : url.endsWith('catalog.json') ? slimCatalog(catalog) : extra ? behind(get(), Number(extra[1])) : catalog,
+            ),
           );
           return;
         }
@@ -493,7 +508,7 @@ export function cdGames(cdRoot: string): Plugin {
         for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
         return shots.size ? { ...known(e), shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : known(e);
       });
-      const secret = get().secret.map(known);
+      const secret = (gate: number) => behind(get(), gate).map(known);
       // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
       // files shrink 3-20x: a whole game comes as its pack (below), and each game file but a
       // GIF also gets a gzip copy, <file>.gz, which the site fetches instead when it needs
@@ -505,8 +520,10 @@ export function cdGames(cdRoot: string): Plugin {
         const details = catalogDetails(e);
         if (details) this.emitFile({ type: 'asset', fileName: `games/details/${e.id}.json`, source: JSON.stringify(details) });
       }
-      // Whole entries (no games/details/<id>.json), so nothing else the build writes names them.
-      this.emitFile({ type: 'asset', fileName: 'games/extra.json', source: JSON.stringify(secret.map((e) => ({ ...e, gz: true }))) });
+      // Whole entries (no games/details/<id>.json), so nothing else the build writes names them;
+      // every gate's file is written, empty or not
+      for (const gate of GATES)
+        this.emitFile({ type: 'asset', fileName: `games/extra-${gate}.json`, source: JSON.stringify(secret(gate).map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
       for (const [fileName, source] of packs) this.emitFile({ type: 'asset', fileName, source });
       for (const [site, disk] of files) {

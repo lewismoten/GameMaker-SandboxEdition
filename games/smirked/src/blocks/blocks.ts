@@ -231,8 +231,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = crypt(19);
     if (!open) {
       p.rect(3, 1, 14, 19, c('board', 2)).rect(3, 1, 14, 1, c('board', 3)).rect(14, 10, 2, 2, c('silver', 2));
-      p.rect(4, 3, 12, 6, c('white', 2));
-      micro(p, 5, 3, 'STAFF', c('red', 1));
+      // the sign is wider than the door: five letters take 19 pixels
+      p.rect(0, 3, 20, 6, c('white', 2));
+      micro(p, 1, 3, 'STAFF', c('red', 1));
       micro(p, 6, 9, String(SORRY_NEEDED), c('white', 2));
       micro(p, 9, 9, 'SRY', c('white', 1));
     } else p.rect(3, 1, 14, 19, c('black', 0)).rect(3, 1, 2, 19, c('board', 2));
@@ -300,7 +301,7 @@ export function buildBlocks(pal: Pal): BlockBook {
       p.rect(0, 4, 20, 16, c('board', 2)).rect(0, 4, 20, 2, c('board', 4));
       p.rect(3, 0, 10, 8, c('silver', 1)).rect(4, 1, 8, 3, c('glow', 0));
       micro(p, 5, 1, `$${SWORD_PRICE}`, c('glow', 2));
-      micro(p, 2, 12, 'SWORD', c('gold', 2));
+      micro(p, 1, 12, 'SWORD', c('gold', 2));
     } else {
       p.rect(0, 4, 3, 16, c('board', 2)).rect(17, 4, 3, 16, c('board', 2));
       micro(p, 6, 8, 'THX', c('gold', 2));
@@ -344,7 +345,7 @@ export function buildBlocks(pal: Pal): BlockBook {
         [13, 5],
       ])
         p.disc(x, y, 1.6, c('gold', 2)).set(x, y + 2, c('red', 2));
-      micro(p, 2, 12, 'BRAVE', c('gold', 2));
+      micro(p, 1, 12, 'BRAVE', c('gold', 2));
     } else {
       p.disc(10, 5, 3, c('gold', 1)).rect(9, 2, 2, 1, c('gold', 2));
       micro(p, 3, 12, 'DESK', c('white', 1));

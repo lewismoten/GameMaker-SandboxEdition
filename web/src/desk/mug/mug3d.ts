@@ -67,7 +67,7 @@ export const MUG_COLORS: { id: string; name: string; colors: MugColors }[] = [
   { id: 'yellow', name: 'Yellow inside', colors: { body: '#f7f5ee', accent: '#f2c200' } },
 ];
 
-export interface MugView {
+interface MugView {
   texture: HTMLCanvasElement;
   size: MugSize;
   colors: MugColors;
@@ -89,73 +89,139 @@ function shade(hex: string, k: number): string {
   return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`;
 }
 
+/**
+ * The rim and the hollow inside, in the inside's color: the lip's ring, then through the
+ * opening the far inner wall, lit near the rim and darkening as it goes down, and the inside
+ * bottom where the mug is shallow enough to show it. The near inner wall is hidden behind the
+ * lip, as it is on a real mug.
+ */
+function inside(g: CanvasRenderingContext2D, cx: number, top: number, R: number, ry: number, H: number, color: string): void {
+  const ri = R * 0.93;
+  const ryi = ry * 0.93;
+  const floor = top + H * 0.93; // the inside bottom's middle
+  // the lip, its top lit
+  const lip = g.createLinearGradient(0, top - ry, 0, top + ry);
+  lip.addColorStop(0, shade(color, 1.02));
+  lip.addColorStop(1, shade(color, 0.88));
+  g.fillStyle = lip;
+  g.beginPath();
+  g.ellipse(cx, top, R, ry, 0, 0, Math.PI * 2);
+  g.fill();
+  g.save();
+  g.beginPath();
+  g.ellipse(cx, top, ri, ryi, 0, 0, Math.PI * 2);
+  g.clip();
+  // the far wall, down from the rim into the dark
+  const deep = Math.max(top - ryi + 1, Math.min(top + ryi, floor - ryi)); // the lowest of it we see
+  const wall = g.createLinearGradient(0, top - ryi, 0, deep);
+  wall.addColorStop(0, shade(color, 0.9));
+  wall.addColorStop(0.45, shade(color, 0.62));
+  wall.addColorStop(1, shade(color, 0.34));
+  g.fillStyle = wall;
+  g.fillRect(cx - ri, top - ryi, 2 * ri, 2 * ryi);
+  // the inside bottom, where it shows
+  if (floor - ryi < top + ryi) {
+    g.fillStyle = shade(color, 0.5);
+    g.beginPath();
+    g.ellipse(cx, floor, ri, ryi, 0, 0, Math.PI * 2);
+    g.fill();
+  }
+  // the wall curving away at the sides, darker on the right (the light is from the front left), and a soft shine
+  const across = g.createLinearGradient(cx - ri, 0, cx + ri, 0);
+  across.addColorStop(0, 'rgba(0,0,0,0.22)');
+  across.addColorStop(0.3, 'rgba(255,255,255,0.10)');
+  across.addColorStop(0.55, 'rgba(0,0,0,0)');
+  across.addColorStop(1, 'rgba(0,0,0,0.38)');
+  g.fillStyle = across;
+  g.fillRect(cx - ri, top - ryi, 2 * ri, 2 * ryi);
+  g.restore();
+  // the lip's inner edge
+  g.strokeStyle = shade(color, 0.7);
+  g.lineWidth = Math.max(1, R * 0.012);
+  g.beginPath();
+  g.ellipse(cx, top, ri, ryi, 0, 0, Math.PI * 2);
+  g.stroke();
+}
+
+/** The mug's proportions on the canvas: body height, the rim's ellipse height, the handle's angle and the handle's shape. */
+function frame(v: Pick<MugView, 'size' | 'rot' | 'radius' | 'top' | 'tilt'>) {
+  const R = v.radius;
+  const H = (R * 2 * v.size.height) / v.size.diameter;
+  return {
+    H,
+    ry: R * (v.tilt ?? 0.2),
+    handleAt: Math.PI + v.rot, // the handle's view angle (0 = facing us)
+    reach: R * 0.62,
+    hh: H * 0.34,
+    mid: v.top + H * 0.48,
+    tube: R * 0.16,
+  };
+}
+
+/** Steps along the handle's loop. */
+const HANDLE_STEPS = 32;
+
+/**
+ * The handle's middle line on the canvas, top joint to bottom joint. Each point is placed in
+ * the mug's own space (how far out from the axis, how high, which way round) and then seen
+ * the way the rim is: across by the sine of its angle, down by the rim's tilt times its
+ * cosine. Nothing divides, so it stays finite at every angle, edge-on included.
+ */
+export function handlePoints(v: Pick<MugView, 'size' | 'rot' | 'cx' | 'top' | 'radius' | 'tilt'>): { x: number; y: number }[] {
+  const { ry, handleAt, reach, hh, mid } = frame(v);
+  const R = v.radius;
+  const pts: { x: number; y: number }[] = [];
+  for (let i = 0; i <= HANDLE_STEPS; i++) {
+    const t = (i / HANDLE_STEPS) * Math.PI;
+    const out = R * 0.94 + reach * Math.sin(t) * (0.85 + 0.15 * Math.sin(t)); // from the axis
+    const height = mid - hh * Math.cos(t);
+    pts.push({ x: v.cx + out * Math.sin(handleAt), y: height + (ry * out * Math.cos(handleAt)) / R });
+  }
+  return pts;
+}
+
 /** Draws the mug. The body's height comes from the mug size; the handle sits opposite the print's middle. */
 export function drawMug(g: CanvasRenderingContext2D, v: MugView): void {
   const { texture, size, colors, rot, cx, top, radius: R } = v;
-  const e = v.tilt ?? 0.2;
   const layer = v.layer ?? 'all';
-  const H = (R * 2 * size.height) / size.diameter;
-  const ry = R * e;
+  const { H, ry, handleAt, tube } = frame(v);
   const circumference = Math.PI * size.diameter;
   const half = (Math.PI * Math.min(size.wrapW, circumference)) / circumference; // half the print's angle
   const printH = (H * size.wrapH) / size.height;
   const printTop = top + (H - printH) / 2;
-  const handleAt = Math.PI + rot; // the handle's view angle (0 = facing us)
   const handleInFront = Math.cos(handleAt) > 0;
 
+  // the handle: one loop, stroked whole with round joins (a mitred join on a line that turns
+  // back on itself, as the loop's ends do seen edge-on, shoots out in long spikes)
   const handle = () => {
     if (!size.handle) return;
-    const reach = R * 0.62;
-    const hh = H * 0.34;
-    const mid = top + H * 0.48;
-    const tube = R * 0.16;
-    const path = (dAngle: number) => {
+    const pts = handlePoints(v);
+    const trace = (dx: number) => {
       g.beginPath();
-      for (let i = 0; i <= 24; i++) {
-        const t = (i / 24) * Math.PI;
-        const r = R * 0.96 + reach * Math.sin(t) * (0.85 + 0.15 * Math.sin(t));
-        const th = handleAt + dAngle / r;
-        const x = cx + r * Math.sin(th);
-        const y = mid - hh * Math.cos(t) + ry * (r / R) * Math.cos(th);
-        if (i) g.lineTo(x, y);
-        else g.moveTo(x, y);
-      }
+      pts.forEach((p, i) => (i ? g.lineTo(p.x + dx, p.y) : g.moveTo(p.x + dx, p.y)));
     };
     g.save();
     g.lineCap = 'round';
+    g.lineJoin = 'round';
     const lit = 0.75 + 0.25 * Math.cos(handleAt + 0.6);
-    for (const d of [-tube * 0.6, 0, tube * 0.6]) {
-      g.strokeStyle = shade(colors.accent, lit * (d ? 0.9 : 1));
-      g.lineWidth = tube;
-      path(d);
-      g.stroke();
-    }
-    g.strokeStyle = 'rgba(255,255,255,0.55)';
+    g.strokeStyle = shade(colors.accent, lit * 0.62);
+    g.lineWidth = tube * 1.12;
+    trace(0);
+    g.stroke();
+    g.strokeStyle = shade(colors.accent, lit);
+    g.lineWidth = tube * 0.9;
+    trace(tube * 0.04);
+    g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,0.5)';
     g.lineWidth = tube * 0.22;
-    path(-tube * 0.35);
+    trace(-tube * 0.2);
     g.stroke();
     g.restore();
   };
 
   if (layer !== 'front') {
     if (!handleInFront) handle();
-    // the rim and the inside
-    g.fillStyle = shade(colors.body, 0.96);
-    g.beginPath();
-    g.ellipse(cx, top, R, ry, 0, 0, Math.PI * 2);
-    g.fill();
-    const inner = g.createLinearGradient(0, top - ry, 0, top + ry);
-    inner.addColorStop(0, shade(colors.accent, 0.95));
-    inner.addColorStop(1, shade(colors.accent, 0.45));
-    g.fillStyle = inner;
-    g.beginPath();
-    g.ellipse(cx, top + ry * 0.04, R * 0.92, ry * 0.86, 0, 0, Math.PI * 2);
-    g.fill();
-    // shadow of the far wall on the inside
-    g.fillStyle = 'rgba(0,0,0,0.25)';
-    g.beginPath();
-    g.ellipse(cx, top + ry * 0.04, R * 0.92, ry * 0.86, 0, Math.PI, Math.PI * 2);
-    g.fill();
+    inside(g, cx, top, R, ry, H, colors.accent);
   }
   if (layer === 'back') return;
 

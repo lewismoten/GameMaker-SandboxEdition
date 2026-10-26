@@ -10,7 +10,7 @@ import type { Palette } from '../../formats/palette';
 
 export const audio = new AudioEngine();
 
-export interface PreviewOptions {
+interface PreviewOptions {
   /** Plays something else than showGraphic(file), e.g. a slide show clip by clip. */
   run?: (m: Machine, gamePalette: Palette) => Promise<void>;
   /** Extra class for the preview box (e.g. a smaller screen). */
@@ -29,7 +29,7 @@ export interface PreviewOptions {
   onRunning?: (on: boolean) => void;
 }
 
-export interface GamePreview {
+interface GamePreview {
   el: HTMLElement;
   canvas: HTMLCanvasElement;
   /** Starts (or restarts) the preview. */

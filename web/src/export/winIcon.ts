@@ -11,7 +11,7 @@ import type { IndexedImage } from '../formats/gif';
 
 export const ICON_SIZES = [16, 24, 32, 48, 64, 256];
 
-export interface IconImage {
+interface IconImage {
   size: number;
   /** A PNG, or a BITMAPINFOHEADER and its pixels (as in an .ico file). */
   data: Uint8Array;
@@ -63,7 +63,7 @@ export function shrink(rgba: Uint8Array, from: number, left: number, top: number
 }
 
 /** An icon bitmap: BITMAPINFOHEADER (height doubled for the mask), BGRA rows bottom up, then the 1-bit AND mask. */
-export function iconBitmap(rgba: Uint8Array, size: number): Uint8Array {
+function iconBitmap(rgba: Uint8Array, size: number): Uint8Array {
   const maskStride = Math.ceil(size / 32) * 4;
   const out = new Uint8Array(40 + size * size * 4 + maskStride * size);
   const dv = new DataView(out.buffer);

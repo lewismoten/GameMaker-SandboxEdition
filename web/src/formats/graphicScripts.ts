@@ -4,7 +4,7 @@
 //  .txt  text shown 32 columns wide on the current screen.
 import { Reader, latin1Text, textBytes } from './binary';
 
-export interface Backdrop {
+interface Backdrop {
   x: number;
   y: number;
   gif: string;

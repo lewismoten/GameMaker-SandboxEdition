@@ -1,6 +1,7 @@
 // The level check's findings from playing (playtest.ts): stuck areas, things nobody reached,
 // links never touched, falls the player can't see, hurts that hold, scoring that never stops,
 // how much of each scene the bot covered, long scenes, and the hit points at each exit.
+import { prizeInView, seenFrom } from './inView';
 import { BACKBL } from '../../../formats/blocks';
 import { LASTMON } from '../../../formats/monster';
 import { MLEN } from '../../../formats/map';
@@ -43,7 +44,12 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
     d.map.blocks.forEach((n, i) => {
       if (isPickup(d, n) && !ex.heat[i]) missed.set(n, [...(missed.get(n) ?? []), i]);
     });
-    for (const [n, cells] of missed)
+    for (const [n, all] of missed) {
+      // in plain view of where the hero went, after trying everything: a tease
+      const shown = new Set(sure ? seenFrom(all, (c) => !!ex.heat[c]) : []);
+      if (shown.size) out.push(prizeInView(d, n, [...shown], 'never reached'));
+      const cells = all.filter((c) => !shown.has(c));
+      if (!cells.length) continue;
       out.push({
         check: 'unreachable',
         severity: sure ? 'warning' : 'info',
@@ -53,6 +59,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
           : 'The bot ran out of time before trying everything; play there to make sure.',
         where: { ...where, cell: cells[0], cells, block: { file: d.names.bbl ?? '', n } },
       });
+    }
     // placed monsters never come near, the friendly ones (they give something) above all
     const far = d.map.monsters.flatMap((p, slot) => (p.monnum < LASTMON && d.mon[p.monnum] && !ex.monsters.has(slot) ? [p] : []));
     const friendly = far.filter((p) => !hostile(d.mon[p.monnum], d.mbl));
@@ -69,7 +76,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
         check: 'unreachable',
         severity: 'info',
         title: `${foes} enemies are where the hero never goes`,
-        detail: 'An enemy nobody meets is padding: give it a job or take it out.',
+        detail: 'If nobody is meant to meet them, they could go; if they guard a secret, keep them.',
         where: { ...where, cells: far.filter((p) => hostile(d.mon[p.monnum], d.mbl)).map((p) => p.cury * MLEN + p.curx) },
       });
   }
@@ -104,7 +111,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
     const check = KIND[i.kind as keyof typeof KIND];
     out.push({
       check,
-      severity: check === 'hurt-lock' ? 'error' : check === 'blind-drop' ? 'info' : 'warning',
+      severity: check === 'blind-drop' ? 'info' : 'warning',
       title: `${i.detail} at ${at(i.cell)}${i.source ? ` (${i.source})` : ''}`,
       detail: list.length > 1 ? `And ${list.length - 1} more like it${i.source ? '' : ' nearby'}.` : undefined,
       where: { ...where, cell: i.cell, cells: list.map((l) => l.cell) },
@@ -116,7 +123,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
       check: 'checkpoints',
       severity: 'info',
       title: `Even the bot’s quickest way through takes ${minutes.toFixed(1)} minutes`,
-      detail: 'A death starts the scene over. Split a long scene with a link so the player keeps what they earned.',
+      detail: 'A death starts the scene over. If it isn’t meant as one long run, a link partway splits it, so the player keeps what they earned.',
       where,
     });
   if (!ex.complete)
@@ -148,7 +155,8 @@ export function curve(runs: SceneRun[]): Finding[] {
       check: 'curve',
       severity: 'warning',
       title: `The bot finishes each scene with more hit points than the last (${hp.join(' → ')})`,
-      detail: 'Healing outpaces harm, so the game gets easier as it goes. Spread healing where the hard parts end, and fewer of them late.',
+      detail:
+        'Healing outpaces harm, so the game gets easier as it goes. If that isn’t the plan, spread healing where the hard parts end, and less of it late.',
       where: {},
       fix: 'spread-healing',
     },

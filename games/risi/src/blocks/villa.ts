@@ -73,12 +73,12 @@ export function buildVilla(pal: Pal): BlockBook {
     p.rect(0, 0, 20, 2, c('ink', 0)).rect(0, 2, 20, 1, c('marble', 2));
     for (let xx = 0; xx < 20; xx += 4) p.rect(xx, 4, 2, 2, c('ink', 0));
     if (dog) {
-      // a corgi in tesserae: big ears, the tall right one; CAVE CANEM under him
+      // a corgi in tesserae: big ears, a matched pair; CAVE over him and CANEM under
       blob(p, 10, 11, 5, 2.4, R('fur'), 1, 2);
-      p.rect(4, 9, 3, 3, c('fur', 2)).line(4, 9, 3, 6, c('fur', 1)).line(6, 9, 6, 5, c('fur', 1)).set(3, 11, c('ink', 0)).set(5, 10, c('ink', 0));
+      p.rect(4, 9, 3, 3, c('fur', 2)).line(4, 9, 3, 6, c('fur', 1)).line(6, 9, 6, 6, c('fur', 1)).set(3, 11, c('ink', 0)).set(5, 10, c('ink', 0));
       for (const lx of [7, 13]) p.rect(lx, 13, 1, 2, c('fur', 1));
-      micro(p, 1, 15, 'CAVE', c('ink', 0));
-      micro(p, 11, 15, 'CAN', c('pompeii', 1));
+      micro(p, 3, 0, 'CAVE', c('ink', 0));
+      micro(p, 0, 15, 'CANEM', c('pompeii', 1));
     }
     return p;
   };

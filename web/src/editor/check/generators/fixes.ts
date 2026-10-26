@@ -1,7 +1,7 @@
 // The level check's one-click fixes: for a finding, the generator that helps (generators/*.ts)
 // set up to change the project's files. Each writes ordinary Game-Maker data, and the panel
 // keeps the files as they were so the fix can be undone.
-import { BACKBL, MONBL, parseBlocks, serializeBlocks } from '../../../formats/blocks';
+import { BACKBL, MONBL, SOLTOP, parseBlocks, serializeBlocks } from '../../../formats/blocks';
 import { serializeGame } from '../../../formats/game';
 import { parseMap, serializeMap } from '../../../formats/map';
 import { parseMonsters, serializeMonsters } from '../../../formats/monster';
@@ -17,7 +17,7 @@ import { contrastColor, fillHazard, outline } from './blockArt';
 import { airBlock, ladderBlock, ladderCells, landmarkBlocks, placeLandmarks } from './mapFixes';
 import { findMazes } from '../checks/mazeCheck';
 
-export interface Fix {
+interface Fix {
   label: string;
   /** What it will do, for its button's tooltip. */
   detail: string;
@@ -74,6 +74,24 @@ function make(f: Finding, project: Project): Fix | undefined {
         apply: () => {
           const mbl = parseBlocks(files.get(mblName)!, MONBL);
           for (const p of new Set(pics)) mbl[p].pixels = outline(mbl[p].pixels, color);
+          files.set(mblName, serializeBlocks(mbl));
+          return [mblName];
+        },
+      };
+    }
+    case 'no-soltop': {
+      const m = f.where.monster;
+      const mblName = d?.names.mbl;
+      if (!d || !m || !mblName || !files.has(mblName)) return undefined;
+      const pics = [...new Set(pictures(d.mon[m.n]))].filter((p) => d.mbl[p] && d.mbl[p].solid & SOLTOP && d.mbl[p].chHitPt < 0);
+      if (!pics.length) return undefined;
+      return {
+        label: 'Leave out its solid top',
+        detail: `Clears SOLTOP on monster ${m.n}’s hurting pictures (blocks ${pics.join(', ')}), keeping SOLBOT and the sides: the hero still stands on its back and is pushed off its sides.`,
+        files: [mblName],
+        apply: () => {
+          const mbl = parseBlocks(files.get(mblName)!, MONBL);
+          for (const p of pics) mbl[p].solid &= ~SOLTOP;
           files.set(mblName, serializeBlocks(mbl));
           return [mblName];
         },

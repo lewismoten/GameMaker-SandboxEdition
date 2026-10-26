@@ -13,6 +13,7 @@ import './edition.css';
 import { themeButton } from './theme';
 import { viewSwitch } from './viewSwitch';
 import { parseHash } from './urlState';
+import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 
 const modernUi = () => import('./modernUi');
 
@@ -25,6 +26,8 @@ const content = h('div', { class: 'content', id: 'content' });
 let workspace: Workspace | undefined;
 let disposeDesk: (() => void) | undefined;
 let ui: Ui = 'desk';
+/** The magazine at #/magazine, put away when the route moves on. */
+let disposeMagazine: (() => void) | undefined;
 
 function savedUi(): Ui {
   try {
@@ -48,7 +51,7 @@ function rememberUi(next: Ui): void {
 function webShowing(): string | undefined {
   const [kind, id] = parseHash(location.hash).path;
   if (kind === 'game' && id?.startsWith('cd:')) return id;
-  if (kind === 'p' && id) return `project:${id}`;
+  if (kind === 'p' && id) return id.startsWith('look:') ? `cd:${id.slice(5)}` : `project:${id}`;
   return undefined;
 }
 
@@ -60,6 +63,8 @@ async function startDesk(hash?: string): Promise<void> {
   app.classList.remove('modern');
   workspace?.dispose();
   workspace = undefined;
+  disposeMagazine?.();
+  disposeMagazine = undefined;
   document.title = 'Game-Maker 1994';
   // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
   const deskHash = hash ?? (parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk');
@@ -96,6 +101,7 @@ function startModern(hash?: string): void {
       h(
         'nav',
         { class: 'topbar-nav', 'aria-label': 'Site pages' },
+        h('a', { class: 'nav-link nav-games', href: '#/', title: 'All the games: play one, edit a copy, or make your own' }, 'Games'),
         h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
         h(
           'a',
@@ -103,7 +109,16 @@ function startModern(hash?: string): void {
           'Achievements',
         ),
         h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
-        h('a', { class: 'nav-link', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
+        h('a', { class: 'nav-link hide-tiny', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
+        h(
+          'a',
+          {
+            class: 'hide-narrow nav-link',
+            href: '#/library',
+            title: 'Everything to read and print: manuals, maps, newsletters, sticker sheets, TURBO BUTTON magazine and more',
+          },
+          'Library',
+        ),
       ),
       h(
         'button',
@@ -116,10 +131,19 @@ function startModern(hash?: string): void {
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the cast, achievements, the credits, playing offline and the source code', title: 'More' }, '⋯'),
+        h(
+          'summary',
+          {
+            'aria-label': 'More: the guide on small screens, the library, the cast, achievements, the credits, playing offline and the source code',
+            title: 'More',
+          },
+          '⋯',
+        ),
         h(
           'div',
           { class: 'topbar-menu' },
+          h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
+          h('a', { href: '#/library' }, '📚 Library'),
           h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('a', { href: '#/credits' }, '📜 Credits'),
@@ -170,7 +194,7 @@ async function route(): Promise<void> {
     path: [kind, id, file],
   } = parseHash(location.hash);
   content.removeAttribute('role');
-  const { renderHome, renderWebManual, openStored } = await modernUi();
+  const { renderHome, openStored } = await modernUi();
   if (ui !== 'modern') return;
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
@@ -191,7 +215,23 @@ async function route(): Promise<void> {
   }
   workspace?.dispose();
   workspace = undefined;
+  disposeMagazine?.();
+  disposeMagazine = undefined;
   clear(titleSlot);
+  if (kind === 'magazine') {
+    const { renderMagazinePage } = await import('./manual/magazine/viewer');
+    if (ui !== 'modern') return;
+    document.title = `TURBO BUTTON magazine · ${PRODUCT}`;
+    disposeMagazine = renderMagazinePage(content, parseHash(location.hash).params.page);
+    return;
+  }
+  if (kind === 'library') {
+    const { renderLibrary } = await import('./library/libraryPage');
+    if (ui !== 'modern') return;
+    document.title = `Library · ${PRODUCT}`;
+    renderLibrary(content);
+    return;
+  }
   if (kind === 'cast') {
     const { renderCast } = await import('./cast/castPage');
     if (ui !== 'modern') return;
@@ -236,9 +276,12 @@ async function route(): Promise<void> {
   }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
-    const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
-    document.title = `${title ? `${title[0].toUpperCase()}${title.slice(1)} · ` : ''}Guide · ${PRODUCT}`;
+    const { renderWebManual } = await import('./manual/webManual');
+    if (ui !== 'modern') return;
     renderWebManual(content, id);
+    // named after the section shown (its heading), after it is drawn so seo/route.ts can read it
+    const title = id ? content.querySelector('.guide article h1')?.textContent?.trim() : '';
+    document.title = `${title ? `${title} · ` : ''}Guide · ${PRODUCT}`;
     return;
   }
   document.title = PRODUCT;
@@ -271,20 +314,71 @@ function notHere(): void {
   );
 }
 
-window.addEventListener('hashchange', () => void route());
+window.addEventListener('hashchange', () => {
+  // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
+  // page of today's web from the desk (the desk itself never changes the hash with a hashchange)
+  const [kind] = parseHash(location.hash).path;
+  if (ui === 'modern' && kind === 'desk') void startDesk(location.hash);
+  else if (ui === 'desk' && kind !== 'desk' && (/^#\/?$/.test(location.hash) || MODERN_PATHS.includes(kind ?? ''))) {
+    disposeDesk?.();
+    disposeDesk = undefined;
+    startModern();
+  } else void route();
+});
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the library #/library, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
+/** The pages of today's web an address can name. */
+const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash)
-  ? !!startHash
-  : ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
-// #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)
-if (startPath[0] === 'dos') location.replace(`./dos.html${startPath[1] ? `?game=${encodeURIComponent(startPath[1])}` : ''}`);
-else if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
-else void startDesk();
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');
+/** The interface this address (or the last visit) chooses. */
+function startChosen(): void {
+  // #/dos and #/dos/<game>: the PC on its own page (dos.html, dosPage/dosPage.ts)
+  if (startPath[0] === 'dos') location.replace(`./dos.html${startPath[1] ? `?game=${encodeURIComponent(startPath[1])}` : ''}`);
+  else if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
+  else void startDesk();
+}
+
+/**
+ * A game sent by another site (?open=<url> or ?receive, linkIn/ and docs/embed.md): asked
+ * about, kept in this browser, then opened on the desk, in DOS Game-Maker or in today's web.
+ */
+async function openLinked(req: LinkRequest): Promise<void> {
+  // the request leaves the address first, so a reload doesn't ask again
+  const here = new URL(location.href);
+  for (const k of ['open', 'receive', 'in', 'mode', 'from']) here.searchParams.delete(k);
+  const linkHash = /^#\/?(open|receive)(\?|\/|$)/.test(location.hash);
+  history.replaceState(null, '', `${here.pathname}${here.search}${linkHash ? '' : location.hash}`);
+  const { runLinkIn, destinationUrl, destinationHash } = await import('./linkIn/start');
+  const dest = await runLinkIn(req, savedUi() === 'modern' ? 'web' : 'desk');
+  if (!dest) {
+    if (!linkHash) startChosen();
+    else if (savedUi() === 'modern') startModern('#/');
+    else void startDesk('#/desk');
+    return;
+  }
+  // stored before the page may go elsewhere
+  const ach = await import('./achievements/store');
+  await ach.loadAchievements();
+  ach.unlockAchievement('link-in');
+  await ach.achievementsWritten();
+  const url = destinationUrl(dest);
+  if (url) {
+    location.replace(url);
+    return;
+  }
+  if (dest.target === 'desk') {
+    await startDesk(destinationHash(dest));
+    void import('./linkIn/notice').then((m) => m.notTrueDosNotice());
+  } else startModern(destinationHash(dest));
+}
+
+const linkRequest = parseLinkRequest(location.search, startHash, location.href);
+if (linkRequest) void openLinked(linkRequest);
+else startChosen();
 
 registerServiceWorker();
 // achievements: the gm-achievement event, other tabs, and the counted ones kept current

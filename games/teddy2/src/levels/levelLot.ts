@@ -1,6 +1,6 @@
 // Level 7: MEANWHILE... Gwinn Signs Up, at noon on the Fair's back lot, before the gates
 // open, on a windy day. Gwinn hops out of the Ferris wheel car on the ride truck, BOOFs a
-// goose off the path, rides the big fan's breeze along the Klown Klub's costume line, and
+// goose off the path, rides the big fan's breeze along the Clown Club's costume line, and
 // passes under the bandstand, where Honker has the dog show's sign-up sheet (the stage is
 // too high to hop onto from the ground) and Professor Pratfall practices pies (flop, and
 // they sail over). Past the exhibit hall she hops into the breeze from the fan on the creek
@@ -48,7 +48,7 @@ export function lot(): Level {
   m.set(2, 37, 'carL0').set(3, 37, 'carR0').set(2, 38, 'gondola').set(3, 38, 'carR1');
   m.set(6, 38, 'cab00').set(7, 38, 'cab10').set(6, 39, 'cab01').set(7, 39, 'cab11');
   m.set(9, 39, 'signFolks');
-  // Juggles, and the Klown Klub's trailer.
+  // Juggles, and the Clown Club's trailer.
   m.set(10, 38, 'juggles0Top').set(10, 39, 'juggles0Bot');
   for (let bx = 0; bx < 4; bx++) for (let by = 0; by < 2; by++) m.set(12 + bx, 38 + by, `trailer${bx}${by}`);
 

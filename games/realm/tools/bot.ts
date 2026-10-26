@@ -1,5 +1,5 @@
 // A play-testing bot for GameSim: finds its way with a shortest-path search over the blocks
-// Pip can stand on, walks it one straight run at a time, and fights whatever comes at him
+// Pip can stand on (keeping to the roads and streets when keepTo is set), walks it one straight run at a time, and fights whatever comes at him
 // (turns to face it with a one-tick step, then swings). It talks by walking into people, buys
 // by walking into a counter twice, opens gates by walking into them, and drinks a tonic when
 // it's hurt.
@@ -11,7 +11,7 @@ import { LOOT_MONS, cellOnScreen, isKeepsake, isLootBlock, lootScene, monPos } f
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57, t: 20, k: 37 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57, t: 20, z: 44 } as const;
 
 export class Died extends Error {
   constructor() {
@@ -30,6 +30,8 @@ export class Bot {
   loot = false;
   /** In a boss fight: the boss's parts are left to the fight (fight() and walking ignore them). */
   boss = false;
+  /** The extra cost of a step onto a cell off the roads and streets (kit/walkPaths.ts keepToPaths); unset, every way costs the same. */
+  keepTo?: (x: number, y: number) => number;
   constructor(readonly sim: GameSim) {}
 
   say(s: string): void {
@@ -183,7 +185,7 @@ export class Bot {
     return s;
   }
 
-  /** Cheapest path (4 directions) to (tx, ty) over standable blocks, round hurtful ones, not through links (but the target). */
+  /** Cheapest path (4 directions) to (tx, ty) over standable blocks, round hurtful ones (and, with keepTo, along the roads), not through links (but the target). */
   path(tx: number, ty: number, through: Set<string> = new Set()): Pt[] | undefined {
     const { x: sx, y: sy } = this.sim.pos;
     const links = this.linkCells();
@@ -207,7 +209,7 @@ export class Bot {
         const shown = this.sim.shown(nx, ny);
         // round what hurts, and round drafts and currents (they push you off your line)
         const hurt = (shown.chHitPt < 0 ? 40 : 0) + (shown.grav ? 12 : 0);
-        const nd = d + 1 + hurt;
+        const nd = d + 1 + hurt + (this.keepTo?.(nx, ny) ?? 0);
         if (nd < (dist.get(key(nx, ny)) ?? Infinity)) {
           dist.set(key(nx, ny), nd);
           prev.set(key(nx, ny), key(x, y));

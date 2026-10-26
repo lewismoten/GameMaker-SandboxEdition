@@ -10,13 +10,11 @@
 // plays its own timing and the number after it is not used.
 import type { SlideEntry } from '../../../formats/graphicScripts';
 
-export type ClipKind = 'gif' | 'bkd' | 'fli' | 'txt' | 'lst' | 'other';
+type ClipKind = 'gif' | 'bkd' | 'fli' | 'txt' | 'lst' | 'other';
 export type Then = 'key' | 'none' | 'seconds';
 
 /** Most lines FileListClass holds. */
 export const MAX_SLIDES = 100;
-/** Longest name FileEntry keeps. */
-export const MAX_NAME = 15;
 /** FadeTo: 65 steps of a 70 Hz retrace. */
 export const FADE_SECONDS = 65 / 70;
 

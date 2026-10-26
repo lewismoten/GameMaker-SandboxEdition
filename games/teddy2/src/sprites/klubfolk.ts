@@ -1,4 +1,4 @@
-// The Klown Klub: Doc Leo's friends, two blocks tall and kind to dogs. Honker (a horn and
+// The Clown Club: Doc Leo's friends, two blocks tall and kind to dogs. Honker (a horn and
 // polka dots, always up for a high five), Bubbles (a bubble wand; she loves a good sit),
 // Twirly (a tutu; ask her about spinning), and Professor Pratfall (practicing pie throws,
 // for science). Plus the things around the ring: bowling pins, pies, bubbles.

@@ -7,10 +7,10 @@
 // time since you last left the board decides whether they did. It is real time, measured
 // with Date.now: the desk's DOS TIME moves the room's clock, not this.
 
-export type Mark = 'X' | 'O';
+type Mark = 'X' | 'O';
 /** Nine cells, left to right and top to bottom: 'X', 'O' or ' '. */
 export type Board = string[];
-export type Outcome = Mark | 'draw';
+type Outcome = Mark | 'draw';
 
 /** You must stay off the line at least this long for the other player to take a turn. */
 export const MIN_WAIT_MS = 5 * 60_000;
@@ -30,7 +30,7 @@ const LINES = [
 
 export const emptyBoard = (): Board => Array<string>(9).fill(' ');
 
-export const freeCells = (b: Board): number[] => b.flatMap((c, i) => (c === ' ' ? [i] : []));
+const freeCells = (b: Board): number[] => b.flatMap((c, i) => (c === ' ' ? [i] : []));
 
 /** The three cells in a row, if somebody has them. */
 export function winLine(b: Board): number[] | undefined {
@@ -80,13 +80,13 @@ export const replyDelay = (rand: () => number = Math.random): number => MIN_WAIT
 
 // ---- the saved game ------------------------------------------------------------------------
 
-export interface DoorRecord {
+interface DoorRecord {
   wins: number;
   losses: number;
   draws: number;
 }
 
-export interface DoorGame {
+interface DoorGame {
   board: Board;
   /** Who moved first this game (they take turns from game to game). */
   first: Mark;
@@ -110,7 +110,7 @@ export interface DoorState {
 }
 
 /** A new game: when the other player goes first, their opening move is on its way. */
-export function newGame(first: Mark, rand: () => number = Math.random): DoorGame {
+function newGame(first: Mark, rand: () => number = Math.random): DoorGame {
   const board = emptyBoard();
   return first === 'X' ? { board, first } : { board, first, pending: { cell: replyMove(board, rand), after: replyDelay(rand) } };
 }
@@ -131,7 +131,7 @@ function settle(s: DoorState): DoorState {
   return { ...s, game: { ...s.game, over: o, pending: undefined }, record: r };
 }
 
-export type Turn = 'yours' | 'theirs' | 'over';
+type Turn = 'yours' | 'theirs' | 'over';
 
 export const turn = (g: DoorGame): Turn => (g.over ? 'over' : g.pending ? 'theirs' : 'yours');
 

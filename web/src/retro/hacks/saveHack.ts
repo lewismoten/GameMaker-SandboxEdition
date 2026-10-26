@@ -81,7 +81,7 @@ import {
 import { deskDate } from '../dos/vfs';
 
 const RULE = '='.repeat(79);
-export const SAVEHACK_HEADER = [
+const SAVEHACK_HEADER = [
   RULE,
   '                       SAVEHACK v1.2a - DOS Save Game Editor',
   '                          Written by: vesuvian',
@@ -89,10 +89,10 @@ export const SAVEHACK_HEADER = [
   RULE,
 ];
 /** Callers of the BBS (bbs.ts's last callers, The Sofa's regulars) the author greets. */
-export const SAVEHACK_GREETINGS = ['PIXEL WIZARD', 'THE BLOCKSMITH', 'NIGHT OWL'];
-export const SAVEHACK_BYE = `Thank you for using SAVEHACK! Greetings to: ${SAVEHACK_GREETINGS.join(', ')}, and all SYSOPs!`;
+const SAVEHACK_GREETINGS = ['PIXEL WIZARD', 'THE BLOCKSMITH', 'NIGHT OWL'];
+const SAVEHACK_BYE = `Thank you for using SAVEHACK! Greetings to: ${SAVEHACK_GREETINGS.join(', ')}, and all SYSOPs!`;
 /** The label of the backup taken before SAVEHACK's first change to a game. */
-export const ORIGINAL = 'Original';
+const ORIGINAL = 'Original';
 
 const TOP = 6; // first row under the header
 const BOTTOM = ROWS - 3; // last row above the status line
@@ -426,7 +426,7 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
     for (const f of fields) {
       if (f.group !== group) {
         group = f.group;
-        rows.push({ text: `\xc4\xc4 ${GROUP_LABELS[f.group]} `.padEnd(46, '\xc4'), a: HEAD, selectable: false });
+        rows.push({ text: `── ${GROUP_LABELS[f.group]} `.padEnd(46, '─'), a: HEAD, selectable: false });
         rowField.push(undefined);
       }
       const unused = isUnused(f, labels);

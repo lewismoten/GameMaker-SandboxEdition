@@ -254,11 +254,13 @@ export function fridge(book: BlockBook): Level {
   m.fill(23, 13, 5, 1, 'h');
   m.row(10, 23, 43, 'G').row(10, 33, 34, 'f');
   m.row(7, 23, 43, 'G').row(7, 40, 41, 'f');
-  m.row(4, 23, 44, 'G').row(4, 29, 30, 'f');
+  // a hatch in the top shelf behind the butter's slide: the way down to the celery past it
+  m.row(4, 23, 44, 'G').row(4, 29, 30, 'f').set(39, 4, 'f');
   // the dairy, come to life
   // a tin heart at the back of the fridge's bottom, past the milk, in the corner by the door hinge
   m.set(42, 13, 'tinHeart');
-  m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 24, 2).mon(MON.milk, 24, 3);
+  // (on the top shelf the cream's loop stays a block clear of the milk's walk, so he's never caught between them)
+  m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 29, 2).mon(MON.milk, 24, 3);
   // willpower: seven sticks of celery
   m.set(25, 12, '1').set(24, 9, '1').set(31, 9, '1').set(39, 6, '1').set(35, 3, '1');
   // the door, swung open: its shelves (the mustard, and the mustard seed by it, the ketchup)
@@ -342,5 +344,7 @@ export function reckoning(book: BlockBook): Level {
   m.set(36, 4, ',').set(42, 2, ',');
   m.set(46, 9, 'bathOpen').set(46, 8, 'I');
   m.link(46, 9, 'won');
+  // the wall comes right up to the door, so there is nothing to hop past it to
+  m.col(W - 2, 0, 9, '+');
   return { m, start: at(2, 9), size: [W, H] };
 }

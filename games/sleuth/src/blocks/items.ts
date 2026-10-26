@@ -84,8 +84,8 @@ export const ITEM = {
       // the trick dagger hidden in its folds: a bright, blunt blade
       p.line(9, 9, 14, 14, c('grey', 6)).line(10, 9, 15, 14, c('grey', 5));
       p.rect(8, 7, 3, 2, c('gold', 3));
-      p.rect(14, 16, 5, 3, c('paper', 4));
-      micro(p, 15, 16, '1', c('black', 0));
+      p.rect(14, 14, 5, 6, c('paper', 4));
+      micro(p, 15, 15, '1', c('black', 0));
     }),
   manuscript: (f: Pixels) =>
     onFloor(f, (p) => {

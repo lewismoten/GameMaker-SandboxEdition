@@ -29,7 +29,7 @@ const KEY = {
   d: 0x2064,
   space: 0x3920,
   b: 0x3062,
-  p: 0x1970,
+  g: 0x2267,
   f: 0x2166,
   two: 0x0332,
   three: 0x0433,
@@ -68,7 +68,7 @@ export function buildCharacter(): Character {
   ]);
   set(S[SEQ.die], [f('hurt_white', 2), f('die0', 3), f('die1', 4), f('die2', 4), f('die3', 24)], { sound: SND.die });
   set(S[SEQ.hurt], [f('hurt_white', 2), f('hurt_red', 2), f('hurt_white', 2), f('hurt_red', 1)], { sound: SND.hurt });
-  set(S[SEQ.pickup], [f('idle_sway', 2), f('down_stand', 2)], { key: KEY.p, sound: SND.pickup, ground: 1, norepeat: 1, jstkMov: 0, jstkBut: 0 });
+  set(S[SEQ.pickup], [f('idle_sway', 2), f('down_stand', 2)], { key: KEY.g, sound: SND.pickup, ground: 1, norepeat: 1, jstkMov: 0, jstkBut: 0 });
   set(S[SEQ.drop], [f('down_stand', 1)], { key: 0 });
 
   const moves: [number, number, string, number, number, boolean, number][] = [

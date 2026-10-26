@@ -22,7 +22,7 @@ import type { IndexedImage } from '../formats/gif';
 import type { IconColors } from './macIcon';
 
 export type WinArch = 'x64' | 'arm64';
-export const WIN_PLAYER_PATHS: Record<WinArch, string> = { x64: 'win/GameMakerPlayer-x64.exe', arm64: 'win/GameMakerPlayer-arm64.exe' };
+const WIN_PLAYER_PATHS: Record<WinArch, string> = { x64: 'win/GameMakerPlayer-x64.exe', arm64: 'win/GameMakerPlayer-arm64.exe' };
 
 export interface WinAppOptions {
   title: string;

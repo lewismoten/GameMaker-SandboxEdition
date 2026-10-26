@@ -1,4 +1,4 @@
-// Level 5: The Klown Klub, showtime. Earn three tickets from Doc Leo's friends with
+// Level 5: The Clown Club, showtime. Earn three tickets from Doc Leo's friends with
 // tricks (a high five for Honker, a sit for Bubbles, a spin for Twirly), get through the
 // turnstile, roll a fluff ball into the bowling pins under the bleachers, play dead under
 // the Pie-O-Matic's test pies, spin through the stage door, dig under the stage
@@ -35,7 +35,7 @@ export function klub(): Level {
   m.rect(0, 20, 3, 20, 'canvas');
   m.rect(86, 20, 14, 20, 'canvas');
 
-  // The midway in front of the big top: string lights, the three klub members.
+  // The midway in front of the big top: string lights, the three club members.
   const door = 22;
   m.rect(3, 30, door - 3, 10, (x) => (x % 2 ? 'tentOut' : 'tentOut2'));
   m.rect(3, 29, door - 3, 1, 'tentEave');
@@ -160,7 +160,7 @@ export function klub(): Level {
   void cut;
   return {
     file: 'klub',
-    title: 'The Klown Klub',
+    title: 'The Clown Club',
     time: 'show',
     bs,
     beasts,

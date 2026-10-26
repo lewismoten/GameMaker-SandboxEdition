@@ -5,6 +5,7 @@ import { Project } from '../core/project';
 import { libraryGame } from '../core/library';
 import { loadCatalog } from '../../project/files';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame } from '../../formats/game';
+import { beginFirstSteps } from './firstSteps';
 import { closeGaps } from '../editors/integrator/integratorLayout';
 import { BACKBL, parseBlocks } from '../../formats/blocks';
 import { parseSoundSet } from '../../formats/sound';
@@ -84,5 +85,7 @@ export async function starterProject(title: string, from = 'sample'): Promise<Pr
   // the scenes snug together, so the scene board opens at a readable size
   for (const [i, pos] of closeGaps(game)) game.scenes[i].pos = pos;
   p.files.set(p.gam, serializeGame(game));
+  // the First steps checklist ticks as these files change
+  beginFirstSteps(p);
   return p;
 }

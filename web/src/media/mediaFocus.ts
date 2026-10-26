@@ -6,7 +6,7 @@
 // lets go: the visitor just watched something, and a demo bursting into sound as the
 // dialog closes would be unwelcome (the preview's ▶ Watch demo is right there).
 
-export type MediaKind = 'preview' | 'player';
+type MediaKind = 'preview' | 'player';
 
 interface Claim {
   kind: MediaKind;

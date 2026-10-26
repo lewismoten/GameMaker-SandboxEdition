@@ -38,7 +38,7 @@ import { parseSave, SaveFormatError, serializeSave, type SavedGame } from './sav
 import type { FileSource } from './gameLabels';
 
 /** A level a save can be put in, and the link the hero arrives by. */
-export interface SaveLevel {
+interface SaveLevel {
   scene: number;
   /** The integrator's scene description ('' when none). */
   name: string;
@@ -162,7 +162,7 @@ export function moveSaveHero(files: FileSource, gam: string, save: SavedGame, x:
 }
 
 /** A picture of a save's screen as the game shows it after F6. */
-export interface SavePicture {
+interface SavePicture {
   /** VISIBLE_W x VISIBLE_H palette indices (the playing view; CropScreen hides the rest). */
   width: number;
   height: number;

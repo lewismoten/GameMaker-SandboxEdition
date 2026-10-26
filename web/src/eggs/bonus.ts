@@ -1,17 +1,17 @@
-// Two more eggs, kept apart from the dozen: they never count toward it (what the dozen
-// unlocks still needs exactly the twelve in eggs.ts), and nothing loads this file until the
-// dozen is complete (eggDisplay.ts and eggExe.ts import it only then).
+// Two more eggs, kept apart from the felt eggs: they never count toward them (what the felt
+// eggs unlock still needs exactly the ones in eggs.ts), and nothing loads this file until the
+// felt eggs are all found (eggDisplay.ts and eggExe.ts import it only then).
 //
 // DETECTION works as in eggs.ts: an egg is found when any saved slot of its game holds it, as
 // `detect` says ({ block: N } in the inventory, or { counter: N, atLeast: M }). Until `detect`
 // is set, an egg can only be added with EGG.EXE. EGG.EXE's overrides for these two live in the
-// same `gm-eggs` record as the dozen's, keyed `<game>/<id>` (bonusKey) so they never collide
+// same `gm-eggs` record as the felt eggs', keyed `<game>/<id>` (bonusKey) so they never collide
 // with a game's own key.
 import type { EggDetect } from './eggs';
 import { EGGS_CHANGED, readOverrides, savesHold, statusOf, type EggStatus, type Override } from './eggState';
 import { loadSaveData } from '../project/storage';
 
-export interface BonusEgg {
+interface BonusEgg {
   game: string;
   id: 'rotten' | 'faberge';
   gameTitle: string;
@@ -35,7 +35,7 @@ export const BONUS_EGGS: readonly BonusEgg[] = [
       'Aged to perfection by Claude Opus 5.5',
       'Cracked by Lewis "Lewie" Moten III, who said "do not shake it" and then shook it',
       'Sniffed, and firmly declined, by Teddy',
-      "Rolled under the stove by Gwinn (two n's), twice",
+      'Rolled under the stove by Gwinn, twice',
       'Doc Leo held his nose and the flashlight',
     ],
     lore: 'Family legend: in 1776 a Redcoat quartermaster hid the regiment\'s root beer recipe inside a hollow egg, reasoning that no patriot would ever steal a rotten one. He was wrong, and he was downwind. The recipe went west in a saddlebag, the Redcoats went home thirsty, and the family kept the egg "for the heart of the matter."',
@@ -51,9 +51,9 @@ export const BONUS_EGGS: readonly BonusEgg[] = [
     credits: [
       'Baked by Lewis "Lewie" Moten III and Claude Opus 5.5 (one kept the oven, one kept count)',
       'Clockwork baker modeled on Doc Leo, who insists the hat is regulation',
-      "Taste-tested by Teddy and Gwinn (two n's), against strict orders",
+      'Taste-tested by Teddy and Gwinn, against strict orders',
     ],
-    lore: 'The thirteenth egg of a baker\'s dozen, right where the recipe always said it would be. Ingredient 13 was never an ingredient: "Pour one for whoever is still waiting at the table." The Redcoats had the recipe; the patriots had the root beer, and refills. History calls it a revolution. The family calls it a second glass.',
+    lore: 'One more egg than anybody had, right where the recipe always said it would be. Ingredient 13 was never an ingredient: "Pour one for whoever is still waiting at the table." The Redcoats had the recipe; the patriots had the root beer, and refills. History calls it a revolution. The family calls it a second glass.',
     detect: { block: 5 },
   },
 ];

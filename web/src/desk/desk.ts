@@ -25,12 +25,13 @@ import './boxes/gmBox.css';
 import { SANDBOX_SHOTS, sandboxShots } from '../gfx/sandboxShots';
 import { fitStage } from './stage';
 import { keyCardSpot } from './pc/keyCard';
-import { regSide } from '../retro/gmReg/regSide';
+import { regSideLater } from '../retro/gmReg/regSideLater';
 import { newsClipping } from './room/newsClipping';
 import { phoneNotes } from './room/phoneNotes';
 import { wallClock } from './room/wallClock';
 import { wasteBasket } from './room/wasteBasket';
 import { roomDoor } from './room/roomDoor';
+import { paperStack } from './room/paperStack';
 import { captureStub } from './pc/captureStub';
 import { deskProps } from './props';
 import { EDITION, FORK_NOTE } from '../edition';
@@ -53,7 +54,7 @@ const lazy = {
   gmBox: () => import('./boxes/gmBox'),
   shelf: () => import('./boxes/shelf'),
 };
-export interface DeskNav {
+interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
   toModern(projectId?: string, file?: string): void;
   /** Leave for today's web interface at an address (#/game/cd:<id>), from the view switch. */
@@ -118,6 +119,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   const box = h('div', { class: 'box' });
   // the playing game's key card, taped to the monitor
+  // the PC's keyboard, and (on a phone) the strip of large keys under the PC
+  const keys = keyboard(() => void power(true));
   const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
   const spk = speakers({
     gamePlaying: () => computer?.gamePlaying ?? false,
@@ -199,23 +202,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h(
         'div',
         { class: 'desk-left' },
-        h(
-          'button',
-          {
-            class: 'prop catalog-prop',
-            onclick: () => void catalog(),
-            'aria-label': 'Shareware catalog: games made with Game-Maker',
-          },
-          h(
-            'div',
-            { class: 'paper', 'aria-hidden': 'true' },
-            'SHAREWARE',
-            h('br'),
-            'CATALOG',
-            h('em', null, 'Games made with Game-Maker · Fall 1994 · call our BBS!'),
-          ),
-          h('span', { class: 'caption' }, 'Shareware catalog'),
-        ),
+        paperStack({ catalog: () => void catalog(), magazine: () => void magazine() }),
         h(
           'button',
           {
@@ -270,7 +257,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
-        keyboardTray(keyboard(() => void power(true))),
+        keyboardTray(keys.board),
+        keys.strip,
         // the screen takes every key (Tab too), so it comes last when tabbing: the case,
         // tray and monitor buttons come first and CSS puts them back in their places
         h(
@@ -363,11 +351,15 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   };
   window.addEventListener('keydown', onKey);
   // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the monitor
-  const reg = regSide(
+  const reg = regSideLater(
     () => desk.querySelector<HTMLElement>('.monitor'),
     () => computer?.focus(),
-    // the desk's window: the mail truck comes for the card and drives off with it
-    { onMailed: () => window.dispatchEvent(new CustomEvent('gm-window-event', { detail: { kind: 'mailtruck' } })) },
+    // the desk's window: the mail truck comes for the card and drives off with it; the reply
+    // comes on paper too, under the bedroom door (props/mailDrop.ts)
+    {
+      onMailed: () => window.dispatchEvent(new CustomEvent('gm-window-event', { detail: { kind: 'mailtruck' } })),
+      onReply: (reply) => window.dispatchEvent(new CustomEvent('gm-reg-reply', { detail: reply })),
+    },
   );
 
   function setTurbo(on: boolean): void {
@@ -381,6 +373,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   let poweringOn: Promise<void> | undefined;
   let switchingOff = false;
   async function power(onlyOn = false): Promise<void> {
+    // a desk already left (a click, a key or restore() arriving late) never switches its PC on
+    if (!desk.isConnected) return;
     // the tube still collapsing from switching off: the switch is waiting to be pressed again
     if (switchingOff) return;
     // still loading the PC's insides from the first press: that press switches it on
@@ -470,6 +464,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         const { bottom, scale, dim } = row(i);
         const el = floppyElement(d, true);
         el.classList.add('peek');
+        if (i === 0) el.classList.add('front'); // the one whose label shows whole
         el.style.left = `${x0}px`;
         el.style.bottom = `${bottom}px`;
         el.style.transform = `scale(${scale})`;
@@ -600,14 +595,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       (t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string],
     );
     const [{ openBoxViewer }, { drawGmBox, gmBoxContents }] = await Promise.all([lazy.boxViewer(), lazy.gmBox()]);
+    // the Owner's Guide or an insert read from the box: put it down and the box is back in hand
+    const read = () =>
+      void dosManual().then(() => {
+        if (!desk.isConnected) return;
+        desk.querySelector<HTMLElement>('.gm-box')?.focus({ preventScroll: true });
+        void openGmBox();
+      });
     await openBoxViewer({ title: 'Game-Maker SE 3.0' }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
       insertLabel: 'Put the CD in and start Game-Maker',
-      manual: () => void dosManual(),
+      manual: read,
       extras: gmBoxContents(
         () => {
           document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
-          void dosManual();
+          read();
         },
         () => {
           document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
@@ -657,7 +659,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     const made = scene
       ? await gameShelf(scene, games, {
           insert: (id) => void insertOriginal(id),
-          manual: (g, front) => void gameManual(g, front),
+          manual: (g, front) => gameManual(g, front),
         })
       : undefined;
     if (fill !== shelfFill) {
@@ -689,9 +691,51 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     );
   }
 
+  /** The magazine lying on the desk with the catalog (open=magazine); its links play disks, call the BBS and look at the props. */
+  const magazine = () =>
+    opened('magazine', async () =>
+      (await import('../manual/magazine/viewer')).openMagazine({
+        where: 'desk',
+        desk: {
+          play: (id) => void insertOriginal(id),
+          bbs: (board) => void command(`C:\nTERMINAL${board ? ` ${board.toUpperCase()}` : ''}`),
+          gm: () => void startGameMaker(),
+          look,
+        },
+      }),
+    );
+
+  /** Turns to a prop on the desk (look=modem…, from the magazine's ads): opens what opens, points out the rest. */
+  function look(prop: string): void {
+    if (prop === 'catalog') return void catalog();
+    if (prop === 'gmbox') return void openGmBox();
+    if (prop === 'diskbox') return void flip();
+    if (prop === 'mug') return void import('./mug/mugViewer').then((m) => m.openMugViewer());
+    const el =
+      prop === 'modem'
+        ? modem.el
+        : prop === 'speakers'
+          ? spk.right
+          : prop === 'gamepad'
+            ? desk.querySelector<HTMLElement>('.game-pad')
+            : prop === 'mousepad'
+              ? desk.querySelector<HTMLElement>('.mouse-pad')
+              : undefined;
+    if (!el) return;
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    (el.querySelector<HTMLElement>('button, [role="button"]') ?? el).focus({ preventScroll: true });
+    el.classList.add('desk-look');
+    setTimeout(() => el.classList.remove('desk-look'), 3000);
+  }
+
   /** Comes back to what the address describes: the disk in A:, the program running, what is open. */
   async function restore(): Promise<void> {
     const { disk, run, open } = wanted;
+    const looking = deskView.get('look');
+    if (looking) {
+      deskView.set({ look: undefined });
+      look(looking);
+    }
     if (!disk && !run && !open) return;
     if (!disks.length) await refreshDisks();
     const d = disk ? disks.find((x) => x.id === disk) : undefined;
@@ -706,6 +750,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     else if (run === 'bbs') await command('C:\nTERMINAL');
     else if (run) await power(true);
     if (open === 'catalog') void catalog();
+    else if (open === 'magazine') void magazine();
     else if (open === 'gm-box') void openGmBox();
     else if (open === 'gm-manual') void dosManual();
     else if (open?.startsWith('manual:')) {
@@ -724,7 +769,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     () => fetch('./gm/index.json'), // C:\GM's listing, so GM starts offline too
   ]);
   void loadGameList().then((cat) => fillShelf(cat.filter((g) => g.original?.box)));
-  // a secret game revealed or hidden again (all twelve eggs found, or EGG.EXE): the shelf
+  // a secret game revealed or hidden again (every felt egg found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
     const cat = await loadGameList().catch(() => [] as CatalogEntry[]);
@@ -748,11 +793,22 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   // the tin heart hunt's trophy, once every heart is found (nothing at all until then)
   let unTrophy: (() => void) | undefined;
-  void import('../tinHearts/trophy').then(({ heartTrophy }) => {
+  void import('../tinHearts/trophySpot').then(({ heartTrophy }) => {
     if (!desk.isConnected) return;
     unTrophy = heartTrophy((el) => {
       const clip = desk.querySelector('.news-clipping');
       if (clip) clip.after(el);
+      else desk.querySelector('.desk-scene')?.append(el);
+    });
+  });
+  // the score trophies, once a game ends with points (nothing at all until then)
+  let unScores: (() => void) | undefined;
+  void import('../scoreTrophies/trophySpot').then(({ scoreTrophies }) => {
+    if (!desk.isConnected) return;
+    unScores = scoreTrophies((el) => {
+      // after the shelf's eggs and tin heart trophy when you Tab along the wall
+      const after = desk.querySelector('.heart-trophy') ?? desk.querySelector('.news-clipping');
+      if (after) after.after(el);
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
@@ -776,9 +832,19 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unCatalog();
     unEggs?.();
     unTrophy?.();
+    unScores?.();
     removeWarp();
     capture?.dispose();
-    computer?.screen.destroy();
-    computer?.keys.detach();
+    // the PC goes with the desk: whatever it runs stops, and its sound with it (a game, the
+    // BBS's modem, a beep), its timers and keys too. Coming back makes a new desk with the PC
+    // off, as before; one switching off already is disposed of by switchOff's own timer.
+    if (computer && !switchingOff) shutDown(computer);
+    else if (!computer) void pcLoad?.then(shutDown); // still loading: switched off once it is
   };
+}
+
+/** A desk's PC when the desk is left: switched off (every sound cut) and disposed of. */
+function shutDown(pc: Computer): void {
+  pc.powerOff();
+  pc.dispose();
 }

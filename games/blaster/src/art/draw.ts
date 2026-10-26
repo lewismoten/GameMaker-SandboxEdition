@@ -2,6 +2,7 @@
 import { emptyBlock, type Block } from '../../../../web/src/formats/blocks';
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels, dither } from '../../../kit/pixels';
+import { textInk } from '../../../kit/textBounds';
 
 export const CLEAR = 255;
 
@@ -89,13 +90,19 @@ export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: num
 
 /** The PC's 8x8 font, optionally scaled. */
 export function text(p: Pixels, x: number, y: number, s: string, c: number, scale = 1): Pixels {
+  const ink = textInk(p, s);
+  const dot = (dx: number, dy: number, dw: number, dh: number) => {
+    p.rect(dx, dy, dw, dh, c);
+    ink?.add(dx, dy, dw, dh);
+  };
   [...s].forEach((ch, i) => {
     const code = ch.charCodeAt(0) & 255;
     for (let row = 0; row < 8; row++) {
       const bits = FONT8X8[code * 8 + row];
-      for (let col = 0; col < 8; col++) if (bits & (1 << col)) p.rect(x + (i * 8 + col) * scale, y + row * scale, scale, scale, c);
+      for (let col = 0; col < 8; col++) if (bits & (1 << col)) dot(x + (i * 8 + col) * scale, y + row * scale, scale, scale);
     }
   });
+  ink?.end();
   return p;
 }
 
@@ -271,12 +278,19 @@ const MICRO: Record<string, string> = {
   '>': '100010001010100',
   '<': '001010100010001',
   _: '000000000000111',
+  '\\': '100100010001001',
 };
 
 export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pixels {
+  const ink = textInk(p, s, undefined, (ch) => ch in MICRO || ch.toUpperCase() in MICRO);
+  const dot = (dx: number, dy: number, dw: number, dh: number) => {
+    p.rect(dx, dy, dw, dh, c);
+    ink?.add(dx, dy, dw, dh);
+  };
   [...s].forEach((ch, i) => {
     const g = MICRO[ch] ?? MICRO[ch.toUpperCase()] ?? MICRO['?'];
-    for (let k = 0; k < 15; k++) if (g[k] === '1') p.set(x + i * 4 + (k % 3), y + Math.floor(k / 3), c);
+    for (let k = 0; k < 15; k++) if (g[k] === '1') dot(x + i * 4 + (k % 3), y + Math.floor(k / 3), 1, 1);
   });
+  ink?.end();
   return p;
 }

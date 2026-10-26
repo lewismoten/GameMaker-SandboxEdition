@@ -1,7 +1,7 @@
 // Writes games/blaster/walkthrough.json: the bot pilot flies every leg of every stage in
 // order (as check.ts does), one key segment a leg, with the ship's energy, score and Nova
 // Bombs carried from leg to leg as the game carries them, and games/kit/walkthrough.ts checks
-// the whole run on the real engine (title, story, all fifteen legs, the ending, the credits).
+// the whole run on the real engine (title, story, all sixteen legs, the ending, the credits).
 // It never takes a side room's way in.
 //   cd web && npx vite-node ../games/blaster/tools/walkthrough.ts
 import { newCharInfo } from '../../../web/src/engine/world';

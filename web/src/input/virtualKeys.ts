@@ -106,7 +106,7 @@ const KEY_CODES: Record<string, number> = {
   Quote: 222,
 };
 
-export type Modifier = 'shift' | 'ctrl' | 'alt';
+type Modifier = 'shift' | 'ctrl' | 'alt';
 
 /** Which modifier a code is, if it is one. */
 export function modifierOf(code: string): Modifier | undefined {
@@ -135,13 +135,7 @@ function keyCodeFor(code: string): number {
 }
 
 /** Sends one keydown or keyup to `target`, as the browser would for a real key. */
-export function sendKey(
-  target: EventTarget,
-  code: string,
-  down: boolean,
-  mods: Record<Modifier, boolean>,
-  opts: { caps?: boolean; repeat?: boolean } = {},
-): boolean {
+function sendKey(target: EventTarget, code: string, down: boolean, mods: Record<Modifier, boolean>, opts: { caps?: boolean; repeat?: boolean } = {}): boolean {
   const e = new KeyboardEvent(down ? 'keydown' : 'keyup', {
     key: keyFor(code, mods.shift, opts.caps),
     code,

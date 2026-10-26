@@ -8,7 +8,7 @@ import type { OplPreset } from '../../../audio/oplPatch';
 import { programChanges, setStartProgram, startProgram } from '../../../formats/cmfEdit';
 import type { MusicDoc } from './doc';
 
-export interface PickFor {
+interface PickFor {
   /** The MIDI channel (track) the sound is for. */
   ch: number;
   /** Whose sound it is, for the title ("Track 2", "Instrument 5"). */
@@ -18,7 +18,7 @@ export interface PickFor {
 }
 
 /** The presets a channel can use: its drum's in rhythm mode, else every melodic one. */
-export function presetsFor(ch: number, rhythm: boolean): OplPreset[] {
+function presetsFor(ch: number, rhythm: boolean): OplPreset[] {
   const slot = rhythm ? slotOfChannel(ch) : undefined;
   return slot ? OPL_PRESETS.filter((p) => p.drum === slot) : OPL_PRESETS.filter((p) => !p.drum);
 }

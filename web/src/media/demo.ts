@@ -3,7 +3,7 @@
 // and the first level's intro can be skipped so the video starts with the playing; that
 // only changes a copy of the game in memory, never the game's own files.
 import './demo.css';
-import { h, modal, toast } from '../editor/core/ui';
+import { download, h, modal, toast } from '../editor/core/ui';
 import { GameFiles } from '../project/files';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import { parseGame, serializeGame } from '../formats/game';
@@ -12,7 +12,6 @@ import type { Session } from '../engine/scene';
 import { LiveRecorder, recorderFormat } from './video';
 import { AudioMix } from './audioTap';
 import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demoAudio';
-import { saveBlob } from './screenCapture';
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
 import { claimMediaFocus } from './mediaFocus';
@@ -65,7 +64,7 @@ function loadSkip(): boolean {
   }
 }
 
-export interface DemoOptions {
+interface DemoOptions {
   title: string;
   files: GameFiles;
   gam: string;
@@ -115,7 +114,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
     v.mix.dispose();
     if (!keep) return;
     const name = `${o.title.replace(/[^\w-]+/g, '-').toLowerCase() || 'demo'}-demo-320x200.${v.rec.ext}`;
-    saveBlob(name, blob);
+    download(name, blob);
     status.textContent = `Saved ${name} (${(blob.size / 1e6).toFixed(1)} MB).`;
   };
 

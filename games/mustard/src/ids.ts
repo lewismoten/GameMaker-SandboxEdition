@@ -41,7 +41,6 @@ export const SEQ = {
   hopW: 13,
   rootS: 14,
   joy: 15,
-  joyH: 16,
   hopLeft7: 17,
   hopRight9: 18,
 } as const;
@@ -59,13 +58,12 @@ export const KEY = {
   d: 0x2064,
   q: 0x1071,
   e: 0x1265,
-  h: 0x2368,
   home: 0x4700,
   pgup: 0x4900,
 } as const;
 
 /** PC scan codes the bot and the demo press. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, h: 35 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18 } as const;
 
 /**
  * Water: raindrops caught and drops of groundwater. Counters 20 and up refuse a touch that

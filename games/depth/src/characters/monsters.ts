@@ -30,8 +30,11 @@ export const SHOT_POWER = 150;
 
 /** A patrol back and forth: `run` blocks one way, then back. */
 const patrol = (dx: number, dy: number, speed: number) => [corner(dx, dy, speed), corner(-dx, -dy, speed)];
-/** A square walk (a friend strolling). */
-const square = (w: number, h: number, speed: number) => [corner(w, 0, speed), corner(0, h, speed), corner(-w, 0, speed), corner(0, -h, speed)];
+/** A square walk (a friend strolling): a diamond on the map, two legs right and two left, the
+ * left ones mirrored so the friend (drawn side on, facing right) faces the way it goes. */
+const square = (w: number, h: number, speed: number) => [corner(w, 0, speed), corner(0, h, speed, 4), corner(-w, 0, speed, 4), corner(0, -h, speed)];
+/** A friend's patrol: right, then back left facing left. */
+const stroll = (dx: number, speed: number) => [corner(dx, 0, speed), corner(-dx, 0, speed, 4)];
 
 export function buildMonsters(sp: SpriteSet): Monster[] {
   const set = newMonsterSet();
@@ -85,7 +88,7 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
       [m('leo1'), 5],
     ],
     { power: 200, thru: 1 },
-    patrol(4, 0, 1),
+    stroll(4, 1),
   );
   set[MON.bat] = mon(anim('bat', 2, 2), { power: 85, thru: 0, towards: 2, end: 120, newmon: MON.pop, upscore: 40 });
   // Count Polygon: a ray cracks him (he blinks), another shatters him (he blinks faster), a

@@ -6,11 +6,12 @@ import { pickFile } from '../widgets/filePicker';
 import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
-import { editors, fileInfo } from '../editors/registry';
+import { icon } from './homeIcons';
+import { loadEditor, type EditorFn } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
-import { mountPlayer, type PlayerHandle } from '../../player/player';
+import type { PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
@@ -19,6 +20,10 @@ import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 import { noteOpened, quickOpen } from './quickOpen';
 import { usedByLine, deleteMessage } from './usedBy';
+import { firstStepsState, notePlayed } from './firstSteps';
+import type { FirstStepsPanel } from './firstStepsPanel';
+import { readOnlyBar } from './released';
+import { saveNote } from './saveNote';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -62,33 +67,66 @@ const KIND_HELP: Partial<Record<FileKind, string>> = {
   rec: 'a recorded demo',
 };
 
-/** Sections with more files than this can be folded away. */
+/** Sections with more files than this can be folded away; in a game this big, every section can. */
 const FOLD_AT = 8;
-const FOLD_KEY = 'gm-file-folds';
+/** A game with this many files opens with every section folded (but the open file's). */
+const FOLD_ALL_AT = 20;
+/** Each game's folds, by project id then kind. */
+const FOLD_KEY = 'gm-file-folds-by-game';
 
-function folds(): Record<string, boolean> {
+function folds(project: string): Record<string, boolean> {
   try {
-    return JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, boolean>;
+    return (JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, Record<string, boolean>>)[project] ?? {};
   } catch {
     return {};
   }
 }
 
-/** Folded unless chosen otherwise; very long lists start folded. */
-function isFolded(kind: FileKind, count: number): boolean {
-  return folds()[kind] ?? count > 24;
+/** Folded unless chosen otherwise: a big game's sections start folded, and a very long list does. */
+function isFolded(project: string, kind: FileKind, count: number, total: number): boolean {
+  return folds(project)[kind] ?? (total >= FOLD_ALL_AT || count > 24);
 }
 
-function setFolded(kind: FileKind, folded: boolean): void {
+function setFolded(project: string, kind: FileKind, folded: boolean): void {
   try {
-    localStorage.setItem(FOLD_KEY, JSON.stringify({ ...folds(), [kind]: folded }));
+    const all = JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, Record<string, boolean>>;
+    localStorage.setItem(FOLD_KEY, JSON.stringify({ ...all, [project]: { ...all[project], [kind]: folded } }));
   } catch {
     /* private mode: the fold just isn't remembered */
   }
 }
 
+/** Each kind's hue, for the colored extension that tells files apart at a glance (editor.css .ext). */
+const KIND_HUE: Partial<Record<FileKind, number>> = {
+  gam: 0,
+  pal: 320,
+  bbl: 25,
+  mbl: 280,
+  cbl: 200,
+  mon: 350,
+  chr: 240,
+  map: 140,
+  snd: 45,
+  gif: 180,
+  fli: 260,
+  bkd: 100,
+  txt: 215,
+  lst: 300,
+  cmf: 160,
+  voc: 10,
+  rec: 60,
+  his: 35,
+};
+
+/** A file's name with its extension colored by kind. */
+function fileLabel(name: string, k: FileKind): (string | HTMLElement)[] {
+  const dot = name.lastIndexOf('.');
+  if (dot <= 0 || KIND_HUE[k] === undefined) return [name];
+  return [name.slice(0, dot), h('span', { class: 'ext', style: `--ext-h:${KIND_HUE[k]}` }, name.slice(dot))];
+}
+
 /** Search: every word must appear in the name ("lev map" finds level1.map). */
-export function matchesFile(name: string, query: string): boolean {
+function matchesFile(name: string, query: string): boolean {
   const n = name.toLowerCase();
   return query
     .toLowerCase()
@@ -105,9 +143,18 @@ export class Workspace {
   private cleanup?: () => void;
   private player?: PlayerHandle;
   private unlisten: () => void;
+  /** The beginner's checklist, in games started from the starter (firstSteps.ts). */
+  private firstSteps?: FirstStepsPanel;
+  /** A game opened to look inside (released.ts): its bar over the editor, and no ways to add, rename or delete files. */
+  private readonly bar: HTMLElement | null;
+  private get looking(): boolean {
+    return !!this.project.readOnly;
+  }
 
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
+    this.bar = readOnlyBar(project);
+    this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
@@ -148,7 +195,25 @@ export class Workspace {
     };
     document.addEventListener('keydown', onHelpKey);
     this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey));
+    if (firstStepsState(project)) void this.loadFirstSteps();
   }
+
+  /** The First steps panel (its own chunk, loaded only for games that have the checklist). */
+  private async loadFirstSteps(): Promise<void> {
+    const { firstStepsPanel } = await import('./firstStepsPanel');
+    if (this.disposed) return;
+    this.firstSteps = firstStepsPanel(this.project, {
+      open: (f) => this.open(f),
+      play: () => this.play(true),
+      upload: () => void import('../widgets/uploadChecklist').then((m) => m.uploadChecklist(this.project)),
+    });
+    this.renderSidebar();
+  }
+
+  private disposed = false;
+
+  /** "Saved in this browser" under Download (not when only looking inside). */
+  private saved?: ReturnType<typeof saveNote>;
 
   private unbind?: () => void;
 
@@ -165,6 +230,9 @@ export class Workspace {
   }
 
   dispose(): void {
+    this.disposed = true;
+    this.saved?.dispose();
+    this.firstSteps?.dispose();
     this.cleanup?.();
     this.player?.stop();
     this.unlisten();
@@ -204,21 +272,25 @@ export class Workspace {
           this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
         ),
         this.playButton(),
+        this.firstSteps?.button(),
       ),
       h(
         'div',
         { class: 'side-files', id: 'side-files' },
-        h(
-          'div',
-          { class: 'toolbar side-actions' },
-          h('button', { onclick: () => void this.newFile() }, '+ Add a file…'),
-          h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
-        ),
+        this.looking
+          ? null
+          : h(
+              'div',
+              { class: 'toolbar side-actions' },
+              h('button', { onclick: () => void this.newFile() }, '+ Add a file…'),
+              h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
+            ),
         h(
           'div',
           { class: 'toolbar side-actions' },
           downloadButton(this.project.name, () => this.chooseDownload()),
         ),
+        this.saved?.el,
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
       ),
@@ -253,8 +325,10 @@ export class Workspace {
   /** One kind of file: a heading (with a fold toggle once there are many) and its files. */
   private section(k: FileKind, files: string[]): HTMLElement {
     const p = this.project;
-    const foldable = files.length > FOLD_AT;
-    const folded = foldable && isFolded(k, files.length);
+    const total = p.files.names().length;
+    const foldable = k !== 'gam' && (files.length > FOLD_AT || (total >= FOLD_ALL_AT && files.length > 0));
+    // the open file's section is never folded away from it
+    const folded = foldable && !(this.current && files.includes(this.current)) && isFolded(p.id, k, files.length, total);
     const sec = h('section', {
       class: `file-section${foldable ? ' foldable' : ''}${folded ? ' folded' : ''}${files.length ? '' : ' none'}`,
       'data-kind': k,
@@ -262,7 +336,7 @@ export class Workspace {
     const toggle = () => {
       const now = !sec.classList.contains('folded');
       sec.classList.toggle('folded', now);
-      setFolded(k, now);
+      setFolded(p.id, k, now);
       head.setAttribute('aria-expanded', String(!now));
     };
     const head = foldable
@@ -270,16 +344,23 @@ export class Workspace {
           'button',
           { class: 'fold', 'aria-expanded': String(!folded), title: 'Show or hide these files', onclick: toggle },
           h('span', { class: 'chev', 'aria-hidden': 'true' }, '▸'),
+          h('span', { class: 'kind-emoji', 'aria-hidden': 'true' }, KIND_ICON[k]),
           h('span', null, KIND_LABELS[k]),
           h('span', { class: 'count' }, String(files.length)),
         )
-      : h('span', null, KIND_LABELS[k], files.length ? null : h('span', { class: 'none-yet' }, ' · none yet'));
+      : h(
+          'span',
+          null,
+          h('span', { class: 'kind-emoji', 'aria-hidden': 'true' }, KIND_ICON[k]),
+          KIND_LABELS[k],
+          files.length ? null : h('span', { class: 'none-yet' }, ' · none yet'),
+        );
     const parts: (HTMLElement | null)[] = [
       h(
         'h2',
         { class: 'file-kind' },
         head,
-        k === 'gam'
+        k === 'gam' || this.looking
           ? null
           : h(
               'button',
@@ -296,9 +377,9 @@ export class Workspace {
         h(
           'div',
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
-          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, n),
+          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k)),
           h('button', { class: 'icon-btn', title: `Edit ${n}`, 'aria-label': `Edit ${n}`, onclick: () => this.open(n) }, '✎'),
-          n === p.gam
+          n === p.gam || this.looking
             ? null
             : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
         ),
@@ -333,6 +414,7 @@ export class Workspace {
 
   /** Adds a file of one kind: new, from the library, or from your computer. */
   private async addOfKind(kind: FileKind): Promise<void> {
+    await import('../tools/all'); // the converters and recorders offered beside New
     const name = await pickFile(this.project, kind, { adding: true, title: `Add ${KIND_LABELS[kind].toLowerCase()}`, actions: this.makers(kind) });
     if (name) this.open(name);
   }
@@ -367,8 +449,10 @@ export class Workspace {
     this.renderSidebar();
     const body = h('div');
     const isGam = file === this.project.gam;
+    const changes = !this.looking;
     clear(
       this.main,
+      this.bar,
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
@@ -385,7 +469,8 @@ export class Workspace {
               'aria-keyshortcuts': 'Control+P Meta+P',
               onclick: () => void this.quickOpen(),
             },
-            h('span', { 'aria-hidden': 'true' }, '⌕'),
+            // drawn, like the keyboard beside it (the ⌕ character came out tiny in most fonts)
+            icon('search'),
           ),
           h(
             'button',
@@ -399,21 +484,39 @@ export class Workspace {
             keyboardIcon(),
           ),
           fileActions([
-            ...(isGam ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
-            { label: 'Duplicate', run: () => void this.duplicate(file) },
+            ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
+            ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
             {
               label: 'Download file',
               run: () => download(file.toUpperCase(), this.project.files.get(file)!),
               title: `Save ${file.toUpperCase()} to your computer`,
             },
-            ...(isGam ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
+            ...(isGam || !changes ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
       ),
       isGam ? this.nextSteps() : usedByLine(this.project, file),
       body,
     );
-    const editor = editors[kindOf(file)] ?? fileInfo;
+    void this.mountEditor(body, file);
+  }
+
+  /** Puts the file's editor in body, fetching it the first time a file of its kind opens (a note shows if that takes a moment). */
+  private async mountEditor(body: HTMLElement, file: string): Promise<void> {
+    const wait = h('p', { class: 'hint', role: 'status' }, 'Opening the editor…');
+    const slow = window.setTimeout(() => body.append(wait), 150);
+    let editor: EditorFn;
+    try {
+      editor = await loadEditor(kindOf(file));
+    } catch (e) {
+      console.error(e);
+      editor = () =>
+        clear(body, h('p', { class: 'hint' }, `The editor could not be loaded (${(e as Error).message}). Check the connection and open the file again.`));
+    } finally {
+      window.clearTimeout(slow);
+      wait.remove();
+    }
+    if (!body.isConnected || this.current !== file) return; // another file (or the player) took its place
     try {
       this.cleanup = editor(body, this.project, file) || undefined;
       foldHint(body.querySelector<HTMLElement>('p.hint'));
@@ -425,6 +528,7 @@ export class Workspace {
 
   /** On the game's own page: one-click ways into the files that make the game its own (can be hidden). */
   private nextSteps(): HTMLElement | null {
+    if (this.looking) return null; // its bar offers the copy that would be changed
     const key = `gm-next-hidden-${this.project.id}`;
     try {
       if (localStorage.getItem(key)) return null;
@@ -511,6 +615,7 @@ export class Workspace {
   /** Play tests the game: from the level being edited when a level's map is open, else from the title screen. Stop goes back to that file. */
   private play(fromTitle = false, back = this.current): void {
     const level = fromTitle ? undefined : this.levelHere(back);
+    notePlayed(this.project);
     setHashParams({ play: fromTitle ? 'title' : true });
     this.cleanup?.();
     this.cleanup = undefined;
@@ -522,6 +627,7 @@ export class Workspace {
     const levelName = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
     clear(
       this.main,
+      this.bar,
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
@@ -541,13 +647,16 @@ export class Workspace {
       h(
         'p',
         { class: 'hint' },
-        level ? `Starts at ${levelName}, the level that uses ${back}. ` : '',
+        level ? `The title and menu still come first (press a key, then choose Play); then it starts at ${levelName}, the level that uses ${back}. ` : '',
         'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
       ),
     );
     const copy = new GameFiles(this.project.files.entries());
     if (level) copy.set(this.project.gam, serializeGame(startingAt(level.game, level.scene)));
-    this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
+    // the player loads with the first play test; not if another file was opened meanwhile
+    void import('../../player/player').then(({ mountPlayer }) => {
+      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
+    });
   }
 
   /** The "Add a file" dialog: a grid of every kind of file, with a picture of each. */

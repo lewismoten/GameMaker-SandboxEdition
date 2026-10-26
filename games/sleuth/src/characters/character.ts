@@ -1,6 +1,6 @@
 // ADA.CHR and ADA.CBL: Inspector Penn walks in eight directions on the arrows, on WASD,
 // on Q/E (up and to the side) and on the number pad's corners; Space picks things up;
-// L raises the prop magnifying glass, but only while she carries it.
+// Z raises the prop magnifying glass, but only while she carries it.
 import { CHARBL } from '../../../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { BlockSet } from '../blocks/blockset';
@@ -68,7 +68,7 @@ export function buildCharacter(): Character {
   ];
   for (const [n, key, dx, dy, joy] of moves) set(S[n], walk(dx, dy), { key, jstkMov: joy, jstkBut: joy ? 4 : 0, sound: SND.none });
   // The lens: a sequence tied to the magnifying glass block, so it only works while she has it.
-  set(S[SEQ.lens], [f('lens', 12), f('lens', 6)], { key: KEY.l, sound: SND.lens, bloc: ITEMS.indexOf('lens'), norepeat: 1 });
+  set(S[SEQ.lens], [f('lens', 12), f('lens', 6)], { key: KEY.z, sound: SND.lens, bloc: ITEMS.indexOf('lens'), norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // hit points: only a wrong accusation takes them

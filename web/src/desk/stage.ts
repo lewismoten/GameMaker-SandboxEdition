@@ -1,8 +1,8 @@
 // On a computer screen the whole desk fits the window, like a photo of it: the scene is
 // laid out at one size (STAGE_W x STAGE_H) and scaled to fit, so nothing scrolls and the
 // props keep their places. Narrow (phone) screens stack the props instead (desk.css).
-export const STAGE_W = 1440;
-export const STAGE_H = 880;
+const STAGE_W = 1440;
+const STAGE_H = 880;
 /** The wall clock's width at full size (wallClock.css). */
 const CLOCK_W = 180;
 

@@ -9,6 +9,7 @@
 // own palette (where the common ramps sit at the same entries).
 import { Pixels, rng } from '../../../kit/pixels';
 import { Reel } from '../../../kit/reel';
+import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
 import { centered, micro, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -164,6 +165,7 @@ function castleNight(pal: Pal, seed = 3): Pixels {
 
 // ---- the title ------------------------------------------------------------------------------
 
+/** The title cartoon (cover.fli: Will under the lamp, an iris, a fade to black) and title.gif's picture with the name. */
 export function coverFli(cast: Cast): { fli: Uint8Array; title: Pixels; pal: Uint8Array } {
   const pal = buildScreenPalette();
   const c = pal.c;
@@ -175,7 +177,7 @@ export function coverFli(cast: Cast): { fli: Uint8Array; title: Pixels; pal: Uin
     if (k >= 6) outlined(p, 160 - textWidth('IN SWEATPANTS', 2) / 2, 36, 'IN SWEATPANTS', c('sweats', 3), c('ink', 0), 2, c('velvet', 0));
     if (k >= 14) say(p, pal, 160, 192 - 2, 'by The Bard of Bizarre', 'paper', 2);
   };
-  const scene = (p: Pixels, k: number) => {
+  const scene = (p: Pixels, k: number, named = false) => {
     // the searchlight sweeping the sky
     const a = -Math.PI / 2 + Math.sin(k / 6) * 0.7;
     for (let t = 0; t < 180; t += 1) {
@@ -188,16 +190,18 @@ export function coverFli(cast: Cast): { fli: Uint8Array; title: Pixels; pal: Uin
     }
     // Will under the street lamp with his coffee, contemplating it
     scaleBlit(p, sprite(cast.poet, k % 20 < 14 ? 'yorick' : 'smug'), 56, 116, 2);
-    title(p, k);
+    if (named) title(p, k);
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);
   scene(first, 0);
   r.fadeIn(first, 4);
   for (let k = 0; k < 40; k++) r.frame(bg, (p) => scene(p, k));
+  // the name is the title picture's: the cartoon closes on an iris on Will and fades to black
+  r.irisOut(74, 134, 8).fadeOut(fadeOutLength(SPEED));
   const last = new Pixels(W, H);
   last.px.set(bg.px);
-  scene(last, 40);
+  scene(last, 40, true);
   return { fli: r.fli(SPEED), title: last, pal: pal.pal };
 }
 
@@ -324,7 +328,7 @@ export function interFli(k: number, cast: Cast): Uint8Array {
 
 // ---- the title cards ----------------------------------------------------------------------------
 
-/** Splits a title into lines of at most `n` columns. */
+/** Splits a title into lines of at most `n` columns; two lines are balanced (no word left alone). */
 function wrap(s: string, n: number): string[] {
   const out: string[] = [];
   let line = '';
@@ -333,8 +337,14 @@ function wrap(s: string, n: number): string[] {
     else line = line ? `${line} ${w}` : w;
   }
   if (line) out.push(line);
-  return out;
+  if (out.length !== 2) return out;
+  const spaces = [...s.matchAll(/ /g)].map((m) => m.index).filter((i) => i <= n && s.length - i - 1 <= n);
+  const mid = spaces.sort((a, b) => Math.abs(a - s.length / 2) - Math.abs(b - s.length / 2))[0];
+  return mid === undefined ? out : [s.slice(0, mid), s.slice(mid + 1)];
 }
+
+/** The PC font has no curly quotes: they become straight ones. */
+const plain = (s: string) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 /** The strip of the monologue on a card: y 56 to 176. */
 const STRIP = 56;
@@ -344,7 +354,7 @@ export function cardFli(card: CardView, cast: Cast): Uint8Array {
   const c = pal.c;
   const mono = card.def.monologue!;
   const r = new Reel(pal.pal);
-  const titleLines = wrap(mono.title.toUpperCase(), 38);
+  const titleLines = wrap(plain(mono.title).toUpperCase(), 38);
   const head = (p: Pixels, k: number) => {
     p.rect(0, 0, W, STRIP, c('ink', 0)).rect(0, STRIP - 1, W, 1, c('gold', 1));
     centered(p, 4, `MONOLOGUE ${card.index} OF 17  -  ${card.def.group.name.toUpperCase()}`, c('gold', 2));

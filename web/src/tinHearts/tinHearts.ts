@@ -22,23 +22,23 @@ export const MANIFEST = json as unknown as HeartManifest;
 export const FOUND_FILE = 'tinheart.dat';
 export const OVERRIDES_KEY = 'gm-tin-hearts';
 /** Fired on window when a heart is found, or EGG.EXE changes one. */
-export const TIN_HEARTS_CHANGED = 'gm-tin-hearts-changed';
+const TIN_HEARTS_CHANGED = 'gm-tin-hearts-changed';
 
-export type HeartOverride = 'added' | 'broken';
-export type HeartStatus = 'saved' | 'added' | 'broken' | 'none';
+type HeartOverride = 'added' | 'broken';
+type HeartStatus = 'saved' | 'added' | 'broken' | 'none';
 
 /** The heart a game hides, if it declares one. */
 export const heartOf = (gameId: string): HeartPlace | undefined => MANIFEST.hearts[gameId];
 
 /** What FOUND_FILE holds. */
-export interface FoundNote {
+interface FoundNote {
   /** When it was found (ISO date). */
   found: string;
   scene: number;
   at: [number, number];
 }
 
-export function foundBytes(scene: number, at: [number, number], when = new Date()): Uint8Array {
+function foundBytes(scene: number, at: [number, number], when = new Date()): Uint8Array {
   return new TextEncoder().encode(JSON.stringify({ found: when.toISOString(), scene, at } satisfies FoundNote));
 }
 
@@ -56,7 +56,7 @@ export function parseFound(bytes: Uint8Array | undefined): FoundNote | undefined
 const announce = () => typeof window !== 'undefined' && window.dispatchEvent(new Event(TIN_HEARTS_CHANGED));
 
 /** Keeps a find in the game's save data (once: the first find's date stays). */
-export async function recordFind(saveId: string, scene: number, at: [number, number]): Promise<void> {
+async function recordFind(saveId: string, scene: number, at: [number, number]): Promise<void> {
   if (parseFound((await loadSaveData(saveId))[FOUND_FILE])) return;
   await writeSaveFile(saveId, FOUND_FILE, foundBytes(scene, at));
   announce();
@@ -118,6 +118,9 @@ export function setAllOverrides(states: Pick<HeartState, 'id' | 'inSave'>[], fou
   writeOverrides(o);
 }
 
+/** EGG.EXE's X Reset all (and R): every heart back to what the saves say. */
+export const resetAllOverrides = (): void => writeOverrides({});
+
 /** Where a heart stands: found = (in the save OR added by hand) AND not taken away. */
 export function statusOf(inSave: boolean, override: HeartOverride | undefined): { status: HeartStatus; found: boolean } {
   if (override === 'broken') return { status: 'broken', found: false };
@@ -137,7 +140,7 @@ export interface HeartState {
 }
 
 /** A catalog entry, as much as counting needs. */
-export interface CountedGame {
+interface CountedGame {
   id: string;
   title: string;
 }
@@ -153,7 +156,7 @@ export function pendingOf<T extends { id: string; title: string }>(catalog: T[])
 }
 
 /** The counted games from the live catalog (titles from it). */
-export async function countedGames(): Promise<CountedGame[]> {
+async function countedGames(): Promise<CountedGame[]> {
   const { loadGameList } = await import('../project/files');
   return countedOf(await loadGameList().catch(() => []));
 }

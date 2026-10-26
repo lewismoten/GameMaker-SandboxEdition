@@ -187,6 +187,7 @@ function art(a: Area): void {
       [cat(1), 4],
     ],
     {
+      faces: 'right',
       hazard: true,
       path: [
         [4, 0, 2],
@@ -211,6 +212,7 @@ function art(a: Area): void {
       [spear(1), 2],
     ],
     {
+      faces: 'right',
       hazard: true,
       path: [
         [8, 0, 3],
@@ -288,6 +290,7 @@ function art(a: Area): void {
       [hat(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [6, 0, 2],
         [-6, 0, 2],

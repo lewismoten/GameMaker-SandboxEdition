@@ -1,3 +1,5 @@
+// The Cast page's data: only catalog games, a picture and alt text for everyone, cameos and hidden
+// things where the games put them, and the cast's names spelled right.
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';

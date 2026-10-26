@@ -4,7 +4,7 @@ import { Reader, Writer } from './binary';
 
 export const LASTSND = 30;
 export const NUMFREQ = 36;
-export const SND_FILE_SIZE = LASTSND * NUMFREQ * 2 + LASTSND * 9;
+const SND_FILE_SIZE = LASTSND * NUMFREQ * 2 + LASTSND * 9;
 
 export const SOUND_NAMES = [
   'Help (hit points up)',

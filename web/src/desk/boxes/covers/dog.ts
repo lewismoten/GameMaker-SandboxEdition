@@ -1,9 +1,9 @@
-// The dogs on the painted covers: Teddy, the red-gold Pembroke corgi (big upright ears, his
-// right one taller, a white blaze, chest and paws, a big grin), and Gwinn, his big sister,
+// The dogs on the painted covers: Teddy, the red-gold Pembroke corgi (big upright ears, a
+// matching pair, a white blaze, chest and paws, a big grin), and Gwinn, his big sister,
 // a lean liver-brown pit-lab mix with floppy ears, amber eyes and a pink collar.
 import { type Ctx, blob, ell, fill, lin, poly, rad, stroke } from './paint';
 
-export interface DogLook {
+interface DogLook {
   coat: [string, string, string]; // highlight, body, shadow
   ears: 'up' | 'flop';
   legs: number; // leg length
@@ -137,8 +137,8 @@ export function dog(c: Ctx, x: number, y: number, s: number, d: DogLook, flip = 
   // ears
   if (d.ears === 'up') {
     for (const [bx, tx, ty] of [
-      [hx - 26, hx - 34, hy - 86],
-      [hx + 4, hx + 10, hy - 96], // his right ear stands taller
+      [hx - 26, hx - 34, hy - 94],
+      [hx + 4, hx + 10, hy - 94], // the same height: his ears match
     ]) {
       poly(c, [bx - 14, hy - 18, tx, ty, bx + 18, hy - 22]);
       fill(

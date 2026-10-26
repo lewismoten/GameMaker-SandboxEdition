@@ -123,7 +123,7 @@ export function screenKeys(container: HTMLElement, corner: HTMLElement, canvas: 
   toggle.className = 'gm-osk-toggle';
   toggle.textContent = 'F1–F10';
   toggle.title = 'On-screen keys: Esc, F1–F10, arrows, Enter and more, to click or tap';
-  toggle.setAttribute('aria-label', 'On-screen keys');
+  toggle.setAttribute('aria-label', 'F1–F10 and other on-screen keys');
   toggle.setAttribute('aria-controls', id);
   const show = (on: boolean) => {
     panel.hidden = !on;

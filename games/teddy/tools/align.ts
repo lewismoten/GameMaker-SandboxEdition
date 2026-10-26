@@ -1,6 +1,6 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): every grid of
 // parts named <name><col><row> (signs, pictures, houses, the cone), the three-block clouds, the
-// pairs (Top over Bot, L beside R), the Klown Car, and that their art joins up across the block
+// pairs (Top over Bot, L beside R), the Clown Car, and that their art joins up across the block
 // edges. Run by tools/check.ts.
 import { alignGame, gridParts, shape, sizesOf, type PartRule } from '../../kit/align';
 import { LEVELS } from '../src/game';
@@ -41,7 +41,7 @@ export function align(): number {
         [-2, 0, `cloud${m[1]}0`],
       ],
     },
-    ...shape('Klown Car', [
+    ...shape('Clown Car', [
       ['carRoofL', 'carRoofR'],
       [/^car(Door|Open)$/, 'carBack'],
     ]),

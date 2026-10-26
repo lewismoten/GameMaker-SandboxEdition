@@ -1,8 +1,9 @@
 // Search engines and link previews mostly don't run the app, so the pages carry what they
 // need as static HTML: meta/Open Graph/Twitter tags, schema.org JSON-LD for the app and
 // every bundled game, and readable text with links (shown until the app starts, and to
-// browsers without JavaScript). The build also writes robots.txt, sitemap.xml and
-// llms.txt (https://llmstxt.org), which the dev server serves too.
+// browsers without JavaScript). The build also writes robots.txt, sitemap.xml,
+// llms.txt (https://llmstxt.org) and The Sandbox Scoop's RSS feed scoop.xml (scoopFeed.ts),
+// which the dev server serves too.
 //
 // index.html, play.html and dos.html mark where it goes with <!--SEO:HEAD--> and <!--SEO:BODY-->.
 //
@@ -11,11 +12,17 @@
 // description, canonical address, tags, JSON-LD and text baked in, and a preview picture
 // og/<id>.png (scripts/ogImage.ts): link previews (Slack, Discord, X, Facebook) don't run
 // scripts, so play.html?game=<id> can only show the generic player's tags.
+//
+// Each section of the Guide also gets a page of its own, help-<id>.html (made from the built
+// index.html, so it loads the same app and opens #/help/<id>), with its title, description,
+// canonical address and its text to read, so search engines can find the Guide's sections.
 import type { IndexHtmlTransformContext, Plugin } from 'vite';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
+import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
+import { GUIDE_SECTIONS } from '../src/manual/guideSections';
 import {
   appJsonLd,
   clip,
@@ -38,10 +45,11 @@ import {
   SITE_URL,
 } from '../src/seo/site';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
+import { magazineJsonLd, siteLinksHtml, websiteJsonLd } from '../src/seo/siteSections';
 import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
-export const HEAD_MARK = '<!--SEO:HEAD-->';
-export const BODY_MARK = '<!--SEO:BODY-->';
+const HEAD_MARK = '<!--SEO:HEAD-->';
+const BODY_MARK = '<!--SEO:BODY-->';
 // Around what the marks became in play.html, so a game's page can swap in its own.
 const HEAD_START = '<!--seo:head-->';
 const HEAD_END = '<!--/seo:head-->';
@@ -105,14 +113,17 @@ const STYLE = `<style>
     </style>`;
 
 /**
- * The home page's structured data: the app, its source, and the games as a list of their own
- * pages (each page carries the game's full JSON-LD, gameHead), which keeps index.html small.
+ * The home page's structured data: the site, the app, its source, the magazine, and the games
+ * as a list of their own pages (each page carries the game's full JSON-LD, gameHead), which
+ * keeps index.html small.
  */
 function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
   const games = playable(catalog);
   return [
+    websiteJsonLd(),
     appJsonLd(),
     repoJsonLd(),
+    ...magazineJsonLd(),
     {
       '@type': 'ItemList',
       '@id': `${SITE_URL}#games`,
@@ -125,11 +136,11 @@ function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
 
 function indexHead(catalog: CdCatalogEntry[]): string {
   const meta = metaTags({ ...ROUTES.home, url: SITE_URL, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
-  return `${meta}\n    <link rel="sitemap" type="application/xml" href="./sitemap.xml" />\n    ${jsonLdScript(siteNodes(catalog))}\n    ${STYLE}`;
+  return `${HEAD_START}${meta}\n    <link rel="sitemap" type="application/xml" href="./sitemap.xml" />\n    <link rel="alternate" type="application/rss+xml" title="${SCOOP_TITLE}" href="./scoop.xml" />\n    ${jsonLdScript(siteNodes(catalog))}\n    ${STYLE}${HEAD_END}`;
 }
 
 function indexBody(catalog: CdCatalogEntry[]): string {
-  return `<main class="seo-static">
+  return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(PRODUCT)}</h1>
       <p>${escapeHtml(SITE_ABOUT)}</p>
       <noscript><p><strong>${escapeHtml(PRODUCT)} is an app that runs in your browser: please turn on JavaScript to design and play games.</strong> You can still read about it below and browse the <a href="${REPO_URL}">source code on GitHub</a>.</p></noscript>
@@ -142,9 +153,10 @@ function indexBody(catalog: CdCatalogEntry[]): string {
         <li>Everything stays in your browser and works offline. Files stay compatible with the original DOS Game-Maker 3.0.</li>
       </ul>
       ${gameList(catalog, pageHref)}
+      ${siteLinksHtml()}
       <h2>Source code</h2>
       <p>${escapeHtml(PRODUCT)} is free and open source: <a href="${REPO_URL}">${REPO_URL.replace('https://', '')}</a>. <span class="seo-note">${escapeHtml(FORK_NOTE)}.</span></p>
-    </main>`;
+    </main>${BODY_END}`;
 }
 
 /** dos.html: the PC on its own (src/dosPage). */
@@ -212,7 +224,7 @@ function playBody(catalog: CdCatalogEntry[]): string {
 }
 
 /** play-<id>.html: the game's own tags, with <meta name="gm:game"> telling play.ts which game. */
-export function gameHead(g: CdCatalogEntry): string {
+function gameHead(g: CdCatalogEntry): string {
   const meta = metaTags({
     title: pageTitle(g),
     description: gameDescription(g),
@@ -231,13 +243,13 @@ export function gameHead(g: CdCatalogEntry): string {
       description: gameDescription(g),
       primaryImageOfPage: imageUrl(g),
       about: { '@id': `${playUrl(g.id)}#game` },
-      isPartOf: { '@type': 'WebSite', name: PRODUCT, url: SITE_URL },
+      isPartOf: { '@type': 'WebSite', '@id': `${SITE_URL}#website`, name: PRODUCT, url: SITE_URL },
+      // the site, then the game (play.html on its own sends a visitor to the home page)
       breadcrumb: {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: PRODUCT, item: SITE_URL },
-          { '@type': 'ListItem', position: 2, name: 'Play', item: `${SITE_URL}play.html` },
-          { '@type': 'ListItem', position: 3, name: g.title, item: playUrl(g.id) },
+          { '@type': 'ListItem', position: 2, name: g.title, item: playUrl(g.id) },
         ],
       },
     },
@@ -245,7 +257,11 @@ export function gameHead(g: CdCatalogEntry): string {
   return `${HEAD_START}<meta name="gm:game" content="${escapeHtml(g.id)}" />\n    ${meta}\n    ${jsonLdScript(ld)}\n    ${STYLE}${HEAD_END}`;
 }
 
-export function gameBody(g: CdCatalogEntry): string {
+/**
+ * A game's readable page text. A shareware game's notice stays in the game (shown before it
+ * starts) and out of this text: the CD's notices give their authors' 1994 home addresses.
+ */
+function gameBody(g: CdCatalogEntry): string {
   const what = g.original ? 'A new shareware game' : g.kind === 'shareware' ? 'Shareware from the 90s' : 'A sample game that came with Game-Maker 3.0';
   return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(g.title)}</h1>
@@ -254,7 +270,7 @@ export function gameBody(g: CdCatalogEntry): string {
       ${readable(g.blurb) ? `<p>${escapeHtml(g.blurb!)}</p>` : ''}
       <p>Play ${escapeHtml(g.title)} right here in your browser — nothing to download or install — with a keyboard, a game controller or touch controls.</p>
       <noscript><p><strong>The game runs in your browser: please turn on JavaScript to play.</strong></p></noscript>
-      ${g.kind === 'shareware' && g.notice ? `<details><summary>Shareware: the author’s notice</summary><pre style="white-space:pre-wrap;font:13px monospace">${escapeHtml(g.notice)}</pre></details>` : ''}
+      ${g.kind === 'shareware' && g.notice ? `<p>Shareware: the author’s notice and how to register are in the game, shown before it starts.</p>` : ''}
       <p><a href="./play.html">More games to play</a> · <a href="./">${escapeHtml(PRODUCT)}</a>: make your own game in your browser.</p>
       <p class="seo-note">Made with <a href="./">${escapeHtml(PRODUCT)}</a> · <a href="${REPO_URL}">source code</a> · ${escapeHtml(FORK_NOTE)}.</p>
     </main>${BODY_END}`;
@@ -262,14 +278,57 @@ export function gameBody(g: CdCatalogEntry): string {
 
 /** A game's page from play.html (as built, or as served in dev): its own title, tags and text. */
 export function gamePageHtml(playHtml: string, g: CdCatalogEntry): string {
-  const swap = (html: string, start: string, end: string, part: string) => {
-    const a = html.indexOf(start);
-    const b = html.indexOf(end, a);
-    if (a < 0 || b < 0) throw new Error(`play.html has no ${start}…${end}`);
-    return html.slice(0, a) + part + html.slice(b + end.length);
-  };
   const html = playHtml.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(pageTitle(g))}</title>`);
-  return swap(swap(html, HEAD_START, HEAD_END, gameHead(g)), BODY_START, BODY_END, gameBody(g));
+  return swapPart(swapPart(html, HEAD_START, HEAD_END, gameHead(g)), BODY_START, BODY_END, gameBody(g));
+}
+
+/** `html` with what lies between its `start` and `end` marks (and the marks) replaced by `part`. */
+function swapPart(html: string, start: string, end: string, part: string): string {
+  const a = html.indexOf(start);
+  const b = html.indexOf(end, a);
+  if (a < 0 || b < 0) throw new Error(`the page has no ${start}…${end}`);
+  return html.slice(0, a) + part + html.slice(b + end.length);
+}
+
+type GuideSection = (typeof GUIDE_SECTIONS)[number];
+/** A Guide section's own page. */
+const guideFile = (id: string) => `help-${encodeURIComponent(id)}.html`;
+
+function guideHead([id, title, html]: GuideSection): string {
+  const meta = metaTags({
+    title: `${title} · Guide · ${PRODUCT}`,
+    // its first paragraph says what the section is (a table or list would read as noise)
+    description: clip((/<p>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? html).replace(/<[^>]+>/g, ' '), 155),
+    url: `${SITE_URL}${guideFile(id)}`,
+    image: OG_IMAGE,
+    imageAlt: OG_IMAGE_ALT,
+    type: 'article',
+  });
+  // the app opens on this section: it reads the address's #/help/<id> as it starts
+  const open = `<script>if(!location.hash)history.replaceState(null,'',${JSON.stringify(`#/help/${id}`)})</script>`;
+  return `${HEAD_START}${meta}\n    ${open}\n    ${STYLE}${HEAD_END}`;
+}
+
+function guideBody([id, title, html]: GuideSection): string {
+  return `${BODY_START}<main class="seo-static">
+      <p><a href="./#/help">${escapeHtml(PRODUCT)} Guide</a></p>
+      <h1>${escapeHtml(title)}</h1>
+      ${html}
+      <p class="seo-note"><a href="./#/help/${escapeHtml(id)}">Open this in the Guide</a> · <a href="./">${escapeHtml(PRODUCT)}</a></p>
+    </main>${BODY_END}`;
+}
+
+/** A Guide section's page from index.html (as built, or as served in dev): its own title, tags and text. */
+export function guidePageHtml(indexHtml: string, section: GuideSection): string {
+  const html = indexHtml.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(`${section[1]} · Guide · ${PRODUCT}`)}</title>`);
+  return swapPart(swapPart(html, HEAD_START, HEAD_END, guideHead(section)), BODY_START, BODY_END, guideBody(section));
+}
+
+/** The Guide section whose page this is (help-<id>.html), if any. */
+function pageSection(path: string): GuideSection | undefined {
+  const m = /(?:^|\/)help-([^/]+)\.html$/.exec(path.split('?')[0]);
+  const id = m && decodeURIComponent(m[1]);
+  return id ? GUIDE_SECTIONS.find(([s]) => s === id) : undefined;
 }
 
 /** The game whose page this is (play-<id>.html), if any. */
@@ -287,11 +346,12 @@ function gameImage(cdRoot: string, g: CdCatalogEntry, files = cdFiles(cdRoot)): 
   });
 }
 
-export function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
+function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
   const urls = [
     { loc: SITE_URL, priority: '1.0' },
     { loc: `${SITE_URL}dos.html`, priority: '0.7' },
     ...playable(catalog).map((g) => ({ loc: playUrl(g.id), priority: g.original ? '0.8' : '0.6' })),
+    ...GUIDE_SECTIONS.map(([id]) => ({ loc: `${SITE_URL}${guideFile(id)}`, priority: '0.5' })),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -383,6 +443,7 @@ function generated(cdRoot: string): Record<string, { type: string; body: () => s
     'robots.txt': { type: 'text/plain; charset=utf-8', body: robotsTxt },
     'sitemap.xml': { type: 'application/xml; charset=utf-8', body: () => sitemapXml(cdCatalog(cdRoot), new Date().toISOString().slice(0, 10)) },
     'llms.txt': { type: 'text/plain; charset=utf-8', body: () => llmsTxt(cdCatalog(cdRoot)) },
+    'scoop.xml': { type: 'application/rss+xml; charset=utf-8', body: () => scoopRss(cdCatalog(cdRoot), readScoopDates()) },
   };
 }
 
@@ -411,9 +472,11 @@ export function seoPages(cdRoot: string): Plugin {
           return;
         }
         const g = pageGame(catalog, path);
-        if (!g) return next();
+        // a Guide section's page: index.html as the dev server serves it, then made the section's own
+        const section = !g && pageSection(path);
+        if (!g && !section) return next();
         server
-          .transformIndexHtml(`/${path}`, readFileSync(join(server.config.root, 'play.html'), 'utf8'), req.originalUrl)
+          .transformIndexHtml(`/${path}`, readFileSync(join(server.config.root, section ? 'index.html' : 'play.html'), 'utf8'), req.originalUrl)
           .then((html) => {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.end(html);
@@ -428,7 +491,9 @@ export function seoPages(cdRoot: string): Plugin {
       const g = pageGame(catalog, ctx.path);
       const play = !!g || /play\.html$/.test(ctx.filename) || ctx.path.endsWith('play.html');
       const out = html.replace(HEAD_MARK, play ? playHead(catalog) : indexHead(catalog)).replace(BODY_MARK, play ? playBody(catalog) : indexBody(catalog));
-      return g ? gamePageHtml(out, g) : out;
+      if (g) return gamePageHtml(out, g);
+      const section = !play && pageSection(ctx.path);
+      return section ? guidePageHtml(out, section) : out;
     },
     generateBundle: {
       // After Vite has written play.html (with its script and stylesheet links), so each
@@ -436,6 +501,10 @@ export function seoPages(cdRoot: string): Plugin {
       order: 'post',
       handler(_options, bundle) {
         for (const [fileName, file] of Object.entries(generated(cdRoot))) this.emitFile({ type: 'asset', fileName, source: file.body() });
+        const index = bundle['index.html'];
+        if (index?.type === 'asset')
+          for (const section of GUIDE_SECTIONS)
+            this.emitFile({ type: 'asset', fileName: guideFile(section[0]), source: guidePageHtml(String(index.source), section) });
         const play = bundle['play.html'];
         if (play?.type !== 'asset') return;
         const files = cdFiles(cdRoot);

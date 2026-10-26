@@ -5,7 +5,7 @@ import { h, modal } from '../core/ui';
 import { rovingGrid } from './rovingGrid';
 import './colorChoice.css';
 
-export interface ColorChoiceOptions {
+interface ColorChoiceOptions {
   /** The color chosen now. */
   get(): number;
   /** Chooses a color. */
@@ -16,7 +16,7 @@ export interface ColorChoiceOptions {
   name?: (i: number) => string;
 }
 
-export interface ColorChoice {
+interface ColorChoice {
   el: HTMLElement;
   /** Shows the color chosen now in the number box. */
   refresh(): void;

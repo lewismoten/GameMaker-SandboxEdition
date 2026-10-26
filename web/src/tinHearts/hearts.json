@@ -22,6 +22,7 @@
     "sweats": { "map": "hive.map", "at": [81, 15] },
     "teddy": { "map": "backyard.map", "at": [78, 37] },
     "teddy2": { "map": "house.map", "at": [8, 25] },
+    "teddy3": { "map": "meadow.map", "at": [45, 31] },
     "tickle": { "map": "tower.map", "at": [43, 23] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },

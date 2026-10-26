@@ -8,15 +8,16 @@
 // in memory once read, a call that changes nothing writes nothing, and calls made before the
 // record is read are held and applied once it is. Each change fires ACHIEVEMENTS_CHANGED on
 // window (and tells other tabs over a BroadcastChannel); a new unlock also fires
-// ACHIEVEMENT_UNLOCKED with { id } for the toast.
+// ACHIEVEMENT_UNLOCKED with { id } for the toast. The catalog (every achievement's text) is
+// read with the record, so a page that unlocks nothing early doesn't load it up front.
 import { loadSaveData, writeSaveFile } from '../project/storage';
-import { achievementById } from './catalog';
+import type { Achievement } from './catalog';
 
 export const SAVE_ID = 'site:achievements';
 export const FILE = 'achievements.json';
 export const ACHIEVEMENTS_CHANGED = 'gm-achievements-changed';
 /** A CustomEvent with detail { id } for each new unlock. */
-export const ACHIEVEMENT_UNLOCKED = 'gm-achievement-unlocked';
+const ACHIEVEMENT_UNLOCKED = 'gm-achievement-unlocked';
 
 export interface AchievementRecord {
   /** id -> Date.now() of the unlock. */
@@ -27,7 +28,7 @@ export interface AchievementRecord {
   sets: Record<string, string[]>;
 }
 
-export const emptyRecord = (): AchievementRecord => ({ unlocked: {}, progress: {}, sets: {} });
+const emptyRecord = (): AchievementRecord => ({ unlocked: {}, progress: {}, sets: {} });
 
 /** The record read back from its file; anything malformed is dropped. */
 export function parseRecord(bytes: Uint8Array | undefined): AchievementRecord {
@@ -60,6 +61,8 @@ export function mergeRecords(a: AchievementRecord, b: AchievementRecord): Achiev
 }
 
 let record: AchievementRecord | undefined;
+/** The catalog's lookup, there once the record is (loadAchievements reads both). */
+let byId: ((id: string) => Achievement | undefined) | undefined;
 let loading: Promise<AchievementRecord> | undefined;
 /** Changes asked for before the record was read. */
 let held: ((r: AchievementRecord) => boolean)[] = [];
@@ -79,17 +82,20 @@ function tellOthers(): void {
 /** Reads the record once (later calls share it). */
 export function loadAchievements(): Promise<AchievementRecord> {
   if (record) return Promise.resolve(record);
-  loading ??= loadSaveData(SAVE_ID)
-    .then((files) => parseRecord(files[FILE]))
-    .catch(() => emptyRecord())
-    .then((r) => {
-      record = r;
-      const changes = held;
-      held = [];
-      const before = new Set(Object.keys(r.unlocked));
-      if (changes.map((f) => f(r)).some(Boolean)) commit(before);
-      return r;
-    });
+  loading ??= Promise.all([
+    loadSaveData(SAVE_ID)
+      .then((files) => parseRecord(files[FILE]))
+      .catch(() => emptyRecord()),
+    import('./catalog'),
+  ]).then(([r, catalog]) => {
+    byId = catalog.achievementById;
+    record = r;
+    const changes = held;
+    held = [];
+    const before = new Set(Object.keys(r.unlocked));
+    if (changes.map((f) => f(r)).some(Boolean)) commit(before);
+    return r;
+  });
   return loading;
 }
 
@@ -131,19 +137,20 @@ function change(f: (r: AchievementRecord) => boolean): void {
   if (f(record)) commit(before);
 }
 
+/** Whether the catalog has the id (asked inside a change, when the catalog is loaded). */
 function known(id: string): boolean {
-  if (achievementById(id)) return true;
+  if (byId?.(id)) return true;
   devLog('unknown achievement id', id);
   return false;
 }
 
 /** Unlocks an achievement (once: later calls do nothing). Unknown ids are ignored. */
 export function unlockAchievement(id: string): void {
-  if (!known(id) || record?.unlocked[id]) return;
+  if (record?.unlocked[id]) return;
   change((r) => {
-    if (r.unlocked[id]) return false;
+    if (r.unlocked[id] || !known(id)) return false;
     r.unlocked[id] = Date.now();
-    const of = achievementById(id)?.of;
+    const of = byId?.(id)?.of;
     if (of) r.progress[id] = { n: of, of };
     return true;
   });
@@ -151,10 +158,11 @@ export function unlockAchievement(id: string): void {
 
 /** How far along an achievement is ("n of of"); reaching the end unlocks it. Progress never goes back. */
 export function progress(id: string, n: number, of: number): void {
-  if (!known(id) || !(of > 0)) return;
+  if (!(of > 0)) return;
   const p = record?.progress[id];
   if (record && p && p.n >= n && p.of === of && (n < of || record.unlocked[id])) return;
   change((r) => {
+    if (!known(id)) return false;
     const q = r.progress[id];
     let changed = false;
     // a count never drops for the same total (a heart taken away keeps the badge); a new total
@@ -173,13 +181,15 @@ export function progress(id: string, n: number, of: number): void {
 
 /**
  * Counts `item` toward an achievement whose total is fixed in the catalog (the editors, the
- * export platforms): the set is kept, and progress is its size against the catalog's `of`.
+ * export platforms): the set is kept, and progress is its size against the catalog's `of`. An
+ * item the catalog's `items` doesn't list is ignored.
  */
 export function tally(id: string, item: string): void {
-  const a = achievementById(id);
-  if (!known(id) || !a) return;
   if (record?.sets[id]?.includes(item)) return;
   change((r) => {
+    const a = byId?.(id);
+    if (!a) return known(id); // (false, noted in development)
+    if (a.items && !a.items.includes(item)) return false; // not one that counts: not kept either
     const s = (r.sets[id] ??= []);
     if (s.includes(item)) return false;
     s.push(item);

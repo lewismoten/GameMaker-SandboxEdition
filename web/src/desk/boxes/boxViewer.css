@@ -223,3 +223,18 @@
 .box-viewer:focus {
   outline: none;
 }
+
+/* the box in hand under the desk's black light (boxUv.ts): its glowing print, half by day */
+.box-viewer.uv .bface img.buv {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+}
+
+.box-viewer.uv.night .bface img.buv {
+  opacity: 1;
+}
+
+.box-viewer.uv.night {
+  background: radial-gradient(circle at 50% 40%, rgba(24, 8, 44, 0.94), rgba(4, 2, 8, 0.97));
+}

@@ -9,10 +9,13 @@ import { BACKBL, BLEN, type Block } from '../../formats/blocks';
 import { DIESEQ, HURTSEQ } from '../../formats/character';
 import { MLEN, MWID } from '../../formats/map';
 import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
-import { keyRoles, movesFor, type Move } from './inputs';
+import { keyRoles, movesFor, steadyMoves, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
 import { driveMove } from './drive';
+import { frees, getsAway } from './escape';
+import { canLeave, stuckAreas } from './stuck';
 import type { Game, Link } from '../../formats/game';
+import { footCell } from './walk/walkPaths';
 
 const CELLS = MLEN * MWID;
 
@@ -20,21 +23,43 @@ export interface ExploreOptions {
   /** Stop after this long (ms of work); the result says it was cut short. */
   budgetMs?: number;
   maxNodes?: number;
-  /** Told now and then how far it has got; return true to stop. */
-  progress?: (nodes: number, queued: number) => boolean | void;
+  /** Told now and then how far it has got, with the heat and deaths so far (live, not copies); return true to stop. */
+  progress?: (nodes: number, queued: number, live: ExploreLive) => boolean | void;
   now?: () => number;
   /** Move every monster every tick, however far away (slower). */
   exact?: boolean;
   /** Only these of the character's moves (a bot's style: walk and hop, walk only…). */
   moveFilter?: (m: Move) => boolean;
+  /** Play with steady hands: one key at a time, at least this many ticks between key changes (inputs.ts steadyMoves). */
+  steadyTicks?: number;
   /** Wait at every place, not only near lifts and timed blocks. */
   waitEverywhere?: boolean;
   /** Cells to head for: places nearer them are tried first. */
   goal?: number[];
+  /**
+   * With `goal`: walking paths and roads (background block numbers, walk/walkPaths.ts) to keep
+   * to. The search then weighs the way so far as well as the distance left (A*, not greedy): a
+   * move costs 1, and `offCost` more (1 by default) when it ends off the paths, so a way along
+   * a road up to that much longer is found before one cutting across. Unset (or empty), the
+   * search is exactly as without it.
+   */
+  paths?: { blocks: ReadonlySet<number>; offCost?: number };
   /** Stop as soon as a link this accepts is taken (a bot after the next scene). */
   stopAt?: (link: number, toScene: number) => boolean;
   /** Start partway through the scene: a snapshot of this scene from the same entry. */
   start?: Snap;
+  /** Told the world as the hero enters and after every tick played (what the screen shows: w.mx, w.my, w.scroll). */
+  onTick?: (w: World) => void;
+}
+
+/** What an exploration has found so far: its own arrays, read while it runs (the level check's live heat map). */
+export interface ExploreLive {
+  heat: Uint32Array;
+  first: Int32Array;
+  /** Deaths by cell: how many tries ended there. */
+  deaths: Map<number, number>;
+  /** Work done so far (ms). */
+  ms: number;
 }
 
 /** Where the hero comes into the scene, and with what. */
@@ -53,7 +78,7 @@ export interface Via {
 }
 
 /** A resting place (a node of the graph). */
-export interface Place {
+interface Place {
   cell: number;
   /** Undefined for the place the hero enters at. */
   via?: Via;
@@ -72,6 +97,12 @@ export interface Place {
   dropIn?: number;
   /** What the hero has gathered by here: things carried, counters and score (a bot that collects). */
   worth: number;
+  /** Every move tried from here ended in a death: the hero is doomed here, not stuck. */
+  doomed?: boolean;
+  /** In what looked like a stuck area, but a key or two held a while gets the hero out (frees()). */
+  freed?: boolean;
+  /** With `paths`: what the way here cost (a move 1, and more off the paths). */
+  cost?: number;
 }
 
 export interface ExitReach {
@@ -107,7 +138,11 @@ export interface Exploration {
   /** Placed monster slots the hero came within reach of. */
   monsters: Set<number>;
   exits: ExitReach[];
+  /** Each link reached carrying the least (worthOf), for a run that leaves behind all it can. */
+  poorExits: ExitReach[];
   incidents: Incident[];
+  /** How many tries ended in a death, by cell. */
+  deaths: Map<number, number>;
   /** True when every place was tried before the budget ran out. */
   complete: boolean;
   ticks: number;
@@ -121,7 +156,7 @@ export interface Exploration {
 }
 
 /** Block numbers whose animation changes how they hold, push or hurt the hero (timed doors, lifts). */
-export function timedBlocks(bg: Block[]): Set<number> {
+function timedBlocks(bg: Block[]): Set<number> {
   const out = new Set<number>();
   for (let n = 0; n < BACKBL; n++) {
     const b = bg[n];
@@ -151,7 +186,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const w = sim.w;
   const bg = w.bg;
   const gravity = bg.some((b) => b.grav !== 0);
-  const moves = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => !opt.moveFilter || opt.moveFilter(m));
+  const all = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => !opt.moveFilter || opt.moveFilter(m));
+  const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks) : all;
   const goal = opt.goal?.map((c) => ({ x: c % MLEN, y: Math.floor(c / MLEN) }));
   /** Blocks from the nearest goal cell (wrapping as the map does). */
   const distance = (cell: number) => {
@@ -166,10 +202,15 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     return best;
   };
   const heap = new PlaceHeap();
+  const paths = goal && opt.paths?.blocks.size ? opt.paths : undefined;
+  const offCost = paths?.offCost ?? 1;
   let reachedStop = false;
   const timed = timedBlocks(bg);
   // blocks that refuse a touch while a counter is short (locks), and the counters they read
   const gateCounters = [...new Set(bg.filter((b) => (b.effect >= 20 || b.effect === 3) && b.eamt < 0).map((b) => b.effect))];
+  // a counter matters up to what its dearest gate takes (one over it: money and the special
+  // counters are kept one over what they show), so 9 words and 24 aren't the same place
+  const gateNeed = new Map(gateCounters.map((e) => [e, Math.max(9, ...bg.filter((b) => b.effect === e && b.eamt < 0).map((b) => -b.eamt + 1))]));
   const limitedSeqs = w.chr.sequences.flatMap((s, i) => (i >= 5 && s.key && w.chr.meter[i] < 32767 ? [i] : []));
   const solidMonster = (n: number) => {
     const m = w.mon[n];
@@ -184,7 +225,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const first = new Int32Array(CELLS).fill(-1);
   const monsters = new Set<number>();
   const exits = new Map<number, ExitReach>();
+  const poorExits = new Map<number, ExitReach>();
   const incidents: Incident[] = [];
+  const deathsAt = new Map<number, number>();
   const seenIncident = new Set<string>();
   const note = (i: Incident) => {
     const k = `${i.kind}:${i.cell}:${i.source ?? ''}`;
@@ -226,7 +269,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const signature = () => {
     const ci = w.ci;
     let s = ci.inv.filter((b) => b < BACKBL).join('.');
-    for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], 9) : 0}`;
+    for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], gateNeed.get(e)!) : 0}`;
     for (const q of limitedSeqs) s += `|q${Math.min(ci.meter[q], 3)}`;
     const d = changedCells(baseMap, w.map);
     for (let i = 0; i < d.length; i += 2) {
@@ -252,6 +295,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const had = index.get(key);
     if (had !== undefined) return had;
     const id = places.length;
+    const cost = paths && (via ? (places[via.parent]?.cost ?? 0) + 1 + (paths.blocks.has(w.map[footCell(w)]) ? 0 : offCost) : 0);
     places.push({
       cell: cellOf(),
       via: via && { ...via, ticks: moveTicks },
@@ -264,14 +308,20 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       out: [],
       exits: [],
       dropIn,
+      ...(paths ? { cost } : {}),
     });
     index.set(key, id);
     if (timedHere && !index.has(`${spot}#first`)) index.set(`${spot}#first`, id);
-    if (goal) heap.push(id, distance(cellOf()) * 1000 + (w.clock - startClock) / 100);
+    // (keeping to paths: the way so far and the distance left, and of two as good, the nearer)
+    if (goal && paths) heap.push(id, (cost! + distance(cellOf())) * 1000 + distance(cellOf()) * 10 + (w.clock - startClock) / 100);
+    else if (goal) heap.push(id, distance(cellOf()) * 1000 + (w.clock - startClock) / 100);
     else (newCells ? fresh : queue).push(id);
     return id;
   };
 
+  /** Hurt-lock tests run (by culprit, else cell; -1 once one found a lock), and how many more may run. */
+  const lockTests = new Map<string, number>();
+  let lockTestsLeft = 40;
   /** One tick, with everything the checks watch for. Returns 'dead', a link, or undefined. */
   const hurtRun = { n: 0, at: -1, x: 0, y: 0 };
   const scoreRun = { n: 0, heal: 0 };
@@ -282,7 +332,10 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const hp = w.ci.hitpts;
     const score = w.ci.score;
     const before = sim.px;
-    const r = await sim.tick();
+    const t = await sim.tick();
+    opt.onTick?.(w);
+    // the death sequence has started: nothing the player does stops it (touch.ts sets it at 0 hit points)
+    const r = t === undefined && w.chr.cseq === DIESEQ ? 'dead' : t;
     ticks++;
     moveTicks++;
     const tick = w.clock - startClock;
@@ -302,17 +355,29 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       const my = mi.cury[0] * BLEN + mi.cury[1];
       if (Math.abs(mx - pos.x) < BLEN + 4 && my - pos.y < BLEN + 4 && pos.y - my < BLEN * 2 + 4) monsters.add(l);
     }
-    // hurt on tick after tick without getting away: something holds the hero while it hurts
+    // hurt on tick after tick without getting away: something may hold the hero while it hurts.
+    // PLAYGAME hurts on every tick of a touch, so a bot standing in a foe's way is hurt as long as
+    // it stands there; it is only a lock when none of the moves gets the hero away (escape.ts).
     if (w.ci.hitpts < hp && w.chr.cseq !== DIESEQ) {
       if (hurtRun.n === 0) Object.assign(hurtRun, { at: cellOf(), x: pos.x, y: pos.y });
       hurtRun.n++;
-      if (hurtRun.n >= 8 && Math.abs(pos.x - hurtRun.x) < BLEN && Math.abs(pos.y - hurtRun.y) < BLEN)
-        note({
-          kind: 'hurt-lock',
-          cell: hurtRun.at,
-          detail: `Lost hit points ${hurtRun.n} ticks running without moving a block`,
-          source: culprit(w, sim, 'hurt'),
-        });
+      if (hurtRun.n === 8 && Math.abs(pos.x - hurtRun.x) < BLEN && Math.abs(pos.y - hurtRun.y) < BLEN) {
+        const source = culprit(w, sim, 'hurt');
+        const k = source ?? `cell ${hurtRun.at}`;
+        const tried = lockTests.get(k) ?? 0;
+        if (tried >= 0 && tried < 2 && lockTestsLeft > 0) {
+          lockTestsLeft--;
+          const away = await getsAway(sim, moves);
+          lockTests.set(k, away ? tried + 1 : -1);
+          if (!away)
+            note({
+              kind: 'hurt-lock',
+              cell: hurtRun.at,
+              detail: 'Something holds the hero while it hurts: no key gets him away',
+              source,
+            });
+        }
+      }
     } else if (w.chr.cseq !== HURTSEQ) hurtRun.n = 0;
     // points or health every tick: a touch that never uses itself up
     if (w.ci.score > score) scoreRun.n++;
@@ -351,6 +416,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       landedAt = -1;
     }
     if (r === 'dead') {
+      deathsAt.set(cellOf(), (deathsAt.get(cellOf()) ?? 0) + 1);
       note({ kind: 'death', cell: cellOf(), detail: 'The hero died here', source: culprit(w, sim, 'hurt') });
       return 'dead';
     }
@@ -358,18 +424,23 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       const link = r.link;
       const l = game.scenes[scene].links[link];
       const had = exits.get(link);
-      if (!had || w.ci.hitpts > had.hp)
-        exits.set(link, {
-          link,
-          toScene: l.toScene,
-          tick: had ? Math.min(had.tick, tick) : tick,
-          hp: w.ci.hitpts,
-          ci: { ...w.ci, inv: w.ci.inv.slice(), meter: w.ci.meter.slice(), seqon: w.ci.seqon.slice() },
-          clock: w.clock,
-          to: l.to,
-          world: w,
-          via: had?.via ?? { ...via!, ticks: moveTicks },
-        });
+      const reach = (prev?: ExitReach): ExitReach => ({
+        link,
+        toScene: l.toScene,
+        tick: prev ? Math.min(prev.tick, tick) : tick,
+        hp: w.ci.hitpts,
+        ci: { ...w.ci, inv: w.ci.inv.slice(), meter: w.ci.meter.slice(), seqon: w.ci.seqon.slice() },
+        clock: w.clock,
+        to: l.to,
+        world: w,
+        via: { ...via!, ticks: moveTicks },
+      });
+      if (!had || w.ci.hitpts > had.hp) exits.set(link, { ...reach(had), via: had?.via ?? { ...via!, ticks: moveTicks } });
+      // carrying the least: fewer things and counters (worth in thousands), then more hit points
+      const poor = poorExits.get(link);
+      const carry = Math.floor(worthOf(w.ci) / 1000);
+      if (!poor || carry < Math.floor(worthOf(poor.ci) / 1000) || (carry === Math.floor(worthOf(poor.ci) / 1000) && w.ci.hitpts > poor.hp))
+        poorExits.set(link, reach(poor));
       if (opt.stopAt?.(link, l.toScene)) reachedStop = true;
       return link;
     }
@@ -377,7 +448,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   };
 
   /** Plays one move from the place restored. Returns the places it ended in, and links reached. */
-  const play = async (m: Move): Promise<{ to: number[]; exits: number[] }> => {
+  const play = async (m: Move): Promise<{ to: number[]; exits: number[]; dead?: boolean }> => {
     const to: number[] = [];
     const startY = w.chr.y[0];
     fall = undefined;
@@ -388,13 +459,15 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     moveTicks = 0;
     const r = await driveMove(sim, m, { tick: step, carried: () => to.push(addPlace()) });
     if (typeof r.end === 'number') return { to, exits: [r.end] };
-    if (r.end === 'dead') return { to, exits: [] };
+    if (r.end === 'dead') return { to, exits: [], dead: true };
     const drop = w.chr.y[0] - startY > 2 ? w.chr.y[0] - startY : undefined;
     to.push(addPlace(drop));
     return { to, exits: [] };
   };
 
+  opt.onTick?.(w);
   addPlace();
+  const startSnap = places[0].snap!;
   let stopped = false;
   let lastReport = now();
   for (;;) {
@@ -405,11 +478,15 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       break;
     }
     const p = places[id];
+    let tried = 0;
+    let deaths = 0;
     for (const [mi, m] of moves.entries()) {
       if (m.waits && !p.waits && !opt.waitEverywhere) continue;
       sim.restore(p.snap!);
       via = { parent: id, move: mi, ticks: 0 };
       const r = await play(m);
+      tried++;
+      if (r.dead) deaths++;
       for (const t of r.to) if (t >= 0 && t !== id && !p.out.includes(t)) p.out.push(t);
       for (const e of r.exits) if (!p.exits.includes(e)) p.exits.push(e);
       if (reachedStop) break;
@@ -417,23 +494,26 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     // a place is tried once: its snapshot (a few kilobytes) is no longer needed
     p.snap = undefined;
     p.done = true;
+    if (tried && deaths === tried && !reachedStop) p.doomed = true;
     if (now() - lastReport > 200) {
       lastReport = now();
-      if (opt.progress?.(places.length, queue.length - head + fresh.length + heap.size)) {
+      if (opt.progress?.(places.length, queue.length - head + fresh.length + heap.size, { heat, first, deaths: deathsAt, ms: now() - t0 })) {
         stopped = true;
         break;
       }
     }
   }
   for (const p of places) p.snap = undefined;
-  return {
+  const ex: Exploration = {
     scene,
     places,
     heat,
     first,
     monsters,
     exits: [...exits.values()],
+    poorExits: [...poorExits.values()],
     incidents,
+    deaths: deathsAt,
     complete: !stopped && !reachedStop,
     ticks,
     ms: now() - t0,
@@ -441,6 +521,41 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     moves,
     links: game.scenes[scene].links,
   };
+  await confirmStuck(ex, sim, startSnap, baseMap, bg);
+  return ex;
+}
+
+/**
+ * Before an area is called a place to get stuck, the hero is taken to its way in again (the
+ * moves that found it, replayed from the start) and every key, and every two keys together, is
+ * held for a few lengths of time: a hop steered just so, or a key with a walk, may get him out
+ * where the explorer's own moves didn't. Places of an area he gets out of are marked freed.
+ */
+async function confirmStuck(ex: Exploration, sim: SceneSim, start: Snap, map: Uint8Array, bg: Block[]): Promise<void> {
+  const areas = stuckAreas(ex, map, bg).slice(0, 12);
+  if (!areas.length) return;
+  const ok = canLeave(ex);
+  // cells with a way out, but none of a stuck area's (a cell can be both, carrying a key or not)
+  const trapped = new Set(areas.flatMap((a) => a.cells));
+  const way = new Set(ex.places.flatMap((p, i) => (ok[i] && !trapped.has(p.cell) ? [p.cell] : [])));
+  const keys = [...new Set(ex.moves.flatMap((m) => m.steps.flatMap((s) => s.keys)))];
+  const tick = async () => {
+    const t = await sim.tick();
+    return t === 'dead' ? 'dead' : t ? t.link : undefined;
+  };
+  for (const a of areas) {
+    const chain: number[] = [];
+    for (let p = a.entry; ex.places[p].via; p = ex.places[p].via!.parent) chain.unshift(p);
+    sim.restore(start);
+    for (const p of chain) {
+      const v = ex.places[p].via!;
+      await driveMove(sim, ex.moves[v.move], { tick, limit: v.ticks });
+    }
+    if (await frees(sim, keys, way)) {
+      const cells = new Set(a.cells);
+      for (const p of ex.places) if (cells.has(p.cell)) p.freed = true;
+    }
+  }
 }
 
 /** What the hero is touching that would do this: a block in its cells, else the monster nearest. */
@@ -515,7 +630,7 @@ class PlaceHeap {
 }
 
 /** Things carried count most, then counters (money and the ten special ones), then score. */
-export function worthOf(ci: CharInfo): number {
+function worthOf(ci: CharInfo): number {
   let counters = 0;
   for (let i = 20; i < 30; i++) counters += Math.max(0, ci.meter[i] ?? 0);
   return ci.inv.filter((b) => b < BACKBL).length * 1e6 + (counters + Math.max(0, ci.meter[3] ?? 0)) * 1e3 + ci.score;

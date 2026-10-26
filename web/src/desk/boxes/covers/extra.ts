@@ -226,7 +226,7 @@ function clown(c: Ctx, x: number, y: number, s: number): void {
   c.restore();
 }
 
-/** A corgi sitting up, ears high (the right one taller); base at (x, y). */
+/** A corgi sitting up, ears high (a matching pair); base at (x, y). */
 function corgi(c: Ctx, x: number, y: number, s: number): void {
   c.save();
   c.translate(x, y);
@@ -251,11 +251,13 @@ function corgi(c: Ctx, x: number, y: number, s: number): void {
       [1, '#c86020'],
     ]),
   );
-  poly(c, [-24, -98, -30, -142, -6, -108]);
+  poly(c, [-24, -98, -30, -144, -6, -108]);
   fill(c, '#d06a28');
-  poly(c, [10, -108, 30, -150, 26, -98]);
+  poly(c, [10, -108, 34, -144, 28, -98]);
   fill(c, '#d06a28');
   poly(c, [-22, -104, -26, -128, -12, -108]);
+  fill(c, '#f0a8a0');
+  poly(c, [16, -108, 30, -128, 26, -104]);
   fill(c, '#f0a8a0');
   ell(c, 2, -76, 13, 12);
   fill(c, '#fbf4ea');

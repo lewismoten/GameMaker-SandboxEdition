@@ -1,3 +1,5 @@
+// A game downloaded on the desk PC: laid out as Game-Maker's transfer left it, and GMCRACK's
+// patched player.
 import { describe, expect, it } from 'vitest';
 import { configBat, gameDownloadNodes } from '../src/retro/hacks/deskFiles';
 import { pcExtras } from '../src/retro/hacks/pcExtras';

@@ -1,15 +1,16 @@
-// The keyboard tray: a slide-out shelf under the desk top holding the keyboard and, on
-// its mouse pad, a two-button ball mouse with its cord running back under the desk. The
-// mouse is the PC's mouse: drag it around the pad to move the pointer, press it to click.
-// The handle slides the tray in under the desk and out again.
+// The keyboard tray: a slide-out shelf under the desk top holding the keyboard, the game pad
+// left of it (gamePad.ts) and, on its mouse pad (its print chosen from the magazine's ad,
+// padChoice.ts), a two-button ball mouse with its cord running back under the desk. The mouse
+// is the PC's mouse: drag it around the pad to move the pointer, press it to click. The
+// handle slides the tray in under the desk and out again.
 import './tray.css';
 import { h } from '../../editor/core/ui';
 import { output } from '../../audio/output';
 import { audioContext, unlock } from '../../audio/context';
-import { SANDBOX_COLORS } from '../../retro/bbs/bbsName';
 import { deskMouse } from '../../input/deskMouse';
-
-const CGA = ['#000', '#00a', '#0a0', '#0aa', '#a00', '#a0a', '#a50', '#aaa', '#555', '#55f', '#5f5', '#5ff', '#f55', '#f5f', '#ff5', '#fff'];
+import { deskGamePad } from './gamePad';
+import { PAD_CHANGED, loadPad, padName, type PadPrint } from './padChoice';
+import { padSvg } from './padPrints';
 
 let squeakCtx: AudioContext | undefined;
 
@@ -52,35 +53,10 @@ function squeak(): void {
   }
 }
 
-/** The mouse pad's print: THE -= S A N D B O X =- BBS's logon screen, night sky and dunes. */
-function padArt(): HTMLElement {
-  const letters = [...'SANDBOX'].map((c, i) => `<text x="${14 + i * 18.5}" y="38" fill="${CGA[SANDBOX_COLORS[i]]}">${c}</text>`).join('');
-  const stars = [
-    [18, 10],
-    [44, 6],
-    [70, 14],
-    [96, 8],
-    [128, 12],
-    [146, 5],
-    [112, 22],
-    [30, 20],
-  ]
-    .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="0.9" fill="#fff" opacity="0.8"/>`)
-    .join('');
-  const el = h('div', { class: 'pad-art', 'aria-hidden': 'true' });
-  el.innerHTML = `<svg viewBox="0 0 156 140" preserveAspectRatio="none">
-    <defs><linearGradient id="pad-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0f2e"/><stop offset="1" stop-color="#23407c"/></linearGradient></defs>
-    <rect width="156" height="140" fill="url(#pad-sky)"/>
-    ${stars}
-    <circle cx="132" cy="62" r="9" fill="#ffe7a0" opacity="0.9"/>
-    <g font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="22" stroke="#000" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${letters}</g>
-    <text x="78" y="54" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="11" fill="#ff5">-= B B S =-</text>
-    <path d="M0 104 Q30 84 62 96 T120 92 T156 98 V140 H0 Z" fill="#b8863d"/>
-    <path d="M0 116 Q40 100 84 112 T156 108 V140 H0 Z" fill="#e2bf78"/>
-    <g fill="#9c6c2c"><rect x="18" y="80" width="26" height="18"/><rect x="14" y="74" width="8" height="10"/><rect x="40" y="74" width="8" height="10"/><rect x="26" y="70" width="10" height="12"/><path d="M28 98 v-8 a3 3 0 0 1 6 0 v8 z" fill="#5c3c14"/></g>
-    <path d="M31 70 v-9 l7 3 -7 3" fill="#f55" stroke="#5c3c14" stroke-width="0.8"/>
-    <text x="150" y="132" text-anchor="end" font-family="'Courier New', monospace" font-weight="700" font-size="9" fill="#3a2a10">1-412-555-SAND</text>
-  </svg>`;
+/** The mouse pad's print (padPrints.ts): the Sandbox BBS one it came with, or the one chosen from the magazine. */
+function padArt(print: PadPrint): HTMLElement {
+  const el = h('div', { class: 'pad-art', 'aria-hidden': 'true', dataset: { print } });
+  el.innerHTML = padSvg(print);
   return el;
 }
 
@@ -138,14 +114,40 @@ function mousePad(): HTMLElement {
       class: 'ball-mouse',
       role: 'button',
       tabindex: '0',
-      'aria-label': "The PC's mouse: drag it on the pad to move the pointer; Enter clicks, arrow keys roll it",
       title: "Drag the mouse to move the PC's pointer; press its left or right button to click",
     },
     h('span', { class: 'mouse-btn left' }),
     h('span', { class: 'mouse-btn right' }),
     h('span', { class: 'mouse-logo' }, 'SQUEAK'),
   );
-  const pad = h('div', { class: 'mouse-pad' }, padArt(), cordSvg, mouse);
+  let art = padArt(loadPad());
+  // the pad itself (not the mouse) changes its print, as the magazine's mouse pad ad does
+  const changePad = h('button', { type: 'button', class: 'pad-change', 'aria-label': "Change the mouse pad's print", title: "Change the mouse pad's print" });
+  // (first, so the print and the mouse lie over it: it takes keyboard focus, the pad's clicks reach it below)
+  const pad = h('div', { class: 'mouse-pad' }, changePad, art, cordSvg, mouse);
+  const choosePrint = () =>
+    void import('./padChooser').then(({ openPadChooser }) => openPadChooser({ opener: changePad, deskHref: location.hash || '#/desk' }));
+  changePad.addEventListener('click', choosePrint);
+  pad.addEventListener('click', (e) => {
+    if (e.target instanceof Node && (mouse.contains(e.target) || changePad.contains(e.target))) return;
+    choosePrint();
+  });
+  /** Lays the print down (and names it on the mouse, for a screen reader). */
+  const printPad = (print: PadPrint) => {
+    if (art.dataset.print !== print) {
+      const next = padArt(print);
+      art.replaceWith(next);
+      art = next;
+    }
+    mouse.setAttribute(
+      'aria-label',
+      `SQUEAK, the PC's mouse, on the mouse pad with the ${padName(print)} print: drag it on the pad to move the pointer; Enter clicks, arrow keys roll it`,
+    );
+  };
+  printPad(loadPad());
+  // chosen again from the magazine while the desk is open
+  const changed = () => (pad.isConnected ? printPad(loadPad()) : window.removeEventListener(PAD_CHANGED, changed));
+  window.addEventListener(PAD_CHANGED, changed);
 
   const place = () => {
     mouse.style.left = `${pos.x}px`;
@@ -271,6 +273,7 @@ export function keyboardTray(keyboard: HTMLElement): HTMLElement {
         'div',
         { class: 'tray-plane' },
         h('div', { class: 'tray-slab', 'aria-hidden': 'true' }, h('span', { class: 'tray-runner l' }), h('span', { class: 'tray-runner r' })),
+        deskGamePad(),
         keyboard,
         mousePad(),
       ),

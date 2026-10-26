@@ -27,7 +27,7 @@ into the door to dial: it
 costs 25 cents (one quarter).
 Arcade games take them too!
 
-FOOD PILLS heal you. A whole
+DINNER PILLS fill you up: a
 turkey dinner in one capsule!
 
 BATTERIES charge your Zapper.
@@ -62,7 +62,7 @@ F5 Save   F6 Load   ESC Quit`,
 const CREDITS_TEXT = check(
   'credits',
   `IN THE YEAR 2000!
-Version 1.0 - 1992
+Version 1.0 - 1993
 
 Game design, pictures, music
 and robot dog: Claude
@@ -105,8 +105,8 @@ A postcard from the future:
 "The grandkids still argue
 over the family root beer.
 The recipe calls for thirteen
-of something. Twelve, it
-turns out, is merely a dozen."`,
+of something. Thirteen eggs,
+it turns out, are not it."`,
 );
 if (POSTCARD.split('\n').length > 16) throw new Error('postcard: more than one page');
 
@@ -141,7 +141,7 @@ function wrapDoc(text: string, width = 30): string {
 export function readme(price: string): string {
   return wrapDoc(`IN THE YEAR 2000!
 A Future Adventure
-Sandbox Software, (C) 1992
+Sandbox Software, (C) 1993
 Version 1.0
 ==============================
 
@@ -153,7 +153,7 @@ Help Dex find his pages in six levels of the future:
 
 1. DOME SWEET DOME: the suburbs of Hover Heights
 2. THE INFORMATION SUPERHIGHWAY: fourteen lanes of hover traffic
-3. MEGA MALL 2000: the arcade, TV-RAMA, and PILLS
+3. MEGA MALL 2000: the arcade, TV-RAMA, and the food court
 4. THE TELEPORT-A-PHONE EXCHANGE: wrong number! (several of them)
 5. THE MOON: moon buggies and meteor showers
 6. THE SCIENCE FAIR: catch Sparky before the judges go
@@ -185,6 +185,7 @@ HINTS
 * Read the teletype in the exchange hall. It knows a thing or two.
 * Grandpa's CitiCar likes a honk.
 * The judges want 20 pages. There are lots more than that.
+* Came to the fair short? The school copier prints more.
 
 THIS IS SHAREWARE
 -----------------

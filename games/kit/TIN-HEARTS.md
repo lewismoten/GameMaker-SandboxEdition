@@ -1,7 +1,8 @@
 # Tin hearts (and cameos): the recipe
 
 Every Sandbox Software game and every Bard of Bizarre game hides one **tin heart**: a small riveted
-tin heart with a clock face, a nod to the Tin Man. Find them all and Mystery Robot Joe leaves a diamond
+tin heart with a clock face, a nod to the Tin Man and to Lewis's pacemaker (no secret: the cast page and
+TURBO BUTTON say so). Find them all and Mystery Robot Joe leaves a diamond
 heart trophy on the desk. The web counts a game as soon as its `about.json` declares a heart.
 
 In Game-Maker 3.0 a block has no id or sound of its own, so a heart is just a block that gives points
@@ -117,7 +118,7 @@ The rules (low risk, as for the heart):
   and the text-fit check.
 - Keep it warm. Clowns are always friendly. Use "building blocks", not brand names. No photos:
   redraw as pixel art.
-- Never put anything from the secret game in another game.
+- Never put anything from a secret game in another game.
 
 ## The Easter egg
 

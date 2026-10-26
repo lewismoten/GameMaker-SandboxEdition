@@ -6,7 +6,7 @@
 //
 // Like the designers' VGA screen (vga/shared/vga.ts) it fills the tube (4:3), so its
 // pixels are a little taller than wide, drawn from a whole-number upscale so they stay even.
-import { FONT_CP437 } from '../text/cp437';
+import { FONT_CP437 } from '../../gfx/cp437Glyphs';
 
 /** The screen mode a picture of this size needs: 320x200 if it fits there, 640x400, or 640x480 for one taller than 400. */
 export function modeFor(width: number, height: number): [number, number] {

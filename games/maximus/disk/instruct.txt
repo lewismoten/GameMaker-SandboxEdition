@@ -32,8 +32,8 @@ too). Up fires your jets: tap
 it again in the air to climb
 higher. Down curls into a
 ball. Space fires your blaster
-the way you last moved. P
-picks things up and O drops
+the way you last moved. G
+picks things up and B drops
 one. To go back to orbit, walk
 into the uplink beacon.
 
@@ -57,7 +57,7 @@ Q/E Dash Boots
 C Shield Emitter (guard orb)
 F Hover Pack
 V Mine Layer
-H Med Kit
+R Med Kit
 W Flak Cannon
 Q/E Hydro Jets (diving bell)
 Up Spring Shocks (rover)

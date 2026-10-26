@@ -162,6 +162,18 @@
    "html": "<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Nine levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>"
   },
   {
+   "head": "Since last issue: The kingdom got around to it",
+   "html": "<p>Quest for the Round Tuit players have been very prompt. The Royal Library reports the Tome of Tomorrow returned, three hundred years overdue, by dozens of you, and Doc Leo reports Sir Reginald Cluckington III home safe. The most-asked question on the BBS: where can I swim? Nowhere. The rivers of Procrastia can't be swum. Look for bridges.</p>"
+  },
+  {
+   "head": "Around the Sandbox: Gwinn's progress report",
+   "html": "<p>Gwinn has her own levels this time, and our testers say she's a natural: she BOOFs, she chews, she digs big and she does zoomies straight through the hay bales. Her SIT is coming along. She gets about halfway, sits for one moment, and is up again wiggling. We're told that's how it starts.</p>"
+  },
+  {
+   "head": "In the workshop: The biggest one yet",
+   "html": "<p>The Teddy trilogy ends next year with <b>Teddy's Little Biggest Adventure</b>: every place from the first two games, more heroes than ever, and, for the first time, you get to drive THE\u00a0CHEZ. What's the occasion? We can't say. Gwinn made us promise.</p>"
+  },
+  {
    "head": "Letters: \"Why did Teddy stop rolling over?\"",
    "html": "<p>He retired from it, by choice, like he retired from hoops. He is a professional now. Roll over's key went to his new SNIFF, which our testers say is the best trick in the game. Teddy agrees.</p>"
   }
@@ -266,7 +278,7 @@
     "cbl": "gwinn.cbl",
     "pal": "farm.pal"
    },
-   "back": "If found wandering, please return to Doc Leo and THE CHEZ, the little red car by the show barn. She will come for a corn dog. She will come for anything, really."
+   "back": "If found wandering, please return to Doc Leo and THE\u00a0CHEZ, the little red car by the show barn. She will come for a corn dog. She will come for anything, really."
   },
   {
    "kind": "hintbook",
@@ -283,7 +295,7 @@
       },
       {
        "q": "I found the thing Gwinn dropped. Now what?",
-       "a": "Bring it to Doc Leo at THE CHEZ, his little red car, at the end of the stop. Its door opens for it: hop in and he drives on."
+       "a": "Bring it to Doc Leo at THE\u00a0CHEZ, his little red car, at the end of the stop. Its door opens for it: hop in and he drives on."
       },
       {
        "q": "How do Gwinn's levels end?",
@@ -308,7 +320,7 @@
       },
       {
        "q": "What is in the attic?",
-       "a": "Bounce on Doc Leo's bed upstairs: it sends you up through the hatch. A balloon dog and a lot of boxes marked KLUB."
+       "a": "Bounce on Doc Leo's bed upstairs: it sends you up through the hatch. A balloon dog and a lot of boxes marked WIGS."
       }
      ]
     },

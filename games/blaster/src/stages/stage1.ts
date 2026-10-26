@@ -141,6 +141,7 @@ function legA(g: Grid): void {
  * Somebody's breadboard 6502 computer, plugged in between the bus lines: the 6502 straddles
  * the channel, a jumper runs to the 555 clock, and the clock LED blinks with the A firewalls
  * (both are ntime chains of the same length that start together, so they never drift).
+ * Wires from the bus lines on either side feed it power and data.
  */
 function breadboard(g: Grid, c: number, d: number): void {
   g.rect(c, d, 10, 14, (cc) => (cc === c || cc === c + 9 ? 'bbR' : cc === c + 3 ? 'bbC' : 'bbH'));
@@ -153,6 +154,14 @@ function breadboard(g: Grid, c: number, d: number): void {
     .set(c + 7, d + 6, 'jwV')
     .set(c + 7, d + 5, 'clkOn')
     .set(c + 6, d + 5, 'runStep');
+  // wired to the bus lines either side, so it is part of the computer
+  g.set(c - 2, d + 9, 'hkBusL')
+    .set(c - 1, d + 9, 'hkFloorL')
+    .set(c, d + 9, 'hkRailL')
+    .set(c + 1, d + 9, 'hkPinL');
+  g.set(c + 11, d + 3, 'hkBusR')
+    .set(c + 10, d + 3, 'hkFloorR')
+    .set(c + 9, d + 3, 'hkRailR');
 }
 
 function legB(g: Grid): void {

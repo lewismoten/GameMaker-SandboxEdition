@@ -5,7 +5,7 @@ import { Reader, Writer } from './binary';
 export const MLEN = 100;
 export const MWID = 100;
 export const LASTMM = 200;
-export const MAP_CELLS = MLEN * MWID;
+const MAP_CELLS = MLEN * MWID;
 
 export interface PlacedMonster {
   /** Monster number in the .mon file; LASTMON (64) or more = empty slot. */

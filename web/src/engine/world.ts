@@ -103,13 +103,13 @@ export interface MonInfo {
 }
 
 /** mm[]: monster number per slot (LASTMON = empty). */
-export interface MonSlot {
+interface MonSlot {
   monnum: number;
   curx: number;
   cury: number;
 }
 
-export interface KeyStackEntry {
+interface KeyStackEntry {
   key: number;
   seq: number;
   frame: number;
@@ -121,7 +121,7 @@ export interface BresScroll {
   iters: number;
 }
 
-export interface ScrollState {
+interface ScrollState {
   /** Pixel offset of the screen edge within the edge block (mx, my). */
   nx: number;
   ny: number;
@@ -161,7 +161,7 @@ export interface TouchBlocks {
   blknum: number[];
 }
 
-export interface SoundHooks {
+interface SoundHooks {
   /** DoSound: returns true if a sound was started. */
   play(n: number): boolean;
 }
@@ -246,7 +246,7 @@ export function newCharInfo(): CharInfo {
   };
 }
 
-export function newMonInfo(): MonInfo {
+function newMonInfo(): MonInfo {
   return {
     fromchar: 0,
     delta: { x: 0, y: 0 },
@@ -268,7 +268,7 @@ export function newMonInfo(): MonInfo {
   };
 }
 
-export function newScroll(): ScrollState {
+function newScroll(): ScrollState {
   return {
     nx: 0,
     ny: 0,
@@ -309,7 +309,7 @@ export function padBlocks(list: Block[] | undefined, count: number): Block[] {
  * map[y][x] with C's flat layout: x may run one past the row into the next row. Out
  * of range reads in the helpers below return 0 / LASTMM instead of stray memory.
  */
-export function cellIndex(x: number, y: number): number {
+function cellIndex(x: number, y: number): number {
   return y * MLEN + x;
 }
 

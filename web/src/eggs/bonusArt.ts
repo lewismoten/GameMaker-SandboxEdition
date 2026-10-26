@@ -1,11 +1,13 @@
-// Drawing the two eggs kept apart from the dozen (bonus.ts): a rotten egg (mottled, pitted,
+// Drawing the two eggs kept apart from the felt eggs (bonus.ts): a rotten egg (mottled, pitted,
 // cracking a little more with every tap, stench rising), the IOU note inside it, the diamond
 // heart that note is for (cut with facets, caged in gold filigree, turning: Mystery Robot Joe's
 // trophy for the tin heart hunt, tinHearts/trophy.ts), and a pastry egg like a jeweled imperial egg
 // (rose glaze, piped icing, gold leaf, a nest of spun sugar, a clockwork baker on top).
 // The shells are painted flat and wrapped round the egg shape pixel by pixel, like the felt
 // eggs (eggArt.ts), but lit with a sheen and a bump map so icing stands up and cracks sink.
-import { EGG_ASPECT, TEX_H, TEX_W } from './eggArt';
+import { EGG_ASPECT, radiusAt } from './eggArt';
+import { xorshift32 } from '../seededRandom';
+import { TEX_H, TEX_W } from './eggTexture';
 
 export { EGG_ASPECT };
 
@@ -26,16 +28,6 @@ export interface Shell {
   gloss: number;
   /** How strongly `height` bends the light. */
   bump: number;
-}
-
-function rng(seed: number): () => number {
-  let s = seed >>> 0 || 1;
-  return () => {
-    s ^= s << 13;
-    s ^= s >>> 17;
-    s ^= s << 5;
-    return (s >>> 0) / 4294967296;
-  };
 }
 
 const canvas = (w: number, h: number) => {
@@ -92,8 +84,6 @@ const readLayer = (c: HTMLCanvasElement): Float32Array => {
 };
 
 // ---- the shell, wrapped and lit -----------------------------------------------------------
-
-const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) * (1 + 0.13 * y);
 
 /** Draws a shell turned by `turn` radians into `box`, through a buffer of at most `res` rows. */
 export function drawShell(g: CanvasRenderingContext2D, shell: Shell, turn: number, box: Box, res = 300): void {
@@ -200,7 +190,7 @@ function rottenBaseLayers() {
   const n1 = noise(31);
   const n2 = noise(77);
   const n3 = noise(5);
-  const rand = rng(1776);
+  const rand = xorshift32(1776);
   const color = new ImageData(TEX_W, TEX_H);
   const height = new Float32Array(TEX_W * TEX_H);
   const mix = (a: number[], b: number[], t: number) => a.map((x, i) => x + (b[i] - x) * Math.max(0, Math.min(1, t)));
@@ -241,7 +231,7 @@ let cracks: Crack[] | undefined;
 
 function crackPaths(): Crack[] {
   if (cracks) return cracks;
-  const rand = rng(1313);
+  const rand = xorshift32(1313);
   cracks = [];
   for (let k = 0; k < 13; k++) {
     // the first cracks start on the side that faces you
@@ -294,7 +284,7 @@ export function rottenShell(taps: number): Shell {
   const dg = dent.getContext('2d')!;
   dg.fillStyle = '#000';
   dg.fillRect(0, 0, TEX_W, TEX_H);
-  const rand = rng(99);
+  const rand = xorshift32(99);
   const all = crackPaths();
   const path = (g: CanvasRenderingContext2D, pts: [number, number][], upto: number, dx: number) => {
     const n = Math.max(2, Math.round(pts.length * upto));
@@ -339,7 +329,7 @@ export function rottenShell(taps: number): Shell {
   // near the end, flakes of shell fall away: dark inside, and something glinting in there
   if (stage >= 8) {
     const flakes = (stage - 7) * 3;
-    const r2 = rng(4242);
+    const r2 = xorshift32(4242);
     for (let f = 0; f < flakes; f++) {
       const c = all[f % all.length];
       const [px, py] = c.pts[Math.floor(r2() * c.pts.length)];
@@ -379,7 +369,7 @@ export function rottenShell(taps: number): Shell {
 export function stinkPuff(seed: number): HTMLCanvasElement {
   const c = canvas(128, 128);
   const g = c.getContext('2d')!;
-  const rand = rng(seed * 7919 + 3);
+  const rand = xorshift32(seed * 7919 + 3);
   const tints = ['164, 196, 92', '128, 170, 72', '196, 206, 120', '98, 140, 60', '176, 186, 96'];
   for (let i = 0; i < 46; i++) {
     const a = rand() * Math.PI * 2;
@@ -403,7 +393,7 @@ export function stinkPuff(seed: number): HTMLCanvasElement {
 
 /** A few shards of rotten shell lying where they fell, around a spot on the floor. */
 export function drawRestingShards(g: CanvasRenderingContext2D, cx: number, cy: number, size: number): void {
-  const rand = rng(1301);
+  const rand = xorshift32(1301);
   for (let i = 0; i < 9; i++) {
     const side = i % 2 ? 1 : -1;
     const x = cx + side * size * (0.28 + rand() * 0.5);
@@ -742,7 +732,7 @@ function hsl(h: number, s: number, l: number): [number, number, number] {
 let pastry: Shell | undefined;
 
 /** The pastry egg's covering: rose glaze, white piping, gold leaf and a baked foot. */
-export function pastryShell(): Shell {
+function pastryShell(): Shell {
   if (pastry) return pastry;
   const layers = { color: canvas(TEX_W, TEX_H), height: canvas(TEX_W, TEX_H), metal: canvas(TEX_W, TEX_H) };
   const C = layers.color.getContext('2d')!;
@@ -751,7 +741,7 @@ export function pastryShell(): Shell {
   Hh.fillStyle = M.fillStyle = '#000';
   Hh.fillRect(0, 0, TEX_W, TEX_H);
   M.fillRect(0, 0, TEX_W, TEX_H);
-  const rand = rng(1313);
+  const rand = xorshift32(1313);
   const V = (f: number) => TEX_H * f;
   // the glaze: rose, a touch deeper toward the foot, engine-turned like enamel
   const bg = C.createLinearGradient(0, 0, 0, TEX_H);
@@ -937,7 +927,7 @@ let nest: { cup: Thread[]; foot: { a: number; bend: number; color: string; w: nu
 
 function sugarThreads() {
   if (nest) return nest;
-  const rand = rng(2024);
+  const rand = xorshift32(2024);
   const amber = () => `hsla(${28 + rand() * 14}, ${82 + rand() * 16}%, ${32 + rand() * 26}%, ${0.25 + rand() * 0.4})`;
   const thread = (rx0: number, rx1: number): Thread => ({
     rx: rx0 + rand() * (rx1 - rx0),
@@ -961,7 +951,7 @@ function sugarThreads() {
  * The spun-sugar holder round an egg in `box`: `part` 'back' is drawn before the egg, 'front'
  * after it. It turns with the egg.
  */
-export function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: number, part: 'back' | 'front'): void {
+function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: number, part: 'back' | 'front'): void {
   const n = sugarThreads();
   const cx = box.x + box.w / 2;
   const cupY = box.y + box.h * 0.82;
@@ -1025,7 +1015,7 @@ export function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: numbe
  * The clockwork baker standing on a gold disc at (x, y) (the egg's crown), `s` tall,
  * turned `a` radians (0 faces you).
  */
-export function drawBaker(g: CanvasRenderingContext2D, x: number, y: number, s: number, a: number): void {
+function drawBaker(g: CanvasRenderingContext2D, x: number, y: number, s: number, a: number): void {
   const sa = Math.sin(a);
   const ca = Math.cos(a);
   // a point on the figure: `side` along its shoulders, `fwd` the way it faces

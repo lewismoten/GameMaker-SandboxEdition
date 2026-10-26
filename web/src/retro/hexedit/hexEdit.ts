@@ -34,14 +34,14 @@ import {
   statusLine,
   type ListRow,
 } from '../hacks/dosUi';
-import { leafAt, sectionAt, type Leaf, type Structure } from './structure';
+import { hex, leafAt, sectionAt, type Leaf, type Structure } from './structure';
 import { describe } from './structureMedia';
 import { listFolder, openFile, pathOf, type HexFile } from './hexFiles';
 
-export const HEXEDIT_TITLE = 'HEXEDIT 1.1';
+const HEXEDIT_TITLE = 'HEXEDIT 1.1';
 const COPYRIGHT = 'HEXEDIT 1.1  Hex file editor.  (C) 1994 Sandbox Software.  Freeware.';
 
-export const HEXEDIT_HELP = [
+const HEXEDIT_HELP = [
   COPYRIGHT,
   '',
   'Views and edits any file byte by byte.  For Game-Maker files it names the',
@@ -58,7 +58,6 @@ const HEX_X = 11;
 const ASC_X = 61;
 const TOP = 2;
 
-const hex = (n: number, w = 2) => n.toString(16).toUpperCase().padStart(w, '0');
 const hexX = (i: number) => HEX_X + i * 3 + (i >= 8 ? 1 : 0);
 
 export async function runHexEdit(h: RetroHost, args: string[]): Promise<void> {
@@ -367,7 +366,7 @@ async function goTo(h: RetroHost, t: State): Promise<void> {
 }
 
 /** Text, or hex bytes typed as pairs ("47 4D"); quotes force text. */
-export function searchBytes(a: string): Uint8Array {
+function searchBytes(a: string): Uint8Array {
   const q = /^"(.*)"?$/.exec(a);
   if (!q && /^[0-9a-f]{2}( ?[0-9a-f]{2})*$/i.test(a)) return Uint8Array.from(a.replace(/ /g, '').match(/../g)!, (x) => parseInt(x, 16));
   const text = toCp437(q ? q[1].replace(/"$/, '') : a);

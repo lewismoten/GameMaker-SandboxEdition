@@ -4,7 +4,7 @@
 // first paint (the same rule as here) so the page never flashes the wrong colors.
 import { h } from './editor/core/ui';
 
-export type Theme = 'dark' | 'light' | 'auto';
+type Theme = 'dark' | 'light' | 'auto';
 const KEY = 'gm-theme';
 const ORDER: Theme[] = ['dark', 'light', 'auto'];
 const LABEL: Record<Theme, [string, string]> = {
@@ -13,7 +13,7 @@ const LABEL: Record<Theme, [string, string]> = {
   auto: ['🖥️', 'Theme follows your system'],
 };
 
-export function getTheme(): Theme {
+function getTheme(): Theme {
   try {
     const t = localStorage.getItem(KEY) as Theme | null;
     return t && ORDER.includes(t) ? t : 'dark';
@@ -22,7 +22,7 @@ export function getTheme(): Theme {
   }
 }
 
-export function applyTheme(t: Theme): void {
+function applyTheme(t: Theme): void {
   document.documentElement.dataset.theme = t;
   try {
     localStorage.setItem(KEY, t);

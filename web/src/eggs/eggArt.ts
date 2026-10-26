@@ -2,20 +2,8 @@
 // fibers, bands, a pattern, an appliqué and running stitches), then wrapped round an egg
 // shape and lit, pixel by pixel, at any turn. Used small on the wall and large in the viewer.
 import type { EggLook } from './eggs';
-
-export const TEX_W = 512;
-export const TEX_H = 256;
-
-/** A small seeded random, so an egg's fibers come out the same each time. */
-function rng(seed: number): () => number {
-  let s = seed >>> 0 || 1;
-  return () => {
-    s ^= s << 13;
-    s ^= s >>> 17;
-    s ^= s << 5;
-    return (s >>> 0) / 4294967296;
-  };
-}
+import { xorshift32 } from '../seededRandom';
+import { TEX_H, TEX_W } from './eggTexture';
 
 const seedOf = (text: string) => [...text].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261);
 
@@ -25,7 +13,7 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
   c.width = TEX_W;
   c.height = TEX_H;
   const g = c.getContext('2d')!;
-  const rand = rng(seedOf(seed));
+  const rand = xorshift32(seedOf(seed)); // the same fibers each time
   g.fillStyle = look.felt;
   g.fillRect(0, 0, TEX_W, TEX_H);
   const stitch = (draw: () => void, color = look.thread, width = 2.2) => {
@@ -232,6 +220,22 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
         3,
       );
       break;
+    case 'confetti': {
+      // confetti French knots in every color, and gold rickrack round the waist
+      const colors = ['#ffd23f', '#e8443a', '#3a8fe0', '#4fc06a', '#ff8a2a', '#ff7fb0', '#ffffff'];
+      scatter(70, 0.08, 0.98, (x, y, i) => {
+        g.fillStyle = colors[i % colors.length];
+        g.beginPath();
+        g.arc(x, y, 2.4, 0, Math.PI * 2);
+        g.fill();
+      });
+      g.strokeStyle = look.thread;
+      g.lineWidth = 3;
+      g.beginPath();
+      for (let x = 0; x <= TEX_W; x += 8) g.lineTo(x, waist + ((x / 8) % 2 ? -6 : 6));
+      g.stroke();
+      break;
+    }
   }
   // running stitches along the bands' edges
   for (const y of [waist - 13, waist + 13, TEX_H * 0.16 - 6, TEX_H * 0.16 + 6])
@@ -533,12 +537,32 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       g.fill();
       g.restore();
       break;
+    case 'cake':
+      // a birthday cake: a frosted layer with a cream drip, and three yarn candles lit
+      blob(() => g.rect(-22, -6, 44, 26));
+      g.fillStyle = '#fff4fa';
+      g.fillRect(-22, -6, 44, 5);
+      for (let k = 0; k < 4; k++) {
+        g.beginPath();
+        g.arc(-16.5 + k * 11, -1, 5.5, 0, Math.PI);
+        g.fill();
+      }
+      ['#3a8fe0', '#ffd23f', '#e8443a'].forEach((col, i) => {
+        const cx = -12 + i * 12;
+        g.fillStyle = col;
+        g.fillRect(cx - 2, -22, 4, 16);
+        g.fillStyle = '#ffb02e';
+        g.beginPath();
+        g.ellipse(cx, -26, 2.6, 4, 0, 0, Math.PI * 2);
+        g.fill();
+      });
+      break;
   }
   g.restore();
 }
 
 /** The egg's half-width at height y (-1 top .. 1 bottom), as a fraction of its half-height. */
-const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) * (1 + 0.13 * y);
+export const radiusAt = (y: number) => 0.76 * Math.sqrt(Math.max(0, 1 - y * y)) * (1 + 0.13 * y);
 
 /**
  * Draws the egg turned by `turn` radians (0 shows the front appliqué) into a w x h box at

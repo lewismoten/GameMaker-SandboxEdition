@@ -4,7 +4,7 @@
 import { seeded } from '../boxFacts';
 
 export type Ctx = CanvasRenderingContext2D;
-export type Stops = [number, string][];
+type Stops = [number, string][];
 /** A cover painter: fills a w x h picture (the title sits over its top ~third). */
 export type Painter = (ctx: Ctx, w: number, h: number) => void;
 

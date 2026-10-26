@@ -31,10 +31,10 @@ export const ADVTYPE = 10;
 export const SCENEDESCLEN = 20;
 export const SCENEFILES = 20;
 export const MAXSCENELINKS = 20;
-export const SCENE_SIZE = 283;
-export const HEADER_SIZE = 256;
+const SCENE_SIZE = 283;
+const HEADER_SIZE = 256;
 export const GAM_VERSION = 300;
-export const GAM_FILETYPE = 8;
+const GAM_FILETYPE = 8;
 
 /** Scene 0 (title/menu) file slots. */
 export const START_FILES = [
@@ -72,8 +72,8 @@ export const ADV_FILES = [
 
 // Default extension per file slot; 'graphic' slots accept any of GRAPHIC_EXTS.
 export const ADV_EXTS = ['pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd', 'cmf', 'graphic', 'graphic'] as const;
-export const START_EXTS = ['graphic', 'cmf', 'graphic', 'cmf', 'graphic', 'cmf', 'graphic', 'graphic', 'graphic', 'graphic', 'graphic', 'rec'] as const;
-export const END_EXTS = ['graphic', 'cmf', 'graphic', 'cmf'] as const;
+const START_EXTS = ['graphic', 'cmf', 'graphic', 'cmf', 'graphic', 'cmf', 'graphic', 'graphic', 'graphic', 'graphic', 'graphic', 'rec'] as const;
+const END_EXTS = ['graphic', 'cmf', 'graphic', 'cmf'] as const;
 export const GRAPHIC_EXTS = ['gif', 'bkd', 'fli', 'txt', 'lst'];
 
 export interface Point {
@@ -90,7 +90,7 @@ export interface Link {
   to: Point;
 }
 
-export interface ScrollInfo {
+interface ScrollInfo {
   /** 0 = no scrolling, 0xFF = scroll when the character nears the edge. */
   up: number;
   down: number;
@@ -127,7 +127,7 @@ export interface Game {
   converted: boolean;
 }
 
-export function isV3Game(bytes: Uint8Array): boolean {
+function isV3Game(bytes: Uint8Array): boolean {
   return bytes[0] === 0x47 && bytes[1] === 0x4d;
 }
 

@@ -1,7 +1,7 @@
 // Y2K.MON: who mows, chases, honks and hugs. One list for every level.
 import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
 import type { BlockSet } from '../blocks/book';
-import { MON } from '../ids';
+import { COPY_TICKS, MON } from '../ids';
 
 /** Orientations: 0 as drawn (facing right), 4 mirrored (left). */
 const O = { right: 0, left: 4 };
@@ -57,7 +57,7 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.pop, { pics: anim('pop', 2), power: 100, end: 6 });
 
   def(MON.mowerH, { pics: anim('mower', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(5, 0, 2) });
-  def(MON.mowerV, { pics: anim('mower', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 4, 2) });
+  def(MON.mowerV, { pics: anim('mowerFront', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 4, 2) });
   def(MON.mowerBox, {
     pics: anim('mower', 2),
     power: ROBOT,
@@ -65,10 +65,10 @@ export function buildMonsters(mb: BlockSet): Monster[] {
     score: 100,
     end: 900,
     march: [
-      [0, 3, 2, 0],
-      [4, 3, 2, 0],
-      [4, 0, 2, 0],
-      [0, 0, 2, 0],
+      [0, 3, 2, O.left],
+      [4, 3, 2, O.right],
+      [4, 0, 2, O.right],
+      [0, 0, 2, O.left],
     ],
   });
   def(MON.dog, { pics: anim('dog', 3), power: CHASER, towards: 2, becomes: MON.pop, score: 150 });
@@ -103,10 +103,10 @@ export function buildMonsters(mb: BlockSet): Monster[] {
     becomes: MON.pop,
     score: 200,
     march: [
-      [5, 0, 2, 0],
-      [5, 4, 2, 0],
-      [0, 4, 2, 0],
-      [0, 0, 2, 0],
+      [5, 0, 2, O.right],
+      [5, 4, 2, O.right],
+      [0, 4, 2, O.left],
+      [0, 0, 2, O.left],
     ],
   });
   def(MON.cart, { pics: anim('cart', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(7, 0, 4) });
@@ -139,9 +139,14 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.sparky, { pics: anim('sparky', 2), power: 140, towards: RANDOM(3), becomes: MON.sparky2, score: 500 });
   def(MON.sparky2, { pics: anim('sparkyMad', 2), power: 140, towards: -3, becomes: MON.sparky3, score: 750 });
   def(MON.sparky3, { pics: anim('sparkyMad', 1), power: 140, towards: RANDOM(6), becomes: MON.sparkyDizzy, score: 1000 });
-  // Dizzy for a moment (no zap can touch him), then he lets go of the cover page.
-  def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.cover });
+  // Dizzy for a moment (no zap can touch him), then good dog: he trots over to Dex, still too
+  // tough for a zap, and drops the cover page at his feet, so a stray zap has nothing lying
+  // about the gym to hit (it would beat the page: a page Dex can take must be weaker than him).
+  def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.sparkyFetch });
+  def(MON.sparkyFetch, { pics: anim('sparky', 3), power: 250, towards: 5, end: 50, becomes: MON.cover });
   // The cover page: tough enough that lava can't hurt it (only a careless zap can).
   def(MON.cover, { pics: [['cover', 50]], power: 99 });
+  // A page on the copier's tray: as tough as the cover, and gone before the next one prints.
+  def(MON.page, { pics: [['pageMon', 50]], power: 99, end: COPY_TICKS - 1 });
   return set;
 }

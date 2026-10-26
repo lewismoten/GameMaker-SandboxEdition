@@ -4,7 +4,7 @@
 // exports, which put them in the page's description tags and show the notice.
 
 /** The author's readme / order form, by name. */
-export const NOTICE_FILES = ['readme.txt', 'order.doc', 'register.txt', 'order.txt'];
+const NOTICE_FILES = ['readme.txt', 'order.doc', 'register.txt', 'order.txt'];
 const NOTICE_WORDS = /shareware|freeware|regist/i;
 
 /** A DOS text file as plain text: up to the ^Z end mark, no CRs or control characters. */
@@ -37,7 +37,7 @@ export function blurbOf(text: string, max = 220): string | undefined {
   return joined.length > max ? `${joined.slice(0, max - 3).replace(/\s+\S*$/, '')}…` : joined;
 }
 
-export interface GameAbout {
+interface GameAbout {
   /** From the game's story or instruction screen. */
   blurb?: string;
   /** Shareware: the author's notice, as text. */

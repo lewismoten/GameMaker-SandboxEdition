@@ -15,7 +15,7 @@ export const STORY = pages(
   [
     'The Big Show was a BIG hit.',
     '',
-    'The Klown Klub paraded until',
+    'The Clown Club paraded until',
     'midnight. Teddy rode on the',
     "roof of Doc Leo's CitiCar,",
     'THE CHEZ. Gwinn chased the',
@@ -32,7 +32,7 @@ export const STORY = pages(
   ],
   [
     'And Doc Leo has news: the',
-    'Klown Klub is booked at the',
+    'Clown Club is booked at the',
     'TRI-COUNTY FAIR, tonight, way',
     'out past the river. The Big',
     'Show was big. This show is',
@@ -138,9 +138,9 @@ const CREDITS_TEXT = pages(
     'a little bigger this time.',
     'Gwinn as herself (sorry,',
     'everybody). Doc Leo, still',
-    'the friendliest hobo clown',
-    'in the Klown Klub. And THE',
-    'CHEZ, his red 1976 CitiCar.',
+    'the friendliest hobo clown in',
+    'the Clown Club. And THE CHEZ,',
+    'his red 1976 CitiCar.',
   ],
   [
     'No dogs were rushed. Gwinn',
@@ -183,7 +183,7 @@ export const WON = pages(
     'BLUE.',
   ],
   [
-    'Then the Klown Klub takes the',
+    'Then the Clown Club takes the',
     'stage. Teddy opens with every',
     'trick he knows (and a sniff).',
     'Doc Leo pulls a dove out of',
@@ -241,7 +241,7 @@ export const EGG = pages(
     'keeps looking toward the',
     'kitchen and licking his nose.',
   ],
-  ['STARRING', '', 'Teddy, a little bigger', 'this time', '', "Stunts by Gwinn (two n's),", 'uncredited at her own', 'request'],
+  ['STARRING', '', 'Teddy, a little bigger', 'this time', '', 'Stunts by Gwinn,', 'uncredited at her own', 'request'],
 );
 
 /** Lines under each level card (yellow lines start with NEW). */
@@ -266,14 +266,15 @@ TEDDY'S LITTLE BIGGER ADVENTURE
      Version 1.0 - 1996
   (c) 1996 Sandbox Software
 
-The morning after the Klown
-Klub's Big Show, Gwinn's bed is
-empty. Her collar is gone, and
-a trail of confetti leads out
-the doggy door. Tonight the
-Klown Klub plays the Tri-County
-Fair, and Teddy won't go
-without his big sister.
+The morning after the
+Clown Club's Big Show, Gwinn's
+bed is empty. Her collar is
+gone, and a trail of confetti
+leads out the doggy door.
+Tonight the Clown Club plays
+the Tri-County Fair, and Teddy
+won't go without his big
+sister.
 
 Sniff out her trail across
 town, over the river and out to
@@ -352,8 +353,8 @@ SAYING THANKS
   Designs. For Teddy, for
   Gwinn (who sat, once), and
   for Doc Leo and every
-  friendly clown in every Klown
-  Klub.
+  friendly clown in every
+  Clown Club.
 
 Woof! Boof!
 `.replace(/^\n/, '');

@@ -12,6 +12,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline, makeBook };
 export type SpriteBook = ReturnType<typeof makeBook>;
@@ -216,8 +217,18 @@ export function buildCharBlocks(pal: Pal) {
   return book;
 }
 
-/** Hurting things are solid (they push him away) and cost composure. */
-export const hurts = (hp: number, solid = 15) => ({ chHitPt: hp, solid });
+/**
+ * Hurting things are solid (they push him away) and cost composure. Not SOLTOP: on a monster
+ * that is the side that pushes the hero under it (PLAYGAME's ChkMonChr), into the floor; SOLBOT
+ * still lets him stand on one.
+ */
+export const hurts = (hp: number, solid = SOLBOT | SOLLEF | SOLRIG) => ({ chHitPt: hp, solid });
+/**
+ * Solid only at the sides, for a foe he could land on (hurts(hp, SIDES)): PLAYGAME pushes a hero
+ * on a monster's top past it without checking walls, down into the floor under it, so this one
+ * pushes only sideways and he slides down beside it.
+ */
+export const SIDES = SOLLEF | SOLRIG;
 /** A friend's hello: a tip (money, so it never plays the score sound: that one is the opening line). */
 export const hello = { effect: 3, eamt: 1 };
 
@@ -260,8 +271,9 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   const balloon = (word: string, f: number, left: boolean) => {
     const p = P();
     const y = 5 + f;
-    p.rect(1, y, 18, 9, c('paper', 1)).rect(2, y + 1, 16, 7, c('paper', 2));
-    p.rect(1, y, 1, 9, c('paper', 0)).rect(18, y, 1, 9, c('paper', 0));
+    // the whole block wide: a four-letter word takes 15 pixels and needs a gap either side
+    p.rect(0, y, 20, 9, c('paper', 1)).rect(1, y + 1, 18, 7, c('paper', 2));
+    p.rect(0, y, 1, 9, c('paper', 0)).rect(19, y, 1, 9, c('paper', 0));
     const tx = left ? 15 : 4;
     p.set(tx, y + 9, c('paper', 1)).set(tx + (left ? 1 : -1), y + 10, c('paper', 1));
     micro(p, 10 - Math.floor((word.length * 4 - 1) / 2), y + 2, word, c('velvet', 1));
@@ -286,8 +298,8 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
     const p = P();
     blob(p, 10, 15, 8.6, 4 + f * 0.4, pal.r(fur), 0, 3);
     blob(p, 6, 13, 3.4, 2.8, pal.r(fur), 1, 3);
-    // Teddy's right ear stands taller than his left
-    p.line(4, 10, 3, fur === 'fur' ? 6 : 8, c(fur, 2)).line(7, 10, 8, 7, c(fur, 2));
+    // Teddy's ears stand up, a matched pair; Gwinn's flop
+    p.line(4, 10, 3, fur === 'fur' ? 7 : 8, c(fur, 2)).line(7, 10, 8, 7, c(fur, 2));
     blob(p, 7, 15, 2.2, 1.6, pal.r(chest), 1, 2);
     p.set(4, 13, ink).set(7, 13, ink).set(2, 14, ink);
     if (collar) p.rect(5, 15, 4, 1, c(collar, 2));
@@ -329,23 +341,38 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('goat0', goat(0), hello);
   book.add('goat1', goat(1), hello);
-  // Doc Leo, hobo clown: grey fedora, ash beard, red nose, navy corduroy, purple shirt, teal tie,
-  // red sneakers, and the rubber chicken on its leash
+  // Doc Leo, hobo clown: grey fedora, painted stubble, his own nose sunburned, navy corduroy, purple shirt, teal tie,
+  // red sneakers, and the rubber chicken on its leash. Side on, walking right (mirrored for
+  // left), the chicken trotting behind; f 0 is a stride, f 1 the legs passing.
   const leo = (f: number) => {
     const p = P();
-    for (const [x, d] of [
-      [7, f ? 1 : 0],
-      [11, f ? -1 : 0],
-    ])
-      p.rect(x + d, 14, 2, 4, c('navy', 1)).rect(x + d - 1, 18, 3, 2, c('red', 2));
-    p.rect(5, 8, 9, 6, c('navy', 2)).rect(8, 8, 3, 5, c('purple', 2)).rect(9, 8, 1, 5, c('teal', 2));
-    blob(p, 9.5, 4.5, 3.2, 3, pal.r('skin'), 2, 4);
-    p.rect(6, 5, 7, 2, c('grey', 0)).rect(8, 6, 3, 1, c('white', 2));
-    p.set(10, 4, c('red', 3)).set(8, 3, ink).set(11, 3, ink);
-    p.rect(5, 1, 9, 2, c('grey', 2)).rect(7, 0, 5, 1, c('grey', 2)).rect(4, 2, 11, 1, c('grey', 1));
-    p.line(14, 10, 16, 16, c('red', 1));
-    blob(p, 17, 17, 2.4, 1.6, pal.r('yellow'), 0, 2);
-    p.set(19, 15 + f, c('red', 3)).set(18, 15, c('yellow', 2));
+    // the rubber chicken behind him, facing the way he goes, on its leash from his hand
+    blob(p, 3.5, 17, 2.6, 1.7, pal.r('yellow'), 0, 2);
+    p.rect(5, 14 + f, 2, 2, c('yellow', 2))
+      .set(7, 15 + f, c('red', 3))
+      .set(5, 13 + f, c('red', 2))
+      .set(6, 14 + f, ink);
+    p.line(4, 19, 3 + f, 19, c('red', 2)).line(8, 12, 6, 14 + f, c('red', 1));
+    // legs: the far one a shade darker; red sneakers pointing ahead
+    const stride = f ? 0 : 2;
+    const leg = (dx: number, k: number) => {
+      for (let y = 14; y < 18; y++) p.rect(10 + Math.round(((y - 13) / 5) * dx), y, 2, 1, c('navy', k));
+      p.rect(10 + dx, 18, 4, 2, c('red', k + 1));
+    };
+    leg(-stride, 0);
+    leg(stride, 1);
+    // the corduroy jacket, the purple shirt and teal tie showing at the front
+    p.rect(8, 8, 6, 6, c('navy', 2)).rect(8, 8, 1, 6, c('navy', 1));
+    p.rect(13, 8, 1, 5, c('purple', 2)).rect(13, 9, 1, 3, c('teal', 2));
+    // the near arm, back to the leash
+    p.line(10, 9, 8, 12, c('navy', 1)).set(8, 12, c('skin', 3));
+    // the head in profile: painted stubble, white mouth, his own sunburned nose out front, one eye in white paint
+    blob(p, 11, 4.5, 3, 3, pal.r('skin'), 2, 4);
+    p.rect(10, 6, 4, 2, c('grey', 0)).set(12, 5, c('grey', 0)).set(13, 6, c('white', 2));
+    p.set(13, 3, c('white', 2)).set(12, 2, c('white', 2));
+    p.set(14, 4, c('pink', 1)).set(15, 4, c('pink', 1)).set(14, 5, c('pink', 0)).set(12, 3, ink).set(9, 4, c('skin', 1));
+    // the fedora, side on: crown and brim
+    p.rect(8, 0, 6, 2, c('grey', 2)).rect(7, 2, 9, 1, c('grey', 1)).rect(8, 1, 6, 1, c('grey', 0));
     return done(p);
   };
   book.add('leo0', leo(0), hello);

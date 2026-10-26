@@ -1,3 +1,4 @@
+// Whether the desk's window is on screen, so things go by outside only when someone can see them.
 import { describe, expect, it } from 'vitest';
 import { canSee, type Sight } from './visible';
 

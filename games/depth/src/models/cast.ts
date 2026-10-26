@@ -293,7 +293,7 @@ export function double(f: number): Shape[] {
 
 // ---------------------------------------------------------------- friends
 
-/** Teddy, the Pembroke Welsh corgi: red-gold, white blaze and chest, his right ear taller. Built
+/** Teddy, the Pembroke Welsh corgi: red-gold, white blaze and chest, ears up. Built
  * for a camera high above: big head in front, ears up, the body behind it. */
 export function teddy(f: number): Shape[] {
   const fur = rgb(220, 128, 52);
@@ -316,7 +316,7 @@ export function teddy(f: number): Shape[] {
     { d: F.sphere([0.5, 0.66, 0.34], 0.16), mat: furMat },
     { d: F.ell([0.5, 0.82, 0.29], 0.08, 0.08, 0.065), mat: { color: white, diffuse: 1, spec: 0.2, shine: 10 } },
     { d: F.sphere([0.5, 0.9, 0.31], 0.03), mat: black },
-    { d: F.cap([0.4, 0.62, 0.44], [0.3, 0.6, 0.68], 0.065, 0.012), mat: furMat }, // his right ear, the tall one
+    { d: F.cap([0.4, 0.62, 0.44], [0.31, 0.6, 0.62], 0.065, 0.012), mat: furMat }, // the ears, a matched pair
     { d: F.cap([0.6, 0.62, 0.44], [0.69, 0.6, 0.62], 0.065, 0.012), mat: furMat },
     { d: F.sphere([0.445, 0.79, 0.4], 0.026), mat: black },
     { d: F.sphere([0.555, 0.79, 0.4], 0.026), mat: black },
@@ -374,7 +374,11 @@ export function gwinn(f: number): Shape[] {
   ];
 }
 
-/** Doc Leo, hobo clown: grey fedora, navy corduroy jacket, purple shirt, green tie, red sneakers, and the rubber chicken on its leash. */
+/**
+ * Doc Leo, hobo clown: grey fedora, white face paint round his eyes and mouth, his own nose
+ * sunburned pink, painted stubble, navy corduroy jacket, purple shirt, green tie, red sneakers,
+ * and the rubber chicken on its leash.
+ */
 export function docLeo(f: number): Shape[] {
   const navy: Material = { color: rgb(36, 48, 100), diffuse: 1, spec: 0.2, shine: 10 };
   const shirt: Material = {
@@ -387,7 +391,11 @@ export function docLeo(f: number): Shape[] {
     color: (p) => {
       const front = p[1] > 0.66;
       if (front && p[2] < 0.66 && Math.abs(p[0] - 0.5) < 0.05) return rgb(250, 250, 250); // the white mouth
-      if (p[2] < 0.65) return rgb(90, 90, 110); // ash beard
+      // white round each eye, the eye dark in the middle
+      const ex = Math.abs(Math.abs(p[0] - 0.5) - 0.035);
+      const ez = p[2] - 0.695;
+      if (front && ex * ex + ez * ez < 0.0006) return ex * ex + ez * ez < 0.00008 ? rgb(30, 26, 30) : rgb(250, 250, 250);
+      if (p[2] < 0.65) return rgb(90, 90, 110); // painted stubble
       return rgb(240, 196, 170);
     },
     diffuse: 1,
@@ -407,7 +415,7 @@ export function docLeo(f: number): Shape[] {
     { d: F.cap([0.38, 0.6, 0.5], [0.34, 0.66, 0.32], 0.035), mat: navy },
     { d: F.cap([0.62, 0.6, 0.5], [0.67, 0.68, 0.36], 0.035), mat: navy },
     { d: F.sphere([0.5, 0.6, 0.66], 0.095), mat: skin },
-    { d: F.sphere([0.5, 0.69, 0.66], 0.03), mat: red }, // the nose: play mode
+    { d: F.sphere([0.5, 0.69, 0.665], 0.025), mat: { color: rgb(236, 140, 130), diffuse: 1, spec: 0.3, shine: 20 } }, // his own nose, sunburned
     { d: F.cyl([0.5, 0.6, 0.745], 0.15, 0.008, 0.004), mat: hat },
     { d: F.cyl([0.5, 0.6, 0.79], 0.085, 0.045, 0.02), mat: hat },
   ];
@@ -470,4 +478,15 @@ export { Cylinder, MAT };
 /** Shapes grown (or shrunk) by s about a point on the floor. */
 export function scaled(shapes: Shape[], s: number, pivot: V = [0.5, 0.62, 0]): Shape[] {
   return shapes.map((sh) => new Moved(sh, [1, 0, 0, 0, 1, 0, 0, 0, 1], [pivot[0] * (1 - s), pivot[1] * (1 - s), pivot[2] * (1 - s)], s));
+}
+
+/** Shapes turned about the upright axis through a point on the floor, so a model built facing the
+ * camera faces right, three-quarters on (the face still shows): for a sprite that walks, mirrored
+ * for left. */
+export function sideOn(shapes: Shape[], turn = Math.PI / 4, pivot: V = [0.5, 0.6, 0]): Shape[] {
+  // world = R * local + at, R turning the +y side (toward the camera) toward +x
+  const c = Math.cos(turn);
+  const s = Math.sin(turn);
+  const rot = [c, s, 0, -s, c, 0, 0, 0, 1];
+  return shapes.map((sh) => new Moved(sh, rot, [pivot[0] - (c * pivot[0] + s * pivot[1]), pivot[1] - (-s * pivot[0] + c * pivot[1]), 0]));
 }

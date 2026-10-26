@@ -6,6 +6,7 @@
 //
 // Timing: ChangeScroll runs once per 18.2 Hz game tick and picks a speed; DrawScroll
 // runs on every 145.6 Hz timer interrupt and moves the view a little each time.
+import { updateCharDrawState } from './render';
 import { inScreenBounds } from './touch';
 import {
   BLEN,
@@ -129,10 +130,10 @@ function bresenhamScroll(b: BresScroll): number {
 }
 
 /**
- * ShiftEverything: keep sprite screen positions in step with the scrolled map. The C
- * also returned whether the character had to be redrawn; this port redraws every frame.
+ * ShiftEverything: keep sprite screen positions in step with the scrolled map. Returns
+ * the C's MoveChar: true when the character moved against the shift, so it is redrawn.
  */
-function shiftEverything(w: World, shift: Coord): void {
+function shiftEverything(w: World, shift: Coord): boolean {
   for (let l = 0; l < LASTMM; l++) {
     if (w.mm[l].monnum >= LASTMON) continue;
     const mi = w.mi[l];
@@ -147,15 +148,22 @@ function shiftEverything(w: World, shift: Coord): void {
     }
   }
   const ci = w.ci;
+  let moveChar = false;
   // A character standing still or moving with the shift rides along with the background.
   // One moving against it gets only small (< 4 pixel) moves folded in here; larger ones
   // are left to the character's own movement.
   if (ci.nexty - ci.oldy === 0 || sign(shift.y) === sign(ci.nexty - ci.oldy)) {
     if (ci.scry !== OFFSCRN) ci.scry += shift.y;
-  } else if (Math.abs(ci.nexty - ci.oldy) < 4) ci.scry += ci.nexty - ci.oldy + shift.y;
+  } else {
+    moveChar = true;
+    if (Math.abs(ci.nexty - ci.oldy) < 4) ci.scry += ci.nexty - ci.oldy + shift.y;
+  }
   if (ci.nextx - ci.oldx === 0 || sign(shift.x) === sign(ci.nextx - ci.oldx)) {
     if (ci.scrx !== OFFSCRN) ci.scrx += shift.x;
-  } else if (Math.abs(ci.nextx - ci.oldx) < 4) ci.scrx += ci.nextx - ci.oldx + shift.x;
+  } else {
+    moveChar = true;
+    if (Math.abs(ci.nextx - ci.oldx) < 4) ci.scrx += ci.nextx - ci.oldx + shift.x;
+  }
   if (ci.nextx !== OFFSCRN) {
     ci.nextx += shift.x;
     ci.nexty += shift.y;
@@ -164,6 +172,7 @@ function shiftEverything(w: World, shift: Coord): void {
     ci.oldx += shift.x;
     ci.oldy += shift.y;
   }
+  return moveChar;
 }
 
 /** DrawScroll: one 1/145.6 s scroll step. Returns how many new 4 pixel edge strips it took. */
@@ -221,8 +230,12 @@ export function drawScroll(w: World): number {
     sc.ny += BLEN;
     w.my = (w.my - 1 + MWID) % MWID;
   }
-  if (shift.x || shift.y) shiftEverything(w, shift);
+  const moveChar = shift.x || shift.y ? shiftEverything(w, shift) : false;
+  // DrawScroll then redraws the character (PLAYGAME.C 4098): drawchars sets oldx/oldy to
+  // scrx/scry, so on the next step a character that moved against the scroll compares
+  // with where it is drawn and, once its own move is used up, rides along again. Without
+  // this, scry stayed where it was for the whole scroll and solid monsters (ChkMonChr
+  // reads scry) pushed the character from the wrong side.
+  if (moveChar || sc.littleShiftx || sc.littleShifty) updateCharDrawState(w);
   return (Math.abs(shift.x) + Math.abs(shift.y)) / 4;
 }
-
-export { SOLBOT, SOLTOP, SOLRIG };

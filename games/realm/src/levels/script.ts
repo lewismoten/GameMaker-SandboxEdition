@@ -26,7 +26,9 @@ In Procrastia that means "eventually, maybe, if it's not raining." But you, Pip,
 
 So off you go: north up the road to Laterburg and the castle.
 
-SPACE swings your wooden sword. T drinks a tonic (you've one in your satchel). F2 shows your gold and your satchel. F5 saves.
+SPACE swings your wooden sword. T drinks a tonic (you've one in your satchel). F2 shows your gold and your satchel.
+
+F5 saves your game and F6 loads it. Save often, Pip: before every dungeon, and after.
 
 And Pip? Mind the slimes. They put things off, too. Including biting you.`,
   ),
@@ -98,7 +100,7 @@ The King holds court in the Garden Court at the top of the street. Under the sky
 
 The Royal Round Tuit, boy! Every King of Procrastia has got around to things by it. Then Lord Deadline stole it and broke it in three, and now nobody gets around to ANYTHING.
 
-The first piece is under the Snooze Barrows, north of here. Take this ROYAL WRIT: the Barrows' door is sealed in my name.
+Three pieces in three dungeons, then Deadline Keep itself: four dungeons in all. The first piece is under the Snooze Barrows, north of here. Take this ROYAL WRIT: the Barrows' door is sealed in my name.
 
 (You may already have one. Have another. They're free.)
 
@@ -115,7 +117,7 @@ Bring the pieces to Deadline Keep, beyond the Dawdle Flats. And do come back and
 
 TEDDY is a corgi. Red and white, ears like two sails, and he knows his left from his right. Last seen in the Whistling Woods east of the river.
 
-GWINN is chocolate brown, a pit and lab, pink collar. Two n's in Gwinn. She's particular about that. She likes to dig on the beach south of Someday Harbor.
+GWINN is chocolate brown, a pit and lab, pink collar. She likes to dig on the beach south of Someday Harbor.
 
 Find them. They'll come home on their own once they're found. Dogs know the way, they just don't feel like it. Then come to the kennel gate.`,
   ),
@@ -276,7 +278,7 @@ When you face him, fight like it's due today.`,
     'Someday Harbor',
     `Kazoo reeds! Ten gold a bundle, ten notes a bundle.
 
-No kazoo yet? Doc Leo teaches the Kazoo of Haste, if you do him a favor. Until then you can hum through the reeds and press K. People will stare.
+No kazoo yet? Doc Leo teaches the Kazoo of Haste, if you do him a favor. Until then you can hum through the reeds and press Z. People will stare.
 
 Tonics from Mother Tansy's cousin at the next stall, fifteen gold.
 
@@ -345,7 +347,7 @@ He was last seen out in the Gloomwood, south of here, near that black castle. He
     "Doc Leo's Tent",
     `REGGIE! You found him! Sir Reginald Cluckington III, home at last! Squeak!
 
-As promised: the Kazoo of Haste. Press K to toot. Every toot is a note that flies straight and true, and a sharp note beats anything short of the King.
+As promised: the Kazoo of Haste. Press Z to toot. Every toot is a note that flies straight and true, and a sharp note beats anything short of the King.
 
 Twenty-five notes to start. Lyra sells reeds at the harbor, ten notes a bundle.
 
@@ -372,7 +374,7 @@ Then he trots off home to the kennel in Laterburg, ears up, like it was his idea
     'Gwinn',
     'harbor',
     'The Beach',
-    `It's Gwinn! Two n's.
+    `It's Gwinn!
 
 She drops what she was digging up at your feet. It's a sock. You did not need a sock.
 
@@ -399,13 +401,16 @@ Squeak. He'll find his way back to Doc Leo's tent, he says. (Squeak.) Rubber chi
     'The First Piece',
     'nowish',
     'The Snooze Barrows',
-    `Sir Snoozalot rolls over, mumbles "five more minutes," and is gone in a puff of dust.
+    `PIECE 1 OF 3
+Dungeon 1 of 4 done
+
+Sir Snoozalot rolls over, mumbles "five more minutes," and is gone in a puff of dust.
 
 Behind him, on a little stone plinth: a wedge of old oak edged in brass. The first piece of the Royal Round Tuit!
 
 It's warm, and it hums faintly, like something that very much wants to get on with things.
 
-(It glows on the Tuit Table in the Garden Court now. Two to go.)`,
+(It glows on the Tuit Table in the Garden Court now. Two to go, then Deadline Keep. Time to save: F5.)`,
     'piece',
   ),
   piece2: t(
@@ -414,11 +419,16 @@ It's warm, and it hums faintly, like something that very much wants to get on wi
     'The Second Piece',
     'harbor',
     'The Soggy Vaults',
-    `The Kraken of Kinda-Later sinks back into the deep, promising to come back for you eventually.
+    `PIECE 2 OF 3
+Dungeon 2 of 4 done
+
+The Kraken of Kinda-Later sinks back into the deep, promising to come back for you eventually.
 
 The second piece of the Round Tuit sits in a scallop shell, crackling with blue sparks. Lightning! It must have soaked it up from the storm-eels.
 
-Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink this right up. (Don't worry. It's a tuit. It recharges.)`,
+Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink this right up. (Don't worry. It's a tuit. It recharges.)
+
+One piece to go, then Deadline Keep.`,
     'piece',
   ),
   piece3: t(
@@ -427,7 +437,10 @@ Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink
     'The Third Piece',
     'falls',
     'The Putoff Mines',
-    `Tick-Tock the Unpunctual winds down, chimes thirteen, and stops for good. Fashionably late to its own defeat.
+    `PIECE 3 OF 3
+Dungeon 3 of 4 done
+
+Tick-Tock the Unpunctual winds down, chimes thirteen, and stops for good. Fashionably late to its own defeat.
 
 The third piece of the Round Tuit was the key that wound it up.
 
@@ -450,7 +463,7 @@ THE HERALDRY EGG. Forest-green felt quartered in gold diamonds like a herald's c
 
 Stitched inside the lining:
 
-Questmaster Gwinn (two n's, three quests, never once asked for directions)
+Questmaster Gwinn (three quests, never once asked for directions)
 
 Map inked by Lewis "Lewie" Moten III
 

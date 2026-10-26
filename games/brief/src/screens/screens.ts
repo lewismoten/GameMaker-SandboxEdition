@@ -4,7 +4,7 @@
 // story's twist, the thirty-third book, the endings, and the high score / load / save
 // backdrops. Everything shares the game palette, so PLAYGAME's inks come out exact.
 import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
 import { Pixels, rng } from '../../../kit/pixels';
@@ -17,7 +17,8 @@ import type { BlockSet } from '../blocks/sets';
 import type { CompiledWing } from '../levels/wing';
 import { story } from '../stories';
 import { joinPages, storyPages } from './pages';
-import { CREDITS, EGG, HELP, LOST, STORY, WON, book33Text, coverText } from './text';
+import { CREDITS, EGG, HELP, LOST, STORY, WON, book33Text, chapterDoneText, coverText } from './text';
+import { CHAPTERS, chapterOf } from '../chapters';
 
 const W = 320;
 const H = 200;
@@ -383,7 +384,12 @@ export function introFli(joe: BlockSet): Uint8Array {
     frames.push(p);
     palettes.push(PAL.pal);
   }
-  return encodeFli(
+  // a second on his line (the hold the list used to give), then a fade to black before the title
+  for (let t = 0; t < 10; t++) {
+    frames.push(frames[frames.length - 1]);
+    palettes.push(PAL.pal);
+  }
+  return encodeFliFadeOut(
     frames.map((f) => Uint8Array.from(f.px)),
     PAL.pal,
     { speed: 7, palettes },
@@ -399,13 +405,13 @@ export function buildScreens(joe: BlockSet, wings: CompiledWing[]): Record<strin
   out['title.gif'] = gif(titleScreen(joe));
   out['title.lst'] = serializeSlideList([
     { name: SANDLOGO, pause: 0 },
-    { name: 'intro.fli', pause: 1 },
+    { name: 'intro.fli', pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]);
   out['menu.gif'] = gif(menuScreen(joe));
   out['story.gif'] = gif(pageScreen(joe, 'THE STORY', 51));
   out['story.txt'] = dosText(STORY);
-  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 1 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
+  out['story.lst'] = serializeSlideList([{ name: 'intro.fli', pause: 0 }, { name: 'story.gif', pause: 0 }, { name: 'story.txt' }]);
   out['help.gif'] = gif(pageScreen(joe, 'HOW TO PLAY', 52, 'up0'));
   out['help.txt'] = dosText(HELP);
   out['help.lst'] = serializeSlideList([{ name: 'help.gif', pause: 0 }, { name: 'help.txt' }]);
@@ -429,7 +435,9 @@ export function buildScreens(joe: BlockSet, wings: CompiledWing[]): Record<strin
     out[cover] = gif(coverScreen(w.spec.tint, w.spec.wing.name));
     w.books.forEach((b, k) => {
       const s = story(b.spec.n);
-      out[`c${s.n}.txt`] = dosText(coverText(s, w.spec.wing.name, k, b.spec.note, index++));
+      const ch = chapterOf(w.index);
+      const inChapter = ch.wings.indexOf(w.index) * 4 + k + 1;
+      out[`c${s.n}.txt`] = dosText(coverText(s, w.spec.wing.name, k, b.spec.note, index++, ch, inChapter));
       out[`c${s.n}.lst`] = serializeSlideList([{ name: cover, pause: 0 }, { name: `c${s.n}.txt` }]);
       out[`s${s.n}.txt`] = dosText(joinPages(storyPages(s)));
       out[`t${s.n}.gif`] = gif(twistScreen(w, k));
@@ -441,6 +449,14 @@ export function buildScreens(joe: BlockSet, wings: CompiledWing[]): Record<strin
   out['egg.gif'] = gif(pageScreen(joe, 'THE FELT EGG', 62, 'shh'));
   out['egg.txt'] = dosText(EGG);
   out['egg.lst'] = serializeSlideList([{ name: 'eggpic.gif', pause: 8 }, { name: 'egg.gif', pause: 0 }, { name: 'egg.txt' }]);
+  // the chapter-done pages (shown from dark.pal scenes, like the thirty-third book's)
+  const names = (ch: (typeof CHAPTERS)[number]) => ch.wings.map((i) => wings[i].spec.wing.name);
+  CHAPTERS.slice(0, -1).forEach((ch, k) => {
+    const so = CHAPTERS.slice(0, k + 1).reduce((n, c) => n + c.wings.length * 4, 0);
+    out[`ch${ch.n}.gif`] = gifRedAtZero(pageScreen(joe, `CHAPTER ${ch.n} DONE`, 63 + k, 'shh'));
+    out[`ch${ch.n}.txt`] = dosText(chapterDoneText(ch, names(ch), CHAPTERS[k + 1], names(CHAPTERS[k + 1]), so, wings.length * 4));
+    out[`ch${ch.n}.lst`] = serializeSlideList([{ name: `ch${ch.n}.gif`, pause: 0 }, { name: `ch${ch.n}.txt` }]);
+  });
   // the thirty-third book
   out['b33.gif'] = gifRedAtZero(pageScreen(joe, 'BOOK 33', 61, 'blink'));
   out['b33.txt'] = dosText(book33Text());

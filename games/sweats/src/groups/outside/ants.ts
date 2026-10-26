@@ -283,12 +283,19 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
     p.rect(12, y - 5, 5, 2, c('green', 1)).rect(11, y - 3, 7, 1, c('green', 0));
     p.set(15, y - 1, c('white', 2));
     if (sign) {
+      // NO MOP takes the whole block (a 1px word gap): the sign has no side borders, and its
+      // back (the other frame, as it turns) shows the words through the board, mirrored
       p.line(9, y - 2, 9, 3, c('wood', 1))
-        .rect(2, 1, 15, 7, c('white', 2))
-        .frame(2, 1, 15, 7, c('red', 1));
-      micro(p, 3 + (f ? 0 : 0), 2, f ? 'NO' : 'ON', c('red', 1));
-      micro(p, 11, 2, f ? 'MOP' : '', c('red', 1));
-      if (!f) p.rect(11, 3, 4, 2, c('red', 1));
+        .rect(0, 1, 20, 7, c('white', 2))
+        .rect(0, 1, 20, 1, c('red', 1))
+        .rect(0, 7, 20, 1, c('red', 1));
+      if (f) {
+        micro(p, 1, 2, 'NO', c('red', 1));
+        micro(p, 9, 2, 'MOP', c('red', 1));
+      } else {
+        micro(p, 12, 2, 'ON', c('red', 1));
+        p.rect(1, 3, 9, 2, c('red', 1));
+      }
     } else p.rect(1, y - 6, 4, 3, c('yellow', 2));
     return outline(p, ink);
   };

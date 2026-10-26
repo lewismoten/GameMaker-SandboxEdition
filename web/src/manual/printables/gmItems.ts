@@ -1,9 +1,11 @@
 // What's in the Game-Maker: Sandbox Edition box besides the Owner's Guide and the bonus-games
 // CD: the program disks, The Ultimate Owner's Guide for power users (../ultimate), a quick reference card for Game-Maker's own design tools (from the
 // original help screens), the inserts in gmInserts.ts (keyboard template, map grid pad,
-// registration card, license, customer support), Sandbox Software's catalog, The Bard of
+// registration card, license, customer support), RSD's registration confirmation once it has
+// come in the mail (regConfirm.ts), Sandbox Software's catalog, The Bard of
 // Bizarre's (bardCatalog.ts), the BBS ad, a
 // poster of games made with Game-Maker and a sticker sheet that mixes every Sandbox game's heroes.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './gmItems.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
@@ -16,8 +18,11 @@ import { bardCatalog } from './bardCatalog';
 import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
 import { mixedStickers, stickerScreen } from './stickers';
+import { fitSheet, narrower } from './fitSheet';
 import { gmStickerSpecs } from './gmStickers';
-import { ultimateItem } from '../ultimate/ultimateGuide';
+import { ultimateItem } from '../ultimate/ultimateItem';
+import { currentMail } from '../../retro/gmReg/replyMail';
+import { regConfirmItem } from './regConfirm';
 
 /** Game-Maker SE as if it were one more catalog entry, for the generic cards. */
 const GM_ENTRY: CatalogEntry = { id: 'gamemaker-se', title: PRODUCT, kind: 'gameware', path: '', gam: null, files: [], price: '$0.00', year: 1995 };
@@ -27,7 +32,7 @@ function contextFor(entry: CatalogEntry, family: CatalogEntry[]): PrintContext {
 }
 
 /** The keys of Game-Maker's own tools, as the original help screens (code/GM/*.HLP) give them. */
-export const DESIGNER_KEYS: [tool: string, keys: [string, string][]][] = [
+const DESIGNER_KEYS: [tool: string, keys: [string, string][]][] = [
   [
     'Everywhere',
     [
@@ -161,37 +166,50 @@ async function keyCard(): Promise<Sheet[]> {
 /** A poster of the games Sandbox Software made with Game-Maker. */
 async function poster(): Promise<Sheet[]> {
   const shots = await sandboxShots();
-  return [
-    sheet(
-      11,
-      17,
-      'gmp',
-      h('div', { class: 'gmp-top' }, h('span', null, 'MADE WITH'), h('b', null, 'GAME-MAKER'), h('em', null, 'Sandbox Edition')),
+  const grid = h(
+    'div',
+    { class: 'gmp-grid' },
+    ...shots.map((s) =>
       h(
-        'div',
-        { class: 'gmp-grid' },
-        ...shots.map((s) =>
-          h(
-            'figure',
-            null,
-            h('img', { src: s.canvas.toDataURL(), alt: s.title, width: s.canvas.width, height: s.canvas.height }),
-            h('figcaption', null, h('b', null, s.title), h('span', null, s.feature)),
-          ),
-        ),
-      ),
-      h(
-        'div',
-        { class: 'gmp-bottom' },
-        sandboxLogo('gmp-logo'),
-        h('p', null, 'No programming. Just blocks, monsters, maps and your imagination.', h('br'), 'Download them all on ', sandboxBanner(), ` ${BBS_PHONE}`),
+        'figure',
+        null,
+        h('img', { src: s.canvas.toDataURL(), alt: s.title, width: s.canvas.width, height: s.canvas.height }),
+        h('figcaption', null, h('b', null, s.title), h('span', null, s.feature)),
       ),
     ),
-  ];
+  );
+  const s = sheet(
+    11,
+    17,
+    'gmp',
+    h('div', { class: 'gmp-top' }, h('span', null, 'MADE WITH'), h('b', null, 'GAME-MAKER'), h('em', null, 'Sandbox Edition')),
+    grid,
+    h(
+      'div',
+      { class: 'gmp-bottom' },
+      sandboxLogo('gmp-logo'),
+      h(
+        'p',
+        null,
+        'No programming. Just blocks, monsters, maps and your imagination.',
+        h('br'),
+        'Download them all on ',
+        sandboxBanner(),
+        ' ',
+        h('span', { style: 'white-space: nowrap' }, BBS_PHONE),
+      ),
+    ),
+  );
+  // every game's picture on the poster, its foot included
+  fitSheet(s, narrower(grid), 0.4);
+  return [s];
 }
 
 /** The paper in the Game-Maker SE box, in tray order. */
 export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
   const ctx = contextFor(GM_ENTRY, family);
+  // RSD's reply, once its envelope (desk/props/mailDrop.ts) has been opened
+  const mail = currentMail();
   return [
     { id: 'disks', title: 'Program disks', note: 'Two 3½" disks in their sleeve', icon: '💾', render: diskSleeve },
     ultimateItem(),
@@ -199,6 +217,7 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
     { id: 'template', title: 'Keyboard template', note: 'Sits above the function keys', icon: '🎹', render: keyTemplate },
     { id: 'mapgrid', title: 'Map grid pad', note: 'Graph paper for planning maps', icon: '📐', render: mapGrid },
     { id: 'regcard', title: 'Registration card', note: 'Business reply mail', icon: '📮', render: registrationCard },
+    ...(mail?.opened ? [regConfirmItem(mail)] : []),
     { id: 'license', title: 'License agreement', note: 'MIT License', icon: '📜', render: licenseSheet },
     { id: 'support', title: 'Customer support', note: 'Phone, fax, BBS, Internet; troubleshooting', icon: '☎️', render: supportCard },
     { id: 'catalog', title: 'Sandbox Software catalog', note: 'Games made with Game-Maker', icon: '🗂️', render: () => catalog(ctx) },

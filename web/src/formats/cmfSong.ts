@@ -22,7 +22,7 @@
 // unedited song is written back byte for byte.
 import { isCmf } from './cmf';
 
-export type EvType = 'on' | 'off' | 'program' | 'mode' | 'raw';
+type EvType = 'on' | 'off' | 'program' | 'mode' | 'raw';
 
 /** One event of the stream. */
 export interface Ev {
@@ -118,15 +118,18 @@ export function readSong(bytes: Uint8Array): CmfSong {
   const instNum = u16(36);
   const headerLen = Math.max(40, Math.min(instBlk, bytes.length));
   const header = bytes.slice(0, headerLen);
+  // load_file reads inst_num as a 16-bit int even in a CMF 1.0 file, whose count is one byte
+  // (audio/cmfLoad.ts): the records then run on into the music, which it still reads from
+  // music_blk. Only the first 128 can be played (writeSong keeps no more).
   const instruments: Uint8Array[] = [];
-  for (let i = 0; i < instNum; i++) {
+  for (let i = 0; i < Math.min(instNum, 128); i++) {
     const inst = new Uint8Array(16);
     inst.set(bytes.subarray(instBlk + i * 16, instBlk + i * 16 + 16));
     instruments.push(inst);
   }
   const instEnd = instBlk + instNum * 16;
   const gap = musicBlk > instEnd ? bytes.slice(instEnd, musicBlk) : new Uint8Array(0);
-  const m = bytes.subarray(Math.max(musicBlk, instEnd));
+  const m = bytes.subarray(musicBlk);
   const song: CmfSong = {
     header,
     ticksPerBeat: u16(10),

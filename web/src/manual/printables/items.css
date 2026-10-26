@@ -766,6 +766,28 @@
   hyphens: auto;
 }
 
+/* a story's section: Since last issue, In the workshop, Around the Sandbox, Letters */
+.nl-cols .nl-kicker {
+  margin: 0 0 0.3cqw;
+  font:
+    700 1.4cqw Arial,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #d81e1e;
+}
+
+.nl-workshop,
+.nl-letters {
+  padding: 1cqw 1.2cqw 0.4cqw;
+  border: 0.25cqw solid #18150f;
+}
+
+.nl-letters {
+  border-style: dashed;
+}
+
+.nl-front .pp-photo,
 .nl-next .pp-photo {
   margin: 0 0 1cqw;
   border: 0.3cqw solid #18150f;
@@ -1100,6 +1122,19 @@
   margin: 0 auto;
 }
 
+/* more pictures than fit (story.ts sizes them): rows of one height, centered */
+.map-panels.fit {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* and a long key on a wide sheet takes three columns */
+.pp-land .map-panels.fit ~ .map-key {
+  columns: 3;
+}
+
 /* a tall map never runs off the sheet */
 .map-panels.n1 .map-panel {
   width: min(100%, calc(var(--ar) * 100cqw));
@@ -1218,67 +1253,6 @@
     3cqw/1.4 'Times New Roman',
     Times,
     serif;
-}
-
-.pp-sheet.pp-hb-cover {
-  background: var(--grain, none), linear-gradient(160deg, #1d2b52, #0b1020) !important;
-  color: #fff;
-  text-align: center;
-}
-
-.hb-band {
-  margin: 0 -8cqw 6cqw;
-  padding: 2cqw;
-  background: #d81e1e;
-  font:
-    900 5cqw 'Arial Black',
-    Impact,
-    sans-serif;
-  letter-spacing: 0.3em;
-}
-
-.pp-sheet.pp-hb-cover h2 {
-  margin: 0;
-  color: #f2b632;
-  font:
-    900 8cqw/1.05 'Arial Black',
-    Impact,
-    sans-serif;
-}
-
-.hb-sub {
-  font:
-    italic 3.6cqw Georgia,
-    serif;
-}
-
-.hb-howto {
-  margin: 8cqw 0 0;
-  padding: 4cqw;
-  background: #f6f1e2;
-  color: #18150f;
-  text-align: left;
-}
-
-.hb-mapref {
-  margin: 4cqw 0 0;
-  padding: 2.4cqw 4cqw;
-  border: 0.5cqw dashed currentColor;
-  font:
-    2.9cqw/1.35 Arial,
-    sans-serif;
-  text-align: left;
-}
-
-.hb-foot {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 5cqw;
-  font:
-    700 2.4cqw Arial,
-    sans-serif;
-  letter-spacing: 0.2em;
 }
 
 .pp-hb-page h3 {
@@ -1660,6 +1634,29 @@
     Arial,
     sans-serif;
   letter-spacing: 0.06em;
+}
+
+/* the Clown Club's O, a red rubber nose as tall as the capitals */
+.id-nose {
+  display: inline-block;
+  width: 0.74em;
+  height: 0.74em;
+  margin: 0 0.02em;
+  vertical-align: -0.02em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff 0 12%, #ff5a4e 16%, #e01b24 62%, #9e0f16 100%);
+  color: transparent;
+  overflow: hidden;
+  print-color-adjust: exact;
+}
+
+.id-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .id-body {

@@ -58,7 +58,7 @@ export function kb(bytes: number): string {
 const KEY = 'gm-bbs-sandbox-user';
 
 /** The stored record, or undefined when there is none (or storage is blocked). */
-export function loadAccount(): BbsAccount | undefined {
+function loadAccount(): BbsAccount | undefined {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return undefined;
@@ -71,7 +71,7 @@ export function loadAccount(): BbsAccount | undefined {
   }
 }
 
-export function saveAccount(a: BbsAccount): void {
+function saveAccount(a: BbsAccount): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(a));
   } catch {

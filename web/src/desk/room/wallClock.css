@@ -20,4 +20,75 @@
     width: 100%;
     height: auto;
   }
+
+  /* lume paint: under the black light, in a dark room, the numbers, ticks and hands glow green
+     (with the room lit, the glow can't be seen and the dark print stays readable) */
+  .wall-clock .wc-lume {
+    transition:
+      fill 0.6s,
+      stroke 0.6s,
+      filter 0.6s;
+  }
+
+  .desk.bl-uv.rl-dark .wall-clock text.wc-lume,
+  .desk.bl-uv.rl-dark .wall-clock rect.wc-lume {
+    fill: #9dff7a;
+    filter: drop-shadow(0 0 1.5px #6dff4a) drop-shadow(0 0 4px rgb(80 255 60 / 0.6));
+  }
+
+  .desk.bl-uv.rl-dark .wall-clock line.wc-lume {
+    stroke: #9dff7a;
+    filter: drop-shadow(0 0 1.5px #6dff4a);
+  }
+
+  /* the second hand's red paint glows hot pink under UV */
+  .desk.bl-uv.rl-dark .wall-clock .wc-sec rect.wc-lume {
+    fill: #ff4fa0;
+    filter: drop-shadow(0 0 2px #ff3b8f);
+  }
+
+  /* at night under the tube, white glows a light purple: the face and the date window; the
+     lume keeps a thin dark edge so it still reads against it */
+  .desk.bl-uv.rl-dark .wall-clock :is(.wc-face, .wc-date-bg) {
+    fill: #b9a6f4;
+  }
+
+  .desk.bl-uv.rl-dark .wall-clock text.wc-lume {
+    stroke: #1d3a14;
+    stroke-width: 0.8px;
+    paint-order: stroke;
+  }
+
+  /* the afterglow: in the dark, the charged lume glows as strongly as it is charged
+     (--lume, wallClock.ts), and the face is dark around it */
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing text.wc-lume,
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing :is(.wc-hour, .wc-min) rect.wc-lume {
+    fill: color-mix(in srgb, #9dff7a calc(var(--lume, 0) * 100%), #2a2f2a);
+    filter: drop-shadow(0 0 3px rgb(80 255 60 / calc(var(--lume, 0) * 0.7)));
+    transition:
+      fill 1s linear,
+      filter 1s linear;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing line.wc-lume {
+    stroke: color-mix(in srgb, #9dff7a calc(var(--lume, 0) * 100%), #2a2f2a);
+    transition: stroke 1s linear;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing :is(.wc-face, .wc-date-bg) {
+    fill: #1f2226;
+  }
+
+  /* what isn't lume (the red second hand, the printing, the glare) is lost in the dark */
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing :is(.wc-sec rect, .wc-pin) {
+    fill: #3a2324;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing svg text:not(.wc-lume) {
+    fill: #34383d;
+  }
+
+  .desk.rl-dark:not(.bl-uv) .wall-clock.wc-glowing .wc-glare {
+    opacity: 0.05;
+  }
 }

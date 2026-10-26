@@ -485,7 +485,7 @@ export function buildHouse(pal: Pal): BlockBook {
   // a hook with a dish towel's empty loop (the towel is out flying)
   const breadbox = P().rect(0, 0, 20, 20, c('steel', 1));
   breadbox.rect(0, 0, 20, 6, c('steel', 2)).rect(2, 9, 16, 2, c('red', 2));
-  micro(breadbox, 3, 13, 'BREAD', c('white', 3));
+  micro(breadbox, 1, 13, 'BREAD', c('white', 3));
   book.add('breadbox', breadbox, { solid: SOLID });
 
   // smile spots on the kitchen wall: land on one and flash a smile
@@ -653,8 +653,8 @@ export function buildHouse(pal: Pal): BlockBook {
       p.rect(2, 5, 7, 6, c('grey', 0)).rect(11, 5, 7, 6, c('grey', 0)).disc(5, 8, 1.4, c('steel', 1)).disc(14, 8, 1.4, c('steel', 1));
       for (let x = 2; x < 18; x += 3) p.rect(x, 14, 2, 2, c('steel', 1));
     } else {
-      p.rect(2, 4, 12, 5, c('screen', 1));
-      micro(p, 3, 5, 'FM 95', c('led', 1));
+      p.rect(2, 4, 17, 5, c('screen', 1));
+      micro(p, 3, 5, 'FM95', c('led', 1));
       p.disc(16, 12, 2.4, c('steel', 2)).set(16, 10, c('ink', 0));
       for (let x = 2; x < 13; x += 2) p.rect(x, 12, 1, 3 + (x % 3), c('led', 0));
     }

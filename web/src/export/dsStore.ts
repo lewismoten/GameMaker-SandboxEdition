@@ -90,7 +90,7 @@ function recordBytes(r: DsRecord): number[] {
   return out;
 }
 
-export interface FinderWindow {
+interface FinderWindow {
   /** Window position and content size, in points. */
   x: number;
   y: number;

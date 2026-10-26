@@ -7,6 +7,8 @@
 // - Linux: a folder with play.sh (.tar.gz), src/export/linuxApp.ts;
 // - Web: the game and its player in one page (.html), exportSinglePage.ts; or a web app to
 //   put on a web host (.zip), exportWebApp.ts;
+// - Web player: the one page that plays game folders on a web host, with this game's folder
+//   and a games.json (.zip), or the page alone (.html), exportWebPlayer.ts (docs/web-player.md);
 // - DOS: the original Game-Maker files with the stand-alone player (.zip), exportDos.ts;
 // - a game of yours also: its files as they are here (.zip), to keep safe or import again.
 //
@@ -19,6 +21,7 @@ import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
+import { REPO_URL } from '../../seo/site';
 
 export interface DownloadGame {
   title: string;
@@ -39,7 +42,7 @@ export interface DownloadGame {
   fiction?: string;
 }
 
-export type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'dos' | 'files';
+type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'player' | 'dos' | 'files';
 
 interface Choice {
   kind: DownloadKind;
@@ -83,6 +86,14 @@ const CHOICES: Choice[] = [
     line: 'The game and its player in one file that opens in any browser, offline. The .zip is a web app to put on a web host.',
   },
   {
+    kind: 'player',
+    name: 'Web player',
+    format: '.zip',
+    alt: '.html',
+    line: 'For your own web site: the web player, one page that plays Game-Maker game folders, with this game’s folder beside it. The .html is the player alone.',
+    details: `${REPO_URL}/blob/master/docs/web-player.md`,
+  },
+  {
     kind: 'dos',
     name: 'DOS',
     format: '.zip',
@@ -95,8 +106,7 @@ const CHOICES: Choice[] = [
  * Every download but DOS still plays on a web engine (a browser, or the one built into the
  * system), so it is not frozen in time the way the DOS files are.
  */
-export const ENGINE_CAVEAT =
-  'All but DOS still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
+const ENGINE_CAVEAT = 'All but DOS still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
 
 /** The visitor's own system, to choose first: a phone or tablet gets the web page. */
 export function visitorSystem(
@@ -138,7 +148,8 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
     const update = () => {
       go.textContent = `Download ${current.format}`;
       alt.hidden = !current.alt;
-      alt.textContent = current.kind === 'web' ? 'Web app (.zip)' : current.alt ? `Zip (${current.alt})` : '';
+      alt.textContent =
+        current.kind === 'web' ? 'Web app (.zip)' : current.kind === 'player' ? 'Player only (.html)' : current.alt ? `Zip (${current.alt})` : '';
     };
     const rows = choices.map((c) => {
       const id = `dl-${c.kind}`;
@@ -165,7 +176,18 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
           { class: 'dl-line', id: `${id}-line` },
           c.line,
           c.details
-            ? [' ', h('a', { href: c.details, onclick: () => close(undefined), 'aria-label': `More details about the ${c.name} download` }, 'More details →')]
+            ? [
+                ' ',
+                h(
+                  'a',
+                  {
+                    href: c.details,
+                    ...(c.details.startsWith('http') ? { target: '_blank', rel: 'noopener' } : { onclick: () => close(undefined) }),
+                    'aria-label': `More details about the ${c.name} download`,
+                  },
+                  'More details →',
+                ),
+              ]
             : null,
         ),
       );
@@ -223,12 +245,18 @@ const NAMES: Record<DownloadKind, string> = {
   mac: 'Mac app',
   linux: 'Linux download',
   web: 'web page',
+  player: 'web player',
   dos: 'DOS game',
   files: 'game files',
 };
 
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Promise<void> {
   try {
+    if (kind === 'player' && alt) {
+      const { fetchWebPlayer } = await import('../../export/exportWebPlayer');
+      save('web-player.html', await fetchWebPlayer(), 'text/html', 'Put it beside Game-Maker game folders on a web host.');
+      return downloaded('web');
+    }
     toast(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
     const files = await game.files();
     if (kind === 'windows') {
@@ -261,6 +289,9 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         await import('../../export/exportSinglePage')
       ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
+    } else if (kind === 'player') {
+      const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);
+      save(name, zip, 'application/zip', 'Unzip it onto any web host, then open index.html there.');
     } else if (kind === 'dos') {
       const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(files, { title: game.title, gam: game.gam });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
@@ -269,7 +300,8 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       const zip = await createZip(backupEntries(files, game.gam, game.companion?.()));
       save(`${game.gam.replace(/\.gam$/i, '')}.zip`, zip, 'application/zip', 'Import it here again whenever you like.');
     }
-    downloaded(kind);
+    // the web player counts as a web download (achievements' export-web)
+    downloaded(kind === 'player' ? 'web' : kind);
   } catch (e) {
     toast(plainError(e), 'error');
   }

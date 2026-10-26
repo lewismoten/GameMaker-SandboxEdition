@@ -259,7 +259,7 @@ export function readme(price: string): string {
     '',
     'FILES ON THIS DISK',
     'BLASTER.GAM  the game',
-    '*.MAP        15 maps',
+    '*.MAP        17 maps',
     '*.BBL *.MBL  blocks',
     '*.MON        monsters',
     'SHIP.CHR     the BLASTER',

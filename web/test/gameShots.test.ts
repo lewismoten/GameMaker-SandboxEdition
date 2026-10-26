@@ -1,3 +1,4 @@
+// The build's game pictures: palette PNGs and where each picture is kept.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';

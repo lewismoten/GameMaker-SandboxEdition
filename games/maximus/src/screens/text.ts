@@ -36,7 +36,7 @@ SECTOR CHARTS
 Fly into the middle of a planet to land. Planets with a gold signal beside them hold a shard. The planet card shows a long-range scan: green is you, gold is the vault. Trading posts sell supplies: nudge a pad to buy, one of each per visit. A jump ring behind gates takes you on to the next sector.
 
 ON FOOT
-Left/Right walk (the number pad's 4/6/8/2 work as arrows too). Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. P picks things up and O drops one. To go back to orbit, walk into the uplink beacon.
+Left/Right walk (the number pad's 4/6/8/2 work as arrows too). Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. G picks things up and B drops one. To go back to orbit, walk into the uplink beacon.
 
 UNDER THE SEA
 The diving bell swims with the arrows and holds still when you let go. Surface at the buoy to leave.
@@ -52,7 +52,7 @@ Q/E Dash Boots
 C Shield Emitter (guard orb)
 F Hover Pack
 V Mine Layer
-H Med Kit
+R Med Kit
 W Flak Cannon
 Q/E Hydro Jets (diving bell)
 Up Spring Shocks (rover)
@@ -174,9 +174,9 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / O ... pick up / drop
+  G / B ... pick up / drop
   Q / E ... dash left/right
-  Z X C V H W  module weapons
+  Z X C V R W  module weapons
   F ....... hover
   T ....... hail
   F1 F2 ... help, status
@@ -211,7 +211,7 @@ export const BETWEEN = wrap31(`Midnight-blue felt, silver star stitches, a ringe
 Charted by Claude Opus 5.5
 and Lewis "Lewie" Moten III
 
-Between worlds it hums a count: twelve, twelve, twelve. Then a thirteenth beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.`);
+Between worlds it hums a count: thirteen, thirteen, thirteen. Then one more beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.`);
 {
   const lines = BETWEEN.trimEnd().split('\n');
   if (lines.length > 16 || lines.some((l) => l.length > 30)) throw new Error(`BETWEEN does not fit one page: ${lines.length} lines`);

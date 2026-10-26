@@ -9,8 +9,8 @@ import { sofaFiles } from './sofaFiles';
 import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
+import { unlockAchievement } from '../../achievements';
 
-export const SOFA_PHONE = '1-412-555-0177';
 /** All eight lines are often in use: about one call in three gets a busy signal. */
 export const sofaBusy = () => Math.random() < 0.35;
 const LINES = 8;
@@ -51,7 +51,7 @@ function menu(t: Term): void {
   t.line();
   t.line('|14   T |07... |15Teleconference |07(talk with the other callers)');
   t.line("|14   W |07... |15Who's on |07(see every line)");
-  t.line('|14   L |07... |15The lounge |07(news from the SysOps)');
+  t.line('|14   L |07... |15The lounge |07(news from goat, the SysOp)');
   t.line('|14   F |07... |15File library |07(free downloads from our regulars)');
   t.line('|14   P |07... |15GIF pictures |07(THE CHEZ and the Bard of Bizarre logo)');
   t.line('|14   X |07... |15Exit |07(log off)');
@@ -205,6 +205,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
         return;
       }
       if (msg) t.line(`|10From ${name}: |07${msg}`);
+      if (msg) unlockAchievement('sofa-chat');
       if (/stop|quit|knock|enough|please/i.test(msg)) pleaAt = performance.now() + 900;
       prompt();
     } else if (k.key === 'Backspace') {

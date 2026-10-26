@@ -10,8 +10,9 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Reel } from '../../../kit/reel';
+import { fadeOutLength } from '../../../kit/fadeOut';
 import { gradient } from '../../../snowbound/src/art/draw';
-import { centered, micro, outlined, text, textWidth } from '../../../snowbound/src/art/font';
+import { centered, micro, microWidth, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
@@ -85,7 +86,7 @@ function detector(p: Pixels, pal: Pal, x: number, y: number, joy: number): void 
 /** How many pictures of the cover the title animates through. */
 const COVER_FRAMES = 12;
 
-/** The title cartoon (cover.fli) and its last picture with the name on it (title.gif's pixels and palette). */
+/** The title cartoon (cover.fli: the cover comes to life, an iris closes, a fade to black) and the cover with the name on it (title.gif's pixels and palette). */
 export function coverFli(cast: Cast): { fli: Uint8Array; title: Pixels; pal: Uint8Array } {
   const frames = Array.from({ length: COVER_FRAMES }, (_, k) => coverRgb(cast, k, COVER_FRAMES));
   // inks for the lettering first (black, gold, its shadow, a deep plum, cream), then the cover's colors
@@ -108,19 +109,15 @@ export function coverFli(cast: Cast): { fli: Uint8Array; title: Pixels; pal: Uin
     outlined(p, 160 - textWidth('RAT TICKLER', 3) / 2, drop + 20, 'RAT TICKLER', 4, 3, 3, 3);
     if (sub) {
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
   r.fadeIn(pics[0], 6);
   pics.forEach((p, i) => r.add(p, i === 0 ? 4 : 2));
   const last = pics[pics.length - 1];
-  for (const [k, drop] of [-60, -40, -18, 2, 10, 5, 7].entries()) {
-    const p = new Pixels(W, H);
-    p.px.set(last.px);
-    name(p, drop, k >= 5);
-    r.add(p, k === 6 ? 10 : 1);
-  }
+  // the name is the title picture's: the cartoon closes on an iris and fades to black instead
+  r.irisOut(186, 124, 8).fadeOut(fadeOutLength(SPEED));
   const title = new Pixels(W, H);
   title.px.set(last.px);
   name(title, 7, true);
@@ -267,13 +264,14 @@ export function certFli(cast: Cast): Uint8Array {
       const n = Math.min(60, (k - 38) * 8);
       for (let i = 0; i < n; i++) {
         const x = 196 + i * 1.6;
-        p.set(x, 166 + Math.sin(i / 2.2) * 5 * Math.sin(i / 11), ink).set(x + 1, 166 + Math.sin(i / 2.2) * 5 * Math.sin(i / 11), ink);
+        p.set(x, 162 + Math.sin(i / 2.2) * 5 * Math.sin(i / 11), ink).set(x + 1, 162 + Math.sin(i / 2.2) * 5 * Math.sin(i / 11), ink);
       }
     }
-    p.rect(190, 174, 104, 1, ink);
+    // the signature line and its title stay above the border's inner rule (y 185)
+    p.rect(190, 170, 104, 1, ink);
     if (k >= 40) {
-      micro(p, 198, 178, 'PROF. R. TICKLES', ink);
-      micro(p, 202, 184, 'DEAN OF GIGGLES', c('brown', 1));
+      micro(p, 198, 173, 'PROF. R. TICKLES', ink);
+      micro(p, 202, 179, 'DEAN OF GIGGLES', c('brown', 1));
       micro(p, 100, 160, 'DORSAL DELIGHT', c('brown', 1));
       micro(p, 116, 166, '- 1995 -', c('brown', 1));
     }
@@ -303,6 +301,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   const c = pal.c;
   const ink = c('ink', 0);
   const info = CARDS[i];
+  /** Where this level falls in the game (the last one says so), small under the place line. */
+  const count = `${i === CARDS.length - 1 ? 'FINAL LEVEL:' : 'LEVEL'} ${i + 1} OF ${CARDS.length}${i === 0 ? ' - F5 SAVES, F6 LOADS' : ''}`;
   const bg = new Pixels(W, H, ink);
   bg.blit(card.map, 0, STRIP);
   const frame = (p: Pixels, k: number) => {
@@ -311,6 +311,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     const drop = [-24, -14, -2, 10, 6, 8][Math.min(5, k)];
     outlined(p, 160 - textWidth(info.title, 2) / 2, drop, info.title, c('gold', 3), c('ink', 1), 2);
     if (k >= 5) centered(p, 32, info.where, c('paint', 1));
+    if (k >= 5) micro(p, 160 - Math.ceil(microWidth(count) / 2), 45, count, c('paint', 1));
     if (k >= 9) centered(p, 178, `"${info.lines[0]}`, c('paint', 1));
     if (k >= 15) centered(p, 189, ` ${info.lines[1]}"`, c('paint', 1));
   };

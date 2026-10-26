@@ -84,7 +84,7 @@ function art(s: TextScreen, x: number, y: number, chars: string[], colors: strin
 }
 
 /** Rolling sand dunes across the screen, `rows` tall. */
-export function sandDunes(s: TextScreen, y: number, rows: number): void {
+function sandDunes(s: TextScreen, y: number, rows: number): void {
   for (let x = 0; x < COLS; x++) {
     const height = Math.max(1, Math.min(rows, Math.round(rows / 2 + 0.5 + (rows / 3) * Math.sin(x / 7) + (rows / 6) * Math.sin(x / 2.7 + 1))));
     const top = y + rows - height;

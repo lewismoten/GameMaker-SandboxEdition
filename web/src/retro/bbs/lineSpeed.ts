@@ -127,7 +127,7 @@ export const statusBps = (speed: LineSpeed = lineSpeed()) => (speed === 'unlimit
 // ---- the "speed it up" hint ----------------------------------------------------------------
 
 /** Seconds of waiting that earn the hint. */
-export const HINT_SECONDS = 15;
+const HINT_SECONDS = 15;
 
 let hinted = false;
 

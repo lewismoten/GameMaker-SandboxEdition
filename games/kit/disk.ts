@@ -12,16 +12,20 @@ export class Disk {
     this.files.set(name.toLowerCase(), typeof bytes === 'string' ? dosText(bytes) : bytes);
   }
 
-  /** Replaces disk/ with these files and reports their total size. */
+  /**
+   * Replaces disk/ with these files and reports their total size. GAME_DISK_OUT, when set,
+   * names another folder to write instead (checkGames.ts builds there to compare with disk/).
+   */
   write(): number {
-    if (existsSync(this.dir)) rmSync(this.dir, { recursive: true });
-    mkdirSync(this.dir, { recursive: true });
+    const dir = process.env.GAME_DISK_OUT || this.dir;
+    if (existsSync(dir)) rmSync(dir, { recursive: true });
+    mkdirSync(dir, { recursive: true });
     let total = 0;
     for (const [name, bytes] of this.files) {
-      writeFileSync(join(this.dir, name), bytes);
+      writeFileSync(join(dir, name), bytes);
       total += bytes.length;
     }
-    console.log(`${this.files.size} files, ${total.toLocaleString()} bytes -> ${this.dir}`);
+    console.log(`${this.files.size} files, ${total.toLocaleString()} bytes -> ${dir}`);
     return total;
   }
 }

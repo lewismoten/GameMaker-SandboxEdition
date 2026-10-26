@@ -28,7 +28,7 @@ export const MAX_MUGS = 16;
 export const newMug = (size: string, design: MugDesignId | ''): PageMug => ({ size, front: design, back: design, lift: DEFAULT_LIFT });
 
 /** A setup read back from storage, anything unknown put right. */
-export function cleanSetup(raw: unknown, start: PageMug): PageSetup {
+function cleanSetup(raw: unknown, start: PageMug): PageSetup {
   const v = (raw && typeof raw === 'object' ? raw : {}) as Partial<PageSetup>;
   const side = (d: unknown): MugDesignId | '' => (typeof d === 'string' && isDesign(d) ? d : '');
   const mugs = (Array.isArray(v.mugs) ? v.mugs : [])

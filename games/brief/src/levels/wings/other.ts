@@ -3,7 +3,7 @@
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, corgi, figure, floor, on, sign, wall } from '../../art/kit';
+import { blank, corgi, figure, figureSide, floor, on, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
@@ -127,20 +127,23 @@ function sandwichLady(under: Pixels): Pixels {
   return p;
 }
 
-/** Underwood: cape, mask, and his underwear on the outside. */
+/** Underwood, side on: cape streaming behind, mask, and his underwear on the outside. */
 function underwood(frame: number): Pixels {
-  const p = figure({ shirt: ['blue', 3], pants: ['blue', 3], hair: ['ink', 1], face: 'shades', arms: 'up' }, frame);
-  p.rect(5, 14, 10, 3, c('red', 3)); // the underwear, over the pants
-  p.rect(2, 10, 3, 9, c('red', 2)).rect(15, 10, 3, 9, c('red', 2)); // cape
-  micro(p, 7, 10, 'U', c('yellow', 3));
+  const p = figureSide({ shirt: ['blue', 3], pants: ['blue', 3], hair: ['ink', 1], face: 'shades', arms: 'up' }, frame);
+  p.rect(8, 14, 5, 3, c('red', 3)); // the underwear, over the pants
+  p.rect(4, 9, 3, 7 + frame, c('red', 2)).rect(2, 11 + frame, 2, 5, c('red', 2)); // cape
+  p.rect(11, 10, 2, 3, c('yellow', 3)); // the U, at his chest
   return p;
 }
 
-function bird(frame: number): Pixels {
+/** The bird head on, wings flapping: its face coming down the map, its back going up. */
+function birdHeadOn(frame: number, face: boolean): Pixels {
   const p = blank();
-  p.rect(7, 9, 7, 4, c('grey', 3)).rect(13, 8, 3, 3, c('grey', 4)).set(16, 9, c('orange', 3));
-  if (frame) p.line(9, 9, 5, 3, c('grey', 2)).line(11, 9, 14, 3, c('grey', 2));
-  else p.line(9, 12, 4, 15, c('grey', 2)).line(11, 12, 15, 15, c('grey', 2));
+  p.rect(8, 8, 4, 6, c('grey', 3)).rect(8, 5, 4, 3, c('grey', face ? 4 : 3));
+  if (face) p.set(8, 6, c('ink', 0)).set(11, 6, c('ink', 0)).rect(9, 7, 2, 2, c('orange', 3));
+  else p.rect(9, 14, 2, 2, c('grey', 2));
+  if (frame) p.line(8, 9, 3, 5, c('grey', 2)).line(11, 9, 16, 5, c('grey', 2));
+  else p.line(8, 10, 3, 13, c('grey', 2)).line(11, 10, 16, 13, c('grey', 2));
   return p;
 }
 
@@ -276,6 +279,7 @@ function art(a: Area): void {
       [underwood(1), 5],
     ],
     {
+      faces: 'right',
       path: [
         [6, 0, 2],
         [0, 2, 2],
@@ -284,12 +288,18 @@ function art(a: Area): void {
       ],
     },
   );
-  a.monster(
+  a.walker(
     'bird',
-    [
-      [bird(0), 3],
-      [bird(1), 3],
-    ],
+    {
+      front: [
+        [birdHeadOn(0, true), 3],
+        [birdHeadOn(1, true), 3],
+      ],
+      back: [
+        [birdHeadOn(0, false), 3],
+        [birdHeadOn(1, false), 3],
+      ],
+    },
     {
       hazard: true,
       path: [
@@ -337,6 +347,7 @@ function art(a: Area): void {
       [astro(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [6, 0, 1],
         [0, -2, 1],

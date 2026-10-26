@@ -9,7 +9,7 @@ import { MLEN, MWID } from '../../../formats/map';
 import { pickOnMap } from './pickOnMap';
 
 /** What the links panel needs from the integrator. */
-export interface LinksContext {
+interface LinksContext {
   project: Project;
   game: Game;
   /** The selected scene: the one whose links these are. */

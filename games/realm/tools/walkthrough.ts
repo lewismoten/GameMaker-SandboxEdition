@@ -8,16 +8,20 @@ import { writeWalkthrough } from '../../kit/walkthrough';
 import { Bot } from './bot';
 import { ROUTE } from './route';
 import { GameSim } from './sim';
+import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 
 const SEED = 1;
 const sim = new GameSim(undefined, SEED);
 const bot = new Bot(sim);
 bot.loot = true;
+// along the roads and streets, as a person walks (walkPaths.json, written by the build)
+bot.keepTo = keepToPaths(sim, readWalkPaths('realm'));
 for (const [name, step] of ROUTE) {
   await step(bot);
   console.log(`${name}: ${bot.log[bot.log.length - 1]}`);
 }
 if (sim.ended !== 'won') throw new Error('The bot did not win');
+if (sim.deaths) throw new Error(`The bot lost ${sim.deaths} lives`);
 const segments: WalkSegment[] = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
 // a chapter the first time play enters each of the big places
 const chapterOf: Record<string, string> = {

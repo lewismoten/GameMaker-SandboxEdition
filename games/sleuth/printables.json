@@ -16,7 +16,7 @@
     "End": "Walk down-left (number pad 1)",
     "PgDn": "Walk down-right (number pad 3)",
     "Space": "Pick up evidence",
-    "L": "Look through the lens (once you have it)",
+    "Z": "Look through the lens (once you have it)",
     "F2": "Your evidence (Money), score and chances (Lives)",
     "F3": "Music on / off",
     "F4": "Sound effects on / off"
@@ -564,9 +564,41 @@
   ],
   "news": [
     {
-      "head": "Coming soon: a whodunit from Sandbox",
-      "html": "<p>Our first mystery, <b>FINAL CURTAIN</b>, puts you in a trench coat at the Paragon Theatre on Halloween night, 1936. Every clue is in the game, and the solution comes in three parts: who, how and why.</p>",
-      "everywhere": true
+      "head": "Final Curtain: our first whodunit",
+      "html": "<p>Port Ellery, Halloween night, 1936. Six hundred people watched Victor Crane die in Act III of THE RAVEN'S BRIDE and thought it was acting. In <b>Final Curtain</b> you are Inspector Ada Penn of Homicide, and you have until dawn. Search the Paragon with the house lights up, then again by the ghost light; question five suspects, then show them what you found. Name the killer, how and why. Commissioner Hale gives you three chances.</p>"
+    },
+    {
+      "head": "Since last issue: The Big Show went on",
+      "html": "<p>Teddy's Little Big Adventure is the most-played game on our BBS this summer. Play dead is still the favorite trick (it's the only way past the Pie-O-Matic), and the most-asked question is how high a corgi can hop. Two blocks easily, three with good steering, four never. A wall that tall always has another way around.</p>"
+    },
+    {
+      "head": "Around the Sandbox: Trick or treat",
+      "html": "<p>On Halloween night Doc Leo will be at the office door with balloon animals for the trick-or-treaters: dogs, swords and, by special request, one very long giraffe. Teddy is going as a knight again. Gwinn is going as Gwinn; she ate the other costume. THE\u00a0CHEZ is going as a pumpkin, which, being tomato red, it already mostly is.</p>"
+    },
+    {
+      "head": "In the workshop: A library in a box",
+      "html": "<p>Remember the Dog House, the tiny red lending library on a post on Maple Street in Teddy's adventure? We looked inside. It's much bigger than the box. <b>KEEP IT BRIEF!</b> is about the night every word fell out of every book, and the tin night librarian who has to put them back, exactly one hundred words at a time.</p>"
+    },
+    {
+      "head": "Letters: \"Is the Clown Club real?\"",
+      "html": "<p><i>\"Teddy, Gwinn, Doc Leo, the Big Show... is the Clown Club real?\"</i> - A reader, age 9</p><p><b>The Scoop replies:</b> Very real. Doc Leo marches in its parades, and the Clown Club puts on shows for kids all over town. In real life there are fewer custard pies.</p>"
     }
-  ]
+  ],
+  "worldMap": {
+    "groups": [
+      {
+        "scenes": [4, 5, "6-10", "22-41"],
+        "labels": ["The evidence board", "Lila Fontaine", "Edgar Bliss", "Agatha Crane", "Felix Morrow", "Oliver Pike"]
+      },
+      {
+        "scenes": [11, 12, "13-21", "42-61", 76],
+        "labels": ["The evidence board", "Lila Fontaine", "Edgar Bliss", "Agatha Crane", "Felix Morrow", "Oliver Pike"]
+      },
+      {
+        "scenes": [62, "63-75"],
+        "name": "The Stage at Dawn",
+        "labels": ["The suspects in a row", "The Commissioner"]
+      }
+    ]
+  }
 }

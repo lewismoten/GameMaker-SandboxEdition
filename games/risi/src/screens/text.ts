@@ -150,7 +150,7 @@ export const CARDS: { numeral: string; title: string; english: string; goal: str
     numeral: 'V',
     title: 'CANIT PISCIS AUREUS',
     english: 'The Golden Fish Sings',
-    goal: 'Six golden scales. Steam and drums lift.',
+    goal: 'Six gold scales. Steam and drums lift.',
     lines: ['O piscis aureus, diva balnei!', 'O golden fish, bathtub diva!'],
   },
   {

@@ -6,7 +6,7 @@
 // or DATE RESET) goes back to the real local time. A change is announced ('gm-desk-clock') so the
 // room follows at once.
 const KEY = 'gm-desk-clock';
-export const DESK_CLOCK_EVENT = 'gm-desk-clock';
+const DESK_CLOCK_EVENT = 'gm-desk-clock';
 
 function load(): number {
   try {
@@ -19,8 +19,6 @@ function load(): number {
 
 let offset = load();
 
-/** Milliseconds the room's clock is ahead of the real one (0: the real local time). */
-export const deskClockOffset = (): number => offset;
 /** Whether TIME or DATE has set the room to another time than the real one. */
 export const deskClockSet = (): boolean => offset !== 0;
 

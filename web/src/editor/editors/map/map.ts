@@ -6,7 +6,7 @@ import { viewState } from '../../../urlState';
 import { h, clear, selectField, toast, debounce, modal, download } from '../../core/ui';
 import { blockButton } from '../../widgets/blockChooser';
 import { blockCanvas, blockImages } from '../../core/draw';
-import { paletteChooser } from '../blocks/blocks';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import type { FileKind, Project } from '../../core/project';
 import { fileField, pickFile } from '../../widgets/filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
@@ -17,7 +17,11 @@ import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Hand
 import { drawOverlay, type OverlayState } from './tools/overlay';
 import { MapTools, type ToolMode } from './tools/toolController';
 import { findBlock, floodCells, replaceAll } from './tools/cellOps';
-import { checkPanel } from './check/checkPanel';
+import type { checkPanel } from './check/checkPanel';
+import { simulate } from '../palette/colorVision';
+import { findPlayersView, posterPng, posterScene } from './mapPoster';
+import type { Level } from '../../../manual/printables/levelMapLayout';
+import { monsterName } from '../monsters/monsterNames';
 import './mapExport.css';
 import './tools/mapTools.css';
 
@@ -38,6 +42,18 @@ const TOOLS: [Mode, string, string, string, string][] = [
   ['building', '⌂', 'Building', 'H', 'Drag out a rectangle to build a house of that size from its parts'],
   ['monster', '👾', 'Monsters', 'M', 'Click to place the chosen monster; right-click to remove one'],
   ['pan', '✋', 'Scroll', '', 'Touch screens: drag to scroll the map instead of drawing'],
+];
+
+/** The map picture's choices for the whole map, the level and a game screen. */
+const OPT_LABELS = { monsters: 'Monsters where they start', grid: 'Block grid (yellow lines every 10 blocks)', links: 'Scene links and start points' };
+
+/** The map's zoom choices: down to 10% (a block 2 pixels across) to see a whole map at once. */
+const ZOOMS: [number, string][] = [
+  [0.1, '10%'],
+  [0.25, '25%'],
+  [0.5, '50%'],
+  [1, '100%'],
+  [2, '200%'],
 ];
 
 /** A remembered on/off choice (the grid); off when storage is unavailable. */
@@ -91,11 +107,23 @@ registerEditor(['map'], (host, project, file) => {
   // (…/PLANET1.MAP?x=40&y=12&zoom=2)
   const view = viewState(['p', project.id, file]);
   const urlZoom = Number(view.get('zoom'));
-  let zoom = [0.5, 1, 2].includes(urlZoom) ? urlZoom : 1;
+  let zoom = ZOOMS.some(([z]) => z === urlZoom) ? urlZoom : 1;
   let bgImgs: HTMLCanvasElement[] = [];
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
   let monImgs: HTMLCanvasElement[] = [];
+  // the Level check's "Gray level": the map on screen in the palette's lightness only, so the
+  // heat map's colors stand out (made when first asked for; exports always draw in color)
+  let gray: { bg: HTMLCanvasElement[]; mon: HTMLCanvasElement[] } | undefined;
+  let drawnGray = false;
+  const onScreen = () => {
+    if (!overlay.gray) return { bg: bgImgs, mon: monImgs };
+    if (!gray) {
+      const pal = simulate(chooser.palette, 'gray');
+      gray = { bg: blockImages(bg, pal), mon: blockImages(mblk, pal, true) };
+    }
+    return gray;
+  };
   const save = debounce(() => project.files.set(file, serializeMap(map)), 300);
   // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change
   const history = new History<Uint8Array>();
@@ -130,7 +158,7 @@ registerEditor(['map'], (host, project, file) => {
       role: 'region',
       'aria-label': 'The map (scroll with the arrow keys)',
       style:
-        'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 240px - var(--map-tools-h, 60px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+        'overflow:auto;max-height:max(280px, var(--map-room, calc(100dvh - 320px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
     },
     h('div', { class: 'mt-stack' }, canvas, over),
   );
@@ -143,14 +171,14 @@ registerEditor(['map'], (host, project, file) => {
   const picker = rovingGrid(
     h('div', {
       class: 'block-picker',
-      style: 'max-height:max(120px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.55))',
+      style: 'max-height:max(120px, calc(var(--side-room, 360px) * 0.56))',
     }),
     'Blocks to paint with',
   );
   const monPicker = rovingGrid(
     h('div', {
       class: 'block-picker',
-      style: 'max-height:max(100px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.4))',
+      style: 'max-height:max(100px, calc(var(--side-room, 360px) * 0.44))',
     }),
     'Monsters to place',
   );
@@ -174,6 +202,7 @@ registerEditor(['map'], (host, project, file) => {
   function rebuild(): void {
     bgImgs = blockImages(bg, chooser.palette);
     monImgs = blockImages(mblk, chooser.palette, true);
+    gray = undefined;
     clear(
       picker,
       ...bg.map((b, i) =>
@@ -212,11 +241,12 @@ registerEditor(['map'], (host, project, file) => {
       monPicker,
       ...mons.map((m, i) => {
         const pic = firstPic(m);
+        const name = monsterName(project, monName, i);
         return h(
           'button',
           {
             class: mode === 'monster' && i === monBrush ? 'selected' : '',
-            title: `Monster ${i}`,
+            title: name ? `Monster ${i}: ${name}` : `Monster ${i}`,
             onclick: () => ((monBrush = i), setMode('monster'), rebuildMonsters()),
           },
           pic >= 0 ? blockCanvas(mblk[pic].pixels, chooser.palette, { transparent: true, className: 'checker' }) : h('span', null, '—'),
@@ -231,20 +261,32 @@ registerEditor(['map'], (host, project, file) => {
     canvas.width = MLEN * s;
     canvas.height = MWID * s;
     ctx.imageSmoothingEnabled = false;
-    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) ctx.drawImage(bgImgs[map.blocks[y * MLEN + x]] ?? bgImgs[0], x * s, y * s, s, s);
+    const { bg: bgI, mon: monI } = onScreen();
+    drawnGray = !!overlay.gray;
+    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) ctx.drawImage(bgI[map.blocks[y * MLEN + x]] ?? bgI[0], x * s, y * s, s, s);
     map.monsters.forEach((m) => {
       if (m.monnum >= LASTMON) return;
       const pic = firstPic(mons[m.monnum]);
-      if (pic >= 0) ctx.drawImage(monImgs[pic], m.curx * s, m.cury * s, s, s);
-      else {
+      if (pic >= 0) ctx.drawImage(monI[pic], m.curx * s, m.cury * s, s, s);
+      else if (s < 8) {
+        // zoomed far out: too small to outline, a filled dot
+        ctx.fillStyle = '#f0f';
+        ctx.fillRect(m.curx * s, m.cury * s, s, s);
+      } else {
         ctx.strokeStyle = '#f0f';
         ctx.strokeRect(m.curx * s + 2, m.cury * s + 2, s - 4, s - 4);
       }
     });
     monCount.textContent = `${map.monsters.filter((m) => m.monnum < LASTMON).length} of ${LASTMM} monster slots used`;
     for (const mk of linkMarks()) {
+      const color = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
+      if (s < 8) {
+        ctx.fillStyle = color;
+        ctx.fillRect(mk.x * s, mk.y * s, s, s);
+        continue;
+      }
       ctx.lineWidth = 2;
-      ctx.strokeStyle = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
+      ctx.strokeStyle = color;
       ctx.strokeRect(mk.x * s + 1, mk.y * s + 1, s - 2, s - 2);
     }
     redrawOverlay();
@@ -296,7 +338,14 @@ registerEditor(['map'], (host, project, file) => {
       ? starts.map((m, i) => [i, `${m.label} (${m.x}, ${m.y})`])
       : [[0, `the middle of the level (${level.x + (level.w >> 1)}, ${level.y + (level.h >> 1)})`]];
     const startAt = (i: number) => starts[i] ?? { x: level.x + (level.w >> 1), y: level.y + (level.h >> 1) };
-    type AreaMode = 'whole' | 'level' | 'screen';
+    type AreaMode = 'whole' | 'level' | 'screen' | 'players';
+    // "As players see it": found once, the first time it is chosen (the explorer plays the map)
+    let players: ReturnType<typeof findPlayersView> | undefined;
+    let playersLevel: Level | undefined;
+    let playersNote = '';
+    /** The poster's width at 1×, in pixels. */
+    let posterWide = 0;
+    const PREVIEW_POSTER = 0.25;
     let mode: AreaMode = level.w < MLEN || level.h < MWID ? 'level' : 'whole';
     let start = 0;
     let screens = 1;
@@ -305,7 +354,7 @@ registerEditor(['map'], (host, project, file) => {
     const PREVIEW = 4; // preview pixels per block
 
     await modal<void>('Download a picture of the map', (close) => {
-      let shot = renderWhole(opts, PREVIEW / BLEN);
+      let shot: HTMLElement = renderWhole(opts, PREVIEW / BLEN);
       shot.className = 'pixel map-export-shot';
       const frame = h('div', { class: 'map-export-frame' });
       for (const hd of ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as Handle[])
@@ -325,17 +374,74 @@ registerEditor(['map'], (host, project, file) => {
         (v) => ((scale = v), refresh()),
       );
       const fixed = () => mode === 'screen';
+      const mapOpts = h('div', { class: 'stack', style: 'gap:4px' }, ...(['monsters', 'grid', 'links'] as const).map((k) => opt(OPT_LABELS[k], k)));
+      const setShot = (next: HTMLElement) => {
+        next.className = 'pixel map-export-shot';
+        shot.replaceWith(next);
+        shot = next;
+      };
       const refresh = () => {
+        const poster = mode === 'players';
+        frame.hidden = poster;
+        mapOpts.hidden = poster;
+        preview.classList.toggle('poster', poster);
+        [...modeBar.children].forEach((b) => b.setAttribute('aria-checked', String((b as HTMLElement).dataset.mode === mode)));
+        if (poster) {
+          screenOpts.hidden = true;
+          info.textContent = playersNote + (playersLevel && posterWide ? ` A ${Math.round(posterWide * scale)}-pixel-wide PNG picture.` : '');
+          downloadBtn.disabled = !playersLevel;
+          return;
+        }
+        downloadBtn.disabled = false;
+        if (!(shot instanceof HTMLCanvasElement)) setShot(renderWhole(opts, PREVIEW / BLEN));
         const p = (v: number) => `${(v / MLEN) * 100}%`;
         Object.assign(frame.style, { left: p(area.x), top: p(area.y), width: p(area.w), height: `${(area.h / MWID) * 100}%` });
         frame.classList.toggle('fixed', fixed());
         frame.title = fixed() ? 'Drag to move the screen' : 'Drag to move; drag an edge or corner to resize';
         info.textContent = `Blocks ${area.x}–${area.x + area.w - 1} across, ${area.y}–${area.y + area.h - 1} down (${area.w}×${area.h}): a ${area.w * BLEN * scale}×${area.h * BLEN * scale} PNG picture.`;
-        [...modeBar.children].forEach((b) => b.setAttribute('aria-checked', String((b as HTMLElement).dataset.mode === mode)));
         screenOpts.hidden = mode !== 'screen';
+      };
+      // the poster: the explorer plays the map once, then it is drawn the printed Level Maps' way
+      const showPlayers = () => {
+        if (!players) {
+          playersNote = 'Playing the level from every way in to see where it goes…';
+          players = findPlayersView(project, file, (done, total) => {
+            playersNote = `Playing the level from every way in to see where it goes… (way in ${Math.min(done + 1, total)} of ${total})`;
+            if (mode === 'players') info.textContent = playersNote;
+          });
+          void players.done.then(
+            async (found) => {
+              const l = found?.level;
+              playersLevel = l;
+              if (!l) playersNote = 'No scene plays on this map, so there is no way in to follow.';
+              else {
+                const b = await posterPng(project, l, PREVIEW_POSTER);
+                const img = h('img', { alt: `${l.name}, as the player goes through it` });
+                const wide = b ? (await createImageBitmap(b)).width / PREVIEW_POSTER : 0;
+                if (b) img.src = URL.createObjectURL(b);
+                const joins = l.unrolled?.loops.some(Boolean);
+                playersNote = `Scene ${l.group.scenes.join(', ')} · ${l.area.w}×${l.area.h} blocks: what the player sees${
+                  l.unrolled ? ', laid out as the player goes past the map’s edge' : ''
+                }${joins ? ' (dashed edges join up)' : ''}, with where you arrive and the ways out.${
+                  found.complete ? '' : ' The level is big: the bot ran out of time, so a corner it never reached may be left off.'
+                }`;
+                posterWide = wide;
+                if (mode === 'players') setShot(img);
+              }
+              if (mode === 'players') refresh();
+            },
+            (e: unknown) => {
+              if (e instanceof DOMException && e.name === 'AbortError') return;
+              playersNote = `The level could not be played: ${e instanceof Error ? e.message : String(e)}`;
+              if (mode === 'players') refresh();
+            },
+          );
+        }
+        refresh();
       };
       const setMode = (m: AreaMode) => {
         mode = m;
+        if (m === 'players') return showPlayers();
         area = m === 'whole' ? { ...WHOLE_MAP } : m === 'level' ? { ...level } : gameView(startAt(start), { w: screens, h: screens });
         if (m === 'screen' && scale === 1) scale = 2;
         scaleSel.querySelector('select')!.value = String(scale);
@@ -347,7 +453,17 @@ registerEditor(['map'], (host, project, file) => {
         modeBtn('whole', 'Whole map', `All ${MLEN}×${MWID} blocks`),
         modeBtn('level', 'Just the level', 'Leaves out the background fill round the level, which the character never sees'),
         modeBtn('screen', 'Game screen', 'One screen as the game shows it when the character starts there (a screenshot)'),
+        modeBtn(
+          'players',
+          'As players see it',
+          'The map as a strategy guide or poster shows it: what the player sees, laid out as they go (on past an edge the map wraps over), with where you arrive and the ways out',
+        ),
       );
+      if (!posterScene(project, file)) {
+        const b = modeBar.lastElementChild as HTMLButtonElement;
+        b.disabled = true;
+        b.title = 'No scene plays on this map yet, so there is no way in to follow.';
+      }
       screenOpts.append(
         selectField(
           'Start point',
@@ -384,17 +500,39 @@ registerEditor(['map'], (host, project, file) => {
         frame.addEventListener('pointermove', move);
         frame.addEventListener('pointerup', up);
       });
-      const opt = (label: string, k: keyof typeof opts) => {
+      function opt(label: string, k: keyof typeof opts) {
         const input = h('input', { type: 'checkbox', checked: opts[k], style: 'width:auto;margin:0' });
         input.addEventListener('change', () => {
           opts[k] = input.checked;
-          const c = renderWhole(opts, PREVIEW / BLEN);
-          c.className = shot.className;
-          shot.replaceWith(c);
-          shot = c;
+          setShot(renderWhole(opts, PREVIEW / BLEN));
         });
         return h('label', { style: 'display:flex;flex-direction:row;align-items:center;gap:8px;font-weight:normal' }, input, label);
-      };
+      }
+      const downloadBtn = h(
+        'button',
+        {
+          class: 'primary',
+          onclick: () => {
+            const name = file.replace(/\.map$/i, '');
+            if (mode === 'players') {
+              if (!playersLevel) return;
+              void posterPng(project, playersLevel, scale).then(async (b) => {
+                if (!b) return toast('The picture could not be made.', 'error');
+                download(`${name}-players.png`, new Uint8Array(await b.arrayBuffer()), 'image/png');
+                close(undefined);
+              });
+              return;
+            }
+            renderWhole(opts, scale, area).toBlob(async (b) => {
+              if (!b) return toast('The picture could not be made.', 'error');
+              const suffix = mode === 'screen' ? 'screen' : area.w === MLEN && area.h === MWID ? 'map' : 'level';
+              download(`${name}-${suffix}.png`, new Uint8Array(await b.arrayBuffer()), 'image/png');
+              close(undefined);
+            }, 'image/png');
+          },
+        },
+        '⤓ Download PNG',
+      );
       setMode(mode);
       return h(
         'div',
@@ -403,39 +541,11 @@ registerEditor(['map'], (host, project, file) => {
         screenOpts,
         preview,
         info,
-        h(
-          'div',
-          { class: 'map-export-opts' },
-          h(
-            'div',
-            { class: 'stack', style: 'gap:4px' },
-            opt('Monsters where they start', 'monsters'),
-            opt('Block grid (yellow lines every 10 blocks)', 'grid'),
-            opt('Scene links and start points', 'links'),
-          ),
-          scaleSel,
-        ),
-        h(
-          'div',
-          { class: 'buttons' },
-          h('button', { onclick: () => close(undefined) }, 'Cancel'),
-          h(
-            'button',
-            {
-              class: 'primary',
-              onclick: () =>
-                renderWhole(opts, scale, area).toBlob(async (b) => {
-                  if (!b) return toast('The picture could not be made.', 'error');
-                  const suffix = mode === 'screen' ? 'screen' : area.w === MLEN && area.h === MWID ? 'map' : 'level';
-                  download(`${file.replace(/\.map$/i, '')}-${suffix}.png`, new Uint8Array(await b.arrayBuffer()), 'image/png');
-                  close(undefined);
-                }, 'image/png'),
-            },
-            '⤓ Download PNG',
-          ),
-        ),
+        h('div', { class: 'map-export-opts' }, mapOpts, scaleSel),
+        h('div', { class: 'buttons' }, h('button', { onclick: () => close(undefined) }, 'Cancel'), downloadBtn),
       );
     });
+    players?.cancel();
   }
 
   const cell = (e: PointerEvent) => {
@@ -449,14 +559,15 @@ registerEditor(['map'], (host, project, file) => {
     if (x < 0 || y < 0 || x >= MLEN || y >= MWID) return;
     map.blocks[y * MLEN + x] = v;
     const s = BLEN * zoom;
-    ctx.drawImage(bgImgs[v], x * s, y * s, s, s);
+    ctx.drawImage(onScreen().bg[v], x * s, y * s, s, s);
   }
 
   /** Cells the tools changed: draw just them (with the links over them) and save. */
   function changedCells(cells: number[]): void {
     if (!cells.length) return;
     const s = BLEN * zoom;
-    for (const i of cells) ctx.drawImage(bgImgs[map.blocks[i]] ?? bgImgs[0], (i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
+    const bgI = onScreen().bg;
+    for (const i of cells) ctx.drawImage(bgI[map.blocks[i]] ?? bgI[0], (i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
     if (cells.length > 400) draw();
     else redrawOverlay();
     save();
@@ -563,6 +674,47 @@ registerEditor(['map'], (host, project, file) => {
   canvas.addEventListener('pointerup', endStroke);
   canvas.addEventListener('pointercancel', endStroke);
   canvas.addEventListener('pointerleave', () => tools.leave());
+
+  // the Level check's marks and links, told in words when the pointer rests on them; it never
+  // takes a click (pointer-events: none), and hides while drawing
+  const tip = h('div', { class: 'mt-tip', 'aria-hidden': 'true', hidden: true });
+  document.body.append(tip);
+  let tipTimer: ReturnType<typeof setTimeout> | undefined;
+  let tipCell = -1;
+  const hideTip = () => {
+    clearTimeout(tipTimer);
+    tip.hidden = true;
+    tipCell = -1;
+  };
+  canvas.addEventListener('pointermove', (e) => {
+    if (e.buttons || e.pointerType === 'touch') return hideTip();
+    const p = cell(e);
+    const c = p.y * MLEN + p.x;
+    if (c === tipCell) return;
+    hideTip();
+    tipCell = c;
+    const { clientX, clientY } = e;
+    tipTimer = setTimeout(() => {
+      // zoomed out, a mark is a dot or two: the nearest one within about 6 pixels
+      const s = BLEN * zoom;
+      const lines = [
+        ...(check?.describe(c, s < 8 ? Math.ceil(6 / s) : 0) ?? []),
+        ...linkMarks()
+          .filter((m) => m.x === p.x && m.y === p.y)
+          .map((m) => (m.kind === 'to' ? `▢ The hero comes in here (${m.label})` : `▢ A link: touching it takes the hero ${m.label}`)),
+      ];
+      if (!lines.length) return;
+      clear(tip, ...lines.map((l) => h('div', null, l)));
+      tip.hidden = false;
+      const w = tip.offsetWidth;
+      const ht = tip.offsetHeight;
+      tip.style.left = `${Math.max(4, Math.min(innerWidth - w - 4, clientX + 14))}px`;
+      tip.style.top = `${clientY + 18 + ht > innerHeight ? Math.max(4, clientY - ht - 10) : clientY + 18}px`;
+    }, 250);
+  });
+  canvas.addEventListener('pointerleave', hideTip);
+  canvas.addEventListener('pointerdown', hideTip);
+  scroller.addEventListener('scroll', hideTip, { passive: true });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
   const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
@@ -657,13 +809,24 @@ registerEditor(['map'], (host, project, file) => {
   }
   syncToggles();
 
-  // the level check: a panel beside the map, its heat map and marks on the overlay
-  const check = checkPanel({
+  // the level check: a panel beside the map, its heat map and marks on the overlay (loaded when
+  // first opened; until then a hidden slot holds its place in the side column)
+  let check: ReturnType<typeof checkPanel> | undefined;
+  let loadingCheck: Promise<ReturnType<typeof checkPanel>> | undefined;
+  const checkSlot = h('div', { hidden: true });
+  const openCheck = () =>
+    (loadingCheck ??= import('./check/checkPanel').then((m) => {
+      check = m.checkPanel(checkHost);
+      checkSlot.replaceWith(check.el);
+      fitter.observe(check.el);
+      return check;
+    }));
+  const checkHost: Parameters<typeof checkPanel>[0] = {
     project,
     file,
     scene: set.scenes[0],
     overlay,
-    redraw: () => redrawOverlay(),
+    redraw: () => (!!overlay.gray !== drawnGray ? draw() : redrawOverlay()),
     goTo: (c) => {
       const s = BLEN * zoom;
       const x = c % MLEN;
@@ -685,7 +848,7 @@ registerEditor(['map'], (host, project, file) => {
       for (const [c, b] of cells) map.blocks[c] = b;
       changedCells(cells.map(([c]) => c));
     },
-  });
+  };
   const checkBtn = h(
     'button',
     {
@@ -694,11 +857,12 @@ registerEditor(['map'], (host, project, file) => {
       'aria-label': 'Level check',
       'aria-pressed': 'false',
       title: 'Level check: let a bot play this scene and show where it went and what players would mind',
-      onclick: () => {
-        check.toggle();
-        checkBtn.setAttribute('aria-pressed', String(check.shown()));
-        if (check.shown()) check.el.scrollIntoView({ block: 'nearest' });
-      },
+      onclick: () =>
+        void openCheck().then((check) => {
+          check.toggle();
+          checkBtn.setAttribute('aria-pressed', String(check.shown()));
+          if (check.shown()) check.el.scrollIntoView({ block: 'nearest' });
+        }),
     },
     '🩺',
     h('span', { class: 'mt-label' }, 'Check'),
@@ -824,11 +988,7 @@ registerEditor(['map'], (host, project, file) => {
       chooser.el,
       selectField(
         'Zoom',
-        [
-          [0.5, '50%'],
-          [1, '100%'],
-          [2, '200%'],
-        ] as [number, string][],
+        ZOOMS,
         () => zoom,
         (v) => ((zoom = v), view.set({ zoom: v === 1 ? undefined : v }), draw()),
       ),
@@ -841,7 +1001,7 @@ registerEditor(['map'], (host, project, file) => {
       h(
         'div',
         { class: 'stack mt-side-col', style: 'flex:0 1 260px' },
-        check.el,
+        checkSlot,
         tools.panel,
         h('strong', null, 'Blocks'),
         picker,
@@ -852,13 +1012,27 @@ registerEditor(['map'], (host, project, file) => {
     ),
   );
   rebuild();
-  // the map and the pickers give up the height of a file toolbar that wraps onto a second row
-  const fieldsBar = scroller.closest('.row')?.previousElementSibling as HTMLElement | null;
-  const barSize = new ResizeObserver(() => fieldsBar && host.style.setProperty('--map-tools-h', `${fieldsBar.offsetHeight}px`));
-  if (fieldsBar) barSize.observe(fieldsBar);
-  // the blocks and monsters give up the height of the tool panel above them
-  const panelSize = new ResizeObserver(() => host.style.setProperty('--mt-panel-h', `${tools.panel.hidden ? 0 : tools.panel.offsetHeight + 8}px`));
-  panelSize.observe(tools.panel);
+  // One screen: the map, and the blocks and monsters lists, end at the editor's bottom edge,
+  // measured from where they start (below the tip, file toolbar and tool panel, whatever
+  // their height), so the editor pane itself needn't scroll.
+  const sideCol = picker.parentElement!;
+  const fit = () => {
+    const main = host.closest('main');
+    if (!main) return;
+    const pad = parseFloat(getComputedStyle(main).paddingBottom) || 0;
+    const top = (el: Element) => el.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop;
+    const bottom = main.clientHeight - pad - 4;
+    const room = Math.round(bottom - top(scroller) - status.offsetHeight - 10);
+    const fixed = sideCol.scrollHeight - picker.offsetHeight - monPicker.offsetHeight;
+    const side = Math.round(bottom - top(sideCol) - fixed);
+    if (host.style.getPropertyValue('--map-room') !== `${room}px`) host.style.setProperty('--map-room', `${room}px`);
+    if (host.style.getPropertyValue('--side-room') !== `${side}px`) host.style.setProperty('--side-room', `${side}px`);
+    // a long Level check report scrolls the side column by itself (mapTools.css)
+    host.style.setProperty('--side-col-room', `${Math.round(bottom - top(sideCol))}px`);
+  };
+  const fitter = new ResizeObserver(() => requestAnimationFrame(fit));
+  for (const el of [host, sideCol, tools.panel]) fitter.observe(el);
+  addEventListener('resize', fit);
   const onKey = (e: KeyboardEvent) => {
     const t = e.target as HTMLElement | null;
     if (t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || t?.closest('dialog')) return;
@@ -912,8 +1086,10 @@ registerEditor(['map'], (host, project, file) => {
     });
   });
   return () => {
+    hideTip();
+    tip.remove();
     window.removeEventListener('keydown', onKey);
-    barSize.disconnect();
-    panelSize.disconnect();
+    fitter.disconnect();
+    removeEventListener('resize', fit);
   };
 });

@@ -6,6 +6,15 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 
 **▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
+**Videos:** [RSD Game Maker - Sandbox Edition](https://www.youtube.com/watch?v=0riemzdF8gc), a
+tour of the web port, the editor and the 1994 desk, and
+[More Features](https://www.youtube.com/watch?v=gNEya63wDmo), what has been added since. Both
+are in the site's Library too.
+
+This fork is kept by Lewis Moten, who shoveled Fort Ashby's driveways in the winter of 1992
+to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: see
+[Lewis and Game-Maker](docs/history.md).
+
 ![The 1994 desk: a PC showing the Snowbound title screen, a shelf of game boxes, a disk box, a night window with the moon, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
@@ -13,6 +22,12 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 - **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
   original menus and designers, a BBS to dial, and the games' boxes, disks and manuals on
   the shelf; or *today's web* editor with point-and-click editors for every part of a game.
+- **Help making good games:** the map editor's Level check plays each scene on the real
+  engine, draws a heat map of where the hero got, marks places a player can get stuck and
+  offers one-click fixes; the block, monster and sound editors show its findings as badges,
+  a Before You Upload checklist ticks itself, and a bot can make a walkthrough of your game.
+  The Game-Maker box holds *The Ultimate Owner's Guide*, an advanced booklet on level design,
+  tricks from the new games and these tools.
 - **A port, not a PC emulator:** Game-Maker and its PLAYGAME player are re-implemented in
   TypeScript from the released C source, and no DOS or x86 code runs. The desk's PC is a
   simulation; some hardware is emulated (VGA mode 13h, the OPL2 FM sound chip).
@@ -22,12 +37,13 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 - **The CD's games:** the sample "gameware" (edit a copy) and the shareware (play only,
   with their authors' notices). CD games that shipped without a title demo get one recorded
   for this edition, kept apart from their original files.
-- **Twelve new Sandbox Software games** built for this fork, entirely in code
+- **Thirteen new Sandbox Software games** built for this fork, entirely in code
   ([games/](games)): Maximus: The Hundred Worlds, Sandcastle Knight, Snowbound: The $89
   Shovel, In The Year 2000!, Teddy's Little Big Adventure, Teddy's Little Bigger Adventure,
-  Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT BRIEF! The Tiny Pockets Library,
-  Depth Perception and Quest for the Round Tuit. Each comes with a manual, box art,
-  printable extras and hidden felt eggs to find.
+  Teddy's Little Biggest Adventure, Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT
+  BRIEF! The Tiny Pockets Library, Depth Perception and Quest for the Round Tuit. Each comes
+  with a manual, box art, printable extras (among them a fold-out World Map and Level Maps)
+  and a hidden tin heart, and most hide a felt egg to find.
 - **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
   monologues, dressed as 1995 shareware from The Sofa BBS: eleven by The Bard of Bizarre
   (Third Goat from the Left, Mustard Seed Hustle, Thread the Needle, Brother Camel, Loaf
@@ -43,11 +59,23 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
   credits on the real engine, with chapters, ready to download as an MP4.
 - **The desk PC's utilities:** HEXEDIT, BACKUP, SAVEHACK and GMCRACK, in 1990s dress but
   mainly for looking inside game files, saved games and registration while debugging.
+- **The BBSes:** a modem with a line speed to pick (300 baud to unlimited), a tic-tac-toe
+  door game played a move a call, and a TTY call to the neighbor in Baudot.
+- **Achievements** for what you make, play and find, on the web and in the desk's ACHIEVE.EXE.
 - **Sharing:** export a game as a one-page web game, an installable web app, or a folder
   that runs in DOSBox, or download any game, your own too, as a Mac app, a Windows program
   or a Linux folder that plays offline in its own window (built in the browser; see the
   [Mac](mac/README.md), [Windows](win/README.md) and [Linux](linux/README.md) notes).
   Everything is saved in your browser and works offline.
+- **Opening games from other sites:** a link (`?open=<address of the game>`) or a page using
+  `window.open` and `postMessage` can open a game here to play or edit, on the desk, in DOS
+  Game-Maker or on the web, after the visitor says yes. See
+  [Opening games from your site](docs/embed.md).
+- **A web player for your old games:** one `.html` file to put on any web host beside your
+  Game-Maker game folders. It lists them from an optional `games.json`, starts one from
+  `?game=<name>`, and keeps high scores and saved games in the browser, with export and
+  import. [Try it with the games here](https://lewismoten.github.io/GameMaker-SandboxEdition/player/)
+  or see [The web player](docs/web-player.md).
 
 ## Screenshots
 
@@ -57,6 +85,8 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 | The home page's Sandbox games | Editing Snowbound's neighborhood map |
 | ![Snowbound being played: the kid with his shovel on a snowy street, under the level's "1. Gale Street" briefing](docs/screenshots/web-play.png) | ![The Bizarre tab: twelve games from comic songs, with Third Goat from the Left's demo in the side panel](docs/screenshots/web-bizarre.png) |
 | Playing Snowbound | The Bizarre games |
+| ![The original DOS Game-Maker 3.0 running in the browser: its red and blue menu bar, with the Map Maker's menu open (By Gregory Stone, Copyright 1994) over Snowbound's disk](docs/screenshots/dos-gm-mapmaker.png) | ![Game-Maker's copy check in the browser: it asks for a word from the Owner's Guide, which is open beside it with the paragraph marked, and the registration card on the right](docs/screenshots/dos-gm-copycheck.png) |
+| The original DOS Game-Maker, running in the browser | Its copy check, with the Owner's Guide beside it |
 
 ## Run it yourself
 
@@ -91,9 +121,17 @@ npx vite-node scripts/winExe.ts teddy             # a Windows .exe, in ../dist/w
 npx vite-node scripts/linuxTar.ts teddy           # a Linux .tar.gz, in ../dist/linux
 ```
 
+To check every game at once (each one rebuilt and compared with its committed disk, played
+by its bot, its walkthrough replayed, its text, hidden items and levels checked), run
+`npm run check:games` from `web/`. It prints a table and fails on any regression; add
+`--game teddy` for one game or `--quick` to skip the rebuild compare.
+
 Pushes to `master` are published to GitHub Pages by
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml). The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
+[`.github/workflows/games.yml`](.github/workflows/games.yml) runs `npm run check:games -- --quick`
+on every push and pull request; run the full check (with the rebuild compare, about 20 minutes)
+yourself before committing a game.
 
 ## Where things are
 
@@ -101,6 +139,7 @@ Pushes to `master` are published to GitHub Pages by
 | --- | --- |
 | [`web/`](web) | The browser app. [web/README.md](web/README.md) explains it; [web/src/README.md](web/src/README.md) maps the source. |
 | [`games/`](games) | The Sandbox Software and Bard of Bizarre games, built in code, and the shared kit that builds and play-tests them. See [games/README.md](games/README.md) and [games/kit/README.md](games/kit/README.md). |
+| [`docs/`](docs) | For site owners: [opening a game from your own site](docs/embed.md) and [the web player](docs/web-player.md); and [Lewis and Game-Maker](docs/history.md), how the project came about. |
 | [`mac/`](mac), [`win/`](win), [`linux/`](linux) | The small native players that a downloaded game runs in, and how they are built. See [mac/README.md](mac/README.md), [win/README.md](win/README.md) and [linux/README.md](linux/README.md). |
 | `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
 | [`code/`](code) | The original DOS C/C++ source. See [code/README.md](code/README.md). |

@@ -1,8 +1,8 @@
 // getfname with folders: Game-Maker's file picker let you type a path, and listed the
 // sub-directories ("SAMPLE\") along with matching files, so you could move between
 // game areas. Picking a folder enters it; picking (or typing) a file returns it.
-// The box layout and messages follow getFileName in textUi.ts (getfname's question box
-// over a 15-column list); getfname's C body is not in code/GM (only WINDIO.H declares it).
+// The box layout and messages follow getfname's question box over a 15-column list;
+// getfname's C body is not in code/GM (only WINDIO.H declares it).
 import { attr } from '../text/textScreen';
 import { CURATTR, MENUATTR, SHADATTR, errorBox, type Ui } from '../text/textUi';
 import type { FileSystem } from './vfs';

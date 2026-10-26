@@ -351,6 +351,29 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('peggy0', peggy(0), hello);
   book.add('peggy1', peggy(1), hello);
+  // Peggy going on her way: side on, walking right, the plant held out ahead
+  const peggyWalk = (f: number) => {
+    const p = P();
+    const s = f ? 0 : 1;
+    p.rect(8 - s, 16, 2, 4, c('navy', 0)).rect(10 + s, 16, 2, 4, c('navy', 1));
+    p.rect(7, 8, 7, 9, c('purple', 2)).rect(7, 8, 7, 1, c('purple', 3)).rect(13, 9, 1, 8, c('white', 2));
+    blob(p, 10.5, 4.5, 3, 3.4, pal.r('skin'), 2, 4);
+    for (const [x, y] of [
+      [7, 2],
+      [9, 1],
+      [11, 1],
+      [7, 4],
+      [8, 6],
+    ])
+      p.disc(x, y + 1, 1.3, c('grey', 3));
+    p.rect(12, 4, 2, 2, c('pink', 1)).set(12, 5, ink).set(14, 5, c('skin', 2)).set(12, 7, c('red', 1));
+    p.line(11, 10, 14, 11, c('purple', 1))
+      .rect(14, 10, 4, 3, c('green', 1 + f))
+      .rect(15, 12, 3, 2, c('white', 2));
+    return outline(p, ink);
+  };
+  book.add('peggyWalk0', peggyWalk(0));
+  book.add('peggyWalk1', peggyWalk(1));
 }
 
 export function ficusMonsters(set: Monster[], mb: SpriteBook): void {
@@ -364,7 +387,11 @@ export function ficusMonsters(set: Monster[], mb: SpriteBook): void {
   set[FICUS_MON.gnat] = mon(anim(mb, 'gnat0', 'gnat1', 2), { power: POWER.foe, thru: 1, newmon: FICUS_MON.puff }, pace(3, 1));
   set[FICUS_MON.cart] = mon(anim(mb, 'pcart0', 'pcart1', 2), { power: POWER.tough, thru: 1 }, pace(4, 2));
   set[FICUS_MON.peggy] = mon(anim(mb, 'peggy0', 'peggy1', 16), { power: POWER.friend, thru: 0, newmon: FICUS_MON.peggyOff }, still);
-  set[FICUS_MON.peggyOff] = mon(anim(mb, 'peggy1', 'peggy0', 4), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 2), corner(4, 0, 2)]);
+  set[FICUS_MON.peggyOff] = mon(anim(mb, 'peggyWalk0', 'peggyWalk1', 4), { power: POWER.tough, thru: 0, end: 30 }, [
+    corner(0, 0, 2),
+    corner(4, 0, 2),
+    corner(0, 0, 2, 4),
+  ]);
   set[FICUS_MON.puff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }
 

@@ -1,5 +1,6 @@
 // SAVEHACK.ZIP's words: its FILE_ID.DIZ (10 lines of at most 45 columns, as the BBS's file
-// listing shows it) and SAVEHACK.DOC, the author's readme. vesuvian is Lewis's BBS handle,
+// listing shows it) and SAVEHACK.DOC, the author's readme, which also tells EGG.EXE's unshown keys
+// (eggs/eggExe.ts; the zine, manual/zine, only introduces EGG). vesuvian is Lewis's BBS handle,
 // short for Vesuvian Doppelganger, a Magic: The Gathering card.
 
 import { warezSignoff } from '../bbs/fileId';
@@ -41,6 +42,15 @@ export const SAVEHACK_DOC: string[] = [
   '  warns you before a value that may overflow. Before its first change',
   '  to a game it backs up your saves ("Original"); pick Restore original',
   '  saves to put them back. BACKUP /L lists the backups too.',
+  '',
+  'AND ONE MORE THING',
+  "  Felt eggs? Not SAVEHACK's department.",
+  '  But you know EGG, the egg inspector (type EGG anywhere)? Its key bar',
+  "  leaves some out. On an egg's row:",
+  "    Enter Add it if you don't have it, break it if you do",
+  '    A     Add it          B     Break it',
+  '  R puts it back the way your saves say. Like SAVEHACK, it never',
+  '  touches a saved game. (Finding them for real is more fun. Just sayin.)',
   '',
   'Greetings to PIXEL WIZARD, THE BLOCKSMITH, NIGHT OWL and all SYSOPs.',
   'Call THE -= S A N D B O X =- BBS, 412-555-SAND.',

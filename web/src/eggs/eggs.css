@@ -43,7 +43,8 @@
   }
 }
 
-.egg-mini {
+.egg-mini,
+.egg-special {
   display: block;
   width: 30px;
   height: 40px;
@@ -77,10 +78,11 @@
   .desk-scene > .egg-perch .egg-row {
     flex-wrap: wrap;
     gap: 2px 1px;
-    max-width: calc(6 * 20px + 5 * 1px);
+    max-width: calc(7 * 20px + 6 * 1px);
   }
 
-  .desk-scene > .egg-perch .egg-mini {
+  .desk-scene > .egg-perch .egg-mini,
+  .desk-scene > .egg-perch .egg-special {
     width: 20px;
     height: 27px;
   }

@@ -9,5 +9,10 @@
   "exe": "NEEDLE.EXE",
   "sound": "sb",
   "tinHeart": { "map": "tailor.map", "at": [35, 17] },
-  "easterEgg": { "map": "desert.map", "at": [48, 8] }
+  "easterEgg": { "map": "desert.map", "at": [48, 8] },
+  "acceptedFindings": [
+    "hurt-lock s3 Monster 8 holds the hero while it hurts",
+    "hurt-lock s4 Monster 13 holds the hero while it hurts",
+    "hurt-lock s5 Monster 16 holds the hero while it hurts"
+  ]
 }

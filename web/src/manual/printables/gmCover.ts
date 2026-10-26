@@ -4,6 +4,7 @@
 // to show a real game screen underneath, one of the Sandbox games made with Game-Maker.
 // One SVG on a 550 x 850 sheet (5.5 x 8.5 inches), so it scales with the page and prints; it
 // is shown as an image so its ids stay its own when the page is copied for print.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './gmCover.css';
 
 export const COVER_W = 550;
@@ -228,13 +229,13 @@ function drawings(): string {
       <path d="M 40 -40 A 46 46 0 0 0 -30 -42" stroke-dasharray="4 4" marker-end="url(#gmc-arrow)"/>
       <text class="gmc-label" x="58" y="-46">8 WAYS</text>
     </g>
-    <!-- a 3.5 inch diskette, behind the title -->
+    <!-- a 3.5 inch diskette, behind the title: shutter down, label up -->
     <g transform="translate(372 96) rotate(9)" class="gmc-faint">
       <rect x="0" y="0" width="140" height="146" rx="5"/>
-      <rect x="34" y="0" width="74" height="44"/>
-      <rect x="80" y="8" width="18" height="30"/>
-      <rect x="20" y="70" width="100" height="70"/>
-      <line x1="30" y1="86" x2="110" y2="86"/><line x1="30" y1="102" x2="110" y2="102"/>
+      <rect x="32" y="102" width="74" height="44"/>
+      <rect x="42" y="108" width="18" height="30"/>
+      <rect x="20" y="6" width="100" height="70"/>
+      <line x1="30" y1="44" x2="110" y2="44"/><line x1="30" y1="60" x2="110" y2="60"/>
     </g>
     <!-- a protractor arc and center mark -->
     <g class="gmc-faint">
@@ -262,7 +263,7 @@ function sticker(cx: number, cy: number, r: number): string {
   </g>`;
 }
 
-export const COVER_ALT =
+const COVER_ALT =
   'Owner’s Guide cover: GAME-MAKER, Sandbox Edition, Version 3.0, in white on a blue blueprint of a hero drawn pixel by pixel, a joystick, and a diskette. ' +
   'The bottom of the blueprint is peeled back to show a game made with Game-Maker. A red sticker reads Technical Support, 1-800-555-0176, 9 AM to 6 PM Eastern, Monday to Friday.';
 

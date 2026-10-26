@@ -1,6 +1,7 @@
 // sandcast.mon: who walks, chases, scuttles and rolls, and what each becomes when beaten.
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
 import { MB } from '../sprites/sprites';
+import { SIGNS } from '../sprites/signs';
 import { MON } from '../rules';
 
 const m = (name: string) => MB.id(name);
@@ -333,5 +334,10 @@ export function buildMonsters(): Monster[] {
     becomes: MON.puff,
     score: 100,
   });
+
+  // The signs by the start (sprites/signs.ts): one block each, standing still, as strong as
+  // Gwinn so neither knocks the other over, and too strong for Teddy to knock down.
+  let n = MON.sign;
+  for (const { name, blocks } of SIGNS) for (let i = 0; i < blocks; i++) def(n++, { pics: [[`${name}${i}`, 100]], power: 180 });
   return set;
 }

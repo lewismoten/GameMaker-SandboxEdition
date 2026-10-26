@@ -14,7 +14,7 @@ export const SOUND_GROUPS: { id: SoundGroup; label: string; icon: string; hint: 
   { id: 'long', label: 'Long & ambience', icon: '〰', hint: 'longer than 3 seconds' },
 ];
 
-export interface SoundProfile {
+interface SoundProfile {
   seconds: number;
   /** Loudest sample, 0..1. */
   peak: number;

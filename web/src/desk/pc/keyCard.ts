@@ -3,13 +3,12 @@
 // game an index card written out from its character files (editor/keymap/keyMap.ts). Click it to
 // read it larger.
 import './keyCard.css';
-import '../../manual/printables/paper.css';
 import { h, clear } from '../../editor/core/ui';
 import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../../editor/keymap/keyMap';
 import { cardRows } from './keyCardRows';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
 
-export interface PlayingGame {
+interface PlayingGame {
   files: GameFiles;
   gam: string;
   title: string;
@@ -29,7 +28,7 @@ const keyLines = (keys: string[], room: number) => Math.max(1, Math.ceil(keys.re
  * An index card with the keys written out, for games without a printed one. `compact` is the
  * small card taped to the monitor: fewer, larger lines, so it reads at a glance.
  */
-export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
+function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
   const rows = cardRows(km.keys, compact);
   const joy = km.joystick.length > 0;
   const always = GLOBAL_KEYS.filter((g) => g.scan <= 64);
@@ -92,9 +91,13 @@ export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLE
  * printed card from a Sandbox Software box when there is one; taped to the monitor it is
  * always the handwritten card, which stays legible that small.
  */
-/** The keycard printed for a Sandbox Software box (its printables load only when one is read up close). */
+/** The keycard printed for a Sandbox Software box (its printables and paper styles load only when one is read up close). */
 async function printedCard(entry: CatalogEntry) {
-  const [{ printContext }, { boxItems }] = await Promise.all([import('../boxes/printContext'), import('../../manual/printables/items')]);
+  const [{ printContext }, { boxItems }] = await Promise.all([
+    import('../boxes/printContext'),
+    import('../../manual/printables/items'),
+    import('../../manual/printables/paper.css'),
+  ]);
   const ctx = await printContext(entry);
   return ctx ? boxItems(ctx).find((i) => i.id === 'keycard') : undefined;
 }

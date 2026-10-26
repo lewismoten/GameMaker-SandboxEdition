@@ -17,8 +17,8 @@ export interface Program {
   run(h: RetroHost): Promise<void>;
 }
 
-export const GMTOPBAR = '                           G A M E  -  M A K E R  SE 3.00                       ';
-export const DESIGN_BAR = '  Palette  Block  Monster  Map  Character  Image  Sound  Integrator  Main  Help ';
+const GMTOPBAR = '                           G A M E  -  M A K E R  SE 3.00                       ';
+const DESIGN_BAR = '  Palette  Block  Monster  Map  Character  Image  Sound  Integrator  Main  Help ';
 export const PGMTITLECOL = 47;
 
 /** writestr(0,0,79,GMTOPBAR); writestr(0,1,31,"  Palette  Block ..."); */

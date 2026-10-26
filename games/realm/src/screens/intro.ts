@@ -3,7 +3,7 @@
 // kingdom; he bows and is gone. Painted in true color, one palette chosen for every frame
 // (median cut), and dithered in a pattern fixed to the screen so still parts never change and
 // the FLI stores only what moves.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Canvas, mix, clamp01, tnoise } from '../art/rgb';
 import { sky, stars, tuit, castle } from './scenery';
@@ -86,5 +86,7 @@ export function introFli(): Uint8Array {
   );
   const q = new Quantizer(pal, 6);
   const indexed = rgb.map((f) => q.apply(f, 320, 200));
-  return encodeFli(indexed, pal, { speed: 5 });
+  // a second on Deadline's words (the hold the title list used to give), then a fade to black
+  const last = indexed[indexed.length - 1];
+  return encodeFliFadeOut([...indexed, ...Array.from({ length: 14 }, () => last)], pal, { speed: 5 });
 }

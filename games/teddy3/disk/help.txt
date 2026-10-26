@@ -1,0 +1,47 @@
+TEDDY (arrows or W A D)
+ LEFT/RIGHT walk  UP hop
+   (hold: higher)  Q/E hop
+   up-left / up-right
+ SPACE woof     DOWN dig
+ F fetch        S sniff
+ 1 high five: bells, buttons
+ 2 sit pretty   3 spin
+ 4 play dead (hold)
+
+BUTTONS: high five one and a
+spark runs down its wire to
+what it opens. Some doors
+close again by themselves.
+
+
+GWINN (MEANWHILE...)
+ SPACE BOOF     DOWN dig big
+ 1 chew         2 sit (sort
+                  of)
+ 3 zoomies      4 flop (hold)
+
+DOC LEO (MEANWHILE...)
+ LEFT/RIGHT stroll  UP hop
+ SPACE squeeze the rubber
+   chicken: SQUAWK!
+ 1 twist a balloon dog: it
+   floats him up. It pops!
+ 4 pratfall (hold)
+ F fetch
+
+
+THE CHEZ (on the road)
+ LEFT/RIGHT drive
+ UP bump (over potholes)
+ Q/E bump up and along
+ SPACE HONK!
+ Pull up to a CHARGER to
+ plug in. A hill takes one
+ charge to climb.
+
+F1 help  F2 your stuff
+F3 music F4 sounds
+F5 save  F6 load  ESC quit
+F2 shows treats as "Money"
+and energy as "Hitpoints".
+

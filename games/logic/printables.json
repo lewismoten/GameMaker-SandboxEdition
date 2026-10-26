@@ -7,7 +7,23 @@
   "news": [
     {
       "head": "Ohm Sweet Ohm: puzzles made of pure Game-Maker",
-      "html": "<p>Every switch, fuse and relay in Sandbox Software's new puzzler is built from ordinary Game-Maker blocks and monsters: batteries are blocks that give birth to \"current\" monsters, and gates fall when a stronger monster touches them. Not one line of code!</p>"
+      "html": "<p>A thunderstorm has scrambled the Bitmores' brand-new Smart Home, and Watt, the pocket-sized repair robot who lives in the fuse box, must roll home through twenty-three haywire circuit boards, from the toaster to the attic. Every switch, fuse and relay is built from ordinary Game-Maker blocks and monsters: batteries are blocks that give birth to \"current\" monsters, and gates fall when a stronger monster touches them. Not one line of code!</p>"
+    },
+    {
+      "head": "Since last issue: Two years of Sparky mail",
+      "html": "<p>It has been a while since issue 2, and the mailbag filled up. Your favorite gadget in In The Year 2000! was the Teleport-A-Phone. Your least favorite moment was running out of quarters at the Phone Exchange (every room has more, and they come back each time you dial). Three of you sent drawings of Sparky 3000, and one of you built him out of a shoebox and two flashlights.</p>"
+    },
+    {
+      "head": "Around the Sandbox: New address, new computer",
+      "html": "<p>Where did we go? The founder finished high school, a 486 with a CD-ROM drive turned up as a graduation present, and Sandbox Software moved to Pittsburgh, where the founder is studying at the Art Institute of Pittsburgh. You can see it on the boxes. The best part of the new desk is a modem: our own BBS is online at 1-412-555-SAND, and every Sandbox game, hint and high-score list goes there first.</p>"
+    },
+    {
+      "head": "In the workshop: Can Game-Maker scroll a shooter?",
+      "html": "<p>Everybody on the BBS says Game-Maker can't do a real scrolling shoot-'em-up. We think it can. The workbench has a nano-fighter, a lot of graph paper covered in circuit traces, and a title: <b>Virus Blaster</b>. A hint: it's set somewhere very close to you right now.</p>"
+    },
+    {
+      "head": "Letters: \"Is the pocket telephone real?\"",
+      "html": "<p><i>\"Dex's science report is about a telephone that fits in your pocket. Is that a real invention?\"</i> - A reader, by mail</p><p><b>The Scoop replies:</b> Not yet. In our BBS poll it got two votes, and one of those was a joke. Ask us again in the year 2000.</p>"
     }
   ],
   "stickers": [
@@ -331,7 +347,7 @@
       "intro": "The trickiest chip in the Bitmore house, wire by wire. Two pink control lines throw four relays; only one combination gets current safely to the gate.",
       "panels": [
         {
-          "map": "computer.map",
+          "map": "attic.map",
           "x": 2,
           "y": 2,
           "w": 16,

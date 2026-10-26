@@ -12,12 +12,12 @@
 // algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
-import { uploadChecklist } from '../../widgets/uploadChecklist';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
 import { GameFiles } from '../../../project/files';
-import { mountPlayer, type PlayerHandle } from '../../../player/player';
+import type { PlayerHandle } from '../../../player/player';
+import type { AudioEngine } from '../../../audio/engine';
 import {
   ADVTYPE,
   ENDTYPE,
@@ -37,7 +37,6 @@ import { newMap, parseMap, serializeMap } from '../../../formats/map';
 import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
 import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';
-import { audio } from '../../widgets/mediaShared';
 import { linksPanel } from './sceneLinks';
 import { BoardCamera } from './boardCamera';
 import { boardInput } from './boardInput';
@@ -116,11 +115,14 @@ registerEditor(['gam'], (host, project, file) => {
   });
 
   // ---- songs ---------------------------------------------------------------------------
+  // the audio engine (widgets/mediaShared.ts) loads with the first song played
+  let audio: AudioEngine | undefined;
   async function toggleSong(file: string): Promise<void> {
     if (playing === file) {
-      audio.stopSong();
+      audio?.stopSong();
       playing = undefined;
     } else {
+      audio ??= (await import('../../widgets/mediaShared')).audio;
       await audio.resume();
       if (await audio.playSong(project.files.get(file))) playing = file;
       else {
@@ -587,7 +589,7 @@ registerEditor(['gam'], (host, project, file) => {
 
   /** Plays a copy of the game whose start link goes straight to this level. */
   function playFrom(scene: number): void {
-    audio.stopSong();
+    audio?.stopSong();
     playing = undefined;
     const copy = startingAt(game, scene);
     const files = new GameFiles(project.files.entries());
@@ -595,7 +597,10 @@ registerEditor(['gam'], (host, project, file) => {
     let player: PlayerHandle | undefined;
     void modal<void>(`Playing ${game.scenes[scene].desc || `level ${scene}`}`, (close) => {
       const host = h('div', { class: 'player-host rec-player' });
-      queueMicrotask(() => (player = mountPlayer(host, files, project.gam, { title: project.name, record: true, onExit: () => close(undefined) })));
+      // the player loads when first used; not if the dialog has closed by then
+      void import('../../../player/player').then(({ mountPlayer }) => {
+        if (host.isConnected) player = mountPlayer(host, files, project.gam, { title: project.name, record: true, onExit: () => close(undefined) });
+      });
       return h('div', { class: 'stack rec-dialog' }, host, h('p', { class: 'hint' }, 'Click the screen to start. Esc ends the level.'));
     }).then(() => player?.stop());
   }
@@ -646,7 +651,10 @@ registerEditor(['gam'], (host, project, file) => {
               { class: 'toolbar' },
               h(
                 'button',
-                { onclick: () => void uploadChecklist(project), title: 'The guide’s Appendix B, ticked where the level check can tell' },
+                {
+                  onclick: () => void import('../../widgets/uploadChecklist').then((m) => m.uploadChecklist(project)),
+                  title: 'The guide’s Appendix B, ticked where the level check can tell',
+                },
                 '☑ Before you upload…',
               ),
               h(
@@ -656,6 +664,36 @@ registerEditor(['gam'], (host, project, file) => {
                   title: 'Let a bot play the whole game and keep it as a walkthrough to watch or save as a video',
                 },
                 '🤖 Make a walkthrough…',
+              ),
+              h(
+                'button',
+                {
+                  onclick: async () => {
+                    const { openingDialog } = await import('../../tools/opening/openingDialog');
+                    if (!(await openingDialog(project, s, game.scenes))) return;
+                    save();
+                    draw();
+                    renderSide();
+                    renderPanel();
+                  },
+                  title:
+                    'Add, swap or remove the opening that plays before the title: a “Made with Game-Maker: Sandbox Edition” intro or the classic RSD one, and a “presents” card',
+                },
+                '🎬 Opening sting…',
+              ),
+              h(
+                'button',
+                {
+                  onclick: async () => {
+                    const { instructionCardDialog } = await import('../../tools/cards/cardDialog');
+                    if (!(await instructionCardDialog(project, s))) return;
+                    save();
+                    renderSide();
+                    renderPanel();
+                  },
+                  title: 'Make the instructions from the game’s own keys, with the goal, the dangers and the items, on a backdrop that always reads well',
+                },
+                '📝 Instruction card…',
               ),
             )
           : null,
@@ -668,6 +706,22 @@ registerEditor(['gam'], (host, project, file) => {
                     'button',
                     { class: 'primary', onclick: () => playFrom(selected), title: 'Play this level straight away, without the title and menu' },
                     '▶ Play from here',
+                  )
+                : null,
+              kind === 'adventure'
+                ? h(
+                    'button',
+                    {
+                      onclick: async () => {
+                        const { levelCardDialog } = await import('../../tools/cards/cardDialog');
+                        if (!(await levelCardDialog(project, game, selected))) return;
+                        save();
+                        renderSide();
+                        renderPanel();
+                      },
+                      title: 'Make the card shown as the level starts: its name, “level 3 of 10”, the goal and a hint (it shows again after every death)',
+                    },
+                    '🪧 Level card…',
                   )
                 : null,
               h(
@@ -778,6 +832,6 @@ registerEditor(['gam'], (host, project, file) => {
     toolsSize.disconnect();
     wide?.removeEventListener?.('change', onWide);
     if (raf) cancelAnimationFrame(raf);
-    audio.stopSong();
+    audio?.stopSong();
   };
 });

@@ -1,6 +1,7 @@
 // The printed manual of an original game (games/<id>/manual.json) and the paper that came
 // in its box (games/<id>/printables.json plus generated extras; see printables/README.md):
 // the stapled booklet with the box front as its cover, and a "What's in the box" tray.
+// A game with no box (openGameMaps) still gets its World Map and Level Maps.
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
@@ -11,8 +12,8 @@ import { openBox } from './printables/viewer';
 import { boxItems } from './printables/items';
 import { shotCache, type PrintContext } from './printables/kit';
 
-/** Opens the game's manual box; `onReady` hears when it has loaded and is about to show. */
-export async function openGameManual(listed: CatalogEntry, coverImage?: string, onReady?: () => void): Promise<void> {
+/** Opens the game's manual box (at the piece `start` names, else the manual); `onReady` hears when it has loaded and is about to show. */
+export async function openGameManual(listed: CatalogEntry, coverImage?: string, onReady?: () => void, start?: string): Promise<void> {
   const entry = await withDetails(listed); // a listed entry holds only the manual's title
   const manual = entry.original?.manual;
   if (!manual) return;
@@ -26,8 +27,23 @@ export async function openGameManual(listed: CatalogEntry, coverImage?: string, 
     const ctx: PrintContext = { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
     const items = boxItems(ctx);
     onReady?.();
-    await openBox(title, pages, items);
+    await openBox(title, pages, items, { start });
   } finally {
     host.remove();
   }
+}
+
+/** The pieces a game without a box can still have: the fold-out World Map and its Level Maps. */
+const MAP_PIECES = new Set(['worldmap', 'levelmaps']);
+
+/**
+ * A boxless game's maps (the Bard of Bizarre's song-games come on a disk, with no manual or
+ * box): the World Map and Level Maps, in the same viewer, with nothing else.
+ */
+export async function openGameMaps(listed: CatalogEntry, onReady?: () => void, start?: string): Promise<void> {
+  const entry = await withDetails(listed);
+  const ctx: PrintContext = { entry, family: [], printables: entry.original?.printables ?? {}, manual: { title: '', pages: [] }, shot: shotCache(entry) };
+  const items = boxItems(ctx).filter((i) => MAP_PIECES.has(i.id));
+  onReady?.();
+  await openBox(`${entry.title}: maps`, [], items, { trayHeading: 'Maps', start });
 }

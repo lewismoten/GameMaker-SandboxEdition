@@ -8,7 +8,7 @@ import type { SceneData } from '../sceneData';
 
 const open = (b: Block | undefined) => !!b && b.solid !== 15;
 
-export interface Maze {
+interface Maze {
   cells: number[];
   deadEnds: number[];
   junctions: number[];
@@ -79,7 +79,9 @@ export function mazes(d: SceneData): Finding[] {
       check: 'maze',
       severity: bare ? 'warning' : 'info',
       title: `A maze of ${m.cells.length} cells near ${at(m.cells[0])}: ${m.deadEnds.length} dead ends, ${m.paying} with a prize${bare ? ', and every passage looks the same' : ''}`,
-      detail: bare ? 'Give each wing its own floor, or put a landmark at the crossroads.' : 'Put something worth the walk in more of the dead ends.',
+      detail: bare
+        ? 'If players should find their way, give each wing its own floor, or put a landmark at the crossroads.'
+        : 'Something worth the walk in more of the dead ends rewards exploring.',
       where: { scene: d.scene, map: d.names.map, cell: m.junctions[0] ?? m.cells[0], cells: [...m.deadEnds] },
       fix: bare ? 'landmark' : undefined,
     });

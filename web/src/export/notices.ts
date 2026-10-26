@@ -6,7 +6,7 @@
 // text in the folder. A Bard of Bizarre game's notices begin with its non-commercial voice
 // clips (recordedAudio.ts).
 
-export type NoticePlatform = 'windows' | 'mac' | 'linux';
+type NoticePlatform = 'windows' | 'mac' | 'linux';
 
 const MIT = `Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`;
 
-const PROJECT = `Game-Maker: Sandbox Edition (the player program and the game's player page)
+/** This project's MIT License: the player programs' and every exported page's (pageSeo.ts, exportWebApp.ts LICENSE.txt). */
+export const PROJECT = `Game-Maker: Sandbox Edition (the player program and the game's player page)
 https://github.com/lewismoten/GameMaker-SandboxEdition
 MIT License
 

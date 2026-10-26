@@ -3,12 +3,12 @@
 // as loadscene's globals do (taken here in scene order, which is play order for most games).
 import { BACKBL, CHARBL, MONBL, newBlockSet, parseBlocks, type Block } from '../../formats/blocks';
 import { newCharacter, parseCharacter, type Character } from '../../formats/character';
-import type { Game } from '../../formats/game';
-import { newMap, parseMap, type GameMap } from '../../formats/map';
+import { NOSCENE, type Game } from '../../formats/game';
+import { MLEN, newMap, parseMap, type GameMap } from '../../formats/map';
 import { parseMonsters, type Monster } from '../../formats/monster';
 import { defaultPalette, parsePalette } from '../../formats/palette';
 import { parseSoundSet, type SoundSet } from '../../formats/sound';
-import { levelScenes } from './playtest';
+import { levelScenes, linksInto } from './sceneLinks';
 import type { FileSource } from './sim';
 
 export interface SceneData {
@@ -24,6 +24,10 @@ export interface SceneData {
   chr: Character;
   palette: Uint8Array;
   sounds?: SoundSet;
+  /** Cells the hero comes into the scene at (the To of every link that leads here). */
+  entries: number[];
+  /** Cells of the scene's own links (touching one leaves the scene). */
+  links: number[];
 }
 
 const SLOTS = ['pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd'] as const;
@@ -71,6 +75,8 @@ export function scenesOf(game: Game, files: FileSource): SceneData[] {
       chr: tryParse(names.chr, parseCharacter, newCharacter),
       palette: tryParse(names.pal, parsePalette, defaultPalette),
       sounds: tryParse(names.snd, parseSoundSet, () => undefined),
+      entries: linksInto(game, scene).map((l) => l.to.y * MLEN + l.to.x),
+      links: s.links.flatMap((l) => (l.toScene === NOSCENE ? [] : [l.from.y * MLEN + l.from.x])),
     });
   }
   return out;

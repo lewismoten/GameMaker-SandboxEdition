@@ -23,7 +23,7 @@ const KEYS: [string, string][] = [
 ];
 
 /** 5550148 → 555-0148; 18005550142 → 1-800-555-0142 (as far as it's been dialed). */
-export function formatNumber(d: string): string {
+function formatNumber(d: string): string {
   const local = (s: string) => (s.length > 3 ? `${s.slice(0, 3)}-${s.slice(3)}` : s);
   if (d.startsWith('911')) return d;
   if (d.startsWith('1')) return ['1', d.slice(1, 4), local(d.slice(4))].filter(Boolean).join('-');
@@ -49,9 +49,11 @@ export function openDialPad(press: (k: string) => void, hangUp: () => void): Dia
       {
         class: 'pp-key',
         onclick: () => press(k),
-        'aria-label': k === '*' ? 'star' : k === '#' ? 'pound' : k,
+        // what the key shows (2 ABC), so a voice user can say it; * and # by name
+        'aria-label': k === '*' ? 'star' : k === '#' ? 'pound' : `${k} ${letters}`.trim(),
       },
       h('b', null, k),
+      ' ', // between the digit and its letters, for the text (not drawn: the key is a flex column)
       h('small', null, letters || ' '),
     );
   const memory = SPEED_DIAL.map(([name, digits]) =>

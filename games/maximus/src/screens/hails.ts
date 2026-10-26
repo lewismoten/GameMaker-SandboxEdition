@@ -48,10 +48,11 @@ const key = (): Record<string, number> => ({
   Y: C('yellow')[4],
   o: C('orange')[5],
   x: C('red')[3],
+  q: C('red')[5],
 });
 
-// Doc Leo, from the photos: a grey felt fedora, wire glasses, white around the eyes, a red
-// nose and cheeks, a white mouth turned down sad, the hobo's ash beard, a purple shirt, a
+// Doc Leo, from the photos: a grey felt fedora, wire glasses, white around the eyes, his own
+// nose and cheeks sunburned, a white mouth turned down sad, the hobo's ash beard, a purple shirt, a
 // green tie and a navy corduroy jacket. 32 x 40, drawn three times bigger.
 const LEO = [
   '..........KKKKKKKKKKKK..........',
@@ -69,9 +70,9 @@ const LEO = [
   '.......SKswwwwwsswwwwwsKS.......',
   '.......SKgwwKwwggwwKwwgKS.......',
   '........KswwwwwsswwwwwsK........',
-  '........KrrsssRRRRsssrrK........',
-  '........KrrssRRwRRRssrrK........',
-  '........KassssRRRRssssaK........',
+  '........KrrsssqqqqsssrrK........',
+  '........KrrssqqwqqqssrrK........',
+  '........KassssqqqqssssaK........',
   '........KaasswwwwwwssaaK........',
   '........KaawwwKKKKwwwaaK........',
   '........KaawwKwwwwKwwaaK........',
@@ -252,7 +253,7 @@ export const HAILS: Hail[] = [
     from: 'INCOMING HAIL',
     title: 'DOC LEO',
     sub: 'PhD COMEDIC SCIENCE',
-    text: '"A hobo takes a job if one\'s offered. A tramp won\'t. Got a parcel, courier? My chicken and I will walk it over." He puts his red nose on and tips his hat.',
+    text: '"A hobo takes a job if one\'s offered. A tramp won\'t. Got a parcel, courier? My chicken and I will walk it over." He tips his hat, and the chicken squeaks.',
     art: drawLeo,
   },
 ];

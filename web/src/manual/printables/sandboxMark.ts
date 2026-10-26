@@ -91,7 +91,7 @@ const PARTS: Part[] = [
 const outlined = (p: Part) => !!p.stroke || (!!p.fill && !p.bare);
 
 /** The mark as SVG markup, `size` pixels (or any CSS length) square. */
-export function sandboxMarkSvg(size: number | string = 64, label = 'Sandbox Software'): string {
+function sandboxMarkSvg(size: number | string = 64, label = 'Sandbox Software'): string {
   const body = PARTS.map(
     (p) =>
       `<path d="${p.d}" fill="${p.fill ?? 'none'}"${outlined(p) ? ` stroke="${p.stroke ?? INK}" stroke-width="${p.width ?? 1.2}"` : ''} stroke-linejoin="round" stroke-linecap="round"/>`,

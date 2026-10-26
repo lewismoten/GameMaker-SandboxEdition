@@ -1,0 +1,191 @@
+<!doctype html>
+<!--
+  A working sample for docs/embed.md: a page on another site that sends a game to
+  Game-Maker: Sandbox Edition with window.open and postMessage. Pick a game's files (its
+  folder, its files, a .zip, a .gmpak or a one-page export), choose where it opens, and press
+  the button. Nothing is uploaded anywhere: the files go from this page straight to the
+  Game-Maker window in the same browser.
+
+  Try it locally: serve this folder (for example `python3 -m http.server 8000` here) and open
+  http://localhost:8000/send-game.html. Add ?site=<address of Game-Maker> to send to another copy
+  of the site (a local one, say).
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Send a game to Game-Maker</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --text: #1a1d29;
+        --muted: #4f566a;
+        --border: #9aa2b8;
+        --accent: #1f3fbf;
+        --accent-text: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #11131a;
+          --text: #e6e8ef;
+          --muted: #aab1c5;
+          --border: #4a5170;
+          --accent: #8ea4ff;
+          --accent-text: #0b0d14;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.5 system-ui, sans-serif;
+      }
+      main {
+        box-sizing: border-box;
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+      label,
+      fieldset {
+        display: block;
+        margin: 0 0 14px;
+      }
+      fieldset {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 12px;
+      }
+      fieldset label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 4px 16px 4px 0;
+        min-height: 24px;
+      }
+      input[type='url'] {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 36px;
+        padding: 4px 8px;
+        font: inherit;
+      }
+      input[type='radio'] {
+        width: 20px;
+        height: 20px;
+      }
+      button {
+        min-height: 40px;
+        padding: 6px 18px;
+        border: 0;
+        border-radius: 6px;
+        background: var(--accent);
+        color: var(--accent-text);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible {
+        outline: 3px solid #e08a00;
+        outline-offset: 2px;
+      }
+      .note {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      #log {
+        min-height: 1.5em;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Send a game to Game-Maker</h1>
+      <p>
+        This page shows how another site can open a game in Game-Maker: Sandbox Edition. It opens Game-Maker in a new window and hands it the files with
+        <code>postMessage</code>. Game-Maker asks you before it opens anything, and keeps the game only in this browser.
+      </p>
+      <form id="form">
+        <label>Game-Maker’s address <input id="site" type="url" required /></label>
+        <label>The game’s files <input id="files" type="file" multiple /></label>
+        <p class="note">Choose every file in the game’s folder, or one .zip, .gmpak or exported .html.</p>
+        <fieldset>
+          <legend>Open it in</legend>
+          <label><input type="radio" name="in" value="web" checked /> Today’s web</label>
+          <label><input type="radio" name="in" value="desk" /> The 1994 desk</label>
+          <label><input type="radio" name="in" value="dos" /> DOS Game-Maker</label>
+        </fieldset>
+        <fieldset>
+          <legend>To</legend>
+          <label><input type="radio" name="mode" value="play" checked /> Play it</label>
+          <label><input type="radio" name="mode" value="edit" /> Edit a copy</label>
+        </fieldset>
+        <button type="submit">Open in Game-Maker</button>
+      </form>
+      <p id="log" role="status" aria-live="polite"></p>
+    </main>
+    <script>
+      const DEFAULT_SITE = 'https://lewismoten.github.io/GameMaker-SandboxEdition/';
+      const form = document.getElementById('form');
+      const site = document.getElementById('site');
+      const picker = document.getElementById('files');
+      const log = document.getElementById('log');
+      site.value = new URLSearchParams(location.search).get('site') || DEFAULT_SITE;
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const picked = [...picker.files];
+        if (!picked.length) {
+          log.textContent = 'Choose the game’s files first.';
+          return;
+        }
+        const where = form.elements.in.value;
+        const mode = form.elements.mode.value;
+        const url = new URL(site.value);
+        url.searchParams.set('receive', '');
+        url.searchParams.set('in', where);
+        url.searchParams.set('mode', mode);
+        url.searchParams.set('from', location.origin); // Game-Maker then listens to this origin only
+        const gmOrigin = url.origin;
+
+        // Open the window first, in the click itself, or a popup blocker may stop it.
+        // No "noopener": Game-Maker needs window.opener to say it is ready.
+        const gm = window.open(url.href, 'gamemaker');
+        if (!gm) {
+          log.textContent = 'The browser blocked the new window. Allow pop-ups for this page and try again.';
+          return;
+        }
+        log.textContent = 'Waiting for Game-Maker…';
+
+        // Read the files while Game-Maker loads.
+        const payload = Promise.all(picked.map(async (f) => [f.webkitRelativePath || f.name, await f.arrayBuffer()]));
+        let sent = false;
+
+        async function onMessage(event) {
+          // Only the window opened above, at the origin it was opened at.
+          if (event.source !== gm || event.origin !== gmOrigin) return;
+          const msg = event.data || {};
+          if (msg.type === 'gm-ready' && !sent) {
+            sent = true;
+            const entries = await payload;
+            const files = Object.fromEntries(entries);
+            const name = picked.length === 1 ? picked[0].name.replace(/\.[^.]*$/, '') : undefined;
+            // The ArrayBuffers are transferred, not copied.
+            gm.postMessage({ type: 'gm-files', name, files, in: where, mode }, gmOrigin, entries.map(([, b]) => b));
+            log.textContent = 'Sent. Game-Maker is asking whether to open it.';
+          } else if (msg.type === 'gm-received') {
+            log.textContent = `Game-Maker opened “${msg.name}” (${msg.files} files).`;
+            removeEventListener('message', onMessage);
+          } else if (msg.type === 'gm-error') {
+            log.textContent = `Game-Maker did not open it: ${msg.message}`;
+            removeEventListener('message', onMessage);
+          }
+        }
+        addEventListener('message', onMessage);
+      });
+    </script>
+  </body>
+</html>

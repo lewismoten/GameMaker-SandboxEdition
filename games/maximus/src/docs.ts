@@ -247,6 +247,33 @@ export function about(b: Built): object {
         caption: "Courier's chart of the first sector: the gate, the station and the asteroid belt",
       },
     },
+    // the facing check leaves these alone (games/kit/levelCheck.ts): the walker robots, the
+    // saucers, the winged fighters, the face-balls and the orbs look the same from every side
+    sameEverySide: [
+      'heart.mon#17',
+      'heart.mon#54',
+      'land1.mon#24',
+      'land1.mon#54',
+      'land2.mon#24',
+      'land2.mon#54',
+      'mech1.mon#17',
+      'mech1.mon#54',
+      'mech2.mon#17',
+      'mech2.mon#54',
+      'sea1.mon#14',
+      'sea1.mon#54',
+      'sea2.mon#14',
+      'sea2.mon#54',
+      'space1.mon#11',
+      'space1.mon#32',
+      'space1.mon#54',
+      'space2.mon#11',
+      'space2.mon#32',
+      'space2.mon#54',
+    ],
+    // Level check findings kept on purpose (games/kit/levelCheck.ts): the foe that holds the
+    // hero while it hurts stays as it is
+    acceptedFindings: ['hurt-lock s9 Monster 10 holds the hero while it hurts'],
   };
 }
 
@@ -290,7 +317,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'Controls',
-        html: `<h2>Keys</h2><table><tr><td><kbd>Left</kbd> <kbd>Right</kbd></td><td>Walk, swim, drive or thrust</td></tr><tr><td><kbd>Up</kbd></td><td>Jet hop on foot (tap again in the air to climb), thrust in the pod and the bell, jump with Spring Shocks in the rover</td></tr><tr><td><kbd>Down</kbd></td><td>Curl into a ball (on foot), dive, brake</td></tr><tr><td><kbd>Space</kbd></td><td>Fire, in the direction you last moved</td></tr><tr><td><kbd>P</kbd> / <kbd>O</kbd></td><td>Pick up / drop a module</td></tr><tr><td><kbd>T</kbd></td><td>Hail (say hello)</td></tr><tr><td><kbd>F1</kbd></td><td>Help</td></tr><tr><td><kbd>F2</kbd></td><td>Status: score, credits, hit points, lives and your modules</td></tr><tr><td><kbd>F3</kbd> / <kbd>F4</kbd></td><td>Music / sound on and off</td></tr><tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>Save / load</td></tr><tr><td><kbd>Esc</kbd></td><td>Quit</td></tr></table><p>The number pad's <kbd>8</kbd> <kbd>4</kbd> <kbd>6</kbd> <kbd>2</kbd> work the same as the arrows. W/A/S/D are not a second set of arrows here: <kbd>W</kbd> fires the Flak Cannon. Dropping a module is <kbd>O</kbd>, beside <kbd>P</kbd> for pick up and well away from W/A/S/D, so a WASD habit can't throw one away.</p><h2>Module keys</h2><table>${MODULES.map((m) => `<tr><td><kbd>${m.key}</kbd></td><td>${m.name}</td></tr>`).join('')}</table>`,
+        html: `<h2>Keys</h2><table><tr><td><kbd>Left</kbd> <kbd>Right</kbd></td><td>Walk, swim, drive or thrust</td></tr><tr><td><kbd>Up</kbd></td><td>Jet hop on foot (tap again in the air to climb), thrust in the pod and the bell, jump with Spring Shocks in the rover</td></tr><tr><td><kbd>Down</kbd></td><td>Curl into a ball (on foot), dive, brake</td></tr><tr><td><kbd>Space</kbd></td><td>Fire, in the direction you last moved</td></tr><tr><td><kbd>G</kbd> / <kbd>B</kbd></td><td>Pick up / drop a module</td></tr><tr><td><kbd>T</kbd></td><td>Hail (say hello)</td></tr><tr><td><kbd>F1</kbd></td><td>Help</td></tr><tr><td><kbd>F2</kbd></td><td>Status: score, credits, hit points, lives and your modules</td></tr><tr><td><kbd>F3</kbd> / <kbd>F4</kbd></td><td>Music / sound on and off</td></tr><tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>Save / load</td></tr><tr><td><kbd>Esc</kbd></td><td>Quit</td></tr></table><p>The number pad's <kbd>8</kbd> <kbd>4</kbd> <kbd>6</kbd> <kbd>2</kbd> work the same as the arrows. W/A/S/D are not a second set of arrows here: <kbd>W</kbd> fires the Flak Cannon. Pick up with <kbd>G</kbd> and drop with <kbd>B</kbd>, under the left hand while the right steers and away from W/A/S/D, so a WASD habit can't throw a module away.</p><h2>Module keys</h2><table>${MODULES.map((m) => `<tr><td><kbd>${m.key}</kbd></td><td>${m.name}</td></tr>`).join('')}</table>`,
       },
       {
         head: 'Four Ways to Travel',
@@ -298,7 +325,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'The Galaxy and the Shards',
-        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Jump rings</h2><p>Every sector chart also holds a <b>jump ring</b>, walled in behind the next sector's crystal gates: carry those shards and it takes you straight on. The ring in The Deep Black leads to the Maelstrom itself.</p><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard, and its <b>long-range scan</b> shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>The Core</h2><p>All ten shards open the way to the Core. Fly the <b>Maelstrom</b>, a storm canyon so packed with rock that your weapons jam, to the <b>Citadel</b>, whose vault holds the teleporter to the <b>Heart</b>. There the Guardian's armor plates stand across the hall, and down their middle runs a seal of light that opens only to the Core's own spark. The <b>Heart Eye</b> circles in front of it and swoops when you come near. Crack it three times, with a plasma bolt, a shield orb or by ramming it (that hurts), and it bursts into the Core Light, which finds you and charges the seal: then walk through. Plasma cracks the plates; shouldering into them works too, for a few hit points.</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
+        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Jump rings</h2><p>Every sector chart also holds a <b>jump ring</b>, walled in behind the next sector's crystal gates: carry those shards and it takes you straight on. The ring in The Deep Black leads to the Maelstrom itself.</p><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing says where you are (SECTOR 2 OF 5, WORLD 9 OF 18), names the shard and which of the ten it is (SHARD 3 OF 10), reminds you that <kbd>F5</kbd> saves, and its <b>long-range scan</b> shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>The Core</h2><p>All ten shards open the way to the Core. Fly the <b>Maelstrom</b>, a storm canyon so packed with rock that your weapons jam, to the <b>Citadel</b>, whose vault holds the teleporter to the <b>Heart</b>. There the Guardian's armor plates stand across the hall, and down their middle runs a seal of light that opens only to the Core's own spark. The <b>Heart Eye</b> circles in front of it and swoops when you come near. Crack it three times, with a plasma bolt, a shield orb or by ramming it (that hurts), and it bursts into the Core Light, which finds you and charges the seal: then walk through. Plasma cracks the plates; shouldering into them works too, for a few hit points.</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
       },
       {
         head: 'Worlds and Vaults',
@@ -306,7 +333,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'Courier Modules',
-        html: `<h2>The ten modules</h2><p>Modules lie in planet vaults. Press <kbd>P</kbd> to pick one up; it stays in your inventory (<kbd>F2</kbd>) and works in every vehicle that can use it.</p><table><tr><th>Module</th><th>Key</th><th>Where</th></tr>${MODULES.map(
+        html: `<h2>The ten modules</h2><p>Modules lie in planet vaults. Press <kbd>G</kbd> to pick one up; it stays in your inventory (<kbd>F2</kbd>) and works in every vehicle that can use it.</p><table><tr><th>Module</th><th>Key</th><th>Where</th></tr>${MODULES.map(
           (m, i) => {
             const w = worlds.find((x) => x.world.module === i);
             return `<tr><td>${m.name}</td><td><kbd>${m.key}</kbd></td><td>${w ? `${w.world.name}, ${SECTORS[w.sector].name}` : ''}</td></tr>`;

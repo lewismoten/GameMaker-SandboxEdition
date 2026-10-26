@@ -290,9 +290,9 @@ export class Route {
       if (d.dead) return;
       if (!r.arrived) throw new Error(`${info.name}: the bot did not reach the vault (best ${r.best}, at ${d.pos.bx},${d.pos.by})`);
       if (info.module !== undefined) {
-        d.press(SCAN.p);
+        d.press(SCAN.g);
         for (let i = 0; i < 8; i++) await d.tick();
-        d.release(SCAN.p);
+        d.release(SCAN.g);
         for (let i = 0; i < 4; i++) await d.tick();
       }
       if (!this.has(info)) throw new Error(`${info.name}: the prize was not taken`);

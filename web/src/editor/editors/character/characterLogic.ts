@@ -91,14 +91,3 @@ export const firesMonster = (f: Frame): boolean => f.pic2 === MONBL;
 export function travel(seq: Sequence): { x: number; y: number } {
   return activeFrames(seq).reduce((a, f) => (firesMonster(f) ? a : { x: a.x + f.x, y: a.y + f.y }), { x: 0, y: 0 });
 }
-
-/**
- * The frames of `src` facing the other way: each move goes left instead of right (x negated)
- * and both blocks are mirrored left to right. Firing frames are copied as they are. A
- * "walk left" made from a "walk right" in one step.
- */
-export function mirroredFrames(src: Sequence): Frame[] {
-  return activeFrames(src).map((f) =>
-    firesMonster(f) ? copyFrame(f) : { ...copyFrame(f), x: -f.x, orient: (flipHOrient(bottomOrient(f)) << 4) | flipHOrient(topOrient(f)) },
-  );
-}

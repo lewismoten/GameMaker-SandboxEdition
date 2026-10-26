@@ -233,7 +233,7 @@ export const FX: Record<string, Pixels> = {
     undefined,
     2,
   ),
-  // A Klown Klub ticket.
+  // A Clown Club ticket.
   ticket1: S(['oooooooooooooo', 'ovvvvvvvvvvvvo', 'ov.oo....oo.vo', 'ovvvvvvvvvvvvo', 'ovGGGGGGGGGGvo', 'ovvvvvvvvvvvvo', 'oooooooooooooo'], undefined, 8),
   ticket2: S(
     ['.oooooooooooooo', '.ovvvvvvvvvvvvo', 'ov.oo....oo.vo.', 'ovvvvvvvvvvvvo.', 'ovGGGGGGGGGGvo.', 'ovvvvvvvvvvvvo.', 'oooooooooooooo.'],

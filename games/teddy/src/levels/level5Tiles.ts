@@ -1,14 +1,14 @@
-// Level 5's background blocks, the Klown Klub: the night sky and the midway, the big top's
+// Level 5's background blocks, the Clown Club: the night sky and the midway, the big top's
 // bleachers, ring and rigging, trampolines (gravity up) and a tightrope, the three-ticket
 // turnstile, backstage (mirrors, costume rack, trunks, the stage door), the trapdoor shaft
 // with the stage lift, the stage with its curtains and footlights, a spotlight cone cut into
-// 3 x 6 blocks, the Klub members over the tent canvas, and Doc Leo waiting for his nose.
+// 3 x 6 blocks, the Club members over the tent canvas, and Doc Leo waiting for his nose.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, micro, over, speckle } from '../art/draw';
 import { CTR } from '../ids';
 import { GRAV, Tiles } from './level';
 import { KLUB } from '../sprites/klubfolk';
-import { FULL, docLeo } from '../sprites/people';
+import { DRESSED, FULL, docLeo } from '../sprites/people';
 import { c, canvas, copy, cut, dirt, r, sky } from '../blocks/tiles';
 import { rootBeer } from '../sprites/toys';
 
@@ -312,7 +312,7 @@ export function klubTiles(): Tiles {
   cut(cone).forEach((row, y) => row.forEach((px, x) => t.air(`cone${x}${y}`, px)));
   t.air('stageBack', new Pixels(20, 20, c('purple', 0)));
 
-  // The klown klub members (two blocks tall, over the midway's tent canvas).
+  // The clown club members (two blocks tall, over the midway's tent canvas).
   for (const [name, fig] of Object.entries(KLUB)) {
     // each over the stripe of the column it stands in (honker and twirly on even columns)
     const base = name === 'launcher' ? 'backstage' : name === 'bubbles' ? 'tentOut' : 'tentOut2';
@@ -326,7 +326,7 @@ export function klubTiles(): Tiles {
     t.air(`${name}Bot`, bot, name === 'bubbles' ? { birthMon: 0, birthTime: 0 } : name === 'launcher' ? { birthMon: 0, birthTime: 0 } : {});
   }
   // Doc Leo on stage in the middle of the right spotlight, without his nose; happy once he has it (the way out).
-  const leo = docLeo({ hat: true, tie: true, shoes: true, chicken: true, nose: false });
+  const leo = docLeo(DRESSED);
   const leoHappy = docLeo(FULL, true);
   const half = (fig: Pixels, y: number) => {
     const p = copy(t.pic(y ? 'cone15' : 'cone14'));

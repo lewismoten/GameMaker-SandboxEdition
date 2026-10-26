@@ -1,0 +1,105 @@
+// The magazine's drawn pictures (types.ts ArtId): THE CHEZ (desk/props/chezArt.ts), the Sandbox
+// Software mark (printables/sandboxMark.ts), a bar code, a floppy disk, a stack of bare bulk
+// disks (blankDisk.ts), and the desk's
+// modem (modemArt.ts), speakers and disk box drawn as the desk draws them
+// (speakerArt.ts, diskBoxArt.ts) and the game pad as the desk's (desk/pc/gamePadArt.ts) for the hardware ads; the Sound Boaster card and its before
+// and after faces (soundCardArt.ts); the HOLE-Y MOLEY disk notcher and a disk before and after it
+// (notcherArt.ts); and a snapshot of the 1994 desk itself
+// (deskShot.ts), screenshots of today's web (webShots.ts) and Lewis's DOSBox screenshot
+// (dosShot.ts); and Joey's crayon drawing for the
+// Mail Bag (joeyDrawing.ts); and the Design Workshop's chain of boss states (bossChain.ts).
+import { h } from '../../editor/core/ui';
+import { drawChez } from '../../desk/props/chezArt';
+import { sandboxMarkEl } from '../printables/sandboxMark';
+import { fnv1a } from '../../seededRandom';
+import type { ArtId, WebShot } from './types';
+import { deskShotImg } from './deskShot';
+import { dosShotImg } from './dosShot';
+import { blankDiskArt } from './blankDisk';
+import { diskBoxArt } from './diskBoxArt';
+import { gamePadArt } from '../../desk/pc/gamePadArt';
+import { joeyDrawing } from './joeyDrawing';
+import { modemArt } from './modemArt';
+import { notcherArt } from './notcherArt';
+import { soundCardArt } from './soundCardArt';
+import { speakerArt } from './speakerArt';
+import { webShotImg } from './webShots';
+import { svgArt } from './svgArt';
+import { bossChainArt } from './bossChain';
+
+/** Doc Leo sits back from THE CHEZ's windshield, his face and hat whole in the door window. */
+const DRIVER_SEAT: [number, number] = [-3, 0.5];
+
+/** UPC-style bars from the issue's name, with the price box's digits under them. */
+function barcode(alt: string): Element {
+  let x = 4;
+  let bars = '';
+  for (let i = 0; i < 44; i++) {
+    const w = 1 + (fnv1a(`turbo${i}`) % 3);
+    if (i % 2 === 0) bars += `<rect x="${x}" y="2" width="${w}" height="${i < 2 || i > 41 || i === 22 ? 34 : 30}" fill="#000"/>`;
+    x += w;
+  }
+  return svgArt(
+    `0 0 ${x + 4} 44`,
+    `<rect width="100%" height="100%" fill="#fff"/>${bars}<text x="50%" y="42" font-size="6" font-family="monospace" text-anchor="middle">0 74470 19951 1</text>`,
+    alt,
+  );
+}
+
+/** A 3½" disk standing shutter down: the label up top, the write-protect and high-density holes in the top corners. */
+const DISK =
+  '<path d="M8 4H92a4 4 0 0 1 4 4V92a4 4 0 0 1-4 4H12L4 88V8a4 4 0 0 1 4-4Z" fill="#1d4f9c"/><rect x="26" y="66" width="48" height="30" fill="#c9ccd2"/><rect x="32" y="71" width="12" height="20" fill="#1d4f9c"/><rect x="16" y="8" width="68" height="42" fill="#fff6e0"/><rect x="16" y="14" width="68" height="4" fill="#d9381e"/><rect x="7" y="7" width="6" height="6" fill="#0b1a33"/><rect x="87" y="7" width="6" height="6" fill="#0b1a33"/>';
+const isWebShot = (id: ArtId): id is `web-${WebShot}` => id.startsWith('web-');
+
+/** A picture for the page; THE CHEZ is drawn on a canvas and handed over as an image (it prints). */
+export function artElement(id: ArtId, alt: string): Element {
+  if (isWebShot(id)) return webShotImg(id.slice(4) as WebShot, alt);
+  switch (id) {
+    case 'barcode':
+      return barcode(alt);
+    case 'sandbox': {
+      const el = sandboxMarkEl('mag-mark');
+      el.setAttribute('role', 'img');
+      el.setAttribute('aria-label', alt);
+      return el;
+    }
+    case 'disk':
+      return svgArt('0 0 100 100', DISK, alt);
+    case 'blankdisk':
+      return blankDiskArt(alt);
+    case 'modem':
+      return modemArt(alt);
+    case 'speakers':
+      return speakerArt(alt);
+    case 'diskbox':
+      return diskBoxArt(alt);
+    case 'desk':
+      return deskShotImg(alt);
+    case 'dos-carl':
+      return dosShotImg(alt);
+    case 'gamepad':
+      return gamePadArt({ shaft: true, alt });
+    case 'boaster':
+      return soundCardArt('card', alt);
+    case 'boaster-before':
+      return soundCardArt('before', alt);
+    case 'boaster-after':
+      return soundCardArt('after', alt);
+    case 'notcher':
+      return notcherArt('press', alt);
+    case 'notch-before':
+      return notcherArt('before', alt);
+    case 'notch-after':
+      return notcherArt('after', alt);
+    case 'joey':
+      return joeyDrawing(alt);
+    case 'bosschain':
+      return bossChainArt(alt);
+    case 'chez': {
+      const k = 8;
+      const c = h('canvas', { width: 44 * k, height: 24 * k });
+      drawChez(c.getContext('2d')!, 2 * k, 22 * k, k, DRIVER_SEAT);
+      return h('img', { src: c.toDataURL(), alt, class: 'mag-chez' });
+    }
+  }
+}

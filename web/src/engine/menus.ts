@@ -103,7 +103,7 @@ export async function gGet(m: Machine, x: number, y: number, col: number, bcol: 
  * channel steps by 2 per entry; every 32 entries a stopped channel may start rising
  * (random(2) only gives 0 or 1). A channel that reaches 63 falls back to 0 and waits there.
  */
-export function randCols(rand = Math.random): Uint8Array {
+function randCols(rand = Math.random): Uint8Array {
   const pal = new Uint8Array(PALETTE_SIZE);
   const add = 2;
   let [r, g, b] = [0, 0, 0];

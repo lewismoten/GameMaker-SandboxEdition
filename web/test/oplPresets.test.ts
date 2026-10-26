@@ -1,3 +1,5 @@
+// The OPL2 instrument presets: valid patches, read as the chip's registers, and a preview that
+// sounds.
 import { describe, expect, it } from 'vitest';
 import { OPL_PRESETS, PRESET_GROUPS, findPreset } from '../src/audio/oplPresets';
 import { patch, validPatch } from '../src/audio/oplPatch';

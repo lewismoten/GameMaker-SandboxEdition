@@ -1,12 +1,14 @@
 // The level check's block checks, from a scene's map and background blocks alone: hazard art
-// that doesn't fill its cell, opposite blocks touching, touches that score or heal every tick,
-// counters that can run out before the gate that reads them, timed blocks that make the hero
-// wait, and birth blocks that never rest.
+// that doesn't fill its cell, opposite blocks touching, touches that score or heal every tick
+// (where the hero can get to them, and not goals: a link on the cell ends the scene),
+// counters that can run out before the gate that reads them, timed blocks in the way that make
+// the hero wait, and birth blocks that never rest.
 import { BACKBL, BLEN, type Block } from '../../../formats/blocks';
 import { MLEN, MWID } from '../../../formats/map';
 import { at, type Finding } from '../findings';
 import { blockUse, topColors, type SceneData } from '../sceneData';
 import { mazes } from './mazeCheck';
+import { openFrom } from './sealed';
 
 /** A tick of the game clock, and the three seconds a timed wait may last. */
 export const TICK_S = 1 / 18.2;
@@ -20,7 +22,7 @@ const open = (b: Block) => b.solid !== 15;
  * How much of a hazard block's cell its art covers: the share of its pixels that aren't the
  * colors of the open blocks the map uses most (the sky behind it), and the empty rows on top.
  */
-export function hazardCoverage(b: Block, sky: Set<number>): { share: number; emptyTop: number } {
+function hazardCoverage(b: Block, sky: Set<number>): { share: number; emptyTop: number } {
   let art = 0;
   let emptyTop = 0;
   let seen = false;
@@ -107,6 +109,11 @@ export function opposites(d: SceneData): Finding[] {
 
 export function everyTickBlocks(d: SceneData): Finding[] {
   const use = blockUse(d.map);
+  const links = new Set(d.links);
+  // a scene the hero leaves the moment he comes in (he lands on a link) has nothing to farm
+  if (d.entries.length && d.entries.every((c) => links.has(c) || links.has(c - MLEN))) return [];
+  // only where the hero can get to, and not on a link: touching one ends the scene (a goal)
+  const reach = d.entries.length ? openFrom(d.map.blocks, d.bbl, d.entries) : undefined;
   const out: Finding[] = [];
   for (let n = 0; n < BACKBL; n++) {
     const b = d.bbl[n];
@@ -120,12 +127,14 @@ export function everyTickBlocks(d: SceneData): Finding[] {
             ? `${b.eamt} on counter ${b.effect}`
             : '';
     if (!gives) continue;
+    const cells = cellsOf(d, n).filter((c) => !links.has(c) && (!reach || reach[c]));
+    if (!cells.length) continue;
     out.push({
       check: 'every-tick',
       severity: 'warning',
       title: `Block ${n} gives ${gives} on every tick the hero touches it`,
       detail: 'It never turns into another block when touched, so standing on it farms it. Set “becomes when touched” to a plain block.',
-      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
+      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells },
     });
   }
   return out;
@@ -203,7 +212,9 @@ export function waits(d: SceneData): Finding[] {
     const cycle = blockCycle(d.bbl, n);
     if (!cycle.length || cycle[cycle.length - 1].n === cycle[0].n) continue;
     cycle.forEach((c) => done.add(c.n));
-    const shut = (c: { n: number }) => d.bbl[c.n].solid !== 0 || d.bbl[c.n].chHitPt < 0;
+    // shut: solid or hurting, unless a touch clears it (snow the hero shovels through)
+    const clears = (k: number) => d.bbl[k].touchBl !== k && d.bbl[k].touchBl < BACKBL && !d.bbl[d.bbl[k].touchBl].solid;
+    const shut = (c: { n: number }) => (d.bbl[c.n].solid !== 0 || d.bbl[c.n].chHitPt < 0) && !clears(c.n);
     if (!cycle.some(shut) || cycle.every(shut)) continue;
     // the longest run of shut steps, round the loop
     let best = 0;
@@ -213,6 +224,14 @@ export function waits(d: SceneData): Finding[] {
       best = Math.max(best, t);
     }
     if (best <= WAIT_TICKS) continue;
+    // only a wait when it stands in the way: with its cells shut for good, a link the hero
+    // could get to before is out of reach (a timed block off the way on is scenery)
+    if (d.entries.length && d.links.length) {
+      const shutCells = new Set(cycle.flatMap((c) => cellsOf(d, c.n)));
+      const open = openFrom(d.map.blocks, d.bbl, d.entries);
+      const without = openFrom(d.map.blocks, d.bbl, d.entries, shutCells);
+      if (!d.links.some((l) => open[l] && !without[l])) continue;
+    }
     out.push({
       check: 'waits',
       severity: best > WAIT_TICKS * 2 ? 'warning' : 'info',
@@ -225,7 +244,7 @@ export function waits(d: SceneData): Finding[] {
   return out;
 }
 
-export function births(d: SceneData): Finding[] {
+function births(d: SceneData): Finding[] {
   const use = blockUse(d.map);
   const out: Finding[] = [];
   for (let n = 0; n < BACKBL; n++) {
@@ -238,7 +257,7 @@ export function births(d: SceneData): Finding[] {
       check: 'births',
       severity: b.birthTime < 18 ? 'warning' : 'info',
       title: `Block ${n} gives birth to monster ${b.birthMon} every ${(b.birthTime * TICK_S).toFixed(1)} s`,
-      detail: 'It keeps on while the hero is near. Give it a longer time, or let the block animate to a quiet one.',
+      detail: 'It keeps on while the hero is near. If a flood isn’t the idea, give it a longer time, or let the block animate to a quiet one.',
       where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
     });
   }
@@ -246,7 +265,7 @@ export function births(d: SceneData): Finding[] {
 }
 
 /** Hazard blocks whose main color is the main color of ground the hero stands on safely. */
-export function telegraph(d: SceneData): Finding[] {
+function telegraph(d: SceneData): Finding[] {
   const use = blockUse(d.map);
   const safe = new Map<number, number>();
   for (let n = 0; n < BACKBL; n++) {
@@ -264,7 +283,7 @@ export function telegraph(d: SceneData): Finding[] {
       check: 'telegraph',
       severity: 'info',
       title: `Hazard block ${n} is mostly the same color as safe block ${like}`,
-      detail: 'Give hurting blocks a color of their own, the same in every level.',
+      detail: 'Unless it is a trick on purpose, give hurting blocks a color of their own, the same in every level.',
       where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
     });
   }
@@ -278,4 +297,48 @@ export function counterSources(scenes: SceneData[]): Set<number> {
   return out;
 }
 
-export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes, telegraph];
+/** The share of two blocks' pixels that are the same color in the same place (0 to 1). */
+export function likeness(a: Block, b: Block): number {
+  let same = 0;
+  for (let i = 0; i < BLEN * BLEN; i++) if (a.pixels[i] === b.pixels[i]) same++;
+  return same / (BLEN * BLEN);
+}
+
+/** Blocks this alike (the share of their pixels the same) look the same at a glance. */
+export const LOOK_ALIKE = 0.9;
+/** Blocks used this often on a map are part of its look, not a one-off. */
+const COMMON = 4;
+
+/**
+ * Footing that looks like something else: an open block (the hero passes through it, no pull of
+ * its own) drawn nearly like a solid one on the same map. Players stand on what looks like floor
+ * and walk round what looks like wall; a trick floor or a secret door is fair when the game hints.
+ */
+function footing(d: SceneData): Finding[] {
+  const use = blockUse(d.map);
+  const kinds = (want: (b: Block) => boolean) =>
+    [...Array(BACKBL).keys()].filter((n) => use[n] >= COMMON && want(d.bbl[n]) && !hurts(d.bbl[n]) && d.bbl[n].pixels.some((p) => p !== 255));
+  const solid = kinds((b) => b.solid === 15);
+  const passable = kinds((b) => b.solid === 0 && !b.obj && !b.scorePts && b.chHitPt <= 0 && b.grav === d.bbl[0].grav);
+  const out: Finding[] = [];
+  for (const n of passable) {
+    let best = -1;
+    let score = 0;
+    for (const m of solid) {
+      const l = likeness(d.bbl[n], d.bbl[m]);
+      if (l > score) [best, score] = [m, l];
+    }
+    if (best < 0 || score < LOOK_ALIKE) continue;
+    out.push({
+      check: 'footing',
+      severity: 'info',
+      title: `Open block ${n} looks like solid block ${best} (${Math.round(score * 100)}% of its pixels the same)`,
+      detail:
+        'The hero passes through one and stands on the other, but they look alike. Unless it is a fair secret the game hints at, draw what you can walk through differently from what you can stand on: darker, without an edge, or behind a different color.',
+      where: { scene: d.scene, map: d.names.map, block: { file: d.names.bbl ?? '', n }, cells: cellsOf(d, n) },
+    });
+  }
+  return out;
+}
+
+export const blockChecks = [hazardArt, opposites, everyTickBlocks, waits, births, mazes, telegraph, footing];

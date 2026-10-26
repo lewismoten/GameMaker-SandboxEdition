@@ -202,7 +202,7 @@ export abstract class ComputerDrives {
             file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
             textFile(
               'PHONE.LST',
-              'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-0177  14400 N81  Major BBS, 8 lines\nMRS. NOVAK NEXT DOOR         1-412-555-0156  45.45 TDD  TTY (Baudot)\n',
+              'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-SOFA  14400 N81  Major BBS, 8 lines\nMRS. NOVAK NEXT DOOR         1-412-555-0156  45.45 TDD  TTY (Baudot)\n',
             ),
             textFile('TTYINFO.TXT', TTY_INFO.join('\n') + '\n'),
           ]),

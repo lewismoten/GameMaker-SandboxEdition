@@ -1,6 +1,7 @@
 // Credits, "The original Game-Maker": RSD's own title screen, the Stone family, Andy Stone's
 // 2014 source release and 2011 look back, every distinct RSD intro screen the CD's games show
-// (rsdIntros.ts), and who the source credits for each part (rsdParts.ts).
+// (rsdIntros.ts), who the source credits for each part (rsdParts.ts), and the 1992 ad whose look
+// the magazine's Game-Maker ad borrows.
 import { h } from '../editor/core/ui';
 import { section, ext, repoFile, card, thumb, more } from './section';
 import { RSD_INTROS } from './rsdIntros';
@@ -52,6 +53,13 @@ export function originalSection(): HTMLElement {
           '.',
         ),
       ),
+    ),
+    h(
+      'p',
+      null,
+      'TURBO BUTTON’s Game-Maker ad takes its look from the full-page ad RSD and KD Software ran in ',
+      ext('https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up', 'Computer Gaming World #99 (October 1992), page 55'),
+      ': the hot pink page, the big serif headlines, the screenshot grid and the order coupon. Its words and pictures are new.',
     ),
     h('h3', { id: 'credits-rsd-intros' }, 'RSD’s intro screens'),
     h('p', null, 'Not every game on the CD opens with the same RSD screen. These are all the different ones, each shown once however many games use it.'),

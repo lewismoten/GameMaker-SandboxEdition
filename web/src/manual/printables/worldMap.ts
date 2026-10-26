@@ -1,28 +1,37 @@
-// The fold-out World Map in every Sandbox Software box: every scene of the game as a card
-// (its number and name and a picture of where you arrive) and an arrow for every way from
-// one scene to another, laid out by the Game Integrator's Auto-arrange from the game's own
-// .GAM. It's drawn as one SVG in tenths of an inch, so it prints at full size: a big game
-// prints as an overview page plus pages to trim and tape together (A1, B1, ... like a road
-// atlas), each the same SVG looking at its own part. On screen it comes folded and opens
-// into a map you can zoom and drag around.
+// The fold-out World Map in every Sandbox Software box (and with a Bard of Bizarre game's maps): every place of the game as a
+// round picture of where you arrive (its number and name) and a way for every link from one
+// place to another, drawn in a theme that suits the game (worldMapThemes.ts: a star chart, a
+// floor plan, a street map, a circuit board...). Places go where their paths are easy to follow
+// (worldMapPlan.ts: few crossings, no path under a place, regions kept together). A scene that
+// is only a conversation or a passage is folded into its place and listed on its land
+// (worldMapGroups.ts); the "Every scene" view shows every scene. It's drawn as one SVG in tenths
+// of an inch, so it prints at full size: a big game prints as an overview page plus pages to
+// trim and tape together (A1, B1, ... like a road atlas), each the same SVG looking at its own
+// part. On screen it comes folded and opens into a map you can zoom and drag around.
+import './paper.css'; // first: this piece's own styles build on the paper's
 import './worldMap.css';
 import { h } from '../../editor/core/ui';
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
 import { ENDTYPE, NOSCENE, STARTTYPE, parseGame, type Game, type Point } from '../../formats/game';
-import { MLEN, MWID } from '../../formats/map';
 import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
-import { autoArrange } from '../../editor/editors/integrator/integratorLayout';
-import { graphOf } from '../../editor/editors/integrator/layoutCells';
+import { arrival, graphOf } from '../../editor/editors/integrator/layoutCells';
 import { graphicShot, levelShot } from '../../editor/editors/integrator/integratorArt';
-import { hashString, sheet, type PrintContext, type Sheet } from './kit';
-import { CELL, bounds, cardRects, folds, tiles, type Rect } from './worldMapLayout';
-import { INK, PAPER, blobPath, lookOf, mix, regions, scatter, trailBetween, type Look, type Terrain } from './worldMapTerrain';
-import { SERIF, TERRAIN_NAMES, agedPaper, cartouche, compassRose, el, freshCopy, glyph, scaleBar } from './worldMapArt';
+import { sheet, type PrintContext, type Sheet } from './kit';
+import { fnv1a } from '../../seededRandom';
+import { folds, tiles, type Rect } from './worldMapLayout';
+import { groupScenes, isBlackPalette, placeLabels, placesGame } from './worldMapGroups';
+import type { WorldMapHints } from './types';
+import { INK, PAPER, lookOf, mix, type Look } from './worldMapTerrain';
+import { SERIF, agedPaper, cartouche, compassRose, el, freshCopy, scaleBar } from './worldMapArt';
+import { NAME_LINE, ribbonWidth } from './worldMapMeasure';
+import { STEP, planWorld } from './worldMapPlan';
+import { regionsOf } from './worldMapRegions';
+import { SPACE, ground } from './worldMapGround';
+import { ways, waySample } from './worldMapWays';
+import { themeOf, type Theme, type ThemeId } from './worldMapThemes';
 import { panZoom } from './panZoom';
 
 const NS = 'http://www.w3.org/2000/svg';
-const SEA = '#9fc0c4';
-const RIPPLE = mix('#3f6f80', PAPER, 0.25);
 
 /** Margin, header and footer heights, in map units (tenths of an inch). */
 const M = 10;
@@ -30,19 +39,25 @@ const HEAD = 22;
 const FOOT = 17;
 /** One printed page's part of the map, and how much neighbors overlap (landscape letter). */
 const PAGE = { w: 105, h: 80, overlap: 3 };
-/** A place's round picture, and the land round it. */
+/** A place's round picture. */
 const R = 5.2;
-const LAND = { rx: 13.5, ry: 11.6 };
 const KIND = { start: '#c58a00', end: '#a8281f', scene: '#2f5a3a' };
+/** How many lines of names a place lists at most, and about how many letters fit on one. */
+const MOST_LINES = 5;
+const LINE_CHARS = 42;
 
-/** Where the hero arrives in a scene: the "to" block of the first link into it (as the integrator shows it). */
-function arrival(game: Game, i: number): Point {
-  for (const s of game.scenes) {
-    if (s.gametype === NOSCENE) continue;
-    const l = s.links.find((x) => x.toScene === i);
-    if (l) return l.to;
+/** Names joined with dots into lines of about LINE_CHARS letters; what doesn't fit is counted. */
+function wrapNames(names: string[]): string[] {
+  const lines: string[] = [];
+  let k = 0;
+  for (; k < names.length; k++) {
+    const last = lines.length - 1;
+    if (last >= 0 && lines[last].length + 3 + names[k].length <= LINE_CHARS) lines[last] += ` · ${names[k]}`;
+    else if (lines.length < MOST_LINES) lines.push(names[k]);
+    else break;
   }
-  return { x: MLEN >> 1, y: MWID >> 1 };
+  if (k < names.length) lines[lines.length - 1] += ` · and ${names.length - k} more`;
+  return lines;
 }
 
 /** The game and just the files its cards need (maps, blocks, palettes, title and end screens). */
@@ -98,7 +113,6 @@ interface World {
   W: number;
   H: number;
   svg: SVGSVGElement;
-  scenes: number;
 }
 
 /** The colors of a picture, 0xRRGGBB -> how many of every 4th pixel are that color. */
@@ -116,90 +130,91 @@ function colorsOf(canvas: HTMLCanvasElement | undefined): Map<number, number> {
 interface Place {
   i: number;
   c: Point;
+  box: Rect;
   kind: 'start' | 'end' | 'scene';
   look: Look;
   pic?: HTMLCanvasElement;
+  /** The names it lists under its ribbon, a line each. */
+  names: string[];
 }
 
-/** The whole map as an SVG, `W` x `H` tenths of an inch. */
-function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
+/** What a theme adds round a place's picture: a world's orbit, a chip's package on a board. */
+function frameExtras(theme: ThemeId, x: number, y: number): SVGElement[] {
+  if (theme === 'space')
+    return [el('circle', { cx: x, cy: y, r: R + 2.1, fill: 'none', stroke: '#e9e2ff', 'stroke-width': 0.18, 'stroke-dasharray': '0.5 0.5', opacity: 0.8 })];
+  if (theme !== 'board') return [];
+  const s = R + 1.6;
+  const out = [el('rect', { x: x - s, y: y - s, width: s * 2, height: s * 2, rx: 0.6, fill: '#1f2623', stroke: '#0e1411', 'stroke-width': 0.2 })];
+  for (let k = 0; k < 5; k++) {
+    const o = -s + 1.5 + (k * (2 * s - 3)) / 4;
+    for (const [px, py, w, h] of [
+      [x - s - 0.8, y + o - 0.3, 0.8, 0.6],
+      [x + s, y + o - 0.3, 0.8, 0.6],
+      [x + o - 0.3, y - s - 0.8, 0.6, 0.8],
+    ])
+      out.push(el('rect', { x: +px.toFixed(2), y: +py.toFixed(2), width: w, height: h, fill: '#d8a84e' }));
+  }
+  return out;
+}
+
+const moved = (p: Point, d: Point): Point => ({ x: p.x + d.x, y: p.y + d.y });
+
+/**
+ * The whole map as an SVG, `W` x `H` tenths of an inch: the player's places, or with `every`
+ * every scene as the Game Integrator shows them.
+ */
+function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: WorldMapHints | undefined, every: boolean): World {
+  const black = (i: number) => isBlackPalette(files.get(scenes.scenes[i].files[0]?.toLowerCase() ?? ''));
+  const grouping = every ? undefined : groupScenes(scenes, graphOf(scenes), black, hints);
+  const game = grouping ? placesGame(scenes, grouping) : scenes;
   const graph = graphOf(game);
-  const rects = cardRects(autoArrange(game), { x: M, y: HEAD + 4 });
-  const b = bounds(rects.values());
-  const W = Math.max(PAGE.w, b.x + b.w + M);
-  const H = Math.max(PAGE.h, b.y + b.h + FOOT + M - 4);
-  // a narrow map's places stand in the middle
-  const dx = (W - (b.x + b.w + M)) / 2;
-  for (const r of rects.values()) r.x += dx;
+  const theme = themeOf(entry);
+  const names = new Map<number, string[]>();
+  if (grouping) for (const i of new Set([...grouping.folded.keys(), ...grouping.labels.keys()])) names.set(i, wrapNames(placeLabels(scenes, grouping, i)));
+  const kindOf = (i: number) => (game.scenes[i].gametype === STARTTYPE ? 'start' : game.scenes[i].gametype === ENDTYPE ? 'end' : 'scene');
+  const label = (i: number) => fit(game.scenes[i].desc || { start: 'Title', end: 'The end', scene: 'Untitled' }[kindOf(i)], 24);
+  const plan = planWorld(game, label, (i) => names.get(i)?.length ?? 0);
+  // the plan (places and paths) between the title and the key, in the middle of a narrow sheet
+  const b = plan.bounds;
+  const W = Math.max(PAGE.w, b.w + 2 * (M + 2));
+  const H = Math.max(PAGE.h, b.h + HEAD + 6 + FOOT + M);
+  const d = { x: (W - b.w) / 2 - b.x, y: HEAD + 6 - b.y };
   const accent = entry.original?.box?.accent ?? '#c8962a';
   const navy = entry.original?.box?.background ?? '#22304a';
-  const seed = hashString(entry.id);
+  const seed = fnv1a(entry.id);
 
   // each place: where it is, its kind, its picture and the look of its country
   const places = new Map<number, Place>();
-  for (const [i, r] of rects) {
+  for (const [i, at] of plan.at) {
     const s = game.scenes[i];
-    const kind = s.gametype === STARTTYPE ? 'start' : s.gametype === ENDTYPE ? 'end' : 'scene';
-    const pic = kind === 'scene' ? levelShot(files, s, arrival(game, i), 7, 7) : (graphicShot(files, s.files[0]) ?? graphicShot(files, s.files[2]));
-    places.set(i, { i, c: { x: r.x + r.w / 2, y: r.y + r.h / 2 - 1.2 }, kind, look: lookOf(colorsOf(pic)), pic });
+    const kind = kindOf(i);
+    const pic = kind === 'scene' ? levelShot(files, s, arrival(scenes, i), 7, 7) : (graphicShot(files, s.files[0]) ?? graphicShot(files, s.files[2]));
+    const box = plan.boxes.get(i)!;
+    places.set(i, { i, c: moved(at, d), box: { ...box, x: box.x + d.x, y: box.y + d.y }, kind, look: lookOf(colorsOf(pic)), pic, names: names.get(i) ?? [] });
   }
-  const svg = el('svg', { xmlns: NS, viewBox: `0 0 ${W} ${H}`, class: 'wm-svg', 'font-family': SERIF }) as SVGSVGElement;
+  const paths = plan.paths.map((p) => ({ ...p, line: p.line.map((q) => moved(q, d)) }));
+  const all = [...places.values()];
+  const regions = regionsOf(game, graph).filter((r) => r.ids.length >= 2 && r.ids.every((i) => places.has(i)));
+  const land = ground({ theme: theme.id, W, H, seed, places: all, regions: regions.map((r) => r.ids), lines: paths.map((p) => p.line) });
+
+  const svg = el('svg', { xmlns: NS, viewBox: `0 0 ${W} ${H}`, class: `wm-svg wm-theme-${theme.id}`, 'font-family': SERIF }) as SVGSVGElement;
   const paper = agedPaper(W, H, seed, accent);
   const border = paper.pop()!;
-  svg.append(...paper, el('rect', { x: 2, y: 2, width: W - 4, height: H - 4, fill: SEA, opacity: 0.5 }));
+  svg.append(...paper, ...land.under);
 
-  // the trails, worked out first: the land bridges and the trees keep to them
-  const trails = graph.pairs.flatMap(([a, c]) => {
-    const pa = places.get(a);
-    const pc = places.get(c);
-    return pa && pc
-      ? [{ a, c, t: trailBetween(pa.c, pc.c, R + 0.5, seed ^ (a * 977 + c * 131)), near: Math.hypot(pa.c.x - pc.c.x, pa.c.y - pc.c.y) < CELL.w * 1.6 }]
-      : [];
+  // regions: lettered across the top of their places
+  const lettering = el('g', {
+    class: 'wm-regions',
+    'font-family': land.letter.family ?? SERIF,
+    'font-style': land.letter.family ? 'normal' : 'italic',
+    'text-anchor': 'middle',
   });
-
-  // the land: ripples off the coast, the coast, then each country's color over it
-  const all = [...places.values()];
-  const blob = (p: Place, grow = 0) => blobPath(p.c.x, p.c.y + 1.2, LAND.rx + grow, LAND.ry + grow, seed + p.i * 7919);
-  const ripples = el('g', { class: 'wm-ripples', fill: 'none', stroke: RIPPLE, 'stroke-width': 0.14 });
-  for (const p of all) ripples.append(el('path', { d: blob(p, 1.3) }), el('path', { d: blob(p, 2.6), 'stroke-dasharray': '1.4 0.8' }));
-  const coast = el('g', { class: 'wm-coast', fill: 'none', stroke: INK, 'stroke-width': 0.7, 'stroke-linecap': 'round' });
-  const land = el('g', { class: 'wm-land' });
-  for (const p of all) coast.append(el('path', { d: blob(p) }));
-  for (const t of trails) if (t.near) coast.append(el('path', { d: t.t.d, 'stroke-width': 7.7 }));
-  for (const t of trails) if (t.near) land.append(el('path', { d: t.t.d, fill: 'none', stroke: places.get(t.a)!.look.fill, 'stroke-width': 7 }));
-  for (const p of all) land.append(el('path', { d: blob(p), fill: p.look.fill }));
-  svg.append(ripples, coast, land);
-
-  // each country's little drawings, off the places and the trails
-  const avoid = [...all.map((p) => ({ p: { x: p.c.x, y: p.c.y + 1.8 }, r: R + 3 })), ...trails.flatMap((t) => t.t.samples.map((p) => ({ p, r: 1.8 })))];
-  const marks = el('g', { class: 'wm-terrain' });
-  const used = new Set<Terrain>();
-  for (const p of all) {
-    const spots = scatter(
-      { x: p.c.x, y: p.c.y + 1.2 },
-      LAND.rx * 0.95,
-      LAND.ry * 0.95,
-      7,
-      seed + p.i * 31,
-      avoid,
-      all.filter((o) => o !== p).map((o) => ({ x: o.c.x, y: o.c.y + 1.2 })),
-    );
-    spots.forEach((s, k) => marks.append(glyph(p.look.terrain, s.x, s.y, p.look.ink, k)));
-    if (spots.length) used.add(p.look.terrain);
-  }
-  svg.append(marks);
-
-  // regions: scenes on one map, linked to each other, lettered across the top of their land
-  const lettering = el('g', { class: 'wm-regions', 'font-family': SERIF, 'font-style': 'italic', 'text-anchor': 'middle' });
-  const maps = game.scenes.map((s, i) => (places.has(i) && s.gametype !== STARTTYPE && s.gametype !== ENDTYPE ? s.files[1]?.toLowerCase() : undefined));
-  for (const group of regions(maps, graph.pairs)) {
-    if (group.length < 2) continue;
-    const ps = group.map((i) => places.get(i)!);
+  for (const r of regions) {
+    const ps = r.ids.map((i) => places.get(i)!);
     const x = ps.reduce((n, p) => n + p.c.x, 0) / ps.length;
-    const top = Math.min(...ps.map((p) => p.c.y));
-    const name = fit(game.scenes[group[0]].desc || 'Region', 26).toUpperCase();
-    // as wide as the region, never over its neighbors' lettering
-    const span = Math.max(...ps.map((p) => p.c.x)) - Math.min(...ps.map((p) => p.c.x)) + CELL.w * 0.9;
+    const top = Math.min(...ps.map((p) => p.box.y));
+    const name = fit(r.name || 'Region', 26).toUpperCase();
+    const span = Math.max(...ps.map((p) => p.box.x + p.box.w)) - Math.min(...ps.map((p) => p.box.x));
     const size = 2;
     const spacing = size * 0.3;
     const natural = name.length * (size * 0.72 + spacing);
@@ -208,61 +223,42 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
         'text',
         {
           x,
-          y: top - R - 1.3,
+          y: top - 1.4,
           'font-size': size,
           'letter-spacing': spacing,
-          fill: ps[0].look.ink,
-          stroke: PAPER,
+          fill: land.letter.fill,
+          stroke: land.letter.stroke,
           'stroke-width': 0.5,
           'paint-order': 'stroke',
-          opacity: 0.9,
           ...(natural > span ? { textLength: span, lengthAdjust: 'spacingAndGlyphs' } : {}),
         },
         name,
       ),
     );
   }
-  svg.append(lettering);
 
-  // the trails: a pale road under a line of dots, dashes and an arrowhead where only one way goes
-  const roads = el('g', { class: 'wm-trails', fill: 'none', 'stroke-linecap': 'round' });
-  for (const { a, c, t } of trails) {
-    const fwd = graph.out.get(a)?.includes(c);
-    const back = graph.out.get(c)?.includes(a);
-    roads.append(el('path', { d: t.d, stroke: '#fbf5e4', 'stroke-width': 1.1, opacity: 0.75 }));
-    roads.append(
-      el(
-        'path',
-        fwd && back
-          ? { d: t.d, stroke: INK, 'stroke-width': 0.5, 'stroke-dasharray': '0.05 0.9' }
-          : { d: t.d, stroke: INK, 'stroke-width': 0.3, 'stroke-dasharray': '1.1 0.6' },
-      ),
-    );
-    if (!(fwd && back)) {
-      const deg = (t.angle * 180) / Math.PI + (fwd ? 0 : 180);
-      roads.append(
-        el('path', {
-          d: 'M-0.9,-0.8 L0.7,0 L-0.9,0.8 z',
-          fill: INK,
-          stroke: 'none',
-          transform: `translate(${t.mid.x.toFixed(2)},${t.mid.y.toFixed(2)}) rotate(${deg.toFixed(1)})`,
-        }),
-      );
-    }
-  }
-  svg.append(roads);
+  // the ways: dotted (or plain) both ways, dashed with an arrowhead where only one way goes
+  const lanes = ways(
+    theme.id,
+    paths.map(({ a, b: c, line }) => {
+      const fwd = !!graph.out.get(a)?.includes(c);
+      const back = !!graph.out.get(c)?.includes(a);
+      return { line: fwd || !back ? line : [...line].reverse(), both: fwd && back };
+    }),
+  );
+  svg.append(lanes, ...land.over, lettering);
 
   // the places: a round picture of where you come in, framed like a map's inset, with a ribbon
   const defs = el('defs', {});
   svg.append(defs);
   for (const p of all) {
-    const s = game.scenes[p.i];
     const { x, y } = p.c;
     const color = KIND[p.kind];
     const id = `wm-clip-${p.i}`;
     defs.append(el('clipPath', { id }, el('circle', { cx: x, cy: y, r: R })));
     const g = el('g', { class: `wm-place wm-${p.kind}` });
     g.append(
+      ...frameExtras(theme.id, x, y),
       el('circle', { cx: x + 0.45, cy: y + 0.55, r: R + 0.7, fill: '#00000033' }),
       el('circle', { cx: x, cy: y, r: R + 0.7, fill: '#fbf6e8', stroke: INK, 'stroke-width': 0.25 }),
     );
@@ -301,8 +297,8 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
       ),
     );
     // the ribbon with its name, the ways on below it
-    const name = fit(s.desc || (p.kind === 'start' ? 'Title' : p.kind === 'end' ? 'The end' : 'Untitled'), 24);
-    const rw = Math.max(11, Math.min(19, name.length * 0.82 + 3));
+    const name = label(p.i);
+    const rw = ribbonWidth(name);
     const ry = y + R + 0.5;
     g.append(
       el('path', {
@@ -335,14 +331,37 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
         fit(foot, 34),
       ),
     );
+    // who and what else is here: the scenes folded into it
+    p.names.forEach((line, k) =>
+      g.append(
+        el(
+          'text',
+          {
+            class: 'wm-here',
+            x,
+            y: y + R + 0.5 + 4.1 + NAME_LINE * (k + 1),
+            'font-size': 1.1,
+            fill: INK,
+            'text-anchor': 'middle',
+            stroke: PAPER,
+            'stroke-width': 0.4,
+            'paint-order': 'stroke',
+            ...(line.length * 1.1 * 0.48 > 21.5 ? { textLength: 21.5, lengthAdjust: 'spacingAndGlyphs' } : {}),
+          },
+          line,
+        ),
+      ),
+    );
     svg.append(g);
   }
 
   // the title cartouche, the key, the scale and the compass
+  const count = every ? `${graph.nodes.length} scenes` : `${all.filter((p) => p.kind === 'scene').length} ${theme.places}`;
   svg.append(
-    cartouche(W / 2, 3.5, Math.min(W - 2 * M, 78), entry.title, `A Map of the Known World · ${graph.nodes.length} scenes · Sandbox Software`, navy, accent),
+    cartouche(W / 2, 3.5, Math.min(W - 2 * M, 78), entry.title, `${theme.subtitle} · ${count} · ${entry.company ?? 'Sandbox Software'}`, navy, accent),
   );
-  svg.append(legend(M - 6, H - FOOT - 3, [...used], accent));
+  svg.append(legend(M - 6, H - FOOT - 3, theme, land.key, accent, names.size > 0));
+  if (grouping?.hostOf.size) svg.setAttribute('data-folded', String(grouping.hostOf.size));
   svg.append(compassRose(W - 13, H - 10.5, 5.2, accent));
 
   // fold creases, as on a map that has been folded and opened, then the border over everything
@@ -358,11 +377,18 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
       el('line', { x1: 0, y1: y + 0.2, x2: W, y2: y + 0.2, stroke: '#5a40201f' }),
     );
   svg.append(creases, border);
-  return { W, H, svg, scenes: graph.nodes.length };
+  return { W, H, svg };
 }
 
-/** The key in the bottom corner: places, start and end, the two kinds of trail, the countries drawn. */
-function legend(x: number, y: number, terrains: Terrain[], accent: string): SVGElement {
+/** The key in the bottom corner: places, start and end, the two kinds of way, what the ground shows, the names a place lists. */
+function legend(
+  x: number,
+  y: number,
+  theme: Theme,
+  key: { draw: (x: number, y: number) => SVGElement; name: string }[],
+  accent: string,
+  lists: boolean,
+): SVGElement {
   const g = el('g', { class: 'wm-legend', 'font-size': 1.35, fill: INK });
   const w = 72;
   g.append(
@@ -380,24 +406,27 @@ function legend(x: number, y: number, terrains: Terrain[], accent: string): SVGE
     ),
   ];
   const c2 = x + 36;
+  // a way's sample on a patch of its ground, where the ground is dark
+  const patch = theme.id === 'space' ? SPACE : theme.id === 'board' ? '#2f5e45' : undefined;
   g.append(
     ...dot(x + 3, row(0) - 0.4, KIND.scene, '7'),
-    el('text', { x: x + 5, y: row(0) }, 'A scene: where you arrive in it'),
+    el('text', { x: x + 5, y: row(0) }, theme.key.place),
     ...dot(x + 3, row(1) - 0.4, KIND.start, '★'),
     el('text', { x: x + 5, y: row(1) }, 'The title: the game starts'),
     ...dot(x + 3, row(2) - 0.4, KIND.end, '⚑'),
     el('text', { x: x + 5, y: row(2) }, 'The end of the game'),
-    el('path', { d: `M${c2},${row(0) - 0.4} h6`, stroke: INK, 'stroke-width': 0.5, 'stroke-dasharray': '0.05 0.9', 'stroke-linecap': 'round', fill: 'none' }),
-    el('text', { x: c2 + 8, y: row(0) }, 'A way there and back'),
-    el('path', { d: `M${c2},${row(1) - 0.4} h6`, stroke: INK, 'stroke-width': 0.3, 'stroke-dasharray': '1.1 0.6', fill: 'none' }),
-    el('path', { d: `M${c2 + 2.4},${row(1) - 1.2} l1.6,0.8 l-1.6,0.8 z`, fill: INK }),
-    el('text', { x: c2 + 8, y: row(1) }, 'One way only'),
   );
-  g.append(scaleBar(x + 2, row(3), CELL.w));
-  // the countries this map draws, a little drawing and its name
-  terrains.slice(0, 3).forEach((t, k) => {
+  for (const [k, both] of [true, false].entries()) {
+    if (patch) g.append(el('rect', { x: c2 - 0.8, y: row(k) - 1.7, width: 7.6, height: 2.6, fill: patch }));
+    g.append(waySample(theme.id, c2, row(k) - 0.4, 6, both), el('text', { x: c2 + 8, y: row(k) }, both ? theme.key.both : theme.key.one));
+  }
+  g.append(scaleBar(x + 2, row(3), STEP.w));
+  if (lists)
+    g.append(el('text', { x: c2 + 9, y: row(3), 'font-size': 1.1 }, '12 The Shop'), el('text', { x: c2 + 17, y: row(3) }, 'Who and what you meet there'));
+  // what the ground shows, a little drawing and its name
+  key.slice(0, 3).forEach((t, k) => {
     const gx = c2 + 1.4 + k * 11.5;
-    g.append(glyph(t, gx, row(2) - 0.6, INK, 1), el('text', { x: gx + 2, y: row(2), 'font-size': 1.1, 'font-style': 'italic' }, TERRAIN_NAMES[t]));
+    g.append(t.draw(gx, row(2) - 0.6), el('text', { x: gx + 2, y: row(2), 'font-size': 1.1, 'font-style': 'italic' }, t.name));
   });
   return g;
 }
@@ -452,10 +481,10 @@ function tileSheet(world: World, t: Rect & { name: string; col: number; row: num
  * scaled to one page, with the atlas grid), then, for a map bigger than a page, the pages
  * that print it at full size.
  */
-export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
+export async function worldMap(ctx: PrintContext, every = false): Promise<Sheet[]> {
   const loaded = await loadWorld(ctx.entry);
   if (!loaded) return [];
-  const world = drawWorld(ctx.entry, loaded.game, loaded.files);
+  const world = drawWorld(ctx.entry, loaded.game, loaded.files, ctx.printables.worldMap, every);
   const grid = tileGrid(world.W, world.H);
   const full = freshCopy(world.svg);
   if (grid) full.append(grid);
@@ -467,35 +496,65 @@ export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
   return sheets;
 }
 
-/** On screen: a folded map that opens into one you can zoom (buttons, wheel, keys) and drag around. */
-export function worldMapScreen(sheets: Sheet[]): HTMLElement {
+/**
+ * On screen: a folded map that opens into one you can zoom (buttons, wheel, keys) and drag
+ * around. With `other` (and a map that folds scenes away), a button swaps it for the map of
+ * every scene and back; `other(every)` gives that view's sheets and what printing then prints.
+ */
+export function worldMapScreen(sheets: Sheet[], other?: (every: boolean) => Promise<Sheet[]>): HTMLElement {
   const s = sheets[0];
   if (!s) return h('p', { class: 'gmb-loading' }, 'This game has no scenes to map.');
-  const map = freshCopy(s.el);
-  map.classList.add('wm-screen-sheet');
-  const pz = panZoom(map, s.w, 'The World Map: drag to look around');
-  const pages = sheets.length > 1 ? sheets.length - 1 : 1;
-  const bar = h(
-    'div',
-    { class: 'wm-bar' },
-    ...pz.buttons,
-    h(
-      'span',
-      null,
-      `${s.w.toFixed(1)}" × ${s.h.toFixed(1)}" · prints as ${pages > 1 ? `an overview and ${pages} pages to tape together` : 'one page'} · drag to look around, ctrl+scroll to zoom`,
-    ),
-  );
+  const holder = h('div', { class: 'wm-fold' });
+  const folds = !!s.el.querySelector('svg[data-folded]');
+  const show = (s: Sheet, pages: number, every: boolean) => {
+    const map = freshCopy(s.el);
+    map.classList.add('wm-screen-sheet');
+    const pz = panZoom(map, s.w, every ? 'The World Map, every scene: drag to look around' : 'The World Map: drag to look around');
+    const swap =
+      other && folds
+        ? h(
+            'button',
+            {
+              type: 'button',
+              class: 'wm-every',
+              'aria-pressed': String(every),
+              title: 'Every scene as its own card, as the Game Integrator shows them',
+              onclick: async () => {
+                const next = await other(!every);
+                if (!next[0]) return;
+                show(next[0], next.length > 1 ? next.length - 1 : 1, !every);
+                holder.querySelector<HTMLElement>('.wm-every')?.focus(); // the new bar's button keeps the keyboard's place
+              },
+            },
+            'Every scene',
+          )
+        : undefined;
+    const bar = h(
+      'div',
+      { class: 'wm-bar' },
+      ...pz.buttons,
+      ...(swap ? [swap] : []),
+      h(
+        'span',
+        null,
+        `${s.w.toFixed(1)}" × ${s.h.toFixed(1)}" · prints as ${pages > 1 ? `an overview and ${pages} pages to tape together` : 'one page'} · drag to look around, ctrl+scroll to zoom`,
+      ),
+    );
+    holder.replaceChildren(bar, pz.view);
+    holder.classList.add('open');
+    // a readable start: places about 150 px across (or the whole map when that's smaller)
+    requestAnimationFrame(() => pz.setZoom(Math.max(pz.view.clientWidth - 24, Math.min(s.w * 100, pz.view.clientWidth * 2.4))));
+  };
 
   // folded: the title panel on top of a stack of folds
   const face = freshCopy(s.el);
   face.classList.add('wm-face');
   face.style.width = `${Math.max(1, s.w / 8.5) * 340}px`;
-  const holder = h('div', { class: 'wm-fold' });
   const open = () => {
-    holder.replaceChildren(bar, pz.view);
-    holder.classList.add('open');
-    // a readable start: places about 150 px across (or the whole map when that's smaller)
-    requestAnimationFrame(() => pz.setZoom(Math.max(pz.view.clientWidth - 24, Math.min(s.w * 100, pz.view.clientWidth * 2.4))));
+    dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-world-map' } }));
+    const style = /\bwm-theme-(\w+)/.exec(s.el.querySelector('.wm-svg')?.getAttribute('class') ?? '')?.[1];
+    if (style) dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-world-styles', item: style } }));
+    show(s, sheets.length > 1 ? sheets.length - 1 : 1, false);
   };
   const folded = h('div', { class: 'wm-folded', 'aria-hidden': 'true', onclick: open }, h('div', { class: 'wm-face-crop' }, face));
   holder.append(folded, h('button', { type: 'button', class: 'fo-btn wm-open', onclick: open }, 'Unfold the map'));

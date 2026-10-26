@@ -7,10 +7,10 @@
 import './viewSwitch.css';
 import { h } from './editor/core/ui';
 
-export type View = 'desk' | 'dos' | 'web';
+type View = 'desk' | 'dos' | 'web';
 
 /** What is in front of you: a catalog game's id (cd:<id>) or your own game's (project:<id>), as the desk's disks name them. */
-export type Showing = string | undefined;
+type Showing = string | undefined;
 
 const VIEWS: [view: View, label: string, name: string, title: string][] = [
   ['desk', 'Desk', '1994 desk', 'The 1994 desk: the PC, the disk box, the shelf of games'],
@@ -19,7 +19,7 @@ const VIEWS: [view: View, label: string, name: string, title: string][] = [
 ];
 
 /** The address of each view, showing `showing` where it can. */
-export function viewHref(view: View, showing: Showing): string {
+function viewHref(view: View, showing: Showing): string {
   const cd = showing?.startsWith('cd:') ? showing.slice(3) : undefined;
   const mine = showing?.startsWith('project:') ? showing.slice(8) : undefined;
   if (view === 'dos') return `./dos.html${cd ? `?game=${encodeURIComponent(cd)}` : ''}`;

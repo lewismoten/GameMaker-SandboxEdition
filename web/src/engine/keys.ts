@@ -65,7 +65,7 @@ export function simKeyPress(w: World, key: number): void {
 }
 
 /** CleanKeyStk: squeeze out released (0xff) entries, keeping the order. */
-export function cleanKeyStack(w: World): void {
+function cleanKeyStack(w: World): void {
   let to = 0;
   for (let from = 0; from < w.keystkptr; from++) {
     if (w.keystack[from].key !== 0xff) w.keystack[to++] = { ...w.keystack[from] };

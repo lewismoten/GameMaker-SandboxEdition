@@ -116,13 +116,13 @@ export const KEY = {
   e: 0x1265,
   z: 0x2c7a,
   x: 0x2d78,
-  l: 0x266c,
+  c: 0x2e63,
   home: 0x4700,
   pgup: 0x4900,
 } as const;
 
 /** PC scan codes the bot and the demo press. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, z: 44, x: 45, l: 38 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, z: 44, x: 45, c: 46 } as const;
 
 /**
  * The laughing carpet: every rat tickled happy, all game long. Counters 20 and up refuse a touch

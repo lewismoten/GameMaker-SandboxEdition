@@ -111,8 +111,8 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
     .rect(1, 4, 18, 2, c('wood', 2));
   book.add('bench', bench, { solid: LEDGE, grav: GRAV.down });
   const news = night(9);
-  news.rect(4, 4, 12, 16, c('red', 1)).rect(5, 5, 10, 6, c('glass', 1)).rect(6, 6, 8, 4, c('white', 1));
-  micro(news, 6, 13, 'NEWS', c('white', 2));
+  news.rect(2, 4, 16, 16, c('red', 1)).rect(4, 5, 12, 6, c('glass', 1)).rect(5, 6, 10, 4, c('white', 1));
+  micro(news, 3, 13, 'NEWS', c('white', 2));
   book.add('news', news, { solid: SOLID });
 
   // ---------- the castle front ----------
@@ -334,7 +334,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   const menu = wall(43, false);
   menu.rect(1, 2, 18, 16, c('wood', 1)).rect(2, 3, 16, 14, c('chalk', 0));
   micro(menu, 3, 4, 'JAVA', c('white', 1));
-  micro(menu, 3, 10, 'MOCHA', c('white', 0));
+  micro(menu, 3, 10, 'BREW', c('white', 0));
   book.add('menu', menu, AIR);
   const menu2 = wall(44, false);
   menu2.rect(1, 2, 18, 16, c('wood', 1)).rect(2, 3, 16, 14, c('chalk', 0));
@@ -537,4 +537,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   const kid = lewieCameo(pal.pal, 'down0');
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (kid.get(x, y) !== 255) lewie.set(x, y, kid.get(x, y));
   book.add('lewie', lewie, AIR);
+  // the stage's far wing: the same drapes, solid, so nothing lies past the curtain (added last,
+  // so no block before it moves)
+  book.add('drapeWing', book.pics.get('drape')!.crop(0, 0, 20, 20), { solid: SOLID });
 }

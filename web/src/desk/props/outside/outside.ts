@@ -12,7 +12,7 @@ let live = false;
 export const outsidePlaying = (): boolean => live;
 
 /** Where something is in the window's view, in its pixels: x, y, width, height. */
-export type Box = [number, number, number, number];
+type Box = [number, number, number, number];
 
 export interface OutsideEvent {
   kind: string;

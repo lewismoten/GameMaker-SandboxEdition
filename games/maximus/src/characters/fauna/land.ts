@@ -529,7 +529,8 @@ export function landFauna(): Creature[] {
       hide: 'ruin',
       accent: 'glow',
       frames: 1,
-      move: { kind: 'path', corners: pace(6, 1) },
+      // five blocks out and back at 3 a tick: about 3.7 s a round (6 at 1 was 13 s to wait)
+      move: { kind: 'path', corners: pace(5, 3) },
       power: 200,
       dmg: 0,
       score: 0,

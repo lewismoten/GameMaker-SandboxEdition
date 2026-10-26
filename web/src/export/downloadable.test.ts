@@ -1,3 +1,4 @@
+// Which catalog games may be downloaded: this project's own games and RSD's samples only.
 import { describe, expect, it } from 'vitest';
 import { resolve } from 'node:path';
 import { catalogDownloadable, RSD_COMPANY } from './downloadable';

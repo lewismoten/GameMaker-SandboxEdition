@@ -17,14 +17,42 @@ export function usedByLine(project: Project, file: string): HTMLElement {
     );
     return line;
   }
-  line.append('Used by ');
-  [...scenes, ...scripts].forEach((u, i) => {
-    if (i) line.append(', ');
-    line.append(h('button', { class: 'used-by-link', title: `Open ${u.file}`, onclick: () => openInEditor(project, u.file) }, u.text));
-  });
-  line.append('.');
+  // a palette or sound set can be used by twenty scenes: the first few, and the rest on request,
+  // so the line stays one line and the editor below keeps its room
+  const uses = [...scenes, ...scripts];
+  const link = (u: (typeof uses)[number]) =>
+    h('button', { class: 'used-by-link', title: `Open ${u.file}`, onclick: () => openInEditor(project, u.file) }, u.text);
+  const show = (all: boolean) => {
+    const shown = all || uses.length <= SHOWN + 1 ? uses : uses.slice(0, SHOWN);
+    line.replaceChildren('Used by ');
+    shown.forEach((u, i) => {
+      if (i) line.append(', ');
+      line.append(link(u));
+    });
+    if (shown.length < uses.length)
+      line.append(
+        ' and ',
+        h(
+          'button',
+          {
+            class: 'used-by-link used-by-more',
+            title: 'Show every scene and script that uses it',
+            onclick: () => {
+              show(true);
+              line.querySelectorAll<HTMLElement>('.used-by-link')[SHOWN]?.focus();
+            },
+          },
+          `${uses.length - shown.length} more`,
+        ),
+      );
+    line.append('.');
+  };
+  show(false);
   return line;
 }
+
+/** How many uses the line names before "and N more". */
+const SHOWN = 3;
 
 /** "Delete forest.bbl? Meadow · background block set and slide show title.lst use it…" */
 export function deleteMessage(project: Project, file: string): string {

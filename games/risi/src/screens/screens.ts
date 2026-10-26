@@ -1,7 +1,7 @@
 // The 320x200 pictures: the menu, the paper behind text pages, the high scores, load and save,
 // and the credits (Doc Leo's photo and the Bard's logo: Veni, Vidi, Risi! sits with the Bard of
 // Bizarre on The Sofa BBS). The title is the art drawn for the game (art/cover.ts, cover.fli and
-// its last frame, title.gif); the story, the level cards and the endings are cartoons
+// then title.gif with the name); the story, the level cards and the endings are cartoons
 // (cartoons.ts).
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { Pixels, rng } from '../../../kit/pixels';

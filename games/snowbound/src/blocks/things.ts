@@ -2,7 +2,8 @@
 // (a kid ducks and pops up by a next/ntime pair, and both frames give birth to a snowball
 // monster every 66 ticks; touching one knocks it down to a pile for 100 points), cocoa mugs,
 // dollar bills and a $5 tip on the walk, signposts, two-block street-name signs and the cars
-// buried in the mall lot. Returns the pine, mug and bill painters, which the sled run reuses.
+// buried in the mall lot. Returns the pine, mug and bill painters, which the sled run reuses, and
+// the car maker, which adds the back row's tan cars last.
 import { Pixels } from '../../../kit/pixels';
 import { blob, shadeAt } from '../art/draw';
 import { micro, microWidth } from '../art/font';
@@ -140,29 +141,72 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
   micro(tip, 8, 10, '$5', c('coat', 2));
   book.add('tip', tip, { effect: MONEY, eamt: 5, score: 50, touch: 'walk' });
 
-  const signpost = (label: string, arrow: '>' | '<' | 'v' | '^') => {
-    const p = yardBase(113);
+  // Parked cars buried in the mall lot (two blocks: rear, front), each row its own color so the
+  // lot has landmarks: blue up front, green in the middle, tan at the back by THE CHEZ (whose
+  // tomato red no other car wears). The body is two shades of a ramp, dark then light.
+  const parked = (front: boolean, ramp: string, dark: number) => {
+    const p = lot(51);
+    const k = c('ink', 0);
+    const [body, top] = [c(ramp, dark), c(ramp, dark + 1)];
+    if (!front) {
+      p.rect(2, 8, 18, 9, k).rect(3, 9, 17, 7, body).rect(3, 9, 17, 2, top);
+      p.rect(10, 4, 10, 5, k).rect(11, 5, 9, 4, c('ice', 1));
+      blob(p, 6, 17, 3, 3, R('ink'), 0, 1);
+      blob(p, 13, 7, 9, 4, snow, 3, 6);
+      blob(p, 6, 8, 5, 2, snow, 3, 6);
+    } else {
+      p.rect(0, 8, 17, 9, k).rect(0, 9, 16, 7, body).rect(0, 9, 16, 2, top);
+      p.rect(0, 4, 8, 5, k).rect(0, 5, 7, 4, c('ice', 1));
+      p.rect(15, 11, 2, 2, c('glow', 1));
+      blob(p, 12, 17, 3, 3, R('ink'), 0, 1);
+      blob(p, 5, 6, 7, 3, snow, 3, 6);
+      blob(p, 12, 8, 5, 2, snow, 3, 6);
+    }
+    return p;
+  };
+  const car = (name: string, ramp: string, dark: number) => {
+    book.add(`${name}L`, parked(false, ramp, dark), { solid: SOLID });
+    book.add(`${name}R`, parked(true, ramp, dark), { solid: SOLID });
+  };
+
+  // A wooden signpost in a yard; or, lit, a lamp-lit board on the lot that keeps its color at night.
+  const signpost = (label: string, arrow: '>' | '<' | 'v' | '^' | '\\', lit = false) => {
+    const p = lit ? lot(53) : yardBase(113);
+    const [board, edge, arr] = lit ? [c('glow', 3), c('glow', 0), c('orange', 3)] : [c('wood', 3), c('wood', 0), c('coat', 3)];
     p.rect(9, 11, 2, 9, c('wood', 1));
-    p.rect(1, 3, 18, 9, c('wood', 3)).frame(1, 3, 18, 9, c('wood', 0)).rect(1, 2, 18, 1, c('snow', 6));
-    micro(p, 10 - Math.floor(microWidth(label) / 2), 5, label, c('ink', 0));
+    if (lit && label.startsWith('M')) {
+      // the whole block wide, so the M can be five pixels across with its V showing (the
+      // 3x5 font's M reads as an H at this size)
+      p.rect(0, 3, 20, 9, board).rect(0, 3, 20, 1, edge).rect(0, 11, 20, 1, edge).rect(0, 2, 20, 1, c('snow', 6));
+      const x = 10 - Math.ceil((microWidth(label) + 2) / 2);
+      ['10001', '11011', '10101', '10001', '10001'].forEach((row, y) => [...row].forEach((b, dx) => b === '1' && p.set(x + dx, 5 + y, c('ink', 0))));
+      micro(p, x + 6, 5, label.slice(1), c('ink', 0));
+    } else {
+      p.rect(1, 3, 18, 9, board).frame(1, 3, 18, 9, edge).rect(1, 2, 18, 1, c('snow', 6));
+      micro(p, 10 - Math.floor(microWidth(label) / 2), 5, label, c('ink', 0));
+    }
     const ay = 15;
     if (arrow === '>')
-      p.line(13, ay, 18, ay, c('coat', 3))
-        .line(16, ay - 2, 18, ay, c('coat', 3))
-        .line(16, ay + 2, 18, ay, c('coat', 3));
+      p.line(13, ay, 18, ay, arr)
+        .line(16, ay - 2, 18, ay, arr)
+        .line(16, ay + 2, 18, ay, arr);
     if (arrow === '<')
-      p.line(1, ay, 6, ay, c('coat', 3))
-        .line(3, ay - 2, 1, ay, c('coat', 3))
-        .line(3, ay + 2, 1, ay, c('coat', 3));
-    if (arrow === 'v') p.line(15, 12, 15, 18, c('coat', 3)).line(13, 16, 15, 18, c('coat', 3)).line(17, 16, 15, 18, c('coat', 3));
-    if (arrow === '^') p.line(15, 13, 15, 19, c('coat', 3)).line(13, 15, 15, 13, c('coat', 3)).line(17, 15, 15, 13, c('coat', 3));
+      p.line(1, ay, 6, ay, arr)
+        .line(3, ay - 2, 1, ay, arr)
+        .line(3, ay + 2, 1, ay, arr);
+    if (arrow === 'v') p.line(15, 12, 15, 18, arr).line(13, 16, 15, 18, arr).line(17, 16, 15, 18, arr);
+    if (arrow === '^') p.line(15, 13, 15, 19, arr).line(13, 15, 15, 13, arr).line(17, 15, 15, 13, arr);
+    // up and to the left
+    if (arrow === '\\') p.line(2, 13, 7, 18, arr).line(2, 13, 5, 13, arr).line(2, 13, 2, 16, arr);
     return p;
   };
   book.add('signHill', signpost('HILL', '>'), { solid: SOLID });
-  book.add('signTown', signpost('TOWN', 'v'), { solid: SOLID });
+  // On the far right of the mall lot, for anyone lost among the buried cars: the mall is up
+  // and back to the left. (It and the green car took the slots of TOWN, HOME and PLOWS signs
+  // no map ever used.)
+  book.add('signMallBack', signpost('MALL', '\\', true), { solid: SOLID });
   book.add('signMall', signpost('MALL', '>'), { solid: SOLID });
-  book.add('signHome', signpost('HOME', '<'), { solid: SOLID });
-  book.add('signPlow', signpost('PLOWS', '^'), { solid: SOLID });
+  car('greenCar', 'money', 1);
   book.add('signBus', signpost('BUS', 'v'), { solid: SOLID });
 
   // Green street-name signs on a corner post, two blocks wide: name0 (left) and name1.
@@ -192,27 +236,7 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
   streetSign('stJamieBowden', 'JAMIE ST', 'BOWDEN DR');
   streetSign('stBowdenLaVale', 'BOWDEN DR', 'TO LAVALE', 'siding');
 
-  // Parked cars buried in the mall lot (two blocks: rear, front).
-  const parked = (front: boolean) => {
-    const p = lot(51);
-    const k = c('ink', 0);
-    if (!front) {
-      p.rect(2, 8, 18, 9, k).rect(3, 9, 17, 7, c('coat', 1)).rect(3, 9, 17, 2, c('coat', 2));
-      p.rect(10, 4, 10, 5, k).rect(11, 5, 9, 4, c('ice', 1));
-      blob(p, 6, 17, 3, 3, R('ink'), 0, 1);
-      blob(p, 13, 7, 9, 4, snow, 3, 6);
-      blob(p, 6, 8, 5, 2, snow, 3, 6);
-    } else {
-      p.rect(0, 8, 17, 9, k).rect(0, 9, 16, 7, c('coat', 1)).rect(0, 9, 16, 2, c('coat', 2));
-      p.rect(0, 4, 8, 5, k).rect(0, 5, 7, 4, c('ice', 1));
-      p.rect(15, 11, 2, 2, c('glow', 1));
-      blob(p, 12, 17, 3, 3, R('ink'), 0, 1);
-      blob(p, 5, 6, 7, 3, snow, 3, 6);
-      blob(p, 12, 8, 5, 2, snow, 3, 6);
-    }
-    return p;
-  };
-  book.add('parkedL', parked(false), { solid: SOLID });
-  book.add('parkedR', parked(true), { solid: SOLID });
-  return { pine, mug, bill };
+  // the front row's blue cars, in the old parked cars' slots
+  car('blueCar', 'siding', 3);
+  return { pine, mug, bill, car };
 }

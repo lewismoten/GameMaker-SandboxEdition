@@ -8,11 +8,11 @@
     "C": "Shield Emitter",
     "F": "Hover Pack",
     "V": "Mine Layer",
-    "H": "Med Kit",
+    "R": "Med Kit",
     "W": "Flak Cannon",
     "T": "Hail (say hello)",
-    "P": "Pick up a module",
-    "O": "Drop a module"
+    "G": "Pick up a module",
+    "B": "Drop a module"
   },
   "items": [
     {
@@ -649,43 +649,43 @@
           "hints": [
             {
               "q": "Where do I find the Plasma Lance?",
-              "a": "In a vault on Little Hollow, in The Cradle. Press P to pick it up; its key is Z."
+              "a": "In a vault on Little Hollow, in The Cradle. Press G to pick it up; its key is Z."
             },
             {
               "q": "Where do I find the Nova Core?",
-              "a": "In a vault on Pyre, in Emberreach. Press P to pick it up; its key is X."
+              "a": "In a vault on Pyre, in Emberreach. Press G to pick it up; its key is X."
             },
             {
               "q": "Where do I find the Dash Boots?",
-              "a": "In a vault on Copperfield, in The Cradle. Press P to pick it up; its key is Q / E."
+              "a": "In a vault on Copperfield, in The Cradle. Press G to pick it up; its key is Q / E."
             },
             {
               "q": "Where do I find the Shield Emitter?",
-              "a": "In a vault on Mistral Isle, in The Shallows. Press P to pick it up; its key is C."
+              "a": "In a vault on Mistral Isle, in The Shallows. Press G to pick it up; its key is C."
             },
             {
               "q": "Where do I find the Hover Pack?",
-              "a": "In a vault on Scorchmark, in Emberreach. Press P to pick it up; its key is F."
+              "a": "In a vault on Scorchmark, in Emberreach. Press G to pick it up; its key is F."
             },
             {
               "q": "Where do I find the Mine Layer?",
-              "a": "In a vault on Rimefall, in Glasswind. Press P to pick it up; its key is V."
+              "a": "In a vault on Rimefall, in Glasswind. Press G to pick it up; its key is V."
             },
             {
               "q": "Where do I find the Med Kit?",
-              "a": "In a vault on Outpost Nine, in The Cradle. Press P to pick it up; its key is H."
+              "a": "In a vault on Outpost Nine, in The Cradle. Press G to pick it up; its key is R."
             },
             {
               "q": "Where do I find the Flak Cannon?",
-              "a": "In a vault on Venom Marsh, in Glasswind. Press P to pick it up; its key is W."
+              "a": "In a vault on Venom Marsh, in Glasswind. Press G to pick it up; its key is W."
             },
             {
               "q": "Where do I find the Hydro Jets?",
-              "a": "In a vault on Tidewater, in The Shallows. Press P to pick it up; its key is Q / E (sub)."
+              "a": "In a vault on Tidewater, in The Shallows. Press G to pick it up; its key is Q / E (sub)."
             },
             {
               "q": "Where do I find the Spring Shocks?",
-              "a": "In a vault on Redrock, in Emberreach. Press P to pick it up; its key is Up (rover)."
+              "a": "In a vault on Redrock, in Emberreach. Press G to pick it up; its key is Up (rover)."
             }
           ]
         },
@@ -731,7 +731,7 @@
             },
             {
               "q": "Plot me a course.",
-              "a": "Fly to the corner of the galaxy chart and come at the knot from below. The two rocks in the middle of its south face are only a picture: fly straight up through them. Inside, press P to pick up the felt egg, then touch the beacon.",
+              "a": "Fly to the corner of the galaxy chart and come at the knot from below. The two rocks in the middle of its south face are only a picture: fly straight up through them. Inside, press G to pick up the felt egg, then touch the beacon.",
               "sketch": {
                 "rows": [
                   "o oooo",
@@ -956,8 +956,28 @@
   ],
   "news": [
     {
+      "head": "Maximus: 100 scenes, and not one more",
+      "html": "<p><b>Maximus: The Hundred Worlds</b> is out. The Maximus Core has gone dark, and Max, a courier at Maxima Station, must carry ten star-shards home across 88 worlds by pod, on foot, by rover and in a diving bell. Game-Maker holds up to 231 scenes; we stopped at 100: a galaxy chart, five sector charts, 88 worlds, the Maelstrom, the Citadel and the Heart, plus a title, a training deck and an ending. Every limit we found is in LIMITS.TXT on the disk.</p>"
+    },
+    {
       "head": "Courier’s corner",
       "html": "<p>Registered couriers: your fold-out galaxy chart, the sector map of all 88 worlds and the hint book are in this box. Fold the chart along the creases and keep it by the keyboard.</p>"
+    },
+    {
+      "head": "Since last issue: GLITCH is gone",
+      "html": "<p>Virus Blaster pilots have been posting high scores on the BBS since April. Your favorite boss is the Feedback Howler; your least favorite is the Head Crash and its rings of platter shards. And the question everybody asks: can the BLASTER stop? No. The data stream never stops flowing. Pull Down to brake.</p>"
+    },
+    {
+      "head": "Around the Sandbox: A clown on the line",
+      "html": "<p>While we were building the hails in Maximus, a friend of the office asked to be in one. So on Boxcar Flats you'll meet Doc Leo, PhD (Comedic Science), a hobo clown with a rubber chicken on a leash. Doc Leo is a proud member of the Clown Club, twists balloon animals for the kids at every parade, and parks a little red electric car out front. He says he'll be in more games. We believe him.</p>"
+    },
+    {
+      "head": "In the workshop: Teddy gets a game",
+      "html": "<p>Remember Teddy, the SysOp's corgi? He's getting his own game for the Fourth of July. <b>Sandcastle Knight</b> puts him in a tin helmet with a red plume as the knight of the backyard sandbox, with four castles to win back. Who knocked them down? Somebody with a lot of zoomies. You'll meet her next issue.</p>"
+    },
+    {
+      "head": "Letters: \"Only in an emergency\"",
+      "html": "<p><i>\"I told my mom I was shrinking down into the family 486 to fight a virus. She said to be home for dinner.\"</i> - A pilot, by modem</p><p><b>The Scoop replies:</b> Good advice. VACCINE.EXE is only for emergencies, and so is skipping dinner.</p>"
     }
   ]
 }

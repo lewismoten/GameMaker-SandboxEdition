@@ -31,9 +31,13 @@ const loadGuide = (): Promise<Guide> =>
 /** Buttons that act without taking the keyboard from the screen (a click keeps GM typing). */
 const keepFocus = { onmousedown: (e: MouseEvent) => e.preventDefault() };
 
-/** What the page around the PC adds: news of the card going in the mail (the desk's window shows the mail truck). */
+/**
+ * What the page around the PC adds: news of the card going in the mail (the desk's window shows
+ * the mail truck) and of RSD's reply arriving (the desk's mail jeep brings a paper copy).
+ */
 export interface RegSideOptions {
   onMailed?: () => void;
+  onReply?: (reply: Reply) => void;
 }
 
 /**
@@ -394,6 +398,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     stage('reply');
     if (here) registerBtn.focus();
     say(`Reply arrived from Recreational Software Designs: registration number ${reply.number} for ${reply.name}. Choose Register now.`);
+    opts.onReply?.(reply);
   }
 
   function again(): void {

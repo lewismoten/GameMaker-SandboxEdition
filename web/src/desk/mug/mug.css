@@ -162,12 +162,16 @@
   background: #111;
 }
 
-.mugv-design img,
-.subl-design img {
+.mugv-design img {
   display: block;
   width: 100%;
   height: auto;
   image-rendering: pixelated;
+}
+
+/* a game's badge is see-through round the edge: show it on the mug's white */
+.mugv-design[data-group='game'] img {
+  background: #f7f5ee;
 }
 
 .mugv-design span {

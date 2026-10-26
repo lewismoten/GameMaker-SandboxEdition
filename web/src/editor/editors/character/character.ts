@@ -11,12 +11,12 @@ import './character.css';
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
 import { blockButton } from '../../widgets/blockChooser';
-import { h, clear, numberField, selectField, checkField, debounce, confirmDialog } from '../../core/ui';
+import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { History } from '../../core/history';
 import { drawBlockTo } from '../../core/draw';
-import { paletteChooser } from '../blocks/blocks';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import { audio } from '../../widgets/mediaShared';
-import { BACKBL, BLEN, CHARBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
+import { BACKBL, BLEN, CHARBL, newBlockSet, parseBlocks, serializeBlocks, type Block } from '../../../formats/blocks';
 import {
   INF_REPEAT,
   MAXFRAME,
@@ -31,7 +31,8 @@ import {
 import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../../formats/sound';
 import { scanName } from '../../../input/scancodes';
 import { viewState } from '../../../urlState';
-import { bottomOrient, firesMonster, insertFrame, mirroredFrames, normalOrient, setFrames, topOrient, travel } from './characterLogic';
+import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, travel } from './characterLogic';
+import { blockLinks, mirrorPanel, seqLinks, type MirrorContext } from './characterMirrorPanel';
 import { frameCard, keyPicker, type FrameContext } from './characterFrames';
 import { stageBackdrop } from './characterStage';
 
@@ -64,6 +65,8 @@ const BUILT_IN_HELP = [
   'Runs on its key: asks which inventory object to drop, then puts it down.',
 ];
 
+const sameBytes = (a: Uint8Array, b: Uint8Array | undefined) => !!b && a.length === b.length && a.every((v, i) => v === b[i]);
+
 const STAGE_W = 240;
 const STAGE_H = 120;
 
@@ -85,8 +88,19 @@ registerEditor(['chr'], (host, project, file) => {
   let withSound = false;
   const save = debounce(() => project.files.set(file, serializeCharacter(chr)), 250);
   // Undo: each change records the state before it (changes less than half a second apart, like typing a number, are one step).
-  const history = new History<Uint8Array>();
-  let base = serializeCharacter(chr);
+  // A snapshot holds the hero, its block set (mirroring can draw new blocks) and the mirror links.
+  interface Snap {
+    chr: Uint8Array;
+    cbl?: Uint8Array;
+    links: string;
+  }
+  const snapshot = (): Snap => ({
+    chr: serializeCharacter(chr),
+    cbl: cblName ? project.files.get(cblName) : undefined,
+    links: JSON.stringify([seqLinks({ project, file }), blockLinks(project, cblName)]),
+  });
+  const history = new History<Snap>();
+  let base = snapshot();
   let lastChange = 0;
   const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
   const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
@@ -99,14 +113,23 @@ registerEditor(['chr'], (host, project, file) => {
     const now = Date.now();
     if (now - lastChange > 500) history.record(base);
     lastChange = now;
-    base = serializeCharacter(chr);
+    base = snapshot();
     syncHistory();
     save();
   };
   function step(back: boolean): void {
     const to = back ? history.undo(base) : history.redo(base);
     if (!to) return;
-    Object.assign(chr, parseCharacter(to));
+    Object.assign(chr, parseCharacter(to.chr));
+    if (to.cbl && cblName && !sameBytes(to.cbl, project.files.get(cblName))) {
+      project.files.set(cblName, to.cbl);
+      cbl = parseBlocks(to.cbl, CHARBL);
+    }
+    if (to.links !== base.links) {
+      const [seqs, blocks] = JSON.parse(to.links) as [unknown[], unknown[]];
+      project.setExtras(file, 'mirrors', seqs.length ? seqs : undefined);
+      if (cblName) project.setExtras(cblName, 'mirrors', blocks.length ? blocks : undefined);
+    }
     base = to;
     lastChange = 0;
     syncHistory();
@@ -305,7 +328,7 @@ registerEditor(['chr'], (host, project, file) => {
           'button',
           {
             class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`,
-            onclick: () => ((current = i), view.set({ sequence: i }), renderList(), renderDetail()),
+            onclick: () => mirrors.go(i),
           },
           h('span', { class: 'chr-seq-thumb checker' }, spriteCanvas(s.frames[0] && frameCount(s) ? s.frames[0] : undefined, 1)),
           h('span', { class: 'chr-seq-name' }, h('b', null, `${i}`), ' ', seqName(i)),
@@ -319,8 +342,13 @@ registerEditor(['chr'], (host, project, file) => {
   const stage = h('canvas', { width: STAGE_W, height: STAGE_H, class: 'pixel chr-stage' });
   const stageInfo = h('span', { class: 'chr-muted' });
   let timer: ReturnType<typeof setTimeout> | undefined;
-  let playing = true;
+  // starts paused for anyone who asked their system for less motion
+  let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
   let frameCards: HTMLElement[] = [];
+  /** The frame being edited: shown big beside the stage, and on the stage while paused. */
+  let picked = 0;
+  const figure = h('canvas', { width: BLEN * 3, height: BLEN * 6, class: 'pixel chr-figure checker', role: 'img' });
+  const figureCap = h('figcaption', { class: 'chr-muted' });
   const backdrop = stageBackdrop(project, file, STAGE_W, STAGE_H, () => animate(chr.sequences[current]));
 
   function drawStage(seq: Sequence, i: number, pos: { x: number; y: number }, burst: string): void {
@@ -364,7 +392,11 @@ registerEditor(['chr'], (host, project, file) => {
       drawStage(seq, -1, pos, '');
       return;
     }
-    if (i === 0 && withSound && playing) void playSound(seq.sound);
+    if (!playing) {
+      showPicked(seq);
+      return;
+    }
+    if (i === 0 && withSound) void playSound(seq.sound);
     const f = seq.frames[i];
     let burst = '';
     if (firesMonster(f)) burst = `fires monster ${f.pic1}`;
@@ -375,6 +407,39 @@ registerEditor(['chr'], (host, project, file) => {
     drawStage(seq, i, pos, burst);
     if (!playing) return;
     timer = setTimeout(() => animate(seq, (i + 1) % n, pos), (Math.max(1, f.pause) * 1000) / 18.2);
+  }
+
+  /** Paused: the stage holds the frame being edited, standing where the hero starts. */
+  function showPicked(seq: Sequence): void {
+    const n = frameCount(seq);
+    if (picked >= n) picked = Math.max(0, n - 1);
+    frameCards.forEach((c, k) => c.classList.toggle('playing', k === picked && n > 0));
+    drawStage(seq, n ? picked : -1, { x: (STAGE_W - BLEN) / 2, y: STAGE_H / 2 + 10 }, '');
+    drawFigure(seq);
+  }
+
+  /** The whole hero in the frame being edited (top block over bottom), three times size. */
+  function drawFigure(seq: Sequence): void {
+    const n = frameCount(seq);
+    const f = n ? seq.frames[Math.min(picked, n - 1)] : undefined;
+    const shown = f && firesMonster(f) ? lastPicture(seq, Math.min(picked, n - 1)) : f;
+    const ctx = figure.getContext('2d')!;
+    ctx.clearRect(0, 0, figure.width, figure.height);
+    if (shown) {
+      if (shown.pic1 < CHARBL) drawBlockTo(ctx, cbl[shown.pic1].pixels, pal(), 0, 0, 3, true, normalOrient(topOrient(shown)));
+      if (shown.pic2 < CHARBL) drawBlockTo(ctx, cbl[shown.pic2].pixels, pal(), 0, BLEN * 3, 3, true, normalOrient(bottomOrient(shown)));
+    }
+    const label = n ? `Frame ${Math.min(picked, n - 1) + 1}${f && firesMonster(f) ? ' (fires a monster)' : ''}` : 'No frames';
+    figureCap.textContent = label;
+    figure.setAttribute('aria-label', `The whole hero in ${label.toLowerCase()}`);
+  }
+
+  function pick(seq: Sequence, i: number): void {
+    if (picked === i) return;
+    picked = i;
+    frameCards.forEach((c, k) => c.classList.toggle('picked', k === i));
+    if (playing) drawFigure(seq);
+    else showPicked(seq);
   }
 
   function describeTravel(seq: Sequence): string {
@@ -392,41 +457,41 @@ registerEditor(['chr'], (host, project, file) => {
   const frames: FrameContext = {
     blocks: () => cbl,
     palette: pal,
-    edit,
+    // an edit to a frame shows at once in the big figure (and on the stage while paused)
+    edit: (fn) => {
+      edit(fn);
+      queueMicrotask(() => {
+        if (playing) drawFigure(chr.sequences[current]);
+        else showPicked(chr.sequences[current]);
+        refreshMirror();
+      });
+    },
     listChanged: () => renderList(),
     redraw: () => renderDetail(),
     travelChanged: (seq) => (stageInfo.textContent = describeTravel(seq)),
   };
 
-  /** "Facing the other way, from…": fills this sequence with another one's frames mirrored (a walk left from a walk right). */
-  function mirrorFrom(seq: Sequence, n: number): HTMLElement | null {
-    const sources = chr.sequences.map((_, i) => i).filter((i) => i !== current && frameCount(chr.sequences[i]) > 0);
-    if (!sources.length) return null;
-    const sel = h('select', { 'aria-label': 'Sequence to mirror' }, ...sources.map((i) => h('option', { value: String(i) }, `${i}. ${seqName(i)}`)));
-    const go = h(
-      'button',
-      {
-        title: 'Replace these frames with the chosen sequence’s, facing the other way: moves go left instead of right, blocks mirrored',
-        onclick: async () => {
-          const src = chr.sequences[Number(sel.value)];
-          if (
-            n &&
-            !(await confirmDialog(
-              'Mirror a sequence',
-              `Replace this sequence’s ${n} frame${n === 1 ? '' : 's'} with ${seqName(Number(sel.value))}’s, facing the other way?`,
-              'Replace',
-            ))
-          )
-            return;
-          edit(() => setFrames(seq, mirroredFrames(src)));
-          renderList();
-          renderDetail();
-        },
-      },
-      'Make it',
-    );
-    return h('div', { class: 'toolbar chr-mirror' }, h('span', { class: 'chr-muted' }, 'Facing the other way, from'), sel, go);
-  }
+  /** The mirror bar, redrawn after each frame edit so "in step" stays true. */
+  const mirrorSlot = h('div');
+  const refreshMirror = () => clear(mirrorSlot, cblName ? mirrorPanel(mirrors) : null);
+  const mirrors: MirrorContext = {
+    project,
+    file,
+    chr,
+    cblName: () => cblName,
+    freshBlocks: () => (cbl = parseBlocks(project.files.get(cblName)!, CHARBL)),
+    saveBlocks: (set: Block[]) => project.files.set(cblName, serializeBlocks((cbl = set))),
+    current: () => current,
+    seqName,
+    edit,
+    go: (i) => {
+      if (i !== current) picked = 0;
+      current = i;
+      view.set({ sequence: i });
+      renderList();
+      renderDetail();
+    },
+  };
 
   // ---------------------------------------------------------------- sequence detail
   const detail = h('div', { class: 'chr-detail' });
@@ -459,7 +524,14 @@ registerEditor(['chr'], (host, project, file) => {
     );
     stageInfo.textContent = describeTravel(seq);
 
-    frameCards = seq.frames.slice(0, n).map((f, i) => frameCard(frames, seq, f, i, n));
+    frameCards = seq.frames.slice(0, n).map((f, i) => {
+      const card = frameCard(frames, seq, f, i, n);
+      card.classList.toggle('picked', i === picked);
+      // touching or tabbing into a frame makes it the one shown big
+      card.addEventListener('pointerdown', () => pick(seq, i));
+      card.addEventListener('focusin', () => pick(seq, i));
+      return card;
+    });
     const addFrame =
       n < MAXFRAME
         ? h(
@@ -485,7 +557,7 @@ registerEditor(['chr'], (host, project, file) => {
       h(
         'div',
         { class: 'chr-stage-wrap' },
-        stage,
+        h('div', { class: 'chr-stage-row' }, stage, h('figure', { class: 'chr-figure-wrap' }, figure, figureCap)),
         h(
           'div',
           { class: 'chr-stage-bar' },
@@ -501,7 +573,7 @@ registerEditor(['chr'], (host, project, file) => {
         { class: 'chr-frames-wrap' },
         h('h3', null, 'Frames ', h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · hover a block to turn or flip it, click it to change it`)),
         h('div', { class: 'chr-frames' }, ...frameCards, addFrame),
-        mirrorFrom(seq, n),
+        mirrorSlot,
       ),
       h(
         'div',
@@ -618,6 +690,8 @@ registerEditor(['chr'], (host, project, file) => {
       ),
     );
     animate(seq);
+    drawFigure(seq);
+    refreshMirror();
   }
 
   // ---------------------------------------------------------------- page

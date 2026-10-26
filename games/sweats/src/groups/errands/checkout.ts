@@ -179,9 +179,9 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
     p.rect(3, 11, 14, 2, c('wood', 3)).rect(9, 13, 2, 7, c('metal', 1)).rect(5, 19, 10, 1, c('metal', 1));
     p.rect(4, 9, 12, 2, c('white', 1));
     for (const x of [5, 8, 11, 14]) p.rect(x, 7, 2, 2, c('yellow', 2)).set(x, 5, c('wood', 4)).set(x, 6, c('wood', 4));
-    p.rect(6, 1, 8, 4, c('white', 2));
+    p.rect(2, 0, 16, 5, c('white', 2));
   });
-  micro(sample, 6, 1, 'FREE', c('red', 1));
+  micro(sample, 3, 0, 'FREE', c('red', 1));
   book.add('sample', sample, AIR);
   // a stack of nested carts by the door
   const carts = over(storeWall(pal).rect(0, 15, 20, 5, c('lino', 0)).rect(0, 15, 20, 1, c('lino', 1)), pal, (p) => {
@@ -369,21 +369,22 @@ export function checkoutSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('beep0', beep(0), hurts(-5));
   book.add('beep1', beep(1), hurts(-5));
-  // the slowest employee on earth: hunched in his orange vest, the weight of a thousand lost carts
+  // the slowest employee on earth: hunched in his orange vest, the weight of a thousand lost carts.
+  // Side on, shuffling right (his path mirrors him for left); his "HM" reads the same either way.
   const clerk = (f: number) => {
     const p = clear();
-    p.rect(6, 15, 3, 5, c('navy', 1))
-      .rect(11 + f, 15, 3, 5, c('navy', 1))
-      .rect(5, 19, 4, 1, ink)
-      .rect(11 + f, 19, 4, 1, ink);
-    p.rect(5, 8, 10, 8, c('teal', 1)).rect(6, 8, 8, 8, c('orange', 2)).rect(9, 8, 2, 8, c('teal', 1)).rect(11, 10, 3, 2, c('white', 2));
-    blob(p, 9, 6, 3.4, 3.2, pal.r('skin'), 1, 3);
-    p.rect(6, 2, 7, 2, c('hair', 0)).set(7, 6, ink).set(10, 6, ink).rect(7, 5, 2, 1, c('skin', 1)).rect(10, 5, 2, 1, c('skin', 1));
-    p.rect(8, 8, 3, 1, ink);
-    p.line(4, 9, 3, 14, c('teal', 1)).line(15, 9, 16, 14, c('teal', 1));
+    p.rect(9 - f, 15, 3, 4, c('navy', 0))
+      .rect(10 + f, 15, 3, 4, c('navy', 1))
+      .rect(9 - f, 19, 4, 1, ink)
+      .rect(10 + f, 19, 4, 1, ink);
+    p.rect(7, 8, 7, 8, c('orange', 2)).rect(7, 8, 2, 8, c('teal', 1)).rect(12, 10, 2, 2, c('white', 2));
+    blob(p, 11, 6, 3.2, 3, pal.r('skin'), 1, 3);
+    p.rect(8, 2, 6, 2, c('hair', 0)).rect(8, 4, 2, 2, c('hair', 0));
+    p.set(13, 6, ink).rect(12, 5, 2, 1, c('skin', 1)).set(14, 7, c('skin', 2)).set(13, 8, ink);
+    p.line(11, 9, 12, 14, c('teal', 1)).set(12, 15, c('skin', 2));
     if (f) {
       p.rect(12, 0, 8, 6, c('white', 2)).set(13, 6, c('white', 2));
-      micro(p, 13, 0, 'TRY', ink);
+      micro(p, 13, 0, 'HM', ink);
     }
     return done(p);
   };

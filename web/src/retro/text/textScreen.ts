@@ -1,7 +1,7 @@
 // An 80x25 color text mode screen (VGA mode 3) drawn on a canvas: character + attribute
 // cells, the 16 color text palette (which Game-Maker reprogrammed), boxes with drop
 // shadows, saved regions and a blinking cursor. Characters are CP437 codes.
-import { FONT_CP437 } from './cp437';
+import { FONT_CP437 } from '../../gfx/cp437Glyphs';
 
 export const COLS = 80;
 export const ROWS = 25;
@@ -31,7 +31,7 @@ const VGA16: [number, number, number][] = [
 /** attr = foreground + background * 16 */
 export const attr = (fg: number, bg: number) => (fg & 15) | ((bg & 15) << 4);
 
-export interface SavedRegion {
+interface SavedRegion {
   x: number;
   y: number;
   w: number;

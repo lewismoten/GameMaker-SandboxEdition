@@ -8,7 +8,7 @@
 import { RECLEN, parseRecording, serializeRecording, type RecordedKey } from '../formats/recording';
 
 export const RECORD = 1;
-export const PLAYBACK = 2;
+const PLAYBACK = 2;
 
 export class Recorder {
   mode = 0;

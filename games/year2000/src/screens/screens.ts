@@ -28,7 +28,7 @@ export function titleScreen(a: Art): Pixels {
   scaleBlit(p, a.dex, 30, 138, 3);
   scaleBlit(p, a.sparky, 238, 152, 2, true);
   p.rect(0, 186, W, 14, C('night', 0));
-  centeredText(p, 189, 'SANDBOX SOFTWARE  (C) 1992', C('teal', 5));
+  centeredText(p, 189, 'SANDBOX SOFTWARE  (C) 1993', C('teal', 5));
   return p;
 }
 
@@ -142,7 +142,7 @@ export function storyScreens(a: Art): Pixels[] {
     p.rect(126, 116, 14, 26, C('grey', 1)).rect(128, 118, 10, 8, C('neon', 2)).line(138, 116, 142, 104, C('grey', 2));
     scaleBlit(p, a.dex, 190, 40, 5);
     chromeCentered(p, 160 - 10, '', 2);
-    caption(p, ['DEX DYNAMO, AGE 11, WROTE THE BEST', 'SCIENCE FAIR REPORT IN THE SOLAR SYSTEM:', '"THE POCKET TELEPHONE." 20 WHOLE PAGES.']);
+    caption(p, ['DEX DYNAMO, 11, WROTE THE BEST SCIENCE', 'FAIR REPORT IN THE SOLAR SYSTEM:', '"THE POCKET TELEPHONE." 20 WHOLE PAGES.']);
     out.push(p);
   }
   // 3. Sparky ate it.
@@ -191,7 +191,7 @@ export function storyScreens(a: Art): Pixels[] {
 }
 
 // ------------------------------------------------------------------ level cards
-export function levelCard(n: number, title: string, lines: string[], view: Pixels): Pixels {
+export function levelCard(n: number, of: number, title: string, lines: string[], view: Pixels): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, H, R('night'), 0, 3);
   p.blit(view, 0, 46);
@@ -201,6 +201,8 @@ export function levelCard(n: number, title: string, lines: string[], view: Pixel
   text(p, tx + 1, 13, title, C('grey', 0));
   text(p, tx, 12, title, C('teal', 5));
   p.rect(tx, 23, textWidth(title), 1, C('teal', 3));
+  // how many levels there are, and how many are left, under the name
+  text(p, tx, 30, n === of ? `THE LAST ONE OF ${of}!` : `OF ${of}: ${of - n} MORE TO GO`, C('gold', 5));
   lines.forEach((s, i) => text(p, 10, 152 + i * 11, s, i === lines.length - 1 ? C('gold', 5) : C('grey', 7)));
   return p;
 }
@@ -274,7 +276,7 @@ export function wonScreen2(a: Art): Pixels {
     '',
     'SPARKY ATE THE TROPHY.',
   ];
-  p.rect(30, 52, 260, lines.length * 11 + 10, C('night', 0));
+  p.rect(16, 52, 288, lines.length * 11 + 10, C('night', 0));
   lines.forEach((s, i) => centeredText(p, 58 + i * 11, s, i === lines.length - 1 ? C('gold', 5) : C('grey', 7)));
   scaleBlit(p, a.dex, 34, 140, 2);
   scaleBlit(p, a.sparky, 262, 158, 2, true);

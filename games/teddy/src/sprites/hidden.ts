@@ -1,10 +1,11 @@
 // The Sandbox Software regulars tucked into Teddy's town (games/kit/TIN-HEARTS.md): the tin
 // heart and the painted Easter egg, each drawn over the block it lies on, and guests from the
 // other games recolored into Teddy's ramps (never the sky, glow or neon ramps, which change
-// with the time of day).
+// with the time of day). Also the save sign (kit/saveSign.ts), drawn in those ramps too.
 import { Pixels } from '../../../kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg, type EggPattern } from '../../../kit/easterEgg';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import { P } from '../art/pal';
 
 const c = (n: string, k: number) => P.c(n, k);
@@ -96,4 +97,28 @@ export function addGuest(bs: Over, name: string, guest: Pixels, base: string): s
   p.blit(guest, 0, 0, 255);
   bs.add(name, p, { grav: bs.def(base).grav });
   return name;
+}
+
+/**
+ * The save sign (kit/saveSign.ts): its board over the two cells at (x, y) and (x + 1, y), its
+ * posts over the two below, each drawn over what is there and keeping its gravity and solid
+ * sides (scenery: no touch, no sound).
+ */
+export function addSaveSign(bs: Over, m: { get(x: number, y: number): string; set(x: number, y: number, name: string): unknown }, x: number, y: number): void {
+  const cells: [number, number][] = [
+    [x, y],
+    [x + 1, y],
+    [x, y + 1],
+    [x + 1, y + 1],
+  ];
+  const bases = cells.map(([cx, cy]) => m.get(cx, cy));
+  const pics = bases.map((b) => over(bs.pic(b)));
+  const sign = saveSignBlocks(P.pal, { board: [pics[0], pics[1]], posts: [pics[2], pics[3]] }, { use: STEADY });
+  const out = [...sign.board, ...sign.posts!];
+  cells.forEach(([cx, cy], k) => {
+    const name = `saveSign${k}`;
+    const { grav, solid } = bs.def(bases[k]);
+    bs.add(name, out[k], { grav, solid });
+    m.set(cx, cy, name);
+  });
 }

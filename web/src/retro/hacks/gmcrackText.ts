@@ -8,7 +8,7 @@ export const GROUP = 'DiGiTAL DUNE';
 /** Where cracking keeps the original: GAME.EXE -> GAME.BAK. */
 export const bakName = (exe: string): string => exe.replace(/\.EXE$/i, '.BAK').toUpperCase();
 export const VERSION = '1.0';
-export const RELEASED = '07/04/95';
+const RELEASED = '07/04/95';
 /** Who the scroller and the .NFO greet. */
 export const GREETS = ['PIXEL WIZARD', 'THE BLOCKSMITH', 'SCROLLMASTER', 'MONSTER MASH', 'SAND CASTLE'];
 

@@ -1,6 +1,7 @@
 // Game health check: finds what would stop a game from playing as intended — files its
 // scenes name that are not there, links into scenes that don't exist, names DOS can't
-// use, empty files, and (deep check) files that can't be read. Used by the home page's
+// use, empty files, and (deep check) files that can't be read and animations RSD's player
+// can't play (formats/fliLimits.ts). Used by the home page's
 // ⚠ badges and report; pure, so it is tested in test/health.test.ts.
 import { fileSlotsFor, GRAPHIC_EXTS, NOSCENE, parseGame, sceneKind, slotExtensions, type Game } from '../formats/game';
 import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
@@ -12,17 +13,18 @@ import { parseMap } from '../formats/map';
 import { parseSoundSet } from '../formats/sound';
 import { decodeGif } from '../formats/gif';
 import { parseFli } from '../formats/fli';
+import { describeFliFault, fliFaults } from '../formats/fliLimits';
 import { parseCmf } from '../formats/cmf';
 import { decodeVoc } from '../formats/voc';
 import { parseRecording } from '../formats/recording';
 import { cdName, normalize } from './files';
 
-export type Severity = 'error' | 'warning';
+type Severity = 'error' | 'warning';
 
 export interface Issue {
   severity: Severity;
   /** What kind of problem, for grouping in the report. */
-  kind: 'missing' | 'link' | 'name' | 'empty' | 'unreadable' | 'game';
+  kind: 'missing' | 'link' | 'name' | 'empty' | 'unreadable' | 'game' | 'dos';
   /** The file the problem is in or about. */
   file?: string;
   message: string;
@@ -204,6 +206,14 @@ export function checkGame(src: FileSource, gam: string | undefined, opts: { deep
       if (!parse || !bytes.length || n === gamFile) continue;
       try {
         parse(bytes);
+        const faults = ext(n) === 'fli' ? fliFaults(bytes) : [];
+        if (faults.length)
+          issues.push({
+            severity: 'warning',
+            kind: 'dos',
+            file: n,
+            message: `${n} won’t play right in real DOS: ${faults.slice(0, 3).map(describeFliFault).join('; ')}${faults.length > 3 ? ', and more' : ''}. Save it again in the Animation editor (any change, even one you undo) and the editor writes it in pieces DOS reads.`,
+          });
       } catch (e) {
         // Leftovers the game never opens (the CD has a few) can't break it.
         const note = used.has(n) ? '' : ' The game doesn’t use it.';

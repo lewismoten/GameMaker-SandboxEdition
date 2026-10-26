@@ -1,3 +1,4 @@
+// fileHistory: Undo and Redo for editors that rewrite whole files.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../src/project/files';
 import { fileHistory } from '../src/editor/core/fileUndo';

@@ -6,7 +6,7 @@
 import type { GameFiles } from '../project/files';
 
 /** The heading LICENSE.TXT gives the clips (games/kit/license.ts). */
-export const RECORDED_HEADING = 'VOICE CLIPS: NOT MIT';
+const RECORDED_HEADING = 'VOICE CLIPS: NOT MIT';
 
 /** The voice clips (upper-case DOS names) a game's LICENSE.TXT says are not MIT, or none. */
 export function recordedClips(files: GameFiles): string[] {

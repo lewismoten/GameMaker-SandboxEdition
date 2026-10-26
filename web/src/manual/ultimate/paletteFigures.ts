@@ -114,7 +114,7 @@ const same = (a: Palette, b: Palette, i: number) => a[i * 3] === b[i * 3] && a[i
 const css = (p: Palette, i: number) => `rgb(${vga8(p[i * 3])},${vga8(p[i * 3 + 1])},${vga8(p[i * 3 + 2])})`;
 
 /** Entries that differ, as runs: "9–71, 76–79". */
-export function runs(list: number[]): string {
+function runs(list: number[]): string {
   const out: string[] = [];
   for (let k = 0; k < list.length;) {
     let e = k;
@@ -175,7 +175,8 @@ function strip(p: Palette, [from, to]: Range, alt: string): HTMLImageElement {
     g.fillStyle = css(p, i);
     g.fillRect((i - from) * 10, 0, 10, 10);
   }
-  return h('img', { src: c.toDataURL(), alt, width: c.width, height: c.height, class: 'ug-pix ug-strip-sw' });
+  // a row of swatches in a table: too small a target to enlarge one by one (crisp.ts)
+  return h('img', { src: c.toDataURL(), alt, width: c.width, height: c.height, class: 'ug-pix ug-strip-sw', dataset: { noZoom: '' } });
 }
 
 function windowPixels(map: Uint8Array, bbl: Uint8Array, [x, y, w, hh]: Set['at']): Uint8Array {

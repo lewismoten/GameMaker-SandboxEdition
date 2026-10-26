@@ -6,7 +6,7 @@ import { h, clear } from '../editor/core/ui';
 import { loadDisks, type Disk } from '../retro/dos/disks';
 import type { Computer } from '../retro/computer';
 
-export interface DiskMenuHost {
+interface DiskMenuHost {
   pc(): Computer | undefined;
   /** The PC, switched on (whatever it is running). */
   on(): Promise<Computer | undefined>;
@@ -24,7 +24,7 @@ const GROUPS: [string, (d: Disk) => boolean][] = [
 export function diskMenu(host: DiskMenuHost): {
   button: HTMLElement;
   refresh(insertId?: string): Promise<void>;
-  openGame(id: string): Promise<boolean>;
+  openDisk(diskId: string, action: 'play' | 'design'): Promise<boolean>;
   light(ms?: number): void;
   protectedA(): boolean;
   current(): string | undefined;
@@ -113,11 +113,11 @@ export function diskMenu(host: DiskMenuHost): {
                   {
                     type: 'button',
                     class: 'dos-btn',
-                    'aria-label': `Put ${d.kind === 'blank' ? 'the blank disk' : d.title} in drive A:`,
-                    title: 'Just swap the disk: whatever is running sees it the next time it reads drive A:',
+                    'aria-label': `Insert ${d.kind === 'blank' ? 'the blank disk' : d.title} in drive A:`,
+                    title: 'Insert it in drive A: and nothing more (to swap disks): whatever is running sees it the next time it reads drive A:',
                     onclick: () => void swapIn(d),
                   },
-                  '⇥ A:',
+                  '⇥ Insert',
                 ),
               ),
             ),
@@ -169,12 +169,15 @@ export function diskMenu(host: DiskMenuHost): {
     else await host.command(d.kind === 'blank' ? 'C:\nCD \\GM\nGM' : 'A:\nGM');
   }
 
-  /** Puts a catalog game's disk (play.html?game=<id>'s id) in drive A: and opens it in GM; false when there is none (unknown, or a secret game still hidden). */
-  async function openGame(id: string): Promise<boolean> {
+  /**
+   * Puts a disk (cd:<id> with play.html?game=<id>'s id, or project:<id>) in drive A: and plays
+   * or designs its game; false when the box has no such disk (unknown, or a secret game still hidden).
+   */
+  async function openDisk(diskId: string, action: 'play' | 'design'): Promise<boolean> {
     if (!disks.length) await refresh();
-    const d = disks.find((x) => x.id === `cd:${id}`);
+    const d = disks.find((x) => x.id === diskId);
     if (!d) return false;
-    await use(d, 'design');
+    await use(d, action === 'play' && d.gam ? 'play' : 'design');
     return true;
   }
 
@@ -200,7 +203,7 @@ export function diskMenu(host: DiskMenuHost): {
   return {
     button,
     refresh,
-    openGame,
+    openDisk,
     light,
     /** The disk in drive A: has its write-protect tab open (an original). */
     protectedA: () => !!inDrive?.writeProtected,

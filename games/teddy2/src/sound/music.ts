@@ -4,6 +4,7 @@
 // Yankee Doodle on a fife for Founders' Day. Each voice is its own OPL2 channel; chords
 // spread across three channels.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { THEME_A, THEME_B, THEME_CHORDS } from '../../../kit/teddyTheme';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],
@@ -112,10 +113,6 @@ const { piano, bass: BASS, strings, brass, lead, bell, organ, pad, pluck } = INS
 /** A soft snare-ish tick on beats 2 and 4. */
 const backbeat = (bars: number) => times(bars, 'r q, C4 q, r q, C4 q');
 
-// Teddy's Theme: 8 bars in C.
-const THEME_A = 'G4 e, C5 e, E5 e, G5 e, E5 q, C5 q, D5 e, E5 e, F5 e, D5 e, G4 h, A4 e, C5 e, F5 e, A5 e, G5 q, E5 q, D5 e, C5 e, D5 e, E5 e, C5 h';
-const THEME_B = 'E5 q, E5 e, F5 e, G5 q, C6 q, B5 e, A5 e, G5 e, F5 e, E5 h, D5 q, D5 e, E5 e, F5 q, A5 q, G5 e, F5 e, E5 e, D5 e, C5 h';
-
 /** Title: the theme as a bouncy march, then the bridge. */
 export function titleSong(): Uint8Array {
   const chords = ['C', 'G7', 'F', 'C', 'C', 'G7', 'Dm', 'C', 'C', 'Am', 'Dm', 'G7', 'C', 'F', 'G7', 'C'];
@@ -150,7 +147,6 @@ export function storySong(): Uint8Array {
 const GWINN_A = 'A4 e, C5 e, E5 e, A5 e, G5 q, E5 q, F5 e, E5 e, D5 e, F5 e, E5 h, A4 e, C5 e, E5 e, A5 e, B5 q, G#5 q, A5 q, E5 q, A4 h';
 const GWINN_B = 'D5 q, F5 e, A5 e, D6 q, A5 q, C6 e, B5 e, A5 e, G5 e, A5 h, F5 q, E5 e, D5 e, E5 q, G#5 q, A5 h., r q';
 const GWINN_CHORDS = ['Am', 'Dm', 'Am', 'E7', 'Dm', 'Am', 'E7', 'Am'];
-const THEME_CHORDS = ['C', 'G7', 'F', 'C', 'C', 'Am', 'Dm', 'G7'];
 
 /** Level 1, Doc Leo's house at dawn: the theme on a music box, slow and sleepy, then waking up. */
 export function houseSong(): Uint8Array {

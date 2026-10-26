@@ -1,3 +1,5 @@
+// The Sandbox BBS's upload/download ratio: free files, the ten on the house, and what an upload
+// earns.
 import { describe, expect, it } from 'vitest';
 import { filePoints, kb, mayDownload, newAccount, NEW_USER_FILES, RATIO, ratioText, recordDownload, recordUpload } from '../src/retro/bbs/ratio';
 

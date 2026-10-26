@@ -4,7 +4,7 @@ import { Reader } from './binary';
 
 export const CMF_GAMEMAKER_CLOCK = 146;
 
-export interface CmfFile {
+interface CmfFile {
   version: number;
   ticksPerBeat: number;
   /** Ticks per second the song was converted for. */
@@ -44,7 +44,7 @@ export interface CmfEvent {
   data: number[];
 }
 
-export interface CmfSong {
+interface CmfSong {
   /** 16-byte SBI FM instruments; instrument n starts on MIDI channel n. */
   instruments: Uint8Array[];
   events: CmfEvent[];

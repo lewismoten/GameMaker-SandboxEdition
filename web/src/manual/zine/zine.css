@@ -1,0 +1,249 @@
+/* NO CARRIER #3's leaves (zineLeaf.ts) and their page turner (zineItem.ts): photocopied,
+   typewriter text, cut-out ransom-note headings, notes scrawled in the margin. Sized in cqw (a
+   hundredth of the leaf's width), so a leaf looks the same at any size and in print. */
+
+.pp-zine {
+  display: flex;
+  flex-direction: column;
+  padding: 7cqw 6cqw 4cqw 8cqw;
+  /* photocopy: off-white, a gray cast at the edges, toner specks */
+  background:
+    radial-gradient(circle at 12% 18%, rgba(0, 0, 0, 0.35) 0 0.25cqw, transparent 0.35cqw) 0 0 / 13cqw 11cqw,
+    radial-gradient(circle at 70% 60%, rgba(0, 0, 0, 0.3) 0 0.25cqw, transparent 0.35cqw) 0 0 / 17cqw 15cqw,
+    radial-gradient(ellipse at 50% 40%, #fafaf6 55%, #d9d9d2 100%);
+  color: #111;
+  font:
+    calc(var(--zf, 3.6) * 1cqw) / 1.38 'Courier New',
+    Courier,
+    monospace;
+}
+
+.pp-zine-blank {
+  background: #fafaf6;
+}
+
+.pp-zine .zine-page {
+  flex: 1;
+}
+
+.pp-zine p {
+  margin: 0 0 0.55em;
+}
+
+.pp-zine .zine-page.cover p:first-of-type {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* cut-out letters, each from a different magazine */
+.pp-zine .zine-ransom {
+  margin: 0 0 0.6em;
+  font-size: 1.55em;
+  line-height: 1.45;
+}
+
+.pp-zine .zr {
+  display: inline-block;
+  margin: 0.04em;
+  padding: 0 0.12em;
+  transform: rotate(var(--r, 0deg));
+}
+
+.pp-zine .zr-word {
+  display: inline-block;
+  margin-right: 0.4em;
+  white-space: nowrap;
+}
+
+.pp-zine .zr-a {
+  background: #111;
+  color: #fff;
+  font-family: Impact, 'Arial Black', sans-serif;
+}
+
+.pp-zine .zr-b {
+  border: 0.06em solid #111;
+  background: #fff;
+  color: #111;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.pp-zine .zr-c {
+  background: #cfcfcf;
+  color: #111;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+
+.pp-zine .zr-d {
+  background: #fff;
+  color: #111;
+  font-family: 'Arial Black', Arial, sans-serif;
+  text-decoration: underline;
+}
+
+.pp-zine .zr-e {
+  background: #3a3a3a;
+  color: #fff;
+  font-family: 'Times New Roman', serif;
+  font-weight: 700;
+}
+
+/* notes scrawled in pen, with a hand-drawn arrow */
+.pp-zine .zine-scrawl {
+  color: #1a237e;
+  font:
+    700 1.1em/1.25 'Marker Felt',
+    'Comic Sans MS',
+    cursive;
+  transform: rotate(-2deg);
+}
+
+.pp-zine .zine-arrow {
+  display: inline-block;
+  transform: rotate(-12deg);
+}
+
+.pp-zine .zine-phones {
+  margin: 0 0 0.6em;
+  padding: 0;
+  list-style: none;
+  font:
+    1em/1.3 'Marker Felt',
+    'Comic Sans MS',
+    cursive;
+}
+
+.pp-zine .zine-phones li {
+  margin: 0 0 0.25em;
+  border-bottom: 0.06em dashed #999;
+}
+
+.pp-zine .zine-num {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+
+.pp-zine .zine-what {
+  color: #333;
+}
+
+.pp-zine .zine-folio {
+  margin: 0;
+  color: #555;
+  text-align: center;
+}
+
+/* four leaves on a letter sheet, two by two, with dashed lines to cut along */
+.pp-zine4 {
+  display: grid;
+  grid-template: 1fr 1fr / 1fr 1fr;
+  background: #fff;
+}
+
+.pp-zine4 > .pp-paper {
+  width: 100%;
+}
+
+.pp-zine4 .pp-sheet {
+  box-shadow: none;
+}
+
+.pp-zine4::before,
+.pp-zine4::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  border: 0 dashed #888;
+}
+
+.pp-zine4::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left-width: 1px;
+}
+
+.pp-zine4::after {
+  top: 50%;
+  right: 0;
+  left: 0;
+  border-top-width: 1px;
+}
+
+/* on screen: one leaf at a time, as large as fits */
+.zine-turner {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.zine-turner > .pp-paper {
+  width: min(100%, 560px, calc((100dvh - 200px) * 4.25 / 5.5));
+  transform: rotate(-0.6deg);
+}
+
+.zine-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #f2efe6;
+  font:
+    600 14px/1 system-ui,
+    sans-serif;
+}
+
+.zine-bar button[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* the editor's red marker: words crossed out, and a signed answer */
+.pp-zine .zine-struck {
+  text-decoration: line-through 0.18em #c62828;
+}
+
+.pp-zine .zine-ed {
+  margin: 0.2em 0 0.6em 1.2em;
+  color: #c62828;
+  font:
+    700 1.15em/1.2 'Marker Felt',
+    'Comic Sans MS',
+    cursive;
+  transform: rotate(-3deg);
+}
+
+/* the last panel: an ad box drawn on two sides and given up on, and a streak from the copier */
+.pp-zine .zine-unfinished {
+  position: relative;
+  margin-top: 0.6em;
+  padding: 0.8em 0.6em;
+  border-top: 0.12em dashed #333;
+  border-left: 0.12em dashed #333;
+}
+
+.pp-zine .zine-ad {
+  margin: 0;
+  font:
+    700 1.05em/1.2 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.04em;
+  transform: rotate(-1deg);
+}
+
+.pp-zine .zine-smear {
+  position: absolute;
+  right: -10%;
+  bottom: -0.2em;
+  left: 35%;
+  height: 0.9em;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.55) 25%, rgba(0, 0, 0, 0.35) 70%, transparent);
+  filter: blur(0.08em);
+  transform: rotate(-2deg);
+}

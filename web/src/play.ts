@@ -3,7 +3,10 @@
 //   play-<id>.html         the same, the game named by the page (<meta name="gm:game">)
 //   play.html?project=<id> a project from the editor (IndexedDB)
 //   exported web apps     ./game/manifest.json lists the bundled game files
+//   &autoplay (or ?autoplay) starts the game without its click-to-play screen (the catalog's
+//   ▶ Play links have it); sound comes on at the first click or key if the browser held it back
 import { mountPlayer } from './player/player';
+import { unlock } from './audio/context';
 import { watchForUpdates } from './devReload';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
@@ -24,6 +27,18 @@ const pageGame = document.querySelector<HTMLMetaElement>('meta[name="gm:game"]')
 document.documentElement.style.cssText = 'height:100%;background:#000';
 document.body.style.cssText = 'margin:0;height:100%;background:#000';
 root.style.cssText = 'width:100%;height:100%';
+const autoplay = /^(|1|true|yes|on)$/i.test(new URLSearchParams(location.search).get('autoplay') ?? 'off');
+
+/** Sound waits for the visitor's first click or key when the browser allows no sooner. */
+function unlockOnFirstTouch(): void {
+  const go = () => {
+    unlock();
+    removeEventListener('pointerdown', go, true);
+    removeEventListener('keydown', go, true);
+  };
+  addEventListener('pointerdown', go, true);
+  addEventListener('keydown', go, true);
+}
 
 async function loadBundle(): Promise<{ id: string; title: string; gam: string; files: GameFiles } | undefined> {
   const res = await fetch('./game/manifest.json').catch(() => undefined);
@@ -72,7 +87,8 @@ async function choose(): Promise<
         title: entry.title,
         gam: entry.gam!,
         files: streamed.files,
-        back: './',
+        // back to the game's own page in the catalog, with its Look inside, manual and saves
+        back: `./#/game/cd:${encodeURIComponent(entry.id)}`,
         poster: posterOf(entry).catch(() => undefined),
         notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
       };
@@ -87,7 +103,23 @@ async function main(): Promise<void> {
   root.style.font = '16px system-ui';
   const game = await choose();
   if (!game) {
-    location.replace('./');
+    const params = new URLSearchParams(location.search);
+    const asked = params.get('project')
+      ? 'That game isn’t kept in this browser (it may have been deleted, or made in another browser).'
+      : params.get('game')
+        ? 'That game isn’t in the catalog (the link may be old).'
+        : '';
+    if (!asked) {
+      location.replace('./');
+      return;
+    }
+    // a stale or foreign link says what happened, instead of landing on the home page unexplained
+    const say = Object.assign(document.createElement('h1'), { textContent: `${asked} ` });
+    say.style.font = '18px system-ui';
+    say.append(Object.assign(document.createElement('a'), { href: './', textContent: 'See all the games →', style: 'color:#ffd400' }));
+    root.replaceChildren(say);
+    root.style.padding = '24px';
+    root.style.boxSizing = 'border-box';
     return;
   }
   if (!pageGame) document.title = game.title;
@@ -98,7 +130,12 @@ async function main(): Promise<void> {
   heading.style.cssText = 'position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
   document.body.prepend(heading);
   for (const [name, bytes] of Object.entries(await loadSaveData(game.id))) game.files.set(name, bytes);
-  const start = () =>
+  if (autoplay) unlockOnFirstTouch();
+  let first = true;
+  const start = () => {
+    // only the first start skips "Play": after the game ends, its start screen comes back
+    const autoStart = autoplay && first;
+    first = false;
     mountPlayer(root, game.files, game.gam, {
       title: game.title,
       notice: game.notice,
@@ -112,7 +149,9 @@ async function main(): Promise<void> {
         if (game.back) location.href = game.back;
         else start();
       },
+      autoStart,
     });
+  };
   start();
 }
 

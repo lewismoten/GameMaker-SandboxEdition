@@ -6,7 +6,7 @@ import { listProjects } from '../../project/storage';
 import { originId } from './homeOrigin';
 import { editedWhen } from './homeTime';
 
-export interface CopyRecord {
+interface CopyRecord {
   id: string;
   name: string;
   gam: string;

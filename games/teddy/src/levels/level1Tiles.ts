@@ -1,6 +1,6 @@
 // Level 1's background blocks, Doc Leo's backyard: the lawn, the hedge, Doc Leo's house,
 // Teddy's doghouse, the garden boxes, the clothesline, Gwinn's garbage-can mess, the old oak,
-// the back fence with soft dirt under it, hint signs and the alley where the Klown Car
+// the back fence with soft dirt under it, hint signs and the alley where the Clown Car
 // waits. Also the helpers every level uses: GROUND (the map row the lawn starts on), the
 // sky band for a row (bandOf) and a hint sign on a stake.
 import { Pixels } from '../../../kit/pixels';
@@ -298,7 +298,7 @@ export function backyardTiles(): Tiles {
   t.air('signFetch', sign(tuft(sky(3), 83), 'F!'));
   t.air('signCar', sign(tuft(sky(3), 84), 'TOWN'));
 
-  // The alley: a gravel lane and the Klown Car.
+  // The alley: a gravel lane and the Clown Car.
   t.klownCar(
     (bx, by) => (by === 0 ? t.pic('hedge') : tuft(sky(3), 90 + bx)),
     'hat',

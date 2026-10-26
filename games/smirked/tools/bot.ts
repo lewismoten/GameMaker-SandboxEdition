@@ -1,9 +1,10 @@
 // A play-testing bot for GameSim: finds its way with a shortest-path search over the floor (what
 // hurts costs more: a hissing fog machine, a fake spiderweb, a fog light; links it wasn't sent
-// to are walls), walks it one straight run at a time, pushes into doors to open them, picks up
-// what it sees on the way, and tackles (or swings the foam sword at) what's in the way. Moving
-// monsters (zombies, bats, the ghost, the werewolf guy, the cardboard knight) are handled by trying
-// a stretch again from a snapshot after a wait (route.ts, carefully()).
+// to are walls; off the foyer's runner a little more when keepTo is set), walks it one straight
+// run at a time, pushes into doors to open them, picks up what it sees on the way, and tackles
+// (or swings the foam sword at) what's in the way. Moving monsters (zombies, bats, the ghost,
+// the werewolf guy, the cardboard knight) are handled by trying a stretch again from a
+// snapshot after a wait (route.ts, carefully()).
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
 import { BATTERIES, MONEY, SCAN, SMIRKS, SORRY, HELMET } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
@@ -130,13 +131,16 @@ export class Bot {
     return s;
   }
 
+  /** The extra cost of a step onto a cell off the carpet runner (kit/walkPaths.ts keepToPaths); unset, every way costs the same. */
+  keepTo?: (x: number, y: number) => number;
+
   /** What one step onto (x, y) costs, or undefined where you can't go. */
   private cost(x: number, y: number): number | undefined {
     const shown = this.sim.shown(x, y);
     if (shown.solid) return undefined;
     const extra = this.avoid.get(`${x},${y}`) ?? 0;
     if (shown.chHitPt < 0 || shown.scorePts < 0) return 40 + extra;
-    return 1 + extra;
+    return 1 + extra + (this.keepTo?.(x, y) ?? 0);
   }
 
   /** Shortest path (4 directions) to (tx, ty) in world blocks, avoiding links not asked for. */

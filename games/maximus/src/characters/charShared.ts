@@ -82,7 +82,7 @@ export function weapons(c: Character, pose: (name: string) => F, extra: { fireY?
     ],
   });
   setSeq(c, SEQ.medkit, {
-    key: 'h',
+    key: 'r',
     sound: SND.medkit,
     bloc: itemBlock('medkit'),
     norepeat: true,

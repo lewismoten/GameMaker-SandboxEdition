@@ -1,3 +1,4 @@
+// The offline copy: sizes in words, and checking there is room.
 import { describe, expect, it } from 'vitest';
 import { hasRoom, sizeText } from '../src/offline/offlineCopy';
 

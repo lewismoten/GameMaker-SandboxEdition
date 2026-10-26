@@ -8,7 +8,7 @@
     "F": "Toss a tennis ball",
     "B": "Throw a splash of water",
     "Space": "Fling a clod of sand",
-    "P": "Pick up"
+    "G": "Pick up"
   },
   "items": [
     {
@@ -159,7 +159,7 @@
           "hints": [
             {
               "q": "Where is the shovel?",
-              "a": "Right beside Teddy's toy chest in the southwest corner, where you start. Press P to pick it up."
+              "a": "Right beside Teddy's toy chest in the southwest corner, where you start. Press G to pick it up."
             },
             {
               "q": "How do I get into Anthill Keep?",
@@ -226,7 +226,7 @@
             },
             {
               "q": "Just show me where to dig.",
-              "a": "Pick up the shovel (P) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press P to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
+              "a": "Pick up the shovel (G) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press G to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
               "sketch": {
                 "rows": [
                   "---------|",
@@ -457,9 +457,28 @@
   ],
   "news": [
     {
-      "head": "Teddy's next adventure",
-      "html": "<p>Registered Sandcastle Knight players were promised the next Teddy adventure on disk, and here it comes: <b>Teddy's Little Big Adventure</b> is on our workbench now. Your copy is on the house; watch the BBS for it.</p>",
-      "everywhere": true
+      "head": "A corgi in a tin helmet",
+      "html": "<p>Teddy the Pembroke Welsh Corgi is the knight of the backyard sandbox, and in <b>Sandcastle Knight</b> he wins back four castles, his toys and the Crown of the Sandbox from under his snoring big sister. Dig dunes, plug anthills, build towers of sand and show off his tricks: sit, spin, play dead and roll over. It's the Fourth of July, so every knight who wins back the crown gets fireworks. No sound card needed: Teddy beeps along on the PC speaker.</p>"
+    },
+    {
+      "head": "Dial the sandbox",
+      "html": "<p>Not every little hole in the sandbox was dug by an ant. One of them dials our BBS, right inside the game, and your phone bill is safe. Have a look in the file area while you're logged on.</p>"
+    },
+    {
+      "head": "Since last issue: Couriers report in",
+      "html": "<p>Maximus couriers have been busy. The most-hailed world is Boxcar Flats (hi, Doc Leo). The most-asked question is about the star whales: every whale in a pod swims the same loop at the same moment, so a pod keeps its shape. Several of you have noticed that a pod in The Cradle spells a name. We aren't saying whose.</p>"
+    },
+    {
+      "head": "Around the Sandbox: Meet Gwinn",
+      "html": "<p>Teddy has a big sister. Gwinn is a chocolate-brown pit-lab mix with amber eyes and a pink collar, younger than Teddy and twice his size, and she knows exactly one trick: zoomies. In her first week at the office she knocked over a coffee can of pencils, unplugged the modem and lay down on the SysOp's keyboard. She has never once sat when asked. Everybody loves her anyway.</p>"
+    },
+    {
+      "head": "In the workshop: Teddy's next adventure",
+      "html": "<p>Registered Sandcastle Knight players were promised the next Teddy adventure on disk, and it's on our workbench now: <b>Teddy's Little Big Adventure</b>. This time Teddy leaves the sandbox for the big town, with more tricks than ever and a friend of ours in a felt fedora. Your copy is on the house; watch the BBS for it.</p>"
+    },
+    {
+      "head": "Letters: \"A galaxy on my monitor\"",
+      "html": "<p><i>\"My Maximus galaxy chart is taped to the side of my monitor. Is that where it goes?\"</i> - A courier, by mail</p><p><b>The Scoop replies:</b> That's where ours is. Fold it along the creases, and mind the Maelstrom.</p>"
     }
   ]
 }

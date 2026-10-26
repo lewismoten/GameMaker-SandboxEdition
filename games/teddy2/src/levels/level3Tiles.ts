@@ -1,9 +1,9 @@
 // Level 3's background blocks: Gwinn's night out, the night of the Big Show. Doc Leo's
 // backyard in the dark (Teddy asleep in his doghouse), the back gate, the alley, the park
 // by lamplight with its pond, a tall playground fence with hard clay at its foot, and the
-// park's east gate where the Klown Klub's hay wagon is hitched up for the Fair.
+// park's east gate where the Clown Club's hay wagon is hitched up for the Fair.
 import { Pixels, rng } from '../../../kit/pixels';
-import { blob, klubArt, micro, speckle } from '../art/draw';
+import { blob, clubArt, micro, microWidth, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { boxFace, c, canvas, copy, cut, dirt, grassTop, hedge, leaves, plankFence, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';
 import { sign, water } from './common';
@@ -194,7 +194,7 @@ export function nightTiles(): Tiles {
   const pc = cut(play);
   for (let by = 0; by < 3; by++) for (let bx = 0; bx < 3; bx++) t.air(`play${bx}${by}`, pc[by][bx]);
 
-  // The Klown Klub's hay wagon, hitched to a pickup at the park gate: hop into the hay.
+  // The Clown Club's hay wagon, hitched to a pickup at the park gate: hop into the hay.
   const wagon = canvas(4, 2, (_bx, by) => skyAt(38 + by));
   wagon.rect(2, 26, 76, 8, c('wood', 2)).rect(2, 26, 76, 1, c('wood', 4));
   for (let x = 6; x < 78; x += 8) wagon.rect(x, 12, 2, 14, c('wood', 1));
@@ -209,7 +209,8 @@ export function nightTiles(): Tiles {
   for (const x of [14, 64]) {
     wagon.disc(x, 35, 5, c('ink', 0)).ring(x, 35, 3, c('wood', 2));
   }
-  micro(wagon, 8, 28, klubArt('KLOWN KLUB  TO THE FAIR'), c('yellow', 3));
+  const wagonSide = clubArt('CLOWN CLUB HAYRIDE');
+  micro(wagon, 40 - Math.floor(microWidth(wagonSide) / 2), 28, wagonSide, c('yellow', 3));
   const wc = cut(wagon);
   for (let by = 0; by < 2; by++) for (let bx = 0; bx < 4; bx++) t.air(`wagon${bx}${by}`, wc[by][bx]);
   const truck = canvas(2, 2, (_bx, by) => skyAt(38 + by));

@@ -35,7 +35,7 @@ import {
 } from './world';
 
 /** Asks the player which inventory slot to drop; resolves -1 for Esc. */
-export type DropPicker = () => Promise<number>;
+type DropPicker = () => Promise<number>;
 
 /**
  * CHRFRAME with the original's out-of-range behavior: frame -1 read the 17 bytes

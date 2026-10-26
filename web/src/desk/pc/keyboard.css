@@ -59,3 +59,111 @@
     transition: none;
   }
 }
+
+/* the phone's strip of finger-sized keys under the PC (keyboard.ts STRIP): only where the
+   board's own keys are too small to tap */
+.key-strip {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .pc > .key-strip {
+    order: 2; /* under the case, over the keyboard tray */
+    align-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin: 10px 0 0;
+  }
+
+  /* below the disk's Play / Design bar, which hangs under the case */
+  .pc:has(.drive-actions:not([hidden])) > .key-strip {
+    margin-top: 58px;
+  }
+
+  .key-strip .ks-key {
+    flex: 1 1 0;
+    min-width: 36px;
+    max-width: 64px;
+    min-height: 44px;
+    padding: 4px 2px;
+    border: 1px solid #a79e85;
+    border-radius: 6px;
+    color: #1d1a12;
+    font:
+      600 14px system-ui,
+      sans-serif;
+    background: linear-gradient(#fbf7ea, #e2d9c0);
+    box-shadow: 0 3px 0 #a79e85;
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  .key-strip .ks-key:nth-child(3),
+  .key-strip .ks-key:nth-child(4) {
+    flex-grow: 1.6;
+    max-width: 84px;
+  }
+
+  .key-strip .ks-key:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #a79e85;
+  }
+
+  .key-strip .ks-key:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 2px;
+  }
+
+  /* F2 to F10, opened by the strip's last key: a row of their own, the template's word under each */
+  .key-strip .ks-fn {
+    display: flex;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .key-strip .ks-fn[hidden] {
+    display: none;
+  }
+
+  .key-strip .ks-f {
+    line-height: 1.1;
+  }
+
+  .key-strip .ks-f small {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+  }
+}
+
+/* the lock lights over the keypad: a green LED and its name, as on a 101-key board */
+.kb-locks {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  pointer-events: none;
+}
+
+.kb-lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.kb-lock .led {
+  margin: 0;
+}
+
+.kb-lock-name {
+  font:
+    600 6px/1 system-ui,
+    sans-serif;
+  color: #6f6a5c;
+  letter-spacing: 0.02em;
+}

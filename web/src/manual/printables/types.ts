@@ -16,7 +16,7 @@ export type GeneratedKind =
   | 'levelmaps'; // Level Maps: every level's real map, cropped, with arrivals and ways out marked
 
 /** A spot on a map, in blocks (0-99), with a label. */
-export interface MapMark {
+interface MapMark {
   x: number;
   y: number;
   label: string;
@@ -61,7 +61,21 @@ export interface MapItem extends ItemBase {
 export interface HintBookItem extends ItemBase {
   kind: 'hintbook';
   intro?: string;
+  /** What the cover shows, when the automatic pick (hintCoverArt.ts) is poor. */
+  cover?: HintCover;
   sections: { head: string; hints: { q: string; a: string; sketch?: HintSketch }[] }[];
+}
+
+/**
+ * A hint book cover's art. `hero`: a character file (its scene's blocks and palette are
+ * found), or the three files. `scene`: "title" (the title screen), a GIF of the game's, or a
+ * map window [map, x, y] (16 x 10 blocks). Colors are CSS colors; the box's are the default.
+ */
+export interface HintCover {
+  hero?: string | Portrait;
+  scene?: string | [map: string, x: number, y: number];
+  background?: string;
+  accent?: string;
 }
 
 /**
@@ -222,11 +236,27 @@ export interface SpriteArt {
 }
 
 /** A story for The Sandbox Scoop newsletter. */
-export interface NewsStory {
+interface NewsStory {
   head: string;
   html: string;
   /** Also run it in the other games' newsletters (it doesn't talk about this box). */
   everywhere?: boolean;
+}
+
+/**
+ * How the player's World Map groups scenes into places. Each group's first scene is the place;
+ * the rest are folded into it (no picture of their own) and listed on its land. A scene is a
+ * number, a range ("9-18"), or a name only one scene has. Scenes shown under an all-black
+ * palette fold into their place without being named here (worldMapGroups.ts).
+ */
+export interface WorldMapHints {
+  groups?: {
+    scenes: (number | string)[];
+    /** The place's name on the map (default: its scene's). */
+    name?: string;
+    /** What its land lists (default: the folded scenes' numbers and names). */
+    labels?: string[];
+  }[];
 }
 
 /** games/<id>/printables.json */
@@ -243,4 +273,6 @@ export interface PrintablesFile {
   news?: NewsStory[];
   /** A one-line pitch for the publisher catalog (defaults to the blurb). */
   pitch?: string;
+  /** The World Map's places (see WorldMapHints). */
+  worldMap?: WorldMapHints;
 }

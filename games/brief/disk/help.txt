@@ -6,27 +6,27 @@ KEYS
  F2 status: Money is the
     words you carry. Words
     are money.
- P pocket a small thing
+ Space: pocket a small
+    thing
  F5 save F6 load
  Esc quit to the menu
 
 Walk into a door, a book or a
 page to use it.
 
-
 THE LIBRARY
- The reading room has a
- door to each of the eight
- wings. Each wing's
- hallway has four tall
- books on its shelves:
- walk into a spine and in
- you go.
+ The night comes in four
+ chapters of two wings
+ each. The reading room
+ has a door to each wing;
+ a later chapter's doors
+ are barred until the
+ chapter before is done.
 
- The door marked OUT goes
- back to the reading room.
-
-
+ Each wing's hallway has
+ four tall books: walk
+ into a spine and in you
+ go. OUT goes back.
 
 
 
@@ -79,16 +79,17 @@ WORD LOCKS
 
 
 THE RESERVE STACKS
- The purple STAX door in
- the reading room leads
- to the Reserve Stacks.
- Eight stamp gates stand
- in a row there, each
- inked with its wing's
- stamp. A gate opens once
+ Behind the purple STAX
+ door, a stamp gate for
+ each wing stands in a
+ row. A gate opens once
  its wing has four stories
- stamped SHELVED.
+ SHELVED. Past each pair,
+ step on the chapter's
+ stamp desk: CHAPTER DONE,
+ and the next doors open.
+ Then save with F5!
 
- What is past the gates?
+ Past the last gate?
  Exactly one hundred
  words. Ask anyone.

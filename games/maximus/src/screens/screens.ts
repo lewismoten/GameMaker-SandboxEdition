@@ -428,23 +428,30 @@ export function sectorCards(k: number, worlds: { world: World; scene: number; sc
     spaceBg(card, 500 + scene);
     // left: the planet and what the courier knows about it
     planetArt(card, 26, 30, 20, world.biome, scene, { rings: scene % 5 === 0 });
-    card.text(54, 12, `SECTOR ${k + 1}`, C('grey')[4]);
-    card.text(54, 22, sec.name.toUpperCase(), C('cyan')[6]);
+    // where the courier is: the sector of five, and the world of the sector's own
+    card.text(54, 12, `SECTOR ${k + 1} OF ${SECTORS.length}`, C('grey')[4]);
+    // the sector's name, on two lines when one would run under the scan panel (x 160)
+    const secName = sec.name.toUpperCase();
+    const cut = Canvas.width(secName) > 104 ? secName.lastIndexOf(' ', 13) : -1;
+    (cut > 0 ? [secName.slice(0, cut), secName.slice(cut + 1)] : [secName]).forEach((l, j) => card.text(54, 22 + j * 10, l, C('cyan')[6]));
     const name = world.name.toUpperCase();
     const scale = Canvas.width(name, 2) <= 150 ? 2 : 1;
     card.text(6, 58, name, C('yellow').slice(3).reverse(), { scale, outline: 0 });
     card.text(6, 80, KIND_TEXT[world.kind], C('orange')[6]);
     card.text(6, 90, `DANGER ${'*'.repeat(sec.level)}${'.'.repeat(5 - sec.level)}`, C('red')[6]);
-    let y = card.para(6, 106, 150, world.blurb, C('ice')[6], 10);
+    card.text(6, 100, `WORLD ${i + 1} OF ${worlds.length}`, C('grey')[5]);
+    let y = card.para(6, 114, 150, world.blurb, C('ice')[6], 10);
     if (world.shard !== undefined) {
       card.sprite(drawShard(world.shard), 4, y + 2, 1);
-      card.para(26, y + 6, 130, `SHARD: ${SHARDS[world.shard].toUpperCase()}`, C('yellow')[6], 10);
+      card.para(26, y + 6, 130, `SHARD ${world.shard + 1} OF ${SHARDS.length}: ${SHARDS[world.shard].toUpperCase()}`, C('yellow')[6], 10);
       y += 24;
     }
     if (world.module !== undefined) {
       card.sprite(drawModule(world.module), 4, y + 2, 1);
-      card.para(26, y + 6, 130, MODULES[world.module].name.toUpperCase(), C('green')[6], 10);
+      y = card.para(26, y + 6, 130, MODULES[world.module].name.toUpperCase(), C('green')[6], 10);
     }
+    if (y > 176) throw new Error(`${world.name}: the card's text runs into its save line`);
+    card.text(6, 178, 'F5 SAVE  F6 LOAD', C('green')[5]);
     card.text(6, 188, 'ANY KEY TO LAND', C('grey')[3]);
     // right: the long-range scan of the whole world
     if (scan) {
@@ -476,7 +483,10 @@ export function placeCards(places: { file: string; title: string; sub: string; t
     planetArt(card, 92, 104, 64, p.biome, 900 + i);
     card.text(172, 30, p.sub, C('cyan')[6]);
     card.text(172, 48, p.title, C('yellow').slice(3).reverse(), { scale: Canvas.width(p.title, 2) <= 140 ? 2 : 1, outline: 0 });
-    card.para(172, 80, 140, p.text, C('ice')[6], 10);
+    const y = card.para(172, 80, 140, p.text, C('ice')[6], 10);
+    if (y > 150) throw new Error(`${p.title}: the card's text runs into its last lines`);
+    card.text(172, 160, `CORE ${i + 1} OF ${places.length}`, C('grey')[4]);
+    card.text(172, 172, 'F5 SAVE  F6 LOAD', C('green')[5]);
     card.text(172, 184, 'ANY KEY TO GO ON', C('grey')[3]);
     c.blit(card, 0, i * 200);
     out.set(`${p.file}.bkd`, serializeBackdrop({ x: 0, y: i * 200, gif: 'places.gif' }));

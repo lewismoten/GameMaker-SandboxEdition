@@ -1,0 +1,156 @@
+/* The Level check report (checkReport.ts): the large dialog, and its printed checklist. */
+.lcr {
+  width: min(960px, calc(100vw - 64px));
+  max-width: 100%;
+}
+.lcr-filters {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.lcr-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lcr-group h3 {
+  margin: 0 0 4px;
+  font-size: 1.05em;
+}
+.lcr-list {
+  max-height: none;
+}
+.lcr-place {
+  margin: 0;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+.lcr-status {
+  margin: 0;
+}
+.lcr-open {
+  min-height: 24px;
+}
+/* the panel's list styles, here too for the whole game's report (opened where the map editor's aren't loaded) */
+.lcr .lc-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.lcr .lc-count {
+  min-height: 28px;
+}
+.lcr .lc-count[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.lcr .lc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lcr .lc-item {
+  border-left: 4px solid var(--border);
+  padding: 4px 0 4px 8px;
+}
+.lcr .lc-error {
+  border-left-color: var(--danger);
+}
+.lcr .lc-warning {
+  border-left-color: #c77700;
+}
+.lcr .lc-suggestion {
+  border-left-color: var(--accent);
+}
+.lcr .lc-what {
+  margin: 2px 0 0;
+}
+.lcr .lc-detail,
+.lcr .lc-why {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.lcr .lc-why .guide-link {
+  display: inline-block;
+  min-height: 24px;
+  line-height: 24px;
+}
+.lcr button {
+  min-height: 28px;
+}
+.lcr .check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  font-weight: normal;
+}
+.lcr .check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+.lcr [hidden] {
+  display: none;
+}
+.lcr-print {
+  display: none;
+}
+
+@media print {
+  html.lcr-printing body > *:not(.lcr-print) {
+    display: none !important;
+  }
+  html.lcr-printing,
+  html.lcr-printing body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  html.lcr-printing .lcr-print {
+    display: block;
+    color: #000;
+    font:
+      11pt/1.35 Georgia,
+      'Times New Roman',
+      serif;
+  }
+  .lcr-print h1 {
+    font-size: 16pt;
+    margin: 0 0 4pt;
+  }
+  .lcr-print h2 {
+    font-size: 13pt;
+    margin: 14pt 0 4pt;
+    border-bottom: 1px solid #000;
+    break-after: avoid;
+  }
+  .lcr-print ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lcr-print li {
+    display: flex;
+    gap: 8pt;
+    padding: 4pt 0;
+    break-inside: avoid;
+  }
+  .lcr-print .lcr-box {
+    font-size: 15pt;
+    line-height: 1;
+  }
+  .lcr-print .lcr-done {
+    color: #555;
+  }
+  .lcr-print .lcr-p-place,
+  .lcr-print .lcr-p-why {
+    font-size: 9.5pt;
+    color: #333;
+  }
+}

@@ -1,6 +1,7 @@
 // The paper shareware catalog on the desk: every shareware game made with Game-Maker,
 // with how to get it (the BBS) and the author's registration notice.
 import { h, clear } from '../../editor/core/ui';
+import { focusInto } from '../overlayFocus';
 import { creditLine, type CatalogEntry } from '../../project/files';
 import { sizeText, storageLine, zipBytes, zipName } from '../../project/diskFacts';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
@@ -33,7 +34,7 @@ function soundLine(g: CatalogEntry): string {
   return 'VGA · PC speaker sound';
 }
 
-export interface CatalogActions {
+interface CatalogActions {
   callBbs(): void;
   downloaded(id: string): boolean;
 }
@@ -41,9 +42,11 @@ export interface CatalogActions {
 export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): Promise<void> {
   return new Promise((resolve) => {
     const games = entries.filter((g) => g.kind === 'shareware' && g.gam);
+    let back = () => {};
     const close = () => {
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      back();
       resolve();
     };
     // The catalog is on top: keys must not also reach the PC (Esc would quit the program).
@@ -123,5 +126,6 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
       paper,
     );
     document.body.append(overlay);
+    back = focusInto(overlay.querySelector('button.close'));
   });
 }

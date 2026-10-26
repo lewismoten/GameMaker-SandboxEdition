@@ -6,7 +6,7 @@ import { h } from '../editor/core/ui';
 import { VirtualKeys } from '../input/virtualKeys';
 
 const KEYS: [label: string, code: string, name: string][] = [
-  ['Esc', 'Escape', 'Escape'],
+  ['Esc', 'Escape', 'Esc (Escape)'],
   ['Tab', 'Tab', 'Tab'],
   ['↑', 'ArrowUp', 'Up arrow'],
   ['↓', 'ArrowDown', 'Down arrow'],

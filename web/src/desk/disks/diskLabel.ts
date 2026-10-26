@@ -1,12 +1,14 @@
 // The printed label on a Sandbox Software disk, as a shareware publisher had them made in the
 // 90s: the company band, the title in the box's colors over a picture from the game, its
-// hero standing in front, and the small print. Pictures come from the game's own files.
+// hero standing in front, and the small print. Pictures come from the game's own files. Under
+// the desk's black light its title glows in its ink's fluorescent color (diskLabel.css).
 import './diskLabel.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { mapShot } from '../../gfx/gameShots';
 import { portrait } from '../../manual/printables/kit';
+import { uvInk } from '../room/posterUv';
 
 interface LabelArt {
   shot?: string;
@@ -65,7 +67,8 @@ export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string, d
       class: 'label printed graphic',
       style:
         `--lbg:${l?.background ?? '#fff'};--lband:${l?.band ?? '#c62828'};--lbandink:${bandInk(l?.band ?? '#c62828')};--link:${l?.ink ?? '#111'};` +
-        `--bbg:${box?.background ?? l?.band ?? '#222'};--bacc:${box?.accent ?? '#ffd400'};--bink:${box?.ink ?? '#fff'}`,
+        `--bbg:${box?.background ?? l?.band ?? '#222'};--bacc:${box?.accent ?? '#ffd400'};--bink:${box?.ink ?? '#fff'};` +
+        `--uvacc:${uvInk(box?.accent ?? '#ffd400')};--uvink:${uvInk(box?.ink ?? '#fff')}`,
     },
     h('span', { class: 'p-logo' }, logoText(g)),
     h(

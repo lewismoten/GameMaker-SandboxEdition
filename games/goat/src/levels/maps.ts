@@ -302,7 +302,7 @@ export function caravan(book: BlockBook): Level {
   // the stable door is in a pocket of rocks, and the only way in is through the spitting camel's line
   for (let y = 16; y <= 21; y++) if (y !== 18) m.set(36, y, 'rockSand');
   m.camel(6, 5);
-  m.camel(26, 7);
+  m.camel(21, 7);
   m.mon(MON.wiseman, 12, 13);
   m.mon(MON.goat, 19, 15);
   m.mon(MON.cousin, 8, 17).mon(MON.rooster, 30, 3);

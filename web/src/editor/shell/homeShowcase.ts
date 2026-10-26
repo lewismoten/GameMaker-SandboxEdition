@@ -28,6 +28,24 @@ const KIND_LABEL: Record<GameKind, string> = {
 const mayAutoplay = () =>
   !matchMedia('(prefers-reduced-motion: reduce)').matches && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
+/** Once the visitor stops a demo, no other starts by itself until they watch one again (kept for the visit). */
+const STOPPED_KEY = 'gm-demos-stopped';
+const demosStopped = (): boolean => {
+  try {
+    return sessionStorage.getItem(STOPPED_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+const setDemosStopped = (on: boolean): void => {
+  try {
+    if (on) sessionStorage.setItem(STOPPED_KEY, '1');
+    else sessionStorage.removeItem(STOPPED_KEY);
+  } catch {
+    // private windows may refuse; the choice then lasts only until the page changes
+  }
+};
+
 /** A featured game plays by itself only when its files are this small (a demo needs them all). */
 const AUTOPLAY_BYTES = 1.2e6;
 
@@ -74,7 +92,7 @@ async function copyLink(game: HomeGame): Promise<void> {
   }
 }
 
-export interface Showcase {
+interface Showcase {
   el: HTMLElement;
   /** Shows a game; `featured` when nobody chose it, `resume` for the game of yours edited last. */
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
@@ -136,7 +154,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
               class: 'sc-another sc-link',
               onclick: () => void copyLink(game),
               title: 'Copy a link that opens this page on this game',
-              'aria-label': `Copy a link to ${game.title}`,
+              'aria-label': `Copy link to ${game.title}`,
             },
             icon('link'),
             'Copy link',
@@ -156,14 +174,18 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
 
     const setPlaying = (on: boolean) => {
       playBtn.textContent = on ? '■ Stop demo' : '▶ Watch demo';
-      playBtn.setAttribute('aria-label', `${on ? 'Stop' : 'Play'} the ${game.title} demo here`);
+      playBtn.setAttribute('aria-label', `${on ? 'Stop' : 'Watch'} demo of ${game.title} here`);
       playBtn.setAttribute('aria-pressed', String(on));
       if (!on) demo = undefined;
     };
     const play = () => {
       demo = demoInPicture(game, screen, { loop: true, onState: (on) => gen === generation && setPlaying(on) });
     };
-    playBtn.addEventListener('click', () => (demo ? demo.stop() : play()));
+    playBtn.addEventListener('click', () => {
+      setDemosStopped(!!demo);
+      if (demo) demo.stop();
+      else play();
+    });
 
     clear(actions, ...gameActions(game, nav, refresh));
     const walk = walkthroughButton(game.entry, () => game.files());
@@ -203,7 +225,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       setPlaying(false);
       const dialog = demoDialogButton(game);
       if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
-      if (!mayAutoplay()) return;
+      if (!mayAutoplay() || demosStopped()) return;
       // a game the visitor chose plays straight away; one shown by itself waits for the page, and only when small
       if (!how.featured && !how.resume) play();
       else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, () => gen === generation && !demo && play());

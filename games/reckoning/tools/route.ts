@@ -3,6 +3,7 @@
 // glasses of water, the TV remote, the milk in the reckoning), and hops over everything noisy.
 import { MON, ROLLS, SEQ, STRAW, WILL } from '../src/ids';
 import { Bot } from './bot';
+import { ORIGIN } from '../src/levels/maps';
 
 const expect = (bot: Bot, scene: number, what: string) => {
   if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
@@ -125,16 +126,23 @@ export async function fridge(bot: Bot): Promise<void> {
     await must(bot, bot.hop('up', 12), 'up through the bottom shelf');
     await must(bot, bot.walk(31, 'along the bottom shelf'), 'shelf');
   });
-  await carefully(bot, 'the middle shelf, past the butter', 10, async () => {
+  await carefully(bot, 'the top shelf', 10, async () => {
     await must(bot, bot.walk(32, 'under the middle shelf'), 'under');
     await must(bot, bot.hop('up', 12), 'up through the middle shelf');
-    await must(bot, bot.hop('right', 3, 'right', 39), 'over the butter');
-    await must(bot, bot.walk(39, 'the celery on the middle shelf'), 'celery');
-  });
-  await carefully(bot, 'the top shelf', 10, async () => {
     await must(bot, bot.hop('up', 12), 'up through the top shelf');
     await must(bot, bot.walk(35, 'the celery on the top shelf'), 'celery');
+  });
+  // the butter sliding on the middle shelf is solid all round and pins a man it meets there:
+  // down through the hatch in the top shelf behind it, and back up while it slides away
+  await carefully(bot, 'the celery behind the butter', 10, async () => {
+    await must(bot, bot.walk(39, 'down the hatch to the celery behind the butter'), 'celery');
+    await must(bot, bot.land(), 'land');
+    if (bot.at.y !== 6) throw new Error(`not on the middle shelf (${bot.px.y / 20})`);
+    await must(bot, butterGoing(bot), 'the butter going');
+    await must(bot, bot.walk(38, 'beside the hatch'), 'beside');
+    await must(bot, bot.hop('up', 12), 'up through the top shelf again');
     if (will(bot) - start < 7) throw new Error(`only ${will(bot) - start} celery`);
+    await must(bot, bot.hop('right', 6, 'right', 40.5), 'over the hatch');
     await must(bot, bot.walk(42, 'the cheesecake'), 'the cheesecake');
   });
   await carefully(bot, 'down off the fridge door, out to the hall', 10, async () => {
@@ -195,6 +203,30 @@ export async function dash(bot: Bot): Promise<void> {
     await must(bot, bot.walk(66.6, 'the bathroom door'), 'the bathroom door');
     await leave(bot, bot.walk(76, 'across the bathroom to the toilet'), 'the bathroom');
   });
+}
+
+/** Waits for the butter on the middle shelf to be sliding left, away from the hatch. */
+function butterGoing(bot: Bot) {
+  const butter = () => {
+    const k = bot.sim.w.mm.findIndex((m) => m.monnum === MON.butter);
+    return k < 0 ? undefined : bot.sim.w.mi[k].curx[0] * 20 + bot.sim.w.mi[k].curx[1];
+  };
+  let was = butter() ?? 0;
+  let dir = 0;
+  return bot.until(
+    undefined,
+    () => {
+      const x = butter();
+      if (x === undefined) return false;
+      // which way it last moved (until() asks twice a tick)
+      if (x !== was) dir = Math.sign(x - was);
+      was = x;
+      // sliding away, its right side a block clear of the man's left
+      return dir < 0 && bot.px.x - 20 - (x - ORIGIN * 20 + 20) >= Number(process.env.GAP ?? 20);
+    },
+    'the butter sliding away',
+    200,
+  );
 }
 
 /** Is any of these monsters still about? */

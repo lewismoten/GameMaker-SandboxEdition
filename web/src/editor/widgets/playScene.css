@@ -1,0 +1,8 @@
+/* The play session of one scene (playScene.ts). */
+dialog.ps {
+  width: min(820px, calc(100vw - 32px));
+  max-width: 100%;
+}
+.ps-host {
+  max-height: calc(100vh - 260px);
+}

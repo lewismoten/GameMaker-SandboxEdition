@@ -4,7 +4,7 @@ import { h, modal } from '../../core/ui';
 import { paletteCss, type Palette } from '../../../formats/palette';
 import { moveRange, swapRange } from './pixelOps';
 
-export interface Recolor {
+interface Recolor {
   from: number;
   to: number;
   count: number;

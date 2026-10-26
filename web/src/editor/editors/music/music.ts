@@ -14,6 +14,7 @@ import { VelocityField } from './velocity';
 import { startProgram } from '../../../formats/cmfEdit';
 import { MUS_TABS, loadTab, saveTab, stepTab, type MusTab } from './tabs';
 import './music.css';
+import { fitToPane } from '../../core/fitPane';
 import { viewState } from '../../../urlState';
 
 registerEditor(['cmf'], (host, project, file) => {
@@ -130,6 +131,23 @@ registerEditor(['cmf'], (host, project, file) => {
       },
       'Fit',
     ),
+    // drawing a tune, then a band around it, or the tune again faster or slower
+    h(
+      'button',
+      {
+        title: 'Generate accompaniment: bass, chords and drums around one track’s tune',
+        onclick: () => void import('./accompanyDialog').then((m) => m.accompanyDialog(doc)),
+      },
+      '🎼 Accompany…',
+    ),
+    h(
+      'button',
+      {
+        title: 'Copy melody to a new song: faster or slower, transposed, with a new band',
+        onclick: () => void import('./copyTuneDialog').then((m) => m.copyTuneDialog(doc)),
+      },
+      '⧉ Copy tune…',
+    ),
   );
   const bar = h('div', { class: 'mus-bar' }, h('div', { class: 'toolbar' }, playBtn, toStart, loopBtn, time), rollTools);
   const options = h(
@@ -142,11 +160,16 @@ registerEditor(['cmf'], (host, project, file) => {
     h(
       'details',
       { class: 'mus-tips' },
-      h('summary', { title: 'How the ruler, END and VEL work', 'aria-label': 'Tips: the ruler, END and VEL' }, '?'),
+      h('summary', { title: 'How the ruler, END, VEL and copying tracks work', 'aria-label': 'Tips: the ruler, END, VEL and copying tracks' }, '?'),
       h(
         'p',
         { class: 'hint' },
         'Click the ruler to set where playing starts; drag on it to mark a loop. Drag END to change where the song repeats. Drag the bars in VEL to make notes louder or softer.',
+      ),
+      h(
+        'p',
+        { class: 'hint' },
+        'To use a track in another song, press ⧉ on it, open the other song and press Paste track under its tracks; or there, choose Add a track from another song…. It comes with its notes and instrument, on the next free track.',
       ),
     ),
   );
@@ -269,6 +292,7 @@ registerEditor(['cmf'], (host, project, file) => {
   });
 
   clear(host, root);
+  fitToPane(root);
   showTab(tab);
   refresh();
   if (!doc.song.notes.length && !doc.tracks().length) toast('An empty song: add a track to start.');

@@ -1,0 +1,298 @@
+/* The shareware catalog and TURBO BUTTON lying flat on the desk, one on the other
+   (paperStack.ts). Each paper is tilted back from its front edge the way the keyboard tray is
+   (pc/tray.css: 56 degrees, the eye 2218px off), so it is foreshortened as much; on the wide
+   stage (deskStage.css) the eye is straight out from the desk's vanishing point, so the
+   papers' sides run back the way the desk top's ends do. Below the stage, the menu of the two. */
+.paper-stack {
+  /* across the stack, where lines running straight back meet */
+  --ps-vp-x: 50%;
+  position: relative;
+}
+
+.ps-toggle {
+  --tilt: 0deg;
+  display: block;
+  width: 150px;
+  height: 100px;
+}
+
+.ps-desk {
+  position: absolute;
+  inset: 0;
+  /* as the tray's: 2218 / tan(56deg) puts the vanishing point 1496px above the front edge */
+  perspective: 2218px;
+  perspective-origin: var(--ps-vp-x) 100%;
+}
+
+/* a letter-size paper lying on the desk, its front edge on the stack's front */
+.ps-sheet {
+  --x: 0px;
+  --y: 0px;
+  --lift: 0px;
+  --turn: 0deg;
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 104px;
+  height: 136px;
+  overflow: hidden;
+  transform-origin: 50% 100%;
+  transform: rotateX(56deg) translate3d(var(--x), var(--y), var(--lift)) rotateZ(var(--turn));
+  transition: transform 0.18s ease-out;
+  text-align: left;
+}
+
+/* the catalog: typed on a copier's cream paper, stapled at the left, pages under it */
+.ps-catalog {
+  --y: -48px;
+  left: 0;
+  padding: 14px 10px 10px 16px;
+  background: var(--paper, #f6f0dc);
+  color: var(--ink, #2b2418);
+  box-shadow:
+    3px 3px 0 #ddd6bf,
+    6px 6px 0 #c4bca2,
+    0 0 14px rgba(0, 0, 0, 0.5);
+  overflow: visible;
+}
+
+.ps-catalog b {
+  display: block;
+  font:
+    700 13px/1.1 'Courier New',
+    ui-monospace,
+    monospace;
+}
+
+.ps-catalog em {
+  display: block;
+  margin-top: 8px;
+  font:
+    400 9px/1.3 'Courier New',
+    monospace;
+}
+
+/* two staples down the left */
+.ps-catalog::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 12px;
+  width: 3px;
+  height: 14px;
+  background: #9a9a9a;
+  box-shadow: 0 96px 0 #9a9a9a;
+}
+
+/* the magazine on top, turned a little: a black cover, the red masthead, the big news,
+   three screenshots, cover lines and the free CD's yellow burst */
+.ps-magazine {
+  --lift: 3px;
+  --turn: -5deg;
+  left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 6px 5px;
+  background: #121218;
+  color: #f6f2e6;
+  box-shadow:
+    -1px 1px 0 #3a3a44,
+    0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.ps-mast {
+  color: #f23a3f;
+  -webkit-text-stroke: 0.4px #fff;
+  font:
+    900 17px/0.9 Impact,
+    'Arial Black',
+    sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+.ps-issue {
+  font:
+    700 5px/1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.ps-magazine strong {
+  color: #ffd31a;
+  font:
+    900 10px/1 Impact,
+    'Arial Black',
+    sans-serif;
+}
+
+.ps-shots {
+  display: flex;
+  gap: 3px;
+}
+
+.ps-shots i {
+  flex: 1;
+  height: 18px;
+  border: 1px solid #f6f2e6;
+  background: linear-gradient(#5b8fd6 0 45%, #f4f4f8 45% 60%, #3d7a3a 60%);
+}
+
+.ps-shots i:nth-child(2) {
+  background: linear-gradient(#7cc4e8 0 50%, #d9a441 50% 70%, #6b4423 70%);
+}
+
+.ps-shots i:nth-child(3) {
+  background: linear-gradient(#20123a 0 55%, #c2185b 55% 70%, #2f8f3a 70%);
+}
+
+/* the cover lines, too small to read */
+.ps-lines {
+  display: grid;
+  gap: 3px;
+  padding-right: 34px;
+}
+
+.ps-lines i {
+  height: 3px;
+  background: #f6f2e6;
+}
+
+.ps-lines i:nth-child(2) {
+  width: 80%;
+}
+
+.ps-burst {
+  position: absolute;
+  right: 3px;
+  bottom: 6px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  clip-path: polygon(
+    50% 0,
+    61% 18%,
+    82% 7%,
+    80% 30%,
+    100% 36%,
+    85% 52%,
+    98% 70%,
+    76% 74%,
+    75% 96%,
+    57% 84%,
+    43% 100%,
+    34% 80%,
+    12% 90%,
+    16% 67%,
+    0 58%,
+    15% 42%,
+    4% 22%,
+    26% 22%,
+    30% 0
+  );
+  background: #ffd31a;
+  color: #a8141a;
+  font:
+    900 6.5px/1 Impact,
+    'Arial Black',
+    sans-serif;
+  text-align: center;
+  transform: rotate(-12deg);
+}
+
+/* pointing at a choice lifts its paper off the stack */
+.paper-stack[data-hot='catalog'] .ps-catalog {
+  --x: -6px;
+  --y: -60px;
+  --lift: 10px;
+}
+
+.paper-stack[data-hot='magazine'] .ps-magazine {
+  --lift: 14px;
+  --turn: -2deg;
+}
+
+/* the menu of the two, just above the stack */
+.ps-menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  z-index: 25;
+  display: grid;
+  gap: 4px;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 32px));
+  padding: 6px;
+  border: 1px solid #6b4a2a;
+  border-radius: 8px;
+  background: #1d150d;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+}
+
+.ps-menu[hidden] {
+  display: none;
+}
+
+.ps-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 12px 6px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: #f4ead2;
+  cursor: pointer;
+  text-align: left;
+  font:
+    600 14px/1.2 system-ui,
+    sans-serif;
+}
+
+.ps-choice small {
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  color: #d8cbb0;
+}
+
+.ps-choice:hover {
+  background: #3a2a18;
+}
+
+.ps-choice:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: -3px;
+  background: #3a2a18;
+}
+
+/* a tiny paper for each: the cream catalog, the black cover with its red masthead */
+.ps-icon {
+  flex: none;
+  width: 20px;
+  height: 26px;
+  border-radius: 1px;
+  background:
+    repeating-linear-gradient(transparent 0 4px, #8c836c 4px 5px) 3px 6px / 14px 16px no-repeat,
+    #f6f0dc;
+}
+
+.ps-choice-magazine .ps-icon {
+  background:
+    linear-gradient(#d61f26, #d61f26) 2px 2px / 16px 5px no-repeat,
+    radial-gradient(circle, #ffd31a 0 3px, transparent 3.5px) 10px 14px / 8px 8px no-repeat,
+    #121218;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-sheet {
+    transition: none;
+  }
+}

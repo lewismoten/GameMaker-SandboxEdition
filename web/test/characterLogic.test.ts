@@ -6,7 +6,6 @@ import {
   flipHOrient,
   flipVOrient,
   insertFrame,
-  mirroredFrames,
   moveFrame,
   normalOrient,
   rotateOrient,
@@ -15,6 +14,7 @@ import {
   withBottomOrient,
   withTopOrient,
 } from '../src/editor/editors/character/characterLogic';
+import { mirrorFrames } from '../src/editor/editors/character/characterMirror';
 import { MAXFRAME, emptyFrame, frameCount, newCharacter } from '../src/formats/character';
 
 describe('orientation buttons', () => {
@@ -80,13 +80,13 @@ describe('frame list editing', () => {
   });
 });
 
-describe('mirroredFrames', () => {
+describe('mirrorFrames', () => {
   it('turns a walk right into a walk left', () => {
     const c = newCharacter();
     const right = c.sequences[5];
     const f = (x: number, orient: number) => ({ x, y: -2, orient, pic1: 0, pic2: 1, pause: 3, extra: new Uint8Array(5) });
     setFrames(right, [f(4, 0), f(4, 1 | (2 << 4))]);
-    const left = mirroredFrames(right);
+    const left = mirrorFrames(right);
     expect(left.map((x) => x.x)).toEqual([-4, -4]);
     expect(left.map((x) => x.y)).toEqual([-2, -2]);
     expect(left[0].orient).toBe(4 | (4 << 4));

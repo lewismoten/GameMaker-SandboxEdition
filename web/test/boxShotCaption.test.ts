@@ -1,3 +1,4 @@
+// The captions under a box's screenshots name the level each map belongs to.
 import { describe, expect, it } from 'vitest';
 import { shotCaption } from '../src/desk/boxes/gameBox';
 import type { Game } from '../src/formats/game';

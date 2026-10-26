@@ -15,13 +15,14 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 import { CHEESE, CROWN, LAUGHS } from '../ids';
 
 export { T, outline };
 
 export interface ManPose {
-  /** front: to you; side: walking right (mirror for left). */
-  face: 'front' | 'side';
+  /** front: to you; side: walking right (mirror for left); back: away from you (climbing). */
+  face: 'front' | 'side' | 'back';
   /** Walk cycle (0..3); legs apart on 1 and 3. */
   step?: number;
   mood?: 'calm' | 'blink' | 'worry' | 'ouch' | 'shout' | 'swoon' | 'bliss' | 'laugh';
@@ -92,6 +93,12 @@ export function marcusArt(pal: Pal) {
     const hx = side ? 11 : 10;
     const hy = 4 + crouch;
     blob(p, hx + 0.5, hy + 0.5, 3.8, 3.8, pal.r('skin'), 1, 4);
+    // from behind: the curls cover his head, his ears either side, no face
+    const back = o.face === 'back';
+    if (back)
+      blob(p, hx + 0.5, hy, 3.6, 3.4, pal.r('hair'), 0, 2)
+        .set(hx - 3, hy + 1, c('skin', 2))
+        .set(hx + 4, hy + 1, c('skin', 2));
     for (const [cx, cy] of [
       [-3, -3],
       [-1, -4],
@@ -103,14 +110,16 @@ export function marcusArt(pal: Pal) {
       if (!(side && cx > 2)) p.disc(hx + cx, hy + cy, 1.3, c('hair', (cx + cy) % 2 ? 1 : 2));
     if (side) p.disc(hx - 3, hy, 1.4, c('hair', 1));
     const ey = hy;
-    const eyes = side ? [hx + 2] : [hx - 1, hx + 2];
+    const eyes = back ? [] : side ? [hx + 2] : [hx - 1, hx + 2];
     for (const ex of eyes) {
       if (mood === 'blink' || mood === 'bliss' || mood === 'swoon' || mood === 'laugh') p.set(ex - 1, ey, ink).set(ex, ey, ink);
       else if (mood === 'ouch') p.set(ex - 1, ey - 1, ink).set(ex, ey, ink);
       else p.set(ex, ey, ink).set(ex, ey - 1, mood === 'worry' ? ink : c('toga', 3));
     }
     const mx = side ? hx + 2 : hx + 0.5;
-    if (mood === 'shout' || mood === 'ouch' || mood === 'laugh') p.rect(Math.round(mx) - 1, hy + 2, 3, 2, ink).set(Math.round(mx), hy + 3, c('red', 2));
+    if (back) {
+      // no mouth to show
+    } else if (mood === 'shout' || mood === 'ouch' || mood === 'laugh') p.rect(Math.round(mx) - 1, hy + 2, 3, 2, ink).set(Math.round(mx), hy + 3, c('red', 2));
     else if (mood === 'worry')
       p.set(mx - 1, hy + 3, ink)
         .set(mx, hy + 2, ink)
@@ -153,7 +162,8 @@ export function buildMarcusBlocks(pal: Pal) {
   book.add('blink', a.body({ face: 'front', mood: 'blink' }));
   book.add('worry', a.body({ face: 'front', mood: 'worry', arms: 'gut', sweat: 2 }));
   for (let s = 0; s < 4; s++) book.add(`walk${s}`, a.body({ face: 'side', step: s }));
-  book.add('hop', a.body({ face: 'front', arms: 'up', mood: 'shout' }));
+  // Up hops, and on a ladder climbs: his back, arms up
+  book.add('hop', a.body({ face: 'back', arms: 'up' }));
   book.add('hopSide', a.body({ face: 'side', arms: 'up', step: 1, mood: 'worry' }));
   book.add('sneak0', a.body({ face: 'side', crouch: true, step: 0, mood: 'worry' }));
   book.add('sneak1', a.body({ face: 'side', crouch: true, step: 1, mood: 'worry' }));
@@ -353,14 +363,14 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('flavia0', flavia(0), { scorePts: 250 });
   book.add('flavia1', flavia(1), { scorePts: 250 });
   // Teddy and Gwinn, sitting like good Roman dogs: red (Gwinn: pink) collars, a golden bulla
-  const dog = (f: number, fur: string, chest: string, collar: string, tallEar: boolean) => {
+  const dog = (f: number, fur: string, chest: string, collar: string, pointyEars: boolean) => {
     const p = P();
     blob(p, 9, 15, 6, 4.4, R(fur), 1, 3);
     blob(p, 11, 15, 2.6, 3.6, R(chest), 1, 3);
     p.rect(5, 18, 3, 2, c(chest, 2)).rect(11, 18, 3, 2, c(chest, 2));
     blob(p, 12, 7, 4.4, 4, R(fur), 1, 3);
-    if (tallEar) {
-      p.line(9, 5, 8, 0, c(fur, 2)).line(10, 4, 10, 1, c(fur, 1)).line(15, 5, 16, 1, c(fur, 2)).line(14, 4, 15, 2, c(fur, 1));
+    if (pointyEars) {
+      p.line(9, 5, 8, 1, c(fur, 2)).line(10, 4, 9, 2, c(fur, 1)).line(15, 5, 16, 1, c(fur, 2)).line(14, 4, 15, 2, c(fur, 1));
       p.line(12, 4, 12, 9, c('marble', 3));
     } else p.rect(7, 5, 3, 5, c(fur, 0)).rect(15, 5, 3, 5, c(fur, 0));
     p.set(10, 7, ink).set(14, 7, ink).disc(12, 10, 1.1, ink);
@@ -405,7 +415,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(4, 15, 0, 13 - f, c('tile', 2));
     p.set(6 + f, 18, c('mouse', 0)).set(11 - f, 18, c('mouse', 0));
     if (cheese) p.rect(15, 15, 4, 3, c('cheese', 2)).set(16, 16, c('cheese', 0));
-    return done(p);
+    // lamplight along its edge (gold keeps its light at night), so a gray mouse reads on the
+    // dark kitchen floor; the same pixels, so the same reach
+    return outline(p, c('gold', 1));
   };
   book.add('mouse0', mouse(0, true), solid);
   book.add('mouse1', mouse(1, true), solid);
@@ -515,10 +527,13 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('grey', 1));
     return done(p);
   };
-  book.add('pigeon0', pigeon(0), solid);
-  book.add('pigeon1', pigeon(1), solid);
-  book.add('pigeonS', pigeon(0), hurt(-4));
-  /** Doc Leo's face: rose-red nose and cheeks, white mouth and eyes, a heavy ash beard. */
+  // Pigeons are solid only at their sides: Marcus landing on one slides down beside it onto the
+  // roof instead of being pushed down into the tiles under it.
+  const sides = SOLLEF | SOLRIG;
+  book.add('pigeon0', pigeon(0), { solid: sides });
+  book.add('pigeon1', pigeon(1), { solid: sides });
+  book.add('pigeonS', pigeon(0), hurt(-4, sides));
+  /** Doc Leo's face: his own nose and cheeks sunburned, white paint round the mouth and eyes, painted stubble. */
   const leoFace = (p: Pixels, x: number, y: number, f: number) => {
     blob(p, x, y, 3.6, 3.8, R('skin'), 2, 4);
     for (let k = -3; k <= 3; k++) p.set(x + k, y + 2 + (Math.abs(k) > 2 ? -1 : 0), c('grey', 1)).set(x + k, y + 3, c('grey', 1));
@@ -527,9 +542,9 @@ export function buildMonsterBlocks(pal: Pal) {
       .disc(x + 2, y - 1, 1, c('marble', 3))
       .set(x - 2, y - 1, ink)
       .set(x + 2, y - 1 + f, ink);
-    p.disc(x, y + 1, 1.2, c('red', 3))
-      .set(x - 3, y + 1, c('red', 2))
-      .set(x + 3, y + 1, c('red', 2));
+    p.disc(x, y + 1, 1.2, c('tile', 3))
+      .set(x - 3, y + 1, c('tile', 2))
+      .set(x + 3, y + 1, c('tile', 2));
     p.line(x - 3, y - 3, x - 1, y - 2, ink).line(x + 1, y - 2, x + 3, y - 3, ink);
   };
   // Doc Leo the philosopher: a navy cloak over his purple tunic, red sneakers, a scroll, and
@@ -633,7 +648,7 @@ export function buildMonsterBlocks(pal: Pal) {
     if (laugh) {
       face(p, 10, 6 - f, { laugh: true });
       p.line(4, 11, 1, 6 - f * 2, c('skin', 2)).line(16, 11, 19, 6 - f * 2, c('skin', 2));
-      micro(p, 14, 0, f ? 'HA' : '', c('gold', 3));
+      micro(p, 13, 0, f ? 'HA' : '', c('gold', 3));
     } else {
       face(p, 10, 6, { stern: true });
       p.rect(5, 12, 10, 2, c('grey', 3));
@@ -697,6 +712,7 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     return done(p);
   };
+  const seated = SOLBOT | SOLLEF | SOLRIG;
   // (his toga and throne look the same until he shakes with laughter: stages 0 and 3 only)
   for (const [half, s] of [
     ['A', 0],
@@ -706,9 +722,11 @@ export function buildMonsterBlocks(pal: Pal) {
     ['B', 0],
     ['B', 3],
   ] as const) {
-    book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
-    book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
-    book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
+    // solid but not SOLTOP, the side that pushes a hero under a monster (PLAYGAME's ChkMonChr):
+    // Marcus landing on him is never pushed down into the stage, where his stamp would hurt
+    book.add(`gravis${half}${s}a`, gravis(half, s, 0), { solid: seated });
+    book.add(`gravis${half}${s}b`, gravis(half, s, 1), { solid: seated });
+    book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10, seated));
   }
   // his "SILENTIUM!": a purple hush rolling toward Marcus, a finger to its lips, white-rimmed to read on the red stage front
   const hush = (f: number) => {

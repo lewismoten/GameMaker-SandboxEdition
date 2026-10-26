@@ -6,7 +6,7 @@ import type { Story } from '../stories';
 export const COLS = 30;
 export const PAGE = 16;
 
-/** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent. */
+/** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent; THE CHEZ stays on one line. */
 export function wrap(text: string, width = COLS): string[] {
   const out: string[] = [];
   for (const para of text.split('\n')) {
@@ -16,7 +16,11 @@ export function wrap(text: string, width = COLS): string[] {
     }
     const indent = /^ */.exec(para)![0];
     let line = '';
-    for (const word of para.trim().split(/\s+/)) {
+    for (const glued of para
+      .trim()
+      .replace(/\b(THE|The) (CHEZ|Chez)\b/g, '$1\u00a0$2')
+      .split(/[^\S\u00a0]+/)) {
+      const word = glued.replace(/\u00a0/g, ' ');
       const next = line ? `${line} ${word}` : `${indent}${word}`;
       if (next.length > width && line) {
         out.push(line);

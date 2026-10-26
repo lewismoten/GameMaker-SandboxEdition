@@ -9,7 +9,7 @@ export interface Piece {
   url?: string;
 }
 
-export interface PieceGroup {
+interface PieceGroup {
   id: string;
   title: string;
   note?: string;
@@ -22,17 +22,17 @@ export const PIECE_GROUPS: PieceGroup[] = [
     title: 'In the site',
     pieces: [
       {
-        name: 'font8x8_basic',
+        name: 'font8x8_basic, font8x8_ext_latin, font8x8_greek and font8x8_misc',
         license: 'Public domain',
         by: 'Daniel Hepper, from the IBM PC BIOS font',
-        what: 'The 8×8 text font on the game screen (web/src/gfx/font8x8.ts).',
+        what: 'The 8×8 text font on the game screen and the PC’s text screens (web/src/gfx/font8x8.ts; its accented letters, Greek letters and some symbols in web/src/gfx/cp437Glyphs.ts).',
         url: 'https://github.com/dhepper/font8x8',
       },
       {
         name: 'Caveat',
         license: 'SIL Open Font License 1.1',
         by: 'Impallari Type',
-        what: 'The handwriting on the Owner’s Guide’s registration record. Loaded from Google Fonts when that page is shown; not included in the site or in exported games.',
+        what: 'The handwriting on the Owner’s Guide’s registration record. Its 600 weight, cut to Latin-1, is kept with the site (web/src/manual/fonts), so no font server is asked for it; not in exported games.',
         url: 'https://fonts.google.com/specimen/Caveat',
       },
       {
@@ -52,6 +52,113 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Written for this project',
         by: 'The chip is Yamaha’s; the emulation is this project’s own',
         what: 'Plays the CMF music (web/src/audio/opl.ts). No emulator’s code was adapted.',
+      },
+      {
+        name: 'Modem handshakes',
+        license: 'Published standards (no code or recordings used)',
+        by: 'The Bell System (Bell 103, Bell 212A) and the ITU-T (V.22bis, V.32, V.32bis, V.8, V.34, V.90)',
+        what: 'The sounds the desk’s modem makes at each line speed, synthesized from the standards’ tones (web/src/retro/bbs/modem.ts).',
+      },
+      {
+        name: 'TTY Baudot code',
+        license: 'Published standards (no code used)',
+        by: 'ITU-T V.18 (1994) and ANSI/TIA-825; cross-checked against Asterisk’s tdd.c (GPL v2, Digium), none of it copied',
+        what: 'The 45.45-baud text-telephone code for TERMINAL’s TTY calls (web/src/retro/bbs/baudot.ts). Period facts from Gallaudet University, the FCC and Ultratec; Ultratec and Turbo Code are Ultratec, Inc.’s names, and Turbo Code is only named.',
+      },
+      {
+        name: 'viridis',
+        license: 'CC0 (public domain dedication)',
+        by: 'Stéfan van der Walt and Nathaniel Smith',
+        what: 'The six colors of the level check’s heat map, which read with every kind of color vision (web/src/editor/check).',
+        url: 'https://bids.github.io/colormap/',
+      },
+      {
+        name: 'WCAG 2 contrast ratio',
+        license: 'W3C formula (no code used)',
+        by: 'The W3C’s Web Content Accessibility Guidelines',
+        what: 'How the level check measures a monster against the scenery behind it, and the Color vision check’s grayscale.',
+      },
+      {
+        name: 'Color vision simulation',
+        license: 'Published matrices (no code used)',
+        by: 'Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes, IEEE TVCG, 2009',
+        what: 'How the palette editor’s Color vision check shows a level with protanopia, deuteranopia or tritanopia (web/src/editor/editors/palette/colorVision.ts).',
+      },
+      {
+        name: 'CIELAB and ΔE (CIE 1976)',
+        license: 'Published standard (no code used)',
+        by: 'The International Commission on Illumination (CIE); sRGB curve from IEC 61966-2-1',
+        what: 'How the Color vision check measures whether two colors look alike.',
+      },
+      {
+        name: 'sfxr (the idea)',
+        license: 'An idea, freshly written (no code used)',
+        by: 'Tomas Pettersson (DrPetter), 2007',
+        what: 'Sliders plus presets that give a new take each time, as in the editor’s 🎛 sound effect maker and PC speaker effects (web/src/audio/sfxSynth.ts, web/src/editor/tools/speakerFx.ts).',
+      },
+      {
+        name: 'A Smarter Way to Find Pitch (the method)',
+        license: 'A published method, freshly written (no code used)',
+        by: 'Philip McLeod and Geoff Wyvill, ICMC 2005',
+        what: 'How the sound set editor’s Preview as PC speaker finds the pitch of a .voc, step by step (web/src/audio/vocToSpeaker.ts).',
+      },
+      {
+        name: 'Mr. Yuck',
+        license: 'Trademark of UPMC Children’s Hospital of Pittsburgh',
+        by: 'A simple drawing in tribute, not the original artwork',
+        what: 'The green poison-warning sticker on the desk’s phone.',
+      },
+      {
+        name: 'Phosphate',
+        license: 'Comes with macOS; no font file included',
+        by: 'Steve Jackaman and Ashley Muir, © International TypeFounders, Inc.',
+        what: 'The DOC LEO lettering on the desk’s black-light poster, drawn into its pictures by Claude with Pillow and NumPy (games/kit/scans/blacklight.py).',
+      },
+      {
+        name: 'A room where everything can be clicked',
+        license: 'An inspiration; nothing copied',
+        by: 'The Brothers Chaps (Mike and Matt Chapman), who made Homestar Runner and Strong Bad’s emails',
+        what: 'The 1994 desk, where nearly everything does something when clicked and some things are hidden to find. Lewis watched their Flash cartoons, where clicking things in the last scene turned up hidden extras. The names are their owners’.',
+        url: 'https://homestarrunner.com/',
+      },
+    ],
+  },
+  {
+    id: 'credits-magazine',
+    title: 'In TURBO BUTTON and the guides',
+    note: 'The magazine and The Ultimate Owner’s Guide are written and drawn for this project. These are what they draw on from others, and the names they make up.',
+    pieces: [
+      {
+        name: 'The Shareware Shelf',
+        license: 'Titles, years and makers only; no files copied',
+        by: 'The Internet Archive’s Game-Maker Archive collection, from archive.org’s public search API',
+        what: 'The community games listed on TURBO BUTTON’s Shareware Shelf (web/src/manual/magazine/data/gameMakerArchive.json, fetched by web/scripts/gameMakerArchive.ts). The page links to none of them, and a few titles are left off a family page. The games belong to their authors.',
+        url: 'https://archive.org/search?query=subject%3A%22Game-Maker+games%22',
+      },
+      {
+        name: 'Tricks from the shareware authors',
+        license: 'Ideas described in this project’s own words; no art, music, sounds or text copied',
+        by: 'Community games in the Game-Maker Archive: Blinky 2 and 3, Ninja Tuck, A-J’s Quest and Builder (A-J Games), Parsec Man 3D (Mark Hadley), Shanna (Angelo Felix), Hurdles (Roland Ludlam), Seal Boarders, RSD’s Penguin Pete and others',
+        what: 'Chapter 17 of The Ultimate Owner’s Guide, the archive counts in its “Where Game-Maker Runs Out”, and TURBO BUTTON’s “Tricks of the Shareware Masters”.',
+        url: 'https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22',
+      },
+      {
+        name: 'Lewis’s DOSBox screenshot',
+        license: 'Lewis’s own capture, on this fork’s terms',
+        by: 'Lewis Moten, testing the games in real DOS',
+        what: 'A Fly Named Carl’s garbled title, in the guide’s “Where Game-Maker Runs Out” (web/public/ultimate/carl-dos.webp) and TURBO BUTTON’s “Bugs Only DOS Could Find” (web/public/magazine/dos-carl.webp).',
+      },
+      {
+        name: 'The first Easter eggs',
+        license: 'Historical facts; names only',
+        by: 'Warren Robinett’s Adventure (Atari 2600, 1980), Atari’s Steve Wright, who gave them the name, and Moonlander (1973)',
+        what: 'TURBO BUTTON’s page on the history of Easter eggs. The names are their owners’.',
+      },
+      {
+        name: 'Made-up brands',
+        license: 'Parody names, made up for the story',
+        by: 'ILLOGITECH, SOUND BOASTER and Overcreative Labs, GRAVITAS, HOLE-Y MOLEY and Punchline Products, PIXELMAX, SQUEAK, AwkWard BIOS, Kiln & Kilobyte, Tin Can Telecom, Shoebox Media Co. and Square Deal Pad Co.',
+        what: 'The desk’s hardware and TURBO BUTTON’s ads. None is a real company or product, no connection with or endorsement by any company is implied, and the prices are part of the story. The desk’s sound card is “Sound Blaster compatible”, as the clone cards said; Sound Blaster is Creative Technology’s trademark.',
       },
     ],
   },
@@ -77,6 +184,12 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Public domain',
         by: 'Ludwig van Beethoven, about 1810 (published 1867)',
         what: 'Its opening is the hold music on the desk phone’s business lines (web/src/desk/room/phone/sounds.ts).',
+      },
+      {
+        name: 'Happy Birthday to You',
+        license: 'Public domain',
+        by: 'The tune of “Good Morning to All”, Mildred J. Hill, 1893',
+        what: 'The ending song of Teddy’s Little Biggest Adventure (games/teddy3), arranged for the game.',
       },
       {
         name: 'Yankee Doodle (again)',
@@ -107,6 +220,84 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Under copyright, not licensed by this project',
         by: 'John Williams, 1980',
         what: 'SND7.CMF in three A-J Games shareware games on the CD (Bounerim, Ralph’s game, Sign of the Hedgehog), kept unaltered as their authors distributed them.',
+      },
+    ],
+  },
+  {
+    id: 'credits-cd-pictures',
+    title: 'Pictures in the CD’s games',
+    note: 'Most of the CD games’ pictures are drawn or rendered, but some are scanned photographs, paintings or frames of film. None of the games name a source, so these were traced in October 2026 by looking and by searching text; an uncertain source says “likely” or “appears to be”. They are kept unaltered, as their authors distributed them, and are not licensed by this project.',
+    pieces: [
+      {
+        name: 'The Blue Marble',
+        license: 'Public domain (NASA)',
+        by: 'The crew of Apollo 17, 1972',
+        what: 'The Earth in Nebula (BLUE.GIF, and small in MENU.GIF and NOVA.FLI).',
+        url: 'https://en.wikipedia.org/wiki/The_Blue_Marble',
+      },
+      {
+        name: 'Saturn’s crescent (Voyager 1, frame C3501159)',
+        license: 'Public domain (NASA)',
+        by: 'NASA/JPL, Voyager 1, 1980',
+        what: 'Nebula’s SATRING.GIF, tinted blue; the same picture is in the CD’s picture library (cd/picture/space/planets).',
+      },
+      {
+        name: 'Io (Voyager 1)',
+        license: 'Public domain (NASA)',
+        by: 'Appears to be NASA/JPL, Voyager 1, 1979',
+        what: 'Nebula’s yellow world (YELOSUN.GIF, YELOLOW.GIF, YELOBYE.FLI, NOVA.FLI, MENU.GIF): Jupiter’s moon Io with a volcanic plume on its edge.',
+        url: 'https://photojournal.jpl.nasa.gov/target/io',
+      },
+      {
+        name: 'Nebula’s green planet',
+        license: 'Unknown; likely public domain (NASA)',
+        by: 'Source not identified',
+        what: 'GREENHI.FLI, GREENBYE.FLI and HISCORE.GIF: a planet photograph tinted green, possibly Mars.',
+      },
+      {
+        name: 'The Outer Limits (1963–1965)',
+        license: 'Under copyright (today MGM’s), not licensed by this project',
+        by: 'Episodes “The Cry of Silence” (1964) and “The Zanti Misfits” (1963), as the game itself says',
+        what: 'Frames captured from the TV series in Sheldon Chase’s Woman Warrior and the Outer Limits and Woman Warrior and the Attack From Below (OLSTART.GIF, WARRIOR.GIF, OLENDING.GIF and their menu and text-box animations). The woman appears to be June Havoc.',
+        url: 'https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series)',
+      },
+      {
+        name: 'The Nazgûl',
+        license: 'Under copyright, not licensed by this project',
+        by: 'Ted Nasmith, first published in the 1990 Tolkien Calendar',
+        what: 'The painting behind the title of Matt Bell’s Paper Airplane (GMTITLE.GIF).',
+        url: 'https://www.tednasmith.com/?p=214',
+      },
+      {
+        name: 'Falcon turning into an F-16',
+        license: 'Likely under copyright, not licensed by this project',
+        by: 'May be Jody Sjogren’s Metamorphosis II: Falconfyre (1986); not confirmed',
+        what: 'Paper Airplane’s opening picture (OPENPAP.GIF). Its ending picture (ENDPAP.GIF), a figure of cloud over a runway, is from a source not identified.',
+        url: 'https://wright.libraryhost.com/repositories/2/top_containers/6194',
+      },
+      {
+        name: 'Tropical birds painting',
+        license: 'Unknown; presumably under copyright',
+        by: 'Artist not identified',
+        what: 'The title picture of RSD’s Sample game (SAMPLE.GIF, MENUBKG.FLI, TEXTBKG.FLI): an orange long-billed bird, a blue-and-yellow macaw, a hummingbird and egrets.',
+      },
+      {
+        name: 'Boathouse photograph',
+        license: 'Unknown',
+        by: 'Source not identified',
+        what: 'RSD’s Houses (HOUSES.GIF, BKG.GIF): a boathouse with a canoe on a pond.',
+      },
+      {
+        name: 'Beach, mountain lake and water photographs',
+        license: 'Unknown',
+        by: 'Source not identified; two are in the CD’s own picture library (cd/picture/nature OCEAN1.GIF and AMER01_I.GIF)',
+        what: 'Glubada Pond’s OCEAN.GIF (also in END.FLI), POND.GIF and WATER.GIF.',
+      },
+      {
+        name: 'Clouds behind RSD’s title',
+        license: 'Unknown',
+        by: 'Source not identified',
+        what: 'The photograph of clouds behind “Recreational Software Designs’ Game-Maker Presents:” (GMTITLE.GIF) in many of the CD’s games.',
       },
     ],
   },

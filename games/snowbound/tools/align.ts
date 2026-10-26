@@ -1,6 +1,7 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the houses (roof
 // over eaves over a one-colored front), garages, the mall, the stores, the arcade, the signs,
-// the parked cars (and THE CHEZ), the fair's strongman bell, and that their art joins up across the block edges.
+// the parked cars (and THE CHEZ), the fair's strongman bell, the lot's cart return, and that
+// their art joins up across the block edges.
 // Run by tools/check.ts.
 import { alignGame, namesOf, type Need, type PartRule } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
@@ -9,7 +10,7 @@ import { buildBlocks } from '../src/blocks/blocks';
 const is = (...s: string[]) => ({ test: (g: string) => s.includes(g), toString: () => s.join('|') });
 const roofMid = ['roofM', 'chimney', 'chimney2'];
 const eave = (e: string) => [`eave${e}`, `eave${e}2`];
-const front = /^(red|blue|yellow)(Wall|Win|Door|Garage[LR])$/;
+const front = /^(red|blue|yellow)(Win|Door|Garage[LR])$/;
 /** A run of parts left to right: each wants its neighbors. */
 const run = (seq: string[]): PartRule[] =>
   seq.map((n, i) => ({ part: n, need: [...(i > 0 ? [[-1, 0, seq[i - 1]]] : []), ...(i < seq.length - 1 ? [[1, 0, seq[i + 1]]] : [])] as Need }));
@@ -87,7 +88,8 @@ export function align(): number {
     })),
     ...[...book.index.keys()].filter((n) => /^st.*0$/.test(n) && book.index.has(n.slice(0, -1) + '1')).flatMap((n) => run([n, n.slice(0, -1) + '1'])),
     ...run(['board0', 'board1']),
-    ...run(['parkedL', 'parkedR']),
+    ...run(['cartSign0', 'cartSign1', 'cartCorral']),
+    ...['blueCar', 'greenCar', 'tanCar'].flatMap((n) => run([`${n}L`, `${n}R`])),
     ...run(['chezL', 'chezR']),
     { part: 'fairMan', need: [[1, 0, /^fairBell[LR]?$/]] },
     {

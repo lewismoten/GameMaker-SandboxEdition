@@ -9,11 +9,11 @@
 // those frames are nothing but a color chunk each and cost the file almost nothing.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, centered, gradient, klubArt, micro, outline, outlined, scaleBlit, speckle } from '../art/draw';
+import { CLEAR, centered, gradient, clubArt, micro, outline, outlined, scaleBlit, speckle } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { drawArt } from './castArt';
 import { CITICAR } from './castCar';
-import { CHICKEN, CHICKEN_BAWK, LEO, LEO_BLINK, LEO_NOSE } from './castLeo';
+import { CHICKEN, CHICKEN_BAWK, LEO, LEO_BLINK, LEO_SMILE, paintFace } from './castLeo';
 import { GRASS_GWINN, GRASS_TEDDY, GRASS_TEDDY_PANT, GWINN_BLINK, GWINN_RUN1, GWINN_RUN2, JEANS } from './castGwinn';
 import { TEDDY, TEDDY_BLINK, TEDDY_PANT } from './castTeddy';
 import { dogHouseLibrary } from '../sprites/library';
@@ -65,8 +65,8 @@ class Reel {
   }
 }
 
-const say = (p: Pixels, words: string, y: number, col = c('paint', 3), cx = W / 2) => centered(p, y, klubArt(words), col, 1, c('ink', 0), cx);
-const big = (p: Pixels, words: string, y: number, cx = W / 2) => centered(p, y, klubArt(words), c('yellow', 3), 2, c('ink', 0), cx);
+const say = (p: Pixels, words: string, y: number, col = c('paint', 3), cx = W / 2) => centered(p, y, clubArt(words), col, 1, c('ink', 0), cx);
+const big = (p: Pixels, words: string, y: number, cx = W / 2) => centered(p, y, clubArt(words), c('yellow', 3), 2, c('ink', 0), cx);
 
 /** Scene 1: Teddy, grinning up at the camera on the kitchen floor. */
 function teddyScene(reel: Reel): void {
@@ -88,7 +88,7 @@ function teddyScene(reel: Reel): void {
     p.blit(outline(t, c('ink', 0)), 0, 0, CLEAR);
     big(p, 'TEDDY', 24, 250);
     say(p, 'RED-GOLD CORGI.', 52, undefined, 250);
-    say(p, 'ONE EAR TALLER.', 64, undefined, 250);
+    say(p, 'ALL EARS.', 64, undefined, 250);
     say(p, 'A TON OF TRICKS.', 76, undefined, 250);
     if (f >= 20) {
       say(p, 'KNOWS LEFT', 150, c('yellow', 3), 250);
@@ -227,7 +227,7 @@ function gwinnScene(reel: Reel): void {
   }
 }
 
-/** Scene 3: Doc Leo on Main Street, flags out. Nose on: showtime. */
+/** Scene 3: Doc Leo on Main Street, flags out. Smile on: showtime. */
 function leoScene(reel: Reel): void {
   const bg = new Pixels(W, H);
   gradient(bg, 0, 0, W, 90, r('sky'), 2, 7);
@@ -255,7 +255,8 @@ function leoScene(reel: Reel): void {
     const l = new Pixels(W, H, CLEAR);
     const bob = on && f % 2 ? 1 : 0;
     drawArt(l, LEO, c, 0, bob);
-    if (on) drawArt(l, LEO_NOSE, c, 0, bob);
+    paintFace(l, bob, c);
+    if (on) drawArt(l, LEO_SMILE, c, 0, bob);
     if (f === 8 || f === 40) drawArt(l, LEO_BLINK, c, 0, bob);
     // his right arm up, in its corduroy sleeve, the chicken in his fist and its leash hanging
     poly(
@@ -291,7 +292,7 @@ function leoScene(reel: Reel): void {
     big(p, 'DOC LEO', 6, 262);
     if (!on) say(p, 'A HOBO CLOWN, AND HIS', 170);
     if (!on) say(p, 'RUBBER CHICKEN ON A LEASH.', 182);
-    if (on) say(p, 'NOSE ON: SHOWTIME!', 170, c('yellow', 3));
+    if (on) say(p, 'SMILE ON: SHOWTIME!', 170, c('yellow', 3));
     if (f >= 32) say(p, '(HE ALWAYS ORDERS ROOT BEER.)', 182);
     if (f === 22 || f === 23) for (let k = 0; k < 8; k++) p.set(128 + Math.round(Math.cos(k) * 14), 100 + Math.round(Math.sin(k) * 12), c('yellow', 3));
     reel.add(p);

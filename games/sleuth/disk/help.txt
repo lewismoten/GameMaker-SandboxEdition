@@ -10,7 +10,7 @@ NUMBER PAD 7 9 1 3: the four
 diagonals
 SPACE: pick up what you stand
 on
-L: look through the lens (once
+Z: look through the lens (once
 you have it)
 
 F1 help F2 your evidence

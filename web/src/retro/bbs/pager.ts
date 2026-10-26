@@ -6,7 +6,7 @@ import { ROWS } from '../text/textScreen';
 import type { Term } from './term';
 
 /** Rows the terminal shows above its status bar. */
-export const SCREEN_ROWS = ROWS - 1;
+const SCREEN_ROWS = ROWS - 1;
 
 /**
  * Entries (by their heights in rows) into pages of at most `room` rows, in order. An entry
@@ -34,7 +34,7 @@ export function pageKeys(page: number, pages: number): string {
   return keys.length ? `${keys.join(' ')}, ` : '';
 }
 
-export interface PagedListing {
+interface PagedListing {
   /** The area's header lines (the same number every time); it gets the page number to show and the mode. */
   header: (page: number, pages: number, extended: boolean) => string[];
   /** Each entry's lines on the extended listing, its whole FILE_ID.DIZ (made again for each page shown, so a * stays current). */
@@ -49,7 +49,7 @@ type Lines<T> = T | (() => T);
 const now = <T>(l: Lines<T>): T => (typeof l === 'function' ? (l as () => T)() : l);
 
 /** More extended pages than this and an area opens on its compact list, one line a file. */
-export const EXTENDED_PAGES = 3;
+const EXTENDED_PAGES = 3;
 
 /**
  * Draws the listing a page at a time, keeping the prompt on the screen below it. An area with

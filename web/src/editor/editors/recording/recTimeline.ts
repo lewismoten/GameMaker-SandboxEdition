@@ -21,7 +21,7 @@ import {
 } from './recTimelineModel';
 import { TICK, RULER, CAP_H, FOLD, type Layout, layout, type Frame, type CapBox, draw, fitCanvas, stripHeight } from './recTimelineDraw';
 
-export interface Timeline {
+interface Timeline {
   el: HTMLElement;
   destroy(): void;
 }
@@ -88,7 +88,7 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
   return { el, destroy: () => cancelAnimationFrame(raf) };
 }
 
-export interface EditTimeline extends Timeline {
+interface EditTimeline extends Timeline {
   set(events: RecEvent[]): void;
 }
 

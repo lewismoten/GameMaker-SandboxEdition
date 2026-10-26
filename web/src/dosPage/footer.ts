@@ -4,7 +4,7 @@
 // slides up over the bottom of the screen instead of making the footer taller; one at a time.
 import { h } from '../editor/core/ui';
 
-export interface Fold {
+interface Fold {
   icon: string;
   /** Shown beside the icon (on a phone too: short). */
   word: string;

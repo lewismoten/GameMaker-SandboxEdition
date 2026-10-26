@@ -1,8 +1,10 @@
+// The printed Level Maps' arithmetic: shared maps, the part in use and the part seen, hidden cells, marks and page
+// packing.
 import { describe, expect, it } from 'vitest';
 import { emptyBlock } from '../../formats/blocks';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Scene } from '../../formats/game';
 import { MLEN, MWID } from '../../formats/map';
-import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, packPages, usedArea } from './levelMapLayout';
+import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, packPages, seenArea, usedArea } from './levelMapLayout';
 
 const scene = (gametype: number, files: string[], links: [number, number, number, number, number][] = []): Scene =>
   ({
@@ -52,6 +54,28 @@ describe('Level Maps layout', () => {
     expect(usedArea(cells)).toEqual({ x: 29, y: 19, w: 14, h: 8 });
     expect(usedArea(cells, [{ x: 50, y: 20 }], 0)).toEqual({ x: 30, y: 20, w: 21, h: 6 });
     expect(usedArea(blank(3))).toEqual({ x: 0, y: 0, w: MLEN, h: MWID });
+  });
+
+  it('crops further to what the player sees, a block round it, keeping every mark and staying in the used part', () => {
+    const used = { x: 0, y: 0, w: 100, h: 75 };
+    // a level along the top: sky above and ground below it are cut away
+    expect(seenArea(used, [0, 28, 100, 22], [])).toEqual({ x: 0, y: 27, w: 100, h: 24 });
+    // a way out below what was seen still shows
+    expect(seenArea(used, [10, 28, 40, 22], [{ x: 60, y: 55, w: 2, h: 1 }])).toEqual({ x: 9, y: 27, w: 54, h: 30 });
+    // never past the used part
+    expect(seenArea({ x: 5, y: 5, w: 20, h: 20 }, [0, 0, 100, 100], [])).toEqual({ x: 5, y: 5, w: 20, h: 20 });
+  });
+
+  it('takes in the rest of a room the crop would cut through, with the same margin as its other sides', () => {
+    // a room from x 22 to 77, seen only as far as x 73: the crop goes on to its wall and one block past
+    const cells = new Uint8Array(MLEN * MWID);
+    for (let y = 38; y <= 62; y++) for (let x = 22; x <= 77; x++) cells[y * MLEN + x] = 1;
+    const used = { x: 21, y: 37, w: 58, h: 27 };
+    expect(seenArea(used, [21, 32, 53, 35], [], 1, cells)).toEqual({ x: 21, y: 37, w: 58, h: 27 });
+    // a room that runs on far past the crop (more than 8 blocks) is cut as before
+    const wide = new Uint8Array(MLEN * MWID);
+    for (let y = 10; y <= 20; y++) for (let x = 0; x <= 99; x++) wide[y * MLEN + x] = 1;
+    expect(seenArea({ x: 0, y: 9, w: 100, h: 13 }, [10, 10, 30, 11], [], 1, wide)).toEqual({ x: 9, y: 9, w: 32, h: 13 });
   });
 
   it('marks arrivals and ways out, joining a row of door blocks, and the end its own kind', () => {

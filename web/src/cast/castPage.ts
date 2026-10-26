@@ -92,7 +92,7 @@ const families = () =>
         h(
           'p',
           null,
-          'Twelve new games made for this edition in the style of 1995 retail and shareware: each comes in a box with a printed manual, a disk label and paper extras to print, and plays in real DOS too. Sandbox Software is made up; it is where Teddy, Gwinn and THE CHEZ live. Look closely and every one also hides a little felt egg.',
+          'Thirteen new games made for this edition in the style of 1995 retail and shareware: each comes in a box with a printed manual, a disk label and paper extras to print, and plays in real DOS too. Sandbox Software is made up; it is where Teddy, Gwinn and THE\u00a0CHEZ live. Look closely and most of them also hide a little felt egg.',
         ),
         h('a', { href: tabHref('sandbox') }, 'Browse Sandbox →'),
       ),
@@ -173,7 +173,7 @@ export function renderCast(el: HTMLElement): void {
       h(
         'p',
         { class: 'lead' },
-        'The same faces keep turning up in this edition’s new games: a corgi with one ear shorter than the other, his sister-in-mischief, a friendly hobo clown, a tomato-red electric car that is always charging, and a goat nobody painted. Here is who they are, and where to find them.',
+        'The same faces keep turning up in this edition’s new games: a red-gold corgi with a big grin, his sister-in-mischief, a friendly hobo clown, a tomato-red electric car that is always charging, and a goat nobody painted. Here is who they are, and where to find them.',
       ),
       castStage(CAST, state),
       families(),

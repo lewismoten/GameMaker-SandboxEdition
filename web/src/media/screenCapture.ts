@@ -3,7 +3,7 @@
 //    the background, except for the line drawing characters C0h-DFh, which repeat their
 //    eighth column so boxes join up (as the VGA's Line Graphics Enable did).
 //  - mode 13h: 320x200, one pixel per palette index.
-import { FONT_CP437 } from '../retro/text/cp437';
+import { FONT_CP437 } from '../gfx/cp437Glyphs';
 import { COLS, ROWS, type TextScreen } from '../retro/text/textScreen';
 import type { Vga } from '../vga/shared/vga';
 
@@ -68,18 +68,6 @@ export function pngOf(canvas: HTMLCanvasElement): Promise<Uint8Array> {
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? void b.arrayBuffer().then((a) => resolve(new Uint8Array(a))) : reject(new Error('PNG failed'))), 'image/png'),
   );
-}
-
-/** Saves a Blob as a download. */
-export function saveBlob(name: string, blob: Blob): void {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
 /** A file name time stamp: 2026-10-20-1912. */

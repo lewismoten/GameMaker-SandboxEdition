@@ -70,7 +70,7 @@ ARROWS or W A S D: walk
 Q and E: walk up and left / up and right
 NUMBER PAD 7 9 1 3: the four diagonals
 SPACE: pick up what you stand on
-L: look through the lens (once you have it)
+Z: look through the lens (once you have it)
 
 F1 help   F2 your evidence
 F3 music  F4 sound
@@ -114,7 +114,9 @@ Pittsburgh, PA 15213
 
 // ---------------------------------------------------------------- briefings
 
-export const GR1_INTRO = `Sergeant Dobbs holds the green room door for you.
+export const GR1_INTRO = `PART 2 OF 5
+
+Sergeant Dobbs holds the green room door for you.
 
 "Five of them had reason to want Crane dead, Inspector, and all five are in here. Walk up to one and sit down to ask your questions.
 
@@ -124,13 +126,17 @@ export const GR1_INTRO = `Sergeant Dobbs holds the green room door for you.
 
 "And the Historical Society ladies want you to read their plaque in the lobby. I said you were busy."`;
 
-export const GR2_INTRO = `Two in the morning. The coffee is cold and the suspects are not talking to each other.
+export const GR2_INTRO = `PART 4 OF 5
+
+Two in the morning. The coffee is cold and the suspects are not talking to each other.
 
 "You've got it all now," says Dobbs. "Show them what you found. Watch who sweats.
 
 "When you're sure, take the EXIT. By dawn they'll all be up on that stage waiting for you to name the killer."`;
 
-export const ACC_INTRO = `Dawn. Gray light through the loading door. The suspects stand on the stage of the Paragon in a row, under the work lights.
+export const ACC_INTRO = `PART 5 OF 5
+
+Dawn. Gray light through the loading door. The suspects stand on the stage of the Paragon in a row, under the work lights.
 
 Step up to the one you accuse.
 
@@ -428,6 +434,7 @@ export const ACT_CARDS = {
   act1: {
     title: 'ACT ONE',
     time: '10:30 P.M.',
+    part: 'PART 1 OF 5',
     lines: [
       'The house is empty. Victor Crane',
       'died on this stage at 9:48. The',
@@ -436,11 +443,13 @@ export const ACT_CARDS = {
       'Find 4 pieces of EVIDENCE, then',
       'knock at the GREEN ROOM door',
       'backstage. (F2 counts them.)',
+      'F5 saves the case, F6 loads it.',
     ],
   },
   act2: {
     title: 'ACT TWO',
     time: '2:00 A.M.',
+    part: 'PART 3 OF 5',
     lines: [
       'Mrs. Crane has given you her keys.',
       'The power is off. Only the ghost',
@@ -496,7 +505,7 @@ KEYS
   Q / E: walk up-left / up-right
   Number pad 7 9 1 3: diagonals
   Space: pick up evidence
-  L: look through the lens
+  Z: look through the lens
   F1 help, F2 evidence, F3 music, F4 sound, F5 save, F6 load, Esc quit
 
 FILES ON THIS DISK

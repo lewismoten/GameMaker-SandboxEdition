@@ -5,10 +5,8 @@ import { type BookletPage } from './booklet';
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import { isSandboxGame, loadCatalog, type CatalogEntry } from '../project/files';
-import { openBox } from './printables/viewer';
 import { bookletPageCount } from './printables/imposition';
 import type { BookPage } from './printables/manualPages';
-import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
 import { sandboxShots, type GameShot } from '../gfx/sandboxShots';
 import { gmCover } from './printables/gmCover';
@@ -72,17 +70,17 @@ function pages(shots: GameShot[]): BookletPage[] {
         <tr><td>&nbsp;&nbsp;&nbsp;Playing, saving and high scores</td><td>6</td></tr>
         <tr><td>3. Designing Games</td><td>8</td></tr>
         <tr><td>&nbsp;&nbsp;&nbsp;Game-Maker words</td><td>9</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Your first game</td><td>11</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;The tools at a glance</td><td>12</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Games made with Game-Maker</td><td>15</td></tr>
-        <tr><td>4. Utilities</td><td>17</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Troubleshooting a real PC</td><td>19</td></tr>
-        <tr><td>5. The Game-Maker BBS</td><td>20</td></tr>
-        <tr><td>6. Sharing Your Games</td><td>21</td></tr>
-        <tr><td>Appendix A. Specifications</td><td>23</td></tr>
-        <tr><td>Appendix B. Files and Folders</td><td>25</td></tr>
-        <tr><td>Appendix C. The Copy Check</td><td>26</td></tr>
-        <tr><td>Appendix D. About This Edition</td><td>27</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;How a game comes together</td><td>11</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;The tools at a glance</td><td>13</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Games made with Game-Maker</td><td>16</td></tr>
+        <tr><td>4. Utilities</td><td>18</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Troubleshooting a real PC</td><td>20</td></tr>
+        <tr><td>5. The Game-Maker BBS</td><td>21</td></tr>
+        <tr><td>6. Sharing Your Games</td><td>22</td></tr>
+        <tr><td>Appendix A. Specifications</td><td>24</td></tr>
+        <tr><td>Appendix B. Files and Folders</td><td>26</td></tr>
+        <tr><td>Appendix C. The Copy Check</td><td>27</td></tr>
+        <tr><td>Appendix D. About This Edition</td><td>28</td></tr>
       </table>
       <div class="note"><strong>Welcome!</strong> It\u2019s as much fun to create computer games as it is to play them.
       Game-Maker lets you turn your game ideas into great games with no programming at all.
@@ -261,7 +259,7 @@ function pages(shots: GameShot[]): BookletPage[] {
     ),
     page(
       '3. Designing Games',
-      `<h2>Your first game</h2>
+      `<h2>How a game comes together</h2>
       <p>Most designers work in this order. Keep every file for one game in the same folder.</p>
       <ol>
         <li>Make a folder: at the DOS prompt type <code>MD C:\\GM\\MYGAME</code>, or choose
@@ -277,8 +275,34 @@ function pages(shots: GameShot[]): BookletPage[] {
         between them, and add title pictures, FLI animations and music.</li>
         <li><b>Play</b> it from the main menu.</li>
       </ol>
-      <div class="note"><strong>Tip.</strong> The fastest way to learn is to change a sample game.
-      Load Sample\u2019s map in the Map Maker, move a few blocks, and play it again.</div>`,
+      <div class="note"><strong>Tip.</strong> The fastest way to learn is to change a game that
+      already works. Try the exercise on the next page before you build all of these parts.</div>`,
+    ),
+    page(
+      '3. Designing Games',
+      `<h2>Your first change</h2>
+      <p>Take the brick path away from the cottage in <i>Sample</i>, then play it to see the change.</p>
+      <ol>
+        <li><b>Back it up.</b> At the prompt type <code>CD \\GM\\SAMPLE</code>, then <code>GM</code>.
+        The bottom line reads <i>Game area: C:\\GM\\SAMPLE</i>. Choose <b>Utilities</b>, then
+        <b>Backup</b>, and press <kbd>Enter</kbd> on <code>SAMPLE.GAM</code>. Every file in the
+        folder goes into <code>SAMPLE.ZIP</code> under its own name (page 18). Press <kbd>C</kbd>,
+        then <kbd>Esc</kbd>.</li>
+        <li><b>Open its map.</b> Choose <b>Design</b>, then <b>Map</b>. Press <kbd>Enter</kbd> at
+        <b>Choose a Map</b> and again on <code>SAMPLE.MAP</code>. The bar moves down by itself:
+        press <kbd>Enter</kbd> twice at each of the next four items to load the block sets,
+        monsters and palette, then once at <b>Edit Chosen Map</b>.</li>
+        <li><b>Change the scenery.</b> Press <kbd>Z</kbd> to see the top left corner full size: the
+        cottage, with a brick path from its front door. Grass, the first block in the list, and
+        the dot tool are already chosen. Hold MB1 and drag along the path.</li>
+        <li><b>Save, then play.</b> Press <kbd>Esc</kbd>. At <b>Save Map</b> press <kbd>Enter</kbd>,
+        <kbd>Enter</kbd> on <code>SAMPLE.MAP</code>, and <kbd>Y</kbd> to write over it. Press
+        <kbd>Enter</kbd> at <b>Quit</b> and <kbd>Esc</kbd>. Choose <b>Play</b>, <b>Play a
+        Game!</b> and <code>SAMPLE.GAM</code>, then <b>Play</b>.</li>
+        <li><b>Look.</b> The hero starts in the cottage doorway, and grass now runs up to the door.</li>
+      </ol>
+      <div class="note"><strong>Changed your mind?</strong> <b>Utilities, Restore</b> puts Sample
+      back the way it came on the CD.</div>`,
     ),
     page(
       '3. Designing Games',
@@ -344,9 +368,9 @@ function pages(shots: GameShot[]): BookletPage[] {
     page(
       '3. Designing Games',
       `<h2>Games made with Game-Maker</h2>
-      <p>Every one of these Sandbox Software games was built with the tools in this box: no
-      programming, just blocks, monsters, maps and the Integrator. The pictures are their
-      own maps, drawn from their own files.</p>
+      <p>These Sandbox Software games use Game-Maker\u2019s blocks, monsters, maps and
+      Integrator scenes. Open their files in the tools to see how they work, and build your own
+      without programming. The pictures are their own maps, drawn from their own files.</p>
       ${gallery(shots.slice(0, 4), 3)}`,
     ),
     page(
@@ -430,6 +454,8 @@ function pages(shots: GameShot[]): BookletPage[] {
       '6. Sharing Your Games',
       `<span class="chapter">6</span>
       <h1>Sharing Your Games</h1>
+      <div class="note"><strong>Historical terms.</strong> These do not apply to the Sandbox
+      Edition. Today\u2019s license, the MIT License, is on the next page.</div>
       <h3>In 1994</h3>
       <p>Game-Maker\u2019s license let you install it on one computer at a time and keep a
       backup copy. Games you made could be <i>transferred</i> and given away free to no more
@@ -580,10 +606,11 @@ export async function dosManualPages(): Promise<BookPage[]> {
   return bookPages(pages(await galleryShots()));
 }
 
-export async function openDosManual(): Promise<void> {
-  const shots = await galleryShots();
+/** The guide in the box viewer, with the box's other contents (loaded only now: the copy check needs just the pages), open at `start` (a piece's id) or the guide. */
+export async function openDosManual(start?: string): Promise<void> {
+  const [shots, { openBox }, { gmBoxItems }] = await Promise.all([galleryShots(), import('./printables/viewer'), import('./printables/gmItems')]);
   const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
-  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
+  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb', start });
 }
 
 /** The guide as a stapled booklet for the box viewer: note pages fill it out to whole folded sheets. */

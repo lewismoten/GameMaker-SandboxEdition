@@ -58,7 +58,7 @@ export function offerCardAtMenu(h: RetroHost, onRegistered: (name: string) => vo
 }
 
 /** qwindow(x, y, len, q, ans): a one-line question box; null for Esc (or the card applied). */
-export async function qWindow(h: RetroHost, x: number, y: number, len: number, question: string, start = ''): Promise<string | null> {
+async function qWindow(h: RetroHost, x: number, y: number, len: number, question: string, start = ''): Promise<string | null> {
   const s = h.screen;
   const saved = s.window(x, y, question.length + len + 2, 1, MENUATTR, SHADATTR);
   let answer = start;

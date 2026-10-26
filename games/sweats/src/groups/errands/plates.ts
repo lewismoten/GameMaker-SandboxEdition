@@ -18,7 +18,7 @@ import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';
 import type { MapBuilder } from '../../levels/maps';
-import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
+import { SIDES, T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { DINNER, clear, cut, over } from './art';
@@ -175,8 +175,9 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
       .set(16, f, c('metal', 2));
     return p;
   };
-  book.add('phantom0', phantom(0), hurts(-6));
-  book.add('phantom1', phantom(1), hurts(-6));
+  // (solid only at their sides: landing on one slides him down beside it, not into the floor)
+  book.add('phantom0', phantom(0), hurts(-6, SIDES));
+  book.add('phantom1', phantom(1), hurts(-6, SIDES));
   addBubble(book, pal, 'whisper', 'TBL7', hurts(-5), { tail: 'right' });
   addBubble(book, pal, 'chuckle', 'HEH', hurts(-4), { fill: 'cream', tail: 'right' });
   // the grease stain, sliding about with a smirk
@@ -189,20 +190,23 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('grease0', grease(0), hurts(-6));
   book.add('grease1', grease(1), hurts(-6));
-  // the busboy: white shirt, black apron, a grey tub, eyes sliding to the side (judging)
+  // the busboy: white shirt, black apron, a grey tub held out ahead, eyes sliding back at him
+  // (judging). Side on, walking right (his path mirrors him for left).
   const busboy = (f: number) => {
     const p = clear();
-    p.rect(7, 15, 2, 5, ink).rect(11, 15, 2, 5, ink);
-    p.rect(5, 8, 10, 8, c('white', 2)).rect(6, 11, 8, 6, c('ink', 1));
-    p.rect(1, 9, 8, 4, c('grey', 1)).rect(1, 9, 8, 1, c('grey', 2));
+    const s = f ? 1 : 0;
+    p.rect(9 - s, 15, 2, 5, c('ink', 1))
+      .rect(10 + s, 15, 2, 5, ink)
+      .rect(11 + s, 19, 2, 1, ink);
+    p.rect(7, 8, 6, 8, c('white', 2)).rect(9, 11, 5, 6, c('ink', 1));
+    p.rect(12, 9, 7, 4, c('grey', 1)).rect(12, 9, 7, 1, c('grey', 2)).set(11, 10, c('skin', 3));
     const hx = 10;
-    p.rect(hx - 3, 2, 7, 7, c('skin', 3)).rect(hx - 3, 1, 7, 2, c('hair', 0));
-    const look = f ? 1 : -1;
-    p.set(hx - 1 + look, 5, ink)
-      .set(hx + 2 + look, 5, ink)
-      .rect(hx - 2, 4, 2, 1, c('hair', 0))
-      .rect(hx + 1, 3, 2, 1, c('hair', 0));
-    p.rect(hx - 1, 7, 3, 1, c('skin', 1));
+    p.rect(hx - 3, 2, 6, 7, c('skin', 3))
+      .rect(hx - 3, 1, 6, 2, c('hair', 0))
+      .rect(hx - 3, 3, 2, 2, c('hair', 0));
+    p.set(hx + 3, 5, c('skin', 3)).set(hx + 3, 6, c('skin', 2));
+    p.set(hx + 1 - s, 5, ink).rect(hx, 4, 2, 1, c('hair', 0));
+    p.set(hx + 1, 7, c('skin', 1)).set(hx + 2, 7, c('skin', 1));
     return outline(p, ink);
   };
   book.add('busboy0', busboy(0), hurts(0));
@@ -220,7 +224,7 @@ export function platesMonsters(set: Monster[], mb: SpriteBook): void {
   ]);
   set[PM.whisper] = mon(anim(mb, 'whisper0', 'whisper1', 6), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-8, 0, 2, 4)]);
   set[PM.chuckle] = mon(anim(mb, 'chuckle0', 'chuckle1', 6), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 1), corner(-2, 0, 1, 4)]);
-  set[PM.grease] = mon(anim(mb, 'grease0', 'grease1', 6), foe, pace(3, 1));
+  set[PM.grease] = mon(anim(mb, 'grease0', 'grease1', 6), foe, pace(1, 1));
   set[PM.busboy] = mon(anim(mb, 'busboy0', 'busboy1', 30), { power: POWER.tough, thru: 1 }, pace(2, 1));
   set[PM.poof] = mon(anim(mb, 'poof0', 'poof1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }
@@ -288,11 +292,13 @@ export const plates: Monologue = {
     // the host stand (the chuckle), the leaning tower of greasy plates, its grease stain
     m.set(21, 10, 'H').set(23, 10, '$');
     for (let r = 0; r < 4; r++) m.set(26, 7 + r, `tower.0.${r}`);
+    // (the grease slides a block, a block clear of the tower and of the phantom's swoop, so
+    // neither pushes him into the tower or catches him between them)
     m.set(26, 6, '3').set(29, 10, '$');
-    m.mon(PM.grease, 27, 10);
+    m.mon(PM.grease, 29, 10);
     // the third table: the entree plate; another phantom
     m.set(31, 6, 's').set(36, 5, 'a').set(41, 5, 'w');
-    m.mon(PM.phantom, 30, 10);
+    m.mon(PM.phantom, 32, 10);
     table(34, 37);
     m.set(35, 8, '%').set(36, 8, '4').set(37, 8, 'b');
     // the kitchen doors (the whispers), a coffee, the busboy, the bus tub

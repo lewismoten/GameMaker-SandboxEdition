@@ -239,12 +239,13 @@ export function wicker(book: BlockBook): Level {
   // the weave down from R3 to R5, the bottom room
   m.col(25, 10, 19, 'Y');
   m.fill(18, 17, 13, 4, 'o').set(23, 19, '%').set(28, 19, '%').set(24, 20, 'J').text(21, 17, '|oo|');
-  m.mon(MON.mouse, 18, 20).mon(MON.moth, 26, 18);
+  // (pacers turn a block clear of walls: PLAYGAME's side push would shove the loaf into one)
+  m.mon(MON.mouse, 19, 20).mon(MON.moth, 26, 18);
   // the weave up the east wall to the lid, a side room on the way
   m.col(31, 3, 20, 'Y');
   // (four rows tall, so the weevil can be hopped where it turns)
   m.fill(26, 5, 5, 4, 'o').set(28, 7, '%').set(26, 8, '+');
-  m.mon(MON.weevil, 26, 8);
+  m.mon(MON.weevil, 27, 8);
   // the lid, and out on top of the basket in the light coming in (no gravity, like the weave):
   // a few rolls along its rim to the way on, so "I'm still bread!" is sung to the end
   m.set(31, 2, 'D');
@@ -272,9 +273,10 @@ export function baskets(book: BlockBook): Level {
   // the baskets: on the grass, on stones, up in an olive tree, over the fire
   m.set(5, 9, 'e').set(9, 7, '_').set(9, 6, 'e');
   m.set(13, 9, 'e').set(16, 9, 'O').set(18, 9, 'e');
-  // the fox's den under the stones: it trots out and back, and stops to sniff at each end
+  // the fox's den under the stones: it trots out and back, and stops to sniff at each end (a
+  // block clear of the den and the basket, so it can't push the loaf into either)
   m.set(22, 8, 'R').set(22, 9, 'R').set(23, 7, '_').set(24, 7, '_').set(24, 6, 'e');
-  m.mon(MON.fox, 23, 9);
+  m.mon(MON.fox, 24, 9);
   m.set(30, 9, 'e').set(34, 9, 'e');
   m.mon(MON.seed, 32, 9);
   // the fire and its warm air up to the fig branches, a basket at the top

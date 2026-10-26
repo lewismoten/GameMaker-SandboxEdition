@@ -3,12 +3,12 @@ import { h, clear, confirmDialog } from '../../../core/ui';
 import { rovingGrid } from '../../../widgets/rovingGrid';
 import type { BrushKind } from './brushStore';
 
-export interface BrushItem {
+interface BrushItem {
   id: string;
   name: string;
 }
 
-export interface BrushPanelOpts<T extends BrushItem> {
+interface BrushPanelOpts<T extends BrushItem> {
   kind: BrushKind;
   items: T[];
   selected?: string;

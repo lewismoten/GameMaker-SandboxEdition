@@ -44,7 +44,7 @@ interface DemoSource {
 }
 
 /** The tag over a game's own recording that its title screen never named (Houses, Peach). */
-export const IN_GAME_DEMO_TAG = 'Its own recording · unused by the original';
+const IN_GAME_DEMO_TAG = 'Its own recording · unused by the original';
 
 /** The recording a preview plays; a promise while an added demo is still being fetched. */
 function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource | Promise<DemoSource | undefined> | undefined {
@@ -92,7 +92,7 @@ export interface DemoPreview {
   stop(): void;
 }
 
-export interface DemoPreviewOptions {
+interface DemoPreviewOptions {
   title: string;
   /** Play again from the start when the recording runs out. */
   loop?: boolean;

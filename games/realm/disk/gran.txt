@@ -18,14 +18,14 @@ SPACE swings your wooden
 sword. T drinks a tonic
 (you've one in your satchel).
 F2 shows your gold and your
-satchel. F5 saves.
+satchel.
+
+F5 saves your game and F6
+loads it. Save often, Pip:
+before every dungeon, and
+after.
 
 And Pip? Mind the slimes. They
 put things off, too. Including
 biting you.
-
-
-
-
-
 

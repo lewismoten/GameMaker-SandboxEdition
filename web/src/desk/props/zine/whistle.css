@@ -1,0 +1,45 @@
+/* The toy whistle on the desk (whistle.ts), with NO CARRIER under it (manual/zine). */
+.toy-whistle {
+  width: 58px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.45));
+}
+
+.toy-whistle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.toy-whistle:hover,
+.toy-whistle:focus-visible {
+  transform: rotate(-6deg) scale(1.08);
+}
+
+.toy-whistle:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 4px;
+}
+
+@media (min-width: 961px) {
+  /* on the desk top behind the shareware catalog */
+  .desk-scene .toy-whistle {
+    position: absolute;
+    left: 136px;
+    top: 476px;
+    z-index: 1;
+    transform: rotate(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toy-whistle:hover,
+  .toy-whistle:focus-visible {
+    transform: none;
+  }
+}

@@ -1,0 +1,345 @@
+/* The GRAVITAS game pad's full-page ad (sections/hardware.ts, page hardware-4), in the look of
+   a 1990s game pad ad: a deep purple page over a glossy, slightly crumpled grid floor in steep
+   perspective, a spaced serif headline with one word in hot pink, two pads (the desk's drawing,
+   desk/pc/gamePadArt.ts) tilted over each other with their buttons lit, the pitch at the
+   bottom right in condensed italics under the maker's name, and a white coupon strip along the
+   foot. The page keeps these colors in light and dark, as every printed page does. */
+.mag-page[data-page='hardware-4'] {
+  --gv-pink: #ff4f8b;
+  --gv-lilac: #ddd2ff;
+  background:
+    radial-gradient(ellipse 60% 34% at 32% 60%, rgba(214, 196, 255, 0.55), transparent 70%),
+    linear-gradient(#170833, #2b1461 34%, #4b2f98 62%, #3a2181 82%, #24104f);
+  color: #fff;
+}
+
+/* the floor: thin dark grid lines on a shiny violet sheet, laid down in perspective, and the
+   crumple of its foil catching the light */
+.mag-page[data-page='hardware-4']::before {
+  inset: 18% -70% -40%;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 1 0 0 0 0.6 -0.32'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(rgba(16, 4, 40, 0.75) 0.045em, transparent 0.045em), linear-gradient(90deg, rgba(16, 4, 40, 0.75) 0.045em, transparent 0.045em),
+    radial-gradient(ellipse 30% 45% at 45% 40%, rgba(235, 225, 255, 0.4), transparent 70%);
+  background-size:
+    6em 6em,
+    1.15em 1.15em,
+    1.15em 1.15em,
+    100% 100%;
+  transform-origin: 50% 0;
+  transform: perspective(26em) rotateX(64deg);
+  -webkit-mask-image: linear-gradient(transparent, #000 22%);
+  mask-image: linear-gradient(transparent, #000 22%);
+}
+
+.mag-page[data-page='hardware-4'] :is(.mag-adlabel, .mag-folio) {
+  color: var(--gv-lilac);
+}
+
+/* the ad itself: no frame, laid out on the page in a grid */
+.mag-page[data-page='hardware-4'] .mag-adframe {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr;
+  grid-template-rows: auto auto 1fr auto auto auto;
+  gap: 0 1.2em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+}
+
+/* the headline: spaced small capitals, white, one word in hot pink */
+.mag-page[data-page='hardware-4'] .mag-adframe :is(h2, .mag-ad-sub) {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #fff;
+  font:
+    small-caps 400 2.75em/1.12 'Times New Roman',
+    Times,
+    Georgia,
+    serif;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-shadow: 0 0.04em 0.18em rgba(10, 0, 30, 0.8);
+}
+
+.mag-page[data-page='hardware-4'] .mag-ad-sub strong {
+  color: var(--gv-pink);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* the two pads, big, tilted down onto the floor and over each other */
+.mag-page[data-page='hardware-4'] .art-gamepad {
+  --rz: -16deg;
+  grid-row: 3;
+  grid-column: 1 / -1;
+  justify-self: end;
+  align-self: start;
+  position: relative;
+  z-index: 1;
+  width: 70%;
+  margin: 0.4em 4.5% 0 0;
+  filter: drop-shadow(0 1.4em 1em rgba(10, 0, 30, 0.6));
+}
+
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) {
+  --rz: -38deg;
+  z-index: 0;
+  grid-row: 3 / 5;
+  justify-self: start;
+  align-self: start;
+  width: 55%;
+  margin: 38% 0 0 3%;
+}
+
+.mag-page[data-page='hardware-4'] .art-gamepad .gp-art {
+  margin: 0;
+  transform-style: preserve-3d;
+  transform: perspective(70em) rotateX(46deg) rotateZ(var(--rz));
+}
+
+/* the shafts lying beside the pads stay in the box: the first pad's is out, so its brass
+   socket shows */
+.mag-page[data-page='hardware-4'] .art-gamepad .gp-shaft {
+  display: none;
+}
+
+/* the second's is screwed into the d-pad: it rises from the socket's center at right angles to
+   the pad, in the pad's own 3D space, so the pad's tilt and perspective foreshorten it. Turned
+   first to undo the pad's spin, so the rod's face (and its shading) is toward the eye. */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) :is(.gp-dpad, .gp-socket) {
+  transform-style: preserve-3d;
+}
+
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-stick {
+  display: block;
+  position: absolute;
+  left: 12%;
+  bottom: 50%;
+  width: 76%;
+  height: 680%;
+  transform-origin: 50% 100%;
+  transform: rotateZ(calc(-1 * var(--rz))) rotateX(-90deg);
+}
+
+/* the magazine sizes art by its width, so the rod is shorter than its box: its foot goes down
+   to the socket */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-stick-art {
+  top: auto;
+}
+
+/* and its shadow falls across the pad away from the light */
+.mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) .gp-socket::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  width: 420%;
+  height: 70%;
+  border-radius: 50%;
+  background: linear-gradient(90deg, rgba(8, 0, 24, 0.85), rgba(8, 0, 24, 0.4) 55%, transparent);
+  transform-origin: 0 50%;
+  transform: rotate(calc(28deg - var(--rz)));
+}
+
+/* the buttons lit from inside, each with a soft halo of its own color */
+.mag-page[data-page='hardware-4'] .art-gamepad .gp-btn {
+  background: radial-gradient(circle at 40% 35%, #fff 0, var(--gp-hi) 22%, var(--gp-c) 62%, var(--gp-lo));
+  box-shadow:
+    0 0 2.2cqw 1cqw var(--gp-c),
+    0 0 5cqw 2.4cqw color-mix(in srgb, var(--gp-hi) 45%, transparent);
+}
+
+/* the pitch: the product's name in spaced capitals, a condensed italic list, then the maker */
+.mag-page[data-page='hardware-4'] .mag-side {
+  grid-row: 4;
+  grid-column: 2;
+  align-self: end;
+  position: relative;
+  z-index: 2;
+  margin: 0 -0.5em 0.4em -1.6em;
+  padding: 1.2em 1.1em 0.8em 2.2em;
+  border: 0;
+  /* the floor in shadow behind the words, so they read on the shine */
+  background: radial-gradient(ellipse closest-side, rgba(20, 6, 48, 0.9) 76%, rgba(20, 6, 48, 0.6) 90%, transparent);
+  background-size: 100% 100%;
+  box-shadow: none;
+  color: #fff;
+  text-shadow: 0 0.05em 0.2em rgba(10, 0, 30, 0.85);
+}
+
+.mag-page[data-page='hardware-4'] .mag-side h3 {
+  margin: 0 0 0.35em;
+  color: #fff;
+  font:
+    700 1.15em/1.1 Helvetica,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.17em;
+  white-space: nowrap;
+}
+
+.mag-page[data-page='hardware-4'] .mag-side .mag-list {
+  margin: 0 0 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+.mag-page[data-page='hardware-4'] .mag-side li {
+  margin: 0 0 0.12em;
+  padding-left: 0.8em;
+  text-indent: -0.8em;
+  font:
+    italic 700 1.12em/1.2 'Avenir Next Condensed',
+    'Arial Narrow',
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-stretch: condensed;
+}
+
+.mag-page[data-page='hardware-4'] .mag-side li::before {
+  content: '• ';
+}
+
+.mag-page[data-page='hardware-4'] .mag-side li strong {
+  font-weight: 700;
+}
+
+.mag-page[data-page='hardware-4'] .mag-side p {
+  margin: 0;
+  font:
+    italic 0.82em/1.3 Helvetica,
+    Arial,
+    sans-serif;
+  color: #fff;
+}
+
+/* the maker's name, big italic capitals, and its motto */
+.mag-page[data-page='hardware-4'] .mag-side p:nth-of-type(2) {
+  margin-top: 0.4em;
+  color: #fff;
+  font:
+    italic 900 3.1em/1 'Arial Black',
+    Impact,
+    Helvetica,
+    sans-serif;
+  letter-spacing: -0.02em;
+  text-align: right;
+}
+
+.mag-page[data-page='hardware-4'] .mag-side p:nth-of-type(3) {
+  color: #fff;
+  font:
+    italic 1.3em/1.1 'Times New Roman',
+    Times,
+    serif;
+  text-align: right;
+}
+
+/* the order coupon: a white strip along the foot of the page, cut out along its dashes */
+.mag-page[data-page='hardware-4'] .mag-card {
+  grid-row: 5;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  grid-auto-flow: row dense;
+  gap: 0 1.4em;
+  align-items: start;
+  padding: 0.7em 1em;
+  border-color: #141210;
+  box-shadow: 0.3em 0.3em 0 rgba(10, 0, 30, 0.55);
+  font-size: 0.82em;
+  text-shadow: none;
+}
+
+.mag-page[data-page='hardware-4'] .mag-card > * {
+  grid-column: 1;
+  margin: 0;
+}
+
+.mag-page[data-page='hardware-4'] .mag-card h3 {
+  margin-bottom: 0.25em;
+  color: #6a1fb0;
+  font-size: 1.35em;
+}
+
+.mag-page[data-page='hardware-4'] .mag-card p:nth-of-type(4) {
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+.mag-page[data-page='hardware-4'] .mag-card > :is(.mag-field, a.mag-go) {
+  grid-column: 2;
+}
+
+.mag-page[data-page='hardware-4'] .mag-card > .mag-field {
+  margin-top: 0.7em;
+}
+
+.mag-page[data-page='hardware-4'] .mag-card > a.mag-go {
+  justify-self: start;
+  margin-top: 0.5em;
+}
+
+.mag-page[data-page='hardware-4'] .mag-adframe > .mag-small {
+  grid-row: 6;
+  grid-column: 1 / -1;
+  margin: 0.5em 0 0;
+  padding: 0.1em 0.4em;
+  justify-self: end;
+  background: rgba(20, 6, 48, 0.85);
+  color: var(--gv-lilac);
+  opacity: 1;
+  text-align: right;
+}
+
+/* a narrow screen: the page runs long, one column, the pads still overlapping, and the shine
+   kept up by the pads, away from the words */
+.flow .mag-page[data-page='hardware-4'] {
+  background:
+    radial-gradient(ellipse 70% 14% at 45% 22%, rgba(214, 196, 255, 0.5), transparent 70%),
+    linear-gradient(#170833, #2b1461 16%, #4b2f98 30%, #2f1a6e 60%, #24104f);
+}
+
+.flow .mag-page[data-page='hardware-4']::before {
+  inset: 8% -70% -10%;
+  opacity: 0.6;
+}
+
+.flow .mag-page[data-page='hardware-4'] .mag-adframe {
+  grid-template-columns: 1fr;
+  grid-template-rows: none;
+}
+
+.flow .mag-page[data-page='hardware-4'] .mag-adframe > * {
+  grid-row: auto;
+  grid-column: 1;
+}
+
+.flow .mag-page[data-page='hardware-4'] .mag-adframe :is(h2, .mag-ad-sub) {
+  font-size: 1.7em;
+  letter-spacing: 0.06em;
+}
+
+.flow .mag-page[data-page='hardware-4'] .art-gamepad {
+  width: 82%;
+}
+
+.flow .mag-page[data-page='hardware-4'] .art-gamepad:nth-of-type(2) {
+  margin: -2% 0 1em;
+}
+
+.flow .mag-page[data-page='hardware-4'] .mag-side {
+  margin: 0 -0.8em 0.8em;
+  padding: 1.4em 0.8em 1.6em;
+}
+
+.flow .mag-page[data-page='hardware-4'] .mag-card {
+  grid-template-columns: 1fr;
+}
+
+.flow .mag-page[data-page='hardware-4'] .mag-card > :is(*, a.mag-go) {
+  grid-column: 1;
+}

@@ -1,0 +1,239 @@
+/* The web player's own pages (the game list, the how-to, saves): light and dark, readable at
+   390px. The game itself uses the player's styles (player/player.css). */
+:root {
+  --wp-bg: #f6f7fa;
+  --wp-card: #ffffff;
+  --wp-text: #1a1d29;
+  --wp-muted: #4f566a;
+  --wp-border: #9aa2b8;
+  --wp-accent: #1f3fbf;
+  --wp-accent-text: #ffffff;
+  --wp-focus: #b35900;
+  --wp-danger: #a3221b;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --wp-bg: #13151c;
+    --wp-card: #1b1e28;
+    --wp-text: #e6e8ef;
+    --wp-muted: #aab1c5;
+    --wp-border: #4a5170;
+    --wp-accent: #8ea4ff;
+    --wp-accent-text: #0b0d14;
+    --wp-focus: #ffb347;
+    --wp-danger: #ff8a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --wp-bg: #13151c;
+  --wp-card: #1b1e28;
+  --wp-text: #e6e8ef;
+  --wp-muted: #aab1c5;
+  --wp-border: #4a5170;
+  --wp-accent: #8ea4ff;
+  --wp-accent-text: #0b0d14;
+  --wp-focus: #ffb347;
+  --wp-danger: #ff8a80;
+  color-scheme: dark;
+}
+
+body.wp-body {
+  margin: 0;
+  background: var(--wp-bg);
+  color: var(--wp-text);
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+}
+.wp {
+  box-sizing: border-box;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+.wp h1 {
+  margin: 0 0 4px;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+.wp h2 {
+  margin: 32px 0 8px;
+  font-size: 1.25rem;
+}
+.wp p {
+  margin: 0 0 10px;
+}
+.wp .wp-lead,
+.wp .wp-meta {
+  color: var(--wp-muted);
+}
+.wp a {
+  color: var(--wp-accent);
+}
+.wp a:focus-visible,
+.wp button:focus-visible,
+.wp input:focus-visible,
+.wp summary:focus-visible {
+  outline: 3px solid var(--wp-focus);
+  outline-offset: 2px;
+}
+.wp-games {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wp-game {
+  display: block;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 24px;
+  padding: 12px 14px;
+  border: 1px solid var(--wp-border);
+  border-radius: 8px;
+  background: var(--wp-card);
+  color: var(--wp-text) !important;
+  text-decoration: none;
+}
+.wp-game:hover {
+  border-color: var(--wp-accent);
+}
+.wp-game-title {
+  display: block;
+  font-weight: 650;
+  font-size: 1.1rem;
+  color: var(--wp-accent);
+}
+.wp-game-meta,
+.wp-game-about {
+  display: block;
+  color: var(--wp-muted);
+  font-size: 0.9rem;
+}
+.wp-saved {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--wp-border);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--wp-muted);
+  vertical-align: 2px;
+}
+.wp button,
+.wp .wp-button {
+  box-sizing: border-box;
+  min-height: 32px;
+  min-width: 24px;
+  padding: 4px 12px;
+  border: 1px solid var(--wp-border);
+  border-radius: 6px;
+  background: var(--wp-card);
+  color: var(--wp-text);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.wp button.wp-primary,
+.wp .wp-button.wp-primary {
+  border-color: var(--wp-accent);
+  background: var(--wp-accent);
+  color: var(--wp-accent-text);
+}
+.wp button.wp-danger {
+  color: var(--wp-danger);
+}
+.wp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+.wp input[type='text'] {
+  box-sizing: border-box;
+  min-height: 32px;
+  min-width: 0;
+  flex: 1 1 12rem;
+  padding: 4px 8px;
+  border: 1px solid var(--wp-border);
+  border-radius: 6px;
+  background: var(--wp-card);
+  color: var(--wp-text);
+  font: inherit;
+}
+.wp label {
+  font-weight: 600;
+}
+.wp pre {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--wp-border);
+  border-radius: 6px;
+  background: var(--wp-card);
+  font-size: 0.85rem;
+}
+.wp code {
+  overflow-wrap: anywhere;
+}
+.wp-saves {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wp-saves li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--wp-border);
+}
+.wp-saves .wp-save-name {
+  font-weight: 600;
+}
+.wp-status {
+  min-height: 1.5em;
+}
+.wp-error {
+  padding: 10px 12px;
+  border: 1px solid var(--wp-danger);
+  border-radius: 6px;
+  color: var(--wp-danger);
+}
+.wp details summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 24px;
+}
+.wp footer {
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: var(--wp-muted);
+}
+
+/* While a game plays: the player fills the window. */
+body.wp-playing {
+  margin: 0;
+  height: 100vh;
+  background: #000;
+}
+body.wp-playing #wp-root {
+  width: 100%;
+  height: 100%;
+  color: #ccc;
+}
+/* the player's "← All games" link has the top left corner */
+body.wp-playing .gm-made-with {
+  top: auto;
+  bottom: 8px;
+}

@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "ARIIkgBNCM0JTRFICsgLzQZNCkgKyAZICsgOSArID0gKyAfNBhIIkgBNDc0DEgiSAE0JzQMSCJIATQnNAxIIkgBNCs0DTQfNEU0OzQ0SBJIATRXNA00NzQZIBsgJTSJICsgPSArIGM1MTRjNBkgOyARICsgJEgiSAE0VzQRNA80GEgqSAE0OzQNLBMsGSA7IBBIIkgBNCs0DTQZICsgGSArIBM0ITQXNBhIKkgBNAM0UTQ=="
+   "keys": "ARIIkgBNCM0JTRNICsgPSArIDEgKyBDNBk0JSArIBkgKyA5ICsgPSArIB80GEgiSAE0NzQMSCJIATQnNAxIIkgBNCc0DEgiSAE0KzQNNB80RTQ7NDRIEkgBNFc0DTQ3NBkgGyAlNIkgKyA9ICsgYzRBND0gKyAfNBkgOyAlICsgJEgiSAE0KzQVNA80GEgqSAE0HzQNLBMsGSA7ICRIIkgBNCs0DTQZICsgGSArIBM0ITQXNBhIKkgBNAM0UTQ=="
   },
   {
    "scene": 3,
-   "keys": "AU08zQBQNdAASy3LAE0KzQBQDdAATRDNBk0+zQBQT9AASxTLAEsUyxJLTcsDSwLLA0gFyAlNGc0GSAXICU0DzQZIBsgAUAHQAE1LzQBLCssASA/IAE0ezQBQUdAATQbNAE0KzQNNAs0DTWrNBk0IzQBQQ9AASBrIAEsFywBIBMgASw=="
+   "keys": "AU08zQBQNdAASy3LAE0KzQBQDdAATRDNBk0+zQBQT9AASxTLAEsUywZND80GSAXICU0DzQZIBsgAUAHQAE1LzQBLCssASA/IAE0ezQBQUdAATQbNAE0KzQZIBMgATQrNAEgNyABNBc0ASATIAEs="
   },
   {
    "scene": 4,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19927,
+  "frames": 18907,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1326
+    "frame": 1343
    },
    {
     "title": "Level 1: The Mound",
-    "frame": 2983
+    "frame": 3000
    },
    {
     "title": "Level 2: Deep Down in the Dust",
-    "frame": 6150
+    "frame": 6147
    },
    {
     "title": "Level 3: The Mountain",
-    "frame": 10018
+    "frame": 8997
    },
    {
     "title": "Level 4: The Palm of God's Hand",
-    "frame": 12348
+    "frame": 11327
    },
    {
     "title": "Ending",
-    "frame": 15080
+    "frame": 14059
    },
    {
     "title": "Credits",
-    "frame": 17839
+    "frame": 16819
    }
   ]
  }

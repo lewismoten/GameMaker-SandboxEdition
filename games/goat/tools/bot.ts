@@ -1,6 +1,7 @@
 // A play-testing bot for GameSim: finds its way with a shortest-path search (anything it can
-// eat out of the way counts as ground, at a price), walks it one straight run at a time,
-// eats, gathers wool from the thorn bushes, and screams at whatever cousin stands in the gap.
+// eat out of the way counts as ground, at a price; off the paths a little more when keepTo is
+// set), walks it one straight run at a time, eats, gathers wool from the thorn bushes, and
+// screams at whatever cousin stands in the gap.
 // Moving monsters (the crowd, camels, pigeons) are handled by trying a stretch again from a
 // snapshot after a wait (see route.ts, carefully()).
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
@@ -84,6 +85,9 @@ export class Bot {
     return s;
   }
 
+  /** The extra cost of a step onto a cell off the paths (kit/walkPaths.ts keepToPaths); unset, every way costs the same. */
+  keepTo?: (x: number, y: number) => number;
+
   /** What one step onto (x, y) costs, or undefined where the goat can't go. */
   private cost(x: number, y: number): number | undefined {
     const shown = this.sim.shown(x, y);
@@ -95,7 +99,7 @@ export class Bot {
       return d === undefined ? undefined : 1 + d + extra;
     }
     if (shown.chHitPt < 0 || shown.scorePts < 0) return 40 + extra;
-    return 1 + extra;
+    return 1 + extra + (this.keepTo?.(x, y) ?? 0);
   }
 
   /**

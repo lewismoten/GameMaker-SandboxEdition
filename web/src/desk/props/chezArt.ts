@@ -45,7 +45,7 @@ const RISE = 2.6;
 const BAND_END = 6.9;
 
 /** How far up the stripes have stepped at x (0 along the front, RISE over the rear quarter). */
-export function stripeStep(x: number): number {
+function stripeStep(x: number): number {
   const [a, b] = KINK;
   if (x >= b) return 0;
   if (x <= a) return RISE;
@@ -59,11 +59,14 @@ const path = (c: CanvasRenderingContext2D, pts: Pt[]) => {
   c.closePath();
 };
 
-/** Doc Leo at the wheel, seen through the door window: his chewed fedora, a red nose, a grin. */
-function docLeo(c: CanvasRenderingContext2D): void {
+/** Doc Leo at the wheel, seen through the door window: his chewed fedora, white face paint round
+ * his eye and his grin, his own nose sunburned pink. */
+function docLeo(c: CanvasRenderingContext2D, seat: Pt = [0, 0]): void {
   c.save();
   path(c, CHEZ_WINDOW);
   c.clip();
+  // the seat: moved back (toward the rear, smaller x) and down, he sits clear of the windshield
+  c.translate(seat[0], seat[1]);
   // the corduroy jacket's shoulder and the green tie
   c.fillStyle = '#7a5a32';
   c.fillRect(17, 6.6, 6, 2);
@@ -74,10 +77,15 @@ function docLeo(c: CanvasRenderingContext2D): void {
   c.beginPath();
   c.ellipse(20.2, 5.2, 1.7, 1.9, 0, 0, Math.PI * 2);
   c.fill();
-  // stubble and the grin
+  // stubble, white round the grin and round the eye, then the grin
   c.fillStyle = 'rgba(60,50,40,0.35)';
   c.beginPath();
   c.ellipse(20.6, 6.3, 1.3, 0.75, 0, 0, Math.PI);
+  c.fill();
+  c.fillStyle = '#fbfbf8';
+  c.beginPath();
+  c.ellipse(21.2, 6.15, 0.85, 0.5, 0, 0, Math.PI * 2);
+  c.ellipse(21.15, 4.75, 0.6, 0.55, 0, 0, Math.PI * 2);
   c.fill();
   c.strokeStyle = '#5a1a10';
   c.lineWidth = 0.22;
@@ -86,10 +94,10 @@ function docLeo(c: CanvasRenderingContext2D): void {
   c.stroke();
   c.fillStyle = '#1a1a1a';
   c.fillRect(21.0, 4.6, 0.35, 0.35);
-  // the red nose
-  c.fillStyle = '#e0242c';
+  // his own nose, sunburned
+  c.fillStyle = '#ec948c';
   c.beginPath();
-  c.arc(22.0, 5.3, 0.62, 0, Math.PI * 2);
+  c.arc(21.85, 5.35, 0.45, 0, Math.PI * 2);
   c.fill();
   // the fedora: brim and a dented crown
   c.fillStyle = '#5a4632';
@@ -107,9 +115,11 @@ function docLeo(c: CanvasRenderingContext2D): void {
 
 /**
  * Draws THE CHEZ with its box's bottom left on the ground at (x, ground), `k` pixels to the
- * kit's unit, facing left (driving right to left, the passenger side showing).
+ * kit's unit, facing left (driving right to left, the passenger side showing). `seat` moves Doc
+ * Leo in the kit's units (back is negative x): a close-up sits him back from the windshield so
+ * his face and hat show whole in the door window.
  */
-export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number, k: number): void {
+export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number, k: number, seat?: Pt): void {
   c.save();
   // mirrored: the kit's x runs nose-right; facing left, unit u lands at x + (40 - u) * k
   c.translate(x + 40 * k, ground - 20 * k);
@@ -177,7 +187,7 @@ export function drawChez(c: CanvasRenderingContext2D, x: number, ground: number,
   c.fillStyle = glass;
   path(c, CHEZ_WINDOW);
   c.fill();
-  docLeo(c);
+  docLeo(c, seat);
   c.strokeStyle = '#d8eef8';
   c.lineWidth = 0.35;
   c.beginPath();

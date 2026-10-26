@@ -92,3 +92,28 @@
   overscroll-behavior: contain;
   border-radius: 6px;
 }
+
+/* Let the bot play… (botDemoDialog.ts) */
+.rec-bot {
+  max-width: 560px;
+}
+.rec-bot-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: end;
+}
+.rec-bot-pick select {
+  max-width: 100%;
+}
+.rec-bot-status {
+  min-height: 3em;
+}
+.rec-bot .buttons {
+  flex-wrap: wrap;
+}
+dialog.modal .rec-bot label.check {
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+}

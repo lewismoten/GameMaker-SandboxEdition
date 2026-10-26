@@ -15,9 +15,9 @@ const DB_NAME = 'gamemaker-save-backups';
 const DB_VERSION = 1;
 const STORE = 'saveBackups';
 
-export const BACKUPS_CHANGED = 'gm-save-backups-changed';
+const BACKUPS_CHANGED = 'gm-save-backups-changed';
 
-export interface SaveBackup {
+interface SaveBackup {
   id: string;
   /** The save id ('game:nebula', 'project:…'). */
   game: string;
@@ -117,7 +117,7 @@ export function summarize(b: SaveBackup): BackupSummary {
 }
 
 /** A label for a backup taken now ("Before editing slot 3", or the date). */
-export function defaultLabel(when = Date.now()): string {
+function defaultLabel(when = Date.now()): string {
   return `Backup ${new Date(when).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}`;
 }
 

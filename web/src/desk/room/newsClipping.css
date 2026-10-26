@@ -26,6 +26,12 @@
     outline: none;
   }
 
+  /* the keyboard's place: the room's yellow ring (props.css), not just the lift */
+  .news-clipping:focus-visible {
+    outline: 2px solid #ffd400;
+    outline-offset: 4px;
+  }
+
   /* the push pin */
   .news-clipping::after {
     content: '';

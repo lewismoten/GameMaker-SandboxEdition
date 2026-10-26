@@ -85,17 +85,11 @@ export function validPatch(p: Uint8Array): boolean {
   return p.length >= 11 && p[8] <= 3 && p[9] <= 3 && p[10] <= 0x0f;
 }
 
-/** The first 11 bytes match (the rest of an SBI record is unused). */
-export function samePatch(a: Uint8Array, b: Uint8Array): boolean {
-  for (let i = 0; i < 11; i++) if (a[i] !== b[i]) return false;
-  return true;
-}
-
 /** The five drums of the chip's rhythm mode, by the MIDI channel that plays them (11..15). */
 export type DrumSlot = 'bd' | 'sd' | 'tom' | 'cy' | 'hh';
 
 /** How a preset is heard when previewed. */
-export type PreviewKind = 'tune' | 'chord' | 'hits';
+type PreviewKind = 'tune' | 'chord' | 'hits';
 
 export interface OplPreset {
   /** Stable key (kebab case). */

@@ -29,7 +29,7 @@ export function groupOf(path: string): string | undefined {
   return `${parts[0]}/`;
 }
 
-export interface SiteWorkerOptions {
+interface SiteWorkerOptions {
   /** Changes whenever anything in the build does (the worker's file must change for browsers to update). */
   version: string;
   /** Installed up front: the pages and what they load before showing anything, the icons and manifest. */
@@ -143,7 +143,7 @@ self.addEventListener('fetch', (event) => {
   if (path === undefined || path === 'sw.js') return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    const hit = await cache.match(req, { ignoreSearch: true });
+    const hit = await cache.match(req, { ignoreSearch: true, ignoreVary: true }); // a host's Vary: Origin would miss a module script's request
     if (hit) return hit;
     try {
       const res = await fetch(req);

@@ -1,3 +1,4 @@
+// Media focus: a player stops every preview and other player, and previews take it from each other.
 import { describe, expect, it } from 'vitest';
 import { claimMediaFocus, playerHasFocus } from './mediaFocus';
 

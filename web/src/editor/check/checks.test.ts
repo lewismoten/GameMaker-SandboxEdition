@@ -45,15 +45,34 @@ describe('the level check’s file checks', () => {
     expect(opposites(d)).toHaveLength(1);
   });
 
-  it('times a block that stays shut too long', () => {
-    const t = testGame(ROWS);
+  it('leaves out a block that scores every tick on a goal or sealed in', () => {
+    // coins: one on the exit's cell (touching it ends the scene), one walled in, one in reach
+    const t = testGame(['##########', '#........#', '#........#', '#E.S..c..#', '##########', '#####c####', '##########']);
     const bbl = parseBlocks(t.files.get('test.bbl')!, BACKBL);
-    Object.assign(bbl[SPIKES], { nextBl: 20, ntime: 90, solid: 15 });
-    Object.assign(bbl[20], { nextBl: SPIKES, ntime: 10 });
+    bbl[COIN].touchBl = COIN;
     t.files.set('test.bbl', serializeBlocks(bbl));
-    const f = waits(sceneOf(t));
+    const map = t.files.get('test.map')!;
+    map[(3 * 100 + 1) * 2] = COIN;
+    const f = everyTickBlocks(sceneOf(t));
+    expect(f).toHaveLength(1);
+    expect(f[0].where.cells).toEqual([306]);
+  });
+
+  it('times a block that stays shut too long, only where it stands in the way', () => {
+    const shutFor = (rows: string[]) => {
+      const t = testGame(rows);
+      const bbl = parseBlocks(t.files.get('test.bbl')!, BACKBL);
+      Object.assign(bbl[SPIKES], { nextBl: 20, ntime: 90, solid: 15 });
+      Object.assign(bbl[20], { nextBl: SPIKES, ntime: 10 });
+      t.files.set('test.bbl', serializeBlocks(bbl));
+      return waits(sceneOf(t));
+    };
+    // the door between the start and the exit, in a low passage
+    const f = shutFor(['##########', '##########', '#..#.....#', '#E.^.S...#', '##########']);
     expect(f).toHaveLength(1);
     expect(f[0].title).toContain('4.9 s');
+    // off the way on (past the start, away from the exit): scenery
+    expect(shutFor(ROWS)).toHaveLength(0);
   });
 
   it('finds a coin sealed in a wall without playing', () => {

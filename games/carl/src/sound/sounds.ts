@@ -119,7 +119,10 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.spend, spend, SPEAKER.noise(3, 60, 300));
   // flying is the PC speaker's alone: every move starts it, and a .VOC there would cut off
   // whatever clip is playing (a lyric, the level's last line) the moment Carl changes course
-  set.freqs[SND.fly] = speaker((i) => (i < 3 ? 220 + (i % 2) * 30 : 0));
+  // A low, rough buzz (about 70 ms): pitches round 115 Hz that jump every step, the way a fly's
+  // wings drone, not a beep; holding a key restarts it each move, so it runs on as one buzz
+  const BUZZ = [118, 96, 132, 104, 126, 92, 138, 100, 122, 108];
+  set.freqs[SND.fly] = speaker((i) => BUZZ[i] ?? 0);
   add(
     SND.roll,
     'roll',

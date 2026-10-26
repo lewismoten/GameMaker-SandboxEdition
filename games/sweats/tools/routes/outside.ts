@@ -160,7 +160,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the price tag on the floor');
       await must(bot, bot.walk(26, 'down to the floor'), 'floor');
       await declaim(bot, 'the price tag on the floor');
-      await must(bot, bot.hop('right', 12, 'right', 30), 'over Teddy, the dollar');
+      await must(bot, bot.hop('right', 12, 'right', 31), 'over Teddy, the dollar');
     });
     await carefully(bot, 'aisle two', 0, async () => {
       await declaim(bot, 'the price tag');

@@ -5,7 +5,7 @@
 import './pageToc.css';
 import { h } from './editor/core/ui';
 
-export interface PageTocOptions {
+interface PageTocOptions {
   /** More headings to list, indented under their section (e.g. '.cast-card h3[id]'). */
   sub?: string;
 }

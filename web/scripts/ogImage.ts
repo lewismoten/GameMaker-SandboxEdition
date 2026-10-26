@@ -16,7 +16,7 @@ export const CARD_W = 1200;
 export const CARD_H = 630;
 
 /** A picture as 8-bit RGB. */
-export interface Rgb {
+interface Rgb {
   width: number;
   height: number;
   data: Uint8Array;
@@ -90,7 +90,7 @@ const NOT_THE_GAME = /^(gmtitle|sandlogo|rsdtbox|ajgames|black\.|c?fade(in|out)|
  * slides), else any GIF it has. Still pictures come before animations, whose first frame is
  * often a fade.
  */
-export function titlePicture(entry: CdCatalogEntry, read: Read): Rgb | undefined {
+function titlePicture(entry: CdCatalogEntry, read: Read): Rgb | undefined {
   const slots: string[] = ['title.gif'];
   const gam = entry.gam && read(entry.gam);
   if (gam) {
@@ -169,7 +169,7 @@ const MIDDLE_DOT = [0, 0, 0, 0x18, 0x18, 0, 0, 0];
 const ASCII: Record<string, string> = { '‘': "'", '’': "'", '“': '"', '”': '"', '–': '-', '—': '-', '…': '...', é: 'e', è: 'e', á: 'a', ö: 'o', ü: 'u' };
 
 /** Characters the font has (and the middle dot), so text measures one cell per character. */
-export const fontText = (s: string): string =>
+const fontText = (s: string): string =>
   [...s]
     .map((c) => ASCII[c] ?? c)
     .join('')

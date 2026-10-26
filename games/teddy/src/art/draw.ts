@@ -2,6 +2,8 @@
 // textures, ASCII sprites, the PC's 8x8 font and a 3x5 font for tiny signs.
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels, dither, rng } from '../../../kit/pixels';
+import { textInk } from '../../../kit/textBounds';
+import { P } from './pal';
 
 export const CLEAR = 255;
 
@@ -91,34 +93,57 @@ export function over(dst: Pixels, src: Pixels, x = 0, y = 0): Pixels {
 }
 
 /**
- * The Klown Klub spells itself with backwards K's. In art (signs, titles, cartoons) a
- * MIRROR_K draws a mirrored K; plain text (the .TXT pages) keeps ordinary K's.
+ * The Clown Club letters the O of CLOWN as a round red rubber nose. In art (signs, titles,
+ * cartoons) NOSE draws it at capital height and NOSE_SMALL at lowercase height; plain text
+ * (the .TXT pages) keeps an ordinary O.
  */
-export const MIRROR_K = '\ua4d8';
+export const NOSE = '\u25cf';
+export const NOSE_SMALL = '\u2022';
 
-/** The backwards K in the PC font's style (the font's own K mirrored keeps its serifs and reads as an X). */
-const BACKWARDS_K = ['##...##.', '.##..##.', '..##.##.', '...####.', '..##.##.', '.##..##.', '##...##.', '........'];
+/**
+ * The noses in the PC font's cell: # red, d its shaded side, w the shine, from the upper left
+ * like every lump. The three Teddy games' palettes put these ramps at the same indexes.
+ */
+const NOSE_GLYPHS: Record<string, string[]> = {
+  [NOSE]: ['..###...', '.#w###..', '#w#####.', '#######.', '######d.', '.####d..', '..ddd...', '........'],
+  [NOSE_SMALL]: ['........', '........', '..###...', '.#w###..', '.#####..', '.####d..', '..ddd...', '........'],
+};
+const NOSE_INK: Record<string, number> = { '#': P.c('red', 2), d: P.c('red', 0), w: P.c('paint', 3) };
 
-/** Turns every "KLOWN KLUB" (any case) into its sign spelling, backwards K's and all. */
-export function klubArt(s: string): string {
-  return s.replace(/k(lown)/gi, (_, rest: string) => MIRROR_K + rest).replace(/k(lub)/gi, (_, rest: string) => MIRROR_K + rest);
+/** Turns every "CLOWN CLUB" (any case) into its sign spelling, the O a red nose. */
+export function clubArt(s: string): string {
+  return s.replace(/(cl)(o)(wn\s+club)/gi, (_, a: string, o: string, b: string) => a + (o === 'O' ? NOSE : NOSE_SMALL) + b);
 }
 
-/** Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. */
-export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+/**
+ * Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. A nose is painted
+ * red, or drawn flat in `col` with `flat` (an outline's or a shadow's pass).
+ */
+export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1, flat = false): number {
+  const ink = textInk(p, s);
+  const dot = (dx: number, dy: number, dw: number, dh: number, k = col) => {
+    p.rect(dx, dy, dw, dh, k);
+    ink?.add(dx, dy, dw, dh);
+  };
   let cx = x;
   for (const ch of s) {
     const base = (ch.charCodeAt(0) & 0xff) * 8;
     for (let row = 0; row < 8; row++) {
-      if (ch === MIRROR_K) {
-        for (let b = 0; b < 8; b++) if (BACKWARDS_K[row][b] === '#') p.rect(cx + b * scale, y + row * scale, scale, scale, col);
+      const nose = NOSE_GLYPHS[ch];
+      if (nose) {
+        for (let b = 0; b < 8; b++) {
+          const k = nose[row][b];
+          if (k === '.') continue;
+          dot(cx + b * scale, y + row * scale, scale, scale, flat ? col : NOSE_INK[k]);
+        }
         continue;
       }
       const bits = FONT8X8[base + row];
-      for (let b = 0; b < 8; b++) if (bits & (1 << b)) p.rect(cx + b * scale, y + row * scale, scale, scale, col);
+      for (let b = 0; b < 8; b++) if (bits & (1 << b)) dot(cx + b * scale, y + row * scale, scale, scale);
     }
     cx += 8 * scale;
   }
+  ink?.end();
   return cx - x;
 }
 
@@ -126,7 +151,7 @@ export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 /** Text with a 1px outline (and an optional drop shadow). */
 export function outlined(p: Pixels, x: number, y: number, s: string, col: number, edge: number, scale = 1, shadow?: number): void {
-  if (shadow !== undefined) text(p, x + scale, y + scale * 2, s, shadow, scale);
+  if (shadow !== undefined) text(p, x + scale, y + scale * 2, s, shadow, scale, true);
   for (const [dx, dy] of [
     [-1, 0],
     [1, 0],
@@ -137,7 +162,7 @@ export function outlined(p: Pixels, x: number, y: number, s: string, col: number
     [-1, 1],
     [1, -1],
   ])
-    text(p, x + dx, y + dy, s, edge, scale);
+    text(p, x + dx, y + dy, s, edge, scale, true);
   text(p, x, y, s, col, scale);
 }
 
@@ -159,7 +184,6 @@ const MICRO: Record<string, string> = {
   I: '111010010010111',
   J: '001001001101010',
   K: '101101110101101',
-  [MIRROR_K]: '101101011101101',
   L: '100100100100111',
   M: '101111111101101',
   N: '110101101101101',
@@ -197,20 +221,39 @@ const MICRO: Record<string, string> = {
   ',': '000000000010100',
   '?': '110001010000010',
   '+': '000010111010000',
+  '>': '100010001010100',
+  '<': '001010100010001',
+  '(': '010100100100010',
+  ')': '010001001001010',
 };
 
-/** 3x5 letters, 1px apart. Returns the width drawn. */
+/** The nose in the 3x5 letters: as tall as they are and a little wider, to read round. */
+const MICRO_NOSE = ['.###.', '#w###', '#####', '####d', '.ddd.'];
+const isNose = (ch: string) => ch === NOSE || ch === NOSE_SMALL;
+
+/** 3x5 letters, 1px apart (a nose is 5x5). Returns the width drawn. */
 export function micro(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  const ink = textInk(p, s, undefined, (ch) => ch in MICRO || ch.toUpperCase() in MICRO || isNose(ch));
+  const dot = (dx: number, dy: number, dw: number, dh: number, k = col) => {
+    p.rect(dx, dy, dw, dh, k);
+    ink?.add(dx, dy, dw, dh);
+  };
   let cx = x;
   for (const ch of s.toUpperCase()) {
+    if (isNose(ch)) {
+      MICRO_NOSE.forEach((row, dy) => [...row].forEach((k, dx) => k !== '.' && dot(cx + dx * scale, y + dy * scale, scale, scale, NOSE_INK[k])));
+      cx += 6 * scale;
+      continue;
+    }
     const g = MICRO[ch] ?? MICRO[' '];
-    for (let i = 0; i < 15; i++) if (g[i] === '1') p.rect(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale, col);
+    for (let i = 0; i < 15; i++) if (g[i] === '1') dot(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale);
     cx += 4 * scale;
   }
+  ink?.end();
   return cx - x - scale;
 }
 
-export const microWidth = (s: string, scale = 1) => s.length * 4 * scale - scale;
+export const microWidth = (s: string, scale = 1) => ([...s].filter(isNose).length * 2 + s.length * 4 - 1) * scale;
 
 /** Scales a picture up by an integer factor into dst (clear pixels skipped). */
 export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): void {

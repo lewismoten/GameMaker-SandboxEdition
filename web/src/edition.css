@@ -13,27 +13,6 @@
   opacity: 0.85;
 }
 
-/* under the logo on the home page banner */
-.hero-edition {
-  display: block;
-  margin: -4px 0 6px;
-  color: #ffd400;
-  font:
-    800 14px/1.2 system-ui,
-    sans-serif;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-}
-
-.hero-fork {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.hero-fork a {
-  color: inherit;
-}
-
 /* phones: one row. The edition sits under the logo, and the open game's name takes what is
    left, shortened with … when it must be */
 @media (max-width: 600px) {
@@ -125,9 +104,9 @@
 .topbar .topbar-menu > :hover {
   background: var(--panel-2);
 }
-/* below 900px the cast, achievements, desk, offline and source links move into it, so the
-   header stays one row on tablets too */
-@media (max-width: 900px) {
+/* below 1200px the cast, achievements, credits, magazine, offline and source links move into
+   it, so the header stays one row on tablets and small laptops too */
+@media (max-width: 1199px) {
   .topbar .hide-narrow {
     display: none;
   }
@@ -171,7 +150,7 @@
   white-space: nowrap;
 }
 
-/* the bar's page links (Cast, Achievements, Credits, Guide): each its own target, with a thin rule
+/* the bar's page links (Games, Cast, Achievements, Credits, Guide, Magazine): each its own target, with a thin rule
    centred between neighbours so they don't read as one phrase */
 .topbar-nav {
   display: flex;
@@ -187,12 +166,29 @@
   border-left: 1px solid color-mix(in srgb, currentColor 40%, transparent);
 }
 
-@media (max-width: 900px) {
-  /* only Guide is left in the bar: no rule beside it */
+@media (max-width: 1199px) {
+  /* only Games and Guide are left in the bar: one rule between them */
   .topbar-nav > a.nav-link {
     padding: 4px 6px;
   }
   .topbar-nav > a.nav-link + a.nav-link {
     border-left: 0;
+  }
+  .topbar-nav > a.nav-games ~ a.nav-link:not(.hide-narrow) {
+    border-left: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+  }
+}
+
+/* the narrowest phones: Guide moves from the bar into the ⋯ menu, so the bar stays one row */
+.topbar-menu > .show-tiny {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .topbar-nav > a.hide-tiny {
+    display: none;
+  }
+  .topbar-menu > .show-tiny {
+    display: revert;
   }
 }

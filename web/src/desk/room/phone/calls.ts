@@ -3,10 +3,12 @@
 // the game boxes, time & temperature, the weather line, the movie line, 911, and anyone
 // else (not in service, no answer, busy, or somebody's answering machine). Pittsburgh,
 // December 1994: local calls are seven digits; 1 + area code + number works too.
+import { fnv1a } from '../../../seededRandom';
 import type { PhoneSounds } from './sounds';
 import { deskMs } from '../../../retro/dos/deskClock';
 import { VOICES, type Voice } from '../../../audio/voices';
 import { GREETING, TTY_LOCAL } from '../../../retro/bbs/ttyTalk';
+import { achieve } from '../../props/propKit';
 
 /** What a call can do on the line; the dial pad provides it (phone.ts). */
 export interface CallLine {
@@ -75,6 +77,7 @@ const tty: Call = async (line) => {
   await ring(line, 2);
   line.status('Silence…');
   await line.wait(1.5);
+  achieve('tty-wallphone');
   for (const text of [GREETING, 'HELLO Q GA']) {
     line.status('A warble of two tones: a TTY typing');
     line.caption('TTY tones', text);
@@ -207,9 +210,9 @@ const DIRECTORY: Record<string, Call> = {
   '5550111': async (line) => timeAndTemperature(line),
   '5550112': async (line) => weather(line),
   '5550113': async (line) => movieLine(line),
-  // THE -= S A N D B O X =- BBS (1-412-555-SAND), The Sofa, and Sandcastle Knight's BBS
+  // THE -= S A N D B O X =- BBS (1-412-555-SAND), The Sofa (1-412-555-SOFA), and Sandcastle Knight's BBS
   '5557263': modem,
-  '5550177': modem,
+  '5557632': modem,
   '5550142': modem,
   // Mrs. Novak next door, on her TTY (Mom's notes)
   [TTY_LOCAL]: tty,
@@ -296,23 +299,16 @@ async function movieLine(line: CallLine): Promise<void> {
   line.ended('The movie line hung up');
 }
 
-/** A small stable number from the digits, so a number always does the same thing. */
-function hash(s: string): number {
-  let n = 2166136261;
-  for (let i = 0; i < s.length; i++) n = Math.imul(n ^ s.charCodeAt(i), 16777619);
-  return n >>> 0;
-}
-
 /** Who (or what) answers a number. */
 export function callFor(digits: string): Call {
   const n = localNumber(digits);
   const known = DIRECTORY[n];
   if (known) return known;
-  const h = hash(n) % 10;
+  const h = fnv1a(n) % 10; // a number always does the same thing
   if (h < 5) return notInService;
   if (h < 7) return noAnswer;
   if (h < 8) return busy;
-  return answeringMachine(FAMILIES[(hash(n) >>> 8) % FAMILIES.length]);
+  return answeringMachine(FAMILIES[(fnv1a(n) >>> 8) % FAMILIES.length]);
 }
 
 /** The memory buttons, labeled by hand like Mom's notes (phoneNotes.ts). */

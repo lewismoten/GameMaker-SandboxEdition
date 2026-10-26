@@ -5,11 +5,12 @@
     { "game": "realm", "as": "in the grass by Someday Harbor’s lighthouse" },
     { "game": "logic", "as": "in the crawlspace behind The Home Computer" },
     { "game": "smirked", "as": "in a far corner of the crypt" },
-    { "game": "teddy", "as": "up on the Klown Car’s roof" },
+    { "game": "teddy", "as": "up on the Clown Car’s roof" },
     { "game": "goat", "as": "in the grass in the far corner of the shepherds’ field" },
     { "game": "needle", "as": "under the tailor’s sewing table" },
     { "game": "tickle", "as": "on the tower’s floor, in the far corner" },
     { "game": "teddy2", "as": "up in the attic, by the boxes" },
+    { "game": "teddy3", "as": "up in the old oak, where the raccoon naps" },
     { "game": "mustard", "as": "in a pocket of air down in the dust" },
     { "game": "carl", "as": "under the bedroom desk" },
     { "game": "snowbound", "as": "in the snow by the backyard snowman" },
@@ -40,7 +41,7 @@
     { "game": "year2000", "as": "tinkering with the Teleport Exchange’s switchboard" },
     { "game": "brief", "as": "seeing to the inventor’s wiring in the Laboratory" },
     { "game": "sandcast", "as": "perched on a sandcastle in the BBS file area" },
-    { "game": "depth", "as": "beside THE CHEZ in Teapot Temple, minding its charge port" }
+    { "game": "depth", "as": "beside THE\u00a0CHEZ in Teapot Temple, minding its charge port" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
@@ -62,10 +63,6 @@
     { "game": "reckoning", "as": "a photo in the hall with the family’s, red knit hat and all" },
     { "game": "sweats", "as": "in the audience at The Hive’s open mic" }
   ],
-  "leo": [
-    { "game": "sleuth", "as": "a playbill in the lobby" }
-  ],
-  "chicken": [
-    { "game": "sleuth", "as": "on the leash in Doc Leo’s playbill" }
-  ]
+  "leo": [{ "game": "sleuth", "as": "a playbill in the lobby" }],
+  "chicken": [{ "game": "sleuth", "as": "on the leash in Doc Leo’s playbill" }]
 }

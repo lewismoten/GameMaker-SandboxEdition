@@ -9,5 +9,9 @@
   "exe": "TICKLE.EXE",
   "sound": "sb",
   "tinHeart": { "map": "tower.map", "at": [43, 23] },
-  "easterEgg": { "map": "lab.map", "at": [17, 13] }
+  "easterEgg": { "map": "lab.map", "at": [17, 13] },
+  "acceptedFindings": [
+    "hurt-lock s4 Monster 17 holds the hero while it hurts",
+    "hurt-lock s4 Monster 18 holds the hero while it hurts"
+  ]
 }

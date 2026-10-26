@@ -21,7 +21,7 @@ export function savesButton(target: SavesTarget | undefined): { el: HTMLElement;
       type: 'button',
       class: 'with-ico',
       title: 'See and change the saved games and the high scores, and back them up',
-      'aria-label': `Saves and scores of ${target.title}`,
+      'aria-label': `Saves & scores of ${target.title}`,
       onclick: () => void open(),
     },
     icon('disk'),

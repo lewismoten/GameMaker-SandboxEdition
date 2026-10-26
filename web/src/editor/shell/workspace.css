@@ -34,6 +34,7 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
+  min-height: 24px; /* a 24px target, the height of its row */
   padding: 2px 4px 2px 0;
   border: 0;
   background: none;
@@ -103,6 +104,18 @@
   flex: 1 1 auto;
   padding-inline: 8px;
   white-space: nowrap;
+}
+
+/* "Saved in this browser" under Download (saveNote.ts) */
+.sidebar .save-note {
+  margin: 6px 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sidebar .save-note.failed {
+  color: var(--danger);
+  font-weight: 600;
 }
 
 /* Phones: the file list folds into one "Files" button, kept at the top of the screen. */

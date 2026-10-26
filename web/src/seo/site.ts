@@ -11,7 +11,7 @@ export const OG_IMAGE = `${SITE_URL}og-image.png`;
 export const OG_IMAGE_ALT = 'A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box.';
 
 /** For description tags (search results show about 160 characters). */
-export const SITE_DESCRIPTION =
+const SITE_DESCRIPTION =
   'Make DOS-style games in your browser with no programming: a free, open-source remake of RSD Game-Maker 3.0 (1994). Play 90s shareware and export your own games.';
 /** The longer version, for text on the page. */
 export const SITE_ABOUT =
@@ -37,11 +37,21 @@ export const ROUTES = {
   cast: {
     title: `The cast · ${PRODUCT}`,
     description:
-      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
+      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE\u00a0CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
   },
   credits: {
     title: `Credits · ${PRODUCT}`,
     description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, the software and third-party pieces, the AI tools and the people, and who made what in The Bard of Bizarre’s games.`,
+  },
+  magazine: {
+    title: `TURBO BUTTON magazine · ${PRODUCT}`,
+    description:
+      'TURBO BUTTON, the shareware gamer’s monthly: a 1990s-style magazine about Game-Maker and its games, with reviews, interviews, strategy, a BBS list, a game directory and ads, to read page by page or print.',
+  },
+  library: {
+    title: `Library · ${PRODUCT}`,
+    description:
+      'Everything to read and print in one place: each game’s manual, hint book, maps, newsletter, sticker sheet and cards, the Game-Maker box’s paper, TURBO BUTTON magazine and the Guide, by game or by type.',
   },
   achievements: {
     title: `What you’ve done · ${PRODUCT}`,
@@ -135,7 +145,7 @@ export function clip(text: string, max: number): string {
   return one.length > max ? `${one.slice(0, max - 1).replace(/\s+\S*$/, '')}…` : one;
 }
 
-export interface PageMeta {
+interface PageMeta {
   title: string;
   description: string;
   /** Absolute canonical address (left out when unknown, e.g. an exported game). */
@@ -219,7 +229,7 @@ export function repoJsonLd(): Record<string, unknown> {
 }
 
 /** What made a game: this app, its site and its source code. */
-export function madeWith(): Record<string, unknown> {
+function madeWith(): Record<string, unknown> {
   return { '@type': 'SoftwareApplication', name: PRODUCT, url: SITE_URL, sameAs: [REPO_URL], applicationCategory: 'GameApplication' };
 }
 

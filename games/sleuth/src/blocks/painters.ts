@@ -3,7 +3,7 @@
 // doors with their name plates, notes and chalkboards on the walls, and furniture.
 import { Pixels, rng } from '../../../kit/pixels';
 import { SOLID, type BlockDef } from './blockset';
-import { blob, micro, microC, pool, shadeAt, speckle } from '../art/draw';
+import { blob, micro, microC, microWidth, pool, shadeAt, speckle } from '../art/draw';
 import { c, ramp as r } from '../art/pal';
 
 export const T = (fill = 0) => new Pixels(20, 20, fill);
@@ -182,20 +182,24 @@ export function closedDoor(label: string, color = 'panel'): Pixels {
   return p;
 }
 
+/** Five 3x5 letters take 19 of a block's 20 pixels: a note or board with such a line runs edge to edge. */
+const wide = (lines: string[]) => lines.some((l) => microWidth(l) > 16);
+
 /** A paper note pinned on a wall face, three short lines of writing. */
 export function wallNote(lines: string[], paper = 'paper', inkName = 'black'): Pixels {
   const p = wallFace();
-  p.rect(1, 2, 18, 17, c(paper, 4)).frame(1, 2, 18, 17, c(paper, 2));
+  if (wide(lines)) p.rect(0, 2, 20, 17, c(paper, 4)).rect(0, 2, 20, 1, c(paper, 2)).rect(0, 18, 20, 1, c(paper, 2));
+  else p.rect(1, 2, 18, 17, c(paper, 4)).frame(1, 2, 18, 17, c(paper, 2));
   p.set(10, 2, c('velvet', 4));
-  lines.forEach((l, i) => micro(p, 2, 4 + i * 5, l, c(inkName, 0)));
+  lines.forEach((l, i) => micro(p, microWidth(l) > 16 ? 1 : 2, 4 + i * 5, l, c(inkName, 0)));
   return p;
 }
 
 /** A chalkboard on the wall with chalk writing. */
 export function chalkboard(lines: string[]): Pixels {
   const p = wallFace();
-  p.rect(0, 2, 20, 17, c('wood', 1)).rect(1, 3, 18, 15, c('green', 0));
-  lines.forEach((l, i) => micro(p, 2, 4 + i * 5, l, c('paper', 4)));
+  p.rect(0, 2, 20, 17, c('wood', 1)).rect(wide(lines) ? 0 : 1, 3, wide(lines) ? 20 : 18, 15, c('green', 0));
+  lines.forEach((l, i) => micro(p, microWidth(l) > 16 ? 1 : 2, 4 + i * 5, l, c('paper', 4)));
   return p;
 }
 

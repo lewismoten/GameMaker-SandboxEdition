@@ -3,15 +3,17 @@
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, blob, centered, gradient, klubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
+import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
-import { docLeo, type Costume } from '../sprites/people';
-import { citiCar, propSprite } from '../sprites/klown';
+import { FULL, docLeo, type Costume } from '../sprites/people';
+import { CHEZ, pockets, propSprite } from '../sprites/klown';
+import { chezRide } from './ride';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from '../sound/music';
@@ -29,7 +31,7 @@ export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
-/** A big puffy sky with the town far away and the Klown Klub's big top on the horizon. */
+/** A big puffy sky with the town far away and the Clown Club's big top on the horizon. */
 export function landscape(seed = 1, bigTop = true): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, 130, SP.r('sky'), 0, 7);
@@ -46,7 +48,7 @@ export function landscape(seed = 1, bigTop = true): Pixels {
     for (let wy = 128 - h + 4; wy < 124; wy += 6) for (let wx = x + 2; wx < x + 12; wx += 4) if (R() < 0.4) p.rect(wx, wy, 2, 2, c('sky', 6));
   }
   if (bigTop) {
-    // the Klown Klub's big top: red and white stripes, a flag
+    // the Clown Club's big top: red and white stripes, a flag
     const cx = 236;
     for (let y = 0; y < 34; y++) {
       const half = 4 + y * 1.1;
@@ -178,8 +180,8 @@ export function titleScreen(): Pixels {
   return p;
 }
 
-/** A level card: a framed view of the level and what is new there. */
-export function card(l: Level, n: number, lines: string[]): Pixels {
+/** A level card: a framed view of the level, where it falls (LEVEL 2 OF n), and what is new there. */
+export function card(l: Level, n: number, of: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));
@@ -188,9 +190,9 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   const view = renderRegion(map, l.bs.build(), l.beasts.mb.build(), l.beasts.build(), l.view[0], l.view[1], 15, 5, extra);
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);
-  outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);
-  outlined(p, 16, 132, klubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
-  lines.forEach((s, i) => text(p, 16, 154 + i * 10, s, cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
+  outlined(p, 16, 120, n === of ? `FINAL LEVEL: ${n} OF ${of}` : `LEVEL ${n} OF ${of}`, cc('yellow', 3), cc('red', 1), 1);
+  outlined(p, 16, 132, clubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
+  lines.forEach((s, i) => text(p, 16, 154 + i * 10, clubArt(s), cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
   return p;
 }
 
@@ -242,7 +244,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('lost.txt', LOST);
   lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
   levels.forEach((l, i) => {
-    put(`${l.file}.gif`, gif(card(l, i + 1, CARDS[l.file] ?? []), buildPalette(l.time).pal));
+    put(`${l.file}.gif`, gif(card(l, i + 1, levels.length, CARDS[l.file] ?? []), buildPalette(l.time).pal));
     lst(`${l.file}.lst`, [[`${l.file}.gif`, 30]]);
   });
   if (levels.some((l) => l.nook)) {
@@ -280,7 +282,7 @@ export function wonScreen(): [Pixels, Uint8Array] {
   p.rect(0, 150, W, 50, c('wood', 2));
   for (let x = 0; x < W; x += 24) p.rect(x, 150, 1, 50, c('wood', 0));
   blob(p, 160, 152, 60, 8, SP.r('glow'), 1, 3);
-  leoBig(p, 176, 70, 2, undefined, true);
+  leoBig(p, 176, 70, 2, FULL, true);
   teddyBig(p, 'frontReach', 104, 92, 3);
   gwinnBig(p, 'gwinnRoll', 220, 126, 2);
   const R = rng(4);
@@ -317,7 +319,7 @@ export function lostScreen(): Pixels {
 /**
  * The intro cartoon (FLI): the backyard at dawn; Gwinn bounds across with Doc Leo's
  * suitcase, costume pieces flying out; Teddy pops out of his doghouse and gives chase;
- * then the logo drops in.
+ * then the yard fades to black (the logo is the title picture's).
  */
 export function introFli(): Uint8Array {
   const frames: Uint8Array[] = [];
@@ -368,42 +370,44 @@ export function introFli(): Uint8Array {
     caption(p, 'TEDDY TO THE RESCUE!');
     add(p);
   }
-  // 4. The logo drops in, bouncing
-  const title = titleScreen();
-  for (let f = 0; f < 14; f++) {
-    const p = landscape(7);
-    const drop = Math.round(-90 * Math.cos((f / 13) * Math.PI * 2.5) * (1 - f / 13));
-    logo(p, 6 + Math.min(0, drop) + (drop > 0 ? Math.round(drop / 6) : 0));
-    add(p);
-  }
-  add(title, 3);
-  return encodeFli(frames, SP.pal, { speed: 6 });
+  // 4. the yard, empty but for the doghouse: off they go (the title, logo and all, follows the fade)
+  const p = new Pixels(W, H);
+  p.px.set(bg.px);
+  caption(p, 'TEDDY TO THE RESCUE!');
+  add(p, 6);
+  return encodeFliFadeOut(frames, SP.pal, { speed: 6 });
 }
 
 /**
  * Between stops (an FLI): Doc Leo's little red CitiCar hums across town (it is electric:
- * no exhaust, just a whirr), Pockets at the wheel and Teddy's head out of the back window.
+ * no exhaust, just a whirr), Pockets at the wheel behind the door window and Teddy beside him
+ * in the front passenger seat, his head out of the front of the window, ears flapping.
  */
 export function driveFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const bg = landscape(11);
   bg.rect(0, 168, W, 32, c('asphalt', 1));
   for (let x = 0; x < W; x += 40) bg.rect(x + 8, 182, 20, 3, c('yellow', 3));
-  const carPic = new Pixels(40, 40, CLEAR);
-  citiCar(carPic, 0, 0);
+  // Pockets' bowler, face and collar (his sprite starts nine rows down its two blocks)
+  const [top, body] = pockets(() => new Pixels(20, 20, CLEAR));
+  const driver = new Pixels(20, 40, CLEAR).blit(top, 0, 0).blit(body, 0, 20).crop(0, 9, 20, 16);
   for (let f = 0; f < 44; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
-    const x = -130 + f * 11;
-    const bob = f % 2;
-    scaleBlit(p, carPic, x, 66 + bob, 3);
-    // Pockets' bowler behind the door window; Teddy's head out of the back window (in the flat
-    // tail, so it pokes out behind the car), ears flapping
-    p.rect(x + 40, 116 + bob, 16, 3, c('ink', 0)).rect(x + 43, 109 + bob, 10, 7, c('ink', 0));
-    scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 17, 93 + bob, 2);
+    const x = -200 + f * 12;
+    const y = 72 + (f % 2);
+    chezRide(
+      p,
+      x,
+      y,
+      5,
+      CHEZ,
+      (q) => scaleBlit(q, driver, x + 60, y + 14, 2),
+      (q) => scaleBlit(q, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 2, 20, 12), x + 94, y + 18, 2),
+    );
     // the electric whirr
-    for (let k = 0; k < 3; k++) p.rect(x - 14 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
-    if (f > 16 && f < 30) outlined(p, x + 124, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);
+    for (let k = 0; k < 3; k++) p.rect(x - 8 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
+    if (f > 16 && f < 30) outlined(p, x + 206, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);
     centered(p, 12, f < 22 ? 'OFF TO THE NEXT STOP!' : "DOC LEO'S CITICAR: 100% ELECTRIC", c('paint', 3), 1, c('ink', 0));
     frames.push(Uint8Array.from(p.px));
   }

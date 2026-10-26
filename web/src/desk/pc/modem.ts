@@ -15,7 +15,7 @@ type Light = (typeof LIGHTS)[number];
 /** How long the hint stays up. */
 const HINT_MS = 14_000;
 
-export interface DeskModem {
+interface DeskModem {
   el: HTMLElement;
   /** MR: the modem has power (follows the PC). */
   power(on: boolean): void;
@@ -70,7 +70,7 @@ export function deskModem(onClick: () => void): DeskModem {
 
   const showSpeed = () => {
     brand.textContent = `DATA/FAX ${speedLabel()}`;
-    const name = `Modem speed: ${speedWords()}. Change it`;
+    const name = `DATA/FAX ${speedLabel()}: the modem's speed, ${speedWords()}. Change it`;
     speed.setAttribute('aria-label', name);
     speed.title = name;
   };

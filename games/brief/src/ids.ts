@@ -55,9 +55,9 @@ export const KEY = {
   s: 0x1f73,
   a: 0x1e61,
   d: 0x2064,
-  /** P: Joe pockets what he stands on (if it is small enough; almost nothing is). */
-  p: 0x1970,
+  /** Space: Joe pockets what he stands on (if it is small enough; almost nothing is). */
+  space: 0x3920,
 } as const;
 
 /** Scan codes for recordings and the simulator. */
-export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, esc: 0x01 } as const;
+export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 } as const;

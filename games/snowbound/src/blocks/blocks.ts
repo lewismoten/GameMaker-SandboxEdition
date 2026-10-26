@@ -24,7 +24,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const k = blockContext(pal);
   const painters = addGround(k);
   const treats = addThings(k, painters);
-  addHouses(k);
+  addHouses(k, painters);
   const mall = addMall(k);
   addSled(k, treats);
   addRoute(k, painters);
@@ -33,5 +33,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   addWoods(k, painters, treats);
   addChez(k, painters);
   addHidden(k, painters, pal.pal);
+  // the back row's tan cars, in the last two slots (the set is full at 150)
+  treats.car('tanCar', 'glow', 1);
   return k.book;
 }

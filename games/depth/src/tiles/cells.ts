@@ -485,6 +485,9 @@ export function kinds(): Record<string, Kind> {
     tinHeart2: floor(),
     easterEgg: floor(),
     watt: floor(),
+    // and the save sign, laid over two of them
+    saveL: floor(),
+    saveR: floor(),
   };
   return K;
 }

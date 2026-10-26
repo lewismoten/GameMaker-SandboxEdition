@@ -1,5 +1,7 @@
 // The Ultimate Owner's Guide, chapters 3 to 5: monsters and characters, counters and logic,
-// scenes and links. Checked against PLAYGAME (code/GM/PLAYGAME.C) and web/src/engine.
+// scenes and links. Checked against PLAYGAME (code/GM/PLAYGAME.C) and web/src/engine
+// (CharBirthMon turns a fired shot to its way, movechars gives an empty Idle block 0,
+// StartSceneInits takes the starting values from the first scene's character only).
 import { opening, tip, type Chapter } from './chapter';
 
 export const ACTORS: Chapter = {
@@ -54,13 +56,41 @@ export const ACTORS: Chapter = {
   interrupted (a jump that finishes), to run once per key press, or to build up momentum.</p>
   <ul>
     <li><b>Firing.</b> A frame can give birth to a monster at the hero: a shot, a thrown pie,
-    a puff of dust. Shots fly off in the direction he last moved.</li>
+    a puff of dust. A shot that moves toward or away from the hero ignores him once fired and
+    flies straight the way he last moved, jumps included, turned to match: mirrored when it flies
+    left, turned on end when it flies up or down. So draw every shot facing right.</li>
     <li><b>Ammunition.</b> Sequences 5 to 19 each have a counter; every run uses one, and at
     zero the key does nothing. Blocks that add to that counter are refills.</li>
     <li><b>Tools.</b> A sequence can need a block in the inventory: no hammer, no hammering.</li>
+    <li><b>Idle needs a picture.</b> Leave the Idle sequence empty and the standing hero shows
+    the character set’s first block, whatever it is. Give Idle at least one frame.</li>
     <li><b>A voice of his own.</b> Each sequence plays one sound from the scene’s set when it
     starts, so a “talk” key can say a line.</li>
   </ul>
+  <h2>Facing four ways, and mirroring</h2>
+  <p>Chapter 11 says why a hero should face the way he walks. Here is how, in the Character
+  Maker’s Sequences tab:</p>
+  <ol>
+    <li><b>Draw one side.</b> Make the walk right first, frame by frame. Click a frame to see
+    the whole hero in it, both blocks together, three times size beside the stage. The stage
+    plays the walk at the game’s speed while you work; pause it and it holds the frame you are
+    editing.</li>
+    <li><b>Mirror it.</b> Under the frames, choose <i>Make the mirrored sequence in</i>, pick
+    the empty slot for the walk left, and press <b>Make it</b>. Every move goes left instead of
+    right and both blocks of every frame are mirrored (orientation 4 on each). The sound, the
+    flags and the joystick come along, turned round; a Right arrow key becomes Left when Left
+    is free.</li>
+    <li><b>Or mirror it on blocks of its own.</b> Choose <i>as new mirrored blocks</i> and the
+    pictures are copied, mirrored, into empty blocks of the set instead. Use this when the
+    other side should differ, such as a hand that carries something or a bag slung on one
+    shoulder.</li>
+    <li><b>Keep the two in step.</b> The two sequences stay linked. Change the walk right and
+    the bar under its frames says the mirror is out of step; <b>Update the mirrored
+    sequence</b> re-makes it, moves, pauses and pictures. Repaint a block in the block painter
+    and its mirror block offers <b>Apply to the mirror too</b>.</li>
+    <li><b>Draw the front and back yourself.</b> Mirroring only swaps left and right. The
+    walk down and the walk up need pictures of their own.</li>
+  </ol>
   <h2>Characters who talk</h2>
   <p>For a friend who has something to say:</p>
   <ul>
@@ -90,13 +120,35 @@ export const LOGIC: Chapter = {
   <p>Their starting values are set in the Character Maker. Score, counters, lives and the
   inventory travel with the hero from scene to scene. A counter set to <i>unlimited</i> never
   changes and never stands in anyone’s way.</p>
+  <p>Only the first character sets them. The starting hit points, lives, money and special
+  counters come from the character of the first scene the game plays, and a scene with another
+  character file later changes his sequences and pictures, never those numbers. A sequence
+  counter is the one exception: a later character’s counter counts for a sequence the first
+  character never had. So heroes chosen at a select screen can differ in speed, jump, weapons
+  and voice, but not in how much they can take.</p>
+  <h2>Showing a count</h2>
+  <p>Nothing is on the screen while the game plays. <kbd>F2</kbd> shows hit points, lives, score
+  and money, and nothing shows the special or sequence counters at all. Players who can’t see
+  what they have stop trying to collect it, so show the count in the world:</p>
+  <ul>
+    <li><b>Draw the price on the gate.</b> A door that wants three keys has three keyholes
+    drawn on it.</li>
+    <li><b>A gate that counts down.</b> Instead of one gate that takes 3, make a chain: a gate
+    with three lamps that takes 1 and becomes the same gate with two lamps, and so on. Each bump
+    with a token lights one more, and the player sees how many are still to find.</li>
+    <li><b>Ammunition in the picture.</b> A refill drawn with its number on it (a box marked 5)
+    tells the player how many he just got. If keeping count matters, make the gun unlimited and
+    put the challenge somewhere else.</li>
+    <li><b>Progress on the card.</b> The intro picture of each level can say which level it is
+    of how many, and what is still to do.</li>
+  </ul>
   <h2>Gates that need a counter</h2>
   <p>A background block that takes from <b>money</b> or a <b>special counter</b> is refused
   unless the counter holds at least that much. A refused touch does nothing at all: no points,
   no sound, no change. That one rule is the heart of Game-Maker logic.</p>
   <p>Make a <b>locked gate</b>: a block solid on all sides that takes, say, 3 from special
   counter 1 and becomes an open doorway. Bumping it with fewer than 3 does nothing; with 3 or
-  more it opens and the 3 are spent. Our games are full of these:</p>
+  more it opens and the 3 are spent. The Sandbox games are full of these:</p>
   <ul>
     <li>Third Goat from the Left: the place in the line at the manger opens for enough wool.</li>
     <li>Certified Rat Tickler: each gate wants more carpet than the last.</li>
@@ -106,6 +158,25 @@ export const LOGIC: Chapter = {
   hit points (or points) in the same touch, and becomes an empty shelf.</p>
   <p>Lives, hit points and the sequence counters are never checked this way; only money and
   the special counters can say no.</p>
+  <h2>Try it: a three-token gate</h2>
+  <p>Any game with a floor to walk on will do. Draw two spare background blocks, a token and
+  a door, then:</p>
+  <ol>
+    <li><b>The counter.</b> In the Character Maker’s <i>At the start</i> tab, under
+    <b>Special counters</b>, set #1 to <b>Counts</b>, starting at <b>0</b>.</li>
+    <li><b>The token.</b> In the block editor, leave all its <b>Solid sides</b> clear. Under
+    <i>When touched</i>, set <b>Changes counter</b> to <i>Special counter 1</i>, <b>by</b> 1,
+    and <b>Becomes block</b> to your floor block’s number.</li>
+    <li><b>The gate.</b> Tick all four <b>Solid sides</b>. Set <b>Changes counter</b> to
+    <i>Special counter 1</i>, <b>by</b> −3, and <b>Becomes block</b> to the floor block.</li>
+    <li><b>The map.</b> Lay three tokens along a corridor and the gate across its end, walled
+    so the gate is the only way on. Then play it.</li>
+  </ol>
+  <p>The tokens vanish as the hero walks over them. After two, the gate ignores him: no
+  sound, no change. After the third it opens at a bump, and the counter is back to 0.</p>
+  <p>Now set special counter 1 to start at <b>1</b> and play again. Two tokens open the gate.
+  It never counted tokens; it only asks whether the counter can pay 3 without going below
+  zero.</p>
   <h2>Switches and wiring</h2>
   <ul>
     <li><b>A switch</b> is a block that becomes its “on” picture when bumped. Make switches go

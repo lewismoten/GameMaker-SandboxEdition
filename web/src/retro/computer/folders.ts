@@ -143,8 +143,9 @@ export abstract class ComputerFolders extends ComputerDrives {
       return false;
     }
     if (d.disk.kind !== 'blank') {
-      await errorBox(this, `The disk in drive A: (${d.disk.title}) isn't blank.`, 'Put a blank disk from the disk box in drive A:.  (C)ontinue');
-      return false;
+      // the game is already read in, so the disk can come out: a blank one from the disk box goes in
+      const r = await errorBox(this, `The disk in drive A: (${d.disk.title}) isn't blank.`, '(S)wap in a blank disk from the disk box   (A)bort');
+      if (r !== 'S') return false;
     }
     const project = Project.fromFiles(new GameFiles(game.files.entries()), game.title);
     const gam = game.files.mainGame();

@@ -50,7 +50,7 @@ export const MARGIN = 0.125;
 export const circumference = (size: Pick<MugSize, 'diameter'>): number => Math.PI * size.diameter;
 
 /** Where the picture goes on a wrap, inches: the same picture twice, front and back. */
-export interface Placement {
+interface Placement {
   /** The picture's size. */
   w: number;
   h: number;

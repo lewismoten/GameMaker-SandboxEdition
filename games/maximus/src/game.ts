@@ -180,7 +180,8 @@ export function buildGame(): Built {
     const m = sectorMap(sets.space, 1000 + k * 77, list.length, designs, shards, [k * 2, k * 2 + 1]);
     const ms = sec.level <= 2 ? monsters.space1 : monsters.space2;
     const name = k === 0 ? formation(m.grid, ms, wordCells('LEWIS'), { x: m.arrive.x + 14, y: m.arrive.y + 12 }, 'the whales that spell LEWIS') : undefined;
-    populate(m.grid, bbl.space, ms, spaceSpots(m.grid, bbl.space, m.arrive), {
+    const spots = { ...spaceSpots(m.grid, bbl.space, m.arrive), alsoAvoid: [m.jumpArrive, ...m.planets.map((p) => p.back)] };
+    populate(m.grid, bbl.space, ms, spots, {
       seed: 30 + k,
       level: sec.level,
       count: 50 + sec.level * 15 + (name ? wordCells('LEWIS').cells.length : 0),

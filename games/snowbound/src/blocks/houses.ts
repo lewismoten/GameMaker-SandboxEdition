@@ -1,12 +1,16 @@
 // Houses in 3/4 view: two rows of snowy roof over one row of wall (red brick, blue siding or
 // butter yellow) with windows, doors and garages. The eaves and chimneys animate by next/ntime
 // chains: each block names its second frame as "next", and that frame names the first.
-import { rng } from '../../../kit/pixels';
+import { rng, type Pixels } from '../../../kit/pixels';
 import { blob, gradient, shadeAt } from '../art/draw';
 import { Ctx, SOLID } from './book';
+import { cartReturn } from './cartReturn';
 
-export function addHouses(k: Ctx): void {
+export function addHouses(k: Ctx, painters: { lot: (seed: number) => Pixels }): void {
   const { book, R, c, snow, P } = k;
+  // No map shows a house's plain wall block, so those three slots hold the mall lot's cart return.
+  const cart = cartReturn(k, painters.lot);
+  const spare = { red: 'cartSign0', blue: 'cartSign1', yellow: 'cartCorral' } as const;
   // ---------- houses (3/4 view: two rows of snowy roof over one row of wall) ----------
   // the roof's snow darkens down the block to the shade the eave below starts at (no band)
   const roofTop = (edge: 'L' | 'M' | 'R') => {
@@ -72,7 +76,8 @@ export function addHouses(k: Ctx): void {
       for (let x = 2; x < 20; x += 5) for (let i = 0; i < 2 + (x % 3); i++) p.set(x, 2 + i, c('ice', 4 - i));
       return p;
     };
-    book.add(`${name}Wall`, wall(), { solid: SOLID });
+    const slot = spare[name as keyof typeof spare];
+    book.add(slot, cart[slot]);
     const win = wall();
     win.rect(3, 5, 14, 11, c('wood', 4)).rect(4, 6, 12, 9, c('glow', 2));
     gradient(win, 4, 6, 12, 9, R('glow'), 3, 1);

@@ -259,7 +259,7 @@ export async function theTower(bot: Bot): Promise<void> {
   await tickle(bot, 'right', 'Mortimer, round two');
   enough(bot, 3);
   await carefully(bot, 'the balcony', 10, async () => {
-    await bot.tap('l', 20);
+    await bot.tap('c', 20);
     await leave(bot, bot.walk(42, 'out onto the balcony'), 'the balcony');
   });
 }

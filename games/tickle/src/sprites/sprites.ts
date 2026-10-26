@@ -1,6 +1,6 @@
-// TICKLE.CBL and TICKLE.MBL: Doc Leo (Lewis Moten's hobo clown: a chewed-up dark fedora, a red
-// nose, white mouth and eye patches, a stubble "ash beard", a purple shirt and a green tie, red
-// sneakers; for the occasion, a lab coat over it all), two blocks tall; and everything that moves:
+// TICKLE.CBL and TICKLE.MBL: Doc Leo (Lewis Moten's hobo clown: a chewed-up dark fedora, white
+// mouth and eye patches, his own nose sunburned pink, painted stubble, a purple shirt and a green
+// tie, red sneakers; for the occasion, a lab coat over it all), two blocks tall; and everything that moves:
 // his hands pinning and his fingers tickling, the rats (white lab rats and the city's agouti wild
 // rats: wary, tense, pinned on their backs, giggling, scampering off to the laughing carpet), the
 // night janitor's floor buffer, Dean Dour of the Board of Serious Science, a sewer alligator,
@@ -16,6 +16,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline };
 
@@ -28,7 +29,8 @@ export const RAT_HIGH = 11;
 // ---------------------------------------------------------------------------------------------
 
 export interface LeoPose {
-  view: 'front' | 'side';
+  /** Facing you, side on (walking right), or from behind (climbing). */
+  view: 'front' | 'side' | 'rear';
   /** Walking stride (0..3) in side view. */
   stride?: number;
   /** What his arms do. */
@@ -51,6 +53,7 @@ export function leoArt(pal: Pal) {
   return (o: LeoPose): Pixels => {
     const p = new Pixels(20, 40, T);
     const side = o.view === 'side';
+    const rear = o.view === 'rear';
     const dy = o.crouch ?? 0;
     const hx = (o.back ? -1 : 0) + (side ? 0 : 0);
     // ---- legs and sneakers
@@ -97,7 +100,10 @@ export function leoArt(pal: Pal) {
       const cx = side ? 10 : 10;
       for (let x = Math.round(cx - half); x <= cx + half; x++) p.set(x, y, c('coat', x < cx - half + 2 ? 2 : y > hem - 3 ? 3 : 4));
     }
-    if (!side) {
+    if (rear) {
+      // the coat's back seam
+      p.line(10, top + 3, 10, hem - 1, c('coat', 2));
+    } else if (!side) {
       for (let y = top; y < top + 9; y++) p.rect(8, y, 4, 1, c('purple', 1));
       for (let y = top; y < top + 8; y++) p.rect(9, y, 2, 1, c('tie', y < top + 2 ? 2 : 1));
       p.set(9, top + 8, c('tie', 1)).set(10, top + 8, c('tie', 0));
@@ -145,36 +151,43 @@ export function leoArt(pal: Pal) {
     const fx = side ? 11 : 10 + hx;
     const face = o.face ?? 'smile';
     // collar
-    p.rect(7, top - 1, 6, 1, c('purple', 2));
+    p.rect(7, top - 1, 6, 1, rear ? c('coat', 3) : c('purple', 2));
     if (side) blob(p, fx, hy + 4.5, 4, 5, pal.r('skin'), 1, 3);
     else blob(p, fx, hy + 4.5, 5, 5, pal.r('skin'), 1, 3);
-    // the ash beard: stubble over the jaw
-    for (let y = hy + 5; y < hy + 10; y++)
-      for (let x = fx - 5; x <= fx + 5; x++) if (p.get(x, y) !== T && (x + y) % 2 === 0 && (y > hy + 6 || Math.abs(x - fx) > 3)) p.set(x, y, c('navy', 1));
-    // the white mouth patch, and the mouth
-    const mx = side ? fx + 2 : fx;
-    p.rect(mx - (side ? 1 : 2), hy + 6, side ? 3 : 5, 3, c('paint', 1));
-    if (face === 'laugh') p.rect(mx - (side ? 0 : 1), hy + 6, side ? 2 : 3, 3, c('nose', 0)).set(mx, hy + 6, c('paint', 1));
-    else if (face === 'ouch' || face === 'dazed') p.rect(mx - 1, hy + 8, 3, 1, ink).set(mx, hy + 7, ink);
-    else if (face === 'grin')
-      p.rect(mx - 2, hy + 7, 5, 1, ink)
-        .set(mx - 2, hy + 6, ink)
-        .set(mx + 2, hy + 6, ink);
-    else
-      p.set(mx - 1, hy + 7, ink)
-        .set(mx, hy + 8, ink)
-        .set(mx + 1, hy + 7, ink);
-    // eyes: white patches, and pupils (shut for a blink and a laugh)
-    const eyes = side ? [fx + 1] : [fx - 2, fx + 2];
-    for (const ex of eyes) {
-      p.rect(ex - 1, hy + 2, 2, 2, c('paint', 1));
-      if (face === 'blink' || face === 'laugh') p.rect(ex - 1, hy + 3, 2, 1, ink);
-      else if (face === 'dazed') p.set(ex - 1, hy + 2, ink).set(ex, hy + 3, ink);
-      else p.set(ex, hy + 3, ink);
-      p.rect(ex - 1, hy + 1, 2, 1, ink);
+    if (rear) {
+      // the back of his head: ash hair down to the neck, his ears either side
+      for (let y = hy; y < hy + 6; y++)
+        for (let x = fx - 5; x <= fx + 5; x++)
+          if (p.get(x, y) !== T && !(y >= hy + 3 && y <= hy + 4 && Math.abs(x - fx) >= 4)) p.set(x, y, c('grey', y < hy + 2 ? 2 : 1));
+    } else {
+      // the ash beard: stubble over the jaw
+      for (let y = hy + 5; y < hy + 10; y++)
+        for (let x = fx - 5; x <= fx + 5; x++) if (p.get(x, y) !== T && (x + y) % 2 === 0 && (y > hy + 6 || Math.abs(x - fx) > 3)) p.set(x, y, c('navy', 1));
+      // the white mouth patch, and the mouth
+      const mx = side ? fx + 2 : fx;
+      p.rect(mx - (side ? 1 : 2), hy + 6, side ? 3 : 5, 3, c('paint', 1));
+      if (face === 'laugh') p.rect(mx - (side ? 0 : 1), hy + 6, side ? 2 : 3, 3, c('nose', 0)).set(mx, hy + 6, c('paint', 1));
+      else if (face === 'ouch' || face === 'dazed') p.rect(mx - 1, hy + 8, 3, 1, ink).set(mx, hy + 7, ink);
+      else if (face === 'grin')
+        p.rect(mx - 2, hy + 7, 5, 1, ink)
+          .set(mx - 2, hy + 6, ink)
+          .set(mx + 2, hy + 6, ink);
+      else
+        p.set(mx - 1, hy + 7, ink)
+          .set(mx, hy + 8, ink)
+          .set(mx + 1, hy + 7, ink);
+      // eyes: white patches, and pupils (shut for a blink and a laugh)
+      const eyes = side ? [fx + 1] : [fx - 2, fx + 2];
+      for (const ex of eyes) {
+        p.rect(ex - 1, hy + 2, 2, 2, c('paint', 1));
+        if (face === 'blink' || face === 'laugh') p.rect(ex - 1, hy + 3, 2, 1, ink);
+        else if (face === 'dazed') p.set(ex - 1, hy + 2, ink).set(ex, hy + 3, ink);
+        else p.set(ex, hy + 3, ink);
+        p.rect(ex - 1, hy + 1, 2, 1, ink);
+      }
+      // his own nose, sunburned pink
+      p.disc(side ? fx + 4 : fx + 0.5, hy + 5, 1.3, c('pink', 1)).set(side ? fx + 4 : fx, hy + 4, c('pink', 2));
     }
-    // the red nose
-    p.disc(side ? fx + 4 : fx + 0.5, hy + 5, 1.3, c('nose', 1)).set(side ? fx + 4 : fx, hy + 4, c('nose', 2));
     // ---- the fedora: chewed brim, dented crown, a few pins on the band
     if (!o.hatless) {
       const by = hy - 1 + (o.back ? 1 : 0);
@@ -231,6 +244,7 @@ export function buildCharBlocks(pal: Pal) {
   add('grin', { view: 'front', face: 'grin' });
   for (let s = 0; s < 4; s++) add(`walk${s}`, { view: 'side', stride: s });
   add('hop', { view: 'front', arms: 'up', hop: true, face: 'grin' });
+  add('climb', { view: 'rear', arms: 'up', hop: true });
   add('hopSide', { view: 'side', arms: 'up', hop: true, face: 'grin' });
   add('pin', { view: 'front', arms: 'press', crouch: 4, face: 'grin' });
   add('tickle0', { view: 'front', arms: 'wiggle0', face: 'laugh' });
@@ -402,8 +416,10 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Hazards are solid (they push Doc Leo away) and cost rapport.
-  const hurt = (hp: number) => ({ chHitPt: hp, solid: 15 });
+  // Hazards are solid (they push Doc Leo away) and cost rapport. Not SOLTOP: on a monster that
+  // is the side that pushes the hero under it (PLAYGAME's ChkMonChr), into the floor. SOLBOT
+  // still lets him stand on one's back.
+  const hurt = (hp: number) => ({ chHitPt: hp, solid: SOLBOT | SOLLEF | SOLRIG });
 
   // ---- Doc Leo's hands
   // PIN: a hand coming down flat, palm to the floor, out from his side (facing right; mirrored for the left)
@@ -511,10 +527,13 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(4 - f, 18, 5, 2, c('ink', 1)).rect(11 + f, 18, 5, 2, c('ink', 1));
     return done(p);
   };
-  book.add('deanA0', deanA(0), hurt(-8));
-  book.add('deanA1', deanA(1), hurt(-8));
-  book.add('deanB0', deanB(0), hurt(-8));
-  book.add('deanB1', deanB(1), hurt(-8));
+  // Dean Dour is solid only at his sides: Doc Leo landing on his head slides down beside him
+  // (a frown or two) instead of being pushed down into the floor under him.
+  const dour = { chHitPt: -8, solid: SOLLEF | SOLRIG };
+  book.add('deanA0', deanA(0), dour);
+  book.add('deanA1', deanA(1), dour);
+  book.add('deanB0', deanB(0), dour);
+  book.add('deanB1', deanB(1), dour);
   // ---- the sewer alligator (A: snout, B: tail), swimming in the channel
   const gatorA = (f: number) => {
     const p = P();

@@ -11,7 +11,7 @@ import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
-export type Change = 'song' | 'view' | 'track' | 'play';
+type Change = 'song' | 'view' | 'track' | 'play';
 
 /** One color per MIDI channel, from the EGA palette. */
 export const TRACK_COLORS = [
@@ -32,6 +32,14 @@ export const TRACK_COLORS = [
   '#88ccff',
   '#ffffff',
 ];
+
+/** A track's name: its drum, or its instrument's preset, or its number. */
+export function trackNameOf(song: CmfSong, ch: number): string {
+  if (startMode(song) && RHYTHM_CHANNELS.includes(ch)) return DRUM_NAMES[ch];
+  const p = startProgram(song, ch);
+  const preset = song.instruments[p] ? presetName(song.instruments[p]) : undefined;
+  return preset ? preset[0].toUpperCase() + preset.slice(1) : `Track ${ch + 1}`;
+}
 
 export const SNAPS: [number, string][] = [
   [4, 'Bar'],
@@ -118,10 +126,7 @@ export class MusicDoc {
   }
 
   trackName(ch: number): string {
-    if (this.rhythm && RHYTHM_CHANNELS.includes(ch)) return DRUM_NAMES[ch];
-    const p = startProgram(this.song, ch);
-    const preset = this.song.instruments[p] ? presetName(this.song.instruments[p]) : undefined;
-    return preset ? preset[0].toUpperCase() + preset.slice(1) : `Track ${ch + 1}`;
+    return trackNameOf(this.song, ch);
   }
 
   sounds(ch: number): boolean {

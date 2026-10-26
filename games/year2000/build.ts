@@ -12,10 +12,13 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildCharacter } from './src/characters/character';
 import { demoRecording } from './src/demo';
 import { LEVELS, SETS } from './src/levels/levels';
+import { walkPaths } from './src/walkPaths';
+import { writeWalkPaths } from '../kit/walkPaths';
 import { DIALS } from './src/levels/level4';
 import type { LevelMap } from './src/levels/mapkit';
 import { buildMonsters } from './src/characters/monsters';
@@ -134,7 +137,7 @@ LEVELS.forEach((l, i) => {
   const view = renderMap(map.map, built[l.set], vx, vy, 16, 5, mbl, mons);
   const dex = cb.pic(l.chr === 'moon.chr' ? 'm_down0' : 'down0');
   if (start.x >= vx && start.x < vx + 16 && start.y >= vy && start.y < vy + 5) view.blit(dex, (start.x - vx) * 20, (start.y - vy) * 20, 255);
-  disk.put(`card${i + 1}.gif`, S.gif(S.levelCard(i + 1, l.card.title, l.card.lines, view)));
+  disk.put(`card${i + 1}.gif`, S.gif(S.levelCard(i + 1, LEVELS.length, l.card.title, l.card.lines, view)));
   lst(`lvl${i + 1}.lst`, [...l.intro.map((f) => [f, 0] as [string, number]), [`card${i + 1}.gif`, 8]]);
 
   const scene = emptyScene(ADVTYPE);
@@ -209,7 +212,11 @@ disk.put('year2000.gam', serializeGame(game));
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
 disk.put('license.txt', licenseText('In The Year 2000!'));
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
+// the sidewalks and walks the walkthrough's bot keeps to (not on the disk)
+writeWalkPaths('year2000', walkPaths(sets));
 console.log(
   `${Object.entries(sets)
     .map(([k, s]) => `${k} ${s.names.length}`)

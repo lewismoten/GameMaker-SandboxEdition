@@ -34,7 +34,7 @@ export interface Terrain {
 }
 
 /** One slot of a terrain kind: its name and the neighbors it stands for (for the template's little diagram). */
-export interface Slot {
+interface Slot {
   label: string;
   mask: number;
 }
@@ -107,12 +107,12 @@ export function requiredSlots(kind: TerrainKind): number[] {
 }
 
 /** Every block of the terrain (what counts as "in" it). */
-export function terrainBlocks(t: Terrain): Set<number> {
+function terrainBlocks(t: Terrain): Set<number> {
   return new Set(t.tiles.filter((b) => b >= 0));
 }
 
 /** The 4-bit side mask (N 1, E 2, S 4, W 8) of an 8-bit neighbor mask. */
-export function sideBits(m: number): number {
+function sideBits(m: number): number {
   return (m & N ? 1 : 0) | (m & E ? 2 : 0) | (m & S ? 4 : 0) | (m & W ? 8 : 0);
 }
 
@@ -192,7 +192,7 @@ export function pickBlock(t: Terrain, mask: number): number {
 }
 
 /** The 8-bit neighbor mask of a cell: which neighbors are in (off the map counts as in). */
-export function neighborMask(isIn: (x: number, y: number) => boolean, x: number, y: number, w = MLEN, h = MWID): number {
+function neighborMask(isIn: (x: number, y: number) => boolean, x: number, y: number, w = MLEN, h = MWID): number {
   const at = (dx: number, dy: number) => {
     const nx = x + dx,
       ny = y + dy;

@@ -3,7 +3,7 @@
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, docLeo, figure, floor, on, sign, wall } from '../../art/kit';
+import { blank, docLeoSide, figure, floor, on, sign, wall } from '../../art/kit';
 import { joe } from '../../sprites/joe';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
@@ -210,6 +210,7 @@ function art(a: Area): void {
       [goat(1), 4],
     ],
     {
+      faces: 'right',
       hazard: true,
       path: [
         [0, 3, 1],
@@ -305,10 +306,11 @@ function art(a: Area): void {
   a.monster(
     'leoNight',
     [
-      [docLeo(0), 6],
-      [docLeo(1), 6],
+      [docLeoSide(0), 6],
+      [docLeoSide(1), 6],
     ],
     {
+      faces: 'right',
       path: [
         [5, 0, 1],
         [-5, 0, 1],

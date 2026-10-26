@@ -157,6 +157,8 @@ export function commonMonsters(set: Monster[], mb: SpriteBook): void {
   set[MON.teddy] = mon(anim(mb, 'teddy0', 'teddy1', 20), { power: POWER.tough, thru: 1 }, still);
   set[MON.gwinn] = mon(anim(mb, 'gwinn0', 'gwinn1', 24), { power: POWER.tough, thru: 1 }, still);
   // friends: a hello (a touch) is a tip, and off they go
+  // (a friend going off is gone before it could walk back; the walk back is still drawn turned
+  // round, so the path reads the way it would look)
   set[MON.carl] = mon(anim(mb, 'carl0', 'carl1', 1), { power: POWER.friend, thru: 0, newmon: MON.carlOff }, [
     corner(0, 0, 2),
     corner(3, -1, 2, 0),
@@ -164,9 +166,17 @@ export function commonMonsters(set: Monster[], mb: SpriteBook): void {
     corner(2, 2, 2, 4),
     corner(0, 0, 2, 4),
   ]);
-  set[MON.carlOff] = mon(anim(mb, 'carlAway0', 'carlAway1', 1), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
+  set[MON.carlOff] = mon(anim(mb, 'carlAway0', 'carlAway1', 1), { power: POWER.tough, thru: 0, end: 30 }, [
+    corner(0, 0, 5),
+    corner(6, -6, 5, 0),
+    corner(0, 0, 5, 4),
+  ]);
   set[MON.goat] = mon(anim(mb, 'goat0', 'goat1', 8), { power: POWER.friend, thru: 0, newmon: MON.goatOff }, still);
   set[MON.goatOff] = mon(anim(mb, 'goatAway1', 'goatAway0', 3), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 2), corner(-4, 0, 2, 4)]);
   set[MON.leo] = mon(anim(mb, 'leo0', 'leo1', 6), { power: POWER.friend, thru: 0, newmon: MON.leoOff }, pace(2, 1));
-  set[MON.leoOff] = mon(anim(mb, 'leoAway1', 'leoAway0', 4), { power: POWER.tough, thru: 0, end: 40 }, [corner(0, 0, 2), corner(5, 0, 2, 0)]);
+  set[MON.leoOff] = mon(anim(mb, 'leoAway1', 'leoAway0', 4), { power: POWER.tough, thru: 0, end: 40 }, [
+    corner(0, 0, 2),
+    corner(5, 0, 2, 0),
+    corner(0, 0, 2, 4),
+  ]);
 }

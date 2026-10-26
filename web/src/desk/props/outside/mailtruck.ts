@@ -1,5 +1,5 @@
 // The mail truck pulling away from the corner, off to the post office: a boxy white truck
-// with a red and blue stripe and plain MAIL lettering on its side. It comes when something
+// with a plain gray band and MAIL lettering on its side, no service's markings. It comes when something
 // asks for it (gm-window-event, kind "mailtruck"): your registration card is on its way.
 import { ambient, roomSound } from '../propSound';
 import { VIEW } from '../../room/snowWindow';
@@ -25,11 +25,10 @@ export const mailtruck: OutsideEvent = {
     c.fillRect(x, g - 30, 18, 22);
     c.fillStyle = '#a8d4ee';
     c.fillRect(x + 2, g - 27, 10, 9);
-    // a red and a blue stripe along it, and MAIL
-    c.fillStyle = '#c81e2a';
-    c.fillRect(x, g - 15, 62, 2.5);
-    c.fillStyle = '#2a4aa8';
-    c.fillRect(x, g - 12.5, 62, 2.5);
+    // a plain gray band along it, and MAIL
+    c.fillStyle = '#9aa3ad';
+    c.fillRect(x, g - 14, 62, 2.5);
+    c.fillStyle = '#1e2a4a';
     c.font = 'bold 10px Arial, sans-serif';
     c.fillText('MAIL', x + 26, g - 22);
     c.fillStyle = '#2a2a2a';

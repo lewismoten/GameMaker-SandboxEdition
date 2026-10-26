@@ -38,12 +38,21 @@ export const PALETTES: Chapter = {
   stray color. Then a night palette is the same ramps, each shade darkened and nudged toward
   blue, and every block follows along.</p>
   <figure data-fig="compare"></figure>
-  <p>Keep a few ramps out of the tint on purpose. Our games mark their lamp light, lit
+  <p>Keep a few ramps out of the tint on purpose. The Sandbox games mark their lamp light, lit
   windows, stars and gold as <i>glowing</i> ramps that stay bright in every palette, so at
   night they shine instead of going dim. In Snowbound the window light even gets brighter
   after dark.</p>
   <figure data-fig="goat"></figure>
   <figure data-fig="loaf"></figure>
+  <h2>Colors everyone can tell apart</h2>
+  <p>Some players don’t see red and green as two colors, and some play on a gray screen. The
+  palette editor’s <b>Color vision</b> tab shows a level in grayscale and as players with
+  protanopia, deuteranopia or tritanopia see it. It lists the colors that touch on the map, or
+  a monster and the scenery it stands in, that look alike there, and ramp steps too close to
+  see. Click one to see where; ✨ makes the safe change, usually one color a little lighter or
+  darker, and Undo puts it back. Two colors you chose to look alike, such as a texture’s two
+  hues of one lightness, can be dismissed with <b>✓ They’re meant to look alike</b>; the
+  <b>dismissed</b> toggle under the list shows them again.</p>
   <h2>Colors the program goes looking for</h2>
   <p>Game-Maker and PLAYGAME draw some things in whatever color of your palette is
   <i>nearest</i> to a color they have in mind. If your palette has nothing close, they settle
@@ -66,7 +75,7 @@ export const PALETTES: Chapter = {
   pictures between scenes fade in the same way. Inside a level the palette never changes, so
   a flash of lightning or the lights going out is done with blocks instead (Chapter 2). Between
   levels, an <code>.FLI</code> animation can change its colors from frame to frame: a frame
-  that changes only the palette costs very little, which is how our cartoons and logo stings
+  that changes only the palette costs very little, which is how the Sandbox cartoons and logo stings
   fade in and out.</p>
   ${tip('Pro tip:', 'Check a new palette on the menu and the <kbd>F2</kbd> screen, not just in the level. That is where a missing blue shows up first.')}`,
 };
@@ -118,6 +127,9 @@ export const BLOCKS: Chapter = {
     <li><b>Conveyor belts and wind:</b> blocks that pull sideways. In The Year 2000! uses
     them to carry the hero along.</li>
     <li><b>Updrafts and geysers:</b> a column of blocks that pulls up.</li>
+    <li><b>Only the hero feels it.</b> Monsters ignore gravity and go where their movement
+    takes them, so a monster walking off a ledge walks on through the air. Keep walkers on paths
+    that stay on the ground, and let things that should fall do it with a path that goes down.</li>
   </ul>
   <h2>Animation runs by block number</h2>
   <p>A block can turn into another block after a number of ticks (a tick is 1/18 of a second),
@@ -143,6 +155,23 @@ export const BLOCKS: Chapter = {
     frame is showing, so each frame needs the same touch settings.</li>
   </ul>
   <figure data-fig="chain"></figure>
+  <h2>Big pictures: groups, and watching them move</h2>
+  <p>A sign, a mirror or a poster is several blocks that only make sense together, and so is a
+  monster two blocks wide. In the block editor, Shift-click or Ctrl-click the blocks and choose
+  <b>Group picked blocks</b>, or use <b>Group with neighbors</b> for a run of blocks in a row,
+  and give the group a name and its blocks across and down. <b>Suggest groups</b> looks for them for you:
+  background blocks that always sit together on the maps, monsters placed side by side that move
+  in step, and the hero’s top and bottom blocks. Nothing is added until you tick it.</p>
+  <p>While you paint a block of a group, the whole group is shown around it; click a neighbor
+  to paint that one. <b>Edit as one picture</b> joins the group into one canvas, where a line or
+  a fill runs straight across the block edges, and Apply puts each part back in its block (with
+  an Undo for the whole group). Groups are notes for you: they live beside the game, never in it,
+  and DOS never sees them.</p>
+  <p>Under <b>Preview &amp; uses</b>, the animation the block is in plays at the game’s own 18
+  ticks a second: its chain, the monster that shows it, or the hero’s sequence; the group’s
+  animation plays in the Groups panel. Each stroke shows up in it at once, so you can fix a frame and watch
+  the whole cycle. Pause it, or step one frame at a time; it starts paused if your computer is
+  set to reduce motion.</p>
   <h2>Blocks that give birth</h2>
   <p>A background block can give birth to a monster every so many ticks: a cannon, a nest, a
   leaky pipe. Like animation, the timer belongs to the block number, and only blocks within

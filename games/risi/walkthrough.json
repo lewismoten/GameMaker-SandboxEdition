@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0KzQZIDMgJTRnNBkgMyAlNCs0GSAjIBxIMkgBNCM0DSAzICU0PzSpNCs0GOQK5ChIIkgBNAs0FTQbNCRIMkgBNBc0ETQXNBkgMyAkSDJIATQrNA0sHywZIDMgJEgaSAE0JzQNNA80GEgySAE0FzQRIDMgJEgySAE0WzQNIDMgEEgaSAE0EzQlICMgJTQPNDEgMyAlNCM0sTQ=="
+   "keys": "AU0KzQZIDMgJTRnNBkgMyAlNCs0GSAjIBxIMkgBNCM0DSAzICU0PzTBNCs0GOQK5ChIIkgBNAs0FTQbNCRIMkgBNBc0ETQXNBkgMyAkSDJIATQrNA0sHywZIDMgJEgaSAE0JzQNNA80GEgySAE0FzQRIDMgJEgySAE0XzQNIDMgEEgaSAE0EzQlICMgJTQPNDEgMyAlNCM0sTQ=="
   },
   {
    "scene": 3,
@@ -16,15 +16,15 @@
   },
   {
    "scene": 4,
-   "keys": "AU0PzSwSDJIATQPNB00FzQZIAsgATQrNBjkCuQpNFM0GTQXNBk0IzQpND80GTQXNBkgMyAlNDc0GSALIAE0ISArIBc0HOQK5Ck0NzQY5ArkKEgySAE0DzQZNAs0GEgySAE0AzQZNCM0GTQ/NBkgMyAlNCM0USAHIAE0SzQZNAs0GOQK5CjkCuQo5ArkKOQK5CjkCuQo5ArkKEgySAE0FzQVIDMgJTQbNBhIMkgBNAM0ITQrNBk0NzU5N"
+   "keys": "AU0PzSwSDJIATQPNB00FzQZIAsgATQrNBjkCuQpNFM0GTQXNBk0IzQpND80GTQXNBkgMyAlNDc0GSALIAE0ISArIBc0HOQK5Ck0NzQY5ArkKEgySAE0DzQZNAs0GEgySAE0AzQZNCM0GTQ/NBkgMyAlNCM0USAHIAE0SSArIA80ITQLNBjkCuQo5ArkKOQK5CjkCuQo5ArkKOQK5ChIMkgBNA80ISAzICU0MSArIDs0GEgySAE0AzQhNCs0GTQ3NTk0="
   },
   {
    "scene": 5,
-   "keys": "ATkCuQpNDM0GTRTNBkgKyABNA80DTQ/NBk0FzQYSBpIATQnNAxIMkgBNAM0EEgiSAE0AzQlNFM0GTQjNFTkCuQpNDM0GTRfNBk0DzQZIDMgATQLNAzkCuQpND80GTQXNDzkCuQpNB80GTRPNOE0="
+   "keys": "ATkCuQpNDM0GTRTNBkgKyABNA80DTQ/NBk0FzQYSBpIATQnNAxIMkgBNAM0EEgiSAE0AzQlNFM0GTQjNFTkCuQpNDc0GTRbNBksAywZIDMgATQPNAzkCuQpNEc0GTQXNDzkCuQpNCM0GTRLNOE0="
   },
   {
    "scene": 6,
-   "keys": "AU0KzQZIDMgJTRLNBk0KzQYSCpIATQDNBE0CzQZIDMgATQPNBk0HzQZNDc0HSwDLBk0FzRBIBsgATQfNB00IzQZNBM0YTQrNDEsAywYSBpIATQHNDEgEyABNBc0PTQXNBk0IzRk5ArkKTRzNBk0ISArIBEgKyATNCBIKkgBNAM0mTQfNBkgMyAlNBc0GEgaSAE0BzQxIBMgATQXND00FzQZNCM0ZTQ3NBk0KzQYSCpIATQDNBE0CzQZNA80RSAzICU0XzS5N"
+   "keys": "AU0KzQZIDMgJTRLNBk0KzQYSCpIATQDNBE0CzQZIDMgATQPNBk0HzQZNDc0HSwDLBk0FzRBIBsgATQfNB00IzQZNBM0YTQrNDEsAywYSBpIATQHNDEgEyABNBc0PTQXNBk0IzR85ArkKTRzNBk0KzQYSCpIATQDNCE0HzQZIDMgJTQXNBhIGkgBNAc0MSATIAE0FzQ9NBc0GTQjNGU0NzQZNCs0GEgqSAE0AzQRNAs0GTQPNEUgMyAlNF80GTQ=="
   },
   {
    "scene": 7,
@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 24560,
+  "frames": 24448,
   "chapters": [
    {
     "title": "Opening",
@@ -67,39 +67,39 @@
    },
    {
     "title": "Story",
-    "frame": 1337
+    "frame": 1352
    },
    {
     "title": "I: Canis Meus Flatum Dedit",
-    "frame": 3210
+    "frame": 3226
    },
    {
     "title": "II: Laudes Ignavi",
-    "frame": 5787
+    "frame": 5826
    },
    {
     "title": "III: Titus Torquet Lingua",
-    "frame": 7912
+    "frame": 7951
    },
    {
     "title": "IV: Felis Fortissimus",
-    "frame": 10835
+    "frame": 11026
    },
    {
     "title": "V: Canit Piscis Aureus",
-    "frame": 12790
+    "frame": 12981
    },
    {
     "title": "VI: Silentium Ridentium",
-    "frame": 15885
+    "frame": 15773
    },
    {
     "title": "Ending",
-    "frame": 19354
+    "frame": 19242
    },
    {
     "title": "Credits",
-    "frame": 21992
+    "frame": 21880
    }
   ]
  }

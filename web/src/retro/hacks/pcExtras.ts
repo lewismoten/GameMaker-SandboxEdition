@@ -15,7 +15,7 @@ export interface PcExtrasState {
   cracked?: [string, number][];
 }
 
-export interface RecordStore<T> {
+interface RecordStore<T> {
   load(): Promise<T | undefined>;
   save(value: T): Promise<void>;
 }

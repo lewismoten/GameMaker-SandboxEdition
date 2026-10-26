@@ -1,6 +1,6 @@
 // The 320x200 pictures: title, menu, the newspaper storyline, level cards, the notepad
 // behind text pages, and the endings. All drawn in code with the same ramps as the blocks.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { matchColor } from '../../../../web/src/formats/palette';
 import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
@@ -35,7 +35,7 @@ export function buildScreens(
   title.rect(92, 168, 14, 16, c('grey', 3)).rect(92, 168, 14, 2, c('grey', 4)).rect(94, 172, 10, 6, c('money', 2));
   micro(title, 95, 173, '$', c('money', 0));
   title.rect(0, 188, W, 12, c('ink', 0));
-  centered(title, 190, 'Sandbox Software  (c) 1995', c('snow', 6));
+  centered(title, 190, 'Sandbox Software  (c) 1993', c('snow', 6));
   save('title.gif', title);
 
   // ---------------- menu: a painted shop sign holds the menu
@@ -116,7 +116,7 @@ export function buildScreens(
     'BITS & BYTES SOFTWARE',
     'LAVALE MALL',
   ]);
-  outlined(n2, 82, 162, 'ONLY $89', c('coat', 3), c('newsink', 0), 2);
+  outlined(n2, 72, 162, 'ONLY $89', c('coat', 3), c('newsink', 0), 2);
   n2.rect(212, 42, 98, 74, c('paper', 4)).frame(212, 42, 98, 74, c('newsink', 0));
   body(n2, 216, 46, 92, [
     'FOR SALE: SLED,',
@@ -482,19 +482,24 @@ export function buildScreens(
       if (t2) outlined(p, 160 - textWidth(caption2) / 2, 20, caption2.slice(0, t2), c('gold', 3), c('ink', 0));
       frames.push(Uint8Array.from(p.px));
     }
+    // a hold on the corner, then a fade to black before the title
     for (let k = 0; k < 12; k++) frames.push(frames[frames.length - 1]);
-    files['intro.fli'] = encodeFli(frames, pal.pal, { speed: 6 });
+    files['intro.fli'] = encodeFliFadeOut(frames, pal.pal, { speed: 6 });
   }
 
   // ---------------- level cards (in each level's own palette)
-  for (const card of extras.cards) {
+  extras.cards.forEach((card, i) => {
     const p = new Pixels(W, H, card.pal.c('ink', 0));
     p.blit(card.map, 0, 0);
     p.rect(0, 118, W, 2, card.pal.c('gold', 3));
     outlined(p, 12, 128, card.title, card.pal.c('snow', 6), card.pal.c('ink', 1), 2);
     text(p, 12, 148, card.time, card.pal.c('gold', 3));
+    // where the level falls, small at the right under the gold rule
+    const of = extras.cards.length;
+    const count = i === of - 1 ? `FINAL LEVEL: ${i + 1} OF ${of}` : `LEVEL ${i + 1} OF ${of}`;
+    micro(p, 308 - microWidth(count), 122, count, card.pal.c('gold', 3));
     card.lines.forEach((l, i) => text(p, 12, 162 + i * 10, l, card.pal.c('snow', 5)));
     files[`${card.name}.gif`] = gif(p, card.pal.pal);
-  }
+  });
   return files;
 }

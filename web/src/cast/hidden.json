@@ -22,6 +22,7 @@
     ["sweats","pizza.map"],
     ["teddy","park.map"],
     ["teddy2","farm.map"],
+    ["teddy3","dig.map"],
     ["tickle","lab.map"],
     ["year2000","exchange.map"]
   ],
@@ -48,6 +49,7 @@
     ["sweats","hive.map"],
     ["teddy","backyard.map"],
     ["teddy2","house.map"],
+    ["teddy3","meadow.map"],
     ["tickle","tower.map"],
     ["year2000","mall.map"]
   ]

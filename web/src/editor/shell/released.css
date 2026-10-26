@@ -1,0 +1,45 @@
+/* The bar over a game opened to look inside (released.ts): what it is, and Make a copy. */
+.released-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 10px;
+  padding: 6px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.released-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 12px;
+}
+
+.released-text {
+  flex: 1 1 12em;
+  min-width: 0;
+}
+
+.released-bar button {
+  min-height: 28px;
+  padding: 3px 12px;
+  font-size: 13px;
+}
+
+/* the editors size themselves by --ws-vh (editor.css), so the bar's height comes off it */
+@media (min-width: 1200px) {
+  .workspace:has(.released-bar) {
+    --ws-vh: calc(100dvh - 52px);
+  }
+}
+@media (min-width: 901px) and (max-width: 1199px) {
+  .workspace:has(.released-bar) {
+    --ws-vh: calc(100dvh - 104px);
+  }
+}

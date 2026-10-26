@@ -244,6 +244,17 @@
   color: var(--muted);
 }
 
+.mus-track-head {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.mus-track-head .mus-track-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .mus-track-tools {
   display: flex;
   gap: 3px;
@@ -290,6 +301,8 @@
 
 .mus-add-btn {
   border-style: dashed;
+  min-height: 28px;
+  overflow-wrap: anywhere;
 }
 
 /* ---- instrument ---- */
@@ -481,7 +494,7 @@
    the Song tab, and the Instruments and Settings tabs scroll by themselves. */
 @media (min-width: 861px) and (min-height: 600px) {
   .mus {
-    height: calc(var(--ws-vh, 100dvh) - 128px);
+    height: max(480px, var(--room, calc(var(--ws-vh, 100dvh) - 128px)));
   }
   .mus-panel {
     flex: 1 1 0;
@@ -834,4 +847,78 @@ dialog.modal .mus-preset[hidden],
 }
 .mus-preset:has(input:checked) small {
   color: var(--text);
+}
+
+/* Generate accompaniment and Copy melody to a new song (accompanyDialog.ts, copyTuneDialog.ts) */
+.mus-acc {
+  max-width: 560px;
+}
+.mus-acc-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: end;
+}
+.mus-acc-pick select,
+.mus-acc-pick input[type='number'] {
+  min-height: 28px;
+  max-width: 100%;
+}
+.mus-acc-result {
+  min-height: 6em;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.mus-acc-result p {
+  margin: 0 0 6px;
+}
+.mus-acc-chords {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  word-spacing: 2px;
+  overflow-wrap: anywhere;
+}
+.mus-acc-parts {
+  margin: 0 0 6px;
+  padding-left: 1.2em;
+  font-size: 13px;
+}
+.mus-acc-keep {
+  margin: 0;
+  padding: 6px 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.mus-acc-keep .hint {
+  margin: 0 0 4px;
+}
+.mus-acc-keep-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+}
+.mus-acc-short {
+  margin: 0 0 6px;
+  padding-left: 1.2em;
+  font-size: 13px;
+  font-weight: 600;
+}
+.mus-acc .buttons {
+  flex-wrap: wrap;
+}
+dialog.modal .mus-acc label.check {
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+}
+
+/* Add a track from another song: the picked song's tracks */
+.mus-pick-tracks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mus-pick-tracks button {
+  min-height: 28px;
 }

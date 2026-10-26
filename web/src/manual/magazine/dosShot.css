@@ -1,0 +1,14 @@
+/* Lewis's DOSBox screenshot (dosShot.ts): the game screen in the magazine's monitor-gray bevel. */
+.mag-art.art-dos-carl {
+  --tilt: 1deg;
+}
+
+.mag-art img.mag-dos-shot {
+  aspect-ratio: 638 / 398;
+  padding: 0.3em;
+  box-sizing: border-box;
+  background: #c3c3c3;
+  border: 0.18em solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
+}

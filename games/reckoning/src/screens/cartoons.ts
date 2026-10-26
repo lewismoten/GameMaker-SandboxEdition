@@ -11,8 +11,9 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Reel } from '../../../kit/reel';
+import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
-import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
+import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
@@ -114,7 +115,7 @@ function clock(p: Pixels, pal: Pal, x: number, y: number, time: string, colon: b
 /** How many pictures of the cover the title animates through. */
 const COVER_FRAMES = 10;
 
-/** The title cartoon (cover.fli) and its last picture with the name on it (title.gif's pixels and palette). */
+/** The title cartoon (cover.fli: the cover comes to life, an iris closes, a fade to black) and the cover with the name on it (title.gif's pixels and palette). */
 export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } {
   const frames = Array.from({ length: COVER_FRAMES }, (_, k) => coverRgb(k / (COVER_FRAMES - 1)));
   // inks for the lettering first (black, cream, the aura's gold, a deep shadow, white), then the cover's colors
@@ -138,19 +139,15 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
     if (sub) {
       outlined(p, 160 - textWidth('OF 3:17 A.M.') / 2, drop + 46, 'OF 3:17 A.M.', 4, 3);
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
   r.fadeIn(pics[0], 6);
   pics.forEach((p, i) => r.add(p, i === 0 ? 4 : 2));
   const last = pics[pics.length - 1];
-  for (const [k, drop] of [-70, -44, -20, 2, 10, 5, 7].entries()) {
-    const p = new Pixels(W, H);
-    p.px.set(last.px);
-    name(p, drop, k >= 5);
-    r.add(p, k === 6 ? 10 : 1);
-  }
+  // the name is the title picture's: the cartoon closes on an iris and fades to black instead
+  r.irisOut(226, 70, 8).fadeOut(fadeOutLength(SPEED));
   const title = new Pixels(W, H);
   title.px.set(last.px);
   name(title, 7, true);
@@ -230,6 +227,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   const c = pal.c;
   const ink = c('ink', 0);
   const info = CARDS[i];
+  /** Where this act falls in the game (the last one says so), small under the place line. */
+  const count = `${i === CARDS.length - 1 ? 'FINAL ACT:' : 'ACT'} ${i + 1} OF ${CARDS.length}${i === 0 ? ' - F5 SAVES, F6 LOADS' : ''}`;
   const bg = new Pixels(W, H, ink);
   bg.blit(card.map, 0, STRIP);
   const frame = (p: Pixels, k: number) => {
@@ -238,6 +237,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     const drop = [-24, -14, -2, 10, 6, 8][Math.min(5, k)];
     outlined(p, 160 - textWidth(info.title, 2) / 2, drop, info.title, c('cream', 3), c('ink', 1), 2);
     if (k >= 5) centered(p, 32, info.where, c('white', 2));
+    if (k >= 5) micro(p, 160 - Math.ceil(microWidth(count) / 2), 45, count, c('white', 2));
     if (k >= 9) centered(p, 178, `"${info.lines[0]}`, c('white', 2));
     if (k >= 15) centered(p, 189, ` ${info.lines[1]}"`, c('white', 2));
   };
@@ -455,7 +455,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       ])
         p.set(x, y, c('crust', 2));
       scaleBlit(p, M(k % 12 < 6 ? 'bliss' : 'worry'), 90, 112, 2);
-      if (k >= 10) say(p, pal, 236, 76, '(of the cheesecake)', 'white', 2);
+      if (k >= 10) say(p, pal, 124, 48, '(of the cheesecake)', 'white', 2); // on the dark wall, not the white fridge
       caption(p, pal, ['Was it worth it?', 'Ask him at 3:17 tomorrow.']);
     };
     const first = new Pixels(W, H);

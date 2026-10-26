@@ -16,16 +16,18 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   snowbound: () => import('./snowbound'),
   teddy: () => import('./teddy'),
   teddy2: () => import('./teddy2'),
+  teddy3: () => import('./teddy3'),
   year2000: () => import('./year2000'),
 };
 
 /**
  * The secret games' covers, by idHash, so the desk's code and chunk names name none of them
  * (see project/secretGames): e.g. `0x1234abcd: () => import('./extra')` for a cover in
- * covers/extra.ts. None yet.
+ * covers/extra.ts.
  */
 const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {
   0x3cb23e5f: () => import('./extra'),
+  0x5cdf8e7d: () => import('./extra2'),
 };
 
 /** Where the award laurel and the "hours of play" burst sit, clear of each cover's subject. */
@@ -34,6 +36,7 @@ export const SEALS: Record<string, { laurel: 'left' | 'right'; burst: 'left' | '
   sleuth: { laurel: 'right', burst: 'right' },
   snowbound: { laurel: 'left', burst: 'right' },
   teddy2: { laurel: 'left', burst: 'left' },
+  teddy3: { laurel: 'left', burst: 'left' },
   year2000: { laurel: 'right', burst: 'right' },
 };
 

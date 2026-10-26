@@ -23,7 +23,7 @@ export const CELL = BLEN * SCALE;
 export const MAX_SPEED = 50;
 export const TICK_MS = 1000 / 18.2;
 
-export interface MapChoice {
+interface MapChoice {
   label: string;
   map?: string;
   bbl?: string;

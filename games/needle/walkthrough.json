@@ -8,19 +8,19 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "PU01SArIC0gKyAPNCU0ISArIF80HTQhICsgISArIBc0GEBKQAEsKywNNGEgKyA3NCk0DSArICEgKyAhICsgUzQZNF80OTRTNBk0NSArIIUgKyAhICsgISArIB80GTQhICsgSzQwSDJIATQnNA00DSArICEgKyAhICsgFzQZNBM0QTQnNBi4frgBN"
+   "keys": "PU01SArIC0gKyAPNCU0ISArIF80HTQhICsgISArIBc0GEBKQAEsKywNNGEgKyA3NCk0DSArICEgKyAhICsgUzQZNF80OTRTNBk0NSArIIUgKyAhICsgIzQZNCEgKyBLNDBIMkgBNDc0DTQNICsgISArICEgKyAXNBk0EzRBNCc0GLh+uAE0="
   },
   {
    "scene": 3,
-   "keys": "AU0cSArIF80HEgySAE0GzQsSDJIATRbNA0sAywZNA0gKyEJICsgFzQZNLs0GSAzICU1CSArIBc0GTRLNBi49rgAuKK4ALjKuAE0PzQZNF0gKyAXNBhASkABLAssGTRpICsgKzQZNA0gKyArNBk0IzRBN"
+   "keys": "AU0cSArIF80HEgySAE0GzQsSDJIATRnNA0sAywZNA0gKyD9ICsgFzQZNLs0GSAzICU1CSArIBc0GTRLNBi49rgAuKK4ALjKuAE0PzQZNF0gKyAXNBhASkABLAssGTRpICsgKzQZNA0gKyArNBk0IzRBN"
   },
   {
    "scene": 4,
-   "keys": "AU0PzUBNCs0GTQXNBkgRyABNGc0YTQjNBhIMkgBNBM0FTRLNBi4frgBNF80GLiiuAE0SzSlNFEgKyBfNBk0PzQZID8gATRTNBk0DzQZIC8gATQPNDBIMkgBNAs0DTQjNBk0IzSEu"
+   "keys": "AU0PzUBNCs0GTQXNBkgRyABNGc0STQjNBhIMkgBNCM0DTRLNBi4frgBNF80GLiiuAE0SzRdNCkgKyBNICsgKSArIDM0GTQ/NBkgPyABNFM0GTQPNBkgLyABNA80MEgySAE0CzQNNCM0GTQjNIS4="
   },
   {
    "scene": 5,
-   "keys": "AU0KzQZIGcgATRTNBkseyyISBJIATQvNJU0ZzTAuH64ATQ/NBkgOyAQSCpIATQXNA00FzQYQCpAASw/LA0sKywYs"
+   "keys": "AU0KzQZIGcgATRTNBkseyyISBJIATQvNJU0ZzQYuH64ATQdICsgPzQZIDsgEEgqSAE0FzQNNBc0GEAqQAEsPywNLCssGLA=="
   }
  ],
  "chapters": [
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18829,
+  "frames": 18610,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1366
+    "frame": 1382
    },
    {
     "title": "Level 1: The City Gate",
-    "frame": 3064
+    "frame": 3080
    },
    {
     "title": "Level 2: The Desert Road",
-    "frame": 6178
+    "frame": 6152
    },
    {
     "title": "Level 3: The Tailor's Shop",
-    "frame": 9328
+    "frame": 9302
    },
    {
     "title": "Level 4: The Eye of the Needle",
-    "frame": 11895
+    "frame": 11889
    },
    {
     "title": "Ending",
-    "frame": 13971
+    "frame": 13751
    },
    {
     "title": "Credits",
-    "frame": 16741
+    "frame": 16522
    }
   ]
  }

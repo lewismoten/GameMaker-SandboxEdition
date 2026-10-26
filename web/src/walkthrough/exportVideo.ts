@@ -29,7 +29,7 @@ export interface ExportOptions {
   sound?: DemoAudio;
 }
 
-export interface ExportResult {
+interface ExportResult {
   blob: Blob;
   frames: number;
   /** The sound's codec, or 'none' when the browser can't encode either. */

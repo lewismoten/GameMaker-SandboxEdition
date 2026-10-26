@@ -1,0 +1,35 @@
+/* The Sofa BBS's half-page ad (sections/smallAds.ts SOFA_BBS) as a cozy living room: a soft
+   pastel striped wall over a warm floor, and a drawn sofa with its cushions and throw pillows
+   at the lower right, behind the words. Our own drawing. */
+.mag-halfad[aria-label='Advertisement: The Sofa BBS'] .mag-halfad-frame {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 150'%3E %3Cellipse cx='120' cy='140' rx='112' ry='8' fill='%23b9876a' fill-opacity='0.35'/%3E %3Crect x='26' y='120' width='8' height='18' rx='2' fill='%238a5a3a'/%3E%3Crect x='206' y='120' width='8' height='18' rx='2' fill='%238a5a3a'/%3E %3Crect x='30' y='22' width='180' height='70' rx='22' fill='%23e9897a'/%3E %3Crect x='30' y='22' width='180' height='18' rx='12' fill='%23f3a596'/%3E %3Cpath d='M120 30V92' stroke='%23cf6f60' stroke-width='2'/%3E %3Crect x='34' y='80' width='172' height='44' rx='12' fill='%23dd7a6b'/%3E %3Crect x='40' y='76' width='82' height='30' rx='10' fill='%23f09a8b'/%3E%3Crect x='118' y='76' width='82' height='30' rx='10' fill='%23f09a8b'/%3E %3Cpath d='M48 82H112M126 82H190' stroke='%23fbbcb0' stroke-width='3' stroke-linecap='round'/%3E %3Crect x='6' y='56' width='38' height='70' rx='18' fill='%23d9705f'/%3E%3Cellipse cx='25' cy='60' rx='19' ry='10' fill='%23f3a596'/%3E %3Crect x='196' y='56' width='38' height='70' rx='18' fill='%23d9705f'/%3E%3Cellipse cx='215' cy='60' rx='19' ry='10' fill='%23f3a596'/%3E %3Crect x='150' y='46' width='40' height='34' rx='9' fill='%23ffd76a' transform='rotate%2812 170 63%29'/%3E %3Cpath d='M156 54L184 72M184 54L156 72' stroke='%23f2bd3a' stroke-width='2' transform='rotate%2812 170 63%29'/%3E %3Crect x='52' y='50' width='34' height='30' rx='9' fill='%238fd0c9' transform='rotate%28-10 69 65%29'/%3E %3C/svg%3E")
+      right 3% bottom 1.6em / auto 40% no-repeat,
+    linear-gradient(transparent calc(100% - 3.2em), #c79a7a calc(100% - 3.2em), #c79a7a calc(100% - 3em), #f6e3cc calc(100% - 3em)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 1.1em, transparent 1.1em 2.2em),
+    #ffe3ea;
+}
+
+/* the words keep clear of the sofa */
+.mag-halfad[aria-label='Advertisement: The Sofa BBS'] :is(.mag-list, .mag-small) {
+  max-width: 58%;
+}
+
+/* a narrow screen: the sofa sits small at the lower right beside the fine print, the list runs full width */
+.flow .mag-halfad[aria-label='Advertisement: The Sofa BBS'] .mag-halfad-frame {
+  padding-bottom: 2.4em;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 150'%3E %3Cellipse cx='120' cy='140' rx='112' ry='8' fill='%23b9876a' fill-opacity='0.35'/%3E %3Crect x='26' y='120' width='8' height='18' rx='2' fill='%238a5a3a'/%3E%3Crect x='206' y='120' width='8' height='18' rx='2' fill='%238a5a3a'/%3E %3Crect x='30' y='22' width='180' height='70' rx='22' fill='%23e9897a'/%3E %3Crect x='30' y='22' width='180' height='18' rx='12' fill='%23f3a596'/%3E %3Cpath d='M120 30V92' stroke='%23cf6f60' stroke-width='2'/%3E %3Crect x='34' y='80' width='172' height='44' rx='12' fill='%23dd7a6b'/%3E %3Crect x='40' y='76' width='82' height='30' rx='10' fill='%23f09a8b'/%3E%3Crect x='118' y='76' width='82' height='30' rx='10' fill='%23f09a8b'/%3E %3Cpath d='M48 82H112M126 82H190' stroke='%23fbbcb0' stroke-width='3' stroke-linecap='round'/%3E %3Crect x='6' y='56' width='38' height='70' rx='18' fill='%23d9705f'/%3E%3Cellipse cx='25' cy='60' rx='19' ry='10' fill='%23f3a596'/%3E %3Crect x='196' y='56' width='38' height='70' rx='18' fill='%23d9705f'/%3E%3Cellipse cx='215' cy='60' rx='19' ry='10' fill='%23f3a596'/%3E %3Crect x='150' y='46' width='40' height='34' rx='9' fill='%23ffd76a' transform='rotate%2812 170 63%29'/%3E %3Cpath d='M156 54L184 72M184 54L156 72' stroke='%23f2bd3a' stroke-width='2' transform='rotate%2812 170 63%29'/%3E %3Crect x='52' y='50' width='34' height='30' rx='9' fill='%238fd0c9' transform='rotate%28-10 69 65%29'/%3E %3C/svg%3E")
+      right 3% bottom 0.9em / auto 5.5em no-repeat,
+    linear-gradient(transparent calc(100% - 1.8em), #c79a7a calc(100% - 1.8em), #c79a7a calc(100% - 1.6em), #f6e3cc calc(100% - 1.6em)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 1.1em, transparent 1.1em 2.2em),
+    #ffe3ea;
+}
+
+.flow .mag-halfad[aria-label='Advertisement: The Sofa BBS'] .mag-list {
+  max-width: none;
+}
+
+.flow .mag-halfad[aria-label='Advertisement: The Sofa BBS'] .mag-small {
+  max-width: 48%;
+}

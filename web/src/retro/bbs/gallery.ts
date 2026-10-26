@@ -3,7 +3,8 @@
 // gallery.json), THE CHEZ's among them. The Sofa's GIF area (board "sofa" in gallery.json:
 // what Doc Leo uploaded there, the hobo clown pictures and the Bard's logo) shares the
 // list. Downloaded pictures from either board land in C:\IMAGES, where VPIC shows them again (retro/view/vpic.ts). The photos are
-// Lewis's own, except CHEZTED.GIF and THECHEZ2.GIF (one shot), taken by Nicky Foster (NOTICE.md).
+// Lewis's own, except CHEZTED.GIF and THECHEZ2.GIF (one shot), taken by Nicky Foster, and
+// COLONIAL.GIF, taken by Todd Jones (NOTICE.md).
 import list from './gallery.json';
 import { decodePartialGif, partialPixels } from '../../formats/gifProgressive';
 import { decodePartialJpeg, isJpeg, type PartialJpeg } from '../../formats/jpeg';
@@ -31,7 +32,7 @@ const DESC: Record<string, string> = {
   'TEDDY.JPG': 'Teddy as a JPEG. Watch it sharpen!',
   'GWINN.JPG': 'Teddy and his pal Gwinn in the grass.',
   'GAZEBO.GIF': 'The SysOp and Teddy at the gazebo.',
-  'COLONIAL.GIF': 'The SysOp in colonial dress with General Washington. Huzzah!',
+  'COLONIAL.GIF': 'The SysOp in colonial dress with General Washington. Photo: Todd Jones.',
   'DOGHOUSE.JPG': "The Dog House: the SysOp's little lending library.",
   'LIBRARY.GIF': 'The Dog House again, in 16 colors.',
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",

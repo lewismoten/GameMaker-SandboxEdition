@@ -6,11 +6,12 @@ import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval } from '../art/draw';
 import { FLOORS } from './floors';
 import { micro } from '../art/font';
-import { CTR, MON, PAGES_NEEDED } from '../ids';
-import { C } from '../art/pal';
+import { COPY_TICKS, CTR, MON, PAGES_NEEDED } from '../ids';
+import { C, PAL } from '../art/pal';
 import { banner, billboard, crater, domeHome } from '../art/bigart';
 import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
 import { addEgg } from './egg';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import { mowerDock } from './suburb';
 import { crtTv } from './city';
 
@@ -132,7 +133,7 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone' | 'cpu650
     // Dex's own project: a "pocket telephone". The judges have their doubts.
     p.rect(8, 3, 4, 10, C('grey', 1)).rect(9, 4, 2, 2, C('neon', 2)).line(11, 3, 12, 0, C('grey', 2));
     for (let y = 7; y < 12; y += 2) p.set(9, y, C('grey', 5)).set(10, y, C('grey', 5));
-    micro(p, 1, 14, 'POCKET', C('denim', 1));
+    micro(p, 1, 14, 'PHONE', C('denim', 1));
   }
   return p;
 }
@@ -140,8 +141,9 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone' | 'cpu650
 function judgeTable(done: boolean, label = 'PAGES'): Pixels {
   const p = on('gym');
   p.rect(0, 4, 20, 14, C('denim', 2)).rect(0, 4, 20, 3, C('denim', 4));
-  p.rect(2, 9, 16, 6, C('paper', 2));
-  micro(p, 2, 10, done ? 'OK!' : label, done ? C('green', 2) : C('red', 3));
+  // the card runs edge to edge: PAGES and COVER take 19 of the block's 20 pixels
+  p.rect(0, 9, 20, 6, C('paper', 2));
+  micro(p, 1, 10, done ? 'OK!' : label, done ? C('green', 2) : C('red', 3));
   if (!done) micro(p, 2, 14, 'HERE', C('denim', 1));
   void PAGES_NEEDED;
   return p;
@@ -150,7 +152,7 @@ function judgeTable(done: boolean, label = 'PAGES'): Pixels {
 function podium(): Pixels {
   const p = on('gym');
   p.rect(3, 6, 14, 13, C('gold', 3)).rect(3, 6, 14, 3, C('gold', 5));
-  micro(p, 8, 11, '1', C('gold', 1), 2);
+  micro(p, 8, 8, '1', C('gold', 1), 2);
   p.disc(10, 3, 2.5, C('gold', 5));
   p.rect(9, 3, 2, 4, C('gold', 4));
   return p;
@@ -161,6 +163,23 @@ function bleachers(): Pixels {
   for (let y = 0; y < 20; y += 5) {
     p.rect(0, y, 20, 3, C('wood', 3)).rect(0, y + 3, 20, 2, C('wood', 1));
   }
+  return p;
+}
+
+/** The school's copier, seen from above: a grey body, the glass and a green PRINT button. */
+function copier(): Pixels {
+  const p = on('gym');
+  p.rect(1, 2, 18, 17, C('chrome', 3)).rect(1, 2, 18, 2, C('chrome', 5)).rect(1, 17, 18, 2, C('chrome', 1));
+  p.rect(3, 5, 10, 7, C('glass', 2)).rect(4, 6, 5, 1, C('glass', 4));
+  p.rect(14, 6, 3, 3, C('green', 3)).rect(14, 10, 3, 1, C('red', 3));
+  micro(p, 3, 13, 'COPY', C('night', 1));
+  return p;
+}
+
+/** The copier's out tray on the gym floor, where its pages land. */
+function copierTray(): Pixels {
+  const p = on('gym');
+  p.rect(2, 0, 16, 9, C('chrome', 2)).rect(3, 0, 14, 7, C('chrome', 4)).rect(2, 8, 16, 1, C('chrome', 1));
   return p;
 }
 
@@ -214,6 +233,17 @@ export function moonSet(): BlockSet {
   s.add('covertable', judgeTable(false, 'COVER'), { solid: SOLID, effect: CTR.cover, eamt: -1, score: 5000, touch: 'judgedone' });
   s.add('podium', podium());
   addBig(s, 'banner', banner('SCIENCE FAIR 2000', 8, 1, 'denim', 'gold'));
+  // How to finish: the cover page from Sparky, and pages from the copier when you are short
+  // (its tray prints a page every few seconds, MON.page), so no player reaches the fair stuck.
+  const gymFloor = FLOORS.gym;
+  addBig(s, 'bbSparky', billboard(['ZAP SPARKY 3 TIMES', 'FOR THE COVER PAGE!', 'NEEDS THE ZAPPER', 'AND BATTERIES.'], 'denim', 'gold', gymFloor, 5, 6));
+  addBig(s, 'bbCopier', billboard(['SHORT ON PAGES?', 'WAIT AT THE COPIER.', 'IT PRINTS ONE EVERY', 'FEW SECONDS.'], 'purple', 'gold', gymFloor, 5, 6));
+  s.add('copier', copier(), { solid: SOLID });
+  s.add('copiertray', copierTray(), { birthMon: MON.page, birthTime: COPY_TICKS });
+  // the save sign (kit/saveSign.ts), standing in the dust by the landing spot
+  const dust = s.pic('moon');
+  const sign = saveSignBlocks(PAL.pal, { board: [dust, dust], posts: [dust, dust] });
+  [...sign.board, ...sign.posts!].forEach((p, k) => s.add(`saveSign${k}`, p));
   addEgg(s, 'moon');
   return s;
 }

@@ -1,8 +1,37 @@
-/* Palette editor helpers: the re-lit comparison and the blocks that use a color. */
+/* Palette editor helpers: the column beside the colors, the re-lit comparison and the blocks
+   that use a color. */
+.pal-slider {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.pal-slider > span {
+  flex: 0 0 3.2em;
+}
+.pal-slider > .row {
+  flex: 1;
+  min-width: 0;
+}
+.pal-undo {
+  display: inline-flex;
+  gap: 8px;
+}
+.pal-icon {
+  min-width: 36px;
+  font-size: 1.15em;
+}
+/* side by side (wide windows), the column scrolls by itself (--room: core/fitPane.ts) */
+@media (min-width: 901px) {
+  .pal-side {
+    max-height: max(240px, calc(var(--room, 100dvh) - var(--below, 0px)));
+    overflow-y: auto;
+  }
+}
 .pal-tools {
   margin-top: 12px;
 }
-.pal-tools summary {
+.pal-tools summary,
+.pal-uses-panel summary {
   cursor: pointer;
   font-weight: 600;
   min-height: 24px;
@@ -34,7 +63,122 @@
   padding: 2px 6px;
   text-align: left;
 }
-.pal-tools h3 {
+.pal-uses-panel {
+  max-height: 240px;
+  overflow-y: auto;
+}
+@media (min-width: 901px) {
+  .pal-uses-panel {
+    max-height: none;
+  }
+}
+.pal-tools h3,
+.pal-uses-panel h3 {
   margin: 8px 0 4px;
   font-size: 1em;
+}
+/* the column's tabs: the color being edited, and the color vision check (visionPanel.ts) */
+.pal-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  /* stays in sight while the column scrolls */
+  position: sticky;
+  top: -12px;
+  margin-top: -12px;
+  padding-top: 12px;
+  z-index: 1;
+  background: var(--panel);
+}
+.pal-side > [role='tabpanel'][hidden] {
+  display: none;
+}
+.pal-tab {
+  flex: 1;
+  min-height: 32px;
+  font-weight: 600;
+}
+.pal-tab[aria-selected='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+.pal-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.pal-view {
+  flex: 1 0 auto;
+  min-height: 28px;
+  padding: 2px 8px;
+}
+.pal-vision-fig {
+  margin: 0;
+}
+.pal-vision-shot {
+  display: block;
+  /* clear of the sticky tabs when scrolled to */
+  scroll-margin-top: 56px;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+}
+.pal-vision-count {
+  margin: 0;
+  font-weight: 600;
+}
+.pal-warns {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pal-warns li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.pal-warn-go {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 2px 6px;
+  text-align: left;
+  font-weight: normal;
+}
+.pal-warn-fix,
+.pal-warn-dismiss,
+.pal-dismissed-toggle,
+.pal-warn-more,
+.pal-vision-undo {
+  min-height: 24px;
+  padding: 2px 8px;
+}
+.pal-chip {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.pal-warn-go > span:last-child {
+  margin-left: 4px;
+}
+.pal-dismissed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.pal-dismissed .pal-warns {
+  align-self: stretch;
+}
+.pal-is-dismissed .pal-warn-go {
+  border-style: dashed;
 }

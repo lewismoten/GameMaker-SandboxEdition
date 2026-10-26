@@ -72,7 +72,7 @@ export const INSTRUCTIONS = [
     'press down beside you.',
     'X or SPACE: TICKLE. Fingers',
     'wiggle out to both sides.',
-    'L: laugh maniacally.',
+    'C: laugh maniacally.',
   ]),
   page([
     'THE TECHNIQUE',
@@ -213,7 +213,7 @@ KEYS
   Q E            hop sideways
   Z or Down      PIN
   X or Space     TICKLE
-  L              laugh
+  C              laugh
 
 FILES IN THIS ZIP
   TICKLE.GAM   the game

@@ -4,13 +4,13 @@
 // the little hatch on his tin chest, where the tally counter sits, and the golden heart behind it.
 // Each letter is a color in COLORS; '.' is clear.
 
-export const COLORS = ['fffa95', '6d7d8d', '08080c', 'f2f6ff', 'd6a128', 'c6ceda', '485061', 'ba1c18', 'ee6959', '99a5b6', 'fffaea', 'eaca5d', '996d18'].map(
+const COLORS = ['fffa95', '6d7d8d', '08080c', 'f2f6ff', 'd6a128', 'c6ceda', '485061', 'ba1c18', 'ee6959', '99a5b6', 'fffaea', 'eaca5d', '996d18'].map(
   (c) => `#${c}`,
 );
 
 export type JoeFrame = 'stand' | 'step' | 'blink' | 'sideA' | 'sideB';
 
-export const FRAMES: Record<JoeFrame, string[]> = {
+const FRAMES: Record<JoeFrame, string[]> = {
   stand: [
     '.........aa.........',
     '.........bb.........',
@@ -123,7 +123,7 @@ export const FRAMES: Record<JoeFrame, string[]> = {
   ],
 };
 
-export interface JoeLook {
+interface JoeLook {
   frame: JoeFrame;
   /** Side frames face left; mirrored, he faces right. */
   mirror?: boolean;

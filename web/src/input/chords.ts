@@ -11,7 +11,7 @@ const UP = 72,
   DOWN = 80;
 
 /** Arrow pairs and the keypad key each pair stands for, in the order they are tried. */
-export const ARROW_CHORDS: readonly { arrows: readonly [number, number]; scan: number }[] = [
+const ARROW_CHORDS: readonly { arrows: readonly [number, number]; scan: number }[] = [
   { arrows: [UP, LEFT], scan: 71 }, // Home / Pad 7
   { arrows: [UP, RIGHT], scan: 73 }, // PgUp / Pad 9
   { arrows: [DOWN, LEFT], scan: 79 }, // End / Pad 1

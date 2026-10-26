@@ -9,5 +9,8 @@
   "exe": "RECKON.EXE",
   "sound": "sb",
   "tinHeart": { "map": "fridge.map", "at": [44, 15] },
-  "easterEgg": { "map": "fridge.map", "at": [4, 9] }
+  "easterEgg": { "map": "fridge.map", "at": [4, 9] },
+  "acceptedFindings": [
+    "hurt-lock s4 Monster 14 holds the hero while it hurts"
+  ]
 }

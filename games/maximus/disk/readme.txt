@@ -12,7 +12,7 @@ it on a shareware CD, as long
 as all 515 files stay together
 and nobody charges money for
 it. (A hundred worlds take
-some room: 7.1 MB. Unzip it
+some room: 6.8 MB. Unzip it
 all to your hard disk.)
 
 If you enjoy Maximus, please
@@ -71,9 +71,9 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / O ... pick up / drop
+  G / B ... pick up / drop
   Q / E ... dash left/right
-  Z X C V H W  module weapons
+  Z X C V R W  module weapons
   F ....... hover
   T ....... hail
   F1 F2 ... help, status
@@ -104,7 +104,7 @@ THE MODULES
   Shield Emitter  C
   Hover Pack      F
   Mine Layer      V
-  Med Kit         H
+  Med Kit         R
   Flak Cannon     W
   Hydro Jets      Q / E (sub)
   Spring Shocks   Up (rover)

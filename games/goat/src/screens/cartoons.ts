@@ -7,11 +7,23 @@ import { Pixels } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { Reel } from '../../../kit/reel';
 import { blob } from '../../../snowbound/src/art/draw';
-import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
+import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { bigStar, H, skyline, stars, twinkle, W } from './night';
 import { CARDS } from './text';
+
+/** The PC's music notes (CP437 13 and 14, which the 8x8 font here lacks), outlined: one note, or two beamed. */
+const NOTES = { one: [0x3f, 0x33, 0x3f, 0x30, 0x30, 0x70, 0xf0, 0xe0], two: [0x7f, 0x63, 0x7f, 0x63, 0x63, 0x67, 0xe6, 0xc0] };
+function musicNote(p: Pixels, x: number, y: number, two: boolean, fill: number, edge: number): void {
+  const rows = two ? NOTES.two : NOTES.one;
+  const on = (r: number, b: number) => r >= 0 && r < 8 && b >= 0 && b < 8 && (rows[r] >> (7 - b)) & 1;
+  for (let r = -1; r < 9; r++)
+    for (let b = -1; b < 9; b++) {
+      if (on(r, b)) p.set(x + b, y + r, fill);
+      else if ([-1, 0, 1].some((dy) => [-1, 0, 1].some((dx) => on(r + dy, b + dx)))) p.set(x + b, y + r, edge);
+    }
+}
 
 /** Clear pixels in sprites. */
 const T = 255;
@@ -251,7 +263,7 @@ export function storyFli(cast: Cast): Uint8Array {
       if (sing)
         for (let n = 0; n < 3; n++) {
           const t = (k - 14 + n * 4) % 12;
-          outlined(p, 140 - t * 2 - n * 10, 20 - t * 2 + n * 4, n % 2 ? '\x0e' : '\x0d', c('gold', 3), c('ink', 0));
+          musicNote(p, 140 - t * 2 - n * 10, 20 - t * 2 + n * 4, n % 2 === 1, c('gold', 3), c('ink', 0));
         }
       // the goat by the hay, chewing all night long
       const chew = k >= 28;
@@ -296,6 +308,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   const c = pal.c;
   const ink = c('ink', 0);
   const info = CARDS[i];
+  /** Where this level falls in the game (the last one says so), small under the place line. */
+  const count = `${i === CARDS.length - 1 ? 'FINAL LEVEL:' : 'LEVEL'} ${i + 1} OF ${CARDS.length}${i === 0 ? ' - F5 SAVES, F6 LOADS' : ''}`;
   const bg = new Pixels(W, H, ink);
   bg.blit(card.map, 0, STRIP);
   const frame = (p: Pixels, k: number) => {
@@ -304,6 +318,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     const drop = [-24, -14, -2, 10, 6, 8][Math.min(5, k)];
     outlined(p, 160 - textWidth(info.title, 2) / 2, drop, info.title, c('gold', 3), c('ink', 1), 2);
     if (k >= 5) centered(p, 32, info.where, c('cloth', 3));
+    if (k >= 5) micro(p, 160 - Math.ceil(microWidth(count) / 2), 45, count, c('cloth', 3));
     if (k >= 9) centered(p, 178, `"${info.lines[0]}`, c('cloth', 3));
     if (k >= 15) centered(p, 189, ` ${info.lines[1]}"`, c('cloth', 3));
   };

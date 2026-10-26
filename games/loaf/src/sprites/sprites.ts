@@ -13,6 +13,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
+import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T, outline };
 
@@ -89,6 +90,13 @@ export function loafArt(pal: Pal) {
           dot(u + k * 0.05, -0.72 + k * 0.06, c('crumb', 1));
           if (k > -3) dot(u + k * 0.05 + 0.04, -0.72 + k * 0.06 + 0.05, c('crust', 2));
         }
+      // from behind: the score marks run down its back
+      if (o.face === 'none')
+        for (const u of [-0.45, 0, 0.45])
+          for (let k = -3; k <= 3; k++) {
+            dot(u + k * 0.05, -0.15 + k * 0.06, c('crumb', 1));
+            if (k > -3) dot(u + k * 0.05 + 0.04, -0.15 + k * 0.06 + 0.05, c('crust', 2));
+          }
       // flour dust
       for (const [u, v] of [
         [-0.6, -0.3],
@@ -191,7 +199,7 @@ export function loafArt(pal: Pal) {
   return { body };
 }
 
-/** The loaf's poses for one form: front, blink, roll (four quarter turns), rise, rise sideways, hunker, bread (singing), hurt, crumbling. */
+/** The loaf's poses for one form: front, blink, roll (four quarter turns), rise, rise sideways, hunker, bread (singing), hurt, crumbling; then each form's back (climb). */
 export function buildCharBlocks(pal: Pal) {
   const book = makeBook('cbl');
   const a = loafArt(pal);
@@ -212,6 +220,8 @@ export function buildCharBlocks(pal: Pal) {
     book.add(k('crumble0'), a.body({ face: 'front', wrapped, mood: 'sad', crumble: 0.35 }));
     book.add(k('crumble1'), a.body({ face: 'front', wrapped, mood: 'sad', crumble: 1 }));
   }
+  // rising, and climbing the weave: the back of the loaf (its crust, or the cloth's knot), going away
+  for (const form of ['loaf', 'bundle'] as Form[]) book.add(`${form}.climb`, a.body({ face: 'none', wrapped: form === 'bundle', rise: 1.6 }));
   return book;
 }
 
@@ -227,6 +237,9 @@ export function buildMonsterBlocks(pal: Pal) {
   const lit = (p: Pixels) => outline(p, c('crumb', 0));
   // Big hungry things are solid (they push the loaf away) and take a bite.
   const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
+  // Walkers on the ground are solid only at their sides: a loaf that lands on one's back
+  // slides down beside it (one bite) instead of standing there being bitten every tick.
+  const bite = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: SOLLEF | SOLRIG });
 
   // A hungry hand reaching down from above, fingers open, then closing.
   const hand = (f: number) => {
@@ -242,8 +255,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(14, 9, 17 + (f ? -1 : 1), 12, c('skin', 2));
     return done(p);
   };
-  book.add('hand0', hand(0), hurt(-8));
-  book.add('hand1', hand(1), hurt(-8));
+  book.add('hand0', hand(0), bite(-8));
+  book.add('hand1', hand(1), bite(-8));
   // Winding up: drawn back into a fist, shaking (shake lines on alternate sides).
   const fist = (f: number) => {
     const p = P();
@@ -258,8 +271,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(side, 5, side, 9, c('white', 2)).line(side + (f ? -1 : 1), 11, side + (f ? -1 : 1), 13, c('white', 2));
     return done(p);
   };
-  book.add('fist0', fist(0), hurt(-8));
-  book.add('fist1', fist(1), hurt(-8));
+  book.add('fist0', fist(0), bite(-8));
+  book.add('fist1', fist(1), bite(-8));
   // A fish flying like a prayer.
   const fish = (f: number) => {
     const p = P();
@@ -322,10 +335,10 @@ export function buildMonsterBlocks(pal: Pal) {
     foot(10, f === 0 ? 3 : 0);
     return done(p);
   };
-  book.add('feet0', feet(0), hurt(-6));
-  book.add('feet1', feet(1), hurt(-6));
+  book.add('feet0', feet(0), bite(-6));
+  book.add('feet1', feet(1), bite(-6));
   // standing still, both feet planted, before he turns round
-  book.add('feetStand', feet(2), hurt(-6));
+  book.add('feetStand', feet(2), bite(-6));
   // The third goat from the left, grazing her way across the hillside. Friendly.
   const goat = (f: number) => {
     const p = P();
@@ -355,10 +368,10 @@ export function buildMonsterBlocks(pal: Pal) {
     else p.line(15, 10, 17, 7 + f, ink);
     return lit(p);
   };
-  book.add('weevil0', weevil(0), hurt(-4));
-  book.add('weevil1', weevil(1), hurt(-4));
+  book.add('weevil0', weevil(0), bite(-4));
+  book.add('weevil1', weevil(1), bite(-4));
   // stopped, feelers up, before it turns round
-  book.add('weevilStop', weevil(0, true), hurt(-4));
+  book.add('weevilStop', weevil(0, true), bite(-4));
   // A mouse in the wicker, nose twitching.
   const mouse = (f: number) => {
     const p = P();
@@ -372,8 +385,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(8, 17, 7 + f, 18, c('grey', 1)).line(12, 17, 13 - f, 18, c('grey', 1));
     return lit(p);
   };
-  book.add('mouse0', mouse(0), hurt(-6));
-  book.add('mouse1', mouse(1), hurt(-6));
+  book.add('mouse0', mouse(0), bite(-6));
+  book.add('mouse1', mouse(1), bite(-6));
   // sitting up on its haunches, whiskers going, before it turns round
   const sit = P();
   sit.line(4, 18, 1, 15, c('grey', 2));
@@ -382,7 +395,7 @@ export function buildMonsterBlocks(pal: Pal) {
   sit.disc(9, 4, 1.6, c('red', 3)).disc(13, 4, 1.6, c('red', 3)).set(12, 6, ink).set(14, 8, c('red', 2));
   sit.line(14, 8, 17, 6, c('white', 1)).line(14, 9, 17, 10, c('white', 1)).line(11, 11, 13, 12, c('grey', 1));
   sit.line(7, 18, 12, 18, c('grey', 1));
-  book.add('mouseSit', lit(sit), hurt(-6));
+  book.add('mouseSit', lit(sit), bite(-6));
   // A tiny mustard seed in tiny red sneakers, hopping along (from another song). Say hello.
   const seed = (f: number) => {
     const p = P();
@@ -422,9 +435,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(7, 15, 6 + f * 2, 19, ink).line(13, 15, 14 - f * 2, 19, ink);
     return lit(p);
   };
-  book.add('fox0', fox(0), hurt(-8));
-  book.add('fox1', fox(1), hurt(-8));
-  book.add('foxSniff', fox(0, true), hurt(-8));
+  book.add('fox0', fox(0), bite(-8));
+  book.add('fox1', fox(1), bite(-8));
+  book.add('foxSniff', fox(0, true), bite(-8));
   // An owl, swooping.
   const owl = (f: number) => {
     const p = P();
@@ -458,9 +471,9 @@ export function buildMonsterBlocks(pal: Pal) {
       p.line(x, 14, x + (f ? d : 0), 18, c('sand', 0));
     return done(p);
   };
-  book.add('dog0', dog(0), hurt(-7));
-  book.add('dog1', dog(1), hurt(-7));
-  book.add('dogSniff', dog(0, true), hurt(-7));
+  book.add('dog0', dog(0), bite(-7));
+  book.add('dog1', dog(1), bite(-7));
+  book.add('dogSniff', dog(0, true), bite(-7));
   // A moth round the lamps.
   const moth = (f: number) => {
     const p = P();

@@ -2,7 +2,6 @@
 // down the line): the bar fills at the line speed of the moment (lineSpeed.ts), so picking a
 // faster modem speed mid-transfer speeds it up there and then. Esc aborts, Space skips ahead.
 import type { RetroHost } from '../host';
-import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { modemSignal, sleep, type Term } from './term';
 import { cps, lineSpeed, slowWait, speedWords, warpCount } from './lineSpeed';
@@ -16,7 +15,7 @@ export function expectText(bytes: number, share = 1): string {
 }
 
 /** "45 s", "3 min 20 s", "1 hr 4 min". */
-export function timeText(sec: number): string {
+function timeText(sec: number): string {
   const s = Math.max(1, Math.round(sec));
   if (s < 60) return `${s} s`;
   const m = Math.floor(s / 60);
@@ -27,7 +26,7 @@ export function timeText(sec: number): string {
 /** The rate for a progress line: "1650 cps" (or "no wait" when unlimited); `share`: how much of the line the protocol gets. */
 export const cpsText = (share = 1) => (Number.isFinite(cps('file')) ? `${Math.round(cps('file') * share)} cps` : 'no wait');
 
-export interface Progress {
+interface Progress {
   /** Where it stops short, as a fraction of the file (an upload the phone cuts off). */
   stopAt?: number;
   /** Ctrl-X aborts too (uploads). */
@@ -65,7 +64,7 @@ export async function progress(
     const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
     s.cursorY = row;
     s.cursorX = 0;
-    t.local(`|15${name.padEnd(12)} |10${toCp437(bar)} |14${commas(Math.round(got)).padStart(9)} |07bytes  ${cpsText(share).padEnd(8)}`);
+    t.local(`|15${name.padEnd(12)} |10${bar} |14${commas(Math.round(got)).padStart(9)} |07bytes  ${cpsText(share).padEnd(8)}`);
   };
   for (;;) {
     const k = h.keys.poll();

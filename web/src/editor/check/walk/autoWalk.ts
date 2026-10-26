@@ -4,7 +4,12 @@
 // everywhere) until one reaches a link to a scene not seen yet (or the won scene) without
 // dying. The path it found is played again from the scene's start on the same engine, the keys
 // it pressed kept tick by tick, and that state carries into the next scene. Where no style gets
-// through, it stops there and says so: the walkthrough ends where the bot got to.
+// through, it stops there and says so: the walkthrough ends where the bot got to. A scene the
+// author has played (mine.ts) is played with the author's keys instead, when they still reach
+// an exit from where the walkthrough has got to; else the bot plays it. In a scene whose block
+// set has walking paths (walkPaths.ts), a style that heads for the exit looks again keeping to
+// them, and that route is played when it walks more of the paths for only modestly more time
+// (pathRoute.ts), as a person would walk along the road rather than cut across.
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Game } from '../../../formats/game';
 import { MLEN } from '../../../formats/map';
@@ -13,9 +18,12 @@ import { driveMove, type Outcome } from '../drive';
 import { explore, type Entry, type Exploration, type ExploreOptions, type Via } from '../explore';
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource, type Snap } from '../sim';
+import { replayMine } from './replayMine';
+import { footCell, scenePaths } from './walkPaths';
+import { ON_PATH_ENOUGH, pathShare, preferPathRoute, type RouteFit } from './pathRoute';
 
-export interface Strategy {
-  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector';
+interface Strategy {
+  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
   name: string;
   /** Only for scenes with gravity (true) or without (false). */
   gravity?: boolean;
@@ -35,6 +43,9 @@ export const STRATEGIES: Strategy[] = [
   { id: 'collector', name: 'Collect everything, then go on', share: 0.8, options: () => ({}) },
 ];
 
+/** The author's own play of a scene (not one of the bot's styles). */
+export const MINE: Strategy = { id: 'mine', name: 'Your play', share: 0, options: () => ({}) };
+
 export interface SceneOutcome {
   scene: number;
   name: string;
@@ -47,6 +58,10 @@ export interface SceneOutcome {
   next?: number;
   /** Where the bot went, for a scene it couldn't get through (the heat map). */
   heat?: Uint32Array;
+  /** The author's play of the scene was used, or was asked for but no longer reaches an exit (the bot played it). */
+  mine?: 'used' | 'broke';
+  /** The scene has walking paths: the share of the route's walking on them, and whether a second search keeping to them gave the route. */
+  paths?: { share: number; kept: boolean };
 }
 
 export interface AutoWalk {
@@ -59,16 +74,22 @@ export interface AutoWalk {
   stopped?: string;
 }
 
-export interface AutoWalkOptions {
+interface AutoWalkOptions {
   /** Time for each scene, all styles together (ms). */
   budgetMs?: number;
   seed?: number;
   /** Told the scene, the style and how far along; return true to stop. */
   progress?: (scene: number, strategy: string, places: number) => boolean | void;
+  /** The author's own plays to use, by scene: their keys (encodeKeys), from the scene's entry. */
+  mine?: Record<number, string>;
+  /** Stop after this many scenes (1: just the first scene). */
+  maxScenes?: number;
+  /** Walking paths to keep to: block numbers by the .bbl's name in lower case (walkPaths.ts allWalkPaths). */
+  paths?: Record<string, number[]>;
 }
 
 /** The places from the start to `id`, by the moves that reached each. */
-export function pathTo(ex: Exploration, via: Via): Via[] {
+function pathTo(ex: Exploration, via: Via): Via[] {
   const out: Via[] = [via];
   for (let p = via.parent; ex.places[p]?.via; p = ex.places[p].via!.parent) out.unshift(ex.places[p].via!);
   return out;
@@ -83,10 +104,12 @@ export interface Replay {
   ci: CharInfo;
   clock: number;
   world: World;
+  /** How much of its walking was on the walking paths (none measured when none were given). */
+  fit?: RouteFit;
 }
 
 /** Plays a found path again from the scene's start (every monster moving, as the engine does), recording its keys. */
-export async function replayPath(
+async function replayPath(
   game: Game,
   files: FileSource,
   scene: number,
@@ -96,6 +119,8 @@ export async function replayPath(
   seed = 1,
   /** Go on from partway (a place reached before, `ticks` into the scene) instead of the scene's start. */
   from?: { snap: Snap; ticks: number },
+  /** Walking paths, to measure how much of the route keeps to them. */
+  paths?: ReadonlySet<number>,
 ): Promise<Replay | undefined> {
   const sim = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev, seed);
   if (from) sim.restore(from.snap);
@@ -103,9 +128,19 @@ export async function replayPath(
   let ticks = from?.ticks ?? 0;
   // a key event is played on the segment's next tick (as the walkthrough runtime plays them)
   sim.onKey = (key) => events.push({ tick: ticks + 1, key });
+  let moving = 0;
+  let onPath = 0;
   const tick = async (): Promise<Outcome> => {
     ticks++;
+    const was = paths && sim.px;
     const r = await sim.tick();
+    if (was && r === undefined) {
+      const now = sim.px;
+      if (now.x !== was.x || now.y !== was.y) {
+        moving++;
+        if (paths.has(sim.w.map[footCell(sim.w)])) onPath++;
+      }
+    }
     return r === 'dead' ? 'dead' : r ? r.link : undefined;
   };
   const done = (link: number): Replay => {
@@ -118,6 +153,7 @@ export async function replayPath(
       ci: { ...ci, inv: ci.inv.slice(), meter: ci.meter.slice(), seqon: ci.seqon.slice() },
       clock: sim.w.clock,
       world: sim.w,
+      fit: { ticks, moving, onPath },
     };
   };
   for (const v of path) {
@@ -207,17 +243,27 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       }
       return false;
     };
+    // the author's own play, if it still gets out from here
+    const myKeys = opt.mine?.[scene];
+    if (myKeys !== undefined) {
+      opt.progress?.(scene, MINE.name, 0);
+      const r = await replayMine(game, files, scene, entry, myKeys, seed);
+      const l = r && s.links[r.link];
+      if (r && l && level(l) && l.toScene !== scene) found = { replay: r, strategy: MINE };
+      outcome.mine = found ? 'used' : 'broke';
+    }
     // a side room with no new way on: what it holds is why the hero came
-    if (backOnly) await collect();
+    if (backOnly && !found) await collect();
     const gravity = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w.bg.some((b) => b.grav !== 0);
-    for (const st of found ? [] : STRATEGIES) {
-      if (st.id === 'collector' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
-      outcome.tried.push(st.id);
+    const paths = scenePaths(opt.paths, s.files);
+    /** One style's search for a way on (`more`: the walking paths to keep to); the first route that replays to a wanted link. */
+    const tryStyle = async (st: Strategy, more: Partial<ExploreOptions> = {}): Promise<Replay | undefined> => {
       // first with far monsters held still (fast); a path that plays differently once they all
       // move is looked for again with every monster moving
       for (const exact of [false, true]) {
         const ex = await explore(game, scene, files, entry, {
           ...st.options(goal),
+          ...more,
           exact,
           budgetMs: budget * st.share * (exact ? 0.5 : 1),
           stopAt: (l) => wanted.has(l),
@@ -226,17 +272,31 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
             return cancelled;
           },
         });
-        if (cancelled) break;
+        if (cancelled) return undefined;
         if (!biggest || ex.places.length > biggest.places.length) biggest = ex;
         const exits = ex.exits.filter((e) => wanted.has(e.link)).sort((a, b) => a.tick - b.tick);
         for (const e of exits) {
-          const replay = await replayPath(game, files, scene, entry, ex.moves, pathTo(ex, e.via), seed);
-          if (replay && wanted.has(replay.link)) {
-            found = { replay, strategy: st };
-            break;
-          }
+          const replay = await replayPath(game, files, scene, entry, ex.moves, pathTo(ex, e.via), seed, undefined, paths);
+          if (replay && wanted.has(replay.link)) return replay;
         }
-        if (found || !exits.length) break;
+        if (!exits.length) return undefined;
+      }
+      return undefined;
+    };
+    for (const st of found ? [] : STRATEGIES) {
+      if (st.id === 'collector' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
+      outcome.tried.push(st.id);
+      const replay = await tryStyle(st);
+      if (replay) {
+        found = { replay, strategy: st };
+        // walking paths: a style that heads for the exit looks again, keeping to them
+        const fit = replay.fit ?? { ticks: replay.ticks, moving: 0, onPath: 0 };
+        if (paths && st.options(goal).goal && pathShare(fit) < ON_PATH_ENOUGH) {
+          const kept = await tryStyle(st, { paths: { blocks: paths } });
+          const use = !cancelled && !!kept?.fit && preferPathRoute(fit, kept.fit);
+          if (use) found = { replay: kept, strategy: st };
+          outcome.paths = { share: pathShare(use ? kept.fit! : fit), kept: use };
+        } else if (paths) outcome.paths = { share: pathShare(fit), kept: false };
       }
       if (found || cancelled) break;
     }
@@ -261,6 +321,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       out.won = true;
       break;
     }
+    if (opt.maxScenes && out.scenes.length >= opt.maxScenes) break;
     seen.add(link.toScene);
     remember(scene, biggest);
     arrived.add(`${link.toScene}@${link.to.x},${link.to.y}`);

@@ -19,7 +19,7 @@ export const match = (pal: Uint8Array, c: [number, number, number]) => matchColo
 
 const ext = (name: string) => (/\.[^.]*$/.exec(name)?.[0] ?? '').toLowerCase();
 
-export interface GraphicOptions {
+interface GraphicOptions {
   /** Receives the palette of the shown picture (the NewCols argument). */
   cols?: Uint8Array;
   /** Seconds to wait for a key; -1 = the default for the file type. */
@@ -79,7 +79,7 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
 }
 
 /** DrawGif / drawbkd: draws into the screen and returns the GIF palette in `cols`. */
-export function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop = false): boolean {
+function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop = false): boolean {
   let x = 0;
   let y = 0;
   let name = file;

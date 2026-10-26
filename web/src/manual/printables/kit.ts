@@ -75,23 +75,6 @@ export function sheet(w: number, h_: number, cls: string, ...children: (Node | s
   return { el, w, h: h_ };
 }
 
-/** A small deterministic random generator, so every print of a sheet looks the same. */
-export function rng(seed: number): () => number {
-  let s = seed >>> 0 || 1;
-  return () => {
-    s ^= s << 13;
-    s ^= s >>> 17;
-    s ^= s << 5;
-    return (s >>> 0) / 4294967296;
-  };
-}
-
-export function hashString(s: string): number {
-  let x = 2166136261;
-  for (let i = 0; i < s.length; i++) x = Math.imul(x ^ s.charCodeAt(i), 16777619);
-  return x >>> 0;
-}
-
 /** Simple HTML from our own JSON files. */
 export function html(tag: keyof HTMLElementTagNameMap, cls: string, markup: string): HTMLElement {
   const el = document.createElement(tag);

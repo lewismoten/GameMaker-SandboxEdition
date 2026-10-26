@@ -59,7 +59,7 @@ export function corners(path: March[], kind: PathKind): Corner[] {
 }
 
 /** Clamps a spot (blocks from the origin) to the drawing box. */
-export function clampToBox(kind: PathKind, x: number, y: number): { x: number; y: number } {
+function clampToBox(kind: PathKind, x: number, y: number): { x: number; y: number } {
   const b = pathBox(kind);
   return { x: Math.max(b.x0, Math.min(b.x0 + b.w - 1, x)), y: Math.max(b.y0, Math.min(b.y0 + b.h - 1, y)) };
 }

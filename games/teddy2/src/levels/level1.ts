@@ -113,13 +113,15 @@ export function house(): Level {
   for (let k = 0; k < 7; k++) m.set(16 + k, 39 - k, 'hallStep');
   m.rect(15, UP, 7, 1, 'hallStep');
   m.set(20, 38, 'coat');
-  // The kitchen: counters (the toaster on one), the fridge, the table; the mouse.
+  // The kitchen: counters (the toaster on one), the fridge, the step stool (the way back up
+  // the fridge from the right), the table; the mouse.
   m.rect(26, 39, 7, 1, 'counter');
   m.rect(26, 35, 7, 1, 'cabinet');
   m.set(28, 38, 'sink').set(31, 38, 'toaster');
   m.set(33, 37, 'fridge00').set(34, 37, 'fridge10');
   m.set(33, 38, 'fridge01').set(34, 38, 'fridge11');
   m.set(33, 39, 'fridge02').set(34, 39, 'fridge12');
+  m.set(35, 39, 'stool');
   m.set(37, 39, 'table00').set(38, 39, 'table10').set(39, 39, 'table20');
   // The laundry room: the washer and dryer, the chute's hole in the floor.
   m.set(44, 39, 'washer0').set(46, 39, 'dryer');

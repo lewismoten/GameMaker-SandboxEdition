@@ -40,7 +40,7 @@ function ramp(dark: RGB, light: RGB, n: number): RGB[] {
   return Array.from({ length: n }, (_, i) => dark.map((d, k) => Math.round(d + ((light[k] - d) * i) / (n - 1))) as RGB);
 }
 
-export interface Texture {
+interface Texture {
   name: string;
   icon: string;
   /** RGB colors per pixel for a seed. */

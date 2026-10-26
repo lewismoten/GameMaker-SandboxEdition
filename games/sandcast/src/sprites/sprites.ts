@@ -2,6 +2,7 @@
 // and teddyBlocks.ts.
 import { mb } from './monsterBlocks';
 import { cb } from './teddyBlocks';
+import './signs';
 
 export const MB = mb;
 export const CB = cb;

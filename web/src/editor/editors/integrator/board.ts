@@ -4,16 +4,15 @@
 // live board and for Export PNG.
 import type { Project } from '../../core/project';
 import { NOSCENE, sceneKind, type Game, type Point } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
-import { WORLD, CARD_UNITS } from './layoutCells';
+import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 
 /** Board pixels per integrator unit, and the card size on the board. */
 export const S = 8;
-export const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
-export const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
-export const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
-export const FONT = 'ui-monospace, Menlo, Consolas, monospace';
+const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
+const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
+const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
+const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
 export interface Rect {
   x: number;
@@ -29,13 +28,13 @@ export interface CardButton extends Rect {
 
 export const inRect = (r: Rect, x: number, y: number) => x >= r.x && y >= r.y && x <= r.x + r.w && y <= r.y + r.h;
 
-export function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
+function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
   ctx.beginPath();
   ctx.roundRect(r.x, r.y, r.w, r.h, rad);
 }
 
 /** Where a line from the centre of `r` towards (tx, ty) leaves the rectangle. */
-export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
+function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;
   const dx = tx - cx;
@@ -46,7 +45,7 @@ export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
 }
 
 /** What the board shows besides the game: the selection, the song playing and the scene pictures. */
-export interface BoardView {
+interface BoardView {
   project: Project;
   game: Game;
   selected: number;
@@ -55,15 +54,7 @@ export interface BoardView {
   levelOf: (i: number) => HTMLCanvasElement | undefined;
 }
 
-/** Where the hero arrives in a scene: the "to" block of the first scene that links to it. */
-export function arrival(game: Game, i: number): Point {
-  for (const s of game.scenes) {
-    if (s.gametype === NOSCENE) continue;
-    const l = s.links.find((x) => x.toScene === i);
-    if (l) return l.to;
-  }
-  return { x: MLEN >> 1, y: MWID >> 1 };
-}
+export { arrival } from './layoutCells';
 
 /** The scenes in use (not NOSCENE), in order. */
 export const usedScenes = (game: Game) => game.scenes.map((_, i) => i).filter((i) => game.scenes[i].gametype !== NOSCENE);
@@ -99,7 +90,7 @@ export function cardButtons(project: Project, game: Game, i: number, r: Rect): C
   return out;
 }
 
-export function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undefined, box: Rect, label?: string): void {
+function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undefined, box: Rect, label?: string): void {
   ctx.fillStyle = '#000';
   ctx.fillRect(box.x, box.y, box.w, box.h);
   if (img) {

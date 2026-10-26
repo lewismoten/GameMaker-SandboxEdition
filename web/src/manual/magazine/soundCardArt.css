@@ -1,0 +1,31 @@
+/* The Sound Boaster ad's pictures (soundCardArt.ts): the card in its callouts print, and the
+   before and after faces, square, in their side boxes. */
+.mag-callouts-pic svg.mag-boaster {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mag-art.art-boaster-before,
+.mag-art.art-boaster-after {
+  width: 6.5em;
+  flex: none;
+  border: 0.15em solid #141210;
+  box-shadow: 0.2em 0.2em 0 rgba(0, 0, 0, 0.4);
+}
+
+.mag-callouts:has(svg.mag-boaster) {
+  width: 74%;
+  margin: 0 auto;
+}
+
+/* each face sits at the left of its side box, the list beside it */
+.mag-side > .mag-art.art-boaster-before,
+.mag-side > .mag-art.art-boaster-after {
+  float: left;
+  margin: 0.2em 0.8em 0.3em 0;
+}
+
+.mag-side:has(> .art-boaster-before, > .art-boaster-after) > .mag-list {
+  overflow: hidden;
+}

@@ -1,5 +1,5 @@
 // The felt egg: shiny teal felt with silver wave stitches, a red felt rocket with an orange
-// yarn flame, and a band of chrome sequins around the middle. It is a Pick-up block (P), so
+// yarn flame, and a band of chrome sequins around the middle. It is a Pick-up block (G), so
 // it rides along in Dex's pockets (the inventory) and into the saved game. Every block set
 // keeps it at the same number, EGG_BLOCK, because the inventory holds only block numbers.
 // Picking it up also counts CTR.tomorrow, which opens the hatch in the launch pad's closet.

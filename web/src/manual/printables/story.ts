@@ -1,9 +1,12 @@
 // The kinds of paper a game describes in its printables.json: maps and posters, hint books,
 // letters, newspapers, journals, ID cards, charts and fold-out star charts.
 import { h } from '../../editor/core/ui';
-import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
+import { sheet, html, mapPicture, portrait, type PrintContext, type Sheet } from './kit';
+import { fnv1a, xorshift32 } from '../../seededRandom';
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
+import { fitSheet } from './fitSheet';
+import { hintBookCover } from './hintCover';
 import type {
   ChartItem,
   HintBookItem,
@@ -21,8 +24,10 @@ import type {
 // ------------------------------------------------------------------ maps
 async function mapPanel(ctx: PrintContext, p: MapPanel, start: number): Promise<HTMLElement> {
   const src = await ctx.shot(p);
-  const marks = (p.marks ?? []).map((m, i) => {
-    const n = m.kind === 'secret' ? '★' : m.kind === 'start' ? '▶' : String(start + i);
+  // numbered as the key numbers them: the start and a secret have symbols, not numbers
+  let next = start;
+  const marks = (p.marks ?? []).map((m) => {
+    const n = m.kind === 'secret' ? '★' : m.kind === 'start' ? '▶' : String(next++);
     return h(
       'span',
       { class: `mp-mark mk-${m.kind ?? 'note'}`, style: `left:${((m.x - p.x + 0.5) / p.w) * 100}%;top:${((m.y - p.y + 0.5) / p.h) * 100}%`, title: m.label },
@@ -51,47 +56,32 @@ async function mapItem(ctx: PrintContext, it: MapItem): Promise<Sheet[]> {
     }
   }
   const [w, hh] = it.landscape ? [11, 8.5] : [8.5, 11];
-  return [
-    sheet(
-      w,
-      hh,
-      `map ${it.landscape ? 'land' : ''}`,
-      h('header', { class: 'map-head' }, h('h2', null, it.heading ?? it.title), it.intro ? h('p', null, it.intro) : null),
-      h('div', { class: `map-panels n${it.panels.length} c${it.columns ?? 2}` }, ...panels),
-      key.length ? h('ol', { class: 'map-key' }, ...key) : null,
-      it.legend?.length ? h('div', { class: 'map-legend' }, ...it.legend.map((l) => h('p', null, l))) : null,
-      h('div', { class: 'map-compass', 'aria-hidden': 'true' }, 'N'),
-    ),
-  ];
+  const grid = h('div', { class: `map-panels n${it.panels.length} c${it.columns ?? 2}` }, ...panels);
+  const s = sheet(
+    w,
+    hh,
+    `map ${it.landscape ? 'land' : ''}`,
+    h('header', { class: 'map-head' }, h('h2', null, it.heading ?? it.title), it.intro ? h('p', null, it.intro) : null),
+    grid,
+    key.length ? h('ol', { class: 'map-key' }, ...key) : null,
+    it.legend?.length ? h('div', { class: 'map-legend' }, ...it.legend.map((l) => h('p', null, l))) : null,
+    h('div', { class: 'map-compass', 'aria-hidden': 'true' }, 'N'),
+  );
+  // many pictures (or a long key) would run off the sheet: they go in rows of one height
+  // instead (the first one larger), as tall as the sheet allows
+  fitSheet(s, (f) => {
+    grid.classList.add('fit');
+    for (const [i, el] of [...grid.children].entries()) {
+      const ar = parseFloat((el as HTMLElement).style.getPropertyValue('--ar')) || 1.6;
+      Object.assign((el as HTMLElement).style, { width: `calc(${ar} * ${(f * (i ? 40 : 60)).toFixed(2)}cqw)`, maxWidth: '100%', margin: '0' });
+    }
+  });
+  return [s];
 }
 
 // ------------------------------------------------------------------ hint book
 async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
-  void ctx;
-  const cover = sheet(
-    5.5,
-    8.5,
-    'hb hb-cover',
-    h('div', { class: 'hb-band' }, 'OFFICIAL'),
-    h('h2', null, it.title),
-    h('p', { class: 'hb-sub' }, ctx.entry.title),
-    h(
-      'div',
-      { class: 'hb-howto' },
-      h('b', null, 'HOW TO USE THIS BOOK'),
-      h('p', null, it.intro ?? 'Find your question, then lay the red film over the answer below it. Only read what you need!'),
-      redCode('Like this: you found it!'),
-    ),
-    ctx.printables.skip?.includes('worldmap')
-      ? null
-      : h(
-          'p',
-          { class: 'hb-mapref' },
-          h('b', null, 'LOST? '),
-          'Unfold the World Map that came in your box: it shows every scene, numbered, and every way from one to the next.',
-        ),
-    h('p', { class: 'hb-foot' }, 'SANDBOX SOFTWARE · RED FILM INCLUDED'),
-  );
+  const cover = await hintBookCover(ctx, it);
   // flow the questions onto pages, measured in a real hint book page off screen
   const blocks: HTMLElement[] = it.sections.flatMap((s) => [
     h('h3', null, s.head),
@@ -180,16 +170,27 @@ async function journal(it: JournalItem): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ ID card
+/**
+ * The card's printed band. The Clown Club letters the O of CLOWN as a red rubber nose, so
+ * that O is drawn as one; screen readers get the name as plain text.
+ */
+function idBand(org: string, style: string): HTMLElement {
+  const parts = org.split(/(?<=CL)(O)(?=WN\s+CLUB)/i);
+  if (parts.length === 1) return h('div', { class: 'id-band', style }, org);
+  const lettered = parts.map((s, i) => (i % 2 ? h('span', { class: 'id-nose' }, s) : s));
+  return h('div', { class: 'id-band', style }, h('span', { class: 'id-sr' }, org), h('span', { 'aria-hidden': 'true' }, ...lettered));
+}
+
 async function idCard(ctx: PrintContext, it: IdCardItem): Promise<Sheet[]> {
   const photo = it.photo ? await ctx.shot(it.photo) : undefined;
   const face = it.portrait ? await portrait(ctx.entry, it.portrait) : undefined;
   const style = `--card:${it.color ?? '#2b4f8c'};--card-ink:${it.ink ?? '#fff'}`;
-  const r = rng(hashString(it.name));
+  const r = xorshift32(fnv1a(it.name));
   const front = sheet(
     3.375,
     2.125,
     'id',
-    h('div', { class: 'id-band', style }, it.org),
+    idBand(it.org, style),
     h(
       'div',
       { class: 'id-body' },
@@ -267,7 +268,7 @@ async function starChart(ctx: PrintContext, it: StarChartItem): Promise<Sheet[]>
     svg.append(el);
     return el;
   };
-  const r = rng(hashString(it.heading));
+  const r = xorshift32(fnv1a(it.heading));
   // background stars
   for (let i = 0; i < 260; i++) add('circle', { cx: r() * W, cy: r() * H, r: r() * 1.4 + 0.2, fill: '#fff', opacity: 0.3 + r() * 0.6 });
   // spiral arms

@@ -11,7 +11,7 @@ export interface BlockRect {
 }
 
 /** The game's view in blocks (SCRNBLEN x SCRNBWID: 320x200 pixels of 20x20 blocks). */
-export const SCREEN_BLOCKS = { w: 16, h: 10 };
+const SCREEN_BLOCKS = { w: 16, h: 10 };
 
 export const WHOLE_MAP: BlockRect = { x: 0, y: 0, w: MLEN, h: MWID };
 

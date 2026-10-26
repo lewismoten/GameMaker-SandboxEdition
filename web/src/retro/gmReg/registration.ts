@@ -55,7 +55,7 @@ function readUlong(text: string): { value: number; rest: string } | undefined {
   return { value: Math.min(Number(m[1]), U32 - 1), rest: text.slice(m[0].length) };
 }
 
-export type RegCheck =
+type RegCheck =
   | { kind: 'missing' } // "Missing File:  PLAYGAME.REG"
   | { kind: 'bad' } // "Bad Registration File!"
   | { kind: 'registered'; userName: string } // no questions: "Registered To: <name>"

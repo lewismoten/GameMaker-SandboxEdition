@@ -4,7 +4,7 @@
 import { Pixels } from '../../../../kit/pixels';
 import { blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, corgi, figure, floor, on, sign, wall } from '../../art/kit';
+import { blank, corgi, figure, figureBack, figureSide, floor, on, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
@@ -50,7 +50,7 @@ function laptop(under: Pixels, portrait: boolean): Pixels {
   return p;
 }
 
-const agent = (step: number) => figure({ shirt: ['ink', 1], pants: ['ink', 1], tie: ['ink', 0], face: 'shades', hair: ['ink', 1] }, step);
+const agent = (step: number, view = figure) => view({ shirt: ['ink', 1], pants: ['ink', 1], tie: ['ink', 0], face: 'shades', hair: ['ink', 1] }, step);
 
 function roofSniper(): Pixels {
   const p = wall('brick', 'grey', 9);
@@ -216,12 +216,18 @@ function art(a: Area): void {
   a.solid('sniper', roofSniper());
   a.prop('nancyP', 'studio', figure({ shirt: ['orange', 3], pants: ['ink', 1], hair: ['brown', 1], hairStyle: 'long', glasses: true }));
   sign(['PORTRAITS', 'WHILE YOU', "DON'T WAIT"], 3, { board: 'sky' }).forEach((px, i) => a.solid(`portraits${i}`, px));
-  a.monster(
+  a.walker(
     'agent',
-    [
-      [agent(0), 5],
-      [agent(1), 5],
-    ],
+    {
+      front: [
+        [agent(0), 5],
+        [agent(1), 5],
+      ],
+      back: [
+        [agent(0, figureBack), 5],
+        [agent(1, figureBack), 5],
+      ],
+    },
     {
       hazard: true,
       path: [
@@ -230,13 +236,20 @@ function art(a: Area): void {
       ],
     },
   );
-  a.patrol(
-    'agent',
-    [
-      [5, 0, 1],
-      [-5, 0, 1],
-    ],
+  a.monster(
     'agentH',
+    [
+      [agent(0, figureSide), 5],
+      [agent(1, figureSide), 5],
+    ],
+    {
+      faces: 'right',
+      hazard: true,
+      path: [
+        [5, 0, 1],
+        [-5, 0, 1],
+      ],
+    },
   );
 
   // Everything But the Tea
@@ -318,7 +331,7 @@ function art(a: Area): void {
   a.solid('router0', router(0, a.tiles.pic('green')), { next: 'router1', ntime: 6 });
   a.solid('router1', router(1, a.tiles.pic('green')), { next: 'router0', ntime: 6 });
   sign(['WATER UNDER', 'THE BRIDGE'], 3, { board: 'blue', ink: 'paper' }).forEach((px, i) => a.solid(`bridgeSign${i}`, px));
-  const little = (s: number) => figure({ shirt: ['red', 3], pants: ['brown', 1], hair: ['brown', 2], small: true, arms: 'up', face: 'sad' }, s);
+  const little = (s: number) => figureSide({ shirt: ['red', 3], pants: ['brown', 1], hair: ['brown', 2], small: true, arms: 'up', face: 'sad' }, s);
   a.monster(
     'little',
     [
@@ -326,6 +339,7 @@ function art(a: Area): void {
       [little(1), 3],
     ],
     {
+      faces: 'right',
       hazard: true,
       path: [
         [4, 0, 2],
@@ -347,6 +361,7 @@ function art(a: Area): void {
       [cool(1), 4],
     ],
     {
+      faces: 'right',
       path: [
         [6, 0, 2],
         [-6, 0, 2],

@@ -1,4 +1,4 @@
-// PIP.CHR: Pip walks on the arrows or W/A/S/D, swings on Space, toots the kazoo on K and
+// PIP.CHR: Pip walks on the arrows or W/A/S/D, swings on Space, toots the kazoo on Z and
 // drinks a tonic on T. Game-Maker runs the first sequence bound to a key that is turned on and
 // has uses left, so the steel sword's swing (sequence 13, no swings until it's bought) comes
 // before the wooden one's (14, unlimited): buying the sword fills its counter with 30,000
@@ -19,7 +19,7 @@ export const KEY = {
   a: 0x1e61,
   s: 0x1f73,
   d: 0x2064,
-  k: 0x256b,
+  z: 0x2c7a,
   t: 0x1474,
 };
 const JOY = { up: 1, right: 3, down: 5, left: 7, any: 9 };
@@ -121,7 +121,7 @@ export function buildPip(cb: SpriteSheet): Character {
       { pic: 0, pic1: MON.note, pic2: MONBL, y: 20, pause: 0 },
       { pic: n('toot'), pause: 5 },
     ],
-    { key: KEY.k, sound: SND.kazoo, norepeat: 1, ground: 1, jstkMov: 0, jstkBut: 0 },
+    { key: KEY.z, sound: SND.kazoo, norepeat: 1, ground: 1, jstkMov: 0, jstkBut: 0 },
   );
   set(
     SEQ.tonic,

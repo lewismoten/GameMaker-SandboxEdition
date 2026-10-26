@@ -36,7 +36,7 @@ export function rgbaOf(src: CanvasImageSource & { width: number; height: number 
 }
 
 /** Median cut over the given RGBA images: up to `colors` 8-bit colors. */
-export function medianCut(images: ImageData[], colors = 256): [number, number, number][] {
+function medianCut(images: ImageData[], colors = 256): [number, number, number][] {
   // sample at most ~120k pixels
   const total = images.reduce((n, im) => n + im.width * im.height, 0);
   const step = Math.max(1, Math.floor(total / 120_000));
@@ -87,7 +87,7 @@ export function medianCut(images: ImageData[], colors = 256): [number, number, n
 }
 
 /** A 6-bit VGA palette from 8-bit colors (missing entries black). */
-export function vgaPalette(colors: [number, number, number][]): Palette {
+function vgaPalette(colors: [number, number, number][]): Palette {
   const pal = new Uint8Array(768);
   colors.slice(0, 256).forEach(([r, g, b], i) => pal.set([r >> 2, g >> 2, b >> 2], i * 3));
   return pal;
@@ -168,7 +168,7 @@ export function toIndexed(images: ImageData[], opts: { palette?: Palette; dither
 }
 
 /** Loads a File as an image (any format the browser understands). */
-export async function loadImage(file: Blob): Promise<ImageBitmap> {
+async function loadImage(file: Blob): Promise<ImageBitmap> {
   return createImageBitmap(file);
 }
 

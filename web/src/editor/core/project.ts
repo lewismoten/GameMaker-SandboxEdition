@@ -7,6 +7,7 @@ import { decodeGif, isGif } from '../../formats/gif';
 import { debounce } from './ui';
 import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';
+import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
 
 export type FileKind =
   'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
@@ -33,6 +34,9 @@ export const KIND_LABELS: Record<FileKind, string> = {
   other: 'Other files',
 };
 
+/** Where an autosave is: begun, kept in IndexedDB, or refused (storage full, private mode…). */
+export type SaveState = 'saving' | 'saved' | 'failed';
+
 export function kindOf(name: string): FileKind {
   const ext = (/\.([^.]+)$/.exec(name)?.[1] ?? '').toLowerCase();
   return (ext in KIND_LABELS ? ext : 'other') as FileKind;
@@ -49,6 +53,8 @@ export class Project {
   /** Editor-only extras (project/companion.ts); undefined until loaded or first changed (saving then keeps the stored one). */
   companion?: Companion;
   private extrasListeners = new Set<(file: string, section: string) => void>();
+  /** Set for a game opened only to look inside (readOnly.ts makeReadOnly): every change is refused before it happens, and nothing is saved. */
+  readOnly?: ReadOnlyGuard;
 
   constructor(id: string, name: string, gam: string, files: GameFiles, companion?: Companion) {
     this.id = id;
@@ -57,7 +63,7 @@ export class Project {
     this.files = files;
     this.companion = companion;
     files.onChange = (n) => {
-      editedFile(n);
+      if (!this.readOnly) editedFile(n);
       this.persist();
       for (const l of this.listeners) l(n);
     };
@@ -90,12 +96,40 @@ export class Project {
     return () => this.listeners.delete(fn);
   }
 
+  private saveListeners = new Set<(state: SaveState, error?: Error) => void>();
+
+  /** Hears each autosave start, finish or failure (the editor's "Saved" note: shell/saveNote.ts). */
+  onSaveState(fn: (state: SaveState, error?: Error) => void): () => void {
+    this.saveListeners.add(fn);
+    return () => this.saveListeners.delete(fn);
+  }
+
+  private tellSave(state: SaveState, error?: Error): void {
+    for (const l of this.saveListeners) l(state, error);
+  }
+
   private persist = debounce(() => {
-    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).catch((e) => console.error('Autosave failed', e));
+    if (this.readOnly) return;
+    this.tellSave('saving');
+    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).then(
+      () => this.tellSave('saved'),
+      (e: unknown) => {
+        console.error('Autosave failed', e);
+        this.tellSave('failed', e as Error);
+      },
+    );
   }, 400);
 
   saveNow(): Promise<void> {
-    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion);
+    if (this.readOnly) return this.saving;
+    this.tellSave('saving');
+    this.saving = saveProject(this.id, this.name, this.gam, this.files, this.companion).then(
+      () => this.tellSave('saved'),
+      (e: unknown) => {
+        this.tellSave('failed', e as Error);
+        throw e;
+      },
+    );
     return this.saving;
   }
 
@@ -106,6 +140,8 @@ export class Project {
 
   /** Changes one section of a file's extras and autosaves (the game's files are not touched). */
   setExtras(file: string, section: string, value: unknown): void {
+    // a look-only game keeps what the Level check finds in memory; anything else is a change
+    if (this.readOnly && !MEMORY_SECTIONS.includes(section)) refuse(this, `${file}: ${section}`);
     this.companion ??= emptyCompanion();
     setSection(this.companion, file, section, value);
     this.persist();
@@ -114,6 +150,7 @@ export class Project {
 
   /** A file was renamed: its extras follow it. */
   renameExtras(from: string, to: string): void {
+    if (this.readOnly) refuse(this, from);
     if (!this.companion) return;
     renameInCompanion(this.companion, from, to);
     this.persist();
@@ -128,6 +165,11 @@ export class Project {
     const bytes = this.files.get(this.gam)!;
     if (this.cachedGame?.bytes !== bytes) this.cachedGame = { bytes, game: parseGame(bytes) };
     return this.cachedGame.game;
+  }
+
+  /** Drops the parsed game, so the next game() reads the .gam again (readOnly.ts restoreFiles). */
+  forgetParsed(): void {
+    this.cachedGame = undefined;
   }
 
   saveGame(game: Game): void {

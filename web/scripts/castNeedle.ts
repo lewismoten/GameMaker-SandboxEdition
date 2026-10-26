@@ -19,10 +19,10 @@ export const NEEDLE_PAL: [number, number, number][] = [
   [49, 9, 11], // 6 thread
   [30, 4, 6], // 7 thread shadow
 ];
-export const NEEDLE_W = 26;
-export const NEEDLE_H = 52;
+const NEEDLE_W = 26;
+const NEEDLE_H = 52;
 /** The eye's middle, from the needle picture's top left. */
-export const NEEDLE_EYE = { x: 8, y: 14 };
+const NEEDLE_EYE = { x: 8, y: 14 };
 
 /** The needle, CLEAR around it and through its eye. */
 export function needlePicture(): Pixels {

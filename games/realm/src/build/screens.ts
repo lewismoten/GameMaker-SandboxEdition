@@ -1,6 +1,7 @@
 // The pictures, slide shows and text pages between scenes, by file name.
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
+import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { licenseText } from '../../../kit/license';
 import { dosText } from '../../../kit/disk';
 import * as S from '../screens/screens';
@@ -14,13 +15,11 @@ export function screenFiles(price: string): AreaFile[] {
   const put = (name: string, bytes: Uint8Array | string) => out.push({ name, bytes: typeof bytes === 'string' ? dosText(bytes) : bytes });
   const lst = (name: string, entries: { name: string; pause?: number }[]) => put(name, serializeSlideList(entries));
   put(SANDLOGO, sandLogoFli());
-  put('intro.fli', introFli());
+  // the intro in clips of about 4 seconds, so Esc can skip it between them
+  const intro = fliClips('intro.fli', introFli());
+  for (const [name, bytes] of Object.entries(intro)) put(name, bytes);
   put('title.gif', S.titleScreen().gif());
-  lst('title.lst', [
-    { name: SANDLOGO, pause: 0 },
-    { name: 'intro.fli', pause: 1 },
-    { name: 'title.gif', pause: 12 },
-  ]);
+  lst('title.lst', [{ name: SANDLOGO, pause: 0 }, ...clipEntries(intro, 0), { name: 'title.gif', pause: 12 }]);
   // the pages shown from the menu (and the ending) write MORE... in the menu palette's nearest
   // red: reserve it in the menu at the same index (2) as in the pages' backdrops
   put('menu.gif', S.menuScreen().gif({ menu: S.MENU_INK, more: S.RED_INK }));

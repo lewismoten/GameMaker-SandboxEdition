@@ -41,6 +41,9 @@
   flex: none;
 }
 .sl-edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   margin-left: auto;
   white-space: nowrap;
 }
@@ -442,7 +445,7 @@
   grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: 8px;
   /* fills what is left of the window, so the page itself doesn't scroll */
-  max-height: clamp(110px, calc(var(--ws-vh, 100dvh) - 705px), 340px);
+  max-height: clamp(84px, var(--room, calc(var(--ws-vh, 100dvh) - 705px)) - 24px, 340px);
   overflow-y: auto;
 }
 .sl-media {

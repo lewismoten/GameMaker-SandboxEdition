@@ -1,9 +1,9 @@
 // INTRO.FLI: the render of the century, as a cartoon. The picture ray traces line by line,
 // Count Polygon swoops through it turning spheres into polyhedra, Ray's bands light up, and
-// the DEPTH PERCEPTION logo spins in out of the distance with a lens flare. The camera never
+// the last shot closes in on Ray before the fade (the logo is the title's). The camera never
 // moves within a shot, so an FLI frame only stores what changed.
 import { encodeFli } from '../../../../web/src/formats/fli';
-import { bloom, flare, type Picture } from '../render/image';
+import type { Picture } from '../render/image';
 import { MAT } from '../render/look';
 import { Matcher, medianCut, putColors } from '../render/quant';
 import { Sphere, hull, mix, rgb, type Shape, type V } from '../render/tracer';
@@ -12,11 +12,9 @@ import * as C from '../models/cast';
 import { rayModel } from '../models/ray';
 import { NEAR_COL } from '../tiles/cells';
 import { centered, text } from './draw';
-import { logoShapes, SKY, TITLE_EYE, TITLE_LOOK, titleSet } from './title';
+import { SKY, TITLE_EYE, TITLE_LOOK, titleSet } from './title';
 import { cam, stage, still, H, W } from './stage';
 import { place } from './pictures';
-
-const easeOut = (t: number) => 1 - (1 - t) ** 3;
 
 /** An icosahedron's corners (the low-poly version of a sphere). */
 function lowPoly(c: V, r: number, mat = MAT.gold): Shape {
@@ -80,25 +78,16 @@ export function introFrames(): { frames: Picture[]; speed: number } {
     if (f >= 2) centered(pic, 12, 'RAY', rgb(255, 210, 120), 2, { outline: rgb(40, 20, 0) });
     frames.push(pic);
   }
-  // D: the logo spins in from the distance, then a highlight sweeps it
-  const FLY = 12;
-  for (let f = 0; f < FLY; f++) {
-    const e = easeOut(f / (FLY - 1));
-    const logo = logoShapes([0, 0.4 + 40 * (1 - e), 1.0 + 1.2 * (1 - e)], 1.45, -Math.PI * 2 * (1 - e), -0.38);
-    frames.push(still(world([logo], 1, false, 2), camera, 4, 20, 21));
-  }
-  const rest = frames[frames.length - 1];
-  const SWEEP = 6;
-  for (let f = 0; f < SWEEP; f++) {
-    const pic: Picture = { w: W, h: H, rgb: rest.rgb.slice() };
-    const fx = 70 + (f / (SWEEP - 1)) * 190;
-    flare(pic, fx, 52 + Math.sin(f) * 4, Math.sin((Math.PI * (f + 0.5)) / SWEEP) * 0.8);
+  // D: the closing shot, close on Ray as he keeps rolling (the logo is the title picture's,
+  // which fades in after this fades out)
+  const close = cam([0.9, -5.6, 1.4], rayAt, 0.7);
+  const CLOSE = 12;
+  for (let f = 0; f < CLOSE; f++) {
+    const pic = still(world([], 1, false, 2 + f * 0.25), close, 4, 20, 21);
+    if (f >= 4) centered(pic, 184, 'NO GLASSES REQUIRED.', rgb(255, 255, 255), 1, { outline: rgb(20, 16, 50) });
     frames.push(pic);
   }
-  const last: Picture = { w: W, h: H, rgb: rest.rgb.slice() };
-  bloom(last, 0.9, 2.5, 0.5);
-  centered(last, 184, 'NO GLASSES REQUIRED.', rgb(255, 255, 255), 1, { outline: rgb(20, 16, 50) });
-  for (let f = 0; f < 10; f++) frames.push(last);
+  for (let f = 0; f < 6; f++) frames.push(frames[frames.length - 1]);
   return { frames, speed: 7 };
 }
 

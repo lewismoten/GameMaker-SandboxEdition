@@ -1,3 +1,5 @@
+// The terminal on a paced line: text arrives at the line speed, in order, keys wait for the screen,
+// and a speed change takes effect at once.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Term } from './term';
 import { TextKeys, key, readLine } from '../text/textInput';

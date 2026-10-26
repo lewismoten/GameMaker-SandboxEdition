@@ -25,13 +25,13 @@ import { GMCRACK_NFO, GREETINGS, GROUP, VERSION, bakName } from './gmcrackText';
 const KEYGEN_MAX = NAME_MAX - 1;
 
 /** A key for a name, as CHK.EXE will check it against this PC's serial number. */
-export const keygen = (name: string): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), SERIAL));
+const keygen = (name: string): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), SERIAL));
 
 /**
  * The shareware games in C:\DOWNLOAD whose .EXE is still there: this project's own (the only
  * ones GMCRACK cracks), or with `any` every one, so a game cracked before can be uncracked.
  */
-export async function crackable(h: RetroHost, any = false): Promise<CatalogEntry[]> {
+async function crackable(h: RetroHost, any = false): Promise<CatalogEntry[]> {
   const cat = await h.catalog();
   return h.downloads
     .list()

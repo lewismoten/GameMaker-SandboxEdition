@@ -21,7 +21,7 @@ import type { OverlayState } from './overlay';
 export type ToolMode = 'line' | 'rect' | 'select' | 'terrain' | 'stamp' | 'building' | 'paste';
 
 /** What the tools need from the map editor. */
-export interface MapHost {
+interface MapHost {
   project: Project;
   blocksArr: Uint8Array;
   bbl: () => string;

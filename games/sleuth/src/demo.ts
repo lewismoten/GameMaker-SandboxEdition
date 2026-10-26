@@ -11,7 +11,7 @@ import { SCAN } from './ids';
 export async function demoRecording(files: Map<string, Uint8Array>): Promise<Uint8Array> {
   const bot = new Bot(new GameSim(files));
   await act1(bot, true);
-  await bot.key(SCAN.l, 2, 30);
+  await bot.key(SCAN.z, 2, 30);
   const keys = bot.sim.keys;
   keys.push({ delta: 20, key: SCAN.esc }, { delta: 2, key: SCAN.esc | 0x80 });
   return serializeRecording(keys);

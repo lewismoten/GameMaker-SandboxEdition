@@ -1,3 +1,4 @@
+// FILE_ID.DIZ: within 10 lines of 45 ASCII columns, with the right credits and summaries.
 import { describe, expect, it } from 'vitest';
 import { DIZ_LINES, DIZ_WIDTH, ascii, dizBytes, gameDiz, newestPicture, pictureDiz, wrapWords } from '../src/retro/bbs/fileId';
 import type { CatalogEntry } from '../src/project/files';

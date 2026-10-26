@@ -3,7 +3,9 @@
 // the name and registration number in by hand once the reply card came back, so once the desk's
 // C:\GM\PLAYGAME.REG registers Game-Maker (GM REGISTER, the card beside the monitor or GMCRACK)
 // they appear in ink; delete it or unregister it and the lines are blank again. It is real text,
-// so a screen reader reads it (and "not filled in" for a blank line).
+// so a screen reader reads it (and "not filled in" for a blank line). The ink is Caveat, kept
+// with the site (fonts/caveat-600.woff2, SIL Open Font License; regRecord.css), so the page asks
+// no other server for it.
 import './regRecord.css';
 import { h } from '../editor/core/ui';
 import { pcExtras } from '../retro/hacks/pcExtras';
@@ -40,12 +42,6 @@ function refresh(): void {
   }
 }
 
-/** A pen: a handwriting face from Google Fonts, with the page's cursive faces when it can't load. */
-function loadPen(): void {
-  if (document.getElementById('rr-pen-font')) return;
-  document.head.append(h('link', { id: 'rr-pen-font', rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap' }));
-}
-
 function line(label: string, field: Field | undefined, printed?: string): HTMLElement {
   const value = field
     ? h('span', { class: 'rr-line' }, h('span', { class: `rr-hand rr-${field}`, 'data-reg': field }), h('span', { class: 'rr-blank' }, 'not filled in'))
@@ -58,7 +54,6 @@ function line(label: string, field: Field | undefined, printed?: string): HTMLEl
  * number and a word on keeping them), `cover` on the back cover (name and number).
  */
 export function regRecord(kind: 'page' | 'cover'): HTMLElement {
-  loadPen();
   const el =
     kind === 'page'
       ? h(

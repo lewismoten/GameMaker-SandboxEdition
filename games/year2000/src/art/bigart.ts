@@ -71,20 +71,20 @@ export function garage(): Pixels {
   return p;
 }
 
-/** A billboard 3 blocks wide, 2 tall: two posts and a lit sign. */
-export function billboard(lines: string[], bg: string, ink: string, floor: (seed?: number) => Pixels): Pixels {
-  const p = tiled(new Pixels(60, 40), floor);
-  p.rect(10, 26, 3, 13, C('chrome', 2)).rect(47, 26, 3, 13, C('chrome', 2));
-  p.rect(1, 1, 58, 27, C('chrome', 6));
-  gradient(p, 2, 2, 56, 25, R(bg), 1, 3);
-  const lh = 7;
+/** A billboard `cols` blocks wide (3 unless said), 2 tall: two posts and a lit sign; `lh` is the line height. */
+export function billboard(lines: string[], bg: string, ink: string, floor: (seed?: number) => Pixels, cols = 3, lh = 7): Pixels {
+  const W = cols * 20;
+  const p = tiled(new Pixels(W, 40), floor);
+  p.rect(10, 26, 3, 13, C('chrome', 2)).rect(W - 13, 26, 3, 13, C('chrome', 2));
+  p.rect(1, 1, W - 2, 27, C('chrome', 6));
+  gradient(p, 2, 2, W - 4, 25, R(bg), 1, 3);
   const y0 = Math.round(14 - (lines.length * lh) / 2) + 1;
   lines.forEach((s, i) => {
     const w = microWidth(s);
-    micro(p, Math.round(30 - w / 2) + 1, y0 + i * lh + 1, s, C('grey', 0));
-    micro(p, Math.round(30 - w / 2), y0 + i * lh, s, C(ink, 5));
+    micro(p, Math.round(W / 2 - w / 2) + 1, y0 + i * lh + 1, s, C('grey', 0));
+    micro(p, Math.round(W / 2 - w / 2), y0 + i * lh, s, C(ink, 5));
   });
-  for (let x = 4; x < 58; x += 6) p.set(x, 1, C('gold', 5));
+  for (let x = 4; x < W - 2; x += 6) p.set(x, 1, C('gold', 5));
   return p;
 }
 

@@ -1,5 +1,5 @@
 // Download → Mac: a game as a native Mac app, made right here in the browser (and by
-// mac/package.ts with the same code). The app is the small player program from mac/
+// web/scripts/macDmg.ts with the same code). The app is the small player program from mac/
 // (web/public/mac/GameMakerPlayer, one universal binary for Apple silicon and Intel Macs),
 // the game's one-web-page export as Contents/Resources/game.html, an Info.plist naming the
 // game, and an icon drawn from the game. The player's ad-hoc signature is re-sealed for the
@@ -25,7 +25,7 @@ import { macIcon, type IconColors } from './macIcon';
 import { resealPlayer } from './macSign';
 import { thirdPartyNotices } from './notices';
 
-export const PLAYER_PATH = 'mac/GameMakerPlayer';
+const PLAYER_PATH = 'mac/GameMakerPlayer';
 const EXECUTABLE = 'GameMakerPlayer';
 
 export interface MacAppOptions {
@@ -48,7 +48,7 @@ export interface MacAppOptions {
   colors?: IconColors;
 }
 
-export interface MacAppFile {
+interface MacAppFile {
   path: string;
   data?: Uint8Array;
   mode: number;

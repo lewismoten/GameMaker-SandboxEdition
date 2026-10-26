@@ -2,10 +2,10 @@
 
 ## A derivative work of RSD Game-Maker
 
-This repository is a **modified fork** of the source code of *Game-Maker*, the game
+This repository is a **modified fork** of the source code of _Game-Maker_, the game
 construction kit produced from 1991 to 1995 by Recreational Software Designs (RSD) of
 Amherst, New Hampshire. It was sold by direct mail in the US by KD Software (RSD also made a
-distribution deal with GameLynk), in the UK as *Captain GameMaker* by Screen Entertainment,
+distribution deal with GameLynk), in the UK as _Captain GameMaker_ by Screen Entertainment,
 and worldwide on CD-ROM by Microforum, as [Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
 records. Game-Maker was created by
 G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Today it is
@@ -24,7 +24,7 @@ license requires.
 ## The name: Game-Maker: Sandbox Edition
 
 To keep this fork from being mistaken for RSD's own release, it goes by **Game-Maker:
-Sandbox Edition** (short: *Game-Maker SE*), after the Sandbox BBS Lewis ran in Pittsburgh in
+Sandbox Edition** (short: _Game-Maker SE_), after the Sandbox BBS Lewis ran in Pittsburgh in
 the 1990s. It is based on RSD Game-Maker 3.0 and keeps its file formats, but it is not the same
 program, and the pieces it draws are its own:
 
@@ -35,8 +35,8 @@ program, and the pieces it draws are its own:
 - the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original,
   rebuilt in TypeScript from its source on a simulated PC; no DOS or x86 code runs.
 
-Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker-SandboxEdition)
-and to the original as *RSD Game-Maker 3.0* (Game-Maker 3.0 by Recreational Software Designs)
+Refer to this project as _Game-Maker: Sandbox Edition_ (https://github.com/lewismoten/GameMaker-SandboxEdition)
+and to the original as _RSD Game-Maker 3.0_ (Game-Maker 3.0 by Recreational Software Designs)
 (https://github.com/gandrewstone/GameMaker).
 
 ## Why a web version
@@ -64,10 +64,78 @@ game folder opens in the browser unchanged.
   and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
-  *1994 desk* (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
-  *modern web* editor and player. AI assistance did most of the porting and code
+  _1994 desk_ (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
+  _modern web_ editor and player. AI assistance did most of the porting and code
   generation: reading the original C source, writing the TypeScript, building the Sandbox
   Software games in code, and testing them, directed and reviewed by Lewis.
+- **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
+  the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
+  Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the
+  time, how the CMF music format worked, what came in a 1990s software box, how a save editor
+  might look, and ways to get more out of a game. Gemini 3 drew the ASCII-art can in
+  LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
+  to the project as notes and ideas, through Lewis.
+- **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
+  directed, from no one else's code, art, data or recordings: the desk modem's line speeds
+  and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
+  with Mrs. Novak (see "TTYs" below); the Sandbox BBS's door game, TIC-TAC-TOE BY MODEM, and
+  its make-believe opponent SCROLLMASTER; the printable World Map and Level Maps, drawn from
+  each game's own files; the editor's level check, its generators (the maze, the one-click
+  fixes, the block-art helpers) and its walkthrough bot (see "The level check" below); opening
+  games that other sites link to or send (`web/src/linkIn`, `docs/embed.md`); the new
+  opening of Teddy's Theme (`games/kit/teddyTheme.ts`), an original tune for the Teddy games;
+  and the "Made with Game-Maker: Sandbox Edition" opening stings the editor offers new games
+  (`games/kit/madewith.ts`, shipped as `web/public/opening/madewith.fli` and `.gif`, ray
+  traced like the Sandbox Software sting, and the three flat ones `games/kit/madewithMore.ts`
+  draws: block by block, wipe and typewriter, `web/public/opening/mw*.fli`; the editor's
+  "Classic RSD" choice copies RSD's own `RSDTBOX.FLI` from the CD instead), the "PRESENTS" card the editor draws for a
+  game's maker (`web/src/editor/tools/opening`), and _TURBO BUTTON_, the site's 1990s-style
+  game magazine (`web/src/manual/magazine`): its words, layout and drawings, with screenshots
+  of the games, the desk and the site themselves and its interview with Lewis drawn from his own account in
+  `docs/history.md`; The Ultimate Owner's Guide (`web/src/manual/ultimate`); and the desk's
+  props, drawn in code: the GRAVITAS game pad, the ILLOGITECH speakers and their SOUND BOASTER
+  switch, the mugs (each badge made from a game's own files or the BBS's ANSI art) and the mouse
+  pad prints. Like everything else added here they are under
+  the MIT License, so the games they open can carry them anywhere.
+- **Lewis's DOSBox screenshot** of A Fly Named Carl's garbled title (his own capture, taken while
+  testing the games in real DOS) illustrates "Where Game-Maker Runs Out" in The Ultimate Owner's
+  Guide (`web/public/ultimate/carl-dos.webp`, cropped to the game screen and scaled to 320 × 200),
+  and _TURBO BUTTON_'s feature "Bugs Only DOS Could Find" (`web/public/magazine/dos-carl.webp`,
+  cropped to the game screen at the size DOSBox drew it). It is source material from Lewis,
+  shared under the same terms as the rest of this fork.
+- **Tricks From the Shareware Authors** (chapter 17 of The Ultimate Owner's Guide,
+  `web/src/manual/ultimate/chaptersShareware.ts`) and the archive counts in its "Where Game-Maker
+  Runs Out" describe techniques found by surveying community Game-Maker games in the
+  [Internet Archive's Game-Maker Archive collection](https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22):
+  _Blinky 2_, _Blinky 3_, _Ninja Tuck_ and _A-J's Quest_ (A-J Games), _Crystal Mania 4_,
+  _Parsec Man 3D_ (Mark Hadley), _Thal's Quest for the Crystals_,
+  _Orb: the Derelict Planet_, _Shanna_ (Angelo Felix), _Andy in Asunderland_, _Builder_
+  (A-J Games), _Hurdles_ (Roland Ludlam), _Seal Boarders_, and RSD's _Penguin Pete_. The games
+  belong to their authors; the guide names them and describes their ideas in its own words, and
+  copies none of their art, music, sounds or text.
+- **Research: watching people play Game-Maker games.** Observations from two videos informed
+  The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and
+  _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`), "What Players Hate (and How to
+  Fix It)" (`sections/gripes.ts`) and "Readers' Picks: Polish Over Size" (`sections/readersPicks.ts`,
+  whose three games are made up): **levelengine**'s livestream
+  "[RSD Game Maker Binge](https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76)" (YouTube, 2020, 34 parts, with
+  its viewers' chat), and **Pixelmusement**'s
+  "[ADG Episode 250 - Game-Maker](https://www.youtube.com/watch?v=8oy5pXPXxbk)" (Ancient DOS
+  Games, YouTube, 2018). What made players stuck, quit or grin is retold in this project's own
+  words, and every engine claim was checked against `code/GM/PLAYGAME.C` and its port (where a
+  video and PLAYGAME disagree, PLAYGAME wins). No material is copied: the videos and the chat
+  aren't quoted, no viewer is named, and none of the games' art, music or text is used.
+- **The Shareware Shelf** in _TURBO BUTTON_ (`web/src/manual/magazine/sections/shelf.ts`) lists
+  the titles, years and makers of the Game-Maker games in the
+  [Internet Archive's Game-Maker Archive collection](https://archive.org/search?query=subject%3A%22Game-Maker+games%22),
+  fetched from archive.org's public search API by `web/scripts/gameMakerArchive.ts` into
+  `web/src/manual/magazine/data/gameMakerArchive.json` (the query and date are in the file).
+  Titles only: no files from the collection are copied, and the page doesn't link to them. Its
+  companion feature, "Tricks of the Shareware Masters" (`sections/masters.ts`), describes in its
+  own words techniques found in the collection's featured games (_Blinky 2_, _Blinky 3_,
+  _Parsec Man 3D_, _Ninja Tuck_, _Hurdles_, _Seal Boarders_, _A-J's Quest_, _Shanna_, RSD's
+  _Penguin Pete_, and the limits reached by _A-J 3_, _Taken by a Vampire One Night_, _Badman III_
+  and _Crystal Quest_), showing none of their art, music, sounds or text.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
@@ -103,42 +171,106 @@ game folder opens in the browser unchanged.
   Lewis.
 - **The BBS pictures** (`web/public/bbs`, downloadable from the Sandbox BBS's GIF Gallery and
   The Sofa's GIF area): the photos are Lewis's own (Teddy, Gwinn, the gazebo, the hobo clown
-  and Doc Leo, colonial dress, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
+  and Doc Leo, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
   **THECHEZ2.GIF**, one shot of Lewis holding Teddy in front of THE CHEZ, which was taken by
   **Nicky Foster** of the Front Royal-Warren County Chamber of Commerce as a promotional photo
-  of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop. The Bard logo (BARDLOGO.GIF) was made with
-  DeepAI.
+  of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop, and
+  **COLONIAL.GIF**, Lewis in colonial dress beside George Washington, which was taken by
+  **Todd Jones**, Director of Technology, County of Warren, at a Warren County VA250 event, a
+  flag retirement ceremony. The Bard logo (BARDLOGO.GIF) was made with DeepAI.
 - **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
   (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
   Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from
   two of Lewis's photos of himself, over many rounds of his corrections, with
-  `games/kit/scans/blacklight.py`.
+  `games/kit/scans/blacklight.py` (Python with Pillow and NumPy). Its glance frames, in which
+  Doc Leo now and then looks to one side and smiles, were drawn the same way from the same
+  photo. The poster's DOC LEO lettering is set in **Phosphate** (Steve Jackaman and Ashley
+  Muir; © International TypeFounders, Inc.), a typeface that comes with macOS: only the
+  lettering's pixels are in the poster pictures, and no font file is in the repository.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
-  - *Teddy's Little Bigger Adventure*: `games/teddy2/disk/main.cmf` (Main Street) quotes
+  - _Teddy's Little Bigger Adventure_: `games/teddy2/disk/main.cmf` (Main Street) quotes
     **Yankee Doodle**, a traditional American tune (18th century), public domain; arrangement
     by the game.
-  - *I Screamed, She Smirked*: `games/smirked/disk/title.cmf`, `story.cmf` and `foyer.cmf`
+  - _I Screamed, She Smirked_: `games/smirked/disk/title.cmf`, `story.cmf` and `foyer.cmf`
     open with the mordent of the **Toccata and Fugue in D minor**, BWV 565, credited to
     J. S. Bach (about 1704), public domain; arrangement by the game.
-  - *The desk's wall phone*: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
+  - _The desk's wall phone_: its hold music (`web/src/desk/room/phone/sounds.ts`) is the
     opening of **Für Elise** by Ludwig van Beethoven (about 1810, published 1867), public
     domain.
-  - *A hidden bonus on the site*: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
+  - _Teddy's Little Biggest Adventure_: its ending song (`games/teddy3/src/sound/music.ts`)
+    plays **Happy Birthday to You**, the tune of "Good Morning to All" by Mildred J. Hill
+    (1893), public domain in the US; arrangement by the game, which credits it on its
+    credits screen.
+  - _A hidden bonus on the site_: a music box (`web/src/eggs/musicBox.ts`) plays **Yankee
     Doodle**, the same traditional tune, public domain.
-  - *RSD's sample music on the CD* quotes public-domain works: `GMMOONLT.CMF` is the first
+  - _RSD's sample music on the CD_ quotes public-domain works: `GMMOONLT.CMF` is the first
     movement of Beethoven's Piano Sonata No. 14, the **Moonlight** (1801); `GMRANGE.CMF` is
     **Home on the Range** (Daniel E. Kelley, music, and Brewster M. Higley, words, 1872).
-  - *The shareware games A-J's Quest (`cd/sharware/ajquest`) and Ralph's game
-    (`cd/sharware/fluffyr`)* use `GMFAIRY.CMF`, the **Dance of the Sugar Plum Fairy** from
-    Tchaikovsky's *The Nutcracker* (1892), public domain.
+  - _The shareware games A-J's Quest (`cd/sharware/ajquest`) and Ralph's game
+    (`cd/sharware/fluffyr`)_ use `GMFAIRY.CMF`, the **Dance of the Sugar Plum Fairy** from
+    Tchaikovsky's _The Nutcracker_ (1892), public domain.
 - **Third-party music under copyright.** Three shareware games on the CD by A-J Games,
-  *Bounerim* (`cd/sharware/bounerm`), Ralph's game (`cd/sharware/fluffyr`) and *Sign of the
-  Hedgehog* (`cd/sharware/signhdg`), include `SND7.CMF`, an arrangement of John Williams's
+  _Bounerim_ (`cd/sharware/bounerm`), Ralph's game (`cd/sharware/fluffyr`) and _Sign of the
+  Hedgehog_ (`cd/sharware/signhdg`), include `SND7.CMF`, an arrangement of John Williams's
   **The Imperial March** (1980), which is under copyright and not licensed by this project.
   It is kept as those games were distributed in the 1990s, unaltered, as part of their
   authors' original files.
+- **Pictures in the CD's games.** Most of the CD games' pictures are drawn or rendered, but
+  some are scanned photographs, paintings or frames of film. None of them name a source, so
+  these were traced in October 2026 by looking at them and searching by text; where a source
+  is not certain it says "likely" or "appears to be". They are kept unaltered, as their
+  authors distributed them, and are not licensed by this project:
+  - _Nebula_ (`cd/gameware/nebula`, RSD): `BLUE.GIF` is the **Blue Marble**, the photograph
+    of the Earth taken by the crew of Apollo 17 in 1972
+    ([NASA](https://en.wikipedia.org/wiki/The_Blue_Marble)), also small in `MENU.GIF` and
+    `NOVA.FLI`. `SATRING.GIF` is a **Voyager 1** picture of Saturn's crescent and rings
+    (1980, frame C3501159, the same picture as `cd/picture/space/planets/C3501159.GIF`),
+    tinted blue. `YELOSUN.GIF`, `YELOLOW.GIF`, `YELOBYE.FLI`, `NOVA.FLI` and `MENU.GIF` appear
+    to be a **Voyager 1** color picture of Jupiter's moon **Io** (1979) with a volcanic plume
+    on its edge ([NASA/JPL](https://photojournal.jpl.nasa.gov/target/io)). These NASA pictures
+    are in the **public domain** in the US. The green planet in `GREENHI.FLI`, `GREENBYE.FLI`
+    and `HISCORE.GIF` is a planet photograph tinted green, likely also from NASA (possibly
+    Mars); its source was not identified.
+  - _Woman Warrior and the Outer Limits_ (`cd/gameware/outerlim`) and _Woman Warrior and the
+    Attack From Below_ (`cd/gameware/warrior`), by Sheldon Chase for KD Software: their title
+    pictures (`OLSTART.GIF`, `WARRIOR.GIF`, and the same collage in their `MENU.FLI`,
+    `MENUBOX.FLI` and `TEXTBOX.FLI`) and the ending picture `OLENDING.GIF` are frames
+    captured from the television series
+    [**The Outer Limits**](<https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series)>)
+    (1963–1965). The game's own story screen says it "uses parts from two episodes",
+    ["The Cry of Silence"](https://en.wikipedia.org/wiki/Cry_of_Silence) (1964), whose star
+    June Havoc the woman appears to be, and
+    ["The Zanti Misfits"](https://en.wikipedia.org/wiki/The_Zanti_Misfits) (1963). The series
+    is **under copyright** (today MGM's), not licensed by this project.
+  - _Paper Airplane_ (`cd/sharware/paperair`), by Matt Bell: its title picture `GMTITLE.GIF`
+    is **The Nazgûl** by **Ted Nasmith** (gouache, first published in the 1990 Tolkien
+    Calendar; [tednasmith.com](https://www.tednasmith.com/?p=214)), scanned with the title
+    lettered over it. `OPENPAP.GIF`, a falcon turning into an F-16, may be **Jody Sjogren**'s
+    _Metamorphosis II: Falconfyre_ (1986;
+    [Wright State University](https://wright.libraryhost.com/repositories/2/top_containers/6194)),
+    which was not confirmed. The figure of cloud over a runway in `ENDPAP.GIF` is a painting or
+    photo collage whose source was not identified. All are **under copyright**, not licensed by
+    this project.
+  - _Sample_ (`cd/gameware/sample`, RSD): `SAMPLE.GIF`, also in `MENUBKG.FLI` and
+    `TEXTBKG.FLI`, is a **painting** of tropical birds (a long-billed orange bird, a
+    blue-and-yellow macaw, a hummingbird and egrets) whose artist was not identified;
+    presumably under copyright.
+  - _Houses_ (`cd/gameware/houses`, RSD): `HOUSES.GIF` and `BKG.GIF` are a **photograph** of a
+    boathouse with a canoe on a pond; its source was not identified.
+  - _Glubada Pond_ (`cd/gameware/glub`): `OCEAN.GIF` (also in `END.FLI`) is the CD's own
+    picture library's `cd/picture/nature/OCEAN1.GIF`, a beach photograph; `POND.GIF` is its
+    `cd/picture/nature/AMER01_I.GIF`, a mountain lake; and `WATER.GIF` is another photograph.
+    Their sources were not identified.
+  - _RSD's title picture_ (`GMTITLE.GIF`, "Recreational Software Designs' Game-Maker
+    Presents:", in many of the CD's games) is lettered over a **photograph of clouds** whose
+    source was not identified.
+- **The CD's picture and animation libraries** (`cd/picture`, `cd/animate`) are a collection
+  of 1990s GIF pictures and FLI animations of mixed and mostly unrecorded origin: NASA
+  pictures (Voyager, Magellan, Viking, the Space Shuttle) alongside photographs of cars,
+  places and animals whose photographers are not named and which are likely under copyright.
+  They are kept as Andy Stone released them and are not on the website.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
   Bell and others). Shareware games are shown play-only, with their authors' original
@@ -186,8 +318,8 @@ These files are cut from those recordings (each game's `tools/cutClips.py` cuts 
     FLATUS, NEMO, PISCIS, QUIS, RIDETIS, SUMMA, TECTA, TER, TITUS, VICTORIA.
 
 Each of those games' LICENSE.TXT names its clips under "VOICE CLIPS: NOT MIT", its readme and
-credits say so, and the Windows, Mac, Linux, DOS and web-app downloads' notices repeat it
-(`web/src/export/recordedAudio.ts`). **Everything else in each game is MIT licensed**: the
+credits say so, and the Windows, Mac, Linux, DOS and web-app downloads' notices repeat it, as
+does the one-page download's text (`web/src/export/recordedAudio.ts`). **Everything else in each game is MIT licensed**: the
 code, levels, art, text, the other sound effects (made in code) and the FM (CMF) music
 arranged or composed by Claude. Certified Rat Tickler has no recording, so none of it is
 affected.
@@ -220,6 +352,10 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Sound Blaster**, **CMF** (Creative Music File), **VOC** and **SBI**: trademarks and
   formats of Creative Technology Ltd. The CMF player is a port of Game-Maker's own
   `SBMUSIC.C` and of the behavior of Creative's SBFMDRV driver; no Creative code is used.
+- **YouTube**: the Library lists Lewis Moten's own videos about this project, from his
+  YouTube channel. Their card pictures are copies of YouTube's thumbnails kept on the site, so
+  showing the Library asks YouTube for nothing; a video's player is embedded from
+  youtube-nocookie.com only when the visitor presses Play.
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
 - **The music editor and its FM instruments** were made for this project. The editor is an
@@ -228,18 +364,30 @@ formats from their published descriptions and from Game-Maker's own source.
   AdLib's `STANDARD.BNK` settings (PIANO1, BRASS1, BDRUM1). They were replaced with original
   patches in October 2026. Some of the original RSD songs in `cd/` and `runtime/` use
   AdLib's BRASS1 settings; they are kept as RSD released them.
-- **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
-  the IBM PC BIOS font.
+- **8×8 text font**: Daniel Hepper's `font8x8_basic`, plus accented letters and symbols
+  from his `font8x8_ext_latin` and `font8x8_misc` and Greek letters from his `font8x8_greek`
+  (`web/src/gfx/cp437Glyphs.ts`), all in the public domain, derived from the IBM PC BIOS
+  font. The other code page 437 glyphs (card suits, notes, arrows, math signs) were drawn for
+  this project.
 - **Caveat** (the handwriting in the Owner's Guide's registration record,
-  `web/src/manual/regRecord.ts`), a font by Impallari Type under the SIL Open Font License
-  1.1, is loaded from Google Fonts when that page is shown; it isn't included in this
-  repository or in exported games.
+  `web/src/manual/regRecord.ts`), a font by Impallari Type ("Copyright 2014 The Caveat
+  Project Authors"), under the SIL Open Font License 1.1. Its 600 weight, cut to Latin-1
+  with fontTools (its name and license kept inside it), is kept with the site as
+  `web/src/manual/fonts/caveat-600.woff2`, with the license beside it (`Caveat-OFL.txt`), so
+  the page asks no font server for it. It isn't in exported games.
 - **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
   one service under its successive names) and **DeepAI** are their owners' names for the
-  tools used to make the Bard of Bizarre songs and art (see Credits); none of their code is
-  used.
+  tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for
+  the tools Lewis reviews and brainstorms with (see Credits); none of their code is used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
-  separate GPL program and is not included.
+  separate GPL program and is not included. `npm run dosbox` (`web/scripts/dosbox.ts`) only lays
+  out a folder of this repository's files for a DOSBox the developer installs, and opens it.
+- **Modem sounds** on the desk (`web/src/retro/bbs/modem.ts`, `lineSpeed.ts`): the dial tone,
+  touch-tones (the standard DTMF pairs), rings and each line speed's handshake are
+  synthesized in code from the published standards: **Bell 103** (300 baud) and **Bell 212A**
+  (1200), the Bell System's, and the ITU-T's **V.22bis** (2400), **V.32** and **V.32bis**
+  (4800 to 14,400), **V.8** and **V.34** (28,800 and 33,600) and **V.90** (56K). No recording of
+  a modem is used. The names are their owners'; nothing else of theirs is used.
 - **TTYs (text telephones)** on the desk (`web/src/retro/bbs/baudot.ts`, `tdd.ts`,
   `ttyInfo.ts`): the 5-bit Baudot code at 45.45 baud, its 1400/1800 Hz tones and its US
   figures table follow ITU-T Recommendation V.18 (1994) and ANSI/TIA-825. The code table was
@@ -251,11 +399,30 @@ formats from their published descriptions and from Game-Maker's own source.
   Mrs. Novak and her number (555-0156) are made up.
 - **Real names in the games.** The games name some real hardware, software and products of
   their time as part of the setting: AdLib, VGA, the RCA 1802, MOS 6502 and Atari 400, Yamaha's
-  OPL3, AMI BIOS, PKUNZIP, ZMODEM, Renegade BBS, the Remington Noiseless typewriter, Autodesk
-  Animator and the CitiCar (Lewis's own car, THE CHEZ). Brand names also appear where Lewis's
-  song lyrics and his 100 Word Stories (in *KEEP IT BRIEF!*) are quoted word for word. These
+  OPL3, AMI BIOS, PKZIP and PKUNZIP, Xmodem, Ymodem and ZMODEM, Renegade BBS and The Major BBS (Galacticomm's; The Sofa runs a look-alike), VPIC (Bob Montgomery's picture viewer; the desk's is a look-alike), QEMM, the 286 to Pentium, Windows 3.1 and NT, OS/2, the ATI, Trident, Tseng and
+  Paradise Super VGA cards (from RSD's own system requirements), the Remington Noiseless
+  typewriter, Autodesk Animator and the CitiCar, an electric car Sebring-Vanguard built in the 1970s (Lewis's own car, THE CHEZ). The 1994 desk, where nearly everything does something when clicked and some things are hidden to find, was inspired by The Brothers Chaps' (Mike and Matt Chapman's) Homestar Runner and Strong Bad's emails, Flash cartoons whose last scenes hid extras to click; nothing of theirs is copied, and the names are their owners'. The TURBO BUTTON magazine's history of Easter eggs names the Atari 2600 and its games Adventure (Warren Robinett, 1980) and Moonlander (1973), and Atari's Steve Wright, who named Easter eggs. Brand names also appear where Lewis's
+  song lyrics and his 100 Word Stories (in _KEEP IT BRIEF!_) are quoted word for word. These
   are trademarks of their respective owners; no endorsement is implied. Every other store,
   arcade, brand, product and publication in the games is made up.
+- **Illogitech**, the brand on the desk's speakers and in their _TURBO BUTTON_ ad, is a made-up
+  parody name. It is not a real company or product, and no connection with or endorsement by
+  any company is implied.
+- **Sound Boaster** and its maker **Overcreative Labs**, the sound card brand on the desk speakers'
+  switch and in its _TURBO BUTTON_ ad, are made-up parody names. They are not a real company or
+  product, and no connection with or endorsement by any company is implied. The desk PC's card
+  is "Sound Blaster compatible", as the clone cards of the time said; Sound Blaster is Creative
+  Technology's trademark (below). The makers' names printed on its chips in _Virus Blaster_
+  (**YO MAMA!** on the FM music chip, **ANALOG DEVIOUS** on the DSP, **TEXAS INSTRUMENTALS** on
+  the amplifier) are made-up parody names too, not real companies.
+- **Gravitas** and its **GRAVITAS PC GamePad**, the game pad on the desk's keyboard tray and in
+  its _TURBO BUTTON_ ad, are a made-up parody name. It is not a real company or product, and no
+  connection with or endorsement by any company is implied. The ad's prices ($24.95 for the pad,
+  $33.95 for the joystick) are part of the story, after what Lewis remembers paying in 1994.
+- **HOLE-Y MOLEY**, the Disk Doubler, and its maker **Punchline Products**, the disk notcher in its
+  _TURBO BUTTON_ ad, are made-up parody names. They are not a real company or product, and no
+  connection with or endorsement by any company is implied; the ad's drawing of the press is this
+  project's own. Its price ($14.95) is part of the story, after what Lewis remembers paying.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
   License, so this fork leaves it out. The README says where to get it.
@@ -280,15 +447,56 @@ formats from their published descriptions and from Game-Maker's own source.
   ("Copyright (c) Creative Technology Pte Ltd, 1990"), as every program built with them did.
   "Export for DOS" ships `XFERPLAY.EXE` (renamed after the game) and `SNDBLAST.DRV` with
   a README that gives Game-Maker's MIT License and names these parts.
-- The desk's hardware brands (BOOMTONE, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
-  numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
+- The desk's hardware brands (ILLOGITECH, SOUND BOASTER and Overcreative Labs, GRAVITAS, PIXELMAX, SQUEAK, AwkWard BIOS, Square Deal Pad Co.'s mouse pads), the magazine's other advertisers (HOLE-Y MOLEY and Punchline Products, Kiln & Kilobyte's mugs, Tin Can Telecom's modem, Shoebox Media Co.'s disk box), and its phone
+  numbers are made up, as are the magazines and awards on the game boxes and the magazine
+  _TURBO BUTTON_, its prices and its coupons. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
   look, what's on them and their numbers are made up.
+- **TURBO BUTTON's Game-Maker ad** (its send-away ad, `web/src/manual/magazine/sections/ads.ts`)
+  takes its look from the full-page Game-Maker ad by RSD and KD Software in _Computer Gaming
+  World_ #99 (October 1992), page 55
+  ([Internet Archive](https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up)):
+  a hot pink page, big condensed serif headlines, a grid of screenshots and an order coupon.
+  Its words, pictures and coupon are new; nothing of the original ad is reproduced, and the
+  page links to the original.
 - **The level check** (`web/src/editor/check`): its heat map's six colors are taken from
   **viridis**, the color map by Stéfan van der Walt and Nathaniel Smith (CC0, public domain
-  dedication), chosen because it reads with every kind of color vision; its monster contrast is
-  the **relative luminance and contrast ratio** of the W3C's Web Content Accessibility
-  Guidelines (WCAG) 2. Both are used as published; no code of theirs is included.
+  dedication), chosen because it reads with every kind of color vision; its monster and
+  text-screen contrast is the **relative luminance and contrast ratio** of the W3C's Web Content
+  Accessibility Guidelines (WCAG) 2, and its flashing check follows WCAG 2's **three flashes a
+  second** threshold (success criterion 2.3.1). All are used as published; no code of theirs is
+  included.
+- **The palette editor's Color vision check** (`web/src/editor/editors/palette/colorVision.ts`)
+  simulates protanopia, deuteranopia and tritanopia with the severity-1.0 matrices published
+  by **Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes**, "A
+  Physiologically-based Model for Simulation of Color Vision Deficiency" (IEEE Transactions
+  on Visualization and Computer Graphics 15(6), 2009), applied in linear RGB. Its grayscale is
+  the WCAG 2 relative luminance above, and it measures how alike two colors look with the
+  CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's
+  (IEC 61966-2-1) transfer curve. All are published formulas and numbers; no code of theirs
+  is included.
+- **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
+  `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
+  ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
+  envelope, with presets (jump, coin, hurt, explosion…) that give a new take each time. The
+  synthesizers were written fresh for this project; no sfxr code is included.
+- **The sound set editor's "Preview as PC speaker"** (`web/src/audio/vocToSpeaker.ts`) finds
+  each step's pitch with the normalized square difference function and its "first peak near the
+  highest" rule from **Philip McLeod and Geoff Wyvill**, "A Smarter Way to Find Pitch"
+  (Proceedings of the International Computer Music Conference, 2005), with parabolic
+  interpolation of the peaks, and falls back on the zero-crossing rate for noise. Written fresh
+  from the paper; no code of theirs is included.
+- **The music editor's accompaniment generator** (`web/src/editor/editors/music/arrange/`)
+  finds a tune's key with the **Krumhansl-Schmuckler** method, using the major and minor key
+  profiles published by **Carol L. Krumhansl and Edward J. Kessler** (Psychological Review 89,
+  1982), and picks its chords with a Viterbi pass; its takes are seeded with **Mulberry32**, the
+  public-domain generator by Tommy Ettinger. Its band's patterns follow the project's own
+  `games/kit/song.ts`. The profile numbers are published data; no one else's code is included.
+- **Seeded random numbers and string hashes** (`web/src/seededRandom.ts`, shared by the
+  walkthroughs, printables, magazine art, felt eggs and editors) use three public-domain
+  algorithms: **Mulberry32** by Tommy Ettinger, **xorshift32** from George Marsaglia's
+  "Xorshift RNGs" (Journal of Statistical Software 8, 2003) and the **FNV-1a** hash by Glenn
+  Fowler, Landon Curt Noll and Kiem-Phong Vo. Each is a few lines written from its description.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
@@ -352,10 +560,10 @@ Game-Maker's makefiles don't build.
   contributed by David Schwaderer and can be found in his excellent book 'C Programmers
   Guide to NetBIOS' published by Howard W. Sams & Co. Inc." The same file credits Roger
   Schlafly for PKZIP's encryption and Robert Mahoney for the `.ZIP` name, and cites
-  Storer, *Data Compression, Methods and Theory* (Computer Science Press, 1988) and Held,
-  *Data Compression, Techniques and Applications* (John Wiley & Sons, 1987). Game-Maker's
+  Storer, _Data Compression, Methods and Theory_ (Computer Science Press, 1988) and Held,
+  _Data Compression, Techniques and Applications_ (John Wiley & Sons, 1987). Game-Maker's
   own C and assembly code computes no CRC.
-- **FLI format**: `code/Image/FLI/FLIDOC.TXT`, the *Turbo C FLI Library* document for
+- **FLI format**: `code/Image/FLI/FLIDOC.TXT`, the _Turbo C FLI Library_ document for
   Autodesk Animator files, "Copyright 1989-1990 Dancing Flame, San Francisco. Program Code
   and Library by Jim Kent. Documentation by Jim Kent and Heidi Brumbaugh." Andy Stone's
   `FLI.CPP` quotes it in a comment.
@@ -392,7 +600,7 @@ Game-Maker's makefiles don't build.
   It isn't part of Game-Maker's build.
 - **BMP2BGI** 1.0 (`BMP2BGI1.ZIP`, 1991) by Richard G. Rasulis, Jr. ("(c) R.G.Rasulis
   Consulting Services"). Its `BMP.H` is "(c) Ziff-Davis Publishing", from Charles
-  Petzold's article in *PC Magazine* (vol. 10, no. 10, pp. 365–370). No license is
+  Petzold's article in _PC Magazine_ (vol. 10, no. 10, pp. 365–370). No license is
   given.
 
 **Unattributed, so flagged rather than credited**
@@ -427,6 +635,10 @@ and test; none of their code ships in the app except Vite's small module runtime
 helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
 they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
+
+The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the developer's
+computer with Pillow (MIT-CMU License) and NumPy (BSD); the Caveat font was cut down with
+fontTools (MIT). Only their output is committed.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,

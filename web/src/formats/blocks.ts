@@ -3,7 +3,7 @@
 import { Reader, Writer } from './binary';
 
 export const BLEN = 20;
-export const BLOCK_PIXELS = BLEN * BLEN;
+const BLOCK_PIXELS = BLEN * BLEN;
 export const BLOCK_SIZE = 420;
 export const BACKBL = 150;
 export const MONBL = 100;
@@ -69,7 +69,7 @@ export function emptyBlock(index: number, transparent = false): Block {
   };
 }
 
-export function readBlock(r: Reader): Block {
+function readBlock(r: Reader): Block {
   return {
     pixels: r.bytesOf(BLOCK_PIXELS),
     birthMon: r.u8(),
@@ -89,7 +89,7 @@ export function readBlock(r: Reader): Block {
   };
 }
 
-export function writeBlock(w: Writer, b: Block): void {
+function writeBlock(w: Writer, b: Block): void {
   w.bytes(b.pixels, BLOCK_PIXELS)
     .u8(b.birthMon)
     .i16(b.birthTime)

@@ -36,14 +36,15 @@ export function clear(el: Element, ...children: Child[]): void {
   append(el, children);
 }
 
-export function download(name: string, data: Uint8Array | string, type = 'application/octet-stream'): void {
-  const blob = new Blob([data as BlobPart], { type });
+/** Saves `data` as the file `name` (a Blob keeps its own type). */
+export function download(name: string, data: Uint8Array | string | Blob, type = 'application/octet-stream'): void {
+  const blob = data instanceof Blob ? data : new Blob([data as BlobPart], { type });
   const url = URL.createObjectURL(blob);
   const a = h('a', { href: url, download: name });
   document.body.append(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
 export function pickFiles(opts: { multiple?: boolean; directory?: boolean; accept?: string } = {}): Promise<File[]> {

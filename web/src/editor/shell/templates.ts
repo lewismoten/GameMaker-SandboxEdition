@@ -8,14 +8,15 @@ import { newMap, serializeMap } from '../../formats/map';
 import { newSoundSet, serializeSoundSet } from '../../formats/sound';
 import { serializeBackdrop, serializeSlideList } from '../../formats/graphicScripts';
 import { textBytes } from '../../formats/binary';
+import { blankSong } from '../../audio/compose';
 
-export interface FileTemplate {
+interface FileTemplate {
   kind: FileKind;
   label: string;
   make: (p: Project) => Uint8Array;
 }
 
-export const TEMPLATES: FileTemplate[] = [
+const TEMPLATES: FileTemplate[] = [
   { kind: 'pal', label: 'Palette', make: (p) => serializePalette(p.paletteFor('').palette.slice() || defaultPalette()) },
   ...(['bbl', 'mbl', 'cbl'] as BlockKind[]).map((k) => ({ kind: k, label: KIND_LABELS[k], make: () => serializeBlocks(newBlockSet(k)) })),
   { kind: 'mon', label: 'Monsters', make: () => serializeMonsters(newMonsterSet()) },
@@ -25,6 +26,7 @@ export const TEMPLATES: FileTemplate[] = [
   { kind: 'txt', label: 'Text screen', make: () => textBytes('Write your text here.\r\nLines are 31 characters wide.\r\n') },
   { kind: 'lst', label: 'Slide show', make: () => serializeSlideList([]) },
   { kind: 'bkd', label: 'Backdrop', make: () => serializeBackdrop({ x: 0, y: 0, gif: '' }) },
+  { kind: 'cmf', label: 'Song', make: () => blankSong() },
 ];
 
 export function templateFor(kind: FileKind): FileTemplate | undefined {

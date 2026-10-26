@@ -24,7 +24,7 @@ export interface AboutForSecrets {
 export type SecretBlocks = Record<string, number[]>;
 
 /** The blocks `b` animates through, starting with itself (nextBl, as the engine steps it). */
-export function animationChain(blocks: Block[], b: number): number[] {
+function animationChain(blocks: Block[], b: number): number[] {
   const out: number[] = [];
   while (blocks[b] && !out.includes(b)) {
     out.push(b);

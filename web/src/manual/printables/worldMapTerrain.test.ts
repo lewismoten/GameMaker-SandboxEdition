@@ -1,5 +1,6 @@
+// The World Map's land: countries from colors, and coasts drawn the same every time.
 import { describe, expect, it } from 'vitest';
-import { blobPath, circleEdge, hsl, lookOf, mix, regions, scatter, terrainOf, trailBetween } from './worldMapTerrain';
+import { blobPath, hsl, lookOf, mix, terrainOf } from './worldMapTerrain';
 
 describe('World Map terrain', () => {
   it('reads a country from a color', () => {
@@ -42,39 +43,5 @@ describe('World Map terrain', () => {
     expect(a).toBe(blobPath(10, 10, 5, 4, 42));
     expect(a).not.toBe(blobPath(10, 10, 5, 4, 43));
     expect(a.startsWith('M') && a.endsWith('Z')).toBe(true);
-  });
-
-  it('runs trails edge to edge with a bend, the same each time', () => {
-    const t = trailBetween({ x: 0, y: 0 }, { x: 20, y: 0 }, 5, 7);
-    expect(t).toEqual(trailBetween({ x: 0, y: 0 }, { x: 20, y: 0 }, 5, 7));
-    const [p, q] = [t.samples[0], t.samples.at(-1)!];
-    expect(Math.hypot(p.x, p.y)).toBeCloseTo(5);
-    expect(Math.hypot(q.x - 20, q.y)).toBeCloseTo(5);
-    expect(Math.abs(t.mid.y)).toBeGreaterThan(0.5);
-    expect(circleEdge({ x: 0, y: 0 }, 2, { x: 0, y: 10 })).toEqual({ x: 0, y: 2 });
-  });
-
-  it('scatters drawings inside a country, off the places and apart', () => {
-    const avoid = [{ p: { x: 0, y: 0 }, r: 4 }];
-    const spots = scatter({ x: 0, y: 0 }, 12, 10, 8, 3, avoid, [{ x: 30, y: 0 }]);
-    expect(spots.length).toBe(8);
-    for (const s of spots) {
-      expect(Math.hypot(s.x, s.y)).toBeGreaterThanOrEqual(4);
-      expect(Math.hypot(s.x - 30, s.y)).toBeGreaterThan(Math.hypot(s.x, s.y));
-    }
-    expect(scatter({ x: 0, y: 0 }, 12, 10, 8, 3, avoid, [{ x: 30, y: 0 }])).toEqual(spots);
-  });
-
-  it('groups linked scenes on one map into a region', () => {
-    expect(
-      regions(
-        [undefined, 'a.map', 'a.map', 'b.map', 'a.map'],
-        [
-          [1, 2],
-          [2, 3],
-          [0, 1],
-        ],
-      ),
-    ).toEqual([[1, 2], [3], [4]]);
   });
 });

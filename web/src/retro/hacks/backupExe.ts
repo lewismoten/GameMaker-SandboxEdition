@@ -38,7 +38,7 @@ import {
 const TITLE = 'BACKUP 2.1  Saved-game backup for Game-Maker games';
 const COPYRIGHT = 'Copyright (C) 1995 Sandbox Software.  Freeware.';
 /** What BACKUP labels its backups (the date is kept beside the label). */
-export const BACKUP_LABEL = 'BACKUP.EXE';
+const BACKUP_LABEL = 'BACKUP.EXE';
 
 const stamp = (when: number) => dosStamp(deskDate(when));
 const plural = (n: number, one: string, many = `${one}s`) => `${num(n)} ${n === 1 ? one : many}`;
@@ -184,7 +184,7 @@ async function backupUi(h: RetroHost): Promise<void> {
       break;
     }
     const rows: ListRow[] = games.map((g) => ({
-      text: `${picked.has(g.save) ? '[\xfb]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 26)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(8)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
+      text: `${picked.has(g.save) ? '[√]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 26)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(8)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
       a: g.files ? BRIGHT : DIM,
     }));
     statusLine(

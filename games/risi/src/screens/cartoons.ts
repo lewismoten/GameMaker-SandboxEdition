@@ -10,6 +10,7 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Reel } from '../../../kit/reel';
+import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, micro, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -105,7 +106,7 @@ function triclinium(pal: Pal): Pixels {
 /** How many pictures of the cover the title animates through. */
 const COVER_FRAMES = 12;
 
-/** The title cartoon (cover.fli) and its last picture with the name on it (title.gif's pixels and palette). */
+/** The title cartoon (cover.fli: the cover comes to life, an iris closes, a fade to black) and the cover with the name on it (title.gif's pixels and palette). */
 export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } {
   const frames = Array.from({ length: COVER_FRAMES }, (_, k) => coverRgb(k / (COVER_FRAMES - 1)));
   // inks for the lettering first (black, Pompeian red, gold, a deep shadow, white), then the cover's colors
@@ -126,21 +127,17 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
   const name = (p: Pixels, drop: number, sub: boolean) => {
     outlined(p, 160 - textWidth('VENI, VIDI, RISI!', 2) / 2, drop, 'VENI, VIDI, RISI!', 1, 3, 2, 3);
     if (sub) {
-      outlined(p, 160 - textWidth('I CAME, I SAW, I LAUGHED') / 2, drop + 18, 'I CAME, I SAW, I LAUGHED', 2, 3);
+      outlined(p, 160 - textWidth('I CAME, I SAW, I LAUGHED') / 2, drop + 22, 'I CAME, I SAW, I LAUGHED', 2, 3);
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 - Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
   r.fadeIn(pics[0], 6);
   pics.forEach((p, i) => r.add(p, i === 0 ? 4 : 2));
   const last = pics[pics.length - 1];
-  for (const [k, drop] of [-40, -24, -8, 4, 9, 6, 7].entries()) {
-    const p = new Pixels(W, H);
-    p.px.set(last.px);
-    name(p, drop, k >= 5);
-    r.add(p, k === 6 ? 10 : 1);
-  }
+  // the name is the title picture's: the cartoon closes on an iris and fades to black instead
+  r.irisOut(176, 78, 8).fadeOut(fadeOutLength(SPEED));
   const title = new Pixels(W, H);
   title.px.set(last.px);
   name(title, 7, true);
@@ -252,6 +249,10 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     p.rect(0, STRIP - 1, W, 1, c('gold', 1)).rect(0, 174, W, 1, c('gold', 1));
     const drop = [-24, -14, -2, 6, 3, 4][Math.min(5, k)];
     micro(p, 4, 3, info.numeral, c('gold', 2), 2);
+    // and how many there are, small under it
+    micro(p, 4, 16, `OF ${CARDS[CARDS.length - 1].numeral}`, c('gold', 1));
+    // the first card says how to save
+    if (i === 0) micro(p, 4, 24, 'F5 SAVES, F6 LOADS', c('gold', 1));
     outlined(p, 160 - textWidth(info.title, big ? 2 : 1) / 2, drop + (big ? 0 : 6), info.title, c('marble', 3), c('pompeii', 0), big ? 2 : 1);
     if (k >= 5) centered(p, 34, info.english, c('ochre', 3));
     // what to do here, and the key for it

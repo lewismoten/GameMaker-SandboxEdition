@@ -1,0 +1,310 @@
+/* The Library (#/library, libraryPage.ts): a card for everything to read and print. */
+
+main.library {
+  --lib-card-w: 168px;
+  --lib-thumb-h: 132px;
+  --lib-shelf: #e7dcc4;
+  --lib-shelf-edge: #b9a57f;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+:root[data-theme='dark'] main.library {
+  --lib-shelf: #2a2a33;
+  --lib-shelf-edge: #4a4a58;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='auto'] main.library {
+    --lib-shelf: #2a2a33;
+    --lib-shelf-edge: #4a4a58;
+  }
+}
+
+.library h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+.library .lead {
+  max-width: 46rem;
+  margin: 0 0 20px;
+  font-size: 16px;
+}
+
+.lib-kicker {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lib-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.lib-orders {
+  display: flex;
+  gap: 6px;
+}
+
+.lib-order {
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 14px;
+}
+
+.lib-order[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.lib-count {
+  margin: 0 0 0 auto;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lib-loading {
+  color: var(--muted);
+}
+
+.lib-group {
+  margin-bottom: 28px;
+}
+
+.lib-group h2 {
+  margin: 0 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 20px;
+}
+
+.lib-group h3 {
+  margin: 14px 0 8px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.lib-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--lib-card-w)), 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* a card: the picture over its name; the whole card is the button or link */
+.lib-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lib-card:hover {
+  border-color: var(--accent);
+}
+
+.lib-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.lib-card.opening {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.lib-thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: var(--lib-thumb-h);
+  overflow: hidden;
+  border-bottom: 1px solid var(--lib-shelf-edge);
+  background: var(--lib-shelf);
+}
+
+.lib-icon {
+  font-size: 44px;
+  line-height: 1;
+}
+
+/* a picture from the site's files (a video's), filling the frame */
+.lib-picture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* the first sheet, laid out wide and shrunk (thumbs.ts) */
+.lib-shrunk {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.lib-shrunk .pp-sheet {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.lib-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px 10px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.lib-name small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* a manual's card: a little booklet in its box's colors */
+.lib-book {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 78px;
+  height: 108px;
+  padding: 18px 6px 6px;
+  border-radius: 2px 4px 4px 2px;
+  background: var(--lib-bg, #1d3c78);
+  box-shadow:
+    inset 4px 0 0 rgba(0, 0, 0, 0.2),
+    0 6px 14px rgba(0, 0, 0, 0.35);
+  color: var(--lib-ink, #fff);
+  font:
+    700 10px/1.15 system-ui,
+    sans-serif;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.lib-book-band {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  left: 0;
+  height: 6px;
+  background: var(--lib-band, #ffd23f);
+}
+
+/* the Game-Maker Owner's Guide: blueprint paper, comb-bound */
+.lib-book-gm {
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 9px), #1d3c78;
+  box-shadow:
+    inset 6px 0 0 #111,
+    0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 480px) {
+  main.library {
+    --lib-card-w: 140px;
+    --lib-thumb-h: 112px;
+  }
+
+  .lib-count {
+    margin-left: 0;
+  }
+}
+
+/* one game or kind of paper, or all of them */
+.lib-pick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lib-only-label {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lib-only {
+  min-width: 0;
+  max-width: min(22rem, 100%);
+  min-height: 32px;
+  font-size: 14px;
+}
+
+.lib-pick[hidden] {
+  display: none;
+}
+
+/* a piece the same in several boxes: how many */
+.lib-name .lib-boxes {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* TURBO BUTTON's cover, at the magazine's own page size before it is shrunk (covers.ts) */
+.lib-mag-paper {
+  container-type: inline-size;
+  position: relative;
+  width: 816px;
+  height: 1056px;
+}
+
+/* an issue's number over its picture */
+.lib-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #b3261e;
+  color: #fff;
+  font:
+    700 13px/1.4 system-ui,
+    sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* a walkthrough's length, where a video's length sits */
+.lib-badge.lib-length {
+  top: auto;
+  right: 8px;
+  bottom: calc(100% - var(--lib-thumb-h) + 8px);
+  left: auto;
+  background: rgba(0, 0, 0, 0.82);
+  font-variant-numeric: tabular-nums;
+}

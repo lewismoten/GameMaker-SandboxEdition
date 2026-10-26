@@ -36,7 +36,8 @@ export function buildPictures(cast: Cast): Record<string, Uint8Array> {
     p.rect(24, 6, 272, 190, c('parch', 4)).frame(24, 6, 272, 190, c('parch', 1));
     for (let y = 8; y < 194; y += 3) p.set(25, y, c('parch', 2)).set(294, y + 1, c('parch', 2));
     // a coffee ring by the heading
-    for (let a = 0; a < Math.PI * 2; a += 0.05) p.set(270 + Math.cos(a) * 9, 20 + Math.sin(a) * 6, c('coffee', 2));
+    const ringX = Math.max(270, Math.round(160 + textWidth(heading, 2) / 2 + 12)); // clear of a long heading
+    for (let a = 0; a < Math.PI * 2; a += 0.05) p.set(ringX + Math.cos(a) * 9, 20 + Math.sin(a) * 6, c('coffee', 2));
     centered(p, 14, heading, c('brown', 1), 2);
     return p;
   };

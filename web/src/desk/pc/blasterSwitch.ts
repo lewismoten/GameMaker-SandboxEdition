@@ -1,11 +1,14 @@
-// The Sound Blaster switch on the right speaker's front, under the volume knob,: it puts the desk PC's sound card in or
-// takes it out (retro/computer/soundBlaster.ts). Without the card, games and Game-Maker's
-// designers play their sounds on the PC speaker and there is no music. Programs look for the
-// card as they start, as PLAYGAME did, so a game already playing keeps its sound until the next:
-// flipping it mid-game shows a note over the speaker with a button to start the game again.
+// The Sound Boaster switch on the right speaker's front, under the volume knob: it puts the
+// desk PC's sound card in or takes it out (retro/computer/soundBlaster.ts). Sound Boaster is
+// the card's made-up parody brand (like the speakers' ILLOGITECH); the card itself is Sound
+// Blaster compatible. Without the card, games and Game-Maker's designers play their sounds on
+// the PC speaker and there is no music. Programs look for the card as they start, as PLAYGAME
+// did, so a game already playing keeps its sound until the next: flipping it mid-game shows a
+// note over the speaker with a button to start the game again.
 import './blasterSwitch.css';
 import { h } from '../../editor/core/ui';
 import { setSoundBlaster, soundBlaster } from '../../retro/computer/soundBlaster';
+import { unlockAchievement } from '../../achievements';
 
 /** What the switch needs from the desk PC. */
 export interface BlasterPc {
@@ -16,29 +19,30 @@ export interface BlasterPc {
 }
 
 /** How long the note stays up (ms) unless the pointer or focus is on it. */
-export const NOTE_MS = 6000;
+const NOTE_MS = 6000;
 
 export function blasterSwitch(pc?: BlasterPc): HTMLElement {
   const el = h(
     'button',
-    { class: 'sb-switch', type: 'button', role: 'switch', 'aria-label': 'Sound Blaster card' },
-    h('span', { class: 'sb-print', 'aria-hidden': 'true' }, 'SOUND', h('br'), 'BLASTER'),
+    { class: 'sb-switch', type: 'button', role: 'switch', 'aria-label': 'Sound Boaster card' },
+    h('span', { class: 'sb-print', 'aria-hidden': 'true' }, 'SOUND', h('br'), 'BOASTER'),
     h('span', { class: 'sb-track', 'aria-hidden': 'true' }, h('span', { class: 'sb-knob' })),
   );
   const show = () => {
     const on = soundBlaster();
     el.setAttribute('aria-checked', String(on));
     el.dataset.on = String(on);
-    el.title = on ? 'Sound Blaster on: music and digital sound. Click to switch it off.' : 'Sound Blaster off: PC speaker only. Click to switch it on.';
+    el.title = on ? 'Sound Boaster on: music and digital sound. Click to switch it off.' : 'Sound Boaster off: PC speaker only. Click to switch it on.';
   };
   const note = blasterNote(el);
   el.addEventListener('click', () => {
     const on = !soundBlaster();
     setSoundBlaster(on);
+    if (!on) unlockAchievement('desk-soundcard');
     show();
     const playing = pc ? pc.gamePlaying() : !!document.querySelector('.crt-game canvas');
     note.open(
-      on ? 'Sound Blaster on: music and digital sound.' : 'Sound Blaster off: sounds play on the PC speaker, with no music.',
+      on ? 'Sound Boaster on: music and digital sound.' : 'Sound Boaster off: sounds play on the PC speaker, with no music.',
       playing && pc ? () => pc.restartGame() : undefined,
     );
   });
@@ -63,7 +67,7 @@ function blasterNote(sw: HTMLElement): { open(text: string, restart?: () => bool
   const closeBtn = h('button', { type: 'button', class: 'sb-note-close', 'aria-label': 'Close', title: 'Close (Esc)' }, '×');
   const panel = h(
     'div',
-    { class: 'sb-note', role: 'group', 'aria-label': 'Sound Blaster', hidden: true },
+    { class: 'sb-note', role: 'group', 'aria-label': 'Sound Boaster', hidden: true },
     text,
     h('div', { class: 'sb-note-buttons' }, restartBtn, closeBtn),
   );

@@ -176,9 +176,14 @@ export function infoPanel(kind: string): Pixels {
     case 'shard':
       p.blit(drawShard(0).crop(4, 0, 12, 20), 4, 0, 255);
       break;
-    case 'credit':
-      p.blit(drawPickup('credit').crop(3, 2, 14, 16), 3, 2, 255);
+    case 'credit': {
+      // a half-size chip over a "+5" plate: a sign about credits, not one to grab
+      const chip = drawPickup('credit').crop(3, 2, 14, 16);
+      const half = new Pixels(7, 8, 255).map((x, y) => chip.get(x * 2, y * 2));
+      p.blit(half, 6, 2, 255);
+      key(4, 11, 11, ['.#...####', '###..#...', '.#...###.', '........#', '.....###.']);
       break;
+    }
     case 'down':
       key(6, 12, 7, ['..#..', '..#..', '#####', '.###.', '..#..']);
       fill(p, new Mask().ellipse(10, 6, 4, 4), S('suit', 3));

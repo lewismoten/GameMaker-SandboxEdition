@@ -1,9 +1,11 @@
 // Doc Leo from the side, walking right, for the cast stage: the games only draw him facing you
 // (games/teddy/src/sprites/people.ts docLeo) or half his size (Shakespeare in Sweatpants), so
 // this draws his walk to match docLeo(): the same 20x40, the same colors (Teddy's palette) and
-// the same costume: chewed felt fedora, wire glasses, red nose, ash-gray beard round a white
-// mouth, navy corduroy jacket over a purple shirt, green tie, blue suspenders, patched
-// trousers, red sneakers, and the rubber chicken trotting behind on its leash.
+// the same costume: chewed felt fedora, wire glasses, white makeup round his eye and his mouth,
+// his own nose and cheek sunburned pink, painted gray stubble, navy corduroy jacket over a
+// purple shirt, green tie, blue suspenders, patched trousers, red sneakers, and the rubber
+// chicken trotting behind on its leash. (The face is Teddy's Little Biggest Adventure's side
+// view, games/teddy3/src/sprites/leo.ts.)
 import { Pixels } from '../../games/kit/pixels';
 import { CLEAR, outline } from '../../games/teddy/src/art/draw';
 import { CK } from '../../games/teddy/src/sprites/klown';
@@ -12,7 +14,7 @@ import { P } from '../../games/teddy/src/art/pal';
 // docLeo's own colors (people.ts K)
 const K: Record<string, number> = {
   ...CK,
-  u: P.c('stone', 1),
+  u: P.c('stone', 2),
   U: P.c('stone', 3),
   m: P.c('metal', 2),
   k: P.c('stone', 1),
@@ -21,6 +23,7 @@ const K: Record<string, number> = {
   c: P.c('blue', 2),
   v: P.c('purple', 2),
   a: P.c('pink', 2),
+  N: P.c('tongue', 1),
   t: P.c('asphalt', 1),
   T: P.c('asphalt', 2),
 };
@@ -31,17 +34,17 @@ const HAT = ['.......oooooo.......', '......okkOkkko......', '......okkkkkko....
 const HAIR = ['....................', '....................', '.......oooooo.......', '......okuukkuo......', '.....okkuukkkuo.....'];
 const TOP = [
   ...HAT,
-  '......ousSSSSSo.....',
-  '......ouoooSoooo....',
-  '......ouusmwmmSo....',
-  '......ouuasmmSSo....',
-  '......ouuaasSRRo....',
-  '......ouuusSRRRo....',
+  '......osSSSSSSSo....',
+  '.....osSSSmmmmmmo...',
+  '.....oSSsSSmwwwm....',
+  '.....osOsSSmwowm....',
+  '.....osssSSSwwwso...',
+  '.....oSSSSSaSNNNo...',
+  '.....ouSSSSaSNNNNo..',
+  '.....ouuuSSwwwwoo...',
+  '.....ouuuuwoowwo....',
   '......ouuuuwwwuo....',
-  '.......ouuwoowuo....',
-  '.......ouuuwwuo.....',
-  '........ouuuuo......',
-  '.........ouuo.......',
+  '.......ouuuuuuo.....',
   '.......oxxxxvGo.....',
   '......oxxXxxvGGo....',
   '......oxxxxxcvGo....',

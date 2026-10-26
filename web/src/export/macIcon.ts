@@ -1,5 +1,5 @@
 // The Mac app's icon (Contents/Resources/AppIcon.icns), drawn without a canvas so the web
-// app and mac/package.ts make the same one: a rounded tile in the shape of a macOS icon
+// app and web/scripts/macDmg.ts make the same one: a rounded tile in the shape of a macOS icon
 // with a little 4:3 screen showing the game (its first level, as the home page's tiles do,
 // or its title picture), saved as PNGs inside an .icns file.
 //
@@ -123,7 +123,7 @@ export function drawIcon(picture: IndexedImage | undefined, colors: IconColors =
 }
 
 /** Halves an RGBA image (each pixel the average of four, weighted by alpha). */
-export function halve(rgba: Uint8Array, size: number): Uint8Array {
+function halve(rgba: Uint8Array, size: number): Uint8Array {
   const h = size / 2;
   const out = new Uint8Array(h * h * 4);
   for (let y = 0; y < h; y++)

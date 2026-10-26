@@ -1,9 +1,10 @@
-// The felt eggs under black light: with the tube on (blacklight.ts), some of the eggs found
-// so far, standing in their frame on the shelf (eggs/eggDisplay.ts), show what plain light
-// hides, in fluorescent ink: dots, stripes, a zigzag, little stars, and on one a tiny
-// smiling face (eggs/eggUv.ts, shared with the close-up viewer). Only on eggs that are there;
-// drawn over each egg, clipped to its shape.
-import { UV_SVG, uvInk } from '../../eggs/eggUv';
+// The felt eggs under black light: with the tube on (blacklight.ts), the eggs found so far,
+// standing in their frame on the shelf (eggs/eggDisplay.ts), sink to a dim violet, and some
+// show what plain light hides, in fluorescent ink that glows bright: dots, stripes, a zigzag,
+// little stars, and on one a tiny smiling face (eggs/eggUv.ts, shared with the close-up
+// viewer). Only on eggs that are there; drawn over each egg, clipped to its shape.
+import { UV_SVG, hot, uvInk } from '../../eggs/eggUv';
+import { achieve } from './propKit';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -39,7 +40,6 @@ export function eggGlow(desk: HTMLElement): { update(): void; dispose(): void } 
     layer.setAttribute('aria-hidden', 'true');
     eggs.forEach((egg, i) => {
       const ink = uvInk(i);
-      if (!ink) return;
       const r = egg.getBoundingClientRect();
       const svg = document.createElementNS(NS, 'svg');
       svg.setAttribute('viewBox', '0 0 20 27');
@@ -50,10 +50,19 @@ export function eggGlow(desk: HTMLElement): { update(): void; dispose(): void } 
         height: `${r.height / k}px`,
       });
       const id = `egg-uv-${i}`;
-      svg.innerHTML = `<defs><clipPath id="${id}"><ellipse cx="10" cy="15" rx="8.6" ry="11.2"/></clipPath></defs><g clip-path="url(#${id})">${UV_SVG[ink.pattern](ink.ink)}</g>`;
+      // every egg's felt sinks to a dim violet; on the inked ones the ink glows over it, a wide
+      // halo under a white-hot core
+      const dim = `<ellipse cx="10" cy="15" rx="8.6" ry="11.2" fill="#1c0838" opacity="0.55"/>`;
+      const art = ink && UV_SVG[ink.pattern];
+      svg.innerHTML = !ink
+        ? dim
+        : `<defs><clipPath id="${id}"><ellipse cx="10" cy="15" rx="8.6" ry="11.2"/></clipPath>` +
+          `<filter id="${id}-g" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.1"/><feMerge><feMergeNode/><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>` +
+          `<g clip-path="url(#${id})">${dim}<g filter="url(#${id}-g)">${art!(ink.ink, 1.5)}</g>${art!(hot(ink.ink), 0.7)}</g>`;
       layer!.append(svg);
     });
     perch.append(layer);
+    if (eggs.some((_, i) => uvInk(i))) achieve('desk-egg-uv');
   };
   return {
     update,

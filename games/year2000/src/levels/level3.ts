@@ -1,6 +1,6 @@
 // Level 3: MEGA MALL 2000. Three floors of shopping under one glass roof: the ARCADE
-// (quarters buy points), TV-RAMA (five hundred channels, all of them on at once), PILLS
-// food court (the whole Thanksgiving dinner in one capsule), and a hover-rink downstairs.
+// (quarters buy points), TV-RAMA (five hundred channels, all of them on at once), the FOOD
+// court (the whole Thanksgiving dinner in one dinner pill), and a hover-rink downstairs.
 // The Employees Only keycard is locked in a laser display case at TV-RAMA; the loading
 // dock behind the STAFF door has a Teleport-A-Phone. Security robots don't like running.
 import { LevelMap, type Legend } from './mapkit';
@@ -95,7 +95,7 @@ const ROWS = [
 export function level3(set: BlockSet): LevelMap {
   const m = new LevelMap(set, 'void');
   m.stamp(0, 0, ROWS, LEGEND, 'tile');
-  // a tin heart tucked behind the food court's tables at PILLS
+  // a tin heart tucked behind the food court's tables under its FOOD sign
   m.set_(42, 1, 'tinHeart');
   return m;
 }

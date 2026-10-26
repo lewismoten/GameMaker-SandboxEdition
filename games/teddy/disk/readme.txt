@@ -6,7 +6,7 @@ Teddy is a Pembroke Welsh Corgi
 who knows a ton of tricks. His
 person, Doc Leo, is a friendly
 hobo clown, and tonight he is
-the star of the Klown Klub's
+the star of the Clown Club's
 Big Show. But Teddy's big
 sister Gwinn just ran off with
 Doc Leo's costume suitcase and
@@ -94,7 +94,7 @@ SAYING THANKS
   Designs. For Teddy, for
   Gwinn (yes, even Gwinn), and
   for Doc Leo and every
-  friendly clown in every Klown
-  Klub.
+  friendly clown in every
+  Clown Club.
 
 Woof!

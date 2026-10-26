@@ -28,8 +28,8 @@ const S = (rows: string[], dx?: number, dy?: number) => sprite(rows, KEY, dx, dy
 
 // Side view, facing right. Head on the right, fluffy white rump on the left.
 const HEAD = [
-  '.............o......',
-  '..........o.oeo.....',
+  '....................',
+  '..........o..o......',
   '.........oeooeo.....',
   '.........oetoeto....',
   '........oTtttttoo...',
@@ -75,8 +75,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // Mouth open: "Woof!"
   bark: S([
-    '.............o......',
-    '..........o.oeo.....',
+    '....................',
+    '..........o..o......',
     '.........oeooeo.....',
     '.........oetoeto....',
     '........oTtttttoo...',
@@ -95,8 +95,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // Nose to the ground, front paws scrabbling.
   dig1: S([
-    '.....o..............',
-    '..o.oeo.............',
+    '....................',
+    '..o..o..............',
     '.oeooeo.............',
     'oetoetoo....oo......',
     'oTtttttTo..owwo.....',
@@ -110,8 +110,8 @@ export const POSES: Record<string, Pixels> = {
     '...owwo...owwo......',
   ]),
   dig2: S([
-    '.....o..............',
-    '..o.oeo.............',
+    '....................',
+    '..o..o..............',
     '.oeooeo.............',
     'oetoetoo....oo......',
     'oTtttttTo..owwo.....',
@@ -126,8 +126,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // Up on the hind legs (the raised paw is drawn in the block above).
   reach: S([
-    '.............o......',
-    '..........o.oeo.....',
+    '....................',
+    '..........o..o......',
     '.........oeooeo.....',
     '.........oetoeto....',
     '........oTtttttoo...',
@@ -146,8 +146,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // Sitting pretty, side view.
   sit: S([
-    '.............o......',
-    '..........o.oeo.....',
+    '....................',
+    '..........o..o......',
     '.........oeooeo.....',
     '.........oetoeto....',
     '........oTtttttoo...',
@@ -166,8 +166,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // Front view for idling and the middle of a spin.
   front: S([
-    '...o................',
-    '..oeo.........o.....',
+    '....................',
+    '...o..........o.....',
     '..oeo........oeo....',
     '..oeto......oteo....',
     '..otttooooootttoo...',
@@ -185,8 +185,8 @@ export const POSES: Record<string, Pixels> = {
     '...oo.oooooo.oo.....',
   ]),
   frontBlink: S([
-    '...o................',
-    '..oeo.........o.....',
+    '....................',
+    '...o..........o.....',
     '..oeo........oeo....',
     '..oeto......oteo....',
     '..otttooooootttoo...',
@@ -204,8 +204,8 @@ export const POSES: Record<string, Pixels> = {
     '...oo.oooooo.oo.....',
   ]),
   frontTilt: S([
-    '..o.................',
-    '.oeo.........o......',
+    '....................',
+    '..o..........o......',
     '.oeo........oeo.....',
     '.oeto......oteo.....',
     '.otttooooootttoo....',
@@ -261,8 +261,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // From behind: the famous loaf.
   back: S([
-    '..............o.....',
-    '...o.........oto....',
+    '....................',
+    '...o..........o.....',
     '..oto........oto....',
     '..otto......totto...',
     '..otttooooootttoo...',
@@ -303,8 +303,8 @@ export const POSES: Record<string, Pixels> = {
   // Playing dead: flat on his side, tongue out, X eyes. Only six pixels tall.
   dead: S(['..owwoo.owwoo.......', '.ooooooooooooooo.ooo', 'owwttttttttttTttooeo', 'owwwttttttttttkkttto', '.owwwwwwwwwwwwwwwwpk', '..oooooooooooooooopo']),
   frontBark: S([
-    '...o................',
-    '..oeo.........o.....',
+    '....................',
+    '...o..........o.....',
     '..oeo........oeo....',
     '..oeto......oteo....',
     '..otttooooootttoo...',
@@ -321,6 +321,30 @@ export const POSES: Record<string, Pixels> = {
     '..owwowwwwwowwo.....',
     '...oo.oooooo.oo.....',
   ]),
+  // Hopping up (or climbing) from behind: the loaf, legs tucked.
+  backHop: S(
+    [
+      '....................',
+      '...o..........o.....',
+      '..oto........oto....',
+      '..otto......totto...',
+      '..otttooooootttoo...',
+      '...otTTTTTTTTtto....',
+      '...otttttttttto.....',
+      '..otttttttttttto....',
+      '..otttttttttttto....',
+      '..otttTTTTTTtttto...',
+      '..ottwwwwwwwwttoo...',
+      '..ootwwwwwwwwwtoo...',
+      '.owwtwwwwWwwwtwwo...',
+      '..ooowwwWWWwwooo....',
+      '....owwwwwwwwo......',
+      '...owwo....owwo.....',
+      '...oo......oo.......',
+    ],
+    undefined,
+    1,
+  ),
   // Hopping straight up: legs tucked, ears flying.
   frontHop: S(
     [
@@ -346,8 +370,8 @@ export const POSES: Record<string, Pixels> = {
   ),
   // On the hind legs for a high five; the raised paw is in the block above.
   frontReach: S([
-    '...o................',
-    '..oeo.........o..o..',
+    '....................',
+    '...o..........o..o..',
     '..oeo........oeoowo.',
     '..oeto......oteowwo.',
     '..otttooooootttowwo.',
@@ -368,8 +392,8 @@ export const POSES: Record<string, Pixels> = {
   ]),
   // Sitting pretty: both front paws up.
   frontBeg: S([
-    '...o................',
-    '..oeo.........o.....',
+    '....................',
+    '...o..........o.....',
     '..oeo........oeo....',
     '..oeto......oteo....',
     '..otttooooootttoo...',
@@ -424,8 +448,8 @@ export const POSES: Record<string, Pixels> = {
   // Mid-air, stretched out.
   hop: S(
     [
-      '.............o......',
-      '..........o.oeo.....',
+      '....................',
+      '..........o..o......',
       '.........oeooeo.....',
       '.........oetoeto....',
       '........oTtttttoo...',
@@ -445,8 +469,8 @@ export const POSES: Record<string, Pixels> = {
     1,
   ),
   hurt: S([
-    '..........o.........',
-    'k........oeo.o......',
+    '....................',
+    'k.........o..o......',
     '.k.......oeooeo.....',
     '.........oetoeto....',
     '........owwwwwwoo...',
@@ -475,9 +499,6 @@ export const POSES: Record<string, Pixels> = {
     '...ooooooooooooooo..',
   ]),
 };
-
-/** The raised paw shown in the block above Teddy's head during a high five. */
-export const PAW_UP = S(['.....oo.....', '....owwo....', '...owwwwo...', '...owwwwo...', '....owwo....', '....otto....', '....otto....', '....otto....'], 7);
 
 /** Little stars circling a dizzy head (drawn above when tuckered out). */
 export const ZZZ = S(['.......kkk..', '.........k..', '........k...', '.......kkk..', '....kk......', '.....k......', '....kk......'], 6, 10);

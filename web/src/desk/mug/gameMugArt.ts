@@ -1,46 +1,48 @@
-// Mug pictures for the Sandbox Software games: each game's own title screen (TITLE.GIF) over
-// a band in its box colors, with its hero standing at both ends of the band (the first frame
-// of the hero's .CHR, drawn from its .CBL blocks in the palette of a level the hero plays in).
+// Mug pictures for the Sandbox Software games, each a badge (gameBadge.ts) made from the game's
+// own files: a round medallion cut from its title screen (TITLE.GIF), the title's lettering on
+// a ribbon across it, and its hero standing in front (the first frame of the hero's .CHR, drawn
+// from its .CBL blocks in the palette of a level the hero plays in).
 import { fetchGameFile, loadGameList, type CatalogEntry } from '../../project/files';
 import { decodeGif, isGif } from '../../formats/gif';
 import { parseGame } from '../../formats/game';
 import { parseCharacter } from '../../formats/character';
-import { BLEN, CHARBL, parseBlocks } from '../../formats/blocks';
-import { parsePalette } from '../../formats/palette';
-import { paintIndexed } from '../../editor/core/draw';
-import { FONT8X8 } from '../../gfx/font8x8';
+import { BLEN, CHARBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
+import { paletteToRGBA, parsePalette } from '../../formats/palette';
+import { BADGE_H, BADGE_W, composeBadge, trimSprite, type BadgeLook, type Rgba } from './gameBadge';
 
-/** The games, in the box's order, each with its hero's character file. */
-export const GAME_MUGS: [game: string, hero: string][] = [
-  ['maximus', 'courier'],
-  ['teddy', 'teddy'],
-  ['year2000', 'dex'],
-  ['blaster', 'ship'],
-  ['logic', 'watt'],
-  ['sleuth', 'ada'],
-  ['snowbound', 'kid'],
-  ['sandcast', 'sandcast'],
-];
-
-/** The picture is a 320 x 200 title screen over a band this tall. */
-export const GAME_ART_W = 320;
-export const GAME_ART_H = 268;
-const BAND = GAME_ART_H - 200;
-
-/** Text in the 8 x 8 BIOS font. */
-function text(g: CanvasRenderingContext2D, s: string, x: number, y: number, color: string): void {
-  g.fillStyle = color;
-  for (let i = 0; i < s.length; i++) {
-    const code = s.charCodeAt(i);
-    for (let row = 0; row < 8; row++) {
-      const bits = FONT8X8[code * 8 + row];
-      for (let col = 0; col < 8; col++) if (bits & (1 << col)) g.fillRect(x + i * 8 + col, y + row, 1, 1);
-    }
-  }
+/** A game's mug: its hero's character file, and where its title screen's lettering is (and the rest of its look). */
+export interface GameMug extends BadgeLook {
+  game: string;
+  hero: string;
 }
 
+/** The games, in the box's order. */
+export const GAME_MUGS: GameMug[] = [
+  { game: 'maximus', hero: 'courier', title: [0, 16, 320, 94], centerX: 205 },
+  { game: 'teddy', hero: 'teddy', title: [16, 0, 304, 82], centerX: 200, side: 'left' },
+  { game: 'year2000', hero: 'dex', title: [8, 2, 312, 90], centerX: 160 },
+  { game: 'blaster', hero: 'ship', title: [4, 6, 316, 90], centerX: 160 },
+  { game: 'logic', hero: 'watt', title: [6, 10, 312, 86], centerX: 170, side: 'left', hide: [[0, 0, 112, 10]] },
+  { game: 'sleuth', hero: 'ada', title: [36, 0, 286, 73], centerX: 160, hide: [[94, 64, 226, 73]] },
+  { game: 'snowbound', hero: 'kid', title: [6, 10, 314, 82], centerX: 160 },
+  {
+    game: 'sandcast',
+    hero: 'sandcast',
+    title: [30, 9, 290, 96],
+    centerX: 160,
+    hide: [
+      [0, 0, 320, 9],
+      [0, 96, 66, 120],
+      [244, 96, 320, 120],
+    ],
+  },
+];
+
+export const GAME_ART_W = BADGE_W;
+export const GAME_ART_H = BADGE_H;
+
 /** The hero, 20 x 40 (top and bottom block), or undefined. */
-async function hero(entry: CatalogEntry, name: string): Promise<HTMLCanvasElement | undefined> {
+async function hero(entry: CatalogEntry, name: string): Promise<Rgba | undefined> {
   const [gam, chrB, cblB] = await Promise.all([
     entry.gam ? fetchGameFile(entry, entry.gam) : undefined,
     fetchGameFile(entry, `${name}.chr`),
@@ -52,76 +54,31 @@ async function hero(entry: CatalogEntry, name: string): Promise<HTMLCanvasElemen
   const scene = scenes.find((s) => s.files[5]?.toLowerCase() === `${name}.chr`) ?? scenes[0];
   const palB = scene?.files[0] ? await fetchGameFile(entry, scene.files[0]) : undefined;
   if (!palB) return undefined;
-  const pal = parsePalette(palB);
+  const lut = paletteToRGBA(parsePalette(palB));
   const frame = parseCharacter(chrB).sequences[0]?.frames[0];
   const blocks = parseBlocks(cblB, CHARBL);
   if (!frame) return undefined;
-  const c = document.createElement('canvas');
-  c.width = BLEN;
-  c.height = 2 * BLEN;
-  const g = c.getContext('2d')!;
-  for (const [pic, y] of [
-    [frame.pic1, 0],
-    [frame.pic2, BLEN],
-  ]) {
+  const out: Rgba = { width: BLEN, height: 2 * BLEN, data: new Uint32Array(BLEN * 2 * BLEN) };
+  [frame.pic1, frame.pic2].forEach((pic, i) => {
     const b = blocks[pic];
-    if (!b) continue;
-    const one = document.createElement('canvas');
-    paintIndexed(one, b.pixels, BLEN, BLEN, pal, true);
-    g.drawImage(one, 0, y);
-  }
-  return c;
-}
-
-/** The part of a sprite that isn't see-through, or undefined if it's empty. */
-function trim(c: HTMLCanvasElement): HTMLCanvasElement | undefined {
-  const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
-  let [x0, y0, x1, y1] = [c.width, c.height, -1, -1];
-  for (let y = 0; y < c.height; y++)
-    for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3]) [x0, y0, x1, y1] = [Math.min(x0, x), Math.min(y0, y), Math.max(x1, x), Math.max(y1, y)];
-  if (x1 < 0) return undefined;
-  const out = document.createElement('canvas');
-  out.width = x1 - x0 + 1;
-  out.height = y1 - y0 + 1;
-  out.getContext('2d')!.drawImage(c, -x0, -y0);
+    if (b) for (let k = 0; k < BLEN * BLEN; k++) out.data[i * BLEN * BLEN + k] = b.pixels[k] === TRANSPARENT ? 0 : lut[b.pixels[k]];
+  });
   return out;
 }
 
-/** A game's mug picture, GAME_ART_W x GAME_ART_H, or undefined if its files can't be had. */
-export async function gameMugArt(game: string, heroName: string): Promise<HTMLCanvasElement | undefined> {
-  const entry = (await loadGameList().catch(() => [])).find((c) => c.id === game);
+/** A game's mug picture, GAME_ART_W x GAME_ART_H, see-through round the badge, or undefined if its files can't be had. */
+export async function gameMugArt(mug: GameMug): Promise<HTMLCanvasElement | undefined> {
+  const entry = (await loadGameList().catch(() => [])).find((c) => c.id === mug.game);
   if (!entry) return undefined;
-  const [titleB, sprite] = await Promise.all([fetchGameFile(entry, 'title.gif'), hero(entry, heroName).catch(() => undefined)]);
+  const [titleB, sprite] = await Promise.all([fetchGameFile(entry, 'title.gif'), hero(entry, mug.hero).catch(() => undefined)]);
   if (!titleB || !isGif(titleB)) return undefined;
-  const title = decodeGif(titleB);
-  const shot = document.createElement('canvas');
-  paintIndexed(shot, title.pixels, title.width, title.height, title.palette);
-  const box = entry.original?.box as { background?: string; accent?: string; ink?: string } | undefined;
+  const badge = composeBadge(decodeGif(titleB), sprite && trimSprite(sprite), entry.original?.box ?? {}, mug);
   const c = document.createElement('canvas');
-  c.width = GAME_ART_W;
-  c.height = GAME_ART_H;
+  c.width = badge.width;
+  c.height = badge.height;
   const g = c.getContext('2d')!;
-  g.imageSmoothingEnabled = false;
-  g.drawImage(shot, 0, 0, 320, 200);
-  g.fillStyle = box?.background ?? '#000';
-  g.fillRect(0, 200, GAME_ART_W, BAND);
-  g.fillStyle = box?.accent ?? '#ff0';
-  g.fillRect(0, 200, GAME_ART_W, 2);
-  const fig = sprite && trim(sprite);
-  if (fig) {
-    // as large as fits the band in whole pixels, facing in from both ends
-    const k = Math.max(1, Math.min(Math.floor((BAND - 8) / fig.height), Math.floor(64 / fig.width)));
-    const [w, h] = [fig.width * k, fig.height * k];
-    const y = 200 + 2 + Math.round((BAND - 2 - h) / 2);
-    g.drawImage(fig, 8, y, w, h);
-    g.save();
-    g.translate(GAME_ART_W - 8, y);
-    g.scale(-1, 1);
-    g.drawImage(fig, 0, 0, w, h);
-    g.restore();
-  }
-  const line = (s: string, y: number, color: string) => text(g, s, Math.round((GAME_ART_W - s.length * 8) / 2), y, color);
-  line('SANDBOX SOFTWARE', 222, box?.accent ?? '#ff0');
-  line('MADE WITH GAME-MAKER', 240, box?.ink ?? '#fff');
+  const img = g.createImageData(badge.width, badge.height);
+  new Uint32Array(img.data.buffer).set(badge.data);
+  g.putImageData(img, 0, 0);
   return c;
 }

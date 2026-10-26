@@ -7,8 +7,7 @@
 // cross-checked against Asterisk's tdd.c (GPL, nothing copied). See NOTICE.md.
 import type { Line } from './modem';
 
-export const BAUD = 45.45;
-export const BIT = 0.022; // seconds: 1 / 45.45
+export const BIT = 0.022; // seconds: 1 / 45.45 baud
 export const MARK = 1400;
 export const SPACE = 1800;
 /** Start bit, five data bits, 1.5 stop bits. */
@@ -87,7 +86,7 @@ export function decodeBaudot(codes: number[]): string {
 }
 
 /** One tone on the line: `freq` from `at` (seconds from the start) for `dur`. */
-export interface Tone {
+interface Tone {
   freq: number;
   at: number;
   dur: number;

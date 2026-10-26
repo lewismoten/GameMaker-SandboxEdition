@@ -10,6 +10,7 @@ import { gameAbout } from './gameAbout';
 import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
+import { PROJECT } from './notices';
 
 export interface ExportOptions {
   title: string;
@@ -63,7 +64,8 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(gameEntries);
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, gameEntries);
-  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction }), theme)) });
+  const audio = recordedAudioNotice(recordedClips(files), 78, '  ');
+  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction, audio }), theme)) });
 
   for (const icon of ICONS) {
     try {
@@ -96,7 +98,8 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const precache = ['./', ...entries.filter((e) => !e.name.startsWith('game/')).map((e) => e.name)];
   const version = hashText(entries.map((e) => `${e.name}:${e.data.length}`).join('|') + Date.now());
   entries.push({ name: 'sw.js', data: enc.encode(serviceWorkerSource(version, precache)) });
-  entries.push({ name: 'README.txt', data: enc.encode(readme(opts.title, recordedAudioNotice(recordedClips(files), 78, '  '))) });
+  entries.push({ name: 'README.txt', data: enc.encode(readme(opts.title, audio)) });
+  entries.push({ name: 'LICENSE.txt', data: enc.encode(`${PROJECT}\n`) });
 
   return { name: `${id}-webapp.zip`, zip: await createZip(entries) };
 }
@@ -146,5 +149,9 @@ Controls
 The game folder
   game/ holds the game's original files, which also play in the DOS
   Game-Maker / PLAYGAME. index.html carries its own copy of them.
+
+License
+  The player (index.html, sw.js) is MIT licensed: see LICENSE.txt, which
+  must stay with it when you share or publish it.
 ${audio ? `\nThe game's voice clips\n${audio}\n` : ''}`;
 }

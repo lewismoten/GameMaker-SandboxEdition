@@ -247,7 +247,7 @@ export function birthMon(w: World, mm: number, mon: number, x: number, y: number
 }
 
 /** KillMon: returns true if the monster is gone (rather than transformed). */
-export function killMon(w: World, mm: number): boolean {
+function killMon(w: World, mm: number): boolean {
   const mon = w.mon[w.mm[mm].monnum];
   // end === -2 means the monster can never be killed.
   if (!mon || mon.end === -2) return false;

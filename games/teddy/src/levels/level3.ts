@@ -9,7 +9,7 @@ import { LevelMap, type Level } from './level';
 import { bandOf } from './level1Tiles';
 import { G, parkTiles } from './level3Tiles';
 import { parkBeasts } from './level3Beasts';
-import { STEADY, addEasterEgg, addGuest } from '../sprites/hidden';
+import { STEADY, addEasterEgg, addGuest, addSaveSign } from '../sprites/hidden';
 import { lewieCameo } from '../../../kit/cameos';
 import { P } from '../art/pal';
 
@@ -107,7 +107,7 @@ export function park(): Level {
   m.set(76, 39, 'discKid');
   m.set(74, 38, 'lampTop').set(74, 39, 'lamp');
 
-  // The park gate, Pockets and the Klown Car.
+  // The park gate, Pockets and the Clown Car.
   const car = 84;
   m.set(car - 2, 37, 'pocketsWant')
     .set(car - 2, 38, 'pocketsHead')
@@ -169,6 +169,8 @@ export function park(): Level {
   // the flower beds
   m.set(13, 32, addEasterEgg(bs, m.get(13, 32), 'zigzag'));
   m.set(80, 39, addGuest(bs, 'lewie', lewieCameo(P.pal, 'down0', { use: STEADY }), m.get(80, 39)));
+  // the save sign by the gate Teddy comes in at
+  addSaveSign(bs, m, 5, 38);
   m.mark('start', 5, 39);
   m.mark('exit', car, 39);
   return {

@@ -1,4 +1,4 @@
-// Stage 3: THE SOUND CARD. A red Sound Blaster board: the FM chip, audio jacks, volume
+// Stage 3: THE SOUND CARD. A red sound card: the FM chip (its maker a parody, YO MAMA!), audio jacks, volume
 // knobs, VU meters dancing, and big speaker cones that thump the ship forward when they
 // push out (a gravity block that is only there on the beat).
 import { Pixels, rng } from '../../../kit/pixels';
@@ -66,9 +66,9 @@ function fmChip(a: StageArt): Pixels {
     big.rect(1, k, 6, 2, p.c('steel', 5)).rect(53, k, 6, 2, p.c('steel', 5));
   }
   bevel(big, 6, 6, 48, 48, p.r('deep'), 1, 2);
-  micro(big, 12, 18, 'YMF262', p.c('label', 4));
-  micro(big, 16, 28, 'OPL3', p.c('glow', 3));
-  micro(big, 14, 38, 'YAMAHA', p.c('label', 2));
+  micro(big, 14, 18, 'YO MAMA!', p.c('label', 4));
+  micro(big, 14, 28, 'HA HA HA', p.c('glow', 3));
+  micro(big, 14, 38, 'FM SYNTH', p.c('label', 2));
   return big;
 }
 

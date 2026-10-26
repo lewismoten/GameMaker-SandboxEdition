@@ -1,6 +1,6 @@
 // Every distinct RSD intro screen the CD's games show before their own title, for the Credits page gallery.
 
-export interface RsdIntro {
+interface RsdIntro {
   /** File in web/public/credits/. */
   src: string;
   alt: string;

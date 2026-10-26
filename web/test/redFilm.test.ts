@@ -1,17 +1,7 @@
 // Tests: Red reveal inks for the hint book (manual/printables/redFilm.ts).
 import { describe, expect, it } from 'vitest';
-import {
-  CYAN_INK,
-  DECOY_INKS,
-  FIELD_INK,
-  LINE_INKS,
-  PRINT_CYAN_INK,
-  hashText,
-  luma,
-  seeded,
-  throughRedFilm,
-  throughRedView,
-} from '../src/manual/printables/redFilm';
+import { CYAN_INK, DECOY_INKS, FIELD_INK, LINE_INKS, PRINT_CYAN_INK, luma, throughRedFilm, throughRedView } from '../src/manual/printables/redFilm';
+import { fnv1a, mulberry32 } from '../src/seededRandom';
 
 const WHITE = 'rgb(255,255,255)';
 
@@ -34,11 +24,11 @@ describe('red reveal inks', () => {
     expect(255 - throughRedFilm(CYAN_INK)).toBeLessThan(60);
   });
   it('the noise is the same for the same answer', () => {
-    const a = seeded(hashText('Use the gold key'));
-    const b = seeded(hashText('Use the gold key'));
+    const a = mulberry32(fnv1a('Use the gold key'));
+    const b = mulberry32(fnv1a('Use the gold key'));
     const xs = Array.from({ length: 5 }, a);
     expect(Array.from({ length: 5 }, b)).toEqual(xs);
     for (const x of xs) (expect(x).toBeGreaterThanOrEqual(0), expect(x).toBeLessThan(1));
-    expect(hashText('a')).not.toBe(hashText('b'));
+    expect(fnv1a('a')).not.toBe(fnv1a('b'));
   });
 });

@@ -11,7 +11,9 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { Disk } from '../kit/disk';
+import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
+import { putSaveSign } from '../kit/saveSign';
 import { buildBlocks } from './src/blocks/blocks';
 import { MON } from './src/ids';
 import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './src/levels/maps';
@@ -27,6 +29,7 @@ import { buildKid, buildSledder } from './src/characters/kid';
 import { CREDITS, INSTRUCTIONS, WOODS, readme } from './src/screens/text';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
+import { writeWalkPaths } from '../kit/walkPaths';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -130,6 +133,11 @@ let totalMoney = 0;
 built.forEach(({ l, m, start }, i) => {
   const pal = buildPalette(l.time);
   const map = m.build();
+  // Jamie Street, the level after the pines, shows the save sign by the sled's start; SNOW.BBL
+  // is full, so it gets its own copy (JAMIE.BBL) with blocks it never shows given to the sign
+  const set = l.file === 'jamie' ? putSaveSign(bbl, map, noon.pal, start[0] + 3, start[1] - 1) : bbl;
+  const bblFile = l.file === 'jamie' ? 'jamie.bbl' : 'snow.bbl';
+  if (l.file === 'jamie') disk.put(bblFile, serializeBlocks(set));
   totalMoney += m.money;
   const mons = buildMonsters(mb, l.mons);
   disk.put(`${l.time}.pal`, serializePalette(pal.pal));
@@ -137,7 +145,7 @@ built.forEach(({ l, m, start }, i) => {
   disk.put(`${l.file}.mon`, serializeMonsters(mons));
   disk.put(l.song[0], l.song[1]());
   disk.put(`lvl${i + 1}.lst`, serializeSlideList([{ name: `card${i + 1}.gif`, pause: 8 }]));
-  const view = renderRegion(map, bbl, mb.blocks, mons, l.card.view[0], l.card.view[1], 16, 6, [
+  const view = renderRegion(map, set, mb.blocks, mons, l.card.view[0], l.card.view[1], 16, 6, [
     { pixels: cb.blocks[cb.n(l.chr === 'sled.chr' ? 'sled' : 'down0')].pixels, x: start[0], y: start[1] },
   ]);
   cards.push({ name: `card${i + 1}`, map: view, pal, ...l.card });
@@ -152,7 +160,7 @@ built.forEach(({ l, m, start }, i) => {
   scene.files = [
     `${l.time}.pal`,
     `${l.file}.map`,
-    'snow.bbl',
+    bblFile,
     `${l.file}.mon`,
     'snow.mbl',
     l.chr,
@@ -251,7 +259,12 @@ disk.put('lost.cmf', lostSong());
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
 disk.put('license.txt', licenseText('Snowbound: The $89 Shovel'));
+// the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
+clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
+// the sidewalks, front walks and driveways (and the side streets, plowed down to the same
+// asphalt) the walkthrough's bot keeps to; not the main road, which it keeps off anyway (not on the disk)
+writeWalkPaths('snowbound', { 'snow.bbl': ['walk', 'deepWalk', 'stoop', 'stoopPaper', 'asphalt', 'deep', 'tip', 'rootBeer'].map((n) => book.n(n)) });
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,
 );

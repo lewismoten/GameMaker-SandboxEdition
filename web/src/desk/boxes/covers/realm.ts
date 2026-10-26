@@ -156,7 +156,10 @@ function pip(c: Ctx, x: number, y: number, s: number): void {
   stroke(c, '#a05040', 3 * s, [x - 8 * s, y - 128 * s, x, y - 124 * s, x + 8 * s, y - 128 * s]);
 }
 
-/** Doc Leo: grey felt fedora, ash-beard stubble, red nose, navy corduroy, green tie, red sneakers. */
+/**
+ * Doc Leo: grey felt fedora, white face paint round his eyes and mouth, his own nose sunburned
+ * pink, painted stubble, navy corduroy, green tie, red sneakers.
+ */
 function docLeo(c: Ctx, x: number, y: number, s: number): void {
   ell(c, x, y, 34 * s, 9 * s);
   fill(c, 'rgba(0,0,0,0.35)');
@@ -180,14 +183,16 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   poly(c, [x - 4 * s, y - 112 * s, x + 4 * s, y - 112 * s, x + 6 * s, y - 80 * s, x, y - 74 * s, x - 6 * s, y - 80 * s]);
   fill(c, '#2a9a6a');
   ell(c, x, y - 140 * s, 26 * s, 28 * s);
-  fill(c, '#f6e6da');
+  fill(c, '#f2c9a0');
   blob(c, [x - 24 * s, y - 136 * s, x + 24 * s, y - 136 * s, x + 20 * s, y - 116 * s, x - 20 * s, y - 116 * s]);
   fill(c, 'rgba(60,70,90,0.55)');
   ell(c, x, y - 126 * s, 10 * s, 6 * s);
   fill(c, '#ffffff');
-  ell(c, x, y - 138 * s, 6 * s, 5 * s);
-  fill(c, '#e02a2a');
+  ell(c, x, y - 138 * s, 5 * s, 4.5 * s);
+  fill(c, '#ec948c');
   for (const dx of [-10, 10]) {
+    ell(c, x + dx * s, y - 148 * s, 7 * s, 6 * s);
+    fill(c, '#ffffff');
     ell(c, x + dx * s, y - 148 * s, 3 * s, 3 * s);
     fill(c, '#1a1010');
   }

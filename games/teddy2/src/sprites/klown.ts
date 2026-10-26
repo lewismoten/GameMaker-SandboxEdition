@@ -149,7 +149,7 @@ export function klownCar(base: (bx: number, by: number) => Pixels, open: boolean
 }
 
 /** THE CHEZ in this game's colors. */
-const CHEZ: ChezInk = {
+export const CHEZ: ChezInk = {
   body: [c('red', 1), c('red', 2), c('red', 3)],
   trim: c('red', 0),
   glass: [c('blue', 1), c('sky', 6)],

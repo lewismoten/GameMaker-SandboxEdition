@@ -1,6 +1,6 @@
 IN THE YEAR 2000!
 A Future Adventure
-Sandbox Software, (C) 1992
+Sandbox Software, (C) 1993
 Version 1.0
 ==============================
 
@@ -31,7 +31,7 @@ levels of the future:
    SUPERHIGHWAY: fourteen
    lanes of hover traffic
 3. MEGA MALL 2000: the arcade,
-   TV-RAMA, and PILLS
+   TV-RAMA, and the food court
 4. THE TELEPORT-A-PHONE
    EXCHANGE: wrong number!
    (several of them)
@@ -92,6 +92,8 @@ HINTS
 * The judges want 20 pages.
   There are lots more than
   that.
+* Came to the fair short? The
+  school copier prints more.
 
 THIS IS SHAREWARE
 -----------------

@@ -1,3 +1,4 @@
+// The music editor's tabs and their arrow keys.
 import { describe, expect, it } from 'vitest';
 import { stepTab } from '../src/editor/editors/music/tabs';
 

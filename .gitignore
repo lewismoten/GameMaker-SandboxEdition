@@ -12,3 +12,10 @@ __pycache__/
 
 # Mac apps and disk images built by web/scripts/macDmg.ts
 /dist/
+
+# DOSBox drive C: laid out by web/scripts/dosbox.ts
+/dosbox/
+# a copy of Carl with its pre-fix COVER.FLI, for a screenshot of the DOS glitch
+/dosbox-broken/
+# setups, saved games and high scores npm run dosbox backs up before each rebuild
+/dosbox-saves/

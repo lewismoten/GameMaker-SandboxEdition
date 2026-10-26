@@ -52,7 +52,7 @@
   --ts-text: #e09ce0;
   position: relative;
   /* leaves room for the line count under it, so the editor fits a 1024×768 window */
-  max-height: min(70vh, calc(100dvh - 260px));
+  max-height: min(70vh, calc(var(--ws-vh, 100dvh) - 270px));
   min-height: 240px;
   overflow: auto;
   background: var(--ts-bg);
@@ -212,7 +212,8 @@
 }
 
 .ts-side .game-preview canvas {
-  max-width: 100%;
+  /* a short window: smaller, so the page needn't scroll */
+  max-width: min(100%, 640px, calc((var(--ws-vh, 100dvh) - 345px) * 4 / 3)) !important; /* over the preview's own 640px */
 }
 
 @media (max-width: 860px) {

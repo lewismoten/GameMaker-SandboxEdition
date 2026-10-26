@@ -25,7 +25,7 @@ export const INSTRUCTIONS = [
     'plow banks along the road to',
     'pack more snowballs.',
     '',
-    'F2 counts your coffee can.',
+    'ENTER picks up what you find.',
   ]),
   page([
     'HOT COCOA warms you back up.',
@@ -68,7 +68,7 @@ export const INSTRUCTIONS = [
 const CREDITS_TEXT = page(
   [
     'SNOWBOUND: THE $89 SHOVEL',
-    'Sandbox Software, 1995',
+    'Sandbox Software, 1993',
     '',
     'Design, pixels, music, sound',
     'and levels by Claude - every',
@@ -97,8 +97,8 @@ export function readme(price: string): string {
   return `
     S N O W B O U N D
     The $89 Shovel
-    Version 1.0 - December 1995
-    (c) 1995 Sandbox Software
+    Version 1.0 - January 1993
+    (c) 1993 Sandbox Software
 
 Fort Ashby, West Virginia,
 December 1992. A foot and a

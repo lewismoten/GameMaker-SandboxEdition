@@ -6,7 +6,7 @@
 export const LINE_CHARS = 31;
 export const PAGE_LINES = 16;
 
-export interface TypedLine {
+interface TypedLine {
   /** The line as typed, without its newline. */
   text: string;
   /** The first screen line it is shown on. */

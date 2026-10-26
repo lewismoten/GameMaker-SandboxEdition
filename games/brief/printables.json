@@ -5,7 +5,7 @@
     "Down": "Walk one step down",
     "Left": "Walk one step left",
     "Right": "Walk one step right",
-    "P": "Pocket a small thing"
+    "Space": "Pocket a small thing"
   },
   "items": [
     {
@@ -16,7 +16,7 @@
       "address": "Reading Room Desk, The Tiny Pockets Library, behind the red door of The Dog House",
       "date": "The night of the jam",
       "to": "To the night librarian",
-      "body": "<p>Joe,</p><p>I jammed. I am not proud of it. I said 99. Then I said 101. Then I said STOP, which is not even a number. By the time I came to, every word had fallen out of every book on every shelf.</p><p>Here is what I need. Every book holds <b>one hundred words</b>. I will open THE END of a book for exactly that many, and not one fewer. Pick them up off the floor. All of them. The slips say how many words each is worth; I am told some of them are paragraphs. Short paragraphs.</p><p>The shushers mean well. They will still fine you, a point at a time. So will the scissors, the static, the reporters, and a twister I would rather not discuss.</p><p>When four stories are back in a wing, that wing's stamp gate in the Reserve Stacks will let you through. I check. I do not collect. Past the gates there is one more book. Do not ask me what is in it. I only count.</p><p>THE END is the only way out of a book. Nobody can take your words in there, so you can always finish. Finish.</p>",
+      "body": "<p>Joe,</p><p>I jammed. I am not proud of it. I said 99. Then I said 101. Then I said STOP, which is not even a number. By the time I came to, every word had fallen out of every book on every shelf.</p><p>Here is what I need. Every book holds <b>one hundred words</b>. I will open THE END of a book for exactly that many, and not one fewer. Pick them up off the floor. All of them. The slips say how many words each is worth; I am told some of them are paragraphs. Short paragraphs.</p><p>The shushers mean well. They will still fine you, a point at a time. So will the scissors, the static, the reporters, and a twister I would rather not discuss.</p><p>When four stories are back in a wing, that wing's stamp gate in the Reserve Stacks will let you through. I check. I do not collect. Do the wings two at a time, a chapter of the night each; when a chapter's two are done, go through their gates and stamp it on its desk, and I will open the next chapter's doors. Past the gates there is one more book. Do not ask me what is in it. I only count.</p><p>THE END is the only way out of a book. Nobody can take your words in there, so you can always finish. Finish.</p>",
       "signature": "The Word Counter\n(099... 101... sorry. 100.)",
       "style": "type"
     },
@@ -47,8 +47,8 @@
       "heading": "THE TINY POCKETS LIBRARY",
       "intro": "A library much bigger than the box. Hang it by your computer, and keep it brief.",
       "panels": [
-        { "map": "library.map", "x": 0, "y": 0, "w": 16, "h": 10, "caption": "The reading room: eight wing doors and the Word Counter" },
-        { "map": "library.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Reserve Stacks: eight stamp gates and one more book" },
+        { "map": "library.map", "x": 0, "y": 0, "w": 16, "h": 10, "caption": "The reading room: eight wing doors (later chapters barred) and the Word Counter" },
+        { "map": "library.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Reserve Stacks: eight stamp gates, three chapter desks and one more book" },
         { "map": "clown.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "Clown Alley: The Scissor Situation" },
         { "map": "docks.map", "x": 48, "y": 0, "w": 16, "h": 10, "caption": "The Docks: Legend at the Water's Edge" },
         { "map": "yard.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Backyard: Superpowers of Spooker Boy" },
@@ -74,6 +74,7 @@
           "head": "The Reading Room",
           "hints": [
             { "q": "Which door goes where?", "a": "Top row, left to right: Clown Alley, the Laboratory, the Docks, the Backyard. Bottom row: the Living Room, After Hours, Other Dimensions, the Future Shelf. The purple STAX door on the right goes to the Reserve Stacks." },
+            { "q": "Some doors have brass bars across them.", "a": "Those wings belong to a later chapter. Finish the chapter you are in (both of its wings, four books each), then go to the Reserve Stacks, walk through its gates and step onto its stamp desk. The next chapter's doors open." },
             { "q": "Can I fix the Word Counter?", "a": "You fix it by filling the books. It will keep flipping between 099, 101 and STOP until then. It is a very dramatic machine." }
           ]
         },
@@ -81,6 +82,7 @@
           "head": "The Reserve Stacks",
           "hints": [
             { "q": "The stamp gates won't open.", "a": "Each gate wants four stories restored in its own wing. The plate on the gate says 4. It means it." },
+            { "q": "Where do I stamp a chapter done?", "a": "In the Reserve Stacks, past the gates of the chapter's two wings: the desk marked CH1, CH2 or CH3 in the shelves just below the corridor. Step down onto it. Then save with F5." },
             { "q": "What is the thirty-third book?", "a": "Exactly one hundred words. Whose hundred is up to you." }
           ]
         },
@@ -89,10 +91,10 @@
           "hints": [
             { "q": "Some say there is a felt egg somewhere in the library.", "a": "Libraries lose things. Good libraries keep a lost and found. The Word Counter complains that nobody can find it." },
             { "q": "Where is the lost and found?", "a": "In the Reserve Stacks. Not every shelf there is as solid as it looks: look for a book pulled half out, with a red ribbon hanging from it." },
-            { "q": "I found it. Now what?", "a": "Walk onto the shoebox and press P. Finders, pocketers. F2 shows it in Joe's pocket, and a save keeps it there." },
+            { "q": "I found it. Now what?", "a": "Walk onto the shoebox and press Space. Finders, pocketers. F2 shows it in Joe's pocket, and a save keeps it there." },
             {
               "q": "Step by step?",
-              "a": "In the Reserve Stacks, walk to the bottom right corner, past the fern, and keep walking right into the shelf with the ribbon. In the Lost and Found, stand on the shoebox with the egg and press P. Leave by the OUT door.",
+              "a": "In the Reserve Stacks, walk to the bottom right corner, past the fern, and keep walking right into the shelf with the ribbon. In the Lost and Found, stand on the shoebox with the egg and press Space. Leave by the OUT door.",
               "sketch": {
                 "rows": [
                   "    =",
@@ -261,6 +263,22 @@
     {
       "head": "A library in a box on a post",
       "html": "<p>Our lawyers asked us to keep the press release for <b>KEEP IT BRIEF!</b> under one hundred words, so: thirty-two stories, one hundred words each, a tin librarian who refuses to round, and shushers who fine. Register for $10. Exactly $10. The Word Counter will not make change. Keep it brief.</p>"
+    },
+    {
+      "head": "Since last issue: Nobody has spoiled it",
+      "html": "<p>Final Curtain detectives: thank you for keeping the solution off the BBS. Commissioner Hale has handed out a lot of strikes this month. The most-asked question is about Victor's safe: three dials, four symbols, no numbers. Victor never wrote anything down that he could hang on a wall instead. Go and look at his walls.</p>"
+    },
+    {
+      "head": "Around the Sandbox: Neighbors on the line",
+      "html": "<p>We aren't the only game-makers on the 412 exchange. Over on The Sofa BBS (1-412-555-SOFA), The Bard of Bizarre has been uploading song-games, each one built around a song of his. It's a different shop with a different sense of humor, and we like it a lot. Tell the SysOp we said hi. Meanwhile, THE CHEZ is parked in front of the library in this game. Of course it's charging.</p>"
+    },
+    {
+      "head": "In the workshop: Real depth",
+      "html": "<p>The office 486 has been running all night for weeks, ray tracing chrome spheres, glass cubes and one red teapot. That's our next game: <b>Depth Perception</b>, where every scene has a near plane and a far plane, and only the one in focus is solid. No cardboard glasses required.</p>"
+    },
+    {
+      "head": "Letters: \"Is Macbeth the cat a suspect?\"",
+      "html": "<p><i>\"Is Macbeth the cat a suspect? He was in every room I searched.\"</i> - A detective, by modem</p><p><b>The Scoop replies:</b> Not a suspect. Macbeth is the theater cat, and he goes wherever he likes. Most cats do.</p>"
     }
   ]
 }

@@ -12,3 +12,17 @@
 .wd-stop {
   color: var(--danger);
 }
+.wd-plays h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.wd-mine li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+.wd-broke {
+  display: block;
+  color: var(--muted);
+}

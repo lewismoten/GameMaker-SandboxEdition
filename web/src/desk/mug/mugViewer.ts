@@ -18,7 +18,8 @@ export function openMugViewer(): Promise<void> {
       return -wrapAngle(sizeOf(choice.size), printPlacement(sizeOf(choice.size), art.width / art.height).centers[0]);
     };
     let rot = facing();
-    let spin = 0.5; // radians a second
+    // radians a second; none with reduced motion asked for (drag to turn it)
+    let spin = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 0.5;
     let drag: { x: number; rot: number } | undefined;
     let raf = 0;
     let last = performance.now();
@@ -119,10 +120,13 @@ export function openMugViewer(): Promise<void> {
     };
     paintPicks();
 
+    // the keyboard goes into the viewer, and back to the mug on the desk when it closes
+    const opener = document.activeElement as HTMLElement | null;
     const close = () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      opener?.focus({ preventScroll: true });
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {
@@ -157,7 +161,7 @@ export function openMugViewer(): Promise<void> {
           h('h3', null, 'Picture'),
           h('p', { class: 'mugv-note' }, 'The same picture on the front and the back. ANSI art from the board itself, in the VGA text font and its 16 colors:'),
           h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'bbs')),
-          h('p', { class: 'mugv-note' }, 'Or a Sandbox Software game: its title screen and its hero, from the game’s own files:'),
+          h('p', { class: 'mugv-note' }, 'Or a Sandbox Software game: a badge of its title and its hero, from the game’s own files:'),
           h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'game')),
           h('h3', null, 'Mug'),
           h('div', { class: 'mugv-chips' }, ...sizePicks),
@@ -173,5 +177,8 @@ export function openMugViewer(): Promise<void> {
       ),
     );
     document.body.append(overlay);
+    (overlay.querySelector<HTMLElement>('.mugv-designs [aria-pressed="true"]') ?? overlay.querySelector<HTMLElement>('.mugv-designs button'))?.focus({
+      preventScroll: true,
+    });
   });
 }

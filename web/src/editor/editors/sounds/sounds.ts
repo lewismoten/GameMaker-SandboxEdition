@@ -3,7 +3,7 @@
 import './sounds.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { h, clear, numberField, debounce } from '../../core/ui';
+import { h, clear, numberField, debounce, toast } from '../../core/ui';
 import { AudioEngine } from '../../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../../tools/speakerFx';
@@ -11,6 +11,10 @@ import { fileField } from '../../widgets/filePicker';
 import { History } from '../../core/history';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
+import { fitToPane } from '../../core/fitPane';
+import { decodeVoc } from '../../../formats/voc';
+import { vocToSpeaker } from '../../../audio/vocToSpeaker';
+import { fitChoice, setSlotFit, slotFit } from './speakerFit';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -58,6 +62,28 @@ registerEditor(['snd'], (host, project, file) => {
     const name = snd.digital[i];
     return name && name[0] !== ' ' && project.files.has(`${name}.voc`) ? `${name}.voc` : undefined;
   };
+  /** Slot i's .voc as PC speaker steps, or undefined when it has none or it can't be read. */
+  const fromVoc = (i: number): Uint16Array | undefined => {
+    const voc = vocOf(i);
+    if (!voc) return undefined;
+    try {
+      const d = decodeVoc(project.files.get(voc)!);
+      return vocToSpeaker(d.samples, d.sampleRate, slotFit(project, file, i));
+    } catch {
+      return undefined;
+    }
+  };
+  /** Slot i's .voc length in seconds, or undefined when it has none or it can't be read. */
+  const vocSeconds = (i: number): number | undefined => {
+    const voc = vocOf(i);
+    if (!voc) return undefined;
+    try {
+      const d = decodeVoc(project.files.get(voc)!);
+      return d.sampleRate ? d.samples.length / d.sampleRate : undefined;
+    } catch {
+      return undefined;
+    }
+  };
   const hasSpeaker = (i: number) => snd.freqs[i].some((v) => v > 0);
   // A slot is silent when it has neither a .voc file nor any PC speaker step.
   const hasAudio = (i: number) => !!vocOf(i) || hasSpeaker(i);
@@ -68,6 +94,14 @@ registerEditor(['snd'], (host, project, file) => {
     await audio.resume();
     audio.stopVoc();
     audio.playSpeaker(snd.freqs[i]);
+  };
+  /** The list's PC speaker button: the slot's own steps, or (none drawn) a draft made from its .voc. */
+  const previewSpeaker = async (i: number) => {
+    const steps = hasSpeaker(i) ? snd.freqs[i] : fromVoc(i);
+    if (!steps) return;
+    await audio.resume();
+    audio.stopVoc();
+    audio.playSpeaker(steps);
   };
   const playVoc = async (i: number) => {
     const voc = vocOf(i);
@@ -82,6 +116,13 @@ registerEditor(['snd'], (host, project, file) => {
   function renderList(): void {
     clear(
       list,
+      h(
+        'div',
+        { class: 'snd-item snd-heads', 'aria-hidden': 'true' },
+        h('span', { class: 'snd-name' }, 'Effect'),
+        h('span', { class: 'snd-col', title: 'PC speaker' }, 'PC'),
+        h('span', { class: 'snd-col', title: 'Sound Blaster' }, 'SB'),
+      ),
       ...snd.freqs.map((_, i) =>
         h(
           'div',
@@ -96,13 +137,30 @@ registerEditor(['snd'], (host, project, file) => {
             },
             `${i}. ${SOUND_NAMES[i] ?? 'Effect'}${snd.digital[i] ? ' 🔊' : ''}`,
           ),
+          // two columns: what a PC speaker plays, and what a Sound Blaster plays
           h(
             'button',
             {
-              title: hasAudio(i) ? 'Play as the game would' : 'No sound yet: no PC speaker steps and no .voc file',
-              'aria-label': `Play effect ${i} as the game would`,
-              disabled: !hasAudio(i),
-              onclick: () => void play(i),
+              class: 'snd-col',
+              title: hasSpeaker(i)
+                ? 'PC speaker'
+                : vocOf(i)
+                  ? 'No PC speaker steps (the game is silent here on a PC speaker): plays a draft made from its .voc'
+                  : 'No PC speaker steps and no .voc file',
+              'aria-label': `Play effect ${i} on the PC speaker${hasSpeaker(i) ? '' : vocOf(i) ? ' (a draft from its .voc)' : ''}`,
+              disabled: !hasSpeaker(i) && !vocOf(i),
+              onclick: () => void previewSpeaker(i),
+            },
+            hasSpeaker(i) ? '▶' : '▷',
+          ),
+          h(
+            'button',
+            {
+              class: 'snd-col',
+              title: vocOf(i) ? `Sound Blaster: ${vocOf(i)!.toUpperCase()}` : 'No .voc file: a Sound Blaster plays the PC speaker sound',
+              'aria-label': `Play effect ${i} on the Sound Blaster`,
+              disabled: !vocOf(i),
+              onclick: () => void playVoc(i),
             },
             '▶',
           ),
@@ -190,7 +248,98 @@ registerEditor(['snd'], (host, project, file) => {
     canvas.addEventListener('pointerup', () => (renderList(), renderPlay()));
     draw();
 
+    // the slot's .voc as a PC speaker sound: heard first, drawn as outlines, then kept if liked
+    let preview: Uint16Array | undefined;
+    const drawPreview = () => {
+      draw();
+      if (!preview) return;
+      ctx.strokeStyle = '#00e0ff';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < NUMFREQ; i++) {
+        if (!preview[i]) continue;
+        const y = toY(preview[i], H);
+        ctx.strokeRect(i * 14 + 1, y + 1, 12, H - y - 1);
+      }
+    };
+    const convState = h('p', { class: 'hint snd-state', 'aria-live': 'polite' });
+    const convert = () => {
+      preview = fromVoc(current);
+      if (!preview) toast('That .voc file could not be read.', 'error');
+      return preview;
+    };
+    const previewBtn = h(
+      'button',
+      {
+        title: 'Hear this effect’s .voc as the PC speaker would play it: one tone at a time, on or off (the outlines show it)',
+        onclick: async () => {
+          if (!convert()) return;
+          drawPreview();
+          applyBtn.disabled = false;
+          convState.textContent = preview!.some((v) => v)
+            ? 'The outlines show it. Use it if you like it (Undo takes it back).'
+            : 'The .voc is too quiet to turn into PC speaker steps.';
+          await audio.resume();
+          audio.stopVoc();
+          audio.playSpeaker(preview!);
+        },
+      },
+      '▶ Preview as PC speaker',
+    );
+    const applyBtn = h(
+      'button',
+      {
+        disabled: true,
+        title: 'Replace the PC speaker steps below with the preview (Undo takes it back)',
+        onclick: () => {
+          if (!preview && !convert()) return;
+          remember();
+          f.set(preview!);
+          save();
+          renderDetail();
+          renderList();
+          void playSpeaker(current);
+          toast('The PC speaker version is made from the .voc. Undo (Ctrl+Z) takes it back.');
+        },
+      },
+      '✓ Use it for the PC speaker',
+    );
+    // remembered per slot in the companion file; a preview showing is made again with the new fit
+    const fitField = fitChoice(
+      () => slotFit(project, file, current),
+      (v) => {
+        setSlotFit(project, file, current, v);
+        if (preview) previewBtn.click();
+      },
+      vocSeconds(current),
+    );
+    const convPart = vocOf(current)
+      ? h('div', { class: 'snd-part', role: 'group', 'aria-label': 'Make the PC speaker version from the .voc' }, fitField, previewBtn, applyBtn, convState)
+      : null;
+
     const digital = snd.digital[current];
+    // 🎛 the sound effect maker: a new .voc for this slot (or this slot's own, made by it, changed)
+    const ownVoc = vocOf(current);
+    const remake = ownVoc && project.extras(ownVoc, 'sfx', undefined) ? ownVoc : undefined;
+    const makerBtn = h(
+      'button',
+      {
+        title: remake
+          ? `Change ${remake.toUpperCase()} with the sliders it was made with`
+          : 'Make a .voc for this effect with sliders and presets, and use it here',
+        onclick: async () => {
+          const { sfxMaker } = await import('../../tools/sfxMaker'); // loaded when first used
+          const { SLOT_PRESET } = await import('../../../audio/sfxPresets');
+          const made = await sfxMaker(project, { file: remake, preset: SLOT_PRESET[current], speaker: true, stem: SLOT_PRESET[current] ?? 'effect' });
+          if (!made) return;
+          remember();
+          snd.digital[current] = made.name.replace(/\.voc$/, '').slice(0, 8);
+          if (made.speaker) f.set(made.speaker);
+          save();
+          render();
+        },
+      },
+      remake ? '🎛 Change it in the sound effect maker…' : '🎛 Make one with the sound effect maker…',
+    );
     const shape = (fn: (i: number) => number) => {
       remember();
       for (let i = 0; i < NUMFREQ; i++) f[i] = Math.max(0, Math.min(MAXF, Math.round(fn(i))));
@@ -234,6 +383,8 @@ registerEditor(['snd'], (host, project, file) => {
           { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
         h('div', { class: 'snd-part' }, vocBtn, vocState),
+        convPart,
+        h('div', { class: 'snd-part' }, makerBtn),
       ),
       h(
         'div',
@@ -313,6 +464,7 @@ registerEditor(['snd'], (host, project, file) => {
     ),
     h('div', { class: 'snd-layout' }, list, detail),
   );
+  fitToPane(list, detail);
   render();
   const onKey = (e: KeyboardEvent) => {
     const t = e.target;

@@ -35,19 +35,26 @@ export interface BoxItem {
 
 type PrintMode = 'item' | 'booklet' | 'all';
 
-export interface BoxOptions {
+interface BoxOptions {
   /** How the manual is bound: two staples in the fold (a shareware booklet), or a plastic comb. */
   binding?: 'staples' | 'comb';
+  /** The tray's heading (a box's contents by default; a folder of maps has no manual). */
+  trayHeading?: string;
+  /** The piece to open at, by id ('manual' or a BoxItem's): the Library's card for it. The first otherwise. */
+  start?: string;
 }
 
-const COMB_HOW = 'two pages a side: fold the stack, or cut it and bind it';
-const STAPLE_HOW = 'two pages a side: fold the stack, staple the fold';
+const COMB_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, or cut it and bind it';
+const STAPLE_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, staple the fold';
+/** A book's pages in reading order, for the screen: the booklet's imposed order is for folding. */
+const READ_HOW = 'every page in reading order: choose Save as PDF in the print dialog';
 
 /** Gap between the pages of a comb-bound spread, as a fraction of a page's width. */
 const COMB_GAP = 0.07;
 
 export function openBox(title: string, pages: BookPage[], items: BoxItem[], options: BoxOptions = {}): Promise<void> {
   const comb = options.binding === 'comb';
+  const trayHeading = options.trayHeading ?? 'What’s in the box';
   return new Promise((resolve) => {
     let current = 'manual';
     let at = 0;
@@ -191,8 +198,9 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       const item = items.find((i) => i.id === id);
       filmBtn.hidden = !item?.redFilm;
       if (!item?.redFilm) (film.hide(), lens.hide());
-      bookletBtn.firstChild!.textContent = item?.pages ? 'This booklet, two pages a side' : 'Manual as a booklet';
+      bookletBtn.firstChild!.textContent = item?.pages ? 'Print booklet: this one' : 'Print booklet: the manual';
       bookletBtn.lastChild!.textContent = !item?.pages && comb ? COMB_HOW : STAPLE_HOW;
+      pieceLabel();
       if (id === 'manual') {
         openBook('manual', pages, comb);
         showManual();
@@ -211,8 +219,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       // turned straight to a chapter (a level check's guide link), else where it was left
       const anchor = item.openAt?.();
       const page = anchor ? p.findIndex((pg) => pg.anchors?.includes(anchor)) : -1;
-      if (page >= 0) marks.set(item.id, page);
       openBook(item.id, p, false);
+      if (page >= 0) at = page; // after openBook, which keeps the page it is open at when it is already open
       showManual();
     };
 
@@ -220,7 +228,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const entries: { id: string; title: string; note?: string; icon: string; promised?: boolean }[] = [
       { id: 'manual', title: 'Manual', note: `${pages.length - 2} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
       ...items,
-    ];
+    ].filter((it) => it.id !== 'manual' || pages.length); // no pages: a folder of extras, no manual
     for (const it of entries)
       tray.append(
         h(
@@ -264,7 +272,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       else if (mode === 'item' && isBook()) out.push(...manualSingle(book));
       else {
         const list = mode === 'all' ? items : items.filter((i) => i.id === current);
-        if (mode === 'all') out.push(...manualSingle());
+        if (mode === 'all' && pages.length) out.push(...manualSingle());
         for (const it of list)
           if (it.pages) out.push(...manualSingle(await bookletOf(it)));
           else for (const s of await it.render()) out.push(sheetPage(s));
@@ -282,13 +290,20 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     printRoot.replaceChildren(...manualSingle());
     window.addEventListener('afterprint', afterPrint);
 
-    const bookletBtn = h('button', { onclick: () => void print('booklet') }, 'Manual as a booklet', h('small', null, comb ? COMB_HOW : STAPLE_HOW));
+    const bookletBtn = h('button', { onclick: () => void print('booklet') }, 'Print booklet: the manual', h('small', null, comb ? COMB_HOW : STAPLE_HOW));
+    // a book shown: its pages one after another, to read on screen (a PDF), not folded
+    const pieceBtn = h('button', { onclick: () => void print('item') }, 'This piece', h('small', null, ''));
+    const pieceLabel = () => {
+      const book = isBook();
+      pieceBtn.firstChild!.textContent = book ? 'Read on screen' : 'This piece';
+      pieceBtn.lastChild!.textContent = book ? READ_HOW : '';
+    };
     const menu = h(
       'div',
       { class: 'gmb-print-menu', hidden: true },
-      h('button', { onclick: () => void print('item') }, 'This piece'),
+      pieceBtn,
       bookletBtn,
-      h('button', { onclick: () => void print('all') }, 'Everything in the box'),
+      h('button', { onclick: () => void print('all') }, pages.length ? 'Everything in the box' : 'Everything here'),
     );
 
     // ---- the frame: a modal box; the page under it can't be reached until it closes
@@ -333,7 +348,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         h('div', { class: 'gmb-print-wrap' }, h('button', { onclick: () => (menu.hidden = !menu.hidden), 'aria-haspopup': 'menu' }, '🖨 Print…'), menu),
         h('button', { onclick: close }, 'Close (Esc)'),
       ),
-      h('div', { class: 'gmb-main' }, h('nav', { class: 'gmb-tray', 'aria-label': 'What’s in the box' }, h('h2', null, 'What’s in the box'), tray), stage),
+      h('div', { class: 'gmb-main' }, h('nav', { class: 'gmb-tray', 'aria-label': trayHeading }, h('h2', null, trayHeading), tray), stage),
     );
     film.mount(overlay);
     lens.mount(overlay);
@@ -343,7 +358,11 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         shut.push(el);
       }
     document.body.append(overlay, printRoot);
-    select('manual');
-    tray.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
+    if (!pages.length) bookletBtn.hidden = true;
+    const first = pages.length ? 'manual' : (items[0]?.id ?? 'manual');
+    select(entries.some((e) => e.id === options.start) ? options.start! : first);
+    const picked = tray.querySelector<HTMLElement>('li.on button') ?? tray.querySelector<HTMLElement>('button');
+    picked?.focus({ preventScroll: true });
+    picked?.scrollIntoView({ block: 'nearest' });
   });
 }

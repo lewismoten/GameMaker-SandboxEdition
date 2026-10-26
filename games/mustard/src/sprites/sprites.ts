@@ -9,6 +9,7 @@ import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import type { Pal } from '../art/pal';
+import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 
 export { T };
 
@@ -37,8 +38,8 @@ export type Stage = 'seed' | 'sprout' | 'plant';
 export type Feet = 0 | 1 | 2 | 'tuck' | 'squat' | 'none';
 
 export interface SeedPose {
-  /** front: both eyes; side: looking right (mirror for left). */
-  face: 'front' | 'side';
+  /** front: both eyes; side: looking right (mirror for left); back: climbing away from you. */
+  face: 'front' | 'side' | 'back';
   feet: Feet;
   blink?: boolean;
   /** What grows out of the top: a tip (the seed), a sprout, or the plant's stem. */
@@ -82,11 +83,20 @@ export function seedArt(pal: Pal) {
     else if (o.feet === 1) (shoe(4, fy - 1), shoe(12, fy));
     else if (o.feet === 2) (shoe(6, fy), shoe(10, fy - 1));
     else if (o.feet === 'squat') (shoe(3, fy), shoe(13, fy));
+    const back = o.face === 'back';
+    // from behind, tucked feet are behind the seed: their heels peep out under it
+    if (o.feet === 'tuck' && back) (shoe(4, fy + 1), shoe(12, fy));
     // the seed
     blob(p, cx, cy, rx, ry, pal.r('seed'), 0, 4, 1.15);
     // tucked feet kick up in front of the seed
-    if (o.feet === 'tuck') (shoe(4, fy + 1), shoe(12, fy));
+    if (o.feet === 'tuck' && !back) (shoe(4, fy + 1), shoe(12, fy));
     p.set(Math.round(cx - rx * 0.45), Math.round(cy - ry * 0.55), c('seed', 4)).set(Math.round(cx - rx * 0.45) + 1, Math.round(cy - ry * 0.55), c('seed', 4));
+    // from behind: no face, just the seed's ridge running down its back
+    if (back) {
+      for (let y = Math.round(cy - ry) + 2; y <= Math.round(cy + ry) - 2; y++) p.set(Math.round(cx), y, c('seed', 1));
+      if (o.mood === 'ouch') p.px.forEach((v, i) => v !== T && v !== ink && v !== c('white', 2) && (p.px[i] = c('red', 3)));
+      return outline(p, ink);
+    }
     // the face
     const ey = Math.round(cy - 1);
     const eyes = o.face === 'front' ? [Math.round(cx) - 2, Math.round(cx) + 2] : [Math.round(cx) + 1, Math.round(cx) + 4];
@@ -121,21 +131,26 @@ export function seedArt(pal: Pal) {
   };
 
   /** The plant's top half: its stem, two leaves and the yellow bud of the song's cover. */
-  const top = (sway: number, mood: 'still' | 'joy' | 'wilt' | 'ouch' = 'still'): Pixels => {
+  const top = (sway: number, mood: 'still' | 'joy' | 'wilt' | 'ouch' = 'still', back = false): Pixels => {
     const p = new Pixels(20, 20, T);
+    // from behind, the leaves' paler undersides are behind the stem
+    const leaves = () => {
+      blob(p, 5 + sway / 2, 12 + lift, 4, 2, pal.r('leaf'), back ? 0 : 1, back ? 2 : 4);
+      blob(p, 15 + sway / 2, 10 + lift, 4, 2, pal.r('leaf'), back ? 0 : 1, back ? 2 : 4);
+      p.line(7 + sway / 2, 12 + lift, 10, 14, c('leaf', 1)).line(13 + sway / 2, 10 + lift, 10, 12, c('leaf', 1));
+    };
     const droop = mood === 'wilt';
     const bx = 10 + sway + (droop ? 3 : 0);
     const by = droop ? 10 : 5;
+    const lift = mood === 'joy' ? -4 : droop ? 4 : 0;
+    if (back) leaves();
     // the stem, from the bottom block's top up to the bud
     for (let y = 19; y >= by + 3; y--) {
       const x = Math.round(10 + ((19 - y) / (19 - by)) * (bx - 10));
       p.set(x, y, c('leaf', 2)).set(x + 1, y, c('leaf', 1));
     }
     // two leaves, raised for joy
-    const lift = mood === 'joy' ? -4 : droop ? 4 : 0;
-    blob(p, 5 + sway / 2, 12 + lift, 4, 2, pal.r('leaf'), 1, 4);
-    blob(p, 15 + sway / 2, 10 + lift, 4, 2, pal.r('leaf'), 1, 4);
-    p.line(7 + sway / 2, 12 + lift, 10, 14, c('leaf', 1)).line(13 + sway / 2, 10 + lift, 10, 12, c('leaf', 1));
+    if (!back) leaves();
     // the bud, like a little lemon
     blob(p, bx, by, 3.2, 4, pal.r('seed'), 1, 4, 1.2);
     p.set(bx, by - 4, c('leaf', 2));
@@ -189,6 +204,9 @@ export function buildCharBlocks(pal: Pal) {
   book.add('topJoy', s.top(0, 'joy'));
   book.add('topWilt', s.top(0, 'wilt'));
   book.add('topOuch', s.top(0, 'ouch'));
+  // hopping straight up, and climbing roots: the seed's back
+  for (const [stage, top] of STAGES) book.add(`${stage}.climb`, s.body({ face: 'back', feet: 'tuck', top, squash: -0.6 }));
+  book.add('topBack', s.top(0, 'still', true));
   return book;
 }
 
@@ -199,8 +217,10 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Big loud things are solid (they push the seed away) and hurt to bump into.
-  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
+  // Big loud things are solid (they push the seed away) and hurt to bump into. Not SOLTOP: on a
+  // monster that is the side that pushes the hero under it (PLAYGAME's ChkMonChr), into the
+  // ground. SOLBOT still lets the seed stand on one's back.
+  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: SOLBOT | SOLLEF | SOLRIG });
 
   // Raindrops: catch one and it is a drop of water (and a sip).
   const drop = (f: number) => {

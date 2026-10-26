@@ -9,6 +9,8 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
+import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { CLEAR, centered, outlined, text } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
@@ -22,7 +24,7 @@ export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
 }
 
 /** The card before a leg: a framed look at it, its name and a few words. */
-export function card(s: Stage, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
+export function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
   const pc = (n: string, k: number) => s.pal.c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
@@ -30,9 +32,10 @@ export function card(s: Stage, legIndex: number, l = s.legs[legIndex], tagged?: 
   const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
-  const tag = tagged ?? (l.kind === 'boss' ? 'WARNING!' : `STAGE ${s.n}-${'AB'[legIndex]}`);
+  const tag = tagged ?? (l.kind === 'boss' ? (s.n === of ? 'WARNING! LAST BOSS!' : 'WARNING!') : `STAGE ${s.n}-${'ABCD'[legIndex]}`);
   outlined(p, 12, 110, tag, l.kind === 'boss' && !tagged ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
-  outlined(p, 12, 122, s.title.toUpperCase(), pc('steel', 5), pc('ink', 0), 1);
+  // the world's name, and where it falls in the game
+  outlined(p, 12, 122, `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
   l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('grey', 6)));
   if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
@@ -164,30 +167,24 @@ export function introFli(): Uint8Array {
     frames.push(frame(p));
   }
   // 4. close-up of the drive: the BLASTER shrinks into the slot
-  for (let f = 0; f < 18; f++) {
+  const drive = (f: number) => {
     const p = new Pixels(W, H, c('beige', 3));
     p.rect(0, 70, W, 60, c('beige', 4));
     p.rect(30, 92, 260, 18, c('ink', 0));
     p.rect(34, 96, 252, 10, c('deep', 1));
     speedLines(p, 160, 100, f, 'cyan', 50);
-    const s = Math.max(1, 6 - Math.floor(f / 3));
-    const x = 160 - 10 * s;
-    const y = 170 - f * 4 - 10 * s;
-    scaleBlit(p, f % 2 ? SHIP_FLAME : SHIP, x, y, s);
     caption(p, f < 9 ? 'SHRINK DOWN...' : 'FLY IN... AND BLAST IT!');
+    return p;
+  };
+  for (let f = 0; f < 18; f++) {
+    const p = drive(f);
+    const s = Math.max(1, 6 - Math.floor(f / 3));
+    scaleBlit(p, f % 2 ? SHIP_FLAME : SHIP, 160 - 10 * s, 170 - f * 4 - 10 * s, s);
     frames.push(frame(p));
   }
-  // 5. the logo slams down over the title
-  const title = titleScreen();
-  for (let f = 0; f < 10; f++) {
-    const p = circuit(5);
-    const drop = Math.round(-120 * Math.max(0, 1 - f / 5) + (f > 5 ? Math.sin(f * 2) * (10 - f) : 0));
-    logo(p, 14 + drop);
-    if (f === 5) p.map((x, y, k) => ((x + y) % 2 ? c('grey', 7) : k));
-    frames.push(frame(p));
-  }
-  for (let i = 0; i < 3; i++) frames.push(frame(title));
-  return encodeFli(frames, SP.pal, { speed: 9 });
+  // 5. in it goes, and the scene fades out; the title (the logo over the circuits) follows
+  for (let f = 18; f < 24; f++) frames.push(frame(drive(f)));
+  return encodeFliFadeOut(frames, SP.pal, { speed: 9 });
 }
 
 /** Between stages: down the data bus to the next part of the machine. */
@@ -225,6 +222,8 @@ export function wonFli(): Uint8Array {
     frames.push(frame(p));
   }
   const last = desk((g) => dos(g, boot));
+  // on a dark banner, so it doesn't run into the poster and the window either side
+  last.rect(62, 15, 224, 26, c('ink', 0)).frame(62, 15, 224, 26, c('slime', 3));
   outlined(last, 70, 20, 'SYSTEM CLEAN!', c('slime', 5), c('ink', 0), 2);
   for (let i = 0; i < 2; i++) frames.push(frame(last));
   // On the desk the whole time, in a brass frame: the team's real mascot, Teddy, scanned in
@@ -263,13 +262,13 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
   const lst = (name: string, entries: [string, number?][]) => put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
   for (const s of stages) {
     s.legs.forEach((l, i) => {
-      put(`${l.file}.gif`, gif(card(s, i), s.pal.pal));
+      put(`${l.file}.gif`, gif(card(s, stages.length, i), s.pal.pal));
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
     });
     const side = s.side;
     if (side) {
       const room = side.room.file;
-      put(`${room}.gif`, gif(card(s, -1, side.room, 'UNMAPPED SECTOR'), s.pal.pal));
+      put(`${room}.gif`, gif(card(s, stages.length, -1, side.room, 'UNMAPPED SECTOR'), s.pal.pal));
       lst(`${room}.lst`, [[`${room}.gif`, 0]]);
       // the way out: the egg's page, then the next leg's own card
       put(`${side.outro}bg.gif`, gif(page('THE DEBUG EGG', 31)));
@@ -278,14 +277,12 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
     }
   }
   put(SANDLOGO, sandLogoFli());
-  put('intro.fli', introFli());
+  // the intro in clips of about 4 seconds, so Esc can skip it between them
+  const intro = fliClips('intro.fli', introFli());
+  for (const [name, bytes] of Object.entries(intro)) put(name, bytes);
   put('title.gif', gif(titleScreen()));
   // the Sandbox Software logo first, then the game's own intro
-  lst('title.lst', [
-    [SANDLOGO, 0],
-    ['intro.fli', 0],
-    ['title.gif', 12],
-  ]);
+  put('title.lst', serializeSlideList([{ name: SANDLOGO, pause: 0 }, ...clipEntries(intro, 0), { name: 'title.gif', pause: 12 }]));
   put('menu.gif', gif(menuScreen()));
   const textPage = (base: string, heading: string, body: string, seed: number) => {
     put(`${base}bg.gif`, gif(page(heading, seed)));

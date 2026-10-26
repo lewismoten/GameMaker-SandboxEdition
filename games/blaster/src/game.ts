@@ -29,7 +29,7 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
   const legs = stages.flatMap((s) => s.legs.map((l) => ({ s, l })));
   legs.forEach(({ s, l }, i) => {
     const scene = emptyScene(ADVTYPE);
-    scene.desc = `${s.n}${'abc'[s.legs.indexOf(l)]} ${l.title}`.slice(0, 19);
+    scene.desc = `${s.n}${'abcd'[s.legs.indexOf(l)]} ${l.title}`.slice(0, 19);
     scene.pos = { x: 24 + (i % 8) * 36, y: 90 + Math.floor(i / 8) * 50 };
     // Scrolling legs may only scroll up (the ship's drift carries the screen along, see
     // characters/ship.ts); boss arenas never scroll: one fixed screen.
@@ -95,7 +95,10 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     const from = game.scenes[at(side.from)];
     const free = from.links.findIndex((l) => l.toScene === NOSCENE);
     if (free < 0) throw new Error(`No free link in ${side.from}`);
-    from.links[free] = { toScene: roomAt, from: side.cell, to: startOf(side.room) };
+    // first in the list, so the editor's Auto-arrange (which follows links in order) lays the
+    // room out beside the leg it leads from, not after the ending's chain
+    from.links.splice(free, 1);
+    from.links.unshift({ toScene: roomAt, from: side.cell, to: startOf(side.room) });
     game.scenes.push(room, out);
   }
 

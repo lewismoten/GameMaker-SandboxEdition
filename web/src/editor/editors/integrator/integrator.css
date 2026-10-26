@@ -87,6 +87,12 @@
 .grator-resize:focus-visible::after {
   border-color: var(--title-text);
 }
+/* focused from the keyboard: a ring round the whole bar, not just its grip changing color */
+.grator-resize:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -1px;
+  border-radius: 4px;
+}
 .grator-side {
   min-width: 0;
   max-height: calc(clamp(320px, calc(var(--ws-vh, 100dvh) - 199px - var(--grator-tools-h, 37px)), 900px) + var(--grator-tools-h, 37px) + 11px);

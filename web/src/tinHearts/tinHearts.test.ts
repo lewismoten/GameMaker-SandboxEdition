@@ -18,6 +18,7 @@ import {
   parseFound,
   pendingOf,
   readOverrides,
+  resetAllOverrides,
   setAllOverrides,
   setOverride,
   statusOf,
@@ -84,6 +85,10 @@ describe('tin hearts', () => {
     setAllOverrides(s, true);
     expect(readOverrides()).toEqual({ sleuth: 'added' });
     expect((await heartStates(games)).every((h) => h.found)).toBe(true);
+    // X Reset all: back to what the saves say
+    resetAllOverrides();
+    expect(readOverrides()).toEqual({});
+    expect((await heartStates(games)).map((h) => h.status)).toEqual(['saved', 'none']);
   });
 
   it('counts only catalog games that declare a heart; the rest are pending (dev only)', () => {

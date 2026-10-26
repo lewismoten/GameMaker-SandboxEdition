@@ -171,7 +171,7 @@ export async function present(b: Built): Promise<void> {
       {
         file: 'mael',
         title: 'MAELSTROM',
-        sub: 'THE WAY TO THE CORE',
+        sub: 'WAY TO THE CORE',
         text: 'Two hundred rocks in a storm that never ends. Your weapons are useless here: just fly.',
         biome: 'core',
       },

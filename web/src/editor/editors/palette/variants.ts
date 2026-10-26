@@ -5,7 +5,7 @@ import type { Palette } from '../../../formats/palette';
 
 type RGB = [number, number, number];
 
-export interface Variant {
+interface Variant {
   id: string;
   name: string;
   /** A short file-name stem for the new palette. */

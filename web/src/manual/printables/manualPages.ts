@@ -1,12 +1,14 @@
 // The printed manual: its chapters flowed onto booklet pages (5.5 x 8.5 inches, like the
 // stapled manuals in shareware boxes), padded with note pages to whole folded sheets, with
 // its own front cover (manualCover.ts) and a back cover.
+import './paper.css'; // the page's own styles (the guide beside the DOS page's monitor shows pages without the box viewer)
 import { h } from '../../editor/core/ui';
 import { mapShot } from '../../gfx/gameShots';
 import type { CatalogEntry } from '../../project/files';
 import { bookletPageCount } from './imposition';
 import { paginate } from './paginate';
-import { FICTIONAL_NOTE, sandboxLogo, hashString } from './kit';
+import { FICTIONAL_NOTE, sandboxLogo } from './kit';
+import { fnv1a } from '../../seededRandom';
 import { manualCover } from './manualCover';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 
@@ -50,7 +52,7 @@ async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLEleme
 }
 
 /** After any paragraph giving a P.O. Box, a printed note that it is made up. */
-export function markFictionalAddresses(root: HTMLElement): number {
+function markFictionalAddresses(root: HTMLElement): number {
   let n = 0;
   const blocks = [...root.querySelectorAll('p, li, td, div')].filter(
     (b) => /P\.?\s?O\.?\s+Box/i.test(b.textContent ?? '') && !b.querySelector('p, li, td, div'),
@@ -95,7 +97,7 @@ function scoresPage(title: string): HTMLElement[] {
 }
 
 function backCover(entry: CatalogEntry): HTMLElement[] {
-  const n = hashString(entry.id);
+  const n = fnv1a(entry.id);
   const bars = Array.from({ length: 46 }, (_, i) => h('i', { style: `width:${1 + ((n >> (i % 24)) & 1) + (i % 3 === 0 ? 1 : 0)}px` }));
   return [
     h(

@@ -1,7 +1,7 @@
 // The pictures of each listed game that the home page's tiles (its title screen,
 // src/gfx/titlePicture.ts), its panel, the play page and the desk's boxes show
 // (src/gfx/levelPicture.ts), drawn at build time: one small PNG each instead
-// of the half a dozen game files a page would fetch to draw it (src/desk/boxes/boxArt.ts renderShot).
+// of the half a dozen game files a page would fetch to draw it (src/gfx/gameShots.ts renderShot).
 import { readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { parseGame } from '../src/formats/game';

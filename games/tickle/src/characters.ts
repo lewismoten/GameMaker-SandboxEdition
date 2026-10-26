@@ -12,7 +12,7 @@ import { CARPET, KEY, MON, POWER, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
-const MIRROR = 0x40; // the block flipped left-right
+const MIRROR = 0x44; // both blocks flipped left-right (low nibble the top, high nibble the bottom)
 
 /** Pixels a tick walking. */
 export const STEP = 4;
@@ -74,7 +74,7 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.rightD], walk(STEP, false), { key: KEY.d, sound: SND.step });
   set(S[SEQ.leftA], walk(-STEP, true), { key: KEY.a, sound: SND.step });
   // hopping
-  const hop = [f({ pose: 'hop', y: -HOP })];
+  const hop = [f({ pose: 'climb', y: -HOP })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
   set(S[SEQ.hopW], hop, { key: KEY.w, sound: SND.hop });
   const side = (dx: number, mirror: boolean) => [f({ pose: 'hopSide', x: dx, y: -HOP, mirror }), f({ pose: 'hopSide', x: dx, y: -HOP, mirror })];
@@ -108,7 +108,7 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pose: 'laugh0', pause: 4 }),
     f({ pose: 'grin', pause: 3 }),
   ];
-  set(S[SEQ.laugh], laugh, { key: KEY.l, sound: SND.laugh, norepeat: 1 });
+  set(S[SEQ.laugh], laugh, { key: KEY.c, sound: SND.laugh, norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // rapport (health)

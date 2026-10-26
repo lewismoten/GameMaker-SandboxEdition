@@ -1,3 +1,5 @@
+// The Game-Maker box's inserts: made-up 555 numbers, the price tag, the disks and the keyboard
+// template.
 import { describe, expect, it } from 'vitest';
 import { GM_DISKS, GM_PRICE, SUPPORT, templateKeys } from '../src/manual/printables/gmInserts';
 

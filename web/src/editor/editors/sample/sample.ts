@@ -293,6 +293,24 @@ registerEditor(['voc'], (host, project, file) => {
           },
           '⬇ WAV',
         ),
+        // a sound the 🎛 sound effect maker made can be changed with its sliders again
+        project.extras(file, 'sfx', undefined)
+          ? h(
+              'button',
+              {
+                title: 'Change it with the sliders it was made with (this replaces any edits made here; Undo brings them back)',
+                onclick: async () => {
+                  const { sfxMaker } = await import('../../tools/sfxMaker'); // loaded when first used
+                  const before = samples;
+                  const made = await sfxMaker(project, { file });
+                  if (!made) return;
+                  samples = before;
+                  commit(decodeVoc(project.files.get(file)!).samples);
+                },
+              },
+              '🎛 Sound effect maker…',
+            )
+          : null,
       ),
       h(
         'div',

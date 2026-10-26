@@ -23,7 +23,7 @@ export const COMPUTERS = ['286', '386', '486'] as const;
 /** How long the "few days" in the mail take on the desk (skippable). */
 export const MAIL_DAYS_MS = 3500;
 
-export interface MailedCard {
+interface MailedCard {
   name: string;
   bought?: string;
   computer?: string;

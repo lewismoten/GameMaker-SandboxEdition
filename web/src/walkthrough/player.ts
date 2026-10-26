@@ -6,14 +6,12 @@
 // and chapter markers) right under the screen. While it is open the page's other demos stop
 // (media/mediaFocus.ts).
 import './walkthrough.css';
-import { h, modal, toast } from '../editor/core/ui';
-import { saveBlob } from '../media/screenCapture';
+import { download, h, modal, toast } from '../editor/core/ui';
 import { fetchSiteFile, type CatalogEntry, type GameFiles } from '../project/files';
 import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
 import { WalkAudio, WalkRun } from './runtime';
-import { canExport, exportWalkthrough } from './exportVideo';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
@@ -25,7 +23,7 @@ const SKIP_MS = (40 * 1000) / TICK_RATE;
 const walkCache = new Map<string, Promise<Walkthrough | undefined>>();
 
 /** The game's walkthrough (its catalog entry names it), loaded once. */
-export function loadWalkthrough(entry: CatalogEntry): Promise<Walkthrough | undefined> {
+function loadWalkthrough(entry: CatalogEntry): Promise<Walkthrough | undefined> {
   const path = entry.walkthrough;
   if (!path) return Promise.resolve(undefined);
   let p = walkCache.get(path);
@@ -46,9 +44,9 @@ const slug = (s: string) =>
     .toLowerCase() || 'game';
 
 /** The address of the game's page in the web app. */
-export const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
+const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
 
-export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
+function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
   return youtubeText({
     gameTitle: entry.title,
     year: entry.year,
@@ -63,7 +61,7 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
 }
 
 /** What "Copy for YouTube" puts on the clipboard: the title, a blank line, then the description (its chapter list last). */
-export const youtubeClipboard = (yt: { title: string; description: string }) => `${yt.title}\n\n${yt.description}`;
+const youtubeClipboard = (yt: { title: string; description: string }) => `${yt.title}\n\n${yt.description}`;
 
 /** Copies `text`: the Clipboard API, else a selected textarea inside `inside` (a modal dialog keeps the rest of the page inert). */
 async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
@@ -89,13 +87,19 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
   }
 }
 
-/** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show. */
-export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void, given?: Walkthrough): Promise<void> {
+/** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show; `chapter` (an index into its timeline's chapters) starts it there. */
+export async function watchWalkthrough(
+  entry: CatalogEntry,
+  loadFiles: () => Promise<GameFiles>,
+  onReady?: () => void,
+  given?: Walkthrough,
+  chapter?: number,
+): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter);
   } finally {
     release?.();
   }
@@ -107,6 +111,7 @@ async function watch(
   onReady: (() => void) | undefined,
   onLose: (f: () => void) => void,
   given?: Walkthrough,
+  chapter?: number,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -210,8 +215,9 @@ async function watch(
       null,
       h(
         'button',
-        { type: 'button', class: 'wt-chapter', onclick: () => void seek(i), 'aria-label': `${c.title}, at ${clock(c.frame / WALKTHROUGH_FPS)}` },
+        { type: 'button', class: 'wt-chapter', onclick: () => void seek(i) },
         h('span', { class: 'wt-chapter-time' }, clock(c.frame / WALKTHROUGH_FPS)),
+        ' ',
         h('span', { class: 'wt-chapter-title' }, c.title),
       ),
     ),
@@ -263,6 +269,7 @@ async function watch(
         // eslint-disable-next-line @typescript-eslint/no-base-to-string -- whatever was thrown, as text
         status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : end;
         if (!r.error && r.done) watchedWalkthrough(entry.id);
+        if (!r.error && walk.bot) unlockAchievement('watch-bot');
       }
     })();
   };
@@ -358,6 +365,7 @@ async function watch(
     if (!dragging) return;
     dragging = false;
     showHover(undefined);
+    unlockAchievement('watch-seek');
     void seekTo(frameAt(e.clientX));
   });
   progress.addEventListener('pointercancel', () => {
@@ -371,6 +379,7 @@ async function watch(
     const to = e.key === 'Home' ? 0 : e.key === 'End' ? total - 1 : step !== undefined ? now + step * WALKTHROUGH_FPS : undefined;
     if (to === undefined) return;
     e.preventDefault();
+    unlockAchievement('watch-seek');
     void seekTo(to);
   });
 
@@ -400,6 +409,7 @@ async function watch(
   });
   exportBtn.addEventListener('click', async () => {
     if (making) return making.abort();
+    const { canExport, exportWalkthrough } = await import('./exportVideo'); // the MP4 maker loads when first asked for
     if (!(await canExport())) return toast('This browser cannot make MP4 videos (it has no H.264 encoder). Try Chrome, Edge or Safari.', 'error');
     const pick = exportSel.value;
     const from = pick === 'all' ? 0 : tl.chapters[Number(pick)].frame;
@@ -430,7 +440,7 @@ async function watch(
             : 'Making the video: getting to the start…';
         },
       });
-      saveBlob(name, res.blob);
+      download(name, res.blob);
       unlockAchievement('download-mp4');
       status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {
@@ -473,7 +483,10 @@ async function watch(
   showPlay();
   showTime();
   fresh();
-  void run!.start().then(() => run!.step(true));
+  void run!
+    .start()
+    .then(() => run!.step(true))
+    .then(() => (chapter !== undefined && tl.chapters[chapter] ? seek(chapter) : undefined));
 
   onReady?.();
   await modal<void>(`${entry.title}: walkthrough`, () =>

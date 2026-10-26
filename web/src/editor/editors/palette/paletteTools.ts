@@ -14,7 +14,7 @@ import { colorUses, openInEditor, sceneName } from '../../core/uses';
 import { shadeRamp } from './ramps';
 import { VARIANTS, relight, range } from './variants';
 
-export interface PaletteContext {
+interface PaletteContext {
   project: Project;
   file: string;
   pal: Palette;
@@ -28,7 +28,7 @@ export interface PaletteContext {
 
 type Range = [number, number];
 
-export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTMLElement; refresh: () => void; dispose: () => void } {
+export function paletteTools(c: PaletteContext): { el: HTMLElement; uses: HTMLElement; rampBtn: HTMLElement; refresh: () => void; dispose: () => void } {
   const { project, file, pal } = c;
   const span = (): Range => {
     const a = c.selected();
@@ -134,7 +134,8 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
     rightCap.textContent = compareSel.selectedOptions[0]?.textContent ?? '';
     makeBtn.hidden = !compareSel.value.startsWith('v:');
     if (!shot) return;
-    paintIndexed(left, shot.pixels, shot.width, shot.height, pal);
+    // a copy: draw.ts keeps a color table per palette object, and this one changes in place
+    paintIndexed(left, shot.pixels, shot.width, shot.height, pal.slice());
     paintIndexed(right, shot.pixels, shot.width, shot.height, other());
   }
   sceneSel.addEventListener('change', redraw);
@@ -180,7 +181,8 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
     { class: 'pal-tools stack' },
     h(
       'details',
-      { class: 'panel pal-compare', open: true },
+      // folded at first, so the colors and the color being edited fit one window
+      { class: 'panel pal-compare' },
       h('summary', null, 'Night, dusk, underwater…'),
       h(
         'p',
@@ -202,11 +204,13 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; rampBtn: HTM
         : h('label', { class: 'field' }, h('span', null, 'Re-light as'), compareSel),
       h('div', { class: 'toolbar' }, makeBtn),
     ),
-    h('details', { class: 'panel', open: true }, h('summary', null, 'Which blocks use this color'), usesHead, usesList),
   );
+  // beside the color being edited (palette.ts), where a click on a color shows its uses
+  const uses = h('details', { class: 'pal-uses-panel', open: true }, h('summary', null, 'Which blocks use this color'), usesHead, usesList);
   showGlows();
   return {
     el,
+    uses,
     rampBtn,
     refresh() {
       redraw();

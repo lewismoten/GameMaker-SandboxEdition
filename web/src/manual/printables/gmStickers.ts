@@ -25,7 +25,7 @@ const REGULARS: (MixedSticker & { game: string })[] = [
     shape: 'cut',
     color: '#6b7280',
     ink: '#ffffff',
-    sprite: { blocks: 'backyard.bbl', pal: 'backyard.pal', grid: [[98]], under: 34 },
+    sprite: { blocks: 'backyard.bbl', pal: 'backyard.pal', grid: [[99]], under: 34 },
   },
   {
     game: 'teddy',
@@ -57,7 +57,7 @@ const REGULARS: (MixedSticker & { game: string })[] = [
   {
     game: 'realm',
     text: 'TEDDY',
-    sub: 'ONE EAR SHORTER',
+    sub: 'VERY GOOD BOY',
     shape: 'cut',
     color: '#e8862a',
     ink: '#ffffff',
@@ -66,7 +66,7 @@ const REGULARS: (MixedSticker & { game: string })[] = [
   {
     game: 'sandcast',
     text: 'GWINN',
-    sub: "TWO N'S",
+    sub: 'ZOOMIES!',
     shape: 'cut',
     color: '#f6a9c8',
     ink: '#3a1a20',

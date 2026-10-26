@@ -4,7 +4,7 @@
 // in the sky, droppers on ceilings. Up to 200 per map (Game-Maker's LASTMM).
 import { rng } from '../../../kit/pixels';
 import { LASTMM } from '../../../../web/src/formats/map';
-import type { Block } from '../../../../web/src/formats/blocks';
+import { SOLLEF, SOLRIG, type Block } from '../../../../web/src/formats/blocks';
 import { Grid, W, H, wx, wy } from './mapkit';
 import type { Creature, MonsterSet, Placement } from '../characters/bestiary';
 
@@ -18,6 +18,8 @@ export interface Spots {
   liquid: { x: number; y: number }[];
   vault?: { x: number; y: number };
   avoid: { x: number; y: number };
+  /** Other places the hero comes in (a sector's planets, its jump ring): kept as clear as `avoid`. */
+  alsoAvoid?: { x: number; y: number }[];
 }
 
 export function tierOf(c: Creature): number {
@@ -30,6 +32,15 @@ export function tierOf(c: Creature): number {
 function reach(c: Creature): number {
   if (c.move.kind !== 'path') return 0;
   return Math.max(0, ...c.move.corners.map((k) => k[0]));
+}
+
+/** A solid-sided creature on a sideways path (a ferry slab). */
+const slides = (c: Creature) => reach(c) > 0 && ((c.block?.solid ?? 0) & (SOLLEF | SOLRIG)) !== 0;
+
+/** How far a creature's normal path rises (max -dy): a lift slab's climb. */
+function rise(c: Creature): number {
+  if (c.move.kind !== 'path') return 0;
+  return Math.max(0, ...c.move.corners.map((k) => -k[1]));
 }
 
 export function populate(
@@ -45,13 +56,34 @@ export function populate(
     const b = bbl[g.get(x, y)];
     return (b.solid & 14) === 0 && b.chHitPt >= 0 && !b.obj && b.effect === 0;
   };
-  const far = (x: number, y: number) => {
-    let dx = Math.abs(x - spots.avoid.x);
-    dx = Math.min(dx, W - dx);
-    let dy = Math.abs(y - spots.avoid.y);
-    dy = Math.min(dy, H - dy);
-    return dx > 9 || dy > 6;
-  };
+  const wall = (x: number, y: number) => (bbl[g.get(x, y)].solid & (SOLLEF | SOLRIG)) !== 0;
+  /** The nearest shift (up to 3 blocks) at which a slab gliding `run` blocks right from x has no
+   * wall on its rows (its own and the one above) from a block before it to a block past its turn. */
+  const clearShift = (x: number, y: number, run: number) =>
+    [0, -1, 1, -2, 2, -3, 3].find((d) => {
+      for (let k = -1; k <= run + 1; k++) if (wall(x + d + k, y) || wall(x + d + k, y - 1)) return false;
+      return true;
+    });
+  const anySolid = (x: number, y: number) => bbl[g.get(x, y)].solid !== 0;
+  /** The nearest shift (up to 3 blocks) at which a slab bobbing `up` blocks over (x, y) has an
+   * open column: two blocks of head room for a rider over its top, its whole climb, and an empty
+   * block under its lowest point (so it never rests on a floor a courier could be under). */
+  const clearColumn = (x: number, y: number, up: number) =>
+    [0, -1, 1, -2, 2, -3, 3].find((d) => {
+      for (let k = y - up - 2; k <= y + 1; k++) if (anySolid(x + d, k)) return false;
+      return true;
+    });
+  // clear of every place the hero comes in: out of a chaser's reach (PLAYGAME's 8 blocks
+  // across, 5 up or down), and a walker's beat further still on the rows beside it
+  const entries = [spots.avoid, ...(spots.alsoAvoid ?? [])];
+  const far = (x: number, y: number, beat: number) =>
+    entries.every((e) => {
+      let dx = Math.abs(x - e.x);
+      dx = Math.min(dx, W - dx);
+      let dy = Math.abs(y - e.y);
+      dy = Math.min(dy, H - dy);
+      return dx > 9 + (dy <= 2 ? beat : 0) || dy > 6;
+    });
   const byPlace = new Map<Placement, number[]>();
   ms.creatures.forEach((c, i) => {
     if (tierOf(c) > opts.level + 1) return;
@@ -87,7 +119,7 @@ export function populate(
   const put = (mon: number, x: number, y: number) => {
     x = wx(x);
     y = wy(y);
-    if (placed >= max || !open(x, y) || !far(x, y) || g.monsterAt(x, y)) return false;
+    if (placed >= max || !open(x, y) || !far(x, y, reach(ms.creatures[mon])) || g.monsterAt(x, y)) return false;
     // keep a little room between monsters so they spread over the whole world
     if (g.monsters.some((m) => Math.min(Math.abs(m.x - x), W - Math.abs(m.x - x)) < spacing && Math.min(Math.abs(m.y - y), H - Math.abs(m.y - y)) < spacing))
       return false;
@@ -152,7 +184,14 @@ export function populate(
         if (s) ok = put(mon, s.x, s.y - 1);
       } else if (place === 'platform') {
         const s = spots.liquid[Math.floor(r() * spots.liquid.length)] ?? spots.caveAir[Math.floor(r() * spots.caveAir.length)];
-        if (s) ok = put(mon, s.x - 2, s.y - 2);
+        if (s) {
+          // a slab that glides sideways turns a block clear of walls, and one that bobs climbs a
+          // clear column: PLAYGAME's push puts a courier beside, over or under it with no wall
+          // check, so at a wall, ceiling or floor it would shove him inside
+          const shift = slides(c) ? clearShift(s.x - 2, s.y - 2, reach(c)) : rise(c) ? clearColumn(s.x - 2, s.y - 2, rise(c)) : 0;
+          const x = s.x - 2 + (shift ?? NaN);
+          if (!Number.isNaN(x)) ok = put(mon, x, s.y - 2);
+        }
       }
       if (ok) n++;
     }

@@ -1,3 +1,4 @@
+// The Owner's Guide's registration record: blank until PLAYGAME.REG registers the copy.
 import { describe, expect, it } from 'vitest';
 import { registeredTo } from '../src/manual/regRecord';
 import { DEFAULT_REG, SERIAL, regFile, registrationNumber } from '../src/retro/gmReg/registration';

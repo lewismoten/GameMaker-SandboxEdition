@@ -4,7 +4,7 @@
 import { sceneKind, type Game } from '../../../formats/game';
 
 /** Between-scene screens, by scene kind and slot. */
-export const START_SCREENS: [number, string][] = [
+const START_SCREENS: [number, string][] = [
   [0, 'Title'],
   [2, 'Menu'],
   [4, 'Storyline'],
@@ -19,11 +19,11 @@ export const START_SONGS: [number, string][] = [
   [3, 'Menu song'],
   [5, 'Storyline song'],
 ];
-export const END_SCREENS: [number, string][] = [
+const END_SCREENS: [number, string][] = [
   [0, 'Game won'],
   [2, 'Game lost'],
 ];
-export const END_SONGS: [number, string][] = [
+const END_SONGS: [number, string][] = [
   [1, 'Game won song'],
   [3, 'Game lost song'],
 ];

@@ -1,13 +1,19 @@
 // The level check's playtest of a whole game, or of one scene: explores each scene from where
 // play enters it (explore.ts), carrying the hero's hit points, score and inventory from the
 // exit that led there, then finds the stuck areas in it (stuck.ts). Scenes are taken in the
-// order play reaches them from the title's first link.
+// order play reaches them from the title's first link. It can also play with steady hands
+// (one key at a time, unhurried), or go on into each scene carrying the least the hero could
+// have left the last one with (what a player who skips things brings).
 import { parseBlocks, BACKBL } from '../../formats/blocks';
-import { ADVTYPE, NOSCENE, parseGame, type Game } from '../../formats/game';
+import { NOSCENE, parseGame, type Game } from '../../formats/game';
 import { parseMap } from '../../formats/map';
-import { explore, type Entry, type Exploration } from './explore';
+import { explore, type Entry, type Exploration, type ExploreLive } from './explore';
 import { startCharInfo, type FileSource } from './sim';
 import { stuckAreas, type StuckArea } from './stuck';
+import { levelScenes, linksInto } from './sceneLinks';
+
+/** For games/kit/levelCheck.ts, which takes the level scenes from here. */
+export { levelScenes };
 
 export interface SceneRun {
   scene: number;
@@ -18,13 +24,21 @@ export interface SceneRun {
   stuck: StuckArea[];
   /** The hero's hit points as it entered. */
   hpIn: number;
+  /** Where and with what the hero came in (to play the scene again another way). */
+  entry: Entry;
 }
 
-export interface PlaytestOptions {
+interface PlaytestOptions {
   /** Work per scene before moving on (ms). */
   budgetMs?: number;
-  /** Told the scene being explored and how far along it is; return true to stop everything. */
-  progress?: (scene: number, done: number, total: number, places: number) => boolean | void;
+  /** Told the scene being explored, how far along it is and what it has found so far; return true to stop everything. */
+  progress?: (scene: number, done: number, total: number, places: number, queued: number, live: ExploreLive) => boolean | void;
+  /** Play with steady hands: one key at a time, at least this many ticks between changes. */
+  steadyTicks?: number;
+  /** Go on into each scene carrying the least the hero could leave the last one with (explore.ts poorExits). */
+  leaveBehind?: boolean;
+  /** Try places nearer the scene's links on first (explore.ts goal): finds a way through sooner, covers less. */
+  towardExits?: boolean;
 }
 
 export interface Playtest {
@@ -42,16 +56,6 @@ export function gameOf(files: FileSource & { mainGame?(): string | undefined }, 
   const bytes = name ? files.get(name) : undefined;
   if (!bytes) throw new Error('This game has no .gam file.');
   return parseGame(bytes);
-}
-
-/** Level scenes: the ones with a map that play can enter. */
-export function levelScenes(game: Game): number[] {
-  return game.scenes.flatMap((s, i) => (i > 1 && s.gametype === ADVTYPE && s.files[1] ? [i] : []));
-}
-
-/** Every link into `scene`: from which scene, which link, and where the hero starts. */
-export function linksInto(game: Game, scene: number): { scene: number; link: number; to: { x: number; y: number } }[] {
-  return game.scenes.flatMap((s, i) => s.links.flatMap((l, k) => (l.toScene === scene ? [{ scene: i, link: k, to: l.to }] : [])));
 }
 
 /** Plays the whole game: every scene the hero can get to, in the order play reaches them. */
@@ -73,7 +77,7 @@ export async function playtestGame(game: Game, files: FileSource, opt: PlaytestO
       break;
     }
     runs.push(r);
-    for (const e of r.ex.exits) {
+    for (const e of opt.leaveBehind ? r.ex.poorExits : r.ex.exits) {
       if (e.toScene === 1) out.won = true;
       if (e.toScene <= 1 || e.toScene >= game.scenes.length || seen.has(e.toScene)) continue;
       seen.add(e.toScene);
@@ -101,6 +105,11 @@ export async function playtestScene(game: Game, files: FileSource, scene: number
   );
 }
 
+/** Plays one scene again from the same entry as an earlier run, another way (steady hands). */
+export async function replayScene(game: Game, files: FileSource, run: SceneRun, opt: PlaytestOptions = {}): Promise<SceneRun | undefined> {
+  return checkScene(game, files, run.scene, run.from, run.entry, opt, 0, 1);
+}
+
 async function checkScene(
   game: Game,
   files: FileSource,
@@ -112,10 +121,13 @@ async function checkScene(
   total: number,
 ): Promise<SceneRun | undefined> {
   let cancelled = false;
+  const onward = game.scenes[scene].links.filter((l) => l.toScene !== NOSCENE && l.toScene !== from.scene && l.toScene !== scene);
   const ex = await explore(game, scene, files, entry, {
     budgetMs: opt.budgetMs,
-    progress: (places) => {
-      if (opt.progress?.(scene, done, total, places)) cancelled = true;
+    steadyTicks: opt.steadyTicks,
+    goal: opt.towardExits && onward.length ? onward.map((l) => l.from.y * 100 + l.from.x) : undefined,
+    progress: (places, queued, live) => {
+      if (opt.progress?.(scene, done, total, places, queued, live)) cancelled = true;
       return cancelled;
     },
   });
@@ -124,5 +136,5 @@ async function checkScene(
   const mapBytes = files.get(s.files[1]);
   const bblBytes = s.files[2] ? files.get(s.files[2]) : undefined;
   const stuck = mapBytes && bblBytes ? stuckAreas(ex, parseMap(mapBytes).blocks, parseBlocks(bblBytes, BACKBL)) : [];
-  return { scene, name: s.desc.trim() || `Scene ${scene}`, from, ex, stuck, hpIn: entry.ci.hitpts };
+  return { scene, name: s.desc.trim() || `Scene ${scene}`, from, ex, stuck, hpIn: entry.ci.hitpts, entry };
 }

@@ -1,12 +1,13 @@
 // Started once by each page (main.ts, play.ts): unlocks what other parts of the page report
-// with a `gm-achievement` event ({ detail: { id } }, e.g. the desk's room props), follows other
+// with a `gm-achievement` event ({ detail: { id } }, e.g. the desk's room props, or { id, item }
+// to count an item toward a fixed total, e.g. the World Map's styles), follows other
 // tabs, and keeps the counted achievements (tin hearts, felt eggs, every game played) in step
 // with the saves and the catalog as they change.
 import { refreshGoals } from './goals';
-import { listenToOtherTabs, loadAchievements, progress, unlockAchievement } from './store';
+import { listenToOtherTabs, loadAchievements, progress, tally, unlockAchievement } from './store';
 
-/** The event other code fires to unlock one: new CustomEvent(ACHIEVEMENT_EVENT, { detail: { id } }). */
-export const ACHIEVEMENT_EVENT = 'gm-achievement';
+/** The event other code fires to unlock one: new CustomEvent(ACHIEVEMENT_EVENT, { detail: { id } }), or { id, item } to tally an item. */
+const ACHIEVEMENT_EVENT = 'gm-achievement';
 
 let started = false;
 
@@ -14,8 +15,9 @@ export function startAchievements(): void {
   if (started || typeof window === 'undefined') return;
   started = true;
   window.addEventListener(ACHIEVEMENT_EVENT, (e) => {
-    const id = (e as CustomEvent<{ id?: unknown }>).detail?.id;
-    if (typeof id === 'string') unlockAchievement(id);
+    const { id, item } = (e as CustomEvent<{ id?: unknown; item?: unknown } | null>).detail ?? {};
+    if (typeof id === 'string' && typeof item === 'string') tally(id, item);
+    else if (typeof id === 'string') unlockAchievement(id);
     // eslint-disable-next-line no-console -- a development-only note
     else if (import.meta.env?.DEV) console.info('[achievements] gm-achievement without an id', e);
   });
@@ -36,11 +38,12 @@ function settle(f: () => void, ms = 600): () => void {
 
 async function watchCounts(): Promise<void> {
   await loadAchievements();
-  const [{ heartStates, watchHearts }, { eggStates, EGGS_CHANGED }, { SAVES_CHANGED }, { CATALOG_CHANGED }] = await Promise.all([
+  const [{ heartStates, watchHearts }, { eggStates, EGGS_CHANGED }, { SAVES_CHANGED }, { CATALOG_CHANGED }, { laidFromSaves }] = await Promise.all([
     import('../tinHearts/tinHearts'),
     import('../eggs/eggState'),
     import('../project/storage'),
     import('../project/catalogWatch'),
+    import('../eggs/teddyEgg'),
   ]);
   // only finds made in a game count, not ones EGG.EXE adds by hand
   const hearts = async () => {
@@ -53,6 +56,7 @@ async function watchCounts(): Promise<void> {
     const s = await eggStates().catch(() => []);
     const n = s.filter((x) => x.inSave).length;
     if (n) unlockAchievement('egg-first');
+    if (laidFromSaves(s)) unlockAchievement('egg-teddy');
     if (s.length && n) progress('egg-all', n, s.length);
   };
   const onHearts = settle(() => void hearts());

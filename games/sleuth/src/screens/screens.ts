@@ -132,19 +132,13 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
   put('hiscore.gif', gif(scoresScreen()));
   put('load.gif', gif(drawerScreen('LOAD A CASE')));
   put('save.gif', gif(drawerScreen('FILE THE CASE')));
-  // the Sandbox Software logo first, then the game's own intro
+  // the Sandbox Software logo (title.lst and story.lst are with the cartoons, flics.ts)
   put(SANDLOGO, sandLogoFli());
-  lst('title.lst', [
-    [SANDLOGO, 0],
-    ['intro.fli', 0],
-    ['title.gif', 10],
-  ]);
 
   // pages of long text on the case file
   put('casefile.gif', gif(caseFile('')));
   put('story.gif', gif(caseFile("THE RAVEN'S BRIDE")));
   put('story.txt', wide(STORY));
-  lst('story.lst', [['story.fli', 0], ['story.gif', 0], ['story.txt']]);
   put('help.gif', gif(caseFile('HOW TO PLAY')));
   put('help.txt', wide(HELP));
   lst('help.lst', [['help.gif', 0], ['help.txt']]);
@@ -213,8 +207,8 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
     if (night) p.map((px, py, col) => (((px + py) % 2 === 0 || (px % 4 === 1 && py % 2 === 1)) && !lit.has(col) ? c('black', 0) : col));
     return p;
   };
-  put('act1.gif', gif(actCard(view(views.act1, 26, 21), ACT_CARDS.act1.title, ACT_CARDS.act1.time, ACT_CARDS.act1.lines)));
-  put('act2.gif', gif(actCard(view(views.act2, 16, 25, true), ACT_CARDS.act2.title, ACT_CARDS.act2.time, ACT_CARDS.act2.lines)));
+  put('act1.gif', gif(actCard(view(views.act1, 26, 21), ACT_CARDS.act1.title, ACT_CARDS.act1.time, ACT_CARDS.act1.lines, ACT_CARDS.act1.part)));
+  put('act2.gif', gif(actCard(view(views.act2, 16, 25, true), ACT_CARDS.act2.title, ACT_CARDS.act2.time, ACT_CARDS.act2.lines, ACT_CARDS.act2.part)));
   lst('act1.lst', [['act1.gif', 12]]);
   lst('act2.lst', [['act2.gif', 12]]);
 

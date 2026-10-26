@@ -117,7 +117,7 @@ export function buildCampus(pal: Pal): BlockBook {
   eagle.rect(9, 6, 2, 14, c('wood', 2)).rect(5, 8, 10, 2, c('gold', 1));
   blob(eagle, 10, 4, 4, 2.6, R('gold'), 1, 3);
   eagle.set(10, 1, c('gold', 3)).set(9, 3, c('ink', 0));
-  micro(eagle, 6, 11, 'SPQR', c('pompeii', 1));
+  micro(eagle, 3, 11, 'SPQR', c('pompeii', 1));
   book.add('aquila', eagle, { score: 250, touch: 'field' });
   // pickups in the field
   book.add('wcup', cup(x, field(12)), { hp: 30, score: 10, touch: 'field' });

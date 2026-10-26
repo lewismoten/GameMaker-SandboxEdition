@@ -1,11 +1,11 @@
 // How each kind of sticker is drawn on a canvas, in its own coordinates (its cut shape's top-left
 // at 0, 0; S pixels to the inch), already clipped to its cut line plus bleed: die-cut pixel-art
-// characters with a colored rim, characters and words on shaped stickers, a screenshot on a
+// characters with a colored border, characters and words on shaped stickers, a screenshot on a
 // little TV, the game's title on a floppy disk, the Sandbox BBS, Game-Maker and Sandbox Software.
 import { PRODUCT } from '../../edition';
 import { BBS_PHONE } from './kit';
 import { drawSandboxMark, SANDBOX_RAINBOW } from './sandboxMark';
-import { CUT_OFFSET, cutGeom, outline, type Pt, type Solid, type StickerGeom, type StickerShape } from './stickerGeom';
+import { artHalo, CUT_OFFSET, cutGeom, MIN_SIZE, outline, type Pt, type Solid, type StickerGeom, type StickerShape } from './stickerGeom';
 
 /** A sticker ready to lay out and draw. */
 export interface Sticker {
@@ -27,8 +27,8 @@ export interface Words {
 
 const BLACK_FONT = '"Arial Black", "Arial Bold", Arial, sans-serif';
 const SANS = 'Arial, sans-serif';
-/** A die-cut's colored rim, inside its cut line; the rest of the border is white. */
-const RIM = 0.035;
+/** The thin white line that hugs a die-cut's art, inside its colored border. */
+const HALO = 0.035;
 
 export function polyPath(pts: Pt[], S: number): Path2D {
   const p = new Path2D();
@@ -40,7 +40,7 @@ export function polyPath(pts: Pt[], S: number): Path2D {
 // ------------------------------------------------------------------ words
 
 /** Lines of text at the largest size (px) that fits maxW x maxH, splitting on spaces into up to 3 lines. */
-export function fit(
+function fit(
   g: CanvasRenderingContext2D,
   text: string,
   maxW: number,
@@ -71,7 +71,7 @@ export function fit(
   return best;
 }
 
-export function drawLines(
+function drawLines(
   g: CanvasRenderingContext2D,
   fitted: { lines: string[]; size: number },
   cx: number,
@@ -87,14 +87,34 @@ export function drawLines(
   fitted.lines.forEach((l, i) => g.fillText(l, cx, cy - total / 2 + (i + 0.5) * fitted.size * lh));
 }
 
-/** Words in a box, the main line big and the sub line small under it. */
-function wordsIn(g: CanvasRenderingContext2D, w: Words, x: number, y: number, bw: number, bh: number, fill: string): void {
+/** The least size of printed words, in device pixels at S to the inch: 6 pt, as sticker printers ask. */
+const minText = (S: number) => (6 / 72) * S;
+
+/**
+ * Words in a box, the main line big and the sub line small under it (`subShare` of the height).
+ * A sub line that would print smaller than `minPx` is left off, and the main line takes the box.
+ */
+function wordsIn(
+  g: CanvasRenderingContext2D,
+  w: Words,
+  x: number,
+  y: number,
+  bw: number,
+  bh: number,
+  fill: string,
+  subShare = 0.3,
+  minPx = 0,
+  subW = 0.94,
+): void {
   g.fillStyle = fill;
+  const sub = w.sub ? fit(g, w.sub, bw * subW, bh * (w.text ? subShare : 0.8), '700', SANS) : undefined;
+  const both = !!(w.text && sub && sub.size >= minPx);
+  const mainH = 0.92 - subShare;
   if (w.text) {
-    const main = fit(g, w.text, bw, bh * (w.sub ? 0.62 : 1), '900', BLACK_FONT);
-    drawLines(g, main, x + bw / 2, y + bh * (w.sub ? 0.34 : 0.5), '900', BLACK_FONT);
+    const main = fit(g, w.text, bw, bh * (both ? mainH : 1), '900', BLACK_FONT);
+    drawLines(g, main, x + bw / 2, y + bh * (both ? (0.34 * mainH) / 0.62 : 0.5), '900', BLACK_FONT);
   }
-  if (w.sub) drawLines(g, fit(g, w.sub, bw * 0.94, bh * (w.text ? 0.3 : 0.8), '700', SANS), x + bw / 2, y + bh * (w.text ? 0.8 : 0.5), '700', SANS);
+  if (sub && (both || !w.text)) drawLines(g, sub, x + bw / 2, y + bh * (w.text ? 1 - subShare * 0.667 : 0.5), '700', SANS);
 }
 
 /** A picture drawn at a whole number of device pixels per art pixel, so pixel art stays crisp. */
@@ -119,6 +139,9 @@ interface CutLayout {
 
 const measure = document.createElement('canvas').getContext('2d')!;
 
+/** The least size of a die-cut's art box, so with its border the sticker is MIN_SIZE across. */
+const MIN_ART = MIN_SIZE - 2 * CUT_OFFSET;
+
 function cutLayout(img: Art, px: number, words?: Words): CutLayout {
   const aw = (img.width * px) / 150;
   const ah = (img.height * px) / 150;
@@ -128,7 +151,7 @@ function cutLayout(img: Art, px: number, words?: Words): CutLayout {
   const textH = (words.text ? ph * 0.6 : ph * 0.5) * 100;
   measure.font = `900 ${textH}px ${BLACK_FONT}`;
   const want = Math.max(measure.measureText(words.text || '').width, measure.measureText(words.sub || '').width * 0.55) / 100 + 0.16;
-  const pw = Math.min(1.7, Math.max(aw * 0.9, want, 0.7));
+  const pw = Math.min(1.7, Math.max(aw * 0.9, want, MIN_ART));
   const w = Math.max(aw, pw);
   const overlap = Math.min(0.06, ah * 0.1);
   return { w, h: ah + ph - overlap, art: { x: (w - aw) / 2, y: 0, w: aw, h: ah }, plate: { x: (w - pw) / 2, y: ah - overlap, w: pw, h: ph } };
@@ -156,17 +179,22 @@ function solidOf(w: number, h: number, draw: (g: CanvasRenderingContext2D, S: nu
   return { cols, rows, cell: 1 / S, bits };
 }
 
-/** A die-cut around a drawing `w` x `h` inches: a colored rim at the cut line, white inside, then the drawing. */
-export function dieCutOf(name: string, w: number, h: number, rim: string, draw: (g: CanvasRenderingContext2D, S: number) => void): Sticker {
+/**
+ * A die-cut around a drawing `w` x `h` inches: a border of one color from a thin white line round
+ * the drawing out past the cut line by the bleed, so a cut a little off still lands on color.
+ */
+function dieCutOf(name: string, w: number, h: number, border: string, draw: (g: CanvasRenderingContext2D, S: number) => void): Sticker {
   const geom = cutGeom(solidOf(w, h, draw));
   return {
     name,
     geom,
     paint(g, S, bleed) {
-      g.fillStyle = rim;
+      g.fillStyle = border;
       g.fill(polyPath(outline(geom, bleed), S));
+      const halo = new Path2D();
+      for (const ring of artHalo(geom, HALO)) halo.addPath(polyPath(ring, S));
       g.fillStyle = '#ffffff';
-      g.fill(polyPath(outline(geom, -RIM), S));
+      g.fill(halo, 'evenodd');
       g.save();
       g.translate(Math.round(CUT_OFFSET * S), Math.round(CUT_OFFSET * S));
       draw(g, S);
@@ -175,9 +203,13 @@ export function dieCutOf(name: string, w: number, h: number, rim: string, draw: 
   };
 }
 
-/** A pixel-art character cut out round its silhouette, its name on a plate under it. */
+/**
+ * A pixel-art character cut out round its silhouette, its name on a plate under it. Each pixel is
+ * `px`/150 inch, or more if that would make the sticker under MIN_SIZE across.
+ */
 export function dieCut(name: string, img: Art, px: number, words: Words | undefined): Sticker {
-  const L = cutLayout(img, px, words);
+  let L = cutLayout(img, px, words);
+  while (Math.min(L.w, L.h) < MIN_ART - 1e-9 && px < 40) L = cutLayout(img, ++px, words);
   return dieCutOf(name, L.w, L.h, words?.color ?? '#ffffff', (g, S) => {
     const k = Math.max(1, Math.round((px * S) / 150));
     crisp(g, img, (L.art.x + L.art.w / 2) * S, (L.art.y + L.art.h / 2) * S, k);
@@ -193,7 +225,7 @@ export function dieCut(name: string, img: Art, px: number, words: Words | undefi
 // ------------------------------------------------------------------ shaped stickers
 
 /** Size of a shaped sticker: [w, h] in inches. Tall rects hold a character. */
-export function stickerSize(shape: StickerShape, tall = false): [number, number] {
+function stickerSize(shape: StickerShape, tall = false): [number, number] {
   switch (shape) {
     case 'circle':
     case 'star':
@@ -219,10 +251,11 @@ function innerBox(shape: StickerShape): [number, number, number, number] {
   switch (shape) {
     case 'circle':
       return [0.17, 0.17, 0.66, 0.66];
+    // a seal's and a bang's words stay inside the keyline round their notches
     case 'star':
-      return [0.2, 0.2, 0.6, 0.6];
+      return [0.24, 0.31, 0.52, 0.38];
     case 'burst':
-      return [0.22, 0.24, 0.56, 0.52];
+      return [0.26, 0.33, 0.48, 0.34];
     case 'heart':
       return [0.2, 0.14, 0.6, 0.48];
     case 'bubble':
@@ -246,6 +279,7 @@ function sunburst(g: CanvasRenderingContext2D, cx: number, cy: number, r: number
 
 /** A shaped sticker: a character over a sunburst with words under it, or words alone. */
 export function shaped(name: string, shape: StickerShape, words: Words, img?: Art): Sticker {
+  const pointy = shape === 'star' || shape === 'burst';
   const [w, h] = stickerSize(shape, !!img && (shape === 'rect' || shape === 'badge'));
   const geom: StickerGeom = { w, h, shape };
   return {
@@ -261,8 +295,7 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
       if (img) {
         const labelled = !!(words.text || words.sub);
         const round = shape !== 'rect' && shape !== 'badge' && shape !== 'bubble';
-        const pointy = shape === 'star' || shape === 'burst';
-        const bandTop = labelled ? H * (shape === 'heart' ? 0.5 : pointy ? 0.6 : round ? 0.64 : 0.72) : H;
+        const bandTop = labelled ? H * (shape === 'heart' ? 0.5 : pointy ? 0.52 : round ? 0.64 : 0.72) : H;
         const cx = W / 2;
         const cy = (Math.max(by * H, H * 0.06) + bandTop) / 2;
         sunburst(g, cx, cy, Math.max(W, H));
@@ -279,9 +312,21 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
           g.fillStyle = words.ink;
           g.fillRect(-bleed * S, bandTop, W + 2 * bleed * S, H + bleed * S - bandTop);
           // round stickers narrow toward the bottom, so their words sit higher and narrower
-          const inset = shape === 'heart' ? 0.36 : shape === 'burst' ? 0.4 : shape === 'star' ? 0.46 : round ? 0.6 : 0.84;
+          // a seal or a bang keeps its words inside its notches, the small line narrower under the big one
+          const inset = shape === 'heart' ? 0.36 : pointy ? 0.52 : round ? 0.6 : 0.84;
           const bandH = (H - bandTop) * (pointy ? 0.62 : round ? 0.72 : 1);
-          wordsIn(g, words, (W * (1 - inset)) / 2, bandTop + bandH * 0.08, W * inset, bandH * 0.84, words.color);
+          wordsIn(
+            g,
+            words,
+            (W * (1 - inset)) / 2,
+            bandTop + bandH * 0.08,
+            W * inset,
+            bandH * 0.84,
+            words.color,
+            pointy ? 0.36 : 0.3,
+            minText(S),
+            shape === 'burst' ? 0.64 : pointy ? 0.72 : 0.94,
+          );
         }
       } else wordsIn(g, words, bx * W, by * H, bw * W, bh * H, words.ink);
     },
@@ -361,17 +406,17 @@ export function floppy(name: string, title: string, sub: string | undefined, bod
       const H = h * S;
       g.fillStyle = body;
       g.fillRect(-bleed * S, -bleed * S, W + 2 * bleed * S, H + 2 * bleed * S);
-      // the metal shutter and its window
+      // the disk stands shutter down, label up: the metal shutter and its window at the bottom
       g.fillStyle = '#b9bdc6';
-      g.fillRect(W * 0.28, 0 - bleed * S, W * 0.46, H * 0.3 + bleed * S);
+      g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.3 + bleed * S);
       g.fillStyle = '#7d828c';
-      g.fillRect(W * 0.28, H * 0.27, W * 0.46, H * 0.03);
+      g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.03);
       g.fillStyle = '#2a2d33';
-      g.fillRect(W * 0.55, H * 0.05, W * 0.1, H * 0.18);
-      // the label
-      const lx = W * 0.1;
-      const ly = H * 0.37;
-      const lw = W * 0.8;
+      g.fillRect(W * 0.35, H * 0.77, W * 0.1, H * 0.18);
+      // the label on the upper part, its words upright
+      const lx = W * 0.14;
+      const ly = H * 0.05;
+      const lw = W * 0.72;
       const lh = H * 0.58;
       g.fillStyle = '#fbf6e6';
       g.fill(roundRectPath(lx, ly, lw, lh, 0.05 * S));
@@ -380,10 +425,14 @@ export function floppy(name: string, title: string, sub: string | undefined, bod
       wordsIn(g, { text: title, sub, color: '#fbf6e6', ink }, lx + lw * 0.06, ly + lh * 0.17, lw * 0.88, lh * 0.56, ink);
       drawSandboxMark(g, lx + lw - lh * 0.27, ly + lh * 0.72, lh * 0.24);
       g.fillStyle = '#333';
-      drawLines(g, fit(g, 'SANDBOX SOFTWARE', lw * 0.62, lh * 0.1, '700', SANS), lx + lw * 0.38, ly + lh * 0.84, '700', SANS);
-      // the write-protect hole
+      drawLines(g, fit(g, 'SANDBOX SOFTWARE', lw * 0.62, lh * 0.1, '700', SANS), lx + lw * 0.36, ly + lh * 0.84, '700', SANS);
+      // the top corners, away from the shutter: the write-protect hole (its slider pushed
+      // half across) at the left and the high-density hole at the right
       g.fillStyle = '#111';
-      g.fillRect(W * 0.06, H * 0.88, W * 0.06, H * 0.06);
+      g.fillRect(W * 0.04, H * 0.05, W * 0.06, H * 0.07);
+      g.fillRect(W * 0.9, H * 0.05, W * 0.06, H * 0.07);
+      g.fillStyle = '#9aa0a8';
+      g.fillRect(W * 0.04, H * 0.05, W * 0.06, H * 0.035);
     },
   };
 }

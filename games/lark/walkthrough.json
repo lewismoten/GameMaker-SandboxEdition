@@ -1,0 +1,498 @@
+{
+ "version": 1,
+ "game": "lark",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "H0gByAdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSw=="
+  },
+  {
+   "scene": 9,
+   "keys": ""
+  },
+  {
+   "scene": 2,
+   "keys": "AU0BzQdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00="
+  },
+  {
+   "scene": 10,
+   "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "AU0BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSA=="
+  },
+  {
+   "scene": 4,
+   "keys": ""
+  },
+  {
+   "scene": 5,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSwHLB0sBywdLAcsHSwHLB0s="
+  },
+  {
+   "scene": 11,
+   "keys": ""
+  },
+  {
+   "scene": 5,
+   "keys": "AU0BzQdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HSA=="
+  },
+  {
+   "scene": 6,
+   "keys": "C00HzQYSCJIATQzNA00HzQYSCJIATQXNA00HzQYSCJIATQXNA00bzQZNDc0GEgiSAE0AzQUSCJIATQDNBUgIyAUQBpAASwvLA0saywZLGUgKyA7LGEshywZLDcsGEgiSAE0AzQVNBs0GEgqSAE0KzQNNDc0GEgiSAE0MzQNN"
+  },
+  {
+   "scene": 7,
+   "keys": "C00izQYQCJAASwbLA0sHywZNIM0GTQ=="
+  },
+  {
+   "scene": 13,
+   "keys": ""
+  },
+  {
+   "scene": 8,
+   "keys": "AUgByAdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 12,
+   "keys": ""
+  },
+  {
+   "scene": 8,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHTQHNB00BzQdNAc0HTQHNB1A="
+  },
+  {
+   "scene": 3,
+   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSA=="
+  },
+  {
+   "scene": 15,
+   "keys": ""
+  },
+  {
+   "scene": 16,
+   "keys": "AUgByAdIAcgHSwHLB0s="
+  },
+  {
+   "scene": 17,
+   "keys": ""
+  },
+  {
+   "scene": 16,
+   "keys": "AUgByAdLAcsHSwHLB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0gByAdIAcgHSAHIB00BzQlLAcsHSwHLB0sBywdQAdAHSwHLCVAB0AdQAdAHUAHQB0sBywdLAcsHUAHQB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HUAHQB0gByAdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HUAHQB1AB0AdQAdAHUAHQB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB1AB0AdQAdAHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 18,
+   "keys": ""
+  },
+  {
+   "scene": 16,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUA=="
+  },
+  {
+   "scene": 3,
+   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdI"
+  },
+  {
+   "scene": 19,
+   "keys": ""
+  },
+  {
+   "scene": 20,
+   "keys": "AUgByAdIAcgHSAHIB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywtIAcgHSAHIB0gByA1NAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB0gByAdIAcgNSAHIB0gByAdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 21,
+   "keys": ""
+  },
+  {
+   "scene": 20,
+   "keys": "AU0BzQdQAdAHUAHQB00BzQdNAc0HSAHIB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB00BzQdNAc0HTQHNB00BzQdI"
+  },
+  {
+   "scene": 3,
+   "keys": "AVAB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdN"
+  },
+  {
+   "scene": 22,
+   "keys": "AU0BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSA=="
+  },
+  {
+   "scene": 23,
+   "keys": ""
+  },
+  {
+   "scene": 24,
+   "keys": "AUgByAdLAcsHSAHIB0gByAdIAcgHSwHLB0sBywdL"
+  },
+  {
+   "scene": 25,
+   "keys": ""
+  },
+  {
+   "scene": 24,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HTQ=="
+  },
+  {
+   "scene": 26,
+   "keys": "C00ozQ5NDs0UTQxICsgHzQZNC0gKyAfNBk0KSArID0gKyC/NbU0HzTdLA0gKyHjLBhIIkgBNBs0DEAiQAEsNywNICcgFSwfLBk0wzQYSDJIATQjNA00="
+  },
+  {
+   "scene": 27,
+   "keys": "AU0BzQdNAc0HTQHNB00BzQdIAcgHSAHIB00BzQdIAcgHOQG5Cks="
+  },
+  {
+   "scene": 28,
+   "keys": ""
+  },
+  {
+   "scene": 27,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHUA=="
+  },
+  {
+   "scene": 29,
+   "keys": ""
+  },
+  {
+   "scene": 30,
+   "keys": "AU0BzQdN"
+  },
+  {
+   "scene": 31,
+   "keys": ""
+  },
+  {
+   "scene": 30,
+   "keys": "AU0BzQdIAcgHTQHNB00BzQdNAc0HTQHNB0gByAdLAcsHSwHLB0gByBhIAcgYSAHIGEgByBhLAcsYSwHLGEsByxhLAcsYSwHLGE0BzRhNAc0YTQHNGE0BzRhNAc0YTQHNGE0BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSwHLB0sBywdIAcgHSAHIB0gByBhIAcgYTQHNGEgByBhIAcgYSAHIGEsByxhIAcg="
+  },
+  {
+   "scene": 32,
+   "keys": "AVAB0AdNAc0HUAHQB00BzQdNAc0HSAHIB0gByAdNAc0HSAHIBzkBuQpL"
+  },
+  {
+   "scene": 33,
+   "keys": ""
+  },
+  {
+   "scene": 32,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHUAHQB1AB0BhQAdAYUAHQGFAB0BhQAdAYTQHNGE0BzRhNAc0YUAHQGFAB0BhQAdAYUAHQGEsByxhLAcsYSwHLGEsByxhLAcsYSwHLGEsByxhLAcsYSwHLGFAB0A=="
+  },
+  {
+   "scene": 34,
+   "keys": ""
+  },
+  {
+   "scene": 35,
+   "keys": "AU0BzQdNAc0HSAHIB0gByAdNAc0HTQHNB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HUAHQB00BzQdNAc0HSAHIB0gByAdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HUAHQB1AB0AdNAc0HTQHNB0gByAdIAcgHTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSwHLB0s="
+  },
+  {
+   "scene": 36,
+   "keys": "C002zU5NA81FSwVICsgbywYQCJAASwXLA00HzQYSCJIATQDNBUsCywYQCJAASwXLA00HzQYSCJIATQDNBUsCywYQ"
+  },
+  {
+   "scene": 37,
+   "keys": "AUgByAdNAc0HTQHNB0gByAdNAc0HSAHIBzkBuQpL"
+  },
+  {
+   "scene": 38,
+   "keys": ""
+  },
+  {
+   "scene": 37,
+   "keys": "AU0BzQdQAdAHUAHQB0sBywdQAdAHUAHQB1AB0AdLAcsHSwHLB1AB0AdQAdAHSwHLB0sBywdIAcgHSAHIB0sBywdLAcsHUAHQB1AB0AdQAdAHUAHQB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB1AB0AdQAdAHUAHQB0sBywdLAcsHSAHIB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSwHLB0sBywdQAdAHUAHQB0sBywdQ"
+  },
+  {
+   "scene": 14,
+   "keys": ""
+  },
+  {
+   "scene": 39,
+   "keys": "AU0BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSA=="
+  },
+  {
+   "scene": 40,
+   "keys": ""
+  },
+  {
+   "scene": 42,
+   "keys": ""
+  },
+  {
+   "scene": 41,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdQAdAHUAHQBzkBuQpIAcgHSAHIB0sBywdLAcsHSwHLB0gByAdIAcgHSAHIDUgByAdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0gByAdIAcgHSAHIB0gByA1QAdAHUAHQDVAB0AdQAdAHTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIE0gByAdIAcgNUAHQB1AB0A1QAdAHUAHQB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB0gByAdIAcgHSAHIFVAB0AdQAdANUAHQB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB0gByB9IAcgHSAHIDVAB0AdQAdANUAHQB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB0gByAdIAcgHSAHIB0gByA1QAdAHUAHQDVAB0AdQAdAHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0gByAdIAcgHSAHIB0gByAdN"
+  },
+  {
+   "scene": 43,
+   "keys": ""
+  },
+  {
+   "scene": 41,
+   "keys": "AUsBywdIAcgHSw=="
+  },
+  {
+   "scene": 44,
+   "keys": ""
+  },
+  {
+   "scene": 45,
+   "keys": "AUgByAdIAcgHSAHIB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB0g="
+  },
+  {
+   "scene": 46,
+   "keys": ""
+  },
+  {
+   "scene": 45,
+   "keys": "AVAB0AdQAdAHUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB1AB0AdLAcsHSAHIB1AB0AdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB00BzQdIAcgHTQHNB00BzQdIAcgHTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHTQHNB00BzQdN"
+  },
+  {
+   "scene": 47,
+   "keys": "C00OzUZNOc0GSAzIKk0ozQZN"
+  },
+  {
+   "scene": 48,
+   "keys": "AU0BzQdNAc0HSAHIB0gByAdNAc0HSAHIBzkBuQpL"
+  },
+  {
+   "scene": 49,
+   "keys": ""
+  },
+  {
+   "scene": 48,
+   "keys": "AU0BzQdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB1AB0AdQAdAHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHUAHQB0sBywdLAcsHUA=="
+  },
+  {
+   "scene": 50,
+   "keys": ""
+  },
+  {
+   "scene": 51,
+   "keys": ""
+  },
+  {
+   "scene": 52,
+   "keys": "AUgByAdIAcgHSAHIB0sBywdIAcgHSAHIB0sBywdIAcgHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0sBywdLAcsHSwHLB0sBywdLAcsHSAHIB0gByB9QAdAHUAHQB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB0gByAdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB0gByAdNAc0HTQHNB00BzQdNAc0HSAHIB00BzQdNAc0HTQHNB00BzQdNAc0HTQHNB00BzQdNAc0HSAHIB0gByAdNAc0eUAHQB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB1AB0AdLAcsHSwHLB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdNAc0HTQHNB00BzQdQAdAHUAHQB00BzQdQAdAHUAHQB00BzQdQAdAHUAHQB00BzQdQAdAHTQHNB00BzQdNAc0HUAHQB00BzQdNAc0HTQHNB00BzQdIAcgHSAHIB1AB0AdQAdAHUAHQB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdLAcsHSwHLB0sBywdIAcgHSAHIB1AB0AdQAdAHTQHNB00BzQdIAcgHSAHIB0gByAdNAc0HSAHIB0gByAdIAcgHTQHNB0gByAdNAc0HTQHNB00BzQdNAc0HTQHNB0gByAdIAcgHSAHIB0gByAdIAcgHSAHIB00BzQdNAc0HSwHLB0sBywdQAdAHSwHLB1AB0AdLAcsHSwHLB0sBywdLAcsHSwHLB0gByAdIAcgHTQHNB0gByAc5AbkKSw=="
+  },
+  {
+   "scene": 53,
+   "keys": ""
+  },
+  {
+   "scene": 54,
+   "keys": ""
+  },
+  {
+   "scene": 55,
+   "keys": ""
+  },
+  {
+   "scene": 56,
+   "keys": "C00bzVQSB5IATQLNNRIHkgBNB80vEgeSAE0GzTESB5IATQbN3QFNHM0YTVfNBlAD0AhN"
+  },
+  {
+   "scene": 57,
+   "keys": ""
+  },
+  {
+   "scene": 58,
+   "keys": ""
+  },
+  {
+   "scene": 59,
+   "keys": ""
+  },
+  {
+   "scene": 60,
+   "keys": "C0gMyANNFM0xEgqSAE0GzQNLA8sSEAqQAEsGywNNA80gEgqSAE0GzQNLA8sGEAqQAEsGywNLBMsGHCGcSU0OzTMSCpIATQDNBUsEyyMQCpAASwbLA00DzQYSCpIATQbNA0gMyAVNGM0GSxvLBhAKkABLBssDSw=="
+  },
+  {
+   "scene": 61,
+   "keys": ""
+  },
+  {
+   "scene": 62,
+   "keys": ""
+  },
+  {
+   "scene": 63,
+   "keys": "C00HzQYtAa0YTTXNBhwenABNC80cLQGtDk08zQY5AbkATRbNEk0UzQYtAa0nLQGtOy0BrU9NG80GTQ=="
+  },
+  {
+   "scene": 64,
+   "keys": ""
+  },
+  {
+   "scene": 65,
+   "keys": "FUs="
+  },
+  {
+   "scene": 66,
+   "keys": ""
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Prologue: Closing Time"
+  },
+  {
+   "scene": 3,
+   "title": "The Long Road"
+  },
+  {
+   "scene": 4,
+   "title": "Chapter 1: The Clock Tower"
+  },
+  {
+   "scene": 15,
+   "title": "Chapter 2: Valentines in the Park"
+  },
+  {
+   "scene": 19,
+   "title": "Chapter 3: The Parade"
+  },
+  {
+   "scene": 22,
+   "title": "The Shore Road"
+  },
+  {
+   "scene": 23,
+   "title": "Chapter 4: The Music Box"
+  },
+  {
+   "scene": 29,
+   "title": "Chapter 5: The Charging Run"
+  },
+  {
+   "scene": 34,
+   "title": "Chapter 6: The Lighthouse"
+  },
+  {
+   "scene": 39,
+   "title": "The Winter Road"
+  },
+  {
+   "scene": 40,
+   "title": "Chapter 7: Snow Day"
+  },
+  {
+   "scene": 44,
+   "title": "Chapter 8: Open Mic at the Hive"
+  },
+  {
+   "scene": 50,
+   "title": "Chapter 9: The Painted Rocks"
+  },
+  {
+   "scene": 54,
+   "title": "Chapter 10: The Fair"
+  },
+  {
+   "scene": 58,
+   "title": "Chapter 11: The Tall Plant"
+  },
+  {
+   "scene": 62,
+   "title": "The Smart Home"
+  },
+  {
+   "scene": 66,
+   "title": "Opening Time"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 118346,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028
+   },
+   {
+    "title": "Prologue: Closing Time",
+    "frame": 3700
+   },
+   {
+    "title": "The Long Road",
+    "frame": 7736
+   },
+   {
+    "title": "Chapter 1: The Clock Tower",
+    "frame": 8300
+   },
+   {
+    "title": "Chapter 2: Valentines in the Park",
+    "frame": 18878
+   },
+   {
+    "title": "Chapter 3: The Parade",
+    "frame": 27675
+   },
+   {
+    "title": "The Shore Road",
+    "frame": 33183
+   },
+   {
+    "title": "Chapter 4: The Music Box",
+    "frame": 33747
+   },
+   {
+    "title": "Chapter 5: The Charging Run",
+    "frame": 42239
+   },
+   {
+    "title": "Chapter 6: The Lighthouse",
+    "frame": 51408
+   },
+   {
+    "title": "The Winter Road",
+    "frame": 60909
+   },
+   {
+    "title": "Chapter 7: Snow Day",
+    "frame": 61473
+   },
+   {
+    "title": "Chapter 8: Open Mic at the Hive",
+    "frame": 70316
+   },
+   {
+    "title": "Chapter 9: The Painted Rocks",
+    "frame": 78541
+   },
+   {
+    "title": "Chapter 10: The Fair",
+    "frame": 89009
+   },
+   {
+    "title": "Chapter 11: The Tall Plant",
+    "frame": 96274
+   },
+   {
+    "title": "The Smart Home",
+    "frame": 103708
+   },
+   {
+    "title": "Opening Time",
+    "frame": 112081
+   },
+   {
+    "title": "Ending",
+    "frame": 114043
+   },
+   {
+    "title": "Credits",
+    "frame": 115834
+   }
+  ]
+ }
+}

@@ -8,11 +8,11 @@
 // skips what is on its way down the line; it never brings SCROLLMASTER's turn sooner, and
 // neither does setting the desk's clock with DOS's TIME: the time offline is measured with
 // Date.now.
-import { unlockAchievement } from '../../achievements';
+import { progress, unlockAchievement } from '../../achievements';
 import { boxBottom, boxRow, boxRule, boxTop, type Term } from './term';
 import { callIn, loadState, MIN_WAIT_MS, play, rematch, saveState, stillOnline, turn, winLine, type DoorState } from './ticTacToe';
 
-export const DOOR_NAME = 'TIC-TAC-TOE BY MODEM v1.2';
+const DOOR_NAME = 'TIC-TAC-TOE BY MODEM v1.2';
 const RIVAL = 'SCROLLMASTER';
 const RIVAL_FROM = 'Highland Park, PA';
 const WAIT_MIN = MIN_WAIT_MS / 60_000;
@@ -45,7 +45,7 @@ export function sandboxCall(): () => void {
 }
 
 /** What the board's door menu leads to: back to the main menu, or the caller hung up. */
-export type DoorExit = 'menu' | 'hangup';
+type DoorExit = 'menu' | 'hangup';
 
 /** The Door Games menu. */
 export async function doorGames(t: Term, name: string): Promise<DoorExit> {
@@ -165,6 +165,8 @@ async function ticTacToe(t: Term, name: string): Promise<DoorExit> {
       const o = s.game.over;
       unlockAchievement('bbs-door');
       if (o === 'X') unlockAchievement('bbs-door-win');
+      const played = s.record.wins + s.record.losses + s.record.draws;
+      progress('bbs-door-three', Math.min(played, 3), 3);
       t.line(
         o === 'X'
           ? `|10Three in a row! You beat ${RIVAL}.`

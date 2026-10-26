@@ -4,6 +4,7 @@
 // Best Behaved blue rosette, while Doc Leo waves by THE CHEZ.
 import { GWINN, TEDDY } from './dog';
 import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stars, stroke } from './paint';
+import { leoFace } from './leoFace';
 
 /** The 1976½ CitiCar, seen from its front corner as it sits in the photo: a short tomato-red
  * wedge, the hood sloping straight up into a big flat windshield, a tall boxy cabin with a black
@@ -171,41 +172,7 @@ function docLeo(c: Ctx, x: number, y: number, s: number, flip = false): void {
   stroke(c, '#1a2a5a', 22, [-50, -268, -70, -210, -84, -170]);
   ell(c, -86, -164, 12, 12);
   fill(c, '#fff');
-  // face: white mouth and eyes, rosy nose and cheeks, the ash beard, wire glasses
-  ell(c, 0, -326, 36, 42);
-  fill(c, '#f4c8a4');
-  blob(c, [-34, -330, -30, -296, 0, -282, 30, -296, 34, -330, 0, -318]);
-  fill(c, 'rgba(60,70,90,0.38)');
-  ell(c, 0, -304, 16, 10);
-  fill(c, '#fff');
-  c.beginPath();
-  c.arc(0, -310, 10, 0.3, Math.PI - 0.3);
-  c.lineWidth = 3;
-  c.strokeStyle = '#8a1010';
-  c.stroke();
-  for (const ex of [-15, 15]) {
-    ell(c, ex, -338, 9, 8);
-    fill(c, '#fff');
-    ell(c, ex, -338, 3.5, 4);
-    fill(c, '#1a1a1a');
-    c.beginPath();
-    c.arc(ex, -338, 10, 0, Math.PI * 2);
-    c.lineWidth = 2;
-    c.strokeStyle = '#9a9aa4';
-    c.stroke();
-    ell(c, ex * 1.6, -318, 7, 5);
-    fill(c, 'rgba(240,80,80,0.6)');
-  }
-  stroke(c, '#1a1a1a', 4, [-24, -354, -6, -350]);
-  stroke(c, '#1a1a1a', 4, [24, -354, 6, -350]);
-  ell(c, 0, -322, 9, 9);
-  fill(
-    c,
-    rad(c, -3, -325, 10, [
-      [0, '#ffb0a0'],
-      [1, '#d82020'],
-    ]),
-  );
+  leoFace(c);
   // the chewed-up fedora
   ell(c, 0, -362, 50, 10, -0.08);
   fill(c, '#3a3a3e');
@@ -331,10 +298,10 @@ function sniffer(c: Ctx, x: number, y: number, s: number): void {
     c.strokeStyle = lo;
     c.stroke();
   }
-  // the ears, pricked forward; his right one stands taller
+  // the ears, pricked forward, both the same height
   for (const [bx, tx, ty] of [
-    [hx - 24, hx - 22, hy - 84],
-    [hx + 4, hx + 22, hy - 94],
+    [hx - 24, hx - 22, hy - 92],
+    [hx + 4, hx + 22, hy - 92],
   ]) {
     poly(c, [bx - 14, hy - 16, tx, ty, bx + 18, hy - 22]);
     fill(
@@ -751,7 +718,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   sniffer(c, 254, 548, 1.0);
   // the trail from Teddy's nose to Gwinn
   scent(c, [356, 542, 384, 536, 412, 544, 440, 530, 462, 536, 478, 520, 488, 510]);
-  // confetti (the Klown Klub was here)
+  // confetti (the Clown Club was here)
   for (let i = 0; i < 30; i++) {
     c.fillStyle = ['#d9381e', '#ffd23f', '#1d5fb8', '#1e9a5a', '#ff5aa8'][i % 5];
     c.save();

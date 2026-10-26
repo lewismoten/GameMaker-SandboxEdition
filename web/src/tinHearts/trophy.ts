@@ -5,17 +5,17 @@
 // a short scene (reveal.ts) in which Joe finds he had a golden heart all along, like the Tin Man;
 // after that its last picture, the heart turning on its stand, and a short note from Joe.
 // With reduced motion only the last picture, and the heart holds still (drag or ← → turn it).
+// The desk's spot for it is trophySpot.ts, which loads this only once the set is whole.
 import './trophy.css';
 import '../eggs/eggs.css';
 import { h, clear } from '../editor/core/ui';
-import { heartStates, watchHearts } from './tinHearts';
 import { drawJoe } from './joeArt';
 import { LINES, revealSounds, SCENE_SECONDS, sceneAt, seenReveal, setSeenReveal } from './reveal';
 
 type Art = typeof import('../eggs/bonusArt');
 
 /** The riveted tin stand and its brass plate, `w` wide, its foot on `baseY`, centered on `cx`. */
-export function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number, w: number, allAlong = false): { top: number } {
+function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number, w: number, allAlong = false): { top: number } {
   const hgt = w * 0.42;
   const top = baseY - hgt;
   const x0 = cx - w / 2;
@@ -73,6 +73,9 @@ export function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number
     const lines = allAlong ? ['PRESENTED BY', 'MYSTERY ROBOT JOE', 'WHO HAD ONE ALL ALONG'] : ['PRESENTED BY', 'MYSTERY ROBOT JOE'];
     const fs = Math.min(ph * (allAlong ? 0.2 : 0.26), (pw * 0.92) / Math.max(...lines.map((l) => l.length)) / 0.62);
     g.font = `600 ${Math.round(fs)}px Georgia, 'Times New Roman', serif`;
+    // the estimate above is for average letters; capitals run wider, so measure and shrink to the plate
+    const widest = Math.max(...lines.map((l) => g.measureText(l).width));
+    if (widest > pw * 0.92) g.font = `600 ${Math.floor((fs * pw * 0.92) / widest)}px Georgia, 'Times New Roman', serif`;
     lines.forEach((l, i) => g.fillText(l, cx, py + (ph * (i + 0.55)) / lines.length));
   } else {
     g.fillStyle = 'rgba(58, 42, 8, 0.7)';
@@ -95,70 +98,11 @@ export function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number
 }
 
 /** The whole trophy, w x h: the stand and the heart on it. */
-function drawTrophy(art: Art, g: CanvasRenderingContext2D, w: number, hh: number, turn: number, time: number): void {
+export function drawTrophy(art: Art, g: CanvasRenderingContext2D, w: number, hh: number, turn: number, time: number): void {
   const sw = w * 0.86;
   const { top } = drawStand(g, w / 2, hh * 0.98, sw);
   const size = Math.min(w * 0.9, (top - hh * 0.02) * 1.05);
   art.drawHeart(g, w / 2, top - size * 0.42, size, turn, time);
-}
-
-/** Shows the trophy once every counted heart is found; returns the function that takes it away. */
-export function heartTrophy(place: (el: HTMLElement) => void): () => void {
-  const btn = h('button', { type: 'button', class: 'heart-trophy', hidden: true });
-  place(btn);
-  let total = 0;
-  let shown = false;
-  let opening = false;
-
-  const refresh = async () => {
-    const states = await heartStates().catch(() => []);
-    total = states.length;
-    const done = total > 0 && states.every((s) => s.found);
-    // a heart lost again (EGG.EXE's Clear all): the scene plays again when the set is whole
-    if (total && !done) setSeenReveal(false);
-    if (done === shown) return;
-    shown = done;
-    btn.hidden = !done;
-    if (!done) return clear(btn);
-    const art = await import('../eggs/bonusArt');
-    const W = 44;
-    const H = 60;
-    const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1)) * 1.5;
-    const c = h('canvas', { class: 'heart-trophy-art', width: W * k, height: H * k, 'aria-hidden': 'true' });
-    const g = c.getContext('2d')!;
-    g.scale(k, k);
-    drawTrophy(art, g, W, H, 0.45, 0.3);
-    btn.setAttribute('aria-label', 'A diamond heart on a riveted tin stand, presented by Mystery Robot Joe: take a closer look');
-    btn.title = 'Presented by Mystery Robot Joe';
-    clear(btn, c);
-  };
-
-  btn.addEventListener('click', async () => {
-    if (opening || !shown) return;
-    opening = true;
-    try {
-      await openTrophy(total);
-    } finally {
-      opening = false;
-      btn.focus();
-    }
-  });
-
-  const onChange = () => void refresh();
-  const onVisible = () => document.visibilityState === 'visible' && onChange();
-  const unwatch = watchHearts(onChange);
-  window.addEventListener('focus', onChange);
-  document.addEventListener('visibilitychange', onVisible);
-  // a heart found on the desk's PC (or in another tab) can complete the set
-  const poll = setInterval(() => document.visibilityState === 'visible' && onChange(), 8000);
-  void refresh();
-  return () => {
-    clearInterval(poll);
-    unwatch();
-    window.removeEventListener('focus', onChange);
-    document.removeEventListener('visibilitychange', onVisible);
-    btn.remove();
-  };
 }
 
 const WORDS = 'Zero One Two Three Four Five Six Seven Eight Nine Ten Eleven Twelve Thirteen Fourteen Fifteen Sixteen Seventeen Eighteen Nineteen Twenty'.split(
@@ -174,8 +118,8 @@ export const joeNote = (n: number): string =>
   `${countWord(n)} tin hearts, counted twice on my tally counter, and every one of them ticking. The Tin Man walked all the way to Oz for a heart and found he had been kind the whole way there. You went looking in every corner of every game, which is much the same thing. Here is the one I borrowed. Keep it where it can catch the light.`;
 
 /** What the trophy view says happened, once the scene has played. */
-export const ALL_ALONG =
-  'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG.';
+const ALL_ALONG =
+  'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG. He left something else on the shelf, too.';
 
 /**
  * A closer look: the diamond heart on its stand, Mystery Robot Joe beside it, and his note.
