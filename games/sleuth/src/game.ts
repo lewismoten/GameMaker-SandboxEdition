@@ -3,7 +3,7 @@
 // intro they show. A question is a link to a scene whose intro is the answer; the answer
 // scene looks exactly like the room she asked it in, so the talk simply goes on.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
-import type { Theatre } from './levels/theatre';
+import type { Theater } from './levels/theater';
 import { LINEUP, ROOM, SOLVED, SUSPECTS, ZCELL, center, type ParlorLinks } from './levels/parlor';
 
 const TITLE = 'FINAL CURTAIN';
@@ -55,7 +55,7 @@ interface SceneIndex {
   egg: number;
 }
 
-export function buildGame(acts: Theatre[], pl: ParlorLinks): { game: Game; ix: SceneIndex } {
+export function buildGame(acts: Theater[], pl: ParlorLinks): { game: Game; ix: SceneIndex } {
   const game = newGame(TITLE);
   const [title, end] = game.scenes;
   title.files = [
@@ -86,13 +86,13 @@ export function buildGame(acts: Theatre[], pl: ParlorLinks): { game: Game; ix: S
     game.scenes.push(s);
     return game.scenes.length - 1;
   };
-  const theatre = { bbl: 'paragon.bbl', mon: 'paragon.mon', mbl: 'paragon.mbl' };
+  const theater = { bbl: 'paragon.bbl', mon: 'paragon.mon', mbl: 'paragon.mbl' };
   const green = { map: 'green.map', bbl: 'green.bbl', mon: 'green.mon', mbl: 'green.mbl', pal: 'house.pal', cmf: 'parlor.cmf' };
   const stage = { ...green, pal: 'dawn.pal', cmf: 'dawn.cmf' };
 
   const ix = {} as SceneIndex;
-  ix.act1 = add('Act One', { ...theatre, pal: 'house.pal', map: 'act1.map', cmf: 'act1.cmf', intro: 'act1.lst', exit: 'curtain.fli' }, true, 30, 60);
-  ix.act2 = add('Act Two', { ...theatre, pal: 'night.pal', map: 'act2.map', cmf: 'act2.cmf', intro: 'act2.lst', exit: 'theories.lst' }, true, 30, 120);
+  ix.act1 = add('Act One', { ...theater, pal: 'house.pal', map: 'act1.map', cmf: 'act1.cmf', intro: 'act1.lst', exit: 'curtain.fli' }, true, 30, 60);
+  ix.act2 = add('Act Two', { ...theater, pal: 'night.pal', map: 'act2.map', cmf: 'act2.cmf', intro: 'act2.lst', exit: 'theories.lst' }, true, 30, 120);
 
   // the green room, round 1 and round 2
   const hub = (round: 'gr1' | 'gr2', y: number) => {

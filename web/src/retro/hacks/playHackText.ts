@@ -1,7 +1,7 @@
 // PLAYHACK's words: the .NFO and FILE_ID.DIZ in PLAYHACK.ZIP, a DiGiTAL DUNE release like GMCRACK
 // (gmcrackText.ts). It is make-believe for the desk PC: PLAYHACK edits a game of yours' DOS player
 // choices (dosPlayer/), the same ones the editor's DOS player panel edits, which the DOS export
-// writes into XFERPLAY.EXE. The 1990s players it is modelled on are real: A-J Games' Builder
+// writes into XFERPLAY.EXE. The 1990s players it is modeled on are real: A-J Games' Builder
 // blanked its menu words, and their Rodip renamed its status words, both with a hex editor.
 import { DIZ_WIDTH, warezSignoff } from '../bbs/fileId';
 import { GROUP, GREETS } from './gmcrackText';

@@ -18,7 +18,7 @@ function game(): Game {
 }
 
 describe('Play Level menu', () => {
-  it('lists every way into a level, labelled by where it comes from', () => {
+  it('lists every way into a level, labeled by where it comes from', () => {
     expect(playChoices(game()).map((c) => c.label)).toEqual([
       'Level 1 at 5,6, from the title',
       'Level 2 at 1,2, from Level 1’s exit',

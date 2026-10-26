@@ -540,7 +540,7 @@ export function buildBlocks(pal: Pal): BlockBook {
       `tinHeart${k || ''}`,
       drawTinHeart(
         book.pics.get('gloom')!.crop(0, 0, 20, 20),
-        { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) },
+        { ink: c('ink', 0), tin: [c('gray', 1), c('gray', 2), c('gray', 3)], white: c('white', 2), dark: c('gray', 0) },
         k,
       ),
       {

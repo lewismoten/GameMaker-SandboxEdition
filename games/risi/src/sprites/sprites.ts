@@ -1,5 +1,5 @@
 // MARCUS.CBL, FELIX.CBL and RISI.MBL: Marcus Iocundus the poet (curly dark hair, a white toga
-// with a narrow purple stripe, sandals, a wax tablet of jokes), Felix, the cat (grey tabby, a
+// with a narrow purple stripe, sandals, a wax tablet of jokes), Felix, the cat (gray tabby, a
 // white chest, very brave), and everything else that moves: the jokes he tells ("HA!"), Rufus's
 // clouds, Lady Flavia behind her fan, Teddy and Gwinn as good Roman dogs (red collars with a
 // golden bulla; Gwinn's is pink), a slave with figs, mice (one with its cheese), ants, the
@@ -188,7 +188,7 @@ interface CatPose {
   faint?: number;
 }
 
-/** Felix's look: a grey tabby with a white chest and green eyes. */
+/** Felix's look: a gray tabby with a white chest and green eyes. */
 function felixArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
@@ -518,13 +518,13 @@ export function buildMonsterBlocks(pal: Pal) {
   const pigeon = (f: number) => {
     const p = P();
     // a slate-dark rock dove, so it reads against the sunset roofs: pale wing bars, a green sheen
-    blob(p, 9, 14, 5, 3.6, R('grey'), 0, 1);
-    blob(p, 14, 10 + f, 2.6, 2.4, R('grey'), 0, 2);
-    p.line(6, 13, 11, 13, c('grey', 3)).line(6, 15, 10, 15, c('grey', 3));
+    blob(p, 9, 14, 5, 3.6, R('gray'), 0, 1);
+    blob(p, 14, 10 + f, 2.6, 2.4, R('gray'), 0, 2);
+    p.line(6, 13, 11, 13, c('gray', 3)).line(6, 15, 10, 15, c('gray', 3));
     p.set(15, 9 + f, c('marble', 3))
       .set(17, 11 + f, c('ochre', 2))
       .rect(12, 12, 3, 1, c('laurel', 2));
-    p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('grey', 1));
+    p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('gray', 1));
     return done(p);
   };
   // Pigeons are solid only at their sides: Marcus landing on one slides down beside it onto the
@@ -536,7 +536,7 @@ export function buildMonsterBlocks(pal: Pal) {
   /** Doc Leo's face: his own nose and cheeks sunburned, white paint round the mouth and eyes, painted stubble. */
   const leoFace = (p: Pixels, x: number, y: number, f: number) => {
     blob(p, x, y, 3.6, 3.8, R('skin'), 2, 4);
-    for (let k = -3; k <= 3; k++) p.set(x + k, y + 2 + (Math.abs(k) > 2 ? -1 : 0), c('grey', 1)).set(x + k, y + 3, c('grey', 1));
+    for (let k = -3; k <= 3; k++) p.set(x + k, y + 2 + (Math.abs(k) > 2 ? -1 : 0), c('gray', 1)).set(x + k, y + 3, c('gray', 1));
     p.rect(x - 1, y + 2, 3, 2, c('marble', 3)).set(x, y + 3, c('red', 1));
     p.disc(x - 2, y - 1, 1, c('marble', 3))
       .disc(x + 2, y - 1, 1, c('marble', 3))
@@ -639,19 +639,19 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('bather1', bather(1), solid);
 
   // ---- VI. the theater
-  // a spectator: stone-faced (grey, arms crossed) or laughing at last (counter 24)
+  // a spectator: stone-faced (gray, arms crossed) or laughing at last (counter 24)
   const spectator = (laugh: boolean, f: number) => {
     const p = P();
-    const robe = laugh ? 'ochre' : 'grey';
+    const robe = laugh ? 'ochre' : 'gray';
     for (let y = 9; y < 20; y++) p.rect(4, y, 12, 1, c(robe, y % 3 ? 2 : 1));
-    blob(p, 10, 6 - (laugh ? f : 0), 4, 4, laugh ? R('skin') : R('grey'), 1, 3);
+    blob(p, 10, 6 - (laugh ? f : 0), 4, 4, laugh ? R('skin') : R('gray'), 1, 3);
     if (laugh) {
       face(p, 10, 6 - f, { laugh: true });
       p.line(4, 11, 1, 6 - f * 2, c('skin', 2)).line(16, 11, 19, 6 - f * 2, c('skin', 2));
       micro(p, 13, 0, f ? 'HA' : '', c('gold', 3));
     } else {
       face(p, 10, 6, { stern: true });
-      p.rect(5, 12, 10, 2, c('grey', 3));
+      p.rect(5, 12, 10, 2, c('gray', 3));
     }
     return done(p);
   };
@@ -693,7 +693,7 @@ export function buildMonsterBlocks(pal: Pal) {
       blob(p, 10, 11 - (stage >= 3 ? f : 0), 7, 7, R('skin'), 1, 3);
       for (let k = 0; k < 12; k++)
         p.set(4 + k, 5 - Math.round(Math.sin((k / 11) * Math.PI) * 2) + (stage >= 2 ? (k % 3 === 0 ? 1 : 0) : 0), c('laurel', 2 + (k % 2)));
-      p.line(5, 6, 4, 9, c('grey', 2)).line(15, 6, 16, 9, c('grey', 2));
+      p.line(5, 6, 4, 9, c('gray', 2)).line(15, 6, 16, 9, c('gray', 2));
       if (stage === 0) face(p, 10, 10, { stern: true });
       else if (stage === 1) (face(p, 10, 10, { stern: true }), p.set(13, 13, c('red', 3)));
       else if (stage === 2) face(p, 10, 10, { grin: true });

@@ -61,7 +61,7 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
   add(
     'rack',
     on(B, (p) => {
-      p.rect(0, 9, 20, 1, c('grey', 4));
+      p.rect(0, 9, 20, 1, c('gray', 4));
       const R = rng(3);
       for (let x = 1; x < 19; x += 3) p.rect(x, 4, 3, 13, c(['velvet', 'navy', 'green', 'plum', 'gold'][Math.floor(R() * 5)], 2 + Math.floor(R() * 2)));
     }),
@@ -70,7 +70,7 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
   add(
     'robe',
     on(B, (p) => {
-      p.rect(0, 9, 20, 1, c('grey', 4));
+      p.rect(0, 9, 20, 1, c('gray', 4));
       p.rect(3, 3, 14, 15, c('black', 2)).rect(3, 3, 14, 2, c('velvet', 3)).rect(9, 3, 2, 15, c('velvet', 2));
     }),
     S,
@@ -99,7 +99,7 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
       for (const y of [3, 9, 15]) p.rect(0, y + 4, 20, 1, c('wood', 4));
       p.disc(4, 5, 2, c('paper', 5)); // a skull
       p.set(3, 5, c('black', 0)).set(5, 5, c('black', 0));
-      p.rect(9, 3, 1, 4, c('grey', 5)).rect(12, 2, 2, 5, c('gold', 3));
+      p.rect(9, 3, 1, 4, c('gray', 5)).rect(12, 2, 2, 5, c('gold', 3));
       p.rect(3, 10, 5, 3, c('velvet', 3)).rect(11, 9, 6, 4, c('green', 2));
       p.rect(2, 16, 4, 3, c('tan', 3)).rect(9, 15, 3, 4, c('teal', 3)).rect(14, 16, 4, 3, c('plum', 3));
     }),
@@ -111,7 +111,7 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
       for (const y of [3, 9, 15]) p.rect(0, y + 4, 20, 1, c('wood', 4));
       p.rect(2, 2, 6, 5, c('black', 1)).rect(3, 1, 4, 1, c('black', 1)); // a deerstalker
       p.rect(11, 3, 6, 4, c('tan', 2));
-      p.rect(2, 9, 14, 3, c('grey', 4));
+      p.rect(2, 9, 14, 3, c('gray', 4));
       p.rect(4, 15, 3, 4, c('gold', 2)).rect(12, 14, 4, 5, c('navy', 3));
     }),
     S,
@@ -123,10 +123,10 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
       p.rect(0, 3, 20, 14, c('wood', 1)).rect(0, 3, 20, 1, c('wood', 3));
       p.rect(2, 0, 16, 8, c('paper', 5)).frame(2, 0, 16, 8, c('paper', 3));
       micro(p, 3, 2, 'V.C.', c('black', 0));
-      p.rect(2, 8, 16, 2, c('black', 0)).set(1, 8, c('grey', 4)).set(18, 8, c('grey', 4));
+      p.rect(2, 8, 16, 2, c('black', 0)).set(1, 8, c('gray', 4)).set(18, 8, c('gray', 4));
       p.rect(3, 10, 14, 6, c('black', 1)).rect(3, 15, 14, 1, c('black', 0));
       for (let y = 11; y < 15; y += 2) for (let x = 4 + ((y >> 1) % 2); x < 16; x += 2) p.set(x, y, c('paper', 3));
-      p.rect(7, 14, 6, 1, c('grey', 3));
+      p.rect(7, 14, 6, 1, c('gray', 3));
       p.set(17, 11, c('gold', 3));
     }),
     S,
@@ -170,7 +170,7 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
   add(
     'cot',
     on(B, (p) => {
-      p.rect(1, 2, 18, 16, c('grey', 1)).rect(2, 3, 16, 14, c('navy', 2)).rect(2, 3, 16, 4, c('paper', 4));
+      p.rect(1, 2, 18, 16, c('gray', 1)).rect(2, 3, 16, 14, c('navy', 2)).rect(2, 3, 16, 4, c('paper', 4));
     }),
     S,
   );

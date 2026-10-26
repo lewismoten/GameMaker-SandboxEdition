@@ -43,7 +43,7 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
   const wall = (seed: number) => wallpaper(pal, seed);
   // the thermostat: 58, and dropping
   const thermo = wall(30);
-  thermo.rect(5, 4, 10, 12, c('white', 1)).frame(5, 4, 10, 12, c('grey', 1)).rect(7, 6, 6, 5, c('ice', 1));
+  thermo.rect(5, 4, 10, 12, c('white', 1)).frame(5, 4, 10, 12, c('gray', 1)).rect(7, 6, 6, 5, c('ice', 1));
   micro(thermo, 7, 7, '58', c('night', 0));
   thermo.disc(10, 13, 1.4, c('red', 1));
   book.add('thermo', thermo, AIR);
@@ -110,10 +110,10 @@ export function blanketBlocks(book: BlockBook, pal: Pal): void {
   }
   // the instructions: STEP 1 OF 94
   const sheet = wall(37);
-  sheet.rect(3, 2, 14, 16, c('white', 2)).frame(3, 2, 14, 16, c('grey', 1));
+  sheet.rect(3, 2, 14, 16, c('white', 2)).frame(3, 2, 14, 16, c('gray', 1));
   micro(sheet, 4, 3, 'STEP', c('ink', 0));
   micro(sheet, 4, 9, '1/94', c('red', 1));
-  sheet.rect(5, 15, 8, 1, c('grey', 1)).line(9, 14, 11, 12, c('grey', 1));
+  sheet.rect(5, 15, 8, 1, c('gray', 1)).line(9, 14, 11, 12, c('gray', 1));
   book.add('sheet', sheet, AIR);
   // the dish towel he curled round, on its hook
   const towel = wall(38);

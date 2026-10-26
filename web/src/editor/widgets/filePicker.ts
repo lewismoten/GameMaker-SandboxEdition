@@ -28,7 +28,7 @@ interface PickOptions {
   actions?: { label: string; run: () => Promise<string | undefined> }[];
 }
 
-/** Kinds whose library files can be fetched alone: their thumbnails need no neighbours. */
+/** Kinds whose library files can be fetched alone: their thumbnails need no neighbors. */
 const ALONE = new Set<FileKind>(['voc', 'cmf', 'snd', 'fli', 'gif', 'pal']);
 const fetched = new Map<string, Promise<Uint8Array>>();
 
@@ -64,7 +64,7 @@ function vocGroup(key: string, bytes: Uint8Array | undefined): SoundGroup | unde
   return groups.get(key);
 }
 
-/** Resolves with the chosen file name, '' for none, or undefined if cancelled. */
+/** Resolves with the chosen file name, '' for none, or undefined if canceled. */
 export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {}): Promise<string | undefined> {
   const kinds = opts.kinds ?? [kind];
   const grouped = kinds.length === 1 && kind === 'voc';

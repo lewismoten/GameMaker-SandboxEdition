@@ -286,7 +286,7 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
   }
 }
 
-/** A small ad on an editorial page: labelled ADVERTISEMENT over its own frame, set apart from the story. */
+/** A small ad on an editorial page: labeled ADVERTISEMENT over its own frame, set apart from the story. */
 function halfAdBox(b: HalfAd, env: RenderEnv, pending: Promise<unknown>[]): HTMLElement {
   const { where } = env;
   return h(

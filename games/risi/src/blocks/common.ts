@@ -99,9 +99,9 @@ export function cup(x: Ctx, bg: Pixels): Pixels {
 export function denarius(x: Ctx, bg: Pixels): Pixels {
   const p = copy(bg);
   const { c } = x;
-  p.disc(10, 11, 4.6, c('grey', 2)).disc(10, 11, 3.6, c('grey', 3)).set(8, 9, c('marble', 3));
+  p.disc(10, 11, 4.6, c('gray', 2)).disc(10, 11, 3.6, c('gray', 3)).set(8, 9, c('marble', 3));
   // a laureate head in profile
-  p.rect(9, 9, 3, 4, c('grey', 1)).set(12, 11, c('grey', 1)).set(8, 9, c('laurel', 1)).set(9, 8, c('laurel', 1)).set(11, 8, c('laurel', 1));
+  p.rect(9, 9, 3, 4, c('gray', 1)).set(12, 11, c('gray', 1)).set(8, 9, c('laurel', 1)).set(9, 8, c('laurel', 1)).set(11, 8, c('laurel', 1));
   return p;
 }
 

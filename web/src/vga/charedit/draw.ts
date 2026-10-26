@@ -2,7 +2,7 @@
 // blocks (turned by their orientation), the block list, a character frame of a top and a
 // bottom block, the function buttons and the placement grid.
 import { type Vga, SIZEX, SIZEY } from '../shared/vga';
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY3, GREY4, RED1, RED2, RED3 } from '../shared/facelift';
+import { BLACK, BLEN, Face, GREEN, GRAY1, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
 import { CHARBL } from '../../formats/blocks';
 import { type Frame } from '../../formats/character';
 import { GL, BLLIST, BLX, BLY, BLY1, GT, GRIDLEN, GRIDWID, BX, TX, T1, MX, MY, HX, SX, ENDFR, FUNAR, SHOOTAR, ZERO } from './layout';
@@ -145,8 +145,8 @@ export abstract class CharacterMakerDraw extends CharacterMakerState {
   protected drawFnButs(x: number, y: number, orient: number): void {
     const fc = this.face.cols;
     const col = [
-      [fc[GREY3], fc[RED1], fc[BLACK], fc[RED2]],
-      [fc[GREY3], fc[RED3], fc[GREEN], fc[GREY3]],
+      [fc[GRAY3], fc[RED1], fc[BLACK], fc[RED2]],
+      [fc[GRAY3], fc[RED3], fc[GREEN], fc[GRAY3]],
     ];
     const dir: number[] = [];
     for (let j = 0; j < 6; j++) {
@@ -165,7 +165,7 @@ export abstract class CharacterMakerDraw extends CharacterMakerState {
 
   protected grid(): void {
     const v = this.v;
-    const c = this.face.cols[GREY1];
+    const c = this.face.cols[GRAY1];
     for (let j = 0; j < GRIDLEN; j++)
       for (let k = 0; k < GRIDWID; k++) {
         v.point(GL + j * BLEN, GT + k * BLEN, c);
@@ -183,10 +183,10 @@ export abstract class CharacterMakerDraw extends CharacterMakerState {
     v.moucurbox(BLEN / 2, 0, 320 - BLEN / 2, 200 - (BLEN * 5) / 2);
     face.drawsurface(GL - 3, GT - 32, GRIDLEN * BLEN + 5, GRIDWID * BLEN + 34);
     v.boxFill(GL, GT, GL + BLEN * GRIDLEN - 1, GT + BLEN * GRIDWID - 1, this.bkg);
-    v.line(GL - 1, GT - 1, GL - 1, GT + BLEN * GRIDWID - 1, fc[GREY3]);
-    v.line(GL - 1, GT - 1, GL + BLEN * GRIDLEN - 1, GT - 1, fc[GREY4]);
+    v.line(GL - 1, GT - 1, GL - 1, GT + BLEN * GRIDWID - 1, fc[GRAY3]);
+    v.line(GL - 1, GT - 1, GL + BLEN * GRIDLEN - 1, GT - 1, fc[GRAY4]);
     this.grid();
-    v.boxFill(GL - 1, GT - 30, GL + GRIDLEN * BLEN - 1, GT - 9, fc[GREY3]);
+    v.boxFill(GL - 1, GT - 30, GL + GRIDLEN * BLEN - 1, GT - 9, fc[GRAY3]);
     this.drawFnButs(BX, GT - 30, 0);
     face.drawlistframe(BLX, BLY, BLLIST);
     this.drawlist(BLX, BLY, BLLIST, CHARBL, this.curblk, (n) => n);

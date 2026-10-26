@@ -7,11 +7,11 @@ import { Bot } from './bot';
 import { act1, act2, accuse, findEgg, greenRoom } from './route';
 import { buildGame } from '../src/game';
 import { buildActs } from '../src/levels/acts';
-import { buildTheatreBlocks } from '../src/blocks/tiles';
+import { buildTheaterBlocks } from '../src/blocks/tiles';
 import { buildParlorBlocks, buildParlorMap } from '../src/levels/parlor';
 
 export function sceneIndex() {
-  return buildGame(buildActs(buildTheatreBlocks()), buildParlorMap(buildParlorBlocks()).links).ix;
+  return buildGame(buildActs(buildTheaterBlocks()), buildParlorMap(buildParlorBlocks()).links).ix;
 }
 
 export function loadDisk(): Map<string, Uint8Array> {

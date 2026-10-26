@@ -1,6 +1,6 @@
 // The people of Procrastia, facing you: a head (hat, hair, face), a body and legs drawn as
 // ASCII art, each colored by its own key, and a blink for the second frame of their idle
-// animation. Plus the cameos: Doc Leo the hobo clown (grey felt fedora, navy corduroy, purple
+// animation. Plus the cameos: Doc Leo the hobo clown (gray felt fedora, navy corduroy, purple
 // shirt, green tie, red sneakers, a rubber chicken on a leash), Teddy the corgi and Gwinn, THE
 // CHEZ's owner, Will the playwright from Shakespeare in Sweatpants, Mystery Robot Joe from
 // Keep It Brief!, Teenage Lewie from Snowbound, and Lord Deadline himself.
@@ -251,7 +251,7 @@ const LEGS: Record<string, string[]> = {
   sneakers: ['.....KpPPKKPPpK.....', '....KooowKKooowK....', '....KKKKK..KKKKK....'],
   robe: ['...KwgGGGGGGGGgwK...', '...KwwwwwwwwwwwwK...', '....KKKKKKKKKKKK....'],
   short: ['......KpPKKPpK......', '......KnNKKNnK......', '.......KK..KK.......'],
-  // grey sweatpants and fuzzy pink slippers
+  // gray sweatpants and fuzzy pink slippers
   slippers: ['.....KpPPKKPPpK.....', '....KfFFfKKfFFfK....', '....KKKKK..KKKKK....'],
   // Joe's tin feet
   robot: ['.....KmmKKKKmmK.....', '....KMMMMK.KMMMMK...', '....KKKKKK.KKKKKK...'],
@@ -286,14 +286,14 @@ export function person(p: PersonSpec): [Canvas, Canvas] {
 const skinDark = { s: C('skin', 1), S: C('skin', 2), d: C('skin', 0) };
 
 export const PEOPLE: Record<string, PersonSpec> = {
-  grandma: { head: 'bun', body: 'dress', legs: 'skirt', key: lookKey({ hair: R('hairGrey', 0, 1, 1), coat: R('purple', 1, 2, 3), pants: R('leather', 1) }) },
+  grandma: { head: 'bun', body: 'dress', legs: 'skirt', key: lookKey({ hair: R('hairGray', 0, 1, 1), coat: R('purple', 1, 2, 3), pants: R('leather', 1) }) },
   king: {
     head: 'crown',
     body: 'robe',
     legs: 'robe',
     key: lookKey(
-      { hair: R('hairGrey', 0, 1, 1), coat: R('red', 1, 2, 3), pants: R('leather', 1), trim: R('gold', 1, 2, 3) },
-      { w: C('white', 1), j: C('hairGrey', 1) },
+      { hair: R('hairGray', 0, 1, 1), coat: R('red', 1, 2, 3), pants: R('leather', 1), trim: R('gold', 1, 2, 3) },
+      { w: C('white', 1), j: C('hairGray', 1) },
     ),
   },
   guard: {
@@ -326,7 +326,7 @@ export const PEOPLE: Record<string, PersonSpec> = {
     head: 'captain',
     body: 'coat',
     legs: 'boots',
-    key: lookKey({ hair: R('hairGrey', 0, 1), coat: R('night', 0, 1, 1), pants: R('night', 0, 1), hat: R('night', 0, 1, 1), trim: R('gold', 1, 2, 3) }),
+    key: lookKey({ hair: R('hairGray', 0, 1), coat: R('night', 0, 1, 1), pants: R('night', 0, 1), hat: R('night', 0, 1, 1), trim: R('gold', 1, 2, 3) }),
   },
   tinker: {
     head: 'goggles',
@@ -361,7 +361,7 @@ export const PEOPLE: Record<string, PersonSpec> = {
     body: 'robe',
     legs: 'robe',
     key: lookKey(
-      { hair: R('hairGrey', 0, 1, 1), coat: R('leather', 0, 1, 2), pants: R('leather', 0), hat: R('leather', 0, 1, 2) },
+      { hair: R('hairGray', 0, 1, 1), coat: R('leather', 0, 1, 2), pants: R('leather', 0), hat: R('leather', 0, 1, 2) },
       { w: C('leather', 1), j: C('white', 1) },
     ),
   },
@@ -378,7 +378,7 @@ export const PEOPLE: Record<string, PersonSpec> = {
     legs: 'short',
     key: lookKey({ hair: R('hairBlond', 0, 1), coat: R('red', 1, 2, 3), pants: R('blue', 1, 2), hat: R('blue', 1, 2, 3) }),
   },
-  // Doc Leo: chewed-up grey felt fedora with pins, painted stubble, white paint round his eyes
+  // Doc Leo: chewed-up gray felt fedora with pins, painted stubble, white paint round his eyes
   // and his mouth, his own nose sunburned pink, navy corduroy over a purple shirt and green tie,
   // and red sneakers
   docleo: {

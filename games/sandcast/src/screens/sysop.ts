@@ -294,7 +294,7 @@ function lewis(p: Pixels): void {
   // His ear on the left.
   oval(p, 30, 104, 9, 16, (x, y, u) => sh(SKIN, 4.6 + u * 0.8, x, y));
   p.line(30, 94, 28, 112, SKIN[3]);
-  // Shaggy grey-brown hair: a bowl cut combed forward, its fringe ragged, strands of grey.
+  // Shaggy gray-brown hair: a bowl cut combed forward, its fringe ragged, strands of gray.
   const inHair = (x: number, y: number) => {
     const u = (x - 90) / 66;
     const v = (y - 76) / 50;

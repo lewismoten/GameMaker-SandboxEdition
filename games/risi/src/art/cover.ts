@@ -35,7 +35,7 @@ function noise2(seed: number) {
 const N1 = noise2(31);
 const N2 = noise2(57);
 const fbm = (x: number, y: number) => N1(x, y) * 0.55 + N1(x * 2.1 + 7, y * 2.1) * 0.3 + N2(x * 4.3, y * 4.3 + 3) * 0.15;
-/** Marble: warm white with grey veins (where the noise turns). */
+/** Marble: warm white with gray veins (where the noise turns). */
 const marble = (x: number, y: number, light: number): RGB => {
   const v = Math.abs(Math.sin((x * 0.06 + y * 0.03 + fbm(x * 0.05, y * 0.05) * 6) * 1.3));
   const vein = 0.55 + 0.45 * smooth(0.0, 0.07, v);

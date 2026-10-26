@@ -51,7 +51,7 @@ export function addHouses(k: Ctx, painters: { lot: (seed: number) => Pixels }): 
     const r = rng(7 + frame);
     for (let k = 0; k < 3; k++) {
       const yy = 4 - k * 2 - frame;
-      if (yy >= 0) blob(p, 13 + k + frame, yy, 2 + k * 0.3, 1.5, R('grey'), 3, 5);
+      if (yy >= 0) blob(p, 13 + k + frame, yy, 2 + k * 0.3, 1.5, R('gray'), 3, 5);
     }
     void r;
     return p;

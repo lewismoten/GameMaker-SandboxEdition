@@ -37,23 +37,23 @@ export function crtTv(screen: number): Pixels {
   const p = blank(C('night', 0));
   p.rect(1, 3, 18, 16, C('wood', 2));
   for (let y = 4; y < 19; y += 3) p.rect(1, y, 18, 1, C('wood', 1));
-  p.rect(2, 5, 12, 10, C('grey', 1));
+  p.rect(2, 5, 12, 10, C('gray', 1));
   const sx = 3;
   const sy = 6;
   const sw = 10;
   const sh = 8;
   if (screen === 0) {
-    const bars = ['grey', 'gold', 'teal', 'green', 'pink', 'red', 'denim'];
+    const bars = ['gray', 'gold', 'teal', 'green', 'pink', 'red', 'denim'];
     for (let i = 0; i < sw; i++) p.rect(sx + i, sy, 1, sh - 2, C(bars[Math.floor((i * bars.length) / sw)], 4));
     p.rect(sx, sy + sh - 2, sw, 2, C('night', 2));
   } else if (screen === 1) {
     p.rect(sx, sy, sw, sh, C('sky', 5));
     // A cartoon: the Earth with a smile, of course.
     blob(p, 8, 10, 3, 3, R('green'), 1, 4);
-    p.set(7, 10, C('grey', 0)).set(9, 10, C('grey', 0)).rect(7, 11, 3, 1, C('grey', 0));
+    p.set(7, 10, C('gray', 0)).set(9, 10, C('gray', 0)).rect(7, 11, 3, 1, C('gray', 0));
   } else {
     const r = rng(screen * 7);
-    for (let y = sy; y < sy + sh; y++) for (let x = sx; x < sx + sw; x++) p.set(x, y, C('grey', 2 + Math.floor(r() * 6)));
+    for (let y = sy; y < sy + sh; y++) for (let x = sx; x < sx + sw; x++) p.set(x, y, C('gray', 2 + Math.floor(r() * 6)));
   }
   p.rect(15, 6, 3, 1, C('chrome', 4)).rect(15, 8, 3, 1, C('chrome', 4));
   p.disc(16, 12, 1, C('gold', 4));
@@ -66,18 +66,18 @@ function arcade(state: 'a' | 'b' | 'over' | 'tilt'): Pixels {
   p.rect(2, 0, 16, 20, C('purple', 2));
   p.rect(2, 0, 16, 4, C('pink', 3));
   micro(p, 3, 0, state === 'tilt' ? 'TILT' : 'ZAP!', C('gold', 5));
-  p.rect(4, 5, 12, 8, C('grey', 0));
+  p.rect(4, 5, 12, 8, C('gray', 0));
   if (state === 'over') {
     micro(p, 3, 5, 'GAME', C('red', 4));
     micro(p, 3, 11, 'OVER', C('red', 4));
   } else {
     const r = rng(state === 'a' ? 3 : 4);
-    for (let i = 0; i < 6; i++) p.set(5 + r() * 10, 6 + r() * 6, C('grey', 7));
+    for (let i = 0; i < 6; i++) p.set(5 + r() * 10, 6 + r() * 6, C('gray', 7));
     p.rect(7 + (state === 'a' ? 0 : 3), 10, 3, 2, C('neon', 3));
     p.rect(10 - (state === 'a' ? 0 : 2), 7, 2, 2, C('pink', 4));
   }
   p.rect(3, 14, 14, 4, C('chrome', 3));
-  p.rect(6, 14, 1, 2, C('grey', 0)).disc(6, 14, 1, C('red', 4));
+  p.rect(6, 14, 1, 2, C('gray', 0)).disc(6, 14, 1, C('red', 4));
   p.disc(11, 16, 1, C('gold', 4)).disc(14, 16, 1, C('teal', 4));
   return p;
 }
@@ -87,7 +87,7 @@ function pinball(part: 'top' | 'bottom', lit: number): Pixels {
   if (part === 'top') {
     p.rect(1, 2, 18, 18, C('chrome', 2));
     gradient(p, 2, 3, 16, 14, R('sunset'), 3 + lit, 10);
-    micro(p, 3, 4, '2000', C('grey', 7));
+    micro(p, 3, 4, '2000', C('gray', 7));
     for (let i = 0; i < 4; i++) p.set(4 + i * 4, 15, (i + lit) % 2 ? C('gold', 5) : C('red', 4));
   } else {
     p.rect(1, 0, 18, 20, C('chrome', 2));
@@ -97,7 +97,7 @@ function pinball(part: 'top' | 'bottom', lit: number): Pixels {
       [13, 5, 'gold'],
       [9, 9, 'teal'],
     ] as const)
-      p.disc(x, y, 2, C(c, 4)).set(x, y, C('grey', 7));
+      p.disc(x, y, 2, C(c, 4)).set(x, y, C('gray', 7));
     p.line(4, 15, 8, 17, C('red', 4)).line(15, 15, 11, 17, C('red', 4));
     p.disc(10 + lit, 12, 1, C('chrome', 7));
     p.rect(2, 18, 16, 2, C('chrome', 1));
@@ -112,10 +112,10 @@ function fountain(k: number): Pixels {
   oval(p, 10, 11, 7.5, 6.5, C('sky', 4));
   for (let a = 0; a < 6; a++) {
     const t = a + k * 0.5;
-    p.set(10 + Math.cos(t) * 4, 9 + Math.sin(t) * 3, C('grey', 7));
+    p.set(10 + Math.cos(t) * 4, 9 + Math.sin(t) * 3, C('gray', 7));
   }
   p.rect(9, 3, 2, 8, C('sky', 6))
-    .set(10, 2 - k, C('grey', 7))
+    .set(10, 2 - k, C('gray', 7))
     .set(8 - k, 4, C('sky', 7))
     .set(12 + k, 4, C('sky', 7));
   return p;
@@ -123,7 +123,7 @@ function fountain(k: number): Pixels {
 
 function palm(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 10, 18, 6, 1.5, C('grey', 1));
+  oval(p, 10, 18, 6, 1.5, C('gray', 1));
   p.rect(6, 14, 8, 5, C('pink', 3)).rect(6, 14, 8, 1, C('pink', 5));
   p.line(10, 14, 9, 7, C('wood', 2)).line(11, 14, 10, 7, C('wood', 3));
   for (const [dx, dy] of [
@@ -139,7 +139,7 @@ function palm(floor: Floor): Pixels {
 
 function foodTable(): Pixels {
   const p = on('tile');
-  oval(p, 10, 16, 8, 2, C('grey', 2));
+  oval(p, 10, 16, 8, 2, C('gray', 2));
   oval(p, 10, 10, 8, 6, C('chrome', 6));
   oval(p, 10, 10, 6.5, 4.5, C('gold', 4));
   // Lunch in the year 2000: a single pill on a plate.
@@ -190,11 +190,11 @@ function exchangeGlow(): Pixels {
 
 function flamingo(floor: Floor): Pixels {
   const p = on(floor);
-  p.line(9, 12, 9, 18, C('grey', 2)).line(11, 12, 11, 18, C('grey', 2));
+  p.line(9, 12, 9, 18, C('gray', 2)).line(11, 12, 11, 18, C('gray', 2));
   oval(p, 10, 10, 5, 3, C('pink', 4));
   p.line(13, 9, 15, 3, C('pink', 4)).line(14, 9, 16, 3, C('pink', 3));
   p.disc(15, 3, 1.6, C('pink', 4));
-  p.set(17, 3, C('grey', 0)).set(17, 4, C('grey', 0));
+  p.set(17, 3, C('gray', 0)).set(17, 4, C('gray', 0));
   return p;
 }
 
@@ -207,11 +207,11 @@ function shuffleboard(): Pixels {
 }
 
 function testPattern(): Pixels {
-  const p = blank(C('grey', 3));
-  const bars = ['grey', 'gold', 'teal', 'green', 'pink', 'red', 'denim'];
+  const p = blank(C('gray', 3));
+  const bars = ['gray', 'gold', 'teal', 'green', 'pink', 'red', 'denim'];
   for (let i = 0; i < 20; i++) p.rect(i, 0, 1, 14, C(bars[Math.floor((i * 7) / 20)], 4));
-  p.rect(0, 14, 20, 6, C('grey', 1));
-  p.rect(6, 15, 8, 4, C('grey', 6));
+  p.rect(0, 14, 20, 6, C('gray', 1));
+  p.rect(6, 15, 8, 4, C('gray', 6));
   return p;
 }
 
@@ -241,7 +241,7 @@ function seaGlass(): Pixels {
   for (let x = 0; x < 20; x += 6) p.line(x, 5, x + 3, 14, C('teal', 4));
   // A fish swims past outside.
   oval(p, 9, 10, 3, 1.5, C('gold', 4));
-  p.set(12, 9, C('gold', 4)).set(12, 11, C('gold', 4)).set(7, 10, C('grey', 0));
+  p.set(12, 9, C('gold', 4)).set(12, 11, C('gold', 4)).set(7, 10, C('gray', 0));
   return p;
 }
 
@@ -279,7 +279,7 @@ function launchSign(): Pixels {
 function boardRamp(count = 0): Pixels {
   const p = on('concrete');
   p.rect(2, 0, 16, 20, C('gold', 3));
-  for (let y = 0; y < 20; y += 4) p.rect(2, y, 16, 2, C('grey', 1));
+  for (let y = 0; y < 20; y += 4) p.rect(2, y, 16, 2, C('gray', 1));
   p.rect(5, 6, 10, 8, C('night', 0));
   if (!count) {
     micro(p, 6, 8, 'GO', C('gold', 5));
@@ -300,7 +300,7 @@ const SECOND = 18;
 function numberSign(n: number): Pixels {
   const p = on('marble');
   p.rect(5, 1, 10, 13, C('chrome', 6)).rect(6, 2, 8, 11, C('denim', 2));
-  micro(p, 7, 3, String(n), C('grey', 7), 2);
+  micro(p, 7, 3, String(n), C('gray', 7), 2);
   p.rect(9, 14, 2, 5, C('chrome', 3));
   return p;
 }
@@ -310,7 +310,7 @@ export function citySet(): BlockSet {
   addFloors(s, ['tile', 'carpet', 'marble', 'beach', 'shag', 'seafloor', 'jungle', 'concrete', 'sidewalk']);
   s.add('static', on('static', 51), { next: 'static2', ntime: 1 });
   s.add('static2', on('static', 52), { next: 'static', ntime: 1 });
-  s.add('void', blank(C('grey', 0)), { solid: SOLID });
+  s.add('void', blank(C('gray', 0)), { solid: SOLID });
   addItems(s, 'tile', ['page', 'quarter', 'pill', 'battery', 'keycard', 'cola']);
   addItems(s, 'carpet', ['quarter', 'page']);
   addItems(s, 'marble', ['quarter', 'pill', 'battery']);
@@ -401,7 +401,7 @@ export function citySet(): BlockSet {
  * tinkering with the Exchange's switchboard (scenery, solid like the wall he stands by).
  */
 function addKeepsakes(s: BlockSet): void {
-  const tin = { ink: C('grey', 0), tin: [C('chrome', 3), C('chrome', 5), C('chrome', 6)], white: C('grey', 7), dark: C('chrome', 1) };
+  const tin = { ink: C('gray', 0), tin: [C('chrome', 3), C('chrome', 5), C('chrome', 6)], white: C('gray', 7), dark: C('chrome', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     s.add(`tinHeart${k || ''}`, drawTinHeart(on('tile'), tin, k), {
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
@@ -409,7 +409,7 @@ function addKeepsakes(s: BlockSet): void {
       touch: 'tile',
       score: 100,
     });
-  const egg = { ink: C('purple', 0), shell: PAL.r('pink').slice(2), paint: [C('teal', 2), C('teal', 4)], accent: C('gold', 4), white: C('grey', 7) };
+  const egg = { ink: C('purple', 0), shell: PAL.r('pink').slice(2), paint: [C('teal', 2), C('teal', 4)], accent: C('gold', 4), white: C('gray', 7) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
     s.add(`easterEgg${k || ''}`, drawEasterEgg(on('beach'), egg, 'zigzag', k), {
       next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,

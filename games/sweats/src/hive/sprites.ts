@@ -12,8 +12,8 @@ export function buildHiveSprites(book: SpriteBook, pal: Pal): void {
   const c = pal.c;
   const shush = (f: number) => {
     const p = new Pixels(20, 20, T);
-    p.rect(1, 5 + f, 18, 9, c('grey', 3)).rect(2, 6 + f, 16, 7, c('white', 2));
-    p.set(5, 14 + f, c('grey', 3)).set(4, 15 + f, c('grey', 3));
+    p.rect(1, 5 + f, 18, 9, c('gray', 3)).rect(2, 6 + f, 16, 7, c('white', 2));
+    p.set(5, 14 + f, c('gray', 3)).set(4, 15 + f, c('gray', 3));
     micro(p, 3, 7 + f, 'SHH', c('red', 1));
     p.set(16, 7 + f, c('red', 1))
       .set(16, 8 + f, c('red', 1))

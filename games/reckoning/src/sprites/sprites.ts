@@ -1,4 +1,4 @@
-// RECKON.CBL and RECKON.MBL: the man (Doc Leo off duty at 3:17 a.m.: shaggy grey bowl cut,
+// RECKON.CBL and RECKON.MBL: the man (Doc Leo off duty at 3:17 a.m.: shaggy gray bowl cut,
 // wire glasses, shirtless and sweating, striped pajama pants, fuzzy slippers) and everything
 // else that moves: Teddy and Gwinn asleep (and later awake, wanting to play), the snoring Zs, the
 // dairy in the fridge come to life (a hopping milk carton, a bouncing yogurt, a winking wedge of
@@ -75,7 +75,7 @@ function manArt(pal: Pal) {
     if (side) blob(p, 11.2, 10.5 + crouch, 3.8, 3.4, pal.r('skin'), 1, 4);
     else blob(p, 10.5, 10.5 + crouch, 4.6, 3.4, pal.r('skin'), 1, 4);
     if (!back) p.set(side ? 13 : 10, 12 + crouch, c('skin', 0));
-    // the head: a shaggy grey bowl cut, wire glasses
+    // the head: a shaggy gray bowl cut, wire glasses
     const hx = side ? 11 : 10;
     const hy = 5 + crouch;
     blob(p, hx + 0.5, hy, 4.4, 4.2, pal.r('skin'), 1, 4);
@@ -345,8 +345,8 @@ export function buildMonsterBlocks(pal: Pal) {
   // Carl the fly, buzzing round the kitchen
   const carl = (f: number) => {
     const p = P();
-    blob(p, 10, 12, 3.4, 2.6, pal.r('grey'), 0, 2);
-    blob(p, 13, 11, 2, 2, pal.r('grey'), 0, 1);
+    blob(p, 10, 12, 3.4, 2.6, pal.r('gray'), 0, 2);
+    blob(p, 13, 11, 2, 2, pal.r('gray'), 0, 1);
     p.disc(14, 10, 1.2, c('red', 3));
     for (const s of [-1, 1]) blob(p, 9 + s * 2, f ? 7 : 9, 3, 2, pal.r('white'), 1, 2);
     p.line(8, 14, 7, 17, ink).line(11, 14, 12, 17, ink);
@@ -418,7 +418,7 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(6, 17, 12, 17, c('gold', 2)).set(9, 18, c('gold', 3));
     // the head
     blob(p, 9, 10, 5.4, 5.4, pal.r('devil'), 1, 4);
-    p.rect(4, 4, 10, 3, c('ink', 1)).rect(4, 4, 10, 1, c('grey', 3));
+    p.rect(4, 4, 10, 3, c('ink', 1)).rect(4, 4, 10, 1, c('gray', 3));
     // horns (bent once he's splashed)
     const bend = stage >= 2 ? 2 : 0;
     p.line(5, 5, 3 + bend, 0 + bend, c('cream', 2)).line(13, 5, 15 - bend, 0 + bend, c('cream', 2));

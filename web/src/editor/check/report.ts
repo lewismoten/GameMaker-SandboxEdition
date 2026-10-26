@@ -61,7 +61,7 @@ export interface Report {
   won?: boolean;
   /** Level scenes play never got to. */
   unreached: number[];
-  cancelled: boolean;
+  canceled: boolean;
   ms: number;
 }
 
@@ -173,7 +173,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...wonRoute(game, all),
       ...missingFiles(game, files, all),
     );
-  const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
+  const report: Report = { findings, runs: [], unreached: [], canceled: false, ms: 0 };
   if (opt.play !== false) {
     const feed = new LiveFeed(now);
     const budgetMs = opt.budgetMs ?? 10_000;
@@ -190,7 +190,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       let r: SceneRun | undefined;
       try {
         r = await playtestScene(game, files, opt.scene, { budgetMs: opt.budgetMs, progress, towardExits: opt.towardExits });
-        if (!r) report.cancelled = true;
+        if (!r) report.canceled = true;
       } catch (e) {
         findings.push(couldNotPlay(opt.scene, name(opt.scene), e instanceof Error ? e.message : String(e)));
       }
@@ -200,12 +200,12 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       runs.push(...p.runs);
       report.won = p.won;
       report.unreached = p.unreached;
-      report.cancelled = p.cancelled;
+      report.canceled = p.canceled;
       findings.push(...curve(runs), ...p.failed.map((f) => couldNotPlay(f.scene, name(f.scene), f.error)));
       // and again, leaving behind everything it can: is the end still in reach?
-      if (p.won && !p.cancelled && opt.leaveBehind !== false) {
+      if (p.won && !p.canceled && opt.leaveBehind !== false) {
         const poor = await playtestGame(game, files, { budgetMs: opt.budgetMs, progress, leaveBehind: true, towardExits: opt.towardExits });
-        report.cancelled ||= poor.cancelled;
+        report.canceled ||= poor.canceled;
         findings.push(...softlocks(p, poor, all, name));
       }
     }
@@ -214,12 +214,12 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       findings.push(...playFindings(r, d), ...oneWay(r, d));
       report.runs.push(summarize(r, d?.names.map));
     }
-    if (opt.steadyMs && !report.cancelled) {
+    if (opt.steadyMs && !report.canceled) {
       const ticks = Math.max(1, Math.round((opt.steadyMs / 1000) * 18.2));
       for (const r of runs) {
         const steady = await replayScene(game, files, r, { budgetMs: opt.budgetMs, progress, steadyTicks: ticks, towardExits: opt.towardExits });
         if (!steady) {
-          report.cancelled = true;
+          report.canceled = true;
           break;
         }
         findings.push(

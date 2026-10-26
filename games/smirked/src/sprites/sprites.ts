@@ -138,7 +138,7 @@ function heroArt(pal: Pal) {
       sleeve(cx - w - 2, 8, 12);
       hand = [cx + 6, 8];
     }
-    // the foam sword: grey blade, yellow guard, red grip
+    // the foam sword: gray blade, yellow guard, red grip
     if (o.sword === 'held') {
       const [hx, hy2] = hand;
       p.rect(hx, hy2 - 1, 2, 2, c('red', 1))
@@ -368,7 +368,7 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('tackle0', tackle(0));
   book.add('tackle1', tackle(1));
-  // The foam sword's swing (the last level's tackle): an arc of grey foam, a squeak of motion lines.
+  // The foam sword's swing (the last level's tackle): an arc of gray foam, a squeak of motion lines.
   const swing = (f: number) => {
     const p = P();
     for (let a = -1.2; a < 1.2; a += 0.04)
@@ -394,7 +394,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('dust0', dust(0));
   book.add('dust1', dust(1));
 
-  // An animatronic zombie: grey-green, tattered shirt, foam guts, a plastic axe, a jerky shuffle.
+  // An animatronic zombie: gray-green, tattered shirt, foam guts, a plastic axe, a jerky shuffle.
   const zombie = (f: number) => {
     const p = P();
     for (const [x, d] of [

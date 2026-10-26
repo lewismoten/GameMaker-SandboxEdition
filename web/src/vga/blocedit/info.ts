@@ -5,7 +5,7 @@ import { errorBox } from '../../retro/text/textUi';
 import { BACKBL, BLEN, CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../formats/blocks';
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '../../formats/monster';
 import { SIZEX, SIZEY } from '../shared/vga';
-import { GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED3, RIGHT } from '../shared/facelift';
+import { GRAY1, GRAY2, GRAY3, GRAY4, LEFT, NONE, RED3, RIGHT } from '../shared/facelift';
 import { drawblk, drawlist, getblk, loadblks, pixelsOf, scrollList, type ListPick } from '../shared/blocc';
 import {
   LLEN,
@@ -100,8 +100,8 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
       const { v, face } = this;
       const fc = face.cols;
       const B = this.blk[b];
-      const sh = (x: number, y: number, col: number, s: string) => this.gwriteShadow(x, y, col, fc[GREY4], s);
-      const empty = fc[GREY4];
+      const sh = (x: number, y: number, col: number, s: string) => this.gwriteShadow(x, y, col, fc[GRAY4], s);
+      const empty = fc[GRAY4];
 
       if (changed & 7 && grabbed !== -1) drawblk(v, ox - 10, oy - 10, this.under); // Erase block
 
@@ -146,7 +146,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
                 B.birthMon = LASTMON; // Wrap if would be < 0
               else B.birthMon = (B.birthMon + addamt) & 255;
               if (B.birthMon > LASTMON) B.birthMon = 0; // Wrap if too big
-              v.boxFill(MONX - 8, MONY + 10, MONX - 8 + 8 * 4, MONY + 10 + 6, fc[GREY1]);
+              v.boxFill(MONX - 8, MONY + 10, MONX - 8 + 8 * 4, MONY + 10 + 6, fc[GRAY1]);
               v.write(MONX - 8, MONY + 10, fc[RED3], this.birthStr(B));
             }
             break;
@@ -155,7 +155,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
               B.birthTime += addamt;
               if (B.birthTime < 1) B.birthTime = 9999;
               if (B.birthTime > 9999) B.birthTime = 1;
-              v.boxFill(MONX, MONY + 30, MONX + 8 * 4, MONY + 30 + 6, fc[GREY1]);
+              v.boxFill(MONX, MONY + 30, MONX + 8 * 4, MONY + 30 + 6, fc[GRAY1]);
               v.write(MONX, MONY + 30, fc[RED3], d(B.birthTime, 4));
             }
             break;
@@ -170,7 +170,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
               B.scorePts += addamt;
               if (B.scorePts > 9999) B.scorePts -= 2 * 9999;
               if (B.scorePts < -9999) B.scorePts += 2 * 9999;
-              v.boxFill(TMENUX + TMENULEN - 5 * 8, SCOREY, TMENUX + TMENULEN, SCOREY + 8, fc[GREY1]);
+              v.boxFill(TMENUX + TMENULEN - 5 * 8, SCOREY, TMENUX + TMENULEN, SCOREY + 8, fc[GRAY1]);
               sh(TMENUX + TMENULEN - 5 * 8, SCOREY, fc[RED3], d(B.scorePts, 5));
             }
             break;
@@ -179,7 +179,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
               B.chHitPt += addamt;
               if (B.chHitPt > 9999) B.chHitPt -= 2 * 9999;
               if (B.chHitPt < -9999) B.chHitPt += 2 * 9999;
-              v.boxFill(TMENUX + TMENULEN - 5 * 8, HITPTSY, TMENUX + TMENULEN, HITPTSY + 8, fc[GREY1]);
+              v.boxFill(TMENUX + TMENULEN - 5 * 8, HITPTSY, TMENUX + TMENULEN, HITPTSY + 8, fc[GRAY1]);
               sh(TMENUX + TMENULEN - 5 * 8, HITPTSY, fc[RED3], d(B.chHitPt, 5));
             }
             break;
@@ -189,7 +189,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
               if (B.effect === 2 || B.effect === 4) B.effect += sign(addamt);
               if (B.effect < 1) B.effect = 24;
               if (B.effect > 24) B.effect = 1;
-              v.boxFill(TMENUX + 5, EFFECTY, TMENUX + TMENULEN - 56, EFFECTY + 8, fc[GREY1]);
+              v.boxFill(TMENUX + 5, EFFECTY, TMENUX + TMENULEN - 56, EFFECTY + 8, fc[GRAY1]);
               sh(TMENUX + 5, EFFECTY, fc[RED3], this.makeEffect(b));
             }
             break;
@@ -198,7 +198,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
               B.eamt += addamt;
               if (B.eamt > 9999) B.eamt -= 2 * 9999;
               if (B.eamt < -9999) B.eamt += 2 * 9999;
-              v.boxFill(TMENUX + TMENULEN - 40, EFFECTY, TMENUX + TMENULEN, EFFECTY + 8, fc[GREY1]);
+              v.boxFill(TMENUX + TMENULEN - 40, EFFECTY, TMENUX + TMENULEN, EFFECTY + 8, fc[GRAY1]);
               sh(TMENUX + TMENULEN - 40, EFFECTY, fc[RED3], d(B.eamt, 5));
             }
             break;
@@ -211,7 +211,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
 
       owin = win; // See if the cursor has gone over another menu item.
       win = 0; // If so, highlight it.
-      const four = [face.bkg, fc[GREY1], fc[GREY2], fc[GREY4]];
+      const four = [face.bkg, fc[GRAY1], fc[GRAY2], fc[GRAY4]];
       if (inBox(mx, my, TRASHX, TTOPY, TRASHX + 25, TRASHY + 35) || (owin === TRASHCAN && inBox(mx, my, TRASHX, TTOPY - BLEN, TRASHX + 25, TRASHY + 35))) {
         win = TRASHCAN;
         if (owin !== TRASHCAN) {
@@ -232,14 +232,14 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
         if (inBox(mx, my, MENUX, SCOREY, MENUX + TMENULEN, SCOREY + 8)) {
           win = SCORE;
           if (owin !== SCORE) {
-            v.boxFill(TMENUX + 5, SCOREY, TMENUX + 5 + 8 * 8, SCOREY + 8, fc[GREY1]);
+            v.boxFill(TMENUX + 5, SCOREY, TMENUX + 5 + 8 * 8, SCOREY + 8, fc[GRAY1]);
             sh(TMENUX + 5, SCOREY, fc[RED3], 'Score by');
           }
         }
         if (inBox(mx, my, MENUX, HITPTSY, MENUX + TMENULEN, HITPTSY + 8)) {
           win = HITPTS;
           if (owin !== HITPTS) {
-            v.boxFill(TMENUX + 5, HITPTSY, TMENUX + 5 + 8 * 13, HITPTSY + 8, fc[GREY1]);
+            v.boxFill(TMENUX + 5, HITPTSY, TMENUX + 5 + 8 * 13, HITPTSY + 8, fc[GRAY1]);
             sh(TMENUX + 5, HITPTSY, fc[RED3], 'Hit points by');
           }
         }
@@ -247,14 +247,14 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
           win = EFFECT;
           if (owin !== EFFECT) {
             const str = this.makeEffect(b);
-            v.boxFill(TMENUX + 5, EFFECTY, TMENUX + 5 + 8 * str.length, EFFECTY + 8, fc[GREY1]);
+            v.boxFill(TMENUX + 5, EFFECTY, TMENUX + 5 + 8 * str.length, EFFECTY + 8, fc[GRAY1]);
             sh(TMENUX + 5, EFFECTY, fc[RED3], str);
           }
         }
         if (inBox(mx, my, MENUX + TMENULEN - 8 * 9, EFFECTY, MENUX + TMENULEN, EFFECTY + 8)) {
           win = EAMOUNT;
           if (owin !== EAMOUNT) {
-            v.boxFill(TMENUX + TMENULEN - 7 * 8, EFFECTY, TMENUX + TMENULEN, EFFECTY + 8, fc[GREY1]);
+            v.boxFill(TMENUX + TMENULEN - 7 * 8, EFFECTY, TMENUX + TMENULEN, EFFECTY + 8, fc[GRAY1]);
             sh(TMENUX + TMENULEN - 56, EFFECTY, fc[RED3], `by${d(B.eamt, 5)}`);
           }
         }
@@ -278,30 +278,30 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
         // Unhighlight old highlighted menu option
         switch (owin) {
           case MONBIRTH:
-            v.write(MONX - 8, MONY + 10, fc[GREY3], this.birthStr(B));
+            v.write(MONX - 8, MONY + 10, fc[GRAY3], this.birthStr(B));
             break;
           case MONTIME:
-            v.write(MONX, MONY + 30, fc[GREY3], d(B.birthTime, 4));
+            v.write(MONX, MONY + 30, fc[GRAY3], d(B.birthTime, 4));
             break;
           case TIMEBLOCK:
-            this.writeNtime(b, fc[GREY3]);
+            this.writeNtime(b, fc[GRAY3]);
             break;
           case SCORE:
-            sh(TMENUX + 5, SCOREY, fc[GREY3], 'Score by');
-            sh(TMENUX + TMENULEN - 40, SCOREY, fc[GREY3], d(B.scorePts, 5));
+            sh(TMENUX + 5, SCOREY, fc[GRAY3], 'Score by');
+            sh(TMENUX + TMENULEN - 40, SCOREY, fc[GRAY3], d(B.scorePts, 5));
             break;
           case HITPTS:
-            sh(TMENUX + 5, HITPTSY, fc[GREY3], 'Hit points by');
-            sh(TMENUX + TMENULEN - 40, HITPTSY, fc[GREY3], d(B.chHitPt, 5));
+            sh(TMENUX + 5, HITPTSY, fc[GRAY3], 'Hit points by');
+            sh(TMENUX + TMENULEN - 40, HITPTSY, fc[GRAY3], d(B.chHitPt, 5));
             break;
           case EFFECT:
-            sh(TMENUX + 5, EFFECTY, fc[GREY3], this.makeEffect(b));
+            sh(TMENUX + 5, EFFECTY, fc[GRAY3], this.makeEffect(b));
             break;
           case EAMOUNT:
-            sh(TMENUX + TMENULEN - 56, EFFECTY, fc[GREY3], `by${d(B.eamt, 5)}`);
+            sh(TMENUX + TMENULEN - 56, EFFECTY, fc[GRAY3], `by${d(B.eamt, 5)}`);
             break;
           case OBJECT:
-            this.objButton(B.obj, fc[GREY3]);
+            this.objButton(B.obj, fc[GRAY3]);
             break;
           case TRASHCAN:
             v.draw4dat(TRASHX, TRASHY, TRASHAR, 25, 34, four);
@@ -372,13 +372,13 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
         } else if (mbuts === 0 && obuts !== 0) {
           // Drop block
           T.touchBl = grabbed;
-          V.boxFill(TMENUX + TMENULEN - 32, TOUCHY + 6, TMENUX + TMENULEN, TOUCHY + 14, fc[GREY1]);
+          V.boxFill(TMENUX + TMENULEN - 32, TOUCHY + 6, TMENUX + TMENULEN, TOUCHY + 14, fc[GRAY1]);
           if (T.touchBl !== b) {
-            sh(TMENUX + 5, TOUCHY + 6, fc[GREY3], 'Block to');
-            sh(TMENUX + TMENULEN - 40, TOUCHY + 6, fc[GREY3], d(T.touchBl, 5));
+            sh(TMENUX + 5, TOUCHY + 6, fc[GRAY3], 'Block to');
+            sh(TMENUX + TMENULEN - 40, TOUCHY + 6, fc[GRAY3], d(T.touchBl, 5));
             drawblk(V, TOUCHX, TOUCHY, pixelsOf(this.blk, T.touchBl));
           } else {
-            sh(TMENUX + TMENULEN - 32, TOUCHY + 6, fc[GREY3], 'None');
+            sh(TMENUX + TMENULEN - 32, TOUCHY + 6, fc[GRAY3], 'None');
             V.boxFill(TOUCHX, TOUCHY, TOUCHX + BLEN - 1, TOUCHY + BLEN - 1, empty);
           }
           this.saved = false;
@@ -532,7 +532,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
     let curmon = choice === LASTMON ? 0 : choice;
     const pic = (c: number) => pixelsOf(mblk, this.m[c].pic[this.m[c].cur.pic]?.[0] ?? MONBL);
     drawlist(v, mblk, MOX, MOY2, MOLEN, LASTMON, curmon, this.monnum);
-    if (choice === LASTMON) v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
+    if (choice === LASTMON) v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
     else drawblk(v, SELX, SELY, pic(choice));
     face.drawborder(TBOXX, TBOXY, 169, 9, 5, 2);
     face.boxWithText(TBOXX, TBOXY, 'Pick Monster to Birth');
@@ -553,7 +553,7 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
           return choice;
         }
         if (y > MY3 && y < MY3 + 10) {
-          v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
+          v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
           choice = LASTMON;
           this.saved = false;
         }

@@ -178,7 +178,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const current = () => lineup[at];
   let paraded = 0;
   const spriteOf = (m: CastMember | { id: string }) => sprites.get(m.id);
-  const centre = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
+  const center = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
   const has = (...ids: string[]) => ids.every((id) => sprites.has(id));
   const isGwinn = (m: CastMember) => m.id === 'gwinn' && has('prop:hat');
   const hatGag = (m: CastMember) => m.id === 'leo' && has('teddy', 'prop:hat') && !!spriteOf(m)?.acts.bareWalk;
@@ -215,7 +215,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   }
 
   function hello(m: CastMember, now: number): void {
-    x = centre(m);
+    x = center(m);
     into('talk', now);
     say(m);
     const fx = HELLO_FX[m.id];
@@ -224,7 +224,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
 
   /** Stopped in the light: business first (Teddy with the hat), else hello. */
   function arrive(m: CastMember, now: number): void {
-    x = centre(m);
+    x = center(m);
     if (hatGag(m) && !hatOn) {
       into('pre', now);
       helper = { id: 'teddy', x: -24, left: false, speed: RUN, carry: 'hat' };
@@ -257,7 +257,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       if (fx) sound.effect(fx);
     } else {
       phase = 'talk';
-      x = centre(m);
+      x = center(m);
       say(m);
       // a pick while paused: the costume already lies where Gwinn dropped it
       if (isGwinn(m)) for (const [k, p] of PROPS.entries()) props.push(prop(p, DROPS[k] - 6, FLOOR, true));
@@ -535,7 +535,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       const t = now - t0;
       if (m.id === 'lewie') snow = phase === 'exit' ? Math.max(0, snow - dt * 1.4) : Math.min(1, snow + dt * 1.2);
       if (phase === 'enter') {
-        x = s.sprite.walk ? x + speed(m) * dt : centre(m);
+        x = s.sprite.walk ? x + speed(m) * dt : center(m);
         // the costume falls out behind her as she runs
         while (isGwinn(m) && dropped < PROPS.length && x >= DROPS[dropped]) {
           props.push(prop(PROPS[dropped], x + 2, FLOOR - 14));
@@ -543,10 +543,10 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
         }
         // Gwinn runs right across first and comes back; everyone else stops in the light
         if (isGwinn(m) && x >= TURN) into('back', now);
-        else if (!isGwinn(m) && x >= centre(m) && (s.sprite.walk || t > 600)) arrive(m, now);
+        else if (!isGwinn(m) && x >= center(m) && (s.sprite.walk || t > 600)) arrive(m, now);
       } else if (phase === 'back') {
         x -= speed(m) * dt;
-        if (x <= centre(m)) hello(m, now);
+        if (x <= center(m)) hello(m, now);
       } else if (phase === 'pre' && helper) {
         // Teddy runs up with the hat, hands it over with a happy bark, and runs back off
         if (helper.carry) {

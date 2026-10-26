@@ -33,7 +33,7 @@ export const RSD_INTROS: RsdIntro[] = [
   },
   {
     src: 'rsd-production.webp',
-    alt: 'An RSD Production: a large blue RSD logo with “Recreational Software Designs” beneath it, framed by a grey box, between the words “An” and “Production” in engraved grey capitals',
+    alt: 'An RSD Production: a large blue RSD logo with “Recreational Software Designs” beneath it, framed by a gray box, between the words “An” and “Production” in engraved gray capitals',
     caption: 'The Patchwork Heart’s and Peach the Lobster’s version (2 games)',
     file: 'cd/gameware/heart/gmtitle1.gif',
     games: ['The Patchwork Heart', 'Peach the Lobster'],

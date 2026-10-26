@@ -3,7 +3,7 @@
 import { Matcher, medianCut, putColors, type Col } from '../render/quant';
 import { SPRITE_COUNT, SPRITE_FIRST } from '../sprites/sprites';
 
-/** Game-Maker's designers look for these greys, reds, black and LCD green (kit PaletteBuilder); black first. */
+/** Game-Maker's designers look for these grays, reds, black and LCD green (kit PaletteBuilder); black first. */
 const DESIGNER: Col[] = [
   [0, 0, 0],
   [33, 33, 33],

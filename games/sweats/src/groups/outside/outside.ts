@@ -141,7 +141,7 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
       [30, 12, 8, 5],
     ])
       blob(pic, x, y, rx, ry, R('white'), 0, 2);
-    pic.rect(14, 10, 3, 1, c('grey', 1)).rect(22, 10, 3, 1, c('grey', 1)).rect(18, 14, 4, 1, c('grey', 1));
+    pic.rect(14, 10, 3, 1, c('gray', 1)).rect(22, 10, 3, 1, c('gray', 1)).rect(18, 14, 4, 1, c('gray', 1));
     addPicture(book, 'cloud', pic, skyAt(pal, 72, 2), () => AIR);
   }
   // the bush the wind launched it into: the rest of the receipt caught in it; then parted
@@ -150,8 +150,8 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
     blob(p, 10, 11, 10, 9, R('green'), 0, 3);
     if (open) p.rect(6, 6, 8, 14, c('green', 0)).rect(7, 8, 6, 12, c('ink', 1));
     else {
-      p.rect(5, 6, 9, 5, c('white', 2)).line(5, 6, 13, 10, c('white', 1)).line(6, 11, 12, 11, c('grey', 2));
-      p.rect(11, 9, 5, 3, c('white', 1)).set(7, 8, c('grey', 1)).set(9, 8, c('grey', 1));
+      p.rect(5, 6, 9, 5, c('white', 2)).line(5, 6, 13, 10, c('white', 1)).line(6, 11, 12, 11, c('gray', 2));
+      p.rect(11, 9, 5, 3, c('white', 1)).set(7, 8, c('gray', 1)).set(9, 8, c('gray', 1));
     }
     return p;
   };
@@ -180,7 +180,7 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
     for (let x = 1; x < 19; x++) {
       const y = 9 + Math.round(Math.sin((x + f * 5) / 3) * 4);
       p.rect(x, y - 3, 1, 6, c('white', 2)).set(x, y + 3, c('white', 0));
-      if (x % 2) p.set(x, y - 1, c('grey', 2)).set(x, y + 1, c('grey', 2));
+      if (x % 2) p.set(x, y - 1, c('gray', 2)).set(x, y + 1, c('gray', 2));
     }
     face(p, pal, 10, 7 + Math.round(Math.sin((10 + f * 5) / 3) * 4), { wink: true });
     return outline(p, ink);
@@ -210,7 +210,7 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
     for (let y = 5; y < 13; y += 2) p.rect(4, y, 15 - (y - 5) / 3, 1, c('metal', 2));
     for (let x = 4; x < 19; x += 3) p.line(x, 5, x + 1, 13, c('metal', 1));
     p.rect(5, 14, 13, 1, c('metal', 0)).line(6, 13, 6, 16, c('metal', 0)).line(16, 13, 16, 16, c('metal', 0));
-    for (const x of [6, 16]) p.disc(x, 17.5, 1.8, c('ink', 1)).set(x + (f ? 1 : -1), 17, c('grey', 2));
+    for (const x of [6, 16]) p.disc(x, 17.5, 1.8, c('ink', 1)).set(x + (f ? 1 : -1), 17, c('gray', 2));
     if (f) p.set(1, 9, c('white', 2)).set(0, 11, c('white', 2));
     return outline(p, ink);
   };

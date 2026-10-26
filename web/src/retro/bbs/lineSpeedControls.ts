@@ -23,7 +23,7 @@ export function speedRadios(): HTMLFieldSetElement {
   return set;
 }
 
-/** A labelled select of the speeds. */
+/** A labeled select of the speeds. */
 export function speedSelect(id: string): { label: HTMLLabelElement; select: HTMLSelectElement } {
   const select = h('select', { id }, ...LINE_SPEEDS.map((s) => h('option', { value: value(s) }, speedWords(s))));
   select.value = value(lineSpeed());

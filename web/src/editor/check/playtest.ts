@@ -47,7 +47,7 @@ export interface Playtest {
   unreached: number[];
   /** The hero reached a link to the won scene. */
   won: boolean;
-  cancelled: boolean;
+  canceled: boolean;
   /** Scenes the bot couldn't load or play (a file missing, a scene with no map), and why. */
   failed: { scene: number; error: string }[];
 }
@@ -64,7 +64,7 @@ export function gameOf(files: FileSource & { mainGame?(): string | undefined }, 
 export async function playtestGame(game: Game, files: FileSource, opt: PlaytestOptions = {}): Promise<Playtest> {
   const runs: SceneRun[] = [];
   const first = game.scenes[0]?.links[0];
-  const out: Playtest = { runs, unreached: [], won: false, cancelled: false, failed: [] };
+  const out: Playtest = { runs, unreached: [], won: false, canceled: false, failed: [] };
   if (!first || first.toScene === NOSCENE) return out;
   // a game whose start goes straight to the won (or title) scene has no level to play
   if (first.toScene <= 1 || first.toScene >= game.scenes.length) {
@@ -87,7 +87,7 @@ export async function playtestGame(game: Game, files: FileSource, opt: PlaytestO
       continue;
     }
     if (!r) {
-      out.cancelled = true;
+      out.canceled = true;
       break;
     }
     runs.push(r);
@@ -134,18 +134,18 @@ async function checkScene(
   done: number,
   total: number,
 ): Promise<SceneRun | undefined> {
-  let cancelled = false;
+  let canceled = false;
   const onward = game.scenes[scene].links.filter((l) => l.toScene !== NOSCENE && l.toScene !== from.scene && l.toScene !== scene);
   const ex = await explore(game, scene, files, entry, {
     budgetMs: opt.budgetMs,
     steadyTicks: opt.steadyTicks,
     goal: opt.towardExits && onward.length ? onward.map((l) => l.from.y * 100 + l.from.x) : undefined,
     progress: (places, queued, live) => {
-      if (opt.progress?.(scene, done, total, places, queued, live)) cancelled = true;
-      return cancelled;
+      if (opt.progress?.(scene, done, total, places, queued, live)) canceled = true;
+      return canceled;
     },
   });
-  if (cancelled) return undefined;
+  if (canceled) return undefined;
   const s = game.scenes[scene];
   const mapBytes = files.get(s.files[1]);
   const bblBytes = s.files[2] ? files.get(s.files[2]) : undefined;

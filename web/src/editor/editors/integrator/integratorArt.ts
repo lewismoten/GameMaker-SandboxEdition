@@ -10,7 +10,7 @@ import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../../formats/f
 import { parseBackdrop, parseSlideList, textLines } from '../../../formats/graphicScripts';
 
 /**
- * `cols` x `rows` blocks of a level's map centred on `at`, drawn the way the game draws
+ * `cols` x `rows` blocks of a level's map centered on `at`, drawn the way the game draws
  * them: background blocks in the level's palette, placed monsters (first frame) and the
  * hero (first frame) standing on `at`. Undefined when the level has no map.
  */

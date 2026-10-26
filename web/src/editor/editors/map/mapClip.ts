@@ -1,6 +1,6 @@
 // Picking the part of a 100x100 map to save as a picture: the part that isn't just the
 // background fill around the level, or one screen as the game shows it (PLAYGAME draws a
-// 16x10 block window centred on where the character starts).
+// 16x10 block window centered on where the character starts).
 import { MLEN, MWID } from '../../../formats/map';
 
 export interface BlockRect {

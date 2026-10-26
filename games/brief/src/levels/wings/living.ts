@@ -27,8 +27,8 @@ function endTable(under: Pixels): Pixels {
 
 /** Jenny's drawing, on the fridge door: Jenny, her mother, and a brown cloud named Dad. */
 function fridge(withDrawing: boolean): Pixels {
-  const p = new Pixels(20, 20, c('grey', 5));
-  p.frame(0, 0, 20, 20, c('grey', 2)).rect(0, 7, 20, 1, c('grey', 2)).rect(16, 2, 2, 4, c('grey', 2)).rect(16, 10, 2, 7, c('grey', 2));
+  const p = new Pixels(20, 20, c('gray', 5));
+  p.frame(0, 0, 20, 20, c('gray', 2)).rect(0, 7, 20, 1, c('gray', 2)).rect(16, 2, 2, 4, c('gray', 2)).rect(16, 10, 2, 7, c('gray', 2));
   if (withDrawing) {
     p.rect(2, 8, 13, 11, c('paper', 4));
     p.rect(3, 13, 1, 4, c('pink', 2)).disc(3.5, 11, 1.5, c('yellow', 3)); // Jenny
@@ -46,7 +46,7 @@ function tv(under: Pixels, dead: boolean, frame = 0): Pixels {
   p.rect(3, 5, 12, 10, dead ? c('ink', 0) : c('blue', 1 + frame));
   if (!dead) for (let y = 5; y < 15; y += 2) p.rect(3, y, 12, 1, c('blue', 3 - frame));
   p.disc(17, 7, 1, c('brass', 3)).disc(17, 11, 1, c('brass', 3));
-  p.line(6, 2, 4, 0, c('grey', 3)).line(12, 2, 14, 0, c('grey', 3));
+  p.line(6, 2, 4, 0, c('gray', 3)).line(12, 2, 14, 0, c('gray', 3));
   return p;
 }
 
@@ -88,7 +88,7 @@ function recordPlayer(frame: number, under: Pixels): Pixels {
   const p = on(under);
   bevel(p, 1, 8, 18, 10, r('wood'), 3, 1);
   p.disc(9, 10, 6, c('ink', 0)).disc(9, 10, 2, c('red', 3));
-  p.set(9 + (frame ? 3 : -3), 8, c('grey', 4));
+  p.set(9 + (frame ? 3 : -3), 8, c('gray', 4));
   p.line(16, 6, 12, 10, c('tin', 5));
   return p;
 }
@@ -96,7 +96,7 @@ function recordPlayer(frame: number, under: Pixels): Pixels {
 function windowTwister(): Pixels {
   const p = wall('wallpaper', 'orange', 3);
   p.rect(3, 2, 14, 12, c('ink', 0)).rect(4, 3, 12, 10, c('sky', 1));
-  for (let y = 3; y < 13; y++) p.rect(10 - (13 - y) * 0.4, y, 1 + (13 - y) * 0.8, 1, c('grey', 2));
+  for (let y = 3; y < 13; y++) p.rect(10 - (13 - y) * 0.4, y, 1 + (13 - y) * 0.8, 1, c('gray', 2));
   return p;
 }
 
@@ -105,7 +105,7 @@ function tornado(frame: number): Pixels {
   for (let y = 1; y < 19; y++) {
     const w = 1 + (19 - y) * 0.45;
     const x = 10 + Math.sin(y * 0.5 + frame * 2) * 2;
-    p.rect(Math.round(x - w), y, Math.round(w * 2), 1, c('grey', y % 3 ? 2 : 3));
+    p.rect(Math.round(x - w), y, Math.round(w * 2), 1, c('gray', y % 3 ? 2 : 3));
   }
   return p;
 }
@@ -154,15 +154,15 @@ function closetShelf(): Pixels {
 
 function brokenBulb(under: Pixels): Pixels {
   const p = on(under);
-  p.rect(9, 0, 1, 4, c('grey', 2)).rect(8, 4, 4, 3, c('grey', 3));
-  p.line(7, 7, 6, 12, c('grey', 4)).line(12, 7, 14, 11, c('grey', 4)).line(6, 12, 9, 10, c('grey', 4)).line(14, 11, 11, 13, c('grey', 4));
-  p.set(5, 15, c('grey', 4)).set(13, 17, c('grey', 4));
+  p.rect(9, 0, 1, 4, c('gray', 2)).rect(8, 4, 4, 3, c('gray', 3));
+  p.line(7, 7, 6, 12, c('gray', 4)).line(12, 7, 14, 11, c('gray', 4)).line(6, 12, 9, 10, c('gray', 4)).line(14, 11, 11, 13, c('gray', 4));
+  p.set(5, 15, c('gray', 4)).set(13, 17, c('gray', 4));
   return p;
 }
 
 function lightSwitch(): Pixels {
   const p = wall('panel');
-  p.rect(7, 6, 6, 9, c('paper', 4)).rect(9, 8, 2, 4, c('grey', 2));
+  p.rect(7, 6, 6, 9, c('paper', 4)).rect(9, 8, 2, 4, c('gray', 2));
   return p;
 }
 
@@ -176,8 +176,8 @@ function speaker(frame: number, under: Pixels): Pixels {
 function moth(frame: number): Pixels {
   const p = blank();
   p.rect(9, 8, 2, 6, c('brown', 3));
-  if (frame) p.rect(3, 6, 6, 5, c('grey', 4)).rect(11, 6, 6, 5, c('grey', 4));
-  else p.rect(5, 10, 4, 6, c('grey', 4)).rect(11, 10, 4, 6, c('grey', 4));
+  if (frame) p.rect(3, 6, 6, 5, c('gray', 4)).rect(11, 6, 6, 5, c('gray', 4));
+  else p.rect(5, 10, 4, 6, c('gray', 4)).rect(11, 10, 4, 6, c('gray', 4));
   return p;
 }
 
@@ -258,7 +258,7 @@ function art(a: Area): void {
   a.tile('studyrug', floor('carpet', 6, 'red'));
   a.solid('studyWall', wall('panel'));
   a.solid('francis', seated(a.tiles.pic('studyrug'), 'green', ['brown', 2]));
-  a.solid('aunt', seated(a.tiles.pic('studyrug'), 'purple', ['grey', 4]));
+  a.solid('aunt', seated(a.tiles.pic('studyrug'), 'purple', ['gray', 4]));
   a.solid('cousin', seated(a.tiles.pic('studyrug'), 'blue', ['yellow', 3]));
   a.solid('rack', coatRack(a.tiles.pic('studyrug')));
   a.solid('lawyer', lawyerDesk(a.tiles.pic('studyrug')));
@@ -288,8 +288,8 @@ function art(a: Area): void {
   a.solid('switch', lightSwitch());
   a.solid('speaker0', speaker(0, a.tiles.pic('closet')), { next: 'speaker1', ntime: 8 });
   a.solid('speaker1', speaker(1, a.tiles.pic('closet')), { next: 'speaker0', ntime: 8 });
-  a.prop('george', 'closet', figure({ shirt: ['grey', 3], pants: ['brown', 1], hair: ['grey', 2], arms: 'out', face: 'sad' }));
-  sign(['IDEAS:', 'PLEASE', 'UPGRADE'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`idea${i}`, px));
+  a.prop('george', 'closet', figure({ shirt: ['gray', 3], pants: ['brown', 1], hair: ['gray', 2], arms: 'out', face: 'sad' }));
+  sign(['IDEAS:', 'PLEASE', 'UPGRADE'], 3, { board: 'gray' }).forEach((px, i) => a.solid(`idea${i}`, px));
   a.monster(
     'moth',
     [

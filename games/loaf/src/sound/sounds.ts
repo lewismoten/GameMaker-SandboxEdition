@@ -1,4 +1,4 @@
-// The effects are levelled to about -15 dB RMS (the roll and the crunch were hot, the crumble and
+// The effects are leveled to about -15 dB RMS (the roll and the crunch were hot, the crumble and
 // the holy shimmer quiet), near the sung clips.
 //
 // The sound sets: a PC speaker sound for every effect, each backed by a Sound Blaster .VOC. The

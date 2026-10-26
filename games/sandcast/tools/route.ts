@@ -217,7 +217,7 @@ async function ambush(bot: Bot, stand: { x: number; y: number }, label: string):
       break;
     }
     if (Math.abs(gx) < 30 && Math.abs(gy) < 30) {
-      // too close: step to the free neighbour farthest from her
+      // too close: step to the free neighbor farthest from her
       const away = dirs
         .map((d) => ({ d, x: p.x + STEP[d].x, y: p.y + STEP[d].y }))
         .filter((c) => !bot.sim.solidAt(c.x, c.y) && !bot.current(c.x, c.y))

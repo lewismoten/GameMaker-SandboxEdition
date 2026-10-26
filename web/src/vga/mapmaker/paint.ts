@@ -2,7 +2,7 @@
 // flood fill, and lines, boxes and circles drawn a cell at a time, with the rubber-band
 // preview while the button is held (updateShape and the copyFn* point functions).
 import { SIZEX, SIZEY } from '../shared/vga';
-import { BLEN, GREY1, GREY2, GREY3 } from '../shared/facelift';
+import { BLEN, GRAY1, GRAY2, GRAY3 } from '../shared/facelift';
 import { BACKBL } from '../../formats/blocks';
 import { LASTMON } from '../../formats/monster';
 import { LASTMM, MLEN, MWID } from '../../formats/map';
@@ -58,9 +58,9 @@ export abstract class MapMakerPaint extends MapMakerDraw {
           if (x < SIZEX && y < SIZEY && x >= 0 && y >= 0) {
             if (!(this.status < NOTOOLS && x + BLEN - 1 > LMX - 43 && x < LMX + 32)) this.drawblk(x, y, this.pix(0, b));
             if (this.status >= NOTOOLS && div(x, BLEN) >= div(TOOLX, BLEN) && div(x, BLEN) <= div(TOOLX, BLEN) + 2 && div(y, BLEN) === div(TOOLY, BLEN)) {
-              v.box(TOOLX - 1, TOOLY, TOOLX + 36, TOOLY + 11, fc[GREY1]);
-              v.box(TOOLX - 2, TOOLY - 1, TOOLX + 37, TOOLY + 12, fc[GREY2]);
-              v.box(TOOLX - 3, TOOLY - 2, TOOLX + 38, TOOLY + 13, fc[GREY3]);
+              v.box(TOOLX - 1, TOOLY, TOOLX + 36, TOOLY + 11, fc[GRAY1]);
+              v.box(TOOLX - 2, TOOLY - 1, TOOLX + 37, TOOLY + 12, fc[GRAY2]);
+              v.box(TOOLX - 3, TOOLY - 2, TOOLX + 38, TOOLY + 13, fc[GRAY3]);
               this.face.drawborder(TOOLX + 1, TOOLY + 2, 35, 9, 1, 1);
               this.toolb(TOOLX, TOOLY, this.face.facePen());
             }

@@ -156,19 +156,19 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   const back = paperBase(pal);
   back.rect(3, 0, 14, 20, c('wood', 1));
   for (let y = 1; y < 20; y++) for (let x = 4; x < 16; x++) back.set(x, y, shadeAt(R('night'), 0, 2, y / 30, x, y));
-  back.rect(4, 17, 12, 3, c('grey', 0)).rect(15, 1, 2, 19, c('wood', 3));
+  back.rect(4, 17, 12, 3, c('gray', 0)).rect(15, 1, 2, 19, c('wood', 3));
   book.add('backDoor', back, AIR);
   // ---- outside: the night, the parking lot
   book.add('night', night(pal, 60), AIR);
   const lot = night(pal, 62);
-  lot.rect(0, 14, 20, 6, c('grey', 0)).rect(0, 14, 20, 1, c('grey', 2)).rect(0, 15, 20, 1, c('grey', 1));
-  for (let x = 0; x < 20; x += 5) lot.set(x + 2, 17, c('grey', 1));
+  lot.rect(0, 14, 20, 6, c('gray', 0)).rect(0, 14, 20, 1, c('gray', 2)).rect(0, 15, 20, 1, c('gray', 1));
+  for (let x = 0; x < 20; x += 5) lot.set(x + 2, 17, c('gray', 1));
   lot.rect(6, 18, 8, 1, c('yellow', 1));
   book.add('lot', lot, AIR);
   const asphalt = new Pixels(20, 20);
   const ar = rng(63);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) asphalt.set(x, y, c('ink', ar() < 0.15 ? 1 : 0));
-  asphalt.rect(0, 0, 20, 1, c('grey', 0));
+  asphalt.rect(0, 0, 20, 1, c('gray', 0));
   book.add('asphalt', asphalt, { solid: SOLID });
   // the nursery's sandwich board: CLOSED (they all were)
   const closed = lot.crop(0, 0, 20, 20);
@@ -178,7 +178,7 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   book.add('closedSign', closed, AIR);
   // a lamppost (two tall), its pool of light
   const post = new Pixels(20, 40, 255);
-  post.rect(9, 6, 2, 34, c('grey', 1)).rect(5, 2, 10, 4, c('grey', 2)).rect(6, 6, 8, 2, c('spot', 2));
+  post.rect(9, 6, 2, 34, c('gray', 1)).rect(5, 2, 10, 4, c('gray', 2)).rect(6, 6, 8, 2, c('spot', 2));
   for (let y = 8; y < 34; y++)
     for (let x = 0; x < 20; x++) if (Math.abs(x - 10) < (y - 8) * 0.3 + 3 && (x + y) % 3 === 0 && post.get(x, y) === 255) post.set(x, y, c('spot', 0));
   addPicture(
@@ -190,7 +190,7 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
   );
   // the drugstore's sign on its pole, glowing (2 x 1)
   const sign = new Pixels(40, 20, 255);
-  sign.rect(1, 1, 38, 13, c('white', 2)).frame(1, 1, 38, 13, c('red', 1)).rect(18, 14, 4, 6, c('grey', 1));
+  sign.rect(1, 1, 38, 13, c('white', 2)).frame(1, 1, 38, 13, c('red', 1)).rect(18, 14, 4, 6, c('gray', 1));
   micro(sign, 3, 3, 'DRUGSTORE', c('red', 1));
   micro(sign, 11, 8, 'OPEN', c('blue', 1));
   addPicture(
@@ -326,7 +326,7 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('pcart0', cart(0), hurts(-10));
   book.add('pcart1', cart(1), hurts(-10));
-  // Peggy: grey curls, cat-eye glasses, a lilac cardigan, cash only, no questions asked
+  // Peggy: gray curls, cat-eye glasses, a lilac cardigan, cash only, no questions asked
   const peggy = (f: number) => {
     const p = P();
     p.rect(5, 8, 10, 9, c('purple', 2))
@@ -344,7 +344,7 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
       [6, 4],
       [14, 4],
     ])
-      p.disc(x, y + 1, 1.3, c('grey', 3));
+      p.disc(x, y + 1, 1.3, c('gray', 3));
     p.rect(7, 4, 3, 2, c('pink', 1)).rect(11, 4, 3, 2, c('pink', 1)).set(8, 5, ink).set(12, 5, ink).rect(9, 7, 3, 1, c('red', 1));
     p.rect(14, 10, 4, 3, c('green', 1 + f)).rect(15, 12, 3, 2, c('white', 2));
     return outline(p, ink);
@@ -365,7 +365,7 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
       [7, 4],
       [8, 6],
     ])
-      p.disc(x, y + 1, 1.3, c('grey', 3));
+      p.disc(x, y + 1, 1.3, c('gray', 3));
     p.rect(12, 4, 2, 2, c('pink', 1)).set(12, 5, ink).set(14, 5, c('skin', 2)).set(12, 7, c('red', 1));
     p.line(11, 10, 14, 11, c('purple', 1))
       .rect(14, 10, 4, 3, c('green', 1 + f))

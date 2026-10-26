@@ -1,16 +1,16 @@
-// Game-Maker's graphic "face": the grey surfaces, sunken borders, red buttons and green
+// Game-Maker's graphic "face": the gray surfaces, sunken borders, red buttons and green
 // LCD text boxes every designer draws, ported from code/GM/FACELIFT.C and PALC.C.
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
 
 export const BLEN = 20;
 export const MAXFACECOL = 9;
-export const GREY1 = 0;
+export const GRAY1 = 0;
 export const RED1 = 1;
 export const RED2 = 2;
 export const BLACK = 3;
-export const GREY2 = 4;
-export const GREY3 = 5;
-export const GREY4 = 6;
+export const GRAY2 = 4;
+export const GRAY3 = 5;
+export const GRAY4 = 6;
 export const RED3 = 7;
 export const GREEN = 8;
 
@@ -28,51 +28,51 @@ export class Face {
     return this.cols[BLACK];
   }
 
-  /** SetCols: the nearest palette entries to Game-Maker's greys, reds, black and green. */
+  /** SetCols: the nearest palette entries to Game-Maker's grays, reds, black and green. */
   setCols(colors: RGBdata[]): void {
     const c = this.cols;
-    c[GREY1] = palFindCol(33, 33, 33, colors);
-    c[GREY2] = palFindCol(28, 28, 28, colors);
-    c[GREY3] = palFindCol(23, 23, 23, colors);
-    c[GREY4] = palFindCol(18, 18, 18, colors);
+    c[GRAY1] = palFindCol(33, 33, 33, colors);
+    c[GRAY2] = palFindCol(28, 28, 28, colors);
+    c[GRAY3] = palFindCol(23, 23, 23, colors);
+    c[GRAY4] = palFindCol(18, 18, 18, colors);
     c[RED1] = palFindCol(43, 0, 0, colors);
     c[RED2] = palFindCol(28, 0, 0, colors);
     c[RED3] = palFindCol(53, 0, 0, colors);
     c[BLACK] = palFindCol(0, 0, 0, colors);
     c[GREEN] = palFindCol(8, 48, 24, colors);
-    this.hi.set([c[GREY1], c[RED3], c[GREY1], c[GREEN]]);
+    this.hi.set([c[GRAY1], c[RED3], c[GRAY1], c[GREEN]]);
   }
 
   /** BoxWithText: green LCD text on a sunken edge. */
   boxWithText(x: number, y: number, str: string): void {
     const { v, cols } = this;
     const lp = str.length;
-    v.line(x - 1, y - 1, x + lp * 8, y - 1, cols[GREY4]);
-    v.line(x - 1, y, x - 1, y + 8, cols[GREY3]);
+    v.line(x - 1, y - 1, x + lp * 8, y - 1, cols[GRAY4]);
+    v.line(x - 1, y, x - 1, y + 8, cols[GRAY3]);
     v.boxFill(x, y, x + lp * 8, y + 8, cols[GREEN]);
     v.write(x + 1, y + 1, cols[BLACK], str);
   }
 
-  /** drawborder: a raised grey frame AROUND the object at x,y of size xlen,ylen. */
+  /** drawborder: a raised gray frame AROUND the object at x,y of size xlen,ylen. */
   drawborder(x: number, y: number, xlen: number, ylen: number, xthick: number, ythick: number): void {
     const { v, cols } = this;
-    v.box(x - xthick - 3, y - ythick - 3, x + xlen + xthick + 1, y + ythick + ylen + 1, cols[GREY3]);
-    v.box(x - xthick - 2, y - ythick - 2, x + xlen + xthick, y + ythick + ylen, cols[GREY2]);
-    v.boxFill(x - xthick - 1, y - ythick - 1, x - 1, y + ylen + ythick - 1, cols[GREY1]);
-    v.boxFill(x + xlen, y - ythick - 1, x + xlen + xthick - 1, y + ylen + ythick - 1, cols[GREY1]);
+    v.box(x - xthick - 3, y - ythick - 3, x + xlen + xthick + 1, y + ythick + ylen + 1, cols[GRAY3]);
+    v.box(x - xthick - 2, y - ythick - 2, x + xlen + xthick, y + ythick + ylen, cols[GRAY2]);
+    v.boxFill(x - xthick - 1, y - ythick - 1, x - 1, y + ylen + ythick - 1, cols[GRAY1]);
+    v.boxFill(x + xlen, y - ythick - 1, x + xlen + xthick - 1, y + ylen + ythick - 1, cols[GRAY1]);
     if (xlen > 0) {
-      v.boxFill(x, y - ythick - 1, x + xlen, y - 2, cols[GREY1]);
-      v.boxFill(x, y + ylen, x + xlen, y + ylen + ythick - 1, cols[GREY1]);
-      v.line(x - 1, y - 1, x + xlen - 1, y - 1, cols[GREY4]);
+      v.boxFill(x, y - ythick - 1, x + xlen, y - 2, cols[GRAY1]);
+      v.boxFill(x, y + ylen, x + xlen, y + ylen + ythick - 1, cols[GRAY1]);
+      v.line(x - 1, y - 1, x + xlen - 1, y - 1, cols[GRAY4]);
     }
-    if (ylen > 0) v.line(x - 1, y, x - 1, y + ylen - 1, cols[GREY3]);
+    if (ylen > 0) v.line(x - 1, y, x - 1, y + ylen - 1, cols[GRAY3]);
   }
 
   drawsurface(x: number, y: number, xlen: number, ylen: number): void {
     const { v, cols } = this;
-    v.box(x - 2, y - 2, x + xlen + 1, y + ylen + 1, cols[GREY3]);
-    v.box(x - 1, y - 1, x + xlen, y + ylen, cols[GREY2]);
-    v.boxFill(x, y, x + xlen - 1, y + ylen - 1, cols[GREY1]);
+    v.box(x - 2, y - 2, x + xlen + 1, y + ylen + 1, cols[GRAY3]);
+    v.box(x - 1, y - 1, x + xlen, y + ylen, cols[GRAY2]);
+    v.boxFill(x, y, x + xlen - 1, y + ylen - 1, cols[GRAY1]);
   }
 
   /** DrawArrows: the red scroll arrows either side of a list of blocks. */
@@ -81,13 +81,13 @@ export class Face {
     let left1, left2, left3, right1, right2, right3;
     switch (selected) {
       case LEFT:
-        left1 = cols[GREY1];
+        left1 = cols[GRAY1];
         left2 = left3 = cols[RED3];
         right1 = right2 = cols[RED1];
         right3 = cols[RED2];
         break;
       case RIGHT:
-        right1 = cols[GREY1];
+        right1 = cols[GRAY1];
         right2 = right3 = cols[RED3];
         left1 = left2 = cols[RED1];
         left3 = cols[RED2];
@@ -110,7 +110,7 @@ export class Face {
 
   drawlistframe(x: number, y: number, blnum: number): void {
     this.drawborder(x, y, BLEN * blnum + 1, BLEN, 12, 1);
-    this.v.line(x + BLEN * blnum, y, x + BLEN * blnum, y + BLEN - 1, this.cols[GREY3]);
+    this.v.line(x + BLEN * blnum, y, x + BLEN * blnum, y + BLEN - 1, this.cols[GRAY3]);
     this.drawArrows(x, y, blnum, 0);
   }
 

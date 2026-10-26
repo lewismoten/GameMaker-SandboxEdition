@@ -127,7 +127,7 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   c.save();
   c.translate(x, y);
   c.scale(s, s);
-  // grey trousers, red sneakers
+  // gray trousers, red sneakers
   for (const lx of [-20, 20]) {
     poly(c, [lx - 15, -150, lx + 15, -150, lx + 16, -16, lx - 14, -16]);
     fill(

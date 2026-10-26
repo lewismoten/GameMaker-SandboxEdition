@@ -112,7 +112,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('ceilL', ceil('lab'), { solid: SOLID });
   // the lab's floor: checkered vinyl
   const vinyl = P();
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) vinyl.set(x, y, (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('tile', 3) : c('grey', 1));
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) vinyl.set(x, y, (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('tile', 3) : c('gray', 1));
   vinyl.rect(0, 0, 20, 1, c('paint', 0));
   book.add('floorL', vinyl, { solid: SOLID });
   // the sewer's walkway and its stone, the tower's stone
@@ -350,7 +350,7 @@ export function buildBlocks(pal: Pal): BlockBook {
       const x = 4 + k * 6;
       for (let y = 0; y < 20; y++)
         if ((y + f * 5 + k * 4) % 10 < 5)
-          p.set(x + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('paper', 1)).set(x + 1 + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('grey', 3));
+          p.set(x + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('paper', 1)).set(x + 1 + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('gray', 3));
     }
     return p;
   };
@@ -443,7 +443,7 @@ export function buildBlocks(pal: Pal): BlockBook {
       [10, 4],
       [12, 6],
     ])
-      coffee.set(x, y, c('grey', 3)).set(x + 1, y - 1, c('grey', 2));
+      coffee.set(x, y, c('gray', 3)).set(x + 1, y - 1, c('gray', 2));
     book.add(`coffee.${a}`, coffee, { hp: 20, score: 10, touch: bgName, ...air });
     // Doc Leo's rubber chicken on its leash: an extra life
     const chicken = wall(a);
@@ -505,15 +505,15 @@ export function buildBlocks(pal: Pal): BlockBook {
   lotWin.blit(wall('course'), 0, 0).blit(wall('course'), 20, 0);
   lotWin.rect(1, 2, 38, 16, c('wood', 1));
   for (let y = 3; y < 17; y++)
-    for (let x = 2; x < 38; x++) lotWin.set(x, y, y < 13 ? shadeAt(R('blue'), 0, 1, y / 30, x, y) : shadeAt(R('grey'), 0, 1, 0.2 + (y - 13) / 10, x, y));
+    for (let x = 2; x < 38; x++) lotWin.set(x, y, y < 13 ? shadeAt(R('blue'), 0, 1, y / 30, x, y) : shadeAt(R('gray'), 0, 1, 0.2 + (y - 13) / 10, x, y));
   const st = rng(37);
   for (let i = 0; i < 6; i++) lotWin.set(3 + Math.floor(st() * 34), 4 + Math.floor(st() * 4), c('paper', 2));
-  lotWin.rect(2, 13, 36, 1, c('grey', 2));
+  lotWin.rect(2, 13, 36, 1, c('gray', 2));
   // the lamp and its pool of light on the asphalt
   for (let x = 22; x < 38; x++) for (let y = 13; y < 17; y++) if (Math.abs(x - 33) < 6 - (y - 13)) lotWin.set(x, y, shadeAt(R('cheese'), 0, 1, 0.3, x, y));
-  lotWin.rect(34, 5, 1, 9, c('grey', 1)).rect(31, 4, 4, 1, c('grey', 1)).rect(31, 5, 3, 1, c('cheese', 2));
+  lotWin.rect(34, 5, 1, 9, c('gray', 1)).rect(31, 4, 4, 1, c('gray', 1)).rect(31, 5, 3, 1, c('cheese', 2));
   // the charger, its green light, and the cord to the car's port
-  lotWin.rect(28, 10, 2, 5, c('grey', 2)).set(28, 11, c('potion', 3));
+  lotWin.rect(28, 10, 2, 5, c('gray', 2)).set(28, 11, c('potion', 3));
   const port = chezSide(
     lotWin,
     6,
@@ -524,10 +524,10 @@ export function buildBlocks(pal: Pal): BlockBook {
       glass: [c('navy', 0), c('glass', 0)],
       roof: c('ink', 1),
       tire: c('ink', 0),
-      hub: c('grey', 3),
+      hub: c('gray', 3),
       rim: c('paper', 2),
       stripe: c('ink', 1),
-      bumper: c('grey', 0),
+      bumper: c('gray', 0),
       lamp: c('paper', 2),
       tail: c('flame', 1),
     },
@@ -567,7 +567,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add(
     'joe',
     wains().blit(
-      joeCameo(buildPalette('plain').pal, 'down', 0, { use: ['ink', 'steel', 'grey', 'paint', 'glass', 'red', 'navy', 'gold', 'nose'].flatMap((n) => R(n)) }),
+      joeCameo(buildPalette('plain').pal, 'down', 0, { use: ['ink', 'steel', 'gray', 'paint', 'glass', 'red', 'navy', 'gold', 'nose'].flatMap((n) => R(n)) }),
       0,
       0,
       CLEAR,

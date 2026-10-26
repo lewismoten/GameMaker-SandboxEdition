@@ -165,7 +165,7 @@ function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): 
         [18, 17],
       ])
         p.set(x, y, c('yellow', 3));
-    p.rect(3, 12, 6, 1, c('grey', 3)).rect(11, 12, 6, 1, c('grey', 3));
+    p.rect(3, 12, 6, 1, c('gray', 3)).rect(11, 12, 6, 1, c('gray', 3));
   }
   return p;
 }

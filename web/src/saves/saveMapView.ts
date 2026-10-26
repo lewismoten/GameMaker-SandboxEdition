@@ -333,7 +333,7 @@ export function saveMapView(o: MapViewOptions): MapView {
       }
     }
   });
-  const end = (e: PointerEvent, cancelled: boolean) => {
+  const end = (e: PointerEvent, canceled: boolean) => {
     if (!pointers.has(e.pointerId)) return;
     pointers.delete(e.pointerId);
     if (pointers.size) return;
@@ -341,7 +341,7 @@ export function saveMapView(o: MapViewOptions): MapView {
     canvas.classList.remove('panning');
     const was = mode;
     mode = 'none';
-    if (cancelled) {
+    if (canceled) {
       ghost = undefined;
       say(defaultHint);
       redraw();

@@ -21,7 +21,7 @@ function rottenBaseLayers() {
   const color = new ImageData(TEX_W, TEX_H);
   const height = new Float32Array(TEX_W * TEX_H);
   const mix = (a: number[], b: number[], t: number) => a.map((x, i) => x + (b[i] - x) * Math.max(0, Math.min(1, t)));
-  const grey = [146, 150, 124];
+  const gray = [146, 150, 124];
   const olive = [98, 110, 70];
   const sick = [186, 176, 104];
   const brown = [104, 82, 50];
@@ -33,7 +33,7 @@ function rottenBaseLayers() {
       const a = fbm(n1, u, v, 6);
       const b = fbm(n2, u, v, 4);
       const fine = n3(u, v, 96, 48);
-      let c = mix(grey, olive, (a - 0.38) * 3);
+      let c = mix(gray, olive, (a - 0.38) * 3);
       c = mix(c, sick, (b - 0.6) * 4);
       c = mix(c, brown, (0.36 - b) * 4);
       // what settled at the bottom

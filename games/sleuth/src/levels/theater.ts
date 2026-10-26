@@ -6,13 +6,13 @@
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockSet } from '../blocks/blockset';
 
-/** Where the theatre sits on the 100x100 map. */
+/** Where the theater sits on the 100x100 map. */
 const OX = 10;
 const OY = 10;
 const W = 84;
 const H = 48;
 
-/** A map cell in theatre-local coordinates → map coordinates. */
+/** A map cell in theater-local coordinates → map coordinates. */
 export const at = (x: number, y: number) => ({ x: x + OX, y: y + OY });
 
 const rep = (ch: string, n: number) => ch.repeat(n);
@@ -176,9 +176,9 @@ function layout(act: 1 | 2): string[] {
   rows.push('#aaa=====' + lobby(45) + '#' + 'VVVV.jj.' + '#');
   rows.push('#========' + lobby(46) + '0' + '........' + '#');
   rows.push(rep('#', 20) + rep('^', 10) + rep('#', 20));
-  // the trap room, east of the theatre
+  // the trap room, east of the theater
   return rows.map((r, y) => {
-    if (r.length !== 50) throw new Error(`theatre row ${y} is ${r.length} wide`);
+    if (r.length !== 50) throw new Error(`theater row ${y} is ${r.length} wide`);
     let east: string;
     if (y < 8 || y > 31) east = rep(' ', 18);
     else if (y === 8 || y === 31) east = rep('%', 18);
@@ -354,7 +354,7 @@ function blockFor(ch: string, act: 1 | 2, x: number, y: number, rows: string[]):
   throw new Error(`No block for "${ch}" at ${x},${y}`);
 }
 
-/** Things lying about, by act (theatre-local coordinates). */
+/** Things lying about, by act (theater-local coordinates). */
 const ITEMS_AT: Record<1 | 2, [string, number, number][]> = {
   1: [
     ['lens', 33, 3],
@@ -383,7 +383,7 @@ export interface Placed {
   y: number;
 }
 
-export interface Theatre {
+export interface Theater {
   map: GameMap;
   /** Where Ada starts (map coordinates). */
   start: { x: number; y: number };
@@ -392,7 +392,7 @@ export interface Theatre {
   rows: string[];
 }
 
-export function buildTheatre(act: 1 | 2, bs: BlockSet, monsters: Placed[]): Theatre {
+export function buildTheater(act: 1 | 2, bs: BlockSet, monsters: Placed[]): Theater {
   const rows = layout(act);
   const map = newMap();
   map.blocks.fill(bs.id('void'));

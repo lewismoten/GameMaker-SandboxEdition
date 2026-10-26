@@ -13,7 +13,7 @@ function streetLight(under: Pixels, lit: boolean): Pixels {
   const p = on(under);
   if (lit) blob(p, 10, 16, 9, 4, r('yellow'), 0, 2);
   p.rect(9, 4, 2, 15, c('ink', 1)).rect(6, 2, 8, 3, c('ink', 1));
-  p.rect(7, 4, 6, 2, lit ? c('yellow', 3) : c('grey', 2));
+  p.rect(7, 4, 6, 2, lit ? c('yellow', 3) : c('gray', 2));
   return p;
 }
 
@@ -26,7 +26,7 @@ function house(): Pixels {
 function ice(): Pixels {
   const p = floor('snow', 3);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x * 3 + y * 7) % 11 === 0) p.set(x, y, c('sky', 4));
-  p.line(3, 6, 12, 11, c('grey', 3)).line(12, 11, 16, 9, c('grey', 3));
+  p.line(3, 6, 12, 11, c('gray', 3)).line(12, 11, 16, 9, c('gray', 3));
   return p;
 }
 
@@ -50,7 +50,7 @@ function target(under: Pixels, speared: boolean): Pixels {
   const p = on(under);
   p.disc(10, 10, 9, c('paper', 4)).disc(10, 10, 6, c('red', 3)).disc(10, 10, 3, c('paper', 4));
   p.line(5, 5, 15, 15, c('red', 1)).line(15, 5, 5, 15, c('red', 1)).line(6, 5, 15, 14, c('red', 1)).line(14, 5, 5, 14, c('red', 1));
-  if (speared) p.line(10, 10, 19, 1, c('green', 4)).line(10, 11, 19, 2, c('green', 2)).rect(9, 9, 3, 3, c('grey', 4));
+  if (speared) p.line(10, 10, 19, 1, c('green', 4)).line(10, 11, 19, 2, c('green', 2)).rect(9, 9, 3, 3, c('gray', 4));
   return p;
 }
 
@@ -79,7 +79,7 @@ function spear(frame: number): Pixels {
 
 function laundry(kind: number): Pixels {
   const p = floor('grass', 11 + kind);
-  p.rect(0, 3, 20, 1, c('grey', 4));
+  p.rect(0, 3, 20, 1, c('gray', 4));
   const col = ['blue', 'pink', 'yellow', 'green'][kind];
   if (kind % 2) p.rect(3, 4, 14, 12, c(col, 3)).rect(1, 4, 3, 5, c(col, 3)).rect(16, 4, 3, 5, c(col, 3));
   else p.rect(4, 4, 4, 11, c(col, 3)).rect(12, 4, 4, 13, c(col, 2)).rect(12, 15, 7, 2, c(col, 2)).rect(1, 13, 7, 2, c(col, 3));
@@ -89,14 +89,14 @@ function laundry(kind: number): Pixels {
 
 function pole(): Pixels {
   const p = floor('grass', 14);
-  p.rect(9, 0, 3, 20, c('grey', 3)).rect(0, 3, 20, 1, c('grey', 4));
+  p.rect(9, 0, 3, 20, c('gray', 3)).rect(0, 3, 20, 1, c('gray', 4));
   return p;
 }
 
 /** John, tied up in the clothesline with a great many pegs. */
 function tiedJohn(under: Pixels): Pixels {
   const p = on(under, figure({ shirt: ['blue', 2], pants: ['brown', 1], hair: ['brown', 1], face: 'sad' }));
-  for (let y = 9; y < 19; y += 3) p.rect(4, y, 12, 1, c('grey', 5));
+  for (let y = 9; y < 19; y += 3) p.rect(4, y, 12, 1, c('gray', 5));
   for (const [x, y] of [
     [5, 10],
     [13, 13],
@@ -110,8 +110,8 @@ function tiedJohn(under: Pixels): Pixels {
 
 function peg(frame: number): Pixels {
   const p = blank();
-  if (frame) p.rect(9, 4, 2, 12, c('wood', 4)).rect(8, 9, 4, 2, c('grey', 3));
-  else p.rect(4, 9, 12, 2, c('wood', 4)).rect(9, 8, 2, 4, c('grey', 3));
+  if (frame) p.rect(9, 4, 2, 12, c('wood', 4)).rect(8, 9, 4, 2, c('gray', 3));
+  else p.rect(4, 9, 12, 2, c('wood', 4)).rect(9, 8, 2, 4, c('gray', 3));
   return p;
 }
 
@@ -120,16 +120,16 @@ function workbench(under: Pixels, tool: 'chainsaw' | 'grinder' | 'nailgun' | 'cn
   p.rect(0, 10, 20, 3, c('wood', 3)).rect(1, 13, 2, 6, c('wood', 1)).rect(17, 13, 2, 6, c('wood', 1));
   switch (tool) {
     case 'chainsaw':
-      p.rect(2, 5, 8, 5, c('orange', 3)).rect(10, 6, 9, 3, c('grey', 4)).frame(10, 6, 9, 3, c('ink', 0));
+      p.rect(2, 5, 8, 5, c('orange', 3)).rect(10, 6, 9, 3, c('gray', 4)).frame(10, 6, 9, 3, c('ink', 0));
       break;
     case 'grinder':
-      p.rect(3, 6, 10, 3, c('yellow', 3)).disc(15, 6, 4, c('grey', 3)).disc(15, 6, 1, c('ink', 0));
+      p.rect(3, 6, 10, 3, c('yellow', 3)).disc(15, 6, 4, c('gray', 3)).disc(15, 6, 1, c('ink', 0));
       break;
     case 'nailgun':
-      p.rect(3, 4, 12, 4, c('red', 3)).rect(5, 8, 3, 2, c('ink', 1)).rect(15, 5, 3, 2, c('grey', 4));
+      p.rect(3, 4, 12, 4, c('red', 3)).rect(5, 8, 3, 2, c('ink', 1)).rect(15, 5, 3, 2, c('gray', 4));
       break;
     case 'cnc':
-      bevel(p, 1, 0, 18, 10, r('grey'), 3, 1);
+      bevel(p, 1, 0, 18, 10, r('gray'), 3, 1);
       p.rect(9, 2, 2, 6, c('ink', 0)).rect(3, 8, 14, 1, c('wood', 4));
       micro(p, 3, 2, 'CNC', c('green', 4));
       break;
@@ -137,7 +137,7 @@ function workbench(under: Pixels, tool: 'chainsaw' | 'grinder' | 'nailgun' | 'cn
       p.rect(3, 4, 6, 6, c('blue', 2)).line(9, 6, 17, 3, c('ink', 1)).set(18, 2, c('sky', 4)).set(17, 1, c('purple', 4));
       break;
     case 'flame':
-      p.rect(3, 5, 10, 4, c('grey', 2)).rect(13, 6, 3, 2, c('ink', 1));
+      p.rect(3, 5, 10, 4, c('gray', 2)).rect(13, 6, 3, 2, c('ink', 1));
       blob(p, 18, 6, 2, 2, r('orange'), 1, 3);
       break;
     case 'wood':
@@ -254,7 +254,7 @@ function art(a: Area): void {
   );
 
   // Santa's Little OSHA Violation
-  a.tile('garage', floor('tile', 8, 'grey'));
+  a.tile('garage', floor('tile', 8, 'gray'));
   for (const t of ['chainsaw', 'grinder', 'nailgun', 'cnc', 'plasma', 'flame', 'wood'] as const) a.solid(`wb${t}`, workbench(a.tiles.pic('garage'), t));
   a.prop('santa', 'garage', figure({ shirt: ['red', 3], pants: ['red', 2], hat: { kind: 'santa', color: ['red', 3] }, beard: ['paper', 4], arms: 'up' }));
   a.prop('timmy', 'garage', figure({ shirt: ['green', 3], pants: ['blue', 1], hair: ['brown', 2], small: true, face: 'happy' }));
@@ -304,7 +304,7 @@ export const YARD: WingSpec = {
   wing: WINGS[3],
   tint: 'green',
   stamp: [
-    ['grey', 5],
+    ['gray', 5],
     ['blue', 3],
     ['red', 3],
   ],

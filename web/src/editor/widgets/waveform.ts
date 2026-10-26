@@ -21,7 +21,7 @@ export function drawWave(c: HTMLCanvasElement, s: Float32Array, style: WaveStyle
   ctx.fillRect(0, 0, w, hgt);
   const n = s.length;
   const x = (i: number) => (n ? (i / n) * w : 0);
-  // time lines and the centre line
+  // time lines and the center line
   ctx.fillStyle = style.grid ?? 'rgba(108, 242, 138, 0.14)';
   if (style.tick && n) for (let t = style.tick; t < n; t += style.tick) ctx.fillRect(Math.round(x(t)), 0, 1, hgt);
   ctx.fillRect(0, Math.floor(hgt / 2), w, 1);

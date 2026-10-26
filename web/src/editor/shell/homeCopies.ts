@@ -34,7 +34,7 @@ export function copiesOf(
 
 /**
  * Asks before making another copy when there are some already. Resolves with a copy to open,
- * 'new' to make a new copy anyway, or undefined (cancelled). With no copies, 'new' at once.
+ * 'new' to make a new copy anyway, or undefined (canceled). With no copies, 'new' at once.
  */
 export async function chooseCopy(title: string, catalogId: string, gam: string | null | undefined): Promise<CopyRecord | 'new' | undefined> {
   const copies = copiesOf(catalogId, gam, await listProjects().catch(() => []));

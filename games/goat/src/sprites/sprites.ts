@@ -171,7 +171,7 @@ export function goatArt(pal: Pal) {
   return { side, front, back, faint };
 }
 
-/** The goat herself: grey and white like the cover, with a beard and curled horns. */
+/** The goat herself: gray and white like the cover, with a beard and curled horns. */
 const HERO = { fur: 'goat', lo: 1, hi: 5, horns: true, beard: true } as const;
 
 export function buildCharBlocks(pal: Pal) {

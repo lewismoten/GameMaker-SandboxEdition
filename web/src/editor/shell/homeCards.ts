@@ -391,7 +391,7 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
 
 /**
  * Makes an editable copy of a CD game, or picks the copy you have already: the project's id,
- * or undefined when cancelled. Edit a copy, and Make a copy on a game opened to look inside (released.ts).
+ * or undefined when canceled. Edit a copy, and Make a copy on a game opened to look inside (released.ts).
  */
 export async function copyCatalogGame(
   entry: CatalogEntry | undefined,

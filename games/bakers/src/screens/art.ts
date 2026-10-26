@@ -105,21 +105,21 @@ export function chez(p: Pixels, x: number, y: number, s: number, wheel = 0): voi
       glass: [c('sky', 0), c('sky', 4)],
       roof: c('ink', 0),
       tire: c('ink', 0),
-      hub: c('grey', 3),
+      hub: c('gray', 3),
       rim: c('paper', 4),
       bumper: c('ink', 1),
       lamp: c('orange', 3),
       tail: c('red', 5),
       stripe: c('ink', 2),
       pin: c('paper', 4),
-      chrome: c('grey', 4),
+      chrome: c('gray', 4),
     },
     'right',
     k,
   );
   // a mark on each wheel, going round
   const a = wheel * 0.9;
-  for (const wx of CHEZ_WHEELS) p.set(ox + wx * k + Math.cos(a) * 1.4 * k, oy + 20 * k - 3.25 * k - 0.5 + Math.sin(a) * 1.4 * k, c('grey', 1));
+  for (const wx of CHEZ_WHEELS) p.set(ox + wx * k + Math.cos(a) * 1.4 * k, oy + 20 * k - 3.25 * k - 0.5 + Math.sin(a) * 1.4 * k, c('gray', 1));
 }
 
 /** Doc Leo's root beer stand on wheels, striped awning, a barrel and a sign: about 70 x 60 units. */
@@ -203,7 +203,7 @@ export function headline(p: Pixels, y: number, s: string, scale: number, fill: n
 /** A kitchen wall: subway tile above, wainscot below, in the fixed ramps. */
 export function kitchenWall(p: Pixels, floorY = 150): void {
   for (let y = 0; y < floorY; y++)
-    for (let x = 0; x < W; x++) p.set(x, y, y % 8 === 7 || (x + (Math.floor(y / 8) % 2) * 8) % 16 === 0 ? c('grey', 4) : c('paper', 4));
+    for (let x = 0; x < W; x++) p.set(x, y, y % 8 === 7 || (x + (Math.floor(y / 8) % 2) * 8) % 16 === 0 ? c('gray', 4) : c('paper', 4));
   p.rect(0, floorY - 30, W, 4, c('wood', 3)).rect(0, floorY - 26, W, 26, c('wood', 2));
   for (let x = 6; x < W; x += 26) p.rect(x, floorY - 22, 18, 18, c('wood', 1));
   for (let y = floorY; y < H; y++)
@@ -226,20 +226,20 @@ export function mainStreet(p: Pixels, seed = 1): void {
     for (let wy = top + 10; wy < 110; wy += 22)
       for (let wx = x + 8; wx < x + w - 12; wx += 18) p.rect(wx, wy, 10, 14, c('sky', 1)).rect(wx, wy, 10, 1, c('paper', 4));
     // a flag on a pole
-    p.rect(x + w - 6, top - 14, 1, 16, c('grey', 3));
+    p.rect(x + w - 6, top - 14, 1, 16, c('gray', 3));
     for (let i = 0; i < 6; i++) p.rect(x + w - 5, top - 14 + i, 12, 1, i % 2 ? c('paper', 4) : c('red', 3));
     p.rect(x + w - 5, top - 14, 5, 3, c('blue', 2));
     x += w + 2;
   }
-  p.rect(0, 128, W, 6, c('grey', 4));
-  p.rect(0, 134, W, 66, c('grey', 1));
+  p.rect(0, 128, W, 6, c('gray', 4));
+  p.rect(0, 134, W, 66, c('gray', 1));
   for (let xx = 0; xx < W; xx += 24) p.rect(xx, 166, 12, 2, c('yellow', 2));
 }
 
 export { centered, scaleBlit, text, micro, outlined, gradient, blob, textWidth };
 
 /**
- * Doc Leo, large: a chewed grey fedora with a red band, the hobo face (ash beard, the white
+ * Doc Leo, large: a chewed gray fedora with a red band, the hobo face (ash beard, the white
  * mouth turned down, white round the eyes, rosy cheeks and the red nose), round spectacles,
  * a navy corduroy jacket with pins over a purple shirt and a green tie, and the rubber
  * chicken held up or hanging on its red leash. 40 x 64 units of `s` pixels, top-left at (x, y).
@@ -313,12 +313,12 @@ export function bigLeo(p: Pixels, x: number, y: number, s: number, chickenUp = f
   D(27, 20, 1.6, c('red', 4));
   D(20, 19, 2.6, c('red', 3));
   D(19.3, 18.3, 0.8, c('red', 5));
-  // the chewed grey fedora
+  // the chewed gray fedora
   R(4, 9, 32, 3, ink);
-  R(5, 9, 30, 2, c('grey', 2));
+  R(5, 9, 30, 2, c('gray', 2));
   R(10, 1, 20, 9, ink);
-  R(11, 2, 18, 7, c('grey', 3));
+  R(11, 2, 18, 7, c('gray', 3));
   R(11, 6, 18, 2, c('red', 1));
-  R(18, 2, 4, 1, c('grey', 1));
+  R(18, 2, 4, 1, c('gray', 1));
   R(30, 9, 3, 1, c('night', 1)); // a bite out of the brim
 }

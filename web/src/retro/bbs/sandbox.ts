@@ -548,7 +548,7 @@ async function upload(t: Term, h: RetroHost): Promise<void> {
   const [, proto, share] = protocol;
   const file = await pickFile(t, h);
   if (!file) {
-    t.line('|07Upload cancelled.');
+    t.line('|07Upload canceled.');
     return;
   }
   t.print('|11Describe it in one line: |15');

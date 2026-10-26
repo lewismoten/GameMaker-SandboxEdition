@@ -37,7 +37,7 @@ const OPTIONS: [SpeakerFit, string, string][] = [
 ];
 
 /**
- * The Fit choice as a labelled group of two radio buttons, each with a line saying what it does.
+ * The Fit choice as a labeled group of two radio buttons, each with a line saying what it does.
  * `seconds` is the .voc's length: when it already fits, both give the same steps and the group says so.
  */
 export function fitChoice(get: () => SpeakerFit, set: (v: SpeakerFit) => void, seconds: number | undefined): HTMLFieldSetElement {

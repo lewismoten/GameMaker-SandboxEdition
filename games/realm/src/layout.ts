@@ -12,8 +12,8 @@ function crossings(g: Game): number {
     if (s.gametype === NOSCENE) return;
     for (const l of s.links) if (l.toScene !== NOSCENE && l.toScene !== i && g.scenes[l.toScene]) pairs.push([i, l.toScene]);
   });
-  const centres = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
-  return layoutCost(pairs, centres, { w: 22, h: 18 }).cross;
+  const centers = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
+  return layoutCost(pairs, centers, { w: 22, h: 18 }).cross;
 }
 
 /** Reorders `scene`'s links (grouped by where they lead) until nothing crosses; returns the crossings left. */

@@ -67,7 +67,7 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   book.add('hFloor', boards, { solid: SOLID });
   const ceil = new Pixels(20, 20, c('haunt', 0));
   ceil.rect(0, 0, 20, 8, c('wood', 0)).rect(0, 7, 20, 1, c('wood', 1));
-  ceil.line(0, 8, 9, 19, c('grey', 1)).line(4, 8, 9, 19, c('grey', 1)).line(0, 13, 6, 8, c('grey', 1)).line(0, 18, 10, 8, c('grey', 0));
+  ceil.line(0, 8, 9, 19, c('gray', 1)).line(4, 8, 9, 19, c('gray', 1)).line(0, 13, 6, 8, c('gray', 1)).line(0, 18, 10, 8, c('gray', 0));
   book.add('hCeil', ceil, { solid: SOLID });
   // the sign: MILD SCARES FOR ALL AGES
   {
@@ -127,7 +127,7 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   book.add('web', web(false), { ...AIR, hp: -1, touch: 'webTorn' });
   // the beam and the gift shop's shelf (ledges)
   const beam = wall(106);
-  beam.rect(0, 0, 20, 6, c('wood', 1)).rect(0, 0, 20, 1, c('wood', 2)).rect(0, 5, 20, 1, c('wood', 0)).line(3, 6, 6, 12, c('grey', 1));
+  beam.rect(0, 0, 20, 6, c('wood', 1)).rect(0, 0, 20, 1, c('wood', 2)).rect(0, 5, 20, 1, c('wood', 0)).line(3, 6, 6, 12, c('gray', 1));
   book.add('beam', beam, { solid: LEDGE, grav: GRAV.down });
   const shelf = wall(107);
   shelf.rect(0, 0, 20, 3, c('wood', 2)).rect(0, 3, 20, 1, c('wood', 0));
@@ -153,7 +153,7 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   // the proof: the plastic axe, the broken broomstick, the witch's hat, the souvenir sword
   plotThing(book, 'hBase', 'axe', (p) => {
     p.line(4, 18, 14, 6, c('wood', 2)).line(5, 18, 15, 6, c('wood', 1));
-    p.rect(11, 3, 7, 6, c('grey', 2)).rect(11, 3, 7, 1, c('white', 2)).set(17, 9, c('red', 2));
+    p.rect(11, 3, 7, 6, c('gray', 2)).rect(11, 3, 7, 1, c('white', 2)).set(17, 9, c('red', 2));
   });
   plotThing(book, 'hBase', 'broom', (p) => {
     p.line(1, 17, 9, 13, c('wood', 2)).line(12, 15, 14, 18, c('wood', 2));
@@ -216,14 +216,14 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   book.add('fog1', fog(1), hurts(-2, 0));
   // the animatronic zombie: cardboard-green, arms out, a plastic axe
   const zombie = (f: number) => {
-    const p = person(pal, { hair: 'grey', shirt: 'grey', pants: 'navy', step: 0, raw: true });
+    const p = person(pal, { hair: 'gray', shirt: 'gray', pants: 'navy', step: 0, raw: true });
     for (let y = 0; y < 20; y++)
       for (let x = 0; x < 20; x++)
         if ([c('skin', 1), c('skin', 2), c('skin', 3), c('skin', 4)].includes(p.get(x, y))) p.set(x, y, c('green', 2 - ((x + y) % 2)));
     p.rect(4, 9, 3, 1, c('green', 2)).rect(14, 9, 3, 1, c('green', 2));
-    p.rect(8, 11, 1, 3, c('grey', 0)).rect(12, 10, 1, 2, c('grey', 0));
+    p.rect(8, 11, 1, 3, c('gray', 0)).rect(12, 10, 1, 2, c('gray', 0));
     p.line(16, 9 - f, 19, 3 - f, c('wood', 2))
-      .rect(17, 1 - f, 3, 4, c('grey', 2))
+      .rect(17, 1 - f, 3, 4, c('gray', 2))
       .set(9, 5, c('red', 3))
       .set(12, 5, c('red', 3));
     return outline(p, ink);
@@ -280,7 +280,7 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   // bats on strings, flapping (harmless props)
   const bat = (f: number) => {
     const p = P();
-    p.line(10, 0, 10, 8, c('grey', 0));
+    p.line(10, 0, 10, 8, c('gray', 0));
     blob(p, 10, 11, 2.5, 3, pal.r('ink'), 0, 1);
     const w = f ? -3 : 3;
     p.line(8, 10, 2, 10 + w, c('ink', 1))

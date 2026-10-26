@@ -17,7 +17,7 @@ const DRAFTS: Draft[] = [
   { text: 'A crumpled level sketch: a maze shaped like a maze. Too mazey.', scrawl: ['LEVEL 7 (try 4)', '#.#.#.#.# ← ???'] },
   { text: 'A rejected title: SUPER MEGA ULTRA GAME 2: THE SEQUEL TO NOTHING.', scrawl: ['SUPER MEGA ULTRA', 'GAME 2 (no.)'] },
   { text: 'An IOU: one (1) finished game. Signed, me. Dated last summer.', scrawl: ['I.O.U.', '1 finished game'] },
-  { text: 'A floppy labelled DO NOT USE. It goes back in the basket. Again.', scrawl: ['DO NOT USE'], floppy: true },
+  { text: 'A floppy labeled DO NOT USE. It goes back in the basket. Again.', scrawl: ['DO NOT USE'], floppy: true },
   { text: 'A boss design: a toaster with feelings. Margin note: needs more feelings.', scrawl: ['BOSS: toaster', 'w/ feelings'] },
   { text: 'A hero sprite that is just a square. The square is very brave.', scrawl: ['HERO', '■ (brave)'] },
   { text: 'A doodle of Teddy with a long, swishy tail. Wrong! He has a fluffy rump and no tail at all.', scrawl: ['TEDDY v1', '(tail??)'] },

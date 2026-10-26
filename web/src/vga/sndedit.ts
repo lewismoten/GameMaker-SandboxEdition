@@ -8,7 +8,7 @@ import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { WorkArea } from '../retro/dos/workArea';
 import { type Vga } from './shared/vga';
-import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED2, initStartCols } from './shared/facelift';
+import { BLACK, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, RED2, initStartCols } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
 import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '../formats/sound';
@@ -249,7 +249,7 @@ class SoundDesigner {
         if (x >= LX && x < RX && y >= BY + 2 && y <= BY + 4) {
           // The red strip under a bar: silence.
           const grabbed = Math.floor((x - LX) / 4);
-          v.boxFill(LX + 4 * grabbed, TY, LX + 3 + 4 * grabbed, BY, fc[GREY2]);
+          v.boxFill(LX + 4 * grabbed, TY, LX + 3 + 4 * grabbed, BY, fc[GRAY2]);
           this.s.freqs[i][grabbed] = 0;
           this.saved = false;
         }
@@ -257,9 +257,9 @@ class SoundDesigner {
           // Draw a bar.
           const grabbed = Math.floor((x - LX) / 4);
           this.s.freqs[i][grabbed] = ROOTTWO[BY - y];
-          v.boxFill(LX + 4 * grabbed, TY, LX + 3 + 4 * grabbed, y, fc[GREY2]);
-          v.boxFill(LX + 4 * grabbed, y, LX + 2 + 4 * grabbed, BY, fc[GREY1]);
-          v.line(LX + 3 + 4 * grabbed, y + 1, LX + 3 + 4 * grabbed, BY, fc[GREY3]);
+          v.boxFill(LX + 4 * grabbed, TY, LX + 3 + 4 * grabbed, y, fc[GRAY2]);
+          v.boxFill(LX + 4 * grabbed, y, LX + 2 + 4 * grabbed, BY, fc[GRAY1]);
+          v.line(LX + 3 + 4 * grabbed, y + 1, LX + 3 + 4 * grabbed, BY, fc[GRAY3]);
           this.saved = false;
         }
         if (x > PX && x < PX + 36) {
@@ -344,18 +344,18 @@ class SoundDesigner {
     const { v, face } = this;
     const fc = face.cols;
     face.drawsurface(LX - 17, TY - 3, RX - LX + 19, BY - TY + 21);
-    v.boxFill(LX - 1, TY, RX - 1, BY, fc[GREY2]);
-    v.line(LX - 2, TY, LX - 1, BY + 3, fc[GREY3]);
-    v.line(LX - 2, TY - 1, RX - 1, TY - 1, fc[GREY4]);
+    v.boxFill(LX - 1, TY, RX - 1, BY, fc[GRAY2]);
+    v.line(LX - 2, TY, LX - 1, BY + 3, fc[GRAY3]);
+    v.line(LX - 2, TY - 1, RX - 1, TY - 1, fc[GRAY4]);
     v.line(LX - 2, BY + 2, RX - 1, BY + 2, fc[RED2]);
     v.line(LX - 2, BY + 3, RX - 1, BY + 3, fc[RED2]);
     for (let j = 1; j < NUMFREQ + 1; j++) v.point(LX - 1 + j * 4, BY + 1, fc[RED2]);
-    v.point(LX - 1, BY + 1, fc[GREY2]);
+    v.point(LX - 1, BY + 1, fc[GRAY2]);
     const mid0 = Math.trunc((TY + BY - 72) / 2);
     const mid1 = Math.trunc((TY + BY + 72) / 2);
     v.boxFill(LX - 14, mid0 - 1, LX - 5, mid1, fc[GREEN]);
-    v.line(LX - 15, mid0 - 2, LX - 15, mid1, fc[GREY3]);
-    v.line(LX - 15, mid0 - 2, LX - 5, mid0 - 2, fc[GREY4]);
+    v.line(LX - 15, mid0 - 2, LX - 15, mid1, fc[GRAY3]);
+    v.line(LX - 15, mid0 - 2, LX - 5, mid0 - 2, fc[GRAY4]);
     v.write(LX - 13, mid0, fc[BLACK], 'F\nr\ne\nq\nu\ne\nn\nc\ny');
     face.boxWithText(Math.trunc((LX + RX - 32) / 2), BY + 7, 'Time');
     face.drawsurface(MX - 3, MY - 2, 42, 28);
@@ -367,8 +367,8 @@ class SoundDesigner {
     v.draw4dat(PX, P3, NEXTAR, 35, 10, face.facePen());
     face.drawsurface(TEXX - 3, TEXY - 3, 17 * 8 + 6, TEXY2 - TEXY + 22);
     face.drawsurface(VOCX - 3, VOCY - 3, 16 * 8 + 6, TEXY2 - TEXY + 14);
-    v.line(TEXX - 1, TEXY2 - 1, TEXX - 1, TEXY2 + 16, fc[GREY3]);
-    v.line(TEXX - 1, TEXY2 - 1, TEXX + 17 * 8, TEXY2 - 1, fc[GREY4]);
+    v.line(TEXX - 1, TEXY2 - 1, TEXX - 1, TEXY2 + 16, fc[GRAY3]);
+    v.line(TEXX - 1, TEXY2 - 1, TEXX + 17 * 8, TEXY2 - 1, fc[GRAY4]);
     face.boxWithText(VOCX + 24, VOCY + 12, '          ');
   }
 
@@ -377,7 +377,7 @@ class SoundDesigner {
     const fc = face.cols;
     face.boxWithText(TEXX, TEXY, `Sound number: ${String(num + 1).padStart(2)}`);
     const str = ANNOUNCE[num] ?? '';
-    if (!str) v.boxFill(TEXX, TEXY2, TEXX + 17 * 8, TEXY2 + 16, fc[GREY2]);
+    if (!str) v.boxFill(TEXX, TEXY2, TEXX + 17 * 8, TEXY2 + 16, fc[GRAY2]);
     else {
       v.boxFill(TEXX, TEXY2, TEXX + 17 * 8, TEXY2 + 16, fc[GREEN]);
       v.write(TEXX + 1, TEXY2 + 1, fc[BLACK], str);
@@ -389,19 +389,19 @@ class SoundDesigner {
 
   private drawVocName(num: number): void {
     const name = this.s.digital[num];
-    if (!name || name[0] === ' ') this.v.boxFill(VOCX + 24, VOCY + 12, VOCX + 104, VOCY + 20, this.face.cols[GREY2]);
+    if (!name || name[0] === ' ') this.v.boxFill(VOCX + 24, VOCY + 12, VOCX + 104, VOCY + 20, this.face.cols[GRAY2]);
     else this.face.boxWithText(VOCX + 24, VOCY + 12, ` ${name.padEnd(8)} `);
   }
 
   private drawmarks(i: number): void {
     const { v, face } = this;
     const fc = face.cols;
-    v.boxFill(LX, TY, RX - 1, BY, fc[GREY2]);
+    v.boxFill(LX, TY, RX - 1, BY, fc[GRAY2]);
     this.s.freqs[i].forEach((f, j) => {
       if (!f) return;
       const top = BY - freq2index(f);
-      v.boxFill(LX + 4 * j, top, LX + 2 + 4 * j, BY, fc[GREY1]);
-      v.line(LX + 3 + 4 * j, top + 1, LX + 3 + 4 * j, BY, fc[GREY3]);
+      v.boxFill(LX + 4 * j, top, LX + 2 + 4 * j, BY, fc[GRAY1]);
+      v.line(LX + 3 + 4 * j, top + 1, LX + 3 + 4 * j, BY, fc[GRAY3]);
     });
   }
 

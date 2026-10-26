@@ -37,7 +37,7 @@ const K: Record<string, number> = {
 const S = (rows: string[], dx?: number, dy?: number) => sprite(rows, K, dx, dy);
 
 export const CRITTERS: Record<string, Pixels> = {
-  // A grey squirrel with a big tail.
+  // A gray squirrel with a big tail.
   squirrel1: S([
     '..ooo..........',
     '.oGGGo.........',
@@ -75,7 +75,7 @@ export const CRITTERS: Record<string, Pixels> = {
     '..oGo....oGGo..',
     '..oo......oo...',
   ]),
-  // A cat loafing on a fence or a step: grey tabby, in the way and not moving.
+  // A cat loafing on a fence or a step: gray tabby, in the way and not moving.
   cat1: S(
     [
       '.o...o..........',

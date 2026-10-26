@@ -449,7 +449,7 @@ async function watch(
       unlockAchievement('download-mp4');
       status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {
-      status.textContent = (e as Error).name === 'AbortError' ? 'Video cancelled.' : `The video could not be made: ${(e as Error).message}`;
+      status.textContent = (e as Error).name === 'AbortError' ? 'Video canceled.' : `The video could not be made: ${(e as Error).message}`;
     } finally {
       making = undefined;
       exportBtn.textContent = '⬇ Download MP4';

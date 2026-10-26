@@ -1,6 +1,6 @@
 // Seamless 20x20 textures for background blocks, drawn in whatever colors the game's
 // palette has: each recipe asks for colors by RGB and gets the nearest palette entries,
-// so a grass block is green even in a palette full of greys. Tiles wrap at the edges, so
+// so a grass block is green even in a palette full of grays. Tiles wrap at the edges, so
 // a field of them shows no seams.
 import { BLEN } from '../../formats/blocks';
 import { matchColor, type Palette } from '../../formats/palette';

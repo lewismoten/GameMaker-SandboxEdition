@@ -17,7 +17,7 @@ export function tiled(p: Pixels, floor: (seed?: number) => Pixels): Pixels {
 export function domeHome(floor: (seed?: number) => Pixels, tint = 'pink'): Pixels {
   const p = tiled(new Pixels(80, 60), floor);
   // Shadow on the ground.
-  oval(p, 42, 53, 38, 6, C('grey', 1));
+  oval(p, 42, 53, 38, 6, C('gray', 1));
   // The dome.
   for (let y = 4; y < 54; y++)
     for (let x = 2; x < 78; x++) {
@@ -39,7 +39,7 @@ export function domeHome(floor: (seed?: number) => Pixels, tint = 'pink'): Pixel
       const edge = (x - 4) % 9 === 0;
       p.set(x, y, edge ? C('chrome', 2) : shadeAt(R('glass'), 0, 3, (y - 22) / 10 + (pane % 2) * 0.2, x, y));
     }
-  for (let x = 6; x < 74; x += 9) p.line(x + 2, 23, x + 4, 25, C('grey', 7));
+  for (let x = 6; x < 74; x += 9) p.line(x + 2, 23, x + 4, 25, C('gray', 7));
   // A stripe in the family color.
   for (let x = 3; x < 77; x++) {
     const nx = (x + 0.5 - 40) / 37;
@@ -70,7 +70,7 @@ export function billboard(lines: string[], bg: string, ink: string, floor: (seed
   const y0 = Math.round(14 - (lines.length * lh) / 2) + 1;
   lines.forEach((s, i) => {
     const w = microWidth(s);
-    micro(p, Math.round(W / 2 - w / 2) + 1, y0 + i * lh + 1, s, C('grey', 0));
+    micro(p, Math.round(W / 2 - w / 2) + 1, y0 + i * lh + 1, s, C('gray', 0));
     micro(p, Math.round(W / 2 - w / 2), y0 + i * lh, s, C(ink, 5));
   });
   for (let x = 4; x < W - 2; x += 6) p.set(x, 1, C('gold', 5));
@@ -91,7 +91,7 @@ export function neonSign(s: string, w: number, wall: (seed?: number) => Pixels, 
 /** The launch-pad rocket, 2x3 blocks: fins, portholes, flame-scorched pad. */
 export function rocket(floor: (seed?: number) => Pixels): Pixels {
   const p = tiled(new Pixels(40, 60), floor);
-  oval(p, 20, 56, 18, 4, C('grey', 1));
+  oval(p, 20, 56, 18, 4, C('gray', 1));
   for (let y = 2; y < 54; y++) {
     const half = y < 16 ? Math.round(Math.sqrt(y - 1) * 2.4) : 8;
     for (let x = 20 - half; x < 20 + half; x++) p.set(x, y, shadeAt(R('chrome'), 2, 7, 1 - Math.abs(x + 0.5 - 17) / 12, x, y));
@@ -100,7 +100,7 @@ export function rocket(floor: (seed?: number) => Pixels): Pixels {
   for (const y of [22, 31]) {
     oval(p, 20, y, 3.5, 3.5, C('chrome', 1));
     oval(p, 20, y, 2.5, 2.5, C('glass', 2));
-    p.set(19, y - 1, C('grey', 7));
+    p.set(19, y - 1, C('gray', 7));
   }
   for (const s of [-1, 1]) {
     for (let k = 0; k < 10; k++) p.line(20 + s * 8, 42 + k, 20 + s * (8 + Math.min(9, k + 2)), 50 + Math.min(4, k / 2), C('red', 2 + (k % 2)));
@@ -116,7 +116,7 @@ export function banner(s: string, w: number, h: number, bg: string, ink: string)
   p.frame(0, 0, p.w, p.h, C('chrome', 6));
   const x = Math.round((p.w - s.length * 8) / 2);
   const y = Math.round((p.h - 8) / 2);
-  text(p, x + 1, y + 1, s, C('grey', 0));
+  text(p, x + 1, y + 1, s, C('gray', 0));
   text(p, x, y, s, C(ink, 5));
   return p;
 }

@@ -225,7 +225,7 @@ const LISTED: CastMember[] = [
     name: 'The tin heart',
     role: 'Small, riveted, ticking. Hidden somewhere.',
     hi: 'Tick… tock… Yes, I have a heart. I am a heart. Find me!',
-    art: { game: 'teddy', width: 14, height: 12, alt: 'The tin heart: a small grey riveted tin heart with a shine on its corner' },
+    art: { game: 'teddy', width: 14, height: 12, alt: 'The tin heart: a small gray riveted tin heart with a shine on its corner' },
     bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one, and to Lewis, whose own heart has kept time with a pacemaker since February 2014, the year Game-Maker’s source code was set free. One is hidden in every Sandbox and Bard of Bizarre game, so it is something to look for: listen for the tick-tock.',
     appears: [],
   },
@@ -396,10 +396,10 @@ const LISTED: CastMember[] = [
   {
     id: 'will',
     name: 'Shakespeare (Will)',
-    role: 'A starched ruff, grey sweatpants, fuzzy slippers',
+    role: 'A starched ruff, gray sweatpants, fuzzy slippers',
     hi: 'Alas! Forsooth! I have lost a pen, and it was the most tragic night of my life.',
-    art: { game: 'sweats', width: 20, height: 20, alt: 'Shakespeare in a white ruff, a purple velvet doublet, grey sweatpants and pink fuzzy slippers' },
-    bio: 'The open-mic regular at The Hive: bald dome, pointed beard, gold earring, a starched ruff over a velvet doublet, and grey sweatpants. He holds his coffee up like Yorick’s skull and declaims seventeen monologues about the most dramatic things that ever happened to him, like a ficus named Gerald and the self-checkout. No coffee, no stage.',
+    art: { game: 'sweats', width: 20, height: 20, alt: 'Shakespeare in a white ruff, a purple velvet doublet, gray sweatpants and pink fuzzy slippers' },
+    bio: 'The open-mic regular at The Hive: bald dome, pointed beard, gold earring, a starched ruff over a velvet doublet, and gray sweatpants. He holds his coffee up like Yorick’s skull and declaims seventeen monologues about the most dramatic things that ever happened to him, like a ficus named Gerald and the self-checkout. No coffee, no stage.',
     appears: [{ game: 'sweats', as: 'the star of open-mic night' }],
   },
 ];

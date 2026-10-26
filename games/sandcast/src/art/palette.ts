@@ -20,10 +20,10 @@ export const TABBY = pb.ramp('tabby', 8, [70, 30, 8], [255, 222, 170], [232, 122
 export const PINK = pb.ramp('pink', 4, [140, 50, 74], [255, 196, 210], [240, 120, 150]);
 export const BEETLE = pb.ramp('beetle', 6, [12, 22, 30], [130, 236, 200], [30, 120, 110]);
 export const PURPLE = pb.ramp('purple', 5, [36, 12, 52], [214, 160, 255], [124, 60, 180]);
-export const GREY = pb.ramp('grey', 6, [40, 40, 44], [220, 220, 224]);
+export const GRAY = pb.ramp('gray', 6, [40, 40, 44], [220, 220, 224]);
 
 // The 16 colors of an ANSI BBS screen (CGA order: black, blue, green, cyan, red,
-// magenta, brown, light grey, dark grey, light blue, light green, light cyan, light red,
+// magenta, brown, light gray, dark gray, light blue, light green, light cyan, light red,
 // light magenta, yellow, white).
 export const ANSI: number[] = [
   [0, 0, 0],

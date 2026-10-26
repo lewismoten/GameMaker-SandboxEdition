@@ -104,11 +104,11 @@ export function platesBlocks(book: BlockBook, pal: Pal): void {
     over(wainscot, pal, (p) => {
       p.rect(2, 14, 16, 2, c('metal', 2)).rect(3, 16, 1, 3, c('metal', 1)).rect(16, 16, 1, 3, c('metal', 1));
       p.disc(4, 19, 1.2, ink).disc(16, 19, 1.2, ink);
-      p.rect(3, 6, 14, 8, c('grey', 1)).rect(3, 6, 14, 1, c('grey', 2)).rect(4, 13, 12, 1, c('grey', 0));
+      p.rect(3, 6, 14, 8, c('gray', 1)).rect(3, 6, 14, 1, c('gray', 2)).rect(4, 13, 12, 1, c('gray', 0));
       if (full) for (let k = 0; k < 5; k++) plate(p, pal, 10, 5 - k, 12);
     });
   const closed = busCart(false);
-  micro(closed, 6, 8, 'BUS', c('grey', 3));
+  micro(closed, 6, 8, 'BUS', c('gray', 3));
   book.add('busOpen', busCart(true), { grav: GRAV.none });
   gate(book, 'busTub', closed, 'busOpen', PLATES);
   // the four plates (the plot), over the wallpaper
@@ -190,7 +190,7 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('grease0', grease(0), hurts(-6));
   book.add('grease1', grease(1), hurts(-6));
-  // the busboy: white shirt, black apron, a grey tub held out ahead, eyes sliding back at him
+  // the busboy: white shirt, black apron, a gray tub held out ahead, eyes sliding back at him
   // (judging). Side on, walking right (his path mirrors him for left).
   const busboy = (f: number) => {
     const p = clear();
@@ -199,7 +199,7 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
       .rect(10 + s, 15, 2, 5, ink)
       .rect(11 + s, 19, 2, 1, ink);
     p.rect(7, 8, 6, 8, c('white', 2)).rect(9, 11, 5, 6, c('ink', 1));
-    p.rect(12, 9, 7, 4, c('grey', 1)).rect(12, 9, 7, 1, c('grey', 2)).set(11, 10, c('skin', 3));
+    p.rect(12, 9, 7, 4, c('gray', 1)).rect(12, 9, 7, 1, c('gray', 2)).set(11, 10, c('skin', 3));
     const hx = 10;
     p.rect(hx - 3, 2, 6, 7, c('skin', 3))
       .rect(hx - 3, 1, 6, 2, c('hair', 0))

@@ -28,7 +28,7 @@ function lowPoly(c: V, r: number, mat = MAT.gold): Shape {
   );
 }
 
-/** Ray's bands, from cold grey to lit amber. */
+/** Ray's bands, from cold gray to lit amber. */
 const band = (k: number) => mix(rgb(70, 70, 80), NEAR_COL, k);
 
 export function introFrames(): { frames: Picture[]; speed: number } {

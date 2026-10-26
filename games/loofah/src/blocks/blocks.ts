@@ -76,7 +76,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const checker = (top: boolean) => {
     const p = P();
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('white', 1) : c('ink', 1));
-    if (top) p.rect(0, 0, 20, 1, c('white', 2)).rect(0, 1, 20, 1, c('grey', 1));
+    if (top) p.rect(0, 0, 20, 1, c('white', 2)).rect(0, 1, 20, 1, c('gray', 1));
     return p;
   };
   book.add('floor', checker(true), { solid: SOLID });
@@ -131,7 +131,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
     if (what === 'both') {
       blob(p, 14, 14, 4, 4, R('ink'), 0, 1);
-      for (let k = 0; k < 6; k++) p.set(12 + ((k * 3) % 5), 11 + ((k * 2) % 6), c('grey', 1));
+      for (let k = 0; k < 6; k++) p.set(12 + ((k * 3) % 5), 11 + ((k * 2) % 6), c('gray', 1));
     }
     return p;
   };
@@ -139,15 +139,15 @@ export function buildBlocks(pal: Pal): BlockBook {
 
   // ---------- the tub ----------
   const tubRim = baseTile.crop(0, 0, 20, 20);
-  tubRim.rect(0, 12, 20, 8, c('white', 2)).rect(0, 12, 20, 2, c('white', 1)).rect(0, 14, 20, 1, c('grey', 2));
+  tubRim.rect(0, 12, 20, 8, c('white', 2)).rect(0, 12, 20, 2, c('white', 1)).rect(0, 14, 20, 1, c('gray', 2));
   book.add('tubRim', tubRim, { solid: LEDGE, grav: GRAV.down });
   const tubSide = P().rect(0, 0, 20, 20, c('white', 1));
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y) % 7 === 0) tubSide.set(x, y, c('white', 2));
-  tubSide.rect(0, 16, 20, 4, c('grey', 1));
+  tubSide.rect(0, 16, 20, 4, c('gray', 1));
   book.add('tubSide', tubSide, { solid: SOLID });
   // the claw foot (scenery under the tub's end)
   const claw = baseTile.crop(0, 0, 20, 20);
-  claw.rect(0, 0, 20, 10, c('white', 1)).rect(0, 8, 20, 2, c('grey', 1));
+  claw.rect(0, 0, 20, 10, c('white', 1)).rect(0, 8, 20, 2, c('gray', 1));
   claw.rect(6, 10, 6, 6, c('gold', 1)).rect(4, 16, 10, 2, c('gold', 2)).set(4, 18, c('gold', 1)).set(9, 18, c('gold', 1)).set(13, 18, c('gold', 1));
   book.add('claw', claw, { solid: SOLID });
   // the bathwater: cursed, bubbling (he wades in it, up to his waist); it gives birth to bubbles
@@ -165,8 +165,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     // the tank is two blocks: its lid and lever up top, then the rest of it down to the floor
     const p = part === 'tankTop' ? tiles(26) : baseTile.crop(0, 0, 20, 20);
     if (part === 'tankTop')
-      p.rect(2, 4, 16, 2, c('white', 1)).rect(3, 6, 14, 14, c('white', 2)).rect(13, 9, 3, 1, c('metal', 3)).rect(3, 6, 14, 1, c('grey', 2));
-    else if (part === 'tank') p.rect(3, 0, 14, 12, c('white', 2)).rect(5, 12, 10, 8, c('white', 1)).rect(3, 11, 14, 1, c('grey', 2));
+      p.rect(2, 4, 16, 2, c('white', 1)).rect(3, 6, 14, 14, c('white', 2)).rect(13, 9, 3, 1, c('metal', 3)).rect(3, 6, 14, 1, c('gray', 2));
+    else if (part === 'tank') p.rect(3, 0, 14, 12, c('white', 2)).rect(5, 12, 10, 8, c('white', 1)).rect(3, 11, 14, 1, c('gray', 2));
     else p.rect(1, 6, 18, 3, c('white', 2)).rect(1, 6, 18, 1, c('white', 1)).rect(4, 9, 12, 8, c('white', 1)).rect(6, 17, 8, 3, c('white', 0));
     return p;
   };
@@ -255,7 +255,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('doorTop', doorTop, air);
   const bucket = (full: boolean) => {
     const p = baseTile.crop(0, 0, 20, 20);
-    p.rect(3, 6, 14, 14, c('grey', 2)).rect(3, 6, 14, 2, c('grey', 3)).rect(2, 6, 1, 3, c('grey', 1)).rect(17, 6, 1, 3, c('grey', 1));
+    p.rect(3, 6, 14, 14, c('gray', 2)).rect(3, 6, 14, 2, c('gray', 3)).rect(2, 6, 1, 3, c('gray', 1)).rect(17, 6, 1, 3, c('gray', 1));
     p.line(3, 6, 10, 0, c('metal', 2)).line(10, 0, 17, 6, c('metal', 2));
     if (full) p.rect(4, 8, 12, 3, c('suds', 2)).set(7, 7, c('rosemary', 2)).set(12, 7, c('suds', 1));
     else micro(p, 6, 12, String(SALT_NEEDED), c('ink', 0));
@@ -309,7 +309,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the store's ceiling: a fluorescent tube, flickering far off
   const tube = (on: boolean) => {
     const p = forest(42);
-    p.rect(2, 3, 16, 3, on ? c('neon', 1) : c('grey', 0)).rect(2, 2, 16, 1, c('metal', 0));
+    p.rect(2, 3, 16, 3, on ? c('neon', 1) : c('gray', 0)).rect(2, 2, 16, 1, c('metal', 0));
     if (on) for (const x of [3, 9, 15]) p.set(x, 8, c('neon', 0));
     return p;
   };
@@ -326,8 +326,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the store's floor (linoleum, solid) and the forest floor (moss over linoleum)
   const lino = (moss: boolean) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('grey', 1) : c('grey', 2));
-    p.rect(0, 0, 20, 1, c('grey', 3));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('gray', 1) : c('gray', 2));
+    p.rect(0, 0, 20, 1, c('gray', 3));
     if (moss) {
       const r = rng(44);
       for (let x = 0; x < 20; x++) {
@@ -441,8 +441,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   const register = (paid: boolean) => {
     const p = forest(57);
     p.rect(0, 8, 20, 12, c('ink', 1))
-      .rect(0, 8, 20, 2, c('grey', 2))
-      .rect(4, 2, 12, 6, c('grey', 1))
+      .rect(0, 8, 20, 2, c('gray', 2))
+      .rect(4, 2, 12, 6, c('gray', 1))
       .rect(6, 3, 8, 3, c('neon', paid ? 1 : 0));
     micro(p, 6, 3, paid ? 'OK' : String(COINS_NEEDED), c('ink', 0));
     if (paid) blob(p, 10, 12, 4, 3, R('ink'), 0, 1);
@@ -707,7 +707,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
   const pic = (name: string) => book.pics.get(name)!.crop(0, 0, 20, 20);
   // a tin heart on a little wall shelf at home, a hop back from the top of the bookcase: a glint crosses it now and then; 100 points
-  const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
+  const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('gray', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, drawTinHeart(pic('paper'), tin, k), {
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
@@ -727,7 +727,7 @@ export function buildBlocks(pal: Pal): BlockBook {
       ...air,
     });
   // Mystery Robot Joe (Keep It Brief!), taking stock in the forest-dark aisle at 3 a.m. (scenery)
-  const use = ['ink', 'grey', 'metal', 'white', 'gold', 'red', 'skin', 'night', 'steam'].flatMap((n) => R(n));
+  const use = ['ink', 'gray', 'metal', 'white', 'gold', 'red', 'skin', 'night', 'steam'].flatMap((n) => R(n));
   book.add('joe', pic('forest').blit(joeCameo(buildPalette('plain').pal, 'side', 0, { use }), 0, 0, CLEAR), air);
   return book;
 }

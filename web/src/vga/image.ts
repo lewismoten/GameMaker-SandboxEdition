@@ -102,7 +102,7 @@ class ImageReader extends ImageReaderScreen {
           if (!(await this.goforit())) choice = 0;
           break;
         case 5: {
-          // saveany(".pal") & saveblks(): both are asked for, even if the first is cancelled.
+          // saveany(".pal") & saveblks(): both are asked for, even if the first is canceled.
           const keep = this.work.curfile;
           const a = await this.work.save('Enter the palette file name: ', 'pal', pal2bytes(this.colors));
           this.work.curfile = keep;

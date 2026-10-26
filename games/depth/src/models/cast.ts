@@ -375,7 +375,7 @@ export function gwinn(f: number): Shape[] {
 }
 
 /**
- * Doc Leo, hobo clown: grey fedora, white face paint round his eyes and mouth, his own nose
+ * Doc Leo, hobo clown: gray fedora, white face paint round his eyes and mouth, his own nose
  * sunburned pink, painted stubble, navy corduroy jacket, purple shirt, green tie, red sneakers,
  * and the rubber chicken on its leash.
  */

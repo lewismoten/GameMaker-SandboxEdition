@@ -10,7 +10,7 @@ export function addStage(add: Add, { B, ST }: { B: Pixels; ST: Pixels }) {
   // The set of THE RAVEN'S BRIDE, and the spot where Victor Crane fell
   const bierBig = new Pixels(40, 20);
   bierBig.blit(ST, 0, 0).blit(ST, 20, 0);
-  bierBig.rect(2, 3, 36, 14, c('grey', 2)).rect(2, 3, 36, 2, c('grey', 4)).rect(2, 15, 36, 2, c('grey', 0));
+  bierBig.rect(2, 3, 36, 14, c('gray', 2)).rect(2, 3, 36, 2, c('gray', 4)).rect(2, 15, 36, 2, c('gray', 0));
   bierBig.rect(5, 6, 30, 8, c('velvet', 1));
   for (let x = 6; x < 34; x += 4) bierBig.set(x, 9, c('gold', 2));
   add('bier0', bierBig.crop(0, 0, 20, 20), S);
@@ -48,16 +48,16 @@ export function addStage(add: Add, { B, ST }: { B: Pixels; ST: Pixels }) {
     on(ST, (p) => {
       p.frame(1, 1, 18, 18, c('wood', 0));
       p.frame(2, 2, 16, 16, c('wood', 7));
-      p.rect(9, 8, 2, 4, c('grey', 4));
+      p.rect(9, 8, 2, 4, c('gray', 4));
     }),
   );
   const ghostPole = (lit: number) =>
     on(ST, (p) => {
       if (lit) pool(p, 10, 10, 9 + lit, 9 + lit, r('ghost'), 0, lit);
       p.disc(10, 16, 4, c('black', 1));
-      p.rect(9, 6, 2, 10, c('grey', 3));
+      p.rect(9, 6, 2, 10, c('gray', 3));
       p.rect(7, 3, 6, 4, c('black', 2));
-      blob(p, 10, 6, 3, 3, lit ? r('ghost') : r('grey'), lit ? 2 : 3, lit ? 3 : 5);
+      blob(p, 10, 6, 3, 3, lit ? r('ghost') : r('gray'), lit ? 2 : 3, lit ? 3 : 5);
     });
   add('ghostlight', ghostPole(0), S);
   // At night the ghost light burns, and something drifts out of it now and then.
@@ -70,7 +70,7 @@ export function addStage(add: Add, { B, ST }: { B: Pixels; ST: Pixels }) {
     on(wallFace(), (p) => {
       p.rect(0, 3, 20, 14, c('panel', 2));
       for (let x = 2; x < 20; x += 4) p.rect(x, 3, 1, 14, c('tan', 3));
-      p.rect(0, 12, 20, 2, c('grey', 4));
+      p.rect(0, 12, 20, 2, c('gray', 4));
     }),
     S,
   );
@@ -79,7 +79,7 @@ export function addStage(add: Add, { B, ST }: { B: Pixels; ST: Pixels }) {
   propTable.rect(1, 2, 58, 15, c('wood', 1)).rect(1, 2, 58, 1, c('wood', 4)).rect(2, 3, 56, 13, c('paper', 1));
   for (let i = 0; i < 6; i++) propTable.frame(3 + i * 9, 4, 8, 10, c('paper', 4));
   propTable.rect(5, 8, 5, 2, c('gold', 3)); // a crown
-  propTable.line(13, 12, 19, 6, c('grey', 5)).rect(12, 11, 3, 2, c('gold', 2)); // a sword
+  propTable.line(13, 12, 19, 6, c('gray', 5)).rect(12, 11, 3, 2, c('gold', 2)); // a sword
   propTable.rect(31, 7, 4, 4, c('gold', 2)); // a goblet
   propTable.disc(40, 9, 2, c('velvet', 4)); // a rose
   microC(propTable, 50, 6, '?', c('velvet', 2)); // the dagger's empty outline

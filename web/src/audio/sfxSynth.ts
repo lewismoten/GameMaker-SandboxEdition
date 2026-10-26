@@ -1,6 +1,6 @@
 // The sound effect maker's synthesizer: one oscillator (square, triangle, saw, sine or noise)
 // whose pitch starts somewhere, slides, jumps, wobbles and repeats, shaped by an attack, hold
-// and decay, with a simple tone (low-pass) control, levelled so its loudest point is the volume. The same settings also give the 36 PC
+// and decay, with a simple tone (low-pass) control, leveled so its loudest point is the volume. The same settings also give the 36 PC
 // speaker steps of a sound set slot (1/145.6 s each), so one effect works with or without a
 // Sound Blaster. The idea of a few sliders plus presets with random variety comes from
 // DrPetter's sfxr (2007); this code is written fresh for this edition (see NOTICE.md).

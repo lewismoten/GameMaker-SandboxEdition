@@ -86,7 +86,7 @@ export function uvTexture(tex: ImageData, i: number): ImageData {
   if (!ink) return g.getImageData(0, 0, TEX_W, TEX_H);
   g.lineCap = 'round';
   const wrap = (draw: (dx: number) => void) => [-TEX_W, 0, TEX_W].forEach(draw);
-  // drawn twice, as fluorescent ink looks: a wide halo in the ink's colour, then a thinner core
+  // drawn twice, as fluorescent ink looks: a wide halo in the ink's color, then a thinner core
   // that burns nearly white, so the pattern reads at a glance even on the shelf's small eggs
   const paint = (w: number) => {
     switch (ink.pattern) {

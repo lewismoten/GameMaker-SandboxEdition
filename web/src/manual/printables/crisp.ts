@@ -7,7 +7,7 @@
 //     device pixels per pixel, exact);
 //   - any other scale over 1 is drawn at the next whole scale and smoothly resampled to the
 //     exact size ("sharp bilinear"), so pixels stay even and only their edges soften;
-//   - under 1, a high quality smooth reduction (in halving steps), so strokes turn grey
+//   - under 1, a high quality smooth reduction (in halving steps), so strokes turn gray
 //     instead of vanishing.
 // Clicking (or Enter on) a shot shows it enlarged at a whole scale.
 

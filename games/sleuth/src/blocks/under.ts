@@ -40,7 +40,7 @@ export function addUnder(add: Add, LF: Pixels, stairs: Pixels): void {
   add(
     'pillar',
     on(LF, (p) => {
-      p.rect(4, 0, 12, 20, c('wood', 1)).rect(5, 0, 2, 20, c('wood', 3)).rect(4, 0, 12, 2, c('grey', 2));
+      p.rect(4, 0, 12, 20, c('wood', 1)).rect(5, 0, 2, 20, c('wood', 3)).rect(4, 0, 12, 2, c('gray', 2));
     }),
     S,
   );

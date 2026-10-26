@@ -84,7 +84,7 @@ export const shelf = (items: ShelfItem[], markText: string): Block => ({ t: 'she
 export const jumpOn = (page: string): Block => ({ t: 'jump', dir: 'on', page });
 /** The rest of a jumped story: its headline `title` again, and "▸ Continued from page N" (`page`, where it left off). */
 export const jumpFrom = (page: string, title: string): Block => ({ t: 'jump', dir: 'from', page, title });
-/** A small ad on an editorial page, framed and labelled ADVERTISEMENT: half the page, or a third in `beside`. */
+/** A small ad on an editorial page, framed and labeled ADVERTISEMENT: half the page, or a third in `beside`. */
 export const halfAd = (advertiser: string, head: string, blocks: Block[], o: { sub?: Inline; small?: Inline; tone?: Tone; burst?: string } = {}): HalfAd => ({
   t: 'halfad',
   advertiser,

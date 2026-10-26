@@ -88,12 +88,12 @@ export async function runWarezInstall(h: RetroHost): Promise<void> {
       '',
       'Press any key.',
     ]);
-    return finish(['INSTALL: installation cancelled. Nothing was changed.']);
+    return finish(['INSTALL: installation canceled. Nothing was changed.']);
   }
   statusLine(h, 'Where should Game-Maker go? Enter to accept, Esc to quit.', YELLOW);
   put(h, 7, 14, BRIGHT, 'Install to:');
   const dir = await editLine(h, 19, 14, 30, 'C:\\GM', /^[\x21-\x7e]$/);
-  if (dir === null) return finish(['INSTALL: installation cancelled. Nothing was changed.']);
+  if (dir === null) return finish(['INSTALL: installation canceled. Nothing was changed.']);
 
   if (isGmDir(dir)) {
     const gm = await findC(h, ['GM']);

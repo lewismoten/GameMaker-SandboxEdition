@@ -1,6 +1,6 @@
 // The title and cover art, drawn for the game (no cover came with the song): a 1995 living room
 // at night. The dusty-rose floral couch sits square in the middle, and between its cushions a
-// purple Bermuda swirl turns, sucking in everything that was ever lost in a couch: the big grey
+// purple Bermuda swirl turns, sucking in everything that was ever lost in a couch: the big gray
 // remote, tumbling, a sock, pennies, a pen, a spoon, a tiny raccoon peeking out. The console TV
 // snows static on the left with the VCR blinking 12:00 on top of it; the lamp glows on the
 // right, the cat sits on the couch's arm unimpressed, and Teddy peeks round the end. Painted in
@@ -288,7 +288,7 @@ export function coverRgb(t: number): Uint8Array {
   put(SWIRL.x + 14, SWIRL.y - 4, [90, 90, 96]);
   put(SWIRL.x + 22, SWIRL.y - 4, [90, 90, 96]);
 
-  // ---- the remote: a big chunky grey 1995 clicker, tumbling into the swirl
+  // ---- the remote: a big chunky gray 1995 clicker, tumbling into the swirl
   {
     const u = t;
     const cx = 236 - u * 64;

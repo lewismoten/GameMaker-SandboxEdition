@@ -23,7 +23,7 @@ export const ERRANDS_RAMPS: Ramp[] = [
   ['gas', 3, [70, 100, 20], [214, 236, 120]],
 ];
 
-/** The parking lot: Tuesday, cloudy skies, unforgiving humidity (a muggy grey-green cast). */
+/** The parking lot: Tuesday, cloudy skies, unforgiving humidity (a muggy gray-green cast). */
 export const MUGGY: Lighting = {
   sky: [
     [118, 124, 120],
@@ -97,7 +97,7 @@ export function poofSprites(book: SpriteBook, pal: Pal): void {
     for (let k = 0; k < 7; k++) {
       const a = (k / 7) * Math.PI * 2 + f;
       const r = 4 + f * 3;
-      p.disc(10 + Math.cos(a) * r, 11 + Math.sin(a) * r * 0.8, 2.4 - f * 0.8, c('grey', 3 - f));
+      p.disc(10 + Math.cos(a) * r, 11 + Math.sin(a) * r * 0.8, 2.4 - f * 0.8, c('gray', 3 - f));
     }
     p.set(10, 4 - f, c('gold', 3))
       .set(9, 5 - f, c('gold', 2))

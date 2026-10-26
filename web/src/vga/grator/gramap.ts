@@ -10,7 +10,7 @@ import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../../
 import { BACKBL, BLOCK_SIZE } from '../../formats/blocks';
 import { MLEN, MWID } from '../../formats/map';
 import type { RGBdata, Vga } from '../shared/vga';
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, palFindCol } from '../shared/facelift';
+import { BLACK, BLEN, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, RED1, RED2, palFindCol } from '../shared/facelift';
 
 const MAP1X = 18;
 const MAP1Y = 5;
@@ -196,10 +196,10 @@ class LinkMap {
       linkcols[0][0] = linkcols[1][0] = 255;
       linkcols[0][1] = fcol(0)[RED1];
       linkcols[0][2] = fcol(0)[RED2];
-      linkcols[0][3] = fcol(0)[GREY1];
+      linkcols[0][3] = fcol(0)[GRAY1];
       linkcols[1][1] = fcol(1)[RED1];
       linkcols[1][2] = fcol(1)[RED2];
-      linkcols[1][3] = fcol(1)[GREY1];
+      linkcols[1][3] = fcol(1)[GRAY1];
       v.setAllPalTo(colors[cm][fcol(cm)[BLACK]]);
       this.drawscrn(cm);
     }
@@ -436,22 +436,22 @@ class LinkMap {
     const face = this.faces[cm];
     const fc = face.cols;
     face.drawsurface(2, 2, 316, 196);
-    v.line(4, MAP1Y + 50, 4, MAP1Y + 163, fc[GREY3]);
-    v.line(306, MAP2Y + 50, 306, MAP2Y + 163, fc[GREY3]);
-    v.line(4, MAP1Y + 50, 13, MAP1Y + 50, fc[GREY4]);
-    v.line(306, MAP2Y + 50, 315, MAP2Y + 50, fc[GREY4]);
+    v.line(4, MAP1Y + 50, 4, MAP1Y + 163, fc[GRAY3]);
+    v.line(306, MAP2Y + 50, 306, MAP2Y + 163, fc[GRAY3]);
+    v.line(4, MAP1Y + 50, 13, MAP1Y + 50, fc[GRAY4]);
+    v.line(306, MAP2Y + 50, 315, MAP2Y + 50, fc[GRAY4]);
     v.boxFill(307, MAP2Y + 51, 315, MAP2Y + 163, fc[GREEN]);
     v.boxFill(5, MAP1Y + 51, 13, MAP1Y + 163, fc[GREEN]);
-    v.line(NEXTBX - 1, NEXTBY + 1, NEXTBX - 1, NEXTBY + 9, fc[GREY2]);
-    v.point(NEXTBX - 1, NEXTBY + 10, fc[GREY4]);
+    v.line(NEXTBX - 1, NEXTBY + 1, NEXTBX - 1, NEXTBY + 9, fc[GRAY2]);
+    v.point(NEXTBX - 1, NEXTBY + 10, fc[GRAY4]);
     this.drawAllButs(this.faces[0].cols);
     v.setmoupos(DONEBX + 18, DONEBY + 5);
     [...this.scns[this.from].desc].forEach((c, lp) => v.write(6, MAP1Y + 52 + lp * 8, fc[BLACK], c));
     [...this.scns[this.to].desc].forEach((c, lp) => v.write(308, MAP2Y + 52 + lp * 8, fc[BLACK], c));
-    v.line(MAP1X - 2, MAP2Y - 2, MAP2X + MAPSCRNX * BLEN, MAP2Y - 2, fc[GREY4]);
-    v.boxFill(MAP1X + MAPSCRNX * BLEN + 1, MAP1Y - 2, MAP2X - 3, MAP1Y + MAPSCRNY * BLEN, fc[GREY1]);
-    v.line(MAP1X - 2, MAP1Y - 1, MAP1X - 2, MAP1Y + MAPSCRNY * BLEN, fc[GREY3]);
-    v.line(MAP2X - 2, MAP2Y - 1, MAP2X - 2, MAP2Y + MAPSCRNY * BLEN, fc[GREY3]);
+    v.line(MAP1X - 2, MAP2Y - 2, MAP2X + MAPSCRNX * BLEN, MAP2Y - 2, fc[GRAY4]);
+    v.boxFill(MAP1X + MAPSCRNX * BLEN + 1, MAP1Y - 2, MAP2X - 3, MAP1Y + MAPSCRNY * BLEN, fc[GRAY1]);
+    v.line(MAP1X - 2, MAP1Y - 1, MAP1X - 2, MAP1Y + MAPSCRNY * BLEN, fc[GRAY3]);
+    v.line(MAP2X - 2, MAP2Y - 1, MAP2X - 2, MAP2Y + MAPSCRNY * BLEN, fc[GRAY3]);
     this.colorChange(cm);
   }
 

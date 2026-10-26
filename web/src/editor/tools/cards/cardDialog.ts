@@ -12,7 +12,7 @@ import { tally } from '../../../achievements';
 
 let count = 0;
 
-/** A labelled text box; `rows` above 1 makes it a textarea. */
+/** A labeled text box; `rows` above 1 makes it a textarea. */
 function box(label: string, value: string, hint: string, rows = 1, onInput: () => void = () => undefined): { el: HTMLElement; get: () => string } {
   const id = `card-${++count}`;
   const input =

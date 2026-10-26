@@ -463,7 +463,7 @@ export function buildVilla(pal: Pal): BlockBook {
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(
       `tinHeart${k || ''}`,
-      drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('grey', 0) }, k),
+      drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('gray', 0) }, k),
       {
         score: 100,
         touch: 'kbase',

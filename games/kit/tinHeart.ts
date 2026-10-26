@@ -1,5 +1,5 @@
 // The tin heart: a small recurring object Lewis tucks into the games, a nod to the Tin Man
-// and the heart that ticks. A riveted tin heart, silver-grey with a highlight and a little
+// and the heart that ticks. A riveted tin heart, silver-gray with a highlight and a little
 // clock face in the middle, drawn into a 20x20 block in any game's palette; its frames move a
 // glint across the tin (a gentle shine). Touching one gives a small bonus. Its sound is a soft,
 // steady tick-tock on the PC speaker (`TICK_TOCK`, never a .VOC, so it never cuts a voice clip),

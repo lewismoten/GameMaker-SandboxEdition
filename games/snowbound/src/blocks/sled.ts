@@ -40,7 +40,7 @@ export function addSled(k: Ctx, { mug, bill }: Treats) {
   // one hurts once: the bump swaps in a look-alike that is still solid but harmless, so a
   // sled stopped against it (or pushing off into it) isn't hurt again and again.
   const rock = slope(5, false);
-  blob(rock, 10, 10.5, 9.8, 9.4, R('grey'), 0, 3);
+  blob(rock, 10, 10.5, 9.8, 9.4, R('gray'), 0, 3);
   blob(rock, 9, 5, 7.5, 3.5, snow, 4, 6);
   book.add('rock', rock, { solid: SOLID, hp: -8, touch: 'rockHit' });
   book.add('rockHit', rock, { solid: SOLID });

@@ -20,7 +20,7 @@ await writeWalkthrough('sleuth', {
   chapters: [
     { scene: ix.act1, title: 'Act One: The Paragon Theatre' },
     { scene: ix.gr1a, title: 'The Green Room, Midnight' },
-    { scene: ix.act2, title: 'Act Two: The Theatre at Night' },
+    { scene: ix.act2, title: 'Act Two: The Theater at Night' },
     { scene: ix.gr2a, title: 'The Green Room, 2 AM' },
     { scene: ix.acca, title: 'Dawn: The Accusation' },
   ],

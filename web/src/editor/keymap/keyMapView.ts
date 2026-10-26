@@ -1,4 +1,4 @@
-// The "⌨ Keys" dialog: a keyboard with the keys a game uses lit up and labelled, a list of
+// The "⌨ Keys" dialog: a keyboard with the keys a game uses lit up and labeled, a list of
 // what each does (from keyMap.ts), the joystick, PLAYGAME's own keys, and the game's own
 // instructions. Self-contained (no editor.css), so the player can show it too.
 import './keyMapView.css';

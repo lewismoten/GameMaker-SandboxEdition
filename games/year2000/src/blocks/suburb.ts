@@ -20,12 +20,12 @@ function chromeFence(floor: Floor, dir: 'h' | 'v' | 'post'): Pixels {
   const p = on(floor);
   if (dir === 'h') {
     p.rect(0, 6, 20, 2, C('chrome', 6)).rect(0, 12, 20, 2, C('chrome', 4));
-    for (let x = 2; x < 20; x += 6) p.rect(x, 3, 2, 14, C('chrome', 5)).rect(x, 3, 1, 14, C('chrome', 7)).rect(x, 16, 2, 2, C('grey', 1));
+    for (let x = 2; x < 20; x += 6) p.rect(x, 3, 2, 14, C('chrome', 5)).rect(x, 3, 1, 14, C('chrome', 7)).rect(x, 16, 2, 2, C('gray', 1));
   } else if (dir === 'v') {
     p.rect(7, 0, 2, 20, C('chrome', 6)).rect(11, 0, 2, 20, C('chrome', 4));
     for (let y = 2; y < 20; y += 6) p.rect(6, y, 8, 2, C('chrome', 5));
   } else {
-    p.rect(6, 2, 8, 15, C('chrome', 4)).rect(6, 2, 8, 2, C('chrome', 7)).rect(6, 16, 8, 2, C('grey', 1));
+    p.rect(6, 2, 8, 15, C('chrome', 4)).rect(6, 2, 8, 2, C('chrome', 7)).rect(6, 16, 8, 2, C('gray', 1));
     p.disc(10, 3, 2, C('pink', 4));
   }
   return p;
@@ -34,7 +34,7 @@ function chromeFence(floor: Floor, dir: 'h' | 'v' | 'post'): Pixels {
 function hedgeCube(floor: Floor): Pixels {
   const p = on(floor);
   // A hedge trimmed into a perfect cube by the robot gardener: bright top, shaded front.
-  oval(p, 11, 18, 9, 2, C('grey', 1));
+  oval(p, 11, 18, 9, 2, C('gray', 1));
   p.rect(1, 1, 18, 17, C('green', 0));
   speckle(p, 2, 2, 16, 6, R('green'), 4, 1, 4, 0.5);
   speckle(p, 2, 8, 16, 9, R('green'), 1, 1, 5, 0.5);
@@ -51,7 +51,7 @@ function hedgeCube(floor: Floor): Pixels {
 
 function chromeTree(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 11, 17, 7, 2, C('grey', 1));
+  oval(p, 11, 17, 7, 2, C('gray', 1));
   p.rect(9, 9, 2, 9, C('chrome', 3));
   // A perfect sphere of robot-trimmed leaves, and a chrome ring around it.
   blob(p, 10, 7, 7, 7, R('neon'), 0, 3);
@@ -61,7 +61,7 @@ function chromeTree(floor: Floor): Pixels {
 
 function mailbox(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 10, 17, 5, 1.5, C('grey', 1));
+  oval(p, 10, 17, 5, 1.5, C('gray', 1));
   p.rect(9, 9, 2, 8, C('chrome', 3));
   p.rect(4, 3, 12, 7, C('denim', 2)).rect(4, 3, 12, 2, C('denim', 4));
   p.rect(15, 1, 1, 5, C('red', 3)).rect(15, 1, 3, 2, C('red', 4));
@@ -71,7 +71,7 @@ function mailbox(floor: Floor): Pixels {
 
 function dish(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 10, 17, 7, 2, C('grey', 1));
+  oval(p, 10, 17, 7, 2, C('gray', 1));
   p.rect(9, 11, 2, 6, C('chrome', 2));
   for (let y = 2; y < 13; y++)
     for (let x = 2; x < 18; x++) {
@@ -99,7 +99,7 @@ function doghouse(floor: Floor): Pixels {
 export function pool(phase: number): Pixels {
   const p = blank();
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sky'), 3, 6, 0.5 + 0.5 * Math.sin((x + y * 0.5 + phase * 3) / 3), x, y));
-  for (let x = 0; x < 20; x += 5) p.set(x + phase, 6 + ((x / 5) % 2) * 7, C('grey', 7));
+  for (let x = 0; x < 20; x += 5) p.set(x + phase, 6 + ((x / 5) % 2) * 7, C('gray', 7));
   return p;
 }
 
@@ -114,9 +114,9 @@ export function mowerDock(floor: Floor, label = 'MOW'): Pixels {
 
 function paperCannon(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 10, 16, 7, 2, C('grey', 1));
+  oval(p, 10, 16, 7, 2, C('gray', 1));
   p.rect(2, 8, 16, 8, C('purple', 2)).rect(2, 8, 16, 2, C('purple', 4));
-  p.rect(8, 13, 4, 7, C('grey', 1));
+  p.rect(8, 13, 4, 7, C('gray', 1));
   micro(p, 3, 10, 'NEWS', C('paper', 2));
   return p;
 }
@@ -141,7 +141,7 @@ function clouds(seed: number): Pixels {
   const p = blank();
   gradient(p, 0, 0, 20, 20, R('sky'), 4, 5);
   const r = rng(seed);
-  for (let i = 0; i < 3; i++) blob(p, r() * 20, r() * 20, 3 + r() * 4, 2 + r() * 2, R('grey'), 5, 7);
+  for (let i = 0; i < 3; i++) blob(p, r() * 20, r() * 20, 3 + r() * 4, 2 + r() * 2, R('gray'), 5, 7);
   return p;
 }
 
@@ -157,7 +157,7 @@ function tunnel(dir: 'R' | 'L'): Pixels {
 
 function tollBot(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 10, 18, 7, 1.5, C('grey', 1));
+  oval(p, 10, 18, 7, 1.5, C('gray', 1));
   p.rect(5, 6, 10, 12, C('gold', 3)).rect(5, 6, 10, 2, C('gold', 5));
   blob(p, 10, 5, 5, 4, R('chrome'), 3, 7);
   p.rect(7, 4, 2, 2, C('red', 4)).rect(11, 4, 2, 2, C('red', 4));
@@ -180,7 +180,7 @@ function pillStand(floor: Floor, k: number): Pixels {
 export function suburbSet(): BlockSet {
   const s = new BlockSet(150, false);
   addFloors(s, ['grass', 'flowers', 'sidewalk', 'road', 'roadH', 'roadV', 'deck', 'lane', 'laneLine', 'concrete']);
-  s.add('void', blank(C('grey', 0)), { solid: SOLID });
+  s.add('void', blank(C('gray', 0)), { solid: SOLID });
   s.add('clouds', clouds(1), { solid: SOLID });
   s.add('clouds2', clouds(2), { solid: SOLID });
   addItems(s, 'grass', ['page', 'quarter', 'pill', 'battery', 'zapper', 'cola', 'remote']);

@@ -38,9 +38,9 @@ export function sugarCube(p: Pixels, pal: Pal): Pixels {
   // the top face (lit), the front, the side (shaded), grains and a glint
   for (let i = 0; i < 3; i++) p.rect(x0 + 3 - i, y0 + i, 9, 1, c('white', 3));
   p.rect(x0, y0 + 3, 9, 8, c('white', 2))
-    .rect(x0 + 9, y0 + 1, 2, 9, c('grey', 2))
-    .set(x0 + 9, y0 + 10, c('grey', 2));
-  p.rect(x0, y0 + 11, 11, 1, c('grey', 1));
+    .rect(x0 + 9, y0 + 1, 2, 9, c('gray', 2))
+    .set(x0 + 9, y0 + 10, c('gray', 2));
+  p.rect(x0, y0 + 11, 11, 1, c('gray', 1));
   for (const [x, y] of [
     [2, 5],
     [5, 8],

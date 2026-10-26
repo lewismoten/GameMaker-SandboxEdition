@@ -52,9 +52,9 @@ function brickWall(pal: Pal, seed: number, curb: boolean): Pixels {
     for (let x = 0; x < 20; x++) {
       const row = Math.floor(y / 5);
       const mortar = y % 5 === 4 || (x + (row % 2) * 5) % 10 === 9;
-      p.set(x, y, mortar ? c('grey', 2) : c('brick', r() < 0.15 ? 0 : r() < 0.2 ? 2 : 1));
+      p.set(x, y, mortar ? c('gray', 2) : c('brick', r() < 0.15 ? 0 : r() < 0.2 ? 2 : 1));
     }
-  if (curb) p.rect(0, 15, 20, 5, c('grey', 2)).rect(0, 15, 20, 1, c('grey', 3)).rect(0, 19, 20, 1, c('grey', 1));
+  if (curb) p.rect(0, 15, 20, 5, c('gray', 2)).rect(0, 15, 20, 1, c('gray', 3)).rect(0, 19, 20, 1, c('gray', 1));
   return p;
 }
 
@@ -66,7 +66,7 @@ export function itchBlocks(book: BlockBook, pal: Pal): void {
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) sky.set(x, y, shadeAt(pal.r('sky'), 1, 4, y / 20, x, y));
   book.add('sky', sky, AIR);
   const roofline = brickWall(pal, 70, false);
-  roofline.rect(0, 0, 20, 4, c('grey', 1)).rect(0, 0, 20, 1, c('grey', 3)).rect(0, 4, 20, 1, c('ink', 1));
+  roofline.rect(0, 0, 20, 4, c('gray', 1)).rect(0, 0, 20, 1, c('gray', 3)).rect(0, 4, 20, 1, c('ink', 1));
   book.add('brickTop', roofline, AIR);
   book.add('brick', brickWall(pal, 71, false), AIR);
   book.add('brickB', brickWall(pal, 72, true), AIR);
@@ -79,9 +79,9 @@ export function itchBlocks(book: BlockBook, pal: Pal): void {
   // the bank's sign over its back door, in stone
   {
     const pic = new Pixels(60, 20, 255);
-    pic.rect(2, 2, 56, 16, c('grey', 3)).frame(2, 2, 56, 16, c('grey', 1)).rect(4, 4, 52, 1, c('white', 2));
+    pic.rect(2, 2, 56, 16, c('gray', 3)).frame(2, 2, 56, 16, c('gray', 1)).rect(4, 4, 52, 1, c('white', 2));
     micro(pic, 8, 6, 'BANK', c('navy', 0), 2);
-    micro(pic, 41, 8, 'EST', c('grey', 1));
+    micro(pic, 41, 8, 'EST', c('gray', 1));
     addPicture(book, 'bank', pic, brickWall(pal, 74, false), () => AIR);
   }
   // the dumpster behind the bank (solid: climb it)

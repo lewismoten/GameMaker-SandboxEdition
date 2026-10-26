@@ -175,7 +175,7 @@ function isoWorld(shapes: Shape[], t: Theme): World {
 /** Light halos for isometric cells: [x, y, z, radius px, color] in the cell's own units. */
 function isoGlows(p: Picture, glows: [number, number, number, number, V][]): void {
   for (const [gx, gy, gz, r, c] of glows) {
-    // the oblique glow positions are given for the oblique cell (y 0.58 = the middle); recentre
+    // the oblique glow positions are given for the oblique cell (y 0.58 = the middle); recenter
     const [sx, sy] = isoXY(gx, gy - 0.08, gz);
     for (let y = 0; y < p.h; y++)
       for (let x = 0; x < p.w; x++) {
@@ -195,7 +195,7 @@ export function renderIsoCell(key: CellKey, plane: Plane, themeId: ThemeId, seed
   if (kind.ground(plane) === 'pit') throw new Error(`${key.kind}: no pits in isometric cells`);
   const shapes: Shape[] = [new Box([-4, -4, -1], [5, 5, 0], floorMat(t))];
   const own = isoShapes(key, plane, t) ?? kind.shapes?.(0, 0, plane, t, key.part ?? 0) ?? [];
-  // items made for the oblique cell stand a little south of the middle; centre them
+  // items made for the oblique cell stand a little south of the middle; center them
   shapes.push(...own);
   const world = isoWorld(shapes, t);
   const cam = isoCamera();

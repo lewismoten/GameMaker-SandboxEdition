@@ -53,7 +53,7 @@ const MARKUP = `<g font-family="Arial, Helvetica, sans-serif">
   <text x="${W - 4}" y="${TOP - 20}" text-anchor="end" font-size="8.5" font-weight="700" fill="#b3261e">BIG POINTS ★</text>
   <text x="${W / 2}" y="${H - 6}" text-anchor="middle" font-size="9" fill="${ink}">↘ hit: a copy that can’t be hurt flashes · ↗ 50 ticks: the next one</text></g>`;
 
-/** The chain of boss states, as an image labelled `alt`. */
+/** The chain of boss states, as an image labeled `alt`. */
 export function bossChainArt(alt: string): SVGSVGElement {
   return svgArt(`0 0 ${W} ${H}`, MARKUP, alt, 'mag-diagram');
 }

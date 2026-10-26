@@ -46,12 +46,12 @@ async function firstLevel(entry: CatalogEntry): Promise<Level | undefined> {
 /** How many colors a block uses (to pick lively ones). */
 const colors = (b: Block | undefined) => new Set(b?.pixels ?? []).size;
 
-/** The panel colors: the palette's nearest black, grey, white and a highlight. */
+/** The panel colors: the palette's nearest black, gray, white and a highlight. */
 function inks(pal: Palette) {
   return {
     black: matchColor(pal, 0, 0, 0),
     dark: matchColor(pal, 14, 14, 18),
-    grey: matchColor(pal, 40, 40, 44),
+    gray: matchColor(pal, 40, 40, 44),
     white: matchColor(pal, 63, 63, 63),
     hi: matchColor(pal, 63, 52, 0),
   };
@@ -94,7 +94,7 @@ function palette(s: Screen, lv: Level): void {
     const y = 104 + n * 22;
     s.write(206, y, ink.white, name);
     s.write(286, y, ink.white, String(v & 63).padStart(2, ' '));
-    s.box(206, y + 10, 309, y + 16, ink.grey);
+    s.box(206, y + 10, 309, y + 16, ink.gray);
     s.boxFill(207, y + 11, 207 + Math.round(((v & 63) / 63) * 101), y + 15, matchColor(lv.pal, n === 0 ? 63 : 0, n === 1 ? 63 : 0, n === 2 ? 63 : 0));
   });
   s.write(206, 176, ink.hi, `COLOR ${pick}`);
@@ -121,7 +121,7 @@ function blocks(s: Screen, lv: Level): void {
     s.drawBlock(x, y, b.pixels);
     if (i === num) s.box(x - 1, y - 1, x + BLEN, y + BLEN, ink.hi);
   });
-  s.write(182, 182, ink.grey, 'BLOCK SET');
+  s.write(182, 182, ink.gray, 'BLOCK SET');
 }
 
 function monsters(s: Screen, lv: Level): void {
@@ -136,12 +136,12 @@ function monsters(s: Screen, lv: Level): void {
     .slice(0, 4);
   strips.forEach((frames, row) => {
     const y = 10 + row * 46;
-    s.write(8, y, ink.grey, `MONSTER ${row + 1}`);
+    s.write(8, y, ink.gray, `MONSTER ${row + 1}`);
     frames.slice(0, 6).forEach((f, n) => {
       const x = 8 + n * 52;
       s.boxFill(x, y + 10, x + 41, y + 51 - 10, ink.black);
       bigBlock(s, x + 1, y + 11, f.pixels, 2, true);
-      s.box(x, y + 10, x + 41, y + 41, n === 0 ? ink.hi : ink.grey);
+      s.box(x, y + 10, x + 41, y + 41, n === 0 ? ink.hi : ink.gray);
     });
   });
 }
@@ -170,10 +170,10 @@ function map(s: Screen, lv: Level): void {
   const sy = Math.max(0, Math.min(rows - 10, lv.at.y - 5));
   s.box(10 + sx * 2, 6 + sy * 2, 10 + (sx + 16) * 2, 6 + (sy + 10) * 2, ink.hi);
   s.write(222, 12, ink.white, 'MAP');
-  s.write(222, 28, ink.grey, '100 X 100');
-  s.write(222, 38, ink.grey, 'BLOCKS');
+  s.write(222, 28, ink.gray, '100 X 100');
+  s.write(222, 38, ink.gray, 'BLOCKS');
   s.boxFill(222, 60, 230, 66, ink.hi);
-  s.write(236, 60, ink.grey, 'SCREEN');
+  s.write(236, 60, ink.gray, 'SCREEN');
 }
 
 const DRAW: Record<Tool, (s: Screen, lv: Level) => void> = { palette, blocks, monsters, map };

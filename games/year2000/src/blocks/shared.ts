@@ -82,7 +82,7 @@ export function addBooths(set: BlockSet, floor: Floor): void {
     return p;
   };
   const phone = (p: Pixels) => {
-    p.rect(12, 4, 3, 5, C('grey', 1)).rect(12, 4, 1, 3, C('grey', 3));
+    p.rect(12, 4, 3, 5, C('gray', 1)).rect(12, 4, 1, 3, C('gray', 3));
   };
   set.add('booth_door', door(phone), { solid: SOLID, effect: CTR.quarters, eamt: -1, touch: 'booth_open' });
   set.add('booth_dead', door(phone, 'OUT'), { solid: SOLID });
@@ -104,7 +104,7 @@ export function addBooths(set: BlockSet, floor: Floor): void {
     for (let y = 1; y < 19; y++)
       for (let x = 4; x < 16; x++) p.set(x, y, shadeAt(R('teal'), 2, 5, ((y + k * 3) % 8) / 8 + (Math.abs(x - 9.5) < 2 ? 0.3 : 0), x, y));
     const r = rng(k + 3);
-    for (let i = 0; i < 9; i++) p.set(4 + r() * 12, 1 + r() * 18, C('grey', 7));
+    for (let i = 0; i < 9; i++) p.set(4 + r() * 12, 1 + r() * 18, C('gray', 7));
     return p;
   };
   set.add('booth_open', open(0), { next: 'booth_open2', ntime: 2 });
@@ -122,7 +122,7 @@ export function addLasers(set: BlockSet, floor: Floor, onTime: number, offTime: 
       for (const y of [6, 10, 14]) {
         p.rect(3, y, 14, 1, C('red', 4));
         p.rect(3, y - 1, 14, 1, C('red', 2)).rect(3, y + 1, 14, 1, C('red', 2));
-        for (let x = 4; x < 17; x += 4) p.set(x + (y % 3), y, C('grey', 7));
+        for (let x = 4; x < 17; x += 4) p.set(x + (y % 3), y, C('gray', 7));
       }
     return p;
   };
@@ -144,7 +144,7 @@ export function addWalkways(set: BlockSet, style: 'walk' | 'tube'): void {
     for (let k = 0; k < 2; k++) {
       const off = ((k * 10 + phase * 5) % 20) - 2;
       for (let i = 0; i < 5; i++) {
-        const col = tube ? C('grey', 7) : C('gold', 4);
+        const col = tube ? C('gray', 7) : C('gold', 4);
         const pts: [number, number][] = [
           [off + i, 5 + i],
           [off + i, 14 - i],

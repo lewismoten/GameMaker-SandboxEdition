@@ -12,34 +12,34 @@ import { WINGS } from '../../stories';
 function backdrop(): Pixels {
   const p = new Pixels(20, 20, c('blue', 1));
   for (let x = 0; x < 20; x += 4) p.rect(x, 0, 2, 20, c('blue', 2));
-  p.rect(0, 17, 20, 3, c('grey', 4));
+  p.rect(0, 17, 20, 3, c('gray', 4));
   return p;
 }
 
 function tripod(under: Pixels): Pixels {
   const p = on(under);
   p.line(10, 9, 4, 19, c('ink', 1)).line(10, 9, 16, 19, c('ink', 1)).line(10, 9, 10, 19, c('ink', 1));
-  p.rect(5, 3, 10, 6, c('ink', 1)).rect(13, 4, 4, 4, c('grey', 2)).disc(15, 6, 1.5, c('sky', 4));
+  p.rect(5, 3, 10, 6, c('ink', 1)).rect(13, 4, 4, 4, c('gray', 2)).disc(15, 6, 1.5, c('sky', 4));
   return p;
 }
 
 function studioLight(under: Pixels): Pixels {
   const p = on(under);
   p.rect(9, 8, 2, 11, c('ink', 1)).rect(5, 18, 10, 1, c('ink', 1));
-  p.rect(3, 1, 14, 8, c('paper', 4)).frame(3, 1, 14, 8, c('grey', 2));
+  p.rect(3, 1, 14, 8, c('paper', 4)).frame(3, 1, 14, 8, c('gray', 2));
   return p;
 }
 
 const royal = (queen: boolean) =>
   figure(
     queen
-      ? { shirt: ['purple', 3], dress: true, hair: ['grey', 4], hairStyle: 'bun', hat: { kind: 'crown', color: ['brass', 3] }, face: 'happy' }
-      : { shirt: ['red', 3], pants: ['ink', 1], beard: ['grey', 4], hat: { kind: 'crown', color: ['brass', 3] } },
+      ? { shirt: ['purple', 3], dress: true, hair: ['gray', 4], hairStyle: 'bun', hat: { kind: 'crown', color: ['brass', 3] }, face: 'happy' }
+      : { shirt: ['red', 3], pants: ['ink', 1], beard: ['gray', 4], hat: { kind: 'crown', color: ['brass', 3] } },
   );
 
 function laptop(under: Pixels, portrait: boolean): Pixels {
   const p = on(under);
-  p.rect(2, 13, 16, 3, c('grey', 3));
+  p.rect(2, 13, 16, 3, c('gray', 3));
   p.rect(3, 3, 14, 10, c('ink', 1)).rect(4, 4, 12, 8, portrait ? c('sky', 3) : c('blue', 1));
   if (portrait)
     for (let i = 0; i < 4; i++)
@@ -53,16 +53,16 @@ function laptop(under: Pixels, portrait: boolean): Pixels {
 const agent = (step: number, view = figure) => view({ shirt: ['ink', 1], pants: ['ink', 1], tie: ['ink', 0], face: 'shades', hair: ['ink', 1] }, step);
 
 function roofSniper(): Pixels {
-  const p = wall('brick', 'grey', 9);
+  const p = wall('brick', 'gray', 9);
   p.rect(3, 4, 14, 9, c('sky', 3)).rect(3, 4, 14, 2, c('sky', 4));
   p.rect(10, 7, 3, 3, c('ink', 1)).line(9, 8, 5, 8, c('ink', 1));
   return p;
 }
 
 function onigiri(): Pixels {
-  const p = new Pixels(20, 20, c('grey', 3));
+  const p = new Pixels(20, 20, c('gray', 3));
   for (const top of [1, 11]) {
-    p.rect(0, top + 7, 20, 2, c('grey', 1));
+    p.rect(0, top + 7, 20, 2, c('gray', 1));
     for (let i = 0; i < 3; i++) {
       const x = 1 + i * 6;
       for (let y = 0; y < 6; y++) p.rect(x + 2 - Math.floor(y / 2), top + y + 1, 1 + Math.floor(y / 2) * 2, 1, c('paper', 4));
@@ -73,7 +73,7 @@ function onigiri(): Pixels {
 }
 
 function teaFridge(): Pixels {
-  const p = new Pixels(20, 20, c('grey', 4));
+  const p = new Pixels(20, 20, c('gray', 4));
   p.rect(1, 1, 18, 18, c('sky', 4));
   for (const y of [2, 10]) for (let x = 2; x < 18; x += 4) p.rect(x, y, 3, 7, c('green', 3)).rect(x, y, 3, 2, c('paper', 4));
   return p;
@@ -81,15 +81,15 @@ function teaFridge(): Pixels {
 
 function counter(under: Pixels, register: boolean): Pixels {
   const p = on(under);
-  p.rect(0, 8, 20, 12, c('paper', 3)).rect(0, 8, 20, 2, c('grey', 4));
-  if (register) p.rect(4, 2, 10, 6, c('grey', 2)).rect(5, 3, 8, 2, c('green', 4));
+  p.rect(0, 8, 20, 12, c('paper', 3)).rect(0, 8, 20, 2, c('gray', 4));
+  if (register) p.rect(4, 2, 10, 6, c('gray', 2)).rect(5, 3, 8, 2, c('green', 4));
   else p.rect(3, 3, 14, 5, c('orange', 2)).rect(4, 4, 3, 3, c('brown', 2)).rect(9, 4, 3, 3, c('brown', 2));
   return p;
 }
 
 function socks(under: Pixels): Pixels {
   const p = on(under);
-  p.rect(2, 2, 16, 16, c('grey', 3));
+  p.rect(2, 2, 16, 16, c('gray', 3));
   p.rect(4, 4, 3, 8, c('red', 3)).rect(4, 11, 5, 3, c('red', 3)).rect(12, 4, 3, 8, c('blue', 3)).rect(12, 11, 5, 3, c('blue', 3));
   p.rect(7, 15, 6, 2, c('ink', 1)).rect(13, 16, 3, 2, c('paper', 4));
   return p;
@@ -127,14 +127,14 @@ function ficus(under: Pixels, alive: boolean): Pixels {
 
 function officeDesk(under: Pixels): Pixels {
   const p = on(under);
-  p.rect(0, 8, 20, 6, c('grey', 3)).rect(0, 8, 20, 1, c('grey', 5)).rect(1, 14, 2, 5, c('grey', 2)).rect(17, 14, 2, 5, c('grey', 2));
+  p.rect(0, 8, 20, 6, c('gray', 3)).rect(0, 8, 20, 1, c('gray', 5)).rect(1, 14, 2, 5, c('gray', 2)).rect(17, 14, 2, 5, c('gray', 2));
   p.rect(5, 2, 10, 6, c('ink', 1)).rect(6, 3, 8, 4, c('blue', 2));
   micro(p, 6, 3, 'ADS', c('paper', 4));
   return p;
 }
 
 function truck(part: number): Pixels {
-  const big = new Pixels(40, 20, c('grey', 1));
+  const big = new Pixels(40, 20, c('gray', 1));
   big.rect(0, 4, 26, 12, c('paper', 2)).rect(26, 7, 12, 9, c('red', 2)).rect(29, 8, 6, 4, c('sky', 3));
   for (const [x, col] of [
     [3, 'brown'],
@@ -199,13 +199,13 @@ function router(frame: number, under: Pixels): Pixels {
   const p = on(under);
   p.rect(3, 10, 14, 6, c('ink', 1)).line(5, 10, 3, 4, c('ink', 1)).line(15, 10, 17, 5, c('ink', 1));
   for (let i = 0; i < 4; i++) p.set(6 + i * 3, 13, (i + frame) % 2 ? c('green', 4) : c('ink', 0));
-  p.line(4, 15, 15, 11, c('grey', 3)); // crushed
+  p.line(4, 15, 15, 11, c('gray', 3)); // crushed
   return p;
 }
 
 function art(a: Area): void {
   // Prompted Royalty
-  a.tile('studio', floor('lino', 2, 'grey'));
+  a.tile('studio', floor('lino', 2, 'gray'));
   a.solid('backdrop', backdrop());
   a.solid('tripod', tripod(a.tiles.pic('studio')));
   a.solid('slight', studioLight(a.tiles.pic('studio')));
@@ -292,7 +292,7 @@ function art(a: Area): void {
   );
 
   // Craigslist Said It Was Healthy
-  a.tile('cube', floor('carpet', 8, 'grey'));
+  a.tile('cube', floor('carpet', 8, 'gray'));
   a.tile('alley', floor('road', 8));
   a.solid('jarold', ficus(a.tiles.pic('cube'), false));
   a.solid('jaroldJr', ficus(a.tiles.pic('cube'), true));
@@ -301,7 +301,7 @@ function art(a: Area): void {
   a.solid('truck1', truck(1));
   a.solid('cubewall', wall('panel'));
   a.solid('alleywall', wall('brick', 'brown', 12));
-  a.prop('seller', 'alley', figure({ shirt: ['purple', 2], pants: ['ink', 1], hair: ['grey', 4], hairStyle: 'wild', arms: 'out' }));
+  a.prop('seller', 'alley', figure({ shirt: ['purple', 2], pants: ['ink', 1], hair: ['gray', 4], hairStyle: 'wild', arms: 'out' }));
   sign(['TAKE CARE OF', 'JAROLD', '-MANAGEMENT'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`jaroldSign${i}`, px));
   a.monster(
     'leaf',
@@ -375,7 +375,7 @@ export const FUTURE: WingSpec = {
   tint: 'sky',
   stamp: [
     ['teal', 3],
-    ['grey', 5],
+    ['gray', 5],
     ['red', 3],
   ],
   signs: [

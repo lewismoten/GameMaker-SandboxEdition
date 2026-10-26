@@ -30,7 +30,7 @@ describe('fli frames', () => {
     expect(back.frames.map((f) => f.pixels[0])).toEqual([1, 1, 2]);
   });
 
-  it('centres a picture on a frame', () => {
+  it('centers a picture on a frame', () => {
     const px = fitPicture(new Uint8Array([5, 6, 7, 8]), 2, 2, 4, 4);
     expect([...px]).toEqual([0, 0, 0, 0, 0, 5, 6, 0, 0, 7, 8, 0, 0, 0, 0, 0]);
     expect(fitPicture(new Uint8Array(16).fill(3), 4, 4, 2, 2)).toEqual(new Uint8Array(4).fill(3));

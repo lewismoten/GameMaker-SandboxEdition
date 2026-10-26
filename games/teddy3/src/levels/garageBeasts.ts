@@ -12,7 +12,7 @@ import { wiredButton, wiredDoor } from './parts';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 
-/** Dust bunnies: grey fluff with two dot eyes, rolling. */
+/** Dust bunnies: gray fluff with two dot eyes, rolling. */
 const K = { d: P.c('stone', 2), D: P.c('stone', 3), l: P.c('stone', 4), o: P.c('ink', 0) };
 const bunny = (k: number) =>
   sprite(

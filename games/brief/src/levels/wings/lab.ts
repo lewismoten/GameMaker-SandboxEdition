@@ -9,10 +9,10 @@ import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
 
 const professor = (step = 0, arms: 'down' | 'up' = 'down', view = figure) =>
-  view({ shirt: ['paper', 4], pants: ['grey', 2], hair: ['grey', 4], hairStyle: 'wild', glasses: true, arms }, step);
+  view({ shirt: ['paper', 4], pants: ['gray', 2], hair: ['gray', 4], hairStyle: 'wild', glasses: true, arms }, step);
 
 function pipes(seed: number): Pixels {
-  const p = new Pixels(20, 20, c('grey', 1));
+  const p = new Pixels(20, 20, c('gray', 1));
   p.rect(0, 5, 20, 4, c('tin', 3)).rect(0, 5, 20, 1, c('tin', 5));
   p.rect(seed % 2 ? 4 : 12, 0, 4, 20, c('brass', 2)).rect(seed % 2 ? 4 : 12, 0, 1, 20, c('brass', 4));
   p.disc(seed % 2 ? 6 : 14, 7, 3, c('red', 3)).set(seed % 2 ? 6 : 14, 7, c('ink', 0));
@@ -22,19 +22,19 @@ function pipes(seed: number): Pixels {
 }
 
 function wires(): Pixels {
-  const p = new Pixels(20, 20, c('grey', 1));
+  const p = new Pixels(20, 20, c('gray', 1));
   const cols = ['red', 'blue', 'yellow', 'green'];
   for (let i = 0; i < 4; i++) for (let x = 0; x < 20; x++) p.set(x, Math.round(10 + Math.sin(x * 0.5 + i * 1.7) * (3 + i)), c(cols[i], 3));
-  p.rect(6, 6, 8, 8, c('grey', 2)).frame(6, 6, 8, 8, c('ink', 0));
+  p.rect(6, 6, 8, 8, c('gray', 2)).frame(6, 6, 8, 8, c('ink', 0));
   micro(p, 7, 8, '?!', c('yellow', 3));
   return p;
 }
 
 function ductTape(under: Pixels): Pixels {
   const p = on(under);
-  blob(p, 10, 10, 8, 8, r('grey'), 2, 4);
+  blob(p, 10, 10, 8, 8, r('gray'), 2, 4);
   p.disc(10, 10, 3.5, c('wood', 3));
-  p.rect(14, 12, 6, 4, c('grey', 3));
+  p.rect(14, 12, 6, 4, c('gray', 3));
   return p;
 }
 
@@ -50,7 +50,7 @@ function vcr(lit: boolean): Pixels {
 }
 
 function crowd(seed: number): Pixels {
-  const p = new Pixels(20, 20, c('grey', 1));
+  const p = new Pixels(20, 20, c('gray', 1));
   const shirts = ['blue', 'red', 'green', 'brown', 'purple'];
   for (let i = 0; i < 3; i++) {
     const x = 1 + i * 6;
@@ -92,7 +92,7 @@ function peapod(under: Pixels): Pixels {
 
 function bench(under: Pixels, ooze = false): Pixels {
   const p = on(under);
-  p.rect(0, 8, 20, 4, c('grey', 4)).rect(0, 12, 20, 1, c('grey', 1)).rect(2, 13, 2, 6, c('grey', 2)).rect(16, 13, 2, 6, c('grey', 2));
+  p.rect(0, 8, 20, 4, c('gray', 4)).rect(0, 12, 20, 1, c('gray', 1)).rect(2, 13, 2, 6, c('gray', 2)).rect(16, 13, 2, 6, c('gray', 2));
   p.rect(4, 3, 3, 6, c('sky', 4)).rect(4, 3, 3, 1, c('paper', 4));
   p.rect(10, 5, 5, 4, ooze ? c('purple', 3) : c('green', 3)).rect(11, 2, 3, 3, c('sky', 4));
   return p;
@@ -128,7 +128,7 @@ function masks(): Pixels {
 }
 
 function stainedGlass(bits: string): Pixels {
-  const p = new Pixels(20, 20, c('grey', 2));
+  const p = new Pixels(20, 20, c('gray', 2));
   p.rect(3, 2, 14, 18, c('ink', 0));
   p.disc(10, 5, 7, c('ink', 0));
   const cols = ['blue', 'red', 'yellow', 'green', 'purple'];
@@ -145,7 +145,7 @@ function pew(under: Pixels): Pixels {
 }
 
 function altar(part: number): Pixels {
-  const big = new Pixels(40, 20, c('grey', 1));
+  const big = new Pixels(40, 20, c('gray', 1));
   bevel(big, 0, 4, 40, 16, r('paper'), 3, 1);
   micro(big, 4, 10, 'COMPILER', c('ink', 0));
   big.rect(18, 0, 4, 5, c('brass', 3));
@@ -181,8 +181,8 @@ function art(a: Area): void {
   a.solid('crowd1', crowd(1));
   a.solid('crowd2', crowd(2));
   const tools = blank();
-  tools.line(3, 15, 12, 6, c('grey', 4)).line(3, 16, 12, 7, c('grey', 2)).rect(11, 4, 4, 4, c('grey', 3));
-  tools.line(8, 17, 17, 14, c('red', 3)).rect(14, 12, 4, 3, c('grey', 4));
+  tools.line(3, 15, 12, 6, c('gray', 4)).line(3, 16, 12, 7, c('gray', 2)).rect(11, 4, 4, 4, c('gray', 3));
+  tools.line(8, 17, 17, 14, c('red', 3)).rect(14, 12, 4, 3, c('gray', 4));
   a.prop('tools', 'labtile', tools, false);
   sign(['EUREKA!', 'PLEASE STAND', 'BACK'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`eureka${i}`, px));
   a.walker(
@@ -287,7 +287,7 @@ function art(a: Area): void {
   a.solid('altar1', altar(1));
   a.solid('candle0', candle(0, a.tiles.pic('nave')), { next: 'candle1', ntime: 6 });
   a.solid('candle1', candle(1, a.tiles.pic('nave')), { next: 'candle0', ntime: 7 });
-  sign(['ALL CLASSES', 'WELCOME', 'NO EXCEPTIONS*'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`zero${i}`, px));
+  sign(['ALL CLASSES', 'WELCOME', 'NO EXCEPTIONS*'], 3, { board: 'gray' }).forEach((px, i) => a.solid(`zero${i}`, px));
   a.monster(
     'thrown',
     [
@@ -337,7 +337,7 @@ export const LAB: WingSpec = {
   wing: WINGS[1],
   tint: 'teal',
   stamp: [
-    ['grey', 1],
+    ['gray', 1],
     ['green', 4],
     ['red', 3],
   ],

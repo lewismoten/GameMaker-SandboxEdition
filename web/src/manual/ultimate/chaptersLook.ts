@@ -30,7 +30,7 @@ export const PALETTES: Chapter = {
   </ul>
   <p>Try the same trick for seasons (green, gold and white), underwater (everything pushed
   toward blue-green, the brightest colors pulled down), or a haunted version of a level you
-  already built (greys, a sickly green and one red you keep for eyes).</p>
+  already built (grays, a sickly green and one red you keep for eyes).</p>
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,
@@ -63,7 +63,7 @@ export const PALETTES: Chapter = {
     <tr><td>The <kbd>F2</kbd> and <kbd>F10</kbd> screens</td><td>blue and yellow</td><td>their frames and words: score, money, hit points, lives</td></tr>
     <tr><td>Text screens (<code>.TXT</code>)</td><td>a deep purple</td><td>every line of the text</td></tr>
     <tr><td>A menu choice you left empty, or <kbd>F1</kbd> with no instructions</td><td>a bright red</td><td>“No game-specific…” notes</td></tr>
-    <tr><td>The design tools</td><td>greys, reds, black, a green</td><td>their own frames, buttons and lists</td></tr>
+    <tr><td>The design tools</td><td>grays, reds, black, a green</td><td>their own frames, buttons and lists</td></tr>
   </table>
   <h2>Color 0 is the background</h2>
   <p>Before some of its own screens, PLAYGAME wipes the whole screen to palette color 0 and

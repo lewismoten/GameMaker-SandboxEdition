@@ -86,7 +86,7 @@ export function usedArea(cells: ArrayLike<number>, keep: Point[] = [], pad = 1):
 /**
  * The map's background blocks with every secret one drawn as plain ground: what it turns
  * into when touched (a tin heart or an egg's touch block is the ground under it), else the
- * commonest of its neighbours that isn't secret, else the padding. Also returns the cells it
+ * commonest of its neighbors that isn't secret, else the padding. Also returns the cells it
  * covered, which are never marked.
  */
 export function hideSecrets(cells: ArrayLike<number>, blocks: Block[], secret: ReadonlySet<number>): { cells: Uint8Array; hidden: Set<number> } {
@@ -205,7 +205,7 @@ export function walledReach(cells: ArrayLike<number>, blocks: Block[], starts: P
 
 /**
  * The blocks a map is padded with: its padding block (fillerBlock) and any block scattered
- * through it (stars in space: three in four of its neighbours are the padding).
+ * through it (stars in space: three in four of its neighbors are the padding).
  */
 function paddingBlocks(cells: ArrayLike<number>): Set<number> {
   const filler = fillerBlock(cells);

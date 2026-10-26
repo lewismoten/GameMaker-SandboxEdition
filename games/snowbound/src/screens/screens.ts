@@ -32,7 +32,7 @@ export function buildScreens(
   scaleBlit(title, kid, 20, 128, 3);
   // a big pile of snow and a tin can of money
   blob(title, 106, 192, 26, 10, pal.r('snow'), 2, 6);
-  title.rect(92, 168, 14, 16, c('grey', 3)).rect(92, 168, 14, 2, c('grey', 4)).rect(94, 172, 10, 6, c('money', 2));
+  title.rect(92, 168, 14, 16, c('gray', 3)).rect(92, 168, 14, 2, c('gray', 4)).rect(94, 172, 10, 6, c('money', 2));
   micro(title, 95, 173, '$', c('money', 0));
   title.rect(0, 188, W, 12, c('ink', 0));
   centered(title, 190, 'Sandbox Software  (c) 1993', c('snow', 6));
@@ -271,11 +271,11 @@ export function buildScreens(
   won1.rect(0, 112, W, 88, c('wood', 2)).rect(0, 112, W, 4, c('wood', 4));
   box(won1, 120, 58, 1);
   // the register
-  won1.rect(206, 74, 70, 38, c('grey', 2)).rect(212, 78, 58, 14, c('ink', 0));
+  won1.rect(206, 74, 70, 38, c('gray', 2)).rect(212, 78, 58, 14, c('ink', 0));
   text(won1, 214, 81, '$89.00', c('money', 2));
-  for (let k = 0; k < 12; k++) won1.rect(214 + (k % 6) * 9, 96 + Math.floor(k / 6) * 7, 7, 5, c('grey', 4));
+  for (let k = 0; k < 12; k++) won1.rect(214 + (k % 6) * 9, 96 + Math.floor(k / 6) * 7, 7, 5, c('gray', 4));
   // a coffee can full of crumpled dollars
-  won1.rect(70, 82, 26, 30, c('grey', 3)).rect(70, 82, 26, 3, c('grey', 4));
+  won1.rect(70, 82, 26, 30, c('gray', 3)).rect(70, 82, 26, 3, c('gray', 4));
   for (let k = 0; k < 9; k++) blob(won1, 74 + (k % 3) * 9, 80 - Math.floor(k / 3) * 3, 4, 3, pal.r('money'), 0, 2);
   scaleBlit(won1, kid, 14, 106, 3);
   won1.rect(0, 166, W, 34, c('ink', 0));
@@ -305,11 +305,11 @@ export function buildScreens(
     const rr = rng(k + 40);
     for (let i = 0; i < 8; i++) arc.rect(x + 8 + Math.floor(rr() * 26), 66 + Math.floor(rr() * 18), 2, 2, c(['gold', 'snow', 'coat'][i % 3], 3));
     arc
-      .rect(x + 2, 94, 40, 14, c('grey', 1))
+      .rect(x + 2, 94, 40, 14, c('gray', 1))
       .rect(x + 10, 98, 2, 6, c('ink', 0))
       .rect(x + 9, 96, 4, 3, c('coat', 3));
     arc.rect(x + 24, 99, 4, 4, c('gold', 3)).rect(x + 31, 99, 4, 4, c('siding', 3));
-    arc.rect(x + 16, 118, 12, 14, c('grey', 2)).rect(x + 21, 121, 2, 6, c('ink', 0));
+    arc.rect(x + 16, 118, 12, 14, c('gray', 2)).rect(x + 21, 121, 2, 6, c('ink', 0));
     micro(arc, x + 17, 134, '25', c('gold', 3));
   }
   arc.rect(0, 160, W, 40, c('wall', 0));
@@ -381,7 +381,7 @@ export function buildScreens(
   lost.rect(130, 96, 170, 50, c('wood', 1)).rect(140, 80, 30, 30, c('snow', 6));
   for (let y = 100; y < 140; y++) for (let x = 150; x < 296; x++) lost.set(x, y, ((x >> 3) + (y >> 3)) % 2 ? c('coat', 2) : c('butter', 3));
   lost.rect(150, 84, 16, 14, c('skin', 2)).rect(148, 80, 20, 6, c('coat', 3)).set(155, 90, c('ink', 0)).set(161, 90, c('ink', 0));
-  lost.rect(164, 94, 12, 2, c('grey', 5)).rect(175, 94, 2, 2, c('coat', 3));
+  lost.rect(164, 94, 12, 2, c('gray', 5)).rect(175, 94, 2, 2, c('coat', 3));
   lost.rect(0, 146, W, 54, c('wood', 0));
   outlined(lost, 160 - textWidth('SNOWED OUT', 3) / 2, 150, 'SNOWED OUT', c('snow', 6), c('ink', 0), 3);
   centered(lost, 178, 'A cold, a quilt, and a coffee can', c('snow', 6));
@@ -410,7 +410,7 @@ export function buildScreens(
         for (let x = hx - 6 + inset; x < hx + 156 - inset; x++) p.set(x, base - 76 + y, y < 27 ? c('snow', x < hx + 75 ? 6 : 4) : c('ink', 0));
       }
       p.rect(hx + 104, base - 84, 12, 14, c('brick', 1)).rect(hx + 104, base - 86, 12, 3, c('snow', 6));
-      for (let k = 0; k < 4; k++) blob(p, hx + 110 + k * 3 + Math.sin((f + k * 5) / 4) * 2, base - 92 - k * 8 - (f % 8), 3 + k, 3, pal.r('grey'), 3, 5);
+      for (let k = 0; k < 4; k++) blob(p, hx + 110 + k * 3 + Math.sin((f + k * 5) / 4) * 2, base - 92 - k * 8 - (f % 8), 3 + k, 3, pal.r('gray'), 3, 5);
       for (const wx of [hx + 14, hx + 44, hx + 104])
         p.rect(wx, base - 36, 22, 18, c('wood', 4))
           .rect(wx + 2, base - 34, 18, 14, c('glow', f > 8 ? 3 : 1))
@@ -427,7 +427,7 @@ export function buildScreens(
       for (let x = (f * 3) % 24; x < W; x += 24) p.rect(x, 188, 12, 2, c('gold', 2));
       // the sign: two green blades on a post
       const sx = 70;
-      p.rect(sx - 2, 38, 5, 140, c('grey', 3)).rect(sx - 2, 38, 2, 140, c('grey', 4));
+      p.rect(sx - 2, 38, 5, 140, c('gray', 3)).rect(sx - 2, 38, 2, 140, c('gray', 4));
       const pile = Math.min(5, Math.floor(f / 9));
       const blade = (y: number, label: string, dx: number) => {
         const w = textWidth(label, 2) + 12;
@@ -448,12 +448,12 @@ export function buildScreens(
       const paperAt = (x: number, y: number, flat: boolean) => {
         if (flat) {
           p.rect(x - 9, y - 4, 19, 6, c('snow', 6))
-            .rect(x - 9, y + 1, 19, 1, c('grey', 3))
-            .rect(x - 10, y - 4, 1, 6, c('grey', 4));
-          for (let k = -6; k < 8; k += 3) p.rect(x + k, y - 2, 2, 1, c('grey', 4));
+            .rect(x - 9, y + 1, 19, 1, c('gray', 3))
+            .rect(x - 10, y - 4, 1, 6, c('gray', 4));
+          for (let k = -6; k < 8; k += 3) p.rect(x + k, y - 2, 2, 1, c('gray', 4));
           p.rect(x - 1, y - 4, 3, 6, c('coat', 3));
         } else {
-          for (let i = -6; i <= 6; i++) p.rect(x + i, y + i, 4, 4, c('snow', 6)).set(x + i + 3, y + i + 3, c('grey', 3));
+          for (let i = -6; i <= 6; i++) p.rect(x + i, y + i, 4, 4, c('snow', 6)).set(x + i + 3, y + i + 3, c('gray', 3));
           p.rect(x - 1, y - 1, 4, 4, c('coat', 3));
         }
       };

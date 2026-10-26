@@ -316,8 +316,8 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 11, 7, 4, R('white'), 1, 3);
     const hy = f ? 12 : 7;
     blob(p, 16, hy, 3, 2.6, R('white'), 1, 3);
-    p.line(15, hy - 3, 13, hy - 6, c('grey', 2))
-      .line(17, hy - 3, 16, hy - 6, c('grey', 2))
+    p.line(15, hy - 3, 13, hy - 6, c('gray', 2))
+      .line(17, hy - 3, 16, hy - 6, c('gray', 2))
       .set(17, hy, ink);
     return done(p);
   };
@@ -462,7 +462,7 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(9, 4, 2, 10, c('purple', 0))
       .rect(14, 4 + f, 4, 3, c('skin', 2))
       .line(17, 0, 17, 20, c('wood', 2));
-    p.rect(5, 18, 4, 2, c('grey', 1)).rect(11, 18, 4, 2, c('grey', 1));
+    p.rect(5, 18, 4, 2, c('gray', 1)).rect(11, 18, 4, 2, c('gray', 1));
     return done(p);
   };
   book.add('mopperA0', mopperA(0), hurt(6));

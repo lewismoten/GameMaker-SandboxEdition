@@ -94,7 +94,7 @@ function putBack(project: Project, r: Released): void {
   if (ws?.currentFile) ws.open(ws.currentFile);
 }
 
-/** Edit a copy's flow; then the copy opens at the same file and settings (`again`: to redo a refused change). False when cancelled. */
+/** Edit a copy's flow; then the copy opens at the same file and settings (`again`: to redo a refused change). False when canceled. */
 async function copyAndSwitch(r: Released, again = false): Promise<boolean> {
   const e = r.entry;
   const id = await copyCatalogGame(e, e.title, e.gam, async () => new GameFiles(r.original.entries().map(([n, b]) => [n, b.slice()])));

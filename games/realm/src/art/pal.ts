@@ -37,7 +37,7 @@ const FIXED: [string, RGB[]][] = [
     ],
   ],
   [
-    'hairGrey',
+    'hairGray',
     [
       [120, 120, 128],
       [200, 200, 206],

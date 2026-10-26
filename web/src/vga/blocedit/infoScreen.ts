@@ -5,7 +5,7 @@
 import { BACKBL, BLEN, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../formats/blocks';
 import { LASTMON } from '../../formats/monster';
 import { SIZEX } from '../shared/vga';
-import { GREY1, GREY2, GREY3, GREY4, RED1, RED2, RED3 } from '../shared/facelift';
+import { GRAY1, GRAY2, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
 import { drawblk, drawlist, pixelsOf } from '../shared/blocc';
 import {
   LLEN,
@@ -59,8 +59,8 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
     const { v, face, lastbl } = this;
     const fc = face.cols;
     const B = this.blk[b];
-    const sh = (x: number, y: number, s: string) => this.gwriteShadow(x, y, fc[GREY3], fc[GREY4], s);
-    const empty = fc[GREY4];
+    const sh = (x: number, y: number, s: string) => this.gwriteShadow(x, y, fc[GRAY3], fc[GRAY4], s);
+    const empty = fc[GRAY4];
 
     face.drawlistframe(LX, LY, LLEN); // Draw the bloc list
     drawlist(v, this.blk, LX, LY, LLEN, lastbl, this.list);
@@ -68,7 +68,7 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
     face.drawsurface(INFODONEX - 3, INFODONEY, 40, 13);
     face.doneb(INFODONEX, INFODONEY);
 
-    const four = [face.bkg, fc[GREY1], fc[GREY2], fc[GREY4]];
+    const four = [face.bkg, fc[GRAY1], fc[GRAY2], fc[GRAY4]];
     v.draw4dat(TRASHX, TRASHY, TRASHAR, 25, 34, four);
     v.draw4dat(TTOPX, TTOPY, CANTOPAR, 27, 15, four, 8);
 
@@ -84,7 +84,7 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
     sh(TIMEX - 18, TIMEY - 10, 'Change\n\nto');
     sh(TIMEX - 18, TIMEY + BLEN + 1, 'After');
     sh(TIMEX - 18, TIMEY + BLEN + 18, 'Ticks');
-    v.write(TIMEX - 8, TIMEY + BLEN + 11, fc[GREY3], d(B.ntime, 4));
+    v.write(TIMEX - 8, TIMEY + BLEN + 11, fc[GRAY3], d(B.ntime, 4));
     if (B.nextBl !== b && B.ntime !== 0) drawblk(v, TIMEX, TIMEY, pixelsOf(this.blk, B.nextBl));
     else v.boxFill(TIMEX, TIMEY, TIMEX + BLEN - 1, TIMEY + BLEN - 1, empty);
 
@@ -112,8 +112,8 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
       sh(MONX - 18, MONY, 'Monster');
       sh(MONX - 18, MONY + 20, 'Every');
       sh(MONX - 18, MONY + 38, 'Ticks');
-      v.write(MONX - 8, MONY + 10, fc[GREY3], this.birthStr(B)); // variables
-      v.write(MONX, MONY + 30, fc[GREY3], d(B.birthTime, 4));
+      v.write(MONX - 8, MONY + 10, fc[GRAY3], this.birthStr(B)); // variables
+      v.write(MONX, MONY + 30, fc[GRAY3], d(B.birthTime, 4));
       sh(TMENUX + 5, TOUCHY + 6, 'Block to');
       if (B.touchBl !== b) {
         sh(TMENUX + TMENULEN - 40, TOUCHY + 6, d(B.touchBl, 5));
@@ -123,7 +123,7 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
         v.boxFill(TOUCHX, TOUCHY, TOUCHX + BLEN - 1, TOUCHY + BLEN - 1, empty);
       }
       this.drawGravityInfo(BLOCX, BLOCY, B);
-      this.objButton(B.obj, fc[GREY3]);
+      this.objButton(B.obj, fc[GRAY3]);
     }
   }
 
@@ -133,7 +133,7 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
 
   protected objButton(inv: number, col: number): void {
     if (this.lastbl !== BACKBL) return;
-    const g4 = this.face.cols[GREY4];
+    const g4 = this.face.cols[GRAY4];
     this.face.drawsurface(OBJECTX, OBJECTY, 9 * 8, 2 * 10);
     if (inv) {
       this.gwriteShadow(OBJECTX, OBJECTY, col, g4, 'Inventory');
@@ -148,7 +148,7 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
     const fc = this.face.cols;
     // (Color 3 of these was never set in the C; the arrow does not use it.)
     const sel = [0, fc[RED1], fc[RED2], 0];
-    const dull = [0, fc[GREY2], fc[GREY4], 0];
+    const dull = [0, fc[GRAY2], fc[GRAY4], 0];
     const v = this.v;
     v.draw4dat(blkx + 2, blky - DISTAWAY - 27, GRAVAR, 15, 15, B.grav & SOLTOP ? sel : dull, 0);
     v.draw4dat(blkx + 2, blky + BLEN + DISTAWAY + 10, GRAVAR, 15, 15, B.grav & SOLBOT ? sel : dull, 2);
@@ -160,7 +160,7 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
     const { v, face } = this;
     const fc = face.cols;
     const yes = fc[RED3];
-    const no = fc[GREY2];
+    const no = fc[GRAY2];
     face.drawborder(BLOCX, BLOCY - DISTAWAY - 2, BLEN, 3, 1, 1); // Top Solid
     if (B.solid & SOLTOP) v.boxFill(blkx - 1, blky - DISTAWAY - 3, blkx + BLEN - 1, blky - DISTAWAY, yes);
     else v.boxFill(blkx, blky - DISTAWAY - 2, blkx + BLEN - 1, blky - DISTAWAY, no);
@@ -179,14 +179,14 @@ export abstract class BlockInfoDrawing extends BlockDesignerScreen {
   protected touchNone(): void {
     const { v, face } = this;
     const fc = face.cols;
-    v.boxFill(TOUCHX, TOUCHY, TOUCHX + BLEN - 1, TOUCHY + BLEN - 1, fc[GREY4]);
-    v.boxFill(TMENUX + TMENULEN - 32, TOUCHY + 6, TMENUX + TMENULEN, TOUCHY + 14, fc[GREY1]);
-    this.gwriteShadow(TMENUX + TMENULEN - 32, TOUCHY + 6, fc[GREY3], fc[GREY4], 'None');
+    v.boxFill(TOUCHX, TOUCHY, TOUCHX + BLEN - 1, TOUCHY + BLEN - 1, fc[GRAY4]);
+    v.boxFill(TMENUX + TMENULEN - 32, TOUCHY + 6, TMENUX + TMENULEN, TOUCHY + 14, fc[GRAY1]);
+    this.gwriteShadow(TMENUX + TMENULEN - 32, TOUCHY + 6, fc[GRAY3], fc[GRAY4], 'None');
   }
 
   protected writeNtime(b: number, col: number): void {
     const { v, face } = this;
-    v.boxFill(TIMEX - 8, TIMEY + BLEN + 11, TIMEX + BLEN + 2, TIMEY + BLEN + 17, face.cols[GREY1]);
+    v.boxFill(TIMEX - 8, TIMEY + BLEN + 11, TIMEX + BLEN + 2, TIMEY + BLEN + 17, face.cols[GRAY1]);
     v.write(TIMEX - 8, TIMEY + BLEN + 11, col, d(this.blk[b].ntime, 4));
   }
 

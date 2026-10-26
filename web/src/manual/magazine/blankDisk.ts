@@ -5,7 +5,7 @@
 // and the corner cut at bottom left.
 import { svgArt } from './svgArt';
 
-/** One disk, 90 x 94 like the real thing in millimetres, its top-left corner at the origin. */
+/** One disk, 90 x 94 like the real thing in millimeters, its top-left corner at the origin. */
 function disk(body: string, edge: string, front: boolean): string {
   const shell = `<path d="M3 0 H87 a3 3 0 0 1 3 3 V91 a3 3 0 0 1 -3 3 H6 L0 88 V3 a3 3 0 0 1 3 -3 Z" fill="${body}" stroke="${edge}" stroke-width="0.8"/>`;
   // the metal shutter along the bottom, its window onto the disk, and the groove it slides in
@@ -26,7 +26,7 @@ function disk(body: string, edge: string, front: boolean): string {
   return shell + shutter + recess + arrow + protect + hd;
 }
 
-/** The stack of three unlabelled disks, as an image named by `alt`. */
+/** The stack of three unlabeled disks, as an image named by `alt`. */
 export function blankDiskArt(alt: string): Element {
   return svgArt(
     '0 0 128 116',

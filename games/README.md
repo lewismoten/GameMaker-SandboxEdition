@@ -428,7 +428,7 @@ trumpet patter over stride piano, a Broadway chorus), and eighteen sung clips ar
 **Shakespeare in Sweatpants** (`sweats`). The Bard of Bizarre's seventeen spoken monologues about
 overly dramatic boring events, shareware from The Sofa BBS (`"series": "bizarre"`): open-mic night at
 The Hive, a castle-front coffee house in Oakland (inspired by Lewis's memories of the Beehive; drawn
-from memory). Will the poet (a ruff, a velvet doublet, grey sweatpants) performs them in four sets, each
+from memory). Will the poet (a ruff, a velvet doublet, gray sweatpants) performs them in four sets, each
 monologue a side-on scene of its own that plays its boring event as an epic; Space declaims, two word
 balloons flying out along paths to both sides (power 160) to beat what comes at him. Between sets the
 intermissions are scenes on The Hive's one map: five tips buy a coffee at the register (a block that

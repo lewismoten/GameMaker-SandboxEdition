@@ -53,7 +53,7 @@ function streaks(base: Pixels, dir: 'left' | 'right' | 'up', ph: number, faint =
   return p;
 }
 
-/** A fan's round cage and blades over a copy of `base`, centred at (cx, cy). */
+/** A fan's round cage and blades over a copy of `base`, centered at (cx, cy). */
 function fanFace(p: Pixels, cx: number, cy: number, rad: number, ph: number): void {
   p.disc(cx, cy, rad, c('metal', 1));
   for (let k = 0; k < 4; k++) {

@@ -104,7 +104,7 @@ function bedroomBackdrop(pal: Pal): Pixels {
 
 /** The clock on the night stand: big red digits. */
 function clock(p: Pixels, pal: Pal, x: number, y: number, time: string, colon: boolean): void {
-  p.rect(x, y, 44, 18, pal.c('ink', 0)).frame(x, y, 44, 18, pal.c('grey', 1));
+  p.rect(x, y, 44, 18, pal.c('ink', 0)).frame(x, y, 44, 18, pal.c('gray', 1));
   outlined(p, x + 3, y + 5, colon ? time : time.replace(':', ' '), pal.c('digit', 1), pal.c('ink', 0));
 }
 

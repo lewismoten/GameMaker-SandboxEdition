@@ -76,7 +76,7 @@ function dogHouse(p: Pixels, x: number, y: number, s: number, open = 0): void {
   for (let i = 0; i < 6; i++) {
     const cx = 8 + (i % 3) * 10;
     const cy = 49 + Math.floor(i / 3) * 6;
-    R(cx, cy, 8, 5, c('grey', 2));
+    R(cx, cy, 8, 5, c('gray', 2));
     R(cx + 2, cy + 1, 4, 3, c(rocks[i], 3));
   }
   // the box

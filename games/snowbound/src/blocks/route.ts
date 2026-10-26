@@ -25,13 +25,13 @@ export function addRoute(k: Ctx, { yardBase, sidewalk }: Painters): void {
     const y = 16 - i * 2;
     const x = 2 + (i % 2);
     bundle
-      .rect(x, y, 16, 2, c('grey', 5))
+      .rect(x, y, 16, 2, c('gray', 5))
       .rect(x, y + 1, 16, 1, c('concrete', 2))
       .set(x, y, c('concrete', 2))
       .set(x + 15, y + 1, c('concrete', 1));
   }
   // the top paper: masthead, a headline and two columns of type
-  bundle.rect(2, 3, 17, 6, c('grey', 5)).frame(2, 3, 17, 6, c('concrete', 1));
+  bundle.rect(2, 3, 17, 6, c('gray', 5)).frame(2, 3, 17, 6, c('concrete', 1));
   bundle.rect(3, 4, 15, 1, c('ink', 0));
   bundle.rect(4, 6, 6, 1, c('concrete', 1)).rect(11, 6, 6, 1, c('concrete', 1)).rect(4, 7, 5, 1, c('concrete', 2)).rect(11, 7, 4, 1, c('concrete', 2));
   // the twine, crossed and knotted on top
@@ -50,7 +50,7 @@ export function addRoute(k: Ctx, { yardBase, sidewalk }: Painters): void {
   book.add('stoop', mat(), { effect: PAPERS, eamt: -1, score: 250, touch: 'stoopPaper' });
   // ...and the same mat with the morning paper on it: rolled, with a red rubber band.
   const done = mat();
-  done.rect(4, 4, 12, 4, c('grey', 5)).rect(4, 7, 12, 1, c('concrete', 1)).rect(4, 4, 1, 4, c('concrete', 2)).rect(15, 4, 1, 4, c('concrete', 2));
+  done.rect(4, 4, 12, 4, c('gray', 5)).rect(4, 7, 12, 1, c('concrete', 1)).rect(4, 4, 1, 4, c('concrete', 2)).rect(15, 4, 1, 4, c('concrete', 2));
   done.rect(6, 5, 7, 1, c('concrete', 1)).rect(6, 6, 5, 1, c('concrete', 2));
   done.rect(9, 4, 1, 4, c('coat', 3)).rect(10, 4, 1, 4, c('coat', 1));
   book.add('stoopPaper', done);

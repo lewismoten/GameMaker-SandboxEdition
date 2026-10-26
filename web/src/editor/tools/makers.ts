@@ -5,7 +5,7 @@ import type { FileKind, Project } from '../core/project';
 
 interface Maker {
   label: string;
-  /** Resolves with the new file's name, or undefined if cancelled. */
+  /** Resolves with the new file's name, or undefined if canceled. */
   run: (p: Project) => Promise<string | undefined>;
 }
 

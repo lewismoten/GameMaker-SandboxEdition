@@ -25,7 +25,7 @@ const K: Record<string, number> = {
 };
 const S = (rows: string[], dx?: number, dy?: number) => sprite(rows, K, dx, dy);
 
-/** Dust bunnies: grey fluff with two dot eyes, rolling. */
+/** Dust bunnies: gray fluff with two dot eyes, rolling. */
 const bunny = (k: number) =>
   S(
     k

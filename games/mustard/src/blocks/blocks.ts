@@ -534,7 +534,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // air down in the dust by the buried junk (a glint crosses it now and then) and a painted Easter
   // egg at the foot of the great plant, far over on the left. Each is air like the cave or sky
   // around it, a few points, gone when touched (that is its touch block), with no sound of its own.
-  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('white', 2), dark: c('grey', 1) };
+  const tin = { ink: c('ink', 0), tin: [c('gray', 2), c('gray', 3), c('gray', 4)], white: c('white', 2), dark: c('gray', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, drawTinHeart(cave(4), tin, k), {
       ...air,

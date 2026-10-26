@@ -2,7 +2,7 @@
 // needs or uses up, limited uses) and the monster a frame gives birth to (birthmon).
 import { errorBox } from '../../retro/text/textUi';
 import { SIZEX, SIZEY } from '../shared/vga';
-import { BLEN, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RIGHT } from '../shared/facelift';
+import { BLEN, GRAY2, GRAY3, GRAY4, LEFT, NONE, RED1, RIGHT } from '../shared/facelift';
 import { BACKBL, CHARBL, MONBL, emptyBlock } from '../../formats/blocks';
 import { type Frame } from '../../formats/character';
 import { LASTMON, parseMonsters } from '../../formats/monster';
@@ -25,7 +25,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     for (let k = 0; k < 2; k++)
       for (let j = 0; j < 5; j++)
         if (inv[5 * k + j] !== BACKBL) this.drawblk(INVX(j), INVY(k), this.pix(inv[5 * k + j]));
-        else this.v.boxFill(INVX(j), INVY(k), INVX1(j), INVY1(k), this.face.cols[GREY2]);
+        else this.v.boxFill(INVX(j), INVY(k), INVX1(j), INVY1(k), this.face.cols[GRAY2]);
   }
 
   /** inventinit: the objects the character starts with. */
@@ -50,9 +50,9 @@ export abstract class CharacterInventory extends SequenceEditor {
     face.drawsurface(INVX(0) - 6, INVY(0) - 6, 6 + 5 * (BLEN + 5), 6 + 2 * (BLEN + 5));
     for (let k = 0; k < 2; k++)
       for (let j = 0; j < 5; j++) {
-        v.boxFill(INVX(j), INVY(k), INVX1(j), INVY1(k), fc[GREY2]);
-        v.line(INVX(j) - 1, INVY(k) - 1, INVX1(j), INVY(k) - 1, fc[GREY3]);
-        v.line(INVX(j) - 1, INVY(k) - 1, INVX(j) - 1, INVY1(k), fc[GREY4]);
+        v.boxFill(INVX(j), INVY(k), INVX1(j), INVY1(k), fc[GRAY2]);
+        v.line(INVX(j) - 1, INVY(k) - 1, INVX1(j), INVY(k) - 1, fc[GRAY3]);
+        v.line(INVX(j) - 1, INVY(k) - 1, INVX(j) - 1, INVY1(k), fc[GRAY4]);
       }
     face.drawlistframe(MOX, MOY2, MOLEN);
     this.drawlist(MOX, MOY2, MOLEN, BACKBL, curblk2, (n) => n);
@@ -61,7 +61,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     face.drawborder(TBOX(36), TBOXY, 289, 9, 5, 2);
     face.boxWithText(TBOX(36), TBOXY, 'Select Objects for Initial Inventory');
     face.drawborder(20, 174, 281, 9, 5, 2);
-    v.boxFill(20, 174, 300, 182, fc[GREY2]);
+    v.boxFill(20, 174, 300, 182, fc[GRAY2]);
     while (p.inv[curinv] !== BACKBL && curinv < 9) curinv++;
     this.drawinv();
     v.moucur(true);
@@ -77,7 +77,7 @@ export abstract class CharacterInventory extends SequenceEditor {
       await v.tick();
       const { x: mx, y: my, but: buts } = v.moustats();
       if (buts > 0) {
-        v.boxFill(20, 174, 300, 182, fc[GREY2]); // Turn off error msg
+        v.boxFill(20, 174, 300, 182, fc[GRAY2]); // Turn off error msg
         if (mx > MX4 && mx < MX4 + 36 && my > MY4 && my < MY4 + 10) return done();
         if (my >= MOY2 && my < MOY2 + BLEN) {
           if (mx >= MOX && mx < MOX + MOLEN * BLEN) {
@@ -146,7 +146,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     face.doneb(MX3, MY3 + 13);
     v.moucurbox(1, 1, SIZEX - 1, SIZEY - 1);
     let current = 0;
-    if (sq.bloc === BACKBL) v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
+    if (sq.bloc === BACKBL) v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
     else {
       this.drawblk(SELX, SELY, this.pix(sq.bloc));
       current = sq.bloc;
@@ -155,7 +155,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     face.drawborder(TBOX(34), TBOXY, 273, 9, 5, 2);
     face.boxWithText(TBOX(34), TBOXY, 'Select Object to Activate Sequence');
     face.drawborder(20, 174, 281, 9, 5, 2);
-    v.boxFill(20, 174, 300, 182, fc[GREY2]);
+    v.boxFill(20, 174, 300, 182, fc[GRAY2]);
     await v.fadeTo(this.colors);
     v.moucur(true);
     for (;;) {
@@ -171,8 +171,8 @@ export abstract class CharacterInventory extends SequenceEditor {
         }
         if (my > MY3 && my < MY3 + 10) {
           sq.bloc = BACKBL;
-          v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
-          v.boxFill(20, 174, 300, 182, fc[GREY2]);
+          v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
+          v.boxFill(20, 174, 300, 182, fc[GRAY2]);
           this.saved = false;
         }
       }
@@ -182,7 +182,7 @@ export abstract class CharacterInventory extends SequenceEditor {
           if (this.blk[b].obj === 1) {
             sq.bloc = b;
             this.drawblk(SELX, SELY, this.pix(b));
-            v.boxFill(20, 174, 300, 182, fc[GREY2]);
+            v.boxFill(20, 174, 300, 182, fc[GRAY2]);
             this.saved = false;
           } else face.boxWithText(20, 174, 'Only Object Blocks can be Selected!');
         }
@@ -261,7 +261,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     face.doneb(MX3, MY4);
     v.moucurbox(1, 1, SIZEX - 1, SIZEY - 1);
     this.drawlist(MOX, MOY2, MOLEN, LASTMON, curmon, monnum);
-    v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
+    v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
     face.drawborder(TBOX(21), TBOXY, 169, 9, 5, 2);
     face.boxWithText(TBOX(21), TBOXY, 'Pick Monster to Shoot');
     await v.fadeTo(this.colors);
@@ -316,7 +316,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     face.drawsurface(MX3 - 2, MY4 - 1, 40, 14);
     face.doneb(MX3, MY4);
     face.drawborder(SELX, SELY - BLEN / 2, BLEN, BLEN * 2, 2, 2);
-    v.boxFill(SELX, SELY - BLEN / 2, SELX + BLEN - 1, SELY + (BLEN * 3) / 2 - 1, fc[GREY2]);
+    v.boxFill(SELX, SELY - BLEN / 2, SELX + BLEN - 1, SELY + (BLEN * 3) / 2 - 1, fc[GRAY2]);
     face.drawsurface(34, 15, 260, 20);
     v.write(36, 17, fc[RED1], ' Choose the position from which');
     v.write(36, 25, fc[RED1], '      the monster is shot.     ');
@@ -324,7 +324,7 @@ export abstract class CharacterInventory extends SequenceEditor {
     cur.x = 0;
     cur.y = 0;
     const draw = () => this.drawbl(SELX, SELY - BLEN / 2 + cur.y, this.monpic(cur.pic1), cur.orient & 0xff);
-    const erase = () => v.boxFill(SELX, SELY - BLEN / 2 + cur.y, SELX - 1 + cur.x + BLEN, SELY + BLEN / 2 - 1 + cur.y, fc[GREY2]);
+    const erase = () => v.boxFill(SELX, SELY - BLEN / 2 + cur.y, SELX - 1 + cur.x + BLEN, SELY + BLEN / 2 - 1 + cur.y, fc[GRAY2]);
     draw();
     v.moucur(true);
     for (;;) {

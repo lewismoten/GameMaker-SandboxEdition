@@ -481,7 +481,7 @@ main.credits-page .bard-table thead th {
   box-shadow: inset 0 -2px 0 var(--border);
 }
 
-/* Phones and narrow windows: each table row becomes a card, its cells labelled. */
+/* Phones and narrow windows: each table row becomes a card, its cells labeled. */
 @media (max-width: 899px) {
   main.credits-page .credits-table,
   main.credits-page .credits-table caption:not(.sr-only),

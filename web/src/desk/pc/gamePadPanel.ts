@@ -1,5 +1,5 @@
 // The game pad's large controls (gamePad.ts): the pad drawn big in a panel at the bottom of the
-// window, over the desk but clear of the PC's screen, with a labelled button on each of the
+// window, over the desk but clear of the PC's screen, with a labeled button on each of the
 // d-pad's eight ways and on each of its four buttons. Hold one with the pointer, or with Enter
 // or Space (the arrow keys push the d-pad too); the game on the PC reads it as the joystick.
 // The panel doesn't take the focus from the game when it is opened or pressed with the pointer.

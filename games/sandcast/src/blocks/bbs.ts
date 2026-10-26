@@ -2,7 +2,7 @@
 // walls, letter blocks that spell the board's name, the floppy and juice prizes (drawn over
 // the ANSI floor), the SysOp's terminal and the NO CARRIER doorway out.
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { ANSI, GREY, STEEL } from '../art/palette';
+import { ANSI, GRAY, STEEL } from '../art/palette';
 import { CTR } from '../rules';
 import { Pixels, art, bevel, rng, tile } from '../art/draw';
 import { SOLID, bg } from './common';
@@ -83,11 +83,11 @@ export function addBbs(juiceArt: Pixels): void {
   {
     // The SysOp's terminal, glowing green.
     const p = tile(0).blit(bg.pic('ansiFloor'), 0, 0);
-    bevel(p, 1, 2, 18, 14, GREY, 3, 1);
+    bevel(p, 1, 2, 18, 14, GRAY, 3, 1);
     p.rect(3, 4, 14, 9, 0);
     for (let y = 5; y < 12; y += 2) p.rect(4, y, 4 + ((y * 5) % 9), 1, ANSI[10]);
     p.rect(4, 11, 2, 1, ANSI[15]);
-    p.rect(3, 16, 14, 3, GREY[2]).rect(4, 17, 12, 1, GREY[4]);
+    p.rect(3, 16, 14, 3, GRAY[2]).rect(4, 17, 12, 1, GRAY[4]);
     bg.add('terminal', p, { solid: SOLID });
   }
   {

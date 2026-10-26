@@ -327,7 +327,7 @@ function lostScreen(): Pixels {
   const dead = new Pixels(20, 20, 255);
   dead
     .rect(1, 9, 18, 7, c('ink', 0))
-    .rect(2, 10, 6, 5, c('grey', 2))
+    .rect(2, 10, 6, 5, c('gray', 2))
     .rect(8, 10, 5, 5, c('skin', 2))
     .rect(13, 10, 5, 5, c('blue', 1))
     .rect(14, 7, 4, 3, c('yellow', 3));

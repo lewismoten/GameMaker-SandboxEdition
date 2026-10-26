@@ -10,7 +10,7 @@ type Light = 'house' | 'night' | 'dawn';
 
 /** [name, shades, dark, light, mid?, gives off light?] */
 const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
-  ['grey', 8, [24, 24, 30], [214, 214, 220]],
+  ['gray', 8, [24, 24, 30], [214, 214, 220]],
   ['wood', 8, [52, 30, 16], [214, 160, 98]],
   ['panel', 6, [26, 12, 10], [120, 64, 42]],
   ['velvet', 8, [44, 4, 10], [232, 52, 60], [150, 14, 26]],

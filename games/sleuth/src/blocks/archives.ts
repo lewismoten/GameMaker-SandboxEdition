@@ -29,10 +29,10 @@ function portrait(): Pixels {
     p.rect(4, 12, 12, 2, c('paper', 4));
     for (let x = 4; x < 16; x += 2) p.set(x, 14, c('paper', 2));
     p.rect(9, 13, 2, 4, c('velvet', 3));
-    // face, grey-brown hair, spectacles
+    // face, gray-brown hair, spectacles
     p.rect(7, 7, 6, 5, c('skin', 3)).rect(8, 11, 4, 1, c('skin', 2));
     p.set(6, 8, c('tan', 1)).set(13, 8, c('tan', 1)).set(6, 9, c('tan', 1)).set(13, 9, c('tan', 1));
-    p.rect(7, 8, 2, 1, c('grey', 5)).rect(11, 8, 2, 1, c('grey', 5)).set(9, 8, c('grey', 3)).set(10, 8, c('grey', 3));
+    p.rect(7, 8, 2, 1, c('gray', 5)).rect(11, 8, 2, 1, c('gray', 5)).set(9, 8, c('gray', 3)).set(10, 8, c('gray', 3));
     p.set(8, 9, c('black', 0)).set(11, 9, c('black', 0));
     p.set(9, 10, c('skin', 2)).rect(9, 11, 2, 1, c('velvet', 1));
     // the tricorn: a wide upturned brim, its point to the front
@@ -76,7 +76,7 @@ function clipping(right: boolean): Pixels {
       [42, 13],
       [48, 18],
     ])
-      w.set(x, y, c('grey', 3)); // blotted ink
+      w.set(x, y, c('gray', 3)); // blotted ink
   return w;
 }
 

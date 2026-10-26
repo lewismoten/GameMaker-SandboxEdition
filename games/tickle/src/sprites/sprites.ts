@@ -158,7 +158,7 @@ function leoArt(pal: Pal) {
       // the back of his head: ash hair down to the neck, his ears either side
       for (let y = hy; y < hy + 6; y++)
         for (let x = fx - 5; x <= fx + 5; x++)
-          if (p.get(x, y) !== T && !(y >= hy + 3 && y <= hy + 4 && Math.abs(x - fx) >= 4)) p.set(x, y, c('grey', y < hy + 2 ? 2 : 1));
+          if (p.get(x, y) !== T && !(y >= hy + 3 && y <= hy + 4 && Math.abs(x - fx) >= 4)) p.set(x, y, c('gray', y < hy + 2 ? 2 : 1));
     } else {
       // the ash beard: stubble over the jaw
       for (let y = hy + 5; y < hy + 10; y++)
@@ -497,14 +497,14 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     p.line(4, 0, 9, 13, c('steel', 3)).line(5, 0, 10, 13, c('steel', 2)).rect(2, 0, 5, 2, c('red', 2));
     blob(p, 10, 16, 8, 3.4, pal.r('steel'), 1, 4);
-    p.rect(2, 18, 16, 2, c('grey', 0));
+    p.rect(2, 18, 16, 2, c('gray', 0));
     for (let k = 0; k < 4; k++) p.set(3 + ((k * 4 + f * 2) % 15), 19, c('paper', 2));
     p.set(15, 15, c('red', 3));
     return done(p);
   };
   book.add('buffer0', buffer(0), hurt(-8));
   book.add('buffer1', buffer(1), hurt(-8));
-  // ---- Dean Dour (A: his head and the mortarboard, B: grey suit and clipboard)
+  // ---- Dean Dour (A: his head and the mortarboard, B: gray suit and clipboard)
   const deanA = (f: number) => {
     const p = P();
     p.rect(3, 2, 14, 2, c('ink', 1))
@@ -514,16 +514,16 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(6, 9, 3, 2, c('glass', 1)).rect(11, 9, 3, 2, c('glass', 1)).rect(9, 9, 2, 1, c('ink', 0));
     p.set(7, 10, ink).set(12, 10, ink).line(6, 8, 9, 9, ink).line(11, 9, 14, 8, ink);
     p.line(8, 15, 12, 15, ink).set(7, 16, ink).set(13, 16, ink);
-    p.rect(7, 17, 6, 3, c('grey', 1)).rect(8, 17, 4, 3, c('paper', 2)).rect(9, 18, 2, 2, c('red', 1));
+    p.rect(7, 17, 6, 3, c('gray', 1)).rect(8, 17, 4, 3, c('paper', 2)).rect(9, 18, 2, 2, c('red', 1));
     return done(p);
   };
   const deanB = (f: number) => {
     const p = P();
     // a white shirt front under the red tie, so he reads against the tower's purple stone
-    p.rect(4, 0, 12, 12, c('grey', 1)).rect(7, 0, 6, 7, c('paper', 2)).rect(9, 0, 2, 8, c('red', 1)).rect(4, 0, 2, 12, c('grey', 0));
+    p.rect(4, 0, 12, 12, c('gray', 1)).rect(7, 0, 6, 7, c('paper', 2)).rect(9, 0, 2, 8, c('red', 1)).rect(4, 0, 2, 12, c('gray', 0));
     // the clipboard
     p.rect(12, 3, 7, 8, c('wood', 2)).rect(13, 4, 5, 6, c('paper', 2)).rect(14, 5, 3, 1, ink).rect(14, 7, 3, 1, ink);
-    p.rect(5, 12, 4, 6, c('grey', 0)).rect(11, 12, 4, 6, c('grey', 0));
+    p.rect(5, 12, 4, 6, c('gray', 0)).rect(11, 12, 4, 6, c('gray', 0));
     p.rect(4 - f, 18, 5, 2, c('ink', 1)).rect(11 + f, 18, 5, 2, c('ink', 1));
     return done(p);
   };
@@ -632,12 +632,12 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('spark1', spark(1), { chHitPt: -5 });
   const pigeon = (f: number) => {
     const p = P();
-    blob(p, 10, 11, 5, 2.8, pal.r('grey'), 1, 3);
-    blob(p, 15, 8, 2.4, 2.2, pal.r('grey'), 2, 3);
-    p.rect(17, 8, 2, 1, c('wood', 2)).set(15, 7, c('nose', 1)).line(4, 11, 1, 12, c('grey', 1));
+    blob(p, 10, 11, 5, 2.8, pal.r('gray'), 1, 3);
+    blob(p, 15, 8, 2.4, 2.2, pal.r('gray'), 2, 3);
+    p.rect(17, 8, 2, 1, c('wood', 2)).set(15, 7, c('nose', 1)).line(4, 11, 1, 12, c('gray', 1));
     p.set(13, 10, c('purple', 2)).set(14, 11, c('tie', 2));
-    if (f) for (let k = 0; k < 6; k++) p.line(7 + k, 10, 5 + k, 3 + k / 3, c('grey', k > 3 ? 1 : 2));
-    else for (let k = 0; k < 6; k++) p.line(7 + k, 12, 5 + k, 18 - k / 3, c('grey', k > 3 ? 1 : 2));
+    if (f) for (let k = 0; k < 6; k++) p.line(7 + k, 10, 5 + k, 3 + k / 3, c('gray', k > 3 ? 1 : 2));
+    else for (let k = 0; k < 6; k++) p.line(7 + k, 12, 5 + k, 18 - k / 3, c('gray', k > 3 ? 1 : 2));
     return done(p);
   };
   book.add('pigeon0', pigeon(0), hurt(-5));

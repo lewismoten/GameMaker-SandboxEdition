@@ -31,7 +31,7 @@ export function clampPos(p: Point): Point {
   };
 }
 
-/** Where card centres (Pos + 2) may go: inside the world's frame, or (for crowded games) anywhere Pos may be. */
+/** Where card centers (Pos + 2) may go: inside the world's frame, or (for crowded games) anywhere Pos may be. */
 export const ROOMY = {
   x0: WORLD.x + CARD_UNITS.w / 2,
   y0: WORLD.y + CARD_UNITS.h / 2,
@@ -40,7 +40,7 @@ export const ROOMY = {
 };
 export const TIGHT = { x0: POS_MIN.x + 2, y0: POS_MIN.y + 2, x1: POS_MAX.x + 2, y1: POS_MAX.y + 2 };
 export type Area = typeof ROOMY;
-/** How far apart neighbouring cards may sit at most (so small games don't sprawl). */
+/** How far apart neighboring cards may sit at most (so small games don't sprawl). */
 export const MAX_GAP = { x: CARD_UNITS.w * 1.6, y: CARD_UNITS.h * 1.5 };
 
 // ---- the scene graph ------------------------------------------------------------------------
@@ -150,7 +150,7 @@ interface Block {
 }
 
 /**
- * A tree laid out left to right: each scene in the column before its children, centred on
+ * A tree laid out left to right: each scene in the column before its children, centered on
  * them; runs of children that lead nowhere further are packed in a grid at most `leafRows`
  * tall, so a hub with many dead ends stays compact.
  */
@@ -233,7 +233,7 @@ export function flowOrder(g: Graph): number[] {
   return [...order, ...g.ends];
 }
 
-/** The scenes in flow order along rows that turn back at each end ("as the ox ploughs"), or down columns. */
+/** The scenes in flow order along rows that turn back at each end ("as the ox plows"), or down columns. */
 export function snakeCells(order: number[], across: number, byColumns: boolean): Cells {
   const cells: Cells = new Map();
   order.forEach((s, k) => {

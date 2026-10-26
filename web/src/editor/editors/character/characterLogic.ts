@@ -74,7 +74,7 @@ export function deleteFrame(seq: Sequence, at: number): void {
   setFrames(seq, list);
 }
 
-/** Swaps frame `at` with its neighbour `at + dir`. */
+/** Swaps frame `at` with its neighbor `at + dir`. */
 export function moveFrame(seq: Sequence, at: number, dir: -1 | 1): boolean {
   const list = activeFrames(seq);
   const to = at + dir;

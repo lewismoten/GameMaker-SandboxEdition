@@ -28,7 +28,7 @@ export const MON = {
   /** The mustard seed in red sneakers, lost between the cushions too. Say hi. */
   seed: 13,
   seedBye: 14,
-  /** Lint: a grey wisp drifting about. A shout blows it away. */
+  /** Lint: a gray wisp drifting about. A shout blows it away. */
   lint: 15,
   /** The third goat from the left, a long way from Bethlehem, grazing on lost socks. Harmless. */
   goat: 16,

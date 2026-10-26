@@ -60,7 +60,7 @@ export async function canExport(): Promise<boolean> {
   return !!(await canEncodeMp4(W, H));
 }
 
-const aborted = () => new DOMException('The video was cancelled', 'AbortError');
+const aborted = () => new DOMException('The video was canceled', 'AbortError');
 
 export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult> {
   const vcodec = await canEncodeMp4(W, H);

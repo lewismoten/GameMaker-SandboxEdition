@@ -59,17 +59,17 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
     ] as const) {
       pic
         .rect(1, y0 + 1, 38, 38, c('white', 2))
-        .frame(1, y0 + 1, 38, 38, c('grey', 1))
+        .frame(1, y0 + 1, 38, 38, c('gray', 1))
         .rect(2, y0 + 2, 36, 7, c('white', 1))
-        .rect(2, y0 + 9, 36, 1, c('grey', 2));
+        .rect(2, y0 + 9, 36, 1, c('gray', 2));
       pic
-        .disc(8, y0 + 5, 2, c('grey', 1))
-        .disc(14, y0 + 5, 2, c('grey', 1))
+        .disc(8, y0 + 5, 2, c('gray', 1))
+        .disc(14, y0 + 5, 2, c('gray', 1))
         .rect(24, y0 + 3, 10, 4, c('night', 1));
       micro(pic, 25, y0 + 3, dryer ? 'HOT' : 'WAR', c(dryer ? 'red' : 'ice', 2));
       pic
-        .disc(20, y0 + 24, 12, c('grey', 2))
-        .disc(20, y0 + 24, 10, c('grey', 0))
+        .disc(20, y0 + 24, 12, c('gray', 2))
+        .disc(20, y0 + 24, 10, c('gray', 0))
         .disc(20, y0 + 24, 9, c(dryer ? 'night' : 'ice', dryer ? 1 : 0));
       if (dryer) {
         // the drum tumbling: a lone sock flung round in careless heat, and the heat
@@ -86,10 +86,10 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
           pic.disc(x, y0 + y, r, c('white', 2)).set(x - 1, y0 + y - 1, c('ice', 2));
       }
       pic
-        .ring(20, y0 + 24, 12, c('grey', 2))
-        .ring(20, y0 + 24, 11.5, c('grey', 2))
+        .ring(20, y0 + 24, 12, c('gray', 2))
+        .ring(20, y0 + 24, 11.5, c('gray', 2))
         .ring(20, y0 + 24, 9.6, c('white', 2));
-      pic.rect(3, y0 + 36, 34, 2, c('grey', 1));
+      pic.rect(3, y0 + 36, 34, 2, c('gray', 1));
     }
     addPicture(book, 'tower', pic, wall(50), () => ({ solid: SOLID }));
   }
@@ -103,15 +103,15 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
   book.add('basket', basket, { solid: SOLID });
   // the clothesline (a cord with clothespins), strung over the shelves
   const line = (p: Pixels) => {
-    p.rect(0, 2, 20, 1, c('white', 0)).rect(0, 3, 20, 1, c('grey', 1));
+    p.rect(0, 2, 20, 1, c('white', 0)).rect(0, 3, 20, 1, c('gray', 1));
     return p;
   };
   book.add('line', line(wall(52)), AIR);
   // the dryer's vent where the line is tied: lint puffs out of it
   const vent = line(wall(55));
-  vent.rect(0, 6, 9, 8, c('metal', 1)).rect(0, 6, 9, 1, c('metal', 2)).rect(9, 5, 3, 10, c('metal', 2)).rect(12, 6, 2, 8, c('grey', 0));
+  vent.rect(0, 6, 9, 8, c('metal', 1)).rect(0, 6, 9, 1, c('metal', 2)).rect(9, 5, 3, 10, c('metal', 2)).rect(12, 6, 2, 8, c('gray', 0));
   for (let x = 1; x < 9; x += 2) vent.rect(x, 7, 1, 7, c('metal', 0));
-  vent.set(15, 8, c('grey', 2)).set(17, 10, c('grey', 2)).set(16, 12, c('grey', 1)).rect(1, 1, 3, 4, c('wood', 3));
+  vent.set(15, 8, c('gray', 2)).set(17, 10, c('gray', 2)).set(16, 12, c('gray', 1)).rect(1, 1, 3, 4, c('wood', 3));
   book.add('vent', vent, { ...AIR, birthMon: SOCKS_MON.lint, birthTime: 160 });
   // the ironing board (a ledge), the iron on one end
   const board = (iron: boolean) => {
@@ -127,7 +127,7 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
   const peer = book.pics.get('win.0.0')!.crop(0, 0, 20, 20);
   for (const [x, hair] of [
     [10, 'hair'],
-    [16, 'grey'],
+    [16, 'gray'],
   ] as const) {
     blob(peer, x, 13, 3, 3.4, R('skin'), 1, 3);
     peer
@@ -174,13 +174,13 @@ export function socksSprites(book: SpriteBook, pal: Pal): void {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
-  // static lint off the dryer: a grey fuzzball crackling
+  // static lint off the dryer: a gray fuzzball crackling
   const lint = (f: number) => {
     const p = P();
-    blob(p, 10, 11, 5.5, 5, pal.r('grey'), 1, 3);
+    blob(p, 10, 11, 5.5, 5, pal.r('gray'), 1, 3);
     for (let k = 0; k < 10; k++) {
       const a = (k / 10) * Math.PI * 2 + f * 0.3;
-      p.set(10 + Math.cos(a) * 7, 11 + Math.sin(a) * 6.5, c('grey', 2));
+      p.set(10 + Math.cos(a) * 7, 11 + Math.sin(a) * 6.5, c('gray', 2));
     }
     p.line(1 + f * 2, 3, 4 + f * 2, 6, c('yellow', 2)).line(16 - f * 2, 2, 18 - f * 2, 5, c('yellow', 2));
     face(p, pal, 10, 10, { angry: true });
@@ -191,7 +191,7 @@ export function socksSprites(book: SpriteBook, pal: Pal): void {
   // a perfectly matched pair, marching in step: conformity
   const pair = (f: number) => {
     const p = P();
-    for (const x of [1, 9]) drawSock(p, pal, x, 5 - (f ? 1 : 0), ['grey', 2], (_x, y) => (y === 4 || y === 6 ? c('navy', 1) : undefined));
+    for (const x of [1, 9]) drawSock(p, pal, x, 5 - (f ? 1 : 0), ['gray', 2], (_x, y) => (y === 4 || y === 6 ? c('navy', 1) : undefined));
     p.set(3, 9 - f, ink)
       .set(5, 9 - f, ink)
       .set(11, 9 - f, ink)
@@ -203,8 +203,8 @@ export function socksSprites(book: SpriteBook, pal: Pal): void {
   // a whisper: WHY?
   const why = (f: number) => {
     const p = P();
-    p.rect(1, 4 + f, 18, 9, c('grey', 2)).rect(2, 5 + f, 16, 7, c('white', 1));
-    p.set(5, 13 + f, c('grey', 2)).set(4, 14 + f, c('grey', 2));
+    p.rect(1, 4 + f, 18, 9, c('gray', 2)).rect(2, 5 + f, 16, 7, c('white', 1));
+    p.set(5, 13 + f, c('gray', 2)).set(4, 14 + f, c('gray', 2));
     micro(p, 3, 6 + f, 'WHY?', c('purple', 1));
     return outline(p, ink);
   };

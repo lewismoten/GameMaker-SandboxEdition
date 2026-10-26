@@ -67,7 +67,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   const view = () => viewRect;
 
   /** Zooms so the whole path (and the origin) fits with a little room around it. */
-  function fitView(width?: number, centre?: { x: number; y: number }): void {
+  function fitView(width?: number, center?: { x: number; y: number }): void {
     const b = box();
     const aspect = b.w / b.h;
     const pts = [{ x: 0, y: 0 }, ...corners(path(), kind())];
@@ -78,7 +78,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
     let w = width ?? Math.max(maxX - minX + 7, (maxY - minY + 7) * aspect, kind() === 'normal' ? 13 : 19);
     w = Math.max(8, Math.min(b.w, Math.round(w)));
     const hgt = Math.min(b.h, Math.max(5, Math.round(w / aspect)));
-    const c = centre ?? { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
+    const c = center ?? { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
     const x0 = Math.max(b.x0, Math.min(b.x0 + b.w - w, Math.round(c.x - w / 2 + 0.5)));
     const y0 = Math.max(b.y0, Math.min(b.y0 + b.h - hgt, Math.round(c.y - hgt / 2 + 0.5)));
     viewRect = { x0, y0, w, h: hgt };

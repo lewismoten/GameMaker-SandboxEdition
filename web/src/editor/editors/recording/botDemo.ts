@@ -55,7 +55,7 @@ export async function runDemo(
   gam: string,
   walk: Walkthrough,
   stop: { tick: number } | { scene: number; ticks: number },
-  opts: { playback?: Uint8Array; maxMinutes?: number; cancelled?: () => boolean } = {},
+  opts: { playback?: Uint8Array; maxMinutes?: number; canceled?: () => boolean } = {},
 ): Promise<DemoRun> {
   const run = new WalkRun(headlessCanvas(), files, gam, { ...walk, story: false, segments: opts.playback ? [] : walk.segments });
   const out: DemoRun = { keys: [], scenes: [], end: 0, ended: false };
@@ -91,7 +91,7 @@ export async function runDemo(
       out.ended = true;
       break;
     }
-    if (run.frame % 600 === 0 && opts.cancelled?.()) break;
+    if (run.frame % 600 === 0 && opts.canceled?.()) break;
   }
   out.end = Math.min(stopAt, rec.tick);
   out.state ??= fingerprint(s, scene);
@@ -181,10 +181,10 @@ export async function walkToDemo(
   scene: number,
   seconds: number,
   esc: boolean,
-  cancelled?: () => boolean,
+  canceled?: () => boolean,
 ): Promise<BotDemo> {
   const ticks = Math.max(1, Math.round(seconds * GAME_HZ));
-  const run = await runDemo(files, gam, walk, { scene, ticks }, { cancelled });
+  const run = await runDemo(files, gam, walk, { scene, ticks }, { canceled });
   const at = run.scenes.find((x) => x.scene === scene);
   if (run.error) return { ticks: 0, shown: 0, sceneAt: 0, keys: 0, truncated: false, message: `The game stopped with an error: ${run.error}` };
   if (!at) return { ticks: 0, shown: 0, sceneAt: 0, keys: 0, truncated: false, message: 'The bot’s way through the game never comes to that scene.' };

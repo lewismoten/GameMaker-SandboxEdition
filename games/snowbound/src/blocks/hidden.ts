@@ -13,7 +13,7 @@ import type { addGround } from './ground';
 export function addHidden(k: Ctx, { yardBase }: ReturnType<typeof addGround>, pal: Uint8Array) {
   const { book, R, c } = k;
   // the tin heart: two frames of its shine (the plain heart, then the glint across it)
-  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('snow', 6), dark: c('ink', 1) };
+  const tin = { ink: c('ink', 0), tin: [c('gray', 2), c('gray', 3), c('gray', 4)], white: c('snow', 6), dark: c('ink', 1) };
   book.add('tinHeart', drawTinHeart(yardBase(111), tin, 0), { score: 100, touch: 'yardA0', next: 'tinHeart2', ntime: 50 });
   book.add('tinHeart2', drawTinHeart(yardBase(111), tin, 2), { score: 100, touch: 'yardA0', next: 'tinHeart', ntime: 3 });
   // the Easter egg, dyed Christmas red with gold zigzags

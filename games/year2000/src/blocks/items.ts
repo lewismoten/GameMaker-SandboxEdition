@@ -6,7 +6,7 @@ import { T, blob, oval, outline } from '../art/draw';
 import { micro } from '../art/font';
 import { C } from '../art/pal';
 
-const K = () => C('grey', 0);
+const K = () => C('gray', 0);
 
 function base(): Pixels {
   return new Pixels(20, 20, T);
@@ -14,7 +14,7 @@ function base(): Pixels {
 
 /** A hover shadow under an item. */
 function shadow(p: Pixels, cx = 10, cy = 17, rx = 5, ry = 1.6): Pixels {
-  oval(p, cx, cy, rx, ry, C('grey', 1));
+  oval(p, cx, cy, rx, ry, C('gray', 1));
   return p;
 }
 
@@ -34,7 +34,7 @@ export function pagePic(): Pixels {
     }
   // Scribbles and an A+.
   p.rect(9, 6, 4, 1, C('denim', 1)).rect(9, 9, 5, 1, C('denim', 1)).rect(10, 12, 3, 1, C('denim', 1));
-  outline(p, C('grey', 2));
+  outline(p, C('gray', 2));
   return p;
 }
 
@@ -44,7 +44,7 @@ function quarterPic(): Pixels {
   blob(p, 10, 9, 6, 6, PALR('chrome'), 2, 7);
   p.ring(10, 9, 5.5, C('chrome', 3));
   micro(p, 7, 7, '25', C('chrome', 2));
-  p.set(7, 5, C('grey', 7)).set(8, 4, C('grey', 7));
+  p.set(7, 5, C('gray', 7)).set(8, 4, C('gray', 7));
   outline(p, C('chrome', 0));
   return p;
 }
@@ -58,7 +58,7 @@ function pillPic(): Pixels {
     const cy = 13 - t * 8;
     oval(p, cx, cy, 3.3, 3.3, t < 0.5 ? C('pink', 3) : C('paper', 2));
   }
-  p.line(6, 10, 9, 7, C('pink', 5)).line(12, 4, 14, 3, C('grey', 7));
+  p.line(6, 10, 9, 7, C('pink', 5)).line(12, 4, 14, 3, C('gray', 7));
   outline(p, C('pink', 0));
   return p;
 }
@@ -66,8 +66,8 @@ function pillPic(): Pixels {
 function batteryPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 4);
-  p.rect(7, 4, 6, 12, C('grey', 1)).rect(7, 4, 6, 5, C('gold', 3)).rect(9, 2, 2, 2, C('chrome', 5));
-  p.rect(8, 5, 1, 10, C('grey', 3)).rect(8, 5, 1, 3, C('gold', 5));
+  p.rect(7, 4, 6, 12, C('gray', 1)).rect(7, 4, 6, 5, C('gold', 3)).rect(9, 2, 2, 2, C('chrome', 5));
+  p.rect(8, 5, 1, 10, C('gray', 3)).rect(8, 5, 1, 3, C('gold', 5));
   micro(p, 9, 10, '+', C('gold', 4));
   outline(p, K());
   return p;
@@ -76,7 +76,7 @@ function batteryPic(): Pixels {
 function zapperPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 7);
-  // A chunky Laser-Tag Zapper: grey body, teal barrel, orange safety tip, neon sensor.
+  // A chunky Laser-Tag Zapper: gray body, teal barrel, orange safety tip, neon sensor.
   p.rect(3, 6, 12, 5, C('chrome', 4)).rect(3, 6, 12, 1, C('chrome', 6));
   p.rect(14, 7, 4, 3, C('teal', 3)).rect(17, 7, 1, 3, C('orange', 3));
   p.rect(5, 10, 4, 6, C('chrome', 3)).rect(5, 15, 4, 1, C('chrome', 1));
@@ -107,10 +107,10 @@ function colaPic(): Pixels {
 function remotePic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 4);
-  p.rect(7, 6, 6, 10, C('grey', 2)).rect(7, 6, 6, 1, C('grey', 4));
+  p.rect(7, 6, 6, 10, C('gray', 2)).rect(7, 6, 6, 1, C('gray', 4));
   oval(p, 10, 10, 2, 2, C('red', 3));
   p.set(9, 9, C('red', 4));
-  p.rect(8, 13, 4, 1, C('grey', 4));
+  p.rect(8, 13, 4, 1, C('gray', 4));
   p.line(12, 6, 15, 2, C('chrome', 5));
   p.set(15, 1, C('red', 4));
   outline(p, K());
@@ -120,7 +120,7 @@ function remotePic(): Pixels {
 function keycardPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 6);
-  p.rect(4, 5, 12, 9, C('pink', 3)).rect(4, 7, 12, 2, C('grey', 1));
+  p.rect(4, 5, 12, 9, C('pink', 3)).rect(4, 7, 12, 2, C('gray', 1));
   p.rect(5, 10, 4, 3, C('paper', 2)).rect(10, 10, 5, 1, C('pink', 5)).rect(10, 12, 4, 1, C('pink', 5));
   p.rect(5, 5, 10, 1, C('pink', 5));
   outline(p, C('pink', 0));

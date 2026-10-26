@@ -111,8 +111,8 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
     p.rect(6, 8, 8, 2, c('snow', 6)).rect(7, 9, 6, 1, c('wood', 1));
     blob(p, 9, 8, 2, 1.5, snow, 5, 6);
     for (let i = 0; i < 6; i++) {
-      p.set(8 + Math.round(Math.sin((i + frame * 3) * 0.9) * 1.5), 6 - i, c('grey', 4));
-      p.set(12 + Math.round(Math.sin((i + frame * 3 + 2) * 0.9) * 1.5), 5 - i, c('grey', 4));
+      p.set(8 + Math.round(Math.sin((i + frame * 3) * 0.9) * 1.5), 6 - i, c('gray', 4));
+      p.set(12 + Math.round(Math.sin((i + frame * 3 + 2) * 0.9) * 1.5), 5 - i, c('gray', 4));
     }
     return p;
   };
@@ -136,8 +136,8 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
   book.add('bill', bill(yardBase(109), 0.15), { effect: MONEY, eamt: 1, score: 10, touch: 'yardA0', next: 'bill2', ntime: 5 });
   book.add('bill2', bill(yardBase(109), -0.15), { effect: MONEY, eamt: 1, score: 10, touch: 'yardA0', next: 'bill', ntime: 5 });
   const tip = sidewalk(111);
-  tip.rect(3, 5, 14, 10, c('snow', 6)).frame(3, 5, 14, 10, c('grey', 3));
-  tip.line(3, 5, 10, 10, c('grey', 3)).line(16, 5, 10, 10, c('grey', 3));
+  tip.rect(3, 5, 14, 10, c('snow', 6)).frame(3, 5, 14, 10, c('gray', 3));
+  tip.line(3, 5, 10, 10, c('gray', 3)).line(16, 5, 10, 10, c('gray', 3));
   micro(tip, 8, 10, '$5', c('coat', 2));
   book.add('tip', tip, { effect: MONEY, eamt: 5, score: 50, touch: 'walk' });
 
@@ -213,7 +213,7 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
   const streetSign = (name: string, top: string, bottom: string, bottomBlade = 'pine') => {
     const big = new Pixels(40, 20);
     big.blit(yardBase(115), 0, 0).blit(yardBase(117), 20, 0);
-    big.rect(19, 2, 2, 18, c('grey', 3)).rect(19, 2, 1, 18, c('grey', 4));
+    big.rect(19, 2, 2, 18, c('gray', 3)).rect(19, 2, 1, 18, c('gray', 4));
     blob(big, 20, 19, 5, 2, snow, 3, 6);
     const blade = (y: number, label: string, ramp: string) => {
       const w = microWidth(label) + 6;

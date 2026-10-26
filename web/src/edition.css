@@ -151,7 +151,7 @@
 }
 
 /* the bar's page links (Games, Cast, Achievements, Credits, Guide, Magazine): each its own target, with a thin rule
-   centred between neighbours so they don't read as one phrase */
+   centered between neighbors so they don't read as one phrase */
 .topbar-nav {
   display: flex;
   align-items: center;

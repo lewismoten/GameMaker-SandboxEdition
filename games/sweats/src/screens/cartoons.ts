@@ -122,7 +122,7 @@ function castleNight(pal: Pal, seed = 3): Pixels {
     p.rect(x, 150 - h, 1, h, c('night', 0));
     if ((x * 13) % 17 === 0) p.set(x, 150 - h + 6 + (x % 9), c('amber', 2));
   }
-  // the castle: a wide front of grey stone, two turrets, battlements, the arched door, lit windows
+  // the castle: a wide front of gray stone, two turrets, battlements, the arched door, lit windows
   const stone = (x0: number, y0: number, w: number, h: number) => {
     for (let y = y0; y < y0 + h; y++)
       for (let x = x0; x < x0 + w; x++) {

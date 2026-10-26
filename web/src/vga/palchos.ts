@@ -10,7 +10,7 @@ import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/de
 import type { OpenDesigner } from '../retro/host';
 import { WorkArea } from '../retro/dos/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY, bytes2pal } from './shared/vga';
-import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './shared/facelift';
+import { BLACK, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, MAXFACECOL, initStartCols } from './shared/facelift';
 
 const TRANSCOL = 255;
 const COPY = 0;
@@ -184,10 +184,10 @@ class PaletteDesigner {
           v.moucur(false);
           v.line(x, CY1 + 1, x, CY2, face.bkg);
           v.line(x, CY2, grabbed + CX, CY2, face.bkg);
-          v.point(x, CY1 + 1, fc[GREY1]);
-          v.point(x, CY1 + 2, fc[GREY1]);
-          v.point(x, CY1 + 3, fc[GREY2]);
-          v.point(x, CY1 + 4, fc[GREY3]);
+          v.point(x, CY1 + 1, fc[GRAY1]);
+          v.point(x, CY1 + 2, fc[GRAY1]);
+          v.point(x, CY1 + 3, fc[GRAY2]);
+          v.point(x, CY1 + 4, fc[GRAY3]);
         }
         ({ x, y, but: butnum } = v.moustats());
         if (grabbed !== -1) {
@@ -241,7 +241,7 @@ class PaletteDesigner {
           if (!this.resetCols()) {
             face.drawborder(CX, CY, MAXCOLS, 11, 5, 2);
             face.drawborder(TBX, TBY, TBLEN, TBWID, 2, 2); // erase the text box
-            v.boxFill(TBX, TBY, TBX + TBLEN - 1, TBY + TBWID - 1, fc[GREY2]);
+            v.boxFill(TBX, TBY, TBX + TBLEN - 1, TBY + TBWID - 1, fc[GRAY2]);
             this.drawcolchange();
           }
           v.moucur(true);
@@ -379,7 +379,7 @@ class PaletteDesigner {
   private drawscrn(): void {
     const { v, face } = this;
     face.drawborder(TBX, TBY, TBLEN, TBWID, 2, 2); // the text box
-    v.boxFill(TBX, TBY, TBX + TBLEN - 1, TBY + TBWID - 1, face.cols[GREY2]);
+    v.boxFill(TBX, TBY, TBX + TBLEN - 1, TBY + TBWID - 1, face.cols[GRAY2]);
     face.drawborder(CX, CY, MAXCOLS, 11, 5, 2); // the palette
     for (let x = CX; x < CX1; x++) v.line(x, CY, x, CY1, x - CX);
     this.drawbuttons();
@@ -392,7 +392,7 @@ class PaletteDesigner {
     const { v, face } = this;
     face.drawborder(SPLOTX, SPLOTY, SPLOTX1 - SPLOTX, SPLOTY1 - SPLOTY + 12, 2, 2);
     v.boxFill(SPLOTX, SPLOTY, SPLOTX1 - 1, SPLOTY1 - 1, this.curcol);
-    v.boxFill(SPLOTX - 1, SPLOTY1, SPLOTX1 - 1, SPLOTY1 + 1, face.cols[GREY1]);
+    v.boxFill(SPLOTX - 1, SPLOTY1, SPLOTX1 - 1, SPLOTY1 + 1, face.cols[GRAY1]);
     face.boxWithText(SPLOTX, SPLOTY1 + 3, this.curcol !== TRANSCOL ? ` Color #${String(this.curcol).padStart(3)} ` : '    Clear   ');
   }
 
@@ -403,14 +403,14 @@ class PaletteDesigner {
     face.boxWithText(COLBX, COLBY, 'Red     ');
     face.boxWithText(COLBX, COLBY + COLBWID, 'Green   ');
     face.boxWithText(COLBX, COLBY + 2 * COLBWID, 'Blue    ');
-    v.line(COLBX, COLBY - 2 + 2 * COLBWID, COLBX + COLBLEN, COLBY - 2 + 2 * COLBWID, fc[GREY1]);
-    v.line(COLBX, COLBY - 2 + COLBWID, COLBX + COLBLEN, COLBY - 2 + COLBWID, fc[GREY1]);
-    v.boxFill(COLBX + 65, COLBY - 1, MINUSB - 1, COLBY + 3 * COLBWID - 3, fc[GREY1]);
+    v.line(COLBX, COLBY - 2 + 2 * COLBWID, COLBX + COLBLEN, COLBY - 2 + 2 * COLBWID, fc[GRAY1]);
+    v.line(COLBX, COLBY - 2 + COLBWID, COLBX + COLBLEN, COLBY - 2 + COLBWID, fc[GRAY1]);
+    v.boxFill(COLBX + 65, COLBY - 1, MINUSB - 1, COLBY + 3 * COLBWID - 3, fc[GRAY1]);
     for (let lp = 0; lp < 3; lp++) {
       this.plushalf(PLUSB, COLBY - 2 + lp * COLBWID, face.facePen());
       this.minushalf(MINUSB, COLBY - 2 + lp * COLBWID, face.facePen());
-      v.line(PLUSB - 1, COLBY - 1 + lp * COLBWID, PLUSB - 1, COLBY - 3 + (lp + 1) * COLBWID, fc[GREY2]);
-      v.point(PLUSB - 1, COLBY - 3 + (lp + 1) * COLBWID, fc[GREY4]);
+      v.line(PLUSB - 1, COLBY - 1 + lp * COLBWID, PLUSB - 1, COLBY - 3 + (lp + 1) * COLBWID, fc[GRAY2]);
+      v.point(PLUSB - 1, COLBY - 3 + (lp + 1) * COLBWID, fc[GRAY4]);
     }
     face.drawsurface(HELPX - 2, HELPY - 1, 40, 26);
     face.menub(MENUX, MENUY);

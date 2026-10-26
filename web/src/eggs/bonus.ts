@@ -30,7 +30,7 @@ export const BONUS_EGGS: readonly BonusEgg[] = [
     gameTitle: "Baker's Dozen",
     name: 'The Rotten Egg',
     description:
-      'A real egg, or it was once: mottled grey-green, crazed with cracks, and giving off a smell you can see. Nobody in the family will say how long it sat in the root beer cellar, or why nobody ever threw it out. Tap it and find out.',
+      'A real egg, or it was once: mottled gray-green, crazed with cracks, and giving off a smell you can see. Nobody in the family will say how long it sat in the root beer cellar, or why nobody ever threw it out. Tap it and find out.',
     credits: [
       'Aged to perfection by Claude Opus 5.5',
       'Cracked by Lewis "Lewie" Moten III, who said "do not shake it" and then shook it',
