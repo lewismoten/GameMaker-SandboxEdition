@@ -4,17 +4,19 @@
 // Each is a floor cell, ray traced like any other, with the kit's pixel art laid over it in the
 // level's own colors (nearest match; the palette is picked without them, so no other block
 // changes). Each keeps a block number of its own, high in the set, so no other number moves.
+// The save sign (kit/saveSign.ts) is laid over two floor cells the same way, in Fractal Peaks.
 import { Pixels } from '../../../kit/pixels';
 import { drawTinHeart } from '../../../kit/tinHeart';
 import { drawEasterEgg } from '../../../kit/easterEgg';
 import { wattCameo } from '../../../kit/cameos';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import type { Block } from '../../../../web/src/formats/blocks';
 import type { Matcher } from '../render/quant';
 import type { TileBook } from '../tiles/book';
 import type { Plane } from '../tiles/cells';
 
 /** The block numbers they keep (in every level's sets; only levels that use one fill it). */
-export const HIDDEN: Record<string, number> = { tinHeart: 140, tinHeart2: 143, easterEgg: 141, watt: 142 };
+export const HIDDEN: Record<string, number> = { tinHeart: 140, tinHeart2: 143, easterEgg: 141, watt: 142, saveL: 138, saveR: 139 };
 
 export function pinHidden(book: TileBook): void {
   for (const [kind, n] of Object.entries(HIDDEN)) book.pin(kind, n);
@@ -56,4 +58,16 @@ export function overlayHidden(book: TileBook, blocks: Record<Plane, Block[]>, pa
       blk.pixels = Uint8Array.from(px.px);
     }
   }
+  // the save sign: two cells side by side, the board alone (it lies on the floor)
+  if (book.keys[HIDDEN.saveL]?.kind === 'saveL' && book.keys[HIDDEN.saveR]?.kind === 'saveR')
+    for (const p of ['near', 'far'] as Plane[]) {
+      const pic = (n: number) => {
+        const px = new Pixels(20, 20);
+        px.px.set(blocks[p][n].pixels);
+        return px;
+      };
+      const [l, r] = saveSignBlocks(pal, { board: [pic(HIDDEN.saveL), pic(HIDDEN.saveR)] }, { use: m.allowed }).board;
+      blocks[p][HIDDEN.saveL].pixels = Uint8Array.from(l.px);
+      blocks[p][HIDDEN.saveR].pixels = Uint8Array.from(r.px);
+    }
 }

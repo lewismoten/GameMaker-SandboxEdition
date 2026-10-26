@@ -155,6 +155,8 @@ export const LEVELS: Level[] = [
     tagline: 'Infinitely detailed. Mostly downhill.',
     advice: ['Arrows on the ground pull you', 'their way: ride them down.', 'Mind the slopes into pits.'],
     monsters: { J, K },
+    // the save sign by the start (kit/saveSign.ts)
+    legend: { S: 'saveL', Z: 'saveR' },
     rings: {
       '1': { toFar: [1, 0], toNear: [-1, 0] },
       '2': { toFar: [1, 0], toNear: [-1, 0] },
@@ -165,7 +167,7 @@ export const LEVELS: Level[] = [
     iso: [[26, 0, 46, 9]],
     rows: [
       '###############          #####################',
-      '#.............#          #...................#',
+      '#...SZ........#          #...................#',
       '#.@..*...##...#          #.......nnnnn.*.....#',
       '#..........*..############.......n...n.......#',
       '#.....#.......>>>>>>>>>>>>>>.#...n.R.n.....K.#',

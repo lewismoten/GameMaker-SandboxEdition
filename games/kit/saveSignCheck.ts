@@ -1,5 +1,5 @@
 // Checks the save signs (saveSign.ts) on the built disks: every game with a felt egg (about.json
-// "egg") has exactly one, where its about.json "saveSign" says ({ map, at, after }), and `after`
+// "egg") has exactly one, where its about.json "saveSign" says ({ map, at, after, planes? }), and `after`
 // (the map the egg is on) is that map or links straight to it; no other game has one. Secret
 // games are left out unless named. Run from web/:
 //
@@ -16,7 +16,8 @@ import { MLEN, MWID, parseMap } from '../../web/src/formats/map';
 interface About {
   secret?: boolean;
   egg?: { block?: number; counter?: number };
-  saveSign?: { map: string; at: [number, number]; after: string };
+  /** `planes`: the same level's other map files (Depth Perception's far plane), where the same cell is the same sign. */
+  saveSign?: { map: string; at: [number, number]; after: string; planes?: string[] };
 }
 
 /** Every save sign on a game's disk, as "map@x,y" (the board's left block). */
@@ -51,7 +52,9 @@ export function findSaveSigns(id: string): string[] {
 /** What is wrong with a game's save sign, or [] when it is right. */
 export function saveSignProblems(id: string): string[] {
   const about = JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')) as About;
-  const signs = findSaveSigns(id);
+  const planes = new Set(about.saveSign?.planes ?? []);
+  const at = about.saveSign?.at.join(',');
+  const signs = findSaveSigns(id).filter((s) => !(planes.has(s.split('@')[0]) && s.endsWith(`@${at}`)));
   if (!about.egg) return signs.length ? [`has a save sign but no felt egg: ${signs.join(' ')}`] : [];
   const want = about.saveSign;
   if (!want) return [`has a felt egg but about.json has no "saveSign" (found: ${signs.join(' ') || 'none'})`];
