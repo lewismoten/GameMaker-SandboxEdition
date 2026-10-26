@@ -205,7 +205,7 @@ export function putSaveSign(bbl: Block[], map: GameMap, pal: Uint8Array, x: numb
     return p;
   };
   const sign = saveSignBlocks(pal, { board: [pic(0, 0), pic(1, 0)], posts: posts ? [pic(0, 1), pic(1, 1)] : undefined }, o);
-  const out = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
+  const out: Block[] = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
   const cells: [Pixels, number, number][] = [
     [sign.board[0], 0, 0],
     [sign.board[1], 1, 0],
