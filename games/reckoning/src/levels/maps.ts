@@ -259,7 +259,8 @@ export function fridge(book: BlockBook): Level {
   // the dairy, come to life
   // a tin heart at the back of the fridge's bottom, past the milk, in the corner by the door hinge
   m.set(42, 13, 'tinHeart');
-  m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 24, 2).mon(MON.milk, 24, 3);
+  // (on the top shelf the cream's loop stays a block clear of the milk's walk, so he's never caught between them)
+  m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 29, 2).mon(MON.milk, 24, 3);
   // willpower: seven sticks of celery
   m.set(25, 12, '1').set(24, 9, '1').set(31, 9, '1').set(39, 6, '1').set(35, 3, '1');
   // the door, swung open: its shelves (the mustard, and the mustard seed by it, the ketchup)
