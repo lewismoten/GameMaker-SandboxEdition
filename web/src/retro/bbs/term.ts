@@ -216,6 +216,11 @@ export class Term {
     return true;
   }
 
+  /** Whether the call has just been dropped (its line noise may still be arriving). */
+  get dropping(): boolean {
+    return !!this.lost;
+  }
+
   /** Waits out the line noise after a dropped call. */
   async dropped(): Promise<void> {
     await this.lost;

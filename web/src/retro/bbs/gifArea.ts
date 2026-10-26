@@ -65,6 +65,29 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
 }
 
 /** Downloads a picture (from the Sandbox BBS's GIF Gallery or The Sofa's GIF area) into C:\IMAGES, painting it as it arrives. */
+/**
+ * Line noise in a picture coming in: what arrives is garbage, so the viewer paints streaks of
+ * random colors from where the picture had got to downward, for as long as the noise lasts on
+ * a text screen (Term.interrupt), about two and a half seconds.
+ */
+async function lineNoise(scr: ReturnType<RetroHost['pictureMode']>, done: number): Promise<void> {
+  const from = Math.min(scr.height - 1, Math.floor(done * scr.height));
+  for (let i = 0; i < 40; i++) {
+    for (let n = 1 + Math.floor(Math.random() * 4); n > 0; n--) {
+      const y = from + Math.floor(Math.random() * (scr.height - from));
+      const x = Math.floor(Math.random() * scr.width);
+      const run = Math.min(scr.width * (scr.height - y) - x, 8 + Math.floor(Math.random() * 400));
+      const color = Math.floor(Math.random() * 256);
+      // a run of one color, or of noise, wrapping onto the next row as a decoder's output would
+      if (Math.random() < 0.5) scr.mem.fill(color, y * scr.width + x, y * scr.width + x + run);
+      else for (let k = 0; k < run; k++) scr.mem[y * scr.width + x + k] = Math.floor(Math.random() * 256);
+    }
+    scr.invalidate();
+    modemSignal('receive');
+    await sleep(60);
+  }
+}
+
 /** The bottom line while a picture comes in: a bar, the percent and the bytes so far (40 columns at most). */
 export function progressLine(got: number, total: number): string {
   const f = total ? Math.min(1, got / total) : 1;
@@ -94,6 +117,8 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
   let last = performance.now();
   try {
     for (;;) {
+      // someone picked up the phone: the noise lands in the picture, then the call is gone
+      if (t.dropping) await lineNoise(scr, got / bytes.length);
       t.print(''); // a dropped call ends the transfer
       const now = performance.now();
       // at the line speed of the moment (Unlimited: all at once)
