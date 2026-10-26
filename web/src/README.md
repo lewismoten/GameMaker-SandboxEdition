@@ -126,6 +126,14 @@ modules are in [`../test`](../test).
   page (`exportSinglePage.ts`, `singlePage.ts`, played by `standalonePlayer.ts`), the web player
   (`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
   (`serviceWorker.ts`). See Exports below.
+- [`dosPlayer/`](dosPlayer): the DOS player customizer's core, with no DOM. `patchTable.ts` is
+  what it offers of XFERPLAY.EXE (words, colors, frames, positions, times, F-keys: the safe and
+  caution entries of the patch map, with offsets and rules); `patchRules.ts` checks and writes
+  each value; `applyPatches.ts` patches only the CD's player (MD5 `fcaf47d5…`) and reads a
+  hand-edited one back into patches; `renamedExtensions.ts` sees a player that asks for other
+  file extensions (Acord Games'); `md5.ts` (RFC 1321); `presets.ts` (Builder's blanked menu,
+  Rōdïp's status words, Reset all); `playerRecord.ts` keeps the choices in the .gam's
+  `dosPlayer` companion section.
   - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
     `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),
     `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`).
