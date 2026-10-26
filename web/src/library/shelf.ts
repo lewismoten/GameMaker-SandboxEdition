@@ -27,17 +27,19 @@ export const SHELF_TYPES = [
   ['magazine', 'Magazines and zines'],
   ['guide', 'Guides'],
   ['walkthrough', 'Walkthroughs'],
+  ['video', 'Videos'],
 ] as const;
 
 export type ShelfType = (typeof SHELF_TYPES)[number][0];
 
-/** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, the zine, or a game's walkthrough player. */
+/** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, the zine, a game's walkthrough player, or a video's player (videoDialog.ts, by its YouTube id). */
 export type Opening =
   | { via: 'box'; game: string; start: string; maps?: boolean }
   | { via: 'gm'; start: string }
   | { via: 'href'; href: string }
   | { via: 'zine' }
-  | { via: 'walk'; game: string };
+  | { via: 'walk'; game: string }
+  | { via: 'video'; id: string };
 
 export interface ShelfItem {
   /** Unique on the shelf: its owner and its id in the box. */
@@ -54,8 +56,10 @@ export interface ShelfItem {
   boxes?: number;
   /** A numbered issue (a box's Sandbox Scoop): its number, for reading in order, and its line ("Vol. 1, No. 3 · March 1995"). */
   issue?: { no: number; line: string };
-  /** A walkthrough: how long it plays, in seconds. */
+  /** A walkthrough or a video: how long it plays, in seconds. */
   seconds?: number;
+  /** A picture for the card from the site's own files (a video's), in place of a drawn sheet. */
+  picture?: string;
 }
 
 export const GM_OWNER = 'gamemaker';
@@ -167,7 +171,7 @@ export interface ShelfGroup {
 
 /**
  * The shelf sorted: by game (each game in the order listed, then Other: the pieces in every box,
- * the site's own reading and the Game-Maker box), or by type (SHELF_TYPES' order, each kind in the order listed, the
+ * the site's own reading, its videos and the Game-Maker box), or by type (SHELF_TYPES' order, each kind in the order listed, the
  * Game-Maker Owner's Guides first among the manuals).
  * Empty groups are left out.
  */
@@ -187,7 +191,8 @@ export function groupShelf(items: readonly ShelfItem[], order: ShelfOrder): Shel
     }
     list.push(it);
   }
-  const site = items.filter((i) => i.owner === SITE_OWNER);
+  const site = items.filter((i) => i.owner === SITE_OWNER && i.type !== 'video');
+  const videos = items.filter((i) => i.owner === SITE_OWNER && i.type === 'video');
   const gm = items.filter((i) => i.owner === GM_OWNER);
   const shared = items.filter((i) => i.owner === SHARED_OWNER);
   const other: ShelfGroup = {
@@ -196,6 +201,7 @@ export function groupShelf(items: readonly ShelfItem[], order: ShelfOrder): Shel
     parts: [
       { heading: 'In every box', items: shared },
       { heading: 'Magazines, guides and more', items: site },
+      { heading: 'Videos', items: videos },
       { heading: gm[0]?.ownerTitle ?? '', items: gm },
     ].filter((p) => p.items.length),
   };

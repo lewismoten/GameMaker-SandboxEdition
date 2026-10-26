@@ -2,7 +2,7 @@
 // box (manual/printables/items.ts), the Bard of Bizarre's games' maps, the Game-Maker box's
 // Owner's Guide and paper (gmItems.ts), and the site's own reading (siteShelf.ts). Each piece
 // keeps the way to draw its first sheet, for the card's thumbnail (thumbs.ts). Each game's
-// walkthrough is listed too (walkShelf.ts).
+// walkthrough is listed too (walkShelf.ts), and the videos about the site (videos.ts).
 import type { CatalogEntry } from '../project/files';
 import { isSandboxGame } from '../project/files';
 import { isOldSecret } from '../project/secretGames';
@@ -12,6 +12,7 @@ import { GM_OWNER, SITE_OWNER, shelfGames, typeOfPiece, type ShelfItem } from '.
 import { siteShelf } from './siteShelf';
 import { mergeShared } from './shared';
 import { walkShelf } from './walkShelf';
+import { videoShelf } from './videos';
 import { scoopIssue } from '../manual/printables/scoopIssue';
 import { scoopDateline } from '../manual/printables/scoopIssues';
 import { gmCoverSheet, hintCoverSheet, magazineCoverSheet, manualCoverSheet } from './covers';
@@ -126,7 +127,7 @@ export async function loadShelf(): Promise<Shelf> {
   const walked = await walks;
   items.push(...walked.items);
   for (const [key, make] of walked.thumbs) thumbs.set(key, make);
-  items.push(...siteShelf(zine));
+  items.push(...siteShelf(zine), ...videoShelf());
   thumbs.set(`${SITE_OWNER}:magazine`, () => magazineCoverSheet(entries));
   if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());
   return { items: mergeShared(items), thumbs, games };

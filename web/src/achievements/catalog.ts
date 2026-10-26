@@ -75,6 +75,7 @@ export const LIBRARY_KINDS = [
   'magazine',
   'guide',
   'walkthrough',
+  'video',
 ] as const;
 /** The World Map's styles (manual/printables/worldMapThemes.ts ThemeId; a test keeps them in step). */
 export const WORLD_MAP_STYLES = ['land', 'space', 'town', 'rooms', 'library', 'board', 'grid'] as const;

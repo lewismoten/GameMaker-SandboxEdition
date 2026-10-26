@@ -5,6 +5,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import type { CatalogEntry } from '../project/files';
 import { GM_OWNER, groupShelf, hms, ownersOf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
+import { dateText, videoShelf } from './videos';
 
 const GAMES = new URL('../../../games/', import.meta.url);
 
@@ -118,6 +119,7 @@ describe('sorting the Library', () => {
     item('a', 'manual', 'manual', 'Alpha'),
     item(SITE_OWNER, 'magazine', 'magazine'),
     item('a', 'worldmap', 'worldmap', 'Alpha'),
+    item(SITE_OWNER, 'video', 'video'),
     item(GM_OWNER, 'manual', 'manual', 'The Game-Maker box'),
     item('b', 'manual', 'manual', 'Beta'),
   ];
@@ -128,13 +130,14 @@ describe('sorting the Library', () => {
     expect(groups[0].parts[0].items.map((i) => i.key)).toEqual(['a:manual', 'a:worldmap']);
     expect(groups[2].parts.map((p) => [p.heading, p.items.map((i) => i.key)])).toEqual([
       ['Magazines, guides and more', [`${SITE_OWNER}:magazine`]],
+      ['Videos', [`${SITE_OWNER}:video`]],
       ['The Game-Maker box', [`${GM_OWNER}:manual`]],
     ]);
   });
 
   it('by type: in the kinds’ order, with no empty kinds', () => {
     const groups = groupShelf(items, 'type');
-    expect(groups.map((g) => g.heading)).toEqual(['Manuals', 'World Maps', 'Magazines and zines']);
+    expect(groups.map((g) => g.heading)).toEqual(['Manuals', 'World Maps', 'Magazines and zines', 'Videos']);
     expect(new Set(SHELF_TYPES.map(([t]) => t)).size).toBe(SHELF_TYPES.length);
   });
 
@@ -194,5 +197,33 @@ describe('the site’s own reading', () => {
     expect(hidden).toContainEqual({ via: 'href', href: '#/help' });
     expect(hidden).not.toContainEqual({ via: 'zine' });
     expect(siteShelf(true).map((i) => i.open)).toContainEqual({ via: 'zine' });
+  });
+});
+
+describe('the site’s videos', () => {
+  const PUBLIC = new URL('../../public/', import.meta.url);
+
+  it('lists each with its length, who made it and when, and a picture the site serves itself', () => {
+    const videos = videoShelf();
+    expect(videos.length).toBeGreaterThan(0);
+    for (const v of videos) {
+      expect(v.type).toBe('video');
+      expect(v.owner).toBe(SITE_OWNER);
+      expect(v.seconds).toBeGreaterThan(0);
+      expect(v.note).toMatch(/^Lewis Moten · [A-Z][a-z]{2} \d{1,2}, \d{4}$/);
+      // a file of the site's own, so showing the Library asks YouTube for nothing
+      expect(v.picture).toMatch(/^\.\/videos\/[\w-]+\.webp$/);
+      expect(existsSync(new URL(v.picture!.slice(2), PUBLIC)), v.picture).toBe(true);
+    }
+    expect(new Set(videos.map((v) => v.key)).size).toBe(videos.length);
+  });
+
+  it('opens each in its own player, so the kind counts toward Well read even with no connection', () => {
+    for (const v of videoShelf()) expect(v.open).toEqual({ via: 'video', id: expect.stringMatching(/^[\w-]{11}$/) as unknown });
+  });
+
+  it('writes a date as it is written, in no time zone', () => {
+    expect(dateText('2026-10-22')).toBe('Oct 22, 2026');
+    expect(dateText('2027-01-01')).toBe('Jan 1, 2027');
   });
 });
