@@ -23,6 +23,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* over the whole of a drawing with words on it (propKit.ts cover) */
+.prop-cover {
+  inset: 0;
+  border-radius: 0;
+}
+
 /* read out, not seen */
 .prop-live {
   position: fixed;

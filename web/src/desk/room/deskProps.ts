@@ -6,6 +6,7 @@ import { h } from '../../editor/core/ui';
 import type { WallPhoneLine } from './phone/phone';
 import { watchDaylight } from './daylight';
 import { deskMug } from '../mug/mug';
+import { cover } from '../props/propKit';
 
 const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
   const el = h('div', { class: cls });
@@ -104,15 +105,12 @@ export function wallPhone(): HTMLElement {
       </g>
     </g>`,
   );
-  el.setAttribute('role', 'button');
-  el.setAttribute('tabindex', '0');
-  el.setAttribute('aria-label', 'Wall telephone: lift the handset');
-  el.title = 'The phone: lift the handset';
+  // a button over it, so the keypad's digits and the 911 sticker aren't read as its name
+  cover(el, 'Wall telephone: lift the handset', 'The phone: lift the handset');
   // the line, the keypad and whoever answers (phone/phone.ts), loaded when first lifted
   let line: Promise<WallPhoneLine> | undefined;
   const toggle = () => void (line ??= import('./phone/phone').then((m) => m.phoneLineFor(el))).then((l) => l.toggle());
   el.addEventListener('click', toggle);
-  el.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle()));
   return el;
 }
 

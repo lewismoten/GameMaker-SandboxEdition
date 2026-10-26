@@ -18,6 +18,13 @@ import { VirtualKeys } from '../../input/virtualKeys';
 import { audioContext, unlock } from '../../audio/context';
 import { output } from '../../audio/output';
 
+/** Whether `words` has `word` as a whole word (any case). */
+const saysWord = (words: string, word: string): boolean =>
+  words
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .includes(word.toLowerCase());
+
 /** [label, width in key units, KeyboardEvent.code] or a number for a gap. */
 type Key = [string, number, string] | number;
 
@@ -176,8 +183,9 @@ export function keyboard(onClick: () => void): { board: HTMLElement; strip: HTML
           type: 'button',
           class: `kt-label kt-${name.toLowerCase()}`,
           title: `${name}: ${g.title}`,
-          // the word printed on the template first when the key's title doesn't say it (QUIT, JOY)
-          'aria-label': g.title.toLowerCase().includes(shown.toLowerCase()) ? `Press ${name}: ${g.title}` : `${shown}: press ${name}, ${g.title}`,
+          // the word printed on the template first when the key's title doesn't say it as a
+          // word of its own (QUIT, JOY: "Joystick" isn't "Joy" to a voice control)
+          'aria-label': saysWord(g.title, shown) ? `Press ${name}: ${g.title}` : `${shown}: press ${name}, ${g.title}`,
           dataset: { code: k[2] },
         },
         shown,

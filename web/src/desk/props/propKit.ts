@@ -54,6 +54,19 @@ export function hitArea(cls: string): HTMLButtonElement {
   return h('button', { class: `prop-hit ${cls}`, type: 'button' });
 }
 
+/**
+ * A thing with words drawn on it (box art, a clipping, a phone's keypad) made pressable by an
+ * empty button laid over all of it, so the button's name is its label and not every word in
+ * the picture (WCAG 2.5.3, axe label-content-name-mismatch). `el` keeps its click handlers:
+ * the button's click bubbles to them. Returns the button, the thing to focus.
+ */
+export function cover(el: HTMLElement, name: string, title?: string): HTMLButtonElement {
+  const btn = h('button', { class: 'prop-hit prop-cover', type: 'button', 'aria-label': name });
+  if (title) btn.title = title;
+  el.append(btn);
+  return btn;
+}
+
 let live: HTMLElement | undefined;
 let bubble: HTMLElement | undefined;
 let bubbleTimer = 0;

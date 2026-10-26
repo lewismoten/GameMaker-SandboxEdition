@@ -3,6 +3,7 @@
 // the one quote are the ones NOTICE.md gives, with their source.
 import './newsClipping.css';
 import { focusInto } from '../overlayFocus';
+import { cover } from '../props/propKit';
 import { h } from '../../editor/core/ui';
 
 const QUOTE = 'if there is interest in preserving the old games you guys made then porting Game-Maker to modern OSes is the first step';
@@ -62,14 +63,7 @@ function readLarger(): void {
 }
 
 export function newsClipping(): HTMLElement {
-  return h(
-    'button',
-    {
-      class: 'news-clipping',
-      onclick: readLarger,
-      title: 'A newspaper clipping: Game-Maker’s source code set free (click to read)',
-      'aria-label': 'Newspaper clipping about Game-Maker’s source code release',
-    },
-    h('div', { class: 'clip-small', 'aria-hidden': 'true' }, article('div')),
-  );
+  const el = h('div', { class: 'news-clipping', onclick: readLarger }, h('div', { class: 'clip-small', 'aria-hidden': 'true' }, article('div')));
+  cover(el, 'Newspaper clipping about Game-Maker’s source code release', 'A newspaper clipping: Game-Maker’s source code set free (click to read)');
+  return el;
 }

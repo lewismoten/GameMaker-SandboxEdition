@@ -20,16 +20,10 @@
     transition: transform 0.15s;
   }
 
+  /* the button laid over it (propKit.ts cover) shows the room's yellow ring */
   .phone-notes:hover,
-  .phone-notes:focus-visible {
+  .phone-notes:has(> .prop-cover:focus-visible) {
     transform: rotate(0.5deg) scale(1.05);
-    outline: none;
-  }
-
-  /* the keyboard's place: the room's yellow ring (props.css), not just the lift */
-  .phone-notes:focus-visible {
-    outline: 2px solid #ffd400;
-    outline-offset: 4px;
   }
 }
 

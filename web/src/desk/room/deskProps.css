@@ -70,7 +70,6 @@
   }
 }
 
-.wall-phone:focus-visible,
 .desk-lamp:focus-visible {
   outline: 2px solid #ffd400;
   outline-offset: 4px;
