@@ -71,6 +71,7 @@ npx vite-node ../games/<id>/build.ts                 # deterministic: rerun leav
 npx vite-node ../games/kit/tinHearts.ts check <id>   # "ok, <map> at x,y, found when touched"
 npx vite-node ../games/<id>/tools/check.ts           # the bot still wins
 npx vite-node ../games/kit/textfitCheck.ts <id>      # if you touched any text
+npx vite-node scripts/levelSecrets.ts                # the printed Level Maps hide the new spot
 npx vitest run src/tinHearts src/cast                # hearts.json current; every heart on its disk; cameos known
 npx tsc --noEmit
 ```
@@ -124,8 +125,9 @@ The rules (low risk, as for the heart):
 
 A decorated Easter egg is the second recurring object: `kit/easterEgg.ts`, `drawEasterEgg(ground,
 colors, 'bands' | 'zigzag' | 'dots' | 'stars', frame)`. Hide it like the tin heart, with the same
-block rules: a few points, touch block the ground, no sound. It isn't collected or counted yet, but
-record its place in `about.json` the same way so it can be counted later:
+block rules: a few points, touch block the ground, no sound. It isn't collected or counted, but
+record its place in `about.json` the same way: the cast page lists its games from it, and the
+printed Level Maps keep that cell hidden.
 
 ```json
 "easterEgg": { "map": "town.map", "at": [41, 12] },
