@@ -127,6 +127,11 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
     <li><b>Doors two cells wide.</b> Each door is a pair of links on side-by-side cells that go
     to the same place, so a pointer whose tip sits a little off center still gets in.</li>
   </ul>
+  <p>Another of the archive’s games points with a hand instead, and moves it the other way. Its
+  hero select is a room that doesn’t scroll sideways, with four links in a row overhead, one per
+  hero. The hand slides left and right 10 pixels a step, and Space hops it 75 pixels up into the
+  link above it. The doors don’t need a grid, only a row, and a pick takes a deliberate press,
+  never a stray step.</p>
   <p>Leave the level flat, with nothing that pulls, so the pointer stays where it is put, and
   label each door on the map so the choice reads before it is made.</p>
   <h2>A shareware cut from a second .gam</h2>
