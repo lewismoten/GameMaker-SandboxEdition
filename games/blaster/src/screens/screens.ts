@@ -1,5 +1,6 @@
 // The 320x200 screens: the intro cartoon and title, the menu, the story/help/credits
-// pages, a card before every leg, the warp between stages, and the endings. Every page
+// pages, a card before every leg, the cartoons either side of the data bus rides between
+// stages (busCartoon.ts), and the endings. Every page
 // Game-Maker writes on has a pale panel where its text goes, so its purple, blue and red
 // letters stay readable over the art.
 import { encodeGif } from '../../../../web/src/formats/gif';
@@ -14,8 +15,9 @@ import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { CLEAR, centered, outlined, text } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
-import { buildLeg, type Stage } from '../stages/stage';
-import { H, SHIP, SHIP_FLAME, SP, W, blob, c, circuit, dos, floppy, glitchFace, logo, monitor, panel, room, scaleBlit, speedLines, tower } from './cartoon';
+import { buildLeg, legLetter, type Stage } from '../stages/stage';
+import { arriveFli, warpFli } from './busCartoon';
+import { H, SHIP, SHIP_FLAME, SP, W, c, circuit, dos, floppy, glitchFace, logo, monitor, panel, room, scaleBlit, speedLines, tower } from './cartoon';
 import { CREDITS, DEBUG_EGG, HELP, LOST, README, STORY, WON } from './text';
 import { SONGS } from '../sound/music';
 
@@ -32,10 +34,19 @@ function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagg
   const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, l.cardView?.x ?? X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
-  const tag = tagged ?? (l.kind === 'boss' ? (s.n === of ? 'WARNING! LAST BOSS!' : 'WARNING!') : `STAGE ${s.n}-${'ABCDEF'[legIndex]}`);
+  const bus = l.kind === 'bus';
+  const tag =
+    tagged ??
+    (l.kind === 'boss'
+      ? s.n === of
+        ? 'WARNING! LAST BOSS!'
+        : 'WARNING!'
+      : bus
+        ? 'ALL ABOARD THE DATA BUS!'
+        : `STAGE ${s.n}-${legLetter(s, l).toUpperCase()}`);
   outlined(p, 12, 110, tag, l.kind === 'boss' && !tagged ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
-  // the world's name, and where it falls in the game
-  outlined(p, 12, 122, `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
+  // the world's name, and where it falls in the game (a ride: where it goes)
+  outlined(p, 12, 122, bus ? `NEXT STOP: ${s.title.toUpperCase()}` : `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
   l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('gray', 6)));
   if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
@@ -187,20 +198,6 @@ function introFli(): Uint8Array {
   return encodeFliFadeOut(frames, SP.pal, { speed: 9 });
 }
 
-/** Between stages: down the data bus to the next part of the machine. */
-function warpFli(): Uint8Array {
-  const frames: Uint8Array[] = [];
-  for (let f = 0; f < 34; f++) {
-    const p = new Pixels(W, H, c('ink', 0));
-    speedLines(p, 160, 100, f, f % 6 < 3 ? 'cyan' : 'gold', 80);
-    blob(p, 160, 100, 14 + (f % 3), 14 + (f % 3), SP.r('glow'), 0, 2, 0.4);
-    scaleBlit(p, f % 2 ? SHIP_FLAME : SHIP, 140, 90 - Math.round(Math.sin(f / 3) * 4), 2);
-    caption(p, f < 17 ? 'STAGE CLEAR!' : 'RIDING THE DATA BUS...');
-    frames.push(frame(p));
-  }
-  return encodeFli(frames, SP.pal, { speed: 4 });
-}
-
 /** The ending cartoon: GLITCH bursts, the PC reboots clean. */
 function wonFli(): Uint8Array {
   const frames: Uint8Array[] = [];
@@ -264,6 +261,7 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
     s.legs.forEach((l, i) => {
       put(`${l.file}.gif`, gif(card(s, stages.length, i), (l.pal ?? s.pal).pal));
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
+      if (l.bus) put(`${l.file}.fli`, arriveFli(l.bus, s.title));
     });
     const side = s.side;
     if (side) {

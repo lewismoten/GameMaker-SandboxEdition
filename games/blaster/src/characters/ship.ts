@@ -7,10 +7,12 @@
 // never stops. Every move also fires: a twin shot leaves the guns every third tick.
 //
 // shipfree.chr is the same ship without the drift, for the boss arenas.
+//
+// shipbus.chr rides the data bus between stages, seen from behind (src/bus).
 import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
 import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, CLEAR, blob, rotate, turn45, turn90 } from '../art/draw';
+import { BlockSet, CLEAR, blob, outline, rotate, turn45, turn90 } from '../art/draw';
 import { DRIFT, KEY, SEQ, SND, START } from '../ids';
 import type { Pal } from '../art/pal';
 
@@ -107,6 +109,38 @@ function banked(p: Pal, src: Pixels, dir: -1 | 1): Pixels {
   return rotate(squeezed, dir * 12);
 }
 
+/**
+ * The BLASTER from behind, for the data bus rides: the canopy over the hull, the wings out to
+ * their red-tipped fins, and the twin engines glowing at you (dimmer on the flicker frame).
+ */
+function rearPic(p: Pal, flame: 0 | 1, flash = false): Pixels {
+  const pic = new Pixels(20, 20, CLEAR);
+  const hull = flash ? p.r('cyan') : p.r('steel');
+  // the wings, drooping a little toward the tips, and the fins standing at their ends
+  for (let x = 1; x < 19; x++) {
+    const droop = Math.abs(x - 9.5) > 6 ? 1 : 0;
+    pic
+      .set(x, 10 + droop, hull[6])
+      .set(x, 11 + droop, hull[4])
+      .set(x, 12 + droop, hull[1]);
+  }
+  for (const x of [1, 18]) {
+    pic.rect(x, 6, 1, 7, hull[2]);
+    pic.rect(x, 5, 1, 2, flash ? p.c('cyan', 5) : p.c('red', 2));
+  }
+  // the hull and the canopy over it
+  blob(pic, 9.5, 10.5, 4.5, 5, hull, 1, 6);
+  blob(pic, 9.5, 6.5, 3, 2.6, flash ? p.r('steel') : p.r('cyan'), 1, 5);
+  // the engines, seen from behind: a dark ring round a hot core
+  for (const cx of [7.5, 11.5]) {
+    blob(pic, cx, 15, 2, 2, p.r('steel'), 0, 1);
+    pic.rect(Math.floor(cx), 15, 1, 1, p.c('fire', flame ? 5 : 7)).rect(Math.floor(cx) - 1, 15, 1, 1, p.c('fire', flame ? 3 : 5));
+    pic.set(Math.floor(cx), 14, p.c('fire', flame ? 3 : 6)).set(Math.floor(cx), 16, p.c('fire', flame ? 4 : 6));
+    if (!flame) pic.set(Math.floor(cx), 17, p.c('fire', 4)).set(Math.floor(cx) - 1, 16, p.c('fire', 3));
+  }
+  return outline(pic, p.c('ink', 0));
+}
+
 export function shipBlocks(p: Pal): BlockSet {
   const cb = new BlockSet(CHARBL, 'cbl');
   cb.add('ship0', shipPic(p, 0));
@@ -138,6 +172,12 @@ export function shipBlocks(p: Pal): BlockSet {
     for (const y of [6, 13]) t.set(18, y, p.c('cyan', 4 + f)).set(19, y, p.c('cyan', 3));
     cb.add(`brakeS${f}`, t);
   }
+  // from behind, on the data bus: steady, banked into a lane change, and flashing when hit
+  cb.add('rear0', rearPic(p, 0));
+  cb.add('rear1', rearPic(p, 1));
+  cb.add('rearL', rotate(rearPic(p, 0), -14));
+  cb.add('rearR', rotate(rearPic(p, 1), 14));
+  cb.add('rearHit', rearPic(p, 0, true));
   return cb;
 }
 
@@ -377,5 +417,37 @@ export function buildSideShip(cb: BlockSet, drift: number): Character {
     frame(fl, ...ahead),
     frame(s0, ...ahead),
   ]);
+  return c;
+}
+
+/**
+ * shipbus.chr, for the data bus rides, seen from behind. It only steers: Left and Right (or A
+ * and D, or the stick) move it a whole lane, 40 pixels in four frames of 10 (under PLAYGAME's
+ * 11-pixel cap). Every frame, steering or not, also pushes it 5 pixels up the screen: forward.
+ * The row above it is a wall of look-alikes, so the push holds it on its row until the way into
+ * the chip opens over the middle lane. No guns on the bus, and no Nova Bombs.
+ */
+export function buildBusShip(cb: BlockSet): Character {
+  const c = buildShip(cb, 0);
+  const S = c.sequences;
+  const PUSH = -5;
+  for (const s of S) setSeq(s, [], { key: 0 });
+  setSeq(S[SEQ.idle], [frame(cb.id('rear0'), 0, PUSH), frame(cb.id('rear1'), 0, PUSH)]);
+  setSeq(S[SEQ.die], [0, 1, 2, 3, 4].map((k) => frame(cb.id(`die${k}`), 0, 0, 3)).concat([frame(cb.id('die4'), 0, 0, 12)]), { sound: SND.die });
+  const hit = cb.id('rearHit');
+  setSeq(S[SEQ.hurt], [frame(hit, 0, PUSH), frame(cb.id('rear0'), 0, PUSH), frame(hit, 0, PUSH)], { sound: SND.hurt });
+  const steer: [number, number, number, number][] = [
+    [SEQ.left, KEY.left, 7, -1],
+    [SEQ.right, KEY.right, 3, 1],
+    [SEQ.a, KEY.a, 0, -1],
+    [SEQ.d, KEY.d, 0, 1],
+  ];
+  for (const [seq, key, joy, dx] of steer)
+    setSeq(
+      S[seq],
+      [0, 1, 2, 3].map(() => frame(cb.id(dx < 0 ? 'rearL' : 'rearR'), dx * 10, PUSH)),
+      // a key waits for the lane change to finish, so the ship always ends up in a lane
+      { key, jstkMov: joy, ground: 1 },
+    );
   return c;
 }

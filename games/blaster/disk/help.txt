@@ -14,10 +14,10 @@ FLYING
 F2 shows your energy, your
 spare ships and (counter 5)
 your Nova Bombs.
-THREE WAYS TO FLY
-Every stage has runs straight
-up the screen, a run corner to
-corner and a run side-on.
+FOUR WAYS TO FLY
+Runs go straight up, corner to
+corner and side-on; between
+stages you ride the data bus.
 
 CORNER TO CORNER
  The keys turn with the track:
@@ -30,6 +30,22 @@ SIDE-ON
  The BLASTER flies right. UP
  and DOWN climb and dive, RIGHT
  speeds ahead, LEFT brakes.
+THE DATA BUS
+ Seen from behind, the BLASTER
+ rides one of three lanes.
+ LEFT and RIGHT (or A and D)
+ hop a lane. No guns here:
+ dodge interrupts, stray bits
+ and virus, and fly into good
+ bytes (+50) and repairs (+10).
+
+ The sign counts the bus
+ cycles left and the bar fills
+ up. At 0 the middle lane
+ opens into the chip ahead:
+ steer into it!
+
+
 THINGS TO GRAB
  N   Nova Bomb charges (+2)
  +   Repair the hull (+10)

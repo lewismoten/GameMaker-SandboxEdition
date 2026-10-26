@@ -321,6 +321,30 @@ function cpuSong(): Uint8Array {
   return make({ bpm: 170, chords, melody: mel, lead: brass, arpShape: [0, 2, 1, 3, 2, 4, 3, 5], bassStyle: 'drive' });
 }
 
+/** The data bus rides between stages: B minor, four on the floor, racing. */
+function busSong(): Uint8Array {
+  const chords = ['Bm', 'G', 'D', 'A', 'Bm', 'G', 'Em', 'F#', 'Bm', 'G', 'D', 'A', 'G', 'A', 'F#', 'Bm'];
+  const mel = join(
+    'B4 e, D5 e, F#5 e, B5 e, A5 q, F#5 q',
+    'G5 e, F#5 e, D5 e, B4 e, D5 h',
+    'D5 e, F#5 e, A5 e, D6 e, C#6 q, A5 q',
+    'E5 e, A5 e, C#6 e, E6 e, C#6 h',
+    'B5 e, A5 e, F#5 e, D5 e, F#5 q, B5 q',
+    'D6 e, B5 e, G5 e, B5 e, D6 h',
+    'E6 q, D6 e, B5 e, G5 q, E5 q',
+    'F#5 h, A#5 h',
+    'B4 e, D5 e, F#5 e, B5 e, D6 q, B5 q',
+    'G5 e, B5 e, D6 e, G6 e, F#6 q, D6 q',
+    'A5 q, F#5 e, A5 e, D6 q, A5 q',
+    'C#6 e, B5 e, A5 e, E5 e, A5 h',
+    'B5 q, G5 e, B5 e, D6 q, B5 q',
+    'C#6 q, A5 e, C#6 e, E6 q, C#6 q',
+    'F#6 e, E6 e, C#6 e, A#5 e, F#5 h',
+    'B5 w',
+  );
+  return make({ bpm: 176, chords, melody: mel, lead: SAW, drum: 'four', bassStyle: 'drive', arpShape: [0, 1, 2, 1, 3, 2, 1, 2] });
+}
+
 /** The bosses: menacing, chromatic. */
 function bossSong(): Uint8Array {
   const chords = ['Em', 'F', 'Em', 'F', 'Em', 'F', 'G', 'F#m'];
@@ -394,6 +418,7 @@ export const SONGS: Record<string, () => Uint8Array> = {
   'sound.cmf': soundSong,
   'disk.cmf': diskSong,
   'cpu.cmf': cpuSong,
+  'bus.cmf': busSong,
   'boss.cmf': bossSong,
   'glitch.cmf': glitchSong,
   'won.cmf': wonSong,

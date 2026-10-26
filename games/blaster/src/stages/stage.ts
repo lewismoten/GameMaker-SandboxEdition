@@ -9,6 +9,7 @@ import { ARENA_START, STRIP_START, type Grid } from './mapkit';
 import { Bestiary } from '../characters/mons';
 import type { Pal, Theme } from '../art/pal';
 import type { DiagTrack } from './diagTrack';
+import type { Ride } from '../bus/rides';
 import { addStageTiles, pad, type StageArt, type TileOpts } from '../blocks/tiles';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
 
@@ -23,8 +24,8 @@ export interface Leg {
   /** File name base of its .pal/.bbl/.mon/.mbl (shared by the scrolling legs of a stage). */
   kitFile: string;
   title: string;
-  /** A strip scrolling up, a fixed boss arena, a slanted, wrapping track, or a band scrolling right. */
-  kind: 'scroll' | 'boss' | 'diag' | 'side';
+  /** A strip scrolling up, a fixed boss arena, a slanted, wrapping track, a band scrolling right, or a data bus ride. */
+  kind: 'scroll' | 'boss' | 'diag' | 'side' | 'bus';
   grid: Grid;
   kit: Kit;
   /** Card lines shown before the leg. */
@@ -37,6 +38,8 @@ export interface Leg {
   cardView?: { x: number; y: number };
   /** A diagonal leg's track, and where Right hops a lane early: [lap, first column, columns]. */
   diag?: { track: DiagTrack; shortcuts: [number, number, number][] };
+  /** A data bus ride's timetable and sign (src/bus). */
+  bus?: Ride;
 }
 
 /**
@@ -103,5 +106,8 @@ export function buildLeg(l: Leg): BuiltLeg {
     mon: l.kit.beasts.build(),
   };
 }
+
+/** A run's letter in its stage (a, b, c...): the data bus ride before the first run has none. */
+export const legLetter = (s: Stage, l: Leg): string => 'abcdef'[s.legs.filter((x) => x.kind !== 'bus').indexOf(l)] ?? '';
 
 export const startOf = (l: Leg) => l.start ?? (l.kind === 'boss' ? ARENA_START : STRIP_START);

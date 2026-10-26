@@ -1,6 +1,7 @@
 // Play-tests every leg with the bot in the headless simulator:
 //   cd web && npx vite-node ../games/blaster/tools/check.ts [leg file...]
 import { fly } from './bot';
+import { rideBus } from './busBot';
 import { STAGES } from '../src/stages/stages';
 import { arenaGoal, goalOf, maxTicksOf, simOf } from './testkit';
 import { Sim } from './sim';
@@ -50,7 +51,7 @@ for (const make of STAGES) {
     const sim = simOf(l);
     const t0 = Date.now();
     const human = process.env.HUMAN ? { horizon: 5, every: 5 } : {};
-    const r = await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...human });
+    const r = l.bus ? await rideBus(sim, l.bus) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...human });
     console.log(
       `${l.file} ${l.title}: ${r.ok ? 'CLEARED' : r.dead ? 'DIED' : 'TIMED OUT'} in ${r.ticks} ticks (${(r.ticks / 18.2).toFixed(0)}s), lost ${r.hpLost} energy, score ${r.score}, ${((Date.now() - t0) / 1000).toFixed(1)}s`,
     );

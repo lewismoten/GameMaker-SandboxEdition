@@ -42,6 +42,13 @@ flies right: Up and Down climb
 and dive, Right speeds ahead
 and Left brakes.
 
+Between stages you ride the
+data bus, seen from behind.
+Left and Right hop a lane.
+Dodge what comes at you until
+the sign reads 0, then take
+the middle lane into the chip.
+
 The BLASTER flies forward and
 fires on its own whenever you
 steer. Grab N capsules for
@@ -49,7 +56,7 @@ Nova Bombs, + for repairs.
 
 FILES ON THIS DISK
 BLASTER.GAM  the game
-*.MAP        27 maps
+*.MAP        31 maps
 *.BBL *.MBL  blocks
 *.MON        monsters
 SHIP.CHR     the BLASTER

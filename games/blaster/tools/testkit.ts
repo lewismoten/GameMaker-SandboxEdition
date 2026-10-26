@@ -1,7 +1,7 @@
 // A leg in the headless simulator, and where the bot should head in a boss arena.
 import { DIAG_DRIFT, DRIFT } from '../src/ids';
 import { buildPalette } from '../src/art/pal';
-import { buildDiagShip, buildShip, buildSideShip, shipBlocks } from '../src/characters/ship';
+import { buildBusShip, buildDiagShip, buildShip, buildSideShip, shipBlocks } from '../src/characters/ship';
 import { scrollOf } from '../src/game';
 import { Sim } from './sim';
 import type { CharInfo } from '../../../web/src/engine/world';
@@ -18,7 +18,14 @@ export function simOf(l: Leg, seed = 1, ci?: CharInfo): Sim {
       bbl: b.bbl,
       mbl: b.mbl,
       mon: b.mon,
-      chr: l.kind === 'diag' ? buildDiagShip(cb, DIAG_DRIFT) : l.kind === 'side' ? buildSideShip(cb, DRIFT) : buildShip(cb, l.kind === 'boss' ? 0 : DRIFT),
+      chr:
+        l.kind === 'diag'
+          ? buildDiagShip(cb, DIAG_DRIFT)
+          : l.kind === 'side'
+            ? buildSideShip(cb, DRIFT)
+            : l.kind === 'bus'
+              ? buildBusShip(cb)
+              : buildShip(cb, l.kind === 'boss' ? 0 : DRIFT),
       cbl: cb.build(undefined, true),
       start: startOf(l),
       links: l.grid.links,

@@ -10,6 +10,7 @@ import type { RecordedKey } from '../../../web/src/formats/recording';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { STAGES } from '../src/stages/stages';
 import { fly } from './bot';
+import { rideBus } from './busBot';
 import { diagGoal, goalOf, maxTicksOf, simOf } from './testkit';
 
 const ci = newCharInfo();
@@ -32,7 +33,8 @@ for (const make of STAGES) {
     // on a diagonal leg, a steadier pilot that keeps to the middle and takes the last shortcut;
     // on a side leg, steady hands too
     const cable = l.kind === 'diag' ? { goal: diagGoal(l), stick: 80, every: 3 } : l.kind === 'side' ? { stick: 30, every: 3 } : {};
-    const r = await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...cable });
+    // on the data bus, a pilot who only sees traffic once it is well on its way and lets each lane change settle
+    const r = l.bus ? await rideBus(sim, l.bus, { notice: 72, calm: 4 }) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...cable });
     if (!r.ok) throw new Error(`${l.file}: the bot did not get through (${r.dead ? 'died' : 'timed out'}; ${r.log.slice(-1)[0] ?? ''})`);
     if (st.side?.from === l.file && sim.link >= l.grid.links.length) throw new Error(`${l.file}: the bot took the side room's way in`);
     console.log(`${l.file} ${l.title}: ${r.ticks} ticks, lost ${r.hpLost}, energy ${ci.hitpts}, score ${ci.score}`);
