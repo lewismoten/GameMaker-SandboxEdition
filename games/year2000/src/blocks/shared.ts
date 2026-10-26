@@ -86,13 +86,15 @@ export function addBooths(set: BlockSet, floor: Floor): void {
   };
   set.add('booth_door', door(phone), { solid: SOLID, effect: CTR.quarters, eamt: -1, touch: 'booth_open' });
   set.add('booth_dead', door(phone, 'OUT'), { solid: SOLID });
-  set.add('booth_ring', door(phone), { solid: SOLID, next: 'booth_ring2', ntime: 5 });
-  const ring2 = door(phone);
+  // A booth that rings and rings but is out of order like the rest: the OUT sign, and nothing
+  // happens when you walk into it (it's only solid).
+  set.add('booth_ring', door(phone, 'OUT'), { solid: SOLID, next: 'booth_ring2', ntime: 5 });
+  const ring2 = door(phone, 'OUT');
   for (const [x, y] of [
-    [11, 3],
-    [16, 3],
-    [11, 9],
-    [16, 9],
+    [11, 2],
+    [16, 2],
+    [11, 15],
+    [16, 15],
   ])
     ring2.set(x, y, C('gold', 5));
   set.add('booth_ring2', ring2, { solid: SOLID, next: 'booth_ring', ntime: 12 });
