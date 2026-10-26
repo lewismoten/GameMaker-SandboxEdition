@@ -47,7 +47,7 @@ export function scanWithProgress(given: ScanFile[]): Promise<ScanReport | undefi
 /** Zips with no game, and those that could not be read, folded away under the summary. */
 function zipNotes(r: ScanReport): HTMLElement | undefined {
   const rows = [
-    ...r.emptyZips.map((z) => h('li', null, z, h('small', null, ' · no .GAM file'))),
+    ...r.emptyZips.map((z) => h('li', null, z.path, h('small', null, ` · no .GAM file: ${z.held}`))),
     ...r.badZips.map((z) => h('li', null, z.path, h('small', null, ` · ${z.error}`))),
   ];
   if (!rows.length) return undefined;
@@ -89,7 +89,7 @@ export function chooseGames(r: ScanReport, noImport: (g: FoundGame) => string | 
           h(
             'small',
             { class: 'ic-from', id: `ic-from-${i}` },
-            `${g.from || 'the files picked'} · ${g.fileCount} ${g.fileCount === 1 ? 'file' : 'files'}${why ? ` · ${why}` : ''}`,
+            `${g.from || 'the files picked'} · ${g.fileCount} ${g.fileCount === 1 ? 'file' : 'files'}${g.alsoIn ? ` · also in ${g.alsoIn.join(', ')}` : ''}${why ? ` · ${why}` : ''}`,
           ),
         ),
       );

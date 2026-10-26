@@ -14,6 +14,26 @@ const game = (dir: string, title: string): [string, Uint8Array][] => [
   [`${dir}${title.toLowerCase()}.pal`, enc.encode('palette')],
   [`${dir}hero.cel`, enc.encode('hero')],
 ];
+/** A self-extracting archive: a DOS program stub, then the zip; `absolute` moves its offsets past the stub, as some packers did. */
+async function sfx(entries: [string, Uint8Array][], absolute: boolean): Promise<Uint8Array> {
+  const z = await createZip(entries.map(([name, data]) => ({ name, data })));
+  const stub = new Uint8Array(1500).fill(0x90);
+  stub.set([0x4d, 0x5a]);
+  const out = new Uint8Array(stub.length + z.length);
+  out.set(stub);
+  out.set(z, stub.length);
+  if (absolute) {
+    const v = new DataView(out.buffer);
+    const eocd = out.length - 22;
+    const dir = v.getUint32(eocd + 16, true);
+    v.setUint32(eocd + 16, dir + stub.length, true);
+    for (let p = dir + stub.length, i = 0; i < v.getUint16(eocd + 10, true); i++) {
+      v.setUint32(p + 42, v.getUint32(p + 42, true) + stub.length, true);
+      p += 46 + v.getUint16(p + 28, true);
+    }
+  }
+  return out;
+}
 const loose = (entries: [string, Uint8Array][]) => entries.map(([p, b]) => file(p, b));
 
 describe('scanImport', () => {
@@ -56,7 +76,7 @@ describe('scanImport', () => {
       ['Glub', 'games/glub.zip › glub/', 3],
       ['Zark', 'games/zark.zip', 3],
     ]);
-    expect(r.emptyZips).toEqual(['games/tools.zip']);
+    expect(r.emptyZips).toEqual([{ path: 'games/tools.zip', held: 'only tool.txt' }]);
     expect(scanSummary(r)).toBe('3 games found, 1 zip had no game');
     expect(progress).toEqual([0, 1, 2, 3, 4]);
     const read = await new GameReader(given).read(r.games[0]);
@@ -115,6 +135,51 @@ describe('scanImport', () => {
     expect(second.files.names()).toEqual(['never.z0g', 'never1b.z0g', 'shared.z0q']);
   });
 
+  it('reads self-extracting .EXEs as zips (offsets counted from the zip or from the file), never running them', async () => {
+    for (const absolute of [false, true]) {
+      const given = [file('games/zark.exe', await sfx(game('', 'Zark'), absolute)), file('games/tool.exe', new Uint8Array([0x4d, 0x5a, 1, 2, 3]))];
+      const r = await scanImport(given);
+      expect(r.games.map((g) => [g.name, g.from, g.fileCount])).toEqual([['Zark', 'games/zark.exe', 3]]);
+      expect((await new GameReader(given).read(r.games[0])).files.names()).toEqual(['hero.cel', 'zark.gam', 'zark.pal']);
+      expect(r.loose.map((f) => f.path)).toEqual(['games/tool.exe']);
+    }
+  });
+
+  it('keeps one of the same game found twice (a zip with a self-extracting copy of itself), the copy with the most files', async () => {
+    const inside = await sfx(game('', 'Yuphex'), false);
+    const given = [
+      await zip('yuphex.zip', [...game('', 'Yuphex'), ['extra.txt', enc.encode('x')], ['yufex.zip', await createZip([{ name: 'YUFEX.EXE', data: inside }])]]),
+    ];
+    const r = await scanImport(given);
+    expect(r.games.map((g) => [g.name, g.from, g.fileCount, g.alsoIn])).toEqual([
+      ['Yuphex', 'yuphex.zip', 4, ['yuphex.zip › yufex.zip › YUFEX.EXE (a self-extracting archive)']],
+    ]);
+    expect(r.emptyZips).toEqual([]);
+    expect(scanSummary(r)).toBe('1 game found, 1 copy of the same game left out');
+  });
+
+  it('says what a zip with no game held', async () => {
+    const r = await scanImport([
+      await zip('docs.zip', [
+        ['a.txt', enc.encode('x')],
+        ['b.doc', enc.encode('x')],
+      ]),
+      await zip('pics.zip', [
+        ['a.gif', enc.encode('x')],
+        ['b.gif', enc.encode('x')],
+        ['c.gif', enc.encode('x')],
+        ['d.gif', enc.encode('x')],
+      ]),
+      await zip('sfx.zip', [['SETUP.EXE', await sfx([['readme.txt', enc.encode('x')]], false)]]),
+    ]);
+    expect(r.emptyZips).toEqual([
+      { path: 'docs.zip', held: 'only text files (a.txt, b.doc)' },
+      { path: 'pics.zip', held: '4 files, such as a.gif, b.gif, c.gif…' },
+      { path: 'sfx.zip › SETUP.EXE (a self-extracting archive)', held: 'only readme.txt' },
+      { path: 'sfx.zip', held: 'only SETUP.EXE, a self-extracting archive with no game' },
+    ]);
+  });
+
   it('finds nothing in zips with no .gam, damaged zips, or a Mac’s copies', async () => {
     const r = await scanImport([
       await zip('a.zip', [['readme.txt', enc.encode('x')]]),
@@ -125,7 +190,10 @@ describe('scanImport', () => {
       file('broken.zip', enc.encode('not a zip')),
     ]);
     expect(r.games).toEqual([]);
-    expect(r.emptyZips).toEqual(['a.zip', 'mac.zip']);
+    expect(r.emptyZips).toEqual([
+      { path: 'a.zip', held: 'only readme.txt' },
+      { path: 'mac.zip', held: 'it is empty' },
+    ]);
     expect(r.badZips.map((b) => b.path)).toEqual(['broken.zip']);
     expect(r.loose).toEqual([]);
     expect(scanSummary(r)).toBe('0 games found, 2 zips had no game, 1 zip could not be read');

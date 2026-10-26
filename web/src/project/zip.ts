@@ -168,7 +168,8 @@ export interface ZipListing {
 }
 
 /**
- * A zip's files from its central directory, without inflating any: an import looks for the
+ * A zip's files from its central directory, without inflating any (a self-extracting .EXE's
+ * too, which is never run): an import looks for the
  * .gam files first and reads the rest only for the games picked (project/importScan.ts).
  */
 export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
@@ -186,7 +187,13 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
   const count = v.getUint16(eocd + 10, true);
   if (limits && count > limits.maxEntries) throw new Error(`The ZIP holds ${count} entries, more than ${limits.maxEntries}`);
   let declared = 0;
-  let p = v.getUint32(eocd + 16, true);
+  // A self-extracting .EXE is a program with the zip after it: its packer may have counted the
+  // offsets from the zip's start, not the file's, so they are moved by however far the
+  // directory (which ends where the end record starts) really is from where they say.
+  const dirSize = v.getUint32(eocd + 12, true);
+  const dirAt = v.getUint32(eocd + 16, true);
+  const shift = Math.max(0, eocd - dirSize - dirAt);
+  let p = dirAt + shift;
   const dec = new TextDecoder();
   const out: ZipListing[] = [];
   for (let i = 0; i < count; i++) {
@@ -197,7 +204,7 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
     const nameLen = v.getUint16(p + 28, true);
     const extraLen = v.getUint16(p + 30, true);
     const commentLen = v.getUint16(p + 32, true);
-    const localOffset = v.getUint32(p + 42, true);
+    const localOffset = v.getUint32(p + 42, true) + shift;
     const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     // Folder entries carry no data. Sizes come from the central directory because the

@@ -34,14 +34,16 @@ export interface FoundGame {
   paths: string[];
   /** When a folder holds several games, each with its own player: the .gam this one plays (named as it is once renamed back), and its title. */
   gam?: string;
+  /** Where else the same game is (its .gam files byte for byte): those copies are left out. */
+  alsoIn?: string[];
 }
 
 export interface ScanReport {
   games: FoundGame[];
   /** Zips looked in (inside others too). */
   zips: number;
-  /** Zips with no .gam file in them. */
-  emptyZips: string[];
+  /** Zips with no .gam file in them, and what they did hold ("only text files"). */
+  emptyZips: { path: string; held: string }[];
   /** Zips that could not be read, and why. */
   badZips: { path: string; error: string }[];
   /** Files in no game, zips aside (none of them is imported, unless no game was found at all). */
@@ -53,6 +55,24 @@ export const PLAYER_EXE = (name: string, size: number) => /\.exe$/i.test(name) &
 
 /** Zips inside zips are looked in this deep. */
 const MAX_DEPTH = 3;
+/** A program bigger than this is not opened to see if it is a self-extracting zip. */
+const MAX_SFX_BYTES = 64 << 20;
+const isExe = (path: string) => /\.exe$/i.test(path);
+/** Files with words in them, not a game's: a zip with only these is "only text files". */
+const TEXT_FILE = /\.(txt|doc|diz|nfo|me|1st|htm|html|md|wri|rtf|cfg|conf|bat)$/i;
+/** "a self-extracting archive" labels: these .EXEs, looked in as zips. */
+const sfxNote = (path: string) => `${path} (a self-extracting archive)`;
+
+/** What a zip with no game held, for its note. */
+function heldBy(files: ScanFile[], sfx: Set<ScanFile>): string {
+  const kept = files.filter((f) => !isJunk(clean(f.path)));
+  const names = kept.map((f) => baseOf(clean(f.path)));
+  if (!kept.length) return 'it is empty';
+  if (kept.length === 1) return `only ${names[0]}${sfx.has(kept[0]) ? ', a self-extracting archive with no game' : ''}`;
+  if (kept.every((f) => TEXT_FILE.test(f.path))) return `only text files (${names.join(', ')})`;
+  const shown = names.slice(0, 3).join(', ');
+  return `${kept.length} files, such as ${shown}${kept.length > 3 ? '…' : ''}`;
+}
 
 const clean = (path: string) => path.replace(/\\/g, '/').replace(/^(\.\/|\/)+/, '');
 const dirOf = (path: string) => (path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '');
@@ -188,36 +208,95 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
       const top = depth === 0;
       if (top) onProgress?.(done++, topZips.length, z.path);
       const n = await lookInZip(z, top ? [z] : zips, top ? [] : [...inner, z.path], depth);
-      found += n;
+      found += n ?? 0;
       if (top) await breathe();
     }
+    // a program in no game may be a self-extracting zip (never run: only read)
+    if (depth < MAX_DEPTH)
+      for (const z of loose.filter((f) => isExe(f.path) && !PLAYER_EXE(f.path, f.size) && f.size <= MAX_SFX_BYTES)) {
+        signal?.throwIfAborted();
+        const n = await lookInZip(z, depth === 0 ? [z] : zips, depth === 0 ? [] : [...inner, z.path], depth, true);
+        if (n !== undefined) {
+          sfx.add(z);
+          found += n;
+        }
+      }
     return found;
   };
 
-  const lookInZip = async (z: ScanFile, zips: ScanFile[], inner: string[], depth: number): Promise<number> => {
+  /** The .EXEs found to be self-extracting zips. */
+  const sfx = new Set<ScanFile>();
+
+  /** How many games a zip holds; for a program (`asSfx`), undefined when it is not a self-extracting zip. */
+  const lookInZip = async (z: ScanFile, zips: ScanFile[], inner: string[], depth: number, asSfx = false): Promise<number | undefined> => {
     const label = [zips[0].path, ...inner].map(clean).join(' › ');
-    report.zips++;
     let entries: ScanFile[];
     try {
       const bytes = await z.read();
-      if (!bytes || !isZip(bytes)) throw new Error('It is not a zip file.');
-      entries = listZip(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+      if (asSfx) {
+        // an MS-DOS program (MZ) with a zip's end record in it
+        if (!bytes || bytes[0] !== 0x4d || bytes[1] !== 0x5a) return undefined;
+        try {
+          entries = listZip(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+        } catch {
+          return undefined;
+        }
+      } else {
+        if (!bytes || !isZip(bytes)) throw new Error('It is not a zip file.');
+        entries = listZip(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+      }
     } catch (e) {
+      report.zips++;
       report.badZips.push({ path: label, error: (e as Error).message || 'It could not be read.' });
       return 0;
     }
+    report.zips++;
+    if (asSfx) sfxPaths.add(label);
     // zips deeper than this are left unopened
     const files = depth + 1 >= MAX_DEPTH ? entries.filter((e) => !isZipName(e.path)) : entries;
     const n = await look(files, zips, inner, depth + 1);
-    if (!n) report.emptyZips.push(label);
+    if (!n) report.emptyZips.push({ path: asSfx ? sfxNote(label) : label, held: heldBy(files, sfx) });
     return n;
   };
+  /** Labels of the self-extracting archives found. */
+  const sfxPaths = new Set<string>();
 
   await look(given, [], [], 0);
+  report.games = sameGamesOnce(report.games, sfxPaths);
+  report.loose = report.loose.filter((f) => !sfx.has(f));
   // listed by where they are (a zip's games stay together, so GameReader reads it once)
   report.games.sort((a, b) => a.from.localeCompare(b.from, undefined, { numeric: true, sensitivity: 'base' }));
   onProgress?.(topZips.length, topZips.length);
   return report;
+}
+
+/**
+ * One of each game whose .gam files are the same byte for byte (a zip holding a self-extracting
+ * copy of itself): the copy with the most files, else the one found first, noting where the others are.
+ */
+function sameGamesOnce(games: FoundGame[], sfxPaths: Set<string>): FoundGame[] {
+  const label = (g: FoundGame) => {
+    const at = [...sfxPaths].find((p) => g.from === p || g.from.startsWith(`${p} › `));
+    return at ? g.from.replace(at, sfxNote(at)) : g.from || 'the files picked';
+  };
+  const byGam = new Map<string, FoundGame[]>();
+  const out: FoundGame[] = [];
+  for (const g of games) {
+    if (!g.gamCrcs.length) {
+      out.push(g);
+      continue;
+    }
+    const key = [...g.gamCrcs].sort().join(',');
+    const same = byGam.get(key);
+    if (same) same.push(g);
+    else byGam.set(key, [g]);
+  }
+  for (const same of byGam.values()) {
+    const keep = same.reduce((best, g) => (g.fileCount > best.fileCount ? g : best));
+    const others = same.filter((g) => g !== keep);
+    out.push(others.length ? { ...keep, alsoIn: others.map(label) } : keep);
+  }
+  return out;
 }
 
 /** "212 games found, 3 zips had no game" */
@@ -226,6 +305,8 @@ export function scanSummary(r: Pick<ScanReport, 'games' | 'emptyZips' | 'badZips
   const parts = [`${n(r.games.length, 'game')} found`];
   if (r.emptyZips.length) parts.push(`${n(r.emptyZips.length, 'zip')} had no game`);
   if (r.badZips.length) parts.push(`${n(r.badZips.length, 'zip')} could not be read`);
+  const copies = r.games.reduce((sum, g) => sum + (g.alsoIn?.length ?? 0), 0);
+  if (copies) parts.push(`${n(copies, 'copy', 'copies')} of the same ${copies === 1 ? 'game' : 'games'} left out`);
   if (!r.games.length && r.zips && !r.emptyZips.length && !r.badZips.length) parts.push(`in ${n(r.zips, 'zip')}`);
   return parts.join(', ');
 }
