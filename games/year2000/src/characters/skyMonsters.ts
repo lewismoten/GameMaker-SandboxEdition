@@ -12,37 +12,15 @@ import type { BlockSet } from '../blocks/book';
 import { SKYMON } from '../ids';
 import { DASH_SPAWN, SPAWN_COL } from '../blocks/sky';
 import { HORIZON_COLS, HORIZON_ROW } from '../art/skyView';
+import { growPics, laneSlide, leapTo, roadCorners, type RoadCorner } from '../../../kit/road3d';
 
 const POWER = 95;
 /** The vanishing point's cell, where everything starts down its lane. */
-const VP = { x: HORIZON_COLS[1], y: HORIZON_ROW };
-/** Leap speed: more than any spawner is from the horizon, in pixels a tick. */
-const LEAP = 240;
-
-type Corner = [number, number, number, number];
-
-/** A path as steps [dx, dy, speed] from where the last one ended (Game-Maker stores corners from the start). */
-function path(steps: [number, number, number][], orient: number): Corner[] {
-  let x = 0;
-  let y = 0;
-  return steps.map(([dx, dy, speed]) => {
-    x += dx;
-    y += dy;
-    return [x, y, speed, orient];
-  });
-}
-
-/** Lane k's slide: -1 left, 0 middle, 1 right (outward along its line, faster as it comes). */
-const laneSteps = (k: number): [number, number, number][] => [
-  [k, 1, 1],
-  [k, 1, 2],
-  [3 * k, 4, 4],
-  [2 * k, 3, 5],
-];
+const VP: [number, number] = [HORIZON_COLS[1], HORIZON_ROW];
 
 export function buildSkyMonsters(mb: BlockSet): Monster[] {
   const set = newMonsterSet();
-  const def = (n: number, pics: [string, number][], march: Corner[], becomes: number = SKYMON.puff, end = -1) => {
+  const def = (n: number, pics: [string, number][], march: RoadCorner[], becomes: number = SKYMON.puff, end = -1) => {
     const mon = emptyMonster();
     mon.used = 1;
     mon.power = POWER;
@@ -53,13 +31,6 @@ export function buildSkyMonsters(mb: BlockSet): Monster[] {
     march.forEach(([x, y, pic, orient], i) => (mon.march[0][i] = { x, y, pic, orient }));
     set[n] = mon;
   };
-  // Its sizes in step with its path: a dot while it crawls the first block, then nearer and nearer.
-  const grow = (name: string): [string, number][] => [
-    [`${name}0`, 12],
-    [`${name}1`, 8],
-    [`${name}2`, 5],
-    [`${name}3`, 200],
-  ];
   for (const [kind, becomes] of [
     ['car', SKYMON.puff],
     ['truck', SKYMON.puff],
@@ -69,9 +40,8 @@ export function buildSkyMonsters(mb: BlockSet): Monster[] {
     for (const lane of [0, 1, 2]) {
       const k = lane - 1;
       // the spawner is at (SPAWN_COL + lane, HORIZON_ROW)
-      const leap: [number, number, number] = [VP.x - (SPAWN_COL + lane), VP.y - HORIZON_ROW, LEAP];
       // drawn as they are in every lane (mirrored, the trucks' lettering would read backward)
-      def(SKYMON[kind][lane], grow(kind), path([leap, ...laneSteps(k)], 0), becomes);
+      def(SKYMON[kind][lane], growPics(kind), roadCorners([leapTo([SPAWN_COL + lane, HORIZON_ROW], VP), ...laneSlide(k)], 0), becomes);
     }
   // The dashes between the lanes ride the road itself, so they come faster than the traffic.
   const dashPics: [string, number][] = [
@@ -83,8 +53,7 @@ export function buildSkyMonsters(mb: BlockSet): Monster[] {
   ];
   DASH_SPAWN.forEach(([sx, sy], i) => {
     const k = i ? 1 : -1;
-    const leap: [number, number, number] = [VP.x - sx, VP.y - sy, LEAP];
-    def(i ? SKYMON.dashR : SKYMON.dashL, dashPics, path([leap, [k, 2, 3], [2 * k, 4, 6], [k, 2, 7]], k < 0 ? 4 : 0), SKYMON.none);
+    def(i ? SKYMON.dashR : SKYMON.dashL, dashPics, roadCorners([leapTo([sx, sy], VP), [k, 2, 3], [2 * k, 4, 6], [k, 2, 7]], k < 0 ? 4 : 0), SKYMON.none);
   });
   def(
     SKYMON.puff,

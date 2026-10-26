@@ -9,31 +9,9 @@ import { micro } from '../art/font';
 import { C } from '../art/pal';
 import { ITEM_PICS } from '../blocks/items';
 import { CTR } from '../ids';
+import { ROAD_SIZES, shrinkSprite } from '../../../kit/road3d';
 
 const K = () => C('gray', 0);
-
-/** How big each size is, and the row of the sprite its bottom sits on (lower as it nears). */
-export const SIZES = [
-  { scale: 0.25, bottom: 6 },
-  { scale: 0.45, bottom: 11 },
-  { scale: 0.72, bottom: 16 },
-  { scale: 1, bottom: 19 },
-] as const;
-
-/** A full-size picture shrunk (nearest pixel), centered, its bottom row on `bottom`. */
-function shrink(src: Pixels, scale: number, bottom: number): Pixels {
-  const p = new Pixels(20, 20, T);
-  if (scale >= 1) return p.blit(src, 0, bottom - 19, T);
-  const w = Math.max(1, Math.round(20 * scale));
-  const x0 = Math.round(10 - w / 2);
-  const y0 = bottom + 1 - w;
-  for (let y = 0; y < w; y++)
-    for (let x = 0; x < w; x++) {
-      const c = src.get(Math.min(19, Math.floor((x + 0.5) / scale)), Math.min(19, Math.floor((y + 0.5) / scale)));
-      if (c !== T) p.set(x0 + x, y0 + y, c);
-    }
-  return p;
-}
 
 /** A hover car from behind: teal, a bubble canopy, red tail lights, a glow where the wheels would be. */
 function hoverCar(): Pixels {
@@ -118,7 +96,7 @@ function sparkle(k: number): Pixels {
 export function buildSkyMonsterBlocks(): BlockSet {
   const s = new BlockSet(100, true);
   const sizes = (name: string, full: Pixels, near: BlockDef) =>
-    SIZES.forEach(({ scale, bottom }, i) => s.add(`${name}${i}`, shrink(full, scale, bottom), i >= 2 ? near : {}));
+    ROAD_SIZES.forEach(({ scale, bottom }, i) => s.add(`${name}${i}`, shrinkSprite(full, scale, bottom, T), i >= 2 ? near : {}));
   // A bump hurts as on the Skyway: cars 12, trucks 16 (nothing far off can touch the car).
   sizes('car', hoverCar(), { hp: -12 });
   sizes('truck', hoverTruck(), { hp: -16 });

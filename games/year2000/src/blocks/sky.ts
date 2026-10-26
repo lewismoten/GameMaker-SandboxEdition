@@ -23,6 +23,7 @@ import { T, shadeAt } from '../art/draw';
 import { EXIT_COL, HORIZON, HORIZON_ROW, VX, WALL_ROW, CAR_ROW, LANE_COLS, halfWidth } from '../art/skyView';
 import { MILE, MILES, OPEN_AT, WAVES, type Lane } from '../levels/cloudWaves';
 import { CTR, EGG_BLOCK, SKYMON } from '../ids';
+import { spawnChains } from '../../../kit/road3d';
 
 const R = PAL.r;
 const W = 320;
@@ -338,22 +339,10 @@ export function skySet(): BlockSet {
   // The spawners, off the right edge: one chain per lane, a block per entry in the timetable.
   const spawners: [string, number, number][] = [];
   const blank = new Pixels(20, 20, C('sky', 4));
-  for (const lane of [0, 1, 2] as Lane[]) {
-    const entries = WAVES.filter(([, l]) => l === lane).sort((a, b) => a[0] - b[0]);
-    let from = 0;
-    entries.forEach(([tick, , kind], i) => {
-      if (tick < from || tick < 2) throw new Error(`cloud lane ${lane}: entry at ${tick} is out of order`);
-      // on the map from the last entry's tick until just after its own: its first birth is its only one
-      s.add(`spawn${lane}_${i}`, blank, {
-        birthMon: SKYMON[kind][lane],
-        birthTime: tick,
-        next: i + 1 < entries.length ? `spawn${lane}_${i + 1}` : `spawn${lane}_end`,
-        ntime: tick + 1 - from,
-      });
-      from = tick + 1;
-    });
-    s.add(`spawn${lane}_end`, blank);
-    spawners.push([`spawn${lane}_0`, SPAWN_COL + lane, HORIZON_ROW]);
+  for (const chain of spawnChains(WAVES, [0, 1, 2])) {
+    for (const b of chain.blocks) s.add(b.name, blank, { birthMon: SKYMON[b.kind][chain.lane as Lane], birthTime: b.birthTime, next: b.next, ntime: b.ntime });
+    s.add(chain.end, blank);
+    spawners.push([chain.first, SPAWN_COL + chain.lane, HORIZON_ROW]);
   }
   s.add('dashSpawnL', blank, { birthMon: SKYMON.dashL, birthTime: DASH_EVERY });
   s.add('dashSpawnR', blank, { birthMon: SKYMON.dashR, birthTime: DASH_EVERY });

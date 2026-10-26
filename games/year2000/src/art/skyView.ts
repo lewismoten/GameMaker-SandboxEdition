@@ -3,6 +3,7 @@
 // the bottom of the screen, widening as it comes; three lanes, the car's three places. The
 // blocks (sky.ts), the oncoming traffic (skySprites.ts) and its paths (skyMonsters.ts) all
 // measure from here, so the picture and the things moving over it line up.
+import { roadView } from '../../../kit/road3d';
 
 /** The horizon's height on the screen, in pixels (the top of block row 3). */
 export const HORIZON = 60;
@@ -11,14 +12,8 @@ export const VX = 170;
 /** How fast the lane widens: its half width is SPREAD x (y - HORIZON). */
 const SPREAD = 1.2;
 
-/** The lane's half width at screen row y (its rails sit at VX +- this). */
-export const halfWidth = (y: number) => Math.max(0, (y - HORIZON) * SPREAD);
-
-/** Where lane k (-1 left, 0 middle, 1 right) runs at screen row y: two thirds of the way out for the side lanes. */
-export const laneX = (k: number, y: number) => VX + (k * 2 * halfWidth(y)) / 3;
-
-/** Where the dashed lines between the lanes run (side -1 or 1). */
-export const dividerX = (side: number, y: number) => VX + (side * halfWidth(y)) / 3;
+/** The lane's half width at a screen row, where each lane runs, and the dashed lines between them (kit/road3d.ts). */
+export const { halfWidth, laneX, dividerX } = roadView(HORIZON, VX, SPREAD);
 
 /** The car's three lanes, as block columns on row 5 (left, middle, right). */
 export const LANE_COLS = [6, 8, 10] as const;

@@ -73,6 +73,11 @@ Making the files:
   (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look. `putSaveSign` gives a
   game whose block set is full a copy of the set for that one map, with the sign in blocks the map never shows.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
+- `road3d.ts` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
+  bus rides: the road's perspective (`roadView`), the spawner chains that turn a timetable into blocks giving birth once
+  each (`spawnChains`), the traffic's leap onto the vanishing point and slide down its lane (`leapTo`, `laneSlide`,
+  `roadCorners`), its sizes in step (`growPics`) and a full-size picture shrunk to them (`shrinkSprite`, `ROAD_SIZES`).
+  Each game draws its own pictures and places its own blocks.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
 
