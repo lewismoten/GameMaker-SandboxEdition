@@ -9,6 +9,7 @@
   "sound": "sb",
   "tinHeart": { "map": "gale.map", "at": [13, 24] },
   "easterEgg": { "map": "bowden.map", "at": [59, 31] },
+  "saveSign": { "map": "jamie.map", "at": [44, 5], "after": "gale.map" },
   "label": {
     "background": "#f4f8ff",
     "band": "#1d4f91",

@@ -14,6 +14,7 @@ import { Disk } from '../kit/disk';
 import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildBlocks } from './src/blocks/blocks';
+import { withSaveSign } from './src/blocks/saveSign';
 import { MON } from './src/ids';
 import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './src/levels/maps';
 import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './src/sound/music';
@@ -132,6 +133,10 @@ let totalMoney = 0;
 built.forEach(({ l, m, start }, i) => {
   const pal = buildPalette(l.time);
   const map = m.build();
+  // Jamie Street, the level after the pines, shows the save sign by the sled's start (its own block set)
+  const set = l.file === 'jamie' ? withSaveSign(bbl, map, noon.pal, start[0] + 3, start[1] - 1) : bbl;
+  const bblFile = l.file === 'jamie' ? 'jamie.bbl' : 'snow.bbl';
+  if (l.file === 'jamie') disk.put(bblFile, serializeBlocks(set));
   totalMoney += m.money;
   const mons = buildMonsters(mb, l.mons);
   disk.put(`${l.time}.pal`, serializePalette(pal.pal));
@@ -139,7 +144,7 @@ built.forEach(({ l, m, start }, i) => {
   disk.put(`${l.file}.mon`, serializeMonsters(mons));
   disk.put(l.song[0], l.song[1]());
   disk.put(`lvl${i + 1}.lst`, serializeSlideList([{ name: `card${i + 1}.gif`, pause: 8 }]));
-  const view = renderRegion(map, bbl, mb.blocks, mons, l.card.view[0], l.card.view[1], 16, 6, [
+  const view = renderRegion(map, set, mb.blocks, mons, l.card.view[0], l.card.view[1], 16, 6, [
     { pixels: cb.blocks[cb.n(l.chr === 'sled.chr' ? 'sled' : 'down0')].pixels, x: start[0], y: start[1] },
   ]);
   cards.push({ name: `card${i + 1}`, map: view, pal, ...l.card });
@@ -154,7 +159,7 @@ built.forEach(({ l, m, start }, i) => {
   scene.files = [
     `${l.time}.pal`,
     `${l.file}.map`,
-    'snow.bbl',
+    bblFile,
     `${l.file}.mon`,
     'snow.mbl',
     l.chr,
