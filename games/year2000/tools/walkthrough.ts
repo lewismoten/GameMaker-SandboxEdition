@@ -58,8 +58,9 @@ for (const [i, l] of LEVELS.entries()) {
   const lm = l.build(set);
   const map = lm.done();
   const names = set.names;
-  // Booth doors only when dialing; never the closet (its hologram wall, the egg, the hatch).
-  const avoid = new Set(['booth_door', 'xwallGlow', 'egg', 'hatch'].filter((n) => set.has(n)).map((n) => set.id(n)));
+  // Booth doors only when dialing; never the closet (its hologram wall, the egg, the hatch), nor
+  // the spare cover (it's for a player whose cover a zap burned).
+  const avoid = new Set(['booth_door', 'xwallGlow', 'egg', 'hatch', 'sparecover'].filter((n) => set.has(n)).map((n) => set.id(n)));
   // never the tin heart or the Easter egg: they're left for the player to find
   set.names.forEach((n, i) => /^(tinHeart|easterEgg)\d*$/.test(n) && avoid.add(i));
   const links: SimScene['links'] = [];

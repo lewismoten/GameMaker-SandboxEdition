@@ -95,7 +95,7 @@ async function shortOfPages(): Promise<void> {
   const scene: SimScene = { map: lm.done(), bbl: set.build(), mbl, mon: mons, chr: chars[l.chr], cbl, links: [{ from: lm.at('exit'), to: { x: 0, y: 0 } }] };
   const short = newCharInfo();
   const sim = new Sim(scene, lm.at('start'), short, 17);
-  const bot = new Bot(sim, { zapAt: (n) => ROBOTS.has(n) });
+  const bot = new Bot(sim, { zapAt: (n) => ROBOTS.has(n), avoid: new Set([set.id('sparecover')]) });
   const pages = () => short.meter[CTR.pages] - 1;
   const zaps0 = short.meter[SEQ.zap];
   await bot.collect(set.names, (n) => ITEMS.test(n), 'items');
@@ -114,13 +114,39 @@ async function shortOfPages(): Promise<void> {
   );
 }
 
+/**
+ * A player whose cover page a stray zap burned: Sparky's is gone, so the one spare cover beside
+ * the copier must get them to the podium. There is only one, and it is worth one cover.
+ */
+async function spareCover(): Promise<void> {
+  const l = LEVELS.find((v) => v.file === 'school')!;
+  const set = SETS[l.set]();
+  const lm = l.build(set);
+  const scene: SimScene = { map: lm.done(), bbl: set.build(), mbl, mon: mons, chr: chars[l.chr], cbl, links: [{ from: lm.at('exit'), to: { x: 0, y: 0 } }] };
+  const lost = newCharInfo();
+  const sim = new Sim(scene, lm.at('start'), lost, 19);
+  lost.meter[CTR.pages] = PAGES_NEEDED + 1; // a new game's counters are set as the scene starts
+  const bot = new Bot(sim, { zapAt: () => false });
+  const spare = bot.find(set.names, (n) => n === 'sparecover');
+  if (spare.length !== 1) throw new Error(`year2000: ${spare.length} spare covers in the gym (want 1)`);
+  if (!(await bot.goTo(spare, 'the spare cover'))) throw new Error('year2000: no way to the spare cover');
+  if (lost.meter[CTR.cover] !== 2) throw new Error(`year2000: the spare cover left the counter at ${lost.meter[CTR.cover] - 1} (want 1)`);
+  const ok = (await bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'exit')) && sim.link >= 0 && !sim.dead;
+  if (!ok)
+    throw new Error(
+      `year2000: with the spare cover, the bot did not finish (cover ${lost.meter[CTR.cover] - 1}, pages ${lost.meter[CTR.pages] - 1}, dead ${sim.dead})`,
+    );
+  console.log(`spare cover: Sparky's cover lost, took the spare beside the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`);
+}
+
 for (const [i, l] of LEVELS.entries()) {
   const set = SETS[l.set]();
   const bbl = set.build();
   const lm = l.build(set);
   const map = lm.done();
   const names = set.names;
-  const avoid = new Set(['booth_door'].map((n) => set.id(n)));
+  // the spare cover is for a player whose cover a zap burned: the bot brings back Sparky's
+  const avoid = new Set(['booth_door', 'sparecover'].filter((n) => set.has(n)).map((n) => set.id(n)));
   // never the tin heart or the Easter egg: they're left for the player to find
   set.names.forEach((n, i) => /^(tinHeart|easterEgg)\d*$/.test(n) && avoid.add(i));
   const links: SimScene['links'] = [];
@@ -196,3 +222,4 @@ console.log(`${(totalTicks / 18.2 / 60).toFixed(1)} minutes; ${pagesAtFair} page
 if (!god && deaths) throw new Error(`year2000: the bot lost ${deaths} ${deaths === 1 ? 'life' : 'lives'}`);
 if (pagesAtFair < PAGES_NEEDED) throw new Error(`year2000: only ${pagesAtFair} of ${PAGES_NEEDED} pages reached the fair`);
 await shortOfPages();
+await spareCover();

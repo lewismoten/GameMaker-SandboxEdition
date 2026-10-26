@@ -3,8 +3,9 @@
 // Zap him three times to calm him down, turn in 20 pages at the judges' table, hand
 // over the cover page, and step up to the podium. Two signs by the door say how: zap Sparky
 // for the cover, and wait at the copier (it prints a page every few seconds) if you came
-// short. Among the projects: a 6502 breadboard computer, the 1802 that flew to Jupiter, and
-// a time capsule for America's 250th in 2026.
+// short. Beside the copier is one spare cover, for a cover a stray zap burned. Among the
+// projects: a 6502 breadboard computer, the 1802 that flew to Jupiter, and a time capsule
+// for America's 250th in 2026.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';
 import { MON } from '../ids';
@@ -37,6 +38,7 @@ const LEGEND: Legend = {
   Y: { big: 'bbCopier', w: 5, h: 2 },
   C: 'copier',
   y: 'copiertray',
+  x: 'sparecover',
   '@': { mark: 'start' },
 };
 
@@ -64,7 +66,7 @@ const ROWS = [
   gym('..V.....T..........R...V....'), // 15
   gym('....AAAAA..q......YYYYY.....'), // 16
   gym('..p.AAAAA.........YYYYY.q...'), // 17
-  gym('.....*..........z...C.......'), // 18
+  gym('.....*..........z...Cx......'), // 18
   gym('....................y.......'), // 19
   gym('.............@..............'), // 20
   'S'.repeat(30), // 21

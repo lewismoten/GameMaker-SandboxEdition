@@ -183,6 +183,21 @@ function copierTray(): Pixels {
   return p;
 }
 
+/**
+ * Spare covers beside the copier: a SPARE card over two blank covers on the gym floor. Touch it
+ * for one cover page, in case a stray zap burned Sparky's. The COVER table takes only one, so a
+ * second cover changes nothing, and it scores nothing.
+ */
+function spareCovers(): Pixels {
+  const p = on('gym');
+  p.rect(0, 0, 20, 7, C('paper', 2));
+  micro(p, 1, 1, 'SPARE', C('red', 3));
+  p.rect(6, 10, 12, 9, C('denim', 1)).rect(5, 9, 12, 9, C('sky', 4));
+  p.rect(3, 8, 12, 10, C('sky', 6)).rect(3, 8, 12, 2, C('denim', 2));
+  p.set(12, 13, C('gold', 4)).set(11, 14, C('gold', 4)).set(12, 14, C('gold', 4)).set(13, 14, C('gold', 4)).set(12, 15, C('gold', 4));
+  return p;
+}
+
 function volcanoSpawner(): Pixels {
   return project('volcano');
 }
@@ -234,12 +249,14 @@ export function moonSet(): BlockSet {
   s.add('podium', podium());
   addBig(s, 'banner', banner('SCIENCE FAIR 2000', 8, 1, 'denim', 'gold'));
   // How to finish: the cover page from Sparky, and pages from the copier when you are short
-  // (its tray prints a page every few seconds, MON.page), so no player reaches the fair stuck.
+  // (its tray prints a page every few seconds, MON.page), so no player reaches the fair stuck;
+  // beside the copier, one spare cover for a player whose cover a stray zap burned.
   const gymFloor = FLOORS.gym;
   addBig(s, 'bbSparky', billboard(['ZAP SPARKY 3 TIMES', 'FOR THE COVER PAGE!', 'NEEDS THE ZAPPER', 'AND BATTERIES.'], 'denim', 'gold', gymFloor, 5, 6));
   addBig(s, 'bbCopier', billboard(['SHORT ON PAGES?', 'WAIT AT THE COPIER.', 'IT PRINTS ONE EVERY', 'FEW SECONDS.'], 'purple', 'gold', gymFloor, 5, 6));
   s.add('copier', copier(), { solid: SOLID });
   s.add('copiertray', copierTray(), { birthMon: MON.page, birthTime: COPY_TICKS });
+  s.add('sparecover', spareCovers(), { effect: CTR.cover, eamt: 1, touch: 'gym' });
   // the save sign (kit/saveSign.ts), standing in the dust by the landing spot
   const dust = s.pic('moon');
   const sign = saveSignBlocks(PAL.pal, { board: [dust, dust], posts: [dust, dust] });
