@@ -115,6 +115,10 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
     <li><b>The finish in another lane.</b> The course’s exit isn’t on the lane the bike starts
     in, so the player has to change lanes on purpose to finish; riding along only loops.</li>
   </ul>
+  <p>A skiing game in the archive runs the same idea downhill: the skier drifts 19 right and 20
+  down every frame, the view scrolls only down and to the right so it never turns back, and the
+  slope wraps under him. A solid gate opens by itself after about 55 seconds, so the run has a
+  set length however the player steers.</p>
   <h2>Choices you walk into</h2>
   <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,
   each a link to a different scene, and label the floor in front of each: the player picks by
@@ -151,7 +155,9 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   hero select is a room that doesn’t scroll sideways, with four links in a row overhead, one per
   hero. The hand slides left and right 10 pixels a step, and Space hops it 75 pixels up into the
   link above it. The doors don’t need a grid, only a row, and a pick takes a deliberate press,
-  never a stray step.</p>
+  never a stray step. A snowboarding sequel picks its hero the same way: the pointer slides along
+  a row of two links, and Up or Space hops it onto one, the game’s own seal or a guest from
+  another studio’s game, each with its own copy of the courses.</p>
   <p>Leave the level flat, with nothing that pulls, so the pointer stays where it is put, and
   label each door on the map so the choice reads before it is made.</p>
   <h2>A shareware cut from a second .gam</h2>
