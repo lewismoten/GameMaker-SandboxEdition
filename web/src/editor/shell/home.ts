@@ -188,12 +188,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   let projects: Awaited<ReturnType<typeof listProjects>> = [];
   /** The collections this catalog has: Bizarre only with enough of the Bard's games. */
   const shownCats = () => CATEGORIES.filter((c) => c.id !== 'bizarre' || hasBizarreTab(catalog));
-  // RSD's own games first
-  const gameware = () =>
-    catalog
-      .filter((g) => g.kind !== 'shareware' && !g.original)
-      .sort((a, b) => (RSD_GAMES.includes(b.id) ? 1 : 0) - (RSD_GAMES.includes(a.id) ? 1 : 0) || RSD_GAMES.indexOf(a.id) - RSD_GAMES.indexOf(b.id));
-  const entriesOf = (c: Category): CatalogEntry[] =>
+  // every list A to Z by title (the maker and collection groups keep their own order, each A to Z inside)
+  const byTitle = (list: CatalogEntry[]) => [...list].sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }));
+  const gameware = () => catalog.filter((g) => g.kind !== 'shareware' && !g.original);
+  const entriesOf = (c: Category): CatalogEntry[] => byTitle(entriesIn(c));
+  const entriesIn = (c: Category): CatalogEntry[] =>
     c === 'gameware'
       ? gameware()
       : c === 'sandbox'
@@ -462,7 +461,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       // (pack() above), each tile telling its group
       const sections: { name: string; count?: number; games: { g: HomeGame }[] }[] =
         c === 'bizarre'
-          ? byCollection(gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g })))
+          ? byCollection(gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))).map((sec) => ({
+              ...sec,
+              games: [...sec.games].sort((a, b) => a.g.title.localeCompare(b.g.title, undefined, { numeric: true, sensitivity: 'base' })),
+            }))
           : byMakerTab()
             ? byMaker(gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
             : [];
