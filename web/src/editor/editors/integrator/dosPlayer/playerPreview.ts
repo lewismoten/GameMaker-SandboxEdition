@@ -16,6 +16,7 @@ import { BACKBL } from '../../../../engine/world';
 import type { PlayerLook } from '../../../../engine/playerLook';
 import type { PatchScreen } from '../../../../dosPlayer/patchTable';
 import { mulberry32 } from '../../../../seededRandom';
+import type { PreviewDrawn } from './dragItems';
 
 /** The screens a preview can show (every patch's screen but 'all' and 'play'). */
 export type PreviewScreen = Exclude<PatchScreen, 'all' | 'play'>;
@@ -89,18 +90,27 @@ const SAMPLE_SLOTS = ['Before the bridge', 'Second level', '', '', '', '', '', '
 /** A patch of the menu's "No game-specific ..." line (shown in the menu preview only while one is edited). */
 const NO_FILE = /noInstructions|noStoryline|noCredits|noFile|menuMessages/;
 
-/** Draws `which` with `look` into `screen` and shows it; `focused` is the patch being edited. */
-export function drawPreview(screen: Screen, files: GameFiles, game: Game, gameName: string, look: PlayerLook, which: PreviewScreen, focused = ''): void {
+/** Draws `which` with `look` into `screen` and shows it; `focused` is the patch being edited. Says what it drew that can be dragged. */
+export function drawPreview(
+  screen: Screen,
+  files: GameFiles,
+  game: Game,
+  gameName: string,
+  look: PlayerLook,
+  which: PreviewScreen,
+  focused = '',
+): PreviewDrawn {
   screen.setPalette(new Uint8Array(PALETTE_SIZE));
   screen.clear(0);
   let pal: Uint8Array;
+  const drawn: PreviewDrawn = { title: game.scenes[0]?.desc ?? '', heading: false };
   const marker = (x: number, y: number, col: number) => screen.boxFill(x, y, x + look.num('border.marker.width'), y + 4, col);
   switch (which) {
     case 'menu':
     case 'text': {
       pal = menuBack(screen, files, game);
       if (which === 'menu') {
-        const col = drawMenu(screen, look, pal, game.scenes[0]?.desc ?? '');
+        const col = drawMenu(screen, look, pal, drawn.title);
         const m = menuMarker(look);
         marker(m.x, m.y, col);
         if (NO_FILE.test(focused))
@@ -149,6 +159,7 @@ export function drawPreview(screen: Screen, files: GameFiles, game: Game, gameNa
       const saving = which === 'save';
       const picture = drawPicture(screen, files, slot(game, 0, saving ? 10 : 9));
       pal = picture ?? levelPalette(files, game);
+      drawn.heading = !picture;
       if (!picture) (saving ? drawSaveHeading : drawLoadHeading)(screen, look, pal);
       drawSaveSlots(screen, look, pal, SAMPLE_SLOTS, saving);
       marker(60, 35, look.color(pal, saving ? 'color.select.saveMarker' : 'color.select.loadMarker'));
@@ -175,4 +186,5 @@ export function drawPreview(screen: Screen, files: GameFiles, game: Game, gameNa
   }
   screen.setPalette(pal);
   screen.present();
+  return drawn;
 }
