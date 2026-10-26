@@ -1,0 +1,22 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.instructions": "How to Shovel",
+    "str.menu.highScores": "Top Shovelers",
+    "str.hiscore.title": "Top Shovelers",
+    "str.hiscore.congrats": "You dug it!",
+    "str.invent.money": "Dollars:   %d",
+    "str.invent.hitpoints": "Warmth:    %d",
+    "color.rgb.hsRed": [46, 4, 4],
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [58, 58, 63],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.title.x": 108,
+    "layout.hiscore.congrats.x": 116
+  }
+}
