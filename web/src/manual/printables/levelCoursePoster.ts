@@ -25,6 +25,7 @@ export async function coursePosterSvg(entry: CatalogEntry, map: string, box: { w
     most: 2,
     least: 0.1,
     growth: 1,
+    stack: true,
   });
   const l = levels.find((v) => v.course && v.group.map === map.toLowerCase());
   if (!l?.course) return undefined;
