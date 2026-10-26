@@ -24,8 +24,16 @@ import { GMCRACK_NFO, GREETINGS, GROUP, VERSION, bakName } from './gmcrackText';
 /** The keygen's name field: CHK.C's fgets keeps 28 letters of a 29-letter name, so 28 is the most that works. */
 const KEYGEN_MAX = NAME_MAX - 1;
 
-/** A key for a name, as CHK.EXE will check it against this PC's serial number. */
-const keygen = (name: string): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), SERIAL));
+/** A key for a name, as CHK.EXE checks it against a copy's serial number (this PC's unless given). */
+const keygen = (name: string, serial = SERIAL): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), serial));
+
+/** A serial some other copy of Game-Maker could have: a counter times 1029, plus 4 (validSerial). */
+export function randomSerial(random = Math.random): number {
+  for (;;) {
+    const serial = (1 + Math.floor(random() * 9999)) * 1029 + 4;
+    if (serial !== SERIAL) return serial;
+  }
+}
 
 /**
  * The shareware games in C:\DOWNLOAD whose .EXE is still there: this project's own (the only
@@ -173,20 +181,41 @@ async function unregister(h: RetroHost): Promise<void> {
 
 async function keygenScreen(h: RetroHost): Promise<void> {
   clearArea(h);
-  put(h, 4, TOP, `|14KEYGEN |07by PiXEL WiZARD/${GROUP}: a key for any name, serial |14${SERIAL}`);
-  put(h, 4, TOP + 2, '|07Name: ');
-  hint(h, 'Type your name exactly as you will register it, then Enter.  Esc goes back.');
-  const name = await field(h, 10, TOP + 2, KEYGEN_MAX);
+  put(h, 4, TOP, `|14KEYGEN |07by PiXEL WiZARD/${GROUP}: a key for any name and serial`);
+  // a copy's serial is a counter times 1029, plus 4: R makes up another copy's
+  let serial = SERIAL;
+  const showSerial = () =>
+    put(h, 4, TOP + 2, `|07Serial: |14${String(serial).padEnd(10)}|08${serial === SERIAL ? "(this PC's copy)    " : '(some other copy)   '}`);
+  showSerial();
+  hint(h, "R: another copy's serial (counter x 1029 + 4).  Enter: go on.  Esc: back");
+  for (;;) {
+    const k = (await h.keys.next()).key.toUpperCase();
+    if (k === 'ESCAPE') return;
+    if (k === 'ENTER') break;
+    if (k === 'R') serial = randomSerial();
+    else if (k === 'T') serial = SERIAL;
+    showSerial();
+  }
+  put(h, 4, TOP + 3, '|07Name:   ');
+  hint(h, 'Type the name exactly as it will be registered, then Enter.  Esc goes back.');
+  const name = await field(h, 12, TOP + 3, KEYGEN_MAX);
   if (!name?.trim()) return;
-  entered(h, 10, TOP + 2, KEYGEN_MAX, name);
+  entered(h, 12, TOP + 3, KEYGEN_MAX, name);
   // a little show while it "computes"
   for (let i = 0; i < 12; i++) {
-    put(h, 4, TOP + 3, `|07Key:  |08${hex(Math.floor(Math.random() * 0xffffffff), 8)}`);
+    put(h, 4, TOP + 4, `|07Key:    |08${hex(Math.floor(Math.random() * 0xffffffff), 8)}`);
     await sleep(60);
   }
-  const key = keygen(name);
-  put(h, 4, TOP + 3, `|07Key:  |14${key.padEnd(10)}`);
-  put(h, 4, TOP + 5, '|07Register Game-Maker with it now? |15[Y/n]');
+  const key = keygen(name, serial);
+  put(h, 4, TOP + 4, `|07Key:    |14${key.padEnd(10)}`);
+  if (serial !== SERIAL) {
+    // CHK.EXE reads the serial out of this copy's PLAYGAME.EXE, so only its own serial registers it
+    put(h, 4, TOP + 6, "|07That key fits the other copy's serial, not this PC's: its serial");
+    put(h, 4, TOP + 7, '|07is built into PLAYGAME.EXE. |08(T at the serial goes back to this one.)');
+    await anyKey(h);
+    return;
+  }
+  put(h, 4, TOP + 6, '|07Register Game-Maker with it now? |15[Y/n]');
   hint(h, 'Y registers now (or write it on the registration card for GM REGISTER)');
   const k = (await h.keys.next()).key.toUpperCase();
   if (k !== 'N' && k !== 'ESCAPE') await register(h, name, key);
@@ -309,6 +338,7 @@ function usage(h: RetroHost): void {
   p('');
   p('  GMCRACK            the menu: register, unregister, KEYGEN, crack, uncrack');
   p('  GMCRACK /K name    prints the registration key for a name');
+  p('  GMCRACK /R name    the same for a made-up serial of some other copy');
   p('  GMCRACK /?         this help');
 }
 
@@ -317,10 +347,11 @@ export async function runGmCrack(h: RetroHost, args: string[]): Promise<void> {
   await pcExtras().ready;
   const sw = args[0]?.toUpperCase();
   if (sw === '/?' || sw === '-?' || sw === '/H') return usage(h);
-  if (sw === '/K' || sw === '-K') {
+  if (sw === '/K' || sw === '-K' || sw === '/R' || sw === '-R') {
     const name = args.slice(1).join(' ');
     if (!name) return usage(h);
-    h.screen.print(`${toCp437(`Name: ${name.slice(0, KEYGEN_MAX)}\nKey:  ${keygen(name)}   (serial ${SERIAL})`)}\n`);
+    const serial = sw.endsWith('R') ? randomSerial() : SERIAL;
+    h.screen.print(`${toCp437(`Name: ${name.slice(0, KEYGEN_MAX)}\nKey:  ${keygen(name, serial)}   (serial ${serial})`)}\n`);
     return;
   }
   const stop = frame(h);
