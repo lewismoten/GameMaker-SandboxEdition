@@ -226,7 +226,8 @@ export function mound(book: BlockBook): Level {
   m.text(64, 9, ',..@.,').text(64, 7, '*');
   m.mon(MON.beetleR, 8, 9);
   m.peacock(21, 9);
-  m.mon(MON.crow, 40, 1).mon(MON.bee, 51, 7).mon(MON.beetleR, 48, 9).mon(MON.crow, 56, 1);
+  // (the bee's dive keeps a block from the end of the beetle's walk, so the seed is never caught between)
+  m.mon(MON.crow, 40, 1).mon(MON.bee, 53, 7).mon(MON.beetleR, 48, 9).mon(MON.crow, 56, 1);
   m.link(67, 9, 'next');
   return { m, start: at(4, 7), size: [W, H] };
 }
@@ -249,12 +250,14 @@ export function dust(book: BlockBook): Level {
   m.fill(12, 13, 7, 3, 'c').row(16, 12, 18, '#').set(15, 15, 'o').set(13, 13, '+').set(18, 13, '!');
   m.fill(20, 5, 6, 2, 'c').row(7, 20, 25, '#').set(22, 6, 'o').set(24, 5, '+');
   m.fill(26, 13, 10, 3, 'c').row(16, 26, 35, '#').set(30, 15, 'o').set(34, 13, '+');
-  m.fill(39, 9, 5, 2, 'c').row(11, 39, 43, '#').set(41, 10, 'o');
+  m.fill(39, 9, 6, 2, 'c').row(11, 39, 44, '#').set(41, 10, 'o');
   // groundwater in the dust itself
   m.set(32, 4, 'O').set(45, 15, 'O');
   // a tin heart in a pocket of air by the buried junk, a short dig from the last drop
   m.set(41, 16, 'tinHeart');
-  m.mon(MON.ant, 4, 8).mon(MON.worm, 12, 15).mon(MON.mole, 26, 15).mon(MON.ant, 20, 6).mon(MON.worm, 39, 10);
+  // each pacer keeps a block clear of its cave's walls: a solid one coming back against a wall
+  // would push the sprout inside it
+  m.mon(MON.ant, 5, 8).mon(MON.worm, 13, 15).mon(MON.mole, 27, 15).mon(MON.ant, 21, 6).mon(MON.worm, 40, 10);
   // up through the crack into the daylight, and along the sidewalk to the sunny spot: the walk
   // there lets "Keep on hustlin'" (the crack opening) play out before the level ends
   m.fill(36, -2, W - 37, 2, 'Y')
