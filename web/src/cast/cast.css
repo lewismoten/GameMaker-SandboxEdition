@@ -285,6 +285,23 @@ main.cast .lead {
   margin-bottom: 32px;
 }
 
+/* the stage and its controls stay at the top of the window as the cast scrolls under them, when
+   the window is tall enough to leave room for the cast (castStage.ts sets --cast-stage-h) */
+@media (min-height: 640px) {
+  .cast-stage {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 8px 0;
+    background: var(--bg);
+    box-shadow: 0 10px 8px -10px rgba(0, 0, 0, 0.35);
+  }
+
+  main.cast :is(h2, h3)[id]:not(#cast-stage-h) {
+    scroll-margin-top: calc(var(--cast-stage-h, 0px) + 12px);
+  }
+}
+
 .cast-stage-box {
   position: relative;
   max-width: 720px;

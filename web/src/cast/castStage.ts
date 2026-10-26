@@ -615,6 +615,8 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   // the sound starts with a tap on the stage or its controls (browsers, and iPhones most of all,
   // only let it start from a gesture)
   root.addEventListener('click', () => (sound.start(), showSound()));
+  // the stage stays at the top while the page scrolls (cast.css): a jump to a heading stops below it
+  new ResizeObserver(() => root.closest('main')?.style.setProperty('--cast-stage-h', `${root.offsetHeight}px`)).observe(root);
   canvas.addEventListener('click', () => setPlaying(!playing));
 
   const seen = new IntersectionObserver(([e]) => {
