@@ -39,6 +39,11 @@ const LEGEND: Legend = {
   '1': { mon: MON.buggy },
   '2': { mon: MON.buggyV },
   '@': { mark: 'start' },
+  // the save sign: its board, then its posts
+  '[': 'saveSign0',
+  ']': 'saveSign1',
+  '{': 'saveSign2',
+  '}': 'saveSign3',
 };
 
 /** Pads a row of moon surface to `n` blocks. */
@@ -76,8 +81,8 @@ const ROWS = [
   row('.....z......r.............v....r'), // 21
   row('..1'), // 22 (the second buggy patrols row 20, clear of where the belt drops Dex)
   row('.....CC.........r..............KKK'), // 23
-  row('.....CC...p..........*.........KKK'), // 24
-  row('...F...........r'), // 25
+  row('.[]..CC...p..........*.........KKK'), // 24
+  row('.{}F...........r'), // 25
   row('.@........q.......G'), // 26
   row(''), // 27
   '~'.repeat(40), // 28

@@ -7,10 +7,11 @@ import { blob, gradient, oval } from '../art/draw';
 import { FLOORS } from './floors';
 import { micro } from '../art/font';
 import { COPY_TICKS, CTR, MON, PAGES_NEEDED } from '../ids';
-import { C } from '../art/pal';
+import { C, PAL } from '../art/pal';
 import { banner, billboard, crater, domeHome } from '../art/bigart';
 import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
 import { addEgg } from './egg';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import { mowerDock } from './suburb';
 import { crtTv } from './city';
 
@@ -239,6 +240,10 @@ export function moonSet(): BlockSet {
   addBig(s, 'bbCopier', billboard(['SHORT ON PAGES?', 'WAIT AT THE COPIER.', 'IT PRINTS ONE EVERY', 'FEW SECONDS.'], 'purple', 'gold', gymFloor, 5, 6));
   s.add('copier', copier(), { solid: SOLID });
   s.add('copiertray', copierTray(), { birthMon: MON.page, birthTime: COPY_TICKS });
+  // the save sign (kit/saveSign.ts), standing in the dust by the landing spot
+  const dust = s.pic('moon');
+  const sign = saveSignBlocks(PAL.pal, { board: [dust, dust], posts: [dust, dust] });
+  [...sign.board, ...sign.posts!].forEach((p, k) => s.add(`saveSign${k}`, p));
   addEgg(s, 'moon');
   return s;
 }
