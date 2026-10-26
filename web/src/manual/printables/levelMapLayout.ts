@@ -7,6 +7,8 @@ import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../
 import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
 import type { SeenRect, StoodColumns, UnrolledMap } from './levelViews';
+import { layOutCourse, type CourseLayout } from './levelCourse';
+import type { CoursePath } from '../../editor/check/course';
 import { unrolledAt, type Unrolled, type UnrolledBox as UnrolledBoxRect } from '../../editor/check/unroll';
 import {
   cutRooms,
@@ -523,6 +525,8 @@ export interface Level {
   unrolled?: Unrolled;
   /** With `unrolled`, the marks where they are on the map itself (for "Every block of the map"). */
   mapMarks?: LevelMark[];
+  /** A course through the wrap (levelCourse.ts): printed as the strip the way runs, not as `area`. */
+  course?: CourseLayout<LevelMark>;
   /** A room cut out of a map of rooms (levelRooms.ts): who you meet there, printed beside it. */
   cast?: { title: string; people: CastPerson[] };
   /** A room cut out of a map of rooms: what its copies change. */
@@ -669,7 +673,8 @@ function intersect(a: Rect, b: Rect): Rect | undefined {
  * a map the hero walks off the edge of as the player goes through it. A map the hero never walks
  * around in (every scene starts him on its way out) is left out, and a map of separate rooms
  * (levelRooms.ts; `rooms`, levelRoomHints.ts, says how a map's maker wants it cut) prints each
- * room as a level of its own.
+ * room as a level of its own. A map in `courses` (a course through the wrap, by "map|bbl") is
+ * laid out as its strip, its panels `panel` blocks high.
  */
 export function levelsOf(
   game: Game,
@@ -678,6 +683,8 @@ export function levelsOf(
   views: Record<string, SeenRect> = {},
   unrolled: Record<string, UnrolledMap> = {},
   rooms: Record<string, RoomsHint> = {},
+  courses: Record<string, CoursePath> = {},
+  panel = 56,
 ): Level[] {
   const numbered: { cut: RoomCut; hint: RoomsHint }[] = [];
   const levels = mapGroups(game).flatMap((group): (Level | RoomPart)[] => {
@@ -700,6 +707,8 @@ export function levelsOf(
     if (reach) area = joinRects(area, reach, whole);
     area = trimPadding(area, cells, marks, [false, false], blocks);
     const level: Level = { group, cells, area, whole, marks, name, scene: group.scenes[0] };
+    const path = courses[key];
+    if (path) return [{ ...level, course: layOutCourse(cells, blocks, path, marks, panel) }];
     let top = level;
     if (unrolled[key]) {
       top = unrolledLevel(level, unrolled[key], wrapReach(map.blocks, blocks, starts), blocks, unrolled[key].stood);
