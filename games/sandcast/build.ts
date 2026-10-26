@@ -35,12 +35,14 @@ import { sysopFli } from './src/screens/sysop';
 import { CREDITS, DUG, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
 import { licenseText } from '../kit/license';
+import { putSaveSign } from '../kit/saveSign';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
 // Shared game data.
-disk.put('sandcast.bbl', serializeBlocks(BG.build()));
+const bg = BG.build();
+disk.put('sandcast.bbl', serializeBlocks(bg));
 disk.put('sandcast.mbl', serializeBlocks(MB.build()));
 disk.put('sandcast.cbl', serializeBlocks(CB.build()));
 disk.put('sandcast.mon', serializeMonsters(buildMonsters()));
@@ -117,7 +119,15 @@ const subjects: Record<keyof typeof L, string> = {
 };
 for (const key of Object.keys(L) as (keyof typeof L)[]) {
   const lv = L[key];
-  disk.put(lv.name, serializeMap(lv.map.done()));
+  const map = lv.map.done();
+  // The save sign (kit/saveSign.ts) by the lagoon's door, near where Teddy climbs out of Gwinn's
+  // dig: every background block is taken, so the sandbox gets its own copy of the set with
+  // blocks it never shows given to the sign.
+  if (key === 'hub') {
+    disk.put('sandbox.bbl', serializeBlocks(putSaveSign(bg, map, DAY, 43, 2)));
+    (lv as { bbl?: string }).bbl = 'sandbox.bbl';
+  }
+  disk.put(lv.name, serializeMap(map));
   // The sandbox is visited between every castle, so it has no briefing of its own (and the
   // title demo starts there without waiting for a key).
   if (key === 'hub' || key === 'dig') continue;
