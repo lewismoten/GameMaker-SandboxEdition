@@ -20,8 +20,9 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 ## What's in it
 
 - **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
-  DOS menus and designers rebuilt from its source, a BBS to dial, and the games' boxes, disks and manuals on
-  the shelf; or *today's web* editor with point-and-click editors for every part of a game.
+  DOS menus and designers rebuilt from its source, a BBS to dial, and the games' boxes,
+  disks and manuals on the shelf; or *today's web* editor with point-and-click editors for
+  every part of a game.
 - **Help making good games:** the map editor's Level check plays each scene on the real
   engine, draws a heat map of where the hero got, marks places a player can get stuck and
   offers one-click fixes; the block, monster and sound editors show its findings as badges,
