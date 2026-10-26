@@ -191,7 +191,7 @@ export function storyScreens(a: Art): Pixels[] {
 }
 
 // ------------------------------------------------------------------ level cards
-export function levelCard(n: number, title: string, lines: string[], view: Pixels): Pixels {
+export function levelCard(n: number, of: number, title: string, lines: string[], view: Pixels): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, H, R('night'), 0, 3);
   p.blit(view, 0, 46);
@@ -201,6 +201,8 @@ export function levelCard(n: number, title: string, lines: string[], view: Pixel
   text(p, tx + 1, 13, title, C('grey', 0));
   text(p, tx, 12, title, C('teal', 5));
   p.rect(tx, 23, textWidth(title), 1, C('teal', 3));
+  // how many levels there are, and how many are left, under the name
+  text(p, tx, 30, n === of ? `THE LAST ONE OF ${of}!` : `OF ${of}: ${of - n} MORE TO GO`, C('gold', 5));
   lines.forEach((s, i) => text(p, 10, 152 + i * 11, s, i === lines.length - 1 ? C('gold', 5) : C('grey', 7)));
   return p;
 }

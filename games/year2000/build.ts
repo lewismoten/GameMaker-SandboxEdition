@@ -137,7 +137,7 @@ LEVELS.forEach((l, i) => {
   const view = renderMap(map.map, built[l.set], vx, vy, 16, 5, mbl, mons);
   const dex = cb.pic(l.chr === 'moon.chr' ? 'm_down0' : 'down0');
   if (start.x >= vx && start.x < vx + 16 && start.y >= vy && start.y < vy + 5) view.blit(dex, (start.x - vx) * 20, (start.y - vy) * 20, 255);
-  disk.put(`card${i + 1}.gif`, S.gif(S.levelCard(i + 1, l.card.title, l.card.lines, view)));
+  disk.put(`card${i + 1}.gif`, S.gif(S.levelCard(i + 1, LEVELS.length, l.card.title, l.card.lines, view)));
   lst(`lvl${i + 1}.lst`, [...l.intro.map((f) => [f, 0] as [string, number]), [`card${i + 1}.gif`, 8]]);
 
   const scene = emptyScene(ADVTYPE);
