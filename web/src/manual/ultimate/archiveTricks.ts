@@ -194,6 +194,13 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   rest, well inside a set’s 150. Paint the screen as a single picture, cut it into 20 by 20
   blocks, and lay them out in order on the map: the picture comes back whole, with links for the
   pointer to step onto.</p>
+  <p>It’s one of the archive’s favorite front ends: many games pick a hero, a level or an episode
+  this way, with an arrow, a hand, a triangle or a little creature for the pointer. One unfinished
+  episode select shows the catch to watch for. Its pointer steps three frames of 20 to 30 pixels a
+  press, but PLAYGAME moves a hero at most 11 pixels a tick, so a press goes 33 pixels, not the 60
+  between its markers, and the pointer never lands on the next one. Keep each frame of a step at
+  11 pixels or less and make the frames add up to the spacing exactly, as the arrow above does
+  with ten frames of 10.</p>
   <p>Leave the level flat, with nothing that pulls, so the pointer stays where it is put, and
   label each door on the map so the choice reads before it is made.</p>
   <h2>A shareware cut from a second .gam</h2>
