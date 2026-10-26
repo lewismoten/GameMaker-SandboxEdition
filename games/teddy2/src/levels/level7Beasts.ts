@@ -3,6 +3,7 @@
 // under the bleachers hides one more. THE BIG DROP's car rides up its tower steadily and drops
 // fast. The carousel's horses go up and down (stand on one for a lift to the canopy). Bees
 // at the root beer stand.
+import { SOLTOP } from '../../../../web/src/formats/blocks';
 import { Pixels } from '../../../kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
@@ -62,7 +63,9 @@ export function midwayBeasts() {
   for (let k = 0; k < 3; k++) b.pic(`bell${k}`, bell(k));
   b.pic('askSit1', askBubble('SIT?', undefined, 0)).pic('askSit2', askBubble('SIT?', undefined, 1));
   b.pic('askSpin1', askBubble('SPIN?', undefined, 0)).pic('askSpin2', askBubble('SPIN?', undefined, 1));
-  b.pic('horseR', horse('blue'), { solid: 15 }).pic('horseB', horse('purple'), { solid: 15 });
+  // a horse has no solid underside: coming down, it passes over a dog under it instead of pushing him into the floor
+  const horseSides = { solid: 15 & ~SOLTOP };
+  b.pic('horseR', horse('blue'), horseSides).pic('horseB', horse('purple'), horseSides);
   b.pic('dropCar', dropCar(), { solid: 15 });
   b.pic('bee1', bee(0), { hp: -10 }).pic('bee2', bee(1), { hp: -10 });
 
