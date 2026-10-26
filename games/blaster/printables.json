@@ -131,15 +131,19 @@
           "hints": [
             {
               "q": "The ribbon cable goes on forever!",
-              "a": "It loops on purpose. Each lap of the screen ends at the kink, where the wires bend flat, and there you slide over into the next wire down. Ride wire 5, 4, 3 and 2 and you reach the red wire, wire 1, where the gate is. Just keep riding."
+              "a": "It is coiled, and it loops on purpose. Each lap of the screen ends at the kink, where the cable bends flat, and round the bend you are on the next coil down. The numbers printed on the cable count the coils left: 4, 3, 2, 1. The plug at the end of coil 1 is the way out. Just keep riding."
             },
             {
               "q": "Which way is which on the cable?",
-              "a": "The keys turn with the track. Up speeds you along it, Down slows you down, Left climbs toward the wire above and Right toward the wire below."
+              "a": "The keys turn with the track. Up speeds you along it, Down slows you down, Left steers toward its top edge (mostly up) and Right toward its bottom edge (mostly right)."
+            },
+            {
+              "q": "Something keeps zapping me near the colored stripes.",
+              "a": "Those are splits in the insulation, with the wires inside showing. The bright spot in the middle of each one spits sparks up toward the cable's top edge. Ride past on the bottom side, or speed through."
             },
             {
               "q": "Is there a shortcut?",
-              "a": "Two splices: gaps in a ridge, with gold staples on their edges, under wire 4 and under wire 2. Hold Right as you pass one and you hop into the next wire, a whole lap early. Miss it and you just ride one more lap."
+              "a": "Two strips of gray tape join one coil to the next across the board, one on coil 4 and one on coil 2. Hold Right as you pass one and you slide over onto the next coil, a whole lap early. Miss it and you just ride one more lap."
             },
             {
               "q": "How do I beat GLITCH?",
