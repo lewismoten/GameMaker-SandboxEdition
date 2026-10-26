@@ -16,6 +16,10 @@ import { setImported } from './homeOrigin';
 import { takeCompanion } from '../../project/companion';
 import { openingFields } from '../tools/opening/openingFields';
 import type { OpeningStyle } from '../tools/opening/openingIntros';
+import { fingerprintOf, fingerprintOfFiles, type Fingerprint } from '../../imported/fingerprint';
+import { noteImport } from '../../imported/noteMoves';
+import { removedGames, removedMatch, type RemovedGame } from '../../imported/removedGames';
+import { starsText } from '../../imported/ratings';
 
 export async function newGame(nav: HomeNav): Promise<void> {
   const opening = openingFields();
@@ -118,7 +122,23 @@ async function saveImported({ files, name, gam, players }: Imported): Promise<{ 
   return { project: p, note: player?.message, madeGam };
 }
 
-async function importFiles(nav: HomeNav, imported: Imported): Promise<void> {
+/** Where an imported game came from and its fingerprint, kept with its rating and note (imported/). */
+interface Origin {
+  source: string;
+  fingerprint: Fingerprint;
+}
+
+const originOf = (g: FoundGame): Origin => ({ source: g.from || 'the files picked', fingerprint: fingerprintOf(g) });
+
+/** "Previously removed (★★☆☆☆, your note: Too hard)" */
+function removedBefore(r: RemovedGame): string {
+  const note = r.note?.trim();
+  const short = note && note.length > 80 ? `${note.slice(0, 79)}…` : note;
+  const what = [r.rating ? starsText(r.rating) : 'unrated', short && `your note: ${short}`].filter(Boolean).join(', ');
+  return `Previously removed (${what})`;
+}
+
+async function importFiles(nav: HomeNav, imported: Imported, origin: Origin): Promise<void> {
   const { files } = imported;
   if (!files.size) return;
   const shareware = await sharewareMatch(files);
@@ -141,6 +161,7 @@ async function importFiles(nav: HomeNav, imported: Imported): Promise<void> {
     return;
   }
   const { project: p, note, madeGam } = await saveImported(imported);
+  noteImport(p.id, origin.source, origin.fingerprint);
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
   if (note) toast(note);
   toast(`Opened ${p.name} (${files.size} files). It is listed under Imported.`);
@@ -152,13 +173,25 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   const shareware = await sharewareByCrc();
   const sharewareOf = (g: FoundGame) => g.gamCrcs.map((c) => shareware.get(c)).find(Boolean);
   const { chooseGames, importWithProgress } = chooser;
-  const chosen = await chooseGames(report, (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined), new GameReader(given));
+  const records = removedGames();
+  const chosen = await chooseGames(
+    report,
+    (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined),
+    new GameReader(given),
+    (g) => {
+      const was = removedMatch(fingerprintOf(g), records);
+      return was && removedBefore(was);
+    },
+  );
   if (!chosen?.length) return;
   const reader = new GameReader(given);
   const batch = newBatch();
   const { done, failed } = await importWithProgress(chosen, async (g) => {
     const { project } = await saveImported(await reader.read(g));
     markBatch([project.id], batch);
+    // its source and fingerprint; one removed before takes back its rating and note
+    const { source, fingerprint } = originOf(g);
+    noteImport(project.id, source, fingerprint);
   });
   onAdded?.();
   if (!done && !failed.length) return;
@@ -195,15 +228,23 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
   if (list.some((f) => /\.html?$/i.test(f.name))) {
     const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
     const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
-    if (page) return importFiles(nav, { files: page.files, players: [], name: page.title, gam: page.gam });
+    if (page)
+      return importFiles(
+        nav,
+        { files: page.files, players: [], name: page.title, gam: page.gam },
+        { source: list.find((f) => /\.html?$/i.test(f.name))!.name, fingerprint: fingerprintOfFiles(Object.fromEntries(page.files.entries())) },
+      );
   }
   const report = await chooser.scanWithProgress(given);
   if (!report) return;
-  if (report.games.length === 1) return importFiles(nav, await new GameReader(given).read(report.games[0]));
-  if (report.games.length > 1) return importChosen(report, given, onAdded);
+  // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
+  const one = report.games.length === 1 && report.games[0];
+  if (one && !removedMatch(fingerprintOf(one))) return importFiles(nav, await new GameReader(given).read(one), originOf(one));
+  if (report.games.length) return importChosen(report, given, onAdded);
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
   const files = await gameFromFiles(report.loose);
-  if (!report.zips && files.files.size) return importFiles(nav, files);
+  if (!report.zips && files.files.size)
+    return importFiles(nav, files, { source: 'the files picked', fingerprint: fingerprintOfFiles(Object.fromEntries(files.files.entries())) });
   await chooser.showNothingFound(report);
 }
 

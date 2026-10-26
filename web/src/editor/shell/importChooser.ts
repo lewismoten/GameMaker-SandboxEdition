@@ -66,12 +66,21 @@ export function showNothingFound(r: ScanReport): Promise<void> {
   ]).then(() => undefined);
 }
 
-/** Lists the games found to tick the ones to import. `noImport` says why a game can't be (a shareware game). */
-export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => string | undefined, reader: GameReader): Promise<FoundGame[] | undefined> {
+/**
+ * Lists the games found to tick the ones to import. `noImport` says why a game can't be (a
+ * shareware game); `unticked` why one is left unticked, though it can be ticked (one removed
+ * before: imported/removedGames.ts), as a leftover .gam is.
+ */
+export async function chooseGames(
+  r: ScanReport,
+  noImport: (g: FoundGame) => string | undefined,
+  reader: GameReader,
+  unticked: (g: FoundGame) => string | undefined = () => undefined,
+): Promise<FoundGame[] | undefined> {
   const list = h('ul', { class: 'ic-list', 'aria-label': 'Games found', tabindex: '-1' });
   const thumbs = importThumbs(reader, list);
   const chosen = await modal<FoundGame[]>('Import games', (close) => {
-    const boxes: [HTMLInputElement, FoundGame][] = [];
+    const boxes: [HTMLInputElement, FoundGame, boolean][] = [];
     const go = h('button', { type: 'submit', class: 'primary' });
     const count = () => {
       const n = boxes.filter(([b]) => b.checked).length;
@@ -80,8 +89,11 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
     };
     const rows = r.games.map((g, i) => {
       const why = noImport(g);
-      const box = h('input', { type: 'checkbox', checked: !why && !g.leftover, disabled: !!why, onchange: count, 'aria-describedby': `ic-from-${i}` });
-      if (!why) boxes.push([box, g]);
+      const before = unticked(g);
+      // a leftover, or a game removed before: listed, but only imported when ticked by hand
+      const aside = !!(g.leftover || before);
+      const box = h('input', { type: 'checkbox', checked: !why && !aside, disabled: !!why, onchange: count, 'aria-describedby': `ic-from-${i}` });
+      if (!why) boxes.push([box, g, aside]);
       const thumb = thumbs.thumb(g);
       // the picture ticks its game too, as its words do
       thumb.addEventListener('click', () => box.disabled || box.click());
@@ -103,6 +115,7 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
               g.missing && !g.leftover && `${g.missing} ${g.missing === 1 ? 'file' : 'files'} missing`,
               g.leftover,
               g.alsoIn && `also in ${g.alsoIn.join(', ')}`,
+              before,
               why,
             ]
               .filter(Boolean)
@@ -111,11 +124,12 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
         ),
       );
     });
-    // Select all leaves the leftovers unticked (a test .gam missing files): tick one to take it too
+    // Select all leaves the leftovers (a test .gam missing files) and games removed before unticked: tick one to take it too
     const all = (on: boolean) => () => {
-      for (const [b, g] of boxes) b.checked = on && !g.leftover;
+      for (const [b, , aside] of boxes) b.checked = on && !aside;
       count();
     };
+    const asides = boxes.filter(([, , aside]) => aside).length;
     count();
     const left = r.loose.length
       ? ` ${r.loose.length} other ${r.loose.length === 1 ? 'file is' : 'files are'} in no game and ${r.loose.length === 1 ? 'is' : 'are'} left out.`
@@ -129,7 +143,14 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
           close(boxes.filter(([b]) => b.checked).map(([, g]) => g));
         },
       },
-      h('p', { class: 'ic-summary' }, `${scanSummary(r)}.${left} Each one you tick becomes its own game under Imported.`),
+      h(
+        'p',
+        { class: 'ic-summary' },
+        `${scanSummary(r)}.${left} Each one you tick becomes its own game under Imported.`,
+        asides
+          ? ` ${asides} ${asides === 1 ? 'is' : 'are'} left unticked (a leftover missing files, or a game you removed before), even by Select all; tick ${asides === 1 ? 'it' : 'one'} to import it too.`
+          : '',
+      ),
       zipNotes(r),
       h(
         'div',
