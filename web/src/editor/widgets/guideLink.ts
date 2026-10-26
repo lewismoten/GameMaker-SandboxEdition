@@ -4,6 +4,7 @@ import { h } from '../core/ui';
 import type { GuideRef } from '../check/findings';
 
 export const GUIDE_TITLES: Record<GuideRef['chapter'], string> = {
+  palettes: 'Palettes: One Map, Many Moods',
   craft: 'Designing With a Goal',
   levels: 'Levels Players Forgive',
   upload: 'Before You Upload',

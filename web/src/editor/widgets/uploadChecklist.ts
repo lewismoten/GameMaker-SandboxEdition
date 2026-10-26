@@ -80,7 +80,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   },
   {
     text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable',
-    checks: ['fli', 'text-contrast', 'dos-chars', 'missing-file', 'out-of-range'],
+    checks: ['fli', 'text-contrast', 'color-zero', 'dos-chars', 'missing-file', 'out-of-range'],
   },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },

@@ -16,6 +16,7 @@ import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';
 import { helpKeys } from './checks/helpKeys';
 import { textContrast } from './checks/textContrast';
+import { colorZero } from './checks/colorZero';
 import { dosChars } from './checks/dosChars';
 import { blankIdle, startValues } from './checks/heroStart';
 import { shotPrize } from './checks/shotPrize';
@@ -82,7 +83,7 @@ export interface CheckOptions {
   leaveBehind?: boolean;
   /** Head for the scene's links first (playtest.ts towardExits): a way through sooner, less of the rest. */
   towardExits?: boolean;
-  /** The project's DOS player patches (dosPlayer/), for the menu's words in the text-contrast check. */
+  /** The project's DOS player patches (dosPlayer/), for the menu's words in the text-contrast check and the words the color 0 check matches. */
   player?: PlayerPatches;
 }
 
@@ -157,6 +158,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...controls(files),
       ...helpKeys(game, files),
       ...textContrast(game, files, opt.player),
+      ...colorZero(game, files, opt.player),
       ...dosChars(game, files, files.mainGame()),
       ...startValues(game, all),
       ...stakes(game, all),

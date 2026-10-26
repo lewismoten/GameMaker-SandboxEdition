@@ -7,7 +7,22 @@ type Severity = 'error' | 'warning' | 'info';
 
 /** A chapter of The Ultimate Owner's Guide (manual/ultimate/plan.ts ids) and a heading in it. */
 export interface GuideRef {
-  chapter: 'craft' | 'levels' | 'upload' | 'testing' | 'sounds' | 'actors' | 'blocks' | 'logic' | 'scenes' | 'show' | 'tricks' | 'check' | 'players' | 'limits';
+  chapter:
+    | 'palettes'
+    | 'craft'
+    | 'levels'
+    | 'upload'
+    | 'testing'
+    | 'sounds'
+    | 'actors'
+    | 'blocks'
+    | 'logic'
+    | 'scenes'
+    | 'show'
+    | 'tricks'
+    | 'check'
+    | 'players'
+    | 'limits';
   section: string;
 }
 
@@ -318,6 +333,11 @@ export const CHECKS = {
     name: 'Text that’s hard to read',
     why: 'PLAYGAME draws text in the picture’s nearest deep purple. Over a dark or busy patch, players can’t read the goal or the keys, and skip the screen.',
     guide: { chapter: 'show', section: 'Text screens and slide shows' },
+  },
+  'color-zero': {
+    name: 'A color 0 that isn’t black',
+    why: 'PLAYGAME clears the high-score name prompt and the F-key screens to color 0, then writes on them in the nearest red and blue: on a gray or bright color 0 those words can be hard to read.',
+    guide: { chapter: 'palettes', section: 'Color 0 is the background' },
   },
   'dos-chars': {
     name: 'Characters DOS can’t draw',
