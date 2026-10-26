@@ -293,7 +293,13 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);
       save(name, zip, 'application/zip', 'Unzip it onto any web host, then open index.html there.');
     } else if (kind === 'dos') {
-      const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(files, { title: game.title, gam: game.gam });
+      const { name, zip, exe } = await (
+        await import('../../export/exportDos')
+      ).exportDos(files, {
+        title: game.title,
+        gam: game.gam,
+        player: (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam),
+      });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {
       const [{ createZip }, { backupEntries }] = await Promise.all([import('../../project/zip'), import('../../project/companion')]);

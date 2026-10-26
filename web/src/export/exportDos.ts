@@ -8,12 +8,17 @@ import { parseGame } from '../formats/game';
 import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
 import { parseSoundSet } from '../formats/sound';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
+import { applyPlayerPatches } from '../dosPlayer/applyPatches';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
+import { playerChanges } from '../dosPlayer/describePatches';
 
 interface DosExportOptions {
   title: string;
   gam: string;
   /** Where the built Game-Maker: Sandbox Edition app is served from (its dos/ folder is used). */
   appBase?: string;
+  /** The project's DOS player customizations (dosPlayer/playerRecord.ts), written into its copy of XFERPLAY.EXE. */
+  player?: PlayerPatches;
 }
 
 /** DOS 8.3 names that FAT and Game-Maker accept. */
@@ -87,6 +92,8 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
   } catch {
     throw new Error('The DOS player is not part of this build (it is copied from cd/gm by "npm run games").');
   }
+  const changes = playerChanges(opts.player ?? {});
+  if (changes.length) player = applyPlayerPatches(player, opts.player!);
   // the setup screen's Help (CONFIG.BAT) reads CONFIG.HLP, which RSD's Transfer copied beside
   // the player; a build made before it was copied simply goes without. (XFERPLAY's F1 shows the
   // game's instructions and never reads GMHELP.TXT: only PLAYGAME.EXE, in Game-Maker, does.)
@@ -106,13 +113,13 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     // (beside the game's own README.TXT, if it has one, under another name)
     {
       name: names.some((n) => n.toUpperCase() === 'README.TXT') ? 'PLAYER.TXT' : 'README.TXT',
-      data: textBytes(readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  ')).replace(/\n/g, '\r\n')),
+      data: textBytes(readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes).replace(/\n/g, '\r\n')),
     },
   ];
   return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries), exe };
 }
 
-function readme(title: string, stem: string, audio?: string): string {
+function readme(title: string, stem: string, audio: string | undefined, changes: string[]): string {
   return `${title}
 ${'='.repeat(title.length)}
 
@@ -138,8 +145,16 @@ Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: S
 (a modified fork of RSD Game-Maker 3.0: https://github.com/lewismoten/GameMaker-SandboxEdition).
 
 Notices
-  ${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD, and
-  CONFIG.HLP its setup screen's help text, from the same CD.
+  ${
+    changes.length
+      ? `${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE from the Game-Maker CD, customized
+  by this game's author in Game-Maker: Sandbox Edition's DOS player panel. Only these
+  changed (each the same length or shorter, in place):
+${changes.map((c) => `    - ${c}`).join('\n')}
+  CONFIG.HLP is its setup screen's help text, from the same CD.`
+      : `${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD, and
+  CONFIG.HLP its setup screen's help text, from the same CD.`
+  }
   Game-Maker's source code was released under the MIT License:
 
 ${MIT_NOTICE}
