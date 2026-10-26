@@ -82,7 +82,7 @@ A sticker's `sprite` is rows of block numbers from a `.mbl`, `.cbl` or `.bbl` fi
 - **Die-cut border:** 1/8 in (`CUT_OFFSET`) of the sticker's color round its art, with a thin white line hugging the art. The cut line is that offset closed: inner corners rounded (at least 0.1 in) and narrow gaps filled, parts that stand apart bridged into one piece, and the traced line smoothed, so the blade follows one smooth shape.
 - **Keylines** on shaped stickers sit 0.1 in inside the cut, clear of a cut a little off.
 - **Words:** a small line that would print under 6 pt is left off; seals and bangs keep their words inside their notches.
-- **On paper:** the cut line is dashed (white dashes on a dark hairline, plain on any color), with the bleed past it, so scissors can follow it.
+- **On paper:** the bleed runs past each cut line. The dashed cut line (white dashes on a dark hairline, plain on any color) is drawn only when the screen's Show cut guides is ticked, for scissors and glue: a cutting machine's cut a little off would leave dashes showing.
 
 Every item has `kind`, `title` (tray name), optional `note` (tray subtitle) and `promised: true`
 when the manual promises it to registered players (it gets a REG seal). If the manual promises
