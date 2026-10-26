@@ -25,7 +25,7 @@ export function heartTrophy(place: (el: HTMLElement) => void): () => void {
       btn.hidden = true;
       return clear(btn);
     }
-    const [art, { drawTrophy }] = await Promise.all([import('../eggs/bonusArt'), import('./trophy')]); // with the button's styles
+    const [art, { drawTrophy }] = await Promise.all([import('../eggs/diamondHeart'), import('./trophy')]); // with the button's styles
     if (!shown) return; // lost again meanwhile
     const W = 44;
     const H = 60;

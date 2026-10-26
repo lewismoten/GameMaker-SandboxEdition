@@ -12,7 +12,7 @@ import { h, clear } from '../editor/core/ui';
 import { drawJoe } from './joeArt';
 import { LINES, revealSounds, SCENE_SECONDS, sceneAt, seenReveal, setSeenReveal } from './reveal';
 
-type Art = typeof import('../eggs/bonusArt');
+type Art = typeof import('../eggs/diamondHeart');
 
 /** The riveted tin stand and its brass plate, `w` wide, its foot on `baseY`, centered on `cx`. */
 function drawStand(g: CanvasRenderingContext2D, cx: number, baseY: number, w: number, allAlong = false): { top: number } {
@@ -126,7 +126,7 @@ const ALL_ALONG =
  * `scene`: play the reveal first (it plays by itself the first time; reveal.ts). Esc closes.
  */
 export async function openTrophy(n: number, scene = !seenReveal()): Promise<void> {
-  const art = await import('../eggs/bonusArt');
+  const art = await import('../eggs/diamondHeart');
   return new Promise((resolve) => {
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let turn = 0.45;

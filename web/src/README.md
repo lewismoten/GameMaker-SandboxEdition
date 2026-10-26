@@ -307,8 +307,10 @@ modules are in [`../test`](../test).
     shadow box once all three Teddy adventures' eggs are found; `eggPile.ts` draws it, a little
     pile of felt sausages with a whiff rising, not an egg shape.
   - `bonus.ts` holds two more eggs kept apart from the felt eggs, loaded only once the felt eggs are
-    all found (drawn by `bonusArt.ts`, looked at in `bonusViewer.ts`); `musicBox.ts` is a little
-    synthesized music box.
+    all found (looked at in `bonusViewer.ts`): `bonusArt.ts` draws the rotten egg, its IOU note
+    and the cake stand, `pastryEgg.ts` the pastry egg, both on `eggShell.ts`'s wrapped and lit
+    shell; `diamondHeart.ts` is the heart the IOU promises, which the tin heart trophy shows too.
+    `musicBox.ts` is a little synthesized music box.
 - [`tinHearts/`](tinHearts): the tin heart hunt: which games hide one and where (`hearts.json`,
   `manifest.ts`), which are found (`tinHearts.ts`, as a line of text in `progress.ts`), EGG.EXE's
   tin heart page (`tinHeartExe.ts`), and the desk's trophy (`trophySpot.ts` loads `trophy.ts` and

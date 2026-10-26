@@ -8,7 +8,10 @@
 // motion: no wobble, no rising clouds, no falling shards, no spinning; the sound still plays.
 import { h, clear } from '../editor/core/ui';
 import { eggTaps, setEggTaps, TAPS, type BonusState } from './bonus';
-import { drawIouNote, drawPastryEgg, drawRestingShards, drawShell, EGG_ASPECT, rottenShell, stinkPuff, type Box } from './bonusArt';
+import { drawIouNote, drawRestingShards, rottenShell, stinkPuff } from './bonusArt';
+import { EGG_ASPECT } from './eggArt';
+import { drawShell, type Box } from './eggShell';
+import { drawPastryEgg } from './pastryEgg';
 import { musicBox } from './musicBox';
 
 const IOU = {
