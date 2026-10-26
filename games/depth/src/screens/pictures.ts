@@ -27,9 +27,9 @@ const WHITE: V = rgb(255, 255, 255);
 const INK: V = rgb(20, 14, 44);
 
 /** Words over a picture: a big title, a line under it, and advice at the bottom. */
-function card(pic: Picture, title: string, line: string, advice: string[], n: number): void {
+function card(pic: Picture, title: string, line: string, advice: string[], n: number, of: number): void {
   panel(pic, 0, 0, W, 38, rgb(10, 8, 30), 0.55);
-  text(pic, 8, 3, `SCENE ${n}`, rgb(255, 200, 90), 1, { outline: INK });
+  text(pic, 8, 3, n === of ? `FINAL SCENE: ${n} OF ${of}` : `SCENE ${n} OF ${of}`, rgb(255, 200, 90), 1, { outline: INK });
   centered(pic, 16, title.toUpperCase(), WHITE, 2, { outline: INK, shadow: rgb(0, 0, 0) });
   panel(pic, 0, 150, W, H, rgb(10, 8, 30), 0.6);
   centered(pic, 154, line, rgb(140, 230, 255), 1, { outline: INK });
@@ -51,7 +51,7 @@ const nearCube: Material = { color: NEAR_COL, diffuse: 0.85, spec: 1.0, shine: 7
 const farCube: Material = { color: FAR_COL, diffuse: 0.75, spec: 1.2, shine: 90, fresnel: 0.35 };
 
 /** The level cards: each scene's set, rendered close to the ground with a long lens. */
-export function cardPicture(n: number, title: string, line: string, advice: string[]): Picture {
+export function cardPicture(n: number, of: number, title: string, line: string, advice: string[]): Picture {
   const ids: ThemeId[] = ['checker', 'glass', 'mirror', 'peaks', 'teapot', 'vanish'];
   const id = ids[n - 1];
   const t = THEMES[id];
@@ -112,7 +112,7 @@ export function cardPicture(n: number, title: string, line: string, advice: stri
       : studio(d, { boxes: false, top: t.sky, horizon: mix(t.sky, [1, 1, 1], 0.5) });
   const pic = still(world, cam(eye, look, 0.75), 4, 20, n);
   bloom(pic, 0.95, 2.5, 0.45);
-  card(pic, title, line, advice, n);
+  card(pic, title, line, advice, n, of);
   return pic;
 }
 

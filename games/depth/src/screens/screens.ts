@@ -68,7 +68,7 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   files['savegame.gif'] = toGif(P.savePicture('SAVE GAME'), slotsFixed);
 
   // the level cards
-  for (const s of input.sets) gif(`card${s.level.n}.gif`, P.cardPicture(s.level.n, s.level.name, s.level.tagline, s.level.advice));
+  for (const s of input.sets) gif(`card${s.level.n}.gif`, P.cardPicture(s.level.n, input.sets.length, s.level.name, s.level.tagline, s.level.advice));
 
   // the end
   const ending = endingFrames();
