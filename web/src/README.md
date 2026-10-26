@@ -75,7 +75,8 @@ modules are in [`../test`](../test).
   `render.ts`, menus (`menus.ts`), function keys (`funcKeys.ts`), the key stack (`keys.ts`),
   recordings (`recorder.ts`), the between-scene screens (`showGraphic.ts`) and the "machine"
   (`machine.ts`: screen, keyboard, timers). `slowPc.ts` is the slow PC behind the desk's TURBO
-  button. `playerLook.ts` is what XFERPLAY's own screens show (words, matched colors, frames,
+  button. `playGain.ts` is the points a play scored itself, leaving out those an F6 load brought
+  (for the score trophies). `playerLook.ts` is what XFERPLAY's own screens show (words, matched colors, frames,
   positions, times, F-keys) from a project's DOS player patches (`RunOptions.player`), the CD
   player's with none; the menu, high-score, status, drop and load/save screens draw through
   `drawMenu`, `drawHighScores`, `drawStatus`… so the editor's previews use the same code.
@@ -340,7 +341,8 @@ modules are in [`../test`](../test).
   Mystery Robot Joe's scene, `reveal.ts` with `joeArt.ts`, only once every heart is found).
 - [`scoreTrophies/`](scoreTrophies): the desk's two score trophies, at the back left of the desk
   under the game shelves. `scores.ts` keeps each catalog game's best final score (counted only when
-  beaten) and the total of every finished play's final score, in the save store as `site:scores`,
+  beaten) and the total of the points every finished play scored itself (after an F6 load, only the
+  points since it: the engine's `playGain.ts`), in the save store as `site:scores`,
   heard as play ends from the engine's `Session.onPlayEnd` (never during a demo's or walkthrough's
   playback) through the player's `hook.ts`, for games played under `game:<id>` (the play page and
   the desk's PC). `tiers.ts` turns the sums into tiers (none, plastic, bronze, silver, gold, the gaudy

@@ -53,6 +53,15 @@ describe('score record', () => {
     expect(addEnd(r, 'teddy', -50.7).total).toBe(15200);
   });
 
+  it('adds only what a play scored itself after F6 loaded a save, yet keeps its best', () => {
+    let r = addEnd(emptyScores(), 'teddy', 3000); // the play that saved at 3,000 and quit
+    r = addEnd(r, 'teddy', 6000, 3000); // loaded it and scored 3,000 more
+    expect(r).toEqual({ best: { teddy: 6000 }, total: 6000, plays: 2 });
+    // a stored record from before this kept every play's whole score: it reads back as it was
+    expect(parseScores(new TextEncoder().encode('{"best":{"teddy":6000},"total":9000,"plays":2}')).total).toBe(9000);
+    expect(addEnd(r, 'teddy', 100, -5).total).toBe(6000);
+  });
+
   it('keeps it in the save store, read back the same, and drops what is malformed', async () => {
     await recordEnd('teddy', 4000);
     await recordEnd('teddy', 2500);
@@ -81,8 +90,8 @@ describe('only real play of a catalog game counts', () => {
     expect(scoreHook(undefined)).toBeUndefined();
     expect(scoreHook('project:abc')).toBeUndefined();
     expect(scoreHook('bundle:teddy')).toBeUndefined();
-    scoreHook('game:teddy')!(1234, 'lost');
-    await vi.waitFor(async () => expect((await loadScores()).best.teddy).toBe(1234));
+    scoreHook('game:teddy')!(1234, 'lost', 234);
+    await vi.waitFor(async () => expect(await loadScores()).toEqual({ best: { teddy: 1234 }, total: 234, plays: 1 }));
   });
 });
 

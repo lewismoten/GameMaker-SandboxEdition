@@ -1,6 +1,8 @@
 // The scores behind the desk's two score trophies: each catalog game's best final score (the
-// score when a play of it ended, won, lost or left with Esc), and the total of every finished
-// play's final score. A play counts toward a game's best only when it beats the best so far.
+// score when a play of it ended, won, lost or left with Esc), and the total of the points every
+// finished play scored. A play counts toward a game's best only when it beats the best so far.
+// A play that loaded a save with F6 adds only what it scored itself to the total, never the
+// loaded save's points again (engine/playGain.ts); its final score still counts for the best.
 // None of it is read from a game's high score file: it is heard from the engine as play ends
 // (engine Session.onPlayEnd, never during a demo's or walkthrough's playback; hook.ts).
 //
@@ -18,7 +20,7 @@ export const SCORES_CHANGED = 'gm-scores-changed';
 export interface ScoreRecord {
   /** game id -> its best final score. */
   best: Record<string, number>;
-  /** Every finished play's final score, added up. */
+  /** The points every finished play scored itself (F6's loaded points left out), added up. */
   total: number;
   /** How many plays have ended (with any score). */
   plays: number;
@@ -43,12 +45,17 @@ export function parseScores(bytes: Uint8Array | undefined): ScoreRecord {
   return r;
 }
 
-/** A play of `game` ended with `score`: the total grows, and the game's best if it was beaten. */
-export function addEnd(r: ScoreRecord, game: string, score: number): ScoreRecord {
+/**
+ * A play of `game` ended with `score`, having scored `gained` of it itself (less, after F6
+ * loaded a save; the whole score when left out): the total grows by the gain, and the game's
+ * best if the score beat it.
+ */
+export function addEnd(r: ScoreRecord, game: string, score: number, gained = score): ScoreRecord {
   const s = Math.max(0, Math.floor(score));
+  const g = Number.isFinite(gained) ? Math.max(0, Math.floor(gained)) : s;
   const best = { ...r.best };
   if (s > (best[game] ?? 0)) best[game] = s;
-  return { best, total: r.total + s, plays: r.plays + 1 };
+  return { best, total: r.total + g, plays: r.plays + 1 };
 }
 
 /** The best scores added up (what the best-scores trophy shows). */
@@ -75,10 +82,10 @@ export async function loadScores(): Promise<ScoreRecord> {
 }
 
 /** Keeps a finished play (read, changed and written in turn, so two ends never overlap). */
-export function recordEnd(game: string, score: number): Promise<void> {
+export function recordEnd(game: string, score: number, gained = score): Promise<void> {
   writing = writing
     .then(async () => {
-      const next = addEnd(await loadScores(), game, score);
+      const next = addEnd(await loadScores(), game, score, gained);
       await writeSaveFile(SAVE_ID, FILE, new TextEncoder().encode(JSON.stringify(next)), { quiet: true });
       announce();
       void earned(next);

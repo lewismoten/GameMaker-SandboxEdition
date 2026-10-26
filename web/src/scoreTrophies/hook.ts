@@ -7,5 +7,5 @@ import type { Session } from '../engine/scene';
 export function scoreHook(saveId: string | undefined): NonNullable<Session['onPlayEnd']> | undefined {
   const id = saveId?.startsWith('game:') ? saveId.slice(5) : undefined;
   if (!id) return undefined;
-  return (score) => void import('./scores').then((m) => m.recordEnd(id, score));
+  return (score, _how, gained) => void import('./scores').then((m) => m.recordEnd(id, score, gained));
 }

@@ -18,6 +18,7 @@ import { newCharInfo } from './world';
 import { MAXSCENELINKS, parseGame, type Game } from '../formats/game';
 import { MLEN, MWID } from '../formats/map';
 import { PALETTE_SIZE } from '../formats/palette';
+import { gainAtEnd, newPlayGain } from './playGain';
 
 export interface RunOptions {
   /** Called when the player picks Quit; return true to show the menu again. */
@@ -284,7 +285,7 @@ export async function play(s: Session, startLink: number): Promise<void> {
   // A playthrough that makes the high score table is kept as data<place>.rec; demo
   // playback never scores (score -1 leaves off the "Your Latest Score" line).
   if (!s.rec.playing) {
-    s.onPlayEnd?.(score, curscene === 1 ? 'won' : curlink === MAXSCENELINKS + 2 ? 'lost' : 'quit');
+    s.onPlayEnd?.(score, curscene === 1 ? 'won' : curlink === MAXSCENELINKS + 2 ? 'lost' : 'quit', gainAtEnd(s.gain ?? newPlayGain(), score));
     const place = await checkHighScores(m, s.gameName, s.colors, score, look);
     if (place) m.files.set(`data${place}.rec`, s.rec.save());
   } else score = -1;

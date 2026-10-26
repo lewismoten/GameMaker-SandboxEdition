@@ -43,6 +43,7 @@ import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
+import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
 
@@ -82,8 +83,11 @@ export interface Session {
   /**
    * Not PLAYGAME's: play ended (won, lost, or left with Esc) with this score, just before the
    * high score table. Never told during a demo's playback. It only listens: nothing changes.
+   * `gained` is the points the play scored itself, leaving out those F6 loaded (playGain.ts).
    */
-  onPlayEnd?: (score: number, how: PlayEnd) => void;
+  onPlayEnd?: (score: number, how: PlayEnd, gained: number) => void;
+  /** Not PLAYGAME's: the stretches of this play between F6 loads (playGain.ts). */
+  gain?: PlayGain;
   /**
    * The last level played. loadscene loads into globals, so a level that leaves its
    * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
@@ -210,6 +214,7 @@ export function startGameInits(s: Session): void {
   ci.hitpts = -1;
   ci.lives = -1;
   ci.score = 0;
+  s.gain = newPlayGain();
   ci.inv.fill(BACKBL + 1);
   ci.meter.fill(-1);
 }
@@ -713,8 +718,10 @@ async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: nu
     return undefined;
   }
   await sceneReady(s, data.doscene);
+  const before = s.ci.score;
   const loaded = restoreSaved(s, w, data);
   if (!loaded) return undefined;
+  gainAtLoad((s.gain ??= newPlayGain()), before, s.ci.score);
   const nw = loaded.world;
   attachSound(s, nw, loaded.sounds);
   m.screen.write(88, 185, blue, look.text('str.load.done'));
