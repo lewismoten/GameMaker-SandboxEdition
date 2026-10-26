@@ -113,7 +113,7 @@ export function adoptPlayer(files: GameFiles, players: { name: string; bytes: Ui
     const map = renameBack(files, exeExt);
     const shown = Object.values(exeExt).filter(Boolean).slice(0, 2);
     said.push(
-      `${name} asks for renamed file extensions (${shown.join(', ')}…), so Game-Maker couldn’t open these files: ${map.size} kinds are renamed back. (The DOS player panel doesn’t offer renaming extensions.)`,
+      `${name} was changed to look for its files under other extensions (${shown.join(', ')}…). Their ${map.size} kinds of file are renamed back to Game-Maker’s own, so they open here. (The DOS player panel doesn’t offer renaming extensions.)`,
     );
   }
   if (!read.explained) said.push(`Its other changes (such as an About page of its own) aren’t carried over.`);

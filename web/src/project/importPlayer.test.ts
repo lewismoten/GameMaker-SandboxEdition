@@ -46,7 +46,7 @@ describe('adoptPlayer', () => {
   it.skipIf(!has('game-maker_anyworld'))('renames Acord Games’ files back', () => {
     const { files, players } = folder('game-maker_anyworld');
     const r = adoptPlayer(files, players)!;
-    expect(r.message).toMatch(/renamed file extensions/);
+    expect(r.message).toMatch(/under other extensions/);
     expect(files.has('anyworld.gam')).toBe(true);
     const game = parseGame(files.get('anyworld.gam')!);
     expect(game.scenes[0].files[2].toLowerCase()).toBe('any0.gif');

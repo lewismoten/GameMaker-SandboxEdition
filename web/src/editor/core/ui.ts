@@ -57,12 +57,27 @@ export function pickFiles(opts: { multiple?: boolean; directory?: boolean; accep
   });
 }
 
+/** How long a toast stays: long enough to read (about 15 characters a second), at most 30 s. */
+export function toastMs(message: string, kind: 'info' | 'error' = 'info'): number {
+  return Math.min(30000, Math.max(kind === 'error' ? 8000 : 4000, 2000 + message.length * 65));
+}
+
 let toastHost: HTMLElement | undefined;
 export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
   toastHost ??= document.body.appendChild(h('div', { class: 'toasts', role: 'status', 'aria-live': 'polite' }));
-  const t = h('div', { class: `toast ${kind}` }, message);
+  const close = h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss' }, '×');
+  const t = h('div', { class: `toast ${kind}` }, h('span', null, message), close);
   toastHost.append(t);
-  setTimeout(() => t.remove(), kind === 'error' ? 8000 : 3500);
+  // the clock stops while the pointer or focus is on the toast, and starts over when it leaves
+  let timer = 0;
+  const start = () => (timer = window.setTimeout(() => t.remove(), toastMs(message, kind)));
+  const stop = () => clearTimeout(timer);
+  close.addEventListener('click', () => (stop(), t.remove()));
+  t.addEventListener('pointerenter', stop);
+  t.addEventListener('pointerleave', start);
+  t.addEventListener('focusin', stop);
+  t.addEventListener('focusout', start);
+  start();
 }
 
 /** A modal <dialog>. Resolves with the value passed to close(). */
