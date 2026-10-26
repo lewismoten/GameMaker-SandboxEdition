@@ -507,8 +507,11 @@ modules are in [`../test`](../test).
   kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
   the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
   `monsters/`, `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`),
-  `integrator/` (its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, and
-  `playerPreview.ts`, which draws XFERPLAY's screens with the engine's own `draw*` functions), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
+  `integrator/` (its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
+  tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
+  `playerFields.ts` makes each field), `playerPreview.ts`, which draws XFERPLAY's screens with the
+  engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
+  (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
   `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
@@ -669,6 +672,10 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   a level as seen in grayscale and with color-vision differences (`colorVision.ts`) and lists
   colors that look alike there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
+- **Color 0.** The palette editor's note by color 0 opens `editors/palette/colorZeroDialog.ts`:
+  each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
+  table, F1, F2, F5, F10), drawn with the engine's own functions in the palette and the
+  project's DOS player patches, with the palette entry each word color matched.
 
 **Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`, which
 calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`, the game's

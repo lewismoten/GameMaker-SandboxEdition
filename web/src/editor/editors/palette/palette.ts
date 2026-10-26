@@ -53,6 +53,18 @@ registerEditor(['pal'], (host, project, file) => {
     refresh();
   }
 
+  /** The note by color 0: “backgrounds” opens a preview of the player's screens drawn on it. */
+  const zeroLink = () =>
+    h(
+      'button',
+      {
+        type: 'button',
+        class: 'pal-zero-link',
+        title: 'Preview the screens the player draws on color 0',
+        onclick: () => void import('./colorZeroDialog').then(({ colorZeroDialog }) => colorZeroDialog(project, file, pal)),
+      },
+      'backgrounds',
+    );
   const swatches = rovingGrid(h('div', { class: 'swatches pal-swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
   const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
   const label = h('div', { class: 'meta' });
@@ -131,6 +143,7 @@ registerEditor(['pal'], (host, project, file) => {
       h('br'),
       h('span', { style: 'font-family:ui-monospace,monospace' }, hex),
       selected === 255 ? h('span', null, ' · see-through in monster and character blocks') : null,
+      selected === 0 ? h('span', null, ' · drawn as menu ', zeroLink()) : null,
     );
     sliders.forEach((s, c) => {
       s.range.value = String(pal[selected * 3 + c]);
@@ -285,7 +298,9 @@ registerEditor(['pal'], (host, project, file) => {
     h(
       'p',
       { class: 'hint' },
-      'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks.',
+      'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks. Color 0 is drawn as menu ',
+      zeroLink(),
+      '.',
     ),
     row,
     tools.el,
