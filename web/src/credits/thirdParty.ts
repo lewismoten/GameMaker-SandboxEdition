@@ -114,6 +114,13 @@ export const PIECE_GROUPS: PieceGroup[] = [
         by: 'Steve Jackaman and Ashley Muir, © International TypeFounders, Inc.',
         what: 'The DOC LEO lettering on the desk’s black-light poster, drawn into its pictures by Claude with Pillow and NumPy (games/kit/scans/blacklight.py).',
       },
+      {
+        name: 'A room where everything can be clicked',
+        license: 'An inspiration; nothing copied',
+        by: 'The Brothers Chaps (Mike and Matt Chapman), who made Homestar Runner and Strong Bad’s emails',
+        what: 'The 1994 desk, where nearly everything does something when clicked and some things are hidden to find. Lewis watched their Flash cartoons, where clicking things in the last scene turned up hidden extras. The names are their owners’.',
+        url: 'https://homestarrunner.com/',
+      },
     ],
   },
   {
@@ -140,13 +147,6 @@ export const PIECE_GROUPS: PieceGroup[] = [
         license: 'Lewis’s own capture, on this fork’s terms',
         by: 'Lewis Moten, testing the games in real DOS',
         what: 'A Fly Named Carl’s garbled title, in the guide’s “Where Game-Maker Runs Out” (web/public/ultimate/carl-dos.webp) and TURBO BUTTON’s “Bugs Only DOS Could Find” (web/public/magazine/dos-carl.webp).',
-      },
-      {
-        name: 'A room where everything can be clicked',
-        license: 'An inspiration; nothing copied',
-        by: 'The Brothers Chaps (Mike and Matt Chapman), who made Homestar Runner and Strong Bad’s emails',
-        what: 'The 1994 desk, where nearly everything does something when clicked and some things are hidden to find. Lewis watched their Flash cartoons, where clicking things in the last scene turned up hidden extras. The names are their owners’.',
-        url: 'https://homestarrunner.com/',
       },
       {
         name: 'The first Easter eggs',
