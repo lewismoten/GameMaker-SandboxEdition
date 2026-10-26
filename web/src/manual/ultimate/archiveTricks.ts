@@ -95,6 +95,22 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   lives, one adds 2 lives, one takes some away. Each becomes a plain look-alike when touched, and
   a slope funnels all three into the one way out. Lives and hit points carry on, so the choice
   lasts the whole game. (The first character still sets where they start, Chapter 4.)</p>
+  <h2>Choices you walk into</h2>
+  <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,
+  each a link to a different scene, and label the floor in front of each: the player picks by
+  walking in. Two of the archive’s games do it:</p>
+  <ul>
+    <li><b>Skill by door.</b> A first scene called “skill” has two doors side by side, Cadet and
+    Commando. Each leads into its own copy of the next level: the same map, so it costs a scene,
+    not new art, and the copies can differ in their monsters. They lead on to an easier and a
+    harder build of the last map, so the choice holds to the end.</li>
+    <li><b>Play or watch.</b> RSD’s own sample starts in a sealed nook at the bottom of its first
+    level’s map, with a Play Game door into that level and a Demo door into a separate guided
+    tour. The nook needs no map of its own: a few walled-off rows of a map the game already has
+    will do, with the scene starting the hero inside them.</li>
+  </ul>
+  <p>Put the doors a few blocks apart so one step can’t take the wrong one, and keep the room
+  free of foes. A choice the player hasn’t read yet shouldn’t cost a life.</p>
   <h2>A mouse pointer to pick with</h2>
   <p>Game-Maker has no mouse, but a hero can look like one. One of the archive’s games opens on a
   select screen whose hero is an arrow pointer, drawn the way a desktop draws it, sitting over a
