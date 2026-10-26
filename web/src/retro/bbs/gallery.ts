@@ -32,7 +32,7 @@ const DESC: Record<string, string> = {
   'TEDDY.JPG': 'Teddy as a JPEG. Watch it sharpen!',
   'GWINN.JPG': 'Teddy and his pal Gwinn in the grass.',
   'GAZEBO.GIF': 'The SysOp and Teddy at the gazebo.',
-  'COLONIAL.GIF': 'The SysOp in colonial dress with General Washington. Huzzah! Photo: Todd Jones.',
+  'COLONIAL.GIF': 'The SysOp in colonial dress with General Washington. Photo: Todd Jones.',
   'DOGHOUSE.JPG': "The Dog House: the SysOp's little lending library.",
   'LIBRARY.GIF': 'The Dog House again, in 16 colors.',
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",
