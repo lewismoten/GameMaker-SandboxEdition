@@ -288,7 +288,7 @@ export function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
     corner(3, 0, 1),
   ]);
   set[CGOAT_MON.fizz] = mon(anim(mb, 'fizz0', 'fizz1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 2), corner(0, -4, 2)]);
-  set[CGOAT_MON.mirage] = mon(anim(mb, 'mirage0', 'mirage1', 6), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(2, 1));
+  set[CGOAT_MON.mirage] = mon(anim(mb, 'mirage0', 'mirage1', 6), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(1, 1));
   set[CGOAT_MON.puff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }
 
@@ -369,8 +369,9 @@ export const cgoat: Monologue = {
     m.set(36, 9, 'm');
     placePicture(m, 'fizzCup', 39, 8, 2, 2);
     m.set(40, 4, 'thermostat').set(44, 3, 'y');
-    // every time he blinks: a goat, a goat, and the third goat from the left (the real one)
-    m.mon(CGOAT_MON.mirage, 44, 9).mon(CGOAT_MON.mirage, 49, 9).mon(MON.goat, 55, 9);
+    // every time he blinks: a goat, a goat, and the third goat from the left (the real one); the
+    // first turns a block short of the table, so it never pushes him into it
+    m.mon(CGOAT_MON.mirage, 42, 9).mon(CGOAT_MON.mirage, 49, 9).mon(MON.goat, 55, 9);
     placePicture(m, 'bTable', 45, 9, 2, 1);
     placePicture(m, 'credenza', 50, 9, 2, 1);
     m.set(48, 9, '$').set(52, 9, 'b').set(50, 3, 'y').set(55, 4, 'goatPortrait');

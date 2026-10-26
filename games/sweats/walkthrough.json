@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0BzSJNDs0GTQhICsgFzQY5A7kMTQXNBkgMyARLAMsGTRDNDk0CzQYSDJIATQDNBU0FzQZNCM0TTQXNBkgMyARNBc0GTQjNDDkDuQxND80GTQrNBjkDuQxNFM0GSwXLBkgMyARNBc0GEgySAE0AzQRNA80GTRLNDE0FzQYSDJIATQvNBzkDuQxNHs0GOQO5DE0UzQZND80GTSPNBk0="
+   "keys": "AU0BzSJNDs0GTQhICsgFzQY5A7kMTQXNBkgMyARLAMsGTRDNDk0CzQYSDJIATQDNBU0FzQZNCM0TTQXNBkgMyARNBc0GTQjNDDkDuQxND80GTQrNBjkDuQxNFM0GSwXLBkgMyARNBc0GEgySAE0AzQRNA80GTRLNDE0FzQYSDJIATQbNDDkDuQxNI80GOQO5DE0UzQZND80GTSPNBk0="
   },
   {
    "scene": 5,
@@ -40,7 +40,7 @@
   },
   {
    "scene": 10,
-   "keys": "AU0BzS1NCc0GEgySAE0AzQZNA80GTQvNDDkDuWBNEc0GEgySAE0AzQZLAssGTQvNDE0HzQZLA8sGOQO5DE0czQY5A7kMTQ/NBkgMyARIDMgIOQO5Wk0IzQ45A7kMTQXNBjkDuQxNFM0GEgySAE0AzQZNCM0GTQbNDDkDuQxNDM0GOQO5DE0ZzQZNCM0GEgySAE0NzQNNAs0GTRTNBk0="
+   "keys": "AU0BzS1NCc0GEgySAE0AzQZNA80GTQvNDDkDuWBNEc0GEgySAE0AzQZLAssGTQvNDE0HzQZLA8sGOQO5DE0czQY5A7kMTQ/NBkgMyARIDMgIOQO5DE0IzQ45A7kMTQXNBjkDuQxNFM0GEgySAE0AzQZNCM0GTQbNDDkDuQxNDM0GOQO5DE0ZzQZNCM0GEgySAE0NzQNNAs0GTRTNBk0="
   },
   {
    "scene": 11,
@@ -88,7 +88,7 @@
   },
   {
    "scene": 22,
-   "keys": "AU0BzTNNJ80GSAzIBk1GzQZIDMgEOQO5DE0IzQZIDMgDTQLNBk0HzQZNBM0WSwLLAzkDuQxNB80GOQO5DBIMkgBNCM0DOQO5DE0GzQZIDMgETQfNBkgMyANNAs0GTQjNEU0DzTsSDJIATQPNBjkDuQwSDJIATQbNCU0ZzQZNOM0GTQrNBk0JzQY5A7kMTQXNBjkDuQxNBs0GOQO5DE0HzQY5A7kMTQPNBk0PzQZN"
+   "keys": "AU0BzTNNJ80GSAzIBk1GzQZIDMgEOQO5DE0IzQZIDMgDTQLNBk0HzQZNBM0WSwLLAzkDuQxNB80GOQO5DBIMkgBNDc0DOQO5DE0BzQZIDMgETQfNBkgMyANNAs0GTQjNEU0DzTsSDJIATQPNBjkDuQwSDJIATQbNCU0ZzQZNOM0GTQrNBk0JzQY5A7kMTQXNBjkDuQxNBs0GOQO5DE0HzQY5A7kMTQPNBk0PzQZN"
   },
   {
    "scene": 23,
@@ -187,7 +187,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 73727,
+  "frames": 73486,
   "chapters": [
    {
     "title": "Opening",
@@ -211,87 +211,87 @@
    },
    {
     "title": "3. The Office Chair That Tried to Kill Me",
-    "frame": 13786
+    "frame": 13802
    },
    {
     "title": "4. Gerald the Ficus is Dead",
-    "frame": 17145
+    "frame": 17161
    },
    {
     "title": "Intermission 1",
-    "frame": 19472
+    "frame": 19488
    },
    {
     "title": "5. The Day the Self-Checkout Tried to Destroy Me",
-    "frame": 20610
+    "frame": 20626
    },
    {
     "title": "6. How I Earned a Nod from the Smoking Cashier",
-    "frame": 24294
+    "frame": 24310
    },
    {
     "title": "7. I Don’t Work Here, But Emotionally I Do",
-    "frame": 27780
+    "frame": 27796
    },
    {
     "title": "8. I Held in a Fart and Killed a Bird",
-    "frame": 31359
+    "frame": 31118
    },
    {
     "title": "Intermission 2",
-    "frame": 34613
+    "frame": 34372
    },
    {
     "title": "9. She Took the Blanket (and Left My Soul on the Floor)",
-    "frame": 35752
+    "frame": 35511
    },
    {
     "title": "10. Wore All the Weird Socks",
-    "frame": 39287
+    "frame": 39046
    },
    {
     "title": "11. How the Cat Won the Pizza War",
-    "frame": 42683
+    "frame": 42442
    },
    {
     "title": "12. Janet, This Is Not About You (It’s About the Itch)",
-    "frame": 45980
+    "frame": 45739
    },
    {
     "title": "13. Double Tap for Justice",
-    "frame": 49877
+    "frame": 49636
    },
    {
     "title": "Intermission 3",
-    "frame": 53059
+    "frame": 52818
    },
    {
     "title": "14. This Is Why I Don’t Go Outside",
-    "frame": 54198
+    "frame": 53957
    },
    {
     "title": "15. The Ants Have Spoken",
-    "frame": 57097
+    "frame": 56856
    },
    {
     "title": "16. The Day I Fought Cardboard",
-    "frame": 60421
+    "frame": 60180
    },
    {
     "title": "17. Shelter Me Gently, You Wounded Beast",
-    "frame": 63500
+    "frame": 63259
    },
    {
     "title": "The Curtain Call",
-    "frame": 67342
+    "frame": 67101
    },
    {
     "title": "Ending",
-    "frame": 68480
+    "frame": 68239
    },
    {
     "title": "Credits",
-    "frame": 71159
+    "frame": 70918
    }
   ]
  }

@@ -278,7 +278,8 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
 }
 
 export function chairMonsters(set: Monster[], mb: SpriteBook): void {
-  set[CHAIR_MON.screw] = mon(anim(mb, 'screw0', 'screw1', 3), { power: POWER.foe, thru: 1, newmon: CHAIR_MON.puff }, pace(3, 1));
+  // (a screw rolls a block, so it turns a block short of the cubicle's walls and never pushes him into one)
+  set[CHAIR_MON.screw] = mon(anim(mb, 'screw0', 'screw1', 3), { power: POWER.foe, thru: 1, newmon: CHAIR_MON.puff }, pace(1, 1));
   set[CHAIR_MON.squeak] = mon(anim(mb, 'squeak0', 'squeak1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: CHAIR_MON.puff }, [
     corner(0, 0, 2),
     corner(0, 1, 1, 4),
@@ -356,7 +357,7 @@ export const chair: Monologue = {
     m.mon(MON.leo, 15, 9);
     // another cubicle: a desk, a coin on it, a screw underfoot, the spilled coffee
     m.set(31, 9, 'spill').row(9, 27, 28, 'K').set(28, 8, 'v').set(25, 9, 'c').set(26, 3, 'y');
-    m.mon(CHAIR_MON.screw, 23, 9);
+    m.mon(CHAIR_MON.screw, 24, 9);
     // the janitor and his cart: the wrench ("good luck, you'll need it")
     m.mon(CHAIR_MON.janitor, 32, 9);
     placePicture(m, 'cart', 33, 9, 2, 1);

@@ -376,8 +376,9 @@ export const umbrella: Monologue = {
     // aisle one: tools below, paint above (the wrench on top), a price tag on each plank
     m.row(7, 20, 24, 'o').row(4, 21, 23, 'P');
     m.set(22, 3, 'wrench').set(21, 6, '&');
+    // (Teddy sits a block past the low tag's walk, so he's never caught between them)
     m.mon(UMBR_MON.tag, 25, 9).mon(UMBR_MON.tag, 22, 6);
-    m.mon(MON.teddy, 28, 9);
+    m.mon(MON.teddy, 29, 9);
     // aisle two: tape below (a roll on it), tools above (the screwdriver on top)
     m.row(7, 31, 35, 'O').row(4, 32, 34, 'o');
     m.set(35, 6, 'tape').set(33, 3, 'screwdriver').set(32, 6, '&');

@@ -89,7 +89,7 @@ export const WORK_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the fizz', 0, async () => {
       await must(bot, bot.walk(37, 'up to the fizzing cup'), 'cup');
-      await must(bot, bot.hop('right', 12, 'right', 42), 'over the fizzing cup');
+      await must(bot, bot.hop('right', 12, 'right', 41), 'over the fizzing cup');
     });
     await carefully(bot, 'the goats', 0, async () => {
       await declaim(bot, 'a goat');
