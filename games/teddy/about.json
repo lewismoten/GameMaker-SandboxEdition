@@ -44,5 +44,6 @@
       ["klub.map", 64, 26]
     ],
     "rating": "Ages 6 and up"
-  }
+  },
+  "acceptedFindings": ["link-solid s3 Link 2 at (16, 37) is inside block 96, which is solid on every side"]
 }

@@ -71,5 +71,6 @@
     "course.mon#44",
     "course.mon#45",
     "course.mon#55"
-  ]
+  ],
+  "acceptedFindings": ["speed-cap s5 The 3 key’s sequence (12) moves the hero 12 px in a frame, and PLAYGAME stops him at 11"]
 }
