@@ -113,9 +113,13 @@ const TENS = ['', '', 'Twenty', 'Thirty', 'Forty'];
 export const countWord = (n: number): string =>
   n < 21 ? WORDS[n] : n < 50 ? `${TENS[Math.floor(n / 10)]}${n % 10 ? `-${WORDS[n % 10].toLowerCase()}` : ''}` : String(n);
 
-/** Joe's note, for `n` hearts. */
-export const joeNote = (n: number): string =>
-  `${countWord(n)} tin hearts, counted twice on my tally counter, and every one of them ticking. The Tin Man walked all the way to Oz for a heart and found he had been kind the whole way there. You went looking in every corner of every game, which is much the same thing. Here is the one I borrowed. Keep it where it can catch the light.`;
+/** Joe's note, for `n` hearts (`clock`: the wall clock's among them). */
+export const joeNote = (n: number, clock = true): string =>
+  `${countWord(n)} tin hearts, counted twice on my tally counter, and every one of them ticking. The Tin Man walked all the way to Oz for a heart and found he had been kind the whole way there. You went looking in every corner of every game${clock ? ', and even in a clock' : ''}, which is much the same thing. Here is the one I borrowed. Keep it where it can catch the light.`;
+
+/** Joe's postscript while hearts are still out there (found every game's before the clock's joined). */
+export const joeStillOut = (missing: number): string =>
+  `P.S. My tally counter clicked again after I set this down. ${missing === 1 ? 'One more tin heart has turned up' : `${countWord(missing)} more tin hearts have turned up`}, ticking somewhere in this very room. No hurry. The shelf is yours either way.`;
 
 /** What the trophy view says happened, once the scene has played. */
 const ALL_ALONG =
@@ -123,9 +127,10 @@ const ALL_ALONG =
 
 /**
  * A closer look: the diamond heart on its stand, Mystery Robot Joe beside it, and his note.
- * `scene`: play the reveal first (it plays by itself the first time; reveal.ts). Esc closes.
+ * `scene`: play the reveal first (it plays by itself the first time; reveal.ts). `missing`: hearts
+ * still to find (only for someone who had every game's before the room's joined). Esc closes.
  */
-export async function openTrophy(n: number, scene = !seenReveal()): Promise<void> {
+export async function openTrophy(n: number, scene = !seenReveal(), missing = 0): Promise<void> {
   const art = await import('../eggs/diamondHeart');
   return new Promise((resolve) => {
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -296,14 +301,21 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
       'div',
       { class: 'eggv-card' },
       h('h2', { id: 'trophy-title' }, 'The Diamond Heart'),
-      h('p', { class: 'eggv-where' }, `Presented by Mystery Robot Joe, for finding all ${n} tin hearts`),
+      h(
+        'p',
+        { class: 'eggv-where' },
+        missing
+          ? `Presented by Mystery Robot Joe, for finding ${n - missing} of ${n} tin hearts`
+          : `Presented by Mystery Robot Joe, for finding all ${n} tin hearts`,
+      ),
       h(
         'p',
         null,
         'A heart cut from one flawless diamond, faceted like an imperial jeweled egg and caged in gold filigree, sitting in a tin cup on a riveted tin box that Joe made himself. The brass plate reads: PRESENTED BY MYSTERY ROBOT JOE.',
       ),
       h('h3', null, 'A note from Joe'),
-      h('p', { class: 'eggv-lore' }, `“${joeNote(n)}” — Joe`),
+      h('p', { class: 'eggv-lore' }, `“${joeNote(n - missing, !missing)}” — Joe`),
+      missing ? h('p', { class: 'eggv-lore' }, `“${joeStillOut(missing)}”`) : null,
       more,
       controls,
     );

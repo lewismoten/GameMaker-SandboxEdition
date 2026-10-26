@@ -1,8 +1,9 @@
 // Where the tin heart trophy (trophy.ts) goes on the desk: watches the hearts and shows the
-// trophy once every counted heart is found. Until then there is nothing at all, and the
-// trophy's drawing and scene aren't fetched.
+// trophy once the hunt is won (huntComplete: every heart, or every game's for someone who had
+// them all before the clock's heart joined, who is told in its closer look that one more is out
+// there). Until then there is nothing at all, and the trophy's drawing and scene aren't fetched.
 import { h, clear } from '../editor/core/ui';
-import { heartStates, watchHearts } from './tinHearts';
+import { huntComplete, huntStates, watchHearts } from './tinHearts';
 import { setSeenReveal } from './reveal';
 
 /** Shows the trophy once every counted heart is found; returns the function that takes it away. */
@@ -10,13 +11,15 @@ export function heartTrophy(place: (el: HTMLElement) => void): () => void {
   const btn = h('button', { type: 'button', class: 'heart-trophy', hidden: true });
   place(btn);
   let total = 0;
+  let missing = 0;
   let shown = false;
   let opening = false;
 
   const refresh = async () => {
-    const states = await heartStates().catch(() => []);
+    const states = await huntStates().catch(() => []);
     total = states.length;
-    const done = total > 0 && states.every((s) => s.found);
+    missing = states.filter((s) => !s.found).length;
+    const done = huntComplete(states);
     // a heart lost again (EGG.EXE's Clear all): the scene plays again when the set is whole
     if (total && !done) setSeenReveal(false);
     if (done === shown) return;
@@ -44,7 +47,7 @@ export function heartTrophy(place: (el: HTMLElement) => void): () => void {
     if (opening || !shown) return;
     opening = true;
     try {
-      await (await import('./trophy')).openTrophy(total);
+      await (await import('./trophy')).openTrophy(total, undefined, missing);
     } finally {
       opening = false;
       btn.focus();
