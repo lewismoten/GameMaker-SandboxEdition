@@ -83,7 +83,7 @@ export async function bathroom(bot: Bot): Promise<void> {
     await must(bot, bot.walk(18.6, 'the end of the shelf'), 'end');
   });
   await carefully(bot, 'over the soap, the toilet', 0, async () => {
-    await must(bot, bot.hop('right', 8, 'right', 24), 'over the grapefruit soap');
+    await must(bot, bot.hop('right', 12, 'right', 24), 'over the grapefruit soap');
     await must(bot, bot.hop('right', 12, 'right', 26), 'up on the tank');
     if (salt(bot) < 3) throw new Error(`no salt on the tank (${salt(bot)})`);
     await must(bot, bot.walk(28, 'down by the sink'), 'sink');

@@ -177,8 +177,9 @@ export function bathroom(book: BlockBook): Level {
   m.set(15, 10, 'u');
   // a shelf over the tub: a jar of salt, a quarter in the soap dish, candles
   m.row(8, 14, 17, 's').set(15, 7, '1').set(17, 7, 'q').set(14, 7, '*');
-  // a bar of cursed grapefruit soap, sliding along the floor
-  m.mon(MON.grapefruit, 20, 11);
+  // a bar of cursed grapefruit soap, sliding along the floor, a block clear of the tub and the
+  // toilet (a solid soap coming back against either would push you inside it)
+  m.mon(MON.grapefruit, 21, 11);
   // the toilet, a jar on its tank
   m.set(25, 11, 'l').set(26, 10, 'tankTop').set(26, 11, 't').set(26, 9, '1');
   // the sink and the vanity, the mirror, the shelf above (candles, a jar, the mango soap)
