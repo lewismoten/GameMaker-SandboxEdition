@@ -106,7 +106,7 @@ export const ZINE: ZinePage[] = [
       "Where: hex offset 1800 of the game's .EXE (6,144, right after the EXE header). Byte DC, then 28 bytes of name, scrambled.",
       'The scramble: each letter gets a base number added, plus a step for every place along. After the name ends the bytes just count up by the step. Then a 0, then the serial in 4 bytes, shuffled (bytes 1, 3, 4, 2). A good serial minus 4 divides by 1029.',
       '3.00 quit doing it. Its player has no slot at all. Your name goes in the credits now, like a normal person.',
-      'ALSO: the old players would NOT start without GMTITLE.GIF, RSD\'s "Game-Maker Presents:" card. No card, no game. So everybody drew their own studio card in its place.',
+      'ALSO: the old players would NOT start without GMTITLE.GIF, RSD\'s "Game-Maker Presents:" card. No card, no game. Lots of authors drew their own studio card in its place.',
       "HEXEDIT here won't open an .EXE (sorry), so this one's history class. Still a neat way to tell who REALLY made an old game.",
     ],
     scrawl: ['same stamp = same copy of GM'],

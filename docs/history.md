@@ -41,8 +41,8 @@ adventure games and learned how game logic works. Its sound editor stuck with me
 drew a sound's wave with the mouse, and a few bytes became an 8-bit sound effect.
 
 My copy wouldn't start a game without its title card, `GMTITLE.GIF`: RSD's "Game-Maker
-Presents:" picture, shown before every game. So everyone who made games drew their own card in
-its place. (Game-Maker 3.00's player stopped asking for it.)
+Presents:" picture, shown before every game. Plenty of authors drew their own card in its place;
+I just left RSD's. (Game-Maker 3.00's player stopped asking for it.)
 
 I graduated in May 1994, and my parents gave me a 486 with a CD-ROM drive as a graduation
 gift. I left for Pittsburgh in June.
