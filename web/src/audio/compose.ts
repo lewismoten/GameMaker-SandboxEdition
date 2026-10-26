@@ -113,3 +113,14 @@ export function song(bpm: number, voices: Voice[]): Uint8Array {
   for (let c = 0; c < 16; c++) instruments[c] ??= INSTRUMENTS.piano;
   return encodeCmf({ instruments, events, ticksPerBeat });
 }
+
+/**
+ * A new, empty song: piano on every channel and one silent bar at `bpm` (a song with nothing
+ * in it at all would end the moment it starts, and PLAYGAME restarts a song when it ends).
+ */
+export function blankSong(bpm = 120): Uint8Array {
+  const ticksPerBeat = Math.round((146 * 60) / bpm);
+  const instruments = Array.from({ length: 16 }, () => INSTRUMENTS.piano);
+  // the bar's end, marked by setting channel 1's volume to where it already is
+  return encodeCmf({ instruments, events: [{ tick: 4 * ticksPerBeat, data: [0xb0, 7, 100] }], ticksPerBeat });
+}
