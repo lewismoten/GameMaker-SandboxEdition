@@ -287,7 +287,9 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         'Extract it, then run play.sh in the folder.',
       );
     } else if (kind === 'web' && alt) {
-      const { name, zip } = await (await import('../../export/exportWebApp')).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction });
+      const { name, zip } = await (
+        await import('../../export/exportWebApp')
+      ).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
       const { name, html } = await (

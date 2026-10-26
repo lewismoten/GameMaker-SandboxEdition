@@ -150,12 +150,19 @@ export abstract class ComputerFolders extends ComputerDrives {
     const project = Project.fromFiles(new GameFiles(game.files.entries()), game.title);
     const gam = game.files.mainGame();
     if (gam) project.gam = gam;
+    // the game's DOS player customizations (PLAYHACK's) go with it: on the floppy's copy, and in the download's .EXE
+    const { loadProjectPatches } = await import('../../dosPlayer/projectPatches');
+    const player = game.hd?.projectId ? await loadProjectPatches(game.hd.projectId) : {};
+    if (gam && Object.keys(player).length) {
+      const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
+      project.setExtras(gam, PLAYER_SECTION, playerRecord(player));
+    }
     await project.saveNow();
     await this.swapInProject(project);
     const r = await errorBox(this, 'Transfer Done!', '(D)ownload it too, to run in DOSBox   (C)ontinue');
     if (r === 'D' && gam) {
       try {
-        const { name, zip } = await (await import('../../export/exportDos')).exportDos(project.files, { title: game.title, gam });
+        const { name, zip } = await (await import('../../export/exportDos')).exportDos(project.files, { title: game.title, gam, player });
         download(name, zip, 'application/zip');
       } catch (e) {
         await errorBox(this, (e as Error).message.slice(0, 70), '(C)ontinue');
