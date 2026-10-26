@@ -1,6 +1,6 @@
-// Credits, "AI tools and models, and the people": each AI tool and what it made, as NOTICE.md
-// and the games' own credits say, then Lewis's part and the cast who appear as themselves
-// (their pictures are the cast page's, public/cast/<id>.png).
+// Credits, "The people": Lewis's part and the cast who appear as themselves (their pictures are
+// the cast page's, public/cast/<id>.png); and, lower on the page, "AI tools and models": each
+// AI tool and what it made, as NOTICE.md and the games' own credits say.
 import { h } from '../editor/core/ui';
 import { section, ext, card, thumb } from './section';
 import { NOTICE_URL } from '../edition';
@@ -9,7 +9,7 @@ import { CAST, type CastMember } from '../cast/castData';
 /** One tool's card: its name, a short subtitle, two or three short lines, and any longer story in a small disclosure. */
 const tool = (name: string, maker: string, made: string, story?: Parameters<typeof h>[2]) =>
   card(
-    'h4',
+    'h3',
     name,
     h('p', { class: 'card-meta' }, maker),
     h('p', null, made),
@@ -22,12 +22,12 @@ const member = (id: string) => CAST.find((m) => m.id === id)!;
 const portrait = (m: CastMember) =>
   thumb(`./cast/${m.id}.png`, m.art.alt, [h('b', null, m.name), h('br'), m.role], `#/cast?who=${m.id}`, [m.art.width, m.art.height]);
 
-export function peopleSection(): HTMLElement {
+/** Each AI tool and model, and what it made. */
+export function aiToolsSection(): HTMLElement {
   return section(
-    'credits-people',
-    'AI tools and models, and the people',
-    'Which tools made what, and the person behind all of it.',
-    h('h3', { id: 'credits-ai' }, 'AI tools and models'),
+    'credits-ai',
+    'AI tools and models',
+    'Which tools made what, directed by Lewis.',
     h(
       'div',
       { class: 'credits-cards credits-cards-grid' },
@@ -58,6 +58,15 @@ export function peopleSection(): HTMLElement {
       tool('Whisper', 'OpenAI · MIT License', 'Word timings for cutting the voice clips. Runs on the developer’s computer; nothing ships.'),
     ),
     h('p', { class: 'muted' }, 'None of these tools’ code is used in the site or the games.'),
+  );
+}
+
+/** Lewis, and the cast who appear as themselves. */
+export function peopleSection(): HTMLElement {
+  return section(
+    'credits-people',
+    'The people',
+    'The person behind all of it, and the cast who appear as themselves.',
     h(
       'div',
       { class: 'credits-people-row' },
