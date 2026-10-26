@@ -174,7 +174,8 @@ modules are in [`../test`](../test).
   `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it
   does, removing it.
 - [`cast/`](cast): the Cast page (`#/cast`, `castPage.ts`, its people and things in
-  `castData.ts`): the regulars of the new games on a stage (`castStage.ts`), walking with their own
+  `castData.ts`): the regulars of the new games on a stage (`castStage.ts`; once it scrolls away,
+  a small one in a corner, `castMini.ts`), walking with their own
   sprites (`castSprite.ts`, from `../public/cast/sprites.json`) to the Teddy games' theme
   (`castSound.ts`), and the games each appears in (`castThumbs.ts`; `cameos.json` for new cameos,
   `hidden.json` for the Easter eggs and tin hearts, written by `scripts/castHidden.ts`).
