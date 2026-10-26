@@ -270,6 +270,41 @@ main.cast .lead {
     width: 88px;
     height: 88px;
   }
+
+  /* phones: the name and role beside the picture, the bio under both at the card's full width */
+  .cast-card {
+    row-gap: 0;
+  }
+
+  .cast-text {
+    display: contents;
+  }
+
+  .cast-card > .cast-pic {
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+
+  .cast-text > .cast-bio,
+  .cast-text > :nth-child(n + 4) {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+  }
+
+  .cast-card > .cast-seen-box,
+  .cast-card > .cast-appears {
+    margin-top: 12px;
+  }
+
+  /* "Seen in": one row that scrolls sideways, not a tall grid */
+  .cast-seen {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: 96px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    overscroll-behavior-x: contain;
+  }
 }
 
 .cast-kicker {
