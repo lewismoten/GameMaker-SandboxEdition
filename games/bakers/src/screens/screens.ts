@@ -162,6 +162,8 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   scaleBlit(p, ingredient(n, 0), 56, 120, 2);
   text(p, 100, 128, 'FIND:', c('ink', 1));
   text(p, 100, 140, RECIPE[n - 1]?.name ?? '???', c('red', 2));
+  // the first room says how to keep your place
+  if (lvl === 1 && !room.spec.interlude) centered(p, 156, 'F5 SAVES  F6 LOADS', c('red', 2));
   if (room.spec.hero === 'chick') scaleBlit(p, reggie('down'), 234, 118, 2);
   else bigLeo(p, 236, 116, 0.75);
   return { px: p, pal: pal.pal };
