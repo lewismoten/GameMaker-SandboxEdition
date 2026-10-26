@@ -68,9 +68,12 @@ describe('a course through the wrap', () => {
     expect(findCourse(ride)).toBeUndefined();
   });
 
-  it('is not a steep diagonal that crosses one edge three times and the other only once', () => {
+  it("takes a shorter corner-to-corner leg: three laps across, two down (Virus Blaster's first stages)", () => {
     const ride: [number, number][] = [];
     for (let k = 0; k < 200; k++) ride.push([mod(86 + k, 100), mod(42 - Math.floor((k * 2) / 3), 100)]);
-    expect(findCourse(ride)).toBeUndefined();
+    expect(findCourse(ride)).toEqual([
+      [86, 42],
+      [285, -90],
+    ]);
   });
 });
