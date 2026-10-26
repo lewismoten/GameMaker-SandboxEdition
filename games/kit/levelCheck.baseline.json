@@ -412,6 +412,10 @@
  ],
  "remote": [],
  "risi": [
+  "warning push-squeeze s3 Solid monsters 12 and 50 close in on the same spot, at (11, 11)",
+  "warning push-squeeze s3 Solid monsters 12 and 51 close in on the same spot, at (13, 11)",
+  "warning push-squeeze s3 Solid monsters 13 and 50 close in on the same spot, at (5, 11)",
+  "warning push-squeeze s3 Solid monsters 13 and 51 close in on the same spot, at (7, 11)",
   "warning start-threat s5 Monster 8 starts 2 blocks from where the hero comes in"
  ],
  "sandcast": [],

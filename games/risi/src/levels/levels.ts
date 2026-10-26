@@ -77,7 +77,7 @@ export const LEVELS: LevelDef[] = [
     build: kitchen,
     snd: 'kitchen',
     song: 'felis',
-    mons: { run: 3 },
+    mons: { run: 2 },
     view: [14, 3],
   },
   {
