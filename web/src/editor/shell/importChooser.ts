@@ -80,7 +80,7 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
     };
     const rows = r.games.map((g, i) => {
       const why = noImport(g);
-      const box = h('input', { type: 'checkbox', checked: !why, disabled: !!why, onchange: count, 'aria-describedby': `ic-from-${i}` });
+      const box = h('input', { type: 'checkbox', checked: !why && !g.leftover, disabled: !!why, onchange: count, 'aria-describedby': `ic-from-${i}` });
       if (!why) boxes.push([box, g]);
       const thumb = thumbs.thumb(g);
       // the picture ticks its game too, as its words do
@@ -97,7 +97,16 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
           h(
             'small',
             { class: 'ic-from', id: `ic-from-${i}` },
-            `${g.from || 'the files picked'} · ${g.fileCount} ${g.fileCount === 1 ? 'file' : 'files'}${g.alsoIn ? ` · also in ${g.alsoIn.join(', ')}` : ''}${why ? ` · ${why}` : ''}`,
+            [
+              g.from || 'the files picked',
+              `${g.fileCount} ${g.fileCount === 1 ? 'file' : 'files'}`,
+              g.missing && !g.leftover && `${g.missing} ${g.missing === 1 ? 'file' : 'files'} missing`,
+              g.leftover,
+              g.alsoIn && `also in ${g.alsoIn.join(', ')}`,
+              why,
+            ]
+              .filter(Boolean)
+              .join(' · '),
           ),
         ),
       );

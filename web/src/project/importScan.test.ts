@@ -107,9 +107,39 @@ describe('scanImport', () => {
     ]);
   });
 
-  it('keeps a game with several .gam files as one, named by its first', async () => {
-    const r = await scanImport(loose([...game('g/', 'Beta'), ['g/alpha.gam', gam('Alpha')]]));
-    expect(r.games.map((g) => [g.name, g.gamCrcs.length, g.fileCount])).toEqual([['Alpha', 2, 4]]);
+  it('lists each .gam of a folder as its own game, without the other .gam', async () => {
+    const given = loose([...game('g/', 'Beta'), ['g/alpha.gam', gam('Alpha')]]);
+    const r = await scanImport(given);
+    expect(r.games.map((g) => [g.name, g.gam, g.fileCount, g.leftover])).toEqual([
+      ['Alpha', 'alpha.gam', 3, undefined],
+      ['Beta', 'beta.gam', 3, undefined],
+    ]);
+    expect((await new GameReader(given).read(r.games[0])).files.names()).toEqual(['alpha.gam', 'beta.pal', 'hero.cel']);
+  });
+
+  it('lists a leftover .gam that no player loads and that lacks its files after the real game, unticked', async () => {
+    const player = new Uint8Array(160_598);
+    player.set(enc.encode('.Z0G'), 0x256b6);
+    const space = newGame('Space');
+    space.scenes[0].files = ['SPACE.Z0A', 'SPACE.Z0B', 'SHARED.Z0Q'];
+    const given = [
+      await zip('zapak.zip', [
+        ['SPACE.Z0G', serializeGame(space)],
+        ['ZAPAK.EXE', player],
+        ['ZAPAK.Z0G', gam('Zapak')],
+        ['SHARED.Z0Q', enc.encode('map')],
+      ]),
+    ];
+    const r = await scanImport(given);
+    expect(r.games.map((g) => [g.name, g.missing, g.leftover])).toEqual([
+      ['Zapak', undefined, undefined],
+      ['Space', 2, 'SPACE.GAM: 2 of its files aren’t in the zip; no player loads it'],
+    ]);
+    const reader = new GameReader(given);
+    expect((await reader.read(r.games[0])).files.names()).toEqual(['shared.z0q', 'zapak.z0g']);
+    // the leftover keeps the folder's player, to rename its files back by
+    const left = await reader.read(r.games[1]);
+    expect([left.files.names(), left.players.map((p) => p.name), left.gam]).toEqual([['shared.z0q', 'space.z0g'], ['ZAPAK.EXE'], 'space.gam']);
   });
 
   it('finds each game of a folder whose games share their files, each with its own player, renamed extensions and all', async () => {
@@ -127,12 +157,12 @@ describe('scanImport', () => {
     ];
     const r = await scanImport(given);
     expect(r.games.map((g) => [g.name, g.gam, g.fileCount])).toEqual([
-      ['Neverwhere 1', 'never.gam', 4],
-      ['Neverwhere 1B', 'never1b.gam', 4],
+      ['Neverwhere 1', 'never.gam', 3],
+      ['Neverwhere 1B', 'never1b.gam', 3],
     ]);
     const second = await new GameReader(given).read(r.games[1]);
     expect([second.name, second.gam, second.players.map((p) => p.name)]).toEqual(['Neverwhere 1B', 'never1b.gam', ['NEVER1B.EXE']]);
-    expect(second.files.names()).toEqual(['never.z0g', 'never1b.z0g', 'shared.z0q']);
+    expect(second.files.names()).toEqual(['never1b.z0g', 'shared.z0q']);
   });
 
   it('reads self-extracting .EXEs as zips (offsets counted from the zip or from the file), never running them', async () => {

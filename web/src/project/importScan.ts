@@ -8,7 +8,6 @@
 import { cdName, GameFiles, IGNORED_FILE, normalize } from './files';
 import { crc32, isZip, listZip } from './zip';
 import { parseGame } from '../formats/game';
-import { renamedExtensions } from '../dosPlayer/renamedExtensions';
 
 /** A file to look at: picked, dropped or in a zip. Its path is from the top of what was given. */
 export interface ScanFile {
@@ -36,6 +35,10 @@ export interface FoundGame {
   gam?: string;
   /** Where else the same game is (its .gam files byte for byte): those copies are left out. */
   alsoIn?: string[];
+  /** Files its .gam names that are not here. */
+  missing?: number;
+  /** Why it is left unticked: a leftover .gam beside the real game, lacking files, that no player loads. */
+  leftover?: string;
 }
 
 export interface ScanReport {
@@ -112,22 +115,60 @@ export function groupGames(files: ScanFile[], played: ReadonlySet<ScanFile> = ne
 }
 
 /**
+ * The extension a player .EXE opens its game by: XFERPLAY 3.00 keeps ".GAM" at 0x256b6, which
+ * Acord Games' players changed to ".Z0G" and Virtual Mario's blanked to ".". (The DOS player
+ * panel reads all of its extensions, in dosPlayer/; this needs only that one.)
+ */
+function gamExtension(exe: Uint8Array): string {
+  let now = '';
+  for (let i = 0; i < 4 && exe[0x256b6 + i]; i++) now += String.fromCharCode(exe[0x256b6 + i]);
+  now = now.trim().toLowerCase();
+  return now === '.' || !now ? '' : now;
+}
+
+/**
  * Each player .EXE here and the game file beside it that it plays: the one named after it, with
  * the .gam extension it asks for (Acord Games' players ask for .z0g; Virtual Mario's for none).
+ * `games`: the files with an extension a player beside them asks for in place of .gam (a
+ * leftover SPACE.Z0G beside ZAPAK.EXE too).
  */
-export async function playedBy(files: ScanFile[]): Promise<Map<ScanFile, ScanFile>> {
-  const out = new Map<ScanFile, ScanFile>();
+export async function playedBy(files: ScanFile[]): Promise<{ players: Map<ScanFile, ScanFile>; games: Set<ScanFile> }> {
+  const players = new Map<ScanFile, ScanFile>();
+  const games = new Set<ScanFile>();
   const kept = files.filter((f) => !isJunk(clean(f.path)));
   for (const exe of kept.filter((f) => PLAYER_EXE(f.path, f.size))) {
     const bytes = await exe.read().catch(() => undefined);
     if (!bytes) continue;
-    const ext = renamedExtensions(bytes)['.gam'] ?? '.gam';
+    const ext = gamExtension(bytes);
     const path = clean(exe.path);
+    const beside = kept.filter((f) => f !== exe && dirOf(clean(f.path)) === dirOf(path));
     const want = normalize(`${baseOf(path).replace(/\.[^.]*$/, '')}${ext}`);
-    const gam = kept.find((f) => f !== exe && dirOf(clean(f.path)) === dirOf(path) && normalize(f.path) === want);
-    if (gam) out.set(exe, gam);
+    const gam = beside.find((f) => normalize(f.path) === want);
+    if (gam) {
+      players.set(exe, gam);
+      games.add(gam);
+    }
+    // a blanked extension names no others: files without one are a game's pictures and maps too
+    if (ext && ext !== '.gam') for (const f of beside) if (normalize(f.path).endsWith(ext)) games.add(f);
   }
-  return out;
+  return { players, games };
+}
+
+/** Files a .gam names (its scenes' files) that `have` lacks; the high scores and saves a game makes as it plays aside. */
+function missingFiles(bytes: Uint8Array | undefined, have: ScanFile[]): number {
+  if (!bytes) return 0;
+  const names = new Set(have.flatMap((f) => [normalize(f.path), cdName(f.path)]));
+  try {
+    const wanted = new Set(
+      parseGame(bytes)
+        .scenes.flatMap((s) => s.files)
+        .filter((n) => n && !/\.(his|sav|rec)$/i.test(n))
+        .map(normalize),
+    );
+    return [...wanted].filter((n) => !names.has(n) && !names.has(cdName(n))).length;
+  } catch {
+    return 0;
+  }
 }
 
 /** The title on a game's menu screen, from its main .gam (as Project.fromFiles names it). */
@@ -160,18 +201,22 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
 
   /** These files' games (and their zips', `depth` zips down); how many games that was. */
   const look = async (files: ScanFile[], zips: ScanFile[], inner: string[], depth: number): Promise<number> => {
-    const players = await playedBy(files);
-    const played = new Set(players.values());
+    const { players, games: played } = await playedBy(files);
     const { games, loose } = groupGames(files, played);
     if (!zips.length) report.loose.push(...loose);
     let found = 0;
-    const add = async (g: Group, gams: ScanFile[], files: ScanFile[], gam?: string) => {
+    /** Adds a game; how many files its .gam names that it lacks. */
+    const add = async (g: Group, gams: ScanFile[], files: ScanFile[], gam?: string, leftover?: (missing: number) => string | undefined) => {
       const crcs: number[] = [];
       let title = '';
+      let missing = 0;
       for (const [i, f] of gams.entries()) {
         const bytes = await f.read().catch(() => undefined);
         if (bytes) crcs.push(crc32(bytes));
-        if (i === 0) title = titleOf(bytes, gam ?? normalize(f.path));
+        if (i === 0) {
+          title = titleOf(bytes, gam ?? normalize(f.path));
+          missing = missingFiles(bytes, files);
+        }
       }
       report.games.push({
         name: title,
@@ -182,26 +227,34 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
         inner,
         paths: files.map((f) => f.path),
         gam,
+        ...(missing ? { missing } : {}),
+        ...(leftover?.(missing) ? { leftover: leftover(missing) } : {}),
       });
       found++;
     };
     for (const g of games) {
-      // a folder of games sharing their files, each with its own player (Acord Games'): one game each
-      const own = [...players].filter(([exe, gam]) => g.files.includes(exe) && g.files.includes(gam));
-      if (new Set(own.map(([, gam]) => gam)).size >= 2) {
-        for (const [exe, gam] of own) {
-          const others = new Set(own.map(([e]) => e).filter((e) => e !== exe));
-          await add(
-            g,
-            [gam],
-            g.files.filter((f) => !others.has(f)),
-            normalize(`${baseOf(clean(gam.path)).replace(/\.[^.]*$/, '')}.gam`),
-          );
-        }
+      const gams = g.files.filter((f) => isGam(f.path) || played.has(f)).sort((a, b) => normalize(a.path).localeCompare(normalize(b.path)));
+      if (gams.length < 2) {
+        await add(g, gams, g.files);
         continue;
       }
-      const gams = g.files.filter((f) => isGam(f.path) || played.has(f)).sort((a, b) => normalize(a.path).localeCompare(normalize(b.path)));
-      await add(g, gams, g.files);
+      // several games sharing a folder's files (Acord Games' NEVER and NEVER1B, or a leftover
+      // SPACE beside ZAPAK): one game each, those a player beside them loads first, each
+      // without the others' game files, and with only its own player when it has one
+      const exeOf = new Map([...players].filter(([exe, gam]) => g.files.includes(exe) && g.files.includes(gam)).map(([exe, gam]) => [gam, exe]));
+      const ownExes = new Set(exeOf.values());
+      const hasPlayers = g.files.some((f) => PLAYER_EXE(f.path, f.size));
+      const where = zips.length ? 'the zip' : 'the folder';
+      for (const gf of [...gams].sort((a, b) => Number(exeOf.has(b)) - Number(exeOf.has(a)))) {
+        const exe = exeOf.get(gf);
+        const files = g.files.filter((f) => f === gf || (!gams.includes(f) && (!exe || !ownExes.has(f) || f === exe)));
+        const gam = normalize(`${baseOf(clean(gf.path)).replace(/\.[^.]*$/, '')}.gam`);
+        await add(g, [gf], files, gam, (missing) =>
+          missing && !exe
+            ? `${gam.toUpperCase()}: ${missing} of its files ${missing === 1 ? 'isn’t' : 'aren’t'} in ${where}${hasPlayers ? '; no player loads it' : ''}`
+            : undefined,
+        );
+      }
     }
     for (const z of files.filter((f) => isZipName(f.path) && !isJunk(clean(f.path)))) {
       signal?.throwIfAborted();
