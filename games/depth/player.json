@@ -1,0 +1,18 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.instructions": "How to Roll",
+    "str.menu.highScores": "Best Renders",
+    "str.hiscore.title": "Best Renders",
+    "str.hiscore.congrats": "Picture perfect!",
+    "str.invent.hitpoints": "Light:     %d",
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [30, 54, 63],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.title.x": 112
+  }
+}
