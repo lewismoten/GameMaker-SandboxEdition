@@ -12,7 +12,8 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
     toast('That game is not in this browser any more.', 'error');
     return undefined;
   }
-  const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
+  // trimmed: authors padded the name with spaces to center it on the DOS menu
+  const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc.trim() || p.record.name;
   return { title, gam: p.record.gam, files: async () => p.files, project: true, companion: () => p.record.companion };
 }
 

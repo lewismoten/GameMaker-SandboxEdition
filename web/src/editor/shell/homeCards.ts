@@ -176,13 +176,13 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
   return {
     key: `my:${p.id}`,
     kind: 'mine',
-    title: p.name,
+    title: p.name.trim(),
     // the game it began as, when it is a copy
     byline: [editedWhen(p.updated), original?.gam ? `copy of ${original.title}` : null, p.gam].filter(Boolean).join(' · '),
     // two lines (pre-line in home.css), so a narrow tile never ends a line with a lone “·”
     tileByline: original?.gam ? `${editedWhen(p.updated)}\nfrom ${original.title}` : undefined,
     gam: p.gam,
-    search: searchText(p.name, p.gam),
+    search: searchText(p.name.trim(), p.gam),
     project: p,
     health: projectTarget(p.id, p.name, p.updated, original?.gam ? catalogTarget(original) : undefined),
     // the first level the title scene leads to, where the hero arrives

@@ -790,7 +790,7 @@ export class Workspace {
 
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
-    const title = this.project.game().scenes[0]?.desc || this.project.name;
+    const title = this.project.game().scenes[0]?.desc.trim() || this.project.name;
     return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
   }
 }

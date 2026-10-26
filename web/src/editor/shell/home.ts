@@ -218,7 +218,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
   let sort = savedSort();
   const sorted = () =>
-    sort === 'name' ? [...projects].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })) : projects;
+    sort === 'name' ? [...projects].sort((a, b) => a.name.trim().localeCompare(b.name.trim(), undefined, { numeric: true, sensitivity: 'base' })) : projects;
   const mine = (p: (typeof projects)[number]) => remember(projectGame(p, findOriginal(p, catalog)));
   /** Your games made here (My games) or imported. */
   const own = (c: Category) => (c === 'mine' || c === 'imported' ? projects.filter((p) => isImported(p.id) === (c === 'imported')) : []);

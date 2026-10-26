@@ -87,7 +87,8 @@ export class Project {
       gam = 'game.gam';
       files.set(gam, serializeGame(newGame(name ?? 'My Game')));
     }
-    const title = name ?? (parseGame(files.get(gam)!).scenes[0]?.desc || gam);
+    // trimmed: authors padded the name with spaces to center it on the DOS menu
+    const title = name?.trim() || parseGame(files.get(gam)!).scenes[0]?.desc.trim() || gam;
     return new Project(id, title, gam, files, companion);
   }
 

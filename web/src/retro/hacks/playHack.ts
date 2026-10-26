@@ -139,7 +139,7 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
       put(h, 3, TOP + 1, HEAD, cell('Name', 10) + cell('Game', 50) + 'Patches');
       statusLine(h, `${games.length} game${games.length === 1 ? '' : 's'} here.`);
       const counts = await Promise.all(games.map(async (g) => Object.keys(await loadProjectPatches(g.id)).length));
-      const rows: ListRow[] = games.map((g, i) => ({ text: cell(dosDirName(g.gam), 10) + cell(g.name, 50) + (counts[i] ? String(counts[i]) : '-') }));
+      const rows: ListRow[] = games.map((g, i) => ({ text: cell(dosDirName(g.gam), 10) + cell(g.name.trim(), 50) + (counts[i] ? String(counts[i]) : '-') }));
       const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: gi });
       if (pick.key === 'Escape') break;
       gi = pick.i;
