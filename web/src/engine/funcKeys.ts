@@ -20,7 +20,7 @@ function frame2(screen: Screen, col: number, look?: PlayerLook, key?: string): v
 }
 
 /** What the status and drop screens read of a level: its palette, blocks, inventory and clock. */
-type InventoryWorld = Pick<World, 'palette' | 'bg' | 'clock'> & { ci: Pick<World['ci'], 'inv' | 'score' | 'meter' | 'hitpts' | 'lives'> };
+export type InventoryWorld = Pick<World, 'palette' | 'bg' | 'clock'> & { ci: Pick<World['ci'], 'inv' | 'score' | 'meter' | 'hitpts' | 'lives'> };
 
 // The 2 x 5 inventory grid shared by Display_Invent and DropBloc; cells are BLEN+5 apart.
 function drawInventory(screen: Screen, w: InventoryWorld, col: number): void {
@@ -75,12 +75,11 @@ export async function statusScreen(m: Machine, w: World, look = STOCK_LOOK): Pro
   await m.pauseTimeKey();
 }
 
-/** F10: GMabout */
-export async function aboutScreen(m: Machine, w: World, look = STOCK_LOOK): Promise<void> {
-  const blue = look.color(w.palette, 'color.select.aboutFrame');
-  const yellow = look.color(w.palette, 'color.select.aboutText');
-  frame2(m.screen, blue, look, 'about');
-  m.flushKeys();
+/** GMabout's first page (this web edition's words); returns the text color. */
+export function drawAbout(screen: Screen, palette: Uint8Array, look: PlayerLook): number {
+  const blue = look.color(palette, 'color.select.aboutFrame');
+  const yellow = look.color(palette, 'color.select.aboutText');
+  frame2(screen, blue, look, 'about');
   const page1 = [
     '      G A M E - M A K E R',
     '          Version 3.00   ',
@@ -98,7 +97,14 @@ export async function aboutScreen(m: Machine, w: World, look = STOCK_LOOK): Prom
     '',
     '                      MORE... ',
   ];
-  page1.forEach((line, i) => m.screen.write(40, 40 + i * 8, yellow, line));
+  page1.forEach((line, i) => screen.write(40, 40 + i * 8, yellow, line));
+  return yellow;
+}
+
+/** F10: GMabout */
+export async function aboutScreen(m: Machine, w: World, look = STOCK_LOOK): Promise<void> {
+  const yellow = drawAbout(m.screen, w.palette, look);
+  m.flushKeys();
   await m.pauseTimeKey(look.seconds('timing.aboutPage1'));
   m.screen.boxFill(16, 16, 304, 184, 0);
   ['Game-Maker software, documen-', 'tation, and data files are', 'COPYRIGHTED by Recreational', 'Software Designs.'].forEach((line, i) =>

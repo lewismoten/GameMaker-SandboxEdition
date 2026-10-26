@@ -1,6 +1,6 @@
 // A project's DOS player patches in words, one line each, in plain ASCII: for the DOS export's
 // README ("the .EXE was customized: only these changed") and the import's note.
-import { PATCHES, type PatchEntry, type PatchScreen } from './patchTable';
+import { PATCHES, type ColorName, type PatchEntry, type PatchScreen } from './patchTable';
 import { cleanPatches, type PatchValue, type PlayerPatches } from './patchRules';
 
 export const SCREEN_NAMES: Record<PatchScreen, string> = {
@@ -19,9 +19,20 @@ export const SCREEN_NAMES: Record<PatchScreen, string> = {
   all: 'Colors',
 };
 
+export const COLOR_LABELS: Record<ColorName, string> = {
+  yellow: 'Yellow',
+  red: 'Red',
+  blue: 'Blue',
+  purple: 'Purple',
+  hsRed: 'High-score red',
+  hsBlue: 'High-score blue',
+  hsGreen: 'Spare (high-score green)',
+};
+
 function show(entry: PatchEntry, v: PatchValue): string {
   if (entry.kind === 'text' || entry.kind === 'format') return (v as string).trim() ? `"${v as string}"` : 'hidden';
   if (entry.kind === 'fkey') return v === 'off' ? 'off' : 'on';
+  if (entry.kind === 'select') return COLOR_LABELS[v as ColorName];
   if (Array.isArray(v)) return v.join(',');
   return String(v);
 }

@@ -138,9 +138,9 @@ function randCols(rand = Math.random): Uint8Array {
 }
 
 /** DrawDefaultScrn: concentric colored frames when a game has no menu graphic. */
-export function drawDefaultScreen(m: Machine, colors: Uint8Array): void {
+export function drawDefaultScreen(m: { screen: Screen }, colors: Uint8Array, rand = Math.random): void {
   m.screen.clear();
-  colors.set(randCols());
+  colors.set(randCols(rand));
   m.screen.setPalette(colors);
   // Box l uses color l, so the random ramps in palette entries 0..100 form the frames.
   for (let l = 0; l <= 100; l++) m.screen.box(40 - Math.trunc((l * 4) / 10), 100 - l, 280 + Math.trunc((l * 4) / 10), 180 + Math.trunc((l * 2) / 10), l);

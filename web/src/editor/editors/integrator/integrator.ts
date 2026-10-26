@@ -346,6 +346,15 @@ registerEditor(['gam'], (host, project, file) => {
       h('span', { class: 'grator-spacer' }),
       h(
         'button',
+        {
+          title: 'Customize the DOS player’s own words, colors, frames and timings (the DOS export’s XFERPLAY.EXE)',
+          'aria-label': 'DOS player',
+          onclick: () => void import('./dosPlayer/playerPanel').then(({ openPlayerPanel }) => openPlayerPanel(project)),
+        },
+        ...toolFace('▤', 'DOS player'),
+      ),
+      h(
+        'button',
         { title: 'Download a picture of all the scenes and links', 'aria-label': 'Download PNG', onclick: () => void exportPng() },
         ...toolFace('⬇', 'PNG'),
       ),

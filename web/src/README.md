@@ -488,7 +488,8 @@ modules are in [`../test`](../test).
   kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
   the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
   `monsters/`, `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`),
-  `integrator/`, `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
+  `integrator/` (its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, and
+  `playerPreview.ts`, which draws XFERPLAY's screens with the engine's own `draw*` functions), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
   `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
