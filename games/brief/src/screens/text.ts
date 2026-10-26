@@ -236,6 +236,8 @@ export function coverText(s: Story, wing: string, k: number, note: string, index
     ...wrap(`Chapter ${ch.n} of 4, book ${inChapter} of ${ch.wings.length * 4}`),
     'Words on the floor: 100',
     'Words in the book:    0',
+    // the first chapter's books also say how to save
+    ...(ch.n === 1 ? ['F5 saves your place.'] : []),
     '',
     ...wrap(`JOE'S NOTE: ${note}`),
     '',
@@ -249,6 +251,7 @@ export function coverText(s: Story, wing: string, k: number, note: string, index
       ),
       1,
     );
+  if (lines.length > PAGE) lines.splice(lines.indexOf(''), 1);
   if (lines.length > PAGE) throw new Error(`${s.title}: cover page has ${lines.length} lines`);
   return lines.join('\n') + '\n';
 }
