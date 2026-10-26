@@ -17,6 +17,7 @@ import { groupClipFor, suggestionsFor } from './blockClips';
 import { isStill } from './animClip';
 import { newGroupDialog, suggestDialog } from './groupDialogs';
 import { groupPaintDialog } from './groupPaintDialog';
+import { chooseBlock } from '../../widgets/blockChooser';
 
 interface GroupsPanel {
   el: HTMLElement;
@@ -46,7 +47,49 @@ export function groupsPanel(o: {
   let which = 0;
   /** The pictures before the last "Edit as one picture", for its Undo. */
   let lastPaint: { name: string; before: Map<number, Uint8Array> } | undefined;
-  const view = groupView({ blocks: () => o.blocks, pal: o.pal, transparent: o.sprites, onPick: (b) => o.select(b) });
+  /** The group the view shows, for the view's fill, swap and remove. */
+  let shown: BlockGroup | undefined;
+  const spot = (g: BlockGroup, i: number) => `column ${(i % g.cols) + 1}, row ${Math.floor(i / g.cols) + 1}`;
+  /** Puts a chosen block into a cell of the group shown (an empty one, or the current block's). */
+  async function chooseFor(i: number): Promise<void> {
+    const g = shown;
+    if (!g) return;
+    const was = g.cells[i];
+    const b = await chooseBlock(`A block for “${g.name}”, ${spot(g, i)}`, o.blocks, o.pal(), was, [], o.sprites);
+    if (b === undefined || b === was) return;
+    g.cells[i] = b;
+    save();
+    // the block being edited moved out of the spot: edit the one put in its place
+    if (was === o.current()) o.select(b);
+    else render();
+  }
+  const view = groupView({
+    blocks: () => o.blocks,
+    pal: o.pal,
+    transparent: o.sprites,
+    onPick: (b) => o.select(b),
+    onFill: (i) => void chooseFor(i),
+    onReplace: (i) => void chooseFor(i),
+    onRemove: (i) => void removeAt(i),
+  });
+  /** Takes a block out of the group shown; the last block out forgets the group. */
+  async function removeAt(i: number): Promise<void> {
+    const g = shown;
+    if (!g) return;
+    const b = g.cells[i];
+    if (g.cells.filter((c) => c >= 0).length === 1) {
+      if (!(await confirmDialog('Ungroup', `Block ${b} is the last one in “${g.name}”. Forget the group? Its block is not changed.`, 'Ungroup'))) return;
+      groups = groups.filter((x) => x !== g);
+      save();
+      render();
+      return;
+    }
+    g.cells[i] = -1;
+    save();
+    // the block being edited left the group: stay with the group, on a block still in it
+    if (b === o.current() && !g.cells.includes(b)) o.select(g.cells.find((c) => c >= 0)!);
+    else render();
+  }
   const player = animPlayer({ blocks: () => o.blocks, pal: o.pal, transparent: o.sprites, label: 'The group’s animation as the game plays it', scale: 2 });
   const animCaption = h('figcaption', { class: 'meta' }, 'The group in the game, animated');
   const animFigure = h('figure', { class: 'blk-group-anim' }, player.el, animCaption);
@@ -132,6 +175,7 @@ export function groupsPanel(o: {
     if (which >= mine.length) which = 0;
     const g = mine[which];
     summary.textContent = groups.length ? `Groups (${groups.length})` : 'Groups';
+    shown = g;
     view.show(g, cur);
     const clip = g && groupClipFor(o.project, o.file, o.kind, o.blocks, g, cur);
     player.show(clip && !isStill(clip) ? [clip] : [], cur);
@@ -157,7 +201,11 @@ export function groupsPanel(o: {
                     return sel;
                   })(),
                 )
-              : h('p', { class: 'meta' }, `Block ${cur} is part of “${g.name}” (${g.cols} × ${g.rows}). Click a neighbor to paint it.`),
+              : h(
+                  'p',
+                  { class: 'meta' },
+                  `Block ${cur} is part of “${g.name}” (${g.cols} × ${g.rows}). Click a neighbor to paint it, the outlined block to put a different one in its place, + to fill an empty spot, and × to take a block out.`,
+                ),
             view.el,
             animFigure,
             h(
