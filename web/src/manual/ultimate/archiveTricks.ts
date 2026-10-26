@@ -95,6 +95,27 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   lives, one adds 2 lives, one takes some away. Each becomes a plain look-alike when touched, and
   a slope funnels all three into the one way out. Lives and hit points carry on, so the choice
   lasts the whole game. (The first character still sets where they start, Chapter 4.)</p>
+  <h2>A diagonal track on the wrap</h2>
+  <p>One of the archive’s racers turns the map 45 degrees. Its speeder bike course is drawn
+  corner to corner: lanes of dirt between tree lines that run up and to the right across the
+  whole 100 by 100 map. The bike’s standing sequence moves it 10 right and 10 up every tick, and
+  the dirt pulls up and to the right too, so the course rushes at the player and the screen
+  scrolls both ways at once. It looks like a three-quarter view, though every block is a plain
+  square.</p>
+  <ul>
+    <li><b>Keys turned with the view.</b> Up is a boost along the track (30 right and 30 up),
+    Down nearly stops, and Left and Right step to the next lane (30 up, or 30 right). The arrows
+    mean what they look like they mean on the slanted course.</li>
+    <li><b>A loop with no seams.</b> Riding off the top comes back at the bottom, and off the
+    right at the left, so a diagonal lane runs on through the wrap and meets itself. One lap is
+    100 steps of one block across and one up, about 141 blocks of road, and there is never an
+    edge or a turn-around to give it away.</li>
+    <li><b>Longer laps.</b> A shallower slant goes further before it repeats. A drift of 10 right
+    and 5 up crosses the map twice before it meets itself, about 224 blocks a lap; 15 right and
+    5 up crosses it three times, about 316. Draw the track along that line through each crossing.</li>
+    <li><b>The finish in another lane.</b> The course’s exit isn’t on the lane the bike starts
+    in, so the player has to change lanes on purpose to finish; riding along only loops.</li>
+  </ul>
   <h2>Choices you walk into</h2>
   <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,
   each a link to a different scene, and label the floor in front of each: the player picks by
