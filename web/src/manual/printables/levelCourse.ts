@@ -81,6 +81,8 @@ export interface CourseFit {
   most?: number;
   least?: number;
   growth?: number;
+  /** Panels may be cut shorter than a page, to stack in rows (a poster); else each is a page high. */
+  stack?: boolean;
 }
 
 /** One page-high piece of the strip. */
@@ -432,7 +434,7 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
   let panels = cutAt(least);
   const budget = pagesOf(panels, least) * (fit.growth ?? 2);
   search: for (let sc = most; sc > least + 1e-9; sc = Math.round((sc - 0.05) * 100) / 100)
-    for (let k = 1; k <= 8; k++) {
+    for (let k = 1; k <= (fit.stack ? 8 : 1); k++) {
       // page-high panels, then a half, a third... of a page, to stack in rows
       const h = (fit.pageH / k - fit.padH) / sc;
       if (h < 4 * overlap) break;

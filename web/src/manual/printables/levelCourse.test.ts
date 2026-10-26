@@ -121,7 +121,7 @@ describe('a course laid out as one strip', () => {
       expect((p.a1 - p.a0) * z.scale + fit.padH).toBeLessThanOrEqual(fit.pageH + 1e-9);
     }
     // a poster: everything on one page, as big as that allows
-    const poster = layOutCourse(track(), blocks, path, marks, { ...fit, least: 0.1, growth: 1 });
+    const poster = layOutCourse(track(), blocks, path, marks, { ...fit, least: 0.1, growth: 1, stack: true });
     expect(poster.scale).toBeLessThan(1);
   });
 

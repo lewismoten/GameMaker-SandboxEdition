@@ -615,8 +615,8 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
         listedUnrolled(ctx.entry.id),
         listedRoomHints(ctx.entry.id),
         listedCourses(ctx.entry.id),
-        // the biggest blocks that fit, up to twice full size, so a course's details read
-        { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL },
+        // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
+        { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
       );
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined, course: undefined }));
