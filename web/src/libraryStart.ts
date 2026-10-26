@@ -1,10 +1,10 @@
-// The game the Library starts on (libraryPage.ts) when today's web was just showing one: a game's
+// The game the Library starts on (library/libraryPage.ts) when today's web was just showing one: a game's
 // page on the Games list (#/game/cd:<id>), a game looked inside (#/p/look:<id>), or a game of your
 // own copied from one (#/p/<project>, its origin in editor/shell/homeOrigin.ts). main.ts notes
 // each such view; the Library uses the latest one once, and only if that game has paper on its
-// shelves (the Sandbox and Bizarre games do). Otherwise it opens as it was left (prefs.ts).
+// shelves (the Sandbox and Bizarre games do). Otherwise it opens as it was left (library/prefs.ts).
 // Kept in localStorage; with none (a private window), the Library just opens as before.
-// No imports, so main.ts can note views without loading anything.
+// No imports, and outside library/, so main.ts can note views without loading the Library.
 
 const KEY = 'gm-library-context';
 const USED_KEY = 'gm-library-context-used';

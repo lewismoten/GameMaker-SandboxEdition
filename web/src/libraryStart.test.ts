@@ -1,7 +1,7 @@
-// The game the Library starts on (startGame.ts): the latest game page, look inside or copied
+// The game the Library starts on (libraryStart.ts): the latest game page, look inside or copied
 // project, used once, and only when that game has paper on the shelves.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { libraryStartGame, noteLibraryContext } from './startGame';
+import { libraryStartGame, noteLibraryContext } from './libraryStart';
 
 const store = new Map<string, string>();
 const listed = (id: string) => ['teddy', 'goat', 'bard1'].includes(id);

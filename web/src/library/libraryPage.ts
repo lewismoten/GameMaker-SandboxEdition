@@ -7,7 +7,7 @@
 // walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play). The
 // Game-Maker box's piece and chapter stay in the address (&gm=ultimate&ch=12, readerAddress.ts).
 // Opened without a sort in the address just after showing one game (its page, a look inside it,
-// or a copy of it being made), it starts on that game's shelf instead (startGame.ts). A
+// or a copy of it being made), it starts on that game's shelf instead (../libraryStart.ts). A
 // "Showing: <game> · All games" line says what is picked and goes back to everything.
 // Below the shelves, your imported games' ratings and notes (imported/notesShelf.ts).
 import './library.css';
@@ -22,7 +22,7 @@ import { tally, unlockAchievement } from '../achievements';
 import { openFromLibrary, readerOpen } from './readerAddress';
 import { onCatalogChanged } from '../project/catalogWatch';
 import { originId } from '../editor/shell/homeOrigin';
-import { libraryStartGame } from './startGame';
+import { libraryStartGame } from '../libraryStart';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
 let unwatchShelf: (() => void) | undefined;

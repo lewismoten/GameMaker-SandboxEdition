@@ -358,7 +358,7 @@ modules are in [`../test`](../test).
   kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
   browser (`prefs.ts`). Opened with no sort in the address just after a game's page, a look
   inside a game or a copy of one in the editor, it starts on that game's shelf if it has one
-  (`startGame.ts`, noted by `main.ts`'s router, used once), with a "Showing: <game> · All games"
+  (`../libraryStart.ts`, outside `library/` so `main.ts`'s router can note each view; used once), with a "Showing: <game> · All games"
   line. Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
   Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
   (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
@@ -404,7 +404,9 @@ modules are in [`../test`](../test).
     (`levelSecrets.ts`, from `levelSecrets.json` written by `scripts/levelSecrets.ts`) and crop to
     what the player sees (`levelViews.ts`, from `levelViews.json` written by
     `scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
-    through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round),
+    through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
+    course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
+    to run up the page in panels, `levelCourse.ts` and `levelCourseSvg.ts`),
     both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
     (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
     and a map nobody walks around in is left out. `levelPoster.ts`
@@ -610,6 +612,9 @@ modules are in [`../test`](../test).
     edges in unwrapped blocks (folding a way that goes round forever to one lap), and
     `unrollMap.ts` explores one map from every way in for the map editor's "As players see it"
     picture (`editors/map/mapPoster.ts`, drawn by `manual/printables/levelPoster.ts`).
+  - A course through the wrap: `course.ts` finds, from the walkthrough's ride, a map ridden lap
+    after lap corner to corner through the wrapping edges without coming back to a block (Virus
+    Blaster's ribbon cable), for the Level Maps to print as one strip.
   - They run in Web Workers (`worker.ts` started by `client.ts`, `walk/walkWorker.ts` by
     `walk/walkClient.ts`, `unrollWorker.ts` by `unrollClient.ts`); `live.ts` turns a running check into the worker's once-a-second posts
     (changed heat cells, deaths, time left). `testGame.ts` and `gitDisk.ts` are for the tests.
