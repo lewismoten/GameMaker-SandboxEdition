@@ -55,11 +55,31 @@ dialog.modal:has(.ic-choose, .ic-work) {
   background: var(--panel-2);
 }
 
+.ic-list li {
+  display: flex;
+  align-items: center;
+  gap: 0 4px;
+  padding-left: 8px;
+}
+
 .ic-list li + li {
   border-top: 1px solid var(--border);
 }
 
+/* 320 x 200 shown at 80 x 50, pixels kept square */
+.ic-thumb {
+  flex: none;
+  width: 80px;
+  height: 50px;
+  border-radius: 3px;
+  background: var(--bg);
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
 dialog.modal label.ic-game {
+  flex: 1;
+  min-width: 0;
   display: grid;
   grid-template-columns: 24px 1fr;
   align-items: center;

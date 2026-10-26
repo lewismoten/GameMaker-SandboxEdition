@@ -1,8 +1,10 @@
 // The dialogs of an import that holds more than one game (homeImport.ts): looking through
-// the zips, with a progress bar and Cancel; the games found, to tick the ones to import;
-// importing them one at a time, again with Cancel; and what was found when no game was.
+// the zips, with a progress bar and Cancel; the games found, each with its title screen
+// (importThumbs.ts), to tick the ones to import; importing them one at a time, again with
+// Cancel; and what was found when no game was.
 import { h, modal } from '../core/ui';
-import { scanImport, scanSummary, type FoundGame, type ScanFile, type ScanReport } from '../../project/importScan';
+import { scanImport, scanSummary, type FoundGame, type GameReader, type ScanFile, type ScanReport } from '../../project/importScan';
+import { importThumbs } from './importThumbs';
 import './importChooser.css';
 
 /** A dialog that runs `work` (told how far it got) and closes when it ends; Cancel or Esc stops it. */
@@ -65,8 +67,10 @@ export function showNothingFound(r: ScanReport): Promise<void> {
 }
 
 /** Lists the games found to tick the ones to import. `noImport` says why a game can't be (a shareware game). */
-export function chooseGames(r: ScanReport, noImport: (g: FoundGame) => string | undefined): Promise<FoundGame[] | undefined> {
-  return modal<FoundGame[]>('Import games', (close) => {
+export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => string | undefined, reader: GameReader): Promise<FoundGame[] | undefined> {
+  const list = h('ul', { class: 'ic-list', 'aria-label': 'Games found', tabindex: '-1' });
+  const thumbs = importThumbs(reader, list);
+  const chosen = await modal<FoundGame[]>('Import games', (close) => {
     const boxes: [HTMLInputElement, FoundGame][] = [];
     const go = h('button', { type: 'submit', class: 'primary' });
     const count = () => {
@@ -78,9 +82,13 @@ export function chooseGames(r: ScanReport, noImport: (g: FoundGame) => string | 
       const why = noImport(g);
       const box = h('input', { type: 'checkbox', checked: !why, disabled: !!why, onchange: count, 'aria-describedby': `ic-from-${i}` });
       if (!why) boxes.push([box, g]);
+      const thumb = thumbs.thumb(g);
+      // the picture ticks its game too, as its words do
+      thumb.addEventListener('click', () => box.disabled || box.click());
       return h(
         'li',
         null,
+        thumb,
         h(
           'label',
           { class: 'ic-game' },
@@ -119,10 +127,12 @@ export function chooseGames(r: ScanReport, noImport: (g: FoundGame) => string | 
         h('button', { type: 'button', onclick: all(true) }, 'Select all'),
         h('button', { type: 'button', onclick: all(false) }, 'Select none'),
       ),
-      h('ul', { class: 'ic-list', 'aria-label': 'Games found', tabindex: '-1' }, ...rows),
+      (list.append(...rows), list),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), go),
     );
   });
+  thumbs.close();
+  return chosen;
 }
 
 /** Imports the games one at a time with `each`; how many were imported (Cancel stops after the one going). */

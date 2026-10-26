@@ -151,7 +151,7 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   const shareware = await sharewareByCrc();
   const sharewareOf = (g: FoundGame) => g.gamCrcs.map((c) => shareware.get(c)).find(Boolean);
   const { chooseGames, importWithProgress } = chooser;
-  const chosen = await chooseGames(report, (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined));
+  const chosen = await chooseGames(report, (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined), new GameReader(given));
   if (!chosen?.length) return;
   const reader = new GameReader(given);
   const { done, failed } = await importWithProgress(chosen, async (g) => {

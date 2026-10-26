@@ -5,7 +5,7 @@
 // files are read while looking, so a folder of hundreds of zips holds one zip at a time; the
 // games picked are read again by GameReader. No DOM: the home page's import (editor/shell/
 // homeImport.ts, importChooser.ts) shows it.
-import { GameFiles, IGNORED_FILE, normalize } from './files';
+import { cdName, GameFiles, IGNORED_FILE, normalize } from './files';
 import { crc32, isZip, listZip } from './zip';
 import { parseGame } from '../formats/game';
 import { renamedExtensions } from '../dosPlayer/renamedExtensions';
@@ -348,6 +348,20 @@ export class GameReader {
 
   constructor(given: ScanFile[]) {
     this.loose = new Map(given.map((f) => [f.path, f]));
+  }
+
+  /** One of a found game's files by its DOS name (its title screen's), without reading the rest. */
+  async file(game: FoundGame, name: string): Promise<Uint8Array | undefined> {
+    const from = game.zips.length ? await this.zipEntries(game) : this.loose;
+    const want = normalize(name);
+    const cd = cdName(name);
+    const path = game.paths.find((p) => normalize(p) === want) ?? game.paths.find((p) => normalize(p) === cd);
+    return path ? from.get(path)?.read() : undefined;
+  }
+
+  /** The .gam a found game plays: its own when its folder holds others, else the first. */
+  mainGam(game: FoundGame): string | undefined {
+    return game.gam ?? game.paths.filter(isGam).map(normalize).sort()[0];
   }
 
   async read(game: FoundGame): Promise<ReadGame> {
