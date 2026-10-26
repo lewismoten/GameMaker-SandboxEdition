@@ -16,6 +16,7 @@ import { G, inviteTiles } from './inviteTiles';
 import { inviteBeasts } from './inviteBeasts';
 import { bandAt } from './common';
 import { inviteSong } from '../sound/inviteSong';
+import { addSaveSign } from '../sprites/hidden';
 
 /** Where things are, for the bot's route. */
 export const INVITE = { crier: 9, honker: 19, fence: 35, dig: 34, up: 36, low: 41, mid: 40, high: 42, landing: 39, pratfall: 45, latch: 55, seat: 58 };
@@ -142,6 +143,8 @@ export function invite(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.treat(INVITE.mid - 1, ESC.mid - 1, 'bone');
+  // the save sign, hung on the bakery wall above the Town Crier's door
+  addSaveSign(bs, m, 9, 36, false);
   m.mark('start', 1, 39);
   m.mark('exit', INVITE.seat, 39);
   return {

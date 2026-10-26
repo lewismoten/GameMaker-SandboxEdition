@@ -101,20 +101,25 @@ export function addGuest(bs: Over, name: string, guest: Pixels, base: string): s
 
 /**
  * The save sign (kit/saveSign.ts): its board over the two cells at (x, y) and (x + 1, y), its
- * posts over the two below, each drawn over what is there and keeping its gravity and solid
- * sides (scenery: no touch, no sound).
+ * posts over the two below (or the board alone, hung on a wall, when `posts` is false), each
+ * drawn over what is there and keeping its gravity and solid sides (scenery: no touch, no sound).
  */
-export function addSaveSign(bs: Over, m: { get(x: number, y: number): string; set(x: number, y: number, name: string): unknown }, x: number, y: number): void {
+export function addSaveSign(
+  bs: Over,
+  m: { get(x: number, y: number): string; set(x: number, y: number, name: string): unknown },
+  x: number,
+  y: number,
+  posts = true,
+): void {
   const cells: [number, number][] = [
     [x, y],
     [x + 1, y],
-    [x, y + 1],
-    [x + 1, y + 1],
   ];
+  if (posts) cells.push([x, y + 1], [x + 1, y + 1]);
   const bases = cells.map(([cx, cy]) => m.get(cx, cy));
   const pics = bases.map((b) => over(bs.pic(b)));
-  const sign = saveSignBlocks(P.pal, { board: [pics[0], pics[1]], posts: [pics[2], pics[3]] }, { use: STEADY });
-  const out = [...sign.board, ...sign.posts!];
+  const sign = saveSignBlocks(P.pal, { board: [pics[0], pics[1]], posts: posts ? [pics[2], pics[3]] : undefined }, { use: STEADY });
+  const out = [...sign.board, ...(sign.posts ?? [])];
   cells.forEach(([cx, cy], k) => {
     const name = `saveSign${k}`;
     const { grav, solid } = bs.def(bases[k]);
