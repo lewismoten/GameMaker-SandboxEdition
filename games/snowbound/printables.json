@@ -167,7 +167,8 @@
           "y": 0,
           "w": 100,
           "h": 100,
-          "caption": "Start at Leon Drive near the top. Each time the run leaves the bottom of the poster it comes back in at the top, a third of the way to the right (and off the right edge, back in at the left): the firs, then the birches, then the lamps and the finish at Bowden Drive, on the left."
+          "caption": "The whole run as you ride it, top to bottom. Start at Leon Drive at the top of picture 1 and ride down; each picture carries on at the top of the next, where the numbered rings match. The street goes round the edges of the town map, so each lap is fresh hill: the firs, then the birches, then the lamps and lit firs, with the boards counting down 9 to 1 and the finish above Bowden Drive at the end of the last picture.",
+          "course": true
         }
       ]
     },
