@@ -59,6 +59,58 @@
   display: none;
 }
 
+/* the Chapters list (chapterJump.ts) */
+.gmb-chapter-wrap {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.gmb-chapter-wrap[hidden] {
+  display: none;
+}
+
+.gmb-chapter {
+  min-width: 0;
+  max-width: min(320px, 60vw);
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid #c9b994;
+  border-radius: 6px;
+  background: #f3ead2;
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+}
+
+.gmb-chapter:focus-visible,
+.gmb-goto:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+
+/* a contents row on screen: a button that turns to its page, looking like the printed line */
+.gmb .mpage button.gmb-goto {
+  display: inline;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline dotted rgba(0, 0, 0, 0.35);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.gmb .mpage button.gmb-goto:hover {
+  background: none;
+  text-decoration: underline;
+}
+
 .gmb-print-wrap {
   position: relative;
 }

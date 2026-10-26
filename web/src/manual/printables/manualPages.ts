@@ -21,8 +21,17 @@ export interface BookPage {
   body: HTMLElement[];
   /** A class for the page, for a booklet with a style of its own (measure it with the same class). */
   cls?: string;
-  /** Ids of the chapters that open on this page, for turning straight to one. */
-  anchors?: string[];
+  /** The chapters that open on this page, for turning straight to one (printables/chapterJump.ts). */
+  marks?: PageMark[];
+}
+
+/** A chapter opening on a page. */
+export interface PageMark {
+  /** For links that name it ('levels'). */
+  id: string;
+  /** Its number ('12', or 'A' for an appendix); '' for the contents. */
+  no: string;
+  title: string;
 }
 
 async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLElement> {

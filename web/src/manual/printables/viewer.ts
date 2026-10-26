@@ -8,6 +8,7 @@ import type { Sheet } from './kit';
 import { RedFilm, RedLens } from './redFilm';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
+import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type ChapterStop } from './chapterJump';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -29,19 +30,34 @@ export interface BoxItem {
    * manual. `render` then gives only its cover, for the box's list of pieces.
    */
   pages?(): Promise<BookPage[]>;
-  /** The chapter (BookPage.anchors) to open the booklet at, asked each time it is first shown. */
+  /** The chapter (a BookPage.marks id) to open the booklet at, asked each time it is first shown. */
   openAt?(): string | undefined;
 }
 
 type PrintMode = 'item' | 'booklet' | 'all';
 
-interface BoxOptions {
+/** A page address that keeps the piece open and its chapter (the Library's ?gm=ultimate&ch=12). */
+export interface BoxAddress {
+  /**
+   * The piece or the chapter shown changed: `chapter` is its number ('12', 'A', 'contents'),
+   * undefined on a cover or outside a booklet's chapters; `jump` when the reader chose it (a new
+   * history entry, so Back returns), not when paging into it.
+   */
+  moved(piece: string, chapter: string | undefined, jump: boolean): void;
+  /** Hands over how to turn the open box to a piece and chapter (Back and Forward), and close it. */
+  attach(turn: (piece: string, chapter?: string) => void, close: () => void): void;
+}
+
+export interface BoxOptions {
   /** How the manual is bound: two staples in the fold (a shareware booklet), or a plastic comb. */
   binding?: 'staples' | 'comb';
   /** The tray's heading (a box's contents by default; a folder of maps has no manual). */
   trayHeading?: string;
   /** The piece to open at, by id ('manual' or a BoxItem's): the Library's card for it. The first otherwise. */
   start?: string;
+  /** The chapter of `start`'s booklet to open at, by its number ('12', 'A') or id. */
+  chapter?: string;
+  address?: BoxAddress;
 }
 
 const COMB_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, or cut it and bind it';
@@ -66,6 +82,21 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     let stapled = centerSpread(total);
     const marks = new Map<string, number>(); // the page each booklet was left open at
     const booklets = new Map<string, Promise<BookPage[]>>();
+    let stops: ChapterStop[] = [];
+    let told: string | undefined; // the piece and chapter last given to the address
+    const tell = (chapter: string | undefined, jump = false) => {
+      const key = `${current}|${chapter ?? ''}`;
+      if (key === told) return;
+      told = key;
+      options.address?.moved(current, chapter, jump);
+    };
+    const picker = chapterPicker((s) => turnTo(s.page, true));
+    // to a page of the booklet shown (a chapter chosen, a contents row): Back comes back
+    const turnTo = (page: number, jump: boolean) => {
+      if (!isBook()) return;
+      at = Math.max(0, Math.min(total - 1, page));
+      showManual(jump);
+    };
     const isBook = (id = current) => id === 'manual' || !!items.find((i) => i.id === id)?.pages;
     const openBook = (id: string, p: BookPage[], bound: boolean) => {
       marks.set(bookId, at);
@@ -75,6 +106,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       total = p.length;
       stapled = centerSpread(total);
       at = marks.get(id) ?? 0;
+      stops = chapterStops(p);
+      picker.use(stops);
     };
     // the stage scrolls a tall piece: focusable, so the keyboard can scroll it too
     const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown' });
@@ -101,7 +134,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       counter,
       h('button', { onclick: () => go(1), 'aria-label': 'Next page' }, '▶'),
     );
-    const showManual = () => {
+    const showManual = (jump = false) => {
       const isTwo = two();
       const shown = spreadAt(at, total, isTwo);
       at = shown[0];
@@ -116,6 +149,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
           if (shown.length === 2) el.classList.add(k === 0 ? 'left' : 'right');
           else if (isTwo) el.classList.add(i === 0 ? 'right' : 'left');
           el.addEventListener('click', () => go(shown.length === 2 && k === 0 ? -1 : 1));
+          linkContents(el, (to) => turnTo(to, true));
           return el;
         }),
       );
@@ -152,6 +186,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
             : `Page ${shown.join('–')} of ${total - 2}${!bookComb && shown[0] === stapled[0] ? ' · center' : ''}`;
       stage.replaceChildren(spread, nav);
       crispShots(spread);
+      picker.showing(shown[shown.length - 1]);
+      tell(stopAt(stops, shown[shown.length - 1])?.key || undefined, jump);
     };
     const go = (dir: 1 | -1) => {
       if (!isBook()) return;
@@ -188,6 +224,13 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       fitSheets();
     };
 
+    // the chapter the box was opened at (options.chapter), or turned to by the address, for its piece
+    let wanted = options.start !== undefined && options.chapter ? { piece: options.start, chapter: options.chapter } : undefined;
+    const asked = (piece: string) => {
+      const w = wanted?.piece === piece ? wanted.chapter : undefined;
+      wanted = undefined;
+      return w;
+    };
     const select = (id: string) => {
       current = id;
       for (const li of tray.children) {
@@ -196,6 +239,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         li.querySelector('button')?.setAttribute('aria-current', String(on));
       }
       const item = items.find((i) => i.id === id);
+      if (!item?.pages && id !== 'manual') (picker.use([]), tell(undefined));
       filmBtn.hidden = !item?.redFilm;
       if (!item?.redFilm) (film.hide(), lens.hide());
       bookletBtn.firstChild!.textContent = item?.pages ? 'Print booklet: this one' : 'Print booklet: the manual';
@@ -203,6 +247,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       pieceLabel();
       if (id === 'manual') {
         openBook('manual', pages, comb);
+        const page = findStop(stops, asked('manual'))?.page;
+        if (page !== undefined) at = page;
         showManual();
       } else if (item?.pages) void showBooklet(item);
       else if (item) void showItem(item);
@@ -217,10 +263,10 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       const p = await bookletOf(item);
       if (current !== item.id) return;
       // turned straight to a chapter (a level check's guide link), else where it was left
-      const anchor = item.openAt?.();
-      const page = anchor ? p.findIndex((pg) => pg.anchors?.includes(anchor)) : -1;
+      const anchor = item.openAt?.() ?? asked(item.id);
       openBook(item.id, p, false);
-      if (page >= 0) at = page; // after openBook, which keeps the page it is open at when it is already open
+      const page = findStop(stops, anchor)?.page;
+      if (page !== undefined) at = page; // after openBook, which keeps the page it is open at when it is already open
       showManual();
     };
 
@@ -344,6 +390,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         { class: 'gmb-bar' },
         h('strong', null, title),
         h('span', { class: 'gmb-spacer' }),
+        picker.el,
         filmBtn,
         h('div', { class: 'gmb-print-wrap' }, h('button', { onclick: () => (menu.hidden = !menu.hidden), 'aria-haspopup': 'menu' }, '🖨 Print…'), menu),
         h('button', { onclick: close }, 'Close (Esc)'),
@@ -361,6 +408,17 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     if (!pages.length) bookletBtn.hidden = true;
     const first = pages.length ? 'manual' : (items[0]?.id ?? 'manual');
     select(entries.some((e) => e.id === options.start) ? options.start! : first);
+    options.address?.attach((piece, chapter) => {
+      if (!entries.some((e) => e.id === piece)) return;
+      told = `${piece}|${chapter ?? ''}`; // the address already says so
+      if (piece !== current) {
+        wanted = chapter ? { piece, chapter } : undefined;
+        select(piece);
+        return;
+      }
+      const page = isBook() ? (findStop(stops, chapter)?.page ?? (chapter ? undefined : 0)) : undefined;
+      if (page !== undefined) turnTo(page, false);
+    }, close);
     const picked = tray.querySelector<HTMLElement>('li.on button') ?? tray.querySelector<HTMLElement>('button');
     picked?.focus({ preventScroll: true });
     picked?.scrollIntoView({ block: 'nearest' });

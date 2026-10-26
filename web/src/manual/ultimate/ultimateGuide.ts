@@ -4,7 +4,7 @@
 // box can show the cover without loading the chapters; this file loads when it is first opened.
 import './ultimateGuide.css';
 import { h } from '../../editor/core/ui';
-import type { BookPage } from '../printables/manualPages';
+import type { BookPage, PageMark } from '../printables/manualPages';
 import { measurer } from '../printables/manualPages';
 import { paginate } from '../printables/paginate';
 import { CHAPTERS, chapterStarts, planBook } from './plan';
@@ -33,7 +33,8 @@ function contents(starts: number[]): HTMLElement[] {
       'table',
       { class: 'ug-toc' },
       h('tr', null, h('th', null, 'Chapter'), h('th', null, 'Page')),
-      ...CHAPTERS.map((c, i) => h('tr', null, h('td', null, c.title), h('td', null, String(starts[i])))),
+      // each row names its page (the box viewer makes it a button that turns there)
+      ...CHAPTERS.map((c, i) => h('tr', { dataset: { page: String(starts[i]) } }, h('td', null, c.title), h('td', null, String(starts[i])))),
     ),
     h(
       'div',
@@ -57,10 +58,14 @@ export async function ultimatePages(): Promise<BookPage[]> {
     // the chapters flow on one after another; each opening is marked with its chapter
     // (a chapter marked newPage starts a fresh run of pages)
     const runs: HTMLElement[][] = [[]];
+    // each chapter's mark, its number as its opening prints it ('12', 'Appendix A')
+    const marks: PageMark[] = [];
     for (const [i, c] of CHAPTERS.entries()) {
       const el = document.createElement('div');
       el.innerHTML = c.html;
       await fillFigures(el);
+      const no = (el.querySelector('.ug-num')?.textContent ?? '').trim().replace(/^Appendix\s+/, '');
+      marks.push({ id: c.id, no: no || String(i + 1), title: c.title });
       el.querySelector<HTMLElement>('.ug-open')?.setAttribute('data-ch', String(i));
       if (c.newPage && runs[runs.length - 1].length) runs.push([]);
       runs[runs.length - 1].push(...([...el.children] as HTMLElement[]));
@@ -75,10 +80,10 @@ export async function ultimatePages(): Promise<BookPage[]> {
     let ch = 0;
     return [
       { kind: 'cover', body: [ultimateCover()] },
-      { kind: 'text', head: head('Contents'), body: contents(starts), cls: PAGE_CLASS },
+      { kind: 'text', head: head('Contents'), body: contents(starts), cls: PAGE_CLASS, marks: [{ id: 'contents', no: '', title: 'Contents' }] },
       ...text.map((body, i): BookPage => {
         ch = opens[i].at(-1) ?? ch;
-        return { kind: 'text', head: head(CHAPTERS[ch].head), body, cls: PAGE_CLASS, anchors: opens[i].map((c) => CHAPTERS[c].id) };
+        return { kind: 'text', head: head(CHAPTERS[ch].head), body, cls: PAGE_CLASS, marks: opens[i].map((c) => marks[c]) };
       }),
       ...Array.from({ length: plan.notes }, (): BookPage => ({ kind: 'notes', head: head('Notes'), body: notesPage() })),
       { kind: 'cover', body: [backCover()] },
