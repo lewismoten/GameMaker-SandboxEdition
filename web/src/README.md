@@ -346,13 +346,18 @@ modules are in [`../test`](../test).
   them (`covers.ts` draws just the cover of manuals, hint books and TURBO BUTTON), `shared.ts` lists once the pieces the same in
   every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is
   the page; a card opens its piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
+  `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
+  (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
+  past the opening closes it.
 - [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its pages `booklet.ts`, its
   screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and
   each original game's printed manual (`gameManual.ts`). `fonts/` holds the handwriting font
   (Caveat, with its OFL).
 - [`manual/printables/`](manual/printables): each game's box contents, with its own
   [README](manual/printables/README.md). The viewer (`viewer.ts`) shows the paper in a "What's in
-  the box" tray (`items.ts`); `gen.ts` makes what every Sandbox Software box has; `kit.ts`,
+  the box" tray (`items.ts`); `chapterJump.ts` is its Chapters list for a booklet whose pages mark
+  their chapters (`BookPage.marks`: the Owner's Guide and The Ultimate Owner's Guide), and makes
+  their contents rows buttons that turn to the page; `gen.ts` makes what every Sandbox Software box has; `kit.ts`,
   `fitSheet.ts`, `paginate.ts`, `imposition.ts` and `crisp.ts` lay paper out.
   - Manuals: `manualPages.ts` and `manualCover.ts`; the hint book's cover (`hintCover.ts`,
     `hintCoverArt.ts`) and answers hidden under red film (`redFilm.ts`); the key card (`keys.ts`);

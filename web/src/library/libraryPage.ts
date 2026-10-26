@@ -4,7 +4,8 @@
 // remembered per browser (prefs.ts). A card opens its piece
 // in the viewer that already shows it: its game's box (manual/gameManual.ts), the Game-Maker
 // box (manual/dosManual.ts), TURBO BUTTON, the Guide, the desk's zine (manual/zine), a game's
-// walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play).
+// walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play). The
+// Game-Maker box's piece and chapter stay in the address (&gm=ultimate&ch=12, readerAddress.ts).
 import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
@@ -14,6 +15,7 @@ import { loadShelf, type Shelf } from './listing';
 import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
 import { forgetThumbs, lazyThumb } from './thumbs';
 import { tally, unlockAchievement } from '../achievements';
+import { openFromLibrary, readerOpen } from './readerAddress';
 
 const ORDERS: [ShelfOrder, string][] = [
   ['game', 'By game'],
@@ -48,8 +50,7 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
       const done = o.maps ? m.openGameMaps(entry, undefined, o.start) : m.openGameManual(entry, undefined, undefined, o.start);
       await whenShown(done);
     } else if (o.via === 'gm') {
-      const { openDosManual } = await import('../manual/dosManual');
-      await whenShown(openDosManual(o.start));
+      await whenShown(openFromLibrary(o.start, undefined, true));
     } else if (o.via === 'walk') {
       const entry = games.get(o.game);
       if (!entry) return;
@@ -140,6 +141,13 @@ function groupSection(g: ShelfGroup, shelf: Shelf, order: ShelfOrder): HTMLEleme
 export function renderLibrary(el: HTMLElement): void {
   unlockAchievement('library-visit');
   const state = viewState(['library']);
+  // the address only moved within the Game-Maker box (a chapter, Back, closing it): the shelves stay
+  const shelfKey = () => ['by', 'only', 'game'].map((k) => state.get(k) ?? '').join('|');
+  const gm = state.get('gm');
+  if (el.dataset.library === shelfKey() && el.querySelector(':scope > .library')) {
+    if (gm && !readerOpen()) void openFromLibrary(gm, state.get('ch'), false); // Forward, back into it
+    return;
+  }
   const asked = state.get('by');
   let order: ShelfOrder = isShelfOrder(asked) ? asked : (savedOrder() ?? 'game');
   // the address's pick when it named the sort, else the one last picked for this sort
@@ -173,7 +181,10 @@ export function renderLibrary(el: HTMLElement): void {
     },
   });
   const gamePick = h('span', { class: 'lib-pick', hidden: true }, h('label', { for: 'lib-game', class: 'lib-only-label' }, 'Game'), gamePicker);
-  const keepAddress = () => state.set({ by: order === 'game' && !only ? undefined : order, only, game: order === 'type' && only ? game : undefined });
+  const keepAddress = () => {
+    state.set({ by: order === 'game' && !only ? undefined : order, only, game: order === 'type' && only ? game : undefined });
+    el.dataset.library = shelfKey();
+  };
   const buttons = ORDERS.map(([o, label]) =>
     h(
       'button',
@@ -244,6 +255,9 @@ export function renderLibrary(el: HTMLElement): void {
       list,
     ),
   );
+  el.dataset.library = shelfKey();
+  // a link to a piece of the Game-Maker box, at a chapter (#/library?gm=ultimate&ch=12)
+  if (gm) void openFromLibrary(gm, state.get('ch'), false);
   void loadShelf()
     .then((s) => {
       shelf = s;
