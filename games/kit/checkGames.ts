@@ -9,7 +9,8 @@
 //           with TEXT_BOUNDS on; with --quick, kit/textBoundsCheck.ts builds on its own)
 //   text    kit/textfitCheck.ts      hidden  kit/hiddenView.ts      level  kit/levelCheck.ts
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
-// then once: kit/tinHearts.ts check and kit/syncCheck.ts (levelSecrets.json and box hours).
+// then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
+// elsewhere) and kit/syncCheck.ts (levelSecrets.json and box hours).
 // With --play, each game is also played by the Level check's bot (kit/levelCheck.ts --play: one-way
 // spots, things left behind, steady hands, its walkthrough's pace), which only reports.
 //
@@ -145,13 +146,18 @@ if (flag('--play'))
 console.log('== every game');
 const hearted = games.filter((id) => has(id, 'about.json') && 'tinHeart' in JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')));
 const hearts = hearted.length ? step('tin hearts', '../games/kit/tinHearts.ts', ['check', ...hearted]) : 'skip';
+const signs = step('save signs', '../games/kit/saveSignCheck.ts', games);
 const sync = step('levelSecrets and box hours', '../games/kit/syncCheck.ts', games);
 
 const pad = (s: string, n: number) => s.padEnd(n);
 console.log(`\n${pad('game', 10)} ${COLS.map((c) => pad(c, 6)).join(' ')}   time`);
 for (const [id, r] of rows) console.log(`${pad(id, 10)} ${COLS.map((c) => pad(r[c], 6)).join(' ')} ${String(r.sec).padStart(5)}s`);
-console.log(`tin hearts: ${hearts}   levelSecrets and box hours: ${sync}`);
-const failed = [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length + (hearts === 'FAIL' ? 1 : 0) + (sync === 'FAIL' ? 1 : 0);
+console.log(`tin hearts: ${hearts}   save signs: ${signs}   levelSecrets and box hours: ${sync}`);
+const failed =
+  [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
+  (hearts === 'FAIL' ? 1 : 0) +
+  (signs === 'FAIL' ? 1 : 0) +
+  (sync === 'FAIL' ? 1 : 0);
 const min = (Date.now() - t0) / 60_000;
 console.log(`${games.length} games in ${min.toFixed(1)} min: ${failed ? `${failed} failing (see above)` : 'all pass'}`);
 process.exit(failed ? 1 : 0);
