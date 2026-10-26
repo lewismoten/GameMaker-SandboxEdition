@@ -29,7 +29,7 @@ function face(p: Pal): Pixels {
       if (x >= 120 && x < 160) continue;
       const ny = (y + 10) / 84;
       if (nx * nx + ny * ny * ny > 1) continue;
-      let c = shadeAt(p.r('grey'), 3, 6, 0.6 - Math.abs(nx) * 0.4 - ny * 0.2, x, y);
+      let c = shadeAt(p.r('gray'), 3, 6, 0.6 - Math.abs(nx) * 0.4 - ny * 0.2, x, y);
       if (y % 6 === 0 && r() < 0.5) c = p.c('virus', 2 + Math.floor(r() * 3));
       big.set(x, y, c);
     }
@@ -45,7 +45,7 @@ function face(p: Pal): Pixels {
   for (const s of [-1, 1]) {
     blob(big, 140 + s * 70, 46, 26, 20, p.r('ink'), 0, 0);
     blob(big, 140 + s * 70, 46, 10, 8, p.r('glow'), 1, 4);
-    big.rect(140 + s * 108 - 10, 60, 20, 4, p.c('grey', 2));
+    big.rect(140 + s * 108 - 10, 60, 20, 4, p.c('gray', 2));
   }
   micro(big, 30, 8, 'GLITCH', p.c('virus', 5));
   micro(big, 222, 8, 'V1.0', p.c('virus', 5));

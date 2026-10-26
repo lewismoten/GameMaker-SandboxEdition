@@ -104,7 +104,7 @@ export function ramTiles(bs: BlockSet, a: StageArt): void {
   bs.add('wattBlink', watt(a, true), { next: 'watt', ntime: 3 });
   // the tin heart, tucked away on a pickup pad: a glint crosses it now and then; worth 500
   const p = a.pal;
-  const tin = { ink: p.c('ink', 0), tin: [p.c('steel', 2), p.c('steel', 4), p.c('steel', 6)], white: p.c('grey', 7), dark: p.c('steel', 1) };
+  const tin = { ink: p.c('ink', 0), tin: [p.c('steel', 2), p.c('steel', 4), p.c('steel', 6)], white: p.c('gray', 7), dark: p.c('steel', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     bs.add(`tinHeart${k || ''}`, drawTinHeart(pad(a), tin, k), {
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
@@ -133,8 +133,8 @@ function carlBug(a: StageArt, zap: number): Pixels {
       ink: p.c('ink', 0),
       fly: [p.c('steel', 0), p.c('steel', 1), p.c('steel', 2), p.c('steel', 3), p.c('steel', 4)],
       eye: [p.c('red', 0), p.c('red', 1), p.c('red', 2), p.c('red', 3)],
-      wing: [p.c('grey', 5), p.c('grey', 6), p.c('grey', 7)],
-      white: p.c('grey', 7),
+      wing: [p.c('gray', 5), p.c('gray', 6), p.c('gray', 7)],
+      white: p.c('gray', 7),
       red: p.c('red', 2),
     },
     { view: 'front', wing: zap, mood: zap ? 'grin' : 'smug' },
@@ -160,7 +160,7 @@ function carlNote(a: StageArt): Pixels {
   const p = a.pal;
   const t = new Pixels(20, 20);
   t.px.set(a.floor(0).px);
-  const ink = p.c('grey', 6);
+  const ink = p.c('gray', 6);
   micro(t, 0, 2, 'FOUND', ink);
   micro(t, 0, 8, 'IT:', ink);
   micro(t, 0, 14, 'CARL', p.c('trim', 4));
@@ -178,7 +178,7 @@ function watt(a: StageArt, blink: boolean): Pixels {
   const t = new Pixels(20, 20);
   t.px.set(a.floor(0).px);
   const w = new Pixels(20, 20, CLEAR);
-  w.rect(3, 15, 14, 4, p.c('grey', 1));
+  w.rect(3, 15, 14, 4, p.c('gray', 1));
   for (let x = 4; x < 17; x += 2) w.set(x, 16, p.c('steel', 3)).set(x, 18, p.c('steel', 2));
   bevel(w, 5, 11, 10, 5, p.r('fire'), 3);
   w.rect(9, 12, 2, 2, p.c('gold', 4));
@@ -187,7 +187,7 @@ function watt(a: StageArt, blink: boolean): Pixels {
   w.rect(14, 4, 2, 2, p.c('red', 3));
   for (const x of [7.5, 12.5]) {
     if (blink) w.rect(Math.round(x) - 2, 8, 4, 1, p.c('ink', 0));
-    else w.disc(x, 8, 2.1, p.c('grey', 7)).rect(Math.round(x), 8, 2, 2, p.c('ink', 0));
+    else w.disc(x, 8, 2.1, p.c('gray', 7)).rect(Math.round(x), 8, 2, 2, p.c('ink', 0));
   }
   outline(w, p.c('ink', 0));
   return t.blit(w, 0, 0, CLEAR);
@@ -231,7 +231,7 @@ export function stackTiles(bs: BlockSet, a: StageArt, beat: number): void {
     bs.add(`stkF${k}`, stackCell(a, b), { next: `stk${k}`, ntime: (N - k) * beat, chHitPt: HURT.hazard, touch: 'stkGap' });
   });
   const gap = stackCell(a, null);
-  for (let i = 0; i < 5; i++) gap.set(4 + i * 3, 6 + ((i * 7) % 8), a.pal.c('grey', 2));
+  for (let i = 0; i < 5; i++) gap.set(4 + i * 3, 6 + ((i * 7) % 8), a.pal.c('gray', 2));
   bs.add('stkGap', gap);
   slices(bs, 'lblStk', label(a, 3, 'PAGE 1: STACK', a.pal.c('glow', 3)));
   bs.add('lbl1FF', label(a, 1, '$01FF', a.pal.c('base', 5)));

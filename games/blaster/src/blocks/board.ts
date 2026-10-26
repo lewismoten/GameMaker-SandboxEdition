@@ -20,7 +20,7 @@ export function boardArt(p: Pal): StageArt {
   };
   const floor = (v: number): Pixels => {
     const t = weave(v + 1);
-    const silk = p.c('grey', 5);
+    const silk = p.c('gray', 5);
     if (v === 1) {
       // a via
       blob(t, 9.5, 9.5, 3, 3, p.r('trim'), 2, 5);
@@ -180,7 +180,7 @@ function chip(a: StageArt, r: number, c: number, label?: string): Pixels {
 function capacitor(a: StageArt, ramp: string, name: string, value: string): Pixels {
   const p = a.pal;
   const big = onFloor(a, 2, 2);
-  const silk = p.c('grey', 5);
+  const silk = p.c('gray', 5);
   big.ring(20, 22, 17.5, silk);
   micro(big, 1, 1, name, silk);
   micro(big, 35, 1, '+', silk);
@@ -190,9 +190,9 @@ function capacitor(a: StageArt, ramp: string, name: string, value: string): Pixe
   // the vent, scored in a cross
   big.rect(19, 16, 2, 13, p.c('steel', 1)).rect(14, 21, 13, 2, p.c('steel', 1));
   // the minus stripe, with its minus signs
-  for (let y = 7; y < 38; y++) for (let x = 5; x < 10; x++) if (Math.hypot(x - 20, y - 22) < 14.5) big.set(x, y, p.c('grey', 6));
+  for (let y = 7; y < 38; y++) for (let x = 5; x < 10; x++) if (Math.hypot(x - 20, y - 22) < 14.5) big.set(x, y, p.c('gray', 6));
   for (const y of [14, 21, 28]) big.rect(6, y, 3, 1, p.c('ink', 0));
-  micro(big, 20 - value.length * 2, 31, value, ramp === 'slime' ? p.c('ink', 0) : p.c('grey', 7));
+  micro(big, 20 - value.length * 2, 31, value, ramp === 'slime' ? p.c('ink', 0) : p.c('gray', 7));
   return big;
 }
 
@@ -204,7 +204,7 @@ function ceramic(a: StageArt): Pixels {
   t.rect(7, 13, 1, 5, p.c('steel', 5)).rect(14, 13, 1, 5, p.c('steel', 5));
   blob(t, 11, 9, 7, 5.5, p.r('fire'), 2, 5);
   micro(t, 5, 7, '104', p.c('fire', 0));
-  micro(t, 0, 0, 'C3', p.c('grey', 5));
+  micro(t, 0, 0, 'C3', p.c('gray', 5));
   return t;
 }
 
@@ -213,7 +213,7 @@ function transistor(a: StageArt, name: string): Pixels {
   const p = a.pal;
   const t = new Pixels(20, 20);
   t.px.set(a.floor(0).px);
-  const silk = p.c('grey', 5);
+  const silk = p.c('gray', 5);
   micro(t, 0, 0, name, silk);
   for (const x of [6, 10, 14]) t.rect(x - 1, 12, 2, 3, p.c('steel', 5)).set(x - 1, 12, p.c('steel', 6));
   for (let x = 4; x <= 16; x++) {
@@ -260,7 +260,7 @@ function resistor(a: StageArt, vertical: boolean): Pixels {
     t.rect(0, 9, 20, 2, p.c('steel', 5));
     bevel(t, 4, 6, 12, 8, p.r('label'), 2, 1);
     bands.forEach((c, i) => t.rect(5 + at[i], 6, 1, 8, c));
-    micro(t, 1, 0, 'R7', p.c('grey', 5));
+    micro(t, 1, 0, 'R7', p.c('gray', 5));
   }
   return t;
 }
@@ -271,7 +271,7 @@ function led(a: StageArt, on: boolean, ramp: string): Pixels {
   t.px.set(a.floor(0).px);
   if (on) blob(t, 10, 10, 8, 8, p.r(ramp), 0, 2, 0.4);
   blob(t, 10, 10, 5, 5, p.r(ramp), on ? 2 : 0, on ? 4 : 1);
-  if (on) t.set(8, 8, p.c('grey', 7));
+  if (on) t.set(8, 8, p.c('gray', 7));
   t.rect(4, 17, 12, 2, p.c('steel', 3));
   return t;
 }
@@ -293,8 +293,8 @@ function crystal(a: StageArt): Pixels {
 function breadboard(a: StageArt, kind: 'H' | 'C' | 'R'): Pixels {
   const p = a.pal;
   const t = new Pixels(20, 20);
-  t.map((x, y) => shadeAt(p.r('grey'), 5, 6, 0.55 + ((x * 3 + y * 5) % 7) * 0.03, x, y));
-  const hole = (x: number, y: number) => t.rect(x, y, 2, 2, p.c('grey', 2)).set(x + 1, y + 1, p.c('grey', 4));
+  t.map((x, y) => shadeAt(p.r('gray'), 5, 6, 0.55 + ((x * 3 + y * 5) % 7) * 0.03, x, y));
+  const hole = (x: number, y: number) => t.rect(x, y, 2, 2, p.c('gray', 2)).set(x + 1, y + 1, p.c('gray', 4));
   if (kind === 'R') {
     t.rect(1, 0, 1, 20, p.c('red', 2)).rect(18, 0, 1, 20, p.c('blue', 2));
     for (let y = 1; y < 20; y += 4) if (y % 20 !== 17) (hole(5, y), hole(12, y));
@@ -304,7 +304,7 @@ function breadboard(a: StageArt, kind: 'H' | 'C' | 'R'): Pixels {
         if (kind === 'C' && x >= 8 && x <= 12) continue;
         hole(x, y);
       }
-  if (kind === 'C') t.rect(8, 0, 4, 20, p.c('grey', 4)).rect(9, 0, 2, 20, p.c('grey', 3));
+  if (kind === 'C') t.rect(8, 0, 4, 20, p.c('gray', 4)).rect(9, 0, 2, 20, p.c('gray', 3));
   return t;
 }
 
@@ -321,7 +321,7 @@ function dip(a: StageArt, w: number, h: number, bodyX: number, bodyW: number, pi
   big.rect(bodyX, top, bodyW, 1, p.c('deep', 3)).rect(bodyX, top, 1, h - bottom - top, p.c('deep', 3));
   big.rect(bodyX + bodyW - 1, top, 1, h - bottom - top, p.c('ink', 0)).rect(bodyX, h - bottom - 1, bodyW, 1, p.c('ink', 0));
   blob(big, bodyX + bodyW / 2, top, 3.5, 3.5, p.r('deep'), 0, 0);
-  big.rect(bodyX + 3, top + 3, 2, 2, p.c('grey', 5)).set(bodyX + 3, top + 3, p.c('grey', 7));
+  big.rect(bodyX + 3, top + 3, 2, 2, p.c('gray', 5)).set(bodyX + 3, top + 3, p.c('gray', 7));
   return big;
 }
 
@@ -333,8 +333,8 @@ function cpu6502(a: StageArt): Pixels {
   const p = a.pal;
   const pins = [14, 21, 28, 34, 41, 48, 54, 61];
   const big = dip(a, 60, 80, 6, 48, pins, 3, 3);
-  text(big, 14, 22, '6502', p.c('grey', 6));
-  micro(big, 22, 33, '8501', p.c('grey', 4));
+  text(big, 14, 22, '6502', p.c('gray', 6));
+  micro(big, 22, 33, '8501', p.c('gray', 4));
   return big;
 }
 
@@ -342,8 +342,8 @@ function cpu6502(a: StageArt): Pixels {
 function timer555(a: StageArt): Pixels {
   const p = a.pal;
   const big = dip(a, 40, 40, 7, 26, [6, 14, 22, 30], 3, 3);
-  text(big, 8, 12, '555', p.c('grey', 6));
-  micro(big, 10, 23, 'NE555', p.c('grey', 4));
+  text(big, 8, 12, '555', p.c('gray', 6));
+  micro(big, 10, 23, 'NE555', p.c('gray', 4));
   return big;
 }
 
@@ -353,7 +353,7 @@ function bbLed(a: StageArt, on: boolean): Pixels {
   t.rect(7, 14, 1, 6, p.c('steel', 5)).rect(12, 14, 1, 6, p.c('steel', 5));
   if (on) blob(t, 10, 9, 8, 8, p.r('red'), 0, 2, 0.4);
   blob(t, 10, 9, 5, 6, p.r('red'), on ? 2 : 0, on ? 4 : 1);
-  t.set(8, 6, on ? p.c('grey', 7) : p.c('red', 2));
+  t.set(8, 6, on ? p.c('gray', 7) : p.c('red', 2));
   return t;
 }
 
@@ -391,7 +391,7 @@ function lead(t: Pixels, a: StageArt, x0: number, x1: number, y: number, ramp: s
 /** A wire's stripped end, pushed into the breadboard hole at (x, y) from the left. */
 function tip(t: Pixels, a: StageArt, x: number, y: number): Pixels {
   const p = a.pal;
-  return t.rect(x - 3, y, 4, 2, p.c('steel', 5)).set(x + 1, y + 1, p.c('grey', 2));
+  return t.rect(x - 3, y, 4, 2, p.c('steel', 5)).set(x + 1, y + 1, p.c('gray', 2));
 }
 
 /**

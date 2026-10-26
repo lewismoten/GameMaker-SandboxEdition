@@ -78,7 +78,7 @@ function head(p: Pal, blink: boolean): Pixels {
   }
   // mouth
   big.rect(14, 33, 12, 3, p.c('ink', 0));
-  for (let x = 15; x < 26; x += 3) big.rect(x, 33, 2, 2, p.c('grey', 7));
+  for (let x = 15; x < 26; x += 3) big.rect(x, 33, 2, 2, p.c('gray', 7));
   return big;
 }
 

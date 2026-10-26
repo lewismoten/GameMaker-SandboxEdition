@@ -1,7 +1,7 @@
 // The virus's creatures, drawn once and colored per stage: each is a pair of animation
 // frames from ASCII art (left halves, mirrored) with these keys:
 //   o outline   1-5 main color (dark to light)   a b c accent (dark, mid, light)
-//   w white     k dark grey   r red   y yellow   s S h steel (dark, mid, light)
+//   w white     k dark gray   r red   y yellow   s S h steel (dark, mid, light)
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob } from '../art/draw';
 import { sym } from '../characters/enemies';
@@ -26,8 +26,8 @@ export function keyOf(p: Pal, s: Scheme): Record<string, number> {
     a: at(a, 1),
     b: at(a, Math.floor(a.length / 2)),
     c: at(a, a.length - 1),
-    w: p.c('grey', 7),
-    k: p.c('grey', 2),
+    w: p.c('gray', 7),
+    k: p.c('gray', 2),
     r: p.c('red', 2),
     y: p.c('gold', 4),
     s: p.c('steel', 2),
@@ -389,7 +389,7 @@ export function disc(p: Pal, s: Scheme): Pair {
       const a = n * 0.5 + (i * Math.PI * 2) / 3;
       for (let r = 2; r < 8; r++) t.set(10 + Math.cos(a) * r, 10 + Math.sin(a) * r, k.c);
     }
-    blob(t, 10, 10, 2, 2, p.r('grey'), 0, 1);
+    blob(t, 10, 10, 2, 2, p.r('gray'), 0, 1);
     return t;
   };
   return [f(0), f(1)];

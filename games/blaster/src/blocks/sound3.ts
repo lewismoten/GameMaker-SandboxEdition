@@ -141,7 +141,7 @@ export function soundEgg(bs: BlockSet, a: StageArt): void {
     shell: [p.c('blue', 1), p.c('blue', 2), p.c('blue', 3)],
     paint: [p.c('gold', 2), p.c('gold', 4)],
     accent: p.c('pink', 3),
-    white: p.c('grey', 7),
+    white: p.c('gray', 7),
   };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
     bs.add(`easterEgg${k || ''}`, drawEasterEgg(a.floor(0), egg, 'zigzag', k), {
@@ -160,6 +160,6 @@ export function soundVirus(b: Bestiary, p: Pal): void {
   pics(b, 'noteG', g0, g1);
   pics(b, 'wasp', ...wasp(keyOf(p, { main: 'gold', accent: 'cyan' })));
   pics(b, 'amp', ...bomb(keyOf(p, { main: 'blue', accent: 'red' })));
-  pics(b, 'disc', ...disc(p, { main: 'grey', accent: 'cyan' }));
+  pics(b, 'disc', ...disc(p, { main: 'gray', accent: 'cyan' }));
   pics(b, 'cluster', ...cluster(p, { main: 'pink', accent: 'gold' }));
 }

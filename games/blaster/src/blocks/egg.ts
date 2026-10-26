@@ -29,7 +29,7 @@ export function eggPic(p: Pal, under: Pixels): Pixels {
       const nx = (x + 0.5 - 9.75) / Math.max(1, hw);
       const ny = (y - 10.2) / 8.4;
       const light = 0.5 - nx * 0.35 - ny * 0.3 + (r() - 0.5) * 0.5;
-      t.set(x, y, p.c('grey', light > 0.75 ? 3 : light > 0.4 ? 2 : 1));
+      t.set(x, y, p.c('gray', light > 0.75 ? 3 : light > 0.4 ? 2 : 1));
     }
   // the outline, in black thread
   for (let y = 0; y < 20; y++)
@@ -84,8 +84,8 @@ export function eggPic(p: Pal, under: Pixels): Pixels {
   // the ribbon of chip pins around the waist
   for (let x = 0; x < 20; x++) {
     if (!inside(x, 12)) continue;
-    t.set(x, 12, p.c('grey', 1));
-    if (x % 2 === 0) t.set(x, 12, p.c('grey', 7)).set(x, 11, p.c('grey', 5));
+    t.set(x, 12, p.c('gray', 1));
+    if (x % 2 === 0) t.set(x, 12, p.c('gray', 7)).set(x, 11, p.c('gray', 5));
   }
   // the felt bug: red body, dark head, six French-knot legs
   t.rect(9, 8, 3, 3, p.c('red', 2)).set(9, 8, p.c('red', 3)).set(10, 8, p.c('red', 1)).set(10, 9, p.c('red', 1)).set(10, 10, p.c('red', 1));

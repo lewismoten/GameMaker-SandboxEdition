@@ -33,21 +33,21 @@ function colorAt(p: Pal, T: number, px: number, py: number, gap: boolean): numbe
     if (r < 0.07 || r > 0.93) return p.c('ink', 0);
     // a round ridge lit from the upper left, with a highlight
     const lit = 0.62 - 0.55 * (r - 0.5) * 2 + 0.4 * Math.exp(-(((r - 0.27) / 0.11) ** 2));
-    return redRidge ? shadeAt(p.r('red'), 0, 4, lit, px, py) : shadeAt(p.r('grey'), 1, 6, lit, px, py);
+    return redRidge ? shadeAt(p.r('red'), 0, 4, lit, px, py) : shadeAt(p.r('gray'), 1, 6, lit, px, py);
   }
   const red = Math.floor(S / PITCH) === RED;
   if (gap && h < RIDGE) {
     // a splice: the ridge cut away, gold staples at its two edges
     const edge = h < 0.35 || h > RIDGE - 0.35;
     if (edge) return (px + py) % 4 < 2 ? p.c('gold', 4) : p.c('ink', 0);
-    return shadeAt(p.r('grey'), 0, 1, 0.4, px, py);
+    return shadeAt(p.r('gray'), 0, 1, 0.4, px, py);
   }
   // the lane: dark, with the ridge's shadow along its top and copper strands down its middle
-  if (h < RIDGE + 0.9) return red ? p.c('red', 0) : p.c('grey', 0);
+  if (h < RIDGE + 0.9) return red ? p.c('red', 0) : p.c('gray', 0);
   // three thin copper strands, a little way in from each side and down the middle
   const strand = [6, 11.5, 17].some((c) => Math.abs(h - c) < 0.11);
   if (red) return strand ? p.c('red', 3) : shadeAt(p.r('red'), 0, 1, 0.3, px, py);
-  return strand ? p.c('fire', 2) : shadeAt(p.r('grey'), 0, 1, 0.5, px, py);
+  return strand ? p.c('fire', 2) : shadeAt(p.r('gray'), 0, 1, 0.5, px, py);
 }
 
 /** The bare block whose corner has track value c. */
@@ -97,7 +97,7 @@ export class CableBlocks {
     const pic = cell(p, c, slope, gap);
     const red = Math.floor(mod(c + 1, LAP) / PITCH) === RED;
     if (mark === 'chevron') chevron(pic, slope, red ? p.c('red', 4) : p.c('gold', 3));
-    if (mark?.startsWith('digit')) digit(pic, Number(mark.slice(5)), red ? p.c('grey', 7) : p.c('gold', 4), p.c('ink', 0));
+    if (mark?.startsWith('digit')) digit(pic, Number(mark.slice(5)), red ? p.c('gray', 7) : p.c('gold', 4), p.c('ink', 0));
     const solid = !gap && mod(c, PITCH) < RIDGE;
     const key = `${solid ? 1 : 0}:${pic.px.join(',')}`;
     let name = this.seen.get(key);

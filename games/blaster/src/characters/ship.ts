@@ -80,7 +80,7 @@ function deathPic(p: Pal, k: number): Pixels {
   const r = 4 + k * 2;
   blob(pic, 10, 10, r, r, p.r('fire'), Math.max(0, 3 - k), 7 - Math.max(0, k - 2));
   if (k >= 2) for (let i = 0; i < 12; i++) pic.set(10 + Math.cos(i) * (r + 1), 10 + Math.sin(i * 1.7) * (r + 1), p.c('fire', 5));
-  if (k >= 3) blob(pic, 10, 10, k * 1.5, k * 1.5, p.r('grey'), 1, 3);
+  if (k >= 3) blob(pic, 10, 10, k * 1.5, k * 1.5, p.r('gray'), 1, 3);
   return pic;
 }
 

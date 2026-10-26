@@ -109,7 +109,7 @@ function gap(a: StageArt): Pixels {
   const p = a.pal;
   const t = copy(a.floor(2));
   for (let x = 0; x < 20; x++) if (x < 4 || x > 15) t.set(x, 10, p.c('glow', 1));
-  for (let i = 0; i < 6; i++) t.set(4 + ((i * 7) % 12), 8 + ((i * 3) % 5), p.c('grey', 2));
+  for (let i = 0; i < 6; i++) t.set(4 + ((i * 7) % 12), 8 + ((i * 3) % 5), p.c('gray', 2));
   return t;
 }
 
@@ -137,7 +137,7 @@ function pickup(a: StageArt, kind: PickupKind, k: number): Pixels {
     t.draw(7, 7, N, { X: p.c('red', 1) });
   } else if (kind === 'repair') {
     blob(t, 9.5, 9.5, 7, 7, p.r('slime'), 1 + glow, 5);
-    t.rect(8, 5, 4, 10, p.c('grey', 7)).rect(5, 8, 10, 4, p.c('grey', 7));
+    t.rect(8, 5, 4, 10, p.c('gray', 7)).rect(5, 8, 10, 4, p.c('gray', 7));
     t.rect(9, 6, 2, 8, p.c('red', 2)).rect(6, 9, 8, 2, p.c('red', 2));
   } else if (kind === 'life') {
     blob(t, 9.5, 9.5, 7, 7, p.r('cyan'), 1 + glow, 5);

@@ -36,7 +36,7 @@ function burst(p: Pal, k: number, big: boolean): Pixels {
   if (k < 3) blob(s, 10, 10, r, r, p.r('fire'), k === 0 ? 4 : 2 - Math.min(2, k - 1), 7 - k);
   else {
     // smoke
-    blob(s, 10, 10, r - 1, r - 1, p.r('grey'), 1, 3);
+    blob(s, 10, 10, r - 1, r - 1, p.r('gray'), 1, 3);
     for (let i = 0; i < 6; i++) s.set(10 + Math.cos(i * 1.1) * r, 10 + Math.sin(i * 1.1) * r, p.c('fire', 3));
   }
   if (k === 1 || k === 2)
@@ -46,7 +46,7 @@ function burst(p: Pal, k: number, big: boolean): Pixels {
 
 function wreckPic(p: Pal, k: number): Pixels {
   const s = pic();
-  blob(s, 10, 11, 8, 6, p.r('grey'), 0, 3);
+  blob(s, 10, 11, 8, 6, p.r('gray'), 0, 3);
   for (let i = 0; i < 9; i++) {
     const a = i * 0.7 + k;
     s.rect(10 + Math.cos(a) * 5, 11 + Math.sin(a) * 3, 2, 1, p.c('steel', 1 + (i % 3)));
@@ -54,7 +54,7 @@ function wreckPic(p: Pal, k: number): Pixels {
   s.rect(8, 10, 4, 2, p.c('fire', k ? 3 : 2));
   s.set(6 + k * 3, 9, p.c('fire', 5));
   // a curl of smoke
-  blob(s, 11 - k, 4 - k, 2 + k, 2, p.r('grey'), 2, 4);
+  blob(s, 11 - k, 4 - k, 2 + k, 2, p.r('gray'), 2, 4);
   return s;
 }
 

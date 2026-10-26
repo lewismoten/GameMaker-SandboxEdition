@@ -37,7 +37,7 @@ function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagg
   // the world's name, and where it falls in the game
   outlined(p, 12, 122, `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
-  l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('grey', 6)));
+  l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('gray', 6)));
   if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
   return p;
 }
@@ -68,7 +68,7 @@ function titleScreen(): Pixels {
   logo(p, 14);
   scaleBlit(p, SHIP, 34, 110, 3);
   scaleBlit(p, SHIP, 232, 124, 2);
-  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('grey', 7), 1, c('ink', 0));
+  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('gray', 7), 1, c('ink', 0));
   return p;
 }
 

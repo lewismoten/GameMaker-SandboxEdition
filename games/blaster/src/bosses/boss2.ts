@@ -31,7 +31,7 @@ function mouth(p: Pal, open: boolean): Pixels {
     const a = (i * Math.PI * 2) / 14;
     const x = 20 + Math.cos(a) * (r - 2);
     const y = 27 + Math.sin(a) * (r - 2);
-    big.rect(x, y, 2, 2, p.c('grey', 7));
+    big.rect(x, y, 2, 2, p.c('gray', 7));
   }
   return big;
 }

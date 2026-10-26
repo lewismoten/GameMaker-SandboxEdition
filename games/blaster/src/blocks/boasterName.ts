@@ -57,7 +57,7 @@ function letter(p: Pixels, x: number, y: number, ch: string, ink: number, shadow
 function namePicture(a: StageArt): Pixels {
   const p = a.pal;
   const big = onFloor(a, 14, 5);
-  const ink = p.c('grey', 7);
+  const ink = p.c('gray', 7);
   const shadow = p.c('base', 0);
   const line = (word: string, y: number) => {
     const x0 = (14 - word.length * 2) * 10;
@@ -77,6 +77,6 @@ export function nameTiles(bs: BlockSet, a: StageArt): string[][] {
 export function finePrint(bs: BlockSet, a: StageArt): string[] {
   const big = onFloor(a, 6, 1);
   const s = 'OVERCREATIVE LABS - REV. A';
-  micro(big, Math.round(60 - s.length * 2), 7, s, a.pal.c('grey', 6));
+  micro(big, Math.round(60 - s.length * 2), 7, s, a.pal.c('gray', 6));
   return slicesShared(bs, 'fp', big)[0];
 }

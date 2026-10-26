@@ -34,7 +34,7 @@ function common(p: Pal): void {
   p.ramp('slime', 6, [10, 40, 0], [220, 255, 140], [100, 210, 30]);
   p.ramp('gold', 5, [90, 50, 0], [255, 240, 150], [240, 180, 30]);
   p.ramp('pink', 5, [100, 0, 40], [255, 220, 240], [255, 60, 150]);
-  p.ramp('grey', 8, [16, 16, 20], [250, 250, 250]);
+  p.ramp('gray', 8, [16, 16, 20], [250, 250, 250]);
   p.ramp('red', 5, [70, 0, 0], [255, 170, 150], [230, 30, 20]);
   p.ramp('blue', 5, [0, 10, 70], [170, 200, 255], [30, 80, 230]);
   // the colors PLAYGAME looks for when it writes text (match() picks the nearest)

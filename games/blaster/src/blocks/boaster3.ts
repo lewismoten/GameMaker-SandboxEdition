@@ -108,8 +108,8 @@ function bigChip(a: StageArt, w: number, h: number, lines: string[], small?: str
   blob(big, 8, H / 2, 2.5, 2.5, p.r('deep'), 0, 0);
   const lh = 12;
   const y0 = Math.round(H / 2 - (lines.length * lh - 4) / 2) - (small ? 2 : 0);
-  lines.forEach((s, i) => text(big, Math.round(W / 2 - s.length * 4), y0 + i * lh, s, p.c('grey', 7)));
-  if (small) micro(big, Math.round(W / 2 - small.length * 2), H - 11, small, p.c('grey', 5));
+  lines.forEach((s, i) => text(big, Math.round(W / 2 - s.length * 4), y0 + i * lh, s, p.c('gray', 7)));
+  if (small) micro(big, Math.round(W / 2 - small.length * 2), H - 11, small, p.c('gray', 5));
   return big;
 }
 
@@ -120,7 +120,7 @@ function smallChip(a: StageArt, w: number, lines: string[]): Pixels {
   const W = w * 20;
   for (let x = 5; x < W - 4; x += 5) big.rect(x, 0, 2, 3, p.c('steel', 5)).rect(x, 17, 2, 3, p.c('steel', 4));
   bevel(big, 2, 3, W - 4, 14, p.r('deep'), 1, 1);
-  lines.forEach((s, i) => micro(big, Math.round(W / 2 - s.length * 2), 4 + i * 6, s, p.c('grey', i ? 6 : 7)));
+  lines.forEach((s, i) => micro(big, Math.round(W / 2 - s.length * 2), 4 + i * 6, s, p.c('gray', i ? 6 : 7)));
   return big;
 }
 
@@ -163,9 +163,9 @@ function wheel(a: StageArt): Pixels {
     big.rect(14 + Math.cos(an) * 16 - 1, 20 + Math.sin(an) * 16 - 1, 2, 2, p.c('steel', 4));
   }
   blob(big, 14, 20, 6, 6, p.r('steel'), 2, 5);
-  micro(big, 22, 2, 'VOL', p.c('grey', 7));
-  micro(big, 31, 9, '+', p.c('grey', 7));
-  micro(big, 31, 29, '-', p.c('grey', 7));
+  micro(big, 22, 2, 'VOL', p.c('gray', 7));
+  micro(big, 31, 9, '+', p.c('gray', 7));
+  micro(big, 31, 29, '-', p.c('gray', 7));
   return big;
 }
 
@@ -208,7 +208,7 @@ function capacitor(a: StageArt, ramp: string): Pixels {
   const t = a.floor(0);
   blob(t, 10, 10, 8, 8, p.r(ramp), 0, 3);
   t.ring(10, 10, 4, p.c('steel', 5));
-  t.rect(3, 6, 2, 8, p.c('grey', 6));
+  t.rect(3, 6, 2, 8, p.c('gray', 6));
   return t;
 }
 
@@ -217,7 +217,7 @@ function waveTrace(a: StageArt): Pixels {
   const p = a.pal;
   const t = a.floor(0);
   t.rect(0, 6, 20, 1, p.c('base', 5)).rect(0, 13, 20, 1, p.c('base', 5));
-  for (const x of [3, 13]) t.line(x, 8, x + 3, 10, p.c('grey', 5)).line(x + 3, 10, x, 12, p.c('grey', 5));
+  for (const x of [3, 13]) t.line(x, 8, x + 3, 10, p.c('gray', 5)).line(x + 3, 10, x, 12, p.c('gray', 5));
   return t;
 }
 
@@ -252,17 +252,17 @@ export function boasterTiles(bs: BlockSet, a: StageArt): void {
 /** The Beeper: a PC-speaker gremlin, grumpy that a sound card took its job. */
 function beeper(p: Pal, loud: boolean): Pixels {
   const t = new Pixels(20, 20, CLEAR);
-  blob(t, 10, 11, 8, 8, p.r('grey'), 2, 6);
-  t.ring(10, 11, 5, p.c('grey', 3));
+  blob(t, 10, 11, 8, 8, p.r('gray'), 2, 6);
+  t.ring(10, 11, 5, p.c('gray', 3));
   for (const [x, y] of [
     [7, 13],
     [10, 15],
     [13, 13],
     [10, 12],
   ])
-    t.set(x, y, p.c('grey', 1));
+    t.set(x, y, p.c('gray', 1));
   // angry eyes
-  t.rect(5, 7, 4, 3, p.c('grey', 7)).rect(11, 7, 4, 3, p.c('grey', 7));
+  t.rect(5, 7, 4, 3, p.c('gray', 7)).rect(11, 7, 4, 3, p.c('gray', 7));
   t.rect(7, 8, 2, 2, p.c('red', 2)).rect(11, 8, 2, 2, p.c('red', 2));
   t.line(4, 5, 8, 7, p.c('ink', 0)).line(15, 5, 11, 7, p.c('ink', 0));
   outline(t, p.c('ink', 0));
@@ -305,5 +305,5 @@ export function boasterVirus(b: Bestiary, p: Pal): void {
   pics(b, 'ha', ha(p, 0), ha(p, 1));
   pics(b, 'wave', wave(p, 0), wave(p, 1), HURT.hazard);
   pics(b, 'amp', ...bomb(keyOf(p, { main: 'blue', accent: 'red' })));
-  pics(b, 'disc', ...disc(p, { main: 'grey', accent: 'cyan' }));
+  pics(b, 'disc', ...disc(p, { main: 'gray', accent: 'cyan' }));
 }
