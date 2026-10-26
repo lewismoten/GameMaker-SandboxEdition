@@ -72,30 +72,38 @@
   },
   {
    "scene": 18,
-   "keys": "EUsMy1hNDs0ASwrLAE0CzQBJAskASALIAEkIyUZQCtACSAbIAEkCyQBNDM0ASwTLAksIy0JHAscAUATQAEsWywBQVtAARwTHADkBuSdPEs80TQ7NAEkCyQBNDs0AUQbRIEcGxwBJBskYSAzIAEcExwZNEs0kSArI"
+   "keys": "MUsMywBQBtAATQzNTk0GzTNNBs0AUBjQAEsGy3hQctBISwnLAFAJ0ABND81ITQPNCU0/zRI5Abk7UGPQA00JzQ=="
   },
   {
    "scene": 19,
-   "keys": "D0sMywBPAs8ATQrNAEgCyABNCs0ASwTLAE8CzwBHEscUSATIBFA60ABJCskAUATQAEgIyABRAtEATQbNAFAE0ABIDMgASxDLAEgEyAZLBMsUSATIAEkMyQBRCtEcUQbRDEcIxwRLEMsATwLPDkgYyABNBM0UTQbNGk8IzwBQAtAATwLPAEsEyyxNAs0AUAbQCkgEyABJGMk="
+   "keys": "EUsMy1hNDs0ASwrLAE0CzQBJAskASALIAEkIyUZQCtACSAbIAEkCyQBNDM0ASwTLAksIy0JHAscAUATQAEsWywBQVtAARwTHADkBuSdPEs80TQ7NAEkCyQBNDs0AUQbRIEcGxwBJBskYSAzIAEcExwZNEs0kSArI"
   },
   {
    "scene": 20,
-   "keys": "EzkBuQ1PAs8CTwTPAFAE0AA5AbkBOQG5AU8GzwBHBMcASQbJAk0CzQBQAtAAOQG5A1EG0QBJCskaTQTNAFEC0QBIAsggSwTLCk0EzRJIBMgUSAvI"
+   "keys": "D0sMywBPAs8ATQrNAEgCyABNCs0ASwTLAE8CzwBHEscUSATIBFA60ABJCskAUATQAEgIyABRAtEATQbNAFAE0ABIDMgASxDLAEgEyAZLBMsUSATIAEkMyQBRCtEcUQbRDEcIxwRLEMsATwLPDkgYyABNBM0UTQbNGk8IzwBQAtAATwLPAEsEyyxNAs0AUAbQCkgEyABJGMk="
   },
   {
    "scene": 21,
-   "keys": "MUsMywBQBtAATQ/ND00DzQBLA8tITQnNAFAV0ABLA8sASAPIAEsDyxVLA8sSOQG5AjkBuQJNBs0MSwPLJ0sDy4cBSwnLAFAJ0ABND80nTQPNEksGy2lNDM0AUA/QAEsGyyFLCcsATQbNBk0DzQBQBtBsSw/LAFAJ0ABNEs0tTTDNQk0JzQBLA8tUTQrN"
+   "keys": "mAJNBs0JTQnNigFIA8gASQPJAEgGyBhJA8kATQPNM0sDywBQA9AYUGPQAE0KzQ=="
   },
   {
    "scene": 22,
-   "keys": "C0gEyABHAscASATIAEcExwA5AbkBSALIAEkEyQBIFsgASwjLAEcGxwBICMgAUALQADkBuQNICsgASQjJAEgMyABPCM8KSATIAFBs0ABNAs0ASALIDkgGyAQ5AbkBOQG5B1AG0ABREtEASAbIAEcCxwBIBsgARwTHAEgeyABJBMkASATIBkcExwJIBMgARwjHAE0SzQ5ICMgASwLLAFAJ0A=="
+   "keys": "EzkBuQ1PAs8CTwTPAFAE0AA5AbkBOQG5AU8GzwBHBMcASQbJAk0CzQBQAtAAOQG5A1EG0QBJCskaTQTNAFEC0QBIAsgOOQG5BzkBuQM5AbkFSwLLDkgCyABRAtEMSA7I"
   },
   {
    "scene": 23,
-   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
+   "keys": "MUsMywBQBtAATQ/ND00DzQBLA8tITQnNAFAV0ABLA8sASAPIAEsDyxVLA8sSOQG5AjkBuQJNBs0MSwPLJ0sDy4cBSwnLAFAJ0ABND80nTQPNEksGy2lNDM0AUA/QAEsGyyFLCcsATQbNBk0DzQBQBtBsSw/LAFAJ0ABNEs0tTTDNQk0JzQBLA8tUTQrN"
   },
   {
    "scene": 24,
+   "keys": "C0gEyABHAscASATIAEcExwA5AbkBSALIAEkEyQBIFsgASwjLAEcGxwBICMgAUALQADkBuQNICsgASQjJAEgMyABPCM8KSATIAFBs0ABNAs0ASALIDkgGyAQ5AbkBOQG5B1AG0ABREtEASAbIAEcCxwBIBsgARwTHAEgeyABJBMkASATIBkcExwJIBMgARwjHAE0SzQ5ICMgASwLLAFAJ0A=="
+  },
+  {
+   "scene": 25,
+   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
+  },
+  {
+   "scene": 26,
    "keys": "H08CzwpLBMsMTQLNBE0CzRJQCtAATwLPAEcExwBQCtAASATIBEgEyABJAskATQjNBlAE0ABPBs8ARwbHCFAC0ABIAsgAUAbQAFEG0QBJBMkASATIAkgCyAhNAs0CTQLNCEgCyABLCssGUATQAFEE0QBQAtAASQTJAFAK0ABPAs8ARwjHCEsCywpIAsgASQLJAE0IzQZQCNAATwbPAEgEyABHAscaTQTNDkgCyAhLAssASALIHk0CzQBIAsgUSwTLFk0CzT5NAs0CSArIAEcDxw=="
   }
  ],
@@ -166,36 +174,44 @@
   },
   {
    "scene": 18,
-   "title": "Stage 4: The Hard Disk — The Platter"
+   "title": "Stage 4: The Hard Disk — Fragmented File"
   },
   {
    "scene": 19,
-   "title": "Stage 4: The Hard Disk — Bad Sectors"
+   "title": "Stage 4: The Hard Disk — The Platter"
   },
   {
    "scene": 20,
-   "title": "Stage 4: The Hard Disk — The Head Crash"
+   "title": "Stage 4: The Hard Disk — Bad Sectors"
   },
   {
    "scene": 21,
-   "title": "Stage 5: The CPU — The Ribbon Cable"
+   "title": "Stage 4: The Hard Disk — Between Platters"
   },
   {
    "scene": 22,
-   "title": "Stage 5: The CPU — The Pipeline"
+   "title": "Stage 4: The Hard Disk — The Head Crash"
   },
   {
    "scene": 23,
-   "title": "Stage 5: The CPU — The Core"
+   "title": "Stage 5: The CPU — The Ribbon Cable"
   },
   {
    "scene": 24,
+   "title": "Stage 5: The CPU — The Pipeline"
+  },
+  {
+   "scene": 25,
+   "title": "Stage 5: The CPU — The Core"
+  },
+  {
+   "scene": 26,
    "title": "Stage 5: The CPU — GLITCH"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 60454,
+  "frames": 66445,
   "chapters": [
    {
     "title": "Opening",
@@ -270,40 +286,48 @@
     "frame": 38949
    },
    {
-    "title": "Stage 4: The Hard Disk — The Platter",
+    "title": "Stage 4: The Hard Disk — Fragmented File",
     "frame": 40909
    },
    {
+    "title": "Stage 4: The Hard Disk — The Platter",
+    "frame": 44363
+   },
+   {
     "title": "Stage 4: The Hard Disk — Bad Sectors",
-    "frame": 43803
+    "frame": 47257
+   },
+   {
+    "title": "Stage 4: The Hard Disk — Between Platters",
+    "frame": 49505
    },
    {
     "title": "Stage 4: The Hard Disk — The Head Crash",
-    "frame": 46051
+    "frame": 52132
    },
    {
     "title": "Stage 5: The CPU — The Ribbon Cable",
-    "frame": 47325
+    "frame": 53324
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 51603
+    "frame": 57602
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 53446
+    "frame": 59445
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 55055
+    "frame": 61054
    },
    {
     "title": "Ending",
-    "frame": 57247
+    "frame": 63246
    },
    {
     "title": "Credits",
-    "frame": 58899
+    "frame": 64893
    }
   ]
  }

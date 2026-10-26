@@ -141,12 +141,20 @@
           "head": "4. The Hard Disk",
           "hints": [
             {
+              "q": "Where am I going on the slanted tracks?",
+              "a": "Following Mom's recipe file. It lies in four fragments over the platter: ride each one corner to corner, round the kink onto the next, 3, 2, 1, to EOF. The gold chain on fragment 2 is a cluster link: hold Right on it to jump a fragment early."
+            },
+            {
               "q": "The platter keeps throwing me around.",
               "a": "The wide streams of The Platter push hard. Hug the side the stream pushes you toward so you can't be shoved into a turret."
             },
             {
               "q": "How do I stop a Tank?",
               "a": "Six hits. They drive straight, so get out of the way first and shoot from the side as they pass."
+            },
+            {
+              "q": "Something keeps reaching across the gap between the platters.",
+              "a": "The read/write arms, seeking. Each one reaches in, burning like a firewall, then pulls back out. Wait for it to pull back, or fly over or under it."
             },
             {
               "q": "The Head Crash's shards are everywhere.",

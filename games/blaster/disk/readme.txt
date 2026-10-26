@@ -49,7 +49,7 @@ Nova Bombs, + for repairs.
 
 FILES ON THIS DISK
 BLASTER.GAM  the game
-*.MAP        24 maps
+*.MAP        26 maps
 *.BBL *.MBL  blocks
 *.MON        monsters
 SHIP.CHR     the BLASTER

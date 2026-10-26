@@ -6,6 +6,8 @@ import { buildPalette } from '../art/pal';
 import { diskArt, diskTiles, diskVirus } from '../blocks/disk4';
 import { kit, type Stage } from './stage';
 import { bossCrash } from '../bosses/boss4';
+import { fragLeg } from './frag';
+import { plattersLeg } from './platters';
 
 function virus4(b: Parameters<typeof diskVirus>[0], p: Parameters<typeof diskVirus>[1]): void {
   diskVirus(b, p);
@@ -161,6 +163,7 @@ export function stage4(): Stage {
     song: 'disk.cmf',
     bossSong: 'boss.cmf',
     legs: [
+      fragLeg(),
       {
         file: 's4a',
         kitFile: 's4',
@@ -179,6 +182,7 @@ export function stage4(): Stage {
         kit: ks,
         card: ['Bad sectors are crawling', 'with virus. Heavy tanks', 'cut across the lane.'],
       },
+      plattersLeg(),
       bossCrash(art),
     ],
   };
