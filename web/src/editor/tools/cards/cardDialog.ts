@@ -8,6 +8,7 @@ import type { Project } from '../../core/project';
 import type { Game, Scene } from '../../../formats/game';
 import { addCard, INSTRUCTIONS_SLOT, INTRO_SLOT } from './cardWire';
 import { CARD_LINES, instructionLines, keyLines, levelCardLines, pagesOf, playOrder } from './cardText';
+import { tally } from '../../../achievements';
 
 let count = 0;
 
@@ -52,6 +53,7 @@ async function save(project: Project, scene: Scene, slot: number, stem: string, 
   const before = scene.files[slot];
   const files = addCard(project, scene, slot, stem, lines, plain, seconds);
   toast(`Made ${files.map((f) => f.toUpperCase()).join(', ')}${before ? `; ${before.toUpperCase()} is still in the game` : ''}.`);
+  if (!project.readOnly) tally('make-cards', slot === INSTRUCTIONS_SLOT ? 'howto' : 'level');
   return true;
 }
 

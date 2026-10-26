@@ -16,6 +16,7 @@ import { TakeRecorder, type Take } from '../check/walk/takes';
 import { keepPlay } from '../check/walk/mine';
 import { startingAt } from '../editors/integrator/startAt';
 import { PlaySession, keepHeat } from '../editors/map/check/playSession';
+import { unlockAchievement } from '../../achievements';
 
 export interface PlayResult {
   /** Ticks of play this session added to the map's heat map. */
@@ -77,6 +78,7 @@ export function playScene(project: Project, scene: number, map: string): Promise
       dlg.remove();
       const heatTicks = session.heat.rec.ticks;
       keepHeat(project, map, session.heat.rec);
+      if (heatTicks > 0 && !project.readOnly) unlockAchievement('make-heat');
       resolve({ heatTicks, kept });
     };
 
@@ -84,6 +86,7 @@ export function playScene(project: Project, scene: number, map: string): Promise
       if (!take) return;
       keepPlay(project, take);
       kept = take;
+      if (!project.readOnly) unlockAchievement('make-take');
       keepBtn.hidden = true;
       status.textContent = `Kept: Make a walkthrough plays it for ${name}. Try again to replace it, or Done.`;
       againBtn.focus();

@@ -6,6 +6,7 @@ import type { Project } from '../../core/project';
 import type { Scene } from '../../../formats/game';
 import { openingFields } from './openingFields';
 import { openingOf, removeOpening } from './openingWire';
+import { unlockAchievement } from '../../../achievements';
 
 /** Resolves true when the game's opening changed. */
 export async function openingDialog(project: Project, start: Scene, scenes: Scene[]): Promise<boolean> {
@@ -48,5 +49,6 @@ export async function openingDialog(project: Project, start: Scene, scenes: Scen
   const { applyOpening } = await import('./openingCards');
   const { noSting } = await applyOpening(project, start, scenes, v.style, v.name);
   if (noSting) toast('The opening could not be loaded (offline?).', 'error');
+  else if (!project.readOnly) unlockAchievement('make-opening');
   return true;
 }
