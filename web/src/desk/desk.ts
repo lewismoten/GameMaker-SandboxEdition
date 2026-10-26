@@ -580,6 +580,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       const p = Project.fromFiles(files, `${d.title} (my copy)`);
       if (d.gam) p.gam = d.gam;
       await p.saveNow();
+      // remembered as a copy of its game, so it lists with that game's kind (home, PLAYHACK)
+      if (d.catalog) (await import('../editor/shell/homeOrigin')).rememberOrigin(p.id, d.catalog.id);
       return nav.toModern(p.id);
     }
     if (!(await leaveProgram())) return;
