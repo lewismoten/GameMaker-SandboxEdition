@@ -1,9 +1,12 @@
 // A leg in the headless simulator, and where the bot should head in a boss arena.
 import { DIAG_DRIFT, DRIFT } from '../src/ids';
 import { buildPalette } from '../src/art/pal';
-import { buildDiagShip, buildShip, shipBlocks } from '../src/characters/ship';
+import { buildDiagShip, buildShip, buildSideShip, shipBlocks } from '../src/characters/ship';
+import { scrollOf } from '../src/game';
 import { Sim } from './sim';
 import type { CharInfo } from '../../../web/src/engine/world';
+import { MLEN } from '../../../web/src/formats/map';
+import { ROWS, TOP } from '../src/stages/sideLeg';
 import { buildLeg, startOf, type Leg } from '../src/stages/stage';
 
 export function simOf(l: Leg, seed = 1, ci?: CharInfo): Sim {
@@ -15,11 +18,11 @@ export function simOf(l: Leg, seed = 1, ci?: CharInfo): Sim {
       bbl: b.bbl,
       mbl: b.mbl,
       mon: b.mon,
-      chr: l.kind === 'diag' ? buildDiagShip(cb, DIAG_DRIFT) : buildShip(cb, l.kind === 'boss' ? 0 : DRIFT),
+      chr: l.kind === 'diag' ? buildDiagShip(cb, DIAG_DRIFT) : l.kind === 'side' ? buildSideShip(cb, DRIFT) : buildShip(cb, l.kind === 'boss' ? 0 : DRIFT),
       cbl: cb.build(undefined, true),
       start: startOf(l),
       links: l.grid.links,
-      scroll: { up: l.kind === 'boss' ? 0 : 0xff, down: 0, left: 0, right: l.kind === 'diag' ? 0xff : 0 },
+      scroll: scrollOf(l),
       names: l.kit.beasts.names,
     },
     ci,
@@ -36,7 +39,7 @@ export function arenaGoal(s: Sim): { x: number; y: number } {
   return parts.length ? { x: lx - 10 + Math.sin(s.ticks / 9) * 30, y: ly + 5 * 20 } : { x: lx - 10, y: ly };
 }
 
-/** How long the bot may take on a leg: the ribbon cable is five laps of the map. */
+/** How long the bot may take on a leg: a diagonal leg is several laps of the map. */
 export const maxTicksOf = (l: Leg): number => (l.kind === 'boss' ? 2400 : l.kind === 'diag' ? 4000 : 1600);
 
 /**
@@ -64,4 +67,44 @@ export function diagGoal(l: Leg): (s: Sim) => { x: number; y: number } {
     const ahead = DIAG_DRIFT * 10;
     return flat ? { x: s.pos.x + ahead, y: s.pos.y + across * 20 } : { x: s.pos.x + ahead + across * 10, y: s.pos.y - ahead + across * 10 };
   };
+}
+
+/**
+ * The pilot on a side leg: cruise ahead, and keep within the run of rows that stays open over
+ * the next few columns nearest the ship (over a card, under a cable). Where the way ahead is
+ * clear it has no reason to climb or dive; where it isn't, it heads for the middle of that run.
+ * Returns a goal for fly().
+ */
+export function sideGoal(s: Sim): { x: number; y: number } {
+  const w = s.w;
+  const p = s.pos;
+  const col = Math.floor(p.x / 20);
+  const solid = (x: number, y: number) => (w.bg[w.blkmap[w.map[y * MLEN + (x % MLEN)]]].solid ?? 0) !== 0;
+  const open = (y: number) => {
+    for (let k = 0; k <= 2; k++) if (solid(col + k, y)) return false;
+    return true;
+  };
+  // the runs of open rows, and the one nearest the ship
+  let best: [number, number] | undefined;
+  let far = Infinity;
+  for (let y = TOP; y < TOP + ROWS; y++) {
+    if (!open(y) || (y > TOP && open(y - 1))) continue;
+    let end = y;
+    while (end + 1 < TOP + ROWS && open(end + 1)) end++;
+    const lo = y * 20;
+    const hi = end * 20;
+    const d = p.y < lo ? lo - p.y : p.y > hi ? p.y - hi : 0;
+    if (d < far) {
+      far = d;
+      best = [lo, hi];
+    }
+  }
+  // clear ahead where it is: no reason to climb or dive; else for the middle of the run
+  const clear = best && p.y >= best[0] && p.y <= best[1];
+  return { x: p.x + DRIFT * 10, y: !best || clear ? p.y : (best[0] + best[1]) / 2 };
+}
+
+/** The goal fly() steers for on a leg, if any. */
+export function goalOf(l: Leg): ((s: Sim) => { x: number; y: number }) | undefined {
+  return l.kind === 'boss' ? arenaGoal : l.kind === 'side' ? sideGoal : undefined;
 }

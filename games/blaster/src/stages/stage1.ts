@@ -7,6 +7,8 @@ import { rng } from '../../../kit/pixels';
 import { buildPalette } from '../art/pal';
 import { kit, type Stage } from './stage';
 import { bossBIOS } from '../bosses/boss1';
+import { slotsLeg } from './slots';
+import { tracesLeg } from './traces';
 
 function virus1(b: Parameters<typeof boardVirus>[0], p: Parameters<typeof boardVirus>[1]): void {
   boardVirus(b, p);
@@ -270,6 +272,7 @@ export function stage1(): Stage {
         kit: ka,
         card: ['Follow the data bus north.', 'Every move fires the guns.', 'UP: faster  DOWN: brake', 'SPACE: Nova Bomb  F5 saves'],
       },
+      tracesLeg(),
       {
         file: 's1b',
         kitFile: 's1',
@@ -279,6 +282,7 @@ export function stage1(): Stage {
         kit: kb,
         card: ['Turrets sweep, firewalls', 'blink. Shoot the collars', 'off the turrets!', 'Red 555 LED? Beam is ON.'],
       },
+      slotsLeg(),
       bossBIOS(art),
     ],
   };

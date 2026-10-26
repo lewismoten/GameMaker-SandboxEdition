@@ -134,6 +134,8 @@ export class BlockSet {
   constructor(
     readonly limit: number,
     readonly kind: string,
+    /** Turns every picture as the set is built (a side leg's monsters face left). */
+    readonly turn?: (p: Pixels) => Pixels,
   ) {}
 
   add(name: string, pic: Pixels, props: BlockProps = {}): number {
@@ -180,7 +182,7 @@ export class BlockSet {
       const pic = this.pics[i];
       if (!pic) return void out.push(emptyBlock(i, transparentPad));
       const b = emptyBlock(i, transparentPad);
-      b.pixels = Uint8Array.from(pic.px);
+      b.pixels = Uint8Array.from((this.turn ? this.turn(pic) : pic).px);
       const { next, touch, birth, ...rest } = pr;
       Object.assign(b, rest);
       if (next) b.nextBl = this.id(next);
@@ -290,5 +292,19 @@ export function turn45(src: Pixels, scale = 0.86): Pixels {
       if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
       out.set(x, y, src.get(sx, sy));
     }
+  return out;
+}
+
+/** A sprite turned 90 degrees clockwise (nose up becomes nose right), pixel for pixel. */
+export function turn90(src: Pixels): Pixels {
+  const out = new Pixels(src.h, src.w, CLEAR);
+  for (let y = 0; y < out.h; y++) for (let x = 0; x < out.w; x++) out.set(x, y, src.get(y, src.h - 1 - x));
+  return out;
+}
+
+/** A picture flipped top to bottom. */
+export function flipY(src: Pixels): Pixels {
+  const out = new Pixels(src.w, src.h);
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(x, src.h - 1 - y));
   return out;
 }

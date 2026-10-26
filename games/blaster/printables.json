@@ -42,7 +42,7 @@
             },
             {
               "q": "How do I see my energy?",
-              "a": "Press F2. Hitpoints is your energy (40 when you start), Lives is your spare ships, and counter 5 is your Nova charges."
+              "a": "Press F2. It shows your energy (40 when you start), your spare ships, and your Nova charges as counter 5."
             }
           ]
         },
@@ -60,6 +60,18 @@
             {
               "q": "What is the red light on the breadboard?",
               "a": "The clock LED on a 555 timer. It keeps time for the homemade 6502 and for the firewall right past it. LED on, beam on. LED off: go!"
+            },
+            {
+              "q": "The screen went corner to corner and my keys feel wrong.",
+              "a": "On the copper traces the keys turn with the track. Up speeds you along the trace, Down slows you, Left steers toward its top edge and Right toward its bottom edge. Keep to the middle of the copper and let the guns do the work."
+            },
+            {
+              "q": "The trace ends at the edge of the screen and starts again!",
+              "a": "It bends flat and comes round the wrap as the next trace down. That is the way on. The silkscreen counts the traces left, 3, 2, 1, and the last one runs into the chip. A silver jumper wire halfway round bridges to the next trace: hold Right on it to save a lap."
+            },
+            {
+              "q": "Now I am flying sideways!",
+              "a": "Expansion Slots is seen from the side. Up and Down climb and dive, Right speeds ahead and Left brakes. Cards stand up from the board and the IDE cable hangs from the drive cage: fly over one and under the other."
             },
             {
               "q": "The BIOS Bug's head won't break.",

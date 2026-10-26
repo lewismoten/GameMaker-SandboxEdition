@@ -37,6 +37,8 @@ export class DiagTrack implements TrackSpec {
 
   constructor(s: TrackSpec) {
     if (s.pitch * s.lanes !== 100) throw new Error('A diagonal track needs pitch x lanes = 100');
+    // round the wrap, t loses `kink`: that must be one lane on
+    if (s.kink + s.pitch !== 100) throw new Error('A diagonal track needs kink + pitch = 100');
     this.pitch = s.pitch;
     this.lanes = s.lanes;
     this.board = s.board;

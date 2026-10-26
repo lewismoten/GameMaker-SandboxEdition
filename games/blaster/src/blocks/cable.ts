@@ -103,7 +103,7 @@ function cell(p: Pal, c: DiagCell, look: Look): Pixels {
 }
 
 /** A printed arrow along the cable (up and to the right, or right on the kink). */
-function chevron(t: Pixels, flat: boolean, color: number): void {
+export function chevron(t: Pixels, flat: boolean, color: number): void {
   for (let i = 0; i < 6; i++)
     if (!flat)
       t.set(8 + i, 6, color)
@@ -118,7 +118,7 @@ function chevron(t: Pixels, flat: boolean, color: number): void {
 }
 
 /** A big printed digit, outlined, two pixels to a font pixel. */
-function digit(t: Pixels, n: number, fill: number, edge: number): void {
+export function digit(t: Pixels, n: number, fill: number, edge: number): void {
   const on = (x: number, y: number) => x >= 0 && y >= 0 && x < 8 && y < 8 && (FONT8X8[(48 + n) * 8 + y] & (1 << x)) !== 0;
   for (let y = -1; y < 9; y++)
     for (let x = -1; x < 9; x++) {

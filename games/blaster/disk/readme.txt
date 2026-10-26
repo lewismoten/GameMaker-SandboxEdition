@@ -33,10 +33,14 @@ F1 help  F2 status
 F3 music F4 sounds
 F5 save  F6 load  Esc quit
 
-On the ribbon cable the keys
-turn with the track: Up goes
-faster, Left and Right steer
-across it.
+On the runs that go corner to
+corner the keys turn with the
+track: Up goes faster, Left
+and Right steer across it. On
+the side-on runs the BLASTER
+flies right: Up and Down climb
+and dive, Right speeds ahead
+and Left brakes.
 
 The BLASTER flies forward and
 fires on its own whenever you
@@ -45,7 +49,7 @@ Nova Bombs, + for repairs.
 
 FILES ON THIS DISK
 BLASTER.GAM  the game
-*.MAP        18 maps
+*.MAP        20 maps
 *.BBL *.MBL  blocks
 *.MON        monsters
 SHIP.CHR     the BLASTER

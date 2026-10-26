@@ -10,7 +10,10 @@ import { BlockSet } from '../art/draw';
 import type { DiagBlocks } from '../blocks/diagBlocks';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
 import { addPickupTiles, pad, type StageArt } from '../blocks/tiles';
-import { addCommon } from '../characters/sharedMonsters';
+import { HURT, addCommon } from '../characters/sharedMonsters';
+import { mite, swooper } from '../characters/enemies';
+import { POWER } from '../ids';
+import { zapPic } from './cable';
 import { Bestiary } from '../characters/mons';
 import type { DiagTrack } from './diagTrack';
 import { Grid } from './mapkit';
@@ -165,4 +168,44 @@ export function diagLeg<M extends string>(s: DiagSpec<M>): Leg {
     card: s.card,
     diag: { track, shortcuts: s.shortcuts },
   };
+}
+
+/**
+ * The virus every diagonal leg after the cable shares, dressed in its stage's pictures (each
+ * name0/name1 already in the monster blocks): a diver that swoops to a spot just ahead on the
+ * ship's line and dives down the lane through it, a swooper that waits by the lane's upper
+ * edge and crosses it down and to the right, sparks off a pitted spot (`zap`) and mites that
+ * crawl out of a crack (`crawl`).
+ */
+export function diagFoes(b: Bestiary, p: Pal, o: { diver: string; swooper: string; mite: string; score?: number; speed?: number }): void {
+  const s = o.speed ?? 3;
+  b.mb.add('zap0', zapPic(p, 0), { chHitPt: HURT.hazard });
+  b.mb.add('zap1', zapPic(p, 1), { chHitPt: HURT.hazard });
+  b.add(o.diver, {
+    power: POWER.enemy,
+    pics: [
+      [`${o.diver}0`, 4],
+      [`${o.diver}1`, 4],
+    ],
+    becomes: 'boom',
+    score: o.score ?? 100,
+    attack: {
+      mode: 'player',
+      legs: [
+        [3, -3, s],
+        [-14, 14, s + 2],
+      ],
+    },
+  });
+  swooper(b, o.swooper, [[7, 7, s]], { score: o.score ?? 100 });
+  b.add('zap', {
+    power: POWER.bullet,
+    end: -1,
+    path: [[-2, -2, 4]],
+    pics: [
+      ['zap0', 2],
+      ['zap1', 2],
+    ],
+  });
+  mite(b, 'crawl', [[-6, -6, 2]], { pic: o.mite, score: 50 });
 }

@@ -11,9 +11,25 @@ FLYING
  SPACE   NOVA BOMB: five big
          plasma bolts at once
 
-Your energy shows on F2 as
-Hitpoints; Nova Bombs show as
-counter 5.
+F2 shows your energy, your
+spare ships and (counter 5)
+your Nova Bombs.
+THREE WAYS TO FLY
+Every stage has runs straight
+up the screen, a run corner to
+corner and a run side-on.
+
+CORNER TO CORNER
+ The keys turn with the track:
+ UP goes faster along it, DOWN
+ slows, LEFT and RIGHT cross
+ it. Each lap ends at a bend
+ onto the next lane down.
+
+SIDE-ON
+ The BLASTER flies right. UP
+ and DOWN climb and dive, RIGHT
+ speeds ahead, LEFT brakes.
 THINGS TO GRAB
  N   Nova Bomb charges (+2)
  +   Repair the hull (+10)
@@ -29,7 +45,7 @@ DANGERS
   Flying into a live one
   burns a hole... and you.
  Data streams shove sideways.
- Cable tape: RIGHT hops over.
+ Bridges: RIGHT hops a lane.
 BOSSES
 Each stage ends at a boss
 plugging the only way out.

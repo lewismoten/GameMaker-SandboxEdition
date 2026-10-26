@@ -23,8 +23,8 @@ export interface Leg {
   /** File name base of its .pal/.bbl/.mon/.mbl (shared by the scrolling legs of a stage). */
   kitFile: string;
   title: string;
-  /** A strip scrolling up, a fixed boss arena, or the ribbon cable's slanted, wrapping track. */
-  kind: 'scroll' | 'boss' | 'diag';
+  /** A strip scrolling up, a fixed boss arena, a slanted, wrapping track, or a band scrolling right. */
+  kind: 'scroll' | 'boss' | 'diag' | 'side';
   grid: Grid;
   kit: Kit;
   /** Card lines shown before the leg. */

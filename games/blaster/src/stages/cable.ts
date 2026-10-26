@@ -28,7 +28,7 @@ const SPLICES: [number, number, number][] = [
 ];
 
 /** A spark off a bare wire. */
-function zapPic(p: Pal, k: number): Pixels {
+export function zapPic(p: Pal, k: number): Pixels {
   const s = new Pixels(20, 20, CLEAR);
   blob(s, 10, 10, 3, 3, p.r('gold'), 2, 4);
   for (let i = 0; i < 6; i++) {

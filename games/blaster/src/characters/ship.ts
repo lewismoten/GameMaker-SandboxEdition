@@ -10,7 +10,7 @@
 import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
 import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, CLEAR, blob, turn45 } from '../art/draw';
+import { BlockSet, CLEAR, blob, turn45, turn90 } from '../art/draw';
 import { DRIFT, KEY, SEQ, SND, START } from '../ids';
 import type { Pal } from '../art/pal';
 
@@ -94,6 +94,10 @@ export function shipBlocks(p: Pal): BlockSet {
   cb.add('shipD0', turn45(shipPic(p, 0), 0.97));
   cb.add('shipD1', turn45(shipPic(p, 1), 0.97));
   cb.add('flashD', turn45(shipPic(p, 0, true), 0.97));
+  // nose to the right, for the side-scrolling legs (shipside.chr)
+  cb.add('shipS0', turn90(shipPic(p, 0)));
+  cb.add('shipS1', turn90(shipPic(p, 1)));
+  cb.add('flashS', turn90(shipPic(p, 0, true)));
   return cb;
 }
 
@@ -104,8 +108,8 @@ function frame(pic: number, x: number, y: number, pause = 1): Frame {
 }
 
 /** A frame that gives birth to monster `mon` one row above the ship. */
-function birth(mon: number): Frame {
-  return { x: 0, y: 0, orient: 0, pic1: mon, pic2: MONBL, pause: 0, extra: new Uint8Array(5) };
+function birth(mon: number, y = 0): Frame {
+  return { x: 0, y, orient: 0, pic1: mon, pic2: MONBL, pause: 0, extra: new Uint8Array(5) };
 }
 
 function setSeq(s: Sequence, frames: Frame[], opts: Partial<Sequence> = {}): void {
@@ -250,6 +254,73 @@ export function buildDiagShip(cb: BlockSet, drift: number): Character {
     birth(SHOT_MON.novaC),
     birth(SHOT_MON.novaR1),
     birth(SHOT_MON.novaR2),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  return c;
+}
+
+/**
+ * shipside.chr, for the side-scrolling legs: the course runs left to right, so the drift is
+ * `drift` right every frame and the keys steer as they look. Right speeds ahead, Left brakes
+ * (never to a stop: the screen would stop with it), Up and Down climb and dive. The guns fire
+ * to the right, from the ship's own row (a birth frame 20 pixels down is born in the ship's
+ * row, not the one above). Nothing moves left, so the screen only scrolls right.
+ */
+export function buildSideShip(cb: BlockSet, drift: number): Character {
+  const c = buildShip(cb, drift);
+  const S = c.sequences;
+  const s0 = cb.id('shipS0');
+  const s1 = cb.id('shipS1');
+  const fl = cb.id('flashS');
+  const d = drift;
+  const shot = (mon: number) => birth(mon, 20);
+  const fly = (x: number, y: number) => [frame(s0, x, y), frame(s1, x, y), shot(SHOT_MON.shot), frame(s0, x, y)];
+  const keep = (seq: number, frames: Frame[]) =>
+    setSeq(S[seq], frames, { key: S[seq].key, jstkMov: S[seq].jstkMov, jstkBut: S[seq].jstkBut, sound: S[seq].sound, norepeat: S[seq].norepeat });
+  const V = 6; // up and down
+  const D = 5; // diagonals
+  const BOOST = 6;
+  const ahead: [number, number] = [d, 0];
+  const brake = d - 1;
+  keep(SEQ.idle, fly(...ahead));
+  keep(SEQ.die, [0, 1, 2, 3, 4].map((k) => frame(cb.id(`die${k}`), brake, 0, 2)).concat([frame(cb.id('die4'), brake, 0, 6)]));
+  keep(SEQ.hurt, [
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+    frame(fl, ...ahead),
+    shot(SHOT_MON.shot),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  keep(SEQ.pickup, [frame(s0, ...ahead)]);
+  keep(SEQ.drop, [frame(s0, ...ahead)]);
+  const moves: [number, [number, number]][] = [
+    [SEQ.up, [d, -V]],
+    [SEQ.down, [d, V]],
+    [SEQ.left, [brake, 0]],
+    [SEQ.right, [d + BOOST, 0]],
+    [SEQ.upLeft, [brake, -D]],
+    [SEQ.upRight, [d + D, -D]],
+    [SEQ.downLeft, [brake, D]],
+    [SEQ.downRight, [d + D, D]],
+    [SEQ.w, [d, -V]],
+    [SEQ.s, [d, V]],
+    [SEQ.a, [brake, 0]],
+    [SEQ.d, [d + BOOST, 0]],
+    [SEQ.q, [brake, -D]],
+    [SEQ.e, [d + D, -D]],
+  ];
+  for (const [seq, [x, y]] of moves) keep(seq, fly(x, y));
+  keep(SEQ.nova, [
+    frame(fl, ...ahead),
+    shot(SHOT_MON.novaL2),
+    shot(SHOT_MON.novaL1),
+    shot(SHOT_MON.novaC),
+    shot(SHOT_MON.novaR1),
+    shot(SHOT_MON.novaR2),
     frame(s1, ...ahead),
     frame(fl, ...ahead),
     frame(s0, ...ahead),

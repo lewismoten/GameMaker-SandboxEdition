@@ -112,5 +112,5 @@ export const START = {
 /** How many pixels a tick the scrolling stages carry the ship forward. */
 export const DRIFT = 2;
 
-/** How many pixels right and up a tick the ribbon cable carries the ship. */
+/** How many pixels right and up a tick the diagonal legs carry the ship. */
 export const DIAG_DRIFT = 5;

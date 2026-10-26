@@ -1,9 +1,20 @@
 // blaster.gam: the title scene, the ending, and every leg of every stage in order, each
 // one's gate linked to the launch pad of the next.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
-import { startOf, type Stage } from './stages/stage';
+import { startOf, type Leg, type Stage } from './stages/stage';
 
 const TITLE = 'VIRUS BLASTER';
+
+/** The ship's flight program for each kind of leg (characters/ship.ts). */
+const SHIP_FILE: Record<Leg['kind'], string> = { scroll: 'ship.chr', boss: 'shipfree.chr', diag: 'shipdiag.chr', side: 'shipside.chr' };
+
+/** Which ways a leg's screen may scroll: strips up, diagonal legs up and right, side legs right, arenas never. */
+export const scrollOf = (l: Leg) => ({
+  up: l.kind === 'scroll' || l.kind === 'diag' ? 0xff : 0,
+  down: 0,
+  left: 0,
+  right: l.kind === 'diag' || l.kind === 'side' ? 0xff : 0,
+});
 
 export function buildGame(stages: Stage[], startAt?: string): Game {
   const game = newGame(TITLE);
@@ -29,12 +40,13 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
   const legs = stages.flatMap((s) => s.legs.map((l) => ({ s, l })));
   legs.forEach(({ s, l }, i) => {
     const scene = emptyScene(ADVTYPE);
-    scene.desc = `${s.n}${'abcd'[s.legs.indexOf(l)]} ${l.title}`.slice(0, 19);
+    scene.desc = `${s.n}${'abcdef'[s.legs.indexOf(l)]} ${l.title}`.slice(0, 19);
     scene.pos = { x: 24 + (i % 8) * 36, y: 90 + Math.floor(i / 8) * 50 };
     // Scrolling legs may only scroll up (the ship's drift carries the screen along, see
     // characters/ship.ts); boss arenas never scroll: one fixed screen.
-    // The ribbon cable scrolls up and right, wrapping round the map (see stages/cable.ts).
-    scene.scroll = { ...scene.scroll, up: l.kind === 'boss' ? 0 : 0xff, down: 0, left: 0, right: l.kind === 'diag' ? 0xff : 0 };
+    // The diagonal legs scroll up and right, wrapping round the map (see stages/diagLeg.ts);
+    // the side-scrolling legs only right (stages/sideLeg.ts).
+    scene.scroll = { ...scene.scroll, ...scrollOf(l) };
     const last = s.legs[s.legs.length - 1] === l;
     scene.files = [
       l.pal ? `${l.file}.pal` : `s${s.n}.pal`,
@@ -42,7 +54,7 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
       `${l.kitFile}.bbl`,
       `${l.kitFile}.mon`,
       `${l.kitFile}.mbl`,
-      l.kind === 'boss' ? 'shipfree.chr' : l.kind === 'diag' ? 'shipdiag.chr' : 'ship.chr',
+      SHIP_FILE[l.kind],
       'ship.cbl',
       'blaster.snd',
       l.kind === 'boss' ? s.bossSong : s.song,

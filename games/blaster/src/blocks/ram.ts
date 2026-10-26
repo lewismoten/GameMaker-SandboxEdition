@@ -47,7 +47,7 @@ export function ramArt(p: Pal): StageArt {
 }
 
 /** A DRAM chip standing up the board: 2 wide x 3 tall, leads down both sides. */
-function dram(a: StageArt, label: string): Pixels {
+export function dram(a: StageArt, label: string): Pixels {
   const p = a.pal;
   const big = onFloor(a, 2, 3);
   for (let y = 6; y < 56; y += 5) big.rect(1, y, 5, 2, p.c('steel', 5)).rect(34, y, 5, 2, p.c('steel', 5));
@@ -203,7 +203,7 @@ function watt(a: StageArt, blink: boolean): Pixels {
 /** The bytes as they're pushed: LDA #$FF / STA $D020 / NOP / JMP ($FFFC), a reset! / RTS / BRK / NOP. */
 export const STACK_BYTES = ['A9', 'FF', '8D', '20', 'D0', 'EA', '6C', 'FC', 'FF', '60', '00', 'EA'];
 
-function stackCell(a: StageArt, byte: string | null): Pixels {
+export function stackCell(a: StageArt, byte: string | null): Pixels {
   const p = a.pal;
   const t = a.floor(0);
   if (byte === null) {
