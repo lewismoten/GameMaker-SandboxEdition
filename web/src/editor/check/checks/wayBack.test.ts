@@ -1,4 +1,4 @@
-// The level check's ways back and ways through (wayBack.ts), with steady hands' moves
+// The level check's ways back and ways through (wayBack.ts), with slower hands' moves
 // (inputs.ts steadyMoves), on the tiny game in testGame.ts and on runs made up by hand.
 import { describe, expect, it } from 'vitest';
 import { MLEN } from '../../../formats/map';
@@ -69,7 +69,7 @@ describe('things left behind', () => {
   });
 });
 
-describe('steady hands', () => {
+describe('slower hands', () => {
   const walk = (k: number): Move => ({ name: `walk ${k}`, steps: [{ keys: [k], until: 'cell', max: 30 }] });
   const jump: Move = {
     name: 'jump 72 1 running 77',
@@ -104,7 +104,7 @@ describe('steady hands', () => {
     expect(describeMove(walk(LEFT), 6)).toBe('Left');
   });
 
-  it('gets through the test level with steady hands, so says nothing', async () => {
+  it('gets through the test level with slower hands, so says nothing', async () => {
     const t = testGame(LEDGE);
     const main = (await playtestScene(t.game, t, 2))!;
     const ex = await explore(t.game, 2, t, main.entry, { steadyTicks: 6 });
@@ -121,7 +121,7 @@ describe('steady hands', () => {
     const steady = { ...main, ex: { ...main.ex, exits: [], heat, complete: true } };
     const f = steadyFindings(main, steady, undefined, 6);
     expect(f).toHaveLength(1);
-    expect(f[0].title).toMatch(/^With steady hands the bot can’t get past \(4, 2\)$/);
+    expect(f[0].title).toMatch(/^With slower hands the bot can’t get past \(4, 2\)$/);
     expect(f[0].detail).toContain('at least 330 ms between changes');
   });
 });
