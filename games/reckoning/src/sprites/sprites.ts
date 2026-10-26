@@ -45,25 +45,36 @@ export function manArt(pal: Pal) {
     const crouch = o.crouch ? 2 : 0;
     const step = o.step ?? 0;
     const arms = o.arms ?? 'down';
-    // pajama pants (striped) and slippers
-    const legs =
-      side && step % 2
-        ? [
-            [7, -2],
-            [12, 2],
-          ]
-        : [
-            [7, 0],
-            [12, 0],
-          ];
+    // pajama pants (striped) and slippers: from the side, in profile, one leg striding ahead of
+    // the other on steps 1 and 3 (and the arm on that side swinging back), slippers pointing ahead
+    const swing = side ? [0, 3, 0, -3][step % 4] : 0;
+    const legs = side
+      ? [
+          [9, -swing],
+          [11, swing],
+        ]
+      : [
+          [7, 0],
+          [12, 0],
+        ];
     for (const [lx, d] of legs) {
       for (let y = 14 + crouch; y < 18; y++) p.rect(lx + Math.round(((y - 14) / 4) * d) - 1, y, 3, 1, c('pjs', (lx + y) % 3 ? 2 : 3));
-      p.rect(lx + d - 2, 18, 4 + (side ? 1 : 0), 2, c('red', 1)).set(lx + d - 2, 18, c('red', 2));
+      if (side) p.rect(lx + d - 1, 18, 4, 2, c('red', 1)).set(lx + d + 2, 18, c('red', 2));
+      else p.rect(lx + d - 2, 18, 4, 2, c('red', 1)).set(lx + d - 2, 18, c('red', 2));
     }
-    p.rect(6, 13 + crouch, 9, 2, c('pjs', 2)).rect(6, 13 + crouch, 9, 1, c('white', 1));
+    const skin = c('skin', 2);
+    const arm = (x0: number, y0: number, x1: number, y1: number) => p.line(x0, y0, x1, y1, skin).line(x0 + 1, y0, x1 + 1, y1, c('skin', 1));
+    const sy = 9 + crouch;
+    // from the side, the far arm shows only behind his body (drawn first, in shadow)
+    if (side && arms === 'down') p.line(10, sy, 10 - swing, sy + 4, c('skin', 1));
+    if (side && arms === 'up') p.line(9, sy, 8, sy - 6, c('skin', 1));
+    if (side) p.rect(7, 13 + crouch, 7, 2, c('pjs', 2)).rect(7, 13 + crouch, 7, 1, c('white', 1));
+    else p.rect(6, 13 + crouch, 9, 2, c('pjs', 2)).rect(6, 13 + crouch, 9, 1, c('white', 1));
     // the round bare belly (from behind, his bare back)
-    blob(p, 10.5, 10.5 + crouch, 4.6, 3.4, pal.r('skin'), 1, 4);
-    if (!back) p.set(side ? 12 : 10, 12 + crouch, c('skin', 0));
+    // (from the side the belly is narrower and bulges ahead of him)
+    if (side) blob(p, 11.2, 10.5 + crouch, 3.8, 3.4, pal.r('skin'), 1, 4);
+    else blob(p, 10.5, 10.5 + crouch, 4.6, 3.4, pal.r('skin'), 1, 4);
+    if (!back) p.set(side ? 13 : 10, 12 + crouch, c('skin', 0));
     // the head: a shaggy grey bowl cut, wire glasses
     const hx = side ? 11 : 10;
     const hy = 5 + crouch;
@@ -79,7 +90,9 @@ export function manArt(pal: Pal) {
       p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
       p.set(hx - 4, hy - 1, c('metal', 2)).set(hx + 4, hy - 1, c('metal', 2));
     }
-    const eyes = side ? [hx + 1, hx + 3] : [hx - 2, hx + 2];
+    // from the side: one eye ahead, and an ear under the hair
+    if (side) p.set(hx - 2, hy + 1, c('skin', 3)).set(hx - 2, hy, c('skin', 3));
+    const eyes = side ? [hx + 2] : [hx - 2, hx + 2];
     const ey = hy;
     for (const ex of back ? [] : eyes) {
       p.set(ex - 1, ey - 1, c('metal', 2))
@@ -120,12 +133,11 @@ export function manArt(pal: Pal) {
         .set(mx, hy + 2, ink)
         .set(mx + 1, hy + 2, ink);
     if (!side && !back) p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
-    // arms
-    const skin = c('skin', 2);
-    const arm = (x0: number, y0: number, x1: number, y1: number) => p.line(x0, y0, x1, y1, skin).line(x0 + 1, y0, x1 + 1, y1, c('skin', 1));
-    const sy = 9 + crouch;
-    if (arms === 'down') (arm(5, sy, 4, sy + 4), arm(15, sy, 16, sy + 4));
-    if (arms === 'up') (arm(5, sy, 2, sy - 6), arm(15, sy, 17, sy - 6));
+    // arms (from the side, the near arm, swinging opposite the near leg)
+    if (side && arms === 'down') arm(10, sy, 10 + swing, sy + 4);
+    else if (side && arms === 'up') arm(10, sy, 12, sy - 6);
+    else if (arms === 'down') (arm(5, sy, 4, sy + 4), arm(15, sy, 16, sy + 4));
+    else if (arms === 'up') (arm(5, sy, 2, sy - 6), arm(15, sy, 17, sy - 6));
     if (arms === 'forehead') (arm(5, sy, 4, sy + 4), arm(15, sy, hx + 3, hy - 2));
     if (arms === 'fist') (arm(5, sy, 4, sy + 4), arm(15, sy, 17, sy - 7), p.disc(17, sy - 8, 1.4, skin));
     if (arms === 'gut') (arm(5, sy, 8, sy + 3), arm(15, sy, 12, sy + 3));
