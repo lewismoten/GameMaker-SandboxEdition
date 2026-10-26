@@ -95,5 +95,5 @@ export function renderCredits(el: HTMLElement): void {
       softwareSection(),
     ),
   );
-  pageToc(el.querySelector('main')!);
+  pageToc(el.querySelector('main')!, { jump: false }); // its own row of sections (jumpList)
 }

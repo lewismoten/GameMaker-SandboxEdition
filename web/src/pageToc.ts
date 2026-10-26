@@ -9,6 +9,8 @@ import { h } from './editor/core/ui';
 interface PageTocOptions {
   /** More headings to list, indented under their section (e.g. '.cast-card h3[id]'). */
   sub?: string;
+  /** False where the page has its own row of section links for a narrow window (the credits). */
+  jump?: boolean;
 }
 
 export function pageToc(main: HTMLElement, o: PageTocOptions = {}): void {
@@ -44,11 +46,13 @@ export function pageToc(main: HTMLElement, o: PageTocOptions = {}): void {
   main.replaceChildren(body, nav);
   main.classList.add('with-toc');
   // the narrow window's row (one or the other list is shown, never both)
-  let first: HTMLElement = heads.find((e) => e.tagName === 'H2')!;
-  while (first.parentElement && first.parentElement !== body) first = first.parentElement;
-  // (sections only: a long list of smaller entries would push the page itself out of sight)
-  const sections = items.filter((i) => i.head.tagName === 'H2').map((i) => i.jump);
-  body.insertBefore(h('nav', { class: 'page-jump', 'aria-label': 'On this page' }, h('ul', null, ...sections)), first);
+  if (o.jump !== false) {
+    let first: HTMLElement = heads.find((e) => e.tagName === 'H2')!;
+    while (first.parentElement && first.parentElement !== body) first = first.parentElement;
+    // (sections only: a long list of smaller entries would push the page itself out of sight)
+    const sections = items.filter((i) => i.head.tagName === 'H2').map((i) => i.jump);
+    body.insertBefore(h('nav', { class: 'page-jump', 'aria-label': 'On this page' }, h('ul', null, ...sections)), first);
+  }
 
   // entries for parts hidden now (a filter on the page) are hidden too
   const sync = () =>
