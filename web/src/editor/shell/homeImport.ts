@@ -9,6 +9,7 @@ import { beginFirstSteps } from './firstSteps';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
 import { GameReader, gameFromFiles, scanFile, type FoundGame, type ReadGame, type ScanFile, type ScanReport } from '../../project/importScan';
 import * as chooser from './importChooser';
+import { markBatch, newBatch } from './importBatch';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
@@ -154,16 +155,33 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   const chosen = await chooseGames(report, (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined), new GameReader(given));
   if (!chosen?.length) return;
   const reader = new GameReader(given);
+  const batch = newBatch();
   const { done, failed } = await importWithProgress(chosen, async (g) => {
-    await saveImported(await reader.read(g));
+    const { project } = await saveImported(await reader.read(g));
+    markBatch([project.id], batch);
   });
   onAdded?.();
+  if (!done && !failed.length) return;
   const games = (n: number) => `${n} ${n === 1 ? 'game' : 'games'}`;
   const canceled = done + failed.length < chosen.length;
-  toast(
-    `${canceled ? 'Canceled: imported' : 'Imported'} ${done === chosen.length ? games(done) : `${done} of ${games(chosen.length)}`}. They are listed under Imported.`,
-  );
-  if (failed.length) toast(`Not imported: ${failed.join('; ')}`, 'error');
+  // what came in, with a way to take it all back out
+  const again = await modal<boolean>(canceled ? 'Import canceled' : 'Imported', (close) => [
+    h(
+      'p',
+      null,
+      `${canceled ? 'Canceled: imported' : 'Imported'} ${done === chosen.length ? games(done) : `${done} of ${games(chosen.length)}`}. They are listed under Imported.`,
+    ),
+    failed.length
+      ? h('details', { class: 'ic-notes' }, h('summary', null, `Not imported (${failed.length})`), h('ul', null, ...failed.map((f) => h('li', null, f))))
+      : null,
+    h(
+      'div',
+      { class: 'buttons' },
+      done ? h('button', { type: 'button', onclick: () => close(true) }, 'Remove the ones from this import') : null,
+      h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => close(false) }, 'OK'),
+    ),
+  ]);
+  if (again) await (await import('./importRemove')).removeImported(() => onAdded?.(), batch);
 }
 
 /**

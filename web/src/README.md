@@ -485,7 +485,8 @@ modules are in [`../test`](../test).
     `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
     lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
-    each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`) and
+    each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all
+    the imported games, or one import's, which `importBatch.ts` remembers: `importRemove.ts`) and
     `projectExport.ts`; the health badge (`gameHealth.ts`).
   - The workspace (`workspace.ts`: file list + editor), with Play Game and the Play Level split
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player

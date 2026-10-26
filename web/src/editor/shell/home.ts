@@ -225,6 +225,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** The collection a game is listed in. */
   const categoryOf = (g: HomeGame): Category => (g.project && isImported(g.project.id) ? 'imported' : g.kind);
   // My games in the order you like: the one edited last first, or by name
+  // an import can bring in hundreds: all of them go at once (importRemove.ts, loaded when used)
+  const removeAllBtn = h(
+    'button',
+    { type: 'button', class: 'lib-remove-all', hidden: true, onclick: () => void import('./importRemove').then((m) => m.removeImported(refreshProjects)) },
+    'Remove all imported…',
+  );
   const sortBox = h(
     'label',
     { class: 'lib-sort' },
@@ -456,6 +462,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     libTitle.textContent = info.name;
     showLead(false);
     sortBox.hidden = !isOwn(c) || own(c).length < 2;
+    removeAllBtn.hidden = c !== 'imported' || !own(c).length;
     let cards: HTMLElement[];
     if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
     else {
@@ -629,7 +636,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
             h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game'),
           ),
         ),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, howBtn),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, removeAllBtn, howBtn),
         tiles,
       ),
       h('section', { class: 'home-start', 'aria-labelledby': 'home-start-title' }, h('h2', { id: 'home-start-title' }, 'Getting started'), ...startBody()),

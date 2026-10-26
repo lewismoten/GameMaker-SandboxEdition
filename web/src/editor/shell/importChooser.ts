@@ -8,7 +8,7 @@ import { importThumbs } from './importThumbs';
 import './importChooser.css';
 
 /** A dialog that runs `work` (told how far it got) and closes when it ends; Cancel or Esc stops it. */
-function working<T>(
+export function working<T>(
   title: string,
   start: string,
   work: (signal: AbortSignal, tell: (done: number, total: number, what: string) => void) => Promise<T>,
