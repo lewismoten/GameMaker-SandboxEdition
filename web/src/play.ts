@@ -14,6 +14,9 @@ import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 import { markUsed } from './project/projectUse';
 import { registerServiceWorker } from './offline';
 import { playAchievements, playWrote } from './achievements';
+import { catalogPatches } from './dosPlayer/catalogPatches';
+import { companionPatches } from './dosPlayer/playerRecord';
+import type { PlayerPatches } from './dosPlayer/patchRules';
 
 interface BundleManifest {
   id: string;
@@ -66,7 +69,18 @@ async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
 }
 
 async function choose(): Promise<
-  { id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string; poster?: Promise<string | undefined> } | undefined
+  | {
+      id: string;
+      title: string;
+      gam: string;
+      files: GameFiles;
+      back?: string;
+      notice?: string;
+      poster?: Promise<string | undefined>;
+      /** Its DOS player look (dosPlayer/): a project's companion, an original game's player.json. */
+      player?: PlayerPatches;
+    }
+  | undefined
 > {
   const params = new URLSearchParams(location.search);
   const gameId = params.get('game') ?? pageGame;
@@ -76,7 +90,14 @@ async function choose(): Promise<
     // the home page's "Continue where you left off" shows the game played last
     if (p) {
       markUsed(projectId);
-      return { id: `project:${projectId}`, title: p.record.name, gam: p.record.gam, files: p.files, back: './' };
+      return {
+        id: `project:${projectId}`,
+        title: p.record.name,
+        gam: p.record.gam,
+        files: p.files,
+        back: './',
+        player: companionPatches(p.record.companion, p.record.gam),
+      };
     }
   }
   if (gameId) {
@@ -96,6 +117,7 @@ async function choose(): Promise<
         back: `./#/game/cd:${encodeURIComponent(entry.id)}`,
         poster: posterOf(entry).catch(() => undefined),
         notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
+        player: catalogPatches(entry),
       };
     }
   }
@@ -144,6 +166,7 @@ async function main(): Promise<void> {
     mountPlayer(root, game.files, game.gam, {
       title: game.title,
       notice: game.notice,
+      player: game.player,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),

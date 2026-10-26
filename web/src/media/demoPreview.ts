@@ -13,6 +13,7 @@ import { DemoAudioEngine, demoAudio, onDemoAudio, type DemoAudio } from './demoA
 import type { Session } from '../engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import type { GameFiles } from '../project/files';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { recordingTicks, titleDemo, withoutOpening } from './demo';
 import { attractRecording } from './attractDemo';
 import { extraDemoForGam, loadExtraDemos } from './extraDemos';
@@ -76,6 +77,8 @@ interface DemoPreviewOptions {
   attract?: boolean;
   /** Show DEMO_KIND_TAG over an added demo or the attract mode (default true). */
   tag?: boolean;
+  /** The game's DOS player look (dosPlayer/): its player screens as its .EXE shows them. */
+  player?: PlayerPatches;
 }
 
 /**
@@ -111,6 +114,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     let endedAt = 0;
     const p = mountPlayer(host, game, gam, {
       title: o.title,
+      player: o.player,
       playback: rec,
       preview: true,
       audio: sound,

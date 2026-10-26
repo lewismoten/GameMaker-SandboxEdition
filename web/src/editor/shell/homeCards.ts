@@ -301,15 +301,17 @@ export function demoInPicture(
   const ready = (async () => {
     screen.classList.add('demo-loading');
     try {
-      const [files, { playDemoPreview }, { demoAudioPicker }] = await Promise.all([
+      const [files, { playDemoPreview }, { demoAudioPicker }, player] = await Promise.all([
         (game.previewFiles ?? game.files)(),
         demoPreview(),
         import('../../media/demoAudio'),
+        // a catalog game's DOS player look (its player.json)
+        game.entry ? import('../../dosPlayer/catalogPatches').then((m) => m.catalogPatches(game.entry)) : undefined,
       ]);
       if (stopped || !game.gam) return false;
       sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
       screen.append(host, sound);
-      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop, tag: false });
+      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop, tag: false, player });
       if (!preview) {
         stop();
         return false;
@@ -411,7 +413,9 @@ export async function copyCatalogGame(
   const files = await offerAddedDemo(entry, await loadFiles(), gam);
   if (!files) return;
   toast(`Copying ${title}…`);
-  const p = Project.fromFiles(files, name);
+  // the copy keeps the game's DOS player look (an original game's player.json) in its companion
+  const companion = entry && gam ? (await import('../../dosPlayer/catalogPatches')).catalogCompanion(entry, gam) : undefined;
+  const p = Project.fromFiles(files, name, undefined, companion);
   if (gam) p.gam = gam;
   await p.saveNow();
   rememberOrigin(p.id, entry?.id);
@@ -510,7 +514,13 @@ function lookInside(game: HomeGame, id: string, nav: HomeNav): HTMLElement {
 export function demoDialogButton(game: HomeGame): HTMLElement | null {
   if (!game.gam) return null;
   // the dialog and the video maker load when it is pressed (media/demo.ts does the rest)
-  const press = async () => (await import('../../media/demo')).demoButton(game.title, () => game.files(), game.gam)?.click();
+  const press = async () => {
+    const [{ demoButton }, player] = await Promise.all([
+      import('../../media/demo'),
+      game.entry ? import('../../dosPlayer/catalogPatches').then((m) => m.catalogPatches(game.entry)) : undefined,
+    ]);
+    demoButton(game.title, () => game.files(), game.gam, player)?.click();
+  };
   return h(
     'button',
     { class: 'with-ico', title: 'Watch the demo with its music and sounds, or save it as a video', onclick: () => void press() },

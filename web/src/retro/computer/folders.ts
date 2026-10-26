@@ -108,7 +108,9 @@ export abstract class ComputerFolders extends ComputerDrives {
     if (r !== 'C' && r !== 'Enter') return undefined;
     this.copiedTo = `C:\\GM\\${dir}`;
     if (installed) return hdProject(installed);
-    const project = Project.fromFiles(new GameFiles(files.entries()), title);
+    // the copy keeps a catalog game's DOS player look (an original game's player.json)
+    const companion = catalogId && gam ? await (await import('../../dosPlayer/catalogPatches')).catalogCompanionById(catalogId, gam) : undefined;
+    const project = Project.fromFiles(new GameFiles(files.entries()), title, undefined, companion);
     if (gam) project.gam = gam;
     await project.saveNow();
     this.opts.onDisksChanged?.();
@@ -152,7 +154,12 @@ export abstract class ComputerFolders extends ComputerDrives {
     if (gam) project.gam = gam;
     // the game's DOS player customizations (PLAYHACK's) go with it: on the floppy's copy, and in the download's .EXE
     const { loadProjectPatches } = await import('../../dosPlayer/projectPatches');
-    const player = game.hd?.projectId ? await loadProjectPatches(game.hd.projectId) : {};
+    const catalogId = game.hd?.catalog?.id ?? game.catalogId;
+    const player = game.hd?.projectId
+      ? await loadProjectPatches(game.hd.projectId)
+      : catalogId
+        ? await (await import('../../dosPlayer/catalogPatches')).catalogPatchesById(catalogId)
+        : {};
     if (gam && Object.keys(player).length) {
       const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
       project.setExtras(gam, PLAYER_SECTION, playerRecord(player));

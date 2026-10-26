@@ -1,8 +1,9 @@
 // 🔍 Look inside: a finished game from the home page (gameware, Sandbox, the Bard of Bizarre's,
 // shareware) opened in the editor as released, without making a copy. Its files load into an
 // in-memory project that editor/core/readOnly.ts makes refuse every change: it is never saved
-// to this browser, never listed in My games and keeps no companion data. Its address is
-// #/p/look:<id>/<file> (lookId.ts), so reload and Back work.
+// to this browser, never listed in My games and keeps no companion data but its DOS player
+// look (dosPlayer/catalogPatches.ts). Its address is #/p/look:<id>/<file> (lookId.ts), so
+// reload and Back work.
 //
 // A change tried on it asks first. A game free to change (gameware, Sandbox, the Bard's):
 // "Make a copy and keep going" runs Edit a copy's flow (homeCards.ts copyCatalogGame) and
@@ -45,7 +46,14 @@ export async function openReleased(catalogId: string, host: HTMLElement, file?: 
   const entry = catalog.find((g) => g.id === catalogId && g.gam);
   if (!entry?.gam) return undefined;
   const original = await loadHostedGame(entry, './', (done, total) => (status.textContent = `Opening ${entry.title}: ${done} of ${total} files…`));
-  const project = Project.fromFiles(new GameFiles(original.entries().map(([n, b]) => [n, b.slice()])), entry.title, lookId(entry.id));
+  // its DOS player look (an original game's player.json) shows in the integrator's DOS player panel and its Play
+  const { catalogCompanion } = await import('../../dosPlayer/catalogPatches');
+  const project = Project.fromFiles(
+    new GameFiles(original.entries().map(([n, b]) => [n, b.slice()])),
+    entry.title,
+    lookId(entry.id),
+    catalogCompanion(entry, entry.gam),
+  );
   project.gam = entry.gam;
   const r: Released = { entry, original };
   released.set(project, r);

@@ -19,8 +19,9 @@ import { download, h, modal, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
-import type { GameFiles } from '../../project/files';
+import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
+import type { PlayerPatches } from '../../dosPlayer/patchRules';
 import { REPO_URL } from '../../seo/site';
 
 export interface DownloadGame {
@@ -40,6 +41,8 @@ export interface DownloadGame {
   companion?: () => Companion | undefined;
   /** Our own games: made now, presented as a 1990s release (export/fiction.ts), for the About text. */
   fiction?: string;
+  /** A catalog game, for its DOS player look (an original game's player.json, dosPlayer/catalogPatches.ts); a game of yours keeps its own in `companion`. */
+  entry?: CatalogEntry;
 }
 
 type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'player' | 'dos' | 'files';
@@ -218,11 +221,13 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
   if (picked) await build(game, picked.kind, picked.alt);
 }
 
-/** The options the native downloads share. */
-/** A game of yours: its DOS player customizations (dosPlayer/playerRecord.ts), which the DOS, web-page and native exports show. */
-async function gamePatches(game: DownloadGame) {
+/** The game's DOS player customizations (dosPlayer/), which the DOS, web-page and native exports show: a catalog game's own, or yours from its companion. */
+async function gamePatches(game: DownloadGame): Promise<PlayerPatches> {
+  if (game.entry) return (await import('../../dosPlayer/catalogPatches')).catalogPatches(game.entry);
   return (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam);
 }
+
+/** The options the native downloads share. */
 
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
   const [{ exportSinglePage }, { slug }, mac, audio] = await Promise.all([

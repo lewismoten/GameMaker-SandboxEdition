@@ -16,6 +16,7 @@ import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
+import { catalogPatches } from '../dosPlayer/catalogPatches';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -124,6 +125,8 @@ async function watch(
     return;
   }
   const gam = entry.gam;
+  // a catalog game's own DOS player look (an original game's player.json) unless a project's was handed in
+  player ??= catalogPatches(entry);
   const tl = walk.timeline;
   const total = tl.frames;
   /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */

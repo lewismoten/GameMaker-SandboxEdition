@@ -319,8 +319,16 @@ export class Computer extends ComputerFolders {
     this.opts.onGame?.({ files, gam, title });
     // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
-      // a game of yours plays with its DOS player choices (PLAYHACK, the editor's panel)
-      const patches = projectId && !gmHelp ? import('../dosPlayer/projectPatches').then((m) => m.loadProjectPatches(projectId)) : Promise.resolve(undefined);
+      // a game of yours plays with its DOS player choices (PLAYHACK, the editor's panel), a catalog
+      // game with its own (an original game's player.json); Game-Maker's PLAYGAME (gmHelp) has none
+      const catalogId = saveId?.startsWith('game:') ? saveId.slice('game:'.length) : undefined;
+      const patches = gmHelp
+        ? Promise.resolve(undefined)
+        : projectId
+          ? import('../dosPlayer/projectPatches').then((m) => m.loadProjectPatches(projectId))
+          : catalogId
+            ? import('../dosPlayer/catalogPatches').then((m) => m.catalogPatchesById(catalogId))
+            : Promise.resolve(undefined);
       const mount = () =>
         void Promise.all([import('../player/player'), patches]).then(
           ([{ mountPlayer }, player]) =>

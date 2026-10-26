@@ -159,6 +159,10 @@ modules are in [`../test`](../test).
   desk, and `patchesChanged.ts` tells an editor that has the game open, so its autosave keeps
   them); `describePatches.ts` lists them in words (the DOS export's
   README, which says its .EXE was customized; `exportDos.ts` writes them into XFERPLAY.EXE).
+  `catalogPatches.ts` is a catalog game's own look: an original game's `games/<id>/player.json`
+  (the same record), carried on its catalog entry as `player`, which its Play, demos,
+  walkthrough, downloads, the desk's copies and Transfer, and Look inside / Edit a copy read
+  (`gamePlayers.test.ts` checks every player.json with `games/kit/player.ts`).
   - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
     `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),
     `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`).

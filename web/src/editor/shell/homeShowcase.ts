@@ -77,6 +77,7 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
       year: e.year,
       box: e.original?.box,
       fiction: fictionNote(e),
+      entry: e,
     }),
   );
 }
