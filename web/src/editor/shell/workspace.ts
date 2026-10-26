@@ -1,4 +1,5 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
+import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
@@ -194,7 +195,15 @@ export class Workspace {
       void showShortcuts(this.current ? kindOf(this.current) : undefined);
     };
     document.addEventListener('keydown', onHelpKey);
-    this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey));
+    // the desk's PLAYHACK saved this game's DOS player patches: take them in, so the next autosave keeps them
+    const offPatches = onPatchesChanged((id, patches) => {
+      if (id !== project.id || project.readOnly) return;
+      void import('../../dosPlayer/playerRecord').then(({ companionPatches, playerRecord, PLAYER_SECTION }) => {
+        if (JSON.stringify(companionPatches(project.companion, project.gam)) !== JSON.stringify(patches))
+          project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
+      });
+    });
+    this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey), offPatches());
     if (firstStepsState(project)) void this.loadFirstSteps();
   }
 

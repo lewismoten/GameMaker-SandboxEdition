@@ -139,7 +139,8 @@ modules are in [`../test`](../test).
   file extensions (Acord Games'); `md5.ts` (RFC 1321); `presets.ts` (Builder's blanked menu,
   Rōdïp's status words, Reset all); `playerRecord.ts` keeps the choices in the .gam's
   `dosPlayer` companion section (`projectPatches.ts` reads and writes a stored project's, for the
-  desk); `describePatches.ts` lists them in words (the DOS export's
+  desk, and `patchesChanged.ts` tells an editor that has the game open, so its autosave keeps
+  them); `describePatches.ts` lists them in words (the DOS export's
   README, which says its .EXE was customized; `exportDos.ts` writes them into XFERPLAY.EXE).
   - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
     `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),

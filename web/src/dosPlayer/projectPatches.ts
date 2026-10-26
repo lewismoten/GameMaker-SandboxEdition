@@ -1,10 +1,11 @@
 // A stored project's DOS player patches, read and written straight from IndexedDB (project/
 // storage.ts): for the desk PC, whose PLAYHACK.EXE edits them and whose Play shows them, without
-// opening the project in the editor.
+// opening the project in the editor (an editor that has it open hears of a save: patchesChanged.ts).
 import { getSection, emptyCompanion, setSection } from '../project/companion';
 import { loadProject, saveProject } from '../project/storage';
 import { PLAYER_SECTION, playerRecord, recordPatches } from './playerRecord';
 import type { PlayerPatches } from './patchRules';
+import { announcePatches } from './patchesChanged';
 
 /** The project's patches (none when it is gone). */
 export async function loadProjectPatches(projectId: string): Promise<PlayerPatches> {
@@ -21,5 +22,7 @@ export async function saveProjectPatches(projectId: string, patches: PlayerPatch
   const companion = record.companion ?? emptyCompanion();
   setSection(companion, record.gam, PLAYER_SECTION, playerRecord(patches));
   await saveProject(record.id, record.name, record.gam, files, companion);
+  // an editor with this game open takes them in, so its next autosave keeps them
+  announcePatches(record.id, recordPatches(playerRecord(patches)));
   return true;
 }

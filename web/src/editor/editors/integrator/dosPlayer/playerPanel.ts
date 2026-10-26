@@ -86,6 +86,17 @@ function playerPanel(project: Project): HTMLElement {
     project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
     redraw();
   };
+  // patches saved from outside (the desk's PLAYHACK, editor/shell/workspace.ts) replace the ones shown
+  const offExtras = project.onExtrasChange((file, section) => {
+    if (!body.isConnected) return offExtras();
+    if (file !== project.gam || section !== PLAYER_SECTION) return;
+    const now = companionPatches(project.companion, project.gam);
+    if (JSON.stringify(now) === JSON.stringify(patches)) return;
+    for (const k of Object.keys(patches)) delete patches[k];
+    Object.assign(patches, now);
+    render();
+    redraw();
+  });
 
   /** Sets one patch (or the stock value) when it keeps the rules; returns the problem otherwise. */
   const set = (pid: string, value: PatchValue): string | undefined => {
