@@ -415,8 +415,11 @@ function boom(frame: number): Pixels {
   return p;
 }
 
-/** Adds what Joe's drumstick throws to a scene's monster list, at the number HELLO fires (ids.ts TOOL_MON). */
-export function withTools(b: Bestiary): Bestiary {
+/**
+ * Adds what Joe's drumstick throws to a scene's monster list, at the number HELLO fires (ids.ts
+ * TOOL_MON), as strong as `power` (a scene can add a gentler one first).
+ */
+export function withTools(b: Bestiary, power = 150): Bestiary {
   if (b.has('hello')) return b;
   b.add(
     'hello',
@@ -425,7 +428,7 @@ export function withTools(b: Bestiary): Bestiary {
         ['boom0', 2],
         ['boom1', 2],
       ],
-      power: 150,
+      power,
       towards: 7,
       end: 14,
       thru: true,
@@ -724,12 +727,13 @@ export function fairCritters(mb: BlockSet, reggieRun: number): Bestiary {
   ];
   b.add('horseA', { pics: [['horse', 50]], power: 100, end: -2, path: stroke(-1) });
   b.add('horseB', { pics: [['horse2', 50]], power: 100, end: -2, path: stroke(1) });
+  const reggie = 50;
   b.add('reggie', {
     pics: [
       ['reggieFly0', 6],
       ['reggieFly1', 6],
     ],
-    power: 50,
+    power: reggie,
     end: 0,
     path: [
       [0, 0, 1],
@@ -737,7 +741,9 @@ export function fairCritters(mb: BlockSet, reggieRun: number): Bestiary {
       [0, 0, 1],
     ],
   });
-  return b;
+  // a HELLO here is no stronger than Reggie, so it passes through him (one that popped him
+  // would leave the turnstile waiting for him for good)
+  return withTools(b, reggie);
 }
 
 /** The fair's monster numbers. */
