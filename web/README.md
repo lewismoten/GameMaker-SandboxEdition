@@ -183,6 +183,8 @@ cd web
 npm install
 npm run dev        # http://localhost:5173
 npm test           # every *.test.ts in test/ and src/ (vitest), a minute or two
+npm run test:fast  # only the quick tests, as GitHub runs them (each under 50 ms here)
+npm run test:slow-list  # times every test and rewrites test/slowTests.json, the ones CI skips
 npm run typecheck  # tsc --noEmit (strict)
 npm run format     # Prettier on web/'s code, games/*.ts and code/README.md (config at the repo root)
 npm run format:check  # the same, only checking (CI runs it)
@@ -220,8 +222,10 @@ Every game file but a GIF also gets a gzip copy (`<file>.gz`), which the site fe
 unpacks, since GitHub Pages sends unknown file types uncompressed.
 
 The GitHub Actions workflow in [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
-tests and builds on every push and pull request, and deploys `web/dist` to GitHub Pages
-from `master`. In the repository settings, set **Pages → Source** to **GitHub Actions**.
+checks formatting, lint and types, runs only the quick tests (`GM_FAST_TESTS`: a test over
+50 ms here runs only locally, listed in `test/slowTests.json`), builds on every push and pull
+request, and deploys `web/dist` to GitHub Pages from `master`. Run `npm test` locally for
+everything; after adding a slow test, run `npm run test:slow-list` so CI leaves it out. In the repository settings, set **Pages → Source** to **GitHub Actions**.
 
 ## Layout
 

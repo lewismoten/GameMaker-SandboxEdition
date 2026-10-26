@@ -1,0 +1,246 @@
+{
+  "limitMs": 50,
+  "files": [
+    "src/dosPage/boundary.test.ts",
+    "src/editor/check/fastBirth.test.ts",
+    "src/editor/check/regressions.test.ts",
+    "src/editor/check/walk/autoWalk.test.ts",
+    "src/engine/playEnd.test.ts",
+    "src/formats/fliClips.test.ts",
+    "src/hostedPlayer/load.test.ts",
+    "src/manual/printables/levelSecrets.test.ts",
+    "src/manual/printables/levelViews.test.ts",
+    "test/cdBackdrops.test.ts",
+    "test/fliRuns.test.ts",
+    "test/gif.test.ts",
+    "test/monsterPathEngine.test.ts",
+    "test/music.test.ts",
+    "test/textfitMore.test.ts"
+  ],
+  "tests": {
+    "src/audio/sfxSynth.test.ts": ["presets each makes a short, audible sound that survives a .VOC round trip"],
+    "src/cast/castData.test.ts": [
+      "the cast page lists the hidden things where the games’ about.json put them (else rerun scripts/castHidden.ts), never in a secret game"
+    ],
+    "src/desk/mug/gameBadge.test.ts": ["composeBadge Teddy's title ribbon has no sky or cloud between the letters"],
+    "src/desk/mug/mug3d.test.ts": [
+      "handlePoints 11oz: finite, near the body and never turning back on itself across, at every degree",
+      "handlePoints 15oz: finite, near the body and never turning back on itself across, at every degree",
+      "handlePoints 12oz: finite, near the body and never turning back on itself across, at every degree"
+    ],
+    "src/editor/check/checks.test.ts": ["the level check’s file checks reports a whole game, play included"],
+    "src/editor/check/checks/wayBack.test.ts": ["slower hands gets through the test level with slower hands, so says nothing"],
+    "src/editor/check/explore.test.ts": [
+      "the level check explorer finds the exit, the floor it walked, the pit it falls into, and leaves the sealed coin",
+      "the level check explorer plays a whole game from the title link to the won scene",
+      "the level check explorer knows spikes the hero can step off don’t hold him"
+    ],
+    "src/editor/check/walk/mine.test.ts": ["my play in the walkthrough plays my keys in place of the bot’s, and the engine agrees"],
+    "src/editor/check/walk/pathRoute.test.ts": [
+      "the bot keeps to the road searches along the road first when asked, and exactly as before when not",
+      "the bot keeps to the road walks the bend in the road instead of cutting across the field",
+      "the bot keeps to the road cuts across when the road is a long way round"
+    ],
+    "src/editor/editors/animation/scene/scene.test.ts": ["render writes a 320x200 .FLI whose frames are the scene, sprites in the picture’s colors"],
+    "src/editor/editors/palette/colorVision.test.ts": [
+      "warnings lists touching colors that look alike, and shows where",
+      "warnings says nothing about colors that already look alike (texture) or far apart in every view",
+      "warnings finds a monster the color of the scenery it stands in",
+      "warnings finds ramp steps too close to see, and evens them out",
+      "fixes offers no fix that would make another level worse"
+    ],
+    "src/editor/editors/recording/botDemo.test.ts": [
+      "a demo the bot plays replays on the engine to the same end",
+      "a demo the bot plays ends back on the title with Esc"
+    ],
+    "src/editor/editors/registry.test.ts": [
+      "loadEditor gam: loads its editor",
+      "loadEditor pal: loads its editor",
+      "loadEditor bbl: loads its editor",
+      "loadEditor mon: loads its editor",
+      "loadEditor chr: loads its editor",
+      "loadEditor map: loads its editor",
+      "loadEditor snd: loads its editor",
+      "loadEditor fli: loads its editor",
+      "loadEditor bkd: loads its editor",
+      "loadEditor cmf: loads its editor",
+      "loadEditor voc: loads its editor",
+      "loadEditor rec: loads its editor"
+    ],
+    "src/editor/tools/opening/opening.test.ts": [
+      "the classic RSD intro shows the same pictures as TEXTBOX3.FLI (they differ only in a color no pixel of theirs uses)",
+      "the opening in a new game animation: madewith.fli 0 in a new TITLE.LST",
+      "the opening in a new game animation with a name: madewith.fli 0, presents.fli 0 in a new TITLE.LST",
+      "the opening in a new game still with a name: madewith.gif 4, presents.gif 4 in a new TITLE.LST",
+      "the opening in a new game blocks: madewith.fli 0 in a new TITLE.LST",
+      "the opening in a new game wipe with a name: madewith.fli 0, presents.fli 0 in a new TITLE.LST",
+      "the opening in a new game is replaced, not doubled, when chosen again (fetching the sting from the site)"
+    ],
+    "src/export/downloadable.test.ts": [
+      "which catalog games may be downloaded leaves out every other author’s game on the CD, as the release scripts’ --all does"
+    ],
+    "src/export/linuxApp.test.ts": [
+      "linuxApp makes a .tar.gz of the game folder, programs and scripts executable",
+      "linuxApp writes scripts the shell accepts, which install, fall back to the browser, and uninstall"
+    ],
+    "src/export/macApp.test.ts": [
+      "macApp re-seals the player for the app’s Info.plist and resources",
+      "macApp zips the app with the program executable",
+      "macApp makes an app codesign verifies"
+    ],
+    "src/export/notices.test.ts": ["third-party notices travel in every download"],
+    "src/export/winApp.test.ts": [
+      "the Windows player reads back the resources it writes, unchanged",
+      "winApp puts the game, its info, icon and version into the program (x64 and arm64)",
+      "winApp zips the program",
+      "winIcon makes an .ico file with bitmaps and PNGs"
+    ],
+    "src/formats/fliPlaygame.test.ts": [
+      "PLAYGAME port breaks on a chunk bigger than its buffer (one 64K BRUN frame, as encodeFli once wrote)",
+      "PLAYGAME port plays every game .FLI with a small buffer, frame for frame as fli.ts draws it",
+      "encodeFli chunk limit splits big frames into bands that each fit (runs: false), drawing the same pictures",
+      "encodeFli chunk limit splits big frames into bands that each fit (runs: true), drawing the same pictures",
+      "encodeFli chunk limit re-encodes game animations to the same frames"
+    ],
+    "src/linkIn/unpack.test.ts": [
+      "unpackGame reads a .zip, a pack and a gzipped pack the same, and drops DOS programs",
+      "unpackGame reads a page made by “Export as one web page”",
+      "unpackGame stops a zip that unpacks past the limit"
+    ],
+    "src/manual/printables/levelRooms.test.ts": [
+      "on the real disks leaves out Quest for the Round Tuit's talk map, and prints its towns apart",
+      "on the real disks lays Teddy's Little Bigger Adventure's main street out hedge to hedge, its den apart",
+      "on the real disks prints no planet of Maximus with a slab of bedrock under its floor, only one line of it",
+      "on the real disks keeps marks of every level inside its crop"
+    ],
+    "src/manual/printables/worldMapPlan.test.ts": [
+      "World Map plans places every place once, none over another",
+      "World Map plans keeps every path off the places in the every-scene view too"
+    ],
+    "src/manual/ultimate/plan.test.ts": ["The Ultimate Owner’s Guide shares no run of six words with the original manual, the reviews or the video"],
+    "src/scoreTrophies/scoreTrophies.test.ts": ["only real play of a catalog game counts hooks catalog games only, never a game of your own or a download"],
+    "src/seo/scoopFeed.test.ts": ["The Sandbox Scoop feed leaves out the secret games"],
+    "src/seo/seoPages.test.ts": ["seoBuild makes each Guide section a page of its own that opens it in the app"],
+    "src/tinHearts/hearts.test.ts": [
+      "tin hearts finds blaster's heart on its disk, and the engine reports touching it",
+      "tin hearts finds brief's heart on its disk, and the engine reports touching it",
+      "tin hearts finds maximus's heart on its disk, and the engine reports touching it",
+      "tin hearts finds teddy3's heart on its disk, and the engine reports touching it"
+    ],
+    "test/bbsGallery.test.ts": ["GIF Gallery files 'TEDDY.JPG' is a 1994 download: 8.3 name, 320x200 or smaller, small"],
+    "test/cmfEdit.test.ts": [
+      "CMF editing model writes every song on the CD back byte for byte",
+      "CMF editing model plays the same after a round trip through the model",
+      "CMF editing model removing ignored events changes nothing that plays",
+      "CMF editing model plays softer after scaling velocities down"
+    ],
+    "test/demoAudio.test.ts": ["walkthrough sound without a card writes no song into the video, and starts it again when the card goes back in"],
+    "test/exportDos.test.ts": [
+      "DOS export names the stand-alone player after the game and keeps its files intact",
+      "DOS export keeps a game’s own README.TXT and puts the player’s beside it"
+    ],
+    "test/fliFrames.test.ts": ["fli frames re-encodes every CD animation frame for frame"],
+    "test/fliSpeedZero.test.ts": ["FLI speed a speed above 0 waits for frames after each one"],
+    "test/formats.test.ts": [
+      "binary formats round-trips every .bbl file byte for byte",
+      "binary formats round-trips every .mbl file byte for byte",
+      "binary formats round-trips every .cbl file byte for byte",
+      "binary formats round-trips every .chr file byte for byte",
+      "binary formats round-trips every .mon file byte for byte",
+      "binary formats round-trips every .map file byte for byte",
+      "binary formats round-trips every .snd file byte for byte",
+      "binary formats round-trips every .gam file byte for byte"
+    ],
+    "test/gamePack.test.ts": ["gamePack reads back what it wrote", "gamePack hands out each file as soon as its bytes are in, whatever the chunk sizes"],
+    "test/gamePages.test.ts": ["preview picture is a 1200 x 630 PNG"],
+    "test/gameShots.test.ts": ["the build's game pictures draws a game its tile and screen pictures"],
+    "test/gmRegistration.test.ts": ["GMCRACK’s answer table lists every question, fitting 80 columns and the screen"],
+    "test/hexStructure.test.ts": [
+      "HEXEDIT structure maps .gam values match the parser",
+      "HEXEDIT structure maps .map values match the parser",
+      "HEXEDIT structure maps .bbl values match the parser",
+      "HEXEDIT structure maps .mbl values match the parser",
+      "HEXEDIT structure maps .cbl values match the parser",
+      "HEXEDIT structure maps .chr values match the parser",
+      "HEXEDIT structure maps .mon values match the parser",
+      "HEXEDIT structure maps .cmf values match the parser",
+      "HEXEDIT structure maps .fli values match the parser"
+    ],
+    "test/integratorLayout.test.ts": [
+      "integrator layout falls back to a grid for long games without overlaps",
+      "integrator layout arranges Maximus",
+      "integrator layout arranges games/brief/disk/brief.gam cleanly",
+      "integrator layout arranges games/lark/disk/lark.gam cleanly",
+      "integrator layout arranges games/maximus/disk/maximus.gam cleanly",
+      "integrator layout arranges games/realm/disk/tuit.gam cleanly",
+      "integrator layout arranges games/sleuth/disk/final.gam cleanly"
+    ],
+    "test/jpeg.test.ts": [
+      "JPEG decodes baseline, progressive and grayscale files",
+      "JPEG fills a baseline file in top to bottom as it arrives",
+      "JPEG shows a progressive file whole from its first scan, sharper with each scan"
+    ],
+    "test/kitPhoto.test.ts": ["games/kit/photo loads every scan the games use"],
+    "test/manualStickers.test.ts": [
+      "sticker sheets never lets two stickers overlap, and keeps a cutting gap between them",
+      "sticker sheets fits each plain shape in its box and follows a die-cut around its art"
+    ],
+    "test/newGameSave.test.ts": [
+      "a new saved game bakers: starts where Play starts, with the first level's character",
+      "a new saved game blaster: starts where Play starts, with the first level's character",
+      "a new saved game brief: starts where Play starts, with the first level's character",
+      "a new saved game carl: starts where Play starts, with the first level's character",
+      "a new saved game depth: starts where Play starts, with the first level's character",
+      "a new saved game goat: starts where Play starts, with the first level's character",
+      "a new saved game lark: starts where Play starts, with the first level's character",
+      "a new saved game loaf: starts where Play starts, with the first level's character",
+      "a new saved game logic: starts where Play starts, with the first level's character",
+      "a new saved game loofah: starts where Play starts, with the first level's character",
+      "a new saved game maximus: starts where Play starts, with the first level's character",
+      "a new saved game mustard: starts where Play starts, with the first level's character",
+      "a new saved game needle: starts where Play starts, with the first level's character",
+      "a new saved game realm: starts where Play starts, with the first level's character",
+      "a new saved game reckoning: starts where Play starts, with the first level's character",
+      "a new saved game remote: starts where Play starts, with the first level's character",
+      "a new saved game risi: starts where Play starts, with the first level's character",
+      "a new saved game sandcast: starts where Play starts, with the first level's character",
+      "a new saved game sleuth: starts where Play starts, with the first level's character",
+      "a new saved game smirked: starts where Play starts, with the first level's character",
+      "a new saved game snowbound: starts where Play starts, with the first level's character",
+      "a new saved game sweats: starts where Play starts, with the first level's character",
+      "a new saved game teddy: starts where Play starts, with the first level's character",
+      "a new saved game teddy2: starts where Play starts, with the first level's character",
+      "a new saved game teddy3: starts where Play starts, with the first level's character",
+      "a new saved game tickle: starts where Play starts, with the first level's character",
+      "a new saved game year2000: starts where Play starts, with the first level's character"
+    ],
+    "test/oplPresets.test.ts": ["OPL2 instrument presets play a Game-Maker CMF preview that sounds, stays in range, and (percussion) dies away"],
+    "test/sampleEdit.test.ts": ["sound groups sorts made-up sounds by their shape"],
+    "test/saveLevel.test.ts": [
+      "changing a saved game’s level teddy: every level loads at its start, keeping what the hero has",
+      "changing a saved game’s level teddy2: every level loads at its start, keeping what the hero has",
+      "changing a saved game’s level snowbound: every level loads at its start, keeping what the hero has",
+      "changing a saved game’s level sandcast: every level loads at its start, keeping what the hero has",
+      "changing a saved game’s level year2000: every level loads at its start, keeping what the hero has",
+      "changing a saved game’s level goat: every level loads at its start, keeping what the hero has",
+      "changing a saved game’s level draws the whole level, the F6 screen the same, and where the hero fits"
+    ],
+    "test/secretGames.test.ts": ["the build and secret games lists them only in the secret catalog"],
+    "test/singlePage.test.ts": [
+      "one-page export packs and unpacks files end to end",
+      "one-page export round-trips base64, including large inputs",
+      "one-page export encodes and decodes a game (gzip when available)",
+      "reading a one-page export back finds the embedded game in a filled page",
+      "importing a one-page export as a project turns the page back into game files"
+    ],
+    "test/sofaSpam.test.ts": ["The Sofa teleconference spam uses only characters the terminal font draws"],
+    "test/textfit.test.ts": [
+      "text fit blaster: no text over art",
+      "text fit logic: no text over art",
+      "text fit maximus: no text over art",
+      "text fit sandcast: no text over art",
+      "text fit sleuth: no text over art",
+      "text fit teddy: no text over art"
+    ]
+  }
+}

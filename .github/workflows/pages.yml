@@ -23,7 +23,7 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,8 +34,11 @@ jobs:
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint
-      - run: npx tsc --noEmit -p .
+      # only the quick tests (each under 50 ms here); the slow ones run locally (test/slowTests.json)
       - run: npx vitest run
+        env:
+          GM_FAST_TESTS: '1'
+      # type-checks, then builds
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
