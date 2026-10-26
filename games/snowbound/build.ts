@@ -71,7 +71,7 @@ const LEVELS: Level[] = [
     card: {
       title: '1. GALE STREET',
       time: 'Friday, 7:00 AM.  18 inches!',
-      lines: ['Papers first! Grab the bundle', 'by the porch, one paper per', 'door mat. Then shovel. East!'],
+      lines: ['Papers first! Grab the bundle', 'by the porch, one paper per', 'door mat. Then shovel. East!', 'F5 saves, F6 loads.'],
       view: [9, 13],
     },
   },
