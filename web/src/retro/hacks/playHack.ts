@@ -14,6 +14,8 @@ import { PLAYER_PRESETS } from '../../dosPlayer/presets';
 import { COLOR_LABELS, SCREEN_NAMES } from '../../dosPlayer/describePatches';
 import { playerLook } from '../../engine/playerLook';
 import { PLAYHACK_VERSION } from './playHackText';
+import { HACK_GROUPS, hackGroupOf, type HackGroup } from './playHackGroups';
+import { loadCatalog, type CatalogEntry } from '../../project/files';
 import { BG, BRIGHT, DIM, GREEN, HEAD, RED, TEXT, YELLOW, cell, confirm, editLine, frame, keyBar, pickList, put, statusLine, type ListRow } from './dosUi';
 
 const RULE = '='.repeat(79);
@@ -89,26 +91,48 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
   };
   chrome('~Enter~ Select  ~Esc~ Quit');
   statusLine(h, 'Looking for your games...');
-  const games = (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'));
-  let gi = 0;
-  for (;;) {
-    chrome('~\x18\x19~ Choose  ~Enter~ Select game  ~Esc~ Quit');
+  const all = (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'));
+  const catalog = await loadCatalog().catch(() => [] as CatalogEntry[]);
+  const groupOf = new Map(all.map((p) => [p.id, hackGroupOf(p.id, catalog)]));
+  const groups = HACK_GROUPS.map((g) => ({ ...g, games: all.filter((p) => groupOf.get(p.id) === g.id) })).filter((g) => g.games.length);
+  if (!all.length) {
+    chrome('~Esc~ Quit');
     frame(h, 1, TOP, 78, BOTTOM, 'Select one of your games');
-    if (!games.length) {
-      put(h, 3, TOP + 2, BRIGHT, 'No games of yours on this PC yet.');
-      put(h, 3, TOP + 3, TEXT, 'Make one in Game-Maker (or on the web side), then patch its player here.');
-      statusLine(h, 'PLAYHACK only patches your own games: shareware belongs to its authors.');
-      await h.keys.next();
-      break;
+    put(h, 3, TOP + 2, BRIGHT, 'No games of yours on this PC yet.');
+    put(h, 3, TOP + 3, TEXT, 'Make one in Game-Maker (or on the web side), then patch its player here.');
+    statusLine(h, 'PLAYHACK only patches your own games: shareware belongs to its authors.');
+    await h.keys.next();
+  }
+  // a short PC goes straight to its games; one with several kinds picks a kind first
+  let ci = 0;
+  for (; all.length;) {
+    let group: { id: HackGroup; name: string; games: typeof all } = groups[0];
+    if (groups.length > 1) {
+      chrome('~\x18\x19~ Choose  ~Enter~ Open  ~Esc~ Quit');
+      frame(h, 1, TOP, 78, BOTTOM, 'Which games?');
+      put(h, 3, TOP + 1, HEAD, cell('Kind', 30) + 'Games');
+      statusLine(h, `${all.length} game${all.length === 1 ? '' : 's'} of yours found.`);
+      const rows: ListRow[] = groups.map((g) => ({ text: cell(g.name, 30) + String(g.games.length) }));
+      const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: ci });
+      if (pick.key === 'Escape') break;
+      ci = pick.i;
+      group = groups[ci];
     }
-    put(h, 3, TOP + 1, HEAD, cell('Name', 10) + cell('Game', 50) + 'Patches');
-    statusLine(h, `${games.length} game${games.length === 1 ? '' : 's'} of yours found.`);
-    const counts = await Promise.all(games.map(async (g) => Object.keys(await loadProjectPatches(g.id)).length));
-    const rows: ListRow[] = games.map((g, i) => ({ text: cell(dosDirName(g.gam), 10) + cell(g.name, 50) + (counts[i] ? String(counts[i]) : '-') }));
-    const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: gi });
-    if (pick.key === 'Escape') break;
-    gi = pick.i;
-    await editGame(h, games[gi].id, dosDirName(games[gi].gam), chrome);
+    const games = group.games;
+    let gi = 0;
+    for (;;) {
+      chrome(`~\x18\x19~ Choose  ~Enter~ Select game  ~Esc~ ${groups.length > 1 ? 'Back' : 'Quit'}`);
+      frame(h, 1, TOP, 78, BOTTOM, groups.length > 1 ? `Select one of your games: ${group.name}` : 'Select one of your games');
+      put(h, 3, TOP + 1, HEAD, cell('Name', 10) + cell('Game', 50) + 'Patches');
+      statusLine(h, `${games.length} game${games.length === 1 ? '' : 's'} here.`);
+      const counts = await Promise.all(games.map(async (g) => Object.keys(await loadProjectPatches(g.id)).length));
+      const rows: ListRow[] = games.map((g, i) => ({ text: cell(dosDirName(g.gam), 10) + cell(g.name, 50) + (counts[i] ? String(counts[i]) : '-') }));
+      const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: gi });
+      if (pick.key === 'Escape') break;
+      gi = pick.i;
+      await editGame(h, games[gi].id, dosDirName(games[gi].gam), chrome);
+    }
+    if (groups.length <= 1) break;
   }
   s.fill(0, 0, 79, ROWS - 1, attr(7, 0));
   s.cursorX = 0;

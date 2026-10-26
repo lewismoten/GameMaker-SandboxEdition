@@ -295,7 +295,7 @@ modules are in [`../test`](../test).
     screen (`picture.ts`).
   - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
     rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
-    patches as the editor's panel does, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
+    patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
     `cracktro.ts`, `gm30Install.ts`, their words in `*Text.ts`, their look in `dosUi.ts`, what they
     add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
     debugging tools for registration modes, saved games and backups, dressed as 1990s scene
