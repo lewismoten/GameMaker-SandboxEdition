@@ -13,6 +13,7 @@ import './edition.css';
 import { themeButton } from './theme';
 import { viewSwitch } from './viewSwitch';
 import { parseHash } from './urlState';
+import { noteLibraryContext } from './library/startGame';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 
 const modernUi = () => import('./modernUi');
@@ -193,6 +194,8 @@ async function route(): Promise<void> {
   const {
     path: [kind, id, file],
   } = parseHash(location.hash);
+  // a game's page, a look inside one or a project: the Library may start on that game (library/startGame.ts)
+  noteLibraryContext(kind, id);
   content.removeAttribute('role');
   const { renderHome, openStored } = await modernUi();
   if (ui !== 'modern') return;

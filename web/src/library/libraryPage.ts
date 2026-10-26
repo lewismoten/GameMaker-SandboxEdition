@@ -6,6 +6,9 @@
 // box (manual/dosManual.ts), TURBO BUTTON, the Guide, the desk's zine (manual/zine), a game's
 // walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play). The
 // Game-Maker box's piece and chapter stay in the address (&gm=ultimate&ch=12, readerAddress.ts).
+// Opened without a sort in the address just after showing one game (its page, a look inside it,
+// or a copy of it being made), it starts on that game's shelf instead (startGame.ts). A
+// "Showing: <game> · All games" line says what is picked and goes back to everything.
 // Below the shelves, your imported games' ratings and notes (imported/notesShelf.ts).
 import './library.css';
 import { h, clear } from '../editor/core/ui';
@@ -18,6 +21,8 @@ import { forgetThumbs, lazyThumb } from './thumbs';
 import { tally, unlockAchievement } from '../achievements';
 import { openFromLibrary, readerOpen } from './readerAddress';
 import { onCatalogChanged } from '../project/catalogWatch';
+import { originId } from '../editor/shell/homeOrigin';
+import { libraryStartGame } from './startGame';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
 let unwatchShelf: (() => void) | undefined;
@@ -162,6 +167,21 @@ export function renderLibrary(el: HTMLElement): void {
   let shelf: Shelf | undefined;
   const list = h('div', { class: 'lib-shelf', id: 'lib-shelf' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
   const count = h('p', { class: 'lib-count', role: 'status' });
+  // what is picked, said plainly, with the way back to everything beside it
+  const showingName = h('strong');
+  const showAll = h('button', {
+    type: 'button',
+    class: 'lib-show-all',
+    'aria-controls': 'lib-shelf',
+    onclick: () => {
+      only = undefined;
+      rememberOnly(order, only);
+      keepAddress();
+      show();
+      picker.focus();
+    },
+  });
+  const showing = h('p', { class: 'lib-showing', hidden: true }, 'Showing: ', showingName, h('span', { 'aria-hidden': 'true' }, ' · '), showAll);
   const pickLabel = h('label', { for: 'lib-only', class: 'lib-only-label' });
   const picker = h('select', {
     id: 'lib-only',
@@ -221,6 +241,9 @@ export function renderLibrary(el: HTMLElement): void {
       ...groups.map((g) => h('option', { value: pickOf(g) }, g.heading)),
     );
     picker.value = only ?? '';
+    showing.hidden = !only;
+    showingName.textContent = groups.find((g) => pickOf(g) === only)?.heading ?? '';
+    showAll.textContent = order === 'game' ? 'All games' : 'All kinds';
     let shown = only ? groups.filter((g) => pickOf(g) === only) : groups;
     // one kind (By type) from several games: a second picker for the game
     const owners = order === 'type' && only && shown[0] ? ownersOf(shown[0].parts[0].items) : [];
@@ -257,6 +280,7 @@ export function renderLibrary(el: HTMLElement): void {
         gamePick,
         count,
       ),
+      showing,
       list,
     ),
   );
@@ -272,7 +296,17 @@ export function renderLibrary(el: HTMLElement): void {
   void loadShelf()
     .then((s) => {
       shelf = s;
-      if (list.isConnected) show();
+      if (!list.isConnected) return;
+      // no sort in the address, just after showing one game with paper here: start on its shelf, as if picked
+      const start = isShelfOrder(asked) ? undefined : libraryStartGame((id) => groupShelf(s.items, 'game').some((g) => pickOf(g) === id), originId);
+      if (start) {
+        order = 'game';
+        only = start;
+        rememberOrder(order);
+        rememberOnly(order, only);
+        keepAddress();
+      }
+      show();
     })
     .catch(() => list.replaceChildren(h('p', { class: 'lib-loading' }, 'The shelves could not be loaded. Try reloading the page.')));
   // a secret game revealed or hidden again (the felt eggs, the tin hearts, EGG.EXE): its pieces join or leave without a reload

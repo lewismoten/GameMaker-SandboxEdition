@@ -356,7 +356,10 @@ modules are in [`../test`](../test).
 - [`library/`](library): the Library (`#/library`, the top bar's Library link): a card for
   everything to read or print, sorted by game or by type (`?by=type`) and narrowed to one game or
   kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
-  browser (`prefs.ts`). Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
+  browser (`prefs.ts`). Opened with no sort in the address just after a game's page, a look
+  inside a game or a copy of one in the editor, it starts on that game's shelf if it has one
+  (`startGame.ts`, noted by `main.ts`'s router, used once), with a "Showing: <game> · All games"
+  line. Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
   Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
   (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
   played in the walkthrough player. Videos about the site (`videos.ts`, plain data: one entry a
