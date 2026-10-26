@@ -50,6 +50,17 @@ function rewriteNames(bytes: Uint8Array, map: Map<string, string>): Uint8Array {
   return out;
 }
 
+/**
+ * Whether `bytes` can be a file of extension `ext`, for the kinds that say so in their first
+ * bytes. Acord's folders also hold other programs' data under the same renamed extensions (3D
+ * Construction Kit worlds as .z0p beside the games' FLIs), which keep their names.
+ */
+function fits(ext: string, bytes: Uint8Array): boolean {
+  if (ext === 'fli') return bytes.length >= 6 && bytes[5] === 0xaf && (bytes[4] === 0x11 || bytes[4] === 0x12);
+  if (ext === 'gif') return bytes.length >= 4 && String.fromCharCode(...bytes.subarray(0, 4)) === 'GIF8';
+  return true;
+}
+
 /** Renames a renamed-extension game's files back (in place); returns the extension map used. */
 function renameBack(files: GameFiles, exeExt: Record<string, string>): Map<string, string> {
   const map = new Map<string, string>(); // renamed ext -> Game-Maker's
@@ -77,7 +88,7 @@ function renameBack(files: GameFiles, exeExt: Record<string, string>): Map<strin
   for (const n of files.names()) {
     const e = extOf(n);
     const to = map.get(e) ?? (blankGam && gams.includes(n) ? 'gam' : undefined);
-    if (to) renames.set(n, e ? `${n.slice(0, -e.length)}${to}` : `${n}.gam`);
+    if (to && fits(to, files.get(n)!)) renames.set(n, e ? `${n.slice(0, -e.length)}${to}` : `${n}.gam`);
   }
   for (const [from, to] of renames) {
     const bytes = files.get(from)!;
