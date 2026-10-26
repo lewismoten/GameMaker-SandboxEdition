@@ -252,7 +252,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <b>Certified Rat Tickler</b>, Doc Leo turns mad scientist with a real certificate in rat
       tickling (Lewis earned one) and plots to raise a legion of giggling rats.</li>
       <li><b>Shakespeare in Sweatpants</b>: seventeen spoken monologues by a man in a starched
-      ruff and grey sweatpants about the most dramatic things that ever happened to him, like a
+      ruff and gray sweatpants about the most dramatic things that ever happened to him, like a
       lost pen, a dead ficus named Gerald and the self-checkout. The game puts him on stage at
       open-mic night.</li>
       <li><b>Veni, Vidi, Risi!</b>: six songs in Latin, as grand as Rome, about a dog who breaks
