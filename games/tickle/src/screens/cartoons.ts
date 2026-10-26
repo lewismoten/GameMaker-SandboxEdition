@@ -302,7 +302,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   const ink = c('ink', 0);
   const info = CARDS[i];
   /** Where this level falls in the game (the last one says so), small under the place line. */
-  const count = `${i === CARDS.length - 1 ? 'FINAL LEVEL:' : 'LEVEL'} ${i + 1} OF ${CARDS.length}`;
+  const count = `${i === CARDS.length - 1 ? 'FINAL LEVEL:' : 'LEVEL'} ${i + 1} OF ${CARDS.length}${i === 0 ? ' - F5 SAVES, F6 LOADS' : ''}`;
   const bg = new Pixels(W, H, ink);
   bg.blit(card.map, 0, STRIP);
   const frame = (p: Pixels, k: number) => {
