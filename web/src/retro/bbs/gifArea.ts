@@ -6,6 +6,7 @@
 // view-while-download did it; then back to the BBS's text. Pictures go to C:\IMAGES.
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
+import { toCp437 } from '../text/cp437';
 import { readLine } from '../text/textInput';
 import { commas } from '../dos/vfs';
 import { modeFor } from '../view/picture';
@@ -64,6 +65,13 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
 }
 
 /** Downloads a picture (from the Sandbox BBS's GIF Gallery or The Sofa's GIF area) into C:\IMAGES, painting it as it arrives. */
+/** The bottom line while a picture comes in: a bar, the percent and the bytes so far (40 columns at most). */
+export function progressLine(got: number, total: number): string {
+  const f = total ? Math.min(1, got / total) : 1;
+  const bar = '█'.repeat(Math.round(f * 12)).padEnd(12, '░');
+  return toCp437(`${bar} ${Math.floor(f * 100)}%  ${commas(Math.floor(got))} of ${commas(total)}`);
+}
+
 export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void> {
   if (f.board === 'sofa') t.line(`|15Zmodem|07.  ${f.name}, |14${commas(f.bytes)}|07 bytes: |14${downloadLine(f.bytes, '|07, |14')}|07.`);
   else t.line(`|07Protocol: |15Zmodem|07.  ${f.name} is |14${commas(f.bytes)}|07 bytes, ${expectText(f.bytes)}.`);
@@ -93,6 +101,11 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
       last = now;
       const pic = decodePicture(bytes.subarray(0, Math.floor(got)));
       if (pic) paintPicture(scr, pic);
+      // until the first of the picture arrives the palette is all black: one white to write in
+      else scr.dac.set([63, 63, 63], 15 * 3);
+      // how far along, on the bottom line, as a terminal's status line showed it
+      caption(scr, progressLine(got, bytes.length));
+      scr.invalidate();
       modemSignal('receive');
       const k = scr.poll();
       if (k === 'Escape') {
