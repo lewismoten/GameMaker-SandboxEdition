@@ -21,6 +21,8 @@ import { packCollections, packGroups } from './homePack';
 import { byMaker } from './homeAuthors';
 import { wantsTouchControls } from '../../player/touch';
 import { findOriginal, isImported } from './homeOrigin';
+import { batchOf } from './importBatch';
+import { lastUsed } from '../../project/projectUse';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 
 export interface HomeNav {
@@ -369,10 +371,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     markSelected();
   };
 
-  /** With games of your own, the one edited last (to carry on with); otherwise a featured game. */
+  /** With games of your own, the one played or opened last (to carry on with); otherwise a featured game. */
   const showStart = () => {
-    if (!projects.length) return feature();
-    top.show(mine(projects[0]), { resume: true });
+    // not the game an import of several saved last (projectUse.ts)
+    const last = lastUsed(projects, (id) => !!batchOf(id));
+    if (!last) return feature();
+    top.show(mine(last), { resume: true });
     showPath([]);
     markSelected();
   };

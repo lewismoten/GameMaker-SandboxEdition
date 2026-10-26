@@ -8,6 +8,7 @@
 import { cdName, GameFiles, IGNORED_FILE, normalize } from './files';
 import { crc32, isZip, listZip } from './zip';
 import { parseGame } from '../formats/game';
+import { markZipLeftovers } from './importLeftovers';
 
 /** A file to look at: picked, dropped or in a zip. Its path is from the top of what was given. */
 export interface ScanFile {
@@ -315,7 +316,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
   const sfxPaths = new Set<string>();
 
   await look(given, [], [], 0);
-  report.games = sameGamesOnce(report.games, sfxPaths);
+  report.games = markZipLeftovers(sameGamesOnce(report.games, sfxPaths));
   report.loose = report.loose.filter((f) => !sfx.has(f));
   // listed by where they are (a zip's games stay together, so GameReader reads it once)
   report.games.sort((a, b) => a.from.localeCompare(b.from, undefined, { numeric: true, sensitivity: 'base' }));

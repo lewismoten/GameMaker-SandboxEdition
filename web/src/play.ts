@@ -11,6 +11,7 @@ import { watchForUpdates } from './devReload';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
+import { markUsed } from './project/projectUse';
 import { registerServiceWorker } from './offline';
 import { playAchievements, playWrote } from './achievements';
 
@@ -72,7 +73,11 @@ async function choose(): Promise<
   const projectId = params.get('project');
   if (projectId) {
     const p = await loadProject(projectId);
-    if (p) return { id: `project:${projectId}`, title: p.record.name, gam: p.record.gam, files: p.files, back: './' };
+    // the home page's "Continue where you left off" shows the game played last
+    if (p) {
+      markUsed(projectId);
+      return { id: `project:${projectId}`, title: p.record.name, gam: p.record.gam, files: p.files, back: './' };
+    }
   }
   if (gameId) {
     // the short catalog: the play page needs no manuals; a shareware game's notice comes on its own

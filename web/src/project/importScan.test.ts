@@ -142,6 +142,25 @@ describe('scanImport', () => {
     expect([left.files.names(), left.players.map((p) => p.name), left.gam]).toEqual([['shared.z0q', 'space.z0g'], ['ZAPAK.EXE'], 'space.gam']);
   });
 
+  it('lists a .gam missing files in a folder of its own, beside a whole game of the same zip, as a leftover', async () => {
+    const test = newGame('Title Screen');
+    test.scenes[0].files = ['AVTEST.MAP', 'AVTEST.CBL'];
+    const broken = newGame('Broken');
+    broken.scenes[0].files = ['GONE.MAP'];
+    const given = [
+      await zip('shorty.zip', [...game('', 'Shorty'), ['TEST/AVTEST.GAM', serializeGame(test)]]),
+      // a folder of games is many downloads: one missing files there is not a leftover
+      ...loose([...game('more/zark/', 'Zark'), ['more/broken/broken.gam', serializeGame(broken)]]),
+    ];
+    const r = await scanImport(given);
+    expect(r.games.map((g) => [g.name, g.from, g.missing, g.leftover])).toEqual([
+      ['Broken', 'more/broken/', 1, undefined],
+      ['Zark', 'more/zark/', undefined, undefined],
+      ['Shorty', 'shorty.zip', undefined, undefined],
+      ['Title Screen', 'shorty.zip › TEST/', 2, 'AVTEST.GAM: 2 of its files aren’t in the zip'],
+    ]);
+  });
+
   it('finds each game of a folder whose games share their files, each with its own player, renamed extensions and all', async () => {
     // an Acord Games player asks for .z0g in place of .gam (dosPlayer/renamedExtensions.ts)
     const player = new Uint8Array(160_598);

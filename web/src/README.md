@@ -118,7 +118,10 @@ modules are in [`../test`](../test).
   streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
   (`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
   (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips
-  inside zips too) by their .gam files, and reading the picked ones again (`importScan.ts`), a
+  inside zips too) by their .gam files, and reading the picked ones again (`importScan.ts`; a test
+  .gam missing files beside a whole game in the same zip is a leftover, left unticked:
+  `importLeftovers.ts`), when each of your games was last played or opened, for the home page's
+  "Continue where you left off" (`projectUse.ts`), a
   folder's own hand-edited player read into DOS player patches, its renamed
   extensions mapped back (`importPlayer.ts`; the names inside its files are rewritten by
   `extensionNames.ts`, which the DOS export uses the other way), and the editor-only companion file (`companion.ts`,

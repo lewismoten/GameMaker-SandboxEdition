@@ -111,8 +111,9 @@ export async function chooseGames(r: ScanReport, noImport: (g: FoundGame) => str
         ),
       );
     });
+    // Select all leaves the leftovers unticked (a test .gam missing files): tick one to take it too
     const all = (on: boolean) => () => {
-      for (const [b] of boxes) b.checked = on;
+      for (const [b, g] of boxes) b.checked = on && !g.leftover;
       count();
     };
     count();

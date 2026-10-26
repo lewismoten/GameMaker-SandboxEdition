@@ -32,6 +32,11 @@ export function markBatch(ids: string[], batch: string): void {
   write(map);
 }
 
+/** The import of several that brought this project in, if one did. */
+export function batchOf(id: string): string | undefined {
+  return read()[id];
+}
+
 /** Forgets these projects' imports (they were removed). */
 export function forgetBatch(ids: string[]): void {
   const map = read();
@@ -48,11 +53,6 @@ export function forgetBatch(ids: string[]): void {
  * The projects to remove: those listed under Imported (not My games, nor one moved from
  * Imported to My games), and of import `batch` only when one is given.
  */
-export function importedToRemove<P extends { id: string }>(
-  projects: P[],
-  isImported: (id: string) => boolean,
-  batch?: string,
-  batchOf = (id: string) => read()[id],
-): P[] {
-  return projects.filter((p) => isImported(p.id) && (batch === undefined || batchOf(p.id) === batch));
+export function importedToRemove<P extends { id: string }>(projects: P[], isImported: (id: string) => boolean, batch?: string, of = batchOf): P[] {
+  return projects.filter((p) => isImported(p.id) && (batch === undefined || of(p.id) === batch));
 }
