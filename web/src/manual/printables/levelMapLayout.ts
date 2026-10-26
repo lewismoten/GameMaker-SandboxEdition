@@ -7,7 +7,7 @@ import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../
 import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
 import type { SeenRect, StoodColumns, UnrolledMap } from './levelViews';
-import { layOutCourse, type CourseLayout } from './levelCourse';
+import { layOutCourse, type CourseFit, type CourseLayout } from './levelCourse';
 import type { CoursePath } from '../../editor/check/course';
 import { unrolledAt, type Unrolled, type UnrolledBox as UnrolledBoxRect } from '../../editor/check/unroll';
 import {
@@ -674,7 +674,7 @@ function intersect(a: Rect, b: Rect): Rect | undefined {
  * around in (every scene starts him on its way out) is left out, and a map of separate rooms
  * (levelRooms.ts; `rooms`, levelRoomHints.ts, says how a map's maker wants it cut) prints each
  * room as a level of its own. A map in `courses` (a course through the wrap, by "map|bbl") is
- * laid out as its strip, its panels `panel` blocks high.
+ * laid out as its strip, its panels fitted to the paper (`fit`).
  */
 export function levelsOf(
   game: Game,
@@ -684,7 +684,7 @@ export function levelsOf(
   unrolled: Record<string, UnrolledMap> = {},
   rooms: Record<string, RoomsHint> = {},
   courses: Record<string, CoursePath> = {},
-  panel = 56,
+  fit: CourseFit = { pageW: 101, pageH: 62, padW: 13.2, padH: 6.4 },
 ): Level[] {
   const numbered: { cut: RoomCut; hint: RoomsHint }[] = [];
   const levels = mapGroups(game).flatMap((group): (Level | RoomPart)[] => {
@@ -708,7 +708,7 @@ export function levelsOf(
     area = trimPadding(area, cells, marks, [false, false], blocks);
     const level: Level = { group, cells, area, whole, marks, name, scene: group.scenes[0] };
     const path = courses[key];
-    if (path) return [{ ...level, course: layOutCourse(cells, blocks, path, marks, panel) }];
+    if (path) return [{ ...level, course: layOutCourse(cells, blocks, path, marks, fit) }];
     let top = level;
     if (unrolled[key]) {
       top = unrolledLevel(level, unrolled[key], wrapReach(map.blocks, blocks, starts), blocks, unrolled[key].stood);

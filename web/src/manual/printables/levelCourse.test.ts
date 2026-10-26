@@ -52,7 +52,7 @@ describe('a course laid out as one strip', () => {
   const path = findCourse(ride())!;
   it('is found from the ride', () => expect(path).toBeDefined());
 
-  const l = layOutCourse(track(), blocks, path, marks, 56);
+  const l = layOutCourse(track(), blocks, path, marks, { pageW: 300, pageH: 62, padW: 13, padH: 6 });
 
   it('turns the way on (up and to the right) to point up the page, start at the bottom', () => {
     expect(l.up[0]).toBeCloseTo(Math.SQRT1_2);
@@ -100,8 +100,33 @@ describe('a course laid out as one strip', () => {
     }
   });
 
+  it('draws what the player sees beside the way: the walls and the next lane, each place on every lap it shows', () => {
+    const drawn = new Set(l.cells.map((c) => `${c.x},${c.y}`));
+    // half a screen across from the way, past its wall: a wall block and the lane beyond it
+    const way = l.cells.filter((c) => c.way);
+    expect(way.some((c) => drawn.has(`${c.x + 8},${c.y}`) && !l.cells.find((d) => d.x === c.x + 8 && d.y === c.y)!.way)).toBe(true);
+    // a map block seen from two laps is drawn on both
+    const laps = new Map<string, number>();
+    for (const c of l.cells) laps.set(`${mod(c.x, 100)},${mod(c.y, 100)}`, (laps.get(`${mod(c.x, 100)},${mod(c.y, 100)}`) ?? 0) + 1);
+    expect([...laps.values()].some((n) => n > 1)).toBe(true);
+  });
+
+  it('draws its blocks as big as fit the paper, up to twice full size, on at most twice the pages', () => {
+    const fit = { pageW: 101, pageH: 62, padW: 13.2, padH: 6.4, most: 2, least: 1 };
+    const z = layOutCourse(track(), blocks, path, marks, fit);
+    expect(z.scale).toBeGreaterThan(1);
+    expect(z.scale).toBeLessThanOrEqual(2);
+    for (const p of z.panels) {
+      expect((p.c1 - p.c0) * z.scale + fit.padW).toBeLessThanOrEqual(fit.pageW + 1e-9);
+      expect((p.a1 - p.a0) * z.scale + fit.padH).toBeLessThanOrEqual(fit.pageH + 1e-9);
+    }
+    // a poster: everything on one page, as big as that allows
+    const poster = layOutCourse(track(), blocks, path, marks, { ...fit, least: 0.1, growth: 1 });
+    expect(poster.scale).toBeLessThan(1);
+  });
+
   it('finds a splice across to the next lane as a shortcut a lap on', () => {
-    const s = layOutCourse(track(30), blocks, path, marks, 56);
+    const s = layOutCourse(track(30), blocks, path, marks, { pageW: 300, pageH: 62, padW: 13, padH: 6 });
     expect(s.shortcuts.length).toBe(1);
     const [sc] = s.shortcuts;
     // a lap on is 100 across and 80 up the map: about 127 blocks up the strip
@@ -128,7 +153,7 @@ describe('a downhill slant laid out upright', () => {
   for (let u = 2; u < 236; u++) ride.push([mod(left(u) + 10, 100), mod(4 + u, 100)]);
   const path = findCourse(ride)!;
   const at = (u: number) => ({ kind: 'start', x: mod(left(u) + 10, 100), y: mod(4 + u, 100), w: 1, h: 1 });
-  const l = layOutCourse(cells, blocks, path, [at(2), { ...at(235), kind: 'exit' }], 56);
+  const l = layOutCourse(cells, blocks, path, [at(2), { ...at(235), kind: 'exit' }], { pageW: 300, pageH: 62, padW: 13, padH: 6 });
 
   it('keeps the map upright and runs down the page, start at the top of the first panel', () => {
     expect(path).toBeDefined();

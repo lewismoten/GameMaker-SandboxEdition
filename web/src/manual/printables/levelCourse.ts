@@ -2,9 +2,10 @@
 // laid out for the printed Level Maps as one long strip the way the ship flies it: the map
 // unrolled through every wrap seam, turned in steps of 45 degrees so the way on points up the
 // page, start at the bottom. A way straight down the map (a downhill run, such as Snowbound's
-// sled run) keeps the map upright instead and runs down the page, start at the top. Only the way the hero can get to near the path is drawn (every open
-// block a short way from it, reached without going through a wall) and a few blocks of the
-// walls and scenery round that. Also found here: where the way crosses the wrap (the seams, and
+// sled run) keeps the map upright instead and runs down the page, start at the top. Only the
+// way the hero can get to near the path is drawn (every open block a short way from it, reached
+// without going through a wall, on every lap it is passed) and what the player sees round it (a
+// screen's reach: the walls, scenery and lanes beside). Also found here: where the way crosses the wrap (the seams, and
 // the laps they count), the bends where it runs off straight up (the kinks), the places where
 // it touches a part of itself further on (a shortcut, such as a splice across to the next lane),
 // and the page-high panels it is cut into. No DOM; levelCourseSvg.ts draws it.
@@ -14,9 +15,10 @@ import type { CoursePath } from '../../editor/check/course';
 import { openCell } from './levelRooms';
 
 /** How far from the path (in blocks, through open blocks) the way the hero can get to is drawn. */
-const REACH = 16;
-/** Blocks of wall and scenery drawn round it. */
-const MARGIN = 3;
+const REACH = 24;
+/** What the player sees round the hero: half a screen (16 x 10 blocks) each way, drawn round every block of the way. */
+const VIEW_X = 8;
+const VIEW_Y = 5;
 /** Two parts of the way that touch but are further apart than this along it are a shortcut. */
 const SHORTCUT = 2 * REACH + 8;
 /** The path's way at a place is its direction over this many blocks either side. */
@@ -65,6 +67,22 @@ export interface Kink {
   taken: boolean;
 }
 
+/**
+ * How the strip is cut for paper: pages `pageW` x `pageH` paper units, each panel needing `padW`
+ * and `padH` more than its picture (labels, gaps); blocks drawn `least` paper units or more, up to
+ * `most`, as big as they can be while the strip takes no more than `growth` times the pages it
+ * would at `least` (and never wider than a page).
+ */
+export interface CourseFit {
+  pageW: number;
+  pageH: number;
+  padW: number;
+  padH: number;
+  most?: number;
+  least?: number;
+  growth?: number;
+}
+
 /** One page-high piece of the strip. */
 export interface CoursePanel {
   /** Along, bottom and top (the top runs a few blocks into the next panel's bottom). */
@@ -91,6 +109,10 @@ export interface CourseLayout<M> {
   kinks: Kink[];
   shortcuts: Shortcut[];
   panels: CoursePanel[];
+  /** Paper units a block the panels are drawn at. */
+  scale: number;
+  /** Blocks each panel runs on into the next (the same blocks at the foot of one and the top of the other). */
+  overlap: number;
   /** The whole strip, along and across. */
   box: CoursePanel;
 }
@@ -135,14 +157,15 @@ function cutPanels(a0: number, a1: number, height: number, overlap: number): [nu
 
 /**
  * Lays out the course `path` on a map (`cells`, its blocks), with `marks` (map blocks) moved onto
- * it, cut into panels `height` blocks high that overlap by `overlap`.
+ * it, cut into panels that overlap by `overlap` blocks, the biggest blocks and tallest panels
+ * that `fit` the paper.
  */
 export function layOutCourse<M extends { x: number; y: number; w: number; h: number }>(
   cells: ArrayLike<number>,
   blocks: Block[],
   path: CoursePath,
   marks: M[],
-  height: number,
+  fit: CourseFit,
   overlap = 3,
 ): CourseLayout<M> {
   const [sx, sy] = path[0];
@@ -191,21 +214,71 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
     front = next;
   }
 
-  // the way, and a margin of what is round it
-  const drawn = new Map<number, CourseCell>();
-  for (const c of claim.values()) drawn.set(keyOf(c.x, c.y), { x: c.x, y: c.y, way: true });
-  for (const c of claim.values())
-    for (let dy = -MARGIN; dy <= MARGIN; dy++)
-      for (let dx = -MARGIN; dx <= MARGIN; dx++) {
-        const x = c.x + dx;
-        const y = c.y + dy;
-        const k = keyOf(x, y);
-        if (drawn.has(k)) continue;
-        // an open block of another lap's way is drawn there, not here
-        const other = claim.get(mod(y, MWID) * MLEN + mod(x, MLEN));
-        if (other && (other.x !== x || other.y !== y)) continue;
-        drawn.set(k, { x, y, way: false });
+  // the way drawn: out from the path through open blocks in unwrapped blocks, so a map block the
+  // way passes on two laps is drawn on both (the claims above only say which lap a block is first)
+  const ways = new Set<number>();
+  let wfront: [number, number][] = [];
+  for (const p of sample(path)) {
+    const x = Math.round(p.x);
+    const y = Math.round(p.y);
+    if (ways.has(keyOf(x, y)) || !open(x, y)) continue;
+    ways.add(keyOf(x, y));
+    wfront.push([x, y]);
+  }
+  for (let d = 1; d <= REACH && wfront.length; d++) {
+    const next: [number, number][] = [];
+    for (const [cx, cy] of wfront)
+      for (const [dx, dy] of steps) {
+        const x = cx + dx;
+        const y = cy + dy;
+        if (ways.has(keyOf(x, y)) || !open(x, y)) continue;
+        ways.add(keyOf(x, y));
+        next.push([x, y]);
       }
+    wfront = next;
+  }
+  // and what the player sees from it: the screen round every block of the way (walls, scenery,
+  // the lanes beside), found as a box of blocks spread VIEW_X across and VIEW_Y down
+  const wayCells = [...ways].map((k) => [Math.floor(k / 65536) - 16384, (k % 65536) - 16384]);
+  const bx0 = Math.min(...wayCells.map((c) => c[0])) - VIEW_X;
+  const by0 = Math.min(...wayCells.map((c) => c[1])) - VIEW_Y;
+  const bw = Math.max(...wayCells.map((c) => c[0])) + VIEW_X - bx0 + 1;
+  const bh = Math.max(...wayCells.map((c) => c[1])) + VIEW_Y - by0 + 1;
+  const seen = new Uint8Array(bw * bh);
+  for (const [x, y] of wayCells) seen[(y - by0) * bw + (x - bx0)] = 1;
+  const across = new Uint8Array(bw * bh);
+  for (let y = 0; y < bh; y++) {
+    let last = -Infinity;
+    for (let x = 0; x < bw; x++) {
+      if (seen[y * bw + x]) last = x;
+      if (x - last <= VIEW_X) across[y * bw + x] = 1;
+    }
+    last = Infinity;
+    for (let x = bw - 1; x >= 0; x--) {
+      if (seen[y * bw + x]) last = x;
+      if (last - x <= VIEW_X) across[y * bw + x] = 1;
+    }
+  }
+  const drawn = new Map<number, CourseCell>();
+  for (let x = 0; x < bw; x++) {
+    let last = -Infinity;
+    const mark = new Uint8Array(bh);
+    for (let y = 0; y < bh; y++) {
+      if (across[y * bw + x]) last = y;
+      if (y - last <= VIEW_Y) mark[y] = 1;
+    }
+    last = Infinity;
+    for (let y = bh - 1; y >= 0; y--) {
+      if (across[y * bw + x]) last = y;
+      if (last - y <= VIEW_Y) mark[y] = 1;
+    }
+    for (let y = 0; y < bh; y++)
+      if (mark[y]) {
+        const ux = x + bx0;
+        const uy = y + by0;
+        drawn.set(keyOf(ux, uy), { x: ux, y: uy, way: !!seen[y * bw + x] });
+      }
+  }
 
   // shortcuts: open neighbors claimed by parts of the path far apart along it
   const joins: { lo: { x: number; y: number }; hi: { x: number; y: number }; s: number }[] = [];
@@ -318,12 +391,62 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
     c0: Math.min(...corners.map((p) => p.c)),
     c1: Math.max(...corners.map((p) => p.c)),
   };
-  const panels = cutPanels(box.a0, box.a1, height, overlap).map(([a0, a1]) => {
-    const inside = corners.filter((p) => p.a >= a0 - 1 && p.a <= a1 + 1);
-    return { a0, a1, c0: Math.min(...inside.map((p) => p.c)), c1: Math.max(...inside.map((p) => p.c)) };
-  });
+  // each line along the strip: how far it goes across, for each panel's width
+  const lines = Math.ceil(box.a1 - box.a0) + 1;
+  const lo = new Float64Array(lines).fill(Infinity);
+  const hi = new Float64Array(lines).fill(-Infinity);
+  for (const p of corners) {
+    const k = Math.floor(p.a - box.a0);
+    lo[k] = Math.min(lo[k], p.c);
+    hi[k] = Math.max(hi[k], p.c);
+  }
+  const span = ([a0, a1]: [number, number]): CoursePanel => {
+    let c0 = Infinity;
+    let c1 = -Infinity;
+    for (let k = Math.max(0, Math.floor(a0 - box.a0) - 1); k <= Math.min(lines - 1, Math.ceil(a1 - box.a0) + 1); k++)
+      ((c0 = Math.min(c0, lo[k])), (c1 = Math.max(c1, hi[k])));
+    return { a0, a1, c0, c1 };
+  };
+  // the biggest blocks that fit: the tallest panels at that size no wider than a page, on no more
+  // pages than allowed (short panels stack in rows)
+  const most = fit.most ?? 1;
+  const least = fit.least ?? 1;
+  const cutAt = (sc: number, h = (fit.pageH - fit.padH) / sc) => cutPanels(box.a0, box.a1, h, overlap).map(span);
+  const pagesOf = (cut: CoursePanel[], sc: number) => {
+    // shelves: panels side by side across a page, rows of them down it
+    let pages = 0;
+    let x = Infinity;
+    let y = 0;
+    let row = 0;
+    for (const p of cut) {
+      const w = (p.c1 - p.c0) * sc + fit.padW;
+      const h = (p.a1 - p.a0) * sc + fit.padH;
+      if (x + w > fit.pageW) ((y += row), (x = 0), (row = 0));
+      if (y + h > fit.pageH || pages === 0) ((pages += 1), (y = 0), (x = 0), (row = 0));
+      x += w;
+      row = Math.max(row, h);
+    }
+    return pages;
+  };
+  let scale = least;
+  let panels = cutAt(least);
+  const budget = pagesOf(panels, least) * (fit.growth ?? 2);
+  search: for (let sc = most; sc > least + 1e-9; sc = Math.round((sc - 0.05) * 100) / 100)
+    for (let k = 1; k <= 8; k++) {
+      // page-high panels, then a half, a third... of a page, to stack in rows
+      const h = (fit.pageH / k - fit.padH) / sc;
+      if (h < 4 * overlap) break;
+      const cut = cutAt(sc, h);
+      if (Math.max(...cut.map((p) => p.c1 - p.c0)) * sc + fit.padW <= fit.pageW && pagesOf(cut, sc) <= budget) {
+        ((panels = cut), (scale = sc));
+        break search;
+      }
+    }
+  // a strip wider than a page at the least size is drawn smaller
+  const widest = Math.max(...panels.map((p) => p.c1 - p.c0));
+  if (widest * scale + fit.padW > fit.pageW) scale = (fit.pageW - fit.padW) / widest;
   if (down) panels.reverse();
-  return { up, down, right, cells: [...drawn.values()], marks: placed, seams, laps, kinks, shortcuts, panels, box };
+  return { up, down, right, cells: [...drawn.values()], marks: placed, seams, laps, kinks, shortcuts, panels, scale, overlap, box };
 }
 
 /** The panel (0 the start's) a place along the strip is drawn on: the first whose top it is under (whose foot it is over, on a way down). */
