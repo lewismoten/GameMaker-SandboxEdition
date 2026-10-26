@@ -56,6 +56,28 @@
   box-shadow: 0 0 0 3px #ffd400;
 }
 
+/* After dark (props/roomLight.ts) the card hangs in the screen's light, over the room's dark
+   layer rather than under it: the soft holes that layer cuts for lights behind the card (the
+   game boxes' spines, the clipping, the clock) would otherwise shine through it as blotches
+   over the writing. It dims itself, evenly, instead. Under the black light its paper glows a
+   little, all over, and the ink stays dark. */
+@media (min-width: 961px) {
+  .desk.rl-dark .key-card-spot {
+    z-index: 22;
+    filter: drop-shadow(2px 5px 5px rgba(0, 0, 0, 0.45)) brightness(0.8);
+  }
+
+  .desk.rl-dark .key-card-spot:hover,
+  .desk.rl-dark .key-card-spot:focus-visible {
+    filter: drop-shadow(4px 10px 10px rgba(0, 0, 0, 0.5)) brightness(0.85);
+  }
+
+  .desk.bl-uv.bl-night.rl-dark .key-card-spot .idx-sheet {
+    background-color: #f1eeff;
+    box-shadow: 0 0 2.4cqw 0.6cqw rgb(140 120 255 / 0.4);
+  }
+}
+
 /* a strip of clear tape holding it to the bezel */
 .key-card-spot .tape {
   position: absolute;
@@ -228,11 +250,55 @@
   line-height: var(--line, 5.8cqw);
 }
 
-.idx-row kbd.chord {
-  /* a Mac's arrow chord (↑+← for Home): two arrows on one key, kept as narrow as the key name */
-  padding: 0 0.4cqw;
-  letter-spacing: -0.04em;
+/* the Move line's little arrow pad, two ruled lines tall: the arrow keys that move, drawn as
+   key caps in a 3×3 square (corners as diagonal arrows), the ones that don't left faint */
+.idx-row.move {
+  min-height: calc(var(--line, 5.8cqw) * 2);
 }
+
+.idx-pad {
+  display: inline-grid;
+  flex: none;
+  grid-template-columns: repeat(3, calc(var(--line, 5.8cqw) * 0.62));
+  grid-auto-rows: calc(var(--line, 5.8cqw) * 0.62);
+  gap: calc(var(--line, 5.8cqw) * 0.04);
+  padding: calc(var(--line, 5.8cqw) * 0.03) 0;
+}
+
+.idx-pad > span {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  border-radius: 0.6cqw;
+  font-size: calc(var(--line, 5.8cqw) * 0.5);
+  line-height: 1;
+}
+
+.idx-pad > span.on {
+  border: max(0.2cqw, 1px) solid currentColor;
+}
+
+.idx-pad > span.off {
+  border: max(0.2cqw, 1px) dashed rgb(28 42 107 / 0.3);
+}
+
+/* a key a Mac makes from two arrows, with how, on the big card */
+.idx-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6cqw;
+}
+
+.idx-cap small {
+  font-size: calc(var(--line, 5.8cqw) * 0.45);
+}
+
+/* how to make the diagonals: two arrows held together */
+.idx-row.note {
+  color: #b3121a;
+  font-size: calc(var(--line, 5.8cqw) * 0.5);
+}
+
 .idx-always kbd {
   height: auto;
   min-width: 0;

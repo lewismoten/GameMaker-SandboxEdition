@@ -5,7 +5,7 @@
 import './keyCard.css';
 import { h, clear } from '../../editor/core/ui';
 import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../../editor/keymap/keyMap';
-import { cardRows } from './keyCardRows';
+import { keyCard, type Cap, type CardRow } from './keyCardRows';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
 
 interface PlayingGame {
@@ -22,34 +22,49 @@ async function originalOf(game: PlayingGame): Promise<CatalogEntry | undefined> 
 }
 
 /** How many ruled lines a row's keys take when a line holds `room` letters (a key cap takes one more). */
-const keyLines = (keys: string[], room: number) => Math.max(1, Math.ceil(keys.reduce((n, k) => n + k.length + 1, 0) / room));
+const keyLines = (keys: Cap[], room: number) => Math.max(1, Math.ceil(keys.reduce((n, k) => n + k.key.length + 1, 0) / room));
+/** A row's ruled lines: its keys', or two for the Move line's arrow pad. */
+const rowLines = (r: CardRow, room: number) => Math.max(r.pad ? 2 : 1, keyLines(r.keys, room));
+
+/** The Move line's little drawing of the arrow keys: the ways they move, the rest left blank. */
+const arrowPad = (pad: (string | undefined)[]) =>
+  h(
+    'span',
+    { class: 'idx-pad', role: 'img', 'aria-label': `Arrow keys: ${pad.filter(Boolean).join(' ')}` },
+    ...pad.map((a, i) => h('span', { class: a ? 'on' : i === 4 ? 'mid' : 'off', 'aria-hidden': 'true' }, a ?? '')),
+  );
+
+/** A key cap, and on the big card how a Mac makes it ("↑ and ← together"). */
+const capEl = (c: Cap) => (c.how ? h('span', { class: 'idx-cap' }, h('kbd', null, c.key), h('small', null, c.how)) : h('kbd', null, c.key));
 
 /**
  * An index card with the keys written out, for games without a printed one. `compact` is the
  * small card taped to the monitor: fewer, larger lines, so it reads at a glance.
  */
 function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
-  const rows = cardRows(km.keys, compact);
+  const { rows, note } = keyCard(km.keys, compact);
   const joy = km.joystick.length > 0;
   const always = GLOBAL_KEYS.filter((g) => g.scan <= 64);
+  const extra = (note ? 1 : 0) + (joy && !compact ? 1 : 0);
   // The small card shows every key: on one column, two if needed, and when even that won't
   // fit, only the keys (click the card to read what they do).
-  let two = !compact && rows.length + (joy ? 1 : 0) > 9;
+  let two = !compact && rows.reduce((n, r) => n + rowLines(r, 40), 0) + extra > 9;
   let keysOnly = false;
-  let used = rows.length + (joy && !compact ? 1 : 0);
+  let used = rows.reduce((n, r) => n + rowLines(r, 40), 0) + extra;
   if (compact) {
-    used = rows.reduce((n, r) => n + keyLines(r.keys, 12), 0);
+    used = rows.reduce((n, r) => n + rowLines(r, 12), 0) + extra;
     if (used > 7) {
       two = true;
-      used = Math.ceil(rows.reduce((n, r) => n + keyLines(r.keys, 6), 0) / 2);
+      used = Math.ceil(rows.reduce((n, r) => n + rowLines(r, 6), 0) / 2) + extra;
     }
     if (used > 9) {
       keysOnly = true;
-      used = Math.ceil(rows.reduce((n, r) => n + r.keys.length, 0) / 6) + 1;
+      used = Math.ceil(rows.reduce((n, r) => n + r.keys.length, 0) / 6) + 2 + extra;
     }
   } else if (two) used = Math.ceil(used / 2);
   // the writing gets smaller to fit every line on the card's ruled lines
   const line = Math.min(compact ? 9.5 : 6.4, 43 / Math.max(1, used + 1));
+  const noteEl = note ? h('div', { class: 'idx-row note' }, h('span', null, note)) : null;
   return h(
     'div',
     { class: `idx-card${compact ? ' compact' : ''}`, style: `--line:${line.toFixed(2)}cqw` },
@@ -61,7 +76,8 @@ function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement 
         ? h(
             'div',
             { class: 'idx-list keys-only' },
-            h('div', { class: 'idx-keys' }, ...rows.flatMap((r) => r.keys).map((k) => h('kbd', null, k))),
+            h('div', { class: 'idx-keys' }, ...rows.flatMap((r) => [r.pad ? arrowPad(r.pad) : null, ...r.keys.map(capEl)])),
+            noteEl,
             h('div', { class: 'idx-row more' }, h('span', null, 'Click to see what each key does')),
           )
         : h(
@@ -70,12 +86,14 @@ function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement 
             ...rows.map((r) =>
               h(
                 'div',
-                { class: 'idx-row' },
-                h('span', { class: 'idx-keys' }, ...r.keys.map((k) => h('kbd', /^[↑↓]\+/.test(k) ? { class: 'chord' } : null, k))),
-                h('span', null, r.does),
+                { class: `idx-row${r.pad ? ' move' : ''}` },
+                r.pad ? arrowPad(r.pad) : null,
+                r.keys.length || !r.pad ? h('span', { class: 'idx-keys' }, ...r.keys.map(capEl)) : null,
+                h('span', { class: 'idx-does' }, r.does),
               ),
             ),
             rows.length ? null : h('div', { class: 'idx-row' }, h('span', null, 'No keys: this game plays itself.')),
+            noteEl,
             joy && !compact
               ? h('div', { class: 'idx-row joy' }, h('span', { class: 'idx-keys' }, h('kbd', null, 'Joy')), h('span', null, 'a joystick or gamepad works too'))
               : null,
