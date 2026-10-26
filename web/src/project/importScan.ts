@@ -214,6 +214,8 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
   };
 
   await look(given, [], [], 0);
+  // listed by where they are (a zip's games stay together, so GameReader reads it once)
+  report.games.sort((a, b) => a.from.localeCompare(b.from, undefined, { numeric: true, sensitivity: 'base' }));
   onProgress?.(topZips.length, topZips.length);
   return report;
 }

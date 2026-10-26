@@ -52,14 +52,14 @@ describe('scanImport', () => {
     const progress: number[] = [];
     const r = await scanImport(given, { onProgress: (done) => progress.push(done) });
     expect(r.games.map((g) => [g.name, g.from, g.fileCount])).toEqual([
-      ['Zark', 'games/zark.zip', 3],
-      ['Glub', 'games/glub.zip › glub/', 3],
       ['Deep', 'games/deep.zip › a/b/deep/', 3],
+      ['Glub', 'games/glub.zip › glub/', 3],
+      ['Zark', 'games/zark.zip', 3],
     ]);
     expect(r.emptyZips).toEqual(['games/tools.zip']);
     expect(scanSummary(r)).toBe('3 games found, 1 zip had no game');
     expect(progress).toEqual([0, 1, 2, 3, 4]);
-    const read = await new GameReader(given).read(r.games[2]);
+    const read = await new GameReader(given).read(r.games[0]);
     expect(read.files.names()).toEqual(['deep.gam', 'deep.pal', 'hero.cel']);
   });
 
@@ -68,13 +68,13 @@ describe('scanImport', () => {
     const given = [await zip('pack.zip', [...game('one/', 'One'), ...game('two/', 'Two'), ['more/inner.zip', inner]])];
     const r = await scanImport(given);
     expect(r.games.map((g) => [g.name, g.from])).toEqual([
+      ['Inner', 'pack.zip › more/inner.zip'],
       ['One', 'pack.zip › one/'],
       ['Two', 'pack.zip › two/'],
-      ['Inner', 'pack.zip › more/inner.zip'],
     ]);
     const reader = new GameReader(given);
-    expect((await reader.read(r.games[1])).files.names()).toEqual(['hero.cel', 'two.pal', 'two.gam'].sort());
-    expect((await reader.read(r.games[2])).files.names()).toEqual(['hero.cel', 'inner.gam', 'inner.pal']);
+    expect((await reader.read(r.games[0])).files.names()).toEqual(['hero.cel', 'inner.gam', 'inner.pal']);
+    expect((await reader.read(r.games[2])).files.names()).toEqual(['hero.cel', 'two.gam', 'two.pal']);
   });
 
   it('takes a mix: a game folder, a folder of them, and zips beside them', async () => {
