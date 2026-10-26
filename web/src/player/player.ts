@@ -13,6 +13,7 @@ import { hideIdleCursor } from './cursorHide';
 import { parseGame } from '../formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
+import { scoreHook } from '../scoreTrophies/hook';
 
 interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -156,6 +157,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
 
   // a catalog game's tin heart: a touch at its place is kept as a find (never in a preview)
   const hearts = opts.preview ? undefined : heartHook(opts.saveId);
+  // a catalog game's final score, for the desk's score trophies (never a preview or a demo)
+  const scores = opts.preview ? undefined : scoreHook(opts.saveId);
   let stopped = false;
   let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
@@ -186,6 +189,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
             onSession: (s) => (hearts.onSession(s), opts.onSession?.(s)),
             onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)),
           }),
+          ...(scores && { onPlayEnd: (...a) => (scores(...a), opts.onPlayEnd?.(...a)) }),
         });
       } catch (e) {
         if (!(e instanceof GameAborted)) {
