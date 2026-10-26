@@ -9,9 +9,10 @@
 // shelves under the corridor (src/chapters.ts): it sets the next chapter's flag, and that
 // chapter's doors in the reading room stay barred until it is set.
 import { chezSide } from '../../../kit/chez';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
-import { c, r } from '../art/pal';
+import { PAL, c, r } from '../art/pal';
 import { blank, corgi, docLeo, figure, floor, gwinn, mirror, on, sign } from '../art/kit';
 import { BOOKS_PER_WING, wingCounter } from '../ids';
 import { CHAPTERS, chapterOf } from '../chapters';
@@ -218,8 +219,8 @@ const STACKS = [
   'SSSSSSSSSSSSSSSS',
   'SB76.54.32.10..S',
   'SSSSdSSeSSgSS..S',
-  'SAAAl..l..lJ...S',
-  'S..............S',
+  'SAAAl..l..lJ().S',
+  'S...........[].S',
   'S.......@....b.X',
   'S..q...........S',
   'S.....CCC......S',
@@ -547,6 +548,9 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   a.monAt(2, 2, 'teddy');
   a.monAt(12, 8, 'gwinn');
 
+  // the save sign (kit/saveSign.ts), standing by where Joe comes back into the Stacks
+  const saveSign = saveSignBlocks(PAL.pal, { board: [parquet, parquet], posts: [parquet, parquet] });
+  [...saveSign.board, ...saveSign.posts!].forEach((p, k) => a.tile(`saveSign${k}`, p));
   const stacks = a.window(
     16,
     0,
@@ -563,6 +567,10 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       C: 'line0',
       f: 'fern',
       Y: { tile: 'looseShelf', mark: 'looseShelf' },
+      '(': 'saveSign0',
+      ')': 'saveSign1',
+      '[': 'saveSign2',
+      ']': 'saveSign3',
       g: { tile: 'stamp0', mark: 'stamp0' },
       e: { tile: 'stamp1', mark: 'stamp1' },
       d: { tile: 'stamp2', mark: 'stamp2' },

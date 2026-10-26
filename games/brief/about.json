@@ -8,6 +8,7 @@
   "egg": { "block": 149 },
   "tinHeart": { "map": "other.map", "at": [34, 22] },
   "easterEgg": { "map": "other.map", "at": [30, 28] },
+  "saveSign": { "map": "library.map", "at": [28, 3], "after": "library.map" },
   "exe": "BRIEF.EXE",
   "sound": "sb",
   "label": {
