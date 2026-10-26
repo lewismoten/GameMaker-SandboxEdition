@@ -117,7 +117,9 @@ modules are in [`../test`](../test).
 - [`project/`](project): a game's files (`files.ts`: `GameFiles`, 8.3 names, the CD catalog),
   streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
   (`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
-  (`importPage.ts`), a folder's own hand-edited player read into DOS player patches, its renamed
+  (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips
+  inside zips too) by their .gam files, and reading the picked ones again (`importScan.ts`), a
+  folder's own hand-edited player read into DOS player patches, its renamed
   extensions mapped back (`importPlayer.ts`), and the editor-only companion file (`companion.ts`,
   never exported).
   - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
