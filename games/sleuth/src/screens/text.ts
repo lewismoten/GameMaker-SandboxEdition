@@ -78,7 +78,7 @@ F5 save   F6 load   ESC quit
 \f
 SEARCHING
 
-Evidence glints where it lies. Stand on it and press SPACE. F2 lists what you carry; your evidence count shows as "Money".
+Evidence glints where it lies. Stand on it and press SPACE. F2 lists what you carry and counts your evidence.
 
 Some things only show to a sharp eye with the right tool. Some doors want a key. When an act asks for evidence, the green room door counts it: push the door, then push again.
 
