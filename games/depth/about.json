@@ -20,6 +20,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "Six ray-traced worlds, each in two planes",
     "background": "#120c34",
     "accent": "#ffa63a",
     "ink": "#ffffff",

@@ -11,6 +11,12 @@ import { fnv1a, mulberry32 } from '../../seededRandom';
 export interface BoxExtras {
   /** Hours of play to finish, set from the walkthrough by games/kit/playtime.ts (playtime.ts); estimated from the number of levels when missing. */
   hours?: number;
+  /**
+   * What the box says in place of "N levels to explore" (the count of level scenes), for a game
+   * whose scenes aren't what a player would call levels: "One night in five parts", "23 haywire
+   * circuit boards". An empty string leaves the line off.
+   */
+  levels?: string;
   /** More selling points, printed with the ones worked out from the game's files. */
   claims?: string[];
   /** Quotes from (made-up) 1994-95 magazines. */
@@ -52,7 +58,10 @@ export function boxClaims(entry: Pick<CatalogEntry, 'files' | 'original'>, level
   const songs = count(files, 'cmf');
   const vocs = count(files, 'voc');
   const out = ['Stunning 256-color VGA graphics'];
-  if (levels > 1) out.push(`${levels} levels to explore`);
+  const own = (entry.original?.box as BoxExtras | undefined)?.levels;
+  if (own !== undefined) {
+    if (own) out.push(own);
+  } else if (levels > 1) out.push(`${levels} levels to explore`);
   if (sb && songs) out.push(`${songs} original Sound Blaster FM song${songs === 1 ? '' : 's'}`);
   if (sb && vocs) out.push('Digitized sound effects');
   if (!sb) out.push('PC speaker sound: no sound card needed');

@@ -17,6 +17,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "4 levels to explore",
     "background": "#1a2a5c",
     "accent": "#ff8fc8",
     "ink": "#ffffff",

@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "5 stages: 11 scrolling runs and 5 bosses",
     "background": "#0a0f24",
     "accent": "#ff7a1a",
     "ink": "#ffffff",

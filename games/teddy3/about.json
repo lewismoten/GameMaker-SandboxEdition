@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "16 levels to explore",
     "hours": 5,
     "background": "#2a1a5e",
     "accent": "#ffd23f",

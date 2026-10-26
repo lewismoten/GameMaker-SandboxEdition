@@ -39,6 +39,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "88 worlds to explore",
     "background": "#0b1030",
     "accent": "#f0a020",
     "ink": "#ffffff",
