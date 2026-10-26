@@ -3,7 +3,7 @@
 // file offsets it writes and the rules it must keep. Entries the map marks keep (RSD's credits,
 // copyright notices) or unsafe (file names, the menu item count, the scan-code table) are left
 // out, as are the setup screen and the text-mode start-up messages. Offsets were read from the
-// file and checked against PLAYGAME.C (built with TRANSFER) and HISCOREL.C; patchTable.test.ts
+// file and checked against PLAYGAME.C (built with TRANSFER) and HISCOREL.C; applyPatches.test.ts
 // checks every stock value against the .EXE again.
 
 /** The editor panel's groups. */
