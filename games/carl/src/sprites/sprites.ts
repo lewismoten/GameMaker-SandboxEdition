@@ -287,8 +287,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(2, 11, 0, 9 - f, c('fur', 2));
     return done(p);
   };
-  book.add('teddy0', corgi(0), hurt(8));
-  book.add('teddy1', corgi(1), hurt(8));
+  // no solid top (14, not 15): coming down from a hop, he never shoves Carl under him into the floor
+  book.add('teddy0', corgi(0), hurt(8, 14));
+  book.add('teddy1', corgi(1), hurt(8, 14));
 
   // ---- cameos: Loaf #13, the third goat, the mustard seed, Brother Camel ----
   const loaf = (f: number) => {
