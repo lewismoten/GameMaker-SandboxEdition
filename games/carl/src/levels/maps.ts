@@ -116,6 +116,14 @@ function room(m: MapBuilder, W: number, H: number): void {
   m.col(0, 0, H - 1, 'side').col(W - 1, 0, H - 1, 'side');
 }
 
+/** Sugar cubes in a room: on the wallpaper (rows 1 to 6) or the wainscot (rows 8 and down). */
+function sugar(m: MapBuilder, at: [number, number][]): void {
+  for (const [x, y] of at) {
+    if (y === 7) throw new Error('No sugar on the chair rail');
+    m.set(x, y, y < 7 ? 'sugarW' : 'sugarP');
+  }
+}
+
 /** A window at (x, y) (two blocks wide, two tall); `night` for the bedroom's. */
 function window(m: MapBuilder, x: number, y: number): void {
   m.set(x, y, 'winTL')
@@ -192,6 +200,14 @@ export function theCouch(book: BlockBook): Level {
   // and down the pole, long enough for "On my lamp" to play before the scene ends
   m.set(55, 4, 'shelfTop').col(55, 5, 10, 'shelf');
   lamp(m, 56, 4);
+  // sugar: by the shelf, over the couch, by the pizza, under the towels, past the bookcase
+  sugar(m, [
+    [3, 8],
+    [15, 4],
+    [32, 2],
+    [39, 9],
+    [53, 6],
+  ]);
   m.link(56, 9, 'next');
   return { m, start: at(4, 5), size: [W, H] };
 }
@@ -240,6 +256,15 @@ export function theWalls(book: BlockBook): Level {
   m.mon(MON.clap, 46, 7);
   // the kitchen door: six smiles
   m.col(50, 1, 7, 'side').set(50, 8, 'doorFrame').set(50, 9, 'door').set(50, 10, 'doorFrame');
+  // sugar on the kitchen tiles
+  m.each('sugarT', [
+    [3, 2],
+    [20, 5],
+    [26, 9],
+    [34, 1],
+    [46, 2],
+    [48, 5],
+  ]);
   m.link(50, 9, 'next');
   return { m, start: at(2, 5), size: [W, H] };
 }
@@ -279,6 +304,13 @@ export function theBed(book: BlockBook): Level {
   m.mon(MON.dogEar, 36, 9);
   m.mon(MON.towel, 40, 6);
   m.set(41, 10, 'plant');
+  sugar(m, [
+    [7, 6],
+    [27, 2],
+    [37, 5],
+    [44, 2],
+    [46, 8],
+  ]);
   // the window in the end wall: three ears and he gets up and opens it, and Carl flies straight
   // out into the night, long enough for "I've opened the window" to play before the scene ends
   m.set(W - 1, 3, 'sashTop').set(W - 1, 4, 'sash');
@@ -338,6 +370,13 @@ export function theWindow(book: BlockBook): Level {
   // a last gust, and the tall grass: the wild
   m.fill(66, 2, 2, 9, 'calm');
   m.fill(70, 6, 3, 6, 'tall').set(71, 9, 'wild');
+  // sugar cubes off the picnic, blown about the yard
+  m.each('sugarS', [
+    [11, 3],
+    [17, 10],
+    [49, 7],
+    [54, 10],
+  ]);
   m.link(71, 9, 'next');
   return { m, start: at(6, 5), size: [W, H] };
 }
@@ -398,6 +437,16 @@ export function theWild(book: BlockBook): Level {
     [55, 9],
     [58, 4],
   ]);
+  // sugar: the crew's craft-services table is somewhere off screen
+  m.each('sugarS', [
+    [2, 2],
+    [13, 6],
+    [24, 3],
+    [37, 6],
+    [47, 9],
+    [56, 2],
+    [60, 10],
+  ]);
   // the big clock: twenty-four hours and it breaks
   m.col(62, 1, 11, 'stem').set(62, 6, 'clock');
   // past it the wild goes on into tall grass: Carl flies straight on through the broken clock,
@@ -441,6 +490,13 @@ export function theAux(book: BlockBook): Level {
   // the last stand: his hand reaches out over the stereo, and again right over the cord (roll
   // past each)
   m.mon(MON.grab, 44, 1).mon(MON.grab, 49, 2);
+  sugar(m, [
+    [6, 3],
+    [17, 6],
+    [30, 3],
+    [38, 8],
+    [43, 6],
+  ]);
   m.link(49, 9, 'won');
   return { m, start: at(4, 5), size: [W, H] };
 }

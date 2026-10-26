@@ -95,7 +95,7 @@ function sandboxCell(ctx: MagContext, id: string, questions: string[], max = 2):
 const BIZARRE_TIPS: [id: string, tip: string][] = [
   [
     'carl',
-    'BUZZ (B) wakes a sleeping ear. Fly into it while it twitches: three ears, and he opens the window. A barrel roll (Space) makes a towel or swatter MISS.',
+    'Flying burns SUGAR (F2 counts it as Money): fresh air costs one, air you’ve flown is free, a cube gives 25. Run dry and you sink: hold Down on the carpet to lick up crumbs. BUZZ (B) wakes a sleeping ear; fly into it while it twitches.',
   ],
   [
     'goat',

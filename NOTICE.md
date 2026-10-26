@@ -142,11 +142,13 @@ game folder opens in the browser unchanged.
   Level check's link, missing-part and speed-limit checks (`web/src/editor/check/checks/linkChecks.ts`,
   `missingParts.ts`, `gameChecks.ts`). Ideas only: none of the games' art, music, sounds, text
   or players is copied, and no author, owner or registration detail is named.
-- **Ideas from the same archive in the Sandbox games.** A second survey of the community games in
-  the Internet Archive's Game-Maker Archive collection suggested two touches to this project's own
+- **Ideas from the same archive in this project's games.** A second survey of the community games in
+  the Internet Archive's Game-Maker Archive collection suggested touches to this project's own
   games: _Quest for the Round Tuit_'s tide poles on the Dawdle Flats and _In The Year 2000!_'s
   boarding-ramp countdown, both clocks read from a chain of timed blocks, as the archive's games
-  did with block rings and staged lights. Ideas only: the blocks, art and words are this
+  did with block rings and staged lights; and _A Fly Named Carl_'s sugar, a flight meter made of
+  the air itself (fresh air costs a counter, and with none left it no longer holds him up), as an
+  archive game's sky costs its flight counter. Ideas only: the blocks, art and words are this
   project's own, and nothing from those games is copied.
 - **Research: watching people play Game-Maker games.** Observations from two videos informed
   The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and

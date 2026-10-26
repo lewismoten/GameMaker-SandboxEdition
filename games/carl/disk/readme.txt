@@ -22,6 +22,12 @@ back and take the aux cord.
 You can't lose to a dish
 towel. Barrel roll.
 
+Flying takes sugar: fresh air
+costs a little, sugar cubes
+fill you up, and a tired fly
+sinks to the carpet to lick
+up crumbs.
+
 STARTING THE GAME
   Type CARL and press Enter.
   VGA required. A Sound Blaster

@@ -9,7 +9,7 @@
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
 import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
-import { EARS, HOURS, KEY, MON, SEQ, SMILES, SND, SNACKS } from './ids';
+import { EARS, HOURS, KEY, MON, SEQ, SMILES, SND, SNACKS, SUGAR_START } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
@@ -111,6 +111,7 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
   ch.meter[0] = 100; // patience (health)
   ch.meter[1] = 3; // lives
   for (const k of [SNACKS, SMILES, EARS, HOURS]) ch.meter[k] = 1; // shown as meter - 1: none yet
+  ch.meter[3] = SUGAR_START + 1; // sugar, the money counter (shown as meter - 1)
   ch.cseq = 0;
   ch.cframe = 0;
   return ch;

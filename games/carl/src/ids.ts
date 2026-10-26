@@ -122,6 +122,9 @@ export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e
  * Counters 20 and up refuse a touch that would empty them, so each gate opens only for what it
  * asks. Like money, a counter starts at 1 and shows one less.
  */
+/** Sugar Carl starts with (the money counter, 3: F2 shows it as Money). */
+export const SUGAR_START = 40;
+
 /** Snacks Carl has landed on ("on my food"): the lamp only takes him with eight. */
 export const SNACKS = 20;
 export const SNACKS_NEEDED = 8;
@@ -141,7 +144,9 @@ export const SND = {
   help: 0,
   /** A monster done in ("MISSED!", a hello). */
   kill: 1,
+  /** Sugar (a cube, a lick of the carpet). */
   money: 2,
+  /** A sugar spent on fresh air (the fly's buzz again). */
   pay: 3,
   /** An extra life. */
   life: 4,

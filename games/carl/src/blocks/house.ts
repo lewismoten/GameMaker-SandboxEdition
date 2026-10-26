@@ -16,7 +16,7 @@ import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { buildPalette, type Pal } from '../art/pal';
 import { EARS, EARS_NEEDED, MON, SMILES, SMILES_NEEDED, SNACKS, SNACKS_NEEDED } from '../ids';
-import { AIR, BlockBook, LEDGE, LIFE, SOLID } from './common';
+import { AIR, BlockBook, LEDGE, LICK_EVERY, LIFE, SOLID, SUGAR, SUGAR_CUBE, fresh, sugarCube } from './common';
 
 /** Ticks between puffs from the diffuser and the smudge bowl. */
 export const MIST_EVERY = 64;
@@ -60,11 +60,12 @@ export function buildHouse(pal: Pal): BlockBook {
     return p;
   };
   const panel = () => panelAt(P(), 0, 0, 20, 20);
-  book.add('paper', paper(), AIR);
-  book.add('panel', panel(), AIR);
+  // fresh air costs Carl a sugar the first time he flies into it (common.ts fresh())
+  book.add('paper', paper(), fresh('paperFlown'));
+  book.add('panel', panel(), fresh('panelFlown'));
   const rail = paper();
   panelAt(rail, 0, 12, 20, 8).rect(0, 10, 20, 3, c('panel', 4)).rect(0, 13, 20, 1, c('panel', 0));
-  book.add('rail', rail, AIR);
+  book.add('rail', rail, fresh('railFlown'));
   const ceil = P().rect(0, 0, 20, 20, c('white', 2));
   ceil.rect(0, 13, 20, 3, c('white', 3)).rect(0, 16, 20, 2, c('white', 1)).rect(0, 18, 20, 2, c('grey', 2));
   for (let x = 2; x < 20; x += 5) ceil.set(x, 17, c('white', 3));
@@ -80,7 +81,8 @@ export function buildHouse(pal: Pal): BlockBook {
     p.rect(0, 0, 20, 1, c('shag', 3));
     return p;
   };
-  book.add('shag', shag(11), { solid: SOLID });
+  // crumbs in the carpet: landed on, the shag gives a lick of sugar, then none for a while
+  book.add('shag', shag(11), { solid: SOLID, effect: SUGAR, eamt: 1, next: 'shagLicked', ntime: 1 });
   // a wet patch on the shag (the floor he keeps mopping)
   const wet = shag(12);
   blob(wet, 10, 4, 9, 2.4, R('water'), 1, 3);
@@ -316,8 +318,8 @@ export function buildHouse(pal: Pal): BlockBook {
     for (let i = 0; i < 4; i++) blob(p, 5 + r() * 10, 8 + r() * 8, 1.6, 1.3, R('chip'), 1, 3);
     return p;
   };
-  book.add('crumbW', crumbs(paper, 31), { score: 10, touch: 'paper' });
-  book.add('crumbP', crumbs(panel, 32), { score: 10, touch: 'panel' });
+  book.add('crumbW', crumbs(paper, 31), { score: 10, touch: 'paperFlown' });
+  book.add('crumbP', crumbs(panel, 32), { score: 10, touch: 'panelFlown' });
   // a can of soda: health
   const soda = (bg: () => Pixels) => {
     const p = bg();
@@ -325,8 +327,8 @@ export function buildHouse(pal: Pal): BlockBook {
     p.rect(7, 10, 6, 3, c('white', 3)).line(14, 4, 12, 0, c('white', 3));
     return p;
   };
-  book.add('soda', soda(panel), { hp: 30, score: 10, touch: 'panel' });
-  book.add('sodaW', soda(paper), { hp: 30, score: 10, touch: 'paper' });
+  book.add('soda', soda(panel), { hp: 30, score: 10, touch: 'panelFlown' });
+  book.add('sodaW', soda(paper), { hp: 30, score: 10, touch: 'paperFlown' });
   // a donut: an extra life
   const donut = (bg: () => Pixels) => {
     const p = bg();
@@ -343,8 +345,8 @@ export function buildHouse(pal: Pal): BlockBook {
     micro(p, 1, 1, '+1', c('white', 3));
     return p;
   };
-  book.add('donut', donut(panel), { effect: LIFE, eamt: 1, score: 100, touch: 'panel' });
-  book.add('donutW', donut(paper), { effect: LIFE, eamt: 1, score: 100, touch: 'paper' });
+  book.add('donut', donut(panel), { effect: LIFE, eamt: 1, score: 100, touch: 'panelFlown' });
+  book.add('donutW', donut(paper), { effect: LIFE, eamt: 1, score: 100, touch: 'paperFlown' });
 
   // ---------- the TV (an old console set on a stand), showing the goat ----------
   const tvArt = (f: number) => {
@@ -423,11 +425,11 @@ export function buildHouse(pal: Pal): BlockBook {
     return p;
   };
   const tiles = () => tilesAt(P());
-  book.add('tiles', tiles(), AIR);
-  book.add('tilesB', tilesAt(P(), true), AIR);
-  book.add('crumbT', crumbs(tiles, 33), { score: 10, touch: 'tiles' });
-  book.add('sodaT', soda(tiles), { hp: 30, score: 10, touch: 'tiles' });
-  book.add('donutT', donut(tiles), { effect: LIFE, eamt: 1, score: 100, touch: 'tiles' });
+  book.add('tiles', tiles(), fresh('tilesFlown'));
+  book.add('tilesB', tilesAt(P(), true), fresh('tilesBFlown'));
+  book.add('crumbT', crumbs(tiles, 33), { score: 10, touch: 'tilesFlown' });
+  book.add('sodaT', soda(tiles), { hp: 30, score: 10, touch: 'tilesFlown' });
+  book.add('donutT', donut(tiles), { effect: LIFE, eamt: 1, score: 100, touch: 'tilesFlown' });
   const cabinet = (handleY: number) => {
     const p = P().rect(0, 0, 20, 20, c('wood', 3));
     p.frame(1, 1, 18, 18, c('wood', 1)).frame(3, 3, 14, 14, c('wood', 2));
@@ -698,7 +700,7 @@ export function buildHouse(pal: Pal): BlockBook {
     book.add(`tinHeart${k || ''}`, drawTinHeart(panel(), tin, k), {
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
       ntime: k ? 2 : 50,
-      touch: 'panel',
+      touch: 'panelFlown',
       score: 100,
       ...AIR,
     });
@@ -708,7 +710,7 @@ export function buildHouse(pal: Pal): BlockBook {
     book.add(`easterEgg${k || ''}`, drawEasterEgg(panel(), egg, 'zigzag', k), {
       next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
       ntime: k ? 3 : 60,
-      touch: 'panel',
+      touch: 'panelFlown',
       score: 50,
       ...AIR,
     });
@@ -728,5 +730,18 @@ export function buildHouse(pal: Pal): BlockBook {
   micro(card2, 8, 5, 'B', c('eye', 2));
   micro(card2, 3, 11, 'BUZZ', c('ink', 0));
   book.add('signBuzz', card2, AIR);
+
+  // (last too) the flown twins of fresh air: the same pictures, free to fly through again
+  book.add('paperFlown', paper(), AIR);
+  book.add('panelFlown', panel(), AIR);
+  book.add('railFlown', rail, AIR);
+  book.add('tilesFlown', tiles(), AIR);
+  book.add('tilesBFlown', tilesAt(P(), true), AIR);
+  book.add('shagLicked', shag(11), { solid: SOLID, next: 'shag', ntime: LICK_EVERY });
+  // sugar cubes: a fly's fuel
+  const cube = (bg: () => Pixels) => sugarCube(bg(), pal);
+  book.add('sugarW', cube(paper), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'paperFlown' });
+  book.add('sugarP', cube(panel), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'panelFlown' });
+  book.add('sugarT', cube(tiles), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'tilesFlown' });
   return book;
 }
