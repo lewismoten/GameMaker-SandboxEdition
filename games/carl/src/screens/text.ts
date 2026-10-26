@@ -78,7 +78,7 @@ export const INSTRUCTIONS = [
     'Each bit of air you fly into',
     'for the first time costs one',
     "(air you've flown is free).",
-    'F2 counts it as Money: sugar',
+    'F2 counts your sugar: sugar',
     "is a fly's only money.",
     '',
     'A SUGAR CUBE gives 25.',
