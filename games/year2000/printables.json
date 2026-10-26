@@ -1,5 +1,5 @@
 {
-  "pitch": "Sparky 3000 ate Dex Dynamo's science report: find 20 pages across the suburbs, the Superhighway, the Mega Mall and the Moon before the Science Fair at 3:00. Bring a quarter!",
+  "pitch": "Sparky 3000 ate Dex Dynamo's science report: find 20 pages across the suburbs, the clouds, the Superhighway, the Mega Mall and the Moon before the Science Fair at 3:00. Bring a quarter!",
   "keys": {
     "Space": "Fire the Laser-Tag Zapper (find it in your backyard first)",
     "F2": "Status: score, lives, hit points and quarters in your pocket"
@@ -30,7 +30,25 @@
           ]
         },
         {
-          "head": "2. The Information Superhighway",
+          "head": "2. The Cloud Lane",
+          "hints": [
+            {
+              "q": "How do I drive this thing?",
+              "a": "You don't: Grandpa's CitiCar flies itself. Left and Right (or A and D) steer it one whole lane at a time. Up and Down do nothing up here."
+            },
+            {
+              "q": "The traffic keeps hitting me!",
+              "a": "Everything comes out of the middle of the horizon as a dot, then slides into its lane. Watch which way the dot drifts, and move as soon as you know. When two lanes are blocked, the third is clear, and often has a page in it."
+            },
+            {
+              "q": "Where does it end?",
+              "a": "Watch the sign: SKYWAY 9 MI counts down a mile every six seconds. At 0 MI the exit ramp lights up over the RIGHT lane. Be in the right lane and the car takes the ramp by itself."
+            },
+            { "q": "I'm low on hit points.", "a": "Dinner pills come down the lanes too. Steer into one for a turkey dinner." }
+          ]
+        },
+        {
+          "head": "3. The Information Superhighway",
           "hints": [
             {
               "q": "How do I cross fourteen lanes of traffic?",
@@ -44,7 +62,7 @@
           ]
         },
         {
-          "head": "3. Mega Mall 2000",
+          "head": "4. Mega Mall 2000",
           "hints": [
             {
               "q": "How do I get the STAFF ONLY keycard?",
@@ -62,7 +80,7 @@
           ]
         },
         {
-          "head": "4. The Teleport-A-Phone Exchange",
+          "head": "5. The Teleport-A-Phone Exchange",
           "hints": [
             {
               "q": "Which number do I dial?",
@@ -80,7 +98,7 @@
           ]
         },
         {
-          "head": "5. The Moon",
+          "head": "6. The Moon",
           "hints": [
             { "q": "Where is the Moon Pass?", "a": "At the top left of the Moon, west of the big dome. Hop up meteor alley to get it." },
             {
@@ -94,7 +112,7 @@
           ]
         },
         {
-          "head": "6. The Science Fair",
+          "head": "7. The Science Fair",
           "hints": [
             {
               "q": "How do I catch Sparky?",

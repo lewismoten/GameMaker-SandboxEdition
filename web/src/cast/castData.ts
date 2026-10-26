@@ -158,7 +158,7 @@ const LISTED: CastMember[] = [
       { game: 'depth', as: 'ray-traced in the Teapot Temple' },
       { game: 'logic', as: 'a circuit board: power lights its headlights' },
       { game: 'snowbound', as: 'buried in the mall parking lot' },
-      { game: 'year2000', as: 'Grandpa’s, and flying in the Skyway’s slow lane' },
+      { game: 'year2000', as: 'Grandpa’s, flying the Skyway’s slow lane and yours to steer through the clouds' },
       { game: 'tickle', as: 'through the classroom window, charging' },
       { game: 'sweats', as: 'at The Hive’s curb' },
       { game: 'risi', as: 'by the gate: QVID EST?' },
