@@ -233,6 +233,10 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
     foes and prizes come in from the right, and he jumps or ducks. Or turn the bands round, and a
     vehicle that only steers up and down flies through a world that scrolls by itself.</li>
   </ul>
+  <p>Teddy’s Little Biggest Adventure has a level built this way: Teddy’s Dream Run, with the
+  three speeds above. Balls, puddles, branches and treats are born off the right edge, one block
+  of a timed chain each, and when the paw prints in the sky fill in, the path pulls him to the
+  finish.</p>
   <h2>A pass code to get through</h2>
   <p>A short puzzle in the archive locks its exit behind a word. The screen is a wall of carved
   letter tiles, eight across and three rows high, with the hero below. He walks left and right and
