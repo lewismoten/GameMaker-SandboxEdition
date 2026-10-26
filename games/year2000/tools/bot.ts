@@ -284,6 +284,14 @@ export class Bot {
     return false;
   }
 
+  /** Boards the Moon Shuttle: up to the foot of its ramp, then waits out the countdown (the ramp
+   * is solid until it reads GO) and steps on. */
+  async board(exit: { x: number; y: number }): Promise<boolean> {
+    if (!(await this.goTo([[exit.x, exit.y + 1]], 'the foot of the ramp'))) return false;
+    for (let t = 0; t < 400 && this.blockAt(exit.x, exit.y).solid; t++) if (!(await this.tick())) return false;
+    return this.goTo([[exit.x, exit.y]], 'the rocket');
+  }
+
   /** Every cell holding a block whose name passes `test`. */
   find(names: string[], test: (name: string) => boolean): [number, number][] {
     const out: [number, number][] = [];

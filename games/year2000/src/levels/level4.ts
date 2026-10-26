@@ -199,7 +199,7 @@ const LAUNCH_LEGEND: Legend = {
   '.': 'concrete',
   K: { big: 'rocket', w: 2, h: 3 },
   L: 'launchsign',
-  k: { tile: 'board', mark: 'exit' },
+  k: { tile: 'board6', mark: 'exit' },
   o: door('launchOut'),
   '@': { mark: 'launch' },
 };

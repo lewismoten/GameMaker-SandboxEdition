@@ -274,14 +274,28 @@ function launchSign(): Pixels {
   return p;
 }
 
-function boardRamp(): Pixels {
+/** The boarding ramp: its board reads GO, or, while the countdown runs, the seconds left on a
+ * red chain across the ramp. */
+function boardRamp(count = 0): Pixels {
   const p = on('concrete');
   p.rect(2, 0, 16, 20, C('gold', 3));
   for (let y = 0; y < 20; y += 4) p.rect(2, y, 16, 2, C('grey', 1));
   p.rect(5, 6, 10, 8, C('night', 0));
-  micro(p, 6, 8, 'GO', C('gold', 5));
+  if (!count) {
+    micro(p, 6, 8, 'GO', C('gold', 5));
+    return p;
+  }
+  micro(p, 8, 8, String(count), C('neon', 3));
+  for (let x = 1; x < 19; x += 2) p.rect(x, 16, 2, 2, x % 4 === 1 ? C('red', 2) : C('chrome', 6));
+  p.rect(0, 14, 2, 6, C('chrome', 3)).rect(18, 14, 2, 6, C('chrome', 3));
   return p;
 }
+
+/** The launch countdown's first and last numbers on the ramp (the launch picture counts on from
+ * 3), and ticks in a second (18.2 a second in PLAYGAME). */
+const COUNT_FROM = 6;
+const COUNT_TO = 4;
+const SECOND = 18;
 
 function numberSign(n: number): Pixels {
   const p = on('marble');
@@ -361,6 +375,12 @@ export function citySet(): BlockSet {
   s.add('tar2', tar(1), { hp: -3, next: 'tar', ntime: 5 });
   addBig(s, 'rocket', rocket(FLOORS.concrete));
   s.add('launchsign', launchSign(), { solid: SOLID });
+  // The Moon Shuttle's boarding ramp counts down from the moment Dex dials in (each booth
+  // into this scene starts its clocks again): 6, 5, 4, chained across the ramp, then GO, and
+  // the launch picture goes on from 3. A door on a clock, read like the staged lights of 1990s
+  // Game-Maker games.
+  for (let n = COUNT_FROM; n >= COUNT_TO; n--)
+    s.add(`board${n}`, boardRamp(n), { solid: SOLID, next: n > COUNT_TO ? `board${n - 1}` : 'board', ntime: SECOND });
   s.add('board', boardRamp());
   for (const n of [1, 2, 3, 4]) s.add(`num${n}`, numberSign(n), { solid: SOLID });
   addSignal(s);

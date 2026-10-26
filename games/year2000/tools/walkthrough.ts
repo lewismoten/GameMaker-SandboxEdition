@@ -100,7 +100,7 @@ for (const [i, l] of LEVELS.entries()) {
         arrival = links[sim.link].to;
         enter(arrival);
       }
-      return bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'the rocket');
+      return bot.board(lm.at('exit'));
     }
     await bot.collect(names, (n) => ITEMS.test(n), 'items');
     if (l.file === 'school') {

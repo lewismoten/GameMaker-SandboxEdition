@@ -40,7 +40,7 @@
   },
   {
    "scene": 5,
-   "keys": "AUg="
+   "keys": "AUgMyCpI"
   },
   {
    "scene": 6,
@@ -79,7 +79,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 33724,
+  "frames": 33863,
   "chapters": [
    {
     "title": "Opening",
@@ -107,19 +107,19 @@
    },
    {
     "title": "Level 5: The Moon",
-    "frame": 22437
+    "frame": 22576
    },
    {
     "title": "Level 6: Science Fair",
-    "frame": 26616
+    "frame": 26755
    },
    {
     "title": "Ending",
-    "frame": 30164
+    "frame": 30303
    },
    {
     "title": "Credits",
-    "frame": 32169
+    "frame": 32308
    }
   ]
  }

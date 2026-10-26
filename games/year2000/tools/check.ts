@@ -156,7 +156,7 @@ for (const [i, l] of LEVELS.entries()) {
         fresh(to);
         bot = new Bot(sim, opts);
       }
-      return bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'the rocket');
+      return bot.board(lm.at('exit'));
     }
     await bot.collect(names, (n) => ITEMS.test(n), 'items');
     if (l.file === 'school' && !(await catchSparky(bot, names))) return false;
