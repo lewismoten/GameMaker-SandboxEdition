@@ -11,7 +11,7 @@ const expect = (bot: Bot, scene: number, what: string) => {
   if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-6).join('\n')}`);
 };
 
-export async function hub1(bot: Bot): Promise<void> {
+async function hub1(bot: Bot): Promise<void> {
   expect(bot, S.hub, 'the sandbox');
   await bot.goto(3, 33, 'the shovel');
   await bot.key(SCAN.g, 2, 6);
@@ -42,7 +42,7 @@ async function toss(bot: Bot, dir: Dir, label: string): Promise<void> {
   bot.say(label);
 }
 
-export async function keep(bot: Bot): Promise<void> {
+async function keep(bot: Bot): Promise<void> {
   expect(bot, S.keep, 'Anthill Keep');
   await bot.goto(18, 20, 'a tennis ball');
   await bot.goto(22, 11, 'sand');
@@ -60,7 +60,7 @@ export async function keep(bot: Bot): Promise<void> {
   if ((await bot.goto(17, 4, 'the keep door')) !== 'link') throw new Error('No way out');
 }
 
-export async function hub2(bot: Bot): Promise<void> {
+async function hub2(bot: Bot): Promise<void> {
   expect(bot, S.hub, 'the sandbox');
   if ((await bot.goto(45, 21, 'the Hosewater Moat')) !== 'link') throw new Error('No way in');
 }
@@ -90,7 +90,7 @@ async function ride(bot: Bot, dir: Dir, x: number, y: number, label: string): Pr
   await bot.goto(x, y, label);
 }
 
-export async function moat(bot: Bot): Promise<void> {
+async function moat(bot: Bot): Promise<void> {
   expect(bot, S.moat, 'the Hosewater Moat');
   await bot.goto(23, 22, 'sand');
   await bot.goto(32, 21, 'sand');
@@ -112,7 +112,7 @@ export async function moat(bot: Bot): Promise<void> {
   if ((await bot.goto(19, 9, 'the castle door')) !== 'link') throw new Error('No way out');
 }
 
-export async function hub3(bot: Bot): Promise<void> {
+async function hub3(bot: Bot): Promise<void> {
   expect(bot, S.hub, 'the sandbox');
   if ((await bot.goto(43, 6, 'Low Tide Lagoon')) !== 'link') throw new Error('No way in');
 }
@@ -155,7 +155,7 @@ async function crabGap(bot: Bot): Promise<void> {
   if (waited) bot.say(`waited ${waited} ticks for the crabs`);
 }
 
-export async function lagoon(bot: Bot): Promise<void> {
+async function lagoon(bot: Bot): Promise<void> {
   expect(bot, S.lagoon, 'Low Tide Lagoon');
   await bot.goto(19, 1, 'the bucket');
   await bot.key(SCAN.g, 2, 6);
@@ -251,12 +251,12 @@ async function ambush(bot: Bot, stand: { x: number; y: number }, label: string):
   throw new Error(`${label}: Gwinn never came by`);
 }
 
-export async function hub4(bot: Bot): Promise<void> {
+async function hub4(bot: Bot): Promise<void> {
   expect(bot, S.hub, 'the sandbox');
   if ((await bot.goto(4, 4, 'the old burrow')) !== 'link') throw new Error('No way in');
 }
 
-export async function burrows(bot: Bot): Promise<void> {
+async function burrows(bot: Bot): Promise<void> {
   expect(bot, S.burrows, 'the Beetle Burrows');
   await bot.goto(1, 5, 'sand');
   await bot.goto(17, 4, 'an acorn');
@@ -307,7 +307,7 @@ async function splashPaw(bot: Bot, kinds: number[], label: string): Promise<void
   bot.say(label);
 }
 
-export async function patio(bot: Bot): Promise<void> {
+async function patio(bot: Bot): Promise<void> {
   expect(bot, S.patio, "Gwinn's nap");
   // fill up at her water bowl (it never runs dry): four splashes for her two paws
   await bot.goto(15, 18, 'a water bowl');

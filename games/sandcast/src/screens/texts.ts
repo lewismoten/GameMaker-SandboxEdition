@@ -7,7 +7,7 @@ const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const KEEP = '\u0001'; // stands in for the name's spaces while wrapping
 
 /** Wraps paragraphs to Game-Maker's text screens (30 characters a line, so fgets never splits). */
-export function wrap(text: string, width = 30): string {
+function wrap(text: string, width = 30): string {
   text = text.split(BBS_NAME).join(BBS_NAME.replace(/ /g, KEEP));
   const out: string[] = [];
   for (const para of text.trim().split('\n')) {

@@ -3,7 +3,7 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
 import { startOf, type Stage } from './stages/stage';
 
-export const TITLE = 'VIRUS BLASTER';
+const TITLE = 'VIRUS BLASTER';
 
 export function buildGame(stages: Stage[], startAt?: string): Game {
   const game = newGame(TITLE);

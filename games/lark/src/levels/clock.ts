@@ -7,7 +7,7 @@
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const SQUARE_ROWS = [
+const SQUARE_ROWS = [
   'hhhhhhhhhWWWWWhhhhhhhhhh',
   'h........WWcWW.........h',
   'h.l......WWWWW......l..h',
@@ -23,7 +23,7 @@ export const SQUARE_ROWS = [
   'hhhhhhhhhhhShhhhhhhhhhhh',
 ];
 
-export const SQUARE7_ROWS = [
+const SQUARE7_ROWS = [
   'hhhhhhhhhWWWWWhhhhhhhhhh',
   'h........WW7WW.........h',
   'h.l......WWWWW......l..h',
@@ -75,7 +75,7 @@ export function squareMap(set: BlockSet, mons: Bestiary, seven: boolean): Stampe
 // tick bridge, 'B' a tock bridge, 'g' a stuck gear, 'w' a window, '1234' the big cog, 'D' the
 // door back to the square, 'X' the hatch up, '@' where Joe comes in, 'o' and ':' the pendulum's
 // rod and bob.
-export const TOWER_ROWS = [
+const TOWER_ROWS = [
   '########################',
   '#......................#',
   '#...l.......w.........X#',
@@ -134,7 +134,7 @@ export function towerMap(set: BlockSet, mons: Bestiary): Stamped {
 }
 
 // The belfry: the bell overhead, the third gear up on a floor, the hammer, and the bell rope.
-export const BELFRY_ROWS = [
+const BELFRY_ROWS = [
   '####################',
   '#........12........#',
   '#........34........#',

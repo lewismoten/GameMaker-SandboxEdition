@@ -18,7 +18,7 @@ export interface Story {
   text: string;
 }
 
-export const STORIES: Story[] = [
+const STORIES: Story[] = [
   {
     n: 1,
     title: 'Where the Mountain Speaks',

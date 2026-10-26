@@ -11,7 +11,7 @@ import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/forma
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
-export type Area = 'course' | 'lab' | 'sewer' | 'tower';
+type Area = 'course' | 'lab' | 'sewer' | 'tower';
 
 /** Each place's wall, filler, floor, ceiling and ledge. */
 const PLACE: Record<Area, Record<string, string>> = {
@@ -60,7 +60,7 @@ const LEGEND: Record<string, string> = {
   X: 'exit',
 };
 
-export interface LinkSpec {
+interface LinkSpec {
   from: [number, number];
   toScene: 'next' | 'won';
 }
@@ -68,7 +68,7 @@ export interface LinkSpec {
 /** Where a level's map sits in the 100x100 world (the rest is solid). */
 export const ORIGIN = 2;
 
-export class MapBuilder {
+class MapBuilder {
   readonly map: GameMap = newMap();
   readonly links: LinkSpec[] = [];
   private monCount = 0;

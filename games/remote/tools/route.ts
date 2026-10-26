@@ -35,7 +35,7 @@ async function through(bot: Bot, x: number, y: number, side: 'up' | 'down' | 'le
  * `maxLoss` patience (or goes wrong), it is taken back and played again after a short wait, so
  * you set out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;

@@ -24,7 +24,7 @@ function offset(level: Level): [number, number] {
  * the mirror (every cell reached from the egg without crossing a wall or the mirror), and the
  * tin heart and the Easter egg (levels/hidden.ts), which are for players to find.
  */
-export function eggRoom(level: Level): Set<string> {
+function eggRoom(level: Level): Set<string> {
   const b = buildLevel(new TileBook(level.theme, rulesFor({ level: level.n })), level);
   const out = new Set<string>();
   const at = (x: number, y: number) => b.kinds[y]?.[x] ?? 'void';
@@ -50,7 +50,7 @@ export function eggRoom(level: Level): Set<string> {
  * `maxLoss` light, it is taken back and played again after a wait, so he rolls out at a
  * better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;

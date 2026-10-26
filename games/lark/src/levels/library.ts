@@ -5,7 +5,7 @@
 import type { BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const LIBRARY_ROWS = [
+const LIBRARY_ROWS = [
   'PPPPPPPPPWPPPPPPPWPPPPPP',
   'PSsSs.SsSs.SsSs.SsSs...P',
   'P......................P',

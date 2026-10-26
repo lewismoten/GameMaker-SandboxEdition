@@ -8,7 +8,7 @@ import { SLOTS } from './levels/board';
 
 const ROOMS: Record<string, string> = { kitchen: 'The Kitchen', living: 'The Living Room', garage: 'The Garage', attic: 'The Attic' };
 
-export function printables(): unknown {
+function printables(): unknown {
   // the home computer's corner of the attic map
   const n = BOARDS.filter((b) => b.room === 'attic').findIndex((b) => b.file === 'computer');
   const [OX, OY] = SLOTS[n];

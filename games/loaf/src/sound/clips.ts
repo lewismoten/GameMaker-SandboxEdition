@@ -18,8 +18,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '../../../../web/src/formats/voc';
 
-export const CLIPS = { bread: 11025, countme: 11025, twelve: 11025, wasted: 11025, still: 11025, mama: 8000 } as const;
-export type ClipName = keyof typeof CLIPS;
+const CLIPS = { bread: 11025, countme: 11025, twelve: 11025, wasted: 11025, still: 11025, mama: 8000 } as const;
+type ClipName = keyof typeof CLIPS;
 
 const here = dirname(fileURLToPath(import.meta.url));
 

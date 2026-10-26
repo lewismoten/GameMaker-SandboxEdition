@@ -4,7 +4,7 @@ import { newMap, reindexMonsters, MLEN, type GameMap } from '../../../../web/src
 import { rng } from '../../../kit/pixels';
 import { BG } from '../blocks/bblocks';
 
-export type Cell = string | { tile?: string; mon?: number; mark?: string };
+type Cell = string | { tile?: string; mon?: number; mark?: string };
 export type Legend = Record<string, Cell>;
 
 // (seven entries still, so every map's random draws stay the same)

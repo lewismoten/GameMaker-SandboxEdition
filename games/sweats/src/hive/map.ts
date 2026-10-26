@@ -14,7 +14,7 @@ export const HIVE_H = 16;
 export const HIVE_STREET: [number, number] = [1, 13];
 export const HIVE_STAGE: [number, number] = [32, 5];
 /** The curtain (the link to the next set). */
-export const CURTAIN: [number, number] = [22, 5];
+const CURTAIN: [number, number] = [22, 5];
 
 export function buildHive(m: MapBuilder): void {
   // ---------------- outside: the avenue at night

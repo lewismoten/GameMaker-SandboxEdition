@@ -24,7 +24,7 @@ export { T, outline };
  * pale (moonlight on fog) and the art just inside it goes dark. The same pixels as a plain
  * outline, so what touches you is exactly what you see.
  */
-export function rim(p: Pixels, ink: number, pale: number): Pixels {
+function rim(p: Pixels, ink: number, pale: number): Pixels {
   outline(p, pale);
   const src = p.px.slice();
   for (let y = 0; y < p.h; y++)
@@ -42,9 +42,9 @@ export function rim(p: Pixels, ink: number, pale: number): Pixels {
   return p;
 }
 
-export type Facing = 'down' | 'up' | 'side';
+type Facing = 'down' | 'up' | 'side';
 
-export interface HeroPose {
+interface HeroPose {
   facing: Facing;
   /** Walk phase: 0 standing, 1 and 2 the steps. */
   step?: 0 | 1 | 2;
@@ -56,7 +56,7 @@ export interface HeroPose {
 }
 
 /** Your look, in the pal's ramps. */
-export function heroArt(pal: Pal) {
+function heroArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
@@ -239,7 +239,7 @@ export function buildCharBlocks(pal: Pal, withSword = false) {
  * head. Face on (front), or strolling: side on to the right (mirror it for left) or from behind
  * (going up the map).
  */
-export function lilyArt(pal: Pal) {
+function lilyArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const legs = (p: Pixels, step: number, side: boolean) => {

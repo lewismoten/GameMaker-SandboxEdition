@@ -11,7 +11,7 @@ import type { Place } from '../sound/sounds';
 import type { Form } from '../sprites/sprites';
 import { city, desert, eye, tailor, type Level } from './maps';
 
-export interface LevelDef {
+interface LevelDef {
   /** The level's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
   file: string;
   desc: string;

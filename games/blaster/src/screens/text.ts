@@ -215,7 +215,7 @@ export const DEBUG_EGG = pages(
 for (const l of DEBUG_EGG.split('\n')) if (l.length > 30) throw new Error(`Egg line over 30 columns: "${l}"`);
 
 /** readme.txt, 31 columns wide. */
-export function readme(price: string): string {
+function readme(price: string): string {
   const lines = [
     '         VIRUS BLASTER',
     '      Version 1.0 - 1995',

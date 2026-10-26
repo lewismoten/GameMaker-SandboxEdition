@@ -21,15 +21,15 @@ import { CROWN, LAUGHS, LAUGHS_NEEDED, MON, SCALES, SCALES_NEEDED } from '../ids
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, marble, outside, sparkle, wreath } from './common';
 
 /** Ticks between scalding bubbles out of the hot pool. */
-export const BUBBLE_EVERY = 40;
+const BUBBLE_EVERY = 40;
 /** Ticks between notes from the diva's basin. */
-export const NOTE_EVERY = 30;
+const NOTE_EVERY = 30;
 /** Ticks between drops of hot water off the steamy vault. */
-export const DRIP_EVERY = 54;
+const DRIP_EVERY = 54;
 /** Ticks between cabbages from the top of the stands. */
-export const CABBAGE_EVERY = 58;
+const CABBAGE_EVERY = 58;
 /** Ticks between the hushes ("SILENTIUM!") the herald's horn blows over the Emperor's head. */
-export const HUSH_EVERY = 64;
+const HUSH_EVERY = 64;
 
 export function buildThermae(pal: Pal): BlockBook {
   const x = context(pal);

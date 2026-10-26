@@ -130,7 +130,7 @@ function silentium(lite = false): Arranger {
 const LEVEL_SONGS: Record<SongName, (lite?: boolean) => Arranger> = { canis, ignavi, titus, felis, piscis, silentium };
 
 /** Title: the group's fanfare, then "O flatus, perfidus ventus" for a taste of the opera. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = arranger('fanfare');
   a.section(FANFARE, { sing: 'choir', comp: 'hold', color: 'arp', bass: 'march', drums: ['fanfare'], vel: 106 });
   a.rimshot();
@@ -138,7 +138,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** The story: "Cogito, scribo, quaero iocum", hushed. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = arranger('silentium', 120);
   a.section(SILENT_VERSE, { sing: 'solo', comp: 'pah', color: 'none', bass: 'oompah', drums: ['bounce'], vel: 88 });
   a.section(SILENT_BRIDGE, { sing: 'solo', comp: 'none', color: 'none', bass: 'long', drums: ['none'], vel: 80 });
@@ -146,7 +146,7 @@ export function storySong(): Uint8Array {
 }
 
 /** Won: the fanfare, louder, a key up, and the laugh at last. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = arranger('fanfare');
   a.section(FANFARE, { sing: 'choir', comp: 'hold', color: 'arp', bass: 'march', drums: ['fanfare'], vel: 110 });
   a.section({ ...FANFARE, name: 'again' }, { sing: 'choir', comp: 'pump', color: 'double', bass: 'eighths', drums: ['fanfare'], vel: 114, shift: 2 });
@@ -155,7 +155,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: "Risus erit... forsitan... cras?" slow, alone. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = arranger('canis', 66);
   a.section({ ...SILENT_BRIDGE, name: 'cras' }, { sing: 'solo', comp: 'hold', color: 'none', bass: 'long', drums: ['opera'], vel: 86 });
   a.event(50);
@@ -163,7 +163,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: a medley, every song's refrain in the game's order. */
-export function medley(): Uint8Array {
+function medley(): Uint8Array {
   const parts: [SongName, Section][] = [
     ['canis', CANIS_REFRAIN],
     ['ignavi', IGNAVI_REFRAIN],

@@ -20,11 +20,11 @@ import { MON, TITLES, TITLES_NEEDED } from '../ids';
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, context, copy, cup, denarius, grapes, outside, sparkle, wreath } from './common';
 
 /** Ticks between arrows from the archers' tower. */
-export const ARROW_EVERY = 36;
+const ARROW_EVERY = 36;
 /** Ticks between spells off the wise man's chimney. */
-export const SPELL_EVERY = 52;
+const SPELL_EVERY = 52;
 /** The tituli: what each says, and what Titus's tongue twists it into. */
-export const TITULI: [string, string][] = [
+const TITULI: [string, string][] = [
   ['TITVS', 'TVTIS'],
   ['TECTA', 'TACTA'],
   ['TOT', 'TVT'],

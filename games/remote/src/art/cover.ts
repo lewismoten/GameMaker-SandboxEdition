@@ -8,8 +8,8 @@
 // (cartoons.ts). `t` (0..1) animates it: the swirl turns, the remote tumbles in, the VCR blinks.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 
@@ -35,7 +35,7 @@ const N1 = noise2(31);
 const N2 = noise2(47);
 
 /** Where the swirl is: between the middle seat cushions. */
-export const SWIRL = { x: 160, y: 140 };
+const SWIRL = { x: 160, y: 140 };
 
 const ROSE: RGB = [196, 120, 136];
 const ROSE_DARK: RGB = [110, 50, 70];

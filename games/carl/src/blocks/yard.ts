@@ -17,10 +17,10 @@ import { AIR, BlockBook, GRAV, LEDGE, LICK_EVERY, SOLID, SUGAR, SUGAR_CUBE, fres
 import { cut } from './house';
 
 /** Ticks between wasps from the nest. */
-export const WASP_EVERY = 90;
+const WASP_EVERY = 90;
 /** Ticks a gust blows, and the calm between gusts. */
-export const GUST_ON = 8;
-export const GUST_OFF = 30;
+const GUST_ON = 8;
+const GUST_OFF = 30;
 
 export function buildYard(pal: Pal): BlockBook {
   const book = new BlockBook();

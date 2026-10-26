@@ -30,7 +30,7 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
   ['corgi', 4, [150, 64, 14], [255, 200, 120]],
 ];
 
-export interface Pal {
+interface Pal {
   pal: Uint8Array;
   /** Palette entries in use (the rest are free, e.g. for color cycling). */
   used: number;
@@ -40,7 +40,7 @@ export interface Pal {
   ink: { red: number; blue: number; purple: number; yellow: number; white: number; black: number };
 }
 
-export function buildPalette(): Pal {
+function buildPalette(): Pal {
   const p = new PaletteBuilder();
   p.designerColors();
   // PLAYGAME's text inks (6-bit 63,10,10 / 10,10,63 / 50,10,50 / 63,63,0) as exact colors.

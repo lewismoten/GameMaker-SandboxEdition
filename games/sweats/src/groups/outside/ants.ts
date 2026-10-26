@@ -328,7 +328,7 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
   book.add('kingB1', roach(1, 2), hurts(-6));
 }
 
-export function antsMonsters(set: Monster[], mb: SpriteBook): void {
+function antsMonsters(set: Monster[], mb: SpriteBook): void {
   set[ANTS_MON.dust] = mon(anim(mb, 'dust0', 'dust1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: ANTS_MON.poof }, [
     corner(0, 0, 2),
     corner(-6, 0, 2, 4),

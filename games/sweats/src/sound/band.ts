@@ -6,14 +6,14 @@ import { BONGO, BRUSH, CRASH, HAT, KICK, PIANO, RIDE, RIM, SNARE, SWELL, TIMP, V
 
 // ---- the band -----------------------------------------------------------------------------
 
-export const LEAD = 0;
+const LEAD = 0;
 export const TWIN = 1;
 export const BASSCH = 2;
-export const COMP = [3, 4, 5];
+const COMP = [3, 4, 5];
 
-export type Bass = 'walk' | 'two' | 'bossa' | 'pedal' | 'riff' | 'stop' | 'none';
-export type Comp = 'charleston' | 'red' | 'pad' | 'swell' | 'roll' | 'bossa' | 'waltz' | 'shout' | 'blues' | 'sowhat' | 'stop' | 'none';
-export type Drums = 'ride' | 'bebop' | 'brush' | 'bossa' | 'shout' | 'march' | 'noir' | 'waltz' | 'shuffle' | 'snap' | 'stop' | 'none';
+type Bass = 'walk' | 'two' | 'bossa' | 'pedal' | 'riff' | 'stop' | 'none';
+type Comp = 'charleston' | 'red' | 'pad' | 'swell' | 'roll' | 'bossa' | 'waltz' | 'shout' | 'blues' | 'sowhat' | 'stop' | 'none';
+type Drums = 'ride' | 'bebop' | 'brush' | 'bossa' | 'shout' | 'march' | 'noir' | 'waltz' | 'shuffle' | 'snap' | 'stop' | 'none';
 
 export interface Style {
   lead: Uint8Array;
@@ -41,7 +41,7 @@ export interface Style {
   extra?: (a: Arranger, at: number) => void;
 }
 
-export interface Note {
+interface Note {
   at: number;
   len: number;
   n: number;

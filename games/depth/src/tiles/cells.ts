@@ -14,8 +14,8 @@ export type Plane = 'near' | 'far';
 export const PLANES: Plane[] = ['near', 'far'];
 
 /** Block height of a cube (cells), and how much of a cell its south face takes on screen. */
-export const H = 0.8;
-export const F = OBLIQUE_K * H;
+const H = 0.8;
+const F = OBLIQUE_K * H;
 
 /** The planes' colors: near things are warm amber, far things cool cyan. */
 export const NEAR_COL = rgb(255, 150, 40);
@@ -29,7 +29,7 @@ export interface Ctx {
   nPit: boolean;
 }
 
-export interface Kind {
+interface Kind {
   ground(p: Plane): 'floor' | 'pit';
   /** Casts a full cube's shadow on the floor east and south of it. */
   tall(p: Plane): boolean;
@@ -69,7 +69,7 @@ export function cube(cx: number, cy: number, mat: Material, opts: { h?: number; 
 }
 
 /** Where a small thing standing on the middle of a cell sits (x, y on the floor). */
-export const mid = (cx: number, cy: number): [number, number] => [cx + 0.5, cy + 0.58];
+const mid = (cx: number, cy: number): [number, number] => [cx + 0.5, cy + 0.58];
 
 const glassOf = (c: V, glow = 0.25): Material => ({
   color: c,
@@ -182,7 +182,7 @@ function slope(dx: number, dy: number): Kind {
 }
 
 /** The kinds of cell. Items stand on the floor; cubes fill the cell. */
-export function kinds(): Record<string, Kind> {
+function kinds(): Record<string, Kind> {
   const floor = (): Kind => ({ ground: () => 'floor', tall: () => false });
   const pit = (): Kind => ({ ground: () => 'pit', tall: () => false });
   const item = (build: (x: number, y: number, t: Theme) => Shape[], glows?: Kind['glows']): Kind => ({
@@ -563,7 +563,7 @@ export const KEY_DIR: V = (() => {
   return [v[0] / l, v[1] / l, v[2] / l];
 })();
 
-export function worldFor(shapes: Shape[], t: Theme, keyColor?: V): World {
+function worldFor(shapes: Shape[], t: Theme, keyColor?: V): World {
   return {
     shapes,
     key: { dir: KEY_DIR, color: keyColor ?? t.key, soft: 0.07 },
@@ -577,7 +577,7 @@ export function worldFor(shapes: Shape[], t: Theme, keyColor?: V): World {
 }
 
 /** Adds soft glows (light halos) to a 20x20 picture. */
-export function addGlows(p: Picture, glows: [number, number, number, number, V][], scale = 20): void {
+function addGlows(p: Picture, glows: [number, number, number, number, V][], scale = 20): void {
   for (const [gx, gy, gz, r, c] of glows) {
     const sx = gx * scale;
     const sy = (gy - OBLIQUE_K * gz) * scale;

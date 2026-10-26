@@ -11,7 +11,7 @@ import { H, Reel, W, c, caption, gwinnAt, leoAt, teddyAt } from './reel';
 import { SP } from './screens';
 
 /** The Big Top's inside: red and white stripes up to the king pole, the ring, a string of lights. */
-export function bigTop(lit: boolean): Pixels {
+function bigTop(lit: boolean): Pixels {
   const p = new Pixels(W, H, c('ink', 0));
   for (let y = 0; y < 150; y++)
     for (let x = 0; x < W; x++) {

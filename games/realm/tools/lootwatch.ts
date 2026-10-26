@@ -51,7 +51,7 @@ export function monPos(sim: GameSim, i: number): { x: number; y: number } {
 }
 
 /** Whether Pip (one block) overlaps a monster at (mx, my). */
-export function pipTouches(sim: GameSim, mx: number, my: number): boolean {
+function pipTouches(sim: GameSim, mx: number, my: number): boolean {
   const c = sim.w.chr;
   const px = c.x[0] + c.x[1] / 20;
   const py = c.y[0] + c.y[1] / 20;

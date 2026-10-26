@@ -20,7 +20,7 @@ const O = () => c('ink', 0);
 
 // ------------------------------------------------------------------ Doc Leo
 
-export type Facing = 'down' | 'up' | 'side';
+type Facing = 'down' | 'up' | 'side';
 
 /**
  * Doc Leo, hobo clown, seen from a little above: a chewed grey fedora, the ash beard and the
@@ -103,7 +103,7 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
 }
 
 /** The rubber chicken: yellow, limp, orange beak, red comb. Held up (squeezed) or on its leash. */
-export function chicken(p: Pixels, x: number, y: number, squeezed: boolean): void {
+function chicken(p: Pixels, x: number, y: number, squeezed: boolean): void {
   const y2 = c('yellow', 3);
   const y1 = c('yellow', 1);
   if (squeezed) {
@@ -411,22 +411,6 @@ export function chickenItem(): Pixels {
 }
 
 // ------------------------------------------------------------------ the ingredients
-
-export const INGREDIENT_NAMES = [
-  'Sassafras Root',
-  'Wintergreen',
-  'Nutmeg',
-  'Molasses',
-  'Vanilla Bean',
-  'Boston Harbor Tea',
-  'Cane Sugar',
-  'Yeast (Gerald)',
-  'Cloves',
-  'Licorice Root',
-  'Bottled Lightning',
-  'Twice-Boiled Water',
-  'The Thirteenth',
-] as const;
 
 /** Ingredient n (1..13) as a 20x20 sprite with a soft golden glow behind it. */
 export function ingredient(n: number, frame = 0): Pixels {

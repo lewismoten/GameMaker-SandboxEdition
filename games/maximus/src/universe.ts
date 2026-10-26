@@ -14,7 +14,7 @@ export interface World {
   blurb: string;
 }
 
-export interface Sector {
+interface Sector {
   name: string;
   /** 1..5 */
   level: number;

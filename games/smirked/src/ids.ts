@@ -125,7 +125,6 @@ export const HELMET = 22;
 export const SMIRKS = 23;
 export const MONEY = 3;
 export const SWORD_PRICE = 12;
-export const LIVES = 1;
 
 /** Sound effect numbers in each .SND (0..8 are the ones PLAYGAME plays by itself). */
 export const SND = {

@@ -172,7 +172,7 @@ export function goatArt(pal: Pal) {
 }
 
 /** The goat herself: grey and white like the cover, with a beard and curled horns. */
-export const HERO = { fur: 'goat', lo: 1, hi: 5, horns: true, beard: true } as const;
+const HERO = { fur: 'goat', lo: 1, hi: 5, horns: true, beard: true } as const;
 
 export function buildCharBlocks(pal: Pal) {
   const made = makeBook('cbl');

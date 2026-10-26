@@ -19,19 +19,19 @@ import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 export { BlockBook, SOLID };
 const LIFE = 1;
 /** Ticks the empty place in the line stays open, leans shut (still open) and stays shut. */
-export const GAP_OPEN = 44;
-export const GAP_LEAN = 18;
-export const GAP_SHUT = 36;
+const GAP_OPEN = 44;
+const GAP_LEAN = 18;
+const GAP_SHUT = 36;
 /** Ticks between spits from a kneeling camel. */
-export const SPIT_EVERY = 46;
+const SPIT_EVERY = 46;
 /** Ticks a kneeling camel puffs its cheeks before each spit. */
-export const SPIT_WINDUP = 10;
+const SPIT_WINDUP = 10;
 /**
  * Water never runs out: a well, the oasis or a trough glints for one tick in every
  * SIP_EVERY + 1, and a goat pushing into it then takes a sip (one breath and one hit point),
  * so a goat who screamed her breath away can always get it back.
  */
-export const SIP_EVERY = 28;
+const SIP_EVERY = 28;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

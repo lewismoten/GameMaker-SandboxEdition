@@ -22,7 +22,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
 }
 
 /** Collectibles still in the level (a pickup that changes when touched and gives something; gates are solid, so left out). */
-export function loot(bot: Bot): string[] {
+function loot(bot: Bot): string[] {
   const out: string[] = [];
   for (let y = ORIGIN; y < ORIGIN + 16; y++)
     for (let x = ORIGIN; x < ORIGIN + 70; x++) {
@@ -39,7 +39,7 @@ export function loot(bot: Bot): string[] {
  * `maxLoss` hit points (or goes wrong), it is taken back and played again after a short wait, so
  * Carl sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -483,10 +483,3 @@ export async function theAux(bot: Bot): Promise<void> {
     await leave(bot, bot.fly(49, 9, 'the aux cord'), 'the aux cord');
   });
 }
-
-export const counts = {
-  snacks: (b: Bot) => count(b, SNACKS),
-  smiles: (b: Bot) => count(b, SMILES),
-  ears: (b: Bot) => count(b, EARS),
-  hours: (b: Bot) => count(b, HOURS),
-};

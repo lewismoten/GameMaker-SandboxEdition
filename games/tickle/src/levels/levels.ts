@@ -4,7 +4,7 @@ import type { BlockBook } from '../blocks/blocks';
 import type { MonsterOptions } from '../characters';
 import { course, lab, sewer, tower, type Level } from './maps';
 
-export interface LevelDef {
+interface LevelDef {
   file: string;
   desc: string;
   light: Light;

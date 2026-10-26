@@ -47,11 +47,6 @@ export function bevel(p: Pixels, x: number, y: number, w: number, h: number, ram
   return p;
 }
 
-/** ASCII art → a transparent sprite; each character maps to a color through `key`. */
-export function sprite(rows: string[], key: Record<string, number>, dx = 0, dy = 0, w = 20, h = 20): Pixels {
-  return new Pixels(w, h, CLEAR).draw(dx, dy, rows, key);
-}
-
 /** Adds a 1 pixel outline in `ink` around every opaque pixel. */
 export function outline(src: Pixels, ink: number): Pixels {
   const p = new Pixels(src.w, src.h, CLEAR);

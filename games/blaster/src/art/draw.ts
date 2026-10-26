@@ -53,30 +53,6 @@ export function outline(p: Pixels, c: number, transparent = CLEAR): Pixels {
   return p;
 }
 
-/** ASCII art with a key; '.' and ' ' are transparent. */
-export function sprite(rows: string[], key: Record<string, number>, w = 20, h = 20): Pixels {
-  const p = new Pixels(w, h, CLEAR);
-  const ox = Math.floor((w - Math.max(...rows.map((r) => r.length))) / 2);
-  const oy = Math.floor((h - rows.length) / 2);
-  return p.draw(ox, oy, rows, key);
-}
-
-/** Mirror left to right. */
-export function mirror(p: Pixels): Pixels {
-  return p.flipX();
-}
-
-export function flipY(p: Pixels): Pixels {
-  const q = new Pixels(p.w, p.h);
-  return q.map((x, y) => p.get(x, p.h - 1 - y));
-}
-
-/** Rotate 90 degrees clockwise (square pictures). */
-export function rot90(p: Pixels): Pixels {
-  const q = new Pixels(p.h, p.w);
-  return q.map((x, y) => p.get(y, p.h - 1 - x));
-}
-
 /** Copies src scaled up by s (nearest), skipping CLEAR. */
 export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): Pixels {
   for (let yy = 0; yy < src.h * s; yy++)
@@ -138,7 +114,7 @@ export function gradient(p: Pixels, x: number, y: number, w: number, h: number, 
 
 // ------------------------------------------------------------------ block sets
 
-export type BlockProps = Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl' | 'birthMon'>> & {
+type BlockProps = Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl' | 'birthMon'>> & {
   /** Name of the block this animates into after ntime ticks. */
   next?: string;
   /** Name of the block this becomes when touched. */

@@ -26,7 +26,7 @@ function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = [], 
 }
 
 /** Power of Ray's shot: it renders wireframes (110), jaggies and bats, and hurts the Count. */
-export const SHOT_POWER = 150;
+const SHOT_POWER = 150;
 
 /** A patrol back and forth: `run` blocks one way, then back. */
 const patrol = (dx: number, dy: number, speed: number) => [corner(dx, dy, speed), corner(-dx, -dy, speed)];

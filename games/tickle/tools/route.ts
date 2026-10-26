@@ -23,7 +23,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * `maxLoss` rapport (or goes wrong), it is taken back and played again after a short wait, so he
  * sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -71,7 +71,7 @@ const enough = (bot: Bot, level: number) => {
 };
 
 /** 1. The course: five practice rats, Loaf #13, the door. */
-export async function theCourse(bot: Bot): Promise<void> {
+async function theCourse(bot: Bot): Promise<void> {
   expect(bot, 2, 'the course');
   await tickle(bot, 'right', 'practice rat 1');
   await carefully(bot, 'up on the first desk', 0, async () => {
@@ -104,7 +104,7 @@ export async function theCourse(bot: Bot): Promise<void> {
 }
 
 /** 2. The lab: benches, racks over the Tesla coils and the floor buffer, past Dean Dour. */
-export async function theLab(bot: Bot): Promise<void> {
+async function theLab(bot: Bot): Promise<void> {
   expect(bot, 3, 'the lab');
   await tickle(bot, 'right', 'the first lab rat');
   await carefully(bot, 'up on the first bench', 0, async () => {
@@ -159,7 +159,7 @@ export async function theLab(bot: Bot): Promise<void> {
 }
 
 /** 3. The sewers: up the steam onto the pipe over the alligator, the long walkway, the low pipe, the last walkway. */
-export async function theSewers(bot: Bot): Promise<void> {
+async function theSewers(bot: Bot): Promise<void> {
   expect(bot, 4, 'the sewers');
   await tickle(bot, 'right', 'the first wild rat');
   await carefully(bot, 'up the steam and onto the pipe', 0, async () => {
@@ -207,7 +207,7 @@ export async function theSewers(bot: Bot): Promise<void> {
 }
 
 /** 4. The empire: the tower's floor, then ledge by ledge up to the balcony. */
-export async function theTower(bot: Bot): Promise<void> {
+async function theTower(bot: Bot): Promise<void> {
   expect(bot, 5, 'the tower');
   await tickle(bot, 'right', 'the first rat in the tower');
   await carefully(bot, "past the Jacob's ladder", 0, async () => {

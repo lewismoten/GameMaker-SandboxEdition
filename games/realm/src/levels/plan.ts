@@ -10,7 +10,7 @@ import type { LinkSpec } from '../game';
 
 export type Pt = [number, number];
 
-export interface Npc {
+interface Npc {
   /** Monster number in the scene's .MON. */
   mon: number;
   at: Pt;

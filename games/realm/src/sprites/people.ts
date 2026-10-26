@@ -11,7 +11,7 @@ import type { Canvas, RGB } from '../art/rgb';
 // ---------------------------------------------------------------- heads (rows 0-11)
 const FACE = ['....KhHsSSSSsHhK....', '....KHsSeSSeSsHK....', '....KHsSeSSeSsHK....', '.....KsSSddSSsK.....', '.....KKssSSssKK.....'];
 
-export const HEADS: Record<string, string[]> = {
+const HEADS: Record<string, string[]> = {
   bun: [
     '....................',
     '.........KKK........',
@@ -231,7 +231,7 @@ export const HEADS: Record<string, string[]> = {
 };
 
 // ---------------------------------------------------------------- bodies (rows 12-16) and legs (17-19)
-export const BODIES: Record<string, string[]> = {
+const BODIES: Record<string, string[]> = {
   tunic: ['....KgGLLLLLLGgK....', '...KsgGGLLLLGGgsK...', '...KsKgGGGGGGgKsK...', '....KKnNNyyNNnKK....', '.....KgGGGGGGgK.....'],
   dress: ['....KgGLLLLLLGgK....', '...KsgGGLLLLGGgsK...', '...KsKgGGGGGGgKsK...', '....KgGGGGGGGGgK....', '...KgGGGGGGGGGGgK...'],
   apron: ['....KgGwwwwwwGgK....', '...KsgGwwwwwwGgsK...', '...KsKgwwwwwwgKsK...', '....KKgwwwwwwgKK....', '.....KgwwwwwwgK.....'],
@@ -245,7 +245,7 @@ export const BODIES: Record<string, string[]> = {
   tally: ['....KmMMMMMMMMmK....', '...KmKMMKwwKMMKmK...', '...KmKMMKeeKMMKmK...', '...KMKMMKKKKMMKMK...', '....KKmMMMMMMmKK....'],
   armor: ['...KcCMMMMMMMMCcK...', '..KcCcMMMooMMMcCcK..', '..KcKcMMMooMMMcKcK..', '...KKcCCCCCCCCcKK...', '...KcCCCCCCCCCCcK...'],
 };
-export const LEGS: Record<string, string[]> = {
+const LEGS: Record<string, string[]> = {
   boots: ['.....KpPPKKPPpK.....', '.....KnNNKKNNnK.....', '......KKK..KKK......'],
   skirt: ['....KgGGGGGGGGgK....', '.....KKnNKKNnKK.....', '......KKK..KKK......'],
   sneakers: ['.....KpPPKKPPpK.....', '....KooowKKooowK....', '....KKKKK..KKKKK....'],
@@ -258,7 +258,7 @@ export const LEGS: Record<string, string[]> = {
   greaves: ['.....KmMMKKMMmK.....', '.....KcCCKKCCcK.....', '.....KKKK..KKKK.....'],
 };
 
-export interface PersonSpec {
+interface PersonSpec {
   head: keyof typeof HEADS;
   body: keyof typeof BODIES;
   legs: keyof typeof LEGS;

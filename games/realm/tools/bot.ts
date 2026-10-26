@@ -9,11 +9,11 @@ import { POWER, SEQ } from '../src/ids';
 import { LOOT_MONS, cellOnScreen, isKeepsake, isLootBlock, lootScene, monPos } from './lootwatch';
 
 type Pt = { x: number; y: number };
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57, t: 20, z: 44 } as const;
 
-export class Died extends Error {
+class Died extends Error {
   constructor() {
     super('Pip died');
   }

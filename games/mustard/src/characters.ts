@@ -19,18 +19,17 @@ const MIRROR = 0x40; // bottom block flipped left-right
 const MIRROR_BOTH = 0x44; // and the top block
 
 /** Pixels a tick walking: the seed is slow but sure; once it has grown (sprout, plant) it strides out. */
-export const STEP = 3;
-export const STEP_GROWN = 4;
+const STEP = 3;
+const STEP_GROWN = 4;
 /** Laced up (the laces carried), it hustles: the seed and the grown seed alike. */
-export const STEP_LACED = 5;
-export const STEP_LACED_GROWN = 6;
+const STEP_LACED = 5;
+const STEP_LACED_GROWN = 6;
 /** Pixels a tick sideways in a hop. */
-export const HOP_STEP = 4;
+const HOP_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
-export const HOP = 12;
+const HOP = 12;
 /** Pixels a tick pushing roots down, or climbing in them. */
-export const ROOT_STEP = 3;
-export const CLIMB = 5;
+const ROOT_STEP = 3;
 
 export type Form = 'seed' | 'sprout' | 'plant';
 

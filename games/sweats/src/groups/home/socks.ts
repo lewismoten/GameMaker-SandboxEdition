@@ -212,7 +212,7 @@ export function socksSprites(book: SpriteBook, pal: Pal): void {
   book.add('why1', why(1), hurts(-3));
 }
 
-export function socksMonsters(set: Monster[], mb: SpriteBook): void {
+function socksMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // lint out of the dryer, under the shelves and up, and back along the clothesline at him
   set[SOCKS_MON.lint] = mon(anim(mb, 'lint0', 'lint1', 3), { power: POWER.foe, thru: 1, end: -1, newmon: SOCKS_MON.fluff }, [

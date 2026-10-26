@@ -18,9 +18,6 @@ export const CTR = {
   turns: 21,
 } as const;
 
-/** Ingredients in the recipe card's list. The thirteenth is not on it. */
-export const INGREDIENTS = 12;
-
 /** Character sequences (0..4 are Game-Maker's own: idle, die, hurt, pick up, drop). */
 export const SEQ = {
   idle: 0,

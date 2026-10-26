@@ -188,8 +188,3 @@ export class Screen {
     return encodeGif({ width: this.w, height: this.h, pixels, palette });
   }
 }
-
-/** A soft vertical gradient fill. */
-export function gradient(cv: Canvas, top: RGB, bottom: RGB, y0 = 0, y1 = cv.h): void {
-  cv.shade((_x, y) => mix(top, bottom, Math.max(0, Math.min(1, (y - y0) / (y1 - y0)))));
-}

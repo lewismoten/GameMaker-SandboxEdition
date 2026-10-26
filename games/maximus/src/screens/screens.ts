@@ -4,7 +4,7 @@
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeBackdrop, serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { tileNoise } from '../art/draw';
 import { Canvas } from '../art/canvas';
@@ -61,9 +61,6 @@ const SCREEN_THEME: Theme = {
 };
 export const SCREEN = buildPalette(SCREEN_ROLES, SCREEN_THEME);
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
-const BLUE = 11;
-const RED = 12;
-const YELLOW = 13;
 
 const gif = (c: Canvas) => encodeGif({ width: c.w, height: c.h, pixels: c.px, palette: SCREEN.pal });
 
@@ -121,12 +118,6 @@ export function planetArt(c: Canvas, cx: number, cy: number, rad: number, biome:
     night: 0,
   });
 }
-
-const big = (p: Pixels, k: number) => {
-  const c = new Canvas(p.w * k, p.h * k, 255);
-  c.sprite(p, 0, 0, k);
-  return c;
-};
 
 function logo(c: Canvas, y: number, scale = 5): void {
   const word = 'MAXIMUS';
@@ -495,4 +486,4 @@ export function placeCards(places: { file: string; title: string; sub: string; t
   return out;
 }
 
-export { rng, BLUE, RED, YELLOW, S, big };
+export { rng, S };

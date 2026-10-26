@@ -24,16 +24,16 @@ import { CARPET, NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, hop up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks a Tesla coil rests, and arcs. */
-export const COIL_REST = 40;
-export const COIL_ARC = 14;
+const COIL_REST = 40;
+const COIL_ARC = 14;
 
 /** The four places, each with its own wall behind everything. */
-export type Area = 'course' | 'lab' | 'sewer' | 'tower';
-export const AREAS: Area[] = ['course', 'lab', 'sewer', 'tower'];
+type Area = 'course' | 'lab' | 'sewer' | 'tower';
+const AREAS: Area[] = ['course', 'lab', 'sewer', 'tower'];
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

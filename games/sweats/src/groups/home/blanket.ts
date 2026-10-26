@@ -255,7 +255,7 @@ export function blanketSprites(book: SpriteBook, pal: Pal): void {
   }
 }
 
-export function blanketMonsters(set: Monster[], mb: SpriteBook): void {
+function blanketMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // chills drift in off the window, down to the floor and away to the left
   set[BLANKET_MON.chill] = mon(anim(mb, 'chill0', 'chill1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: BLANKET_MON.fluff }, [

@@ -213,7 +213,7 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
   book.add('busboy1', busboy(1), hurts(0));
 }
 
-export function platesMonsters(set: Monster[], mb: SpriteBook): void {
+function platesMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: PM.poof };
   set[PM.phantom] = mon(anim(mb, 'phantom0', 'phantom1', 5), { ...foe, thru: 0 }, [
     corner(0, 0, 1),

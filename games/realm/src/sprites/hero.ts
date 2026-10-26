@@ -5,7 +5,7 @@ import { art, lookKey, R, type Key } from '../art/sprite';
 import { C } from '../art/pal';
 import type { Canvas } from '../art/rgb';
 
-export const PIP_KEY: Key = lookKey({
+const PIP_KEY: Key = lookKey({
   hair: R('hairBrown', 0, 1, 2),
   coat: R('green', 1, 2, 3),
   pants: R('leather', 2, 3),

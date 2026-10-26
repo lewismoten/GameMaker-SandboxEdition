@@ -12,7 +12,7 @@ import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { saveSignBlocks } from '../../../kit/saveSign';
 
-export interface Style {
+interface Style {
   id: string;
   /** Board (floor) ramp and the shades used. */
   board: string;
@@ -42,15 +42,15 @@ export const W = 8;
  * dead cell you bump to start, or a 555 timer chip wired astable. */
 export type BatteryKind = 'steady' | 'pulse' | 'antipulse' | 'dead' | 'astable';
 /** Ticks a pulse battery stays on and off. */
-export const PULSE_ON = 27;
-export const PULSE_OFF = 27;
+const PULSE_ON = 27;
+const PULSE_OFF = 27;
 /** A 555 wired astable with R1 an eighth of R2: high for 0.693(R1+R2)C, low for 0.693(R2)C,
  * so its output is high a little longer than it is low (it can never get under half). The
  * low stretch is long enough to cross the night-light's corridor at a relaxed tapping pace. */
-export const ASTABLE_HIGH = 72;
-export const ASTABLE_LOW = 64;
+const ASTABLE_HIGH = 72;
+const ASTABLE_LOW = 64;
 /** Ticks between sparks: one every 5 ticks at 4 pixels a tick leaves no gap. */
-export const SPARK_EVERY = 5;
+const SPARK_EVERY = 5;
 
 function floorPic(st: Style, seed: number): Pixels {
   const p = new Pixels(20, 20);

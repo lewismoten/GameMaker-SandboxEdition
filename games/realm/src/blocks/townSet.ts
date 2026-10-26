@@ -199,7 +199,7 @@ function rope(open: boolean): Canvas {
 }
 
 /** The plaza fountain: a round stone basin, two blocks square, a spout in the middle. */
-export function fountain(book: BlockBook): void {
+function fountain(book: BlockBook): void {
   cutBlocks(book, 'fountain', 2, 2, (cv) => {
     shadow(cv, 3, 5, 36, 33, 0.35);
     cv.ellipse(20, 22, 18, 15, (x, y) => mix([214, 208, 198], [150, 144, 138], clamp01((x - 2) / 40 + (y - 7) / 60)));
@@ -211,5 +211,3 @@ export function fountain(book: BlockBook): void {
     cv.ellipse(20, 6, 2, 1.5, [230, 246, 255]);
   });
 }
-
-export { STONE, BLUE };

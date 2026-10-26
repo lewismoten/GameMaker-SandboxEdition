@@ -22,10 +22,8 @@ import { AUTHOR, CARDS } from './text';
 
 const W = 320;
 const H = 200;
-/** Clear pixels in sprites. */
-const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** The man's sprites (the .CBL's pictures). */
@@ -37,7 +35,7 @@ export interface Cast {
 }
 
 /** The palette (6-bit VGA) washed toward blood red by `t` (0..1). */
-export function bloodRed(pal: Uint8Array, t: number): Uint8Array {
+function bloodRed(pal: Uint8Array, t: number): Uint8Array {
   const out = Uint8Array.from(pal);
   for (let i = 0; i < 256; i++) {
     const [r, g, b] = [pal[i * 3], pal[i * 3 + 1], pal[i * 3 + 2]];
@@ -473,5 +471,3 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
   }
   return files;
 }
-
-export { T };

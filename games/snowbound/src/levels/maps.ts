@@ -52,7 +52,7 @@ const LEGEND: Record<string, string> = {
   q: 'slopeCocoa',
 };
 
-export interface LinkSpec {
+interface LinkSpec {
   from: [number, number];
   toScene: 'next' | 'won' | 'woods';
   to: [number, number];

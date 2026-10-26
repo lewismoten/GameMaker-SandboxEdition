@@ -328,7 +328,7 @@ export function pizzaSprites(book: SpriteBook, pal: Pal): void {
   book.add('cat1', cat(1), hurts(0));
 }
 
-export function pizzaMonsters(set: Monster[], mb: SpriteBook): void {
+function pizzaMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   set[PIZZA_MON.fork] = mon(anim(mb, 'fork0', 'fork1', 4), { power: POWER.foe, thru: 1, newmon: PIZZA_MON.fluff }, pace(2, 2));
   set[PIZZA_MON.napkin] = mon(anim(mb, 'napkin0', 'napkin1', 8), { power: POWER.foe, thru: 1, newmon: PIZZA_MON.fluff }, pace(2, 1));

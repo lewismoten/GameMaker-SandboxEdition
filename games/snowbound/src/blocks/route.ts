@@ -13,7 +13,7 @@ import type { addGround } from './ground';
 type Painters = ReturnType<typeof addGround>;
 
 /** Papers in the bundle: one for each customer on Gale Street and Leota Street. */
-export const BUNDLE = 6;
+const BUNDLE = 6;
 
 export function addRoute(k: Ctx, { yardBase, sidewalk }: Painters): void {
   const { book, c, snow } = k;

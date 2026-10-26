@@ -44,7 +44,7 @@ import {
 import { wrap } from './pages';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 
-export function gif(p: Pixels, pal = PAL.pal): Uint8Array {
+function gif(p: Pixels, pal = PAL.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
@@ -90,7 +90,7 @@ export function menuScreen(): Pixels {
 }
 
 /** Backdrop for text pages: PLAYGAME writes 31 columns at x=40, y=40..167 (purple). */
-export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pixels {
+function pageScreen(title: string, seed: number, who: Pixels = leo()): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 186);
   p.rect(0, 0, W, 28, c('wood', 1));
@@ -104,7 +104,7 @@ export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pi
   return p;
 }
 
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 190);
   // the ring stain goes right of the rows (x 20..285), below the last full one
@@ -112,7 +112,7 @@ export function scoresScreen(): Pixels {
   return p;
 }
 
-export function slotsScreen(): Pixels {
+function slotsScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 176);
   // the names are written in yellow: each gets a dark strip, the blue message the card
@@ -191,7 +191,7 @@ export function recipePage(n: number): Pixels {
 
 // ------------------------------------------------------------------ the intro cartoon
 
-export function introFli(): Uint8Array {
+function introFli(): Uint8Array {
   const frames: Pixels[] = [];
   const say = (p: Pixels, lines: string[]) => {
     p.rect(0, 170, W, 30, c('ink', 0));
@@ -319,7 +319,7 @@ export function paradeScreen(): { px: Pixels; pal: Uint8Array } {
   return { px: p, pal };
 }
 
-export function lostScreen(): Pixels {
+function lostScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 140);
   scaleBlit(p, docLeo('down'), 120, 60, 1);

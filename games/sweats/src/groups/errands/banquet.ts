@@ -255,7 +255,7 @@ export function banquetSprites(book: SpriteBook, pal: Pal): void {
   }
 }
 
-export function banquetMonsters(set: Monster[], mb: SpriteBook): void {
+function banquetMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: BM.poof };
   set[BM.blah] = mon(anim(mb, 'blah0', 'blah1', 6), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(0, 1, 2, 4), corner(-5, 0, 2, 4)]);
   set[BM.cough] = mon(anim(mb, 'cough0', 'cough1', 4), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-3, 0, 2, 4)]);

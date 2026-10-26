@@ -439,7 +439,7 @@ export function withTools(b: Bestiary, power = 150): Bestiary {
 }
 
 /** Valentines blowing about the park's lawn (the rest are in the box Gwinn ran off with). */
-export const LAWN_VALENTINES = 6;
+const LAWN_VALENTINES = 6;
 
 /** The park: valentines tumbling about the lawn, and Gwinn, who runs away from Joe until she is cornered. */
 export function parkCritters(mb: BlockSet): Bestiary {
@@ -490,7 +490,7 @@ export const FLOAT_LANES = [
 const BUMP = 2;
 
 /** How far (blocks) each float travels before it turns off the street. */
-export const FLOAT_RUN = 20;
+const FLOAT_RUN = 20;
 
 /**
  * Main Street: the parade, lane by lane, each float born at the lane's west end. A float that
@@ -579,9 +579,9 @@ function liftDef(pic: string, rows: number) {
 }
 
 /** How far the music box's pin lift rises (blocks). */
-export const BOX_LIFT = 6;
+const BOX_LIFT = 6;
 /** How far the lighthouse's lift rises (blocks). */
-export const LIGHTHOUSE_LIFT = 7;
+const LIGHTHOUSE_LIFT = 7;
 
 /** Inside the music box: the pin lift. */
 export function boxCritters(mb: BlockSet): Bestiary {
@@ -613,7 +613,7 @@ export function coveCritters(mb: BlockSet, loop: [number, number][]): Bestiary {
 }
 
 /** How far (blocks) the plow drives along Lewie's street before it turns off. */
-export const PLOW_RUN = 38;
+const PLOW_RUN = 38;
 
 /** Lewie's street: the plow, born at the street's west end, and the snow off the roofs (sets/snow.ts SNOW_MON numbers them). */
 export function snowCritters(mb: BlockSet): Bestiary {
@@ -683,7 +683,7 @@ export function hiveCritters(mb: BlockSet, loops: [number, number, number, numbe
 }
 
 /** How fast (pixels a tick) a painted rock rolls away from Joe. */
-export const ROLL = 3;
+const ROLL = 3;
 
 /**
  * The rock garden: each painted rock rolls away from Joe (stopping at walls), and when it rolls
@@ -750,7 +750,7 @@ export function fairCritters(mb: BlockSet, reggieRun: number): Bestiary {
 export const fairMonsters = { horseA: 0, horseB: 1, reggie: 2 } as const;
 
 /** How long (ticks) the Big Grumble lets off steam after each HELLO: longer every time. */
-export const STEAM = [30, 50, 70];
+const STEAM = [30, 50, 70];
 
 /**
  * The Smart Home: grumpy gadgets patrolling (a bump winds Joe down a little and startles one out

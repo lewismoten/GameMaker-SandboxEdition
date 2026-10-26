@@ -25,7 +25,7 @@ interface Mat {
   glow?: boolean;
 }
 
-export const MATS: Record<Theme, Mat> = {
+const MATS: Record<Theme, Mat> = {
   barrows: {
     floor: [
       [86, 70, 52],
@@ -115,7 +115,7 @@ export const MATS: Record<Theme, Mat> = {
 
 const bitsOf = (m: number) => [1, 2, 4, 8].filter((b) => m & b).length;
 
-export function floorOf(m: Mat): (x: number, y: number) => RGB {
+function floorOf(m: Mat): (x: number, y: number) => RGB {
   return (x, y) => {
     const n = tnoise(x, y, 5, 20, 3) * 0.6 + tnoise(x, y, 2.5, 20, 4) * 0.4;
     let c = mix(m.floor[0], m.floor[1], n);

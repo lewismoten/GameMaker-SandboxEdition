@@ -5,7 +5,7 @@ import type { BlockBook } from '../blocks/book';
 import { tileName } from '../blocks/autotiles';
 import { CornerMap, N } from '../art/corners';
 
-export interface GroundOptions {
+interface GroundOptions {
   /** Layers in priority order (the first one wins a conflict). */
   layers: string[];
   /** The base block, or a picker for scattered variants of it. */

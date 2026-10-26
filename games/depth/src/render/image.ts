@@ -64,7 +64,7 @@ export function oblique(x0: number, y0: number, pxPerUnit: number, k = OBLIQUE_K
   };
 }
 
-export interface RenderOptions {
+interface RenderOptions {
   /** Samples a pixel where the picture is smooth, and where it changes (edges). */
   spp?: number;
   edgeSpp?: number;
@@ -135,12 +135,6 @@ export function render(world: World, cam: Camera, w: number, h: number, opts: Re
       if (alpha) alpha[i] = cover / n;
     }
   return { w, h, rgb, alpha };
-}
-
-export function blank(w: number, h: number, c: V = [0, 0, 0]): Picture {
-  const rgb = new Float32Array(w * h * 3);
-  for (let i = 0; i < w * h; i++) rgb.set(c, i * 3);
-  return { w, h, rgb };
 }
 
 /** A separable Gaussian blur of rgb (premultiplied by alpha when there is one). */
@@ -254,17 +248,4 @@ export function toBytes(p: Picture, exposure = 1): Uint8Array {
     out[i] = Math.round(clamp01(t) ** (1 / 1.1) * 255);
   }
   return out;
-}
-
-/** A crop as a new picture. */
-export function crop(p: Picture, x: number, y: number, w: number, h: number): Picture {
-  const rgb = new Float32Array(w * h * 3);
-  const alpha = p.alpha ? new Float32Array(w * h) : undefined;
-  for (let yy = 0; yy < h; yy++)
-    for (let xx = 0; xx < w; xx++) {
-      const i = (y + yy) * p.w + x + xx;
-      rgb.set(p.rgb.subarray(i * 3, i * 3 + 3), (yy * w + xx) * 3);
-      if (alpha) alpha[yy * w + xx] = p.alpha![i];
-    }
-  return { w, h, rgb, alpha };
 }

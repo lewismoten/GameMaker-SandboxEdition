@@ -10,7 +10,7 @@ import type { BlockSet } from './sets';
 import { SHOVEL } from '../ids';
 
 /** The first keepsake's block number; the ten Joe can carry follow it. */
-export const KEEPSAKE_BASE = 140;
+const KEEPSAKE_BASE = 140;
 
 export const KEEPSAKE = {
   /** Doc Leo's thank-you from the clock tower: the town clock's spare winding key. SPRING HOP. */

@@ -4,7 +4,7 @@ import { Canvas } from '../art/rgb';
 import { DIAG_MASKS, MASKS, paintTile, type Shader, type Variant } from '../art/terrain';
 import type { Attrs, BlockBook } from './book';
 
-export interface Family {
+interface Family {
   layer: string;
   shader: Shader;
   diag?: boolean;

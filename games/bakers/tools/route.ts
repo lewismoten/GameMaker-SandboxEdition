@@ -6,7 +6,7 @@ import { ORIGIN } from '../src/levels/room';
 import { Bot } from './bot';
 
 /** A stop: a legend character (the nearest one not yet visited) or a room cell [x, y]. */
-export type Stop = string | [number, number] | { pickup: [number, number] } | { push: [number, number] };
+type Stop = string | [number, number] | { pickup: [number, number] } | { push: [number, number] };
 
 /** The Clock Room's lazy Susan, clockwise from XII (blocks/susan.ts). */
 export const SUSAN: [number, number][] = [

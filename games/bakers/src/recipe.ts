@@ -2,7 +2,7 @@
 // the family's footnotes. Each room's exit page shows its line of the card; the box's recipe
 // card prints them all (and leaves the thirteenth line blank, as the family always has).
 
-export interface RecipeLine {
+interface RecipeLine {
   n: number;
   name: string;
   /** The amount and the instruction, as Ebenezer wrote it. */

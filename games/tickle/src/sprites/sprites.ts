@@ -21,14 +21,14 @@ import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 export { T, outline };
 
 /** The lowest row a tickle's pixels may reach, and the highest a wary rat's may. */
-export const TICKLE_LOW = 8;
-export const RAT_HIGH = 11;
+const TICKLE_LOW = 8;
+const RAT_HIGH = 11;
 
 // ---------------------------------------------------------------------------------------------
 // Doc Leo
 // ---------------------------------------------------------------------------------------------
 
-export interface LeoPose {
+interface LeoPose {
   /** Facing you, side on (walking right), or from behind (climbing). */
   view: 'front' | 'side' | 'rear';
   /** Walking stride (0..3) in side view. */
@@ -47,7 +47,7 @@ export interface LeoPose {
 }
 
 /** Doc Leo, 20 x 40 (top block over bottom block). */
-export function leoArt(pal: Pal) {
+function leoArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   return (o: LeoPose): Pixels => {
@@ -262,10 +262,10 @@ export function buildCharBlocks(pal: Pal) {
 // The rats
 // ---------------------------------------------------------------------------------------------
 
-export type Fur = 'lab' | 'wild';
+type Fur = 'lab' | 'wild';
 
 /** A rat in one of its moods, 20 x 20, facing right. */
-export function ratArt(pal: Pal, fur: Fur) {
+function ratArt(pal: Pal, fur: Fur) {
   const c = pal.c;
   const ink = c('ink', 0);
   const coat = fur === 'lab' ? 'rat' : 'agouti';

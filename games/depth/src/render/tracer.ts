@@ -15,7 +15,7 @@ export * from './shapes';
 
 // ---------------------------------------------------------------- the scene
 
-export interface Light {
+interface Light {
   /** Direction toward the light (unit). */
   dir: V;
   color: V;
@@ -23,7 +23,7 @@ export interface Light {
   soft: number;
 }
 
-export interface PointLight {
+interface PointLight {
   at: V;
   color: V;
   /** Radius of the bulb for soft shadows. */

@@ -10,7 +10,7 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'THIRD GOAT FROM THE LEFT';
+const TITLE = 'THIRD GOAT FROM THE LEFT';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /**

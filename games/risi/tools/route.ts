@@ -28,7 +28,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * `maxLoss` dignity (or goes wrong), it is taken back and played again after a short wait, so
  * he sets out at a better moment. `maxWait` keeps the horde from catching up while he waits.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>, maxWait = 300): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>, maxWait = 300): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -54,15 +54,15 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
 }
 
 const count = (n: number) => (bot: Bot) => bot.sim.meter(n) - 1;
-export const air = count(AIR);
-export const cheese = count(CHEESE);
-export const titles = count(TITLES);
-export const scales = count(SCALES);
-export const laughs = count(LAUGHS);
-export const crown = count(CROWN);
+const air = count(AIR);
+const cheese = count(CHEESE);
+const titles = count(TITLES);
+const scales = count(SCALES);
+const laughs = count(LAUGHS);
+const crown = count(CROWN);
 
 /** Where the monsters numbered `n` are (level blocks, their left edges). */
-export function where(bot: Bot, n: number): { x: number; y: number }[] {
+function where(bot: Bot, n: number): { x: number; y: number }[] {
   const w = bot.sim.w;
   return w.mi
     .map((mi, i) => ({ mi, n: w.mm[i]?.monnum }))
@@ -71,7 +71,7 @@ export function where(bot: Bot, n: number): { x: number; y: number }[] {
 }
 
 /** Pickups (blocks that give points, dignity or a counter when touched) still on the level's map. */
-export function lootLeft(bot: Bot): string[] {
+function lootLeft(bot: Bot): string[] {
   const out: string[] = [];
   for (let y = ORIGIN; y < ORIGIN + 16; y++)
     for (let x = ORIGIN; x < ORIGIN + 70; x++) {

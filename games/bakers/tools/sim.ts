@@ -24,7 +24,7 @@ import type { RecordedKey } from '../../../web/src/formats/recording';
 
 const diskDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'disk');
 
-export function readDisk(): Map<string, Uint8Array> {
+function readDisk(): Map<string, Uint8Array> {
   const files = new Map<string, Uint8Array>();
   for (const n of readdirSync(diskDir)) files.set(n.toLowerCase(), new Uint8Array(readFileSync(join(diskDir, n))));
   return files;
@@ -43,7 +43,7 @@ class Rand {
 }
 
 /** Keys pressed in one scene, timed from the tick play entered it. */
-export interface SceneKeys {
+interface SceneKeys {
   scene: number;
   keys: RecordedKey[];
 }

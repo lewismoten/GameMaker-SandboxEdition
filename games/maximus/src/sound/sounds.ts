@@ -56,7 +56,7 @@ function hello(): Synth {
   return (t) => (t < 0.28 ? a(t) : b(t)) * (t > 0.24 && t < 0.3 ? 0.2 : 1);
 }
 
-export interface Sfx {
+interface Sfx {
   slot: number;
   name: string;
   voc: string;

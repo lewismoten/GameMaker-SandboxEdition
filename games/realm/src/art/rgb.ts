@@ -195,7 +195,7 @@ export class Canvas {
   }
 }
 
-export function segDist(px: number, py: number, x0: number, y0: number, x1: number, y1: number): number {
+function segDist(px: number, py: number, x0: number, y0: number, x1: number, y1: number): number {
   const dx = x1 - x0;
   const dy = y1 - y0;
   const l2 = dx * dx + dy * dy;
@@ -203,7 +203,7 @@ export function segDist(px: number, py: number, x0: number, y0: number, x1: numb
   return Math.hypot(px - (x0 + t * dx), py - (y0 + t * dy));
 }
 
-export function polySdf(x: number, y: number, pts: [number, number][]): number {
+function polySdf(x: number, y: number, pts: [number, number][]): number {
   let d = Infinity;
   let inside = false;
   for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
@@ -218,21 +218,12 @@ export function polySdf(x: number, y: number, pts: [number, number][]): number {
 // ---------------------------------------------------------------- color math
 
 export const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-export const mul = (a: RGB, k: number): RGB => [a[0] * k, a[1] * k, a[2] * k];
-export const add = (a: RGB, k: number): RGB => [a[0] + k, a[1] + k, a[2] + k];
 export const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 export const smooth = (e0: number, e1: number, x: number) => {
   const t = clamp01((x - e0) / (e1 - e0));
   return t * t * (3 - 2 * t);
 };
 export const hex = (s: string): RGB => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
-
-/** A ramp lookup: t 0..1 through a list of color stops. */
-export function ramp(stops: RGB[], t: number): RGB {
-  t = clamp01(t) * (stops.length - 1);
-  const i = Math.min(stops.length - 2, Math.floor(t));
-  return mix(stops[i], stops[i + 1], t - i);
-}
 
 // ---------------------------------------------------------------- tileable noise
 
@@ -263,21 +254,6 @@ export function tnoise(x: number, y: number, cell: number, period: number, seed:
   const a = v(ix, iy) + (v(ix + 1, iy) - v(ix, iy)) * sx;
   const b = v(ix, iy + 1) + (v(ix + 1, iy + 1) - v(ix, iy + 1)) * sx;
   return a + (b - a) * sy;
-}
-
-/** Fractal tileable noise (0..1): octaves of tnoise. */
-export function fbm(x: number, y: number, period: number, seed: number, cell = 10, octaves = 3): number {
-  let sum = 0;
-  let amp = 1;
-  let norm = 0;
-  for (let o = 0; o < octaves; o++) {
-    sum += tnoise(x, y, cell, period, seed + o * 17) * amp;
-    norm += amp;
-    amp *= 0.5;
-    cell /= 2;
-    if (cell < 1) break;
-  }
-  return sum / norm;
 }
 
 /** A per-pixel hash 0..1 that repeats every `period` pixels (sparkles, pebbles, flowers). */

@@ -33,7 +33,7 @@ const LATE = { mugHp: 10 };
 export const KIT = 4;
 
 /** A clear afternoon over the lot. */
-export const AFTERNOON: Lighting = {
+const AFTERNOON: Lighting = {
   sky: [
     [70, 120, 200],
     [214, 232, 250],
@@ -245,7 +245,7 @@ export function itchSprites(book: SpriteBook, pal: Pal): void {
   book.add('toddler1', toddler(1), hurts(0));
 }
 
-export function itchMonsters(set: Monster[], mb: SpriteBook): void {
+function itchMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   set[ITCH_MON.ghost] = mon(anim(mb, 'ghost0', 'ghost1', 6), { power: POWER.foe, thru: 1, newmon: ITCH_MON.fluff }, bob(2, 1));
   set[ITCH_MON.tsk] = mon(anim(mb, 'tsk0', 'tsk1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: ITCH_MON.fluff }, [

@@ -34,8 +34,8 @@ export function outline(p: Pixels, ink: number): Pixels {
   return p;
 }
 
-export type Stage = 'seed' | 'sprout' | 'plant';
-export type Feet = 0 | 1 | 2 | 'tuck' | 'squat' | 'none';
+type Stage = 'seed' | 'sprout' | 'plant';
+type Feet = 0 | 1 | 2 | 'tuck' | 'squat' | 'none';
 
 export interface SeedPose {
   /** front: both eyes; side: looking right (mirror for left); back: climbing away from you. */

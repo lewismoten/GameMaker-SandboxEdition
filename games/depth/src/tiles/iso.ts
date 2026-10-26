@@ -11,13 +11,13 @@ import { THEMES, type Theme, type ThemeId } from './themes';
 
 /** Screen pixels per unit of height, and the height of a full-tier cube (its hexagon fills the block). */
 const ZPX = 12.5;
-export const ISO_H = 10 / ZPX;
+const ISO_H = 10 / ZPX;
 
 /** World (x, y, z) to block pixels: the cell's floor diamond fills the lower half of the block. */
-export const isoXY = (x: number, y: number, z: number): [number, number] => [10 + 10 * (x - y), 10 + 5 * (x + y) - ZPX * z];
+const isoXY = (x: number, y: number, z: number): [number, number] => [10 + 10 * (x - y), 10 + 5 * (x + y) - ZPX * z];
 
 /** The isometric camera: parallel rays from the south-east, above. */
-export function isoCamera(top = 4): Camera {
+function isoCamera(top = 4): Camera {
   const d = norm([-1, -1, -10 / ZPX]);
   return {
     ray(sx, sy) {
@@ -66,7 +66,7 @@ const solidOf = (c: V, emit = 0.1): Material => ({
 });
 
 /** A cube on the cell's unit square, `h` tall (in units of the full tier). */
-export function isoCube(mat: Material, h = 1, inset = 0.02): Shape {
+function isoCube(mat: Material, h = 1, inset = 0.02): Shape {
   const top = ISO_H * h;
   const r = 0.03;
   return new Sdf(

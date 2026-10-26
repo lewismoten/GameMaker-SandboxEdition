@@ -12,7 +12,7 @@ import { SCREEN, spaceBg } from './screens';
 
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
 
-export interface Hail {
+interface Hail {
   /** the world it belongs to (universe.ts) */
   world: string;
   /** who is calling */

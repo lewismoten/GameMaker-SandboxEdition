@@ -6,7 +6,7 @@ import type { SetBuilder } from '../blocks/blockset';
 import type { MonsterSet } from '../characters/bestiary';
 import type { P } from './spacemaps';
 
-export interface MaelstromResult {
+interface MaelstromResult {
   grid: Grid;
   arrive: P;
   exitWarp: P;
@@ -84,7 +84,7 @@ export function maelstromMap(s: SetBuilder, ms: MonsterSet): MaelstromResult {
   return { grid: g, arrive, exitWarp, citadel, citadelArrive: { x: wx(end.x + 2), y: end.y + 1 } };
 }
 
-export interface HeartResult {
+interface HeartResult {
   grid: Grid;
   arrive: P;
   back: P;

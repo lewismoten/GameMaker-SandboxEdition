@@ -16,7 +16,7 @@ import type { TileBook } from '../tiles/book';
 import type { Plane } from '../tiles/cells';
 
 /** The block numbers they keep (in every level's sets; only levels that use one fill it). */
-export const HIDDEN: Record<string, number> = { tinHeart: 140, tinHeart2: 143, easterEgg: 141, watt: 142, saveL: 138, saveR: 139 };
+const HIDDEN: Record<string, number> = { tinHeart: 140, tinHeart2: 143, easterEgg: 141, watt: 142, saveL: 138, saveR: 139 };
 
 export function pinHidden(book: TileBook): void {
   for (const [kind, n] of Object.entries(HIDDEN)) book.pin(kind, n);

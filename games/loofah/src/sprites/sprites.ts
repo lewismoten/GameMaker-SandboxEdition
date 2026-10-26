@@ -17,7 +17,7 @@ import { PINK, SEQ } from '../ids';
 
 export { T, outline };
 
-export interface ManPose {
+interface ManPose {
   /** front: to you; side: walking right (mirror for left); back: climbing away from you. */
   face: 'front' | 'side' | 'back';
   /** Walk cycle (0..3); legs apart on 1 and 3. */
@@ -34,7 +34,7 @@ export interface ManPose {
 }
 
 /** The man's look, in the pal's ramps. */
-export function manArt(pal: Pal) {
+function manArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const body = (o: ManPose): Pixels => {

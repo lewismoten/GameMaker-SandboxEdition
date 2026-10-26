@@ -2,9 +2,9 @@
 
 // ---- chords -------------------------------------------------------------------------------
 
-export const PC: Record<string, number> = { C: 0, Db: 1, D: 2, Eb: 3, E: 4, F: 5, Gb: 6, G: 7, Ab: 8, A: 9, Bb: 10, B: 11 };
+const PC: Record<string, number> = { C: 0, Db: 1, D: 2, Eb: 3, E: 4, F: 5, Gb: 6, G: 7, Ab: 8, A: 9, Bb: 10, B: 11 };
 
-export function shape(name: string): { pc: number; iv: number[] } {
+function shape(name: string): { pc: number; iv: number[] } {
   const m = /^([A-G]b?)(m?)(7?)$/.exec(name);
   if (!m) throw new Error(`Unknown chord ${name}`);
   const iv = [0, m[2] ? 3 : 4, 7];
@@ -12,7 +12,7 @@ export function shape(name: string): { pc: number; iv: number[] } {
   return { pc: PC[m[1]], iv };
 }
 
-export const fold = (pc: number, lo: number) => lo + ((pc - lo + 120) % 12);
+const fold = (pc: number, lo: number) => lo + ((pc - lo + 120) % 12);
 /** The bass root (E1..D#2), shifted. */
 export const root = (name: string, shift = 0) => fold(shape(name).pc + shift, 40);
 /** A close chord from `lo` up. */
@@ -31,7 +31,7 @@ export interface Section {
   tune: string[];
 }
 
-export const vamp = (name: string, chords: string[]): Section => ({ name, chords, tune: chords.map(() => 'r w') });
+const vamp = (name: string, chords: string[]): Section => ({ name, chords, tune: chords.map(() => 'r w') });
 
 // Canis Meus Flatum Dedit (C minor)
 /** "Sub mensa... in tenebris... sic venit pestilentia..." */

@@ -11,7 +11,7 @@ import { centered, micro, outlined, text, textWidth } from '../../../snowbound/s
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** Your sprites. */
   hero: Map<string, Pixels>;
   /** Everybody else's. */
@@ -19,7 +19,7 @@ export interface ScreenExtras {
 }
 
 /** The night sky with stars and the moon. */
-export function nightSky(p: Pixels, pal: Pal, seed = 3, bottom = H): void {
+function nightSky(p: Pixels, pal: Pal, seed = 3, bottom = H): void {
   const c = pal.c;
   gradient(p, 0, 0, W, bottom, pal.r('night'), 0, 3);
   const r = rng(seed);

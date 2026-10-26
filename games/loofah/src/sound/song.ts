@@ -35,7 +35,7 @@ import { INSTRUMENTS, sbi } from '../../../kit/music';
 import { ORGAN, Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, detuned, sweep } from '../../../kit/songFx';
 
-export const BPM = 89;
+const BPM = 89;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -448,7 +448,7 @@ function intro(a: Arranger, bars = 2): void {
 const there = (b: Section): Section => ({ ...b, tune: [...b.tune.slice(0, -1), THERE] });
 
 /** Title: the toms and the bell, the organ swells, then "Loofah of Lucifer" with the whole band. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger();
   intro(a);
   a.swell('Fm', 2).roll(2);
@@ -461,7 +461,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: verse 1, hushed, the organ and the bell. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger(84);
   a.section(VERSE1, { gtr: 'none', sing: 'solo', org: 'hold', bass: 'long', drums: ['hats'], vel: 92 });
   a.section(BAND, { gtr: 'ring', sing: 'none', org: 'arp', bass: 'long', drums: ['half', 'half', 'half', 'fill'], vel: 92 });
@@ -470,7 +470,7 @@ export function storySong(): Uint8Array {
 }
 
 /** The four acts. */
-export function levelSongs(): Uint8Array[] {
+function levelSongs(): Uint8Array[] {
   // the bathroom: the band, verses 2 and 3, chorus 1
   const one = new Arranger();
   intro(one);
@@ -511,7 +511,7 @@ export function levelSongs(): Uint8Array[] {
 }
 
 /** Won: chorus 2 with the choir, and "Never touch the loofah", the bell tolling the end. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger();
   a.section({ name: 'pickup', chords: ['C'], tune: ['r w'] }, { gtr: 'ring', sing: 'none', org: 'hold', bass: 'eighths', drums: ['fill'], vel: 100 });
   chorus(a, CHORUS2, { vel: 108 });
@@ -525,7 +525,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: "I'm sleeping alone with a washcloth of shame", slow, the organ and the bell. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(76);
   a.section(
     { ...OUTRO, name: 'alone', chords: OUTRO.chords.slice(0, 5), tune: OUTRO.tune.slice(0, 5) },
@@ -536,7 +536,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole song in order, "She said" to "Never touch the loofah". */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger();
   a.section(VERSE1, { gtr: 'none', sing: 'solo', org: 'hold', bass: 'long', drums: ['hats', 'hats', 'goth', 'fill'], vel: 94 });
   a.section(there(BAND), { gtr: 'ring', sing: 'solo', org: 'hold', bass: 'long', drums: goth(4), vel: 98 });

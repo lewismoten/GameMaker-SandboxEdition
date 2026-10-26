@@ -9,7 +9,7 @@ const MOVES: (number | undefined)[] = [undefined, SCAN.left, SCAN.right, SCAN.up
 
 const HARMLESS = /^(shot|nova|spark|wreck|boom|bigBoom|turretBoom)/;
 
-export interface BotResult {
+interface BotResult {
   ok: boolean;
   dead: boolean;
   ticks: number;

@@ -11,7 +11,7 @@ import { centered, micro, outlined, text, textWidth } from '../../../snowbound/s
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** Your sprites. */
   hero: Map<string, Pixels>;
 }

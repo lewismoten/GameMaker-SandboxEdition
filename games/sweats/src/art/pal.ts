@@ -5,7 +5,7 @@
 // at the same entries, which is what lets every scene share the poet's POET.CBL.
 import { PaletteBuilder } from '../../../kit/palette';
 
-export type RGB = [number, number, number];
+type RGB = [number, number, number];
 /** [name, shades, dark, light, mid?, glows? (keeps its light in every scene)] */
 export type Ramp = [string, number, RGB, RGB, RGB?, boolean?];
 
@@ -48,7 +48,7 @@ export interface Lighting {
   add: RGB;
 }
 
-export const PLAIN: Lighting = {
+const PLAIN: Lighting = {
   sky: [
     [30, 26, 40],
     [150, 130, 120],

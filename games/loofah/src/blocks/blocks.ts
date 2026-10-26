@@ -25,18 +25,18 @@ import { CANDLES, CANDLES_NEEDED, COINS, COINS_NEEDED, MON, PINK, SALT, SALT_NEE
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, hop up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between the cursed citrus suds from the soap dish. */
-export const SUDS_EVERY = 44;
+const SUDS_EVERY = 44;
 /** Ticks between fresh sprigs on the rosemary pot in the shower. */
-export const SPRIG_EVERY = 160;
+const SPRIG_EVERY = 160;
 /** Ticks between drips from the shower head. */
-export const DRIP_EVERY = 30;
+const DRIP_EVERY = 30;
 
 /** The messages the mirrors fog up with, four blocks wide each. */
-export const MIRROR_WORDS = ['YOU CROSSED A LINE', 'YOU MADE IT WORSE'] as const;
+const MIRROR_WORDS = ['YOU CROSSED A LINE', 'YOU MADE IT WORSE'] as const;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

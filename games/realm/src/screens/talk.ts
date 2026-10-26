@@ -5,7 +5,7 @@
 import { Canvas, type RGB, mix, clamp01, tnoise, speck } from '../art/rgb';
 import { Screen } from './screen';
 
-export interface Theme {
+interface Theme {
   /** Top and bottom of the backdrop. */
   bg: [RGB, RGB];
   /** The ribbon's color. */

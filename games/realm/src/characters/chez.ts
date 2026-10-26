@@ -9,7 +9,7 @@ import { KEY, frames } from './pip';
 const MIRROR = 0x40;
 const MONBL = 100;
 const CHARBL = 50;
-export const DRIVE = 5;
+const DRIVE = 5;
 
 export function buildChez(cb: SpriteSheet): Character {
   const ch = newCharacter();

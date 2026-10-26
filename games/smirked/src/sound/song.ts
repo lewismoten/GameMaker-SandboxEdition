@@ -33,7 +33,7 @@ import { sbi } from '../../../kit/music';
 import { Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, leveled, sweep } from '../../../kit/songFx';
 
-export const BPM = 100;
+const BPM = 100;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -470,7 +470,7 @@ function bigChorus(a: Arranger, vel = 106): void {
 }
 
 /** Title: the organ, the thunder, the chorus with "GET DOWN!", and a tag; the werewolf howls. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger();
   a.toccata();
   a.roll(1).hit('C');
@@ -484,7 +484,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: the organ, then verses 1 and 2 (the brass sting on "fled"). */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger();
   a.toccata(94);
   verse(a, VERSE1, 92);
@@ -502,7 +502,7 @@ export function storySong(): Uint8Array {
  * werewolf verse and the bridge in the fake spiderwebs (pizzicato, strings, the howl), and the
  * breakdown and the last chorus by the emergency exit, as big as the pit band gets.
  */
-export function levelSongs(): Uint8Array[] {
+function levelSongs(): Uint8Array[] {
   const one = new Arranger();
   one.toccata(96);
   verse(one, VERSE1);
@@ -550,7 +550,7 @@ function finalChorus(a: Arranger, vel = 108): void {
 }
 
 /** Won: the breakdown (the Bravery Badge), the last chorus, the outro; a single wolf howl. Curtain. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger();
   a.section(slice(BREAKDOWN, 1), { comp: 'stride', sing: 'muted', bass: 'stride', drums: ['brush', 'brush', 'fill'], vel: 94 });
   finalChorus(a, 110);
@@ -560,7 +560,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: "I was supposed to impress, but I nearly flatlined", slow, and the sad trombone. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(76);
   a.section(slice(FINAL, 3, 5), { comp: 'strings', sing: 'muted', bass: 'hold', drums: ['tick'], vel: 86 });
   const at = a.bar * 4;
@@ -572,7 +572,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole song in order, verse 1 to the outro. */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger();
   verse(a, VERSE1);
   vamp(a, 'vamp', ['C', 'G7']);
@@ -608,5 +608,3 @@ export function allSongs(): Record<string, Uint8Array> {
     menu: wholeSong(),
   };
 }
-
-export { voicing, root };

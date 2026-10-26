@@ -10,12 +10,10 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'THE GREAT DAIRY';
-export const SUBTITLE = 'RECKONING OF 3:17 A.M.';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /** Who made the spoken recording the game's voice clips come from. */
-export const RECORDING_CREDIT = 'recording (voice) made with Riffusion (now Google Flow Music)';
+const RECORDING_CREDIT = 'recording (voice) made with Riffusion (now Google Flow Music)';
 
 /**
  * Who made the monologue and the pictures: the words, the recording, and the title art and the

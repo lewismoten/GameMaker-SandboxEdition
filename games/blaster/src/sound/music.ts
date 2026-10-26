@@ -164,11 +164,11 @@ const THEME_B = join(
 const THEME_CHORDS = ['Am', 'F', 'C', 'G', 'Am', 'F', 'G', 'E'];
 const B_CHORDS = ['Am', 'F', 'G', 'C', 'Am', 'F', 'E', 'Am'];
 
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   return make({ bpm: 156, chords: [...THEME_CHORDS, ...B_CHORDS], melody: join(THEME, THEME_B), lead: brass, padInst: pad });
 }
 
-export function menuSong(): Uint8Array {
+function menuSong(): Uint8Array {
   return make({
     bpm: 120,
     chords: THEME_CHORDS,
@@ -182,7 +182,7 @@ export function menuSong(): Uint8Array {
   });
 }
 
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const chords = ['Dm', 'Bb', 'C', 'Am', 'Dm', 'Bb', 'Gm', 'A'];
   const mel = join('D5 h, F5 q, E5 q', 'D5 h., A4 q', 'C5 h, E5 q, G5 q', 'E5 w', 'D5 h, F5 q, A5 q', 'Bb5 h, A5 q, G5 q', 'F5 q, E5 q, D5 q, Bb4 q', 'C#5 w');
   return make({
@@ -200,7 +200,7 @@ export function storySong(): Uint8Array {
 }
 
 /** Stage 1: the motherboard, E minor, driving. */
-export function boardSong(): Uint8Array {
+function boardSong(): Uint8Array {
   const chords = ['Em', 'Em', 'C', 'D', 'Em', 'Em', 'C', 'B', 'Am', 'C', 'G', 'D', 'Em', 'C', 'B', 'Em'];
   const mel = join(
     'E5 e, E5 e, B4 e, E5 e, G5 q, F#5 q',
@@ -224,7 +224,7 @@ export function boardSong(): Uint8Array {
 }
 
 /** Stage 2: memory, C minor, clicking staccato. */
-export function ramSong(): Uint8Array {
+function ramSong(): Uint8Array {
   const chords = ['Cm', 'Cm', 'Ab', 'Bb', 'Cm', 'Cm', 'Ab', 'G', 'Fm', 'Ab', 'Eb', 'Bb', 'Cm', 'Ab', 'G', 'Cm'];
   const mel = join(
     'C5 e, r e, Eb5 e, r e, G5 e, Eb5 e, C5 e, G4 e',
@@ -248,7 +248,7 @@ export function ramSong(): Uint8Array {
 }
 
 /** Stage 3: the sound card, G minor funk. */
-export function soundSong(): Uint8Array {
+function soundSong(): Uint8Array {
   const chords = ['Gm', 'Gm', 'Cm', 'D', 'Gm', 'Gm', 'Eb', 'D', 'Cm', 'Gm', 'Cm', 'D', 'Eb', 'F', 'D', 'Gm'];
   const riff = 'G4 e, r s, G4 s, Bb4 e, C5 e, r e, D5 e, F5 e, D5 e';
   const mel = join(
@@ -273,7 +273,7 @@ export function soundSong(): Uint8Array {
 }
 
 /** Stage 4: the hard disk, B minor, spinning. */
-export function diskSong(): Uint8Array {
+function diskSong(): Uint8Array {
   const chords = ['Bm', 'G', 'D', 'A', 'Bm', 'G', 'F#', 'F#', 'Em', 'G', 'D', 'A', 'Bm', 'G', 'F#', 'Bm'];
   const spin = (a: string, b: string, c: string, d: string) => `${a} s, ${b} s, ${c} s, ${d} s`;
   const mel = join(
@@ -298,7 +298,7 @@ export function diskSong(): Uint8Array {
 }
 
 /** Stage 5: the CPU, D minor, fastest of all. */
-export function cpuSong(): Uint8Array {
+function cpuSong(): Uint8Array {
   const chords = ['Dm', 'Dm', 'Bb', 'C', 'Dm', 'Dm', 'Bb', 'A', 'Gm', 'Bb', 'F', 'C', 'Dm', 'Bb', 'A', 'Dm'];
   const mel = join(
     'D5 e, A5 e, F5 e, D5 e, A5 e, F5 e, D6 q',
@@ -322,7 +322,7 @@ export function cpuSong(): Uint8Array {
 }
 
 /** The bosses: menacing, chromatic. */
-export function bossSong(): Uint8Array {
+function bossSong(): Uint8Array {
   const chords = ['Em', 'F', 'Em', 'F', 'Em', 'F', 'G', 'F#m'];
   const mel = join(
     'E5 q, E5 e, F5 e, E5 q, B4 q',
@@ -338,7 +338,7 @@ export function bossSong(): Uint8Array {
 }
 
 /** GLITCH: the final boss. */
-export function glitchSong(): Uint8Array {
+function glitchSong(): Uint8Array {
   const chords = ['Dm', 'Eb', 'Dm', 'Eb', 'Bb', 'A', 'Dm', 'A'];
   const mel = join(
     'D5 s, D5 s, D6 e, D5 s, D5 s, C6 e, D5 s, D5 s, A5 e, F5 q',
@@ -353,7 +353,7 @@ export function glitchSong(): Uint8Array {
   return make({ bpm: 176, chords, melody: mel, lead: CHIP, bassStyle: 'drive', drum: 'four', padInst: strings });
 }
 
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const chords = ['C', 'F', 'G', 'C', 'Am', 'F', 'G', 'C'];
   const mel = join(
     'C5 e, E5 e, G5 e, C6 e, G5 q, E5 q',
@@ -368,7 +368,7 @@ export function wonSong(): Uint8Array {
   return make({ bpm: 132, chords, melody: mel, lead: brass, padInst: strings });
 }
 
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const chords = ['Am', 'F', 'Dm', 'E', 'Am', 'F', 'E', 'Am'];
   const mel = join('E5 h, C5 q, A4 q', 'F5 h, C5 h', 'D5 h, F5 q, A4 q', 'Ab4 w', 'A4 h, C5 q, E5 q', 'F5 h, A5 h', 'Ab5 q, E5 q, B4 q, D5 q', 'A4 w');
   return make({

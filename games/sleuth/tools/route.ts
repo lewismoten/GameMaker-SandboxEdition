@@ -138,7 +138,7 @@ export async function act2(bot: Bot): Promise<void> {
 }
 
 /** The lobby's history wall: both smudged words of the clipping under the lens, then the plaque. */
-export async function readHistoryWall(bot: Bot): Promise<void> {
+async function readHistoryWall(bot: Bot): Promise<void> {
   const g = (x: number, y: number, label: string) => bot.goto(at(x, y).x, at(x, y).y, label);
   const block = (x: number) => bot.sim.blockAt(at(x, 39).x, at(x, 39).y);
   for (const x of [26, 28]) {

@@ -8,8 +8,8 @@ import type { Bestiary, BlockSet } from '../blocks/sets';
 import { BANNER_W } from '../blocks/fair';
 import { stamp, type Stamped } from './stamp';
 
-export const FAIR_W = 34;
-export const FAIR_H = 15;
+const FAIR_W = 34;
+const FAIR_H = 15;
 
 /** The horses: west column of each (two blocks wide), the row it starts on, and whether it starts by rising (A) or falling (B). */
 export const HORSES: { x: number; row: number; kind: 'A' | 'B' }[] = [
@@ -22,10 +22,10 @@ const HORSE_CHARS = 'QRVX';
 const WHEEL_CHARS = '!#$%&*()+';
 
 /** The canopy's row, and how far Reggie floats along it (from its west end). */
-export const CANOPY_ROW = 3;
+const CANOPY_ROW = 3;
 export const REGGIE_RUN = 10;
 
-export function fairRows(): string[] {
+function fairRows(): string[] {
   const g: string[][] = Array.from({ length: FAIR_H }, (_, y) =>
     Array.from({ length: FAIR_W }, (_, x) => (y === FAIR_H - 1 ? 'g' : x === 0 || x === FAIR_W - 1 ? 'E' : String(Math.min(7, y)))),
   );

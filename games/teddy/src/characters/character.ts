@@ -32,9 +32,9 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 }
 
 /** Walking speed in pixels per clock tick (18.2 ticks a second). */
-export const STEP = 5;
+const STEP = 5;
 /** Upward push per tick while Up is held (gravity takes one more away every tick). */
-export const HOP = 11;
+const HOP = 11;
 
 export function buildCharacter(): Character {
   const ch = newCharacter();

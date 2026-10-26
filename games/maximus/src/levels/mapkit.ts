@@ -50,7 +50,7 @@ export class Grid {
 }
 
 /** Is a block something the courier can be inside (not solid on all sides that matter)? */
-export function open(b: Block): boolean {
+function open(b: Block): boolean {
   return (b.solid & (SOLLEF | SOLRIG | SOLBOT)) === 0 || b.solid === SOLTOP;
 }
 

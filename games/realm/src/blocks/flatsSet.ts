@@ -11,7 +11,7 @@ import { paintEgg } from '../art/egg';
 import { C, BLK } from '../ids';
 
 /** Rippled wet sand, shining where the water still lies in the ripples. */
-export function mud(x: number, y: number): RGB {
+function mud(x: number, y: number): RGB {
   const rip = Math.sin((y + tnoise(x, y, 5, 20, 3) * 4) * ((Math.PI * 2) / 5));
   const n = tnoise(x, y, 5, 20, 4) * 0.5 + tnoise(x, y, 2.5, 20, 5) * 0.3;
   let c = mix([150, 130, 100], [196, 176, 136], clamp01(n + rip * 0.12));

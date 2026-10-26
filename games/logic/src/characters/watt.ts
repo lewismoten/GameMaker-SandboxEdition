@@ -13,9 +13,9 @@ const MIRROR = 0x40;
  * go past 8 pixels the frame after it first touches, or a bead of current passing through
  * the switch's middle (rows/columns 7..12) could reach him whatever the spark's phase.
  */
-export const STEPS = [3, 3, 2, 6, 6];
+const STEPS = [3, 3, 2, 6, 6];
 
-export const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12, reboot: 13 } as const;
+const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12, reboot: 13 } as const;
 
 export function buildWatt(cb: BlockSet, bombMonster: number): Character {
   const ch = newCharacter();

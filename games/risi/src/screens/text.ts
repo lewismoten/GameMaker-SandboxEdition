@@ -10,8 +10,6 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'VENI, VIDI, RISI!';
-export const SUBTITLE = 'I CAME, I SAW, I LAUGHED';
 export const AUTHOR = 'Veni, Vidi, Risi!';
 
 /**

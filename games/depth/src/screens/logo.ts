@@ -125,7 +125,7 @@ const GLYPHS: Record<string, Pt[][]> = {
 };
 
 /** A line of lettering as stroke pieces, centered on x = 0, baseline at y. */
-export function strokes(text: string, height: number, y: number, gap = 0.12): Seg[] {
+function strokes(text: string, height: number, y: number, gap = 0.12): Seg[] {
   const r = B * height;
   const placed: Seg[] = [];
   let pen = 0;

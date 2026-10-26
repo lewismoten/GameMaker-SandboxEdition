@@ -7,18 +7,18 @@ import { Bot } from './bot';
 type Step = (b: Bot) => Promise<void>;
 const set = (...cells: [number, number][]) => new Set(cells.map(([x, y]) => `${x},${y}`));
 
-export const nowish: Step = async (b) => {
+const nowish: Step = async (b) => {
   await b.talk(13, 13, 'Grandma Pim');
   await b.retry(() => b.enter(22, 39, 'out of Nowish'));
 };
 
-export const toKing: Step = async (b) => {
+const toKing: Step = async (b) => {
   await b.retry(() => b.enter(31, 45, 'Laterburg gate'));
   await b.talk(74, 10, 'the King');
   await b.retry(() => b.enter(74, 67, 'out of Laterburg'));
 };
 
-export const barrows: Step = async (b) => {
+const barrows: Step = async (b) => {
   await b.retry(() => b.enter(40, 24, 'the Snooze Barrows'));
   await b.retry(async () => {
     // the writ opens the sealed door
@@ -121,7 +121,7 @@ async function onFoot(b: Bot): Promise<void> {
   b.say('Lord Deadline caught');
 }
 
-export const steel: Step = async (b) => {
+const steel: Step = async (b) => {
   await b.retry(() => b.enter(31, 45, 'Laterburg gate'));
   // Brokk's sword counter: walk in to pay, again to take it
   await b.goto(66, 33, 'the sword counter');
@@ -134,7 +134,7 @@ export const steel: Step = async (b) => {
   await b.retry(() => b.enter(74, 67, 'out of Laterburg'));
 };
 
-export const vaults: Step = async (b) => {
+const vaults: Step = async (b) => {
   await b.retry(() => b.enter(14, 47, 'Someday Harbor'));
   // the foghorn clears the fog bank as Pip walks into it
   await b.retry(() => b.enter(16, 49, 'the Soggy Vaults', set([16, 48])));
@@ -145,7 +145,7 @@ export const vaults: Step = async (b) => {
   });
 };
 
-export const flats: Step = async (b) => {
+const flats: Step = async (b) => {
   // the second piece crackles: the garage gate opens for THE CHEZ
   await b.retry(() => b.enter(31, 10, 'THE CHEZ', set([31, 11])));
   b.pacifist = true;
@@ -153,14 +153,14 @@ export const flats: Step = async (b) => {
   b.pacifist = false;
 };
 
-export const lamp: Step = async (b) => {
+const lamp: Step = async (b) => {
   await b.retry(() => b.enter(80, 61, 'Eventually Falls'));
   await b.goto(62, 29, "Hattie's lamp");
   await b.push('up', 6);
   await b.retry(() => b.enter(71, 64, 'out of Eventually Falls'));
 };
 
-export const mines: Step = async (b) => {
+const mines: Step = async (b) => {
   await b.retry(() => b.enter(78, 38, 'the Putoff Mines'));
   await b.retry(async () => {
     await b.goto(50, 66, 'through the lamp door', set([50, 70]));
@@ -170,7 +170,7 @@ export const mines: Step = async (b) => {
   });
 };
 
-export const keep: Step = async (b) => {
+const keep: Step = async (b) => {
   await b.retry(() => b.enter(76, 76, 'Deadline Keep'));
   await b.retry(async () => {
     await b.goto(50, 35, 'through the sockets', set([50, 39], [50, 38], [50, 37]));

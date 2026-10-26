@@ -7,7 +7,7 @@ import type { Level } from './levels';
 /** The felt egg's block number in the Hall of Mirrors' block sets (about.json "egg"). */
 export const EGG_BLOCK = 149;
 
-export interface LevelExtras {
+interface LevelExtras {
   rules?: (kind: string, plane: Plane, part: number) => Behavior | undefined;
   prepare?: (book: TileBook) => void;
 }

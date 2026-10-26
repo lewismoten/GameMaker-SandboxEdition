@@ -317,7 +317,7 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   book.add('clownRun1', clown(1, true));
 }
 
-export function cardMonsters(set: Monster[], mb: SpriteBook): void {
+function cardMonsters(set: Monster[], mb: SpriteBook): void {
   set[CARD_MON.lily] = mon(anim(mb, 'lily0', 'lily1', 8), { power: POWER.friend, thru: 1, newmon: CARD_MON.lilyOn }, pace(1, 1));
   set[CARD_MON.lilyOn] = mon(anim(mb, 'lilyOn0', 'lilyOn1', 4), { power: POWER.tough, thru: 0, end: 50 }, [
     corner(0, 0, 2),

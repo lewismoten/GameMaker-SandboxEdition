@@ -8,7 +8,7 @@ const BRIDGE = /^bridge:\d+:(\d+)$/;
 const corners = (m: number) => [1, 2, 4, 8].filter((b) => m & b).length;
 
 /** True for a block a person would walk along, by its name in the book. */
-export function isWay(name: string): boolean {
+function isWay(name: string): boolean {
   const w = WAYS.exec(name);
   if (w) return w[2] === 'full' || corners(Number(w[3])) >= 2;
   const b = BRIDGE.exec(name);

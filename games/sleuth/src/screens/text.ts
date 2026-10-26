@@ -4,7 +4,7 @@
 import { withCreditPage } from '../../../kit/license';
 
 /** Word-wraps paragraphs ("\n\n" between them, "\f" forces a new page) into 16-line pages. */
-export function pages(text: string, width: number): string {
+function pages(text: string, width: number): string {
   const out: string[] = [];
   for (const pageText of text.split('\f')) {
     const lines: string[] = [];
@@ -242,7 +242,7 @@ Last note, underlined twice:
 
 // ---------------------------------------------------------------- the interviews
 
-export interface Talk {
+interface Talk {
   hello: string;
   r1: [string, string, string];
   hello2: string;
@@ -464,7 +464,7 @@ export const ACT_CARDS = {
 };
 
 /** Plain paragraphs wrapped at 31 columns (no page padding), for README.TXT. */
-export function wrap31(text: string): string {
+function wrap31(text: string): string {
   const out: string[] = [];
   for (const para of text.trim().split('\n')) {
     if (!para.trim()) {

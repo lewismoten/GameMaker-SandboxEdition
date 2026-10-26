@@ -376,7 +376,7 @@ export function ficusSprites(book: SpriteBook, pal: Pal): void {
   book.add('peggyWalk1', peggyWalk(1));
 }
 
-export function ficusMonsters(set: Monster[], mb: SpriteBook): void {
+function ficusMonsters(set: Monster[], mb: SpriteBook): void {
   set[FICUS_MON.leaf] = mon(anim(mb, 'leaf0', 'leaf1', 5), { power: POWER.foe, thru: 0, end: -1, newmon: FICUS_MON.puff }, [
     corner(0, 0, 1),
     corner(-1, 1, 1),

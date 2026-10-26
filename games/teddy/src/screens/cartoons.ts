@@ -81,7 +81,7 @@ function balloon(p: Pixels, x: number, y: number, t: number): void {
 }
 
 /** Clip 1: Doc Leo practices in the backyard: a balloon dog, a magic trick, a parade strut. */
-export function leoFli(): Uint8Array {
+function leoFli(): Uint8Array {
   const r = new Reel(backyard());
   const leo = (p: Pixels, wave = false, x = 150, y = 92) => scaleBlit(p, docLeo(DRESSED, wave), x, y, 2);
   const teddy = (p: Pixels, pose: string) => scaleBlit(p, POSES[pose], 100, 134, 2);
@@ -128,7 +128,7 @@ export function leoFli(): Uint8Array {
 }
 
 /** Clip 2: Doc Leo goes ahead to the Club in his CitiCar; his costume suitcase waits on the step. */
-export function carFli(): Uint8Array {
+function carFli(): Uint8Array {
   const bg = backyard();
   // the drive along the bottom, and the suitcase by the back step
   bg.rect(0, 176, W, 24, c('asphalt', 1));
@@ -162,7 +162,7 @@ export function carFli(): Uint8Array {
 }
 
 /** The finale: the Clown Club parade down Main Street at night, Teddy riding up front in the CitiCar. */
-export function paradeFli(): Uint8Array {
+function paradeFli(): Uint8Array {
   const bg = new Pixels(W, H, c('ink', 0));
   for (let y = 0; y < 120; y++) for (let x = 0; x < W; x++) if ((x * 13 + y * 7) % 97 === 0) bg.set(x, y, c('glow', 3));
   for (let x = 0; x < W; x += 34) bg.rect(x, 60 + ((x / 34) % 3) * 8, 30, 120, c('siding', (x / 34) % 2));

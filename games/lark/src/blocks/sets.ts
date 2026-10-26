@@ -11,7 +11,7 @@ export { SOLTOP, SOLRIG, SOLBOT, SOLLEF };
 /** Gravity bits (Block.grav): 1 up, 2 right, 4 down, 8 left. */
 export const GRAV = { n: 1, e: 2, s: 4, w: 8 } as const;
 
-export interface BlockDef {
+interface BlockDef {
   solid?: number;
   score?: number;
   hp?: number;
@@ -87,7 +87,7 @@ export class BlockSet {
   }
 }
 
-export interface MonDef {
+interface MonDef {
   /** Monster block names and ticks to show each. */
   pics: [string, number][];
   power: number;

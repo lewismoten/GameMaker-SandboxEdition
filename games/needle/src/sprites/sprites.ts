@@ -17,7 +17,7 @@ import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 export { T };
 
 /** Gives every drawn pixel's empty neighbors the outline color. */
-export function outline(p: Pixels, ink: number): Pixels {
+function outline(p: Pixels, ink: number): Pixels {
   const src = p.px.slice();
   for (let y = 0; y < p.h; y++)
     for (let x = 0; x < p.w; x++) {
@@ -38,7 +38,7 @@ export function outline(p: Pixels, ink: number): Pixels {
 }
 
 /** What the camel still carries. */
-export interface Load {
+interface Load {
   saddle: boolean;
   bags: boolean;
   shoes: boolean;
@@ -81,7 +81,7 @@ const WALK: Legs[] = [
   ],
 ];
 
-export interface CamelPose {
+interface CamelPose {
   legs: Legs | 'tuck' | 'kneel' | 'flop';
   /** Head: up (proud), chew (mouth moving), dream (eyes shut, chin up), ouch, faint. */
   head?: 'up' | 'chew' | 'dream' | 'ouch' | 'faint';
@@ -93,7 +93,7 @@ export interface CamelPose {
 }
 
 /** Brother Camel in the pal's ramps. `pose` gives a 20x40 picture (top block over bottom). */
-export function camelArt(pal: Pal) {
+function camelArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const fur = pal.r('camel');

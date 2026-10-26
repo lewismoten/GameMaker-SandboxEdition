@@ -5,7 +5,7 @@
 // show's red nose is a costume piece he puts on at showtime. Gwinn scattered the costume
 // across town; `wearing` says which pieces he has on.
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, over, sprite } from '../art/draw';
+import { CLEAR, sprite } from '../art/draw';
 import { CK } from './klown';
 import { P } from '../art/pal';
 
@@ -110,17 +110,6 @@ export function docLeo(wearing: Costume = DRESSED, wave = false): Pixels {
     for (let i = 21; i < 26; i++) rows[i] = patch(rows[i], 16, i < 25 ? 'o...' : '....');
   }
   return sprite(rows, K, 0, 40 - rows.length, 20, 40);
-}
-
-/** The two halves of a 20x40 picture over background blocks. */
-export function halves(fig: Pixels, top: Pixels, bottom: Pixels): [Pixels, Pixels] {
-  const a = new Pixels(20, 20);
-  a.px.set(top.px);
-  over(a, fig.crop(0, 0, 20, 20));
-  const b = new Pixels(20, 20);
-  b.px.set(bottom.px);
-  over(b, fig.crop(0, 20, 20, 20));
-  return [a, b];
 }
 
 export { CLEAR };

@@ -7,8 +7,8 @@
 // 256-color palette for the FLI (cartoons.ts). Frame k of n animates it.
 import { rng, type Pixels } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 
@@ -35,7 +35,7 @@ const N2 = noise2(47);
 const fbm = (x: number, y: number) => N1(x, y) * 0.6 + N2(x * 2.1, y * 2.1) * 0.3 + N1(x * 4.3 + 7, y * 4.3) * 0.1;
 
 /** The cast, as pictures and the palette they are drawn in (6-bit VGA). */
-export interface CoverCast {
+interface CoverCast {
   leo: (pose: string) => Pixels;
   mons: Map<string, Pixels>;
   pal: Uint8Array;

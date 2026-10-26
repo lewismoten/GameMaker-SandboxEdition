@@ -12,7 +12,7 @@ import type { Level } from './levels/level';
 import { SCAN } from './ids';
 
 /** The route step the title demo stops after. */
-export const DEMO_ENDS = 'has the collar';
+const DEMO_ENDS = 'has the collar';
 
 export async function demoRecording(l: Level): Promise<Uint8Array> {
   const sim = new Sim(

@@ -7,12 +7,12 @@
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const STREET_W = 22;
-export const STREET_H = 17;
+const STREET_W = 22;
+const STREET_H = 17;
 /** The parade's lanes (drawing rows), west end spawners first. */
 export const STREET_LANES = [7, 8, 10, 11];
 
-export function streetRows(): string[] {
+function streetRows(): string[] {
   const g: string[][] = Array.from({ length: STREET_H }, (_, y) =>
     Array.from({ length: STREET_W }, (_, x) => {
       if (x === 0 || y === 0 || x === STREET_W - 1 || y === STREET_H - 1) return String((x * 7 + y * 3) % 4);

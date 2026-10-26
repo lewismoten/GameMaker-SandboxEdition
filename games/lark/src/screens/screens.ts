@@ -68,8 +68,8 @@ import {
   WON,
 } from './text';
 
-export const W = 320;
-export const H = 200;
+const W = 320;
+const H = 200;
 
 const gif = (p: Pixels): Uint8Array => encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: PAL.pal });
 
@@ -155,7 +155,7 @@ const clearPic = () => new Pixels(20, 20, 255);
 
 // ------------------------------------------------------------------ screens
 
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = new Pixels(W, H);
   dusk(p);
   hills(p, 132);
@@ -169,7 +169,7 @@ export function titleScreen(): Pixels {
   return p;
 }
 
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = new Pixels(W, H);
   dusk(p, 200);
   hills(p, 150);
@@ -182,7 +182,7 @@ export function menuScreen(): Pixels {
 }
 
 /** Backdrop for text pages: PLAYGAME writes 31 columns at x 40, y 40..167 in purple. */
-export function pageScreen(heading: string, who: Pixels[] = [joe('down', 0)]): Pixels {
+function pageScreen(heading: string, who: Pixels[] = [joe('down', 0)]): Pixels {
   const p = new Pixels(W, H);
   libraryWall(p);
   paper(p, 30, 32, 262, 150);
@@ -192,7 +192,7 @@ export function pageScreen(heading: string, who: Pixels[] = [joe('down', 0)]): P
   return p;
 }
 
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = new Pixels(W, H);
   libraryWall(p);
   // PLAYGAME writes "Top Ten Scores" at the very top and "Hit any key" at the very bottom: plain paper to the edges
@@ -201,7 +201,7 @@ export function scoresScreen(): Pixels {
   return p;
 }
 
-export function slotsScreen(): Pixels {
+function slotsScreen(): Pixels {
   const p = new Pixels(W, H);
   libraryWall(p);
   saveSlots(p, c('ink', 0), c('paper', 4), c('wood', 3));

@@ -20,7 +20,7 @@ import { Area, type Cell, type Window } from './area';
 import { shelf, type WingSpec } from './wing';
 
 /** Door labels, wing by wing (five letters fit on a door). */
-export const DOOR_LABELS = ['CLOWN', 'LAB', 'DOCKS', 'YARD', 'HOME', 'NIGHT', 'OTHER', '2000'];
+const DOOR_LABELS = ['CLOWN', 'LAB', 'DOCKS', 'YARD', 'HOME', 'NIGHT', 'OTHER', '2000'];
 
 function wingDoor(label: string, stamp: WingSpec['stamp'], seed: number): Pixels {
   const p = shelf(seed, 'red');

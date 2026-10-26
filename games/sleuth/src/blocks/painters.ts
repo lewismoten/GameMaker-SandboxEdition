@@ -16,7 +16,7 @@ export const clone = (p: Pixels) => {
 // ---------------------------------------------------------------- floors
 
 /** Planks running left to right, 5 pixels wide, ends staggered. */
-export function planks(lo: number, hi: number, seed: number, rampName = 'wood'): Pixels {
+function planks(lo: number, hi: number, seed: number, rampName = 'wood'): Pixels {
   const p = T();
   const R = rng(seed);
   const w = r(rampName);
@@ -233,11 +233,6 @@ export function footlight(bright: number): Pixels {
   return p;
 }
 
-export function table(top: Pixels | undefined, w = 'wood'): Pixels {
-  const p = top ? clone(top) : boards(9);
-  p.rect(1, 3, 18, 14, c(w, 2)).rect(1, 3, 18, 1, c(w, 4)).rect(1, 16, 18, 1, c(w, 0));
-  return p;
-}
 export const on = (base: Pixels, draw: (p: Pixels) => void) => {
   const p = clone(base);
   draw(p);

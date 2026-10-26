@@ -17,7 +17,7 @@ export interface SpritePic {
   shadow: Float32Array;
 }
 
-export interface SpriteLook {
+interface SpriteLook {
   /** A light of its own (the shot, glows). */
   keyColor?: V;
   sky?: V;
@@ -32,7 +32,7 @@ export interface SpriteLook {
   outline?: V;
 }
 
-export function spriteWorld(shapes: Shape[], look: SpriteLook = {}): World {
+function spriteWorld(shapes: Shape[], look: SpriteLook = {}): World {
   return {
     shapes,
     key: { dir: KEY_DIR, color: look.keyColor ?? rgb(255, 246, 232), soft: 0.05 },

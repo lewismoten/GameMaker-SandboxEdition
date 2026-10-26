@@ -3,16 +3,12 @@
 // of Bizarre.
 import { withCreditPage } from '../../../kit/license';
 
-export const page = (lines: string[], pages = 1) => {
+const page = (lines: string[], pages = 1) => {
   for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
   if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
   while (lines.length % 16) lines.push('');
   return lines.join('\n');
 };
-
-export const TITLE = 'SHAKESPEARE';
-export const SUBTITLE = 'IN SWEATPANTS';
-export const AUTHOR = 'The Bard of Bizarre';
 
 /**
  * Who made the monologues and the pictures. Used by LICENSE.TXT (the credits page and the

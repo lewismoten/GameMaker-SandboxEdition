@@ -7,7 +7,7 @@ import type { SpriteSet } from '../sprites/sprites';
 
 // Keys (scan code << 8 | ASCII), as every Sandbox game: arrows and W/A/S/D, Q/E and the
 // number pad corners for diagonals.
-export const KEY = {
+const KEY = {
   up: 0x4800,
   down: 0x5000,
   left: 0x4b00,
@@ -28,8 +28,8 @@ export const KEY = {
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 
 /** Pixels Ray rolls a tick. */
-export const SPEED = 4;
-export const DIAG = 3;
+const SPEED = 4;
+const DIAG = 3;
 
 type F = Partial<Frame> & { pic: number };
 function frames(list: F[]): Frame[] {

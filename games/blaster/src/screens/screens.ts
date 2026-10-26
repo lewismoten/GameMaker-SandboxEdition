@@ -19,12 +19,12 @@ import { H, SHIP, SHIP_FLAME, SP, W, blob, c, circuit, dos, floppy, glitchFace, 
 import { CREDITS, DEBUG_EGG, HELP, LOST, README, STORY, WON } from './text';
 import { SONGS } from '../sound/music';
 
-export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
+function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
 /** The card before a leg: a framed look at it, its name and a few words. */
-export function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
+function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
   const pc = (n: string, k: number) => s.pal.c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
@@ -59,7 +59,7 @@ const caption = (p: Pixels, s: string) => {
 };
 
 /** The title poster: the logo, the BLASTER diving at GLITCH. */
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = circuit(5);
   speedLines(p, 160, 150, 3, 'cyan', 60);
   const face = new Pixels(120, 82, CLEAR);
@@ -73,7 +73,7 @@ export function titleScreen(): Pixels {
 }
 
 /** The menu: the logo, and a pale panel where PLAYGAME writes its choices in blue. */
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = circuit(9);
   logo(p, 4, 160, false);
   panel(p, 64, 100, 256, 170);
@@ -86,7 +86,7 @@ export function menuScreen(): Pixels {
 }
 
 /** A page for text: a heading and the pale panel PLAYGAME writes on (x 40..288, y 40..167). */
-export function page(heading: string, seed: number): Pixels {
+function page(heading: string, seed: number): Pixels {
   const p = circuit(seed);
   panel(p, 34, 36, 292, 178);
   outlined(p, Math.round(160 - heading.length * 8), 10, heading, c('slime', 5), c('ink', 0), 2);
@@ -94,7 +94,7 @@ export function page(heading: string, seed: number): Pixels {
 }
 
 /** The high score backdrop: everything Game-Maker writes there lands on pale panels. */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = circuit(21);
   panel(p, 8, 0, 311, 199);
   // Small ships in the top corners, clear of the widest row (a 22 letter name ends at x 284).
@@ -108,7 +108,7 @@ export function scoresScreen(): Pixels {
  * its messages ("Game Saved!", "This game has not been saved!") in blue at y 185, x 40..272,
  * so a pale strip under it.
  */
-export function slotScreen(heading: string): Pixels {
+function slotScreen(heading: string): Pixels {
   const p = circuit(heading.length);
   panel(p, 52, 30, 300, 175, c('ink', 0), c('steel', 4));
   panel(p, 34, 182, 286, 196);
@@ -125,7 +125,7 @@ function frame(p: Pixels): Uint8Array {
  * marked VACCINE goes into the drive, the BLASTER shrinks and flies in, and the logo slams
  * down.
  */
-export function introFli(): Uint8Array {
+function introFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const typed = ['C:\\>PKUNZIP COOLGAME', 'INFLATING: COOLGAME.EXE', 'C:\\>COOLGAME'];
   // 1. typing
@@ -188,7 +188,7 @@ export function introFli(): Uint8Array {
 }
 
 /** Between stages: down the data bus to the next part of the machine. */
-export function warpFli(): Uint8Array {
+function warpFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   for (let f = 0; f < 34; f++) {
     const p = new Pixels(W, H, c('ink', 0));
@@ -202,7 +202,7 @@ export function warpFli(): Uint8Array {
 }
 
 /** The ending cartoon: GLITCH bursts, the PC reboots clean. */
-export function wonFli(): Uint8Array {
+function wonFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const r = rng(9);
   const bits = Array.from({ length: 60 }, () => [60 + r() * 0, 41, (r() - 0.5) * 9, (r() - 0.7) * 7] as [number, number, number, number]);
@@ -247,7 +247,7 @@ export function wonFli(): Uint8Array {
 }
 
 /** Game over: GLITCH grinning from the monitor. */
-export function lostScreen(): Pixels {
+function lostScreen(): Pixels {
   const p = desk((g) => {
     glitchFace(g, 77, 1);
     text(g, 24, 70, 'HA HA HA HA', c('slime', 5));

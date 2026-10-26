@@ -6,7 +6,7 @@ import { BlockSet } from '../art/draw';
 /** One leg of a path: move (x, y) blocks at `speed` pixels a tick. */
 export type Leg = [x: number, y: number, speed: number];
 
-export interface MonDef {
+interface MonDef {
   /** Animation: [monster block name, ticks]. */
   pics: [string, number][];
   power: number;

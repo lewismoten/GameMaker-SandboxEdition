@@ -176,7 +176,7 @@ function addDuelist(mons: MonBook, power: number, hits: number): number {
 }
 
 /** Where each dungeon's stairs come out, and where you come in from. */
-export interface DungeonDoors {
+interface DungeonDoors {
   /** Scene and block the stairs lead back to. */
   out: Record<Theme, { to: string; at: Pt }>;
 }

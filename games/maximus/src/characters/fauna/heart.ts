@@ -11,7 +11,7 @@ import { mechFauna } from './mech';
 import { L } from './define';
 
 /** How much charge the Core Light gives the seal: each seal block it opens takes one. */
-export const SPARK_CHARGE = 4;
+const SPARK_CHARGE = 4;
 
 /** The machines the Heart's map never places, and so the slots its boss phases take. */
 const FREE = ['Crawler', 'Sentry Drone', 'Gun Turret', 'Security Bot', 'Spider Bot'];

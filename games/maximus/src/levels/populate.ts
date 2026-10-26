@@ -22,7 +22,7 @@ export interface Spots {
   alsoAvoid?: { x: number; y: number }[];
 }
 
-export function tierOf(c: Creature): number {
+function tierOf(c: Creature): number {
   if (c.dmg === 0) return 1;
   const t = c.dmg <= 6 ? 1 : c.dmg <= 10 ? 2 : c.dmg <= 15 ? 3 : 4;
   return c.power >= 100 && c.dmg >= 10 ? Math.max(t, 3) : t;

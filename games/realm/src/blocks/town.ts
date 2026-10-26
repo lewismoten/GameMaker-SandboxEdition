@@ -28,7 +28,7 @@ export const quay: Shader = (x, y, d) => {
 };
 
 /** Clipped hedges: a dense leafy box with a lit top edge and a shadow at its foot. */
-export const hedge: Shader = (x, y, d, nx, ny) => {
+const hedge: Shader = (x, y, d, nx, ny) => {
   if (d > 0) {
     const sh = clamp01(ny * 1.2 + nx * 0.3) * (1 - smooth(0, 4, d));
     return mix(grass(x, y), [24, 46, 24], sh * 0.7);

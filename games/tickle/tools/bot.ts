@@ -6,7 +6,7 @@ import { CARPET, MON, SCAN } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import type { GameSim } from './sim';
 
-export type Dir = 'left' | 'right';
+type Dir = 'left' | 'right';
 type Result = string | undefined;
 
 export class Bot {

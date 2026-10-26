@@ -6,13 +6,13 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
 import type { LevelSet } from './levels/blocks';
 
-export const TITLE = 'DEPTH PERCEPTION';
+const TITLE = 'DEPTH PERCEPTION';
 
 export const cardScene = (i: number) => 2 + i * 3;
 export const nearScene = (i: number) => 3 + i * 3;
 export const farScene = (i: number) => 4 + i * 3;
 
-export interface LevelFiles {
+interface LevelFiles {
   pal: string;
   map: Record<'near' | 'far', string>;
   bbl: Record<'near' | 'far', string>;

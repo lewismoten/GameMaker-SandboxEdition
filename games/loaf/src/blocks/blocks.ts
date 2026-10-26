@@ -21,11 +21,11 @@ import { BASKETS, BASKETS_NEEDED, CRUMBS, CRUMBS_NEEDED, MON } from '../ids';
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, rise up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between flying fish from a fish basket. */
-export const FISH_EVERY = 70;
+const FISH_EVERY = 70;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

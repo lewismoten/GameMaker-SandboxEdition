@@ -36,7 +36,7 @@ const copy = (p: Pixels) => {
 
 /** The title cartoon: rain on the Paragon, the bulbs chasing, a lightning strike; the lights
  * flicker and go out, and the dark street fades to black (the title shows the Paragon lit). */
-export function introFli(): Uint8Array {
+function introFli(): Uint8Array {
   const frames: Pixels[] = [];
   const pals: Uint8Array[] = [];
   const dark = dimmed(P.pal, 0.3);
@@ -60,7 +60,7 @@ export function introFli(): Uint8Array {
 }
 
 /** The death scene: Rowena raises the dagger, Count Corvin falls, the curtain comes down. */
-export function storyFli(): Uint8Array {
+function storyFli(): Uint8Array {
   const frames: Pixels[] = [];
   const victor = actor('victor', 70);
   const fallen = actor('victor', 70, 'fall');
@@ -97,7 +97,7 @@ export function storyFli(): Uint8Array {
 }
 
 /** Edgar's memory: a man in evening dress with a dripping umbrella, past the lobby bar. */
-export function umbrellaManFli(): Uint8Array {
+function umbrellaManFli(): Uint8Array {
   const frames: Pixels[] = [];
   const base = new Pixels(W, H);
   // the lobby: marble, the auditorium doors, the bar in front
@@ -132,7 +132,7 @@ export function umbrellaManFli(): Uint8Array {
 }
 
 /** End of Act One: the curtain falls. */
-export function curtainFli(): Uint8Array {
+function curtainFli(): Uint8Array {
   const frames: Pixels[] = [];
   for (let i = 0; i <= 24; i++) {
     const p = stageView(Math.min(1, i / 16), 0);
@@ -153,7 +153,7 @@ function theoryFrame(): Pixels {
 }
 
 /** ONE: the swap at the prop table in the dark wing. */
-export function swapFli(): Uint8Array {
+function swapFli(): Uint8Array {
   const frames: Pixels[] = [];
   for (let i = 0; i < 40; i++) {
     const p = theoryFrame();
@@ -183,7 +183,7 @@ export function swapFli(): Uint8Array {
 }
 
 /** TWO: a drop of poison in the goblet. */
-export function poisonFli(): Uint8Array {
+function poisonFli(): Uint8Array {
   const frames: Pixels[] = [];
   for (let i = 0; i < 36; i++) {
     const p = theoryFrame();
@@ -204,7 +204,7 @@ export function poisonFli(): Uint8Array {
 }
 
 /** THREE: the lights go out and a figure slips across the stage. */
-export function darkFli(): Uint8Array {
+function darkFli(): Uint8Array {
   const frames: Pixels[] = [];
   const victor = actor('victor', 60);
   const shadow = actor('edgar', 64);
@@ -227,7 +227,7 @@ export function darkFli(): Uint8Array {
 }
 
 /** The curtain call: the company bows; Ada watches from the wings. */
-export function wonFli(): Uint8Array {
+function wonFli(): Uint8Array {
   const frames: Pixels[] = [];
   const cast = (['lila', 'edgar', 'felix', 'agatha'] as const).map((w) => [actor(w, 64, 'stand'), actor(w, 64, 'bow')]);
   const ada = actor('ada', 64);
@@ -253,7 +253,7 @@ export function wonFli(): Uint8Array {
 }
 
 /** Lost: the marquee goes dark, one bank of bulbs at a time. */
-export function lostFli(): Uint8Array {
+function lostFli(): Uint8Array {
   const frames: Pixels[] = [];
   for (let i = 0; i < 30; i++) {
     const p = facade(i, i < 14 ? 1 : 0);

@@ -22,7 +22,7 @@ import { sbi } from '../../../kit/music';
 import { CELESTA, REED, Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '../../../kit/songFx';
 
-export const BPM = 116;
+const BPM = 116;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -344,7 +344,7 @@ function chorus(a: Arranger, o: { shift?: number; vel?: number; drums?: string[]
 }
 
 /** Title: the swell, the roll, the laughter, then the chorus and the laughter again. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger();
   intro(a);
   a.laugh();
@@ -354,7 +354,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: the verse sneaking along on pizzicato strings, then the pre-chorus on celesta. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger(104);
   a.section(VERSE, { comp: 'pizz', sing: 'solo', bass: 'long', drums: ['sneak'], vel: 92 });
   a.section(PRE, { comp: 'celesta', sing: 'twin', bass: 'long', drums: ['none'], vel: 92 });
@@ -366,7 +366,7 @@ export function storySong(): Uint8Array {
  * in the lab; the verse on pizzicato in the sewers, low and sneaky, into the chorus; the march up
  * the tower, the chorus twice, the second time up a whole step.
  */
-export function levelSongs(): Record<'course' | 'lab' | 'sewer' | 'tower', Uint8Array> {
+function levelSongs(): Record<'course' | 'lab' | 'sewer' | 'tower', Uint8Array> {
   const course = new Arranger();
   course.section(VERSE, { comp: 'tango', sing: 'solo', bass: 'habanera', drums: tango(8), vel: 98 });
   course.section(PRE, { comp: 'celesta', sing: 'twin', bass: 'long', drums: ['sneak'], vel: 96 });
@@ -395,7 +395,7 @@ export function levelSongs(): Record<'course' | 'lab' | 'sewer' | 'tower', Uint8
 }
 
 /** Won: "a laughing carpet bowing under my command": the last chorus up a step, the laughter, a big swell. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger();
   a.section({ name: 'pickup', chords: ['B7'], tune: ['r h, r e, B3 e, E4 e, F#4 e'] }, { comp: 'swell', sing: 'solo', bass: 'long', drums: ['none'], vel: 96 });
   a.roll(2, [40, 43, 47, 52]).hit('Em');
@@ -409,7 +409,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: "Twenty-two is dread": the pre-chorus slow and alone, the choir humming away to nothing. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(76);
   a.section(PRE, { comp: 'choir', sing: 'solo', bass: 'long', drums: ['none'], vel: 84 });
   a.fx.swell(VOICES, (a.bar - 2) * 4, 7.5, HUSH);
@@ -418,7 +418,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole song in order. */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger();
   intro(a);
   a.laugh();
@@ -440,5 +440,3 @@ export function allSongs(): Record<string, Uint8Array> {
   const levels = levelSongs();
   return { title: titleSong(), story: storySong(), ...levels, won: wonSong(), lost: lostSong(), menu: wholeSong() };
 }
-
-export { voicing, root };

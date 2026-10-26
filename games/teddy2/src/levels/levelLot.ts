@@ -19,7 +19,7 @@ import { lotBeasts } from './levelLotBeasts';
 /** The roofs' shelters from the gusts (a vent, or the loudspeakers on the catwalk), right to left. */
 export const SHELTERS = [85, 79, 74, 68, 62, 56];
 /** The roofs and the catwalk run from here to here (row 33); the bandstand's stage is left of them. */
-export const ROOFS = { x0: 50, x1: 86, row: 33 };
+const ROOFS = { x0: 50, x1: 86, row: 33 };
 /** Where the updraft lifts her to the roofs. */
 export const UPDRAFT = 87;
 

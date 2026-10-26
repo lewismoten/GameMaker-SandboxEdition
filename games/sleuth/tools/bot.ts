@@ -6,7 +6,7 @@ import { GameSim } from './sim';
 import { SCAN } from '../src/ids';
 
 type Pt = { x: number; y: number };
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 
 export class Bot {

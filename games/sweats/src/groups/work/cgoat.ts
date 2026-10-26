@@ -281,7 +281,7 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
   book.add('mirage1', mirage(1), hurts(-6));
 }
 
-export function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
+function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
   set[CGOAT_MON.static] = mon(anim(mb, 'fuzz0', 'fuzz1', 3), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(3, 1));
   set[CGOAT_MON.creamer] = mon(anim(mb, 'creamer0', 'creamer1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [
     corner(0, 0, 1),

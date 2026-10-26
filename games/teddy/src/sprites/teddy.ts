@@ -6,7 +6,7 @@ import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 
 /** o outline, d/t/T tan shadow/main/light, W/w white fur, k black, e ear pink, p tongue. */
-export const KEY: Record<string, number> = {
+const KEY: Record<string, number> = {
   o: P.c('corgi', 0),
   d: P.c('corgi', 2),
   t: P.c('corgi', 3),

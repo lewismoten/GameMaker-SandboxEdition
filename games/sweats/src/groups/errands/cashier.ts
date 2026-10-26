@@ -378,7 +378,7 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
   book.add('cashier1', cashier(1), hello);
 }
 
-export function cashierMonsters(set: Monster[], mb: SpriteBook): void {
+function cashierMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: CM.poof };
   set[CM.devil] = mon(anim(mb, 'devil0', 'devil1', 7), foe, pace(3, 1));
   set[CM.gnats] = mon(anim(mb, 'gnats0', 'gnats1', 2), { ...foe, thru: 0 }, [

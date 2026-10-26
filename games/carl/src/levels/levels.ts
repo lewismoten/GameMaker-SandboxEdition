@@ -6,9 +6,9 @@ import type { MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
 import { theAux, theBed, theCouch, theWalls, theWild, theWindow, type Level } from './maps';
 
-export type BlockSet = 'house' | 'yard';
+type BlockSet = 'house' | 'yard';
 
-export interface LevelDef {
+interface LevelDef {
   file: string;
   desc: string;
   set: BlockSet;

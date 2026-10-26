@@ -20,7 +20,7 @@ import { AUTHOR, CARDS } from './text';
 const W = 320;
 const H = 200;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** The camel, posed (20x40: his top block over his bottom), as he is in each level ('loaded'... 'bare'). */

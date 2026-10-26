@@ -23,10 +23,10 @@ import { course } from './levels/course';
 
 export const LEVELS: (() => Level)[] = [garage, maple, park, invite, bakery, balloon, road, mill, dig, pies, funhouse, hill, meadow, stage, rigging, course];
 
-export const TITLE = 'TEDDY 3: BIGGEST!';
+const TITLE = 'TEDDY 3: BIGGEST!';
 
 /** What plays on the way out of a level: THE CHEZ driving on after Teddy's, or the level's own cartoon. */
-export const outro = (l: Level) => l.outro ?? (l.hero === 'teddy' ? 'drive.fli' : '');
+const outro = (l: Level) => l.outro ?? (l.hero === 'teddy' ? 'drive.fli' : '');
 
 /** An all-black palette, for a scene that is only passed through. */
 export const DARK = 'dark.pal';

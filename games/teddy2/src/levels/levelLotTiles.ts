@@ -23,7 +23,7 @@ export const bandRow = (y: number) => (y <= 30 ? 0 : y <= 33 ? 1 : y <= 36 ? 2 :
 export const skyAt = (y: number) => `sky${bandRow(y)}`;
 
 /** How long each part of a gust lasts, in ticks: blowing, calm, then stirring again. */
-export const GUST = { on: 28, off: 26, warn: 12 };
+const GUST = { on: 28, off: 26, warn: 12 };
 
 /** Streaks of wind over a copy of `base`, blowing `dir`; `faint` draws only a few wisps. */
 function streaks(base: Pixels, dir: 'left' | 'right' | 'up', ph: number, faint = false): Pixels {

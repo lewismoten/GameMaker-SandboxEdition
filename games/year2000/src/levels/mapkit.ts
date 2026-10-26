@@ -4,7 +4,7 @@
 import { newMap, reindexMonsters, MLEN, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockSet } from '../blocks/book';
 
-export type Cell = string | { tile?: string; mon?: number; mark?: string; big?: string; w?: number; h?: number };
+type Cell = string | { tile?: string; mon?: number; mark?: string; big?: string; w?: number; h?: number };
 export type Legend = Record<string, Cell>;
 
 export class LevelMap {

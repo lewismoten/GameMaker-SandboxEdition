@@ -6,7 +6,7 @@ import type { PickupId } from './items';
 import { roleIndex } from '../art/palette';
 import { ROLES } from '../art/roles';
 
-export const RI = roleIndex(ROLES);
+const RI = roleIndex(ROLES);
 export const R = (name: string) => {
   const r = RI.get(name);
   if (!r) throw new Error(`no role ${name}`);

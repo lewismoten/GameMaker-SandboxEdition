@@ -232,7 +232,7 @@ export const CARDS: Record<string, string[]> = {
 /** Lines on the disk's text files: 31 columns at most. */
 const README_WIDTH = 31;
 
-export function readme(price: string): string {
+function readme(price: string): string {
   const out = `
  TEDDY'S LITTLE BIG ADVENTURE
      Version 1.0 - 1995

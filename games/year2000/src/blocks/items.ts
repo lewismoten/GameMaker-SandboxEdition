@@ -13,7 +13,7 @@ function base(): Pixels {
 }
 
 /** A hover shadow under an item. */
-export function shadow(p: Pixels, cx = 10, cy = 17, rx = 5, ry = 1.6): Pixels {
+function shadow(p: Pixels, cx = 10, cy = 17, rx = 5, ry = 1.6): Pixels {
   oval(p, cx, cy, rx, ry, C('grey', 1));
   return p;
 }
@@ -38,7 +38,7 @@ export function pagePic(): Pixels {
   return p;
 }
 
-export function quarterPic(): Pixels {
+function quarterPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 5);
   blob(p, 10, 9, 6, 6, PALR('chrome'), 2, 7);
@@ -49,7 +49,7 @@ export function quarterPic(): Pixels {
   return p;
 }
 
-export function pillPic(): Pixels {
+function pillPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 6);
   // A capsule lying diagonally: one half hot pink, one half white. Contains: Thanksgiving.
@@ -63,7 +63,7 @@ export function pillPic(): Pixels {
   return p;
 }
 
-export function batteryPic(): Pixels {
+function batteryPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 4);
   p.rect(7, 4, 6, 12, C('grey', 1)).rect(7, 4, 6, 5, C('gold', 3)).rect(9, 2, 2, 2, C('chrome', 5));
@@ -73,7 +73,7 @@ export function batteryPic(): Pixels {
   return p;
 }
 
-export function zapperPic(): Pixels {
+function zapperPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 7);
   // A chunky Laser-Tag Zapper: grey body, teal barrel, orange safety tip, neon sensor.
@@ -87,7 +87,7 @@ export function zapperPic(): Pixels {
   return p;
 }
 
-export function colaPic(): Pixels {
+function colaPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 6);
   // A can of Hover-Cola, with little chrome wings.
@@ -104,7 +104,7 @@ export function colaPic(): Pixels {
   return p;
 }
 
-export function remotePic(): Pixels {
+function remotePic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 4);
   p.rect(7, 6, 6, 10, C('grey', 2)).rect(7, 6, 6, 1, C('grey', 4));
@@ -117,7 +117,7 @@ export function remotePic(): Pixels {
   return p;
 }
 
-export function keycardPic(): Pixels {
+function keycardPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 6);
   p.rect(4, 5, 12, 9, C('pink', 3)).rect(4, 7, 12, 2, C('grey', 1));
@@ -127,7 +127,7 @@ export function keycardPic(): Pixels {
   return p;
 }
 
-export function passPic(): Pixels {
+function passPic(): Pixels {
   const p = base();
   shadow(p, 10, 18, 6);
   p.rect(3, 5, 14, 9, C('gold', 4)).rect(3, 5, 14, 2, C('purple', 2));

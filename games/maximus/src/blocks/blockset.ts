@@ -5,7 +5,7 @@ import { Pixels } from '../../../kit/pixels';
 import { BACKBL, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
 import { CLEAR } from '../art/draw';
 
-export interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'>> {
+interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'>> {
   /** Block this one becomes after `ntime` ticks (by name). */
   next?: string;
   /** Block this one becomes when touched (by name). */

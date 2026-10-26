@@ -9,7 +9,7 @@ import type { Bestiary } from '../characters/mons';
 import type { StageArt } from '../blocks/tiles';
 
 export const X0 = 2;
-export const START_ROW = 94;
+const START_ROW = 94;
 export const EXIT_ROW = 6;
 /** Rows from the launch pad to the gate. */
 export const LENGTH = START_ROW - EXIT_ROW;
@@ -17,7 +17,7 @@ export const ARENA_TOP = 45;
 export const ARENA_START = { x: X0 + 8, y: ARENA_TOP + 5 };
 export const STRIP_START = { x: X0 + 8, y: START_ROW };
 
-export type TurretKind = 'sweep' | 'down' | 'seeker' | 'flak';
+type TurretKind = 'sweep' | 'down' | 'seeker' | 'flak';
 
 export class Grid {
   readonly map: GameMap = newMap();

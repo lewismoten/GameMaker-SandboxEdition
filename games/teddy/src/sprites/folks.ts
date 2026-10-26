@@ -255,27 +255,3 @@ export function pin(phase: number): Pixels {
   p.draw(5, phase ? 4 : 2, rows, { o: P.c('ink', 0), W: P.c('fur', 2), R: P.c('red', 2) });
   return p;
 }
-
-/** A yellow taxi, two blocks long: [back, front], facing left. */
-export function taxi(phase: number): [Pixels, Pixels] {
-  const big = S(
-    [
-      '..........oooooooooooo..........',
-      '.........oBBBoyyyoBBBBo.........',
-      '........oBBBBoyyyoBBBBBo........',
-      '..ooooooooooooooooooooooooooooo.',
-      '.oyyyyyyyyyyyyyyyyyyyyyyyyyyyyyo',
-      'oWyyyyyyyyyyyyoyyyyyyyyyyyyyyyRo',
-      'oyyyyyyyyyyyyyoyyyyyyyyyyyyyyyyo',
-      'ooooooooooooooooooooooooooooooo.',
-      phase ? '...ooo.................ooo.....' : '..ooooo...............ooooo....',
-      phase ? '..omMmo...............omMmo....' : '..oMmMo...............oMmMo....',
-      '...ooo.................ooo.....',
-    ],
-    4,
-    9,
-    40,
-    20,
-  );
-  return [big.crop(0, 0, 20, 20), big.crop(20, 0, 20, 20)];
-}

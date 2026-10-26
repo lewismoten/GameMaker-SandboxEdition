@@ -16,7 +16,7 @@ export const LIFE = 1;
 export type BlockSet = 'villa' | 'campus' | 'thermae';
 
 /** What a set's drawing code shares. */
-export interface Ctx {
+interface Ctx {
   book: BlockBook;
   pal: Pal;
   R: Pal['r'];

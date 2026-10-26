@@ -9,11 +9,11 @@ import type { SongName } from './song';
 
 export const LEAD = 0;
 export const TWIN_CH = 1;
-export const BASS = 2;
+const BASS = 2;
 export const COMP = [3, 4];
 export const COLOR = 5;
 
-export const GROOVE: Record<string, Groove> = {
+const GROOVE: Record<string, Groove> = {
   // opera: the timpani alone, a roll into the refrain
   opera: { t: 'x.......x.......' },
   operaStab: { k: 'x...............', t: 'x.......x.......', c: 'x...............' },
@@ -36,14 +36,14 @@ export const GROOVE: Record<string, Groove> = {
   none: {},
 };
 
-export interface Band {
+interface Band {
   lead: Uint8Array;
   comp: Uint8Array;
   color: Uint8Array;
   bass?: Uint8Array;
 }
 
-export interface Play {
+interface Play {
   sing: 'solo' | 'choir' | 'none';
   /** The comping voices: held chords, off-beat stabs (oom-PAH), eighth pumps, or out. */
   comp: 'hold' | 'pah' | 'pump' | 'none';

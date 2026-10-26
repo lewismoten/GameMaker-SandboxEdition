@@ -1,44 +1,6 @@
 // The numbers that tie the four heroes' characters (Teddy, Gwinn, Doc Leo and THE CHEZ), blocks,
 // monsters, sounds and maps together. Teddy's and Gwinn's are the sequel's, unchanged.
 
-/** Teddy's character sequences (0-4 are Game-Maker's fixed ones). */
-export const SEQ = {
-  idle: 0,
-  die: 1,
-  hurt: 2,
-  /** F: fetch (pick up). */
-  fetch: 3,
-  drop: 4,
-  right: 5,
-  left: 6,
-  /** Up: hop (hold for higher). */
-  hop: 7,
-  /** Space: speak (bark). */
-  speak: 8,
-  /** Down: dig. */
-  dig: 9,
-  /** 1: high five (and ring a bell). */
-  five: 10,
-  /** 2: sit pretty. */
-  sit: 11,
-  /** 3: spin. */
-  spin: 12,
-  /** S: sniff (new: roll over is retired). */
-  sniff: 13,
-  /** 4: play dead (hold). */
-  dead: 14,
-  /** D: walk right (the same as Right). */
-  rightD: 15,
-  /** A: walk left. */
-  leftA: 16,
-  /** W: hop. */
-  hopW: 17,
-  /** Q: hop up and to the left. */
-  hopLeft: 18,
-  /** E: hop up and to the right. */
-  hopRight: 19,
-} as const;
-
 /** Gwinn's character sequences (gwinn.chr), on the same keys where she has the same move. */
 export const GSEQ = {
   idle: 0,

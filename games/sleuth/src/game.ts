@@ -6,7 +6,7 @@ import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type L
 import type { Theatre } from './levels/theatre';
 import { LINEUP, ROOM, SOLVED, SUSPECTS, ZCELL, center, type ParlorLinks } from './levels/parlor';
 
-export const TITLE = 'FINAL CURTAIN';
+const TITLE = 'FINAL CURTAIN';
 
 type Pt = { x: number; y: number };
 type Files = Partial<Record<'pal' | 'map' | 'bbl' | 'mon' | 'mbl' | 'cmf' | 'intro' | 'exit', string>>;
@@ -25,14 +25,14 @@ export const PIN_FILES: Record<string, string> = {
   safe_ms: 'evms',
   cuesheet: 'evcue',
 };
-export const PINS = {
+const PINS = {
   gr1: ['coroner', 'checklist', 'stub', 'chart', 'policy'],
   gr2: ['coroner', 'checklist', 'stub', 'chart', 'policy', 'ledger', 'umbrella', 'safe_ms', 'cuesheet'],
 };
 export const WRONG_KEYS = ['lila', 'edgar', 'agatha', 'felix', 'poison', 'dark', 'love', 'money'];
 
 /** Scene numbers, for the play-testing bot and the docs. */
-export interface SceneIndex {
+interface SceneIndex {
   act1: number;
   act2: number;
   gr1a: number;

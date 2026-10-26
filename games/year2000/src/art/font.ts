@@ -43,12 +43,6 @@ export function outlined(p: Pixels, x: number, y: number, s: string, col: number
   text(p, x, y, s, col, scale);
 }
 
-export function centered(p: Pixels, y: number, s: string, col: number, scale = 1, outline?: number): void {
-  const x = Math.round((p.w - textWidth(s, scale)) / 2);
-  if (outline !== undefined) outlined(p, x, y, s, col, outline, scale);
-  else text(p, x, y, s, col, scale);
-}
-
 const MICRO: Record<string, string> = {
   A: '010101111101101',
   B: '110101110101110',

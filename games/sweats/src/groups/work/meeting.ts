@@ -234,7 +234,7 @@ export function meetingSprites(book: SpriteBook, pal: Pal): void {
   book.add('ink1', puff(1));
 }
 
-export function meetingMonsters(set: Monster[], mb: SpriteBook): void {
+function meetingMonsters(set: Monster[], mb: SpriteBook): void {
   // buzzwords drift up and away to the left off the coworkers, and pop at the end of their path
   set[WORK_MON.buzz] = mon(anim(mb, 'buzz0', 'buzz1', 10), { power: POWER.foe, thru: 1, end: -1, newmon: WORK_MON.inkPuff }, [
     corner(0, 0, 2),

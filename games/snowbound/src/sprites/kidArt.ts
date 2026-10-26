@@ -113,12 +113,6 @@ export function shovel(p: Pixels, pal: Pal, view: 'front' | 'side' | 'back'): Pi
   return p;
 }
 
-export interface Book<T> {
-  index: Map<string, number>;
-  pics: Map<string, Pixels>;
-  blocks: T[];
-}
-
 export function makeBook(kind: 'mbl' | 'cbl') {
   const blocks: Block[] = newBlockSet(kind);
   const index = new Map<string, number>();

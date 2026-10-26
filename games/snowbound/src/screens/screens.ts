@@ -10,7 +10,7 @@ import { buildScreenPalette, type Pal } from '../art/pal';
 import { feltEgg } from '../blocks/woods';
 import { H, W, gif, scaleBlit, sky, snowTitle, snowfall, town } from './scenery';
 
-export type Spr = Map<string, Pixels>;
+type Spr = Map<string, Pixels>;
 
 export function buildScreens(
   spr: Spr,

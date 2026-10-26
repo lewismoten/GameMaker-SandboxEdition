@@ -19,13 +19,13 @@ const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, l
 const MIRROR = 0x40; // the block flipped left-right
 
 /** Pixels a tick rolling: steady (a block in five ticks), as quick as rising sideways. */
-export const STEP = 4;
+const STEP = 4;
 /** Pixels a tick sideways while rising. */
-export const RISE_STEP = 4;
+const RISE_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
-export const RISE = 12;
+const RISE = 12;
 /** Pixels a tick down (climbing down the weave, hunkering). */
-export const DOWN_STEP = 3;
+const DOWN_STEP = 3;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; mirror?: boolean };
 

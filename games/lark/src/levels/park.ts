@@ -7,10 +7,10 @@ import { rng } from '../../../kit/pixels';
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const PARK_W = 30;
-export const PARK_H = 20;
+const PARK_W = 30;
+const PARK_H = 20;
 
-export function parkRows(): string[] {
+function parkRows(): string[] {
   const R = rng(23);
   const g: string[][] = Array.from({ length: PARK_H }, (_, y) =>
     Array.from({ length: PARK_W }, (_, x) => {

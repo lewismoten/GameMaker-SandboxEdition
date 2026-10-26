@@ -6,7 +6,7 @@ import type { Form, MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
 import { bedroom, dash, fridge, reckoning, type Level } from './maps';
 
-export interface LevelDef {
+interface LevelDef {
   file: string;
   desc: string;
   light: Light;

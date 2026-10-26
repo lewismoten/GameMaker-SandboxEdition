@@ -6,12 +6,12 @@ import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type 
 import type { BlockSet } from '../blocks/book';
 import { CTR, MON, SEQ, SND } from '../ids';
 
-export const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920, g: 0x2267 };
+const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920, g: 0x2267 };
 /**
  * Alternate keys (scan code << 8 | ASCII). Game-Maker can't read two arrows at once, so the
  * diagonals get keys of their own: Q/E and the number pad's 7/9/1/3. W/A/S/D copy the arrows.
  */
-export const ALT = {
+const ALT = {
   w: 0x1177,
   a: 0x1e61,
   s: 0x1f73,

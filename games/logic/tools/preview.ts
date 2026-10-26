@@ -10,7 +10,7 @@ import type { BlockSet } from '../src/blocks/sets';
 
 const dir = process.env.PREVIEW_DIR ?? '.';
 
-export function sheet(bs: BlockSet, cols = 16): Pixels {
+function sheet(bs: BlockSet, cols = 16): Pixels {
   const n = bs.names.length;
   const p = new Pixels(cols * 21, Math.ceil(n / cols) * 21, 0);
   bs.pics.forEach((px, i) => p.blit(px, (i % cols) * 21, Math.floor(i / cols) * 21));

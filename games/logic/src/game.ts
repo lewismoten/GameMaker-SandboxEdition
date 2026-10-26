@@ -17,7 +17,7 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '../../../web/src/formats/game';
 import type { CompiledRoom } from './levels/board';
 
-export const TITLE = 'OHM SWEET OHM';
+const TITLE = 'OHM SWEET OHM';
 
 function noLinks(): Scene['links'] {
   return Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));

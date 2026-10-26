@@ -27,5 +27,4 @@ addBbs(juiceArt);
 addDig();
 
 export const BG = bg;
-export const B = (name: string) => bg.id(name);
 export { PURPLE };

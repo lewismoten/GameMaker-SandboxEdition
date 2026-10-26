@@ -16,7 +16,7 @@ const FINGERS: [number, number][] = [
 ];
 
 /** Whether (x, y) of the 160x60 drawing is in the hand. */
-export function inHand(x: number, y: number): boolean {
+function inHand(x: number, y: number): boolean {
   const bowl = ((x - 82) / 76) ** 2 + ((y - 24) / 32) ** 2 <= 1 && y >= 30;
   const heel = ((x - 82) / 60) ** 2 + ((y - 44) / 14) ** 2 <= 1;
   const thumb = x >= 8 && x <= 22 && y >= 14 + Math.max(0, x - 18) * 2 && y <= 40;

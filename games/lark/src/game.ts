@@ -42,7 +42,7 @@ import { critterBlocks } from './sprites/critters';
 
 export const GAM = 'lark.gam';
 
-export interface Compiled {
+interface Compiled {
   game: Game;
   places: Place[];
   sets: Record<string, BlockSet>;

@@ -264,7 +264,7 @@ export function dbltapSprites(book: SpriteBook, pal: Pal): void {
   book.add('turtle1', turtle(1), hurts(0));
 }
 
-export function dbltapMonsters(set: Monster[], mb: SpriteBook): void {
+function dbltapMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // trending tags drift down off the hamster flag to the floor and away left
   set[DBLTAP_MON.trend] = mon(anim(mb, 'trend0', 'trend1', 6), { power: POWER.foe, thru: 1, end: -1, newmon: DBLTAP_MON.fluff }, [

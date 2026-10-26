@@ -32,9 +32,9 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 }
 
 /** THE CHEZ's top speed, in pixels per tick (Teddy trots at 5). */
-export const DRIVE = 7;
+const DRIVE = 7;
 /** The bump on its springs, per tick while Up is held (Teddy hops with 11): a block or so. */
-export const BUMP = 9;
+const BUMP = 9;
 
 export function buildChez(): Character {
   const ch = newCharacter();

@@ -13,11 +13,10 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'I SCREAMED, SHE SMIRKED';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /** Who made the music the game's FM songs and sung clips come from (the lyrics file's header). */
-export const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
+const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
 
 /**
  * Who made the song and the pictures: the lyrics, the recording, and the title and cover art,
@@ -27,7 +26,7 @@ export const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
 export const SONG_CREDIT = `lyrics shaped by ChatGPT from Lewis Moten's prompts; ${MUSIC_CREDIT}; title and cover art drawn for this game by Claude Opus 5.5`;
 
 /** The song as sung, word for word (the clean lyrics; long lines broken at a comma or dash). */
-export const LYRICS: Record<string, string[]> = {
+const LYRICS: Record<string, string[]> = {
   verse1: [
     'Okay, in my defense... the',
     '  sign said "mild scares',

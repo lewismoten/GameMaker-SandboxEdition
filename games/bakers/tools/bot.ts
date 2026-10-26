@@ -13,7 +13,7 @@ import { CTR, SCAN } from '../src/ids';
 import type { Compiled } from '../src/compile';
 import { sceneOf } from '../src/game';
 
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 type Pt = { x: number; y: number };
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 const DIRS: Dir[] = ['up', 'down', 'left', 'right'];

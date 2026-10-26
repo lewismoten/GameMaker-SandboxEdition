@@ -7,7 +7,7 @@ import { CLEAR, blob } from '../art/draw';
 import { sym } from '../characters/enemies';
 import type { Pal } from '../art/pal';
 
-export interface Scheme {
+interface Scheme {
   main: string;
   accent: string;
 }

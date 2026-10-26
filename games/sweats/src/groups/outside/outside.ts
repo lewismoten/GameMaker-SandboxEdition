@@ -224,7 +224,7 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
   book.add('jogOn1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, arms: 'up', side: true }));
 }
 
-export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
+function outsideMonsters(set: Monster[], mb: SpriteBook): void {
   set[OUT_MON.receipt] = mon(anim(mb, 'receipt0', 'receipt1', 6), { power: POWER.tough, thru: 0 }, [
     corner(0, 0, 1),
     corner(2, -1, 1),

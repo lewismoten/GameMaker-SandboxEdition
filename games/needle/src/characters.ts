@@ -19,15 +19,15 @@ const MIRROR = 0x40; // bottom block flipped left-right
 const MIRROR_BOTH = 0x44; // and the top block
 
 /** Pixels a tick walking: a camel's easy stride. */
-export const STEP = 4;
+const STEP = 4;
 /** Pixels a tick sideways in a hop. */
-export const HOP_STEP = 4;
+const HOP_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
-export const HOP = 12;
+const HOP = 12;
 /** Pixels a tick crawling on his knees. */
-export const CRAWL = 2;
+const CRAWL = 2;
 /** Pixels a tick kneeling lets him down a thread. */
-export const SLIDE = 3;
+const SLIDE = 3;
 
 type F = { pic: string; top?: string | null; x?: number; y?: number; pause?: number; mirror?: boolean };
 

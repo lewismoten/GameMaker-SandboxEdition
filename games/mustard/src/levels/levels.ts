@@ -6,7 +6,7 @@ import type { Form, MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
 import { dust, mound, mountain, sky, type Level } from './maps';
 
-export interface LevelDef {
+interface LevelDef {
   file: string;
   desc: string;
   light: Light;

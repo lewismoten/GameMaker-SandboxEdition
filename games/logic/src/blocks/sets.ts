@@ -91,7 +91,7 @@ export class BlockSet {
   }
 }
 
-export interface MonDef {
+interface MonDef {
   /** Monster block names and ticks to show each. */
   pics: [string, number][];
   power: number;

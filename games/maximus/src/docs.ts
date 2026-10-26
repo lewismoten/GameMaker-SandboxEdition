@@ -16,14 +16,14 @@ import { SECTORS, SCENE, allWorlds } from './universe';
 import { SONGS } from './sound/music';
 import { wrapDoc } from './screens/text';
 
-export interface Limit {
+interface Limit {
   what: string;
   max: string;
   used: string;
   where: string;
 }
 
-export function limits(b: Built): Limit[] {
+function limits(b: Built): Limit[] {
   const g = b.game;
   const gam = serializeGame(g);
   const pool = (() => {
@@ -169,7 +169,7 @@ export function limitsTxt(b: Built): string {
 }
 
 /** The most interesting 16x10 window of a map: many different blocks, monsters, few empty cells. */
-export function bestView(b: Built, file: string, w = 16, h = 10, near?: { x: number; y: number; r: number }): [number, number] {
+function bestView(b: Built, file: string, w = 16, h = 10, near?: { x: number; y: number; r: number }): [number, number] {
   const s = b.scenes.find((x) => x.file === file)!;
   const g = s.map;
   let best: [number, number] = [0, 0];

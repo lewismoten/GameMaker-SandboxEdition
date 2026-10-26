@@ -10,7 +10,7 @@ export const W = 320;
 export const H = 200;
 
 /** A five-pointed star. */
-export function star(p: Pixels, cx: number, cy: number, rad: number, col: number): void {
+function star(p: Pixels, cx: number, cy: number, rad: number, col: number): void {
   const pts: [number, number][] = [];
   for (let i = 0; i < 10; i++) {
     const a = -Math.PI / 2 + (i * Math.PI) / 5;

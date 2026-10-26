@@ -28,7 +28,7 @@ async function must(bot: Bot, r: Promise<string | undefined>, what: string): Pro
  * than `maxLoss` hit points (or gets stuck), it is taken back and played again after a short
  * wait, so she steps out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;

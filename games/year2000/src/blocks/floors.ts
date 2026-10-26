@@ -4,7 +4,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { shadeAt, speckle } from '../art/draw';
 import { C, PAL } from '../art/pal';
 
-export type Painter = (seed?: number) => Pixels;
+type Painter = (seed?: number) => Pixels;
 
 const R = PAL.r;
 

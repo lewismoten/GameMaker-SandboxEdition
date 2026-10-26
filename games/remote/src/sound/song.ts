@@ -31,7 +31,7 @@ import { sbi } from '../../../kit/music';
 import { Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, sweep, waved } from '../../../kit/songFx';
 
-export const BPM = 120;
+const BPM = 120;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -447,7 +447,7 @@ function bridge(a: Arranger, vel = 96): void {
 }
 
 /** Title: the VCR whirrs, the hook glitches "re-re-re-MOTE?!", and the first chorus. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger();
   vamp(a, 'whirr', 2);
   // the tape chews: "where's the re- re- re-" stuttering into the downbeat
@@ -464,7 +464,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: the intro and verse 1. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger();
   intro(a);
   verse(a, VERSE1, 94);
@@ -477,7 +477,7 @@ export function storySong(): Uint8Array {
  * chorus in the kitchen, the bridge in the void between the cushions (and the second chorus's
  * "void of eternal doom" echoing), and the last chorus on the living room ride, on a calliope.
  */
-export function levelSongs(): Uint8Array[] {
+function levelSongs(): Uint8Array[] {
   const one = new Arranger();
   intro(one);
   verse(one, VERSE1);
@@ -509,7 +509,7 @@ export function levelSongs(): Uint8Array[] {
 const slice = (s: Section, from: number, to = s.tune.length): Section => ({ name: s.name, chords: s.chords.slice(from, to), tune: s.tune.slice(from, to) });
 
 /** Won: "My will's worn thin...", the dramatic pause, "But wait - what's this, beneath my thigh?", found, the outro. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger();
   a.section({ name: 'pickup', chords: ['Am'], tune: ['r h, r e, D5 e, D5 e, E5 e'] }, { comp: 'organ', sing: 'solo', bass: 'walk', drums: ['fill'], vel: 100 });
   chorus(a, slice(FINAL, 0, 4), { vel: 104 });
@@ -522,7 +522,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: "The remote is gone, it vanished from sight." slow and alone. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(84);
   a.section(
     { name: 'gone', chords: ['Am', 'Dm', 'Dm Am'], tune: ['r h, r e, D5 e, E5 e, r e', VERSE1.tune[7], 'F4 e, D4 e, E4 q, r h'] },
@@ -534,7 +534,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole song in order, intro to outro. */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger();
   intro(a, 'organ');
   verse(a, VERSE1);
@@ -569,5 +569,3 @@ export function allSongs(): Record<string, Uint8Array> {
     menu: wholeSong(),
   };
 }
-
-export { voicing, root };

@@ -9,7 +9,7 @@ import { rng } from '../../../kit/pixels';
 const B = 20;
 
 /** A canvas where every drawing call is repeated at the 8 neighboring offsets. */
-export class Tile {
+class Tile {
   readonly cv = new Canvas(B, B);
   private each(fn: (dx: number, dy: number) => void): this {
     for (const dy of [-B, 0, B]) for (const dx of [-B, 0, B]) fn(dx, dy);
@@ -47,7 +47,7 @@ export class Tile {
   }
 }
 
-export type Sampler = (x: number, y: number) => RGB;
+type Sampler = (x: number, y: number) => RGB;
 
 /** Fades `inner` in over `base` from the block's edges (0 at the edge, 1 from `inset` pixels in). */
 export function blend(base: Sampler, inner: Sampler, inset = 5): Sampler {

@@ -130,7 +130,7 @@ export const MON = {
 } as const;
 
 /** Background block attributes by name; next/touch refer to other blocks by name. */
-export interface BlockDef {
+interface BlockDef {
   solid?: number;
   score?: number;
   hp?: number;

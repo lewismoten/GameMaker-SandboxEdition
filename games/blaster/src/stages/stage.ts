@@ -11,7 +11,7 @@ import type { Pal, Theme } from '../art/pal';
 import { addStageTiles, pad, type StageArt, type TileOpts } from '../blocks/tiles';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
 
-export interface Kit {
+interface Kit {
   bs: BlockSet;
   beasts: Bestiary;
 }
@@ -33,7 +33,7 @@ export interface Leg {
  * A room off the beaten path: a link cell in one leg (not one of its gate's links, so the
  * bot never takes it) leads in; its way out shows a page, then plays the next leg again.
  */
-export interface SideRoom {
+interface SideRoom {
   /** The leg with the way in, and the map cell of the way in. */
   from: string;
   cell: { x: number; y: number };
@@ -77,7 +77,7 @@ export function kit(art: StageArt, own: (bs: BlockSet) => void, virus: (b: Besti
   return { bs, beasts };
 }
 
-export interface BuiltLeg {
+interface BuiltLeg {
   map: GameMap;
   bbl: Block[];
   mbl: Block[];

@@ -60,17 +60,6 @@ export function domeHome(floor: (seed?: number) => Pixels, tint = 'pink'): Pixel
   return p;
 }
 
-/** A garage block row piece: wall, door, roofline. 3x2 blocks. */
-export function garage(): Pixels {
-  const p = new Pixels(60, 40);
-  // Roof (seen from above) and front wall.
-  gradient(p, 0, 0, 60, 16, R('purple'), 2, 4);
-  for (let x = 0; x < 60; x += 6) p.rect(x, 0, 1, 16, C('purple', 1));
-  p.rect(0, 16, 60, 2, C('chrome', 6));
-  gradient(p, 0, 18, 60, 22, R('concrete'), 4, 2);
-  return p;
-}
-
 /** A billboard `cols` blocks wide (3 unless said), 2 tall: two posts and a lit sign; `lh` is the line height. */
 export function billboard(lines: string[], bg: string, ink: string, floor: (seed?: number) => Pixels, cols = 3, lh = 7): Pixels {
   const W = cols * 20;

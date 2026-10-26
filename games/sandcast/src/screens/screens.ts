@@ -13,11 +13,11 @@ import { CB, MB } from '../sprites/sprites';
 import { wattCameo } from '../../../kit/cameos';
 import { textInk } from '../../../kit/textBounds';
 
-export const W = 320;
-export const H = 200;
+const W = 320;
+const H = 200;
 const BLACK = ANSI[0];
 
-export function screen(c = BLACK): Pixels {
+function screen(c = BLACK): Pixels {
   return new Pixels(W, H, c);
 }
 
@@ -42,7 +42,7 @@ export function text(p: Pixels, x: number, y: number, s: string, color: number |
 }
 
 /** ANSI shade characters: 1 = light (25%), 2 = medium (50%), 3 = dark (75%), 4 = full. */
-export function shadeRect(p: Pixels, x: number, y: number, w: number, h: number, fg: number, level: 1 | 2 | 3 | 4, bg = -1): Pixels {
+function shadeRect(p: Pixels, x: number, y: number, w: number, h: number, fg: number, level: 1 | 2 | 3 | 4, bg = -1): Pixels {
   for (let yy = y; yy < y + h; yy++)
     for (let xx = x; xx < x + w; xx++) {
       const on = level === 4 || (level === 2 ? (xx + yy) % 2 === 0 : level === 1 ? xx % 2 === 0 && yy % 2 === 0 : !(xx % 2 === 1 && yy % 2 === 1));
@@ -53,13 +53,13 @@ export function shadeRect(p: Pixels, x: number, y: number, w: number, h: number,
 }
 
 /** A double-line box in the CP437 style. */
-export function box(p: Pixels, x: number, y: number, w: number, h: number, c: number): Pixels {
+function box(p: Pixels, x: number, y: number, w: number, h: number, c: number): Pixels {
   p.frame(x, y, w, h, c).frame(x + 2, y + 2, w - 4, h - 4, c);
   return p;
 }
 
 /** The big sandy logo letters: a sand gradient in each glyph, dark outline, dithered shadow. */
-export function logo(p: Pixels, x: number, y: number, s: string, scale: number): Pixels {
+function logo(p: Pixels, x: number, y: number, s: string, scale: number): Pixels {
   const h = 8 * scale;
   const grad = (_gx: number, gy: number) => {
     const t = gy / h;
@@ -85,7 +85,7 @@ export function logo(p: Pixels, x: number, y: number, s: string, scale: number):
 }
 
 /** A sandcastle on a dune with a moat, flags flying. `s` scales it. */
-export function castleArt(p: Pixels, cx: number, base: number, s = 1, seed = 5): Pixels {
+function castleArt(p: Pixels, cx: number, base: number, s = 1, seed = 5): Pixels {
   const r = rng(seed);
   const X = (v: number) => Math.round(cx + v * s);
   const Y = (v: number) => Math.round(base + v * s);
@@ -382,7 +382,7 @@ export function snapFli(): Uint8Array {
 }
 
 /** A sprite scaled up `s` times at (x, y); clear pixels stay clear. */
-export function stamp(p: Pixels, spr: Pixels, s: number, x: number, y: number, flip = false): Pixels {
+function stamp(p: Pixels, spr: Pixels, s: number, x: number, y: number, flip = false): Pixels {
   for (let yy = 0; yy < spr.h; yy++)
     for (let xx = 0; xx < spr.w; xx++) {
       const c = spr.get(flip ? spr.w - 1 - xx : xx, yy);

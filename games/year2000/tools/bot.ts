@@ -24,7 +24,7 @@ const TRAFFIC = new Set<number>([
   MON.buggyV,
 ]);
 
-export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
+const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
 const DIRS: [number, number, number][] = [
   [1, 0, SCAN.right],
   [-1, 0, SCAN.left],
@@ -32,7 +32,7 @@ const DIRS: [number, number, number][] = [
   [0, -1, SCAN.up],
 ];
 
-export interface BotOptions {
+interface BotOptions {
   /** Keep hit points topped up (checks reachability, not difficulty). */
   god?: boolean;
   /** The moon suit: steer with a tolerance instead of stepping block by block. */

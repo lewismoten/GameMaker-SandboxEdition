@@ -6,7 +6,7 @@ import { LASTMM, MLEN, newMap, reindexMonsters, type GameMap } from '../../../..
 import { ORIGIN } from '../ids';
 import type { Bestiary, BlockSet } from '../blocks/sets';
 
-export type Cell = string | { tile: string; mon?: string };
+type Cell = string | { tile: string; mon?: string };
 
 export interface Stamped {
   map: GameMap;

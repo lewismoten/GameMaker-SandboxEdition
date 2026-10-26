@@ -31,7 +31,7 @@ const LATE = { mugHp: 10 };
 /** What mends the umbrella. */
 export const MENDS = 4;
 /** Ticks between drops from a storm cloud. */
-export const DROP_EVERY = 70;
+const DROP_EVERY = 70;
 
 export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
   const { c, r: R } = pal;
@@ -286,7 +286,7 @@ export function umbrellaSprites(book: SpriteBook, pal: Pal): void {
   book.add('canopyCalm', canopy(3, 0));
 }
 
-export function umbrellaMonsters(set: Monster[], mb: SpriteBook): void {
+function umbrellaMonsters(set: Monster[], mb: SpriteBook): void {
   set[UMBR_MON.drop] = mon(anim(mb, 'drop0', 'drop1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.splash }, [corner(0, 0, 3), corner(0, 8, 3)]);
   set[UMBR_MON.splash] = mon(anim(mb, 'splash0', 'splash1', 3), { power: POWER.friend, thru: 0, end: 6 });
   set[UMBR_MON.tag] = mon(anim(mb, 'tag0', 'tag1', 6), { power: POWER.foe, thru: 1, newmon: UMBR_MON.poof }, pace(2, 1));

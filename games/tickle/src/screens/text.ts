@@ -11,8 +11,6 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'CERTIFIED';
-export const SUBTITLE = 'RAT TICKLER';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /**

@@ -5,7 +5,7 @@
 import { NOSCENE, type Game } from '../../../web/src/formats/game';
 import { arrangements, layoutCost } from '../../../web/src/editor/editors/integrator/integratorLayout';
 
-export function crossings(g: Game): number {
+function crossings(g: Game): number {
   const pos = arrangements(g, 1)[0].positions;
   const pairs: [number, number][] = [];
   g.scenes.forEach((s, i) => {

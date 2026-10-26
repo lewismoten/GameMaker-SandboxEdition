@@ -34,25 +34,25 @@ class ToneBook extends BlockBook {
  * darker (`name~1`, `name~2`): the sky deepens toward the top, so the plant stands out and the
  * height reads (MapBuilder.tone lays them). Each shift lists only what its rows show.
  */
-export const DUSK_TONED: Record<number, string[]> = {
+const DUSK_TONED: Record<number, string[]> = {
   2: ['sky', 'wisp', 'branch', 'breeze0', 'breeze1', 'cloudA', 'cloudB', 'cloudL', 'cloudR', 'waterSky', 'life', 'sun0', 'sun1'],
   1: ['sky', 'wisp', 'branch', 'nest', 'breeze0', 'breeze1', 'sun0', 'sun1', 'stalkL', 'stalkR'],
 };
 /** Blocks that blend one tone into the next down the block where two bands meet (`name~2to1`): [shift at the top, at the bottom, the blocks that row shows]. */
-export const SKY_BLENDS: [number, number, string[]][] = [
+const SKY_BLENDS: [number, number, string[]][] = [
   [0, 2, ['sky']],
   [2, 1, ['sky', 'sun0', 'sun1']],
   [1, 0, ['sky', 'stalkL', 'stalkR', 'breeze0', 'breeze1']],
 ];
 /** Solid on top only: stand on it, hop up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, right: 2, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, right: 2, down: 4 } as const;
 /** Ticks the gust over the top branch stays calm, gathers (the warning) and blows. */
-export const GUST = { calm: 80, warn: 24, gust: 28 } as const;
+const GUST = { calm: 80, warn: 24, gust: 28 } as const;
 const LIFE = 1;
 /** Ticks between raindrops from a rain cloud, and between pebbles from the scree. */
-export const RAIN_EVERY = 120;
-export const SCREE_EVERY = 90;
+const RAIN_EVERY = 120;
+const SCREE_EVERY = 90;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new ToneBook();

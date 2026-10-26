@@ -6,7 +6,7 @@ import { GameSim } from './sim';
 import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 
 /** The timed blocks the route waits for: the escapement's bridges and the comb's teeth. */
-export function bridgeIds(): Ids {
+function bridgeIds(): Ids {
   const { tower, box, snow } = compile().sets;
   return {
     tick: tower.id('tick'),

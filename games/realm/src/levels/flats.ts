@@ -5,7 +5,7 @@
 import { Plan, type Pt } from './plan';
 import type { MonBook } from '../characters/monbook';
 
-export interface FlatsPlan {
+interface FlatsPlan {
   plan: Plan;
   west: Pt;
   east: Pt;

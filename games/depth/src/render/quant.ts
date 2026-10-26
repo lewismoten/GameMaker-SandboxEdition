@@ -4,7 +4,7 @@
 // 256 colors can give).
 
 /** 8-bit RGB, 3 bytes a pixel. */
-export type Rgb = Uint8Array;
+type Rgb = Uint8Array;
 export type Col = [number, number, number];
 
 /**

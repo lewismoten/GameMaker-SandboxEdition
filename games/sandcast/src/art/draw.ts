@@ -1,6 +1,6 @@
 // Drawing helpers shared by the block, monster and character art.
 import { Pixels, rng, dither } from '../../../kit/pixels';
-import { SAND, OCHRE, STEEL } from './palette';
+import { SAND } from './palette';
 
 export const CLEAR = 255;
 export { Pixels, rng, dither };
@@ -35,20 +35,6 @@ export function ripples(p: Pixels, seed: number, ramp = SAND, base = 6): Pixels 
       p.set(x, y, shade(ramp, base - 1));
       p.set(x, y - 1, shade(ramp, base + 1));
     }
-  }
-  return p;
-}
-
-/** A few pebbles. */
-export function pebbles(p: Pixels, seed: number, n = 3): Pixels {
-  const r = rng(seed);
-  for (let k = 0; k < n; k++) {
-    const x = 2 + Math.floor(r() * 15);
-    const y = 2 + Math.floor(r() * 15);
-    const big = r() > 0.5;
-    p.rect(x, y, big ? 3 : 2, 2, OCHRE[3]);
-    p.set(x, y, OCHRE[5]);
-    p.rect(x, y + 2, big ? 3 : 2, 1, SAND[3]);
   }
   return p;
 }
@@ -105,6 +91,3 @@ export function art(rows: string[], key: Record<string, number>, base?: Pixels):
   const p = base ?? sprite();
   return p.draw(0, 0, rows, key);
 }
-
-/** Steel helper colors for outlines. */
-export const INK = STEEL[0];

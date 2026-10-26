@@ -24,19 +24,19 @@ import { MILK_CARTON, MON, ROLLS, ROLLS_NEEDED, SEQ, STRAW, WILL, WILL_NEEDED } 
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, hop up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between milkshakes from the soda fountain. */
-export const SHAKE_EVERY = 40;
+const SHAKE_EVERY = 40;
 /** Ticks between cartons set out on the crate in the reckoning. */
-export const CARTON_EVERY = 160;
+const CARTON_EVERY = 160;
 /** Ticks into the reckoning before the second spout starts to rattle (it throws SPOUT_WARN later). */
-export const SPOUT_WAKE = 200;
+const SPOUT_WAKE = 200;
 /** Ticks the second spout rattles and steams, as a warning, before it throws. */
-export const SPOUT_WARN = 48;
+const SPOUT_WARN = 48;
 /** Ticks between milkshakes from the second spout, once it's awake. */
-export const SPOUT_EVERY = 56;
+const SPOUT_EVERY = 56;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

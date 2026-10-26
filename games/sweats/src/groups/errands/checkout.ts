@@ -420,7 +420,7 @@ export function checkoutSprites(book: SpriteBook, pal: Pal): void {
   }
 }
 
-export function checkoutMonsters(set: Monster[], mb: SpriteBook): void {
+function checkoutMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: CM.poof };
   set[CM.card] = mon(anim(mb, 'card0', 'card1', 4), foe, pace(4, 2));
   set[CM.unexpected] = mon(anim(mb, 'unexp0', 'unexp1', 5), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-1, 1, 2, 4), corner(-9, 0, 3, 4)]);

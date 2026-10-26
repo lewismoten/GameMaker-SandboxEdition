@@ -103,7 +103,7 @@ function gatedBox(g: Grid, s: SetBuilder, wxp: number, wyp: number, dir: [number
   });
 }
 
-export interface GalaxyResult {
+interface GalaxyResult {
   grid: Grid;
   arriveHome: P;
   dock: P;
@@ -205,7 +205,7 @@ export function galaxyMap(s: SetBuilder): GalaxyResult {
   return { grid: g, arriveHome, dock, sectors, core: { x: cx - 1, y: cy - 1 }, coreArrive, knot: { beacon, out } };
 }
 
-export interface SectorResult {
+interface SectorResult {
   grid: Grid;
   arrive: P;
   warp: P;

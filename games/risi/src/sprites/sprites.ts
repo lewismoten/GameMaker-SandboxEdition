@@ -20,7 +20,7 @@ import { CHEESE, CROWN, LAUGHS } from '../ids';
 
 export { T, outline };
 
-export interface ManPose {
+interface ManPose {
   /** front: to you; side: walking right (mirror for left); back: away from you (climbing). */
   face: 'front' | 'side' | 'back';
   /** Walk cycle (0..3); legs apart on 1 and 3. */
@@ -57,7 +57,7 @@ function tipOver(p: Pixels, t: number): void {
 }
 
 /** Marcus's look, in the pal's ramps. */
-export function marcusArt(pal: Pal) {
+function marcusArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const body = (o: ManPose): Pixels => {
@@ -178,7 +178,7 @@ export function buildMarcusBlocks(pal: Pal) {
   return book;
 }
 
-export interface CatPose {
+interface CatPose {
   face: 'front' | 'side';
   step?: number;
   mood?: 'calm' | 'blink' | 'ouch' | 'yowl' | 'bliss';
@@ -189,7 +189,7 @@ export interface CatPose {
 }
 
 /** Felix's look: a grey tabby with a white chest and green eyes. */
-export function felixArt(pal: Pal) {
+function felixArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const body = (o: CatPose): Pixels => {

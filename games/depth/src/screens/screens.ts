@@ -17,7 +17,7 @@ import { storyPictures, wonPicture } from './story';
 import { CREDITS, EGG_TEXT, INSTRUCTIONS } from './text';
 import { titlePicture } from './title';
 
-export interface ScreenInput {
+interface ScreenInput {
   sprites: SpriteSet;
   sets: LevelSet[];
 }

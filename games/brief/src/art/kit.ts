@@ -17,7 +17,7 @@ export function on(base: Pixels, ...sprites: Pixels[]): Pixels {
 
 // ------------------------------------------------------------------ floors and walls
 
-export type FloorKind =
+type FloorKind =
   | 'boards'
   | 'parquet'
   | 'tile'
@@ -185,7 +185,7 @@ export function sign(lines: string[], blocks: number, o: { board?: string; ink?:
 
 // ------------------------------------------------------------------ people
 
-export interface FigureLook {
+interface FigureLook {
   skin?: string;
   hair?: [string, number];
   hairStyle?: 'short' | 'long' | 'bun' | 'bald' | 'pigtails' | 'wild';

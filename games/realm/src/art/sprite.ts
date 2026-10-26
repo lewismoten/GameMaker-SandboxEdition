@@ -18,19 +18,6 @@ export function art(rows: string[], key: Key, w = 20, h = 20, dx = 0, dy = 0): C
   return cv;
 }
 
-/** Stacks drawings (later ones on top); rows may be shorter than the canvas. */
-export function layered(parts: [string[], number?, number?][], key: Key, w = 20, h = 20): Canvas {
-  const cv = new Canvas(w, h);
-  for (const [rows, dx = 0, dy = 0] of parts)
-    rows.forEach((row, y) =>
-      [...row].forEach((ch, x) => {
-        const c = key[ch];
-        if (c) cv.set(x + dx, y + dy, c);
-      }),
-    );
-  return cv;
-}
-
 /** The common key every person shares: outline, skin, eyes, white, boots. */
 export function baseKey(over: Key = {}): Key {
   return {
@@ -52,7 +39,7 @@ export function baseKey(over: Key = {}): Key {
 }
 
 /** Hair, clothes and hat ramps for a person: [dark, mid, light]. */
-export interface Look {
+interface Look {
   hair: RGB[];
   coat: RGB[];
   pants: RGB[];

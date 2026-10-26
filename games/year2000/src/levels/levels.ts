@@ -12,7 +12,7 @@ import { exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } f
 
 export const SETS = { suburb: suburbSet, city: citySet, moon: moonSet };
 
-export interface Level {
+interface Level {
   file: string;
   desc: string;
   set: keyof typeof SETS;

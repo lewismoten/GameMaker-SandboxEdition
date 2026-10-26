@@ -1,5 +1,5 @@
 // The way through the game, as orders for the bot.
-import { FAITH, SEQ, WATER } from '../src/ids';
+import { SEQ, WATER } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { Bot } from './bot';
 
@@ -24,7 +24,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * than `maxLoss` hit points (or goes wrong), it is taken back and played again after a short
  * wait, so the seed sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -55,7 +55,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
  * without losing a life or more than `loss` hit points; otherwise the seed is put back where it
  * was and carries on without it, as a player leaves what's too far or too risky.
  */
-export async function grab(
+async function grab(
   bot: Bot,
   label: string,
   cells: [number, number][],
@@ -97,10 +97,9 @@ const onRow = (bot: Bot, row: number, what: string) => {
   if (bot.at.y !== row) throw new Error(`not on ${what} (row ${bot.at.y})`);
 };
 
-export const water = (bot: Bot) => bot.sim.meter(WATER) - 1;
+const water = (bot: Bot) => bot.sim.meter(WATER) - 1;
 /** Laced up: the faster walks are on (the laces are carried). */
 const laced = (bot: Bot) => !!bot.sim.ci.seqon[SEQ.fastRight];
-export const faith = (bot: Bot) => bot.sim.meter(FAITH) - 1;
 
 /** 1. The mound and the garden. */
 export async function theMound(bot: Bot): Promise<void> {

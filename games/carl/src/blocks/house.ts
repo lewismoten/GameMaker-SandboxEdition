@@ -19,8 +19,8 @@ import { EARS, EARS_NEEDED, MON, SMILES, SMILES_NEEDED, SNACKS, SNACKS_NEEDED } 
 import { AIR, BlockBook, LEDGE, LICK_EVERY, LIFE, SOLID, SUGAR, SUGAR_CUBE, fresh, sugarCube } from './common';
 
 /** Ticks between puffs from the diffuser and the smudge bowl. */
-export const MIST_EVERY = 64;
-export const SNORE_EVERY = 46;
+const MIST_EVERY = 64;
+const SNORE_EVERY = 46;
 
 /** Cuts a big drawing into 20x20 blocks: the block at column i, row j. */
 export const cut = (big: Pixels, i: number, j: number) => big.crop(i * 20, j * 20, 20, 20);

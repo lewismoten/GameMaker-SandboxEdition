@@ -7,7 +7,7 @@ import { GameSim } from './sim';
 import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 
 export const SEED = 1;
-export const LEVELS = [fogHall, zombieParade, fakeWoods, lastHall];
+const LEVELS = [fogHall, zombieParade, fakeWoods, lastHall];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);

@@ -11,7 +11,7 @@ import type { Stamped } from './levels/stamp';
 import { TITLE } from './screens/text';
 import { withTools } from './sprites/critters';
 
-export type Cell = { x: number; y: number };
+type Cell = { x: number; y: number };
 
 export interface Place {
   scene: number;

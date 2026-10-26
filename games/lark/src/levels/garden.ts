@@ -9,8 +9,8 @@ import type { Bestiary, BlockSet } from '../blocks/sets';
 import { ROCKS } from '../ids';
 import { stamp, type Stamped } from './stamp';
 
-export const GARDEN_W = 28;
-export const GARDEN_H = 18;
+const GARDEN_W = 28;
+const GARDEN_H = 18;
 
 /** Each rock's start and its circle (drawing cells), and where Joe stands to send it home. */
 export const ROCK_PLAN: { rock: [number, number]; circle: [number, number]; push: [number, number]; pat: [number, number] }[] = [
@@ -20,7 +20,7 @@ export const ROCK_PLAN: { rock: [number, number]; circle: [number, number]; push
   { rock: [19, 3], circle: [14, 3], push: [26, 3], pat: [13, 3] },
 ];
 
-export function gardenRows(): string[] {
+function gardenRows(): string[] {
   if (ROCK_PLAN.length !== ROCKS) throw new Error('a plan for every rock');
   const R = (x: number, y: number) => ((x * 7 + y * 13) % 11 < 3 ? ',' : '.');
   const g: string[][] = Array.from({ length: GARDEN_H }, (_, y) =>

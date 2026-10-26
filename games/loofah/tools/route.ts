@@ -27,7 +27,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * `maxLoss` dignity (or goes wrong), it is taken back and played again after a short wait, so
  * he sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -51,11 +51,11 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
 }
 
-export const salt = (bot: Bot) => bot.sim.meter(SALT) - 1;
-export const coins = (bot: Bot) => bot.sim.meter(COINS) - 1;
-export const candles = (bot: Bot) => bot.sim.meter(CANDLES) - 1;
-export const pink = (bot: Bot) => bot.sim.meter(PINK) - 1;
-export const brine = (bot: Bot) => bot.sim.meter(SEQ.throw);
+const salt = (bot: Bot) => bot.sim.meter(SALT) - 1;
+const coins = (bot: Bot) => bot.sim.meter(COINS) - 1;
+const candles = (bot: Bot) => bot.sim.meter(CANDLES) - 1;
+const pink = (bot: Bot) => bot.sim.meter(PINK) - 1;
+const brine = (bot: Bot) => bot.sim.meter(SEQ.throw);
 
 /** I. Cursed in the Shower: up the steam to the rack, over the towel, through the tub, the toilet, the sink's shelf, the hamper, the bucket. */
 export async function bathroom(bot: Bot): Promise<void> {
@@ -106,7 +106,7 @@ export async function bathroom(bot: Bot): Promise<void> {
 }
 
 /** Where the monsters numbered `n` are (level blocks, their left edges). */
-export function where(bot: Bot, n: number): { x: number; y: number }[] {
+function where(bot: Bot, n: number): { x: number; y: number }[] {
   const w = bot.sim.w;
   return w.mi
     .map((mi, i) => ({ mi, n: w.mm[i]?.monnum }))

@@ -165,7 +165,7 @@ export function parkBench(ground: Pixels): Pixels {
 }
 
 /** A red velvet rope between two brass posts: the way to a friend's thank-you, once. */
-export function rope(down: boolean, ground: Pixels): Pixels {
+function rope(down: boolean, ground: Pixels): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(ground.px);
   p.disc(3, 10, 2.5, c('brass', 3)).disc(16, 10, 2.5, c('brass', 3));

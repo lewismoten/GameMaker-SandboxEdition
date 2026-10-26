@@ -3,9 +3,9 @@
 // name) and where Pip arrives there. Scene 0 is the title and menu, scene 1 the ending.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link } from '../../../web/src/formats/game';
 
-export const TITLE = 'ROUND TUIT';
+const TITLE = 'ROUND TUIT';
 
-export interface SceneFiles {
+interface SceneFiles {
   pal: string;
   map: string;
   bbl: string;
@@ -35,7 +35,7 @@ export interface SceneSpec {
   still?: boolean;
 }
 
-export interface Front {
+interface Front {
   /** Where play starts: the first scene's id and the block Pip starts on. */
   start: { to: string; at: [number, number] };
 }

@@ -19,7 +19,7 @@ import { AIR, AIR_NEEDED, CHEESE, CHEESE_NEEDED, MON } from '../ids';
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, outside, sparkle, wreath } from './common';
 
 /** Ticks between the clouds from under Rufus's table. */
-export const GAS_EVERY = 46;
+const GAS_EVERY = 46;
 
 export function buildVilla(pal: Pal): BlockBook {
   const x = context(pal);

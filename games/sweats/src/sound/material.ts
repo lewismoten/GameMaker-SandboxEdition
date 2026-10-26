@@ -22,7 +22,7 @@ export const PC: Record<string, number> = {
   B: 11,
 };
 /** Per quality: the chord's tones (from the root) and the three the comping voices play (thirds, sevenths and a color; the bass has the root). */
-export const QUALITY: Record<string, { tones: number[]; comp: number[] }> = {
+const QUALITY: Record<string, { tones: number[]; comp: number[] }> = {
   '': { tones: [0, 4, 7], comp: [0, 4, 7] },
   m: { tones: [0, 3, 7], comp: [0, 3, 7] },
   '7': { tones: [0, 4, 7, 10], comp: [4, 10, 14] },

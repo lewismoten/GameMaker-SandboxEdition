@@ -9,7 +9,7 @@ import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** Doc Leo's whole poses (20 x 40). */
   leo: (pose: string) => Pixels;
   /** Everybody else's sprites. */

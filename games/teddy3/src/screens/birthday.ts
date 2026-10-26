@@ -9,7 +9,7 @@ import { H, Reel, W, c, caption, leoAt, teddyAt } from './reel';
 import { SP } from './screens';
 
 /** A paw print: the pad and four toes. */
-export function paw(p: Pixels, x: number, y: number, s: number, col: number): void {
+function paw(p: Pixels, x: number, y: number, s: number, col: number): void {
   p.disc(x, y + s, s * 1.4, col);
   for (const [dx, dy] of [
     [-2.2, -1.2],

@@ -20,12 +20,12 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
 import { ORIGIN, type Room } from './levels/room';
 
-export const TITLE = "BAKER'S DOZEN";
+const TITLE = "BAKER'S DOZEN";
 export const GAM = 'bakers.gam';
-export const SECRET_SCENE = 15;
+const SECRET_SCENE = 15;
 /** The room whose second ingredient leads to the hidey-hole, and the one it skips. */
-export const SECRET_FROM = 5;
-export const SKIPPED = 6;
+const SECRET_FROM = 5;
+const SKIPPED = 6;
 
 export const roomScene = (level: number) => (level === 0 ? SECRET_SCENE : level + 1);
 export const sceneOf = (room: Room) => room.spec.cupboard?.scene ?? room.spec.interlude?.scene ?? roomScene(room.spec.level);
@@ -51,7 +51,7 @@ function noLinks(): Link[] {
   return Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
 }
 
-export function sceneFiles(room: Room): string[] {
+function sceneFiles(room: Room): string[] {
   const s = room.spec;
   const hero = s.hero ?? 'leo';
   return [

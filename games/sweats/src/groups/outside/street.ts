@@ -33,8 +33,8 @@ export const OUTSIDE_RAMPS: Ramp[] = [
 ];
 
 /** Ticks a gust blows, and the calm between gusts. */
-export const GUST_ON = 10;
-export const GUST_OFF = 36;
+const GUST_ON = 10;
+const GUST_OFF = 36;
 
 /** A plain patch of the scene's sky (shade k, a few specks). */
 export function skyAt(pal: Pal, seed: number, k: number): Pixels {

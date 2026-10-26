@@ -23,7 +23,7 @@ import { CHAPTERS, chapterOf } from '../chapters';
 const W = 320;
 const H = 200;
 
-export function gif(p: Pixels): Uint8Array {
+function gif(p: Pixels): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: PAL.pal });
 }
 
@@ -32,7 +32,7 @@ export function gif(p: Pixels): Uint8Array {
  * MORE... in the entry nearest red in that palette, which is index 0, so this picture gets a
  * palette of its own with red at 0 and index 0's own pixels moved to a copy of its color.
  */
-export function gifRedAtZero(p: Pixels): Uint8Array {
+function gifRedAtZero(p: Pixels): Uint8Array {
   const pal = PAL.pal.slice();
   const used = new Set(p.px);
   let spare = 255;
@@ -63,7 +63,7 @@ function grass(p: Pixels, y: number, seed: number): void {
  * fire-engine red door with a plexi window, strap hinges, a dog-bone handle and a paw-print
  * knob; dog books inside; under it, a cubby grid of painted rocks.
  */
-export function dogHouse(p: Pixels, x: number, y: number, s: number, open = 0): void {
+function dogHouse(p: Pixels, x: number, y: number, s: number, open = 0): void {
   const R = (xx: number, yy: number, w: number, h: number, col: number) =>
     p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
   // post
@@ -127,7 +127,7 @@ function bigJoe(p: Pixels, joe: BlockSet, x: number, y: number, s: number, pose 
 
 // ------------------------------------------------------------------ title, menu, backdrops
 
-export function titleScreen(joe: BlockSet): Pixels {
+function titleScreen(joe: BlockSet): Pixels {
   const p = nightSky(3);
   grass(p, 178, 4);
   // light spilling out of the open red door
@@ -179,7 +179,7 @@ function panel(p: Pixels, x: number, y: number, w: number, h: number, ruled = tr
   p.rect(x + 8, y + 2, 1, h - 4, c('red', 4));
 }
 
-export function menuScreen(joe: BlockSet): Pixels {
+function menuScreen(joe: BlockSet): Pixels {
   const p = shelves(11);
   headline(p, 10, 'KEEP IT BRIEF!', 2, c('yellow', 3), c('red', 1));
   centered(p, 38, 'The Tiny Pockets Library', c('paper', 4), 1, c('ink', 0));
@@ -192,7 +192,7 @@ export function menuScreen(joe: BlockSet): Pixels {
 }
 
 /** Backdrop for text pages: PLAYGAME writes 31 columns at x=40, y=40..167 (purple). */
-export function pageScreen(joe: BlockSet, title: string, seed: number, pose = 'down0'): Pixels {
+function pageScreen(joe: BlockSet, title: string, seed: number, pose = 'down0'): Pixels {
   const p = shelves(seed);
   p.rect(0, 0, W, 28, c('wood', 0));
   headline(p, 7, title, 2, c('yellow', 3), c('red', 1));
@@ -203,7 +203,7 @@ export function pageScreen(joe: BlockSet, title: string, seed: number, pose = 'd
 }
 
 /** A book's cover page: leather with gold tooling around a paper label. */
-export function coverScreen(tint: string, title: string): Pixels {
+function coverScreen(tint: string, title: string): Pixels {
   const p = new Pixels(W, H);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (x * 7 + y * 13) % 17 === 0 ? c(tint, 1) : c(tint, 2));
   p.frame(6, 6, W - 12, H - 12, c('brass', 3)).frame(9, 9, W - 18, H - 18, c('brass', 2));
@@ -222,7 +222,7 @@ export function coverScreen(tint: string, title: string): Pixels {
 }
 
 /** High scores: PLAYGAME writes the table from the top (x=20..300), "Hit any key" at y=192. */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = shelves(21);
   // the paper runs off the top and bottom so its edges stay clear of the title and Hit any key
   panel(p, 10, -4, 300, 208, false);
@@ -230,7 +230,7 @@ export function scoresScreen(): Pixels {
 }
 
 /** Load and save: "Load Game" at (124,10) and ten slots from y=40, 14 apart, x=73... */
-export function slotsScreen(joe: BlockSet): Pixels {
+function slotsScreen(joe: BlockSet): Pixels {
   // the names are written in yellow: each gets a dark strip, the blue message the paper
   // (kit/saveSlots.ts); the paper is wide enough for the message from x 40
   const p = shelves(31);
@@ -247,7 +247,7 @@ export function slotsScreen(joe: BlockSet): Pixels {
  * A story's picture: the twist, acted out by the book's own blocks and monsters at twice
  * their size, framed like a plate in an old book, with Joe's caption.
  */
-export function twistScreen(w: CompiledWing, k: number): Pixels {
+function twistScreen(w: CompiledWing, k: number): Pixels {
   const b = w.books[k];
   const s = story(b.spec.n);
   const p = new Pixels(W, H, c('paper', 4));
@@ -289,7 +289,7 @@ export function twistScreen(w: CompiledWing, k: number): Pixels {
 }
 
 /** The felt egg, big, on the Lost and Found's shelf, before its page. */
-export function eggScreen(): Pixels {
+function eggScreen(): Pixels {
   const p = shelves(71);
   p.rect(0, 0, W, 28, c('wood', 0));
   headline(p, 7, 'LOST AND FOUND', 2, c('yellow', 3), c('red', 1));
@@ -325,7 +325,7 @@ function cyclePalette(slots: number[], frame: number): Uint8Array {
   return pal;
 }
 
-export function introFli(joe: BlockSet): Uint8Array {
+function introFli(joe: BlockSet): Uint8Array {
   const frames: Pixels[] = [];
   const palettes: Uint8Array[] = [];
   const base = (open: number) => {

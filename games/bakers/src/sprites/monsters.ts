@@ -32,7 +32,7 @@ import { BlockSet, Bestiary, type BlockDef, type MonDef } from '../blocks/sets';
 import { MON } from '../ids';
 
 /** Every hazard in the kitchen is one touch: Doc Leo plays dead and the room starts over. */
-export const KILL = -100;
+const KILL = -100;
 
 function rot90(src: Pixels): Pixels {
   const p = new Pixels(20, 20, CLEAR);
@@ -83,7 +83,7 @@ export function buildMonsterBlocks(): BlockSet {
 const pics = (kind: string, t: number): [string, number][] => FRAMES[kind].map((_, i) => [`${kind}#${i}`, t]);
 
 /** A loop of moves [dx, dy, speed, orient?] (each from the last corner) as Game-Maker stores it. */
-export function loop(name: string, moves: [number, number, number, number?][]): [number, number, number, number?][] {
+function loop(name: string, moves: [number, number, number, number?][]): [number, number, number, number?][] {
   let x = 0;
   let y = 0;
   const out = moves.map(([dx, dy, speed, o]): [number, number, number, number?] => {

@@ -29,7 +29,7 @@ export interface Behavior {
 
 export type Rules = (kind: string, plane: Plane, part: number) => Behavior;
 
-export const ctxKey = (c: Ctx) => `${+c.w}${+c.n}${+c.nw}${+c.nPit}`;
+const ctxKey = (c: Ctx) => `${+c.w}${+c.n}${+c.nw}${+c.nPit}`;
 
 export class TileBook {
   readonly keys: CellKey[] = [];

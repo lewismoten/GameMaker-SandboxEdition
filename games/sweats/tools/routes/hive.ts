@@ -114,29 +114,6 @@ async function toTheCart(bot: Bot): Promise<void> {
   });
 }
 
-/** (The long way, no longer taken: off the stage, down the stairs, back through to the counter, a coffee, and up again.) */
-export async function downForACoffee(bot: Bot): Promise<void> {
-  await carefully(bot, 'off the stage', 0, async () => {
-    await must(bot, bot.walk(30, 'under the coin by the drapes'), 'drapes');
-    await must(bot, bot.hop('up', 12), 'the coin up by the drapes');
-    await must(bot, bot.walk(36, 'off the stage'), 'off');
-    await must(bot, bot.hop('right', 12, 'right', 41.5), 'over the couch arm');
-    await must(bot, bot.hop('right', 12, 'right', 44.5), 'over the other arm');
-    await must(bot, bot.walk(57, 'to the stairs'), 'stairs');
-    await must(bot, bot.walk(66, 'down the stairs'), 'down');
-    await must(bot, bot.walk(58, 'under the stairs'), 'under');
-  });
-  await theater(bot, 'left');
-  await carefully(bot, 'the counter', 0, async () => {
-    if (tips(bot) < 5) throw new Error(`only ${tips(bot)} tips for the coffee`);
-    await must(bot, bot.walk(31.8, 'the register'), 'register');
-    await must(bot, bot.walk(31, 'the cup'), 'cup');
-    await must(bot, bot.walk(29, 'the tip jar'), 'jar');
-    if (coffee(bot) < 1) throw new Error('no coffee');
-  });
-  await theater(bot, 'right');
-}
-
 export const HIVE_ROUTES: Record<string, Route> = {};
 for (let k = 1; k <= 5; k++)
   HIVE_ROUTES[`hive${k}`] = async (bot) => {

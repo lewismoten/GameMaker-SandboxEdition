@@ -10,8 +10,8 @@
 // the windows flicker, lightning flashes, the sword shakes, and Lily's smirk grows.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 
@@ -37,7 +37,7 @@ const N1 = noise2(61);
 const N2 = noise2(73);
 
 /** Where the moon is. */
-export const MOON = { x: 262, y: 44, r: 24 };
+const MOON = { x: 262, y: 44, r: 24 };
 
 export function coverRgb(t: number): Uint8Array {
   const W = COVER_W;

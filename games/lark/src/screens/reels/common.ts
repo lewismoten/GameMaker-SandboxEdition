@@ -12,7 +12,7 @@ import { buildPalette, c, type Light } from '../../art/pal';
 export const W = 320;
 export const H = 200;
 /** 1/70 s a frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 /** The game's palette in a light (6-bit VGA). */
 export const lit = (light: Light): Uint8Array => buildPalette(light).pal;

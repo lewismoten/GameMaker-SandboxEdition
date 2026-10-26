@@ -25,7 +25,7 @@ const hash2 = (x: number, y: number) => {
   return s - Math.floor(s);
 };
 /** Smooth value noise (for rock and grass). */
-export function noise(x: number, y: number): number {
+function noise(x: number, y: number): number {
   const xi = Math.floor(x);
   const yi = Math.floor(y);
   const u = smooth(0, 1, x - xi);
@@ -36,7 +36,7 @@ export function noise(x: number, y: number): number {
   const d = hash2(xi + 1, yi + 1);
   return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
 }
-export const fbm = (x: number, y: number, oct = 4) => {
+const fbm = (x: number, y: number, oct = 4) => {
   let s = 0;
   let amp = 0.5;
   let f = 1;

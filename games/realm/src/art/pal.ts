@@ -215,7 +215,7 @@ const FIXED: [string, RGB[]][] = [
   ],
 ];
 
-export const FIXED_INDEX = new Map<string, number[]>();
+const FIXED_INDEX = new Map<string, number[]>();
 let next = 1;
 const fixedRgb: RGB[] = [[0, 0, 0]];
 for (const [name, cols] of FIXED) {
@@ -227,7 +227,7 @@ for (const [name, cols] of FIXED) {
   FIXED_INDEX.set(name, ids);
 }
 /** The last fixed palette entry. */
-export const SPRITE_END = next - 1;
+const SPRITE_END = next - 1;
 
 /** A fixed color's 8-bit RGB: name and shade (clamped). */
 export function C(name: string, k = 0): RGB {

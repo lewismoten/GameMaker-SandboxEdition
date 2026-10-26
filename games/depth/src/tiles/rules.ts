@@ -6,20 +6,20 @@ import { SOLID } from './book';
 import type { Plane } from './cells';
 
 /** Falling into the void: enough to end any life at once. */
-export const FALL = -999;
+const FALL = -999;
 
 /** Ticks an auto-focus panel stays in focus, and out. */
-export const PULSE = 40;
+const PULSE = 40;
 /** Ticks between shards from a prism, near and far. */
-export const SHARD_NEAR = 140;
-export const SHARD_FAR = 110;
+const SHARD_NEAR = 140;
+const SHARD_FAR = 110;
 /** Ticks a prism glows before it throws. */
-export const SHARD_TELL = 16;
+const SHARD_TELL = 16;
 
 /** The last ticks in focus flicker (warn, steady, warn), so a panel never vanishes unannounced. */
-export const FLICKER = 4;
+const FLICKER = 4;
 
-export interface LevelRules {
+interface LevelRules {
   level: number;
   /** Extra kinds of this level. */
   extra?: (kind: string, plane: Plane, part: number) => Behavior | undefined;

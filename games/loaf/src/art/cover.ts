@@ -6,8 +6,8 @@
 // warms and the rays turn, the loaf rises a little and steams, a glint runs over its crust.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 
@@ -51,7 +51,7 @@ const HORIZON = 98;
 const hill = (x: number) => 112 + ((x - 170) / 170) ** 2 * 14 + Math.sin(x / 23) * 1.5;
 
 /** The twelve baskets on the hillside: x, y of the rim, half width (far ones smaller). */
-export const BASKETS: [number, number, number][] = [
+const BASKETS: [number, number, number][] = [
   [22, 121, 6],
   [44, 118, 6],
   [66, 116, 7],

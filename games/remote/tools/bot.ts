@@ -13,7 +13,7 @@ import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 
 type Pt = { x: number; y: number };
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 
 /** The tin heart and the Easter egg are for players to find (games/kit/TIN-HEARTS.md): the bot leaves them lying. */
 const HIDDEN = new Set([...buildBlocks(buildPalette('plain')).index].filter(([name]) => /^(tinHeart|easterEgg)/.test(name)).map(([, n]) => n));

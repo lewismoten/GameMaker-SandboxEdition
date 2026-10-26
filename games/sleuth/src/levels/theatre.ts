@@ -7,8 +7,8 @@ import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/forma
 import type { BlockSet } from '../blocks/blockset';
 
 /** Where the theatre sits on the 100x100 map. */
-export const OX = 10;
-export const OY = 10;
+const OX = 10;
+const OY = 10;
 const W = 84;
 const H = 48;
 

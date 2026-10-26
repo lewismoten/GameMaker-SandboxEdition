@@ -16,9 +16,9 @@ import type { Pal } from '../art/pal';
 
 export { T, outline };
 
-export type Facing = 'down' | 'up' | 'side';
+type Facing = 'down' | 'up' | 'side';
 
-export interface HeroPose {
+interface HeroPose {
   facing: Facing;
   /** Walk phase: 0 standing, 1 and 2 the steps. */
   step?: 0 | 1 | 2;
@@ -28,7 +28,7 @@ export interface HeroPose {
 }
 
 /** Your look, in the pal's ramps. */
-export function heroArt(pal: Pal) {
+function heroArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);

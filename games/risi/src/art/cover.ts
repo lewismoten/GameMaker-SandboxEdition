@@ -7,8 +7,8 @@
 // sky, and the bust, stone-faced at first, cracks up: its eyes close and its mouth falls open.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 
