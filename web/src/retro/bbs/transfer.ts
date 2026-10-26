@@ -2,7 +2,6 @@
 // down the line): the bar fills at the line speed of the moment (lineSpeed.ts), so picking a
 // faster modem speed mid-transfer speeds it up there and then. Esc aborts, Space skips ahead.
 import type { RetroHost } from '../host';
-import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { modemSignal, sleep, type Term } from './term';
 import { cps, lineSpeed, slowWait, speedWords, warpCount } from './lineSpeed';
@@ -65,7 +64,7 @@ export async function progress(
     const bar = '█'.repeat(Math.round(f * 30)).padEnd(30, '░');
     s.cursorY = row;
     s.cursorX = 0;
-    t.local(`|15${name.padEnd(12)} |10${toCp437(bar)} |14${commas(Math.round(got)).padStart(9)} |07bytes  ${cpsText(share).padEnd(8)}`);
+    t.local(`|15${name.padEnd(12)} |10${bar} |14${commas(Math.round(got)).padStart(9)} |07bytes  ${cpsText(share).padEnd(8)}`);
   };
   for (;;) {
     const k = h.keys.poll();

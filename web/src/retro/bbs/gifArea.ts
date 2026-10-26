@@ -7,7 +7,6 @@
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
-import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { modeFor } from '../view/picture';
 import { boxBottom, boxRow, boxTop, modemSignal, sleep, type Term } from './term';
@@ -112,7 +111,7 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
     h.leavePictureMode();
   }
   const bar = '█'.repeat(Math.round((got / bytes.length) * 30)).padEnd(30, '░');
-  t.line(`|15${f.name.padEnd(12)} |10${toCp437(bar)} |14${commas(Math.floor(got)).padStart(9)} |07bytes  ${cpsText()}`);
+  t.line(`|15${f.name.padEnd(12)} |10${bar} |14${commas(Math.floor(got)).padStart(9)} |07bytes  ${cpsText()}`);
   if (aborted) {
     t.line('|12Transfer aborted.');
     return;

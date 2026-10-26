@@ -110,7 +110,7 @@ let wrongTries = 0;
 async function accessCheck(t: Term, h: RetroHost): Promise<boolean> {
   if (elite) return true;
   t.line();
-  t.line(`|12${toCp437('▄▄▄▄▄▄▄▄')} |15ELiTE USERS ONLY |12${toCp437('▄▄▄▄▄▄▄▄')}`);
+  t.line('|12▄▄▄▄▄▄▄▄ |15ELiTE USERS ONLY |12▄▄▄▄▄▄▄▄');
   t.line("|07This area isn't on the menu. If you found it, you're halfway there.");
   if (wrongTries >= SYSOP_HELPS_AFTER) {
     t.line(`|13<SysOp breaks into chat>|07 Oh, fine. It's |15${ACCESS_CODE}|07. Don't tell my mom.`);
