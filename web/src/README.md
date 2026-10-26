@@ -279,7 +279,8 @@ modules are in [`../test`](../test).
   picture; `host.ts` is what programs on it can use.
   - `computer.ts`: power and programs, with `computer/` (`drives.ts`, game folders in
     `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`).
-    `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk.
+    `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says
+    which utilities keep running while the disk in A: is swapped instead.
   - `dos/`: COMMAND.COM (`shell.ts`), the file system (`vfs.ts`, `hardDisk.ts`, what C: gained in
     `cDriveStore.ts`), the floppies (`disks.ts`), the room's one clock (`deskClock.ts`), the
     designers' file handling (`workArea.ts`) and file picker (`picker.ts`).
@@ -295,7 +296,7 @@ modules are in [`../test`](../test).
     screen (`picture.ts`).
   - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
     rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
-    patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
+    patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts` or the game on the disk in A: in `playHackDisk.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
     `cracktro.ts`, `gm30Install.ts`, their words in `*Text.ts`, their look in `dosUi.ts`, what they
     add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
     debugging tools for registration modes, saved games and backups, dressed as 1990s scene

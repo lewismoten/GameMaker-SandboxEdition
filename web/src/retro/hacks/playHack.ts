@@ -3,6 +3,8 @@
 // then the words, colors, frames, positions, times and keys of XFERPLAY.EXE (dosPlayer/
 // patchTable.ts), each checked by the same rules as the editor's DOS player panel; F2 saves them
 // into the game's companion data, so its next DOS export patches XFERPLAY.EXE and Play shows them.
+// The game on the floppy in A: heads its first screen (playHackDisk.ts), kept up to date while a
+// disk is swapped from the desk's disk box (PLAYHACK keeps running: retro/diskSwap.ts).
 import type { RetroHost } from '../host';
 import { attr, ROWS } from '../text/textScreen';
 import { listProjects } from '../../project/storage';
@@ -15,6 +17,8 @@ import { COLOR_LABELS, SCREEN_NAMES } from '../../dosPlayer/describePatches';
 import { playerLook } from '../../engine/playerLook';
 import { PLAYHACK_VERSION } from './playHackText';
 import { HACK_GROUPS, hackGroupOf, type HackGroup } from './playHackGroups';
+import { diskGame, diskLine } from './playHackDisk';
+import { key } from '../text/textInput';
 import { loadCatalog, type CatalogEntry } from '../../project/files';
 import { BG, BRIGHT, DIM, GREEN, HEAD, RED, TEXT, YELLOW, cell, confirm, editLine, frame, keyBar, pickList, put, statusLine, type ListRow } from './dosUi';
 
@@ -27,6 +31,8 @@ const HEADER = [
   RULE,
 ];
 const TOP = 6;
+/** Not a real key: handed to the first screen's list when the disk in A: changes, so it is drawn again. */
+const DISK_CHANGED = 'DiskChanged';
 const BOTTOM = ROWS - 3;
 
 /** The tabs: Changes (only what this game has changed) first, then every patch by group. */
@@ -93,49 +99,75 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
   };
   chrome('~Enter~ Select  ~Esc~ Quit');
   statusLine(h, 'Looking for your games...');
-  const all = (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'));
   const catalog = await loadCatalog().catch(() => [] as CatalogEntry[]);
-  const groupOf = new Map(all.map((p) => [p.id, hackGroupOf(p.id, catalog)]));
-  // counted again each time the list shows, so a game just patched is under Patched
+  // read again each time the list shows, so a game just patched is under Patched and a copy
+  // just made from the disk in A: is under its kind
   const kinds = async () => {
+    const all = (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'));
     const patched = new Set(
       (await Promise.all(all.map(async (p) => [p.id, Object.keys(await loadProjectPatches(p.id)).length] as const))).filter(([, n]) => n).map(([id]) => id),
     );
-    return [
+    const groups: { id: HackGroup | 'patched'; name: string; games: typeof all }[] = [
       // every game with a change, whatever its kind, first
       { id: 'patched' as const, name: 'Patched', games: all.filter((p) => patched.has(p.id)) },
-      ...HACK_GROUPS.map((g) => ({ ...g, games: all.filter((p) => groupOf.get(p.id) === g.id) })),
+      ...HACK_GROUPS.map((g) => ({ ...g, games: all.filter((p) => hackGroupOf(p.id, catalog) === g.id) })),
     ].filter((g) => g.games.length);
+    return { count: all.length, groups };
   };
-  if (!all.length) {
-    chrome('~Esc~ Quit');
-    frame(h, 1, TOP, 78, BOTTOM, 'Select one of your games');
-    put(h, 3, TOP + 2, BRIGHT, 'No games of yours on this PC yet.');
-    put(h, 3, TOP + 3, TEXT, 'Make one in Game-Maker (or on the web side), then patch its player here.');
-    statusLine(h, 'PLAYHACK only patches your own games: shareware belongs to its authors.');
-    await h.keys.next();
-  }
-  // a short PC goes straight to its games; one with several kinds picks a kind first
+  // a short PC goes straight to its games; one with several kinds, or a disk in A:, picks first
+  // (ci: the kind chosen last, -1 for the disk in A:)
   let ci = 0;
-  for (; all.length;) {
-    const groups = await kinds();
-    let group: { id: HackGroup | 'patched'; name: string; games: typeof all } = groups[0];
-    if (groups.length > 1) {
+  for (;;) {
+    const { count, groups } = await kinds();
+    const inA = h.disk();
+    if (!inA && !groups.length) {
+      chrome('~Esc~ Quit');
+      frame(h, 1, TOP, 78, BOTTOM, 'Select one of your games');
+      put(h, 3, TOP + 2, BRIGHT, 'No games of yours on this PC yet.');
+      put(h, 3, TOP + 3, TEXT, 'Make one in Game-Maker (or on the web side), then patch its player here.');
+      statusLine(h, 'PLAYHACK only patches your own games: shareware belongs to its authors.');
+      // a game disk put in A: meanwhile can be patched (or copied to C: to patch)
+      if ((await keyOrDisk(h)) === DISK_CHANGED) continue;
+      break;
+    }
+    const first = groups.length > 1 || !!inA;
+    let group = groups[0];
+    if (first) {
       chrome('~\x18\x19~ Choose  ~Enter~ Open  ~Esc~ Quit');
       frame(h, 1, TOP, 78, BOTTOM, 'Which games?');
-      put(h, 3, TOP + 1, HEAD, cell('Kind', 30) + 'Games');
-      statusLine(h, `${all.length} game${all.length === 1 ? '' : 's'} of yours found.`);
-      const rows: ListRow[] = groups.map((g) => ({ text: cell(g.name, 30) + String(g.games.length) }));
-      const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: ci });
+      const head = cell('Kind', 30) + 'Games';
+      // the disk in A: above the kinds, and the kinds' heading under it
+      const rows: ListRow[] = inA ? [{ text: diskLine(inA.disk), a: YELLOW }, ...(groups.length ? [{ text: head, selectable: false, a: HEAD }] : [])] : [];
+      if (!inA) put(h, 3, TOP + 1, HEAD, head);
+      const at = rows.length;
+      rows.push(...groups.map((g) => ({ text: cell(g.name, 30) + String(g.games.length) })));
+      statusLine(h, count ? `${count} game${count === 1 ? '' : 's'} of yours found.` : 'No games of yours on this PC yet.');
+      // a disk swapped in or out meanwhile (the desk's disk box) shows at once
+      const pick = await whileWatching(h, () =>
+        pickList(h, rows, {
+          x: 2,
+          y: TOP + (inA ? 1 : 2),
+          w: 75,
+          h: BOTTOM - TOP - (inA ? 2 : 3),
+          cur: inA ? ci + at : Math.max(0, ci),
+          hotkeys: [DISK_CHANGED],
+        }),
+      );
       if (pick.key === 'Escape') break;
-      ci = pick.i;
+      ci = inA && pick.i === 0 ? -1 : pick.i - at;
+      if (pick.key === DISK_CHANGED) continue;
+      if (ci < 0) {
+        const game = await diskGame(h, inA!);
+        if (game) await editGame(h, game.id, game.dos, chrome);
+        continue;
+      }
       group = groups[ci];
     }
     const games = group.games;
     let gi = 0;
     for (;;) {
-      chrome(`~\x18\x19~ Choose  ~Enter~ Select game  ~Esc~ ${groups.length > 1 ? 'Back' : 'Quit'}`);
-      frame(h, 1, TOP, 78, BOTTOM, groups.length > 1 ? `Select one of your games: ${group.name}` : 'Select one of your games');
+      chrome(`~\x18\x19~ Choose  ~Enter~ Select game  ~Esc~ ${first ? 'Back' : 'Quit'}`);
+      frame(h, 1, TOP, 78, BOTTOM, first ? `Select one of your games: ${group.name}` : 'Select one of your games');
       put(h, 3, TOP + 1, HEAD, cell('Name', 10) + cell('Game', 50) + 'Patches');
       statusLine(h, `${games.length} game${games.length === 1 ? '' : 's'} here.`);
       const counts = await Promise.all(games.map(async (g) => Object.keys(await loadProjectPatches(g.id)).length));
@@ -145,13 +177,27 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
       gi = pick.i;
       await editGame(h, games[gi].id, dosDirName(games[gi].gam), chrome);
     }
-    if (groups.length <= 1) break;
+    // straight to the games: Esc quits, unless a disk has gone into A: meanwhile
+    if (!first && !h.disk()) break;
   }
   s.fill(0, 0, 79, ROWS - 1, attr(7, 0));
   s.cursorX = 0;
   s.cursorY = 0;
   h.screen.print('Thank you for using PLAYHACK! Greetings to all SYSOPs. Call 412-555-SAND.\n');
 }
+
+/** Runs `wait` with a disk going in or out of A: handed to it as the key DISK_CHANGED. */
+async function whileWatching<T>(h: RetroHost, wait: () => Promise<T>): Promise<T> {
+  const off = h.watchDisk(() => h.keys.push(key(DISK_CHANGED)));
+  try {
+    return await wait();
+  } finally {
+    off();
+  }
+}
+
+/** The next key, or DISK_CHANGED if a disk goes in or out of A: first. */
+const keyOrDisk = async (h: RetroHost) => (await whileWatching(h, () => h.keys.next())).key;
 
 async function editGame(h: RetroHost, projectId: string, dos: string, chrome: (keys: string) => void): Promise<void> {
   const patches: PlayerPatches = { ...(await loadProjectPatches(projectId)) };
