@@ -242,6 +242,9 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
     }
     for (const [who, x, y] of CHAIRS) monster(who, o.x + x, o.y + y);
     monster('dobbs', o.x + 4, o.y + 8);
+    // at 2 AM, the save sign beside the way out (to dawn and the verdict)
+    if (round === 'gr2')
+      (put(o.x + 5, o.y + 7, 'saveSign0'), put(o.x + 6, o.y + 7, 'saveSign1'), put(o.x + 5, o.y + 8, 'saveSign2'), put(o.x + 6, o.y + 8, 'saveSign3'));
     links.grExit[round] = { x: o.x + 2, y: o.y + 8 };
   }
 

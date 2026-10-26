@@ -11,6 +11,7 @@
   "egg": { "counter": 25, "atLeast": 2 },
   "tinHeart": { "map": "act2.map", "at": [75, 19] },
   "easterEgg": { "map": "act2.map", "at": [11, 44] },
+  "saveSign": { "map": "green.map", "at": [21, 7], "after": "green.map" },
   "label": {
     "background": "#1a0608",
     "band": "#d4a62a",
