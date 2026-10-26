@@ -1,3 +1,6 @@
+CHAPTER 4 OF 4 DONE
+All 32 stories are back.
+
 The Word Counter clears its
 throat.
 
@@ -5,9 +8,6 @@ throat.
 
 Exactly. It checks twice. It
 rings its little bell.
-
-
-
 
 
 

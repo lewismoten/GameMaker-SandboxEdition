@@ -7,6 +7,9 @@
 //   46 the reading nook (behind a gap in the Other Dimensions hallway's shelves; the tin
 //      heart and the Easter egg). The only scene that scrolls: two windows wide, so its far
 //      end is off screen as Joe comes in.
+//   47, 48, 49 the chapter-done pages of chapters 1 to 3 (src/chapters.ts): pass-through
+//      scenes like the thirty-third book's card, out of a chapter's stamp desk in the Stacks
+//      and back to the reading room, where the next chapter's doors now open.
 //
 // PLAYGAME shows a scene's intro graphic on every way in and its exit graphic on every way
 // out, so the hallways and the reading room have neither. A book's intro is its cover page
@@ -17,6 +20,7 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
 import type { CompiledHub } from './levels/hub';
 import type { CompiledWing } from './levels/wing';
+import { CHAPTERS } from './chapters';
 
 export const TITLE = 'KEEP IT BRIEF!';
 export const GAM = 'brief.gam';
@@ -58,6 +62,8 @@ export interface SceneIds {
   book: (w: number, k: number) => number;
   lost: number;
   nook: number;
+  /** Chapter k's chapter-done page (k = 0..2). */
+  chapterDone: (k: number) => number;
 }
 
 export function sceneIds(): SceneIds {
@@ -69,6 +75,7 @@ export function sceneIds(): SceneIds {
     book: (w, k) => 5 + w * 5 + 1 + k,
     lost: 5 + 8 * 5,
     nook: 5 + 8 * 5 + 1,
+    chapterDone: (k) => 5 + 8 * 5 + 2 + k,
   };
 }
 
@@ -138,6 +145,14 @@ export function buildGame(hub: CompiledHub, wings: CompiledWing[]): Game {
   game.scenes.push(nookScene);
   game.scenes[id.hall(wi)].links[5] = { toScene: id.nook, from: nook.gap, to: nook.entry };
   nookScene.links[0] = { toScene: id.hall(wi), from: nook.out, to: wings[wi].hall.entry };
+  // the chapter-done pages: in from a stamp desk, straight back out to the reading room
+  CHAPTERS.slice(0, -1).forEach((ch, k) => {
+    const done = scene(`Chapter ${ch.n} Done`, lib(`ch${ch.n}.lst`, 'dark.pal'), 190 + k * 20, 150);
+    if (game.scenes.length !== id.chapterDone(k)) throw new Error('Scene numbers out of step');
+    game.scenes.push(done);
+    stacks.links[3 + k] = { toScene: id.chapterDone(k), from: hub.stamps[k], to: hub.stacks.entry };
+    done.links[0] = { toScene: id.room, from: hub.stacks.entry, to: hub.room.entry };
+  });
   title.links[0] = { toScene: id.room, from: { x: 0, y: 0 }, to: hub.room.entry };
   return game;
 }

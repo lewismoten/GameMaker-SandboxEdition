@@ -1,6 +1,7 @@
 REPEAT UNTIL TEXTURE IS
 UNIFORM
 Other Dimensions, book IV
+Chapter 4 of 4, book 4 of 8
 Words on the floor: 100
 Words in the book:    0
 
@@ -10,7 +11,6 @@ have kept his hands in place.
 Read the first letters. Then
 do not. The flying chips cost
 points.
-
 THE WORD COUNTER: "I DREAM OF
 NINETY-NINE. IT IS A
 NIGHTMARE."

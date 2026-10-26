@@ -88,6 +88,18 @@
   },
   {
    "scene": 2,
+   "keys": "AU0BzQhNAc0ITQHNCE0BzQhNAc0ITQHNCE0BzQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ISAHICE0BzQhIAcgISAHICEsBywhLAcsISwHLCFAB0A=="
+  },
+  {
+   "scene": 47,
+   "keys": ""
+  },
+  {
+   "scene": 2,
    "keys": "AU0BzQhNAc0ISAHICEgByAhIAcgISAHI"
   },
   {
@@ -168,6 +180,18 @@
   },
   {
    "scene": 2,
+   "keys": "AU0BzQhNAc0ITQHNCE0BzQhNAc0ITQHNCE0BzQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ISAHICE0BzQhIAcgISAHICEsBywhLAcsISwHLCEsBywhLAcsISwHLCFAB0A=="
+  },
+  {
+   "scene": 48,
+   "keys": ""
+  },
+  {
+   "scene": 2,
    "keys": "AVAB0AhQAdAIUAHQCEsBywhLAcsISwHLCEsBywhLAcsISwHLCFAB0A=="
   },
   {
@@ -245,6 +269,18 @@
   {
    "scene": 30,
    "keys": "AVAB0AhQAdAIUAHQCFAB0A=="
+  },
+  {
+   "scene": 2,
+   "keys": "AU0BzQhNAc0ITQHNCE0BzQhNAc0ITQHNCE0BzQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ISAHICE0BzQhIAcgISAHICEsBywhLAcsISwHLCEsBywhLAcsISwHLCEsBywhLAcsISwHLCFAB0A=="
+  },
+  {
+   "scene": 49,
+   "keys": ""
   },
   {
    "scene": 2,
@@ -332,7 +368,7 @@
   },
   {
    "scene": 3,
-   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ISAHICEgByAhIAcgISwHLCEsBywhLAcsISwHLCEsBywhLAcsISwHLCEsBywhLAcsISwHLCEsByw=="
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ISAHICE0BzQhIAcgISAHICEsBywhLAcsISwHLCEsBywhLAcsISwHLCEsBywhLAcsISwHLCEsBywhLAcsISwHL"
   },
   {
    "scene": 4,
@@ -342,44 +378,56 @@
  "chapters": [
   {
    "scene": 5,
-   "title": "Wing 1: Clown Alley"
+   "title": "Chapter 1: Clown Alley"
   },
   {
    "scene": 10,
-   "title": "Wing 2: The Laboratory"
+   "title": "Chapter 1: The Laboratory"
+  },
+  {
+   "scene": 47,
+   "title": "Chapter 1 done"
   },
   {
    "scene": 15,
-   "title": "Wing 3: The Docks"
+   "title": "Chapter 2: The Docks"
   },
   {
    "scene": 20,
-   "title": "Wing 4: The Backyard"
+   "title": "Chapter 2: The Backyard"
+  },
+  {
+   "scene": 48,
+   "title": "Chapter 2 done"
   },
   {
    "scene": 25,
-   "title": "Wing 5: The Living Room"
+   "title": "Chapter 3: The Living Room"
   },
   {
    "scene": 30,
-   "title": "Wing 6: After Hours"
+   "title": "Chapter 3: After Hours"
+  },
+  {
+   "scene": 49,
+   "title": "Chapter 3 done"
   },
   {
    "scene": 35,
-   "title": "Wing 7: Other Dimensions"
+   "title": "Chapter 4: Other Dimensions"
   },
   {
    "scene": 40,
-   "title": "Wing 8: The Future Shelf"
+   "title": "Chapter 4: The Future Shelf"
   },
   {
-   "scene": 3,
-   "title": "The Reserve Stacks"
+   "scene": 4,
+   "title": "The thirty-third book"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 170691,
+  "frames": 175376,
   "chapters": [
    {
     "title": "Opening",
@@ -390,48 +438,60 @@
     "frame": 1544
    },
    {
-    "title": "Wing 1: Clown Alley",
+    "title": "Chapter 1: Clown Alley",
     "frame": 4636
    },
    {
-    "title": "Wing 2: The Laboratory",
+    "title": "Chapter 1: The Laboratory",
     "frame": 24063
    },
    {
-    "title": "Wing 3: The Docks",
-    "frame": 41283
+    "title": "Chapter 1 done",
+    "frame": 41785
    },
    {
-    "title": "Wing 4: The Backyard",
-    "frame": 59974
+    "title": "Chapter 2: The Docks",
+    "frame": 42719
    },
    {
-    "title": "Wing 5: The Living Room",
-    "frame": 80794
+    "title": "Chapter 2: The Backyard",
+    "frame": 61427
    },
    {
-    "title": "Wing 6: After Hours",
-    "frame": 100112
+    "title": "Chapter 2 done",
+    "frame": 82719
    },
    {
-    "title": "Wing 7: Other Dimensions",
-    "frame": 119242
+    "title": "Chapter 3: The Living Room",
+    "frame": 83770
    },
    {
-    "title": "Wing 8: The Future Shelf",
-    "frame": 139101
+    "title": "Chapter 3: After Hours",
+    "frame": 103104
    },
    {
-    "title": "The Reserve Stacks",
-    "frame": 160691
+    "title": "Chapter 3 done",
+    "frame": 122914
+   },
+   {
+    "title": "Chapter 4: Other Dimensions",
+    "frame": 123847
+   },
+   {
+    "title": "Chapter 4: The Future Shelf",
+    "frame": 143727
+   },
+   {
+    "title": "The thirty-third book",
+    "frame": 166026
    },
    {
     "title": "Ending",
-    "frame": 163437
+    "frame": 168122
    },
    {
     "title": "Credits",
-    "frame": 168174
+    "frame": 172859
    }
   ]
  }

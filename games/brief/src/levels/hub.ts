@@ -5,13 +5,16 @@
 // corridor runs past eight stamp gates, one per wing, to the thirty-third book. A gate
 // takes four of its wing's restored stories (counter 20 + w) and gives all four back the
 // moment Joe steps through it, so it only ever checks; Game-Maker refuses the touch while
-// the wing has fewer than four.
+// the wing has fewer than four. Past each pair of gates a chapter's stamp desk stands in the
+// shelves under the corridor (src/chapters.ts): it sets the next chapter's flag, and that
+// chapter's doors in the reading room stay barred until it is set.
 import { chezSide } from '../../../kit/chez';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { c, r } from '../art/pal';
 import { blank, corgi, docLeo, figure, floor, gwinn, mirror, on, sign } from '../art/kit';
 import { BOOKS_PER_WING, wingCounter } from '../ids';
+import { CHAPTERS, chapterOf } from '../chapters';
 import { Area, type Cell, type Window } from './area';
 import { shelf, type WingSpec } from './wing';
 
@@ -28,6 +31,25 @@ function wingDoor(label: string, stamp: WingSpec['stamp'], seed: number): Pixels
   const [rubber, rim, emblem] = stamp;
   p.rect(6, 0, 8, 4, c('brass', 3)).rect(7, 0, 6, 3, c(rubber[0], rubber[1]));
   p.rect(8, 1, 4, 1, c(rim[0], rim[1])).set(10, 1, c(emblem[0], emblem[1]));
+  return p;
+}
+
+/** A later chapter's door, barred: two brass bars and a tag with the chapter's number. */
+function barredDoor(door: Pixels, chapter: number): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(door.px);
+  for (const y of [5, 13]) p.rect(2, y, 16, 2, c('brass', 3)).rect(2, y, 16, 1, c('brass', 4));
+  p.rect(5, 14, 11, 6, c('paper', 4)).frame(5, 14, 11, 6, c('brass', 1));
+  micro(p, 6, 15, `CH${chapter}`, c('red', 2));
+  return p;
+}
+
+/** A chapter's stamp desk in the Stacks' shelves: CH and its number, a brass stamp on a red pad. */
+function stampDesk(chapter: number): Pixels {
+  const p = shelf(160 + chapter, 'purple');
+  bevel(p, 2, 0, 16, 18, r('wood'), 3, 1);
+  micro(p, 4, 2, `CH${chapter}`, c('brass', 4));
+  p.rect(5, 13, 10, 3, c('red', 2)).rect(7, 10, 6, 3, c('brass', 3)).rect(9, 7, 2, 3, c('wood', 1));
   return p;
 }
 
@@ -190,11 +212,13 @@ const LOST = [
   'SSSSSSSDSSSSSSSS',
 ];
 
+// The gates in a row, wing 0's first from the right; under the gap past each pair of gates, a
+// chapter's stamp desk (0, 1, 2) with a lectern below it, so it is reached only from the row.
 const STACKS = [
   'SSSSSSSSSSSSSSSS',
-  'SB76543210.....S',
-  'SSSSSSSSSSSS...S',
-  'SAAA.......J...S',
+  'SB76.54.32.10..S',
+  'SSSSdSSeSSgSS..S',
+  'SAAAl..l..lJ...S',
   'S..............S',
   'S.......@....b.X',
   'S..q...........S',
@@ -216,6 +240,8 @@ export interface CompiledHub {
   book33: { x: number; y: number };
   /** The gates, by wing. */
   gates: { x: number; y: number }[];
+  /** The chapters' stamp desks (links to their chapter-done pages), chapter 1 first. */
+  stamps: { x: number; y: number }[];
   /** The loose shelf in the Stacks (a link into the Lost and Found), and the Lost and Found. */
   looseShelf: { x: number; y: number };
   lost: Window;
@@ -231,7 +257,18 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   const rug = floor('carpet', 9, 'purple');
   a.tile('rug', rug);
   a.solid('shelf', shelf(101, 'red'));
-  wings.forEach((w, i) => a.tile(`door${i}`, wingDoor(DOOR_LABELS[i], w.stamp, 110 + i)));
+  wings.forEach((w, i) => {
+    const door = wingDoor(DOOR_LABELS[i], w.stamp, 110 + i);
+    a.tile(`door${i}`, door);
+    // a later chapter's door: barred until its flag is set. The bump that checks the flag takes
+    // it; the next frame of the step touches the door again, which gives it back and opens. (A
+    // door that opened at once would let Joe in, and take its link, before that second touch.)
+    const flag = chapterOf(i).flag;
+    if (flag) {
+      a.solid(`doorIn${i}`, door, { effect: flag.counter, eamt: flag.amount, touch: `door${i}` });
+      a.solid(`barred${i}`, barredDoor(door, chapterOf(i).n), { effect: flag.counter, eamt: -flag.amount, touch: `doorIn${i}` });
+    }
+  });
   for (let i = wings.length; i < 8; i++)
     a.solid(
       `door${i}`,
@@ -301,13 +338,18 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   sign(['QUIET PLEASE', 'WORDS AT WORK'], 4, { board: 'green', ink: 'paper', edge: 'brass' }).forEach((px, i) =>
     a.solid(`quiet${i}`, on(shelf(130 + i, 'red'), px)),
   );
-  sign(['OVERDUE FINE:', 'ONE WORD', 'PER DAY'], 3).forEach((px, i) => a.solid(`fine${i}`, on(parquet, px)));
+  sign(['CHAPTER DONE?', 'STAMP IT IN', 'THE STACKS'], 3).forEach((px, i) => a.solid(`fine${i}`, on(parquet, px)));
   sign(['BOOKS ARE NOT', 'CHEW TOYS.', 'YES, GWINN.'], 3).forEach((px, i) => a.solid(`chew${i}`, on(parquet, px)));
   // the Reserve Stacks
   wings.forEach((w, i) => {
     a.tile(`gateOpen${i}`, gate('', w.stamp, true, parquet), { effect: wingCounter(i), eamt: BOOKS_PER_WING, touch: `gateDone${i}` });
     a.tile(`gateDone${i}`, gate('', w.stamp, true, parquet));
     a.solid(`gate${i}`, gate(`${BOOKS_PER_WING}`, w.stamp, false, parquet), { effect: wingCounter(i), eamt: -BOOKS_PER_WING, touch: `gateOpen${i}` });
+  });
+  // each chapter but the last ends at a stamp desk, which raises the next chapter's flag
+  CHAPTERS.slice(0, -1).forEach((ch, k) => {
+    const next = CHAPTERS[k + 1].flag!;
+    a.tile(`stamp${k}`, stampDesk(ch.n), { effect: next.counter, eamt: next.amount });
   });
   a.tile('book33', blankBook(parquet));
   const lectern = blank();
@@ -491,7 +533,9 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       d: 'red0',
       e: 'red1',
       N: 'shelf',
-      ...Object.fromEntries([2, 3, 4, 5, 6, 7, 8].map((n) => [String(n), { tile: `door${n - 1}`, mark: `door${n - 1}` }])),
+      ...Object.fromEntries(
+        [2, 3, 4, 5, 6, 7, 8].map((n) => [String(n), { tile: chapterOf(n - 1).flag ? `barred${n - 1}` : `door${n - 1}`, mark: `door${n - 1}` }]),
+      ),
     } as Record<string, Cell>,
     'floor',
   );
@@ -519,6 +563,9 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       C: 'line0',
       f: 'fern',
       Y: { tile: 'looseShelf', mark: 'looseShelf' },
+      g: { tile: 'stamp0', mark: 'stamp0' },
+      e: { tile: 'stamp1', mark: 'stamp1' },
+      d: { tile: 'stamp2', mark: 'stamp2' },
       ...Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 7].map((w) => [String(w), { tile: w < wings.length ? `gate${w}` : 'floor', mark: `gate${w}` }])),
     } as Record<string, Cell>,
     'floor',
@@ -555,6 +602,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     fromStacks: stacks.marks.get('back')!,
     book33: stacks.marks.get('book33')!,
     gates: [0, 1, 2, 3, 4, 5, 6, 7].map((w) => stacks.marks.get(`gate${w}`)!),
+    stamps: CHAPTERS.slice(0, -1).map((_, k) => stacks.marks.get(`stamp${k}`)!),
     looseShelf: stacks.marks.get('looseShelf')!,
     lost,
     egg: lost.marks.get('egg')!,

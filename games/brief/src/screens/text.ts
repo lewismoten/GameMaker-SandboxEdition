@@ -3,6 +3,7 @@
 // are in stories.ts and go on their pages untouched (pages.ts).
 import { withCreditPage } from '../../../kit/license';
 import type { Story } from '../stories';
+import type { Chapter } from '../chapters';
 import { PAGE, page, wrap } from './pages';
 
 export const STORY = page([
@@ -42,16 +43,18 @@ export const HELP = page([
 
 Walk into a door, a book or a page to use it.`,
   `THE LIBRARY
- The reading room has a
- door to each of the eight
- wings. Each wing's
- hallway has four tall
- books on its shelves:
- walk into a spine and in
- you go.
+ The night comes in four
+ chapters of two wings
+ each. The reading room
+ has a door to each wing;
+ a later chapter's doors
+ are barred until the
+ chapter before is done.
 
- The door marked OUT goes
- back to the reading room.`,
+ Each wing's hallway has
+ four tall books: walk
+ into a spine and in you
+ go. OUT goes back.`,
   `IN A BOOK
  The words lie on the
  floor as slips of paper:
@@ -91,17 +94,18 @@ Walk into a door, a book or a page to use it.`,
  So pick up what you can
  reach first.`,
   `THE RESERVE STACKS
- The purple STAX door in
- the reading room leads
- to the Reserve Stacks.
- Eight stamp gates stand
- in a row there, each
- inked with its wing's
- stamp. A gate opens once
+ Behind the purple STAX
+ door, a stamp gate for
+ each wing stands in a
+ row. A gate opens once
  its wing has four stories
- stamped SHELVED.
+ SHELVED. Past each pair,
+ step on the chapter's
+ stamp desk: CHAPTER DONE,
+ and the next doors open.
+ Then save with F5!
 
- What is past the gates?
+ Past the last gate?
  Exactly one hundred
  words. Ask anyone.`,
 ]);
@@ -132,7 +136,10 @@ No words were harmed in the making of this game. A few were fined.`,
 export const CREDITS = withCreditPage(CREDITS_TEXT);
 
 export const WON = page([
-  `The Word Counter clears its throat.
+  `CHAPTER 4 OF 4 DONE
+All 32 stories are back.
+
+The Word Counter clears its throat.
 
 3,200.
 
@@ -218,11 +225,15 @@ const COMPLAINTS = [
 
 const ROMAN = ['I', 'II', 'III', 'IV'];
 
-/** A book's cover page: its title, where it is shelved, Joe's note and the Word Counter's complaint. */
-export function coverText(s: Story, wing: string, k: number, note: string, index: number): string {
+/**
+ * A book's cover page: its title, where it is shelved, how far into its chapter it is, Joe's
+ * note and the Word Counter's complaint (closer to the note when the page would run over).
+ */
+export function coverText(s: Story, wing: string, k: number, note: string, index: number, ch: Chapter, inChapter: number): string {
   const lines = [
     ...wrap(s.title.toUpperCase()),
     ...wrap(`${wing}, book ${ROMAN[k]}`),
+    ...wrap(`Chapter ${ch.n} of 4, book ${inChapter} of ${ch.wings.length * 4}`),
     'Words on the floor: 100',
     'Words in the book:    0',
     '',
@@ -230,8 +241,38 @@ export function coverText(s: Story, wing: string, k: number, note: string, index
     '',
     ...wrap(`THE WORD COUNTER: "${COMPLAINTS[index % COMPLAINTS.length]}"`),
   ];
+  if (lines.length > PAGE)
+    lines.splice(
+      lines.lastIndexOf(
+        '',
+        lines.findIndex((l) => l.startsWith('THE WORD COUNTER')),
+      ),
+      1,
+    );
   if (lines.length > PAGE) throw new Error(`${s.title}: cover page has ${lines.length} lines`);
   return lines.join('\n') + '\n';
+}
+
+/** A wing's name inside a sentence: "the Docks", not "The Docks". */
+const inLine = (name: string) => name.replace(/^The /, 'the ');
+
+/**
+ * A chapter's done page: what Joe put back, how far into the night that is, what opens next,
+ * and to save. `wings` and `next` are the wings' names.
+ */
+export function chapterDoneText(ch: Chapter, wings: string[], next: Chapter, nextWings: string[], storiesSoFar: number, of: number): string {
+  const books = ch.wings.length * 4;
+  return page([
+    `CHAPTER ${ch.n} OF 4 DONE
+${ch.title}
+
+${wings[0]} and ${inLine(wings[1])} are back on their shelves: ${books} stories, ${books * 100} words, every one counted. ${storiesSoFar} of ${of} stories so far.
+
+NEXT: CHAPTER ${next.n} OF 4
+${next.title}. The doors to ${inLine(nextWings[0])} and ${inLine(nextWings[1])} are open now.
+
+F5 saves your place. Do it now!`,
+  ]);
 }
 
 /** The thirty-third book: a heading, two blank pages, and one line. */
