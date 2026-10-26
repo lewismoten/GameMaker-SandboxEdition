@@ -1,8 +1,9 @@
 // The whole game, played by the bot in the headless simulator, scene by scene, chapter by
 // chapter (src/chapters.ts): from the reading room through the chapter's wings and every book
 // (a hundred words each, THE END, the story card, back to the hallway), into the Reserve
-// Stacks, through the gates to the chapter's stamp desk and its done page, and back to the
-// reading room, where the next chapter's barred doors open; the last chapter goes through
+// Stacks, through the gates to the chapter's stamp desk and its done page, back into the
+// Stacks and out to the reading room, where the next chapter's barred doors open; the last
+// chapter goes through
 // all eight stamp gates to the thirty-third book and the ending.
 import { CTR, WORDS_PER_BOOK, wingCounter } from '../src/ids';
 import { compileAll } from '../src/compile';
@@ -123,7 +124,15 @@ export async function playThrough(only?: string, verbose = true) {
     );
     if (bot.follow() !== id.chapterDone(k)) throw new Error(`Chapter ${ch.n}'s stamp desk leads elsewhere`);
     await bot.ticks(3);
-    if (bot.follow() !== id.room) throw new Error(`Chapter ${ch.n}'s done page does not go back to the reading room`);
+    if (bot.follow() !== id.stacks) throw new Error(`Chapter ${ch.n}'s done page does not go back to the Stacks`);
+    await bot.walk(
+      () => [hub.fromStacks],
+      windowBox(16, 0),
+      () => false,
+      false,
+      3000,
+    );
+    if (bot.follow() !== id.room) throw new Error('The Stacks door leads elsewhere');
     say(`ok   chapter ${ch.n} done: ${ch.wings.map((i) => bot.ci.meter[wingCounter(i)] - 1).join(' ')} stories in its wings`);
   }
   // the Reserve Stacks

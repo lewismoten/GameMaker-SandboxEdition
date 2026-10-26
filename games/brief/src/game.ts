@@ -8,8 +8,9 @@
 //      heart and the Easter egg). The only scene that scrolls: two windows wide, so its far
 //      end is off screen as Joe comes in.
 //   47, 48, 49 the chapter-done pages of chapters 1 to 3 (src/chapters.ts): pass-through
-//      scenes like the thirty-third book's card, out of a chapter's stamp desk in the Stacks
-//      and back to the reading room, where the next chapter's doors now open.
+//      scenes like the thirty-third book's card, out of a chapter's stamp desk and back into
+//      the Stacks (a round trip, so the scene graph still lays out flat in the editor); the
+//      next chapter's doors in the reading room now open.
 //
 // PLAYGAME shows a scene's intro graphic on every way in and its exit graphic on every way
 // out, so the hallways and the reading room have neither. A book's intro is its cover page
@@ -109,7 +110,10 @@ export function buildGame(hub: CompiledHub, wings: CompiledWing[]): Game {
 
   room.links[8] = { toScene: id.stacks, from: hub.toStacks, to: hub.stacks.entry };
   stacks.links[0] = { toScene: id.room, from: hub.fromStacks, to: hub.room.entry };
-  stacks.links[1] = { toScene: id.card33, from: hub.book33, to: hub.stacks.entry };
+  // the Stacks' links: 0 back to the reading room, 1..3 the chapter desks (below), 4 the
+  // thirty-third book, 5 the Lost and Found; in this order the editor's integrator draws the
+  // scene graph flat (test/integratorLayout.test.ts)
+  stacks.links[4] = { toScene: id.card33, from: hub.book33, to: hub.stacks.entry };
   card33.links[0] = { toScene: 1, from: hub.stacks.entry, to: { x: 0, y: 0 } };
 
   wings.forEach((w, wi) => {
@@ -134,7 +138,7 @@ export function buildGame(hub: CompiledHub, wings: CompiledWing[]): Game {
   const lost = scene('Lost and Found', files('library', 'library.cmf', '', 'egg.lst'), 230, 110);
   if (game.scenes.length !== id.lost) throw new Error('Scene numbers out of step');
   game.scenes.push(lost);
-  stacks.links[2] = { toScene: id.lost, from: hub.looseShelf, to: hub.lost.entry };
+  stacks.links[5] = { toScene: id.lost, from: hub.looseShelf, to: hub.lost.entry };
   lost.links[0] = { toScene: id.stacks, from: hub.lostOut, to: hub.stacks.entry };
   // the reading nook: in through the gap in a hallway's shelves, out by its door to the hallway
   const wi = wings.findIndex((w) => w.nook);
@@ -145,13 +149,13 @@ export function buildGame(hub: CompiledHub, wings: CompiledWing[]): Game {
   game.scenes.push(nookScene);
   game.scenes[id.hall(wi)].links[5] = { toScene: id.nook, from: nook.gap, to: nook.entry };
   nookScene.links[0] = { toScene: id.hall(wi), from: nook.out, to: wings[wi].hall.entry };
-  // the chapter-done pages: in from a stamp desk, straight back out to the reading room
+  // the chapter-done pages: in from a stamp desk, straight back out to the Stacks
   CHAPTERS.slice(0, -1).forEach((ch, k) => {
     const done = scene(`Chapter ${ch.n} Done`, lib(`ch${ch.n}.lst`, 'dark.pal'), 190 + k * 20, 150);
     if (game.scenes.length !== id.chapterDone(k)) throw new Error('Scene numbers out of step');
     game.scenes.push(done);
-    stacks.links[3 + k] = { toScene: id.chapterDone(k), from: hub.stamps[k], to: hub.stacks.entry };
-    done.links[0] = { toScene: id.room, from: hub.stacks.entry, to: hub.room.entry };
+    stacks.links[1 + k] = { toScene: id.chapterDone(k), from: hub.stamps[k], to: hub.stacks.entry };
+    done.links[0] = { toScene: id.stacks, from: hub.stacks.entry, to: hub.stacks.entry };
   });
   title.links[0] = { toScene: id.room, from: { x: 0, y: 0 }, to: hub.room.entry };
   return game;

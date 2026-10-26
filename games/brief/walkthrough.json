@@ -99,6 +99,10 @@
    "keys": ""
   },
   {
+   "scene": 3,
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ITQHNCE0BzQhQAdAITQHN"
+  },
+  {
    "scene": 2,
    "keys": "AU0BzQhNAc0ISAHICEgByAhIAcgISAHI"
   },
@@ -191,6 +195,10 @@
    "keys": ""
   },
   {
+   "scene": 3,
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ITQHNCE0BzQhQAdAITQHN"
+  },
+  {
    "scene": 2,
    "keys": "AVAB0AhQAdAIUAHQCEsBywhLAcsISwHLCEsBywhLAcsISwHLCFAB0A=="
   },
@@ -281,6 +289,10 @@
   {
    "scene": 49,
    "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "AUgByAhNAc0ITQHNCE0BzQhNAc0ITQHNCE0BzQhQAdAITQHN"
   },
   {
    "scene": 2,
@@ -427,7 +439,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 175376,
+  "frames": 176435,
   "chapters": [
    {
     "title": "Opening",
@@ -451,47 +463,47 @@
    },
    {
     "title": "Chapter 2: The Docks",
-    "frame": 42719
+    "frame": 43072
    },
    {
     "title": "Chapter 2: The Backyard",
-    "frame": 61427
+    "frame": 61780
    },
    {
     "title": "Chapter 2 done",
-    "frame": 82719
+    "frame": 83072
    },
    {
     "title": "Chapter 3: The Living Room",
-    "frame": 83770
+    "frame": 84476
    },
    {
     "title": "Chapter 3: After Hours",
-    "frame": 103104
+    "frame": 103810
    },
    {
     "title": "Chapter 3 done",
-    "frame": 122914
+    "frame": 123620
    },
    {
     "title": "Chapter 4: Other Dimensions",
-    "frame": 123847
+    "frame": 124906
    },
    {
     "title": "Chapter 4: The Future Shelf",
-    "frame": 143727
+    "frame": 144786
    },
    {
     "title": "The thirty-third book",
-    "frame": 166026
+    "frame": 167085
    },
    {
     "title": "Ending",
-    "frame": 168122
+    "frame": 169181
    },
    {
     "title": "Credits",
-    "frame": 172859
+    "frame": 173918
    }
   ]
  }
