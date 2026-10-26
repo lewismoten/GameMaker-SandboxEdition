@@ -142,6 +142,13 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'A Fly Named Carl’s garbled title, in the guide’s “Where Game-Maker Runs Out” (web/public/ultimate/carl-dos.webp) and TURBO BUTTON’s “Bugs Only DOS Could Find” (web/public/magazine/dos-carl.webp).',
       },
       {
+        name: 'A room where everything can be clicked',
+        license: 'An inspiration; nothing copied',
+        by: 'The Brothers Chaps (Mike and Matt Chapman), who made Homestar Runner and Strong Bad’s emails',
+        what: 'The 1994 desk, where nearly everything does something when clicked and some things are hidden to find. Lewis watched their Flash cartoons, where clicking things in the last scene turned up hidden extras. The names are their owners’.',
+        url: 'https://homestarrunner.com/',
+      },
+      {
         name: 'The first Easter eggs',
         license: 'Historical facts; names only',
         by: 'Warren Robinett’s Adventure (Atari 2600, 1980), Atari’s Steve Wright, who gave them the name, and Moonlander (1973)',
