@@ -9,7 +9,10 @@
   "acceptedFindings": [
     "hazard-art s3 Block 41 hurts through its whole cell, but its art fills 7% of it",
     "hazard-art s8 Block 41 hurts through its whole cell, but its art fills 11% of it",
-    "start-threat s14 Monster 15 starts 2 blocks from where the hero comes in"
+    "start-threat s14 Monster 15 starts 2 blocks from where the hero comes in",
+    "tap-twice s18 A quick tap of Down / Pad 2 Left / Pad 4 Right / Pad 6 can take two steps, not one",
+    "tap-twice s18 A quick tap of S A D can take two steps, not one",
+    "tap-twice s2 A quick tap of Down / Pad 2 Left / Pad 4 Right / Pad 6 S A D can take two steps, not one"
   ],
   "eggs": [
     { "id": "rotten", "block": 4 },
