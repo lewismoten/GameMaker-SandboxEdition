@@ -1,5 +1,6 @@
 // layOutCourse on a small made-up track: five lanes at 45 degrees with a kink, on a map that wraps
-// (as Virus Blaster's ribbon cable is built), unrolled into one strip that runs up the page.
+// (as Virus Blaster's ribbon cable is built), unrolled into one strip that runs up the page; and
+// a shallow slant down the map (as Snowbound's sled run is), kept upright and running down it.
 import { describe, expect, it } from 'vitest';
 import type { Block } from '../../formats/blocks';
 import { findCourse } from '../../editor/check/course';
@@ -115,5 +116,37 @@ describe('a course laid out as one strip', () => {
     const seen = new Set(r.pixels);
     expect(seen.has(256)).toBe(true);
     for (const v of seen) expect(v === 256 || (v >= 10 && v < 17)).toBe(true);
+  });
+});
+
+describe('a downhill slant laid out upright', () => {
+  // a run 20 wide between walls, stepping a column right every three rows: three laps down
+  const left = (u: number) => 30 + Math.floor(u / 3);
+  const cells = new Uint8Array(100 * 100).fill(WALL);
+  for (let u = 0; u < 300; u++) for (let i = 1; i < 21; i++) cells[mod(4 + u, 100) * 100 + mod(left(u) + i, 100)] = OPEN;
+  const ride: [number, number][] = [];
+  for (let u = 2; u < 236; u++) ride.push([mod(left(u) + 10, 100), mod(4 + u, 100)]);
+  const path = findCourse(ride)!;
+  const at = (u: number) => ({ kind: 'start', x: mod(left(u) + 10, 100), y: mod(4 + u, 100), w: 1, h: 1 });
+  const l = layOutCourse(cells, blocks, path, [at(2), { ...at(235), kind: 'exit' }], 56);
+
+  it('keeps the map upright and runs down the page, start at the top of the first panel', () => {
+    expect(path).toBeDefined();
+    expect(l.down).toBe(true);
+    expect(l.up).toEqual([0, -1]);
+    expect(l.right).toEqual([1, 0]);
+    const [start, exit] = l.marks;
+    expect(start.at.a).toBeGreaterThan(exit.at.a);
+    expect(panelOf(l, start.at.a)).toBe(0);
+    expect(panelOf(l, exit.at.a)).toBe(l.panels.length - 1);
+    // the first panel is the top of the strip, the last its foot
+    expect(l.panels[0].a1).toBeCloseTo(l.box.a1);
+    expect(l.panels[l.panels.length - 1].a0).toBeCloseTo(l.box.a0);
+  });
+
+  it('counts three laps down, with no kinks or shortcuts', () => {
+    expect(l.laps.map((x) => x.n)).toEqual([1, 2, 3]);
+    expect(l.kinks).toEqual([]);
+    expect(l.shortcuts).toEqual([]);
   });
 });

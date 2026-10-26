@@ -1,7 +1,8 @@
 // A course through the wrap (editor/check/course.ts finds one; levelViews.json keeps its path),
 // laid out for the printed Level Maps as one long strip the way the ship flies it: the map
 // unrolled through every wrap seam, turned in steps of 45 degrees so the way on points up the
-// page, start at the bottom. Only the way the hero can get to near the path is drawn (every open
+// page, start at the bottom. A way straight down the map (a downhill run, such as Snowbound's
+// sled run) keeps the map upright instead and runs down the page, start at the top. Only the way the hero can get to near the path is drawn (every open
 // block a short way from it, reached without going through a wall) and a few blocks of the
 // walls and scenery round that. Also found here: where the way crosses the wrap (the seams, and
 // the laps they count), the bends where it runs off straight up (the kinks), the places where
@@ -75,8 +76,10 @@ export interface CoursePanel {
 }
 
 export interface CourseLayout<M> {
-  /** The way on, a unit vector in map blocks (y down): the strip's up. */
+  /** The strip's up, a unit vector in map blocks (y down): the way on, or straight back up a way down. */
   up: [number, number];
+  /** The way runs down the page, start at the top of the first panel (else up it, start at the foot). */
+  down: boolean;
   /** The strip's right, a unit vector in map blocks. */
   right: [number, number];
   cells: CourseCell[];
@@ -144,7 +147,10 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
 ): CourseLayout<M> {
   const [sx, sy] = path[0];
   const [ex, ey] = path[path.length - 1];
-  const up = snap(ex - sx, ey - sy);
+  const way = snap(ex - sx, ey - sy);
+  // a way straight down the map keeps the map upright: the strip's up is the map's
+  const down = way[0] === 0 && way[1] === 1;
+  const up: [number, number] = down ? [0, -1] : way;
   // right of the way on, with y down the map: (x, y) turned a quarter clockwise on screen
   const right: [number, number] = [-up[1] || 0, up[0]];
   const strip = (x: number, y: number): StripPoint => ({ c: x * right[0] + y * right[1], a: x * up[0] + y * up[1] });
@@ -258,15 +264,16 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
   const laps: { at: StripPoint; n: number }[] = [{ at: strip(pts[0].x + 0.5, pts[0].y + 0.5), n: 1 }];
   for (let k = 1; k < pts.length; k++) if (lapOf(pts[k]) !== lapOf(pts[k - 1])) laps.push({ at: strip(pts[k].x + 0.5, pts[k].y + 0.5), n: laps.length + 1 });
 
-  // kinks: where the path's own way (over a few blocks) isn't straight up
+  // kinks: where the path's own way (over a few blocks) isn't straight on (on a slant down the map
+  // the way is never quite straight down, and its bends are the rider steering: none there)
   const kinks: Kink[] = [];
   const wayAt = (x: number, y: number) => drawn.get(keyOf(Math.floor(x), Math.floor(y)))?.way ?? false;
   let open0: number | undefined;
-  for (let k = 0; k < pts.length; k++) {
+  for (let k = 0; k < (down ? 0 : pts.length); k++) {
     const b = pts[Math.max(0, k - LOOK * 2)];
     const f = pts[Math.min(pts.length - 1, k + LOOK * 2)];
     const d = snap(f.x - b.x, f.y - b.y);
-    const off = Math.abs(d[0] - up[0]) > 1e-6 || Math.abs(d[1] - up[1]) > 1e-6;
+    const off = Math.abs(d[0] - way[0]) > 1e-6 || Math.abs(d[1] - way[1]) > 1e-6;
     if (off && open0 === undefined) open0 = k;
     if ((!off || k === pts.length - 1) && open0 !== undefined) {
       const p0 = pts[open0];
@@ -276,7 +283,7 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
         const m = pts[Math.round((open0 + k) / 2)];
         // straight on from where it bent, past a lane's width: still the way there means another way went on
         let ahead = 0;
-        for (let t = LOOK * 2; t <= LOOK * 3; t++) ahead += wayAt(p0.x + 0.5 + up[0] * t, p0.y + 0.5 + up[1] * t) ? 1 : 0;
+        for (let t = LOOK * 2; t <= LOOK * 3; t++) ahead += wayAt(p0.x + 0.5 + way[0] * t, p0.y + 0.5 + way[1] * t) ? 1 : 0;
         const taken = ahead * 2 > LOOK + 1;
         kinks.push({ a0: strip(p0.x + 0.5, p0.y + 0.5).a, a1: strip(p1.x + 0.5, p1.y + 0.5).a, at: strip(m.x + 0.5, m.y + 0.5), taken });
       }
@@ -303,7 +310,7 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
     return { mark: m, at: at(cx + ux, cy + uy) };
   });
 
-  // the strip's box, and its panels from the bottom up
+  // the strip's box, and its panels from the start: from the bottom up (from the top down on a way down)
   const corners = [...drawn.values()].flatMap((c) => [strip(c.x, c.y), strip(c.x + 1, c.y), strip(c.x, c.y + 1), strip(c.x + 1, c.y + 1)]);
   const box: CoursePanel = {
     a0: Math.min(...corners.map((p) => p.a)),
@@ -315,12 +322,13 @@ export function layOutCourse<M extends { x: number; y: number; w: number; h: num
     const inside = corners.filter((p) => p.a >= a0 - 1 && p.a <= a1 + 1);
     return { a0, a1, c0: Math.min(...inside.map((p) => p.c)), c1: Math.max(...inside.map((p) => p.c)) };
   });
-  return { up, right, cells: [...drawn.values()], marks: placed, seams, laps, kinks, shortcuts, panels, box };
+  if (down) panels.reverse();
+  return { up, down, right, cells: [...drawn.values()], marks: placed, seams, laps, kinks, shortcuts, panels, box };
 }
 
-/** The panel (0 up) a place along the strip is drawn on: the first whose top it is under. */
-export const panelOf = (l: { panels: CoursePanel[] }, a: number): number => {
-  const i = l.panels.findIndex((p) => a < p.a1 - 0.5);
+/** The panel (0 the start's) a place along the strip is drawn on: the first whose top it is under (whose foot it is over, on a way down). */
+export const panelOf = (l: { panels: CoursePanel[]; down?: boolean }, a: number): number => {
+  const i = l.panels.findIndex((p) => (l.down ? a > p.a0 + 0.5 : a < p.a1 - 0.5));
   return i < 0 ? l.panels.length - 1 : i;
 };
 

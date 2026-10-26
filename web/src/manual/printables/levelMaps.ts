@@ -573,8 +573,11 @@ async function printSheets(
   return out;
 }
 
-/** What a course's caption adds: how to read its strip. */
-const COURSE_NOTE = ' · the way as you fly it, unrolled through the wrap: start at the foot of 1 and go up';
+/** What a course's caption adds: how to read its strip (one that runs down the page reads from the top). */
+const courseNote = (c: { down: boolean }) =>
+  c.down
+    ? ' · the way as you ride it, unrolled through the wrap: start at the top of 1 and go down'
+    : ' · the way as you fly it, unrolled through the wrap: start at the foot of 1 and go up';
 
 /** A course's printed pages: its panels side by side, in order, under its caption. */
 async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number): Promise<Sheet[]> {
@@ -586,7 +589,7 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
     const width = which.reduce((w, i) => w + panelWidth(c, i, FULL), 0);
     const y = HEAD + CAPTION + Math.max(0, (AREA.h - CAPTION - height) / 2);
     return pageSheet(entry, `page ${next()} · ${l.name}, ${n + 1} of ${pages.length}`, [
-      captionSvg(game, { ...l, note: `${COURSE_NOTE.slice(3)}${l.note ? ` · ${l.note}` : ''}` }, MARGIN, HEAD, AREA.w),
+      captionSvg(game, { ...l, note: `${courseNote(c).slice(3)}${l.note ? ` · ${l.note}` : ''}` }, MARGIN, HEAD, AREA.w),
       courseSvg(game, l, urls, which, MARGIN + Math.max(0, (AREA.w - width) / 2), y, FULL, COLORS, (m) => markText(game, m)),
       el(
         'text',
@@ -763,7 +766,7 @@ function levelViewer(opts: Loaded): HTMLElement {
     );
     requestAnimationFrame(() => pz.setZoom(Math.min(Math.max(pz.view.clientWidth - 24, 300), w * 20)));
   };
-  /** A course: all its panels side by side, start at the foot of the first. */
+  /** A course: all its panels side by side, start at the foot of the first (the top, on a way down). */
   const showCourse = async (i: number, l: Level) => {
     const c = l.course!;
     const urls = await opts.paintCourse(l);
@@ -779,14 +782,14 @@ function levelViewer(opts: Loaded): HTMLElement {
         viewBox: `0 0 ${w} ${ht}`,
         class: 'lm-svg',
         role: 'img',
-        'aria-label': `Map of scene ${sceneList(game, l)}, ${l.name}, as you fly it`,
+        'aria-label': `Map of scene ${sceneList(game, l)}, ${l.name}, as you ${c.down ? 'ride' : 'fly'} it`,
       },
       el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
       courseSvg(game, l, urls, which, pad, pad, 1, COLORS, (m) => markText(game, m)),
     );
     const pz = panZoom(h('div', { class: 'lm-map' }, svg), w / 10, `Map of ${l.name}: drag to look around`, 400);
     stage.replaceChildren(
-      h('div', { class: 'wm-bar' }, ...pz.buttons, h('span', null, `Scene ${sceneList(game, l)} · ${l.name}${COURSE_NOTE}`)),
+      h('div', { class: 'wm-bar' }, ...pz.buttons, h('span', null, `Scene ${sceneList(game, l)} · ${l.name}${courseNote(c)}`)),
       pz.view,
       h(
         'p',

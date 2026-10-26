@@ -1,5 +1,7 @@
-// findCourse: a ride lap after lap corner to corner through the wrap is a course; a lap racer, a
-// ride that comes round to its own blocks and one that only cuts across a corner are not.
+// findCourse: a ride lap after lap corner to corner through the wrap is a course, and so is a
+// shallow slant down the map that drifts over a third of the way each lap; a lap racer, a ride
+// that comes round to its own blocks, one that only cuts across a corner and one that goes
+// straight down lap after lap are not.
 import { describe, expect, it } from 'vitest';
 import { findCourse } from './course';
 
@@ -48,6 +50,27 @@ describe('a course through the wrap', () => {
   it('is not a ride that only cuts across a corner of a wrapping map', () => {
     const ride: [number, number][] = [];
     for (let k = 0; k < 60; k++) ride.push([mod(70 + k, 100), mod(70 + k, 100)]);
+    expect(findCourse(ride)).toBeUndefined();
+  });
+
+  it('finds a shallow slant: down the map, a column over every three rows, three laps down and two across', () => {
+    const ride: [number, number][] = [];
+    for (let u = 2; u < 236; u++) ride.push([mod(41 + Math.floor(u / 3), 100), mod(6 + u, 100)]);
+    const c = findCourse(ride);
+    expect(c).toBeDefined();
+    expect(c![0]).toEqual([41, 8]);
+    expect(c![c!.length - 1]).toEqual([41 + 78, 6 + 235]);
+  });
+
+  it('is not a ride straight down lap after lap (it never crosses the side)', () => {
+    const ride: [number, number][] = [];
+    for (let u = 0; u < 300; u++) ride.push([50 + (u % 9 < 4 ? 1 : 0), mod(u, 100)]);
+    expect(findCourse(ride)).toBeUndefined();
+  });
+
+  it('is not a steep diagonal that crosses one edge three times and the other only once', () => {
+    const ride: [number, number][] = [];
+    for (let k = 0; k < 200; k++) ride.push([mod(86 + k, 100), mod(42 - Math.floor((k * 2) / 3), 100)]);
     expect(findCourse(ride)).toBeUndefined();
   });
 });

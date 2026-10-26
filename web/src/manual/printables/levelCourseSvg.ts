@@ -1,7 +1,7 @@
 // Drawing a course through the wrap (levelCourse.ts lays it out) for the Level Maps: each panel
 // of the strip as a picture turned so the way on points up the page (sampled nearest-neighbor,
 // so the blocks stay crisp and in the palette), side by side in order with the start at the
-// bottom of the first, and over it the wrap's seams (dashed), the laps, the kinks, the
+// bottom of the first (or, on a way down the map, upright with the start at the top), and over it the wrap's seams (dashed), the laps, the kinks, the
 // shortcuts and the marks. Each panel says where it carries on. Grayscale-safe: every mark has
 // its own shape and words, not only a color.
 import { BLEN } from '../../formats/blocks';
@@ -180,10 +180,13 @@ function panelSvg(
   }
   // its number, and where it carries on
   const last = i === c.panels.length - 1;
+  const [ahead, behind] = c.down
+    ? [last ? 'the end of the way' : `▼ continues at the top of ${i + 2}`, i === 0 ? '▼ start here and ride down' : `▼ from the foot of ${i}`]
+    : [last ? 'the end of the way' : `▲ continues at the foot of ${i + 2}`, i === 0 ? '▲ start here and fly up' : `▲ from the top of ${i}`];
   g.append(
     el('text', { x: ox - GUTTER + 0.4, y: oy - 0.7, 'font-family': SERIF, 'font-size': 2, 'font-weight': 700, fill: '#2b241c' }, String(i + 1)),
-    text(ox + w / 2, oy - 0.7, 1.1, last ? 'the end of the way' : `▲ continues at the foot of ${i + 2}`, { 'text-anchor': 'middle', 'font-style': 'italic' }),
-    text(ox + w / 2, oy + ht + 1.6, 1.1, i === 0 ? '▲ start here and fly up' : `▲ from the top of ${i}`, { 'text-anchor': 'middle', 'font-style': 'italic' }),
+    text(ox + w / 2, c.down ? oy + ht + 1.6 : oy - 0.7, 1.1, ahead, { 'text-anchor': 'middle', 'font-style': 'italic' }),
+    text(ox + w / 2, c.down ? oy - 0.7 : oy + ht + 1.6, 1.1, behind, { 'text-anchor': 'middle', 'font-style': 'italic' }),
   );
   void game;
   return g;

@@ -3,9 +3,11 @@
 // cable: a diagonal track whose every lap comes round the wrap as the next lane down). Found from
 // the walkthrough's play: the hero's blocks tick by tick, unwrapped (x and y run on past 0 and
 // 99). It is a course when its longest unbroken ride crosses the wrap at least twice each way
-// (three laps or more across and down) and no block comes round again on another lap. A lap
-// racer or a planet comes back to its own blocks; a ship that only cuts across one corner of a
-// wrapping starfield doesn't go two laps both ways. No DOM.
+// (three laps or more across and down), or is a shallow slant (two blocks along or more for
+// each block across) that crosses it twice along and once across, and no block comes round
+// again on another lap: Virus Blaster's ribbon cable goes three laps both ways, Snowbound's sled
+// run three down the map and two across, drifting a third of the way over each lap. A lap racer or a planet comes back to its own blocks; a ship that only cuts across
+// one corner of a wrapping starfield doesn't cross both edges. No DOM.
 import { MLEN, MWID } from '../../formats/map';
 
 /** The course as the hero rode it: unwrapped blocks, start to end, straightened to within a block (Douglas-Peucker). */
@@ -13,8 +15,12 @@ export type CoursePath = [number, number][];
 
 /** More blocks than this between two ticks is a jump (a restart, a new scene), not a ride. */
 const STEP = 4;
-/** Laps (different x div 100, and y div 100) the ride must touch both ways. */
+/** Laps (different x div 100, and y div 100) the ride must touch both ways (a shallow slant: the way it goes most)... */
 const MIN_LAPS = 3;
+/** ...and the other way, for a shallow slant: it crosses that edge too. */
+const MIN_ACROSS = 2;
+/** A shallow slant goes at most this far across for each block along. */
+const SHALLOW = 0.5;
 /** How far the straightened path may stray from the ride, in blocks. */
 const TOLERANCE = 1;
 
@@ -82,6 +88,10 @@ function straighten(ride: CoursePath): CoursePath {
 /** The course in `track` (the hero's blocks on one map, a tick each, as the engine has them), or undefined when the map isn't one. */
 export function findCourse(track: readonly (readonly [number, number])[]): CoursePath | undefined {
   const ride = rides(track).reduce<CoursePath | undefined>((a, b) => (!a || b.length > a.length ? b : a), undefined);
-  if (!ride || laps(ride, 0) < MIN_LAPS || laps(ride, 1) < MIN_LAPS || comesRound(ride)) return undefined;
+  if (!ride) return undefined;
+  const [lx, ly] = [laps(ride, 0), laps(ride, 1)];
+  const [w, h] = [0, 1].map((axis) => Math.max(...ride.map((p) => p[axis])) - Math.min(...ride.map((p) => p[axis])));
+  const shallow = Math.min(w, h) <= SHALLOW * Math.max(w, h) && Math.max(lx, ly) >= MIN_LAPS && Math.min(lx, ly) >= MIN_ACROSS;
+  if (!((lx >= MIN_LAPS && ly >= MIN_LAPS) || shallow) || comesRound(ride)) return undefined;
   return straighten(ride);
 }
