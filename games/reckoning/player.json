@@ -1,0 +1,19 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.highScores": "Top Ten Sneaks",
+    "str.hiscore.title": "Top Ten Sneaks",
+    "str.hiscore.congrats": "You made it!",
+    "str.invent.hitpoints": "Dignity:   %d",
+    "color.rgb.hsRed": [46, 4, 4],
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [58, 58, 63],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.congrats.x": 112
+  }
+}
