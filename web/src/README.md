@@ -266,7 +266,8 @@ modules are in [`../test`](../test).
     `regDesk.ts`) puts the Owner's Guide and registration card (`mailCard.ts`) beside the monitor;
     `replyMail.ts` remembers RSD's reply.
   - `hexedit/`: HEXEDIT.EXE (`hexEdit.ts`, `hexFiles.ts`) and its map of each file format
-    (`structure.ts`, `structureMedia.ts`). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
+    (`structure.ts` the map and its Builder; `structureGm.ts` Game-Maker's formats,
+    `structureMedia.ts` the media files). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
     screen (`picture.ts`).
   - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
     rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
