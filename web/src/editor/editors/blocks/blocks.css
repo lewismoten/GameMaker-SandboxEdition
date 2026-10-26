@@ -296,3 +296,9 @@ dialog.modal label.recolor-check {
   min-height: 24px;
   align-items: center;
 }
+
+/* "Block N is used in": an h2 (it comes before the block's own h2) the size of the h3s */
+.editor .blk-uses-head {
+  font-size: 1em;
+  margin-block: 1.33em;
+}

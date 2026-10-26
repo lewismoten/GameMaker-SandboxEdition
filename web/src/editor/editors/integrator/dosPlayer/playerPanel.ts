@@ -112,7 +112,8 @@ function playerPanel(project: Project): HTMLElement {
     patches[e.id] ?? (e.kind === 'fkey' ? 'on' : e.kind === 'text' || e.kind === 'format' ? e.stock.trimEnd() : e.stock);
 
   const tabs = h('div', { class: 'dp-tabs', role: 'tablist', 'aria-label': 'What to change' });
-  const body = h('div', { class: 'dp-body', role: 'tabpanel', id: `${id}-body`, tabindex: '-1' });
+  // look-only, every field is disabled: the panel itself takes the keyboard so it can be scrolled
+  const body = h('div', { class: 'dp-body', role: 'tabpanel', id: `${id}-body`, tabindex: locked ? '0' : '-1' });
   const renderTabs = () =>
     clear(
       tabs,

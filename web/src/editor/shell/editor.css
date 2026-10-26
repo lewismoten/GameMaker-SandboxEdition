@@ -344,7 +344,7 @@ main.home {
 }
 
 .sidebar button.file .ext {
-  color: hsl(var(--ext-h) 75% 30%);
+  color: hsl(var(--ext-h) 75% 24%);
   font-weight: 600;
 }
 
