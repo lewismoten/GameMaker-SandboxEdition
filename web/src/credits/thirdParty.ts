@@ -144,7 +144,7 @@ export const PIECE_GROUPS: PieceGroup[] = [
       {
         name: 'Tricks from the shareware authors',
         license: 'Ideas described in this project’s own words; no art, music, sounds or text copied',
-        by: 'Community games in the Game-Maker Archive: Blinky 2 and 3, Ninja Tuck, A-J’s Quest, Builder, The Return of A-J and Ricci’s Cow Hunt (A-J Games), Parsec Man 3D (Mark Hadley), Shanna (Angelo Felix), Hurdles (Roland Ludlam), Seal Boarders and Seal Boarders 2, Zarlor 2 and Fox Party (John and Robert Brandon), Time After Time (New Age Warriors), Puzzle and Havok (Eclypse Games), Power Fights A.C.: Power Moves II (Alan Caudel), Party of Four, an unfinished monster-movie fan game, the Return of the Jedi fan game, Ski, RSD’s Penguin Pete and Woman Warrior, and others',
+        by: 'Community games in the Game-Maker Archive: Blinky 2 and 3, Ninja Tuck, A-J’s Quest, Builder, The Return of A-J and Ricci’s Cow Hunt (A-J Games), Parsec Man 3D (Mark Hadley), Shanna (Angelo Felix), Hurdles (Roland Ludlam), Seal Boarders and Seal Boarders 2, Zarlor 2 and Fox Party (John and Robert Brandon), Time After Time (New Age Warriors), Puzzle and Havok (Eclypse Games), Power Fights A.C.: Power Moves II (Alan Caudel), Jet! (likely Alan Caudel), Party of Four, an unfinished monster-movie fan game, the Return of the Jedi fan game, Ski, RSD’s Penguin Pete and Woman Warrior, and others',
         what: 'Chapter 17 of The Ultimate Owner’s Guide, the archive counts in its “Where Game-Maker Runs Out”, and TURBO BUTTON’s “Tricks of the Shareware Masters”.',
         url: 'https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22',
       },

@@ -6,8 +6,10 @@
 // CharBirthMon launches a chase or flee shot along the hero's last move (ci.netx, ci.nety) and
 // never aims it again (fromchar, 3369 and 3035), monster contact is pixel by pixel and skips
 // see-through pixels (PicChkTouch), DoCollision kills the lower power (equal powers pass), a
-// block's timer turns every copy at once (changeblks), and XFERPLAY opens the .gam named after
-// its own .EXE (main, argv[0]).
+// block's timer turns every copy at once (changeblks), BlocBirthMon gives birth on each multiple
+// of a block's birth time, only in cells showing it, up to half a screen past the edges, a hero
+// moves at most MAXGRAV (11) pixels a tick, and XFERPLAY opens the .gam named after its own .EXE
+// (main, argv[0]).
 import { tip } from './chapter';
 
 export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
@@ -130,6 +132,55 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   down every frame, the view scrolls only down and to the right so it never turns back, and the
   slope wraps under him. A solid gate opens by itself after about 55 seconds, so the run has a
   set length however the player steers.</p>
+  <h2>A road that comes at you</h2>
+  <p>A screen that doesn’t scroll can still look like an arcade racer seen from behind. One of the
+  archive’s flight games paints the ground in perspective out of plain blocks: bands of sand that
+  get a block wider on each side with every row down, and lighter as they come, meeting at a point
+  on the horizon. Then it makes the world rush past with nothing but block timers:</p>
+  <ul>
+    <li><b>Rocks along the roadside.</b> Down each edge of the road, one cell per row and each a
+    step further out, every cell gets its own block, drawn as plain ground, with a timer one tick
+    longer than the row above: 1, 2, 3, 4. All of them turn into the same pair, a rock for 1 tick
+    and ground for 6, round and round. Every copy of a block shares one clock that starts with the
+    scene, so the rock shows at the horizon, then a row lower and further out each tick, and again
+    every 7 ticks: rocks whipping past on both sides.</li>
+    <li><b>Things that grow as they come.</b> Down the middle, each row’s pair shows a bigger
+    picture than the row above, a twig at the horizon and a whole bush at the bottom, with the same
+    staggered start. It grows as it comes closer, and touching it costs a hit point.</li>
+    <li><b>Clouds flying over.</b> A cloud two blocks wide is a ring of pictures, from a wisp to a
+    big puff, 2 ticks each, then plain sky for 10. Every cloud on the map uses the same ring but
+    starts on a different block of it, so they swell and vanish at different times.</li>
+  </ul>
+  <p>The author drew the numbers 1 to 6 on the start blocks to keep them straight in the editor,
+  and the numbers flash on the screen for the first few ticks. Draw the start blocks as the
+  ground they stand for, and keep the numbers in a notebook.</p>
+  <h2>An end to a road that never ends</h2>
+  <p>A road like that goes nowhere: the hero only moves left and right. The Cloud Lane in
+  <i>In The Year 2000!</i> gives it a destination, an idea from this edition’s maintainer:</p>
+  <ul>
+    <li><b>Always pushing forward.</b> Every sequence the hero has, the standing one too, moves
+    it 5 pixels up the screen. The row above it is a wall of look-alikes, solid blocks drawn as the
+    road, so the push holds it on its row and only steering does anything. Left and Right move it a
+    whole lane, four frames of 10 pixels (under the 11-pixel cap), in a sequence keys can’t
+    interrupt, so it always ends up in a lane.</li>
+    <li><b>The way out opens on a clock.</b> One block of the wall, over the right lane, turns
+    after 990 ticks into a look-alike that pulls up (Doors on a clock, above). The push carries the
+    hero through it onto the scene’s link. A sign counts the miles down, a chain of digit blocks on
+    the same clock, and the destination grows on the horizon as they go by.</li>
+    <li><b>Traffic on a timetable.</b> A block gives birth on its birth time and every multiple
+    of it after the scene starts, but only in cells that show it at that tick. So a cell whose
+    chain shows a different block around each tick the level needs, each with that tick for its
+    birth time, gives birth exactly once each time: a timetable, with a different monster at each
+    entry. Cars come first, then trucks, two lanes at once, with a page in the lane left clear.</li>
+    <li><b>Monsters that grow.</b> Each monster’s pictures run from a dot to full size, timed to
+    its path, and its path slides outward along its lane: a block in 20 ticks, the next in 10,
+    then 4 pixels a tick, faster as it nears. Only the nearest pictures hurt, and a bump turns it
+    into a puff of cloud.</li>
+    <li><b>Spawners nobody sees.</b> PLAYGAME gives birth up to half a screen past the edges, so
+    the spawner chains sit just off the screen and need no pictures. Each path starts with one
+    leap, 240 pixels in a tick, onto the horizon, so nothing is ever seen arriving from the side.
+    Two more spawners give birth to the lane dashes every 8 ticks, forever.</li>
+  </ul>
   <h2>Choices you walk into</h2>
   <p>A menu doesn’t have to be a menu. Start the game in a small room with two or three doors,
   each a link to a different scene, and label the floor in front of each: the player picks by
