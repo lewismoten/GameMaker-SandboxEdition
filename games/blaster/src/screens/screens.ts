@@ -25,7 +25,7 @@ function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
 
 /** The card before a leg: a framed look at it, its name and a few words. */
 function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
-  const pc = (n: string, k: number) => s.pal.c(n, k);
+  const pc = (n: string, k: number) => (l.pal ?? s.pal).c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
   const y0 = l.cardView?.y ?? (l.kind === 'boss' ? l.grid.y(0) : l.grid.y(l.grid.cardAt ?? 40) - 4);
@@ -262,7 +262,7 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
   const lst = (name: string, entries: [string, number?][]) => put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
   for (const s of stages) {
     s.legs.forEach((l, i) => {
-      put(`${l.file}.gif`, gif(card(s, stages.length, i), s.pal.pal));
+      put(`${l.file}.gif`, gif(card(s, stages.length, i), (l.pal ?? s.pal).pal));
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
     });
     const side = s.side;

@@ -44,7 +44,7 @@ function common(p: Pal): void {
   p.ramp('tYellow', 1, [252, 252, 0], [252, 252, 0]);
 }
 
-export type Theme = 'disk' | 'board' | 'ram' | 'sound' | 'cpu' | 'screen';
+export type Theme = 'disk' | 'board' | 'ram' | 'sound' | 'cpu' | 'screen' | 'cable';
 
 /** Stage-specific ramps. Each stage has 'base' (the floor), 'deep', 'trim' and 'glow'. */
 function themed(p: Pal, theme: Theme): void {
@@ -83,6 +83,16 @@ function themed(p: Pal, theme: Theme): void {
       p.ramp('trim', 7, [80, 50, 10], [255, 250, 200], [230, 180, 60]);
       p.ramp('glow', 5, [60, 0, 0], [255, 220, 200], [255, 50, 30]);
       p.ramp('label', 5, [30, 60, 60], [200, 255, 250]);
+      break;
+    case 'cable':
+      // the ribbon cable: the motherboard under it, gray insulation, black plugs
+      p.ramp('base', 8, [0, 30, 14], [120, 220, 130], [20, 110, 50]);
+      p.ramp('deep', 5, [4, 6, 6], [70, 74, 80]);
+      p.ramp('trim', 7, [70, 40, 10], [255, 240, 170], [220, 150, 40]);
+      p.ramp('glow', 5, [60, 20, 0], [255, 230, 160], [255, 120, 20]);
+      p.ramp('label', 5, [40, 60, 120], [200, 220, 255]);
+      p.ramp('ins', 8, [40, 42, 46], [236, 236, 230], [150, 152, 150]);
+      p.ramp('plug', 5, [6, 6, 8], [96, 96, 104]);
       break;
     case 'screen':
       p.ramp('base', 8, [4, 6, 24], [140, 170, 255], [30, 40, 120]);

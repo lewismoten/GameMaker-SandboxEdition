@@ -28,6 +28,8 @@ export interface Leg {
   kit: Kit;
   /** Card lines shown before the leg. */
   card: string[];
+  /** Its own palette (<file>.pal), when not the stage's. */
+  pal?: Pal;
   /** Where the ship starts, when not on a strip's launch pad or in an arena. */
   start?: { x: number; y: number };
   /** The top-left map cell of the card's 16x5 look at the leg, when not the strip's. */

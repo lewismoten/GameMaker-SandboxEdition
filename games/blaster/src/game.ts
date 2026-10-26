@@ -37,7 +37,7 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     scene.scroll = { ...scene.scroll, up: l.kind === 'boss' ? 0 : 0xff, down: 0, left: 0, right: l.kind === 'diag' ? 0xff : 0 };
     const last = s.legs[s.legs.length - 1] === l;
     scene.files = [
-      `s${s.n}.pal`,
+      l.pal ? `${l.file}.pal` : `s${s.n}.pal`,
       `${l.file}.map`,
       `${l.kitFile}.bbl`,
       `${l.kitFile}.mon`,

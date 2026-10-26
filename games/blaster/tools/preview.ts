@@ -18,5 +18,5 @@ for (const make of STAGES) {
   const rows = n ? Number(n) : diag ? 100 : l.kind === 'boss' ? 10 : 90;
   const left = c0 ? Number(c0) : diag ? 0 : X0;
   const cols = w ? Number(w) : diag ? 100 : 16;
-  writePng(out, renderRegion(b.map, b.bbl, b.mbl, b.mon, left, top, cols, rows), st.pal.pal, scale ? Number(scale) : diag ? 1 : 2);
+  writePng(out, renderRegion(b.map, b.bbl, b.mbl, b.mon, left, top, cols, rows), (l.pal ?? st.pal).pal, scale ? Number(scale) : diag ? 1 : 2);
 }

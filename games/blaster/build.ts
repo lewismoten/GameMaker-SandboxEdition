@@ -39,6 +39,7 @@ for (const s of stages) {
   disk.put(`s${s.n}.pal`, serializePalette(s.pal.pal));
   for (const l of s.legs) {
     const b = buildLeg(l);
+    if (l.pal) disk.put(`${l.file}.pal`, serializePalette(l.pal.pal));
     disk.put(`${l.file}.map`, serializeMap(b.map));
     disk.put(`${l.kitFile}.bbl`, serializeBlocks(b.bbl));
     disk.put(`${l.kitFile}.mbl`, serializeBlocks(b.mbl));

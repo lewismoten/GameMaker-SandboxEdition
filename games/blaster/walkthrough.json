@@ -60,11 +60,11 @@
   },
   {
    "scene": 15,
-   "keys": "NUggyAZNZM0ASHTIAk1mzQBQCtAATT7NAEsSyw5IIMgATaYBzYoBTSzNAEuwA8sASPIDyARQQtAATQbNDEsGywBNCM0AUAbQAE0czQ=="
+   "keys": "MUsMywBQBtAATQ/ND00DzQBLA8tITQnNAFAV0ABLA8sASAPIAEsDyxVLA8sSOQG5AjkBuQJNBs0MSwPLJ0sDy4cBSwnLAFAJ0ABND80nTQPNEksGy2lNDM0AUA/QAEsGyyFLCcsATQbNBk0DzQBQBtBsSw/LAFAJ0ABNEs0tTTbNADkBuT5NA81aTQrN"
   },
   {
    "scene": 16,
-   "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQbJAFEE0QBJBMkARxLHPEgIyCJQBtACSQbJAE0GzQBJCskASATIAEcExw=="
+   "keys": "C0gEyABHAscASATIAEcExwA5AbkBSALIAEkEyQBIFsgASwjLAEcGxwBICMgAUArQAEgKyABJCMkASBTINkkCyQBNCM0ASQbJAEgOyABHBMcASArIAEcExwJIDsgSSAbIAEkEyQBIBsgAOQG5ATkBuQFICsgASQbJAE8CzwBHCscASQbJAE0IzQ=="
   },
   {
    "scene": 17,
@@ -147,7 +147,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 44489,
+  "frames": 41478,
   "chapters": [
    {
     "title": "Opening",
@@ -215,23 +215,23 @@
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 35589
+    "frame": 32999
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 37481
+    "frame": 34470
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 39090
+    "frame": 36079
    },
    {
     "title": "Ending",
-    "frame": 41282
+    "frame": 38271
    },
    {
     "title": "Credits",
-    "frame": 42934
+    "frame": 39923
    }
   ]
  }

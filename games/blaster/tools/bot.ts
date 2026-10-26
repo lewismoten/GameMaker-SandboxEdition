@@ -49,7 +49,15 @@ function evaluate(f: Sim, before: { hp: number; score: number; novas: number }, 
 
 export async function fly(
   sim: Sim,
-  o: { maxTicks?: number; horizon?: number; every?: number; goal?: (s: Sim) => { x: number; y: number } | undefined; until?: (s: Sim) => boolean } = {},
+  o: {
+    maxTicks?: number;
+    horizon?: number;
+    every?: number;
+    /** How much a key already held is preferred (higher: steadier hands). */
+    stick?: number;
+    goal?: (s: Sim) => { x: number; y: number } | undefined;
+    until?: (s: Sim) => boolean;
+  } = {},
 ): Promise<BotResult> {
   const horizon = o.horizon ?? 10;
   const every = o.every ?? 2;
@@ -76,7 +84,7 @@ export async function fly(
           if (a === SCAN.space && k === 1) f.release(SCAN.space);
         }
         let v = evaluate(f, before, goal);
-        if (a === current) v += 25;
+        if (a === current) v += o.stick ?? 25;
         if (v > best) {
           best = v;
           choice = a;

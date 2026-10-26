@@ -35,8 +35,8 @@ F5 save  F6 load  Esc quit
 
 On the ribbon cable the keys
 turn with the track: Up goes
-faster, Left and Right cross
-the wires.
+faster, Left and Right steer
+across it.
 
 The BLASTER flies forward and
 fires on its own whenever you
