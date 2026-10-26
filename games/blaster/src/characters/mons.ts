@@ -54,6 +54,8 @@ export class Bestiary {
   readonly mb: BlockSet;
   readonly names: string[] = [];
   private defs: MonDef[] = [];
+  /** In a side leg: pictures (by monster name, as `pics` adds them) left upright. */
+  readonly upright = new Set<string>();
 
   /**
    * `side`: for a side-scrolling leg, every path and picture is turned a quarter turn

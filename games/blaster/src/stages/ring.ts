@@ -56,7 +56,6 @@ export function ringLeg(): Leg {
         for (const x of lap === 3 ? [80] : [84, 94]) mark(lap, x, mid, 'arrow');
       }
       for (const x of [92, 96]) mark(0, x, mid, 'arrow');
-      for (const [lap, x0, n] of SHORTCUTS) for (let x = x0; x < x0 + n; x++) for (let o = -1; o < k.board + 2; o++) mark(lap + 1, x, o, 'link');
       for (const [lap, x, o, m] of [
         [1, 24, mid, 'stuck'],
         [1, 58, mid + 3, 'leak'],
@@ -70,6 +69,7 @@ export function ringLeg(): Leg {
         mark(lap, x, o, m);
     },
     shortcuts: SHORTCUTS,
+    shortcutMark: 'link',
     pickups: [
       [0, 92, 'bit'],
       [0, 95, 'bit'],

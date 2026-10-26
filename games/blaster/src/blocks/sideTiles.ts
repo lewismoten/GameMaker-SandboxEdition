@@ -6,7 +6,7 @@
 // their letters upright.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, bevel, turn90 } from '../art/draw';
+import { BlockSet, bevel, micro, text, turn90 } from '../art/draw';
 import { HURT } from '../characters/sharedMonsters';
 import { SEQ } from '../ids';
 import { beam, current, gap, gate, hatch, launch, mount, pickup, post, type PickupKind, type StageArt } from './tiles';
@@ -139,4 +139,36 @@ export function addTerrain(bs: BlockSet, back: Pixels, t: { cIn: Pixels; cBot: P
       (x, y) => y === 19 - x || y === 18 - x,
     ),
   );
+}
+
+/**
+ * The distance meter: a sign every screen along a side leg, GATE and an arrow over the screens
+ * left to the gate (4, 3, 2, 1), in the stage's trim and glow. The arrow is a ring of three
+ * pictures, so it runs toward the gate.
+ */
+export function addMeter(bs: BlockSet, a: SideArt): void {
+  const p = a.pal;
+  const plate = () => {
+    const t = a.floor(0).crop(0, 0, 20, 20);
+    bevel(t, 0, 3, 20, 14, p.r('trim'), 1, 1);
+    t.rect(1, 4, 18, 12, p.c('ink', 0));
+    return t;
+  };
+  for (let k = 0; k < 3; k++) {
+    const t = plate();
+    micro(t, 2, 5, 'GATE', p.c('trim', 5));
+    for (let i = 0; i < 3; i++) {
+      const x = 3 + i * 5;
+      const c = i === k ? p.c('glow', 4) : p.c('glow', 1);
+      t.rect(x, 12, 2, 1, c)
+        .rect(x + 2, 13, 1, 1, c)
+        .rect(x, 14, 2, 1, c);
+    }
+    bs.add(`mtr${k}`, t, { next: `mtr${(k + 1) % 3}`, ntime: 4 });
+  }
+  for (let n = 1; n <= 4; n++) {
+    const t = plate();
+    text(t, 6, 6, String(n), p.c('glow', 4));
+    bs.add(`mtrN${n}`, t);
+  }
 }

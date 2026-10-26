@@ -54,8 +54,6 @@ export function tracesLeg(): Leg {
         for (const x of lap === 3 ? [84] : [86, 94]) mark(lap, x, mid, 'chevron');
       }
       for (const x of [92, 96]) mark(0, x, mid, 'chevron');
-      // the jumper wire across the mask from trace 3 to trace 2
-      for (const [lap, x0, n] of SHORTCUTS) for (let x = x0; x < x0 + n; x++) for (let o = -1; o < k.board + 2; o++) mark(lap + 1, x, o, 'jumper');
       // pits in the copper: vias that spark, cracks that let mites out
       for (const [lap, x, o, m] of [
         [1, 26, mid, 'via'],
@@ -68,6 +66,7 @@ export function tracesLeg(): Leg {
         mark(lap, x, o, m);
     },
     shortcuts: SHORTCUTS,
+    shortcutMark: 'jumper',
     pickups: [
       [0, 92, 'bit'],
       [0, 95, 'bit'],

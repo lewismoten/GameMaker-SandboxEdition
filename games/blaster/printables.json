@@ -112,6 +112,10 @@
           "head": "3. The Sound Card",
           "hints": [
             {
+              "q": "The music is all over the screen!",
+              "a": "That is The Score, the song the FM chip is playing. Ride each staff corner to corner; it bends flat and wraps onto the next one, and the measure numbers count the staves left: 4, 3, 2, 1. The final double bar is the way out, and a tie on staff 2 hops you a staff early if you hold Right."
+            },
+            {
               "q": "What do the big speakers do?",
               "a": "When a speaker thumps out, the middle of the cone kicks the BLASTER forward. Use it to rush past a crowd."
             },
@@ -122,6 +126,10 @@
             {
               "q": "Why is that chip laughing at me?",
               "a": "It's the FM music chip, and its maker printed YO MAMA! HA HA HA right on it. The HAs fly out of its bottom corners. Shoot the collar off each corner (three hits) to shut it up."
+            },
+            {
+              "q": "The floor and ceiling keep moving up and down.",
+              "a": "In The Waveform they are the song itself, drawn by the oscilloscope. Follow the swing a little ahead of time: climb before a rise, dive before a dip. It gets louder (wider) toward the end."
             },
             {
               "q": "The Feedback Howler's grille blocks everything.",

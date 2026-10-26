@@ -9,7 +9,7 @@ import { MLEN, MWID } from '../../../../web/src/formats/map';
 import { BlockSet } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
-import { addSideTiles, type SideArt, type SideOpts } from '../blocks/sideTiles';
+import { addMeter, addSideTiles, type SideArt, type SideOpts } from '../blocks/sideTiles';
 import { Bestiary } from '../characters/mons';
 import { POWER } from '../ids';
 import { addCommon } from '../characters/sharedMonsters';
@@ -162,6 +162,7 @@ export function sideLeg(s: SideSpec): Leg {
   s.own(bs);
   for (const t of TERRAIN) if (!bs.has(t)) throw new Error(`${s.file}: no terrain block ${t}`);
   addSideTiles(bs, art, s.opts);
+  addMeter(bs, art);
   const beasts = new Bestiary(true);
   addCommon(beasts, pal);
   s.virus(beasts);
@@ -204,6 +205,23 @@ export function sideLeg(s: SideSpec): Leg {
   }
 
   s.build(side);
+  // the distance meter: a sign a screen, counting the screens left to the gate
+  for (let n = 1; n <= 4; n++) {
+    let placed = false;
+    for (const d of [0, 1, -1, 2, -2, 3, -3])
+      for (let r = side.top(GATE - n * 16 + d); !placed && r <= side.top(GATE - n * 16 + d) + 1; r++) {
+        const c = GATE - n * 16 + d;
+        if (
+          ![c, c + 1].every(
+            (x) => side.open(x, r) && side.at(x, r).startsWith('floor') && !g.map.monsters.some((m) => m.monnum < 64 && m.curx === x && m.cury === TOP + r),
+          )
+        )
+          continue;
+        side.put(c, r, 'mtr0').put(c + 1, r, `mtrN${n}`);
+        placed = true;
+      }
+    if (!placed) throw new Error(`${s.file}: no room for the meter's ${n}`);
+  }
   // last, at the number it has in every set (the inventory keeps only block numbers)
   bs.addAt(EGG_BLOCK, 'egg', eggPic(pal, art.floor(0)), { obj: 1, touch: 'floor0' });
   return {

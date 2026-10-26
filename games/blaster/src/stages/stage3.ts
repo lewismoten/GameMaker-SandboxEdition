@@ -8,6 +8,8 @@ import { soundArt, soundEgg, soundTiles, soundVirus } from '../blocks/sound3';
 import { kit, type Stage } from './stage';
 import { bossHowler } from '../bosses/boss3';
 import { bigName } from './boaster';
+import { scoreLeg } from './score';
+import { waveLeg } from './wave';
 
 function virus3(b: Parameters<typeof soundVirus>[0], p: Parameters<typeof soundVirus>[1]): void {
   soundVirus(b, p);
@@ -168,6 +170,7 @@ export function stage3(): Stage {
     song: 'sound.cmf',
     bossSong: 'boss.cmf',
     legs: [
+      scoreLeg(),
       {
         file: 's3a',
         kitFile: 's3',
@@ -187,6 +190,7 @@ export function stage3(): Stage {
         card: ['When a speaker thumps, its', 'middle kicks you forward.', 'Ride the beat!'],
       },
       bigName(pal),
+      waveLeg(),
       bossHowler(art),
     ],
   };

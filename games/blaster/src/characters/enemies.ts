@@ -27,8 +27,9 @@ const anim = (name: string, t = 4): [string, number][] => [
 
 /** Adds a monster's two pictures (name0, name1) to the stage's monster blocks. */
 export function pics(b: Bestiary, name: string, a: Pixels, c: Pixels, hurt: number = HURT.enemy): void {
-  b.mb.add(`${name}0`, a, { chHitPt: hurt });
-  b.mb.add(`${name}1`, c, { chHitPt: hurt });
+  const add = b.upright.has(name) ? b.mb.addUpright.bind(b.mb) : b.mb.add.bind(b.mb);
+  add(`${name}0`, a, { chHitPt: hurt });
+  add(`${name}1`, c, { chHitPt: hurt });
 }
 
 /**

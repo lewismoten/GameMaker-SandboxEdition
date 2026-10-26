@@ -83,7 +83,6 @@ function virus(b: Bestiary, p: Pal): void {
 /** The cable's map and blocks. */
 export function cableLeg(): Leg {
   const pal = buildPalette('cable');
-  const { board: BOARD } = CABLE_TRACK;
   return diagLeg<Mark>({
     file: 's5r',
     title: 'The Ribbon Cable',
@@ -110,11 +109,6 @@ export function cableLeg(): Leg {
       }
       for (const x of [92, 96]) mark(0, x, 13, 'chevron');
 
-      // the tape splices across the board, under coils 1 and 3, into the next coil down
-      for (const [lap, x0, n] of SPLICES)
-        // (the blocks either side too, which show the tape's edges)
-        for (let x = x0; x < x0 + n; x++) for (let o = -1; o < BOARD + 2; o++) mark(lap + 1, x, o, 'splice');
-
       // splits in the insulation (the middle of each sparks) and nicks (some let Crosstalk out)
       const split = (lap: number, x0: number, n: number) => {
         for (let x = x0; x < x0 + n; x++) for (let o = 11; o <= 15; o++) mark(lap, x, o, x === x0 + (n >> 1) && o === 13 ? 'spark' : 'tear');
@@ -140,6 +134,7 @@ export function cableLeg(): Leg {
         mark(lap, x, o, kind);
     },
     shortcuts: SPLICES,
+    shortcutMark: 'splice',
     // pickups (on the cable's middle line, which their pads are drawn on)
     pickups: [
       [0, 92, 'bit'],

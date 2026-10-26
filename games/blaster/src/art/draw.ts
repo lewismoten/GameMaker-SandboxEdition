@@ -138,6 +138,15 @@ export class BlockSet {
     readonly turn?: (p: Pixels) => Pixels,
   ) {}
 
+  /** Blocks the set's `turn` leaves alone (a note-head stays upright in a side leg). */
+  private upright = new Set<string>();
+
+  /** Adds a block that `turn` leaves as drawn. */
+  addUpright(name: string, pic: Pixels, props: BlockProps = {}): number {
+    this.upright.add(name);
+    return this.add(name, pic, props);
+  }
+
   add(name: string, pic: Pixels, props: BlockProps = {}): number {
     if (this.names.includes(name)) throw new Error(`${this.kind}: block ${name} twice`);
     if (this.names.length >= this.limit) throw new Error(`${this.kind}: more than ${this.limit} blocks (${name})`);
@@ -182,7 +191,7 @@ export class BlockSet {
       const pic = this.pics[i];
       if (!pic) return void out.push(emptyBlock(i, transparentPad));
       const b = emptyBlock(i, transparentPad);
-      b.pixels = Uint8Array.from((this.turn ? this.turn(pic) : pic).px);
+      b.pixels = Uint8Array.from((this.turn && !this.upright.has(name) ? this.turn(pic) : pic).px);
       const { next, touch, birth, ...rest } = pr;
       Object.assign(b, rest);
       if (next) b.nextBl = this.id(next);

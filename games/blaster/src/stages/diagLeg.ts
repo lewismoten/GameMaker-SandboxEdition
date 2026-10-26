@@ -19,6 +19,9 @@ import type { DiagTrack } from './diagTrack';
 import { Grid } from './mapkit';
 import type { Leg } from './stage';
 
+/** How many columns at the end of a shortcut shove the ship down into the lane. */
+const SLIDE = 3;
+
 /** A picture `rows` blocks tall and as wide as its columns, over the kink. */
 type EndPic = (rows: number) => Pixels;
 
@@ -54,8 +57,9 @@ export interface DiagSpec<M extends string> {
   plain: { x: number; y: number };
   /** The leg's own marks: numbers, arrows, shortcuts, hazards. */
   decorate: (d: DiagApi<M>) => void;
-  /** Where Right hops to the next lane a lap early: [lap, first column, columns]. */
+  /** Where Right hops to the next lane a lap early: [lap, first column, columns], and its mark. */
   shortcuts: [number, number, number][];
+  shortcutMark: M;
   /** [lap, column, kind], on line `o` across the lane (which their pads are drawn on). */
   pickups: [number, number, string][];
   pickupO: number;
@@ -147,6 +151,15 @@ export function diagLeg<M extends string>(s: DiagSpec<M>): Leg {
   }
 
   s.decorate({ g, track, at, mark, put });
+  // the shortcuts across the ground into the next lane down (the blocks either side too, which
+  // show its edges); over the last few columns a slide shoves the ship on down into the lane, so
+  // one that rides the shortcut to its end is never caught in the corner where it stops
+  for (const [lap, x0, n] of s.shortcuts)
+    for (let x = x0; x < x0 + n; x++)
+      for (let o = -1; o < track.board + 2; o++) {
+        const c = at(lap + 1, x, o);
+        g.put(c.x, c.y, cb.name(c.x, c.y, s.shortcutMark, x >= x0 + n - SLIDE ? { grav: 2 | 4 } : undefined));
+      }
   const start = at(...s.start);
   for (const [lap, x, kind] of s.pickups) put(lap, x, s.pickupO, kind);
   // (never near where a lane crosses the top or side of the map: a monster there wouldn't
@@ -177,7 +190,7 @@ export function diagLeg<M extends string>(s: DiagSpec<M>): Leg {
  * edge and crosses it down and to the right, sparks off a pitted spot (`zap`) and mites that
  * crawl out of a crack (`crawl`).
  */
-export function diagFoes(b: Bestiary, p: Pal, o: { diver: string; swooper: string; mite: string; score?: number; speed?: number }): void {
+export function diagFoes(b: Bestiary, p: Pal, o: { diver: string; swooper: string; mite: string; score?: number; speed?: number; crossPic?: string }): void {
   const s = o.speed ?? 3;
   b.mb.add('zap0', zapPic(p, 0), { chHitPt: HURT.hazard });
   b.mb.add('zap1', zapPic(p, 1), { chHitPt: HURT.hazard });
@@ -197,7 +210,7 @@ export function diagFoes(b: Bestiary, p: Pal, o: { diver: string; swooper: strin
       ],
     },
   });
-  swooper(b, o.swooper, [[7, 7, s]], { score: o.score ?? 100 });
+  swooper(b, o.swooper, [[7, 7, s]], { score: o.score ?? 100, pic: o.crossPic });
   b.add('zap', {
     power: POWER.bullet,
     end: -1,

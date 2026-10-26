@@ -44,11 +44,11 @@ export class DiagBlocks<M extends string> {
     return { x, y, t, flat: x >= k.kink, bare, ground: t % k.pitch < k.board || bare(Math.floor(t / k.pitch)) };
   }
 
-  /** The block for map cell (x, y), with an optional mark. Returns its name. */
-  name(x: number, y: number, mark?: M): string {
+  /** The block for map cell (x, y), with an optional mark (and more props). Returns its name. */
+  name(x: number, y: number, mark?: M, more?: Props): string {
     const cell = this.cell(x, y);
     const pic = this.paint(cell, mark);
-    const props = this.props(cell, mark);
+    const props = { ...this.props(cell, mark), ...more };
     const key = `${JSON.stringify(props)}:${pic.px.join(',')}`;
     let name = this.seen.get(key);
     if (!name) {
