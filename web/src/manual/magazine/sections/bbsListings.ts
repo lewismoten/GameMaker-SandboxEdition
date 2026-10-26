@@ -7,7 +7,7 @@ import { cps, DEFAULT_SPEED, LINE_SPEEDS, speedWords } from '../../../retro/bbs/
 import { button, grid, head, list, note, p, rows, side } from '../blocks';
 import type { MagSection } from '../types';
 
-/** The boards' numbers, as TERMINAL dials them (bbs.ts PHONE, sofa.ts SOFA_PHONE; a test keeps them in step). */
+/** The boards' numbers, as TERMINAL dials them (sandbox.ts PHONE, sofa.ts SOFA_PHONE; a test keeps them in step). */
 export const SANDBOX_PHONE = '1-412-555-SAND';
 export const SOFA_PHONE = '1-412-555-SOFA';
 

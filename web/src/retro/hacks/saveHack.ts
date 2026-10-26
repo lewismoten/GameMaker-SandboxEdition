@@ -88,7 +88,7 @@ const SAVEHACK_HEADER = [
   '                     Uploaded to: The -= S A N D B O X =- BBS',
   RULE,
 ];
-/** Callers of the BBS (bbs.ts's last callers, The Sofa's regulars) the author greets. */
+/** Callers of the BBS (sandbox.ts's last callers, The Sofa's regulars) the author greets. */
 const SAVEHACK_GREETINGS = ['PIXEL WIZARD', 'THE BLOCKSMITH', 'NIGHT OWL'];
 const SAVEHACK_BYE = `Thank you for using SAVEHACK! Greetings to: ${SAVEHACK_GREETINGS.join(', ')}, and all SYSOPs!`;
 /** The label of the backup taken before SAVEHACK's first change to a game. */

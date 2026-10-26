@@ -83,7 +83,7 @@ describe('disk facts', () => {
       'manual/printables/bardCatalog.ts',
       'desk/room/catalog.ts',
       'desk/boxes/gameBox.ts',
-      'retro/bbs/bbs.ts',
+      'retro/bbs/sandbox.ts',
       'retro/bbs/sofaFiles.ts',
       'retro/bbs/fileId.ts',
     ]) {

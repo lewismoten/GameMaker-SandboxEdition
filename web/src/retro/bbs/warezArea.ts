@@ -2,7 +2,7 @@
 // only" access code (bulletin 7 gives it away, and the SysOp breaks in with it after a couple
 // of wrong tries). It holds GMCRACK, SAVEHACK, PLAYHACK and a four-ZIP "rip" of Game-Maker 3.00, each
 // downloaded by Zmodem and unzipped into C:\DOWNLOAD\<ID> with its FILE_ID.DIZ, as the
-// shareware games are (bbs.ts); the C: drive shows the downloaded ones
+// shareware games are (sandbox.ts); the C: drive shows the downloaded ones
 // (retro/hacks/deskFiles.ts). Warez is not FREE: each ZIP costs a file point, and a caller out
 // of points gets the SysOp's leech amnesty rather than a locked door.
 import type { RetroHost } from '../host';
