@@ -54,10 +54,10 @@ export function saveSignProblems(id: string): string[] {
   const signs = findSaveSigns(id);
   if (!about.egg) return signs.length ? [`has a save sign but no felt egg: ${signs.join(' ')}`] : [];
   const want = about.saveSign;
-  if (!want) return ['has a felt egg but about.json has no "saveSign"'];
+  if (!want) return [`has a felt egg but about.json has no "saveSign" (found: ${signs.join(' ') || 'none'})`];
   const here = `${want.map}@${want.at.join(',')}`;
   const problems: string[] = [];
-  if (!signs.includes(here)) problems.push(`no save sign at ${here}`);
+  if (!signs.includes(here)) problems.push(`no save sign at ${here} (found: ${signs.join(' ') || 'none'})`);
   if (signs.length !== 1) problems.push(`${signs.length} save signs (want 1): ${signs.join(' ')}`);
   const { disk, game } = gameDisk(id);
   // the egg's map, when the egg is a block on a map from the start
