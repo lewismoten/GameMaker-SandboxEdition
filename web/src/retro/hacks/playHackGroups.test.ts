@@ -17,8 +17,9 @@ beforeEach(() => {
 const catalog = [
   { id: 'cd:peach', kind: 'gameware' },
   { id: 'cd:glub', kind: 'shareware' },
-  { id: 'snowbound', kind: 'gameware', original: { manual: true } },
-  { id: 'loaf', kind: 'gameware', original: { manual: true }, series: 'bizarre' },
+  // Sandbox Software's games (and the Bard's) ship as shareware, as the catalog lists them
+  { id: 'snowbound', kind: 'shareware', original: { manual: true } },
+  { id: 'loaf', kind: 'shareware', original: { manual: true }, series: 'bizarre' },
 ] as unknown as CatalogEntry[];
 
 describe('hackGroupOf', () => {
