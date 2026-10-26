@@ -138,9 +138,11 @@ by its bot, its walkthrough replayed, its text, hidden items and levels checked)
 Pushes to `master` are published to GitHub Pages by
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml). The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
-[`.github/workflows/games.yml`](.github/workflows/games.yml) runs `npm run check:games -- --quick`
-on every push and pull request; run the full check (with the rebuild compare, about 20 minutes)
-yourself before committing a game.
+Every check job stops after 5 minutes; only the deployments and release builds may run longer.
+Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
+compare, about 20 minutes) yourself before committing a game.
+[`.github/workflows/games.yml`](.github/workflows/games.yml) checks one or two named games by hand
+(Actions → Check the games → Run workflow).
 
 ## Where things are
 

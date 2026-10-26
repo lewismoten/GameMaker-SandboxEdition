@@ -1,14 +1,17 @@
-# Checks every game on pushes and pull requests: npm run check:games (web/), which plays each
-# game's bot and walkthrough and checks its text, hidden items, levels, tin hearts and box hours.
-# CI runs it with --quick (no rebuild compare); the full run is for local use, see AGENTS.md.
+# Checks a few named games by hand (Actions → Check the games → Run workflow): npm run
+# check:games --quick (web/), which plays each game's bot and walkthrough and checks its text,
+# hidden items, levels, tin hearts and box hours. Every game takes far longer than CI should, so
+# it doesn't run on pushes: run `npm run check:games` locally before committing a game (AGENTS.md).
+# Like every check here it stops after 5 minutes; name one or two games at a time.
 name: Check the games
 
 on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
   workflow_dispatch:
+    inputs:
+      games:
+        description: Game ids to check, separated by spaces (e.g. snowbound teddy)
+        required: true
+        default: snowbound
 
 permissions:
   contents: read
@@ -24,7 +27,7 @@ defaults:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,4 +36,7 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
       - run: npm ci
-      - run: npm run check:games -- --quick
+      - name: Check the named games
+        env:
+          GAMES: ${{ inputs.games }}
+        run: npm run check:games -- --quick $(for g in $GAMES; do printf -- '--game %s ' "$g"; done)
