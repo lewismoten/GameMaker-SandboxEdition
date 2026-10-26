@@ -291,7 +291,6 @@ modules are in [`../test`](../test).
   `manifest.ts`), which are found (`tinHearts.ts`, as a line of text in `progress.ts`), EGG.EXE's
   tin heart page (`tinHeartExe.ts`), and the desk's trophy (`trophySpot.ts` loads `trophy.ts` and
   Mystery Robot Joe's scene, `reveal.ts` with `joeArt.ts`, only once every heart is found).
-
 - [`scoreTrophies/`](scoreTrophies): the desk's two score trophies, at the back left of the desk
   under the game shelves. `scores.ts` keeps each catalog game's best final score (counted only when
   beaten) and the total of every finished play's final score, in the save store as `site:scores`,
@@ -326,7 +325,6 @@ modules are in [`../test`](../test).
   them (`covers.ts` draws just the cover of manuals, hint books and TURBO BUTTON), `shared.ts` lists once the pieces the same in
   every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is
   the page; a card opens its piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
-
 - [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its pages `booklet.ts`, its
   screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and
   each original game's printed manual (`gameManual.ts`). `fonts/` holds the handwriting font
@@ -454,7 +452,8 @@ modules are in [`../test`](../test).
     (`fileActions.ts`), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
-    `firstStepsPanel.ts`), new-file templates (`templates.ts`), Look inside (`released.ts`,
+    `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
+    `audio/compose.ts` `blankSong`), Look inside (`released.ts`,
     `lookId.ts`), and the shared stylesheet `editor.css`.
 - `widgets/`: shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
   Show with palette choice (`paletteChooser.ts`), thumbnails (`thumbs.ts`), previews (`preview.ts`),
