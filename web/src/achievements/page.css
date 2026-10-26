@@ -7,8 +7,9 @@ main.ach-page {
   line-height: 1.5;
 }
 
+/* beside "On this page": wide enough for four cards a row at 1440px */
 main.ach-page.with-toc {
-  max-width: 76rem;
+  max-width: 100rem;
 }
 
 main.ach-page h1 {
