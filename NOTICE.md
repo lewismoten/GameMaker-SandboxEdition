@@ -148,8 +148,10 @@ game folder opens in the browser unchanged.
   boarding-ramp countdown, both clocks read from a chain of timed blocks, as the archive's games
   did with block rings and staged lights; and _A Fly Named Carl_'s sugar, a flight meter made of
   the air itself (fresh air costs a counter, and with none left it no longer holds him up), as an
-  archive game's sky costs its flight counter. Ideas only: the blocks, art and words are this
-  project's own, and nothing from those games is copied.
+  archive game's sky costs its flight counter; and _Mustard Seed Hustle_'s red laces, an upgrade
+  made by sequence order (faster walks placed before the plain ones on the same keys, on only
+  while the laces are carried), as an archive game's speed boots work. Ideas only: the blocks,
+  art and words are this project's own, and nothing from those games is copied.
 - **Research: watching people play Game-Maker games.** Observations from two videos informed
   The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and
   _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`), "What Players Hate (and How to

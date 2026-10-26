@@ -1,5 +1,5 @@
 // The way through the game, as orders for the bot.
-import { FAITH, WATER } from '../src/ids';
+import { FAITH, SEQ, WATER } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { Bot } from './bot';
 
@@ -98,6 +98,8 @@ const onRow = (bot: Bot, row: number, what: string) => {
 };
 
 export const water = (bot: Bot) => bot.sim.meter(WATER) - 1;
+/** Laced up: the faster walks are on (the laces are carried). */
+const laced = (bot: Bot) => !!bot.sim.ci.seqon[SEQ.fastRight];
 export const faith = (bot: Bot) => bot.sim.meter(FAITH) - 1;
 
 /** 1. The mound and the garden. */
@@ -108,6 +110,11 @@ export async function theMound(bot: Bot): Promise<void> {
     await must(bot, bot.walk(13, 'the flower bed'), 'flower bed');
   });
   await carefully(bot, 'the flowerpots and the leaves', 12, async () => {
+    await must(bot, bot.walk(15, 'onto the first pot'), 'first pot');
+    // the laces on the pot: Enter picks them up ("...got the greatest feet!"), and the seed hustles
+    await must(bot, bot.hold('enter', 2), 'pick up the laces');
+    await must(bot, bot.sim.waitForClip(), 'the greatest feet');
+    if (!laced(bot)) throw new Error(`no laces (at ${bot.at.x},${bot.at.y})`);
     await must(bot, bot.walk(17, 'up the flowerpots'), 'pots');
     for (const x of [20, 23, 26, 29]) await must(bot, bot.hop('right', 8, 'right', x + 0.5), `leaf ${x}`);
     await must(bot, bot.walk(31, 'the dandelion'), 'dandelion');

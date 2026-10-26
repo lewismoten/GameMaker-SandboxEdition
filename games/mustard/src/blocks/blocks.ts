@@ -599,5 +599,23 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('gustCalm', gust('calm'), { grav: GRAV.down, next: 'gustWarn', ntime: GUST.calm });
   book.add('gustWarn', gust('warn'), { grav: GRAV.down, next: 'gust', ntime: GUST.warn });
   book.add('gust', gust('gust'), { grav: GRAV.down | GRAV.right, next: 'gustCalm', ntime: GUST.gust });
+
+  // (last, so every other block keeps its number) a pair of red laces on the first flowerpot in
+  // the garden, an object: Enter picks them up, and laced up the seed hustles (characters.ts: the
+  // faster walks come first on the same keys, on only while the laces are carried)
+  const laces = sky(1);
+  for (const [cx, k] of [
+    [7, 0],
+    [13, 1],
+  ] as const) {
+    for (let a = 0; a < Math.PI * 2; a += 0.08) {
+      const x = cx + Math.cos(a) * (3.4 - k * 0.4);
+      const y = 12 + Math.sin(a) * 2.6;
+      laces.set(x, y, c('red', a < Math.PI ? 2 : 3));
+    }
+    laces.line(cx + 2, 14, cx + 4 - k * 6, 18, c('red', 2)).rect(cx + 3 - k * 6, 17, 2, 2, c('white', 2));
+  }
+  laces.line(5, 9, 15, 9, c('red', 1)).set(5, 8, c('white', 2)).set(15, 8, c('white', 2));
+  book.add('laces', laces, { ...air, obj: 1, touch: 'sky' });
   return book;
 }

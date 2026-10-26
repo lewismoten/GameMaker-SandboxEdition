@@ -45,7 +45,7 @@ const cb = buildCharBlocks(base);
 disk.put('mustard.bbl', serializeBlocks(bbl));
 disk.put('mustard.mbl', serializeBlocks(mb.blocks));
 disk.put('mustard.cbl', serializeBlocks(cb.blocks));
-for (const form of ['seed', 'sprout', 'plant'] as Form[]) disk.put(`${form}.chr`, serializeCharacter(buildSeed(cb, form)));
+for (const form of ['seed', 'sprout', 'plant'] as Form[]) disk.put(`${form}.chr`, serializeCharacter(buildSeed(cb, form, book.n('laces'))));
 for (const place of ['garden', 'dust', 'mountain', 'sky'] as Place[]) disk.put(`${place}.snd`, serializeSoundSet(buildSoundSet(place)));
 for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 

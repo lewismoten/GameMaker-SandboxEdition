@@ -1,6 +1,6 @@
-// SEED.CHR and PLANT.CHR (the mustard seed: walk slow but sure, hop as high as its greatest
-// feet will take it, push roots down, and a Hallelujah; its health, lives, water and faith)
-// and the .MON file each level loads.
+// SEED.CHR and PLANT.CHR (the mustard seed: walk slow but sure, faster laced up, hop as high as
+// its greatest feet will take it, push roots down, pick up the laces, and a Hallelujah; its
+// health, lives, water and faith) and the .MON file each level loads.
 //
 // Gravity does the platforming: air blocks pull down, so a hop is an upward push each tick Up
 // is held (gravity takes one more away every tick), and Q/E hop up and sideways at once
@@ -21,6 +21,9 @@ const MIRROR_BOTH = 0x44; // and the top block
 /** Pixels a tick walking: the seed is slow but sure; once it has grown (sprout, plant) it strides out. */
 export const STEP = 3;
 export const STEP_GROWN = 4;
+/** Laced up (the laces carried), it hustles: the seed and the grown seed alike. */
+export const STEP_LACED = 5;
+export const STEP_LACED_GROWN = 6;
 /** Pixels a tick sideways in a hop. */
 export const HOP_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
@@ -41,7 +44,7 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 }
 
 /** The seed's character file for one of its forms (the plant is two blocks tall). */
-export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): Character {
+export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form, laces: number): Character {
   const ch = newCharacter();
   const S = ch.sequences;
   const tall = form === 'plant';
@@ -79,16 +82,24 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
       jstkBut: 0,
     },
   );
-  set(S[3], [f({ pic: 'front' })], { key: 0 });
+  // Enter picks up what it stands by (the laces, in the garden): a little bow for it
+  set(S[SEQ.pickup], [f({ pic: 'root1', pause: 3 }), f({ pic: 'joy', top: 'topJoy', pause: 4 })], { key: KEY.enter, sound: SND.laces, jstkBut: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
   const step = form === 'seed' ? STEP : STEP_GROWN;
+  const laced = form === 'seed' ? STEP_LACED : STEP_LACED_GROWN;
   const walk = (dx: number, mirror: boolean) =>
     ['side1', 'side0', 'side2', 'side0'].map((pic, i) => f({ pic, x: dx, mirror, top: tall ? ['top1', 'top0', 'top2', 'top0'][i] : undefined }));
   set(S[SEQ.right], walk(step, false), { key: KEY.right, jstkMov: JOY.right });
   set(S[SEQ.left], walk(-step, true), { key: KEY.left, jstkMov: JOY.left });
   set(S[SEQ.rightD], walk(step, false), { key: KEY.d });
   set(S[SEQ.leftA], walk(-step, true), { key: KEY.a });
+  // laced up: the same walks, faster, first on the same keys, on only while the laces are carried
+  const tie = { bloc: laces };
+  set(S[SEQ.fastRight], walk(laced, false), { key: KEY.right, jstkMov: JOY.right, ...tie });
+  set(S[SEQ.fastLeft], walk(-laced, true), { key: KEY.left, jstkMov: JOY.left, ...tie });
+  set(S[SEQ.fastRightD], walk(laced, false), { key: KEY.d, ...tie });
+  set(S[SEQ.fastLeftA], walk(-laced, true), { key: KEY.a, ...tie });
   // straight up (a hop, or climbing roots): its back, going away
   const hop = [f({ pic: 'climb', y: -HOP, top: 'topBack' })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
@@ -99,8 +110,6 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   ];
   set(S[SEQ.hopLeft], side(-HOP_STEP, true), { key: KEY.q, jstkMov: JOY.upLeft, sound: SND.hop });
   set(S[SEQ.hopRight], side(HOP_STEP, false), { key: KEY.e, jstkMov: JOY.upRight, sound: SND.hop });
-  set(S[SEQ.hopLeft7], side(-HOP_STEP, true), { key: KEY.home, sound: SND.hop });
-  set(S[SEQ.hopRight9], side(HOP_STEP, false), { key: KEY.pgup, sound: SND.hop });
   // Down: push roots (into soft dust), or climb down in them.
   const root = [f({ pic: 'root0', y: ROOT_STEP, pause: 2 }), f({ pic: 'root1', y: ROOT_STEP, pause: 2 })];
   set(S[SEQ.root], root, { key: KEY.down, jstkMov: JOY.down, sound: SND.root });

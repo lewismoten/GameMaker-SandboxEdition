@@ -207,6 +207,8 @@ export function mound(book: BlockBook): Level {
   m.text(8, 9, ',p.q.,').text(11, 7, '*');
   // two flowerpots, the second higher, a drop of dew on top
   m.set(15, 8, 'U').set(15, 9, 'u').set(17, 7, 'U').col(17, 8, 9, 'u').set(17, 6, 'd').set(15, 5, '*');
+  // a pair of red laces on the first pot (Enter): laced up, the seed hustles
+  m.set(15, 7, 'laces');
   // the lawn, where the peacock struts; leaves above it, and a rain cloud
   m.text(20, 9, '.p.x..q..,.');
   for (const x of [20, 23, 26, 29]) m.row(7, x, x + 1, 'L');

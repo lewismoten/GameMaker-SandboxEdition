@@ -8,11 +8,11 @@ LEFT/RIGHT or A D walk: slow
 but sure as a seed, quicker
 once you have grown. UP or W
 hops: hold it longer to hop
-higher. Q and E (or keypad 7
-and 9) hop up and sideways;
-steer as you fall.
+higher. Q and E hop up and
+sideways; steer as you fall.
 
 SPACE: Hallelujah!
+ENTER picks things up.
 
 ROOTS: soft dust gives way to
 your roots. Land on it, walk
@@ -46,6 +46,11 @@ while it's calm.
 Cornered in a tunnel? Push
 roots up into the dust and
 let the mole go by.
+LACES: a pair of red laces
+waits on a flowerpot in the
+garden. ENTER picks them up:
+laced up, you hustle.
+
 It don't shout, it don't brag:
 you have no way to fight. Big
 loud things hurt to bump
@@ -55,9 +60,4 @@ F1 help      F2 counters
 F3 music     F4 sound
 F5 save      F6 load
 ESC quit
-
-
-
-
-
 
