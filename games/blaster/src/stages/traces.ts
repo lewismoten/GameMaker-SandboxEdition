@@ -55,6 +55,18 @@ export function tracesLeg(): Leg {
       }
       for (const x of [92, 96]) mark(0, x, mid, 'chevron');
       // pits in the copper: vias that spark, cracks that let mites out
+      // the silkscreen and bits of copper along the buses, between everything else
+      const silk: TraceMark[] = ['silkR12', 'silkC7', 'silkU3', 'silkR4', 'silkC22', 'silkQ1'];
+      for (let lap = 1; lap <= 3; lap++)
+        for (const [i, x] of [14, 28, 38, 50, 62, 72].entries()) {
+          const o = mid + (i % 2 ? 4 : -4);
+          mark(lap, x, o, i % 3 === 0 ? silk[(lap * 2 + i) % silk.length] : i % 3 === 1 ? 'pad' : lap === 2 && i === 5 ? 'tp' : 'pad');
+        }
+      for (const [lap, x0] of [
+        [1, 54],
+        [3, 22],
+      ])
+        for (let x = x0; x < x0 + 4; x++) for (let o = mid - 2; o <= mid + 2; o++) mark(lap, x, o, 'hatch');
       for (const [lap, x, o, m] of [
         [1, 26, mid, 'via'],
         [1, 62, mid + 3, 'crack'],

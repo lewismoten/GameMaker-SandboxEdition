@@ -7,6 +7,7 @@ import { cpuArt, cpuTiles, cpuVirus } from '../blocks/cpu5';
 import { kit, type Stage } from './stage';
 import { cableLeg } from './cable';
 import { bossGlitch } from '../bosses/boss5';
+import { sinkLeg } from './heatsink';
 
 function virus5(b: Parameters<typeof cpuVirus>[0], p: Parameters<typeof cpuVirus>[1]): void {
   cpuVirus(b, p);
@@ -191,6 +192,7 @@ export function stage5(): Stage {
         kit: ks,
         card: ['The last run. GLITCH is', 'waiting at the end.', 'Save a Nova Bomb or two!'],
       },
+      sinkLeg(),
       bossGlitch(art),
     ],
   };

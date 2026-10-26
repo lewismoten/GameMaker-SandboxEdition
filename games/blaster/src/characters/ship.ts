@@ -10,7 +10,7 @@
 import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
 import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, CLEAR, blob, turn45, turn90 } from '../art/draw';
+import { BlockSet, CLEAR, blob, rotate, turn45, turn90 } from '../art/draw';
 import { DRIFT, KEY, SEQ, SND, START } from '../ids';
 import type { Pal } from '../art/pal';
 
@@ -84,6 +84,29 @@ function deathPic(p: Pal, k: number): Pixels {
   return pic;
 }
 
+/**
+ * The ship banked into a turn (dir -1: left, 1: right): the low wing foreshortened and in
+ * shadow, the high wing catching the light, and the whole ship tilted a little into the turn.
+ */
+function banked(p: Pal, src: Pixels, dir: -1 | 1): Pixels {
+  const steel = p.r('steel');
+  const shade = (c: number, by: number) => {
+    const k = steel.indexOf(c);
+    return k < 0 ? c : steel[Math.max(0, Math.min(steel.length - 1, k + by))];
+  };
+  const squeezed = new Pixels(20, 20, CLEAR);
+  const c = 9.5;
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const low = Math.sign(x - c) === dir;
+      const sx = Math.round(c + (x - c) / (low ? 0.62 : 1));
+      if (sx < 0 || sx > 19) continue;
+      const v = src.get(sx, y);
+      if (v !== CLEAR) squeezed.set(x, y, shade(v, low ? -1 : 1));
+    }
+  return rotate(squeezed, dir * 12);
+}
+
 export function shipBlocks(p: Pal): BlockSet {
   const cb = new BlockSet(CHARBL, 'cbl');
   cb.add('ship0', shipPic(p, 0));
@@ -98,6 +121,23 @@ export function shipBlocks(p: Pal): BlockSet {
   cb.add('shipS0', turn90(shipPic(p, 0)));
   cb.add('shipS1', turn90(shipPic(p, 1)));
   cb.add('flashS', turn90(shipPic(p, 0, true)));
+  // banked into a turn: straight up (and the arenas), on the slant, and side-on (pitched up
+  // to climb, down to dive), and side-on braking: the engine cut, retro jets at the nose
+  for (const [d, n] of [
+    [-1, 'L'],
+    [1, 'R'],
+  ] as [-1 | 1, string][])
+    for (const f of [0, 1] as const) {
+      cb.add(`bank${n}${f}`, banked(p, shipPic(p, f), d));
+      cb.add(`bankD${n}${f}`, turn45(banked(p, shipPic(p, f), d), 0.97));
+      cb.add(`pitch${n}${f}`, rotate(turn90(shipPic(p, f)), d * 20));
+    }
+  for (const f of [0, 1]) {
+    const t = turn90(shipPic(p, 0));
+    for (let x = 0; x < 6; x++) for (let y = 0; y < 20; y++) if (t.get(x, y) !== CLEAR && x < 2) t.set(x, y, CLEAR);
+    for (const y of [6, 13]) t.set(18, y, p.c('cyan', 4 + f)).set(19, y, p.c('cyan', 3));
+    cb.add(`brakeS${f}`, t);
+  }
   return cb;
 }
 
@@ -129,8 +169,11 @@ export function buildShip(cb: BlockSet, drift: number): Character {
   const s1 = cb.id('ship1');
   const fl = cb.id('flash');
   const dy = -drift;
-  /** Three ticks of flight with a twin shot: the guns fire every third tick. */
-  const fly = (x: number, y: number) => [frame(s0, x, y + dy), frame(s1, x, y + dy), birth(SHOT_MON.shot), frame(s0, x, y + dy)];
+  /** Three ticks of flight with a twin shot: the guns fire every third tick; banked into a turn. */
+  const fly = (x: number, y: number) => {
+    const [a, b] = x < 0 ? [cb.id('bankL0'), cb.id('bankL1')] : x > 0 ? [cb.id('bankR0'), cb.id('bankR1')] : [s0, s1];
+    return [frame(a, x, y + dy), frame(b, x, y + dy), birth(SHOT_MON.shot), frame(a, x, y + dy)];
+  };
 
   setSeq(S[SEQ.idle], fly(0, 0));
   setSeq(S[SEQ.die], [0, 1, 2, 3, 4].map((k) => frame(cb.id(`die${k}`), 0, dy, 2)).concat([frame(cb.id('die4'), 0, dy, 6)]), { sound: SND.die });
@@ -207,7 +250,11 @@ export function buildDiagShip(cb: BlockSet, drift: number): Character {
   const s1 = cb.id('shipD1');
   const fl = cb.id('flashD');
   const d = drift;
-  const fly = (x: number, y: number) => [frame(s0, x, y), frame(s1, x, y), birth(SHOT_MON.shot), frame(s0, x, y)];
+  // banked toward the lane's top edge (Left) or its bottom edge (Right)
+  const fly = (x: number, y: number) => {
+    const [a, b] = x - -y < -2 ? [cb.id('bankDL0'), cb.id('bankDL1')] : x + y > 2 ? [cb.id('bankDR0'), cb.id('bankDR1')] : [s0, s1];
+    return [frame(a, x, y), frame(b, x, y), birth(SHOT_MON.shot), frame(a, x, y)];
+  };
   const keep = (seq: number, frames: Frame[]) =>
     setSeq(S[seq], frames, { key: S[seq].key, jstkMov: S[seq].jstkMov, jstkBut: S[seq].jstkBut, sound: S[seq].sound, norepeat: S[seq].norepeat });
   const BOOST = 4;
@@ -276,7 +323,12 @@ export function buildSideShip(cb: BlockSet, drift: number): Character {
   const fl = cb.id('flashS');
   const d = drift;
   const shot = (mon: number) => birth(mon, 20);
-  const fly = (x: number, y: number) => [frame(s0, x, y), frame(s1, x, y), shot(SHOT_MON.shot), frame(s0, x, y)];
+  // pitched up to climb, down to dive; braking, the engine cut and the retro jets lit
+  const fly = (x: number, y: number) => {
+    const [a, b] =
+      y < 0 ? [cb.id('pitchL0'), cb.id('pitchL1')] : y > 0 ? [cb.id('pitchR0'), cb.id('pitchR1')] : x < d ? [cb.id('brakeS0'), cb.id('brakeS1')] : [s0, s1];
+    return [frame(a, x, y), frame(b, x, y), shot(SHOT_MON.shot), frame(a, x, y)];
+  };
   const keep = (seq: number, frames: Frame[]) =>
     setSeq(S[seq], frames, { key: S[seq].key, jstkMov: S[seq].jstkMov, jstkBut: S[seq].jstkBut, sound: S[seq].sound, norepeat: S[seq].norepeat });
   const V = 6; // up and down

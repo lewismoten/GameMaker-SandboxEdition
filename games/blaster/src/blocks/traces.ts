@@ -1,10 +1,12 @@
-// Stage 1's diagonal leg, "Copper Traces" (its own palette, s1r.pal, the motherboard's
-// with the cable's grays): four wide copper traces laid corner to corner over green solder
-// mask, bending flat at the kink the way real traces turn, in 45-degree steps. The copper is
-// bright and brushed along its length, with a bright rim and silkscreen numbers and arrows;
-// the mask between is the board's weave. Where a trace is pitted the copper spits sparks
-// (a via) or lets Bit Mites out (a crack), and in one place a silver jumper wire bridges the
-// mask from one trace to the next. The course starts at a gold edge pad and ends in a black
+// Stage 1's diagonal leg, "Copper Traces" (its own palette, s1r.pal, the motherboard's with
+// the cable's grays): four wide buses of copper traces laid corner to corner over green solder
+// mask, bending flat at the kink the way real traces turn, in 45-degree steps. Each bus is a
+// band of lighter mask outlined in white silkscreen with five thin gold traces along it, so the
+// gold is an accent, not the whole screen; on it sit silkscreen part names (R12, C7, U3...),
+// solder pads, a test point, a patch of cross-hatched copper fill, numbers and arrows. Between
+// the buses, darker mask with etched pits and the board's parts. Where a trace is pitted it
+// spits sparks (a via) or lets Bit Mites out (a crack), and in one place a silver jumper wire
+// bridges the mask to the next bus. The course starts at a gold edge pad and ends in a black
 // chipset chip's leg, the way out.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
 import { Pixels } from '../../../kit/pixels';
@@ -15,7 +17,7 @@ import type { DiagTrack } from '../stages/diagTrack';
 import { DiagBlocks, tAt, type DiagCell } from './diagBlocks';
 import { digit } from './cable';
 
-export type TraceMark = 'via' | 'crack' | 'jumper' | 'chevron' | `digit${number}`;
+export type TraceMark = 'via' | 'crack' | 'jumper' | 'chevron' | 'pad' | 'hatch' | 'tp' | `digit${number}` | `silk${string}`;
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 const mod = (n: number, m: number) => ((n % m) + m) % m;
@@ -38,16 +40,25 @@ function colorAt(p: Pal, k: DiagTrack, T: number, px: number, py: number, c: Dia
       const strand = (px - py + 40) % 10;
       return strand < 4 ? shadeAt(p.r('steel'), 3, 6, 0.3 + strand * 0.18, px, py) : mask(p, px, py, -0.2);
     }
-    // the mask, a little darker in the shadow of the copper's edge
+    // the mask between the buses (the board's parts sit on it), with etched pits
+    if ((px * 3 + py * 5) % 31 === 0) return p.c('base', 0);
     return mask(p, px, py, h < 0.6 && !c.bare(mod(lane - 1, k.lanes)) ? -0.3 : 0);
   }
   const w = k.pitch - k.board;
   const e = h - k.board;
   if (e < 0.1 || e > w - 0.1) return p.c('ink', 0);
-  // a bright rim, then brushed copper along the trace
-  if (e < 0.45 || e > w - 0.45) return p.c('trim', e < 1 ? 6 : 2);
-  const brush = (Math.floor(e * 6) % 3 === 0 ? -0.12 : 0) + 0.15 * Math.exp(-(((e - w * 0.35) / 2.2) ** 2));
-  return shadeAt(p.r('trim'), 2, 5, 0.42 + brush, px, py);
+  // the lane's white silkscreen outline
+  if (Math.abs(e - 0.45) < 0.1 || Math.abs(e - (w - 0.45)) < 0.1) return p.c('gray', 6);
+  if (mark === 'hatch') {
+    // bare copper poured as a fill: cross-hatched
+    return (px + py) % 4 === 0 || (px - py + 40) % 4 === 0 ? p.c('trim', 4) : p.c('trim', 1);
+  }
+  // a bus of copper traces along the lane, gold over a lighter mask
+  const lanes = 5;
+  const q = ((e - 0.7) / (w - 1.4)) * lanes;
+  const f = q - Math.floor(q);
+  if (q > 0 && q < lanes && f > 0.36 && f < 0.64) return shadeAt(p.r('trim'), 2, 5, 0.3 + (f < 0.45 ? 0.5 : 0.2), px, py);
+  return mask(p, px, py, 0.35);
 }
 
 /** A bold silkscreen arrow along the trace (up and to the right, or right on the kink), outlined. */
@@ -81,6 +92,22 @@ export function traceBlocks(bs: BlockSet, p: Pal, k: DiagTrack): DiagBlocks<Trac
     if (mark === 'chevron') arrow(t, c.flat, p.c('gray', 7), p.c('trim', 1));
     if (mark?.startsWith('digit')) digit(t, Number(mark.slice(5)), p.c('gray', 7), p.c('trim', 1));
     if (mark === 'via' || mark === 'crack') pit(p, t, mark === 'crack');
+    if (mark === 'pad') {
+      // a solder pad pair with their vias
+      for (const x of [5, 13]) t.rect(x - 2, 7, 5, 6, p.c('steel', 5)).rect(x, 9, 1, 2, p.c('ink', 0));
+    }
+    if (mark === 'tp') {
+      // a test point: a ring and its label
+      t.ring(10, 12, 3.5, p.c('gray', 7));
+      t.rect(9, 11, 3, 3, p.c('trim', 5));
+      micro(t, 3, 2, 'TP', p.c('gray', 7));
+    }
+    if (mark?.startsWith('silk')) {
+      // a part's name in white silkscreen, with its outline
+      const name = mark.slice(4);
+      t.rect(1, 5, name.length * 4 + 3, 9, p.c('base', 1)).frame(1, 5, name.length * 4 + 3, 9, p.c('gray', 7));
+      micro(t, 3, 7, name, p.c('gray', 7));
+    }
     return t;
   };
   const props = (c: DiagCell, mark?: TraceMark) => ({

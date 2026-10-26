@@ -317,3 +317,19 @@ export function flipY(src: Pixels): Pixels {
   for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(x, src.h - 1 - y));
   return out;
 }
+
+/** A sprite turned `deg` degrees clockwise about its middle, nearest pixel (the palette stays exact). */
+export function rotate(src: Pixels, deg: number): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  const a = (-deg * Math.PI) / 180;
+  const cx = (src.w - 1) / 2;
+  const cy = (src.h - 1) / 2;
+  for (let y = 0; y < out.h; y++)
+    for (let x = 0; x < out.w; x++) {
+      const sx = Math.round(cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a));
+      const sy = Math.round(cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a));
+      if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
+      out.set(x, y, src.get(sx, sy));
+    }
+  return out;
+}
