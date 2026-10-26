@@ -68,6 +68,9 @@ Making the files:
 - `cameos.ts` — Mystery Robot Joe, Watt, Will and Teenage Lewie drawn by their own games and recolored into
   another game's palette (`TIN-HEARTS.md`, "Cameos").
 - `easterEgg.ts` — the decorated Easter egg, a painted egg block in any game's palette, hidden like the tin heart.
+- `saveSign.ts` — the save sign: a cream board with a blue floppy disk, SAVE and F5 in a dashed pink stitch, on two
+  posts, put into any game's palette by nearest color. Each felt-egg game has exactly one, in the level after the egg's
+  (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
@@ -80,6 +83,8 @@ Checking the games:
   and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
+- `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
+  sign, where its about.json says, on the egg's map or one it links to; no other game has one.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
 - `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
