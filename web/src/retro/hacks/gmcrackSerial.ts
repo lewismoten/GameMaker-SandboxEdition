@@ -56,7 +56,7 @@ export function reserialCli(arg: string | undefined, extras: PcExtras): string[]
   else if (word === 'F' || word === 'FACTORY') to = FACTORY_SERIAL;
   else to = parseSerial(word);
   if (to === undefined) return [BAD_SERIAL];
-  if (to === from) return [`PLAYGAME.EXE has serial ${to} already.${to === FACTORY_SERIAL ? ' (the factory serial)' : ''}`];
+  if (to === from) return [`PLAYGAME.EXE has serial ${to} already${to === FACTORY_SERIAL ? ' (the factory serial)' : ''}.`];
   extras.setSerial(to);
   return [
     `Patching C:\\GM\\PLAYGAME.EXE at ${patchLine(from, to)}`,

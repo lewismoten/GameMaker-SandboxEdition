@@ -91,7 +91,8 @@ export const ZINE: ZinePage[] = [
     title: 'THE CRACK SCENE',
     lines: [
       'GMCRACK by DiGiTAL DUNE, from the Warez area, unzips to C:\\DOWNLOAD\\GMCRACK. It shows your serial and whether Game-Maker is registered.',
-      '[3] KEYGEN: type a name, watch the hex fly, get a key, and it offers to register with it. GMCRACK /K <name> just prints the key. Press R first for a made-up serial of some other copy: any number x 1029, plus 4, is a good one.',
+      '[3] KEYGEN: type a name, watch the hex fly, get a key, and it offers to register with it. GMCRACK /K <name> just prints the key. Press R first for a made-up serial of some other copy: any number x 1029, plus 4, is a good one. Like it? It stamps it into YOUR copy.',
+      '[8] RESERIAL: a new serial in C:\\GM\\PLAYGAME.EXE (hex 181E, where CHK.EXE reads it). Your old PLAYGAME.REG goes bad, so it KEYGENs a new key. F puts the factory serial back. GMCRACK /S from DOS.',
       '[1] registers, [2] un-registers (Game-Maker goes back to asking for a word from the manual).',
       '[4] "cracks" a downloaded shareware game: you get a DiGiTAL DUNE intro first. It\'s still shareware, LOL. [5] uncracks it. [7] is the list of manual-check answers.',
       'GM30, the Warez area\'s "rip" of Game-Maker 3.00: its INSTALL just tells you you already own it, d00d.',
