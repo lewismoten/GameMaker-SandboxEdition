@@ -21,7 +21,7 @@ export type Order =
   | { trick: keyof typeof SCAN; hold?: number; after?: number }
   | { wait: number }
   | { face: 'left' | 'right' }
-  | { until: string; maxTicks?: number; check: (s: Sim) => boolean };
+  | { until: string; maxTicks?: number; check: (s: Sim) => boolean | Promise<boolean> };
 
 interface RunResult {
   ok: boolean;
@@ -229,8 +229,8 @@ export async function runRoute(sim: Sim, route: Order[], label = '', rec = new R
       await tick(3);
     } else if ('until' in o) {
       let t = 0;
-      while (!o.check(sim) && t++ < (o.maxTicks ?? 300) && !sim.dead && sim.link < 0) await tick();
-      if (!o.check(sim) && sim.link < 0) {
+      while (!(await o.check(sim)) && t++ < (o.maxTicks ?? 300) && !sim.dead && sim.link < 0) await tick();
+      if (!(await o.check(sim)) && sim.link < 0) {
         say(`FAILED: ${o.until}`);
         return { ok: false, log, keys: rec.keys, grabs };
       }

@@ -17,8 +17,10 @@ import { docLeo, leoOn } from '../sprites/leo';
 export interface Level {
   /** File name stem (8.3). */
   file: string;
-  /** Who plays it: Teddy, Gwinn or Doc Leo (MEANWHILE...), or THE CHEZ on the road. */
+  /** Who plays it: Teddy, Gwinn or Doc Leo (MEANWHILE...), THE CHEZ on the road, or Teddy on the dream run. */
   hero: Hero;
+  /** A scene that never scrolls (the dream run): its .gam scroll flags are all off. */
+  still?: boolean;
   /** The cartoon shown on the way out (none by default). */
   outro?: string;
   /** The lines under the level card (yellow when they start with NEW); else text.ts CARDS. */
@@ -50,7 +52,7 @@ export interface Level {
 }
 
 type Spot = { x: number; y: number };
-export type Hero = 'teddy' | 'gwinn' | 'leo' | 'chez';
+export type Hero = 'teddy' | 'gwinn' | 'leo' | 'chez' | 'runner';
 
 /** A level's block set: non-solid blocks fall (gravity down) unless they say otherwise. */
 export class Tiles extends BlockSet {

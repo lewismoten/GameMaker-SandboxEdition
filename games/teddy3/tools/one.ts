@@ -28,6 +28,9 @@ const r = await playLevel(
       },
       l.start,
       ci,
+      1,
+      // the dream run's scene never scrolls
+      !l.still,
     );
     return { sim, rec: new Recorder(sim) };
   },

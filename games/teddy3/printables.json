@@ -159,7 +159,7 @@
   "news": [
     {
       "head": "Teddy's back for the big one",
-      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Sixteen stops, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE\u00a0CHEZ, which you get to drive. Mind the charge.</p>"
+      "html": "<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Seventeen stops, a dream run, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE\u00a0CHEZ, which you get to drive. Mind the charge.</p>"
     },
     {
       "head": "Since last issue: Best Behaved?",
@@ -421,7 +421,17 @@
           ]
         },
         {
-          "head": "12. Lookout Hill",
+          "head": "12. Teddy's Dream Run",
+          "hints": [
+            {
+              "q": "I can't get past the ball.",
+              "a": "You don't have to get past anything: the run ends by itself when the paw prints in the sky fill in. Hop when the ball is about a dog's length away, and hold Up for a higher hop."
+            },
+            { "q": "A branch keeps bumping me.", "a": "Play dead (hold 4) as it comes, and keep holding until it has gone over." }
+          ]
+        },
+        {
+          "head": "13. Lookout Hill",
           "hints": [
             {
               "q": "The cow won't move.",
@@ -430,7 +440,7 @@
           ]
         },
         {
-          "head": "13. Firefly Meadow",
+          "head": "14. Firefly Meadow",
           "hints": [
             {
               "q": "It's too dark to go on.",
@@ -439,7 +449,7 @@
           ]
         },
         {
-          "head": "14. Meanwhile: Gwinn Hides Backstage",
+          "head": "15. Meanwhile: Gwinn Hides Backstage",
           "hints": [
             {
               "q": "The spotlights keep finding her.",
@@ -448,7 +458,7 @@
           ]
         },
         {
-          "head": "15. Meanwhile: Doc Leo Hangs the Lights",
+          "head": "16. Meanwhile: Doc Leo Hangs the Lights",
           "hints": [
             {
               "q": "How do I get up the middle of the tent?",
@@ -457,7 +467,7 @@
           ]
         },
         {
-          "head": "16. The Teddy Course",
+          "head": "17. The Teddy Course",
           "hints": [
             {
               "q": "Honker won't let me by.",
