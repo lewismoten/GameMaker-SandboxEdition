@@ -129,6 +129,12 @@ main.credits-page .credits-table tbody th {
   font-weight: 600;
 }
 
+/* a game's name in its row: inline padding makes a 24px target without changing the row */
+main.credits-page .credits-table tbody th > a,
+main.credits-page li > a:first-child {
+  padding-block: 3px;
+}
+
 main.credits-page .credits-cite {
   display: block;
   font-size: 14px;
