@@ -95,6 +95,8 @@ Walk into each of the four tower rings with sand, then again to plant a flag. Fo
 Plug anthills with sand. SPACE flings it at ants.
 
 Gwinn naps in the doorway: toss her a ball (F). The can by her has more.
+
+F5 saves, F6 loads.
 `),
   moat: wrap(`
 |2. HOSEWATER MOAT

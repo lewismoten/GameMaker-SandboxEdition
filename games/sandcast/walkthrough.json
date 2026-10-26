@@ -67,7 +67,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 24481,
+  "frames": 24962,
   "chapters": [
    {
     "title": "Opening",
@@ -83,27 +83,27 @@
    },
    {
     "title": "Level 2: Hosewater Moat",
-    "frame": 7447
+    "frame": 7927
    },
    {
     "title": "Level 3: Low Tide Lagoon",
-    "frame": 11382
+    "frame": 11863
    },
    {
     "title": "Level 4: Beetle Burrows",
-    "frame": 15508
+    "frame": 15989
    },
    {
     "title": "Level 5: Gwinn's Nap",
-    "frame": 18723
+    "frame": 19204
    },
    {
     "title": "Ending",
-    "frame": 20409
+    "frame": 20890
    },
    {
     "title": "Credits",
-    "frame": 22929
+    "frame": 23410
    }
   ]
  }
