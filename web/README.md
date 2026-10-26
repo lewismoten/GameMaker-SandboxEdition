@@ -121,7 +121,8 @@ written in TypeScript to look and act the way they did, from the original source
   ends up in a saved game; a shadow box on the shelf shows the ones found. Finding them all
   unlocks secret games, which the site never lists or names until then. Each Sandbox and
   Bard of Bizarre game also hides a tin heart (`src/tinHearts`); finding every one brings
-  a trophy to the shelf.
+  a trophy to the shelf. Two score trophies at the back of the desk (`src/scoreTrophies`)
+  grow from plastic to gold with the catalog games' best scores and total score.
 - **The shelf** holds the boxes of the original games in `../games`: click one to bring
   it forward and turn it (drag, scroll to zoom, shift-drag to pan), read its manual or
   put its disk in drive A:. Each box holds its printables (`src/manual/printables`): a
@@ -204,7 +205,7 @@ them straight from `../cd` and `../games` while developing, and only the product
 | `games/index.json` | the full catalog: every listed game with its notice, manual and printables |
 | `games/catalog.json` | the same list without those (a quarter of the size); what the home page, shelf and play page load |
 | `games/details/<id>.json` | one game's notice, manual and printables, fetched when opened |
-| `games/extra.json` | the secret games, fetched only once all the felt eggs are found (`project/secretGames.ts`) |
+| `games/extra-<gate>.json` | the secret games, each fetched only once what unlocks it is found (`project/secretGames.ts`) |
 | `games/gameware/<id>/` | `cd/gameware/<id>/` (editable samples) |
 | `games/shareware/<id>/` | `cd/sharware/<id>/` (play only; `.exe`/`.bat`/`.com` files left out) |
 | `games/originals/<id>/` | `../games/<id>/disk/` and its `walkthrough.json` |
@@ -240,7 +241,8 @@ detail. In short:
 | `src/cast` | The Cast page (`#/cast`): the characters who turn up in more than one new game. |
 | `src/saves` | The home page's "Saves & scores" panel: a game's saved games and high scores. |
 | `src/credits` | The Credits page (`#/credits`): packages, third-party pieces, the original makers, the games' authors, AI tools and people. |
-| `src/achievements`, `src/tinHearts`, `src/offline` | Achievements (the page and ACHIEVE.EXE); the tin heart hunt and its trophy; the offline copy of the whole site. |
+| `src/achievements`, `src/tinHearts`, `src/scoreTrophies`, `src/offline` | Achievements (the page and ACHIEVE.EXE); the tin heart hunt and its trophy; the desk's two score trophies; the offline copy of the whole site. |
+| `src/library` | The Library (`#/library`): a card for everything to read or print (manuals, box paper, World Maps and Level Maps, the Guides, TURBO BUTTON), the walkthroughs and the videos, by game or by kind. |
 | `src/linkIn` | Opening a game another site links to or sends by postMessage ([`../docs/embed.md`](../docs/embed.md)). |
 | `src/hostedPlayer` | The web player (`web-player.html`, [`../docs/web-player.md`](../docs/web-player.md)): one file that plays the games listed in a `games.json` beside it, keeping their saves in the browser. |
 | `src/media` | Demo playback and previews, the demo sound choice, and saving video, animated GIFs and WAV. |
@@ -253,7 +255,7 @@ detail. In short:
 | `src/vga` | The eight designers ported from their C source, one file per `.EXE` (a big one's parts in a folder of the same name), and `shared/` (VGA screen, block routines, Game-Maker's look). |
 | `src/manual` | The Owner's Guide, the web Guide, the original games' manuals and box contents (with the World Map and Level Maps), The Ultimate Owner's Guide (`ultimate/`), and TURBO BUTTON, a mid-90s game magazine (`magazine/`). |
 | `src/seo` | Page titles, descriptions and JSON-LD. |
-| `src/*.ts` | Entries (`main.ts`, `play.ts`), the Desk \| DOS \| Web switch (`viewSwitch.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`, `pageToc.ts`, `keepTogether.ts` (THE CHEZ on one line), `seededRandom.ts`, and `firstLoad.test.ts` with `importWalk.ts` (what each page must not load up front). |
+| `src/*.ts` | Entries (`main.ts`, `play.ts`), the Desk \| DOS \| Web switch (`viewSwitch.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`, `pageToc.ts`, `keepTogether.ts` (THE CHEZ on one line), `seededRandom.ts`, `modernUi.ts` (today's web, loaded only when shown), `devReload.ts` (development only: a reload button instead of a reload), and `firstLoad.test.ts` with `importWalk.ts` (what each page must not load up front). |
 | `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use), `credits.ts` (the Credits page's package list), `levelSecrets.ts` and `levelViews.ts` (what the Level Maps hide and show), `castHidden.ts` (where the cast's Easter eggs and tin hearts are), `gameMakerArchive.ts` (the magazine's Shareware Shelf), `bbsGifs.ts` (the BBS's pictures) and `dosbox.ts` (`npm run dosbox`). |
 | `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (many newer `*.test.ts` sit beside their source in `src/`). |
 
@@ -263,7 +265,7 @@ detail. In short:
   reload or a shared link comes back to it: `#/` (home, `?tab=…`), `#/game/cd:nebula` (a game
   on the home page), `#/p/<project>/<file>?scene=3` (a file open in the workspace, with what is
   selected in it), `#/help/<section>` (the web Guide), `#/cast`, `#/credits`,
-  `#/achievements`, `#/mac`, `#/windows`, `#/linux` and `#/desk` (`?disk=cd:<id>` puts a
+  `#/achievements`, `#/library`, `#/magazine`, `#/mac`, `#/windows`, `#/linux` and `#/desk` (`?disk=cd:<id>` puts a
   disk in drive A:). Small changes replace the
   history entry; opening a page or file pushes one. `play.html?game=<id>` (and each game's
   own `play-<id>.html`) plays one game full window; `dos.html?game=<id>` opens it in DOS
@@ -303,8 +305,11 @@ detail. In short:
   Integrator's 🤖 Make a walkthrough uses its bot (`check/walk`).
 - **Achievements** (`src/achievements`): what a visitor has done, kept with the saves, shown
   on `#/achievements` and by the desk's ACHIEVE.EXE.
-- **Tests** (`test/`, and a few beside their source): one Vitest file per subject, each starting with a line saying what
-  it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
+- **The Library** (`src/library`): everything on the site to read or print, a card each with
+  a first-page thumbnail, sorted by game or by kind; each card opens its piece in the viewer
+  that already shows it. Walkthroughs and the videos about the site are listed too.
+- **Tests** (`test/`, and many beside their source in `src/`): one Vitest file per subject,
+  each starting with a line saying what it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
 
 ## File formats
 
