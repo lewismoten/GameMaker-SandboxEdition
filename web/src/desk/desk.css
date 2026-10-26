@@ -690,6 +690,35 @@
   cursor: pointer;
 }
 
+/* the drawn buttons stay their size; what takes a finger is at least 24px (an invisible
+   margin round each) */
+.eject-btn {
+  position: relative;
+}
+
+.eject-btn::before,
+.case button.case-btn::before,
+.monitor .enlarge::before {
+  content: '';
+  position: absolute;
+}
+
+.eject-btn::before {
+  inset: -9px -4px;
+}
+
+.eject-btn.wide::before {
+  inset-inline: 0;
+}
+
+.case button.case-btn::before {
+  inset: -2px 0;
+}
+
+.monitor .enlarge::before {
+  inset: -4px -2px;
+}
+
 .eject-btn:active {
   transform: translateY(1px);
   box-shadow: none;
