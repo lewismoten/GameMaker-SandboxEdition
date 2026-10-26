@@ -146,6 +146,29 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   </ul>
   <p>Put the doors a few blocks apart so one step can’t take the wrong one, and keep the room
   free of foes. A choice the player hasn’t read yet shouldn’t cost a life.</p>
+  <h2>Parallax on a screen that doesn’t scroll</h2>
+  <p>An unfinished monster-movie game in the archive keeps its giant standing still while the city
+  goes by behind him. Two rows of the map are skyline, and each row’s block is a ring of ten
+  pictures of the same buildings, each shifted 2 pixels left of the one before, showing 2 ticks
+  apiece. Every copy of a block shares one clock, so the whole row slides together, 1 pixel a
+  tick, and after ten pictures it is back where it began, 20 pixels on: the width of a block, so
+  the seam never shows. The sky above and the street below stay put, and he seems to stride
+  through town.</p>
+  <ul>
+    <li><b>Give each band its own speed for depth.</b> That game moves both rows at the same rate,
+    so they read as one moving skyline. Slow the far hills, speed up the near fence, and the
+    screen gets deep: far hills 2 pixels every 4 ticks, the town 2 pixels every 2, the fence by
+    the road 4 pixels every tick.</li>
+    <li><b>Count the blocks.</b> A ring needs 20 ÷ the shift pictures to come back round: 20
+    blocks for 1 pixel a step, 10 for 2, 5 for 4. Slow a band with a longer timer rather than a
+    smaller step, and it costs no more blocks.</li>
+    <li><b>Draw each band to repeat every 20 pixels,</b> so its right edge meets its left. A
+    band taller than a block is a stack of rings, one per row, with the same timers so they stay
+    lined up.</li>
+    <li><b>Make the stillness the point.</b> A hero who can’t move is a runner on a treadmill:
+    foes and prizes come in from the right, and he jumps or ducks. Or turn the bands round, and a
+    vehicle that only steers up and down flies through a world that scrolls by itself.</li>
+  </ul>
   <h2>A pass code to get through</h2>
   <p>A short puzzle in the archive locks its exit behind a word. The screen is a wall of carved
   letter tiles, eight across and three rows high, with the hero below. He walks left and right and
