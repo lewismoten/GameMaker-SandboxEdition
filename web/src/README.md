@@ -678,8 +678,8 @@ saved with `editor/core/ui.ts` `download`.
   - `videoTranscript.ts` a Library video's `public/videos/<id>.transcript.json`, from its YouTube
     automatic captions (`yt-dlp --skip-download --write-auto-subs --sub-langs en-orig <url>`, then
     `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about
-    a minute a paragraph, the names the captions mishear spelled right, and any sentence naming a
-    secret game left out.
+    a minute a paragraph, and the names the captions mishear spelled right; everything Lewis said
+    is kept as he said it.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
   `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast`, from the
   other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
