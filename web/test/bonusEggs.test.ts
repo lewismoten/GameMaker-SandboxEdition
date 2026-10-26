@@ -20,7 +20,7 @@ import {
   TAPS_KEY,
 } from '../src/eggs/bonus';
 import { EGGS } from '../src/eggs/eggs';
-import { eggStates, OVERRIDES_KEY } from '../src/eggs/eggState';
+import { eggStates, OVERRIDES_KEY, resetAllOverrides } from '../src/eggs/eggState';
 import { tapMessage } from '../src/eggs/bonusViewer';
 
 const save = (inv: number[]) => new TextEncoder().encode(JSON.stringify({ version: 1, world: { ci: { inv, meter: [] } } }));
@@ -65,6 +65,11 @@ describe('the two eggs kept apart from the felt eggs', () => {
     // every felt egg, with both of these broken: still all of them
     store.set(OVERRIDES_KEY, JSON.stringify({ ...most, [EGGS[last].game]: 'added', 'bakers/rotten': 'broken', 'bakers/faberge': 'broken' }));
     expect((await eggStates()).every((s) => s.found)).toBe(true);
+    expect((await bonusStates()).some((s) => s.found)).toBe(false);
+    // EGG.EXE's X Reset all: every egg, these two too, back to what the saves say
+    resetAllOverrides();
+    expect(store.has(OVERRIDES_KEY)).toBe(false);
+    expect((await eggStates()).some((s) => s.found)).toBe(false);
     expect((await bonusStates()).some((s) => s.found)).toBe(false);
   });
 

@@ -52,6 +52,16 @@ export function setOverride(game: string, value: Override | undefined): void {
   window.dispatchEvent(new Event(EGGS_CHANGED));
 }
 
+/** EGG.EXE's X Reset all: every egg (the bonus ones too) back to what the saves say. */
+export function resetAllOverrides(): void {
+  try {
+    localStorage.removeItem(OVERRIDES_KEY);
+  } catch {
+    /* private mode */
+  }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(EGGS_CHANGED));
+}
+
 /** What EGG.EXE shows: where the egg stands, and whether it counts as found. */
 export function statusOf(inSave: boolean, override: Override | undefined): { status: EggStatus; found: boolean } {
   if (override === 'broken') return { status: 'broken', found: false };

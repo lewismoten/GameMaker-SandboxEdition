@@ -118,6 +118,9 @@ export function setAllOverrides(states: Pick<HeartState, 'id' | 'inSave'>[], fou
   writeOverrides(o);
 }
 
+/** EGG.EXE's X Reset all (and R): every heart back to what the saves say. */
+export const resetAllOverrides = (): void => writeOverrides({});
+
 /** Where a heart stands: found = (in the save OR added by hand) AND not taken away. */
 export function statusOf(inSave: boolean, override: HeartOverride | undefined): { status: HeartStatus; found: boolean } {
   if (override === 'broken') return { status: 'broken', found: false };
