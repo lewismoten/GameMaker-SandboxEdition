@@ -10,6 +10,11 @@ when touched. The web knows it by its place: the map file and cell in `about.jso
 the player when a touch changes a map cell, and a touch at that place counts as a find. The find is
 saved in the game's save data as `tinheart.dat`. The disk and the game's play stay exactly as built.
 
+One more heart is in no game: it falls out of the desk's wall clock with the rubber chicken, once
+he has popped out a few times (`web/src/tinHearts/deskHearts.ts`, `web/src/desk/props/clockHeart.ts`).
+It counts toward the set like the others. Someone who had every game's heart before it was added
+keeps the trophy and what it opens, and is shown the clock's as one more to find.
+
 ## Placing a heart
 
 1. **Art.** Draw it with `kit/tinHeart.ts` in the game's own ramps, over the ground it sits on:

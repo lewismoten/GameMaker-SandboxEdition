@@ -339,7 +339,10 @@ modules are in [`../test`](../test).
     shell; `diamondHeart.ts` is the heart the IOU promises, which the tin heart trophy shows too.
     `musicBox.ts` is a little synthesized music box.
 - [`tinHearts/`](tinHearts): the tin heart hunt: which games hide one and where (`hearts.json`,
-  `manifest.ts`), which are found (`tinHearts.ts`, as a line of text in `progress.ts`), EGG.EXE's
+  `manifest.ts`), the one in the desk's wall clock (`deskHearts.ts`: the chicken's pops, its find,
+  and grandfathering whoever had every game's heart before it; the desk's side is
+  `desk/props/clockHeart.ts`, drawn by `tinHeartArt.ts`, and DOS's TIME stands in for the clock
+  where it isn't drawn, `retro/dos/dosTimeEvent.ts`), which are found (`tinHearts.ts`, as a line of text in `progress.ts`), EGG.EXE's
   tin heart page (`tinHeartExe.ts`), and the desk's trophy (`trophySpot.ts` loads `trophy.ts` and
   Mystery Robot Joe's scene, `reveal.ts` with `joeArt.ts`, only once every heart is found).
 - [`scoreTrophies/`](scoreTrophies): the desk's two score trophies, at the back left of the desk
