@@ -12,6 +12,7 @@ import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import { PROJECT } from './notices';
+import { withoutExtensions } from '../dosPlayer/fileExtensions';
 
 export interface ExportOptions {
   title: string;
@@ -66,7 +67,9 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
 
   const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(gameEntries);
-  const player = opts.player && Object.keys(opts.player).length ? opts.player : undefined;
+  // renamed file extensions are for the DOS download only
+  const look = opts.player && withoutExtensions(opts.player);
+  const player = look && Object.keys(look).length ? look : undefined;
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice, player }, gameEntries);
   const audio = recordedAudioNotice(recordedClips(files), 78, '  ');
   entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction, audio }), theme)) });

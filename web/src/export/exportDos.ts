@@ -1,6 +1,8 @@
 // Builds a ZIP that runs under DOS/DOSBox: the game's files in their original formats,
 // the CD's stand-alone player (XFERPLAY.EXE) renamed after the .gam file, the Sound
-// Blaster voice driver, a CONFIG.BAT and instructions.
+// Blaster voice driver, a CONFIG.BAT and instructions. A player customized to ask for other
+// file extensions (dosPlayer/fileExtensions.ts) gets the game's files renamed to match, with
+// the names inside its .gam, slide lists and backdrops rewritten (project/extensionNames.ts).
 import { createZip, type ZipEntry } from '../project/zip';
 import { cdName, normalize, type GameFiles } from '../project/files';
 import { textBytes } from '../formats/binary';
@@ -10,7 +12,9 @@ import { parseSoundSet } from '../formats/sound';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import { applyPlayerPatches } from '../dosPlayer/applyPatches';
 import type { PlayerPatches } from '../dosPlayer/patchRules';
-import { playerChanges } from '../dosPlayer/describePatches';
+import { playerChanges, renamedFiles } from '../dosPlayer/describePatches';
+import { extensionClashes, extensionMap } from '../dosPlayer/fileExtensions';
+import { rewriteNames, swapExtension } from '../project/extensionNames';
 
 interface DosExportOptions {
   title: string;
@@ -37,6 +41,15 @@ export function dosNameProblems(names: string[]): string[] {
  * the name the game uses, for every such file the game refers to.
  */
 export function dosNames(files: GameFiles, gam: string): Map<string, string> {
+  const wanted = gameRefs(files, gam);
+  const names = new Set(files.names());
+  const out = new Map<string, string>();
+  for (const w of wanted) if (!names.has(w) && names.has(cdName(w))) out.set(cdName(w), w);
+  return out;
+}
+
+/** Every file name the game refers to: in its .gam, its backdrops, slide lists and sound sets (normalized). */
+function gameRefs(files: GameFiles, gam: string): Set<string> {
   const wanted = new Set<string>();
   const add = (n: string | undefined) => n && wanted.add(normalize(n));
   try {
@@ -55,10 +68,25 @@ export function dosNames(files: GameFiles, gam: string): Map<string, string> {
       /* unreadable: leave its references alone */
     }
   }
-  const names = new Set(files.names());
-  const out = new Map<string, string>();
-  for (const w of wanted) if (!names.has(w) && names.has(cdName(w))) out.set(cdName(w), w);
-  return out;
+  return wanted;
+}
+
+/**
+ * Stored name -> its name in the DOS folder, for every file the player's renamed extensions
+ * change: all of each kind but text files the game doesn't name (a read-me stays .TXT). Bytes
+ * of the .gam and the slide lists and backdrops it names get their names inside rewritten.
+ */
+function extensionRenames(files: GameFiles, gam: string, names: Map<string, string>, map: Map<string, string>) {
+  const refs = gameRefs(files, gam);
+  const renames = new Map<string, string>();
+  const rewrite = new Set<string>();
+  for (const [stored, dos] of names) {
+    const ext = (/\.([^.]*)$/.exec(dos)?.[1] ?? '').toLowerCase();
+    const named = refs.has(normalize(dos)) || stored === gam;
+    if (map.has(ext) && (ext !== 'txt' || named)) renames.set(stored, swapExtension(dos, map));
+    if (named && /\.(gam|lst|bkd)$/i.test(dos)) rewrite.add(stored);
+  }
+  return { renames, rewrite };
 }
 
 async function fetchBytes(url: string): Promise<Uint8Array> {
@@ -73,12 +101,20 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     throw new Error(
       `“${opts.gam}” is not a DOS file name (up to 8 letters or digits), so the game’s .EXE can’t be named after it. Rename the .gam file first.`,
     );
-  const renamed = dosNames(files, opts.gam);
+  const cd = dosNames(files, opts.gam);
   const stored = files.names().filter((n) => !WEB_ONLY.test(n));
-  const names = stored.map((n) => renamed.get(n) ?? n);
+  const exts = extensionMap(opts.player);
+  const clash = [...extensionClashes(opts.player)][0];
+  if (clash) throw new Error(`The DOS player’s Files tab gives two kinds of file one extension (${clash[1]}); change one first.`);
+  const ext = extensionRenames(files, normalize(opts.gam), new Map(stored.map((n) => [n, cd.get(n) ?? n])), exts);
+  const renamed = new Map(stored.map((n) => [n, ext.renames.get(n) ?? cd.get(n) ?? n]));
+  const names = stored.map((n) => renamed.get(n)!);
+  const twice = names.filter((n, i) => names.findIndex((m) => m.toUpperCase() === n.toUpperCase()) !== i);
+  if (twice.length) throw new Error(`With the DOS player’s renamed extensions, two files would both be named ${twice[0].toUpperCase()}; rename one first.`);
   const bad = dosNameProblems(names);
   if (bad.length) throw new Error(`These file names won’t work in DOS (use up to 8 letters or digits plus a 3 letter extension): ${bad.join(', ')}`);
   const exe = `${stem}.EXE`;
+  const gamExt = (exts.get('gam') ?? 'gam').toUpperCase();
   if (names.some((n) => n.toUpperCase() === exe || n.toUpperCase() === 'SNDBLAST.DRV' || n.toUpperCase() === 'CONFIG.BAT')) {
     throw new Error(`The game already has a file named ${exe}, SNDBLAST.DRV or CONFIG.BAT; remove it first.`);
   }
@@ -109,22 +145,30 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     // Playgame shows its sound/video setup screen when run with "config".
     { name: 'CONFIG.BAT', data: textBytes(`@ECHO OFF\r\n${stem} config\r\n`) },
     ...help,
-    ...stored.map((n) => ({ name: (renamed.get(n) ?? n).toUpperCase(), data: files.get(n)! })),
+    ...stored.map((n) => ({ name: renamed.get(n)!.toUpperCase(), data: ext.rewrite.has(n) ? rewriteNames(files.get(n)!, exts) : files.get(n)! })),
     // (beside the game's own README.TXT, if it has one, under another name)
     {
       name: names.some((n) => n.toUpperCase() === 'README.TXT') ? 'PLAYER.TXT' : 'README.TXT',
-      data: textBytes(readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes).replace(/\n/g, '\r\n')),
+      data: textBytes(
+        readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes, renamedFiles(opts.player ?? {}), gamExt).replace(/\n/g, '\r\n'),
+      ),
     },
   ];
   return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries), exe };
 }
 
-function readme(title: string, stem: string, audio: string | undefined, changes: string[]): string {
+function readme(title: string, stem: string, audio: string | undefined, changes: string[], exts: string[], gamExt: string): string {
   return `${title}
 ${'='.repeat(title.length)}
 
 A Game-Maker 3.00 game for DOS. ${stem}.EXE is Game-Maker's stand-alone player;
-it plays ${stem}.GAM and the other files in this folder.
+it plays ${stem}.${gamExt} and the other files in this folder.${
+    exts.length
+      ? `
+Its files use other extensions than Game-Maker's own (${exts.join(', ')}),
+as some 1990s authors did, so other copies of Game-Maker 3.0 won't open them.`
+      : ''
+  }
 
 Play it in DOSBox (https://www.dosbox.com)
   1. Unzip this folder somewhere, for example C:\\GAMES\\${stem} or ~/games/${stem}.

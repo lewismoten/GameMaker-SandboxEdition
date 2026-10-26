@@ -6,6 +6,7 @@ import { encodeGame, fillPage } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import type { PlayerPatches } from '../dosPlayer/patchRules';
+import { withoutExtensions } from '../dosPlayer/fileExtensions';
 
 // Files a game writes while being played; exported pages start fresh.
 const SAVE_DATA = /^(game\d\.sav|savnames\.dat|data\d+\.rec)$/;
@@ -31,7 +32,9 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   const id = slug(opts.title);
   const entries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(entries);
-  const player = opts.player && Object.keys(opts.player).length ? opts.player : undefined;
+  // renamed file extensions are for the DOS download only
+  const look = opts.player && withoutExtensions(opts.player);
+  const player = look && Object.keys(look).length ? look : undefined;
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice, player }, entries);
   return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction, audio: recordedAudioNotice(recordedClips(files)) }) };
 }
