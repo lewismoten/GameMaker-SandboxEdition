@@ -30,6 +30,8 @@ const INK: V = rgb(20, 14, 44);
 function card(pic: Picture, title: string, line: string, advice: string[], n: number, of: number): void {
   panel(pic, 0, 0, W, 38, rgb(10, 8, 30), 0.55);
   text(pic, 8, 3, n === of ? `FINAL SCENE: ${n} OF ${of}` : `SCENE ${n} OF ${of}`, rgb(255, 200, 90), 1, { outline: INK });
+  // the first card says how to save, once
+  if (n === 1) text(pic, W - 8 - 18 * 8, 3, 'F5 SAVES  F6 LOADS', rgb(255, 200, 90), 1, { outline: INK });
   centered(pic, 16, title.toUpperCase(), WHITE, 2, { outline: INK, shadow: rgb(0, 0, 0) });
   panel(pic, 0, 150, W, H, rgb(10, 8, 30), 0.6);
   centered(pic, 154, line, rgb(140, 230, 255), 1, { outline: INK });
