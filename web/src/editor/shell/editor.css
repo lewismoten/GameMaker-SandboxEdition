@@ -312,6 +312,7 @@ main.home {
 }
 
 .sidebar h2.file-kind .add {
+  flex: none; /* a long kind's name never squeezes it under 24px */
   width: 24px;
   height: 24px;
   padding: 0;

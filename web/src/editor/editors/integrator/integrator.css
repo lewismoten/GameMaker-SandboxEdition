@@ -76,6 +76,12 @@
   position: relative;
   outline: none;
 }
+/* the bar is 10px; what takes the pointer is 24px */
+.grator-resize::before {
+  content: '';
+  position: absolute;
+  inset: 0 -7px;
+}
 .grator-resize::after {
   content: '';
   position: absolute;
@@ -158,6 +164,9 @@
   color: var(--muted);
   font-size: 18px;
   padding: 0 8px;
+}
+.grator-side-close {
+  min-width: 24px;
 }
 .grator-side-close:hover,
 .grator-side-open:hover {
