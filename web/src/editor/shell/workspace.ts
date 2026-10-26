@@ -67,29 +67,62 @@ const KIND_HELP: Partial<Record<FileKind, string>> = {
   rec: 'a recorded demo',
 };
 
-/** Sections with more files than this can be folded away. */
+/** Sections with more files than this can be folded away; in a game this big, every section can. */
 const FOLD_AT = 8;
-const FOLD_KEY = 'gm-file-folds';
+/** A game with this many files opens with every section folded (but the open file's). */
+const FOLD_ALL_AT = 20;
+/** Each game's folds, by project id then kind. */
+const FOLD_KEY = 'gm-file-folds-by-game';
 
-function folds(): Record<string, boolean> {
+function folds(project: string): Record<string, boolean> {
   try {
-    return JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, boolean>;
+    return (JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, Record<string, boolean>>)[project] ?? {};
   } catch {
     return {};
   }
 }
 
-/** Folded unless chosen otherwise; very long lists start folded. */
-function isFolded(kind: FileKind, count: number): boolean {
-  return folds()[kind] ?? count > 24;
+/** Folded unless chosen otherwise: a big game's sections start folded, and a very long list does. */
+function isFolded(project: string, kind: FileKind, count: number, total: number): boolean {
+  return folds(project)[kind] ?? (total >= FOLD_ALL_AT || count > 24);
 }
 
-function setFolded(kind: FileKind, folded: boolean): void {
+function setFolded(project: string, kind: FileKind, folded: boolean): void {
   try {
-    localStorage.setItem(FOLD_KEY, JSON.stringify({ ...folds(), [kind]: folded }));
+    const all = JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, Record<string, boolean>>;
+    localStorage.setItem(FOLD_KEY, JSON.stringify({ ...all, [project]: { ...all[project], [kind]: folded } }));
   } catch {
     /* private mode: the fold just isn't remembered */
   }
+}
+
+/** Each kind's hue, for the colored extension that tells files apart at a glance (editor.css .ext). */
+const KIND_HUE: Partial<Record<FileKind, number>> = {
+  gam: 0,
+  pal: 320,
+  bbl: 25,
+  mbl: 280,
+  cbl: 200,
+  mon: 350,
+  chr: 240,
+  map: 140,
+  snd: 45,
+  gif: 180,
+  fli: 260,
+  bkd: 100,
+  txt: 215,
+  lst: 300,
+  cmf: 160,
+  voc: 10,
+  rec: 60,
+  his: 35,
+};
+
+/** A file's name with its extension colored by kind. */
+function fileLabel(name: string, k: FileKind): (string | HTMLElement)[] {
+  const dot = name.lastIndexOf('.');
+  if (dot <= 0 || KIND_HUE[k] === undefined) return [name];
+  return [name.slice(0, dot), h('span', { class: 'ext', style: `--ext-h:${KIND_HUE[k]}` }, name.slice(dot))];
 }
 
 /** Search: every word must appear in the name ("lev map" finds level1.map). */
@@ -292,8 +325,10 @@ export class Workspace {
   /** One kind of file: a heading (with a fold toggle once there are many) and its files. */
   private section(k: FileKind, files: string[]): HTMLElement {
     const p = this.project;
-    const foldable = files.length > FOLD_AT;
-    const folded = foldable && isFolded(k, files.length);
+    const total = p.files.names().length;
+    const foldable = k !== 'gam' && (files.length > FOLD_AT || (total >= FOLD_ALL_AT && files.length > 0));
+    // the open file's section is never folded away from it
+    const folded = foldable && !(this.current && files.includes(this.current)) && isFolded(p.id, k, files.length, total);
     const sec = h('section', {
       class: `file-section${foldable ? ' foldable' : ''}${folded ? ' folded' : ''}${files.length ? '' : ' none'}`,
       'data-kind': k,
@@ -301,7 +336,7 @@ export class Workspace {
     const toggle = () => {
       const now = !sec.classList.contains('folded');
       sec.classList.toggle('folded', now);
-      setFolded(k, now);
+      setFolded(p.id, k, now);
       head.setAttribute('aria-expanded', String(!now));
     };
     const head = foldable
@@ -309,10 +344,17 @@ export class Workspace {
           'button',
           { class: 'fold', 'aria-expanded': String(!folded), title: 'Show or hide these files', onclick: toggle },
           h('span', { class: 'chev', 'aria-hidden': 'true' }, '▸'),
+          h('span', { class: 'kind-emoji', 'aria-hidden': 'true' }, KIND_ICON[k]),
           h('span', null, KIND_LABELS[k]),
           h('span', { class: 'count' }, String(files.length)),
         )
-      : h('span', null, KIND_LABELS[k], files.length ? null : h('span', { class: 'none-yet' }, ' · none yet'));
+      : h(
+          'span',
+          null,
+          h('span', { class: 'kind-emoji', 'aria-hidden': 'true' }, KIND_ICON[k]),
+          KIND_LABELS[k],
+          files.length ? null : h('span', { class: 'none-yet' }, ' · none yet'),
+        );
     const parts: (HTMLElement | null)[] = [
       h(
         'h2',
@@ -335,7 +377,7 @@ export class Workspace {
         h(
           'div',
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
-          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, n),
+          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k)),
           h('button', { class: 'icon-btn', title: `Edit ${n}`, 'aria-label': `Edit ${n}`, onclick: () => this.open(n) }, '✎'),
           n === p.gam || this.looking
             ? null

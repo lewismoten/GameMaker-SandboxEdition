@@ -336,6 +336,27 @@ main.home {
   background: var(--accent-soft);
 }
 
+/* a group's emoji before its name, and each kind's extension in its own color (workspace.ts KIND_HUE) */
+.sidebar .kind-emoji {
+  margin-right: 0.35em;
+  text-transform: none;
+}
+
+.sidebar button.file .ext {
+  color: hsl(var(--ext-h) 75% 30%);
+  font-weight: 600;
+}
+
+:root[data-theme='dark'] .sidebar button.file .ext {
+  color: hsl(var(--ext-h) 85% 74%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='auto'] .sidebar button.file .ext {
+    color: hsl(var(--ext-h) 85% 74%);
+  }
+}
+
 .sidebar .file-row.active button.file {
   color: var(--accent);
   font-weight: 600;
