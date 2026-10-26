@@ -187,6 +187,13 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   never a stray step. A snowboarding sequel picks its hero the same way: the pointer slides along
   a row of two links, and Up or Space hops it onto one, the game’s own seal or a guest from
   another studio’s game, each with its own copy of the courses.</p>
+  <p>A third game gives its pointer a big stage: large portraits of the four heroes, picked with a
+  little creature that walks left and right below them and steps up onto a link with Space. The
+  whole select screen is one picture cut into blocks. A screen that doesn’t scroll is 16 blocks
+  by 10, and this one uses 108 different blocks, each placed once, plus one plain block for the
+  rest, well inside a set’s 150. Paint the screen as a single picture, cut it into 20 by 20
+  blocks, and lay them out in order on the map: the picture comes back whole, with links for the
+  pointer to step onto.</p>
   <p>Leave the level flat, with nothing that pulls, so the pointer stays where it is put, and
   label each door on the map so the choice reads before it is made.</p>
   <h2>A shareware cut from a second .gam</h2>
