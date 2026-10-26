@@ -91,7 +91,11 @@ export function wallClock(): HTMLElement {
     charge = charge < 0 ? (on ? 1 : 0) : nextCharge(charge, on, 1);
     el.style.setProperty('--lume', charge.toFixed(3));
     // its afterglow shows in a dark room without the black light (which makes it glow anyway)
-    el.classList.toggle('wc-glowing', desk.classList.contains('rl-dark') && !desk.classList.contains('bl-uv') && charge > LUME_VISIBLE);
+    const glowing = desk.classList.contains('rl-dark') && !desk.classList.contains('bl-uv') && charge > LUME_VISIBLE;
+    // seen glowing on the wall (it only shows where the window is wide enough)
+    if (glowing && !el.classList.contains('wc-glowing') && el.getClientRects().length)
+      dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'desk-lume' } }));
+    el.classList.toggle('wc-glowing', glowing);
   };
   const tick = () => {
     lume();

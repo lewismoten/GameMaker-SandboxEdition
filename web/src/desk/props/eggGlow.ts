@@ -4,6 +4,7 @@
 // little stars, and on one a tiny smiling face (eggs/eggUv.ts, shared with the close-up
 // viewer). Only on eggs that are there; drawn over each egg, clipped to its shape.
 import { UV_SVG, hot, uvInk } from '../../eggs/eggUv';
+import { achieve } from './propKit';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -61,6 +62,7 @@ export function eggGlow(desk: HTMLElement): { update(): void; dispose(): void } 
       layer!.append(svg);
     });
     perch.append(layer);
+    if (eggs.some((_, i) => uvInk(i))) achieve('desk-egg-uv');
   };
   return {
     update,

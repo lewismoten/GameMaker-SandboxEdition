@@ -139,6 +139,7 @@ async function terminal(t: Term, h: RetroHost, dialFirst?: string): Promise<void
     s.clear(attr(7, 0));
     const result = await dial(t, h, entry.number, entry.busy());
     if (result !== 'connect') {
+      if (result === 'busy' && entry.run === runSofa) unlockAchievement('sofa-busy');
       t.line(result === 'busy' ? '|07All lines are busy. Try again in a little while.' : '|07Someone is on the phone. Hang it up and try again.');
       t.status(statusLine('Offline'));
       t.print('|07Press a key… ');

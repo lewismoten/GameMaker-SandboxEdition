@@ -8,6 +8,7 @@
 import './blasterSwitch.css';
 import { h } from '../../editor/core/ui';
 import { setSoundBlaster, soundBlaster } from '../../retro/computer/soundBlaster';
+import { unlockAchievement } from '../../achievements';
 
 /** What the switch needs from the desk PC. */
 export interface BlasterPc {
@@ -37,6 +38,7 @@ export function blasterSwitch(pc?: BlasterPc): HTMLElement {
   el.addEventListener('click', () => {
     const on = !soundBlaster();
     setSoundBlaster(on);
+    if (!on) unlockAchievement('desk-soundcard');
     show();
     const playing = pc ? pc.gamePlaying() : !!document.querySelector('.crt-game canvas');
     note.open(

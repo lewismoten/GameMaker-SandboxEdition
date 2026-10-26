@@ -12,6 +12,7 @@ import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../ret
 import { toCp437 } from '../retro/text/cp437';
 import { eggStates, resetAllOverrides, setOverride, type EggState } from './eggState';
 import { hasTeddyEgg } from './teddyEgg';
+import { tally } from '../achievements';
 
 const STATE_TEXT: Record<EggState['status'], string> = {
   saved: 'Found in a save',
@@ -151,10 +152,12 @@ export async function runEggExe(ui: Ui): Promise<void> {
       resetAllOverrides();
     } else if (key === 'T') {
       // the tin heart ledger, a page of its own; back here after
+      tally('desk-egg-pages', 'hearts');
       await (await import('../tinHearts/tinHeartExe')).runTinHeartExe(ui);
       n = -1;
     } else if (key === 'S') {
       // the score trophies' page, likewise
+      tally('desk-egg-pages', 'trophies');
       await (await import('../scoreTrophies/trophyExe')).runTrophyExe(ui);
       n = -1;
     } else if (key === 'Escape' || key === 'Q') break;

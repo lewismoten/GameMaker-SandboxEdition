@@ -6,6 +6,7 @@ import './padChooser.css';
 import { h, modal } from '../../editor/core/ui';
 import { DEFAULT_PAD, PAD_PRINTS, isPadPrint, loadPad, padName, savePad } from './padChoice';
 import { padSvg } from './padPrints';
+import { unlockAchievement } from '../../achievements';
 
 export interface PadChooserOptions {
   /** Where focus goes back to once it closes (the ad's button). */
@@ -57,6 +58,7 @@ export async function openPadChooser(o: PadChooserOptions): Promise<void> {
           const v = new FormData(form).get('pad-print');
           if (!isPadPrint(v)) return;
           savePad(v);
+          if (v !== DEFAULT_PAD) unlockAchievement('desk-mousepad');
           said.textContent = `${padName(v).replace('THE CHEZ', 'THE CHEZ')} is on the desk’s mouse pad now. `;
           status.replaceChildren(said, see);
         },

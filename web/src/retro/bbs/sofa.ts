@@ -9,6 +9,7 @@ import { sofaFiles } from './sofaFiles';
 import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
+import { unlockAchievement } from '../../achievements';
 
 /** All eight lines are often in use: about one call in three gets a busy signal. */
 export const sofaBusy = () => Math.random() < 0.35;
@@ -204,6 +205,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
         return;
       }
       if (msg) t.line(`|10From ${name}: |07${msg}`);
+      if (msg) unlockAchievement('sofa-chat');
       if (/stop|quit|knock|enough|please/i.test(msg)) pleaAt = performance.now() + 900;
       prompt();
     } else if (k.key === 'Backspace') {

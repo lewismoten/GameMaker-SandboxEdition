@@ -4,6 +4,7 @@
 // gamepad's presses included.
 import { holdDeskPad, padPosition, type Joy } from '../../input/deskJoystick';
 import { showPad } from './gamePadArt';
+import { unlockAchievement } from '../../achievements';
 
 /** What the pointers and keys hold on the pad, and the pad shown pressed. */
 export class PadHolds {
@@ -24,6 +25,7 @@ export class PadHolds {
   dir(who: string, pos: number): void {
     this.dirs.delete(who);
     if (pos) this.dirs.set(who, pos);
+    if (pos) unlockAchievement('desk-gamepad');
     this.changed();
   }
 
@@ -31,6 +33,7 @@ export class PadHolds {
   button(who: string, n: number, down: boolean): void {
     if (down) this.buttons.set(who, n);
     else this.buttons.delete(who);
+    if (down) unlockAchievement('desk-gamepad');
     this.changed();
   }
 
