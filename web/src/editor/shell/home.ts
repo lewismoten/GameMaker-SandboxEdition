@@ -64,18 +64,18 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; short: string; l
     lead: 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.',
   },
   {
-    id: 'sandbox',
-    icon: 'star',
-    name: 'Sandbox',
-    short: 'New games in the original formats, so they play in DOS too.',
-    lead: 'New games from Sandbox Software, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.',
-  },
-  {
     id: 'shareware',
     icon: 'lock',
     name: 'Shareware',
     short: 'Other people’s games from the CD and BBSes, as released.',
     lead: 'Games other people made with Game-Maker, from the CD and the BBSes. Most are copyrighted shareware that can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+  },
+  {
+    id: 'sandbox',
+    icon: 'star',
+    name: 'Sandbox',
+    short: 'New games in the original formats, so they play in DOS too.',
+    lead: 'New games from Sandbox Software, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.',
   },
   {
     id: 'bizarre',
