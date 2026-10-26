@@ -139,7 +139,10 @@ modules are in [`../test`](../test).
   the CRC-32s of its .gam files and player .EXEs (`fingerprint.ts`); the small record kept when one
   is removed (`removedGames.ts`), which a later import marks "Previously removed"; moving the
   rating and note between the two as games come and go (`noteMoves.ts`); grouping and filtering by
-  rating (`ratings.ts`) and the Library's notes list and search (`noteSearch.ts`).
+  rating (`ratings.ts`) and the Library's notes list and search (`noteSearch.ts`). On screen: the
+  stars as a radio group, Unrated first (`ratingStars.ts`), the "Rating and note" dialog
+  (`noteDialog.ts`), and the Library's section of them, removed games marked and forgettable
+  (`notesShelf.ts`, loaded by the Library page); `imported.css` styles them.
 - [`export/`](export): publishing a game: as an offline web app (`exportWebApp.ts`), a single web
   page (`exportSinglePage.ts`, `singlePage.ts`, played by `standalonePlayer.ts`), the web player
   (`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
@@ -499,7 +502,9 @@ modules are in [`../test`](../test).
     lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
     each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all
     the imported games, or one import's, which `importBatch.ts` remembers: `importRemove.ts`) and
-    `projectExport.ts`; the health badge (`gameHealth.ts`).
+    `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home
+    page (`homeRatings.ts`: a tile's stars, the Show picker, grouping by rating, and the stars and
+    note in the panel at the top); "Remove all imported…" can take only some ratings.
   - The workspace (`workspace.ts`: file list + editor), with Play Game and the Play Level split
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,

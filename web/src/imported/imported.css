@@ -1,0 +1,226 @@
+/* Imported games' ratings and notes: the star radio group (ratingStars.ts), the note dialog
+   (noteDialog.ts), the stars on a tile and the Library's notes list (notesShelf.ts). */
+.rating-stars {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.rating-stars .rs-opt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  cursor: pointer;
+}
+/* the radio itself is not drawn: its star (or Unrated) is */
+.rating-stars input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.rating-stars .rs-star {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--muted);
+}
+.rating-stars .rs-star.on {
+  color: var(--accent);
+}
+.rating-stars .rs-none {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.rating-stars input:checked + .rs-none {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.rating-stars input:focus-visible + span {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* the note dialog */
+.note-dialog {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+}
+.note-dialog textarea {
+  width: 100%;
+  min-height: 120px;
+  box-sizing: border-box;
+  font: inherit;
+}
+.note-dialog .note-facts {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+/* stars on a tile and in the showcase (read only) */
+.tile-stars {
+  display: block;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+.sc-rate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.sc-rate .sc-note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 14px;
+  color: #e7e2ff;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* the imported list's rating filter */
+.lib-rating select {
+  min-height: 28px;
+}
+
+/* the Library's notes list */
+.lib-notes {
+  margin-top: 32px;
+}
+.lib-notes-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.lib-notes-bar input[type='search'] {
+  min-height: 32px;
+  width: min(100%, 320px);
+  box-sizing: border-box;
+}
+.lib-notes-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 8px;
+}
+.lib-note {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  display: grid;
+  gap: 4px;
+  overflow-wrap: anywhere;
+}
+.lib-note.removed {
+  border-style: dashed;
+  background: transparent;
+}
+.lib-note-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.lib-note-head strong {
+  font-size: 16px;
+}
+.lib-note .lib-note-stars {
+  color: var(--accent);
+}
+.lib-note .lib-note-removed {
+  padding: 0 8px;
+  border: 1px solid var(--danger);
+  border-radius: 999px;
+  color: var(--danger);
+  font-size: 12px;
+}
+.lib-note p {
+  margin: 0;
+  white-space: pre-line;
+}
+.lib-note small {
+  color: var(--muted);
+}
+.lib-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lib-note-actions button {
+  min-height: 28px;
+}
+.note-dialog .note-label {
+  margin: 0 0 4px;
+}
+
+/* Remove imported games: the ratings to remove (editor/shell/importRemove.ts) */
+.ir-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+dialog.modal .ir-ratings .ir-rating {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+}
+.ir-rating input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+.ir-stars {
+  color: var(--accent);
+}
+.sc-rate .sc-rate-label {
+  font-size: 14px;
+}
+/* the panel at the top is always dark purple, in either theme: its own light colors */
+.sc-rate {
+  margin: 0 0 12px;
+  color: #e7e2ff;
+}
+.sc-rate .rating-stars .rs-star {
+  color: #b3abd6;
+}
+.sc-rate .rating-stars .rs-star.on {
+  color: #f5e600;
+}
+.sc-rate .rating-stars .rs-none {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #e7e2ff;
+}
+.sc-rate .rating-stars input:checked + .rs-none {
+  border-color: #f5e600;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}

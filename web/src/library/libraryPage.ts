@@ -6,6 +6,7 @@
 // box (manual/dosManual.ts), TURBO BUTTON, the Guide, the desk's zine (manual/zine), a game's
 // walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play). The
 // Game-Maker box's piece and chapter stay in the address (&gm=ultimate&ch=12, readerAddress.ts).
+// Below the shelves, your imported games' ratings and notes (imported/notesShelf.ts).
 import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
@@ -260,6 +261,12 @@ export function renderLibrary(el: HTMLElement): void {
     ),
   );
   el.dataset.library = shelfKey();
+  // the imported games' ratings and notes, removed ones too (imported/notesShelf.ts), when there are any
+  const page = el.querySelector<HTMLElement>(':scope > .library');
+  void import('../imported/notesShelf')
+    .then((m) => m.notesShelf())
+    .then((notes) => notes && page?.isConnected && page.append(notes))
+    .catch(() => undefined);
   // a link to a piece of the Game-Maker box, at a chapter (#/library?gm=ultimate&ch=12)
   if (gm) void openFromLibrary(gm, state.get('ch'), false);
   void loadShelf()

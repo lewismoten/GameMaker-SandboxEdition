@@ -17,6 +17,9 @@ export interface GameNote {
 
 const store = localJson<Record<string, GameNote>>('gm-imported-notes', () => ({}));
 
+/** Told on `window` when a rating or note changes, so the lists showing them redraw. */
+export const NOTES_CHANGED = 'gm-imported-notes-changed';
+
 /** A game's rating and note (empty when it has none). */
 export function noteOf(id: string): GameNote {
   return store.read()[id] ?? {};
@@ -38,6 +41,7 @@ export function setNote(id: string, change: Partial<GameNote>): void {
   if (Object.keys(next).length) map[id] = next;
   else delete map[id];
   store.write(map);
+  (globalThis as Partial<EventTarget>).dispatchEvent?.(new Event(NOTES_CHANGED));
 }
 
 /** Takes a removed game's out (removedGames.ts keeps it); what it was. */

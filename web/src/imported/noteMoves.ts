@@ -13,11 +13,14 @@ export function noteImport(id: string, source: string, fingerprint: Fingerprint)
   return was;
 }
 
-/** Keeps a record of an imported game being removed; `files` give its fingerprint when the import didn't keep one. */
-export function noteRemoval(game: { id: string; name: string }, files?: Record<string, Uint8Array>): void {
+/**
+ * Keeps a record of an imported game being removed; its `files` (or their `fingerprint`, worked
+ * out already) give its fingerprint when the import didn't keep one.
+ */
+export function noteRemoval(game: { id: string; name: string }, files?: Record<string, Uint8Array>, fingerprint?: Fingerprint): void {
   const n = takeNote(game.id);
-  const fingerprint = n.fingerprint ?? (files ? fingerprintOfFiles(files) : { gam: [] });
-  rememberRemoved({ id: game.id, name: game.name, source: n.source, fingerprint, rating: n.rating, note: n.note });
+  const print = n.fingerprint ?? fingerprint ?? (files ? fingerprintOfFiles(files) : { gam: [] });
+  rememberRemoved({ id: game.id, name: game.name, source: n.source, fingerprint: print, rating: n.rating, note: n.note });
 }
 
 /** Puts a removed game's rating and note back (Undo after a Delete). */
