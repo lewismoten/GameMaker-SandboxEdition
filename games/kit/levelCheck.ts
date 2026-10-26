@@ -6,6 +6,8 @@
 // own list does. Its "acceptedFindings" lists findings the designer looked at and kept on
 // purpose, by the editor's stable key (check, scene and title, web/src/editor/check/accepted.ts), e.g.
 // "hurt-lock s2 Monster 9 holds the hero while it hurts": they never fail, as in the editor.
+// The game's DOS player look (its player.json, kit/player.ts) goes in as a project's would, so the
+// menu's text contrast and the color 0 check judge the words and colors it ships with.
 //
 //   cd web && npx vite-node ../games/kit/levelCheck.ts <id>            new findings exit 1
 //   cd web && npx vite-node ../games/kit/levelCheck.ts <id> --update   write <id>'s baseline
@@ -23,6 +25,7 @@ import { runChecks } from '../../web/src/editor/check/report';
 import { gameOf, levelScenes } from '../../web/src/editor/check/playtest';
 import { findingKey, splitAccepted } from '../../web/src/editor/check/accepted';
 import { readDisk } from './gameSim';
+import { readPlayer } from './player';
 import { measurePace } from '../../web/src/editor/check/walk/pace';
 import { STEADY_MS } from '../../web/src/editor/check/findings';
 import type { Walkthrough } from '../../web/src/walkthrough/format';
@@ -39,7 +42,11 @@ interface About {
 async function staticFindings(id: string): Promise<{ lines: string[]; stale: string[] }> {
   const path = join(here, '..', id, 'about.json');
   const about = existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')) as About) : {};
-  const r = await runChecks(new GameFiles(readDisk(join(here, '..', id, 'disk'))), { play: false, sameEverySide: about.sameEverySide ?? [] });
+  const r = await runChecks(new GameFiles(readDisk(join(here, '..', id, 'disk'))), {
+    play: false,
+    sameEverySide: about.sameEverySide ?? [],
+    player: readPlayer(id),
+  });
   const accepted = about.acceptedFindings ?? [];
   const { open } = splitAccepted(r.findings, accepted);
   const keys = new Set(r.findings.map(findingKey));

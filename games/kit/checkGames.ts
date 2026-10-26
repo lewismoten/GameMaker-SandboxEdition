@@ -9,6 +9,7 @@
 //           with TEXT_BOUNDS on; with --quick, kit/textBoundsCheck.ts builds on its own)
 //   text    kit/textfitCheck.ts      hidden  kit/hiddenView.ts      level  kit/levelCheck.ts
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
+//   player  kit/playerCheck.ts (games/<id>/player.json, its DOS player look, keeps the rules)
 // then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
 // elsewhere) and kit/syncCheck.ts (levelSecrets.json and box hours).
 // With --play, each game is also played by the Level check's bot (kit/levelCheck.ts --play: one-way
@@ -109,7 +110,7 @@ function rebuild(id: string): Status {
   }
 }
 
-const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level'] as const;
+const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player'] as const;
 type Row = Record<(typeof COLS)[number], Status> & { sec: number };
 const rows = new Map<string, Row>();
 const t0 = Date.now();
@@ -124,6 +125,7 @@ for (const id of games) {
     text: step('text', '../games/kit/textfitCheck.ts', [id]),
     hidden: has(id, 'about.json') ? step('hidden', '../games/kit/hiddenView.ts', [id]) : 'skip',
     level: flag('--no-level') ? 'skip' : step('level', '../games/kit/levelCheck.ts', [id]),
+    player: has(id, 'player.json') ? step('player', '../games/kit/playerCheck.ts', [id]) : 'skip',
     sec: 0,
   };
   row.sec = Math.round((Date.now() - t) / 1000);

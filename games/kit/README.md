@@ -80,7 +80,8 @@ Checking the games:
 
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
   any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
-  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts` and `levelCheck.ts`; then `tinHearts.ts check`,
+  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
+  `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
   `saveSignCheck.ts` and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
@@ -88,6 +89,16 @@ Checking the games:
   sign, where its about.json says, on the egg's map or one it links to; no other game has one.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
+- `player.ts` / `playerCheck.ts` — a game's DOS player look, `games/<id>/player.json`: the `{ "base": "xferplay-3.00",
+  "patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
+  `web/src/dosPlayer/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
+  catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never goes on `disk/`, so Game-Maker's own
+  PLAYGAME still shows the stock words (keep in-game text that names an F2 label neutral: "F2 counts your sugar").
+  Words, colors, frames and positions only: no timing or F-key patch (they would change play, and the bots and
+  walkthroughs play without the look) and no renamed extensions. `npx vite-node ../games/kit/playerCheck.ts [<id>...]`
+  checks each against the rules, writes it into the CD's player, and checks that a color it changes on the black
+  screens (F2, the drop picker, F1's no-help line, F10, the name prompt) stands 3 : 1 against color 0 in every level's
+  palette. `levelCheck.ts` judges the menu's words and the color 0 check with it.
 - `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
   `levelCheck.baseline.json` fails. After looking at new findings and judging them fine (or after tuning the checks), run
   `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline. A game's about.json
