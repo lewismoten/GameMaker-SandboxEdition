@@ -46,6 +46,8 @@ async function fetchList(): Promise<GameList | Error | undefined> {
       : undefined;
   }
   if (!res.ok) return listParam ? new Error(`The game list ${listParam} could not be loaded (the server answered ${res.status}).`) : undefined;
+  // a host that answers every missing file with a page (a dev server, a single-page host) has no list
+  if (!listParam && /text\/html/i.test(res.headers.get('content-type') ?? '')) return undefined;
   try {
     return parseGameList(await res.text(), url);
   } catch (e) {
