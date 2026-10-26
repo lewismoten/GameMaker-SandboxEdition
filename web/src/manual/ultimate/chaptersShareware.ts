@@ -93,6 +93,12 @@ export const SHAREWARE: Chapter = {
   swipe that kills what it touches (<i>Ninja Tuck</i>). A monster that rises a little and vanishes
   after 30 ticks, as the <b>Becomes</b> of each enemy, is a score that pops up where the enemy fell
   (<i>Shanna</i>). Both use monster slots, so keep count on a busy screen.</p>
+  <p><i>Ricci’s Cow Hunt</i> shows the recipe for the pop-up whole. Each cow is worth 100 points and
+  a hit point, and its <b>Becomes</b> is a second monster: a “100” that flashes red, black and white so it shows on any ground, at power 255 so
+  nothing can knock it out of the air, whose path floats it up 1 pixel a tick and whose lifetime
+  ends it 30 ticks later. Walk over a cow and its score drifts up from the spot and fades out. Give
+  each prize its own pop-up picture (10, 100, a heart for a life) and the player reads what they
+  just got without looking at the status line.</p>
   <h2>Timing by hand</h2>
   <p>Even steps look mechanical. A jump whose frames rise fast and slow at the top
   (<i>Ninja Tuck</i>), a patrol that slows into each corner by giving each leg its own speed, and a
