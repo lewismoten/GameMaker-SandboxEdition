@@ -1,11 +1,11 @@
 // Turns a Library video's YouTube automatic captions (the rolling .en-orig.vtt that yt-dlp
 // saves) into its readable transcript, public/videos/<id>.transcript.json: [{ t, text }], one
 // paragraph of about 30 to 60 seconds each, t its start in whole seconds. The rolling repeats go,
-// and the names the captions mishear are spelled right (FIXES); nothing else Lewis said changes.
-// A sentence naming a secret game is left out (and printed). Run from web/:
+// and the names the captions mishear are spelled right (FIXES); nothing else Lewis said changes:
+// his videos are his own words, kept as he said them. Run from web/:
 //   npx vite-node scripts/videoTranscript.ts <path>/<id>.en-orig.vtt
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { basename, join, resolve } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { basename, join } from 'node:path';
 
 /** Paragraphs end at a sentence once this long, and anywhere once MAX long (seconds). */
 const MIN = 30;
@@ -47,23 +47,6 @@ const FIXES: [RegExp, string][] = [
   [/\bVinnie Vidy Rizzy,?/g, 'Veni, Vidi, Risi!'],
   [/\bBrother Cattle\b/g, 'Brother Camel'],
 ];
-
-const ROOT = resolve(__dirname, '../..');
-
-/** Each secret game's id and title, as words to look for. */
-function secretWords(): string[] {
-  const words: string[] = [];
-  for (const id of readdirSync(join(ROOT, 'games'))) {
-    let about: { secret?: boolean; title?: string };
-    try {
-      about = JSON.parse(readFileSync(join(ROOT, 'games', id, 'about.json'), 'utf8')) as typeof about;
-    } catch {
-      continue;
-    }
-    if (about.secret) words.push(id, ...(about.title ? [about.title, about.title.split(':')[0]] : []));
-  }
-  return words;
-}
 
 function seconds(stamp: string): number {
   const [h, m, s] = stamp.split(':');
@@ -117,25 +100,17 @@ function paragraphs(all: Word[]): { t: number; text: string }[] {
   return out;
 }
 
-function tidy(text: string, secrets: string[]): string {
+function tidy(text: string): string {
   let s = text;
   for (const [find, put] of FIXES) s = s.replace(find, put);
-  s = s.replace(/^./, (c) => c.toUpperCase());
-  const named = (sentence: string) => secrets.some((w) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(sentence));
-  const kept = s.split(/(?<=[.?!])\s+/).filter((sentence) => {
-    if (!named(sentence)) return true;
-    console.log(`left out (names a secret game): ${sentence}`);
-    return false;
-  });
-  return kept.join(' ');
+  return s.replace(/^./, (c) => c.toUpperCase());
 }
 
 const path = process.argv[2];
 if (!path) throw new Error('Give the .vtt path: npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt');
 const id = basename(path).split('.')[0];
-const secrets = secretWords();
 const out = paragraphs(words(readFileSync(path, 'utf8')))
-  .map((p) => ({ t: p.t, text: tidy(p.text, secrets) }))
+  .map((p) => ({ t: p.t, text: tidy(p.text) }))
   .filter((p) => p.text);
 const file = join(__dirname, '../public/videos', `${id}.transcript.json`);
 writeFileSync(file, `${JSON.stringify(out)}\n`);
