@@ -36,6 +36,8 @@ export interface RunOptions {
   speed?: SpeedSetting;
   /** A touch changed a map cell while the player played (never during a demo's playback). */
   onTouched?: Session['onTouched'];
+  /** Play ended with this score (never during a demo's playback; see Session.onPlayEnd). */
+  onPlayEnd?: Session['onPlayEnd'];
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -67,6 +69,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     joystick: opts.joystick,
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},
+    onPlayEnd: opts.onPlayEnd,
   };
   const touched = opts.onTouched;
   if (touched) s.onTouched = (scene, x, y, bnum) => void (!s.rec.playing && touched(scene, x, y, bnum));
@@ -265,6 +268,7 @@ export async function play(s: Session, startLink: number): Promise<void> {
   // A playthrough that makes the high score table is kept as data<place>.rec; demo
   // playback never scores (score -1 leaves off the "Your Latest Score" line).
   if (!s.rec.playing) {
+    s.onPlayEnd?.(score, curscene === 1 ? 'won' : curlink === MAXSCENELINKS + 2 ? 'lost' : 'quit');
     const place = await checkHighScores(m, s.gameName, s.colors, score);
     if (place) m.files.set(`data${place}.rec`, s.rec.save());
   } else score = -1;

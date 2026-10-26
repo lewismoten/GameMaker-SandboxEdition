@@ -45,6 +45,9 @@ import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
 
 const DEAD = 2;
 
+/** How a play ended: the Game Won scene, no lives left, or Esc (or a scene that could not load). */
+export type PlayEnd = 'won' | 'lost' | 'quit';
+
 /** Everything that lives across scenes (playgame's globals outside a level). */
 export interface Session {
   m: Machine;
@@ -71,6 +74,11 @@ export interface Session {
   onScene?: (scene: number) => void;
   /** Not PLAYGAME's: a touch in `scene` changed map cell (x, y), shown as block `bnum` (World.onTouched). */
   onTouched?: (scene: number, x: number, y: number, bnum: number) => void;
+  /**
+   * Not PLAYGAME's: play ended (won, lost, or left with Esc) with this score, just before the
+   * high score table. Never told during a demo's playback. It only listens: nothing changes.
+   */
+  onPlayEnd?: (score: number, how: PlayEnd) => void;
   /**
    * The last level played. loadscene loads into globals, so a level that leaves its
    * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
