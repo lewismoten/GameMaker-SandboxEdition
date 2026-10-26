@@ -8,6 +8,7 @@ import { decodeGif, isGif } from '../formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';
 import { parseBackdrop, parseSlideList, textLines } from '../formats/graphicScripts';
 import { matchColor, PALETTE_SIZE } from '../formats/palette';
+import { STOCK_LOOK, type PlayerLook } from './playerLook';
 
 // The fixed RGBdata colors the C matches against whatever palette is up (RGBRed.Match…).
 export const RGB_RED: [number, number, number] = [63, 10, 10];
@@ -26,6 +27,8 @@ interface GraphicOptions {
   pause?: number;
   /** The game's current palette, used to pick text colors (`colors` global). */
   gamePalette: Uint8Array;
+  /** The player's look (RunOptions.player): text page colors, default times. */
+  look?: PlayerLook;
 }
 
 /** Returns false when the player pressed Esc (which aborts slide shows). */
@@ -44,26 +47,27 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
   m.audio.stopVoc(); // FreeSoundSample
   const e = ext(file);
   let pause = opts.pause ?? -1;
+  const look = opts.look ?? STOCK_LOOK;
   const cols = opts.cols ?? new Uint8Array(PALETTE_SIZE);
   let key: number | undefined;
 
   if (e === '.gif' || e === '.bkd') {
-    if (pause === -1) pause = e === '.gif' ? 15 : 20;
+    if (pause === -1) pause = look.seconds(e === '.gif' ? 'timing.showGraphic.gif' : 'timing.showGraphic.bkd');
     m.screen.setPaletteTo(0, 0, 0);
     if (drawGifFile(m, file, cols, e === '.bkd')) {
       await m.fadeTo(cols);
       key = (await m.pauseTimeKey(pause))?.ascii;
     } else m.screen.clear();
   } else if (e === '.fli') {
-    if (pause === -1) pause = 0;
+    if (pause === -1) pause = look.seconds('timing.showGraphic.fli');
     if (await playFli(m, file)) {
       cols.set(m.screen.palette);
       key = (await m.pauseTimeKey(pause))?.ascii;
     }
   } else if (e === '.txt') {
-    if (pause === -1) pause = 90;
+    if (pause === -1) pause = look.seconds('timing.showGraphic.txt');
     const pal = opts.cols ?? opts.gamePalette;
-    return displayFile(m, file, match(pal, RGB_PURPLE), pause, opts.gamePalette);
+    return displayFile(m, file, look.color(pal, 'color.select.textPages'), pause, opts.gamePalette, m.files.get(file), look);
   } else if (e === '.lst') {
     const bytes = m.files.get(file);
     if (!bytes) return true;
@@ -71,7 +75,7 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
       // An entry without a pause keeps 0xFFFF seconds: wait for a key. FileListClass
       // meant to give such entries the list's own pause, but after MaxFiles++ it tests
       // the next, still empty entry, so the 0xFFFF always stayed.
-      const ok = await showGraphic(m, entry.name, { cols, pause: entry.pause ?? 0xffff, gamePalette: opts.gamePalette });
+      const ok = await showGraphic(m, entry.name, { cols, pause: entry.pause ?? 0xffff, gamePalette: opts.gamePalette, look });
       if (!ok) return false;
     }
   }
@@ -152,20 +156,28 @@ export async function playFli(m: Machine, file: string): Promise<boolean> {
  * Display_File: text pages over the current picture, 16 lines (rows 5..20 of 8 pixels)
  * per page. fgets(…, 32) read at most 31 characters at a time, so long lines wrap.
  */
-export async function displayFile(m: Machine, file: string, col: number, pause: number, gamePalette: Uint8Array, bytes = m.files.get(file)): Promise<boolean> {
+export async function displayFile(
+  m: Machine,
+  file: string,
+  col: number,
+  pause: number,
+  gamePalette: Uint8Array,
+  bytes = m.files.get(file),
+  look = STOCK_LOOK,
+): Promise<boolean> {
   const saved = m.screen.snapshot();
-  const red = match(gamePalette, RGB_RED);
+  const red = look.color(gamePalette, 'color.select.textMissing');
   m.flushKeys();
   let escaped = false;
   if (!bytes) {
-    m.screen.write(40, 80, red, 'Missing File:');
-    m.screen.write(40, 96, red, `The file ${file} is`);
-    m.screen.write(40, 104, red, 'missing or cannot be opened.');
+    m.screen.write(40, 80, red, look.text('str.text.missingTitle'));
+    m.screen.write(40, 96, red, look.format('str.text.missingFile', file));
+    m.screen.write(40, 104, red, look.text('str.text.missingTail'));
   } else {
     let vertpos = 5;
     for (const line of textLines(bytes)) {
       if (vertpos > 20) {
-        m.screen.write(224, 168, red, 'MORE...');
+        m.screen.write(224, 168, red, look.text('str.text.more'));
         const k = await m.pauseTimeKey(pause);
         if (k?.ascii === 27) {
           escaped = true;

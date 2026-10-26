@@ -654,8 +654,9 @@ export class Workspace {
     const copy = new GameFiles(this.project.files.entries());
     if (level) copy.set(this.project.gam, serializeGame(startingAt(level.game, level.scene)));
     // the player loads with the first play test; not if another file was opened meanwhile
-    void import('../../player/player').then(({ mountPlayer }) => {
-      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
+    void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
+      const player = companionPatches(this.project.companion, this.project.gam);
+      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player });
     });
   }
 

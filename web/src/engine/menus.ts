@@ -1,7 +1,8 @@
 // Ports of playgame's in-graphics UI: GVertMenu, GGet, the default menu screen and
 // the high score table (code/GM/PLAYGAME.C, GRAPHC.C, HISCOREL.C, PALC.C).
 import type { Machine } from './machine';
-import { match, RGB_BLUE, RGB_RED } from './showGraphic';
+import type { Screen } from '../gfx/screen';
+import { STOCK_LOOK, type PlayerLook } from './playerLook';
 import { insertHighScore, parseHighScores, placeFor, serializeHighScores, type HighScore } from '../formats/highscore';
 import { PALETTE_SIZE } from '../formats/palette';
 
@@ -26,6 +27,8 @@ export async function gVertMenu(
   idleSeconds = Infinity,
   choice = 1,
   flushKeys = true,
+  /** The marker's width minus 1 (the player's border.marker.width patch). */
+  markerWidth = 5,
 ): Promise<number> {
   // Rows are 1-based, so the marker for row c sits at y - 8 + c*dy, as in the C.
   const rowY = (c: number) => y - 8 + c * dy;
@@ -34,7 +37,7 @@ export async function gVertMenu(
   else m.takeClick();
   let idleSince = m.now();
   for (;;) {
-    m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, color);
+    m.screen.boxFill(x, rowY(choice), x + markerWidth, rowY(choice) + 4, color);
     const k = m.keyboard.readKey();
     let move = 0;
     if (m.takeClick()) {
@@ -42,7 +45,7 @@ export async function gVertMenu(
       // A port addition; the C mouse only acted as up/down arrows and Enter.
       const row = Math.floor((m.pointer.y - (y - 8) + dy / 2) / dy);
       if (row >= 1 && row <= count) {
-        m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, prev);
+        m.screen.boxFill(x, rowY(choice), x + markerWidth, rowY(choice) + 4, prev);
         return row;
       }
     }
@@ -54,7 +57,7 @@ export async function gVertMenu(
       if (k.scan === 80) move = 1;
     } else if (m.now() - idleSince > idleSeconds * 1000) return count + 1;
     if (move) {
-      m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, prev);
+      m.screen.boxFill(x, rowY(choice), x + markerWidth, rowY(choice) + 4, prev);
       choice += move;
       if (choice < 1) choice = count;
       if (choice > count) choice = 1;
@@ -152,41 +155,84 @@ export function readHighScores(m: Machine, gamename: string): HighScore[] {
   return bytes ? parseHighScores(bytes) : Array.from({ length: 10 }, () => ({ score: 0, name: '' }));
 }
 
-/** ShowHighScores (HISCOREL.C): the table rows get closer together further down. */
-export async function showHighScores(m: Machine, gamename: string, colors: Uint8Array, score = -1): Promise<void> {
-  await m.need(highScoreFile(gamename));
-  const top = readHighScores(m, gamename);
-  const red = match(colors, RGB_RED);
-  const blue = match(colors, RGB_BLUE);
-  m.screen.setPalette(colors);
-  m.screen.write(104, 0, red, 'Top Ten Scores');
+/** The main menu's words over the menu picture: the game's name and the six choices (DoGame). Returns their color. */
+export function drawMenu(screen: Screen, look: PlayerLook, colors: Uint8Array, title: string): number {
+  const col = look.color(colors, 'color.select.menu');
+  screen.write(look.num('layout.menu.titleX'), look.num('layout.menu.titleY'), col, title);
+  for (const w of MENU_WORDS) screen.write(look.num(`layout.menu.${w}.x`), look.num(`layout.menu.${w}.y`), col, look.text(`str.menu.${w}`));
+  return col;
+}
+
+const MENU_WORDS = ['play', 'instructions', 'storyline', 'credits', 'highScores', 'quit'];
+
+/** The menu's GVertMenu call (x, first y, spacing, idle seconds, marker width), as the player's patches set them. */
+export function menuMarker(look: PlayerLook): { x: number; y: number; dy: number; idle: number; width: number } {
+  return {
+    x: look.num('layout.menu.markerX'),
+    y: look.num('layout.menu.firstY'),
+    dy: look.num('layout.menu.spacing'),
+    idle: look.seconds('timing.menu.idleSeconds'),
+    width: look.num('border.marker.width'),
+  };
+}
+
+/** One of the menu's "No game-specific ..." lines (they share one GWrite: one position, one color). */
+export function drawNoFile(screen: Screen, look: PlayerLook, colors: Uint8Array, id: 'noInstructions' | 'noStoryline' | 'noCredits'): void {
+  screen.write(
+    look.num('layout.menu.noFile.x'),
+    look.num('layout.menu.noFile.y'),
+    look.color(colors, 'color.select.menuMessages'),
+    look.text(`str.menu.${id}`),
+  );
+}
+
+/** The high score table's words and rows; the rows get closer together further down. */
+export function drawHighScores(screen: Screen, look: PlayerLook, colors: Uint8Array, top: HighScore[], score: number): void {
+  const red = look.color(colors, 'color.select.hsTitle');
+  const blue = look.color(colors, 'color.select.hsRows');
+  screen.write(look.num('layout.hiscore.title.x'), look.num('layout.hiscore.title.y'), red, look.text('str.hiscore.title'));
   // Row gaps shrink 2, 1, 2, 1... pixels: 22, 20, 19, 17, ...
-  let space = 22;
-  let ypos = 27;
-  for (let j = 0; j < 10; j++) {
-    if (top[j].score !== 0) m.screen.write(20, ypos, blue, `${String(top[j].score).padStart(10)} ${top[j].name}`);
+  let space = look.num('layout.hiscore.rowSpacing');
+  let ypos = look.num('layout.hiscore.firstRowY');
+  const rows = look.num('layout.hiscore.rows');
+  for (let j = 0; j < rows; j++) {
+    if (top[j].score !== 0) screen.write(20, ypos, blue, `${String(top[j].score).padStart(10)} ${top[j].name}`);
     ypos += space;
     if (j % 2 === 0) space--;
     space--;
   }
-  if (score > 0) m.screen.write(20, ypos, blue, `${String(score).padStart(10)} Your Latest Score`);
-  m.screen.write(116, 192, red, 'Hit any key');
-  await m.pauseTimeKey(30);
+  if (score > 0) screen.write(20, ypos, blue, look.format('str.hiscore.latest', score));
+  screen.write(look.num('layout.hiscore.anyKey.x'), look.num('layout.hiscore.anyKey.y'), red, look.text('str.hiscore.anyKey'));
+}
+
+/** ShowHighScores (HISCOREL.C). */
+export async function showHighScores(m: Machine, gamename: string, colors: Uint8Array, score = -1, look = STOCK_LOOK): Promise<void> {
+  await m.need(highScoreFile(gamename));
+  const top = readHighScores(m, gamename);
+  m.screen.setPalette(colors);
+  drawHighScores(m.screen, look, colors, top, score);
+  await m.pauseTimeKey(look.seconds('timing.highScores'));
+}
+
+/** CheckHighScores' words for a new high score (place is 1-based); returns the name's color. */
+export function drawNewHighScore(screen: Screen, look: PlayerLook, colors: Uint8Array, place: number): number {
+  const red = look.color(colors, 'color.select.hsPrompt');
+  const blue = look.color(colors, 'color.select.hsName');
+  screen.write(look.num('layout.hiscore.congrats.x'), look.num('layout.hiscore.congrats.y'), red, look.text('str.hiscore.congrats'));
+  screen.write(0, 100, blue, look.format('str.hiscore.place', place));
+  screen.write(look.num('layout.hiscore.enterName.x'), look.num('layout.hiscore.enterName.y'), red, look.text('str.hiscore.enterName'));
+  return blue;
 }
 
 /** CheckHighScores: asks for a name when the score makes the top ten; returns the 1-based place or 0. */
-export async function checkHighScores(m: Machine, gamename: string, colors: Uint8Array, score: number): Promise<number> {
+export async function checkHighScores(m: Machine, gamename: string, colors: Uint8Array, score: number, look = STOCK_LOOK): Promise<number> {
   await m.need(highScoreFile(gamename));
   const top = readHighScores(m, gamename);
   const place = placeFor(top, score);
   let result = 0;
   let next = top;
   if (place >= 0) {
-    const red = match(colors, RGB_RED);
-    const blue = match(colors, RGB_BLUE);
-    m.screen.write(96, 40, red, 'Congratulations!');
-    m.screen.write(0, 100, blue, `You scored number ${String(place + 1).padStart(2)} on the Top Ten!`);
-    m.screen.write(0, 120, red, 'Enter Your Name:');
+    const blue = drawNewHighScore(m.screen, look, colors, place + 1);
     const name = (await gGet(m, 136, 120, blue, 0, '', 22)) ?? '';
     next = insertHighScore(top, place, { score, name });
     result = place + 1;

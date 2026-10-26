@@ -219,6 +219,11 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
 }
 
 /** The options the native downloads share. */
+/** A game of yours: its DOS player customizations (dosPlayer/playerRecord.ts), which the DOS, web-page and native exports show. */
+async function gamePatches(game: DownloadGame) {
+  return (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam);
+}
+
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
   const [{ exportSinglePage }, { slug }, mac, audio] = await Promise.all([
     import('../../export/exportSinglePage'),
@@ -226,7 +231,7 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     import('../../export/macApp'),
     import('../../export/recordedAudio'),
   ]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
+  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
@@ -287,7 +292,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
     } else if (kind === 'web') {
       const { name, html } = await (
         await import('../../export/exportSinglePage')
-      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
+      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'player') {
       const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);
@@ -298,7 +303,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       ).exportDos(files, {
         title: game.title,
         gam: game.gam,
-        player: (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam),
+        player: await gamePatches(game),
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {

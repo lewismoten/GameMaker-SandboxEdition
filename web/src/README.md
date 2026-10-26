@@ -75,7 +75,10 @@ modules are in [`../test`](../test).
   `render.ts`, menus (`menus.ts`), function keys (`funcKeys.ts`), the key stack (`keys.ts`),
   recordings (`recorder.ts`), the between-scene screens (`showGraphic.ts`) and the "machine"
   (`machine.ts`: screen, keyboard, timers). `slowPc.ts` is the slow PC behind the desk's TURBO
-  button.
+  button. `playerLook.ts` is what XFERPLAY's own screens show (words, matched colors, frames,
+  positions, times, F-keys) from a project's DOS player patches (`RunOptions.player`), the CD
+  player's with none; the menu, high-score, status, drop and load/save screens draw through
+  `drawMenu`, `drawHighScores`, `drawStatus`… so the editor's previews use the same code.
 - [`audio/`](audio): `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV
   calls; `cmfLoad.ts` reads a song's header as its `load_file` did, CMF 1.0 included, and refuses
   what it refused), the AudioWorklet (`music.worklet.ts`), Web Audio output (`engine.ts`, the page's one
