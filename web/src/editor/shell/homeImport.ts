@@ -81,26 +81,38 @@ interface Imported {
   /** From an exported web page: its title and .gam file. */
   name?: string;
   gam?: string;
+  /** The folder's player .EXEs (left out of the files): a hand-edited one becomes DOS player patches. */
+  players?: { name: string; bytes: Uint8Array }[];
 }
+
+/** A game's own player is an .EXE of XFERPLAY 3.00's size; the import reads those and leaves out the rest. */
+const PLAYER_EXE = (name: string, size: number) => /\.exe$/i.test(name) && size === 160_598;
 
 async function filesFromList(list: File[]): Promise<Imported> {
   // A page made by "Export as one web page" carries the whole game inside it.
   const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
   const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
   if (page) return { files: page.files, name: page.title, gam: page.gam };
-  return { files: await filesOnly(list) };
+  return filesOnly(list);
 }
 
-async function filesOnly(list: File[]): Promise<GameFiles> {
+async function filesOnly(list: File[]): Promise<Imported> {
   if (list.length === 1 && /\.zip$/i.test(list[0].name)) {
     const [bytes, { isZip, readZip }] = await Promise.all([list[0].arrayBuffer().then((b) => new Uint8Array(b)), import('../../project/zip')]);
     if (isZip(bytes)) {
       const files = new GameFiles();
-      for (const e of await readZip(bytes)) if (!IGNORED_FILE.test(e.name) && !e.name.endsWith('/')) files.set(e.name, e.data);
-      return files;
+      const players: Imported['players'] = [];
+      for (const e of await readZip(bytes)) {
+        if (PLAYER_EXE(e.name, e.data.length)) players.push({ name: e.name, bytes: e.data });
+        else if (!IGNORED_FILE.test(e.name) && !e.name.endsWith('/')) files.set(e.name, e.data);
+      }
+      return { files, players };
     }
   }
-  return loadFileList(list);
+  const players = await Promise.all(
+    list.filter((f) => PLAYER_EXE(f.name, f.size)).map(async (f) => ({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) })),
+  );
+  return { files: await loadFileList(list), players };
 }
 
 /** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
@@ -112,7 +124,7 @@ async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefine
   return shareware.find((g) => crcs.has(g.gamCrc!));
 }
 
-async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promise<void> {
+async function importFiles(nav: HomeNav, { files, name, gam, players }: Imported): Promise<void> {
   if (!files.size) return;
   const shareware = await sharewareMatch(files);
   if (shareware) {
@@ -133,11 +145,18 @@ async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promis
     ]);
     return;
   }
+  // a hand-edited player (or one that renamed the files' extensions): read before the .gam is looked for
+  const player = players?.length ? (await import('../../project/importPlayer')).adoptPlayer(files, players) : undefined;
   // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
   const companion = takeCompanion(files);
   if (!files.mainGame()) toast('No .gam file found — a new one was created for these files.');
   const p = Project.fromFiles(files, name, undefined, companion);
   if (gam && files.has(gam)) p.gam = gam;
+  if (player) {
+    const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
+    if (Object.keys(player.patches).length) p.setExtras(p.gam, PLAYER_SECTION, playerRecord(player.patches));
+    toast(player.message);
+  }
   await p.saveNow();
   // listed under Imported, apart from the games made here (⋯ More can move it to My games)
   setImported(p.id, true);

@@ -117,7 +117,9 @@ modules are in [`../test`](../test).
 - [`project/`](project): a game's files (`files.ts`: `GameFiles`, 8.3 names, the CD catalog),
   streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
   (`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
-  (`importPage.ts`), and the editor-only companion file (`companion.ts`, never exported).
+  (`importPage.ts`), a folder's own hand-edited player read into DOS player patches, its renamed
+  extensions mapped back (`importPlayer.ts`), and the editor-only companion file (`companion.ts`,
+  never exported).
   - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
     revealed or hidden).
   - The Bard of Bizarre's collections (`bizarre.ts`), a game's title as boxes print it
@@ -195,7 +197,8 @@ modules are in [`../test`](../test).
   record (`store.ts`, in the save store), the calls the rest of the site makes (`index.ts`, with
   `editKinds.ts`, and its `GAME_SPOTS`: scenes of a game that count by name), what each page
   starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an item), totals counted from the games catalog
-  (`goals.ts`), the unlock note (`toast.ts`), the `#/achievements` page (`page.ts`) and the desk's
+  (`goals.ts`), the unlock note (`toast.ts`), the `#/achievements` page (`page.ts`: badges of one size, each opening its details in
+  `details.ts`, with where it is earned from `where.ts`) and the desk's
   `ACHIEVE.EXE` (`achieveExe.ts`).
 
 ### The 1994 desk and its PC
