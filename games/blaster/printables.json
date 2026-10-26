@@ -130,6 +130,18 @@
           "head": "5. The CPU",
           "hints": [
             {
+              "q": "The ribbon cable goes on forever!",
+              "a": "It loops on purpose. Each lap of the screen ends at the kink, where the wires bend flat, and there you slide over into the next wire down. Ride wire 5, 4, 3 and 2 and you reach the red wire, wire 1, where the gate is. Just keep riding."
+            },
+            {
+              "q": "Which way is which on the cable?",
+              "a": "The keys turn with the track. Up speeds you along it, Down slows you down, Left climbs toward the wire above and Right toward the wire below."
+            },
+            {
+              "q": "Is there a shortcut?",
+              "a": "Two splices: gaps in a ridge, with gold staples on their edges, under wire 4 and under wire 2. Hold Right as you pass one and you hop into the next wire, a whole lap early. Miss it and you just ride one more lap."
+            },
+            {
               "q": "How do I beat GLITCH?",
               "a": "Its brain sits behind a sliding grille in its face. Stay in the middle, fire through the gaps, and watch out for the Leak Slugs that hunt you from the bottom corners. Grab the repair in the bottom-left corner when you need it. When the brain bursts, it isn't over: two bare cores still plug the way out, and two fast shards come hunting. Keep firing and keep moving."
             },
@@ -403,7 +415,7 @@
     },
     {
       "head": "Scan every download",
-      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, eleven scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
+      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, twelve scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
     },
     {
       "head": "Since last issue: Watt made it home",
