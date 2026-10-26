@@ -146,6 +146,19 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   </ul>
   <p>Put the doors a few blocks apart so one step can’t take the wrong one, and keep the room
   free of foes. A choice the player hasn’t read yet shouldn’t cost a life.</p>
+  <p>A party pack in the archive turns the choice room into a board game. After a coin cursor
+  picks one of three heroes, the hero walks a winding path of spaces in a room of their own.
+  Doors along the path lead into that hero’s copies of the minigames (archery, a kart race, a
+  remote-control car, a duel), and two more lead across to the other heroes’ rooms, so changing
+  heroes is just another stop on the path. Every minigame sends the player back to the room it
+  came from, so the room becomes a hub to wander, not a menu passed through once.</p>
+  <ul>
+    <li><b>Copies per hero.</b> Each minigame is one map with a scene per hero, each scene with
+    that hero’s character file: the same course plays differently with each.</li>
+    <li><b>Give the hub an end.</b> That pack never reaches Game Won; it’s a party game you quit
+    from. To finish one, give each minigame’s win a counter the hub keeps, and open a last door
+    on the path once every counter is paid.</li>
+  </ul>
   <h2>Parallax on a screen that doesn’t scroll</h2>
   <p>An unfinished monster-movie game in the archive keeps its giant standing still while the city
   goes by behind him. Two rows of the map are skyline, and each row’s block is a ring of ten
