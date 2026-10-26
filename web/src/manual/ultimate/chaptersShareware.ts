@@ -17,7 +17,8 @@
 // "The players"), with the CD XFERPLAY.EXE's strings in playerWords.ts (PLAYGAME.C, HISCOREL.C;
 // F-keys from DoFunKy), the web player's own words in engine/game.ts and menus.ts, the desk's
 // transfer-disk .EXE a name with no bytes (computer/drives.ts, so hexedit/hexFiles.ts finds no
-// file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER).
+// file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER). The DOS player panel
+// it points to is editor/editors/integrator/dosPlayer/ (rules in dosPlayer/), PLAYHACK retro/hacks/.
 import { opening, tip, type Chapter } from './chapter';
 import { PLAYER_WORDS } from './playerWords';
 import { ARCHIVE_TRICKS } from './archiveTricks';
@@ -111,6 +112,14 @@ export const SHAREWARE: Chapter = {
   work; only the words are gone. The same author’s unfinished <i>Rōdïp: Rover of the Deep</i>
   renamed the status line’s Hitpoints and Lives to Energy and Failsafes, and cleared the
   high-score words. These two games led this edition to map every word the player shows.</p>
+  <p><b>The safe way now:</b> open your game’s <code>.gam</code> and press <b>DOS player</b> in the
+  integrator’s toolbar (on the desk PC, <code>PLAYHACK</code> from the BBS’s Warez area does the same).
+  It changes the words, and the player’s colors, frames, positions, waits and the F5, F6 and F9
+  keys, but only in ways the <code>.EXE</code> can take, with a preview of each screen as you type.
+  The DOS download writes your changes into its copy of the player and lists them in its
+  <code>README.TXT</code>; Play and the web-page download show them too. Import a game folder
+  whose player was hand-edited, and its changes come into the panel. By hand, the rules are
+  these:</p>
   <ul>
     <li><b>Back up first.</b> Edit a copy, never the only one.</li>
     <li><b>Same length only.</b> Type over the letters, and pad a shorter word with spaces. Never
@@ -124,12 +133,11 @@ export const SHAREWARE: Chapter = {
     are, out of respect, and because Game-Maker’s license notice should travel with the player.</li>
     <li><b>Test in DOSBox</b> after every change: the menu, F1, F5, F6, a drop and a high score.</li>
   </ul>
-  <p>This changes only the DOS player. The web player, the desk PC and the downloads for Mac,
-  Windows and Linux draw these words from this edition’s own code, not from the
-  <code>.EXE</code>, and every DOS download starts from a fresh copy of the CD’s player, so make
-  the edit again after each one. The desk’s <code>HEXEDIT</code> can’t do it: the
-  <code>.EXE</code> on a transfer disk is only a name there (the desk plays the game in this
-  edition’s player), and it answers <i>File not found</i>. Use a hex editor on your own PC.</p>
+  <p>A hand edit changes only that one <code>.EXE</code>: the web player and the other downloads
+  don’t read it, and every DOS download starts from a fresh copy of the CD’s player. The DOS
+  player panel’s changes travel with the game instead. The desk’s <code>HEXEDIT</code> can’t do
+  it either: the <code>.EXE</code> on a transfer disk is only a name there (the desk plays the
+  game in this edition’s player), and it answers <i>File not found</i>.</p>
   <p>Here is where the words are in the CD’s <code>XFERPLAY.EXE</code> (160,598 bytes):</p>
   <table class="ug-words">
     <tr><th>Offset</th><th>Bytes</th><th>Text</th><th>Shown</th></tr>

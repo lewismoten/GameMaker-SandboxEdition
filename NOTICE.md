@@ -120,6 +120,17 @@ game folder opens in the browser unchanged.
   every word the player shows, and the earlier players' `GMTITLE.GIF` title card, from the same survey; its table of
   the player's words (`playerWords.ts`) is read from the CD's own `cd/gm/xferplay.exe`. No
   author's player or registration details are copied or named.
+  The same two A-J Games players led to the **DOS player customizer**: the integrator's DOS player
+  panel (`web/src/editor/editors/integrator/dosPlayer/`) and the desk's `PLAYHACK.EXE`
+  (`web/src/retro/hacks/playHack.ts`), which patch a copy of the CD's `XFERPLAY.EXE` within the
+  rules their hand edits kept (`web/src/dosPlayer/`), with presets after Builder's blanked menu
+  and Rōdïp's renamed status words. Importing a game folder reads such a hand-edited player back
+  into the panel; Acord Games' shared player, whose renamed file extensions it recognizes and maps
+  back, is only read, never copied. The patch offsets were found in this project's own reading of
+  `cd/gm/xferplay.exe` against `code/GM/PLAYGAME.C` and `HISCOREL.C`.
+- **MD5** (`web/src/dosPlayer/md5.ts`) is written from the algorithm's description in RFC 1321
+  (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
+  the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
 - **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
   game in the Internet Archive's Game-Maker Archive collection, 271 games in all, with this
   project's own file readers (no program from them was run). Its techniques are described,

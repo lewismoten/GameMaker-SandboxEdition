@@ -42,6 +42,12 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'The checksum in the .zip files the site writes (web/src/project/zip.ts), written for this project from the standard ZIP polynomial and APPNOTE’s layout.',
       },
       {
+        name: 'MD5',
+        license: 'Algorithm (no code used)',
+        by: 'Ronald Rivest, RFC 1321 (MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992)',
+        what: 'Tells the CD’s XFERPLAY.EXE from any other file before the DOS player customizer patches it (web/src/dosPlayer/md5.ts), written for this project from the RFC’s description.',
+      },
+      {
         name: 'FLI format',
         license: 'Format description',
         by: 'Jim Kent and Heidi Brumbaugh (Dancing Flame), via Andy Stone’s FLI.CPP',
@@ -146,7 +152,7 @@ export const PIECE_GROUPS: PieceGroup[] = [
         name: 'Hex-edited players',
         license: 'Ideas described in this project’s own words; nothing copied',
         by: 'A-J Games: Builder, whose player has its menu words blanked, and the unfinished Rōdïp: Rover of the Deep, whose player renames Hitpoints and Lives to Energy and Failsafes',
-        what: 'These two games led this project to map every word Game-Maker’s DOS player shows and where it sits in the file: The Ultimate Owner’s Guide’s “Customizing the player’s own words” and its table.',
+        what: 'These two games led this project to map every word Game-Maker’s DOS player shows and where it sits in the file: The Ultimate Owner’s Guide’s “Customizing the player’s own words” and its table, and then the DOS player customizer: the integrator’s DOS player panel and the desk’s PLAYHACK, whose presets blank the menu as Builder did and rename the status words as Rōdïp did.',
         url: 'https://archive.org/details/game-maker_builder',
       },
       {
