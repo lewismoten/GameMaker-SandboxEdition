@@ -205,6 +205,8 @@ export function about(b: Built): object {
     exe: 'MAXIMUS.EXE',
     sound: 'sb',
     egg: { block: EGG_BLOCK },
+    // the save sign (kit/saveSign.ts) where the pod comes out of the asteroid knot that hides the egg (src/game.ts)
+    saveSign: { map: 'galaxy.map', at: [2, 2], after: 'galaxy.map' },
     // the training deck's keepsakes (src/levels/home.ts): the tin heart and the Easter egg up under the windows past the practice range
     tinHeart: { map: 'home.map', at: [53, 43] },
     easterEgg: { map: 'home.map', at: [64, 43] },

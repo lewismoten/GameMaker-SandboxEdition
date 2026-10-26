@@ -10,6 +10,14 @@
   "egg": {
     "block": 129
   },
+  "saveSign": {
+    "map": "galaxy.map",
+    "at": [
+      2,
+      2
+    ],
+    "after": "galaxy.map"
+  },
   "tinHeart": {
     "map": "home.map",
     "at": [
