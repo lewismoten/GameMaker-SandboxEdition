@@ -35,8 +35,8 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   shelf, and test that a player who skips every coin can still finish.</p>
   <h2>Weapons in tiers</h2>
   <p>When monsters meet, the higher power wins and two of the same power pass through each other.
-  So a weapon beats exactly the monsters below it. Give the pea shooter power 60, armoured
-  ships 109 and the bomb 110: only bombs crack the armour. A ladder of shots at 101, 111 and 125
+  So a weapon beats exactly the monsters below it. Give the pea shooter power 60, armored
+  ships 109 and the bomb 110: only bombs crack the armor. A ladder of shots at 101, 111 and 125
   against foes at 100, 109 and 115 makes each better weapon worth finding. Put a weapon’s
   sequence before the plain one on the same key, needing its pickup and with limited uses, and it
   falls back to the plain shot by itself when it runs dry (One key, many weapons, above).</p>
@@ -95,6 +95,24 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   lives, one adds 2 lives, one takes some away. Each becomes a plain look-alike when touched, and
   a slope funnels all three into the one way out. Lives and hit points carry on, so the choice
   lasts the whole game. (The first character still sets where they start, Chapter 4.)</p>
+  <h2>A mouse pointer to pick with</h2>
+  <p>Game-Maker has no mouse, but a hero can look like one. One of the archive’s games opens on a
+  select screen whose hero is an arrow pointer, drawn the way a desktop draws it, sitting over a
+  grid of doors: one per ship, plus an advanced mode. Each door is a link to that choice’s first
+  scene, so landing on a door picks it.</p>
+  <ul>
+    <li><b>Steps the size of the grid.</b> Each arrow key’s sequence moves the pointer 10 pixels
+    a frame for 10 frames: exactly 100 pixels, five blocks, a press. With the doors five blocks
+    apart, one press always lands on the next door, never between two. Home, Page Up, End and
+    Page Down move it diagonally the same distance, so all eight neighbors are one press away.</li>
+    <li><b>A pointer that shines.</b> The standing sequence shows ten pictures of the same arrow
+    with a highlight sliding across it, and the moving sequences show the same ten pictures
+    forward or backward, so the arrow glints as it glides.</li>
+    <li><b>Doors two cells wide.</b> Each door is a pair of links on side-by-side cells that go
+    to the same place, so a pointer whose tip sits a little off center still gets in.</li>
+  </ul>
+  <p>Leave the level flat, with nothing that pulls, so the pointer stays where it is put, and
+  label each door on the map so the choice reads before it is made.</p>
   <h2>A shareware cut from a second .gam</h2>
   <p>A transferred game’s player opens the <code>.GAM</code> named after its own
   <code>.EXE</code>. So one set of data files can carry two games: copy the <code>.GAM</code>, and
