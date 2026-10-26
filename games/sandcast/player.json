@@ -1,0 +1,17 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.highScores": "Best Knights",
+    "str.hiscore.title": "Best Knights",
+    "str.hiscore.congrats": "Good boy!",
+    "str.invent.money": "Sand:      %d",
+    "color.rgb.hsGreen": [63, 58, 30],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.title.x": 112,
+    "layout.hiscore.congrats.x": 124
+  }
+}

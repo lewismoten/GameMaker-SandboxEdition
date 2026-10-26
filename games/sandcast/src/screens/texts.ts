@@ -56,7 +56,7 @@ export const HELP = wrap(`
 |4 play dead     5 roll over
 |F2 status F5 save F6 load
 
-SAND: scoop sand piles, and dig dunes by walking into them with the shovel. F2 shows your sand as Money. Sand plugs anthills, fills fords and builds towers.
+SAND: scoop sand piles, and dig dunes by walking into them with the shovel. F2 counts the sand you carry. Sand plugs anthills, fills fords and builds towers.
 
 TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Enough flags lift a castle gate.
 
@@ -232,9 +232,8 @@ To play, run SANDCAST.EXE. Press F1 while playing for help.
 |  Tricks .. 2 sit, 3 spin,
 |            4 play dead,
 |            5 roll over
-|  F2 ...... status (your sand
-|            is shown as
-|            "Money")
+|  F2 ...... status (counts
+|            your sand)
 |  F5 / F6 . save / load
 |  ESC ..... quit
 
