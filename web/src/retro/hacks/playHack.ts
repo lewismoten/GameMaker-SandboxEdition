@@ -29,7 +29,9 @@ const HEADER = [
 const TOP = 6;
 const BOTTOM = ROWS - 3;
 
-const GROUPS: [PatchGroup, string][] = [
+/** The tabs: Changes (only what this game has changed) first, then every patch by group. */
+const GROUPS: [PatchGroup | 'changed', string][] = [
+  ['changed', 'Changes'],
   ['words', 'Words'],
   ['colors', 'Colors'],
   ['frames', 'Frames'],
@@ -94,7 +96,17 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
   const all = (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'));
   const catalog = await loadCatalog().catch(() => [] as CatalogEntry[]);
   const groupOf = new Map(all.map((p) => [p.id, hackGroupOf(p.id, catalog)]));
-  const groups = HACK_GROUPS.map((g) => ({ ...g, games: all.filter((p) => groupOf.get(p.id) === g.id) })).filter((g) => g.games.length);
+  // counted again each time the list shows, so a game just patched is under Patched
+  const kinds = async () => {
+    const patched = new Set(
+      (await Promise.all(all.map(async (p) => [p.id, Object.keys(await loadProjectPatches(p.id)).length] as const))).filter(([, n]) => n).map(([id]) => id),
+    );
+    return [
+      // every game with a change, whatever its kind, first
+      { id: 'patched' as const, name: 'Patched', games: all.filter((p) => patched.has(p.id)) },
+      ...HACK_GROUPS.map((g) => ({ ...g, games: all.filter((p) => groupOf.get(p.id) === g.id) })),
+    ].filter((g) => g.games.length);
+  };
   if (!all.length) {
     chrome('~Esc~ Quit');
     frame(h, 1, TOP, 78, BOTTOM, 'Select one of your games');
@@ -106,7 +118,8 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
   // a short PC goes straight to its games; one with several kinds picks a kind first
   let ci = 0;
   for (; all.length;) {
-    let group: { id: HackGroup; name: string; games: typeof all } = groups[0];
+    const groups = await kinds();
+    let group: { id: HackGroup | 'patched'; name: string; games: typeof all } = groups[0];
     if (groups.length > 1) {
       chrome('~\x18\x19~ Choose  ~Enter~ Open  ~Esc~ Quit');
       frame(h, 1, TOP, 78, BOTTOM, 'Which games?');
@@ -143,7 +156,8 @@ export async function runPlayHack(h: RetroHost): Promise<void> {
 async function editGame(h: RetroHost, projectId: string, dos: string, chrome: (keys: string) => void): Promise<void> {
   const patches: PlayerPatches = { ...(await loadProjectPatches(projectId)) };
   let dirty = false;
-  let gi = 0;
+  // a game with changes opens on them; one without opens on its words
+  let gi = Object.keys(patches).length ? 0 : 1;
   let cur = 0;
   const KEYS = '~Tab~ Group ~Enter~ Edit ~Del~ Undo ~F5~ Builder ~F6~ Rodip ~F8~ Reset ~F2~ Save ~Esc~ Back';
   for (;;) {
@@ -157,14 +171,22 @@ async function editGame(h: RetroHost, projectId: string, dos: string, chrome: (k
       x += label.length + 3;
     }
     const look = playerLook(patches);
-    const entries = PATCHES.filter((e) => e.group === group);
+    const changes = group === 'changed';
+    const entries = PATCHES.filter((e) => (changes ? e.id in patches : e.group === group));
     const rows: ListRow[] = [];
     const rowEntry: (PatchEntry | undefined)[] = [];
-    let screen = '';
+    let heading = '';
+    if (changes && !entries.length) {
+      rows.push({ text: 'No changes yet. Tab to Words, Colors, Frames... to make one.', selectable: false, a: DIM });
+      rowEntry.push(undefined);
+    }
     for (const e of entries) {
-      if (e.screen !== screen) {
-        screen = e.screen;
-        rows.push({ text: e.screen === 'all' ? "The player's colors" : SCREEN_NAMES[e.screen], selectable: false, a: HEAD });
+      // Changes is headed by tab, the tabs by screen
+      const at = changes ? e.group : e.screen;
+      if (at !== heading) {
+        heading = at;
+        const label = changes ? GROUPS.find(([g]) => g === e.group)![1] : e.screen === 'all' ? "The player's colors" : SCREEN_NAMES[e.screen];
+        rows.push({ text: label, selectable: false, a: HEAD });
         rowEntry.push(undefined);
       }
       const v = patches[e.id] ?? (e.kind === 'fkey' ? 'on' : e.kind === 'text' || e.kind === 'format' ? e.stock.trimEnd() : e.stock);
