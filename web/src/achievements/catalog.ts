@@ -606,7 +606,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'desk-mailjeep',
-    title: 'Special delivery',
+    title: 'Mail call',
     desc: 'Caught the mail jeep driving off after bringing your registration reply.',
     icon: '🚙',
     category: 'found',
