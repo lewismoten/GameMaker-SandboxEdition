@@ -91,10 +91,14 @@
   outline-offset: 2px;
 }
 
-/* a contents row on screen: a button that turns to its page, looking like the printed line */
+/* a contents row on screen: a button that turns to its page, looking like the printed line. It
+   fills its cell (into the cell's padding, booklet.css), so the target is the row's full height;
+   the bar's Chapters list is the same jump with a full-size target */
 .gmb .mpage button.gmb-goto {
-  display: inline;
-  padding: 0;
+  display: block;
+  width: calc(100% + 1.6cqw);
+  margin: -0.4cqw -0.8cqw;
+  padding: 0.4cqw 0.8cqw;
   border: 0;
   border-radius: 0;
   background: none;
