@@ -2,7 +2,7 @@
 // Strings never grow (shorter ones are padded with spaces, which GWrite draws as nothing, and
 // the 0 after each is never touched); in-game text is 0x20-0x7E only (GPutChar's ROM font stops
 // at 127); a printf format keeps its % codes, in order; numbers stay in their immediate's range.
-import { COLOR_TARGETS, FKEY_OFF, PATCHES, type ColorName, type ImmField, type PatchEntry } from './patchTable';
+import { COLOR_TARGETS, FKEY_OFF, PATCHES, type ColorName, type FramePatch, type ImmField, type PatchEntry } from './patchTable';
 
 export type PatchValue = string | number | number[];
 
@@ -46,17 +46,17 @@ export function patchProblem(entry: PatchEntry, value: unknown): string | undefi
       return typeof value === 'string' && value in COLOR_TARGETS ? undefined : 'one of the player’s colors';
     case 'frame': {
       if (!Array.isArray(value) || value.length !== 4) return 'four numbers';
-      const bad = value.findIndex((v, i) => !isInt(v, 0, fieldMax(entry.fields[i], i % 2 === 0 ? 319 : 199)));
-      return bad < 0 ? undefined : `${['left', 'top', 'right', 'bottom'][bad]} from 0 to ${fieldMax(entry.fields[bad], bad % 2 === 0 ? 319 : 199)}`;
+      const bad = value.findIndex((v, i) => !isInt(v, 0, frameLimit(entry, i)));
+      return bad < 0 ? undefined : `${['left', 'top', 'right', 'bottom'][bad]} from 0 to ${frameLimit(entry, bad)}`;
     }
     case 'fkey':
       return value === 'off' || value === 'on' ? undefined : 'on or off';
   }
 }
 
-/** A push imm8 is sign-extended, so a 1-byte coordinate stops at 127. */
-function fieldMax(f: ImmField, screenMax: number): number {
-  return f.size === 1 ? 127 : screenMax;
+/** The largest value a frame's left, top, right or bottom (i: 0-3) takes: a push imm8 is sign-extended, so a 1-byte one stops at 127. */
+export function frameLimit(entry: FramePatch, i: number): number {
+  return entry.fields[i].size === 1 ? 127 : i % 2 === 0 ? 319 : 199;
 }
 
 /** True when `value` is what the CD's player already has (so no patch is needed). */
