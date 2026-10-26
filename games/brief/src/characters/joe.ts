@@ -1,4 +1,4 @@
-// joe.chr: Mystery Robot Joe walks exactly one block per step (three frames that can't be
+// joe.chr: Mystery Robot Joe walks exactly one block per step (four frames that can't be
 // cut short, the first held long enough that a quick tap is one block), so he always stands
 // squarely on the library's grid. Hold an arrow to keep walking. Arrows, W A S D and the number pad all steer. Nothing in the
 // library can hurt him; the worst a shusher can do is fine him a point a tick.
@@ -11,8 +11,9 @@ const MIRROR = 0x40;
 /** Each walk frame: pixels moved, ticks shown. They add up to one block (20 pixels). */
 const WALK = [
   [4, 5],
-  [8, 1],
-  [8, 1],
+  [5, 1],
+  [5, 1],
+  [6, 1],
 ] as const;
 
 export const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12 } as const;
@@ -44,8 +45,9 @@ export function buildJoe(cb: BlockSet): Character {
   set(S[3], [f('blink', 2), f('shh', 3), f('down0', 1)], { key: KEY.space, sound: SND.word, ground: 1, norepeat: 1 });
   set(S[4], [f('down0', 1)], { key: 0 });
 
-  // One block is a 4 pixel step held for 5 ticks, then two 8 pixel strides: 7 ticks of the
-  // 18.2 Hz clock (385 ms) a block. PLAYGAME applies a key event during a ground sequence
+  // One block is a 4 pixel step held for 5 ticks, then three short strides (5, 5 and 6 pixels,
+  // so he never jumps more than 6 at once and the walk looks smooth): 8 ticks of the 18.2 Hz
+  // clock (440 ms) a block. PLAYGAME applies a key event during a ground sequence
   // only while its first frame is up (PLAYGAME.C's KeysPending), and a sequence repeats when
   // its key still reads as down at its end, so a release that waits past frame 0 walks a
   // second block. With frame 0 held 5 ticks, a tap shorter than 275 ms walks one block.

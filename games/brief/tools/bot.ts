@@ -281,7 +281,8 @@ export class Bot {
         this.keepTo,
       );
       if (!d) return; // standing on a goal
-      await this.step(d, careful);
+      // dodging a patroller can fall in step with it for good: after a while, walk on and pay
+      await this.step(d, careful && this.sim.ticks - start < limit / 2);
     }
   }
 
