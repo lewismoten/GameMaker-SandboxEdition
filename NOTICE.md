@@ -120,6 +120,17 @@ game folder opens in the browser unchanged.
   every word the player shows, and the earlier players' `GMTITLE.GIF` title card, from the same survey; its table of
   the player's words (`playerWords.ts`) is read from the CD's own `cd/gm/xferplay.exe`. No
   author's player or registration details are copied or named.
+- **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
+  game in the Internet Archive's Game-Maker Archive collection, 271 games in all, with this
+  project's own file readers (no program from them was run). Its techniques are described,
+  without naming the games, in The Ultimate Owner's Guide's "More from the archive" (chapter 17,
+  `web/src/manual/ultimate/archiveTricks.ts`), chapter 4's "The gate is the exit" and "An AND
+  gate from monster power", and chapter 5's "Links that misfire", "Many rooms on one map" and
+  "Laps round the wrap" (`chaptersPlay.ts`), and in _TURBO BUTTON_'s "Masters, the next disk
+  box" (the third page of `sections/masters.ts`). The faults it found in those games shaped the
+  Level check's link, missing-part and speed-limit checks (`web/src/editor/check/checks/linkChecks.ts`,
+  `missingParts.ts`, `gameChecks.ts`). Ideas only: none of the games' art, music, sounds, text
+  or players is copied, and no author, owner or registration detail is named.
 - **Ideas from the same archive in the Sandbox games.** A second survey of the community games in
   the Internet Archive's Game-Maker Archive collection suggested two touches to this project's own
   games: _Quest for the Round Tuit_'s tide poles on the Dawdle Flats and _In The Year 2000!_'s
