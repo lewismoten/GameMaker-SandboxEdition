@@ -183,7 +183,7 @@ export class Computer extends ComputerFolders {
                 if (e instanceof ProgramAborted) throw e;
                 console.warn('cracktro', e);
               });
-          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
+          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId, undefined, ref.projectId);
           break;
         }
         case 'gmcrack':
@@ -191,6 +191,9 @@ export class Computer extends ComputerFolders {
           break;
         case 'savehack':
           await (await import('./hacks/saveHack')).runSaveHack(this);
+          break;
+        case 'playhack':
+          await (await import('./hacks/playHack')).runPlayHack(this);
           break;
         case 'backup':
           await (await import('./hacks/backupExe')).runBackup(this, _args);
@@ -307,7 +310,7 @@ export class Computer extends ComputerFolders {
     return true;
   }
 
-  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array): Promise<void> {
+  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
     this.setMode('game');
@@ -316,12 +319,15 @@ export class Computer extends ComputerFolders {
     this.opts.onGame?.({ files, gam, title });
     // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
+      // a game of yours plays with its DOS player choices (PLAYHACK, the editor's panel)
+      const patches = projectId && !gmHelp ? import('../dosPlayer/projectPatches').then((m) => m.loadProjectPatches(projectId)) : Promise.resolve(undefined);
       const mount = () =>
-        void import('../player/player').then(
-          ({ mountPlayer }) =>
+        void Promise.all([import('../player/player'), patches]).then(
+          ([{ mountPlayer }, player]) =>
             (this.player = mountPlayer(host, files, gam, {
               title,
               notice,
+              player,
               autoStart: true,
               noKeysButton: true,
               exactPixels: true, // the monitor's size is never a whole multiple of 320x200

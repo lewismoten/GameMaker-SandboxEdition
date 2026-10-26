@@ -138,7 +138,8 @@ modules are in [`../test`](../test).
   hand-edited one back into patches; `renamedExtensions.ts` sees a player that asks for other
   file extensions (Acord Games'); `md5.ts` (RFC 1321); `presets.ts` (Builder's blanked menu,
   Rōdïp's status words, Reset all); `playerRecord.ts` keeps the choices in the .gam's
-  `dosPlayer` companion section; `describePatches.ts` lists them in words (the DOS export's
+  `dosPlayer` companion section (`projectPatches.ts` reads and writes a stored project's, for the
+  desk); `describePatches.ts` lists them in words (the DOS export's
   README, which says its .EXE was customized; `exportDos.ts` writes them into XFERPLAY.EXE).
   - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
     `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),
@@ -266,8 +267,9 @@ modules are in [`../test`](../test).
   - `hexedit/`: HEXEDIT.EXE (`hexEdit.ts`, `hexFiles.ts`) and its map of each file format
     (`structure.ts`, `structureMedia.ts`). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
     screen (`picture.ts`).
-  - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, the GM30 installer and the rest
-    (`saveHack.ts`, `backupExe.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
+  - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
+    rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
+    patches as the editor's panel does, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
     `cracktro.ts`, `gm30Install.ts`, their words in `*Text.ts`, their look in `dosUi.ts`, what they
     add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
     debugging tools for registration modes, saved games and backups, dressed as 1990s scene

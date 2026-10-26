@@ -170,6 +170,7 @@ export abstract class ComputerDrives {
                 files: async () => new Map(d.files.entries()),
                 diskId: d.disk.id,
                 saveId: d.disk.id.startsWith('cd:') ? `game:${d.disk.id.slice(3)}` : undefined,
+                projectId: d.disk.projectId,
               },
             }),
           );

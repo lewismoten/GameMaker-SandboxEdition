@@ -67,8 +67,9 @@ export interface RetroHost extends Ui {
   /**
    * Plays a game on the monitor; resolves when the player quits. It plays as the stand-alone
    * XFERPLAY.EXE unless `gmHelp` is given: then as PLAYGAME.EXE, whose F1 shows it first.
+   * `projectId`: a game of yours, whose XFERPLAY shows its DOS player choices (dosPlayer/).
    */
-  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array): Promise<void>;
+  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void>;
   /** Leaves the 90s desk for today's web editor. */
   openModern(projectId: string, file?: string): void;
   /** A file from the installed C:\GM (help screens). */
