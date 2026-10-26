@@ -25,6 +25,8 @@ export interface FoundGame {
   from: string;
   /** Its .gam files' CRC-32s (a CD shareware game is matched by these). */
   gamCrcs: number[];
+  /** Its player .EXEs' CRC-32s, with gamCrcs its fingerprint (imported/fingerprint.ts). */
+  playerCrcs?: number[];
   /** The files it brings (the .EXEs DOS alone needs are left out). */
   fileCount: number;
   /** The picked zip it is in (none for loose files), and the paths of the zips inside that one it is in, outermost first. */
@@ -133,13 +135,15 @@ function gamExtension(exe: Uint8Array): string {
  * `games`: the files with an extension a player beside them asks for in place of .gam (a
  * leftover SPACE.Z0G beside ZAPAK.EXE too).
  */
-export async function playedBy(files: ScanFile[]): Promise<{ players: Map<ScanFile, ScanFile>; games: Set<ScanFile> }> {
+export async function playedBy(files: ScanFile[]): Promise<{ players: Map<ScanFile, ScanFile>; games: Set<ScanFile>; crcs: Map<ScanFile, number> }> {
   const players = new Map<ScanFile, ScanFile>();
   const games = new Set<ScanFile>();
+  const crcs = new Map<ScanFile, number>();
   const kept = files.filter((f) => !isJunk(clean(f.path)));
   for (const exe of kept.filter((f) => PLAYER_EXE(f.path, f.size))) {
     const bytes = await exe.read().catch(() => undefined);
     if (!bytes) continue;
+    crcs.set(exe, crc32(bytes));
     const ext = gamExtension(bytes);
     const path = clean(exe.path);
     const beside = kept.filter((f) => f !== exe && dirOf(clean(f.path)) === dirOf(path));
@@ -152,7 +156,7 @@ export async function playedBy(files: ScanFile[]): Promise<{ players: Map<ScanFi
     // a blanked extension names no others: files without one are a game's pictures and maps too
     if (ext && ext !== '.gam') for (const f of beside) if (normalize(f.path).endsWith(ext)) games.add(f);
   }
-  return { players, games };
+  return { players, games, crcs };
 }
 
 /** Files a .gam names (its scenes' files) that `have` lacks; the high scores and saves a game makes as it plays aside. */
@@ -202,7 +206,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
 
   /** These files' games (and their zips', `depth` zips down); how many games that was. */
   const look = async (files: ScanFile[], zips: ScanFile[], inner: string[], depth: number): Promise<number> => {
-    const { players, games: played } = await playedBy(files);
+    const { players, games: played, crcs: exeCrcs } = await playedBy(files);
     const { games, loose } = groupGames(files, played);
     if (!zips.length) report.loose.push(...loose);
     let found = 0;
@@ -219,10 +223,12 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
           missing = missingFiles(bytes, files);
         }
       }
+      const playerCrcs = files.map((f) => exeCrcs.get(f)).filter((c): c is number => c !== undefined);
       report.games.push({
         name: title,
         from: fromLabel(zips.length ? [zips[0].path, ...inner].map(clean) : [], g.dir),
         gamCrcs: crcs,
+        ...(playerCrcs.length ? { playerCrcs } : {}),
         fileCount: files.length,
         zips: zips.slice(0, 1),
         inner,

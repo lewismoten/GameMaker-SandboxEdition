@@ -133,6 +133,13 @@ modules are in [`../test`](../test).
     floppies, hard disk and download time (`diskFacts.ts`).
   - `saveData/` reads and writes a game's saves, high scores and save backups, shared by the web's
     Saves & scores and the desk's SAVEHACK and BACKUP.
+- [`imported/`](imported): what this browser remembers about imported games, editor-only and
+  never in a game's files (localStorage through `localJson.ts`): each game's 1–5 star rating
+  (Unrated by default), its note, source and fingerprint (`gameNotes.ts`); the fingerprint itself,
+  the CRC-32s of its .gam files and player .EXEs (`fingerprint.ts`); the small record kept when one
+  is removed (`removedGames.ts`), which a later import marks "Previously removed"; moving the
+  rating and note between the two as games come and go (`noteMoves.ts`); grouping and filtering by
+  rating (`ratings.ts`) and the Library's notes list and search (`noteSearch.ts`).
 - [`export/`](export): publishing a game: as an offline web app (`exportWebApp.ts`), a single web
   page (`exportSinglePage.ts`, `singlePage.ts`, played by `standalonePlayer.ts`), the web player
   (`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
