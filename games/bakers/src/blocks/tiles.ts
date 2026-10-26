@@ -175,7 +175,8 @@ function prop(style: Style, i: number, base: Pixels): Pixels {
       bevel(p, 0, 0, 20, 20, r('wood'), 3, 1);
       p.frame(3, 3, 14, 14, c('wood', 1));
       blob(p, 10, 8, 6, 5, [c('paper', 2), c('paper', 3), c('paper', 4)], 0, 2);
-      micro(p, 5, 7, 'FLOUR', c('wood', 0));
+      // (the label as wide as the block: five letters, 19 pixels)
+      micro(p, 1, 7, 'FLOUR', c('wood', 0));
     } else if (i === 2) {
       // a sink
       bevel(p, 0, 0, 20, 20, r('metal'), 3, 1);
@@ -198,7 +199,8 @@ function prop(style: Style, i: number, base: Pixels): Pixels {
       // a crate, stencilled
       bevel(p, 1, 1, 18, 18, r('wood'), 3, 1);
       p.line(2, 2, 17, 17, c('wood', 1)).line(17, 2, 2, 17, c('wood', 1));
-      micro(p, 3, 8, 'NOT TEA', c('dark', 0));
+      micro(p, 5, 4, 'NOT', c('dark', 0));
+      micro(p, 5, 11, 'TEA', c('dark', 0));
     } else if (i === 2) {
       // sacks
       blob(p, 6, 11, 6, 7, [c('trim', 1), c('trim', 2), c('trim', 3)], 0, 2);

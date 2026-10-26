@@ -6,6 +6,11 @@
   "price": "$0 - a baker's dozen of nothing",
   "secret": true,
   "sameEverySide": ["brewery.mon#17", "cistern.mon#14", "clock.mon#15", "larder.mon#15"],
+  "acceptedFindings": [
+    "hazard-art s3 Block 41 hurts through its whole cell, but its art fills 7% of it",
+    "hazard-art s8 Block 41 hurts through its whole cell, but its art fills 11% of it",
+    "start-threat s14 Monster 15 starts 2 blocks from where the hero comes in"
+  ],
   "eggs": [
     { "id": "rotten", "block": 4 },
     { "id": "faberge", "block": 5 }

@@ -506,7 +506,7 @@ export function ingredient(n: number, frame = 0): Pixels {
       q.rect(4, 6, 12, 9, c('paper', 4)).rect(3, 6, 2, 9, c('paper', 2)).rect(15, 6, 2, 9, c('paper', 2));
       for (let y = 8; y < 14; y += 2) q.rect(6, y, 8, 1, c('sky', 3));
       q.disc(10, 13, 3, c('red', 2)).disc(10, 13, 2, c('red', 3));
-      micro(q, 7, 11, 'XIII', c('red', 4));
+      micro(q, 3, 11, 'XIII', c('red', 4));
       break;
   }
   return over(p, outline(q, ink));
