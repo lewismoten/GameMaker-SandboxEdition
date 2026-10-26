@@ -28,58 +28,66 @@
   },
   {
    "scene": 7,
-   "keys": "EUsMy05JEMkARwTHAE0CzQxICMgATQrNDksEywBHDscATwTPAEcGxwBIDsgASRjJPksMywBQCNAAOQG5BVAE0AA5AbkBTwLPADkBuQFLCstKSQrJAE0CzQBJAskAUQjRAEcCxwBQAtAARwbHFEgEyABHCMcATQbNCE0GzSJICsg="
+   "keys": "MUsMywBQBtAATRLNNk0DzQY5AbkCSwPLDE0JzQBIBsgASwbLD00GzQBQD9AASwbLGDkBuQ45AbkCSwbLrgFLDMsAUAnQAE0VzQNLA8sATQnNAEsGyxVLA8sDSAPIAE14zQBLFcsMTQPND0sGyyRNCc0AUBLQAEsDy3hLDMsAUAnQAE0YzQBLBssPTQnNCUsGyzA5AbkCOQG5Ak0GzQBLBsseSwPLFUgDyDlNCc0kTQnN"
   },
   {
    "scene": 8,
-   "keys": "B0sMywBNAs0ASQTJAEsCywpLBMsATwLPBFAG0ApNDM0sSwrLEE0MzQBIHsgASwbLAE0KzT5LBsscSQLJigFPBM8AOQG5A0kCyQI5AbkFSBLIAEsEywBHAscCRwTHFE8WzwJNGM0OSQLJAEgIyABHCMcASALIGkgKyA=="
+   "keys": "EUsMy05JEMkARwTHAE0CzQxICMgATQrNDksEywBHDscATwTPAEcGxwBIDsgASRjJPksMywBQCNAAOQG5BVAE0AA5AbkBTwrPAEgayABJAskATQLNAEkGyQBIDsgARwbHAFEC0QBJEskCSArI"
   },
   {
    "scene": 9,
-   "keys": "G0sEywJLAssESwLLEk0GzQRRAtEAUALQBE0EzQBPAs8ASwbLAFAE0ABHAscCRwLHEk0GzQhNAs0AUATQAEgEyAZHAscASwLLAkgEyABPAs8KUALQAk0MzQBPBM8AUALQBEcExwRLBMsCSALICksGywBRAtEATQjNAFAE0AJIAsgQSwTLAE0CzQJLAssARwLHBEgMyABJAskASATI"
+   "keys": "B0sMywBNAs0ASQTJAEsCywpLBMsATwLPBFAG0ApNDM0sSwrLEE0MzQBIHsgASwbLAE0KzT5LBsscSQLJigFPBM8AOQG5A0kCyQI5AbkFSBLIAEsEywBHAscCRwTHFE8WzwJNGM0OSQLJAEgIyABHCMcASALIGkgKyA=="
   },
   {
    "scene": 10,
-   "keys": "HUkKyQBIIsgARwLHAEsCywBHDsceSQLJAEgCyABJCMkASBbIAEkMyQxIBMgASwzLAE0CzQA5AbkBOQG5AVAC0ABJCskARwrHCEsGywBIEMgARwTHAE0MzQBJCMkQSwbLAEcExwBJCskASxbLHkgKyA=="
+   "keys": "Z0sDywBQA9CQAUsSyyFIBsgYSwPLAFAe0ABIBsghSwbLAEgDyABHBscDSwnLA1AD0FRLBssASBvIAFAG0AxLDMsASAnIAFEJ0S1LA8sASB7IAEsJyw9IA8gAOQG5AkgGyANNA80JTQrN"
   },
   {
    "scene": 11,
-   "keys": "HUsMywxJBMkATQTNAEsIyxRICMgASQjJAEg2yABRBNEYUCLQAEcOxwBIIMgASQbJHEgMyABNCM0ASwzLAEkMyQBHBscASArIHkgHyA=="
+   "keys": "DTkBuQ1LBMsCSwLLBEsCyxJNBs0EUQLRAFAC0ARNBM0ATwLPAEsGywBQBNAARwLHAkcCxxJNBs0ITQLNAFAE0ABIBMgGRwLHAEsCywJIBMgATwLPClAC0AJNDM0ATwTPAFAC0ARHBMcESwTLAkgCyApLBssAUQLRAE0IzQBQBNACSALIEEsEywBNAs0CSwLLAEcCxwRIDMgASQLJAEgEyA=="
   },
   {
    "scene": 12,
-   "keys": "F0gIyABLAssCSRDJBEsIywA5AbkBRwbHBEgMyABHCMcATRLNGEgCyABHDscASQbJIkcIxwBLBssAUDbQAEcGxzhNBM0ARwTHAE0OzQBLDMsKRwLHAEgGyAJLAssGSALIAEkQyQBRAtECSwLLBk0CzQRIBsgAUQLRBEkCyQJJAskARwLHAEkCyQxLBMsASAbIAEcCxwBIBMgATQrNAkgKyA=="
+   "keys": "HUkKyQBIIsgARwLHAEsCywBHDsceSQLJAEgCyABJCMkASBbIAEkMyQxIBMgASwzLAE0CzQA5AbkBOQG5AVAC0ABJCskARwrHCEsGywBIEMgARwTHAE0MzQBJCMkQSwbLAEcExwBJCskASxbLHkgKyA=="
   },
   {
    "scene": 13,
-   "keys": "I08CzwRLAsseUQTRAFAC0ApLAssGSwLLHE0CzRZPAs8ASwTLAFAG0ABIBsgESQLJAE0EzQ5IAsgCOQG5ATkBuQE5AbkNSwLLFEgCyAZNAs0USwLLTk0EzQRNAs0MSwLLBEsCyxJLAssITQTNDkgKyABHA8c="
+   "keys": "HUsMywxJBMkATQTNAEsIyxRICMgASQjJAEg2yABRBNEYUCLQAEcOxwBIIMgASQbJHEgMyABNCM0ASwzLAEkMyQBHBscASArIHkgHyA=="
   },
   {
    "scene": 14,
-   "keys": "EUsMy1hNDs0ASwrLAE0CzQBJAskASALIAEkIyUZQCtACSAbIAEkCyQBNDM0ASwTLAksIy0JHAscAUATQAEsWywBQVtAARwTHADkBuSdPEs80TQ7NAEkCyQBNDs0AUQbRIEcGxwBJBskYSAzIAEcExwZNEs0kSArI"
+   "keys": "F0gIyABLAssCSRDJBEsIywA5AbkBRwbHBEgMyABHCMcATRLNGEgCyABHDscASQbJIkcIxwBLBssAUDbQAEcGxzhNBM0ARwTHAE0OzQBLDMsKRwLHAEgGyAJLAssGSALIAEkQyQBRAtECSwLLBk0CzQRIBsgAUQLRBEkCyQJJAskARwLHAEkCyQxLBMsASAbIAEcCxwBIBMgATQrNAkgKyA=="
   },
   {
    "scene": 15,
-   "keys": "D0sMywBPAs8ATQrNAEgCyABNCs0ASwTLAE8CzwBHEscUSATIBFA60ABJCskAUATQAEgIyABRAtEATQbNAFAE0ABIDMgASxDLAEgEyAZLBMsUSATIAEkMyQBRCtEcUQbRDEcIxwRLEMsATwLPDkgYyABNBM0UTQbNGk8IzwBQAtAATwLPAEsEyyxNAs0AUAbQCkgEyABJGMk="
+   "keys": "I08CzwRLAsseUQTRAFAC0ApLAssGSwLLHE0CzRZPAs8ASwTLAFAG0ABIBsgESQLJAE0EzQ5IAsgCOQG5ATkBuQE5AbkNSwLLFEgCyAZNAs0USwLLTk0EzQRNAs0MSwLLBEsCyxJLAssITQTNDkgKyABHA8c="
   },
   {
    "scene": 16,
-   "keys": "EzkBuQ1PAs8CTwTPAFAE0AA5AbkBOQG5AU8GzwBHBMcASQbJAk0CzQBQAtAEUQbRAEkKyRpNBM0AUQLRAEgCyCBLAssOSALIAFEC0RJIDsg="
+   "keys": "EUsMy1hNDs0ASwrLAE0CzQBJAskASALIAEkIyUZQCtACSAbIAEkCyQBNDM0ASwTLAksIy0JHAscAUATQAEsWywBQVtAARwTHADkBuSdPEs80TQ7NAEkCyQBNDs0AUQbRIEcGxwBJBskYSAzIAEcExwZNEs0kSArI"
   },
   {
    "scene": 17,
-   "keys": "MUsMywBQBtAATQ/ND00DzQBLA8tITQnNAFAV0ABLA8sASAPIAEsDyxVLA8sSOQG5AjkBuQJNBs0MSwPLJ0sDy4cBSwnLAFAJ0ABND80nTQPNEksGy2lNDM0AUA/QAEsGyyFLCcsATQbNBk0DzQBQBtBsSw/LAFAJ0ABNEs0tTTbNADkBuT5NA81aTQrN"
+   "keys": "D0sMywBPAs8ATQrNAEgCyABNCs0ASwTLAE8CzwBHEscUSATIBFA60ABJCskAUATQAEgIyABRAtEATQbNAFAE0ABIDMgASxDLAEgEyAZLBMsUSATIAEkMyQBRCtEcUQbRDEcIxwRLEMsATwLPDkgYyABNBM0UTQbNGk8IzwBQAtAATwLPAEsEyyxNAs0AUAbQCkgEyABJGMk="
   },
   {
    "scene": 18,
-   "keys": "C0gEyABHAscASATIAEcExwA5AbkBSALIAEkEyQBIFsgASwjLAEcGxwBICMgAUArQAEgKyABJCMkASBTINkkCyQBNCM0ASQbJAEgOyABHBMcASArIAEcExwJIDsgSSAbIAEkEyQBIBsgAOQG5ATkBuQFICsgASQbJAE8CzwBHCscASQbJAE0IzQ=="
+   "keys": "EzkBuQ1PAs8CTwTPAFAE0AA5AbkBOQG5AU8GzwBHBMcASQbJAk0CzQBQAtAEUQbRAEkKyRpNBM0AUQLRAEgCyCBLAssOSALIAFEC0RJIDsg="
   },
   {
    "scene": 19,
-   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
+   "keys": "MUsMywBQBtAATQ/ND00DzQBLA8tITQnNAFAV0ABLA8sASAPIAEsDyxVLA8sSOQG5AjkBuQJNBs0MSwPLJ0sDy4cBSwnLAFAJ0ABND80nTQPNEksGy2lNDM0AUA/QAEsGyyFLCcsATQbNBk0DzQBQBtBsSw/LAFAJ0ABNEs0tTTbNADkBuT5NA81aTQrN"
   },
   {
    "scene": 20,
+   "keys": "C0gEyABHAscASATIAEcExwA5AbkBSALIAEkEyQBIFsgASwjLAEcGxwBICMgAUArQAEgKyABJCMkASBTINkkCyQBNCM0ASQbJAEgOyABHBMcASArIAEcExwJIDsgSSAbIAEkEyQBIBsgAOQG5ATkBuQFICsgASQbJAE8CzwBHCscASQbJAE0IzQ=="
+  },
+  {
+   "scene": 21,
+   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgEyABLAssARwLHAEkiyQ=="
+  },
+  {
+   "scene": 22,
    "keys": "H08CzwpLBMsMTQLNBE0CzRJQCtAATwLPAEcExwBQCtAASATIBEgEyABJAskATQjNBlAE0ABPBs8ARwbHCFAC0ABIAsgAUAbQAFEG0QBJBMkASATIAkgCyAhNAs0CTQLNCEgCyABLCssGUATQAFEE0QBQAtAASQTJAFAK0ABPAs8ARwjHCEsCywpIAsgASQLJAE0IzQZQCNAATwbPAEgEyABHAscaTQTNDkgCyAhLAssASALIHk0CzQBIAsgUSwTLFk0CzT5NAs0CSArIAEcDxw=="
   }
  ],
@@ -106,64 +114,72 @@
   },
   {
    "scene": 7,
-   "title": "Stage 2: Memory Lane — The Address Bus"
+   "title": "Stage 2: Memory Lane — The Ring Buffer"
   },
   {
    "scene": 8,
-   "title": "Stage 2: Memory Lane — The Cache"
+   "title": "Stage 2: Memory Lane — The Address Bus"
   },
   {
    "scene": 9,
-   "title": "Stage 2: Memory Lane — The Memory Leech"
+   "title": "Stage 2: Memory Lane — The Cache"
   },
   {
    "scene": 10,
-   "title": "Stage 3: The Sound Card — The Mixer"
+   "title": "Stage 2: Memory Lane — The Memory Bank"
   },
   {
    "scene": 11,
-   "title": "Stage 3: The Sound Card — The Woofer"
+   "title": "Stage 2: Memory Lane — The Memory Leech"
   },
   {
    "scene": 12,
-   "title": "Stage 3: The Sound Card — The Big Name"
+   "title": "Stage 3: The Sound Card — The Mixer"
   },
   {
    "scene": 13,
-   "title": "Stage 3: The Sound Card — The Feedback Howler"
+   "title": "Stage 3: The Sound Card — The Woofer"
   },
   {
    "scene": 14,
-   "title": "Stage 4: The Hard Disk — The Platter"
+   "title": "Stage 3: The Sound Card — The Big Name"
   },
   {
    "scene": 15,
-   "title": "Stage 4: The Hard Disk — Bad Sectors"
+   "title": "Stage 3: The Sound Card — The Feedback Howler"
   },
   {
    "scene": 16,
-   "title": "Stage 4: The Hard Disk — The Head Crash"
+   "title": "Stage 4: The Hard Disk — The Platter"
   },
   {
    "scene": 17,
-   "title": "Stage 5: The CPU — The Ribbon Cable"
+   "title": "Stage 4: The Hard Disk — Bad Sectors"
   },
   {
    "scene": 18,
-   "title": "Stage 5: The CPU — The Pipeline"
+   "title": "Stage 4: The Hard Disk — The Head Crash"
   },
   {
    "scene": 19,
-   "title": "Stage 5: The CPU — The Core"
+   "title": "Stage 5: The CPU — The Ribbon Cable"
   },
   {
    "scene": 20,
+   "title": "Stage 5: The CPU — The Pipeline"
+  },
+  {
+   "scene": 21,
+   "title": "Stage 5: The CPU — The Core"
+  },
+  {
+   "scene": 22,
    "title": "Stage 5: The CPU — GLITCH"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 49486,
+  "frames": 56416,
   "chapters": [
    {
     "title": "Opening",
@@ -194,68 +210,76 @@
     "frame": 15384
    },
    {
-    "title": "Stage 2: Memory Lane — The Address Bus",
+    "title": "Stage 2: Memory Lane — The Ring Buffer",
     "frame": 16856
    },
    {
+    "title": "Stage 2: Memory Lane — The Address Bus",
+    "frame": 21318
+   },
+   {
     "title": "Stage 2: Memory Lane — The Cache",
-    "frame": 19070
+    "frame": 23143
+   },
+   {
+    "title": "Stage 2: Memory Lane — The Memory Bank",
+    "frame": 25608
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Leech",
-    "frame": 21535
+    "frame": 28461
    },
    {
     "title": "Stage 3: The Sound Card — The Mixer",
-    "frame": 23029
+    "frame": 29955
    },
    {
     "title": "Stage 3: The Sound Card — The Woofer",
-    "frame": 24670
+    "frame": 31596
    },
    {
     "title": "Stage 3: The Sound Card — The Big Name",
-    "frame": 26387
+    "frame": 33314
    },
    {
     "title": "Stage 3: The Sound Card — The Feedback Howler",
-    "frame": 28417
+    "frame": 35345
    },
    {
     "title": "Stage 4: The Hard Disk — The Platter",
-    "frame": 30376
+    "frame": 37305
    },
    {
     "title": "Stage 4: The Hard Disk — Bad Sectors",
-    "frame": 33269
+    "frame": 40199
    },
    {
     "title": "Stage 4: The Hard Disk — The Head Crash",
-    "frame": 35517
+    "frame": 42447
    },
    {
     "title": "Stage 5: The CPU — The Ribbon Cable",
-    "frame": 36729
+    "frame": 43659
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 41007
+    "frame": 47937
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 42478
+    "frame": 49408
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 44087
+    "frame": 51017
    },
    {
     "title": "Ending",
-    "frame": 46279
+    "frame": 53209
    },
    {
     "title": "Credits",
-    "frame": 47931
+    "frame": 54861
    }
   ]
  }

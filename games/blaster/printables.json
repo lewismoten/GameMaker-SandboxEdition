@@ -83,6 +83,10 @@
           "head": "2. Memory Lane",
           "hints": [
             {
+              "q": "Where does the ring buffer end?",
+              "a": "At HEAD. You start reading at TAIL, and each row bends flat at the kink and wraps round onto the next one. The big numbers count the rows left: 3, 2, 1. The dotted cyan pointer on the way round jumps you a row early if you hold Right on it."
+            },
+            {
               "q": "Something keeps pushing me sideways.",
               "a": "Data streams: the rows of flowing arrows. Steer the other way while you cross, or hold Up to cross faster."
             },
@@ -93,6 +97,10 @@
             {
               "q": "The slugs follow me everywhere.",
               "a": "Leak Slugs never give up. They take three hits; shoot them as they come at you from ahead, because they are slower than you and can't catch up from behind."
+            },
+            {
+              "q": "Between the memory sticks, the stack shuts on me.",
+              "a": "It hangs from the upper stick and fills one byte at a time toward the floor, then pops. Stay low and slip through the gap under it, or wait for the pop. The chips stick up from the lower board and hang from the upper one, so pick your height early."
             },
             {
               "q": "I can't reach the Memory Leech's mouth.",
@@ -176,11 +184,11 @@
             },
             {
               "q": "I flew all of Memory Lane and saw nothing.",
-              "a": "Don't rush the gate at the top of 2-A, The Address Bus. Just under it, the SIMM's edge at the far left is missing one gold finger. A tiny bug sits in the gap."
+              "a": "Don't rush the gate at the top of 2-B, The Address Bus. Just under it, the SIMM's edge at the far left is missing one gold finger. A tiny bug sits in the gap."
             },
             {
               "q": "Just give me the coordinates.",
-              "a": "Fly to the top of 2-A and hug the left wall. In the row right under the gate, fly onto the floor beside the missing finger (the first open cell from the left). You drop into A Corner of Memory. Fly over the pad and press Enter to pick up the felt egg, then fly up and out.",
+              "a": "Fly to the top of 2-B and hug the left wall. In the row right under the gate, fly onto the floor beside the missing finger (the first open cell from the left). You drop into A Corner of Memory. Fly over the pad and press Enter to pick up the felt egg, then fly up and out.",
               "sketch": {
                 "rows": [
                   "",
@@ -191,7 +199,7 @@
                   "|    @"
                 ],
                 "labels": [
-                  { "x": 2, "y": 0, "text": "THE GATE TO 2-B" },
+                  { "x": 2, "y": 0, "text": "THE GATE TO 2-C" },
                   { "x": 7, "y": 2, "text": "NO GOLD FINGER" },
                   { "x": 6, "y": 5, "text": "YOU" }
                 ]
