@@ -34,7 +34,7 @@ const SCANS: Scan[] = [
   // Doc Leo's first dress-out: down to the tie, short of the pin on his lapel
   { name: 'leo', photo: 'lewies-first-dressout-as-a-hobo-clown.jpg', crop: [0.1, 0.03, 0.9, 0.82], size: 256 },
   // in colonial dress beside General Washington; the tent's banner at the right is cropped off
-  { name: 'colonial', photo: 'lewie dressed up for SAR with George Washington.jpg', crop: [0, 0.05, 0.93, 1], size: 320 },
+  { name: 'colonial', photo: 'lewie colonial with George Washington.jpg', crop: [0, 0.05, 0.93, 1], size: 320 },
   // THE CHEZ, without the signs on the building above it
   { name: 'chez', photo: 'citicar-at-public-charging-station.webp', crop: [0.16, 0.34, 0.82, 0.87], size: 320 },
   // The Dog House; its charter sign is blurred

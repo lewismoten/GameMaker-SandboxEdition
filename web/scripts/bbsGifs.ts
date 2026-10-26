@@ -52,7 +52,7 @@ const SHOTS: Shot[] = [
   { name: 'HOBO1.GIF', photo: 'lewies-first-dressout-as-a-hobo-clown.jpg', crop: [0, 0, 0.96, 0.9], gif: { colors: 16, gray: true } },
   { name: 'HOBO2.GIF', photo: 'lewie-as-hobo-clown-2.jpg', crop: [0, 0, 1, 1], gif: { colors: 8, gray: true } },
   { name: 'HOBO3.JPG', photo: 'lewie-at-clown-club-as-hobo.jpg', crop: [0.04, 0, 1, 0.84], jpeg: { quality: 65, gray: true } },
-  { name: 'COLONIAL.GIF', photo: 'lewie dressed up for SAR with George Washington.jpg', crop: [0, 0, 0.95, 1], gif: { colors: 128 } },
+  { name: 'COLONIAL.GIF', photo: 'lewie colonial with George Washington.jpg', crop: [0, 0, 0.95, 1], gif: { colors: 128 } },
   // the library's charter number on its sign is blurred
   {
     name: 'DOGHOUSE.JPG',
