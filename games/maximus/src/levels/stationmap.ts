@@ -52,7 +52,7 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
     for (let x = rm.x - 1; x <= rm.x + rm.w; x++) g.set(x, rm.y + rm.h, id('deck:plate'));
   };
   rooms.flat().forEach(carveRoom);
-  // connections: horizontal doorways between neighbours, vertical lift shafts
+  // connections: horizontal doorways between neighbors, vertical lift shafts
   const ground: Run[] = [];
   const caveFloor: Run[] = [];
   const sky: Spot[] = [];

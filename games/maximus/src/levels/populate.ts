@@ -1,5 +1,5 @@
 // Placing monsters on a map: each planet picks a handful of species from its family
-// (so neighbouring worlds feel different), weighted toward tougher ones in the outer
+// (so neighboring worlds feel different), weighted toward tougher ones in the outer
 // sectors, and puts each where it lives - walkers on flat ground, bats in caves, flyers
 // in the sky, droppers on ceilings. Up to 200 per map (Game-Maker's LASTMM).
 import { rng } from '../../../kit/pixels';

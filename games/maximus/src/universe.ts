@@ -60,7 +60,7 @@ export const SECTORS: Sector[] = [
     song: 'ember',
     worlds: [
       W('Cinderfall', 'surface', 'lava', 'Ash rains on rivers of fire.', { shard: 2 }),
-      W('Ashveil', 'surface', 'ash', 'A grey world under a grey sky.'),
+      W('Ashveil', 'surface', 'ash', 'A gray world under a gray sky.'),
       W('Pyre', 'surface', 'lava', 'Do not touch the floor.', { module: 1 }),
       W('Basalt Bay', 'surface', 'ash', 'Black cliffs over a warm sea.'),
       W('Smolder', 'surface', 'autumn', 'The forests here are always burning.'),

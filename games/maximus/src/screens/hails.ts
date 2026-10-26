@@ -26,8 +26,8 @@ interface Hail {
 /** The pixel portrait key: one letter per color. */
 const key = (): Record<string, number> => ({
   K: 0,
-  H: C('grey')[3],
-  h: C('grey')[2],
+  H: C('gray')[3],
+  h: C('gray')[2],
   b: C('brown')[1],
   s: C('sand')[6],
   S: C('sand')[4],
@@ -36,8 +36,8 @@ const key = (): Record<string, number> => ({
   r: C('red')[4],
   R: C('red')[5],
   a: C('blue')[0],
-  A: C('grey')[2],
-  g: C('grey')[5],
+  A: C('gray')[2],
+  g: C('gray')[5],
   p: C('violet')[5],
   P: C('violet')[3],
   t: C('green')[4],
@@ -51,7 +51,7 @@ const key = (): Record<string, number> => ({
   q: C('red')[5],
 });
 
-// Doc Leo, from the photos: a grey felt fedora, wire glasses, white around the eyes, his own
+// Doc Leo, from the photos: a gray felt fedora, wire glasses, white around the eyes, his own
 // nose and cheeks sunburned, a white mouth turned down sad, the hobo's ash beard, a purple shirt, a
 // green tie and a navy corduroy jacket. 32 x 40, drawn three times bigger.
 const LEO = [
@@ -119,20 +119,20 @@ function drawLeo(c: Canvas): void {
   c.gradient(0, 0, 152, 150, [C('violet')[2], C('magenta')[3], C('orange')[4], C('orange')[6], C('yellow')[7]]);
   c.rect(0, 150, 152, 50, C('sand')[3]);
   for (let x = 0; x < 152; x += 3) c.set(x + ((x * 7) % 5), 160 + ((x * 13) % 30), C('sand')[1]);
-  c.rect(0, 140, 152, 2, C('grey')[3]);
+  c.rect(0, 140, 152, 2, C('gray')[3]);
   for (let x = 2; x < 152; x += 10) c.rect(x, 142, 6, 3, C('brown')[1]);
-  c.rect(0, 145, 152, 2, C('grey')[3]);
+  c.rect(0, 145, 152, 2, C('gray')[3]);
   // the boxcar: red planks, a sliding door, its wheels on the rail
   c.rect(4, 70, 144, 66, C('red')[2]);
   for (let x = 8; x < 148; x += 8) c.rect(x, 72, 1, 62, C('red')[1]);
   c.rect(4, 70, 144, 3, C('red')[4]);
   c.rect(52, 78, 48, 56, C('red')[1]);
-  c.frame(52, 78, 48, 56, C('grey')[1]);
+  c.frame(52, 78, 48, 56, C('gray')[1]);
   c.text(10, 76, 'SANDBOX', C('ice')[6]);
   c.text(102, 76, 'R.R.', C('ice')[6]);
   for (const x of [16, 34, 118, 136]) {
-    c.disc(x, 136, 6, C('grey')[1]);
-    c.disc(x, 136, 2, C('grey')[4]);
+    c.disc(x, 136, 6, C('gray')[1]);
+    c.disc(x, 136, 2, C('gray')[4]);
   }
   c.sprite(new Canvas(32, 40, 255).draw(0, 0, LEO, key()), 28, 30, 3);
   // the leash runs from his pocket to the chicken
@@ -145,7 +145,7 @@ function drawGalileo(c: Canvas): void {
   spaceBg(c, 314, false);
   // the probe: its big umbrella antenna (it never quite opened), the bus, two power booms
   // and the long magnetometer boom
-  const g = C('grey');
+  const g = C('gray');
   const y0 = 50;
   for (let k = -5; k <= 5; k++) c.line(76, y0 + 16, 76 + k * 6, y0 - 4 + Math.abs(k) * 2, g[5]);
   for (let k = -5; k < 5; k++) c.line(76 + k * 6, y0 - 4 + Math.abs(k) * 2, 82 + k * 6, y0 - 4 + Math.abs(k + 1) * 2, g[6]);
@@ -194,7 +194,7 @@ function drawLiberty(c: Canvas): void {
   // the yoke
   c.rect(cx - 30, cy - 46, 60, 9, C('brown')[1]);
   c.rect(cx - 30, cy - 46, 60, 2, C('brown')[3]);
-  c.rect(cx - 5, cy - 37, 10, 6, C('grey')[2]);
+  c.rect(cx - 5, cy - 37, 10, 6, C('gray')[2]);
   // the bell: a bronze profile, lit from the left, flaring at the lip
   const bronze = [C('brown')[1], C('brown')[3], C('orange')[2], C('orange')[4], C('yellow')[5]];
   const top = cy - 31;
@@ -269,7 +269,7 @@ export function hailPages(sceneOf: (world: string) => number): Map<string, Uint8
     const c = new Canvas();
     spaceBg(c, 700 + i);
     h.art(c);
-    c.frame(0, 0, 152, 200, C('grey')[1]);
+    c.frame(0, 0, 152, 200, C('gray')[1]);
     // the comm screen
     c.panel(156, 4, 160, 192, C('space')[1], C('cyan')[2], C('cyan')[1]);
     c.rect(157, 5, 158, 11, C('cyan')[1]);
@@ -285,7 +285,7 @@ export function hailPages(sceneOf: (world: string) => number): Map<string, Uint8
       y += 4;
     }
     if (c.para(162, y, 152, h.text, C('ice')[6], 10) > 182) throw new Error(`hail ${h.title}: too much text`);
-    c.text(162, 184, 'ANY KEY TO GO ON', C('grey')[3]);
+    c.text(162, 184, 'ANY KEY TO GO ON', C('gray')[3]);
     atlas.blit(c, 0, i * 200);
     out.set(`w${sceneOf(h.world)}h.bkd`, serializeBackdrop({ x: 0, y: i * 200, gif: 'hails.gif' }));
   });

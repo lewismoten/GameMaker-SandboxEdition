@@ -22,7 +22,7 @@ const SCREEN_ROLES: Role[] = [
   { name: 'neb', n: 8 },
   { name: 'neb2', n: 8 },
   { name: 'star', n: 4 },
-  ...['blue', 'cyan', 'green', 'lime', 'yellow', 'orange', 'red', 'magenta', 'violet', 'brown', 'sand', 'grey', 'ice'].map((name) => ({ name, n: 8 })),
+  ...['blue', 'cyan', 'green', 'lime', 'yellow', 'orange', 'red', 'magenta', 'violet', 'brown', 'sand', 'gray', 'ice'].map((name) => ({ name, n: 8 })),
 ];
 const hueRamp8 = (h: number, s: number, dark = 0.06, light = 0.88): [RGB, RGB, RGB] => [
   hsl(h - 10, s, dark),
@@ -52,7 +52,7 @@ const SCREEN_THEME: Theme = {
   violet: hueRamp8(268, 0.55),
   brown: hueRamp8(25, 0.4, 0.05, 0.7),
   sand: hueRamp8(40, 0.5, 0.15, 0.9),
-  grey: [
+  gray: [
     [20, 22, 28],
     [235, 238, 245],
     [120, 125, 140],
@@ -95,18 +95,18 @@ const BIOME_RAMPS: Record<string, [string, string]> = {
   toxic: ['lime', 'violet'],
   crystal: ['violet', 'cyan'],
   fungal: ['magenta', 'brown'],
-  ash: ['grey', 'red'],
+  ash: ['gray', 'red'],
   autumn: ['orange', 'brown'],
   jungle: ['green', 'lime'],
   ocean: ['blue', 'cyan'],
   abyss: ['violet', 'blue'],
-  station: ['grey', 'cyan'],
+  station: ['gray', 'cyan'],
   space: ['violet', 'neb'],
   core: ['red', 'magenta'],
 };
 
 export function planetArt(c: Canvas, cx: number, cy: number, rad: number, biome: string, seed: number, o: { rings?: boolean } = {}): void {
-  const [a, b] = BIOME_RAMPS[biome] ?? ['grey', 'blue'];
+  const [a, b] = BIOME_RAMPS[biome] ?? ['gray', 'blue'];
   const n = tileNoise(seed, 1, 5);
   const n2 = tileNoise(seed + 4, 1, 11);
   const banded = biome === 'toxic' || biome === 'fungal';
@@ -144,8 +144,8 @@ export function titleScreen(): Uint8Array {
   // the pod streaking past, trailing its flame
   for (let i = 0; i < 70; i++) c.set(70 + i, 132 + i * 0.12, C('orange')[Math.min(7, Math.floor(i / 9))]);
   c.sprite(drawPod('r', { flicker: 2, glow: 1 }), 140, 128, 3);
-  c.center(180, '(C) 1995 SANDBOX SOFTWARE', C('grey')[5], { shadow: 0 });
-  c.center(190, 'SHAREWARE VERSION 1.0', C('grey')[3], { shadow: 0 });
+  c.center(180, '(C) 1995 SANDBOX SOFTWARE', C('gray')[5], { shadow: 0 });
+  c.center(190, 'SHAREWARE VERSION 1.0', C('gray')[3], { shadow: 0 });
   return gif(c);
 }
 
@@ -160,7 +160,7 @@ export function menuScreen(): Uint8Array {
   c.panel(62, 94, 196, 78, C('ice')[7], C('blue')[2], WHITE);
   c.rect(64, 96, 192, 1, C('ice')[6]);
   c.sprite(drawCourier({ arm: [150, 170], backArm: [5, 10] }), 278, 112, 2);
-  c.center(184, 'ARROWS TO CHOOSE, ENTER TO GO', C('grey')[4], { shadow: 0 });
+  c.center(184, 'ARROWS TO CHOOSE, ENTER TO GO', C('gray')[4], { shadow: 0 });
   return gif(c);
 }
 
@@ -215,7 +215,7 @@ const STORY: { text: string[]; frames?: number; art: (c: Canvas, t: number) => v
         // each lane burns bright, then goes out, one after another
         const lit = t < 0.15 + k * 0.2;
         for (let i = 0; i < 14; i++)
-          if (k < 4) c.set(x + 20 + i * 3, 80, lit ? C('cyan')[(i + Math.round(t * 30)) % 3 ? 6 : 7] : C('grey')[i % 2 ? 2 : 4 - Math.floor(k / 2)]);
+          if (k < 4) c.set(x + 20 + i * 3, 80, lit ? C('cyan')[(i + Math.round(t * 30)) % 3 ? 6 : 7] : C('gray')[i % 2 ? 2 : 4 - Math.floor(k / 2)]);
       }
     },
   },
@@ -223,9 +223,9 @@ const STORY: { text: string[]; frames?: number; art: (c: Canvas, t: number) => v
     text: ['Max is a courier. Couriers', 'deliver. This time the package', 'is the light of the galaxy.'],
     frames: 10,
     art: (c, t) => {
-      c.rect(0, 120, 320, 40, C('grey')[2]);
-      c.rect(0, 120, 320, 2, C('grey')[5]);
-      for (let x = 0; x < 320; x += 40) c.rect(x, 122, 2, 38, C('grey')[1]);
+      c.rect(0, 120, 320, 40, C('gray')[2]);
+      c.rect(0, 120, 320, 2, C('gray')[5]);
+      for (let x = 0; x < 320; x += 40) c.rect(x, 122, 2, 38, C('gray')[1]);
       // Max waves from the hangar deck; the pod's lamps blink
       const k = Math.round(t * 9);
       c.sprite(drawPod('idle', { glow: t === 1 ? 1 : k % 2 }), 170, 60, 3);
@@ -350,10 +350,10 @@ export function wonScreens(): Map<string, Uint8Array> {
     col(108, 'NOR HEAT NOR GLOOM', C('ice')[5], { shadow: 0 });
     col(118, 'OF NIGHT...', C('ice')[5], { shadow: 0 });
     col(144, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
-    col(160, 'SANDBOX SOFTWARE 1995', C('grey')[4]);
+    col(160, 'SANDBOX SOFTWARE 1995', C('gray')[4]);
     // Doc Leo, who walked a parcel over for Max at Boxcar Flats: his snapshot, scanned in
     const leo = resample(loadScan('leo'), 84);
-    const at = polaroid(c, 26, 66, leo.w, leo.h, { paper: WHITE, edge: C('grey')[3], shadow: 0, tape: C('sand')[6] });
+    const at = polaroid(c, 26, 66, leo.w, leo.h, { paper: WHITE, edge: C('gray')[3], shadow: 0, tape: C('sand')[6] });
     c.text(Math.round(at.cx - Canvas.width('DOC LEO') / 2), Math.round(at.cy - 3), 'DOC LEO', C('blue')[1]);
     const { pal } = pastePhoto(c, SCREEN.pal, leo, 26, 66);
     out.set('won3.gif', encodeGif({ width: c.w, height: c.h, pixels: c.px, palette: pal }));
@@ -366,10 +366,10 @@ export function wonScreens(): Map<string, Uint8Array> {
     const c = new Canvas();
     spaceBg(c, 74);
     planetArt(c, 160, 120, 60, 'ash', 75);
-    for (let i = 0; i < 40; i++) c.set(220 + i * 1.5, 40 + i, C('grey')[Math.max(0, 6 - Math.floor(i / 6))]);
+    for (let i = 0; i < 40; i++) c.set(220 + i * 1.5, 40 + i, C('gray')[Math.max(0, 6 - Math.floor(i / 6))]);
     c.sprite(drawPod('dl', { hurt: false }), 268, 92, 2);
     c.center(16, 'SIGNAL LOST', C('red').slice(3).reverse(), { scale: 3, outline: 0 });
-    c.center(176, 'The light waits. Try again, courier.', C('grey')[5]);
+    c.center(176, 'The light waits. Try again, courier.', C('gray')[5]);
     out.set('lost.gif', gif(c));
   }
   return out;
@@ -394,8 +394,8 @@ function drawScan(c: Canvas, scan: Scan, kind: string, ox: number, oy: number): 
   const col = [C('space')[1], C('brown')[3], C('brown')[1], C('red')[5], C('cyan')[4], C('blue')[2], C('yellow')[6]];
   if (kind === 'ocean') col[0] = C('blue')[3];
   if (kind === 'station') {
-    col[1] = C('grey')[3];
-    col[2] = C('grey')[2];
+    col[1] = C('gray')[3];
+    col[2] = C('gray')[2];
   }
   const at = (v: number) => Math.floor(v * 1.5);
   for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) c.rect(ox + at(x), oy + at(y), at(x + 1) - at(x), at(y + 1) - at(y), col[scan.cls[y * 100 + x]]);
@@ -420,7 +420,7 @@ export function sectorCards(k: number, worlds: { world: World; scene: number; sc
     // left: the planet and what the courier knows about it
     planetArt(card, 26, 30, 20, world.biome, scene, { rings: scene % 5 === 0 });
     // where the courier is: the sector of five, and the world of the sector's own
-    card.text(54, 12, `SECTOR ${k + 1} OF ${SECTORS.length}`, C('grey')[4]);
+    card.text(54, 12, `SECTOR ${k + 1} OF ${SECTORS.length}`, C('gray')[4]);
     // the sector's name, on two lines when one would run under the scan panel (x 160)
     const secName = sec.name.toUpperCase();
     const cut = Canvas.width(secName) > 104 ? secName.lastIndexOf(' ', 13) : -1;
@@ -430,7 +430,7 @@ export function sectorCards(k: number, worlds: { world: World; scene: number; sc
     card.text(6, 58, name, C('yellow').slice(3).reverse(), { scale, outline: 0 });
     card.text(6, 80, KIND_TEXT[world.kind], C('orange')[6]);
     card.text(6, 90, `DANGER ${'*'.repeat(sec.level)}${'.'.repeat(5 - sec.level)}`, C('red')[6]);
-    card.text(6, 100, `WORLD ${i + 1} OF ${worlds.length}`, C('grey')[5]);
+    card.text(6, 100, `WORLD ${i + 1} OF ${worlds.length}`, C('gray')[5]);
     let y = card.para(6, 114, 150, world.blurb, C('ice')[6], 10);
     if (world.shard !== undefined) {
       card.sprite(drawShard(world.shard), 4, y + 2, 1);
@@ -443,19 +443,19 @@ export function sectorCards(k: number, worlds: { world: World; scene: number; sc
     }
     if (y > 176) throw new Error(`${world.name}: the card's text runs into its save line`);
     card.text(6, 178, 'F5 SAVE  F6 LOAD', C('green')[5]);
-    card.text(6, 188, 'ANY KEY TO LAND', C('grey')[3]);
+    card.text(6, 188, 'ANY KEY TO LAND', C('gray')[3]);
     // right: the long-range scan of the whole world
     if (scan) {
       card.rect(160, 0, 160, 200, C('space')[0]);
       card.text(164, 8, 'LONG-RANGE SCAN', C('cyan')[6]);
       drawScan(card, scan, world.kind, 165, 22);
       card.rect(165, 180, 5, 5, C('green')[6]);
-      card.text(173, 178, 'YOU', C('grey')[5]);
+      card.text(173, 178, 'YOU', C('gray')[5]);
       card.rect(203, 180, 5, 5, C('yellow')[7]);
-      card.text(211, 178, 'VAULT', C('grey')[5]);
+      card.text(211, 178, 'VAULT', C('gray')[5]);
       card.rect(257, 180, 5, 5, C('red')[5]);
-      card.text(265, 178, 'HOT', C('grey')[5]);
-      card.text(164, 190, 'east leads home', C('grey')[3]);
+      card.text(265, 178, 'HOT', C('gray')[5]);
+      card.text(164, 190, 'east leads home', C('gray')[3]);
     }
     c.blit(card, 0, i * 200);
     out.set(`w${scene}.bkd`, serializeBackdrop({ x: 0, y: i * 200, gif: `cards${k + 1}.gif` }));
@@ -476,9 +476,9 @@ export function placeCards(places: { file: string; title: string; sub: string; t
     card.text(172, 48, p.title, C('yellow').slice(3).reverse(), { scale: Canvas.width(p.title, 2) <= 140 ? 2 : 1, outline: 0 });
     const y = card.para(172, 80, 140, p.text, C('ice')[6], 10);
     if (y > 150) throw new Error(`${p.title}: the card's text runs into its last lines`);
-    card.text(172, 160, `CORE ${i + 1} OF ${places.length}`, C('grey')[4]);
+    card.text(172, 160, `CORE ${i + 1} OF ${places.length}`, C('gray')[4]);
     card.text(172, 172, 'F5 SAVE  F6 LOAD', C('green')[5]);
-    card.text(172, 184, 'ANY KEY TO GO ON', C('grey')[3]);
+    card.text(172, 184, 'ANY KEY TO GO ON', C('gray')[3]);
     c.blit(card, 0, i * 200);
     out.set(`${p.file}.bkd`, serializeBackdrop({ x: 0, y: i * 200, gif: 'places.gif' }));
   });

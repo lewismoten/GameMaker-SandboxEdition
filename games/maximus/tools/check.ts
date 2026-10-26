@@ -36,25 +36,25 @@ for (const info of b.scenes) {
     const sim = simFor(b, info, 1);
     await sim.run(5);
     const startX = sim.pos.x;
-    let travelled = 0;
+    let traveled = 0;
     let last = startX;
     sim.press(SCAN.right);
     let stuck = 0;
-    for (let t = 0; t < 2400 && travelled < 2000 && !sim.dead; t++) {
+    for (let t = 0; t < 2400 && traveled < 2000 && !sim.dead; t++) {
       if (t % 16 === 0) sim.press(SCAN.space);
       if (t % 16 === 1) sim.release(SCAN.space);
       await sim.tick();
       let dx = sim.pos.x - last;
       if (dx < -1000) dx += 2000;
-      travelled += Math.max(0, dx);
+      traveled += Math.max(0, dx);
       stuck = dx === 0 ? stuck + 1 : 0;
       last = sim.pos.x;
       if (stuck > 60) break;
       sim.link = -1; // drive past the uplink
     }
-    if (travelled < 2000)
+    if (traveled < 2000)
       report.push(
-        `${info.name}: rover got ${Math.round(travelled / 20)} blocks around the planet (stuck at ${sim.pos.bx},${sim.pos.by}${sim.dead ? ', dead' : ''})`,
+        `${info.name}: rover got ${Math.round(traveled / 20)} blocks around the planet (stuck at ${sim.pos.bx},${sim.pos.by}${sim.dead ? ', dead' : ''})`,
       );
   }
   if (info.kind === 'home') {

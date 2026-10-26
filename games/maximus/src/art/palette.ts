@@ -101,7 +101,7 @@ export function roleIndex(roles: Role[]): Map<string, number[]> {
   return out;
 }
 
-// ---- colour helpers for themes ----
+// ---- color helpers for themes ----
 
 export function hsl(h: number, s: number, l: number): RGB {
   h = ((h % 360) + 360) % 360;
