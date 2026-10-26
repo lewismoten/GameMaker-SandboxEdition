@@ -276,8 +276,9 @@ modules are in [`../test`](../test).
     add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
     debugging tools for registration modes, saved games and backups, dressed as 1990s scene
     programs.
-- [`retro/bbs/`](retro/bbs): the terminal (`term.ts`) and the BBSes.
-  - The boards: THE -= S A N D B O X =- BBS (`bbs.ts`, its name in `bbsName.ts`, ANSI art in
+- [`retro/bbs/`](retro/bbs): the terminal (`term.ts`) and the BBSes; TERMINAL.EXE's dialing
+  directory and calls are `bbs.ts`.
+  - The boards: THE -= S A N D B O X =- BBS (`sandbox.ts`, its name in `bbsName.ts`, ANSI art in
     `ansiArt.ts`) and The Sofa (`sofa.ts`, its number in `sofaPhone.ts` for the printed pieces; its
     files, pictures and SPAM in `sofaFiles.ts`, `sofaPictures.ts` and `sofaSpam.ts`).
   - Their file areas: listings a screen at a time (`pager.ts`) with FILE_ID.DIZ (`fileId.ts`), the
