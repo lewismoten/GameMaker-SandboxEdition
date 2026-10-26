@@ -15,7 +15,12 @@ vi.mock('../project/storage', () => ({
   },
 }));
 
-import { ACHIEVEMENTS, CATEGORIES, DESK_PROPS, achievementById, shownText } from './catalog';
+import { ACHIEVEMENTS, CATEGORIES, DESK_PROPS, LIBRARY_KINDS, MAG_FEATURES, WORLD_MAP_STYLES, achievementById, shownText } from './catalog';
+import { GAME_SPOTS, gameSpot } from './index';
+import { SHELF_TYPES } from '../library/shelf';
+import { SECTIONS } from '../manual/magazine/issue';
+import { themeOf } from '../manual/printables/worldMapThemes';
+import { parseGame } from '../formats/game';
 import {
   FILE,
   SAVE_ID,
@@ -93,6 +98,15 @@ describe('achievements store', () => {
     expect(r.unlocked['export-all']).toBeTypeOf('number');
   });
 
+  it('keeps no item a fixed list doesn’t count', async () => {
+    await loadAchievements();
+    tally('mag-features', 'cover');
+    tally('mag-features', 'gripes');
+    const r = await loadAchievements();
+    expect(r.sets['mag-features']).toEqual(['gripes']);
+    expect(r.progress['mag-features']).toEqual({ n: 1, of: MAG_FEATURES.length });
+  });
+
   it('merges another tab’s record: earliest dates, furthest progress, every item', () => {
     const a = { unlocked: { x: 5 }, progress: { p: { n: 2, of: 5 } }, sets: { s: ['a'] } };
     const b = { unlocked: { x: 3, y: 9 }, progress: { p: { n: 4, of: 5 } }, sets: { s: ['b', 'a'] } };
@@ -164,7 +178,7 @@ describe('where they fire', () => {
         const res = [
           /\b(?:unlockAchievement|achieve|progress|tally)\('([\w-]+)'/g,
           /\{ id: '([\w-]+)'(?:, title|\s*\})/g,
-          /detail: \{ id: '([\w-]+)' \}/g,
+          /detail: \{ id: '([\w-]+)'(?:, item: \w+)? \}/g,
           /^\s*\w+: '(desk-[\w-]+)',$/gm, // DESK_PROGRAMS
         ];
         for (const re of res) for (const m of text.matchAll(re)) fired.add(m[1]);
@@ -174,14 +188,16 @@ describe('where they fire', () => {
   walk(src);
 
   it('fires only ids the catalog has', () => {
-    const unknown = [...fired].filter((id) => /^(desk|bbs|tty|check|make|watch|print|play|link)-/.test(id) && !achievementById(id));
+    const unknown = [...fired].filter(
+      (id) => /^(desk|bbs|tty|check|make|watch|print|play|link|library|mag|zine|sofa|offline)-/.test(id) && !achievementById(id),
+    );
     expect(unknown).toEqual([]);
   });
 
   it('fires every achievement somewhere', () => {
     // the ones fired from a computed id or a count: the Download chooser's export-<kind>, the
     // derived totals, and the tin hearts and felt eggs counted in start.ts
-    const counted = (id: string) => /^export-/.test(id) || !!achievementById(id)?.from || /^(heart|egg)-/.test(id);
+    const counted = (id: string) => /^export-/.test(id) || !!achievementById(id)?.from || /^(heart|egg)-/.test(id) || GAME_SPOTS.some((s) => s.id === id);
     const never = ACHIEVEMENTS.filter((a) => !fired.has(a.id) && !counted(a.id)).map((a) => a.id);
     expect(never).toEqual([]);
   });
@@ -213,7 +229,56 @@ describe('derived totals', () => {
     expect(goalProgress(goalTargets(teddies, 'teddy'), ['teddy'])).toEqual({ n: 1, of: 2 });
   });
 
+  it('counts finished Sandbox and Bizarre games from the same lists as played ones', () => {
+    expect(goalTargets(catalog, 'sandboxDone')).toEqual(goalTargets(catalog, 'sandbox'));
+    expect(goalTargets(catalog, 'bizarreDone')).toEqual(goalTargets(catalog, 'bizarre'));
+  });
+
   it('counts only listed games as done (one played but not listed adds nothing)', () => {
     expect(goalProgress(goalTargets(catalog, 'sandbox'), ['a', 'zz', 'd'])).toEqual({ n: 1, of: 2 });
+  });
+});
+
+describe('lists kept in step with what they count', () => {
+  const games = join(__dirname, '../../../games');
+  const about = (id: string) => JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')) as { title: string; blurb?: string; secret?: boolean };
+
+  it('counts every kind of paper on the Library’s shelves', () => {
+    expect([...LIBRARY_KINDS]).toEqual(SHELF_TYPES.map(([t]) => t));
+  });
+
+  it('counts TURBO BUTTON features the issue runs', () => {
+    const ids = new Set(SECTIONS.map((s) => s.id));
+    for (const f of MAG_FEATURES) expect(ids.has(f)).toBe(true);
+  });
+
+  it('counts World Map styles that a game shown to everyone is drawn in', () => {
+    const shown = readdirSync(games)
+      .filter((id) => existsSync(join(games, id, 'about.json')) && !about(id).secret)
+      .map((id) => themeOf({ id, ...about(id) }).id);
+    expect(new Set(shown)).toEqual(new Set(WORLD_MAP_STYLES));
+  });
+
+  it('finds each game spot’s scenes in its built game', () => {
+    for (const spot of GAME_SPOTS) {
+      const gam = readdirSync(join(games, spot.game, 'disk')).find((f) => /\.gam$/i.test(f))!;
+      const game = parseGame(new Uint8Array(readFileSync(join(games, spot.game, 'disk', gam))));
+      const hits = game.scenes.filter((sc) => spot.scene.test(sc.desc.trim()));
+      expect(hits.length, spot.id).toBeGreaterThan(0);
+      const a = achievementById(spot.id)!;
+      // a counted spot: its scenes and its ending make up the whole total
+      if (a.of) expect(hits.length + (spot.won ? 1 : 0)).toBe(a.of);
+    }
+  });
+
+  it('counts a game spot’s scenes and ending, in that game only', async () => {
+    await loadAchievements();
+    gameSpot('game:brief', 'Chapter 2 Done');
+    gameSpot('game:snowbound', 'Chapter 1 Done');
+    gameSpot('brief', undefined, true);
+    gameSpot('blaster', '3c The Big Name');
+    const r = await loadAchievements();
+    expect(r.sets['brief-chapters']).toEqual(['2', '4']);
+    expect(r.unlocked['blaster-big-name']).toBeTypeOf('number');
   });
 });

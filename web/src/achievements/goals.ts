@@ -1,5 +1,5 @@
-// Totals counted from the games catalog: every Sandbox game played, every Bard of Bizarre game
-// played, every Teddy game finished, every walkthrough watched. The catalog given out (loadGameList) already leaves out a
+// Totals counted from the games catalog: every Sandbox game and every Bard of Bizarre game
+// played and finished, every Teddy game finished, every walkthrough watched. The catalog given out (loadGameList) already leaves out a
 // game that is kept out of sight until it is found, so such a game never counts, and is never
 // named, until the lists show it anyway.
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
@@ -10,7 +10,14 @@ import { currentAchievements, loadAchievements, progress, remember } from './sto
 type Listed = Pick<CatalogEntry, 'id' | 'original' | 'company' | 'series' | 'walkthrough'>;
 
 /** Which set of the record each catalog goal counts. */
-const GOAL_SET: Partial<Record<Goal, string>> = { sandbox: 'played', bizarre: 'played', teddy: 'finished', walkthroughs: 'watched' };
+const GOAL_SET: Partial<Record<Goal, string>> = {
+  sandbox: 'played',
+  bizarre: 'played',
+  sandboxDone: 'finished',
+  bizarreDone: 'finished',
+  teddy: 'finished',
+  walkthroughs: 'watched',
+};
 
 /** A Teddy game: Sandbox Software's teddy, teddy2, teddy3… (a new one counts once the catalog lists it). */
 const isTeddyGame = (g: Listed) => isSandboxGame(g) && /^teddy\d*$/.test(g.id);
@@ -18,9 +25,9 @@ const isTeddyGame = (g: Listed) => isSandboxGame(g) && /^teddy\d*$/.test(g.id);
 /** The catalog games a goal counts. */
 export function goalTargets(catalog: readonly Listed[], goal: Goal): string[] {
   const pick =
-    goal === 'sandbox'
+    goal === 'sandbox' || goal === 'sandboxDone'
       ? isSandboxGame
-      : goal === 'bizarre'
+      : goal === 'bizarre' || goal === 'bizarreDone'
         ? isBizarreGame
         : goal === 'teddy'
           ? isTeddyGame

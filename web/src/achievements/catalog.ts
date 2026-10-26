@@ -21,7 +21,7 @@ export const CATEGORIES: { id: Category; title: string; blurb: string }[] = [
 ];
 
 /** What a derived total counts (goals.ts). */
-export type Goal = 'sandbox' | 'bizarre' | 'teddy' | 'walkthroughs' | 'hearts' | 'eggs';
+export type Goal = 'sandbox' | 'bizarre' | 'sandboxDone' | 'bizarreDone' | 'teddy' | 'walkthroughs' | 'hearts' | 'eggs';
 
 export interface Achievement {
   id: string;
@@ -54,6 +54,32 @@ const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as const;
 const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
 /** The modem speeds that count toward connecting and downloading at every speed (retro/bbs/lineSpeed.ts; Unlimited isn't one). */
 const MODEM_SPEEDS = ['300', '1200', '2400', '4800', '9600', '14400', '28800', '33600', '56000'] as const;
+/** The Library's kinds of paper (library/shelf.ts SHELF_TYPES; a test keeps them in step). */
+export const LIBRARY_KINDS = [
+  'manual',
+  'hintbook',
+  'worldmap',
+  'levelmap',
+  'map',
+  'poster',
+  'newsletter',
+  'stickers',
+  'keys',
+  'registration',
+  'hintcard',
+  'idcard',
+  'license',
+  'letter',
+  'catalog',
+  'insert',
+  'magazine',
+  'guide',
+  'walkthrough',
+] as const;
+/** The World Map's styles (manual/printables/worldMapThemes.ts ThemeId; a test keeps them in step). */
+export const WORLD_MAP_STYLES = ['land', 'space', 'town', 'rooms', 'library', 'board', 'grid'] as const;
+/** TURBO BUTTON's newer features (their section ids in manual/magazine/issue.ts). */
+export const MAG_FEATURES = ['readers-picks', 'gripes', 'dos-bugs', 'shelf'] as const;
 /** The desk props another part of the room reports with a gm-achievement event. */
 export const DESK_PROPS = [
   'desk-clock',
@@ -80,6 +106,8 @@ export const DESK_PROPS = [
   'desk-zine',
   'desk-light',
   'desk-glance',
+  'desk-lume',
+  'desk-egg-uv',
 ] as const;
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
@@ -119,6 +147,19 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'make-walk', title: 'Let the bot play', desc: 'Made a walkthrough of your game with the 🤖 walkthrough bot.', icon: '🤖', category: 'making' },
   { id: 'sfx-maker', title: 'Bleeps and bloops', desc: 'Saved a sound with the 🎛 sound effect maker.', icon: '🎛️', category: 'making' },
   { id: 'first-steps', title: 'First steps', desc: 'Ticked every step of the 🎓 First steps list in a new game.', icon: '🎓', category: 'making' },
+  {
+    id: 'make-cards',
+    title: 'In the cards',
+    desc: 'Made an Instruction card and a Level card in the Game Integrator.',
+    icon: '🪧',
+    category: 'making',
+    of: 2,
+    items: ['howto', 'level'],
+    unit: 'cards',
+  },
+  { id: 'make-opening', title: 'Presenting…', desc: 'Gave a game an Opening sting on its start scene.', icon: '🎬', category: 'making' },
+  { id: 'make-heat', title: 'Feeling the heat', desc: 'Played your own map with Play and record, and grew your heat map.', icon: '🔥', category: 'making' },
+  { id: 'make-take', title: 'Take one', desc: 'Kept your own play of a scene for its walkthrough.', icon: '⏺️', category: 'making' },
   { id: 'palette-vision', title: 'Seen by everyone', desc: 'Applied a ✨ fix from the palette’s Color vision check.', icon: '👓', category: 'making' },
 
   // playing
@@ -144,6 +185,24 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     unit: 'games',
   },
   {
+    id: 'finish-sandbox',
+    title: 'Sandbox champion',
+    desc: 'Played every Sandbox Software game all the way to its ending.',
+    icon: '🥇',
+    category: 'playing',
+    from: 'sandboxDone',
+    unit: 'games',
+  },
+  {
+    id: 'finish-bizarre',
+    title: 'Encore!',
+    desc: 'Played every game by The Bard of Bizarre all the way to its ending.',
+    icon: '🎤',
+    category: 'playing',
+    from: 'bizarreDone',
+    unit: 'games',
+  },
+  {
     id: 'play-teddy',
     title: 'Good dog!',
     desc: 'Played every Teddy game all the way to its ending.',
@@ -151,6 +210,23 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     category: 'playing',
     from: 'teddy',
     unit: 'games',
+  },
+  {
+    id: 'blaster-big-name',
+    title: 'Name in lights',
+    desc: 'Reached 3-C, The Big Name, on the face of the Sound Boaster in Virus Blaster.',
+    icon: '🔊',
+    category: 'playing',
+  },
+  {
+    id: 'brief-chapters',
+    title: 'Chapter and verse',
+    desc: 'Finished all four chapters of the night in KEEP IT BRIEF!',
+    icon: '🔖',
+    category: 'playing',
+    of: 4,
+    items: ['1', '2', '3', '4'],
+    unit: 'chapters',
   },
   {
     id: 'trophy-first',
@@ -261,6 +337,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     of: 3,
     unit: 'games',
   },
+  { id: 'sofa-busy', title: 'All lines are busy', desc: 'Got a busy signal calling The Sofa BBS. Keep trying!', icon: '📵', category: 'desk' },
+  { id: 'sofa-chat', title: 'Couch talk', desc: 'Said something in The Sofa’s teleconference, flood and all.', icon: '🛋️', category: 'desk' },
   { id: 'tty-call', title: 'Typed hello', desc: 'Called Mrs. Novak’s TTY from TERMINAL in TDD mode.', icon: '📠', category: 'desk' },
   { id: 'tty-sk', title: 'SK SK', desc: 'Talked with Mrs. Novak on her TTY until you both signed off with SK.', icon: '👋', category: 'desk' },
   { id: 'tty-wallphone', title: 'Wrong kind of phone', desc: 'Dialed Mrs. Novak from the wall phone and heard her TTY warble.', icon: '☎️', category: 'desk' },
@@ -280,6 +358,21 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     hidden: true,
     hint: 'DOS answers to more than HELP lists.',
   },
+  {
+    id: 'desk-egg-pages',
+    title: 'Turn the page',
+    desc: 'Opened the tin heart ledger and the score trophies’ page in EGG.EXE.',
+    icon: '🗃️',
+    category: 'desk',
+    hidden: true,
+    hint: 'An unlisted program has more than one page.',
+    of: 2,
+    items: ['hearts', 'trophies'],
+    unit: 'pages',
+  },
+  { id: 'desk-gamepad', title: 'Press start', desc: 'Pushed the d-pad or a button on the GRAVITAS GamePad.', icon: '🕹️', category: 'desk' },
+  { id: 'desk-mousepad', title: 'Square deal', desc: 'Put a new print on the desk’s mouse pad from the Square Deal Pad Co. ad.', icon: '🖱️', category: 'desk' },
+  { id: 'desk-soundcard', title: 'Beep mode', desc: 'Switched the Sound Boaster off, for PC speaker beeps.', icon: '🔇', category: 'desk' },
   { id: 'desk-achieve', title: 'Taking stock', desc: 'Looked over what you’ve done with ACHIEVE.', icon: '📋', category: 'desk' },
 
   // around the site
@@ -297,6 +390,46 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   { id: 'print-level-maps', title: 'Map reader', desc: 'Opened a game’s Level Maps.', icon: '🧭', category: 'fun' },
   { id: 'print-world-map', title: 'Fold-out', desc: 'Unfolded a game’s World Map.', icon: '🗺️', category: 'fun' },
+  {
+    id: 'print-world-styles',
+    title: 'Cartographer',
+    desc: 'Unfolded a World Map in each of its seven styles, from star chart to floor plan.',
+    icon: '📐',
+    category: 'fun',
+    of: WORLD_MAP_STYLES.length,
+    items: WORLD_MAP_STYLES,
+    unit: 'styles',
+  },
+  { id: 'library-visit', title: 'Quiet, please', desc: 'Visited the Library.', icon: '🏛️', category: 'fun' },
+  {
+    id: 'library-kinds',
+    title: 'Well read',
+    desc: 'Opened something of every kind on the Library’s shelves.',
+    icon: '📚',
+    category: 'fun',
+    of: LIBRARY_KINDS.length,
+    items: LIBRARY_KINDS,
+    unit: 'kinds',
+  },
+  { id: 'mag-back', title: 'Cover to cover', desc: 'Turned TURBO BUTTON all the way to its back cover.', icon: '🗞️', category: 'fun' },
+  {
+    id: 'mag-features',
+    title: 'Dog-eared',
+    desc: 'Read Readers’ Picks, What Players Hate, Bugs Only DOS Could Find and the Shareware Shelf in TURBO BUTTON.',
+    icon: '📑',
+    category: 'fun',
+    of: MAG_FEATURES.length,
+    items: MAG_FEATURES,
+    unit: 'features',
+  },
+  {
+    id: 'mag-disc',
+    title: 'Free CD-ROM inside!',
+    desc: 'Opened the CD-ROM on TURBO BUTTON’s cover and found the original Game-Maker source.',
+    icon: '💿',
+    category: 'fun',
+  },
+  { id: 'offline-copy', title: 'Off the grid', desc: 'Kept a copy of the whole site for playing offline.', icon: '📴', category: 'fun' },
   { id: 'link-in', title: 'Special delivery', desc: 'Opened a game sent from another site.', icon: '📬', category: 'fun' },
 
   // found it (the desk's room; reported by gm-achievement events)
@@ -515,6 +648,33 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     category: 'found',
     hidden: true,
     hint: 'Keep an eye on the velvet poster. Now and then it looks back.',
+  },
+  {
+    id: 'desk-lume',
+    title: 'Glow in the dark',
+    desc: 'Saw the wall clock’s lume paint glowing in the dark room.',
+    icon: '🟢',
+    category: 'found',
+    hidden: true,
+    hint: 'Some paint keeps shining after the lights go out.',
+  },
+  {
+    id: 'desk-egg-uv',
+    title: 'Secret ink',
+    desc: 'Saw hidden ink glow on the felt eggs under the black light.',
+    icon: '🔦',
+    category: 'found',
+    hidden: true,
+    hint: 'Some things only show under the right light.',
+  },
+  {
+    id: 'zine-read',
+    title: 'Read all about it',
+    desc: 'Read NO CARRIER #3 to its last page.',
+    icon: '📓',
+    category: 'found',
+    hidden: true,
+    hint: 'The underground press runs more than one page.',
   },
 ];
 

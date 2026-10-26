@@ -179,7 +179,8 @@ modules are in [`../test`](../test).
     (`bbsPictureCredits.ts`, `bbsPicturesSection.ts`).
 - [`achievements/`](achievements): what the visitor has done: the catalog (`catalog.ts`), the
   record (`store.ts`, in the save store), the calls the rest of the site makes (`index.ts`, with
-  `editKinds.ts`), what each page starts (`start.ts`), totals counted from the games catalog
+  `editKinds.ts`, and its `GAME_SPOTS`: scenes of a game that count by name), what each page
+  starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an item), totals counted from the games catalog
   (`goals.ts`), the unlock note (`toast.ts`), the `#/achievements` page (`page.ts`) and the desk's
   `ACHIEVE.EXE` (`achieveExe.ts`).
 
