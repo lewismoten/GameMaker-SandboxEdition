@@ -16,15 +16,15 @@
           "hints": [
             {
               "q": "Where is the Laser-Tag Zapper?",
-              "a": "In your own backyard, north of the garage wall. You need the garage remote to open the GATE CLICK door first."
+              "a": "In your own backyard, north of the garage wall. The clicker on Grandpa's key ring opens the GATE CLICK door first."
             },
             {
-              "q": "Where is the garage remote?",
-              "a": "In the hedge garden at the bottom left of the neighborhood. Squeeze in through the gaps in the hedges; a robo-mower guards it."
+              "q": "Where are Grandpa's keys?",
+              "a": "In the hedge garden at the bottom left of the neighborhood. Squeeze in through the gaps in the hedges; a robo-mower guards them. The ring opens both the garage gate and the CitiCar."
             },
             {
-              "q": "Which phone booth works?",
-              "a": "Not the OUT one, and not the one that just rings. The working booth is in the far right corner, past the newspaper cannons. Keep a quarter for it!"
+              "q": "How do I leave the neighborhood?",
+              "a": "In Grandpa's CitiCar, plugged in by your dome. Its door has a note on it: KEYS? Find his key ring, then walk into the door. (The corner phone booths are all out of order today. Save your quarters for later.)"
             },
             { "q": "Can I zap the hoverboard kids?", "a": "No. They zoom up and down the roads, so look both ways and cross behind them." }
           ]

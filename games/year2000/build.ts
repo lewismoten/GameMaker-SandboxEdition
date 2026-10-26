@@ -28,6 +28,7 @@ import { lostSong, menuSong, storySong, titleSong, wonSong } from './src/sound/m
 import { PAL } from './src/art/pal';
 import { renderMap } from './src/art/render';
 import * as S from './src/screens/screens';
+import { liftoffFli, parkingFli } from './src/screens/carCartoons';
 import { buildSounds } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 import { CREDITS, INSTRUCTIONS, POSTCARD, readme } from './src/screens/text';
@@ -96,6 +97,9 @@ disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', S.introFli(art));
 disk.put('tele.fli', S.teleFli(art));
 disk.put('launch.fli', S.launchFli(art));
+// the CitiCar's liftoff before the Cloud Lane, and its stop at the Skyway after
+disk.put('liftoff.fli', liftoffFli(art));
+disk.put('parking.fli', parkingFli(art));
 disk.put('won.fli', S.wonFli());
 disk.put('title.gif', S.gif(S.titleScreen(art)));
 disk.put('menu.gif', S.gif(S.menuScreen(art)));

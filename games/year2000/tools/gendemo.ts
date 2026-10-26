@@ -25,9 +25,9 @@ const sim = new Sim(
 );
 const robots = new Set<number>([MON.mowerH, MON.mowerV, MON.mowerBox, MON.dog, MON.paperbot]);
 const bot = new Bot(sim, { zapAt: (n) => robots.has(n), maxTicks: 900, avoid: new Set([set.id('booth_door')]) });
-// Fetch the remote, open the garage, grab the Zapper and some pages.
+// Fetch Grandpa's keys, open the garage, grab the Zapper and some pages.
 const names = set.names;
-await bot.collect(names, (n) => /^(remote|zapper|page|quarter)_/.test(n), 'items');
+await bot.collect(names, (n) => /^(keys|zapper|page|quarter)_/.test(n), 'items');
 sim.releaseAll();
 const out: number[] = [];
 let last = 0;

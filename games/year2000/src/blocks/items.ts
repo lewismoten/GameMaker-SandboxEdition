@@ -104,15 +104,22 @@ function colaPic(): Pixels {
   return p;
 }
 
-function remotePic(): Pixels {
+/** Grandpa's key ring: the CitiCar's two keys and the garage gate's red clicker. */
+function keysPic(): Pixels {
   const p = base();
-  shadow(p, 10, 18, 4);
-  p.rect(7, 6, 6, 10, C('gray', 2)).rect(7, 6, 6, 1, C('gray', 4));
-  oval(p, 10, 10, 2, 2, C('red', 3));
-  p.set(9, 9, C('red', 4));
-  p.rect(8, 13, 4, 1, C('gray', 4));
-  p.line(12, 6, 15, 2, C('chrome', 5));
-  p.set(15, 1, C('red', 4));
+  shadow(p, 10, 18, 5);
+  p.ring(9, 6, 3.5, C('chrome', 6)).ring(9, 6, 2.6, C('chrome', 4));
+  // two brass keys hanging off the ring, teeth down
+  for (const [x, lean] of [
+    [7, -1],
+    [12, 1],
+  ]) {
+    p.disc(x, 10, 2, C('gold', 4)).set(x, 10, C('gold', 1));
+    for (let y = 12; y < 17; y++) p.set(x + Math.round(((y - 12) * lean) / 3), y, C('gold', 4));
+    p.set(x + lean + 1, 15, C('gold', 3)).set(x + lean + 1, 13, C('gold', 3));
+  }
+  // the clicker
+  p.rect(13, 3, 5, 6, C('red', 2)).rect(14, 4, 3, 2, C('red', 4));
   outline(p, K());
   return p;
 }
@@ -172,7 +179,7 @@ export const ITEM_PICS = {
   battery: batteryPic,
   zapper: zapperPic,
   cola: colaPic,
-  remote: remotePic,
+  keys: keysPic,
   keycard: keycardPic,
   pass: passPic,
   cover: coverPic,

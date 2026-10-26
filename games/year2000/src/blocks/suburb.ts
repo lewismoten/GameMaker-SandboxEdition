@@ -183,7 +183,7 @@ export function suburbSet(): BlockSet {
   s.add('void', blank(C('gray', 0)), { solid: SOLID });
   s.add('clouds', clouds(1), { solid: SOLID });
   s.add('clouds2', clouds(2), { solid: SOLID });
-  addItems(s, 'grass', ['page', 'quarter', 'pill', 'battery', 'zapper', 'cola', 'remote']);
+  addItems(s, 'grass', ['page', 'quarter', 'pill', 'battery', 'zapper', 'cola', 'keys']);
   addItems(s, 'sidewalk', ['page', 'quarter']);
   addItems(s, 'deck', ['page', 'quarter', 'pill', 'battery', 'cola']);
   addBooths(s, 'sidewalk');
@@ -202,14 +202,31 @@ export function suburbSet(): BlockSet {
   s.add('pool', pool(0), { solid: SOLID, next: 'pool2', ntime: 6 });
   s.add('pool2', pool(1), { solid: SOLID, next: 'pool', ntime: 6 });
   // The CitiCar on its charger: honk it (touch the front, on the left) and the headlights flash.
-  addBig(s, 'citi', citicar(false), (col, row) => (col === 0 && row === 1 ? { solid: SOLID, score: 1976, touch: 'citiLit' } : { solid: SOLID }));
+  // Its door, at the back on the right, is locked: Grandpa's note on it asks for the keys. With
+  // the key ring it opens, and stepping in is Dome Sweet Dome's way out (to the Cloud Lane).
+  const parked = citicar(false);
+  const door = parked.crop(20, 20, 20, 20);
+  door.rect(0, 2, 20, 9, C('gold', 5)).frame(0, 2, 20, 9, C('gold', 3));
+  micro(door, 1, 4, 'KEYS?', C('red', 2));
+  parked.blit(door, 20, 20);
+  addBig(s, 'citi', parked, (col, row) =>
+    col === 0 && row === 1
+      ? { solid: SOLID, score: 1976, touch: 'citiLit' }
+      : col === 1 && row === 1
+        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiOpen' }
+        : { solid: SOLID },
+  );
+  const open = citicar(false).crop(20, 20, 20, 20);
+  for (let y = 1; y < 14; y++) for (let x = 0; x < 7; x++) if (open.get(x, y) !== C('gray', 0)) open.set(x, y, y < 7 ? C('teal', 2) : C('night', 1));
+  open.rect(7, 1, 2, 13, C('red', 4));
+  s.add('citiOpen', open);
   s.add('citiLit', citicar(true).crop(0, 20, 20, 20), { solid: SOLID, next: 'citiLit2', ntime: 4 });
   s.add('citiLit2', citicar(false).crop(0, 20, 20, 20), { solid: SOLID, next: 'citiLit', ntime: 4 });
   s.add('charger', chargerPost('1MI'), { solid: SOLID, next: 'charger2', ntime: 12 });
   s.add('charger2', chargerPost('/HR'), { solid: SOLID, next: 'charger', ntime: 12 });
   s.add('mowdock', mowerDock('grass'), { solid: SOLID, birthMon: MON.mowerBox, birthTime: 260 });
   s.add('newscannon', paperCannon('sidewalk'), { solid: SOLID, birthMon: MON.paper, birthTime: 34 });
-  s.add('garagedoor', staffDoor('remote', 'grass'), { solid: SOLID, effect: CTR.remote, eamt: -1, touch: 'concrete' });
+  s.add('garagedoor', staffDoor('keys', 'grass'), { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'concrete' });
   const gw = blank();
   gradient(gw, 0, 0, 20, 20, R('purple'), 2, 3);
   gw.rect(0, 16, 20, 4, C('chrome', 5));

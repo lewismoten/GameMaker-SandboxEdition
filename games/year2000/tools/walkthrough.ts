@@ -52,7 +52,7 @@ const ROBOTS = new Set<number>([
   MON.sparky2,
   MON.sparky3,
 ]);
-const ITEMS = /^(page|quarter|pill|remote|zapper|battery|keycard|pass|cola)_/;
+const ITEMS = /^(page|quarter|pill|keys|zapper|battery|keycard|pass|cola)_/;
 const segments: WalkSegment[] = [];
 const chapters: WalkChapterMark[] = [];
 let deaths = 0;

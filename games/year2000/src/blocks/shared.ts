@@ -29,7 +29,7 @@ const ITEM_DEFS: Record<ItemName, BlockDef> = {
   battery: { effect: CTR.zap, eamt: 6, score: 10 },
   zapper: { effect: CTR.zap, eamt: 15, score: 250 },
   cola: { effect: CTR.lives, eamt: 1, score: 500 },
-  remote: { effect: CTR.remote, eamt: 1, score: 100 },
+  keys: { effect: CTR.keys, eamt: 2, score: 100 },
   keycard: { effect: CTR.keycard, eamt: 1, score: 100 },
   pass: { effect: CTR.moonpass, eamt: 1, score: 100 },
   cover: { effect: CTR.cover, eamt: 1, score: 1000 },
@@ -170,14 +170,14 @@ export function addBig(set: BlockSet, name: string, pic: Pixels, def: (col: numb
   for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) set.add(`${name}${j * cols + i}`, pic.crop(i * 20, j * 20, 20, 20), def(i, j));
 }
 
-export function staffDoor(kind: 'keycard' | 'remote' | 'pass', floor: Floor): Pixels {
+export function staffDoor(kind: 'keycard' | 'keys' | 'pass', floor: Floor): Pixels {
   const p = on(floor);
-  const col = kind === 'keycard' ? 'pink' : kind === 'remote' ? 'gold' : 'purple';
+  const col = kind === 'keycard' ? 'pink' : kind === 'keys' ? 'gold' : 'purple';
   p.rect(0, 0, 20, 20, C(col, 1));
   for (let y = 1; y < 20; y += 3) p.rect(1, y, 18, 2, C(col, 3));
   p.rect(0, 5, 20, 12, C('paper', 2));
-  micro(p, 1, 6, kind === 'keycard' ? 'STAFF' : kind === 'remote' ? 'GATE' : 'MOON', C(col, 1));
-  micro(p, 1, 11, kind === 'keycard' ? 'ONLY' : kind === 'remote' ? 'CLICK' : 'PASS', C('denim', 1));
+  micro(p, 1, 6, kind === 'keycard' ? 'STAFF' : kind === 'keys' ? 'GATE' : 'MOON', C(col, 1));
+  micro(p, 1, 11, kind === 'keycard' ? 'ONLY' : kind === 'keys' ? 'CLICK' : 'PASS', C('denim', 1));
   p.rect(15, 14, 3, 3, C('red', 4));
   return p;
 }

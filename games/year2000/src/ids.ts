@@ -23,8 +23,11 @@ export const CTR = {
   zap: SEQ.zap,
   /** Pages of the science report Sparky chewed up. */
   pages: 20,
-  /** The garage door opener (Dome Sweet Dome). */
-  remote: 21,
+  /**
+   * Grandpa's key ring (Dome Sweet Dome): worth two, one for the garage gate's clicker and one
+   * for the CitiCar's door, so either can be opened first.
+   */
+  keys: 21,
   /** Employees Only keycard (Mega Mall 2000). */
   keycard: 22,
   /** The report's cover page, which Sparky has in his mouth. */

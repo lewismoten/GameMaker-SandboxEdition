@@ -35,7 +35,7 @@ HOVER-COLA is an extra life.
 FRIENDLY ALIENS give hugs, and
 hugs are good for you.
 
-KEYS: the garage remote, the
+KEYS: Grandpa's key ring, the
 STAFF ONLY keycard and the
 Moon Pass open their doors.
 
@@ -45,13 +45,14 @@ Walk through when they're off!
 GLASS TUBES and MOONWALK BELTS
 carry you along - fast.
 
-GRANDPA'S CITICAR flies
-itself. LEFT and RIGHT (or A
-and D) steer it from lane to
-lane. Dodge cars and trucks,
-catch pages and pills. At
-0 MI the exit ramp opens on
-the right: keep RIGHT!
+GRANDPA'S CITICAR opens with
+his keys, and flies itself.
+LEFT and RIGHT (or A and D)
+steer it from lane to lane.
+Dodge cars and trucks, catch
+pages and pills. At 0 MI the
+exit ramp opens on the right:
+keep RIGHT!
 
 ROBOTS can be zapped. CARS,
 buggies, dinos and skaters
@@ -192,6 +193,7 @@ HINTS
 * Zapping a car only makes it swerve. Save your charge for robots.
 * In the Teleport-A-Phone Exchange, booth number 4 is out of order. Try another number - you'll get there eventually.
 * Read the teletype in the exchange hall. It knows a thing or two.
+* Grandpa lost his key ring in the hedge garden. His CitiCar won't open without it.
 * Grandpa's CitiCar likes a honk.
 * In the Cloud Lane, traffic starts as a dot on the horizon. Pick a clear lane early, and keep right when the sign nears 0 MI.
 * The judges want 20 pages. There are lots more than that.

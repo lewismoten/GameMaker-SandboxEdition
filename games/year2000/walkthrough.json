@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0MzQBLEMsAUAjQAEsEywBQDNAATQjNAFAI0ABNDM0AUBTQAEsEywBNEM0ASATIAEsMywBQDNAASwTLAFAM0ABLDMsASATIAE09zQBNCM0ASAjIAE0UzQBIBMgATQjNAFAE0ABNBM0AUAjQAE0czQBNIM0ASAjIAEsEywBIGMgASwjLAFAM0ABIDMgATQjNAEgUyABLFMsASATIAE0YzQBIFMgASwTLAEgYyABLFMsASAjIAEsMywBQHNAASxjLAEsMywBQDNAASwjLAEgIyABLBMsAUBTQAEsEywBNGM0AUAzQAEskywBIDMgASwTLAEgQyABNBM0ASATIAE0EzQBIGMgASxTLAFAY0ABLBMsAUAzQAEscywBIFMgATQzNAEgEyABNDM0ASAzIAEgMyABLEMsAUAjQAEsQywBQBNAASwTLAFAM0ABLCMsASATIAE0IzQBIFMgATQjNAFAU0ABNBM0AUBDQAE0IzQBQDNAATRTNAFAI0ABNVM0AUATQAE0szQBQBNAATQ=="
+   "keys": "AU0MzQBLEMsAUAjQAEsEywBQDNAATQjNAFAI0ABNDM0AUBTQAEsEywBNEM0ASATIAEsMywBQDNAASwTLAFAM0ABLDMsASATIAE09zQBNCM0ASAjIAE0UzQBIBMgATQjNAFAE0ABNBM0AUAjQAE0czQBNIM0ASAjIAEsEywBIGMgASwjLAFAM0ABIDMgATQjNAEgUyABLFMsASATIAE0YzQBIFMgASwTLAEgYyABLFMsASAjIAEsMywBQHNAASxjLAEsMywBQDNAASwjLAEgIyABLBMsAUBTQAEsEywBNGM0AUAzQAEskywBIDMgASwTLAEgQyABNBM0ASATIAE0EzQBIGMgASxTLAFAY0ABLBMsAUAzQAEscywBIFMgATQzNAEgEyABNDM0ASAzIAEgMyABLEMsAUAjQAEsQywBQBNAASwTLAFAM0ABLCMsASATIAE0IzQBIFMgATQjNAFAU0ABNBM0AUBDQAE0IzQBQDNAATQjNAEg="
   },
   {
    "scene": 3,
@@ -87,7 +87,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 37790,
+  "frames": 37640,
   "chapters": [
    {
     "title": "Opening",
@@ -103,35 +103,35 @@
    },
    {
     "title": "Level 2: The Cloud Lane",
-    "frame": 8844
+    "frame": 8330
    },
    {
     "title": "Level 3: Superhighway",
-    "frame": 12838
+    "frame": 12502
    },
    {
     "title": "Level 4: Mega Mall 2000",
-    "frame": 16463
+    "frame": 16313
    },
    {
     "title": "Level 5: Teleport Exchange",
-    "frame": 22455
+    "frame": 22305
    },
    {
     "title": "Level 6: The Moon",
-    "frame": 26500
+    "frame": 26350
    },
    {
     "title": "Level 7: Science Fair",
-    "frame": 30679
+    "frame": 30529
    },
    {
     "title": "Ending",
-    "frame": 34227
+    "frame": 34077
    },
    {
     "title": "Credits",
-    "frame": 36235
+    "frame": 36085
    }
   ]
  }

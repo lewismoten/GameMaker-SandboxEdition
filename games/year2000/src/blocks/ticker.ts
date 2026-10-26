@@ -13,9 +13,9 @@ import { micro } from '../art/font';
 import { C } from '../art/pal';
 
 /** One trip round the ring; padded with spaces to TICKER_FRAMES * STEP pixels. */
-const HEADLINES = 'GOPHER STILL BEATS THE WEB * Y2K BUG: A NO-SHOW * AMERICA 250 IN 2026! * ';
+const HEADLINES = 'GOPHER BEATS THE WEB * Y2K BUG: A NO-SHOW * AMERICA 250 IN 2026! * ';
 const STEP = 10;
-const TICKER_FRAMES = 30;
+const TICKER_FRAMES = 28;
 const RING = TICKER_FRAMES * STEP;
 
 /** The whole ring of text, drawn twice so any 20-pixel window can be cut from it. */

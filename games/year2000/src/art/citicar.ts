@@ -126,3 +126,45 @@ export function citicarRear(k: number, bank = 0): Pixels {
   p.set(9 + k, 19, C('gray', 7));
   return p;
 }
+
+/**
+ * The CitiCar big, for the cartoons around the Cloud Lane: THE CHEZ's side view at `scale`,
+ * facing left so the passenger side and the charge port at the rear show. `wings` (0 to 1) slides
+ * the stubby wings out from under the door; `driver` puts Dex's head in the door window (the only
+ * window from the side); `hum` adds the teal glow under it in flight. Transparent around the car.
+ */
+export function citicarBig(
+  scale: number,
+  o: { wings?: number; driver?: Pixels; hum?: number; headlights?: boolean } = {},
+): { pic: Pixels; portX: number; portY: number } {
+  const w = 40 * scale;
+  const h = 22 * scale;
+  const p = new Pixels(w + 20 * scale, h, T);
+  const ox = 10 * scale;
+  const { portX, portY } = chezSide(p, ox, 0, ink(!!o.headlights), 'left', scale);
+  // the stubby wing on this side: a chrome plate along the sill that swings down and out
+  const wings = o.wings ?? 0;
+  if (wings > 0) {
+    const top = Math.round(12.6 * scale);
+    const drop = Math.max(1, Math.round(4 * scale * wings));
+    for (let j = 0; j < drop; j++) {
+      const x0 = ox + Math.round((9 - j * 0.6) * scale);
+      const x1 = ox + Math.round((30 + j * 0.3) * scale);
+      p.rect(x0, top + j, x1 - x0, 1, j === 0 ? C('chrome', 7) : j === drop - 1 ? C('chrome', 2) : C('chrome', 5));
+    }
+  }
+  if (o.driver) {
+    // Dex at the wheel, seen through the door window (the window's middle, mirrored for facing left)
+    const hx = ox + Math.round((40 - 18.5) * scale) - o.driver.w / 2;
+    const hy = Math.round(3.2 * scale);
+    for (let y = 0; y < o.driver.h; y++)
+      for (let x = 0; x < o.driver.w; x++) {
+        const c = o.driver.get(x, y);
+        const sx = hx + x;
+        const sy = hy + y;
+        if (c !== T && sy < Math.round(8.2 * scale) && p.get(sx, sy) !== T) p.set(sx, sy, c);
+      }
+  }
+  if (o.hum) for (let x = ox + 6 * scale; x < ox + 34 * scale; x += 2) if ((x + o.hum) % 4 < 2) p.rect(x, h - 2 * scale + ((x >> 2) % 2), 2, 1, C('teal', 5));
+  return { pic: p, portX, portY };
+}

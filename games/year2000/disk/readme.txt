@@ -92,6 +92,10 @@ HINTS
 * Read the teletype in the
   exchange hall. It knows a
   thing or two.
+* Grandpa lost his key ring in
+  the hedge garden. His
+  CitiCar won't open without
+  it.
 * Grandpa's CitiCar likes a
   honk.
 * In the Cloud Lane, traffic

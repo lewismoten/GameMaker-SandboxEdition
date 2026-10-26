@@ -50,7 +50,7 @@ const ROBOTS = new Set<number>([
   MON.sparky2,
   MON.sparky3,
 ]);
-const ITEMS = /^(page|quarter|pill|remote|zapper|battery|keycard|pass|cola)_/;
+const ITEMS = /^(page|quarter|pill|keys|zapper|battery|keycard|pass|cola)_/;
 let totalTicks = 0;
 let deaths = 0;
 /** Pages carried into the Science Fair (the judges take 20 of them there). */
@@ -144,6 +144,23 @@ async function spareCover(): Promise<void> {
     );
   console.log(`spare cover: Sparky's cover lost, took the spare beside the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`);
 }
+
+/** Dome Sweet Dome's only way out is Grandpa's CitiCar: one key ring on the map, and its door holds shut without it. */
+function keysAndCar(): void {
+  const l = LEVELS[0];
+  const set = SETS[l.set]();
+  const lm = l.build(set);
+  const rings = lm.count('keys_');
+  if (rings !== 1) throw new Error(`year2000: ${rings} key rings in Dome Sweet Dome (want 1)`);
+  const exit = lm.at('exit');
+  if (lm.get(exit.x, exit.y) !== 'citi3') throw new Error(`year2000: the dome's exit is ${lm.get(exit.x, exit.y)}, not the CitiCar's door`);
+  const door = set.def('citi3');
+  if (!door.solid || door.effect !== CTR.keys || (door.eamt ?? 0) >= 0) throw new Error('year2000: the CitiCar door does not take the keys');
+  const ring = set.def('keys_grass');
+  if ((ring.eamt ?? 0) < 2) throw new Error('year2000: the key ring must open both the garage gate and the car');
+  console.log('keys and car: one key ring (worth 2), the CitiCar door takes one, locked without it');
+}
+keysAndCar();
 
 for (const [i, l] of LEVELS.entries()) {
   const set = SETS[l.set]();

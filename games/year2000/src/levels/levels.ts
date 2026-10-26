@@ -41,7 +41,12 @@ export const LEVELS: Level[] = [
     size: [48, 32],
     card: {
       title: 'DOME SWEET DOME',
-      lines: ['Hover Heights, 8:00 AM. Find the', 'garage remote, the Zapper (SPACE', 'fires it) and your report pages!', 'Corner phone: 25 cents. F5 saves!'],
+      lines: [
+        'Hover Heights, 8:00 AM. Find the',
+        'Zapper (SPACE fires it), your pages',
+        "and Grandpa's keys, then hop in his",
+        'CitiCar by the dome. F5 saves!',
+      ],
       view: [0, 9],
     },
     intro: [],
@@ -57,15 +62,10 @@ export const LEVELS: Level[] = [
     size: [16, 10],
     card: {
       title: 'THE CLOUD LANE',
-      lines: [
-        "8:45 AM. The booth rang Grandpa's",
-        'car phone! LEFT and RIGHT steer his',
-        'flying CitiCar. Dodge the traffic;',
-        'at 0 MI keep RIGHT for the ramp!',
-      ],
+      lines: ["8:45 AM. Grandpa's CitiCar flies", 'itself: LEFT and RIGHT steer it.', 'Dodge the traffic; at 0 MI keep', "RIGHT for the Skyway's exit ramp!"],
       view: [0, 1],
     },
-    intro: ['tele.fli'],
+    intro: ['liftoff.fli'],
   },
   {
     file: 'skyway',
@@ -80,8 +80,8 @@ export const LEVELS: Level[] = [
       lines: ['SUPERHIGHWAY. 9:30 AM. Rush hour.', 'Fourteen lanes of hover traffic', 'hauling faxes. Look both ways!', 'A bump hurts, then cars swerve.'],
       view: [0, 1],
     },
-    // Grandpa drops Dex off at the Skyway: no teleport this time
-    intro: [],
+    // the CitiCar sets Dex down on the deck and flies itself home
+    intro: ['parking.fli'],
   },
   {
     file: 'mall',
