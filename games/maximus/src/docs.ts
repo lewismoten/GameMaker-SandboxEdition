@@ -212,13 +212,15 @@ export function about(b: Built): object {
     easterEgg: { map: 'home.map', at: [64, 43] },
     label: { background: '#0b1030', band: '#f0a020', ink: '#ffffff', logo: 'SANDBOX SOFTWARE' },
     box: {
+      // the claims line in place of the count of level scenes, which counts the charts and the Core too
+      levels: '88 worlds, ten star-shards to find',
       background: '#0b1030',
       accent: '#f0a020',
       ink: '#ffffff',
       tagline: 'One courier. A hundred worlds. Ten shards of light.',
       back: "The Maximus Core, the forge-star at the heart of the galaxy, has gone dark. Its light is scattered in ten star-shards across the Hundred Worlds.\n\nYou're Max, and couriers deliver. Fly your pod from world to world, then land and explore on foot, by rover or in the diving bell: grasslands, glaciers, lava fields, drowned temples and derelict stations. Walk east long enough and you come home! Raid the vaults, stock up at the trading posts, open the shard gates sector by sector, and brave the Maelstrom to the Heart of Maximus.",
       features: [
-        '100 scenes: a galaxy chart, 5 sector charts and 88 explorable worlds',
+        'A galaxy chart, 5 sector charts and 88 worlds to land on',
         'Four ways to travel - courier pod, jet-hopping on foot, the diving bell and the rover',
         'Every planet wraps around: a real little world with caves, ruins, lakes and floating islands',
         '176 creatures on land, at sea, in space and aboard the stations',
