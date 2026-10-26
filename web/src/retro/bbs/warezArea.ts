@@ -150,6 +150,13 @@ export async function warezArea(t: Term, h: RetroHost): Promise<void> {
       boxRow('|11  #  File name        Size  Description'),
       boxBottom(),
     ],
+    // one line a release first, so all of them show at once; E shows each whole FILE_ID.DIZ
+    opensCompact: true,
+    compact: () =>
+      WAREZ.map(
+        (u, i) =>
+          `|11${String(i + 1).padStart(2)} ${h.downloads.has(u.id) ? '|10*' : ' '}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${u.diz[0].replace(/\s*\[\d+\/\d+\]\s*$/, '')}`,
+      ),
     entries: () =>
       WAREZ.map((u, i) => {
         const got = h.downloads.has(u.id) ? '|10*' : ' ';
