@@ -84,8 +84,8 @@ describe('the readers’ reviews', async () => {
     expect(levels.length).toBe(4);
     const ending = walk.timeline.chapters.find((c) => c.title === 'Ending')!;
     const minutes = (ending.frame - levels[0].frame) / walk.timeline.fps / 60;
-    expect(minutes).toBeGreaterThan(3);
-    expect(minutes).toBeLessThan(3.5);
+    expect(minutes).toBeGreaterThan(3.25);
+    expect(minutes).toBeLessThan(3.75);
     expect(readFileSync(join(game, 'src/characters/kid.ts'), 'utf8')).toMatch(/key: KEY\.down,[^\n]*norepeat: 1/);
   });
 });
