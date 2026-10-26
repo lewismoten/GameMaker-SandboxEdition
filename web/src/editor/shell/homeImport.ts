@@ -6,7 +6,9 @@ import { h, toast, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { starterProject } from './starter';
 import { beginFirstSteps } from './firstSteps';
-import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, type CatalogEntry } from '../../project/files';
+import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
+import { GameReader, gameFromFiles, scanFile, type FoundGame, type ReadGame, type ScanFile, type ScanReport } from '../../project/importScan';
+import * as chooser from './importChooser';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
@@ -76,55 +78,47 @@ export async function newGame(nav: HomeNav): Promise<void> {
   nav.openProject(p.id);
 }
 
-interface Imported {
-  files: GameFiles;
-  /** From an exported web page: its title and .gam file. */
-  name?: string;
-  gam?: string;
-  /** The folder's player .EXEs (left out of the files): a hand-edited one becomes DOS player patches. */
-  players?: { name: string; bytes: Uint8Array }[];
-}
-
-/** A game's own player is an .EXE of XFERPLAY 3.00's size; the import reads those and leaves out the rest. */
-const PLAYER_EXE = (name: string, size: number) => /\.exe$/i.test(name) && size === 160_598;
-
-async function filesFromList(list: File[]): Promise<Imported> {
-  // A page made by "Export as one web page" carries the whole game inside it.
-  const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
-  const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
-  if (page) return { files: page.files, name: page.title, gam: page.gam };
-  return filesOnly(list);
-}
-
-async function filesOnly(list: File[]): Promise<Imported> {
-  if (list.length === 1 && /\.zip$/i.test(list[0].name)) {
-    const [bytes, { isZip, readZip }] = await Promise.all([list[0].arrayBuffer().then((b) => new Uint8Array(b)), import('../../project/zip')]);
-    if (isZip(bytes)) {
-      const files = new GameFiles();
-      const players: Imported['players'] = [];
-      for (const e of await readZip(bytes)) {
-        if (PLAYER_EXE(e.name, e.data.length)) players.push({ name: e.name, bytes: e.data });
-        else if (!IGNORED_FILE.test(e.name) && !e.name.endsWith('/')) files.set(e.name, e.data);
-      }
-      return { files, players };
-    }
-  }
-  const players = await Promise.all(
-    list.filter((f) => PLAYER_EXE(f.name, f.size)).map(async (f) => ({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) })),
-  );
-  return { files: await loadFileList(list), players };
-}
+/** Files to import; an exported web page's (or one game of a folder holding several) bring their title and .gam file. */
+type Imported = ReadGame;
 
 /** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
 async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
-  const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && !g.original && g.gamCrc !== undefined);
-  if (!shareware.length) return undefined;
+  const shareware = await sharewareByCrc();
+  if (!shareware.size) return undefined;
   const { crc32 } = await import('../../project/zip');
-  const crcs = new Set(files.byExtension('gam').map((n) => crc32(files.get(n)!)));
-  return shareware.find((g) => crcs.has(g.gamCrc!));
+  return files
+    .byExtension('gam')
+    .map((n) => shareware.get(crc32(files.get(n)!)))
+    .find(Boolean);
 }
 
-async function importFiles(nav: HomeNav, { files, name, gam, players }: Imported): Promise<void> {
+/** The CD shareware games, by their .gam files' CRC-32s. */
+async function sharewareByCrc(): Promise<Map<number, CatalogEntry>> {
+  const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && !g.original && g.gamCrc !== undefined);
+  return new Map(shareware.map((g) => [g.gamCrc!, g]));
+}
+
+/** Saves imported files as a project listed under Imported; what its player's patches said, if anything. */
+async function saveImported({ files, name, gam, players }: Imported): Promise<{ project: Project; note?: string; madeGam: boolean }> {
+  // a hand-edited player (or one that renamed the files' extensions): read before the .gam is looked for
+  const player = players.length ? (await import('../../project/importPlayer')).adoptPlayer(files, players) : undefined;
+  // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
+  const companion = takeCompanion(files);
+  const madeGam = !files.mainGame();
+  const p = Project.fromFiles(files, name, undefined, companion);
+  if (gam && files.has(gam)) p.gam = gam;
+  if (player) {
+    const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
+    if (Object.keys(player.patches).length) p.setExtras(p.gam, PLAYER_SECTION, playerRecord(player.patches));
+  }
+  await p.saveNow();
+  // listed under Imported, apart from the games made here (⋯ More can move it to My games)
+  setImported(p.id, true);
+  return { project: p, note: player?.message, madeGam };
+}
+
+async function importFiles(nav: HomeNav, imported: Imported): Promise<void> {
+  const { files } = imported;
   if (!files.size) return;
   const shareware = await sharewareMatch(files);
   if (shareware) {
@@ -145,36 +139,76 @@ async function importFiles(nav: HomeNav, { files, name, gam, players }: Imported
     ]);
     return;
   }
-  // a hand-edited player (or one that renamed the files' extensions): read before the .gam is looked for
-  const player = players?.length ? (await import('../../project/importPlayer')).adoptPlayer(files, players) : undefined;
-  // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
-  const companion = takeCompanion(files);
-  if (!files.mainGame()) toast('No .gam file found — a new one was created for these files.');
-  const p = Project.fromFiles(files, name, undefined, companion);
-  if (gam && files.has(gam)) p.gam = gam;
-  if (player) {
-    const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
-    if (Object.keys(player.patches).length) p.setExtras(p.gam, PLAYER_SECTION, playerRecord(player.patches));
-    toast(player.message);
-  }
-  await p.saveNow();
-  // listed under Imported, apart from the games made here (⋯ More can move it to My games)
-  setImported(p.id, true);
+  const { project: p, note, madeGam } = await saveImported(imported);
+  if (madeGam) toast('No .gam file found — a new one was created for these files.');
+  if (note) toast(note);
   toast(`Opened ${p.name} (${files.size} files). It is listed under Imported.`);
   nav.openProject(p.id);
 }
 
-/** Opens the files picked on the home page. */
-export async function importPicked(nav: HomeNav, list: File[]): Promise<void> {
-  if (list.length) await importFiles(nav, await filesFromList(list));
+/** Imports the games found that the visitor ticks, each as its own project. */
+async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () => void): Promise<void> {
+  const shareware = await sharewareByCrc();
+  const sharewareOf = (g: FoundGame) => g.gamCrcs.map((c) => shareware.get(c)).find(Boolean);
+  const { chooseGames, importWithProgress } = chooser;
+  const chosen = await chooseGames(report, (g) => (sharewareOf(g) ? 'shareware: play it from the Shareware tab' : undefined));
+  if (!chosen?.length) return;
+  const reader = new GameReader(given);
+  const { done, failed } = await importWithProgress(chosen, async (g) => {
+    await saveImported(await reader.read(g));
+  });
+  onAdded?.();
+  const games = (n: number) => `${n} ${n === 1 ? 'game' : 'games'}`;
+  const canceled = done + failed.length < chosen.length;
+  toast(
+    `${canceled ? 'Canceled: imported' : 'Imported'} ${done === chosen.length ? games(done) : `${done} of ${games(chosen.length)}`}. They are listed under Imported.`,
+  );
+  if (failed.length) toast(`Not imported: ${failed.join('; ')}`, 'error');
 }
 
-/** Opens what was dropped: the drop's entries (folders walked), or its files when it has none. */
-export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], files: File[]): Promise<void> {
+/**
+ * Imports what was given: a one-page export, else the games found in its folders and zips
+ * (importScan.ts). One game opens as it always has; several are listed to pick from; files
+ * with no game make a new one around them, and zips with no game say so.
+ */
+async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdded?: () => void): Promise<void> {
+  if (!given.length) return;
+  // A page made by "Export as one web page" carries the whole game inside it.
+  if (list.some((f) => /\.html?$/i.test(f.name))) {
+    const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
+    const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
+    if (page) return importFiles(nav, { files: page.files, players: [], name: page.title, gam: page.gam });
+  }
+  const report = await chooser.scanWithProgress(given);
+  if (!report) return;
+  if (report.games.length === 1) return importFiles(nav, await new GameReader(given).read(report.games[0]));
+  if (report.games.length > 1) return importChosen(report, given, onAdded);
+  // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
+  const files = await gameFromFiles(report.loose);
+  if (!report.zips && files.files.size) return importFiles(nav, files);
+  await chooser.showNothingFound(report);
+}
+
+/** Opens the files picked on the home page; `onAdded` is told when several games were imported at once. */
+export async function importPicked(nav: HomeNav, list: File[], onAdded?: () => void): Promise<void> {
+  await importGiven(
+    nav,
+    list.map((f) => scanFile(f)),
+    list,
+    onAdded,
+  );
+}
+
+/** Opens what was dropped: the drop's entries (folders walked, keeping their paths), or its files when it has none. */
+export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], files: File[], onAdded?: () => void): Promise<void> {
   const collected: File[] = [];
+  const given: ScanFile[] = [];
   const walk = async (entry: FileSystemEntry): Promise<void> => {
-    if (entry.isFile) collected.push(await new Promise<File>((res, rej) => (entry as FileSystemFileEntry).file(res, rej)));
-    else if (entry.isDirectory) {
+    if (entry.isFile) {
+      const f = await new Promise<File>((res, rej) => (entry as FileSystemFileEntry).file(res, rej));
+      collected.push(f);
+      given.push(scanFile(f, entry.fullPath));
+    } else if (entry.isDirectory) {
       const reader = (entry as FileSystemDirectoryEntry).createReader();
       for (;;) {
         const batch = await new Promise<FileSystemEntry[]>((res, rej) => reader.readEntries(res, rej));
@@ -184,6 +218,6 @@ export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], fi
     }
   };
   if (entries.length) for (const e of entries) await walk(e);
-  else collected.push(...files);
-  await importFiles(nav, await filesFromList(collected));
+  else for (const f of files) (collected.push(f), given.push(scanFile(f)));
+  await importGiven(nav, given, collected, onAdded);
 }
