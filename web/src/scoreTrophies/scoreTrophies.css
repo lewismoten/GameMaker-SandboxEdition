@@ -1,6 +1,6 @@
 /* The score trophies (scoreTrophies/trophySpot.ts): on a phone they stand side by side with the
-   eggs and the tin heart trophy under the PC; on the desk, at its back left corner under the
-   game shelves, left of the toy whistle, on the desk top as the speakers are. */
+   eggs and the tin heart trophy under the PC; on the desk, standing on the desk top just behind
+   the disk box (which is drawn in front of their feet), under the lower game shelf. */
 .score-trophies {
   order: 1;
   display: flex;
@@ -48,9 +48,9 @@
 @media (min-width: 961px) {
   .desk-scene > .score-trophies {
     position: absolute;
-    left: 50px;
-    bottom: calc(880px - 543px);
-    z-index: 1;
+    left: 250px;
+    bottom: calc(880px - 512px);
+    z-index: 0;
     gap: 4px;
     margin: 0;
   }
