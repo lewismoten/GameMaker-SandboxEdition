@@ -23,6 +23,9 @@ import { wantsTouchControls } from '../../player/touch';
 import { findOriginal, isImported } from './homeOrigin';
 import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
+import { allNotes, NOTES_CHANGED, ratingOf } from '../../imported/gameNotes';
+import { groupByRating, ratingName, starsText } from '../../imported/ratings';
+import { rateTile, ratingFilterBox, ratingShown, savedRatingFilter } from './homeRatings';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 
 export interface HomeNav {
@@ -90,11 +93,13 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; short: string; l
 
 const CATEGORY_KEY = 'gm-home-category';
 const SORT_KEY = 'gm-home-sort';
-type MySort = 'edited' | 'name';
+/** 'rating' groups Imported by stars (My games keep the edited order). */
+type MySort = 'edited' | 'name' | 'rating';
 
 function savedSort(): MySort {
   try {
-    return localStorage.getItem(SORT_KEY) === 'name' ? 'name' : 'edited';
+    const v = localStorage.getItem(SORT_KEY);
+    return v === 'name' || v === 'rating' ? v : 'edited';
   } catch {
     return 'edited';
   }
@@ -252,8 +257,15 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       },
       h('option', { value: 'edited', selected: sort === 'edited' }, 'Last edited'),
       h('option', { value: 'name', selected: sort === 'name' }, 'Name'),
+      h('option', { value: 'rating', selected: sort === 'rating' }, 'Rating (Imported)'),
     ),
   );
+  // Imported narrowed to one rating, or Unrated (homeRatings.ts)
+  let ratingFilter = savedRatingFilter();
+  const ratingBox = ratingFilterBox(ratingFilter, (f) => {
+    ratingFilter = f;
+    void select(current);
+  });
   const findGame = (key: string): HomeGame | undefined => {
     for (const c of CATEGORIES) {
       const g = gamesOf(c.id).find((x) => x.key === key);
@@ -315,7 +327,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const heads = [...tiles.querySelectorAll<HTMLElement>(':scope > .lib-sub')];
     // the makers' names are in their headings, so the tiles leave them out (back in a search's plain list)
     tiles.classList.toggle('lib-by-maker', !!heads.length && byMakerTab() && !search.value.trim());
-    if (!heads.length || search.value.trim()) {
+    // Imported grouped by rating stays in the plain flow, a heading over each group (the import tile after them)
+    if (!heads.length || search.value.trim() || current === 'imported') {
       if (packedCols) for (const el of tiles.children) (el as HTMLElement).style.gridArea = '';
       packedCols = 0;
       return;
@@ -467,10 +480,18 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     showLead(false);
     sortBox.hidden = !isOwn(c) || own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !own(c).length;
+    ratingBox.hidden = c !== 'imported' || !own(c).length;
+    const notes = allNotes();
     let cards: HTMLElement[];
     if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
     else {
-      const tile = (g: HomeGame) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) });
+      const tile = (g: HomeGame) => {
+        const t = gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) });
+        if (c === 'imported' && g.project) rateTile(t, notes[g.project.id]);
+        return t;
+      };
+      // Imported: only the rating picked, and grouped by stars when sorted by them
+      const rated = c === 'imported' ? gamesOf(c).filter((g) => ratingShown(ratingFilter, ratingOf(g.project!.id, notes))) : [];
       // the Bard's games under his collections, in the flyer's order, and Gameware and
       // Shareware by who made them (homeAuthors.ts), packed into as few rows as they fit
       // (pack() above), each tile telling its group
@@ -482,7 +503,13 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
             }))
           : byMakerTab()
             ? byMaker(gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
-            : [];
+            : c === 'imported' && sort === 'rating'
+              ? groupByRating(rated, (g) => ratingOf(g.project!.id, notes)).map((grp) => ({
+                  name: grp.rating ? `${starsText(grp.rating)} ${ratingName(grp.rating)}` : 'Unrated',
+                  count: grp.items.length,
+                  games: grp.items.map((g) => ({ g })),
+                }))
+              : [];
       cards =
         sections.length > 1
           ? sections.flatMap((sec, n) => [
@@ -499,7 +526,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
                 return t;
               }),
             ])
-          : gamesOf(c).map(tile);
+          : (c === 'imported' ? rated : gamesOf(c)).map(tile);
     }
     if (!cards.length)
       cards = [
@@ -525,18 +552,24 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
                 ),
               ),
             )
-          : c === 'imported'
+          : c === 'imported' && own(c).length
             ? h(
-                'div',
-                { class: 'lib-empty' },
-                h('p', { class: 'lib-empty-title' }, 'No imported games yet'),
-                h(
-                  'p',
-                  { class: 'meta' },
-                  'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you drop it on the import tile or open it.',
-                ),
+                'p',
+                { class: 'meta' },
+                `No imported game is ${ratingFilter === 'unrated' ? 'unrated' : `rated ${ratingName(Number(ratingFilter) as 1)}`}. Pick All ratings under Show to see them all.`,
               )
-            : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
+            : c === 'imported'
+              ? h(
+                  'div',
+                  { class: 'lib-empty' },
+                  h('p', { class: 'lib-empty-title' }, 'No imported games yet'),
+                  h(
+                    'p',
+                    { class: 'meta' },
+                    'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you drop it on the import tile or open it.',
+                  ),
+                )
+              : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
       ];
     // your own collections take more games in: the import tile, first while there are none
     if (isOwn(c)) {
@@ -640,7 +673,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
             h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game'),
           ),
         ),
-        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, removeAllBtn, howBtn),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, howBtn),
         tiles,
       ),
       h('section', { class: 'home-start', 'aria-labelledby': 'home-start-title' }, h('h2', { id: 'home-start-title' }, 'Getting started'), ...startBody()),
@@ -725,4 +758,17 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     if (key && !findGame(key)) showStart();
     await select(current);
   }));
+  // a rating or note changed (the panel's stars, the note dialog): Imported's tiles redraw, once a frame at most
+  let redraw = 0;
+  const onNotes = () => {
+    if (!page.isConnected) return removeEventListener(NOTES_CHANGED, onNotes);
+    if (current !== 'imported' || redraw) return;
+    redraw = requestAnimationFrame(() => {
+      redraw = 0;
+      // the tile with the keyboard on it keeps it
+      const key = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('.game-tile')?.dataset.key;
+      void select(current).then(() => key && tiles.querySelector<HTMLElement>(`.game-tile[data-key="${CSS.escape(key)}"] .tile-select`)?.focus());
+    });
+  };
+  addEventListener(NOTES_CHANGED, onNotes);
 }

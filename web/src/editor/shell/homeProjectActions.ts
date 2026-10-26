@@ -1,9 +1,12 @@
 // What can be done to a game of your own from the home page, besides opening it: rename it,
-// make a duplicate, download it (download.ts), or delete it (with a few seconds to undo).
+// make a duplicate, download it (download.ts), rate an imported one and note it (imported/
+// noteDialog.ts), or delete it (with a few seconds to undo).
 import { h, promptText, toast } from '../core/ui';
 import { deleteProject, listProjects, loadProject, newId, saveProject } from '../../project/storage';
 import { projectDownloadItem } from './projectExport';
 import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
+import { noteRemoval, undoRemoval } from '../../imported/noteMoves';
+import { forgetUsed } from '../../project/projectUse';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -53,11 +56,15 @@ async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<
   await deleteProject(p.id);
   forgetOrigin(p.id);
   setImported(p.id, false);
+  forgetUsed(p.id);
+  // an imported game leaves a record: its fingerprint, rating and note (imported/removedGames.ts)
+  if (imported) noteRemoval(p, stored.record.files);
   await refresh();
   undoToast(`Deleted “${p.name}”.`, async () => {
     await saveProject(p.id, stored.record.name, stored.record.gam, stored.files, stored.record.companion);
     rememberOrigin(p.id, origin);
     setImported(p.id, imported);
+    if (imported) undoRemoval(p.id);
     await refresh();
   });
 }
@@ -88,9 +95,16 @@ function undoToast(message: string, undo: () => Promise<void>): void {
 }
 
 /** The items of a game of yours' ⋯ More menu. `onMade`: a duplicate was made (its id). */
-export function projectMenuItems(p: ProjectSummary, refresh: () => Promise<void>, onMade?: (id: string) => void): HTMLElement[] {
+export function projectMenuItems(p: ProjectSummary, refresh: () => Promise<void>, onMade?: (id: string) => void): (HTMLElement | null)[] {
   return [
     h('button', { onclick: () => void rename(p, refresh) }, 'Rename…'),
+    isImported(p.id)
+      ? h(
+          'button',
+          { onclick: () => void import('../../imported/noteDialog').then((m) => m.editGameNote(p)), title: 'Its stars and your note, kept in this browser' },
+          'Rating and note…',
+        )
+      : null,
     h('button', { onclick: () => void duplicate(p, refresh, onMade), title: 'A second copy to try something out on' }, 'Duplicate'),
     projectDownloadItem(p.id),
     isImported(p.id)
