@@ -135,6 +135,24 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   </ul>
   <p>Put the doors a few blocks apart so one step can’t take the wrong one, and keep the room
   free of foes. A choice the player hasn’t read yet shouldn’t cost a life.</p>
+  <h2>A pass code to get through</h2>
+  <p>A short puzzle in the archive locks its exit behind a word. The screen is a wall of carved
+  letter tiles, eight across and three rows high, with the hero below. He walks left and right and
+  hops up a row with Space. All the tiles look alike, but only one in each row is a real block:
+  Y in the top row, E in the middle, K at the bottom. Each of those says its letter aloud when he
+  touches it. Every other letter is a monster drawn as a tile, which nothing can kill and which
+  takes 1,100 hit points. Hop up through K, E and Y and he reaches the exit; touch a wrong letter
+  and he dies.</p>
+  <ul>
+    <li><b>The same trick for any code.</b> Make the rows a keypad and the safe path a PIN for an
+    ATM, a phone number to dial, or a lock’s combination. One row per digit, in order.</li>
+    <li><b>Say each right key.</b> A sound on each true block (a spoken letter, a beep, a dial
+    tone) tells the player they’re on the path, so a long code can be learned a step at a time.</li>
+    <li><b>Hide the code somewhere else.</b> Put it on an earlier level’s sign, in the
+    instructions or in the hint book, and the wall becomes a door only a player who paid
+    attention can open. Warn players that a wrong key costs a life, and give them more than one
+    so a slip isn’t the end of the game.</li>
+  </ul>
   <h2>A mouse pointer to pick with</h2>
   <p>Game-Maker has no mouse, but a hero can look like one. One of the archive’s games opens on a
   select screen whose hero is an arrow pointer, drawn the way a desktop draws it, sitting over a
