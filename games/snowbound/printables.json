@@ -157,17 +157,17 @@
     {
       "kind": "map",
       "title": "Jamie Street sled run poster",
-      "note": "Tall poster",
+      "note": "Poster",
       "heading": "JAMIE STREET SLED RUN",
-      "intro": "Closed for sledding. Top to bottom in one go.",
+      "intro": "Closed for sledding. Top to bottom in one go: the longest run in town.",
       "panels": [
         {
           "map": "jamie.map",
-          "x": 31,
-          "y": 5,
-          "w": 22,
-          "h": 79,
-          "caption": "From Leon Drive at the top to Bowden Drive at the bottom."
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 100,
+          "caption": "Start at Leon Drive near the top. Each time the run leaves the bottom of the poster it comes back in at the top, a third of the way to the right (and off the right edge, back in at the left): the firs, then the birches, then the lamps and the finish at Bowden Drive, on the left."
         }
       ]
     },
@@ -211,7 +211,11 @@
             },
             {
               "q": "I keep crashing on the sled.",
-              "a": "Brake with Up before the tree islands, not in them. If you stop dead, push off with Down."
+              "a": "Brake with Up before the tree islands, not in them. If you stop dead, push off with Down. The run bends right, so lean right now and then to keep to the middle, and let the ripples in the snow carry you round the squeezes."
+            },
+            {
+              "q": "How long is the Jamie Street sled run?",
+              "a": "Three stands of trees: firs, birches, then the lamps and lit firs of lower Jamie Street. The boards in the trees count down from 9 to 1, and the finish is just past the 1."
             },
             {
               "q": "The creek ice carries me away.",

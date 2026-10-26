@@ -1,7 +1,7 @@
 // BlockBook: SNOW.BBL built one named block at a time. A block's index is the order it was
 // added; touch/next links are given by name and resolved in finish(), once every block exists.
 // Ctx is what every area's drawing code shares: the book, the palette ramps and a blank tile.
-import { newBlockSet, type Block } from '../../../../web/src/formats/blocks';
+import { emptyBlock, newBlockSet, type Block } from '../../../../web/src/formats/blocks';
 import { Pixels } from '../../../kit/pixels';
 import type { Pal } from '../art/pal';
 
@@ -32,6 +32,38 @@ export class BlockBook {
     if (this.index.has(name)) throw new Error(`Duplicate block ${name}`);
     this.index.set(name, i);
     this.pics.set(name, pic);
+    this.fill(i, pic, a);
+    return i;
+  }
+
+  /**
+   * A copy of the book for one map's own block set: the same blocks under the same numbers,
+   * where `swap` can give slots that map never shows to new blocks (SNOW.BBL is full).
+   */
+  fork(): BlockBook {
+    const b = new BlockBook();
+    this.blocks.forEach((x, i) => (b.blocks[i] = { ...x, pixels: Uint8Array.from(x.pixels), xtra: Uint8Array.from(x.xtra) }));
+    for (const [k, v] of this.index) b.index.set(k, v);
+    for (const [k, v] of this.pics) b.pics.set(k, v);
+    b.links = this.links.map(([i, a]) => [i, a]);
+    return b;
+  }
+
+  /** Gives the slot of block `old` to a new block `name` (a forked book only). */
+  swap(old: string, name: string, pic: Pixels, a: Attrs = {}): number {
+    const i = this.n(old);
+    if (this.index.has(name)) throw new Error(`Duplicate block ${name}`);
+    this.index.delete(old);
+    this.pics.delete(old);
+    this.links = this.links.filter(([j]) => j !== i);
+    this.index.set(name, i);
+    this.pics.set(name, pic);
+    this.blocks[i] = emptyBlock(i);
+    this.fill(i, pic, a);
+    return i;
+  }
+
+  private fill(i: number, pic: Pixels, a: Attrs): void {
     const b = this.blocks[i];
     b.pixels = Uint8Array.from(pic.px);
     b.solid = a.solid ?? 0;
@@ -45,7 +77,6 @@ export class BlockBook {
     b.ntime = a.ntime ?? 0;
     b.obj = a.obj ?? 0;
     this.links.push([i, a]);
-    return i;
   }
 
   n(name: string): number {
