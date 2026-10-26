@@ -30,6 +30,10 @@ interface CutFiles {
   /** The sheet with bleed, to pair with the SVG. */
   bleedPng: () => Promise<Blob>;
   svg: () => string;
+  /** The sheet's picture on screen, and the same with the dashed cut guides drawn on it. */
+  art: HTMLImageElement;
+  plainSrc: string;
+  guidesSrc: () => string;
   name: string;
 }
 
@@ -128,18 +132,19 @@ const KEYLINE_IN = 0.1;
 
 /**
  * One sheet's stickers on a canvas. Paper: the whole Print Then Cut area, each sticker's color
- * running the bleed past its cut line and the cut line dashed on it. Bleed: the same without the
- * dashes, cropped to the stickers (it lines up with the SVG of cut lines). Cut: each sticker
+ * running the bleed past its cut line, and with `guides` the cut line dashed on it (for scissors
+ * and glue; off by default, since a machine's cut a little off would leave the dashes showing).
+ * Bleed: the same without the dashes, cropped to the stickers (it lines up with the SVG of cut lines). Cut: each sticker
  * exactly its cut shape on a transparent ground, cropped to the stickers.
  */
-function drawPage(page: Placed[], list: Sticker[], dpi: number, mode: Mode): HTMLCanvasElement {
+function drawPage(page: Placed[], list: Sticker[], dpi: number, mode: Mode, guides = false): HTMLCanvasElement {
   const bleed = mode === 'cut' ? 0 : BLEED;
   const [bx, by, bw, bh] = mode === 'paper' ? [0, 0, CUT_W, CUT_H] : sheetBounds(page, bleed);
   const c = document.createElement('canvas');
   c.width = Math.round(bw * dpi);
   c.height = Math.round(bh * dpi);
   const g = c.getContext('2d')!;
-  for (const p of page) drawSticker(g, list[p.index], (p.x - bx) * dpi, (p.y - by) * dpi, dpi, bleed, mode === 'paper');
+  for (const p of page) drawSticker(g, list[p.index], (p.x - bx) * dpi, (p.y - by) * dpi, dpi, bleed, mode === 'paper' && guides);
   if (mode === 'cut') hardEdges(c);
   return c;
 }
@@ -282,7 +287,13 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
   const names = all.map((s) => s.name);
   const base = fileName(id);
   return pages.map((page, i) => {
-    const art = drawPage(page, all, DPI_SCREEN, 'paper');
+    const plainSrc = drawPage(page, all, DPI_SCREEN, 'paper').toDataURL();
+    let guidesSrc: string | undefined;
+    const art = h('img', {
+      class: 'stk-art',
+      src: plainSrc,
+      alt: `Stickers: ${[...new Set(page.map((p) => names[p.index].replace(/ \(small\)$/, '')))].join(', ')}`,
+    });
     // 8 x 10.5 in, inside a printer's margins on letter paper, so it prints at actual size
     const s = sheet(
       SHEET_W,
@@ -292,14 +303,10 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
         'header',
         { class: 'stk-head' },
         h('b', null, 'STICKERS'),
-        h('span', null, 'Cut along the dotted lines. Stick on your disk box, your folder, your little brother.'),
+        h('span', null, 'Cut them out. Stick on your disk box, your folder, your little brother.'),
         pages.length > 1 ? h('em', null, `Sheet ${i + 1} of ${pages.length}`) : null,
       ),
-      h('img', {
-        class: 'stk-art',
-        src: art.toDataURL(),
-        alt: `Stickers: ${[...new Set(page.map((p) => names[p.index].replace(/ \(small\)$/, '')))].join(', ')}`,
-      }),
+      art,
       h('p', { class: 'stk-foot' }, 'Plain paper and a glue stick work; label paper is better. Have a cutting machine? Use the Print Then Cut files.'),
     );
     const [, , pw, ph] = sheetBounds(page, BLEED);
@@ -311,6 +318,9 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
       cutSize: [cw, chh],
       name: `${base}-stickers${pages.length > 1 ? `-${i + 1}` : ''}`,
       svg: () => cutSvg(page, names),
+      art,
+      plainSrc,
+      guidesSrc: () => (guidesSrc ??= drawPage(page, all, DPI_SCREEN, 'paper', true).toDataURL()),
       sheetPng: () => pngAt(drawPage(page, all, DPI_PRINT, 'cut'), DPI_PRINT),
       bleedPng: () => pngAt(drawPage(page, all, DPI_PRINT, 'bleed'), DPI_PRINT),
       stickersZip: async () => {
@@ -326,6 +336,9 @@ function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
     return s;
   });
 }
+
+/** Whether the sheets on screen show their dashed cut guides (per browser). */
+const GUIDES_KEY = 'gm-sticker-guides';
 
 const inches = ([w, hh]: [number, number]) => `${w.toFixed(2)} × ${hh.toFixed(2)} in`;
 
@@ -416,8 +429,39 @@ export function stickerScreen(sheets: Sheet[]): HTMLElement {
         '(Silhouette Studio, Brother CanvasWorkspace and others.) Place the picture and the SVG at the sizes shown and center one on the other (Align → Center). Print the picture with registration marks and its bleed off, then cut only the SVG lines. If your program scales a file on import, type the sizes in.',
       ),
       h('h3', null, 'No machine?'),
-      h('p', null, 'Print the sheet at actual size and cut on the dashed lines with scissors: the colors run past them, so a wobble stays in the color.'),
+      h(
+        'p',
+        null,
+        'Tick ',
+        h('i', null, 'Show cut guides'),
+        ', print the sheet at actual size and cut on the dashed lines with scissors: the colors run past them, so a wobble stays in the color. Plain paper and a glue stick work.',
+      ),
     ),
   );
-  return h('div', { class: 'gmb-sheets stk-screen' }, panel, ...sheets.map((s) => s.el));
+  // the dashed cut lines are for scissors only: a cutting machine's cut a little off would leave them showing
+  const guides = h('input', { type: 'checkbox' });
+  const showGuides = (on: boolean) => {
+    for (const f of files) f.art.src = on ? f.guidesSrc() : f.plainSrc;
+  };
+  try {
+    guides.checked = localStorage.getItem(GUIDES_KEY) === '1';
+  } catch {
+    // no storage: the guides start hidden
+  }
+  if (guides.checked) showGuides(true);
+  guides.addEventListener('change', () => {
+    showGuides(guides.checked);
+    try {
+      localStorage.setItem(GUIDES_KEY, guides.checked ? '1' : '0');
+    } catch {
+      // kept for this page only
+    }
+  });
+  const guideRow = h(
+    'label',
+    { class: 'check stk-guides', title: 'Draw dashed cut lines on the sheet, for cutting by hand with scissors (not for a cutting machine)' },
+    guides,
+    h('span', null, 'Show cut guides (for scissors and glue)'),
+  );
+  return h('div', { class: 'gmb-sheets stk-screen' }, guideRow, panel, ...sheets.map((s) => s.el));
 }
