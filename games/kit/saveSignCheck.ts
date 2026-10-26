@@ -25,7 +25,7 @@ interface About {
  * a game's own colors, but a scene may show it in another palette (night's tint), so a pair of
  * blocks is a sign when it looks like one in any palette on the disk.
  */
-export function findSaveSigns(id: string): string[] {
+function findSaveSigns(id: string): string[] {
   const { disk, game } = gameDisk(id);
   const pals = [...disk.keys()].filter((n) => n.endsWith('.pal')).map((n) => disk.get(n)!);
   const found = new Set<string>();
@@ -60,7 +60,7 @@ export function findSaveSigns(id: string): string[] {
 }
 
 /** What is wrong with a game's save sign, or [] when it is right. */
-export function saveSignProblems(id: string): string[] {
+function saveSignProblems(id: string): string[] {
   const about = JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')) as About;
   const planes = new Set(about.saveSign?.planes ?? []);
   const at = about.saveSign?.at.join(',');

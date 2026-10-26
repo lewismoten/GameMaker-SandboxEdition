@@ -41,7 +41,7 @@ export async function recordDemo(files: GameFiles, gam: string, ticks: number, o
   return { rec: serializeRecording(keys), bot };
 }
 
-export interface Replay {
+interface Replay {
   ticks: number;
   deaths: number;
   /** Levels loaded (the first one, and again after each death or link). */

@@ -15,7 +15,7 @@ const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pathOf = (id: string) => join(gamesDir, id, 'walkPaths.json');
 
 /** Block numbers by block set (lower case .bbl name). */
-export type WalkPaths = Record<string, number[]>;
+type WalkPaths = Record<string, number[]>;
 
 /** What a step off the paths costs on top of the step (1): a road up to half again as long wins. */
 export const OFF_PATH_COST = 0.5;

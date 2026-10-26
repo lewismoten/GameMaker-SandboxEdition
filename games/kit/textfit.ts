@@ -29,7 +29,7 @@ const BLUE: RGB = [10, 10, 63];
 const YELLOW: RGB = [63, 63, 0];
 
 /** A string PLAYGAME writes, in a palette index, at a pixel position. */
-export interface TextItem {
+interface TextItem {
   x: number;
   y: number;
   col: number;
@@ -62,7 +62,7 @@ export interface TextFitIssue {
   problems: string[];
 }
 
-export interface TextFitOptions {
+interface TextFitOptions {
   /** Pixels around each line that must be plain paper (default 2). */
   margin?: number;
   /** RGB distance (8-bit) from the paper that counts as art (default 72). */
@@ -246,7 +246,7 @@ export function textScreens(files: Map<string, Uint8Array>): TextScreen[] {
 }
 
 /** The pixels a text item sets (GPutChar's transparent 8x8 glyphs, or a marker box). */
-export function glyphPixels(t: TextItem): [number, number][] {
+function glyphPixels(t: TextItem): [number, number][] {
   const out: [number, number][] = [];
   if (t.box) {
     for (let y = 0; y < t.box.h; y++) for (let x = 0; x < t.box.w; x++) out.push([t.x + x, t.y + y]);
@@ -268,7 +268,7 @@ const lin = (v: number) => {
   return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 };
 const lum = (c: RGB) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
-export const contrastRatio = (a: RGB, b: RGB) => {
+const contrastRatio = (a: RGB, b: RGB) => {
   const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
   return (x + 0.05) / (y + 0.05);
 };

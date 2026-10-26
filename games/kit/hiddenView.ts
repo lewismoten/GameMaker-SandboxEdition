@@ -29,20 +29,20 @@ import { decodeGif, isGif } from '../../web/src/formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../web/src/formats/fli';
 import { builtMapViews, busiest, firstLevels, levelPixels, type FileSource } from '../../web/src/gfx/levelPicture';
 
-export type ItemKind = 'tinHeart' | 'easterEgg';
-export interface Item {
+type ItemKind = 'tinHeart' | 'easterEgg';
+interface Item {
   game: string;
   item: ItemKind;
   map: string;
   at: [number, number];
 }
-export interface Sighting extends Item {
+interface Sighting extends Item {
   /** Where it shows: "start scene 3 (from scene 0 link 1)", "shot 8x5", "box.shots[0]", "demo", "card4.gif"… */
   seen: string[];
 }
 
 /** The renderShot / gamePicture sizes the site draws (cols x rows) and where. */
-export const SHOT_SIZES: readonly [number, number, string][] = [
+const SHOT_SIZES: readonly [number, number, string][] = [
   [8, 5, 'home tile without a title screen, cast "Seen in"'],
   [16, 10, 'play page, showcase, desk box face'],
   [12, 4, 'disk label'],
@@ -53,7 +53,7 @@ export const SHOT_SIZES: readonly [number, number, string][] = [
 const OPENING_TICKS = 55;
 
 /** The cells of the map on screen now (the view's top-left block, plus a part block while it scrolls). */
-export function visibleCells(sim: GameSim): Set<number> {
+function visibleCells(sim: GameSim): Set<number> {
   const w = sim.w;
   const sc = w.scroll;
   const cols = SCRNBLEN + (sc.nx + sc.littleShiftx > 0 ? 1 : 0);
@@ -67,7 +67,7 @@ const inWindow = (at: [number, number], x0: number, y0: number, w: number, h: nu
   (((at[0] - x0) % MLEN) + MLEN) % MLEN < w && (((at[1] - y0) % MWID) + MWID) % MWID < h;
 
 /** Every declared tin heart and Easter egg (secret games never have one). */
-export function declaredItems(ids?: string[]): Item[] {
+function declaredItems(ids?: string[]): Item[] {
   const abouts = readAbouts() as Record<string, Record<string, unknown>>;
   const out: Item[] = [];
   for (const id of ids?.length ? ids : Object.keys(abouts)) {
@@ -156,7 +156,7 @@ function itemTiles(disk: Map<string, Uint8Array>, game: Game, it: Item): Uint32A
 }
 
 /** What shows each of one game's items. */
-export async function gameSightings(id: string, items: Item[], diskPictures = true): Promise<Sighting[]> {
+async function gameSightings(id: string, items: Item[], diskPictures = true): Promise<Sighting[]> {
   const out = items.map((it): Sighting => ({ ...it, seen: [] }));
   if (!out.length) return out;
   const disk = readDisk(join(gamesDir, id, 'disk'));

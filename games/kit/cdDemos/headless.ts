@@ -65,7 +65,7 @@ export function loadCdGame(kind: 'gameware' | 'shareware', id: string): GameFile
   return new GameFiles(readdirSync(dir).map((f) => [f, new Uint8Array(readFileSync(join(dir, f)))] as [string, Uint8Array]));
 }
 
-export interface RunHooks {
+interface RunHooks {
   /**
    * Called once per game tick processed, after it ran, with the live world; return true to
    * stop, or a promise the game waits for before its next frame (keys fed meanwhile reach
@@ -76,7 +76,7 @@ export interface RunHooks {
   onFrame?: (w: World, s: Session, m: Machine) => void;
 }
 
-export interface RunResult {
+interface RunResult {
   session: Session;
   machine: Machine;
   /** The recording made (record mode). */

@@ -22,7 +22,7 @@ const FLOOR = 170;
 /** The drapes left at each side when the curtains are open. */
 const DRAPE = 18;
 
-export interface BardIntroOptions {
+interface BardIntroOptions {
   /** Typed out on the stage boards (default "presents"). */
   tagline?: string;
 }

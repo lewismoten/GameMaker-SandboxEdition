@@ -117,7 +117,7 @@ function nearest(pal: Uint8Array, rgb: readonly number[], use: number[]): number
   return best;
 }
 
-export interface SaveSignOptions {
+interface SaveSignOptions {
   /** The palette entries it may use (default every entry but 255). */
   use?: number[];
 }
@@ -172,11 +172,6 @@ export function looksLikeSaveSignHalf(pixels: Uint8Array, pal: Uint8Array, half:
       if (d < 90) near++;
     }
   return near >= n * 0.9;
-}
-
-/** Whether two blocks side by side (in `pal`) show the sign's board. */
-export function looksLikeSaveSign(left: Uint8Array, right: Uint8Array, pal: Uint8Array): boolean {
-  return looksLikeSaveSignHalf(left, pal, 0) && looksLikeSaveSignHalf(right, pal, 1);
 }
 
 /**

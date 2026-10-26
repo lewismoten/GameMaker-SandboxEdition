@@ -95,7 +95,7 @@ export function licenseText(title: string, story = SANDBOX_STORY, recordedVocs: 
 export const CREDIT_NOTICE = ['Made in 2026 by Lewis Moten', 'with Claude. Free to share:', 'see LICENSE.TXT on the disk.'];
 
 /** The last credits page of every game: one 16-line text screen. */
-export const CREDIT_PAGE = [
+const CREDIT_PAGE = [
   'FREE TO SHARE',
   '',
   ...CREDIT_NOTICE,

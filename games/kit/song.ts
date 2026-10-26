@@ -90,7 +90,7 @@ const tokens = (s: string) =>
     .filter(Boolean);
 
 /** Notes as [midi or null for a rest, beats]. */
-export function parse(s: string): [number | null, number][] {
+function parse(s: string): [number | null, number][] {
   return tokens(s).map((t) => {
     const m = /^(\S+)\s+([whqes])(\.?)$/.exec(t);
     if (!m) throw new Error(`Bad note "${t}"`);
@@ -129,13 +129,13 @@ function chordShape(name: string): { pc: number; iv: number[] } {
 }
 
 /** How the band voices chords: three comping tones (MIDI, low to high) and the bass root. */
-export interface ChordBook {
+interface ChordBook {
   voicing: (chord: string) => number[];
   root: (chord: string) => number;
 }
 
 /** Chord tones folded into G3..F#4 (so three FM voices comp under the tune), the bass root in E2..D#3. */
-export const CLOSE_CHORDS: ChordBook = {
+const CLOSE_CHORDS: ChordBook = {
   voicing: (chord) => {
     const { pc, iv } = chordShape(chord);
     return iv.map((i) => 55 + ((pc + i - 55 + 120) % 12)).sort((a, b) => a - b);
@@ -164,7 +164,7 @@ const DRUM_NOTE: Record<Drum, number> = { k: 36, s: 55, t: 48, c: 72, h: 55 };
 /** One bar of drums: per drum an 8th-note (8 chars) or 16th-note (16 chars) grid; 'x' hits, 'X' accents, '.' rests. */
 export type Groove = Partial<Record<Drum, string>>;
 
-export const GROOVES: Record<string, Groove> = {
+const GROOVES: Record<string, Groove> = {
   rock: { k: 'x...x.x.', s: '..X...X.', h: 'xxxxxxxx' },
   rock4: { k: 'x...x.x.', s: '..X...X.', h: 'x.x.x.x.' },
   rockFill: { k: 'x...x...', s: '..X..xXX', t: '......xx', h: 'xxxxx...' },

@@ -9,7 +9,7 @@ export type Dir = 'left' | 'right';
 export type Result = string | undefined;
 
 /** The keys every hopping game has: arrows, and Q/E to hop sideways. */
-export interface HopKeys {
+interface HopKeys {
   up: number;
   down: number;
   left: number;
@@ -18,7 +18,7 @@ export interface HopKeys {
   e: number;
 }
 
-export interface HopSetup<K extends HopKeys> {
+interface HopSetup<K extends HopKeys> {
   /** The game's key scan codes (src/ids.ts SCAN). */
   scan: K;
   /** The level map's origin in scene blocks (src/levels/maps.ts ORIGIN). */

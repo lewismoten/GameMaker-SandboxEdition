@@ -5,7 +5,7 @@ import type { Pixels } from './pixels';
 import { flyArt, type FlyPose } from '../carl/src/sprites/sprites';
 
 /** The host palette's indices for Carl's ramps: fly 5 shades, eye 4, wing 3 (dark to light). */
-export interface CarlColors {
+interface CarlColors {
   ink: number;
   fly: number[];
   eye: number[];

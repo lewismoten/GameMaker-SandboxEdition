@@ -23,7 +23,7 @@ import { buildCharBlocks as kidBlocks } from '../snowbound/src/sprites/charBlock
 
 export const CLEAR = 255;
 
-export interface RecolorOptions {
+interface RecolorOptions {
   /** The host palette entries the picture may use (default: all but 255). */
   use?: number[];
   /** The source's clear index (default 255), kept clear. */

@@ -19,7 +19,7 @@ export function diskFiles(id: string): GameFiles {
   return files;
 }
 
-export interface ReplayResult {
+interface ReplayResult {
   /** play() reached scene 1, Game Won. */
   won: boolean;
   frames: number;

@@ -705,7 +705,7 @@ function drawSoftware(px: Uint8Array, f: number): Uint8Array {
   return px;
 }
 
-export interface LogoFrames {
+interface LogoFrames {
   frames: Uint8Array[];
   /** A palette per frame (the fades). */
   palettes: Uint8Array[];
@@ -716,7 +716,7 @@ export interface LogoFrames {
 let cached: LogoFrames | undefined;
 
 /** Every frame of the sting as 320x200 indexed pixels, with their palettes. */
-export function sandLogoFrames(): LogoFrames {
+function sandLogoFrames(): LogoFrames {
   if (cached) return cached;
   const rgb: Uint8Array[] = [];
   for (let f = 0; f < FRAMES; f++) {
@@ -744,6 +744,3 @@ export function sandLogoFli(): Uint8Array {
   }
   return fli;
 }
-
-/** One frame in true color (8-bit RGB), for previews. */
-export const sandLogoStill = (f: number): Uint8Array => toBytes(renderFrame(f));
