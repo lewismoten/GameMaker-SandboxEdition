@@ -1,4 +1,4 @@
-// How tight a walkthrough's play is for human hands (the Level check's Steady hands, measured on a
+// How tight a walkthrough's play is for human hands (the Level check's Slower hands, measured on a
 // recorded run): the shortest gap between two key changes, keys changed at the same tick, two
 // or more keys held at once, and the shortest press, each with where in the run it happens. A
 // bot switches keys to the tick; a player with slower hands needs about 300 ms between changes.

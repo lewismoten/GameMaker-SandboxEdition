@@ -95,7 +95,7 @@ export const PLAYERS: Chapter = {
   <h2>Designing for slower hands</h2>
   <p>The bot presses keys to the tick. A jump that needs <kbd>↑</kbd> and <kbd>→</kbd> at the
   same moment, a key let go within a tenth of a second or a hold of exactly so long are easy for
-  it and hard for many people. Tick <b>Steady hands</b> in the Level check and the bot plays
+  it and hard for many people. Tick <b>Slower hands</b> in the Level check and the bot plays
   again with one key at a time and at least 300 thousandths of a second between changes (set
   your own pace beside it); where it can no longer finish, it says where. The fixes are usually
   small: a jump that already carries sideways, a step to climb instead of a leap, a ledge a

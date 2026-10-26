@@ -173,7 +173,7 @@ function chainTo(ex: Exploration, i: number): number[] {
 }
 
 /**
- * Steady hands: the ordinary run got through the scene and the steady run (playtest.ts
+ * Slower hands: the ordinary run got through the scene and the steady run (playtest.ts
  * steadyTicks) didn't. The spot is the last place on the ordinary run's way through that the
  * steady run reached, and the move the ordinary run made there.
  */
@@ -196,7 +196,7 @@ export function steadyFindings(main: SceneRun, steady: SceneRun, d: SceneData | 
     {
       check: 'steady',
       severity: steady.ex.complete ? 'warning' : 'info',
-      title: `With steady hands the bot can’t get past ${at(cell)}`,
+      title: `With slower hands the bot can’t get past ${at(cell)}`,
       detail: `Playing one key at a time with at least ${ms} ms between changes, it found no way on${steady.ex.complete ? '' : ' in the time it had'}. The ordinary bot went on from here with ${describeMove(move, minTicks)}. A jump that already carries sideways, a step to climb, a wider ledge or a lift that waits makes it kinder.`,
       where: { scene: main.scene, map: d?.names.map, cell },
     },

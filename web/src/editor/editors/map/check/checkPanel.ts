@@ -294,16 +294,16 @@ export function checkPanel(host: CheckHost): {
       runBtn,
       undoBtn,
       checkField(
-        'Steady hands',
+        'Slower hands',
         () => steady,
         (v) => (steady = v),
-        'Play the scene a second time with one key at a time and a pause between changes, and say where that can’t get through',
+        'Play the scene again the way a person might: one key at a time, with a pause between key changes, and say where that can’t get through',
       ),
       numberField(
         'ms between keys',
         () => steadyMs,
         (v) => (steadyMs = Math.max(50, Math.min(2000, v || STEADY_MS))),
-        { min: 50, max: 2000, step: 50, title: 'The steady-hands pace: the least time between two key changes' },
+        { min: 50, max: 2000, step: 50, title: 'The slower-hands pace: the least time between two key changes' },
       ),
       h(
         'button',

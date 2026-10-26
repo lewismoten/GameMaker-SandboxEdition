@@ -502,7 +502,7 @@ modules are in [`../test`](../test).
     solid monsters on the map's edge rows, paths that stop right against a block, solid pacers that
     close in, and monsters that are solid and hurt) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
-    whole-game run carrying the least it can, and Steady hands, a second run with one key at a
+    whole-game run carrying the least it can, and Slower hands, a second run with one key at a
     time from `inputs.ts` `steadyMoves`).
   - Findings: `report.ts` gathers them (`findings.ts`: each with why players mind and its section
     of The Ultimate Owner's Guide; a `taste` check measures a design preference, so its warnings

@@ -203,7 +203,7 @@ export const CHECKS = {
     guide: P('Ways back, and no softlocks'),
   },
   steady: {
-    name: 'Steady hands',
+    name: 'Slower hands',
     why: 'The bot presses keys to the tick. A part that needs two keys at once or a split-second change can stop a player with slower hands.',
     taste: true,
     guide: P('Designing for slower hands'),
@@ -348,7 +348,7 @@ export const CHECKS = {
 
 export type CheckId = keyof typeof CHECKS;
 
-/** The pace the Level check's Steady hands plays at unless told another: ms between key changes. */
+/** The pace the Level check's Slower hands plays at unless told another: ms between key changes. */
 export const STEADY_MS = 300;
 
 /** How the panel and badges name a finding: a taste check's warning is a suggestion. */

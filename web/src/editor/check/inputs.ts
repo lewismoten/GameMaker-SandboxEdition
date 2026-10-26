@@ -115,7 +115,7 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
 }
 
 /**
- * The moves as a player with steady, unhurried hands plays them (the Level check's Steady hands):
+ * The moves as a player with steady, unhurried hands plays them (the Level check's Slower hands):
  * one key at a time, and at least `minTicks` between any two key changes, so a key is held that
  * long, a change of keys lets go first and waits that long, and the next move waits too. Moves
  * that need two keys at once are left out.
