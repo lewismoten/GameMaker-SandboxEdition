@@ -12,6 +12,7 @@ import { groupShelf, hms, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, t
 import { loadShelf, type Shelf } from './listing';
 import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
 import { forgetThumbs, lazyThumb } from './thumbs';
+import { tally, unlockAchievement } from '../achievements';
 
 const ORDERS: [ShelfOrder, string][] = [
   ['game', 'By game'],
@@ -35,6 +36,7 @@ function whenShown(done: Promise<unknown>, shown = '.gmb'): Promise<void> {
 async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from: HTMLElement): Promise<void> {
   const o = item.open;
   if (o.via === 'href' || from.hasAttribute('aria-busy')) return; // a link, or opening already
+  tally('library-kinds', item.type);
   from.setAttribute('aria-busy', 'true');
   from.classList.add('opening');
   try {
@@ -110,7 +112,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   ];
   const el =
     item.open.via === 'href'
-      ? h('a', { class: 'lib-card', href: item.open.href }, ...body)
+      ? h('a', { class: 'lib-card', href: item.open.href, onclick: () => tally('library-kinds', item.type) }, ...body)
       : h('button', { type: 'button', class: 'lib-card', onclick: () => void openPiece(item, shelf.games, el) }, ...body);
   return h('li', null, el);
 }
@@ -127,6 +129,7 @@ function groupSection(g: ShelfGroup, shelf: Shelf, order: ShelfOrder): HTMLEleme
 
 /** The Library page into `el`. */
 export function renderLibrary(el: HTMLElement): void {
+  unlockAchievement('library-visit');
   const state = viewState(['library']);
   const asked = state.get('by');
   let order: ShelfOrder = isShelfOrder(asked) ? asked : (savedOrder() ?? 'game');

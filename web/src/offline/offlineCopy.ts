@@ -7,6 +7,7 @@
 // data and pictures. A secret game is in no list: once it is revealed in this browser its pack
 // is added from the catalog, and nothing here ever names it.
 import { loadCatalogList } from '../project/files';
+import { unlockAchievement } from '../achievements';
 
 /** The cache the site's service worker serves from (siteWorker.ts CACHE). */
 const CACHE = 'gm-site';
@@ -208,6 +209,7 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
   };
   await Promise.all([worker(), worker(), worker(), worker()]);
   if (!failure && status.version) rememberCopy(status.version);
+  if (!failure) unlockAchievement('offline-copy');
   return failure ?? { ok: true };
 }
 

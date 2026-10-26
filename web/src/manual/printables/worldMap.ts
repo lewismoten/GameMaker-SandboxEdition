@@ -552,6 +552,8 @@ export function worldMapScreen(sheets: Sheet[], other?: (every: boolean) => Prom
   face.style.width = `${Math.max(1, s.w / 8.5) * 340}px`;
   const open = () => {
     dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-world-map' } }));
+    const style = /\bwm-theme-(\w+)/.exec(s.el.querySelector('.wm-svg')?.getAttribute('class') ?? '')?.[1];
+    if (style) dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-world-styles', item: style } }));
     show(s, sheets.length > 1 ? sheets.length - 1 : 1, false);
   };
   const folded = h('div', { class: 'wm-folded', 'aria-hidden': 'true', onclick: open }, h('div', { class: 'wm-face-crop' }, face));

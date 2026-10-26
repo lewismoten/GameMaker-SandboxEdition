@@ -18,6 +18,7 @@ import { renderPage, type RenderEnv } from './render';
 import { runGo, type DeskHooks } from './goRun';
 import type { Where } from './go';
 import type { Issue, PlacedPage } from './types';
+import { tally, unlockAchievement } from '../../achievements';
 
 interface Loaded {
   issue: Issue;
@@ -137,6 +138,8 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     for (const i of shown) spread.append(h('div', { class: 'mag-sheet' }, h('div', { class: 'mag-paper' }, renderPage(issue.pages[i], env).el)));
     stage.replaceChildren(spread);
     stage.scrollTop = 0;
+    for (const i of shown) tally('mag-features', issue.pages[i].section);
+    if (shown.includes(total - 1)) unlockAchievement('mag-back');
     const [first, last] = [issue.pages[shown[0]], issue.pages[shown.at(-1)!]];
     counter.textContent = narrow()
       ? `${first.folio} / ${total}`
@@ -212,6 +215,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   root.addEventListener('click', (e) => {
     const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-go]');
     if (!a) return;
+    if (a.classList.contains('mag-disc-link')) unlockAchievement('mag-disc');
     const handled = runGo(a.dataset.go!, { where: o.where, desk: o.desk, entry: (id) => entries.get(id), turnTo, close: () => o.onClose?.() });
     if (handled) e.preventDefault();
     else if (o.onClose && a.target !== '_blank') o.onClose(); // leaving for another page: put the magazine down first

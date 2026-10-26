@@ -7,6 +7,7 @@ import { sheet, type Sheet } from '../printables/kit';
 import type { BoxItem } from '../printables/viewer';
 import { ZINE, ZINE_TITLE } from './zinePages';
 import { blankLeaf, zineLeaf } from './zineLeaf';
+import { unlockAchievement } from '../../achievements';
 
 const TITLE = `${ZINE_TITLE} #3`;
 
@@ -40,6 +41,7 @@ function turner(): HTMLElement {
     counter.textContent = `Page ${at + 1} of ${ZINE.length}`;
     prev.disabled = at === 0;
     next.disabled = at === ZINE.length - 1;
+    if (next.disabled) unlockAchievement('zine-read');
   };
   go(0);
   return view;
