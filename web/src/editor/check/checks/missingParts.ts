@@ -111,7 +111,8 @@ export function outOfRange(d: SceneData): Finding[] {
   const empty = new Map<number, number[]>();
   // a scene with no monster file at all shows none (missing-file says so when one is named)
   for (const p of d.mon.length ? d.map.monsters : [])
-    if (p.monnum < LASTMON && emptySlot(d.mon[p.monnum])) empty.set(p.monnum, [...(empty.get(p.monnum) ?? []), p.cury * 100 + p.curx]);
+    if (p.monnum < LASTMON && p.curx >= 0 && p.curx < 100 && p.cury >= 0 && p.cury < 100 && emptySlot(d.mon[p.monnum]))
+      empty.set(p.monnum, [...(empty.get(p.monnum) ?? []), p.cury * 100 + p.curx]);
   for (const [n, cells] of empty)
     out.push({
       check: 'out-of-range',

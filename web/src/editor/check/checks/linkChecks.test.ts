@@ -15,6 +15,7 @@ import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute 
 import { missingFiles, missingVocs, outOfRange } from './missingParts';
 import { counters, opposites } from './blockChecks';
 import { mentions, speedCap } from './gameChecks';
+import { monsterChecks } from './monsterChecks';
 
 // prettier-ignore
 const ROWS = [
@@ -151,6 +152,15 @@ describe('repairs from the archive’s games', () => {
     d.map.blocks[103] = 10;
     d.map.blocks[104] = 10;
     expect(opposites(d)).toEqual([]);
+  });
+
+  it('leaves out a monster placed off the map', () => {
+    const d = sceneOf(testGame(ROWS));
+    d.mon.push(...Array.from({ length: 64 }, emptyMonster));
+    d.mon[3].pic[0] = [0, 5];
+    d.map.monsters[0] = { ...d.map.monsters[0], monnum: 3, curx: 4, cury: 150 };
+    for (const c of monsterChecks) expect(() => c(d)).not.toThrow();
+    expect(outOfRange(d)).toEqual([]);
   });
 
   it('matches a key named by punctuation as itself', () => {
