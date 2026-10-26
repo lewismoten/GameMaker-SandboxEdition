@@ -10,7 +10,7 @@ import type { Game } from '../../formats/game';
 import { scenePixels } from '../../gfx/levelPicture';
 import type { GameFiles } from '../../project/files';
 import { courseRaster, panelOf, type CourseLayout, type StripPoint } from './levelCourse';
-import type { Level } from './levelMapLayout';
+import { packPages, type Level } from './levelMapLayout';
 import { el, SERIF } from './worldMapArt';
 
 /** Pixels a block in a panel's picture: twice the map's, so a block turned 45 degrees keeps its pixels. */
@@ -19,7 +19,7 @@ const SCALE = 2 * BLEN;
 export const GUTTER = 6;
 export const PANEL_HEAD = 2.6;
 /** Between two panels on a page. */
-const PANEL_GAP = 1.2;
+export const PANEL_GAP = 1.2;
 
 type Course = CourseLayout<Level['marks'][number]>;
 type Colors = Record<'start' | 'exit' | 'end' | 'join', string>;
@@ -47,21 +47,38 @@ export async function coursePanelUrls(game: Game, files: GameFiles, l: Level): P
 }
 
 /** A panel's room across the page, with its gutters (paper units at `s` a block). */
-export const panelWidth = (c: Course, i: number, s: number): number => (c.panels[i].c1 - c.panels[i].c0) * s + 2 * GUTTER;
+const panelWidth = (c: Course, i: number, s: number): number => (c.panels[i].c1 - c.panels[i].c0) * s + 2 * GUTTER;
 /** A panel's room down the page, with its labels over and under. */
-export const panelHeight = (c: Course, i: number, s: number): number => (c.panels[i].a1 - c.panels[i].a0) * s + 2 * PANEL_HEAD;
+const panelHeight = (c: Course, i: number, s: number): number => (c.panels[i].a1 - c.panels[i].a0) * s + 2 * PANEL_HEAD;
 
-/** The panels on each page, in order: as many side by side as fit across `width`. */
-export function coursePages(c: Course, width: number, s: number): number[][] {
-  const pages: number[][] = [];
-  let x = Infinity;
-  c.panels.forEach((_, i) => {
-    const w = panelWidth(c, i, s);
-    if (x + w > width) (pages.push([]), (x = 0));
-    pages[pages.length - 1].push(i);
-    x += w + PANEL_GAP;
-  });
-  return pages;
+/** A panel placed on a page: its number and its box's top-left (labels and all). */
+export interface PlacedPanel {
+  i: number;
+  x: number;
+  y: number;
+}
+
+/** The panels on each page, in order: side by side, and in rows when they are short, within `area`. */
+export function coursePages(c: Course, area: { w: number; h: number }): PlacedPanel[][] {
+  const placed = packPages(
+    c.panels.map((_, i) => ({ w: panelWidth(c, i, c.scale), h: panelHeight(c, i, c.scale) })),
+    area,
+    PANEL_GAP,
+  );
+  const pages: PlacedPanel[][] = [];
+  placed.forEach((p, i) => (pages[p.page] ??= []).push({ i, x: p.x, y: p.y }));
+  return pages.filter(Boolean);
+}
+
+/** A panel's box on paper, its labels and all, at the course's own size. */
+export const coursePanelBox = (c: Course, i: number): { w: number; h: number } => ({ w: panelWidth(c, i, c.scale), h: panelHeight(c, i, c.scale) });
+
+/** The size of a page's panels, as placed. */
+export function placedSize(c: Course, which: PlacedPanel[]): { w: number; h: number } {
+  return {
+    w: Math.max(...which.map((p) => p.x + panelWidth(c, p.i, c.scale))),
+    h: Math.max(...which.map((p) => p.y + panelHeight(c, p.i, c.scale))),
+  };
 }
 
 const text = (x: number, y: number, size: number, body: string, attrs: Record<string, string | number> = {}) =>
@@ -178,6 +195,30 @@ function panelSvg(
       text(x, kind === 'start' ? y + r + 1.6 : y - r - 0.6, 1.4, label(m.mark), { 'font-weight': 700, fill: colors[kind], 'text-anchor': 'middle' }),
     );
   }
+  // where it joins the panels before and after: the blocks both show (a band, the same on each),
+  // and a ring numbered for the join at the same place on both, to lay one over the other
+  for (const j of [i - 1, i + 1]) {
+    const q = c.panels[j];
+    if (!q) continue;
+    const lo = Math.max(p.a0, q.a0);
+    const hi = Math.min(p.a1, q.a1);
+    if (hi <= lo) continue;
+    const y0 = oy + (p.a1 - hi) * s;
+    const y1 = oy + (p.a1 - lo) * s;
+    const cj = (Math.max(p.c0, q.c0) + Math.min(p.c1, q.c1)) / 2;
+    const x = X({ c: cj, a: 0 });
+    const name = `${Math.min(i, j) + 1}·${Math.max(i, j) + 1}`;
+    over.append(
+      el('rect', { x: ox, y: y0, width: w, height: y1 - y0, fill: '#fffdf7', 'fill-opacity': 0.3 }),
+      ...[y0, y1].map((y) => el('line', { x1: ox, y1: y, x2: ox + w, y2: y, stroke: '#2b241c', 'stroke-width': 0.2, 'stroke-dasharray': '0.8 0.5' })),
+    );
+    g.append(
+      el('circle', { cx: x, cy: (y0 + y1) / 2, r: 1.5, fill: '#2b241c', stroke: '#fffdf7', 'stroke-width': 0.3 }),
+      text(x, (y0 + y1) / 2 + 0.38, 1, name, { 'font-weight': 700, fill: '#fffdf7', stroke: 'none', 'text-anchor': 'middle' }),
+      el('path', { d: `M${ox + w + 0.3},${y0} h0.5 V${y1} h-0.5`, fill: 'none', stroke: '#2b241c', 'stroke-width': 0.2 }),
+      text(ox + w + 1, (y0 + y1) / 2 + 0.35, 0.95, `= ${j > i ? (c.down ? 'top' : 'foot') : c.down ? 'foot' : 'top'} of ${j + 1}`, { 'font-style': 'italic' }),
+    );
+  }
   // its number, and where it carries on
   const last = i === c.panels.length - 1;
   const [ahead, behind] = c.down
@@ -195,25 +236,20 @@ function panelSvg(
 /** Clip paths are named across the whole document. */
 let clips = 0;
 
-/** The panels `which` side by side from (`x`, `y`) (their labels' top-left), `s` paper units a block. */
+/** The panels `which` where they are placed, from (`x`, `y`), at the course's own size. */
 export function courseSvg(
   game: Game,
   l: Level,
   urls: string[],
-  which: number[],
+  which: PlacedPanel[],
   x: number,
   y: number,
-  s: number,
   colors: Colors,
   label: (m: Level['marks'][number]) => string,
 ): SVGElement {
   const c = l.course!;
   const g = el('g', { class: 'lm-course' });
-  let at = x;
   const id = `lmc${++clips}`;
-  for (const i of which) {
-    g.append(panelSvg(game, c, i, urls[i], at + GUTTER, y + PANEL_HEAD, s, colors, label, id));
-    at += panelWidth(c, i, s) + PANEL_GAP;
-  }
+  for (const p of which) g.append(panelSvg(game, c, p.i, urls[p.i], x + p.x + GUTTER, y + p.y + PANEL_HEAD, c.scale, colors, label, id));
   return g;
 }

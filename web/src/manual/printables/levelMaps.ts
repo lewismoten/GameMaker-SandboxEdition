@@ -20,7 +20,7 @@ import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
-import { coursePages, coursePanelUrls, courseSvg, panelHeight, panelWidth } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelBox, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
 import { unrolledShows } from '../../editor/check/unroll';
 import { BLEN } from '../../formats/blocks';
@@ -43,11 +43,11 @@ const FULL = 1;
 const MOST_PAGES = 60;
 
 export const COLORS = { start: '#17762f', exit: '#1d4e9e', end: '#b3261e', join: '#7a3db8' };
-/** A course's panels are this many blocks high, to fill a page under its caption and their labels. */
-const COURSE_PANEL = 56;
+/** Where a course's panels go on a page: under its caption, over the line about the dashed edges. */
+const COURSE_AREA = { w: AREA.w, h: AREA.h - CAPTION - 2 };
 
 /** The game and every level's files (palette, map, blocks, monsters). */
-async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
+export async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: GameFiles } | undefined> {
   if (!entry.gam) return undefined;
   const gam = await fetchGameFile(entry, entry.gam);
   if (!gam) return undefined;
@@ -68,7 +68,7 @@ async function loadLevels(entry: CatalogEntry): Promise<{ game: Game; files: Gam
 const sceneList = (game: Game, l: Level) => markLabel(game, l.group.scenes);
 
 /** A mark's words: ▶ and the scenes you arrive in, → and the scene a way out goes to, ⚑ the end. */
-const markText = (game: Game, m: Level['marks'][number]) =>
+export const markText = (game: Game, m: Level['marks'][number]) =>
   `${m.kind === 'start' ? '▶' : m.kind === 'end' ? '⚑' : '→'}${m.kind === 'end' ? '' : (m.text ?? markLabel(game, m.scenes))}`;
 
 /** A mark's label: its text and width, and where it sits (paper units, `s` a block from `ox`, `oy`). */
@@ -403,7 +403,7 @@ function pageCounts(game: Game, levels: Level[]): { overviews: number; full: num
     GAP,
   );
   // a course takes a page for each set of its panels
-  const courses = levels.reduce((n, l) => n + (l.course ? coursePages(l.course, AREA.w, FULL).length - 1 : 0), 0);
+  const courses = levels.reduce((n, l) => n + (l.course ? coursePages(l.course, COURSE_AREA).length - 1 : 0), 0);
   const overviews = (placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0) + courses;
   const extra = levels.filter(tiled).reduce((n, l) => n + levelTiles(l).length, 0);
   return { overviews, full: overviews + extra };
@@ -583,14 +583,13 @@ const courseNote = (c: { down: boolean }) =>
 async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number): Promise<Sheet[]> {
   const c = l.course!;
   const urls = await paint(l);
-  const pages = coursePages(c, AREA.w, FULL);
+  const pages = coursePages(c, COURSE_AREA);
   return pages.map((which, n) => {
-    const height = Math.max(...which.map((i) => panelHeight(c, i, FULL)));
-    const width = which.reduce((w, i) => w + panelWidth(c, i, FULL), 0);
-    const y = HEAD + CAPTION + Math.max(0, (AREA.h - CAPTION - height) / 2);
+    const { w: width, h: height } = placedSize(c, which);
+    const y = HEAD + CAPTION + Math.max(0, (COURSE_AREA.h - height) / 2);
     return pageSheet(entry, `page ${next()} · ${l.name}, ${n + 1} of ${pages.length}`, [
       captionSvg(game, { ...l, note: `${courseNote(c).slice(3)}${l.note ? ` · ${l.note}` : ''}` }, MARGIN, HEAD, AREA.w),
-      courseSvg(game, l, urls, which, MARGIN + Math.max(0, (AREA.w - width) / 2), y, FULL, COLORS, (m) => markText(game, m)),
+      courseSvg(game, l, urls, which, MARGIN + Math.max(0, (AREA.w - width) / 2), y, COLORS, (m) => markText(game, m)),
       el(
         'text',
         { x: PAGE.w - MARGIN, y: PAGE.h - FOOT + 1, 'font-family': 'Arial, Helvetica, sans-serif', 'font-size': 1.2, fill: COLORS.join, 'text-anchor': 'end' },
@@ -616,7 +615,8 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
         listedUnrolled(ctx.entry.id),
         listedRoomHints(ctx.entry.id),
         listedCourses(ctx.entry.id),
-        COURSE_PANEL,
+        // the biggest blocks that fit, up to twice full size, so a course's details read
+        { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL },
       );
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined, course: undefined }));
@@ -772,9 +772,16 @@ function levelViewer(opts: Loaded): HTMLElement {
     const urls = await opts.paintCourse(l);
     if (shown !== i || levels()[i] !== l) return;
     const pad = 3;
-    const which = c.panels.map((_, k) => k);
-    const w = which.reduce((n, k) => n + panelWidth(c, k, 1), 0) + pad * 2;
-    const ht = Math.max(...which.map((k) => panelHeight(c, k, 1))) + pad * 2;
+    // every panel in one row, in order
+    let across = 0;
+    const which = c.panels.map((_, k) => {
+      const p = { i: k, x: across, y: 0 };
+      across += coursePanelBox(c, k).w + 1.2;
+      return p;
+    });
+    const size = placedSize(c, which);
+    const w = size.w + pad * 2;
+    const ht = size.h + pad * 2;
     const svg = el(
       'svg',
       {
@@ -785,7 +792,7 @@ function levelViewer(opts: Loaded): HTMLElement {
         'aria-label': `Map of scene ${sceneList(game, l)}, ${l.name}, as you ${c.down ? 'ride' : 'fly'} it`,
       },
       el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
-      courseSvg(game, l, urls, which, pad, pad, 1, COLORS, (m) => markText(game, m)),
+      courseSvg(game, l, urls, which, pad, pad, COLORS, (m) => markText(game, m)),
     );
     const pz = panZoom(h('div', { class: 'lm-map' }, svg), w / 10, `Map of ${l.name}: drag to look around`, 400);
     stage.replaceChildren(
