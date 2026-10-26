@@ -1,11 +1,12 @@
 // Started once by each page (main.ts, play.ts): unlocks what other parts of the page report
-// with a `gm-achievement` event ({ detail: { id } }, e.g. the desk's room props), follows other
+// with a `gm-achievement` event ({ detail: { id } }, e.g. the desk's room props, or { id, item }
+// to count an item toward a fixed total, e.g. the World Map's styles), follows other
 // tabs, and keeps the counted achievements (tin hearts, felt eggs, every game played) in step
 // with the saves and the catalog as they change.
 import { refreshGoals } from './goals';
-import { listenToOtherTabs, loadAchievements, progress, unlockAchievement } from './store';
+import { listenToOtherTabs, loadAchievements, progress, tally, unlockAchievement } from './store';
 
-/** The event other code fires to unlock one: new CustomEvent(ACHIEVEMENT_EVENT, { detail: { id } }). */
+/** The event other code fires to unlock one: new CustomEvent(ACHIEVEMENT_EVENT, { detail: { id } }), or { id, item } to tally an item. */
 const ACHIEVEMENT_EVENT = 'gm-achievement';
 
 let started = false;
@@ -14,8 +15,9 @@ export function startAchievements(): void {
   if (started || typeof window === 'undefined') return;
   started = true;
   window.addEventListener(ACHIEVEMENT_EVENT, (e) => {
-    const id = (e as CustomEvent<{ id?: unknown }>).detail?.id;
-    if (typeof id === 'string') unlockAchievement(id);
+    const { id, item } = (e as CustomEvent<{ id?: unknown; item?: unknown } | null>).detail ?? {};
+    if (typeof id === 'string' && typeof item === 'string') tally(id, item);
+    else if (typeof id === 'string') unlockAchievement(id);
     // eslint-disable-next-line no-console -- a development-only note
     else if (import.meta.env?.DEV) console.info('[achievements] gm-achievement without an id', e);
   });

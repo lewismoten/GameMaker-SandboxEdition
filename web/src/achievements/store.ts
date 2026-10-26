@@ -181,13 +181,15 @@ export function progress(id: string, n: number, of: number): void {
 
 /**
  * Counts `item` toward an achievement whose total is fixed in the catalog (the editors, the
- * export platforms): the set is kept, and progress is its size against the catalog's `of`.
+ * export platforms): the set is kept, and progress is its size against the catalog's `of`. An
+ * item the catalog's `items` doesn't list is ignored.
  */
 export function tally(id: string, item: string): void {
   if (record?.sets[id]?.includes(item)) return;
   change((r) => {
     const a = byId?.(id);
     if (!a) return known(id); // (false, noted in development)
+    if (a.items && !a.items.includes(item)) return false; // not one that counts: not kept either
     const s = (r.sets[id] ??= []);
     if (s.includes(item)) return false;
     s.push(item);
