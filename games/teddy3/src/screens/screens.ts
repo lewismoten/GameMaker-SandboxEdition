@@ -203,8 +203,8 @@ function cardTitle(p: Pixels, x: number, y: number, s: string, col: number, edge
     }
 }
 
-/** A level card: a framed view of the level and what is new there. */
-export function card(l: Level, n: number, lines: string[]): Pixels {
+/** A level card: a framed view of the level, where it falls (LEVEL 2 OF n), and what is new there. */
+export function card(l: Level, n: number, of: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));
@@ -220,7 +220,7 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   const view = renderRegion(map, l.bs.build(), l.beasts.mb.build(), l.beasts.build(), l.view[0], l.view[1], 15, 5, extra);
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);
-  outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);
+  outlined(p, 16, 120, n === of ? `FINAL LEVEL: ${n} OF ${of}` : `LEVEL ${n} OF ${of}`, cc('yellow', 3), cc('red', 1), 1);
   cardTitle(p, 16, 132, clubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1));
   lines.forEach((s, i) => text(p, 16, 154 + i * 10, clubArt(s), cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
   return p;
@@ -265,7 +265,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('lost.txt', LOST);
   lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
   levels.forEach((l, i) => {
-    put(`${l.file}.gif`, gif(card(l, i + 1, l.card ?? CARDS[l.file] ?? []), buildPalette(l.time).pal));
+    put(`${l.file}.gif`, gif(card(l, i + 1, levels.length, l.card ?? CARDS[l.file] ?? []), buildPalette(l.time).pal));
     lst(`${l.file}.lst`, [[`${l.file}.gif`, 30]]);
   });
   if (levels.some((l) => l.egg)) {
