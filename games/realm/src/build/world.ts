@@ -18,6 +18,7 @@ import { TALK } from '../levels/script';
 import { giftCell, talkFiles, talkScene } from '../levels/talk';
 import { peopleSheet } from './people';
 import { noteWays } from './walkPaths';
+import { putSaveSign } from '../../../kit/saveSign';
 
 export interface AreaFile {
   name: string;
@@ -60,7 +61,10 @@ export function buildWorld(cast: Cast) {
   map.blocks.set(ground.blocks);
   for (const s of plan.stamps)
     for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
-  const blocks = book.finish();
+  // the save sign (kit/saveSign.ts) on the grass beside the road's end at Eventually Falls,
+  // where the player comes out (WORLD_ARRIVE.falls, 80,58), drawn by nearest color in blocks the
+  // world never shows, so its palette and every other block stay as they are
+  const blocks = putSaveSign(book.finish(), map, book.pal!.vga, 82, 57);
   noteWays('world.bbl', book);
 
   const mb = peopleSheet();

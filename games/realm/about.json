@@ -10,6 +10,7 @@
   "egg": { "block": 149 },
   "tinHeart": { "map": "port.map", "at": [9, 25] },
   "easterEgg": { "map": "port.map", "at": [91, 42] },
+  "saveSign": { "map": "world.map", "at": [82, 57], "after": "port.map" },
   "label": {
     "background": "#f3ead2",
     "band": "#2f5d3a",
