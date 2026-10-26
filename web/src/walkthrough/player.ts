@@ -12,6 +12,7 @@ import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
 import { WalkAudio, WalkRun } from './runtime';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
@@ -94,12 +95,14 @@ export async function watchWalkthrough(
   onReady?: () => void,
   given?: Walkthrough,
   chapter?: number,
+  /** A project's DOS player patches (dosPlayer/): its menu and player screens as its .EXE shows them. */
+  player?: PlayerPatches,
 ): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player);
   } finally {
     release?.();
   }
@@ -112,6 +115,7 @@ async function watch(
   onLose: (f: () => void) => void,
   given?: Walkthrough,
   chapter?: number,
+  player?: PlayerPatches,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -199,7 +203,7 @@ async function watch(
 
   const fresh = () => {
     run?.stop();
-    run = new WalkRun(canvas, files.copy(), gam, walk, audio);
+    run = new WalkRun(canvas, files.copy(), gam, walk, audio, player);
     return run;
   };
 
@@ -427,6 +431,7 @@ async function watch(
         files,
         gam,
         walk,
+        player,
         from,
         to,
         signal: making.signal,

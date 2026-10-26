@@ -7,6 +7,7 @@ import './uploadChecklist.css';
 import { h, modal } from '../core/ui';
 import type { Project } from '../core/project';
 import { CHECKS, type CheckId, type Finding } from '../check/findings';
+import { companionPatches } from '../../dosPlayer/playerRecord';
 import { sameEverySide } from '../check/sameEverySide';
 import { acceptedFindings, openFindings } from '../check/accepted';
 import { runChecks } from '../check/report';
@@ -143,7 +144,9 @@ export async function uploadChecklist(project: Project): Promise<void> {
   const ticks = new Set(project.extras<number[]>(project.gam, SECTION, []));
   let fileFindings: Finding[] = [];
   try {
-    fileFindings = (await runChecks(project.files, { play: false, sameEverySide: sameEverySide(project) })).findings;
+    fileFindings = (
+      await runChecks(project.files, { play: false, sameEverySide: sameEverySide(project), player: companionPatches(project.companion, project.gam) })
+    ).findings;
   } catch {
     /* a game without levels: every item is the designer's */
   }

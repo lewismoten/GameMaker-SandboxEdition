@@ -12,10 +12,12 @@ import { Machine } from '../engine/machine';
 import { Recorder } from '../engine/recorder';
 import { gameNameOf, loadGameFile, play } from '../engine/game';
 import { sceneFile, type Session } from '../engine/scene';
-import { drawDefaultScreen, gVertMenu, highScoreFile, readHighScores } from '../engine/menus';
+import { drawDefaultScreen, drawMenu, gVertMenu, highScoreFile, menuMarker, readHighScores } from '../engine/menus';
+import { playerLook, type PlayerLook } from '../engine/playerLook';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { serializeHighScores } from '../formats/highscore';
 import { fillBlankScores } from './madeUpScores';
-import { match, RGB_BLUE, showGraphic } from '../engine/showGraphic';
+import { showGraphic } from '../engine/showGraphic';
 import { newCharInfo } from '../engine/world';
 import { AudioEngine } from '../audio/engine';
 import { PALETTE_SIZE } from '../formats/palette';
@@ -237,7 +239,7 @@ const SCAN_ENTER = 28;
 const FRONT_CHAPTERS = { opening: 'Opening', story: 'Story', ending: 'Ending', credits: 'Credits' };
 
 /** The walkthrough itself: PLAYGAME's front end (runGame) with a viewer who knows what to pick. */
-async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough, hooks: WalkHooks = {}): Promise<void> {
+async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough, hooks: WalkHooks, look: PlayerLook): Promise<void> {
   const game = loadGameFile(m, gamFile);
   const rec = new SegmentRecorder(walk);
   const shared = mulberry32(walk.rand.seed);
@@ -256,6 +258,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
     musicOn: m.audio.musicEnabled,
     speakerOnly: m.audio instanceof WalkAudio && !m.audio.card,
     speed: {},
+    look,
     rand: () => (walk.rand.per === 'scene' ? mulberry32(walk.rand.seed) : shared),
     onScene: (scene) => {
       rec.enterScene(scene);
@@ -275,7 +278,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   hooks.onSession?.(s);
   await m.need(highScoreFile(s.gameName)); // loaded now, so the ending can fill it in (onScene)
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
-  const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors });
+  const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors, look });
   const song = async (slot: number) => {
     await m.need(file(0, slot));
     await m.audio.playSong(m.files.get(file(0, slot) ?? ''));
@@ -289,12 +292,12 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
 
   // The menu, as runGame draws it
   let choice = 1;
+  let blue = 0;
+  const marker = menuMarker(look);
   const menu = async () => {
     if (file(0, 2)) await show(file(0, 2)!, s.colors, 0);
     else drawDefaultScreen(m, s.colors);
-    const blue = match(s.colors, RGB_BLUE);
-    m.screen.write(12 * 8, 13 * 8, blue, game.scenes[0].desc);
-    ['Play', 'Read Instructions', 'Read Storyline', 'See Credits', 'See Highest Scores', 'Quit'].forEach((t, i) => m.screen.write(80, (15 + i) * 8, blue, t));
+    blue = drawMenu(m.screen, look, s.colors, game.scenes[0].desc);
     return m.screen.snapshot();
   };
   /** Moves the menu's marker to `to` a key at a time and picks it. */
@@ -302,8 +305,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
     let at = 1200;
     for (let c = choice; c !== to; c += to > choice ? 1 : -1, at += 450) m.pressIn(at, to > choice ? SCAN_DOWN : SCAN_UP);
     m.pressIn(at + 500, SCAN_ENTER);
-    const blue = match(s.colors, RGB_BLUE);
-    choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, Infinity, choice);
+    choice = await gVertMenu(m, marker.x, marker.y, marker.dy, 6, blue, Infinity, choice, true, marker.width);
   };
 
   await song(3);
@@ -359,6 +361,8 @@ export class WalkRun {
     readonly gam: string,
     readonly walk: Walkthrough,
     audio = new WalkAudio(),
+    /** The project's DOS player patches (dosPlayer/): the menu's words and the player's screens as its .EXE shows them. */
+    player?: PlayerPatches,
   ) {
     this.audio = audio;
     this.m = new WalkMachine(canvas, files, audio, walk.hold ?? DEFAULT_HOLD);
@@ -367,13 +371,19 @@ export class WalkRun {
     this.ended = new Promise((r) => (resolve = r));
     void this.ended.then(() => (this.done = true));
     this.run = () =>
-      runWalkthrough(this.m, gam, walk, {
-        onSession: (s) => (this.session = s),
-        onChapter: (title) => {
-          this.chapters.push({ title, frame: this.frame });
-          this.onChapter?.(title, this.chapters.length - 1);
+      runWalkthrough(
+        this.m,
+        gam,
+        walk,
+        {
+          onSession: (s) => (this.session = s),
+          onChapter: (title) => {
+            this.chapters.push({ title, frame: this.frame });
+            this.onChapter?.(title, this.chapters.length - 1);
+          },
         },
-      })
+        playerLook(player),
+      )
         .catch((e) => {
           if (!this.m.aborted) this.error = e;
         })

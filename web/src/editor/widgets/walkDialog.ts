@@ -175,8 +175,8 @@ export async function walkDialog(project: Project): Promise<void> {
     if (!walk) return;
     const title = project.game().scenes[0]?.desc.trim() || project.name;
     const entry = { id: `project:${project.id}`, title, gam: project.gam, kind: 'mine', path: '', files: [] } as unknown as CatalogEntry;
-    const { watchWalkthrough } = await import('../../walkthrough/player');
-    await watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk);
+    const [{ watchWalkthrough }, { companionPatches }] = await Promise.all([import('../../walkthrough/player'), import('../../dosPlayer/playerRecord')]);
+    await watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk, undefined, companionPatches(project.companion, project.gam));
   }
 
   render();

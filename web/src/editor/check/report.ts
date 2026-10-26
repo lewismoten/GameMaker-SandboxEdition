@@ -11,6 +11,7 @@ import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
 import { fliCheck } from './checks/fliCheck';
+import type { PlayerPatches } from '../../dosPlayer/patchRules';
 import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';
 import { helpKeys } from './checks/helpKeys';
@@ -81,6 +82,8 @@ export interface CheckOptions {
   leaveBehind?: boolean;
   /** Head for the scene's links first (playtest.ts towardExits): a way through sooner, less of the rest. */
   towardExits?: boolean;
+  /** The project's DOS player patches (dosPlayer/), for the menu's words in the text-contrast check. */
+  player?: PlayerPatches;
 }
 
 /** A scene the bot couldn't load or play: said, rather than stopping the whole check. */
@@ -153,7 +156,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
     findings.push(
       ...controls(files),
       ...helpKeys(game, files),
-      ...textContrast(game, files),
+      ...textContrast(game, files, opt.player),
       ...dosChars(game, files, files.mainGame()),
       ...startValues(game, all),
       ...stakes(game, all),

@@ -10,6 +10,7 @@ import { AudioRenderer } from './audioRender';
 import { WALKTHROUGH_FPS, type Walkthrough } from './format';
 import { muxAv, type AvSample } from './mp4av';
 import { headlessCanvas, screenRgba, WalkRun } from './runtime';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 
 const W = 320;
 const H = 200;
@@ -20,6 +21,8 @@ export interface ExportOptions {
   files: GameFiles;
   gam: string;
   walk: Walkthrough;
+  /** The project's DOS player patches (dosPlayer/), for the menu and the player's own screens. */
+  player?: PlayerPatches;
   /** The frames to make (default: the whole walkthrough). */
   from?: number;
   to?: number;
@@ -105,7 +108,7 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
     : undefined;
   aenc?.configure({ codec: acodec!.codec, sampleRate: RATE, numberOfChannels: 1, bitrate: 128000 });
 
-  const run = new WalkRun(headlessCanvas(), o.files.copy(), o.gam, o.walk);
+  const run = new WalkRun(headlessCanvas(), o.files.copy(), o.gam, o.walk, undefined, o.player);
   run.audio.logging = true;
   run.audio.card = o.sound !== 'speaker';
   const sound = new AudioRenderer(run.audio.events, RATE);

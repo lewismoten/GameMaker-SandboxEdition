@@ -30,8 +30,15 @@ async function play(project: Project, title: string, files: GameFiles, walk: Wal
   const mark = walk.chapters.find((c) => c.scene === scene)?.title;
   const chapter = walk.timeline.chapters.findIndex((c) => c.title === (mark || sceneName(project, scene)));
   const entry = { id: `project:${project.id}`, title, gam: project.gam, kind: 'mine', path: '', files: [] } as unknown as CatalogEntry;
-  const { watchWalkthrough } = await import('../../walkthrough/player');
-  await watchWalkthrough(entry, () => Promise.resolve(files), undefined, walk, chapter >= 0 ? chapter : undefined);
+  const [{ watchWalkthrough }, { companionPatches }] = await Promise.all([import('../../walkthrough/player'), import('../../dosPlayer/playerRecord')]);
+  await watchWalkthrough(
+    entry,
+    () => Promise.resolve(files),
+    undefined,
+    walk,
+    chapter >= 0 ? chapter : undefined,
+    companionPatches(project.companion, project.gam),
+  );
 }
 
 /** Checks and times a one-scene walkthrough in the walkthrough bot's worker (or, with `walk` left out, has the bot make one). */
