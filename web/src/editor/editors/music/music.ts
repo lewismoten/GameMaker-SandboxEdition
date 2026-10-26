@@ -160,11 +160,16 @@ registerEditor(['cmf'], (host, project, file) => {
     h(
       'details',
       { class: 'mus-tips' },
-      h('summary', { title: 'How the ruler, END and VEL work', 'aria-label': 'Tips: the ruler, END and VEL' }, '?'),
+      h('summary', { title: 'How the ruler, END, VEL and copying tracks work', 'aria-label': 'Tips: the ruler, END, VEL and copying tracks' }, '?'),
       h(
         'p',
         { class: 'hint' },
         'Click the ruler to set where playing starts; drag on it to mark a loop. Drag END to change where the song repeats. Drag the bars in VEL to make notes louder or softer.',
+      ),
+      h(
+        'p',
+        { class: 'hint' },
+        'To use a track in another song, press ⧉ on it, open the other song and press Paste track under its tracks; or there, choose Add a track from another song…. It comes with its notes and instrument, on the next free track.',
       ),
     ),
   );

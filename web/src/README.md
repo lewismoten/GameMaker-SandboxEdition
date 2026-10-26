@@ -589,6 +589,13 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `harmony.ts` hears a tune's key and chords, `styles.ts` holds the band's patterns and preset
   sounds, `accompany.ts` writes bass, chords and drums in rhythm mode around the tune, and
   `copyTune.ts` copies a tune at a new speed and pitch.
+- **Copying tracks between songs.** The music editor's ⧉ on a track, Paste track and Add a track
+  from another song…: `editors/music/trackClip.ts` (pure) copies a track's notes, instruments
+  (SBI bytes), program changes and channel events and adds them to a song on its next free
+  channel, rescaled to the same beats, a drum kept on its drum channel (turning the drum kit on
+  when tracks 7-9 are empty); `trackClipboard.ts` keeps the copy in localStorage (and a JSON copy
+  on the system clipboard); `trackPaste.ts` pastes as one undo step with a toast;
+  `trackPickDialog.ts` picks a track from the game's other songs.
 - **Bot demos.** The demo recordings editor's Let the bot play…
   (`editors/recording/botDemoDialog.ts`) runs `botDemoWorker.ts` (through `botDemoClient.ts`): the
   walkthrough bot plays to the chosen scene, and `botDemo.ts` plays its walkthrough on the engine

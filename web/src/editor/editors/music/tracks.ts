@@ -1,5 +1,5 @@
 // The track list: one track per MIDI channel, with its instrument, mute and solo, and
-// buttons to add and remove tracks.
+// buttons to add, copy, paste and remove tracks (copy and paste in trackPaste.ts).
 import { h, clear, confirmDialog } from '../../core/ui';
 import { channelNotes, removeChannel, setStartProgram, startProgram } from '../../../formats/cmfEdit';
 import { RHYTHM_CHANNELS, DRUM_NAMES } from '../../../formats/cmfSong';
@@ -9,6 +9,8 @@ import { presetName } from './sbi';
 import { presetById } from '../../../audio/oplPresets';
 import { DRUM_KIT, slotOfChannel } from '../../../audio/oplDrumPresets';
 import { applyToTrack, pickPreset } from './presetPicker';
+import { clipLabel, copyToClipboard, pasteIntoDoc } from './trackPaste';
+import { currentTrackClip } from './trackClipboard';
 
 export class TrackList {
   readonly el = h('div', { class: 'mus-tracks', role: 'list', 'aria-label': 'Tracks' });
@@ -100,22 +102,39 @@ export class TrackList {
         'div',
         { class: `mus-track${ch === doc.track ? ' active' : ''}${silent ? ' silent' : ''}`, role: 'listitem', style: `--track:${TRACK_COLORS[ch]}` },
         h(
-          'button',
-          {
-            class: 'mus-track-name',
-            'aria-current': ch === doc.track ? 'true' : undefined,
-            title: silent ? 'Game-Maker does not play this channel now' : `Edit ${doc.trackName(ch)}`,
-            onclick: () => {
-              doc.selectTrack(ch);
-              this.onSelect();
-            },
-          },
-          h('span', { class: 'mus-swatch' }, drum ? '🥁' : String(ch + 1)),
+          'div',
+          { class: 'mus-track-head' },
           h(
-            'span',
-            { class: 'mus-track-text' },
-            h('b', null, doc.trackName(ch)),
-            h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
+            'button',
+            {
+              class: 'mus-track-name',
+              'aria-current': ch === doc.track ? 'true' : undefined,
+              title: silent ? 'Game-Maker does not play this channel now' : `Edit ${doc.trackName(ch)}`,
+              onclick: () => {
+                doc.selectTrack(ch);
+                this.onSelect();
+              },
+            },
+            h('span', { class: 'mus-swatch' }, drum ? '🥁' : String(ch + 1)),
+            h(
+              'span',
+              { class: 'mus-track-text' },
+              h('b', null, doc.trackName(ch)),
+              h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
+            ),
+          ),
+          h(
+            'button',
+            {
+              class: 'mus-ms',
+              title: 'Copy this track, to paste into any song',
+              'aria-label': `Copy the ${doc.trackName(ch)} track`,
+              onclick: () => {
+                copyToClipboard(doc, ch);
+                this.render();
+              },
+            },
+            '⧉',
           ),
         ),
         h(
@@ -178,6 +197,7 @@ export class TrackList {
       );
     });
     const free = doc.freeChannels();
+    const clip = currentTrackClip();
     const add = this.adding
       ? h(
           'div',
@@ -189,18 +209,45 @@ export class TrackList {
           h('button', { onclick: () => ((this.adding = false), this.render()) }, 'Cancel'),
         )
       : h(
-          'button',
-          {
-            class: 'mus-add-btn',
-            disabled: !free.length,
-            title: free.length
-              ? 'Add a track'
-              : doc.rhythm
-                ? 'All 6 melody tracks and 5 drums are in use'
-                : 'All 9 FM voices are in use (turn on the drum kit for drums)',
-            onclick: () => ((this.adding = true), this.render()),
-          },
-          '＋ Add track',
+          'div',
+          { class: 'mus-add' },
+          h(
+            'button',
+            {
+              class: 'mus-add-btn',
+              disabled: !free.length,
+              title: free.length
+                ? 'Add a track'
+                : doc.rhythm
+                  ? 'All 6 melody tracks and 5 drums are in use'
+                  : 'All 9 FM voices are in use (turn on the drum kit for drums)',
+              onclick: () => ((this.adding = true), this.render()),
+            },
+            '＋ Add track',
+          ),
+          clip
+            ? h(
+                'button',
+                {
+                  class: 'mus-add-btn',
+                  title: `Add the copied track to this song as a new track`,
+                  onclick: () => {
+                    const ch = pasteIntoDoc(doc, clip);
+                    if (ch !== undefined) this.onSelect();
+                  },
+                },
+                `📋 Paste track: ${clipLabel(clip)}`,
+              )
+            : null,
+          h(
+            'button',
+            {
+              class: 'mus-add-btn',
+              title: 'Pick a track from another of this game’s songs and add it here',
+              onclick: () => void import('./trackPickDialog').then((m) => m.trackPickDialog(doc)).then((ch) => ch !== undefined && this.onSelect()),
+            },
+            '＋ Add a track from another song…',
+          ),
         );
     // keep the keyboard on a track's preset button when the list is drawn again (after undo)
     const had = this.el.contains(document.activeElement) ? document.activeElement?.getAttribute('data-presets') : null;

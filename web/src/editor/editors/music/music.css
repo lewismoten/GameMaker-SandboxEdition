@@ -244,6 +244,17 @@
   color: var(--muted);
 }
 
+.mus-track-head {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.mus-track-head .mus-track-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .mus-track-tools {
   display: flex;
   gap: 3px;
@@ -290,6 +301,8 @@
 
 .mus-add-btn {
   border-style: dashed;
+  min-height: 28px;
+  overflow-wrap: anywhere;
 }
 
 /* ---- instrument ---- */
@@ -898,4 +911,14 @@ dialog.modal .mus-acc label.check {
   flex-direction: row;
   align-items: center;
   min-height: 24px;
+}
+
+/* Add a track from another song: the picked song's tracks */
+.mus-pick-tracks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mus-pick-tracks button {
+  min-height: 28px;
 }
