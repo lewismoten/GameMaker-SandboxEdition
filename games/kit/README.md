@@ -106,9 +106,9 @@ Checking the games:
   `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
-  (no disk). The bots of teddy, teddy2, logic and brief play on it.
+  (no disk). The bots of teddy, teddy2, teddy3, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
-  keeps the keys per scene and can snapshot and restore. depth, realm and snowbound play on it.
+  keeps the keys per scene and can snapshot and restore. depth, realm, snowbound and the Bard's games play on it.
   `diskSim(new URL('../disk', import.meta.url))` is a game's whole `tools/sim.ts`.
 - `hopBot.ts` — the play-testing bot of the games whose hero hops (walk to a column hopping what blocks it, hop
   and steer, land, hold a key, climb): reckoning, risi, loofah, sweats, mustard, needle and loaf extend it.
@@ -132,8 +132,7 @@ Checking the games:
 - `textBounds.ts` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
   `text`) report each string's ink, and a build run with `TEXT_BOUNDS=<file>` writes every string that runs past its
   picture (or a clip area the helper was given) and is never shown whole there; a scroll or a drop-in shown whole in
-  another frame is fine. Off, it changes no pixel. `cd web && npx vite-node ../games/kit/textBoundsCheck.ts [<id>...]
-[--moving]` builds into a temp folder and lists them; `checkGames.ts` reads it from its rebuild (the `bounds` column).
+  another frame is fine. Off, it changes no pixel. `cd web && npx vite-node ../games/kit/textBoundsCheck.ts [<id>...] [--moving]` builds into a temp folder and lists them; `checkGames.ts` reads it from its rebuild (the `bounds` column).
   A text helper in a new game should report its ink the same way (`textInk(p, s)`, `add`, `end`).
 - `clips.ts` — does every digitized clip play to the end? A walkthrough's run, with its sound written down, checked
   for a clip cut off by the scene ending or by the next sound; `walkthrough.ts` runs it on every

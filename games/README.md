@@ -52,8 +52,10 @@ npx vite-node ../games/kit/textfitCheck.ts <id>   # PLAYGAME's text lands on pla
 npx vite-node ../games/kit/clipCheck.ts <id>      # no voice clip is cut off at a level's start or end
 npx vite-node ../games/kit/hiddenView.ts <id>     # the tin heart and eggs are out of sight
 npx vite-node ../games/kit/tinHearts.ts check     # every tin heart is found when touched
+npx vite-node ../games/kit/levelCheck.ts <id>     # the editor's Level check finds nothing new
 npx vite-node scripts/levelSecrets.ts             # after moving a hidden thing: what the Level Maps hide
 npm run check:games                               # all of these for every game, one at a time, as a table
+npm run check:games -- --game <id> --quick        # one game, without the rebuild compare
 npx tsc --noEmit                                  # typechecks web/ and games/
 npx vitest run                                    # the web tests, some of which read games/
 ```
@@ -81,6 +83,7 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | blaster   | `npx vite-node ../games/blaster/tools/check.ts`      | the bot pilot flies every leg and boss                                          |
 | brief     | `npx vite-node ../games/brief/tools/check.ts`        | the bot restores all 32 books, passes the eight stamp gates, opens the 33rd     |
 | depth     | `npx vite-node ../games/depth/tools/check.ts`        | the bot rolls all six scenes, pulls focus, beats Count Polygon                  |
+| depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | goat      | `npx vite-node ../games/goat/tools/check.ts`         | the bot eats, gathers wool and screams its way to the manger                    |
 | goat      | `npx vite-node ../games/goat/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | mustard   | `npx vite-node ../games/mustard/tools/check.ts`      | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze |
@@ -105,13 +108,14 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | smirked   | `npx vite-node ../games/smirked/tools/gendemo.ts`    | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
-| depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | logic     | `npx vite-node ../games/logic/tools/check.ts`        | plays every board's solution                                                    |
 | maximus   | `npx vite-node ../games/maximus/tools/check.ts`      | lands on every world, drives the rovers around, crosses the training deck       |
 | realm     | `npx vite-node ../games/realm/tools/check.ts`        | the bot plays the whole main quest (`BOT_LOG=1` prints every step)              |
 | realm     | `npx vite-node ../games/realm/tools/sidecheck.ts`    | the side quests                                                                 |
 | realm     | `npx vite-node ../games/realm/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| sandcast  | `npx vite-node ../games/sandcast/tools/check.ts`     | the bot plays the whole game without losing a life                              |
 | sleuth    | `npx vite-node ../games/sleuth/tools/check.ts`       | plays the whole case (`--quick`, `--wrong <who>`, `--walk out.rec`)             |
+| snowbound | `npx vite-node ../games/snowbound/tools/check.ts`    | the bot shovels every leg and prints each level's time, warmth and money        |
 | teddy     | `npx vite-node ../games/teddy/tools/check.ts`        | the bot plays every level (`TEDDY_WALK=<file>` writes the run as a .rec)        |
 | teddy2    | `npx vite-node ../games/teddy2/tools/check.ts`       | the bot plays all eight levels, Teddy's and Gwinn's (`TEDDY2_WALK=<file>`)      |
 | teddy3    | `npx vite-node ../games/teddy3/tools/check.ts`       | the bot plays all sixteen stops, all four heroes (`TEDDY3_WALK=<file>`)         |
@@ -119,8 +123,6 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | year2000  | `npx vite-node ../games/year2000/tools/check.ts`     | the bot plays all six levels in a row (`GOD=1` keeps it alive)                  |
 | year2000  | `npx vite-node ../games/year2000/tools/gendemo.ts`   | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 
-Sandcastle Knight's and Snowbound's `tools/check.ts` only check their multi-block objects: their
-`tools/walkthrough.ts` is the play-through.
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
 title demos are recorded by the build itself (`src/demo.ts` runs the bot) or are fixed key
@@ -129,9 +131,11 @@ each says at its top how to run it.
 
 Every bot plays on a headless copy of PLAYGAME's loop built on the web app's engine
 (`web/src/engine`), so a check runs the real movement, touch and monster code:
-`kit/sceneSim.ts` plays one scene from the build's own data (teddy, teddy2, logic, brief),
-`kit/gameSim.ts` plays the built disk scene after scene (depth, realm, snowbound), and the
-other games keep a `tools/sim.ts` of their own.
+`kit/sceneSim.ts` plays one scene from the build's own data (teddy, teddy2, teddy3, logic,
+brief), `kit/gameSim.ts` plays the built disk scene after scene (most of the others), and
+blaster, maximus, sandcast, sleuth and year2000 keep a `tools/sim.ts` of their own. In many
+games `tools/play.ts` is the bot's whole run, shared by `check.ts`, `walkthrough.ts` and
+`gendemo.ts` (`kit/levelRun.ts`).
 
 ## The kit
 
@@ -141,10 +145,12 @@ indexed-color canvas with seeded randomness and dithering (`pixels.ts`), VGA col
 files (`disk.ts`), each disk's `LICENSE.TXT` (`license.ts`), photos dithered into a picture's
 palette (`photo.ts`, from the small scans in `scans/`), where PLAYGAME writes on the load and
 save pictures (`saveSlots.ts`), the text-fit audit (`textfit.ts`), the two headless
-simulators, the walkthrough writer (`walkthrough.ts`), and a PNG writer for previews. The
+simulators, the walkthrough writer (`walkthrough.ts`), walking paths for the bots
+(`walkPaths.ts`), the editor's Level check run on a built disk (`levelCheck.ts`), and a PNG
+writer for previews. The
 games also share some art and music: THE CHEZ (`chez.ts`), the tin heart and the Easter egg
-(`tinHeart.ts`, `easterEgg.ts`), the cast's cameos (`cameos.ts`, `carlCameo.ts`), and Teddy's
-Theme (`teddyTheme.ts`), the melody every Teddy game plays. `checkGames.ts` runs every game's
+(`tinHeart.ts`, `easterEgg.ts`), the save sign in the level after a felt egg's (`saveSign.ts`),
+the cast's cameos (`cameos.ts`, `carlCameo.ts`), and Teddy's Theme (`teddyTheme.ts`), the melody every Teddy game plays. `checkGames.ts` runs every game's
 checks in one go (`npm run check:games`).
 
 Every game opens with the same Sandbox Software logo: `kit/sandlogo.ts` ray traces gold chrome
@@ -270,10 +276,10 @@ the low bridges flood and drain by the clock, and the felt egg turns up in a nes
 for four seconds in every twenty-four.
 
 **Third Goat from the Left** (`goat`). Not a Sandbox Software game: a 1995 shareware game by The Bard
-of Bizarre (Lewis as his hobo clown Doc Leo), downloaded from The Sofa BBS's file library, so it is
-listed with the shareware (`isSandboxGame` in web/src/project/files.ts) and gets no box, floppy or
-felt egg. Its about.json says `"series": "bizarre"`: once four or more of the Bard's games are in the
-catalog they leave Shareware for a Bizarre tab of their own (web/src/project/bizarre.ts). You are the goat nobody painted on the holy night, from Lewis's song (recorded with
+of Bizarre (Lewis as his hobo clown Doc Leo), downloaded from The Sofa BBS's file library, so it gets no box,
+floppy or felt egg (`isSandboxGame` in web/src/project/files.ts). Its about.json says
+`"series": "bizarre"`, which puts it on the home page's Bizarre tab with the Bard's other games,
+filed by collection (web/src/project/bizarre.ts). You are the goat nobody painted on the holy night, from Lewis's song (recorded with
 Riffusion). Anything a goat eats is a solid block that turns to floor when pushed (hay and thistles fill
 the scream's counter), wool is counter 20 and the empty place third from the left in the line at the
 manger only takes five, and the fainting cousins are solid monsters a scream (power 120) knocks into a
