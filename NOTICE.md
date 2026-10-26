@@ -350,6 +350,10 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Sound Blaster**, **CMF** (Creative Music File), **VOC** and **SBI**: trademarks and
   formats of Creative Technology Ltd. The CMF player is a port of Game-Maker's own
   `SBMUSIC.C` and of the behavior of Creative's SBFMDRV driver; no Creative code is used.
+- **YouTube**: the Library lists Lewis Moten's own videos about this project, from his
+  YouTube channel. Their card pictures are copies of YouTube's thumbnails kept on the site, so
+  showing the Library asks YouTube for nothing; a video's player is embedded from
+  youtube-nocookie.com only when the visitor presses Play.
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
 - **The music editor and its FM instruments** were made for this project. The editor is an

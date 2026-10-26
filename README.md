@@ -6,6 +6,11 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 
 **▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
+**Videos:** [RSD Game Maker - Sandbox Edition](https://www.youtube.com/watch?v=0riemzdF8gc), a
+tour of the web port, the editor and the 1994 desk, and
+[More Features](https://www.youtube.com/watch?v=gNEya63wDmo), what has been added since. Both
+are in the site's Library too.
+
 This fork is kept by Lewis Moten, who shoveled Fort Ashby's driveways in the winter of 1992
 to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: see
 [Lewis and Game-Maker](docs/history.md).
