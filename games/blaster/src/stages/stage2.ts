@@ -8,6 +8,7 @@ import { STACK_BYTES, cornerTiles, ramArt, ramTiles, ramVirus, stackTiles } from
 import { kit, type Leg, type Stage } from './stage';
 import { EGG_BLOCK } from '../blocks/egg';
 import { bossLeech } from '../bosses/boss2';
+import { saveSignBlocks } from '../../../kit/saveSign';
 
 function virus2(b: Parameters<typeof ramVirus>[0], p: Parameters<typeof ramVirus>[1]): void {
   ramVirus(b, p);
@@ -156,7 +157,13 @@ export function stage2(): Stage {
     },
     (b) => virus2(b, pal),
     { mite: 'mite', turretEvery: 12, seekerEvery: 45, flakEvery: 34, hatchShut: 45, hatchOpen: 30, hatchEvery: 8, fenceOn: 28, fenceOff: 28 },
-    (bs) => cornerTiles(bs, art),
+    (bs) => {
+      cornerTiles(bs, art);
+      // the save sign (kit/saveSign.ts), its board alone over the floor: there is no ground to stand it on
+      const [l, r] = saveSignBlocks(pal.pal, { board: [art.floor(0), art.floor(0)] }).board;
+      bs.add('saveL', l);
+      bs.add('saveR', r);
+    },
   );
   const a = strip(ks.bs, ks.beasts, art, 201);
   legA(a);
@@ -229,6 +236,16 @@ export function stage2(): Stage {
     ],
     14,
   );
+  // the save sign, on bare floor in sight of the launch pad
+  const [sc, sd] = (
+    [
+      [3, 3],
+      [10, 3],
+      [3, 5],
+      [10, 5],
+    ] as [number, number][]
+  ).find(([c, d]) => /^floor\d$/.test(b.get(c, d)) && /^floor\d$/.test(b.get(c + 1, d)))!;
+  b.set(sc, sd, 'saveL').set(sc + 1, sd, 'saveR');
   b.cardAt = 14;
   return {
     n: 2,
