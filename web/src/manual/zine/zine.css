@@ -2,7 +2,7 @@
    typewriter text, cut-out ransom-note headings, notes scrawled in the margin. Sized in cqw (a
    hundredth of the leaf's width), so a leaf looks the same at any size and in print. */
 
-.pp-zine {
+.pp-sheet.pp-zine {
   display: flex;
   flex-direction: column;
   padding: 7cqw 6cqw 4cqw 8cqw;
@@ -18,7 +18,7 @@
     monospace;
 }
 
-.pp-zine-blank {
+.pp-sheet.pp-zine-blank {
   background: #fafaf6;
 }
 

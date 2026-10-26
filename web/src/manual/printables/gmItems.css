@@ -1,7 +1,7 @@
 /* the paper in the Game-Maker SE box (gmItems.ts); sizes in cqw of the sheet's width */
 
 /* ---- designer's key card */
-.pp-gmk {
+.pp-sheet.pp-gmk {
   display: flex;
   flex-direction: column;
   padding: 3cqw 3.5cqw 1.2cqw;
@@ -118,7 +118,7 @@
 }
 
 /* ---- poster */
-.pp-gmp {
+.pp-sheet.pp-gmp {
   display: flex;
   flex-direction: column;
   padding: 4cqw;
