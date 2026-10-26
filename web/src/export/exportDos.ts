@@ -87,16 +87,13 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
   } catch {
     throw new Error('The DOS player is not part of this build (it is copied from cd/gm by "npm run games").');
   }
-  // the setup screen's Help and the in-game help (F1) read these, as on the CD's transferred
-  // games; a build made before they were copied simply goes without
+  // the setup screen's Help (CONFIG.BAT) reads CONFIG.HLP, which RSD's Transfer copied beside
+  // the player; a build made before it was copied simply goes without. (XFERPLAY's F1 shows the
+  // game's instructions and never reads GMHELP.TXT: only PLAYGAME.EXE, in Game-Maker, does.)
   const help: ZipEntry[] = [];
-  for (const [name, path] of [
-    ['CONFIG.HLP', 'dos/config.hlp'],
-    ['GMHELP.TXT', 'dos/gmhelp.txt'],
-  ]) {
-    if (names.some((n) => n.toUpperCase() === name)) continue;
-    const data = await fetchBytes(new URL(path, base).href).catch(() => undefined);
-    if (data) help.push({ name, data });
+  if (!names.some((n) => n.toUpperCase() === 'CONFIG.HLP')) {
+    const data = await fetchBytes(new URL('dos/config.hlp', base).href).catch(() => undefined);
+    if (data) help.push({ name: 'CONFIG.HLP', data });
   }
 
   const entries: ZipEntry[] = [
@@ -133,15 +130,16 @@ Play it in DOSBox (https://www.dosbox.com)
      VGA chip on "Auto-Detect". Run CONFIG to change these later.
 
 Keys
-  F1 help, F2 status, F3 music on/off, F4 sound on/off, F5 save, F6 load,
-  Esc leaves a level. The game's own keys are in its instructions.
+  F1 the game's instructions, F2 status, F3 music on/off, F4 sound on/off,
+  F5 save, F6 load, Esc leaves a level. The game's own keys are in its
+  instructions.
 
 Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: Sandbox Edition
 (a modified fork of RSD Game-Maker 3.0: https://github.com/lewismoten/GameMaker-SandboxEdition).
 
 Notices
   ${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD, and
-  CONFIG.HLP and GMHELP.TXT its help text, from the same CD.
+  CONFIG.HLP its setup screen's help text, from the same CD.
   Game-Maker's source code was released under the MIT License:
 
 ${MIT_NOTICE}

@@ -44,7 +44,10 @@ describe('the DOS bugs feature', async () => {
 
   it('names the help files a DOS export carries, and the paths Transfer takes', () => {
     const exportDos = read('web/src/export/exportDos.ts');
-    for (const f of ['CONFIG.HLP', 'GMHELP.TXT']) (expect(exportDos).toContain(f), expect(text).toContain(f));
+    expect(exportDos).toContain('CONFIG.HLP');
+    expect(text).toContain('CONFIG.HLP');
+    // XFERPLAY never reads GMHELP.TXT, so the export leaves it out
+    expect(exportDos).not.toContain("'GMHELP.TXT'");
     expect(read('web/src/retro/gm.ts')).toContain('A:\\\\NAME');
   });
 

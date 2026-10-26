@@ -125,7 +125,7 @@ export const DOS_BUGS: MagSection = {
         cols(2, [
           head('No help in a DOS export', { size: 's', level: 3 }),
           p(
-            '**Saw:** in a game exported for DOS, Help on the setup screen and the in-game help found no text. **Why:** the games RSD’s Transfer made carry CONFIG.HLP and GMHELP.TXT beside the player, and the export left them out. **Fix:** Export for DOS puts them in.',
+            '**Saw:** in a game exported for DOS, Help on the setup screen found no text. **Why:** RSD’s Transfer puts CONFIG.HLP beside the player, and the export left it out. **Fix:** Export for DOS puts it in. (F1 in a transferred game shows its own instructions; only Game-Maker’s PLAYGAME reads GMHELP.TXT.)',
           ),
           head('Transfer, too fussy', { size: 's', level: 3 }),
           p(
