@@ -106,13 +106,12 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
     <li><b>Keys turned with the view.</b> Up is a boost along the track (30 right and 30 up),
     Down nearly stops, and Left and Right step to the next lane (30 up, or 30 right). The arrows
     mean what they look like they mean on the slanted course.</li>
-    <li><b>A loop with no seams.</b> Riding off the top comes back at the bottom, and off the
-    right at the left, so a diagonal lane runs on through the wrap and meets itself. One lap is
-    100 steps of one block across and one up, about 141 blocks of road, and there is never an
-    edge or a turn-around to give it away.</li>
-    <li><b>Longer laps.</b> A shallower slant goes further before it repeats. A drift of 10 right
-    and 5 up crosses the map twice before it meets itself, about 224 blocks a lap; 15 right and
-    5 up crosses it three times, about 316. Draw the track along that line through each crossing.</li>
+    <li><b>Lanes that step over at the seam.</b> Riding off the top comes back at the bottom,
+    and off the right at the left. Drawn straight through, a 45-degree lane would meet itself
+    after 100 steps, about 141 blocks of road. Instead, the track jogs over by one lane where
+    the map wraps from side to side, so each lane runs on into the next one down. The course
+    passes through every lane before it comes back to the start: with five lanes, that’s
+    about 700 blocks of road on one map, with never an edge or a turn-around to give it away.</li>
     <li><b>The finish in another lane.</b> The course’s exit isn’t on the lane the bike starts
     in, so the player has to change lanes on purpose to finish; riding along only loops.</li>
   </ul>
