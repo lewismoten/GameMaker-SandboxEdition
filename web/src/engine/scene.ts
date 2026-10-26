@@ -68,6 +68,8 @@ export interface Session {
   onFrame?: (w: World) => void;
   /** Emulated PC speed; read every tick so it can change while playing. */
   speed: SpeedSetting;
+  /** RunOptions.gmHelp: Game-Maker's own GMHELP.TXT, which F1 shows first (PLAYGAME.EXE only). */
+  gmHelp?: Uint8Array;
   /** The random numbers a level's monsters get as it loads (default Math.random; a walkthrough seeds them). */
   rand?: () => () => number;
   /** Told the scene number each time play() enters a scene (before its picture). */
@@ -480,7 +482,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     m.screen.setPalette(pal);
     switch (n) {
       case 1:
-        await helpScreen(m, w, sceneFile(game, 0, 6));
+        await helpScreen(m, w, sceneFile(game, 0, 6), s.gmHelp);
         break;
       case 2:
         await statusScreen(m, w);

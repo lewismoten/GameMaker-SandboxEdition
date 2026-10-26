@@ -152,11 +152,10 @@ export async function playFli(m: Machine, file: string): Promise<boolean> {
  * Display_File: text pages over the current picture, 16 lines (rows 5..20 of 8 pixels)
  * per page. fgets(…, 32) read at most 31 characters at a time, so long lines wrap.
  */
-export async function displayFile(m: Machine, file: string, col: number, pause: number, gamePalette: Uint8Array): Promise<boolean> {
+export async function displayFile(m: Machine, file: string, col: number, pause: number, gamePalette: Uint8Array, bytes = m.files.get(file)): Promise<boolean> {
   const saved = m.screen.snapshot();
   const red = match(gamePalette, RGB_RED);
   m.flushKeys();
-  const bytes = m.files.get(file);
   let escaped = false;
   if (!bytes) {
     m.screen.write(40, 80, red, 'Missing File:');

@@ -25,16 +25,15 @@ function drawInventory(m: Machine, w: World, col: number): void {
     }
 }
 
-/** F1: HelpFiles */
-export async function helpScreen(m: Machine, w: World, instructions: string | undefined): Promise<void> {
-  const yellow = match(w.palette, RGB_YELLOW);
-  const blue = match(w.palette, RGB_BLUE);
-  // gmhelp.txt is Game-Maker's general help (left out of TRANSFER builds); the game's
-  // own instructions follow.
-  await m.need('gmhelp.txt');
-  if (m.files.has('gmhelp.txt')) {
-    frame2(m, blue);
-    await displayFile(m, 'gmhelp.txt', yellow, 30, w.palette);
+/**
+ * F1: HelpFiles. XFERPLAY.EXE (PLAYGAME.C built with TRANSFER, the player of every transferred
+ * game) shows the game's instructions, or one red line; it never reads GMHELP.TXT. PLAYGAME.EXE,
+ * run from Game-Maker, first shows Game-Maker's own GMHELP.TXT (`gmHelp`) in a blue frame.
+ */
+export async function helpScreen(m: Machine, w: World, instructions: string | undefined, gmHelp?: Uint8Array): Promise<void> {
+  if (gmHelp) {
+    frame2(m, match(w.palette, RGB_BLUE));
+    await displayFile(m, 'gmhelp.txt', match(w.palette, RGB_YELLOW), 30, w.palette, gmHelp);
   }
   if (instructions) await showGraphic(m, instructions, { gamePalette: w.palette });
   else {

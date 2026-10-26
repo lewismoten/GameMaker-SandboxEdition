@@ -34,6 +34,13 @@ export interface RunOptions {
   onFrame?: Session['onFrame'];
   /** Emulated PC speed (shared object: change slowPc at any time). */
   speed?: SpeedSetting;
+  /**
+   * Play as PLAYGAME.EXE, Game-Maker's own player: F1 shows this file (GMHELP.TXT from
+   * Game-Maker's directory) before the game's instructions. Left out, the game plays as
+   * XFERPLAY.EXE, the stand-alone player every transferred game runs on, whose F1 shows only
+   * the instructions (PLAYGAME.C HelpFiles: the gmhelp.txt part is #ifndef TRANSFER).
+   */
+  gmHelp?: Uint8Array;
   /** A touch changed a map cell while the player played (never during a demo's playback). */
   onTouched?: Session['onTouched'];
   /** Play ended with this score (never during a demo's playback; see Session.onPlayEnd). */
@@ -70,6 +77,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},
     onPlayEnd: opts.onPlayEnd,
+    gmHelp: opts.gmHelp,
   };
   const touched = opts.onTouched;
   if (touched) s.onTouched = (scene, x, y, bnum) => void (!s.rec.playing && touched(scene, x, y, bnum));
