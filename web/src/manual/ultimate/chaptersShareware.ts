@@ -106,7 +106,9 @@ export const SHAREWARE: Chapter = {
   inside it as plain text: the menu’s six choices, the save and load lines, the high-score screen.
   A hex editor can change them. <i>Builder</i> did: its author overwrote every menu word with
   spaces, so its own menu picture shows clean with nothing written over it. The choices still
-  work; only the words are gone.</p>
+  work; only the words are gone. The same author’s unfinished <i>Rōdïp: Rover of the Deep</i>
+  renamed the status line’s Hitpoints and Lives to Energy and Failsafes, and cleared the
+  high-score words. These two games led this edition to map every word the player shows.</p>
   <ul>
     <li><b>Back up first.</b> Edit a copy, never the only one.</li>
     <li><b>Same length only.</b> Type over the letters, and pad a shorter word with spaces. Never

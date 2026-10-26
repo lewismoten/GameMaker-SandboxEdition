@@ -143,6 +143,13 @@ export const PIECE_GROUPS: PieceGroup[] = [
         url: 'https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22',
       },
       {
+        name: 'Hex-edited players',
+        license: 'Ideas described in this project’s own words; nothing copied',
+        by: 'A-J Games: Builder, whose player has its menu words blanked, and the unfinished Rōdïp: Rover of the Deep, whose player renames Hitpoints and Lives to Energy and Failsafes',
+        what: 'These two games led this project to map every word Game-Maker’s DOS player shows and where it sits in the file: The Ultimate Owner’s Guide’s “Customizing the player’s own words” and its table.',
+        url: 'https://archive.org/details/game-maker_builder',
+      },
+      {
         name: 'Lewis’s DOSBox screenshot',
         license: 'Lewis’s own capture, on this fork’s terms',
         by: 'Lewis Moten, testing the games in real DOS',

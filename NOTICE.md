@@ -115,7 +115,9 @@ game folder opens in the browser unchanged.
   copies none of their art, music, sounds or text.
   Its section "Customizing the player's own words" describes the hex edit found by comparing
   _Builder_'s player byte for byte with the CD's `XFERPLAY.EXE` (its menu words overwritten with
-  spaces), and the earlier players' `GMTITLE.GIF` title card, from the same survey; its table of
+  spaces) and that of A-J Games' unfinished _Rōdïp: Rover of the Deep_ (its status words renamed
+  Energy and Failsafes, the high-score words cleared): these two games led this project to map
+  every word the player shows, and the earlier players' `GMTITLE.GIF` title card, from the same survey; its table of
   the player's words (`playerWords.ts`) is read from the CD's own `cd/gm/xferplay.exe`. No
   author's player or registration details are copied or named.
 - **Research: watching people play Game-Maker games.** Observations from two videos informed
