@@ -16,7 +16,7 @@ import { regionsOf } from './worldMapRegions';
 /** A place's cell: room for its picture, ribbon and a path or two either side. */
 export const STEP = { w: 27, h: 21 };
 
-export interface Plan {
+interface Plan {
   /** The middle of each place's round picture. */
   at: Map<number, Point>;
   /** What each place covers. */

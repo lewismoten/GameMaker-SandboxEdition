@@ -47,7 +47,7 @@ import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
 const DEAD = 2;
 
 /** How a play ended: the Game Won scene, no lives left, or Esc (or a scene that could not load). */
-export type PlayEnd = 'won' | 'lost' | 'quit';
+type PlayEnd = 'won' | 'lost' | 'quit';
 
 /** Everything that lives across scenes (playgame's globals outside a level). */
 export interface Session {

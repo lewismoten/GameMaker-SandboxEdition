@@ -35,7 +35,7 @@ export const KIND_LABELS: Record<FileKind, string> = {
 };
 
 /** Where an autosave is: begun, kept in IndexedDB, or refused (storage full, private mode…). */
-export type SaveState = 'saving' | 'saved' | 'failed';
+type SaveState = 'saving' | 'saved' | 'failed';
 
 export function kindOf(name: string): FileKind {
   const ext = (/\.([^.]+)$/.exec(name)?.[1] ?? '').toLowerCase();

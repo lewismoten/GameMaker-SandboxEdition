@@ -10,7 +10,7 @@ import { firstScene } from './heroStart';
 import { hostile } from './monsterChecks';
 
 /** More lives than this make a death cost nothing. */
-export const MANY_LIVES = 9;
+const MANY_LIVES = 9;
 
 export function stakes(game: Game, scenes: SceneData[]): Finding[] {
   const first = firstScene(game, scenes);

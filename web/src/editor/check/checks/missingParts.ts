@@ -66,7 +66,7 @@ export function missingFiles(game: Game, files: FileSource, scenes: SceneData[])
 }
 
 /** A .mon slot nothing was made in: no picture at all, and never marked used. */
-export const emptySlot = (m: Monster | undefined) => !m || (!m.used && m.pic.every(([b]) => b >= MONBL));
+const emptySlot = (m: Monster | undefined) => !m || (!m.used && m.pic.every(([b]) => b >= MONBL));
 
 /** Block numbers past the set, counters past 29, and monsters from empty slots. */
 export function outOfRange(d: SceneData): Finding[] {

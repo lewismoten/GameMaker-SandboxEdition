@@ -4,7 +4,7 @@
 // the full stage, and a close that keeps it away for the rest of the visit.
 import { h } from '../editor/core/ui';
 
-export interface MiniStage {
+interface MiniStage {
   el: HTMLElement;
   /** Copies the stage's current frame (when shown). */
   mirror(): void;

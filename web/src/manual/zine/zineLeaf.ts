@@ -7,8 +7,8 @@ import { h } from '../../editor/core/ui';
 import { sheet, type Sheet } from '../printables/kit';
 import type { ZinePage } from './zinePages';
 
-export const LEAF_W = 4.25;
-export const LEAF_H = 5.5;
+const LEAF_W = 4.25;
+const LEAF_H = 5.5;
 
 /** The type size, in hundredths of the leaf's width: the largest tried first, the smallest a page may need. */
 const MOST = 4.2;

@@ -56,14 +56,14 @@ export interface NumberPatch extends Base {
 }
 
 /** A color: red, green and blue (0-63), one byte each. */
-export interface RgbPatch extends Base {
+interface RgbPatch extends Base {
   kind: 'rgb';
   offsets: [number, number, number];
   stock: [number, number, number];
 }
 
 /** Which color target a screen matches (the push imm16 before RGBdata::Match). */
-export interface SelectPatch extends Base {
+interface SelectPatch extends Base {
   kind: 'select';
   offset: number;
   stock: ColorName;
@@ -77,7 +77,7 @@ export interface FramePatch extends Base {
 }
 
 /** A function key's entry in DoFunKy's jump table: on (as shipped) or 'off'. */
-export interface FkeyPatch extends Base {
+interface FkeyPatch extends Base {
   kind: 'fkey';
   key: number;
   offset: number;

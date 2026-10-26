@@ -67,7 +67,7 @@ const PATTERNS = [
 /** Context that names a key but not one for play ("press Space to go on", the number pad). */
 const NOT_PLAY = /\bto\s+(?:continue|go on|start|begin|skip|return|play|read|see|leave)\b|\bany key\b/i;
 
-export interface NamedKey {
+interface NamedKey {
   scan: number;
   token: string;
   line: string;

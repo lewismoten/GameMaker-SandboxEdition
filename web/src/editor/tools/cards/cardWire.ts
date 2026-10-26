@@ -9,7 +9,7 @@ import { cardBackdrop } from './cardBackdrop';
 import { cardFile } from './cardText';
 
 /** What wiring needs of the project (a Project fits). */
-export interface CardProject {
+interface CardProject {
   files: GameFiles;
   freeName(base: string, ext: string): string;
 }

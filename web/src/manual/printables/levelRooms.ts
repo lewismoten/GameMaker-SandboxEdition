@@ -120,7 +120,7 @@ export interface RoomsHint {
   cast?: CastHint;
 }
 
-export interface RoomHint {
+interface RoomHint {
   at: [number, number];
   name: string;
   /** What a way into it from another room of the same scene says ("Florida"). */
@@ -133,7 +133,7 @@ export interface RoomHint {
   skip?: boolean;
 }
 
-export interface CastHint {
+interface CastHint {
   /** The room the panel goes beside (a cell in it). */
   beside: [number, number];
   title: string;

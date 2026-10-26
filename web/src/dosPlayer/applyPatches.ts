@@ -27,7 +27,7 @@ export function applyPlayerPatches(exe: Uint8Array, patches: PlayerPatches): Uin
   return out;
 }
 
-export interface ReadPlayer {
+interface ReadPlayer {
   /** The changes that could be read as patches. */
   patches: PlayerPatches;
   /** True when those explain every byte that differs from the CD's player. */

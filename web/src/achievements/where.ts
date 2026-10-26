@@ -4,7 +4,7 @@
 // too many places to point at one. A hidden one that is not yet unlocked never says where.
 import type { Achievement } from './catalog';
 
-export interface Place {
+interface Place {
   label: string;
   href: string;
 }

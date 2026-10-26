@@ -30,10 +30,10 @@ export const SHELF_TYPES = [
   ['video', 'Videos'],
 ] as const;
 
-export type ShelfType = (typeof SHELF_TYPES)[number][0];
+type ShelfType = (typeof SHELF_TYPES)[number][0];
 
 /** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, the zine, a game's walkthrough player, or a video's player (videoDialog.ts, by its YouTube id). */
-export type Opening =
+type Opening =
   | { via: 'box'; game: string; start: string; maps?: boolean }
   | { via: 'gm'; start: string }
   | { via: 'href'; href: string }

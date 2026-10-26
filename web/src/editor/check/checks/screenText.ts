@@ -6,7 +6,7 @@ import type { FileSource } from '../sim';
 import { textPages, type TextRole } from '../textScreens';
 
 /** Pages of help or story most players read before they skip, and a length worth a suggestion. */
-export const MOST_PAGES = 3;
+const MOST_PAGES = 3;
 const TOO_MANY = 6;
 
 const LONG: Partial<Record<TextRole, string>> = { instructions: 'instructions', story: 'storyline' };

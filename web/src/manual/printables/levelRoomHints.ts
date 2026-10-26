@@ -51,7 +51,7 @@ const SUSPECTS = [
   ],
 }));
 
-export const ROOM_HINTS: Record<string, Record<string, RoomsHint>> = {
+const ROOM_HINTS: Record<string, Record<string, RoomsHint>> = {
   // the green room twice (after Act One, and at 2 AM), an interview room per suspect per round,
   // and the stage at dawn: the green room is drawn once, with the suspects beside it
   sleuth: {

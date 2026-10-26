@@ -13,9 +13,9 @@ export interface RouteFit {
 }
 
 /** The path route may take this much longer than the quickest, as a share of it… */
-export const PATH_SLACK = 0.5;
+const PATH_SLACK = 0.5;
 /** …and at least this many ticks longer (two seconds), so a short scene still has room to keep to the road. */
-export const PATH_SLACK_TICKS = 36;
+const PATH_SLACK_TICKS = 36;
 /** A quickest route at least this much on the paths already walks them: no second search. */
 export const ON_PATH_ENOUGH = 0.9;
 

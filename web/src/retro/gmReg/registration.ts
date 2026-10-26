@@ -18,7 +18,7 @@ import { toCp437 } from '../text/cp437';
 export const FACTORY_SERIAL = 1995 * 1029 + 4;
 
 /** BYTENUMS.H: where CHK.C keeps its byte in PLAYGAME.EXE; the serial is 30 bytes on (PLAYBYTE+30). */
-export const PLAYBYTE = 0x1800;
+const PLAYBYTE = 0x1800;
 export const SERIAL_OFFSET = PLAYBYTE + 30;
 
 /** GetMoreData(): the four bytes at PLAYBYTE+30 as the file holds them, read in the order 1, 3, 4, 2 of the long. */

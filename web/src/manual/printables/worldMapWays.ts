@@ -11,7 +11,7 @@ import type { ThemeId } from './worldMapThemes';
 const f = (n: number) => +n.toFixed(2);
 
 /** An SVG path along `line`, its corners rounded by up to `r` (or cut straight across with `cut`). */
-export function cornered(line: Point[], r: number, cut = false): string {
+function cornered(line: Point[], r: number, cut = false): string {
   if (line.length < 2) return '';
   let d = `M${f(line[0].x)},${f(line[0].y)}`;
   for (let i = 1; i < line.length - 1; i++) {
@@ -28,7 +28,7 @@ export function cornered(line: Point[], r: number, cut = false): string {
 }
 
 /** The middle of a line's longest run and the way it runs there (radians), for an arrowhead. */
-export function midArrow(line: Point[]): { at: Point; angle: number } {
+function midArrow(line: Point[]): { at: Point; angle: number } {
   let best = 1;
   let most = -1;
   for (let i = 1; i < line.length; i++) {

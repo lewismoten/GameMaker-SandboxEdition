@@ -9,7 +9,7 @@ import { INK, PAPER, mix } from './worldMapTerrain';
 import { decor, type Decor } from './worldMapDecor';
 import { grow, gridPattern, inRect, maskOf, rooms, sprinkle, union, type Ground, type GroundInput } from './worldMapGroundKit';
 
-export const BOARD = '#2f5e45';
+const BOARD = '#2f5e45';
 
 /** The first point along `line` (from its start) that is out of every rectangle, and the way it was going. */
 function exitPoint(line: Point[], rs: Rect[]): { at: Point; angle: number } | undefined {

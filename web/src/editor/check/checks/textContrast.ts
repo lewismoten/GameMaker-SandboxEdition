@@ -12,7 +12,7 @@ import type { FileSource } from '../sim';
 import { menuScreen, textPages, type Backdrop, type TextPage, type TextRole } from '../textScreens';
 
 /** A letter is hard to read below this ratio against the picture under it (WCAG's floor for large text). */
-export const MIN_RATIO = 3;
+const MIN_RATIO = 3;
 /** A page is reported when at least this share of its letters is hard to read. */
 const HARD_SHARE = 0.2;
 

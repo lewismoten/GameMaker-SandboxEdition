@@ -7,8 +7,8 @@ import { at, type Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 
 /** How far from the hero, in blocks, a cell is surely on screen with him. */
-export const VIEW_X = 7;
-export const VIEW_Y = 4;
+const VIEW_X = 7;
+const VIEW_Y = 4;
 
 /** The cells (of `cells`) on screen from some cell where `reached` is true; the map wraps. */
 export function seenFrom(cells: number[], reached: (cell: number) => boolean): number[] {

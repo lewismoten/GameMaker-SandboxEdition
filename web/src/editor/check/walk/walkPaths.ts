@@ -10,7 +10,7 @@ import { MLEN, MWID } from '../../../formats/map';
 import type { World } from '../../../engine/world';
 import type { Terrain } from '../../editors/map/tools/autotile';
 
-export const WALK_PATHS = 'walkPaths';
+const WALK_PATHS = 'walkPaths';
 
 interface ExtrasStore {
   extras<T>(file: string, section: string, fallback: T): T;

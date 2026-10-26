@@ -304,14 +304,14 @@ export function counterSources(scenes: SceneData[]): Set<number> {
 }
 
 /** The share of two blocks' pixels that are the same color in the same place (0 to 1). */
-export function likeness(a: Block, b: Block): number {
+function likeness(a: Block, b: Block): number {
   let same = 0;
   for (let i = 0; i < BLEN * BLEN; i++) if (a.pixels[i] === b.pixels[i]) same++;
   return same / (BLEN * BLEN);
 }
 
 /** Blocks this alike (the share of their pixels the same) look the same at a glance. */
-export const LOOK_ALIKE = 0.9;
+const LOOK_ALIKE = 0.9;
 /** Blocks used this often on a map are part of its look, not a one-off. */
 const COMMON = 4;
 
