@@ -28,6 +28,10 @@
       "handlePoints 15oz: finite, near the body and never turning back on itself across, at every degree",
       "handlePoints 12oz: finite, near the body and never turning back on itself across, at every degree"
     ],
+    "src/dosPlayer/applyPatches.test.ts": [
+      "applyPlayerPatches refuses any other file, and every patch that breaks the rules",
+      "readPlayerPatches reads Builder’s blanked menu and high-score words"
+    ],
     "src/editor/check/checks.test.ts": ["the level check’s file checks reports a whole game, play included"],
     "src/editor/check/checks/wayBack.test.ts": ["slower hands gets through the test level with slower hands, so says nothing"],
     "src/editor/check/explore.test.ts": [
