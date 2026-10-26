@@ -41,7 +41,7 @@ export const LEVELS: Level[] = [
         'Hover Heights, 8:00 AM. Find the',
         'garage remote, the Zapper (SPACE',
         'fires it) and your report pages!',
-        'Phone booth on the corner: 25 cents.',
+        'Corner phone: 25 cents. F5 saves!',
       ],
       view: [0, 9],
     },
