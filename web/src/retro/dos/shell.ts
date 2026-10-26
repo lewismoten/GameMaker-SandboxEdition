@@ -6,6 +6,7 @@ import { readLine, type TextKeys } from '../text/textInput';
 import { commas, deskDate, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
 import { toCp437 } from '../text/cp437';
 import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
+import { DOS_TIME_EVENT } from './dosTimeEvent';
 import { unlockAchievement } from '../../achievements';
 
 interface ShellHost {
@@ -366,6 +367,7 @@ export class Shell {
       return;
     }
     this.out(`Current ${what} is ${show()}`);
+    if (time && typeof window !== 'undefined') window.dispatchEvent(new Event(DOS_TIME_EVENT));
     for (;;) {
       this.screen.print(time ? 'Enter new time: ' : 'Enter new date (mm-dd-yy): ');
       const line = await readLine(this.screen, this.host.keys, [], 20);
