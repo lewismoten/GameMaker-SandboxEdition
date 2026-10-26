@@ -30,7 +30,8 @@ interface Where {
 }
 
 /** A one-click suggestion the panel can offer for a finding (generators/*.ts). */
-type FixId = 'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark' | 'no-soltop';
+type FixId =
+  'ladder' | 'fill-hazard' | 'outline-monster' | 'key-sign' | 'open-gap' | 'shorten-cycle' | 'spread-healing' | 'landmark' | 'no-soltop' | 'dos-ascii';
 
 export interface Finding {
   check: CheckId;
@@ -251,6 +252,11 @@ export const CHECKS = {
   'text-contrast': {
     name: 'Text that’s hard to read',
     why: 'PLAYGAME draws text in the picture’s nearest deep purple. Over a dark or busy patch, players can’t read the goal or the keys, and skip the screen.',
+    guide: { chapter: 'show', section: 'Text screens and slide shows' },
+  },
+  'dos-chars': {
+    name: 'Characters DOS can’t draw',
+    why: 'In DOS the player draws in-game words from the PC’s built-in font, which stops at character 127: accented letters, symbols and box lines come out as scribbles.',
     guide: { chapter: 'show', section: 'Text screens and slide shows' },
   },
   reach: {

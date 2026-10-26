@@ -16,6 +16,8 @@ import { blockUse, scenesOf, topColors, type SceneData } from '../sceneData';
 import { contrastColor, fillHazard, outline } from './blockArt';
 import { airBlock, ladderBlock, ladderCells, landmarkBlocks, placeLandmarks } from './mapFixes';
 import { findMazes } from '../checks/mazeCheck';
+import { asciiBytes, asciiText } from '../checks/dosChars';
+import { parseHighScores, serializeHighScores } from '../../../formats/highscore';
 
 interface Fix {
   label: string;
@@ -204,6 +206,28 @@ function make(f: Finding, project: Project): Fix | undefined {
           game.scenes[0].files[6] = txt;
           files.set(project.gam, serializeGame(game));
           return [txt, project.gam];
+        },
+      };
+    }
+    case 'dos-ascii': {
+      const name = f.where.file;
+      if (!name || !files.has(name)) return undefined;
+      const gam = /\.gam$/i.test(name);
+      const his = /\.his$/i.test(name);
+      return {
+        label: 'Write them in plain ASCII',
+        detail: gam
+          ? 'Writes the game’s name with ASCII letters only.'
+          : `Rewrites ${name} with ASCII letters only: accents dropped, symbols and box lines as their nearest keys.`,
+        files: [name],
+        apply: () => {
+          if (gam) {
+            const game = project.game();
+            game.scenes[0].desc = asciiText(game.scenes[0].desc).slice(0, 19);
+            files.set(name, serializeGame(game));
+          } else if (his) files.set(name, serializeHighScores(parseHighScores(files.get(name)!).map((e) => ({ ...e, name: asciiText(e.name).slice(0, 29) }))));
+          else files.set(name, asciiBytes(files.get(name)!));
+          return [name];
         },
       };
     }

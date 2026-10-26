@@ -13,6 +13,7 @@ import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';
 import { helpKeys } from './checks/helpKeys';
 import { textContrast } from './checks/textContrast';
+import { dosChars } from './checks/dosChars';
 import { blankIdle, startValues } from './checks/heroStart';
 import { shotPrize } from './checks/shotPrize';
 import { changingKeys, keyHabits } from './checks/keyHabits';
@@ -134,6 +135,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...controls(files),
       ...helpKeys(game, files),
       ...textContrast(game, files),
+      ...dosChars(game, files, files.mainGame()),
       ...startValues(game, all),
       ...stakes(game, all),
       ...changingKeys(files),

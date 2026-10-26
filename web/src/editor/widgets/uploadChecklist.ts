@@ -74,7 +74,7 @@ export const APPENDIX_B: ChecklistItem[] = [
     text: 'Players can tell how far they are: level cards say which level of how many; a long game comes in chapters, and the first card and each chapter’s end say F5 saves',
     checks: [],
   },
-  { text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable', checks: ['fli', 'text-contrast'] },
+  { text: 'Animations loop smoothly and play in real DOS; menu, F2 and text screens are readable', checks: ['fli', 'text-contrast', 'dos-chars'] },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },
   { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music'] },
