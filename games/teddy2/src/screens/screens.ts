@@ -182,7 +182,7 @@ export function titleScreen(): Pixels {
   const p = landscape(7);
   logo(p, 6);
   leoBig(p, 132, 92, 2, undefined, true);
-  teddyBig(p, 'frontSniff', 30, 98, 4);
+  teddyBig(p, 'frontTilt', 30, 98, 4);
   gwinnBig(p, 'gwinnRun1', 196, 100, 4);
   // a trail of confetti across the grass, and THE CHEZ waiting
   for (let i = 0; i < 30; i++) p.rect(100 + i * 7, 180 + ((i * 5) % 9), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
