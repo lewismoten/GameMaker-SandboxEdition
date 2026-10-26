@@ -79,6 +79,15 @@ export function flatsBook(bridges: [number, number][]): BlockBook {
     plain((x, y) => mix(water(x, y, 6), deck(x, y), 0.25)),
     { solid: ALL, next: 'tideDry', ntime: 54 },
   );
+  // A tide pole by each low bridge, on the same clock (its frames add up to the bridge's 418
+  // ticks, and every block's clock starts with the scene): the water climbs its marks while
+  // the bridge is dry, its flag goes red as the puddles come, and the water tops it while the
+  // bridge is under. A readable countdown, after the two-ring clocks of 1990s Game-Maker games.
+  const POLE_STEPS = 5;
+  for (let k = 0; k < POLE_STEPS; k++)
+    book.add(`tidePole${k}`, tidePole(k / POLE_STEPS, false), { solid: ALL, next: `tidePole${k + 1 < POLE_STEPS ? k + 1 : 'Warn'}`, ntime: 310 / POLE_STEPS });
+  book.add('tidePoleWarn', tidePole(0.85, true), { solid: ALL, next: 'tidePoleUnder', ntime: 54 });
+  book.add('tidePoleUnder', tidePole(1, true), { solid: ALL, next: 'tidePole0', ntime: 54 });
   book.add('charger', charger(false), { solid: ALL, hp: 30, score: 50, touch: 'chargerUsed' });
   book.add('chargerUsed', charger(true), { solid: ALL });
   book.add('sign', sign(), { solid: ALL });
@@ -119,6 +128,28 @@ function charger(used: boolean): Canvas {
     used ? [90, 90, 90] : [240, 200, 40],
   );
   cv.line(13, 12, 17, 17, 0.8, [190, 40, 30]);
+  return cv;
+}
+
+/** A striped tide pole in a pool of its own: water up to `level` (0 to 1) of its five marks, and
+ * a flag on top, white while the bridge is dry and red once the tide is coming. */
+function tidePole(level: number, red: boolean): Canvas {
+  const cv = new Canvas(20, 20).shade(mud, 2);
+  // the pool at the pole's foot, and the water up the pole
+  const top = 18 - level * 14;
+  cv.ellipse(10, 17.5, 7, 2.2, water(10, 18, 4));
+  cv.rect(8, 4, 4, 15, [226, 218, 196]);
+  for (let k = 0; k < 5; k++) cv.rect(8, 6 + k * 2.6, 4, 1.1, [60, 50, 44]);
+  if (level > 0) cv.rect(5, top, 10, 18.5 - top, (x, y) => mix(water(x, y, 6), [150, 200, 220], y < top + 1 ? 0.5 : 0));
+  cv.rect(9.5, 0.5, 1, 4, [90, 60, 36]);
+  cv.poly(
+    [
+      [10.5, 0.5],
+      [16, 2],
+      [10.5, 3.5],
+    ],
+    red ? [210, 40, 30] : [240, 240, 236],
+  );
   return cv;
 }
 

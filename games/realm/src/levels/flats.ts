@@ -130,6 +130,9 @@ export function flatsPlan(mons: MonBook): FlatsPlan {
     [78, 48],
   ] as Pt[])
     p.put('tideDry', x, y);
+  // a tide pole on the mud before each low bridge, counting down to the flood
+  p.put('tidePole0', 25, 44);
+  p.put('tidePole0', 75, 46);
   p.put('charger', 39, 49);
   p.put('charger', 70, 50);
   p.put('sign', 11, 48);

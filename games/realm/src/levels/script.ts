@@ -244,7 +244,7 @@ She'll cross the Dawdle Flats, forty leagues of tidal mud nobody has ever finish
 
 They say there's lightning in the Soggy Vaults. Charging takes one mile per hour. Per hour.
 
-Arrows drive her. SPACE squeezes the horn: ah-OOO-gah! Crabs can't stand it. And when the low causeway goes puddly, the tide's coming in: wait for it to drain.`,
+Arrows drive her. SPACE squeezes the horn: ah-OOO-gah! Crabs can't stand it. And mind the tide poles by the low causeway: when the water climbs to the top and the flag goes red, the tide's coming in. Wait for it to drain.`,
   ),
   salt: t(
     'salt',

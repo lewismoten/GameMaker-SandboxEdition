@@ -283,7 +283,10 @@
               "q": "How do I get across to Far Putoff?",
               "a": "In THE\u00a0CHEZ. The second piece of the Tuit is full of lightning: carry it to Professor Fiddlesticks' garage in Someday Harbor and walk into the garage door."
             },
-            { "q": "The bridge on the Flats is under water!", "a": "It's the tide. Wait a few seconds and it drains again." },
+            {
+              "q": "The bridge on the Flats is under water!",
+              "a": "It's the tide. Wait a few seconds and it drains again. The striped tide pole beside the bridge tells you when: once its flag goes red, the water is on its way."
+            },
             { "q": "The Putoff Mines' door won't let me in.", "a": "It wants a lamp: 40 gold at Hattie's stall in Eventually Falls." },
             {
               "q": "Lord Deadline jumped out of his armor!",

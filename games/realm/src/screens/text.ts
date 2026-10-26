@@ -52,7 +52,7 @@ export const INSTRUCTIONS = [
     'honks. Charging posts top up',
     'her charge (your hit points).',
     'The low bridges flood with the',
-    'tide: wait for it to drain.',
+    'tide. Watch the tide pole.',
     '',
     'F1 help      F2 your satchel',
     'F3 music     F4 sound',
