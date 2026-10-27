@@ -8,11 +8,14 @@
 //
 // shipfree.chr is the same ship without the drift, for the boss arenas.
 //
+// shipdown.chr and shipleft.chr fly the turned legs (stages/turned.ts): nose down, the screen
+// following it down, and nose left, the screen following it left.
+//
 // shipbus.chr rides the data bus between stages, seen from behind (src/bus).
 import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
 import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, CLEAR, blob, outline, rotate, turn45, turn90 } from '../art/draw';
+import { BlockSet, CLEAR, blob, flipX, outline, rotate, turn180, turn45, turn90 } from '../art/draw';
 import { DRIFT, KEY, SEQ, SND, START } from '../ids';
 import type { Pal } from '../art/pal';
 
@@ -178,6 +181,24 @@ export function shipBlocks(p: Pal): BlockSet {
   cb.add('rearL', rotate(rearPic(p, 0), -14));
   cb.add('rearR', rotate(rearPic(p, 1), 14));
   cb.add('rearHit', rearPic(p, 0, true));
+  // nose down, for the strips flown downward (shipdown.chr): banked to the screen's left is
+  // the ship's own right turn, half a turn round
+  cb.add('shipV0', turn180(shipPic(p, 0)));
+  cb.add('shipV1', turn180(shipPic(p, 1)));
+  cb.add('flashV', turn180(shipPic(p, 0, true)));
+  for (const f of [0, 1] as const) {
+    cb.add(`bankVL${f}`, turn180(banked(p, shipPic(p, f), 1)));
+    cb.add(`bankVR${f}`, turn180(banked(p, shipPic(p, f), -1)));
+  }
+  // nose left, for the bands flown leftward (shipleft.chr): the side-on ship in a mirror
+  cb.add('shipW0', flipX(cb.pic('shipS0')));
+  cb.add('shipW1', flipX(cb.pic('shipS1')));
+  cb.add('flashW', flipX(cb.pic('flashS')));
+  for (const f of [0, 1] as const) {
+    cb.add(`pitchWL${f}`, flipX(cb.pic(`pitchL${f}`)));
+    cb.add(`pitchWR${f}`, flipX(cb.pic(`pitchR${f}`)));
+    cb.add(`brakeW${f}`, flipX(cb.pic(`brakeS${f}`)));
+  }
   return cb;
 }
 
@@ -404,6 +425,156 @@ export function buildSideShip(cb: BlockSet, drift: number): Character {
     [SEQ.d, [d + BOOST, 0]],
     [SEQ.q, [brake, -D]],
     [SEQ.e, [d + D, -D]],
+  ];
+  for (const [seq, [x, y]] of moves) keep(seq, fly(x, y));
+  keep(SEQ.nova, [
+    frame(fl, ...ahead),
+    shot(SHOT_MON.novaL2),
+    shot(SHOT_MON.novaL1),
+    shot(SHOT_MON.novaC),
+    shot(SHOT_MON.novaR1),
+    shot(SHOT_MON.novaR2),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  return c;
+}
+
+/** Keeps a sequence's key, stick, sound and repeat while giving it new frames. */
+function keeper(S: Sequence[]) {
+  return (seq: number, frames: Frame[]) =>
+    setSeq(S[seq], frames, { key: S[seq].key, jstkMov: S[seq].jstkMov, jstkBut: S[seq].jstkBut, sound: S[seq].sound, norepeat: S[seq].norepeat });
+}
+
+/**
+ * shipdown.chr, for the strips flown downward: the course runs top to bottom, so the drift is
+ * `drift` down every frame and the keys steer as they look. Down speeds ahead, Up brakes (never
+ * to a stop: the screen would stop with it), Left and Right steer, and Q and E (like 7 and 9)
+ * brake to the left and right. The guns fire down, from the row under the ship (a birth frame
+ * 40 pixels down). Nothing moves up, so the screen only scrolls down.
+ */
+export function buildDownShip(cb: BlockSet, drift: number): Character {
+  const c = buildShip(cb, drift);
+  const S = c.sequences;
+  const s0 = cb.id('shipV0');
+  const s1 = cb.id('shipV1');
+  const fl = cb.id('flashV');
+  const d = drift;
+  const shot = (mon: number) => birth(mon, 40);
+  const fly = (x: number, y: number) => {
+    const [a, b] = x < 0 ? [cb.id('bankVL0'), cb.id('bankVL1')] : x > 0 ? [cb.id('bankVR0'), cb.id('bankVR1')] : [s0, s1];
+    return [frame(a, x, y), frame(b, x, y), shot(SHOT_MON.shot), frame(a, x, y)];
+  };
+  const keep = keeper(S);
+  const H = 6; // sideways
+  const D = 5; // diagonals
+  const FAST = 6;
+  const ahead: [number, number] = [0, d];
+  const brake = d - 1;
+  keep(SEQ.idle, fly(...ahead));
+  keep(SEQ.die, [0, 1, 2, 3, 4].map((k) => frame(cb.id(`die${k}`), 0, d, 2)).concat([frame(cb.id('die4'), 0, d, 6)]));
+  keep(SEQ.hurt, [
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+    frame(fl, ...ahead),
+    shot(SHOT_MON.shot),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  keep(SEQ.pickup, [frame(s0, ...ahead)]);
+  keep(SEQ.drop, [frame(s0, ...ahead)]);
+  const moves: [number, [number, number]][] = [
+    [SEQ.up, [0, brake]],
+    [SEQ.down, [0, d + FAST]],
+    [SEQ.left, [-H, d]],
+    [SEQ.right, [H, d]],
+    [SEQ.upLeft, [-D, brake]],
+    [SEQ.upRight, [D, brake]],
+    [SEQ.downLeft, [-D, d + D]],
+    [SEQ.downRight, [D, d + D]],
+    [SEQ.w, [0, brake]],
+    [SEQ.s, [0, d + FAST]],
+    [SEQ.a, [-H, d]],
+    [SEQ.d, [H, d]],
+    [SEQ.q, [-D, brake]],
+    [SEQ.e, [D, brake]],
+  ];
+  for (const [seq, [x, y]] of moves) keep(seq, fly(x, y));
+  keep(SEQ.nova, [
+    frame(fl, ...ahead),
+    shot(SHOT_MON.novaL2),
+    shot(SHOT_MON.novaL1),
+    shot(SHOT_MON.novaC),
+    shot(SHOT_MON.novaR1),
+    shot(SHOT_MON.novaR2),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  return c;
+}
+
+/**
+ * shipleft.chr, for the bands flown leftward: shipside.chr in a mirror. The drift is `drift`
+ * left every frame; Left speeds ahead, Right brakes (never to a stop), Up and Down climb and
+ * dive. The guns fire to the left, from the ship's own row. Nothing moves right, so the
+ * screen only scrolls left.
+ */
+export function buildLeftShip(cb: BlockSet, drift: number): Character {
+  const c = buildShip(cb, drift);
+  const S = c.sequences;
+  const s0 = cb.id('shipW0');
+  const s1 = cb.id('shipW1');
+  const fl = cb.id('flashW');
+  const d = drift;
+  const shot = (mon: number) => birth(mon, 20);
+  const fly = (x: number, y: number) => {
+    const [a, b] =
+      y < 0
+        ? [cb.id('pitchWL0'), cb.id('pitchWL1')]
+        : y > 0
+          ? [cb.id('pitchWR0'), cb.id('pitchWR1')]
+          : x > -d
+            ? [cb.id('brakeW0'), cb.id('brakeW1')]
+            : [s0, s1];
+    return [frame(a, x, y), frame(b, x, y), shot(SHOT_MON.shot), frame(a, x, y)];
+  };
+  const keep = keeper(S);
+  const V = 6; // up and down
+  const D = 5; // diagonals
+  const BOOST = 6;
+  const ahead: [number, number] = [-d, 0];
+  const brake = -(d - 1);
+  keep(SEQ.idle, fly(...ahead));
+  keep(SEQ.die, [0, 1, 2, 3, 4].map((k) => frame(cb.id(`die${k}`), brake, 0, 2)).concat([frame(cb.id('die4'), brake, 0, 6)]));
+  keep(SEQ.hurt, [
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+    frame(fl, ...ahead),
+    shot(SHOT_MON.shot),
+    frame(s1, ...ahead),
+    frame(fl, ...ahead),
+    frame(s0, ...ahead),
+  ]);
+  keep(SEQ.pickup, [frame(s0, ...ahead)]);
+  keep(SEQ.drop, [frame(s0, ...ahead)]);
+  const moves: [number, [number, number]][] = [
+    [SEQ.up, [-d, -V]],
+    [SEQ.down, [-d, V]],
+    [SEQ.left, [-d - BOOST, 0]],
+    [SEQ.right, [brake, 0]],
+    [SEQ.upLeft, [-d - D, -D]],
+    [SEQ.upRight, [brake, -D]],
+    [SEQ.downLeft, [-d - D, D]],
+    [SEQ.downRight, [brake, D]],
+    [SEQ.w, [-d, -V]],
+    [SEQ.s, [-d, V]],
+    [SEQ.a, [-d - BOOST, 0]],
+    [SEQ.d, [brake, 0]],
+    [SEQ.q, [-d - D, -D]],
+    [SEQ.e, [brake, -D]],
   ];
   for (const [seq, [x, y]] of moves) keep(seq, fly(x, y));
   keep(SEQ.nova, [

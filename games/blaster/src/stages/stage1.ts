@@ -1,5 +1,8 @@
-// Stage 1: THE MOTHERBOARD. Leg A "The Data Bus" teaches everything gently; leg B "The
-// Chipset" brings sweeping turrets, hatches and firewalls; then the BIOS Bug.
+// Stage 1: THE MOTHERBOARD. 1-A "The Data Bus" teaches everything gently, flying up;
+// 1-B "Expansion Slots" flies right along the board's edge; 1-C "The Chipset" flies back down
+// the board (laid into The Data Bus's map beside it, stages/turned.ts) through sweeping turrets,
+// hatches and firewalls; 1-D "The Drive Cage" flies left under the cage (in the slots' map);
+// 1-E "Copper Traces" cuts corner to corner; then the BIOS Bug.
 import { boardArt, boardTiles, boardVirus } from '../blocks/board';
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { LENGTH, strip, type Grid } from './mapkit';
@@ -7,7 +10,8 @@ import { rng } from '../../../kit/pixels';
 import { buildPalette } from '../art/pal';
 import { kit, type Stage } from './stage';
 import { bossBIOS } from '../bosses/boss1';
-import { slotsLeg } from './slots';
+import { driveCageBand, slotsKit, slotsLeg } from './slots';
+import { downLeg, leftLeg, stampNames, stripMeter } from './turned';
 import { tracesLeg } from './traces';
 
 function virus1(b: Parameters<typeof boardVirus>[0], p: Parameters<typeof boardVirus>[1]): void {
@@ -253,6 +257,17 @@ export function stage1(): Stage {
   );
   wires(b, 112, 26);
   b.cardAt = 8;
+  const up: Stage['legs'][number] = {
+    file: 's1a',
+    kitFile: 's1',
+    title: 'The Data Bus',
+    kind: 'scroll',
+    grid: a,
+    kit: ka,
+    card: ['Follow the data bus north.', 'Every move fires the guns.', 'UP: faster  DOWN: brake', 'SPACE: Nova Bomb  F5 saves'],
+  };
+  const chipset: Stage['legs'][number] = { file: 's1b', kitFile: 's1', title: 'The Chipset', kind: 'scroll', grid: b, kit: kb, card: [] };
+  const slots = slotsLeg();
   return {
     n: 1,
     id: 'board',
@@ -263,26 +278,43 @@ export function stage1(): Stage {
     song: 'board.cmf',
     bossSong: 'boss.cmf',
     legs: [
-      {
-        file: 's1a',
-        kitFile: 's1',
-        title: 'The Data Bus',
-        kind: 'scroll',
-        grid: a,
-        kit: ka,
-        card: ['Follow the data bus north.', 'Every move fires the guns.', 'UP: faster  DOWN: brake', 'SPACE: Nova Bomb  F5 saves'],
-      },
-      tracesLeg(),
-      {
-        file: 's1b',
-        kitFile: 's1',
+      up,
+      slots,
+      downLeg(up, chipset, {
+        file: 's1v',
+        kitFile: 's1v',
         title: 'The Chipset',
-        kind: 'scroll',
-        grid: b,
-        kit: kb,
-        card: ['Turrets sweep, firewalls', 'blink. Shoot the collars', 'off the turrets!', 'Red 555 LED? Beam is ON.'],
-      },
-      slotsLeg(),
+        card: ['Back DOWN the board! DOWN is', 'faster now, UP brakes.', 'Shoot the turret collars.', 'Red 555 LED? Beam is ON.'],
+        left: 52,
+        meter: stripMeter(art),
+        // silkscreen, labels and parts keep reading the right way up; the board's runs, chips and edges turn
+        spec: {
+          upright: [
+            ...[1, 2, 3, 4, 5, 6, 7].map((v) => `floor${v}`),
+            ...[0, 1, 2, 3, 4, 5].map((k) => `chipL${k}`),
+            ...['capC', 'q3', 'q7', 'resH', 'resV', 'runStep'],
+            ...['beamA', 'beamA1', 'beamB', 'beamB1', 'beamGap', 'beamOn'],
+          ],
+          stamps: [
+            stampNames('capB', 2, 2),
+            stampNames('capG', 2, 2),
+            stampNames('cs', 4, 4),
+            stampNames('xtal', 2, 1),
+            stampNames('t555', 2, 2),
+            [['m6510', 'm6511', 'm6512']],
+          ],
+        },
+      }),
+      leftLeg(slots, driveCageBand(), {
+        file: 's1l',
+        title: 'The Drive Cage',
+        card: ['Side-on, flying LEFT now:', 'LEFT is faster, RIGHT brakes.', 'Thread the cards and mind', 'the IDE cable hanging low!'],
+        top: 20,
+        art: slotsKit().art,
+        // the capacitors' printing reads the right way round
+        spec: { upright: ['cap00', 'cap10'] },
+      }),
+      tracesLeg(),
       bossBIOS(art),
     ],
   };

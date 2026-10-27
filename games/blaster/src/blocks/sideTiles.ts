@@ -142,33 +142,39 @@ export function addTerrain(bs: BlockSet, back: Pixels, t: { cIn: Pixels; cBot: P
 }
 
 /**
+ * A sign of the distance meter: GATE and an arrow of three chevrons, chevron `k` lit (a ring
+ * of three pictures runs toward the gate), pointing right, left or down; or, for `n`, the
+ * number of screens left. In the stage's trim and glow.
+ */
+export function meterSign(a: StageArt, k: number, dir: 'right' | 'left' | 'down', n?: number): Pixels {
+  const p = a.pal;
+  const t = a.floor(0).crop(0, 0, 20, 20);
+  bevel(t, 0, 3, 20, 14, p.r('trim'), 1, 1);
+  t.rect(1, 4, 18, 12, p.c('ink', 0));
+  if (n !== undefined) return text(t, 6, 6, String(n), p.c('glow', 4));
+  micro(t, 2, dir === 'down' ? 4 : 5, 'GATE', p.c('trim', 5));
+  for (let i = 0; i < 3; i++) {
+    const c = i === k ? p.c('glow', 4) : p.c('glow', 1);
+    if (dir === 'down') {
+      // a v under the word, the next one down lit in turn
+      const y = 10 + i * 2;
+      t.rect(7, y, 2, 1, c)
+        .rect(11, y, 2, 1, c)
+        .rect(9, y + 1, 2, 1, c);
+      continue;
+    }
+    const x = dir === 'right' ? 3 + i * 5 : 15 - i * 5;
+    const tip = dir === 'right' ? x + 2 : x - 1;
+    t.rect(x, 12, 2, 1, c).rect(tip, 13, 1, 1, c).rect(x, 14, 2, 1, c);
+  }
+  return t;
+}
+
+/**
  * The distance meter: a sign every screen along a side leg, GATE and an arrow over the screens
- * left to the gate (4, 3, 2, 1), in the stage's trim and glow. The arrow is a ring of three
- * pictures, so it runs toward the gate.
+ * left to the gate (4, 3, 2, 1).
  */
 export function addMeter(bs: BlockSet, a: SideArt): void {
-  const p = a.pal;
-  const plate = () => {
-    const t = a.floor(0).crop(0, 0, 20, 20);
-    bevel(t, 0, 3, 20, 14, p.r('trim'), 1, 1);
-    t.rect(1, 4, 18, 12, p.c('ink', 0));
-    return t;
-  };
-  for (let k = 0; k < 3; k++) {
-    const t = plate();
-    micro(t, 2, 5, 'GATE', p.c('trim', 5));
-    for (let i = 0; i < 3; i++) {
-      const x = 3 + i * 5;
-      const c = i === k ? p.c('glow', 4) : p.c('glow', 1);
-      t.rect(x, 12, 2, 1, c)
-        .rect(x + 2, 13, 1, 1, c)
-        .rect(x, 14, 2, 1, c);
-    }
-    bs.add(`mtr${k}`, t, { next: `mtr${(k + 1) % 3}`, ntime: 4 });
-  }
-  for (let n = 1; n <= 4; n++) {
-    const t = plate();
-    text(t, 6, 6, String(n), p.c('glow', 4));
-    bs.add(`mtrN${n}`, t);
-  }
+  for (let k = 0; k < 3; k++) bs.add(`mtr${k}`, meterSign(a, k, 'right'), { next: `mtr${(k + 1) % 3}`, ntime: 4 });
+  for (let n = 1; n <= 4; n++) bs.add(`mtrN${n}`, meterSign(a, 0, 'right', n));
 }

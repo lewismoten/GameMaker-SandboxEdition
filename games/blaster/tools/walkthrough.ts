@@ -32,7 +32,7 @@ for (const make of STAGES) {
     };
     // on a diagonal leg, a steadier pilot that keeps to the middle and takes the last shortcut;
     // on a side leg, steady hands too
-    const cable = l.kind === 'diag' ? { goal: diagGoal(l), stick: 80, every: 3 } : l.kind === 'side' ? { stick: 30, every: 3 } : {};
+    const cable = l.kind === 'diag' ? { goal: diagGoal(l), stick: 80, every: 3 } : l.kind === 'side' || l.kind === 'left' ? { stick: 30, every: 3 } : {};
     // on the data bus, a pilot who only sees traffic once it is well on its way and lets each lane change settle
     const r = l.bus ? await rideBus(sim, l.bus, { notice: 72, calm: 4 }) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...cable });
     if (!r.ok) throw new Error(`${l.file}: the bot did not get through (${r.dead ? 'died' : 'timed out'}; ${r.log.slice(-1)[0] ?? ''})`);

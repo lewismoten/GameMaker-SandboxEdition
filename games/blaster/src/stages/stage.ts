@@ -12,6 +12,7 @@ import type { DiagTrack } from './diagTrack';
 import type { Ride } from '../bus/rides';
 import { addStageTiles, pad, type StageArt, type TileOpts } from '../blocks/tiles';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
+import { turnBbl, turnMbl, turnMon, type TurnSpec } from './turned';
 
 interface Kit {
   bs: BlockSet;
@@ -23,9 +24,16 @@ export interface Leg {
   file: string;
   /** File name base of its .pal/.bbl/.mon/.mbl (shared by the scrolling legs of a stage). */
   kitFile: string;
+  /** File name base of its .map, when it shares another leg's (stages/turned.ts). */
+  mapFile?: string;
+  /** File name base of its own palette, when it shares another leg's. */
+  palFile?: string;
   title: string;
-  /** A strip scrolling up, a fixed boss arena, a slanted, wrapping track, a band scrolling right, or a data bus ride. */
-  kind: 'scroll' | 'boss' | 'diag' | 'side' | 'bus';
+  /**
+   * A strip scrolling up (or, turned, down), a fixed boss arena, a slanted, wrapping track, a
+   * band scrolling right (or, turned, left), or a data bus ride.
+   */
+  kind: 'scroll' | 'down' | 'boss' | 'diag' | 'side' | 'left' | 'bus';
   grid: Grid;
   kit: Kit;
   /** Card lines shown before the leg. */
@@ -40,6 +48,8 @@ export interface Leg {
   diag?: { track: DiagTrack; shortcuts: [number, number, number][] };
   /** A data bus ride's timetable and sign (src/bus). */
   bus?: Ride;
+  /** A turned leg: how its blocks, virus pictures and paths turn (stages/turned.ts). */
+  turn?: TurnSpec;
 }
 
 /**
@@ -99,11 +109,16 @@ interface BuiltLeg {
 
 export function buildLeg(l: Leg): BuiltLeg {
   const names = l.kit.beasts;
+  const bbl = l.kit.bs.build((n) => names.id(n));
+  const mb = l.kit.beasts.mb;
+  const mbl = mb.build(undefined, true);
+  const mon = l.kit.beasts.build();
+  const t = l.turn;
   return {
     map: l.grid.done(),
-    bbl: l.kit.bs.build((n) => names.id(n)),
-    mbl: l.kit.beasts.mb.build(undefined, true),
-    mon: l.kit.beasts.build(),
+    bbl: t ? turnBbl(bbl, l.kit.bs.names, t) : bbl,
+    mbl: t ? turnMbl(mbl, mb.names, t, (n) => mb.isUpright(n)) : mbl,
+    mon: t ? turnMon(mon, t) : mon,
   };
 }
 

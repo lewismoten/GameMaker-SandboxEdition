@@ -1,7 +1,7 @@
 // A leg in the headless simulator, and where the bot should head in a boss arena.
 import { DIAG_DRIFT, DRIFT } from '../src/ids';
 import { buildPalette } from '../src/art/pal';
-import { buildBusShip, buildDiagShip, buildShip, buildSideShip, shipBlocks } from '../src/characters/ship';
+import { buildBusShip, buildDiagShip, buildDownShip, buildLeftShip, buildShip, buildSideShip, shipBlocks } from '../src/characters/ship';
 import { scrollOf } from '../src/game';
 import { Sim } from './sim';
 import type { CharInfo } from '../../../web/src/engine/world';
@@ -23,9 +23,13 @@ export function simOf(l: Leg, seed = 1, ci?: CharInfo): Sim {
           ? buildDiagShip(cb, DIAG_DRIFT)
           : l.kind === 'side'
             ? buildSideShip(cb, DRIFT)
-            : l.kind === 'bus'
-              ? buildBusShip(cb)
-              : buildShip(cb, l.kind === 'boss' ? 0 : DRIFT),
+            : l.kind === 'left'
+              ? buildLeftShip(cb, DRIFT)
+              : l.kind === 'down'
+                ? buildDownShip(cb, DRIFT)
+                : l.kind === 'bus'
+                  ? buildBusShip(cb)
+                  : buildShip(cb, l.kind === 'boss' ? 0 : DRIFT),
       cbl: cb.build(undefined, true),
       start: startOf(l),
       links: l.grid.links,
@@ -80,24 +84,24 @@ export function diagGoal(l: Leg): (s: Sim) => { x: number; y: number } {
  * The pilot on a side leg: cruise ahead, and keep within the run of rows that stays open over
  * the next few columns nearest the ship (over a card, under a cable). Where the way ahead is
  * clear it has no reason to climb or dive; where it isn't, it heads for the middle of that run.
- * Returns a goal for fly().
+ * Returns a goal for fly(). `dir` -1 and `top`: a band flown leftward, its top at that row.
  */
-export function sideGoal(s: Sim): { x: number; y: number } {
+export function sideGoal(s: Sim, dir: 1 | -1 = 1, top = TOP): { x: number; y: number } {
   const w = s.w;
   const p = s.pos;
   const col = Math.floor(p.x / 20);
-  const solid = (x: number, y: number) => (w.bg[w.blkmap[w.map[y * MLEN + (x % MLEN)]]].solid ?? 0) !== 0;
+  const solid = (x: number, y: number) => (w.bg[w.blkmap[w.map[y * MLEN + ((x + MLEN) % MLEN)]]].solid ?? 0) !== 0;
   const open = (y: number) => {
-    for (let k = 0; k <= 2; k++) if (solid(col + k, y)) return false;
+    for (let k = 0; k <= 2; k++) if (solid(col + k * dir, y)) return false;
     return true;
   };
   // the runs of open rows, and the one nearest the ship
   let best: [number, number] | undefined;
   let far = Infinity;
-  for (let y = TOP; y < TOP + ROWS; y++) {
-    if (!open(y) || (y > TOP && open(y - 1))) continue;
+  for (let y = top; y < top + ROWS; y++) {
+    if (!open(y) || (y > top && open(y - 1))) continue;
     let end = y;
-    while (end + 1 < TOP + ROWS && open(end + 1)) end++;
+    while (end + 1 < top + ROWS && open(end + 1)) end++;
     const lo = y * 20;
     const hi = end * 20;
     const d = p.y < lo ? lo - p.y : p.y > hi ? p.y - hi : 0;
@@ -108,10 +112,56 @@ export function sideGoal(s: Sim): { x: number; y: number } {
   }
   // clear ahead where it is: no reason to climb or dive; else for the middle of the run
   const clear = best && p.y >= best[0] && p.y <= best[1];
-  return { x: p.x + DRIFT * 10, y: !best || clear ? p.y : (best[0] + best[1]) / 2 };
+  return { x: p.x + DRIFT * 10 * dir, y: !best || clear ? p.y : (best[0] + best[1]) / 2 };
 }
 
 /** The goal fly() steers for on a leg, if any. */
 export function goalOf(l: Leg): ((s: Sim) => { x: number; y: number }) | undefined {
-  return l.kind === 'boss' ? arenaGoal : l.kind === 'side' ? sideGoal : undefined;
+  if (l.kind === 'left') {
+    const top = startOf(l).y - 5;
+    return (s) => sideGoal(s, -1, top);
+  }
+  return l.kind === 'boss' ? arenaGoal : l.kind === 'side' ? (s) => sideGoal(s) : undefined;
+}
+
+/**
+ * Two legs can share a map (stages/turned.ts), each in its own lane: a strip's columns or a
+ * band's rows, which its screen never leaves. Watches a leg's flight for a monster placed
+ * outside its lane that wanders into it (the other leg's virus, read with this leg's .mon).
+ * Returns what it saw, as log lines; none is the pass.
+ */
+export function watchLanes(sim: Sim, l: Leg): () => string[] {
+  const at = startOf(l);
+  const byCol = l.kind === 'scroll' || l.kind === 'down';
+  const byRow = l.kind === 'side' || l.kind === 'left';
+  if (!byCol && !byRow) return () => [];
+  const lo = byCol ? at.x - 8 : at.y - 5;
+  const hi = lo + (byCol ? 15 : 9);
+  const inLane = (m: { x: number; y: number }) => {
+    const v = byCol ? m.x : m.y;
+    return v >= lo && v <= hi;
+  };
+  const foreign = new Map<number, number>(
+    sim
+      .live()
+      .filter((m) => !inLane(m))
+      .map((m) => [m.slot, sim.w.mm[m.slot].monnum]),
+  );
+  const seen: string[] = [];
+  const tick = sim.tick.bind(sim);
+  sim.tick = async () => {
+    await tick();
+    for (const [slot, monnum] of foreign) {
+      if (sim.w.mm[slot].monnum !== monnum) {
+        foreign.delete(slot);
+        continue;
+      }
+      const m = sim.live().find((x) => x.slot === slot);
+      if (m && inLane(m)) {
+        seen.push(`t${sim.ticks}: ${m.name} from another lane at ${m.x},${m.y}`);
+        foreign.delete(slot);
+      }
+    }
+  };
+  return () => seen;
 }

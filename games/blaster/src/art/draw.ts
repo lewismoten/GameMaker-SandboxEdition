@@ -141,6 +141,11 @@ export class BlockSet {
   /** Blocks the set's `turn` leaves alone (a note-head stays upright in a side leg). */
   private upright = new Set<string>();
 
+  /** Is it a block that `turn` leaves as drawn? */
+  isUpright(name: string): boolean {
+    return this.upright.has(name);
+  }
+
   /** Adds a block that `turn` leaves as drawn. */
   addUpright(name: string, pic: Pixels, props: BlockProps = {}): number {
     this.upright.add(name);
@@ -176,6 +181,12 @@ export class BlockSet {
     const i = this.names.indexOf(name);
     if (i < 0) throw new Error(`${this.kind}: no block ${name}`);
     return i;
+  }
+
+  /** The blocks a block leads to: what it animates into and what it becomes when touched. */
+  leadsTo(name: string): string[] {
+    const { next, touch } = this.props[this.id(name)];
+    return [next, touch].filter((n): n is string => !!n);
   }
 
   pic(name: string): Pixels {
@@ -308,6 +319,20 @@ export function turn45(src: Pixels, scale = 0.86): Pixels {
 export function turn90(src: Pixels): Pixels {
   const out = new Pixels(src.h, src.w, CLEAR);
   for (let y = 0; y < out.h; y++) for (let x = 0; x < out.w; x++) out.set(x, y, src.get(y, src.h - 1 - x));
+  return out;
+}
+
+/** A sprite turned half a turn (nose up becomes nose down), pixel for pixel. */
+export function turn180(src: Pixels): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(src.w - 1 - x, src.h - 1 - y));
+  return out;
+}
+
+/** A picture flipped left to right (nose right becomes nose left). */
+export function flipX(src: Pixels): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(src.w - 1 - x, y));
   return out;
 }
 

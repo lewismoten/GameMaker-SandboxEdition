@@ -6,19 +6,30 @@ FLYING
  ARROWS or W A S D   steer
  Q / E   up-left / up-right
  NUMBER PAD 7 9 1 3 diagonals
- UP      speed ahead
- DOWN    brake (never stops)
+ The arrow the way you fly
+   speeds ahead; the one back
+   brakes (it never stops).
  SPACE   NOVA BOMB: five big
          plasma bolts at once
 
-F2 shows your energy, your
-spare ships and (counter 5)
-your Nova Bombs.
-FOUR WAYS TO FLY
-Runs go straight up, corner to
-corner and side-on; between
-stages you ride the data bus.
+F2 shows energy, spare ships
+and (counter 5) Nova Bombs.
+SIX WAYS TO FLY
+Each stage flies a loop: UP,
+RIGHT, DOWN and LEFT round its
+edges, CORNER TO CORNER
+through the middle to the
+boss, then the DATA BUS on to
+the next stage.
 
+UP AND DOWN
+ LEFT and RIGHT steer. Flying
+ up, UP is faster; flying
+ down, DOWN is faster.
+
+SIDE-ON, RIGHT AND LEFT
+ UP and DOWN climb and dive.
+ The way you fly is faster.
 CORNER TO CORNER
  The keys turn with the track:
  UP goes faster along it, DOWN
@@ -26,10 +37,15 @@ CORNER TO CORNER
  it. Each lap ends at a bend
  onto the next lane down.
 
-SIDE-ON
- The BLASTER flies right. UP
- and DOWN climb and dive, RIGHT
- speeds ahead, LEFT brakes.
+GATE SIGNS
+ Along the runs that fly down,
+ right and left, a sign counts
+ the screens left to the gate.
+
+
+
+
+
 THE DATA BUS
  Seen from behind, the BLASTER
  rides one of three lanes.

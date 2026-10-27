@@ -26,21 +26,24 @@ KEYS
 Arrows or W A S D  steer
 Q / E  up-left / up-right
 Number pad 7 9 1 3 diagonals
-Up     speed ahead
-Down   brake
+The arrow the way you fly
+       speeds ahead, the one
+       back brakes
 Space  Nova Bomb
 F1 help  F2 status
 F3 music F4 sounds
 F5 save  F6 load  Esc quit
 
-On the runs that go corner to
-corner the keys turn with the
-track: Up goes faster, Left
-and Right steer across it. On
-the side-on runs the BLASTER
-flies right: Up and Down climb
-and dive, Right speeds ahead
-and Left brakes.
+Each stage flies a loop: up,
+right, down and left round its
+edges, then corner to corner
+through the middle to its
+boss. On the runs that go
+corner to corner the keys turn
+with the track: Up goes
+faster, Left and Right steer
+across it. On the side-on runs
+Up and Down climb and dive.
 
 Between stages you ride the
 data bus, seen from behind.

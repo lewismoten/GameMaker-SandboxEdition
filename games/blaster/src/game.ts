@@ -6,13 +6,24 @@ import { legLetter, startOf, type Leg, type Stage } from './stages/stage';
 const TITLE = 'VIRUS BLASTER';
 
 /** The ship's flight program for each kind of leg (characters/ship.ts). */
-const SHIP_FILE: Record<Leg['kind'], string> = { scroll: 'ship.chr', boss: 'shipfree.chr', diag: 'shipdiag.chr', side: 'shipside.chr', bus: 'shipbus.chr' };
+const SHIP_FILE: Record<Leg['kind'], string> = {
+  scroll: 'ship.chr',
+  down: 'shipdown.chr',
+  boss: 'shipfree.chr',
+  diag: 'shipdiag.chr',
+  side: 'shipside.chr',
+  left: 'shipleft.chr',
+  bus: 'shipbus.chr',
+};
 
-/** Which ways a leg's screen may scroll: strips up, diagonal legs up and right, side legs right, arenas and bus rides never. */
+/**
+ * Which ways a leg's screen may scroll: strips up (turned ones down), diagonal legs up and
+ * right, side legs right (turned ones left), arenas and bus rides never.
+ */
 export const scrollOf = (l: Leg) => ({
   up: l.kind === 'scroll' || l.kind === 'diag' ? 0xff : 0,
-  down: 0,
-  left: 0,
+  down: l.kind === 'down' ? 0xff : 0,
+  left: l.kind === 'left' ? 0xff : 0,
   right: l.kind === 'diag' || l.kind === 'side' ? 0xff : 0,
 });
 
@@ -49,8 +60,8 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     scene.scroll = { ...scene.scroll, ...scrollOf(l) };
     const last = s.legs[s.legs.length - 1] === l;
     scene.files = [
-      l.pal ? `${l.file}.pal` : `s${s.n}.pal`,
-      `${l.file}.map`,
+      l.pal ? `${l.palFile ?? l.file}.pal` : `s${s.n}.pal`,
+      `${l.mapFile ?? l.file}.map`,
       `${l.kitFile}.bbl`,
       `${l.kitFile}.mon`,
       `${l.kitFile}.mbl`,

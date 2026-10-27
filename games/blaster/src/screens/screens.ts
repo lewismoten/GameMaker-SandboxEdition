@@ -12,7 +12,7 @@ import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { clipEntries, fliClips } from '../../../kit/fliClips';
-import { CLEAR, centered, outlined, text } from '../art/draw';
+import { CLEAR, centered, flipX, outlined, text, turn180, turn45, turn90 } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
 import { buildLeg, legLetter, type Stage } from '../stages/stage';
@@ -49,7 +49,9 @@ function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagg
   outlined(p, 12, 122, bus ? `NEXT STOP: ${s.title.toUpperCase()}` : `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
   l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('gray', 6)));
-  if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
+  // the ship, facing the way the leg flies
+  const facing = { down: turn180(SHIP), side: turn90(SHIP), left: flipX(turn90(SHIP)), diag: turn45(SHIP, 0.97) } as Partial<Record<string, Pixels>>;
+  if (l.kind !== 'boss') scaleBlit(p, facing[l.kind] ?? SHIP, 268, 112, 2);
   return p;
 }
 
