@@ -11,6 +11,8 @@
 
 .tour-actor {
   position: absolute;
+  /* under the speech bubble, so a host walking past never covers what is said */
+  z-index: 1;
   image-rendering: pixelated;
   filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.35));
 }
@@ -87,6 +89,7 @@
 /* the speech bubble: a game's, white with a thick outline */
 .tour-bubble {
   position: absolute;
+  z-index: 2;
   box-sizing: border-box;
   padding: 10px 14px;
   border: 3px solid #1a1d29;
@@ -186,6 +189,16 @@
 .tour-recording,
 .tour-recording * {
   cursor: none !important;
+}
+
+/* except over the Start card, which waits for a click before anything is recorded */
+.tour-recording .tour-card[role='dialog'],
+.tour-recording .tour-card[role='dialog'] * {
+  cursor: default !important;
+}
+
+.tour-recording .tour-card .tour-start {
+  cursor: pointer !important;
 }
 .tour-recording .tour-controls {
   display: none;

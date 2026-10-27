@@ -39,11 +39,29 @@ const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent
 
 /** Two addresses show the same thing (their paths match; the editor adds its own settings after them). */
 const samePlace = (a: string, b: string) => parseHash(a).path.join('/') === parseHash(b).path.join('/');
+/** The same page and the same settings on it (a step's `go` may only change a filter). */
+const sameAddress = (a: string, b: string) => {
+  const [x, y] = [parseHash(a), parseHash(b)];
+  return samePlace(a, b) && Object.entries(y.params).every(([k, v]) => x.params[k] === v);
+};
 
 /** The one tour playing. */
 const now: { tour?: Tour } = {};
 
 export const tourPlaying = (): boolean => !!now.tour;
+
+/** Waits until `el` stays put on the screen for a few frames (a scroll has finished), at most `max` ms. */
+async function settled(el: HTMLElement, max = 4000): Promise<void> {
+  const end = performance.now() + max;
+  let last = '';
+  for (let still = 0; still < 4 && performance.now() < end;) {
+    await new Promise((r) => requestAnimationFrame(r));
+    const r = el.getBoundingClientRect();
+    const at = `${Math.round(r.x)},${Math.round(r.y)}`;
+    still = at === last ? still + 1 : 0;
+    last = at;
+  }
+}
 
 export class Tour {
   private flat: { chapter: Chapter; step: TourStep; n: number }[];
@@ -171,12 +189,13 @@ export class Tour {
     }
     // the address this step is shown at, on the chapter's page (the editor's palette after its map)
     const at = this.addressOf(this.i);
-    if (at && !samePlace(location.hash, at.hash)) {
+    if (at && !sameAddress(location.hash, at.hash)) {
       this.bubble.hidden = true;
       this.navigating = true;
       this.moved = true;
       location.hash = at.hash;
-      await sleep(50);
+      // the page redraws for its new address before the old controls can be mistaken for the new
+      await sleep(250);
       this.navigating = false;
       await waitFor(at.ready);
       if (!this.live(token)) return;
@@ -235,7 +254,8 @@ export class Tour {
     el.style.scrollMarginBottom = `${this.floor()}px`;
     el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: this.still ? 'auto' : 'smooth' });
     el.style.scrollMarginBottom = margin;
-    await sleep(this.still ? 60 : 500);
+    // a long smooth scroll outlasts any fixed wait: the hosts aim only once the control stops moving
+    await settled(el);
   }
 
   // ---- the hosts ---------------------------------------------------------------------------

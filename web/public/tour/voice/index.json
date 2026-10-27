@@ -897,7 +897,7 @@
   },
   "library-card": {
     "chapter": "library",
-    "where": "Library: Lewie points at the first card on the shelves",
+    "where": "Library: Lewie points at the first manual on the shelves",
     "text": "Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too.",
     "seconds": 9.71,
     "hash": "3c60b577800c",

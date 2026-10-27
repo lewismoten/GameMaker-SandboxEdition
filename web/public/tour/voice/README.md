@@ -48,7 +48,7 @@ records every clip again.
 | [library-pick.ogg](library/library-pick.ogg) | Pick one game, or one kind, to see just that shelf. | Library: Lewie points at the Game or Kind picker | 6.19 |
 | [library-all.ogg](library/library-all.ogg) | Showing just one game? This puts everything back on the shelves. | Library: Lewie presses the All games button | 6.51 |
 | [library-count.ogg](library/library-count.ogg) | This counts everything on the shelves. I counted them too. Twice. | Library: Joe points at the count of things on the shelves | 6.35 |
-| [library-card.ogg](library/library-card.ogg) | Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too. | Library: Lewie points at the first card on the shelves | 9.71 |
+| [library-card.ogg](library/library-card.ogg) | Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too. | Library: Lewie points at the first manual on the shelves | 9.71 |
 | [library-print.ogg](library/library-print.ogg) | Disk labels and retail boxes open in the print shop, with lines to cut and fold along. | Library: Lewie points at a Disk labels card | 8.59 |
 | [library-walkthrough.ogg](library/library-walkthrough.ogg) | Every game’s walkthrough is here too, played start to finish. Its length is on the card. | Library: Lewie points at a Walkthrough card | 8.27 |
 | [library-magazine.ogg](library/library-magazine.ogg) | TURBO BUTTON is the shareware gamer’s monthly: news, reviews, hints and every game. | Library: Lewie points at the TURBO BUTTON card | 9.15 |
