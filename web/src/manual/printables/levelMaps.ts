@@ -22,6 +22,7 @@ import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
 import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelBox, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
+import { mergeStates } from './levelStates';
 import { unrolledShows } from '../../editor/check/unroll';
 import { BLEN } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
@@ -85,6 +86,8 @@ interface MarkLabel {
   lane: number;
   /** Its top in its first lane, from the picture's top (paper units). */
   top: number;
+  /** Its mark. */
+  at: Level['marks'][number];
 }
 
 const LANE = 1.8;
@@ -102,16 +105,23 @@ function markLabels(game: Game, l: Level, ox: number, s: number): MarkLabel[] {
     const cy = (m.y + (m.h - 1) / 2 - l.area.y + 0.5) * s;
     const box = Math.max(m.h * s, 0.9);
     const top = m.kind === 'start' ? cy - box / 2 - 1.9 : cy + box / 2 + 0.25;
-    return { text, x, w, up: m.kind === 'start', lane: 0, top };
+    return { text, x, w, up: m.kind === 'start', lane: 0, top, at: m };
   });
   // in order across, each label takes the first lane out where it covers no other: one going
   // the same way in that lane, or one going the other way where they meet (an arrival under a way out)
   const placed: { up: boolean; lane: number; from: number; to: number; y: number }[] = [];
   const yOf = (lb: { up: boolean; lane: number; top: number }) => lb.top + (lb.up ? -1 : 1) * lb.lane * LANE;
+  // the states of one place on one map (levelStates.ts) bring marks close together: a label there
+  // also keeps off the other marks' boxes, and off any label as near, whichever way it goes
+  const boxes = l.states
+    ? l.marks.map((m) => ({ m, x0: ox + (m.x - l.area.x) * s, x1: ox + (m.x + m.w - l.area.x) * s, y0: (m.y - l.area.y) * s, y1: (m.y + m.h - l.area.y) * s }))
+    : [];
   for (const lb of [...labels].sort((a, b) => a.x - b.x)) {
     const from = lb.x - lb.w / 2 - 0.2;
     const to = lb.x + lb.w / 2 + 0.2;
-    const hits = () => placed.some((o) => o.from < to && from < o.to && (o.up === lb.up ? o.lane === lb.lane : Math.abs(o.y - yOf(lb)) < 1.7));
+    const covers = () => boxes.some((b) => b.m !== lb.at && b.x0 < to && from < b.x1 && b.y0 < yOf(lb) + 1.6 && yOf(lb) < b.y1);
+    const hits = () =>
+      covers() || placed.some((o) => o.from < to && from < o.to && (o.up === lb.up && !l.states ? o.lane === lb.lane : Math.abs(o.y - yOf(lb)) < 1.7));
     while (hits() && lb.lane < 12) lb.lane++;
     placed.push({ up: lb.up, lane: lb.lane, from, to, y: yOf(lb) });
   }
@@ -321,9 +331,12 @@ function joinNote(l: Level): string {
   return lx && ly ? ' · all four edges join up' : lx ? ' · the left and right edges join up' : ly ? ' · the top and bottom edges join up' : '';
 }
 
+/** "Scene", or "Scenes" for the states of one place printed as one (levelStates.ts). */
+const sceneWord = (l: Level) => (l.states ? 'Scenes' : 'Scene');
+
 /** About how wide a caption's letter is, on average (paper units). */
 const CAPTION_EM = 0.92;
-const captionText = (game: Game, l: Level) => `Scene ${sceneList(game, l)} · ${l.name}${joinNote(l)}${l.note ? ` · ${l.note}` : ''}`;
+const captionText = (game: Game, l: Level) => `${sceneWord(l)} ${sceneList(game, l)} · ${l.name}${joinNote(l)}${l.note ? ` · ${l.note}` : ''}`;
 /** The room a level's caption takes across at its own size (a narrow map's box widens for it). */
 const captionWidth = (game: Game, l: Level) => Math.min(AREA.w, captionText(game, l).length * CAPTION_EM);
 
@@ -611,16 +624,20 @@ export function levelMaps(
   const load = () =>
     (loaded ??= loadLevels(ctx.entry).then((x) => {
       if (!x) return undefined;
-      const seen = levelsOf(
+      // the states of one place (near and far planes) print as one map
+      const seen = mergeStates(
         x.game,
-        x.files,
-        secret,
-        listedViews(ctx.entry.id),
-        listedUnrolled(ctx.entry.id),
-        listedRoomHints(ctx.entry.id),
-        listedCourses(ctx.entry.id),
-        // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
-        { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
+        levelsOf(
+          x.game,
+          x.files,
+          secret,
+          listedViews(ctx.entry.id),
+          listedUnrolled(ctx.entry.id),
+          listedRoomHints(ctx.entry.id),
+          listedCourses(ctx.entry.id),
+          // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
+          { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
+        ),
       );
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined, course: undefined }));
@@ -741,7 +758,7 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
   const caption = (l: Level) =>
     l.course
       ? `Scene ${sceneList(game, l)} · ${l.name}${courseNote(l.course)}`
-      : `Scene ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
+      : `${sceneWord(l)} ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
   /** The map's drawing, or undefined once another is wanted. */
   const drawMap = async (l: Level, still: () => boolean): Promise<SVGElement | undefined> => {
     const { w, ht, which, room } = sizeOf(l);

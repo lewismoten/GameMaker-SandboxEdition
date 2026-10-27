@@ -457,7 +457,8 @@ modules are in [`../test`](../test).
     printable's panel can draw it as a poster, `levelCoursePoster.ts`),
     both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
     (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
-    and a map nobody walks around in is left out. `levelPoster.ts`
+    and a map nobody walks around in is left out; levels that show one place in several states
+    (near and far planes) print as one map (`levelStates.ts`). `levelPoster.ts`
     draws one level the same way as a PNG, for the map editor's "As players see it" picture.
   - Stickers: the sheet (`stickers.ts`, `gmStickers.ts` for the Game-Maker box), laid out on Print
     Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`) by the sticker rules in
