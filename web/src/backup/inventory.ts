@@ -128,6 +128,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-demos-stopped': 'the home page’s demos, stopped this visit',
   'gm-turbo': 'an old setting the desk removes',
   'gm-assistant-archive': 'the Assistant chat’s archive (this tab only)',
+  'gm-tour-demo': 'the guided tour’s signal to start or stop a game preview (an event, never stored)',
 };
 
 /** Which section owns a localStorage key, or undefined. */
