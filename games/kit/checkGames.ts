@@ -11,7 +11,8 @@
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
 //   player  kit/playerCheck.ts (games/<id>/player.json, its DOS player look, keeps the rules)
 // then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
-// elsewhere) and kit/syncCheck.ts (levelSecrets.json and box hours).
+// elsewhere), kit/syncCheck.ts (levelSecrets.json and box hours) and kit/versionCheck.ts (a game
+// whose disk/ changed since the last push to master has a higher about.json version than it had there).
 // With --play, each game is also played by the Level check's bot (kit/levelCheck.ts --play: one-way
 // spots, things left behind, steady hands, its walkthrough's pace), which only reports.
 //
@@ -150,16 +151,18 @@ const hearted = games.filter((id) => has(id, 'about.json') && 'tinHeart' in JSON
 const hearts = hearted.length ? step('tin hearts', '../games/kit/tinHearts.ts', ['check', ...hearted]) : 'skip';
 const signs = step('save signs', '../games/kit/saveSignCheck.ts', games);
 const sync = step('levelSecrets and box hours', '../games/kit/syncCheck.ts', games);
+const versions = step('versions', '../games/kit/versionCheck.ts', games);
 
 const pad = (s: string, n: number) => s.padEnd(n);
 console.log(`\n${pad('game', 10)} ${COLS.map((c) => pad(c, 6)).join(' ')}   time`);
 for (const [id, r] of rows) console.log(`${pad(id, 10)} ${COLS.map((c) => pad(r[c], 6)).join(' ')} ${String(r.sec).padStart(5)}s`);
-console.log(`tin hearts: ${hearts}   save signs: ${signs}   levelSecrets and box hours: ${sync}`);
+console.log(`tin hearts: ${hearts}   save signs: ${signs}   levelSecrets and box hours: ${sync}   versions: ${versions}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +
   (signs === 'FAIL' ? 1 : 0) +
-  (sync === 'FAIL' ? 1 : 0);
+  (sync === 'FAIL' ? 1 : 0) +
+  (versions === 'FAIL' ? 1 : 0);
 const min = (Date.now() - t0) / 60_000;
 console.log(`${games.length} games in ${min.toFixed(1)} min: ${failed ? `${failed} failing (see above)` : 'all pass'}`);
 process.exit(failed ? 1 : 0);

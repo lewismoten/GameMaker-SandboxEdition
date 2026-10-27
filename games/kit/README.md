@@ -108,7 +108,7 @@ Checking the games:
   any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
   byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
   `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
-  `saveSignCheck.ts` and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
+  `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
@@ -142,6 +142,13 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
+- `versionCheck.ts` / `versions.ts` — each game's version is `"version": "major.minor"` in its about.json, the one
+  place it is written: the game's text reads it from there (the in-story date beside it stays as written), and the
+  site shows it. Once a game's `disk/` differs from the last push to master (`git merge-base HEAD origin/master`, else
+  the local master), its version must be higher than it was there: bump the **major** (1.1 → 2.0) for new, removed or
+  reordered levels or a big gameplay change, the **minor** (1.0 → 1.1) for anything else (art, text, sounds, a level's
+  layout). One bump covers every change until the next push. `npx vite-node ../games/kit/versionCheck.ts [<id>...]`
+  names each game to bump; with no master to compare with (no git history) it skips with a note.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, teddy3, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
