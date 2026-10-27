@@ -590,7 +590,10 @@ modules are in [`../test`](../test).
 - `shell/`: the pages.
   - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCategories.ts`
     (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
-    `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeIcons.ts`,
+    `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeLibrary.ts`
+    (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by
+    `homeTilePack.ts`, walked with the arrow keys by `homeTileKeys.ts`; the import tile and drops
+    (`homeDrop.ts`), Getting started (`homeGettingStarted.ts`), `homeIcons.ts`,
     `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
     lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
