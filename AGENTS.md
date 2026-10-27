@@ -139,7 +139,7 @@ preserve what was there.
   - **Clown Club** is the club's name, spelled normally (never "Klown Klub"); wherever it is
     lettered in a picture (signs, box art), the "o" in "Clown" is drawn as a red rubber nose.
   - **THE CHEZ** is a tomato-red 1976½ CitiCar with a black roof and only the door window
-    from the side. It has two charcoal stripes with red between them and a white pinstripe,
+    from the side (no back passenger window). It has two charcoal stripes with red between them and a white pinstripe,
     stepping up in an S behind the door; white wheels; square bumpers; and the charge port
     at the rear passenger side. From behind it has a back window. Draw it with `games/kit/chez.ts`. Teddy rides in
     the front passenger seat, looking out the door window. Keep "THE CHEZ" together on one line
