@@ -8,6 +8,9 @@ import { DEFAULT_URLS, defaultSettings, forgetSettings, loadSettings, saveSettin
 import { ollamaHelp } from './ollamaHelp';
 import './settings.css';
 
+/** Model families that call tools, for a first guess at the model. */
+const TOOL_FAMILIES = /^(qwen3|qwen2\.5|llama3\.[123]|mistral|mixtral|granite3|command-r|hermes3|gpt-(4|5)|o[34])/i;
+
 const page = () => ({ protocol: location.protocol, origin: location.origin });
 
 function problemView(p: Problem): HTMLElement {
@@ -108,7 +111,8 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
         fill(names);
         if (loud)
           show({ ok: true, lines: [`${names.length} model${names.length === 1 ? '' : 's'}: ${names.slice(0, 12).join(', ')}${names.length > 12 ? '…' : ''}`] });
-        if (!model.value && names.length) model.value = names[0];
+        // a first guess only among families known to call tools; else the person picks
+        if (!model.value) model.value = names.find((m) => TOOL_FAMILIES.test(m)) ?? '';
       } catch (e) {
         if (!loud) return;
         show({ ok: false, lines: [], problem: diagnose(now, page(), e) });
