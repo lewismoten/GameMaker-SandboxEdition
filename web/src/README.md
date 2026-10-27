@@ -199,7 +199,12 @@ modules are in [`../test`](../test).
 - [`editor/`](editor): today's web interface (see the next section).
 - [`saves/`](saves): the home page's "Saves & scores" panel (`savesPanel.ts`, loaded by
   `button.ts`): a game's saved games (with a map of the saved level, `saveMapView.ts`) and high
-  scores, with ⓘ notes (`tip.ts`).
+  scores, with ⓘ notes (`tip.ts`). `savesPanel.ts` opens the dialog and keeps the panel's state
+  (`panelState.ts`); the parts draw from it: the list on the left (`panelNav.ts`), a slot
+  (`slotView.ts`, its values `slotField.ts`, where the hero is `slotWhere.ts`, About this save
+  `aboutSave.ts`, and what is done to a slot `slotActions.ts`), the high scores (`scoresView.ts`)
+  and the backups (`backupsView.ts`). `closeGuard.ts` asks before leaving unsaved changes;
+  `panelText.ts` holds the shared words and the yes-or-no question.
 - [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp): the `#/mac`,
   `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it
   does, removing it.

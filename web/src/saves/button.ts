@@ -1,7 +1,7 @@
 // The "Saves & scores" button beside a game on the home page; the panel loads when pressed.
 import { h } from '../editor/core/ui';
 import { icon } from '../editor/shell/homeIcons';
-import type { SavesTarget } from './savesPanel';
+import type { SavesTarget } from './panelState';
 
 export function savesButton(target: SavesTarget | undefined): { el: HTMLElement; open(initial?: string): Promise<void> } | null {
   if (!target?.gam) return null;
