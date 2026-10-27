@@ -12,7 +12,6 @@ import {
   openaiBody,
   parseOllamaReply,
   parseOpenAIReply,
-  toolCallInText,
   type ChatMessage,
 } from './providers';
 import { defaultSettings } from './settings';
@@ -120,16 +119,6 @@ describe('replies', () => {
   it('arguments that are not JSON are kept to be refused, not guessed at', () => {
     const r = parseOpenAIReply({ choices: [{ message: { tool_calls: [{ id: 'y', function: { name: 'get_map', arguments: '{file: a.map' } }] } }] });
     expect(r.toolCalls[0].badArgs).toBe('{file: a.map');
-  });
-
-  it('a tool call written as text by a small model', () => {
-    const names = new Set(['get_map']);
-    expect(toolCallInText('```json\n{"name": "get_map", "arguments": {"file": "a.map"}}\n```', names)).toMatchObject({
-      name: 'get_map',
-      args: { file: 'a.map' },
-    });
-    expect(toolCallInText('{"name": "rm_rf", "arguments": {}}', names)).toBeUndefined();
-    expect(toolCallInText('The map looks fine.', names)).toBeUndefined();
   });
 });
 

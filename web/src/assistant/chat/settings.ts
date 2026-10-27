@@ -14,8 +14,10 @@ export interface AiSettings {
   tools: 'core' | 'all';
   /** Whether the model is sent pictures: auto asks Ollama (or guesses from an OpenAI model's name). */
   images: 'auto' | 'on' | 'off';
-  /** Ollama's context window, in tokens (its own default is often too small for tools). */
+  /** The context window, in tokens: Ollama's num_ctx (its own default is often too small for tools), and what the chat keeps within. */
   contextTokens: number;
+  /** Ollama: let a thinking model (qwen3…) think before answering. Off by default: much faster. */
+  think: boolean;
 }
 
 export const DEFAULT_URLS: Record<ProviderKind, string> = {
@@ -33,7 +35,8 @@ export function defaultSettings(provider: ProviderKind = 'ollama'): AiSettings {
     apiKey: '',
     tools: provider === 'ollama' ? 'core' : 'all',
     images: 'auto',
-    contextTokens: 16384,
+    contextTokens: provider === 'ollama' ? 8192 : 128000,
+    think: false,
   };
 }
 
@@ -54,7 +57,8 @@ export function loadSettings(storage: Pick<Storage, 'getItem'> | undefined = saf
       apiKey: typeof v.apiKey === 'string' ? v.apiKey : '',
       tools: v.tools === 'all' || v.tools === 'core' ? v.tools : d.tools,
       images: v.images === 'on' || v.images === 'off' ? v.images : 'auto',
-      contextTokens: typeof v.contextTokens === 'number' && v.contextTokens >= 2048 ? Math.min(262144, Math.round(v.contextTokens)) : d.contextTokens,
+      contextTokens: typeof v.contextTokens === 'number' && v.contextTokens >= 2048 ? Math.min(1048576, Math.round(v.contextTokens)) : d.contextTokens,
+      think: v.think === true,
     };
   } catch {
     return undefined;

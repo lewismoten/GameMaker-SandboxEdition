@@ -4,7 +4,7 @@
 // normal one is refusing this page's origin (CORS: OLLAMA_ORIGINS); one that answers neither is
 // not listening where it can be reached (OLLAMA_HOST, Tailscale off, the computer asleep).
 import { toOpenAITools } from '../openai';
-import { ProviderError, chatUrl, listModels, modelsUrl, ollamaCapabilities, openaiBody } from './providers';
+import { ProviderError, chatUrl, listModels, modelsUrl, ollamaModelInfo, openaiBody } from './providers';
 import { hostOf, type AiSettings } from './settings';
 
 type Fetch = typeof fetch;
@@ -177,10 +177,16 @@ export async function testConnection(s: AiSettings, page: Page, f: Fetch = fetch
     const known = models.some((m) => m === s.model || m === `${s.model}:latest` || m.replace(/:latest$/, '') === s.model);
     if (!known) return { ok: false, models, lines, problem: diagnose(s, page, new ProviderError(404, `model "${s.model}" not found`)) };
     try {
-      const caps = await ollamaCapabilities(s, f, AbortSignal.timeout(15000));
+      const info = await ollamaModelInfo(s, f, AbortSignal.timeout(15000));
+      const caps = info.capabilities;
       if (caps && !caps.includes('tools')) return { ok: false, models, lines, problem: diagnose(s, page, new ProviderError(400, 'does not support tools')) };
       const vision = caps ? caps.includes('vision') : undefined;
       lines.push(caps ? `${s.model} can call tools${vision ? ' and see pictures' : ', but can’t see pictures'}.` : `${s.model} is there.`);
+      if (caps?.includes('thinking')) lines.push('It is a thinking model: More settings turns its thinking on or off (off is faster).');
+      if (info.contextLength)
+        lines.push(
+          `It was made for ${info.contextLength.toLocaleString('en-US')} tokens of context; the assistant uses ${Math.min(info.contextLength, s.contextTokens).toLocaleString('en-US')}.`,
+        );
       return { ok: true, models, lines, vision };
     } catch (e) {
       return failed(e, chatUrl(s), models);
