@@ -12,6 +12,7 @@ import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
 import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
+import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
@@ -123,6 +124,8 @@ function startModern(hash?: string): void {
       // Desk | DOS | Web, at the top right in every view; the game in front of you comes along
       // (viewSwitch.ts)
       viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
+      // ? Guides: a tour of the page by the games' characters (tour/; the tour loads when started)
+      tourButton(),
       // after it, ⚙ Settings (offline, the source, the credits, the theme, AI setup; settingsMenu.ts), or on
       // phones and tablets the ⋯ menu with the pages the bar has no room for and the settings
       settingsMenu(),

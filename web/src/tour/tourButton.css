@@ -1,0 +1,20 @@
+/* The header's ? Guides button (tourButton.ts): the ⚙ button's look, beside it. */
+.topbar .tour-btn {
+  font-weight: 700;
+}
+.tour-wrap {
+  position: relative;
+  flex: none;
+}
+.tour-wrap > .topbar-menu[hidden] {
+  display: none;
+}
+.topbar .tour-wrap .topbar-menu > button:disabled {
+  opacity: 0.6;
+}
+@media (max-width: 600px) {
+  .topbar .tour-btn {
+    min-width: 36px;
+    padding: 0 6px;
+  }
+}
