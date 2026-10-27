@@ -11,7 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
-import { clipEntries, fliClips } from '../kit/fliClips';
+import { clipEntries, clipEveryList, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { gif } from '../snowbound/src/screens/scenery';
@@ -185,6 +185,7 @@ disk.put(
     RECORDED_VOCS,
   ),
 );
+clipEveryList(disk.files);
 disk.write();
 console.log(
   `${SETS.map((s) => `${s} ${books[s].index.size}`).join(', ')} background blocks, ${mb.index.size} monster blocks, ${heroes.marcus.index.size}/${heroes.felix.index.size} character blocks`,
