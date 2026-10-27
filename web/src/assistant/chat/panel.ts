@@ -34,6 +34,8 @@ import { todoView } from './todoView';
 import './chat.css';
 
 const MODE_KEY = 'gm-assistant-mode';
+/** "Make a game about …", "create me a platform game where …". */
+const MAKE_GAME = /^\s*(?:please\s+)?(?:make|create|build|design)\s+(?:me\s+)?(?:a|an|my)\s+(?:\w+\s+)?game\b/i;
 type Mode = 'ask' | 'free';
 let mode: Mode = (() => {
   try {
@@ -217,7 +219,8 @@ const compose = h(
       const t = input.value.trim();
       if (!t || busy) return;
       input.value = '';
-      void send(t);
+      // "make a game about…" in a game with no level yet goes the Describe a game way: the starter, then a guided build
+      void (MAKE_GAME.test(t) && hasNoLevelSafe() ? build(t) : send(t));
     },
   },
   input,

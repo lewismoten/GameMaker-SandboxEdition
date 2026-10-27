@@ -37,9 +37,10 @@ describe('assistant tools', () => {
     const missing = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'mygame.map' }] });
     expect(missing.isError).toBe(true);
     expect(words(missing)).toMatch(/There is no file mygame\.map/);
-    const wrong = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.bbl' }] });
-    expect(words(wrong)).toMatch(/takes a \.map file, not test\.bbl/);
     expect(ctx.files.get('test.gam')).toBe(before);
+    // a file named for the wrong slot goes to its own
+    const moved = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.bbl' }] });
+    expect(words(moved)).toMatch(/test\.bbl went in slot 2 \(Background block set\), not 1/);
     expect((await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.map' }] })).isError).toBeFalsy();
   });
 
