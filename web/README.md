@@ -188,7 +188,7 @@ npm run test:slow-list  # times every test and rewrites test/slowTests.json, the
 npm run typecheck  # tsc --noEmit (strict)
 npm run format     # Prettier on web/'s code, games/*.ts and code/README.md (config at the repo root)
 npm run format:check  # the same, only checking (CI runs it)
-npm run lint       # ESLint 9 with typescript-eslint's type-aware rules (web/eslint.config.js)
+npm run lint       # ESLint 10 with typescript-eslint's type-aware rules (web/eslint.config.js)
 npm run lint:fix   # lint, fixing what it can
 npm run check:games  # every game's checks (bot, clips, text fit, hidden things, Level check), as a table
 npm run build      # typecheck, then the static site in web/dist
