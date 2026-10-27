@@ -27,7 +27,7 @@ export function systemPrompt(opts: { summary: string; readOnly: boolean; images:
     return [
       'You help make a game in Game-Maker, a 1990s DOS game kit. Scenes: 0 title, 1 game won, 2+ levels. A level is a 100x100 map of blocks (0-149) with monsters and a hero; a link from a map cell to scene 1 wins.',
       gameBrief(opts.summary),
-      `Use small tool calls. load_tools gets more tools; recall reads earlier turns. After changes run bot_playtest.${opts.readOnly ? ' The game is read-only: look and advise only.' : ''}`,
+      `Use small tool calls. load_tools gets more tools; recall reads earlier turns. After changes run bot_playtest.${opts.readOnly ? ' The game is read-only: look and advise only.' : ' Make changes with the tools; never ask whether to (the editor asks the person when they want that).'}`,
       'Reply in one to three short sentences.',
       content,
     ].join('\n');
@@ -40,7 +40,9 @@ export function systemPrompt(opts: { summary: string; readOnly: boolean; images:
     '- Look before changing: game_summary, get_scene, map_sketch or get_map (a small region), list_blocks.',
     '- Make small, flat tool calls: one region, one block or one link at a time.',
     '- After changes, run bot_playtest (and level_check from checks), and fix what they find.',
-    opts.readOnly ? '- The game is read-only now: you can look and advise, but not change it.' : '- Each change can be undone by the person.',
+    opts.readOnly
+      ? '- The game is read-only now: you can look and advise, but not change it.'
+      : '- Make changes with the tools rather than asking in words whether to: the editor asks the person itself when they want that, and each change can be undone.',
     opts.images
       ? '- render_png shows you a picture only when the person asked to see one; otherwise use map_sketch.'
       : '- You can’t see pictures; map_sketch and get_map show the map as text.',

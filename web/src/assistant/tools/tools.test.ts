@@ -31,6 +31,18 @@ const body = (r: ToolResult) => JSON.parse((r.content[0] as { text: string }).te
 const words = (r: ToolResult) => r.content.map((c) => (c.type === 'text' ? c.text : '')).join(' ');
 
 describe('assistant tools', () => {
+  it('set_scene only puts files the game has, of the slot’s kind, in its slots', async () => {
+    const ctx = tiny();
+    const before = ctx.files.get('test.gam');
+    const missing = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'mygame.map' }] });
+    expect(missing.isError).toBe(true);
+    expect(words(missing)).toMatch(/There is no file mygame\.map/);
+    const wrong = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.bbl' }] });
+    expect(words(wrong)).toMatch(/takes a \.map file, not test\.bbl/);
+    expect(ctx.files.get('test.gam')).toBe(before);
+    expect((await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.map' }] })).isError).toBeFalsy();
+  });
+
   it('have unique names, short descriptions and flat object schemas with dry_run on every write', () => {
     const names = GAME_TOOL_DEFS.map((d) => d.name);
     expect(new Set(names).size).toBe(names.length);

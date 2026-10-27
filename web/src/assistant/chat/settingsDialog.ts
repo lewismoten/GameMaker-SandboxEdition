@@ -9,7 +9,9 @@ import { ollamaHelp } from './ollamaHelp';
 import './settings.css';
 
 /** Model families that call tools, for a first guess at the model. */
-const TOOL_FAMILIES = /^(qwen3|qwen2\.5|llama3\.[123]|mistral|mixtral|granite3|command-r|hermes3|gpt-(4|5)|o[34])/i;
+const TOOL_FAMILIES = /^(qwen3|qwen2\.5|llama3\.[123]|mistral|ministral|mixtral|devstral|glm-4|granite3|command-r|hermes3|gpt-(4|5)|o[34])/i;
+/** A tag saying it is under 7 billion parameters ("llama3.2:1b", "smollm:135m"): too small to build with tools. */
+const TINY = /:(\d+(\.\d+)?m|[0-6](\.\d+)?b)\b/i;
 
 const page = () => ({ protocol: location.protocol, origin: location.origin });
 
@@ -114,7 +116,9 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       clear(
         pick,
         h('option', { value: '' }, 'Choose one…'),
-        ...names.map((m) => h('option', { value: m, selected: m === model.value.trim() }, TOOL_FAMILIES.test(m) ? `${m} (calls tools)` : m)),
+        ...names.map((m) =>
+          h('option', { value: m, selected: m === model.value.trim() }, TOOL_FAMILIES.test(m) ? `${m} (calls tools${TINY.test(m) ? ', but small' : ''})` : m),
+        ),
       );
       pickRow.querySelector('label')!.textContent = `Installed models (${names.length})`;
       pickRow.hidden = !names.length;
@@ -129,7 +133,7 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
         if (loud)
           show({ ok: true, lines: [`${names.length} model${names.length === 1 ? '' : 's'}: ${names.slice(0, 12).join(', ')}${names.length > 12 ? '…' : ''}`] });
         // a first guess only among families known to call tools; else the person picks
-        if (!model.value) model.value = names.find((m) => TOOL_FAMILIES.test(m)) ?? '';
+        if (!model.value) model.value = names.find((m) => TOOL_FAMILIES.test(m) && !TINY.test(m)) ?? '';
       } catch (e) {
         if (!loud) return;
         show({ ok: false, lines: [], problem: diagnose(now, page(), e) });
