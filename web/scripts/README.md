@@ -36,6 +36,19 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about
     a minute a paragraph, and the names the captions mishear spelled right; everything Lewis said
     is kept as he said it.
+- The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
+  line again) speaks each line of `tour/lines.ts` in Lewis's own cloned voice with Pocket TTS,
+  locally, into `../public/tour/voice/<chapter>/<id>.ogg` (Opus, mono, about 10 kbps), and
+  rewrites `index.json` (id → chapter, where, words, seconds and hashes, so unchanged lines are
+  skipped) and the generated `README.md` there. Its parts are in `narrate/`: `pocketTts.ts` (the
+  engine, ported from pocket-tts-js, MIT), `audio.ts` (ffmpeg in and out: the voice sample's
+  clearest 10 s, even loudness, the Opus encoding), `lineIndex.ts` and `voiceReadme.ts`. The
+  model, the engine and the voice sample stay outside the repo (`--model`, `--engine`,
+  `--sample`, or `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, `NARRATE_SAMPLE`); CI never runs it.
+  `npm run voice -- --only <id>` records a retake (each take differs; `--seed <n>` repeats one),
+  `--lines <file.json>` reads `[{ id, chapter, where, text }]` instead of the tour, `--out <dir>`
+  writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
+  record. Never put Lewis's voice samples in the repo, a download or a test fixture.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
   `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast`, from the
   other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).

@@ -49,6 +49,8 @@ npx vite-node ../games/kit/versionCheck.ts         # a game changed since the la
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the rebuild compare
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
+npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
+npm run voice:all                                  # every tour voice clip again
 ```
 
 After changing a game, rebuild it and run its checks (`npm run check:games -- --game <id>` runs
