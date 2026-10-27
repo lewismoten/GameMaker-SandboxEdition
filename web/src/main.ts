@@ -119,12 +119,11 @@ function startModern(hash?: string): void {
           'Achievements',
         ),
         h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
-        h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
       ),
       // Desk | DOS | Web, at the top right in every view; the game in front of you comes along
       // (viewSwitch.ts)
       viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
-      // after it, ⚙ Settings (offline, the source, the theme, AI setup; settingsMenu.ts), or on
+      // after it, ⚙ Settings (offline, the source, the credits, the theme, AI setup; settingsMenu.ts), or on
       // phones and tablets the ⋯ menu with the pages the bar has no room for and the settings
       settingsMenu(),
       h(
@@ -133,7 +132,7 @@ function startModern(hash?: string): void {
         h(
           'summary',
           {
-            'aria-label': 'More: the guide on small screens, the library, achievements, the cast, the credits, and settings',
+            'aria-label': 'More: the guide on small screens, the library, achievements, the cast, and settings (with the credits)',
             title: 'More',
           },
           '⋯',
@@ -145,7 +144,6 @@ function startModern(hash?: string): void {
           h('a', { class: 'nav-library', href: '#/library' }, '📚 Library'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('a', { href: '#/cast' }, '🎭 The cast'),
-          h('a', { href: '#/credits' }, '📜 Credits'),
           h('hr'),
           ...settingsItems(),
         ),
