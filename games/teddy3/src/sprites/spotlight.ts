@@ -5,8 +5,8 @@
 // lamp goes dark for a moment.
 import { Pixels } from '../../../kit/pixels';
 import { P } from '../art/pal';
+import { CLEAR } from '../../../kit/blit';
 
-const CLEAR = 255;
 const glow = (k: number) => P.c('glow', k);
 
 /** The lamp and its cone (lit), or the lamp gone dark with no cone. */

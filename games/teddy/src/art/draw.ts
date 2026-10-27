@@ -4,16 +4,11 @@ import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels } from '../../../kit/pixels';
 import { textInk } from '../../../kit/textBounds';
 import { P } from './pal';
+import { CLEAR } from '../../../kit/blit';
+import { textWidth } from '../../../kit/pcText';
+export { textWidth } from '../../../kit/pcText';
+export { CLEAR, over, recolor } from '../../../kit/blit';
 export { shadeAt, gradient, blob, speckle } from '../../../kit/shading';
-
-export const CLEAR = 255;
-
-/** Recolors every pixel through a lookup. */
-export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
-  const p = new Pixels(src.w, src.h);
-  p.px.set(src.px.map(fn));
-  return p;
-}
 
 /** An ASCII sprite on a clear 20x20 block, bottom aligned and centered unless placed. */
 export function sprite(rows: string[], key: Record<string, number>, dx?: number, dy?: number, w = 20, h = 20): Pixels {
@@ -34,11 +29,6 @@ export function outline(src: Pixels, ink: number): Pixels {
       if (near) p.set(x, y, ink);
     }
   return p;
-}
-
-/** Copies a picture with clear (255) pixels skipped. */
-export function over(dst: Pixels, src: Pixels, x = 0, y = 0): Pixels {
-  return dst.blit(src, x, y, CLEAR);
 }
 
 /**
@@ -95,8 +85,6 @@ export function text(p: Pixels, x: number, y: number, s: string, col: number, sc
   ink?.end();
   return cx - x;
 }
-
-export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 /** Text with a 1px outline (and an optional drop shadow). */
 export function outlined(p: Pixels, x: number, y: number, s: string, col: number, edge: number, scale = 1, shadow?: number): void {

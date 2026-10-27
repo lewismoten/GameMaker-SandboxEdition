@@ -3,6 +3,8 @@
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import type { Pixels } from '../../../kit/pixels';
 import { textInk } from '../../../kit/textBounds';
+import { textWidth } from '../../../kit/pcText';
+export { textWidth } from '../../../kit/pcText';
 
 /** Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. */
 export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
@@ -23,8 +25,6 @@ export function text(p: Pixels, x: number, y: number, s: string, col: number, sc
   ink?.end();
   return cx - x;
 }
-
-export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 /** Text with a 1px (scaled) outline or drop shadow. */
 export function outlined(p: Pixels, x: number, y: number, s: string, col: number, outline: number, scale = 1, shadow?: number): void {

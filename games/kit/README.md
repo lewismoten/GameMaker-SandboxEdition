@@ -13,6 +13,10 @@ Making the files:
 
 - `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
 - `palette.ts` — named color ramps for a 256-color VGA palette.
+- `blit.ts` — sprites with 255 as the clear color (`CLEAR`): `over` another picture, `recolor`ed through a lookup,
+  scaled up (`scaleBlit`) or with a one-pixel `outline`.
+- `pcText.ts` — the PC's 8x8 font in a picture at any scale (`text`, `textWidth`), `outlined` with an optional drop
+  shadow, or `centered`; its ink is reported to the text bounds audit.
 - `shading.ts` — shaded drawing in a palette ramp: an ordered-dithered shade (`shadeAt`), a vertical `gradient`, a lit
   lump (`blob`), a raised box (`bevel`) and `speckle`.
 - `music.ts` — FM instruments and note strings → Sound Blaster `.CMF` songs.

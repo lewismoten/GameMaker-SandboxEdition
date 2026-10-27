@@ -7,6 +7,7 @@ import { toBytes, type Picture } from '../render/image';
 import { Matcher, medianCut, putColors, type Col } from '../render/quant';
 import type { V } from '../render/tracer';
 import { textInk } from '../../../kit/textBounds';
+import { textWidth } from '../../../kit/pcText';
 
 /** Draws text (8x8 font scaled by `s`) in color c, with an optional dark outline and drop shadow. */
 export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1, o: { outline?: V; shadow?: V; alpha?: number } = {}): number {
@@ -53,8 +54,6 @@ export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1,
   ink?.end();
   return cx - x;
 }
-
-const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 export function centered(p: Picture, y: number, str: string, c: V, s = 1, o: Parameters<typeof text>[6] = {}): void {
   text(p, Math.round((p.w - textWidth(str, s)) / 2), y, str, c, s, o);

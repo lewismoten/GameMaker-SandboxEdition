@@ -4,9 +4,11 @@ import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels } from '../../../kit/pixels';
 import { textInk } from '../../../kit/textBounds';
 import { shadeAt } from '../../../kit/shading';
+import { CLEAR } from '../../../kit/blit';
+import { textWidth } from '../../../kit/pcText';
+export { textWidth } from '../../../kit/pcText';
+export { CLEAR } from '../../../kit/blit';
 export { shadeAt } from '../../../kit/shading';
-
-export const CLEAR = 255;
 
 /** A lit ellipsoid (light from the upper left). */
 export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo = 0, hi = ramp.length - 1, light = 1): Pixels {
@@ -75,8 +77,6 @@ export function text(p: Pixels, x: number, y: number, s: string, c: number, scal
   ink?.end();
   return p;
 }
-
-export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 /** Text with a 1-pixel (scaled) outline / drop shadow. */
 export function outlined(p: Pixels, x: number, y: number, s: string, fill: number, edge: number, scale = 1, shadow = 0): Pixels {

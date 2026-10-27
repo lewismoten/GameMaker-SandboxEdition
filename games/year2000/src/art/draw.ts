@@ -1,6 +1,7 @@
 // Drawing helpers shared by the block, sprite and screen art.
 import { Pixels } from '../../../kit/pixels';
 import { shadeAt } from '../../../kit/shading';
+export { recolor } from '../../../kit/blit';
 export { shadeAt, gradient, blob, speckle } from '../../../kit/shading';
 
 export const T = 255;
@@ -8,13 +9,6 @@ export const T = 255;
 /** A horizontal gradient (chrome bars). */
 export function hgradient(p: Pixels, x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number): Pixels {
   for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, (x - x0) / Math.max(1, w - 1), x, y));
-  return p;
-}
-
-/** Recolors every pixel through a lookup. */
-export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
-  const p = new Pixels(src.w, src.h);
-  p.px.set(src.px.map(fn));
   return p;
 }
 

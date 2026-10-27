@@ -1,13 +1,7 @@
 // Drawing helpers shared by the block, sprite and screen art.
 import { Pixels } from '../../../kit/pixels';
+export { recolor } from '../../../kit/blit';
 export { shadeAt, gradient, blob, speckle } from '../../../kit/shading';
-
-/** Recolors every pixel through a lookup (palette swaps for variants and hurt flashes). */
-export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
-  const p = new Pixels(src.w, src.h);
-  p.px.set(src.px.map(fn));
-  return p;
-}
 
 /** Rotates a square picture a quarter turn clockwise. */
 export function rotate(src: Pixels): Pixels {
