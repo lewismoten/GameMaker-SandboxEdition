@@ -113,9 +113,6 @@ export interface HomeGame {
   hasDemo(): Promise<boolean>;
 }
 
-/** Recreational Software Designs' own games. */
-export const RSD_GAMES = ['sample', 'pipemare', 'nebula'];
-
 function searchText(...parts: (string | number | null | undefined)[]): string {
   return parts.filter(Boolean).join(' ').toLowerCase();
 }

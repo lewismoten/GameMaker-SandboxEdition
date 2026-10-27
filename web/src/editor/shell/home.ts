@@ -1,8 +1,9 @@
 // Home page: one game shown large (a featured one, or the one you chose; see
-// homeShowcase.ts) and the library: tabs for the collections (your games, the CD's
-// gameware, our Sandbox games, the shareware, and The Bard of Bizarre's once there are enough
-// of them, bizarre.ts) with search and "New game" beside them, and
-// the chosen collection's games as small picture tiles (homeCards.ts). On a wide window
+// homeShowcase.ts) and the library: tabs for the collections (your games, the Sandbox games,
+// The Bard of Bizarre's once there are enough of them (bizarre.ts), the CD's gameware and the
+// shareware; homeCategories.ts) with search and "New game" beside them, and the chosen
+// collection's games as small picture tiles (homeCards.ts). Choosing a collection features
+// one of its games at random. On a wide window
 // the game sits in a column beside the library and the page fits the window, the tiles
 // scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
 // kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
@@ -14,9 +15,10 @@ import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
 import { PRODUCT } from '../../edition';
-import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type HomeGame } from './homeCards';
+import { catalogGame, gameTile, projectGame, type GameKind, type HomeGame } from './homeCards';
 import { showcase } from './homeShowcase';
-import { icon, type IconName } from './homeIcons';
+import { icon } from './homeIcons';
+import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, pickFeatured, savedCategory, type Category } from './homeCategories';
 import { packCollections, packGroups } from './homePack';
 import { byMaker } from './homeAuthors';
 import { wantsTouchControls } from '../../player/touch';
@@ -42,56 +44,6 @@ function pickAndImport(nav: HomeNav, directory?: boolean, onAdded?: () => void):
   });
 }
 
-/** A collection: a kind of game, with your own games split into those made here and those imported. */
-type Category = GameKind | 'imported';
-
-/** Each collection: `short` is the one line shown above its games, `lead` the whole of it (More, and the tab's tip). */
-const CATEGORIES: { id: Category; icon: IconName; name: string; short: string; lead: string }[] = [
-  {
-    id: 'mine',
-    icon: 'edit',
-    name: 'My games',
-    short: 'Games you made or copied, kept in this browser.',
-    lead: 'Games you made here or copied from the collections, kept in this browser. Download a .zip now and then to keep them safe.',
-  },
-  {
-    id: 'imported',
-    icon: 'inbox',
-    name: 'Imported',
-    short: 'Games brought in from folders, files, .zips or .html exports.',
-    lead: 'Games brought in from a folder, files, a .zip or a one-page export, often made by someone else. Kept in this browser; ⋯ More moves one to My games.',
-  },
-  {
-    id: 'gameware',
-    icon: 'disk',
-    name: 'Gameware',
-    short: 'Free games that came with Game-Maker. Play or edit a copy.',
-    lead: 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.',
-  },
-  {
-    id: 'shareware',
-    icon: 'lock',
-    name: 'Shareware',
-    short: 'Other people’s games from the CD and BBSes, as released.',
-    lead: 'Games other people made with Game-Maker, from the CD and the BBSes. Most are copyrighted shareware that can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
-  },
-  {
-    id: 'sandbox',
-    icon: 'star',
-    name: 'Sandbox',
-    short: 'New games in the original formats, so they play in DOS too.',
-    lead: 'New games from Sandbox Software, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.',
-  },
-  {
-    id: 'bizarre',
-    icon: 'music',
-    name: 'Bizarre',
-    short: 'Heartfelt songs about all the wrong things, made into games.',
-    lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools shape and record it, and you can play it, read its notice, or edit a copy (they’re MIT, except their voice clips: personal, non-commercial use only) to see how it was made.',
-  },
-];
-
-const CATEGORY_KEY = 'gm-home-category';
 const SORT_KEY = 'gm-home-sort';
 /** 'rating' groups Imported by stars (My games keep the edited order). */
 type MySort = 'edited' | 'name' | 'rating';
@@ -102,15 +54,6 @@ function savedSort(): MySort {
     return v === 'name' || v === 'rating' ? v : 'edited';
   } catch {
     return 'edited';
-  }
-}
-
-function savedCategory(): Category | undefined {
-  try {
-    const c = localStorage.getItem(CATEGORY_KEY) as Category | null;
-    return c && CATEGORIES.some((x) => x.id === c) ? c : undefined;
-  } catch {
-    return undefined;
   }
 }
 
@@ -274,7 +217,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     return undefined;
   };
 
-  let current: Category = savedCategory() ?? 'gameware';
+  let current: Category = savedCategory() ?? FIRST_CATEGORY;
 
   const filterTiles = () => {
     const q = search.value.trim().toLowerCase();
@@ -372,14 +315,17 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     top.el.querySelector<HTMLElement>('.sc-title')?.focus({ preventScroll: true });
   };
 
-  /** Shows a game picked at random, one with a demo when there are some. */
-  const feature = () => {
-    const pool = [...gamesOf('sandbox'), ...gamesOf('gameware').filter((g) => g.entry && RSD_GAMES.includes(g.entry.id))].filter((g) => g.gam);
-    const withDemo = pool.filter((g) => g.entry?.files.some((f) => f.endsWith('.rec')));
-    const choices = (withDemo.length ? withDemo : pool).filter((g) => g.key !== top.game?.key);
-    const pick = choices[Math.floor(Math.random() * choices.length)];
+  /** The games a collection can feature: its finished ones (all of yours). */
+  const featurable = (c: Category) => gamesOf(c).filter((g) => g.gam || isOwn(c));
+  /**
+   * Shows a game of collection `c` picked at random (homeCategories.ts pickFeatured), or of
+   * Sandbox while `c` has none; its Another button picks again from the same collection.
+   */
+  const feature = (c: Category = current) => {
+    const from = featurable(c).length ? c : FIRST_CATEGORY;
+    const pick = pickFeatured(featurable(from), top.game?.key, (g) => !!g.entry?.files.some((f) => f.endsWith('.rec')));
     if (!pick) return;
-    top.show(pick, { featured: true, onAnother: feature });
+    top.show(pick, { featured: true, onAnother: () => feature(from) });
     showPath([]);
     markSelected();
   };
@@ -464,7 +410,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const select = async (c: Category, picked = false) => {
     // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
     if (c === 'bizarre' && !hasBizarreTab(catalog)) c = 'shareware';
+    const changed = c !== current;
     current = c;
+    // another collection chosen: one of its games is featured at the top (an empty one keeps the game shown)
+    if (picked && changed && featurable(c).length) feature(c);
     if (picked) {
       keep({ tab: c });
       try {
@@ -720,6 +669,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   } catch {
     catalogError = 'These games are unavailable offline until they have been opened once.';
   }
+  // the collection in the address (#/?tab=sandbox) comes back, before a game is featured from it
+  const { tab, q } = currentRoute().params;
+  const tabbed = CATEGORIES.find((c) => c.id === tab)?.id;
+  if (tabbed) current = tabbed;
   // a link to a game shows it, in its own collection
   const chosen = findGame(hashKey());
   if (chosen) {
@@ -737,8 +690,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     showStart();
   }
   // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too
-  const { tab, q } = currentRoute().params;
-  if (CATEGORIES.some((c) => c.id === tab)) current = tab as Category;
+  if (tabbed) current = tabbed;
   if (q) search.value = q;
   await select(current);
 
