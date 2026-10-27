@@ -144,7 +144,7 @@ THE END
 There's no place like Ohm.`,
 ]);
 
-/** The page behind the fuse box's socket. */
+/** The page behind the fuse box's main switch. */
 export const FUSEBOX = pages([
   `THE LIVE WIRE EGG
 

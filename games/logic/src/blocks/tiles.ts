@@ -182,6 +182,30 @@ function outletPic(st: Style, under = floorPic(st, 0)): Pixels {
   return p;
 }
 
+/** The fuse box's main switch, Watt's way out: a black box on the board with its black lever
+ * thrown up to ON, nothing like the cream outlets that give a life. */
+function fuseSwitchPic(st: Style): Pixels {
+  const p = floorPic(st, 0);
+  // the box, screwed down at its corners
+  bevel(p, 2, 1, 16, 18, r('ink'), 1);
+  for (const [x, y] of [
+    [3, 2],
+    [16, 2],
+    [3, 17],
+    [16, 17],
+  ])
+    p.set(x, y, c('metal', 2));
+  // the slot the lever swings in, and the bolt it pivots on
+  p.rect(8, 4, 4, 8, c('ink', 0));
+  // the black lever thrown up, its grip across the top, a glint down its edge
+  p.rect(9, 5, 2, 6, c('ink', 0)).rect(9, 5, 1, 6, c('ink', 2));
+  p.rect(5, 2, 10, 4, c('ink', 0)).rect(5, 2, 10, 1, c('ink', 2)).rect(5, 2, 1, 4, c('ink', 2));
+  p.disc(9.5, 10.5, 1.5, c('metal', 3)).set(9, 10, c('metal', 5));
+  // ON in yellow under the pivot
+  micro(p, 7, 13, 'ON', c('yellow', 3));
+  return p;
+}
+
 function screwPic(st: Style, under = floorPic(st, 2)): Pixels {
   const p = under;
   blob(p, 9.5, 10, 5.5, 5.5, r('gold'), 0, 3);
@@ -446,7 +470,7 @@ export function buildTiles(
   // a panel in the housing that isn't quite a wall, and what lies behind it
   for (const m of opts.seams ?? []) add(`seam${m}`, seamPic(st, m));
   if (opts.fusebox) {
-    add('socket', outletPic(st));
+    add('socket', fuseSwitchPic(st));
     add('tape', tapePic(st, N | E | W, 'PRESS SPACE'));
   }
   // the painted Easter egg (kit/easterEgg.ts), only in the room that hides it: a few points, a

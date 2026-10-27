@@ -88,7 +88,7 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
     card.links[0] = { toScene: roomScene(ri), from: b.start, to: b.start };
     game.scenes.push(card);
   });
-  // Behind a seam in a board's housing: the fuse box. Its socket leads through a page of
+  // Behind a seam in a board's housing: the fuse box. Its main switch leads through a page of
   // text back onto that board's pad.
   rooms.forEach((r, ri) => {
     const fb = r.fusebox;
