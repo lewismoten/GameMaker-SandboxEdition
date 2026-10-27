@@ -333,3 +333,22 @@
 .tour-on .dos-page {
   height: calc(100dvh - var(--tour-bar-h, 72px));
 }
+
+/* on a phone the copy check's guide or card is a sheet along the bottom (retro/gmReg/regSide.css):
+   during a tour it rests on the caption bar instead of under it */
+.tour-on .rs-narrow .rs-panel {
+  bottom: var(--tour-bar-h, 0px);
+  max-height: calc(62dvh - var(--tour-bar-h, 0px));
+}
+.tour-on .rs-narrow .rs-manual {
+  height: calc(62dvh - var(--tour-bar-h, 0px));
+}
+
+/* a narrow window's pages scroll: room under the last control, so it can scroll above the bar */
+@media (max-width: 960px) {
+  .tour-on body::after {
+    content: '';
+    display: block;
+    height: var(--tour-bar-h, 0px);
+  }
+}

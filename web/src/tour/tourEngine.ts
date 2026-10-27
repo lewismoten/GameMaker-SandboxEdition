@@ -230,7 +230,11 @@ export class Tour {
     const bottom = innerHeight - this.floor();
     const across = r.x >= 0 && r.x + Math.min(r.w, 200) <= this.view().w;
     if (across && r.y >= 0 && r.y + Math.min(r.h, 200) <= bottom) return;
+    // centered in what the bar leaves of the window (a phone's bar is tall)
+    const margin = el.style.scrollMarginBottom;
+    el.style.scrollMarginBottom = `${this.floor()}px`;
     el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: this.still ? 'auto' : 'smooth' });
+    el.style.scrollMarginBottom = margin;
     await sleep(this.still ? 60 : 500);
   }
 
