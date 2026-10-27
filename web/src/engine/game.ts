@@ -53,6 +53,14 @@ export interface RunOptions {
   onTouched?: Session['onTouched'];
   /** Play ended with this score (never during a demo's playback; see Session.onPlayEnd). */
   onPlayEnd?: Session['onPlayEnd'];
+  /**
+   * The editor's Play Level test only (never a saved, exported or DOS game): skip the title, its
+   * song and the menu, and start play at once by scene 0's first link (which the test copy points
+   * at the picked level and spot, editor/editors/integrator/startAt.ts) with a new game's
+   * character, as the menu's Play would. When that play ends (won, lost or Esc), the usual end
+   * follows (the won or dead picture, the high scores) and then the menu, as after any play.
+   */
+  skipTitle?: boolean;
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -99,22 +107,29 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors, look });
 
-  // Title (a hosted game may still be loading: m.need waits for files on their way)
-  m.want(file(0, 0), file(0, 2), file(0, 3));
-  await m.need(file(0, 1));
-  await m.audio.playSong(m.files.get(file(0, 1) ?? ''));
-  if (file(0, 0)) await show(file(0, 0)!);
-
-  if (opts.playback && s.rec.initPlayback(opts.playback)) {
-    m.audio.stopSong();
-    await play(s, 0);
-    return;
-  }
-  if (opts.record) {
-    m.audio.stopSong();
+  // The editor's Play Level test: straight into play, then the menu as after any play
+  if (opts.skipTitle) {
+    m.want(file(0, 2), file(0, 3));
     s.rec.initRecord();
     await play(s, 0);
-    return;
+  } else {
+    // Title (a hosted game may still be loading: m.need waits for files on their way)
+    m.want(file(0, 0), file(0, 2), file(0, 3));
+    await m.need(file(0, 1));
+    await m.audio.playSong(m.files.get(file(0, 1) ?? ''));
+    if (file(0, 0)) await show(file(0, 0)!);
+
+    if (opts.playback && s.rec.initPlayback(opts.playback)) {
+      m.audio.stopSong();
+      await play(s, 0);
+      return;
+    }
+    if (opts.record) {
+      m.audio.stopSong();
+      s.rec.initRecord();
+      await play(s, 0);
+      return;
+    }
   }
 
   const menuSong = async () => {
