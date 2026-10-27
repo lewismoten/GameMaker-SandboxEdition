@@ -120,6 +120,22 @@ describe('the chat loop', () => {
     expect(reply).toMatch(/^I stopped: I kept failing: set_map: file is required/);
   });
 
+  it('a reply that only says what it will do is told to go ahead, twice at most', async () => {
+    const ctx = tiny();
+    const plan = { content: 'Let’s adjust the map to add platforms.', toolCalls: [] };
+    const m = scripted([
+      plan,
+      calls(['get_map', { file: 'test.map', x: 0, y: 0, width: 2, height: 2 }]),
+      { ...plan },
+      { ...plan },
+      { content: 'never asked', toolCalls: [] },
+    ]);
+    const reply = await agentOn(ctx, m.chat).send('Make it easier');
+    expect(m.seen[1].at(-1)).toMatchObject({ role: 'user', content: expect.stringMatching(/^Go ahead/) });
+    expect(m.seen).toHaveLength(4);
+    expect(reply).toBe('Let’s adjust the map to add platforms.');
+  });
+
   it('Stop ends the turn; every call it made still gets an answer', async () => {
     const ctx = tiny();
     const stop = new AbortController();

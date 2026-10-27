@@ -53,7 +53,14 @@ const def: ToolDef = {
       }
       rows.push(row);
     }
-    return text(`${name} columns ${x0}-${x0 + w - 1}, rows ${y0}-${y0 + h - 1}:\n${rows.join('\n')}`);
+    // with no level using it, its blocks are unknown: say so rather than leave the model a page of ?
+    const why =
+      at < 0
+        ? `\n(? = unknown: no level uses ${name} as its map, so its blocks aren't known. get_scene shows each level's files.)`
+        : !bbl
+          ? `\n(? = unknown: the level's block set ${game.scenes[at].files[2] || '(none)'} isn't in the game.)`
+          : '';
+    return text(`${name} columns ${x0}-${x0 + w - 1}, rows ${y0}-${y0 + h - 1}:\n${rows.join('\n')}${why}`);
   },
 };
 

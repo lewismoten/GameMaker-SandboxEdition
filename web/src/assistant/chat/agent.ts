@@ -78,6 +78,12 @@ const EDITS_PER_PICTURE = 3;
 
 let textIds = 0;
 
+/** A reply that only says what it will do ("Let's add…", "I'll fix…", "Next, I need to…"). */
+const announces = (t: string) => /\b(let[’']?s|let me|i[’']ll|i will|i need to|i am going to|i[’']m going to|i should|next,? i|now i)\b/i.test(t);
+/** How often in one request such a reply is told to go ahead. */
+const NUDGES = 2;
+const GO_AHEAD = 'Go ahead: make those changes now with the tools, then run bot_playtest. Don’t describe them first.';
+
 /** The same failure, or the same call, this many times in one request stops it. */
 const REPEATS = 3;
 
@@ -286,6 +292,7 @@ export class Agent {
     this.archive.add({ turn: this.turn, role: 'user', text });
     this.repeats.clear();
     this.stuck = '';
+    let nudges = 0;
     const max = this.o.maxSteps ?? 24;
     for (let step = 0; step < max; step++) {
       signal?.throwIfAborted();
@@ -294,7 +301,15 @@ export class Agent {
       if (req.tokens > budget * 0.9 && (await this.compact(opts))) req = await this.prepare();
       while (req.tokens > budget && this.squeeze()) req = await this.prepare();
       const done = await this.step(req, opts);
-      if (!done.calls.length) return done.content;
+      if (!done.calls.length) {
+        // "Let's adjust the map…" and no call: it said what it would do, so it's told to do it
+        if (nudges < NUDGES && !this.stuck && announces(done.content)) {
+          nudges++;
+          this.messages.push({ role: 'user', content: GO_AHEAD });
+          continue;
+        }
+        return done.content;
+      }
       if (this.stuck) {
         const note = `I stopped: I kept ${this.stuck}. A larger model, or asking for one small step at a time, may do better.`;
         this.messages.push({ role: 'assistant', content: note });
