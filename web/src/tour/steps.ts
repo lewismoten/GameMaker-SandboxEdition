@@ -36,6 +36,8 @@ export const HOSTS = {
   max: { name: 'Max', game: 'maximus', scale: 2, voiced: true, voice: { sample: 'scroobie', semitones: 0, tempo: 1 } },
   // the editor: Ohm Sweet Ohm's repair robot
   watt: { name: 'Watt', game: 'logic', scale: 3, voiced: true, voice: { sample: 'lewis', semitones: 7, tempo: 1.05 } },
+  // DOS: Quest for the Round Tuit's Professor Fiddlesticks, the inventor in Someday Harbor's garage
+  fiddle: { name: 'Professor Fiddlesticks', game: 'realm', scale: 3, voiced: true, voice: { sample: 'snooty-wiz', semitones: 0, tempo: 1 } },
 } satisfies Record<string, { name: string; game: string; scale: number; voiced: boolean; voice: HostVoice }>;
 export type HostId = keyof typeof HOSTS;
 
@@ -51,6 +53,8 @@ export const PROPS = {
   tinHeart: { game: 'teddy', scale: 3 },
   // Virus Blaster's BLASTER nano-fighter, from the side
   ship: { game: 'blaster', scale: 3 },
+  // THE CHEZ, driving by as it does in Quest for the Round Tuit
+  chez: { game: 'realm', scale: 2 },
 } as const;
 export type PropId = keyof typeof PROPS;
 
@@ -83,6 +87,13 @@ export const SOUNDS = {
   clack: 'logic/clack',
   fizzle: 'logic/fizzle',
   zap: 'blaster/zap',
+  scoop: 'snowbound/scoop',
+  crunch: 'snowbound/crunch',
+  cocoa: 'snowbound/cocoa',
+  ahooga: 'realm/ahooga',
+  kazoo: 'realm/kazoo',
+  fanfare: 'realm/fanfare',
+  pickup: 'realm/pickup',
 } as const;
 
 /**
@@ -110,6 +121,8 @@ export const MUSIC = {
   sleuthParlor: 'sleuth/parlor.cmf',
   maxStation: 'maximus/station.cmf',
   ohmGarage: 'logic/garage.cmf',
+  snowTitle: 'snowbound/title.cmf',
+  tuitMenu: 'realm/menu.cmf',
 } as const;
 export type MusicId = keyof typeof MUSIC;
 
@@ -158,8 +171,14 @@ export interface TourStep {
   sound?: SoundId;
   /** How long the step stays, in ms (worked out from the words if not given). */
   ms?: number;
-  /** A press really clicks the control: only where that is harmless (it opens a menu, picks another game). */
-  click?: boolean;
+  /**
+   * A press really clicks the control: only where that is harmless (it opens a menu, picks
+   * another game). A selector clicks it only while it matches (the desk's Power button only
+   * while the PC is off, so the tour never switches it off).
+   */
+  click?: boolean | string;
+  /** Said only in its page's own tour: the whole tour says it on another page (Settings has the theme). */
+  pageOnly?: boolean;
   /** Left out, rather than said with nothing to point at, when its target isn't on the page. */
   optional?: boolean;
   /** Starts or stops the page's game preview as the action lands (previews are held still during a tour otherwise). */
@@ -181,8 +200,10 @@ export interface Chapter {
   /** On its title card and in the tour's menus. */
   title: string;
   page: PageKey;
-  /** The address that shows the page. */
+  /** The address that shows the page (on index.html; the DOS page's chapter has `file`). */
   hash: string;
+  /** A page of its own, not index.html (the DOS page): the tour goes on there with a full page load. */
+  file?: 'dos.html';
   /** Waited for before the first step (the page has drawn). */
   ready: string;
   /**

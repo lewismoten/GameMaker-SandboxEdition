@@ -6,12 +6,19 @@ import { CHAPTERS } from './chapters/index';
 import { Tour, tourPlaying } from './tourEngine';
 import type { PageKey } from './steps';
 
-/** Plays the whole tour ('all'), one chapter by id, or (no id) the chapter for `page`. */
-export function startTour(which: string | undefined, opts: { record?: boolean; page?: PageKey } = {}): void {
+/**
+ * Plays the whole tour ('all'), chapters by id ('dos', or 'desk,dos'), or (no id) the chapter
+ * for `page`. `cont`: carrying on from another page (the whole tour, gone on to the DOS page).
+ */
+export function startTour(which: string | undefined, opts: { record?: boolean; page?: PageKey; cont?: boolean } = {}): void {
   hideDock();
-  const chapters = which === 'all' ? CHAPTERS : CHAPTERS.filter((c) => (which ? c.id === which : c.page === opts.page));
-  if (!chapters.length) return;
-  void new Tour(chapters, { record: opts.record, onEnd: () => (dockFor ? showDock(dockFor) : undefined) }).start();
+  const ids = which?.split(',');
+  const chosen = which === 'all' ? CHAPTERS : CHAPTERS.filter((c) => (ids ? ids.includes(c.id) : c.page === opts.page));
+  if (!chosen.length) return;
+  // more than one page: what another page says (Settings has the theme) is left to that page
+  const whole = chosen.length > 1 || !!opts.cont;
+  const chapters = whole ? chosen.map((c) => ({ ...c, steps: c.steps.filter((s) => !s.pageOnly) })) : chosen;
+  void new Tour(chapters, { record: opts.record, cont: opts.cont, onEnd: () => (dockFor ? showDock(dockFor) : undefined) }).start();
 }
 
 let dock: { el: HTMLElement; hosts: Actor[] } | undefined;

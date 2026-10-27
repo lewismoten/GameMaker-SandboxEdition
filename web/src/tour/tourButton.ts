@@ -1,11 +1,12 @@
-// Today's web header's ? Guides button and its menu: show me around this page, keep the guides
-// waiting on this page (remembered per page), watch or record the whole tour. Also a tour
-// asked for in the address (#/?tour=all, #/?tour=home&record). The tour itself is its own
-// download (tourStart.ts), loaded only when one starts or the guides wait on the page shown.
+// The ? Guides button and its menu, in today's web header, the desk's and the DOS page's: show
+// me around this page, keep the guides waiting on this page (remembered per page), watch or
+// record the whole tour. Also a tour asked for in the address (#/?tour=all, #/?tour=home&record,
+// dos.html?tour=dos). The tour itself is its own download (tourStart.ts), loaded only when one
+// starts or the guides wait on the page shown.
 import './tourButton.css';
 import { h } from '../editor/core/ui';
 import { currentRoute, withParams } from '../urlState';
-import { CHAPTER_PAGES, guidesOn, pageOf, setGuidesOn, tourRequest } from './tourPages';
+import { CHAPTER_PAGES, guidesOn, onDosPage, pageHere, setGuidesOn, tourRequest } from './tourPages';
 import type { PageKey } from './steps';
 
 const tour = () => import('./tourStart');
@@ -24,14 +25,17 @@ export const wholeTourItem = (attrs: Record<string, string> = {}): HTMLElement =
 
 const hasChapter = (page: PageKey | undefined) => !!page && CHAPTER_PAGES.includes(page);
 
-/** The ? button and its menu (arrow keys, Home and End move through it; Escape closes it). */
-export function tourButton(): HTMLElement {
+/**
+ * The ? button and its menu (arrow keys, Home and End move through it; Escape closes it).
+ * `look`: a class for the button in the bar it sits in (the DOS page's dos-btn).
+ */
+export function tourButton(look = 'topbar-gear'): HTMLElement {
   watchPages();
   const button = h(
     'button',
     {
       type: 'button',
-      class: 'topbar-gear tour-btn',
+      class: `${look} tour-btn`,
       'aria-label': 'Guides',
       'aria-haspopup': 'menu',
       'aria-expanded': 'false',
@@ -62,7 +66,7 @@ export function tourButton(): HTMLElement {
   const menu = h('div', { id: 'tour-menu', class: 'topbar-menu', role: 'menu', 'aria-label': 'Guides', hidden: true }, ...items);
   const wrap = h('div', { class: 'tour-wrap' }, button, menu);
 
-  const page = () => pageOf(location.hash);
+  const page = pageHere;
   const startHere = () => void tour().then((m) => m.startTour(undefined, { page: page() }));
   const toggleWait = () => {
     const p = page();
@@ -144,14 +148,24 @@ function watchPages(): void {
   if (watching) return;
   watching = true;
   const check = () => {
-    const req = tourRequest(location.hash);
+    const dos = onDosPage();
+    const req = tourRequest(location.hash, dos ? location.search : '');
     if (req) {
       // the request leaves the address, so a reload doesn't start it again
-      history.replaceState(history.state, '', `${location.pathname}${location.search}${withParams(currentRoute(), { tour: undefined, record: undefined })}`);
-      void tour().then((m) => m.startTour(req.chapters, { record: req.record }));
+      if (dos) {
+        const q = new URLSearchParams(location.search);
+        for (const k of ['tour', 'record', 'cont']) q.delete(k);
+        history.replaceState(history.state, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`);
+      } else
+        history.replaceState(
+          history.state,
+          '',
+          `${location.pathname}${location.search}${withParams(currentRoute(), { tour: undefined, record: undefined, cont: undefined })}`,
+        );
+      void tour().then((m) => m.startTour(req.chapters, { record: req.record, cont: req.cont }));
       return;
     }
-    void dockFor(pageOf(location.hash));
+    void dockFor(pageHere());
   };
   window.addEventListener('hashchange', check);
   // after the page's first render has begun

@@ -53,6 +53,18 @@ export class TourSound {
     });
   }
 
+  /**
+   * Starts the sound without a click, as the tour carries on from another page (a browser that
+   * saw a click on this site's last page may allow it): whether it is really playing. If not,
+   * it starts with the next tap or key (audio/context.ts).
+   */
+  async startNow(): Promise<boolean> {
+    if (!this.on) return true;
+    this.start();
+    await this.engine.resume();
+    return this.engine.context?.state === 'running';
+  }
+
   /** The chapter's song (kept to start once sound is on). */
   music(id: MusicId | undefined): void {
     if (id === this.song) return;

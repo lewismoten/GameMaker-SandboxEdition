@@ -12,12 +12,15 @@ Bizarre's recordings (they are for non-commercial use, and the tour may be recor
 
 ## Starting it
 
-- The header's **?** button (`tourButton.ts`): Show me around this page, Guides wait on this page
+- The **?** button (`tourButton.ts`) in today's web header, on the desk's wall and in the DOS
+  page's bar: Show me around this page, Guides wait on this page
   (Teddy and Gwinn stand in the corner of that page, offering its tour; remembered per page in
   `localStorage` `gm-tour-on`, off by default), Watch the whole tour, Record the whole tour.
 - ⚙ Settings › **Guided tour** (also in the ⋯ menu): the whole tour.
-- The address: `#/?tour=all` (the whole tour), `#/?tour=home` (one chapter), with `&record` for
-  recording mode. The request leaves the address once read, so a reload doesn't start it again.
+- The address: `#/?tour=all` (the whole tour), `#/?tour=home` (one chapter), `#/desk?tour=desk`,
+  `dos.html?tour=dos`, or chapters' ids with commas, with `&record` for recording mode. The
+  request leaves the address once read, so a reload doesn't start it again. `&cont` says a tour
+  carries on from another page (below).
 
 ## The chapters
 
@@ -33,12 +36,25 @@ game, that game's music and its sound effects:
 | `guide`                                | `#/help` (always its first part) | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
 | `settings`: the ⚙ menu                 | `#/credits`                      | Courier Max, Maximus (scroobie)                                                        | Maximus's station         |
 | `editor`                               | `#/p/look:logic/kitchen.map`     | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
+| `desk`: the 1994 desk                  | `#/desk`                         | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
+| `dos`: DOS Game-Maker                  | `dos.html`                       | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
 The Settings chapter opens the menu to show each item and shuts it again, and starts nothing
 (no download, no restore). The editor chapter looks inside Ohm Sweet Ohm as released: read-only
 and in memory, so it makes no project and changes none of the visitor's; started from their own
-game, it goes back there when it ends. Still to write: `dos` and `desk` (`chapters/index.ts`
-`PLANNED`).
+game, it goes back there when it ends. The desk chapter really presses only Power, and only while
+the PC is off (`click` with a selector); on a phone, where the room is a column with no wall, its
+shelf, phone, clock and poster steps are left out. The DOS chapter types and presses nothing.
+
+**Another page.** The DOS page is `dos.html`, not `index.html`, so a chapter there (`file`) is
+reached with a page load: the tour shows its title card, then goes to
+`dos.html?tour=<the chapters left>&cont` (`tourEngine.ts` `handOff`), which picks it up with the
+same card; the DOS chapter is last, so nothing goes back. A browser that saw a click on the last
+page lets the sound go on without one, so recording mode skips its Start card then (if not, the
+card asks again). Whole tours leave out steps marked `pageOnly` (Home's Play offline and Theme,
+which the Settings chapter shows). While a tour plays the page hears `gm-tour` events: the desk's
+stage leaves room for the caption bar (`desk/stage.ts`), the DOS page stops above it (`--tour-bar-h`
+in `tour.css`), and achievement notes wait until it ends (`achievements/toast.ts`).
 
 In a tour: Back, Pause, Next, Sound (the mute switch, remembered as `gm-tour-sound`; a browser
 whose demo sound is None starts muted) and Close tour; Esc ends it from anywhere, and the keyboard
@@ -89,5 +105,5 @@ its page's controls in `tourData.test.ts` `SOURCES`. A new host is a sprite in
 `scripts/castSprites.ts` (run it to rewrite `public/cast/sprites.json`) and an entry in `steps.ts`
 `HOSTS` with its voice; then `npm run voice` records the new lines. `tourData.test.ts` checks every selector is really made there, the text fits a phone's bubble, the ids are unique and the sprites, sounds and music are
 Sandbox games' own. Check what each control really does before describing it. A page outside
-today's web (the desk, `dos.html`) will need the button or an entry of its own there, and a
-`pageOf` for its address.
+today's web needs the ? button in its own header (the desk's and the DOS page's have it), and a
+`pageHere` for its address; one outside `index.html` names its `file`.

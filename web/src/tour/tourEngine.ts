@@ -3,7 +3,10 @@
 // speech bubble and anything wandering through; a bar along the bottom holds the caption (read
 // out to screen readers) and Back, Pause, Next, Sound and Close. Steps move on by themselves.
 // Recording mode hides the pointer and the buttons (the keys still work), shows a title card
-// before each chapter, and keeps a steady pace, for screen recordings.
+// before each chapter, and keeps a steady pace, for screen recordings. A chapter on another
+// page (the DOS page, dos.html) carries the tour on there with a full page load (handOff).
+// While a tour plays, the page hears 'gm-tour' events ('start', 'end'): the desk makes room for
+// the caption bar, and achievement notes wait until it ends.
 import './tour.css';
 import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
@@ -15,12 +18,14 @@ import { hushDemos } from '../media/demoAudio';
 
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
-import { pageOf } from './tourPages';
+import { onDosPage, pageHere, pageOf } from './tourPages';
 import { parseHash } from '../urlState';
 import type { Sprite } from '../cast/castStageDraw';
 
 export interface TourOptions {
   record?: boolean;
+  /** Carrying on from another page: no Start card when the sound can start without a click. */
+  cont?: boolean;
   /** Said when the tour ends (finished or closed). */
   onEnd?: () => void;
 }
@@ -30,6 +35,7 @@ const rectOf = (el: Element): Rect => {
   return { x: r.left, y: r.top, w: r.width, h: r.height };
 };
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent('gm-tour', { detail: what }));
 
 /** Two addresses show the same thing (their paths match; the editor adds its own settings after them). */
 const samePlace = (a: string, b: string) => parseHash(a).path.join('/') === parseHash(b).path.join('/');
@@ -77,6 +83,7 @@ export class Tour {
     h('div', { class: 'tour-controls' }, this.backBtn, this.pauseBtn, this.nextBtn, this.soundBtn, this.closeBtn),
   );
   private card?: HTMLElement;
+  private barSize = new ResizeObserver(() => document.documentElement.style.setProperty('--tour-bar-h', `${this.bar.offsetHeight}px`));
 
   constructor(
     private chapters: Chapter[],
@@ -96,12 +103,17 @@ export class Tour {
     tourDemo('stop');
     this.layer.append(this.ring, this.bubble);
     document.body.append(this.layer, this.bar);
+    // the bar's height for a page that keeps its bottom clear of it (the DOS page's footer: tour.css)
+    this.barSize.observe(this.bar);
+    announce('start');
     this.showSound();
     document.addEventListener('keydown', this.onKey, true);
     window.addEventListener('hashchange', this.onHash);
     window.addEventListener('resize', this.onResize);
     this.sprites = await loadSprites();
-    if (this.opts.record) {
+    // carried on from another page: the browser may let the sound start without a click
+    const playing = this.opts.cont && (await this.sound.startNow());
+    if (this.opts.record && !playing) {
       // a click on Start lets the music play; the pointer is hidden from then on
       if (!(await this.titleCard('A guided tour', 'Game-Maker: Sandbox Edition', true))) return;
     }
@@ -139,7 +151,8 @@ export class Tour {
     if (chapter !== this.chapterShown) {
       this.chapterShown = chapter;
       this.clearHosts();
-      const elsewhere = pageOf(location.hash) !== chapter.page;
+      if ((chapter.file === 'dos.html') !== onDosPage()) return this.handOff(chapter);
+      const elsewhere = pageHere() !== chapter.page;
       if (elsewhere || (chapter.always && !samePlace(location.hash, chapter.hash))) {
         this.navigating = true;
         if (!elsewhere) this.moved = true;
@@ -148,7 +161,7 @@ export class Tour {
         this.navigating = false;
       }
       this.sound.music(chapter.music);
-      if (this.opts.record || this.chapters.length > 1) {
+      if (this.opts.record || this.chapters.length > 1 || this.opts.cont) {
         this.bubble.hidden = true;
         await this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
         if (!this.live(token)) return;
@@ -284,7 +297,7 @@ export class Tour {
       this.sound.effect(step.sound);
       this.pressed = target;
       target.classList.add('tour-pressed');
-      if (step.click) this.clickKeepingFocus(target);
+      if (step.click === true || (step.click && target.matches(step.click))) this.clickKeepingFocus(target);
     } else this.sound.effect(step.sound);
     if (step.demo) tourDemo(step.demo);
     if (!this.live(token)) return;
@@ -445,8 +458,27 @@ export class Tour {
   /** Leaving the page (a link the visitor followed) ends the tour. */
   private onHash = () => {
     const chapter = this.flat[this.i]?.chapter;
-    if (!this.navigating && chapter && pageOf(location.hash) !== chapter.page) this.end();
+    if (!this.navigating && chapter && pageHere() !== chapter.page) this.end();
   };
+
+  // ---- another page -------------------------------------------------------------------------
+
+  /**
+   * The tour goes on on another page (the DOS page, or back to index.html from it): its title
+   * card comes up here and again there, and the address there names the chapters left, with
+   * &cont so it carries on without a Start card when the browser lets its sound start.
+   */
+  private handOff(chapter: Chapter): void {
+    const rest = this.chapters.slice(this.chapters.indexOf(chapter)).map((c) => c.id);
+    const params = `tour=${rest.join(',')}${this.opts.record ? '&record' : ''}&cont`;
+    const url = chapter.file ? `./${chapter.file}?${params}` : `./${chapter.hash}${chapter.hash.includes('?') ? '&' : '?'}${params}`;
+    this.cancelHold();
+    this.sound.dispose();
+    this.bubble.hidden = this.ring.hidden = true;
+    void this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
+    // a moment for the card to show, then the page
+    setTimeout(() => location.assign(url), 300);
+  }
 
   // ---- title cards and the end ---------------------------------------------------------------
 
@@ -500,7 +532,10 @@ export class Tour {
     this.card?.remove();
     this.layer.remove();
     this.bar.remove();
+    this.barSize.disconnect();
+    document.documentElement.style.removeProperty('--tour-bar-h');
     document.documentElement.classList.remove('tour-recording');
+    announce('end');
     document.removeEventListener('keydown', this.onKey, true);
     window.removeEventListener('hashchange', this.onHash);
     window.removeEventListener('resize', this.onResize);

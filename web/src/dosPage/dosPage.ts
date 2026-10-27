@@ -28,6 +28,7 @@ import { watchForUpdates } from '../devReload';
 import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
+import { tourButton } from '../tour/tourButton';
 import { placeNotes } from '../achievements/toast';
 import { footer } from './footer';
 import { moreMenu } from './moreMenu';
@@ -291,6 +292,8 @@ clear(
       // Desk | DOS | Web at the top right, where every view has it, the ⋯ menu after it; the disk
       // in drive A: comes along
       viewSwitch('dos', () => disks.current()),
+      // ? Guides: the tour of this page, or the whole tour (tour/; the tour loads when started)
+      tourButton('dos-btn'),
       more,
     ),
     stage,

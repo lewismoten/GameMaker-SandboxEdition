@@ -22,6 +22,7 @@ import { paperStack } from './room/paperStack';
 import { cover } from './props/propKit';
 import { EDITION, FORK_NOTE } from '../edition';
 import { viewSwitch } from '../viewSwitch';
+import { tourButton } from '../tour/tourButton';
 
 /** `el` with a button laid over it (propKit.ts cover), for the box art's words. */
 const withCover = (el: HTMLElement, name: string): HTMLElement => (cover(el, name), el);
@@ -105,6 +106,8 @@ export function deskScene(on: DeskActions) {
       viewSwitch('desk', () => on.diskInA(), {
         web: (href) => (on.toModernAt ? on.toModernAt(href.slice(href.indexOf('#'))) : on.toModern()),
       }),
+      // ? Guides: the tour of the desk, or the whole tour (tour/; the tour loads when started)
+      tourButton(),
       // where today's web has its ⚙ Settings button: the switch sits at the same top right in every view
       h('span', { class: 'view-switch-end', 'aria-hidden': 'true' }),
     ),
