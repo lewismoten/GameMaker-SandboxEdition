@@ -6,6 +6,9 @@
   position: relative;
   flex: none;
 }
+.tour-wrap > .topbar-menu {
+  min-width: 250px;
+}
 .tour-wrap > .topbar-menu[hidden] {
   display: none;
 }
