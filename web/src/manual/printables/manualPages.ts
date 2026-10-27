@@ -42,7 +42,9 @@ async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLEleme
       const num = (name: string, d: number) => Number(s.getAttribute(name) ?? d) || d;
       const w = num('w', 16);
       const hh = num('h', 10);
-      const shot = await mapShot(entry, s.getAttribute('map') ?? '', num('x', 0), num('y', 0), w, hh).catch(() => undefined);
+      // bbl: a map two scenes share, drawn with that scene's blocks
+      const bbl = s.getAttribute('bbl') ?? undefined;
+      const shot = await mapShot(entry, s.getAttribute('map') ?? '', num('x', 0), num('y', 0), w, hh, bbl).catch(() => undefined);
       const fig = document.createElement('figure');
       if (shot)
         fig.append(
