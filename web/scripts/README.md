@@ -54,8 +54,8 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
   record. Never put Lewis's voice samples in the repo, a download or a test fixture.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
-  `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast`, from the
-  other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
+  `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast` (the sprites
+  also walk the guided tour, with a few hosts of its own), from the other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
 - Downloads from the command line: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` run the same code as
   the Download button (see [`export/`](../src/export/README.md)).
 - [`mcp/`](mcp) (`npm run mcp`): the local MCP server for AI tools. It uses the

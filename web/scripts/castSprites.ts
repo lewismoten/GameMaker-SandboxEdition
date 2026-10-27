@@ -166,6 +166,11 @@ const CAST_SPRITES: Record<string, Source> = {
     ],
     ms: 150,
   },
+  // the guided tour's hosts from other Sandbox games (not on the cast page's stage)
+  dex: { game: 'year2000', chr: 'dex.chr', cbl: 'dex.cbl', pal: 'y2k.pal' },
+  ada: { game: 'sleuth', chr: 'ada.chr', cbl: 'ada.cbl', pal: 'house.pal' },
+  max: { game: 'maximus', chr: 'courier.chr', cbl: 'courier.cbl', pal: 'home.pal' },
+  ship: { game: 'blaster', chr: 'shipside.chr', cbl: 'ship.cbl', pal: 's1.pal' },
 };
 
 const disk = (game: string, file: string) => readFileSync(join(__dirname, '../../games', game, 'disk', file));
