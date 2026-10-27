@@ -811,6 +811,11 @@ a.button.with-ico {
   right: auto;
   bottom: auto;
   left: 0;
+  /* kept inside its tile: a hidden tip still counts toward the page's width, and one past the
+     last tile's edge made the page scroll sideways (844 x 390) */
+  width: max-content;
+  max-width: 128px;
+  white-space: normal;
 }
 
 .health-badge[data-tip]::after {
