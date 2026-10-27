@@ -1,7 +1,8 @@
 // The soundtrack: driving FM songs for the Sound Blaster. Each song is a hand-written
 // lead over a chord progression, with a pumping bass, a sixteenth-note arpeggio, and drums
 // made from noisy FM patches (kick, snare and hi-hat on their own channels).
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { INSTRUMENTS, sbi, type Voice } from '../../../kit/music';
+import { tune, join, times } from '../../../kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   Am: ['A', 'C', 'E'],
@@ -37,9 +38,6 @@ function tone(chord: string, k: number, octave: number): string {
   return `${n}${octave + up}`;
 }
 
-const join = (...parts: string[]) => parts.filter(Boolean).join(', ');
-const times = (n: number, s: string) => Array(n).fill(s).join(', ');
-
 /** Sixteenth-note arpeggio, one chord per bar, following `shape` (chord-tone indexes). */
 function arp(chords: string[], octave = 4, shape = [0, 1, 2, 3, 2, 1, 0, 1], len = 's'): string {
   const per = len === 's' ? 16 : 8;
@@ -68,20 +66,6 @@ function drums(bars: number, style: 'rock' | 'four' | 'half' | 'none' = 'rock'):
   const snare = style === 'half' ? 'r h, D4 h' : 'r q, D4 q, r q, D4 q';
   const hat = style === 'half' ? 'C6 q, C6 q, C6 q, C6 q' : times(8, 'C6 e');
   return [times(bars, kick), times(bars, snare), times(bars, hat)];
-}
-
-const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25, t: 1 / 3 };
-const beatsOf = (notes: string) =>
-  notes
-    .split(',')
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .reduce((n, t) => n + LEN[t.endsWith('.') ? t.slice(-2, -1) : t.slice(-1)] * (t.endsWith('.') ? 1.5 : 1), 0);
-
-function tune(bpm: number, voices: Voice[]): Uint8Array {
-  const beats = voices.map((x) => beatsOf(x.notes));
-  if (beats.some((b) => Math.abs(b - beats[0]) > 1e-6)) throw new Error(`Voices differ in length: ${beats.join(' ')}`);
-  return song(bpm, voices);
 }
 
 const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100): Voice => ({ channel, instrument, notes, velocity });

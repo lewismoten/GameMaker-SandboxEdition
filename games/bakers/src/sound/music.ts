@@ -2,7 +2,8 @@
 // of thirteen bars, one more than anybody can march to; every room plays it its own way
 // (a music box in the Pantry, a hot band in the Bakehouse, a minuet in the Tea Room, a polka
 // in the Brewery, a ticking clock at midnight...), and the title and ending dress it up.
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { INSTRUMENTS, sbi } from '../../../kit/music';
+import { tune, v, times } from '../../../kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   G: ['D4', 'G4', 'B4'],
@@ -38,29 +39,6 @@ function bass(bars: string[], style: 'oompah' | 'walk' | 'whole' | 'half'): stri
     })
     .join(', ');
 }
-
-const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25 };
-const beatsOf = (notes: string) =>
-  notes
-    .split(',')
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .reduce((n, t) => n + LEN[t.endsWith('.') ? t.slice(-2, -1) : t.slice(-1)] * (t.endsWith('.') ? 1.5 : 1), 0);
-
-function tune(bpm: number, voices: Voice[]): Uint8Array {
-  const beats = voices.map((x) => beatsOf(x.notes));
-  if (beats.some((b) => Math.abs(b - beats[0]) > 1e-6)) throw new Error(`Voices differ in length: ${beats.join(' ')}`);
-  return song(bpm, voices);
-}
-
-const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
-  channel,
-  instrument,
-  notes,
-  velocity,
-  transpose,
-});
-const times = (n: number, s: string) => Array(n).fill(s).join(', ');
 
 const FIFE = sbi({
   modChar: 0x22,
