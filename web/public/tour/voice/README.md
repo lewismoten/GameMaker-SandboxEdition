@@ -37,3 +37,104 @@ records every clip again.
 | [home-theme.ogg](home/home-theme.ogg) | Theme switches between dark, light, or whatever your computer uses. | Home: Teddy points at Theme in the Settings menu | 5.02 |
 | [home-guides.ogg](home/home-guides.ogg) | Press this button any time to see this tour again, or to have Teddy and me wait on a page for you. | Home: Teddy points at the ? Guides button | 6.27 |
 | [home-bye.ogg](home/home-bye.ogg) | That’s the tour! Now go play something. | Home: Gwinn says goodbye and walks off | 3.24 |
+
+## library
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [library-hello.ogg](library/library-hello.ogg) | Good evening. I’m Joe, the night librarian. Everything on these shelves is to read, print or watch. | Library: Joe comes on | 12.11 |
+| [library-lewie.ogg](library/library-lewie.ogg) | Hi, I’m Lewie! I shoveled a lot of snow to buy Game-Maker. All the paper from the game boxes is here. | Library: Lewie comes on | 6.48 |
+| [library-sort.ogg](library/library-sort.ogg) | Sort the shelves by game, or by type: every manual together, every map together. | Library: Lewie points at the By game and By type buttons | 8.83 |
+| [library-pick.ogg](library/library-pick.ogg) | Pick one game, or one kind, to see just that shelf. | Library: Lewie points at the Game or Kind picker | 6.19 |
+| [library-all.ogg](library/library-all.ogg) | Showing just one game? This puts everything back on the shelves. | Library: Lewie presses the All games button | 6.51 |
+| [library-count.ogg](library/library-count.ogg) | This counts everything on the shelves. I counted them too. Twice. | Library: Joe points at the count of things on the shelves | 6.35 |
+| [library-card.ogg](library/library-card.ogg) | Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too. | Library: Lewie points at the first card on the shelves | 9.71 |
+| [library-print.ogg](library/library-print.ogg) | Disk labels and retail boxes open in the print shop, with lines to cut and fold along. | Library: Lewie points at a Disk labels card | 8.59 |
+| [library-walkthrough.ogg](library/library-walkthrough.ogg) | Every game’s walkthrough is here too, played start to finish. Its length is on the card. | Library: Lewie points at a Walkthrough card | 8.27 |
+| [library-magazine.ogg](library/library-magazine.ogg) | TURBO BUTTON is the shareware gamer’s monthly: news, reviews, hints and every game. | Library: Lewie points at the TURBO BUTTON card | 9.15 |
+| [library-guide.ogg](library/library-guide.ogg) | The Guide and the help for Mac, Windows and Linux are shelved here as well. | Library: Lewie points at the Guide card | 6.99 |
+| [library-bye.ogg](library/library-bye.ogg) | Please return every word to its book. Exactly one hundred at a time. | Library: Joe says goodbye and walks off | 7.39 |
+
+## achievements
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [achievements-hello.ogg](achievements/achievements-hello.ogg) | Hi! I’m Dex Dynamo, from the year 2000. This page keeps track of everything you’ve done here. | Achievements: Dex comes on | 6.95 |
+| [achievements-summary.ogg](achievements/achievements-summary.ogg) | Up top: how many you’ve unlocked so far, out of all of them. | Achievements: Dex points at the count of achievements unlocked | 4.05 |
+| [achievements-making.ogg](achievements/achievements-making.ogg) | Making games: start one, change a file, run the Level check, download it for DOS or the web. | Achievements: Dex points at the Making games heading | 7.07 |
+| [achievements-card.ogg](achievements/achievements-card.ogg) | Each badge says what to do to earn it. Press one to see more, and where to go for it. | Achievements: Dex points at the first badge | 5.52 |
+| [achievements-playing.ogg](achievements/achievements-playing.ogg) | Playing: finish games on the web, on the 1994 desk, even on a phone held sideways. | Achievements: Dex points at the Playing heading | 6.45 |
+| [achievements-hearts.ogg](achievements/achievements-hearts.ogg) | Tin hearts are tucked away inside the games. Touch one and it counts here. | Achievements: Dex points at the Tin heart badge | 5.05 |
+| [achievements-watching.ogg](achievements/achievements-watching.ogg) | Watching: sit back with a walkthrough, or record a video of the screen. | Achievements: Dex points at the Watching heading | 4.75 |
+| [achievements-desk.ogg](achievements/achievements-desk.ogg) | The 1994 desk: switch on the PC, dial a BBS, run the programs on it. | Achievements: Dex points at the The 1994 desk heading | 6.37 |
+| [achievements-site.ogg](achievements/achievements-site.ogg) | Around the site: meet the cast, unfold a map, visit the Library. A few badges stay hidden until you find them. | Achievements: Dex points at the Around the site heading | 7.90 |
+| [achievements-reset.ogg](achievements/achievements-reset.ogg) | Start over forgets the badges in this browser, after asking. Your games and saves stay. | Achievements: Dex points at the Reset achievements button | 6.30 |
+| [achievements-bye.ogg](achievements/achievements-bye.ogg) | They’re kept in this browser, for these pages and the desk alike. Now go earn some! | Achievements: Dex says goodbye and walks off | 5.82 |
+
+## cast
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [cast-hello.ogg](cast/cast-hello.ogg) | Smile on: showtime! I’m Doc Leo. This is the cast: everyone from the new games. | Cast: Doc Leo comes on | 5.39 |
+| [cast-stage.ogg](cast/cast-stage.ogg) | On stage, each regular walks on and says hello, drawn from their own game. | Cast: Teddy points at the stage | 5.63 |
+| [cast-next.ogg](cast/cast-next.ogg) | The arrows bring on the next one, or the one before. | Cast: Teddy presses the Next character button | 3.95 |
+| [cast-pick.ogg](cast/cast-pick.ogg) | Or call one by name from this list. | Cast: Teddy points at the Pick a character list | 2.43 |
+| [cast-sound.ogg](cast/cast-sound.ogg) | The stage stays quiet until you ask. Then the Teddy games’ theme plays along. | Cast: Teddy points at the stage’s sound button | 5.15 |
+| [cast-families.ogg](cast/cast-families.ogg) | Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD. | Cast: Teddy points at the three kinds of games | 7.95 |
+| [cast-filters.ogg](cast/cast-filters.ogg) | These show just one kind’s regulars, or everyone. | Cast: Teddy points at the Show the cast of buttons | 3.71 |
+| [cast-card.ogg](cast/cast-card.ogg) | Each regular has a card: who they are, and a little about them. Teddy knows left from right! | Cast: Teddy points at Teddy’s card | 6.99 |
+| [cast-appears.ogg](cast/cast-appears.ogg) | And the games each one is seen in. Press a picture to go to that game. | Cast: Teddy points at the games Teddy is seen in | 4.75 |
+| [cast-gwinn.ogg](cast/cast-gwinn.ogg) | It wasn’t me. (It was me.) Zoomies! | Cast: Gwinn comes on | 3.12 |
+| [cast-bye.ogg](cast/cast-bye.ogg) | Hey, that’s my hat! Thanks for coming to the show, folks. | Cast: Doc Leo says goodbye and walks off | 3.87 |
+
+## guide
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [guide-hello.ogg](guide/guide-hello.ogg) | Inspector Ada Penn. Every case needs a good guide, and so does making games. This is it. | Guide: Inspector Penn comes on | 6.80 |
+| [guide-start.ogg](guide/guide-start.ogg) | Getting started: how to design, play and share games in this web version. | Guide: Inspector Penn points at the Getting started heading | 5.25 |
+| [guide-tip.ogg](guide/guide-tip.ogg) | New here? Play a game, Look inside it, Edit a copy, then change one small thing and play again. | Guide: Inspector Penn points at the tip for new game makers | 6.43 |
+| [guide-contents.ogg](guide/guide-contents.ogg) | The contents, one part at a time. The editors explains each tool, from maps to music. | Guide: Inspector Penn points at The editors in the Guide’s contents | 6.38 |
+| [guide-sharing.ogg](guide/guide-sharing.ogg) | Sharing your game: a web app for any web host, a copy for real DOS, or just its files. | Guide: Inspector Penn points at Sharing your game in the Guide’s contents | 6.68 |
+| [guide-owners.ogg](guide/guide-owners.ogg) | The Owner’s Guide explains every part of a game, and how the parts fit together. | Guide: Inspector Penn points at the Open the Owner’s Guide button | 5.70 |
+| [guide-ultimate.ogg](guide/guide-ultimate.ogg) | The Ultimate Owner’s Guide is about making a game people enjoy. The Level check uses its checklists. | Guide: Inspector Penn points at the Open The Ultimate Owner’s Guide button | 6.95 |
+| [guide-next.ogg](guide/guide-next.ogg) | At the bottom, the next part’s name takes you on. One clue at a time. | Guide: Inspector Penn presses the next part’s link | 4.95 |
+| [guide-home.ogg](guide/guide-home.ogg) | Here, the home page: making a new game, bringing one in, and every shelf of games. | Guide: Inspector Penn points at The home page heading | 5.75 |
+| [guide-bye.ogg](guide/guide-bye.ogg) | Case closed. When you’re stuck, the answer is usually in here. | Guide: Inspector Penn says goodbye and walks off | 4.38 |
+
+## settings
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [settings-hello.ogg](settings/settings-hello.ogg) | Courier Max, with a delivery: the settings. They live behind the gear, top right. | Settings: Max comes on | 6.27 |
+| [settings-offline.ogg](settings/settings-offline.ogg) | Play offline says how big the whole site is, then saves it all, so it works with no connection. | Settings: Max points at Play offline in the Settings menu | 6.03 |
+| [settings-source.ogg](settings/settings-source.ogg) | Source on GitHub: every line of this site’s code, open for anyone to read. | Settings: Max points at Source on GitHub in the Settings menu | 7.07 |
+| [settings-credits.ogg](settings/settings-credits.ogg) | Credits names who and what made everything here. That’s this page. | Settings: Max points at Credits in the Settings menu | 7.23 |
+| [settings-theme.ogg](settings/settings-theme.ogg) | Theme goes dark, light, or whatever your computer uses. Each press picks the next one. | Settings: Max points at Theme in the Settings menu | 6.35 |
+| [settings-tour.ogg](settings/settings-tour.ogg) | Guided tour plays this whole tour again, every page in order. | Settings: Max points at Guided tour in the Settings menu | 4.35 |
+| [settings-ai.ogg](settings/settings-ai.ogg) | AI setup connects your own AI, on your computer or with your own key, for the editor’s Assistant. | Settings: Max points at AI setup in the Settings menu | 6.91 |
+| [settings-backup.ogg](settings/settings-backup.ogg) | Back up saves everything this browser keeps to one file. Restore brings it back, here or on another computer. | Settings: Max points at Back up / restore in the Settings menu | 8.19 |
+| [settings-page.ogg](settings/settings-page.ogg) | This page’s sections: the original Game-Maker’s makers, the game authors, and every tool used, AI too. | Settings: Max points at the Credits page’s sections | 8.35 |
+| [settings-bye.ogg](settings/settings-bye.ogg) | Delivered. Signed, sealed, and on to the next world. | Settings: Max says goodbye and walks off | 4.75 |
+
+## editor
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [editor-hello.ogg](editor/editor-hello.ogg) | Beep! Watt here, from Ohm Sweet Ohm. This is the editor, open on my game just as it shipped. | Editor: Watt comes on | 5.10 |
+| [editor-readonly.ogg](editor/editor-readonly.ogg) | Looking inside changes nothing. Edit a copy makes your own copy of the game to change. | Editor: Watt points at the Read-only bar | 5.48 |
+| [editor-files.ogg](editor/editor-files.ogg) | Every file in the game, sorted by kind: palettes, blocks, monsters, maps, music and more. | Editor: Watt points at the list of the game’s files | 7.08 |
+| [editor-play.ogg](editor/editor-play.ogg) | Play Game plays it from its title screen, right here, without leaving the editor. | Editor: Watt points at the Play Game button | 5.02 |
+| [editor-level.ogg](editor/editor-level.ogg) | Play Level jumps straight into a level. The arrow beside it picks which one, and where to start. | Editor: Watt points at the Play Level button | 6.62 |
+| [editor-map.ogg](editor/editor-map.ogg) | This is a map: one level, laid out in blocks, a hundred by a hundred. | Editor: Watt points at the map’s name | 5.78 |
+| [editor-blocks.ogg](editor/editor-blocks.ogg) | Pick a block from this list… | Editor: Watt points at the Blocks list | 2.05 |
+| [editor-paint.ogg](editor/editor-paint.ogg) | …then paint with it. Line, Rectangle and Fill lay down lots at once. | Editor: Watt points at the Paint tool | 5.71 |
+| [editor-terrain.ogg](editor/editor-terrain.ogg) | Terrain paints grass, water or paths, and chooses the edges and corners for you. | Editor: Watt points at the Terrain tool | 5.78 |
+| [editor-building.ogg](editor/editor-building.ogg) | Building drags out a whole house, any size, from its parts. | Editor: Watt points at the Building tool | 3.96 |
+| [editor-monsters.ogg](editor/editor-monsters.ogg) | Monsters puts the game’s creatures on the map. A right-click takes one away. | Editor: Watt points at the Monsters tool | 4.71 |
+| [editor-links.ogg](editor/editor-links.ogg) | Links shows the doors: gold marks are exits to other scenes, cyan marks are where the hero comes in. | Editor: Watt points at the Links button | 6.09 |
+| [editor-check.ogg](editor/editor-check.ogg) | The Level check lets a bot play the level, then shows where it went and what players might mind. | Editor: Watt points at the Level check panel | 6.16 |
+| [editor-palette.ogg](editor/editor-palette.ogg) | In a palette, mind color 0: the game draws its menus and text screens on it. Press backgrounds to see them. | Editor: Watt points at the note about color 0 | 8.14 |
+| [editor-assistant.ogg](editor/editor-assistant.ogg) | The Assistant lets your own AI look at a game and change it with you. Set it up in Settings first. | Editor: Watt points at the Assistant button | 5.94 |
+| [editor-copy.ogg](editor/editor-copy.ogg) | Ready to make it yours? Edit a copy, and start changing things. | Editor: Watt points at the Edit a copy button | 4.64 |
+| [editor-bye.ogg](editor/editor-bye.ogg) | Time to recharge. Happy making! Beep. | Editor: Watt says goodbye and walks off | 3.42 |
