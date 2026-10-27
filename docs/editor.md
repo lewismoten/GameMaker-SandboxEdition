@@ -45,6 +45,15 @@ has your own AI build one from a few lines of description (see
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
 panel offers to pick up where you left off. Nothing is uploaded anywhere.
 
+To keep it safe or take it to another browser, _⚙ Settings › Back up / restore…_ saves
+everything this browser keeps to one `.gmbackup` file: your games, saves and high scores,
+achievements, score trophies, eggs and tin hearts, the 1994 desk, imported games' notes and
+ratings (never the imported games themselves), preferences and the AI setup (its key only if you
+tick it). Untick any part to leave it out. _Restore from a file…_ shows what the file holds and
+what each part would change, merges by default (nothing found is lost, the higher score stays, a
+save slot filled on both sides keeps yours and puts the other in Save backups) or replaces a part
+if you choose, and never touches a part the file doesn't have.
+
 ## Opening a copy of a Sandbox game
 
 ![Snowbound opened with Look inside: a read-only banner with an Edit a copy button, the file list on the left, and the game's scenes as a graph](screenshots/editor/02-look-inside.webp)

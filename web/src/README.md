@@ -118,6 +118,8 @@ Each area's own README says what each of its files does; the short ones are desc
   the Level check and the Guide.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
   backups.
+- [`backup/`](backup/README.md): Settings › Back up / restore: everything this browser keeps in one
+  `.gmbackup` file, and bringing it back part by part.
 - [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp): the `#/mac`,
   `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it
   does, removing it.

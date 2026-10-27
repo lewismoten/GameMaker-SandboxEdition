@@ -1,0 +1,207 @@
+/* Back up / restore (exportDialog.ts, importDialog.ts): the sections as a list of rows, each a
+   checkbox with its title, what it holds and its size; the restore's choices and changes. */
+dialog.modal:has(.backup) {
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+}
+
+.backup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.backup p {
+  margin: 0;
+}
+
+.backup-lead {
+  line-height: 1.4;
+}
+
+.backup-sections {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.backup-sections legend {
+  float: left;
+  margin: 4px 0;
+  font-weight: 600;
+}
+
+.backup-quick {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.backup-list {
+  clear: both;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+dialog.modal label.backup-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 24px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.backup-row:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.backup-row:has(input:disabled) {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.backup-row input[type='checkbox'],
+.backup-key input[type='checkbox'] {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.backup-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.backup-about,
+.backup-facts {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.backup-facts {
+  flex: none;
+  text-align: right;
+}
+
+.backup-key {
+  margin: 6px 0 0 30px;
+}
+
+dialog.modal .backup-key label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.backup-warn {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.backup-status:empty {
+  display: none;
+}
+
+.backup-buttons .backup-restore {
+  margin-right: auto;
+}
+
+.restore-head {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.restore-head .backup-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.restore-mode {
+  flex: none;
+  align-self: center;
+  min-height: 32px;
+}
+
+.backup-changes {
+  margin: 4px 0 0 40px;
+  padding: 0;
+  list-style: '– ';
+  font-size: 13px;
+}
+
+.restore-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 0 40px;
+  font-size: 13px;
+}
+
+.restore-extra ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.restore-extra li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.restore-extra select {
+  min-height: 28px;
+}
+
+@media (max-width: 520px) {
+  dialog.modal label.backup-row:has(.backup-facts) {
+    flex-wrap: wrap;
+  }
+
+  .backup-facts {
+    flex-basis: 100%;
+    padding-left: 30px;
+    text-align: left;
+  }
+
+  .restore-head {
+    flex-direction: column;
+  }
+
+  .restore-mode {
+    align-self: stretch;
+    margin-left: 30px;
+  }
+
+  .backup-changes,
+  .restore-extra {
+    margin-left: 30px;
+  }
+
+  .backup-buttons {
+    flex-wrap: wrap;
+  }
+}

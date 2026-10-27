@@ -124,6 +124,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-not-dos-notice': 'a notice shown once a visit',
   'gm-demos-stopped': 'the home page’s demos, stopped this visit',
   'gm-turbo': 'an old setting the desk removes',
+  'gm-assistant-archive': 'the Assistant chat’s archive (this tab only)',
 };
 
 /** Which section owns a localStorage key, or undefined. */
