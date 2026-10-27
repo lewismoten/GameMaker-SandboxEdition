@@ -1,0 +1,166 @@
+/* AI setup (settingsDialog.ts): the provider choice, fields, Test connection's report and the
+   Remote Ollama over Tailscale note. */
+.ai-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(560px, 100%);
+}
+
+dialog.modal:has(.ai-setup) {
+  width: min(600px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+}
+
+.ai-providers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ai-providers legend {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+dialog.modal .ai-provider {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ai-provider:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ai-provider input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+}
+
+.ai-provider span {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-provider small {
+  color: var(--muted);
+}
+
+.ai-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-field[hidden] {
+  display: none;
+}
+
+.ai-field input,
+.ai-field select {
+  min-height: 30px;
+}
+
+.ai-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-row button {
+  min-height: 30px;
+}
+
+.ai-more summary,
+.ai-help summary {
+  min-height: 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ai-more[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-privacy {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  background: var(--panel-2);
+  font-size: 13px;
+}
+
+.ai-status:empty {
+  display: none;
+}
+
+.ai-status {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border-left: 4px solid var(--muted);
+}
+
+.ai-status[data-state='ok'] {
+  border-left-color: var(--accent);
+}
+
+.ai-status[data-state='failed'] {
+  border-left-color: var(--danger);
+}
+
+.ai-status p,
+.ai-problem p {
+  margin: 0 0 4px;
+}
+
+.ai-problem ul,
+.ai-help ul,
+.ai-help ol {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+.ai-help li {
+  margin: 4px 0;
+}
+
+.ai-help p {
+  margin: 4px 0;
+}
+
+.ai-help .hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ai-help-code {
+  margin: 4px 0;
+  padding: 6px 8px;
+  overflow-x: auto;
+  border-radius: 4px;
+  background: var(--panel-2);
+  font-size: 12px;
+}
+
+.ai-forget {
+  margin-right: auto;
+}

@@ -1,0 +1,407 @@
+/* The Assistant chat (panel.ts): docked at the right beside the editor on wide windows (the
+   workspace makes room), full screen on phones; its to-do list, Describe a game box,
+   conversation (log.ts) and the box to type in. */
+.chat-panel {
+  position: fixed;
+  z-index: 85;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.chat-panel[hidden] {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .chat-panel {
+    inset: 44px 0 0 auto;
+    width: min(400px, 36vw);
+    border-left: 1px solid var(--border);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.12);
+  }
+
+  body.chat-docked .workspace {
+    margin-right: min(400px, 36vw);
+  }
+}
+
+.chat-panel button,
+.chat-panel select,
+.chat-panel input[type='text'] {
+  min-height: 28px;
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-head h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.chat-model {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-close {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.chat-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chat-check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+.chat-coach {
+  margin-left: auto;
+}
+
+.chat-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* the to-do list */
+.chat-todo {
+  position: relative;
+  flex: none;
+  max-height: 34vh;
+  overflow: auto;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.chat-todo summary {
+  min-height: 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.todo-list {
+  margin: 6px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todo-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 3px 0;
+}
+
+.todo-list input[type='checkbox'] {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+.todo-list label {
+  flex: 1;
+  min-width: 0;
+  padding-top: 3px;
+  overflow-wrap: anywhere;
+}
+
+.todo-list li.done label {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.todo-list .todo-empty {
+  color: var(--muted);
+}
+
+.todo-list button {
+  flex: none;
+  min-width: 28px;
+  min-height: 24px;
+  padding: 0 6px;
+}
+
+.todo-add {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.todo-add input {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Describe a game */
+.chat-describe {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+}
+
+.chat-describe[hidden] {
+  display: none;
+}
+
+.chat-describe label {
+  font-weight: 600;
+}
+
+.chat-describe .hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.chat-panel textarea {
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+}
+
+/* the conversation */
+.chat-log {
+  /* the containing block of its screen-reader labels, so they never stretch the panel */
+  position: relative;
+  flex: 1;
+  min-height: 80px;
+  padding: 0 2px;
+  overflow: auto;
+}
+
+.chat-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chat-list > li {
+  margin: 6px 0;
+}
+
+.chat-log .msg p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.chat-log .msg {
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.chat-log .user {
+  margin-left: 15%;
+  background: var(--accent-soft);
+}
+
+.chat-log .bot {
+  margin-right: 8%;
+  background: var(--panel-2);
+}
+
+.chat-log .note {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.chat-log .note.error {
+  color: var(--danger);
+  border-left: 3px solid var(--danger);
+}
+
+.chat-log .note ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.chat-log .working {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.chat-dots::before {
+  content: '●';
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--accent);
+  animation: chat-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes chat-pulse {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-dots::before {
+    animation: none;
+  }
+}
+
+/* a tool call: one line, opened to its arguments and result */
+.chat-log .call {
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.chat-log .call summary {
+  min-height: 24px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.chat-log .call summary:hover {
+  background: var(--panel-2);
+}
+
+.chat-log .call.writes .call-icon {
+  color: var(--accent);
+}
+
+.call-state {
+  color: var(--muted);
+}
+
+.chat-log .call.failed .call-state {
+  color: var(--danger);
+}
+
+.call-body {
+  padding: 4px 8px;
+  border-left: 2px solid var(--border);
+}
+
+.call-body .call-h {
+  margin: 4px 0 2px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.call-body pre {
+  max-height: 200px;
+  margin: 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.call-img {
+  display: block;
+  max-width: 100%;
+  margin-top: 4px;
+  image-rendering: pixelated;
+}
+
+.call-ask {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 4px 0 2px 20px;
+  padding: 6px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+}
+
+.call-ask span {
+  flex: 1;
+}
+
+.chat-compose {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-compose .chat-new {
+  margin-right: auto;
+}
+
+.chat-foot {
+  margin: 0;
+  font-size: 13px;
+}
+
+.chat-foot .link {
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.chat-list .call {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 2px 6px;
+}
+
+.chat-list .call details {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-list .call .call-ask {
+  flex-basis: 100%;
+}
+
+.chat-list .call-undo {
+  min-height: 24px;
+  padding: 0 8px;
+  font-family: system-ui, sans-serif;
+}
+
+.chat-list .call.skipped .call-state {
+  font-style: italic;
+}
