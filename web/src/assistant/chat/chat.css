@@ -388,7 +388,8 @@
 }
 
 .chat-list .call details {
-  flex: 1;
+  /* room beside it for Undo only: a picture wraps below */
+  flex: 1 1 calc(100% - 80px);
   min-width: 0;
 }
 
@@ -404,4 +405,107 @@
 
 .chat-list .call.skipped .call-state {
   font-style: italic;
+}
+
+/* the context gauge, with Compact now and Reset */
+.chat-gauge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chat-gauge meter {
+  flex: 1 1 80px;
+  min-width: 60px;
+  height: 10px;
+}
+
+.chat-panel .chat-small {
+  min-height: 24px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+/* Copy whole chat (the header) and Copy this reply (each reply) */
+.chat-panel .chat-copy-all,
+.chat-list .msg-copy {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.chat-copied {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.chat-list .msg.bot {
+  position: relative;
+  padding-right: 34px;
+}
+
+.chat-list .msg-copy {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--muted);
+}
+
+/* a picture from a tool: a thumbnail that opens large */
+.chat-list .call-thumb {
+  flex: 0 0 auto;
+  max-width: 100%;
+  margin-left: 20px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel-2);
+  cursor: zoom-in;
+}
+
+.chat-list .call-thumb img {
+  display: block;
+  max-width: 160px;
+  max-height: 110px;
+  image-rendering: pixelated;
+}
+
+dialog.chat-picture {
+  max-width: calc(100vw - 32px);
+}
+
+dialog.chat-picture img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 140px);
+  image-rendering: pixelated;
+}
+
+/* the editor area lights up for a moment where the assistant just changed something */
+.assistant-changed {
+  animation: assistant-changed 1.2s ease-out;
+}
+
+@keyframes assistant-changed {
+  from {
+    box-shadow: inset 0 0 0 3px var(--accent);
+  }
+  to {
+    box-shadow: inset 0 0 0 3px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-changed {
+    animation: none;
+    outline: 3px solid var(--accent);
+    outline-offset: -3px;
+  }
 }

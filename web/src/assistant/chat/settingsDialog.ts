@@ -53,8 +53,8 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
     const tools = h(
       'select',
       { id: `${id}-tools` },
-      h('option', { value: 'core', selected: s.tools === 'core' }, 'Core tools (smaller, for local models)'),
-      h('option', { value: 'all', selected: s.tools === 'all' }, 'All tools'),
+      h('option', { value: 'core', selected: s.tools === 'core' }, 'In groups, as needed (best for small models)'),
+      h('option', { value: 'all', selected: s.tools === 'all' }, 'All at once'),
     );
     const images = h(
       'select',
@@ -63,7 +63,9 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       h('option', { value: 'on', selected: s.images === 'on' }, 'Always'),
       h('option', { value: 'off', selected: s.images === 'off' }, 'Never'),
     );
-    const ctxSize = h('input', { id: `${id}-ctx`, type: 'number', min: 2048, max: 262144, step: 1024, value: String(s.contextTokens) });
+    const ctxSize = h('input', { id: `${id}-ctx`, type: 'number', min: 2048, max: 1048576, step: 1024, value: String(s.contextTokens) });
+    const think = h('input', { id: `${id}-think`, type: 'checkbox', checked: s.think });
+    const thinkRow = h('div', { class: 'ai-check' }, think, h('label', { for: `${id}-think` }, 'Let thinking models think first (slower)'));
     const ctxRow = h('div', { class: 'ai-field' }, h('label', { for: `${id}-ctx` }, 'Context size (tokens)'), ctxSize);
     const help = h('div', { class: 'ai-help-slot' });
     const listBtn = h('button', { type: 'button', onclick: () => void refreshModels(true) }, 'List models');
@@ -76,14 +78,15 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       apiKey: key.value.trim(),
       tools: tools.value === 'all' ? 'all' : 'core',
       images: images.value === 'on' ? 'on' : images.value === 'off' ? 'off' : 'auto',
-      contextTokens: Math.max(2048, Math.min(262144, Number(ctxSize.value) || 16384)),
+      contextTokens: Math.max(2048, Math.min(1048576, Number(ctxSize.value) || defaultSettings(s.provider).contextTokens)),
+      think: think.checked,
     });
 
     const sync = () => {
       const ollama = s.provider === 'ollama';
       keyLabel.textContent = ollama ? 'API key (optional for Ollama)' : 'API key';
       key.placeholder = ollama ? 'Only if a proxy asks for one' : 'sk-…';
-      ctxRow.hidden = !ollama;
+      thinkRow.hidden = !ollama;
       clear(help, ollama ? ollamaHelp(location.origin) : null);
     };
     const setProvider = (k: ProviderKind) => {
@@ -91,6 +94,7 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       s = { ...read(), provider: k };
       if (!url.value.trim() || url.value.trim() === DEFAULT_URLS[was]) url.value = DEFAULT_URLS[k];
       tools.value = defaultSettings(k).tools;
+      if (String(defaultSettings(was).contextTokens) === ctxSize.value) ctxSize.value = String(defaultSettings(k).contextTokens);
       clear(models);
       sync();
       void refreshModels(false);
@@ -161,6 +165,7 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
         h('div', { class: 'ai-field' }, h('label', { for: `${id}-tools` }, 'Tools offered'), tools),
         h('div', { class: 'ai-field' }, h('label', { for: `${id}-images` }, 'Send it pictures'), images),
         ctxRow,
+        thinkRow,
       ),
       h(
         'p',

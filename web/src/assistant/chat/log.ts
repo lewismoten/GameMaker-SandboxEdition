@@ -1,6 +1,8 @@
-// The chat's conversation as the person sees it: their messages, the model's (streaming in),
-// each tool call as one compact line ("✎ set_map Level 2") that opens to its arguments and
-// result, Apply/Skip on a change waiting for a yes, a working indicator, and problems in words.
+// The chat's conversation as the person sees it: their messages; the model's words in their own
+// bubbles (a new bubble after each tool line, each with Copy, even while it streams); each tool
+// call as one line ("✎ set_map Laundromat") that shows queued, running and done, opens to its
+// arguments and result, and sums up a play-test or Level check; pictures as thumbnails that
+// enlarge; Apply/Skip on a change waiting for a yes; notes; and the whole of it as Markdown.
 import { h, clear } from '../../editor/core/ui';
 import type { Game } from '../../formats/game';
 import { normalize } from '../../project/files';
@@ -10,7 +12,7 @@ import type { Problem } from './diagnose';
 import type { ToolCall } from './providers';
 
 const CHECKS = new Set(['bot_playtest', 'level_check', 'validate', 'record_walkthrough']);
-const PICTURES = new Set(['render_png', 'editor_screenshot']);
+const PICTURES = new Set(['render_png', 'editor_screenshot', 'map_sketch']);
 
 /** Words for what a call works on: a scene's name, the level a map belongs to, or the file. */
 function target(c: ToolCall, game?: Game): string {
@@ -23,6 +25,8 @@ function target(c: ToolCall, game?: Game): string {
     return f.endsWith('.map') && at >= 0 ? scene(at) : f;
   }
   if (typeof a.what === 'string') return a.what;
+  if (typeof a.group === 'string') return a.group;
+  if (typeof a.query === 'string') return `“${a.query.slice(0, 30)}”`;
   if (typeof a.name === 'string') return a.name.slice(0, 30);
   return '';
 }
@@ -34,14 +38,52 @@ export function callLabel(c: ToolCall, writes: boolean, game?: Game): { icon: st
   return { icon, text: `${c.name}${t ? ` ${t}` : ''}` };
 }
 
+/** A play-test's or Level check's result in a few words, for its line. */
+export function resultSummary(name: string, words: string): string | undefined {
+  try {
+    const v = JSON.parse(words) as {
+      won?: boolean;
+      stopped?: string;
+      scenes?: { seconds?: number }[];
+      errors?: number;
+      warnings?: number;
+      ok?: boolean;
+      issues?: unknown[];
+    };
+    if (name === 'bot_playtest' || name === 'record_walkthrough') {
+      const secs = (v.scenes ?? []).reduce((n, s) => n + (s.seconds ?? 0), 0);
+      return v.won ? `won${secs ? ` in ${Math.round(secs * 10) / 10} s` : ''}` : `couldn’t win${v.stopped ? `: ${v.stopped.slice(0, 60)}` : ''}`;
+    }
+    if (name === 'level_check') return `${v.errors ?? 0} error${v.errors === 1 ? '' : 's'}, ${v.warnings ?? 0} warning${v.warnings === 1 ? '' : 's'}`;
+    if (name === 'validate') return `${v.issues?.length ?? 0} issue${v.issues?.length === 1 ? '' : 's'}`;
+  } catch {
+    if (name === 'validate' && /No problems/.test(words)) return 'no problems';
+  }
+  return undefined;
+}
+
+interface CallEntry {
+  li: HTMLElement;
+  state: HTMLElement;
+  body: HTMLElement;
+  call: ToolCall;
+  result?: string;
+  pictures: number;
+}
+
 export class ChatLog {
   private readonly list = h('ol', { class: 'chat-list' });
   readonly el = h('div', { class: 'chat-log', role: 'log', 'aria-live': 'polite', 'aria-label': 'Conversation' }, this.list);
   private streaming?: HTMLElement;
   private working?: HTMLElement;
+  /** Where the current bubble's words start in the reply (after the last tool line). */
+  private from = 0;
+  private soFar = '';
   /** Where the focus goes after Apply or Skip (the message box). */
   afterAsk?: () => void;
-  private calls = new Map<string, { li: HTMLElement; state: HTMLElement; body: HTMLElement }>();
+  /** Copies words, and says so. */
+  copy?: (text: string) => void;
+  private calls = new Map<string, CallEntry>();
 
   /** Scrolls the conversation (only it: scrollIntoView would scroll the fixed panel too) to its end. */
   toEnd(): void {
@@ -52,6 +94,8 @@ export class ChatLog {
     clear(this.list);
     this.calls.clear();
     this.streaming = this.working = undefined;
+    this.from = 0;
+    this.soFar = '';
   }
 
   get empty(): boolean {
@@ -65,28 +109,48 @@ export class ChatLog {
   }
 
   user(text: string): void {
-    this.add(h('li', { class: 'msg user' }, h('span', { class: 'sr-only' }, 'You: '), h('p', null, text)));
+    this.add(h('li', { class: 'msg user', dataset: { md: `**You:** ${text}` } }, h('span', { class: 'sr-only' }, 'You: '), h('p', null, text)));
   }
 
-  /** The model's words so far (one bubble, filled as they stream). */
-  text(t: string): void {
+  private bubble(): HTMLElement {
+    const p = h('p');
+    const li = h(
+      'li',
+      { class: 'msg bot' },
+      h('span', { class: 'sr-only' }, 'Assistant: '),
+      p,
+      h(
+        'button',
+        { type: 'button', class: 'msg-copy', 'aria-label': 'Copy this reply', title: 'Copy this reply', onclick: () => this.copy?.(p.textContent ?? '') },
+        h('span', { 'aria-hidden': 'true' }, '⧉'),
+      ),
+    );
+    return this.add(li);
+  }
+
+  /** The reply's words so far (the whole reply; the current bubble shows those after the last tool line). */
+  text(soFar: string): void {
+    this.soFar = soFar;
+    const t = soFar.slice(this.from).trim();
+    if (!t) return;
     this.stopWorking();
-    if (!this.streaming) this.streaming = this.add(h('li', { class: 'msg bot' }, h('span', { class: 'sr-only' }, 'Assistant: '), h('p')));
+    this.streaming ??= this.bubble();
     this.streaming.querySelector('p')!.textContent = t;
+    this.streaming.dataset.md = `**Assistant:** ${t}`;
     this.toEnd();
   }
 
-  /** The model's turn ended: its words (when they didn't stream) stay, and the next ones start a new bubble. */
+  /** The reply ended: its last words stay, and the next reply starts afresh. */
   reply(content: string): void {
-    if (content.trim() && !this.streaming) this.text(content);
-    else if (this.streaming && content.trim()) this.streaming.querySelector('p')!.textContent = content;
-    else if (this.streaming && !content.trim()) this.streaming.remove();
+    this.text(content);
     this.streaming = undefined;
+    this.from = 0;
+    this.soFar = '';
   }
 
   note(t: string, kind: 'info' | 'error' = 'info'): HTMLElement {
     this.stopWorking();
-    return this.add(h('li', { class: `msg note ${kind}` }, h('p', null, t)));
+    return this.add(h('li', { class: `msg note ${kind}`, dataset: { md: `_${t}_` } }, h('p', null, t)));
   }
 
   problem(p: Problem): void {
@@ -94,7 +158,7 @@ export class ChatLog {
     this.add(
       h(
         'li',
-        { class: 'msg note error' },
+        { class: 'msg note error', dataset: { md: `_${p.title}_ ${p.fix.join(' ')}` } },
         h('p', null, h('strong', null, p.title)),
         p.fix.length ? h('ul', null, ...p.fix.map((f) => h('li', null, f))) : null,
       ),
@@ -112,12 +176,13 @@ export class ChatLog {
     this.working = undefined;
   }
 
-  /** A tool call, as one line that opens to its arguments. */
+  /** A tool call, as one line that opens to its arguments; the reply's next words go in a new bubble. */
   call(c: ToolCall, writes: boolean, game?: Game): void {
     this.stopWorking();
     this.streaming = undefined;
+    this.from = this.soFar.length;
     const { icon, text } = callLabel(c, writes, game);
-    const state = h('span', { class: 'call-state' }, '…');
+    const state = h('span', { class: 'call-state' }, 'queued');
     const body = h('div', { class: 'call-body' }, h('p', { class: 'call-h' }, 'Arguments'), h('pre', { tabindex: 0 }, JSON.stringify(c.args, null, 1)));
     const li = this.add(
       h(
@@ -131,7 +196,12 @@ export class ChatLog {
         ),
       ),
     );
-    this.calls.set(c.id, { li, state, body });
+    this.calls.set(c.id, { li, state, body, call: c, pictures: 0 });
+  }
+
+  running(c: ToolCall): void {
+    const at = this.calls.get(c.id);
+    if (at) at.state.textContent = 'running…';
   }
 
   /** Apply and Skip on a change; resolves true for Apply. Focus goes to Apply when it was in the chat. */
@@ -191,13 +261,67 @@ export class ChatLog {
     if (!at) return;
     at.li.classList.toggle('failed', !!r.isError);
     at.li.classList.toggle('skipped', !!skipped);
-    at.state.textContent = skipped ? 'skipped' : r.isError ? 'failed' : 'done';
     const words = resultText(r);
+    at.result = words;
+    at.state.textContent = skipped
+      ? 'skipped'
+      : r.isError
+        ? 'failed'
+        : words.startsWith('Stopped by the person')
+          ? 'stopped'
+          : (resultSummary(c.name, words) ?? 'done');
     at.body.append(h('p', { class: 'call-h' }, 'Result'), h('pre', { tabindex: 0 }, words.length > 4000 ? `${words.slice(0, 4000)}…` : words || '(nothing)'));
+    // pictures show under the line, small, and open large
     for (const img of r.content)
-      if (img.type === 'image')
-        at.body.append(
-          h('img', { class: 'call-img', src: `data:${img.mimeType};base64,${img.data}`, alt: words.split('\n').pop() || 'A picture from the tool' }),
+      if (img.type === 'image') {
+        at.pictures++;
+        const src = `data:${img.mimeType};base64,${img.data}`;
+        const alt = words.split('\n').pop() || 'A picture from the tool';
+        at.li.append(
+          h(
+            'button',
+            { type: 'button', class: 'call-thumb', 'aria-label': `Enlarge: ${alt}`, title: 'Enlarge', onclick: () => enlarge(src, alt) },
+            h('img', { src, alt: '' }),
+          ),
         );
+      }
+    this.toEnd();
   }
+
+  /** The conversation as Markdown: messages, replies, and tool lines with their arguments and results in short (pictures as [picture]). */
+  markdown(): string {
+    return [...this.list.children]
+      .map((li) => {
+        const el = li as HTMLElement;
+        if (el.classList.contains('working')) return '';
+        if (el.classList.contains('call')) {
+          const e = [...this.calls.values()].find((x) => x.li === el);
+          if (!e) return '';
+          const state = e.state.textContent ?? '';
+          const res = e.result ? ` → ${e.result.replace(/\s+/g, ' ').slice(0, 200)}${e.result.length > 200 ? '…' : ''}` : '';
+          return `- \`${e.call.name}\` ${JSON.stringify(e.call.args).slice(0, 200)} (${state})${res}${e.pictures ? ' [picture]' : ''}`;
+        }
+        return el.dataset.md ?? el.textContent ?? '';
+      })
+      .filter(Boolean)
+      .join('\n\n');
+  }
+}
+
+/** A picture at its full size (pixels kept square), in a dialog. */
+function enlarge(src: string, alt: string): void {
+  const dlg = h(
+    'dialog',
+    { class: 'modal chat-picture', 'aria-label': alt },
+    h(
+      'header',
+      { class: 'modal-head' },
+      h('h2', null, alt),
+      h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => (dlg.close(), dlg.remove()) }, '×'),
+    ),
+    h('img', { src, alt }),
+  );
+  dlg.addEventListener('close', () => dlg.remove());
+  document.body.append(dlg);
+  dlg.showModal();
 }

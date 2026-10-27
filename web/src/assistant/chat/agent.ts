@@ -168,8 +168,8 @@ export class Agent {
   }
 
   /** Puts away older requests for a summary; false when there was nothing to put away. */
-  async compact(opts: SendOptions = {}): Promise<boolean> {
-    const { old, kept } = splitForCompaction(this.messages, this.o.keepRequests ?? 2);
+  async compact(opts: SendOptions & { keep?: number } = {}): Promise<boolean> {
+    const { old, kept } = splitForCompaction(this.messages, opts.keep ?? this.o.keepRequests ?? 2);
     if (!old.length) return false;
     const todos = this.o.todos?.() ?? [];
     let summary = '';

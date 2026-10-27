@@ -164,3 +164,19 @@ dialog.modal .ai-provider {
 .ai-forget {
   margin-right: auto;
 }
+
+.ai-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-check[hidden] {
+  display: none;
+}
+
+.ai-check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
