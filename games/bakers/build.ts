@@ -12,7 +12,7 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { parseSlideList } from '../../web/src/formats/graphicScripts';
 import { Disk } from '../kit/disk';
-import { clipLists } from '../kit/fliClips';
+import { clipEveryList } from '../kit/fliClips';
 import { licenseText } from '../kit/license';
 import { buildPalette } from './src/art/pal';
 import { compileAll } from './src/compile';
@@ -66,7 +66,7 @@ for (const [name, bytes] of disk.files)
   if (name.endsWith('.lst'))
     for (const e of parseSlideList(bytes)) if (!disk.files.has(e.name)) throw new Error(`${name} names ${e.name}, which is not on the disk`);
 // the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
-clipLists(disk.files, ['title.lst', 'story.lst', 'help.lst', 'credits.lst']);
+clipEveryList(disk.files);
 disk.write();
 writeFileSync(join(here, 'printables.json'), JSON.stringify(printables(), null, 2) + '\n');
 console.log(`${game.scenes.length} scenes`);

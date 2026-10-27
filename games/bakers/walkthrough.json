@@ -123,7 +123,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 49477,
+  "frames": 49478,
   "chapters": [
    {
     "title": "Opening",
@@ -167,35 +167,35 @@
    },
    {
     "title": "Room 8: The Brewery",
-    "frame": 24585
+    "frame": 24586
    },
    {
     "title": "Room 9: The Clock Room",
-    "frame": 27870
+    "frame": 27871
    },
    {
     "title": "Room 10: The Bottling Line",
-    "frame": 30618
+    "frame": 30619
    },
    {
     "title": "Room 11: The Lightning Loft",
-    "frame": 32634
+    "frame": 32635
    },
    {
     "title": "Room 12: The Cistern",
-    "frame": 35838
+    "frame": 35839
    },
    {
     "title": "Room 13: The Vault",
-    "frame": 38485
+    "frame": 38486
    },
    {
     "title": "Ending",
-    "frame": 41630
+    "frame": 41631
    },
    {
     "title": "Credits",
-    "frame": 47441
+    "frame": 47442
    }
   ]
  }
