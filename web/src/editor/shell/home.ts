@@ -17,6 +17,8 @@ import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
 import { PRODUCT } from '../../edition';
 import type { HomeGame } from './homeCards';
+// the lists before the showcase, as the tiles' styles (homeCards.ts) come first
+import { categoryOf, homeLibrary, isByMaker, isOwn, SORT_KEY, type MySort } from './homeLibrary';
 import { showcase } from './homeShowcase';
 import { icon } from './homeIcons';
 import { CATEGORIES, CATEGORY_KEY, FIRST_CATEGORY, pickFeatured, savedCategory, type Category } from './homeCategories';
@@ -25,7 +27,6 @@ import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { ratingFilterBox, savedRatingFilter } from './homeRatings';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
-import { categoryOf, homeLibrary, isByMaker, isOwn, SORT_KEY, type MySort } from './homeLibrary';
 import { libraryCards } from './homeLibraryCards';
 import { tilePacker } from './homeTilePack';
 import { tileArrowKeys } from './homeTileKeys';
