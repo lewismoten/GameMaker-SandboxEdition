@@ -625,7 +625,10 @@ modules are in [`../test`](../test).
   parts, such as the integrator's board camera and input, sit beside it). `registry.ts` maps a file
   kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
   the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
-  `monsters/`, `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`, the
+  `monsters/` (the path editor `monsterPathEditor.ts`, its state in `monsterPathState.ts`, the
+  pointer and keys in `monsterPathInput.ts`, a corner's picture and speed in `monsterPathCorner.ts`,
+  the tabs and toolbar in `monsterPathToolbar.ts`, the notice and corners in `monsterPathSide.ts`),
+  `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`, the
   integrator's links as markers to drag, nudge and open in `map/links/`: `markerMath.ts` with no
   DOM, `linkMarkers.ts` on the map and `linkPopover.ts` for one link's details and pictures),
   `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
