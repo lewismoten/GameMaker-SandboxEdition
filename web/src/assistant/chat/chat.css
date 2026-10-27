@@ -147,8 +147,30 @@
   text-decoration: line-through;
 }
 
-.todo-list .todo-empty {
+.todo-groups .todo-empty {
+  margin: 6px 0;
   color: var(--muted);
+}
+
+.todo-group h3 {
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.todo-group .todo-n {
+  font-weight: 400;
+}
+
+.todo-list li.doing label {
+  font-weight: 600;
+}
+
+.todo-list .todo-doing[aria-pressed='true'] {
+  color: var(--accent);
 }
 
 .todo-list button {

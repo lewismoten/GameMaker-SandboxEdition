@@ -21,13 +21,21 @@ export function gameBrief(summary: string): string {
   }
 }
 
-export function systemPrompt(opts: { summary: string; readOnly: boolean; images: boolean; compact?: boolean }): string {
+/** The open to-do items, a few, so a new conversation knows what was next. */
+function todoBrief(items: string[] = []): string {
+  if (!items.length) return 'To-do list: empty.';
+  const shown = items.slice(0, 5).map((t, i) => `${i + 1}. ${t.slice(0, 120)}`);
+  return `To-do list: ${shown.join(' ')}${items.length > 5 ? ` (and ${items.length - 5} more)` : ''}`;
+}
+
+export function systemPrompt(opts: { summary: string; readOnly: boolean; images: boolean; compact?: boolean; todos?: string[] }): string {
   const content = 'Content: family-friendly; characters are friendly, and clowns are never scary. No real addresses, brands or personal details.';
   if (opts.compact)
     return [
       'You help make a game in Game-Maker, a 1990s DOS game kit. Scenes: 0 title, 1 game won, 2+ levels. A level is a 100x100 map of blocks (0-149) with monsters and a hero; a link from a map cell to scene 1 wins.',
       gameBrief(opts.summary),
-      `Use small tool calls. load_tools gets more tools; recall reads earlier turns; recipe lists how-tos for kinds of levels: read one before building that kind. After changes run bot_playtest.${opts.readOnly ? ' The game is read-only: look and advise only.' : ' Make changes with the tools; never ask whether to (the editor asks the person when they want that).'}`,
+      todoBrief(opts.todos),
+      `Use small tool calls. load_tools gets more tools; recall reads earlier turns; recipe lists how-tos for kinds of levels: read one before building that kind. After changes run bot_playtest. todo keeps the to-do list: start an item as you begin it, done when finished, add the next steps before you finish.${opts.readOnly ? ' The game is read-only: look and advise only.' : ' Make changes with the tools; never ask whether to (the editor asks the person when they want that).'}`,
       'Reply in one to three short sentences.',
       content,
     ].join('\n');
@@ -35,8 +43,10 @@ export function systemPrompt(opts: { summary: string; readOnly: boolean; images:
     'You help someone make a game in Game-Maker, a 1990s DOS game construction kit (here in a web editor that saves real DOS files).',
     'A game is a .gam file of scenes: 0 is the title, 1 is "game won", 2+ are levels. A level has a 100x100 map of 20x20-pixel background blocks (.bbl, 0-149) with set properties (solid, gravity, points, hurts, pickup), a palette, monsters (.mon, placed on the map), a hero (.chr) and sounds. Links send the hero from a map cell to another scene; scene 0 link 0 is where play starts; a link to scene 1 wins.',
     gameBrief(opts.summary),
+    todoBrief(opts.todos),
     'How to work:',
     '- You start with a few tools; load_tools gets a group of more (scenes, maps, blocks, monsters, hero, art, text, checks, player, editor). recall reads earlier turns that were put away.',
+    '- todo is the game’s to-do list, kept between visits (Doing, To do, Done): start an item when you begin it, mark it done when finished, and before you finish add the next steps (a few short ones).',
     '- recipe lists how-tos for kinds of levels and features (platformer, keys and locks, shooter, driving…): read the one for what you are building before you build it.',
     '- Look before changing: game_summary, get_scene, map_sketch or get_map (a small region), list_blocks.',
     '- Make small, flat tool calls: one region, one block or one link at a time.',

@@ -44,7 +44,9 @@ What lets an AI tool open, check and change a game.
     model can do; `prompt.ts` has the system prompts (a compact one under 8k) and briefs.
   - `coach.ts` runs the Level check, the bot and validate for "What should I do next?";
     `todo.ts` keeps the to-do list and the "Assistant: <model> via <provider>" credits in
-    the companion data (`todoView.ts` shows the list).
+    the companion data, in three groups: Doing, To do and Done (`todoView.ts` shows the list;
+    `todoTool.ts` is the model's `todo` tool, which lists it, adds next steps and moves items
+    along, so what was next outlasts the conversation).
   - `makeGame.ts`: Describe a game: the starter level for an empty game, then the AI
     builds it until the bot wins. `homeDescribe.ts` asks for the description when New game's
     "Describe it to your AI…" is chosen (`editor/shell/homeImport.ts`).

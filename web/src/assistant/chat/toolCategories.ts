@@ -26,7 +26,7 @@ export const CATEGORIES: Category[] = [
 ];
 
 /** Always offered (recipe is one small definition; its list of topics comes only when called). */
-export const CORE = ['game_summary', 'load_tools', 'recall', 'recipe', 'bot_playtest'];
+export const CORE = ['game_summary', 'load_tools', 'recall', 'recipe', 'todo', 'bot_playtest'];
 
 /** A request after which an unused group is put away. */
 const IDLE_REQUESTS = 4;

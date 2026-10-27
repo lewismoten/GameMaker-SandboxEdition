@@ -3,7 +3,10 @@
 // credit lines are read back for the downloads.
 import { describe, expect, it } from 'vitest';
 import { emptyCompanion, getSection, setSection, type Companion } from '../../project/companion';
-import { addCredit, addTodo, clearDone, companionCredits, credits, refreshTodos, removeTodo, setDone, todos, type TodoHost } from './todo';
+import { addCredit, addTodo, clearDone, companionCredits, credits, grouped, refreshTodos, removeTodo, setDoing, setDone, todos, type TodoHost } from './todo';
+import { todoTool } from './todoTool';
+import { MemoryContext } from '../tools/memoryContext';
+import { GameFiles } from '../../project/files';
 
 function host(): TodoHost & { companion: Companion } {
   const companion = emptyCompanion();
@@ -31,6 +34,36 @@ describe('the to-do list', () => {
       ['Add an exit to Level 1.', true],
     ]);
     expect(todos(p)).toEqual(again);
+  });
+
+  it('moves items through Doing, To do and Done, and the coach leaves the assistant’s items alone', () => {
+    const p = host();
+    const [a, b] = refreshTodos(p, ['One', 'Two'], 'check');
+    addTodo(p, 'Three', new Date(), 'ai');
+    setDoing(p, b.id, true);
+    expect(Object.values(grouped(todos(p))).map((xs) => xs.map((x) => x.text))).toEqual([['Two'], ['One', 'Three'], []]);
+    setDone(p, b.id, true);
+    setDone(p, a.id, true);
+    setDoing(p, a.id, true);
+    expect(Object.values(grouped(todos(p))).map((xs) => xs.map((x) => x.text))).toEqual([['One'], ['Three'], ['Two']]);
+    refreshTodos(p, ['Four'], 'coach');
+    expect(todos(p).map((x) => x.text)).toEqual(expect.arrayContaining(['Three', 'Four']));
+  });
+
+  it('the todo tool lists, adds, starts and ticks by number, and redraws the panel', async () => {
+    const p = host();
+    let redrawn = 0;
+    const tool = todoTool(
+      new MemoryContext(new GameFiles([]), 'mygame.gam'),
+      () => p,
+      () => redrawn++,
+    );
+    expect((await tool.run({})).content[0]).toMatchObject({ text: 'The to-do list is empty.' });
+    await tool.run({ add: ['Add a locker room level', 'Give the hero a sweatband'] });
+    const r = await tool.run({ start: [2], done: [1] });
+    expect((r.content[0] as { text: string }).text).toBe('Doing:\n1. Give the hero a sweatband\nDone (1): Add a locker room level');
+    expect(todos(p).every((x) => x.from === 'ai')).toBe(true);
+    expect(redrawn).toBe(2);
   });
 
   it('ticks, removes and clears, and empties its section when nothing is left', () => {

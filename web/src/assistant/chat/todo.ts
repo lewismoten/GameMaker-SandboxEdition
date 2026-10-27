@@ -1,15 +1,17 @@
 // A game's running to-do list and its assistant credits, kept in the project's companion data
 // (project/companion.ts: editor-only, never in the DOS files or the exports' game files), as
 // sections of the .gam file's extras. The coach's newest list takes the place of its older
-// items still open; ticked items and the person's own stay.
+// items still open; ticked items, the person's own and the ones the assistant added stay.
 import { getSection, type Companion } from '../../project/companion';
 
 export interface TodoItem {
   id: string;
   text: string;
   done: boolean;
-  /** Who added it: the coach (the model), the Level check (no AI set up), or the person. */
-  from: 'coach' | 'check' | 'you';
+  /** Being worked on now (the "Doing" group); kept only while true, and never with done. */
+  doing?: boolean;
+  /** Who added it: the coach (the model), the Level check (no AI set up), the person, or the assistant as it worked (todoTool.ts). */
+  from: 'coach' | 'check' | 'you' | 'ai';
   /** When, as an ISO date. */
   added: string;
 }
@@ -31,7 +33,7 @@ const isItem = (v: unknown): v is TodoItem =>
 
 export function todos(p: TodoHost): TodoItem[] {
   const v = p.extras<unknown>(p.gam, TODO, []);
-  return Array.isArray(v) ? v.filter(isItem).map((x) => ({ ...x, done: !!x.done })) : [];
+  return Array.isArray(v) ? v.filter(isItem).map((x) => ({ ...x, done: !!x.done, ...(x.doing && !x.done ? { doing: true } : { doing: undefined }) })) : [];
 }
 
 function save(p: TodoHost, items: TodoItem[]): TodoItem[] {
@@ -49,27 +51,41 @@ const item = (text: string, from: TodoItem['from'], now: Date): TodoItem => ({
   added: now.toISOString().slice(0, 10),
 });
 
-/** The person's own item, at the end. */
-export function addTodo(p: TodoHost, text: string, now = new Date()): TodoItem[] {
+/** The person's own item (or the assistant's), at the end; one already there isn't added again. */
+export function addTodo(p: TodoHost, text: string, now = new Date(), from: 'you' | 'ai' = 'you'): TodoItem[] {
   const list = todos(p);
   if (!text.trim() || list.some((x) => key(x.text) === key(text))) return list;
-  return save(p, [...list, item(text, 'you', now)]);
+  return save(p, [...list, item(text, from, now)]);
 }
 
 /** A new list from the coach or the Level check: its open items replace the older ones of theirs; ticked items and the person's own stay. */
 export function refreshTodos(p: TodoHost, texts: string[], from: 'coach' | 'check', now = new Date()): TodoItem[] {
   const list = todos(p);
-  const keep = list.filter((x) => x.done || x.from === 'you');
+  const keep = list.filter((x) => x.done || x.from === 'you' || x.from === 'ai');
   const seen = new Set(keep.map((x) => key(x.text)));
   const fresh = texts.filter((t) => t.trim() && !seen.has(key(t)) && (seen.add(key(t)), true)).map((t) => item(t, from, now));
   return save(p, [...fresh, ...keep.filter((x) => !x.done), ...keep.filter((x) => x.done)]);
 }
 
+/** Ticks an item done (no longer doing), or back to do. */
 export function setDone(p: TodoHost, id: string, done: boolean): TodoItem[] {
   return save(
     p,
-    todos(p).map((x) => (x.id === id ? { ...x, done } : x)),
+    todos(p).map((x) => (x.id === id ? { ...x, done, doing: undefined } : x)),
   );
+}
+
+/** Moves an item to Doing (and out of Done), or back to To do. */
+export function setDoing(p: TodoHost, id: string, doing: boolean): TodoItem[] {
+  return save(
+    p,
+    todos(p).map((x) => (x.id === id ? { ...x, done: false, doing: doing || undefined } : x)),
+  );
+}
+
+/** The list in its three groups, in order. */
+export function grouped(items: TodoItem[]): { doing: TodoItem[]; todo: TodoItem[]; done: TodoItem[] } {
+  return { doing: items.filter((x) => x.doing), todo: items.filter((x) => !x.doing && !x.done), done: items.filter((x) => x.done) };
 }
 
 export function removeTodo(p: TodoHost, id: string): TodoItem[] {

@@ -81,11 +81,14 @@ const agentNow = (s: AiSettings, hst: AssistantHost) =>
       try {
         return todos(hst.project)
           .filter((x) => !x.done)
-          .map((x) => x.text);
+          .sort((x, y) => Number(!!y.doing) - Number(!!x.doing))
+          .map((x) => (x.doing ? `(doing) ${x.text}` : x.text));
       } catch {
         return [];
       }
     },
+    todoHost: () => host()?.project,
+    todosChanged: () => todo.render(),
   });
 
 /** Moves the editor to a change, and lights the editor up for a moment. */

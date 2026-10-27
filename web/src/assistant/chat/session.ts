@@ -9,6 +9,8 @@ import { Agent } from './agent';
 import { Archive, sessionArchive } from './archive';
 import { chatTools } from './chatTools';
 import { systemPrompt } from './prompt';
+import type { TodoHost } from './todo';
+import { todoTool } from './todoTool';
 import { chat, looksLikeVision, ollamaModelInfo } from './providers';
 import type { AiSettings } from './settings';
 
@@ -72,6 +74,9 @@ export interface SessionNeeds {
   tab: { specs: Omit<ToolDef, 'run'>[]; run: (name: string, args: Record<string, unknown>) => Promise<ToolResult> };
   facts: () => ModelFacts;
   todos: () => string[];
+  /** The open game's list, for the todo tool, and a redraw after it changes. */
+  todoHost: () => TodoHost | undefined;
+  todosChanged: () => void;
 }
 
 /** The conversation for this game and these settings. */
@@ -81,8 +86,8 @@ export function sessionAgent(s: AiSettings, n: SessionNeeds): Agent {
   const brief = briefOf(n.ctx);
   const agent = new Agent({
     chat: (req) => chat(s, req),
-    tools: chatTools(n.ctx, n.tab),
-    system: async (compact) => systemPrompt({ summary: await brief(), readOnly: n.ctx.readOnly, images: n.facts().sees, compact }),
+    tools: [...chatTools(n.ctx, n.tab), todoTool(n.ctx, n.todoHost, n.todosChanged)],
+    system: async (compact) => systemPrompt({ summary: await brief(), readOnly: n.ctx.readOnly, images: n.facts().sees, compact, todos: n.todos() }),
     images: () => n.facts().sees,
     limit: () => contextLimit(s, n.facts()),
     archive: new Archive(sessionArchive(n.projectId)),
