@@ -430,7 +430,9 @@ modules are in [`../test`](../test).
   (Caveat, with its OFL). `readView.ts` is how every document is read, Pages (a page at a time)
   or Scroll (every page in one column; a phone's default), with the bar's Pages | Scroll pair
   and the choice kept per browser; `scrollPages.ts` is the Scroll column, drawing pages as they
-  near the view and telling the page in view. The box viewer, the zine, TURBO BUTTON and the
+  near the view and telling the page in view. `readSize.ts` is the size pages are shown at (Fit
+  width, Fit page, Actual size at 96 pixels an inch, or zoomed 10–300%), with the bar's size list,
+  Ctrl/Cmd with + and −, and a pinch; also kept per browser. The box viewer, the zine, TURBO BUTTON and the
   Level Maps read both ways.
 - [`manual/printables/`](manual/printables): each game's box contents, with its own
   [README](manual/printables/README.md). The viewer (`viewer.ts`) shows the paper in a "What's in
