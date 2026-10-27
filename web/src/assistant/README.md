@@ -24,19 +24,29 @@ What lets an AI tool open, check and change a game.
     in this browser only. `settingsDialog.ts` is AI setup, with `ollamaHelp.ts` (Remote Ollama
     over Tailscale).
   - `providers.ts`: plain fetch to OpenAI's `/v1/chat/completions` and Ollama's `/api/chat`:
-    the request shapes, streamed and whole replies, model lists and Ollama's capabilities.
+    the request shapes, streamed and whole replies (each native tool call handed on as soon as
+    it is complete), the providers' token counts, model lists, Ollama's model info and its
+    `think` switch.
   - `diagnose.ts`: Test connection, and words for what failed (mixed content, CORS, nothing
     listening, a 403, a model without tools).
-  - `agent.ts`: the tool loop (Apply/Skip through `approve`, Stop through a signal), with
-    `chatTools.ts` (the shared tools and the tab's screenshot, bound to the open project),
-    `prompt.ts` (the system prompt and briefs) and `trim.ts` (history kept to the context).
+  - `agent.ts`: the tool loop. Calls run as they arrive while the reply streams (`textCalls.ts`
+    finds calls written as text), with Apply/Skip through `approve` and Stop through a signal.
+    It keeps within the model's context: tool groups loaded on request (`toolCategories.ts`,
+    terse definitions), result budgets, compaction near the limit (`compact.ts`), and the
+    whole conversation in `archive.ts` (sessionStorage, per game) for `recall`. `tokens.ts`
+    counts for the gauge; `trim.ts` cuts older results as they are sent.
+  - `chatTools.ts` binds the shared tools, `map_sketch` (`mapSketch.ts`, a map as text) and
+    the tab's screenshot to the open project; `session.ts` holds the conversation and what the
+    model can do; `prompt.ts` has the system prompts (a compact one under 8k) and briefs.
   - `coach.ts` runs the Level check, the bot and validate for "What should I do next?";
     `todo.ts` keeps the to-do list and the "Assistant: <model> via <provider>" credits in
     the companion data (`todoView.ts` shows the list).
   - `makeGame.ts`: Describe a game: the starter level for an empty game, then the AI
     builds it until the bot wins. `homeDescribe.ts` asks for the description when New game's
     "Describe it to your AI…" is chosen (`editor/shell/homeImport.ts`).
-  - `panel.ts` is the docked panel (full screen on phones), `log.ts` the conversation.
+  - `panel.ts` is the docked panel (full screen on phones): the gauge with Compact now and
+    Reset, Copy (`clipboard.ts`), and the editor moved to each change (`showChange.ts`).
+    `log.ts` is the conversation: reply bubbles, tool lines, picture thumbnails, Markdown.
 - `shared/`: the read-only switch and the change toast with Undo, used by the chat and the
   bridge alike.
 - `bridge/`: the editor tab's side of the MCP server's bridge, its own chunk, loaded only

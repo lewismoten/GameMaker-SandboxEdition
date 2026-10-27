@@ -187,6 +187,20 @@ open game, with a model you choose. Nothing here is needed for it.
 The settings stay in your browser. The key goes only to the address you gave. While the
 assistant works, the game's contents are sent to that AI.
 
+Small local models work best with a small context. In AI setup's **More settings**, set the
+context size (Ollama's `num_ctx`, 8,192 by default; 4,096 works). The chat then:
+
+- starts the model with a few tools (about 280 tokens of definitions instead of about 6,400)
+  and lets it load a group (maps, blocks, scenes…) when it needs one;
+- cuts big results short, and near the limit puts older turns away for a short summary
+  (**Compact now** does it on request; **Reset** starts a fresh context);
+- keeps the whole conversation in an archive for the tab, which the model can search with
+  `recall`;
+- shows how full the context is, from the server's own count when it gives one.
+
+Thinking models such as qwen3 think only when **Let thinking models think first** is ticked.
+It is off by default, since thinking makes each step much slower.
+
 The chat runs in the page (`web/src/assistant/chat`), so the browser must be allowed to reach
 the AI. Ollama allows pages on `localhost` by default. For any other page, add its origin to
 `OLLAMA_ORIGINS` (for example `https://lewismoten.github.io`).
