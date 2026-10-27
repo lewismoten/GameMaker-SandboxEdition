@@ -275,7 +275,7 @@ export function renderLibrary(el: HTMLElement): void {
       h(
         'p',
         { class: 'lead' },
-        'Every manual, map, newsletter, sticker sheet and card that comes in the boxes, with TURBO BUTTON magazine, the Guide, each game’s walkthrough and videos touring the site. Open one to read it on screen, print it or watch it.',
+        'Every paper from the game boxes, plus magazines, guides and videos.',
       ),
       h(
         'div',
