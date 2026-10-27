@@ -8,6 +8,10 @@ import { assistantHost, onAssistantHost } from '../hostSlot';
 import { bridgeUrl } from './protocol';
 import { BridgeClient } from './client';
 import { EditorContext } from './editorContext';
+import { runInTab } from './editorAdapters';
+import { EDITOR_TOOL_SPECS } from './editorTools';
+import { GAME_TOOL_DEFS } from '../tools/index';
+import { modelContextOf, registerWebMcp, type OfferedTool } from '../webmcp';
 import './panel.css';
 
 const READ_ONLY_KEY = 'gm-assistant-read-only';
@@ -57,7 +61,45 @@ function changeToast(summary: string, undo: () => void): void {
 const ctx = new EditorContext(assistantHost, { readOnly: () => readOnly, changed: changeToast });
 const client = new BridgeClient(ctx, assistantHost, () => readOnly);
 
+// ---- WebMCP: the same tools offered to the browser's own AI agent (assistant/webmcp.ts) ----------
+
+/** Tools of the tab's that change something, beside the shared tools marked as writes. */
+const TAB_WRITES = new Set(['editor_open_file', 'editor_play', 'editor_stop_play', 'editor_undo']);
+const offered: OfferedTool[] = [
+  ...GAME_TOOL_DEFS.map((d) => ({ name: d.name, description: d.description, inputSchema: d.inputSchema, writes: !!d.writes })),
+  ...EDITOR_TOOL_SPECS.map((d) => ({ name: d.name, description: d.description, inputSchema: d.inputSchema, writes: TAB_WRITES.has(d.name) })),
+].map((t) => ({
+  ...t,
+  run: async (args: Record<string, unknown>) => {
+    const r = await runInTab(t.name, args, ctx, assistantHost(), readOnly);
+    noteCall(`${t.name} (WebMCP)`, !r.isError);
+    return r;
+  },
+}));
+let unregister: (() => void) | undefined;
+
+async function setWebMcp(on: boolean): Promise<void> {
+  unregister?.();
+  unregister = undefined;
+  webMcpBox.checked = false;
+  const mc = on ? modelContextOf() : undefined;
+  if (on && !mc) return show();
+  if (mc)
+    try {
+      unregister = await registerWebMcp(mc, offered);
+      webMcpBox.checked = true;
+    } catch (e) {
+      return show(`The browser didn’t take the tools: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  show();
+}
+
+const webMcpBox = h('input', { id: 'assistant-webmcp', type: 'checkbox', onchange: () => void setWebMcp(webMcpBox.checked) });
+const webMcpNote = h('p', { class: 'hint assistant-webmcp-note' });
+
 // ---- the chip that shows while connected ------------------------------------------------------
+
+let chipText: HTMLElement;
 
 const chip = h(
   'div',
@@ -66,9 +108,9 @@ const chip = h(
     'button',
     { class: 'assistant-chip-open', title: 'Open the Assistant', onclick: () => openAssistant() },
     h('span', { 'aria-hidden': 'true' }, '✦ '),
-    'Assistant connected',
+    (chipText = h('span', null, 'Assistant connected')),
   ),
-  h('button', { class: 'assistant-chip-off', onclick: () => client.disconnect() }, 'Disconnect'),
+  h('button', { class: 'assistant-chip-off', onclick: () => (client.disconnect(), void setWebMcp(false)) }, 'Disconnect'),
 );
 
 // ---- the panel --------------------------------------------------------------------------------
@@ -130,6 +172,9 @@ const panel = h(
   status,
   form,
   h('p', { class: 'assistant-check' }, readOnlyBox, h('label', { for: 'assistant-read-only' }, 'Read-only: it can look, but change nothing')),
+  h('h3', null, 'The browser’s own AI agent'),
+  h('p', { class: 'assistant-check' }, webMcpBox, h('label', { for: 'assistant-webmcp' }, 'Offer these tools to it (WebMCP)')),
+  webMcpNote,
   h('h3', null, 'Recent'),
   log,
 );
@@ -148,10 +193,20 @@ function show(message?: string): void {
   connectBtn.hidden = s === 'connected' || s === 'connecting';
   disconnectBtn.hidden = !connectBtn.hidden;
   port.disabled = code.disabled = connectBtn.hidden;
-  if (s === 'connected') {
+  const webMcp = !!unregister;
+  const on = s === 'connected' || webMcp;
+  chipText.textContent = s === 'connected' ? `Assistant connected${webMcp ? ' · WebMCP on' : ''}` : 'WebMCP tools on';
+  if (on) {
     if (!chip.isConnected) document.body.append(chip);
   } else chip.remove();
-  for (const b of document.querySelectorAll<HTMLElement>('.assistant-btn')) b.dataset.connected = String(s === 'connected');
+  for (const b of document.querySelectorAll<HTMLElement>('.assistant-btn')) b.dataset.connected = String(on);
+  const has = !!modelContextOf();
+  webMcpBox.disabled = !has;
+  webMcpNote.textContent = has
+    ? webMcp
+      ? `${offered.length} tools offered to the browser’s agent${readOnly ? ', read-only' : ''}.`
+      : 'This browser has WebMCP: its agent may use the same tools on this game once you tick the box.'
+    : 'This browser has no WebMCP. Chrome has it behind chrome://flags/#enable-webmcp-testing, and in an origin trial.';
   clear(
     log,
     ...(activity.length
@@ -161,11 +216,12 @@ function show(message?: string): void {
 }
 
 client.onStatus = () => show();
-client.onCall = (tool, ok) => {
+function noteCall(tool: string, ok: boolean): void {
   activity.unshift({ tool, ok });
   activity.length = Math.min(activity.length, 6);
   show();
-};
+}
+client.onCall = noteCall;
 // another project opened, or the home page shown: the server hears what is open now
 onAssistantHost(() => (client.sendState(), show()));
 

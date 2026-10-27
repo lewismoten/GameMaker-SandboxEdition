@@ -397,6 +397,12 @@ formats from their published descriptions and from Game-Maker's own source.
   youtube-nocookie.com only when the visitor presses Play.
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
+- **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/src/assistant/png.ts`) are
+  written from the specification; compression is the browser's or Node's own.
+- **Model Context Protocol** and **WebMCP**: the local server for AI tools (`web/scripts/mcp`)
+  speaks the Model Context Protocol with its MIT-licensed TypeScript SDK (see Tools used to
+  build and test). The editor's Assistant can also offer its tools through WebMCP, a draft of
+  the W3C Web Machine Learning Community Group, implemented from the draft with no code used.
 - **The music editor and its FM instruments** were made for this project. The editor is an
   original design, not based on AdLib's Visual Composer, and no AdLib or Creative instrument
   bank is included. The classic piano and brass, and one kick drum used in two games, matched

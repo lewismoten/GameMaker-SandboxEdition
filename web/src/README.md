@@ -257,6 +257,9 @@ modules are in [`../test`](../test).
     - `client.ts` is the WebSocket.
     - `panel.ts` is the Assistant: port and code, status, read-only switch, recent calls, a
       chip in the corner while connected, and a toast with Undo for every change.
+  - `webmcp.ts`: the Assistant's opt-in to offer the same tools to the browser's own AI agent
+    through WebMCP (`document.modelContext.registerTool`, or Chrome's first
+    `navigator.modelContext`), detected first so nothing changes without it.
   - `hostSlot.ts`: where the workspace puts itself for the Assistant, with no imports to run.
   - The local MCP server that serves them is [`../scripts/mcp`](../scripts/mcp) (see its
     README).

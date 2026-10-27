@@ -127,6 +127,27 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'The 1994 desk, where nearly everything does something when clicked and some things are hidden to find. Lewis watched their Flash cartoons, where clicking things in the last scene turned up hidden extras. The names are their owners’.',
         url: 'https://homestarrunner.com/',
       },
+      {
+        name: 'Model Context Protocol',
+        license: 'Protocol specification (the SDK used is MIT)',
+        by: 'The Model Context Protocol project, begun by Anthropic',
+        what: 'How AI tools talk to the local server that opens, checks and edits games (web/scripts/mcp, with its TypeScript SDK) and to the editor’s Assistant through it. None of it is in the site or the downloads.',
+        url: 'https://modelcontextprotocol.io/',
+      },
+      {
+        name: 'WebMCP',
+        license: 'Draft specification (no code used)',
+        by: 'The W3C Web Machine Learning Community Group',
+        what: 'How the editor’s Assistant offers its tools to an AI agent built into the browser, when the browser has it and the visitor opts in (web/src/assistant/webmcp.ts).',
+        url: 'https://webmachinelearning.github.io/webmcp/',
+      },
+      {
+        name: 'PNG',
+        license: 'Format description (RFC 2083)',
+        by: 'Thomas Boutell and the PNG Development Group',
+        what: 'The pictures the Assistant shows an AI tool (web/src/assistant/png.ts), written for this project from the specification; the browser’s own compression packs them.',
+        url: 'https://www.rfc-editor.org/rfc/rfc2083',
+      },
     ],
   },
   {

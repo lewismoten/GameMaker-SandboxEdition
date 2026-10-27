@@ -96,6 +96,32 @@ The safety rules:
 - The tab saves the project itself, as it always does, so `save` and `export_game` don't
   apply to it. Use the editor's Download button.
 
+## WebMCP: the browser's own AI agent
+
+[WebMCP](https://webmachinelearning.github.io/webmcp/) is a draft by the W3C Web Machine
+Learning Community Group. With it, a page offers tools to an AI agent built into the browser:
+`document.modelContext.registerTool({ name, description, inputSchema, execute, annotations },
+{ signal })`, taken back by aborting the signal. It isn't a standard yet. As of October 2026,
+Chrome has it behind a flag (146 and later) and in an origin trial (149 to 156). Chrome's first
+builds put it on `navigator.modelContext`.
+
+In the editor's Assistant, **Offer these tools to it (WebMCP)** registers the same tools the
+bridge offers: the shared game tools plus the tab's own. It is off until you tick it, and
+only shown as usable where the browser has the API (`web/src/assistant/webmcp.ts` feature
+detects it). Changes show as toasts with Undo, and the read-only switch applies here too.
+
+To try it:
+
+1. In Chrome 146 or later, turn on `chrome://flags/#enable-webmcp-testing` and relaunch.
+2. Open a game in the editor, press ✦, and tick the box.
+3. Use an agent that reads a page's WebMCP tools: Chrome's built-in agent where it is
+   available, or a WebMCP inspector extension.
+
+For visitors of the published site without the flag, the site needs an origin trial token
+(developer.chrome.com/origintrials, "WebMCP", for `https://lewismoten.github.io`). It goes in
+`TRIAL_TOKEN` in `webmcp.ts`, which adds it as a meta tag when the box is ticked. Tests
+(`webmcp.test.ts`) use a fake model context.
+
 ## Connecting
 
 Use the full path to `web` in place of `/path/to/GameMaker/web`.
@@ -143,7 +169,9 @@ If Desktop can't find `npm`, give its full path (`which npm`).
 **Local models (Ollama) and OpenAI**: neither speaks MCP by itself. An MCP host that drives
 them (for example an Ollama MCP client) can start this server the same way. Code calling a
 model directly can use the same tool definitions as function-calling tools, with
-`toOpenAITools` in `web/src/assistant/openai.ts`.
+`toOpenAITools` in `web/src/assistant/openai.ts`. A page calling a local Ollama from the
+browser also needs Ollama to allow the page's origin: start it with `OLLAMA_ORIGINS` set to
+that origin (for example `OLLAMA_ORIGINS=https://lewismoten.github.io,http://localhost:5173`).
 
 ## How it is built
 
@@ -156,8 +184,12 @@ has a name, a short description, a flat JSON Schema and a handler that works on 
 - the editor bridge runs the same handlers in the tab, on the open project
   (`web/src/assistant/bridge`). The tab-only tools (screenshot, play test, Undo) are separate
   adapters there.
-- a future chat panel in the editor can hand the same definitions to the model's tool-use API
-  directly.
+- WebMCP registers the same definitions in the page (`web/src/assistant/webmcp.ts`).
+- a future chat panel in the editor, with the user's own model and key kept in their browser,
+  can hand the same definitions to the model's tool-use API directly (`toOpenAITools` for
+  OpenAI and Ollama). Each handler takes a `GameContext`, so a chat can run them on the open
+  project just as the bridge does (`EditorContext`), turning Level check and bot results into
+  advice.
 - the schemas avoid `$ref` and `oneOf` and keep descriptions short, so they convert cleanly
   to OpenAI-style function calling. Ollama's `/api/chat` and its OpenAI-compatible `/v1`
   take the same shape, and small local models handle flat schemas best.
