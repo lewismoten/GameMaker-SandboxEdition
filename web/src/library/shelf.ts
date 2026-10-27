@@ -62,8 +62,8 @@ export interface ShelfItem {
   open: Opening;
   /** A piece the same in several boxes (shared.ts): how many boxes it is in. */
   boxes?: number;
-  /** A numbered issue (a box's Sandbox Scoop): its number, for reading in order, and its line ("Vol. 1, No. 3 · March 1995"). */
-  issue?: { no: number; line: string };
+  /** A numbered issue (a box's Sandbox Scoop): its number, shown over its picture and for reading in order. */
+  issue?: { no: number };
   /** A walkthrough or a video: how long it plays, in seconds. */
   seconds?: number;
   /** A picture for the card from the site's own files (a video's), in place of a drawn sheet. */

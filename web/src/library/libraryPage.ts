@@ -114,7 +114,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   if (make) lazyThumb(frame, item.key, make);
   // by type, a game's or the Game-Maker box's card says whose it is; by game, the heading does, so it says what it is
   const sub = order === 'type' && item.owner !== SITE_OWNER && !item.boxes && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
-  // an issue's number over its picture, readable at a glance (the card's text says it too)
+  // an issue's number over its picture, readable at a glance (said to a screen reader in the card's text)
   const length = item.seconds !== undefined ? hms(item.seconds) : undefined;
   const badgeText = item.issue ? `No. ${item.issue.no}` : length;
   const badge = badgeText ? h('span', { class: `lib-badge${length ? ' lib-length' : ''}`, 'aria-hidden': 'true' }, badgeText) : null;
@@ -128,7 +128,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       sub ? h('small', null, sub) : null,
       // the same in several boxes: listed once, opened from the first
       item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
-      item.issue ? h('small', { class: 'lib-boxes' }, item.issue.line) : null,
+      item.issue ? h('span', { class: 'sr-only' }, `Issue ${item.issue.no}`) : null,
       // a video plays from YouTube: not in the offline copy
       item.open.via === 'video' ? h('small', { class: 'lib-boxes' }, 'Needs the internet') : null,
       // the badge over the picture shows the length; this says it to a screen reader
@@ -272,11 +272,7 @@ export function renderLibrary(el: HTMLElement): void {
       { class: 'library', 'aria-labelledby': 'lib-h' },
       h('p', { class: 'lib-kicker' }, 'Everything to read and print'),
       h('h1', { id: 'lib-h' }, 'Library'),
-      h(
-        'p',
-        { class: 'lead' },
-        'Every paper from the game boxes, plus magazines, guides and videos.',
-      ),
+      h('p', { class: 'lead' }, 'Every paper from the game boxes, plus magazines, guides and videos.'),
       h(
         'div',
         { class: 'lib-bar' },

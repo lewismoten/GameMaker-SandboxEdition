@@ -16,7 +16,6 @@ import { walkShelf } from './walkShelf';
 import { cdPrintItems, gamePrintItems } from './printShelf';
 import { videoShelf } from './videos';
 import { scoopIssue } from '../manual/printables/scoopIssue';
-import { scoopDateline } from '../manual/printables/scoopIssues';
 import { gmCoverSheet, hintCoverSheet, magazineCoverSheet, manualCoverSheet } from './covers';
 
 export interface Shelf {
@@ -65,7 +64,7 @@ export async function loadShelf(): Promise<Shelf> {
     const ownItem = /^own\d+$/.test(piece.id) ? own?.[Number(piece.id.slice(3))] : undefined;
     // a box's newsletter, numbered as it prints its own number and date (gen.ts newsletter)
     const no = piece.id === 'newsletter' && ctx ? scoopIssue(ctx.entry.id, family) : undefined;
-    const issue = no && ctx ? { no, line: `Vol. 1, No. ${no} · ${scoopDateline(ctx.entry.id, ctx.entry.year)}` } : undefined;
+    const issue = no ? { no } : undefined;
     items.push({ key, title: piece.title, note: piece.note, icon: piece.icon, type: typeOfPiece(owner, piece.id, ownItem), owner, ownerTitle, open, issue });
     // the Level Maps: the first level's picture, as the printed maps crop it (its pages are mostly key and captions)
     const levels = piece.id === 'levelmaps' && ctx ? levelMaps(ctx) : undefined;
