@@ -112,7 +112,12 @@ and `.svg`, `game-maker-cd-label-art.png`, `turbo-button-cd-label-art.png`, `dis
 - `retailBoxArt.ts`: the lid (the desk's front cover, `gameBox.ts` `drawPrintFaces`, at the
   print's resolution with no wear or price sticker; spines, top and bottom lettered for the 1.125
   in walls) and the bottom (the back cover). `diskLabelArt.ts` and `cdLabelArt.ts` draw the
-  labels in hundredths of an inch, the game's pixels enlarged without smoothing. `gmBoxPrint.ts`
+  labels in hundredths of an inch, the game's pixels enlarged without smoothing. Every disk label
+  has the game's main character (`hintCoverArt.ts` `gameHero`: its sticker sheet's hero, else its
+  first level's), each pixel a whole 1/150 in; the Bard of Bizarre's games also carry his logo
+  (the BBS's `BARDLOGO.GIF`, made with DeepAI) with its white ground taken out. `labelSheets.ts`
+  `DISK_CASE` is a 3.5" disk measured from a drawing (3.50 × 3.66 in, the recess 2.88 × 2.12 in
+  open at the top edge); `diskLabelFit.ts` draws how the label goes on, for the sheet's help. `gmBoxPrint.ts`
   is the Game-Maker box the same way (`gmBox.ts` `paintGmFaces`; the desk's box is the games'
   size, so it fits the face at 1.25 times, the extra 1/4 in of height going to the front's grid
   of screenshots and the back's space above the small print), its spines black with the logo

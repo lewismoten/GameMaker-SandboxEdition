@@ -216,7 +216,8 @@ game folder opens in the browser unchanged.
   of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop, and
   **COLONIAL.GIF**, Lewis in colonial dress beside George Washington, which was taken by
   **Todd Jones**, Director of Technology, County of Warren, at a Warren County VA250 event, a
-  flag retirement ceremony. The Bard logo (BARDLOGO.GIF) was made with DeepAI.
+  flag retirement ceremony. The Bard logo (BARDLOGO.GIF) was made with DeepAI; the Library's
+  printed disk labels for the Bard's games carry it too, its white ground taken out.
 - **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
   (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
   Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from

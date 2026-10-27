@@ -1,14 +1,16 @@
 // A game's 3.5" disk label drawn to print: the desk's printed label (desk/disks/diskLabel.ts) on
 // the front, the company band, the title in the box's colors over a strip of the game with its
-// hero, the small print, and a strip that folds over the disk's top edge with the title and disk
-// number, upside down so it reads on the back. Drawn on a canvas in hundredths of an inch, so it
+// main character (its sticker sheet's hero, else its first level's), the small print (with the
+// Bard of Bizarre's logo on his games' labels, its white ground taken out), and a strip that folds
+// over the disk's top edge with the title and disk number, upside down so it reads on the back. Drawn on a canvas in hundredths of an inch, so it
 // prints sharp at any dpi; the game's own pixels are enlarged without smoothing. The bleed carries
 // each band's own background color past the cut, never the picture.
 import type { CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { mapShot } from '../../gfx/gameShots';
 import { bandInk, logoText } from '../../desk/disks/diskLabel';
-import { portrait } from './kit';
+import { isBizarreGame } from '../../project/bizarre';
+import { gameHero } from './hintCoverArt';
 import { DISK_LABEL } from './labelSheets';
 
 /** Hundredths of an inch. */
@@ -22,26 +24,84 @@ const PAD = 18;
 
 export interface DiskLabelArt {
   shot?: HTMLCanvasElement;
+  /** The main character, cropped to his pixels. */
   hero?: HTMLImageElement;
+  /** The Bard of Bizarre's logo on a clear ground, for his games. */
+  logo?: HTMLCanvasElement;
+}
+
+/** The Bard of Bizarre's logo (the BBS's BARDLOGO.GIF, made with DeepAI), as served with the site. */
+const BARD_LOGO = './bbs/BARDLOGO.GIF';
+let bardLogo: Promise<HTMLCanvasElement | undefined> | undefined;
+
+/**
+ * The logo with its white ground taken out: the near-white pixels joined to the picture's edge
+ * go clear (the rooster's white feathers are inside his black outline, so they stay), the light
+ * edge pixels beside them fade with how light they are, and it is cropped to what is left.
+ */
+function logoClear(): Promise<HTMLCanvasElement | undefined> {
+  bardLogo ??= (async () => {
+    const img = new Image();
+    img.src = BARD_LOGO;
+    await img.decode();
+    const [w, h] = [img.naturalWidth, img.naturalHeight];
+    const c = document.createElement('canvas');
+    [c.width, c.height] = [w, h];
+    const g = c.getContext('2d', { willReadFrequently: true })!;
+    g.drawImage(img, 0, 0);
+    const data = g.getImageData(0, 0, w, h);
+    const px = data.data;
+    const light = (i: number) => Math.min(px[i * 4], px[i * 4 + 1], px[i * 4 + 2]);
+    const ground = new Uint8Array(w * h);
+    const todo: number[] = [];
+    for (let x = 0; x < w; x++) todo.push(x, (h - 1) * w + x);
+    for (let y = 0; y < h; y++) todo.push(y * w, y * w + w - 1);
+    while (todo.length) {
+      const i = todo.pop()!;
+      if (ground[i] || light(i) < 232) continue;
+      ground[i] = 1;
+      const x = i % w;
+      if (x > 0) todo.push(i - 1);
+      if (x < w - 1) todo.push(i + 1);
+      if (i >= w) todo.push(i - w);
+      if (i < w * (h - 1)) todo.push(i + w);
+    }
+    let [x0, y0, x1, y1] = [w, h, -1, -1];
+    for (let i = 0; i < w * h; i++) {
+      const x = i % w;
+      const y = (i - x) / w;
+      if (ground[i]) px[i * 4 + 3] = 0;
+      else {
+        const edge = (x > 0 && ground[i - 1]) || (x < w - 1 && ground[i + 1]) || (y > 0 && ground[i - w]) || (y < h - 1 && ground[i + w]);
+        if (edge) px[i * 4 + 3] = Math.round(255 * Math.min(1, (255 - light(i)) / 90));
+        if (px[i * 4 + 3]) ((x0 = Math.min(x0, x)), (y0 = Math.min(y0, y)), (x1 = Math.max(x1, x)), (y1 = Math.max(y1, y)));
+      }
+    }
+    if (x1 < 0) return undefined;
+    g.putImageData(data, 0, 0);
+    const out = document.createElement('canvas');
+    [out.width, out.height] = [x1 - x0 + 1, y1 - y0 + 1];
+    out.getContext('2d')!.drawImage(c, -x0, -y0);
+    return out;
+  })().catch(() => undefined);
+  return bardLogo;
 }
 
 /** The pictures on a game's label: the strip of its first box shot and its hero, as the desk's label has. */
 export async function diskLabelArt(g: CatalogEntry): Promise<DiskLabelArt> {
   const shot = g.original?.box?.shots?.[0];
-  const hero =
-    g.original?.printables?.stickers?.find((s) => s.hero)?.hero ??
-    g.original?.printables?.items?.flatMap((i) => (i.kind === 'idcard' && i.portrait ? [i.portrait] : []))[0];
-  const [pic, face] = await Promise.all([
+  const [pic, face, logo] = await Promise.all([
     shot ? mapShot(g, shot[0], shot[1] + 2, shot[2] + 3, 12, 4).catch(() => undefined) : undefined,
-    hero ? portrait(g, hero).catch(() => undefined) : undefined,
+    gameHero(g),
+    isBizarreGame(g) ? logoClear() : undefined,
   ]);
   let img: HTMLImageElement | undefined;
   if (face) {
     img = new Image();
-    img.src = face;
+    img.src = face.src;
     await img.decode().catch(() => (img = undefined));
   }
-  return { shot: pic ?? undefined, hero: img };
+  return { shot: pic ?? undefined, hero: img, logo };
 }
 
 /** A #rrggbb color at alpha `a` (any other color as it is). */
@@ -133,18 +193,35 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
     g.fillStyle = fade;
     g.fillRect(0, top, LW, bh);
   }
+  // the Bard's logo in the bottom right corner, over the banner's foot, inside the safe line
+  const logoH = 80;
+  const logoW = art.logo ? (art.logo.width / art.logo.height) * logoH : 0;
+  const right = LW - PAD - (art.logo ? logoW + 4 : 0);
+  // the hero standing on the banner's foot, each of his pixels a whole 1/150 in, as tall as fits
+  let heroLeft = right;
   if (art.hero) {
-    const hh = bh * 0.92;
-    const w = (art.hero.width / art.hero.height) * hh;
+    // under the disk number's tab, and no wider than 3/4 in, so the title keeps its room
+    const tall = bh - (tag ? 26 : 10);
+    const unit = Math.max(1, Math.min(Math.floor((tall * 1.5) / art.hero.height), Math.floor((75 * 1.5) / art.hero.width))) / 1.5;
+    const w = art.hero.width * unit;
+    const hh = art.hero.height * unit;
+    heroLeft = right - w;
     g.save();
     g.imageSmoothingEnabled = false;
-    g.drawImage(art.hero, LW - LW * 0.06 - w, bottom - hh, w, hh);
+    g.drawImage(art.hero, heroLeft, bottom - hh, w, hh);
+    g.restore();
+  }
+  if (art.logo) {
+    g.save();
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(art.logo, LW - PAD - logoW, LH - 13 - logoH, logoW, logoH);
     g.restore();
   }
   // the title, wrapped and as big as fits beside the hero
   // under the disk number's tab, which sits in the banner's top right
   const clear = tag ? 20 : 0;
-  const textW = LW * 0.66 - PAD;
+  const textW = Math.min(LW * 0.66, heroLeft - 4) - PAD;
   let px = main.length > 14 ? 22 : 29;
   let rows: string[] = [];
   for (; px > 12; px -= 1) {
@@ -184,8 +261,9 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
   // the small print
   g.fillStyle = ink;
   g.font = ARIAL(14, 400);
-  g.fillText(`Shareware${entry.price ? ` · ${entry.price} Registration` : ''}`, PAD, LH - 36, LW - 2 * PAD);
-  g.fillText(`© ${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}`, PAD, LH - 20, LW - 2 * PAD);
+  const printW = LW - 2 * PAD - (art.logo ? logoW + 6 : 0);
+  g.fillText(`Shareware${entry.price ? ` · ${entry.price} Registration` : ''}`, PAD, LH - 36, printW);
+  g.fillText(`© ${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}`, PAD, LH - 20, printW);
 
   // the back strip, upside down so it reads once folded over the top edge
   g.save();
