@@ -54,9 +54,12 @@ export function arenaGoal(s: Sim): { x: number; y: number } {
 export const maxTicksOf = (l: Leg): number => (l.kind === 'boss' ? 2400 : l.kind === 'diag' ? 4000 : 1600);
 
 /**
- * The walkthrough's pilot on a diagonal leg: keep to the middle of the lane at cruising speed
- * (the goal is where the drift alone would take it, so it only speeds up or brakes to dodge),
- * and at the last shortcut cross to the next lane down on purpose, sliding along the lane's
+ * The walkthrough's pilot on a diagonal leg: keep to the middle of the lane at cruising speed,
+ * aiming at the lane's middle where it would be in a moment (on the slant where the drift alone
+ * takes it, so it only speeds up or brakes to dodge). Looking ahead along the lane, not just
+ * across it, it turns with the lane as it bends flat before the wrap, holding Right through
+ * the bend instead of climbing into the lane's top edge. At
+ * the last shortcut it crosses to the next lane down on purpose, sliding along the lane's
  * lower edge until the way opens; the earlier ones it rides past, so the walkthrough shows a
  * lap and a kink as well as a shortcut. Returns a goal for fly().
  */
@@ -64,19 +67,34 @@ export function diagGoal(l: Leg): (s: Sim) => { x: number; y: number } {
   const { track, shortcuts } = l.diag!;
   const { pitch, lanes, kink, board } = track;
   const mid = board + (pitch - board) / 2;
+  const around = lanes * pitch;
+  const lap = 100 * 20;
+  const mod = (v: number, m: number) => ((v % m) + m) % m;
+  /** The track value at map pixel (x, y), and whether it is on the kink (the lane bent flat). */
+  const tAt = (x: number, y: number) => {
+    const flat = Math.floor(mod(x, lap) / 20) >= kink;
+    return { flat, t: mod(flat ? mod(y, lap) / 20 + kink : (mod(x, lap) + mod(y, lap)) / 20, around) };
+  };
   return (s) => {
-    const lap = 100 * 20;
-    const cx = (s.pos.x + 10) % lap;
-    const cy = (s.pos.y + 10) % lap;
-    const flat = Math.floor(cx / 20) >= kink;
-    const T = (((flat ? cy / 20 + kink : (cx + cy) / 20) % (lanes * pitch)) + lanes * pitch) % (lanes * pitch);
-    const lane = Math.floor(T / pitch);
-    let across = mid - (T - lane * pitch);
-    const bx = Math.floor(cx / 20);
-    for (const [k, x0, n] of shortcuts.slice(-1)) if (lane === track.laneOfLap(k) && bx >= x0 - 8 && bx < x0 + n - 6) across += pitch;
-    // ahead along the lane, and across it by `across` (t grows right and down)
-    const ahead = DIAG_DRIFT * 10;
-    return flat ? { x: s.pos.x + ahead, y: s.pos.y + across * 20 } : { x: s.pos.x + ahead + across * 10, y: s.pos.y - ahead + across * 10 };
+    const cx = s.pos.x + 10;
+    const cy = s.pos.y + 10;
+    const here = tAt(cx, cy);
+    const lane = Math.floor(here.t / pitch);
+    let middle = lane * pitch + mid;
+    const bx = Math.floor(mod(cx, lap) / 20);
+    for (const [k, x0, n] of shortcuts.slice(-1)) if (lane === track.laneOfLap(k) && bx >= x0 - 8 && bx < x0 + n - 6) middle += pitch;
+    // where the ship would be in a moment: on the slant the drift alone takes it up and to the
+    // right; once that is past the bend, holding Right (it can never fly down, so it turns early)
+    const drift = DIAG_DRIFT * 10;
+    const onKink = tAt(cx + drift, cy - drift).flat;
+    const px = cx + (onKink ? 90 : drift);
+    const py = cy - (onKink ? 20 : drift);
+    const there = tAt(px, py);
+    // and across the lane from there to its middle (t grows right and down)
+    const across = mod(middle - there.t + around / 2, around) - around / 2;
+    const gx = there.flat ? px : px + across * 10;
+    const gy = there.flat ? py + across * 20 : py + across * 10;
+    return { x: gx - 10, y: gy - 10 };
   };
 }
 

@@ -1,15 +1,18 @@
-// Stage 3: THE SOUND CARD. Leg A "The Mixer" brings note-heads in conga lines and wasps;
-// leg B "The Woofer" has the speakers that thump the ship forward; leg C "The Big Name" crosses
-// the card's face, where it prints SOUND BOASTER (stages/boaster.ts). Then the Feedback Howler.
+// Stage 3: THE SOUND CARD. 3-A "The Big Name" flies up the card's face, where it prints SOUND
+// BOASTER (stages/boaster.ts); 3-B "The Waveform" flies right through the song; 3-C "The
+// Woofer" flies back down past the speakers that thump the ship on (turned on a map of its
+// own, stages/turned.ts); 3-D "The Mixer" flies left with note-heads in conga lines and wasps
+// (in the waveform's map); 3-E "The Score" cuts corner to corner. Then the Feedback Howler.
 import { HOP, HOVER_DROP, S_CURVE, SWEEP, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { soundArt, soundEgg, soundTiles, soundVirus } from '../blocks/sound3';
-import { kit, type Stage } from './stage';
+import { kit, type Leg, type Stage } from './stage';
 import { bossHowler } from '../bosses/boss3';
 import { bigName } from './boaster';
 import { scoreLeg } from './score';
-import { waveLeg } from './wave';
+import { waveKit, waveLeg, mixerBand } from './wave';
+import { downLeg, leftLeg, stampNames, stripMeter } from './turned';
 
 function virus3(b: Parameters<typeof soundVirus>[0], p: Parameters<typeof soundVirus>[1]): void {
   soundVirus(b, p);
@@ -41,41 +44,6 @@ const conga = (g: Grid, c: number, d: number, n: number, name: string) => {
 
 function vuRow(g: Grid, c0: number, c1: number, d: number): void {
   for (let c = c0; c <= c1; c++) g.set(c, d, `vu${(c * 2) % 6}`);
-}
-
-function legA(g: Grid): void {
-  g.stamp(1, 3, 'knob', 2, 2).stamp(13, 5, 'knob', 2, 2);
-  g.set(5, 4, 'jackG').set(6, 4, 'jackP').set(7, 4, 'jackB');
-  conga(g, 8, 9, 5, 'noteR');
-  conga(g, 7, 15, 5, 'noteL');
-  vuRow(g, 2, 13, 21);
-  g.mon(4, 24, 'wasp').mon(11, 24, 'wasp').mon(8, 26, 'wasp');
-  g.stamp(6, 28, 'fm', 3, 3);
-  g.turret(2, 29, 'sweep').turret(13, 30, 'sweep');
-  g.pickup(7, 33, 'nova').pickup(8, 33, 'bit');
-  conga(g, 8, 36, 5, 'noteSL');
-  conga(g, 7, 36, 5, 'noteSR');
-  for (const [c, d] of [
-    [3, 43],
-    [12, 44],
-    [6, 46],
-    [9, 47],
-  ])
-    g.mon(c, d, d % 2 ? 'disc' : 'cluster');
-  g.fence(1, 14, 50, 'A');
-  g.mon(8, 54, 'amp');
-  g.hatch(3, 55).hatch(12, 55);
-  g.pickup(8, 58, 'repair');
-  vuRow(g, 1, 14, 60);
-  conga(g, 8, 62, 5, 'noteHL');
-  g.turret(5, 66, 'flak').turret(10, 66, 'flak');
-  g.mon(3, 70, 'wasp').mon(12, 70, 'wasp');
-  g.stamp(1, 72, 'knob', 2, 2);
-  conga(g, 7, 74, 4, 'noteD');
-  conga(g, 9, 74, 4, 'noteD');
-  g.turret(13, 78, 'seeker');
-  g.mon(5, 81, 'wasp').mon(8, 82, 'wasp').mon(11, 81, 'wasp');
-  g.fence(1, 14, 85, 'B');
 }
 
 function legB(g: Grid): void {
@@ -123,20 +91,6 @@ export function stage3(): Stage {
     { mite: 'mite', turretEvery: 11, seekerEvery: 40, flakEvery: 30, hatchShut: 40, hatchOpen: 30, hatchEvery: 8, fenceOn: 26, fenceOff: 26 },
     (bs) => soundEgg(bs, art),
   );
-  const a = strip(ks.bs, ks.beasts, art, 301);
-  legA(a);
-  a.sprinkle(
-    [
-      ['knob', 2, 2],
-      ['jackG', 1, 1],
-      ['jackP', 1, 1],
-      ['jackB', 1, 1],
-      ['vu0', 1, 1],
-      ['vu3', 1, 1],
-    ],
-    14,
-  );
-  a.cardAt = 30;
   const b = strip(ks.bs, ks.beasts, art, 302);
   legB(b);
   b.sprinkle(
@@ -160,6 +114,9 @@ export function stage3(): Stage {
   ).find(([c, d]) => /^floor0$/.test(b.get(c, d)))!;
   b.set(ec, ed, 'easterEgg');
   b.cardAt = 26;
+  const big = bigName(pal);
+  const woofer: Leg = { file: 's3b', kitFile: 's3', title: 'The Woofer', kind: 'scroll', grid: b, kit: ks, card: [] };
+  const wave = waveLeg();
   return {
     n: 3,
     id: 'sound',
@@ -170,27 +127,30 @@ export function stage3(): Stage {
     song: 'sound.cmf',
     bossSong: 'boss.cmf',
     legs: [
-      scoreLeg(),
-      {
-        file: 's3a',
-        kitFile: 's3',
-        title: 'The Mixer',
-        kind: 'scroll',
-        grid: a,
-        kit: ks,
-        card: ['Note-heads dance in conga', 'lines and hop along a staff.', 'Wasps dive fast.', 'Records spin: shoot far!'],
-      },
-      {
-        file: 's3b',
-        kitFile: 's3',
+      big,
+      wave,
+      // its own map: the card's face beside it has a block set of its own, whose virus numbers stop short of the Woofer's
+      downLeg('own', woofer, {
+        file: 's3v',
+        kitFile: 's3v',
         title: 'The Woofer',
-        kind: 'scroll',
-        grid: b,
-        kit: ks,
-        card: ['When a speaker thumps, its', 'middle kicks you forward.', 'Ride the beat!'],
-      },
-      bigName(pal),
-      waveLeg(),
+        card: ['Back DOWN the card. When a', 'speaker thumps, its middle', 'kicks you on down.', 'Ride the beat!'],
+        left: 2,
+        meter: stripMeter(art),
+        // printing, meters and the egg stay upright; the speakers and the board turn
+        spec: {
+          upright: ['floor3', ...[0, 1, 2, 3, 4, 5].map((k) => `vu${k}`), 'jackG', 'jackP', 'jackB', 'easterEgg', 'easterEgg1', 'easterEgg2', 'easterEgg3'],
+          stamps: [stampNames('fm', 3, 3), stampNames('knob', 2, 2)],
+        },
+      }),
+      leftLeg(wave, mixerBand(), {
+        file: 's3l',
+        title: 'The Mixer',
+        card: ['Flying LEFT across the mix.', 'Note-heads dance in conga', 'lines, Wasps dive fast.', 'Records spin: shoot far!'],
+        top: 20,
+        art: waveKit().art,
+      }),
+      scoreLeg(),
       bossHowler(art),
     ],
   };

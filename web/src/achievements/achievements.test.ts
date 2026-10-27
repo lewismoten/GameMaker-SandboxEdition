@@ -276,7 +276,7 @@ describe('lists kept in step with what they count', () => {
     gameSpot('game:brief', 'Chapter 2 Done');
     gameSpot('game:snowbound', 'Chapter 1 Done');
     gameSpot('brief', undefined, true);
-    gameSpot('blaster', '3d The Big Name');
+    gameSpot('blaster', '3a The Big Name');
     const r = await loadAchievements();
     expect(r.sets['brief-chapters']).toEqual(['2', '4']);
     expect(r.unlocked['blaster-big-name']).toBeTypeOf('number');

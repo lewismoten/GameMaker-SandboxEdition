@@ -9,7 +9,7 @@
   "sound": "sb",
   "egg": { "block": 149 },
   "tinHeart": { "map": "s2a.map", "at": [16, 70] },
-  "easterEgg": { "map": "s3b.map", "at": [16, 34] },
+  "easterEgg": { "map": "s3v.map", "at": [3, 65] },
   "saveSign": { "map": "s2s.map", "at": [12, 47], "after": "s2x.map" },
   "label": {
     "background": "#0b1a10",
@@ -73,6 +73,7 @@
     "s2.mon#21",
     "s1v.mon#21",
     "s2v.mon#21",
+    "s3v.mon#21",
     "s3.mon#21",
     "sb.mon#21",
     "s4.mon#21",
