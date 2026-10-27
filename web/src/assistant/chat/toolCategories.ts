@@ -1,5 +1,5 @@
 // Tools in groups, so a small model's context isn't filled with all of them: it starts with a
-// few (the game's summary, load_tools, recall and the bot), asks load_tools for a group when it
+// few (the game's summary, load_tools, recall, the recipes and the bot), asks load_tools for a group when it
 // needs one, and a group nobody used for a few requests is put away again (compaction puts them
 // all away). The chat's copies of the definitions are terse: first sentences, short argument
 // notes, and no dry_run (the chat has Apply and Skip).
@@ -25,8 +25,8 @@ export const CATEGORIES: Category[] = [
   { id: 'editor', about: 'what the tab shows, open a file', tools: ['editor_state', 'editor_open_file'] },
 ];
 
-/** Always offered. */
-export const CORE = ['game_summary', 'load_tools', 'recall', 'bot_playtest'];
+/** Always offered (recipe is one small definition; its list of topics comes only when called). */
+export const CORE = ['game_summary', 'load_tools', 'recall', 'recipe', 'bot_playtest'];
 
 /** A request after which an unused group is put away. */
 const IDLE_REQUESTS = 4;

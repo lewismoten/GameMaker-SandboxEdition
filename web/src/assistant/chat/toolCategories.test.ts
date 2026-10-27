@@ -28,7 +28,7 @@ describe('tool groups', () => {
   it('start with the core, load a group, and put it away after unused requests', () => {
     const set = new ToolSet(chatTools(ctx(), tab));
     const names = () => set.active().map((t) => t.def.name);
-    expect(names()).toEqual(['game_summary', 'bot_playtest']);
+    expect(names()).toEqual(['game_summary', 'bot_playtest', 'recipe']);
     set.nextRequest();
     expect(set.load('maps')).toEqual(['map_sketch', 'get_map', 'set_map']);
     expect(names()).toContain('set_map');
@@ -70,8 +70,8 @@ describe('tool groups', () => {
     const byGroup = Object.fromEntries(
       CATEGORIES.map((c) => [c.id, toolsTokens(toOpenAITools(all.filter((t) => c.tools.includes(t.def.name)).map((t) => terse(t.def))))]),
     );
-    // as measured in October 2026: the full list about 6,370 tokens (5,160 terse), the start 282;
-    // a group 100 (editor) to 830 (scenes)
+    // as measured in October 2026: the full list about 6,370 tokens (5,160 terse), the start 282
+    // (344 once recipe joined the core); a group 100 (editor) to 830 (scenes)
     expect(offered).toBeLessThan(fullOriginal / 10);
     expect(fullTerse).toBeLessThan(fullOriginal);
     expect(Math.max(...Object.values(byGroup))).toBeLessThan(1000);

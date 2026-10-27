@@ -13,7 +13,11 @@ What lets an AI tool open, check and change a game.
   - The tools: `gameTools.ts` (summary, files, scenes, links), `mapTools.ts`, `blockTools.ts`,
     `actorTools.ts` (monsters and the hero), `screenTools.ts` (palettes, text, slide lists,
     backdrops), `playerTools.ts` (DOS player patches), `checkTools.ts` (validate, the Level
-    check, the walkthrough bot) and `renderTools.ts` (PNG pictures).
+    check, the walkthrough bot), `renderTools.ts` (PNG pictures) and `recipeTools.ts` (`recipe`:
+    short how-tos for kinds of level and their parts, platformer to keys and locks, in the tools'
+    own names and arguments; a list of topics with no topic). The recipes are data in `recipes/`
+    (`kinds.ts`, `parts.ts`); its test keeps every tool and argument they name real. It needs no
+    game (`noGame`), and is in the chat's core tools.
   - `index.ts` lists them. `memoryContext.ts` is a `GameContext` over files in memory.
 - `png.ts` writes a palette picture as a PNG with no canvas.
 - `openai.ts` (`toOpenAITools`) gives the tools as function-calling definitions for OpenAI
