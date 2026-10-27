@@ -64,6 +64,8 @@ export const LIBRARY_KINDS = [
   'poster',
   'newsletter',
   'stickers',
+  'labels',
+  'retailbox',
   'keys',
   'registration',
   'hintcard',
