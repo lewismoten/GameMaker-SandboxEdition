@@ -5,7 +5,7 @@ import { parseHash } from '../urlState';
 import type { PageKey } from './steps';
 
 /** The pages with a chapter (tourData.test.ts keeps it in step with chapters/index.ts). */
-export const CHAPTER_PAGES: readonly PageKey[] = ['home'];
+export const CHAPTER_PAGES: readonly PageKey[] = ['home', 'library', 'achievements', 'cast', 'guide', 'credits', 'editor'];
 
 const PAGES: Record<string, PageKey> = {
   game: 'home',

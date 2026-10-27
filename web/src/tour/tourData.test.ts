@@ -17,6 +17,12 @@ const secret = gameIds.filter((id) => about(id).secret);
 /** Where each page's controls are made: a selector's classes and ids must appear in these. */
 const SOURCES: Record<string, string[]> = {
   home: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'viewSwitch.ts', 'tour/tourButton.ts', 'walkthrough/button.ts', 'editor/shell'],
+  library: ['library'],
+  achievements: ['achievements'],
+  cast: ['cast'],
+  guide: ['manual/webManual.ts', 'manual/guideSections.ts'],
+  credits: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'tour/tourButton.ts', 'credits', 'pageToc.ts'],
+  editor: ['editor/shell', 'editor/editors/map/map.ts', 'editor/editors/map/check/checkPanel.ts', 'editor/editors/palette/palette.ts'],
 };
 const sourceText = (paths: string[]) =>
   paths
@@ -113,7 +119,7 @@ describe('the tour’s data', () => {
   it('lists every line for the voice clips', () => {
     const lines = tourLines();
     // all but Teddy's barks
-    expect(lines.length).toBe(steps.length - 1);
+    expect(lines.length).toBe(steps.filter(({ c, s }) => (s.speaker ?? c.speaker) !== 'teddy').length);
     expect(lines.map((l) => l.speaker)).not.toContain('Teddy');
     for (const l of lines) {
       expect(l.where).toMatch(/^\w[\w ]*: /);
