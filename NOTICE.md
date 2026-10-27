@@ -216,7 +216,8 @@ game folder opens in the browser unchanged.
   of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop, and
   **COLONIAL.GIF**, Lewis in colonial dress beside George Washington, which was taken by
   **Todd Jones**, Director of Technology, County of Warren, at a Warren County VA250 event, a
-  flag retirement ceremony. The Bard logo (BARDLOGO.GIF) was made with DeepAI.
+  flag retirement ceremony. The Bard logo (BARDLOGO.GIF) was made with DeepAI; the Library's
+  printed disk labels for the Bard's games carry it too, its white ground taken out.
 - **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
   (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The
   Doc Leo black-light poster (`docleo-blacklight-*.webp`) was made by **Claude Opus 5.5** from
@@ -395,6 +396,13 @@ formats from their published descriptions and from Game-Maker's own source.
   YouTube channel. Their card pictures are copies of YouTube's thumbnails kept on the site, so
   showing the Library asks YouTube for nothing; a video's player is embedded from
   youtube-nocookie.com only when the visitor presses Play.
+- **The Game Crafter's Large Retail Box template** (thegamecrafter.com,
+  `templates/large-retail-box.png`): the Library's retail boxes to print follow its
+  measurements (a 13.25 × 15.75 in sheet at 300 dpi, a 9.375 × 11.875 in face, 1.125 in walls,
+  0.6875 in turn-ins, 1/2 in glue tabs, a 1/8 in bleed and safe line;
+  `web/src/manual/printables/retailBoxTemplate.ts`). None of its art is copied; the box art and
+  die lines are drawn by this project. The disk and CD label sizes are the common sticker-paper
+  sizes (a 2.75 in wrap-around 3.5" diskette label; a 117 mm CD label with a 41 mm hole).
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
 - **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/src/assistant/png.ts`) are
@@ -403,6 +411,14 @@ formats from their published descriptions and from Game-Maker's own source.
   speaks the Model Context Protocol with its MIT-licensed TypeScript SDK (see Tools used to
   build and test). The editor's Assistant can also offer its tools through WebMCP, a draft of
   the W3C Web Machine Learning Community Group, implemented from the draft with no code used.
+- **The Assistant chat** (`web/src/assistant/chat`) talks to the person's own AI with plain
+  `fetch`: OpenAI's Chat Completions API shape (which OpenAI, LM Studio and Ollama's `/v1`
+  take) and Ollama's `/api/chat`, both written from their public API documentation with no
+  code used. No model ships with the site; each person sets up their own (Ollama or an
+  OpenAI-compatible server). A game changed with it keeps an "Assistant: <model> via
+  <provider>" line in its companion data, and its Windows, Mac, Linux and web downloads show
+  that line in their About text. The chat was written by **Claude Opus 5.5** as Lewis
+  directed.
 - **The music editor and its FM instruments** were made for this project. The editor is an
   original design, not based on AdLib's Visual Composer, and no AdLib or Creative instrument
   bank is included. The classic piano and brass, and one kick drum used in two games, matched
@@ -672,7 +688,8 @@ Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 ## Tools used to build and test
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and its vite-node (MIT), and
+[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
+Vitest project), and
 `@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
 [ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
 and `globals` (MIT). The local MCP server for AI tools (`web/scripts/mcp`, `npm run mcp`) uses

@@ -1,6 +1,7 @@
 // The soundtrack: eleven FM songs for the Sound Blaster, written as note strings. The
 // future, as it sounded in 1992: arpeggiators, pumping octave bass, and a lot of bells.
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { INSTRUMENTS, sbi, type Voice } from '../../../kit/music';
+import { tune } from '../../../kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   C: ['C4', 'E4', 'G4'],
@@ -51,21 +52,6 @@ const ZAPPY = sbi({
   modWave: 2,
   feedback: 0x0e,
 });
-
-const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25 };
-const beatsOf = (notes: string) =>
-  notes
-    .split(',')
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .reduce((n, t) => n + LEN[t.slice(-1) === '.' ? t.slice(-2, -1) : t.slice(-1)] * (t.endsWith('.') ? 1.5 : 1), 0);
-
-/** song(), after checking every voice lasts the same number of beats (so the loop stays in step). */
-function tune(bpm: number, voices: Voice[]): Uint8Array {
-  const beats = voices.map((x) => beatsOf(x.notes));
-  if (beats.some((b) => Math.abs(b - beats[0]) > 1e-6)) throw new Error(`Voices differ in length: ${beats.join(' ')}`);
-  return song(bpm, voices);
-}
 
 const v = (channel: number, instrument: Uint8Array, notes: string | string[], velocity = 100, transpose = 0): Voice => ({
   channel,

@@ -54,10 +54,17 @@ export function argsProblem(schema: JsonSchema, args: unknown): string | undefin
   return problem(schema, args ?? {}, '');
 }
 
+/** "It takes: scene (required), name.": a tool's arguments, so a model that got them wrong can try again. */
+function takes(schema: JsonSchema): string {
+  const req = new Set(schema.required ?? []);
+  const keys = Object.keys(schema.properties ?? {}).map((k) => (req.has(k) ? `${k} (required)` : k));
+  return keys.length ? `It takes: ${keys.join(', ')}.` : 'It takes no arguments.';
+}
+
 /** Runs one tool: checks the arguments, refuses a write while read-only, and turns a throw into an error result. */
 export async function runTool(def: ToolDef, args: unknown, ctx: GameContext): Promise<ToolResult> {
   const bad = argsProblem(def.inputSchema, args);
-  if (bad) return fail(`${def.name}: ${bad}.`);
+  if (bad) return fail(`${def.name}: ${bad}. ${takes(def.inputSchema)}`);
   const a = (args ?? {}) as Record<string, unknown>;
   if (def.writes && ctx.readOnly && !a.dry_run) return fail(`${def.name}: this game is read-only here, so nothing was changed. Try dry_run: true to preview.`);
   try {

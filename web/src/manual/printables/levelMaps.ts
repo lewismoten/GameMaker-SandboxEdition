@@ -22,11 +22,13 @@ import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
 import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelBox, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
+import { mergeStates } from './levelStates';
 import { unrolledShows } from '../../editor/check/unroll';
 import { BLEN } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
 import { panZoom } from './panZoom';
-import type { Reader, ReadView } from '../readView';
+import type { Reader, ReaderOptions, ReadView } from '../readView';
+import { percentOf, widthAt, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
@@ -85,6 +87,8 @@ interface MarkLabel {
   lane: number;
   /** Its top in its first lane, from the picture's top (paper units). */
   top: number;
+  /** Its mark. */
+  at: Level['marks'][number];
 }
 
 const LANE = 1.8;
@@ -102,16 +106,23 @@ function markLabels(game: Game, l: Level, ox: number, s: number): MarkLabel[] {
     const cy = (m.y + (m.h - 1) / 2 - l.area.y + 0.5) * s;
     const box = Math.max(m.h * s, 0.9);
     const top = m.kind === 'start' ? cy - box / 2 - 1.9 : cy + box / 2 + 0.25;
-    return { text, x, w, up: m.kind === 'start', lane: 0, top };
+    return { text, x, w, up: m.kind === 'start', lane: 0, top, at: m };
   });
   // in order across, each label takes the first lane out where it covers no other: one going
   // the same way in that lane, or one going the other way where they meet (an arrival under a way out)
   const placed: { up: boolean; lane: number; from: number; to: number; y: number }[] = [];
   const yOf = (lb: { up: boolean; lane: number; top: number }) => lb.top + (lb.up ? -1 : 1) * lb.lane * LANE;
+  // the states of one place on one map (levelStates.ts) bring marks close together: a label there
+  // also keeps off the other marks' boxes, and off any label as near, whichever way it goes
+  const boxes = l.states
+    ? l.marks.map((m) => ({ m, x0: ox + (m.x - l.area.x) * s, x1: ox + (m.x + m.w - l.area.x) * s, y0: (m.y - l.area.y) * s, y1: (m.y + m.h - l.area.y) * s }))
+    : [];
   for (const lb of [...labels].sort((a, b) => a.x - b.x)) {
     const from = lb.x - lb.w / 2 - 0.2;
     const to = lb.x + lb.w / 2 + 0.2;
-    const hits = () => placed.some((o) => o.from < to && from < o.to && (o.up === lb.up ? o.lane === lb.lane : Math.abs(o.y - yOf(lb)) < 1.7));
+    const covers = () => boxes.some((b) => b.m !== lb.at && b.x0 < to && from < b.x1 && b.y0 < yOf(lb) + 1.6 && yOf(lb) < b.y1);
+    const hits = () =>
+      covers() || placed.some((o) => o.from < to && from < o.to && (o.up === lb.up && !l.states ? o.lane === lb.lane : Math.abs(o.y - yOf(lb)) < 1.7));
     while (hits() && lb.lane < 12) lb.lane++;
     placed.push({ up: lb.up, lane: lb.lane, from, to, y: yOf(lb) });
   }
@@ -321,9 +332,12 @@ function joinNote(l: Level): string {
   return lx && ly ? ' · all four edges join up' : lx ? ' · the left and right edges join up' : ly ? ' · the top and bottom edges join up' : '';
 }
 
+/** "Scene", or "Scenes" for the states of one place printed as one (levelStates.ts). */
+const sceneWord = (l: Level) => (l.states ? 'Scenes' : 'Scene');
+
 /** About how wide a caption's letter is, on average (paper units). */
 const CAPTION_EM = 0.92;
-const captionText = (game: Game, l: Level) => `Scene ${sceneList(game, l)} · ${l.name}${joinNote(l)}${l.note ? ` · ${l.note}` : ''}`;
+const captionText = (game: Game, l: Level) => `${sceneWord(l)} ${sceneList(game, l)} · ${l.name}${joinNote(l)}${l.note ? ` · ${l.note}` : ''}`;
 /** The room a level's caption takes across at its own size (a narrow map's box widens for it). */
 const captionWidth = (game: Game, l: Level) => Math.min(AREA.w, captionText(game, l).length * CAPTION_EM);
 
@@ -604,23 +618,27 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
 export function levelMaps(
   ctx: PrintContext,
-): { render(): Promise<Sheet[]>; reader(view: ReadView, root: HTMLElement): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
+): { render(): Promise<Sheet[]>; reader(o: ReaderOptions): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
   let loaded: Promise<Loaded | undefined> | undefined;
   const load = () =>
     (loaded ??= loadLevels(ctx.entry).then((x) => {
       if (!x) return undefined;
-      const seen = levelsOf(
+      // the states of one place (near and far planes) print as one map
+      const seen = mergeStates(
         x.game,
-        x.files,
-        secret,
-        listedViews(ctx.entry.id),
-        listedUnrolled(ctx.entry.id),
-        listedRoomHints(ctx.entry.id),
-        listedCourses(ctx.entry.id),
-        // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
-        { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
+        levelsOf(
+          x.game,
+          x.files,
+          secret,
+          listedViews(ctx.entry.id),
+          listedUnrolled(ctx.entry.id),
+          listedRoomHints(ctx.entry.id),
+          listedCourses(ctx.entry.id),
+          // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
+          { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
+        ),
       );
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined, course: undefined }));
@@ -640,11 +658,11 @@ export function levelMaps(
       const x = await load();
       return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full) : [];
     },
-    async reader(view, root) {
+    async reader(o) {
       const x = await load();
       if (!x?.seen.length) return { el: h('p', { class: 'gmb-loading' }, 'This game has no levels to map.'), view: () => {} };
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
-      return levelViewer(x, view, root);
+      return levelViewer(x, o);
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {
@@ -675,9 +693,11 @@ interface Loaded {
 }
 
 /** On screen: the maps listed beside the one picked, in a view to zoom and drag (Pages); or every map in one column (Scroll, readView.ts). */
-function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
+function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
   const { game, paint, crop } = opts;
-  let view = start;
+  const { root } = o;
+  let view = o.view;
+  let size: ReadSize = o.size;
   const levels = () => (opts.all ? opts.every : opts.seen);
   const holder = h('div', { class: 'lm-view' });
   const list = h('ul', { class: 'lm-list', 'aria-label': 'Maps' });
@@ -741,7 +761,7 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
   const caption = (l: Level) =>
     l.course
       ? `Scene ${sceneList(game, l)} · ${l.name}${courseNote(l.course)}`
-      : `Scene ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
+      : `${sceneWord(l)} ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
   /** The map's drawing, or undefined once another is wanted. */
   const drawMap = async (l: Level, still: () => boolean): Promise<SVGElement | undefined> => {
     const { w, ht, which, room } = sizeOf(l);
@@ -811,6 +831,7 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
           const { w, ht } = sizeOf(all[k]);
           return ht / w;
         },
+        width: widthOf,
         page: (k) => {
           const { w, ht } = sizeOf(all[k]);
           const map = h('div', { class: 'lm-map', style: `aspect-ratio: ${w} / ${ht}` });
@@ -818,13 +839,28 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
           return map;
         },
         label: (k) => caption(all[k]),
-        showing: mark,
+        showing: (k) => (mark(k), told(k)),
       });
       stage.replaceChildren(legend(all.some((l) => !!l.course)), column.el);
+      column.resize();
     }
     column.scrollTo(i);
     mark(i);
+    told(i);
   };
+  // a map's width at the size chosen: 100% is its printed size, a tenth of an inch a block
+  const natural = (k: number) => (sizeOf(levels()[k]).w / 10) * 96;
+  const widthOf = (k: number) => {
+    const { w, ht } = sizeOf(levels()[k]);
+    return widthAt(size, { viewW: stage.clientWidth, viewH: root.clientHeight - 90, natural: natural(k), ratio: ht / w });
+  };
+  const told = (k: number) => o.shown(percentOf(widthOf(k), natural(k)));
+  const refit = () => {
+    if (!column) return;
+    column.resize();
+    told(Math.max(0, column.current));
+  };
+  addEventListener('resize', refit);
   const show = (i: number) => (view === 'scroll' ? showAll(i) : (dropColumn(), void showOne(i)));
 
   opts.seen.forEach((l, i) =>
@@ -837,11 +873,18 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
     if (v === 'pages') root.scrollTop = 0;
     show(Math.max(0, shown));
   };
-  setView(start);
+  setView(view);
   return {
     el: holder,
     view: (v) => v !== view && setView(v),
+    size: (s) => {
+      size = s;
+      refit();
+    },
     step: (dir) => show(Math.max(0, Math.min(levels().length - 1, shown + dir))),
-    dispose: dropColumn,
+    dispose: () => {
+      dropColumn();
+      removeEventListener('resize', refit);
+    },
   };
 }

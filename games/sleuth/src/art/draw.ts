@@ -3,8 +3,9 @@
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { Pixels, dither, rng } from '../../../kit/pixels';
 import { textInk } from '../../../kit/textBounds';
-
-export const CLEAR = 255;
+import { CLEAR } from '../../../kit/blit';
+import { textWidth } from '../../../kit/pcText';
+export { CLEAR } from '../../../kit/blit';
 
 /** A shade between ramp[lo] and ramp[hi] for level 0..1, ordered-dithered at (x, y). */
 export function shadeAt(r: number[], lo: number, hi: number, level: number, x: number, y: number): number {
@@ -88,8 +89,6 @@ export function text(p: Pixels, x: number, y: number, s: string, col: number, sc
   ink?.end();
   return cx - x;
 }
-
-const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 /** Text with an outline (and an optional drop shadow). */
 export function outlined(p: Pixels, x: number, y: number, s: string, col: number, outline: number, scale = 1, shadow?: number): void {

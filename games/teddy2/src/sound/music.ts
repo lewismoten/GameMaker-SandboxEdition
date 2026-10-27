@@ -3,8 +3,9 @@
 // sneaky minor tune that can't sit still) for her MEANWHILE... levels. Main Street plays
 // Yankee Doodle on a fife for Founders' Day. Each voice is its own OPL2 channel; chords
 // spread across three channels.
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { INSTRUMENTS, sbi } from '../../../kit/music';
 import { THEME_A, THEME_B, THEME_CHORDS } from '../../../kit/teddyTheme';
+import { tune, v, join, times } from '../../../kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],
@@ -62,31 +63,6 @@ function bass(bars: string[], style: 'oompah' | 'walk' | 'half' | 'whole' | 'gal
     })
     .join(', ');
 }
-
-const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25, t: 1 / 3 };
-const beatsOf = (notes: string) =>
-  notes
-    .split(',')
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .reduce((n, t) => n + LEN[t.endsWith('.') ? t.slice(-2, -1) : t.slice(-1)] * (t.endsWith('.') ? 1.5 : 1), 0);
-
-/** song(), after checking every voice lasts the same number of beats (so loops stay in step). */
-function tune(bpm: number, voices: Voice[]): Uint8Array {
-  const beats = voices.map((x) => beatsOf(x.notes));
-  if (beats.some((b) => Math.abs(b - beats[0]) > 1e-6)) throw new Error(`Voices differ in length: ${beats.join(' ')}`);
-  return song(bpm, voices);
-}
-
-const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
-  channel,
-  instrument,
-  notes,
-  velocity,
-  transpose,
-});
-const join = (...parts: string[]) => parts.filter(Boolean).join(', ');
-const times = (n: number, s: string) => Array(n).fill(s).join(', ');
 
 // Instruments.
 const CALLIOPE = sbi({

@@ -2,13 +2,8 @@
 // page), the act cards' lines (from the monologue), and the disk's README.TXT. The monologue is
 // "The Great Dairy Reckoning of 3:17 a.m." by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
-
-const page = (lines: string[], pages = 1) => {
-  for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
-  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
-  while (lines.length % 16) lines.push('');
-  return lines.join('\n');
-};
+import about from '../../about.json';
+import { page } from '../../../kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
@@ -166,7 +161,7 @@ export function readme(price: string): string {
   return `
     THE GREAT DAIRY RECKONING
     OF 3:17 A.M.
-    Version 1.0 - Nov 1995
+    Version ${about.version} - Nov 1995
     by The Bard of Bizarre
 
 "There it is. The enemy.

@@ -12,7 +12,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
-import { clipEntries, fliClips } from '../kit/fliClips';
+import { clipEntries, clipEveryList, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { Pixels } from '../kit/pixels';
@@ -177,6 +177,7 @@ disk.put(
     RECORDED_VOCS,
   ),
 );
+clipEveryList(disk.files);
 disk.write();
 console.log(
   `house ${books.house.index.size}, yard ${books.yard.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks`,

@@ -1,6 +1,6 @@
     CARL
     A FLY NAMED CARL
-    Version 1.0 - June 1995
+    Version 1.1 - June 1995
     by The Bard of Bizarre
 
 "There's a fly in the room

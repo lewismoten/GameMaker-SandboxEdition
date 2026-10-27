@@ -1,12 +1,8 @@
 // The words: text pages shown over the notepad (31 columns, 16 lines a page) and the
 // readme on the disk.
 import { withCreditPage } from '../../../kit/license';
-const page = (lines: string[], pages = 1) => {
-  for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
-  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
-  while (lines.length % 16) lines.push('');
-  return lines.join('\n');
-};
+import about from '../../about.json';
+import { page } from '../../../kit/screenText';
 
 export const INSTRUCTIONS = [
   page([
@@ -97,7 +93,7 @@ export function readme(price: string): string {
   return `
     S N O W B O U N D
     The $89 Shovel
-    Version 1.0 - January 1993
+    Version ${about.version} - January 1993
     (c) 1993 Sandbox Software
 
 Fort Ashby, West Virginia,

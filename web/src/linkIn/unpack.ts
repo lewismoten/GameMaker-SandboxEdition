@@ -141,7 +141,7 @@ export async function unpackGame(input: [string, Uint8Array][], opts: { name?: s
       'No .gam file came with the game, so there is nothing to play. Send the whole game folder, a .zip of it, or a one-page export.',
       'no-game',
     );
-  let desc = '';
+  let desc: string;
   try {
     const game = parseGame(files.get(gam)!);
     if (!game.scenes.length) throw new Error('no scenes');

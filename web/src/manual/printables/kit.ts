@@ -2,6 +2,8 @@
 // note that says the addresses are made up.
 import { h } from '../../editor/core/ui';
 import { mapShot } from '../../gfx/gameShots';
+import { frameShot } from '../../gfx/frameShot';
+import type { ShotFrame } from '../../gfx/shotFrame';
 import { builtHeroPath, heroOf } from '../../gfx/levelPicture';
 import type { CatalogEntry } from '../../project/files';
 import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';
@@ -26,17 +28,18 @@ export interface PrintContext {
   printables: PrintablesFile;
   /** The manual's pages (head + html), for key descriptions and the hint offer. */
   manual: { title: string; pages: { head: string; html: string }[] };
-  /** A map window as a PNG data URL (cached). */
-  shot(panel: Pick<MapPanel, 'map' | 'x' | 'y' | 'w' | 'h'>): Promise<string | undefined>;
+  /** A map window as a PNG data URL (cached); with `frame`, that moment of play when the site has it (gfx/shotFrame.ts). */
+  shot(panel: Pick<MapPanel, 'map' | 'x' | 'y' | 'w' | 'h'> & { frame?: ShotFrame }): Promise<string | undefined>;
 }
 
 export function shotCache(entry: CatalogEntry): PrintContext['shot'] {
   const cache = new Map<string, Promise<string | undefined>>();
   return (p) => {
-    const key = `${p.map}:${p.x}:${p.y}:${p.w}:${p.h}`;
+    const key = `${p.map}:${p.x}:${p.y}:${p.w}:${p.h}:${p.frame ? JSON.stringify(p.frame) : ''}`;
     let hit = cache.get(key);
     if (!hit) {
-      hit = mapShot(entry, p.map, p.x, p.y, p.w, p.h)
+      const frame = p.frame;
+      hit = (async () => (frame && (await frameShot(entry, { map: p.map, ...frame }))) || mapShot(entry, p.map, p.x, p.y, p.w, p.h))()
         .then((c) => c?.toDataURL())
         .catch(() => undefined);
       cache.set(key, hit);

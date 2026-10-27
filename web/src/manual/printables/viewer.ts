@@ -9,7 +9,8 @@ import { RedFilm, RedLens } from './redFilm';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
 import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type ChapterStop } from './chapterJump';
-import { readView, viewToggle, type Reader, type ReadView } from '../readView';
+import { readView, viewToggle, type Reader, type ReaderOptions, type ReadView } from '../readView';
+import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize, type Room } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 
 /** A thing in the box. */
@@ -26,7 +27,7 @@ export interface BoxItem {
   /** Its own on-screen view, built without rendering every sheet (`render` is then only for printing). */
   live?(): Promise<HTMLElement>;
   /** Like `live`, a view of its own that reads a page at a time or scrolled (readView.ts), in `root`. */
-  reader?(view: ReadView, root: HTMLElement): Promise<Reader>;
+  reader?(o: ReaderOptions): Promise<Reader>;
   /** Shows the red film button. */
   redFilm?: boolean;
   /**
@@ -72,8 +73,10 @@ const READ_HOW = 'every page in reading order: choose Save as PDF in the print d
 /** Gap between the pages of a comb-bound spread, as a fraction of a page's width. */
 const COMB_GAP = 0.07;
 
-/** The widest a page is shown in the Scroll view, so its lines stay a reading length. */
+/** The widest Fit width shows a page in the Scroll view, so its lines stay a reading length. */
 const SCROLL_MOST = 860;
+/** A booklet page's width at its printed size: 5.5 inches at 96 CSS pixels an inch. */
+const PAGE_PX = PAGE_W * 96;
 
 export function openBox(title: string, pages: BookPage[], items: BoxItem[], options: BoxOptions = {}): Promise<void> {
   const comb = options.binding === 'comb';
@@ -131,6 +134,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     lens.follow(stage, () => !!items.find((i) => i.id === current)?.redFilm);
     let view = readView();
     const toggle = viewToggle(view, (v) => setView(v));
+    // the size chosen (kept per browser), else each view's own: a whole page turned, the width scrolled
+    let chosen = readSize();
+    const sizeNow = (): ReadSize => chosen ?? (view === 'pages' ? 'page' : 'width');
+    const sizes = sizeControl(sizeNow(), (s) => ((chosen = s), resized()));
+    let percent = 100;
+    const shownAt = (p: number) => sizes.shown((percent = p));
     const two = () => view === 'pages' && stage.clientWidth >= 760;
 
     // ---- the manual
@@ -158,10 +167,18 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       column = undefined;
       stage.classList.remove('gmb-scrolling');
     };
+    // a scrolled page's room: the stage less its padding, and less the page number and the nav for a whole page
+    const scrollRoom = (): Room => ({
+      viewW: stage.clientWidth - 24,
+      viewH: stage.clientHeight - 100,
+      natural: PAGE_PX,
+      ratio: PAGE_H / PAGE_W,
+      most: SCROLL_MOST,
+    });
+    const scrollWidth = () => widthAt(sizeNow(), scrollRoom());
     const fitColumn = () => {
-      const w = `${Math.max(120, Math.min(stage.clientWidth - 24, SCROLL_MOST))}px`;
-      column?.el.style.setProperty('--rv-w', w);
-      column?.el.style.setProperty('--pw', w);
+      column?.resize();
+      shownAt(percentOf(scrollWidth(), PAGE_PX));
     };
     // the page most in view, as the pages turned would show it
     const reading = (i: number, jump = false) => {
@@ -180,6 +197,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
             root: stage,
             count: of.length,
             ratio: () => PAGE_H / PAGE_W,
+            width: scrollWidth,
             page: (i) => {
               const el = pageElement(of[i], i);
               linkContents(el, (to) => turnTo(to, true));
@@ -208,7 +226,10 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       const availW = stage.clientWidth - 24;
       const availH = stage.clientHeight - 64;
       const gap = bookComb ? COMB_GAP * (isTwo ? 1 : 0.5) : 0;
-      const pw = Math.max(120, Math.min(availW / ((isTwo ? 2 : 1) + gap + (bookComb ? (isTwo ? 0.06 : 0.12) : 0)), (availH * PAGE_W) / PAGE_H));
+      const across = availW / ((isTwo ? 2 : 1) + gap + (bookComb ? (isTwo ? 0.06 : 0.12) : 0));
+      const size = sizeNow();
+      const pw = Math.max(120, size === 'page' ? Math.min(across, (availH * PAGE_W) / PAGE_H) : size === 'width' ? across : (PAGE_PX * size) / 100);
+      shownAt(percentOf(pw, PAGE_PX));
       spread.style.setProperty('--pw', `${pw}px`);
       spread.replaceChildren(
         ...shown.map((i, k) => {
@@ -274,7 +295,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     };
     const showReader = async (item: BoxItem) => {
       stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Unfolding…'));
-      const r = await item.reader!(view, stage);
+      const r = await item.reader!({ view, size: chosen ?? 'width', root: stage, shown: shownAt });
       if (current !== item.id) return r.dispose?.();
       reader = r;
       shownSheets = [];
@@ -283,8 +304,20 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     };
     const setView = (v: ReadView) => {
       view = v;
+      sizes.set(sizeNow());
+      sizeShown();
       if (isBook()) showManual();
       else reader?.view(v);
+    };
+    // the size list: for a booklet either way, and for a piece of its own only scrolled
+    const sizeShown = () => {
+      const item = items.find((i) => i.id === current);
+      sizes.el.hidden = !(isBook() || (item?.reader && view === 'scroll'));
+    };
+    const resized = () => {
+      if (column) fitColumn();
+      else if (isBook()) showManual();
+      else reader?.size?.(sizeNow());
     };
     const showItem = async (item: BoxItem) => {
       stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Unfolding…'));
@@ -324,6 +357,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       dropColumn();
       dropReader();
       toggle.el.hidden = !(id === 'manual' || item?.pages || item?.reader);
+      sizeShown();
       if (!item?.pages && id !== 'manual') (picker.use([]), tell(undefined));
       filmBtn.hidden = !item?.redFilm;
       if (!item?.redFilm) (film.hide(), lens.hide());
@@ -448,6 +482,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       opener?.focus({ preventScroll: true });
       window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('resize', onResize);
+      unpinch();
       window.removeEventListener('afterprint', afterPrint);
       afterPrint();
       film.hide();
@@ -458,6 +493,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
       e.stopImmediatePropagation(); // not for the PC underneath
+      if (!sizes.el.hidden && zoomKey(e, sizes, view === 'pages' ? 'page' : 'width')) return;
       const turn = (dir: 1 | -1) => (reader?.step ? reader.step(dir) : go(dir));
       if (e.key === 'ArrowRight') turn(1);
       else if (e.key === 'ArrowLeft') turn(-1);
@@ -475,6 +511,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const onResize = () => (column ? fitColumn() : isBook() ? showManual() : fitSheets());
     window.addEventListener('keydown', onKey, true);
     window.addEventListener('resize', onResize);
+    const unpinch = pinchZoom(
+      stage,
+      sizes,
+      () => percent,
+      () => (sizes.el.hidden ? undefined : (column?.el ?? (isBook() ? spread : ((stage.firstElementChild as HTMLElement | null) ?? undefined)))),
+    );
 
     const overlay = h(
       'div',
@@ -485,6 +527,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         h('strong', null, title),
         h('span', { class: 'gmb-spacer' }),
         toggle.el,
+        sizes.el,
         picker.el,
         filmBtn,
         h('div', { class: 'gmb-print-wrap' }, h('button', { onclick: () => (menu.hidden = !menu.hidden), 'aria-haspopup': 'menu' }, '🖨 Print…'), menu),

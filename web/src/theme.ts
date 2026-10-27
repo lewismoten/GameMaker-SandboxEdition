@@ -2,16 +2,18 @@
 // dark is the default because the bright light theme is hard on the eyes for long
 // sessions. 'auto' follows the system setting. index.html sets data-theme before the
 // first paint (the same rule as here) so the page never flashes the wrong colors.
-import { h } from './editor/core/ui';
+import { h, clear } from './editor/core/ui';
 
 type Theme = 'dark' | 'light' | 'auto';
 const KEY = 'gm-theme';
 const ORDER: Theme[] = ['dark', 'light', 'auto'];
 const LABEL: Record<Theme, [string, string]> = {
-  dark: ['🌙', 'Dark theme'],
-  light: ['☀️', 'Light theme'],
-  auto: ['🖥️', 'Theme follows your system'],
+  dark: ['🌙', 'Dark'],
+  light: ['☀️', 'Light'],
+  auto: ['🖥️', 'System'],
 };
+/** Said on the document when the theme changes, so every Theme item shows it. */
+const CHANGED = 'gm-theme-changed';
 
 function getTheme(): Theme {
   try {
@@ -31,21 +33,23 @@ function applyTheme(t: Theme): void {
   }
 }
 
-/** A header button that cycles dark → light → auto. */
-export function themeButton(): HTMLButtonElement {
-  const btn = h('button', { class: 'theme-toggle' });
-  const show = (t: Theme) => {
-    const [icon, label] = LABEL[t];
-    btn.textContent = icon;
-    btn.title = `${label} (click to change)`;
-    btn.setAttribute('aria-label', `${label}. Change theme`);
+/**
+ * The Settings menu's Theme item (settingsMenu.ts): it cycles dark → light → auto and says
+ * which is on ("Theme: Dark"); every copy (the ⚙ menu's and the ⋯ menu's) stays in step.
+ */
+export function themeItem(attrs: Record<string, string> = {}): HTMLButtonElement {
+  const btn = h('button', { ...attrs, type: 'button', class: 'theme-item', title: 'Change the theme: dark, light, or as your system is set' });
+  const show = () => {
+    if (!btn.isConnected && btn.childNodes.length) return document.removeEventListener(CHANGED, show);
+    const [icon, label] = LABEL[getTheme()];
+    clear(btn, h('span', { 'aria-hidden': 'true' }, icon), ` Theme: ${label}`);
   };
   btn.addEventListener('click', () => {
-    const next = ORDER[(ORDER.indexOf(getTheme()) + 1) % ORDER.length];
-    applyTheme(next);
-    show(next);
+    applyTheme(ORDER[(ORDER.indexOf(getTheme()) + 1) % ORDER.length]);
+    document.dispatchEvent(new Event(CHANGED));
   });
+  document.addEventListener(CHANGED, show);
   applyTheme(getTheme());
-  show(getTheme());
+  show();
   return btn;
 }

@@ -21,6 +21,8 @@ import { buildLeg } from './src/stages/stage';
 import { buildScreens } from './src/screens/screens';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
+import { clipEveryList } from '../kit/fliClips';
+import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -60,4 +62,9 @@ for (const [name, bytes] of Object.entries(buildScreens(stages))) disk.put(name,
 disk.put('demo.rec', await demoRecording(stages[0]));
 disk.put('blaster.gam', serializeGame(buildGame(stages, process.env.BLASTER_START)));
 disk.put('license.txt', licenseText('Virus Blaster'));
+// the cartoons between scenes play from slide lists: boarding the bus after a boss, and pulling
+// into the next stage after a ride; then every long cartoon on the disk is cut into clips
+disk.put('warp.lst', serializeSlideList([{ name: 'warp.fli', pause: 0 }]));
+for (const s of stages) for (const l of s.legs) if (l.kind === 'bus') disk.put(`${l.file}in.lst`, serializeSlideList([{ name: `${l.file}.fli`, pause: 0 }]));
+clipEveryList(disk.files);
 disk.write();

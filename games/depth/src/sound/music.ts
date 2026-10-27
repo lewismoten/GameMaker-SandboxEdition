@@ -2,6 +2,7 @@
 // arpeggios, warm pads, a pulsing bass and a lead on top. Songs are chords (one a bar) plus a
 // melody written bar by bar; the arpeggio, bass and pad are worked out from the chords.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { v } from '../../../kit/tune';
 
 const NAMES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const nm = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;
@@ -109,14 +110,6 @@ const SYNTH = sbi({
 const GLASS = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x1c, carLevel: 0x00, modAD: 0xf6, carAD: 0xf4, modSR: 0x34, carSR: 0x25, feedback: 0x06 });
 const DRUM = sbi({ modChar: 0x00, carChar: 0x00, modLevel: 0x0b, carLevel: 0x00, modAD: 0xf8, carAD: 0xf6, modSR: 0x88, carSR: 0x88, feedback: 0x0e });
 const HAT = sbi({ modChar: 0x0f, carChar: 0x0e, modLevel: 0x00, carLevel: 0x08, modAD: 0xf9, carAD: 0xf8, modSR: 0xf9, carSR: 0xf8, feedback: 0x0e });
-
-const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
-  channel,
-  instrument,
-  notes,
-  velocity,
-  transpose,
-});
 
 /** A kick on 1 and 3, a snare-ish hit on 2 and 4 (an FM thump and a noisy tick). */
 const kick = (bars: number) => Array.from({ length: bars }, () => 'C2 q, r q, C2 e, C2 e, r q').join(', ');

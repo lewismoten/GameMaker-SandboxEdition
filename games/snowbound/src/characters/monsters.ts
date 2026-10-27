@@ -10,9 +10,7 @@
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
 import { MON } from '../ids';
 import { buildMonsterBlocks } from '../sprites/monsterBlocks';
-
-// ---------------------------------------------------------------- monsters
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
+import { corner } from '../../../kit/actors';
 
 function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = [], attack: March[] = []): Monster {
   const m = emptyMonster();

@@ -8,22 +8,7 @@ import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { rng } from '../../../kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { SND } from '../ids';
-
-/** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
-function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {
-  const r = rng(seed);
-  let y = 0;
-  return (t) => {
-    const a = typeof cutoff === 'number' ? cutoff : cutoff(t);
-    y += a * (r() * 2 - 1 - y);
-    return y * (1.4 / Math.sqrt(Math.max(0.05, a)));
-  };
-}
-const gate =
-  (v: Synth, from: number, to: number): Synth =>
-  (t) =>
-    t >= from && t < to ? v(t) : 0;
-const env = (attack: number, decay: number) => (u: number) => Math.min(1, u / attack) * Math.max(0, 1 - u) ** decay;
+import { lowNoise, gate, env } from '../../../kit/synthParts';
 
 /** A voice: harmonics of a pitch through two vowel formants, with a breath of noise. */
 function voice(pitch: (t: number) => number, f1: (t: number) => number, f2: (t: number) => number, seed = 3, breath = 0.04): Synth {

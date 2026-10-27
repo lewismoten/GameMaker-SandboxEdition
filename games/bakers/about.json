@@ -4,6 +4,7 @@
   "company": "Sandbox Software",
   "year": 1996,
   "price": "$0 - a baker's dozen of nothing",
+  "version": "1.1",
   "secret": true,
   "sameEverySide": ["brewery.mon#17", "cistern.mon#14", "clock.mon#15", "larder.mon#15"],
   "acceptedFindings": [

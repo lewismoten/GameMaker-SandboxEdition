@@ -42,9 +42,9 @@ export const SEALS: Record<string, { laurel: 'left' | 'right'; burst: 'left' | '
 
 const painted = new Map<string, Promise<HTMLCanvasElement | undefined>>();
 
-/** The game's painted cover at w x h, or undefined when it has none. */
-export function coverArt(id: string, w: number, h: number): Promise<HTMLCanvasElement | undefined> {
-  const key = `${id}@${w}x${h}`;
+/** The game's painted cover at w x h (painted `scale` times finer, for print), or undefined when it has none. */
+export function coverArt(id: string, w: number, h: number, scale = 1): Promise<HTMLCanvasElement | undefined> {
+  const key = `${id}@${w}x${h}x${scale}`;
   let p = painted.get(key);
   if (!p) {
     const load = COVERS[id] ?? SECRET_COVERS[idHash(id)];
@@ -53,9 +53,11 @@ export function coverArt(id: string, w: number, h: number): Promise<HTMLCanvasEl
       : load()
           .then(({ default: paint }) => {
             const c = document.createElement('canvas');
-            c.width = w;
-            c.height = h;
-            paint(c.getContext('2d')!, w, h);
+            c.width = Math.round(w * scale);
+            c.height = Math.round(h * scale);
+            const g = c.getContext('2d')!;
+            g.scale(scale, scale);
+            paint(g, w, h);
             return c;
           })
           .catch(() => undefined);

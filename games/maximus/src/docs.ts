@@ -15,6 +15,8 @@ import { ROLES } from './art/roles';
 import { SECTORS, SCENE, allWorlds } from './universe';
 import { SONGS } from './sound/music';
 import { wrapDoc } from './screens/text';
+// the version is set by hand in about.json (games/kit/versionCheck.ts); the rest of it is written here
+import aboutFile from '../about.json';
 
 interface Limit {
   what: string;
@@ -200,6 +202,7 @@ export function about(b: Built): object {
     company: 'Sandbox Software',
     year: 1995,
     price: '$15',
+    version: aboutFile.version,
     blurb:
       'Courier Max crosses a galaxy of 88 worlds by pod, on foot, by rover and in a diving bell, hunting the ten star-shards that can relight the dead star at its heart.',
     exe: 'MAXIMUS.EXE',

@@ -12,7 +12,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
-import { clipEntries, fliClips } from '../kit/fliClips';
+import { clipEntries, clipEveryList, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { Pixels } from '../kit/pixels';
@@ -201,6 +201,7 @@ disk.put(
     RECORDED_VOCS,
   ),
 );
+clipEveryList(disk.files);
 disk.write();
 // the foyer's carpet runner, which the walkthrough's bot keeps to (not on the disk)
 writeWalkPaths('smirked', { 'smirked.bbl': [book.n('runner')] });

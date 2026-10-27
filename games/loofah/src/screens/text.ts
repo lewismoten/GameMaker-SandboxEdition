@@ -3,13 +3,8 @@
 // Me, O Loofah, But Leave My Soul" by The Bard of Bizarre; the lines on screen follow Lewis's
 // own transcription of it.
 import { withCreditPage } from '../../../kit/license';
-
-const page = (lines: string[], pages = 1) => {
-  for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
-  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
-  while (lines.length % 16) lines.push('');
-  return lines.join('\n');
-};
+import about from '../../about.json';
+import { page } from '../../../kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
@@ -163,7 +158,7 @@ export function readme(price: string): string {
   return `
     CLEANSE ME, O LOOFAH,
     BUT LEAVE MY SOUL
-    Version 1.0 - Dec 1995
+    Version ${about.version} - Dec 1995
     by The Bard of Bizarre
 
 "She said, 'Don't touch the

@@ -4,6 +4,7 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$12",
+  "version": "1.0",
   "blurb": "A thunderstorm has scrambled the Bitmores' Smart Home, and Watt, a pocket-sized repair robot, must roll through twenty-three haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force fields, without touching a live wire yourself.",
   "exe": "OHMSWEET.EXE",
   "sound": "sb",

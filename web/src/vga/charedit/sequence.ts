@@ -129,7 +129,7 @@ export abstract class SequenceEditor extends CharacterMakerDraw {
     const fr = seq.frames;
     let mx = 0;
     let my = 0;
-    let buts = 0;
+    let buts: number;
     let x2 = SL; // animated coordinates
     let y2 = ST;
     let spot = 0; // Which frame out of ten is currently being defined

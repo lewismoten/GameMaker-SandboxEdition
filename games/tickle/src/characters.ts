@@ -6,10 +6,11 @@
 // follows one key at a time). PIN and TICKLE send out a hand to each side (see ids.ts for how a
 // pin, a tickle and the rats' shapes make "pin first, then tickle" the only way a rat laughs).
 import { MONBL } from '../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
+import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { CARPET, KEY, MON, POWER, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
+import { set, mon, corner } from '../../kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x44; // both blocks flipped left-right (low nibble the top, high nibble the bottom)
@@ -25,13 +26,6 @@ const HAND_SPEED = 4;
 const HAND_REACH = 2;
 
 type F = { pose: string; x?: number; y?: number; pause?: number; mirror?: boolean };
-
-function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
-  if (frames.length > 10) throw new Error('Too many frames');
-  frames.forEach((fr, i) => (s.frames[i] = fr));
-  for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
-  Object.assign(s, { sound: 255, jstkBut: 4, jstkMov: 0, ...o });
-}
 
 /** A frame that gives birth to a monster in Doc Leo's bottom row. */
 function birth(mon: number): Frame {
@@ -117,17 +111,6 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
   ch.cseq = 0;
   ch.cframe = 0;
   return ch;
-}
-
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
-
-function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []): Monster {
-  const m = emptyMonster();
-  m.used = 1;
-  pics.forEach((p, i) => (m.pic[i] = p));
-  Object.assign(m, o);
-  path.forEach((c, i) => (m.march[0][i] = c));
-  return m;
 }
 
 /** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */

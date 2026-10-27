@@ -1,6 +1,9 @@
-// Stage 2: MEMORY LANE. Leg A "The Address Bus" brings the data streams (gravity blocks
-// that shove the ship sideways) and the slugs that never stop coming; leg B "The Cache"
-// runs between rows of chips. Then the Memory Leech.
+// Stage 2: MEMORY LANE. 2-A "The Address Bus" brings the data streams (gravity blocks
+// that shove the ship sideways) and the slugs that never stop coming, flying up; 2-B "The
+// Memory Bank" flies right between two memory sticks; 2-C "The Cache" flies back down between
+// rows of chips (laid into The Address Bus's map beside it, stages/turned.ts); 2-D "Stack
+// Overflow" flies left under three stacks (in the bank's map); 2-E "The Ring Buffer" cuts
+// corner to corner. Then the Memory Leech.
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { LENGTH, X0, arena, strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
@@ -9,8 +12,8 @@ import { kit, type Leg, type Stage } from './stage';
 import { EGG_BLOCK } from '../blocks/egg';
 import { bossLeech } from '../bosses/boss2';
 import { ringLeg } from './ring';
-import { bankLeg } from './bank';
-import { saveSignBlocks } from '../../../kit/saveSign';
+import { bankKit, bankLeg, overflowBand } from './bank';
+import { downLeg, leftLeg, stampNames, stripMeter } from './turned';
 
 function virus2(b: Parameters<typeof ramVirus>[0], p: Parameters<typeof ramVirus>[1]): void {
   ramVirus(b, p);
@@ -159,13 +162,7 @@ export function stage2(): Stage {
     },
     (b) => virus2(b, pal),
     { mite: 'mite', turretEvery: 12, seekerEvery: 45, flakEvery: 34, hatchShut: 45, hatchOpen: 30, hatchEvery: 8, fenceOn: 28, fenceOff: 28 },
-    (bs) => {
-      cornerTiles(bs, art);
-      // the save sign (kit/saveSign.ts), its board alone over the floor: there is no ground to stand it on
-      const [l, r] = saveSignBlocks(pal.pal, { board: [art.floor(0), art.floor(0)] }).board;
-      bs.add('saveL', l);
-      bs.add('saveR', r);
-    },
+    (bs) => cornerTiles(bs, art),
   );
   const a = strip(ks.bs, ks.beasts, art, 201);
   legA(a);
@@ -238,17 +235,18 @@ export function stage2(): Stage {
     ],
     14,
   );
-  // the save sign, on bare floor in sight of the launch pad
-  const [sc, sd] = (
-    [
-      [3, 3],
-      [10, 3],
-      [3, 5],
-      [10, 5],
-    ] as [number, number][]
-  ).find(([c, d]) => /^floor\d$/.test(b.get(c, d)) && /^floor\d$/.test(b.get(c + 1, d)))!;
-  b.set(sc, sd, 'saveL').set(sc + 1, sd, 'saveR');
   b.cardAt = 14;
+  const up: Leg = {
+    file: 's2a',
+    kitFile: 's2',
+    title: 'The Address Bus',
+    kind: 'scroll',
+    grid: a,
+    kit: ks,
+    card: ['Data streams shove you', 'sideways. Leak Slugs never', 'stop coming: shoot them!', 'The stack fills. Slip by!'],
+  };
+  const cache: Leg = { file: 's2b', kitFile: 's2', title: 'The Cache', kind: 'scroll', grid: b, kit: ks, card: [] };
+  const bank = bankLeg();
   return {
     n: 2,
     id: 'ram',
@@ -258,28 +256,33 @@ export function stage2(): Stage {
     art,
     song: 'ram.cmf',
     bossSong: 'boss.cmf',
-    side: { from: 's2a', cell: { x: X0 + 1, y: a.y(gap) }, room, then: 's2b', outro: 's2y' },
+    side: { from: 's2a', cell: { x: X0 + 1, y: a.y(gap) }, room, then: 's2s', outro: 's2y' },
     legs: [
-      ringLeg(),
-      {
-        file: 's2a',
-        kitFile: 's2',
-        title: 'The Address Bus',
-        kind: 'scroll',
-        grid: a,
-        kit: ks,
-        card: ['Data streams shove you', 'sideways. Leak Slugs never', 'stop coming: shoot them!', 'The stack fills. Slip by!'],
-      },
-      {
-        file: 's2b',
-        kitFile: 's2',
+      up,
+      bank,
+      downLeg(up, cache, {
+        file: 's2v',
+        kitFile: 's2v',
         title: 'The Cache',
-        kind: 'scroll',
-        grid: b,
-        kit: ks,
-        card: ['A lane between the chips.', 'Mind the crawlers that cut', 'across it.'],
-      },
-      bankLeg(),
+        card: ['Back DOWN between the chips.', 'Mind the crawlers that cut', 'across the lane.'],
+        left: 52,
+        meter: stripMeter(art),
+        // the chips' printing and the board's silkscreen read the right way up
+        spec: { upright: ['floor4'], stamps: [stampNames('dramA', 2, 3), stampNames('dramB', 2, 3), stampNames('cache', 4, 2)] },
+      }),
+      leftLeg(bank, overflowBand(), {
+        file: 's2l',
+        title: 'Stack Overflow',
+        card: ['Flying LEFT under three', 'stacks: each fills toward', 'the floor. Slip under', 'before it shuts!'],
+        // as far from the bank's band as the map allows: its Leak Slugs hunt the ship from there
+        top: 0,
+        art: bankKit().art,
+        spec: {
+          upright: [...[0, 1, 2, 3, 4].flatMap((k) => [`stk${k}`, `stkF${k}`]), 'stkGap'],
+          stamps: [[['lbl00', 'lbl01']], [['chipF00', 'chipF01']], [['chipC00', 'chipC01']], [['saveL', 'saveR']]],
+        },
+      }),
+      ringLeg(),
       bossLeech(art),
     ],
   };

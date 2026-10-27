@@ -1,8 +1,9 @@
-// The Assistant: the editor's panel for letting an AI tool on this computer work on the open
-// game through the MCP server's bridge (client.ts). Nothing connects until the person types the
-// port and pairing code the server shows. While connected, a chip in the corner says so with a
-// Disconnect button, every change shows a toast with Undo, and a read-only switch keeps the
-// assistant to looking. Loaded only when the Assistant button is first pressed.
+// The Assistant's bridge panel: letting an AI tool on this computer work on the open game
+// through the MCP server's bridge (client.ts), opened from the chat's "AI tool on this computer"
+// link. Nothing connects until the person types the port and pairing code the server shows.
+// While connected, a chip in the corner says so with a Disconnect button, every change shows a
+// toast with Undo, and the read-only switch (shared with the chat) keeps the assistant to
+// looking. Loaded only when first opened.
 import { h, clear } from '../../editor/core/ui';
 import { assistantHost, onAssistantHost } from '../hostSlot';
 import { bridgeUrl } from './protocol';
@@ -12,9 +13,10 @@ import { runInTab } from './editorAdapters';
 import { EDITOR_TOOL_SPECS } from './editorTools';
 import { GAME_TOOL_DEFS } from '../tools/index';
 import { modelContextOf, registerWebMcp, type OfferedTool } from '../webmcp';
+import { assistantReadOnly, onAssistantReadOnly, setAssistantReadOnly } from '../shared/readOnlySwitch';
+import { changeToast } from '../shared/changeToast';
 import './panel.css';
 
-const READ_ONLY_KEY = 'gm-assistant-read-only';
 const PORT_KEY = 'gm-assistant-port';
 
 const stored = (k: string) => {
@@ -32,31 +34,8 @@ const store = (k: string, v: string) => {
   }
 };
 
-let readOnly = stored(READ_ONLY_KEY) === '1';
+let readOnly = assistantReadOnly();
 const activity: { tool: string; ok: boolean }[] = [];
-
-const toasts = h('div', { class: 'toasts assistant-toasts', role: 'status', 'aria-live': 'polite' });
-
-/** A change the assistant made: its words, Undo, and a close button; it goes after a while unless focused or hovered. */
-function changeToast(summary: string, undo: () => void): void {
-  if (!toasts.isConnected) document.body.append(toasts);
-  const t = h(
-    'div',
-    { class: 'toast' },
-    h('span', null, `Assistant: ${summary}`),
-    h('button', { class: 'toast-undo', onclick: () => (undo(), t.remove()) }, 'Undo'),
-    h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: () => t.remove() }, '×'),
-  );
-  toasts.append(t);
-  let timer = 0;
-  const start = () => (timer = window.setTimeout(() => t.remove(), 12_000));
-  const stop = () => clearTimeout(timer);
-  t.addEventListener('pointerenter', stop);
-  t.addEventListener('pointerleave', start);
-  t.addEventListener('focusin', stop);
-  t.addEventListener('focusout', start);
-  start();
-}
 
 const ctx = new EditorContext(assistantHost, { readOnly: () => readOnly, changed: changeToast });
 const client = new BridgeClient(ctx, assistantHost, () => readOnly);
@@ -124,11 +103,13 @@ const readOnlyBox = h('input', {
   id: 'assistant-read-only',
   type: 'checkbox',
   checked: readOnly,
-  onchange: () => {
-    readOnly = readOnlyBox.checked;
-    store(READ_ONLY_KEY, readOnly ? '1' : '');
-    client.sendState();
-  },
+  onchange: () => setAssistantReadOnly(readOnlyBox.checked),
+});
+// the switch is shared with the chat: either one changes it for both
+onAssistantReadOnly((v) => {
+  readOnly = readOnlyBox.checked = v;
+  client.sendState();
+  if (panel.isConnected) show();
 });
 const log = h('ul', { class: 'assistant-log', 'aria-label': 'What the assistant did' });
 
@@ -159,7 +140,7 @@ const panel = h(
   h(
     'header',
     { class: 'modal-head' },
-    h('h2', { id: 'assistant-title' }, h('span', { 'aria-hidden': 'true' }, '✦ '), 'Assistant'),
+    h('h2', { id: 'assistant-title' }, h('span', { 'aria-hidden': 'true' }, '✦ '), 'AI tool on this computer'),
     h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => panel.close() }, '×'),
   ),
   h(

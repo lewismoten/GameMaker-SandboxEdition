@@ -1,6 +1,7 @@
 // The words: text pages Game-Maker writes over the screens (31 columns, 16 lines a page)
 // and the readme on the disk (also 31 columns, for the same little windows).
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 const page = (lines: string[]) => {
   for (const l of lines) if (l.length > 31) throw new Error(`Text line over 31 columns: "${l}"`);
@@ -155,7 +156,7 @@ export const HELP = pages(
 const CREDITS_TEXT = pages(
   [
     'VIRUS BLASTER',
-    'Version 1.0, 1995',
+    `Version ${about.version}, 1995`,
     '',
     'Design, art, music and',
     'programming: Claude',
@@ -266,7 +267,7 @@ for (const l of DEBUG_EGG.split('\n')) if (l.length > 30) throw new Error(`Egg l
 function readme(price: string): string {
   const lines = [
     '         VIRUS BLASTER',
-    '      Version 1.0 - 1995',
+    `      Version ${about.version} - 1995`,
     '  (c) 1995 Sandbox Software',
     '',
     'Your PC has a virus. Shrink',
@@ -326,7 +327,7 @@ function readme(price: string): string {
     '',
     'FILES ON THIS DISK',
     'BLASTER.GAM  the game',
-    '*.MAP        31 maps',
+    '*.MAP        28 maps',
     '*.BBL *.MBL  blocks',
     '*.MON        monsters',
     'SHIP.CHR     the BLASTER',

@@ -11,7 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
-import { clipLists } from '../kit/fliClips';
+import { clipEveryList } from '../kit/fliClips';
 import { HEROES } from './src/heroes';
 import { buildPalette } from './src/art/pal';
 import { buildSounds } from './src/sound/sounds';
@@ -52,5 +52,5 @@ if (levels.some((l) => l.nook)) disk.put(DARK, serializePalette(new Uint8Array(7
 disk.put('teddy3.gam', serializeGame(buildGame(levels, process.env.TEDDY_START)));
 disk.put('license.txt', licenseText("Teddy's Little Biggest Adventure"));
 // the long cartoons the title and the menu play, in clips of about 4 seconds (Esc skips between clips)
-clipLists(disk.files, ['title.lst', 'story.lst', 'help.lst', 'credits.lst']);
+clipEveryList(disk.files);
 disk.write();

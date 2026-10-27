@@ -7,30 +7,13 @@
 // true color, a pixel at a time, then reduced to one 256-color palette for the FLI
 // (cartoons.ts). `t` (0..1) animates it: the swirl turns, the remote tumbles in, the VCR blinks.
 import { rng } from '../../../kit/pixels';
+import { mixc, clamp, noise2 } from '../../../kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;
 
 type RGB = [number, number, number];
 
-const mixc = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-const clamp = (v: number) => Math.max(0, Math.min(255, v));
-
-/** Value noise (smooth, seeded) for textures. */
-function noise2(seed: number) {
-  const r = rng(seed);
-  const g = Array.from({ length: 64 * 64 }, () => r());
-  const at = (x: number, y: number) => g[(((y % 64) + 64) % 64) * 64 + (((x % 64) + 64) % 64)];
-  return (x: number, y: number) => {
-    const x0 = Math.floor(x);
-    const y0 = Math.floor(y);
-    const fx = x - x0;
-    const fy = y - y0;
-    const a = at(x0, y0) + (at(x0 + 1, y0) - at(x0, y0)) * fx;
-    const b = at(x0, y0 + 1) + (at(x0 + 1, y0 + 1) - at(x0, y0 + 1)) * fx;
-    return a + (b - a) * fy;
-  };
-}
 const N1 = noise2(31);
 const N2 = noise2(47);
 

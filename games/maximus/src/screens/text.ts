@@ -3,6 +3,7 @@
 import { MODULES, SHARDS } from '../ids';
 import { SECTORS } from '../universe';
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 /** Wraps text for Game-Maker's text screens: fgets reads 31 characters, so a full
  * 31-character line would leave its newline for the next read (a blank line); keep to 30. */
@@ -133,7 +134,7 @@ export function wrapDoc(text: string, width = 30): string {
 
 export const README = (price: string, files: number, mb: string) =>
   wrapDoc(`MAXIMUS: THE HUNDRED WORLDS
-Version 1.0
+Version ${about.version}
 Sandbox Software, 1995
 ==============================
 

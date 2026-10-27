@@ -5,6 +5,7 @@
 import './readView.css';
 import { h } from '../editor/core/ui';
 import { holdNow, type Hold } from '../phoneScreen';
+import type { ReadSize } from './readSize';
 
 export type ReadView = 'pages' | 'scroll';
 
@@ -65,11 +66,24 @@ export function viewToggle(start: ReadView, pick: (view: ReadView) => void): { e
   return { el: h('span', { class: 'rv-toggle', role: 'group', 'aria-label': 'Read as' }, pages, scroll), set };
 }
 
+/** How a piece's own view is opened (the box viewer's BoxItem.reader). */
+export interface ReaderOptions {
+  view: ReadView;
+  /** The size scrolled pages are shown at (readSize.ts). */
+  size: ReadSize;
+  /** The scrolling stage the view sits in. */
+  root: HTMLElement;
+  /** The percent of its printed size the page in view is shown at, for the size control. */
+  shown(percent: number): void;
+}
+
 /** A piece's own on-screen view that reads both ways (the box viewer's BoxItem.reader). */
 export interface Reader {
   el: HTMLElement;
   /** Switches the view, keeping the page being read. */
   view(view: ReadView): void;
+  /** Shows the scrolled pages at another size, keeping the page being read. */
+  size?(size: ReadSize): void;
   /** Back or Next (the arrow keys). */
   step?(dir: 1 | -1): void;
   dispose?(): void;

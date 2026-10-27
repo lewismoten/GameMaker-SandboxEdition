@@ -70,6 +70,8 @@ export interface ToolDef {
   inputSchema: JsonSchema & { type: 'object' };
   /** Changes the game (refused when read-only). */
   writes?: boolean;
+  /** Works without a game open (a reference, such as the recipes). */
+  noGame?: boolean;
   run(args: Record<string, unknown>, ctx: GameContext): Promise<ToolResult>;
 }
 

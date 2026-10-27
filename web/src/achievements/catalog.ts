@@ -64,6 +64,8 @@ export const LIBRARY_KINDS = [
   'poster',
   'newsletter',
   'stickers',
+  'labels',
+  'retailbox',
   'keys',
   'registration',
   'hintcard',
@@ -238,7 +240,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'blaster-big-name',
     title: 'Name in lights',
-    desc: 'Reached 3-D, The Big Name, on the face of the Sound Boaster in Virus Blaster.',
+    desc: 'Reached 3-A, The Big Name, on the face of the Sound Boaster in Virus Blaster.',
     icon: '🔊',
     category: 'playing',
   },

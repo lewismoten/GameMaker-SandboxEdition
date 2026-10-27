@@ -127,7 +127,7 @@ export const bytes2pal = (b: Uint8Array): RGBdata[] =>
 /** bioskey(0) for a text-mode key: scan code in the high byte, ASCII in the low. */
 export function biosKey(k: Key): number {
   const sc = SCAN[k.code] ?? 0;
-  let ascii = 0;
+  let ascii: number;
   if (k.alt) ascii = 0;
   else if (k.key.length === 1) {
     const c = k.key.charCodeAt(0) & 0xff;

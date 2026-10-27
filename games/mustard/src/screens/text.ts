@@ -2,13 +2,8 @@
 // a page), the level cards' lines (from the song), and the disk's README.TXT. The lyrics are
 // from "Mustard Seed Hustle" by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
-
-const page = (lines: string[], pages = 1) => {
-  for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
-  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
-  while (lines.length % 16) lines.push('');
-  return lines.join('\n');
-};
+import about from '../../about.json';
+import { page } from '../../../kit/screenText';
 
 const TITLE = 'MUSTARD SEED HUSTLE';
 export const AUTHOR = 'The Bard of Bizarre';
@@ -176,7 +171,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 export function readme(price: string): string {
   return `
     MUSTARD SEED HUSTLE
-    Version 1.0 - March 1995
+    Version ${about.version} - March 1995
     by The Bard of Bizarre
 
 "Oh, it's the mustard seed

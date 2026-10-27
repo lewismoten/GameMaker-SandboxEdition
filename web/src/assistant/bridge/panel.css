@@ -1,5 +1,5 @@
 /* The Assistant panel (panel.ts): a small window at the top right that stays open while the
-   editor is used, the chip at the bottom left while connected, and its change toasts above it. */
+   editor is used, the chip at the bottom left while connected (its change toasts: shared/changeToast.css). */
 dialog.assistant-panel {
   position: fixed;
   inset: 72px 16px auto auto;
@@ -94,23 +94,6 @@ dialog.assistant-panel h3 {
 
 .assistant-chip button {
   min-height: 28px;
-}
-
-.assistant-toasts {
-  left: 16px;
-  right: auto;
-  bottom: 64px;
-}
-
-.assistant-toasts .toast-undo {
-  flex: none;
-  min-height: 24px;
-  padding: 0 8px;
-  border: 1px solid currentColor;
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
 }
 
 .assistant-btn[data-connected='true'] {

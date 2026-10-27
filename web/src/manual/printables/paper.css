@@ -249,7 +249,8 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* a page zoomed wider than the stage scrolls sideways from its left edge */
+  align-items: safe center;
   justify-content: safe center;
   padding: 12px;
 }
@@ -1077,4 +1078,20 @@
   border-radius: 8px;
   background: rgba(20, 12, 6, 0.85);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.gmb .rv-size {
+  padding: 4px 6px;
+  border: 1px solid #c9b994;
+  border-radius: 6px;
+  background: #f3ead2;
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+}
+
+.gmb .rv-zoom:disabled {
+  opacity: 0.5;
+  cursor: default;
 }

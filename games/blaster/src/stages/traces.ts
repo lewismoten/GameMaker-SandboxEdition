@@ -1,4 +1,4 @@
-// Stage 1-B, "Copper Traces": the motherboard's diagonal leg, on the track builder
+// Stage 1-E, "Copper Traces": the motherboard's diagonal leg, on the track builder
 // (diagLeg.ts). Four wide copper traces run corner to corner from an edge pad to the chipset;
 // each lap ends where its trace bends flat at the kink and carries on round the wrap as the
 // next trace down, and the silkscreen counts the traces left: 3, 2, 1. It teaches the turned

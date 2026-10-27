@@ -21,6 +21,7 @@ import type { Where } from './go';
 import type { Issue, PlacedPage } from './types';
 import { tally, unlockAchievement } from '../../achievements';
 import { readView, viewToggle } from '../readView';
+import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 
 interface Loaded {
@@ -63,7 +64,7 @@ const PAGE_W = 816;
 const NARROW = 640;
 /** At least this wide for two pages side by side. */
 const TWO = 900;
-/** The widest a page is shown in the Scroll view. */
+/** The widest Fit width shows a page in the Scroll view. */
 const SCROLL_MOST = 900;
 
 /** Builds the viewer in `host`; returns its dispose. */
@@ -75,6 +76,13 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   let view = readView();
   const toggle = viewToggle(view, (v) => {
     view = v;
+    show();
+  });
+  // the scrolled pages' size (readSize.ts): Fit width unless this browser chose another
+  let size: ReadSize = readSize() ?? 'width';
+  let percent = 100;
+  const sizes = sizeControl(size, (s) => {
+    size = s;
     show();
   });
   const stage = h('div', { class: 'mag-stage', tabindex: 0, role: 'region', 'aria-label': `${MAG.name}, the pages` });
@@ -109,6 +117,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       counter,
       next,
       toggle.el,
+      sizes.el,
       zoomBtn,
       h('div', { class: 'mag-print-wrap' }, printBtn, printMenu),
       closeBtn,
@@ -161,17 +170,14 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     const first = issue!.pages[shown[0]];
     if (o.where === 'web') setHashParams({ page: first.folio === 1 ? undefined : first.folio }, ['magazine']);
   };
-  const scrollWidth = () => Math.max(160, narrow() ? stage.clientWidth : Math.min(stage.clientWidth - 24, SCROLL_MOST));
-  const fitColumn = (c: NonNullable<typeof column>, w: number) => {
-    c.w = w;
-    c.el.style.setProperty('--rv-w', `${w}px`);
-    c.el.style.setProperty('--pw', `${w}px`);
-    c.el.style.setProperty('--s', (w / PAGE_W).toFixed(4));
-  };
+  const scrollWidth = () =>
+    widthAt(size, { viewW: stage.clientWidth - (narrow() ? 0 : 24), viewH: stage.clientHeight - 48, natural: PAGE_W, ratio: 11 / 8.5, most: SCROLL_MOST });
   const showScroll = () => {
     const pages = issue!.pages;
-    const flow = narrow();
+    // a phone fitting the width lets each page's text run long at reading size; any other size scales pages whole
+    const flow = narrow() && size === 'width';
     const w = scrollWidth();
+    sizes.shown((percent = percentOf(w, PAGE_W)));
     root.classList.toggle('flow', flow);
     root.classList.toggle('narrow', flow);
     root.classList.remove('zoomed');
@@ -184,6 +190,8 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
           root: stage,
           count: pages.length,
           ratio: () => 11 / 8.5,
+          width: scrollWidth,
+          fit: (holder, _, pw) => holder.style.setProperty('--s', (pw / PAGE_W).toFixed(4)),
           page: (i) => h('div', { class: 'mag-sheet' }, h('div', { class: 'mag-paper' }, renderPage(pages[i], env).el)),
           label: (i) => (i === 0 ? 'Cover' : pages[i].kind === 'back' ? 'Back cover' : `Page ${pages[i].folio}`),
           showing: (i) => ((at = i), reading([i])),
@@ -192,9 +200,9 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       );
       column.el.classList.add('mag-column');
       stage.replaceChildren(column.el);
-      fitColumn(column, w);
       column.scrollTo(at);
-    } else fitColumn(column, w);
+    } else column.resize();
+    column.w = w;
     reading([at]);
   };
 
@@ -202,6 +210,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     if (!issue) return;
     toggle.set(view);
     root.classList.toggle('scrolled', view === 'scroll');
+    sizes.el.hidden = view !== 'scroll';
     if (view === 'scroll') return showScroll();
     dropColumn();
     zoomBtn.hidden = false;
@@ -296,6 +305,10 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   const onKey = (e: KeyboardEvent) => {
     // only while the magazine has the keys (not a box opened from it)
     if (!root.isConnected || !(root.contains(document.activeElement) || document.activeElement === document.body)) return;
+    if (view === 'scroll' && zoomKey(e, sizes, 'width')) {
+      if (o.onClose) e.stopImmediatePropagation();
+      return;
+    }
     if (e.key === 'Escape') {
       if (!printMenu.hidden) togglePrint(false);
       else if (toc.open) toc.open = false;
@@ -329,7 +342,15 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     show();
   });
 
+  const unpinch = pinchZoom(
+    stage,
+    sizes,
+    () => percent,
+    () => (view === 'scroll' ? column?.el : undefined),
+  );
+
   return () => {
+    unpinch();
     dropColumn();
     window.removeEventListener('keydown', onKey, true);
     window.removeEventListener('resize', onResize);

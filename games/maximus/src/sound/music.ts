@@ -3,6 +3,7 @@
 // OPL2 rhythm-mode drums (bass drum, snare, tom, cymbal, hi-hat on channels 11..15).
 import { encodeCmf, type CmfEvent } from '../../../../web/src/formats/cmf';
 import { INSTRUMENTS, midi, sbi } from '../../../kit/music';
+import { LEN } from '../../../kit/tune';
 
 const I = {
   ...INSTRUMENTS,
@@ -75,8 +76,6 @@ interface SongSpec {
   /** A second section: the song plays A A B A instead of A twice (each part 8 bars, its melody exactly that long). */
   b?: { chart: string; melody: string };
 }
-
-const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25, t: 1 / 3 };
 
 function parseLine(notes: string): { at: number; len: number; notes: number[] }[] {
   const out: { at: number; len: number; notes: number[] }[] = [];

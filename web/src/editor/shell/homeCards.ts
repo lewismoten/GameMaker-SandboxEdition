@@ -27,6 +27,7 @@ import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
 import { lookId } from './lookId';
+import { gameVersion } from '../../project/gameVersion';
 
 // Loaded when first used, so the list of games shows without them: the demo player (and
 // the game engine with it), the keyboard map and the manual with the paper in the box.
@@ -129,7 +130,7 @@ function once<T>(f: () => Promise<T>): () => Promise<T> {
 export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   // the CD's library of parts has no game, nor a title of its own
   const title = g.gam ? g.title : 'Parts library';
-  const byline =
+  const made =
     kind === 'sandbox'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
       : kind === 'shareware' || kind === 'bizarre'
@@ -137,6 +138,9 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
         : !g.gam
           ? 'Pictures, monsters and sounds'
           : [g.company ?? g.author, g.year].filter(Boolean).join(' · ') || 'Gameware from the Game-Maker CD';
+  // a game made for this project names its version (about.json), small, after who made it
+  const version = g.gam ? gameVersion(g) : undefined;
+  const byline = version ? `${made} · v${version}` : made;
   return {
     key: `cd:${g.id}`,
     kind,

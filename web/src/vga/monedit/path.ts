@@ -38,8 +38,8 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
     let oldy = my;
     while (spot < 9 && move[spot + 1].pic > 0) {
       spot++;
-      oldx = mx = (lastx = move[spot].x) + LS;
-      oldy = my = (lasty = move[spot].y) + TS;
+      oldx = (lastx = move[spot].x) + LS;
+      oldy = (lasty = move[spot].y) + TS;
     }
     if (spot >= 0) spot2 = 0;
     // The C moved the mouse inside a small box (one pixel per map block) and showed the
@@ -76,7 +76,7 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
       const r = mouse();
       mx = r.x;
       my = r.y;
-      let buts = r.but;
+      const buts = r.but;
       if (frombox) {
         if (!r.inBox) {
           v.moucur(true);
@@ -108,7 +108,6 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
           move[spot].pic = 1;
           redraw = true; // Redraw the path box
           await v.mouclearbut();
-          buts = 0;
         }
       } else if (buts > 0) {
         if (mx > PMX && mx < PMX + 36 && my > PMY && my < PMY + 11) {

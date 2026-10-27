@@ -1,5 +1,5 @@
          VIRUS BLASTER
-      Version 1.0 - 1995
+      Version 2.0 - 1995
   (c) 1995 Sandbox Software
 
 Your PC has a virus. Shrink
@@ -59,7 +59,7 @@ Nova Bombs, + for repairs.
 
 FILES ON THIS DISK
 BLASTER.GAM  the game
-*.MAP        31 maps
+*.MAP        28 maps
 *.BBL *.MBL  blocks
 *.MON        monsters
 SHIP.CHR     the BLASTER

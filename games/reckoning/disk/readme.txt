@@ -1,6 +1,6 @@
     THE GREAT DAIRY RECKONING
     OF 3:17 A.M.
-    Version 1.0 - Nov 1995
+    Version 1.1 - Nov 1995
     by The Bard of Bizarre
 
 "There it is. The enemy.

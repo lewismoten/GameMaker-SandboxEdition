@@ -11,6 +11,8 @@ import { FICTIONAL_NOTE, sandboxLogo } from './kit';
 import { fnv1a } from '../../seededRandom';
 import { manualCover } from './manualCover';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
+import { frameShot } from '../../gfx/frameShot';
+import { asFrame } from '../../gfx/shotFrame';
 
 export const PAGE_W = 5.5;
 export const PAGE_H = 8.5;
@@ -42,7 +44,13 @@ async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLEleme
       const num = (name: string, d: number) => Number(s.getAttribute(name) ?? d) || d;
       const w = num('w', 16);
       const hh = num('h', 10);
-      const shot = await mapShot(entry, s.getAttribute('map') ?? '', num('x', 0), num('y', 0), w, hh).catch(() => undefined);
+      // bbl: a map two scenes share, drawn with that scene's blocks
+      const bbl = s.getAttribute('bbl') ?? undefined;
+      const map = s.getAttribute('map') ?? '';
+      // tick: a moment of play, drawn ahead of time (gfx/shotFrame.ts); else the map view
+      const frame = asFrame({ tick: Number(s.getAttribute('tick') ?? NaN), ...(s.hasAttribute('scene') ? { scene: Number(s.getAttribute('scene')) } : {}) });
+      const shot =
+        (frame && (await frameShot(entry, { map, ...frame }))) || (await mapShot(entry, map, num('x', 0), num('y', 0), w, hh, bbl).catch(() => undefined));
       const fig = document.createElement('figure');
       if (shot)
         fig.append(

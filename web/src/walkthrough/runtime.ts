@@ -317,7 +317,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
     await song(5);
     await show(file(0, 4)!);
     await song(3);
-    screen = await menu();
+    await menu();
   }
   await pick(1);
   m.audio.stopSong();

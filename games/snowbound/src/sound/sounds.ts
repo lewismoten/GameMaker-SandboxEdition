@@ -2,25 +2,14 @@
 // synthesized here (shovel scrapes, the cash register, snowball whooshes...).
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
-import { rng } from '../../../kit/pixels';
 import { SND } from '../ids';
+import { lowNoise, env } from '../../../kit/synthParts';
 
-/** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
-function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {
-  const r = rng(seed);
-  let y = 0;
-  return (t) => {
-    const a = typeof cutoff === 'number' ? cutoff : cutoff(t);
-    y += a * (r() * 2 - 1 - y);
-    return y * (1.4 / Math.sqrt(Math.max(0.05, a)));
-  };
-}
 /** A synth that is silent outside [from, to). */
 const gate =
   (v: Synth, from: number, to: number, fade = false): Synth =>
   (t) =>
     t >= from && t < to ? v(t) * (fade ? 1 - (t - from) / (to - from) : 1) : 0;
-const env = (attack: number, decay: number) => (u: number) => Math.min(1, u / attack) * Math.max(0, 1 - u) ** decay;
 const bell = (hz: number, start = 0, len = 1): Synth => {
   const s = osc.sine(hz);
   const s2 = osc.sine(hz * 2.76);

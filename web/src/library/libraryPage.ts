@@ -59,6 +59,11 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
       const m = await import('../manual/gameManual');
       const done = o.maps ? m.openGameMaps(entry, undefined, o.start) : m.openGameManual(entry, undefined, undefined, o.start);
       await whenShown(done);
+    } else if (o.via === 'print') {
+      const entry = o.game ? games.get(o.game) : undefined;
+      if (o.game && !entry) return;
+      const { openPrintShop } = await import('../manual/printables/printShop');
+      await whenShown(openPrintShop(o.start, entry));
     } else if (o.via === 'gm') {
       await whenShown(openFromLibrary(o.start, undefined, true));
     } else if (o.via === 'walk') {

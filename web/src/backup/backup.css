@@ -1,0 +1,413 @@
+/* Back up / restore (exportDialog.ts, importDialog.ts): the dialog fits the window, its head,
+   intro and foot stay put and only the list of parts scrolls; each part is one row (two on a
+   phone) with its details opened from a button. */
+dialog.modal:has(.backup) {
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+}
+
+dialog.modal[open]:has(.backup) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+dialog.modal:has(.backup) > .backup {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.backup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.backup p {
+  margin: 0;
+}
+
+.backup-lead {
+  line-height: 1.4;
+}
+
+.backup-about {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* ---- the list */
+.backup-sections {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.backup-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.backup-legend {
+  flex: 1;
+  margin: 0;
+  font-size: 15px;
+}
+
+.backup-scroll {
+  flex: 1 1 auto;
+  min-height: 72px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.backup-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.backup-note {
+  margin: 8px 4px !important;
+}
+
+/* ---- a part's row */
+.brow {
+  border-bottom: 1px solid var(--border);
+}
+
+.brow:last-child {
+  border-bottom: 0;
+}
+
+.brow:has(input:checked) {
+  background: var(--accent-soft);
+}
+
+.brow-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 2px 6px;
+}
+
+.brow-a {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brow-b {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+dialog.modal label.brow-name {
+  display: flex;
+  flex-direction: row;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 32px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.brow-name span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.brow-name input,
+.backup-check input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.brow-name:has(input:disabled) {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.brow-count,
+.brow-size {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.brow-count {
+  flex: none;
+}
+
+.brow-size {
+  min-width: 52px;
+  text-align: right;
+}
+
+.brow-mode {
+  min-height: 30px;
+  max-width: 172px;
+}
+
+.brow-mode.overridden {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.brow-custom {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.brow-custom[hidden] {
+  display: none;
+}
+
+.brow-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 2px 8px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.brow-more[aria-expanded='true'] .brow-caret {
+  display: inline-block;
+  transform: rotate(180deg);
+}
+
+.brow-info {
+  justify-content: center;
+  padding: 2px 6px;
+  font-size: 16px;
+}
+
+.brow-details {
+  padding: 0 10px 8px 34px;
+}
+
+.brow-details[hidden] {
+  display: none;
+}
+
+.backup-changes {
+  margin: 0;
+  padding: 0;
+  list-style: '– ';
+  font-size: 13px;
+}
+
+.restore-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.restore-extra ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.restore-extra li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.restore-extra select {
+  min-height: 28px;
+}
+
+/* ---- the choice for every part */
+.restore-all {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+dialog.modal .restore-all label {
+  display: inline;
+  font-weight: 600;
+}
+
+.restore-all select {
+  min-height: 32px;
+}
+
+.restore-all .backup-about {
+  flex-basis: 100%;
+}
+
+/* ---- the foot */
+.backup-foot {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backup-foot .buttons,
+.restore-done .buttons {
+  flex: none;
+  margin-top: 0;
+}
+
+dialog.modal label.backup-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.backup-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 12px;
+}
+
+.backup-warn {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.backup-status {
+  font-size: 14px;
+}
+
+.backup-status:empty {
+  display: none;
+}
+
+.backup-buttons .backup-restore {
+  margin-right: auto;
+}
+
+/* a phone: a row with a choice takes two lines, the name and count, then the size and choices */
+@media (max-width: 560px) {
+  .brow-line:has(select) {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .brow-line:has(select) .brow-a {
+    flex-basis: 100%;
+  }
+
+  .brow-line:has(select) .brow-b {
+    flex: 1 1 100%;
+    min-width: 0;
+    padding: 0 0 4px 28px;
+  }
+
+  .brow-line:has(select) .brow-size {
+    min-width: 0;
+    text-align: left;
+  }
+
+  /* the choice's own outline says it is set here; the words stay for screen readers */
+  .brow-custom:not([hidden]) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .brow-mode {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .brow-size {
+    min-width: 0;
+  }
+
+  /* a long name keeps whole: the count drops under it */
+  .brow-a {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .brow-name span {
+    white-space: normal;
+  }
+
+  .brow-line:not(:has(select)) .brow-count {
+    flex-basis: 100%;
+    padding-left: 28px;
+  }
+
+  .backup-lead {
+    font-size: 14px;
+  }
+
+  .backup-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+/* a short window (a phone on its side) */
+@media (max-height: 500px) {
+  .backup-lead {
+    font-size: 13px;
+  }
+
+  .restore-all .backup-about {
+    display: none;
+  }
+
+  .backup,
+  .backup-foot {
+    gap: 4px;
+  }
+
+  .restore-all {
+    padding: 4px 8px;
+  }
+
+  dialog.modal:has(.backup) {
+    max-height: calc(100dvh - 16px);
+    padding: 12px 20px;
+  }
+
+  dialog.modal:has(.backup) .modal-head {
+    margin-bottom: 4px;
+  }
+}

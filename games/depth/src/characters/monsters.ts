@@ -12,8 +12,7 @@ import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../
 import type { Block } from '../../../../web/src/formats/blocks';
 import { COUNT_RUNS, CROWN, MON, lensCounters } from '../ids';
 import type { SpriteSet } from '../sprites/sprites';
-
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
+import { corner } from '../../../kit/actors';
 
 function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = [], attack: March[] = []): Monster {
   const m = emptyMonster();

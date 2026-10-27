@@ -3,24 +3,8 @@
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { SND } from '../ids';
-
-function lowpass(v: Synth, k: number): Synth {
-  let y = 0;
-  return (t) => (y += (v(t) - y) * k);
-}
-
-function chime(notes: number[], each = 0.07): Uint8Array {
-  const total = notes.length * each + 0.15;
-  const v: Synth = (t) => {
-    let s = 0;
-    notes.forEach((f, i) => {
-      const t0 = i * each;
-      if (t >= t0) s += Math.sin(2 * Math.PI * f * (t - t0)) * Math.exp(-(t - t0) * 9) * 0.5;
-    });
-    return s;
-  };
-  return sample(total, v, { envelope: () => 1, gain: 0.9 });
-}
+import { lowpass } from '../../../kit/synthParts';
+import { chime } from '../../../kit/teddySounds';
 
 /** A knife switch: a sharp metal clack with a little ring. */
 function clack(): Uint8Array {

@@ -10,7 +10,7 @@ import { watchForUpdates } from './devReload';
 import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
-import { themeButton } from './theme';
+import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
 import { parseHash } from './urlState';
 import { noteLibraryContext } from './libraryStart';
@@ -103,13 +103,6 @@ function startModern(hash?: string): void {
         'nav',
         { class: 'topbar-nav', 'aria-label': 'Site pages' },
         h('a', { class: 'nav-link nav-games', href: '#/', title: 'All the games: play one, edit a copy, or make your own' }, 'Games'),
-        h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
-        h(
-          'a',
-          { class: 'hide-narrow nav-link', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' },
-          'Achievements',
-        ),
-        h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
         h('a', { class: 'nav-link hide-tiny', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
         h(
           'a',
@@ -120,22 +113,26 @@ function startModern(hash?: string): void {
           },
           'Library',
         ),
+        h(
+          'a',
+          { class: 'hide-narrow nav-link', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' },
+          'Achievements',
+        ),
+        h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
       ),
-      h(
-        'button',
-        { class: 'hide-narrow topbar-offline', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
-        h('span', { 'aria-hidden': 'true' }, '⤓'),
-        ' Offline',
-      ),
-      h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones and tablets: the cast, achievements, the credits, offline and the source in a small menu, so the header stays one tidy row
+      // Desk | DOS | Web, at the top right in every view; the game in front of you comes along
+      // (viewSwitch.ts)
+      viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
+      // after it, ⚙ Settings (offline, the source, the credits, the theme, AI setup; settingsMenu.ts), or on
+      // phones and tablets the ⋯ menu with the pages the bar has no room for and the settings
+      settingsMenu(),
       h(
         'details',
         { class: 'topbar-more show-narrow' },
         h(
           'summary',
           {
-            'aria-label': 'More: the guide on small screens, the library, the cast, achievements, the credits, playing offline and the source code',
+            'aria-label': 'More: the guide on small screens, the library, achievements, the cast, and settings (with the credits)',
             title: 'More',
           },
           '⋯',
@@ -145,17 +142,12 @@ function startModern(hash?: string): void {
           { class: 'topbar-menu' },
           h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
           h('a', { class: 'nav-library', href: '#/library' }, '📚 Library'),
-          h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
-          h('a', { href: '#/credits' }, '📜 Credits'),
-          h('button', { onclick: openOffline }, '⤓ Play offline'),
-          h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
+          h('a', { href: '#/cast' }, '🎭 The cast'),
+          h('hr'),
+          ...settingsItems(),
         ),
       ),
-      // Desk | DOS | Web, at the top right in every view, the theme button after it; the game in
-      // front of you comes along (viewSwitch.ts)
-      viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
-      themeButton(),
     ),
     content,
   );
@@ -163,15 +155,12 @@ function startModern(hash?: string): void {
   else void route();
 }
 
-const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
-
-/** "Play offline": the whole site downloaded on request (offline/offlineDialog.ts). */
-const openOffline = () => void import('./offline/offlineDialog').then((m) => m.openOfflineDialog());
-
 // The header's ⋯ menu closes when something else is clicked or a choice is made.
 document.addEventListener('click', (e) => {
   const open = document.querySelector<HTMLDetailsElement>('.topbar-more[open]');
-  if (open && (!open.contains(e.target as Node) || (e.target as Element).closest('.topbar-menu'))) open.open = false;
+  const t = e.target as Element;
+  // Theme stays open, to show the theme it changed to
+  if (open && (!open.contains(t) || (t.closest('.topbar-menu') && !t.closest('.theme-item')))) open.open = false;
 });
 
 /** The skip link moves focus to the page's main area without changing the route. */

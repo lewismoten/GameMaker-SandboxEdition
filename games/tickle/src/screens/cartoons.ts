@@ -18,6 +18,7 @@ import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { labBackdrop } from './screens';
 import { AUTHOR, CARDS } from './text';
+import { sprite } from '../../../kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -58,12 +59,6 @@ function caption(p: Pixels, pal: Pal, lines: string[]): void {
 function say(p: Pixels, pal: Pal, x: number, y: number, words: string, ramp = 'gold', k = 3, scale = 1): void {
   outlined(p, Math.round(x - textWidth(words, scale) / 2), y, words, pal.c(ramp, k), pal.c('ink', 0), scale);
 }
-
-const sprite = (set: Map<string, Pixels>, name: string) => {
-  const s = set.get(name);
-  if (!s) throw new Error(`No sprite ${name}`);
-  return s;
-};
 
 /** The bat detector's dial: blue 22 on the left, red 50 on the right, the needle at `joy` (0 dread .. 1 joy). */
 function detector(p: Pixels, pal: Pal, x: number, y: number, joy: number): void {

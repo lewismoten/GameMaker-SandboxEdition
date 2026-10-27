@@ -4,6 +4,7 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$10",
+  "version": "1.1",
   "blurb": "Teddy the corgi knight takes back the backyard sandbox after his big sister Gwinn's zoomies flattened every castle. Build towers of sand, toss tennis balls, show off your tricks!",
   "exe": "SANDCAST.EXE",
   "sound": "speaker",

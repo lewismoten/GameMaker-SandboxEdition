@@ -2,6 +2,30 @@
   "note": "Written by web/scripts/credits.ts from package-lock.json and node_modules; do not edit by hand.",
   "deps": [
     {
+      "name": "@cacheable/memory",
+      "version": "2.2.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/cacheable"
+    },
+    {
+      "name": "@cacheable/utils",
+      "version": "2.5.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/cacheable"
+    },
+    {
       "name": "@eslint-community/eslint-utils",
       "version": "4.10.1",
       "license": "MIT",
@@ -29,7 +53,7 @@
     },
     {
       "name": "@eslint/config-array",
-      "version": "0.21.2",
+      "version": "0.23.5",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
@@ -41,7 +65,7 @@
     },
     {
       "name": "@eslint/config-helpers",
-      "version": "0.4.2",
+      "version": "0.7.0",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
@@ -52,7 +76,7 @@
     },
     {
       "name": "@eslint/core",
-      "version": "0.17.0",
+      "version": "1.2.1",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
@@ -63,20 +87,8 @@
       "repo": "https://github.com/eslint/rewrite"
     },
     {
-      "name": "@eslint/eslintrc",
-      "version": "3.3.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Nicholas C. Zakas",
-      "repo": "https://github.com/eslint/eslintrc"
-    },
-    {
       "name": "@eslint/js",
-      "version": "9.39.5",
+      "version": "10.0.1",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -85,7 +97,7 @@
     },
     {
       "name": "@eslint/object-schema",
-      "version": "2.1.7",
+      "version": "3.0.5",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
@@ -97,7 +109,7 @@
     },
     {
       "name": "@eslint/plugin-kit",
-      "version": "0.4.1",
+      "version": "0.7.3",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
@@ -180,6 +192,18 @@
       "repo": "https://github.com/humanwhocodes/retry"
     },
     {
+      "name": "@jridgewell/resolve-uri",
+      "version": "3.1.2",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "vitest"
+      ],
+      "author": "Justin Ridgewell",
+      "repo": "https://github.com/jridgewell/resolve-uri"
+    },
+    {
       "name": "@jridgewell/sourcemap-codec",
       "version": "1.6.0",
       "license": "MIT",
@@ -190,6 +214,42 @@
       ],
       "author": "Justin Ridgewell",
       "repo": "https://github.com/jridgewell/sourcemaps"
+    },
+    {
+      "name": "@jridgewell/trace-mapping",
+      "version": "0.3.31",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "vitest"
+      ],
+      "author": "Justin Ridgewell",
+      "repo": "https://github.com/jridgewell/sourcemaps"
+    },
+    {
+      "name": "@keyv/bigmap",
+      "version": "1.3.1",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/keyv"
+    },
+    {
+      "name": "@keyv/serialize",
+      "version": "1.1.1",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/keyv"
     },
     {
       "name": "@modelcontextprotocol/sdk",
@@ -226,6 +286,18 @@
       "repo": "https://github.com/DefinitelyTyped/DefinitelyTyped"
     },
     {
+      "name": "@types/esrecurse",
+      "version": "4.3.1",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jimmy Leung",
+      "repo": "https://github.com/DefinitelyTyped/DefinitelyTyped"
+    },
+    {
       "name": "@types/estree",
       "version": "1.0.9",
       "license": "MIT",
@@ -234,6 +306,7 @@
       "usedBy": [
         "eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "RReverser",
@@ -273,7 +346,7 @@
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -284,7 +357,7 @@
     },
     {
       "name": "@typescript-eslint/parser",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -295,7 +368,7 @@
     },
     {
       "name": "@typescript-eslint/project-service",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -306,7 +379,7 @@
     },
     {
       "name": "@typescript-eslint/scope-manager",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -317,7 +390,7 @@
     },
     {
       "name": "@typescript-eslint/tsconfig-utils",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -328,7 +401,7 @@
     },
     {
       "name": "@typescript-eslint/type-utils",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -339,7 +412,7 @@
     },
     {
       "name": "@typescript-eslint/types",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -350,7 +423,7 @@
     },
     {
       "name": "@typescript-eslint/typescript-estree",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -361,7 +434,7 @@
     },
     {
       "name": "@typescript-eslint/utils",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -372,7 +445,7 @@
     },
     {
       "name": "@typescript-eslint/visitor-keys",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -382,52 +455,8 @@
       "repo": "https://github.com/typescript-eslint/typescript-eslint"
     },
     {
-      "name": "@vitest/expect",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
       "name": "@vitest/mocker",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/pretty-format",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/runner",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/snapshot",
-      "version": "3.2.7",
+      "version": "5.0.5",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -438,18 +467,7 @@
     },
     {
       "name": "@vitest/spy",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/utils",
-      "version": "3.2.7",
+      "version": "5.0.5",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -478,7 +496,8 @@
       "direct": false,
       "usedBy": [
         "eslint"
-      ]
+      ],
+      "repo": "https://github.com/acornjs/acorn"
     },
     {
       "name": "acorn-jsx",
@@ -488,7 +507,8 @@
       "direct": false,
       "usedBy": [
         "eslint"
-      ]
+      ],
+      "repo": "https://github.com/acornjs/acorn-jsx"
     },
     {
       "name": "ajv",
@@ -498,7 +518,9 @@
       "direct": false,
       "usedBy": [
         "eslint"
-      ]
+      ],
+      "author": "Evgeny Poberezkin",
+      "repo": "https://github.com/ajv-validator/ajv"
     },
     {
       "name": "ajv",
@@ -537,29 +559,6 @@
       "repo": "https://github.com/ajv-validator/ajv-formats"
     },
     {
-      "name": "ansi-styles",
-      "version": "4.3.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/chalk/ansi-styles"
-    },
-    {
-      "name": "argparse",
-      "version": "2.0.1",
-      "license": "Python-2.0",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "repo": "https://github.com/nodeca/argparse"
-    },
-    {
       "name": "assertion-error",
       "version": "2.0.1",
       "license": "MIT",
@@ -573,23 +572,12 @@
     },
     {
       "name": "balanced-match",
-      "version": "1.0.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Julian Gruber",
-      "repo": "https://github.com/juliangruber/balanced-match"
-    },
-    {
-      "name": "balanced-match",
       "version": "4.0.4",
       "license": "MIT",
       "runtime": false,
       "direct": false,
       "usedBy": [
+        "eslint",
         "typescript-eslint"
       ],
       "repo": "https://github.com/juliangruber/balanced-match"
@@ -608,23 +596,12 @@
     },
     {
       "name": "brace-expansion",
-      "version": "1.1.21",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Julian Gruber",
-      "repo": "https://github.com/juliangruber/brace-expansion"
-    },
-    {
-      "name": "brace-expansion",
       "version": "5.0.12",
       "license": "MIT",
       "runtime": false,
       "direct": false,
       "usedBy": [
+        "eslint",
         "typescript-eslint"
       ],
       "repo": "https://github.com/juliangruber/brace-expansion"
@@ -648,10 +625,22 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
-        "vitest"
+        "vite-node"
       ],
       "author": "egoist",
       "repo": "https://github.com/egoist/cac"
+    },
+    {
+      "name": "cacheable",
+      "version": "2.5.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/cacheable"
     },
     {
       "name": "call-bind-apply-helpers",
@@ -678,20 +667,8 @@
       "repo": "https://github.com/ljharb/call-bound"
     },
     {
-      "name": "callsites",
-      "version": "3.1.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/callsites"
-    },
-    {
       "name": "chai",
-      "version": "5.3.3",
+      "version": "6.3.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -700,65 +677,6 @@
       ],
       "author": "Jake Luer",
       "repo": "https://github.com/chaijs/chai"
-    },
-    {
-      "name": "chalk",
-      "version": "4.1.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "repo": "https://github.com/chalk/chalk"
-    },
-    {
-      "name": "check-error",
-      "version": "2.1.3",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Jake Luer",
-      "repo": "https://github.com/chaijs/check-error"
-    },
-    {
-      "name": "color-convert",
-      "version": "2.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Heather Arthur",
-      "repo": "https://github.com/Qix-/color-convert"
-    },
-    {
-      "name": "color-name",
-      "version": "1.1.4",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "DY",
-      "repo": "https://github.com/colorjs/color-name"
-    },
-    {
-      "name": "concat-map",
-      "version": "0.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "James Halliday",
-      "repo": "https://github.com/substack/node-concat-map"
     },
     {
       "name": "content-disposition",
@@ -891,22 +809,10 @@
         "@modelcontextprotocol/sdk",
         "eslint",
         "typescript-eslint",
-        "vitest"
+        "vite-node"
       ],
       "author": "Josh Junon",
       "repo": "https://github.com/debug-js/debug"
-    },
-    {
-      "name": "deep-eql",
-      "version": "5.0.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Jake Luer",
-      "repo": "https://github.com/chaijs/deep-eql"
     },
     {
       "name": "deep-is",
@@ -999,6 +905,18 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
+        "vite-node"
+      ],
+      "author": "Guy Bedford",
+      "repo": "https://github.com/guybedford/es-module-lexer"
+    },
+    {
+      "name": "es-module-lexer",
+      "version": "2.3.2",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
         "vitest"
       ],
       "author": "Guy Bedford",
@@ -1024,7 +942,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "repo": "https://github.com/evanw/esbuild"
     },
@@ -1053,7 +971,7 @@
     },
     {
       "name": "eslint",
-      "version": "9.39.5",
+      "version": "10.13.0",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -1073,7 +991,7 @@
     },
     {
       "name": "eslint-scope",
-      "version": "8.4.0",
+      "version": "9.1.2",
       "license": "BSD-2-Clause",
       "runtime": false,
       "direct": false,
@@ -1097,23 +1015,12 @@
     },
     {
       "name": "eslint-visitor-keys",
-      "version": "4.2.1",
-      "license": "Apache-2.0",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Toru Nagashima",
-      "repo": "https://github.com/eslint/js"
-    },
-    {
-      "name": "eslint-visitor-keys",
       "version": "5.0.1",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
       "usedBy": [
+        "eslint",
         "typescript-eslint"
       ],
       "author": "Toru Nagashima",
@@ -1121,7 +1028,7 @@
     },
     {
       "name": "espree",
-      "version": "10.4.0",
+      "version": "11.2.0",
       "license": "BSD-2-Clause",
       "runtime": false,
       "direct": false,
@@ -1317,6 +1224,7 @@
       "usedBy": [
         "typescript-eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "thecodrr",
@@ -1324,7 +1232,7 @@
     },
     {
       "name": "file-entry-cache",
-      "version": "8.0.0",
+      "version": "11.1.5",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1332,7 +1240,7 @@
         "eslint"
       ],
       "author": "Jared Wray",
-      "repo": "https://github.com/jaredwray/file-entry-cache"
+      "repo": "https://github.com/jaredwray/cacheable"
     },
     {
       "name": "finalhandler",
@@ -1360,7 +1268,7 @@
     },
     {
       "name": "flat-cache",
-      "version": "4.0.1",
+      "version": "6.1.23",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1368,7 +1276,7 @@
         "eslint"
       ],
       "author": "Jared Wray",
-      "repo": "https://github.com/jaredwray/flat-cache"
+      "repo": "https://github.com/jaredwray/cacheable"
     },
     {
       "name": "flatted",
@@ -1456,18 +1364,6 @@
     },
     {
       "name": "globals",
-      "version": "14.0.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/globals"
-    },
-    {
-      "name": "globals",
       "version": "17.13.0",
       "license": "MIT",
       "runtime": false,
@@ -1489,18 +1385,6 @@
       "repo": "https://github.com/ljharb/gopd"
     },
     {
-      "name": "has-flag",
-      "version": "4.0.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/has-flag"
-    },
-    {
       "name": "has-symbols",
       "version": "1.1.0",
       "license": "MIT",
@@ -1511,6 +1395,18 @@
       ],
       "author": "Jordan Harband",
       "repo": "https://github.com/inspect-js/has-symbols"
+    },
+    {
+      "name": "hashery",
+      "version": "1.5.1",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/hashery"
     },
     {
       "name": "hasown",
@@ -1535,6 +1431,30 @@
       ],
       "author": "Yusuke Wada",
       "repo": "https://github.com/honojs/hono"
+    },
+    {
+      "name": "hookified",
+      "version": "1.15.1",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/hookified"
+    },
+    {
+      "name": "hookified",
+      "version": "2.2.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/hookified"
     },
     {
       "name": "http-errors",
@@ -1574,7 +1494,7 @@
     },
     {
       "name": "ignore",
-      "version": "7.0.13",
+      "version": "7.0.14",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1583,18 +1503,6 @@
       ],
       "author": "kael",
       "repo": "https://github.com/kaelzhang/node-ignore"
-    },
-    {
-      "name": "import-fresh",
-      "version": "3.3.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/import-fresh"
     },
     {
       "name": "imurmurhash",
@@ -1705,42 +1613,6 @@
       "repo": "https://github.com/panva/jose"
     },
     {
-      "name": "js-tokens",
-      "version": "9.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Simon Lydell",
-      "repo": "https://github.com/lydell/js-tokens"
-    },
-    {
-      "name": "js-yaml",
-      "version": "4.3.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Vladimir Zapparov",
-      "repo": "https://github.com/nodeca/js-yaml"
-    },
-    {
-      "name": "json-buffer",
-      "version": "3.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Dominic Tarr",
-      "repo": "https://github.com/dominictarr/json-buffer"
-    },
-    {
       "name": "json-schema-traverse",
       "version": "0.4.1",
       "license": "MIT",
@@ -1802,7 +1674,7 @@
     },
     {
       "name": "keyv",
-      "version": "4.5.4",
+      "version": "5.6.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1837,32 +1709,8 @@
       "repo": "https://github.com/sindresorhus/locate-path"
     },
     {
-      "name": "lodash.merge",
-      "version": "4.6.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "John-David Dalton",
-      "repo": "https://github.com/lodash/lodash"
-    },
-    {
-      "name": "loupe",
-      "version": "3.2.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Veselin Todorov",
-      "repo": "https://github.com/chaijs/loupe"
-    },
-    {
       "name": "magic-string",
-      "version": "0.30.21",
+      "version": "1.4.4",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1939,19 +1787,8 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
+        "eslint",
         "typescript-eslint"
-      ],
-      "author": "Isaac Z. Schlueter",
-      "repo": "https://github.com/isaacs/minimatch"
-    },
-    {
-      "name": "minimatch",
-      "version": "3.1.5",
-      "license": "ISC",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
       ],
       "author": "Isaac Z. Schlueter",
       "repo": "https://github.com/isaacs/minimatch"
@@ -1966,7 +1803,7 @@
         "@modelcontextprotocol/sdk",
         "eslint",
         "typescript-eslint",
-        "vitest"
+        "vite-node"
       ],
       "repo": "https://github.com/vercel/ms"
     },
@@ -1978,7 +1815,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Andrey Sitnik",
       "repo": "https://github.com/ai/nanoid"
@@ -2031,6 +1868,18 @@
       ],
       "author": "James Halliday",
       "repo": "https://github.com/inspect-js/object-inspect"
+    },
+    {
+      "name": "obug",
+      "version": "3.0.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "vitest"
+      ],
+      "author": "Kevin Deng",
+      "repo": "https://github.com/sxzz/obug"
     },
     {
       "name": "on-finished",
@@ -2093,18 +1942,6 @@
       "repo": "https://github.com/sindresorhus/p-locate"
     },
     {
-      "name": "parent-module",
-      "version": "1.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/parent-module"
-    },
-    {
       "name": "parseurl",
       "version": "1.3.3",
       "license": "MIT",
@@ -2159,21 +1996,9 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
-        "vitest"
+        "vite-node"
       ],
       "repo": "https://github.com/unjs/pathe"
-    },
-    {
-      "name": "pathval",
-      "version": "2.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Veselin Todorov",
-      "repo": "https://github.com/chaijs/pathval"
     },
     {
       "name": "picocolors",
@@ -2183,7 +2008,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Alexey Raspopov",
       "repo": "https://github.com/alexeyraspopov/picocolors"
@@ -2197,6 +2022,7 @@
       "usedBy": [
         "typescript-eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "Jon Schlinkert",
@@ -2222,7 +2048,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Andrey Sitnik",
       "repo": "https://github.com/postcss/postcss"
@@ -2274,6 +2100,18 @@
       "repo": "https://github.com/mathiasbynens/punycode.js"
     },
     {
+      "name": "qified",
+      "version": "0.10.1",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint"
+      ],
+      "author": "Jared Wray",
+      "repo": "https://github.com/jaredwray/qified"
+    },
+    {
       "name": "qs",
       "version": "6.16.1",
       "license": "BSD-3-Clause",
@@ -2322,18 +2160,6 @@
       "repo": "https://github.com/floatdrop/require-from-string"
     },
     {
-      "name": "resolve-from",
-      "version": "4.0.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/resolve-from"
-    },
-    {
       "name": "rollup",
       "version": "4.64.12",
       "license": "MIT",
@@ -2341,7 +2167,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Rich Harris",
       "repo": "https://github.com/rollup/rollup"
@@ -2493,18 +2319,6 @@
       "repo": "https://github.com/ljharb/side-channel-weakmap"
     },
     {
-      "name": "siginfo",
-      "version": "2.0.0",
-      "license": "ISC",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Emil Bay",
-      "repo": "https://github.com/emilbayes/siginfo"
-    },
-    {
       "name": "source-map-js",
       "version": "1.2.2",
       "license": "BSD-3-Clause",
@@ -2512,22 +2326,10 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Valentin 7rulnik Semirulnik",
       "repo": "https://github.com/7rulnik/source-map-js"
-    },
-    {
-      "name": "stackback",
-      "version": "0.0.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Roman Shtylman",
-      "repo": "https://github.com/shtylman/node-stackback"
     },
     {
       "name": "statuses",
@@ -2543,7 +2345,7 @@
     },
     {
       "name": "std-env",
-      "version": "3.10.0",
+      "version": "4.3.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2553,44 +2355,8 @@
       "repo": "https://github.com/unjs/std-env"
     },
     {
-      "name": "strip-json-comments",
-      "version": "3.1.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/sindresorhus/strip-json-comments"
-    },
-    {
-      "name": "strip-literal",
-      "version": "3.1.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Anthony Fu",
-      "repo": "https://github.com/antfu/strip-literal"
-    },
-    {
-      "name": "supports-color",
-      "version": "7.2.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "eslint"
-      ],
-      "author": "Sindre Sorhus",
-      "repo": "https://github.com/chalk/supports-color"
-    },
-    {
       "name": "tinybench",
-      "version": "2.9.0",
+      "version": "6.2.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2601,7 +2367,7 @@
     },
     {
       "name": "tinyexec",
-      "version": "0.3.2",
+      "version": "1.3.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2620,43 +2386,11 @@
       "usedBy": [
         "typescript-eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "Superchupu",
       "repo": "https://github.com/SuperchupuDev/tinyglobby"
-    },
-    {
-      "name": "tinypool",
-      "version": "1.1.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/tinylibs/tinypool"
-    },
-    {
-      "name": "tinyrainbow",
-      "version": "2.0.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/tinylibs/tinyrainbow"
-    },
-    {
-      "name": "tinyspy",
-      "version": "4.0.6",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/tinylibs/tinyspy"
     },
     {
       "name": "toidentifier",
@@ -2718,7 +2452,7 @@
     },
     {
       "name": "typescript-eslint",
-      "version": "8.72.0",
+      "version": "8.72.1",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -2789,16 +2523,14 @@
       "version": "3.2.4",
       "license": "MIT",
       "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
+      "direct": true,
+      "usedBy": [],
       "author": "Anthony Fu",
       "repo": "https://github.com/vitest-dev/vitest"
     },
     {
       "name": "vitest",
-      "version": "3.2.7",
+      "version": "5.0.5",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -2821,7 +2553,7 @@
     },
     {
       "name": "why-is-node-running",
-      "version": "2.3.0",
+      "version": "3.2.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,

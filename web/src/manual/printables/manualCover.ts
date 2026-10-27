@@ -7,8 +7,9 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './manualCover.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { mapShot } from '../../gfx/gameShots';
+import { boxShot } from '../../gfx/frameShot';
 import { portrait, sandboxLogo, splitTitle } from './kit';
+import { gameVersion } from '../../project/gameVersion';
 
 /** What the manual is called on its cover: "Courier Manual" from "Maximus - Courier Manual". */
 function manualKind(entry: CatalogEntry): string {
@@ -30,7 +31,7 @@ function coverArt(entry: CatalogEntry): Promise<{ shot?: string; hero?: string }
         entry.original?.printables?.stickers?.find((x) => x.hero)?.hero ??
         entry.original?.printables?.items?.flatMap((i) => (i.kind === 'idcard' && i.portrait ? [i.portrait] : []))[0];
       const [pic, face] = await Promise.all([
-        s ? mapShot(entry, s[0], s[1], s[2], 16, 10).catch(() => undefined) : undefined,
+        s ? boxShot(entry, s).catch(() => undefined) : undefined,
         hero ? portrait(entry, hero).catch(() => undefined) : undefined,
       ]);
       return { shot: pic?.toDataURL(), hero: face };
@@ -81,7 +82,7 @@ export function manualCover(entry: CatalogEntry): { el: HTMLElement; ready: Prom
       class: 'manual-cover',
       style: `--mc-bg:${box?.background ?? '#14182a'};--mc-acc:${box?.accent ?? '#f2b632'};--mc-ink:${box?.ink ?? '#fff'}`,
     },
-    h('div', { class: 'mc-band' }, sandboxLogo('mc-logo'), h('span', { class: 'mc-ver' }, 'Version 1.0')),
+    h('div', { class: 'mc-band' }, sandboxLogo('mc-logo'), h('span', { class: 'mc-ver' }, `Version ${gameVersion(entry) ?? '1.0'}`)),
     h(
       'div',
       { class: 'mc-head' },

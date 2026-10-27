@@ -54,6 +54,7 @@ npm run --silent mcp -- --root ~/GameMakerWork
 | `validate`, `level_check` | The quick file check, and the editor's Level check as JSON. |
 | `bot_playtest`, `record_walkthrough` | The walkthrough bot plays the game: won, the route, the time. |
 | `render_png` | A map region, block sheet, monster or hero frame, title or menu screen, as an image. |
+| `recipe` | How-tos for kinds of level (platformer, keys and locks, shooter…), or their list. Needs no open game. |
 | `export_game` | The DOS, web page, web app, web player, Windows, Mac or Linux download. |
 
 `export_game` reads the players and page templates from a built site: `web/dist` after
@@ -68,8 +69,8 @@ and each one has an Undo.
 1. Start the bridge: ask the AI tool to run `editor_bridge` with `action: start`, or start the
    server with `--bridge`. It listens on 127.0.0.1 only, on a random port, and shows a
    six-digit pairing code (in the tool's answer, and on standard error with `--bridge`).
-2. In the editor, open the game, press **✦** (Assistant) beside the file's title, type the
-   port and code, and press Connect.
+2. In the editor, open the game, press **✦** (Assistant) beside the file's title, then **Use
+   an AI tool on this computer instead (MCP)…**. Type the port and code, and press Connect.
 3. The AI tool calls `open_game` with `source: "editor"`. From then on the game tools work on
    the open project, through the same code the editors use.
 
@@ -105,7 +106,7 @@ Learning Community Group. With it, a page offers tools to an AI agent built into
 Chrome has it behind a flag (146 and later) and in an origin trial (149 to 156). Chrome's first
 builds put it on `navigator.modelContext`.
 
-In the editor's Assistant, **Offer these tools to it (WebMCP)** registers the same tools the
+In the Assistant's MCP panel, **Offer these tools to it (WebMCP)** registers the same tools the
 bridge offers: the shared game tools plus the tab's own. It is off until you tick it, and
 only shown as usable where the browser has the API (`web/src/assistant/webmcp.ts` feature
 detects it). Changes show as toasts with Undo, and the read-only switch applies here too.
@@ -113,7 +114,8 @@ detects it). Changes show as toasts with Undo, and the read-only switch applies 
 To try it:
 
 1. In Chrome 146 or later, turn on `chrome://flags/#enable-webmcp-testing` and relaunch.
-2. Open a game in the editor, press ✦, and tick the box.
+2. Open a game in the editor, press ✦, then **Use an AI tool on this computer instead
+   (MCP)…**, and tick the box.
 3. Use an agent that reads a page's WebMCP tools: Chrome's built-in agent where it is
    available, or a WebMCP inspector extension.
 
@@ -167,11 +169,102 @@ If Desktop can't find `npm`, give its full path (`which npm`).
 **Cursor and others**: the same `command` and `args` under `mcpServers`.
 
 **Local models (Ollama) and OpenAI**: neither speaks MCP by itself. An MCP host that drives
-them (for example an Ollama MCP client) can start this server the same way. Code calling a
-model directly can use the same tool definitions as function-calling tools, with
-`toOpenAITools` in `web/src/assistant/openai.ts`. A page calling a local Ollama from the
-browser also needs Ollama to allow the page's origin: start it with `OLLAMA_ORIGINS` set to
-that origin (for example `OLLAMA_ORIGINS=https://lewismoten.github.io,http://localhost:5173`).
+them (for example an Ollama MCP client) can start this server the same way. Or skip the
+server: the editor's own Assistant chat talks to them directly (below).
+
+## The editor's Assistant chat: your own Ollama or OpenAI
+
+The editor has a chat of its own (✦ beside a file's title). It uses the same tools, on the
+open game, with a model you choose. Nothing here is needed for it.
+
+1. Press ✦, then **AI setup**. Choose **Ollama** (default `http://localhost:11434`) or
+   **OpenAI-compatible** (`https://api.openai.com/v1`, or any `/v1` server such as LM Studio).
+   Pick a model from the list and add a key if the server needs one.
+2. Press **Test connection**. It says what is wrong in words: CORS, nothing listening, mixed
+   content, a missing model, or a model that can't call tools.
+3. Chat, or press **What should I do next?** for a to-do list. An empty game, and the home
+   page, offer **Describe a game…**.
+
+The settings stay in your browser. The key goes only to the address you gave. While the
+assistant works, the game's contents are sent to that AI.
+
+Small local models work best with a small context. In AI setup's **More settings**, set the
+context size (Ollama's `num_ctx`, 8,192 by default; 4,096 works). The chat then:
+
+- starts the model with a few tools (about 340 tokens of definitions instead of about 6,400)
+  and lets it load a group (maps, blocks, scenes…) when it needs one;
+- cuts big results short, and near the limit puts older turns away for a short summary
+  (**Compact now** does it on request; **Reset** starts a fresh context);
+- keeps the whole conversation in an archive for the tab, which the model can search with
+  `recall`;
+- shows how full the context is, from the server's own count when it gives one.
+
+Thinking models such as qwen3 think only when **Let thinking models think first** is ticked.
+It is off by default, since thinking makes each step much slower.
+
+The chat runs in the page (`web/src/assistant/chat`), so the browser must be allowed to reach
+the AI. Ollama allows pages on `localhost` by default. For any other page, add its origin to
+`OLLAMA_ORIGINS` (for example `https://lewismoten.github.io`).
+
+### Remote Ollama over Tailscale
+
+For an Ollama server on another computer in your tailnet:
+
+1. **On the Ollama computer, let Ollama take requests from other computers and from the
+   page.** Set two environment variables, then restart Ollama:
+   - `OLLAMA_HOST` = `0.0.0.0:11434`
+   - `OLLAMA_ORIGINS` = the editor's origin, for example `https://lewismoten.github.io`.
+     Separate several with commas. Pages on localhost are already allowed.
+
+   **macOS** (the Ollama app): run these in Terminal, then quit Ollama from the menu bar and
+   open it again. They last until the Mac restarts; run them again after one.
+
+   ```sh
+   launchctl setenv OLLAMA_HOST "0.0.0.0:11434"
+   launchctl setenv OLLAMA_ORIGINS "https://lewismoten.github.io"
+   ```
+
+   **Windows**: quit Ollama from the taskbar. In Settings, search for "environment variables",
+   choose Edit environment variables for your account, and add both. Or in PowerShell:
+
+   ```powershell
+   setx OLLAMA_HOST "0.0.0.0:11434"
+   setx OLLAMA_ORIGINS "https://lewismoten.github.io"
+   ```
+
+   Then start Ollama again.
+
+   **Linux** (systemd): run `sudo systemctl edit ollama.service`, add these lines, and
+   restart:
+
+   ```ini
+   [Service]
+   Environment="OLLAMA_HOST=0.0.0.0:11434"
+   Environment="OLLAMA_ORIGINS=https://lewismoten.github.io"
+   ```
+
+   ```sh
+   sudo systemctl daemon-reload
+   sudo systemctl restart ollama
+   ```
+
+   `0.0.0.0` lets every network that computer is on reach Ollama, and Ollama has no password.
+   Do this only on networks you trust, or let its firewall allow only Tailscale.
+
+2. **Turn on Tailscale on both computers.** `tailscale status` shows the Ollama computer's
+   name and its `100.x` address.
+3. **Choose the address.**
+   - When the editor is on http (localhost, `npm run dev`): use `http://<machine>:11434` (its
+     tailnet name) or `http://100.x.y.z:11434`.
+   - When the editor is on https (the published site), the browser blocks http addresses
+     (mixed content). On the Ollama computer run `tailscale serve --bg 11434` (short for
+     `tailscale serve --bg --https=443 http://127.0.0.1:11434`), then use
+     `https://<machine>.<tailnet>.ts.net` with no port. `tailscale serve status` shows the
+     address, and `tailscale serve --https=443 off` stops it. The first time, Tailscale may
+     ask you to turn on HTTPS certificates for your tailnet.
+4. **Press Test connection.** If the browser asks to let the site reach devices on your
+   network, allow it. A 403 means Ollama refused the tailnet name: check `OLLAMA_HOST` from
+   step 1.
 
 ## How it is built
 
@@ -185,11 +278,11 @@ has a name, a short description, a flat JSON Schema and a handler that works on 
   (`web/src/assistant/bridge`). The tab-only tools (screenshot, play test, Undo) are separate
   adapters there.
 - WebMCP registers the same definitions in the page (`web/src/assistant/webmcp.ts`).
-- a future chat panel in the editor, with the user's own model and key kept in their browser,
-  can hand the same definitions to the model's tool-use API directly (`toOpenAITools` for
-  OpenAI and Ollama). Each handler takes a `GameContext`, so a chat can run them on the open
-  project just as the bridge does (`EditorContext`), turning Level check and bot results into
-  advice.
+- the editor's Assistant chat (`web/src/assistant/chat`), with the user's own model and key
+  kept in their browser, hands the same definitions to the model's tool-use API directly
+  (`toOpenAITools`, for OpenAI's Chat Completions and Ollama's `/api/chat`). It runs them on
+  the open project just as the bridge does (`EditorContext`), and turns Level check and bot
+  results into a to-do list.
 - the schemas avoid `$ref` and `oneOf` and keep descriptions short, so they convert cleanly
   to OpenAI-style function calling. Ollama's `/api/chat` and its OpenAI-compatible `/v1`
   take the same shape, and small local models handle flat schemas best.

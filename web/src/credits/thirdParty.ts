@@ -48,6 +48,13 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'Tells the CD’s XFERPLAY.EXE from any other file before the DOS player customizer patches it (web/src/dosPlayer/md5.ts), written for this project from the RFC’s description.',
       },
       {
+        name: 'Large Retail Box template',
+        license: 'Measurements only (no art used)',
+        by: 'The Game Crafter',
+        what: 'The Library’s retail boxes to print are laid out on its measurements: the face, walls, turn-ins, glue tabs, the 1/8 in bleed and the safe line (web/src/manual/printables/retailBoxTemplate.ts). The art and die lines are drawn by this project.',
+        url: 'https://www.thegamecrafter.com',
+      },
+      {
         name: 'FLI format',
         license: 'Format description',
         by: 'Jim Kent and Heidi Brumbaugh (Dancing Flame), via Andy Stone’s FLI.CPP',

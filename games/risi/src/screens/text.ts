@@ -2,13 +2,8 @@
 // page), the level cards' Latin lines with their English, and the disk's README.TXT. The songs
 // are Veni, Vidi, Risi!'s (Lewis Moten's group); the Latin on screen is the songs' own.
 import { withCreditPage } from '../../../kit/license';
-
-const page = (lines: string[], pages = 1) => {
-  for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
-  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
-  while (lines.length % 16) lines.push('');
-  return lines.join('\n');
-};
+import about from '../../about.json';
+import { page } from '../../../kit/screenText';
 
 export const AUTHOR = 'Veni, Vidi, Risi!';
 
@@ -211,7 +206,7 @@ export function readme(price: string): string {
   return `
     VENI, VIDI, RISI!
     I Came, I Saw, I Laughed
-    Version 1.0 - Dec 1995
+    Version ${about.version} - Dec 1995
     by Veni, Vidi, Risi!
 
 "Omnes spectant, nemo ridet."

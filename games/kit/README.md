@@ -13,7 +13,23 @@ Making the files:
 
 - `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
 - `palette.ts` — named color ramps for a 256-color VGA palette.
+- `palRamps.ts` — `Pal`, a built palette with its ramps looked up by name, and `wrap`, which makes one from a
+  `PaletteBuilder`.
+- `coverPaint.ts` — painting covers and title pictures in true color before they are reduced: tileable value noise
+  (`noise2`), `mixc`, `smooth` (smoothstep) and `clamp`.
+- `actors.ts` — filling in character and monster files: a sequence's frames and settings (`set`), a monster (`mon`), a
+  path `corner`, and pacing back and forth (`pace`).
+- `screenText.ts` — a text screen's lines checked to fit PLAYGAME's 30 columns and 16 lines a page (`page`), and a
+  cartoon's named `sprite`.
+- `blit.ts` — sprites with 255 as the clear color (`CLEAR`): `over` another picture, `recolor`ed through a lookup,
+  scaled up (`scaleBlit`) or with a one-pixel `outline`.
+- `pcText.ts` — the PC's 8x8 font in a picture at any scale (`text`, `textWidth`), `outlined` with an optional drop
+  shadow, or `centered`; its ink is reported to the text bounds audit.
+- `shading.ts` — shaded drawing in a palette ramp: an ordered-dithered shade (`shadeAt`), a vertical `gradient`, a lit
+  lump (`blob`), a raised box (`bevel`) and `speckle`.
 - `music.ts` — FM instruments and note strings → Sound Blaster `.CMF` songs.
+- `tune.ts` — writing songs in those note strings: a voice (`v`), joining and repeating bars (`join`, `times`), counting
+  beats (`beatsOf`) and `tune`, which writes the song after checking every voice lasts the same number of beats.
 - `teddyTheme.ts` — Teddy's Theme, the melody the Teddy games share (and the Cast page plays, from teddy's `title.cmf`).
 - `song.ts` — the Bard of Bizarre games' OPL2 arrangement writer: patches, drum grooves, and sections (a chord or two and a
   bar of tune each) laid out as tune, second voice, bass, three comping voices and drums; `songPreview.ts` renders a game's
@@ -26,6 +42,10 @@ Making the files:
   ringing harps, stepped glides (no pitch bend), a two-voice choir from vibrato twins, echoes, stutters, rolls and section
   markers (controller 0x66). Loaf #13's `src/sound/song.ts` uses all of them.
 - `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
+- `teddySounds.ts` — the sound effects the Teddy games share (woof, yelp, pop, boing, whoosh, crunch, chomp, giggle,
+  honk, snore, scratch, slap, chime), synthesized as `.VOC` samples.
+- `synthParts.ts` — small pieces the games' synthesized sounds share: noise through a low-pass, a gate, an
+  attack-and-decay envelope and a one-pole low-pass.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
 - `license.ts` — `LICENSE.TXT` for every disk (what's real, what's story, the MIT License), in 30-column pages.
 - `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`): a sandbox with a
@@ -88,7 +108,7 @@ Checking the games:
   any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
   byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
   `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
-  `saveSignCheck.ts` and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
+  `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
@@ -122,6 +142,13 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
+- `versionCheck.ts` / `versions.ts` — each game's version is `"version": "major.minor"` in its about.json, the one
+  place it is written: the game's text reads it from there (the in-story date beside it stays as written), and the
+  site shows it. Once a game's `disk/` differs from the last push to master (`git merge-base HEAD origin/master`, else
+  the local master), its version must be higher than it was there: bump the **major** (1.1 → 2.0) for new, removed or
+  reordered levels or a big gameplay change, the **minor** (1.0 → 1.1) for anything else (art, text, sounds, a level's
+  layout). One bump covers every change until the next push. `npx vite-node ../games/kit/versionCheck.ts [<id>...]`
+  names each game to bump; with no master to compare with (no git history) it skips with a note.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, teddy3, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),

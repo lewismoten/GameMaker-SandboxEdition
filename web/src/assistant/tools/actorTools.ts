@@ -57,12 +57,13 @@ const getMonsters: ToolDef = {
 const CORNERS: JsonSchema = {
   type: 'array',
   maxItems: MAXMARCH,
-  description: 'Path corners: blocks to move from the last corner, speed in pixels a tick (1-20), picture orientation 0-7.',
+  description:
+    'Path corners, in blocks from where the monster starts: it walks to each in turn, then starts over from where it ended (end at 0,0 to loop). Speed in pixels a tick (1-20); orient 0-7 (4 faces left).',
   items: {
     type: 'object',
     properties: {
-      x: int('Blocks right (negative: left).'),
-      y: int('Blocks down (negative: up).'),
+      x: int('Blocks right of the start (negative: left).'),
+      y: int('Blocks below the start (negative: up).'),
       speed: int('Pixels a tick.', 1, 20),
       orient: int('Orientation 0-7.', 0, 7),
     },

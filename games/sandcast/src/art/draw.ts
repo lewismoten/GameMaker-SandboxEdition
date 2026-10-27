@@ -1,8 +1,9 @@
 // Drawing helpers shared by the block, monster and character art.
 import { Pixels, rng, dither } from '../../../kit/pixels';
 import { SAND } from './palette';
+import { CLEAR } from '../../../kit/blit';
+export { CLEAR } from '../../../kit/blit';
 
-export const CLEAR = 255;
 export { Pixels, rng, dither };
 
 export const tile = (c = 0) => new Pixels(20, 20, c);

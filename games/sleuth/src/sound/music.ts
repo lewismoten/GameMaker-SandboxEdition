@@ -2,7 +2,8 @@
 // turns up everywhere: a slow swing on the title, strings for the story, muted brass
 // over a walking bass for Act One, a cold organ for 2 AM, a clock ticking in the green
 // room, drums of a sort at dawn, and in D major for the curtain call.
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { INSTRUMENTS, sbi, song } from '../../../kit/music';
+import { v } from '../../../kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   Dm: ['D4', 'F4', 'A4'],
@@ -72,14 +73,6 @@ const THEME =
 const muted = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1e, carLevel: 0x04, modAD: 0x71, carAD: 0x82, modSR: 0x9e, carSR: 0x8e, feedback: 0x0a });
 const clock = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x10, carLevel: 0x08, modAD: 0xfa, carAD: 0xf9, modSR: 0x88, carSR: 0x88, feedback: 0x0e });
 const drum = sbi({ modChar: 0x00, carChar: 0x00, modLevel: 0x0f, carLevel: 0x00, modAD: 0xf9, carAD: 0xf7, modSR: 0x6b, carSR: 0x5a, feedback: 0x0c });
-
-const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
-  channel,
-  instrument,
-  notes,
-  velocity,
-  transpose,
-});
 
 function titleSong(): Uint8Array {
   const [a, b, c] = comp(PROG, 're q. re q.', 0);

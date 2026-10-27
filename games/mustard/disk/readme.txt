@@ -1,5 +1,5 @@
     MUSTARD SEED HUSTLE
-    Version 1.0 - March 1995
+    Version 1.1 - March 1995
     by The Bard of Bizarre
 
 "Oh, it's the mustard seed

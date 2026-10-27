@@ -529,8 +529,10 @@ export interface Level {
   course?: CourseLayout<LevelMark>;
   /** A room cut out of a map of rooms (levelRooms.ts): who you meet there, printed beside it. */
   cast?: { title: string; people: CastPerson[] };
-  /** A room cut out of a map of rooms: what its copies change. */
+  /** A room cut out of a map of rooms: what its copies change. Several states of one place (levelStates.ts): how they differ. */
   note?: string;
+  /** Several levels that show one place, printed as one (levelStates.ts): how many. */
+  states?: number;
 }
 
 /** A level laid out as the player goes through it: its box, and each mark on the lap where it is met. */

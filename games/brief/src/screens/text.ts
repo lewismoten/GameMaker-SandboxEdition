@@ -2,6 +2,7 @@
 // cover page, the thirty-third book, the endings and README.TXT. Lewis's stories themselves
 // are in stories.ts and go on their pages untouched (pages.ts).
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import type { Story } from '../stories';
 import type { Chapter } from '../chapters';
 import { PAGE, page, wrap } from './pages';
@@ -290,7 +291,7 @@ export function book33Text(): string {
 export function readme(): string {
   const r = wrap(`KEEP IT BRIEF!
 The Tiny Pockets Library
-Version 1.0
+Version ${about.version}
 (c) 1995 Sandbox Software
 
 A library game for IBM PC compatibles with VGA. Sound Blaster recommended.

@@ -1,6 +1,7 @@
 // The soundtrack: nine short FM songs for the Sound Blaster, written as note strings.
 // Each voice is its own OPL2 channel, so chords are spread across three channels.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { v } from '../../../kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   C: ['C4', 'E4', 'G4'],
@@ -75,13 +76,6 @@ function tune(bpm: number, voices: Voice[]): Uint8Array {
   return song(bpm, voices);
 }
 
-const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
-  channel,
-  instrument,
-  notes,
-  velocity,
-  transpose,
-});
 const chordVoices = (bars: string[], rhythm: string, inst: Uint8Array, vel = 70, first = 3): Voice[] =>
   comp(bars, rhythm).map((n, i) => v(first + i, inst, n, vel));
 /** Sleigh-bell shakes on the off beats. */

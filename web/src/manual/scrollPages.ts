@@ -2,7 +2,8 @@
 // viewer's scrolling stage, each with its number above it. A page is drawn only as it nears the
 // view and let go of again once far off, keeping its place at its size (from its shape before it
 // is first drawn), so a guide of a hundred pages scrolls as lightly as one. The page most in view
-// is told to the viewer, for its "Page N of M" and its Chapters list.
+// is told to the viewer, for its "Page N of M" and its Chapters list. Each page has its own width
+// (readSize.ts), set again by resize() with the page being read kept where it was.
 import './readView.css';
 import { h } from '../editor/core/ui';
 
@@ -12,7 +13,11 @@ export interface ScrollPagesOptions {
   count: number;
   /** A page's height over its width, for its place before it is drawn. */
   ratio(i: number): number;
-  /** Draws page `i`, fresh, at the column's width. */
+  /** A page's width in CSS pixels, now (also its `--pw`). */
+  width(i: number): number;
+  /** Anything else a page's holder needs at width `w` (the magazine's scale). */
+  fit?(holder: HTMLElement, i: number, w: number): void;
+  /** Draws page `i`, fresh, at its holder's width. */
   page(i: number): HTMLElement;
   /** The words above page `i` ('Page 3'). */
   label(i: number): string;
@@ -24,6 +29,10 @@ export interface ScrollPages {
   el: HTMLElement;
   /** Scrolls page `i` to the top of the view. */
   scrollTo(i: number): void;
+  /** Sets every page's width again (a new size), keeping the page being read in place. */
+  resize(): void;
+  /** The page being read. */
+  readonly current: number;
   dispose(): void;
 }
 
@@ -45,12 +54,23 @@ const FREE_AT = '500%';
 
 export function scrollPages(o: ScrollPagesOptions): ScrollPages {
   const holders: HTMLElement[] = [];
+  // a page drawn keeps its own height; one not drawn (or let go of) keeps its shape
+  const size = (holder: HTMLElement, i: number) => {
+    const w = o.width(i);
+    holder.style.width = `${w}px`;
+    holder.style.setProperty('--pw', `${w}px`);
+    o.fit?.(holder, i, w);
+    if (holder.classList.contains('rv-empty') && holder.dataset.shape) holder.style.aspectRatio = holder.dataset.shape;
+  };
   const slots = Array.from({ length: o.count }, (_, i) => {
     const holder = h('div', { class: 'rv-page rv-empty', style: `aspect-ratio: 1 / ${o.ratio(i)}` });
     holders.push(holder);
+    size(holder, i);
     return h('div', { class: 'rv-slot', dataset: { page: String(i) } }, h('p', { class: 'rv-folio' }, o.label(i)), holder);
   });
   const el = h('div', { class: 'rv-column' }, ...slots);
+  /** The width each drawn page was drawn at: one drawn much smaller or larger is drawn again, sharp. */
+  const drawnAt = new Map<number, number>();
   // the page in view: how much of each slot is on screen
   const visible = new Map<number, number>();
   let current = -1;
@@ -73,6 +93,7 @@ export function scrollPages(o: ScrollPagesOptions): ScrollPages {
   const draw = (i: number) => {
     if (drawn.has(i)) return;
     drawn.add(i);
+    drawnAt.set(i, o.width(i));
     const holder = holders[i];
     keepPlace(i, () => {
       holder.replaceChildren(o.page(i));
@@ -86,9 +107,10 @@ export function scrollPages(o: ScrollPagesOptions): ScrollPages {
     const { width, height } = holder.getBoundingClientRect();
     if (!width || !height) return;
     drawn.delete(i);
+    drawnAt.delete(i);
     holder.replaceChildren();
     holder.classList.add('rv-empty');
-    holder.style.aspectRatio = `${width} / ${height}`; // its own size, so nothing below it moves
+    holder.dataset.shape = holder.style.aspectRatio = `${width} / ${height}`; // its own shape, so nothing below it moves
   };
   const at = (e: IntersectionObserverEntry) => Number((e.target as HTMLElement).dataset.page);
   const near = new IntersectionObserver((list) => list.forEach((e) => e.isIntersecting && draw(at(e))), {
@@ -118,6 +140,38 @@ export function scrollPages(o: ScrollPagesOptions): ScrollPages {
 
   return {
     el,
+    get current() {
+      return current;
+    },
+    resize() {
+      // where the reader is: the page in view and how far down it, and across the column
+      const anchor = held ?? current;
+      const slot = slots[anchor] as HTMLElement | undefined;
+      const rootTop = o.root.getBoundingClientRect().top;
+      const r = slot?.getBoundingClientRect();
+      const down = r && r.height ? (rootTop - r.top) / r.height : 0;
+      const across = o.root.scrollWidth > o.root.clientWidth ? (o.root.scrollLeft + o.root.clientWidth / 2) / o.root.scrollWidth : 0.5;
+      for (const [i, holder] of holders.entries()) {
+        if (!drawn.has(i)) {
+          size(holder, i);
+          continue;
+        }
+        const w = o.width(i);
+        const was = drawnAt.get(i) ?? w;
+        size(holder, i);
+        if (w / was > 1.5 || was / w > 1.5) {
+          // much larger or smaller: drawn again at its new size, so pictures stay sharp
+          drawn.delete(i);
+          draw(i);
+        }
+      }
+      if (slot) {
+        const now = slot.getBoundingClientRect();
+        o.root.scrollTop += now.top - rootTop + down * now.height;
+        heldTop = o.root.scrollTop;
+      }
+      o.root.scrollLeft = across * o.root.scrollWidth - o.root.clientWidth / 2;
+    },
     scrollTo(i) {
       const slot = slots[Math.max(0, Math.min(o.count - 1, i))];
       if (!slot) return;

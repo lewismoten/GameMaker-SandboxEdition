@@ -35,8 +35,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: var(--rv-w, 100%);
-  max-width: 100%;
+  /* as wide as its widest page (readSize.ts), which may scroll sideways inside the viewer */
+  width: max-content;
+  min-width: 100%;
   flex: none;
   margin: 0 auto;
   padding-bottom: 12px;
@@ -66,7 +67,7 @@
 }
 
 .rv-page {
-  width: 100%;
+  flex: none;
 }
 
 /* a page not drawn yet (or let go of, far off): its size, a faint sheet */
@@ -77,4 +78,28 @@
 
 .rv-toggle[hidden] {
   display: none;
+}
+
+/* the size list: Zoom out, the size, Zoom in */
+.rv-sizes {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.rv-sizes[hidden] {
+  display: none;
+}
+
+.rv-sizes .rv-zoom {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 2px 8px;
+  font-weight: 700;
+}
+
+.rv-sizes .rv-size {
+  min-height: 28px;
+  max-width: 11em;
 }

@@ -3,8 +3,8 @@
 // on a fresh map with open ground inside a wall, so nothing starts out black and empty.
 import { Project } from '../core/project';
 import { libraryGame } from '../core/library';
-import { loadCatalog } from '../../project/files';
-import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame } from '../../formats/game';
+import { loadCatalog, type GameFiles } from '../../project/files';
+import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, serializeGame } from '../../formats/game';
 import { beginFirstSteps } from './firstSteps';
 import { closeGaps } from '../editors/integrator/integratorLayout';
 import { BACKBL, parseBlocks } from '../../formats/blocks';
@@ -18,10 +18,19 @@ export async function starterProject(title: string, from = 'sample'): Promise<Pr
   const p = Project.create(title);
   const g = (await loadCatalog()).find((c) => c.id === from);
   if (!g) return p;
-  const lib = await libraryGame(g);
-  const libGame = Project.fromFiles(lib, g.title, `lib-${g.id}`).game();
+  if (!fillStarter(p, title, await libraryGame(g))) return p;
+  // the First steps checklist ticks as these files change
+  beginFirstSteps(p);
+  return p;
+}
+
+/** Fills a new game's files with the starter level made from a library game's files; false when that game has no level to borrow. */
+export function fillStarter(p: { files: GameFiles; gam: string }, title: string, lib: GameFiles): boolean {
+  const libGam = lib.mainGame();
+  if (!libGam) return false;
+  const libGame = parseGame(lib.get(libGam)!);
   const level = libGame.scenes.find((s) => s.gametype === ADVTYPE && KINDS.every((_, i) => i === 1 || lib.has(s.files[i])));
-  if (!level) return p;
+  if (!level) return false;
   const stem = p.gam.replace(/\.gam$/, '');
   const names = KINDS.map((k) => `${stem}.${k}`);
   // Everything but the map is copied; the map is made fresh from the level's own blocks.
@@ -85,7 +94,5 @@ export async function starterProject(title: string, from = 'sample'): Promise<Pr
   // the scenes snug together, so the scene board opens at a readable size
   for (const [i, pos] of closeGaps(game)) game.scenes[i].pos = pos;
   p.files.set(p.gam, serializeGame(game));
-  // the First steps checklist ticks as these files change
-  beginFirstSteps(p);
-  return p;
+  return true;
 }

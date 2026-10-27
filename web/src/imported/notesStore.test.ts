@@ -40,10 +40,10 @@ describe('fingerprints', () => {
 describe('ratings and notes', () => {
   it('are kept by project id, Unrated and empty notes dropped', () => {
     setNote('p1', { rating: 4, note: 'Good jumps' });
-    expect(noteOf('p1')).toEqual({ rating: 4, note: 'Good jumps' });
+    expect(noteOf('p1')).toEqual({ rating: 4, note: 'Good jumps', edited: expect.any(Number) });
     expect(ratingOf('p1')).toBe(4);
     setNote('p1', { rating: 0 });
-    expect(noteOf('p1')).toEqual({ note: 'Good jumps' });
+    expect(noteOf('p1')).toEqual({ note: 'Good jumps', edited: expect.any(Number) });
     setNote('p1', { note: '  ' });
     expect(allNotes()).toEqual({});
     expect(ratingOf('nobody')).toBe(0);
@@ -68,7 +68,7 @@ describe('removed games', () => {
     expect(removedMatch(fingerprintOf({ gamCrcs: [0x9999] }))).toBeUndefined();
     // imported again: the rating and note come back, and the record goes
     expect(noteImport('p2', 'more/zapak.zip', zapak)?.id).toBe('p1');
-    expect(noteOf('p2')).toEqual({ source: 'more/zapak.zip', fingerprint: zapak, rating: 2, note: 'Too hard' });
+    expect(noteOf('p2')).toEqual({ source: 'more/zapak.zip', fingerprint: zapak, rating: 2, note: 'Too hard', edited: expect.any(Number) });
     expect(removedGames()).toEqual([]);
   });
 

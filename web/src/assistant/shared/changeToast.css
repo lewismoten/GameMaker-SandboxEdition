@@ -1,0 +1,26 @@
+/* An AI's change toasts (changeToast.ts): at the bottom left, clear of the docked chat; on phones
+   with the chat open, at the top, clear of its Apply and Skip and its message box. */
+.assistant-toasts {
+  left: 16px;
+  right: auto;
+  bottom: 64px;
+}
+
+.assistant-toasts .toast-undo {
+  flex: none;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 899px) {
+  body:has(.chat-panel:not([hidden])) .assistant-toasts {
+    top: 52px;
+    right: 16px;
+    bottom: auto;
+  }
+}

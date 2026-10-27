@@ -71,7 +71,8 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
       l.kind === 'boss' ? s.bossSong : l.kind === 'bus' ? 'bus.cmf' : s.song,
       `${l.file}.lst`,
       // after a boss the cartoon boards the data bus; after a ride, it pulls into the next stage
-      last && legs[i + 1] ? 'warp.fli' : l.kind === 'bus' ? `${l.file}.fli` : '',
+      // (as slide lists, so build.ts can cut a long cartoon into clips Esc can skip)
+      last && legs[i + 1] ? 'warp.lst' : l.kind === 'bus' ? `${l.file}in.lst` : '',
       ...new Array(9).fill(''),
     ];
     scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));

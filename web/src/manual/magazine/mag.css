@@ -177,7 +177,8 @@
   overflow: auto;
   padding: 12px;
   display: flex;
-  justify-content: center;
+  /* a page zoomed wider than the stage scrolls sideways from its left edge */
+  justify-content: safe center;
   align-items: flex-start;
 }
 

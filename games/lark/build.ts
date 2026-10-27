@@ -11,6 +11,7 @@ import { serializeMonsters } from '../../web/src/formats/monster';
 import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { Disk } from '../kit/disk';
+import { clipEveryList } from '../kit/fliClips';
 import { licenseText } from '../kit/license';
 import { buildPalette } from './src/art/pal';
 import { demoRecording } from './src/demo';
@@ -79,6 +80,7 @@ for (const s of all.game.scenes) for (const f of s.files) if (f && !disk.files.h
 for (const [name, bytes] of disk.files)
   if (name.endsWith('.lst'))
     for (const e of parseSlideList(bytes)) if (!disk.files.has(e.name)) throw new Error(`${name} names ${e.name}, which is not on the disk`);
+clipEveryList(disk.files);
 disk.write();
 // the roads and walks the walkthrough's bot keeps to (not on the disk)
 writeWalkPaths('lark', walkPaths(all.sets));

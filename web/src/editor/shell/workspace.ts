@@ -13,7 +13,7 @@ import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import type { PlayerHandle } from '../../player/player';
-import { parseGame, serializeGame, type Game } from '../../formats/game';
+import { ADVTYPE, parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap } from '../editors/integrator/startAt';
 import { sceneName, sourceName } from '../editors/integrator/linkSpots';
 import { playButtons } from './playButtons';
@@ -245,18 +245,33 @@ export class Workspace implements AssistantHost {
     if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
   }
 
-  /** The Assistant button: opens the Assistant (its own chunk, loaded on the first press). */
+  /** The Assistant button: opens or closes the Assistant chat (its own chunk, loaded on the first press). */
   private assistantButton(): HTMLElement {
     return h(
       'button',
       {
         class: 'assistant-btn',
-        title: 'Assistant: let an AI tool on this computer work on this game',
+        title: 'Assistant: your own AI looks at this game, changes it with you and says what to do next',
         'aria-label': 'Assistant',
-        'aria-haspopup': 'dialog',
-        onclick: () => void import('../../assistant/bridge/panel').then((m) => m.openAssistant()),
+        'aria-expanded': String(!!document.querySelector('.chat-panel:not([hidden])')),
+        onclick: () => void import('../../assistant/chat/panel').then((m) => m.toggleChat()),
       },
       h('span', { 'aria-hidden': 'true' }, '✦'),
+    );
+  }
+
+  /** An empty game's "Describe a game…": the Assistant chat, ready to build one. */
+  private describeButton(): HTMLElement | null {
+    if (this.looking || this.project.game().scenes.some((s) => s.gametype === ADVTYPE)) return null;
+    return h(
+      'button',
+      {
+        class: 'describe-btn',
+        title: 'Say what the game should be, and your own AI builds a first level',
+        onclick: () => void import('../../assistant/chat/panel').then((m) => m.openChat('describe')),
+      },
+      h('span', { 'aria-hidden': 'true' }, '✦ '),
+      'Describe a game…',
     );
   }
 
@@ -336,6 +351,7 @@ export class Workspace implements AssistantHost {
         ),
         (this.playEl = this.playButton()),
         this.firstSteps?.button(),
+        this.describeButton(),
       ),
       h(
         'div',

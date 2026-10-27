@@ -425,7 +425,7 @@ class SoundDesigner {
       await errorBox(h, 'File does not need conversion', 'Return to (M)enu');
       return;
     }
-    let fileOUT = '';
+    let fileOUT: string;
     for (;;) {
       const answer = await askText(h, 'Enter the file to output: ', 12, `gm${fileIN.replace(/\..*$/, '')}`.slice(0, 8));
       if (answer === null) return;

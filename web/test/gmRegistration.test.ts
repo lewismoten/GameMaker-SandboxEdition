@@ -63,10 +63,15 @@ describe('Game-Maker registration (CHK.C)', () => {
   });
 });
 
-/** The <p> paragraphs of each page of the Owner's Guide (manual/dosManual.ts), as words; index = printed page number. */
+/**
+ * The <p> paragraphs of each page of the Owner's Guide (its chapters, manual/dosManualFront.ts,
+ * dosManualDesign.ts and dosManualBack.ts, in order), as words; index = printed page number.
+ */
 function guidePages(): string[][][] {
-  const src = readFileSync(new URL('../src/manual/dosManual.ts', import.meta.url), 'utf8');
-  const body = src.slice(src.indexOf('  return [\n    {'), src.indexOf('export async function openDosManual'));
+  const body = ['Front', 'Design', 'Back']
+    .map((part) => readFileSync(new URL(`../src/manual/dosManual${part}.ts`, import.meta.url), 'utf8'))
+    .map((src) => src.slice(src.indexOf('  return [\n')))
+    .join('\n');
   const starts = [...body.matchAll(/^ {4}(page\(|\{)/gm)].map((m) => m.index);
   return starts.map((s, i) =>
     [...body.slice(s, starts[i + 1] ?? body.length).matchAll(/<p>([\s\S]*?)<\/p>/g)].map((m) =>

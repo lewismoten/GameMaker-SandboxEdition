@@ -3,7 +3,7 @@
 // cast and the printed manuals. And a game's title screen, for the home page's tiles.
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../project/files';
 import { parseGame } from '../formats/game';
-import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, mapPixels, type MapView } from './levelPicture';
+import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, scenePixels, type MapView } from './levelPicture';
 import { paintIndexed } from '../editor/core/draw';
 import { builtTitlePath, titlePixels, titleSource } from './titlePicture';
 
@@ -67,12 +67,21 @@ export async function renderShot(entry: CatalogEntry, canvas: HTMLCanvasElement,
 /**
  * A screenshot of part of a map, as the game draws it: the background blocks in the
  * palette of the scene that uses the map, with its placed monsters on top (their first
- * animation frame). Returns a canvas `w` x `h` blocks large, or undefined.
+ * animation frame). Returns a canvas `w` x `h` blocks large, or undefined. A map two scenes
+ * share, each in its own part with its own blocks, takes `bbl`: the scene with that block set.
  */
-export async function mapShot(entry: CatalogEntry, mapName: string, x: number, y: number, w = 16, h = 10): Promise<HTMLCanvasElement | undefined> {
+export async function mapShot(
+  entry: CatalogEntry,
+  mapName: string,
+  x: number,
+  y: number,
+  w = 16,
+  h = 10,
+  bbl?: string,
+): Promise<HTMLCanvasElement | undefined> {
   const view: MapView = [mapName, x, y, w, h];
   const built =
-    entry.shots && builtMapViews(entry.original?.box?.shots).some((v) => v.join() === view.join())
+    !bbl && entry.shots && builtMapViews(entry.original?.box?.shots).some((v) => v.join() === view.join())
       ? await loadImage(builtMapShotPath(entry.id, view))
       : undefined;
   if (built) return onCanvas(built);
@@ -80,12 +89,14 @@ export async function mapShot(entry: CatalogEntry, mapName: string, x: number, y
   const gam = gamName ? await fetchFile(entry, gamName) : undefined;
   if (!gam) return undefined;
   const game = parseGame(gam);
-  const scene = game.scenes.find((s) => s.gametype === 10 && s.files[1]?.toLowerCase() === mapName.toLowerCase());
+  const scene = game.scenes.find(
+    (s) => s.gametype === 10 && s.files[1]?.toLowerCase() === mapName.toLowerCase() && (!bbl || s.files[2]?.toLowerCase() === bbl.toLowerCase()),
+  );
   if (!scene) return undefined;
   const names = scene.files.slice(0, 5).filter(Boolean);
   const bytes = await Promise.all(names.map((n) => fetchFile(entry, n)));
   const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]] as [string, Uint8Array]] : [])));
-  const pic = mapPixels(files, game, mapName, x, y, w, h);
+  const pic = scenePixels(files, scene, x, y, w, h);
   if (!pic) return undefined;
   const canvas = document.createElement('canvas');
   paintIndexed(canvas, pic.pixels, pic.width, pic.height, pic.palette);

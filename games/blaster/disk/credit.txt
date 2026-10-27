@@ -1,5 +1,5 @@
 VIRUS BLASTER
-Version 1.0, 1995
+Version 2.0, 1995
 
 Design, art, music and
 programming: Claude

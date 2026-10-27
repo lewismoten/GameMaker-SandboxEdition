@@ -201,7 +201,7 @@ function playLikeDos(file: Uint8Array, memory: number): DosPlay {
           try {
             decode(type, at, memAmt);
           } catch (e) {
-            throw new Error(`frame ${f}: ${(e as Error).message}`);
+            throw new Error(`frame ${f}: ${(e as Error).message}`, { cause: e });
           }
           skip((size - 6) >>> 0);
         } else if (type === 13) {

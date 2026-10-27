@@ -7,11 +7,12 @@
 // follows one key at a time). The weave inside a basket has no gravity, so in it Up and Down climb.
 // The loaf has no way to fight: big hungry things (power 150, solid) take a bite when you bump
 // into them and push you back; a brother loaf or the mustard seed (under 100) is just a hello.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
 import { CHARBL } from '../../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { BASKETS, CRUMBS, KEY, MON, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks, Form } from './sprites/sprites';
+import { set, mon, corner, pace } from '../../kit/actors';
 
 export type { Form };
 
@@ -28,13 +29,6 @@ const RISE = 12;
 const DOWN_STEP = 3;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; mirror?: boolean };
-
-function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
-  if (frames.length > 10) throw new Error('Too many frames');
-  frames.forEach((fr, i) => (s.frames[i] = fr));
-  for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
-  Object.assign(s, { sound: 255, jstkBut: 4, jstkMov: 0, ...o });
-}
 
 /** The loaf's character file, plain or wrapped in the child's cloth. */
 export function buildLoaf(cb: ReturnType<typeof buildCharBlocks>, form: Form): Character {
@@ -100,20 +94,6 @@ export function buildLoaf(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   ch.cframe = 0;
   return ch;
 }
-
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
-
-function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []): Monster {
-  const m = emptyMonster();
-  m.used = 1;
-  pics.forEach((p, i) => (m.pic[i] = p));
-  Object.assign(m, o);
-  path.forEach((c, i) => (m.march[0][i] = c));
-  return m;
-}
-
-/** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
-const pace = (run: number, speed: number, dy = 0): March[] => [corner(0, 0, speed), corner(run, dy, speed, 0), corner(0, 0, speed, 4)];
 
 /** Game ticks a march segment of `blocks` takes at `speed` (PLAYGAME's Bresenhams: one more tick to see it's done). */
 const segTicks = (blocks: number, speed: number): number => {

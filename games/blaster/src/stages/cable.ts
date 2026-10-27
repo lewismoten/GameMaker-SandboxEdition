@@ -1,10 +1,10 @@
-// Stage 5's first leg, "The Ribbon Cable": out of the hard disk's plug and along its ribbon
-// cable to the CPU. The track (cableTrack.ts) is one gray cable coiled corner to corner across
-// a map that wraps on every side, with motherboard showing between the coils. Each lap ends at
-// the kink, where the cable bends flat and carries on round the wrap as the next coil down, so
-// riding along goes through every coil: the printed numbers count them down, 4, 3, 2, 1, to the
-// plug at the far end. Two tape splices across the board let Right hop to the next coil a lap
-// early; missing one only costs that lap.
+// Stage 5-E, "The Ribbon Cable": out of the hard disk's plug and along its ribbon cable, corner
+// to corner through the middle of the stage, to GLITCH. The track (cableTrack.ts) is one gray
+// cable coiled corner to corner across a map that wraps on every side, with motherboard showing
+// between the coils. Each lap ends at the kink, where the cable bends flat and carries on round
+// the wrap as the next coil down, so riding along goes through every coil: the printed numbers
+// count them down, 4, 3, 2, 1, to the plug at the far end. Two tape splices across the board
+// let Right hop to the next coil a lap early; missing one only costs that lap.
 //
 // The cable is worn: splits where the colored wires inside show (one in each spits sparks) and
 // nicks (some let Crosstalk crawl out).

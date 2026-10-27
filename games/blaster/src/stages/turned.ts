@@ -10,7 +10,7 @@ import type { Monster } from '../../../../web/src/formats/monster';
 import { Pixels } from '../../../kit/pixels';
 import { flipX, turn180 } from '../art/draw';
 import { EGG_BLOCK } from '../blocks/egg';
-import { LENGTH, STRIP_START, X0, type Grid } from './mapkit';
+import { Grid, LENGTH, STRIP_START, X0 } from './mapkit';
 import { ROWS, SIDE_START, TOP } from './sideLeg';
 import { meterSign } from '../blocks/sideTiles';
 import type { StageArt } from '../blocks/tiles';
@@ -140,16 +140,27 @@ export const stripMeter = (art: StageArt): StripMeter => ({
 });
 
 /**
+ * A map of a turned leg's own, for one whose virus would hunt the ship across a shared map
+ * (Leak Slugs chase from anywhere): a strip's floor and edges, or a band's solid fill.
+ */
+function ownGrid(src: Leg, fill?: () => string): Leg {
+  const g = src.grid;
+  return { ...src, mapFile: undefined, file: src.file, grid: new Grid(g.bs, g.beasts, g.art, 0, 1, 1, fill) };
+}
+
+/**
  * A strip leg turned half a turn and laid into the host leg's map with its left column at
- * `left`: it flies down from the launch pad near the top to the gate near the bottom.
- * A meter sign stands every two screens, counting the screens left.
+ * `left` (or, with `host` 'own', into a map of its own): it flies down from the launch pad
+ * near the top to the gate near the bottom. A meter sign stands every two screens, counting
+ * the screens left.
  */
 export function downLeg(
-  host: Leg,
+  hostLeg: Leg | 'own',
   src: Leg,
   o: { file: string; kitFile: string; title: string; card: string[]; left: number; spec: Omit<TurnSpec, 'turn' | 'extras'>; meter: StripMeter },
 ): Leg {
-  const L = o.left;
+  const host = hostLeg === 'own' ? ownGrid({ ...src, file: o.file }) : hostLeg;
+  const L = hostLeg === 'own' ? X0 : o.left;
   const to = (x: number, y: number): [number, number] => [L + 15 - (x - X0), MWID - 1 - y];
   const y0 = src.grid.y(src.grid.cardAt ?? 40) - 4;
   // the meter, on bare floor near a side, in the strip's own distances before it is turned
@@ -211,10 +222,11 @@ export function downLeg(
  * at row `top`: it flies left from the launch rail near the right end to the gate near the left.
  */
 export function leftLeg(
-  host: Leg,
+  hostLeg: Leg | 'own',
   src: Leg,
   o: { file: string; title: string; card: string[]; top: number; art: StageArt; spec?: Omit<TurnSpec, 'turn' | 'extras'> },
 ): Leg {
+  const host = hostLeg === 'own' ? ownGrid({ ...src, file: o.file }, () => 'cIn') : hostLeg;
   const to = (x: number, y: number): [number, number] => [MLEN - 1 - x, y - TOP + o.top];
   host.grid.host(src.grid, { x: 0, y: TOP, w: MLEN, h: ROWS }, to);
   const cv = src.cardView!;
@@ -222,7 +234,7 @@ export function leftLeg(
     file: o.file,
     kitFile: o.file,
     mapFile: host.mapFile ?? host.file,
-    palFile: host.palFile ?? host.file,
+    palFile: hostLeg === 'own' ? undefined : (host.palFile ?? host.file),
     title: o.title,
     kind: 'left',
     grid: src.grid,

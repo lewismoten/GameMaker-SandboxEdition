@@ -31,6 +31,28 @@ const body = (r: ToolResult) => JSON.parse((r.content[0] as { text: string }).te
 const words = (r: ToolResult) => r.content.map((c) => (c.type === 'text' ? c.text : '')).join(' ');
 
 describe('assistant tools', () => {
+  it('set_scene only puts files the game has, of the slot’s kind, in its slots', async () => {
+    const ctx = tiny();
+    const before = ctx.files.get('test.gam');
+    const missing = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'mygame.map' }] });
+    expect(missing.isError).toBe(true);
+    expect(words(missing)).toMatch(/There is no file mygame\.map/);
+    expect(ctx.files.get('test.gam')).toBe(before);
+    // a file named for the wrong slot goes to its own
+    const moved = await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.bbl' }] });
+    expect(words(moved)).toMatch(/test\.bbl went in slot 2 \(Background block set\), not 1/);
+    expect((await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.map' }] })).isError).toBeFalsy();
+  });
+
+  it('set_scene turns a level’s scrolling off and on, and only a level’s', async () => {
+    const ctx = tiny();
+    expect((await call(ctx, 'set_scene', { scene: 2, scroll: false })).isError).toBeFalsy();
+    expect(body(await call(ctx, 'get_scene', { scene: 2 })).scroll).toMatchObject({ up: 0, down: 0, left: 0, right: 0 });
+    await call(ctx, 'set_scene', { scene: 2, scroll: true });
+    expect(body(await call(ctx, 'get_scene', { scene: 2 })).scroll).toMatchObject({ up: 255, down: 255, left: 255, right: 255 });
+    expect(words(await call(ctx, 'set_scene', { scene: 0, scroll: false }))).toMatch(/not a level/);
+  });
+
   it('have unique names, short descriptions and flat object schemas with dry_run on every write', () => {
     const names = GAME_TOOL_DEFS.map((d) => d.name);
     expect(new Set(names).size).toBe(names.length);

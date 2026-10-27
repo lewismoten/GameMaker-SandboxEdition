@@ -13,6 +13,8 @@ export interface GameNote {
   /** Where it was imported from: "games/zark.zip › zark/". */
   source?: string;
   fingerprint?: Fingerprint;
+  /** Date.now() of the last change to its rating or note (a backup's restore keeps the newer). */
+  edited?: number;
 }
 
 const store = localJson<Record<string, GameNote>>('gm-imported-notes', () => ({}));
@@ -34,10 +36,12 @@ export function allNotes(): Record<string, GameNote> {
 export function setNote(id: string, change: Partial<GameNote>): void {
   const map = store.read();
   const next: GameNote = { ...map[id], ...change };
+  if (('rating' in change && change.rating !== map[id]?.rating) || ('note' in change && change.note !== map[id]?.note)) next.edited = Date.now();
   if (!next.rating) delete next.rating;
   if (!next.note?.trim()) delete next.note;
   if (!next.source) delete next.source;
   if (!next.fingerprint) delete next.fingerprint;
+  if (Object.keys(next).length === 1) delete next.edited;
   if (Object.keys(next).length) map[id] = next;
   else delete map[id];
   store.write(map);

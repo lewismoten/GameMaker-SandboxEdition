@@ -79,11 +79,11 @@ export abstract class BlockInfoScreen extends BlockInfoDrawing {
     let obuts = 0;
     let grabbed = -1;
     let win = 0;
-    let owin = 0;
+    let owin: number;
     let done = false;
-    let mx = 0;
-    let my = 0;
-    let mbuts = 0;
+    let mx: number;
+    let my: number;
+    let mbuts: number;
 
     await this.redrawInfo(b);
     while (!done) {

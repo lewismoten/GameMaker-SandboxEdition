@@ -12,7 +12,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
-import { clipEntries, fliClips } from '../kit/fliClips';
+import { clipEntries, clipEveryList, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import type { Pixels } from '../kit/pixels';
@@ -167,6 +167,7 @@ disk.put(
     `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The certificate in the game is a parody made up for it. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
   ),
 );
+clipEveryList(disk.files);
 disk.write();
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks; rats ${built.map((b) => b.rats).join(' + ')}`,

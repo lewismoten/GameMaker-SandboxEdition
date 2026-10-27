@@ -1,9 +1,22 @@
 // Tools for the game as a whole: its summary, its files, and its scenes and their links (the
 // Integrator's .gam file).
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, SCENEDESCLEN, emptyScene, fileSlotsFor, serializeGame, type Game, type Link } from '../../formats/game';
+import {
+  ADVTYPE,
+  GRAPHIC_EXTS,
+  MAXSCENELINKS,
+  NOSCENE,
+  SCENEDESCLEN,
+  emptyScene,
+  fileSlotsFor,
+  serializeGame,
+  slotExtensions,
+  type Game,
+  type Link,
+  type Scene,
+} from '../../formats/game';
 import { DRY_RUN, commit } from './run';
 import { FILE, SCENE, fileName, gameOf, int, sceneOf } from './common';
-import { json, ToolError, type JsonSchema, type ToolDef } from './types';
+import { json, ToolError, type GameContext, type JsonSchema, type ToolDef } from './types';
 
 const kindOfName = (n: string) => /\.([^.]+)$/.exec(n)?.[1] ?? 'other';
 const kindName = (g: number) => (g === 1 ? 'title' : g === 2 ? 'game over' : g === ADVTYPE ? 'level' : 'unused');
@@ -87,29 +100,74 @@ const SLOT_FILES: JsonSchema = {
   items: { type: 'object', properties: { slot: int('Slot number.', 0, 19), file: { type: 'string' } }, required: ['slot', 'file'] },
 };
 
-function setSlots(game: Game, scene: number, list: unknown): void {
+/**
+ * Sets a scene's slots to files the game has, of the slot's kind, or clears them. A file named
+ * for the wrong slot goes to the one slot of its kind (mygame.pal to the Palette), and the result
+ * says so; returns those moves.
+ */
+function setSlots(game: Game, scene: number, list: unknown, ctx: GameContext): string[] {
   const s = game.scenes[scene];
-  for (const { slot, file } of (list ?? []) as { slot: number; file: string }[]) {
-    if (slot >= fileSlotsFor(s).length) throw new ToolError(`Scene ${scene} has no slot ${slot} (it has ${fileSlotsFor(s).length}).`);
-    s.files[slot] = file ? fileName(file) : '';
+  const slots = fileSlotsFor(s);
+  const exts = slotExtensions(s);
+  const fits = (slot: number, ext: string) => (exts[slot] === 'graphic' ? GRAPHIC_EXTS.includes(ext) : ext === exts[slot]);
+  const moved: string[] = [];
+  for (const { slot: asked, file } of (list ?? []) as { slot: number; file: string }[]) {
+    if (asked >= slots.length) throw new ToolError(`Scene ${scene} has no slot ${asked} (it has ${slots.length}).`);
+    const name = file ? fileName(file) : '';
+    let slot = asked;
+    if (name) {
+      if (!ctx.files.has(name))
+        throw new ToolError(`There is no file ${name}, so slot ${asked} (${slots[asked]}) was left alone. list_files lists the game's files.`);
+      const ext = name.split('.').pop()?.toLowerCase() ?? '';
+      if (!fits(asked, ext)) {
+        const own = slots.map((_, i) => i).filter((i) => fits(i, ext));
+        if (own.length !== 1)
+          throw new ToolError(
+            `Slot ${asked} (${slots[asked]}) takes ${exts[asked] === 'graphic' ? `a picture (.${GRAPHIC_EXTS.join(', .')})` : `a .${exts[asked]} file`}, not ${name}.`,
+          );
+        slot = own[0];
+        moved.push(`${name} went in slot ${slot} (${slots[slot]}), not ${asked}`);
+      }
+    }
+    s.files[slot] = name;
   }
+  return moved;
 }
+
+/** The slots, for a result: "0 Palette (.pal), 1 Map (.map), …". */
+const slotList = (s: Scene) =>
+  fileSlotsFor(s)
+    .map((n, i) => `${i} ${n} (.${slotExtensions(s)[i]})`)
+    .join(', ');
 
 const setScene: ToolDef = {
   name: 'set_scene',
-  description: 'Renames a scene and/or sets its file slots (palette, map, blocks, monsters, character…).',
+  description:
+    'Renames a scene, sets its file slots (palette, map, blocks, monsters, character…) and/or its scrolling. A level made from the starter already has its files; only name it.',
   writes: true,
   inputSchema: {
     type: 'object',
-    properties: { scene: SCENE, name: { type: 'string', description: `Up to ${SCENEDESCLEN - 1} characters.` }, files: SLOT_FILES, dry_run: DRY_RUN },
+    properties: {
+      scene: SCENE,
+      name: { type: 'string', description: `Up to ${SCENEDESCLEN - 1} characters.` },
+      files: SLOT_FILES,
+      scroll: { type: 'boolean', description: 'A level: false never scrolls (one screen, 16x10 blocks around the start); true scrolls near the edges.' },
+      dry_run: DRY_RUN,
+    },
     required: ['scene'],
   },
   async run(a, ctx) {
     const game = gameOf(ctx);
     const s = sceneOf(game, a.scene);
     if (typeof a.name === 'string') s.desc = a.name.slice(0, SCENEDESCLEN - 1);
-    setSlots(game, a.scene as number, a.files);
-    return commit(ctx, a, { summary: `Scene ${String(a.scene)} (${s.desc.trim()}) changed`, files: { [ctx.gam]: serializeGame(game) } });
+    if (typeof a.scroll === 'boolean') {
+      if (s.gametype !== ADVTYPE) throw new ToolError(`Scene ${String(a.scene)} is not a level; only levels scroll.`);
+      const v = a.scroll ? 0xff : 0;
+      Object.assign(s.scroll, { up: v, down: v, left: v, right: v });
+    }
+    const moved = setSlots(game, a.scene as number, a.files, ctx);
+    const note = moved.length ? `${moved.join('; ')}. The slots are: ${slotList(s)}.` : '';
+    return commit(ctx, a, { summary: `Scene ${String(a.scene)} (${s.desc.trim()}) changed`, files: { [ctx.gam]: serializeGame(game) } }, note);
   },
 };
 
@@ -138,8 +196,9 @@ const addScene: ToolDef = {
     if (free >= 0) game.scenes[free] = s;
     else game.scenes.push(s);
     const n = free >= 0 ? free : game.scenes.length - 1;
-    setSlots(game, n, a.files);
-    return commit(ctx, a, { summary: `Added scene ${n} (${s.desc})`, files: { [ctx.gam]: serializeGame(game) } }, `The new scene is number ${n}.`);
+    const moved = setSlots(game, n, a.files, ctx);
+    const note = moved.length ? ` ${moved.join('; ')}. The slots are: ${slotList(s)}.` : '';
+    return commit(ctx, a, { summary: `Added scene ${n} (${s.desc})`, files: { [ctx.gam]: serializeGame(game) } }, `The new scene is number ${n}.${note}`);
   },
 };
 

@@ -10,6 +10,7 @@ import { TRANSPARENT } from '../../formats/blocks';
 import { decodeGif, isGif } from '../../formats/gif';
 import { firstLevels, heroOf, heroPixels, type HeroSpec, type LevelPicture } from '../../gfx/levelPicture';
 import { mapShot, renderShot, renderTitle } from '../../gfx/gameShots';
+import { boxShot } from '../../gfx/frameShot';
 import { paintIndexed } from '../../editor/core/draw';
 import type { HintCover } from './types';
 
@@ -69,6 +70,21 @@ async function heroArt(entry: CatalogEntry, spec: HeroSpec | undefined): Promise
   return { src: c.toDataURL(), w: pic.width, h: pic.height };
 }
 
+/**
+ * The game's main character as he stands, cropped to his pixels: the one its paper names (its
+ * sticker sheet's hero), else its first level's. For a printed disk label (diskLabelArt.ts).
+ */
+export async function gameHero(entry: CatalogEntry): Promise<CoverArt['hero']> {
+  let game: Game | undefined;
+  try {
+    const gamB = entry.gam ? await fetchGameFile(entry, entry.gam) : undefined;
+    game = gamB ? parseGame(gamB) : undefined;
+  } catch {
+    game = undefined;
+  }
+  return heroArt(entry, heroSpec(entry, game, undefined)).catch(() => undefined);
+}
+
 /** A picture file of the game's (a GIF), drawn whole. */
 async function pictureFile(entry: CatalogEntry, name: string): Promise<HTMLCanvasElement | undefined> {
   const bytes = await fetchGameFile(entry, name);
@@ -93,7 +109,7 @@ async function sceneArt(entry: CatalogEntry, want: HintCover['scene']): Promise<
   if (pic) return pic;
   // the box front shows the first screenshot and the manual cover the third: one of the others
   const s = shots[1] ?? shots[3] ?? shots[0];
-  if (s) pic = await mapShot(entry, s[0], s[1], s[2], 16, 10);
+  if (s) pic = await boxShot(entry, s);
   if (pic) return pic;
   const c = canvas();
   if (await renderShot(entry, c, 16, 10)) return c;
