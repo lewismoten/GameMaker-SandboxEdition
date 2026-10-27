@@ -458,7 +458,8 @@ modules are in [`../test`](../test).
   `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
   (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
   past the opening closes it.
-- [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its pages `booklet.ts`, its
+- [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its chapters in `dosManualFront.ts`,
+  `dosManualDesign.ts` and `dosManualBack.ts` with `dosManualKit.ts`, its pages `booklet.ts`, its
   screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and
   each original game's printed manual (`gameManual.ts`). `fonts/` holds the handwriting font
   (Caveat, with its OFL). `readView.ts` is how every document is read, Pages (a page at a time)
