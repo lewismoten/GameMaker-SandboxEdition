@@ -47,6 +47,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   before the first section on a narrower window.
 - [`offline.ts`](offline.ts) registers [`siteWorker.ts`](siteWorker.ts), the site's service worker.
   [`prefetch.ts`](prefetch.ts) fetches what a visitor is likely to open next once the page settles.
+- [`phoneScreen.ts`](phoneScreen.ts): whether the screen is a phone's (touch, its shorter side 500
+  pixels or less) and how it is held, for the achievements and the documents' default view.
 - [`keepTogether.ts`](keepTogether.ts): THE CHEZ kept on one line (above).
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
@@ -390,7 +392,11 @@ modules are in [`../test`](../test).
 - [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its pages `booklet.ts`, its
   screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and
   each original game's printed manual (`gameManual.ts`). `fonts/` holds the handwriting font
-  (Caveat, with its OFL).
+  (Caveat, with its OFL). `readView.ts` is how every document is read, Pages (a page at a time)
+  or Scroll (every page in one column; a phone's default), with the bar's Pages | Scroll pair
+  and the choice kept per browser; `scrollPages.ts` is the Scroll column, drawing pages as they
+  near the view and telling the page in view. The box viewer, the zine, TURBO BUTTON and the
+  Level Maps read both ways.
 - [`manual/printables/`](manual/printables): each game's box contents, with its own
   [README](manual/printables/README.md). The viewer (`viewer.ts`) shows the paper in a "What's in
   the box" tray (`items.ts`); `chapterJump.ts` is its Chapters list for a booklet whose pages mark
