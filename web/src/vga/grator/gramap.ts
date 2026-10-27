@@ -171,13 +171,13 @@ class LinkMap {
     const curx = [edgex(lk.from.x), edgex(lk.to.x)];
     const cury = [edgey(lk.from.y), edgey(lk.to.y)];
     let done = false;
-    let mx = 100;
-    let my = 100;
-    let mbuts = 0;
+    let mx: number;
+    let my: number;
+    let mbuts: number;
     const ox = 100; // never updated in GRAMAP.C, so any position away from 100,100 counts as a move
     const oy = 100;
     let obuts = 0;
-    let changed = 0;
+    let changed: number;
     let onbut = 0;
     let v = this.v;
     const { faces, linkcols } = this;

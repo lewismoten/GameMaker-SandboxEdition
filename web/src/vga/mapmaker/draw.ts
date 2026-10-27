@@ -120,7 +120,8 @@ export abstract class MapMakerDraw extends MapMakerState {
     const y1 = y + listlen * BLEN;
     let current = monsters ? this.mlist : this.blist;
     let i = 0;
-    let m = v.moustats();
+    v.moustats(); // reading the mouse also clears the clicks held since the last read
+    let m: ReturnType<typeof v.moustats>;
     do {
       await v.delay(50); // wait so a single click will move one block
       m = v.moustats();

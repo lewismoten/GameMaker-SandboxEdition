@@ -140,10 +140,10 @@ class MonsterMaker extends MonsterMovement {
     let selec = 0;
     let x = 0;
     let y = 0;
-    let oldx = 0;
-    let oldy = 0;
+    let oldx: number;
+    let oldy: number;
     let buts = 0;
-    let oldbuts = 0;
+    let oldbuts: number;
     let change2 = MONBL;
     let grabbed = -1;
     let grabbed2 = -1;

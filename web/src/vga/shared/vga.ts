@@ -416,7 +416,7 @@ export class Vga {
   draw4dat(x: number, y: number, pict: ArrayLike<number>, len: number, wid: number, col: ArrayLike<number>, rotation = 0): void {
     let x1 = rotation === 1 || rotation === 2 ? len : 0;
     let y1 = rotation === 2 || rotation === 3 ? wid : 0;
-    let loop = 0;
+    let loop: number;
     let pindex = 0;
     do {
       for (loop = 0; loop < 4; loop++) {

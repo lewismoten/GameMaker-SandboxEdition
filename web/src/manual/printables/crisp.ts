@@ -58,7 +58,7 @@ function redraw(img: HTMLImageElement, plan: CrispPlan): string {
     hctx.imageSmoothingEnabled = true;
     hctx.imageSmoothingQuality = 'high';
     hctx.drawImage(src, 0, 0, half.width, half.height);
-    [src, sctx] = [half, hctx];
+    src = half;
   }
   const [out, octx] = canvas(plan.devW, plan.devH);
   octx.imageSmoothingEnabled = true;

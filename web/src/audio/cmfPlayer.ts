@@ -242,7 +242,7 @@ export class CmfPlayer {
    */
   private setPitch(ch: number, note: number, key: boolean): void {
     const freq = 440 * Math.pow(2, (note - 69) / 12);
-    let block = 0;
+    let block: number;
     let fnum = 0;
     for (block = 0; block < 8; block++) {
       fnum = Math.round((freq * Math.pow(2, 20 - block)) / 49716);

@@ -80,7 +80,8 @@ export async function scrollList(
   const x1 = x + listlen * BLEN;
   const i = await holdStart(v);
   while (cmod(BLEN, sign(dir) * dir) !== 0) dir += sign(dir); // an even part of BLEN
-  let { x: movx, y: movy, but: button } = v.moustats();
+  let { x: movx, y: movy } = v.moustats();
+  let button: number;
   let oldx = movx;
   const oldy = movy;
   if (i < 4) oldx = 0;

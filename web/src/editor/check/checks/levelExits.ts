@@ -81,7 +81,7 @@ export function music(d: SceneData, game: Game, files: FileSource): Finding[] {
         where: { scene: d.scene, file: song },
       },
     ];
-  let clock = 146;
+  let clock: number;
   try {
     clock = parseCmf(bytes).clockTicks;
   } catch {

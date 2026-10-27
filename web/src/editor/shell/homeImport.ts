@@ -68,7 +68,7 @@ export async function newGame(nav: HomeNav): Promise<void> {
     // part of making the game, not one of the designer's changes: no "changed a file" achievement
     const told = p.files.onChange;
     p.files.onChange = undefined;
-    let noSting = false;
+    let noSting: boolean;
     try {
       ({ noSting } = await applyOpening(p, game.scenes[0], game.scenes, style, name));
       p.saveGame(game);

@@ -139,7 +139,6 @@ class ImageReader extends ImageReaderScreen {
           choice = 5;
           break;
         default:
-          choice = 8;
           if (!this.saved && (await errorBox(h, 'Unsaved changes--Really Quit?', '  (Y)es  (N)o')) !== 'Y') {
             choice = 4;
             break;
@@ -211,7 +210,7 @@ class ImageReader extends ImageReaderScreen {
     const fc = face.cols;
     let oldx = -1;
     let oldy = 0;
-    let buts = 0;
+    let buts: number;
     let oldbuts = 0;
     let blbl = this.blenn * BLEN;
     let bwbl = this.bwid * BLEN;

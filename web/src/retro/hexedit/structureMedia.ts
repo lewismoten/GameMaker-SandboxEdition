@@ -266,7 +266,7 @@ function cmf(b: Builder): void {
     else s = status; // running status: the last status byte again
     const hi = s & 0xf0;
     const ch = s & 15;
-    let what = '';
+    let what: string;
     if (s === 0xff) {
       const type = b.u8(at + 1);
       const l = readVlq(bytes, at + 2);

@@ -179,9 +179,9 @@ class MapMaker extends MapMakerPaint {
   // ---- data -------------------------------------------------------------------------------
 
   protected async edit(): Promise<void> {
-    let x = 0;
-    let y = 0;
-    let buts = 0;
+    let x: number;
+    let y: number;
+    let buts: number;
     let oldx = -1;
     let oldy = -1;
     let oldbuts = -1;
