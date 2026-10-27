@@ -9,6 +9,7 @@ import { serializeCharacter } from '../../web/src/formats/character';
 import { serializeGame } from '../../web/src/formats/game';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { Disk } from '../kit/disk';
+import { clipEveryList } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { BG } from './src/blocks/bblocks';
 import { MB, CB } from './src/sprites/sprites';
@@ -158,4 +159,5 @@ const game = buildGame(L, {
 disk.put('sandcast.gam', serializeGame(game));
 disk.put('readme.txt', README);
 disk.put('license.txt', licenseText('Sandcastle Knight'));
+clipEveryList(disk.files);
 disk.write();
