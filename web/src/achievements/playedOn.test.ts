@@ -5,7 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 const unlocked: string[] = [];
 vi.mock('./store', () => ({ unlockAchievement: (id: string) => unlocked.push(id) }));
 
-import { finishedIn, holdOf, RunWatch, type Hold } from './playedOn';
+import { finishedIn, RunWatch } from './playedOn';
+import { holdOf, type Hold } from '../phoneScreen';
 
 describe('holdOf', () => {
   it('takes a touch screen with a narrow side as a phone, wide or tall', () => {

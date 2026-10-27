@@ -1,34 +1,15 @@
 // Where a game is played, for the achievements for finishing one in each place: the view (the
 // 1994 desk's PC, the DOS page, today's web player) and, on a phone, the way it was held.
 //
-// A phone is a touch screen (its main pointer coarse) with a narrow viewport (its shorter side
-// at most PHONE_SIDE pixels), so a tablet or a touch laptop isn't one. A run counts as held
+// A phone is as phoneScreen.ts tells it (a touch screen with a narrow viewport). A run counts as held
 // the way it was held for most of its time: RunWatch adds up the time spent wide (landscape),
 // tall (portrait) and off a phone, so turning the phone partway through changes nothing but the
 // tally. A run held mostly off a phone counts as neither.
 import { unlockAchievement } from './store';
+import { holdNow, type Hold } from '../phoneScreen';
 
 /** The view a game is played in. */
 export type PlayView = 'desk' | 'dos' | 'web';
-
-/** How a phone is held: wide (landscape) or tall (portrait); `off` is not a phone. */
-export type Hold = 'wide' | 'tall' | 'off';
-
-/** A phone's viewport is at most this many CSS pixels on its shorter side. */
-const PHONE_SIDE = 500;
-
-/** How the screen is held now, from its viewport and whether its main pointer is a finger. */
-export function holdOf(width: number, height: number, coarse: boolean): Hold {
-  if (!coarse || Math.min(width, height) > PHONE_SIDE) return 'off';
-  return width > height ? 'wide' : 'tall';
-}
-
-/** How this page's screen is held now. */
-function holdNow(): Hold {
-  if (typeof window === 'undefined') return 'off';
-  const coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
-  return holdOf(innerWidth, innerHeight, coarse);
-}
 
 /** Adds up a run's time in each hold: note() at each change, held() at the end. */
 export class RunWatch {
