@@ -36,8 +36,11 @@ export function whereOf(chapter: Chapter, step: TourStep): string {
   return `${chapter.place}: ${who} ${DOING[step.action]}${label ? (aimed ? ` ${label}` : `, by ${label}`) : ''}`;
 }
 
+/** The lines to record: every step a voiced host says (a barking host's are left to its sound). */
 export function tourLines(): TourLine[] {
   return CHAPTERS.flatMap((c) =>
-    c.steps.map((s) => ({ id: s.id, chapter: c.id, where: whereOf(c, s), speaker: HOSTS[s.speaker ?? c.speaker].name, text: s.say })),
+    c.steps
+      .filter((s) => HOSTS[s.speaker ?? c.speaker].voiced)
+      .map((s) => ({ id: s.id, chapter: c.id, where: whereOf(c, s), speaker: HOSTS[s.speaker ?? c.speaker].name, text: s.say })),
   );
 }

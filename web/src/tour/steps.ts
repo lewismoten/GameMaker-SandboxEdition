@@ -9,9 +9,10 @@ export type PageKey = 'home' | 'guide' | 'library' | 'achievements' | 'cast' | '
 
 /** Who can host or appear: sprites in public/cast/sprites.json from Sandbox games (never a secret game's). */
 export const HOSTS = {
-  teddy: { name: 'Teddy', game: 'teddy', scale: 3 },
-  gwinn: { name: 'Gwinn', game: 'teddy2', scale: 3 },
-  leo: { name: 'Doc Leo', game: 'teddy', scale: 2 },
+  // Teddy barks (his own woof sound), so his lines get no recorded voice
+  teddy: { name: 'Teddy', game: 'teddy', scale: 3, voiced: false },
+  gwinn: { name: 'Gwinn', game: 'teddy2', scale: 3, voiced: true },
+  leo: { name: 'Doc Leo', game: 'teddy', scale: 2, voiced: true },
 } as const;
 export type HostId = keyof typeof HOSTS;
 

@@ -23,8 +23,8 @@ const WORKSPACE = join(homedir(), 'Documents/rivers-of-memory-workspace');
 const DEFAULTS = {
   engine: process.env.POCKET_TTS_ENGINE ?? join(WORKSPACE, 'engines/Pocket-TTS'),
   model: process.env.POCKET_TTS_MODEL ?? join(WORKSPACE, 'models/Pocket-TTS-english_2026-04'),
-  // "Lewie (fast)": Lewis's own voice; never copied into the repo
-  sample: process.env.NARRATE_SAMPLE ?? join(WORKSPACE, 'voices/samples/4ec448fd-d2b9-4241-9319-c7893cecb1f9.webm'),
+  // Lewis's own recording, chosen by ear over "Lewie (fast)"; git-ignored, never copied into the repo
+  sample: process.env.NARRATE_SAMPLE ?? fileURLToPath(new URL('../../.for-lewis/voice/lewie-sample-audio.mp3', import.meta.url)),
   out: process.env.NARRATE_OUT ?? 'public/tour/voice',
 };
 

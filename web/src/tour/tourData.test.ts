@@ -104,7 +104,9 @@ describe('the tour’s data', () => {
 
   it('lists every line for the voice clips', () => {
     const lines = tourLines();
-    expect(lines.length).toBe(steps.length);
+    // all but Teddy's barks
+    expect(lines.length).toBe(steps.length - 1);
+    expect(lines.map((l) => l.speaker)).not.toContain('Teddy');
     for (const l of lines) {
       expect(l.where).toMatch(/^\w[\w ]*: /);
       expect(l.text.length).toBeGreaterThan(0);
