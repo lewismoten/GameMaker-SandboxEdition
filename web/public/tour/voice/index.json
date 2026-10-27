@@ -1,0 +1,170 @@
+{
+  "home-achievements": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Achievements in the header",
+    "text": "Achievements keeps track of what you’ve done, here and on the 1994 desk.",
+    "seconds": 6.08,
+    "hash": "55dd4b479d84",
+    "voice": "7a360d320626"
+  },
+  "home-another": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Another button",
+    "text": "Another picks a different game at random. Ooh, good one.",
+    "seconds": 4.24,
+    "hash": "f4b26db40628",
+    "voice": "7a360d320626"
+  },
+  "home-bye": {
+    "chapter": "home",
+    "where": "Home: Gwinn says goodbye and walks off",
+    "text": "That’s the tour! Now go play something.",
+    "seconds": 3.28,
+    "hash": "e21c8b04fe23",
+    "voice": "7a360d320626"
+  },
+  "home-cast": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Cast in the header",
+    "text": "The Cast page is where you meet Teddy, me, and everyone else from the new games.",
+    "seconds": 5.12,
+    "hash": "69614f35bae9",
+    "voice": "7a360d320626"
+  },
+  "home-download": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Download button",
+    "text": "Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS.",
+    "seconds": 6.48,
+    "hash": "21a8dd6f0929",
+    "voice": "7a360d320626"
+  },
+  "home-games": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Games in the header",
+    "text": "Games, up in the bar, always brings you back here.",
+    "seconds": 4.16,
+    "hash": "56cb7e7e3b77",
+    "voice": "7a360d320626"
+  },
+  "home-guide": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Guide in the header",
+    "text": "The Guide explains making games, one part at a time.",
+    "seconds": 4,
+    "hash": "e8058f7dcc92",
+    "voice": "7a360d320626"
+  },
+  "home-guides": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the ? Guides button",
+    "text": "Press this button any time to see this tour again, or to have Teddy and me wait on a page for you.",
+    "seconds": 6.08,
+    "hash": "03a922a0924e",
+    "voice": "7a360d320626"
+  },
+  "home-hello": {
+    "chapter": "home",
+    "where": "Home: Gwinn comes on",
+    "text": "Hi! I’m Gwinn. This little guy is my brother Teddy. He and I will show you around.",
+    "seconds": 6.16,
+    "hash": "d38a3cfe72c1",
+    "voice": "7a360d320626"
+  },
+  "home-library": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Library in the header",
+    "text": "The Library has things to read and print: manuals, maps, sticker sheets and a magazine.",
+    "seconds": 7.44,
+    "hash": "42502ff5eec1",
+    "voice": "7a360d320626"
+  },
+  "home-look": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Look inside button",
+    "text": "Look inside opens its files in the editor, just as they shipped. Change something and you get a copy of your own.",
+    "seconds": 7.04,
+    "hash": "4edbc90112a5",
+    "voice": "7a360d320626"
+  },
+  "home-new": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the New game button",
+    "text": "New game starts one of your own: ready to play, empty, or described in words for your own AI to build.",
+    "seconds": 6.96,
+    "hash": "8a310c83140a",
+    "voice": "7a360d320626"
+  },
+  "home-offline": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Play offline in the Settings menu",
+    "text": "Settings has Play offline, which saves the whole site so it works with no connection.",
+    "seconds": 5.44,
+    "hash": "6bc910ccc96b",
+    "voice": "7a360d320626"
+  },
+  "home-play": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Play button",
+    "text": "Play starts it right here in your browser, with the keyboard or a gamepad.",
+    "seconds": 4.8,
+    "hash": "0a322dcdd323",
+    "voice": "7a360d320626"
+  },
+  "home-search": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Find a game box",
+    "text": "Looking for one game? Type part of its name here.",
+    "seconds": 4.24,
+    "hash": "a53fe624d3fc",
+    "voice": "7a360d320626"
+  },
+  "home-showcase": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the big game picture at the top",
+    "text": "Up top is one game, shown big. Its picture plays a short demo of the game.",
+    "seconds": 6.64,
+    "hash": "21f5f30fe173",
+    "voice": "7a360d320626"
+  },
+  "home-tabs": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the collection tabs",
+    "text": "These tabs are the collections: your games, ones you bring in, and shelves of games ready to play.",
+    "seconds": 7.12,
+    "hash": "81f1f15b8722",
+    "voice": "7a360d320626"
+  },
+  "home-theme": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Theme in the Settings menu",
+    "text": "Theme switches between dark, light, or whatever your computer uses.",
+    "seconds": 5.68,
+    "hash": "4d195c81acb5",
+    "voice": "7a360d320626"
+  },
+  "home-tiles": {
+    "chapter": "home",
+    "where": "Home: Teddy points at a game tile",
+    "text": "Pick any tile and its game moves up top.",
+    "seconds": 2.88,
+    "hash": "b11205972631",
+    "voice": "7a360d320626"
+  },
+  "home-views": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Desk, DOS and Web switch",
+    "text": "Desk, DOS and Web: a 1994 desk with its PC, DOS Game-Maker on its own, or this page.",
+    "seconds": 7.76,
+    "hash": "e53666b5faed",
+    "voice": "7a360d320626"
+  },
+  "home-walkthrough": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Walkthrough button",
+    "text": "Stuck? Walkthrough plays the whole game for you, start to finish.",
+    "seconds": 4.48,
+    "hash": "31a0ad38dba1",
+    "voice": "7a360d320626"
+  }
+}
