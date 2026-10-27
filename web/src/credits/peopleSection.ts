@@ -55,6 +55,12 @@ export function aiToolsSection(): HTMLElement {
         'Google',
         'A sounding board for ideas: 1990s nostalgia and Lewis’s memories, home-office supplies of the time, how the CMF music format worked, what came in a 1990s software box, how a save editor might look, and getting more out of a game. It drew the ASCII-art can in LUNCHMEAT’s flood on The Sofa.',
       ),
+      tool(
+        'Pocket TTS',
+        'Kyutai · CC BY 4.0',
+        'The guided tour’s voice: each line spoken in Lewis’s own voice, cloned from his recording with his consent. Runs on the developer’s computer.',
+        'Kyutai’s model, in vlapky’s ONNX conversion (pocket-tts-onnx), run by a script ported from vlapky’s pocket-tts-js (MIT) with Microsoft’s ONNX Runtime (MIT). Its built-in voices are never used; only the clips it makes ship.',
+      ),
       tool('Whisper', 'OpenAI · MIT License', 'Word timings for cutting the voice clips. Runs on the developer’s computer; nothing ships.'),
     ),
     h('p', { class: 'muted' }, 'None of these tools’ code is used in the site or the games.'),

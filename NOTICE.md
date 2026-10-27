@@ -227,6 +227,20 @@ game folder opens in the browser unchanged.
   photo. The poster's DOC LEO lettering is set in **Phosphate** (Steve Jackaman and Ashley
   Muir; © International TypeFounders, Inc.), a typeface that comes with macOS: only the
   lettering's pixels are in the poster pictures, and no font file is in the repository.
+- **The guided tour's voice** (`web/public/tour/voice`): each line is spoken in **Lewis Moten's
+  own voice**, cloned from a recording of himself that he made for it, with his consent, by
+  **Pocket TTS** (Kyutai, [huggingface.co/kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts),
+  model weights under the Creative Commons Attribution 4.0 International License, CC BY 4.0),
+  in **vlapky**'s ONNX conversion,
+  [pocket-tts-onnx](https://huggingface.co/vlapky/pocket-tts-onnx) (its weights CC BY 4.0, its
+  conversion code Apache-2.0). The clips are made on the developer's computer by
+  `web/scripts/narrate.ts`, whose engine (`web/scripts/narrate/pocketTts.ts`) is ported from
+  vlapky's **pocket-tts-js** (MIT License, Copyright (c) 2026 vlapky; the notice is kept in that
+  file) and runs Microsoft's **ONNX Runtime** (onnxruntime-web's WASM build, MIT License,
+  Copyright (c) Microsoft Corporation), with ffmpeg for the sound files. The model, the engine
+  and Lewis's recording stay on his computer and are not in the repository or any download;
+  Pocket TTS's built-in voices are never used. Only the generated clips are committed, and they
+  play on the site only (exported games don't carry them).
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
@@ -705,6 +719,11 @@ see above for what ends up in them.
 The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the developer's
 computer with Pillow (MIT-CMU License) and NumPy (BSD); the Caveat font was cut down with
 fontTools (MIT). Only their output is committed.
+
+The tour's narration script (`web/scripts/narrate.ts`, `npm run voice`) runs on the
+developer's computer with ffmpeg, Pocket TTS's ONNX model and ONNX Runtime's WASM build (see
+"The guided tour's voice" in Credits), read from folders outside the repository; only the clips
+it makes are committed.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,
