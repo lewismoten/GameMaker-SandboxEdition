@@ -36,6 +36,8 @@ theme. Some are cropped to the part that matters.
 The home page lists every game by tab: _My games_, _Imported_, the Sandbox and Bizarre games,
 the CD's Gameware and its Shareware. Picking one plays its title demo in the side panel, with
 Play, Look inside, Keys, the manual, the walkthrough, saves and scores, and Download beside it.
+_+ New game_ starts an empty game, and _✦ Describe a game…_ has your own AI build one from a
+few lines of description (see [the Assistant](#the-assistant-and-the-mcp-server)).
 
 ![The My games tab with one game, a copy of Snowbound, under "Continue where you left off", and a Getting started box](screenshots/editor/01-my-games.webp)
 
@@ -221,11 +223,20 @@ out marked.
 
 ## The Assistant and the MCP server
 
-![The map editor with the Assistant panel open: a port and pairing code to connect, a read-only switch, and an option to offer the tools to the browser's own AI agent](screenshots/editor/23-assistant.webp)
+![The map editor with the Assistant chat open beside it: Ask before changing and Read-only at the top, What should I do next?, a question about which level to make harder, the game_summary tool the AI used, and its answer](screenshots/editor/23-assistant.webp)
 
-The ✦ button beside a file's title opens the Assistant. It connects the open game to an AI tool
-on your computer through the Game-Maker MCP server (`npm run mcp -- --bridge` in `web/`), so the
-tool can look at the game, run the Level check, take screenshots and make changes, each one a
-step you can undo. There is a read-only switch, and in browsers that have WebMCP the same tools
-can be offered to the browser's own agent. The server also works on game folders without the
-editor; see [the MCP server's README](../web/scripts/mcp/README.md).
+The ✦ button beside a file's title opens the Assistant, a chat with your own AI about the open
+game. _AI setup_ connects it to Ollama, on this computer or another, or to any OpenAI-compatible
+server; the address, model and key stay in this browser. The AI looks at the game with the same
+tools the Level check and the bot use, and makes small changes and play-tests them. In _Ask
+before changing_ each change waits for Apply or Skip; _Change freely_ applies them with Undo
+still there, and _Read-only_ keeps it to looking. _What should I do next?_ runs the Level check, the bot
+and the file checks and has the AI say what to fix first (with no AI set up, it lists what the
+checks found), and the game keeps a to-do list. _Describe a game…_, for an empty game here or on
+the home page, builds a game from a description until the bot can win it. The picture was taken with a
+scripted stand-in for a model, not a real AI.
+
+_Use an AI tool on this computer instead (MCP)…_ at the bottom of the chat connects the open game
+to the Game-Maker MCP server instead (`npm run mcp -- --bridge` in `web/`), so an AI tool such as
+Claude Code can work on it, each change a step you can undo. The server also works on game
+folders without the editor; see [the MCP server's README](../web/scripts/mcp/README.md).
