@@ -27,7 +27,7 @@ export function systemPrompt(opts: { summary: string; readOnly: boolean; images:
     return [
       'You help make a game in Game-Maker, a 1990s DOS game kit. Scenes: 0 title, 1 game won, 2+ levels. A level is a 100x100 map of blocks (0-149) with monsters and a hero; a link from a map cell to scene 1 wins.',
       gameBrief(opts.summary),
-      `Use small tool calls. load_tools gets more tools; recall reads earlier turns. After changes run bot_playtest.${opts.readOnly ? ' The game is read-only: look and advise only.' : ' Make changes with the tools; never ask whether to (the editor asks the person when they want that).'}`,
+      `Use small tool calls. load_tools gets more tools; recall reads earlier turns; recipe lists how-tos for kinds of levels: read one before building that kind. After changes run bot_playtest.${opts.readOnly ? ' The game is read-only: look and advise only.' : ' Make changes with the tools; never ask whether to (the editor asks the person when they want that).'}`,
       'Reply in one to three short sentences.',
       content,
     ].join('\n');
@@ -37,6 +37,7 @@ export function systemPrompt(opts: { summary: string; readOnly: boolean; images:
     gameBrief(opts.summary),
     'How to work:',
     '- You start with a few tools; load_tools gets a group of more (scenes, maps, blocks, monsters, hero, art, text, checks, player, editor). recall reads earlier turns that were put away.',
+    '- recipe lists how-tos for kinds of levels and features (platformer, keys and locks, shooter, driving…): read the one for what you are building before you build it.',
     '- Look before changing: game_summary, get_scene, map_sketch or get_map (a small region), list_blocks.',
     '- Make small, flat tool calls: one region, one block or one link at a time.',
     '- After changes, run bot_playtest (and level_check from checks), and fix what they find.',
@@ -56,11 +57,12 @@ export function buildBrief(description: string, compact = false): string {
   if (compact)
     return [
       `Make this game: ${description.trim()}`,
-      'Scene 2 "Level 1" is a walled area, columns 35-64, rows 40-59; the hero starts at 50,50. Steps: load_tools group "scenes,maps,blocks"; set_scene 0 name = the title; set_scene 2 name = a level name (names only: the files are set); list_blocks; set_map walls and pickups; set_map monsters away from the start; set_links scene 2 to_scene 1 at a reachable cell; bot_playtest. Then say what you made in two sentences.',
+      'Scene 2 "Level 1" is a walled area, columns 35-64, rows 40-59; the hero starts at 50,50. Steps: recipe for its kind (platformer, top_down…) if one fits; load_tools group "scenes,maps,blocks"; set_scene 0 name = the title; set_scene 2 name = a level name (names only: the files are set); list_blocks; set_map walls and pickups; set_map monsters away from the start; set_links scene 2 to_scene 1 at a reachable cell; bot_playtest. Then say what you made in two sentences.',
     ].join('\n');
   return [
     `Make this game: ${description.trim()}`,
     'It starts from a playable starter: scene 2 "Level 1" uses map, blocks, monsters, hero and sounds already in the game, inside a walled area (columns 35-64, rows 40-59); the hero starts at 50,50.',
+    'If it is a kind of game recipe covers (platformer, top_down, shooter, driving…), read that recipe first.',
     'Build it step by step, small and playable first (load_tools group "scenes,maps,blocks" gets the tools for it):',
     '1. set_scene scene 0 with the game’s title as its name; set_scene scene 2 with a level name. Give names only: the scenes’ files are already set.',
     '2. Shape the level with set_map (walls, open ground, a few pickups) using the level’s own blocks (list_blocks first).',
