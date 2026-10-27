@@ -1,7 +1,7 @@
 IN THE YEAR 2000!
 A Future Adventure
 Sandbox Software, (C) 1993
-Version 1.0
+Version 1.1
 ==============================
 
 It's the year 2000! Cars fly.

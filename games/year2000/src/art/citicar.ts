@@ -82,9 +82,9 @@ export function flyingCiticar(k: number): Pixels {
 }
 
 /**
- * The flying CitiCar from behind, for the Cloud Lane (one block). The rear is all body: a
- * CitiCar has no back window, only the flat red tail under the black roof. The racing stripes
- * run along the sides, so from behind they show only as the sides' edges: two charcoal stripes
+ * The flying CitiCar from behind, for the Cloud Lane (one block). Its flat tail has the back
+ * window up top, under the black roof (from the side there is no window behind the door). The
+ * racing stripes run along the sides, so from behind they show only as the sides' edges: two charcoal stripes
  * with red between and a white pinstripe either side. Tail lights, the square black bumper,
  * white wheels under it, the charge port on the passenger side (on the right, from behind), the
  * stubby wings, and a teal hum underneath. `bank` tips the wings: -1 steering left, 1 right.
@@ -106,6 +106,9 @@ export function citicarRear(k: number, bank = 0): Pixels {
   // the flat red tail: lit on the left, shaded on the right
   for (let y = 4; y < 14; y++) for (let x = 4; x < 16; x++) p.set(x, y, x < 6 ? ink0.body[2] : x > 13 ? ink0.body[0] : ink0.body[1]);
   p.rect(4, 8, 12, 1, ink0.trim);
+  // the back window: a wide pane of glass across the top of the tail, between the rear pillars
+  p.rect(6, 4, 8, 4, ink0.glass[0]).rect(6, 4, 8, 1, ink0.glass[1]);
+  p.set(7, 5, ink0.glass[1]).set(8, 6, ink0.glass[1]);
   // the black roof on top
   p.rect(5, 2, 10, 2, ink0.roof).set(4, 3, ink0.roof).set(15, 3, ink0.roof);
   // the sides' edges, with the stripes: pinstripe, charcoal, red, charcoal, pinstripe
