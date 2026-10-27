@@ -42,7 +42,7 @@
       ["s1a.map", 2, 50],
       ["s3c.map", 2, 44],
       ["s1c.map", 2, 45],
-      ["bus4.map", 0, 0],
+      ["bus4.map", 0, 0, { "tick": 525 }],
       ["s5c.map", 2, 45]
     ],
     "rating": "Ages 8 and up",
