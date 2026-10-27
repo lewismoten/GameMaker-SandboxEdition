@@ -1,6 +1,7 @@
 // The narration's index, public/tour/voice/index.json: for each clip id, its chapter, where the
 // tour uses it, the words it says, how long it plays and hashes of the words and of the voice
-// sample, so scripts/narrate.ts records only lines whose words (or voice) changed. Pure
+// voice (its sample, pitch and speed), so scripts/narrate.ts records only lines whose words (or
+// voice) changed. Pure
 // functions, no models, so tests can run them.
 import { createHash } from 'node:crypto';
 
@@ -11,6 +12,8 @@ export interface Line {
   /** Where the tour uses it, e.g. "Home: points at the New game button". */
   where?: string;
   text: string;
+  /** Whose voice: a named sample, shifted in pitch and speed (left out: the default sample, as is). */
+  voice?: { sample: string; semitones?: number; tempo?: number };
 }
 
 export interface IndexEntry {
@@ -21,7 +24,7 @@ export interface IndexEntry {
   seconds: number;
   /** textHash(text) when the clip was recorded. */
   hash: string;
-  /** textHash of the voice sample's bytes the clip was cloned from. */
+  /** textHash of the voice the clip was recorded in: its sample's bytes, pitch and speed. */
   voice: string;
 }
 
@@ -59,8 +62,8 @@ export interface PlanOptions {
   force?: boolean;
   /** Record only these ids (a retake), whether or not they changed. */
   only?: string[];
-  /** The voice sample's hash; a clip from another sample is recorded again. */
-  voice: string;
+  /** The hash of a line's voice; a clip in another voice is recorded again. */
+  voice: string | ((line: Line) => string);
   /** Whether a clip's file (its path under the voice folder) is there. */
   exists: (path: string) => boolean;
 }
@@ -71,7 +74,8 @@ export function planTakes(lines: Line[], index: VoiceIndex, o: PlanOptions): str
   return lines
     .filter((l) => {
       const e = index[l.id];
-      return o.force || !e || e.hash !== textHash(l.text) || e.voice !== o.voice || !o.exists(clipPath(l));
+      const voice = typeof o.voice === 'string' ? o.voice : o.voice(l);
+      return o.force || !e || e.hash !== textHash(l.text) || e.voice !== voice || !o.exists(clipPath(l));
     })
     .map((l) => l.id);
 }

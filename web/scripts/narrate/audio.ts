@@ -71,6 +71,29 @@ export function normalize(pcm: Float32Array, rate: number): Float32Array {
   return pcm.map((v) => v * gain);
 }
 
+/**
+ * A take in another voice: its pitch moved `semitones` (by playing it faster or slower) and its
+ * speed then set to `tempo` times the original, so a pitch shift alone keeps the words' pace.
+ */
+export function shiftVoice(pcm: Float32Array, rate: number, semitones: number, tempo: number): Float32Array {
+  if (!semitones && tempo === 1) return pcm;
+  const r = 2 ** (semitones / 12);
+  // atempo takes 0.5-2 a stage
+  const stages: number[] = [];
+  for (let t = tempo / r; Math.abs(t - 1) > 1e-6;) {
+    const step = Math.min(2, Math.max(0.5, t));
+    stages.push(step);
+    t /= step;
+  }
+  const filter = [`asetrate=${Math.round(rate * r)}`, `aresample=${rate}`, ...stages.map((t) => `atempo=${t.toFixed(6)}`)].join(',');
+  const input = Buffer.from(pcm.buffer, pcm.byteOffset, pcm.byteLength);
+  const raw = execFileSync(FFMPEG, ['-v', 'error', '-f', 'f32le', '-ar', String(rate), '-ac', '1', '-i', 'pipe:0', '-af', filter, '-f', 'f32le', 'pipe:1'], {
+    input,
+    maxBuffer: 1 << 30,
+  });
+  return new Float32Array(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength));
+}
+
 /** How clips are encoded: Opus's speech mode, mono, at `kbps`, from samples resampled to `rate`. */
 export interface OggOptions {
   kbps: number;

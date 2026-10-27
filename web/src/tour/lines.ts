@@ -4,7 +4,7 @@
 //
 //   import { tourLines } from '../src/tour/lines';
 import { CHAPTERS } from './chapters/index';
-import { HOSTS, type Action, type Chapter, type TourStep } from './steps';
+import { HOSTS, type Action, type Chapter, type HostVoice, type TourStep } from './steps';
 
 export interface TourLine {
   /** The step's id, and the clip's file name without .ogg. */
@@ -17,6 +17,8 @@ export interface TourLine {
   speaker: string;
   /** What the bubble says (the words to record). */
   text: string;
+  /** The speaker's recorded voice. */
+  voice: HostVoice;
 }
 
 const DOING: Record<Action, string> = {
@@ -41,6 +43,9 @@ export function tourLines(): TourLine[] {
   return CHAPTERS.flatMap((c) =>
     c.steps
       .filter((s) => HOSTS[s.speaker ?? c.speaker].voiced)
-      .map((s) => ({ id: s.id, chapter: c.id, where: whereOf(c, s), speaker: HOSTS[s.speaker ?? c.speaker].name, text: s.say })),
+      .map((s) => {
+        const host = HOSTS[s.speaker ?? c.speaker];
+        return { id: s.id, chapter: c.id, where: whereOf(c, s), speaker: host.name, text: s.say, voice: host.voice };
+      }),
   );
 }

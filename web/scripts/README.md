@@ -37,16 +37,18 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     a minute a paragraph, and the names the captions mishear spelled right; everything Lewis said
     is kept as he said it.
 - The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
-  line again) speaks each line of `tour/lines.ts` in Lewis's own cloned voice with Pocket TTS,
+  line again) speaks each line of `tour/lines.ts` in its host's voice (cloned from one of Lewis's voice
+  samples with Pocket TTS, then shifted in pitch and speed as `HOSTS` in `tour/steps.ts` says),
   locally, into `../public/tour/voice/<chapter>/<id>.ogg` (Opus, mono, about 10 kbps), and
   rewrites `index.json` (id → chapter, where, words, seconds and hashes, so unchanged lines are
   skipped) and the generated `README.md` there. Its parts are in `narrate/`: `pocketTts.ts` (the
   engine, ported from pocket-tts-js, MIT), `audio.ts` (ffmpeg in and out: the voice sample's
-  clearest 10 s, even loudness, the Opus encoding), `lineIndex.ts` and `voiceReadme.ts`. The
-  model, the engine and the voice sample stay outside the repo (`--model`, `--engine`,
-  `--sample`, or `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, `NARRATE_SAMPLE`); CI never runs it.
+  clearest 10 s, the pitch and speed shift, even loudness, the Opus encoding), `lineIndex.ts` and `voiceReadme.ts`. The
+  model, the engine and the voice samples stay outside the repo (`--model`, `--engine`, or
+  `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, and `NARRATE_SAMPLE_<NAME>` for a sample named in
+  `SAMPLES`; `--sample <file>` puts every line in one recording, to compare); CI never runs it.
   `npm run voice -- --only <id>` records a retake (each take differs; `--seed <n>` repeats one),
-  `--lines <file.json>` reads `[{ id, chapter, where, text }]` instead of the tour, `--out <dir>`
+  `--lines <file.json>` reads `[{ id, chapter, where, text, voice? }]` instead of the tour, `--out <dir>`
   writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
   record. Never put Lewis's voice samples in the repo, a download or a test fixture.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;

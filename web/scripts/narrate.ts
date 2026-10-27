@@ -14,7 +14,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CLIP_OGG, clearestWindow, normalize, readMono, writeOgg } from './narrate/audio';
+import { CLIP_OGG, clearestWindow, normalize, readMono, shiftVoice, writeOgg } from './narrate/audio';
 import { clipPath, indexJson, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
 import { PocketTts, randomSource } from './narrate/pocketTts';
 import { voiceReadme } from './narrate/voiceReadme';
@@ -23,10 +23,21 @@ const WORKSPACE = join(homedir(), 'Documents/rivers-of-memory-workspace');
 const DEFAULTS = {
   engine: process.env.POCKET_TTS_ENGINE ?? join(WORKSPACE, 'engines/Pocket-TTS'),
   model: process.env.POCKET_TTS_MODEL ?? join(WORKSPACE, 'models/Pocket-TTS-english_2026-04'),
-  // Lewis's own recording, chosen by ear over "Lewie (fast)"; git-ignored, never copied into the repo
-  sample: process.env.NARRATE_SAMPLE ?? fileURLToPath(new URL('../../.for-lewis/voice/lewie-sample-audio.mp3', import.meta.url)),
   out: process.env.NARRATE_OUT ?? 'public/tour/voice',
 };
+
+/**
+ * The voice samples a host's voice names (src/tour/steps.ts HOSTS), all kept outside the repo:
+ * Lewis's own recording (chosen by ear; git-ignored), and his other voices recorded in the
+ * Local Agent Lab's workspace. NARRATE_SAMPLE_<NAME> (e.g. NARRATE_SAMPLE_SCROOBIE) moves one.
+ */
+const SAMPLES: Record<string, string> = {
+  lewis: fileURLToPath(new URL('../../.for-lewis/voice/lewie-sample-audio.mp3', import.meta.url)),
+  scroobie: join(WORKSPACE, 'voices/samples/f2a53d0c-14b9-4919-89fd-582ef03b8c05.webm'),
+  'olden-mon': join(WORKSPACE, 'voices/samples/a6c6994c-ad62-48a0-89e9-81d744701b0e.webm'),
+  'snooty-wiz': join(WORKSPACE, 'voices/samples/3a31070f-6ac7-4868-8b9c-37018e0dc1f4.webm'),
+};
+const samplePath = (name: string) => process.env[`NARRATE_SAMPLE_${name.toUpperCase().replace(/-/g, '_')}`] ?? SAMPLES[name];
 
 function args(argv: string[]) {
   const flags = new Set(['force', 'dry-run', 'wav']);
@@ -47,10 +58,10 @@ async function loadLines(o: Record<string, string | true>): Promise<Line[]> {
   // a path worked out at run time, so this file builds without the tour
   const path = fileURLToPath(new URL('../src/tour/lines', import.meta.url));
   const { tourLines } = (await import(/* @vite-ignore */ path)) as { tourLines: () => Line[] };
-  return tourLines().map(({ id, chapter, where, text }) => ({ id, chapter, where, text }));
+  return tourLines().map(({ id, chapter, where, text, voice }) => ({ id, chapter, where, text, voice }));
 }
 
-const ENV: Record<string, string> = { sample: 'NARRATE_SAMPLE', engine: 'POCKET_TTS_ENGINE', model: 'POCKET_TTS_MODEL' };
+const ENV: Record<string, string> = { sample: 'NARRATE_SAMPLE_<NAME>', engine: 'POCKET_TTS_ENGINE', model: 'POCKET_TTS_MODEL' };
 
 /** The path, or a clear error naming what is missing and how to point at it. */
 function need(path: string, what: string): string {
@@ -67,14 +78,26 @@ async function main() {
   if (problems.length) throw new Error(problems.join('\n'));
   const str = (k: string, d: string) => (typeof o[k] === 'string' ? o[k] : d);
   const out = resolve(str('out', DEFAULTS.out));
-  const sample = need(str('sample', DEFAULTS.sample), 'sample');
+  // --sample puts every line in one recording (to compare samples); otherwise each host's own
+  const override = typeof o.sample === 'string' ? need(o.sample, 'sample') : undefined;
+  const voiceOf = (l: Line) => {
+    const name = l.voice?.sample ?? 'lewis';
+    const path = override ?? samplePath(name);
+    if (!path) throw new Error(`${l.id}: there is no voice sample named ${name} (scripts/narrate.ts SAMPLES)`);
+    return { path, semitones: l.voice?.semitones ?? 0, tempo: l.voice?.tempo ?? 1 };
+  };
+  const sampleHashes = new Map<string, string>();
+  const voiceHash = (l: Line) => {
+    const v = voiceOf(l);
+    if (!sampleHashes.has(v.path)) sampleHashes.set(v.path, textHash(new Uint8Array(readFileSync(need(v.path, 'sample')))));
+    return textHash(`${sampleHashes.get(v.path)}|${v.semitones}|${v.tempo}`);
+  };
   const indexFile = join(out, 'index.json');
   const index: VoiceIndex = existsSync(indexFile) ? JSON.parse(readFileSync(indexFile, 'utf8')) : {};
-  const voice = textHash(new Uint8Array(readFileSync(sample)));
   const only = typeof o.only === 'string' ? o.only.split(',') : undefined;
   const unknown = only?.filter((id) => !lines.some((l) => l.id === id)) ?? [];
   if (unknown.length) throw new Error(`no line has the id ${unknown.join(', ')}`);
-  const todo = planTakes(lines, index, { force: !!o.force, only, voice, exists: (p) => existsSync(join(out, p)) });
+  const todo = planTakes(lines, index, { force: !!o.force, only, voice: voiceHash, exists: (p) => existsSync(join(out, p)) });
   const stale = staleIds(lines, index);
   if (stale.length) console.warn(`in the index but no longer a line (delete their clips by hand): ${stale.join(', ')}`);
   console.log(`${todo.length} of ${lines.length} lines to record into ${out}`);
@@ -90,23 +113,31 @@ async function main() {
 
   const tts = await PocketTts.load(need(str('engine', DEFAULTS.engine), 'engine folder'), need(str('model', DEFAULTS.model), 'model folder'));
   const rate = tts.sampleRate;
-  const reference = clearestWindow(readMono(sample, rate), rate);
-  console.log(`voice: ${sample} (${(reference.length / rate).toFixed(1)} s used)`);
-  const cloned = await tts.cloneVoice(reference);
+  // each sample is cloned once, when a line first needs it
+  const clones = new Map<string, Awaited<ReturnType<typeof tts.cloneVoice>>>();
+  const cloneOf = async (path: string) => {
+    if (!clones.has(path)) {
+      const reference = clearestWindow(readMono(path, rate), rate);
+      console.log(`voice: ${path} (${(reference.length / rate).toFixed(1)} s used)`);
+      clones.set(path, await tts.cloneVoice(reference));
+    }
+    return clones.get(path)!;
+  };
   const ogg = { kbps: Number(str('kbps', String(CLIP_OGG.kbps))), rate: Number(str('rate', String(CLIP_OGG.rate))) };
   const seed = typeof o.seed === 'string' ? Number(o.seed) : undefined;
   let spoken = 0;
   let spent = 0;
   for (const id of todo) {
     const line = lines.find((l) => l.id === id)!;
-    const take = await tts.generate(line.text, cloned, randomSource(seed));
-    take.audio = normalize(take.audio, rate);
+    const v = voiceOf(line);
+    const take = await tts.generate(line.text, await cloneOf(v.path), randomSource(seed));
+    take.audio = normalize(shiftVoice(take.audio, rate, v.semitones, v.tempo), rate);
     const seconds = Math.round((take.audio.length / rate) * 100) / 100;
     const file = join(out, clipPath(line));
     mkdirSync(dirname(file), { recursive: true });
     writeOgg(file, take.audio, rate, ogg);
     if (o.wav) writeWav(file.replace(/\.ogg$/, '.wav'), take.audio, rate);
-    index[id] = { chapter: line.chapter, where: line.where ?? '', text: line.text, seconds, hash: textHash(line.text), voice };
+    index[id] = { chapter: line.chapter, where: line.where ?? '', text: line.text, seconds, hash: textHash(line.text), voice: voiceHash(line) };
     save();
     ((spoken += seconds), (spent += take.genSeconds));
     console.log(`  ${clipPath(line)}: ${seconds.toFixed(2)} s in ${take.genSeconds.toFixed(1)} s`);

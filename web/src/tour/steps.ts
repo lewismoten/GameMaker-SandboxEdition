@@ -8,12 +8,23 @@
 export type PageKey = 'home' | 'guide' | 'library' | 'achievements' | 'cast' | 'credits' | 'magazine' | 'editor' | 'mac' | 'windows' | 'linux' | 'desk' | 'dos';
 
 /** Who can host or appear: sprites in public/cast/sprites.json from Sandbox games (never a secret game's). */
+/**
+ * The voice a host's lines are recorded in (scripts/narrate.ts): one of Lewis's voice samples
+ * by name (kept outside the repo), shifted `semitones` in pitch and played `tempo` times as fast.
+ * Only Doc Leo sounds like Lewis himself.
+ */
+export interface HostVoice {
+  sample: 'lewis' | 'scroobie' | 'olden-mon' | 'snooty-wiz';
+  semitones: number;
+  tempo: number;
+}
+
 export const HOSTS = {
-  // Teddy barks (his own woof sound), so his lines get no recorded voice
-  teddy: { name: 'Teddy', game: 'teddy', scale: 3, voiced: false },
-  gwinn: { name: 'Gwinn', game: 'teddy2', scale: 3, voiced: true },
-  leo: { name: 'Doc Leo', game: 'teddy', scale: 2, voiced: true },
-} as const;
+  // Teddy barks (his own woof sound), so his lines get no recorded voice; the voice is ready for when he talks
+  teddy: { name: 'Teddy', game: 'teddy', scale: 3, voiced: false, voice: { sample: 'scroobie', semitones: 5, tempo: 1.12 } },
+  gwinn: { name: 'Gwinn', game: 'teddy2', scale: 3, voiced: true, voice: { sample: 'lewis', semitones: 4, tempo: 1 } },
+  leo: { name: 'Doc Leo', game: 'teddy', scale: 2, voiced: true, voice: { sample: 'lewis', semitones: 0, tempo: 1 } },
+} satisfies Record<string, { name: string; game: string; scale: number; voiced: boolean; voice: HostVoice }>;
 export type HostId = keyof typeof HOSTS;
 
 /** Things that can wander through a step (a game's monster or object). */
