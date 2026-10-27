@@ -93,6 +93,12 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
   const open = (at: number) => {
     showWait();
     menu.hidden = false;
+    // the DOS page's bar scrolls sideways on a phone and would cut it off: placed by the window there (and on the desk's wall)
+    if (button.closest('.dos-bar, .desk-bar')) {
+      const r = button.getBoundingClientRect();
+      menu.style.top = `${r.bottom + 6}px`;
+      menu.style.right = `${Math.max(8, innerWidth - r.right)}px`;
+    }
     button.setAttribute('aria-expanded', 'true');
     focusItem(at);
   };

@@ -35,9 +35,8 @@
   font-weight: 700;
 }
 :is(.desk-bar, .dos-bar) .tour-wrap > .topbar-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 6px);
+  /* placed under the button by tourButton.ts */
+  position: fixed;
   z-index: 960;
   display: flex;
   flex-direction: column;
