@@ -13,6 +13,8 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
     [
       ['the desk, the magazine or the level check', /^(desk|manual\/magazine|editor\/check)\//],
       ['the Library or the paper in the boxes', /^(library|manual\/printables)\//],
+      // only the ? button and its page list: the tour itself loads when one starts
+      ['the guided tour', /^tour\/(?!tourButton\.|tourPages\.|steps\.)/],
     ],
   ],
   [

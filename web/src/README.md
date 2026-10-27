@@ -41,7 +41,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
   Desk | DOS | Web switch.
-- [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, AI setup, back up / restore), its items also in the narrow ⋯ menu.
+- [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, the guided tour, AI setup, back up / restore), its items also in the narrow ⋯ menu.
 - [`theme.ts`](theme.ts): light or dark for today's web, as the Settings menu's Theme item. [`edition.ts`](edition.ts): the fork's
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
   Windows and Linux pages, the cast, credits and achievements), or a row of its section links
@@ -128,6 +128,10 @@ Each area's own README says what each of its files does; the short ones are desc
   AI tools and the people.
 - [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the
   page and ACHIEVE.EXE.
+
+- [`tour/`](tour/README.md): the guided tour: characters from the games point at and press the
+  page's controls while another explains them, with captions, a Sandbox game's music and a
+  recording mode; started from the header's ? button, ⚙ Settings or `#/?tour=all`.
 
 ### The assistant: AI tools working on a game
 
