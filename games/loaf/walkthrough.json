@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19767,
+  "frames": 19768,
   "chapters": [
    {
     "title": "Opening",
@@ -75,7 +75,7 @@
    },
    {
     "title": "Credits",
-    "frame": 17679
+    "frame": 17680
    }
   ]
  }
