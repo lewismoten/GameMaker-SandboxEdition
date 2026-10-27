@@ -5,6 +5,8 @@
 // living room at dusk in gloom. Carl's red eyes, the lamps, the clock and the stereo's lights
 // keep their own light everywhere.
 import { PaletteBuilder } from '../../../kit/palette';
+import { type Pal, wrap } from '../../../kit/palRamps';
+export { type Pal } from '../../../kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'day' | 'kitchen' | 'night' | 'yard' | 'doc' | 'gloom' | 'plain';
@@ -114,25 +116,6 @@ const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
     add: [0, 0, 0],
   },
 };
-
-export interface Pal {
-  pal: Uint8Array;
-  r: (name: string) => number[];
-  /** Shade k of a ramp, clamped. */
-  c: (name: string, k: number) => number;
-}
-
-function wrap(b: PaletteBuilder): Pal {
-  const r = (name: string) => b.get(name);
-  return {
-    pal: b.pal,
-    r,
-    c: (name, k) => {
-      const ramp = r(name);
-      return ramp[Math.max(0, Math.min(ramp.length - 1, k))];
-    },
-  };
-}
 
 /** The level palettes: every ramp in the same place, lit for the place, and its sky. */
 export function buildPalette(light: Light): Pal {

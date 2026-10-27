@@ -2,6 +2,8 @@
 // time of day. The block art never changes between scenes; the .PAL does, so the same
 // street goes from a pink winter morning to a blue night with glowing windows.
 import { PaletteBuilder } from '../../../kit/palette';
+import { type Pal, wrap } from '../../../kit/palRamps';
+export { type Pal } from '../../../kit/palRamps';
 
 type RGB = [number, number, number];
 export type TimeOfDay = 'morning' | 'noon' | 'dusk' | 'night';
@@ -39,13 +41,6 @@ const SKY: Record<TimeOfDay, { mul: RGB; add: RGB }> = {
   night: { mul: [0.48, 0.54, 0.8], add: [6, 10, 26] },
 };
 
-export interface Pal {
-  pal: Uint8Array;
-  r: (name: string) => number[];
-  /** Shade k of a ramp, clamped. */
-  c: (name: string, k: number) => number;
-}
-
 export function buildPalette(time: TimeOfDay): Pal {
   const b = new PaletteBuilder();
   b.designerColors();
@@ -68,18 +63,6 @@ export function buildPalette(time: TimeOfDay): Pal {
     b.ramp(name, n, f(from), f(to), mid ? f(mid) : undefined);
   }
   return wrap(b);
-}
-
-function wrap(b: PaletteBuilder): Pal {
-  const r = (name: string) => b.get(name);
-  return {
-    pal: b.pal,
-    r,
-    c: (name, k) => {
-      const ramp = r(name);
-      return ramp[Math.max(0, Math.min(ramp.length - 1, k))];
-    },
-  };
 }
 
 /** The same ramps (noon) plus sky gradients and text inks for the 320x200 screens. */
