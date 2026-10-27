@@ -5,6 +5,8 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, type Tool } from '@modelcontextprotocol/sdk/types.js';
 import { GAME_TOOL_DEFS } from '../../src/assistant/tools/index';
 import { runTool } from '../../src/assistant/tools/run';
+import { MemoryContext } from '../../src/assistant/tools/memoryContext';
+import { GameFiles } from '../../src/project/files';
 import { fail, type ToolResult } from '../../src/assistant/tools/types';
 import { SERVER_TOOLS, runServerTool, type ServerState } from './serverTools';
 import { EDITOR_TOOL_SPECS } from '../../src/assistant/bridge/editorTools';
@@ -35,6 +37,8 @@ export async function callTool(state: ServerState, name: string, args: unknown):
     return state.bridge ? state.bridge.call(name, a, timeoutFor(name, a)) : fail('This server has no editor bridge.');
   const def = GAME_TOOL_DEFS.find((t) => t.name === name);
   if (!def) return fail(`There is no tool ${name}.`);
+  // a reference such as the recipes runs here, open game or not
+  if (def.noGame) return runTool(def, args, state.game?.ctx ?? new MemoryContext(new GameFiles(), 'none.gam'));
   if (state.target === 'editor' && state.bridge) return state.bridge.call(name, a, timeoutFor(name, a));
   if (!state.game) return fail('No game is open: open_game (list_games lists them) or new_game first.');
   return runTool(def, args, state.game.ctx);
@@ -46,7 +50,7 @@ export function createServer(state: ServerState): Server {
   const server = new Server(SERVER_INFO, {
     capabilities: { tools: {} },
     instructions:
-      'Game-Maker: Sandbox Edition games (DOS Game-Maker 3.0 files). list_games, then open_game or new_game; game_summary; get_/set_ tools change files in memory (dry_run to preview); level_check and bot_playtest test; render_png shows; save writes to the working folder.',
+      'Game-Maker: Sandbox Edition games (DOS Game-Maker 3.0 files). list_games, then open_game or new_game; game_summary; get_/set_ tools change files in memory (dry_run to preview); level_check and bot_playtest test; render_png shows; save writes to the working folder. recipe lists how-tos for kinds of levels (platformer, keys and locks…); read one before building that kind.',
   });
   server.setRequestHandler(ListToolsRequestSchema, () => ({ tools: listed() }));
   server.setRequestHandler(CallToolRequestSchema, async (req) => callTool(state, req.params.name, req.params.arguments ?? {}));

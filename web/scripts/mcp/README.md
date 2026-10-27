@@ -54,6 +54,7 @@ npm run --silent mcp -- --root ~/GameMakerWork
 | `validate`, `level_check` | The quick file check, and the editor's Level check as JSON. |
 | `bot_playtest`, `record_walkthrough` | The walkthrough bot plays the game: won, the route, the time. |
 | `render_png` | A map region, block sheet, monster or hero frame, title or menu screen, as an image. |
+| `recipe` | How-tos for kinds of level (platformer, keys and locks, shooter…), or their list. Needs no open game. |
 | `export_game` | The DOS, web page, web app, web player, Windows, Mac or Linux download. |
 
 `export_game` reads the players and page templates from a built site: `web/dist` after
@@ -190,7 +191,7 @@ assistant works, the game's contents are sent to that AI.
 Small local models work best with a small context. In AI setup's **More settings**, set the
 context size (Ollama's `num_ctx`, 8,192 by default; 4,096 works). The chat then:
 
-- starts the model with a few tools (about 280 tokens of definitions instead of about 6,400)
+- starts the model with a few tools (about 340 tokens of definitions instead of about 6,400)
   and lets it load a group (maps, blocks, scenes…) when it needs one;
 - cuts big results short, and near the limit puts older turns away for a short summary
   (**Compact now** does it on request; **Reset** starts a fresh context);

@@ -43,6 +43,15 @@ describe('the MCP server', () => {
     expect(tools.find((t) => t.name === 'set_map')!.annotations?.readOnlyHint).toBe(false);
   });
 
+  it('reads the recipes with no game open', async () => {
+    const client = await connect({ roots: new Roots([work]) });
+    expect(textOf(await client.callTool({ name: 'recipe', arguments: {} }))).toMatch(/keys_locks: /);
+    const one = await client.callTool({ name: 'recipe', arguments: { topic: 'platformer' } });
+    expect(one.isError).toBeFalsy();
+    expect(textOf(one)).toMatch(/gravity: 4/);
+    expect((await client.callTool({ name: 'get_map', arguments: { file: 'a.map' } })).isError).toBe(true);
+  });
+
   it('lists the CD’s and this project’s games, never a secret one', async () => {
     const client = await connect({ roots: new Roots([work]) });
     const { games } = jsonOf(await client.callTool({ name: 'list_games', arguments: {} }));
