@@ -175,6 +175,326 @@
     "hash": "15bc6ecf1439",
     "voice": "ec6d8641063d"
   },
+  "desk-bye": {
+    "chapter": "desk",
+    "where": "Desk: Lewie says goodbye and walks off",
+    "text": "That’s my room. Now, who wants to make a game?",
+    "seconds": 4.16,
+    "hash": "77dce2f74265",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-clock": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the wall clock",
+    "text": "A giant wristwatch makes a fine wall clock. Turn the lights off and its hands glow.",
+    "seconds": 6.48,
+    "hash": "f438621d51ee",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-diskbox": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the disk box",
+    "text": "The disk box has a floppy for every game. Pick one and it goes in drive A: and starts.",
+    "seconds": 6.63,
+    "hash": "f270a0cfbf72",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-drive": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at drive A:",
+    "text": "That’s drive A:. With a disk in, buttons beside it play it, design it, or open it in today’s web.",
+    "seconds": 7.91,
+    "hash": "07d0e10c6717",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-enlarge": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Enlarge screen button",
+    "text": "This little button fills the window with the screen. Back to the desk brings the room back.",
+    "seconds": 5.67,
+    "hash": "cbfbe551a43c",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-gmbox": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Game-Maker box",
+    "text": "The Game-Maker box: turn it over, read the Owner’s Guide, or put the CD in and start Game-Maker.",
+    "seconds": 7.84,
+    "hash": "f763b83b3159",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-guides": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the ? Guides button",
+    "text": "Press the question mark any time to see this tour again.",
+    "seconds": 3.84,
+    "hash": "4b700eebbfe7",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-hello": {
+    "chapter": "desk",
+    "where": "Desk: Lewie comes on",
+    "text": "Hey, I’m Lewie. Welcome to my room! It’s December 1994, and this PC is where the games get made.",
+    "seconds": 9.04,
+    "hash": "6c2fce5257d6",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-keyboard": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the keyboard",
+    "text": "Type on your own keyboard, or click the keys here to press them on the PC.",
+    "seconds": 5.28,
+    "hash": "3d4dc4a8431f",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-modem": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the modem",
+    "text": "The modem calls the BBS, where you can download more games. Click its speed to change it.",
+    "seconds": 7.27,
+    "hash": "e31c99bd4c10",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-pad": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the game pad",
+    "text": "The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons.",
+    "seconds": 7.27,
+    "hash": "56f894f2c959",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-papers": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the catalog and the magazine",
+    "text": "The shareware catalog and TURBO BUTTON magazine. Read either one; the catalog can even call the BBS.",
+    "seconds": 7.04,
+    "hash": "241a602418ee",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-phone": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the wall phone",
+    "text": "The phone really dials. Try the numbers on Mom’s notes, or call for the time and the weather.",
+    "seconds": 6.24,
+    "hash": "78f027c75ef9",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-poster": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the poster",
+    "text": "My big plan: shovel snow all winter to buy Game-Maker. Eighty-nine dollars, plus four for shipping!",
+    "seconds": 7.76,
+    "hash": "82d484c179ab",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-power": {
+    "chapter": "desk",
+    "where": "Desk: Lewie presses the Power button",
+    "text": "Power switches the PC on. It boots DOS, just like a real one.",
+    "seconds": 4.71,
+    "hash": "b6a32eb82a09",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-screen": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the screen",
+    "text": "Everything runs on this screen: the DOS prompt, Game-Maker, the games, even the BBS.",
+    "seconds": 6.72,
+    "hash": "75b37f5beee3",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-shelf": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the shelf of game boxes",
+    "text": "My shelf has a box for every game. Take one down to turn it over, read its manual, or play it.",
+    "seconds": 7.27,
+    "hash": "d37f54a3f52d",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-sticky": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Too retro? sticky note",
+    "text": "Too retro? This note takes you to today’s web, with all the same games.",
+    "seconds": 5.44,
+    "hash": "b5ed04424f02",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-switch": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Desk, DOS and Web switch",
+    "text": "Desk, DOS and Web switch views. DOS is this same PC, filling the whole window.",
+    "seconds": 6.72,
+    "hash": "f399c6bdf71a",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-turbo": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Turbo button",
+    "text": "Turbo runs it at full speed. Switch it off and games crawl along like on an old 286.",
+    "seconds": 5.99,
+    "hash": "e951b6e40564",
+    "voice": "9af0a3c00d49"
+  },
+  "dos-bbs": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at BBS in the ⋯ menu",
+    "text": "BBS dials the board with the modem. The line speed under it says how fast.",
+    "seconds": 6.67,
+    "hash": "0ba4a57e1354",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-blaster": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at Sound Blaster card in the ⋯ menu",
+    "text": "Without the Sound Blaster card, games beep their sounds on the PC speaker.",
+    "seconds": 6.19,
+    "hash": "d94165da063f",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-bye": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks says goodbye and walks off",
+    "text": "That concludes the tour! Now, if you’ll excuse me, THE CHEZ needs charging.",
+    "seconds": 9.07,
+    "hash": "74b3049398b6",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-card": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the registration card",
+    "text": "Or mail the registration card. Once the reply comes, Game-Maker stops asking.",
+    "seconds": 7.39,
+    "hash": "e2ac3ccb8a4c",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-check": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the screen",
+    "text": "Game-Maker may ask for a word from its Owner’s Guide. That was copy protection, back in 1994.",
+    "seconds": 9.07,
+    "hash": "5b7f83de17b7",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-disks": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Disks button",
+    "text": "Disks is your disk box: Play, Design, or just Insert any game’s floppy in drive A:.",
+    "seconds": 9.47,
+    "hash": "bb46ff3d5cee",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-full": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Full screen button",
+    "text": "Full screen hides everything else, the browser too.",
+    "seconds": 4.83,
+    "hash": "afbcc9d9a70e",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-gm": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Game-Maker button",
+    "text": "The Game-Maker button takes you back to it from anywhere, with its CD in drive D:.",
+    "seconds": 6.19,
+    "hash": "99c4640f8c11",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-guide": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Owner’s Guide beside the screen",
+    "text": "The guide opens beside it, at the right page, the word marked. Type the word and you’re in.",
+    "seconds": 12.75,
+    "hash": "ddb471c39d84",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-hello": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks comes on",
+    "text": "Professor Fiddlesticks, at your service! This is the very same PC, minus the room, filling the window.",
+    "seconds": 10.11,
+    "hash": "727cc148b732",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-keys": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Keys button",
+    "text": "No keyboard? Keys opens big on-screen keys for the PC.",
+    "seconds": 6.75,
+    "hash": "c060f7421fb8",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-links": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Links button",
+    "text": "Links lists addresses that open this page on a game, at the prompt, or on the BBS.",
+    "seconds": 8.75,
+    "hash": "ebfbc898026d",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-manuals": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at Owner’s Guide in the ⋯ menu",
+    "text": "The Owner’s Guide is Game-Maker’s manual. The Ultimate Guide has the advanced tips and tricks.",
+    "seconds": 10.51,
+    "hash": "8107bc6c729a",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-menus": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the screen",
+    "text": "Then its menus: Play runs a game in PLAYGAME, Design opens the tools that make one, Quit goes to DOS.",
+    "seconds": 9.63,
+    "hash": "b89a4d1a8ffb",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-power": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Power button",
+    "text": "Power switches it on and off. Off is really off: the next start is a fresh boot.",
+    "seconds": 7.55,
+    "hash": "e987e472ed87",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-prompt": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks talks",
+    "text": "At the DOS prompt, type GM to come back, or a game’s name on its disk to play it.",
+    "seconds": 7.07,
+    "hash": "1164f11f237b",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-reset": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at Reset in the ⋯ menu",
+    "text": "Reset restarts the PC, like the button on the front of the case.",
+    "seconds": 6.59,
+    "hash": "8fa3b1d6798f",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-sound": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Sound button",
+    "text": "Sound switches the PC’s sound on and off.",
+    "seconds": 5.95,
+    "hash": "d4e46d4e96e2",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-switch": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Desk, DOS and Web switch",
+    "text": "Desk takes you back to the room around this PC, and Web to today’s site.",
+    "seconds": 7.15,
+    "hash": "6776afcae57d",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-turbo": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Turbo button",
+    "text": "Turbo is sixty-six megahertz of pure speed. Off, it plods along like an old 286.",
+    "seconds": 8.35,
+    "hash": "f0786c04d966",
+    "voice": "532d1bbf3a1e"
+  },
   "editor-assistant": {
     "chapter": "editor",
     "where": "Editor: Watt points at the Assistant button",

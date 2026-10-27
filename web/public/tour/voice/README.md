@@ -17,13 +17,13 @@ records every clip again.
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
 | [home-hello.ogg](home/home-hello.ogg) | Hi! I’m Gwinn. This little guy is my brother Teddy. He and I will show you around. | Home: Gwinn comes on | 5.54 |
+| [home-another.ogg](home/home-another.ogg) | Another picks a different game at random. Ooh, good one. | Home: Teddy presses the Another button | 4.15 |
 | [home-tiles.ogg](home/home-tiles.ogg) | Pick any tile and its game moves up top. | Home: Teddy presses a game tile | 3.57 |
 | [home-showcase.ogg](home/home-showcase.ogg) | Up top is one game, shown big. Its picture plays a short demo of the game. | Home: Teddy points at the big game picture at the top | 5.64 |
 | [home-play.ogg](home/home-play.ogg) | Play starts it right here in your browser, with the keyboard or a gamepad. | Home: Teddy presses the Play button | 5.02 |
 | [home-look.ogg](home/home-look.ogg) | Look inside opens its files in the editor, just as they shipped. Change something and you get a copy of your own. | Home: Teddy points at the Look inside button | 7.65 |
 | [home-walkthrough.ogg](home/home-walkthrough.ogg) | Stuck? Walkthrough plays the whole game for you, start to finish. | Home: Teddy points at the Walkthrough button | 4.30 |
 | [home-download.ogg](home/home-download.ogg) | Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS. | Home: Teddy points at the Download button | 6.22 |
-| [home-another.ogg](home/home-another.ogg) | Another picks a different game at random. Ooh, good one. | Home: Teddy presses the Another button | 4.15 |
 | [home-tabs.ogg](home/home-tabs.ogg) | These tabs are the collections: your games, ones you bring in, and shelves of games ready to play. | Home: Teddy points at the collection tabs | 6.42 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
 | [home-new.ogg](home/home-new.ogg) | New game starts one of your own: ready to play, empty, or described in words for your own AI to build. | Home: Teddy presses the New game button | 7.24 |
@@ -138,3 +138,53 @@ records every clip again.
 | [editor-assistant.ogg](editor/editor-assistant.ogg) | The Assistant lets your own AI look at a game and change it with you. Set it up in Settings first. | Editor: Watt points at the Assistant button | 5.94 |
 | [editor-copy.ogg](editor/editor-copy.ogg) | Ready to make it yours? Edit a copy, and start changing things. | Editor: Watt points at the Edit a copy button | 4.64 |
 | [editor-bye.ogg](editor/editor-bye.ogg) | Time to recharge. Happy making! Beep. | Editor: Watt says goodbye and walks off | 3.42 |
+
+## desk
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [desk-hello.ogg](desk/desk-hello.ogg) | Hey, I’m Lewie. Welcome to my room! It’s December 1994, and this PC is where the games get made. | Desk: Lewie comes on | 9.04 |
+| [desk-power.ogg](desk/desk-power.ogg) | Power switches the PC on. It boots DOS, just like a real one. | Desk: Lewie presses the Power button | 4.71 |
+| [desk-screen.ogg](desk/desk-screen.ogg) | Everything runs on this screen: the DOS prompt, Game-Maker, the games, even the BBS. | Desk: Lewie points at the screen | 6.72 |
+| [desk-enlarge.ogg](desk/desk-enlarge.ogg) | This little button fills the window with the screen. Back to the desk brings the room back. | Desk: Lewie points at the Enlarge screen button | 5.67 |
+| [desk-turbo.ogg](desk/desk-turbo.ogg) | Turbo runs it at full speed. Switch it off and games crawl along like on an old 286. | Desk: Lewie points at the Turbo button | 5.99 |
+| [desk-diskbox.ogg](desk/desk-diskbox.ogg) | The disk box has a floppy for every game. Pick one and it goes in drive A: and starts. | Desk: Lewie points at the disk box | 6.63 |
+| [desk-drive.ogg](desk/desk-drive.ogg) | That’s drive A:. With a disk in, buttons beside it play it, design it, or open it in today’s web. | Desk: Lewie points at drive A: | 7.91 |
+| [desk-gmbox.ogg](desk/desk-gmbox.ogg) | The Game-Maker box: turn it over, read the Owner’s Guide, or put the CD in and start Game-Maker. | Desk: Lewie points at the Game-Maker box | 7.84 |
+| [desk-keyboard.ogg](desk/desk-keyboard.ogg) | Type on your own keyboard, or click the keys here to press them on the PC. | Desk: Lewie points at the keyboard | 5.28 |
+| [desk-pad.ogg](desk/desk-pad.ogg) | The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons. | Desk: Lewie points at the game pad | 7.27 |
+| [desk-shelf.ogg](desk/desk-shelf.ogg) | My shelf has a box for every game. Take one down to turn it over, read its manual, or play it. | Desk: Lewie points at the shelf of game boxes | 7.27 |
+| [desk-papers.ogg](desk/desk-papers.ogg) | The shareware catalog and TURBO BUTTON magazine. Read either one; the catalog can even call the BBS. | Desk: Lewie points at the catalog and the magazine | 7.04 |
+| [desk-modem.ogg](desk/desk-modem.ogg) | The modem calls the BBS, where you can download more games. Click its speed to change it. | Desk: Lewie points at the modem | 7.27 |
+| [desk-phone.ogg](desk/desk-phone.ogg) | The phone really dials. Try the numbers on Mom’s notes, or call for the time and the weather. | Desk: Lewie points at the wall phone | 6.24 |
+| [desk-clock.ogg](desk/desk-clock.ogg) | A giant wristwatch makes a fine wall clock. Turn the lights off and its hands glow. | Desk: Lewie points at the wall clock | 6.48 |
+| [desk-poster.ogg](desk/desk-poster.ogg) | My big plan: shovel snow all winter to buy Game-Maker. Eighty-nine dollars, plus four for shipping! | Desk: Lewie points at the poster | 7.76 |
+| [desk-sticky.ogg](desk/desk-sticky.ogg) | Too retro? This note takes you to today’s web, with all the same games. | Desk: Lewie points at the Too retro? sticky note | 5.44 |
+| [desk-switch.ogg](desk/desk-switch.ogg) | Desk, DOS and Web switch views. DOS is this same PC, filling the whole window. | Desk: Lewie points at the Desk, DOS and Web switch | 6.72 |
+| [desk-guides.ogg](desk/desk-guides.ogg) | Press the question mark any time to see this tour again. | Desk: Lewie points at the ? Guides button | 3.84 |
+| [desk-bye.ogg](desk/desk-bye.ogg) | That’s my room. Now, who wants to make a game? | Desk: Lewie says goodbye and walks off | 4.16 |
+
+## dos
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [dos-hello.ogg](dos/dos-hello.ogg) | Professor Fiddlesticks, at your service! This is the very same PC, minus the room, filling the window. | DOS: Professor Fiddlesticks comes on | 10.11 |
+| [dos-check.ogg](dos/dos-check.ogg) | Game-Maker may ask for a word from its Owner’s Guide. That was copy protection, back in 1994. | DOS: Professor Fiddlesticks points at the screen | 9.07 |
+| [dos-guide.ogg](dos/dos-guide.ogg) | The guide opens beside it, at the right page, the word marked. Type the word and you’re in. | DOS: Professor Fiddlesticks points at the Owner’s Guide beside the screen | 12.75 |
+| [dos-card.ogg](dos/dos-card.ogg) | Or mail the registration card. Once the reply comes, Game-Maker stops asking. | DOS: Professor Fiddlesticks points at the registration card | 7.39 |
+| [dos-menus.ogg](dos/dos-menus.ogg) | Then its menus: Play runs a game in PLAYGAME, Design opens the tools that make one, Quit goes to DOS. | DOS: Professor Fiddlesticks points at the screen | 9.63 |
+| [dos-prompt.ogg](dos/dos-prompt.ogg) | At the DOS prompt, type GM to come back, or a game’s name on its disk to play it. | DOS: Professor Fiddlesticks talks | 7.07 |
+| [dos-power.ogg](dos/dos-power.ogg) | Power switches it on and off. Off is really off: the next start is a fresh boot. | DOS: Professor Fiddlesticks points at the Power button | 7.55 |
+| [dos-gm.ogg](dos/dos-gm.ogg) | The Game-Maker button takes you back to it from anywhere, with its CD in drive D:. | DOS: Professor Fiddlesticks points at the Game-Maker button | 6.19 |
+| [dos-disks.ogg](dos/dos-disks.ogg) | Disks is your disk box: Play, Design, or just Insert any game’s floppy in drive A:. | DOS: Professor Fiddlesticks points at the Disks button | 9.47 |
+| [dos-turbo.ogg](dos/dos-turbo.ogg) | Turbo is sixty-six megahertz of pure speed. Off, it plods along like an old 286. | DOS: Professor Fiddlesticks points at the Turbo button | 8.35 |
+| [dos-sound.ogg](dos/dos-sound.ogg) | Sound switches the PC’s sound on and off. | DOS: Professor Fiddlesticks points at the Sound button | 5.95 |
+| [dos-full.ogg](dos/dos-full.ogg) | Full screen hides everything else, the browser too. | DOS: Professor Fiddlesticks points at the Full screen button | 4.83 |
+| [dos-reset.ogg](dos/dos-reset.ogg) | Reset restarts the PC, like the button on the front of the case. | DOS: Professor Fiddlesticks points at Reset in the ⋯ menu | 6.59 |
+| [dos-blaster.ogg](dos/dos-blaster.ogg) | Without the Sound Blaster card, games beep their sounds on the PC speaker. | DOS: Professor Fiddlesticks points at Sound Blaster card in the ⋯ menu | 6.19 |
+| [dos-bbs.ogg](dos/dos-bbs.ogg) | BBS dials the board with the modem. The line speed under it says how fast. | DOS: Professor Fiddlesticks points at BBS in the ⋯ menu | 6.67 |
+| [dos-manuals.ogg](dos/dos-manuals.ogg) | The Owner’s Guide is Game-Maker’s manual. The Ultimate Guide has the advanced tips and tricks. | DOS: Professor Fiddlesticks points at Owner’s Guide in the ⋯ menu | 10.51 |
+| [dos-keys.ogg](dos/dos-keys.ogg) | No keyboard? Keys opens big on-screen keys for the PC. | DOS: Professor Fiddlesticks points at the Keys button | 6.75 |
+| [dos-links.ogg](dos/dos-links.ogg) | Links lists addresses that open this page on a game, at the prompt, or on the BBS. | DOS: Professor Fiddlesticks points at the Links button | 8.75 |
+| [dos-switch.ogg](dos/dos-switch.ogg) | Desk takes you back to the room around this PC, and Web to today’s site. | DOS: Professor Fiddlesticks points at the Desk, DOS and Web switch | 7.15 |
+| [dos-bye.ogg](dos/dos-bye.ogg) | That concludes the tour! Now, if you’ll excuse me, THE CHEZ needs charging. | DOS: Professor Fiddlesticks says goodbye and walks off | 9.07 |
