@@ -9,12 +9,16 @@ import { createGame, openGame, type OpenGame } from './session';
 import { listGames } from './sources';
 import { buildExport, EXPORT_FORMATS, type ExportFormat } from './exports';
 import type { Roots } from './roots';
+import type { EditorBridge } from './bridge';
 
-/** What the server's tools share: its roots, the open game, and where the built site is. */
+/** What the server's tools share: its roots, the open game, where the built site is, and the bridge to an editor tab. */
 export interface ServerState {
   roots: Roots;
   game?: OpenGame;
   appDir?: string;
+  bridge?: EditorBridge;
+  /** The game tools work on the project open in the paired editor tab instead of game. */
+  target?: 'editor';
 }
 
 export interface ServerTool extends Omit<ToolDef, 'run'> {
@@ -43,11 +47,11 @@ const listGamesTool: ServerTool = {
 const openGameTool: ServerTool = {
   name: 'open_game',
   description:
-    'Opens a game to work on: a folder or .zip path, sandbox:<id> or cd:<id>. A folder in a writable root is edited in place; anything else is copied to workdir (or a new folder) on save.',
+    'Opens a game to work on: a folder or .zip path, sandbox:<id>, cd:<id>, or editor (the project open in the paired editor tab). A folder in a writable root is edited in place; anything else is copied to workdir on save.',
   inputSchema: {
     type: 'object',
     properties: {
-      source: { type: 'string', description: 'A path, sandbox:<id> or cd:<id> (list_games).' },
+      source: { type: 'string', description: 'A path, sandbox:<id>, cd:<id> (list_games), or editor.' },
       gam: { type: 'string', description: 'Which .gam, when there are several.' },
       workdir: { type: 'string', description: 'A new or empty folder for the copy.' },
       read_only: { type: 'boolean', description: 'Refuse every change.' },
@@ -55,9 +59,22 @@ const openGameTool: ServerTool = {
     required: ['source'],
   },
   async run(a, s) {
+    if (a.source === 'editor') {
+      if (!s.bridge?.paired) return fail('No editor tab is paired: start the bridge with editor_bridge, then pair from the editor’s Assistant button.');
+      s.target = 'editor';
+      const state = await s.bridge.call('editor_state', {});
+      return {
+        ...state,
+        content: [
+          { type: 'text', text: 'The game tools now work on the project open in the editor tab; its own Undo takes back each change.' },
+          ...state.content,
+        ],
+      };
+    }
     if (s.game?.changed)
       return fail(`${s.game.ctx.gam} has unsaved changes (${s.game.unsaved.join(', ')}). save first, or call close_game with discard: true.`);
     s.game = await openGame(s.roots, String(a.source), { gam: a.gam as string, workdir: a.workdir as string, readOnly: a.read_only === true });
+    s.target = undefined;
     return json({ opened: opened(s.game), next: 'game_summary shows its scenes; save writes changes to workdir.' });
   },
 };
@@ -77,6 +94,7 @@ const newGameTool: ServerTool = {
   async run(a, s) {
     if (s.game?.changed) return fail('The open game has unsaved changes: save or close_game first.');
     s.game = createGame(s.roots, String(a.title), a.workdir as string | undefined);
+    s.target = undefined;
     return json({ opened: opened(s.game) });
   },
 };
@@ -140,11 +158,40 @@ const exportTool: ServerTool = {
 };
 
 function need(s: ServerState): OpenGame {
+  if (s.target === 'editor')
+    throw new ToolError('The editor tab saves its project by itself and has its own Download button; open_game a folder to save or export here.');
   if (!s.game) throw new ToolError('No game is open: open_game (list_games lists them) or new_game first.');
   return s.game;
 }
 
-export const SERVER_TOOLS: ServerTool[] = [listGamesTool, openGameTool, newGameTool, closeGame, save, exportTool];
+const bridgeTool: ServerTool = {
+  name: 'editor_bridge',
+  description:
+    'The link to the editor open in a browser tab: start (shows the port and pairing code for the person to type into the editor’s Assistant), status, new_code or stop.',
+  inputSchema: { type: 'object', properties: { action: { type: 'string', enum: ['start', 'status', 'new_code', 'stop'] } }, required: ['action'] },
+  async run(a, s) {
+    const b = s.bridge;
+    if (!b) return fail('This server was started without the editor bridge.');
+    if (a.action === 'stop') {
+      await b.stop();
+      if (s.target === 'editor') s.target = undefined;
+      return json({ running: false });
+    }
+    if (a.action === 'new_code') b.renew();
+    if (a.action !== 'status') await b.start();
+    return json({
+      running: b.port > 0,
+      ...(b.port ? { port: b.port, address: `ws://127.0.0.1:${b.port}`, pairing_code: b.code } : {}),
+      paired: b.paired,
+      ...(b.locked ? { locked: 'Too many wrong codes; new_code makes a new one.' } : {}),
+      ...(b.state ? { editor: b.state } : {}),
+      target: s.target ?? 'folder',
+      how: 'In the editor, open a game, press Assistant, type the port and code, and press Connect. Then open_game with source editor.',
+    });
+  },
+};
+
+export const SERVER_TOOLS: ServerTool[] = [listGamesTool, openGameTool, newGameTool, closeGame, save, exportTool, bridgeTool];
 
 /** Runs a server tool with the same argument checks as the shared ones. */
 export async function runServerTool(t: ServerTool, args: unknown, state: ServerState): Promise<ToolResult> {

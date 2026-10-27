@@ -60,6 +60,42 @@ npm run --silent mcp -- --root ~/GameMakerWork
 `npm run build`, or the folder `--app-dir` names (`vite build --outDir <dir>`). The native
 players come from `web/public`.
 
+## The editor open in a browser tab
+
+The server can also work on the game open in the web editor, live. Changes show as you watch,
+and each one has an Undo.
+
+1. Start the bridge: ask the AI tool to run `editor_bridge` with `action: start`, or start the
+   server with `--bridge`. It listens on 127.0.0.1 only, on a random port, and shows a
+   six-digit pairing code (in the tool's answer, and on standard error with `--bridge`).
+2. In the editor, open the game, press **✦** (Assistant) beside the file's title, type the
+   port and code, and press Connect.
+3. The AI tool calls `open_game` with `source: "editor"`. From then on the game tools work on
+   the open project, through the same code the editors use.
+
+The tab's own tools:
+
+| Tool | What it does |
+| --- | --- |
+| `editor_state` | The project, the open file and its selection, whether a play test runs, read-only. |
+| `editor_open_file` | Opens a file in its editor. |
+| `editor_screenshot` | The editor area's largest canvas (a map, a picture, the game being played) as a PNG. |
+| `editor_play`, `editor_stop_play` | Starts Play Game or Play Level, and reports scenes, score and lives while it watches. You press Play. |
+| `editor_undo` | Takes back the assistant's last change. |
+
+The safety rules:
+
+- Nothing connects until you type the code.
+- Only pages from this computer (`http://localhost:*`, `http://127.0.0.1:*`) and the published
+  site may connect. `--bridge-origin <origin>` adds another.
+- After 10 wrong codes the bridge refuses everyone until `editor_bridge` makes a new code.
+- One tab at a time. While connected, a chip in the corner says so, with Disconnect. Closing
+  the tab disconnects it.
+- Every change shows a toast with Undo.
+- The Assistant's read-only switch keeps the AI tool to looking.
+- The tab saves the project itself, as it always does, so `save` and `export_game` don't
+  apply to it. Use the editor's Download button.
+
 ## Connecting
 
 Use the full path to `web` in place of `/path/to/GameMaker/web`.
@@ -117,6 +153,11 @@ has a name, a short description, a flat JSON Schema and a handler that works on 
 
 - this server wraps them over stdio (`server.ts`). Its own tools (`serverTools.ts`) open
   games from disk, save and export.
+- the editor bridge runs the same handlers in the tab, on the open project
+  (`web/src/assistant/bridge`). The tab-only tools (screenshot, play test, Undo) are separate
+  adapters there.
+- a future chat panel in the editor can hand the same definitions to the model's tool-use API
+  directly.
 - the schemas avoid `$ref` and `oneOf` and keep descriptions short, so they convert cleanly
   to OpenAI-style function calling. Ollama's `/api/chat` and its OpenAI-compatible `/v1`
   take the same shape, and small local models handle flat schemas best.
@@ -130,5 +171,7 @@ has a name, a short description, a flat JSON Schema and a handler that works on 
 | `sources.ts` | Finding and loading games. |
 | `roots.ts` | The folder rules. |
 | `exports.ts` | The downloads, from a built site on disk. |
+| `bridge.ts` | The WebSocket the editor tab pairs with. |
 | `vite.config.ts` | vite-node's settings: no plugins, no watching, no output. |
 | `server.test.ts` | An MCP client drives the server in-process and over stdio. |
+| `bridge.test.ts` | Pairing, origins, the lock-out, and calls going to a tab and back. |
