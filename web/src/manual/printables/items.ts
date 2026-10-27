@@ -4,6 +4,7 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './items.css';
 import type { PrintContext } from './kit';
 import type { BoxItem } from './viewer';
+import type { ReadView } from '../readView';
 import type { GeneratedKind, PrintableItem } from './types';
 import { foldOut, renderItem } from './story';
 import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } from './gen';
@@ -59,7 +60,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
             note: 'Every level’s real map, start and ways out marked',
             icon: '🧭',
             render: () => levels.render(),
-            live: () => levels.live(),
+            reader: (view: ReadView, root: HTMLElement) => levels.reader(view, root),
           },
         ]
       : []),

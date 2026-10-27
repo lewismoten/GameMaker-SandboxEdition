@@ -6,7 +6,7 @@
 // page of its own and, if wanted, full-size pages to tape together (A1, B1... as the World Map
 // does). A course through the wrap (levelCourse.ts) prints as the strip the way runs, turned to
 // run up the page, in panels side by side (levelCourseSvg.ts). Nothing is drawn until the piece
-// is opened or printed, and on screen only the map shown.
+// is opened or printed, and on screen only the map shown (or, scrolled, the maps near the view).
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './levelMaps.css';
 import { h } from '../../editor/core/ui';
@@ -26,6 +26,8 @@ import { unrolledShows } from '../../editor/check/unroll';
 import { BLEN } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
 import { panZoom } from './panZoom';
+import type { Reader, ReadView } from '../readView';
+import { scrollPages, type ScrollPages } from '../scrollPages';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
 const PAGE = { w: 105, h: 80 };
@@ -600,7 +602,9 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
 }
 
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
-export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live(): Promise<HTMLElement>; preview(): Promise<Sheet | undefined> } | undefined {
+export function levelMaps(
+  ctx: PrintContext,
+): { render(): Promise<Sheet[]>; reader(view: ReadView, root: HTMLElement): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
   let loaded: Promise<Loaded | undefined> | undefined;
@@ -636,11 +640,11 @@ export function levelMaps(ctx: PrintContext): { render(): Promise<Sheet[]>; live
       const x = await load();
       return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full) : [];
     },
-    async live() {
+    async reader(view, root) {
       const x = await load();
-      if (!x?.seen.length) return h('p', { class: 'gmb-loading' }, 'This game has no levels to map.');
+      if (!x?.seen.length) return { el: h('p', { class: 'gmb-loading' }, 'This game has no levels to map.'), view: () => {} };
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
-      return levelViewer(x);
+      return levelViewer(x, view, root);
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {
@@ -670,9 +674,10 @@ interface Loaded {
   all: boolean;
 }
 
-/** On screen: a list of the maps, and the one picked in a view to zoom and drag. */
-function levelViewer(opts: Loaded): HTMLElement {
+/** On screen: the maps listed beside the one picked, in a view to zoom and drag (Pages); or every map in one column (Scroll, readView.ts). */
+function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
   const { game, paint, crop } = opts;
+  let view = start;
   const levels = () => (opts.all ? opts.every : opts.seen);
   const holder = h('div', { class: 'lm-view' });
   const list = h('ul', { class: 'lm-list', 'aria-label': 'Maps' });
@@ -708,111 +713,135 @@ function levelViewer(opts: Loaded): HTMLElement {
             onchange: (e: Event) => {
               opts.all = (e.target as HTMLInputElement).checked;
               notePrint();
-              void show(Math.max(0, shown));
+              dropColumn();
+              show(Math.max(0, shown));
             },
           }),
           ' Every block of the map, not just what the player sees',
         ),
       )
     : null;
+  const pad = 3;
+  /** A map's size in blocks as drawn on screen, and (a course) its panels side by side in one row. */
+  const sizeOf = (l: Level) => {
+    if (l.course) {
+      const c = l.course;
+      let across = 0;
+      const which = c.panels.map((_, k) => {
+        const p = { i: k, x: across, y: 0 };
+        across += coursePanelBox(c, k).w + 1.2;
+        return p;
+      });
+      const size = placedSize(c, which);
+      return { w: size.w + pad * 2, ht: size.h + pad * 2, which };
+    }
+    const room = labelRoom(game, l);
+    return { w: levelWidth(l) + pad * 2, ht: Math.max(l.area.h + room.above + room.below, castHeight(l)) + pad * 2 + 1, room };
+  };
+  const caption = (l: Level) =>
+    l.course
+      ? `Scene ${sceneList(game, l)} · ${l.name}${courseNote(l.course)}`
+      : `Scene ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
+  /** The map's drawing, or undefined once another is wanted. */
+  const drawMap = async (l: Level, still: () => boolean): Promise<SVGElement | undefined> => {
+    const { w, ht, which, room } = sizeOf(l);
+    const svg = (label: string, ...art: SVGElement[]) =>
+      el(
+        'svg',
+        { xmlns: 'http://www.w3.org/2000/svg', viewBox: `0 0 ${w} ${ht}`, class: 'lm-svg', role: 'img', 'aria-label': label },
+        el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
+        ...art,
+      );
+    if (l.course) {
+      const urls = await opts.paintCourse(l);
+      if (!still()) return undefined;
+      return svg(
+        `Map of scene ${sceneList(game, l)}, ${l.name}, as you ${l.course.down ? 'ride' : 'fly'} it`,
+        courseSvg(game, l, urls, which!, pad, pad, COLORS, (m) => markText(game, m)),
+      );
+    }
+    const url = await paint(l);
+    if (!still()) return undefined;
+    const cast = l.cast && (await castSvg(game, l, pad + l.area.w + GAP, pad + 1, paint, crop));
+    if (!still()) return undefined;
+    return svg(`Map of scene ${sceneList(game, l)}, ${l.name}`, levelSvg(game, l, url, pad, pad + 1 + room!.above, 1), ...(cast ? [cast] : []));
+  };
+  const legend = (course: boolean) =>
+    h(
+      'p',
+      { class: 'lm-legend' },
+      h('span', { class: 'lm-k lm-k-start' }, '▶ 4'),
+      ' where you arrive in scene 4 ',
+      h('span', { class: 'lm-k lm-k-exit' }, '→ 7'),
+      course ? ' the way to scene 7 · dashed lines are the edges of the map, where the way runs on round it' : ' the way to scene 7 ',
+      ...(course ? [] : [h('span', { class: 'lm-k lm-k-end' }, '⚑'), ' the way to the end']),
+    );
+
+  // ---- Pages: the map picked, to zoom and drag
   let shown = -1;
-  const show = async (i: number) => {
+  const mark = (i: number) => {
     shown = i;
     for (const [k, li] of [...list.children].entries()) li.querySelector('button')?.setAttribute('aria-current', String(k === i));
+  };
+  const showOne = async (i: number) => {
+    mark(i);
     const l = levels()[i];
     stage.replaceChildren(h('p', { class: 'gmb-loading' }, 'Drawing the map…'));
-    if (l.course) return showCourse(i, l);
-    const url = await paint(l);
-    if (shown !== i || levels()[i] !== l) return;
-    const pad = 3;
-    const room = labelRoom(game, l);
-    const w = levelWidth(l) + pad * 2;
-    const ht = Math.max(l.area.h + room.above + room.below, castHeight(l)) + pad * 2 + 1;
-    const cast = l.cast && (await castSvg(game, l, pad + l.area.w + GAP, pad + 1, paint, crop));
-    if (shown !== i || levels()[i] !== l) return;
-    const svg = el(
-      'svg',
-      {
-        xmlns: 'http://www.w3.org/2000/svg',
-        viewBox: `0 0 ${w} ${ht}`,
-        class: 'lm-svg',
-        role: 'img',
-        'aria-label': `Map of scene ${sceneList(game, l)}, ${l.name}`,
-      },
-      el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
-      levelSvg(game, l, url, pad, pad + 1 + room.above, 1),
-      ...(cast ? [cast] : []),
-    );
-    const map = h('div', { class: 'lm-map' }, svg);
-    const pz = panZoom(map, w / 10, `Map of ${l.name}: drag to look around`, 400);
-    stage.replaceChildren(
-      h(
-        'div',
-        { class: 'wm-bar' },
-        ...pz.buttons,
-        h('span', null, `Scene ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`),
-      ),
-      pz.view,
-      h(
-        'p',
-        { class: 'lm-legend' },
-        h('span', { class: 'lm-k lm-k-start' }, '▶ 4'),
-        ' where you arrive in scene 4 ',
-        h('span', { class: 'lm-k lm-k-exit' }, '→ 7'),
-        ' the way to scene 7 ',
-        h('span', { class: 'lm-k lm-k-end' }, '⚑'),
-        ' the way to the end',
-      ),
-    );
-    requestAnimationFrame(() => pz.setZoom(Math.min(Math.max(pz.view.clientWidth - 24, 300), w * 20)));
-  };
-  /** A course: all its panels side by side, start at the foot of the first (the top, on a way down). */
-  const showCourse = async (i: number, l: Level) => {
-    const c = l.course!;
-    const urls = await opts.paintCourse(l);
-    if (shown !== i || levels()[i] !== l) return;
-    const pad = 3;
-    // every panel in one row, in order
-    let across = 0;
-    const which = c.panels.map((_, k) => {
-      const p = { i: k, x: across, y: 0 };
-      across += coursePanelBox(c, k).w + 1.2;
-      return p;
-    });
-    const size = placedSize(c, which);
-    const w = size.w + pad * 2;
-    const ht = size.h + pad * 2;
-    const svg = el(
-      'svg',
-      {
-        xmlns: 'http://www.w3.org/2000/svg',
-        viewBox: `0 0 ${w} ${ht}`,
-        class: 'lm-svg',
-        role: 'img',
-        'aria-label': `Map of scene ${sceneList(game, l)}, ${l.name}, as you ${c.down ? 'ride' : 'fly'} it`,
-      },
-      el('rect', { x: 0, y: 0, width: w, height: ht, fill: '#fffdf7' }),
-      courseSvg(game, l, urls, which, pad, pad, COLORS, (m) => markText(game, m)),
-    );
+    const svg = await drawMap(l, () => shown === i && levels()[i] === l && view === 'pages');
+    if (!svg) return;
+    const { w } = sizeOf(l);
     const pz = panZoom(h('div', { class: 'lm-map' }, svg), w / 10, `Map of ${l.name}: drag to look around`, 400);
-    stage.replaceChildren(
-      h('div', { class: 'wm-bar' }, ...pz.buttons, h('span', null, `Scene ${sceneList(game, l)} · ${l.name}${courseNote(c)}`)),
-      pz.view,
-      h(
-        'p',
-        { class: 'lm-legend' },
-        h('span', { class: 'lm-k lm-k-start' }, '▶ 4'),
-        ' where you arrive in scene 4 ',
-        h('span', { class: 'lm-k lm-k-exit' }, '→ 7'),
-        ' the way to scene 7 · dashed lines are the edges of the map, where the way runs on round it',
-      ),
-    );
+    stage.replaceChildren(h('div', { class: 'wm-bar' }, ...pz.buttons, h('span', null, caption(l))), pz.view, legend(!!l.course));
     requestAnimationFrame(() => pz.setZoom(Math.min(Math.max(pz.view.clientWidth - 24, 300), w * 20)));
   };
+
+  // ---- Scroll: every map in one column, drawn as it nears the view
+  let column: ScrollPages | undefined;
+  const dropColumn = () => {
+    column?.dispose();
+    column = undefined;
+  };
+  const showAll = (i: number) => {
+    if (!column) {
+      const all = levels();
+      column = scrollPages({
+        root,
+        count: all.length,
+        ratio: (k) => {
+          const { w, ht } = sizeOf(all[k]);
+          return ht / w;
+        },
+        page: (k) => {
+          const { w, ht } = sizeOf(all[k]);
+          const map = h('div', { class: 'lm-map', style: `aspect-ratio: ${w} / ${ht}` });
+          void drawMap(all[k], () => !!column).then((svg) => svg && map.replaceChildren(svg));
+          return map;
+        },
+        label: (k) => caption(all[k]),
+        showing: mark,
+      });
+      stage.replaceChildren(legend(all.some((l) => !!l.course)), column.el);
+    }
+    column.scrollTo(i);
+    mark(i);
+  };
+  const show = (i: number) => (view === 'scroll' ? showAll(i) : (dropColumn(), void showOne(i)));
+
   opts.seen.forEach((l, i) =>
-    list.append(h('li', null, h('button', { type: 'button', onclick: () => void show(i) }, h('b', null, sceneList(game, l)), ` ${l.name}`))),
+    list.append(h('li', null, h('button', { type: 'button', onclick: () => show(i) }, h('b', null, sceneList(game, l)), ` ${l.name}`))),
   );
   holder.append(h('div', { class: 'lm-side' }, list, printNote, everyNote), stage);
-  void show(0);
-  return holder;
+  const setView = (v: ReadView) => {
+    view = v;
+    holder.classList.toggle('scrolled', v === 'scroll');
+    if (v === 'pages') root.scrollTop = 0;
+    show(Math.max(0, shown));
+  };
+  setView(start);
+  return {
+    el: holder,
+    view: (v) => v !== view && setView(v),
+    step: (dir) => show(Math.max(0, Math.min(levels().length - 1, shown + dir))),
+    dispose: dropColumn,
+  };
 }
