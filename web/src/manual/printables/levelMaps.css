@@ -156,6 +156,11 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
 
+/* maps of many widths: each starts at the left, under its caption */
+.lm-view .rv-slot {
+  align-items: flex-start;
+}
+
 .lm-view .rv-folio {
   align-self: stretch;
   font: inherit;

@@ -251,6 +251,8 @@
 /* scrolled (readView.ts): every leaf in a column, Back and Next kept at the foot */
 .zine-turner.scrolled {
   padding-top: 4px;
+  /* a leaf zoomed wider than the stage scrolls sideways from its left edge */
+  align-items: safe center;
 }
 
 .zine-turner.scrolled .rv-page > .pp-paper {

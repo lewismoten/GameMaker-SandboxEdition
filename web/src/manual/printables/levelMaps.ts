@@ -27,7 +27,8 @@ import { unrolledShows } from '../../editor/check/unroll';
 import { BLEN } from '../../formats/blocks';
 import { MLEN } from '../../formats/map';
 import { panZoom } from './panZoom';
-import type { Reader, ReadView } from '../readView';
+import type { Reader, ReaderOptions, ReadView } from '../readView';
+import { percentOf, widthAt, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 
 /** A printed page (landscape letter, tenths of an inch), its margin, header and footer. */
@@ -617,7 +618,7 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
 export function levelMaps(
   ctx: PrintContext,
-): { render(): Promise<Sheet[]>; reader(view: ReadView, root: HTMLElement): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
+): { render(): Promise<Sheet[]>; reader(o: ReaderOptions): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
   let loaded: Promise<Loaded | undefined> | undefined;
@@ -657,11 +658,11 @@ export function levelMaps(
       const x = await load();
       return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full) : [];
     },
-    async reader(view, root) {
+    async reader(o) {
       const x = await load();
       if (!x?.seen.length) return { el: h('p', { class: 'gmb-loading' }, 'This game has no levels to map.'), view: () => {} };
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
-      return levelViewer(x, view, root);
+      return levelViewer(x, o);
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {
@@ -692,9 +693,11 @@ interface Loaded {
 }
 
 /** On screen: the maps listed beside the one picked, in a view to zoom and drag (Pages); or every map in one column (Scroll, readView.ts). */
-function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
+function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
   const { game, paint, crop } = opts;
-  let view = start;
+  const { root } = o;
+  let view = o.view;
+  let size: ReadSize = o.size;
   const levels = () => (opts.all ? opts.every : opts.seen);
   const holder = h('div', { class: 'lm-view' });
   const list = h('ul', { class: 'lm-list', 'aria-label': 'Maps' });
@@ -828,6 +831,7 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
           const { w, ht } = sizeOf(all[k]);
           return ht / w;
         },
+        width: widthOf,
         page: (k) => {
           const { w, ht } = sizeOf(all[k]);
           const map = h('div', { class: 'lm-map', style: `aspect-ratio: ${w} / ${ht}` });
@@ -835,13 +839,28 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
           return map;
         },
         label: (k) => caption(all[k]),
-        showing: mark,
+        showing: (k) => (mark(k), told(k)),
       });
       stage.replaceChildren(legend(all.some((l) => !!l.course)), column.el);
+      column.resize();
     }
     column.scrollTo(i);
     mark(i);
+    told(i);
   };
+  // a map's width at the size chosen: 100% is its printed size, a tenth of an inch a block
+  const natural = (k: number) => (sizeOf(levels()[k]).w / 10) * 96;
+  const widthOf = (k: number) => {
+    const { w, ht } = sizeOf(levels()[k]);
+    return widthAt(size, { viewW: stage.clientWidth, viewH: root.clientHeight - 90, natural: natural(k), ratio: ht / w });
+  };
+  const told = (k: number) => o.shown(percentOf(widthOf(k), natural(k)));
+  const refit = () => {
+    if (!column) return;
+    column.resize();
+    told(Math.max(0, column.current));
+  };
+  addEventListener('resize', refit);
   const show = (i: number) => (view === 'scroll' ? showAll(i) : (dropColumn(), void showOne(i)));
 
   opts.seen.forEach((l, i) =>
@@ -854,11 +873,18 @@ function levelViewer(opts: Loaded, start: ReadView, root: HTMLElement): Reader {
     if (v === 'pages') root.scrollTop = 0;
     show(Math.max(0, shown));
   };
-  setView(start);
+  setView(view);
   return {
     el: holder,
     view: (v) => v !== view && setView(v),
+    size: (s) => {
+      size = s;
+      refit();
+    },
     step: (dir) => show(Math.max(0, Math.min(levels().length - 1, shown + dir))),
-    dispose: dropColumn,
+    dispose: () => {
+      dropColumn();
+      removeEventListener('resize', refit);
+    },
   };
 }

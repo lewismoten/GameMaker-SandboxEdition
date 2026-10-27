@@ -8,7 +8,8 @@ import type { BoxItem } from '../printables/viewer';
 import { ZINE, ZINE_TITLE } from './zinePages';
 import { blankLeaf, zineLeaf } from './zineLeaf';
 import { unlockAchievement } from '../../achievements';
-import type { Reader, ReadView } from '../readView';
+import type { Reader, ReaderOptions } from '../readView';
+import { percentOf, widthAt, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 
 const TITLE = `${ZINE_TITLE} #3`;
@@ -23,13 +24,17 @@ function printSheets(): Sheet[] {
   return out;
 }
 
-/** The widest a leaf is shown scrolled. */
+/** The widest Fit width shows a leaf scrolled. */
 const SCROLL_MOST = 560;
+/** A leaf's width at its printed size: 4.25 inches at 96 CSS pixels an inch. */
+const LEAF_PX = 4.25 * 96;
 
 /** One leaf at a time, with Back, Next and where you are; or every leaf in a column (Scroll). */
-function turner(start: ReadView, root: HTMLElement): Reader {
+function turner(o: ReaderOptions): Reader {
+  const { root } = o;
   let at = 0;
-  let view = start;
+  let view = o.view;
+  let size: ReadSize = o.size;
   const leaves = new Map<number, Sheet>();
   const leafAt = (i: number) => {
     let s = leaves.get(i);
@@ -49,7 +54,11 @@ function turner(start: ReadView, root: HTMLElement): Reader {
     next.disabled = at === ZINE.length - 1;
     if (next.disabled) unlockAchievement('zine-read');
   };
-  const fit = () => column?.el.style.setProperty('--rv-w', `${Math.max(160, Math.min(root.clientWidth - 56, SCROLL_MOST))}px`);
+  const width = () => widthAt(size, { viewW: root.clientWidth - 56, viewH: root.clientHeight - 100, natural: LEAF_PX, ratio: 5.5 / 4.25, most: SCROLL_MOST });
+  const fit = () => {
+    column?.resize();
+    o.shown(percentOf(width(), LEAF_PX));
+  };
   const show = () => {
     el.classList.toggle('scrolled', view === 'scroll');
     if (view === 'pages') {
@@ -65,6 +74,7 @@ function turner(start: ReadView, root: HTMLElement): Reader {
         root,
         count: ZINE.length,
         ratio: () => 5.5 / 4.25,
+        width,
         page: (i) => zineLeaf(ZINE[i], i).el,
         label: (i) => `Page ${i + 1}`,
         showing: reading,
@@ -89,6 +99,10 @@ function turner(start: ReadView, root: HTMLElement): Reader {
       if (v === 'pages') root.scrollTop = 0;
       show();
     },
+    size: (s) => {
+      size = s;
+      fit();
+    },
     step: (dir) => go(at + dir),
     dispose: () => {
       column?.dispose();
@@ -103,7 +117,7 @@ export function zineItem(): BoxItem {
     title: TITLE,
     note: `${ZINE.length} quarter-letter pages, four to a sheet`,
     icon: '📠',
-    reader: (view, root) => Promise.resolve(turner(view, root)),
+    reader: (o) => Promise.resolve(turner(o)),
     render: () => Promise.resolve(printSheets()),
   };
 }
