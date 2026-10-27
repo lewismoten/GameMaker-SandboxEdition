@@ -38,6 +38,15 @@ describe('tool calls written as text', () => {
     expect(s.shown).toBe('and');
   });
 
+  it('take calls in the {"type": "function"} wrapper, leaving none of it in the words', () => {
+    const full =
+      'Building.\n{"type":"function","function":{"name":"set_map","arguments":{"file":"a.map"}}}\n{"type": "function", "function": {"name": "get_map", "arguments": "{\\"file\\":\\"a.map\\"}"}}\nThere.';
+    for (let n = 1; n <= full.length; n++) expect(scanText(full.slice(0, n), names).shown).not.toMatch(/function|[{}]/);
+    const s = scanText(full, names);
+    expect(s.calls.map((c) => c.name)).toEqual(['set_map', 'get_map']);
+    expect(s.shown).toBe('Building.\n\nThere.');
+  });
+
   it('leave other JSON and braces as words', () => {
     const s = scanText('The hero {"name": "Penny"} jumps {high}. {"name":"rm_rf","arguments":{}}', names);
     expect(s.calls).toEqual([]);

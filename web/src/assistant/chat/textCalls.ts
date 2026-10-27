@@ -1,5 +1,5 @@
 // Tool calls a model writes as text ({"name": …, "arguments": {…}}, bare, in a ```json fence or
-// in <tool_call> tags, several in one reply), found while the reply streams: a call counts as
+// in <tool_call> tags, or wrapped as {"type": "function", "function": {…}}, several in one reply), found while the reply streams: a call counts as
 // soon as its closing brace arrives, so it can run while the model writes on. The words shown
 // leave the calls out, and hold back a call still being written.
 
@@ -12,7 +12,10 @@ export interface TextCall {
 }
 
 const HEAD = /^\{\s*"(?:name|tool|function)"\s*:\s*"([A-Za-z_][\w]*)"/;
-const STARTS = ['{"name":"', '{"tool":"', '{"function":"'];
+const STARTS = ['{"name":"', '{"tool":"', '{"function":"', '{"type":"function","function":{"name":"'];
+/** The OpenAI-style wrapper round a call, `{"type": "function", "function": ` … `}`. */
+const WRAP_OPEN = /\{\s*"type"\s*:\s*"function"\s*,\s*"function"\s*:\s*$/;
+const WRAP_CLOSE = /^\s*\}/;
 
 /** Whether the text from a brace to the end could still become a call's start. */
 function maybeHead(tail: string): boolean {
@@ -36,8 +39,11 @@ function objectEnd(text: string, i: number): number {
   return -1;
 }
 
-/** Widens a call's span over a fence or tags around it (and an array's comma). */
+/** Widens a call's span over a wrapper, fence or tags around it (and an array's comma). */
 function widen(text: string, start: number, end: number): [number, number] {
+  const wrap = WRAP_OPEN.exec(text.slice(0, start));
+  const shut = WRAP_CLOSE.exec(text.slice(end));
+  if (wrap && shut) [start, end] = [start - wrap[0].length, end + shut[0].length];
   const before = text.slice(0, start);
   const after = text.slice(end);
   const open = /(```(?:json|tool_call)?\s*|<tool_call>\s*|\[\s*|,\s*)$/.exec(before);
@@ -78,6 +84,11 @@ export function scanText(text: string, names: ReadonlySet<string>): { calls: Tex
       const raw = v.arguments ?? v.parameters ?? v.args ?? {};
       const args = typeof raw === 'string' ? (JSON.parse(raw) as unknown) : raw;
       if (names.has(name) && args && typeof args === 'object' && !Array.isArray(args)) {
+        // a wrapped call counts once its wrapper's brace arrives too
+        if (WRAP_OPEN.test(text.slice(0, i)) && !text.slice(end).trim()) {
+          pendingAt = i;
+          break;
+        }
         calls.push({ name, args: args as Record<string, unknown>, start: i, end });
         cut.push(widen(text, i, end));
       }
@@ -95,6 +106,6 @@ export function scanText(text: string, names: ReadonlySet<string>): { calls: Tex
   }
   shown += text.slice(at, pendingAt >= 0 ? Math.max(at, pendingAt) : text.length);
   // a fence or tag left open just before a call still arriving
-  if (pendingAt >= 0) shown = shown.replace(/(```(?:json|tool_call)?|<tool_call>|\[)\s*$/, '');
+  if (pendingAt >= 0) shown = shown.replace(WRAP_OPEN, '').replace(/(```(?:json|tool_call)?|<tool_call>|\[)\s*$/, '');
   return { calls, shown: shown.replace(/\n{3,}/g, '\n\n').trim(), pending: pendingAt >= 0 };
 }

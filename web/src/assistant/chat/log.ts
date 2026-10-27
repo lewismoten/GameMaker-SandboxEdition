@@ -85,14 +85,29 @@ export class ChatLog {
   copy?: (text: string) => void;
   private calls = new Map<string, CallEntry>();
 
-  /** Scrolls the conversation (only it: scrollIntoView would scroll the fixed panel too) to its end. */
-  toEnd(): void {
+  /** Whether the person has scrolled up to read (say, an opened call), so new words don't pull them down. */
+  private reading = false;
+
+  constructor() {
+    this.el.addEventListener('scroll', () => {
+      this.reading = this.el.scrollHeight - this.el.scrollTop - this.el.clientHeight > 40;
+    });
+  }
+
+  /**
+   * Scrolls the conversation (only it: scrollIntoView would scroll the fixed panel too) to its end,
+   * unless the person has scrolled up; `force` (their own message) goes there anyway.
+   */
+  toEnd(force = false): void {
+    if (this.reading && !force) return;
     this.el.scrollTop = this.el.scrollHeight;
+    this.reading = false;
   }
 
   clear(): void {
     clear(this.list);
     this.calls.clear();
+    this.reading = false;
     this.streaming = this.working = undefined;
     this.from = 0;
     this.soFar = '';
@@ -109,6 +124,7 @@ export class ChatLog {
   }
 
   user(text: string): void {
+    this.reading = false;
     this.add(h('li', { class: 'msg user', dataset: { md: `**You:** ${text}` } }, h('span', { class: 'sr-only' }, 'You: '), h('p', null, text)));
   }
 
@@ -228,7 +244,8 @@ export class ChatLog {
       at.state.textContent = 'waiting for you';
       at.li.append(box);
       signal?.addEventListener('abort', stop);
-      this.toEnd();
+      // a change waiting for a yes is shown even to someone scrolled up
+      this.toEnd(true);
       if (this.el.closest('.chat-panel')?.contains(document.activeElement)) apply.focus();
     });
   }
