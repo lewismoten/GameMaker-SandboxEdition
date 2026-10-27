@@ -135,30 +135,48 @@ export function drawBoxLetters(entry: CatalogEntry): Promise<BoxSides | undefine
 
 type BoxSides = Record<keyof BoxFaces, HTMLCanvasElement>;
 
-/** The six sides on canvases; with `letters`, only what is lettered (drawBoxLetters). */
-async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolean, cover = true): Promise<BoxSides | undefined> {
+/**
+ * A box to print (the Library's retail box, printables/retailBox.ts): the front and back at
+ * `w` x `h` inches of the desk's layout (PPI to the inch), drawn `scale` times finer, fresh from
+ * the printer: no shelf wear and no store's price sticker.
+ */
+export interface PrintSize {
+  w: number;
+  h: number;
+  scale: number;
+}
+
+/** The front and back to print (PrintSize), with their screenshots and cover painting. */
+export async function drawPrintFaces(entry: CatalogEntry, size: PrintSize): Promise<Pick<BoxSides, 'front' | 'back'> | undefined> {
+  return paintBox(entry, true, false, true, size);
+}
+
+/** The six sides on canvases; with `letters`, only what is lettered (drawBoxLetters); with `print`, fresh at that size. */
+async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolean, cover = true, print?: PrintSize): Promise<BoxSides | undefined> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
+  // the desk's box, or one to print
+  const [faceW, faceH, k] = print ? [print.w, print.h, print.scale] : [W, H, 1];
   const [shots, info, art] = await Promise.all([
     boxShots(entry, box, withShots),
     boxInfo(entry),
-    letters || !cover ? undefined : coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44),
+    letters || !cover ? undefined : coverArt(entry.id, Math.round(faceW * PPI), Math.round(faceH * PPI) - 44, k),
   ]);
   // what is painted under the lettering: none of it in `letters`
   const ground = (ctx: CanvasRenderingContext2D, w: number, h: number) => !letters && background(ctx, box, w, h);
-  const worn = (...args: Parameters<typeof wear>) => !letters && wear(...args);
+  const worn = (...args: Parameters<typeof wear>) => !letters && !print && wear(...args);
   const sb = entry.original?.sound === 'sb';
   const title = entry.title;
   const company = entry.company ?? 'Sandbox Software';
 
   // ---- front: the painted cover under the title, the selling points crowding its corners
-  const [front, f] = canvas(W, H);
-  const fw = front.width;
-  const fh = front.height;
+  const [front, f] = canvas(faceW, faceH, k);
+  const fw = front.width / k;
+  const fh = front.height / k;
   ground(f, fw, fh);
   if (art) {
-    f.drawImage(art, 0, 44);
+    f.drawImage(art, 0, 44, art.width / k, art.height / k);
     // shade the sky behind the title and the ground behind the badges, as box printers did
     f.fillStyle = shadeFade(f, 44, 330, 0.55, 0);
     f.fillRect(0, 44, fw, 290);
@@ -220,18 +238,19 @@ async function paintBox(entry: CatalogEntry, withShots: boolean, letters: boolea
   diskIcons(f, 276, fh - 62, 26, info.disks, box.ink);
   worn(f, fw, fh, `${entry.id}/front`, { creases: 2 });
   const sticker = box.sticker ?? {};
-  priceSticker(f, fw - 134, 6, sticker.store ?? 'Bits & Bytes Software', sticker.price ?? '$4.99');
+  // the store's price sticker, put on in the shop: not printed on the box
+  if (!print) priceSticker(f, fw - 134, 6, sticker.store ?? 'Bits & Bytes Software', sticker.price ?? '$4.99');
 
   // ---- back: the story, and real screenshots of the game with captions
-  const [back, b] = canvas(W, H);
-  const bw = back.width;
-  const bh = back.height;
+  const [back, b] = canvas(faceW, faceH, k);
+  const bw = back.width / k;
+  const bh = back.height / k;
   ground(b, bw, bh);
   // the cover painting, faint behind the title and the screenshots
   if (art) {
     b.save();
     b.globalAlpha = 0.3;
-    b.drawImage(art, 0, 160, art.width, 300, 0, 34, bw, 300);
+    b.drawImage(art, 0, 160 * k, art.width, 300 * k, 0, 34, bw, 300);
     b.restore();
     const fadeOut = b.createLinearGradient(0, 154, 0, 334);
     fadeOut.addColorStop(0, 'rgba(0,0,0,0)');

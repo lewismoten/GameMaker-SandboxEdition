@@ -37,9 +37,8 @@ function labelArt(g: CatalogEntry): Promise<LabelArt> {
   return hit;
 }
 
-/** The company band: just the first word ("SANDBOX"), so it fits one line on a small disk. */
 /** White on a dark band; on a bright one (orange, green) the company name prints in black so it reads. */
-function bandInk(band: string): string {
+export function bandInk(band: string): string {
   const m = /^#([0-9a-f]{6})$/i.exec(band);
   if (!m) return '#fff';
   const [r, g, b] = [0, 2, 4].map((i) => {
@@ -50,7 +49,8 @@ function bandInk(band: string): string {
   return 1.05 / (lum + 0.05) >= 4.5 ? '#fff' : '#111';
 }
 
-function logoText(g: CatalogEntry): string {
+/** The company band's words: the name without "Software" ("SANDBOX"), so it fits one line on a small disk. */
+export function logoText(g: CatalogEntry): string {
   const name = (g.original?.label?.logo ?? g.company ?? 'Sandbox Software').toUpperCase();
   return name.replace(/\s+SOFTWARE$/, '');
 }

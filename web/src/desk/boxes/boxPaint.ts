@@ -14,11 +14,17 @@ export const W = 7.5;
 export const H = 9.25;
 export const D = 2;
 export const PPI = 80; // canvas pixels per inch
-export function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
+/**
+ * A face's canvas, w x h inches at PPI; `scale` makes it that many times finer (a printed box at
+ * 300 dpi) with the drawing still in PPI units, so the same code lays out every size.
+ */
+export function canvas(w: number, h: number, scale = 1): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const c = document.createElement('canvas');
-  c.width = Math.round(w * PPI);
-  c.height = Math.round(h * PPI);
-  return [c, c.getContext('2d')!];
+  c.width = Math.round(w * PPI * scale);
+  c.height = Math.round(h * PPI * scale);
+  const ctx = c.getContext('2d')!;
+  ctx.scale(scale, scale);
+  return [c, ctx];
 }
 
 // THE -= S A N D B O X =- BBS stays one word in box text and is drawn in its colors.
