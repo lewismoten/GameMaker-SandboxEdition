@@ -408,7 +408,7 @@ export function floppy(name: string, title: string, sub: string | undefined, bod
       g.fillRect(-bleed * S, -bleed * S, W + 2 * bleed * S, H + 2 * bleed * S);
       // the disk stands shutter down, label up: the metal shutter and its window at the bottom
       g.fillStyle = '#b9bdc6';
-      g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.3 + bleed * S);
+      g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.3);
       g.fillStyle = '#7d828c';
       g.fillRect(W * 0.26, H * 0.7, W * 0.46, H * 0.03);
       g.fillStyle = '#2a2d33';
