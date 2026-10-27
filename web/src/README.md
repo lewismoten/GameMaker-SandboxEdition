@@ -358,7 +358,8 @@ modules are in [`../test`](../test).
     (`textUi.ts`).
   - `gm.ts`: GM.EXE's menus. `gmReg/`: Game-Maker's registration and copy check (`chk.ts`,
     `registration.ts`, `copyCheck.ts`); `regSide.ts` (loaded by `regSideLater.ts`, asked for by
-    `regDesk.ts`) puts the Owner's Guide and registration card (`mailCard.ts`) beside the monitor;
+    `regDesk.ts`) puts the Owner's Guide (`regGuidePanel.ts`) and registration card (`regCardPanel.ts`,
+    `mailCard.ts`) beside the monitor;
     `replyMail.ts` remembers RSD's reply.
   - `hexedit/`: HEXEDIT.EXE (`hexEdit.ts`, `hexFiles.ts`) and its map of each file format
     (`structure.ts` the map and its Builder; `structureGm.ts` Game-Maker's formats,
