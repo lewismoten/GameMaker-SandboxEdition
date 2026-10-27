@@ -15,7 +15,7 @@ export type PageKey = 'home' | 'guide' | 'library' | 'achievements' | 'cast' | '
  * sounds like Lewis himself.
  */
 export interface HostVoice {
-  sample: 'lewis' | 'scroobie' | 'olden-mon' | 'snooty-wiz' | 'kokoro:af_sky' | 'kokoro:af_heart';
+  sample: 'lewis' | 'scroobie' | 'olden-mon' | 'snooty-wiz' | 'kokoro:af_sky' | 'kokoro:af_heart' | 'kokoro:am_puck' | 'kokoro:bf_emma';
   semitones: number;
   tempo: number;
 }
@@ -25,6 +25,17 @@ export const HOSTS = {
   teddy: { name: 'Teddy', game: 'teddy', scale: 3, voiced: false, voice: { sample: 'scroobie', semitones: 5, tempo: 1.12 } },
   gwinn: { name: 'Gwinn', game: 'teddy2', scale: 3, voiced: true, voice: { sample: 'kokoro:af_sky', semitones: 4, tempo: 1 } },
   leo: { name: 'Doc Leo', game: 'teddy', scale: 2, voiced: true, voice: { sample: 'lewis', semitones: 0, tempo: 1 } },
+  // the Library: KEEP IT BRIEF!'s night librarian, and Snowbound's teenage Lewie
+  joe: { name: 'Joe', game: 'brief', scale: 3, voiced: true, voice: { sample: 'olden-mon', semitones: 0, tempo: 1 } },
+  lewie: { name: 'Lewie', game: 'snowbound', scale: 3, voiced: true, voice: { sample: 'lewis', semitones: 5, tempo: 1 } },
+  // Achievements: In The Year 2000!'s Dex Dynamo
+  dex: { name: 'Dex', game: 'year2000', scale: 3, voiced: true, voice: { sample: 'kokoro:am_puck', semitones: 3, tempo: 1 } },
+  // the Guide: Final Curtain's Inspector Ada Penn
+  ada: { name: 'Inspector Penn', game: 'sleuth', scale: 3, voiced: true, voice: { sample: 'kokoro:bf_emma', semitones: 0, tempo: 1 } },
+  // Settings: Maximus's Courier Max
+  max: { name: 'Max', game: 'maximus', scale: 2, voiced: true, voice: { sample: 'scroobie', semitones: 0, tempo: 1 } },
+  // the editor: Ohm Sweet Ohm's repair robot
+  watt: { name: 'Watt', game: 'logic', scale: 3, voiced: true, voice: { sample: 'lewis', semitones: 7, tempo: 1.05 } },
 } satisfies Record<string, { name: string; game: string; scale: number; voiced: boolean; voice: HostVoice }>;
 export type HostId = keyof typeof HOSTS;
 
@@ -34,6 +45,12 @@ export const PROPS = {
   doghouse: { game: 'teddy', scale: 2 },
   'prop:hat': { game: 'teddy', scale: 3 },
   'prop:nose': { game: 'teddy', scale: 3 },
+  'prop:chicken': { game: 'teddy', scale: 3 },
+  rootbeer: { game: 'teddy', scale: 2 },
+  easterEgg: { game: 'teddy', scale: 3 },
+  tinHeart: { game: 'teddy', scale: 3 },
+  // Virus Blaster's BLASTER nano-fighter, from the side
+  ship: { game: 'blaster', scale: 3 },
 } as const;
 export type PropId = keyof typeof PROPS;
 
@@ -49,6 +66,23 @@ export const SOUNDS = {
   whoosh: 'teddy/whoosh',
   sparkle: 'teddy/sparkle',
   tada: 'teddy/tada',
+  giggle: 'teddy/giggle',
+  honk: 'teddy/honk',
+  shhh: 'brief/shhh',
+  flutter: 'brief/flutter',
+  ding: 'brief/ding',
+  kaching: 'year2000/kaching',
+  oneup: 'year2000/oneup',
+  aha: 'sleuth/aha',
+  hmm: 'sleuth/hmm',
+  chime: 'sleuth/chime',
+  creak: 'sleuth/creak',
+  jet: 'maximus/jet',
+  coin: 'maximus/coin',
+  warp: 'maximus/warp',
+  clack: 'logic/clack',
+  fizzle: 'logic/fizzle',
+  zap: 'blaster/zap',
 } as const;
 
 /**
@@ -70,6 +104,12 @@ export const barkUrl = (name: string): string => `./tour/sfx/${name}.ogg`;
 export const MUSIC = {
   teddyTitle: 'teddy/title.cmf',
   teddyPark: 'teddy/park.cmf',
+  clownClub: 'teddy/klub.cmf',
+  briefLibrary: 'brief/library.cmf',
+  y2kTitle: 'year2000/title.cmf',
+  sleuthParlor: 'sleuth/parlor.cmf',
+  maxStation: 'maximus/station.cmf',
+  ohmGarage: 'logic/garage.cmf',
 } as const;
 export type MusicId = keyof typeof MUSIC;
 
@@ -126,6 +166,11 @@ export interface TourStep {
   demo?: 'play' | 'stop';
   /** Something from a game that wanders through: across the screen, or over to the target. */
   prop?: { id: PropId; run: 'across' | 'drop' };
+  /**
+   * Another address on the chapter's page to show from this step on (the editor's palette after
+   * its map): the tour goes there, waits for `ready`, and Back returns to the step's own address.
+   */
+  go?: { hash: string; ready: string };
 }
 
 export interface Chapter {
@@ -140,6 +185,12 @@ export interface Chapter {
   hash: string;
   /** Waited for before the first step (the page has drawn). */
   ready: string;
+  /**
+   * Plays at its own address even when the visitor is on another view of the same page (the
+   * editor chapter shows a game as released, never the visitor's own); a tour of just this
+   * page takes them back where they were when it ends.
+   */
+  always?: boolean;
   actor: HostId;
   speaker: HostId;
   music?: MusicId;

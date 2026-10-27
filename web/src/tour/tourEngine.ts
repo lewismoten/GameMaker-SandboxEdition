@@ -16,6 +16,7 @@ import { hushDemos } from '../media/demoAudio';
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
 import { pageOf } from './tourPages';
+import { parseHash } from '../urlState';
 import type { Sprite } from '../cast/castStageDraw';
 
 export interface TourOptions {
@@ -29,6 +30,9 @@ const rectOf = (el: Element): Rect => {
   return { x: r.left, y: r.top, w: r.width, h: r.height };
 };
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Two addresses show the same thing (their paths match; the editor adds its own settings after them). */
+const samePlace = (a: string, b: string) => parseHash(a).path.join('/') === parseHash(b).path.join('/');
 
 /** The one tour playing. */
 const now: { tour?: Tour } = {};
@@ -49,6 +53,9 @@ export class Tour {
   private pressed?: HTMLElement;
   private chapterShown?: Chapter;
   private navigating = false;
+  /** Where the visitor was, and whether the tour moved them within that page (a tour of it takes them back). */
+  private startHash = location.hash;
+  private moved = false;
   private returnFocus = document.activeElement as HTMLElement | null;
   private sound = new TourSound();
   private hold?: { left: number; t0: number; timer: number; done: () => void };
@@ -127,12 +134,15 @@ export class Tour {
     this.count.textContent = `${chapter.title} · ${n + 1} of ${chapter.steps.length}`;
     this.unpress();
     this.ring.hidden = true;
+    this.bubble.hidden = true;
     // a new chapter: its page, its music, and (recording, or more than one chapter) its title card
     if (chapter !== this.chapterShown) {
       this.chapterShown = chapter;
       this.clearHosts();
-      if (pageOf(location.hash) !== chapter.page) {
+      const elsewhere = pageOf(location.hash) !== chapter.page;
+      if (elsewhere || (chapter.always && !samePlace(location.hash, chapter.hash))) {
         this.navigating = true;
+        if (!elsewhere) this.moved = true;
         location.hash = chapter.hash;
         await sleep(50);
         this.navigating = false;
@@ -140,10 +150,22 @@ export class Tour {
       this.sound.music(chapter.music);
       if (this.opts.record || this.chapters.length > 1) {
         this.bubble.hidden = true;
-        await this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition');
+        await this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
         if (!this.live(token)) return;
       }
       await waitFor(chapter.ready);
+      if (!this.live(token)) return;
+    }
+    // the address this step is shown at, on the chapter's page (the editor's palette after its map)
+    const at = this.addressOf(this.i);
+    if (at && !samePlace(location.hash, at.hash)) {
+      this.bubble.hidden = true;
+      this.navigating = true;
+      this.moved = true;
+      location.hash = at.hash;
+      await sleep(50);
+      this.navigating = false;
+      await waitFor(at.ready);
       if (!this.live(token)) return;
     }
     // the control: shown from its menu if it is in one, other menus the tour opened closed
@@ -153,8 +175,12 @@ export class Tour {
     if (!target && need && step.target) {
       if (!menuOpen(need)) this.clickKeepingFocus(need);
       this.opened.add(need);
-      await sleep(60);
-      target = findTarget(step.target);
+      // a menu opens at once; a panel may load first
+      for (let t = 0; t < 3000 && !target; t += 100) {
+        await sleep(t ? 100 : 60);
+        if (!this.live(token)) return;
+        target = findTarget(step.target);
+      }
     }
     if (step.target && !target) {
       console.warn(`Tour: nothing on the page for ${step.id} (${cssList(step.target.css).join(', ')})`);
@@ -175,12 +201,23 @@ export class Tour {
     if (this.live(token)) this.go(this.i + 1);
   }
 
+  /** The address step `i` is shown at: the last `go` up to it in its chapter, else the chapter's own when it insists. */
+  private addressOf(i: number): { hash: string; ready: string } | undefined {
+    const { chapter, n } = this.flat[i];
+    for (let k = n; k >= 0; k--) {
+      const go = chapter.steps[k].go;
+      if (go) return go;
+    }
+    return chapter.always ? { hash: chapter.hash, ready: chapter.ready } : undefined;
+  }
+
   /** Scrolls the control onto the screen, above the bar, when it isn't. */
   private async bringIntoView(el: HTMLElement): Promise<void> {
     const r = rectOf(el);
     const bottom = innerHeight - this.floor();
-    if (r.y >= 0 && r.y + Math.min(r.h, 200) <= bottom) return;
-    el.scrollIntoView({ block: 'center', behavior: this.still ? 'auto' : 'smooth' });
+    const across = r.x >= 0 && r.x + Math.min(r.w, 200) <= this.view().w;
+    if (across && r.y >= 0 && r.y + Math.min(r.h, 200) <= bottom) return;
+    el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: this.still ? 'auto' : 'smooth' });
     await sleep(this.still ? 60 : 500);
   }
 
@@ -414,10 +451,10 @@ export class Tour {
   // ---- title cards and the end ---------------------------------------------------------------
 
   /** A chapter's title card for a moment; with `ask`, a Start button that waits for a click (false: closed). */
-  private titleCard(title: string, sub: string, ask = false): Promise<boolean> {
-    const hosts = (['teddy', 'gwinn'] as const).map((id) => {
+  private titleCard(title: string, sub: string, ask = false, who: HostId[] = ['teddy', 'gwinn']): Promise<boolean> {
+    const hosts = who.map((id) => {
       const s = this.sprites?.get(id);
-      return s ? new Actor(s, 4, false) : undefined;
+      return s ? new Actor(s, HOSTS[id].scale + 1, false) : undefined;
     });
     const start = ask ? h('button', { type: 'button', class: 'primary tour-start' }, '▶ Start') : undefined;
     const card = h(
@@ -467,6 +504,10 @@ export class Tour {
     document.removeEventListener('keydown', this.onKey, true);
     window.removeEventListener('hashchange', this.onHash);
     window.removeEventListener('resize', this.onResize);
+    // a tour of just this page goes back to what the visitor had open on it (their own game, not the one shown)
+    const page = pageOf(this.startHash);
+    if (this.moved && this.chapters.every((c) => c.page === page) && pageOf(location.hash) === page && location.hash !== this.startHash)
+      location.hash = this.startHash;
     const back = this.returnFocus;
     if (back && back !== document.body && back.isConnected && visible(back)) back.focus();
     else document.querySelector<HTMLElement>('.tour-btn')?.focus();
