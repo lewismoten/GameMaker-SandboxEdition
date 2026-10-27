@@ -2,19 +2,9 @@
 // (glassy chimes for light, a laser zap for the ray, a falling de-render for losing a life).
 import { newSoundSet, serializeSoundSet } from '../../../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
-import { rng } from '../../../kit/pixels';
 import { SND } from '../ids';
+import { lowNoise, env } from '../../../kit/synthParts';
 
-function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {
-  const r = rng(seed);
-  let y = 0;
-  return (t) => {
-    const a = typeof cutoff === 'number' ? cutoff : cutoff(t);
-    y += a * (r() * 2 - 1 - y);
-    return y * (1.4 / Math.sqrt(Math.max(0.05, a)));
-  };
-}
-const env = (attack: number, decay: number) => (u: number) => Math.min(1, u / attack) * Math.max(0, 1 - u) ** decay;
 const bell = (hz: number, start = 0, len = 1): Synth => {
   const s = osc.sine(hz);
   const s2 = osc.sine(hz * 2.76);

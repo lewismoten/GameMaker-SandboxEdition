@@ -6,12 +6,7 @@ import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { rng } from '../../../kit/pixels';
 import { SND } from '../ids';
-
-/** A one-pole low-pass over a synth (for growly, dull noises). */
-function lowpass(v: Synth, k: number): Synth {
-  let y = 0;
-  return (t) => (y += (v(t) - y) * k);
-}
+import { lowpass } from '../../../kit/synthParts';
 
 /** A dog's bark: a falling vocal tone with breath noise, twice ("woof-woof" for Teddy is one). */
 function woof(pitch: number, seconds = 0.22): Uint8Array {

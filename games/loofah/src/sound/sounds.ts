@@ -10,22 +10,7 @@ import { rng } from '../../../kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { SND } from '../ids';
 import { clipSamples, clipVoc, vocOf, CLIPS } from './clips';
-
-/** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
-function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {
-  const r = rng(seed);
-  let y = 0;
-  return (t) => {
-    const a = typeof cutoff === 'number' ? cutoff : cutoff(t);
-    y += a * (r() * 2 - 1 - y);
-    return y * (1.4 / Math.sqrt(Math.max(0.05, a)));
-  };
-}
-const gate =
-  (v: Synth, from: number, to: number): Synth =>
-  (t) =>
-    t >= from && t < to ? v(t) : 0;
-const env = (attack: number, decay: number) => (u: number) => Math.min(1, u / attack) * Math.max(0, 1 - u) ** decay;
+import { lowNoise, gate, env } from '../../../kit/synthParts';
 
 /** A voice: harmonics of a pitch through two vowel formants (which may move). */
 function voice(pitch: (t: number) => number, f1: number | ((t: number) => number), f2: number | ((t: number) => number), seed = 3, breath = 0.03): Synth {

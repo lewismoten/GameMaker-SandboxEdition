@@ -3,11 +3,7 @@
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { SND } from '../ids';
-
-function lowpass(v: Synth, k: number): Synth {
-  let y = 0;
-  return (t) => (y += (v(t) - y) * k);
-}
+import { lowpass } from '../../../kit/synthParts';
 
 function chime(notes: number[], each = 0.07): Uint8Array {
   const total = notes.length * each + 0.15;
