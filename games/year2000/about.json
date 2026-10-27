@@ -36,7 +36,7 @@
     ],
     "shots": [
       ["dome.map", 0, 9],
-      ["clouds.map", 0, 0],
+      ["clouds.map", 0, 0, { "tick": 840 }],
       ["mall.map", 0, 0],
       ["exchange.map", 30, 0],
       ["moon.map", 0, 1]
