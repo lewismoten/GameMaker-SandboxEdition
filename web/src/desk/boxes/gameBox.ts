@@ -15,6 +15,7 @@ import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBac
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
 import { coverArt, SEALS } from './covers';
+import { gameVersion } from '../../project/gameVersion';
 import {
   type Box,
   PPI,
@@ -474,7 +475,9 @@ function sunburst(ctx: CanvasRenderingContext2D, box: Box, x: number, y: number)
 }
 
 function copyright(entry: CatalogEntry): string {
-  return `©\u00a0${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}. Made with Game-Maker by Recreational Software Designs.`;
+  // the version the game is at (about.json), in the small print
+  const version = gameVersion(entry);
+  return `©\u00a0${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}.${version ? ` Version\u00a0${version}.` : ''} Made with Game-Maker by Recreational Software Designs.`;
 }
 
 /**

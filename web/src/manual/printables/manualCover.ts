@@ -9,6 +9,7 @@ import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { boxShot } from '../../gfx/frameShot';
 import { portrait, sandboxLogo, splitTitle } from './kit';
+import { gameVersion } from '../../project/gameVersion';
 
 /** What the manual is called on its cover: "Courier Manual" from "Maximus - Courier Manual". */
 function manualKind(entry: CatalogEntry): string {
@@ -81,7 +82,7 @@ export function manualCover(entry: CatalogEntry): { el: HTMLElement; ready: Prom
       class: 'manual-cover',
       style: `--mc-bg:${box?.background ?? '#14182a'};--mc-acc:${box?.accent ?? '#f2b632'};--mc-ink:${box?.ink ?? '#fff'}`,
     },
-    h('div', { class: 'mc-band' }, sandboxLogo('mc-logo'), h('span', { class: 'mc-ver' }, 'Version 1.0')),
+    h('div', { class: 'mc-band' }, sandboxLogo('mc-logo'), h('span', { class: 'mc-ver' }, `Version ${gameVersion(entry) ?? '1.0'}`)),
     h(
       'div',
       { class: 'mc-head' },

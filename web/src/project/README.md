@@ -20,5 +20,7 @@ never exported).
 - The Bard of Bizarre's collections (`bizarre.ts`), a game's title as boxes print it
   (`gameTitle.ts`), its DOS folder name (`dosDir.ts`) and what a 1990s buyer asked first:
   floppies, hard disk and download time (`diskFacts.ts`).
+- A game's version, "major.minor" (`gameVersion.ts`): `games/<id>/about.json` `"version"`, which the
+  catalog carries; the home page's byline, the manual cover and the box back's small print show it.
 - `saveData/` reads and writes a game's saves, high scores and save backups, shared by the web's
   Saves & scores and the desk's SAVEHACK and BACKUP.
