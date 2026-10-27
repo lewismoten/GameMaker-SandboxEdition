@@ -145,7 +145,7 @@
   },
   "home-tiles": {
     "chapter": "home",
-    "where": "Home: Teddy points at a game tile",
+    "where": "Home: Teddy presses a game tile",
     "text": "Pick any tile and its game moves up top.",
     "seconds": 3.57,
     "hash": "b11205972631",

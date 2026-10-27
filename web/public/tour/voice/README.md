@@ -17,6 +17,7 @@ records every clip again.
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
 | [home-hello.ogg](home/home-hello.ogg) | Hi! I’m Gwinn. This little guy is my brother Teddy. He and I will show you around. | Home: Gwinn comes on | 5.54 |
+| [home-tiles.ogg](home/home-tiles.ogg) | Pick any tile and its game moves up top. | Home: Teddy presses a game tile | 3.57 |
 | [home-showcase.ogg](home/home-showcase.ogg) | Up top is one game, shown big. Its picture plays a short demo of the game. | Home: Teddy points at the big game picture at the top | 5.64 |
 | [home-play.ogg](home/home-play.ogg) | Play starts it right here in your browser, with the keyboard or a gamepad. | Home: Teddy presses the Play button | 5.02 |
 | [home-look.ogg](home/home-look.ogg) | Look inside opens its files in the editor, just as they shipped. Change something and you get a copy of your own. | Home: Teddy points at the Look inside button | 7.65 |
@@ -24,7 +25,6 @@ records every clip again.
 | [home-download.ogg](home/home-download.ogg) | Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS. | Home: Teddy points at the Download button | 6.22 |
 | [home-another.ogg](home/home-another.ogg) | Another picks a different game at random. Ooh, good one. | Home: Teddy presses the Another button | 4.15 |
 | [home-tabs.ogg](home/home-tabs.ogg) | These tabs are the collections: your games, ones you bring in, and shelves of games ready to play. | Home: Teddy points at the collection tabs | 6.42 |
-| [home-tiles.ogg](home/home-tiles.ogg) | Pick any tile and its game moves up top. | Home: Teddy points at a game tile | 3.57 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
 | [home-new.ogg](home/home-new.ogg) | New game starts one of your own: ready to play, empty, or described in words for your own AI to build. | Home: Teddy presses the New game button | 7.24 |
 | [home-games.ogg](home/home-games.ogg) | Games, up in the bar, always brings you back here. | Home: Teddy points at Games in the header | 3.97 |

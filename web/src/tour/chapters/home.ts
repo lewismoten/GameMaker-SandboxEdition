@@ -36,6 +36,14 @@ export const homeChapter: Chapter = {
     },
     { id: 'home-teddy', action: 'enter', speaker: 'teddy', say: 'Woof!', caption: 'Teddy: Woof! (That means “follow me.”)', sound: 'teddyBark', ms: 2200 },
     {
+      // Teddy picks his own game (or the first tile, if it isn't on this tab), so it's up top for the demo
+      id: 'home-tiles',
+      action: 'press',
+      target: { label: 'a game tile', css: ['.lib-tiles .game-tile[data-key="cd:teddy"] .tile-select', '.lib-tiles .game-tile .tile-select'] },
+      click: true,
+      say: 'Pick any tile and its game moves up top.',
+    },
+    {
       id: 'home-showcase',
       action: 'point',
       target: { label: 'the big game picture at the top', css: '.showcase .sc-screen' },
@@ -86,12 +94,6 @@ export const homeChapter: Chapter = {
       say: 'These tabs are the collections: your games, ones you bring in, and shelves of games ready to play.',
       prop: { id: 'chicken', run: 'across' },
       sound: 'squeak',
-    },
-    {
-      id: 'home-tiles',
-      action: 'point',
-      target: { label: 'a game tile', css: '.lib-tiles .game-tile .tile-select' },
-      say: 'Pick any tile and its game moves up top.',
     },
     {
       id: 'home-search',
