@@ -104,6 +104,8 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-slides-zoom',
       'gm-demo-skip-intro',
       'gm-demo-audio',
+      'gm-tour-on',
+      'gm-tour-sound',
     ],
     prefixes: ['gm-library-only-'],
   },
