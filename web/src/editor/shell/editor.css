@@ -892,6 +892,11 @@ dialog.modal .buttons {
   text-align: left;
 }
 
+/* "Describe it to your AI…" under the other two, the dialog's width */
+.start-describe {
+  grid-column: 1 / -1;
+}
+
 .start-choice small {
   font-weight: 400;
   opacity: 0.85;

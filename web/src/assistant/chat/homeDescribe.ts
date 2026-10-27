@@ -1,12 +1,13 @@
-// The home page's "Describe a game…": the description, AI setup if there is none yet, then a new
-// game from the starter (editor/shell/starter.ts) that the chat builds as soon as its editor
-// opens (panel.ts buildWhenOpened). Loaded when the button is pressed.
+// New game's "✦ Describe it to your AI…" (editor/shell/homeImport.ts): the description, then AI
+// setup if there is none yet. The new game, made from the starter, is built by the chat as soon
+// as its editor opens (panel.ts buildWhenOpened). Loaded when that choice is made.
 import { h, modal } from '../../editor/core/ui';
-import { Project } from '../../editor/core/project';
-import { starterProject } from '../../editor/shell/starter';
-import { buildWhenOpened, readySettings } from './panel';
+import { readySettings } from './panel';
 
-export async function describeGame(nav: { openProject(id: string): void }): Promise<void> {
+export { buildWhenOpened } from './panel';
+
+/** Asks what the game should be, then sets up the AI if needed; undefined when either is canceled. */
+export async function askDescription(): Promise<string | undefined> {
   const text = await modal<string>('Describe a game', (close) => {
     const area = h('textarea', {
       id: 'home-describe',
@@ -39,10 +40,6 @@ export async function describeGame(nav: { openProject(id: string): void }): Prom
       ),
     );
   });
-  if (!text) return;
-  if (!(await readySettings())) return;
-  const p = await starterProject('My Game').catch(() => Project.create('My Game'));
-  await p.saveNow();
-  buildWhenOpened(p.id, text);
-  nav.openProject(p.id);
+  if (!text || !(await readySettings())) return undefined;
+  return text;
 }

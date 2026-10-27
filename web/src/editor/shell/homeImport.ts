@@ -1,4 +1,5 @@
-// Starting a game from the home page: a new game (from the starter, see starter.ts), or one
+// Starting a game from the home page: a new game (from the starter, see starter.ts, empty, or
+// described to your AI and built by the Assistant, assistant/chat/homeDescribe.ts), or one
 // imported from a folder, zip, single-page export or dropped files. Files from the CD's
 // shareware games are recognized by the .gam file's CRC-32. Loaded when first used (home.ts
 // picks the files, or reads the drop, first).
@@ -23,7 +24,7 @@ import { starsText } from '../../imported/ratings';
 
 export async function newGame(nav: HomeNav): Promise<void> {
   const opening = openingFields();
-  const choice = await modal<{ name: string; starter: boolean; opening: { style: OpeningStyle; name: string } }>('New game', (close) => {
+  const choice = await modal<{ name: string; start: 'starter' | 'empty' | 'describe'; opening: { style: OpeningStyle; name: string } }>('New game', (close) => {
     const input = h('input', {
       type: 'text',
       value: 'My Game',
@@ -31,13 +32,13 @@ export async function newGame(nav: HomeNav): Promise<void> {
       autofocus: true,
       onfocus: (e: Event) => (e.target as HTMLInputElement).select(),
     });
-    const go = (starter: boolean) => {
+    const go = (start: 'starter' | 'empty' | 'describe') => {
       const o = input.reportValidity() && opening.value();
-      if (o) close({ name: input.value.trim(), starter, opening: o });
+      if (o) close({ name: input.value.trim(), start, opening: o });
     };
     return h(
       'form',
-      { class: 'stack', onsubmit: (e: Event) => (e.preventDefault(), go(true)) },
+      { class: 'stack', onsubmit: (e: Event) => (e.preventDefault(), go('starter')) },
       h('label', null, 'Title (shown on the menu screen)', input),
       opening.el,
       h(
@@ -51,15 +52,30 @@ export async function newGame(nav: HomeNav): Promise<void> {
         ),
         h(
           'button',
-          { type: 'button', class: 'start-choice', onclick: () => go(false) },
+          { type: 'button', class: 'start-choice', onclick: () => go('empty') },
           h('strong', null, '◻ Empty'),
           h('small', null, 'Just a title and an ending. Add every file yourself.'),
+        ),
+        h(
+          'button',
+          { type: 'button', class: 'start-choice start-describe', onclick: () => go('describe') },
+          h('strong', null, h('span', { 'aria-hidden': 'true' }, '✦ '), 'Describe it to your AI…'),
+          h(
+            'small',
+            null,
+            'Say what the game should be, and your own AI (Ollama or OpenAI) builds a first level from the starter, play-tests it and says what to add next.',
+          ),
         ),
       ),
     );
   });
   if (!choice?.name) return;
-  const p = choice.starter ? await starterProject(choice.name).catch(() => Project.create(choice.name)) : Project.create(choice.name);
+  // the description (and AI setup, if there is none yet), from the Assistant, loaded only now
+  const ai = choice.start === 'describe' ? await import('../../assistant/chat/homeDescribe') : undefined;
+  const described = ai && (await ai.askDescription());
+  if (ai && !described) return;
+  const starter = choice.start !== 'empty';
+  const p = starter ? await starterProject(choice.name).catch(() => Project.create(choice.name)) : Project.create(choice.name);
   const { style, name } = choice.opening;
   if (style !== 'none' || name) {
     // the cards are drawn with the Scene maker's renderer, loaded only now
@@ -76,10 +92,11 @@ export async function newGame(nav: HomeNav): Promise<void> {
       p.files.onChange = told;
     }
     // the First steps compare against the game as it starts, opening and all
-    if (choice.starter) beginFirstSteps(p);
+    if (choice.start === 'starter') beginFirstSteps(p);
     if (noSting) toast('The opening could not be loaded (offline?). Add it later from the start scene’s 🎬 Opening sting….', 'error');
   }
   await p.saveNow();
+  if (ai && described) ai.buildWhenOpened(p.id, described);
   nav.openProject(p.id);
 }
 

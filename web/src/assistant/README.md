@@ -34,7 +34,8 @@ What lets an AI tool open, check and change a game.
     `todo.ts` keeps the to-do list and the "Assistant: <model> via <provider>" credits in
     the companion data (`todoView.ts` shows the list).
   - `makeGame.ts`: Describe a game: the starter level for an empty game, then the AI
-    builds it until the bot wins. `homeDescribe.ts` is the home page's box.
+    builds it until the bot wins. `homeDescribe.ts` asks for the description when New game's
+    "Describe it to your AI…" is chosen (`editor/shell/homeImport.ts`).
   - `panel.ts` is the docked panel (full screen on phones), `log.ts` the conversation.
 - `shared/`: the read-only switch and the change toast with Undo, used by the chat and the
   bridge alike.

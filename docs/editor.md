@@ -36,8 +36,9 @@ theme. Some are cropped to the part that matters.
 The home page lists every game by tab: _My games_, _Imported_, the Sandbox and Bizarre games,
 the CD's Gameware and its Shareware. Picking one plays its title demo in the side panel, with
 Play, Look inside, Keys, the manual, the walkthrough, saves and scores, and Download beside it.
-_+ New game_ starts an empty game, and _✦ Describe a game…_ has your own AI build one from a
-few lines of description (see [the Assistant](#the-assistant-and-the-mcp-server)).
+_+ New game_ starts a game ready to play or an empty one, or, with _✦ Describe it to your AI…_,
+has your own AI build one from a few lines of description (see
+[the Assistant](#the-assistant-and-the-mcp-server)).
 
 ![The My games tab with one game, a copy of Snowbound, under "Continue where you left off", and a Getting started box](screenshots/editor/01-my-games.webp)
 
@@ -232,8 +233,8 @@ tools the Level check and the bot use, and makes small changes and play-tests th
 before changing_ each change waits for Apply or Skip; _Change freely_ applies them with Undo
 still there, and _Read-only_ keeps it to looking. _What should I do next?_ runs the Level check, the bot
 and the file checks and has the AI say what to fix first (with no AI set up, it lists what the
-checks found), and the game keeps a to-do list. _Describe a game…_, for an empty game here or on
-the home page, builds a game from a description until the bot can win it. The picture was taken with a
+checks found), and the game keeps a to-do list. _Describe a game…_, for an empty game here, or
+_✦ Describe it to your AI…_ in the home page's _+ New game_, builds a game from a description until the bot can win it. The picture was taken with a
 scripted stand-in for a model, not a real AI.
 
 _Use an AI tool on this computer instead (MCP)…_ at the bottom of the chat connects the open game

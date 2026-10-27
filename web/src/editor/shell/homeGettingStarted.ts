@@ -13,12 +13,11 @@ export function gettingStarted() {
       null,
       h('li', null, h('b', null, icon('play'), 'Play'), touch ? ' right here, with on-screen controls or a gamepad' : ' right here, with keyboard or gamepad'),
       h('li', null, h('b', null, icon('edit'), 'Look inside'), ' to see how a game was made, then Edit a copy to change it'),
-      h('li', null, h('b', null, icon('plus'), 'New game'), ' to start your own'),
       h(
         'li',
         null,
-        h('b', null, h('span', { 'aria-hidden': 'true' }, '✦ '), 'Describe a game'),
-        ' and your own AI builds one (',
+        h('b', null, icon('plus'), 'New game'),
+        ' to start your own, or describe it and your own AI builds one (',
         h(
           'button',
           { type: 'button', class: 'link-btn', onclick: () => void import('../../assistant/chat/settingsDialog').then((m) => m.openAiSetup()) },
