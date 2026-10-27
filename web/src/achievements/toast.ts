@@ -3,7 +3,9 @@
 // a while (not while it is pointed at or focused). On today's web it is a small card under the
 // header, at the right; on the 1994 desk a sticky note stuck to the front of the desk, left of
 // the keyboard tray, off the screen and the wall. It goes in the top layer (a manual popover)
-// so an open dialog (Saves & scores) doesn't hide it.
+// so an open dialog (Saves & scores) doesn't hide it. While a guided tour plays (tour/: the
+// html element's tour-on class, and its 'gm-tour' events) the notes wait, and come when it ends:
+// they would cover its title cards and bubbles. The achievement itself is kept at once.
 import './toast.css';
 import { achievementById } from './catalog';
 
@@ -71,9 +73,24 @@ function place(el: HTMLElement): void {
   el.style.top = `${Math.max(8, Math.min(s.top + 736 * k, innerHeight - 150))}px`;
 }
 
+/** Notes held while a tour plays, shown when it ends. */
+const held: string[] = [];
+const touring = () => document.documentElement.classList.contains('tour-on');
+
+function holdUntilTourEnds(id: string): void {
+  if (!held.length)
+    window.addEventListener('gm-tour', function after(e) {
+      if ((e as CustomEvent<string>).detail !== 'end') return;
+      window.removeEventListener('gm-tour', after);
+      for (const x of held.splice(0)) showUnlock(x);
+    });
+  if (!held.includes(id)) held.push(id);
+}
+
 export function showUnlock(id: string): void {
   const a = achievementById(id);
   if (!a || typeof document === 'undefined') return;
+  if (touring()) return holdUntilTourEnds(id);
   const el = ensureHost();
   const note = document.createElement('div');
   note.className = 'ach-toast';
