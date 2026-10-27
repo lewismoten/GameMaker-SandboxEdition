@@ -58,7 +58,7 @@ export function aiToolsSection(): HTMLElement {
       tool(
         'Pocket TTS',
         'Kyutai · CC BY 4.0',
-        'The guided tour’s voices cloned from Lewis’s own recordings, with his consent: Doc Leo’s, Joe’s, teenage Lewie’s, Courier Max’s and Watt’s (and Teddy’s when he talks). Runs on the developer’s computer.',
+        'The guided tour’s voices cloned from Lewis’s own recordings, with his consent: Doc Leo’s, Joe’s, teenage Lewie’s, Courier Max’s, Watt’s and Professor Fiddlesticks’ (and Teddy’s when he talks). Runs on the developer’s computer.',
         'Kyutai’s model, in vlapky’s ONNX conversion (pocket-tts-onnx), run by a script ported from vlapky’s pocket-tts-js (MIT) with Microsoft’s ONNX Runtime (MIT). Its built-in voices are never used; only the clips it makes ship.',
       ),
       tool(

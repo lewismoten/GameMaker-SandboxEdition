@@ -243,7 +243,7 @@ game folder opens in the browser unchanged.
   Pocket TTS's built-in voices are never used. Only the generated clips are committed, and they
   play on the site only (exported games don't carry them).
   The cloned voices speak for Doc Leo (Lewis's own), Joe the night librarian, teenage Lewie, Courier
-  Max and Watt, each shifted in pitch and speed. Gwinn's lines are spoken in **Kokoro**'s stock
+  Max, Watt and Professor Fiddlesticks, each shifted in pitch and speed. Gwinn's lines are spoken in **Kokoro**'s stock
   "Sky" voice (`af_sky`), pitched up, Dex Dynamo's in its "Puck" voice (`am_puck`) and Inspector
   Ada Penn's in its "Emma" voice (`bf_emma`): **Kokoro-82M**
   by hexgrad ([huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M),
