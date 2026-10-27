@@ -165,6 +165,11 @@ export interface TourStep {
   target?: Target;
   /** The speech bubble: short and plain. */
   say: string;
+  /**
+   * What its recorded voice says instead, only where the text-to-speech can't say `say` right
+   * even spelled out (scripts/narrate/spoken.ts): the bubble and caption still show `say`.
+   */
+  spoken?: string;
   /** The caption line under the page (for video); "<speaker>: <say>" if not given. */
   caption?: string;
   /** A sound as the action lands. */

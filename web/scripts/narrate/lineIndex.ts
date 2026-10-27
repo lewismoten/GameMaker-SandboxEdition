@@ -1,9 +1,9 @@
 // The narration's index, public/tour/voice/index.json: for each clip id, its chapter, where the
-// tour uses it, the words it says, how long it plays and hashes of the words and of the voice
-// voice (its sample, pitch and speed), so scripts/narrate.ts records only lines whose words (or
-// voice) changed. Pure
-// functions, no models, so tests can run them.
+// tour uses it, the words it says, how long it plays and hashes of the words as spoken and of the
+// voice (its sample, pitch and speed), so scripts/narrate.ts records only lines whose spoken words
+// (or voice) changed. Pure functions, no models, so tests can run them.
 import { createHash } from 'node:crypto';
+import { spokenText, type Engine } from './spoken';
 
 export interface Line {
   id: string;
@@ -12,6 +12,8 @@ export interface Line {
   /** Where the tour uses it, e.g. "Home: points at the New game button". */
   where?: string;
   text: string;
+  /** The words as the text-to-speech is handed them, when spokenText(text) won't do (a rewording). */
+  spoken?: string;
   /** Whose voice: a named sample, shifted in pitch and speed (left out: the default sample, as is). */
   voice?: { sample: string; semitones?: number; tempo?: number };
 }
@@ -22,7 +24,7 @@ export interface IndexEntry {
   text: string;
   /** How long the clip plays, in seconds (two decimals). */
   seconds: number;
-  /** textHash(text) when the clip was recorded. */
+  /** textHash(spokenOf(line)) when the clip was recorded: the words as spoken. */
   hash: string;
   /** textHash of the voice the clip was recorded in: its sample's bytes, pitch and speed. */
   voice: string;
@@ -35,6 +37,12 @@ export const ID = /^[a-z0-9-]+$/;
 
 /** A short, stable hash of text or bytes (12 hex digits of SHA-256). */
 export const textHash = (data: string | Uint8Array): string => createHash('sha256').update(data).digest('hex').slice(0, 12);
+
+/** The engine a line's voice is spoken by: Kokoro for its stock voices ('kokoro:<voice>'), Pocket TTS otherwise. */
+export const engineOf = (line: Pick<Line, 'voice'>): Engine => (line.voice?.sample.startsWith('kokoro:') ? 'kokoro' : 'pocket');
+
+/** The words the text-to-speech says for a line: its text (or its own spoken form) made speakable. */
+export const spokenOf = (line: Pick<Line, 'text' | 'spoken' | 'voice'>): string => spokenText(line.spoken ?? line.text, engineOf(line));
 
 /** A clip's path under the voice folder. */
 export const clipPath = (line: Pick<Line, 'id' | 'chapter'>): string => `${line.chapter}/${line.id}.ogg`;
@@ -53,6 +61,7 @@ export function lineProblems(lines: unknown): string[] {
       problems.push(`line ${i}: ${String(id)}'s chapter ${JSON.stringify(line?.chapter)} must be lowercase a-z, 0-9 and -`);
     if (line?.where !== undefined && typeof line.where !== 'string') problems.push(`line ${i}: ${String(id)}'s where must be text`);
     if (typeof line?.text !== 'string' || !line.text.trim()) problems.push(`line ${i}: ${String(id)} has no text`);
+    if (line?.spoken !== undefined && (typeof line.spoken !== 'string' || !line.spoken.trim())) problems.push(`line ${i}: ${String(id)}'s spoken must be text`);
   });
   return problems;
 }
@@ -75,7 +84,7 @@ export function planTakes(lines: Line[], index: VoiceIndex, o: PlanOptions): str
     .filter((l) => {
       const e = index[l.id];
       const voice = typeof o.voice === 'string' ? o.voice : o.voice(l);
-      return o.force || !e || e.hash !== textHash(l.text) || e.voice !== voice || !o.exists(clipPath(l));
+      return o.force || !e || e.hash !== textHash(spokenOf(l)) || e.voice !== voice || !o.exists(clipPath(l));
     })
     .map((l) => l.id);
 }

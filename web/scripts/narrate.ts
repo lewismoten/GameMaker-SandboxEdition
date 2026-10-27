@@ -1,7 +1,8 @@
 // Records the tour's lines in Lewis Moten's own cloned voice with Pocket TTS, locally: one small
 // Ogg Opus clip per line, public/tour/voice/<chapter>/<id>.ogg, with index.json (id → chapter,
 // where, words, seconds, hashes) and a generated README.md beside them, skipping lines whose words
-// and voice sample haven't changed. The models, engine and voice sample stay outside the repo
+// and voice sample haven't changed. Each line is said in the spoken form narrate/spoken.ts gives it
+// (npm run voice:check hears whether it came out right). The models, engine and voice sample stay outside the repo
 // (paths below, or env vars); only the clips are committed, so CI never runs this. From web/:
 //   npm run voice                                    every new or changed line of src/tour/lines.ts
 //   npm run voice:all                                every line again (--force)
@@ -15,7 +16,7 @@ import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CLIP_OGG, clearestWindow, normalize, readMono, shiftVoice, writeOgg } from './narrate/audio';
-import { clipPath, indexJson, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
+import { clipPath, indexJson, spokenOf, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
 import { PocketTts, randomSource } from './narrate/pocketTts';
 import { voiceReadme } from './narrate/voiceReadme';
 import { loadKokoro, type Kokoro } from './narrate/kokoro';
@@ -62,7 +63,7 @@ async function loadLines(o: Record<string, string | true>): Promise<Line[]> {
   // a path worked out at run time, so this file builds without the tour
   const path = fileURLToPath(new URL('../src/tour/lines', import.meta.url));
   const { tourLines } = (await import(/* @vite-ignore */ path)) as { tourLines: () => Line[] };
-  return tourLines().map(({ id, chapter, where, text, voice }) => ({ id, chapter, where, text, voice }));
+  return tourLines().map(({ id, chapter, where, text, spoken, voice }) => ({ id, chapter, where, text, spoken, voice }));
 }
 
 const ENV: Record<string, string> = { sample: 'NARRATE_SAMPLE_<NAME>', engine: 'POCKET_TTS_ENGINE', model: 'POCKET_TTS_MODEL' };
@@ -149,7 +150,7 @@ async function main() {
   for (const id of todo) {
     const line = lines.find((l) => l.id === id)!;
     const v = voiceOf(line);
-    const take = await speak(line.text, v);
+    const take = await speak(spokenOf(line), v);
     const rate = take.rate;
     take.audio = normalize(shiftVoice(take.audio, rate, v.semitones, v.tempo), rate);
     const seconds = Math.round((take.audio.length / rate) * 100) / 100;
@@ -157,7 +158,7 @@ async function main() {
     mkdirSync(dirname(file), { recursive: true });
     writeOgg(file, take.audio, rate, ogg);
     if (o.wav) writeWav(file.replace(/\.ogg$/, '.wav'), take.audio, rate);
-    index[id] = { chapter: line.chapter, where: line.where ?? '', text: line.text, seconds, hash: textHash(line.text), voice: voiceHash(line) };
+    index[id] = { chapter: line.chapter, where: line.where ?? '', text: line.text, seconds, hash: textHash(spokenOf(line)), voice: voiceHash(line) };
     save();
     ((spoken += seconds), (spent += take.genSeconds));
     console.log(`  ${clipPath(line)}: ${seconds.toFixed(2)} s in ${take.genSeconds.toFixed(1)} s`);

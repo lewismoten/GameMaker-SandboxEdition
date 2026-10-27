@@ -17,6 +17,8 @@ export interface TourLine {
   speaker: string;
   /** What the bubble says (the words to record). */
   text: string;
+  /** What the voice says instead, where the step gives a spoken form. */
+  spoken?: string;
   /** The speaker's recorded voice. */
   voice: HostVoice;
 }
@@ -45,7 +47,7 @@ export function tourLines(): TourLine[] {
       .filter((s) => HOSTS[s.speaker ?? c.speaker].voiced)
       .map((s) => {
         const host = HOSTS[s.speaker ?? c.speaker];
-        return { id: s.id, chapter: c.id, where: whereOf(c, s), speaker: host.name, text: s.say, voice: host.voice };
+        return { id: s.id, chapter: c.id, where: whereOf(c, s), speaker: host.name, text: s.say, spoken: s.spoken, voice: host.voice };
       }),
   );
 }
