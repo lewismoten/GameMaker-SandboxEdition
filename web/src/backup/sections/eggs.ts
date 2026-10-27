@@ -47,6 +47,7 @@ const foundCount = (p: EggsPayload) => {
 export const eggs: Section<EggsPayload> = {
   id: 'eggs',
   title: 'Felt eggs and bonus eggs',
+  short: 'Eggs',
   description: 'Which eggs you have found, EGG.EXE’s changes and how far the rotten egg is cracked.',
   unit: ['egg found', 'eggs found'],
   async extract(w) {
@@ -58,14 +59,15 @@ export const eggs: Section<EggsPayload> = {
     need(isRecord(raw) && Array.isArray(raw.inSaves) && raw.inSaves.every((k) => typeof k === 'string'), 'eggs');
     return { local: stringMap(raw.local, 'eggs'), inSaves: raw.inSaves };
   },
-  merge(mine, theirs) {
+  merge(mine, theirs, ctx) {
     const a = overrides(mine.local);
     const b = overrides(theirs.local);
     const o: Overrides = { ...a };
-    for (const [k, v] of Object.entries(b)) if (v === 'added' && o[k] !== 'broken') o[k] = 'added';
+    for (const [k, v] of Object.entries(b)) if (ctx.prefer === 'theirs' || (v === 'added' && o[k] !== 'broken')) o[k] = v;
     const local = { ...mine.local };
     if (Object.keys(o).length) local[KEY] = JSON.stringify(o);
-    const taps = Math.max(Number(mine.local[TAPS] ?? 0) || 0, Number(theirs.local[TAPS] ?? 0) || 0);
+    const tapsOf = (l: Record<string, string>) => Number(l[TAPS] ?? 0) || 0;
+    const taps = ctx.prefer === 'theirs' && theirs.local[TAPS] !== undefined ? tapsOf(theirs.local) : Math.max(tapsOf(mine.local), tapsOf(theirs.local));
     if (taps) local[TAPS] = String(taps);
     if (theirs.local['gm-egg-hatched'] && !mine.local['gm-egg-hatched'] && !local[TAPS]) local['gm-egg-hatched'] = theirs.local['gm-egg-hatched'];
     const mineSaved = new Set(mine.inSaves);

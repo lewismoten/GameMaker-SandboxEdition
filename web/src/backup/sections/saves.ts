@@ -108,6 +108,7 @@ function mergeFiles(mine: Files, theirs: Files, keep: 'mine' | 'theirs'): Merged
 export const saves: Section<SavesPayload> = {
   id: 'saves',
   title: 'Saved games and high scores',
+  short: 'Saves and high scores',
   description: 'Each game’s save slots, slot names and high-score table, and your Save backups.',
   unit: ['game', 'games'],
   extract(w) {

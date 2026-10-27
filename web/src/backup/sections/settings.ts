@@ -12,10 +12,11 @@ interface KeysPayload {
   local: Record<string, string>;
 }
 
-function keysSection(id: SectionId, title: string, description: string): Section<KeysPayload> {
+function keysSection(id: SectionId, title: string, short: string, description: string): Section<KeysPayload> {
   return {
     id,
     title,
+    short,
     description,
     unit: ['setting', 'settings'],
     extract: (w) => ({ local: localOf(id, w.local) }),
@@ -24,7 +25,7 @@ function keysSection(id: SectionId, title: string, description: string): Section
       need(isRecord(raw), title);
       return { local: stringMap(raw.local, title) };
     },
-    merge: (mine, theirs) => ({ local: fillGaps(mine.local, theirs.local) }),
+    merge: (mine, theirs, ctx) => ({ local: fillGaps(mine.local, theirs.local, ctx.prefer) }),
     inject: (w, mine, next) => injectLocal(w, mine.local, next.local),
     describe: (mine, next) => describeKeys(mine.local, next.local),
   };
@@ -32,6 +33,7 @@ function keysSection(id: SectionId, title: string, description: string): Section
 
 export const prefs = keysSection(
   'prefs',
+  'Preferences',
   'Preferences',
   'The theme, reading view and text size, how the Library and home page are sorted, the volume and the editors’ remembered choices.',
 );
@@ -63,12 +65,13 @@ function keepKey(mine: Record<string, string>, next: Record<string, string>): Re
 const aiBase = keysSection(
   'ai',
   'AI assistant setup',
+  'AI setup',
   'Which AI the Assistant uses: its kind, address and model, and how it asks. The API key stays out unless you include it.',
 );
 
 export const ai: Section<KeysPayload> = {
   ...aiBase,
-  merge: (mine, theirs) => ({ local: fillGaps(mine.local, theirs.local) }),
+  merge: (mine, theirs, ctx) => ({ local: fillGaps(mine.local, theirs.local, ctx.prefer) }),
   replace: (theirs) => theirs,
   inject(w, mine, next) {
     injectLocal(w, mine.local, keepKey(mine.local, next.local));

@@ -19,6 +19,7 @@ function higher(a: ScoreRecord, b: ScoreRecord): ScoreRecord {
 export const trophies: Section<TrophiesPayload> = {
   id: 'trophies',
   title: 'Score trophies',
+  short: 'Score trophies',
   description: 'Your best score in each game and the total of all your points, for the desk’s two trophies.',
   unit: ['best score', 'best scores'],
   extract: (w) => ({
@@ -30,8 +31,8 @@ export const trophies: Section<TrophiesPayload> = {
     need(isRecord(raw), 'score trophies');
     return { files: fileMap(raw.files, 'score trophies'), local: stringMap(raw.local ?? {}, 'score trophies') };
   },
-  merge(mine, theirs) {
-    const local = fillGaps(mine.local, theirs.local);
+  merge(mine, theirs, ctx) {
+    const local = fillGaps(mine.local, theirs.local, ctx.prefer);
     if (!theirs.files[FILE]) return { files: mine.files, local };
     const a = parseScores(mine.files[FILE]);
     const r = higher(a, parseScores(theirs.files[FILE]));

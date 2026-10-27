@@ -39,6 +39,7 @@ const mapOf = (w: World, key: string): Record<string, unknown> => {
 export const projects: Section<ProjectsPayload> = {
   id: 'projects',
   title: 'My games',
+  short: 'My games',
   description: 'Games you made or copied, with every file, their to-do lists and editor notes. Imported games stay out.',
   unit: ['game', 'games'],
   extract(w) {
@@ -84,7 +85,7 @@ export const projects: Section<ProjectsPayload> = {
         takeMeta(id, id, false);
         continue;
       }
-      const choice = ctx.projects[id] ?? 'both';
+      const choice = ctx.projects[id] ?? (ctx.prefer === 'theirs' ? 'replace' : ctx.prefer === 'mine' ? 'skip' : 'both');
       if (choice === 'skip') continue;
       if (choice === 'replace' && id in mine.projects) {
         next.projects[id] = r;

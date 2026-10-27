@@ -1,11 +1,11 @@
-/* Back up / restore (exportDialog.ts, importDialog.ts): the sections as a list of rows, each a
-   checkbox with its title, what it holds and its size; the restore's choices and changes. */
+/* Back up / restore (exportDialog.ts, importDialog.ts): the dialog fits the window, its head,
+   intro and foot stay put and only the list of parts scrolls; each part is one row (two on a
+   phone) with its details opened from a button. */
 dialog.modal:has(.backup) {
-  width: min(640px, calc(100vw - 32px));
+  width: min(720px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
 }
 
-/* the dialog fits the window: its head, the intro and the foot stay put, and the list scrolls */
 dialog.modal[open]:has(.backup) {
   display: flex;
   flex-direction: column;
@@ -31,6 +31,13 @@ dialog.modal:has(.backup) > .backup {
   line-height: 1.4;
 }
 
+.backup-about {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* ---- the list */
 .backup-sections {
   display: flex;
   flex: 1 1 auto;
@@ -57,132 +64,156 @@ dialog.modal:has(.backup) > .backup {
   min-height: 72px;
   overflow: auto;
   overscroll-behavior: contain;
-  padding: 2px;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
 
-.backup-note {
-  margin-top: 8px !important;
-}
-
-.backup-foot {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.backup-foot .buttons {
-  margin-top: 0;
-}
-
 .backup-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-dialog.modal label.backup-row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 10px;
-  min-height: 24px;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
+.backup-note {
+  margin: 8px 4px !important;
 }
 
-.backup-row:has(input:checked) {
-  border-color: var(--accent);
+/* ---- a part's row */
+.brow {
+  border-bottom: 1px solid var(--border);
+}
+
+.brow:last-child {
+  border-bottom: 0;
+}
+
+.brow:has(input:checked) {
   background: var(--accent-soft);
 }
 
-.backup-row:has(input:disabled) {
-  cursor: default;
-  opacity: 0.75;
+.brow-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 2px 6px;
 }
 
-.backup-row input[type='checkbox'],
-.backup-key input[type='checkbox'] {
+.brow-a {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brow-b {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+dialog.modal label.brow-name {
+  display: flex;
+  flex-direction: row;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 32px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.brow-name span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.brow-name input,
+.backup-check input {
   flex: none;
   width: 20px;
   height: 20px;
   margin: 0;
 }
 
-.backup-text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+.brow-name:has(input:disabled) {
+  cursor: default;
+  opacity: 0.7;
 }
 
-.backup-about,
-.backup-facts {
+.brow-count,
+.brow-size {
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.35;
+  white-space: nowrap;
 }
 
-.backup-facts {
+.brow-count {
   flex: none;
+}
+
+.brow-size {
+  min-width: 52px;
   text-align: right;
 }
 
-.backup-key {
-  margin: 6px 0 0 30px;
+.brow-mode {
+  min-height: 30px;
+  max-width: 172px;
 }
 
-dialog.modal .backup-key label {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  min-height: 24px;
+.brow-mode.overridden {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
 }
 
-.backup-warn {
-  color: var(--danger);
-  font-size: 13px;
+.brow-custom {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.backup-status {
-  font-size: 14px;
-}
-
-.backup-status:empty {
+.brow-custom[hidden] {
   display: none;
 }
 
-.backup-buttons .backup-restore {
-  margin-right: auto;
+.brow-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 2px 8px;
+  font-size: 13px;
+  white-space: nowrap;
 }
 
-.restore-head {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
+.brow-more[aria-expanded='true'] .brow-caret {
+  display: inline-block;
+  transform: rotate(180deg);
 }
 
-.restore-head .backup-row {
-  flex: 1;
-  min-width: 0;
+.brow-info {
+  justify-content: center;
+  padding: 2px 6px;
+  font-size: 16px;
 }
 
-.restore-mode {
-  flex: none;
-  align-self: center;
-  min-height: 32px;
+.brow-details {
+  padding: 0 10px 8px 34px;
+}
+
+.brow-details[hidden] {
+  display: none;
 }
 
 .backup-changes {
-  margin: 4px 0 0 40px;
+  margin: 0;
   padding: 0;
   list-style: '– ';
   font-size: 13px;
@@ -192,7 +223,7 @@ dialog.modal .backup-key label {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 6px 0 0 40px;
+  margin-top: 6px;
   font-size: 13px;
 }
 
@@ -216,49 +247,159 @@ dialog.modal .backup-key label {
   min-height: 28px;
 }
 
-@media (max-width: 520px) {
-  dialog.modal label.backup-row:has(.backup-facts) {
+/* ---- the choice for every part */
+.restore-all {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+dialog.modal .restore-all label {
+  display: inline;
+  font-weight: 600;
+}
+
+.restore-all select {
+  min-height: 32px;
+}
+
+.restore-all .backup-about {
+  flex-basis: 100%;
+}
+
+/* ---- the foot */
+.backup-foot {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backup-foot .buttons,
+.restore-done .buttons {
+  flex: none;
+  margin-top: 0;
+}
+
+dialog.modal label.backup-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.backup-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 12px;
+}
+
+.backup-warn {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.backup-status {
+  font-size: 14px;
+}
+
+.backup-status:empty {
+  display: none;
+}
+
+.backup-buttons .backup-restore {
+  margin-right: auto;
+}
+
+/* a phone: a row with a choice takes two lines, the name and count, then the size and choices */
+@media (max-width: 560px) {
+  .brow-line:has(select) {
     flex-wrap: wrap;
+    row-gap: 0;
   }
 
-  .backup-facts {
+  .brow-line:has(select) .brow-a {
     flex-basis: 100%;
-    padding-left: 30px;
+  }
+
+  .brow-line:has(select) .brow-b {
+    flex: 1 1 100%;
+    min-width: 0;
+    padding: 0 0 4px 28px;
+  }
+
+  .brow-line:has(select) .brow-size {
+    min-width: 0;
     text-align: left;
   }
 
-  .restore-head {
-    flex-direction: column;
+  /* the choice's own outline says it is set here; the words stay for screen readers */
+  .brow-custom:not([hidden]) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
 
-  .restore-mode {
-    align-self: stretch;
-    margin-left: 30px;
+  .brow-mode {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
   }
 
-  .backup-changes,
-  .restore-extra {
-    margin-left: 30px;
+  .brow-size {
+    min-width: 0;
   }
 
-  .backup-buttons {
+  /* a long name keeps whole: the count drops under it */
+  .brow-a {
     flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .brow-name span {
+    white-space: normal;
+  }
+
+  .brow-line:not(:has(select)) .brow-count {
+    flex-basis: 100%;
+    padding-left: 28px;
   }
 
   .backup-lead {
     font-size: 14px;
   }
+
+  .backup-buttons {
+    flex-wrap: wrap;
+  }
 }
 
-/* a short window (a phone on its side): the intro gives the list its room */
+/* a short window (a phone on its side) */
 @media (max-height: 500px) {
   .backup-lead {
     font-size: 13px;
   }
 
-  .backup-foot,
-  .backup {
+  .restore-all .backup-about {
+    display: none;
+  }
+
+  .backup,
+  .backup-foot {
     gap: 4px;
+  }
+
+  .restore-all {
+    padding: 4px 8px;
   }
 
   dialog.modal:has(.backup) {

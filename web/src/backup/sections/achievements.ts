@@ -14,6 +14,7 @@ const unlocked = (p: AchievementsPayload) => Object.keys(parseRecord(p.files[FIL
 export const achievements: Section<AchievementsPayload> = {
   id: 'achievements',
   title: 'Achievements',
+  short: 'Achievements',
   description: 'What you have unlocked, and how far along the rest are.',
   unit: ['achievement', 'achievements'],
   extract: (w) => ({ files: { ...((w.stores.saves[SITE_SAVE_IDS.achievements] as Record<string, Uint8Array> | undefined) ?? {}) } }),

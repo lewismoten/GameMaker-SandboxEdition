@@ -50,9 +50,11 @@ everything this browser keeps to one `.gmbackup` file: your games, saves and hig
 achievements, score trophies, eggs and tin hearts, the 1994 desk, imported games' notes and
 ratings (never the imported games themselves), preferences and the AI setup (its key only if you
 tick it). Untick any part to leave it out. _Restore from a file…_ shows what the file holds and
-what each part would change, merges by default (nothing found is lost, the higher score stays, a
-save slot filled on both sides keeps yours and puts the other in Save backups) or replaces a part
-if you choose, and never touches a part the file doesn't have.
+what each part would change, and asks one question for every part (each can be set on its own
+too): _Merge_ (nothing found is lost, the higher score stays, a save slot filled on both sides
+keeps yours and puts the other in Save backups), _Prefer the file_ or _Prefer this browser_
+(merge, with that side winning wherever both differ), or _Replace what's here_. A part the file
+doesn't have is never touched.
 
 ## Opening a copy of a Sandbox game
 

@@ -9,7 +9,8 @@ chosen). It saves what this site keeps in a browser to one file and brings it ba
   (and what is left out, with why). `inventory.test.ts` fails when a new key or database appears in
   the code without a place here.
 - `sections/`: one file a section, each with its rules: what it takes from the browser, how it
-  merges with what's here, how it replaces it, and what a change would do in words.
+  merges with what's here (by its own rules, or with the file's or this browser's side winning
+  every clash: `MergeContext.prefer`), how it replaces it, and what a change would do in words.
   - `projects.ts`: My games (files, companion and to-do list, the per-game maps). Never imported
     games. A game whose id is here already and differs: keep both (the default), replace or skip.
   - `saves.ts`: every game's saves and high-score table, and the Save backups. The tables join
@@ -30,6 +31,8 @@ chosen). It saves what this site keeps in a browser to one file and brings it ba
 - `plan.ts`: an import worked out on a copy (only the chosen sections touched), with what each
   changes. `applyImport.ts` does it.
 - `openDataBackup.ts`, `exportDialog.ts`, `importDialog.ts`, `backup.css`, `formatBytes.ts`: the
-  dialogs.
+  dialogs: one row a part (two on a phone), its details behind a button, only the list scrolling
+  so the foot stays in view; Restore's one choice for every part (Merge, Prefer the file, Prefer
+  this browser, Replace what's here), which each row can set apart.
 
 Tests: `backup.test.ts` (round trip, merges, untouched sections, partial and damaged files).

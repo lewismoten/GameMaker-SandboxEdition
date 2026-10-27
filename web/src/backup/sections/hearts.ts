@@ -42,6 +42,7 @@ const heartCount = (p: HeartsPayload) => {
 export const hearts: Section<HeartsPayload> = {
   id: 'hearts',
   title: 'Tin hearts',
+  short: 'Tin hearts',
   description: 'The tin hearts you have found, in the games and in the room, and EGG.EXE’s changes.',
   unit: ['heart found', 'hearts found'],
   extract: (w) => ({ found: finds(w), local: localOf('hearts', w.local) }),
@@ -51,14 +52,18 @@ export const hearts: Section<HeartsPayload> = {
     for (const f of Object.values(raw.found)) need(f instanceof Uint8Array, 'tin hearts');
     return { found: raw.found as Record<string, Uint8Array>, local: stringMap(raw.local, 'tin hearts') };
   },
-  merge(mine, theirs) {
-    const found = { ...theirs.found, ...mine.found };
-    const local = { ...theirs.local, ...mine.local };
+  merge(mine, theirs, ctx) {
+    const first = ctx.prefer === 'theirs';
+    const found = first ? { ...mine.found, ...theirs.found } : { ...theirs.found, ...mine.found };
+    const local = first ? { ...mine.local, ...theirs.local } : { ...theirs.local, ...mine.local };
     const a = overrides(mine.local);
     const o: Overrides = { ...a };
-    for (const [k, v] of Object.entries(overrides(theirs.local))) if (v === 'added' && o[k] !== 'broken') o[k] = 'added';
+    for (const [k, v] of Object.entries(overrides(theirs.local))) if (first || (v === 'added' && o[k] !== 'broken')) o[k] = v;
     if (Object.keys(o).length) local[OVERRIDES] = JSON.stringify(o);
-    const pops = Math.max(Number(mine.local[POPS] ?? 0) || 0, Number(theirs.local[POPS] ?? 0) || 0);
+    const pops =
+      first && theirs.local[POPS] !== undefined
+        ? Number(theirs.local[POPS]) || 0
+        : Math.max(Number(mine.local[POPS] ?? 0) || 0, Number(theirs.local[POPS] ?? 0) || 0);
     if (pops) local[POPS] = String(pops);
     if (mine.local[REVEAL] === '1' || theirs.local[REVEAL] === '1') local[REVEAL] = '1';
     return { found, local };

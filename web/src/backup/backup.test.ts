@@ -6,7 +6,7 @@ import { parseHighScoreTable, serializeHighScoreTable } from '../project/saveDat
 import { parseSlotNames, serializeSlotNames } from '../project/saveData/saveGame';
 import { FORMAT, FORMAT_VERSION, makeBackup, readBackup, snapshot } from './file';
 import { SECTION_IDS } from './sections';
-import { planImport, projectClashes, type ImportChoices } from './plan';
+import { planImport, projectClashes, type ImportChoices, type Mode } from './plan';
 import { BackupError } from './sections/types';
 import { emptyWorld, worldDiff, type World } from './world';
 import type { SectionId } from './inventory';
@@ -67,7 +67,7 @@ async function backupOf(w: World, only: readonly SectionId[] = SECTION_IDS, with
   return readBackup(bytes);
 }
 
-const all = (mode: 'merge' | 'replace'): ImportChoices => ({ sections: Object.fromEntries(SECTION_IDS.map((id) => [id, mode])), projects: {}, slots: 'mine' });
+const all = (mode: Mode): ImportChoices => ({ sections: Object.fromEntries(SECTION_IDS.map((id) => [id, mode])), projects: {} });
 
 describe('backup file', () => {
   it('round-trips everything but imported games into an empty browser, bytes exact', async () => {
@@ -143,7 +143,10 @@ describe('merge rules', () => {
       ]),
     };
     for (const slots of ['mine', 'theirs'] as const) {
-      const { next } = await planImport(seeded(), await backupOf(theirs, ['saves']), { ...all('merge'), slots, sections: { saves: 'merge' } });
+      const { next } = await planImport(seeded(), await backupOf(theirs, ['saves']), {
+        ...all('merge'),
+        sections: { saves: slots === 'mine' ? 'merge' : 'theirs' },
+      });
       const f = next.stores.saves['game:blaster'] as Record<string, Uint8Array>;
       expect(f['game2.sav']).toEqual(saveWith([2]));
       expect(f['game0.sav']).toEqual(slots === 'mine' ? saveWith([149]) : saveWith([1]));
@@ -189,6 +192,24 @@ describe('merge rules', () => {
     expect(next.local['gm-egg-taps']).toBe('9');
     expect(Object.keys(next.stores.saves).sort()).toEqual(['game:blaster', 'game:teddy']);
     expect(Object.keys(next.stores.saves['game:blaster'] as object)).toEqual(['tinheart.dat']);
+  });
+
+  it('preferring the file or this browser settles every clash its way', async () => {
+    const theirs = seeded();
+    (theirs.stores.projects.p1 as { name: string }).name = 'Changed';
+    theirs.local['gm-theme'] = 'light';
+    theirs.local['gm-imported-notes'] = JSON.stringify({ imp: { rating: 1, note: 'older', fingerprint: { gam: [123] }, edited: 10 } });
+    theirs.stores.desk.EXTRAS = { serial: 'GM-9999' };
+    const b = await backupOf(theirs, ['projects', 'prefs', 'notes', 'desk']);
+    const file = await planImport(seeded(), b, all('theirs'));
+    expect((file.next.stores.projects.p1 as { name: string }).name).toBe('Changed');
+    expect(Object.keys(file.next.stores.projects).sort()).toEqual(['imp', 'p1']);
+    expect(file.next.local['gm-theme']).toBe('light');
+    expect(JSON.parse(file.next.local['gm-imported-notes']).imp.note).toBe('older');
+    expect(file.next.stores.desk.EXTRAS).toEqual({ serial: 'GM-9999' });
+    const mine = await planImport(seeded(), b, all('mine'));
+    const d = worldDiff(seeded(), mine.next);
+    expect([d.set, d.remove, d.stores.flatMap((x) => [...x.puts, ...x.deletes])]).toEqual([[], [], []]);
   });
 
   it('notes keep the newer edit; settings keep this browser’s and fill the rest', async () => {

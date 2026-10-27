@@ -47,7 +47,7 @@ function readNotes(w: World): NotesPayload {
 const hasWords = (n: Note | undefined) => !!(n?.rating || n?.note?.trim());
 
 /** The file's notes put where they belong here: on the same game (by id, then fingerprint), else as removed records. */
-function place(base: NotesPayload, theirs: NotesPayload, w: World, keepNewer: boolean): NotesPayload {
+function place(base: NotesPayload, theirs: NotesPayload, w: World, prefer?: 'mine' | 'theirs'): NotesPayload {
   const imported = importedIds(w);
   const notes = { ...base.notes };
   const removed = [...base.removed];
@@ -59,8 +59,8 @@ function place(base: NotesPayload, theirs: NotesPayload, w: World, keepNewer: bo
       target = Object.keys(notes).find((k) => imported.has(k) && notes[k].fingerprint && sameGame(notes[k].fingerprint, n.fingerprint!));
     if (target) {
       const here = notes[target];
-      if (!hasWords(here) || (keepNewer && (n.edited ?? 0) > (here?.edited ?? 0)))
-        notes[target] = { ...here, ...n, source: here?.source ?? n.source, fingerprint: here?.fingerprint ?? n.fingerprint };
+      const wins = prefer === 'theirs' || (prefer !== 'mine' && (n.edited ?? 0) > (here?.edited ?? 0));
+      if (!hasWords(here) || wins) notes[target] = { ...here, ...n, source: here?.source ?? n.source, fingerprint: here?.fingerprint ?? n.fingerprint };
       continue;
     }
     if (!n.fingerprint || !hasWords(n)) continue;
@@ -87,6 +87,7 @@ function addRemoved(list: Removed[], r: Removed): void {
 export const notes: Section<NotesPayload> = {
   id: 'notes',
   title: 'Imported games’ notes and ratings',
+  short: 'Imported games’ notes',
   description: 'Your stars and notes on imported games, and the records of ones you removed. Not the games themselves.',
   unit: ['note', 'notes'],
   extract(w) {
@@ -105,8 +106,8 @@ export const notes: Section<NotesPayload> = {
     for (const r of raw.removed) need(isRecord(r) && typeof r.id === 'string' && typeof r.removed === 'number' && isPrint(r.fingerprint), 'removed games');
     return raw as unknown as NotesPayload;
   },
-  merge: (mine, theirs, ctx) => place(strip(mine), theirs, ctx.world, true),
-  replace: (theirs, ctx) => place({ notes: {}, removed: [] }, theirs, ctx.world, true),
+  merge: (mine, theirs, ctx) => place(strip(mine), theirs, ctx.world, ctx.prefer),
+  replace: (theirs, ctx) => place({ notes: {}, removed: [] }, theirs, ctx.world, 'theirs'),
   inject(w, _mine, next) {
     const clean = strip(next);
     if (Object.keys(clean.notes).length) w.local[NOTES] = JSON.stringify(clean.notes);

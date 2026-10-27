@@ -10,13 +10,14 @@ import type { ProjectsPayload } from './sections/projects';
 import type { MergeContext, ProjectChoice } from './sections/types';
 import { copyWorld, type World } from './world';
 
-export type Mode = 'merge' | 'replace';
+/** Merge by each section's rules; merge with the file's (theirs) or this browser's (mine) winning every conflict; or replace. */
+export type Mode = 'merge' | 'theirs' | 'mine' | 'replace';
 
 export interface ImportChoices {
   /** The sections to bring back and how; a section left out is not touched. */
   sections: Partial<Record<SectionId, Mode>>;
+  /** Per clashing project id, set by hand; otherwise the projects section's mode decides. */
   projects: Record<string, ProjectChoice>;
-  slots: 'mine' | 'theirs';
 }
 
 export interface SectionChange {
@@ -47,7 +48,7 @@ export async function planImport(world: World, backup: ReadBackup, choices: Impo
   const ctx: MergeContext = {
     world,
     projects: choices.projects,
-    slots: choices.slots,
+    slots: 'mine',
     idMap: {},
     now: opts.now ?? Date.now(),
     newId: opts.newId ?? (() => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`),
@@ -58,6 +59,8 @@ export async function planImport(world: World, backup: ReadBackup, choices: Impo
     const theirs = backup.payloads[s.id];
     if (!mode || theirs === undefined) continue;
     const mine = await s.extract(next);
+    ctx.prefer = mode === 'theirs' || mode === 'mine' ? mode : undefined;
+    ctx.slots = mode === 'theirs' ? 'theirs' : 'mine';
     const result = mode === 'replace' ? (s.replace ? s.replace(theirs, ctx, mine) : theirs) : s.merge(mine, theirs, ctx);
     s.inject(next, mine, result);
     changes.push({ id: s.id, title: s.title, mode, lines: s.describe(mine, result) });

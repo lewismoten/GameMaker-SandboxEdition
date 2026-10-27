@@ -32,6 +32,7 @@ function joinDated(a: Dated, b: Dated): Dated {
 export const desk: Section<DeskPayload> = {
   id: 'desk',
   title: 'The 1994 desk',
+  short: 'The 1994 desk',
   description: 'The PC’s C: drive, your registration and BBS account, file points, and how the room was left.',
   unit: ['item', 'items'],
   extract: (w) => ({ records: { ...w.stores.desk }, local: localOf('desk', w.local) }),
@@ -44,15 +45,15 @@ export const desk: Section<DeskPayload> = {
     if ('C' in raw.records) need(isCDrive(raw.records.C), 'C: drive');
     return { records: raw.records, local: stringMap(raw.local, 'desk') };
   },
-  merge(mine, theirs) {
-    const records = { ...theirs.records, ...mine.records };
+  merge(mine, theirs, ctx) {
+    const records = ctx.prefer === 'theirs' ? { ...mine.records, ...theirs.records } : { ...theirs.records, ...mine.records };
     const a = mine.records.C;
     const b = theirs.records.C;
     if (isCDrive(a) && isCDrive(b)) {
       const c: CDrive = { ids: joinDated(a.ids, b.ids), deleted: [...new Set([...a.deleted, ...b.deleted])], dirs: joinDated(a.dirs, b.dirs) };
       records.C = same(c, a) ? a : c;
     }
-    return { records, local: fillGaps(mine.local, theirs.local) };
+    return { records, local: fillGaps(mine.local, theirs.local, ctx.prefer) };
   },
   inject(w, mine, next) {
     for (const k of Object.keys(mine.records)) delete w.stores.desk[k];

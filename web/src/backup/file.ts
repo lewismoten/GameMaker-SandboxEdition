@@ -36,6 +36,7 @@ export interface Manifest {
 export interface SectionSnapshot {
   id: SectionId;
   title: string;
+  short: string;
   description: string;
   items: number;
   /** Its size in the file, before packing. */
@@ -51,7 +52,16 @@ export async function snapshot(w: World, opts: { withApiKey?: boolean } = {}): P
     let payload = await s.extract(w);
     if (s.id === 'ai' && !opts.withApiKey) payload = { local: withoutApiKey((payload as { local: Record<string, string> }).local) };
     const text = encode(payload);
-    out.push({ id: s.id, title: s.title, description: s.description, items: s.count(payload), bytes: new TextEncoder().encode(text).length, payload, text });
+    out.push({
+      id: s.id,
+      title: s.title,
+      short: s.short,
+      description: s.description,
+      items: s.count(payload),
+      bytes: new TextEncoder().encode(text).length,
+      payload,
+      text,
+    });
   }
   return out;
 }

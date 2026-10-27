@@ -10,6 +10,8 @@ export interface MergeContext {
   world: World;
   /** Per clashing project id; 'both' when left out. */
   projects: Record<string, ProjectChoice>;
+  /** Whose version wins where both have one and the rules don't settle it; undefined: the section's own rules. */
+  prefer?: 'mine' | 'theirs';
   /** A save file (a slot, a recording) that differs here and in the file: whose is kept. The other goes to Save backups. */
   slots: 'mine' | 'theirs';
   /** Project ids the file's games were given here (kept both), so their saves follow them. Filled by the projects section. */
@@ -23,6 +25,8 @@ export class BackupError extends Error {}
 export interface Section<P = unknown> {
   id: SectionId;
   title: string;
+  /** The title in a few words, for the dialogs' one-line rows. */
+  short: string;
   /** One line for the dialog. */
   description: string;
   /** This section's part of the world. */
@@ -73,8 +77,9 @@ export function injectLocal(w: World, mine: Record<string, string>, next: Record
   Object.assign(w.local, next);
 }
 
-/** This browser's keys, plus the file's for keys not set here. */
-export const fillGaps = (mine: Record<string, string>, theirs: Record<string, string>): Record<string, string> => ({ ...theirs, ...mine });
+/** This browser's keys, plus the file's for keys not set here (or, preferring the file, the file's wherever it has one). */
+export const fillGaps = (mine: Record<string, string>, theirs: Record<string, string>, prefer?: 'mine' | 'theirs'): Record<string, string> =>
+  prefer === 'theirs' ? { ...mine, ...theirs } : { ...theirs, ...mine };
 
 /** "Sets 2 settings, changes 1, removes 1" for two key maps. */
 export function describeKeys(mine: Record<string, string>, next: Record<string, string>, unit: [string, string] = ['setting', 'settings']): string[] {
