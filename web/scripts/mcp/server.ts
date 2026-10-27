@@ -40,7 +40,7 @@ export async function callTool(state: ServerState, name: string, args: unknown):
   return runTool(def, args, state.game.ctx);
 }
 
-export const SERVER_INFO = { name: 'gamemaker-sandbox', version: '1.0.0' };
+const SERVER_INFO = { name: 'gamemaker-sandbox', version: '1.0.0' };
 
 export function createServer(state: ServerState): Server {
   const server = new Server(SERVER_INFO, {

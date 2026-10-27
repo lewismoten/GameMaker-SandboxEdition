@@ -29,8 +29,16 @@ export function editorState(host: AssistantHost | undefined, readOnly: boolean):
 
 /** The largest canvas showing in the editor area, as a PNG. */
 async function screenshot(host: AssistantHost): Promise<ToolResult> {
-  const canvases = [...host.editorArea.querySelectorAll('canvas')].filter((c) => c.width > 0 && c.height > 0 && c.getClientRects().length);
-  const c = canvases.sort((a, b) => b.width * b.height - a.width * a.height)[0];
+  const largest = () =>
+    [...host.editorArea.querySelectorAll('canvas')]
+      .filter((c) => c.width > 0 && c.height > 0 && c.getClientRects().length)
+      .sort((a, b) => b.width * b.height - a.width * a.height)[0];
+  // an editor opened again after a change mounts a moment later
+  let c = largest();
+  for (let i = 0; i < 15 && !c; i++) {
+    await new Promise((r) => setTimeout(r, 100));
+    c = largest();
+  }
   if (!c) return fail('The open editor shows no picture to capture; render_png draws any part of the game instead.');
   const blob = await new Promise<Blob | null>((resolve) => c.toBlob(resolve, 'image/png'));
   if (!blob) return fail('The picture could not be captured.');

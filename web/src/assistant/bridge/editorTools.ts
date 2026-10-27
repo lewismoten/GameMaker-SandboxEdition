@@ -3,7 +3,7 @@
 // the tab runs them (editorAdapters.ts).
 import type { ToolDef } from '../tools/types';
 
-export type EditorToolSpec = Omit<ToolDef, 'run'>;
+type EditorToolSpec = Omit<ToolDef, 'run'>;
 
 export const EDITOR_TOOL_SPECS: EditorToolSpec[] = [
   {
