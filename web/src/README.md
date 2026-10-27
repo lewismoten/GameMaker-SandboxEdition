@@ -14,7 +14,7 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
 - `dos.html` → [`dosPage/dosPage.ts`](dosPage/dosPage.ts): DOS Game-Maker, the desk's PC on its
   own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`, with `&dial=sandbox`
   or `&dial=sofa` to dial that board; `?project=<id>&run=play|design` a game kept in this
-  browser). It loads no desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the
+  browser; `?tour=dos` its guided tour, [`tour/`](tour/README.md)). It loads no desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the
   site lead to it. [`viewSwitch.ts`](viewSwitch.ts) is the Desk | DOS | Web switch in all three
   headers.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
