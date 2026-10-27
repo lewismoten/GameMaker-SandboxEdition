@@ -172,14 +172,16 @@ describe('where they fire', () => {
   const walk = (dir: string) => {
     for (const f of readdirSync(dir, { withFileTypes: true })) {
       const p = join(dir, f.name);
-      if (f.isDirectory()) walk(p);
-      else if (/\.ts$/.test(f.name) && !/\.test\.ts$/.test(f.name)) {
+      // the guided tour fires none (its desk-… are step ids)
+      if (f.isDirectory()) {
+        if (p !== join(src, 'tour')) walk(p);
+      } else if (/\.ts$/.test(f.name) && !/\.test\.ts$/.test(f.name)) {
         const text = readFileSync(p, 'utf8');
         const res = [
           /\b(?:unlockAchievement|achieve|progress|tally)\('([\w-]+)'/g,
           /\{ id: '([\w-]+)'(?:, title|\s*\})/g,
           /detail: \{ id: '([\w-]+)'(?:, item: \w+)? \}/g,
-          /^\s*(?!id:)\w+: '(desk-[\w-]+)',$/gm, // DESK_PROGRAMS (not the guided tour's desk-… step ids)
+          /^\s*\w+: '(desk-[\w-]+)',$/gm, // DESK_PROGRAMS
         ];
         for (const re of res) for (const m of text.matchAll(re)) fired.add(m[1]);
       }
