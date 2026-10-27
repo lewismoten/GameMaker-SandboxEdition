@@ -26,6 +26,16 @@ export const homeChapter: Chapter = {
     },
     { id: 'home-teddy', action: 'enter', speaker: 'teddy', say: 'Woof!', caption: 'Teddy: Woof! (That means “follow me.”)', sound: 'teddyBark', ms: 2200 },
     {
+      // the game up top was picked at random (featured): Another shows while it is, so before Teddy picks a tile
+      id: 'home-another',
+      action: 'press',
+      target: { label: 'the Another button', css: '.showcase button.sc-another:not(.sc-link)' },
+      click: true,
+      say: 'Another picks a different game at random. Ooh, good one.',
+      sound: 'boing',
+      optional: true,
+    },
+    {
       // Teddy picks his own game (or the first tile, if it isn't on this tab), so it's up top for the demo
       id: 'home-tiles',
       action: 'press',
@@ -66,15 +76,6 @@ export const homeChapter: Chapter = {
       action: 'point',
       target: action('Download'),
       say: 'Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS.',
-      optional: true,
-    },
-    {
-      id: 'home-another',
-      action: 'press',
-      target: { label: 'the Another button', css: '.showcase button.sc-another:not(.sc-link)' },
-      click: true,
-      say: 'Another picks a different game at random. Ooh, good one.',
-      sound: 'boing',
       optional: true,
     },
     {
@@ -134,10 +135,12 @@ export const homeChapter: Chapter = {
       id: 'home-offline',
       action: 'point',
       target: setting('Play offline'),
+      // the whole tour shows the Settings menu on its own page
+      pageOnly: true,
       say: 'Settings has Play offline, which saves the whole site so it works with no connection.',
       sound: 'pop',
     },
-    { id: 'home-theme', action: 'point', target: setting('Theme'), say: 'Theme switches between dark, light, or whatever your computer uses.' },
+    { id: 'home-theme', action: 'point', target: setting('Theme'), pageOnly: true, say: 'Theme switches between dark, light, or whatever your computer uses.' },
     {
       id: 'home-guides',
       action: 'point',
