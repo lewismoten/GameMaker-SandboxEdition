@@ -15,14 +15,15 @@ This fork is kept by Lewis Moten, who shoveled Fort Ashby's driveways in the win
 to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: see
 [Lewis and Game-Maker](docs/history.md).
 
-![The 1994 desk by day: the PC showing Game-Maker's Sample title screen, the Doc Leo poster and shelves of Sandbox boxes on the wall, the disk box with its toy whistle, the GRAVITAS game pad on the keyboard tray, a snowy window, a wristwatch clock and a door](web/public/og-image.png)
+![The 1994 desk by day: the PC playing Snowbound's first street with a snowplow going by, Snowbound's keys card propped beside it and its poster on the wall with the Doc Leo poster, shelves of Sandbox boxes, the disk box, the game pad on the keyboard tray, a snowy window, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
 
-- **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
-  DOS menus and designers rebuilt from its source, a BBS to dial, and the games' boxes,
-  disks and manuals on the shelf; or *today's web* editor with point-and-click editors for
-  every part of a game.
+- **Three ways to use it** (the Desk, DOS and Web switch at the top right): the *1994 desk*,
+  a recreated PC with a DOS prompt, Game-Maker's DOS menus and designers rebuilt from its
+  source, a BBS to dial, and the games' boxes, disks and manuals on the shelf; *DOS*, the
+  same PC's screen on its own, filling the window without the desk around it; or *today's
+  web* editor with point-and-click editors for every part of a game.
 - **Help making good games:** the map editor's Level check plays each scene on the real
   engine, draws a heat map of where the hero got, marks places a player can get stuck and
   offers one-click fixes; the block, monster and sound editors show its findings as badges,
