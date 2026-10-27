@@ -142,6 +142,8 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
     g.restore();
   }
   // the title, wrapped and as big as fits beside the hero
+  // under the disk number's tab, which sits in the banner's top right
+  const clear = tag ? 20 : 0;
   const textW = LW * 0.66 - PAD;
   let px = main.length > 14 ? 22 : 29;
   let rows: string[] = [];
@@ -149,10 +151,10 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
     g.font = TITLE(px);
     rows = lines(g, main, textW);
     const subH = sub ? 18 : 0;
-    if (rows.length * px * 0.95 + subH <= bh - 16 && rows.every((r) => g.measureText(r).width <= textW)) break;
+    if (rows.length * px * 0.95 + subH <= bh - 16 - clear && rows.every((r) => g.measureText(r).width <= textW)) break;
   }
   const subH = sub ? 18 : 0;
-  let y = top + (bh - (rows.length * px * 0.95 + subH)) / 2 + px * 0.78;
+  let y = top + clear + (bh - clear - (rows.length * px * 0.95 + subH)) / 2 + px * 0.78;
   g.fillStyle = acc;
   g.lineJoin = 'round';
   g.strokeStyle = 'rgba(0,0,0,0.75)';
