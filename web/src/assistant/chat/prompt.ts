@@ -21,24 +21,41 @@ export function gameBrief(summary: string): string {
   }
 }
 
-export function systemPrompt(opts: { summary: string; readOnly: boolean; images: boolean }): string {
+export function systemPrompt(opts: { summary: string; readOnly: boolean; images: boolean; compact?: boolean }): string {
+  const content = 'Content: family-friendly; characters are friendly, and clowns are never scary. No real addresses, brands or personal details.';
+  if (opts.compact)
+    return [
+      'You help make a game in Game-Maker, a 1990s DOS game kit. Scenes: 0 title, 1 game won, 2+ levels. A level is a 100x100 map of blocks (0-149) with monsters and a hero; a link from a map cell to scene 1 wins.',
+      gameBrief(opts.summary),
+      `Use small tool calls. load_tools gets more tools; recall reads earlier turns. After changes run bot_playtest.${opts.readOnly ? ' The game is read-only: look and advise only.' : ''}`,
+      'Reply in one to three short sentences.',
+      content,
+    ].join('\n');
   return [
     'You help someone make a game in Game-Maker, a 1990s DOS game construction kit (here in a web editor that saves real DOS files).',
     'A game is a .gam file of scenes: 0 is the title, 1 is "game won", 2+ are levels. A level has a 100x100 map of 20x20-pixel background blocks (.bbl, 0-149) with set properties (solid, gravity, points, hurts, pickup), a palette, monsters (.mon, placed on the map), a hero (.chr) and sounds. Links send the hero from a map cell to another scene; scene 0 link 0 is where play starts; a link to scene 1 wins.',
     gameBrief(opts.summary),
     'How to work:',
-    '- Look before changing: game_summary, get_scene, get_map (a small region), list_blocks.',
+    '- You start with a few tools; load_tools gets a group of more (scenes, maps, blocks, monsters, hero, art, text, checks, player, editor). recall reads earlier turns that were put away.',
+    '- Look before changing: game_summary, get_scene, map_sketch or get_map (a small region), list_blocks.',
     '- Make small, flat tool calls: one region, one block or one link at a time.',
-    '- After changes, run bot_playtest and level_check, and fix what they find.',
+    '- After changes, run bot_playtest (and level_check from checks), and fix what they find.',
     opts.readOnly ? '- The game is read-only now: you can look and advise, but not change it.' : '- Each change can be undone by the person.',
-    opts.images ? '- render_png and editor_screenshot show you pictures.' : '- You can’t see pictures; use get_map and list_blocks instead of render_png.',
+    opts.images
+      ? '- render_png shows you a picture only when the person asked to see one; otherwise use map_sketch.'
+      : '- You can’t see pictures; map_sketch and get_map show the map as text.',
     'Keep replies short and plain. Say what you changed and what to try next.',
-    'Content: family-friendly. Friendly characters; clowns are always friendly, never scary. No real addresses, brands or personal details.',
+    content,
   ].join('\n');
 }
 
 /** The first message when a game is made from a description. */
-export function buildBrief(description: string): string {
+export function buildBrief(description: string, compact = false): string {
+  if (compact)
+    return [
+      `Make this game: ${description.trim()}`,
+      'Scene 2 "Level 1" is a walled area, columns 35-64, rows 40-59; the hero starts at 50,50. Steps: set_scene 0 name = the title; set_scene 2 name = a level name; list_blocks; set_map walls and pickups; set_map monsters away from the start; set_links scene 2 to_scene 1 at a reachable cell; bot_playtest. Then say what you made in two sentences.',
+    ].join('\n');
   return [
     `Make this game: ${description.trim()}`,
     'It starts from a playable starter: scene 2 "Level 1" uses map, blocks, monsters, hero and sounds already in the game, inside a walled area (columns 35-64, rows 40-59); the hero starts at 50,50.',

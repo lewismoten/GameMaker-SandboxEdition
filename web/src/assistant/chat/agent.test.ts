@@ -8,7 +8,7 @@ import { testGame } from '../../editor/check/testGame';
 import { MemoryContext } from '../tools/memoryContext';
 import { Agent, SKIPPED } from './agent';
 import { chatTools } from './chatTools';
-import { trimHistory } from './trim';
+import { prepareHistory } from './trim';
 import type { ChatMessage, ChatReply, ChatRequest, ToolCall } from './providers';
 
 const tiny = () => new MemoryContext(new GameFiles(testGame(['########', '#......#', '#S..cE.#', '########']).files), 'test.gam');
@@ -30,7 +30,7 @@ const calls = (...c: [string, Record<string, unknown>][]): ChatReply => ({
 });
 
 const agentOn = (ctx: MemoryContext, chat: (r: ChatRequest) => Promise<ChatReply>, images = false) =>
-  new Agent({ chat, tools: chatTools(ctx, 'all'), system: () => 'system', images: () => images, budget: () => 100_000 });
+  new Agent({ chat, tools: chatTools(ctx), system: () => 'system', images: () => images, limit: () => 100_000 });
 
 describe('the chat loop', () => {
   it('asks before a change: Apply makes it, Skip leaves the game alone and tells the model', async () => {
@@ -81,7 +81,7 @@ describe('the chat loop', () => {
         expect(tool.content).toMatch(/picture is in the next message/);
       } else {
         expect(pic).toBeUndefined();
-        expect(tool.content).toMatch(/can’t see pictures/);
+        expect(tool.content).toMatch(/isn’t sent to you/);
       }
     }
   });
@@ -115,11 +115,10 @@ describe('the chat loop', () => {
   });
 });
 
-describe('trimming the history', () => {
-  it('cuts old results short, drops old pictures, then whole old exchanges, keeping the system message', () => {
+describe('the history as sent', () => {
+  it('cuts results from before the latest request short and drops their pictures', () => {
     const big = 'x'.repeat(5000);
     const msgs: ChatMessage[] = [
-      { role: 'system', content: 'sys' },
       { role: 'user', content: 'one' },
       { role: 'assistant', content: '', toolCalls: [{ id: '1', name: 'get_map', args: {} }] },
       { role: 'tool', callId: '1', name: 'get_map', content: big },
@@ -129,13 +128,9 @@ describe('trimming the history', () => {
       { role: 'assistant', content: '', toolCalls: [{ id: '2', name: 'get_map', args: {} }] },
       { role: 'tool', callId: '2', name: 'get_map', content: big },
     ];
-    const t = trimHistory(msgs, 100_000);
-    expect(t[3].content.length).toBeLessThan(500);
-    expect(t[8].content).toBe(big);
-    expect(t[4]).toEqual({ role: 'user', content: 'pic (picture no longer shown)', images: [] });
-    const small = trimHistory(msgs, 5200);
-    expect(small[0].content).toBe('sys');
-    expect(small[1]).toEqual({ role: 'user', content: 'two' });
-    expect(small).toHaveLength(4);
+    const t = prepareHistory(msgs);
+    expect(t[2].content.length).toBeLessThan(400);
+    expect(t[7].content).toBe(big);
+    expect(t[3]).toEqual({ role: 'user', content: 'pic (picture no longer shown)', images: [] });
   });
 });

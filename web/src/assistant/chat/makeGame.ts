@@ -43,7 +43,7 @@ export async function buildGame(
   opts: SendOptions & { rounds?: number; budgetMs?: number } = {},
 ): Promise<BuildResult> {
   const bot = GAME_TOOL_DEFS.find((d) => d.name === 'bot_playtest')!;
-  let reply = await agent.send(buildBrief(description), opts);
+  let reply = await agent.send(buildBrief(description, agent.small), opts);
   let report: string;
   for (let round = 0; ; round++) {
     opts.signal?.throwIfAborted();
