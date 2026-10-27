@@ -63,36 +63,16 @@ modules are in [`../test`](../test).
 
 ## Folders
 
+Each area's own README says what each of its files does; the short ones are described here.
+
 ### Game files, engine and player
 
-- [`formats/`](formats): readers and writers for every Game-Maker file
-  (`.gam .pal .bbl/.mbl/.cbl .chr .mon .map .snd .his .rec .bkd .lst .txt`) and the standard ones
-  it uses (`.gif .fli .cmf .voc`, and `.jpg` for the BBS's pictures). Borland C++ 16-bit layout:
-  `int` is 2 bytes, structs are byte-packed (`binary.ts`).
-  - `cmfSong.ts`, `cmfEdit.ts` and `cmfPreview.ts` are the music editor's model of a CMF song;
-    `fliFrames.ts` an `.FLI` as whole frames for editing; `fliLimits.ts` what DOS can play.
-  - `gifProgressive.ts` and `jpeg.ts` decode a picture as its bytes arrive (the BBS's downloads).
-- [`engine/`](engine): the game engine, a TypeScript port of `PLAYGAME.C`: `game.ts` (`DoGame`),
-  `scene.ts` (`playscene`), `character.ts`, `monsters.ts`, `scroll.ts`, `world.ts`, `touch.ts`,
-  `render.ts`, menus (`menus.ts`), function keys (`funcKeys.ts`), the key stack (`keys.ts`),
-  recordings (`recorder.ts`), the between-scene screens (`showGraphic.ts`) and the "machine"
-  (`machine.ts`: screen, keyboard, timers). `slowPc.ts` is the slow PC behind the desk's TURBO
-  button. `playGain.ts` is the points a play scored itself, leaving out those an F6 load brought
-  (for the score trophies). `playerLook.ts` is what XFERPLAY's own screens show (words, matched colors, frames,
-  positions, times, F-keys) from a project's DOS player patches (`RunOptions.player`), the CD
-  player's with none; the menu, high-score, status, drop and load/save screens draw through
-  `drawMenu`, `drawHighScores`, `drawStatus`… so the editor's previews use the same code.
-- [`audio/`](audio): `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV
-  calls; `cmfLoad.ts` reads a song's header as its `load_file` did, CMF 1.0 included, and refuses
-  what it refused), the AudioWorklet (`music.worklet.ts`), Web Audio output (`engine.ts`, the page's one
-  `context.ts`, one volume for everything in `output.ts`), PC speaker sound sets (`vocToSpeaker.ts`
-  drafts one from a `.voc`'s pitch) and sample editing (`sampleEdit.ts`).
-  - Music: `compose.ts` writes `.CMF` songs from notes as text (shared with `games/kit`); the
-    instrument presets are `oplPresets.ts` and `oplDrumPresets.ts` (written with `oplPatch.ts`,
-    shown off by `oplPresetPreview.ts`).
-  - Sound effects: `sfxSynth.ts` and `sfxPresets.ts` (the sound effect maker); `soundProfile.ts`
-    sorts digital sounds into kinds by listening to them.
-  - `voices.ts`: the people on the other end of the desk's phone line, in the browser's speech.
+- [`formats/`](formats/README.md): readers and writers for every Game-Maker file and the standard
+  ones it uses (Borland C++ 16-bit layout).
+- [`engine/`](engine/README.md): the game engine, a TypeScript port of `PLAYGAME.C`, and what
+  XFERPLAY's own screens show.
+- [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
+  making songs and sound effects.
 - [`gfx/`](gfx): the mode 13h screen (`screen.ts`) and 8×8 fonts (`font8x8.ts`; all of CP437 in
   `cp437Glyphs.ts`), and pictures drawn from a game's own maps: `levelPicture.ts`,
   `titlePicture.ts`, `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
@@ -106,87 +86,24 @@ modules are in [`../test`](../test).
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk
   and exports.
-- [`media/`](media): demo playback (`.REC`, `demo.ts`), previews (`demoPreview.ts`, which demo
-  `demoKind.ts`, the recording one plays `demoSource.ts`), demos added for CD games (`extraDemos.ts`, `addedDemo.ts`), the attract mode
-  (`attractDemo.ts`), the demos' sound choice (`demoAudio.ts`) and which player may play
-  (`mediaFocus.ts`); saving the screen as video (MP4: `video.ts`, `frames.ts`, `mp4Mux.ts`),
-  animated GIF (`gifEncode.ts`) or WAV (`wav.ts`). See Media below.
-- [`walkthrough/`](walkthrough): a Sandbox game's walkthrough (`format.ts`): played on the real
-  engine, deterministically (`runtime.ts`), in a player with chapters and a seek bar (`player.ts`;
-  a jump replays the game unseen up to that frame), with made-up callers filling the empty Top Ten
-  at the end (`madeUpScores.ts`), and rendered to an MP4 with its soundtrack (`exportVideo.ts`,
-  `audioRender.ts`, `mp4av.ts`). `button.ts` loads it all only when Walkthrough is pressed.
+- [`media/`](media/README.md): demos (`.REC`), the attract mode, and saving the screen as MP4, GIF
+  or WAV.
+- [`walkthrough/`](walkthrough/README.md): a Sandbox game's walkthrough: played on the real engine,
+  watched with chapters, rendered to MP4.
 
 ### A game's files and publishing it
 
-- [`project/`](project): a game's files (`files.ts`: `GameFiles`, 8.3 names, the CD catalog),
-  streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
-  (`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
-  (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips
-  inside zips too) by their .gam files, and reading the picked ones again (`importScan.ts`; a test
-  .gam missing files beside a whole game in the same zip is a leftover, left unticked:
-  `importLeftovers.ts`), when each of your games was last played or opened, for the home page's
-  "Continue where you left off" (`projectUse.ts`), a
-  folder's own hand-edited player read into DOS player patches, its renamed
-  extensions mapped back (`importPlayer.ts`; the names inside its files are rewritten by
-  `extensionNames.ts`, which the DOS export uses the other way), and the editor-only companion file (`companion.ts`,
-  never exported).
-  - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
-    revealed or hidden).
-  - The Bard of Bizarre's collections (`bizarre.ts`), a game's title as boxes print it
-    (`gameTitle.ts`), its DOS folder name (`dosDir.ts`) and what a 1990s buyer asked first:
-    floppies, hard disk and download time (`diskFacts.ts`).
-  - `saveData/` reads and writes a game's saves, high scores and save backups, shared by the web's
-    Saves & scores and the desk's SAVEHACK and BACKUP.
-- [`imported/`](imported): what this browser remembers about imported games, editor-only and
-  never in a game's files (localStorage through `localJson.ts`): each game's 1–5 star rating
-  (Unrated by default), its note, source and fingerprint (`gameNotes.ts`); the fingerprint itself,
-  the CRC-32s of its .gam files and player .EXEs (`fingerprint.ts`); the small record kept when one
-  is removed (`removedGames.ts`), which a later import marks "Previously removed"; moving the
-  rating and note between the two as games come and go (`noteMoves.ts`); grouping and filtering by
-  rating (`ratings.ts`) and the Library's notes list and search (`noteSearch.ts`). On screen: the
-  stars as a radio group, Unrated first (`ratingStars.ts`), the "Rating and note" dialog
-  (`noteDialog.ts`), and the Library's section of them, removed games marked and forgettable
-  (`notesShelf.ts`, loaded by the Library page); `imported.css` styles them.
-- [`export/`](export): publishing a game: as an offline web app (`exportWebApp.ts`), a single web
-  page (`exportSinglePage.ts`, `singlePage.ts`, played by `standalonePlayer.ts`), the web player
-  (`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
-  (`serviceWorker.ts`). See Exports below.
-- [`dosPlayer/`](dosPlayer): the DOS player customizer's core, with no DOM. `patchTable.ts` is
-  what it offers of XFERPLAY.EXE (words, colors, frames, positions, times, F-keys: the safe and
-  caution entries of the patch map, with offsets and rules); `patchRules.ts` checks and writes
-  each value; `applyPatches.ts` patches only the CD's player (MD5 `fcaf47d5…`) and reads a
-  hand-edited one back into patches; `fileExtensions.ts` is the Files tab's renamed extensions
-  (every copy of each the player asks for, the kinds the .gam names, the rules, Acord Games'
-  set) and reads a player that asks for other ones; `md5.ts` (RFC 1321); `presets.ts` (Builder's blanked menu,
-  Rōdïp's status words, Reset all); `playerRecord.ts` keeps the choices in the .gam's
-  `dosPlayer` companion section (`projectPatches.ts` reads and writes a stored project's, for the
-  desk, and `patchesChanged.ts` tells an editor that has the game open, so its autosave keeps
-  them); `describePatches.ts` lists them in words (the DOS export's
-  README, which says its .EXE was customized; `exportDos.ts` writes them into XFERPLAY.EXE).
-  `catalogPatches.ts` is a catalog game's own look: an original game's `games/<id>/player.json`
-  (the same record), carried on its catalog entry as `player`, which its Play, demos,
-  walkthrough, downloads, the desk's copies and Transfer, and Look inside / Edit a copy read
-  (`gamePlayers.test.ts` checks every player.json with `games/kit/player.ts`).
-  - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
-    `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),
-    `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`).
-  - What a download carries about itself: `notices.ts` (`THIRD-PARTY-NOTICES.txt`),
-    `recordedAudio.ts` (a Bard of Bizarre game's non-commercial voice clips), `fiction.ts` (the note
-    that this project's games were made in 2026), `pageSeo.ts` (an exported page's search and share
-    tags) and `gameAbout.ts` (a few lines of the game's own story, for descriptions).
-- [`hostedPlayer/`](hostedPlayer): the web player
-  ([`docs/web-player.md`](../../docs/web-player.md)), built into one file (`web-player.html`, and
-  `player/` with a `games.json` of the site's games): `main.ts` starts it, `list.ts` reads
-  `games.json` and `?game=`, `load.ts` fetches a game's files from its folder (the `.gam` names
-  them, as in `linkIn/fetchGame.ts`), `saves.ts` keeps what games write in IndexedDB, `bundle.ts`
-  exports and imports saves as a zip, and `page.ts` draws the list, the how-to and the saves.
-- [`linkIn/`](linkIn): opening a game sent by another site ([`docs/embed.md`](../../docs/embed.md)),
-  from start to finish in `start.ts`: `?open=<url>` fetches it (`fetchGame.ts`), `?receive` takes it
-  from the opener with postMessage (`receive.ts`); `protocol.ts` checks the addresses, messages and
-  limits, `unpack.ts` reads the files (zip, pack, exported page) without trusting them, `dialogs.ts`
-  asks the visitor first, `keep.ts` keeps it as a new Imported game, and `notice.ts` is the "not a
-  real DOS PC" note for the desk and `dos.html`.
+- [`project/`](project/README.md): a game's files, streaming and storing them, importing, the health
+  check, saves and the companion file.
+- [`imported/`](imported/README.md): what this browser remembers about imported games: ratings,
+  notes and fingerprints.
+- [`export/`](export/README.md): publishing a game: web app, single page, web player, DOS folder,
+  and the Mac, Windows and Linux downloads.
+- [`dosPlayer/`](dosPlayer/README.md): the DOS player customizer's core: patching XFERPLAY.EXE's
+  words, colors, frames and keys.
+- [`hostedPlayer/`](hostedPlayer/README.md): the web player, one file that plays Game-Maker game
+  folders on any web host.
+- [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
 - [`offline/`](offline): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`).
@@ -196,528 +113,45 @@ modules are in [`../test`](../test).
 
 ### Today's web interface
 
-- [`editor/`](editor): today's web interface (see the next section).
-- [`saves/`](saves): the home page's "Saves & scores" panel (`savesPanel.ts`, loaded by
-  `button.ts`): a game's saved games (with a map of the saved level, `saveMapView.ts`) and high
-  scores, with ⓘ notes (`tip.ts`). `savesPanel.ts` opens the dialog and keeps the panel's state
-  (`panelState.ts`); the parts draw from it: the list on the left (`panelNav.ts`), a slot
-  (`slotView.ts`, its values `slotField.ts`, where the hero is `slotWhere.ts`, About this save
-  `aboutSave.ts`, and what is done to a slot `slotActions.ts`), the high scores (`scoresView.ts`)
-  and the backups (`backupsView.ts`). `closeGuard.ts` asks before leaving unsaved changes;
-  `panelText.ts` holds the shared words and the yes-or-no question.
+- [`editor/`](editor/README.md): today's web interface: the home page, the workspace, the editors,
+  the Level check and the Guide.
+- [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
+  backups.
 - [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp): the `#/mac`,
   `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it
   does, removing it.
-- [`cast/`](cast): the Cast page (`#/cast`, `castPage.ts`, its people and things in
-  `castData.ts`): the regulars of the new games on a stage (`castStage.ts`, one frame drawn by
-  `castStageScene.ts` with `castStageDraw.ts`, the goat's and the camel's business in
-  `castStageGags.ts`; once it scrolls away,
-  a small one in a corner, `castMini.ts`), walking with their own
-  sprites (`castSprite.ts`, from `../public/cast/sprites.json`) to the Teddy games' theme
-  (`castSound.ts`), and the games each appears in (`castThumbs.ts`; `cameos.json` for new cameos,
-  `hidden.json` for the Easter eggs and tin hearts, written by `scripts/castHidden.ts`).
-- [`credits/`](credits): the Credits page (`#/credits`, `creditsPage.ts`, one `*Section.ts` per
-  part, sharing `section.ts`), all arriving at once at modem speed (`modemSheet.ts`). Tests check
-  each against the lockfile, `code/` and the games' credits.
-  - Software: the npm packages (`deps.json`, written from the lockfile by `scripts/credits.ts`
-    with `lockDeps.ts`; `depNotes.ts` says what each does) and the third-party pieces
-    (`thirdParty.ts`, `piecesSection.ts`).
-  - The original: who the source credits for each part of RSD Game-Maker (`rsdParts.ts`) and every
-    RSD intro screen (`rsdIntros.ts`), in `originalSection.ts`.
-  - The games' authors (`authorsSection.ts`), the AI tools and the people (`peopleSection.ts`), The
-    Bard of Bizarre's table of who made what (`bardCredits.ts`, `bardTable.ts`), where to find more
-    Game-Maker games (`moreGames.ts`, shared with the Guide), and the BBSes' pictures
-    (`bbsPictureCredits.ts`, `bbsPicturesSection.ts`).
-- [`achievements/`](achievements): what the visitor has done: the catalog (`catalog.ts`), the
-  record (`store.ts`, in the save store), the calls the rest of the site makes (`index.ts`, with
-  `editKinds.ts`, and its `GAME_SPOTS`: scenes of a game that count by name), what each page
-  starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an item), where a game was
-  finished (`playedOn.ts`: the desk, the DOS page or the web player, and a phone held wide or tall), totals counted from the games catalog
-  (`goals.ts`), the unlock note (`toast.ts`), the `#/achievements` page (`page.ts`: badges of one size, each opening its details in
-  `details.ts`, with where it is earned from `where.ts`) and the desk's
-  `ACHIEVE.EXE` (`achieveExe.ts`).
+- [`cast/`](cast/README.md): the Cast page: the regulars on a stage, and the games each appears in.
+- [`credits/`](credits/README.md): the Credits page: software, the original, the games' authors, the
+  AI tools and the people.
+- [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the
+  page and ACHIEVE.EXE.
 
 ### The assistant: AI tools working on a game
 
-- [`assistant/`](assistant): what lets an AI tool open, check and change a game.
-  - `tools/`: the tool set, defined once for every way in. A tool is a name, a short
-    description, a flat JSON Schema (no `$ref` or unions, so it converts to OpenAI-style function
-    calling as well as MCP) and a handler that works on a `GameContext` (`types.ts`), with no DOM.
-    - `run.ts` checks the arguments, refuses writes while read-only, and has the `dry_run` that
-      every write takes.
-    - `common.ts` has the pieces the tools share.
-    - The tools: `gameTools.ts` (summary, files, scenes, links), `mapTools.ts`, `blockTools.ts`,
-      `actorTools.ts` (monsters and the hero), `screenTools.ts` (palettes, text, slide lists,
-      backdrops), `playerTools.ts` (DOS player patches), `checkTools.ts` (validate, the Level
-      check, the walkthrough bot) and `renderTools.ts` (PNG pictures).
-    - `index.ts` lists them. `memoryContext.ts` is a `GameContext` over files in memory.
-  - `png.ts` writes a palette picture as a PNG with no canvas.
-  - `openai.ts` (`toOpenAITools`) gives the tools as function-calling definitions for OpenAI
-    or Ollama.
-  - `chat/`: the Assistant chat, the person's own AI working on the open game. Its own
-    chunk, loaded when the Assistant button (✦, beside a file's title) is first pressed.
-    - `settings.ts`: the provider (Ollama, or OpenAI-compatible), address, model and key, kept
-      in this browser only. `settingsDialog.ts` is AI setup, with `ollamaHelp.ts` (Remote Ollama
-      over Tailscale).
-    - `providers.ts`: plain fetch to OpenAI's `/v1/chat/completions` and Ollama's `/api/chat`:
-      the request shapes, streamed and whole replies, model lists and Ollama's capabilities.
-    - `diagnose.ts`: Test connection, and words for what failed (mixed content, CORS, nothing
-      listening, a 403, a model without tools).
-    - `agent.ts`: the tool loop (Apply/Skip through `approve`, Stop through a signal), with
-      `chatTools.ts` (the shared tools and the tab's screenshot, bound to the open project),
-      `prompt.ts` (the system prompt and briefs) and `trim.ts` (history kept to the context).
-    - `coach.ts` runs the Level check, the bot and validate for "What should I do next?";
-      `todo.ts` keeps the to-do list and the "Assistant: <model> via <provider>" credits in
-      the companion data (`todoView.ts` shows the list).
-    - `makeGame.ts`: Describe a game: the starter level for an empty game, then the AI
-      builds it until the bot wins. `homeDescribe.ts` is the home page's box.
-    - `panel.ts` is the docked panel (full screen on phones), `log.ts` the conversation.
-  - `shared/`: the read-only switch and the change toast with Undo, used by the chat and the
-    bridge alike.
-  - `bridge/`: the editor tab's side of the MCP server's bridge, its own chunk, loaded only
-    when the chat's "Use an AI tool on this computer instead (MCP)…" is pressed.
-    - `protocol.ts`: the messages, pairing codes and allowed origins, shared with the server.
-    - `editorTools.ts`: the tab-only tools' schemas.
-    - `editorContext.ts`: the open project as a `GameContext`, each change one step to take
-      back. The Level check and the bot run in their Web Workers.
-    - `editorAdapters.ts` runs any tool in the tab: the shared ones, plus state, open file,
-      screenshot, a watched play test, and Undo.
-    - `client.ts` is the WebSocket.
-    - `panel.ts` is its panel: port and code, status, read-only switch, recent calls, a
-      chip in the corner while connected, and a toast with Undo for every change.
-  - `webmcp.ts`: the Assistant's opt-in to offer the same tools to the browser's own AI agent
-    through WebMCP (`document.modelContext.registerTool`, or Chrome's first
-    `navigator.modelContext`), detected first so nothing changes without it.
-  - `hostSlot.ts`: where the workspace puts itself for the Assistant, with no imports to run.
-  - The local MCP server that serves them is [`../scripts/mcp`](../scripts/mcp) (see its
-    README).
+- [`assistant/`](assistant/README.md): the tools an AI uses to open, check and change a game, the
+  Assistant chat, and the MCP bridge.
 
 ### The 1994 desk and its PC
 
-- [`desk/`](desk): the 1994 desk. `desk.ts` puts it together and works it: the disks, the
-  boxes, the catalog and what the address asks for (`deskRestore.ts`). `deskScene.ts` draws the
-  scene (`stage.ts` scales it to the window); `deskPc.ts` switches the PC on and off and loads its
-  insides; `deskShelf.ts` fills the shelf, `deskGmBox.ts` opens the Game-Maker box, `deskLook.ts`
-  points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned.
-  `overlayFocus.ts` moves the keyboard into an overlay and back.
-  - `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
-    the colors of the picture on the tube), the keyboard (`keyboard.ts`) and the keyboard tray
-    (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
-    magazine's mouse pad ad and remembered by `padChoice.ts`), the GRAVITAS game pad
-    (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls
-    `gamePadPanel.ts`, what is held `gamePadHolds.ts`), the modem (`modem.ts`; click its speed to
-    pick the line speed), the speakers (`speakers.ts`) with the SOUND BOASTER switch
-    (`blasterSwitch.ts`), the key card taped to the monitor (`keyCard.ts`, `keyCardRows.ts`) and
-    the capture card (`capture.ts`, loaded by `captureStub.ts` on the first press).
-  - `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`), turned in the box
-    viewer (`boxViewer.ts`). A game's box (`gameBox.ts`) is drawn from the game itself
-    (`boxFacts.ts`, its play hours from its walkthrough in `playtime.ts`) with `boxPaint.ts`,
-    `boxSeals.ts`, shelf wear (`boxWear.ts`), a glow under the black light (`boxUv.ts`) and a
-    painted cover (`covers/<id>.ts`, with the brushes in `covers/paint.ts`); what came in it is
-    `gameBoxContents.ts`, `boxList.ts` and `printContext.ts`. `gmBox.ts` is the Game-Maker box.
-  - `disks/`: the disk box (`diskBox.ts`; closed on the desk, `diskBoxFill.ts`), the buttons for
-    the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
-    `rsdLabel.ts`).
-  - `mug/`: the BBS mug (`mug.ts`, drawn in 3D by `mug3d.ts`, turned in `mugViewer.ts`). Its
-    pictures (`mugArt.ts`) are badges: each Sandbox game's cut from its title screen
-    (`gameBadge.ts`, `gameMugArt.ts`), the BBS's from its ANSI art (`bbsBadge.ts`). "Make your
-    own" prints a sublimation page (`mugPrint.ts`, `mugSheet.ts`, `mugLayout.ts`, `mugSizes.ts`,
-    remembered by `mugPageStore.ts`).
-  - `room/`: the window (`snowWindow.ts`, as light as it is outside by `daylight.ts`), the poster
-    (`wallPoster.ts`, under black light `posterUv.ts` and `motenUv.ts`), the clipping
-    (`newsClipping.ts`), the clock (`wallClock.ts`; its glow-in-the-dark paint charges and fades in
-    `lumeCharge.ts`), the door (`roomDoor.ts`), the waste basket (`wasteBasket.ts`), the wall phone
-    (`room/phone/`: `phone.ts`, who answers in `calls.ts`, `dialPad.ts`, `sounds.ts`) and its notes
-    (`phoneNotes.ts`), the shareware catalog (`catalog.ts`) and the magazine lying on the desk
-    (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
-  - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
-    lays an empty, named button over a drawing with words on it; their sounds in
-    `propSound.ts`): the clock, waste basket, door, window (`window.ts`, tonight's real moon in
-    `moonPhase.ts`) and what goes by outside (`props/outside/`: `outside.ts` and one module each,
-    such as THE CHEZ, the dogs, the plow and the mail jeep; `visible.ts` says whether the window can
-    be seen), RSD's registration reply under the bedroom door (`mailDrop.ts`; its paper is
-    `manual/printables/regConfirm.ts`, remembered in `retro/gmReg/replyMail.ts`), curtains, speaker,
-    DEGAUSS, the black-light poster (`blacklight.ts`) and the felt eggs' glow under it
-    (`eggGlow.ts`), the toy whistle with the zine under it (`props/zine/`, the zine itself in `manual/zine/`), and the room after dark with its
-    overhead light (`roomLight.ts`). `chezArt.ts` draws THE CHEZ from `games/kit/chez.ts`'s side
-    view.
+- [`desk/`](desk/README.md): the 1994 desk: the room, the PC's case, keyboard and monitor, the
+  boxes, disks and props.
 - [`dosPage/`](dosPage): DOS Game-Maker (`dos.html`, `dosPage.ts`): the PC's page with its one-row
   bar and ⋯ menu (`moreMenu.ts`, with the modem speed, `lineSpeed.ts`), disk menu (`diskMenu.ts`),
   and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line.
-- [`retro/`](retro): the PC, shared by the desk and `dos.html`, importing nothing from `desk/`. The
-  page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its
-  picture; `host.ts` is what programs on it can use.
-  - `computer.ts`: power and programs, with `computer/` (`drives.ts`, game folders in
-    `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`).
-    `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says
-    which utilities keep running while the disk in A: is swapped instead.
-  - `dos/`: COMMAND.COM (`shell.ts`), the file system (`vfs.ts`, `hardDisk.ts`, what C: gained in
-    `cDriveStore.ts`), the floppies (`disks.ts`), the room's one clock (`deskClock.ts`), the
-    designers' file handling (`workArea.ts`) and file picker (`picker.ts`).
-  - `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, `cp437.ts`) and Game-Maker's text UI
-    (`textUi.ts`).
-  - `gm.ts`: GM.EXE's menus. `gmReg/`: Game-Maker's registration and copy check (`chk.ts`,
-    `registration.ts`, `copyCheck.ts`); `regSide.ts` (loaded by `regSideLater.ts`, asked for by
-    `regDesk.ts`) puts the Owner's Guide (`regGuidePanel.ts`) and registration card (`regCardPanel.ts`,
-    `mailCard.ts`) beside the monitor;
-    `replyMail.ts` remembers RSD's reply.
-  - `hexedit/`: HEXEDIT.EXE (`hexEdit.ts`, `hexFiles.ts`) and its map of each file format
-    (`structure.ts` the map and its Builder; `structureGm.ts` Game-Maker's formats,
-    `structureMedia.ts` the media files). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
-    screen (`picture.ts`).
-  - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
-    rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
-    patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts` or the game on the disk in A: in `playHackDisk.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
-    `cracktro.ts`, `gm30Install.ts`, their words in `*Text.ts`, their look in `dosUi.ts`, what they
-    add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
-    debugging tools for registration modes, saved games and backups, dressed as 1990s scene
-    programs.
-- [`retro/bbs/`](retro/bbs): the terminal (`term.ts`) and the BBSes; TERMINAL.EXE's dialing
-  directory and calls are `bbs.ts`.
-  - The boards: THE -= S A N D B O X =- BBS (`sandbox.ts`, its name in `bbsName.ts`, ANSI art in
-    `ansiArt.ts`) and The Sofa (`sofa.ts`, its number in `sofaPhone.ts` for the printed pieces; its
-    files, pictures and SPAM in `sofaFiles.ts`, `sofaPictures.ts` and `sofaSpam.ts`).
-  - Their file areas: listings a screen at a time (`pager.ts`) with FILE_ID.DIZ (`fileId.ts`), the
-    GIF Gallery (`gallery.ts`, `gifArea.ts`), the Warez area (`warezArea.ts`), the upload/download
-    ratio (`ratio.ts`) and PKUNZIP after a download (`pkunzip.ts`).
-  - The line: modem sound (`modem.ts`); `lineSpeed.ts` is the modem's speed, 300 baud to Unlimited,
-    `pacedQueue.ts` sends the boards' text and `transfer.ts` their files at it, and
-    `lineSpeedControls.ts` picks it on the desk's modem and in `dos.html`'s ⋯ menu; `pickup.ts` is
-    someone picking up the kitchen extension.
-  - `tdd.ts` calls a TTY from TERMINAL, in Baudot (`baudot.ts`), to Mrs. Novak's script
-    (`ttyTalk.ts`), with `ttyInfo.ts` on TTYs in 1994.
-  - The Sandbox BBS's door game, TIC-TAC-TOE BY MODEM, is `ticTacToe.ts` (rules, the other caller,
-    the saved game) and `ticTacToeDoor.ts` (its screen); its R)egister menu, `rsdLine.ts`, is RSD's
-    registration line: a name and serial number get TELLREG's registration number.
-- [`vga/`](vga): Game-Maker's eight designers ported from their C source (PALCHOS, BLOCEDIT,
-  MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR). One file per `.EXE` at the top (each exports
-  `program`; `retro/gm.ts` finds them with `import.meta.glob`); a large designer's parts are in a
-  folder of the same name (`layout.ts` its tables, `state.ts` its globals, then layers such as
-  `screen.ts` and `paint.ts`), and `shared/` has the VGA screen (`vga.ts`), block routines
-  (`blocc.ts`), the title and Design bars (`designer.ts`) and Game-Maker's look (`facelift.ts`).
-- [`eggs/`](eggs): the felt eggs hidden in the Sandbox games (`eggs.ts`): which are found
-  (`eggState.ts`, from saved games), the shadow box on the desk (`eggDisplay.ts`), its viewer
-  (`eggViewer.ts`), and `EGG.EXE` (`eggExe.ts`).
-  - `eggUv.ts` is what black light brings out on them (the shelf's `desk/props/eggGlow.ts` and the
-    viewer agree on it), laid out on `eggTexture.ts`'s covering size so the desk needn't load the
-    egg art (`eggArt.ts`).
-  - `teddyEgg.ts` is Teddy's special egg, a bonus (never one of the felt eggs) that joins the
-    shadow box once all three Teddy adventures' eggs are found; `eggPile.ts` draws it, a little
-    pile of felt sausages with a whiff rising, not an egg shape.
-  - `bonus.ts` holds two more eggs kept apart from the felt eggs, loaded only once the felt eggs are
-    all found (looked at in `bonusViewer.ts`): `bonusArt.ts` draws the rotten egg, its IOU note
-    and the cake stand, `pastryEgg.ts` the pastry egg, both on `eggShell.ts`'s wrapped and lit
-    shell; `diamondHeart.ts` is the heart the IOU promises, which the tin heart trophy shows too.
-    `musicBox.ts` is a little synthesized music box.
-- [`tinHearts/`](tinHearts): the tin heart hunt: which games hide one and where (`hearts.json`,
-  `manifest.ts`), the one in the desk's wall clock (`deskHearts.ts`: the chicken's pops, its find,
-  and grandfathering whoever had every game's heart before it; the desk's side is
-  `desk/props/clockHeart.ts`, drawn by `tinHeartArt.ts`, and DOS's TIME stands in for the clock
-  where it isn't drawn, `retro/dos/dosTimeEvent.ts`), which are found (`tinHearts.ts`, as a line of text in `progress.ts`), EGG.EXE's
-  tin heart page (`tinHeartExe.ts`), and the desk's trophy (`trophySpot.ts` loads `trophy.ts` and
-  Mystery Robot Joe's scene, `reveal.ts` with `joeArt.ts`, only once every heart is found).
-- [`scoreTrophies/`](scoreTrophies): the desk's two score trophies, at the back left of the desk
-  under the game shelves. `scores.ts` keeps each catalog game's best final score (counted only when
-  beaten) and the total of the points every finished play scored itself (after an F6 load, only the
-  points since it: the engine's `playGain.ts`), in the save store as `site:scores`,
-  heard as play ends from the engine's `Session.onPlayEnd` (never during a demo's or walkthrough's
-  playback) through the player's `hook.ts`, for games played under `game:<id>` (the play page and
-  the desk's PC). `tiers.ts` turns the sums into tiers (none, plastic, bronze, silver, gold, the gaudy
-  tower) and keeps EGG.EXE's chosen tiers; `trophyArt.ts` draws them, `trophySpot.ts` puts them in the
-  room (hover or press: the tier, the sum and what the next tier needs, never a game's name), and
-  `trophyExe.ts` is EGG.EXE's score trophy page (S from the egg ledger; X resets both, as X resets every
-  egg or heart on the other pages).
+- [`retro/`](retro/README.md): the PC shared by the desk and `dos.html`: DOS, Game-Maker's menus and
+  registration, the utilities and the BBSes.
+- [`vga/`](vga/README.md): Game-Maker's eight designers, ported from their C source.
+- [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
+  EGG.EXE.
+- [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.
+- [`scoreTrophies/`](scoreTrophies/README.md): the desk's two score trophies.
 
 ### The Guides, the paper in the boxes and the magazine
 
-- [`library/`](library): the Library (`#/library`, the top bar's Library link): a card for
-  everything to read or print, sorted by game or by type (`?by=type`) and narrowed to one game or
-  kind (`&only=levelmap`) and, within a kind, one game (`&game=teddy`), all remembered per
-  browser (`prefs.ts`). Opened with no sort in the address just after a game's page, a look
-  inside a game or a copy of one in the editor, it starts on that game's shelf if it has one
-  (`../libraryStart.ts`, outside `library/` so `main.ts`'s router can note each view; used once), with a "Showing: <game> · All games"
-  line. Level Maps cards show the first level's picture (`levelMaps` `preview`); each box's Sandbox
-  Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
-  (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
-  played in the walkthrough player. Videos about the site (`videos.ts`, plain data: one entry a
-  video, with its description and chapters) show their length over a picture kept in `public/videos/`,
-  and open in `videoDialog.ts`: nothing comes from YouTube until Play (or a chapter, or a time in the
-  transcript, which start it there), which embeds youtube-nocookie.com; closing removes the player.
-  Its Transcript disclosure fetches `public/videos/<id>.transcript.json` when opened, written from
-  YouTube's automatic captions by `../scripts/videoTranscript.ts` (see Build-time code).
-  `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
-  keyboard reference, registration, business and ID, and license and warranty cards and hint
-  book postcards; the games, a secret one only once revealed in this browser, and the two
-  sorts), `siteShelf.ts` the site's own reading (TURBO BUTTON, the Guides, the desk's zine once
-  found), `listing.ts` builds it from the catalog (`loadCatalog`) and the boxes' pieces, and the
-  page lists it afresh when a secret game is revealed or hidden (`catalogWatch.ts`), `thumbs.ts` draws each
-  card's first sheet while it is near the window, one at a time and giving the browser back between
-  them (`covers.ts` draws just the cover of manuals, hint books and TURBO BUTTON), `shared.ts` lists once the pieces the same in
-  every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is
-  the page; a card opens its piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
-  `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
-  (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
-  past the opening closes it.
-- [`manual/`](manual): the Owner's Guide for the desk (`dosManual.ts`, its chapters in `dosManualFront.ts`,
-  `dosManualDesign.ts` and `dosManualBack.ts` with `dosManualKit.ts`, its pages `booklet.ts`, its
-  screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and
-  each original game's printed manual (`gameManual.ts`). `fonts/` holds the handwriting font
-  (Caveat, with its OFL). `readView.ts` is how every document is read, Pages (a page at a time)
-  or Scroll (every page in one column; a phone's default), with the bar's Pages | Scroll pair
-  and the choice kept per browser; `scrollPages.ts` is the Scroll column, drawing pages as they
-  near the view and telling the page in view. `readSize.ts` is the size pages are shown at (Fit
-  width, Fit page, Actual size at 96 pixels an inch, or zoomed 10–300%), with the bar's size list,
-  Ctrl/Cmd with + and −, and a pinch; also kept per browser. The box viewer, the zine, TURBO BUTTON and the
-  Level Maps read both ways.
-- [`manual/printables/`](manual/printables): each game's box contents, with its own
-  [README](manual/printables/README.md). The viewer (`viewer.ts`) shows the paper in a "What's in
-  the box" tray (`items.ts`); `chapterJump.ts` is its Chapters list for a booklet whose pages mark
-  their chapters (`BookPage.marks`: the Owner's Guide and The Ultimate Owner's Guide), and makes
-  their contents rows buttons that turn to the page; `gen.ts` makes what every Sandbox Software box has; `kit.ts`,
-  `fitSheet.ts`, `paginate.ts`, `imposition.ts` and `crisp.ts` lay paper out.
-  - Manuals: `manualPages.ts` and `manualCover.ts`; the hint book's cover (`hintCover.ts`,
-    `hintCoverArt.ts`) and answers hidden under red film (`redFilm.ts`); the key card (`keys.ts`);
-    the story (`story.ts`).
-  - The fold-out World Map (`worldMap.ts`, with `worldMapGroups.ts`, which folds conversation
-    scenes into their place; `worldMapPlan.ts`, `worldMapBands.ts` and `worldMapRoute.ts`, which
-    place them and route the paths between, measured by `worldMapMeasure.ts`; `worldMapThemes.ts`,
-    the theme each game's map is drawn in, with `worldMapRegions.ts`, `worldMapGround.ts`,
-    `worldMapGroundKit.ts`, `worldMapIndoors.ts`, `worldMapWays.ts`, `worldMapDecor.ts`,
-    `worldMapTerrain.ts` and `worldMapArt.ts` drawing it; `worldMapLayout.ts` for the pages) and
-    the Level Maps (`levelMaps.ts`, `levelMapLayout.ts`), which never show a tin heart or egg
-    (`levelSecrets.ts`, from `levelSecrets.json` written by `scripts/levelSecrets.ts`) and crop to
-    what the player sees (`levelViews.ts`, from `levelViews.json` written by
-    `scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
-    through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
-    course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
-    to run up the page in stitched panels, `levelCourse.ts` and `levelCourseSvg.ts`, and a map
-    printable's panel can draw it as a poster, `levelCoursePoster.ts`),
-    both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
-    (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
-    and a map nobody walks around in is left out; levels that show one place in several states
-    (near and far planes) print as one map (`levelStates.ts`). `levelPoster.ts`
-    draws one level the same way as a PNG, for the map editor's "As players see it" picture.
-  - Stickers: the sheet (`stickers.ts`, `gmStickers.ts` for the Game-Maker box), laid out on Print
-    Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`) by the sticker rules in
-    `manual/printables/README.md` (least size, bleed, spacing, die-cut border), with files for
-    Design Space and other cutting machines.
-  - The Game-Maker box's paper: its Owner's Guide cover (`gmCover.ts`), what else is in it
-    (`gmItems.ts`, `gmInserts.ts`), The Bard of Bizarre's catalog (`bardCatalog.ts`) and RSD's
-    registration reply (`regConfirm.ts`). `sandboxMark.ts` is Sandbox Software's emblem and
-    `scoopIssue.ts` each box's newsletter number, in the order of the months the games shipped
-    (`scoopIssues.ts`), so the issues read as the studio's story.
-- [`manual/zine/`](manual/zine): NO CARRIER #3, the hacker zine under the desk's toy whistle:
-  its pages (`zinePages.ts`), each on a quarter-letter leaf with its type fitted (`zineLeaf.ts`),
-  and its piece in the box viewer (`zineItem.ts`: one leaf at a time on screen, four to a letter
-  sheet in print), opened by the whistle and the Library.
-- [`manual/ultimate/`](manual/ultimate): The Ultimate Owner's Guide in the Game-Maker box.
-  - `ultimateItem.ts` is its piece in the box and cover (small, so the box loads without the
-    chapters), `ultimateGuide.ts` its pages, `plan.ts` its running order and page sums, `chapter.ts`
-    one chapter's flow.
-  - `chapters*.ts` are its chapters: palettes and blocks (`chaptersLook.ts`), monsters, logic and
-    scenes (`chaptersPlay.ts`), sound (`chaptersSound.ts`), title screens, demos and play-testing
-    (`chaptersShow.ts`), designing with a goal (`chaptersCraft.ts`), 12 level design
-    (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`), 14 the Level
-    check and walkthrough bot (`chaptersCheck.ts`), 15 and 16 designing for every player and where
-    Game-Maker runs out (`chaptersPlayers.ts`), and 17 tricks from the shareware authors
-    (`chaptersShareware.ts`, with the second survey's "More from the archive" in
-    `archiveTricks.ts`), whose table of the words the DOS player shows, and where they sit in
-    the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).
-  - Figures are drawn from real files (`ultimateFigures.ts`, `paletteFigures.ts`).
-    `openUltimate.ts` and `openInManual.ts` open it from outside the desk.
-- [`manual/magazine/`](manual/magazine): TURBO BUTTON, a mid-90s game magazine (`#/magazine`, and
-  lying on the desk's left, `#/desk?open=magazine`).
-  - Putting it together: `issue.ts` holds the running order (page numbers, the contents page, the
-    advertiser index, and house ads from `sections/houseAd.ts` to fill whole folded sheets);
-    `masthead.ts` its name and issue; `games.ts` the games it may name (never a secret one).
-  - `pageRefs.ts`: the page numbers pages give each other once placed (a jumped story's "Continued
-    on page N" and "Continued from", `{page:<id>}` in text) and the small ads on editorial pages for
-    the advertiser index, which `sections/smallAds.ts` holds (half- and third-page ads, The Sofa
-    BBS's in a cozy living room with a drawn sofa, `sofaAd.css`; a story's back half is its
-    section's `*_JUMP`).
-  - `sections/`: one module per section, each returning pages of plain-data blocks (`types.ts`,
-    built with `blocks.ts`, inline markup read by `inline.ts`) so the whole issue builds and is
-    tested in Node. Among them: the cover, contents, news, reviews, the Critic's Corner, the
-    strategy guide, the interviews (`lewis.ts`, `claude.ts`), the Maximus feature, the web edition
-    feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag (with its Design Desk of
-    readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `readersPicks.ts` (polish
-    over size: a finished four-level game beats a huge one and a tiny one), the character spotlight,
-    the game directory, the BBS listings, the store, the reader service card and the ads
-    (`ads.ts`; its inside front cover on the Owner's Guide's blueprint, `sandboxEditionAd.css`).
-  - Links: `go.ts` its `go:` links into the site and `goRun.ts` the ones that open a box, the store,
-    the mouse pad chooser or a desk prop.
-  - `render.ts` draws the pages with:
-    - `disc.ts`, the issue's cover-mounted CD-ROM, drawn turning, which opens the original 2014
-      Game-Maker source (`sections/freeCd.ts` is its page);
-    - `piece.ts`, a box's printed piece small, such as a hint book's or The Ultimate Owner's
-      Guide's cover;
-    - `toolShots.ts`, Game-Maker's design tools drawn at work on a game's own files;
-    - `callouts.ts`, a picture with numbered spots and their key;
-    - `coverFan.ts`, the issue's covers fanned out small;
-    - `replyMail.ts`, a reply card's business reply mail side, with `postnet.ts`, the post office's
-      address bar code under the address on it (order cards have none);
-    - `mugShelf.ts`, a row of mugs wearing the desk mug's own pictures, for the mug ad
-      (`sections/mugAd.ts`);
-    - `shelf.ts`, a long list of titles set small in columns by letter, for The Shareware Shelf
-      (`sections/shelf.ts`: every Game-Maker game in the Internet Archive's Game-Maker Archive,
-      titles only, from `data/gameMakerArchive.json`, its own download fetched while the issue is
-      put together, which `../scripts/gameMakerArchive.ts` fetches again; `sections/masters.ts`
-      follows it with the tricks those games' makers used).
-  - `art.ts`: its drawn pictures (each an `<svg>` from `svgArt.ts`), with:
-    - `speakerArt.ts`, `diskBoxArt.ts` and `modemArt.ts`, the desk's speakers, disk box and modem
-      drawn as the desk draws them, for their ads;
-    - `soundCardArt.ts`, the Sound Boaster card and a kid's face before and after it, for the sound
-      card's ad, `sections/soundCardAd.ts` (its deep blue page and burst of sound waves
-      `soundCardAd.css`);
-    - `blankDisk.ts`, a stack of bulk disks without labels, for the Floppy Barn ad;
-    - `notcherArt.ts`, the HOLE-Y MOLEY disk notcher and a disk before and after it, for its ad,
-      `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
-    - `joeyDrawing.ts`, a reader's crayon drawing of Teddy driving THE CHEZ to the moon, for the
-      Mail Bag;
-    - `bossChain.ts`, the Design Workshop's diagram of a boss with hit points as a chain of states;
-    - `deskShot.ts`, its snapshot of the 1994 desk, `../public/magazine/desk-1994.webp`, with how to
-      take it again; `webShots.ts`, its screenshots of today's web, `../public/magazine/web-*.webp`,
-      likewise; and `dosShot.ts`, Lewis's DOSBox screenshot of Carl's garbled cover,
-      `../public/magazine/dos-carl.webp`, for `sections/dosBugs.ts`.
-  - `viewer.ts` lays every page out at one size (a letter sheet at 96 CSS pixels to the inch, as
-    printed) and scales it whole to fit the window, so no page runs over at any window size, and
-    turns, zooms and prints them on letter paper.
-
-### `editor/`: today's web interface
-
-- `core/`: what everything in the editor uses: DOM helpers and downloads (`ui.ts`), the open
-  project (`project.ts`) and a finished game kept read-only (`readOnly.ts`), Undo and Redo
-  (`history.ts` snapshots; `fileUndo.ts` for editors that rewrite whole files), drawing indexed
-  graphics (`draw.ts`), the CD library (`library.ts`), "what uses this?" (`uses.ts`), plain error
-  messages (`plainError.ts`), and `fitPane.ts`, which keeps an editor's columns inside the window
-  (each scrolls by itself, the pane never does).
-- `shell/`: the pages.
-  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCategories.ts`
-    (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
-    `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeLibrary.ts`
-    (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by
-    `homeTilePack.ts`, walked with the arrow keys by `homeTileKeys.ts`; the import tile and drops
-    (`homeDrop.ts`), Getting started (`homeGettingStarted.ts`), `homeIcons.ts`,
-    `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game),
-    `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
-    lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
-    each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all
-    the imported games, or one import's, which `importBatch.ts` remembers: `importRemove.ts`) and
-    `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home
-    page (`homeRatings.ts`: a tile's stars, the Show picker, grouping by rating, and the stars and
-    note in the panel at the top); "Remove all imported…" can take only some ratings.
-  - The workspace (`workspace.ts`: file list + editor), with Play Game and the Play Level split
-    button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
-    into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
-    the last pick per game in `playPickStore.ts`), the open file's actions
-    (`fileActions.ts`), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
-    (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
-  - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
-    `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
-    `audio/compose.ts` `blankSong`), Look inside (`released.ts`,
-    `lookId.ts`), and the shared stylesheet `editor.css`.
-- `widgets/`: shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
-  Show with palette choice (`paletteChooser.ts`), thumbnails (`thumbs.ts`), previews (`preview.ts`),
-  waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), big-target color choice
-  (`colorChoice.ts`), the ? shortcuts list (`shortcuts.ts`), and the game-accurate graphic previews
-  used by the media editors (`mediaPictures.ts`, `mediaShared.ts`).
-  - The level check's parts outside the map: badges in the block, monster and sound editors
-    (`checkBadges.ts`), the self-ticking Before You Upload list (`uploadChecklist.ts`), Make a
-    walkthrough (`walkDialog.ts`), the findings as a report with a CSV and a printable checklist
-    (`checkReport.ts`, its rows in `checkRows.ts`), Play and record, the one play session of a scene
-    that adds to the author's heat map and keeps their play for the walkthrough (`playScene.ts`),
-    watching the bot's route or the author's play of a scene, and making the bot's route again
-    (`watchScene.ts`), and links into the Ultimate guide (`guideLink.ts`).
-- `editors/`: one folder per file kind, each with its `.ts`, `.css` and helpers (a big editor's
-  parts, such as the integrator's board camera and input, sit beside it). `registry.ts` maps a file
-  kind to its editor and loads each editor the first time a file of its kind opens (`loadEditor`);
-  the editor registers itself as it loads. The kinds: `palette/`, `blocks/`, `character/`,
-  `monsters/` (the path editor `monsterPathEditor.ts`, its state in `monsterPathState.ts`, the
-  pointer and keys in `monsterPathInput.ts`, a corner's picture and speed in `monsterPathCorner.ts`,
-  the tabs and toolbar in `monsterPathToolbar.ts`, the notice and corners in `monsterPathSide.ts`),
-  `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`, the
-  integrator's links as markers to drag, nudge and open in `map/links/`: `markerMath.ts` with no
-  DOM, `linkMarkers.ts` on the map and `linkPopover.ts` for one link's details and pictures),
-  `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
-  changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
-  tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
-  `playerFields.ts` makes each field) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
-  engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
-  (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
-  `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
-  `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
-- `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
-  `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
-  (`vocMaker.ts`, `sfxMaker.ts`), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
-  new game's opening (`opening/`) and the integrator's instruction and level cards (`cards/`: the
-  words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in
-  the scene's slot by `cardWire.ts`, and the dialogs in `cardDialog.ts`). `makers.ts` is their registry, offered by the file picker;
-  `all.ts` imports them all.
-- `check/`: the level check and the walkthrough bot, with no DOM.
-  - Playing: `sim.ts` plays a scene on the engine's own calls with small snapshots, `explore.ts`
-    tries every move (`inputs.ts`, `drive.ts`) from every resting place for the heat map, `stuck.ts`
-    finds places with no way out and `escape.ts` whether the hero can get out of harm;
-    `sceneData.ts` parses each level scene once, and `sceneLinks.ts` gives the level scenes and the
-    links into a scene (apart from `playtest.ts`, so the editors' badges don't load the explorer and
-    engine).
-  - `checks/`: the file checks (hazard art, opposites, waits, look-alike footing, density, contrast, sounds, keys…:
-    `blockChecks.ts`, `monsterChecks.ts`, `gameChecks.ts`, `keyReach.ts`, `facing.ts`,
-    `mazeCheck.ts`, `sealed.ts` (a prize the other plane of two reaches counts as reachable);
-    `inView.ts` prizes in view but out of reach; `helpKeys.ts` keys the help names that nothing
-    uses; `textContrast.ts` text pages and the menu hard to read against their pictures (the pages
-    and the pictures under them from `../textScreens.ts`); `colorZero.ts` level palettes (and, under a first level card that is a bare text
-    page, the menu picture) whose color 0 isn't black, the background of the name prompt and the
-    F-key screens; `heroStart.ts` starting values PLAYGAME
-    ignores and a blank Idle; `shotPrize.ts` shots that destroy prize monsters; `keyHabits.ts` a
-    fire key that roots the hero, ammunition for each key and keys whose job changes between
-    levels; `screenText.ts` long help or story and placeholder pages; `dosChars.ts` in-game words
-    with characters 128-255, which DOS's player draws as scribbles; `levelExits.ts` doors that
-    lead nowhere, a level with no link out and levels with no music (or a song DOS won't play);
-    `flashing.ts` blocks that flash faster than three times a second; `stakes.ts` many lives and
-    an unarmed start among enemies; `playerChecks.ts` a tap that moves twice, scenery that looks like
-    a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
-    `formats/fliLimits.ts`, which the health check also uses; `solidPush.ts` the wall glitch's causes:
-    solid monsters on the map's edge rows, paths that stop right against a block, solid pacers that
-    close in, and monsters that are solid and hurt; `linkChecks.ts` links that misfire, as
-    PLAYGAME's chklnk reads them: two on one cell, a scene that starts on its own link, a link left
-    at (0, 0), links and landings in walls, links off the map, and no chain of links to the won
-    scene; `missingParts.ts` .VOC files and level files that aren't there, block numbers and
-    counters past their sets and monsters from empty slots) and the play checks
-    (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
-    whole-game run carrying the least it can, and Slower hands, a second run with one key at a
-    time from `inputs.ts` `steadyMoves`).
-  - Findings: `report.ts` gathers them (`findings.ts`: each with why players mind and its section
-    of The Ultimate Owner's Guide; a `taste` check measures a design preference, so its warnings
-    show as suggestions); `generators/` holds the one-click fixes (`fixes.ts`, `blockArt.ts`,
-    `mapFixes.ts`) and the maze maker (`mazeFor.ts`); `accepted.ts` keeps the findings a designer
-    marked as meant to be (by a stable key; `sameEverySide.ts` is the facing check's own list).
-  - `walk/`: the walkthrough bot. `pace.ts` measures how tight a walkthrough's key changes are;
-    `autoWalk.ts` walks, checked on the engine by `verify.ts`; `takes.ts` cuts the author's own play
-    of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
-    of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
-    to tell when the map changed since. `walkPaths.ts` keeps a block set's walking paths and roads
-    (companion section `walkPaths` of the .bbl, which a look-only game keeps in memory) and guesses
-    them from its terrains (the block editor's Walking path box, `editors/blocks/walkPathPanel.ts`,
-    marks them); with them the explorer's `paths` option searches along the roads, and
-    `pathRoute.ts` decides whether that route, more on the paths for modestly more time, replaces
-    the quickest one.
-  - A map as the player goes through it: `unroll.ts` follows the hero over the map's wrapping
-    edges in unwrapped blocks (folding a way that goes round forever to one lap), and
-    `unrollMap.ts` explores one map from every way in for the map editor's "As players see it"
-    picture (`editors/map/mapPoster.ts`, drawn by `manual/printables/levelPoster.ts`).
-  - A course through the wrap: `course.ts` finds, from the walkthrough's ride, a map ridden lap
-    after lap corner to corner through the wrapping edges without coming back to a block (Virus
-    Blaster's ribbon cable), for the Level Maps to print as one strip.
-  - They run in Web Workers (`worker.ts` started by `client.ts`, `walk/walkWorker.ts` by
-    `walk/walkClient.ts`, `unrollWorker.ts` by `unrollClient.ts`); `live.ts` turns a running check into the worker's once-a-second posts
-    (changed heat cells, deaths, time left). `testGame.ts` and `gitDisk.ts` are for the tests.
-  - The map editor's Level check panel is `editors/map/check/` (`checkPanel.ts`, its report and
-    play buttons `checkExtras.ts`; `markInfo.ts` puts its marks into words for the map's tooltip
-    and legend; `myHeat.ts` and `myHeatControls.ts` keep the author's own heat map and compare it
-    with the bot's, and `playSession.ts` is what a Play and record session keeps (heat and a
-    take)); the badges, the Before You Upload checklist and Make a walkthrough are in `widgets/`.
-- `keymap/`: working out which keys a game uses (`keyMap.ts`, also behind the desk's key card) and
-  the ⌨ Keys dialog (`keyMapView.ts`, also shown by the player).
+- [`library/`](library/README.md): the Library: a card for everything to read or print, and the
+  site's videos.
+- [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
+  contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
 
 ## Main flows
 
@@ -747,137 +181,10 @@ before reading it (`engine/machine.ts` `need`). `player/player.ts` mounts a canv
 plays them on the `engine/machine.ts` screen, keyboard and timers (an 18.2 Hz game clock, 145.6 Hz
 for scrolling and sound) with `audio/` for music and sound.
 
-**Editors.** Each `editor/editors/<kind>/<kind>.ts` calls `registerEditor([...kinds], fn)`
-(`editors/registry.ts`). The workspace (`shell/workspace.ts`) lists the project's files by kind
-and renders `editors[kind]` for the one chosen; edits go through `core/project.ts`, which
-autosaves to IndexedDB (`shell/saveNote.ts` says so under Download, says why if a save fails, and
-makes Ctrl+S save at once). Files are always written in the original binary formats.
-
-- **Look inside.** A finished game opened with Look inside (`shell/released.ts`, at
-  `#/p/look:<id>`, see `shell/lookId.ts`) is an in-memory project that `core/readOnly.ts` makes
-  read-only: every change through `core/project.ts` is refused before it happens and nothing is
-  saved, and the refusal offers Edit a copy's flow (shareware stays look-only, with its notice).
-- **Block groups.** The block set editor (`editors/blocks/`) and the character editor share block
-  groups (`blockGroups.ts`: a picture drawn across several blocks, kept in the companion file), the
-  group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
-  (`animClip.ts` builds them from block chains, monsters and character sequences; `animPlayer.ts`
-  plays them).
-- **Mirrors.** The character editor makes a sequence's mirror
-  (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
-  x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
-  bar) and keeps the links between a sequence and its twin, and a block and its mirror, in the
-  companion file.
-- **Accompaniment.** The music editor's Accompany… and Copy tune…
-  (`editors/music/accompanyDialog.ts`, `copyTuneDialog.ts`) use `editors/music/arrange/`, pure:
-  `harmony.ts` hears a tune's key and chords, `styles.ts` holds the band's patterns and preset
-  sounds, `accompany.ts` writes bass, chords and drums in rhythm mode around the tune, and
-  `copyTune.ts` copies a tune at a new speed and pitch.
-- **Copying tracks between songs.** The music editor's ⧉ on a track, Paste track and Add a track
-  from another song…: `editors/music/trackClip.ts` (pure) copies a track's notes, instruments
-  (SBI bytes), program changes and channel events and adds them to a song on its next free
-  channel, rescaled to the same beats, a drum kept on its drum channel (turning the drum kit on
-  when tracks 7-9 are empty); `trackClipboard.ts` keeps the copy in localStorage (and a JSON copy
-  on the system clipboard); `trackPaste.ts` pastes as one undo step with a toast;
-  `trackPickDialog.ts` picks a track from the game's other songs.
-- **Bot demos.** The demo recordings editor's Let the bot play…
-  (`editors/recording/botDemoDialog.ts`) runs `botDemoWorker.ts` (through `botDemoClient.ts`): the
-  walkthrough bot plays to the chosen scene, and `botDemo.ts` plays its walkthrough on the engine
-  and writes the keys down at the demo recorder's ticks as a `.REC`.
-- **Scene maker.** The animation editor's Scene maker (`editors/animation/scene/`) draws an `.FLI`
-  from a scene kept in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items),
-  `sceneText.ts` (the 8x8 font, text motions, and the warnings and fit that keep text inside
-  320x200), `sceneAssets.ts` (the game's pictures, maps and sprites, sprite colors matched into each
-  background's palette), `sceneRender.ts` (frames, fades and the `.FLI`) and `sceneGenerate.ts`
-  (Intro, Cast and Story made from the game's files; a monster's name for its Cast card is the one
-  the monster editor keeps in the companion, `editors/monsters/monsterNames.ts`); `sceneCtx.ts` is
-  what its parts share, `sceneEditor.ts`, `sceneTimeline.ts` and `sceneInspector.ts` are its
-  picture, timeline and settings, and `sceneMaker.ts` offers it when a new animation is made.
-- **Opening.** A new game's opening (`tools/opening/`): "+ Make a new game" and the start scene's
-  🎬 Opening sting… (`openingDialog.ts`) offer the intros in `openingIntros.ts` (four "Made with
-  Game-Maker: Sandbox Edition" animations, the first one's still picture, the CD's classic RSD logo
-  animation RSDTBOX.FLI, or none) and a "<name> PRESENTS" card (`openingFields.ts`); a ▶ beside each
-  plays it on the fields' screen first (`openingPreview.ts`, with the file picker's FLI preview). The
-  four are made once by `games/kit/madewith.ts` and `madewithMore.ts` into `public/opening/`, the
-  classic one is the CD's file as it is, and each is fetched only when previewed or chosen;
-  `openingCards.ts` draws the presents card with the Scene maker's renderer, and `openingWire.ts`
-  puts them first in the title `.LST` as the game's own files (what was added is kept in the
-  companion, so it comes out again exactly, or is swapped for another). The Sandbox, CD and
-  imported games never get one.
-- **Color vision.** The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows
-  a level as seen in grayscale and with color-vision differences (`colorVision.ts`) and lists
-  colors that look alike there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a
-  designer dismissed as meant to look alike, in the companion file on the `.pal`.
-- **Color 0.** The palette editor's note by color 0 opens `editors/palette/colorZeroDialog.ts`:
-  each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
-  table, F1, F2, F5, F10), drawn with the engine's own functions in the palette and the
-  project's DOS player patches, with the palette entry each word color matched.
-
-**Exports.** A game's one Download button opens the chooser in `editor/shell/download.ts`, which
-calls `export/`: `exportWebApp.ts` (the built player listed in `player-files.json`, the game's
-files, a manifest and a service worker), `exportSinglePage.ts` (`standalone.html` with the game
-embedded, built by `../scripts/singlePageBuild.ts`), `exportWebPlayer.ts` (the web player,
-`web-player.html`, with the game's folder and a `games.json`), `exportDos.ts` (the files plus the
-CD's `XFERPLAY.EXE`, renamed after the game, and the files renamed to any extensions the DOS
-player panel's Files tab gives them), and the Mac, Windows and Linux downloads
-(`macApp.ts`, `winApp.ts`, `linuxApp.ts`), which put the single page into the players in
-`../public/mac`, `win` and `linux`, with `THIRD-PARTY-NOTICES.txt` (`notices.ts`).
-`export/downloadable.ts` says which catalog games may be downloaded, for the button and for
-`../scripts/macDmg.ts`, `winExe.ts` and `linuxTar.ts`, which run the same code from the command
-line.
-
-**Media.** `media/demo.ts` plays a `.REC` demo in the player; `media/demoPreview.ts` plays one
-inside a picture on the home page, with the demos' sound choice (`demoAudio.ts`). `walkthrough/`
-plays a Sandbox game's `walkthrough.json` and renders it to MP4 (`exportVideo.ts`, `mp4av.ts`).
-`media/video.ts` turns canvases into video: frame by frame with WebCodecs and `mp4Mux.ts`, or live
-with MediaRecorder (with the game's sound from `audioTap.ts`). `gifEncode.ts` writes animated GIFs
-and `wav.ts` sounds. The desk's capture card (`desk/pc/capture.ts`) takes screenshots and
-recordings of the PC's screen with `screenCapture.ts` and the live recorder; every download is
-saved with `editor/core/ui.ts` `download`.
+**Editors, exports and media.** How the editors work is in [`editor/`](editor/README.md), how a
+download is made in [`export/`](export/README.md), and how demos, video and recordings fit together
+in [`media/`](media/README.md).
 
 ## Build-time code
 
-[`../scripts`](../scripts) holds the build's Vite plugins and the scripts run by hand (from
-`web/`, `npx vite-node scripts/<name>.ts`).
-
-- Vite plugins, imported by `../vite.config.ts` (which also emits the service worker and
-  `player-files.json`):
-  - `cdGames.ts` serves the CD's games and `../games` (and writes them into the build, with the
-    catalogs and gzip copies);
-  - `gameShots.ts` draws each listed game's pictures into `games/shots/`;
-  - `singlePageBuild.ts` builds `standalone.html`, and `hostedPlayerBuild.ts` the web player
-    (`web-player.html`, `player/index.html` and `player/games.json`);
-  - `seoBuild.ts` puts tags, JSON-LD and readable text into the pages and writes (and serves in dev)
-    `robots.txt`, `sitemap.xml`, `llms.txt`, each game's `play-<id>.html` and its preview picture
-    `og/<id>.png` (drawn by `ogImage.ts`), each Guide section's page `help-<id>.html` (its text from
-    `manual/guideSections.ts`, which `webManual.ts` shows), and The Sandbox Scoop's RSS feed `scoop.xml`
-    (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
-- Data files the site reads, written by hand-run scripts (their tests fail until they are rerun):
-  - `credits.ts` writes the Credits page's `deps.json`;
-  - `scoopDates.ts` the day each Sandbox Scoop story was first committed, `scoopDates.json` (the
-    site's build checks out only the latest commit, so it can't ask git);
-  - `levelSecrets.ts` (with `levelSecretsScan.ts`) the Level Maps' `levelSecrets.json`;
-  - `levelViews.ts` (with `levelViewsScan.ts` and `levelViewsPlay.ts`; slow, so give it the game ids
-    that changed) their `levelViews.json`;
-  - `castHidden.ts` (with `castHiddenScan.ts`) the cast page's `hidden.json`;
-  - `shotFrames.ts` (with `shotFramesDraw.ts`) the moments of play that box shots and manual
-    shots ask for (`["clouds.map", 0, 0, { "tick": 840 }]`, `<shot … tick="840">`;
-    `gfx/shotFrame.ts`), replayed from each game's walkthrough (`walkthrough/frames.ts`) into
-    `../public/frames/`; give it the game ids that changed;
-  - `gameMakerArchive.ts` the Shareware Shelf's `gameMakerArchive.json`;
-  - `videoTranscript.ts` a Library video's `public/videos/<id>.transcript.json`, from its YouTube
-    automatic captions (`yt-dlp --skip-download --write-auto-subs --sub-langs en-orig <url>`, then
-    `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about
-    a minute a paragraph, and the names the captions mishear spelled right; everything Lewis said
-    is kept as he said it.
-- Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
-  `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast`, from the
-  other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
-- Downloads from the command line: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` run the same code as
-  the Download button (see Exports).
-- [`mcp/`](../scripts/mcp) (`npm run mcp`): the local MCP server for AI tools. It uses the
-  assistant's tools (`assistant/tools`) on game folders, zips, this project's games and the CD's,
-  writing only in the folders it is given, with its own vite-node settings (`mcp/vite.config.ts`).
-  Its README has the setup for Claude Code, Claude Desktop and other clients.
-- `dosbox.ts` (`npm run dosbox`) lays out `../../dosbox/` (git-ignored) to mount as drive C: in
-  DOSBox, with Game-Maker installed and every Sandbox and Bard of Bizarre game's disk beside the
-  samples; `npm run dosbox:open` starts DOSBox on it.
+The build's Vite plugins and the scripts run by hand are in [`../scripts`](../scripts/README.md).

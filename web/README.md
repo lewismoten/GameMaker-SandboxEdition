@@ -229,8 +229,8 @@ everything; after adding a slow test, run `npm run test:slow-list` so CI leaves 
 
 ## Layout
 
-[`src/README.md`](src/README.md) maps the source folders and the main flows in more
-detail. In short:
+[`src/README.md`](src/README.md) maps the source folders and the main flows, and links to each
+area's own README for more detail. In short:
 
 | Folder | What it holds |
 | --- | --- |

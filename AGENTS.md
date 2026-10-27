@@ -92,8 +92,10 @@ preserve what was there.
   when first used (`editor/editors/registry.ts` `loadEditor`, `main.ts`). Import their
   modules dynamically from elsewhere, not statically. `dos.html` must load nothing under
   `src/desk` (`dosPage/boundary.test.ts`).
-- **Docs:** when you add an area, a module with a new job, or a command, add it to
-  `web/src/README.md` (and `games/kit/README.md` for the kit) in the same commit.
+- **Docs:** when you add an area, a module with a new job, or a command, add it to the area's
+  README (indexed from `web/src/README.md`; `web/scripts/README.md` for build-time code,
+  `games/kit/README.md` for the kit) in the same commit. A new area gets its own README and a
+  line in the index.
 - **Agent notes stay out of the repo:** progress files, briefs and probes for a run of agents
   (such as an overnight plan's per-wave progress files) go in the agent's scratchpad, not
   here. Notes for the maintainer go in `.for-lewis/`, which git ignores.
