@@ -49,7 +49,7 @@
   }
 }
 
-/* the header's ⋯ menu (the cast, the desk, offline, the source), on phones and tablets */
+/* the header's ⋯ menu (the pages the bar has no room for, then the settings), on phones and tablets */
 .topbar .show-narrow {
   display: none;
 }
@@ -93,6 +93,9 @@
 }
 .topbar .topbar-menu > button,
 .topbar .topbar-menu > a {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
   padding: 8px 10px;
   border: 0;
   border-radius: 6px;
@@ -101,10 +104,45 @@
   font: inherit;
   text-align: left;
 }
+.topbar .topbar-menu > * > [aria-hidden] {
+  min-width: 1.3em;
+  text-align: center;
+}
 .topbar .topbar-menu > :hover {
   background: var(--panel-2);
 }
-/* below 1200px the cast, achievements, credits, magazine, offline and source links move into
+/* the separator between the ⋯ menu's pages and its settings */
+.topbar-menu > hr {
+  width: 100%;
+  margin: 2px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+/* ⚙ Settings (settingsMenu.ts): the button where the ⋯ menu sits on narrower windows, its menu
+   under it */
+.topbar-settings {
+  position: relative;
+  flex: none;
+}
+.topbar-settings > .topbar-menu[hidden] {
+  display: none;
+}
+.topbar .topbar-gear {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 36px;
+  padding: 0 8px;
+  font-size: 18px;
+  line-height: 1;
+}
+.topbar .topbar-menu > :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* below 1200px the library, achievements, the cast, the credits and the settings move into
    it, so the header stays one row on tablets and small laptops too */
 @media (max-width: 1199px) {
   .topbar .hide-narrow {
@@ -150,7 +188,7 @@
   white-space: nowrap;
 }
 
-/* the bar's page links (Games, Cast, Achievements, Credits, Guide, Magazine): each its own target, with a thin rule
+/* the bar's page links (Games, Guide, Library, Achievements, Cast, Credits): each its own target, with a thin rule
    centered between neighbors so they don't read as one phrase */
 .topbar-nav {
   display: flex;
@@ -180,7 +218,7 @@
 }
 
 /* the narrowest phones: Guide moves from the bar into the ⋯ menu, so the bar stays one row */
-.topbar-menu > .show-tiny {
+.topbar .topbar-menu > .show-tiny {
   display: none;
 }
 
@@ -188,7 +226,7 @@
   .topbar-nav > a.hide-tiny {
     display: none;
   }
-  .topbar-menu > .show-tiny {
-    display: revert;
+  .topbar .topbar-menu > .show-tiny {
+    display: flex;
   }
 }

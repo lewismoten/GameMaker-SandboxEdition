@@ -63,7 +63,7 @@
 }
 
 /* the Desk | DOS | Web switch (src/viewSwitch.ts) on the desk's wall, at the same top right as in
-   today's web header (its height, padding and the theme button's room after the switch) */
+   today's web header (its height, padding and the ⚙ Settings button's room after the switch) */
 .desk-bar {
   box-sizing: border-box;
   min-height: 50px;

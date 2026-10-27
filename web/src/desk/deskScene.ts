@@ -105,7 +105,7 @@ export function deskScene(on: DeskActions) {
       viewSwitch('desk', () => on.diskInA(), {
         web: (href) => (on.toModernAt ? on.toModernAt(href.slice(href.indexOf('#'))) : on.toModern()),
       }),
-      // where today's web has its theme button: the switch sits at the same top right in every view
+      // where today's web has its ⚙ Settings button: the switch sits at the same top right in every view
       h('span', { class: 'view-switch-end', 'aria-hidden': 'true' }),
     ),
     h(
