@@ -1,6 +1,6 @@
     CLEANSE ME, O LOOFAH,
     BUT LEAVE MY SOUL
-    Version 1.0 - Dec 1995
+    Version 1.1 - Dec 1995
     by The Bard of Bizarre
 
 "She said, 'Don't touch the

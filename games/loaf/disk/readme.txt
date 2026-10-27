@@ -1,6 +1,6 @@
     LOAF #13
     (LEFT IN THE BASKET)
-    Version 1.0 - May 1995
+    Version 1.1 - May 1995
     by The Bard of Bizarre
 
 "But I'm still bread!

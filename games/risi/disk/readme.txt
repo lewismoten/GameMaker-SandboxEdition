@@ -1,6 +1,6 @@
     VENI, VIDI, RISI!
     I Came, I Saw, I Laughed
-    Version 1.0 - Dec 1995
+    Version 1.1 - Dec 1995
     by Veni, Vidi, Risi!
 
 "Omnes spectant, nemo ridet."

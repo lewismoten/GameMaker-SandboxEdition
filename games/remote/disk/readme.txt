@@ -1,5 +1,5 @@
     WHERE'S THE REMOTE?!
-    Version 1.0 - June 1995
+    Version 1.1 - June 1995
     by The Bard of Bizarre
 
 "Where's the remote?!

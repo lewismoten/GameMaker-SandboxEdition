@@ -1,5 +1,5 @@
     I SCREAMED, SHE SMIRKED
-    Version 1.0 - October 1995
+    Version 1.1 - October 1995
     by The Bard of Bizarre
 
 "She's eight, and I'm afraid,

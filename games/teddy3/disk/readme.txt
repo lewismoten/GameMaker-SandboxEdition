@@ -1,6 +1,6 @@
 TEDDY'S LITTLE BIGGEST
 ADVENTURE
-     Version 1.0 - 1997
+     Version 1.1 - 1997
   (c) 1997 Sandbox Software
 
 It is Teddy's birthday, and

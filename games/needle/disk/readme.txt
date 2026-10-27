@@ -1,6 +1,6 @@
     THREAD THE NEEDLE,
     BROTHER CAMEL
-    Version 1.0 - May 1995
+    Version 1.1 - May 1995
     by The Bard of Bizarre
 
 "Thread the needle, Brother
