@@ -669,9 +669,13 @@ Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and its vite-node (MIT), and
 `@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
 [ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
-and `globals` (MIT). These are the only packages in `web/package.json`, all used only to build
-and test; none of their code ships in the app except Vite's small module runtime and preload
-helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
+and `globals` (MIT). The local MCP server for AI tools (`web/scripts/mcp`, `npm run mcp`) uses
+the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+(`@modelcontextprotocol/sdk`, MIT, Anthropic, PBC) and [ws](https://github.com/websockets/ws)
+(MIT, Einar Otto Stangvik, Arnout Kazemier, Luigi Pinca and contributors) with `@types/ws`
+(MIT, DefinitelyTyped); they run only on the developer's own computer, in Node. These are the
+only packages in `web/package.json`, all used only to build, test and run local tools; none of
+their code ships in the app except Vite's small module runtime and preload helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
 they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 
