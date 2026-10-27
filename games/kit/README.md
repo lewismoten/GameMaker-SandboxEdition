@@ -13,6 +13,8 @@ Making the files:
 
 - `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
 - `palette.ts` — named color ramps for a 256-color VGA palette.
+- `shading.ts` — shaded drawing in a palette ramp: an ordered-dithered shade (`shadeAt`), a vertical `gradient`, a lit
+  lump (`blob`), a raised box (`bevel`) and `speckle`.
 - `music.ts` — FM instruments and note strings → Sound Blaster `.CMF` songs.
 - `tune.ts` — writing songs in those note strings: a voice (`v`), joining and repeating bars (`join`, `times`), counting
   beats (`beatsOf`) and `tune`, which writes the song after checking every voice lasts the same number of beats.

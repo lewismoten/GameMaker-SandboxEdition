@@ -1,63 +1,12 @@
 // Drawing helpers shared by the blocks, sprites and screens: dithered shading, lumps,
 // textures, ASCII sprites, the PC's 8x8 font and a 3x5 font for tiny signs.
 import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels } from '../../../kit/pixels';
 import { textInk } from '../../../kit/textBounds';
 import { P } from './pal';
+export { shadeAt, gradient, blob, speckle } from '../../../kit/shading';
 
 export const CLEAR = 255;
-
-/** A shade between ramp[lo] and ramp[hi] for level 0..1, ordered-dithered at (x, y). */
-export function shadeAt(ramp: number[], lo: number, hi: number, level: number, x: number, y: number): number {
-  const v = lo + Math.max(0, Math.min(1, level)) * (hi - lo);
-  const base = Math.floor(v);
-  const idx = dither(x, y, v - base) ? base + 1 : base;
-  return ramp[Math.max(0, Math.min(ramp.length - 1, idx))];
-}
-
-/** A lit ellipsoid lump (bush, rock, balloon, treat), light from the upper left. */
-export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo: number, hi: number, light = 1): Pixels {
-  for (let y = Math.floor(cy - ry); y <= cy + ry; y++)
-    for (let x = Math.floor(cx - rx); x <= cx + rx; x++) {
-      const nx = (x + 0.5 - cx) / rx;
-      const ny = (y + 0.5 - cy) / ry;
-      const d = nx * nx + ny * ny;
-      if (d > 1) continue;
-      const z = Math.sqrt(1 - d);
-      const l = (0.62 * z - 0.42 * nx - 0.52 * ny) * light;
-      p.set(x, y, shadeAt(ramp, lo, hi, (l + 0.35) / 1.2, x, y));
-    }
-  return p;
-}
-
-/** Fills a rectangle with a speckled texture around ramp[base]. */
-export function speckle(
-  p: Pixels,
-  x0: number,
-  y0: number,
-  w: number,
-  h: number,
-  ramp: number[],
-  base: number,
-  spread: number,
-  seed: number,
-  density = 0.25,
-): Pixels {
-  const r = rng(seed);
-  for (let y = y0; y < y0 + h; y++)
-    for (let x = x0; x < x0 + w; x++) {
-      let k = base;
-      if (r() < density) k += r() < 0.5 ? -spread : spread;
-      p.set(x, y, ramp[Math.max(0, Math.min(ramp.length - 1, k))]);
-    }
-  return p;
-}
-
-/** A vertical gradient across a rectangle. */
-export function gradient(p: Pixels, x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number): Pixels {
-  for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, (y - y0) / Math.max(1, h - 1), x, y));
-  return p;
-}
 
 /** Recolors every pixel through a lookup. */
 export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
