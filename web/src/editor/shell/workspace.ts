@@ -686,8 +686,9 @@ export class Workspace implements AssistantHost {
 
   /**
    * Play tests the game: from the title screen, from a Play Level pick, or (no pick: the First
-   * steps' Play, an old address) from the level being edited when a level's map is open. The
-   * title and menu always come first, as in DOS. Stop goes back to that file.
+   * steps' Play, an old address) from the level being edited when a level's map is open. Play
+   * Game shows the title and menu first, as in DOS; a level's play test skips them (RunOptions
+   * skipTitle, on the test copy only) and its menu comes after play ends. Stop goes back to that file.
    */
   private play(how?: 'title' | PlayPick, back = this.current, watch?: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): void {
     const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
@@ -725,9 +726,7 @@ export class Workspace implements AssistantHost {
       h(
         'p',
         { class: 'hint' },
-        level
-          ? `The title and menu still come first (press a key, then choose Play); then it starts in ${where}, where ${sourceName(game, level)} leads. `
-          : '',
+        level ? `It starts in ${where}, where ${sourceName(game, level)} leads, without the title and menu; they come after play ends. ` : '',
         'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
       ),
     );
@@ -739,7 +738,8 @@ export class Workspace implements AssistantHost {
     // the player loads with the first play test; not if another file was opened meanwhile
     void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
       const player = companionPatches(this.project.companion, this.project.gam);
-      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player, ...watch });
+      if (!this.disposed && host.isConnected)
+        this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player, skipTitle: !!level, ...watch });
     });
   }
 

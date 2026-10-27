@@ -80,7 +80,8 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <li><b>▶ Play Game</b> plays the game from its title screen. <b>▶ Play Level</b> plays
     from a level instead: its <b>▾</b> lists every way the game’s links bring the player into a
     level (“Level 2 at 40,12, from Level 1’s exit”), and the button plays the last one you
-    picked, or the level whose map is open. The title and menu still come first.</li>
+    picked, or the level whose map is open. It starts right in the level; the title and menu
+    come after play ends.</li>
     <li>A map shows its links as markers: cyan ways in, where the hero arrives (a star for
     where the game starts), and gold exits, where touching a block leads on (a flag for Game
     won). Drag one or nudge it with the arrow keys to move it; click it to see the map or
