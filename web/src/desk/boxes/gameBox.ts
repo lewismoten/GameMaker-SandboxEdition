@@ -8,7 +8,8 @@ import { drawSandboxMark } from '../../manual/printables/sandboxMark';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
-import { mapShot, renderShot } from '../../gfx/gameShots';
+import { renderShot } from '../../gfx/gameShots';
+import { boxShot } from '../../gfx/frameShot';
 import { parseGame, type Game } from '../../formats/game';
 import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
 import { wear } from './boxWear';
@@ -70,7 +71,7 @@ interface Shot {
 }
 
 /**
- * The box's screenshots, captioned: its about.json map views, or (when a map was renamed
+ * The box's screenshots, captioned: its about.json map views (or moments of play, gfx/shotFrame.ts), or (when a map was renamed
  * or removed) a view of where the hero arrives in one of its first levels. Without
  * `pictures` only the captions (the shelf shows most boxes spine out).
  */
@@ -80,8 +81,8 @@ async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promi
   const own = (box as { captions?: string[] }).captions ?? [];
   const views = (box.shots ?? []).slice(0, 3);
   const shots: Shot[] = await Promise.all(
-    views.map(async ([m, x, y], i) => ({
-      shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined,
+    views.map(async (view, i) => ({
+      shot: pictures ? await boxShot(entry, view).catch(() => undefined) : undefined,
       caption: own[i] || (captions[i] ?? ''),
     })),
   );

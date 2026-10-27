@@ -7,7 +7,7 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './manualCover.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { mapShot } from '../../gfx/gameShots';
+import { boxShot } from '../../gfx/frameShot';
 import { portrait, sandboxLogo, splitTitle } from './kit';
 
 /** What the manual is called on its cover: "Courier Manual" from "Maximus - Courier Manual". */
@@ -30,7 +30,7 @@ function coverArt(entry: CatalogEntry): Promise<{ shot?: string; hero?: string }
         entry.original?.printables?.stickers?.find((x) => x.hero)?.hero ??
         entry.original?.printables?.items?.flatMap((i) => (i.kind === 'idcard' && i.portrait ? [i.portrait] : []))[0];
       const [pic, face] = await Promise.all([
-        s ? mapShot(entry, s[0], s[1], s[2], 16, 10).catch(() => undefined) : undefined,
+        s ? boxShot(entry, s).catch(() => undefined) : undefined,
         hero ? portrait(entry, hero).catch(() => undefined) : undefined,
       ]);
       return { shot: pic?.toDataURL(), hero: face };

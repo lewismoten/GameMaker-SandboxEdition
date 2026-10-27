@@ -1,7 +1,9 @@
 // Screenshots of the Sandbox Software games, all made with Game-Maker, for the Game-Maker
-// SE box art and its Owner's Guide: each drawn from the game's own map (its box's first view).
+// SE box art and its Owner's Guide: each drawn from the game's own map (its box's first view),
+// or the moment of play the box shot names (gfx/shotFrame.ts).
 import { loadGameList, type CatalogEntry } from '../project/files';
-import { mapShot, renderShot } from './gameShots';
+import { renderShot } from './gameShots';
+import { boxShot } from './frameShot';
 
 export interface GameShot {
   id: string;
@@ -50,8 +52,8 @@ export function loadedShots(): GameShot[] {
 
 async function shotOf(entry: CatalogEntry, view: number): Promise<HTMLCanvasElement | undefined> {
   const shots = (entry.original?.box as { shots?: [string, number, number][] } | undefined)?.shots ?? [];
-  const [m, x, y] = shots[view] ?? shots[0] ?? [];
-  const shot = m ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined;
+  const at = shots[view] ?? shots[0];
+  const shot = at ? await boxShot(entry, at).catch(() => undefined) : undefined;
   if (shot) return shot;
   // a map no level uses on its own: where the hero arrives instead
   const c = document.createElement('canvas');

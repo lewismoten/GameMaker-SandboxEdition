@@ -11,6 +11,7 @@ import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { storageLine } from '../../project/diskFacts';
 import { shotCache, sheet, fictionalNote, sandboxLogo, sandboxBanner, splitTitle, html, BBS_PHONE, mapPicture, type PrintContext, type Sheet } from './kit';
 import { fnv1a } from '../../seededRandom';
+import { shotFrame } from '../../gfx/shotFrame';
 import { CHARBL } from '../../formats/blocks';
 import { DIR_ARROW, DIR_PAD, PLAYGAME_KEYS, manualKeyText, splitKeys, type BoundKey, type Dir } from './keys';
 import { redCode } from './redFilm';
@@ -522,7 +523,7 @@ export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<S
   const box = g.original?.box;
   const [main] = splitTitle(g.title);
   const shot = box?.shots?.[1] ?? box?.shots?.[0];
-  const bg = shot ? await ctx.shot({ map: shot[0], x: shot[1], y: shot[2], w: 16, h: 10 }) : undefined;
+  const bg = shot ? await ctx.shot({ map: shot[0], x: shot[1], y: shot[2], w: 16, h: 10, frame: shotFrame(shot) }) : undefined;
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
   const hints = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
   // the sample question: the game's own pick, or the next one that leaves the card room for the rest

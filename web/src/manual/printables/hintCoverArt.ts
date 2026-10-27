@@ -10,6 +10,7 @@ import { TRANSPARENT } from '../../formats/blocks';
 import { decodeGif, isGif } from '../../formats/gif';
 import { firstLevels, heroOf, heroPixels, type HeroSpec, type LevelPicture } from '../../gfx/levelPicture';
 import { mapShot, renderShot, renderTitle } from '../../gfx/gameShots';
+import { boxShot } from '../../gfx/frameShot';
 import { paintIndexed } from '../../editor/core/draw';
 import type { HintCover } from './types';
 
@@ -93,7 +94,7 @@ async function sceneArt(entry: CatalogEntry, want: HintCover['scene']): Promise<
   if (pic) return pic;
   // the box front shows the first screenshot and the manual cover the third: one of the others
   const s = shots[1] ?? shots[3] ?? shots[0];
-  if (s) pic = await mapShot(entry, s[0], s[1], s[2], 16, 10);
+  if (s) pic = await boxShot(entry, s);
   if (pic) return pic;
   const c = canvas();
   if (await renderShot(entry, c, 16, 10)) return c;
