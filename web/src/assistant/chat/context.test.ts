@@ -179,3 +179,20 @@ describe('Reset and recall', () => {
     expect(recallText(new Archive(), { query: 'x' })).toMatch(/empty/);
   });
 });
+
+describe('forgiving small models', () => {
+  it('takes numbers as strings and several groups at once', async () => {
+    const c = ctx();
+    const m = scripted([
+      call('load_tools', { group: 'maps, blocks,nonsense' }),
+      call('set_map', { file: 'test.map', x: '2', y: '1', rows: '[[1, 1]]' }),
+      { content: 'Done.', toolCalls: [] },
+    ]);
+    const agent = new Agent({ chat: m.chat, tools: chatTools(c), system: () => 'S', images: () => false, limit: () => 8192 });
+    await agent.send('wall');
+    const results = agent.messages.filter((x) => x.role === 'tool').map((x) => x.content);
+    expect(results[0]).toMatch(/^Loaded maps: map_sketch, get_map, set_map; blocks: list_blocks, get_block, set_block\. \(No group nonsense\.\)/);
+    expect(results[1]).toMatch(/^Applied: Map test.map: 2 cells/);
+    expect(agent.toolset.loadedIds.sort()).toEqual(['blocks', 'maps']);
+  });
+});

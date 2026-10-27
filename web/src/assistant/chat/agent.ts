@@ -10,6 +10,7 @@ import type { ToolDef, ToolResult } from '../tools/types';
 import { Archive, RECALL_SCHEMA, recallText } from './archive';
 import { fixedSummary, requestStarts, splitForCompaction, summaryMessages } from './compact';
 import type { ChatMessage, ChatReply, ChatRequest, ToolCall } from './providers';
+import { coerceArgs } from './coerce';
 import { scanText } from './textCalls';
 import { estimateTokens, messagesTokens, toolsTokens, type Gauge } from './tokens';
 import { CORE, ToolSet, terse } from './toolCategories';
@@ -102,11 +103,38 @@ export class Agent {
             .categories()
             .map((c) => `${c.id} (${c.about})`)
             .join(', ')}.`,
-          inputSchema: { type: 'object', properties: { group: { type: 'string', enum: this.toolset.categories().map((c) => c.id) } }, required: ['group'] },
+          inputSchema: {
+            type: 'object',
+            properties: {
+              group: {
+                type: 'string',
+                description: `One of: ${this.toolset
+                  .categories()
+                  .map((c) => c.id)
+                  .join(', ')} (or several, with commas).`,
+              },
+            },
+            required: ['group'],
+          },
         },
         run: async (a) => {
-          const got = this.toolset.load(String(a.group));
-          return text(got ? `Loaded ${String(a.group)}: ${got.join(', ')}. Use them from your next step.` : `No group ${String(a.group)}.`, !got);
+          // a small model may ask for several at once, or for all of them
+          const g = a.group ?? a.groups;
+          const asked = (Array.isArray(g) ? g.map((x) => (typeof x === 'string' ? x : '')) : typeof g === 'string' ? g.split(/[\s,;|]+/) : []).filter(Boolean);
+          const loaded = asked.flatMap((g) => {
+            const got = this.toolset.load(g.toLowerCase());
+            return got ? [`${g}: ${got.join(', ')}`] : [];
+          });
+          const unknown = asked.filter((g) => !this.toolset.categories().some((c) => c.id === g.toLowerCase()));
+          if (!loaded.length)
+            return text(
+              `No group ${asked.join(', ') || '(none given)'}. Groups: ${this.toolset
+                .categories()
+                .map((c) => c.id)
+                .join(', ')}.`,
+              true,
+            );
+          return text(`Loaded ${loaded.join('; ')}.${unknown.length ? ` (No group ${unknown.join(', ')}.)` : ''} Use them from your next step.`);
         },
       },
       {
@@ -327,6 +355,8 @@ export class Agent {
     else if (!tool) result = text(`There is no tool ${c.name}. load_tools lists the groups.`, true);
     else if (c.badArgs !== undefined) result = text(`The arguments for ${c.name} weren’t a JSON object: ${c.badArgs.slice(0, 200)}`, true);
     else {
+      // "2" for 2 and the like, so the line, the change's place and the tool all see the meaning
+      c.args = coerceArgs(tool.def.inputSchema, c.args);
       onEvent?.({ type: 'running', call: c });
       if (this.toolset.touch(c.name)) onEvent?.({ type: 'tools', loaded: this.toolset.loadedIds });
       const refused = PICTURE_TOOLS.has(c.name) ? this.pictureRefused(c) : undefined;

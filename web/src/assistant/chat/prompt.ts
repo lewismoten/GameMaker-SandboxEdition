@@ -54,12 +54,12 @@ export function buildBrief(description: string, compact = false): string {
   if (compact)
     return [
       `Make this game: ${description.trim()}`,
-      'Scene 2 "Level 1" is a walled area, columns 35-64, rows 40-59; the hero starts at 50,50. Steps: set_scene 0 name = the title; set_scene 2 name = a level name; list_blocks; set_map walls and pickups; set_map monsters away from the start; set_links scene 2 to_scene 1 at a reachable cell; bot_playtest. Then say what you made in two sentences.',
+      'Scene 2 "Level 1" is a walled area, columns 35-64, rows 40-59; the hero starts at 50,50. Steps: load_tools group "scenes,maps,blocks"; set_scene 0 name = the title; set_scene 2 name = a level name; list_blocks; set_map walls and pickups; set_map monsters away from the start; set_links scene 2 to_scene 1 at a reachable cell; bot_playtest. Then say what you made in two sentences.',
     ].join('\n');
   return [
     `Make this game: ${description.trim()}`,
     'It starts from a playable starter: scene 2 "Level 1" uses map, blocks, monsters, hero and sounds already in the game, inside a walled area (columns 35-64, rows 40-59); the hero starts at 50,50.',
-    'Build it step by step, small and playable first:',
+    'Build it step by step, small and playable first (load_tools group "scenes,maps,blocks" gets the tools for it):',
     '1. set_scene scene 0 with the game’s title as its name; set_scene scene 2 with a level name.',
     '2. Shape the level with set_map (walls, open ground, a few pickups) using the level’s own blocks (list_blocks first).',
     '3. Place one or two monsters with set_map monsters, away from the start.',
