@@ -247,3 +247,22 @@
   filter: blur(0.08em);
   transform: rotate(-2deg);
 }
+
+/* scrolled (readView.ts): every leaf in a column, Back and Next kept at the foot */
+.zine-turner.scrolled {
+  padding-top: 4px;
+}
+
+.zine-turner.scrolled .rv-page > .pp-paper {
+  width: 100%;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.zine-turner.scrolled > .zine-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(20, 12, 6, 0.85);
+}
