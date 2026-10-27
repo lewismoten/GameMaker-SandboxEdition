@@ -143,17 +143,28 @@ const slotList = (s: Scene) =>
 const setScene: ToolDef = {
   name: 'set_scene',
   description:
-    'Renames a scene and/or sets its file slots (palette, map, blocks, monsters, character…). A level made from the starter already has its files; only name it.',
+    'Renames a scene, sets its file slots (palette, map, blocks, monsters, character…) and/or its scrolling. A level made from the starter already has its files; only name it.',
   writes: true,
   inputSchema: {
     type: 'object',
-    properties: { scene: SCENE, name: { type: 'string', description: `Up to ${SCENEDESCLEN - 1} characters.` }, files: SLOT_FILES, dry_run: DRY_RUN },
+    properties: {
+      scene: SCENE,
+      name: { type: 'string', description: `Up to ${SCENEDESCLEN - 1} characters.` },
+      files: SLOT_FILES,
+      scroll: { type: 'boolean', description: 'A level: false never scrolls (one screen, 16x10 blocks around the start); true scrolls near the edges.' },
+      dry_run: DRY_RUN,
+    },
     required: ['scene'],
   },
   async run(a, ctx) {
     const game = gameOf(ctx);
     const s = sceneOf(game, a.scene);
     if (typeof a.name === 'string') s.desc = a.name.slice(0, SCENEDESCLEN - 1);
+    if (typeof a.scroll === 'boolean') {
+      if (s.gametype !== ADVTYPE) throw new ToolError(`Scene ${String(a.scene)} is not a level; only levels scroll.`);
+      const v = a.scroll ? 0xff : 0;
+      Object.assign(s.scroll, { up: v, down: v, left: v, right: v });
+    }
     const moved = setSlots(game, a.scene as number, a.files, ctx);
     const note = moved.length ? `${moved.join('; ')}. The slots are: ${slotList(s)}.` : '';
     return commit(ctx, a, { summary: `Scene ${String(a.scene)} (${s.desc.trim()}) changed`, files: { [ctx.gam]: serializeGame(game) } }, note);

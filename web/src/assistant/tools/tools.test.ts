@@ -44,6 +44,15 @@ describe('assistant tools', () => {
     expect((await call(ctx, 'set_scene', { scene: 2, files: [{ slot: 1, file: 'test.map' }] })).isError).toBeFalsy();
   });
 
+  it('set_scene turns a level’s scrolling off and on, and only a level’s', async () => {
+    const ctx = tiny();
+    expect((await call(ctx, 'set_scene', { scene: 2, scroll: false })).isError).toBeFalsy();
+    expect(body(await call(ctx, 'get_scene', { scene: 2 })).scroll).toMatchObject({ up: 0, down: 0, left: 0, right: 0 });
+    await call(ctx, 'set_scene', { scene: 2, scroll: true });
+    expect(body(await call(ctx, 'get_scene', { scene: 2 })).scroll).toMatchObject({ up: 255, down: 255, left: 255, right: 255 });
+    expect(words(await call(ctx, 'set_scene', { scene: 0, scroll: false }))).toMatch(/not a level/);
+  });
+
   it('have unique names, short descriptions and flat object schemas with dry_run on every write', () => {
     const names = GAME_TOOL_DEFS.map((d) => d.name);
     expect(new Set(names).size).toBe(names.length);
