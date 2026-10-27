@@ -102,19 +102,95 @@
  "chapters": [
   {
    "scene": 6,
-   "title": "Room 1: The Kitchen"
+   "title": "Room 1: The Kitchen, board 1: The Toaster"
+  },
+  {
+   "scene": 7,
+   "title": "Room 1: The Kitchen, board 2: The Blender"
+  },
+  {
+   "scene": 8,
+   "title": "Room 1: The Kitchen, board 3: The Microwave"
+  },
+  {
+   "scene": 9,
+   "title": "Room 1: The Kitchen, board 4: The Dishwasher"
+  },
+  {
+   "scene": 10,
+   "title": "Room 1: The Kitchen, board 5: The Fridge"
+  },
+  {
+   "scene": 11,
+   "title": "Room 1: The Kitchen, board 6: The Coffee Maker"
   },
   {
    "scene": 12,
-   "title": "Room 2: The Living Room"
+   "title": "Room 2: The Living Room, board 1: The Doorbell"
+  },
+  {
+   "scene": 13,
+   "title": "Room 2: The Living Room, board 2: The TV Set"
+  },
+  {
+   "scene": 14,
+   "title": "Room 2: The Living Room, board 3: The VCR"
+  },
+  {
+   "scene": 15,
+   "title": "Room 2: The Living Room, board 4: The Floor Lamp"
+  },
+  {
+   "scene": 16,
+   "title": "Room 2: The Living Room, board 5: The Stereo"
+  },
+  {
+   "scene": 17,
+   "title": "Room 2: The Living Room, board 6: The Night-Light"
   },
   {
    "scene": 18,
-   "title": "Room 3: The Garage"
+   "title": "Room 3: The Garage, board 1: The Garage Door Opener"
+  },
+  {
+   "scene": 19,
+   "title": "Room 3: The Garage, board 2: The Wet-Dry Vac"
+  },
+  {
+   "scene": 20,
+   "title": "Room 3: The Garage, board 3: The Power Drill"
+  },
+  {
+   "scene": 21,
+   "title": "Room 3: The Garage, board 4: The Lawn Mower"
+  },
+  {
+   "scene": 22,
+   "title": "Room 3: The Garage, board 5: The Christmas Lights"
+  },
+  {
+   "scene": 23,
+   "title": "Room 3: The Garage, board 6: The CitiCar"
   },
   {
    "scene": 24,
-   "title": "Room 4: The Attic"
+   "title": "Room 4: The Attic, board 1: The Home Computer"
+  },
+  {
+   "scene": 25,
+   "title": "Room 4: The Attic, board 2: The Clock Radio"
+  },
+  {
+   "scene": 26,
+   "title": "Room 4: The Attic, board 3: The Electric Train"
+  },
+  {
+   "scene": 27,
+   "title": "Room 4: The Attic, board 4: The Breadboard Computer"
+  },
+  {
+   "scene": 28,
+   "title": "Room 4: The Attic, board 5: Home Sweet Ohm"
   }
  ],
  "timeline": {
@@ -130,20 +206,96 @@
     "frame": 1459
    },
    {
-    "title": "Room 1: The Kitchen",
+    "title": "Room 1: The Kitchen, board 1: The Toaster",
     "frame": 4084
    },
    {
-    "title": "Room 2: The Living Room",
+    "title": "Room 1: The Kitchen, board 2: The Blender",
+    "frame": 5571
+   },
+   {
+    "title": "Room 1: The Kitchen, board 3: The Microwave",
+    "frame": 7127
+   },
+   {
+    "title": "Room 1: The Kitchen, board 4: The Dishwasher",
+    "frame": 8577
+   },
+   {
+    "title": "Room 1: The Kitchen, board 5: The Fridge",
+    "frame": 10539
+   },
+   {
+    "title": "Room 1: The Kitchen, board 6: The Coffee Maker",
+    "frame": 12547
+   },
+   {
+    "title": "Room 2: The Living Room, board 1: The Doorbell",
     "frame": 14914
    },
    {
-    "title": "Room 3: The Garage",
+    "title": "Room 2: The Living Room, board 2: The TV Set",
+    "frame": 16844
+   },
+   {
+    "title": "Room 2: The Living Room, board 3: The VCR",
+    "frame": 18575
+   },
+   {
+    "title": "Room 2: The Living Room, board 4: The Floor Lamp",
+    "frame": 19874
+   },
+   {
+    "title": "Room 2: The Living Room, board 5: The Stereo",
+    "frame": 21733
+   },
+   {
+    "title": "Room 2: The Living Room, board 6: The Night-Light",
+    "frame": 23091
+   },
+   {
+    "title": "Room 3: The Garage, board 1: The Garage Door Opener",
     "frame": 24588
    },
    {
-    "title": "Room 4: The Attic",
+    "title": "Room 3: The Garage, board 2: The Wet-Dry Vac",
+    "frame": 26632
+   },
+   {
+    "title": "Room 3: The Garage, board 3: The Power Drill",
+    "frame": 28326
+   },
+   {
+    "title": "Room 3: The Garage, board 4: The Lawn Mower",
+    "frame": 29697
+   },
+   {
+    "title": "Room 3: The Garage, board 5: The Christmas Lights",
+    "frame": 31704
+   },
+   {
+    "title": "Room 3: The Garage, board 6: The CitiCar",
+    "frame": 34114
+   },
+   {
+    "title": "Room 4: The Attic, board 1: The Home Computer",
     "frame": 36686
+   },
+   {
+    "title": "Room 4: The Attic, board 2: The Clock Radio",
+    "frame": 38540
+   },
+   {
+    "title": "Room 4: The Attic, board 3: The Electric Train",
+    "frame": 40295
+   },
+   {
+    "title": "Room 4: The Attic, board 4: The Breadboard Computer",
+    "frame": 42936
+   },
+   {
+    "title": "Room 4: The Attic, board 5: Home Sweet Ohm",
+    "frame": 44799
    },
    {
     "title": "Ending",

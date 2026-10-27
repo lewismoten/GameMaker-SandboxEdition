@@ -2,7 +2,7 @@
 // one key segment a board (each starts when its room scene is entered for that board, after
 // the board's title card), with Watt's score and energy carried on as the game carries them,
 // and games/kit/walkthrough.ts checks the whole run on the real engine (title, story, every
-// board of every room, the ending, the credits). One chapter a room. No seams, no fuse box.
+// board of every room, the ending, the credits). One chapter a board, named for its room. No seams, no fuse box.
 // Like a player, the walkthrough rolls over for each board's gold screw on the way
 // (tools/loot.ts): the solution with the cheapest detour that still reaches the outlet.
 //   cd web && npx vite-node ../games/logic/tools/walkthrough.ts
@@ -27,9 +27,9 @@ const chapters: WalkChapterMark[] = [];
 let g = 0;
 for (const [ri, room] of rooms.entries()) {
   const roomScene = 2 + ri; // src/game.ts: the rooms, then one card scene a board
-  // the room's chapter starts with its first board's title card
-  chapters.push({ scene: 2 + rooms.length + g, title: `Room ${ri + 1}: ${game.scenes[roomScene].desc}` });
-  for (const b of room.boards) {
+  for (const [bi, b] of room.boards.entries()) {
+    // each board's chapter starts with its title card
+    chapters.push({ scene: 2 + rooms.length + g, title: `Room ${ri + 1}: ${game.scenes[roomScene].desc}, board ${bi + 1}: ${b.spec.title}` });
     const chr = buildWatt(cb, b.mons.id('boom'));
     const screw = await withScrew(b, room.tiles, mb, cb, chr, ci);
     const r = await playSolution(b, room.tiles, mb, cb, chr, screw.moves, ci);
