@@ -47,7 +47,11 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       autocomplete: 'off',
       spellcheck: false,
       placeholder: 'e.g. qwen3',
+      oninput: () => (pick.value = [...pick.options].some((o) => o.value === model.value.trim()) ? model.value.trim() : ''),
     });
+    // the text box's suggestions only show models matching what is typed, so the list is a dropdown too
+    const pick = h('select', { id: `${id}-pick`, onchange: () => pick.value && (model.value = pick.value) });
+    const pickRow = h('div', { class: 'ai-field', hidden: true }, h('label', { for: `${id}-pick` }), pick);
     const key = h('input', { id: `${id}-key`, type: 'password', value: s.apiKey, autocomplete: 'off', spellcheck: false });
     const keyLabel = h('label', { for: `${id}-key` });
     const tools = h(
@@ -95,7 +99,7 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       if (!url.value.trim() || url.value.trim() === DEFAULT_URLS[was]) url.value = DEFAULT_URLS[k];
       tools.value = defaultSettings(k).tools;
       if (String(defaultSettings(was).contextTokens) === ctxSize.value) ctxSize.value = String(defaultSettings(k).contextTokens);
-      clear(models);
+      fill([]);
       sync();
       void refreshModels(false);
     };
@@ -105,7 +109,16 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       clear(status, ...r.lines.map((l) => h('p', null, r.ok ? '✓ ' : '', l)), r.problem ? problemView(r.problem) : null);
     };
 
-    const fill = (names: string[]) => clear(models, ...names.map((m) => h('option', { value: m })));
+    const fill = (names: string[]) => {
+      clear(models, ...names.map((m) => h('option', { value: m })));
+      clear(
+        pick,
+        h('option', { value: '' }, 'Choose one…'),
+        ...names.map((m) => h('option', { value: m, selected: m === model.value.trim() }, TOOL_FAMILIES.test(m) ? `${m} (calls tools)` : m)),
+      );
+      pickRow.querySelector('label')!.textContent = `Installed models (${names.length})`;
+      pickRow.hidden = !names.length;
+    };
 
     async function refreshModels(loud: boolean) {
       const now = read();
@@ -157,6 +170,7 @@ export function openAiSetup(): Promise<AiSettings | undefined> {
       ),
       h('div', { class: 'ai-field' }, h('label', { for: `${id}-url` }, 'Address'), url),
       h('div', { class: 'ai-field' }, h('label', { for: `${id}-model` }, 'Model'), h('div', { class: 'ai-row' }, model, listBtn), models),
+      pickRow,
       h('div', { class: 'ai-field' }, keyLabel, key),
       h(
         'details',
