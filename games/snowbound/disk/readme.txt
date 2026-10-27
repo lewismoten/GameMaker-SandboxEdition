@@ -1,6 +1,6 @@
     S N O W B O U N D
     The $89 Shovel
-    Version 1.0 - January 1993
+    Version 1.1 - January 1993
     (c) 1993 Sandbox Software
 
 Fort Ashby, West Virginia,
