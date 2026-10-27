@@ -14,6 +14,8 @@ import { closeMenu, findTarget, menuOpen, revealer, visible, waitFor } from './f
 import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type TourStep } from './steps';
 import { TourSound } from './tourSound';
+import { TourRecorder } from './tourRecorder';
+import { CHAPTERS } from './chapters/index';
 import { hushDemos } from '../media/demoAudio';
 
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
@@ -101,6 +103,8 @@ export class Tour {
     h('div', { class: 'tour-controls' }, this.backBtn, this.pauseBtn, this.nextBtn, this.soundBtn, this.closeBtn),
   );
   private card?: HTMLElement;
+  /** Recording the tab, a video a chapter (Record the whole tour), when the visitor agreed to share it. */
+  private recorder?: TourRecorder;
   private barSize = new ResizeObserver(() => document.documentElement.style.setProperty('--tour-bar-h', `${this.bar.offsetHeight}px`));
 
   constructor(
@@ -129,11 +133,15 @@ export class Tour {
     window.addEventListener('hashchange', this.onHash);
     window.addEventListener('resize', this.onResize);
     this.sprites = await loadSprites();
-    // carried on from another page: the browser may let the sound start without a click
-    const playing = this.opts.cont && (await this.sound.startNow());
-    if (this.opts.record && !playing) {
-      // a click on Start lets the music play; the pointer is hidden from then on
+    // carried on from another page: the browser may let the sound start without a click (a
+    // recording still asks for one, to share the new page)
+    if (this.opts.cont) await this.sound.startNow();
+    if (this.opts.record) {
+      // a click on Start lets the music play and the tab be recorded (asked again on each page,
+      // since a recording can't carry over a page load); the pointer is hidden from then on
       if (!(await this.titleCard('A guided tour', 'Game-Maker: Sandbox Edition', true))) return;
+      this.recorder = await TourRecorder.ask();
+      if (now.tour !== this) return void this.recorder?.finish();
     }
     this.sound.start();
     (this.opts.record ? this.bar : this.pauseBtn).focus();
@@ -144,7 +152,7 @@ export class Tour {
 
   private go(i: number): void {
     if (now.tour !== this) return;
-    if (i >= this.flat.length) return this.end();
+    if (i >= this.flat.length) return void this.finale();
     i = Math.max(0, i);
     const token = ++this.token;
     this.cancelHold();
@@ -179,6 +187,9 @@ export class Tour {
         this.navigating = false;
       }
       this.sound.music(chapter.music);
+      // each chapter its own video, numbered in the whole tour's order
+      await this.recorder?.chapter(CHAPTERS.indexOf(chapter) + 1, chapter.id);
+      if (!this.live(token)) return;
       if (this.opts.record || this.chapters.length > 1 || this.opts.cont) {
         this.bubble.hidden = true;
         await this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
@@ -492,7 +503,22 @@ export class Tour {
    * card comes up here and again there, and the address there names the chapters left, with
    * &cont so it carries on without a Start card when the browser lets its sound start.
    */
-  private handOff(chapter: Chapter): void {
+  /** After the last step: the whole tour (or a recording) says it is over before it ends. */
+  private async finale(): Promise<void> {
+    const token = ++this.token;
+    if (this.chapters.length > 1 || this.opts.record || this.opts.cont) {
+      this.clearHosts();
+      this.bubble.hidden = this.ring.hidden = true;
+      this.sound.music(undefined);
+      await this.titleCard('That’s the whole tour!', 'Thanks for watching · Game-Maker: Sandbox Edition', false, ['teddy', 'gwinn'], 5000);
+      if (!this.live(token)) return;
+    }
+    await this.recorder?.finish();
+    this.recorder = undefined;
+    this.end();
+  }
+
+  private async handOff(chapter: Chapter): Promise<void> {
     const rest = this.chapters.slice(this.chapters.indexOf(chapter)).map((c) => c.id);
     const params = `tour=${rest.join(',')}${this.opts.record ? '&record' : ''}&cont`;
     const url = chapter.file ? `./${chapter.file}?${params}` : `./${chapter.hash}${chapter.hash.includes('?') ? '&' : '?'}${params}`;
@@ -500,14 +526,16 @@ export class Tour {
     this.sound.dispose();
     this.bubble.hidden = this.ring.hidden = true;
     void this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
-    // a moment for the card to show, then the page
+    // this page's last chapter saved (a recording ends with its page), then a moment for the card
+    await this.recorder?.finish();
+    this.recorder = undefined;
     setTimeout(() => location.assign(url), 300);
   }
 
   // ---- title cards and the end ---------------------------------------------------------------
 
   /** A chapter's title card for a moment; with `ask`, a Start button that waits for a click (false: closed). */
-  private titleCard(title: string, sub: string, ask = false, who: HostId[] = ['teddy', 'gwinn']): Promise<boolean> {
+  private titleCard(title: string, sub: string, ask = false, who: HostId[] = ['teddy', 'gwinn'], ms = 2600): Promise<boolean> {
     const hosts = who.map((id) => {
       const s = this.sprites?.get(id);
       return s ? new Actor(s, HOSTS[id].scale + 1, false) : undefined;
@@ -537,7 +565,7 @@ export class Tour {
         card.addEventListener('keydown', (e) => e.key === 'Escape' && (this.end(), resolve(done(false))));
       });
     }
-    return sleep(2600).then(() => done(now.tour === this));
+    return sleep(ms).then(() => done(now.tour === this));
   }
 
   /** Ends the tour: everything taken away, menus it opened shut, the keyboard back where it was. */
@@ -551,6 +579,9 @@ export class Tour {
     this.opened.clear();
     this.clearHosts();
     this.sound.dispose();
+    // closed early: what was recorded so far is still saved
+    void this.recorder?.finish();
+    this.recorder = undefined;
     hushDemos(false);
     document.documentElement.classList.remove('tour-on');
     this.card?.remove();
