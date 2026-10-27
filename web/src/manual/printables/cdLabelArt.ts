@@ -80,11 +80,11 @@ function gmCd(g: CanvasRenderingContext2D, bleed: number): void {
   // round the top in at most 150 degrees, so the name and the bottom line never meet
   const most = (Math.PI * 150) / 180;
   g.fillStyle = '#000080';
-  fitArc(g, 'GAME-MAKER 3.0', 33 * s, most, (px) => `900 ${px}px 'Arial Black', Arial, sans-serif`, 11 * s);
-  arcText(g, 'GAME-MAKER 3.0', 33 * s, 'top');
+  fitArc(g, 'GAME-MAKER 3.0', 31.5 * s, most, (px) => `900 ${px}px 'Arial Black', Arial, sans-serif`, 11 * s);
+  arcText(g, 'GAME-MAKER 3.0', 31.5 * s, 'top');
   g.fillStyle = '#1d3f7a';
-  const ed = fitArc(g, 'SANDBOX EDITION', 24 * s, most, (px) => `900 ${px}px Arial, Helvetica, sans-serif`, 5.6 * s, 0.12);
-  arcText(g, 'SANDBOX EDITION', 24 * s, 'top', 0.12 * ed);
+  const ed = fitArc(g, 'SANDBOX EDITION', 23 * s, most, (px) => `900 ${px}px Arial, Helvetica, sans-serif`, 5.6 * s, 0.12);
+  arcText(g, 'SANDBOX EDITION', 23 * s, 'top', 0.12 * ed);
   g.fillStyle = '#8a0a2c';
   const small = fitArc(
     g,
@@ -115,7 +115,7 @@ function turboCd(g: CanvasRenderingContext2D, bleed: number): void {
   g.fillStyle = '#ffd31a';
   g.strokeStyle = '#141210';
   g.font = `900 ${11.5 * s}px Impact, 'Arial Black', sans-serif`;
-  arcText(g, MAG.name, 35.5 * s, 'top', 0.04 * 11.5 * s, 0.9 * s);
+  arcText(g, MAG.name, 32 * s, 'top', 0.04 * 11.5 * s, 0.9 * s);
   g.fillStyle = '#141210';
   const small = fitArc(g, 'SOURCE CODE · GAMES · SHAREWARE', 43.5 * s, (Math.PI * 130) / 180, (px) => `900 ${px}px Arial, Helvetica, sans-serif`, 4.6 * s, 0.1);
   arcText(g, 'SOURCE CODE · GAMES · SHAREWARE', 43.5 * s, 'bottom', 0.1 * small);
