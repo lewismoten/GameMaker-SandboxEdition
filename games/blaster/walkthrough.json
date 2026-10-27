@@ -120,23 +120,27 @@
   },
   {
    "scene": 30,
-   "keys": "AU0VzQBLJMsAUAnQAE0PzQ9NA80ASwPLSE0JzQBQFdAASwPLAEgDyABLA8sVSwPLEjkBuQI5AbkCTQbNDEsDyydLA8szTSrNAEseywBQCdAATQ/NKk0GzRJLA8tUSAbIDFAk0ABLA8snSwbLCU0MzRhIBsgATSTNAEseywBQCdAATRLNLU0zzVo5AbkCOQG5Ak0GzSFIBsgATRDN"
-  },
-  {
-   "scene": 31,
    "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQTJAEsGywBJBskCUQLRAEsGyxJIDsgAUFDQAEgEyABNAs0ASQTJAE0GzQBIBMgARxDHFEgKyA=="
   },
   {
-   "scene": 32,
-   "keys": "EUcKxwxJBMkASArIAEcIxwBQCtAASBbIAE0KzQBIBMgARwLHAEkGyQBICsgKOQG5AU0EzQJIAsgASwLLAEkIySJIPsgASwLLAE8czwxNBs0ASwLLAE8GzwBQAtAASQLJAE0EzQI5AbkDUALQAEgCyABHBMcASQTJQkcMxw=="
-  },
-  {
-   "scene": 33,
+   "scene": 31,
    "keys": "YVAD0EhIA8gSSAbIElAP0ABPBs8nUAnQCUsDyzxNCc0PSAPID08PzwBQA9AATxLPD1AG0BJIDMgASwbLA0kDySFRBtEPUAbQGEgGyCpLA8sJSwPLHksPyxVNCs0="
   },
   {
+   "scene": 32,
+   "keys": "G08EzwBLCssARwLHAEgayABRBtEAUAbQAFEC0QBQBNAATQrNADkBuQlHBscASwLLADkBuQFLCMsAUArQAFEM0QBQCNAATQLNAFAG0AA5AbkDSwbLBEgCyABHBMcATwTPAE0EzQBLAssARwLHAEguyABQFtAaUAbQAEkGyQBLBMtCTQbNAFEG0QBQAtACOQG5BVAK0ABRBtEATwLPAEcMxwBIBMgASQTJBFEC0QBQBtAAUQjRDFAI0ABLBssASAjIAE8EzwBQCtA="
+  },
+  {
+   "scene": 33,
+   "keys": "jgFIBsgPUAbQGEkJyQBIA8gASwbLAEkGyTBND80DSBjIAE0JzQBPBs8VUAbQGEgGyAxRCdEAUA/QMFAG0AA5AbkFSAPIAE8DzxJPA88ASwPLEk0JzRJID8gzTQnNXUsKyw=="
+  },
+  {
    "scene": 34,
-   "keys": "ETkBuQE5AbkRTwLPBEsCyxRNAs0SUArQAE8CzwBHBscAUAzQAFEI0QBJBskCSALIAFAC0ABIAsgARwLHAEsKywRLBMsATwTPAEsEywBHAscAUQrRAE0IzQBJBskASATIAE0EzQJQAtAATwzPAEcExwBIBsgATQrNBE0CzQQ5AbkDUAbQAE8GzwBHBscASALIAEkCyQBLAssAUArQAEcCxwBIBsgASQLJAE0IzQRQAtAASAbIBksCywJLBssAUArQAFEC0QRNBM0CSQTJAEgCyARQAtAASAbIAEsKywpQBtAATQbNAEkCyQBQBNAASQLJAEgGyABNAs0CUATQAEgGyABLAssCTQTNAFAG0ABPAs8ASwTLAEcCxwBLAssESATIAFAE0ABRBNEAUALQAEkGyQBIBsgASwrLCFAG0AJQBNAAUQLRADkBuQFJCMkCUALQAEgGyABLCssMUAjQAk0EzQBJBMkASATIAE0CzQZQCNAASwTLAEcExwBQAtAARwLHAkgCyABQBNAARwLHBEgCyABJAskASALIAE0IzQZNAs0KRwLHAE0CzQBHAscASwLLAEgKyA=="
+   "keys": "AU0VzQBLJMsAUAnQAE0PzQ9NA80AOQG5AksDy0VNCc0AUBXQAEsDywBIA8gASwPLFUsDyxI5AbkCOQG5Ak0GzQxLA8snSwPLM00qzQBLHssAUAnQAE0PzSpNBs0SSwPLVEgGyAxQJNAASwPLJ0sGywlNDM0YSAbIAE0kzQBLHssAUAnQAE0SzS1NM81aOQG5AjkBuQJNBs0hSAbIAE0QzQ=="
+  },
+  {
+   "scene": 35,
+   "keys": "H08CzwpLBMsMTQLNBE0CzRJQCtAATwLPAEcExwBQCtAASATIBEgEyABJAskATQjNBlAE0ABPBs8ARwbHCFAC0ABIAsgAUAbQAFEG0QBJBMkASATIAkgCyAhNAs0CTQLNCEgCyABLCssGUATQAFEE0QBQBNAASQbJAFAE0ABPBs8ARwbHAEgCyARLAssKSQTJAE0IzQxQBNAATwTPAFAC0ABPBM8ARwLHAEgEyBRJAskCTQLNCEgEyAxLAsseTQLNGkgCyAJPAs9OTQLNBEgKyABHA8c="
   }
  ],
  "chapters": [
@@ -254,11 +258,11 @@
   },
   {
    "scene": 30,
-   "title": "Stage 5: The CPU — The Ribbon Cable"
+   "title": "Stage 5: The CPU — The Pipeline"
   },
   {
    "scene": 31,
-   "title": "Stage 5: The CPU — The Pipeline"
+   "title": "Stage 5: The CPU — The Heat Sink"
   },
   {
    "scene": 32,
@@ -266,16 +270,20 @@
   },
   {
    "scene": 33,
-   "title": "Stage 5: The CPU — The Heat Sink"
+   "title": "Stage 5: The CPU — The Cooling Fan"
   },
   {
    "scene": 34,
+   "title": "Stage 5: The CPU — The Ribbon Cable"
+  },
+  {
+   "scene": 35,
    "title": "Stage 5: The CPU — GLITCH"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 90730,
+  "frames": 93392,
   "chapters": [
    {
     "title": "Opening",
@@ -398,32 +406,36 @@
     "frame": 70791
    },
    {
-    "title": "Stage 5: The CPU — The Ribbon Cable",
+    "title": "Stage 5: The CPU — The Pipeline",
     "frame": 74298
    },
    {
-    "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 78407
+    "title": "Stage 5: The CPU — The Heat Sink",
+    "frame": 76262
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 80371
+    "frame": 79046
    },
    {
-    "title": "Stage 5: The CPU — The Heat Sink",
-    "frame": 82131
+    "title": "Stage 5: The CPU — The Cooling Fan",
+    "frame": 81095
+   },
+   {
+    "title": "Stage 5: The CPU — The Ribbon Cable",
+    "frame": 83899
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 84915
+    "frame": 88008
    },
    {
     "title": "Ending",
-    "frame": 87531
+    "frame": 90193
    },
    {
     "title": "Credits",
-    "frame": 89178
+    "frame": 91840
    }
   ]
  }

@@ -1,13 +1,16 @@
-// Stage 5: THE CPU. Leg A "The Pipeline" throws everything the virus has learned; leg B
-// "The Core" is the last run before GLITCH itself.
+// Stage 5: THE CPU. 5-A "The Pipeline" throws everything the virus has learned, flying up;
+// 5-B "The Heat Sink" flies right over the chip; 5-C "The Core" flies back down (turned on
+// its own map, stages/turned.ts); 5-D "The Cooling Fan" flies left under the fan (on its own
+// map too); 5-E "The Ribbon Cable" cuts corner to corner to GLITCH itself.
 import { HOVER_DROP, STALL, S_CURVE, SWEEP, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { cpuArt, cpuTiles, cpuVirus } from '../blocks/cpu5';
-import { kit, type Stage } from './stage';
+import { kit, type Leg, type Stage } from './stage';
 import { cableLeg } from './cable';
 import { bossGlitch } from '../bosses/boss5';
-import { sinkLeg } from './heatsink';
+import { fanBand, sinkKit, sinkLeg } from './heatsink';
+import { downLeg, leftLeg, stampNames, stripMeter } from './turned';
 
 function virus5(b: Parameters<typeof cpuVirus>[0], p: Parameters<typeof cpuVirus>[1]): void {
   cpuVirus(b, p);
@@ -163,6 +166,17 @@ export function stage5(): Stage {
     14,
   );
   b.cardAt = 52;
+  const up: Leg = {
+    file: 's5a',
+    kitFile: 's5',
+    title: 'The Pipeline',
+    kind: 'scroll',
+    grid: a,
+    kit: ks,
+    card: ['Inside the 486 itself.', 'Opcodes stall, then snap', 'sideways. Watch the pause!', 'A, X, Y: just like a 6502!'],
+  };
+  const core: Leg = { file: 's5b', kitFile: 's5', title: 'The Core', kind: 'scroll', grid: b, kit: ks, card: [] };
+  const sink = sinkLeg();
   return {
     n: 5,
     id: 'cpu',
@@ -173,26 +187,27 @@ export function stage5(): Stage {
     song: 'cpu.cmf',
     bossSong: 'glitch.cmf',
     legs: [
-      cableLeg(),
-      {
-        file: 's5a',
-        kitFile: 's5',
-        title: 'The Pipeline',
-        kind: 'scroll',
-        grid: a,
-        kit: ks,
-        card: ['Inside the 486 itself.', 'Opcodes stall, then snap', 'sideways. Watch the pause!', 'A, X, Y: just like a 6502!'],
-      },
-      {
-        file: 's5b',
-        kitFile: 's5',
+      up,
+      sink,
+      // The Core's Leak Slugs hunt fast (and the Pipeline's, and the heat sink's): no sharing a map with them
+      downLeg('own', core, {
+        file: 's5v',
+        kitFile: 's5v',
         title: 'The Core',
-        kind: 'scroll',
-        grid: b,
-        kit: ks,
-        card: ['The last run. GLITCH is', 'waiting at the end.', 'Save a Nova Bomb or two!'],
-      },
-      sinkLeg(),
+        card: ['Back DOWN through the core.', 'Leak Slugs hunt you fast:', 'shoot them first! Save a', 'Nova Bomb or two.'],
+        left: 2,
+        meter: stripMeter(art),
+        spec: { upright: ['rnA', 'rnX', 'rnY', 'rnSP'], stamps: [stampNames('alu', 4, 3), stampNames('l1', 3, 3), stampNames('fpu', 3, 2)] },
+      }),
+      leftLeg('own', fanBand(), {
+        file: 's5l',
+        title: 'The Cooling Fan',
+        card: ['Flying LEFT under the fan.', 'Heat shoves you up, the', 'fan blows you down. Watch', 'the Opcodes stall!'],
+        top: 45,
+        art: sinkKit().art,
+        spec: { upright: ['mark'] },
+      }),
+      cableLeg(),
       bossGlitch(art),
     ],
   };

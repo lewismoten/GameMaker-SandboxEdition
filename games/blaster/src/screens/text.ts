@@ -326,7 +326,7 @@ function readme(price: string): string {
     '',
     'FILES ON THIS DISK',
     'BLASTER.GAM  the game',
-    '*.MAP        31 maps',
+    '*.MAP        28 maps',
     '*.BBL *.MBL  blocks',
     '*.MON        monsters',
     'SHIP.CHR     the BLASTER',
