@@ -13,6 +13,7 @@ import { GM_OWNER, SITE_OWNER, shelfGames, typeOfPiece, type ShelfItem } from '.
 import { siteShelf } from './siteShelf';
 import { mergeShared } from './shared';
 import { walkShelf } from './walkShelf';
+import { cdPrintItems, gamePrintItems } from './printShelf';
 import { videoShelf } from './videos';
 import { scoopIssue } from '../manual/printables/scoopIssue';
 import { scoopDateline } from '../manual/printables/scoopIssues';
@@ -98,6 +99,17 @@ export async function loadShelf(): Promise<Shelf> {
       add(entry.id, entry.title, piece, { via: 'box', game: entry.id, start: piece.id, maps: true }, ctx);
   }
 
+  // the print shop: each game's disk labels and box, and the two CDs (printables/printShop.ts, loaded when drawn)
+  const shop = () => import('../manual/printables/printShop');
+  for (const entry of [...boxed, ...maps])
+    for (const it of gamePrintItems(entry)) {
+      items.push(it);
+      if (it.open.via === 'print') {
+        const start = it.open.start;
+        thumbs.set(it.key, async () => (await shop()).printThumb(start, entry));
+      }
+    }
+
   const gmTitle = 'The Game-Maker box';
   items.push({
     key: `${GM_OWNER}:manual`,
@@ -111,6 +123,13 @@ export async function loadShelf(): Promise<Shelf> {
   });
   thumbs.set(`${GM_OWNER}:manual`, () => gmCoverSheet(entries.find((e) => e.id === 'teddy')));
   for (const piece of gmBoxItems(family)) add(GM_OWNER, gmTitle, piece, { via: 'gm', start: piece.id });
+  for (const it of cdPrintItems(gmTitle)) {
+    items.push(it);
+    if (it.open.via === 'print') {
+      const start = it.open.start;
+      thumbs.set(it.key, async () => (await shop()).printThumb(start));
+    }
+  }
 
   const walked = await walks;
   items.push(...walked.items);

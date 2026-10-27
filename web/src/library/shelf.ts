@@ -16,6 +16,8 @@ export const SHELF_TYPES = [
   ['poster', 'Posters'],
   ['newsletter', 'Newsletters and newspapers'],
   ['stickers', 'Sticker sheets'],
+  ['labels', 'Disk and CD labels'],
+  ['retailbox', 'Retail boxes'],
   ['keys', 'Keyboard reference cards'],
   ['registration', 'Registration cards'],
   ['hintcard', 'Hint book postcards'],
@@ -32,9 +34,15 @@ export const SHELF_TYPES = [
 
 type ShelfType = (typeof SHELF_TYPES)[number][0];
 
-/** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, the zine, a game's walkthrough player, or a video's player (videoDialog.ts, by its YouTube id). */
+/**
+ * How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the
+ * site, the zine, a game's walkthrough player, a video's player (videoDialog.ts, by its YouTube
+ * id), or the print shop at a piece (printables/printShop.ts: a game's labels and box, or with no
+ * game the CD labels).
+ */
 type Opening =
   | { via: 'box'; game: string; start: string; maps?: boolean }
+  | { via: 'print'; game?: string; start: 'disklabels' | 'retailbox' | 'gmcd' | 'turbocd' }
   | { via: 'gm'; start: string }
   | { via: 'href'; href: string }
   | { via: 'zine' }

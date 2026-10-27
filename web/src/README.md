@@ -151,8 +151,8 @@ Each area's own README says what each of its files does; the short ones are desc
 
 ### The Guides, the paper in the boxes and the magazine
 
-- [`library/`](library/README.md): the Library: a card for everything to read or print, and the
-  site's videos.
+- [`library/`](library/README.md): the Library: a card for everything to read or print, the
+  print shop's disk labels, CD labels and retail boxes, and the site's videos.
 - [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
 
