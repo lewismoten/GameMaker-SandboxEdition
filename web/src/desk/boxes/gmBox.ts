@@ -15,25 +15,30 @@ preloadShots();
 
 const PPI = 80;
 const W = 7.5 * PPI;
-const H = 9.25 * PPI;
+const H_DESK = 9.25 * PPI;
 const D = 2 * PPI;
 
 const PINK = '#f0a090';
 const YELLOW = '#f2e600';
 const GREEN = '#1f9a3a';
 const RED = '#d81e1e';
+/** The box's colors, for the box to print (printables/gmBoxPrint.ts). */
+export const GM_BOX_COLORS = { pink: PINK, yellow: YELLOW, red: RED, navy: '#1d3f7a', black: '#0b0b0b' } as const;
 const LOGO = (px: number) => `italic 900 ${px}px 'Arial Black', Impact, sans-serif`;
 const SANS = (px: number, weight = 700, italic = false) => `${italic ? 'italic ' : ''}${weight} ${px}px Arial, Helvetica, sans-serif`;
 
-function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
+/** A face's canvas, w x h at PPI; `scale` draws it that many times finer (a box to print) in the same units. */
+function canvas(w: number, h: number, scale = 1): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  return [c, c.getContext('2d')!];
+  c.width = Math.round(w * scale);
+  c.height = Math.round(h * scale);
+  const ctx = c.getContext('2d')!;
+  ctx.scale(scale, scale);
+  return [c, ctx];
 }
 
 /** "GAME-MAKER" in yellow with its green drop shadow, slanted, fitted to a width. */
-function logo(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, max: number, align: CanvasTextAlign = 'left'): void {
+export function logo(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, max: number, align: CanvasTextAlign = 'left'): void {
   let px = max;
   ctx.font = LOGO(px);
   while (ctx.measureText('GAME-MAKER').width > width && px > 8) ctx.font = LOGO(--px);
@@ -86,20 +91,20 @@ function fitFont(ctx: CanvasRenderingContext2D, text: string, font: (px: number)
 }
 
 /** Whether a point on the front is clear for a caption: below the bands, off the RSD badge and the version flash. */
-function clearOnFront(px: number, py: number): boolean {
+function clearOnFront(px: number, py: number, H: number): boolean {
   if (px < 4 || px > W - 4 || py < 190 || py > H - 4) return false;
   if (px > W - 190 && px < W - 14 && py > H - 124 && py < H - 20) return false;
   return ((px - 110) / 92) ** 2 + ((py - (H - 80)) / 72) ** 2 > 1;
 }
 
 /** The longest run of a tile's caption strip (x0..x1, y0..y1 in the tilted grid) that the front shows clear. */
-function clearSpan(m: DOMMatrix, x0: number, x1: number, y0: number, y1: number): [number, number] {
+function clearSpan(m: DOMMatrix, x0: number, x1: number, y0: number, y1: number, H: number): [number, number] {
   let best: [number, number] = [x0, x0];
   let start: number | undefined;
   for (let x = x0; x <= x1; x += 2) {
     const ok = [y0, y1].every((y) => {
       const p = m.transformPoint({ x, y });
-      return clearOnFront(p.x, p.y);
+      return clearOnFront(p.x, p.y, H);
     });
     if (ok) start ??= x;
     if (start !== undefined && (!ok || x + 2 > x1)) {
@@ -111,14 +116,26 @@ function clearSpan(m: DOMMatrix, x0: number, x1: number, y0: number, y1: number)
   return best;
 }
 
-/** tiles: the screenshots from the desk box, each with its caption. */
-export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces {
+/**
+ * A box to print (the Library's retail box, printables/retailBox.ts): the front and back `h`
+ * pixels tall at PPI (the desk's box is 9.25 in), drawn `scale` times finer, with no store's
+ * price sticker.
+ */
+export interface GmPrintSize {
+  h: number;
+  scale: number;
+}
+
+/** The front and back on canvases: the desk's, or one to print (GmPrintSize). */
+export function paintGmFaces(sampleTiles: [HTMLCanvasElement, string][], print?: GmPrintSize): { front: HTMLCanvasElement; back: HTMLCanvasElement } {
+  const H = print?.h ?? H_DESK;
+  const k = print?.scale ?? 1;
   // the front shows games made with Game-Maker: Sandbox Software's, once they have loaded
   const games = loadedShots();
   const tiles: [HTMLCanvasElement, string, string?][] =
     games.length >= 6 ? games.slice(0, 6).map((g) => [g.canvas, g.feature, g.title.toUpperCase()]) : sampleTiles;
   // ---- front
-  const [front, f] = canvas(W, H);
+  const [front, f] = canvas(W, H, k);
   f.fillStyle = PINK;
   f.fillRect(0, 0, W, H);
   // the tilted grid of screenshots
@@ -140,7 +157,8 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     f.imageSmoothingEnabled = false;
     f.drawImage(shot, x, y, tw, th);
     // the captions go in the part of the strip the box shows, shrunk to fit, or not at all
-    const [from, to] = clearSpan(f.getTransform(), x, x + tw, y + th + 3, y + th + (game ? 42 : 28));
+    // in the face's own units, whatever scale it is drawn at
+    const [from, to] = clearSpan(new DOMMatrix().scale(1 / k).multiply(f.getTransform()), x, x + tw, y + th + 3, y + th + (game ? 42 : 28), H);
     if (to - from < 140) return;
     f.fillStyle = '#fff';
     fitFont(f, caption, (px) => SANS(px), game ? 17 : 19, 13, to - from - 16);
@@ -200,10 +218,10 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
   f.restore();
 
   // the list price is printed on the back; Bits & Bytes Software marked it down
-  priceSticker(f, W - 150, 200, GM_PRICE.store, GM_PRICE.sale, -0.05, GM_PRICE.msrp);
+  if (!print) priceSticker(f, W - 150, 200, GM_PRICE.store, GM_PRICE.sale, -0.05, GM_PRICE.msrp);
 
   // ---- back
-  const [back, b] = canvas(W, H);
+  const [back, b] = canvas(W, H, k);
   b.fillStyle = PINK;
   b.fillRect(0, 0, W, H);
   b.fillStyle = '#0b0b0b';
@@ -297,6 +315,13 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
   b.font = SANS(12, 400);
   b.fillText('Game-Maker © 1991–1994 Recreational Software Designs; released under the MIT License in 2014.', 30, H - 40);
   b.fillText('Sandbox Edition box art, made for this modified fork. Not the original RSD box.', 30, H - 22);
+  return { front, back };
+}
+
+/** tiles: the screenshots from the desk box, each with its caption. */
+export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces {
+  const H = H_DESK;
+  const { front, back } = paintGmFaces(sampleTiles);
 
   // ---- sides and ends
   const spine = (): string => {

@@ -15,13 +15,14 @@ import { boxDie, boxPanels, BOX, type Rect } from './retailBoxTemplate';
 import { pixelSize } from './dieLines';
 
 /** The desk draws a box 7.5 in wide; the template's face is 9.375: 1.25 times as big, so a desk pixel is 1/64 in. */
-const UNIT = PPI / (BOX.face[0] / 7.5);
+export const UNIT = PPI / (BOX.face[0] / 7.5);
 /** The face in desk units (7.5 x 9.5 desk inches). */
 const FACE = { w: (BOX.face[0] * UNIT) / PPI, h: (BOX.face[1] * UNIT) / PPI };
 
 export type BoxSheet = 'lid' | 'bottom';
 
-const L = (r: Rect): Rect => r.map((v) => v * UNIT) as Rect;
+/** A panel in desk units. */
+export const L = (r: Rect): Rect => r.map((v) => v * UNIT) as Rect;
 
 /** The title along a spine, reading downward, as big as fits its length and the wall's depth. */
 function spineTitle(g: CanvasRenderingContext2D, box: Box, main: string, sub: string, depth: number, y0: number, length: number): void {
