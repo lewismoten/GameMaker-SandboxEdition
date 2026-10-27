@@ -1,4 +1,4 @@
-// Stage 3-A, "The Score": the sound card's diagonal leg, on the track builder (diagLeg.ts).
+// Stage 3-E, "The Score": the sound card's diagonal leg, on the track builder (diagLeg.ts).
 // Five staves of the FM chip's song run corner to corner from a treble clef to the final
 // double bar; each lap ends where the staff bends flat at the kink and wraps round onto the
 // next staff, and the measure numbers count them down, 4, 3, 2, 1. Wasps dive down the staff,

@@ -1,4 +1,4 @@
-// Stage 3-C: THE BIG NAME. Up the face of the Sound Boaster from its gold edge fingers to the
+// Stage 3-A: THE BIG NAME. Up the face of the Sound Boaster from its gold edge fingers to the
 // top of the card, past SOUND BOASTER in letters two blocks tall. Beepers (PC-speaker
 // gremlins) dive, chords of three Note-heads sweep across together, the line-out jacks on the
 // bracket roll sound waves across the board along their traces, and the YO MAMA! FM chip

@@ -1,4 +1,4 @@
-// Stage 4-A, "Fragmented File": the hard disk's diagonal leg, on the track builder (diagLeg.ts).
+// Stage 4-E, "Fragmented File": the hard disk's diagonal leg, on the track builder (diagLeg.ts).
 // Mom's recipe file lies in four fragments across the platter; the BLASTER follows it from its
 // directory entry, round each kink onto the next fragment, 3, 2, 1, to EOF. Skulls dive down
 // the track and loop across it, a Leak Slug hunts, records sit on the tracks, bad sectors

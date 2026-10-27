@@ -1,13 +1,18 @@
-// Stage 4: THE HARD DISK. Leg A "The Platter" spins under the ship (rows of data streams
-// that shove it left and right); leg B "Bad Sectors" crawls with virus. Then the Head Crash.
+// Stage 4: THE HARD DISK. 4-A "The Platter" spins under the ship (rows of data streams that
+// shove it left and right), flying up; 4-B "Between Platters" flies right; 4-C "Bad Sectors"
+// flies back down through crawling virus (laid into The Platter's map beside it,
+// stages/turned.ts); 4-D "The Spindle" flies left (in the platters' map); 4-E "Fragmented File"
+// cuts corner to corner. Then the Head Crash.
 import { SPIN, S_CURVE, SWEEP, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { diskArt, diskTiles, diskVirus } from '../blocks/disk4';
-import { kit, type Stage } from './stage';
+import { kit, type Leg, type Stage } from './stage';
 import { bossCrash } from '../bosses/boss4';
 import { fragLeg } from './frag';
-import { plattersLeg } from './platters';
+import { plattersKit, plattersLeg, spindleBand } from './platters';
+import { downLeg, leftLeg, stampNames, stripMeter } from './turned';
+import { armPic } from '../blocks/platters';
 
 function virus4(b: Parameters<typeof diskVirus>[0], p: Parameters<typeof diskVirus>[1]): void {
   diskVirus(b, p);
@@ -153,6 +158,18 @@ export function stage4(): Stage {
     14,
   );
   b.cardAt = 20;
+  const up: Leg = {
+    file: 's4a',
+    kitFile: 's4',
+    title: 'The Platter',
+    kind: 'scroll',
+    grid: a,
+    kit: ks,
+    card: ['The platter spins: data', 'streams shove you hard.', 'Steer against them! Skulls', 'loop around with it.'],
+  };
+  const bad: Leg = { file: 's4b', kitFile: 's4', title: 'Bad Sectors', kind: 'scroll', grid: b, kit: ks, card: [] };
+  const platters = plattersLeg();
+  const side = plattersKit().art;
   return {
     n: 4,
     id: 'disk',
@@ -163,26 +180,26 @@ export function stage4(): Stage {
     song: 'disk.cmf',
     bossSong: 'boss.cmf',
     legs: [
-      fragLeg(),
-      {
-        file: 's4a',
-        kitFile: 's4',
-        title: 'The Platter',
-        kind: 'scroll',
-        grid: a,
-        kit: ks,
-        card: ['The platter spins: data', 'streams shove you hard.', 'Steer against them! Skulls', 'loop around with it.'],
-      },
-      {
-        file: 's4b',
-        kitFile: 's4',
+      up,
+      platters,
+      downLeg(up, bad, {
+        file: 's4v',
+        kitFile: 's4v',
         title: 'Bad Sectors',
-        kind: 'scroll',
-        grid: b,
-        kit: ks,
-        card: ['Bad sectors are crawling', 'with virus. Heavy tanks', 'cut across the lane.'],
-      },
-      plattersLeg(),
+        card: ['Back DOWN the disk. Bad', 'sectors crawl with virus.', 'Heavy tanks cut across', 'the lane.'],
+        left: 52,
+        meter: stripMeter(art),
+        spec: { upright: ['floor3'], stamps: [stampNames('hub', 4, 4)] },
+      }),
+      leftLeg(platters, spindleBand(), {
+        file: 's4l',
+        title: 'The Spindle',
+        card: ['Flying LEFT to the spindle.', 'Arms seek in from both', 'platters: cross between', 'them when they pull back!'],
+        top: 0,
+        art: side,
+        spec: { pics: { armH: armPic(side, true, true) } },
+      }),
+      fragLeg(),
       bossCrash(art),
     ],
   };

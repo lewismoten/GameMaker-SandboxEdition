@@ -1,4 +1,4 @@
-// Stage 3-C: THE BIG NAME, flown over the face of the family 486's sound card, the Sound
+// Stage 3-A: THE BIG NAME, flown over the face of the family 486's sound card, the Sound
 // Boaster (Overcreative Labs, a made-up brand, as in TURBO BUTTON's ad for it). The red board
 // of the rest of Stage 3, gold edge fingers at the slot, a steel bracket down the left with
 // its jacks, volume wheel and joystick port, black chips that carry their makers' (parody)

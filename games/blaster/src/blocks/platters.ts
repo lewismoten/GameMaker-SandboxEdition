@@ -4,7 +4,7 @@
 // platters drag round streaks past in a ring of pictures, faster than the screen scrolls, so
 // the gap looks as fast as it is. Read/write arms seek in and out across the gap.
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, bevel, flipY, micro, shadeAt } from '../art/draw';
+import { BlockSet, bevel, flipX, flipY, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { HURT } from '../characters/sharedMonsters';
 import { addTerrain, type SideArt } from './sideTiles';
@@ -35,6 +35,23 @@ export function plattersArt(p: Pal): SideArt {
   return { pal: p, floor, edge: (_s, v) => floor(v), floors: 2, edges: 1, face };
 }
 
+/**
+ * A read/write arm's head or a piece of its beam, reaching in from the right (`mirror`: from the
+ * left, for the leg flown leftward, its R/W still reading the right way round).
+ */
+export function armPic(a: SideArt, head: boolean, mirror = false): Pixels {
+  const p = a.pal;
+  let t = a.floor(0).crop(0, 0, 20, 20);
+  bevel(t, 0, 7, 20, 6, p.r('steel'), 3, 1);
+  if (head) {
+    t.rect(0, 5, 8, 10, p.c('deep', 1));
+    bevel(t, 1, 6, 6, 8, p.r('trim'), 3, 1);
+  }
+  if (mirror) t = flipX(t);
+  if (head) micro(t, mirror ? 0 : 9, 1, 'R/W', p.c('steel', 5));
+  return t;
+}
+
 /** The leg's own blocks: the platters, the air streaks' ring, the seeking arms. */
 export function plattersBlocks(bs: BlockSet, a: SideArt, armOn: number, armOff: number): void {
   const p = a.pal;
@@ -51,16 +68,7 @@ export function plattersBlocks(bs: BlockSet, a: SideArt, armOn: number, armOff: 
 
   // a read/write arm reaching in from the right: its head (left end) and its beam; out of the
   // gap (only the backdrop) for armOff ticks, then in, burning like a firewall, for armOn
-  const arm = (head: boolean) => {
-    const t = back.crop(0, 0, 20, 20);
-    bevel(t, 0, 7, 20, 6, p.r('steel'), 3, 1);
-    if (head) {
-      t.rect(0, 5, 8, 10, p.c('deep', 1));
-      bevel(t, 1, 6, 6, 8, p.r('trim'), 3, 1);
-      micro(t, 9, 1, 'R/W', p.c('steel', 5));
-    }
-    return t;
-  };
+  const arm = (head: boolean) => armPic(a, head);
   const gone = back.crop(0, 0, 20, 20);
   for (let x = 0; x < 20; x += 5) gone.set(x, 10, p.c('deep', 3));
   bs.add('armGap', gone);

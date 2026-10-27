@@ -46,7 +46,7 @@
       ["s5c.map", 2, 45]
     ],
     "rating": "Ages 8 and up",
-    "hours": 9,
+    "hours": 10,
     "reviews": [
       {
         "quote": "We did not think Game-Maker could scroll like this. Then GLITCH ate our high scores and we stopped thinking at all.",
@@ -74,6 +74,7 @@
     "s1v.mon#21",
     "s2v.mon#21",
     "s3v.mon#21",
+    "s4v.mon#21",
     "s3.mon#21",
     "sb.mon#21",
     "s4.mon#21",

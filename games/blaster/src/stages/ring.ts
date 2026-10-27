@@ -1,4 +1,4 @@
-// Stage 2-A, "The Ring Buffer": Memory Lane's diagonal leg, on the track builder (diagLeg.ts).
+// Stage 2-E, "The Ring Buffer": Memory Lane's diagonal leg, on the track builder (diagLeg.ts).
 // Four rows of memory run corner to corner from TAIL to HEAD; each lap ends where the row bends
 // flat at the kink and wraps round onto the next row, and the rows count down, 3, 2, 1. Parity
 // Bats dive down the row, Watchers cross it, a Leak Slug or two hunt you, stuck bits spark and
