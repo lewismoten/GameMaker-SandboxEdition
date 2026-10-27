@@ -29,6 +29,8 @@ import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
+import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
+import type { RunOptions } from '../../engine/game';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -140,7 +142,7 @@ function matchesFile(name: string, query: string): boolean {
     .every((w) => n.includes(w));
 }
 
-export class Workspace {
+export class Workspace implements AssistantHost {
   readonly project: Project;
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
@@ -211,6 +213,51 @@ export class Workspace {
     });
     this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey), offPatches());
     if (firstStepsState(project)) void this.loadFirstSteps();
+    setAssistantHost(this);
+  }
+
+  // ---- for the Assistant (assistant/hostSlot.ts) ----
+
+  get editorArea(): HTMLElement {
+    return this.main;
+  }
+
+  get playing(): boolean {
+    return !!this.playBack;
+  }
+
+  /** The file a play test goes back to; set while one runs. */
+  private playBack?: string;
+
+  playTest(scene: number | undefined, watch: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): boolean {
+    if (scene === undefined) {
+      this.play('title', this.current ?? this.playBack, watch);
+      return true;
+    }
+    const pick = playChoices(this.project.game()).find((c) => c.to === scene);
+    if (!pick) return false;
+    this.play(pick, this.current ?? this.playBack, watch);
+    return true;
+  }
+
+  stopPlay(): void {
+    const back = this.playBack;
+    if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
+  }
+
+  /** The Assistant button: opens the Assistant (its own chunk, loaded on the first press). */
+  private assistantButton(): HTMLElement {
+    return h(
+      'button',
+      {
+        class: 'assistant-btn',
+        title: 'Assistant: let an AI tool on this computer work on this game',
+        'aria-label': 'Assistant',
+        'aria-haspopup': 'dialog',
+        onclick: () => void import('../../assistant/bridge/panel').then((m) => m.openAssistant()),
+      },
+      h('span', { 'aria-hidden': 'true' }, '✦'),
+    );
   }
 
   /** The First steps panel (its own chunk, loaded only for games that have the checklist). */
@@ -252,6 +299,7 @@ export class Workspace {
     this.player?.stop();
     this.unlisten();
     this.unbind?.();
+    if (assistantHost() === this) setAssistantHost(undefined);
   }
 
   private renderSidebar(): void {
@@ -444,6 +492,7 @@ export class Workspace {
     this.cleanup = undefined;
     this.player?.stop();
     this.player = undefined;
+    this.playBack = undefined;
     this.current = file;
     noteOpened(this.project, file);
     this.sidebar.classList.remove('open');
@@ -498,6 +547,7 @@ export class Workspace {
             },
             keyboardIcon(),
           ),
+          this.assistantButton(),
           fileActions([
             ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
@@ -639,7 +689,7 @@ export class Workspace {
    * steps' Play, an old address) from the level being edited when a level's map is open. The
    * title and menu always come first, as in DOS. Stop goes back to that file.
    */
-  private play(how?: 'title' | PlayPick, back = this.current): void {
+  private play(how?: 'title' | PlayPick, back = this.current, watch?: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): void {
     const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
     notePlayed(this.project);
     setHashParams({ play: level ? pickParam(level) : 'title' });
@@ -648,6 +698,7 @@ export class Workspace {
     this.player?.stop();
     this.player = undefined;
     this.current = undefined;
+    this.playBack = back ?? this.project.gam;
     this.renderSidebar();
     const host = h('div', { class: 'player-host' });
     const game = parseGame(this.project.files.get(this.project.gam)!);
@@ -688,7 +739,7 @@ export class Workspace {
     // the player loads with the first play test; not if another file was opened meanwhile
     void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
       const player = companionPatches(this.project.companion, this.project.gam);
-      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player });
+      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player, ...watch });
     });
   }
 

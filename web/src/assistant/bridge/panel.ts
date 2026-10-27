@@ -1,0 +1,178 @@
+// The Assistant: the editor's panel for letting an AI tool on this computer work on the open
+// game through the MCP server's bridge (client.ts). Nothing connects until the person types the
+// port and pairing code the server shows. While connected, a chip in the corner says so with a
+// Disconnect button, every change shows a toast with Undo, and a read-only switch keeps the
+// assistant to looking. Loaded only when the Assistant button is first pressed.
+import { h, clear } from '../../editor/core/ui';
+import { assistantHost, onAssistantHost } from '../hostSlot';
+import { bridgeUrl } from './protocol';
+import { BridgeClient } from './client';
+import { EditorContext } from './editorContext';
+import './panel.css';
+
+const READ_ONLY_KEY = 'gm-assistant-read-only';
+const PORT_KEY = 'gm-assistant-port';
+
+const stored = (k: string) => {
+  try {
+    return localStorage.getItem(k) ?? '';
+  } catch {
+    return '';
+  }
+};
+const store = (k: string, v: string) => {
+  try {
+    localStorage.setItem(k, v);
+  } catch {
+    /* private mode: not remembered */
+  }
+};
+
+let readOnly = stored(READ_ONLY_KEY) === '1';
+const activity: { tool: string; ok: boolean }[] = [];
+
+const toasts = h('div', { class: 'toasts assistant-toasts', role: 'status', 'aria-live': 'polite' });
+
+/** A change the assistant made: its words, Undo, and a close button; it goes after a while unless focused or hovered. */
+function changeToast(summary: string, undo: () => void): void {
+  if (!toasts.isConnected) document.body.append(toasts);
+  const t = h(
+    'div',
+    { class: 'toast' },
+    h('span', null, `Assistant: ${summary}`),
+    h('button', { class: 'toast-undo', onclick: () => (undo(), t.remove()) }, 'Undo'),
+    h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: () => t.remove() }, '×'),
+  );
+  toasts.append(t);
+  let timer = 0;
+  const start = () => (timer = window.setTimeout(() => t.remove(), 12_000));
+  const stop = () => clearTimeout(timer);
+  t.addEventListener('pointerenter', stop);
+  t.addEventListener('pointerleave', start);
+  t.addEventListener('focusin', stop);
+  t.addEventListener('focusout', start);
+  start();
+}
+
+const ctx = new EditorContext(assistantHost, { readOnly: () => readOnly, changed: changeToast });
+const client = new BridgeClient(ctx, assistantHost, () => readOnly);
+
+// ---- the chip that shows while connected ------------------------------------------------------
+
+const chip = h(
+  'div',
+  { class: 'assistant-chip', role: 'region', 'aria-label': 'Assistant connection' },
+  h(
+    'button',
+    { class: 'assistant-chip-open', title: 'Open the Assistant', onclick: () => openAssistant() },
+    h('span', { 'aria-hidden': 'true' }, '✦ '),
+    'Assistant connected',
+  ),
+  h('button', { class: 'assistant-chip-off', onclick: () => client.disconnect() }, 'Disconnect'),
+);
+
+// ---- the panel --------------------------------------------------------------------------------
+
+const status = h('p', { class: 'assistant-status', role: 'status', 'aria-live': 'polite' });
+const port = h('input', { id: 'assistant-port', type: 'text', inputmode: 'numeric', autocomplete: 'off', placeholder: 'e.g. 51234', value: stored(PORT_KEY) });
+const code = h('input', { id: 'assistant-code', type: 'text', inputmode: 'numeric', autocomplete: 'off', placeholder: '123-456' });
+const connectBtn = h('button', { type: 'submit', class: 'primary' }, 'Connect');
+const disconnectBtn = h('button', { type: 'button', onclick: () => client.disconnect() }, 'Disconnect');
+const readOnlyBox = h('input', {
+  id: 'assistant-read-only',
+  type: 'checkbox',
+  checked: readOnly,
+  onchange: () => {
+    readOnly = readOnlyBox.checked;
+    store(READ_ONLY_KEY, readOnly ? '1' : '');
+    client.sendState();
+  },
+});
+const log = h('ul', { class: 'assistant-log', 'aria-label': 'What the assistant did' });
+
+const form = h(
+  'form',
+  {
+    class: 'assistant-form',
+    onsubmit: (e: Event) => {
+      e.preventDefault();
+      const url = bridgeUrl(port.value);
+      if (!url) return show('Type the port the MCP server shows (a number), or its ws://127.0.0.1 address.');
+      if (code.value.replace(/\D/g, '').length !== 6) return show('Type the six-digit pairing code the MCP server shows.');
+      store(PORT_KEY, port.value.trim());
+      client.connect(url, code.value);
+      code.value = '';
+    },
+  },
+  h('label', { for: 'assistant-port' }, 'Port'),
+  port,
+  h('label', { for: 'assistant-code' }, 'Pairing code'),
+  code,
+  h('div', { class: 'assistant-actions' }, connectBtn, disconnectBtn),
+);
+
+const panel = h(
+  'dialog',
+  { class: 'modal assistant-panel', 'aria-labelledby': 'assistant-title' },
+  h(
+    'header',
+    { class: 'modal-head' },
+    h('h2', { id: 'assistant-title' }, h('span', { 'aria-hidden': 'true' }, '✦ '), 'Assistant'),
+    h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => panel.close() }, '×'),
+  ),
+  h(
+    'p',
+    { class: 'hint' },
+    'Let an AI tool on this computer look at and change this game through the Game-Maker MCP server. Start it with ',
+    h('code', null, 'npm run mcp -- --bridge'),
+    ', or ask your AI tool to start the editor bridge, then type the port and pairing code it shows.',
+  ),
+  status,
+  form,
+  h('p', { class: 'assistant-check' }, readOnlyBox, h('label', { for: 'assistant-read-only' }, 'Read-only: it can look, but change nothing')),
+  h('h3', null, 'Recent'),
+  log,
+);
+panel.addEventListener('cancel', () => panel.close());
+
+function show(message?: string): void {
+  const s = client.status;
+  status.dataset.state = s;
+  status.textContent =
+    message ??
+    (s === 'connected'
+      ? `Connected${readOnly ? ', read-only' : ''}. The assistant can ${readOnly ? 'look at' : 'read and change'} the game open here.`
+      : s === 'connecting'
+        ? 'Connecting…'
+        : client.reason || 'Not connected.');
+  connectBtn.hidden = s === 'connected' || s === 'connecting';
+  disconnectBtn.hidden = !connectBtn.hidden;
+  port.disabled = code.disabled = connectBtn.hidden;
+  if (s === 'connected') {
+    if (!chip.isConnected) document.body.append(chip);
+  } else chip.remove();
+  for (const b of document.querySelectorAll<HTMLElement>('.assistant-btn')) b.dataset.connected = String(s === 'connected');
+  clear(
+    log,
+    ...(activity.length
+      ? activity.map((a) => h('li', { class: a.ok ? '' : 'failed' }, `${a.tool}${a.ok ? '' : ' (refused or failed)'}`))
+      : [h('li', null, 'Nothing yet.')]),
+  );
+}
+
+client.onStatus = () => show();
+client.onCall = (tool, ok) => {
+  activity.unshift({ tool, ok });
+  activity.length = Math.min(activity.length, 6);
+  show();
+};
+// another project opened, or the home page shown: the server hears what is open now
+onAssistantHost(() => (client.sendState(), show()));
+
+/** Opens the Assistant panel, with the focus on the field to fill next. */
+export function openAssistant(): void {
+  if (!panel.isConnected) document.body.append(panel);
+  show();
+  if (!panel.open) panel.show();
+  (client.status === 'connected' ? readOnlyBox : port.value ? code : port).focus();
+}

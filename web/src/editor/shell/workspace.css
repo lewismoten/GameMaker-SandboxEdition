@@ -347,3 +347,13 @@
     font-size: 14px;
   }
 }
+
+/* The Assistant button beside the file's title (assistant/bridge/panel.ts): shown on phones
+   too, unlike the keyboard shortcuts beside it. */
+.editor .assistant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding-inline: 8px;
+}

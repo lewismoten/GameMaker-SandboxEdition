@@ -246,6 +246,18 @@ modules are in [`../test`](../test).
   - `png.ts` writes a palette picture as a PNG with no canvas.
   - `openai.ts` (`toOpenAITools`) gives the tools as function-calling definitions for OpenAI
     or Ollama.
+  - `bridge/`: the editor tab's side of the MCP server's bridge, its own chunk, loaded only
+    when the Assistant button (✦, beside a file's title) is pressed.
+    - `protocol.ts`: the messages, pairing codes and allowed origins, shared with the server.
+    - `editorTools.ts`: the tab-only tools' schemas.
+    - `editorContext.ts`: the open project as a `GameContext`, each change one step to take
+      back. The Level check and the bot run in their Web Workers.
+    - `editorAdapters.ts` runs any tool in the tab: the shared ones, plus state, open file,
+      screenshot, a watched play test, and Undo.
+    - `client.ts` is the WebSocket.
+    - `panel.ts` is the Assistant: port and code, status, read-only switch, recent calls, a
+      chip in the corner while connected, and a toast with Undo for every change.
+  - `hostSlot.ts`: where the workspace puts itself for the Assistant, with no imports to run.
   - The local MCP server that serves them is [`../scripts/mcp`](../scripts/mcp) (see its
     README).
 
@@ -539,7 +551,8 @@ modules are in [`../test`](../test).
   messages (`plainError.ts`), and `fitPane.ts`, which keeps an editor's columns inside the window
   (each scrolls by itself, the pane never does).
 - `shell/`: the pages.
-  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCards.ts`,
+  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCategories.ts`
+    (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
     `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeIcons.ts`,
     `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
