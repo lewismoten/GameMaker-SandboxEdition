@@ -180,8 +180,32 @@
       "repo": "https://github.com/humanwhocodes/retry"
     },
     {
+      "name": "@jridgewell/resolve-uri",
+      "version": "3.1.2",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "vitest"
+      ],
+      "author": "Justin Ridgewell",
+      "repo": "https://github.com/jridgewell/resolve-uri"
+    },
+    {
       "name": "@jridgewell/sourcemap-codec",
       "version": "1.6.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "vitest"
+      ],
+      "author": "Justin Ridgewell",
+      "repo": "https://github.com/jridgewell/sourcemaps"
+    },
+    {
+      "name": "@jridgewell/trace-mapping",
+      "version": "0.3.31",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -234,6 +258,7 @@
       "usedBy": [
         "eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "RReverser",
@@ -382,52 +407,8 @@
       "repo": "https://github.com/typescript-eslint/typescript-eslint"
     },
     {
-      "name": "@vitest/expect",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
       "name": "@vitest/mocker",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/pretty-format",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/runner",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/snapshot",
-      "version": "3.2.7",
+      "version": "5.0.5",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -438,18 +419,7 @@
     },
     {
       "name": "@vitest/spy",
-      "version": "3.2.7",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/vitest-dev/vitest"
-    },
-    {
-      "name": "@vitest/utils",
-      "version": "3.2.7",
+      "version": "5.0.5",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -478,7 +448,8 @@
       "direct": false,
       "usedBy": [
         "eslint"
-      ]
+      ],
+      "repo": "https://github.com/acornjs/acorn"
     },
     {
       "name": "acorn-jsx",
@@ -488,7 +459,8 @@
       "direct": false,
       "usedBy": [
         "eslint"
-      ]
+      ],
+      "repo": "https://github.com/acornjs/acorn-jsx"
     },
     {
       "name": "ajv",
@@ -498,7 +470,9 @@
       "direct": false,
       "usedBy": [
         "eslint"
-      ]
+      ],
+      "author": "Evgeny Poberezkin",
+      "repo": "https://github.com/ajv-validator/ajv"
     },
     {
       "name": "ajv",
@@ -648,7 +622,7 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
-        "vitest"
+        "vite-node"
       ],
       "author": "egoist",
       "repo": "https://github.com/egoist/cac"
@@ -691,7 +665,7 @@
     },
     {
       "name": "chai",
-      "version": "5.3.3",
+      "version": "6.3.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -711,18 +685,6 @@
         "eslint"
       ],
       "repo": "https://github.com/chalk/chalk"
-    },
-    {
-      "name": "check-error",
-      "version": "2.1.3",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Jake Luer",
-      "repo": "https://github.com/chaijs/check-error"
     },
     {
       "name": "color-convert",
@@ -891,22 +853,10 @@
         "@modelcontextprotocol/sdk",
         "eslint",
         "typescript-eslint",
-        "vitest"
+        "vite-node"
       ],
       "author": "Josh Junon",
       "repo": "https://github.com/debug-js/debug"
-    },
-    {
-      "name": "deep-eql",
-      "version": "5.0.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Jake Luer",
-      "repo": "https://github.com/chaijs/deep-eql"
     },
     {
       "name": "deep-is",
@@ -999,6 +949,18 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
+        "vite-node"
+      ],
+      "author": "Guy Bedford",
+      "repo": "https://github.com/guybedford/es-module-lexer"
+    },
+    {
+      "name": "es-module-lexer",
+      "version": "2.3.2",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
         "vitest"
       ],
       "author": "Guy Bedford",
@@ -1024,7 +986,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "repo": "https://github.com/evanw/esbuild"
     },
@@ -1317,6 +1279,7 @@
       "usedBy": [
         "typescript-eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "thecodrr",
@@ -1705,18 +1668,6 @@
       "repo": "https://github.com/panva/jose"
     },
     {
-      "name": "js-tokens",
-      "version": "9.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Simon Lydell",
-      "repo": "https://github.com/lydell/js-tokens"
-    },
-    {
       "name": "js-yaml",
       "version": "4.3.2",
       "license": "MIT",
@@ -1849,20 +1800,8 @@
       "repo": "https://github.com/lodash/lodash"
     },
     {
-      "name": "loupe",
-      "version": "3.2.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Veselin Todorov",
-      "repo": "https://github.com/chaijs/loupe"
-    },
-    {
       "name": "magic-string",
-      "version": "0.30.21",
+      "version": "1.4.4",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -1966,7 +1905,7 @@
         "@modelcontextprotocol/sdk",
         "eslint",
         "typescript-eslint",
-        "vitest"
+        "vite-node"
       ],
       "repo": "https://github.com/vercel/ms"
     },
@@ -1978,7 +1917,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Andrey Sitnik",
       "repo": "https://github.com/ai/nanoid"
@@ -2031,6 +1970,18 @@
       ],
       "author": "James Halliday",
       "repo": "https://github.com/inspect-js/object-inspect"
+    },
+    {
+      "name": "obug",
+      "version": "3.0.0",
+      "license": "MIT",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "vitest"
+      ],
+      "author": "Kevin Deng",
+      "repo": "https://github.com/sxzz/obug"
     },
     {
       "name": "on-finished",
@@ -2159,21 +2110,9 @@
       "runtime": false,
       "direct": false,
       "usedBy": [
-        "vitest"
+        "vite-node"
       ],
       "repo": "https://github.com/unjs/pathe"
-    },
-    {
-      "name": "pathval",
-      "version": "2.0.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Veselin Todorov",
-      "repo": "https://github.com/chaijs/pathval"
     },
     {
       "name": "picocolors",
@@ -2183,7 +2122,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Alexey Raspopov",
       "repo": "https://github.com/alexeyraspopov/picocolors"
@@ -2197,6 +2136,7 @@
       "usedBy": [
         "typescript-eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "Jon Schlinkert",
@@ -2222,7 +2162,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Andrey Sitnik",
       "repo": "https://github.com/postcss/postcss"
@@ -2341,7 +2281,7 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Rich Harris",
       "repo": "https://github.com/rollup/rollup"
@@ -2493,18 +2433,6 @@
       "repo": "https://github.com/ljharb/side-channel-weakmap"
     },
     {
-      "name": "siginfo",
-      "version": "2.0.0",
-      "license": "ISC",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Emil Bay",
-      "repo": "https://github.com/emilbayes/siginfo"
-    },
-    {
       "name": "source-map-js",
       "version": "1.2.2",
       "license": "BSD-3-Clause",
@@ -2512,22 +2440,10 @@
       "direct": false,
       "usedBy": [
         "vite",
-        "vitest"
+        "vite-node"
       ],
       "author": "Valentin 7rulnik Semirulnik",
       "repo": "https://github.com/7rulnik/source-map-js"
-    },
-    {
-      "name": "stackback",
-      "version": "0.0.2",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Roman Shtylman",
-      "repo": "https://github.com/shtylman/node-stackback"
     },
     {
       "name": "statuses",
@@ -2543,7 +2459,7 @@
     },
     {
       "name": "std-env",
-      "version": "3.10.0",
+      "version": "4.3.0",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2565,18 +2481,6 @@
       "repo": "https://github.com/sindresorhus/strip-json-comments"
     },
     {
-      "name": "strip-literal",
-      "version": "3.1.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "author": "Anthony Fu",
-      "repo": "https://github.com/antfu/strip-literal"
-    },
-    {
       "name": "supports-color",
       "version": "7.2.0",
       "license": "MIT",
@@ -2590,7 +2494,7 @@
     },
     {
       "name": "tinybench",
-      "version": "2.9.0",
+      "version": "6.2.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2601,7 +2505,7 @@
     },
     {
       "name": "tinyexec",
-      "version": "0.3.2",
+      "version": "1.3.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -2620,43 +2524,11 @@
       "usedBy": [
         "typescript-eslint",
         "vite",
+        "vite-node",
         "vitest"
       ],
       "author": "Superchupu",
       "repo": "https://github.com/SuperchupuDev/tinyglobby"
-    },
-    {
-      "name": "tinypool",
-      "version": "1.1.1",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/tinylibs/tinypool"
-    },
-    {
-      "name": "tinyrainbow",
-      "version": "2.0.0",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/tinylibs/tinyrainbow"
-    },
-    {
-      "name": "tinyspy",
-      "version": "4.0.6",
-      "license": "MIT",
-      "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
-      "repo": "https://github.com/tinylibs/tinyspy"
     },
     {
       "name": "toidentifier",
@@ -2789,16 +2661,14 @@
       "version": "3.2.4",
       "license": "MIT",
       "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vitest"
-      ],
+      "direct": true,
+      "usedBy": [],
       "author": "Anthony Fu",
       "repo": "https://github.com/vitest-dev/vitest"
     },
     {
       "name": "vitest",
-      "version": "3.2.7",
+      "version": "5.0.5",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -2821,7 +2691,7 @@
     },
     {
       "name": "why-is-node-running",
-      "version": "2.3.0",
+      "version": "3.2.1",
       "license": "MIT",
       "runtime": false,
       "direct": false,

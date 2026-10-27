@@ -131,7 +131,7 @@
       "tin hearts finds maximus's heart on its disk, and the engine reports touching it",
       "tin hearts finds teddy3's heart on its disk, and the engine reports touching it"
     ],
-    "test/bbsGallery.test.ts": ["GIF Gallery files 'TEDDY.JPG' is a 1994 download: 8.3 name, 320x200 or smaller, small"],
+    "test/bbsGallery.test.ts": ["GIF Gallery files TEDDY.JPG is a 1994 download: 8.3 name, 320x200 or smaller, small"],
     "test/cmfEdit.test.ts": [
       "CMF editing model writes every song on the CD back byte for byte",
       "CMF editing model plays the same after a round trip through the model",

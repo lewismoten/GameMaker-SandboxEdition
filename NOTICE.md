@@ -680,7 +680,8 @@ Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 ## Tools used to build and test
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and its vite-node (MIT), and
+[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
+Vitest project), and
 `@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
 [ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
 and `globals` (MIT). The local MCP server for AI tools (`web/scripts/mcp`, `npm run mcp`) uses

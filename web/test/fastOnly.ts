@@ -1,7 +1,7 @@
 // With GM_FAST_TESTS set (CI), skips each test listed in slowTests.json: one over 50 ms here,
 // which runs only locally (scripts/slowTests.ts makes the list; vitest.config.ts loads this).
 import { beforeEach } from 'vitest';
-import type { TaskBase } from 'vitest';
+import type { RunnerTaskBase as TaskBase } from 'vitest';
 import slow from './slowTests.json';
 
 const SLOW = new Set(Object.entries(slow.tests).flatMap(([file, names]) => names.map((n) => `${file} > ${n}`)));
