@@ -22,11 +22,16 @@ import { buildMonsterBlocks as goatMonsterBlocks } from '../../games/goat/src/sp
 import { buildPalette as goatPalette } from '../../games/goat/src/art/pal';
 import { buildMonsterBlocks as loafMonsterBlocks } from '../../games/loaf/src/sprites/sprites';
 import { buildPalette as loafPalette } from '../../games/loaf/src/art/pal';
+import { peopleSheet as realmPeople } from '../../games/realm/src/build/people';
 
 // monster blocks by the name each game's build gives them, so a rebuild that adds or moves
 // blocks can't put the wrong pictures on stage (as the child and the rooster once were)
 const goatBlock = goatMonsterBlocks(goatPalette('day')).n;
 const loafBlock = loafMonsterBlocks(loafPalette('plain')).n;
+const realmPerson = (() => {
+  const sheet = realmPeople();
+  return (name: string) => sheet.n(name);
+})();
 
 /**
  * A hero from its .CHR: `seq` the sequence it walks on with (else the one that walks furthest
@@ -171,6 +176,9 @@ const CAST_SPRITES: Record<string, Source> = {
   ada: { game: 'sleuth', chr: 'ada.chr', cbl: 'ada.cbl', pal: 'house.pal' },
   max: { game: 'maximus', chr: 'courier.chr', cbl: 'courier.cbl', pal: 'home.pal' },
   ship: { game: 'blaster', chr: 'shipside.chr', cbl: 'ship.cbl', pal: 's1.pal' },
+  // Quest for the Round Tuit's Professor Fiddlesticks (the tinker in goggles), as the town draws
+  // him: facing you, standing and blinking
+  fiddle: { game: 'realm', file: 'people.mbl', pal: 'port.pal', frames: [[[realmPerson('tinker0')]], [[realmPerson('tinker1')]]], ms: 420 },
 };
 
 const disk = (game: string, file: string) => readFileSync(join(__dirname, '../../games', game, 'disk', file));
