@@ -12,6 +12,9 @@ import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { hushDemos } from '../media/demoAudio';
+
+/** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
+const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
 import { pageOf } from './tourPages';
 import type { Sprite } from '../cast/castStageDraw';
 
@@ -80,8 +83,10 @@ export class Tour {
     now.tour?.end();
     now.tour = this;
     document.documentElement.classList.toggle('tour-recording', !!this.opts.record);
-    // the game previews keep playing, but quietly: the guides do the talking
+    // the game previews hold still and quiet: the guides do the talking, and start one when they show it
     hushDemos(true);
+    document.documentElement.classList.add('tour-on');
+    tourDemo('stop');
     this.layer.append(this.ring, this.bubble);
     document.body.append(this.layer, this.bar);
     this.showSound();
@@ -244,6 +249,7 @@ export class Tour {
       target.classList.add('tour-pressed');
       if (step.click) this.clickKeepingFocus(target);
     } else this.sound.effect(step.sound);
+    if (step.demo) tourDemo(step.demo);
     if (!this.live(token)) return;
     if (step.action === 'enter' && actor) void actor.hop(this.still);
     this.say(step, speaker, box);
@@ -453,6 +459,7 @@ export class Tour {
     this.clearHosts();
     this.sound.dispose();
     hushDemos(false);
+    document.documentElement.classList.remove('tour-on');
     this.card?.remove();
     this.layer.remove();
     this.bar.remove();

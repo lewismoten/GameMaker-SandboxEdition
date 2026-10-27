@@ -40,6 +40,7 @@ export const homeChapter: Chapter = {
       action: 'point',
       target: { label: 'the big game picture at the top', css: '.showcase .sc-screen' },
       say: 'Up top is one game, shown big. Its picture plays a short demo of the game.',
+      demo: 'play',
     },
     {
       id: 'home-play',

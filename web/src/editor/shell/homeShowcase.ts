@@ -25,9 +25,11 @@ const KIND_LABEL: Record<GameKind, string> = {
   bizarre: 'Bizarre',
 };
 
-/** Movement is welcome and data is not scarce: demos may start by themselves. */
+/** Movement is welcome, data is not scarce and no guided tour is on: demos may start by themselves. */
 const mayAutoplay = () =>
-  !matchMedia('(prefers-reduced-motion: reduce)').matches && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+  !document.documentElement.classList.contains('tour-on') &&
+  !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+  !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
 /** Once the visitor stops a demo, no other starts by itself until they watch one again (kept for the visit). */
 const STOPPED_KEY = 'gm-demos-stopped';
@@ -126,6 +128,12 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   );
   let current: HomeGame | undefined;
   let demo: { stop(): void } | undefined;
+  let tourPlay: ((what: 'play' | 'stop') => void) | undefined;
+  const onTourDemo = (e: Event) => {
+    if (!el.isConnected) return window.removeEventListener('gm-tour-demo', onTourDemo);
+    tourPlay?.((e as CustomEvent<'play' | 'stop'>).detail);
+  };
+  window.addEventListener('gm-tour-demo', onTourDemo);
   let generation = 0;
   let saves: ReturnType<typeof savesButton> = null;
 
@@ -193,6 +201,12 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       if (demo) demo.stop();
       else play();
     });
+    // the guided tour (tour/tourEngine.ts) holds the preview still, and starts it when it shows it
+    tourPlay = (what) => {
+      if (gen !== generation || playBtn.hidden) return;
+      if (what === 'stop') demo?.stop();
+      else if (!demo) play();
+    };
 
     clear(actions, ...gameActions(game, nav, refresh));
     const walk = walkthroughButton(game.entry, () => game.files());

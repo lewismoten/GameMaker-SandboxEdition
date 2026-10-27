@@ -107,6 +107,8 @@ export interface TourStep {
   click?: boolean;
   /** Left out, rather than said with nothing to point at, when its target isn't on the page. */
   optional?: boolean;
+  /** Starts or stops the page's game preview as the action lands (previews are held still during a tour otherwise). */
+  demo?: 'play' | 'stop';
   /** Something from a game that wanders through: across the screen, or over to the target. */
   prop?: { id: PropId; run: 'across' | 'drop' };
 }
